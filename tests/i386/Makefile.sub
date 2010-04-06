@@ -1,0 +1,4 @@
+TESTS+=\
+	i386/simple-function\
+	i386/arithmetic-function\
+	i386/dotproduct

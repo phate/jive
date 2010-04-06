@@ -1,0 +1,21 @@
+TESTS=\
+	test_metacontainers\
+	test_context\
+	test_graph\
+	test_graphtraverser\
+	test_bitstring1\
+	test_bitstring2\
+	test_machinedef
+
+include tests/regalloc/Makefile.sub
+include tests/i386/Makefile.sub
+
+TESTPROGS=$(patsubst %, tests/%, $(TESTS))
+
+$(TESTPROGS): %: %.o tests/testnodes.o tests/graph-sanity-checks.o libjive.a
+
+check: $(TESTPROGS)
+	rm -rf check.log
+	@for TEST in $(TESTPROGS); do \
+		echo -n "$$TEST: " ; if $$TEST >>check.log 2>&1 ; then echo pass ; else echo FAIL ; fi ; \
+	done
