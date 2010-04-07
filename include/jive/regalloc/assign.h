@@ -35,14 +35,18 @@ struct jive_reg_candidate {
 	/* assigned register; NULL if not processed yet */
 	const jive_cpureg * reg;
 	
-	/* number of registers available in the class required for this register
-	minus number of neighbours which can pick from the same class */
+	/* number of registers available in the class required for this value
+	minus number of neighbours which can pick from the same class (but
+	have not picked yet) */
 	int squeeze;
-	/* number of registers available in the class required for this register
-	minus number of neighbours who have picked from the same class */
-	int avail;
 	
 	jive_interference_set interference;
+	
+	/* FIXME: bitmask needs to be large enough */
+	uint64_t allowed_regs;
+	/* number of registers in the class required for this value not assigned
+	to any neighbour yet */
+	unsigned int allowed_regs_count;
 	
 	/* position of node within priority heap */
 	// size_t index;

@@ -121,11 +121,10 @@ jive_edge_dump(jive_edge * edge, int fd)
 	write(fd, tmp, count);
 }
 
-void
-jive_graph_dump(jive_graph * graph, int fd)
+static void
+jive_graph_dump_noheader(jive_graph * graph, int fd)
 {
 	jive_graph_traverser * trav = jive_graph_traverse_topdown(graph);
-	write(fd, dotfile_header, sizeof(dotfile_header) - 1);
 	
 	jive_node * node = jive_graph_traverse_next(trav);
 	while(node) {
@@ -138,8 +137,17 @@ jive_graph_dump(jive_graph * graph, int fd)
 		node = jive_graph_traverse_next(trav);
 	}
 	
-	write(fd, dotfile_footer, sizeof(dotfile_footer) - 1);
 	jive_graph_traverse_finish(trav);
+}
+
+void
+jive_graph_dump(jive_graph * graph, int fd)
+{
+	write(fd, dotfile_header, sizeof(dotfile_header) - 1);
+	
+	jive_graph_dump_noheader(graph, fd);
+	
+	write(fd, dotfile_footer, sizeof(dotfile_footer) - 1);
 }
 
 void
@@ -248,3 +256,45 @@ jive_igraph_view(jive_interference_graph * igraph)
 	system("gv /tmp/itmp.ps");
 }
 
+#include <jive/regalloc/cut.h>
+
+static const char cut_cluster[] = "subgraph cluster%lx{rank=same;\n";
+
+void
+jive_graphcut_dump(jive_graphcut * cut, int fd)
+{
+	write(fd, dotfile_header, sizeof(dotfile_header) - 1);
+	
+	jive_graph_dump_noheader(cut->graph, fd);
+	
+	while(cut) {
+		char tmp[80];
+		ssize_t count;
+		
+		count = snprintf(tmp, sizeof(tmp), cut_cluster, (long)cut);
+		write(fd, tmp, count);
+		jive_instruction * instr = cut->first;
+		while(instr) {
+			count = snprintf(tmp, sizeof(tmp), "\tn%lx\n",
+				(long)instr);
+			write(fd, tmp, count);
+			if (instr == cut->last) instr = 0;
+			else instr = instr->next;
+		}
+		write(fd, "}\n", 2);
+		cut = cut->lower;
+	}
+	
+	write(fd, dotfile_footer, sizeof(dotfile_footer) - 1);
+}
+
+void
+jive_graphcut_view(jive_graphcut * cut)
+{
+	int fd = open("/tmp/ctmp.dot", O_CREAT|O_RDWR, 0644);
+	jive_graphcut_dump(cut, fd);
+	close(fd);
+	
+	system("dot -Tps </tmp/ctmp.dot >/tmp/ctmp.ps");
+	system("gv /tmp/ctmp.ps");
+}

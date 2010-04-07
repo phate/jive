@@ -9,12 +9,100 @@
 
 #include <stdio.h>
 
+/* debugging aids! this function recalculates all incrementally updated
+data and verifies that the stored data matches */
+void
+jive_interference_graph_validate(jive_interference_graph * igraph)
+{
+	/* verify that the list and count of active values before each
+	instruction is consistent */
+	jive_value_multiset active_values;
+	jive_value_multiset_init(&active_values);
+	jive_instruction * instr = igraph->seq.last;
+	while(instr) {
+		jive_value * value = jive_node_iterate_values((jive_node *) instr);
+		while(value) {
+			jive_value_multiset_remove_all(&active_values, value);
+			value = value->next;
+		}
+		jive_operand * operand = jive_node_iterate_operands((jive_node *) instr);
+		while(operand) {
+			value = operand->value;
+			jive_value_multiset_add(&active_values, value);
+			operand = operand->next;
+		}
+		
+		DEBUG_ASSERT(jive_value_multiset_equals_relaxed(&active_values, &instr->active_before));
+		
+		instr = instr->prev;
+	}
+	
+	/* verify that the list and count of interfering values for
+	each register candidate is consistent */
+	size_t n;
+	jive_interference_set interfere;
+	jive_interference_set_init(&interfere);
+	
+	for(n=0; n<igraph->map.nitems; n++) {
+		jive_reg_candidate * cand = igraph->map.items[n];
+		jive_interference_set_clear(&interfere);
+		
+		jive_instruction * instr = igraph->seq.last;
+		while(instr) {
+			jive_value_multiset * active = &instr->active_before;
+			instr = instr->prev;
+			
+			if (!jive_value_multiset_contains(active, cand->value))
+				continue;
+			size_t k;
+			for(k=0; k<active->nitems; k++)
+				if (active->items[k].value != cand->value)
+					jive_interference_set_add(&interfere, jive_interference_graph_map_value(igraph, active->items[k].value));
+		}
+		
+		DEBUG_ASSERT(jive_interference_set_equals(&interfere, &cand->interference));
+		
+		DEBUG_ASSERT(jive_value_get_cpureg_class_shared(cand->value) == cand->regcls);
+		int squeeze = 0;
+		
+		uint64_t allowed_regs = 0;
+		unsigned int allowed_regs_count = cand->regcls->nregs;
+		size_t k;
+		for(k=0; k<cand->regcls->nregs; k++)
+			allowed_regs |= 1ULL << (uint64_t)(cand->regcls->regs[k].index);
+		
+		for(k=0; k<interfere.nitems; k++) {
+			jive_reg_candidate * other = interfere.items[k].value;
+			
+			if (other->reg) {
+				uint64_t mask = 1ULL << (uint64_t)(other->reg->index);
+				if (allowed_regs & mask) {
+					allowed_regs &= ~mask;
+					allowed_regs_count --;
+				}
+			} else if (jive_cpureg_class_intersect(cand->regcls, other->regcls))
+				squeeze --;
+		}
+		
+		squeeze += allowed_regs_count;
+		
+		DEBUG_ASSERT(allowed_regs == cand->allowed_regs);
+		DEBUG_ASSERT(allowed_regs_count == cand->allowed_regs_count);
+		DEBUG_ASSERT(squeeze == cand->squeeze);
+	}
+}
+
 static void
 jive_reg_candidate_reset(jive_reg_candidate * cand)
 {
 	jive_interference_set_clear(&cand->interference);
-	cand->squeeze = cand->regcls->nregs;
-	cand->avail = cand->regcls->nregs;
+	cand->squeeze = 0;
+	cand->allowed_regs = 0;
+	cand->allowed_regs_count = cand->regcls->nregs;
+	cand->squeeze = cand->allowed_regs_count;
+	size_t k;
+	for(k=0; k<cand->regcls->nregs; k++)
+		cand->allowed_regs |= 1ULL << (uint64_t)(cand->regcls->regs[k].index);
 }
 
 jive_reg_candidate *
@@ -41,7 +129,6 @@ jive_reg_candidate_lookup(jive_interference_graph * igraph, jive_value * value)
 	cand->igraph = igraph;
 	cand->reg = 0;
 	cand->regcls = jive_value_get_cpureg_class_shared(value);
-	cand->squeeze = cand->regcls->nregs;
 	jive_reg_candidate_reset(cand);
 	
 	jive_interference_set_init(&cand->interference);
@@ -138,18 +225,17 @@ static bool
 can_assign(jive_reg_candidate * cand, jive_cpureg_t reg, const jive_machine * machine)
 {
 	size_t n;
+	uint64_t mask = 1ULL << (uint64_t) reg->index;
+	if (! (cand->allowed_regs & mask)) return false;
+	
 	for(n=0; n<cand->interference.nitems; n++) {
 		jive_reg_candidate * other = cand->interference.items[n].value;
 		
-		if (other->avail == 1 && jive_cpureg_class_contains(other->regcls, reg->regcls)) {
-			DEBUG_PRINTF("overflows %p\n", other);
-			return false;
-		}
+		if (other->reg == reg) return false;
+		if (other->reg) continue;
 		
-		if (other->reg == reg) {
-			DEBUG_PRINTF("inteferes with %p\n", other);
+		if ((other->allowed_regs & mask) && (other->allowed_regs_count == 1))
 			return false;
-		}
 	}
 	return true;
 }
@@ -220,8 +306,16 @@ do_spill(jive_interference_graph * igraph, jive_reg_candidate * cand,
 	jive_value * value = cand->value;
 	
 	/* make sure we have found the last user */
-	while(last_user_nospill != defining && !jive_instruction_uses(last_user_nospill, value))
+	while(last_user_nospill != defining && !jive_instruction_uses(last_user_nospill, value)) {
+		unmark_active_before(igraph, last_user_nospill, cand);
 		last_user_nospill = last_user_nospill->prev;
+	}
+	/* find first user after split */
+	jive_instruction * first_user_after_split = last_user_nospill->next;
+	while(!jive_instruction_uses(first_user_after_split, value))
+		first_user_after_split = first_user_after_split->next;
+	
+	DEBUG_PRINTF("spill %p: def=%p, last_user_nospill=%p, first_after_split=%p, last=%p\n", value, defining, last_user_nospill, first_user_after_split, last_user);
 	
 	/* add spill instruction immediately after defining instruction
 	FIXME: avoid spilling twice */
@@ -231,10 +325,6 @@ do_spill(jive_interference_graph * igraph, jive_reg_candidate * cand,
 	
 	mark_active_before(igraph, spill, cand);
 	
-	/* find first user after split */
-	jive_instruction * first_user_after_split = last_user_nospill->next;
-	while(!jive_instruction_uses(first_user_after_split, value))
-		first_user_after_split = first_user_after_split->next;
 	jive_instruction * instr = first_user_after_split;
 	
 	/* create restore instruction */
@@ -270,6 +360,12 @@ do_spill(jive_interference_graph * igraph, jive_reg_candidate * cand,
 		if (instr == last_user) break;
 		instr = instr->next;
 	}
+
+#if 1 /* FIXME: make conditional on debug */
+	//jive_igraph_view(igraph);
+	
+	jive_interference_graph_validate(igraph);
+#endif
 	
 	instr = first_user_after_split;
 	
@@ -295,10 +391,12 @@ do_assign(jive_interference_graph * igraph, jive_reg_candidate * cand, const jiv
 	while(!reg) {
 		DEBUG_ASSERT(last_user_nospill != definer);
 		
+		DEBUG_PRINTF("unmark active %p before %p\n", cand->value, last_user_nospill);
 		unmark_active_before(igraph, last_user_nospill, cand);
 		last_user_nospill = last_user_nospill->prev;
 		reg = select_register(cand, machine);
 	}
+	DEBUG_PRINTF("choose %s\n", reg->name);
 	if (last_user_nospill != last_user) {
 		do_spill(igraph, cand, machine, frame, definer, last_user_nospill, last_user);
 	}
@@ -309,12 +407,15 @@ do_assign(jive_interference_graph * igraph, jive_reg_candidate * cand, const jiv
 	
 	/* update availability states in neighbouring registers */
 	size_t n;
+	uint64_t mask = 1ULL << (uint64_t) reg->index;
 	for(n=0; n<cand->interference.nitems; n++) {
 		jive_reg_candidate * other = cand->interference.items[n].value;
-		if (jive_cpureg_class_contains(other->regcls, reg->regcls)) {
-			/* FIXME: "squeeze" should be updated as well */
-			other->avail --;
-			DEBUG_ASSERT(other->avail);
+		other->squeeze ++;
+		if (other->allowed_regs & mask) {
+			other->allowed_regs &= ~mask;
+			other->allowed_regs_count --;
+			other->squeeze --;
+			DEBUG_ASSERT(other->allowed_regs_count);
 		}
 	}
 	
@@ -438,6 +539,8 @@ jive_regalloc_assign(
 	jive_stackframe * frame)
 {
 	jive_interference_graph * igraph = build_interference_graph(seq->first->base.graph, seq, machine);
+	
+	jive_interference_graph_validate(igraph);
 	
 	while(igraph->cand.nitems) {
 		jive_reg_candidate * cand = igraph->cand.items[0].value;

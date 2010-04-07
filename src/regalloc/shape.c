@@ -1,32 +1,7 @@
 #include <jive/regalloc/shape.h>
 #include <jive/regalloc/cut.h>
 #include "debug.h"
-
-/* trivial & dumb graph shaper, to test register assignment pass;
-not really correct, as it does not honor regions;
-also, might exceed register budget */
-void
-jive_regalloc_shape_old(jive_graph * graph, const jive_machine * machine,
-	jive_stackframe * stack, jive_instruction_sequence * seq)
-{
-	jive_graphcut * cut = 0;
-	
-	jive_graph_traverser * trav = jive_graph_traverse_bottomup(graph);
-	jive_node * current;
-	
-	while ( (current = jive_graph_traverse_next(trav)) != 0) {
-		cut = jive_graphcut_create(graph, cut);
-		
-		jive_graphcut_add_instruction(cut, current, machine);
-	}
-	
-	jive_graph_traverse_finish(trav);
-	
-	seq->first = cut->first;
-	jive_instruction * instr = seq->first;
-	while(instr->next) instr = instr->next;
-	seq->last = instr;
-}
+#include <jive/graphdebug.h>
 
 typedef struct jive_shaper_context {
 	/* unchanging state */
@@ -62,7 +37,7 @@ jive_shaper_context_init(jive_shaper_context * ctx, jive_graph * graph, jive_sta
 	jive_regcls_count_init(ctx->aux_count_after);
 }
 
-static inline bool
+static bool
 may_add_passthrough(
 	jive_shaper_context * ctx,
 	jive_instruction * new_instr)
@@ -82,10 +57,11 @@ may_add_passthrough(
 	jive_value * value = jive_node_iterate_values((jive_node *) new_instr);
 	while(value) {
 		size_t count = jive_value_multiset_remove_all(&ctx->aux_active, value);
-		if (count == 0) continue;
-		jive_cpureg_class_t regcls = jive_value_get_cpureg_class(value);
-		jive_regcls_count_sub(ctx->aux_count_before, regcls);
-		jive_regcls_count_sub(ctx->aux_count_after, regcls);
+		if (count != 0) {
+			jive_cpureg_class_t regcls = jive_value_get_cpureg_class(value);
+			jive_regcls_count_sub(ctx->aux_count_before, regcls);
+			jive_regcls_count_sub(ctx->aux_count_after, regcls);
+		}
 		
 		value = value->next;
 	}
@@ -96,7 +72,7 @@ may_add_passthrough(
 	return true;
 }
 
-static inline bool
+static bool
 may_add_below(
 	jive_shaper_context * ctx,
 	jive_instruction * instr,
@@ -113,7 +89,7 @@ may_add_below(
 	return may_add_passthrough(ctx, new_instr);
 }
 
-static inline bool
+static bool
 may_add_before(
 	jive_shaper_context * ctx,
 	jive_instruction * instr,
@@ -153,35 +129,7 @@ may_add_before(
 	return true;
 }
 
-static inline void
-do_add_before(
-	jive_shaper_context * ctx,
-	jive_instruction * instr,
-	jive_instruction * new_instr)
-{
-	jive_instruction * tmp = instr;
-	if (tmp) tmp = tmp->prev;
-	while(tmp) {
-		tmp = tmp->prev;
-		bool may_add = may_add_below(ctx, tmp, new_instr);
-		DEBUG_ASSERT(may_add);
-		(void)may_add;
-		jive_value_multiset_copy(&tmp->active_before, &ctx->aux_active);
-		jive_regcls_count_copy(tmp->use_count_before, ctx->aux_count_before);
-		jive_regcls_count_copy(tmp->use_count_after, ctx->aux_count_after);
-		
-		tmp = tmp->prev;
-	}
-	
-	bool may_add = may_add_before(ctx, instr, new_instr);
-	DEBUG_ASSERT(may_add);
-	(void)may_add;
-	jive_value_multiset_copy(&tmp->active_before, &ctx->aux_active);
-	jive_regcls_count_copy(tmp->use_count_before, ctx->aux_count_before);
-	jive_regcls_count_copy(tmp->use_count_after, ctx->aux_count_after);
-}
-
-static inline void
+static void
 shape_instruction(jive_shaper_context * ctx, jive_instruction * new_instr)
 {
 	/* check whether input regs can be added */
@@ -189,6 +137,11 @@ shape_instruction(jive_shaper_context * ctx, jive_instruction * new_instr)
 	jive_regcls_count_copy(ctx->aux_count_before, ctx->active_above_count);
 	jive_regcls_count_copy(ctx->aux_count_after, ctx->active_above_count);
 	
+/*	if (!may_add_passthrough(ctx, new_instr)) {
+		DEBUG_PRINTF("%p\n", new_instr);
+		jive_graphcut_view(ctx->top);
+		abort();
+	}*/
 	DEBUG_ASSERT(may_add_passthrough(ctx, new_instr));
 	
 	/* find lowest cut at the end of which this instruction may be added */
@@ -205,16 +158,18 @@ shape_instruction(jive_shaper_context * ctx, jive_instruction * new_instr)
 		}
 		if (instr) break;
 		if (may_add_before(ctx, cut->lower->first, new_instr))
-			lowest_cut = cut->upper;
+			lowest_cut = cut;
 		cut = cut->lower;
 	}
 	
-	if (!lowest_cut) {
+	if (lowest_cut == 0) {
 		lowest_cut = jive_graphcut_create(ctx->graph, ctx->top);
 		ctx->top = lowest_cut;
 		if (!ctx->bottom) ctx->bottom = lowest_cut;
 	}
 	
+	if (lowest_cut->lower)
+		DEBUG_ASSERT(may_add_before(ctx, lowest_cut->lower->first, new_instr));
 	jive_graphcut_add_instruction(lowest_cut, (jive_node *)new_instr, ctx->machine);
 	
 	/* update register states of all instructions above */
@@ -246,8 +201,6 @@ jive_regalloc_shape(jive_graph * graph, const jive_machine * machine,
 	jive_shaper_context ctx;
 	jive_shaper_context_init(&ctx, graph, stack, machine);
 	
-	jive_graphcut * cut = 0;
-	
 	jive_value_multiset active_before;
 	jive_value_multiset_init(&active_before);
 	
@@ -255,14 +208,12 @@ jive_regalloc_shape(jive_graph * graph, const jive_machine * machine,
 	jive_node * current;
 	
 	while ( (current = jive_graph_traverse_next(trav)) != 0) {
-		cut = jive_graphcut_create(graph, cut);
-		
-		jive_graphcut_add_instruction(cut, current, machine);
+		shape_instruction(&ctx, (jive_instruction *) current);
 	}
 	
 	jive_graph_traverse_finish(trav);
 	
-	seq->first = cut->first;
+	seq->first = ctx.top->first;
 	jive_instruction * instr = seq->first;
 	while(instr->next) instr = instr->next;
 	seq->last = instr;
