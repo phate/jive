@@ -14,6 +14,7 @@ typedef enum {
 	jive_i386_gpr_eax = 3,	
 	jive_i386_gpr_edx = 4,
 	jive_i386_gpr_esp = 5,
+	jive_i386_gpr_ebp = 6,
 } jive_i386_regcls_index;
 
 /* integer register index */

@@ -42,7 +42,7 @@ jive_i386_stackframe_create(jive_graph * graph, jive_value * stackpointer)
 typedef struct _jive_i386_subroutine {
 	JIVE_SUBROUTINE_COMMON
 	
-	jive_passthrough * esp_passthrough, * return_value;
+	jive_passthrough * esp_passthrough, * ebp_passthrough, * return_value;
 } jive_i386_subroutine;
 
 static jive_value *
@@ -71,6 +71,15 @@ static const jive_subroutine_vmt jive_i386_subroutine_vmt = {
 	.return_value = &jive_i386_return_value
 };
 
+static void
+create_passthrough_reg(jive_i386_subroutine * sub, jive_graph * graph,
+	jive_value ** value, jive_passthrough ** passthrough, jive_cpureg_class_t regcls, const char name[])
+{
+	*passthrough = jive_passthrough_create(graph, regcls->nbits, regcls, name);
+	*value = jive_output_passthrough_create(sub->enter, *passthrough);
+	jive_input_passthrough_create(sub->leave, *passthrough, *value);
+}
+
 jive_subroutine *
 jive_i386_subroutine_create(jive_graph * graph,
 	size_t nparams, bool return_value)
@@ -87,13 +96,12 @@ jive_i386_subroutine_create(jive_graph * graph,
 	sub->leave = leave;
 	jive_state_edge_create(sub->enter, sub->leave);
 	
-	/* FIXME: should be grouped into a "callee-saved" helper */
-	sub->esp_passthrough = jive_passthrough_create(graph, 32, &jive_i386_machine.regcls[jive_i386_gpr_esp], "stackptr");
-	sub->stack_pointer = jive_output_passthrough_create(sub->enter, sub->esp_passthrough);
-	sub->frame_pointer = sub->stack_pointer;
-	jive_input_passthrough_create(sub->leave, sub->esp_passthrough, sub->stack_pointer);
-	
 	/* FIXME: must set esp the register non-spillable here */
+	create_passthrough_reg(sub, graph, &sub->stack_pointer, &sub->esp_passthrough, &jive_i386_machine.regcls[jive_i386_gpr_esp], "stackptr");
+	sub->frame_pointer = sub->stack_pointer;
+	
+	jive_value * tmp;
+	create_passthrough_reg(sub, graph, &tmp, &sub->ebp_passthrough, &jive_i386_machine.regcls[jive_i386_gpr_ebp], "callee_saved_ebp");
 	
 	sub->stackframe = jive_i386_stackframe_create(graph, sub->stack_pointer);
 	
