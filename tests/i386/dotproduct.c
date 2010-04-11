@@ -45,13 +45,13 @@ make_dotprod_function(size_t vector_size)
 	for(n=1; n<vector_size; n++) {
 		jive_node * s = jive_instruction_create(graph,
 			&jive_i386_instructions[jive_i386_int_add],
-			(jive_value *[]){value, operands[n]}, 0);
+			(jive_value *[]){operands[n], value}, 0);
 		value = jive_instruction_output(s, 0);
 	}
 	
 	jive_subroutine_return_value(subroutine, value);
 	
-	jive_regalloc(graph, &jive_i386_machine, 0);
+	jive_regalloc(graph, &jive_i386_machine, jive_subroutine_stackframe(subroutine));
 	
 	jive_instruction_sequence seq;
 	jive_graph_sequentialize(graph, &seq);
@@ -72,12 +72,12 @@ make_dotprod_function(size_t vector_size)
 
 int main()
 {
-	dotprod_function_t dotprod2 = make_dotprod_function(2);
+	dotprod_function_t dotprod2 = make_dotprod_function(4);
 	
-	int a[] = {1, 4};
-	int b[] = {3, 7};
+	int a[] = {1, 4, 0, -3};
+	int b[] = {3, 7, 0, 5};
 	int result = dotprod2(a, b);
-	assert(result = 1*3 + 4*7);
+	assert(result = 1*3 + 4*7 + -3*5 );
 	
 	return 0;
 }
