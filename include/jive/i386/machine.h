@@ -34,15 +34,16 @@ typedef enum {
 	
 	jive_i386_int_load_imm = 1,
 	jive_i386_int_load32_disp = 2,
+	jive_i386_int_store32_disp = 3,
 	
-	jive_i386_int_add = 3,
-	jive_i386_int_sub = 4,
-	jive_i386_int_and = 5,
-	jive_i386_int_or = 6,
-	jive_i386_int_xor = 7,
-	jive_i386_int_mul = 8,
+	jive_i386_int_add = 13,
+	jive_i386_int_sub = 14,
+	jive_i386_int_and = 15,
+	jive_i386_int_or = 16,
+	jive_i386_int_xor = 17,
+	jive_i386_int_mul = 18,
 	
-	jive_i386_int_transfer = 9
+	jive_i386_int_transfer = 19
 } jive_i386_instruction_index;
 
 
