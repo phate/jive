@@ -7,10 +7,14 @@
 typedef struct jive_stackframe_vmt jive_stackframe_vmt;
 typedef struct jive_subroutine_vmt jive_subroutine_vmt;
 
+#define JIVE_STACKFRAME_COMMON \
+	const jive_stackframe_vmt * vmt; \
+	jive_stackslot * first, * last; \
+	jive_graph * graph; \
+	jive_value * stackpointer;
+
 struct jive_stackframe {
-	const jive_stackframe_vmt * vmt;
-	jive_stackslot * first, * last;
-	jive_graph * graph;
+	JIVE_STACKFRAME_COMMON
 };
 
 struct jive_stackslot {

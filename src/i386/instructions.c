@@ -59,6 +59,14 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0x8b
 	},
+	[jive_i386_int_store32_disp] = {
+		.name = "int_store32_disp",
+		.encode = &jive_i386_encode_loadstore32_disp,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = 0, .flags = jive_instruction_flags_none,
+		.ninputs = 2, .noutputs = 0, .nimmediates = 1,
+		.code = 0x89
+	},
 	
 	[jive_i386_int_add] = {
 		.name = "int_add",

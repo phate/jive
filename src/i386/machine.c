@@ -1,5 +1,6 @@
 #include <jive/machine.h>
 #include <jive/internal/instruction_str.h>
+#include <jive/internal/subroutinestr.h>
 
 #include <jive/i386/machine.h>
 
@@ -66,6 +67,32 @@ jive_i386_transfer(const jive_machine * machine, jive_value * in, jive_value ** 
 }
 //jive_value * (*transfer)(const jive_machine * machine, jive_value * value, const jive_cpureg * to);
 
+static jive_node *
+jive_i386_spill(const jive_machine * machine, jive_value * value, jive_stackslot * where, jive_stackframe * frame)
+{
+	jive_value * args[] = {frame->stackpointer, value};
+	long displacement = 0;
+	
+	jive_node * instr = jive_instruction_create(value->node->graph,
+		&jive_i386_instructions[jive_i386_int_store32_disp],
+		args, &displacement);
+	
+	/* FIXME: annotate with stackslot */
+	return instr;
+}
+
+jive_value *
+jive_i386_restore(const jive_machine * machine, struct jive_graph * graph, jive_stackslot * where, jive_stackframe * frame)
+{
+	jive_value * args[] = {frame->stackpointer};
+	long displacement = 0;
+	
+	jive_node * instr = jive_instruction_create(graph,
+		&jive_i386_instructions[jive_i386_int_load32_disp],
+		args, &displacement);
+	/* FIXME: annotate with stackslot */
+	return jive_instruction_output(instr, 0);
+}
 
 const jive_machine jive_i386_machine = {
 	.name = "i386",
@@ -78,6 +105,7 @@ const jive_machine jive_i386_machine = {
 		0
 	},
 	
-	
+	.spill = &jive_i386_spill,
+	.restore = &jive_i386_restore,
 	.transfer = &jive_i386_transfer
 };
