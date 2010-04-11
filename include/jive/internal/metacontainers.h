@@ -225,5 +225,16 @@ multiset_type##_equals(const struct multiset_type * first, const struct multiset
 	} \
 	return true; \
 } \
+ \
+static inline bool \
+multiset_type##_equals_relaxed(const struct multiset_type * first, const struct multiset_type * second) \
+{ \
+	if (first->nitems != second->nitems) return false; \
+	size_t n; \
+	for(n=0; n<first->nitems; n++) { \
+		if (first->items[n].value != second->items[n].value) return false; \
+	} \
+	return true; \
+} \
 
 #endif
