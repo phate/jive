@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdlib.h>
 
 #include <jive/buffer.h>
 #include <jive/internal/instruction_str.h>
@@ -70,14 +71,18 @@ make_dotprod_function(size_t vector_size)
 }
 
 
-int main()
+int main(int argc, char ** argv)
 {
-	dotprod_function_t dotprod2 = make_dotprod_function(4);
+	size_t count = 4;
+	if (argc>2) count = atoi(argv[1]);
+	if (count<4) count = 4;
+	dotprod_function_t dotprod2 = make_dotprod_function(count);
 	
-	int a[] = {1, 4, 0, -3};
-	int b[] = {3, 7, 0, 5};
+	int a[count], b[count];
+	a[0] = 1; a[1] = 4; a[2] = 0; a[3] = -3;
+	b[0] = 3; b[1] = 7; b[2] = 0; b[3] = 5;
 	int result = dotprod2(a, b);
-	assert(result = 1*3 + 4*7 + -3*5 );
+	assert(result == 1*3 + 4*7 + -3*5 );
 	
 	return 0;
 }
