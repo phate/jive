@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define DEBUG 1
+
 #define DEBUG_ASSERT(expr) \
 	do {\
 		if (!(expr)) {\

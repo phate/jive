@@ -15,7 +15,7 @@ static const char dotfile_header[] =
 	"edge [ arrowsize=\"0.75\", labeldistance=\"2\", labelfloat=true ];\n";
 
 static const char node_template[] =
-	"n%lx [ shape=\"record\", label=\"{{%s}|%p\\n%s|{%s}}\" ];\n";
+	"n%lx [ shape=\"record\", label=\"{{%s}|<body%ld>%p\\n%s|{%s}}\" ];\n";
 
 static const char edge_template[] =
 	"n%lx:p%lx -> n%lx:p%lx [ style=solid ];\n";
@@ -77,7 +77,6 @@ jive_node_dump(jive_node * node, int fd)
 		strncat(values, tmp, sizeof(values));
 		
 		jive_cpureg_t reg = jive_value_get_cpureg(value);
-		printf("value: %p %s\n", reg, reg->name);
 		if (reg) {strncat(values, ":", sizeof(values)); strncat(values, reg->name, sizeof(values));}
 		
 		value = value->next;
@@ -87,14 +86,14 @@ jive_node_dump(jive_node * node, int fd)
 		count = snprintf(tmp, sizeof(tmp), node_template,
 			(long)node,
 			operands,
-			node, node->type->name,
+			(long)node, node, node->type->name,
 			values);
 	} else {
 		char * content = node->type->repr(node);
 		count = snprintf(tmp, sizeof(tmp), node_template,
 			(long)node,
 			operands,
-			node, content,
+			(long)node, node, content,
 			values);
 		free(content);
 	}
@@ -153,12 +152,12 @@ jive_graph_dump(jive_graph * graph, int fd)
 void
 jive_graph_view(jive_graph * graph)
 {
-	int fd = open("/tmp/tmp.dot", O_CREAT|O_RDWR, 0644);
+	int fd = open("/tmp/tmp.dot", O_CREAT|O_RDWR|O_TRUNC, 0644);
 	jive_graph_dump(graph, fd);
 	close(fd);
 	
 	system("dot -Tps </tmp/tmp.dot >/tmp/tmp.ps");
-	system("gv /tmp/tmp.ps");
+	system("gv /tmp/tmp.ps >/dev/null 2>&1");
 }
 
 #include <jive/regalloc/assign.h>
@@ -182,6 +181,8 @@ static const char from_reg_cand_edge[] =
 
 static const char to_reg_cand_edge[] =
 	"n%lx:p%lx -> n%lx [ style=solid ] ;\n";
+
+static const char instr_cluster[] = "subgraph cluster_instr { rank=same; \n";
 
 static void
 jive_reg_candidate_dump(jive_reg_candidate * cand, int fd)
@@ -242,18 +243,28 @@ jive_igraph_dump(jive_interference_graph * igraph, int fd)
 		jive_instr_dump(igraph, instr, fd);
 		instr = instr->next;
 	}
+	write(fd, instr_cluster, sizeof(instr_cluster)-1);
+	instr = igraph->seq.first;
+	while(instr) {
+		char tmp[80];
+		ssize_t count = snprintf(tmp, sizeof(tmp), "\tn%lx\n",
+			(long)instr);
+		write(fd, tmp, count);
+		instr = instr->next;
+	}
+	write(fd, "}\n", 2);
 	write(fd, dotfile_footer, sizeof(dotfile_footer)-1);
 }
 
 void
 jive_igraph_view(jive_interference_graph * igraph)
 {
-	int fd = open("/tmp/itmp.dot", O_CREAT|O_RDWR, 0644);
+	int fd = open("/tmp/itmp.dot", O_CREAT|O_RDWR|O_TRUNC, 0644);
 	jive_igraph_dump(igraph, fd);
 	close(fd);
 	
 	system("dot -Tps </tmp/itmp.dot >/tmp/itmp.ps");
-	system("gv /tmp/itmp.ps");
+	system("gv /tmp/itmp.ps >/dev/null 2>&1");
 }
 
 #include <jive/regalloc/cut.h>
@@ -291,10 +302,10 @@ jive_graphcut_dump(jive_graphcut * cut, int fd)
 void
 jive_graphcut_view(jive_graphcut * cut)
 {
-	int fd = open("/tmp/ctmp.dot", O_CREAT|O_RDWR, 0644);
+	int fd = open("/tmp/ctmp.dot", O_CREAT|O_RDWR|O_TRUNC, 0644);
 	jive_graphcut_dump(cut, fd);
 	close(fd);
 	
 	system("dot -Tps </tmp/ctmp.dot >/tmp/ctmp.ps");
-	system("gv /tmp/ctmp.ps");
+	system("gv /tmp/ctmp.ps >/dev/null 2>&1");
 }
