@@ -20,7 +20,9 @@ struct jive_stackframe {
 struct jive_stackslot {
 	jive_stackslot * prev, * next;
 	size_t size;
-	/* FIXME: link instructions using the slot */
+	ssize_t offset;
+	
+	struct jive_instruction * first_user, * last_user;
 };
 
 struct jive_stackframe_vmt {

@@ -27,8 +27,7 @@ struct jive_instruction {
 	jive_value_bits * outregs;
 	
 	/* linked list of instructions */
-	jive_instruction * prev;
-	jive_instruction * next;
+	jive_instruction * prev, * next;
 	
 	/* the following members are used by the register allocator */
 	
@@ -47,6 +46,9 @@ struct jive_instruction {
 	side-effects of this instruction)  */
 	jive_regcls_count use_count_before;
 	jive_regcls_count use_count_after;
+	
+	jive_instruction * stackslot_prev, * stackslot_next;
+	jive_stackslot * stackslot;
 };
 
 #endif

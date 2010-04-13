@@ -73,3 +73,9 @@ jive_default_stackframe_create(jive_graph * graph)
 	
 	return frame;
 }
+
+void
+jive_stackframe_finalize(jive_stackframe * frame)
+{
+	frame->vmt->finalize(frame);
+}

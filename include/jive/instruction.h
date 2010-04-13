@@ -40,6 +40,12 @@ jive_instruction_get_class(const jive_node * node);
 void
 jive_instruction_swap_inputs(jive_node * node);
 
+void
+jive_instruction_use_stackslot(jive_node * node, jive_stackslot * slot);
+
+jive_stackslot *
+jive_instruction_get_stackslot(const jive_node * node);
+
 extern jive_instruction_class jive_pseudo_nop;
 
 /* instruction sequences */

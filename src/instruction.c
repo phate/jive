@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include <jive/internal/instruction_str.h>
+#include <jive/internal/subroutinestr.h>
 #include <jive/machine.h>
 #include <jive/nodeclass.h>
 
@@ -82,6 +83,9 @@ jive_instruction_create(jive_graph * graph,
 	jive_regcls_count_init(node->use_count_before);
 	jive_regcls_count_init(node->use_count_after);
 	
+	node->stackslot_prev = node->stackslot_next;
+	node->stackslot = 0;
+	
 	return (jive_node *)node;
 }
 
@@ -93,6 +97,29 @@ jive_instruction_swap_inputs(jive_node * _node)
 	jive_value_bits * value = node->inregs[0].value;
 	node->inregs[0].value = node->inregs[1].value;
 	node->inregs[1].value = value;
+}
+
+void
+jive_instruction_use_stackslot(jive_node * node, jive_stackslot * slot)
+{
+	DEBUG_ASSERT(node->type == &JIVE_INSTRUCTION);
+	jive_instruction * instruction = (jive_instruction *)node;
+	DEBUG_ASSERT(instruction->stackslot == 0);
+	
+	instruction->stackslot = slot;
+	instruction->stackslot_prev = 0;
+	instruction->stackslot_next = slot->first_user;
+	if (slot->first_user) slot->first_user->stackslot_prev = instruction;
+	else slot->last_user = instruction;
+	slot->first_user = instruction;
+}
+
+jive_stackslot *
+jive_instruction_get_stackslot(const jive_node * node)
+{
+	DEBUG_ASSERT(node->type == &JIVE_INSTRUCTION);
+	jive_instruction * instruction = (jive_instruction *)node;
+	return instruction->stackslot;
 }
 
 jive_operand_bits *
