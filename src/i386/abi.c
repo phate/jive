@@ -1,17 +1,31 @@
 #ifndef JIVE_I386_ABI_H
 #define JIVE_I386_ABI_H
 
+#include "debug.h"
+
 #include <jive/i386/machine.h>
 #include <jive/instruction.h>
 #include <jive/passthrough.h>
 #include <jive/internal/subroutinestr.h>
+#include <jive/internal/instruction_str.h>
+
+typedef struct jive_i386_stackframe jive_i386_stackframe;
+
+struct jive_i386_stackframe {
+	JIVE_STACKFRAME_COMMON;
+	size_t size;
+};
 
 static jive_stackslot *
-jive_i386_stackframe_allocate_slot(jive_stackframe * frame, jive_cpureg_class_t regcls)
+jive_i386_stackframe_allocate_slot(jive_stackframe * _frame, jive_cpureg_class_t regcls)
 {
+	jive_i386_stackframe * frame = (jive_i386_stackframe *) _frame;
 	jive_stackslot * slot = jive_malloc(frame->graph, sizeof(*slot));
 	
+	/* FIXME: for the moment, do direct slot allocation */
 	slot->size = regcls->nbits/8;
+	frame->size += slot->size;
+	slot->offset = -frame->size;
 	
 	slot->prev = frame->last;
 	slot->next = 0;
@@ -19,24 +33,47 @@ jive_i386_stackframe_allocate_slot(jive_stackframe * frame, jive_cpureg_class_t 
 	else frame->first =slot;
 	frame->last = slot;
 	
+	slot->first_user = slot->last_user = 0;
+	
 	return slot;
+}
+
+static void
+jive_i386_stackframe_finalize(jive_stackframe * _frame)
+{
+	/* FIXME: just relocate accesses to stack slots relative
+	to the stackpointer; this is not quite correct as it fails
+	to reserve the used stack space, but in the absence of
+	signals works fine */
+	jive_i386_stackframe * frame = (jive_i386_stackframe *) _frame;
+	
+	jive_stackslot * slot = frame->first;
+	while(slot) {
+		jive_instruction * instr = slot->first_user;
+		while(instr) {
+			instr->immediates[0] += slot->offset;
+			instr = instr->stackslot_next;
+		}
+		slot = slot->next;
+	}
 }
 
 static const jive_stackframe_vmt jive_i386_stackframe_vmt = {
 	.allocate_slot = &jive_i386_stackframe_allocate_slot,
-	.finalize = 0
+	.finalize = &jive_i386_stackframe_finalize
 };
 
 static jive_stackframe *
 jive_i386_stackframe_create(jive_graph * graph, jive_value * stackpointer)
 {
-	jive_stackframe * frame = jive_malloc(graph, sizeof(*frame));
+	jive_i386_stackframe * frame = jive_malloc(graph, sizeof(*frame));
 	frame->vmt = &jive_i386_stackframe_vmt;
 	frame->graph = graph;
 	frame->first = frame->last = 0;
 	frame->stackpointer = stackpointer;
+	frame->size = 0;
 	
-	return frame;
+	return (jive_stackframe *)frame;
 }
 
 typedef struct _jive_i386_subroutine {
