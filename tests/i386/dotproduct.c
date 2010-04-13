@@ -52,10 +52,12 @@ make_dotprod_function(size_t vector_size)
 	
 	jive_subroutine_return_value(subroutine, value);
 	
-	jive_regalloc(graph, &jive_i386_machine, jive_subroutine_stackframe(subroutine));
+	jive_stackframe * stackframe = jive_subroutine_stackframe(subroutine);
+	jive_regalloc(graph, &jive_i386_machine, stackframe);
 	
 	jive_instruction_sequence seq;
 	jive_graph_sequentialize(graph, &seq);
+	jive_stackframe_finalize(stackframe);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer);
@@ -73,12 +75,13 @@ make_dotprod_function(size_t vector_size)
 
 int main(int argc, char ** argv)
 {
-	size_t count = 4;
+	size_t count = 4, n;
 	if (argc>2) count = atoi(argv[1]);
 	if (count<4) count = 4;
 	dotprod_function_t dotprod2 = make_dotprod_function(count);
 	
 	int a[count], b[count];
+	for(n=0; n<count; n++) a[n] = b[n] = 0;
 	a[0] = 1; a[1] = 4; a[2] = 0; a[3] = -3;
 	b[0] = 3; b[1] = 7; b[2] = 0; b[3] = 5;
 	int result = dotprod2(a, b);
