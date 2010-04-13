@@ -147,13 +147,17 @@ jive_regcls_count_sub(jive_regcls_count count, jive_cpureg_class_t regcls)
 	}
 }
 
-static inline bool
-jive_regcls_count_exceeds(const jive_regcls_count count, const jive_regcls_count budget)
+/* verify register class usage counts againts number of registers per
+class as defined by machine description; return NULL if all classes
+are "within budget", or return the first class "over budget" */
+static inline jive_cpureg_class_t
+jive_regcls_count_exceeds_class(const jive_regcls_count count, const jive_machine * machine)
 {
 	size_t n;
-	for(n=0; n<MAX_REGISTER_CLASSES; n++)
-		if (count[n] > budget[n]) return true;
-	return false;
+	for(n=0; n<machine->nregcls; n++)
+		if (count[n] > machine->regcls[n].nregs)
+			return &machine->regcls[n];
+	return 0;
 }
 
 static inline bool

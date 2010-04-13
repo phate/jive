@@ -73,8 +73,8 @@ jive_regalloc_add_instruction_between(jive_instruction * instr,
 		if (!count) jive_regcls_count_add(instr->use_count_before, regcls);
 	}
 	
-	DEBUG_ASSERT(! jive_regcls_count_exceeds(instr->use_count_before, machine->regcls_budget));
-	DEBUG_ASSERT(! jive_regcls_count_exceeds(instr->use_count_after, machine->regcls_budget) );
+	DEBUG_ASSERT(! jive_regcls_count_exceeds_class(instr->use_count_before, machine));
+	DEBUG_ASSERT(! jive_regcls_count_exceeds_class(instr->use_count_after, machine));
 
 	instr->prev = prev;
 	instr->next = next;
@@ -97,4 +97,6 @@ jive_graphcut_add_instruction(jive_graphcut * cut, jive_node * _instruction, con
 	if (!cut->first) cut->first = instruction;
 	
 	jive_regalloc_add_instruction_between(instruction, prev, next, machine);
+	
+	instruction->cut = cut;
 }

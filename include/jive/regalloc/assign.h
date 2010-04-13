@@ -25,6 +25,13 @@ DEFINE_MULTISET_TYPE(jive_interference_set, jive_reg_candidate *, jive_cand_real
 
 DEFINE_SET_TYPE(jive_cand_set, jive_reg_candidate *, jive_cand_realloc);
 
+typedef struct jive_cpureg_bitmask jive_cpureg_bitmask;
+
+struct jive_cpureg_bitmask {
+	/* max. 128 registers? */
+	uint32_t bits[4];
+};
+
 struct jive_reg_candidate {
 	jive_value * value;
 	jive_interference_graph * igraph;
@@ -43,7 +50,7 @@ struct jive_reg_candidate {
 	jive_interference_set interference;
 	
 	/* FIXME: bitmask needs to be large enough */
-	uint64_t allowed_regs;
+	jive_cpureg_bitmask allowed_regs;
 	/* number of registers in the class required for this value not assigned
 	to any neighbour yet */
 	unsigned int allowed_regs_count;
@@ -76,5 +83,58 @@ jive_cand_realloc(void * ptr, size_t old_size, size_t new_size, jive_reg_candida
 
 jive_reg_candidate *
 jive_interference_graph_map_value(jive_interference_graph * igraph, jive_value * value);
+
+static inline void
+jive_cpureg_bitmask_init(jive_cpureg_bitmask * bitmask)
+{
+	memset(bitmask->bits, 0, sizeof(bitmask->bits));
+}
+
+static inline void
+jive_cpureg_bitmask_set(jive_cpureg_bitmask * bitmask, jive_cpureg_t reg)
+{
+	unsigned int index = reg->index / 32;
+	unsigned int bit = reg->index % 32;
+	bitmask->bits[index] |= (1<<bit);
+}
+
+static inline void
+jive_cpureg_bitmask_clear(jive_cpureg_bitmask * bitmask, jive_cpureg_t reg)
+{
+	unsigned int index = reg->index / 32;
+	unsigned int bit = reg->index % 32;
+	bitmask->bits[index] &= ~(1<<bit);
+}
+
+static inline bool
+jive_cpureg_bitmask_isset(const jive_cpureg_bitmask * bitmask, jive_cpureg_t reg)
+{
+	unsigned int index = reg->index / 32;
+	unsigned int bit = reg->index % 32;
+	return (bitmask->bits[index]>>bit) & 1;
+}
+
+static inline unsigned int
+jive_cpureg_bitmask_count(const jive_cpureg_bitmask * bitmask)
+{
+	unsigned int n, count = 0;
+	for(n=0; n<4; n++) {
+		uint32_t bits = bitmask->bits[n];
+		while(bits) {
+			count += bits&1;
+			bits >>= 1;
+		}
+	}
+	return count;
+}
+
+static inline bool
+jive_cpureg_bitmask_equals(const jive_cpureg_bitmask *b1, const jive_cpureg_bitmask * b2)
+{
+	unsigned int n;
+	for(n=0; n<4; n++)
+		if (b1->bits[n] != b2->bits[n]) return false;
+	return true;
+}
 
 #endif

@@ -65,19 +65,19 @@ jive_interference_graph_validate(jive_interference_graph * igraph)
 		DEBUG_ASSERT(jive_value_get_cpureg_class_shared(cand->value) == cand->regcls);
 		int squeeze = 0;
 		
-		uint64_t allowed_regs = 0;
+		jive_cpureg_bitmask allowed_regs;
+		jive_cpureg_bitmask_init(&allowed_regs);
 		unsigned int allowed_regs_count = cand->regcls->nregs;
 		size_t k;
 		for(k=0; k<cand->regcls->nregs; k++)
-			allowed_regs |= 1ULL << (uint64_t)(cand->regcls->regs[k].index);
+			jive_cpureg_bitmask_set(&allowed_regs, &cand->regcls->regs[k]);
 		
 		for(k=0; k<interfere.nitems; k++) {
 			jive_reg_candidate * other = interfere.items[k].value;
 			
 			if (other->reg) {
-				uint64_t mask = 1ULL << (uint64_t)(other->reg->index);
-				if (allowed_regs & mask) {
-					allowed_regs &= ~mask;
+				if (jive_cpureg_bitmask_isset(&allowed_regs, other->reg)) {
+					jive_cpureg_bitmask_clear(&allowed_regs, other->reg);
 					allowed_regs_count --;
 				}
 			} else if (jive_cpureg_class_intersect(cand->regcls, other->regcls))
@@ -86,7 +86,7 @@ jive_interference_graph_validate(jive_interference_graph * igraph)
 		
 		squeeze += allowed_regs_count;
 		
-		DEBUG_ASSERT(allowed_regs == cand->allowed_regs);
+		DEBUG_ASSERT(jive_cpureg_bitmask_equals(&allowed_regs, &cand->allowed_regs));
 		DEBUG_ASSERT(allowed_regs_count == cand->allowed_regs_count);
 		DEBUG_ASSERT(squeeze == cand->squeeze);
 	}
@@ -97,12 +97,12 @@ jive_reg_candidate_reset(jive_reg_candidate * cand)
 {
 	jive_interference_set_clear(&cand->interference);
 	cand->squeeze = 0;
-	cand->allowed_regs = 0;
+	jive_cpureg_bitmask_init(&cand->allowed_regs);
 	cand->allowed_regs_count = cand->regcls->nregs;
 	cand->squeeze = cand->allowed_regs_count;
 	size_t k;
 	for(k=0; k<cand->regcls->nregs; k++)
-		cand->allowed_regs |= 1ULL << (uint64_t)(cand->regcls->regs[k].index);
+		jive_cpureg_bitmask_set(&cand->allowed_regs, &cand->regcls->regs[k]);
 }
 
 jive_reg_candidate *
@@ -225,8 +225,7 @@ static bool
 can_assign(jive_reg_candidate * cand, jive_cpureg_t reg, const jive_machine * machine)
 {
 	size_t n;
-	uint64_t mask = 1ULL << (uint64_t) reg->index;
-	if (! (cand->allowed_regs & mask)) return false;
+	if (! jive_cpureg_bitmask_isset(&cand->allowed_regs, reg)) return false;
 	
 	for(n=0; n<cand->interference.nitems; n++) {
 		jive_reg_candidate * other = cand->interference.items[n].value;
@@ -234,7 +233,7 @@ can_assign(jive_reg_candidate * cand, jive_cpureg_t reg, const jive_machine * ma
 		if (other->reg == reg) return false;
 		if (other->reg) continue;
 		
-		if ((other->allowed_regs & mask) && (other->allowed_regs_count == 1))
+		if (jive_cpureg_bitmask_isset(&other->allowed_regs, reg) && (other->allowed_regs_count == 1))
 			return false;
 	}
 	return true;
@@ -407,12 +406,11 @@ do_assign(jive_interference_graph * igraph, jive_reg_candidate * cand, const jiv
 	
 	/* update availability states in neighbouring registers */
 	size_t n;
-	uint64_t mask = 1ULL << (uint64_t) reg->index;
 	for(n=0; n<cand->interference.nitems; n++) {
 		jive_reg_candidate * other = cand->interference.items[n].value;
 		other->squeeze ++;
-		if (other->allowed_regs & mask) {
-			other->allowed_regs &= ~mask;
+		if (jive_cpureg_bitmask_isset(&other->allowed_regs, reg) ) {
+			jive_cpureg_bitmask_clear(&other->allowed_regs, reg);
 			other->allowed_regs_count --;
 			other->squeeze --;
 			DEBUG_ASSERT(other->allowed_regs_count);
