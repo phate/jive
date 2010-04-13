@@ -12,9 +12,13 @@ typedef enum {
 	jive_i386_gpr = 1,
 	jive_i386_gpr_byte = 2,	/* registers that are byte-addressible */
 	jive_i386_gpr_eax = 3,	
-	jive_i386_gpr_edx = 4,
-	jive_i386_gpr_esp = 5,
-	jive_i386_gpr_ebp = 6,
+	jive_i386_gpr_ebx = 4,
+	jive_i386_gpr_ecx = 5,	
+	jive_i386_gpr_edx = 6,
+	jive_i386_gpr_esi = 7,
+	jive_i386_gpr_edi = 8,
+	jive_i386_gpr_esp = 9,
+	jive_i386_gpr_ebp = 10,
 } jive_i386_regcls_index;
 
 /* integer register index */

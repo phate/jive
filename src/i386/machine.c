@@ -7,11 +7,11 @@
 const jive_cpureg jive_i386_regs [] = {
 	[jive_i386_cc] = {.name = "cc", .regcls = &jive_i386_regcls[jive_i386_flags], .code = 0, .index = jive_i386_cc, .class_mask = 1<<jive_i386_flags},
 	[jive_i386_eax] = {.name = "eax", .regcls = &jive_i386_regcls[jive_i386_gpr_eax], .code = 0, .index = jive_i386_eax, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_eax)},
-	[jive_i386_ecx] = {.name = "ecx", .regcls = &jive_i386_regcls[jive_i386_gpr_byte], .code = 1, .index = jive_i386_ecx, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte)},
-	[jive_i386_ebx] = {.name = "ebx", .regcls = &jive_i386_regcls[jive_i386_gpr_byte], .code = 2, .index = jive_i386_ebx, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte)},
+	[jive_i386_ecx] = {.name = "ecx", .regcls = &jive_i386_regcls[jive_i386_gpr_ecx], .code = 1, .index = jive_i386_ecx, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_ecx)},
+	[jive_i386_ebx] = {.name = "ebx", .regcls = &jive_i386_regcls[jive_i386_gpr_ebx], .code = 2, .index = jive_i386_ebx, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_ebx)},
 	[jive_i386_edx] = {.name = "edx", .regcls = &jive_i386_regcls[jive_i386_gpr_edx], .code = 3, .index = jive_i386_edx, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_edx)},
-	[jive_i386_esi] = {.name = "esi", .regcls = &jive_i386_regcls[jive_i386_gpr], .code = 6, .index = jive_i386_esi, .class_mask = 1<<jive_i386_gpr},
-	[jive_i386_edi] = {.name = "edi", .regcls = &jive_i386_regcls[jive_i386_gpr], .code = 7, .index = jive_i386_edi, .class_mask = 1<<jive_i386_gpr},
+	[jive_i386_esi] = {.name = "esi", .regcls = &jive_i386_regcls[jive_i386_gpr_esi], .code = 6, .index = jive_i386_esi, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_esi)},
+	[jive_i386_edi] = {.name = "edi", .regcls = &jive_i386_regcls[jive_i386_gpr_edi], .code = 7, .index = jive_i386_edi, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_edi)},
 	[jive_i386_ebp] = {.name = "ebp", .regcls = &jive_i386_regcls[jive_i386_gpr_ebp], .code = 5, .index = jive_i386_ebp, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_ebp)},
 	[jive_i386_esp] = {.name = "esp", .regcls = &jive_i386_regcls[jive_i386_gpr_esp], .code = 4, .index = jive_i386_esp, .class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_esp)},
 };
@@ -41,11 +41,35 @@ const jive_cpureg_class jive_i386_regcls [] = {
 		.index = jive_i386_gpr_eax, .parent = &jive_i386_regcls[jive_i386_gpr_byte],
 		.class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_eax) 
 	},
+	[jive_i386_gpr_ecx] = {
+		.name = "gpr_ecx", .nbits = 32,
+		.regs = &jive_i386_regs[jive_i386_ecx], .nregs = 1,
+		.index = jive_i386_gpr_ecx, .parent = &jive_i386_regcls[jive_i386_gpr_byte],
+		.class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_ecx) 
+	},
+	[jive_i386_gpr_ebx] = {
+		.name = "gpr_ebx", .nbits = 32,
+		.regs = &jive_i386_regs[jive_i386_ebx], .nregs = 1,
+		.index = jive_i386_gpr_ebx, .parent = &jive_i386_regcls[jive_i386_gpr_byte],
+		.class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_ebx) 
+	},
 	[jive_i386_gpr_edx] = {
 		.name = "gpr_edx", .nbits = 32,
 		.regs = &jive_i386_regs[jive_i386_edx], .nregs = 1,
 		.index = jive_i386_gpr_edx, .parent = &jive_i386_regcls[jive_i386_gpr_byte],
 		.class_mask = (1<<jive_i386_gpr) | (1<<jive_i386_gpr_byte) | (1<<jive_i386_gpr_edx) 
+	},
+	[jive_i386_gpr_esi] = {
+		.name = "gpr_esi", .nbits = 32,
+		.regs = &jive_i386_regs[jive_i386_esi], .nregs = 1,
+		.index = jive_i386_gpr_esi, .parent = &jive_i386_regcls[jive_i386_gpr],
+		.class_mask = (1<<jive_i386_gpr) |  (1<<jive_i386_gpr_esi) 
+	},
+	[jive_i386_gpr_edi] = {
+		.name = "gpr_edi", .nbits = 32,
+		.regs = &jive_i386_regs[jive_i386_edi], .nregs = 1,
+		.index = jive_i386_gpr_edi, .parent = &jive_i386_regcls[jive_i386_gpr],
+		.class_mask = (1<<jive_i386_gpr) |  (1<<jive_i386_gpr_edi) 
 	},
 	[jive_i386_gpr_esp] = {
 		.name = "gpr_esp", .nbits = 32,
@@ -107,7 +131,9 @@ const jive_machine jive_i386_machine = {
 	
 	.regcls_budget = {
 		1 /* flags*/,
-		8 /* gpr */ , 4 /* gpr_byte */ , 1 /* gpr_eax */, 1 /* gpr_edx */, 1/* gpr_esp */, 1/* gpr_ebp */,
+		8 /* gpr */ , 4 /* gpr_byte */ ,
+		1 /* gpr_eax */, 1 /* gpr_ecx */, 1 /* gpr_ebx */, 1 /* gpr_edx */,
+		1 /* gpr_esi */, 1 /* gpr_edi */, 1 /* gpr_esp */, 1 /* gpr_ebp */,
 		0
 	},
 	

@@ -42,7 +42,12 @@ jive_i386_stackframe_create(jive_graph * graph, jive_value * stackpointer)
 typedef struct _jive_i386_subroutine {
 	JIVE_SUBROUTINE_COMMON
 	
-	jive_passthrough * esp_passthrough, * ebp_passthrough, * return_value;
+	jive_passthrough * esp_passthrough;
+	jive_passthrough * ebp_passthrough;
+	jive_passthrough * ebx_passthrough;
+	jive_passthrough * edi_passthrough;
+	jive_passthrough * esi_passthrough;
+	jive_passthrough * return_value;
 } jive_i386_subroutine;
 
 static jive_value *
@@ -102,6 +107,9 @@ jive_i386_subroutine_create(jive_graph * graph,
 	
 	jive_value * tmp;
 	create_passthrough_reg(sub, graph, &tmp, &sub->ebp_passthrough, &jive_i386_machine.regcls[jive_i386_gpr_ebp], "callee_saved_ebp");
+	create_passthrough_reg(sub, graph, &tmp, &sub->ebx_passthrough, &jive_i386_machine.regcls[jive_i386_gpr_ebx], "callee_saved_ebx");
+	create_passthrough_reg(sub, graph, &tmp, &sub->esi_passthrough, &jive_i386_machine.regcls[jive_i386_gpr_esi], "callee_saved_esi");
+	create_passthrough_reg(sub, graph, &tmp, &sub->edi_passthrough, &jive_i386_machine.regcls[jive_i386_gpr_edi], "callee_saved_edi");
 	
 	sub->stackframe = jive_i386_stackframe_create(graph, sub->stack_pointer);
 	
