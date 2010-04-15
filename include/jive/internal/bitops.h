@@ -1,6 +1,8 @@
 #ifndef JIVE_INTERNAL_BITOPS_H
 #define JIVE_INTERNAL_BITOPS_H
 
+#include <string.h>
+
 /**
 	\brief Compute logic or
 	\param a
