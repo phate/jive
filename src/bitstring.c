@@ -168,7 +168,7 @@ jive_match_bitstring_node_inputs(const jive_node * _node, size_t ninputs, jive_v
 	return true;
 }
 
-static inline jive_operand_list *
+jive_operand_list *
 jive_input_bits_list_create(jive_graph * graph, size_t noperands, jive_value * const values[], jive_operand_bits ** operands)
 {
 	*operands = 0;
@@ -481,7 +481,7 @@ jive_bitslice(jive_value * input, size_t low, size_t high)
 	if (input->node->type == &JIVE_BITSLICE) {
 		const jive_bitslice_nodedata * data = jive_bitslice_info(input->node);
 		
-		const struct _jive_bitstring_node * tmp = (const struct _jive_bitstring_node *) input->node;
+		const struct jive_bitstring_node * tmp = (const struct jive_bitstring_node *) input->node;
 		
 		return jive_bitslice((jive_value *) tmp->inputs[0].value, data->low+low, data->low+high);
 	}
@@ -547,7 +547,7 @@ static void
 jive_bitconcat_revalidate(void * _node)
 {
 	size_t n, pos = 0;
-	struct _jive_bitstring_node * node = _node;
+	struct jive_bitstring_node * node = _node;
 	jive_bitstring_value_range * output = jive_bitstring_output_value_range(node);
 	
 	output->uptodate = true;
@@ -621,7 +621,7 @@ jive_bitconcat_rawcreate(size_t ninputs, jive_value * const inputs[])
 	for(n=0; n<ninputs; n++)
 		nbits += ((jive_value_bits *) inputs[n])->nbits;
 		
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_BITCONCAT, ninputs, inputs);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
@@ -782,7 +782,7 @@ jive_intneg_rawcreate(jive_value * input)
 {
 	unsigned int nbits = ((jive_value_bits *)input)->nbits;
 	
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(input->node->graph, &JIVE_INTNEG, 1, &input);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
@@ -803,7 +803,7 @@ jive_intneg(jive_value * input)
 static void
 jive_intsum_revalidate(void * _node)
 {
-	struct _jive_bitstring_node * node = _node;
+	struct jive_bitstring_node * node = _node;
 	size_t n, ninputs = node->ninputs;
 	jive_bitstring_value_range * output = jive_bitstring_output_value_range(node);
 	
@@ -838,7 +838,7 @@ jive_intsum_rawcreate(size_t ninputs, jive_value * const inputs[])
 	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
 	/* FIXME: assert that all inputs have same width */
 	
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_INTSUM, ninputs, inputs);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
@@ -880,7 +880,7 @@ static inline long min(long a, long b) { return a<b ? a : b; }
 static void
 jive_intproduct_revalidate(void * _node)
 {
-	struct _jive_bitstring_node * node = _node;
+	struct jive_bitstring_node * node = _node;
 	jive_bitstring_value_range * output = jive_bitstring_output_value_range(node);
 	size_t n, ninputs = node->ninputs, nbits=output->nbits;
 	
@@ -922,7 +922,7 @@ jive_intproduct_rawcreate(size_t ninputs, jive_value * const inputs[])
 	unsigned int nbits = 0;
 	for(n=0; n<ninputs; n++) nbits = ((jive_value_bits *)inputs[n])->nbits;
 	
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_INTPRODUCT, ninputs, inputs);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
@@ -972,7 +972,7 @@ jive_intlowproduct_rawcreate(size_t ninputs, jive_value * const inputs[])
 	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
 	/* FIXME: assert that all inputs have same width */
 	
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_INTLOWPRODUCT, ninputs, inputs);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
@@ -1023,7 +1023,7 @@ jive_intsignedhiproduct_rawcreate(size_t ninputs, jive_value * const inputs[])
 	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
 	/* FIXME: assert that all inputs have same width */
 	
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_INTSIGNEDHIGHPRODUCT, ninputs, inputs);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
@@ -1059,7 +1059,7 @@ jive_intunsignedhiproduct_rawcreate(size_t ninputs, jive_value * const inputs[])
 	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
 	/* FIXME: assert that all inputs have same width */
 	
-	struct _jive_bitstring_node * node;
+	struct jive_bitstring_node * node;
 	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_INTUNSIGNEDHIGHPRODUCT, ninputs, inputs);
 	
 	jive_value_bits_init(&node->output, (jive_node *)node, nbits);

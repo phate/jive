@@ -3,9 +3,9 @@
 
 #include <jive/bitstring.h>
 
-typedef struct _jive_bitstring_node jive_bitstring_node;
+typedef struct jive_bitstring_node jive_bitstring_node;
 
-struct _jive_bitstring_node {
+struct jive_bitstring_node {
 	jive_node base;
 	jive_value_bits output;
 	jive_operand_bits * inputs;
@@ -38,6 +38,17 @@ jive_bitstring_output_value_range(void * _node)
 {
 	jive_bitstring_node * node = _node;
 	return &node->output._value_range;
+}
+
+jive_operand_list *
+jive_input_bits_list_create(jive_graph * graph, size_t noperands, jive_value * const values[], jive_operand_bits ** operands);
+
+static inline jive_value_bits *
+jive_value_bits_cast(jive_value * value)
+{
+	if (value->type != &JIVE_VALUE_BITS)
+		jive_graph_fatal_error(value->node->graph, "jive_value_bits expected");
+	return (jive_value_bits *) value;
 }
 
 #endif
