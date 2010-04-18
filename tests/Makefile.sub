@@ -3,6 +3,7 @@ TESTS=\
 	test_context\
 	test_graph\
 	test_graphtraverser\
+	test_prune_replace\
 	test_bitstring1\
 	test_bitstring2\
 	test_machinedef

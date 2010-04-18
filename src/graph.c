@@ -74,7 +74,8 @@ mark_dangling_node_input(jive_graph * graph, jive_node * node)
 	edge->base.target.port = 0;
 	
 	PUSH_FRONT(&head->input_edges, edge, input_list);
-	PUSH_FRONT(&graph->null_origin, edge, output_list);
+	PUSH_BACK(&graph->null_origin, edge, output_list);
+	DEBUG_ASSERT(edge->input_list.next == 0);
 }
 
 static inline void
@@ -88,8 +89,9 @@ mark_dangling_node_output(jive_graph * graph, jive_node * node)
 	edge->base.target.node = 0;
 	edge->base.target.port = 0;
 	
-	PUSH_FRONT(&graph->null_target, edge, input_list);
+	PUSH_BACK(&graph->null_target, edge, input_list);
 	PUSH_FRONT(&head->output_edges, edge, output_list);
+	DEBUG_ASSERT(edge->output_list.next == 0);
 }
 
 static inline void
@@ -233,40 +235,6 @@ jive_edge_remove(jive_edge * _edge)
 	check_bottomup_traversers(origin);
 }
 
-static bool
-_jive_node_prune_recursive(jive_node * node)
-{
-	jive_node_head * head = head_of_node(node);
-	jive_edge_container * edge;
-	
-	if (head->output_edges.first->base.target.node) return false;
-	if (head->reservation) return false;
-	
-	remove_from_cuts(node);
-	
-	jive_input_edge_iterator i = jive_node_iterate_inputs(node);
-	while(i) {
-		jive_edge * edge = i;
-		i = jive_input_edge_iterator_next(i);
-		jive_node * origin = edge->origin.node;
-		jive_edge_remove(edge);
-		check_bottomup_traversers(origin);
-		_jive_node_prune_recursive(origin);
-	}
-	
-	edge = head->input_edges.first;
-	DEBUG_ASSERT(edge->base.origin.node == 0);
-	DEBUG_ASSERT(edge->input_list.next == 0);
-	REMOVE(&node->graph->null_origin, edge, output_list);
-	
-	edge = head->output_edges.first;
-	DEBUG_ASSERT(edge->base.target.node == 0);
-	DEBUG_ASSERT(edge->output_list.next == 0);
-	REMOVE(&node->graph->null_target, edge, input_list);
-	
-	return true;
-}
-
 static void
 recursive_recalculate_depth_from_root(jive_node * node)
 {
@@ -342,16 +310,51 @@ jive_graph_endian(const jive_graph * graph)
 	return jive_endian_little;
 }
 
+static void
+disconnect_inputs(jive_node * node)
+{
+	jive_node_head * head = head_of_node(node);
+	while(head->input_edges.first->base.origin.node) {
+		jive_edge * edge = &head->input_edges.first->base;
+		jive_edge_remove(edge);
+	}
+	
+	jive_edge_container * edge = head->output_edges.first;
+	DEBUG_ASSERT(edge->base.target.node == 0);
+	DEBUG_ASSERT(edge->output_list.next == 0);
+}
+
+static void
+remove_dangling_node(jive_node * node)
+{
+	jive_node_head * head = head_of_node(node);
+	jive_edge_container * edge;
+	
+	edge = head->input_edges.first;
+	DEBUG_ASSERT(edge->base.origin.node == 0);
+	DEBUG_ASSERT(edge->input_list.next == 0);
+	REMOVE(&node->graph->null_origin, edge, output_list);
+	jive_graph_edge_unused(node->graph, edge);
+	
+	edge = head->output_edges.first;
+	DEBUG_ASSERT(edge->base.target.node == 0);
+	DEBUG_ASSERT(edge->output_list.next == 0);
+	REMOVE(&node->graph->null_target, edge, input_list);
+	jive_graph_edge_unused(node->graph, edge);
+}
+
 void
 jive_graph_prune(jive_graph * graph)
 {
-	jive_edge_container ** edge = &graph->null_target.first;
-	
-	while(*edge) {
-		jive_node * node = (*edge)->base.origin.node;
-		
-		if (!_jive_node_prune_recursive(node))
-			edge = &(*edge)->input_list.next;
+	jive_input_edge_iterator i;
+	i = jive_graph_iterate_bottom(graph);
+	while(i) {
+		jive_node * node = i->origin.node;
+		if (head_of_node(node)->reservation == 0) {
+			disconnect_inputs(node);
+			i = jive_input_edge_iterator_next(i);
+			remove_dangling_node(node);
+		} else i = jive_input_edge_iterator_next(i);
 	}
 }
 
@@ -379,12 +382,6 @@ void
 jive_node_unreserve(jive_node * node)
 {
 	head_of_node(node)->reservation--;
-}
-
-void
-jive_node_prune_recursive(jive_node * node)
-{
-	_jive_node_prune_recursive(node);
 }
 
 bool
@@ -501,7 +498,11 @@ jive_operand_value_connect_internal(
 	edge->base.origin.port = value;
 	edge->base.target.node = operand_node;
 	edge->base.target.port = operand;
-		
+	
+	/* nodes must not have "artificial" edges to top and bottom */
+	DEBUG_ASSERT(head_of_node(operand_node)->input_edges.first==0 || head_of_node(operand_node)->input_edges.first->base.target.node);
+	DEBUG_ASSERT(head_of_node(value_node)->output_edges.first==0 || head_of_node(value_node)->output_edges.first->base.origin.node);
+	
 	PUSH_BACK(&head_of_node(operand_node)->input_edges, edge, input_list);
 	PUSH_BACK(&head_of_node(value_node)->output_edges, edge, output_list);
 }
@@ -770,28 +771,37 @@ jive_value_set_mayspill(jive_value * value, bool may_spill)
 
 
 void
-jive_value_replace(jive_value * old_port, jive_value * new_port)
+jive_value_replace(jive_value * old_value, jive_value * new_value)
 {
-	jive_node * old_origin = old_port->node;
-	jive_node * new_origin = new_port->node;
+	jive_node * old_origin = old_value->node;
+	jive_node * new_origin = new_value->node;
+	
+	mark_node_output_connected(new_origin->graph, new_origin);
+	bool connected = false;
 	
 	jive_output_edge_iterator o = jive_node_iterate_outputs(old_origin);
 	while(o) {
 		jive_edge_container * edge = (jive_edge_container *)o;
 		o = jive_output_edge_iterator_next(o);
 		
-		if (edge->base.origin.port != old_port) continue;
+		if (edge->base.origin.port != old_value) continue;
 		
 		REMOVE(&head_of_node(old_origin)->output_edges, edge, output_list);
 		PUSH_BACK(&head_of_node(new_origin)->output_edges, edge, output_list);
 		
 		edge->base.origin.node = new_origin;
-		edge->base.origin.port = new_port;
-		edge->base.target.port->value = new_port;
+		edge->base.origin.port = new_value;
+		edge->base.target.port->value = new_value;
+		DEBUG_ASSERT(edge->base.target.node);
 		
 		check_topdown_traversers(edge->base.target.node);
 		recursive_recalculate_depth_from_root(edge->base.target.node);
+		connected = true;
 	}
+	
+	if (!connected)
+		mark_dangling_node_output(new_origin->graph, new_origin);
+	
 	
 	if (!head_of_node(old_origin)->output_edges.first)
 		mark_dangling_node_output(old_origin->graph, old_origin);

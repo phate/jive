@@ -5,3 +5,4 @@ test_graph
 test_graphtraverser
 test_metacontainers
 test_machinedef
+test_prune_replace
