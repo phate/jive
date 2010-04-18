@@ -66,7 +66,7 @@ static inline void
 mark_dangling_node_input(jive_graph * graph, jive_node * node)
 {
 	jive_node_head * head = head_of_node(node);
-	jive_edge_container * edge=jive_graph_edge_allocate(graph);
+	jive_edge_container * edge = jive_graph_edge_allocate(graph);
 	
 	edge->base.origin.node = 0;
 	edge->base.origin.port = 0;
@@ -81,7 +81,7 @@ static inline void
 mark_dangling_node_output(jive_graph * graph, jive_node * node)
 {
 	jive_node_head * head = head_of_node(node);
-	jive_edge_container * edge=jive_graph_edge_allocate(graph);
+	jive_edge_container * edge = jive_graph_edge_allocate(graph);
 	
 	edge->base.origin.node = node;
 	edge->base.origin.port = 0;
