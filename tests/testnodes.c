@@ -1,15 +1,25 @@
 #include "testnodes.h"
+#include <string.h>
+
+static char *
+test_repr(const void * _node)
+{
+	return strdup("TESTNODE");
+}
 
 const jive_node_class TEST_NODE_CLASS = {
 	0, "node", sizeof(test_node), 0,
+	.repr = &test_repr
 };
 
 const jive_value_class TEST_VALUE_CLASS = {
-	0, "value", sizeof(test_value)
+	0, "value", sizeof(test_value),
+	.repr = &test_repr
 };
 
 const jive_operand_class TEST_OPERAND_CLASS = {
 	0, "operand", sizeof(test_operand),
+	.repr = &test_repr
 };
 
 static jive_operand_list *
