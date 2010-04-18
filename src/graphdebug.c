@@ -18,10 +18,10 @@ static const char node_template[] =
 	"n%lx [ shape=\"record\", label=\"{{%s}|<body%ld>%p\\n%s|{%s}}\" ];\n";
 
 static const char edge_template[] =
-	"n%lx:p%lx -> n%lx:p%lx [ style=solid ];\n";
+	"n%lx:p%lx -> n%lx:p%lx [ style=solid ] /* %lx */;\n";
 
 static const char stateedge_template[] =
-	"n%lx -> n%lx [ style=dashed ] ;\n";
+	"n%lx -> n%lx [ style=dashed ] /* %lx */;\n";
 
 static const char dotfile_footer[] =
 	"}\n";
@@ -110,11 +110,14 @@ jive_edge_dump(jive_edge * edge, int fd)
 	if (edge->origin.port) {
 		count = snprintf(tmp, sizeof(tmp), edge_template,
 			(long)edge->origin.node, (long)edge->origin.port,
-			(long)edge->target.node, (long)edge->target.port
+			(long)edge->target.node, (long)edge->target.port,
+			(long)edge
 			);
 	} else {
 		count = snprintf(tmp, sizeof(tmp), stateedge_template,
-			(long)edge->origin.node, (long)edge->target.node);
+			(long)edge->origin.node, (long)edge->target.node,
+			(long)edge
+			);
 	}
 	
 	write(fd, tmp, count);
