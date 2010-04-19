@@ -5,7 +5,7 @@ LIBJIVE_SRC=src/context.c src/graph.c src/graphdebug.c src/bitstring.c src/fixed
 
 #src/ra-common.c src/ra-graphcut-cache.c src/ra-shape.c src/regalloc.c
 
-LIBJIVE_SRC += src/i386/machine.c src/i386/instructions.c src/i386/abi.c src/i386/encoding.c
+LIBJIVE_SRC += src/i386/machine.c src/i386/instructions.c src/i386/abi.c src/i386/encoding.c src/i386/match.c
 
 all: check
 

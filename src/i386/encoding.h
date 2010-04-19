@@ -91,4 +91,12 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 	const jive_cpureg * outputs[],
 	const long immediates[]);
 
+jive_encode_result
+jive_i386_encode_unaryreg(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_cpureg * inputs[],
+	const jive_cpureg * outputs[],
+	const long immediates[]);
+
+
 #endif

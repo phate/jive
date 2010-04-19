@@ -47,9 +47,9 @@ typedef enum {
 	jive_i386_int_or = 16,
 	jive_i386_int_xor = 17,
 	jive_i386_int_mul = 18,
+	jive_i386_int_neg = 19,
 	
-	jive_i386_int_transfer = 19
+	jive_i386_int_transfer = 32
 } jive_i386_instruction_index;
-
 
 #endif

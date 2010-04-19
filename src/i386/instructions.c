@@ -116,6 +116,14 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.ninputs = 2, .noutputs = 2, .nimmediates = 0,
 		.code = 0xc0af0f
 	},
+	[jive_i386_int_neg] = {
+		.name = "int_neg",
+		.encode = &jive_i386_encode_unaryreg,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xd8
+	},
 	[jive_i386_int_transfer] = {
 		.name = "int_transfer",
 		.encode = &jive_i386_encode_regmove,

@@ -134,6 +134,7 @@ jive_i386_subroutine_create(jive_graph * graph,
 	jive_node * leave = jive_instruction_create(graph,
 		&jive_i386_instructions[jive_i386_ret],
 		0, 0);
+	jive_node_reserve(leave);
 	sub->enter = enter;
 	sub->leave = leave;
 	jive_state_edge_create(sub->enter, sub->leave);

@@ -124,6 +124,9 @@ jive_i386_restore(const jive_machine * machine, struct jive_graph * graph, jive_
 	return jive_instruction_output(instr, 0);
 }
 
+extern bool
+jive_i386_match_instructions(const jive_machine * machine, jive_graph * graph);
+
 const jive_machine jive_i386_machine = {
 	.name = "i386",
 	.regcls = jive_i386_regcls, .nregcls = 5,
@@ -137,7 +140,8 @@ const jive_machine jive_i386_machine = {
 		0
 	},
 	
+	.match_instructions = &jive_i386_match_instructions,
 	.spill = &jive_i386_spill,
 	.restore = &jive_i386_restore,
-	.transfer = &jive_i386_transfer
+	.transfer = &jive_i386_transfer,
 };
