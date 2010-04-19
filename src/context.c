@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <jive/context.h>
 
 #include "compiler.h"
+#include "debug.h"
 
 /**
 	\internal
@@ -49,6 +51,11 @@ static allocator_area *allocator_area_create(int size)
 	area->size=size;
 	area->used=0;
 	area->next=0;
+#ifdef DEBUG
+	/* poison memory area, to trap implicit assumptions
+	of zero initialized memory */
+	memset(area->base, -1, area->size);
+#endif
 	
 	return area;
 }
@@ -110,6 +117,10 @@ jive_context_malloc(jive_context *ctx, size_t size)
 	
 	void *tmp=((char *)ctx->area->base) + ctx->area->used;
 	ctx->area->used+=reserve;
+	
+	/* verify that newly allocated memory still contains
+	poison value */
+	DEBUG_ASSERT(*(char*)tmp == -1);
 	
 	return tmp;
 }
