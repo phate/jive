@@ -82,6 +82,63 @@ validate_arithmetic_width(jive_graph * graph, unsigned int nbits, unsigned int a
 		jive_graph_fatal_error(graph, "invalid arithmetic width");
 }
 
+static inline jive_value *
+jive_fixed_unaryop_output(jive_node * _node)
+{
+	jive_fixed_unaryop * node = (jive_fixed_unaryop *) _node;
+	return (jive_value *) &node->output;
+}
+
+static jive_fixed_unaryop *
+jive_fixed_unaryop_create(
+	jive_graph * graph,
+	const jive_node_class * type,
+	jive_value * input,
+	unsigned int arithmetic_width)
+{
+	jive_operand_bits * operands;
+	jive_operand_list * list = jive_input_bits_list_create(graph, 1, &input, &operands);
+	jive_node * _node = jive_node_create(graph, type, 1, list);
+	jive_fixed_unaryop * node = (jive_fixed_unaryop *) _node;
+	node->inputs = operands;
+	node->arithmetic_width = arithmetic_width;
+	
+	return node;
+}
+
+static char *
+jive_fixed_unaryop_repr(const void * _self)
+{
+	const jive_fixed_unaryop * self = _self;
+	char tmp[64];
+	snprintf(tmp, sizeof(tmp), "%s (%d)", self->base.type->name, self->arithmetic_width);
+	
+	return strdup(tmp);
+}
+
+static bool
+jive_fixed_unaryop_equiv(const void * _self, const void * _other)
+{
+	const jive_fixed_unaryop * self = _self;
+	const jive_fixed_unaryop * other = _other;
+	
+	return self->arithmetic_width == other->arithmetic_width;
+}
+
+static void
+jive_fixed_unaryop_invalidate_inputs(void * _node)
+{
+	struct jive_fixed_unaryop * node = _node;
+	
+	if (!node->output._value_range.uptodate) return;
+	
+	node->output._value_range.uptodate = false;
+	jive_output_edge_iterator i;
+	JIVE_ITERATE_OUTPUTS(i, (jive_node *) node)
+		if (i->origin.port)
+			jive_node_invalidate(i->target.node);
+}
+
 /* fixedadd */
 
 static void
@@ -408,4 +465,70 @@ jive_fixedxor_create(jive_value * a, jive_value * b)
 {
 	jive_node * node = jive_fixedxor_rawcreate(a, b);
 	return jive_fixed_binaryop_output(node);
+}
+
+/* fixedneg */
+
+static void
+jive_fixedneg_revalidate(void * _node)
+{
+	struct jive_fixed_unaryop * node = _node;
+	
+	jive_bitstring_value_range * output_range = &node->output._value_range;
+	const jive_bitstring_value_range * input_range = jive_value_bits_get_value_range((jive_value *) &node->inputs[0]);
+	
+	size_t nbits = output_range->nbits, width = node->arithmetic_width, n;
+	
+	char carry;
+	for(n=0; n<nbits; n+=width) {
+		if ((n % width) == 0) carry = '1';
+		
+		char bit = jive_logic_xor(input_range->bits[n], '1');
+		
+		char new_carry = jive_logic_carry(
+			bit,
+			'0',
+			carry);
+		bit = jive_logic_add(
+			bit,
+			'0',
+			carry);
+		
+		output_range->bits[n] = bit;
+		carry = new_carry;
+	}
+	
+	jive_bitstring_value_range_numeric(output_range);
+	output_range->uptodate = true;
+}
+
+const jive_node_class JIVE_FIXEDNEG = {
+	0, "FIXEDNEG", sizeof(jive_fixed_unaryop), 0,
+	
+	.repr = &jive_fixed_unaryop_repr,
+	.equiv = &jive_fixed_unaryop_equiv,
+	.invalidate_inputs = &jive_fixed_unaryop_invalidate_inputs,
+	.revalidate_outputs = &jive_fixedneg_revalidate
+};
+
+jive_node *
+jive_fixedneg_rawcreate(jive_value * a, unsigned int arithmetic_width)
+{
+	unsigned int nbits = jive_value_bits_cast(a)->nbits;
+	
+	DEBUG_ASSERT((nbits % arithmetic_width) == 0);
+	
+	jive_fixed_unaryop * node;
+	node = jive_fixed_unaryop_create(a->node->graph, &JIVE_FIXEDNEG, a, arithmetic_width);
+	
+	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
+	
+	return (jive_node*)node;
+}
+
+jive_value *
+jive_fixedneg_create(jive_value * a, unsigned int arithmetic_width)
+{
+	jive_node * node = jive_fixedneg_rawcreate(a, arithmetic_width);
+	return jive_fixed_unaryop_output(node);
 }
