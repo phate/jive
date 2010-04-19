@@ -95,6 +95,8 @@ struct jive_machine {
 	
 	const jive_regcls_count regcls_budget;
 	
+	bool (*match_instructions)(const jive_machine * machine, struct jive_graph * graph);
+	
 	jive_node * (*spill)(const jive_machine * machine, jive_value * value, jive_stackslot * where, jive_stackframe * frame);
 	jive_value * (*restore)(const jive_machine * machine, struct jive_graph * graph, jive_stackslot * where, jive_stackframe * frame);
 	struct jive_instruction * (*transfer)(const jive_machine * machine, struct jive_value * in, struct jive_value ** out);
