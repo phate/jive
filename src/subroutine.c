@@ -55,6 +55,8 @@ jive_def_stackframe_allocate_slot(jive_stackframe * frame, jive_cpureg_class_t r
 	else frame->first =slot;
 	frame->last = slot;
 	
+	slot->first_user = slot->last_user = 0;
+	
 	return slot;
 }
 
