@@ -330,11 +330,22 @@ jive_bitconstant_revalidate(void * _node)
 	output->uptodate = true;
 }
 
+static bool
+jive_bitconstant_equiv(const void * _self, const void * _other)
+{
+	const struct _jive_bitconstant * self = _self;
+	const struct _jive_bitconstant * other = _other;
+	
+	if (self->data.nbits != other->data.nbits) return false;
+	
+	return memcmp(self->data.bits, other->data.bits, self->data.nbits) == 0;
+}
+
 const jive_node_class JIVE_BITCONSTANT = {
 	&JIVE_BITSTRING_NODE, "BITCONSTANT", sizeof(struct _jive_bitconstant), 0,
 	
 	.repr = jive_bitconstant_repr,
-	.equiv = 0,
+	.equiv = jive_bitconstant_equiv,
 	.invalidate_inputs = &jive_bitstring_invalidate_inputs,
 	.revalidate_outputs = &jive_bitconstant_revalidate
 };
