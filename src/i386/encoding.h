@@ -78,6 +78,13 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	const long immediates[]);
 
 jive_encode_result
+jive_i386_encode_regimm(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_cpureg * inputs[],
+	const jive_cpureg * outputs[],
+	const long immediates[]);
+
+jive_encode_result
 jive_i386_encode_regmove(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_cpureg * inputs[],

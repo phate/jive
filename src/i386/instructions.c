@@ -116,6 +116,49 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.ninputs = 2, .noutputs = 2, .nimmediates = 0,
 		.code = 0xc0af0f
 	},
+	/* for the immediate instructions, code consists of normal_code | (eax_code << 8),
+	see instruction coding function for explanation */
+	[jive_i386_int_add_immediate] = {
+		.name = "int_add_immediate",
+		.encode = &jive_i386_encode_regimm,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xc0 | (0x05 << 8)
+	},
+	[jive_i386_int_sub_immediate] = {
+		.name = "int_sub_immediate",
+		.encode = &jive_i386_encode_regimm,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xe8 | (0x2d << 8)
+	},
+	[jive_i386_int_and_immediate] = {
+		.name = "int_and_immediate",
+		.encode = &jive_i386_encode_regimm,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xe0 | (0x25 << 8)
+	},
+	[jive_i386_int_or_immediate] = {
+		.name = "int_or_immediate",
+		.encode = &jive_i386_encode_regimm,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xc8 | (0x0d << 8)
+	},
+	[jive_i386_int_xor_immediate] = {
+		.name = "int_xor_immediate",
+		.encode = &jive_i386_encode_regimm,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xc0 | (0x3d << 8)
+	},
+	
 	[jive_i386_int_neg] = {
 		.name = "int_neg",
 		.encode = &jive_i386_encode_unaryreg,
@@ -123,6 +166,14 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
 		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
 		.code = 0xd8
+	},
+	[jive_i386_int_not] = {
+		.name = "int_not",
+		.encode = &jive_i386_encode_unaryreg,
+		.mnemonic = 0,
+		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.code = 0xd0
 	},
 	[jive_i386_int_transfer] = {
 		.name = "int_transfer",
