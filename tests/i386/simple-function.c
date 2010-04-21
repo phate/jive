@@ -14,12 +14,12 @@ int main()
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine * sub = jive_i386_subroutine_create(graph, 1, true);
+	jive_argument_type arguments[] = {jive_argument_int};
+	jive_subroutine * sub = jive_i386_subroutine_create(graph, arguments, 1, jive_argument_int);
 	
 	jive_value * value = jive_subroutine_parameter(sub, 0);
 	jive_subroutine_return_value(sub, value);
 	
-	//jive_graph_view(graph);
 	jive_regalloc(graph, &jive_i386_machine, 0);
 	
 	jive_instruction_sequence seq;

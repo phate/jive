@@ -35,4 +35,14 @@ jive_stackframe *
 jive_default_stackframe_create(struct jive_graph * graph);
 
 
+/**
+	\brief Function argument type
+*/
+typedef enum jive_argument_type {
+	jive_argument_void = 0, /* only legal as return type */
+	jive_argument_pointer = 1,
+	jive_argument_int = 2,
+	jive_argument_long = 3
+} jive_argument_type;
+
 #endif

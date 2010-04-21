@@ -18,7 +18,8 @@ make_dotprod_function(size_t vector_size)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine * subroutine = jive_i386_subroutine_create(graph, 2, true);
+	jive_argument_type arguments[] = {jive_argument_pointer, jive_argument_pointer};
+	jive_subroutine * subroutine = jive_i386_subroutine_create(graph, arguments, 2, jive_argument_long);
 	
 	jive_value * p1 = jive_subroutine_parameter(subroutine, 0);
 	jive_value * p2 = jive_subroutine_parameter(subroutine, 1);

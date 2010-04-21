@@ -45,7 +45,8 @@ make_binary_function(node_creator_t create)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine * subroutine = jive_i386_subroutine_create(graph, 2, true);
+	jive_argument_type arguments[] = {jive_argument_long, jive_argument_long};
+	jive_subroutine * subroutine = jive_i386_subroutine_create(graph, arguments, 2, jive_argument_long);
 	
 	jive_value * v1 = jive_subroutine_parameter(subroutine, 0);
 	jive_value * v2 = jive_subroutine_parameter(subroutine, 1);
