@@ -67,7 +67,14 @@ struct jive_instruction_class {
 struct jive_cpureg_class {
 	/** \brief Descriptive name of register class */
 	const char name[32];
-	unsigned short nbits;
+	/** \brief Bits per register */
+	uint8_t nbits;
+	/** \brief Allowable widths for performing int arithmetic */
+	uint8_t int_arithmetic_width;
+	/** \brief Allowable widths for load/store operations */
+	uint8_t loadstore_width;
+	/** \brief Allowable widths for float arithmetic */
+	uint8_t float_arithmetic_width;
 	
 	const jive_cpureg * regs;
 	unsigned short nregs;

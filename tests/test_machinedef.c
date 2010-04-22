@@ -54,6 +54,9 @@ static void verify_regcls_def(const jive_machine * machine, const jive_cpureg_cl
 		assert((regcls->parent->class_mask & regcls->class_mask) == regcls->parent->class_mask); 
 		assert((regcls->parent->class_mask | regcls->class_mask) == regcls->class_mask); 
 		assert(regcls->nbits == regcls->parent->nbits);
+		assert(regcls->int_arithmetic_width == regcls->parent->int_arithmetic_width);
+		assert(regcls->float_arithmetic_width == regcls->parent->float_arithmetic_width);
+		assert(regcls->loadstore_width == regcls->parent->loadstore_width);
 	}
 	size_t n;
 	for(n=0; n<regcls->nregs; n++) {
