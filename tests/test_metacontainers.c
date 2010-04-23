@@ -78,6 +78,36 @@ void test_multiset()
 	assert(multiset.items[1].value == 43);
 }
 
+static inline int int_hash(int n) {return n;}
+static inline void * int_int_hashmap_alloc(size_t space, int key, int value) {return malloc(space);}
+
+DEFINE_HASHMAP_TYPE(int_int_hashmap, int, int, int_hash, int_int_hashmap_alloc);
+
+void test_map()
+{
+	struct int_int_hashmap map;
+	int_int_hashmap_init(&map);
+	
+	assert(!int_int_hashmap_lookup(&map, 0));
+	
+	assert(map.nitems == 0);
+	
+	int_int_hashmap_set(&map, 0, 42);
+	assert(int_int_hashmap_lookup(&map, 0));
+	assert(int_int_hashmap_lookup(&map, 0)->value == 42);
+	assert(map.nitems == 1);
+	
+	int_int_hashmap_set(&map, 0, 43);
+	assert(map.nitems == 1);
+	
+	bool found = int_int_hashmap_remove(&map, 0);
+	assert(found);
+	assert(map.nitems == 0);
+	assert(int_int_hashmap_lookup(&map, 0) == 0);
+	
+	assert(int_int_hashmap_remove(&map, 0) == false);
+}
+
 int main()
 {
 	test_set();

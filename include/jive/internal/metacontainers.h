@@ -237,4 +237,130 @@ multiset_type##_equals_relaxed(const struct multiset_type * first, const struct 
 	return true; \
 } \
 
+#define DEFINE_HASHMAP_TYPE(hashmap_type, key_type, value_type, hash_function, allocator) \
+ \
+struct hashmap_type##_entry { \
+	key_type key; \
+	value_type value; \
+	struct hashmap_type##_entry * next; \
+}; \
+ \
+struct hashmap_type { \
+	size_t nitems, nbuckets; \
+	struct hashmap_type##_entry ** buckets; \
+	struct hashmap_type##_entry * unused; \
+}; \
+ \
+static inline void \
+hashmap_type##_init(struct hashmap_type * map) \
+{ \
+	map->nitems = map->nbuckets = 0; \
+	map->buckets = 0; \
+	map->unused = 0; \
+} \
+ \
+static inline struct hashmap_type##_entry * \
+hashmap_type##_entry_alloc(struct hashmap_type * map, key_type key, value_type value) \
+{ \
+	struct hashmap_type##_entry * entry = map->unused; \
+	if (entry) map->unused = entry->next; \
+	else entry = allocator(sizeof(*entry), key, value); \
+	entry->key = key; \
+	entry->value = value; \
+	return entry; \
+} \
+ \
+static inline void \
+hashmap_type##_entry_insert(struct hashmap_type * map, struct hashmap_type##_entry * entry, size_t index) \
+{ \
+	entry->next = map->buckets[index]; \
+	map->buckets[index] = entry; \
+} \
+ \
+static inline struct hashmap_type##_entry * \
+hashmap_type##_entry_lookup_bucket(const struct hashmap_type * map, key_type key, size_t index) \
+{ \
+	struct hashmap_type##_entry * current = map->buckets[index]; \
+	while(current) { \
+		if (current->key == key) return current; \
+		current = current->next; \
+	} \
+	return 0; \
+} \
+ \
+static inline const struct hashmap_type##_entry * \
+hashmap_type##_lookup(const struct hashmap_type * map, key_type key) \
+{ \
+	if (map->nitems == 0) return 0; \
+	size_t index = hash_function(key) % map->nbuckets; \
+	return hashmap_type##_entry_lookup_bucket(map, key, index); \
+} \
+ \
+static inline void \
+hashmap_type##_enlarge(struct hashmap_type * map, key_type new_key, value_type new_value) \
+{ \
+	struct hashmap_type##_entry ** old_buckets = map->buckets; \
+	size_t old_nbuckets = map->nbuckets; \
+	 \
+	map->nbuckets = 2 * map->nbuckets + 16; \
+	map->buckets = allocator(sizeof(*map->buckets) * map->nbuckets, new_key, new_value); \
+	 \
+	size_t n; \
+	for(n=0; n<map->nbuckets; n++) map->buckets[n] = 0; \
+	 \
+	for(n=0; n<old_nbuckets; n++) { \
+		struct hashmap_type##_entry * current, * next; \
+		current = old_buckets[n]; \
+		while(current) { \
+			next = current->next; \
+			size_t index = hash_function(current->key) % map->nbuckets; \
+			hashmap_type##_entry_insert(map, current, index); \
+			current = next; \
+		} \
+	} \
+} \
+ \
+static inline bool \
+hashmap_type##_set(struct hashmap_type * map, key_type key, value_type value) \
+{ \
+	size_t index = hash_function(key); \
+	struct hashmap_type##_entry * entry; \
+	if (map->nitems) { \
+		index = index % map->nbuckets; \
+		entry = hashmap_type##_entry_lookup_bucket(map, key, index); \
+		if (entry) { \
+			entry->value = value; \
+			return true; \
+		} \
+	} \
+	 \
+	entry = hashmap_type##_entry_alloc(map, key, value); \
+	if (++map->nitems >= map->nbuckets) {\
+		hashmap_type##_enlarge(map, key, value); \
+		index = hash_function(key) % map->nbuckets; \
+	} \
+	hashmap_type##_entry_insert(map, entry, index); \
+	return false; \
+} \
+ \
+static inline bool \
+hashmap_type##_remove(struct hashmap_type * map, key_type key) \
+{ \
+	struct hashmap_type##_entry ** location, * current; \
+	size_t index = hash_function(key) % map->nbuckets; \
+	location = &map->buckets[index]; \
+	while( (current = *location) != 0) { \
+		if (current->key != key) { \
+			location = &current->next; \
+			continue; \
+		} \
+		*location = current->next; \
+		current->next = map->unused; \
+		map->unused = current; \
+		map->nitems--; \
+		return true; \
+	} \
+	return false; \
+} \
+
 #endif
