@@ -777,6 +777,50 @@ jive_match_bitconcat_node(const jive_node * node, size_t ninputs, jive_value * c
 	return jive_match_bitstring_node_inputs(node, ninputs, inputs);
 }
 
+jive_value *
+jive_extend_slice(jive_value * value, int low, int high, bool sign_extend)
+{
+	/* FIXME: if input is a "slice", it might be useful
+	to try "unwrapping" the slice if the original node
+	has a sufficient number of repeating leading bits */
+	int nbits = jive_value_nbits(value);
+	if (low == 0 && high == nbits) return value;
+	
+	jive_graph * graph = value->node->graph;
+	
+	size_t count = 0;
+	jive_value * values[high-low];
+	if (low<0) {
+		jive_value * tmp;
+		if (high >= 0)
+			tmp = jive_bitconstant_with_value(graph, -low, 0);
+		else
+			tmp = jive_bitconstant_with_value(graph, high-low, 0);
+		values[count++] = tmp;
+	}
+	if (low < nbits && high > 0) {
+		int slice_low = low < 0 ? 0 : low;
+		int slice_high = high > nbits ? nbits : high;
+		values[count++] = jive_bitslice(value, slice_low, slice_high);
+	}
+	if (high > nbits) {
+		int ext_low = low < nbits ? nbits : low;
+		if (sign_extend) {
+			jive_value * sign_bit;
+			sign_bit = jive_bitslice(value, nbits-1, nbits);
+			for(;ext_low < high; ext_low++)
+				values[count++] = sign_bit;
+		} else {
+			values[count++] = jive_bitconstant_with_value(graph, high-ext_low, 0);
+		}
+	}
+	
+	if (count > 1)
+		return jive_bitconcat(count, values);
+	else return
+		values[0];
+}
+
 /* intneg */
 
 static void

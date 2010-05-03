@@ -6,6 +6,7 @@ TESTS=\
 	test_prune_replace\
 	test_bitstring1\
 	test_bitstring2\
+	test_bitstring3\
 	test_machinedef
 
 include tests/regalloc/Makefile.sub

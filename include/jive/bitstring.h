@@ -68,6 +68,24 @@ jive_bitconstant_info(const jive_node * node);
 bool
 jive_match_bitconstant_node(const jive_node * node, size_t nbits, const char * bits);
 
+/**
+	\brief Extend bitstring and slice result
+	\param value Source bitstring
+	\param low Low bit
+	\param high High bit
+	\param sign_extend Perform sign extension
+	
+	Logically extends the given bitstring
+	infinitely to both sides, using 0 for
+	less significant bits, and either 0 or the
+	current sign bit for the more significant
+	bits. This infinite sequence of bits is
+	then sliced within the specified boundaries.
+*/
+
+jive_value *
+jive_extend_slice(jive_value * value, int low, int high, bool sign_extend);
+
 /* bitslice */
 
 extern const jive_node_class JIVE_BITSLICE;
@@ -224,5 +242,13 @@ struct _jive_operand_bits {
 	JIVE_OPERAND_COMMON_FIELDS(jive_value_bits)
 	unsigned int index;
 };
+
+static inline size_t
+jive_value_nbits(const jive_value * value)
+{
+	/* FIXME: activate assertion */
+	/* DEBUG_ASSERT(value->type == &JIVE_VALUE_BITS); */
+	return ((const jive_value_bits *) value)->nbits;
+}
 
 #endif
