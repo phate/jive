@@ -605,6 +605,14 @@ jive_bitconcat_revalidate(void * _node)
 		if (input_port == repeated_input && port_slice_high == repeated_slice_high) {
 			pattern_low = input->low & pattern_high;
 			pattern_high = input->high & pattern_high;
+		} else {
+			size_t k;
+			for(k=0; k<input->nbits; k++) {
+				if (input->bits[k] == '0')
+					pattern_high &= ~ (1<<k);
+				if (input->bits[k] == '1')
+					pattern_low |= (1<<k);
+			}
 		}
 		
 		low = (low << input->nbits) | pattern_low;
