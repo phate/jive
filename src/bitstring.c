@@ -377,6 +377,19 @@ jive_bitconstant(jive_graph * graph, size_t nbits, const char * bits)
 	return jive_bitstring_output(jive_bitconstant_rawcreate(graph, nbits, bits));
 }
 
+jive_value *
+jive_bitconstant_with_value(jive_graph * graph, size_t nbits, long value)
+{
+	size_t n;
+	char bits[nbits];
+	for(n=0; n<nbits; n++) {
+		bits[n] = (value & 1) + '0';
+		value = value>>1;
+	}
+	
+	return jive_bitconstant(graph, nbits, bits);
+}
+
 const jive_bitconstant_nodedata *
 jive_bitconstant_info(const jive_node * node)
 {

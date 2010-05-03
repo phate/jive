@@ -59,6 +59,9 @@ jive_bitconstant_rawcreate(jive_graph * graph, size_t nbits, const char * bits);
 jive_value *
 jive_bitconstant(jive_graph * graph, size_t nbits, const char * bits);
 
+jive_value *
+jive_bitconstant_with_value(jive_graph * graph, size_t nbits, long value);
+
 const jive_bitconstant_nodedata *
 jive_bitconstant_info(const jive_node * node);
 
