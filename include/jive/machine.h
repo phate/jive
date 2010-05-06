@@ -102,6 +102,8 @@ struct jive_machine {
 	
 	const jive_regcls_count regcls_budget;
 	
+	void (*classify_operation)(const jive_machine * machine, const jive_node * node, jive_cpureg_classmask_t * mask);
+	void (*transform_operation)(const jive_machine * machine, jive_node * node, jive_cpureg_class_t regcls);
 	bool (*match_instructions)(const jive_machine * machine, struct jive_graph * graph);
 	
 	jive_node * (*spill)(const jive_machine * machine, jive_value * value, jive_stackslot * where, jive_stackframe * frame);
