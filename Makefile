@@ -1,11 +1,11 @@
 CPPFLAGS+=-Iinclude -iquote include/private
 CFLAGS+=-Wall -Werror -Wfatal-errors -g
 
-LIBJIVE_SRC=src/context.c src/graph.c src/graphdebug.c src/bitstring.c src/fixed.c src/loadstore.c src/instruction.c src/subroutine.c src/buffer.c src/passthrough.c src/regalloc/cut.c src/regalloc/shape.c src/regalloc/assign.c src/regalloc/util.c src/regalloc/spill.c src/regalloc.c src/arithmetic-select.c
+LIBJIVE_SRC=src/context.c src/graph.c src/graphdebug.c src/bitstring.c src/fixed.c src/loadstore.c src/instruction.c src/subroutine.c src/buffer.c src/passthrough.c src/regalloc/cut.c src/regalloc/shape.c src/regalloc/assign.c src/regalloc/util.c src/regalloc/spill.c src/regalloc.c src/arithmetic-select.c src/target.c
 
 #src/ra-common.c src/ra-graphcut-cache.c src/ra-shape.c src/regalloc.c
 
-LIBJIVE_SRC += src/i386/machine.c src/i386/instructions.c src/i386/abi.c src/i386/encoding.c src/i386/match.c
+LIBJIVE_SRC += src/i386/machine.c src/i386/instructions.c src/i386/abi.c src/i386/encoding.c src/i386/match.c src/i386/target.c
 
 all: check
 
