@@ -179,6 +179,7 @@ jive_input_bits_list_create(jive_graph * graph, size_t noperands, jive_value * c
 	size_t n;
 	for(n=0; n<noperands; n++) {
 		(*operands)[n].type = &JIVE_OPERAND_BITS;
+		(*operands)[n].index = n;
 		DEBUG_ASSERT( jive_value_is_instance(values[n], &JIVE_VALUE_BITS) );
 		jive_operand_init((jive_operand *)&(*operands)[n], values[n]);
 	}

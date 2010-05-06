@@ -22,6 +22,8 @@ jive_bitstring_ninputs(const jive_node * node);
 jive_value *
 jive_bitstring_input(const jive_node * node, size_t index);
 
+extern const jive_node_class JIVE_BITSTRING_NODE;
+
 /* bitsymbolicconstant */
 
 extern const jive_node_class JIVE_BITSYMBOLICCONSTANT;
@@ -130,12 +132,12 @@ jive_match_bitconcat_node(const jive_node * node, size_t ninputs, jive_value * c
 
 /* negation */
 
-extern const jive_node_class JIVE_INTNEGATE;
+extern const jive_node_class JIVE_INTNEG;
 
 jive_node *
 jive_intneg_rawcreate(jive_value * input);
 
-/* FIXME: strictly, negation is not a "normalized" representation */
+/* FIXME: strictly speaking, negation is not a "normalized" representation */
 jive_value *
 jive_intneg(jive_value * input);
 
@@ -158,6 +160,8 @@ jive_intproduct_rawcreate(size_t ninputs, jive_value * const inputs[]);
 
 jive_value *
 jive_intproduct(size_t ninputs, jive_value * const inputs[]);
+
+/* FIXME: those product types below should be removed */
 
 /* low product */
 
@@ -213,7 +217,6 @@ jive_match_bitstring_node_inputs(const jive_node * node, size_t ninputs, jive_va
 /* TODO */
 
 extern const jive_node_class
-	JIVE_BITSTRING_NODE,
 	JIVE_BITAND,
 	JIVE_BITOR,
 	JIVE_BITXOR;
