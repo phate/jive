@@ -34,6 +34,9 @@ int main()
 	jive_value * slice = jive_bitslice(base_x, 1, 4);
 	jive_value * inputs[] = {base_x, base_y};
 	jive_value * product = jive_intproduct(2, inputs);
+	jive_value * bitand = jive_bitand(2, inputs);
+	jive_value * bitor = jive_bitor(2, inputs);
+	jive_value * bitxor = jive_bitxor(2, inputs);
 	
 	for(x_low=-8; x_low<8; x_low++) for(x_high=x_low; x_high<8; x_high++)
 	for(y_low=-8; y_low<8; y_low++) for(y_high=y_low; y_high<8; y_high++) {
@@ -69,6 +72,19 @@ int main()
 		
 		assert(range->low == p_low);
 		assert(range->high == p_high);
+		
+		if (x_low != x_high) continue;
+		if (y_low != y_high) continue;
+		
+		/* only a single value for both x and y, must therefore match
+		exactly */
+		
+		range = jive_value_bits_get_value_range(bitand);
+		assert(range->low == (x_low&y_low) && range->high == (x_low&y_low));
+		range = jive_value_bits_get_value_range(bitor);
+		assert(range->low == (x_low|y_low) && range->high == (x_low|y_low));
+		range = jive_value_bits_get_value_range(bitxor);
+		assert(range->low == (x_low^y_low) && range->high == (x_low^y_low));
 	}
 	
 	return 0;

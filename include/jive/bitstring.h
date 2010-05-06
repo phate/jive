@@ -151,6 +151,36 @@ jive_intsum_rawcreate(size_t ninputs, jive_value * const inputs[]);
 jive_value *
 jive_intsum(size_t ninputs, jive_value * const inputs[]);
 
+/* and */
+
+extern const jive_node_class JIVE_BITAND;
+
+jive_node *
+jive_bitand_rawcreate(size_t ninputs, jive_value * const inputs[]);
+
+jive_value *
+jive_bitand(size_t ninputs, jive_value * const inputs[]);
+
+/* or */
+
+extern const jive_node_class JIVE_BITOR;
+
+jive_node *
+jive_bitor_rawcreate(size_t ninputs, jive_value * const inputs[]);
+
+jive_value *
+jive_bitor(size_t ninputs, jive_value * const inputs[]);
+
+/* xor */
+
+extern const jive_node_class JIVE_BITXOR;
+
+jive_node *
+jive_bitxor_rawcreate(size_t ninputs, jive_value * const inputs[]);
+
+jive_value *
+jive_bitxor(size_t ninputs, jive_value * const inputs[]);
+
 /* product */
 
 extern const jive_node_class JIVE_INTPRODUCT;
@@ -213,14 +243,6 @@ jive_value_bits_init(jive_value_bits * value, jive_node * node, unsigned int nbi
 /** \brief Test if inputs of given node match given array of ports */
 bool
 jive_match_bitstring_node_inputs(const jive_node * node, size_t ninputs, jive_value * const inputs[]);
-
-/* TODO */
-
-extern const jive_node_class
-	JIVE_BITAND,
-	JIVE_BITOR,
-	JIVE_BITXOR;
-
 
 /* public structures */
 

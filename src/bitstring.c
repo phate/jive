@@ -949,6 +949,222 @@ jive_intsum_input(const jive_node * node, size_t index)
 	return &((const jive_bitstring_node *)node)->inputs[index];
 }
 
+/* bitand */
+
+static void
+jive_bitand_revalidate(void * _node)
+{
+	struct jive_bitstring_node * node = _node;
+	size_t n, ninputs = node->ninputs;
+	jive_bitstring_value_range * output = jive_bitstring_output_value_range(node);
+	
+	output->low = output->high = 0;
+	memset(output->bits, '1', output->nbits);
+	
+	for(n=0; n<ninputs; n++) {
+		const jive_bitstring_value_range * input = jive_bitstring_input_value_range(node, n);
+		size_t k;
+		for(k=0; k<output->nbits; k++)
+			output->bits[k] = jive_logic_and(output->bits[k], input->bits[k]);
+	}
+	jive_bitstring_value_range_numeric(output);
+	output->uptodate = true;
+}
+
+const jive_node_class JIVE_BITAND = {
+	&JIVE_BITSTRING_NODE, "AND", sizeof(jive_bitstring_node), 0,
+	
+	.repr = 0,
+	.equiv = 0,
+	.invalidate_inputs = &jive_bitstring_invalidate_inputs,
+	.revalidate_outputs = &jive_bitand_revalidate
+};
+
+jive_node *
+jive_bitand_rawcreate(size_t ninputs, jive_value * const inputs[])
+{
+	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
+	/* FIXME: assert that all inputs have same width */
+	
+	struct jive_bitstring_node * node;
+	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_BITAND, ninputs, inputs);
+	
+	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
+	
+	return (jive_node *)node;
+}
+
+jive_value *
+jive_bitand(size_t ninputs, jive_value * const inputs[])
+{
+	/* FIXME: assert that all inputs have same width */
+	JIVE_EXPAND_INPUTS(jive_value, ninputs, inputs, JIVE_BITAND, jive_bitstring_ninputs, jive_bitstring_input);
+	
+	/* FIXME: simplify constants and negations */
+	/* FIXME: strength reduction? */
+	/* FIXME: attempt CSE */
+	return jive_bitstring_output(jive_bitand_rawcreate(ninputs, inputs));
+}
+
+size_t
+jive_bitand_ninputs(const jive_node * node)
+{
+	DEBUG_ASSERT(node->type == &JIVE_BITAND);
+	return ((const jive_bitstring_node *)node)->ninputs;
+}
+
+const jive_operand_bits *
+jive_bitand_input(const jive_node * node, size_t index)
+{
+	DEBUG_ASSERT(index < jive_bitand_ninputs(node));
+	return &((const jive_bitstring_node *)node)->inputs[index];
+}
+
+
+/* bitor */
+
+static void
+jive_bitor_revalidate(void * _node)
+{
+	struct jive_bitstring_node * node = _node;
+	size_t n, ninputs = node->ninputs;
+	jive_bitstring_value_range * output = jive_bitstring_output_value_range(node);
+	
+	output->low = output->high = 0;
+	memset(output->bits, '0', output->nbits);
+	
+	for(n=0; n<ninputs; n++) {
+		const jive_bitstring_value_range * input = jive_bitstring_input_value_range(node, n);
+		size_t k;
+		for(k=0; k<output->nbits; k++)
+			output->bits[k] = jive_logic_or(output->bits[k], input->bits[k]);
+	}
+	jive_bitstring_value_range_numeric(output);
+	output->uptodate = true;
+}
+
+const jive_node_class JIVE_BITOR = {
+	&JIVE_BITSTRING_NODE, "OR", sizeof(jive_bitstring_node), 0,
+	
+	.repr = 0,
+	.equiv = 0,
+	.invalidate_inputs = &jive_bitstring_invalidate_inputs,
+	.revalidate_outputs = &jive_bitor_revalidate
+};
+
+jive_node *
+jive_bitor_rawcreate(size_t ninputs, jive_value * const inputs[])
+{
+	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
+	/* FIXME: assert that all inputs have same width */
+	
+	struct jive_bitstring_node * node;
+	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_BITOR, ninputs, inputs);
+	
+	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
+	
+	return (jive_node *)node;
+}
+
+jive_value *
+jive_bitor(size_t ninputs, jive_value * const inputs[])
+{
+	/* FIXME: assert that all inputs have same width */
+	JIVE_EXPAND_INPUTS(jive_value, ninputs, inputs, JIVE_BITOR, jive_bitstring_ninputs, jive_bitstring_input);
+	
+	/* FIXME: simplify constants and negations */
+	/* FIXME: strength reduction? */
+	/* FIXME: attempt CSE */
+	return jive_bitstring_output(jive_bitor_rawcreate(ninputs, inputs));
+}
+
+size_t
+jive_bitor_ninputs(const jive_node * node)
+{
+	DEBUG_ASSERT(node->type == &JIVE_BITOR);
+	return ((const jive_bitstring_node *)node)->ninputs;
+}
+
+const jive_operand_bits *
+jive_bitor_input(const jive_node * node, size_t index)
+{
+	DEBUG_ASSERT(index < jive_bitor_ninputs(node));
+	return &((const jive_bitstring_node *)node)->inputs[index];
+}
+
+
+/* bitxor */
+
+static void
+jive_bitxor_revalidate(void * _node)
+{
+	struct jive_bitstring_node * node = _node;
+	size_t n, ninputs = node->ninputs;
+	jive_bitstring_value_range * output = jive_bitstring_output_value_range(node);
+	
+	output->low = output->high = 0;
+	memset(output->bits, '0', output->nbits);
+	
+	for(n=0; n<ninputs; n++) {
+		const jive_bitstring_value_range * input = jive_bitstring_input_value_range(node, n);
+		size_t k;
+		for(k=0; k<output->nbits; k++)
+			output->bits[k] = jive_logic_xor(output->bits[k], input->bits[k]);
+	}
+	jive_bitstring_value_range_numeric(output);
+	output->uptodate = true;
+}
+
+const jive_node_class JIVE_BITXOR = {
+	&JIVE_BITSTRING_NODE, "XOR", sizeof(jive_bitstring_node), 0,
+	
+	.repr = 0,
+	.equiv = 0,
+	.invalidate_inputs = &jive_bitstring_invalidate_inputs,
+	.revalidate_outputs = &jive_bitxor_revalidate
+};
+
+jive_node *
+jive_bitxor_rawcreate(size_t ninputs, jive_value * const inputs[])
+{
+	unsigned int nbits = ((jive_value_bits *)inputs[0])->nbits;;
+	/* FIXME: assert that all inputs have same width */
+	
+	struct jive_bitstring_node * node;
+	node = jive_bitstring_create(inputs[0]->node->graph, &JIVE_BITXOR, ninputs, inputs);
+	
+	jive_value_bits_init(&node->output, (jive_node *)node, nbits);
+	
+	return (jive_node *)node;
+}
+
+jive_value *
+jive_bitxor(size_t ninputs, jive_value * const inputs[])
+{
+	/* FIXME: assert that all inputs have same width */
+	JIVE_EXPAND_INPUTS(jive_value, ninputs, inputs, JIVE_BITXOR, jive_bitstring_ninputs, jive_bitstring_input);
+	
+	/* FIXME: simplify constants and negations */
+	/* FIXME: strength reduction? */
+	/* FIXME: attempt CSE */
+	return jive_bitstring_output(jive_bitxor_rawcreate(ninputs, inputs));
+}
+
+size_t
+jive_bitxor_ninputs(const jive_node * node)
+{
+	DEBUG_ASSERT(node->type == &JIVE_BITXOR);
+	return ((const jive_bitstring_node *)node)->ninputs;
+}
+
+const jive_operand_bits *
+jive_bitxor_input(const jive_node * node, size_t index)
+{
+	DEBUG_ASSERT(index < jive_bitxor_ninputs(node));
+	return &((const jive_bitstring_node *)node)->inputs[index];
+}
+
+
 /* intproduct */
 
 static inline long max(long a, long b) { return a>b ? a : b; }
