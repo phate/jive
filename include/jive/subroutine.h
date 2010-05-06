@@ -3,6 +3,8 @@
 
 #include <jive/types.h>
 
+struct jive_graph;
+
 /** \brief Get entry node of subroutine */
 jive_node *
 jive_subroutine_enter(jive_subroutine * sub);
