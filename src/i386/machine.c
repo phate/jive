@@ -124,8 +124,20 @@ jive_i386_restore(const jive_machine * machine, struct jive_graph * graph, jive_
 	return jive_instruction_output(instr, 0);
 }
 
+static void
+jive_i386_classify_operation(const jive_machine * machine, const jive_node * node,
+	jive_cpureg_classmask_t * mask)
+{
+	/* FIXME: this is oviously not very helpful */
+	*mask = (1 << jive_i386_gpr);
+}
+
 extern bool
 jive_i386_match_instructions(const jive_machine * machine, jive_graph * graph);
+
+extern void
+jive_i386_transform_operation(const jive_machine * machine, jive_node * node,
+	jive_cpureg_class_t regcls);
 
 const jive_machine jive_i386_machine = {
 	.name = "i386",
@@ -140,6 +152,8 @@ const jive_machine jive_i386_machine = {
 		0
 	},
 	
+	.classify_operation = &jive_i386_classify_operation,
+	.transform_operation = &jive_i386_transform_operation,
 	.match_instructions = &jive_i386_match_instructions,
 	.spill = &jive_i386_spill,
 	.restore = &jive_i386_restore,

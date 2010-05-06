@@ -5,7 +5,7 @@
 #include <jive/subroutine.h>
 
 jive_subroutine *
-jive_i386_subroutine_create(jive_graph * graph,
+jive_i386_subroutine_create(struct jive_graph * graph,
 	const jive_argument_type arguments[],
 	size_t narguments,
 	jive_argument_type return_value);

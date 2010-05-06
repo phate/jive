@@ -3,8 +3,19 @@
 #include <jive/fixed.h>
 #include <jive/internal/instruction_str.h>
 #include <jive/internal/subroutinestr.h>
+#include <jive/arithmetic-select.h>
 
 #include <jive/i386/machine.h>
+
+#include "debug.h"
+
+void
+jive_i386_transform_operation(const jive_machine * machine, jive_node * node,
+	jive_cpureg_class_t regcls)
+{
+	jive_arithmetic_transform_single(node, regcls->nbits);
+}
+
 
 struct replacement_map {
 	const jive_node_class * node_type;
@@ -20,7 +31,6 @@ static const struct replacement_map map_binary[] = {
 };
 static const size_t map_binary_size = sizeof(map_binary)/sizeof(map_binary[0]);
 
-
 static bool
 match_replace_binary_op(jive_graph * graph, jive_node * node)
 {
@@ -29,6 +39,8 @@ match_replace_binary_op(jive_graph * graph, jive_node * node)
 		if (node->type == map_binary[n].node_type) break;
 	}
 	if (n>=map_binary_size) return false;
+	
+	DEBUG_ASSERT( jive_fixed_arithmetic_width(node) == 32);
 		
 	jive_value * value = jive_node_iterate_values(node);
 	jive_operand * first = jive_node_iterate_operands(node);
@@ -58,6 +70,8 @@ match_replace_unary_op(jive_graph * graph, jive_node * node)
 		if (node->type == map_unary[n].node_type) break;
 	}
 	if (n>=map_unary_size) return false;
+		
+	DEBUG_ASSERT( jive_fixed_arithmetic_width(node) == 32);
 		
 	jive_value * value = jive_node_iterate_values(node);
 	jive_operand * first = jive_node_iterate_operands(node);
