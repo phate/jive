@@ -7,7 +7,8 @@ TESTS=\
 	test_bitstring1\
 	test_bitstring2\
 	test_bitstring3\
-	test_machinedef
+	test_machinedef\
+	arithmetic_function
 
 include tests/regalloc/Makefile.sub
 include tests/i386/Makefile.sub
