@@ -1,9 +1,15 @@
-#ifndef JIVE_FIXEDH
-#define JIVE_FIXEDH
+#ifndef JIVE_FIXED_H
+#define JIVE_FIXED_H
 
 #include <jive/graph.h>
 
 /* fixed bit-width operations */
+
+extern const jive_node_class JIVE_FIXED;
+
+/* get arithmetic width of fixed-bitwidth operation */
+unsigned int
+jive_fixed_arithmetic_width(const jive_node * node);
 
 /* sum */
 
@@ -95,5 +101,17 @@ jive_fixedxor_rawcreate(jive_value * a, jive_value * b);
 jive_value *
 jive_fixedxor_create(jive_value * a, jive_value * b);
 
+/* constant bitstrings placed in a specific register class */
+
+extern const jive_node_class JIVE_REGCONSTANT;
+
+jive_node *
+jive_regconstant_rawcreate(jive_graph * graph, jive_cpureg_class_t regcls, const char * bits);
+
+jive_value *
+jive_regconstant_create(jive_graph * graph, jive_cpureg_class_t regcls, const char * bits);
+
+bool
+jive_regconstant_match(const jive_node * node, jive_cpureg_class_t regcls, const char * bits);
 
 #endif

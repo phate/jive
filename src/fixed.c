@@ -3,8 +3,22 @@
 #include <jive/internal/bitops.h>
 #include <jive/internal/compiler.h>
 #include <jive/nodeclass.h>
+#include <jive/machine.h>
 
 #include "debug.h"
+
+const jive_node_class JIVE_FIXED = {
+	0, "FIXED", sizeof(jive_fixed_base), 0,
+};
+
+/* get arithmetic width of fixed-bitwidth operation */
+unsigned int
+jive_fixed_arithmetic_width(const jive_node * node)
+{
+	DEBUG_ASSERT( jive_node_is_instance(node, &JIVE_FIXED) );
+	return ((const jive_fixed_base *) node) -> arithmetic_width;
+
+}
 
 static inline jive_value *
 jive_fixed_binaryop_output(jive_node * _node)
@@ -164,7 +178,7 @@ jive_fixedadd_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDADD = {
-	0, "FIXEDADD", sizeof(jive_fixed_binaryop), 0,
+	&JIVE_FIXED, "FIXEDADD", sizeof(jive_fixed_binaryop), 0,
 	
 	.repr = &jive_fixed_binaryop_repr,
 	.equiv = &jive_fixed_binaryop_equiv,
@@ -221,7 +235,7 @@ jive_fixedmul_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDMUL = {
-	0, "FIXEDMUL", sizeof(jive_fixed_binaryop), 0,
+	&JIVE_FIXED, "FIXEDMUL", sizeof(jive_fixed_binaryop), 0,
 	
 	.repr = &jive_fixed_binaryop_repr,
 	.equiv = &jive_fixed_binaryop_equiv,
@@ -278,7 +292,7 @@ jive_fixedmulhi_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDMULHI = {
-	0, "FIXEDMULHI", sizeof(jive_fixed_binaryop), 0,
+	&JIVE_FIXED, "FIXEDMULHI", sizeof(jive_fixed_binaryop), 0,
 	
 	.repr = &jive_fixed_binaryop_repr,
 	.equiv = &jive_fixed_binaryop_equiv,
@@ -331,7 +345,7 @@ jive_fixedand_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDAND = {
-	0, "FIXEDAND", sizeof(jive_fixed_binaryop), 0,
+	&JIVE_FIXED, "FIXEDAND", sizeof(jive_fixed_binaryop), 0,
 	
 	.repr = &jive_fixed_binaryop_repr,
 	.equiv = &jive_fixed_binaryop_equiv,
@@ -384,7 +398,7 @@ jive_fixedor_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDOR = {
-	0, "FIXEDOR", sizeof(jive_fixed_binaryop), 0,
+	&JIVE_FIXED, "FIXEDOR", sizeof(jive_fixed_binaryop), 0,
 	
 	.repr = &jive_fixed_binaryop_repr,
 	.equiv = &jive_fixed_binaryop_equiv,
@@ -437,7 +451,7 @@ jive_fixedxor_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDXOR = {
-	0, "FIXEDXOR", sizeof(jive_fixed_binaryop), 0,
+	&JIVE_FIXED, "FIXEDXOR", sizeof(jive_fixed_binaryop), 0,
 	
 	.repr = &jive_fixed_binaryop_repr,
 	.equiv = &jive_fixed_binaryop_equiv,
@@ -503,7 +517,7 @@ jive_fixedneg_revalidate(void * _node)
 }
 
 const jive_node_class JIVE_FIXEDNEG = {
-	0, "FIXEDNEG", sizeof(jive_fixed_unaryop), 0,
+	&JIVE_FIXED, "FIXEDNEG", sizeof(jive_fixed_unaryop), 0,
 	
 	.repr = &jive_fixed_unaryop_repr,
 	.equiv = &jive_fixed_unaryop_equiv,
@@ -532,3 +546,83 @@ jive_fixedneg_create(jive_value * a, unsigned int arithmetic_width)
 	jive_node * node = jive_fixedneg_rawcreate(a, arithmetic_width);
 	return jive_fixed_unaryop_output(node);
 }
+
+/* constant bitstrings placed in a specific register class */
+
+static char *
+jive_regconstant_repr(const void * _self)
+{
+	const struct jive_regconstant * self = _self;
+	
+	return strdup(self->bits);
+}
+
+static bool
+jive_regconstant_equiv(const void * _self, const void * _other)
+{
+	const struct jive_regconstant * self = _self;
+	const struct jive_regconstant * other = _other;
+	
+	jive_cpureg_class_t self_class, other_class;
+	
+	self_class = jive_value_get_cpureg_class((jive_value *) &self->output);
+	other_class = jive_value_get_cpureg_class((jive_value *) &other->output);
+	
+	if (self_class != other_class) return false;
+	
+	return memcmp(self->bits, other->bits, self_class->nbits) == 0;
+}
+
+const jive_node_class JIVE_REGCONSTANT = {
+	0, "REGCONSTANT", sizeof(struct jive_regconstant), 0,
+	
+	.repr = &jive_regconstant_repr,
+	.equiv = &jive_regconstant_equiv,
+	.invalidate_inputs = 0,
+	.revalidate_outputs = 0
+};
+
+jive_node *
+jive_regconstant_rawcreate(jive_graph * graph, jive_cpureg_class_t regcls, const char * bits)
+{
+	struct jive_regconstant * node;
+	node = (struct jive_regconstant *) jive_node_create(graph, &JIVE_REGCONSTANT, 0, 0);
+	
+	char * bits_storage = jive_malloc(graph, regcls->nbits);
+		
+	node->bits = bits_storage;
+	memcpy(bits_storage, bits, regcls->nbits);
+	
+	jive_value_bits_init(&node->output, (jive_node *)node, regcls->nbits);
+	jive_value_set_cpureg_class((jive_value *) &node->output, regcls);
+	
+	return (jive_node *)node;
+}
+
+jive_value *
+jive_regconstant_create(jive_graph * graph, jive_cpureg_class_t regcls, const char * bits)
+{
+	jive_output_edge_iterator i;
+	JIVE_ITERATE_TOP(i, graph)
+		if (jive_regconstant_match(i->target.node, regcls, bits)) {
+			return (jive_value *)&((struct jive_regconstant *) i->target.node)->output;
+		}
+	
+	jive_node * node = jive_regconstant_rawcreate(graph, regcls, bits);
+	
+	return (jive_value *)&((struct jive_regconstant *) node)->output;
+}
+
+bool
+jive_regconstant_match(const jive_node * _node, jive_cpureg_class_t regcls, const char * bits)
+{
+	if (_node->type != &JIVE_REGCONSTANT) return false;
+	const struct jive_regconstant * node;
+	node = (const struct jive_regconstant *)_node;
+	
+	if (jive_value_get_cpureg_class((jive_value *) &node->output) != regcls)
+		return false;
+	
+	return memcmp(node->bits, bits, regcls->nbits) == 0;
+}
+
