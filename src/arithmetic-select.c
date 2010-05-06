@@ -92,6 +92,9 @@ jive_node_is_regop(const jive_node * node)
 		(type == &JIVE_BITCONCAT) ||
 		(type == &JIVE_INTNEG) ||
 		(type == &JIVE_INTSUM) ||
+		(type == &JIVE_BITAND) ||
+		(type == &JIVE_BITOR) ||
+		(type == &JIVE_BITXOR) ||
 		(type == &JIVE_INTPRODUCT);
 }
 
@@ -162,6 +165,44 @@ jive_arithmetic_select(jive_graph * graph,
 	jive_graph_traverse_finish(trav);
 }
 
+static jive_value *
+wrap_fixedand_create(jive_value * a, jive_value * b, unsigned int unused)
+{
+	return jive_fixedand_create(a, b);
+}
+
+static jive_value *
+wrap_fixedor_create(jive_value * a, jive_value * b, unsigned int unused)
+{
+	return jive_fixedor_create(a, b);
+}
+
+static jive_value *
+wrap_fixedxor_create(jive_value * a, jive_value * b, unsigned int unused)
+{
+	return jive_fixedxor_create(a, b);
+}
+
+typedef jive_value * (*reduction_function_t)(jive_value *, jive_value *, unsigned int);
+
+static jive_node *
+transform_binary(jive_bitstring_node * node, unsigned int width, reduction_function_t reduce)
+{
+	jive_value * values[node->ninputs];
+	size_t n;
+	/* FIXME: the bit-extension mode is generally too strict */
+	for(n=0; n<node->ninputs; n++) {
+		values[n] = (jive_value *) node->inputs[n].value;
+		values[n] = jive_extend_slice(values[n], 0, width, true);
+	}
+	for(n=1; n<node->ninputs; n++) {
+		values[0] = reduce(values[0], values[n], width);
+	}
+	
+	jive_value_replace((jive_value *)&node->output, values[0]);
+	return values[0]->node;
+}
+
 jive_node *
 jive_arithmetic_transform_single(jive_node * _node, unsigned int width)
 {
@@ -183,22 +224,17 @@ jive_arithmetic_transform_single(jive_node * _node, unsigned int width)
 		return value->node;
 	}
 	
-	if (type == &JIVE_INTSUM) {
-		jive_value * values[node->ninputs];
-		size_t n;
-		for(n=0; n<node->ninputs; n++) {
-			values[n] = (jive_value *) node->inputs[n].value;
-			values[n] = jive_extend_slice(values[n], 0, width, true);
-		}
-		DEBUG_PRINTF("add: %p\n", values[0]);
-		for(n=1; n<node->ninputs; n++) {
-			DEBUG_PRINTF("add: %p\n", values[n]);
-			values[0] = jive_fixedadd_create(values[0], values[n], width);
-		}
-		
-		jive_value_replace((jive_value *)&node->output, values[0]);
-		return values[0]->node;
-	}
+	if (type == &JIVE_INTSUM)
+		return transform_binary(node, width, &jive_fixedadd_create);
+	
+	if (type == &JIVE_BITAND)
+		return transform_binary(node, width, &wrap_fixedand_create);
+	
+	if (type == &JIVE_BITOR)
+		return transform_binary(node, width, &wrap_fixedor_create);
+	
+	if (type == &JIVE_BITXOR)
+		return transform_binary(node, width, &wrap_fixedxor_create);
 	
 	return _node;
 #if 0

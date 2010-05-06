@@ -12,19 +12,22 @@ typedef long (*binary_function_t)(long, long);
 static jive_value *
 wrap_fixedand_create(jive_value * a, jive_value * b)
 {
-	return jive_fixedand_create(a, b);
+	jive_value * values[2] = {a, b};
+	return jive_bitand(2, values);
 }
 
 static jive_value *
 wrap_fixedor_create(jive_value * a, jive_value * b)
 {
-	return jive_fixedor_create(a, b);
+	jive_value * values[2] = {a, b};
+	return jive_bitor(2, values);
 }
 
 static jive_value *
 wrap_fixedxor_create(jive_value * a, jive_value * b)
 {
-	return jive_fixedxor_create(a, b);
+	jive_value * values[2] = {a, b};
+	return jive_bitxor(2, values);
 }
 
 static jive_value *
