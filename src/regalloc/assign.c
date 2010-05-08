@@ -459,6 +459,9 @@ jive_two_operand_fixup(
 		
 		if (in0 == out0) continue;
 		
+		/* if instruction is marked as "commutative",
+		it must have two input registers; check if they can
+		simply be swapped to achieve what we want */
 		if (icls->flags & jive_instruction_commutative) {
 			jive_cpureg_t in1 = jive_instruction_inputreg(instr, 1);
 			if (out0 == in1) {
