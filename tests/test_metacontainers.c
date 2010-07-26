@@ -3,19 +3,13 @@
 #include <stdio.h>
 #include <jive/internal/metacontainers.h>
 
-static inline void *
-heap_realloc(void * ptr, size_t old_size, size_t new_size, int value)
-{
-	return realloc(ptr, new_size);
-}
-
 typedef struct int_set int_set;
-DEFINE_SET_TYPE(int_set, int, heap_realloc);
+DEFINE_SET_TYPE(int_set, int);
 
-void test_set()
+void test_set(jive_context * context)
 {
 	int_set set, set2;
-	int_set_init(&set);
+	int_set_init(&set, context);
 	
 	assert( ! int_set_contains(&set, 42));
 	
@@ -30,7 +24,7 @@ void test_set()
 	assert(set.items[1] == 42);
 	assert(set.items[2] == 43);
 	
-	int_set_init(&set2);
+	int_set_init(&set2, context);
 	int_set_copy(&set2, &set);
 	assert(set2.nitems == 3);
 	assert(set2.items[0] == 41);
@@ -42,15 +36,18 @@ void test_set()
 	assert(set.nitems == 2);
 	assert(set.items[0] == 41);
 	assert(set.items[1] == 43);
+	
+	int_set_fini(&set);
+	int_set_fini(&set2);
 }
 
 typedef struct int_multiset int_multiset;
-DEFINE_MULTISET_TYPE(int_multiset, int, heap_realloc);
+DEFINE_MULTISET_TYPE(int_multiset, int);
 
-void test_multiset()
+void test_multiset(jive_context * context)
 {
 	int_multiset multiset;
-	int_multiset_init(&multiset);
+	int_multiset_init(&multiset, context);
 	
 	assert( int_multiset_contains(&multiset, 42) == 0 );
 	
@@ -76,17 +73,18 @@ void test_multiset()
 	assert(multiset.nitems == 2);
 	assert(multiset.items[0].value == 41);
 	assert(multiset.items[1].value == 43);
+	
+	int_multiset_fini(&multiset);
 }
 
 static inline int int_hash(int n) {return n;}
-static inline void * int_int_hashmap_alloc(size_t space, int key, int value) {return malloc(space);}
 
-DEFINE_HASHMAP_TYPE(int_int_hashmap, int, int, int_hash, int_int_hashmap_alloc);
+DEFINE_HASHMAP_TYPE(int_int_hashmap, int, int, int_hash);
 
-void test_map()
+void test_map(jive_context * context)
 {
 	struct int_int_hashmap map;
-	int_int_hashmap_init(&map);
+	int_int_hashmap_init(&map, context);
 	
 	assert(!int_int_hashmap_lookup(&map, 0));
 	
@@ -106,11 +104,16 @@ void test_map()
 	assert(int_int_hashmap_lookup(&map, 0) == 0);
 	
 	assert(int_int_hashmap_remove(&map, 0) == false);
+	
+	int_int_hashmap_fini(&map);
 }
 
 int main()
 {
-	test_set();
-	test_multiset();
+	jive_context * context = jive_context_create();
+	test_set(context);
+	test_multiset(context);
+	test_map(context);
+	jive_context_destroy(context);
 	return 0;
 }

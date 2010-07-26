@@ -3,19 +3,28 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <jive/context.h>
 
-#define DEFINE_SET_TYPE(set_type, value_type, reallocator) \
+#define DEFINE_SET_TYPE(set_type, value_type) \
 \
 struct set_type { \
+	jive_context * context; \
 	value_type * items; \
 	size_t nitems, space; \
 }; \
  \
 static inline void \
-set_type##_init(struct set_type * set) \
+set_type##_init(struct set_type * set, jive_context * context) \
 { \
+	set->context = context; \
 	set->items = 0; \
 	set->nitems = set->space = 0; \
+} \
+ \
+static inline void \
+set_type##_fini(struct set_type * set) \
+{ \
+	jive_context_free(set->context, set->items); \
 } \
  \
 static inline void \
@@ -25,7 +34,7 @@ set_type##_enlarge(struct set_type * set, size_t at_least, value_type value) \
 	size_t new_size = set->space * 2; \
 	if (new_size < at_least) new_size = at_least; \
 	 \
-	set->items = reallocator(set->items, set->space * sizeof(value_type), new_size * sizeof(value_type), value); \
+	set->items = jive_context_realloc(set->context, set->items, new_size * sizeof(value_type)); \
 	set->space = new_size; \
 } \
  \
@@ -103,18 +112,26 @@ set_type##_equals(const struct set_type * first, const struct set_type * second)
 	return true; \
 } \
 
-#define DEFINE_MULTISET_TYPE(multiset_type, value_type, reallocator) \
+#define DEFINE_MULTISET_TYPE(multiset_type, value_type) \
 \
 struct multiset_type { \
+	jive_context * context; \
 	struct { value_type value; size_t count; } * items; \
 	size_t nitems, space; \
 }; \
  \
 static inline void \
-multiset_type##_init(struct multiset_type * multiset) \
+multiset_type##_init(struct multiset_type * multiset, jive_context * context) \
 { \
+	multiset->context = context; \
 	multiset->items = 0; \
 	multiset->nitems = multiset->space = 0; \
+} \
+ \
+static inline void \
+multiset_type##_fini(struct multiset_type * multiset) \
+{ \
+	jive_context_free(multiset->context, multiset->items); \
 } \
  \
 static inline void \
@@ -124,7 +141,7 @@ multiset_type##_enlarge(struct multiset_type * multiset, size_t at_least, value_
 	size_t new_size = multiset->space * 2; \
 	if (new_size < at_least) new_size = at_least; \
 	 \
-	multiset->items = reallocator(multiset->items, multiset->space * sizeof(multiset->items[0]), new_size * sizeof(multiset->items[0]), value); \
+	multiset->items = jive_context_realloc(multiset->context, multiset->items, new_size * sizeof(multiset->items[0])); \
 	multiset->space = new_size; \
 } \
  \
@@ -237,7 +254,7 @@ multiset_type##_equals_relaxed(const struct multiset_type * first, const struct 
 	return true; \
 } \
 
-#define DEFINE_HASHMAP_TYPE(hashmap_type, key_type, value_type, hash_function, allocator) \
+#define DEFINE_HASHMAP_TYPE(hashmap_type, key_type, value_type, hash_function) \
  \
 struct hashmap_type##_entry { \
 	key_type key; \
@@ -246,17 +263,41 @@ struct hashmap_type##_entry { \
 }; \
  \
 struct hashmap_type { \
+	jive_context * context; \
 	size_t nitems, nbuckets; \
 	struct hashmap_type##_entry ** buckets; \
 	struct hashmap_type##_entry * unused; \
 }; \
  \
 static inline void \
-hashmap_type##_init(struct hashmap_type * map) \
+hashmap_type##_init(struct hashmap_type * map, jive_context * context) \
 { \
+	map->context = context; \
 	map->nitems = map->nbuckets = 0; \
 	map->buckets = 0; \
 	map->unused = 0; \
+} \
+ \
+static inline void \
+hashmap_type##_fini(struct hashmap_type * map) \
+{ \
+	size_t n; \
+	struct hashmap_type##_entry * entry; \
+	for(n=0; n<map->nbuckets; n++) { \
+		entry = map->buckets[n]; \
+		while(entry) { \
+			map->buckets[n] = entry->next; \
+			jive_context_free(map->context, entry); \
+			entry = map->buckets[n]; \
+		} \
+	} \
+	entry = map->unused; \
+	while(entry) { \
+		map->unused = entry->next; \
+		jive_context_free(map->context, entry); \
+		entry = map->unused; \
+	} \
+	jive_context_free(map->context, map->buckets); \
 } \
  \
 static inline struct hashmap_type##_entry * \
@@ -264,7 +305,7 @@ hashmap_type##_entry_alloc(struct hashmap_type * map, key_type key, value_type v
 { \
 	struct hashmap_type##_entry * entry = map->unused; \
 	if (entry) map->unused = entry->next; \
-	else entry = allocator(sizeof(*entry), key, value); \
+	else entry = jive_context_malloc(map->context, sizeof(*entry)); \
 	entry->key = key; \
 	entry->value = value; \
 	return entry; \
@@ -303,7 +344,7 @@ hashmap_type##_enlarge(struct hashmap_type * map, key_type new_key, value_type n
 	size_t old_nbuckets = map->nbuckets; \
 	 \
 	map->nbuckets = 2 * map->nbuckets + 16; \
-	map->buckets = allocator(sizeof(*map->buckets) * map->nbuckets, new_key, new_value); \
+	map->buckets = jive_context_malloc(map->context, sizeof(*map->buckets) * map->nbuckets); \
 	 \
 	size_t n; \
 	for(n=0; n<map->nbuckets; n++) map->buckets[n] = 0; \
@@ -318,6 +359,8 @@ hashmap_type##_enlarge(struct hashmap_type * map, key_type new_key, value_type n
 			current = next; \
 		} \
 	} \
+	 \
+	jive_context_free(map->context, old_buckets); \
 } \
  \
 static inline bool \
