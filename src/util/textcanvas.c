@@ -244,3 +244,14 @@ jive_textcanvas_vline(jive_textcanvas * canvas,
 	for(y=y1+1; y<y2; y++)
 		jive_textcanvas_put_line_code(canvas, x, y, code);
 }
+
+void
+jive_textcanvas_box(jive_textcanvas * canvas,
+	int x1, int y1, int x2, int y2,
+	bool thick, bool stipple)
+{
+	jive_textcanvas_hline(canvas, x1, y1, x2, thick, stipple);
+	jive_textcanvas_vline(canvas, x2, y1, y2, thick, stipple);
+	jive_textcanvas_hline(canvas, x2, y2, x1, thick, stipple);
+	jive_textcanvas_vline(canvas, x1, y2, y1, thick, stipple);
+}

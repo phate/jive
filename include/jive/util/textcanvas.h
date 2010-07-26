@@ -36,4 +36,9 @@ jive_textcanvas_vline(jive_textcanvas * canvas,
 	int x, int y1, int y2,
 	bool thick, bool stipple);
 
+void
+jive_textcanvas_box(jive_textcanvas * canvas,
+	int x1, int y1, int x2, int y2,
+	bool thick, bool stipple);
+
 #endif
