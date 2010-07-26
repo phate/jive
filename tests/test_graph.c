@@ -1,14 +1,38 @@
 #include <assert.h>
-#include <jive/graph.h>
-#include <jive/nodeclass.h>
+#include <stdio.h>
+#include <locale.h>
+#include <jive/vsdg.h>
+#include <jive/view.h>
 
-#include "testnodes.h"
+#include <jive/vsdg/node-private.h>
 
 int main()
 {
+	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
+	jive_region * region = graph->root_region;
+	
+	jive_node * n1 = jive_node_create(region,
+		0, NULL, NULL,
+		1, (const jive_type *[]){&jive_type_singleton});
+	assert(n1);
+	assert(n1->depth_from_root == 0);
+	
+	jive_node * n2 = jive_node_create(region,
+		1, (const jive_type *[]){&jive_type_singleton}, &n1->outputs[0],
+		0, NULL);
+	assert(n2);
+	assert(n2->depth_from_root == 1);
+	
+	jive_view(graph, stderr);
+	
+	jive_graph_destroy(graph);
+	jive_context_destroy(ctx);
+	return 0;
+#if 0
+//#include "testnodes.h"
 	jive_node * n1 = test_node_create(graph, 0, 0);
 	test_value * out = test_node_value(n1);
 	
@@ -63,4 +87,5 @@ int main()
 	jive_context_destroy(ctx);
 	
 	return 0;
+#endif
 }

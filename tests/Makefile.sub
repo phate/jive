@@ -2,20 +2,24 @@ TESTS=\
 	test_metacontainers\
 	test_context\
 	test_graph\
-	test_graphtraverser\
-	test_prune_replace\
-	test_bitstring1\
-	test_bitstring2\
-	test_bitstring3\
-	test_machinedef\
-	arithmetic_function
+	
+# 	test_context\
+# 	test_graph\
+# 	test_graphtraverser\
+# 	test_prune_replace\
+# 	test_bitstring1\
+# 	test_bitstring2\
+# 	test_bitstring3\
+# 	test_machinedef\
+# 	arithmetic_function
 
-include tests/regalloc/Makefile.sub
-include tests/i386/Makefile.sub
+#include tests/regalloc/Makefile.sub
+#include tests/i386/Makefile.sub
 
 TESTPROGS=$(patsubst %, tests/%, $(TESTS))
 
-$(TESTPROGS): %: %.o tests/testnodes.o tests/graph-sanity-checks.o libjive.a
+$(TESTPROGS): %: %.o libjive.a
+# tests/testnodes.o tests/graph-sanity-checks.o libjive.a
 
 check: $(TESTPROGS)
 	rm -rf check.log

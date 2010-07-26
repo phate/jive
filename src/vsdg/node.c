@@ -1,0 +1,235 @@
+#include <string.h>
+
+#include <jive/internal/compiler.h>
+
+#include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/types-private.h>
+#include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/region.h>
+#include <jive/util/list.h>
+
+const jive_node_class JIVE_NODE = {
+	.parent = 0,
+	.fini = _jive_node_fini,
+	.get_label = _jive_node_get_label,
+	.copy = _jive_node_copy,
+	.equiv = _jive_node_equiv
+};
+
+void
+_jive_node_init(
+	jive_node * self,
+	struct jive_region * region,
+	size_t noperands,
+	const struct jive_type * operand_types[const],
+	struct jive_output * operands[const],
+	size_t noutputs,
+	const struct jive_type * output_types[const])
+{
+	self->graph = region->graph;
+	self->depth_from_root = 0;
+	self->nsuccessors = 0;
+	
+	self->ninputs = 0;
+	self->inputs = 0;
+	
+	self->noutputs = 0;
+	self->outputs = 0;
+	
+	self->shape_location = 0; /* TODO: data type */
+	
+	jive_xpoint_hash_init(&self->resource_crossings);
+	
+	self->active_before_resources = 0; /* TODO: data type */
+	self->active_after_resources = 0; /* TODO: data type */
+	self->use_count_before = 0; /* TODO: data type */
+	self->use_count_after = 0; /* TODO: data type */
+	
+	JIVE_LIST_PUSHBACK(region->nodes, self, region_nodes_list);
+	self->region = region;
+	
+	JIVE_LIST_PUSHBACK(self->graph->top, self, graph_top_list);
+	JIVE_LIST_PUSHBACK(self->graph->bottom, self, graph_bottom_list);
+	
+	size_t n;
+	for(n=0; n<noperands; n++)
+		jive_node_add_input(self, operand_types[n], operands[n]);
+	self->noperands = self->ninputs;
+	
+	for(n=0; n<noutputs; n++)
+		jive_node_add_output(self, output_types[n]);
+	
+	jive_graph_notify_node_create(self->graph, self);
+}
+
+void
+_jive_node_fini(jive_node * self)
+{
+}
+
+char *
+_jive_node_get_label(const jive_node * self)
+{
+	return strdup("NODE");
+}
+	
+jive_node *
+_jive_node_copy(const jive_node * self,
+	struct jive_region * region,
+	struct jive_output * operands[])
+{
+	jive_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
+	const jive_type * operand_types[self->noperands];
+	const jive_type * output_types[self->noutputs];
+	size_t n;
+	for(n=0; n<self->noperands; n++)
+		operand_types[n] = jive_input_get_type(self->inputs[n]);
+	for(n=0; n<self->noutputs; n++)
+		output_types[n] = jive_output_get_type(self->outputs[n]);
+	
+	other->class_ = self->class_;
+	_jive_node_init(other, region,
+		self->noperands, operand_types, operands,
+		self->noutputs, output_types);
+	
+	return other;
+}
+
+bool
+_jive_node_equiv(const jive_node * self, const jive_node * other)
+{
+	return self->class_ == other->class_;
+}
+
+jive_node *
+jive_node_create(
+	struct jive_region * region,
+	size_t noperands,
+	const struct jive_type * operand_types[const],
+	struct jive_output * operands[const],
+	size_t noutputs,
+	const struct jive_type * output_types[const])
+{
+	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	node->class_ = &JIVE_NODE;
+	_jive_node_init(node, region, noperands, operand_types, operands, noutputs, output_types);
+	
+	return node;
+}
+
+static void
+_jive_node_add_input(jive_node * self, jive_input * input)
+{
+	if (!self->ninputs) JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
+	self->ninputs ++;
+	self->inputs = jive_context_realloc(self->graph->context, self->inputs, sizeof(jive_input *) * self->ninputs);
+	self->inputs[input->index] = input;
+	jive_node_invalidate_depth_from_root(self);
+	
+	if (self->graph->resources_fully_assigned) {
+		jive_resource * resource = jive_input_get_constraint(input);
+		jive_resource_merge(resource, input->origin->resource);
+		jive_resource_assign_input(resource, input);
+	}
+	/* FIXME: maybe suppress on node creation */
+	jive_graph_notify_input_create(self->graph, input);
+}
+
+jive_input *
+jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
+{
+	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	_jive_node_add_input(self, input);
+	return input;
+}
+
+static void
+_jive_node_add_output(jive_node * self, jive_output * output)
+{
+	self->noutputs ++;
+	self->outputs = jive_context_realloc(self->graph->context, self->outputs, sizeof(jive_output *) * self->noutputs);
+	self->outputs[output->index] = output;
+	
+	if (self->graph->resources_fully_assigned) {
+		jive_resource * resource = jive_output_get_constraint(output);
+		jive_resource_assign_output(resource, output);
+	}
+	/* FIXME: maybe suppress on node creation */
+	jive_graph_notify_output_create(self->graph, output);
+}
+
+jive_output *
+jive_node_add_output(jive_node * self, const jive_type * type)
+{
+	jive_output * output = jive_type_create_output(type, self, self->noutputs);
+	_jive_node_add_output(self, output);
+	return output;
+}
+
+void
+jive_node_add_successor(jive_node * self)
+{
+	if (unlikely(self->nsuccessors == 0))
+		JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
+	
+	self->nsuccessors ++;
+}
+
+void
+jive_node_remove_successor(jive_node * self)
+{
+	self->nsuccessors --;
+	if (unlikely(self->nsuccessors == 0))
+		JIVE_LIST_PUSHBACK(self->graph->bottom, self, graph_bottom_list);
+}
+
+void
+jive_node_add_used_resource(jive_node * self, jive_resource * resource)
+{
+	/* TODO */
+}
+
+void
+jive_node_remove_used_resource(jive_node * self, jive_resource * resource)
+{
+	/* TODO */
+}
+
+void
+jive_node_add_defined_resource(jive_node * self, jive_resource * resource)
+{
+	/* TODO */
+}
+
+void
+jive_node_remove_defined_resource(jive_node * self, jive_resource * resource)
+{
+	/* TODO */
+}
+
+void
+jive_node_add_crossed_resource(jive_node * self, jive_resource * resource, unsigned int count);
+
+void
+jive_node_remove_crossed_resource(jive_node * self, jive_resource * resource, unsigned int count);
+
+void
+jive_node_invalidate_depth_from_root(jive_node * self)
+{
+	size_t new_depth_from_root = 0, n;
+	for(n=0; n<self->ninputs; n++)
+		if (self->inputs[n]->origin->node->depth_from_root + 1 > new_depth_from_root)
+			 new_depth_from_root = self->inputs[n]->origin->node->depth_from_root + 1;
+	
+	if (self->depth_from_root == new_depth_from_root) return;
+	self->depth_from_root = new_depth_from_root;
+	
+	for(n=0; n<self->noutputs; n++) {
+		jive_input * user = self->outputs[n]->users.first;
+		while(user) {
+			jive_node_invalidate_depth_from_root(user->node);
+			user = user->output_users_list.next;
+		}
+	}
+}
