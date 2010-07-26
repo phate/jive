@@ -35,7 +35,7 @@ typedef void (*jive_error_f)(void * user_context, const char * msg);
 	\brief Create a compiler context
 	\return Newly created context
 */
-jive_context*
+jive_context *
 jive_context_create(void);
 
 /**
@@ -64,8 +64,30 @@ jive_set_fatal_error_handler(jive_context * ctx, jive_error_f function, void * u
 	If no memory could be allocated, the fatal error handler
 	associated with the context will be invoked.
 */
-void*
-jive_context_malloc(jive_context *ctx, size_t size);
+void *
+jive_context_malloc(jive_context * ctx, size_t size);
+
+/**
+	\brief Free memory within compiler context
+	\param ctx Compiler context
+	\param ptr Pointer to memory to be freed
+	
+	The function will free a previously allocated block of memory.
+	The pointer must be one returned by \ref jive_context_malloc
+	or \ref jive_context_realloc previously.
+*/
+void
+jive_context_free(jive_context * ctx, void * ptr);
+
+/**
+	\brief Reallocate memory within compiler context
+	\param ctx Compiler context
+	\param ptr Pointer to memory to be resized
+	\param new_size New size in bytes
+	\returns Pointer to reallocated memory area
+*/
+void *
+jive_context_realloc(jive_context * ctx, void * ptr, size_t new_size);
 
 /**
 	\brief Destroy compiler context
@@ -75,7 +97,7 @@ jive_context_malloc(jive_context *ctx, size_t size);
 	associated with the context.
 */
 void
-jive_context_destroy(jive_context *ctx);
+jive_context_destroy(jive_context * ctx);
 
 /**
 	\brief Notify context of a fatal error
@@ -86,6 +108,33 @@ jive_context_destroy(jive_context *ctx);
 	not return to the caller.
 */
 void
-jive_context_fatal_error(jive_context *ctx, const char *msg);
+jive_context_fatal_error(jive_context * ctx, const char * msg);
+
+/* string helpers, maybe move somewhere else */
+/**
+	\brief Concatenate strings
+	\param context Compiler context
+	\returns Dynamically allocated string
+	
+	All subsequent parameters must be of type "char *", terminated by NULL.
+	Dynamically allocates memory and concatenates the given strings.
+	The memory is associated with the compiler context and freed
+	automatically when the compiler context is destroyed.
+*/
+char *
+jive_context_strjoin(jive_context * context, ...);
+
+/**
+	\brief Duplicate string
+	\param context Compiler context
+	\param str String to copy
+	\returns Dynamically allocated string
+	
+	Dynamically allocates memory and copies the given string.
+	The memory is associated with the compiler context and freed
+	automatically when the compiler context is destroyed.
+*/
+char *
+jive_context_strdup(jive_context * context, const char * str);
 
 #endif

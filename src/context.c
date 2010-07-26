@@ -1,25 +1,21 @@
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <jive/context.h>
+#include <jive/debug-private.h>
+#include <jive/util/list.h>
 
 #include "compiler.h"
-#include "debug.h"
 
-/**
-	\internal
-	\brief Memory area used by allocator
-*/
-typedef struct allocator_area {
-	/** pointer to base of area */
-	void *base;
-	/** total size of area */
-	int size;
-	/** number of bytes already used */
-	int used;
-	/** link to older memory area */
-	struct allocator_area *next;
-} allocator_area;
+typedef struct jive_context_block jive_context_block;
+
+struct jive_context_block {
+	struct {
+		jive_context_block * prev;
+		jive_context_block * next;
+	} context_block_list;
+};
 
 /**
 	\internal
@@ -27,57 +23,28 @@ typedef struct allocator_area {
 */
 struct jive_context {
 	/** area from which allocations are served currently */
-	allocator_area *area;
+	struct {
+		jive_context_block * first;
+		jive_context_block * last;
+	} blocks;
 	
 	/** error handling */
 	struct {
 		jive_error_f function;
-		void *user_context;
+		void * user_context;
 	} error;
 };
 
-static allocator_area *allocator_area_create(int size)
-{
-	allocator_area *area;
-	
-	area=(allocator_area *)malloc(sizeof(*area));
-	if (!area) return 0;
-	
-	area->base=malloc(size);
-	if (!area->base) {
-		free(area);
-		return 0;
-	}
-	area->size=size;
-	area->used=0;
-	area->next=0;
-#ifdef DEBUG
-	/* poison memory area, to trap implicit assumptions
-	of zero initialized memory */
-	memset(area->base, -1, area->size);
-#endif
-	
-	return area;
-}
-
-static void allocator_area_destroy(allocator_area *area)
-{
-	free(area->base);
-	free(area);
-}
-
-jive_context *jive_context_create(void)
+jive_context *
+jive_context_create(void)
 {
 	jive_context * ctx;
 	
-	ctx=(jive_context *)malloc(sizeof(*ctx));
+	ctx = (jive_context *)malloc(sizeof(*ctx));
 	if (!ctx) return 0;
 	
-	ctx->area=allocator_area_create(4096-16);
-	if (!ctx->area) {
-		free(ctx);
-		return 0;
-	}
+	ctx->blocks.first = ctx->blocks.last = 0;
+	
 	ctx->error.function=0;
 	ctx->error.user_context=0;
 	
@@ -91,54 +58,67 @@ jive_set_fatal_error_handler(jive_context * ctx, jive_error_f function, void * u
 	ctx->error.user_context=user_context;
 }
 
-void*
-jive_context_malloc(jive_context *ctx, size_t size)
+void *
+jive_context_malloc(jive_context * ctx, size_t size)
 {
-	/* align memory returned */
-	size_t reserve=(size+(sizeof(long)-1))&~(sizeof(long)-1);
+	jive_context_block * block;
 	
-	if (unlikely(ctx->area->size - ctx->area->used < reserve)) {
-		size_t newsize=(reserve+4095)&~4095;
-		
-		/* reserve at least twice the amount of memory as
-		last time, to gradually reduce allocation overhead */
-		if (newsize<2*ctx->area->size)
-			newsize=2*ctx->area->size;
-		
-		allocator_area *area=allocator_area_create(newsize);
-		if (!area) {
-			jive_context_fatal_error(ctx, "Failed to allocate memory");
-			/* never reached, but silence compiler */
-			return 0;
-		}
-		area->next=ctx->area;
-		ctx->area=area;
+	block = malloc(sizeof(*block) + size);
+	
+	if ( unlikely(!block) ) {
+		jive_context_fatal_error(ctx, "Failed to allocate memory");
+		/* never reached, but silences compiler */
+		return 0;
 	}
 	
-	void *tmp=((char *)ctx->area->base) + ctx->area->used;
-	ctx->area->used+=reserve;
+	JIVE_LIST_PUSHBACK(ctx->blocks, block, context_block_list);
 	
-	/* verify that newly allocated memory still contains
-	poison value */
-	DEBUG_ASSERT(*(char*)tmp == -1);
-	
-	return tmp;
+	return block + 1;
 }
 
 void
-jive_context_destroy(jive_context *ctx)
+jive_context_free(jive_context * ctx, void * ptr)
 {
-	while(ctx->area) {
-		allocator_area *next=ctx->area->next;
-		allocator_area_destroy(ctx->area);
-		ctx->area=next;
+	if ( unlikely(ptr == 0) ) return;
+	jive_context_block * block = ((jive_context_block *) ptr) - 1;
+	JIVE_LIST_REMOVE(ctx->blocks, block, context_block_list);
+	free(block);
+}
+
+void *
+jive_context_realloc(jive_context * ctx, void * ptr, size_t new_size)
+{
+	jive_context_block * orig_block = 0;
+	if ( likely(ptr != 0) ) {
+		orig_block = ((jive_context_block *) ptr) - 1;
+		JIVE_LIST_REMOVE(ctx->blocks, orig_block, context_block_list);
+	}
+	jive_context_block * new_block = realloc(orig_block, sizeof(*new_block) + new_size);
+	if ( unlikely(!new_block) ) {
+		if (orig_block) JIVE_LIST_PUSHBACK(ctx->blocks, orig_block, context_block_list);
+		jive_context_fatal_error(ctx, "Failed to allocate memory");
+		/* never reached, but silences compiler */
+		return 0;
+	}
+	JIVE_LIST_PUSHBACK(ctx->blocks, new_block, context_block_list);
+	
+	return new_block + 1;
+}
+
+void
+jive_context_destroy(jive_context * ctx)
+{
+	while(ctx->blocks.first) {
+		jive_context_block * block = ctx->blocks.first;
+		JIVE_LIST_REMOVE(ctx->blocks, block, context_block_list);
+		free(block);
 	}
 	
 	free(ctx);
 }
 
 void
-jive_context_fatal_error(jive_context *ctx, const char *msg)
+jive_context_fatal_error(jive_context * ctx, const char * msg)
 {
 	if (!ctx->error.function) {
 		fprintf(stderr, "%s\n", msg);
@@ -147,4 +127,49 @@ jive_context_fatal_error(jive_context *ctx, const char *msg)
 		ctx->error.function(ctx->error.user_context, msg);
 		abort();
 	}
+}
+
+/* string helpers, don't really belong here */
+
+static char *
+jive_strcat_helper(jive_context * ctx, char * str, const char * static_append)
+{
+	size_t len = 0;
+	if (str) len = strlen(str);
+	size_t append_len = 0;
+	if (static_append) append_len = strlen(static_append);
+	size_t total = len + append_len;
+	
+	str = jive_context_realloc(ctx, str, total + 1);
+	memcpy(str + len, static_append, append_len + 1);
+	
+	return str;
+}
+
+char *
+jive_context_strjoin(jive_context * context, ...)
+{
+	va_list args;
+	
+	char * result = 0, *s;
+	
+	va_start(args, context);
+	
+	s = va_arg(args, char *);
+	while(s) {
+		result = jive_strcat_helper(context, result, s);
+		s = va_arg(args, char *);
+	}
+	va_end(args);
+	
+	return result;
+}
+
+char *
+jive_context_strdup(jive_context * context, const char * str)
+{
+	size_t len = strlen(str);
+	char * s = jive_context_malloc(context, len + 1);
+	memcpy(s, str, len+1);
+	return s;
 }
