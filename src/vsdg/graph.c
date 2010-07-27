@@ -1,5 +1,6 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-private.h>
+#include <jive/vsdg/traverser-private.h>
 
 static inline void
 _jive_graph_init(jive_graph * self, jive_context * context)
@@ -12,6 +13,9 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	_jive_region_init(self->root_region, self, 0);
+	
+	self->ntraverser_slots = 0;
+	self->traverser_slots = 0;
 }
 
 static void
@@ -34,6 +38,15 @@ jive_graph_destroy(jive_graph * self)
 {
 	_jive_graph_fini(self);
 	jive_context_free(self->context, self);
+}
+
+bool
+jive_graph_has_active_traversers(const jive_graph * self)
+{
+	size_t n;
+	for(n=0; n<self->ntraverser_slots; n++)
+		if (self->traverser_slots[n].traverser) return true;
+	return false;
 }
 
 void

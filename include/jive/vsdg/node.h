@@ -14,6 +14,7 @@ struct jive_input;
 struct jive_type;
 struct jive_output;
 struct jive_region;
+struct jive_traverser_nodestate;
 
 struct jive_node {
 	const struct jive_node_class * class_;
@@ -53,6 +54,9 @@ struct jive_node {
 		jive_node * prev;
 		jive_node * next;
 	} graph_bottom_list;
+	
+	size_t ntraverser_slots;
+	struct jive_traverser_nodestate ** traverser_slots;
 };
 
 typedef enum jive_node_type_flags {

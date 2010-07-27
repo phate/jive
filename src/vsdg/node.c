@@ -60,6 +60,9 @@ _jive_node_init(
 	for(n=0; n<noutputs; n++)
 		jive_node_add_output(self, output_types[n]);
 	
+	self->ntraverser_slots = 0;
+	self->traverser_slots = 0;
+	
 	jive_graph_notify_node_create(self->graph, self);
 }
 

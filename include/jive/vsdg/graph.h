@@ -12,6 +12,7 @@ struct jive_resource;
 struct jive_node;
 struct jive_region;
 struct jive_gate;
+struct jive_traverser_graphstate;
 
 struct jive_graph {
 	jive_context * context;
@@ -38,6 +39,9 @@ struct jive_graph {
 	} resources;
 	
 	bool resources_fully_assigned;
+	
+	size_t ntraverser_slots;
+	struct jive_traverser_graphstate * traverser_slots;
 };
 
 jive_graph *
@@ -45,5 +49,8 @@ jive_graph_create(jive_context * context);
 
 void
 jive_graph_destroy(jive_graph * self);
+
+bool
+jive_graph_has_active_traversers(const jive_graph * self);
 
 #endif

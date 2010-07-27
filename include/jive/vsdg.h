@@ -5,5 +5,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/traverser.h>
 
 #endif
