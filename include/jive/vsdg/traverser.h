@@ -24,6 +24,11 @@ struct jive_traverser {
 		struct jive_traverser_nodestate * last;
 	} visited_nodes;
 	
+	struct jive_notifier
+		* node_create,
+		* node_destroy,
+		* input_change;
+	
 	size_t index, cookie;
 };
 

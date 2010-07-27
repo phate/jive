@@ -27,6 +27,10 @@ _jive_traverser_fini(jive_traverser * self)
 	/* TODO: reset cookies iff == 0 ? or don't use this slot? */
 	DEBUG_ASSERT(self->graph->traverser_slots[self->index].cookie);
 	self->graph->traverser_slots[self->index].traverser = 0;
+	
+	if (self->node_create) jive_notifier_disconnect(self->node_create);
+	if (self->node_destroy) jive_notifier_disconnect(self->node_destroy);
+	if (self->input_change) jive_notifier_disconnect(self->input_change);
 }
 
 void
@@ -35,6 +39,10 @@ _jive_traverser_init(jive_traverser * self, jive_graph * graph)
 	self->graph = graph;
 	self->next_nodes.first = self->next_nodes.last = 0;
 	self->visited_nodes.first = self->visited_nodes.last = 0;
+	
+	self->node_create = 0;
+	self->node_destroy = 0;
+	self->input_change = 0;
 	
 	size_t n;
 	for(n = 0; n < graph->ntraverser_slots; n++) {
@@ -130,6 +138,40 @@ jive_traverser_mark_node_visited(jive_traverser * self, jive_node * node)
 	JIVE_LIST_PUSHBACK(self->visited_nodes, nodestate, traverser_node_list);
 }
 
+/* topdown traversal */
+
+static inline bool
+predecessors_visited(jive_traverser * self, jive_node * node)
+{
+	size_t n;
+	for(n=0; n<node->ninputs; n++)
+		if (!jive_traverser_node_is_visited(self, node->inputs[n]->origin->node)) return false;
+	return true;
+}
+
+static inline void
+_jive_topdown_traverser_check_node(jive_traverser * self, jive_node * node)
+{
+	if (!jive_traverser_node_is_unvisited(self, node)) return;
+	if (predecessors_visited(self, node))
+		jive_traverser_mark_node_candidate(self, node);
+}
+
+static void
+_jive_topdown_traverser_node_create(void * closure, jive_node * node)
+{
+	jive_traverser * self = closure;
+	if (predecessors_visited(self, node))
+		jive_traverser_mark_node_visited(self, node);
+}
+
+static void
+_jive_topdown_traverser_node_destroy(void * closure, jive_node * node)
+{
+	jive_traverser * self = closure;
+	jive_traverser_mark_node_unvisited(self, node);
+}
+
 static inline void
 _jive_topdown_traverser_init(jive_traverser * self, jive_graph * graph)
 {
@@ -138,16 +180,9 @@ _jive_topdown_traverser_init(jive_traverser * self, jive_graph * graph)
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph->top, node, graph_top_list)
 		jive_traverser_mark_node_candidate(self, node);
-}
-
-static inline void
-_jive_topdown_traverser_check_node(jive_traverser * self, jive_node * node)
-{
-	if (!jive_traverser_node_is_unvisited(self, node)) return;
-	size_t n;
-	for(n=0; n<node->ninputs; n++)
-		if (jive_traverser_node_is_unvisited(self, node->inputs[n]->origin->node)) return;
-	jive_traverser_mark_node_candidate(self, node);
+	
+	self->node_create = jive_node_notifier_slot_connect(&graph->on_node_create, _jive_topdown_traverser_node_create, self);
+	self->node_destroy = jive_node_notifier_slot_connect(&graph->on_node_destroy, _jive_topdown_traverser_node_destroy, self);
 }
 
 static jive_node *
