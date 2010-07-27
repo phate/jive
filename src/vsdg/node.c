@@ -46,9 +46,6 @@ _jive_node_init(
 	self->use_count_before = 0; /* TODO: data type */
 	self->use_count_after = 0; /* TODO: data type */
 	
-	JIVE_LIST_PUSHBACK(region->nodes, self, region_nodes_list);
-	self->region = region;
-	
 	JIVE_LIST_PUSHBACK(self->graph->top, self, graph_top_list);
 	JIVE_LIST_PUSHBACK(self->graph->bottom, self, graph_bottom_list);
 	
@@ -63,12 +60,30 @@ _jive_node_init(
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
 	
+	JIVE_LIST_PUSHBACK(region->nodes, self, region_nodes_list);
+	self->region = region;
+	
 	jive_graph_notify_node_create(self->graph, self);
 }
 
 void
 _jive_node_fini(jive_node * self)
 {
+	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
+	self->region = 0;
+	
+	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
+	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
+	
+	while(self->ninputs) jive_input_destroy(self->inputs[self->ninputs - 1]);
+	JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
+	
+	if (self->traverser_slots) {
+		size_t n;
+		for(n=0; n<self->ntraverser_slots; n++)
+			jive_context_free(self->graph->context, self->traverser_slots[n]);
+		jive_context_free(self->graph->context, self->traverser_slots);
+	}
 }
 
 char *
@@ -135,8 +150,7 @@ _jive_node_add_input(jive_node * self, jive_input * input)
 		jive_resource_merge(resource, input->origin->resource);
 		jive_resource_assign_input(resource, input);
 	}
-	/* FIXME: maybe suppress on node creation */
-	jive_graph_notify_input_create(self->graph, input);
+	if (self->region) jive_graph_notify_input_create(self->graph, input);
 }
 
 jive_input *
@@ -158,8 +172,7 @@ _jive_node_add_output(jive_node * self, jive_output * output)
 		jive_resource * resource = jive_output_get_constraint(output);
 		jive_resource_assign_output(resource, output);
 	}
-	/* FIXME: maybe suppress on node creation */
-	jive_graph_notify_output_create(self->graph, output);
+	if (self->region) jive_graph_notify_output_create(self->graph, output);
 }
 
 jive_output *
@@ -235,4 +248,12 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 			user = user->output_users_list.next;
 		}
 	}
+}
+
+void
+jive_node_destroy(jive_node * self)
+{
+	jive_graph_notify_node_destroy(self->graph, self);
+	self->class_->fini(self);
+	jive_context_free(self->graph->context, self);
 }

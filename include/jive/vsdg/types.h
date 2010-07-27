@@ -199,6 +199,9 @@ jive_input_get_constraint(const jive_input * self)
 	return self->class_->get_constraint(self);
 }
 
+void
+jive_input_destroy(jive_input * self);
+
 /**	@}	*/
 
 /**
@@ -279,6 +282,9 @@ jive_output_get_constraint(const jive_output * self)
 
 void
 jive_output_replace(jive_output * self, jive_output * other);
+
+void
+jive_output_destroy(jive_output * self);
 
 /**	@}	*/
 

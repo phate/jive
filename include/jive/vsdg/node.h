@@ -129,4 +129,7 @@ jive_node_add_input(jive_node * self, const struct jive_type * type, struct jive
 struct jive_output *
 jive_node_add_output(jive_node * self, const struct jive_type * type);
 
+void
+jive_node_destroy(jive_node * self);
+
 #endif

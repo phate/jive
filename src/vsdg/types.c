@@ -121,13 +121,23 @@ _jive_input_init(jive_input * self, struct jive_node * node, size_t index, jive_
 void
 _jive_input_fini(jive_input * self)
 {
+	if (self->resource) jive_resource_unassign_input(self->resource, self);
+	
 	if (self->gate) {
 		jive_gate_remove_input(self->gate, self);
 		/* TODO: undo gate interference */
 	}
-	if (self->resource) jive_resource_unassign_input(self->resource, self);
 	
 	jive_input_remove_as_user(self, self->origin);
+	
+	size_t n;
+	self->node->ninputs --;
+	for(n = self->index; n<self->node->ninputs; n++) {
+		self->node->inputs[n] = self->node->inputs[n+1];
+		self->node->inputs[n]->index = n;
+	}
+	if (!self->node->ninputs)
+		JIVE_LIST_PUSHBACK(self->node->graph->top, self->node, graph_top_list);
 }
 
 char *
@@ -215,6 +225,15 @@ jive_input_unregister_resource_crossings(jive_input * self)
 	/* TODO */
 }
 
+void
+jive_input_destroy(jive_input * self)
+{
+	if (self->node->region) jive_graph_notify_input_destroy(self->node->graph, self);
+	
+	self->class_->fini(self);
+	jive_context_free(self->node->graph->context, self);
+}
+
 /* outputs */
 
 const struct jive_output_class JIVE_OUTPUT = {
@@ -244,8 +263,19 @@ void _jive_output_fini(jive_output * self)
 {
 	DEBUG_ASSERT(self->users.first == 0 && self->users.last == 0);
 	
-	if (self->gate) jive_gate_remove_output(self->gate, self);
 	if (self->resource) jive_resource_unassign_output(self->resource, self);
+		
+	if (self->gate) {
+		jive_gate_remove_output(self->gate, self);
+		/* TODO: remove gate interference */
+	}
+	
+	self->node->noutputs --;
+	size_t n;
+	for(n=self->index; n<self->node->noutputs; n++) {
+		self->node->outputs[n] = self->node->outputs[n+1];
+		self->node->outputs[n]->index = n;
+	}
 }
 
 char *
@@ -266,6 +296,15 @@ jive_resource *
 _jive_output_get_constraint(const jive_output * self)
 {
 	return 0; /* TODO */
+}
+
+void
+jive_output_destroy(jive_output * self)
+{
+	if (self->node->region) jive_graph_notify_output_destroy(self->node->graph, self);
+	
+	self->class_->fini(self);
+	jive_context_free(self->node->graph->context, self);
 }
 
 /* gates */
