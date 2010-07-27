@@ -168,6 +168,9 @@ _jive_topdown_traverser_node_create(void * closure, jive_node * node)
 static void
 _jive_topdown_traverser_node_destroy(void * closure, jive_node * node)
 {
+	/* Only "bottom" nodes can be destroyed, therefore it is
+	sufficient to simply remove this node from this traversers 
+	records since it cannot influence the state of any other node. */
 	jive_traverser * self = closure;
 	jive_traverser_mark_node_unvisited(self, node);
 }
