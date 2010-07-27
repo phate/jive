@@ -220,14 +220,15 @@ jive_topdown_traverser_create(jive_graph * graph)
 	return traverser;
 }
 
-static inline void
-_jive_bottomup_traverser_init(jive_traverser * self, jive_graph * graph)
+/* bottom-up traversal */
+
+static void
+_jive_bottomup_traverser_node_create(void * closure, jive_node * node)
 {
-	_jive_traverser_init(self, graph);
-	
-	jive_node * node;
-	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list)
-		jive_traverser_mark_node_candidate(self, node);
+	/* all newly created nodes are at the bottom of the graph,
+	therefore we can simply treat them as "visited" */
+	jive_traverser * self = closure;
+	jive_traverser_mark_node_visited(self, node);
 }
 
 static inline void
@@ -242,6 +243,39 @@ _jive_bottomup_traverser_check_node(jive_traverser * self, jive_node * node)
 		}
 	}
 	jive_traverser_mark_node_candidate(self, node);
+}
+
+static void
+_jive_bottomup_traverser_node_destroy(void * closure, jive_node * node)
+{
+	jive_traverser * self = closure;
+	/* This node is about to be removed; if it was visited already,
+	there is nothing to do, all predecessors are already being tracked.
+	If we are however removing a node that has not been visited yet,
+	the predecessors may become traversable now. */
+	if (!jive_traverser_node_is_visited(self, node)) {
+		jive_traverser_mark_node_visited(self, node);
+		size_t n;
+		for(n=0; n<node->ninputs; n++) {
+			_jive_bottomup_traverser_check_node(self, node->inputs[n]->origin->node);
+		}
+	}
+	
+	/* Now purge this node from our records. */
+	jive_traverser_mark_node_unvisited(self, node);
+}
+
+static inline void
+_jive_bottomup_traverser_init(jive_traverser * self, jive_graph * graph)
+{
+	_jive_traverser_init(self, graph);
+	
+	jive_node * node;
+	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list)
+		jive_traverser_mark_node_candidate(self, node);
+	
+	self->node_create = jive_node_notifier_slot_connect(&graph->on_node_create, _jive_bottomup_traverser_node_create, self);
+	self->node_destroy = jive_node_notifier_slot_connect(&graph->on_node_destroy, _jive_bottomup_traverser_node_destroy, self);
 }
 
 static jive_node *
