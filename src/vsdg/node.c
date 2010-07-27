@@ -37,6 +37,8 @@ _jive_node_init(
 	self->noutputs = 0;
 	self->outputs = 0;
 	
+	self->reserved = 0;
+	
 	self->shape_location = 0; /* TODO: data type */
 	
 	jive_xpoint_hash_init(&self->resource_crossings);

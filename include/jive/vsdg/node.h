@@ -28,6 +28,7 @@ struct jive_node {
 	size_t ninputs;
 	size_t noperands;
 	size_t noutputs;
+	size_t reserved;
 	
 	struct jive_input ** inputs;
 	struct jive_output ** outputs;
@@ -121,6 +122,18 @@ static inline bool
 jive_node_equiv(const jive_node * self, const jive_node * other)
 {
 	return self->class_->equiv(self, other);
+}
+
+static inline void
+jive_node_reserve(jive_node * self)
+{
+	self->reserved ++;
+}
+
+static inline void
+jive_node_unreserve(jive_node * self)
+{
+	self->reserved ++;
 }
 
 struct jive_input *

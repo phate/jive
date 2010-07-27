@@ -16,12 +16,19 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
+	
+	jive_node_notifier_slot_init(&self->on_node_create, context);
+	jive_node_notifier_slot_init(&self->on_node_destroy, context);
+	jive_node_notifier_slot_init(&self->on_node_shape, context);
 }
 
 static void
 _jive_graph_fini(jive_graph * self)
 {
 	/* TODO: destroy all regions, nodes, resources etc. */
+	jive_node_notifier_slot_fini(&self->on_node_create);
+	jive_node_notifier_slot_fini(&self->on_node_destroy);
+	jive_node_notifier_slot_fini(&self->on_node_shape);
 }
 
 jive_graph *
@@ -50,13 +57,21 @@ jive_graph_has_active_traversers(const jive_graph * self)
 }
 
 void
-jive_graph_notify_input_change(jive_graph * graph, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+jive_graph_prune(jive_graph * self)
 {
-	/* TODO */
+	jive_node * node;
+	node = self->bottom.first;
+	while(node) {
+		jive_node * next = node->graph_bottom_list.next;
+		
+		if (!node->reserved) jive_node_destroy(node);
+		
+		node = next;
+	}
 }
 
 void
-jive_graph_notify_node_create(jive_graph * graph, jive_node * node)
+jive_graph_notify_input_change(jive_graph * graph, jive_input * input, jive_output * old_origin, jive_output * new_origin)
 {
 	/* TODO */
 }
@@ -68,7 +83,19 @@ jive_graph_notify_input_create(jive_graph * graph, jive_input * input)
 }
 
 void
+jive_graph_notify_input_destroy(jive_graph * graph, jive_input * input)
+{
+	/* TODO */
+}
+
+void
 jive_graph_notify_output_create(jive_graph * graph, jive_output * output)
+{
+	/* TODO */
+}
+
+void
+jive_graph_notify_output_destroy(jive_graph * graph, jive_output * output)
 {
 	/* TODO */
 }
