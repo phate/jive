@@ -80,6 +80,9 @@ _jive_node_fini(jive_node * self)
 	while(self->ninputs) jive_input_destroy(self->inputs[self->ninputs - 1]);
 	JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
 	
+	jive_context_free(self->graph->context, self->inputs);
+	jive_context_free(self->graph->context, self->outputs);
+	
 	if (self->traverser_slots) {
 		size_t n;
 		for(n=0; n<self->ntraverser_slots; n++)
