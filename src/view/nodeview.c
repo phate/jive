@@ -175,10 +175,10 @@ jive_nodeview_fini(jive_nodeview * self)
 	size_t n;
 	for(n=0; n<self->node->ninputs; n++)
 		jive_inputview_destroy(self->inputs[n]);
-	jive_context_free(context, self->node->inputs);
+	jive_context_free(context, self->inputs);
 	for(n=0; n<self->node->noutputs; n++)
 		jive_outputview_destroy(self->outputs[n]);
-	jive_context_free(context, self->node->outputs);
+	jive_context_free(context, self->outputs);
 	jive_context_free(context, self->node_label);
 }
 
