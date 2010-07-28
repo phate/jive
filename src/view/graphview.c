@@ -57,6 +57,9 @@ jive_graphview_init(jive_graphview * self, jive_graph * graph)
 static void
 jive_graphview_fini(jive_graphview * self)
 {
+	jive_textcanvas_fini(&self->canvas);
+	jive_context_free(self->graph->context, self->rows);
+	jive_regionview_destroy(self->root_region);
 	jive_nodeview_map_fini(&self->nodemap);
 	jive_inputview_map_fini(&self->inputmap);
 	jive_outputview_map_fini(&self->outputmap);
