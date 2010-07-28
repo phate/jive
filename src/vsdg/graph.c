@@ -1,6 +1,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-private.h>
 #include <jive/vsdg/traverser-private.h>
+#include <jive/util/list.h>
 
 static inline void
 _jive_graph_init(jive_graph * self, jive_context * context)
@@ -23,8 +24,28 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 }
 
 static void
+prune_regions_recursive(jive_region * region)
+{
+	jive_region * subregion;
+	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
+		prune_regions_recursive(subregion);
+	if (jive_region_empty(region)) jive_region_destroy(region);
+}
+
+static void
 _jive_graph_fini(jive_graph * self)
 {
+	while(self->bottom.first) {
+		jive_graph_prune(self);
+		jive_node * node;
+		JIVE_LIST_ITERATE(self->bottom, node, graph_bottom_list)
+			node->reserved = 0;
+	}
+	
+	jive_context_free(self->context, self->traverser_slots);
+	
+	prune_regions_recursive(self->root_region);
+	
 	/* TODO: destroy all regions, nodes, resources etc. */
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);
