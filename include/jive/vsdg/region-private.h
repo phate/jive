@@ -10,4 +10,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent);
 void
 _jive_region_fini(jive_region * self);
 
+void
+_jive_region_prune_subregions(jive_region * self);
+
 #endif

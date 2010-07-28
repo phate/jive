@@ -30,4 +30,13 @@ struct jive_region {
 	struct jive_node * anchor_node;
 };
 
+void
+jive_region_destroy(jive_region * self);
+
+static inline bool
+jive_region_empty(const jive_region * self)
+{
+	return self->nodes.first == 0 && self->subregions.first == 0;
+}
+
 #endif
