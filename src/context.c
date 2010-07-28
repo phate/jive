@@ -129,6 +129,12 @@ jive_context_fatal_error(jive_context * ctx, const char * msg)
 	}
 }
 
+bool
+jive_context_is_empty(jive_context * context)
+{
+	return context->blocks.first == 0;
+}
+
 /* string helpers, don't really belong here */
 
 static char *

@@ -3,6 +3,7 @@
 
 /* size_t */
 #include <unistd.h>
+#include <stdbool.h>
 
 /**
 	\file context.h
@@ -109,6 +110,18 @@ jive_context_destroy(jive_context * ctx);
 */
 void
 jive_context_fatal_error(jive_context * ctx, const char * msg);
+
+/**
+	\brief Duplicate string
+	\param context Compiler context
+	\returns Whether any memory has been allocated to the context
+	
+	Determine whether memory has been allocated in this context.
+	Useful mostly for debugging purposes, to be sure that
+	the various helpers properly clean up after themselves.
+*/
+bool
+jive_context_is_empty(jive_context * context);
 
 /* string helpers, maybe move somewhere else */
 /**

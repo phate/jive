@@ -114,6 +114,7 @@ int main()
 	test_set(context);
 	test_multiset(context);
 	test_map(context);
+	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);
 	return 0;
 }

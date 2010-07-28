@@ -169,6 +169,7 @@ int main()
 	assert(!jive_graph_has_active_traversers(graph));
 	
 	jive_graph_destroy(graph);
+	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);
 	return 0;
 }

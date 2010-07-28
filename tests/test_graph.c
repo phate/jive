@@ -26,8 +26,8 @@ int main()
 	assert(n2);
 	assert(n2->depth_from_root == 1);
 	
-	
 	jive_graph_destroy(graph);
+	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);
 	return 0;
 }
