@@ -3,7 +3,7 @@
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/types.h>
+#include <jive/vsdg/basetype.h>
 
 void
 jive_graph_notify_input_change(jive_graph * graph, jive_input * input, jive_output * old_origin, jive_output * new_origin);

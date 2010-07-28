@@ -1,7 +1,7 @@
-#ifndef JIVE_VSDG_TYPES_PRIVATE_H
-#define JIVE_VSDG_TYPES_PRIVATE_H
+#ifndef JIVE_VSDG_BASETYPE_PRIVATE_H
+#define JIVE_VSDG_BASETYPE_PRIVATE_H
 
-#include <jive/vsdg/types.h>
+#include <jive/vsdg/basetype.h>
 
 /* inheritable type member functions */
 

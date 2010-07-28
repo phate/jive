@@ -1,7 +1,7 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/traverser-private.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/types.h>
+#include <jive/vsdg/basetype.h>
 
 #include <jive/debug-private.h>
 #include <jive/util/list.h>

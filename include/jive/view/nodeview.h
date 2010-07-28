@@ -2,7 +2,7 @@
 #define JIVE_VIEW_NODEVIEW_H
 
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/types.h>
+#include <jive/vsdg/basetype.h>
 #include <jive/util/textcanvas.h>
 
 typedef struct jive_inputview jive_inputview;

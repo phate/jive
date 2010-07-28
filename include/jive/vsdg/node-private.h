@@ -2,7 +2,7 @@
 #define JIVE_VSDG_NODE_PRIVATE_H
 
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/types.h>
+#include <jive/vsdg/basetype.h>
 
 /* inheritable node member functions */
 

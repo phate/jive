@@ -4,7 +4,7 @@
 
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/types-private.h>
+#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/util/list.h>
