@@ -55,6 +55,7 @@ _jive_traverser_init(jive_traverser * self, jive_graph * graph)
 	}
 	
 	n = graph->ntraverser_slots;
+	self->index = n;
 	
 	graph->traverser_slots = jive_context_realloc(graph->context,
 		graph->traverser_slots, sizeof(graph->traverser_slots[0]) * (n+1));
