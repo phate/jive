@@ -5,6 +5,7 @@ typedef struct jive_cpureg jive_cpureg;
 typedef struct jive_regcls jive_regcls;
 
 struct jive_cpureg {
+	const jive_regcls * regcls;
 	const char name[32];
 };
 
