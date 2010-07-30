@@ -34,7 +34,7 @@ _jive_type_create_output(const jive_type * self, struct jive_node * node, size_t
 jive_resource *
 _jive_type_create_resource(const jive_type * self, struct jive_graph * graph)
 {
-	jive_resource * resource = jive_context_malloc(graph->context, sizeof(resource));
+	jive_resource * resource = jive_context_malloc(graph->context, sizeof(*resource));
 	resource->class_ = &JIVE_RESOURCE;
 	_jive_resource_init(resource);
 	return resource;
