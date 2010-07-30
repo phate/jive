@@ -39,7 +39,10 @@ _jive_node_init(
 	
 	self->reserved = 0;
 	
-	self->shape_location = 0; /* TODO: data type */
+	/* set region to zero for now to inhibit notification about
+	created inputs/outputs while constructing the node */
+	self->region = 0;
+	self->shape_location = 0; 
 	
 	jive_xpoint_hash_init(&self->resource_crossings);
 	
