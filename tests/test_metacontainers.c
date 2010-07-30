@@ -2,6 +2,38 @@
 #include <assert.h>
 #include <stdio.h>
 #include <jive/internal/metacontainers.h>
+#include <jive/util/list.h>
+
+void test_list(void)
+{
+	struct my_struct {
+		struct {
+			struct my_struct * prev, * next;
+		} anchor;
+	};
+	struct my_struct_list {
+		struct my_struct * first, * last;
+	};
+	
+	struct my_struct_list list_head = {0,0};
+	struct my_struct e1, e2, e3, e4, e5;
+	
+	static struct my_struct * volatile e3_ptr;
+	e3_ptr = &e3;
+	
+	JIVE_LIST_PUSH_FRONT(list_head, &e2, anchor);
+	JIVE_LIST_PUSH_FRONT(list_head, &e1, anchor);
+	JIVE_LIST_PUSH_BACK(list_head, &e4, anchor);
+	JIVE_LIST_INSERT(list_head, e3_ptr, &e4, anchor);
+	JIVE_LIST_INSERT(list_head, (struct my_struct *)0, &e5, anchor);
+	JIVE_LIST_REMOVE(list_head, &e3, anchor);
+	
+	assert(list_head.first == &e1 && list_head.last == &e5);
+	assert(e1.anchor.prev == 0 && e1.anchor.next == &e2);
+	assert(e2.anchor.prev == &e1 && e2.anchor.next == &e4);
+	assert(e4.anchor.prev == &e2 && e4.anchor.next == &e5);
+	assert(e5.anchor.prev == &e4 && e5.anchor.next == 0);
+}
 
 typedef struct int_set int_set;
 DEFINE_SET_TYPE(int_set, int);

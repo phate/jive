@@ -48,8 +48,8 @@ _jive_node_init(
 	self->use_count_before = 0; /* TODO: data type */
 	self->use_count_after = 0; /* TODO: data type */
 	
-	JIVE_LIST_PUSHBACK(self->graph->top, self, graph_top_list);
-	JIVE_LIST_PUSHBACK(self->graph->bottom, self, graph_bottom_list);
+	JIVE_LIST_PUSH_BACK(self->graph->top, self, graph_top_list);
+	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 	
 	size_t n;
 	for(n=0; n<noperands; n++)
@@ -62,7 +62,7 @@ _jive_node_init(
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
 	
-	JIVE_LIST_PUSHBACK(region->nodes, self, region_nodes_list);
+	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
 	
 	jive_graph_notify_node_create(self->graph, self);
@@ -202,7 +202,7 @@ jive_node_remove_successor(jive_node * self)
 {
 	self->nsuccessors --;
 	if (unlikely(self->nsuccessors == 0))
-		JIVE_LIST_PUSHBACK(self->graph->bottom, self, graph_bottom_list);
+		JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 }
 
 void

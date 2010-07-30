@@ -126,7 +126,7 @@ jive_traverser_mark_node_candidate(jive_traverser * self, jive_node * node)
 	jive_traverser_nodestate * nodestate = jive_traverser_get_nodestate(self, node);
 	jive_traverser_nodestate_unlink(self, nodestate);
 	nodestate->cookie = self->cookie;
-	JIVE_LIST_PUSHBACK(self->next_nodes, nodestate, traverser_node_list);
+	JIVE_LIST_PUSH_BACK(self->next_nodes, nodestate, traverser_node_list);
 }
 
 static inline void
@@ -135,7 +135,7 @@ jive_traverser_mark_node_visited(jive_traverser * self, jive_node * node)
 	jive_traverser_nodestate * nodestate = jive_traverser_get_nodestate(self, node);
 	jive_traverser_nodestate_unlink(self, nodestate);
 	nodestate->cookie = self->cookie + 1;
-	JIVE_LIST_PUSHBACK(self->visited_nodes, nodestate, traverser_node_list);
+	JIVE_LIST_PUSH_BACK(self->visited_nodes, nodestate, traverser_node_list);
 }
 
 /* topdown traversal */

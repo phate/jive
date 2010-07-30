@@ -71,7 +71,7 @@ jive_context_malloc(jive_context * ctx, size_t size)
 		return 0;
 	}
 	
-	JIVE_LIST_PUSHBACK(ctx->blocks, block, context_block_list);
+	JIVE_LIST_PUSH_BACK(ctx->blocks, block, context_block_list);
 	
 	return block + 1;
 }
@@ -95,12 +95,12 @@ jive_context_realloc(jive_context * ctx, void * ptr, size_t new_size)
 	}
 	jive_context_block * new_block = realloc(orig_block, sizeof(*new_block) + new_size);
 	if ( unlikely(!new_block) ) {
-		if (orig_block) JIVE_LIST_PUSHBACK(ctx->blocks, orig_block, context_block_list);
+		if (orig_block) JIVE_LIST_PUSH_BACK(ctx->blocks, orig_block, context_block_list);
 		jive_context_fatal_error(ctx, "Failed to allocate memory");
 		/* never reached, but silences compiler */
 		return 0;
 	}
-	JIVE_LIST_PUSHBACK(ctx->blocks, new_block, context_block_list);
+	JIVE_LIST_PUSH_BACK(ctx->blocks, new_block, context_block_list);
 	
 	return new_block + 1;
 }

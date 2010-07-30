@@ -14,7 +14,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
 	
 	if (parent)
-		JIVE_LIST_PUSHBACK(parent->subregions, self, region_subregions_list);
+		JIVE_LIST_PUSH_BACK(parent->subregions, self, region_subregions_list);
 	
 	self->top_cut = self->bottom_cut = 0;
 	self->anchor_node = 0;

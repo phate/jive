@@ -49,7 +49,7 @@ jive_node_notifier_slot_connect(jive_node_notifier_slot * self, jive_node_notifi
 	notifier->context = self->context;
 	notifier->function = function;
 	notifier->closure = closure;
-	JIVE_LIST_PUSHBACK(self->notifiers, notifier, notifier_list);
+	JIVE_LIST_PUSH_BACK(self->notifiers, notifier, notifier_list);
 	
 	return &notifier->base;
 }

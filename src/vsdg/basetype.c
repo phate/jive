@@ -89,7 +89,7 @@ const struct jive_input_class JIVE_INPUT = {
 static inline void
 jive_input_add_as_user(jive_input * self, jive_output * output)
 {
-	JIVE_LIST_PUSHBACK(output->users, self, output_users_list);
+	JIVE_LIST_PUSH_BACK(output->users, self, output_users_list);
 	jive_node_add_successor(output->node);
 }
 
@@ -137,7 +137,7 @@ _jive_input_fini(jive_input * self)
 		self->node->inputs[n]->index = n;
 	}
 	if (!self->node->ninputs)
-		JIVE_LIST_PUSHBACK(self->node->graph->top, self->node, graph_top_list);
+		JIVE_LIST_PUSH_BACK(self->node->graph->top, self->node, graph_top_list);
 }
 
 char *
@@ -329,7 +329,7 @@ _jive_gate_init(jive_gate * self, struct jive_graph * graph, const char name[])
 	self->resource_gate_list.prev = self->resource_gate_list.next = 0;
 	self->graph_gate_list.prev = self->graph_gate_list.next = 0;
 	
-	JIVE_LIST_PUSHBACK(graph->gates, self, graph_gate_list);
+	JIVE_LIST_PUSH_BACK(graph->gates, self, graph_gate_list);
 }
 
 void
@@ -514,7 +514,7 @@ jive_resource_maybe_add_to_graph(jive_resource * self, jive_graph * graph)
 {
 	if (jive_resource_used(self)) return;
 	
-	JIVE_LIST_PUSHBACK(graph->resources, self, graph_resource_list);
+	JIVE_LIST_PUSH_BACK(graph->resources, self, graph_resource_list);
 }
 
 static inline void
@@ -532,7 +532,7 @@ jive_resource_assign_input(jive_resource * self, jive_input * input)
 	
 	jive_resource_maybe_add_to_graph(self, input->node->graph);
 	
-	JIVE_LIST_PUSHBACK(self->inputs, input, resource_input_list);
+	JIVE_LIST_PUSH_BACK(self->inputs, input, resource_input_list);
 	input->resource = self;
 	
 	jive_input_register_resource_crossings(input);
@@ -560,7 +560,7 @@ jive_resource_assign_output(jive_resource * self, jive_output * output)
 	
 	jive_resource_maybe_add_to_graph(self, output->node->graph);
 	
-	JIVE_LIST_PUSHBACK(self->outputs, output, resource_output_list);
+	JIVE_LIST_PUSH_BACK(self->outputs, output, resource_output_list);
 	output->resource = self;
 	
 	jive_node_add_defined_resource(output->node, self);
