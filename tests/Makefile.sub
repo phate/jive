@@ -3,6 +3,8 @@ TESTS=\
 	test_context\
 	test_graph\
 	test_graphtraverser\
+	test_resource\
+	test_interference\
 	
 # 	test_context\
 # 	test_graph\

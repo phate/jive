@@ -15,6 +15,7 @@ struct jive_type;
 struct jive_output;
 struct jive_region;
 struct jive_traverser_nodestate;
+struct jive_node_location;
 
 struct jive_node {
 	const struct jive_node_class * class_;
@@ -33,9 +34,9 @@ struct jive_node {
 	struct jive_input ** inputs;
 	struct jive_output ** outputs;
 	
-	void * shape_location; /* TODO: data type */
+	struct jive_node_location * shape_location;
 	
-	jive_xpoint_hash resource_crossings;
+	jive_resource_interaction resource_interaction;
 	void * active_before_resources; /* TODO: data type */
 	void * active_after_resources; /* TODO: data type */
 	void * use_count_before; /* TODO: data type */

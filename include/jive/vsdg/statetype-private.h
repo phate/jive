@@ -36,7 +36,7 @@ _jive_state_output_get_type(const jive_output * self);
 /* state_resource inheritable members */
 
 void
-_jive_state_resource_init(jive_state_resource * self);
+_jive_state_resource_init(jive_state_resource * self, struct jive_graph * graph);
 
 const jive_type *
 _jive_state_resource_get_type(const jive_resource * self);

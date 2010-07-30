@@ -8,6 +8,7 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 {
 	self->context = context;
 	self->resources.first = self->resources.last = 0;
+	self->unused_resources.first = self->unused_resources.last = 0;
 	self->top.first = self->top.last = 0;
 	self->bottom.first = self->bottom.last = 0;
 	self->resources_fully_assigned = false;
@@ -46,6 +47,7 @@ _jive_graph_fini(jive_graph * self)
 	
 	prune_regions_recursive(self->root_region);
 	
+	while(self->unused_resources.first) jive_resource_destroy(self->unused_resources.first);
 	/* TODO: destroy all regions, nodes, resources etc. */
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);

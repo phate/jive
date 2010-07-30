@@ -5,7 +5,70 @@
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/resource-interference-private.h>
+#include <jive/vsdg/region.h>
+#include <jive/vsdg/cut.h>
 #include <jive/util/list.h>
+
+static inline void
+crossing_range_through_apply(jive_region * passed_region, void (*function)(void * closure, jive_node * node), void * closure)
+{
+	jive_cut * cut;
+	JIVE_LIST_ITERATE(passed_region->cuts, cut, region_cuts_list) {
+		jive_node_location * loc;
+		JIVE_LIST_ITERATE(cut->nodes, loc, cut_nodes_list) {
+			jive_node * node = loc->node;
+			/* TODO
+			for region in node.iterate_anchored_regions():
+				_crossing_range_through_apply(region, function)
+			*/
+			function(closure, node);
+		}
+	}
+}
+
+static inline void
+crossing_range_towards_apply(jive_node * current_node, jive_region * current_region, jive_node * target_node,
+	void (*function)(void * closure, jive_node * node), void * closure)
+{
+	if (current_region != target_node->region) {
+		crossing_range_towards_apply(current_node, current_region, target_node->region->anchor_node, function, closure);
+		current_node = 0;
+	}
+	
+	jive_node_location * current;
+	if (!current_node) current = jive_region_begin(target_node->region);
+	else current = jive_node_location_next_in_region(current_node->shape_location);
+	
+	for(;;) {
+		jive_node * node = current->node;
+		if (node == target_node) break;
+		/* TODO
+		for region in node.iterate_anchored_regions():
+			_crossing_range_through_apply(region, function)
+		*/
+		function(closure, node);
+		current = jive_node_location_next_in_region(current);
+	}
+}
+
+static inline void
+jive_input_crossing_range_apply(jive_input * self, void (*function)(void * closure, jive_node * node), void * closure)
+{
+	/* FIXME: gross hack to ignore "Control" edges */
+	/* TODO:
+	if isinstance(self, ControlType.Input): return
+	*/
+	
+	if (!self->node->shape_location) return;
+	
+	jive_node * begin;
+	if (self->origin->node->shape_location) begin = self->origin->node;
+	else if (self->resource->hovering_region) begin = 0;
+	else return;
+	
+	crossing_range_towards_apply(begin, self->origin->node->region, self->node, function, closure);
+}
 
 char *
 _jive_type_get_label(const jive_type * self)
@@ -36,7 +99,7 @@ _jive_type_create_resource(const jive_type * self, struct jive_graph * graph)
 {
 	jive_resource * resource = jive_context_malloc(graph->context, sizeof(*resource));
 	resource->class_ = &JIVE_RESOURCE;
-	_jive_resource_init(resource);
+	_jive_resource_init(resource, graph);
 	return resource;
 }
 
@@ -213,16 +276,30 @@ jive_input_swap(jive_input * self, jive_input * other)
 	jive_graph_notify_input_change(self->node->graph, other, o2, o1);
 }
 
+static void
+remove_crossed_resource_helper(void * closure, jive_node * node)
+{
+	jive_node_remove_crossed_resource(node, (jive_resource *) closure, 1);
+}
+
+static void
+add_crossed_resource_helper(void * closure, jive_node * node)
+{
+	jive_node_add_crossed_resource(node, (jive_resource *) closure, 1);
+}
+
 void
 jive_input_register_resource_crossings(jive_input * self)
 {
-	/* TODO */
+	if (!self->resource) return;
+	jive_input_crossing_range_apply(self, remove_crossed_resource_helper, self->resource);
 }
 
 void
 jive_input_unregister_resource_crossings(jive_input * self)
 {
-	/* TODO */
+	if (!self->resource) return;
+	jive_input_crossing_range_apply(self, add_crossed_resource_helper, self->resource);
 }
 
 void
@@ -390,17 +467,19 @@ const jive_resource_class JIVE_RESOURCE = {
 };
 
 void
-_jive_resource_init(jive_resource * self)
+_jive_resource_init(jive_resource * self, jive_graph * graph)
 {
+	self->graph = graph;
 	self->inputs.first = self->inputs.last = 0;
 	self->outputs.first = self->outputs.last = 0;
 	self->gates.first = self->gates.last = 0;
 	
-	jive_xpoint_hash_init(&self->node_crossings);
-	self->interference = 0; /* FIXME: proper data type */
+	jive_node_interaction_init(&self->node_interaction);
+	jive_resource_interference_hash_init(&self->interference);
 	self->hovering_region = 0;
 	
 	self->graph_resource_list.prev = self->graph_resource_list.next = 0;
+	JIVE_LIST_PUSH_BACK(graph->unused_resources, self, graph_resource_list);
 }
 
 void
@@ -409,6 +488,7 @@ _jive_resource_fini(jive_resource * self)
 	DEBUG_ASSERT(self->inputs.first == 0 && self->inputs.last == 0);
 	DEBUG_ASSERT(self->outputs.first == 0 && self->outputs.last == 0);
 	DEBUG_ASSERT(self->gates.first == 0 && self->gates.last == 0);
+	jive_resource_interference_hash_fini(&self->interference, self->graph->context);
 }
 
 char *
@@ -510,19 +590,19 @@ jive_resource_set_hovering_region(jive_resource * self, struct jive_region * reg
 
 
 static inline void
-jive_resource_maybe_add_to_graph(jive_resource * self, jive_graph * graph)
+jive_resource_maybe_add_to_graph(jive_resource * self)
 {
 	if (jive_resource_used(self)) return;
-	
-	JIVE_LIST_PUSH_BACK(graph->resources, self, graph_resource_list);
+	JIVE_LIST_REMOVE(self->graph->unused_resources, self, graph_resource_list);
+	JIVE_LIST_PUSH_BACK(self->graph->resources, self, graph_resource_list);
 }
 
 static inline void
-jive_resource_maybe_remove_from_graph(jive_resource * self, jive_graph * graph)
+jive_resource_maybe_remove_from_graph(jive_resource * self)
 {
 	if (jive_resource_used(self)) return;
-	
-	JIVE_LIST_REMOVE(graph->resources, self, graph_resource_list);
+	JIVE_LIST_REMOVE(self->graph->resources, self, graph_resource_list);
+	JIVE_LIST_PUSH_BACK(self->graph->unused_resources, self, graph_resource_list);
 }
 
 void
@@ -530,7 +610,7 @@ jive_resource_assign_input(jive_resource * self, jive_input * input)
 {
 	DEBUG_ASSERT(input->resource == 0);
 	
-	jive_resource_maybe_add_to_graph(self, input->node->graph);
+	jive_resource_maybe_add_to_graph(self);
 	
 	JIVE_LIST_PUSH_BACK(self->inputs, input, resource_input_list);
 	input->resource = self;
@@ -550,7 +630,7 @@ jive_resource_unassign_input(jive_resource * self, jive_input * input)
 	JIVE_LIST_REMOVE(self->inputs, input, resource_input_list);
 	input->resource = 0;
 	
-	jive_resource_maybe_remove_from_graph(self, input->node->graph);
+	jive_resource_maybe_remove_from_graph(self);
 }
 
 void
@@ -558,7 +638,7 @@ jive_resource_assign_output(jive_resource * self, jive_output * output)
 {
 	DEBUG_ASSERT(output->resource == 0);
 	
-	jive_resource_maybe_add_to_graph(self, output->node->graph);
+	jive_resource_maybe_add_to_graph(self);
 	
 	JIVE_LIST_PUSH_BACK(self->outputs, output, resource_output_list);
 	output->resource = self;
@@ -576,7 +656,7 @@ jive_resource_unassign_output(jive_resource * self, jive_output * output)
 	JIVE_LIST_REMOVE(self->outputs, output, resource_output_list);
 	output->resource = 0;
 	
-	jive_resource_maybe_remove_from_graph(self, output->node->graph);
+	jive_resource_maybe_remove_from_graph(self);
 }
 
 void
@@ -591,3 +671,49 @@ jive_resource_unassign_gate(jive_resource * self, jive_gate * gate)
 	/* TODO */
 }
 
+void
+jive_resource_destroy(jive_resource * self)
+{
+	self->class_->fini(self);
+	while(self->inputs.first) jive_resource_unassign_input(self, self->inputs.first);
+	while(self->outputs.first) jive_resource_unassign_output(self, self->outputs.first);
+	while(self->gates.first) jive_resource_unassign_gate(self, self->gates.first);
+	JIVE_LIST_REMOVE(self->graph->unused_resources, self, graph_resource_list);
+	jive_context_free(self->graph->context, self);
+}
+
+size_t
+jive_resource_is_active_before(const jive_resource * self, const struct jive_node * node)
+{
+	jive_node_resource_interaction * xpoint;
+	xpoint = jive_node_resource_interaction_lookup(node, self);
+	if (xpoint) return xpoint->before_count;
+	else return 0;
+}
+
+size_t
+jive_resource_crosses(const jive_resource * self, const struct jive_node * node)
+{
+	jive_node_resource_interaction * xpoint;
+	xpoint = jive_node_resource_interaction_lookup(node, self);
+	if (xpoint) return xpoint->crossed_count;
+	else return 0;
+}
+
+size_t
+jive_resource_is_active_after(const jive_resource * self, const struct jive_node * node)
+{
+	jive_node_resource_interaction * xpoint;
+	xpoint = jive_node_resource_interaction_lookup(node, self);
+	if (xpoint) return xpoint->after_count;
+	else return 0;
+}
+
+size_t
+jive_resource_interferes_with(const jive_resource * self, const jive_resource * other)
+{
+	jive_resource_interference_part * part;
+	part = jive_resource_interference_hash_lookup(&self->interference, other);
+	if (part) return part->whole->count;
+	else return 0;
+}

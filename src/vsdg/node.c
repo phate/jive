@@ -6,6 +6,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/resource-interference-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/util/list.h>
 
@@ -44,7 +45,7 @@ _jive_node_init(
 	self->region = 0;
 	self->shape_location = 0; 
 	
-	jive_xpoint_hash_init(&self->resource_crossings);
+	jive_resource_interaction_init(&self->resource_interaction);
 	
 	self->active_before_resources = 0; /* TODO: data type */
 	self->active_after_resources = 0; /* TODO: data type */
@@ -85,6 +86,8 @@ _jive_node_fini(jive_node * self)
 	
 	jive_context_free(self->graph->context, self->inputs);
 	jive_context_free(self->graph->context, self->outputs);
+	
+	jive_resource_interaction_fini(&self->resource_interaction, self->graph->context);
 	
 	if (self->traverser_slots) {
 		size_t n;
@@ -208,28 +211,134 @@ jive_node_remove_successor(jive_node * self)
 		JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 }
 
+static void
+inc_active_before(jive_node * self, jive_node_resource_interaction * xpoint, size_t count)
+{
+	jive_resource * resource = xpoint->resource;
+	if (xpoint->before_count == 0) {
+		jive_resource_interaction_iterator i;
+		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
+			jive_resource * other = i.pos->resource;
+			if (i.pos->before_count == 0) continue;
+			if (other == resource) continue;
+			printf("%p %p\n", resource, other);
+			jive_resource_interference_add(resource, other);
+		}
+		/* TODO	# assert no overflow
+		assert self._use_count_before.add_regcls(resource.get_real_regcls()) == None
+		*/
+	}
+	xpoint->before_count += count;
+}
+
+static void
+dec_active_before(jive_node * self, jive_node_resource_interaction * xpoint, size_t count)
+{
+	xpoint->before_count -= count;
+	jive_resource * resource = xpoint->resource;
+	if (xpoint->before_count == 0) {
+		jive_resource_interaction_iterator i;
+		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
+			jive_resource * other = i.pos->resource;
+			if (i.pos->before_count == 0) continue;
+			if (other == resource) continue;
+			jive_resource_interference_remove(resource, other);
+		}
+		/* TODO
+		self._use_count_before.sub_regcls(resource.get_real_regcls())
+		*/
+	}
+}
+
+static void
+inc_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size_t count)
+{
+	jive_resource * resource = xpoint->resource;
+	if (xpoint->after_count == 0) {
+		jive_resource_interaction_iterator i;
+		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
+			jive_resource * other = i.pos->resource;
+			if (i.pos->after_count == 0) continue;
+			if (other == resource) continue;
+			printf("%p %p\n", resource, other);
+			jive_resource_interference_add(resource, other);
+		}
+		/* TODO	# assert no overflow
+		assert self._use_count_after.add_regcls(resource.get_real_regcls()) == None
+		*/
+	}
+	xpoint->after_count += count;
+}
+
+static void
+dec_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size_t count)
+{
+	xpoint->after_count -= count;
+	jive_resource * resource = xpoint->resource;
+	if (xpoint->after_count == 0) {
+		jive_resource_interaction_iterator i;
+		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
+			jive_resource * other = i.pos->resource;
+			if (i.pos->after_count == 0) continue;
+			if (other == resource) continue;
+			jive_resource_interference_remove(resource, other);
+		}
+		/* TODO
+		self._use_count_after.sub_regcls(resource.get_real_regcls())
+		*/
+	}
+}
+
 void
 jive_node_add_used_resource(jive_node * self, jive_resource * resource)
 {
-	/* TODO */
+	jive_node_resource_interaction * xpoint = jive_node_resource_interaction_create(self, resource);
+	inc_active_before(self, xpoint, 1);
 }
 
 void
 jive_node_remove_used_resource(jive_node * self, jive_resource * resource)
 {
-	/* TODO */
+	jive_node_resource_interaction * xpoint = jive_node_resource_interaction_lookup(self, resource);
+	dec_active_before(self, xpoint, 1);
+	jive_node_resource_interaction_check_discard(xpoint);
 }
 
 void
 jive_node_add_defined_resource(jive_node * self, jive_resource * resource)
 {
-	/* TODO */
+	jive_node_resource_interaction * xpoint = jive_node_resource_interaction_create(self, resource);
+	inc_active_after(self, xpoint, 1);
 }
 
 void
 jive_node_remove_defined_resource(jive_node * self, jive_resource * resource)
 {
-	/* TODO */
+	jive_node_resource_interaction * xpoint = jive_node_resource_interaction_lookup(self, resource);
+	dec_active_after(self, xpoint, 1);
+	jive_node_resource_interaction_check_discard(xpoint);
+}
+
+void
+jive_node_add_crossed_resource(jive_node * self, jive_resource * resource, unsigned int count)
+{
+	jive_node_resource_interaction * xpoint = jive_node_resource_interaction_create(self, resource);
+	
+	xpoint->crossed_count += count;
+	inc_active_before(self, xpoint, count);
+	inc_active_after(self, xpoint, count);
+}
+
+void
+jive_node_remove_crossed_resource(jive_node * self, jive_resource * resource, unsigned int count)
+{
+	jive_node_resource_interaction * xpoint = jive_node_resource_interaction_lookup(self, resource);
+	
+	xpoint->crossed_count -= count;
+	dec_active_before(self, xpoint, count);
+	dec_active_after(self, xpoint, count);
+	
+	jive_node_resource_interaction_check_discard(xpoint);
 }
 
 void

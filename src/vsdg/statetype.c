@@ -78,7 +78,7 @@ _jive_state_type_create_resource(const jive_type * self, struct jive_graph * gra
 {
 	jive_state_resource * resource = jive_context_malloc(graph->context, sizeof(*resource));
 	resource->base.class_ = &JIVE_STATE_RESOURCE;
-	_jive_state_resource_init(resource);
+	_jive_state_resource_init(resource, graph);
 	return &resource->base; 
 }
 
@@ -116,9 +116,9 @@ _jive_state_output_get_type(const jive_output * self)
 }
 
 void
-_jive_state_resource_init(jive_state_resource * self)
+_jive_state_resource_init(jive_state_resource * self, struct jive_graph * graph)
 {
-	_jive_resource_init(&self->base);
+	_jive_resource_init(&self->base, graph);
 }
 
 const jive_type *

@@ -38,6 +38,10 @@ struct jive_graph {
 		struct jive_resource * first;
 		struct jive_resource * last;
 	} resources;
+	struct {
+		struct jive_resource * first;
+		struct jive_resource * last;
+	} unused_resources;
 	
 	bool resources_fully_assigned;
 	

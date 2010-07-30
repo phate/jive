@@ -3,38 +3,46 @@
 
 #include <jive/context.h>
 
-typedef struct jive_xpoint jive_xpoint;
-typedef struct jive_xpoint_hash jive_xpoint_hash;
-typedef struct jive_xpoint_hash jive_crossed_nodes;
-typedef struct jive_xpoint_hash jive_crossed_resources;
+/*
+	The data structures below keep track of node/resource
+	interactions. Each resource can appear in multiple roles
+	with respect to each node:
+	
+	- "active before": resource is used as input or passed through
+	- "crossed": resource is passed through
+	- "active after": resurce is uned as output or passed through
+	
+	Each resource can appear in each role multiple times.
+	
+	For tracking these role counts, a hash (that maps resource
+	-> interaction point) is stored per node. Additionally
+	the interaction points are linked per resource.
+*/
 
-struct jive_resource;
 struct jive_node;
+struct jive_resource;
 
-struct jive_xpoint {
-	struct jive_node * node;
-	struct jive_resource * resource;
-	size_t count;
-	struct {
-		jive_xpoint * prev;
-		jive_xpoint * next;
-	} by_node;
-	struct {
-		jive_xpoint * prev;
-		jive_xpoint * next;
-	} by_resource;
+typedef struct jive_node_resource_interaction_hash_bucket jive_node_resource_interaction_hash_bucket;
+typedef struct jive_node_interaction jive_node_interaction;
+typedef struct jive_resource_interaction jive_resource_interaction;
+
+struct jive_node_resource_interaction_hash_bucket {
+	struct jive_node_resource_interaction * first;
+	struct jive_node_resource_interaction * last;
 };
 
-struct jive_xpoint_hash {
+/* interaction points of single node with resources, hashed by resource */
+
+struct jive_resource_interaction {
 	size_t nbuckets, nitems;
-	jive_xpoint ** buckets;
+	jive_node_resource_interaction_hash_bucket * buckets;
 };
 
-static inline jive_xpoint **
-jive_xpoint_hash_bucket(const jive_xpoint_hash * hash, void * key)
-{
-	if (!hash->nbuckets) return 0;
-	return &hash->buckets[ (size_t)key % hash->nbuckets ];
-}
+/* interaction points of single resource with nodes */
+
+struct jive_node_interaction {
+	struct jive_node_resource_interaction * first;
+	struct jive_node_resource_interaction * last;
+};
 
 #endif

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include <jive/vsdg/crossings.h>
+#include <jive/vsdg/resource-interference.h>
 
 typedef struct jive_type_class jive_type_class;
 typedef struct jive_type jive_type;
@@ -357,6 +358,8 @@ jive_gate_get_type(const jive_gate * self)
 struct jive_resource {
 	const struct jive_resource_class * class_;
 	
+	struct jive_graph * graph;
+	
 	struct {
 		jive_input * first;
 		jive_input * last;
@@ -372,8 +375,8 @@ struct jive_resource {
 		jive_gate * last;
 	} gates;
 	
-	jive_xpoint_hash node_crossings;
-	void * interference; /* TODO: data type */
+	jive_node_interaction node_interaction;
+	jive_resource_interference_hash interference;
 	struct jive_region * hovering_region;
 	
 	struct {
@@ -454,6 +457,21 @@ jive_resource_get_real_regcls(const jive_resource * self)
 {
 	return self->class_->get_real_regcls(self);
 }
+
+void
+jive_resource_destroy(jive_resource * self);
+
+size_t
+jive_resource_is_active_before(const jive_resource * self, const struct jive_node * node);
+
+size_t
+jive_resource_crosses(const jive_resource * self, const struct jive_node * node);
+
+size_t
+jive_resource_is_active_after(const jive_resource * self, const struct jive_node * node);
+
+size_t
+jive_resource_interferes_with(const jive_resource * self, const jive_resource * other);
 
 void
 jive_resource_assign_input(jive_resource * self, jive_input * input);

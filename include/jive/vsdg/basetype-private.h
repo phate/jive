@@ -88,7 +88,7 @@ jive_gate_remove_output(jive_gate * self, jive_output * output);
 /* inheritable resource member functions */
 
 void
-_jive_resource_init(jive_resource * self);
+_jive_resource_init(jive_resource * self, struct jive_graph * graph);
 
 void
 _jive_resource_fini(jive_resource * self);
