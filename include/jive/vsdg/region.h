@@ -47,5 +47,7 @@ jive_region_empty(const jive_region * self)
 struct jive_node_location *
 jive_region_begin(const jive_region * self);
 
+jive_region *
+jive_region_create_subregion(jive_region * self);
 
 #endif

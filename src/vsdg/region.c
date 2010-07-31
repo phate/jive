@@ -76,3 +76,11 @@ jive_region_begin(const jive_region * self)
 	if (cut) return cut->nodes.first;
 	else return 0;
 }
+
+jive_region *
+jive_region_create_subregion(jive_region * self)
+{
+	jive_region * subregion = jive_context_malloc(self->graph->context, sizeof(*subregion));
+	_jive_region_init(subregion, self->graph, self);
+	return subregion;
+}

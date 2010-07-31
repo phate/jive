@@ -1,5 +1,6 @@
 #include <jive/vsdg/cut-private.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/crossings-private.h>
 
 #include <jive/context.h>
@@ -38,6 +39,52 @@ jive_cut_append(jive_cut * self, jive_node * node)
 	return jive_cut_insert(self, 0, node);
 }
 
+static void
+add_crossings_from_lower_node(jive_node * node, jive_node * lower_node)
+{
+	/* check the resources passed through and used as input by
+	the lower node, add them as crossing this node with the
+	correct multiplicity */
+	jive_resource_interaction_iterator i;
+	JIVE_RESOURCE_INTERACTION_ITERATE(lower_node->resource_interaction, i) {
+		jive_node_resource_interaction * xpoint = i.pos;
+		if (xpoint->crossed_count == 0) continue;
+		jive_node_add_crossed_resource(node, xpoint->resource, xpoint->crossed_count);
+	}
+	
+	size_t n;
+	for(n=0; n<lower_node->ninputs; n++) {
+		jive_input * input = lower_node->inputs[n];
+		if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
+			/* if this is a control edge, pass through resources that
+			are active at the "top" of the region */
+			jive_region * region = input->origin->node->region;
+			jive_node_location * top = jive_region_begin(region);
+			if (!top) continue;
+			
+			jive_node * top_node = top->node;
+			add_crossings_from_lower_node(node, top_node);
+			
+			/* resources passed through the anchor node are passed through the
+			sub-region(s) as well and have thus just been counted twise, so
+			fix-up and remove the duplicates */
+			JIVE_RESOURCE_INTERACTION_ITERATE(lower_node->resource_interaction, i) {
+				jive_node_resource_interaction * xpoint = i.pos;
+				if (xpoint->crossed_count == 0) continue;
+				if (jive_resource_originates_in(xpoint->resource, node)) continue;
+				jive_node_remove_crossed_resource(node, xpoint->resource, xpoint->crossed_count);
+			}
+		} else {
+			/* normal input, just pass through (unless it originates here) */
+			if (input->origin->node == node) continue;
+			if (!input->resource) continue;
+			if (input->resource->hovering_region || input->origin->node->shape_location) {
+				jive_node_add_crossed_resource(node, input->resource, 1);
+			}
+		}
+	}
+}
+
 jive_node_location *
 jive_cut_insert(jive_cut * self, jive_node_location * at, struct jive_node * node)
 {
@@ -56,38 +103,21 @@ jive_cut_insert(jive_cut * self, jive_node_location * at, struct jive_node * nod
 	jive_node_location * next = jive_node_location_next_in_region(loc);
 	if (next) {
 		jive_node * next_node = next->node;
-		
-		/* resources that cross the next node must also cross this node
-		(we have temporarily set the resources originating in our node
-		aside) */
+		add_crossings_from_lower_node(node, next_node);
+	} else if (node->region->anchor_node) {
 		jive_resource_interaction_iterator i;
-		JIVE_RESOURCE_INTERACTION_ITERATE(next_node->resource_interaction, i) {
+		JIVE_RESOURCE_INTERACTION_ITERATE(node->region->anchor_node->resource_interaction, i) {
 			jive_node_resource_interaction * xpoint = i.pos;
 			if (xpoint->crossed_count == 0) continue;
 			jive_node_add_crossed_resource(node, xpoint->resource, xpoint->crossed_count);
 		}
-		
-		/* resources that are inputs to he next node must also cross this
-		node, unless they originate here (or are exempt from crossing for
-		other reasions) */
-		size_t n;
-		for(n=0; n<next_node->ninputs; n++) {
-			jive_input * input = next_node->inputs[n];
-			/* TODO: treat ControlType inputs */
-			
-			if (input->origin->node == node) continue;
-			if (!input->resource) continue;
-			if (input->resource->hovering_region || input->origin->node->shape_location) {
-				jive_node_add_crossed_resource(node, input->resource, 1);
-			}
-		}
-	} else if (node->region->anchor_node) {
-		/* TODO */
-		abort();
 	}
 	
 	/* finally, reinstate input/output resource crossings */
 	jive_node_register_resource_crossings(node);
+	
+	/* TODO: notification via graph callback */
+	
 	return loc;
 }
 

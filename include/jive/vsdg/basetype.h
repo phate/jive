@@ -461,6 +461,8 @@ jive_resource_get_real_regcls(const jive_resource * self)
 void
 jive_resource_destroy(jive_resource * self);
 
+/* FIXME: the following names could be regularized */
+
 size_t
 jive_resource_is_active_before(const jive_resource * self, const struct jive_node * node);
 
@@ -469,6 +471,12 @@ jive_resource_crosses(const jive_resource * self, const struct jive_node * node)
 
 size_t
 jive_resource_is_active_after(const jive_resource * self, const struct jive_node * node);
+
+size_t
+jive_resource_originates_in(const jive_resource * self, const struct jive_node * node);
+
+size_t
+jive_resource_is_used_by(const jive_resource * self, const struct jive_node * node);
 
 size_t
 jive_resource_interferes_with(const jive_resource * self, const jive_resource * other);

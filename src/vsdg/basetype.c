@@ -6,6 +6,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/resource-interference-private.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/cut.h>
 #include <jive/util/list.h>
@@ -18,10 +19,14 @@ crossing_range_through_apply(jive_region * passed_region, void (*function)(void 
 		jive_node_location * loc;
 		JIVE_LIST_ITERATE(cut->nodes, loc, cut_nodes_list) {
 			jive_node * node = loc->node;
-			/* TODO
-			for region in node.iterate_anchored_regions():
-				_crossing_range_through_apply(region, function)
-			*/
+			size_t n;
+			for(n=0; n<node->ninputs; n++) {
+				jive_input * input = node->inputs[n];
+				if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
+				/* cross through anchored region */
+				jive_region * region = input->origin->node->region;
+				crossing_range_through_apply(region, function, closure);
+			}
 			function(closure, node);
 		}
 	}
@@ -41,15 +46,17 @@ crossing_range_towards_apply(jive_node * current_node, jive_region * current_reg
 	else current = jive_node_location_next_in_region(current_node->shape_location);
 	
 	for(;;) {
-		printf("current: %p\n", current);
 		jive_node * node = current->node;
-		printf("node: %p\n", node);
 		if (node == target_node) break;
 		
-		/* TODO
-		for region in node.iterate_anchored_regions():
-			_crossing_range_through_apply(region, function)
-		*/
+		size_t n;
+		for(n=0; n<node->ninputs; n++) {
+			jive_input * input = node->inputs[n];
+			if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
+			/* cross through anchored region */
+			jive_region * region = input->origin->node->region;
+			crossing_range_through_apply(region, function, closure);
+		}
 		function(closure, node);
 		current = jive_node_location_next_in_region(current);
 	}
@@ -58,10 +65,9 @@ crossing_range_towards_apply(jive_node * current_node, jive_region * current_reg
 static inline void
 jive_input_crossing_range_apply(jive_input * self, void (*function)(void * closure, jive_node * node), void * closure)
 {
-	/* FIXME: gross hack to ignore "Control" edges */
-	/* TODO:
-	if isinstance(self, ControlType.Input): return
-	*/
+	/* FIXME: gross hack to ignore "Control" edges,
+	should be resolved using method override instead */
+	if (self->class_ == &JIVE_CONTROL_INPUT) return;
 	
 	if (!self->node->shape_location) return;
 	if (!self->node->region) return; /* destroying node, range not applicable anymore */
@@ -714,6 +720,24 @@ jive_resource_is_active_after(const jive_resource * self, const struct jive_node
 }
 
 size_t
+jive_resource_originates_in(const jive_resource * self, const struct jive_node * node)
+{
+	jive_node_resource_interaction * xpoint;
+	xpoint = jive_node_resource_interaction_lookup(node, self);
+	if (xpoint) return xpoint->after_count - xpoint->crossed_count;
+	else return 0;
+}
+
+size_t
+jive_resource_is_used_by(const jive_resource * self, const struct jive_node * node)
+{
+	jive_node_resource_interaction * xpoint;
+	xpoint = jive_node_resource_interaction_lookup(node, self);
+	if (xpoint) return xpoint->before_count - xpoint->crossed_count;
+	else return 0;
+}
+
+size_t
 jive_resource_interferes_with(const jive_resource * self, const jive_resource * other)
 {
 	jive_resource_interference_part * part;
@@ -721,3 +745,4 @@ jive_resource_interferes_with(const jive_resource * self, const jive_resource * 
 	if (part) return part->whole->count;
 	else return 0;
 }
+

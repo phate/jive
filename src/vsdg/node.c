@@ -5,6 +5,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/basetype-private.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/cut-private.h>
 #include <jive/vsdg/resource-interference-private.h>
@@ -166,6 +167,10 @@ _jive_node_add_input(jive_node * self, jive_input * input)
 		jive_resource_merge(resource, input->origin->resource);
 		jive_resource_assign_input(resource, input);
 	}
+	
+	if (input->class_ == &JIVE_CONTROL_INPUT)
+		input->origin->node->region->anchor_node = self;
+	
 	if (self->region) jive_graph_notify_input_create(self->graph, input);
 }
 
@@ -343,12 +348,6 @@ jive_node_remove_crossed_resource(jive_node * self, jive_resource * resource, un
 	
 	jive_node_resource_interaction_check_discard(xpoint);
 }
-
-void
-jive_node_add_crossed_resource(jive_node * self, jive_resource * resource, unsigned int count);
-
-void
-jive_node_remove_crossed_resource(jive_node * self, jive_resource * resource, unsigned int count);
 
 void
 jive_node_invalidate_depth_from_root(jive_node * self)
