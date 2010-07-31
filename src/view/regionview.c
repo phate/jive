@@ -87,9 +87,10 @@ jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * n
 	for(n=0; n<nodeview->node->noutputs; n++) {
 		jive_input * user = nodeview->node->outputs[n]->users.first;
 		while(user) {
-			if (user->node->region != self->region) continue;
-			jive_nodeview * nodeview = jive_nodeview_map_lookup(&self->graphview->nodemap, user->node)->value;
-			jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
+			if (user->node->region == self->region) {
+				jive_nodeview * nodeview = jive_nodeview_map_lookup(&self->graphview->nodemap, user->node)->value;
+				jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
+			}
 			user = user->output_users_list.next;
 		}
 	}
@@ -105,6 +106,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 	JIVE_LIST_ITERATE(self->region->subregions, subregion, region_subregions_list) {
 		jive_regionview * subregionview = jive_regionview_create(self->graphview, subregion);
 		jive_regionview_layout(subregionview, &reservation);
+		JIVE_LIST_PUSH_BACK(self->subregions, subregionview, regionview_subregions_list);
 	}
 	
 	int min_y = reservation.min_y;
@@ -147,6 +149,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 void
 jive_regionview_draw(jive_regionview * self, jive_textcanvas * dst)
 {
+	printf("draw region %p\n", self);
 	jive_regionview * subregion;
 	JIVE_LIST_ITERATE(self->subregions, subregion, regionview_subregions_list)
 		jive_regionview_draw(subregion, dst);
