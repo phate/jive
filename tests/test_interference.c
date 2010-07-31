@@ -17,17 +17,21 @@ int main()
 	
 	jive_node * n2 = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){&jive_type_singleton, &jive_type_singleton}, n1->outputs,
-		1, (const jive_type *[]){&jive_type_singleton});
+		0, NULL);
 	
 	jive_resource * r0 = jive_type_create_resource(&jive_type_singleton, graph);
 	jive_resource * r1 = jive_type_create_resource(&jive_type_singleton, graph);
 	
 	jive_resource_assign_output(r0, n1->outputs[0]);
 	jive_resource_assign_output(r1, n1->outputs[1]);
+	assert(jive_resource_is_active_after(r0, n1) == 1);
+	assert(jive_resource_is_active_after(r1, n1) == 1);
 	assert(jive_resource_interferes_with(r0, r1) == 1);
 	
 	jive_resource_assign_input(r0, n2->inputs[0]);
 	jive_resource_assign_input(r1, n2->inputs[1]);
+	assert(jive_resource_is_active_before(r0, n2) == 1);
+	assert(jive_resource_is_active_before(r1, n2) == 1);
 	assert(jive_resource_interferes_with(r0, r1) == 2);
 	
 	jive_graph_destroy(graph);

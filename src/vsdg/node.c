@@ -221,7 +221,6 @@ inc_active_before(jive_node * self, jive_node_resource_interaction * xpoint, siz
 			jive_resource * other = i.pos->resource;
 			if (i.pos->before_count == 0) continue;
 			if (other == resource) continue;
-			printf("%p %p\n", resource, other);
 			jive_resource_interference_add(resource, other);
 		}
 		/* TODO	# assert no overflow
@@ -260,7 +259,6 @@ inc_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size
 			jive_resource * other = i.pos->resource;
 			if (i.pos->after_count == 0) continue;
 			if (other == resource) continue;
-			printf("%p %p\n", resource, other);
 			jive_resource_interference_add(resource, other);
 		}
 		/* TODO	# assert no overflow
