@@ -68,4 +68,10 @@ jive_node_remove_crossed_resource(jive_node * self, jive_resource * resource, un
 void
 jive_node_invalidate_depth_from_root(jive_node * self);
 
+void
+jive_node_unregister_resource_crossings(jive_node * self);
+
+void
+jive_node_register_resource_crossings(jive_node * self);
+
 #endif

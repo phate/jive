@@ -5,6 +5,7 @@ TESTS=\
 	test_graphtraverser\
 	test_resource\
 	test_interference\
+	test_shape\
 	
 # 	test_context\
 # 	test_graph\

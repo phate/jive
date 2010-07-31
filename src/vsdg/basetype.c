@@ -40,9 +40,11 @@ crossing_range_towards_apply(jive_node * current_node, jive_region * current_reg
 	if (!current_node) current = jive_region_begin(target_node->region);
 	else current = jive_node_location_next_in_region(current_node->shape_location);
 	
+	
 	for(;;) {
 		jive_node * node = current->node;
 		if (node == target_node) break;
+		
 		/* TODO
 		for region in node.iterate_anchored_regions():
 			_crossing_range_through_apply(region, function)
@@ -61,6 +63,7 @@ jive_input_crossing_range_apply(jive_input * self, void (*function)(void * closu
 	*/
 	
 	if (!self->node->shape_location) return;
+	if (!self->node->region) return; /* destroying node, range not applicable anymore */
 	
 	jive_node * begin;
 	if (self->origin->node->shape_location) begin = self->origin->node;
@@ -292,14 +295,14 @@ void
 jive_input_register_resource_crossings(jive_input * self)
 {
 	if (!self->resource) return;
-	jive_input_crossing_range_apply(self, remove_crossed_resource_helper, self->resource);
+	jive_input_crossing_range_apply(self, add_crossed_resource_helper, self->resource);
 }
 
 void
 jive_input_unregister_resource_crossings(jive_input * self)
 {
 	if (!self->resource) return;
-	jive_input_crossing_range_apply(self, add_crossed_resource_helper, self->resource);
+	jive_input_crossing_range_apply(self, remove_crossed_resource_helper, self->resource);
 }
 
 void

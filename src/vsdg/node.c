@@ -6,6 +6,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/cut-private.h>
 #include <jive/vsdg/resource-interference-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/util/list.h>
@@ -75,8 +76,12 @@ _jive_node_init(
 void
 _jive_node_fini(jive_node * self)
 {
+	if (self->shape_location)
+		jive_node_location_destroy(self->shape_location);
+	
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
-	self->region = 0;
+	jive_node_unregister_resource_crossings(self);
+	self->region = 0; /* FIXME: cannot set region to 0, causes trouble with resource unregistration */
 	
 	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
 	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
@@ -362,6 +367,32 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 			jive_node_invalidate_depth_from_root(user->node);
 			user = user->output_users_list.next;
 		}
+	}
+}
+
+void
+jive_node_unregister_resource_crossings(jive_node * self)
+{
+	size_t n;
+	for(n=0; n<self->ninputs; n++)
+		jive_input_unregister_resource_crossings(self->inputs[n]);
+	for(n=0; n<self->noutputs; n++) {
+		jive_input * input;
+		JIVE_LIST_ITERATE(self->outputs[n]->users, input, output_users_list)
+			jive_input_unregister_resource_crossings(input);
+	}
+}
+
+void
+jive_node_register_resource_crossings(jive_node * self)
+{
+	size_t n;
+	for(n=0; n<self->ninputs; n++)
+		jive_input_register_resource_crossings(self->inputs[n]);
+	for(n=0; n<self->noutputs; n++) {
+		jive_input * input;
+		JIVE_LIST_ITERATE(self->outputs[n]->users, input, output_users_list)
+			jive_input_register_resource_crossings(input);
 	}
 }
 

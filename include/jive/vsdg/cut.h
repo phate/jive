@@ -51,7 +51,10 @@ static inline jive_node_location *
 jive_node_location_next_in_region(jive_node_location * self)
 {
 	jive_node_location * loc = self->cut_nodes_list.next;
-	if (!loc) loc = self->cut->nodes.first;
+	if (!loc) {
+		jive_cut * cut = self->cut->region_cuts_list.next;
+		if (cut) loc = cut->nodes.first;
+	}
 	return loc;
 }
 
