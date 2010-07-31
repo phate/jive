@@ -24,8 +24,6 @@ int main()
 		2, (const jive_type *[]){&jive_type_singleton, &jive_type_singleton}, (jive_output *[]){n2->outputs[0], n1->outputs[1]},
 		0, 0);
 	
-	jive_view(graph, stderr);
-	
 	jive_cut * cut3 = jive_region_create_cut(graph->root_region);
 	jive_cut * cut2 = jive_region_create_cut(graph->root_region);
 	jive_cut * cut1 = jive_region_create_cut(graph->root_region);

@@ -40,9 +40,10 @@ crossing_range_towards_apply(jive_node * current_node, jive_region * current_reg
 	if (!current_node) current = jive_region_begin(target_node->region);
 	else current = jive_node_location_next_in_region(current_node->shape_location);
 	
-	
 	for(;;) {
+		printf("current: %p\n", current);
 		jive_node * node = current->node;
+		printf("node: %p\n", node);
 		if (node == target_node) break;
 		
 		/* TODO

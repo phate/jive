@@ -115,7 +115,7 @@ jive_resource_interaction_begin(const jive_resource_interaction * self)
 }
 
 #define JIVE_RESOURCE_INTERACTION_ITERATE(container, iterator) \
-	for(iterator = jive_resource_interaction_begin(&container); iterator.pos; jive_resource_interaction_iterator_next(&iterator))
+	for(iterator = jive_resource_interaction_begin(&(container)); iterator.pos; jive_resource_interaction_iterator_next(&iterator))
 
 /* interaction points of single node, hashed by resource */
 
