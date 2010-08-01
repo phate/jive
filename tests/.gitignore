@@ -10,6 +10,7 @@ test_interference
 test_shape
 test_shape_crossings
 test_subgraph_shape
+test_gate_interference
 test_machinedef
 test_prune_replace
 arithmetic_function

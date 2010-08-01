@@ -6,6 +6,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/resource-interference-private.h>
+#include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/cut.h>
@@ -109,7 +110,7 @@ _jive_type_create_resource(const jive_type * self, struct jive_graph * graph)
 jive_gate *
 _jive_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_gate * gate = jive_context_malloc(graph->context, sizeof(gate));
+	jive_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
 	gate->class_ = &JIVE_GATE;
 	_jive_gate_init(gate, graph, name);
 	return gate;
@@ -190,8 +191,18 @@ _jive_input_fini(jive_input * self)
 	if (self->resource) jive_resource_unassign_input(self->resource, self);
 	
 	if (self->gate) {
-		jive_gate_remove_input(self->gate, self);
-		/* TODO: undo gate interference */
+		jive_gate * gate = self->gate;
+		JIVE_LIST_REMOVE(gate->inputs, self, gate_inputs_list);
+		
+		size_t n;
+		for(n=0; n<self->node->ninputs; n++) {
+			jive_input * other = self->node->inputs[n];
+			if (other == self) continue;
+			if (!other->gate) continue;
+			size_t count = jive_gate_interference_remove(self->gate, other->gate);
+			if (count == 0 && self->gate->resource && other->gate->resource)
+				jive_resource_interference_remove(self->gate->resource, other->gate->resource);
+		}
 	}
 	
 	jive_input_remove_as_user(self, self->origin);
@@ -346,9 +357,20 @@ void _jive_output_fini(jive_output * self)
 	if (self->resource) jive_resource_unassign_output(self->resource, self);
 		
 	if (self->gate) {
-		jive_gate_remove_output(self->gate, self);
-		/* TODO: remove gate interference */
+		jive_gate * gate = self->gate;
+		JIVE_LIST_REMOVE(gate->outputs, self, gate_outputs_list);
+		
+		size_t n;
+		for(n=0; n<self->node->noutputs; n++) {
+			jive_output * other = self->node->outputs[n];
+			if (other == self) continue;
+			if (!other->gate) continue;
+			size_t count = jive_gate_interference_remove(self->gate, other->gate);
+			if (count == 0 && self->gate->resource && other->gate->resource)
+				jive_resource_interference_remove(self->gate->resource, other->gate->resource);
+		}
 	}
+	
 	
 	self->node->noutputs --;
 	size_t n;
@@ -405,7 +427,7 @@ _jive_gate_init(jive_gate * self, struct jive_graph * graph, const char name[])
 	self->outputs.first = self->outputs.last = 0;
 	self->may_spill = true;
 	self->resource = 0;
-	self->interference = 0; /* TODO: data type */
+	jive_gate_interference_hash_init(&self->interference);
 	self->resource_gate_list.prev = self->resource_gate_list.next = 0;
 	self->graph_gate_list.prev = self->graph_gate_list.next = 0;
 	
@@ -420,6 +442,7 @@ _jive_gate_fini(jive_gate * self)
 	
 	if (self->resource) jive_resource_unassign_gate(self->resource, self);
 	
+	jive_gate_interference_hash_fini(&self->interference, self->graph->context);
 	jive_context_free(self->graph->context, self->name);
 	
 	JIVE_LIST_REMOVE(self->graph->gates, self, graph_gate_list);
@@ -437,22 +460,13 @@ _jive_gate_get_type(const jive_gate * self)
 	return &jive_type_singleton;
 }
 
-void
-jive_gate_remove_input(jive_gate * self, jive_input * input)
+size_t
+jive_gate_interferes_with(const jive_gate * self, const jive_gate * other)
 {
-	DEBUG_ASSERT(input->gate == self);
-	
-	JIVE_LIST_REMOVE(self->inputs, input, gate_inputs_list);
-	input->gate = 0;
-}
-
-void
-jive_gate_remove_output(jive_gate * self, jive_output * output)
-{
-	DEBUG_ASSERT(output->gate == self);
-	
-	JIVE_LIST_REMOVE(self->outputs, output, gate_outputs_list);
-	output->gate = 0;
+	jive_gate_interference_part * part;
+	part = jive_gate_interference_hash_lookup(&self->interference, other);
+	if (part) return part->whole->count;
+	else return 0;
 }
 
 void
@@ -672,13 +686,39 @@ jive_resource_unassign_output(jive_resource * self, jive_output * output)
 void
 jive_resource_assign_gate(jive_resource * self, jive_gate * gate)
 {
-	/* TODO */
+	DEBUG_ASSERT(gate->resource == 0);
+	
+	jive_resource_maybe_add_to_graph(self);
+	
+	JIVE_LIST_PUSH_BACK(self->gates, gate, resource_gate_list);
+	gate->resource = self;
+	
+	jive_gate_interference_iterator i;
+	JIVE_GATE_INTERFERENCE_ITERATE(gate->interference, i) {
+		jive_gate * other = i.pos->gate;
+		DEBUG_ASSERT(other != gate);
+		if (other->resource)
+			jive_resource_interference_add(self, other->resource);
+	}
 }
 
 void
 jive_resource_unassign_gate(jive_resource * self, jive_gate * gate)
 {
-	/* TODO */
+	DEBUG_ASSERT(gate->resource == self);
+	
+	JIVE_LIST_REMOVE(self->gates, gate, resource_gate_list);
+	gate->resource = 0;
+	
+	jive_resource_maybe_remove_from_graph(self);
+	
+	jive_gate_interference_iterator i;
+	JIVE_GATE_INTERFERENCE_ITERATE(gate->interference, i) {
+		jive_gate * other = i.pos->gate;
+		DEBUG_ASSERT(other != gate);
+		if (other->resource)
+			jive_resource_interference_remove(self, other->resource);
+	}
 }
 
 void
@@ -745,4 +785,3 @@ jive_resource_interferes_with(const jive_resource * self, const jive_resource * 
 	if (part) return part->whole->count;
 	else return 0;
 }
-

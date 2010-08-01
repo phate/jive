@@ -13,6 +13,7 @@ struct jive_graph;
 struct jive_input;
 struct jive_type;
 struct jive_output;
+struct jive_gate;
 struct jive_region;
 struct jive_traverser_nodestate;
 struct jive_node_location;
@@ -145,6 +146,12 @@ jive_node_add_input(jive_node * self, const struct jive_type * type, struct jive
 
 struct jive_output *
 jive_node_add_output(jive_node * self, const struct jive_type * type);
+
+struct jive_input *
+jive_node_gate_input(jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
+
+struct jive_output *
+jive_node_gate_output(jive_node * self, struct jive_gate * gate);
 
 void
 jive_node_destroy(jive_node * self);

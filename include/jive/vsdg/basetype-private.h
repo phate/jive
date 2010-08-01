@@ -71,20 +71,6 @@ _jive_output_get_type(const jive_output * self);
 jive_resource *
 _jive_output_get_constraint(const jive_output * self);
 
-/* private gate member functions */
-
-void
-jive_gate_add_input(jive_gate * self, jive_input * input);
-
-void
-jive_gate_remove_input(jive_gate * self, jive_input * input);
-
-void
-jive_gate_add_output(jive_gate * self, jive_output * output);
-
-void
-jive_gate_remove_output(jive_gate * self, jive_output * output);
-
 /* inheritable resource member functions */
 
 void

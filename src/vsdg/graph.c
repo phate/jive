@@ -11,6 +11,7 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	self->unused_resources.first = self->unused_resources.last = 0;
 	self->top.first = self->top.last = 0;
 	self->bottom.first = self->bottom.last = 0;
+	self->gates.first = self->gates.last = 0;
 	self->resources_fully_assigned = false;
 	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));

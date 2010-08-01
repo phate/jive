@@ -6,6 +6,7 @@
 
 #include <jive/vsdg/crossings.h>
 #include <jive/vsdg/resource-interference.h>
+#include <jive/vsdg/gate-interference.h>
 
 typedef struct jive_type_class jive_type_class;
 typedef struct jive_type jive_type;
@@ -310,7 +311,7 @@ struct jive_gate {
 	} outputs;
 	bool may_spill;
 	jive_resource * resource;
-	void * interference; /* TODO: data type */
+	jive_gate_interference_hash interference;
 	
 	struct {
 		jive_gate * prev;
@@ -346,6 +347,9 @@ jive_gate_get_type(const jive_gate * self)
 {
 	return self->class_->get_type(self);
 }
+
+size_t
+jive_gate_interferes_with(const jive_gate * self, const jive_gate * other);
 
 void
 jive_gate_destroy(jive_gate * self);

@@ -9,6 +9,7 @@
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/cut-private.h>
 #include <jive/vsdg/resource-interference-private.h>
+#include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/util/list.h>
 
@@ -200,6 +201,44 @@ jive_node_add_output(jive_node * self, const jive_type * type)
 {
 	jive_output * output = jive_type_create_output(type, self, self->noutputs);
 	_jive_node_add_output(self, output);
+	return output;
+}
+
+jive_input *
+jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
+{
+	const jive_type * type = jive_gate_get_type(gate);
+	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	_jive_node_add_input(self, input);
+	input->gate = gate;
+	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
+	size_t n;
+	for(n=0; n<input->index; n++) {
+		jive_input * other = self->inputs[n];
+		if (!other->gate) continue;
+		size_t count = jive_gate_interference_add(gate, other->gate);
+		if (count > 0 || !gate->resource || !other->gate->resource) continue;
+		jive_resource_interference_add(gate->resource, other->gate->resource);
+	}
+	return input;
+}
+
+jive_output *
+jive_node_gate_output(jive_node * self, jive_gate * gate)
+{
+	const jive_type * type = jive_gate_get_type(gate);
+	jive_output * output = jive_type_create_output(type, self, self->noutputs);
+	_jive_node_add_output(self, output);
+	output->gate = gate;
+	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
+	size_t n;
+	for(n=0; n<output->index; n++) {
+		jive_output * other = self->outputs[n];
+		if (!other->gate) continue;
+		size_t count = jive_gate_interference_add(gate, other->gate);
+		if (count > 0 || !gate->resource || !other->gate->resource) continue;
+		jive_resource_interference_add(gate->resource, other->gate->resource);
+	}
 	return output;
 }
 
