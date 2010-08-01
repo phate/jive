@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
 	jive_context * ctx=jive_context_create();
 	
-	void * ptr=0;
+	void * volatile ptr=0;
 	int error_handler_called=0;
 	
 	jmp_buf buffer;
@@ -25,8 +25,8 @@ int main(int argc, char **argv)
 		error_handler_called=1;
 	}
 	
-	assert(ptr != 0);
 	assert(error_handler_called == 1);
+	assert(ptr != 0);
 	
 	jive_context_destroy(ctx);
 	
