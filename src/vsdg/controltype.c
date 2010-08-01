@@ -1,6 +1,10 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/controltype-private.h>
 #include <jive/vsdg/basetype-private.h>
+#include <jive/vsdg/node.h>
+#include <jive/vsdg/region.h>
+#include <jive/util/list.h>
+#include <jive/debug-private.h>
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
@@ -22,7 +26,7 @@ const jive_type jive_control_type_singleton = {
 
 const jive_input_class JIVE_CONTROL_INPUT = {
 	.parent = &JIVE_INPUT,
-	.fini = _jive_input_fini, /* inherit */
+	.fini = _jive_control_input_fini, /* override */
 	.get_label = _jive_input_get_label, /* inherit */
 	.get_type = _jive_control_input_get_type, /* override */
 	.get_constraint = _jive_input_get_constraint /* inherit */
@@ -79,6 +83,20 @@ void
 _jive_control_input_init(jive_control_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
 	_jive_input_init(&self->base, node, index, origin);
+	DEBUG_ASSERT(origin->node->region->anchor_node == 0);
+	origin->node->region->anchor_node = node;
+	JIVE_LIST_PUSH_BACK(node->anchored_regions, origin->node->region, node_anchored_regions_list);
+}
+
+void
+_jive_control_input_fini(jive_input * self_)
+{
+	jive_control_input * self = (jive_control_input *)self_;
+	if (self->base.origin->node->region->anchor_node == self->base.node) {
+		JIVE_LIST_REMOVE(self->base.node->anchored_regions, self->base.origin->node->region, node_anchored_regions_list);
+		self->base.origin->node->region->anchor_node = 0;
+	}
+	_jive_input_fini(&self->base);
 }
 
 const jive_type *

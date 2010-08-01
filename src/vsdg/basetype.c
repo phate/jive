@@ -19,14 +19,11 @@ crossing_range_through_apply(jive_region * passed_region, void (*function)(void 
 		jive_node_location * loc;
 		JIVE_LIST_ITERATE(cut->nodes, loc, cut_nodes_list) {
 			jive_node * node = loc->node;
-			size_t n;
-			for(n=0; n<node->ninputs; n++) {
-				jive_input * input = node->inputs[n];
-				if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
-				/* cross through anchored region */
-				jive_region * region = input->origin->node->region;
+			
+			jive_region * region;
+			JIVE_LIST_ITERATE(node->anchored_regions, region, node_anchored_regions_list)
 				crossing_range_through_apply(region, function, closure);
-			}
+			
 			function(closure, node);
 		}
 	}
@@ -49,14 +46,10 @@ crossing_range_towards_apply(jive_node * current_node, jive_region * current_reg
 		jive_node * node = current->node;
 		if (node == target_node) break;
 		
-		size_t n;
-		for(n=0; n<node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
-			if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
-			/* cross through anchored region */
-			jive_region * region = input->origin->node->region;
+		jive_region * region;
+		JIVE_LIST_ITERATE(node->anchored_regions, region, node_anchored_regions_list)
 			crossing_range_through_apply(region, function, closure);
-		}
+		
 		function(closure, node);
 		current = jive_node_location_next_in_region(current);
 	}

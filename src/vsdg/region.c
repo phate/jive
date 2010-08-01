@@ -13,6 +13,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->nodes.first = self->nodes.last = 0;
 	self->subregions.first = self->subregions.last = 0;
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
+	self->node_anchored_regions_list.prev = self->node_anchored_regions_list.next = 0;
 	self->cuts.first = self->cuts.last = 0;
 	
 	if (parent)
@@ -27,13 +28,15 @@ _jive_region_fini(jive_region * self)
 	DEBUG_ASSERT(jive_region_empty(self));
 	DEBUG_ASSERT(self->nodes.first == 0 && self->nodes.last == 0);
 	DEBUG_ASSERT(self->subregions.first == 0 && self->subregions.last == 0);
-	while(self->cuts.first) {
-		jive_cut * cut = self->cuts.first;
-		JIVE_LIST_REMOVE(self->cuts, cut, region_cuts_list);
-		jive_cut_destroy(cut);
-	}
+	jive_region_destroy_cuts(self);
 	if (self->parent)
 		JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
+}
+
+void
+jive_region_destroy_cuts(jive_region * self)
+{
+	while(self->cuts.first) jive_cut_destroy(self->cuts.first);
 }
 
 void

@@ -11,6 +11,7 @@ void
 jive_cut_destroy(jive_cut * self)
 {
 	while(self->nodes.first) jive_node_location_destroy(self->nodes.first);
+	JIVE_LIST_REMOVE(self->region->cuts, self, region_cuts_list);
 	jive_context_free(self->region->graph->context, self);
 }
 
@@ -18,10 +19,21 @@ void
 jive_node_location_destroy(jive_node_location * self)
 {
 	jive_node * node = self->node;
+	
+	/* nodes in sub-regions can only be placed if the anchor node
+	of the region has been placed; removing the anchoring node's placement
+	must therefore invalidate tha placement of all sub-ordinate nodes
+	within the region */
+	jive_region * region;
+	JIVE_LIST_ITERATE(node->anchored_regions, region, node_anchored_regions_list)
+		jive_region_destroy_cuts(region);
+	
 	jive_node_unregister_resource_crossings(node);
+	
 	JIVE_LIST_REMOVE(self->cut->nodes, self, cut_nodes_list);
 	self->node->shape_location = 0;
 	jive_context_free(node->graph->context, self);
+	
 	jive_node_register_resource_crossings(node);
 }
 

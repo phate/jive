@@ -49,10 +49,10 @@ _jive_node_init(
 	
 	jive_resource_interaction_init(&self->resource_interaction);
 	
-	self->active_before_resources = 0; /* TODO: data type */
-	self->active_after_resources = 0; /* TODO: data type */
 	self->use_count_before = 0; /* TODO: data type */
 	self->use_count_after = 0; /* TODO: data type */
+	
+	self->anchored_regions.first = self->anchored_regions.last = 0;
 	
 	JIVE_LIST_PUSH_BACK(self->graph->top, self, graph_top_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
@@ -77,11 +77,13 @@ _jive_node_init(
 void
 _jive_node_fini(jive_node * self)
 {
+	DEBUG_ASSERT(self->region);
 	if (self->shape_location)
 		jive_node_location_destroy(self->shape_location);
 	
-	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	jive_node_unregister_resource_crossings(self);
+	
+	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	self->region = 0; /* FIXME: cannot set region to 0, causes trouble with resource unregistration */
 	
 	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
@@ -167,9 +169,6 @@ _jive_node_add_input(jive_node * self, jive_input * input)
 		jive_resource_merge(resource, input->origin->resource);
 		jive_resource_assign_input(resource, input);
 	}
-	
-	if (input->class_ == &JIVE_CONTROL_INPUT)
-		input->origin->node->region->anchor_node = self;
 	
 	if (self->region) jive_graph_notify_input_create(self->graph, input);
 }

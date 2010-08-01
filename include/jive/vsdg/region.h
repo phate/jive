@@ -26,6 +26,10 @@ struct jive_region {
 		jive_region * next;
 	} region_subregions_list;
 	struct {
+		jive_region * prev;
+		jive_region * next;
+	} node_anchored_regions_list;
+	struct {
 		struct jive_cut * first; /* "top" */
 		struct jive_cut * last; /* "bottom" */
 	} cuts;
@@ -34,6 +38,9 @@ struct jive_region {
 
 void
 jive_region_destroy(jive_region * self);
+
+void
+jive_region_destroy_cuts(jive_region * self);
 
 struct jive_cut *
 jive_region_create_cut(jive_region * self);

@@ -37,10 +37,13 @@ struct jive_node {
 	struct jive_node_location * shape_location;
 	
 	jive_resource_interaction resource_interaction;
-	void * active_before_resources; /* TODO: data type */
-	void * active_after_resources; /* TODO: data type */
 	void * use_count_before; /* TODO: data type */
 	void * use_count_after; /* TODO: data type */
+	
+	struct {
+		struct jive_region * first;
+		struct jive_region * last;
+	} anchored_regions;
 	
 	struct {
 		jive_node * prev;

@@ -19,6 +19,9 @@ _jive_control_type_create_resource(const jive_type * self, struct jive_graph * g
 void
 _jive_control_input_init(jive_control_input * self, struct jive_node * node, size_t index, jive_output * origin);
 
+void
+_jive_control_input_fini(jive_input * self_);
+
 const jive_type *
 _jive_control_input_get_type(const jive_input * self);
 
