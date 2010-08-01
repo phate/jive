@@ -47,8 +47,10 @@ _jive_graph_fini(jive_graph * self)
 	
 	prune_regions_recursive(self->root_region);
 	
+	while(self->gates.first) jive_gate_destroy(self->gates.first);
+	
 	while(self->unused_resources.first) jive_resource_destroy(self->unused_resources.first);
-	/* TODO: destroy all regions, nodes, resources etc. */
+	
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);
 	jive_node_notifier_slot_fini(&self->on_node_shape);

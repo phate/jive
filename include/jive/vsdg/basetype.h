@@ -347,6 +347,9 @@ jive_gate_get_type(const jive_gate * self)
 	return self->class_->get_type(self);
 }
 
+void
+jive_gate_destroy(jive_gate * self);
+
 /**	@}	*/
 
 /**

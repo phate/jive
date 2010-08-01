@@ -455,6 +455,13 @@ jive_gate_remove_output(jive_gate * self, jive_output * output)
 	output->gate = 0;
 }
 
+void
+jive_gate_destroy(jive_gate * self)
+{
+	self->class_->fini(self);
+	jive_context_free(self->graph->context, self);
+}
+
 /* resources */
 
 const jive_resource_class JIVE_RESOURCE = {
