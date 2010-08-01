@@ -51,26 +51,62 @@ jive_resource_interference_create(struct jive_resource * first, struct jive_reso
 void
 jive_resource_interference_destroy(jive_resource_interference * self);
 
-static inline void
+static inline size_t
 jive_resource_interference_add(jive_resource * first, jive_resource * second)
 {
 	jive_resource_interference * i;
 	jive_resource_interference_part * part = jive_resource_interference_hash_lookup(&first->interference, second);
 	if (part) i = part->whole;
 	else i = jive_resource_interference_create(first, second);
-	i->count ++;
+	return i->count ++;
 }
 
-static inline void
+static inline size_t
 jive_resource_interference_remove(jive_resource * first, jive_resource * second)
 {
 	jive_resource_interference * i;
 	jive_resource_interference_part * part = jive_resource_interference_hash_lookup(&first->interference, second);
 	i = part->whole;
-	i->count --;
+	size_t count = -- (i->count);
 	if (!i->count) jive_resource_interference_destroy(i);
+	return count;
 }
 
-/* TODO: iterator support */
+typedef struct jive_resource_interference_iterator jive_resource_interference_iterator;
+struct jive_resource_interference_iterator {
+	const jive_resource_interference_hash * container;
+	jive_resource_interference_part * pos;
+	size_t next_bucket;
+};
+
+static inline void
+jive_resource_interference_iterator_next_bucket(jive_resource_interference_iterator * i)
+{
+	while(i->next_bucket < i->container->nbuckets && !i->pos) {
+		i->pos = i->container->buckets[i->next_bucket].first;
+		i->next_bucket ++;
+	}
+}
+
+static inline void
+jive_resource_interference_iterator_next(jive_resource_interference_iterator * i)
+{
+	i->pos = i->pos->chain.next;
+	if (!i->pos) jive_resource_interference_iterator_next_bucket(i);
+}
+
+static inline jive_resource_interference_iterator
+jive_resource_interference_begin(const jive_resource_interference_hash * self)
+{
+	jive_resource_interference_iterator i;
+	i.container = self;
+	i.next_bucket = 0;
+	i.pos = 0;
+	jive_resource_interference_iterator_next_bucket(&i);
+	return i;
+}
+
+#define JIVE_RESOURCE_INTERFERENCE_ITERATE(container, iterator) \
+	for(iterator = jive_resource_interference_begin(&(container)); iterator.pos; jive_resource_interference_iterator_next(&iterator))
 
 #endif
