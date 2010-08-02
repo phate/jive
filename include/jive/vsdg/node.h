@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include <jive/vsdg/crossings.h>
+#include <jive/vsdg/regcls-count.h>
 
 typedef struct jive_node jive_node;
 typedef struct jive_node_class jive_node_class;
@@ -38,8 +39,8 @@ struct jive_node {
 	struct jive_node_location * shape_location;
 	
 	jive_resource_interaction resource_interaction;
-	void * use_count_before; /* TODO: data type */
-	void * use_count_after; /* TODO: data type */
+	jive_regcls_count use_count_before;
+	jive_regcls_count use_count_after;
 	
 	struct {
 		struct jive_region * first;

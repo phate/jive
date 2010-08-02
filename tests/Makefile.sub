@@ -9,6 +9,7 @@ TESTS=\
 	test_shape_crossings\
 	test_subgraph_shape\
 	test_gate_interference\
+	test_regcls_count\
 	
 # 	test_prune_replace\
 # 	test_bitstring1\

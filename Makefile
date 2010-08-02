@@ -5,7 +5,7 @@ CFLAGS+=-Wall -Werror -Wfatal-errors -g
 
 LIBJIVE_SRC = src/context.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
-	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/gate-interference.c \
+	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/gate-interference.c src/vsdg/regcls-count.c \
 	src/vsdg/cut.c src/vsdg/region.c \
 	src/vsdg/node.c src/vsdg/graph.c src/vsdg/traverser.c src/vsdg/notifiers.c \
 	src/util/textcanvas.c \

@@ -10,7 +10,9 @@
 #include <jive/vsdg/cut-private.h>
 #include <jive/vsdg/resource-interference-private.h>
 #include <jive/vsdg/gate-interference-private.h>
+#include <jive/vsdg/regcls-count-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/arch/registers.h>
 #include <jive/util/list.h>
 
 const jive_node_class JIVE_NODE = {
@@ -49,9 +51,8 @@ _jive_node_init(
 	self->shape_location = 0; 
 	
 	jive_resource_interaction_init(&self->resource_interaction);
-	
-	self->use_count_before = 0; /* TODO: data type */
-	self->use_count_after = 0; /* TODO: data type */
+	jive_regcls_count_init(&self->use_count_before);
+	jive_regcls_count_init(&self->use_count_after);
 	
 	self->anchored_regions.first = self->anchored_regions.last = 0;
 	
@@ -78,6 +79,7 @@ _jive_node_init(
 void
 _jive_node_fini(jive_node * self)
 {
+	jive_context * context = self->graph->context;
 	DEBUG_ASSERT(self->region);
 	if (self->shape_location)
 		jive_node_location_destroy(self->shape_location);
@@ -85,7 +87,7 @@ _jive_node_fini(jive_node * self)
 	jive_node_unregister_resource_crossings(self);
 	
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
-	self->region = 0; /* FIXME: cannot set region to 0, causes trouble with resource unregistration */
+	self->region = 0;
 	
 	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
 	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
@@ -93,16 +95,18 @@ _jive_node_fini(jive_node * self)
 	while(self->ninputs) jive_input_destroy(self->inputs[self->ninputs - 1]);
 	JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
 	
-	jive_context_free(self->graph->context, self->inputs);
-	jive_context_free(self->graph->context, self->outputs);
+	jive_context_free(context, self->inputs);
+	jive_context_free(context, self->outputs);
 	
-	jive_resource_interaction_fini(&self->resource_interaction, self->graph->context);
+	jive_regcls_count_fini(&self->use_count_before, context);
+	jive_regcls_count_fini(&self->use_count_after, context);
+	jive_resource_interaction_fini(&self->resource_interaction, context);
 	
 	if (self->traverser_slots) {
 		size_t n;
 		for(n=0; n<self->ntraverser_slots; n++)
-			jive_context_free(self->graph->context, self->traverser_slots[n]);
-		jive_context_free(self->graph->context, self->traverser_slots);
+			jive_context_free(context, self->traverser_slots[n]);
+		jive_context_free(context, self->traverser_slots);
 	}
 }
 
@@ -271,9 +275,11 @@ inc_active_before(jive_node * self, jive_node_resource_interaction * xpoint, siz
 			if (other == resource) continue;
 			jive_resource_interference_add(resource, other);
 		}
-		/* TODO	# assert no overflow
-		assert self._use_count_before.add_regcls(resource.get_real_regcls()) == None
-		*/
+		
+		const jive_regcls * overflow;
+		overflow = jive_regcls_count_add(&self->use_count_before, self->graph->context, jive_resource_get_real_regcls(resource));
+		(void)overflow;
+		DEBUG_ASSERT(overflow == 0);
 	}
 	xpoint->before_count += count;
 }
@@ -291,9 +297,7 @@ dec_active_before(jive_node * self, jive_node_resource_interaction * xpoint, siz
 			if (other == resource) continue;
 			jive_resource_interference_remove(resource, other);
 		}
-		/* TODO
-		self._use_count_before.sub_regcls(resource.get_real_regcls())
-		*/
+		jive_regcls_count_sub(&self->use_count_before, self->graph->context, jive_resource_get_real_regcls(resource));
 	}
 }
 

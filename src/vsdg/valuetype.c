@@ -1,9 +1,13 @@
 #include <jive/vsdg/valuetype.h>
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/basetype-private.h>
+#include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/regcls-count-private.h>
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
+
+#include <jive/util/list.h>
 
 const jive_type_class JIVE_VALUE_TYPE = {
 	.parent = &JIVE_TYPE,
@@ -157,8 +161,67 @@ _jive_value_resource_get_type(const jive_resource * self)
 	return &jive_value_type_singleton;
 }
 
+const jive_regcls *
+jive_value_resource_check_change_regcls(const jive_value_resource * self, const jive_regcls * new_regcls)
+{
+	const jive_regcls * old_regcls = self->regcls, * overflow;
+	
+	const jive_node_resource_interaction * xpoint;
+	JIVE_LIST_ITERATE(self->base.node_interaction, xpoint, same_resource_list) {
+		if (xpoint->before_count) {
+			overflow = jive_regcls_count_check_change(&xpoint->node->use_count_before, old_regcls, new_regcls);
+			if (overflow) return overflow;
+		}
+		if (xpoint->after_count) {
+			overflow = jive_regcls_count_check_change(&xpoint->node->use_count_after, old_regcls, new_regcls);
+			if (overflow) return overflow;
+		}
+	}
+	
+	return 0;
+}
+
 bool
-_jive_value_resource_can_merge(const jive_resource * self, const jive_resource * other);
+_jive_value_resource_can_merge(const jive_resource * self_, const jive_resource * other_)
+{
+	if (!other_) return true;
+	if (other_->class_ != self_->class_) return false;
+	
+	const jive_value_resource * self = (jive_value_resource *) self_;
+	if (!_jive_resource_can_merge(&self->base, other_)) return false;
+	
+	const jive_value_resource * other = (jive_value_resource *) other_;
+	
+	if (self->cpureg && other->cpureg && (self->cpureg != other->cpureg)) return false;
+	
+	const jive_regcls * old_regcls = self->regcls, * new_regcls;
+	if (old_regcls) {
+		new_regcls = jive_regcls_intersection(old_regcls, jive_resource_get_real_regcls(&other->base));
+		if (!new_regcls) return false;
+	} else new_regcls = jive_resource_get_real_regcls(&other->base);
+	
+	const jive_regcls * overflow = jive_value_resource_check_change_regcls(self, new_regcls);
+	if (overflow) return false;
+	overflow = jive_value_resource_check_change_regcls(other, new_regcls);
+	if (overflow) return false;
+	
+	/* FIXME: maybe check for cpureg assignment? */
+	return true;
+}
+
+void
+_jive_value_resource_merge(jive_resource * self_, jive_resource * other_)
+{
+	if (!other_) return;
+	jive_resource_merge(self_, other_);
+	
+	jive_value_resource * self = (jive_value_resource *) self_;
+	jive_value_resource * other = (jive_value_resource *) other_;
+	
+	/* FIXME: maybe check for cpureg assignment? */
+	const jive_regcls * new_regcls = jive_regcls_intersection(self->regcls, other->regcls);
+	jive_value_resource_set_regcls(self, new_regcls);
+}
 
 void
 _jive_value_resource_merge(jive_resource * self, jive_resource * other);
@@ -183,6 +246,36 @@ _jive_value_resource_get_real_regcls(const jive_resource * self_)
 	jive_value_resource * self = (jive_value_resource *) self_;
 	if (self->cpureg) return self->cpureg->regcls;
 	else return self->regcls;
+}
+
+static void
+jive_value_resource_nodes_change_regcls(jive_resource * self, const jive_regcls * old_regcls, const jive_regcls * new_regcls)
+{
+	jive_node_resource_interaction * xpoint;
+	JIVE_LIST_ITERATE(self->node_interaction, xpoint, same_resource_list) {
+		if (xpoint->before_count)
+			jive_regcls_count_change(&xpoint->node->use_count_before, xpoint->node->graph->context, old_regcls, new_regcls);
+		if (xpoint->after_count)
+			jive_regcls_count_change(&xpoint->node->use_count_after, xpoint->node->graph->context, old_regcls, new_regcls);
+	}
+}
+
+void
+jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * regcls)
+{
+	const jive_regcls * old_regcls = jive_resource_get_real_regcls(&self->base);
+	self->regcls = regcls;
+	const jive_regcls * new_regcls = jive_resource_get_real_regcls(&self->base);
+	jive_value_resource_nodes_change_regcls(&self->base, old_regcls, new_regcls);
+}
+
+void
+jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * cpureg)
+{
+	const jive_regcls * old_regcls = jive_resource_get_real_regcls(&self->base);
+	self->cpureg = cpureg;
+	const jive_regcls * new_regcls = jive_resource_get_real_regcls(&self->base);
+	jive_value_resource_nodes_change_regcls(&self->base, old_regcls, new_regcls);
 }
 
 /* value gates */

@@ -530,14 +530,16 @@ _jive_resource_get_type(const jive_resource * self)
 bool
 _jive_resource_can_merge(const jive_resource * self, const jive_resource * other)
 {
+	if (!other) return true;
 	if (self->class_ != other->class_) return false;
-	/* TODO check for interference */
+	if (jive_resource_interferes_with(self, other)) return false;
 	return true;
 }
 
 void
 _jive_resource_merge(jive_resource * self, jive_resource * other)
 {
+	if (!other) return;
 	while(other->inputs.first) {
 		jive_input * input = other->inputs.first;
 		jive_resource_unassign_input(other, input);
