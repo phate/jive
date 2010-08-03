@@ -405,7 +405,15 @@ _jive_output_get_type(const jive_output * self)
 jive_resource *
 _jive_output_get_constraint(const jive_output * self)
 {
-	return 0; /* TODO */
+	if (self->gate) {
+		if (!self->gate->resource) {
+			jive_resource * resource = jive_gate_get_constraint(self->gate);
+			jive_resource_assign_gate(resource, self->gate);
+		}
+		return self->gate->resource;
+	}
+	const jive_type * type = jive_output_get_type(self);
+	return jive_type_create_resource(type, self->node->graph);
 }
 
 void
