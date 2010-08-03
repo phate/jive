@@ -332,6 +332,9 @@ struct jive_gate_class {
 	char * (*get_label)(const jive_gate * self);
 	
 	const jive_type * (*get_type)(const jive_gate * self);
+	
+	/** \brief Retrieve resource constraint of gate */
+	jive_resource * (*get_constraint)(jive_gate * self);
 };
 
 extern const struct jive_gate_class JIVE_GATE;
@@ -346,6 +349,12 @@ static inline const jive_type *
 jive_gate_get_type(const jive_gate * self)
 {
 	return self->class_->get_type(self);
+}
+
+static inline jive_resource *
+jive_gate_get_constraint(jive_gate * self)
+{
+	return self->class_->get_constraint(self);
 }
 
 size_t

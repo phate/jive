@@ -44,7 +44,8 @@ const jive_gate_class JIVE_VALUE_GATE = {
 	.parent = &JIVE_GATE,
 	.fini = _jive_gate_fini, /* inherit */
 	.get_label = _jive_gate_get_label, /* inherit */
-	.get_type = _jive_value_gate_get_type /* override */
+	.get_type = _jive_value_gate_get_type, /* override */
+	.get_constraint = _jive_value_gate_get_constraint /* override */
 };
 
 const jive_resource_class JIVE_VALUE_RESOURCE = {
@@ -290,3 +291,12 @@ _jive_value_gate_get_type(const jive_gate * self)
 	return &jive_value_type_singleton;
 }
 
+jive_resource *
+_jive_value_gate_get_constraint(jive_gate * self_)
+{
+	if (self_->resource) return self_->resource;
+	jive_value_gate * self = (jive_value_gate *) self_;
+	jive_value_resource * resource = (jive_value_resource *)_jive_gate_get_constraint(self_);
+	jive_value_resource_set_regcls(resource, self->required_regcls);
+	return &resource->base;
+}

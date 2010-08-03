@@ -73,4 +73,7 @@ _jive_value_gate_get_label(const jive_gate * self);
 const jive_type *
 _jive_value_gate_get_type(const jive_gate * self);
 
+jive_resource *
+_jive_value_gate_get_constraint(jive_gate * self);
+
 #endif

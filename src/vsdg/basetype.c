@@ -234,7 +234,15 @@ _jive_input_get_type(const jive_input * self)
 jive_resource *
 _jive_input_get_constraint(const jive_input * self)
 {
-	return 0; /* TODO */
+	if (self->gate) {
+		if (!self->gate->resource) {
+			jive_resource * resource = jive_gate_get_constraint(self->gate);
+			jive_resource_assign_gate(resource, self->gate);
+		}
+		return self->gate->resource;
+	}
+	const jive_type * type = jive_input_get_type(self);
+	return jive_type_create_resource(type, self->node->graph);
 }
 
 void
@@ -415,7 +423,8 @@ const jive_gate_class JIVE_GATE = {
 	.parent = 0,
 	.fini = _jive_gate_fini,
 	.get_label = _jive_gate_get_label,
-	.get_type = _jive_gate_get_type
+	.get_type = _jive_gate_get_type,
+	.get_constraint = _jive_gate_get_constraint
 };
 
 void
@@ -458,6 +467,16 @@ const jive_type *
 _jive_gate_get_type(const jive_gate * self)
 {
 	return &jive_type_singleton;
+}
+
+jive_resource *
+_jive_gate_get_constraint(jive_gate * self)
+{
+	if (self->resource) return self->resource;
+	const jive_type * type = jive_gate_get_type(self);
+	jive_resource * resource = jive_type_create_resource(type, self->graph);
+	jive_resource_assign_gate(resource, self);
+	return resource;
 }
 
 size_t
