@@ -23,6 +23,13 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	jive_node_notifier_slot_init(&self->on_node_create, context);
 	jive_node_notifier_slot_init(&self->on_node_destroy, context);
 	jive_node_notifier_slot_init(&self->on_node_shape, context);
+	
+	jive_input_notifier_slot_init(&self->on_input_create, context);
+	jive_input_change_notifier_slot_init(&self->on_input_change, context);
+	jive_input_notifier_slot_init(&self->on_input_destroy, context);
+	
+	jive_output_notifier_slot_init(&self->on_output_create, context);
+	jive_output_notifier_slot_init(&self->on_output_destroy, context);
 }
 
 static void
@@ -55,6 +62,13 @@ _jive_graph_fini(jive_graph * self)
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);
 	jive_node_notifier_slot_fini(&self->on_node_shape);
+	
+	jive_input_notifier_slot_fini(&self->on_input_create);
+	jive_input_change_notifier_slot_fini(&self->on_input_change);
+	jive_input_notifier_slot_fini(&self->on_input_destroy);
+	
+	jive_output_notifier_slot_fini(&self->on_output_create);
+	jive_output_notifier_slot_fini(&self->on_output_destroy);
 }
 
 jive_graph *
@@ -95,34 +109,3 @@ jive_graph_prune(jive_graph * self)
 		node = next;
 	}
 }
-
-void
-jive_graph_notify_input_change(jive_graph * graph, jive_input * input, jive_output * old_origin, jive_output * new_origin)
-{
-	/* TODO */
-}
-
-void
-jive_graph_notify_input_create(jive_graph * graph, jive_input * input)
-{
-	/* TODO */
-}
-
-void
-jive_graph_notify_input_destroy(jive_graph * graph, jive_input * input)
-{
-	/* TODO */
-}
-
-void
-jive_graph_notify_output_create(jive_graph * graph, jive_output * output)
-{
-	/* TODO */
-}
-
-void
-jive_graph_notify_output_destroy(jive_graph * graph, jive_output * output)
-{
-	/* TODO */
-}
-
