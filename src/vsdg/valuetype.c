@@ -223,9 +223,6 @@ _jive_value_resource_merge(jive_resource * self_, jive_resource * other_)
 	jive_value_resource_set_regcls(self, new_regcls);
 }
 
-void
-_jive_value_resource_merge(jive_resource * self, jive_resource * other);
-
 const struct jive_cpureg *
 _jive_value_resource_get_cpureg(const jive_resource * self_)
 {
