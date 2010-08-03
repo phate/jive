@@ -1,12 +1,20 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <jive/vsdg.h>
 #include <jive/arch/registers.h>
-#include <jive/vsdg/graph.h>
 #include <jive/view/nodeview.h>
 #include <jive/view/reservationtracker.h>
 #include <jive/view/graphview.h>
 #include <jive/util/list.h>
+
+static inline const jive_regcls *
+get_input_regcls(const jive_input * input)
+{
+	if (jive_input_isinstance(input, &JIVE_VALUE_INPUT))
+		return ((jive_value_input *)input)->required_regcls;
+	return 0;
+}
 
 jive_inputview *
 jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
@@ -23,16 +31,15 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 	char * type_label = jive_type_get_label(jive_input_get_type(input));
 	
 	const jive_cpureg * cpureg = 0;
+	const jive_regcls * regcls = get_input_regcls(input);
 	if (input->resource) cpureg = jive_resource_get_cpureg(input->resource);
 	
 	if (cpureg) {
 		self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", cpureg->name, NULL);
+	} else if (regcls) {
+		self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", regcls->name, NULL);
 	} else {
 		self->label = jive_context_strjoin(context, input_label, ":", type_label, NULL);
-		/* TODO:
-		elif isinstance(input, vsdg.ValueType.Input): self.label = self.label + ":" + input.required_regcls.name
-		if (jive_input_isinstance(input, &JIVE_VALUE_INPUT)) {
-		}*/
 	}
 	
 	free(input_label);
@@ -61,6 +68,14 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 	jive_textcanvas_put_ascii(dst, x+1, y, self->label);
 }
 
+static inline const jive_regcls *
+get_output_regcls(const jive_output * output)
+{
+	if (jive_output_isinstance(output, &JIVE_VALUE_OUTPUT))
+		return ((jive_value_output *)output)->required_regcls;
+	return 0;
+}
+
 jive_outputview *
 jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 {
@@ -76,16 +91,15 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 	char * type_label = jive_type_get_label(jive_output_get_type(output));
 	
 	const jive_cpureg * cpureg = 0;
+	const jive_regcls * regcls = get_output_regcls(output);
 	if (output->resource) cpureg = jive_resource_get_cpureg(output->resource);
 	
 	if (cpureg) {
 		self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", cpureg->name, NULL);
+	} else if (regcls) {
+		self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", regcls->name, NULL);
 	} else {
 		self->label = jive_context_strjoin(context, output_label, ":", type_label, NULL);
-		/* TODO:
-		elif isinstance(output, vsdg.ValueType.Output): self.label = self.label + ":" + output.required_regcls.name
-		if (jive_output_isinstance(output, &JIVE_VALUE_OUTPUT)) {
-		}*/
 	}
 	
 	free(output_label);
