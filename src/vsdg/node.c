@@ -313,9 +313,10 @@ inc_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size
 			if (other == resource) continue;
 			jive_resource_interference_add(resource, other);
 		}
-		/* TODO	# assert no overflow
-		assert self._use_count_after.add_regcls(resource.get_real_regcls()) == None
-		*/
+		const jive_regcls * overflow;
+		overflow = jive_regcls_count_add(&self->use_count_after, self->graph->context, jive_resource_get_real_regcls(resource));
+		(void)overflow;
+		DEBUG_ASSERT(overflow == 0);
 	}
 	xpoint->after_count += count;
 }
@@ -333,9 +334,7 @@ dec_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size
 			if (other == resource) continue;
 			jive_resource_interference_remove(resource, other);
 		}
-		/* TODO
-		self._use_count_after.sub_regcls(resource.get_real_regcls())
-		*/
+		jive_regcls_count_sub(&self->use_count_after, self->graph->context, jive_resource_get_real_regcls(resource));
 	}
 }
 
