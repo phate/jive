@@ -2,6 +2,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/graph-private.h>
 
 #include <jive/context.h>
 #include <jive/util/list.h>
@@ -19,6 +20,8 @@ void
 jive_node_location_destroy(jive_node_location * self)
 {
 	jive_node * node = self->node;
+	
+	jive_graph_notify_node_remove_place(node->graph, node);
 	
 	/* nodes in sub-regions can only be placed if the anchor node
 	of the region has been placed; removing the anchoring node's placement
@@ -128,7 +131,7 @@ jive_cut_insert(jive_cut * self, jive_node_location * at, struct jive_node * nod
 	/* finally, reinstate input/output resource crossings */
 	jive_node_register_resource_crossings(node);
 	
-	/* TODO: notification via graph callback */
+	jive_graph_notify_node_place(node->graph, node);
 	
 	return loc;
 }

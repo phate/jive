@@ -50,7 +50,8 @@ struct jive_graph {
 	
 	jive_node_notifier_slot on_node_create;
 	jive_node_notifier_slot on_node_destroy;
-	jive_node_notifier_slot on_node_shape;
+	jive_node_notifier_slot on_node_place;
+	jive_node_notifier_slot on_node_remove_place;
 	
 	jive_input_notifier_slot on_input_create;
 	jive_input_change_notifier_slot on_input_change;

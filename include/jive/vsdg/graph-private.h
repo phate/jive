@@ -18,6 +18,18 @@ jive_graph_notify_node_destroy(jive_graph * graph, jive_node * node)
 }
 
 static inline void
+jive_graph_notify_node_place(jive_graph * graph, jive_node * node)
+{
+	jive_node_notifier_slot_call(&graph->on_node_place, node);
+}
+
+static inline void
+jive_graph_notify_node_remove_place(jive_graph * graph, jive_node * node)
+{
+	jive_node_notifier_slot_call(&graph->on_node_remove_place, node);
+}
+
+static inline void
 jive_graph_notify_input_create(jive_graph * graph, jive_input * input)
 {
 	jive_input_notifier_slot_call(&graph->on_input_create, input);
