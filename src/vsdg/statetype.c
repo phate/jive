@@ -5,6 +5,10 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
 
+const jive_state_type jive_state_type_singleton = {
+	.base = { .class_ = &JIVE_STATE_TYPE }
+};
+
 const jive_type_class JIVE_STATE_TYPE = {
 	.parent = &JIVE_TYPE,
 	.get_label = _jive_type_get_label, /* inherit */
@@ -14,10 +18,6 @@ const jive_type_class JIVE_STATE_TYPE = {
 	.create_gate = _jive_state_type_create_gate, /* override */
 	.equals = _jive_type_equals, /* inherit */
 	.accepts = _jive_type_accepts /* inherit */
-};
-
-const jive_type jive_state_type_singleton = {
-	.class_ = &JIVE_STATE_TYPE
 };
 
 const jive_input_class JIVE_STATE_INPUT = {
@@ -101,7 +101,7 @@ _jive_state_input_init(jive_state_input * self, struct jive_node * node, size_t 
 const jive_type *
 _jive_state_input_get_type(const jive_input * self)
 {
-	return &jive_state_type_singleton;
+	return &jive_state_type_singleton.base;
 }
 
 void
@@ -113,7 +113,7 @@ _jive_state_output_init(jive_state_output * self, struct jive_node * node, size_
 const jive_type *
 _jive_state_output_get_type(const jive_output * self)
 {
-	return &jive_state_type_singleton;
+	return &jive_state_type_singleton.base;
 }
 
 void
@@ -125,7 +125,7 @@ _jive_state_resource_init(jive_state_resource * self, struct jive_graph * graph)
 const jive_type *
 _jive_state_resource_get_type(const jive_resource * self)
 {
-	return &jive_state_type_singleton;
+	return &jive_state_type_singleton.base;
 }
 
 void
@@ -137,6 +137,6 @@ _jive_state_gate_init(jive_state_gate * self, struct jive_graph * graph, const c
 const jive_type *
 _jive_state_gate_get_type(const jive_gate * self)
 {
-	return &jive_state_type_singleton;
+	return &jive_state_type_singleton.base;
 }
 

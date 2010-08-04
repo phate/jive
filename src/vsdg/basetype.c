@@ -12,6 +12,12 @@
 #include <jive/vsdg/cut.h>
 #include <jive/util/list.h>
 
+/* static type instance, to be returned by type queries */
+const jive_type jive_type_singleton = {
+	.class_ = &JIVE_TYPE
+};
+
+
 static inline void
 crossing_range_through_apply(jive_region * passed_region, void (*function)(void * closure, jive_node * node), void * closure)
 {
@@ -137,10 +143,6 @@ const jive_type_class JIVE_TYPE = {
 	.create_gate = _jive_type_create_gate,
 	.equals = _jive_type_equals,
 	.accepts = _jive_type_accepts
-};
-
-const jive_type jive_type_singleton = {
-	.class_ = &JIVE_TYPE
 };
 
 /* inputs */

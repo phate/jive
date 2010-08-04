@@ -12,16 +12,18 @@ int main()
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
+	JIVE_DECLARE_TYPE(type);
+	
 	jive_node * n1 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type *[]){&jive_type_singleton, &jive_type_singleton});
+		2, (const jive_type *[]){type, type});
 	
 	jive_node * n2 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){&jive_type_singleton}, (jive_output *[]){n1->outputs[0]},
-		1, (const jive_type *[]){&jive_type_singleton});
+		1, (const jive_type *[]){type}, (jive_output *[]){n1->outputs[0]},
+		1, (const jive_type *[]){type});
 	
 	jive_node * n3 = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){&jive_type_singleton, &jive_type_singleton}, (jive_output *[]){n2->outputs[0], n1->outputs[1]},
+		2, (const jive_type *[]){type, type}, (jive_output *[]){n2->outputs[0], n1->outputs[1]},
 		0, 0);
 	
 	jive_cut * cut3 = jive_region_create_cut(graph->root_region);
@@ -32,9 +34,9 @@ int main()
 	jive_cut_append(cut2, n2);
 	jive_cut_append(cut1, n1);
 	
-	jive_resource * r1 = jive_type_create_resource(&jive_type_singleton, graph);
-	jive_resource * r2 = jive_type_create_resource(&jive_type_singleton, graph);
-	jive_resource * r3 = jive_type_create_resource(&jive_type_singleton, graph);
+	jive_resource * r1 = jive_type_create_resource(type, graph);
+	jive_resource * r2 = jive_type_create_resource(type, graph);
+	jive_resource * r3 = jive_type_create_resource(type, graph);
 	jive_resource_assign_output(r1, n1->outputs[0]);
 	jive_resource_assign_input(r1, n2->inputs[0]);
 	jive_resource_assign_output(r2, n1->outputs[1]);

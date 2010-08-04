@@ -9,6 +9,10 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
 
+static const jive_control_type jive_control_type_singleton = {
+	.base = { .class_ = &JIVE_CONTROL_TYPE }
+};
+
 const jive_type_class JIVE_CONTROL_TYPE = {
 	.parent = &JIVE_TYPE,
 	.get_label = _jive_type_get_label, /* inherit */
@@ -18,10 +22,6 @@ const jive_type_class JIVE_CONTROL_TYPE = {
 	.create_gate = _jive_type_create_gate, /* inherit */
 	.equals = _jive_type_equals, /* inherit */
 	.accepts = _jive_type_accepts /* inherit */
-};
-
-const jive_type jive_control_type_singleton = {
-	.class_ = &JIVE_CONTROL_TYPE
 };
 
 const jive_input_class JIVE_CONTROL_INPUT = {
@@ -102,7 +102,7 @@ _jive_control_input_fini(jive_input * self_)
 const jive_type *
 _jive_control_input_get_type(const jive_input * self)
 {
-	return &jive_control_type_singleton;
+	return &jive_control_type_singleton.base;
 }
 
 void
@@ -114,7 +114,7 @@ _jive_control_output_init(jive_control_output * self, struct jive_node * node, s
 const jive_type *
 _jive_control_output_get_type(const jive_output * self)
 {
-	return &jive_control_type_singleton;
+	return &jive_control_type_singleton.base;
 }
 
 void
@@ -126,5 +126,5 @@ _jive_control_resource_init(jive_control_resource * self, struct jive_graph * gr
 const jive_type *
 _jive_control_resource_get_type(const jive_resource * self)
 {
-	return &jive_control_type_singleton;
+	return &jive_control_type_singleton.base;
 }

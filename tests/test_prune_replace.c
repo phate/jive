@@ -29,7 +29,7 @@ int main()
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	jive_region * region = graph->root_region;
-	const jive_type * type = &jive_type_singleton;
+	JIVE_DECLARE_TYPE(type);
 	jive_node * n1 = jive_node_create(region,
 		0, NULL, NULL,
 		1, (const jive_type *[]){type});

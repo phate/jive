@@ -9,6 +9,10 @@
 
 #include <jive/util/list.h>
 
+static const jive_value_type jive_value_type_singleton = {
+	.base = {.class_ = &JIVE_VALUE_TYPE}
+};
+
 const jive_type_class JIVE_VALUE_TYPE = {
 	.parent = &JIVE_TYPE,
 	.get_label = _jive_type_get_label, /* inherit */
@@ -18,10 +22,6 @@ const jive_type_class JIVE_VALUE_TYPE = {
 	.create_gate = _jive_value_type_create_gate, /* override */
 	.equals = _jive_type_equals, /* inherit */
 	.accepts = _jive_type_accepts /* inherit */
-};
-
-const jive_type jive_value_type_singleton = {
-	.class_ = &JIVE_VALUE_TYPE
 };
 
 const jive_input_class JIVE_VALUE_INPUT = {
@@ -108,7 +108,7 @@ _jive_value_input_init(jive_value_input * self, struct jive_node * node, size_t 
 const jive_type *
 _jive_value_input_get_type(const jive_input * self)
 {
-	return &jive_value_type_singleton;
+	return &jive_value_type_singleton.base;
 }
 
 jive_resource *
@@ -133,7 +133,7 @@ _jive_value_output_init(jive_value_output * self, struct jive_node * node, size_
 const jive_type *
 _jive_value_output_get_type(const jive_output * self)
 {
-	return &jive_value_type_singleton;
+	return &jive_value_type_singleton.base;
 }
 
 jive_resource *
@@ -159,7 +159,7 @@ _jive_value_resource_init(jive_value_resource * self, struct jive_graph * graph)
 const jive_type *
 _jive_value_resource_get_type(const jive_resource * self)
 {
-	return &jive_value_type_singleton;
+	return &jive_value_type_singleton.base;
 }
 
 const jive_regcls *
@@ -288,7 +288,7 @@ _jive_value_gate_init(jive_value_gate * self, struct jive_graph * graph, const c
 const jive_type *
 _jive_value_gate_get_type(const jive_gate * self)
 {
-	return &jive_value_type_singleton;
+	return &jive_value_type_singleton.base;
 }
 
 jive_resource *

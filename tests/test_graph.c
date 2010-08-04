@@ -14,14 +14,16 @@ int main()
 	
 	jive_region * region = graph->root_region;
 	
+	JIVE_DECLARE_TYPE(type);
+	
 	jive_node * n1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){&jive_type_singleton});
+		1, (const jive_type *[]){type});
 	assert(n1);
 	assert(n1->depth_from_root == 0);
 	
 	jive_node * n2 = jive_node_create(region,
-		1, (const jive_type *[]){&jive_type_singleton}, &n1->outputs[0],
+		1, (const jive_type *[]){type}, &n1->outputs[0],
 		0, NULL);
 	assert(n2);
 	assert(n2->depth_from_root == 1);

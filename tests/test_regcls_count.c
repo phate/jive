@@ -97,7 +97,7 @@ int main()
 	
 	jive_region * region = graph->root_region;
 	
-	const jive_type * type = &jive_value_type_singleton;
+	JIVE_DECLARE_VALUE_TYPE(type);
 	
 	jive_node * top = jive_node_create(region,
 		0, NULL, NULL,

@@ -20,7 +20,7 @@ int main()
 		0, NULL, NULL,
 		0, NULL);
 	
-	const jive_type * type = &jive_type_singleton;
+	JIVE_DECLARE_TYPE(type);
 	
 	jive_gate * gate1 = jive_type_create_gate(type, graph, "gate1");
 	jive_gate * gate2 = jive_type_create_gate(type, graph, "gate2");

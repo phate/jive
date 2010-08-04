@@ -4,6 +4,7 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/arch/registers.h>
 
+typedef struct jive_value_type jive_value_type;
 typedef struct jive_value_input jive_value_input;
 typedef struct jive_value_output jive_value_output;
 typedef struct jive_value_output jive_value;
@@ -11,7 +12,11 @@ typedef struct jive_value_gate jive_value_gate;
 typedef struct jive_value_resource jive_value_resource;
 
 extern const jive_type_class JIVE_VALUE_TYPE;
-extern const jive_type jive_value_type_singleton;
+#define JIVE_DECLARE_VALUE_TYPE(name) const jive_value_type name##_struct = {{&JIVE_VALUE_TYPE}}; const jive_type * name = &name##_struct.base
+
+struct jive_value_type {
+	jive_type base;
+};
 
 extern const jive_input_class JIVE_VALUE_INPUT;
 struct jive_value_input {

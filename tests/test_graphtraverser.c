@@ -44,6 +44,7 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	
 	trav = jive_topdown_traverser_create(graph);
 	
+	JIVE_DECLARE_TYPE(type);
 	node = jive_traverser_next(trav);
 	assert(node==n1);
 	
@@ -51,14 +52,14 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	
 	jive_node * n3 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){&jive_type_singleton});
+		1, (const jive_type *[]){type});
 	
 	jive_node * n4 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){&jive_type_singleton}, &n3->outputs[0],
+		1, (const jive_type *[]){type}, &n3->outputs[0],
 		0, NULL);
 	
 	jive_node * n5 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){&jive_type_singleton}, &n2->outputs[0],
+		1, (const jive_type *[]){type}, &n2->outputs[0],
 		0, NULL);
 	
 	/*
@@ -121,13 +122,14 @@ int main()
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
+	JIVE_DECLARE_TYPE(type);
 	jive_node * n1 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type *[]){&jive_type_singleton, &jive_type_singleton});
+		2, (const jive_type *[]){type, type});
 	
 	jive_node * n2 = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){&jive_type_singleton, &jive_type_singleton}, n1->outputs,
-		1, (const jive_type *[]){&jive_type_singleton});
+		2, (const jive_type *[]){type, type}, n1->outputs,
+		1, (const jive_type *[]){type});
 	
 	(void)n1;
 	(void)n2;

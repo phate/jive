@@ -13,15 +13,17 @@ int main()
 	
 	jive_region * region = graph->root_region;
 	
+	JIVE_DECLARE_TYPE(type);
+	
 	jive_node * n1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){&jive_type_singleton});
+		1, (const jive_type *[]){type});
 	
 	jive_node * n2 = jive_node_create(region,
-		1, (const jive_type *[]){&jive_type_singleton}, &n1->outputs[0],
+		1, (const jive_type *[]){type}, &n1->outputs[0],
 		0, NULL);
 	
-	jive_resource * resource = jive_type_create_resource(&jive_type_singleton, graph);
+	jive_resource * resource = jive_type_create_resource(type, graph);
 	jive_resource_assign_output(resource, n1->outputs[0]);
 	jive_resource_assign_input(resource, n2->inputs[0]);
 	
