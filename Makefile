@@ -9,7 +9,8 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/cut.c src/vsdg/region.c \
 	src/vsdg/node.c src/vsdg/graph.c src/vsdg/traverser.c src/vsdg/notifiers.c \
 	src/util/textcanvas.c \
-	src/view/nodeview.c src/view/regionview.c src/view/reservationtracker.c src/view/graphview.c src/view.c
+	src/view/nodeview.c src/view/regionview.c src/view/reservationtracker.c src/view/graphview.c src/view.c \
+	src/bitstring/type.c
 
 #src/ra-common.c src/ra-graphcut-cache.c src/ra-shape.c src/regalloc.c
 
