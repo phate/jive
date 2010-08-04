@@ -185,9 +185,6 @@ jive_value_resource_check_change_regcls(const jive_value_resource * self, const 
 bool
 _jive_value_resource_can_merge(const jive_resource * self_, const jive_resource * other_)
 {
-	if (!other_) return true;
-	if (other_->class_ != self_->class_) return false;
-	
 	const jive_value_resource * self = (jive_value_resource *) self_;
 	if (!_jive_resource_can_merge(&self->base, other_)) return false;
 	

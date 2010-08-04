@@ -446,6 +446,8 @@ jive_resource_get_type(const jive_resource * self)
 static inline bool
 jive_resource_can_merge(const jive_resource * self, const jive_resource * other)
 {
+	if (!other) return true;
+	if (self->class_ != other->class_) return false;
 	return self->class_->can_merge(self, other);
 }
 

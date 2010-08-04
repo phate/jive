@@ -568,8 +568,6 @@ _jive_resource_get_type(const jive_resource * self)
 bool
 _jive_resource_can_merge(const jive_resource * self, const jive_resource * other)
 {
-	if (!other) return true;
-	if (self->class_ != other->class_) return false;
 	if (jive_resource_interferes_with(self, other)) return false;
 	return true;
 }
