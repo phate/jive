@@ -67,9 +67,6 @@ _jive_value_resource_get_real_regcls(const jive_resource * self);
 void
 _jive_value_gate_init(jive_value_gate * self, struct jive_graph * graph, const char name[]);
 
-char *
-_jive_value_gate_get_label(const jive_gate * self);
-
 const jive_type *
 _jive_value_gate_get_type(const jive_gate * self);
 
