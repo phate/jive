@@ -176,6 +176,18 @@ _jive_topdown_traverser_node_destroy(void * closure, jive_node * node)
 	jive_traverser_mark_node_unvisited(self, node);
 }
 
+static void
+_jive_topdown_traverser_input_change(void * closure, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+{
+	jive_traverser * self = closure;
+	if (jive_traverser_node_is_candidate(self, input->node)) {
+		jive_traverser_mark_node_unvisited(self, input->node);
+		_jive_topdown_traverser_check_node(self, input->node);
+	} else if (jive_traverser_node_is_unvisited(self, input->node)) {
+		_jive_topdown_traverser_check_node(self, input->node);
+	}
+}
+
 static inline void
 _jive_topdown_traverser_init(jive_traverser * self, jive_graph * graph)
 {
@@ -187,6 +199,7 @@ _jive_topdown_traverser_init(jive_traverser * self, jive_graph * graph)
 	
 	self->node_create = jive_node_notifier_slot_connect(&graph->on_node_create, _jive_topdown_traverser_node_create, self);
 	self->node_destroy = jive_node_notifier_slot_connect(&graph->on_node_destroy, _jive_topdown_traverser_node_destroy, self);
+	self->input_change = jive_input_change_notifier_slot_connect(&graph->on_input_change, _jive_topdown_traverser_input_change, self);
 }
 
 static jive_node *
@@ -266,6 +279,17 @@ _jive_bottomup_traverser_node_destroy(void * closure, jive_node * node)
 	jive_traverser_mark_node_unvisited(self, node);
 }
 
+static void
+_jive_bottomup_traverser_input_change(void * closure, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+{
+	jive_traverser * self = closure;
+	_jive_bottomup_traverser_check_node(self, old_origin->node);
+	if (jive_traverser_node_is_candidate(self, new_origin->node)) {
+		jive_traverser_mark_node_unvisited(self, new_origin->node);
+		_jive_bottomup_traverser_check_node(self, new_origin->node);
+	}
+}
+
 static inline void
 _jive_bottomup_traverser_init(jive_traverser * self, jive_graph * graph)
 {
@@ -277,6 +301,7 @@ _jive_bottomup_traverser_init(jive_traverser * self, jive_graph * graph)
 	
 	self->node_create = jive_node_notifier_slot_connect(&graph->on_node_create, _jive_bottomup_traverser_node_create, self);
 	self->node_destroy = jive_node_notifier_slot_connect(&graph->on_node_destroy, _jive_bottomup_traverser_node_destroy, self);
+	self->input_change = jive_input_change_notifier_slot_connect(&graph->on_input_change, _jive_bottomup_traverser_input_change, self);
 }
 
 static jive_node *
