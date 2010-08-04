@@ -417,6 +417,15 @@ _jive_output_get_constraint(const jive_output * self)
 }
 
 void
+jive_output_replace(jive_output * self, jive_output * other)
+{
+	while(self->users.first) {
+		jive_input * input = self->users.first;
+		jive_input_divert_origin(input, other);
+	}
+}
+
+void
 jive_output_destroy(jive_output * self)
 {
 	if (self->node->region) jive_graph_notify_output_destroy(self->node->graph, self);
