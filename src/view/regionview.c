@@ -149,7 +149,6 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 void
 jive_regionview_draw(jive_regionview * self, jive_textcanvas * dst)
 {
-	printf("draw region %p\n", self);
 	jive_regionview * subregion;
 	JIVE_LIST_ITERATE(self->subregions, subregion, regionview_subregions_list)
 		jive_regionview_draw(subregion, dst);
