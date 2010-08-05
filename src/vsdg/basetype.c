@@ -222,6 +222,7 @@ _jive_input_fini(jive_input * self)
 char *
 _jive_input_get_label(const jive_input * self)
 {
+	if (self->gate) return jive_gate_get_label(self->gate);
 	char tmp[16];
 	snprintf(tmp, sizeof(tmp), "#%d", self->index);
 	return strdup(tmp);
@@ -393,6 +394,7 @@ void _jive_output_fini(jive_output * self)
 char *
 _jive_output_get_label(const jive_output * self)
 {
+	if (self->gate) return jive_gate_get_label(self->gate);
 	char tmp[16];
 	snprintf(tmp, sizeof(tmp), "#%d", self->index);
 	return strdup(tmp);
