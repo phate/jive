@@ -5,9 +5,12 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
+#include <stdio.h>
+#include <string.h>
+
 const jive_type_class JIVE_BITSTRING_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
-	.get_label = _jive_type_get_label, /* inherit */
+	.get_label = _jive_bitstring_type_get_label, /* override */
 	.create_input = _jive_bitstring_type_create_input, /* override */
 	.create_output = _jive_bitstring_type_create_output, /* override */
 	.create_resource = _jive_bitstring_type_create_resource, /* override */
@@ -37,7 +40,9 @@ const jive_gate_class JIVE_BITSTRING_GATE = {
 	.fini = _jive_gate_fini, /* inherit */
 	.get_label = _jive_gate_get_label, /* inherit */
 	.get_type = _jive_bitstring_gate_get_type, /* override */
-	.get_constraint = _jive_value_gate_get_constraint /* inherit */
+	.get_constraint = _jive_value_gate_get_constraint, /* inherit */
+	.create_input = _jive_value_gate_create_input, /* override */
+	.create_output = _jive_value_gate_create_output /* override */
 };
 
 const jive_resource_class JIVE_BITSTRING_RESOURCE = {
@@ -46,13 +51,22 @@ const jive_resource_class JIVE_BITSTRING_RESOURCE = {
 	.get_label = _jive_resource_get_label, /* inherit */
 	.get_type = _jive_bitstring_resource_get_type, /* override */
 	.can_merge = _jive_bitstring_resource_can_merge, /* override */
-	.merge = _jive_value_resource_merge, /* override */
+	.merge = _jive_value_resource_merge, /* inherit */
 	.get_cpureg = _jive_value_resource_get_cpureg, /* inherit */
 	.get_regcls = _jive_value_resource_get_regcls, /* inherit */
 	.get_real_regcls = _jive_value_resource_get_real_regcls /* inherit */
 };
 
 /* bitstring_type inheritable members */
+
+char *
+_jive_bitstring_type_get_label(const jive_type * self_)
+{
+	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
+	char tmp[16];
+	snprintf(tmp, sizeof(tmp), "bits%d", self->nbits);
+	return strdup(tmp);
+}
 
 jive_input *
 _jive_bitstring_type_create_input(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)

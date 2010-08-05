@@ -45,7 +45,9 @@ const jive_gate_class JIVE_VALUE_GATE = {
 	.fini = _jive_gate_fini, /* inherit */
 	.get_label = _jive_gate_get_label, /* inherit */
 	.get_type = _jive_value_gate_get_type, /* override */
-	.get_constraint = _jive_value_gate_get_constraint /* override */
+	.get_constraint = _jive_value_gate_get_constraint, /* override */
+	.create_input = _jive_value_gate_create_input, /* override */
+	.create_output = _jive_value_gate_create_output /* override */
 };
 
 const jive_resource_class JIVE_VALUE_RESOURCE = {
@@ -297,3 +299,22 @@ _jive_value_gate_get_constraint(jive_gate * self_)
 	jive_value_resource_set_regcls(resource, self->required_regcls);
 	return &resource->base;
 }
+
+jive_input *
+_jive_value_gate_create_input(const jive_gate * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
+{
+	const jive_value_gate * self = (const jive_value_gate *) self_;
+	jive_value_input * input = (jive_value_input *) _jive_gate_create_input(&self->base, node, index, initial_operand);
+	input->required_regcls = self->required_regcls;
+	return &input->base;
+}
+
+jive_output *
+_jive_value_gate_create_output(const jive_gate * self_, struct jive_node * node, size_t index)
+{
+	const jive_value_gate * self = (const jive_value_gate *) self_;
+	jive_value_output * output = (jive_value_output *) _jive_gate_create_output(&self->base, node, index);
+	output->required_regcls = self->required_regcls;
+	return &output->base;
+}
+

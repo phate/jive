@@ -211,8 +211,7 @@ jive_node_add_output(jive_node * self, const jive_type * type)
 jive_input *
 jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
 {
-	const jive_type * type = jive_gate_get_type(gate);
-	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	jive_input * input = jive_gate_create_input(gate, self, self->ninputs, initial_operand);
 	_jive_node_add_input(self, input);
 	input->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
@@ -230,8 +229,7 @@ jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_o
 jive_output *
 jive_node_gate_output(jive_node * self, jive_gate * gate)
 {
-	const jive_type * type = jive_gate_get_type(gate);
-	jive_output * output = jive_type_create_output(type, self, self->noutputs);
+	jive_output * output = jive_gate_create_output(gate, self, self->noutputs);
 	_jive_node_add_output(self, output);
 	output->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);

@@ -334,6 +334,10 @@ struct jive_gate_class {
 	
 	/** \brief Retrieve resource constraint of gate */
 	jive_resource * (*get_constraint)(jive_gate * self);
+	
+	jive_input * (*create_input)(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand);
+	
+	jive_output * (*create_output)(const jive_gate * self, struct jive_node * node, size_t index);
 };
 
 extern const struct jive_gate_class JIVE_GATE;
@@ -354,6 +358,18 @@ static inline jive_resource *
 jive_gate_get_constraint(jive_gate * self)
 {
 	return self->class_->get_constraint(self);
+}
+
+static inline jive_input *
+jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand)
+{
+	return self->class_->create_input(self, node, index, initial_operand);
+}
+
+static inline jive_output *
+jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index)
+{
+	return self->class_->create_output(self, node, index);
 }
 
 size_t

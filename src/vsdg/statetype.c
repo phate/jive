@@ -41,7 +41,9 @@ const jive_gate_class JIVE_STATE_GATE = {
 	.fini = _jive_gate_fini, /* inherit */
 	.get_label = _jive_gate_get_label, /* inherit */
 	.get_type = _jive_state_gate_get_type, /* override */
-	.get_constraint = _jive_gate_get_constraint /* inherit */
+	.get_constraint = _jive_gate_get_constraint, /* inherit */
+	.create_input = _jive_gate_create_input, /* inherit */
+	.create_output = _jive_gate_create_output /* inherit */
 };
 
 const jive_resource_class JIVE_STATE_RESOURCE = {
