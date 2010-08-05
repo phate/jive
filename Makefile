@@ -10,7 +10,13 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/node.c src/vsdg/graph.c src/vsdg/traverser.c src/vsdg/notifiers.c \
 	src/util/textcanvas.c src/util/buffer.c \
 	src/view/nodeview.c src/view/regionview.c src/view/reservationtracker.c src/view/graphview.c src/view.c \
-	src/bitstring/type.c
+	\
+	src/bitstring/type.c \
+	\
+	src/arch/instruction.c src/arch/registers.c \
+	\
+	src/backend/i386/registerset.c\
+	src/backend/i386/instructionset.c\
 
 #src/ra-common.c src/ra-graphcut-cache.c src/ra-shape.c src/regalloc.c
 

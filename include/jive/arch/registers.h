@@ -1,19 +1,30 @@
 #ifndef JIVE_ARCH_REGISTERS_H
 #define JIVE_ARCH_REGISTERS_H
 
+#include <unistd.h>
+
+struct jive_type;
+
 typedef struct jive_cpureg jive_cpureg;
 typedef struct jive_regcls jive_regcls;
 
 struct jive_cpureg {
 	const jive_regcls * regcls;
 	const char name[32];
+	size_t index;
+	int code;
 };
 
 struct jive_regcls {
 	const jive_regcls * parent;
-	unsigned short nregs;
-	unsigned short depth;
 	const char name[32];
+	size_t nbits;
+	const jive_cpureg * regs;
+	size_t nregs;
+	size_t index;
+	size_t int_arithmetic_width;
+	size_t loadstore_width;
+	size_t depth;
 };
 
 static inline const jive_regcls *
@@ -39,5 +50,8 @@ jive_regcls_intersection(const jive_regcls * first, const jive_regcls * second)
 	if (ancestor == second) return first;
 	return 0;
 }
+
+const struct jive_type *
+jive_regcls_get_type(const jive_regcls * self);
 
 #endif

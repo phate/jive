@@ -66,6 +66,8 @@ struct jive_node {
 	struct jive_traverser_nodestate ** traverser_slots;
 };
 
+extern const jive_node_class JIVE_NODE;
+
 typedef enum jive_node_type_flags {
 	jive_node_class_associative = 1,
 	jive_node_class_commutative = 2
