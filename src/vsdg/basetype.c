@@ -89,6 +89,8 @@ _jive_type_get_label(const jive_type * self)
 jive_input *
 _jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
+	/* FIXME: consider raising a "logic error" instead */
+	DEBUG_ASSERT(jive_type_accepts(self, jive_output_get_type(initial_operand)));
 	jive_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
 	input->class_ = &JIVE_INPUT;
 	_jive_input_init(input, node, index, initial_operand);
@@ -172,8 +174,6 @@ jive_input_remove_as_user(jive_input * self, jive_output * output)
 void
 _jive_input_init(jive_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	DEBUG_ASSERT(jive_type_accepts(jive_input_get_type(self), jive_output_get_type(origin)));
-	
 	self->node = node;
 	self->index = index;
 	self->origin = origin;
