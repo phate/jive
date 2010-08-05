@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-/** \file rtdt/buffer.h */
+#include <jive/context.h>
+
+/** \file jive/buffer.h */
 
 /**
 	\defgroup jive_buffer Expandable buffers 
@@ -16,40 +18,42 @@
 */
 
 /** \brief Expandable buffer */
-typedef struct _jive_buffer jive_buffer;
+typedef struct jive_buffer jive_buffer;
 
 /** \brief Expandable buffer */
-struct _jive_buffer {
+struct jive_buffer {
 	/** \brief Data stored in buffer */
 	void * data;
 	/** \brief Number of bytes stored in buffer */
 	size_t size;
 	/** \brief Available storage space before buffer must be expanded */
 	size_t available;
+	/** \brief Context used for memory allocations */
+	jive_context * context;
 };
 
 static inline void
-jive_buffer_init(jive_buffer * buffer);
+jive_buffer_init(jive_buffer * self, jive_context * context);
 
 static inline void
-jive_buffer_destroy(jive_buffer * buffer);
+jive_buffer_fini(jive_buffer * self);
 
 static inline void *
-jive_buffer_reserve(jive_buffer * buffer, size_t size);
+jive_buffer_reserve(jive_buffer * self, size_t size);
 
 static inline bool
-jive_buffer_put(jive_buffer * buffer, void * data, size_t size);
+jive_buffer_put(jive_buffer * self, void * data, size_t size);
 
 static inline bool
-jive_buffer_putbyte(jive_buffer * buffer, unsigned char byte);
+jive_buffer_putbyte(jive_buffer * self, unsigned char byte);
 
 void *
-jive_buffer_executable(const jive_buffer * buffer);
+jive_buffer_executable(const jive_buffer * self);
 
 /* implementation */
 
 void *
-jive_buffer_reserve_slow(jive_buffer * buffer, size_t size);
+jive_buffer_reserve_slow(jive_buffer * self, size_t size);
 
 /**
 	\brief Initialize expandable buffer
@@ -57,10 +61,11 @@ jive_buffer_reserve_slow(jive_buffer * buffer, size_t size);
 	\param buffer Buffer to initialize
 */
 static inline void
-jive_buffer_init(jive_buffer * buffer)
+jive_buffer_init(jive_buffer * self, jive_context * context)
 {
-	buffer->data = 0;
-	buffer->size = buffer->available = 0;
+	self->data = 0;
+	self->size = self->available = 0;
+	self->context = context;
 }
 
 /**
@@ -70,9 +75,9 @@ jive_buffer_init(jive_buffer * buffer)
 	Frees the memory stored in the buffer
 */
 static inline void
-jive_buffer_destroy(jive_buffer * buffer)
+jive_buffer_fini(jive_buffer * self)
 {
-	if (buffer->data) free(buffer->data);
+	jive_context_free(self->context, self->data);
 }
 
 /**
@@ -90,13 +95,13 @@ jive_buffer_destroy(jive_buffer * buffer)
 	\ref jive_buffer_append
 */
 static inline void *
-jive_buffer_reserve(jive_buffer * buffer, size_t size)
+jive_buffer_reserve(jive_buffer * self, size_t size)
 {
-	if (buffer->size + size > buffer->available)
-		return jive_buffer_reserve_slow(buffer, size);
+	if (self->size + size > self->available)
+		return jive_buffer_reserve_slow(self, size);
 	
-	void * tmp = buffer->size + (char *)(buffer->data);
-	buffer->size += size;
+	void * tmp = self->size + (char *)(self->data);
+	self->size += size;
 	return tmp;
 }
 
@@ -113,9 +118,9 @@ jive_buffer_reserve(jive_buffer * buffer, size_t size)
 	condition.
 */
 static inline bool
-jive_buffer_put(jive_buffer * buffer, void * data, size_t size)
+jive_buffer_put(jive_buffer * self, void * data, size_t size)
 {
-	void * ptr = jive_buffer_reserve(buffer, size);
+	void * ptr = jive_buffer_reserve(self, size);
 	if (!ptr) return false;
 	memcpy(ptr, data, size);
 	return true;
@@ -133,9 +138,9 @@ jive_buffer_put(jive_buffer * buffer, void * data, size_t size)
 	condition.
 */
 static inline bool
-jive_buffer_putbyte(jive_buffer * buffer, unsigned char byte)
+jive_buffer_putbyte(jive_buffer * self, unsigned char byte)
 {
-	return jive_buffer_put(buffer, &byte, 1);
+	return jive_buffer_put(self, &byte, 1);
 }
 
 /** @} */
