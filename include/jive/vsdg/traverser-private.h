@@ -6,22 +6,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/internal/compiler.h>
 
-typedef struct jive_traverser_nodestate jive_traverser_nodestate;
-typedef struct jive_traverser_graphstate jive_traverser_graphstate;
-
-struct jive_traverser_graphstate {
-	jive_traverser * traverser;
-	size_t cookie;
-};
-
-struct jive_traverser_nodestate {
-	jive_node * node;
-	size_t cookie;
-	struct {
-		jive_traverser_nodestate * prev;
-		jive_traverser_nodestate * next;
-	} traverser_node_list;
-};
+extern const jive_traverser_class JIVE_TRAVERSER;
 
 void
 _jive_traverser_fini(jive_traverser * self);
@@ -29,26 +14,31 @@ _jive_traverser_fini(jive_traverser * self);
 void
 _jive_traverser_init(jive_traverser * self, jive_graph * graph);
 
-jive_traverser_nodestate *
-jive_traverser_alloc_nodestate(const jive_traverser * self, jive_node * node);
+void
+jive_traverser_add_frontier(jive_traverser * self, jive_traversal_state * state_tracker, struct jive_traversal_nodestate * nodestate);
 
-static inline jive_traverser_nodestate *
-jive_traverser_get_nodestate(const jive_traverser * self, jive_node * node)
-{
-	if (likely(self->index < node->ntraverser_slots)) {
-		jive_traverser_nodestate * nodestate = node->traverser_slots[self->index];
-		if (likely(nodestate != 0)) return nodestate;
-	}
-	return jive_traverser_alloc_nodestate(self, node);
-}
+extern const jive_traverser_class JIVE_FULL_TRAVERSER;
 
-bool
-jive_traverser_node_is_unvisited(const jive_traverser * self, jive_node * node);
+typedef struct jive_full_traverser jive_full_traverser;
 
-bool
-jive_traverser_node_is_candidate(const jive_traverser * self, jive_node * node);
+struct jive_full_traverser {
+	jive_traverser base;
+	
+	struct jive_notifier
+		* node_create,
+		* node_destroy,
+		* input_change;
+	
+	jive_traversal_state state_tracker;
+};
 
-bool
-jive_traverser_node_is_visited(const jive_traverser * self, jive_node * node);
+void
+_jive_full_traverser_fini(jive_traverser * self_);
+
+void
+_jive_full_traverser_init(jive_full_traverser * self, jive_graph * graph);
+
+void
+jive_full_traverser_add_frontier(jive_full_traverser * self,  struct jive_traversal_nodestate * nodestate);
 
 #endif

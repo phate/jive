@@ -110,6 +110,7 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	
 	jive_traverser_destroy(trav);
 	
+	assert(visited_n2);
 	assert(!visited_n3);
 	assert(!visited_n4);
 	assert(visited_n5);

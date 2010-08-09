@@ -16,7 +16,7 @@ struct jive_type;
 struct jive_output;
 struct jive_gate;
 struct jive_region;
-struct jive_traverser_nodestate;
+struct jive_traversal_nodestate;
 struct jive_node_location;
 
 struct jive_node {
@@ -63,7 +63,7 @@ struct jive_node {
 	} graph_bottom_list;
 	
 	size_t ntraverser_slots;
-	struct jive_traverser_nodestate ** traverser_slots;
+	struct jive_traversal_nodestate ** traverser_slots;
 };
 
 extern const jive_node_class JIVE_NODE;
