@@ -8,16 +8,6 @@
 #include <jive/debug-private.h>
 #include <jive/util/list.h>
 
-struct jive_traversal_nodestate {
-	struct jive_node * node;
-	struct jive_traverser * traverser;
-	size_t cookie;
-	struct {
-		jive_traversal_nodestate * prev;
-		jive_traversal_nodestate * next;
-	} traverser_node_list;
-};
-
 struct jive_traversal_state {
 	struct jive_graph * graph;
 	size_t cookie;

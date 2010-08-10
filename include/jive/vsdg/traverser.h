@@ -12,6 +12,16 @@ typedef struct jive_traverser_class jive_traverser_class;
 typedef struct jive_traversal_nodestate jive_traversal_nodestate;
 typedef struct jive_traversal_state jive_traversal_state;
 
+struct jive_traversal_nodestate {
+	struct jive_node * node;
+	struct jive_traverser * traverser;
+	size_t cookie;
+	struct {
+		jive_traversal_nodestate * prev;
+		jive_traversal_nodestate * next;
+	} traverser_node_list;
+};
+
 struct jive_traverser {
 	const jive_traverser_class * class_;
 	

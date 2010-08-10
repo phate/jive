@@ -13,6 +13,8 @@ LIBJIVE_SRC = src/context.c \
 	\
 	src/bitstring/type.c \
 	\
+	src/regalloc/shaping-traverser.c \
+	\
 	src/arch/instruction.c src/arch/registers.c \
 	\
 	src/backend/i386/registerset.c\
