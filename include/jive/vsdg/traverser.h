@@ -4,21 +4,18 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include <jive/vsdg/traversal-state.h>
+struct jive_graph;
+struct jive_node;
 
 typedef struct jive_traverser jive_traverser;
 typedef struct jive_traverser_class jive_traverser_class;
-typedef struct jive_traverser_graphstate jive_traverser_graphstate;
-
-struct jive_traverser_graphstate {
-	jive_traverser * traverser;
-	size_t cookie;
-};
+typedef struct jive_traversal_nodestate jive_traversal_nodestate;
+typedef struct jive_traversal_state jive_traversal_state;
 
 struct jive_traverser {
 	const jive_traverser_class * class_;
 	
-	jive_graph * graph;
+	struct jive_graph * graph;
 	
 	struct {
 		struct jive_traversal_nodestate * first;
@@ -48,14 +45,5 @@ jive_topdown_traverser_create(struct jive_graph * graph);
 
 jive_traverser *
 jive_bottomup_traverser_create(struct jive_graph * graph);
-
-bool
-jive_traverser_node_is_unvisited(const jive_traverser * self, struct jive_node * node);
-
-bool
-jive_traverser_node_is_candidate(const jive_traverser * self, struct jive_node * node);
-
-bool
-jive_traverser_node_is_visited(const jive_traverser * self, struct jive_node * node);
 
 #endif
