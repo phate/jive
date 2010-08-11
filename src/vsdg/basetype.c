@@ -459,7 +459,7 @@ _jive_gate_init(jive_gate * self, struct jive_graph * graph, const char name[])
 	self->outputs.first = self->outputs.last = 0;
 	self->may_spill = true;
 	self->resource = 0;
-	jive_gate_interference_hash_init(&self->interference);
+	jive_gate_interference_hash_init(&self->interference, graph->context);
 	self->resource_gate_list.prev = self->resource_gate_list.next = 0;
 	self->graph_gate_list.prev = self->graph_gate_list.next = 0;
 	
@@ -474,7 +474,7 @@ _jive_gate_fini(jive_gate * self)
 	
 	if (self->resource) jive_resource_unassign_gate(self->resource, self);
 	
-	jive_gate_interference_hash_fini(&self->interference, self->graph->context);
+	jive_gate_interference_hash_fini(&self->interference);
 	jive_context_free(self->graph->context, self->name);
 	
 	JIVE_LIST_REMOVE(self->graph->gates, self, graph_gate_list);
@@ -553,7 +553,7 @@ _jive_resource_init(jive_resource * self, jive_graph * graph)
 	self->gates.first = self->gates.last = 0;
 	
 	jive_node_interaction_init(&self->node_interaction);
-	jive_resource_interference_hash_init(&self->interference);
+	jive_resource_interference_hash_init(&self->interference, graph->context);
 	self->hovering_region = 0;
 	
 	self->graph_resource_list.prev = self->graph_resource_list.next = 0;
@@ -566,7 +566,7 @@ _jive_resource_fini(jive_resource * self)
 	DEBUG_ASSERT(self->inputs.first == 0 && self->inputs.last == 0);
 	DEBUG_ASSERT(self->outputs.first == 0 && self->outputs.last == 0);
 	DEBUG_ASSERT(self->gates.first == 0 && self->gates.last == 0);
-	jive_resource_interference_hash_fini(&self->interference, self->graph->context);
+	jive_resource_interference_hash_fini(&self->interference);
 }
 
 char *
@@ -747,9 +747,9 @@ jive_resource_assign_gate(jive_resource * self, jive_gate * gate)
 	JIVE_LIST_PUSH_BACK(self->gates, gate, resource_gate_list);
 	gate->resource = self;
 	
-	jive_gate_interference_iterator i;
-	JIVE_GATE_INTERFERENCE_ITERATE(gate->interference, i) {
-		jive_gate * other = i.pos->gate;
+	struct jive_gate_interference_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+		jive_gate * other = i.entry->gate;
 		DEBUG_ASSERT(other != gate);
 		if (other->resource)
 			jive_resource_interference_add(self, other->resource);
@@ -766,9 +766,9 @@ jive_resource_unassign_gate(jive_resource * self, jive_gate * gate)
 	
 	jive_resource_maybe_remove_from_graph(self);
 	
-	jive_gate_interference_iterator i;
-	JIVE_GATE_INTERFERENCE_ITERATE(gate->interference, i) {
-		jive_gate * other = i.pos->gate;
+	struct jive_gate_interference_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+		jive_gate * other = i.entry->gate;
 		DEBUG_ASSERT(other != gate);
 		if (other->resource)
 			jive_resource_interference_remove(self, other->resource);

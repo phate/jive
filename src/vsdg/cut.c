@@ -61,8 +61,8 @@ add_crossings_from_lower_node(jive_node * node, jive_node * lower_node)
 	the lower node, add them as crossing this node with the
 	correct multiplicity */
 	jive_resource_interaction_iterator i;
-	JIVE_RESOURCE_INTERACTION_ITERATE(lower_node->resource_interaction, i) {
-		jive_node_resource_interaction * xpoint = i.pos;
+	JIVE_HASH_ITERATE(jive_resource_interaction, lower_node->resource_interaction, i) {
+		jive_node_resource_interaction * xpoint = i.entry;
 		if (xpoint->crossed_count == 0) continue;
 		jive_node_add_crossed_resource(node, xpoint->resource, xpoint->crossed_count);
 	}
@@ -83,8 +83,8 @@ add_crossings_from_lower_node(jive_node * node, jive_node * lower_node)
 			/* resources passed through the anchor node are passed through the
 			sub-region(s) as well and have thus just been counted twise, so
 			fix-up and remove the duplicates */
-			JIVE_RESOURCE_INTERACTION_ITERATE(lower_node->resource_interaction, i) {
-				jive_node_resource_interaction * xpoint = i.pos;
+			JIVE_HASH_ITERATE(jive_resource_interaction, lower_node->resource_interaction, i) {
+				jive_node_resource_interaction * xpoint = i.entry;
 				if (xpoint->crossed_count == 0) continue;
 				if (jive_resource_originates_in(xpoint->resource, node)) continue;
 				jive_node_remove_crossed_resource(node, xpoint->resource, xpoint->crossed_count);
@@ -121,8 +121,8 @@ jive_cut_insert(jive_cut * self, jive_node_location * at, struct jive_node * nod
 		add_crossings_from_lower_node(node, next_node);
 	} else if (node->region->anchor_node) {
 		jive_resource_interaction_iterator i;
-		JIVE_RESOURCE_INTERACTION_ITERATE(node->region->anchor_node->resource_interaction, i) {
-			jive_node_resource_interaction * xpoint = i.pos;
+		JIVE_HASH_ITERATE(jive_resource_interaction, node->region->anchor_node->resource_interaction, i) {
+			jive_node_resource_interaction * xpoint = i.entry;
 			if (xpoint->crossed_count == 0) continue;
 			jive_node_add_crossed_resource(node, xpoint->resource, xpoint->crossed_count);
 		}

@@ -19,6 +19,7 @@ TESTS=\
 # 	test_machinedef\
 # 	arithmetic_function
 
+include tests/util/Makefile.sub
 include tests/regalloc/Makefile.sub
 include tests/i386/Makefile.sub
 

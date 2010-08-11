@@ -18,6 +18,11 @@ struct jive_inputview {
 	int x, y, width, height;
 	char * label;
 	int edge_bend_y;
+	
+	struct {
+		jive_inputview * prev;
+		jive_inputview * next;
+	} hash_chain;
 };
 
 jive_inputview *
@@ -43,6 +48,11 @@ struct jive_outputview {
 	char * label;
 	
 	short edge_begin_x, edge_begin_y;
+	
+	struct {
+		jive_outputview * prev;
+		jive_outputview * next;
+	} hash_chain;
 };
 
 jive_outputview *
@@ -74,6 +84,11 @@ struct jive_nodeview {
 		jive_nodeview * prev;
 		jive_nodeview * next;
 	} regionview_nodes_list;
+	
+	struct {
+		jive_nodeview * prev;
+		jive_nodeview * next;
+	} hash_chain;
 };
 
 jive_nodeview *

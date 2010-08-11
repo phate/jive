@@ -50,7 +50,7 @@ _jive_node_init(
 	self->region = 0;
 	self->shape_location = 0; 
 	
-	jive_resource_interaction_init(&self->resource_interaction);
+	jive_resource_interaction_init(&self->resource_interaction, region->graph->context);
 	jive_regcls_count_init(&self->use_count_before);
 	jive_regcls_count_init(&self->use_count_after);
 	
@@ -100,7 +100,7 @@ _jive_node_fini(jive_node * self)
 	
 	jive_regcls_count_fini(&self->use_count_before, context);
 	jive_regcls_count_fini(&self->use_count_after, context);
-	jive_resource_interaction_fini(&self->resource_interaction, context);
+	jive_resource_interaction_fini(&self->resource_interaction);
 	
 	if (self->traverser_slots) {
 		size_t n;
@@ -267,9 +267,9 @@ inc_active_before(jive_node * self, jive_node_resource_interaction * xpoint, siz
 	jive_resource * resource = xpoint->resource;
 	if (xpoint->before_count == 0) {
 		jive_resource_interaction_iterator i;
-		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
-			jive_resource * other = i.pos->resource;
-			if (i.pos->before_count == 0) continue;
+		JIVE_HASH_ITERATE(jive_resource_interaction, self->resource_interaction, i) {
+			jive_resource * other = i.entry->resource;
+			if (i.entry->before_count == 0) continue;
 			if (other == resource) continue;
 			jive_resource_interference_add(resource, other);
 		}
@@ -289,9 +289,9 @@ dec_active_before(jive_node * self, jive_node_resource_interaction * xpoint, siz
 	jive_resource * resource = xpoint->resource;
 	if (xpoint->before_count == 0) {
 		jive_resource_interaction_iterator i;
-		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
-			jive_resource * other = i.pos->resource;
-			if (i.pos->before_count == 0) continue;
+		JIVE_HASH_ITERATE(jive_resource_interaction, self->resource_interaction, i) {
+			jive_resource * other = i.entry->resource;
+			if (i.entry->before_count == 0) continue;
 			if (other == resource) continue;
 			jive_resource_interference_remove(resource, other);
 		}
@@ -305,9 +305,9 @@ inc_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size
 	jive_resource * resource = xpoint->resource;
 	if (xpoint->after_count == 0) {
 		jive_resource_interaction_iterator i;
-		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
-			jive_resource * other = i.pos->resource;
-			if (i.pos->after_count == 0) continue;
+		JIVE_HASH_ITERATE(jive_resource_interaction, self->resource_interaction, i) {
+			jive_resource * other = i.entry->resource;
+			if (i.entry->after_count == 0) continue;
 			if (other == resource) continue;
 			jive_resource_interference_add(resource, other);
 		}
@@ -326,9 +326,9 @@ dec_active_after(jive_node * self, jive_node_resource_interaction * xpoint, size
 	jive_resource * resource = xpoint->resource;
 	if (xpoint->after_count == 0) {
 		jive_resource_interaction_iterator i;
-		JIVE_RESOURCE_INTERACTION_ITERATE(self->resource_interaction, i) {
-			jive_resource * other = i.pos->resource;
-			if (i.pos->after_count == 0) continue;
+		JIVE_HASH_ITERATE(jive_resource_interaction, self->resource_interaction, i) {
+			jive_resource * other = i.entry->resource;
+			if (i.entry->after_count == 0) continue;
 			if (other == resource) continue;
 			jive_resource_interference_remove(resource, other);
 		}

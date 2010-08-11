@@ -20,18 +20,17 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 	if (jive_nodeview_map_lookup(&self->nodemap, node)) return;
 	
 	jive_nodeview * nodeview = jive_nodeview_create(self, node);
-	jive_nodeview_map_set(&self->nodemap, node, nodeview);
+	jive_nodeview_map_insert(&self->nodemap, nodeview);
 	size_t n;
 	for(n=0; n<node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
 		jive_outputview * outputview = nodeview->outputs[n];
-		jive_outputview_map_set(&self->outputmap, output, outputview);
+		jive_outputview_map_insert(&self->outputmap, outputview);
 	}
 	
 	for(n=0; n<node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		jive_inputview * inputview = nodeview->inputs[n];
-		jive_inputview_map_set(&self->inputmap, input, inputview);
+		jive_inputview_map_insert(&self->inputmap, inputview);
 		jive_graphview_add_node_recursive(self, input->origin->node);
 	}
 }
@@ -128,24 +127,19 @@ jive_graphview_draw(jive_graphview * self)
 	
 	jive_regionview_draw(self->root_region, &self->canvas);
 	
-	size_t n;
-	for(n=0; n<self->inputmap.nbuckets; n++) {
-		struct jive_inputview_map_entry * entry = self->inputmap.buckets[n];
-		while(entry) {
-			jive_inputview * inputview = entry->value;
-			jive_outputview * outputview = jive_outputview_map_lookup(&self->outputmap, inputview->input->origin)->value;
-			
-			int begin_x = outputview->nodeview->x + jive_outputview_get_edge_offset(outputview);
-			int begin_y = jive_nodeview_get_y(outputview->nodeview) + outputview->nodeview->height - 1;
-			int bend_y = jive_nodeview_get_y(inputview->nodeview) + inputview->edge_bend_y;
-			int end_x = inputview->nodeview->x + jive_inputview_get_edge_offset(inputview);
-			int end_y = jive_nodeview_get_y(inputview->nodeview);
-			
-			jive_textcanvas_vline(&self->canvas, begin_x, begin_y, bend_y, false, false);
-			jive_textcanvas_hline(&self->canvas, begin_x, bend_y, end_x, false, false);
-			jive_textcanvas_vline(&self->canvas, end_x, bend_y, end_y, false, false);
-			
-			entry = entry->next;
-		}
+	struct jive_inputview_map_iterator i;
+	JIVE_HASH_ITERATE(jive_inputview_map, self->inputmap, i) {
+		jive_inputview * inputview = i.entry;
+		jive_outputview * outputview = jive_outputview_map_lookup(&self->outputmap, inputview->input->origin);
+		
+		int begin_x = outputview->nodeview->x + jive_outputview_get_edge_offset(outputview);
+		int begin_y = jive_nodeview_get_y(outputview->nodeview) + outputview->nodeview->height - 1;
+		int bend_y = jive_nodeview_get_y(inputview->nodeview) + inputview->edge_bend_y;
+		int end_x = inputview->nodeview->x + jive_inputview_get_edge_offset(inputview);
+		int end_y = jive_nodeview_get_y(inputview->nodeview);
+		
+		jive_textcanvas_vline(&self->canvas, begin_x, begin_y, bend_y, false, false);
+		jive_textcanvas_hline(&self->canvas, begin_x, bend_y, end_x, false, false);
+		jive_textcanvas_vline(&self->canvas, end_x, bend_y, end_y, false, false);
 	}
 }

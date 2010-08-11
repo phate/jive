@@ -2,6 +2,7 @@
 #define JIVE_VIEW_GRAPHVIEW_H
 
 #include <jive/internal/metacontainers.h>
+#include <jive/util/hash.h>
 
 #include <jive/view/nodeview.h>
 #include <jive/vsdg.h>
@@ -17,9 +18,14 @@ struct jive_graphview_row {
 
 static inline int ptr_hash(void * n) {return (intptr_t)n;}
 
-DEFINE_HASHMAP_TYPE(jive_nodeview_map, jive_node *, jive_nodeview *, ptr_hash);
-DEFINE_HASHMAP_TYPE(jive_inputview_map, jive_input *, jive_inputview *, ptr_hash);
-DEFINE_HASHMAP_TYPE(jive_outputview_map, jive_output *, jive_outputview *, ptr_hash);
+JIVE_DECLARE_HASH_TYPE(jive_nodeview_map, jive_nodeview, jive_node *, node, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_nodeview_map, jive_nodeview, jive_node *, node, hash_chain);
+
+JIVE_DECLARE_HASH_TYPE(jive_inputview_map, jive_inputview, jive_input *, input, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_inputview_map, jive_inputview, jive_input *, input, hash_chain);
+
+JIVE_DECLARE_HASH_TYPE(jive_outputview_map, jive_outputview, jive_output *, output, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_outputview_map, jive_outputview, jive_output *, output, hash_chain);
 
 struct jive_graphview {
 	struct jive_graph * graph;

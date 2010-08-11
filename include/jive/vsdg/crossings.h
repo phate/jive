@@ -2,6 +2,7 @@
 #define JIVE_VSDG_CROSSINGS_H
 
 #include <jive/context.h>
+#include <jive/util/hash.h>
 
 /*
 	The data structures below keep track of node/resource
@@ -26,17 +27,9 @@ typedef struct jive_node_resource_interaction_hash_bucket jive_node_resource_int
 typedef struct jive_node_interaction jive_node_interaction;
 typedef struct jive_resource_interaction jive_resource_interaction;
 
-struct jive_node_resource_interaction_hash_bucket {
-	struct jive_node_resource_interaction * first;
-	struct jive_node_resource_interaction * last;
-};
-
 /* interaction points of single node with resources, hashed by resource */
 
-struct jive_resource_interaction {
-	size_t nbuckets, nitems;
-	jive_node_resource_interaction_hash_bucket * buckets;
-};
+JIVE_DECLARE_HASH_TYPE(jive_resource_interaction, struct jive_node_resource_interaction, struct jive_resource *, resource, same_node_list);
 
 /* interaction points of single resource with nodes */
 
