@@ -1,5 +1,5 @@
-#ifndef JIVE_REGALLOC_SHAPE_H
-#define JIVE_REGALLOC_SHAPE_H
+#ifndef JIVE_REGALLOC_SHAPING_TRAVERSER_H
+#define JIVE_REGALLOC_SHAPING_TRAVERSER_H
 
 struct jive_graph;
 struct jive_region;
