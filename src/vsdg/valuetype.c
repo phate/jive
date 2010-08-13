@@ -213,7 +213,7 @@ void
 _jive_value_resource_merge(jive_resource * self_, jive_resource * other_)
 {
 	if (!other_) return;
-	jive_resource_merge(self_, other_);
+	_jive_resource_merge(self_, other_);
 	
 	jive_value_resource * self = (jive_value_resource *) self_;
 	jive_value_resource * other = (jive_value_resource *) other_;
