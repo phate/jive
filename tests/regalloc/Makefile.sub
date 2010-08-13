@@ -1,7 +1,10 @@
 TESTS+=\
-	regalloc/shaping-traverser
+	regalloc/shaping-traverser \
+	regalloc/simple-shaping \
 
 #TESTS+=\
 #	regalloc/test_rat
 #
 #tests/regalloc/test_rat: tests/regalloc/rat.o
+
+tests/regalloc/simple-shaping: tests/regalloc/testarch.o
