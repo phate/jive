@@ -56,4 +56,7 @@ jive_topdown_traverser_create(struct jive_graph * graph);
 jive_traverser *
 jive_bottomup_traverser_create(struct jive_graph * graph);
 
+jive_traverser *
+jive_unshaped_downward_cone_traverser_create(struct jive_node * node);
+
 #endif
