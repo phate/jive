@@ -90,7 +90,9 @@ struct jive_node_class {
 		
 	/** \brief Test for equivalence with another node */
 	bool (*equiv)(const jive_node * self, const jive_node * other);
-
+	
+	const struct jive_regcls * (*get_aux_regcls)(const jive_node * self);
+	
 #if 0
 	/** \brief Invalidate any computed state depending on inputs (i.e. value range) */
 	void (*invalidate_inputs)(jive_node * self);
@@ -130,6 +132,12 @@ static inline bool
 jive_node_equiv(const jive_node * self, const jive_node * other)
 {
 	return self->class_->equiv(self, other);
+}
+
+static inline const struct jive_regcls *
+jive_node_get_aux_regcls(const jive_node * self)
+{
+	return self->class_->get_aux_regcls(self);
 }
 
 static inline void

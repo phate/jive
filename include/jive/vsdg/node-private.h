@@ -30,6 +30,9 @@ _jive_node_copy(const jive_node * self,
 bool
 _jive_node_equiv(const jive_node * self, const jive_node * other);
 
+const struct jive_regcls *
+_jive_node_get_aux_regcls(const jive_node * self);
+
 /* private node member functions */
 
 jive_node *

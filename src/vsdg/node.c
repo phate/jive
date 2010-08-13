@@ -20,7 +20,8 @@ const jive_node_class JIVE_NODE = {
 	.fini = _jive_node_fini,
 	.get_label = _jive_node_get_label,
 	.copy = _jive_node_copy,
-	.equiv = _jive_node_equiv
+	.equiv = _jive_node_equiv,
+	.get_aux_regcls = _jive_node_get_aux_regcls
 };
 
 void
@@ -142,6 +143,12 @@ bool
 _jive_node_equiv(const jive_node * self, const jive_node * other)
 {
 	return self->class_ == other->class_;
+}
+
+const struct jive_regcls *
+_jive_node_get_aux_regcls(const jive_node * self)
+{
+	return 0;
 }
 
 jive_node *

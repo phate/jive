@@ -1,9 +1,10 @@
 #ifndef JIVE_ARCH_REGISTERS_H
 #define JIVE_ARCH_REGISTERS_H
 
-#include <unistd.h>
+#include <stddef.h>
 
 struct jive_type;
+struct jive_graph;
 
 typedef struct jive_cpureg jive_cpureg;
 typedef struct jive_regcls jive_regcls;
@@ -53,5 +54,8 @@ jive_regcls_intersection(const jive_regcls * first, const jive_regcls * second)
 
 const struct jive_type *
 jive_regcls_get_type(const jive_regcls * self);
+
+struct jive_gate *
+jive_regcls_create_gate(const jive_regcls * self, struct jive_graph * graph, const char * name);
 
 #endif

@@ -1,0 +1,36 @@
+#include <jive/arch/registers.h>
+#include <jive/bitstring/type.h>
+
+static const jive_bitstring_type
+	bits8 = {{{.class_ = &JIVE_BITSTRING_TYPE}}, .nbits = 8};
+static const jive_bitstring_type
+	bits16 = {{{.class_ = &JIVE_BITSTRING_TYPE}}, .nbits = 16};
+static const jive_bitstring_type
+	bits32 = {{{.class_ = &JIVE_BITSTRING_TYPE}}, .nbits = 32};
+static const jive_bitstring_type
+	bits64 = {{{.class_ = &JIVE_BITSTRING_TYPE}}, .nbits = 64};
+static const jive_bitstring_type
+	bits128 = {{{.class_ = &JIVE_BITSTRING_TYPE}}, .nbits = 128};
+
+const jive_type *
+jive_regcls_get_type(const jive_regcls * self)
+{
+	switch(self->nbits) {
+		case 8: return &bits8.base.base;
+		case 16: return &bits16.base.base;
+		case 32: return &bits32.base.base;
+		case 64: return &bits64.base.base;
+		case 128: return &bits128.base.base;
+		default: return 0;
+	}
+}
+
+jive_gate *
+jive_regcls_create_gate(const jive_regcls * self, struct jive_graph * graph, const char * name)
+{
+	const jive_type * type = jive_regcls_get_type(self);
+	jive_gate * gate = jive_type_create_gate(type, graph, name);
+	((jive_value_gate *)gate)->required_regcls = self;
+	return gate;
+}
+

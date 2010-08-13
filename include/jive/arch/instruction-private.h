@@ -27,4 +27,7 @@ _jive_instruction_node_copy(const jive_node * self,
 bool
 _jive_instruction_node_equiv(const jive_node * self, const jive_node * other);
 
+const struct jive_regcls *
+_jive_instruction_node_get_aux_regcls(const jive_node * self);
+
 #endif
