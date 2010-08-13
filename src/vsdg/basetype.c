@@ -498,7 +498,6 @@ _jive_gate_get_constraint(jive_gate * self)
 	if (self->resource) return self->resource;
 	const jive_type * type = jive_gate_get_type(self);
 	jive_resource * resource = jive_type_create_resource(type, self->graph);
-	jive_resource_assign_gate(resource, self);
 	return resource;
 }
 
@@ -591,7 +590,7 @@ _jive_resource_can_merge(const jive_resource * self, const jive_resource * other
 void
 _jive_resource_merge(jive_resource * self, jive_resource * other)
 {
-	if (!other) return;
+	if (!other || (other == self)) return;
 	while(other->inputs.first) {
 		jive_input * input = other->inputs.first;
 		jive_resource_unassign_input(other, input);
