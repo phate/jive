@@ -4,6 +4,22 @@
 #include <jive/util/list.h>
 
 static inline void
+jive_graph_valueres_tracker_init(jive_graph_valueres_tracker * self, jive_context * context)
+{
+	self->context = context;
+	self->assigned.first = self->assigned.last = 0;
+	self->trivial.first = self->trivial.last = 0;
+	self->max_pressure = self->space = 0;
+	self->pressured = 0;
+}
+
+static inline void
+jive_graph_valueres_tracker_fini(jive_graph_valueres_tracker * self)
+{
+	jive_context_free(self->context, self->pressured);
+}
+
+static inline void
 _jive_graph_init(jive_graph * self, jive_context * context)
 {
 	self->context = context;
@@ -31,6 +47,8 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	
 	jive_output_notifier_slot_init(&self->on_output_create, context);
 	jive_output_notifier_slot_init(&self->on_output_destroy, context);
+	
+	jive_graph_valueres_tracker_init(&self->valueres, context);
 }
 
 static void
@@ -59,6 +77,8 @@ _jive_graph_fini(jive_graph * self)
 	while(self->gates.first) jive_gate_destroy(self->gates.first);
 	
 	while(self->unused_resources.first) jive_resource_destroy(self->unused_resources.first);
+	
+	jive_graph_valueres_tracker_fini(&self->valueres);
 	
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);

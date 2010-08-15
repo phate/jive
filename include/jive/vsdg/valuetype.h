@@ -55,6 +55,10 @@ struct jive_value_resource {
 	const jive_cpureg * cpureg;
 	int squeeze;
 	jive_allowed_registers_hash allowed_registers;
+	struct {
+		jive_value_resource * prev;
+		jive_value_resource * next;
+	} graph_valueres_list;
 };
 
 void

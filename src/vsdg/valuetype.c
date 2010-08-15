@@ -1,5 +1,6 @@
 #include <jive/vsdg/valuetype.h>
 #include <jive/vsdg/valuetype-private.h>
+#include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/resource-interference-private.h>
@@ -279,7 +280,10 @@ _jive_value_resource_add_squeeze(jive_resource * self_, const jive_regcls * regc
 {
 	jive_value_resource * self = (jive_value_resource *) self_;
 	if (self->cpureg || !self->regcls || !regcls) return;
+	
+	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
 	if (jive_regcls_intersection(self->regcls, regcls)) self->squeeze++;
+	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
 }
 
 void
@@ -287,7 +291,10 @@ _jive_value_resource_sub_squeeze(jive_resource * self_, const jive_regcls * regc
 {
 	jive_value_resource * self = (jive_value_resource *) self_;
 	if (self->cpureg || !self->regcls || !regcls) return;
+	
+	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
 	if (jive_regcls_intersection(self->regcls, regcls)) self->squeeze--;
+	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
 }
 
 void
@@ -296,19 +303,18 @@ _jive_value_resource_deny_register(jive_resource * self_, const jive_cpureg * re
 	jive_value_resource * self = (jive_value_resource *) self_;
 	jive_value_allowed_register * allowed = jive_allowed_registers_hash_lookup(&self->allowed_registers, reg);
 	if (!allowed) return;
+	
+	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
+	
 	jive_allowed_registers_hash_remove(&self->allowed_registers, allowed);
 	jive_context_free(self->base.graph->context, allowed);
+	
+	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
 }
 
-void
-_jive_value_resource_recompute_allowed_registers(jive_resource * self_)
+static void
+_recompute_allowed_registers(jive_value_resource * self)
 {
-	/* recompute both "squeeze" as well as the set of allowed registers
-	from scratch; this must be done whenever an assignment is removed
-	from a neighbour, as an incremental recomputation is just not
-	feasible in this case */
-	jive_value_resource * self = (jive_value_resource *) self_;
-	
 	jive_value_resource_clear_allowed_registers(self);
 	self->squeeze = 0;
 	
@@ -341,6 +347,19 @@ _jive_value_resource_recompute_allowed_registers(jive_resource * self_)
 	}
 }
 
+void
+_jive_value_resource_recompute_allowed_registers(jive_resource * self_)
+{
+	/* recompute both "squeeze" as well as the set of allowed registers
+	from scratch; this must be done whenever an assignment is removed
+	from a neighbour, as an incremental recomputation is just not
+	feasible in this case */
+	jive_value_resource * self = (jive_value_resource *) self_;
+	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
+	_recompute_allowed_registers(self);
+	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
+}
+
 static void
 jive_value_resource_nodes_change_regcls(jive_resource * self, const jive_regcls * old_regcls, const jive_regcls * new_regcls)
 {
@@ -356,6 +375,8 @@ jive_value_resource_nodes_change_regcls(jive_resource * self, const jive_regcls 
 void
 jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * regcls)
 {
+	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
+	
 	if (self->regcls && !self->cpureg) {
 		const jive_regcls * old_regcls = self->regcls;
 		struct jive_resource_interference_hash_iterator i;
@@ -378,12 +399,16 @@ jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * r
 		}
 	}
 	
-	_jive_value_resource_recompute_allowed_registers(&self->base);
+	_recompute_allowed_registers(self);
+	
+	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
 }
 
 void
 jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * cpureg)
 {
+	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
+	
 	const jive_regcls * old_regcls = jive_resource_get_real_regcls(&self->base);
 	if (self->cpureg) {
 		self->cpureg = 0;
@@ -409,7 +434,9 @@ jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * c
 		}
 	}
 	
-	_jive_value_resource_recompute_allowed_registers(&self->base);
+	_recompute_allowed_registers(self);
+	
+	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
 }
 
 /* value gates */
