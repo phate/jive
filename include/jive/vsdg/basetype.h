@@ -446,6 +446,17 @@ struct jive_resource_class {
 
 extern const struct jive_resource_class JIVE_RESOURCE;
 
+static inline bool
+jive_resource_isinstance(const jive_resource * self, const jive_resource_class * class_)
+{
+	const jive_resource_class * c = self->class_;
+	while(c) {
+		if (c == class_) return true;
+		c = c->parent;
+	}
+	return false;
+}
+
 bool
 jive_resource_conflicts_with(const jive_resource * self, const jive_resource * other);
 
