@@ -5,6 +5,7 @@
 #include <jive/view.h>
 
 #include <jive/regalloc/shape.h>
+#include <jive/regalloc/color.h>
 
 #include "testarch.h"
 
@@ -47,7 +48,7 @@ int main()
 	
 	jive_node_gate_input(leave, jive_regcls_create_gate( &jive_testarch_regcls[cls_r1], graph, "ret1"), add2->outputs[0]);
 	
-	jive_view(graph, stdout);
+	jive_view(graph, stderr);
 	
 	jive_regalloc_shape(graph);
 	
@@ -61,6 +62,10 @@ int main()
 	assert((cut->nodes.first == cut->nodes.last) && (cut->nodes.first->node == leave));
 	cut = cut->region_cuts_list.next;
 	assert(cut == 0);
+	
+	jive_regalloc_color(graph);
+	
+	jive_view(graph, stderr);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

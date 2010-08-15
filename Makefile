@@ -13,7 +13,7 @@ LIBJIVE_SRC = src/context.c \
 	\
 	src/bitstring/type.c \
 	\
-	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c \
+	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c \
 	\
 	src/arch/instruction.c src/arch/registers.c \
 	\
