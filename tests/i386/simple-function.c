@@ -8,6 +8,8 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 
+#include <jive/vsdg/valuetype-private.h>
+
 int main()
 {
 	setlocale(LC_ALL, "");
@@ -34,8 +36,12 @@ int main()
 	jive_resource * resource = jive_type_create_resource(type, graph);
 	jive_resource_assign_output(resource, enter->outputs[0]);
 	jive_resource_assign_input(resource, leave->inputs[0]);
-	jive_value_resource_set_cpureg((jive_value_resource *) resource,
-		&jive_i386_regs[jive_i386_eax]);
+	jive_value_resource_set_regcls((jive_value_resource *) resource, ((jive_value_gate *) gate) -> required_regcls);
+	
+	const jive_cpureg * reg_eax = &jive_i386_regs[jive_i386_eax];
+	assert( jive_allowed_registers_hash_lookup( &((jive_value_resource *)resource)->allowed_registers, reg_eax ) );
+	
+	jive_value_resource_set_cpureg((jive_value_resource *) resource, reg_eax);
 	
 	jive_view(graph, stderr);
 	
