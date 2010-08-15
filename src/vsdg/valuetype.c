@@ -303,6 +303,10 @@ _jive_value_resource_deny_register(jive_resource * self_, const jive_cpureg * re
 void
 _jive_value_resource_recompute_allowed_registers(jive_resource * self_)
 {
+	/* recompute both "squeeze" as well as the set of allowed registers
+	from scratch; this must be done whenever an assignment is removed
+	from a neighbour, as an incremental recomputation is just not
+	feasible in this case */
 	jive_value_resource * self = (jive_value_resource *) self_;
 	
 	jive_value_resource_clear_allowed_registers(self);
@@ -374,7 +378,7 @@ jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * r
 		}
 	}
 	
-	self->base.class_->recompute_allowed_registers(&self->base);
+	_jive_value_resource_recompute_allowed_registers(&self->base);
 }
 
 void
@@ -405,7 +409,7 @@ jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * c
 		}
 	}
 	
-	self->base.class_->recompute_allowed_registers(&self->base);
+	_jive_value_resource_recompute_allowed_registers(&self->base);
 }
 
 /* value gates */
