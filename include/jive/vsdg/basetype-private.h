@@ -100,6 +100,18 @@ _jive_resource_get_regcls(const jive_resource * self);
 const struct jive_regcls *
 _jive_resource_get_real_regcls(const jive_resource * self);
 
+void
+_jive_resource_add_squeeze(jive_resource * self, const struct jive_regcls * regcls);
+
+void
+_jive_resource_sub_squeeze(jive_resource * self, const struct jive_regcls * regcls);
+
+void
+_jive_resource_deny_register(jive_resource * self, const struct jive_cpureg * reg);
+
+void
+_jive_resource_recompute_allowed_registers(jive_resource * self);
+
 /* inheritable gate member functions */
 
 void

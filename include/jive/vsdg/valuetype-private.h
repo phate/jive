@@ -44,6 +44,9 @@ _jive_value_output_get_constraint(const jive_output * self);
 void
 _jive_value_resource_init(jive_value_resource * self, struct jive_graph * graph);
 
+void
+_jive_value_resource_fini(jive_resource * self_);
+
 const jive_type *
 _jive_value_resource_get_type(const jive_resource * self);
 
@@ -62,6 +65,18 @@ _jive_value_resource_get_regcls(const jive_resource * self);
 const struct jive_regcls *
 _jive_value_resource_get_real_regcls(const jive_resource * self);
 
+void
+_jive_value_resource_add_squeeze(jive_resource * self, const struct jive_regcls * regcls);
+
+void
+_jive_value_resource_sub_squeeze(jive_resource * self, const struct jive_regcls * regcls);
+
+void
+_jive_value_resource_deny_register(jive_resource * self, const struct jive_cpureg * reg);
+
+void
+_jive_value_resource_recompute_allowed_registers(jive_resource * self);
+
 /* value_gate inheritable members */
 
 void
@@ -78,5 +93,9 @@ _jive_value_gate_create_input(const jive_gate * self, struct jive_node * node, s
 
 jive_output *
 _jive_value_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index);
+
+/* allowed registers */
+
+JIVE_DEFINE_HASH_TYPE(jive_allowed_registers_hash, jive_value_allowed_register, const struct jive_cpureg *, reg, chain);
 
 #endif

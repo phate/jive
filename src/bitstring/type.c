@@ -47,14 +47,18 @@ const jive_gate_class JIVE_BITSTRING_GATE = {
 
 const jive_resource_class JIVE_BITSTRING_RESOURCE = {
 	.parent = &JIVE_VALUE_RESOURCE,
-	.fini = _jive_resource_fini, /* inherit */
+	.fini = _jive_value_resource_fini, /* inherit */
 	.get_label = _jive_resource_get_label, /* inherit */
 	.get_type = _jive_bitstring_resource_get_type, /* override */
 	.can_merge = _jive_bitstring_resource_can_merge, /* override */
 	.merge = _jive_value_resource_merge, /* inherit */
 	.get_cpureg = _jive_value_resource_get_cpureg, /* inherit */
 	.get_regcls = _jive_value_resource_get_regcls, /* inherit */
-	.get_real_regcls = _jive_value_resource_get_real_regcls /* inherit */
+	.get_real_regcls = _jive_value_resource_get_real_regcls, /* inherit */
+	.add_squeeze = _jive_value_resource_add_squeeze, /* inherit */
+	.sub_squeeze = _jive_value_resource_sub_squeeze, /* inherit */
+	.deny_register = _jive_value_resource_deny_register, /* inherit */
+	.recompute_allowed_registers = _jive_value_resource_recompute_allowed_registers /* inherit */
 };
 
 /* bitstring_type inheritable members */

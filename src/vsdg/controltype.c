@@ -49,7 +49,11 @@ const jive_resource_class JIVE_CONTROL_RESOURCE = {
 	.merge = _jive_resource_merge, /* inherit */
 	.get_cpureg = _jive_resource_get_cpureg, /* inherit */
 	.get_regcls = _jive_resource_get_regcls, /* inherit */
-	.get_real_regcls = _jive_resource_get_real_regcls /* inherit */
+	.get_real_regcls = _jive_resource_get_real_regcls, /* inherit */
+	.add_squeeze = _jive_resource_add_squeeze, /* inherit */
+	.sub_squeeze = _jive_resource_sub_squeeze, /* inherit */
+	.deny_register = _jive_resource_deny_register, /* inherit */
+	.recompute_allowed_registers = _jive_resource_recompute_allowed_registers /* inherit */
 };
 
 jive_input *

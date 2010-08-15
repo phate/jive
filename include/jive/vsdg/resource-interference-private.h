@@ -36,7 +36,17 @@ jive_resource_interference_add(jive_resource * first, jive_resource * second)
 	jive_resource_interference * i;
 	jive_resource_interference_part * part = jive_resource_interference_hash_lookup(&first->interference, second);
 	if (part) i = part->whole;
-	else i = jive_resource_interference_create(first, second);
+	else {
+		const struct jive_cpureg * first_reg = jive_resource_get_cpureg(first);
+		const struct jive_cpureg * second_reg = jive_resource_get_cpureg(second);
+		first->class_->deny_register(first, second_reg);
+		second->class_->deny_register(second, first_reg);
+		
+		if (!second_reg) first->class_->add_squeeze(first, jive_resource_get_regcls(second));
+		if (!first_reg) second->class_->add_squeeze(second, jive_resource_get_regcls(first));
+		
+		i = jive_resource_interference_create(first, second);
+	}
 	return i->count ++;
 }
 
@@ -47,7 +57,11 @@ jive_resource_interference_remove(jive_resource * first, jive_resource * second)
 	jive_resource_interference_part * part = jive_resource_interference_hash_lookup(&first->interference, second);
 	i = part->whole;
 	size_t count = -- (i->count);
-	if (!i->count) jive_resource_interference_destroy(i);
+	if (!i->count) {
+		first->class_->recompute_allowed_registers(first);
+		second->class_->recompute_allowed_registers(second);
+		jive_resource_interference_destroy(i);
+	}
 	return count;
 }
 

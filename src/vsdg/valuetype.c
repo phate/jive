@@ -2,6 +2,7 @@
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/crossings-private.h>
+#include <jive/vsdg/resource-interference-private.h>
 #include <jive/vsdg/regcls-count-private.h>
 
 #include <jive/vsdg/node.h>
@@ -52,14 +53,18 @@ const jive_gate_class JIVE_VALUE_GATE = {
 
 const jive_resource_class JIVE_VALUE_RESOURCE = {
 	.parent = &JIVE_RESOURCE,
-	.fini = _jive_resource_fini, /* inherit */
+	.fini = _jive_value_resource_fini, /* override */
 	.get_label = _jive_resource_get_label, /* inherit */
 	.get_type = _jive_value_resource_get_type, /* override */
 	.can_merge = _jive_value_resource_can_merge, /* override */
 	.merge = _jive_value_resource_merge, /* override */
 	.get_cpureg = _jive_value_resource_get_cpureg, /* override */
 	.get_regcls = _jive_value_resource_get_regcls, /* override */
-	.get_real_regcls = _jive_value_resource_get_real_regcls /* override */
+	.get_real_regcls = _jive_value_resource_get_real_regcls, /* override */
+	.add_squeeze = _jive_value_resource_add_squeeze, /* override */
+	.sub_squeeze = _jive_value_resource_sub_squeeze, /* override */
+	.deny_register = _jive_value_resource_deny_register, /* override */
+	.recompute_allowed_registers = _jive_value_resource_recompute_allowed_registers /* override */
 };
 
 jive_input *
@@ -150,12 +155,36 @@ _jive_value_output_get_constraint(const jive_output * self_)
 
 /* value resource, i.e. registers */
 
+static void
+jive_value_resource_clear_allowed_registers(jive_value_resource * self)
+{
+	struct jive_allowed_registers_hash_iterator i;
+	i = jive_allowed_registers_hash_begin(&self->allowed_registers);
+	while(i.entry) {
+		jive_value_allowed_register * allowed = i.entry;
+		jive_allowed_registers_hash_iterator_next(&i);
+		jive_allowed_registers_hash_remove(&self->allowed_registers, allowed);
+		jive_context_free(self->base.graph->context, allowed);
+	}
+}
+
 void
 _jive_value_resource_init(jive_value_resource * self, struct jive_graph * graph)
 {
 	_jive_resource_init(&self->base, graph);
 	self->cpureg = 0;
 	self->regcls = 0;
+	self->squeeze = 0;
+	jive_allowed_registers_hash_init(&self->allowed_registers, graph->context);
+}
+
+void
+_jive_value_resource_fini(jive_resource * self_)
+{
+	jive_value_resource * self = (jive_value_resource *) self_;
+	jive_value_resource_clear_allowed_registers(self);
+	jive_allowed_registers_hash_fini(&self->allowed_registers);
+	_jive_resource_fini(&self->base);
 }
 
 const jive_type *
@@ -245,6 +274,69 @@ _jive_value_resource_get_real_regcls(const jive_resource * self_)
 	else return self->regcls;
 }
 
+void
+_jive_value_resource_add_squeeze(jive_resource * self_, const jive_regcls * regcls)
+{
+	jive_value_resource * self = (jive_value_resource *) self_;
+	if (self->cpureg || !self->regcls || !regcls) return;
+	if (jive_regcls_intersection(self->regcls, regcls)) self->squeeze++;
+}
+
+void
+_jive_value_resource_sub_squeeze(jive_resource * self_, const jive_regcls * regcls)
+{
+	jive_value_resource * self = (jive_value_resource *) self_;
+	if (self->cpureg || !self->regcls || !regcls) return;
+	if (jive_regcls_intersection(self->regcls, regcls)) self->squeeze--;
+}
+
+void
+_jive_value_resource_deny_register(jive_resource * self_, const jive_cpureg * reg)
+{
+	jive_value_resource * self = (jive_value_resource *) self_;
+	jive_value_allowed_register * allowed = jive_allowed_registers_hash_lookup(&self->allowed_registers, reg);
+	if (!allowed) return;
+	jive_allowed_registers_hash_remove(&self->allowed_registers, allowed);
+	jive_context_free(self->base.graph->context, allowed);
+}
+
+void
+_jive_value_resource_recompute_allowed_registers(jive_resource * self_)
+{
+	jive_value_resource * self = (jive_value_resource *) self_;
+	
+	jive_value_resource_clear_allowed_registers(self);
+	self->squeeze = 0;
+	
+	if (self->cpureg) {
+		jive_value_allowed_register * allowed = jive_context_malloc(self->base.graph->context, sizeof(*allowed));
+		allowed->reg = self->cpureg;
+		jive_allowed_registers_hash_insert(&self->allowed_registers, allowed);
+	} else  if (self->regcls) {
+		size_t n;
+		for(n=0; n<self->regcls->nregs; n++) {
+			jive_value_allowed_register * allowed = jive_context_malloc(self->base.graph->context, sizeof(*allowed));
+			allowed->reg = &self->regcls->regs[n];
+			jive_allowed_registers_hash_insert(&self->allowed_registers, allowed);
+		}
+		
+		struct jive_resource_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_resource_interference_hash, self->base.interference, i) {
+			jive_resource * other = i.entry->resource;
+			const jive_cpureg * reg = jive_resource_get_cpureg(other);
+			if (reg) {
+				jive_value_allowed_register * allowed = jive_allowed_registers_hash_lookup(&self->allowed_registers, reg);
+				if (!allowed) continue;
+				jive_allowed_registers_hash_remove(&self->allowed_registers, allowed);
+				jive_context_free(self->base.graph->context, allowed);
+			} else {
+				const jive_regcls * regcls = jive_resource_get_regcls(other);
+				if (regcls && jive_regcls_intersection(self->regcls, regcls)) self->squeeze ++;
+			}
+		}
+	}
+}
+
 static void
 jive_value_resource_nodes_change_regcls(jive_resource * self, const jive_regcls * old_regcls, const jive_regcls * new_regcls)
 {
@@ -260,19 +352,60 @@ jive_value_resource_nodes_change_regcls(jive_resource * self, const jive_regcls 
 void
 jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * regcls)
 {
+	if (self->regcls && !self->cpureg) {
+		const jive_regcls * old_regcls = self->regcls;
+		struct jive_resource_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_resource_interference_hash, self->base.interference, i) {
+			jive_resource * other = i.entry->resource;
+			other->class_->sub_squeeze(other, old_regcls);
+		}
+	}
+	
 	const jive_regcls * old_regcls = jive_resource_get_real_regcls(&self->base);
 	self->regcls = regcls;
 	const jive_regcls * new_regcls = jive_resource_get_real_regcls(&self->base);
 	jive_value_resource_nodes_change_regcls(&self->base, old_regcls, new_regcls);
+	
+	if (regcls && !self->cpureg) {
+		struct jive_resource_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_resource_interference_hash, self->base.interference, i) {
+			jive_resource * other = i.entry->resource;
+			other->class_->add_squeeze(other, regcls);
+		}
+	}
+	
+	self->base.class_->recompute_allowed_registers(&self->base);
 }
 
 void
 jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * cpureg)
 {
 	const jive_regcls * old_regcls = jive_resource_get_real_regcls(&self->base);
+	if (self->cpureg) {
+		self->cpureg = 0;
+		/* this register may have become available for assignment to
+		others, need to recalculate allowed registers for all
+		neighbours */
+		struct jive_resource_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_resource_interference_hash, self->base.interference, i) {
+			jive_resource * other = i.entry->resource;
+			other->class_->recompute_allowed_registers(other);
+		}
+	}
 	self->cpureg = cpureg;
 	const jive_regcls * new_regcls = jive_resource_get_real_regcls(&self->base);
 	jive_value_resource_nodes_change_regcls(&self->base, old_regcls, new_regcls);
+	
+	if (cpureg) {
+		struct jive_resource_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_resource_interference_hash, self->base.interference, i) {
+			jive_resource * other = i.entry->resource;
+			other->class_->deny_register(other, cpureg);
+			other->class_->sub_squeeze(other, self->regcls);
+		}
+	}
+	
+	self->base.class_->recompute_allowed_registers(&self->base);
 }
 
 /* value gates */

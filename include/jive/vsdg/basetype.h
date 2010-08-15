@@ -434,6 +434,14 @@ struct jive_resource_class {
 	const struct jive_regcls * (*get_regcls)(const jive_resource * self);
 	
 	const struct jive_regcls * (*get_real_regcls)(const jive_resource * self);
+	
+	void (*add_squeeze)(jive_resource * self, const struct jive_regcls * regcls);
+	
+	void (*sub_squeeze)(jive_resource * self, const struct jive_regcls * regcls);
+	
+	void (*deny_register)(jive_resource * self, const struct jive_cpureg * reg);
+	
+	void (*recompute_allowed_registers)(jive_resource * self);
 };
 
 extern const struct jive_resource_class JIVE_RESOURCE;

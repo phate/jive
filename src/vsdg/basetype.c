@@ -540,7 +540,11 @@ const jive_resource_class JIVE_RESOURCE = {
 	.merge = _jive_resource_merge,
 	.get_cpureg = _jive_resource_get_cpureg,
 	.get_regcls = _jive_resource_get_regcls,
-	.get_real_regcls = _jive_resource_get_real_regcls
+	.get_real_regcls = _jive_resource_get_real_regcls,
+	.add_squeeze = _jive_resource_add_squeeze,
+	.sub_squeeze = _jive_resource_sub_squeeze,
+	.deny_register = _jive_resource_deny_register,
+	.recompute_allowed_registers = _jive_resource_recompute_allowed_registers
 };
 
 void
@@ -624,6 +628,26 @@ const struct jive_regcls *
 _jive_resource_get_real_regcls(const jive_resource * self)
 {
 	return 0;
+}
+
+void
+_jive_resource_add_squeeze(jive_resource * self, const struct jive_regcls * regcls)
+{
+}
+
+void
+_jive_resource_sub_squeeze(jive_resource * self, const struct jive_regcls * regcls)
+{
+}
+
+void
+_jive_resource_deny_register(jive_resource * self, const struct jive_cpureg * reg)
+{
+}
+
+void
+_jive_resource_recompute_allowed_registers(jive_resource * self)
+{
 }
 
 bool
