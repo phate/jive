@@ -68,16 +68,16 @@ jive_graph_valueres_tracker_add(jive_graph_valueres_tracker * self, jive_value_r
 	} else if (resource->allowed_registers.nitems > resource->squeeze) {
 		JIVE_LIST_PUSH_BACK(self->trivial, resource, graph_valueres_list);
 	} else {
-		size_t index = resource->squeeze - resource->allowed_registers.nitems;
-		if (index >= self->space) {
-			self->pressured = jive_context_realloc(self->context, self->pressured, (index + 1) * sizeof(self->pressured[0]));
+		size_t pressure = resource->squeeze - resource->allowed_registers.nitems;
+		if (pressure >= self->space) {
+			self->pressured = jive_context_realloc(self->context, self->pressured, (pressure + 1) * sizeof(self->pressured[0]));
 			size_t n;
-			for(n=self->space; n<=index ; n++)
-				self->pressured[index].first = self->pressured[index].last = 0;
-			self->space = index + 1;
+			for(n=self->space; n<=pressure ; n++)
+				self->pressured[n].first = self->pressured[n].last = 0;
+			self->space = pressure + 1;
 		}
-		JIVE_LIST_PUSH_BACK(self->pressured[index], resource, graph_valueres_list);
-		if (index >= self->max_pressure) self->max_pressure = index + 1;
+		JIVE_LIST_PUSH_BACK(self->pressured[pressure], resource, graph_valueres_list);
+		if (pressure >= self->max_pressure) self->max_pressure = pressure + 1;
 	}
 }
 
@@ -89,15 +89,8 @@ jive_graph_valueres_tracker_remove(jive_graph_valueres_tracker * self, jive_valu
 	} else if (resource->allowed_registers.nitems > resource->squeeze) {
 		JIVE_LIST_REMOVE(self->trivial, resource, graph_valueres_list);
 	} else {
-		size_t index = resource->squeeze - resource->allowed_registers.nitems;
-		if (index >= self->space) {
-			self->pressured = jive_context_realloc(self->context, self->pressured, (index + 1) * sizeof(self->pressured[0]));
-			size_t n;
-			for(n=self->space; n<=index ; n++)
-				self->pressured[index].first = self->pressured[index].last = 0;
-			self->space = index + 1;
-		}
-		JIVE_LIST_REMOVE(self->pressured[index], resource, graph_valueres_list);
+		size_t pressure = resource->squeeze - resource->allowed_registers.nitems;
+		JIVE_LIST_REMOVE(self->pressured[pressure], resource, graph_valueres_list);
 		while(self->max_pressure && !self->pressured[self->max_pressure-1].first)
 			self->max_pressure --;
 	}
