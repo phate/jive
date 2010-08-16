@@ -416,7 +416,7 @@ pick_node(jive_region_shaper * self)
 		return node;
 	}
 	
-	jive_node * node;
+	jive_node * node = 0;
 	while(!node) {
 		node = self->value_priorities.items[0]->origin->node;
 		

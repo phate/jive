@@ -684,7 +684,7 @@ jive_resource_set_hovering_region(jive_resource * self, struct jive_region * reg
 	
 	input = self->inputs.first;
 	while(input) {
-		jive_input_unregister_resource_crossings(input);
+		jive_input_register_resource_crossings(input);
 		input = input->resource_input_list.next;
 	}
 }
