@@ -59,6 +59,8 @@ struct jive_instruction_class {
 	int code;
 };
 
+extern const jive_instruction_class JIVE_PSEUDO_NOP;
+
 extern const jive_node_class JIVE_INSTRUCTION_NODE;
 
 struct jive_instruction_node {

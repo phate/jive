@@ -143,3 +143,18 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 	jive_traverser_destroy(trav);
 }
 
+static void
+jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
+        jive_buffer * target,
+        const jive_cpureg * inputs[],
+        const jive_cpureg * outputs[],
+        const long immediates[])
+{
+}
+
+const jive_instruction_class JIVE_PSEUDO_NOP = {
+	.name = "PSEUDO_NOP",
+	.encode = jive_encode_PSEUDO_NOP,
+	.mnemonic = jive_encode_PSEUDO_NOP,
+	.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0
+};
