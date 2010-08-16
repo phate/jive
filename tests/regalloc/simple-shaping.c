@@ -6,6 +6,7 @@
 
 #include <jive/regalloc/shape.h>
 #include <jive/regalloc/color.h>
+#include <jive/regalloc/regreuse.h>
 
 #include "testarch.h"
 
@@ -64,6 +65,8 @@ int main()
 	assert(cut == 0);
 	
 	jive_regalloc_color(graph);
+	
+	jive_regalloc_regreuse(graph);
 	
 	jive_view(graph, stderr);
 	
