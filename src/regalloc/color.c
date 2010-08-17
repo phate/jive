@@ -2,7 +2,149 @@
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/resource-interference-private.h>
+#include <jive/vsdg/traverser.h>
 #include <jive/debug-private.h>
+#include <jive/arch/instruction.h>
+
+static bool
+can_specialize(jive_value_resource * regcand, const jive_regcls * regcls)
+{
+	const jive_regcls * old_regcls = jive_resource_get_regcls(&regcand->base);
+	const jive_regcls * new_regcls = jive_regcls_intersection(regcls, old_regcls);
+	if (!new_regcls || (old_regcls == new_regcls)) return false;
+	const jive_regcls * overflow = jive_value_resource_check_change_regcls(regcand, new_regcls);
+	return overflow == 0;
+}
+
+static bool
+try_specialize(jive_value_resource * regcand, const jive_regcls * regcls)
+{
+	const jive_regcls * old_regcls = jive_resource_get_regcls(&regcand->base);
+	const jive_regcls * new_regcls = jive_regcls_intersection(regcls, old_regcls);
+	if (!new_regcls || (old_regcls == new_regcls)) return false;
+	const jive_regcls * overflow = jive_value_resource_check_change_regcls(regcand, new_regcls);
+	if (overflow) return false;
+	
+	jive_value_resource_set_regcls(regcand, new_regcls);
+	return true;
+}
+
+static void
+hard_specialize_recursive(jive_node * node)
+{
+	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) return;
+	const jive_instruction_class * icls = ((jive_instruction_node *)node)->icls;
+	
+	if (!(icls->flags & jive_instruction_write_input)) return;
+	if (icls->flags & jive_instruction_commutative) {
+		const jive_regcls * in0_regcls = jive_resource_get_regcls(node->inputs[0]->resource);
+		const jive_regcls * in1_regcls = jive_resource_get_regcls(node->inputs[1]->resource);
+		const jive_regcls * out_regcls = jive_resource_get_regcls(node->outputs[0]->resource);
+		if ((in0_regcls == out_regcls) || (in1_regcls == out_regcls)) return;
+		if (out_regcls->nregs == 1) {
+			bool can0 = can_specialize((jive_value_resource *) node->inputs[0]->resource, out_regcls);
+			bool can1 = can_specialize((jive_value_resource *) node->inputs[1]->resource, out_regcls);
+			if ((can0 && can1) || (!can0 && !can1)) return;
+			
+			jive_input * input;
+			if (can0) input = node->inputs[0];
+			else input = node->inputs[1];
+			if (try_specialize((jive_value_resource *) input->resource, out_regcls))
+				hard_specialize_recursive(input->origin->node);
+		} else if ((in0_regcls->nregs == 1) && (in1_regcls->nregs == 1)) {
+			bool can0 = can_specialize((jive_value_resource *) node->outputs[0]->resource, in0_regcls);
+			bool can1 = can_specialize((jive_value_resource *) node->outputs[0]->resource, in1_regcls);
+			if ((can0 && can1) || (!can0 && !can1)) return;
+			
+			const jive_regcls * regcls;
+			if (can0) regcls = in0_regcls;
+			else regcls = in1_regcls;
+			if (try_specialize((jive_value_resource *) node->outputs[0]->resource, regcls)) {
+				jive_input * user;
+				JIVE_LIST_ITERATE(node->outputs[0]->users, user, output_users_list)
+					hard_specialize_recursive(user->node);
+			}
+		}
+	} else {
+		const jive_regcls * in_regcls = jive_resource_get_regcls(node->inputs[0]->resource);
+		const jive_regcls * out_regcls = jive_resource_get_regcls(node->outputs[0]->resource);
+		if (in_regcls == out_regcls) return;
+		if (in_regcls->nregs == 1) {
+			if (try_specialize((jive_value_resource *) node->outputs[0]->resource, in_regcls)) {
+				jive_input * user;
+				JIVE_LIST_ITERATE(node->outputs[0]->users, user, output_users_list)
+					hard_specialize_recursive(user->node);
+			}
+		} else if (out_regcls->nregs == 1) {
+			if (try_specialize((jive_value_resource *) node->inputs[0]->resource, out_regcls))
+				hard_specialize_recursive(node->inputs[0]->origin->node);
+		}
+	}
+}
+
+static bool
+soft_specialize_recursive(jive_node * node)
+{
+	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) return false;
+	const jive_instruction_class * icls = ((jive_instruction_node *)node)->icls;
+	
+	if (!(icls->flags & jive_instruction_write_input)) return false;
+	
+	if (try_specialize((jive_value_resource *) node->inputs[0]->resource, jive_resource_get_regcls(node->outputs[0]->resource))) {
+		hard_specialize_recursive(node->inputs[0]->origin->node);
+		return true;
+	}
+	if (try_specialize((jive_value_resource *) node->outputs[0]->resource, jive_resource_get_regcls(node->inputs[0]->resource))) {
+		jive_input * user;
+		JIVE_LIST_ITERATE(node->outputs[0]->users, user, output_users_list)
+			hard_specialize_recursive(user->node);
+		return true;
+	}
+	
+	if (!(icls->flags & jive_instruction_write_input)) return false;
+	
+	if (try_specialize((jive_value_resource *) node->inputs[1]->resource, jive_resource_get_regcls(node->outputs[0]->resource))) {
+		hard_specialize_recursive(node->inputs[1]->origin->node);
+		return true;
+	}
+	if (try_specialize((jive_value_resource *) node->outputs[0]->resource, jive_resource_get_regcls(node->inputs[1]->resource))) {
+		jive_input * user;
+		JIVE_LIST_ITERATE(node->outputs[0]->users, user, output_users_list)
+			hard_specialize_recursive(user->node);
+		return true;
+	}
+	
+	return false;
+}
+
+static void
+pre_specialize(jive_graph * graph)
+{
+	/* try to specialize the register class of selected register candidates
+	to ensure that input/output registers of instructions that overwrite
+	one of their inputs match (to avoid inserting instructions later
+	during fixup) */
+	
+	jive_node * node;
+	
+	/* first, apply all "inevitable" specialization (i.e. those were
+	there is no choice between two alternative registers) */
+	jive_traverser * traverser = jive_bottomup_traverser_create(graph);
+	while( (node = jive_traverser_next(traverser)) != 0) hard_specialize_recursive(node);
+	jive_traverser_destroy(traverser);
+	
+	/* now apply useful specializations where we can choose
+	between two possible inputs that could be overwritten
+	(commutative operations) */
+	for(;;) {
+		bool progress = false;
+		jive_traverser * traverser = jive_bottomup_traverser_create(graph);
+		while( (node = jive_traverser_next(traverser)) != 0)
+			if (soft_specialize_recursive(node)) progress = true;
+		jive_traverser_destroy(traverser);
+		if (!progress) break;
+	}
+}
 
 static const jive_cpureg *
 find_allowed_register(jive_value_resource * regcand)
@@ -48,6 +190,14 @@ color_single(jive_graph * graph, jive_value_resource * regcand)
 	/* TODO: implement conflict resolution */
 	DEBUG_ASSERT(reg);
 	jive_value_resource_set_cpureg(regcand, reg);
+	
+	jive_input * input;
+	JIVE_LIST_ITERATE(regcand->base.inputs, input, resource_input_list)
+		hard_specialize_recursive(input->node);
+	
+	jive_output * output;
+	JIVE_LIST_ITERATE(regcand->base.outputs, output, resource_output_list)
+		hard_specialize_recursive(output->node);
 }
 
 static jive_value_resource *
@@ -63,6 +213,7 @@ find_next_uncolored(jive_graph * graph)
 void
 jive_regalloc_color(jive_graph * graph)
 {
+	pre_specialize(graph);
 	for(;;) {
 		jive_value_resource * regcand = find_next_uncolored(graph);
 		if (!regcand) return;
