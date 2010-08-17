@@ -77,4 +77,7 @@ jive_node_unregister_resource_crossings(jive_node * self);
 void
 jive_node_register_resource_crossings(jive_node * self);
 
+void
+jive_node_remove_all_crossed(jive_node * self);
+
 #endif

@@ -31,6 +31,7 @@ jive_node_location_destroy(jive_node_location * self)
 	JIVE_LIST_ITERATE(node->anchored_regions, region, node_anchored_regions_list)
 		jive_region_destroy_cuts(region);
 	
+	jive_node_remove_all_crossed(node);
 	jive_node_unregister_resource_crossings(node);
 	
 	JIVE_LIST_REMOVE(self->cut->nodes, self, cut_nodes_list);

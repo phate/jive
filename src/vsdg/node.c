@@ -442,6 +442,18 @@ jive_node_register_resource_crossings(jive_node * self)
 }
 
 void
+jive_node_remove_all_crossed(jive_node * self)
+{
+	struct jive_resource_interaction_iterator i = jive_resource_interaction_begin(&self->resource_interaction);
+	while(i.entry) {
+		jive_node_resource_interaction * xpoint = i.entry;
+		jive_resource_interaction_iterator_next(&i);
+		if (xpoint->crossed_count)
+			jive_node_remove_crossed_resource(self, xpoint->resource, xpoint->crossed_count);
+	}
+}
+
+void
 jive_node_destroy(jive_node * self)
 {
 	jive_graph_notify_node_destroy(self->graph, self);
