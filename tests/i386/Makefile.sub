@@ -1,5 +1,6 @@
 TESTS+=\
 	i386/simple-function\
+	i386/simple-regalloc\
 	#i386/arithmetic-function\
 	#i386/dotproduct\
 	#i386/match\
