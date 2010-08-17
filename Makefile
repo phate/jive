@@ -19,6 +19,7 @@ LIBJIVE_SRC = src/context.c \
 	\
 	src/backend/i386/registerset.c\
 	src/backend/i386/instructionset.c\
+	src/backend/i386/machine.c\
 
 #src/ra-common.c src/ra-graphcut-cache.c src/ra-shape.c src/regalloc.c
 

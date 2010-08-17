@@ -1,0 +1,8 @@
+#ifndef JIVE_BACKEND_I386_MACHINE_H
+#define JIVE_BACKEND_I386_MACHINE_H
+
+struct jive_transfer_instructions_factory;
+
+extern const struct jive_transfer_instructions_factory jive_i386_transfer_instructions_factory;
+
+#endif
