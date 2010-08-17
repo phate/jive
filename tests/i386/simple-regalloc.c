@@ -9,13 +9,7 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
 
-#include <jive/vsdg/valuetype-private.h>
-
-#include <jive/regalloc/shape.h>
-#include <jive/regalloc/color.h>
-#include <jive/regalloc/fixup.h>
-#include <jive/regalloc/auxnodes.h>
-#include <jive/regalloc/regreuse.h>
+#include <jive/regalloc.h>
 
 int main()
 {
@@ -73,11 +67,7 @@ int main()
 	
 	jive_view(graph, stderr);
 	
-	jive_regalloc_shape(graph);
-	jive_regalloc_color(graph);
-	jive_regalloc_fixup(graph);
-	jive_regalloc_auxnodes_replace(graph, &jive_i386_transfer_instructions_factory);
-	jive_regalloc_regreuse(graph);
+	jive_regalloc(graph, &jive_i386_transfer_instructions_factory);
 	
 	jive_view(graph, stderr);
 	

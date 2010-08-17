@@ -1,12 +1,17 @@
 #include <jive/regalloc.h>
 #include <jive/regalloc/shape.h>
-#include <jive/regalloc/assign.h>
+#include <jive/regalloc/color.h>
+#include <jive/regalloc/fixup.h>
+#include <jive/regalloc/auxnodes.h>
+#include <jive/regalloc/regreuse.h>
 
 void
-jive_regalloc(jive_graph * graph, const jive_machine * machine, jive_stackframe * frame)
+jive_regalloc(struct jive_graph * graph, const struct jive_transfer_instructions_factory * xfer)
 {
-	jive_instruction_sequence seq;
-	
-	jive_regalloc_shape(graph, machine, frame, &seq);
-	jive_regalloc_assign(&seq, machine, frame);
+	jive_regalloc_shape(graph);
+	jive_regalloc_color(graph);
+	jive_regalloc_fixup(graph);
+	jive_regalloc_auxnodes_replace(graph, xfer);
+	jive_regalloc_regreuse(graph);
 }
+
