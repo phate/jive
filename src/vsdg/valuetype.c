@@ -376,6 +376,9 @@ jive_value_resource_nodes_change_regcls(jive_resource * self, const jive_regcls 
 void
 jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * regcls)
 {
+	/* avoid doing expensive stuff if nothing changed */
+	if (self->regcls == regcls) return;
+	
 	if (self->regcls) jive_graph_valueres_tracker_remove(&self->base.graph->valueres, self);
 	
 	if (self->regcls && !self->cpureg) {
@@ -403,6 +406,25 @@ jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * r
 	_recompute_allowed_registers(self);
 	
 	if (self->regcls) jive_graph_valueres_tracker_add(&self->base.graph->valueres, self);
+}
+
+void
+jive_value_resource_recompute_regcls(jive_value_resource * self)
+{
+	const jive_regcls * regcls = 0;
+	jive_input * input;
+	JIVE_LIST_ITERATE(self->base.inputs, input, resource_input_list)
+		regcls = jive_regcls_intersection(regcls, ((jive_value_input *)input)->required_regcls);
+	
+	jive_output * output;
+	JIVE_LIST_ITERATE(self->base.outputs, output, resource_output_list)
+		regcls = jive_regcls_intersection(regcls, ((jive_value_output *)output)->required_regcls);
+	
+	jive_gate * gate;
+	JIVE_LIST_ITERATE(self->base.gates, gate, resource_gate_list)
+		regcls = jive_regcls_intersection(regcls, ((jive_value_gate *)gate)->required_regcls);
+	
+	jive_value_resource_set_regcls(self, regcls);
 }
 
 void

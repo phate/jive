@@ -65,6 +65,9 @@ void
 jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * regcls);
 
 void
+jive_value_resource_recompute_regcls(jive_value_resource * self);
+
+void
 jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * cpureg);
 
 const jive_regcls *
