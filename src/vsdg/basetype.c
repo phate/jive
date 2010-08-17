@@ -672,6 +672,9 @@ jive_resource_may_spill(const jive_resource * self)
 void
 jive_resource_set_hovering_region(jive_resource * self, struct jive_region * region)
 {
+	/* avoid doing expensive stuff if not changing anything */
+	if (self->hovering_region == region) return;
+	
 	jive_input * input;
 	
 	input = self->inputs.first;
