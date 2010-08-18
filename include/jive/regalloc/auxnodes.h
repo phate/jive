@@ -12,6 +12,8 @@ struct jive_regcls;
 struct jive_transfer_instructions_factory;
 
 typedef struct jive_aux_valuecopy_node jive_aux_valuecopy_node;
+typedef struct jive_aux_spill_node jive_aux_spill_node;
+typedef struct jive_aux_restore_node jive_aux_restore_node;
 
 struct jive_aux_valuecopy_node {
 	jive_node base;
@@ -20,8 +22,28 @@ struct jive_aux_valuecopy_node {
 
 extern const jive_node_class JIVE_AUX_VALUECOPY_NODE;
 
+struct jive_aux_spill_node {
+	jive_node base;
+	const struct jive_regcls * regcls;
+};
+
+extern const jive_node_class JIVE_AUX_SPILL_NODE;
+
+struct jive_aux_restore_node {
+	jive_node base;
+	const struct jive_regcls * regcls;
+};
+
+extern const jive_node_class JIVE_AUX_RESTORE_NODE;
+
 jive_node *
 jive_aux_valuecopy_node_create(struct jive_region * region, const struct jive_regcls * regcls, struct jive_output * origin);
+
+jive_node *
+jive_aux_spill_node_create(struct jive_region * region, const struct jive_regcls * regcls, struct jive_output * origin);
+
+jive_node *
+jive_aux_restore_node_create(struct jive_region * region, const struct jive_regcls * regcls, struct jive_output * stackslot);
 
 void
 jive_regalloc_auxnodes_replace(struct jive_graph * graph, const struct jive_transfer_instructions_factory * gen);
