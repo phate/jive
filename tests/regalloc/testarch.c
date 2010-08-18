@@ -11,27 +11,27 @@ const jive_regcls jive_testarch_regcls [] = {
 	[cls_regs] = {
 		.name = "gpr", .nbits = 32,
 		.regs = &jive_testarch_regs[reg_r1], .nregs = 4,
-		.index = cls_regs, .parent = 0
+		.index = cls_regs, .parent = 0, .depth = 0
 	},
 	[cls_r1] = {
 		.name = "r1", .nbits = 32,
 		.regs = &jive_testarch_regs[reg_r1], .nregs = 1,
-		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs]
+		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs], .depth = 1
 	},
 	[cls_r2] = {
 		.name = "r2", .nbits = 32,
 		.regs = &jive_testarch_regs[reg_r2], .nregs = 1,
-		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs]
+		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs], .depth = 1
 	},
 	[cls_r3] = {
 		.name = "r3", .nbits = 32,
 		.regs = &jive_testarch_regs[reg_r3], .nregs = 1,
-		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs]
+		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs], .depth = 1
 	},
 	[cls_r4] = {
 		.name = "r4", .nbits = 32,
 		.regs = &jive_testarch_regs[reg_r4], .nregs = 1,
-		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs]
+		.index = cls_regs, .parent = &jive_testarch_regcls[cls_regs], .depth = 1
 	},
 };
 
