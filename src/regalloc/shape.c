@@ -54,6 +54,7 @@ check_crossing_overflow(const jive_node * node,
 		if (resource == first_input_resource) first_input_passthrough = false;
 		
 		const jive_regcls * regcls = jive_resource_get_real_regcls(resource);
+		if (!regcls) continue;
 		
 		jive_regcls_count_sub(&use_count_after, context, regcls);
 		if (xpoint->before_count == xpoint->crossed_count)
@@ -71,6 +72,7 @@ check_crossing_overflow(const jive_node * node,
 		if (resource == first_input_resource) first_input_passthrough = true;
 		
 		const jive_regcls * regcls = jive_resource_get_real_regcls(resource);
+		if (!regcls) continue;
 		
 		overflow = jive_regcls_count_add(&use_count_after, context, regcls);
 		if (overflow) break;
@@ -88,7 +90,7 @@ check_crossing_overflow(const jive_node * node,
 	jive_regcls_count_fini(&use_count_before, context);
 	jive_regcls_count_fini(&use_count_after, context);
 	
-	return 0;
+	return overflow;
 }
 
 typedef struct jive_region_shaper jive_region_shaper;
