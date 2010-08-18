@@ -1,5 +1,8 @@
 #include "testarch.h"
 
+#include <jive/arch/transfer-instructions.h>
+#include <jive/vsdg.h>
+
 const jive_cpureg jive_testarch_regs [] = {
 	[reg_r1] = {.name = "r1", .regcls = &jive_testarch_regcls[cls_r1], .index = reg_r1},
 	[reg_r2] = {.name = "r2", .regcls = &jive_testarch_regcls[cls_r2], .index = reg_r2},
@@ -105,4 +108,29 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_write_input,
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0
 	},
+	[instr_copy] = {
+		.name = "copy", .encode = 0, .mnemonic = 0,
+		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 0
+	},
+};
+
+
+static size_t
+testarch_create_copy(jive_region * region, jive_output * origin,
+	jive_input ** xfer_in, jive_node * xfer_nodes[], jive_output ** xfer_out)
+{
+	jive_node * node = (jive_node *) jive_instruction_node_create(
+		region, &jive_testarch_instructions[instr_copy],
+		&origin, NULL);
+	
+	*xfer_in = node->inputs[0];
+	*xfer_out = node->outputs[0];
+	xfer_nodes[0] = node;
+	return 1;
+}
+
+const jive_transfer_instructions_factory testarch_transfer_instructions_factory = {
+	.create_copy = testarch_create_copy,
+	.max_nodes = 1
 };

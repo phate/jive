@@ -29,14 +29,17 @@ typedef enum {
 	instr_setr2 = 2,
 	instr_setr3 = 3,
 	instr_setr4 = 4,
-	instr_getr1 = 1,
-	instr_getr2 = 2,
-	instr_getr3 = 3,
-	instr_getr4 = 4,
-	instr_add = 5,
-	instr_sub = 6,
+	instr_getr1 = 5,
+	instr_getr2 = 6,
+	instr_getr3 = 7,
+	instr_getr4 = 8,
+	instr_add = 9,
+	instr_sub = 10,
+	instr_copy = 11
 } jive_testarch_instruction_index;
 
 extern const jive_instruction_class jive_testarch_instructions [];
+
+extern const struct jive_transfer_instructions_factory testarch_transfer_instructions_factory;
 
 #endif
