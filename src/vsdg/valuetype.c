@@ -251,6 +251,7 @@ _jive_value_resource_merge(jive_resource * self_, jive_resource * other_)
 	
 	/* FIXME: maybe check for cpureg assignment? */
 	const jive_regcls * new_regcls = jive_regcls_intersection(self->regcls, other->regcls);
+	DEBUG_ASSERT((!self->regcls && !other->regcls) || new_regcls);
 	jive_value_resource_set_regcls(self, new_regcls);
 }
 
