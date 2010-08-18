@@ -28,7 +28,7 @@ struct jive_active_place {
 };
 
 typedef enum {
-	jive_conflict_none,
+	jive_conflict_none = 0,
 	jive_conflict_register_class,
 	jive_conflict_resource_name
 } jive_conflict_type;
