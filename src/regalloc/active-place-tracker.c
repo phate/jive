@@ -70,15 +70,6 @@ jive_active_place_tracker_copy(const jive_active_place_tracker * self)
 	return tmp;
 }
 
-/**
-	def get_resources(self):
-		return set(place.resource for place in self.origin_map.values())
-	
-	def get_use_counts(self):
-		assert (self.use_counts == vsdg.utilities.CPURegisterClassCount(place.resource.get_regcls() for place in self.origin_map.values()))
-		return self.use_counts
-*/
-
 void
 jive_active_place_tracker_unlock(jive_active_place_tracker * self)
 {

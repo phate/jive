@@ -1,6 +1,7 @@
 #include <jive/regalloc/shape.h>
 #include <jive/regalloc/shaping-traverser.h>
 #include <jive/regalloc/active-place-tracker-private.h>
+#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/crossings-private.h>
 
 #include <jive/vsdg.h>
@@ -231,13 +232,6 @@ trivial_setup_outputs(jive_region_shaper * self, jive_node * node)
 }
 
 static void
-setup_outputs(jive_region_shaper * self, jive_node * node)
-{
-	/* TODO: implement setup_outputs with splitting support */
-	trivial_setup_outputs(self, node);
-}
-
-static void
 trivial_setup_inputs(jive_region_shaper * self, jive_node * node, size_t insertion_index)
 {
 	jive_active_place * places[node->ninputs];
@@ -255,13 +249,312 @@ trivial_setup_inputs(jive_region_shaper * self, jive_node * node, size_t inserti
 	add_inputs_by_priority(self, insertion_index, places, nplaces);
 }
 
+static jive_active_place *
+select_spill(jive_region_shaper * self, jive_conflict conflict)
+{
+	if (conflict.type == jive_conflict_register_class) {
+		size_t n, lock_level;
+		for(lock_level = 0; lock_level<2; lock_level ++) {
+			for(n=self->value_priorities.nitems; n; n--) {
+				jive_active_place * place = self->value_priorities.items[n-1];
+				if (place->locked > lock_level) continue;
+				if (!jive_resource_may_spill(place->resource)) continue;
+				
+				const jive_regcls * regcls = jive_resource_get_regcls(place->resource);
+				if (jive_regcls_intersection(regcls, conflict.regcls) != regcls) continue;
+				
+				return place;
+			}
+		}
+	} else if (conflict.type == jive_conflict_resource_name) {
+		/*return jive_active_resource_map_lookup(self->active->resource_map, conflict.resource);*/
+		return conflict.place;
+	}
+	
+	return 0;
+}
+
+static jive_node*
+get_spilling_node(jive_region_shaper * self, jive_active_place * place)
+{
+	jive_input * user;
+	JIVE_LIST_ITERATE(place->origin->users, user, output_users_list) {
+		if (jive_node_isinstance(user->node, &JIVE_AUX_SPILL_NODE))
+			return user->node;
+	}
+	
+	return jive_aux_spill_node_create(place->origin->node->region,
+		jive_resource_get_regcls(place->resource), place->origin);
+}
+
+static void
+restore_recursive(jive_region_shaper * self, jive_active_place * place, jive_output * stackslot_state)
+{
+	jive_node * restore_node = 0;
+	jive_output * restore_value = 0;
+	
+	jive_input * user, * next_user;
+	JIVE_LIST_ITERATE_SAFE(place->origin->users, user, next_user, output_users_list) {
+		/* must only restore for nodes within this region and
+		completed completed sub-regions; since sub-regions
+		will after completion have their places merged
+		with their parent, the following check ensures
+		exactly that */
+		if (user->resource != place->resource) continue;
+		
+		if (!restore_node) {
+			const jive_regcls * regcls = jive_resource_get_regcls(place->resource);
+			restore_node = jive_aux_restore_node_create(self->region, regcls, stackslot_state);
+			restore_value = restore_node->outputs[0];
+		}
+		
+		jive_input_divert_origin(user, restore_value);
+	}
+	
+	if (self->parent) {
+		/* since this sub-region is obviously not yet completed,
+		parent region has a different place assigned to the
+		same value. Note that the "pushdown" of the restore
+		node in the parent region will push it below the
+		anchor node of this region, after this completes
+		there will therefore not be any copy of this value
+		be active anywhere */
+		jive_active_place * parent_place = jive_active_place_tracker_get_output_place(self->parent->active, place->origin);
+		if (parent_place) restore_recursive(self->parent, parent_place, stackslot_state);
+	}
+	
+	if (restore_node) {
+		jive_active_place_tracker_divert_origin(self->active, place->origin, restore_value);
+		
+		trivial_setup_outputs(self, restore_node);
+		trivial_setup_inputs(self, restore_node, 0);
+		pushdown_node(self, restore_node);
+		
+	}
+}
+
+static jive_node *
+do_spill(jive_region_shaper * self, jive_active_place * place)
+{
+	jive_node * spill_node = get_spilling_node(self, place);
+	jive_output * stackslot_state = spill_node->outputs[0];
+	restore_recursive(self, place, stackslot_state);
+	
+	return spill_node;
+}
+
+static jive_node *
+do_split(jive_region_shaper * self, jive_active_place * split_place)
+{
+	jive_node * split_node = jive_aux_valuecopy_node_create(self->region,
+		jive_resource_get_regcls(split_place->resource), split_place->origin);
+	jive_output * split_output = split_node->outputs[0];
+	
+	jive_input * user, * next_user;
+	JIVE_LIST_ITERATE_SAFE(split_place->origin->users, user, next_user, output_users_list) {
+		if (user->resource != split_place->resource) continue;
+		jive_input_divert_origin(user, split_output);
+	}
+	
+	jive_active_place_tracker_divert_origin(self->active, split_place->origin, split_output);
+	
+	return split_node;
+}
+
+static void
+setup_outputs(jive_region_shaper * self, jive_node * node)
+{
+	/* Setup outputs of node to be shaped.
+	
+	Makes sure all outputs of the node have an assigned
+	register class (if required) and fit within the total
+	budget of allowed register class use counts. Conflicts
+	are resolved by splitting and/or spilling.*/
+	
+	jive_output * remaining[node->noutputs];
+	jive_node * spills[node->noutputs];
+	size_t nremaining = node->noutputs, n;
+	for(n=0; n<node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		remaining[n] = output;
+		spills[n] = 0;
+		jive_active_place * place = jive_active_place_tracker_get_output_place(self->active, output);
+		if (place) place->locked = 1;
+	}
+	
+	while(nremaining) {
+		nremaining --;
+		jive_output * output = remaining[nremaining];
+		jive_node * obstructing_spill_node = spills[nremaining];
+		
+		DEBUG_ASSERT(!output->resource);
+		
+		jive_active_place * place = jive_active_place_tracker_get_output_place(self->active, output);
+		bool was_active = (place != 0);
+		jive_resource * new_constraint = jive_output_get_constraint(output);
+		/* resolve all conflicts that would be caused by activating this
+		output; note that there might be more than one conflict
+		(e.g. both "class" and "name" conflict), so iterate until all
+		conflicts are resolved */
+		jive_conflict conflict = jive_active_place_tracker_check_replacement_conflict(self->active, place, new_constraint);
+		while(conflict.type) {
+			jive_active_place * to_spill = select_spill(self, conflict);
+			
+			bool spilled_output = (to_spill->origin->node == node);
+			jive_output * spilled_origin = to_spill->origin;
+			
+			if (spilled_output && spilled_origin->resource) {
+				jive_resource_unassign_output(to_spill->resource, spilled_origin);
+				jive_value_resource_recompute_regcls((jive_value_resource *)to_spill->resource);
+			}
+			
+			jive_node * spill_node = do_spill(self, to_spill);
+			
+			if (spilled_output) {
+				/* need to revisit this output */
+				size_t index;
+				for(index=0; index<nremaining; index++)
+					if (spilled_origin == remaining[index]) break;
+				for(n=index; n; n--) {
+					remaining[n] = remaining[n-1];
+					spills[n] = spills[n-1];
+				}
+				remaining[0] = spilled_origin;
+				spills[0] = spill_node;
+				if (index == nremaining) nremaining++;
+			}
+			
+			conflict = jive_active_place_tracker_check_replacement_conflict(self->active, place, new_constraint);
+		}
+		/* we are now certain that this # value may be added to the
+		active set; activate it, depending on its state (spilled away,
+		conflict with register the value is assigned to, or no conflict
+		at all) */
+		if (obstructing_spill_node) {
+			trivial_setup_outputs(self, obstructing_spill_node);
+			trivial_setup_inputs(self, obstructing_spill_node, 0);
+			
+			/* merging with the new constraint prevents the xfer node
+			from being pushed down "too much", since we may
+			require a more specialized register class as output
+			than the xfer node requires as input */
+			place = jive_active_place_tracker_get_output_place(self->active, output);
+			jive_active_place_tracker_merge_output_constraint(self->active, place, output, new_constraint);
+			pushdown_node(self, obstructing_spill_node);
+		} else if (jive_active_place_tracker_check_merge_conflict(self->active, place, new_constraint)) {
+			jive_node * xfer_node = do_split(self, place);
+			trivial_setup_outputs(self, xfer_node);
+			trivial_setup_inputs(self, xfer_node, 0);
+			/* merging with the new constraint prevents the xfer node
+			from being pushed down "too much", since we may
+			require a more specialized register class as output
+			than the xfer node requires as input */
+			place = jive_active_place_tracker_get_output_place(self->active, output);
+			jive_active_place_tracker_merge_output_constraint(self->active, place, output, new_constraint);
+			pushdown_node(self, xfer_node);
+		} else place = jive_active_place_tracker_merge_output_constraint(self->active, place, output, new_constraint);
+		
+		/* if the output was not active before, lock it hard to prevent it
+		from being spilled again; we can do this because we know that an
+		individual nodes register requisition must not exceed the total
+		available budget */
+		if (was_active) place->locked = 1;
+		else place->locked = 2;
+	}
+	
+	for(n=0; n<node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		jive_active_place * place = jive_active_place_tracker_get_output_place(self->active, output);
+		remove_place_from_prio_list(self, place);
+		jive_active_place_tracker_deactivate_place(self->active, place);
+	}
+}
+
+
+static bool
+undo_input_setup(jive_output * origin, jive_node * node)
+{
+	size_t count = 0;
+	jive_input * user;
+	JIVE_LIST_ITERATE(origin->users, user, output_users_list) {
+		if (user->node != node) continue;
+		jive_resource * resource = user->resource;
+		if (resource) {
+			jive_resource_unassign_input(resource, user);
+			jive_value_resource_recompute_regcls((jive_value_resource *) resource);
+			count ++;
+		}
+	}
+	return (count != 0);
+}
+
 static void
 setup_inputs(jive_region_shaper * self, jive_node * node, size_t insertion_index)
 {
-	/* TODO: implement setup_inputs with splitting support */
-	trivial_setup_inputs(self, node, insertion_index);
+	size_t n;
+	for(n=0; n<node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		jive_active_place * place = jive_active_place_tracker_get_input_place(self->active, input);
+		if (place) place->locked = 1;
+	}
+	
+	bool done = (node->ninputs == 0);
+	
+	while(!done) {
+		done = true;
+		
+		for(n=0; n<node->ninputs; n++) {
+			jive_input * input = node->inputs[n];
+			if (input->resource) continue;
+			jive_active_place * place = jive_active_place_tracker_get_input_place(self->active, input);
+			jive_resource * new_constraint = jive_input_get_constraint(input);
+			
+			if (jive_active_place_tracker_check_merge_conflict(self->active, place, new_constraint)) {
+				if (undo_input_setup(place->origin, node)) done = false;
+				do_split(self, place);
+				
+				/* value is now inactive */
+				place = 0;
+			}
+			
+			jive_conflict conflict = jive_active_place_tracker_check_replacement_conflict(self->active, place, new_constraint);
+			if (conflict.type) {
+				jive_active_place * to_spill = select_spill(self, conflict);
+				if (undo_input_setup(to_spill->origin, node)) done = false;
+				do_spill(self, to_spill);
+			}
+			
+			place = jive_active_place_tracker_merge_input_constraint(self->active, place, input, new_constraint);
+			place->locked = 1;
+			jive_resource_set_hovering_region(place->resource, self->region);
+		}
+		
+		if (done) {
+			if (jive_active_place_tracker_get_resource_place(self->active, node->inputs[0]->resource)) {
+				jive_conflict conflict = jive_active_place_tracker_check_aux_regcls_conflict(self->active, jive_node_get_aux_regcls(node));
+				if (conflict.type) {
+					jive_active_place * to_spill = select_spill(self, conflict);
+					if (undo_input_setup(to_spill->origin, node)) done = false;
+					do_spill(self, to_spill);
+				}
+			}
+		}
+	}
+	
+	jive_active_place * places[node->ninputs];
+	size_t nplaces = 0;
+	
+	for(n=0; n<node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		jive_active_place * place = jive_active_place_tracker_get_input_place(self->active, input);
+		if (place->locked) {
+			places[nplaces++] = place;
+			place->locked = 0;
+		}
+	}
+	
+	add_inputs_by_priority(self, insertion_index, places, nplaces);
 }
-
 
 static void
 process_node(jive_region_shaper * self, jive_node * node)

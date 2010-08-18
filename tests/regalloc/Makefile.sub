@@ -1,6 +1,7 @@
 TESTS+=\
 	regalloc/shaping-traverser \
 	regalloc/simple-shaping \
+	regalloc/regmismatch \
 
 #TESTS+=\
 #	regalloc/test_rat
@@ -8,3 +9,4 @@ TESTS+=\
 #tests/regalloc/test_rat: tests/regalloc/rat.o
 
 tests/regalloc/simple-shaping: tests/regalloc/testarch.o
+tests/regalloc/regmismatch: tests/regalloc/testarch.o
