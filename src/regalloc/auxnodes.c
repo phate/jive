@@ -148,7 +148,7 @@ _jive_aux_restore_node_init(jive_aux_restore_node * self, jive_region * region, 
 		1, &output_type);
 	
 	self->regcls = regcls;
-	((jive_value_input *)self->base.inputs[0])->required_regcls = self->regcls;
+	((jive_value_output *)self->base.outputs[0])->required_regcls = self->regcls;
 }
 
 static jive_node *
