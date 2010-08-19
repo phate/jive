@@ -21,12 +21,11 @@ do { \
 
 #define JIVE_LIST_INSERT(list_head, at, object, anchor) \
 do { \
-	(object)->anchor.next = (at); \
 	if ((at)) { \
 		(object)->anchor.prev = (at)->anchor.prev; \
 		(object)->anchor.next = (at); \
 		if ((at)->anchor.prev) (at)->anchor.prev->anchor.next = (object); \
-		else (list_head).first = (at); \
+		else (list_head).first = (object); \
 		(at)->anchor.prev = (object); \
 	} else { \
 		(object)->anchor.prev = (list_head).last; \

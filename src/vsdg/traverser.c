@@ -353,6 +353,7 @@ jive_unshaped_downward_cone_traverser_add_frontier(jive_cone_traverser * self, j
 	jive_traversal_nodestate * nodestate = jive_traversal_state_get_nodestate(&self->state_tracker, node);
 	if (!jive_traversal_state_is_ahead(&self->state_tracker, nodestate)) return;
 	jive_traversal_state_mark_frontier(&self->state_tracker, nodestate);
+	nodestate->traverser = &self->base;
 	
 	jive_traversal_nodestate * insertion_point;
 	JIVE_LIST_ITERATE(self->base.frontier, insertion_point, traverser_node_list)
