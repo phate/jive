@@ -49,7 +49,7 @@ check_crossing_overflow(const jive_node * node,
 		xpoint = jive_node_resource_interaction_lookup(node, resource);
 		/* if it was not crossing before, it is not yet accounted for,
 		so ignore */
-		if (!xpoint->crossed_count) continue;
+		if (!xpoint || !xpoint->crossed_count) continue;
 		
 		if (resource == first_input_resource) first_input_passthrough = false;
 		
@@ -118,11 +118,13 @@ remove_place_from_prio_list(jive_region_shaper * self, jive_active_place * place
 	size_t n = 0;
 	while( (n<self->value_priorities.nitems) && (self->value_priorities.items[n] != place) )
 		n++;
+	if (n == self->value_priorities.nitems) return;
 	n++;
 	while( (n<self->value_priorities.nitems) ) {
 		self->value_priorities.items[n-1] = self->value_priorities.items[n];
 		n++;
 	}
+	self->value_priorities.nitems --;
 }
 
 static void
@@ -733,6 +735,7 @@ pick_node(jive_region_shaper * self)
 				node = 0;
 				break;
 			}
+			node = cand;
 		}
 		jive_traverser_destroy(cone);
 	}
