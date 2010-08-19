@@ -9,6 +9,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 {
 	self->graph = graph;
 	self->parent = parent;
+	self->stackframe = 0;
 	
 	self->nodes.first = self->nodes.last = 0;
 	self->subregions.first = self->subregions.last = 0;

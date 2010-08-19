@@ -216,13 +216,66 @@ replace_pseudo_copy_node(jive_node * node, const jive_transfer_instructions_fact
 }
 
 static void
+replace_pseudo_spill_node(jive_node * node, const jive_transfer_instructions_factory * gen)
+{
+	jive_input * spill_input;
+	jive_node * store_node;
+	jive_node * nodes[gen->max_nodes];
+	size_t nnodes = gen->create_spill(node->region, node->inputs[0]->origin,
+		&spill_input, nodes, &store_node);
+	
+	jive_output * spill_output = jive_node_add_output(store_node, jive_output_get_type(node->outputs[0]));
+	
+	jive_resource_assign_input(node->inputs[0]->resource, spill_input);
+	jive_resource_assign_output(node->outputs[0]->resource, spill_output);
+	
+	jive_cut * cut = node->shape_location->cut;
+	jive_node_location * pos = node->shape_location->cut_nodes_list.next;
+	jive_node_location_destroy(node->shape_location);
+	
+	size_t n;
+	for(n=0; n<nnodes; n++) jive_cut_insert(cut, pos, nodes[n]);
+	
+	jive_output_replace(node->outputs[0], spill_output);
+	jive_node_destroy(node);
+}
+
+static void
+replace_pseudo_restore_node(jive_node * node, const jive_transfer_instructions_factory * gen)
+{
+	jive_node * load_node;
+	jive_output * restore_output;
+	jive_node * nodes[gen->max_nodes];
+	ssize_t nnodes = gen->create_restore(node->region, node->inputs[0]->origin,
+		&load_node, nodes, &restore_output);
+	
+	jive_input * restore_input = jive_node_add_input(load_node,
+		jive_input_get_type(node->inputs[0]), node->inputs[0]->origin);
+	
+	jive_resource_assign_input(node->inputs[0]->resource, restore_input);
+	
+	jive_resource_assign_output(node->outputs[0]->resource, restore_output);
+	
+	jive_cut * cut = node->shape_location->cut;
+	jive_node_location * pos = node->shape_location->cut_nodes_list.next;
+	jive_node_location_destroy(node->shape_location);
+	
+	size_t n;
+	for(n=0; n<nnodes; n++) jive_cut_insert(cut, pos, nodes[n]);
+	
+	jive_output_replace(node->outputs[0], restore_output);
+	jive_node_destroy(node);
+}
+
+static void
 replace_pseudo_nodes(jive_graph * graph, const jive_transfer_instructions_factory * gen)
 {
 	jive_traverser * traverser = jive_bottomup_traverser_create(graph);
 	jive_node * node;
 	while( (node = jive_traverser_next(traverser)) != 0) {
 		if (jive_node_isinstance(node, &JIVE_AUX_VALUECOPY_NODE)) replace_pseudo_copy_node(node, gen);
-		/* TODO replace SPILL and RESTORE nodes */
+		else if (jive_node_isinstance(node, &JIVE_AUX_SPILL_NODE)) replace_pseudo_spill_node(node, gen);
+		else if (jive_node_isinstance(node, &JIVE_AUX_RESTORE_NODE)) replace_pseudo_restore_node(node, gen);
 	}
 	jive_traverser_destroy(traverser);
 }

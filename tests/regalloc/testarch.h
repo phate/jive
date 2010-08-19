@@ -35,7 +35,9 @@ typedef enum {
 	instr_getr4 = 8,
 	instr_add = 9,
 	instr_sub = 10,
-	instr_copy = 11
+	instr_copy = 11,
+	instr_load_disp = 12,
+	instr_store_disp = 13
 } jive_testarch_instruction_index;
 
 extern const jive_instruction_class jive_testarch_instructions [];

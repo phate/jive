@@ -9,10 +9,12 @@ typedef struct jive_region jive_region;
 struct jive_graph;
 struct jive_node;
 struct jive_cut;
+struct jive_stackframe;
 
 struct jive_region {
 	struct jive_graph * graph;
 	jive_region * parent;
+	struct jive_stackframe * stackframe;
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -56,5 +58,13 @@ jive_region_begin(const jive_region * self);
 
 jive_region *
 jive_region_create_subregion(jive_region * self);
+
+static inline struct jive_stackframe *
+jive_region_get_stackframe(const jive_region * region)
+{
+	while(region && !region->stackframe) region = region->parent;
+	if (region) return region->stackframe;
+	else return 0;
+}
 
 #endif
