@@ -1,5 +1,6 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/graph.h>
+#include <jive/arch/stackframe.h>
 #include <jive/vsdg/cut-private.h>
 #include <jive/util/list.h>
 #include <jive/debug-private.h>
@@ -32,6 +33,8 @@ _jive_region_fini(jive_region * self)
 	jive_region_destroy_cuts(self);
 	if (self->parent)
 		JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
+	if (self->stackframe)
+		jive_stackframe_destroy(self->stackframe);
 }
 
 void

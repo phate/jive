@@ -26,9 +26,7 @@ proc_frame(jive_context * context, jive_graph ** graph, jive_node ** enter, jive
 	jive_output * stackptr = jive_node_gate_output(*enter, stackptr_var);
 	jive_node_gate_input(*leave, stackptr_var, stackptr);
 	
-	jive_stackframe * stackframe = jive_context_malloc(context, sizeof(*stackframe));
-	stackframe->stackptr = (jive_value_output *)stackptr;
-	(*graph)->root_region->stackframe = stackframe;
+	jive_stackframe_create((*graph)->root_region, stackptr);
 }
 
 static jive_graph *
@@ -204,7 +202,7 @@ int main()
 		jive_graph_destroy(graph);
 	}
 	
-	//assert(jive_context_is_empty(context));
+	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);
 	
 	return 0;

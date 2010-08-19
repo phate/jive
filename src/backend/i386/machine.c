@@ -27,9 +27,9 @@ jive_i386_create_spill(jive_region * region, jive_output * origin,
 	long displacement = 0;
 	jive_node * node = (jive_node *) jive_instruction_node_create(
 		region, &jive_i386_instructions[jive_i386_int_store32_disp],
-		(jive_output *[]){(jive_output *) stack->stackptr, origin}, &displacement);
+		(jive_output *[]){stack->stackptr, origin}, &displacement);
 	
-	jive_resource_assign_input(stack->stackptr->base.resource, node->inputs[0]);
+	jive_resource_assign_input(stack->stackptr->resource, node->inputs[0]);
 	
 	*spill_in = node->inputs[1];
 	spill_nodes[0] = node;
@@ -46,9 +46,9 @@ jive_i386_create_restore(jive_region * region, jive_output * stackslot,
 	long displacement = 0;
 	jive_node * node = (jive_node *) jive_instruction_node_create(
 		region, &jive_i386_instructions[jive_i386_int_load32_disp],
-		(jive_output *[]){(jive_output *) stack->stackptr}, &displacement);
+		(jive_output *[]){stack->stackptr}, &displacement);
 	
-	jive_resource_assign_input(stack->stackptr->base.resource, node->inputs[0]);
+	jive_resource_assign_input(stack->stackptr->resource, node->inputs[0]);
 	
 	*load_node = node;
 	restore_nodes[0] = node;
