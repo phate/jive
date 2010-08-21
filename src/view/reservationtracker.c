@@ -44,7 +44,7 @@ ensure_size(
 		int y;
 		
 		for(y=self->min_y; y<self->max_y; y++) {
-			memcpy(cells + stride * (y-new_min_y), self->cells + self->stride * (y-self->min_y), self->stride);
+			memcpy(cells + stride * (y-new_min_y) + (self->min_x - new_min_x), self->cells + self->stride * (y-self->min_y), self->stride);
 		}
 		jive_context_free(self->context, self->cells);
 		self->cells = cells;
