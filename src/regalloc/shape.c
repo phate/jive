@@ -110,21 +110,12 @@ struct jive_region_shaper {
 };
 
 static void
-pushdown_node(jive_region_shaper * self, jive_node * new_node);
-
-static void
 remove_place_from_prio_list(jive_region_shaper * self, jive_active_place * place)
 {
-	size_t n = 0;
-	while( (n<self->value_priorities.nitems) && (self->value_priorities.items[n] != place) )
-		n++;
-	if (n == self->value_priorities.nitems) return;
-	n++;
-	while( (n<self->value_priorities.nitems) ) {
-		self->value_priorities.items[n-1] = self->value_priorities.items[n];
-		n++;
-	}
-	self->value_priorities.nitems --;
+	if (place->priority < 0) return;
+	DEBUG_ASSERT(self->value_priorities.items[place->priority] == place);
+	self->value_priorities.items[place->priority] = 0;
+	place->priority = -1;
 }
 
 static void
@@ -136,14 +127,45 @@ add_places_to_prio_list(jive_region_shaper * self, size_t index, jive_active_pla
 			sizeof(self->value_priorities.items[0]) * self->value_priorities.max);
 	}
 	
+	/* reserve space and fill with zeroes */
 	size_t n = self->value_priorities.nitems;
 	while(n>index) {
 		n--;
-		self->value_priorities.items[n+nplaces] = self->value_priorities.items[n];
+		jive_active_place * place = self->value_priorities.items[n];
+		self->value_priorities.items[n+nplaces] = place;
+		if (place) place->priority = n + nplaces;
 	}
-	for(n=0; n<nplaces; n++)
-		self->value_priorities.items[n+index] = places[n];
+	for(n=0; n<nplaces; n++) self->value_priorities.items[n+index] = 0;
+	
+	/* move values into created gap, but don't move
+	any value further back */
+	int insertion_point = index;
+	for(n=0; n<nplaces; n++) {
+		jive_active_place * place = places[n];
+		if ((place->priority >= 0) && (place->priority < insertion_point)) continue;
+		
+		if (place->priority >= 0)
+			self->value_priorities.items[place->priority] = 0;
+		self->value_priorities.items[insertion_point] = place;
+		place->priority = insertion_point;
+		insertion_point ++;
+	}
 	self->value_priorities.nitems += nplaces;
+}
+
+static void
+compactify_prio_list(jive_region_shaper * self)
+{
+	size_t n = 0, k = 0;
+	while(k<self->value_priorities.nitems) {
+		if (self->value_priorities.items[k]) {
+			self->value_priorities.items[n] = self->value_priorities.items[k];
+			self->value_priorities.items[n]->priority = n;
+			n++;
+		}
+		k++;
+	}
+	self->value_priorities.nitems = n;
 }
 
 static void
@@ -175,9 +197,10 @@ jive_region_shaper_init(jive_region_shaper * self, jive_region_shaper * parent, 
 			jive_input * input = region->anchor_node->inputs[n];
 			jive_active_place * place = jive_active_place_tracker_get_input_place(self->active, input);
 			if (!place) continue;
-			jive_active_place_tracker_deactivate_place(self->active, place);
 			remove_place_from_prio_list(self, place);
+			jive_active_place_tracker_deactivate_place(self->active, place);
 		}
+		compactify_prio_list(self);
 	} else {
 		self->active = jive_active_place_tracker_create(self->context);
 	}
@@ -250,7 +273,10 @@ trivial_setup_inputs(jive_region_shaper * self, jive_node * node, size_t inserti
 		places[nplaces ++] = place;
 	}
 	
+	/* FIXME: uniquify */
 	add_inputs_by_priority(self, insertion_index, places, nplaces);
+	/* FIXME: should probably only do this after "regular" insertion */
+	compactify_prio_list(self);
 }
 
 static jive_active_place *
@@ -261,6 +287,7 @@ select_spill(jive_region_shaper * self, jive_conflict conflict)
 		for(lock_level = 0; lock_level<2; lock_level ++) {
 			for(n=self->value_priorities.nitems; n; n--) {
 				jive_active_place * place = self->value_priorities.items[n-1];
+				if (!place) continue;
 				if (place->locked > lock_level) continue;
 				if (!jive_resource_may_spill(place->resource)) continue;
 				
@@ -290,6 +317,9 @@ get_spilling_node(jive_region_shaper * self, jive_active_place * place)
 	return jive_aux_spill_node_create(place->origin->node->region,
 		jive_resource_get_regcls(place->resource), place->origin);
 }
+
+static void
+pushdown_node(jive_region_shaper * self, jive_node * new_node);
 
 static void
 restore_recursive(jive_region_shaper * self, jive_active_place * place, jive_output * stackslot_state)
@@ -557,7 +587,9 @@ setup_inputs(jive_region_shaper * self, jive_node * node, size_t insertion_index
 		}
 	}
 	
+	/* FIXME: uniquify */
 	add_inputs_by_priority(self, insertion_index, places, nplaces);
+	compactify_prio_list(self);
 }
 
 static void
@@ -725,9 +757,12 @@ pick_node(jive_region_shaper * self)
 			for(n=0; n<cand->noutputs; n++) {
 				jive_output * output = cand->outputs[n];
 				jive_active_place * place = jive_active_place_tracker_get_output_place(self->active, output);
-				if (place && (jive_output_isinstance(output, &JIVE_VALUE_OUTPUT))) {
-					remove_place_from_prio_list(self, place);
-					add_places_to_prio_list(self, 0, &place, 1);
+				
+				if (place && (place->priority != -1)) {
+					jive_active_place * oplace = self->value_priorities.items[0];
+					remove_place_from_prio_list(self, oplace);
+					add_places_to_prio_list(self, place->priority + 1, &oplace, 1);
+					compactify_prio_list(self);
 					blocked = true;
 				}
 			}

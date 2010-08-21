@@ -15,6 +15,7 @@ struct jive_active_place {
 	struct jive_output * origin;
 	struct jive_resource * resource;
 	int locked;
+	int priority;
 	
 	struct {
 		jive_active_place * prev;

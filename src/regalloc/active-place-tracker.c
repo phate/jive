@@ -9,6 +9,7 @@ jive_active_place_create(jive_output * origin, jive_resource * resource, jive_co
 	self->origin = origin;
 	self->resource = resource;
 	self->locked = 0;
+	self->priority = -1;
 	
 	return self;
 }
