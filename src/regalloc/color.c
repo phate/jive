@@ -2,6 +2,8 @@
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/resource-interference-private.h>
+#include <jive/vsdg/regcls-count-private.h>
+#include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/debug-private.h>
 #include <jive/arch/instruction.h>
@@ -146,17 +148,45 @@ pre_specialize(jive_graph * graph)
 	}
 }
 
+static void
+update_max_use_count(jive_regcls_count * dst, jive_regcls_count * src, jive_context * context)
+{
+	jive_regcls_count_iterator i;
+	for(i = jive_regcls_count_begin(src); i.entry; jive_regcls_count_iterator_next(&i)) {
+		jive_regcls_count_max(dst, context, i.entry->regcls, i.entry->count);
+	}
+}
+
+static void
+compute_max_cross_count(jive_resource * resource, jive_regcls_count * use_count, jive_context * context)
+{
+	jive_node_resource_interaction * xpoint;
+	JIVE_LIST_ITERATE(resource->node_interaction, xpoint, same_resource_list) {
+		if (xpoint->before_count)
+			update_max_use_count(use_count, &xpoint->node->use_count_before, context);
+		if (xpoint->after_count)
+			update_max_use_count(use_count, &xpoint->node->use_count_after, context);
+	}
+}
+
 static const jive_cpureg *
 find_allowed_register(jive_value_resource * regcand)
 {
+	jive_context * context = regcand->base.graph->context;
 	const jive_cpureg * best_reg = 0;
+	const jive_regcls * regcls = regcand->regcls;
 	size_t best_pressure = regcand->base.interference.nitems + 1;
+	
+	jive_regcls_count use_count;
+	jive_regcls_count_init(&use_count);
+	compute_max_cross_count(&regcand->base, &use_count, context);
 	
 	struct jive_allowed_registers_hash_iterator i;
 	JIVE_HASH_ITERATE(jive_allowed_registers_hash, regcand->allowed_registers, i) {
 		const jive_cpureg * reg = i.entry->reg;
 		
-		/* TODO: test for overflow */
+		if (jive_regcls_count_check_change(&use_count, regcls, reg->regcls))
+			continue;
 		
 		size_t pressure = 0;
 		
@@ -177,6 +207,8 @@ find_allowed_register(jive_value_resource * regcand)
 			best_reg = reg;
 		}
 	}
+	
+	jive_regcls_count_fini(&use_count, context);
 	
 	DEBUG_ASSERT(best_reg);
 	

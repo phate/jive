@@ -77,6 +77,24 @@ jive_regcls_count_add_single(jive_regcls_count * self, jive_context * context, c
 	return item->count;
 }
 
+void
+jive_regcls_count_max(jive_regcls_count * self, jive_context * context, const struct jive_regcls * regcls, size_t count)
+{
+	jive_regcls_count_item * item = jive_regcls_count_lookup_item(self, regcls);
+	if (likely(item != 0)) {
+		if (item->count < count) item->count = count;
+		return;
+	}
+	self->nitems ++;
+	if (self->nitems >= self->nbuckets) rehash(self, context);
+	
+	item = jive_context_malloc(context, sizeof(*item));
+	size_t hash = ((size_t) regcls) % self->nbuckets;
+	item->regcls = regcls;
+	item->count = count;
+	JIVE_LIST_PUSH_BACK(self->buckets[hash], item, chain);
+}
+
 static void
 jive_regcls_count_sub_single(jive_regcls_count * self, jive_context * context, const jive_regcls * regcls)
 {
