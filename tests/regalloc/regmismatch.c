@@ -79,105 +79,77 @@ create_testgraph_mismatch3(jive_context * context)
 	return graph;
 }
 
-#if 0
-def create_testgraph_mismatch3():
-	graph = vsdg.Graph()
+static jive_graph *
+create_testgraph_mismatch4(jive_context * context)
+{
+	jive_graph * graph;
+	jive_node * enter, * leave;
+	proc_frame(context, &graph, &enter, &leave);
 	
-	enter = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	leave = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	stackptr_var = cls_r4.create_gate(graph, "stackptr")
-	stackptr_var.may_spill = False
-	stackptr = enter.gate_output(stackptr_var)
-	leave.gate_input(stackptr_var, stackptr)
-	stack = vsdg.stack.Stackframe(stackptr)
+	jive_output * arg1 = jive_node_gate_output(enter, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "reg"));
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_r1], graph, "cls1"), arg1);
 	
-	arg1 = enter.gate_output(cls_r1.create_gate(graph, "cls1"))
-	leave.gate_input(regs.create_gate(graph, "reg"), arg1)
+	jive_output * arg2 = jive_node_gate_output(enter, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "reg"));
+	jive_node * node = (jive_node *) jive_instruction_node_create(
+		graph->root_region,
+		&jive_testarch_instructions[instr_setr1],
+		&arg2, NULL);
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "reg"), node->outputs[0]);
 	
-	arg2 = enter.gate_output(regs.create_gate(graph, "reg"))
-	arg2 = vsdg.instruction.InstructionNode(graph.root_region, set_r1_instr, (arg2,)).outputs[0]
-	leave.gate_input(regs.create_gate(graph, "reg"), arg2)
-	
-	graph.root_region.stackframe = stack
-	
-	return graph
+	return graph;
+}
 
-def create_testgraph_mismatch4():
-	graph = vsdg.Graph()
+static jive_graph *
+create_testgraph_mismatch5(jive_context * context)
+{
+	jive_graph * graph;
+	jive_node * enter, * leave;
+	proc_frame(context, &graph, &enter, &leave);
 	
-	enter = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	leave = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	stackptr_var = cls_r4.create_gate(graph, "stackptr")
-	stackptr_var.may_spill = False
-	stackptr = enter.gate_output(stackptr_var)
-	leave.gate_input(stackptr_var, stackptr)
-	stack = vsdg.stack.Stackframe(stackptr)
+	jive_output * arg1 = jive_node_gate_output(enter, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "reg"));
 	
-	arg1 = enter.gate_output(regs.create_gate(graph, "reg"))
-	leave.gate_input(cls_r1.create_gate(graph, "cls1"), arg1)
+	jive_node * tmp1 = (jive_node *) jive_instruction_node_create(
+		graph->root_region,
+		&JIVE_PSEUDO_NOP,
+		NULL, NULL);
+	jive_node_gate_input(tmp1, jive_regcls_create_gate(&jive_testarch_regcls[cls_r1], graph, "cls1"), arg1);
+	jive_output * out1 = jive_node_gate_output(tmp1, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "regs"));
 	
-	arg2 = enter.gate_output(regs.create_gate(graph, "reg"))
-	arg2 = vsdg.instruction.InstructionNode(graph.root_region, set_r1_instr, (arg2,)).outputs[0]
-	leave.gate_input(regs.create_gate(graph, "reg"), arg2)
+	jive_node * tmp2 = (jive_node *) jive_instruction_node_create(
+		graph->root_region,
+		&JIVE_PSEUDO_NOP,
+		NULL, NULL);
+	jive_node_gate_input(tmp2, jive_regcls_create_gate(&jive_testarch_regcls[cls_r2], graph, "cls2"), arg1);
+	jive_output * out2 = jive_node_gate_output(tmp2, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "regs"));
 	
-	graph.root_region.stackframe = stack
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "retval1"), out1);
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "retval2"), out2);
 	
-	return graph
+	return graph;
+}
 
-def create_testgraph_mismatch5():
-	graph = vsdg.Graph()
+static jive_graph *
+create_testgraph_mismatch6(jive_context * context)
+{
+	jive_graph * graph;
+	jive_node * enter, * leave;
+	proc_frame(context, &graph, &enter, &leave);
 	
-	enter = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	leave = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	stackptr_var = cls_r4.create_gate(graph, "stackptr")
-	stackptr_var.may_spill = False
-	stackptr = enter.gate_output(stackptr_var)
-	leave.gate_input(stackptr_var, stackptr)
-	stack = vsdg.stack.Stackframe(stackptr)
-	graph.root_region.stackframe = stack
+	jive_node * mid = (jive_node *) jive_instruction_node_create(
+		graph->root_region,
+		&JIVE_PSEUDO_NOP,
+		NULL, NULL);
 	
-	arg1 = enter.gate_output(regs.create_gate(graph, "reg"))
+	jive_node_gate_input(mid, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon"), jive_node_gate_output(enter, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon")));
 	
-	tmp1 = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	tmp1.gate_input(cls_r1.create_gate(graph, "cls1"), arg1)
-	out1 = tmp1.gate_output(regs.create_gate(graph, "regs"))
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon"), jive_node_gate_output(enter, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon")));
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon"), jive_node_gate_output(enter, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon")));
 	
-	tmp2 = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	tmp2.gate_input(cls_r2.create_gate(graph, "cls2"), arg1)
-	out2 = tmp2.gate_output(regs.create_gate(graph, "regs"))
+	jive_node_gate_input(leave, jive_regcls_create_gate(&jive_testarch_regcls[cls_r2], graph, "r2"), jive_node_gate_output(mid, jive_regcls_create_gate(&jive_testarch_regcls[cls_regs], graph, "anon")));
+	jive_node_gate_output(mid, jive_regcls_create_gate(&jive_testarch_regcls[cls_r2], graph, "r2"));
 	
-	leave.gate_input(regs.create_gate(graph, "retval1"), out1)
-	leave.gate_input(regs.create_gate(graph, "retval2"), out2)
-	
-	return graph
-
-def create_testgraph_mismatch6():
-	graph = vsdg.Graph()
-	
-	enter = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	mid = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	leave = vsdg.instruction.InstructionNode(graph.root_region, nop_instr)
-	stackptr_var = cls_r4.create_gate(graph, "stackptr")
-	stackptr_var.may_spill = False
-	stackptr = enter.gate_output(stackptr_var)
-	leave.gate_input(stackptr_var, stackptr)
-	stack = vsdg.stack.Stackframe(stackptr)
-	graph.root_region.stackframe = stack
-	
-	mid.gate_input(regs.create_gate(graph, "anon"), enter.gate_output(regs.create_gate(graph, "anon")))
-	
-	leave.gate_input(regs.create_gate(graph, "anon"), enter.gate_output(regs.create_gate(graph, "anon")))
-	leave.gate_input(regs.create_gate(graph, "anon"), enter.gate_output(regs.create_gate(graph, "anon")))
-	
-	leave.gate_input(cls_r2.create_gate(graph, "r2"), mid.gate_output(regs.create_gate(graph, "anon")))
-	mid.gate_output(cls_r2.create_gate(graph, "r2"))
-	
-	return graph
-#endif
-
-
-
-
+	return graph;
+}
 
 typedef jive_graph * (*creator_function_t)(jive_context *);
 
@@ -185,6 +157,9 @@ static const creator_function_t tests[] = {
 	create_testgraph_mismatch1,
 	create_testgraph_mismatch2,
 	create_testgraph_mismatch3,
+	create_testgraph_mismatch4,
+	create_testgraph_mismatch5,
+	create_testgraph_mismatch6
 };
 
 int main()
