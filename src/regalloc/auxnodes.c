@@ -8,6 +8,7 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/transfer-instructions.h>
+#include <jive/arch/stackframe.h>
 
 #include <string.h>
 
@@ -80,8 +81,7 @@ static void
 _jive_aux_spill_node_init(jive_aux_spill_node * self, jive_region * region, const jive_regcls * regcls, jive_output * origin)
 {
 	const jive_type * input_type = jive_regcls_get_type(regcls);
-	/* TODO: use stackslot type */
-	JIVE_DECLARE_STATE_TYPE(output_type);
+	JIVE_DECLARE_STACKSLOT_TYPE(output_type, regcls);
 	self->base.class_ = &JIVE_AUX_SPILL_NODE;
 	_jive_node_init(&self->base, region,
 		1, &input_type, &origin,
@@ -140,8 +140,7 @@ static void
 _jive_aux_restore_node_init(jive_aux_restore_node * self, jive_region * region, const jive_regcls * regcls, jive_output * origin)
 {
 	const jive_type * output_type = jive_regcls_get_type(regcls);
-	/* TODO: use stackslot type */
-	JIVE_DECLARE_STATE_TYPE(input_type);
+	JIVE_DECLARE_STACKSLOT_TYPE(input_type, regcls);
 	self->base.class_ = &JIVE_AUX_RESTORE_NODE;
 	_jive_node_init(&self->base, region,
 		1, &input_type, &origin,

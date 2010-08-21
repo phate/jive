@@ -8,7 +8,7 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
-#include <jive/arch/stackframe.h>
+#include <jive/backend/i386/stackframe.h>
 
 #include <jive/regalloc.h>
 
@@ -52,7 +52,7 @@ make_dotprod_function(size_t vector_size)
 	
 	jive_output * stackptr = jive_node_gate_output(enter, stackptr_var);
 	jive_node_gate_input(leave, stackptr_var, stackptr);
-	jive_stackframe_create(graph->root_region, stackptr);
+	jive_stackframe * stackframe = jive_i386_stackframe_create(graph->root_region, stackptr);
 	jive_node_gate_input(leave, save_ebx, jive_node_gate_output(enter, save_ebx));
 	jive_node_gate_input(leave, save_ebp, jive_node_gate_output(enter, save_ebp));
 	jive_node_gate_input(leave, save_esi, jive_node_gate_output(enter, save_esi));
@@ -98,14 +98,14 @@ make_dotprod_function(size_t vector_size)
 		jive_node * s = (jive_node *) jive_instruction_node_create(
 			graph->root_region,
 			&jive_i386_instructions[jive_i386_int_add],
-			(jive_output *[]){operands[n], value}, 0);
+			(jive_output *[]){value, operands[n]}, 0);
 		value = s->outputs[0];
 	}
 	
 	jive_node_gate_input(leave, retval_var, value);
 	jive_regalloc(graph, &jive_i386_transfer_instructions_factory);
-	
-	jive_view(graph, stderr);
+	jive_graph_record_stackslots(graph);
+	jive_stackframe_layout(stackframe);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
@@ -124,10 +124,9 @@ int main(int argc, char ** argv)
 {
 	setlocale(LC_ALL, "");
 	
-	size_t count = 2, n;
-	if (argc>2) count = atoi(argv[1]);
+	size_t count = 4, n;
+	if (argc>=2) count = atoi(argv[1]);
 	if (count<4) count = 4;
-	count = 2;
 	dotprod_function_t dotprod2 = make_dotprod_function(count);
 	
 	int a[count], b[count];
@@ -135,7 +134,7 @@ int main(int argc, char ** argv)
 	a[0] = 1; a[1] = 4; a[2] = 0; a[3] = -3;
 	b[0] = 3; b[1] = 7; b[2] = 0; b[3] = 5;
 	int result = dotprod2(a, b);
-	assert(result == 1*3 + 4*7 + 0*-3*5 );
+	assert(result == 1*3 + 4*7 + -3*5 );
 	
 	return 0;
 }
