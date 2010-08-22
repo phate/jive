@@ -5,7 +5,7 @@
 typedef struct my_item my_item;
 
 struct my_item {
-	int key;
+	void * key;
 	int value;
 	struct {
 		my_item * prev;
@@ -13,8 +13,8 @@ struct my_item {
 	} hash_chain;
 };
 
-JIVE_DECLARE_HASH_TYPE(my_hash, my_item, int, key, hash_chain);
-JIVE_DEFINE_HASH_TYPE(my_hash, my_item, int, key, hash_chain);
+JIVE_DECLARE_HASH_TYPE(my_hash, my_item, void *, key, hash_chain);
+JIVE_DEFINE_HASH_TYPE(my_hash, my_item, void *, key, hash_chain);
 
 typedef struct my_hash my_hash;
 typedef struct my_hash_iterator my_hash_iterator;
@@ -26,19 +26,19 @@ int main()
 	my_hash hash;
 	my_hash_init(&hash, ctx);
 	
-	assert(my_hash_lookup(&hash, 42) == 0);
+	assert(my_hash_lookup(&hash, (void *) 42) == 0);
 	
-	my_item i1 = {42, 0};
+	my_item i1 = {(void *)42, 0};
 	my_hash_insert(&hash, &i1);
-	assert(my_hash_lookup(&hash, 42) == &i1);
+	assert(my_hash_lookup(&hash, (void *)42) == &i1);
 	
-	my_item i2 = {10, 0};
+	my_item i2 = {(void *)10, 0};
 	my_hash_insert(&hash, &i2);
 	
 	my_hash_remove(&hash, &i1);
-	assert(my_hash_lookup(&hash, 42) == 0);
+	assert(my_hash_lookup(&hash, (void *)42) == 0);
 	my_hash_insert(&hash, &i1);
-	assert(my_hash_lookup(&hash, 42) == &i1);
+	assert(my_hash_lookup(&hash, (void *)42) == &i1);
 	
 	my_hash_iterator i;
 	int seen_i1 = 0, seen_i2 = 0;
