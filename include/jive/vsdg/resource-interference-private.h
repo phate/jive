@@ -59,8 +59,13 @@ jive_resource_interference_remove(jive_resource * first, jive_resource * second)
 	size_t count = -- (i->count);
 	if (!i->count) {
 		jive_resource_interference_destroy(i);
-		first->class_->recompute_allowed_registers(first);
-		second->class_->recompute_allowed_registers(second);
+		if (jive_resource_get_cpureg(first) || jive_resource_get_cpureg(second)) {
+			first->class_->recompute_allowed_registers(first);
+			second->class_->recompute_allowed_registers(second);
+		} else {
+			first->class_->add_squeeze(first, jive_resource_get_regcls(second));
+			second->class_->add_squeeze(second, jive_resource_get_regcls(first));
+		}
 	}
 	return count;
 }
