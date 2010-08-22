@@ -18,8 +18,10 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->node_anchored_regions_list.prev = self->node_anchored_regions_list.next = 0;
 	self->cuts.first = self->cuts.last = 0;
 	
-	if (parent)
+	if (parent) {
 		JIVE_LIST_PUSH_BACK(parent->subregions, self, region_subregions_list);
+		self->depth = parent->depth + 1;
+	} else self->depth = 0;
 	
 	self->anchor_node = 0;
 }

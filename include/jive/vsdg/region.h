@@ -14,6 +14,7 @@ struct jive_stackframe;
 struct jive_region {
 	struct jive_graph * graph;
 	jive_region * parent;
+	size_t depth;
 	struct jive_stackframe * stackframe;
 	struct {
 		struct jive_node * first;
@@ -51,6 +52,16 @@ static inline bool
 jive_region_empty(const jive_region * self)
 {
 	return self->nodes.first == 0 && self->subregions.first == 0;
+}
+
+static inline bool
+jive_region_is_contained_by(const jive_region * self, const jive_region * other)
+{
+	while(self->depth > other->depth) {
+		if (self->parent == other) return true;
+		self = self->parent;
+	}
+	return false;
 }
 
 struct jive_node_location *
