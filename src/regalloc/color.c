@@ -1,10 +1,13 @@
 #include <jive/regalloc/color.h>
+#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/resource-interference-private.h>
 #include <jive/vsdg/regcls-count-private.h>
 #include <jive/vsdg/crossings-private.h>
 #include <jive/vsdg/traverser.h>
+#include <jive/vsdg/region.h>
+#include <jive/vsdg/cut.h>
 #include <jive/debug-private.h>
 #include <jive/arch/instruction.h>
 
@@ -210,16 +213,141 @@ find_allowed_register(jive_value_resource * regcand)
 	
 	jive_regcls_count_fini(&use_count, context);
 	
-	DEBUG_ASSERT(best_reg);
-	
 	return best_reg;
+}
+
+typedef struct jive_region_split jive_region_split;
+
+struct jive_region_split {
+	jive_region * region;
+	jive_node_location * point;
+	struct {
+		size_t nitems, space;
+		jive_input ** items;
+	} users;
+	struct {
+		jive_region_split * prev;
+		jive_region_split * next;
+	} split_list;
+};
+
+static jive_region_split *
+jive_region_split_create(jive_region * region)
+{
+	jive_region_split * split = jive_context_malloc(region->graph->context, sizeof(*split));
+	split->region = region;
+	split->point = 0;
+	split->users.nitems = split->users.space = 0;
+	split->users.items = 0;
+	return split;
+}
+
+static void
+jive_region_split_destroy(jive_region_split * self)
+{
+	jive_context_free(self->region->graph->context, self->users.items);
+	jive_context_free(self->region->graph->context, self);
+}
+
+static void
+jive_region_split_add_user(jive_region_split * self, jive_input * user)
+{
+	if (self->users.nitems >= self->users.space) {
+		self->users.space = self->users.nitems * 2 + 1;
+		self->users.items = jive_context_realloc(self->region->graph->context, self->users.items,
+			sizeof(self->users.items[0]) * self->users.space);
+	}
+	self->users.items[self->users.nitems ++] = user;
+}
+
+static const jive_cpureg *
+simple_splitting(jive_value_resource * regcand)
+{
+	jive_output * value = regcand->base.outputs.first;
+	DEBUG_ASSERT(regcand->base.outputs.last == regcand->base.outputs.first);
+	
+	const jive_regcls * regcls = jive_resource_get_regcls(&regcand->base);
+	
+	jive_node * spill_node = jive_aux_spill_node_create(value->node->region, regcls, value);
+	jive_cut_insert(value->node->shape_location->cut, value->node->shape_location->cut_nodes_list.next, spill_node);
+	jive_resource_assign_input(&regcand->base, spill_node->inputs[0]);
+	jive_output * stackslot = spill_node->outputs[0];
+	jive_resource_assign_output(jive_output_get_constraint(stackslot), stackslot);
+	
+	struct {
+		jive_region_split * first;
+		jive_region_split * last;
+	} splits = {0,0};
+	
+	const jive_cpureg * reg = 0;
+	while(!reg) {
+		jive_input * last_user = 0, * input;
+		JIVE_LIST_ITERATE(regcand->base.inputs, input, resource_input_list) {
+			const jive_node_resource_interaction * xpoint;
+			xpoint = jive_node_resource_interaction_lookup(input->node, &regcand->base);
+			if (xpoint->crossed_count == 0) {
+				last_user = input;
+				break;
+			}
+		}
+		
+		DEBUG_ASSERT(last_user);
+		
+		jive_region_split * split;
+		JIVE_LIST_ITERATE(splits, split, split_list) if (split->region == last_user->node->region) break;
+		if (!split) {
+			split = jive_region_split_create(last_user->node->region);
+			JIVE_LIST_PUSH_FRONT(splits, split, split_list);
+		}
+		split->point = last_user->node->shape_location;
+		jive_region_split_add_user(split, last_user);
+		/* if split is above sub-regions, users within the sub-regions
+		can use the restored value in their parent region and do
+		not need a separate split */
+		jive_region_split * other_split, * next_split;
+		JIVE_LIST_ITERATE_SAFE(splits, other_split, next_split, split_list) {
+			if (jive_region_is_contained_by(other_split->region, split->region)) {
+				size_t n;
+				for(n=0; n<other_split->users.nitems; n++)
+					jive_region_split_add_user(split, other_split->users.items[n]);
+				JIVE_LIST_REMOVE(splits, other_split, split_list);
+				jive_region_split_destroy(other_split);
+			}
+		}
+		
+		jive_resource_unassign_input(&regcand->base, last_user);
+		jive_value_resource_recompute_regcls(regcand);
+		reg = find_allowed_register(regcand);
+	}
+	
+	jive_region_split * split, * next_split;
+	JIVE_LIST_ITERATE_SAFE(splits, split, next_split, split_list) {
+		jive_node * restore_node = jive_aux_restore_node_create(split->region, regcls, stackslot);
+		jive_resource_assign_input(stackslot->resource, restore_node->inputs[0]);
+		jive_output * restored_value = restore_node->outputs[0];
+		jive_resource_assign_output(jive_output_get_constraint(restored_value), restored_value);
+		jive_resource * res = restored_value->resource;
+		size_t n;
+		for(n=0; n<split->users.nitems; n++) {
+			jive_input * user = split->users.items[n];
+			jive_input_divert_origin(user, restored_value);
+			jive_resource_assign_input(res, user);
+		}
+		jive_value_resource_recompute_regcls((jive_value_resource *) res);
+		jive_cut_insert(split->point->cut, split->point, restore_node);
+	}
+	
+	return reg;
 }
 
 static void
 color_single(jive_graph * graph, jive_value_resource * regcand)
 {
 	const jive_cpureg * reg = find_allowed_register(regcand);
-	/* TODO: implement conflict resolution */
+	if (!reg) {
+		reg = simple_splitting(regcand);
+		/* TODO: implement conflict resolution for gated values */
+	}
 	DEBUG_ASSERT(reg);
 	jive_value_resource_set_cpureg(regcand, reg);
 	
