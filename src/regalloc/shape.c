@@ -273,10 +273,7 @@ trivial_setup_inputs(jive_region_shaper * self, jive_node * node, size_t inserti
 		places[nplaces ++] = place;
 	}
 	
-	/* FIXME: uniquify */
 	add_inputs_by_priority(self, insertion_index, places, nplaces);
-	/* FIXME: should probably only do this after "regular" insertion */
-	compactify_prio_list(self);
 }
 
 static jive_active_place *
@@ -587,7 +584,6 @@ setup_inputs(jive_region_shaper * self, jive_node * node, size_t insertion_index
 		}
 	}
 	
-	/* FIXME: uniquify */
 	add_inputs_by_priority(self, insertion_index, places, nplaces);
 	compactify_prio_list(self);
 }

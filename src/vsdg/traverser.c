@@ -20,7 +20,7 @@ _jive_traversal_state_init_slow(jive_traversal_state * self, jive_graph * graph)
 	
 	graph->traverser_slots[n].cookie = 0;
 	self->cookie = graph->traverser_slots[n].cookie + 1;
-	graph->traverser_slots[n].traverser = (void *) self; /* FIXME: data type */
+	graph->traverser_slots[n].traversal_state = self;
 }
 
 jive_traversal_nodestate *

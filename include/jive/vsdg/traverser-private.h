@@ -54,7 +54,7 @@ jive_full_traverser_add_frontier(jive_full_traverser * self,  struct jive_traver
 typedef struct jive_traverser_graphstate jive_traverser_graphstate;
 
 struct jive_traverser_graphstate {
-	jive_traverser * traverser;
+	jive_traversal_state * traversal_state;
 	size_t cookie;
 };
 
@@ -68,10 +68,10 @@ jive_traversal_state_init(jive_traversal_state * self, jive_graph * graph)
 	
 	size_t n;
 	for(n = 0; n < graph->ntraverser_slots; n++) {
-		if (!graph->traverser_slots[n].traverser) {
+		if (!graph->traverser_slots[n].traversal_state) {
 			self->index = n;
 			self->cookie = graph->traverser_slots[n].cookie + 1;
-			graph->traverser_slots[n].traverser = (void *) self; /* FIXME: correct type */
+			graph->traverser_slots[n].traversal_state = self;
 			return;
 		}
 	}
@@ -85,7 +85,7 @@ jive_traversal_state_fini(jive_traversal_state * self)
 	self->graph->traverser_slots[self->index].cookie = self->cookie + 1;
 	/* TODO: reset cookies iff == 0 ? or don't reuse this slot? */
 	DEBUG_ASSERT(self->graph->traverser_slots[self->index].cookie);
-	self->graph->traverser_slots[self->index].traverser = 0;
+	self->graph->traverser_slots[self->index].traversal_state = 0;
 }
 
 jive_traversal_nodestate *

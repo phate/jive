@@ -114,7 +114,7 @@ jive_graph_has_active_traversers(const jive_graph * self)
 {
 	size_t n;
 	for(n=0; n<self->ntraverser_slots; n++)
-		if (self->traverser_slots[n].traverser) return true;
+		if (self->traverser_slots[n].traversal_state) return true;
 	return false;
 }
 
