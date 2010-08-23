@@ -15,12 +15,13 @@ LIBJIVE_SRC = src/context.c \
 	\
 	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
 	\
-	src/arch/instruction.c src/arch/registers.c src/arch/stackframe.c \
+	src/arch/instruction.c src/arch/registers.c src/arch/stackframe.c src/arch/subroutine.c \
 	\
 	src/backend/i386/registerset.c\
 	src/backend/i386/instructionset.c\
 	src/backend/i386/machine.c\
 	src/backend/i386/stackframe.c\
+	src/backend/i386/subroutine.c\
 
 #src/ra-common.c src/ra-graphcut-cache.c src/ra-shape.c src/regalloc.c
 

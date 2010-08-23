@@ -791,8 +791,36 @@ jive_region_shaper_process(jive_region_shaper * self)
 static void
 process_subregions(jive_region_shaper * self, jive_node * new_node)
 {
-	/* TODO: implement */
-	abort();
+	jive_context * context = self->region->graph->context;
+	size_t nregions = 0, n;
+	
+	for(n=0; n<new_node->ninputs; n++) {
+		jive_input * input = new_node->inputs[n];
+		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
+		nregions ++;
+		jive_active_place * place = jive_active_place_tracker_get_input_place(self->active, input);
+		jive_active_place_tracker_deactivate_place(self->active, place);
+		jive_resource_set_hovering_region(input->resource, 0);
+	}
+	
+	if (!nregions) return;
+	
+	jive_region_shaper * subshapers[nregions];
+	n = 0;
+	jive_region * region;
+	JIVE_LIST_ITERATE(new_node->anchored_regions, region, node_anchored_regions_list) {
+		jive_region_shaper * subshaper = jive_context_malloc(context, sizeof(*subshaper));
+		jive_region_shaper_init(subshaper, self, region, self->master_traverser);
+		jive_region_shaper_process(subshaper);
+		subshapers[n++] = subshaper;
+	}
+	
+	/* TODO: merge resources back */
+	
+	for(n=0; n<nregions; n++) {
+		jive_region_shaper_fini(subshapers[n]);
+		jive_context_free(context, subshapers[n]);
+	}
 }
 
 void

@@ -35,7 +35,7 @@ layout_regions_recursive(jive_region * region)
 {
 	if (region->stackframe) region->stackframe->class_->layout(region->stackframe);
 	jive_region * subregion;
-	JIVE_LIST_ITERATE(region->subregions, region, region_subregions_list)
+	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
 		layout_regions_recursive(subregion);
 }
 
