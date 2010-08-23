@@ -26,7 +26,7 @@ proc_frame(jive_context * context, jive_graph ** graph, jive_node ** enter, jive
 	jive_output * stackptr = jive_node_gate_output(*enter, stackptr_var);
 	jive_node_gate_input(*leave, stackptr_var, stackptr);
 	
-	jive_stackframe_create((*graph)->root_region, stackptr);
+	jive_testarch_stackframe_create((*graph)->root_region, stackptr);
 }
 
 static jive_graph *

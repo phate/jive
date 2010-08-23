@@ -84,22 +84,16 @@ jive_stackslot_type_create(const struct jive_regcls * regcls)
 	return type;
 }
 
-/* TODO: this is a placeholder function; stackframe factory must
-be provided by arch implementation, this generic function
-will be removed later  */
-jive_stackframe *
-jive_stackframe_create(struct jive_region * region, struct jive_output * stackptr);
-
-void
-jive_stackframe_destroy(jive_stackframe * self);
-
-static inline void
-jive_stackframe_layout(jive_stackframe * self)
+static inline jive_stackslot_resource *
+jive_stackslot_resource_cast(jive_resource * self)
 {
-	self->class_->layout(self);
+	if (self && jive_resource_isinstance(self, &JIVE_STACKSLOT_RESOURCE))
+		return (jive_stackslot_resource *) self;
+	else
+		return 0;
 }
 
 void
-jive_graph_record_stackslots(struct jive_graph * self);
+jive_stackframe_destroy(jive_stackframe * self);
 
 #endif

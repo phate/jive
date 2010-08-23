@@ -52,7 +52,7 @@ make_dotprod_function(size_t vector_size)
 	
 	jive_output * stackptr = jive_node_gate_output(enter, stackptr_var);
 	jive_node_gate_input(leave, stackptr_var, stackptr);
-	jive_stackframe * stackframe = jive_i386_stackframe_create(graph->root_region, stackptr);
+	jive_i386_stackframe_create(graph->root_region, stackptr);
 	jive_node_gate_input(leave, save_ebx, jive_node_gate_output(enter, save_ebx));
 	jive_node_gate_input(leave, save_ebp, jive_node_gate_output(enter, save_ebp));
 	jive_node_gate_input(leave, save_esi, jive_node_gate_output(enter, save_esi));
@@ -104,8 +104,6 @@ make_dotprod_function(size_t vector_size)
 	
 	jive_node_gate_input(leave, retval_var, value);
 	jive_regalloc(graph, &jive_i386_transfer_instructions_factory);
-	jive_graph_record_stackslots(graph);
-	jive_stackframe_layout(stackframe);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);

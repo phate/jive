@@ -44,4 +44,11 @@ extern const jive_instruction_class jive_testarch_instructions [];
 
 extern const struct jive_transfer_instructions_factory testarch_transfer_instructions_factory;
 
+struct jive_stackframe;
+struct jive_region;
+struct jive_output;
+
+struct jive_stackframe *
+jive_testarch_stackframe_create(struct jive_region * region, struct jive_output * stackptr);
+
 #endif

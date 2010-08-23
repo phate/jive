@@ -18,36 +18,11 @@ const jive_stackframe_class JIVE_STACKFRAME_CLASS = {
 	.fini = _jive_stackframe_fini
 };
 
-jive_stackframe *
-jive_stackframe_create(jive_region * region, jive_output * stackptr)
-{
-	jive_stackframe * stackframe = jive_context_malloc(region->graph->context, sizeof(*stackframe));
-	_jive_stackframe_init(stackframe, region, stackptr);
-	stackframe->class_ = &JIVE_STACKFRAME_CLASS;
-	return stackframe;
-}
-
 void
 jive_stackframe_destroy(jive_stackframe * self)
 {
 	self->class_->fini(self);
 	jive_context_free(self->region->graph->context, self);
-}
-
-void
-jive_graph_record_stackslots(jive_graph * self)
-{
-	jive_resource * resource;
-	JIVE_LIST_ITERATE(self->resources, resource, graph_resource_list) {
-		if (!jive_resource_isinstance(resource, &JIVE_STACKSLOT_RESOURCE)) continue;
-		jive_stackslot_resource * slot = (jive_stackslot_resource *) resource;
-		if (slot->stackframe) continue;
-		/* FIXME: use the region of the node writing to the slot */
-		jive_stackframe * stackframe = jive_region_get_stackframe(self->root_region);
-		if (!stackframe) continue;
-		slot->stackframe = stackframe;
-		JIVE_LIST_PUSH_BACK(stackframe->slots, slot, stackframe_slots_list);
-	}
 }
 
 /* stackslots */
