@@ -335,6 +335,7 @@ simple_splitting(jive_value_resource * regcand)
 		}
 		jive_value_resource_recompute_regcls((jive_value_resource *) res);
 		jive_cut_insert(split->point->cut, split->point, restore_node);
+		jive_region_split_destroy(split);
 	}
 	
 	return reg;
