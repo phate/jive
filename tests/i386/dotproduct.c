@@ -70,6 +70,9 @@ make_dotprod_function(size_t vector_size)
 	
 	jive_buffer_fini(&buffer);
 	
+	jive_graph_destroy(graph);
+	
+	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);
 	
 	return function;
