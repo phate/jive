@@ -122,7 +122,7 @@ _jive_value_input_get_type(const jive_input * self)
 jive_resource *
 _jive_value_input_get_constraint(const jive_input * self_)
 {
-	jive_value_input * self = (jive_value_input *) self_;
+	const jive_value_input * self = (const jive_value_input *) self_;
 	jive_value_resource * resource = (jive_value_resource *) _jive_input_get_constraint(self_);
 	/* don't overwrite regcls specified by gate (should be done differently though) */
 	if (!self->base.gate) jive_value_resource_set_regcls(resource, self->required_regcls);
@@ -147,7 +147,7 @@ _jive_value_output_get_type(const jive_output * self)
 jive_resource *
 _jive_value_output_get_constraint(const jive_output * self_)
 {
-	jive_value_output * self = (jive_value_output *) self_;
+	const jive_value_output * self = (const jive_value_output *) self_;
 	jive_value_resource * resource = (jive_value_resource *) _jive_output_get_constraint(self_);
 	/* don't overwrite regcls specified by gate (should be done differently though) */
 	if (!self->base.gate) jive_value_resource_set_regcls(resource, self->required_regcls);
