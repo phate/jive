@@ -6,13 +6,20 @@
 #include <jive/backend/i386/subroutine.h>
 
 typedef struct jive_i386_subroutine jive_i386_subroutine;
+typedef struct jive_i386_argument jive_i386_argument;
+
+struct jive_i386_argument {
+	jive_argument_type type;
+	jive_stackslot * slot;
+	jive_output * origin;
+};
 
 struct jive_i386_subroutine {
 	jive_subroutine base;
 	
 	jive_stackframe * stackframe;
 	size_t narguments;
-	jive_argument_type * arguments;
+	jive_i386_argument * arguments;
 	jive_argument_type return_type;
 	jive_gate * return_variable;
 };

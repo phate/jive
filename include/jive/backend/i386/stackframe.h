@@ -10,11 +10,13 @@ struct jive_output;
 struct jive_i386_stackframe {
 	jive_stackframe base;
 	ssize_t size;
+	struct jive_output * stackptr_on_entry;
+	struct jive_input * stackptr_on_exit;
 };
 
 extern const jive_stackframe_class JIVE_I386_STACKFRAME_CLASS;
 
 jive_stackframe *
-jive_i386_stackframe_create(struct jive_region * region, struct jive_output * stackptr);
+jive_i386_stackframe_create(struct jive_region * region, struct jive_output * stackptr_on_entry, struct jive_input * stackptr_on_exit);
 
 #endif

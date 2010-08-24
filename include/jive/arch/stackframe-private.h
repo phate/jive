@@ -55,6 +55,9 @@ _jive_stackvar_input_init(jive_stackvar_input * self, const struct jive_regcls *
 const jive_type *
 _jive_stackvar_input_get_type(const jive_input * self);
 
+jive_resource *
+_jive_stackvar_input_get_constraint(const jive_input * self);
+
 /* output inheritable members */
 
 char *
@@ -65,7 +68,10 @@ _jive_stackvar_output_init(jive_stackvar_output * self, const struct jive_regcls
 
 const jive_type *
 _jive_stackvar_output_get_type(const jive_output * self);
-	
+
+jive_resource *
+_jive_stackvar_output_get_constraint(const jive_output * self);
+
 /* resource inheritable members */
 
 char *
@@ -79,6 +85,12 @@ _jive_stackvar_resource_fini(jive_resource * self);
 
 const jive_type *
 _jive_stackvar_resource_get_type(const jive_resource * self);
+
+bool
+_jive_stackvar_resource_can_merge(const jive_resource * self, const jive_resource * other);
+
+void
+_jive_stackvar_resource_merge(jive_resource * self, jive_resource * other);
 
 /* gate inheritable members */
 

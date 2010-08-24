@@ -54,12 +54,14 @@ extern const jive_input_class JIVE_STACKSLOT_INPUT;
 struct jive_stackvar_input {
 	jive_state_input base;
 	jive_stackvar_type type;
+	jive_stackslot * required_slot;
 };
 
 extern const jive_output_class JIVE_STACKSLOT_OUTPUT;
 struct jive_stackvar_output {
 	jive_state_output base;
 	jive_stackvar_type type;
+	jive_stackslot * required_slot;
 };
 
 extern const jive_gate_class JIVE_STACKSLOT_GATE;
@@ -86,6 +88,7 @@ struct jive_stackslot {
 		jive_stackslot * next;
 	} stackframe_slots_list;
 	long offset;
+	jive_stackframe * stackframe;
 };
 
 static inline jive_stackvar_type

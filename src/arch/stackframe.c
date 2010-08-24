@@ -11,6 +11,11 @@
 void
 _jive_stackframe_fini(jive_stackframe * self)
 {
+	jive_stackvar_resource * var, * next_var;
+	JIVE_LIST_ITERATE_SAFE(self->vars, var, next_var, stackframe_vars_list) {
+		var->stackframe = 0;
+		JIVE_LIST_REMOVE(self->vars, var, stackframe_vars_list);
+	}
 }
 
 const jive_stackframe_class JIVE_STACKFRAME_CLASS = {
@@ -36,6 +41,7 @@ jive_stackslot_create(jive_stackframe * stackframe, long offset)
 	jive_stackslot * self = jive_context_malloc(context, sizeof(*self));
 	JIVE_LIST_PUSH_BACK(stackframe->slots, self, stackframe_slots_list);
 	self->offset = offset;
+	self->stackframe = stackframe;
 	return self;
 }
 
@@ -57,7 +63,7 @@ const jive_input_class JIVE_STACKSLOT_INPUT = {
 	.fini = _jive_input_fini, /* inherit */
 	.get_label = _jive_stackvar_input_get_label, /* override */
 	.get_type = _jive_stackvar_input_get_type, /* override */
-	.get_constraint = _jive_input_get_constraint /* inherit */
+	.get_constraint = _jive_stackvar_input_get_constraint /* override */
 };
 
 const jive_output_class JIVE_STACKSLOT_OUTPUT = {
@@ -65,7 +71,7 @@ const jive_output_class JIVE_STACKSLOT_OUTPUT = {
 	.fini = _jive_output_fini, /* inherit */
 	.get_label = _jive_stackvar_output_get_label, /* override */
 	.get_type = _jive_stackvar_output_get_type, /* override */
-	.get_constraint = _jive_output_get_constraint /* inherit */
+	.get_constraint = _jive_stackvar_output_get_constraint /* override */
 };
 
 const jive_gate_class JIVE_STACKSLOT_GATE = {
@@ -83,8 +89,8 @@ const jive_resource_class JIVE_STACKSLOT_RESOURCE = {
 	.fini = _jive_stackvar_resource_fini, /* override */
 	.get_label = _jive_stackvar_resource_get_label, /* override */
 	.get_type = _jive_stackvar_resource_get_type, /* override */
-	.can_merge = _jive_resource_can_merge, /* inherit */
-	.merge = _jive_resource_merge, /* inherit */
+	.can_merge = _jive_stackvar_resource_can_merge, /* override */
+	.merge = _jive_stackvar_resource_merge, /* override */
 	.get_cpureg = _jive_resource_get_cpureg, /* inherit */
 	.get_regcls = _jive_resource_get_regcls, /* inherit */
 	.get_real_regcls = _jive_resource_get_real_regcls, /* inherit */
@@ -166,6 +172,7 @@ _jive_stackvar_input_init(jive_stackvar_input * self, const struct jive_regcls *
 {
 	_jive_state_input_init(&self->base, node, index, origin);
 	self->type = jive_stackvar_type_create(regcls);
+	self->required_slot = 0;
 }
 
 char *
@@ -184,11 +191,21 @@ _jive_stackvar_input_get_type(const jive_input * self_)
 	return &self->type.base.base;
 }
 
+jive_resource *
+_jive_stackvar_input_get_constraint(const jive_input * self_)
+{
+	const jive_stackvar_input * self = (const jive_stackvar_input *) self_;
+	jive_stackvar_resource * resource = (jive_stackvar_resource *) _jive_input_get_constraint(self_);
+	if (self->required_slot) resource->slot = self->required_slot;
+	return &resource->base.base;
+}
+
 void
 _jive_stackvar_output_init(jive_stackvar_output * self, const struct jive_regcls * regcls, struct jive_node * node, size_t index)
 {
 	_jive_state_output_init(&self->base, node, index);
 	self->type = jive_stackvar_type_create(regcls);
+	self->required_slot = 0;
 }
 
 char *
@@ -205,6 +222,15 @@ _jive_stackvar_output_get_type(const jive_output * self_)
 {
 	const jive_stackvar_output * self = (const jive_stackvar_output *) self_;
 	return &self->type.base.base;
+}
+
+jive_resource *
+_jive_stackvar_output_get_constraint(const jive_output * self_)
+{
+	const jive_stackvar_output * self = (const jive_stackvar_output *) self_;
+	jive_stackvar_resource * resource = (jive_stackvar_resource *) _jive_output_get_constraint(self_);
+	if (self->required_slot) resource->slot = self->required_slot;
+	return &resource->base.base;
 }
 
 void
@@ -238,6 +264,30 @@ _jive_stackvar_resource_get_type(const jive_resource * self_)
 {
 	const jive_stackvar_resource * self = (const jive_stackvar_resource *) self_;
 	return &self->type.base.base;
+}
+
+bool
+_jive_stackvar_resource_can_merge(const jive_resource * self_, const jive_resource * other_)
+{
+	const jive_stackvar_resource * self = (const jive_stackvar_resource *) self_;
+	const jive_stackvar_resource * other = (const jive_stackvar_resource *) other_;
+	
+	if (!_jive_resource_can_merge(self_, other_)) return false;
+	
+	if (self->slot && other->slot && (self->slot != other->slot)) return false;
+	
+	return true;
+}
+
+void
+_jive_stackvar_resource_merge(jive_resource * self_, jive_resource * other_)
+{
+	jive_stackvar_resource * self = (jive_stackvar_resource *) self_;
+	jive_stackvar_resource * other = (jive_stackvar_resource *) other_;
+	
+	_jive_resource_merge(self_, other_);
+	
+	if (other->slot) self->slot = other->slot;
 }
 
 char *

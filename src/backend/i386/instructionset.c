@@ -275,7 +275,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.encode = jive_i386_encode_regimm,
 		.mnemonic = 0,
 		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
-		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 1,
 		.code = 0xc0 | (0x05 << 8)
 	},
 	[jive_i386_int_sub_immediate] = {
@@ -283,7 +283,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.encode = jive_i386_encode_regimm,
 		.mnemonic = 0,
 		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
-		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 1,
 		.code = 0xe8 | (0x2d << 8)
 	},
 	[jive_i386_int_and_immediate] = {
@@ -291,7 +291,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.encode = jive_i386_encode_regimm,
 		.mnemonic = 0,
 		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
-		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 1,
 		.code = 0xe0 | (0x25 << 8)
 	},
 	[jive_i386_int_or_immediate] = {
@@ -299,7 +299,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.encode = jive_i386_encode_regimm,
 		.mnemonic = 0,
 		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
-		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 1,
 		.code = 0xc8 | (0x0d << 8)
 	},
 	[jive_i386_int_xor_immediate] = {
@@ -307,7 +307,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.encode = jive_i386_encode_regimm,
 		.mnemonic = 0,
 		.inregs = intreg_param, .outregs = intflags_param, .flags = jive_instruction_write_input,
-		.ninputs = 1, .noutputs = 2, .nimmediates = 0,
+		.ninputs = 1, .noutputs = 2, .nimmediates = 1,
 		.code = 0xc0 | (0x3d << 8)
 	},
 	[jive_i386_int_neg] = {
