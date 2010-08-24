@@ -22,6 +22,7 @@ record_stackslots(jive_graph * graph)
 		for(n=0; n<node->ninputs; n++) {
 			jive_stackvar_resource * var = jive_stackvar_resource_cast(node->inputs[n]->resource);
 			if (!var) continue;
+			if (var->stackframe) continue;
 			var->stackframe = stackframe;
 			JIVE_LIST_PUSH_BACK(stackframe->vars, var, stackframe_vars_list);
 		}
