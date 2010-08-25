@@ -38,7 +38,7 @@ static void
 hard_specialize_recursive(jive_node * node)
 {
 	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) return;
-	const jive_instruction_class * icls = ((jive_instruction_node *)node)->icls;
+	const jive_instruction_class * icls = ((jive_instruction_node *)node)->attrs.icls;
 	
 	if (!(icls->flags & jive_instruction_write_input)) return;
 	if (icls->flags & jive_instruction_commutative) {
@@ -91,7 +91,7 @@ static bool
 soft_specialize_recursive(jive_node * node)
 {
 	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) return false;
-	const jive_instruction_class * icls = ((jive_instruction_node *)node)->icls;
+	const jive_instruction_class * icls = ((jive_instruction_node *)node)->attrs.icls;
 	
 	if (!(icls->flags & jive_instruction_write_input)) return false;
 	

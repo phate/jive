@@ -7,8 +7,11 @@ const jive_node_class JIVE_ABSTRACT_GAMMA_SLAVE_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_node_get_label, /* inherit */
-	.copy = _jive_node_copy, /* inherit */
+	.get_attrs = _jive_node_get_attrs, /* inherit */
+	.create = _jive_node_create, /* inherit */
 	.equiv = _jive_node_equiv, /* inherit */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 
@@ -35,8 +38,11 @@ const jive_node_class JIVE_ABSTRACT_GAMMA_MASTER_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_node_get_label, /* inherit */
-	.copy = _jive_node_copy, /* inherit */
+	.get_attrs = _jive_node_get_attrs, /* inherit */
+	.create = _jive_node_create, /* inherit */
 	.equiv = _jive_node_equiv, /* inherit */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 
@@ -70,8 +76,11 @@ const jive_node_class JIVE_GAMMA_SLAVE_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_gamma_slave_node_get_label, /* override */
-	.copy = _jive_node_copy, /* inherit */
+	.get_attrs = _jive_node_get_attrs, /* inherit */
+	.create = _jive_node_create, /* inherit */ /* FIXME: override */
 	.equiv = _jive_node_equiv, /* inherit */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 
@@ -95,8 +104,11 @@ const jive_node_class JIVE__GAMMA_MASTER_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_gamma_slave_node_get_label, /* override */
-	.copy = _jive_node_copy, /* inherit */
+	.get_attrs = _jive_node_get_attrs, /* inherit */
+	.create = _jive_node_create, /* inherit */ /* FIXME: override */
 	.equiv = _jive_node_equiv, /* inherit */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 

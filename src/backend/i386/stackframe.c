@@ -39,15 +39,15 @@ _jive_i386_stackframe_layout(jive_stackframe * self_)
 		jive_input * input;
 		JIVE_LIST_ITERATE(var->base.base.inputs, input, resource_input_list) {
 			jive_instruction_node * node = (jive_instruction_node *) input->node;
-			if (node->icls == &jive_i386_instructions[jive_i386_int_load32_disp])
-				node->immediates[0] = slot->offset + stack_size;
+			if (node->attrs.icls == &jive_i386_instructions[jive_i386_int_load32_disp])
+				node->attrs.immediates[0] = slot->offset + stack_size;
 		}
 		
 		jive_output * output;
 		JIVE_LIST_ITERATE(var->base.base.outputs, output, resource_output_list) {
 			jive_instruction_node * node = (jive_instruction_node *) output->node;
-			if (node->icls == &jive_i386_instructions[jive_i386_int_store32_disp])
-				node->immediates[0] = slot->offset + stack_size;
+			if (node->attrs.icls == &jive_i386_instructions[jive_i386_int_store32_disp])
+				node->attrs.immediates[0] = slot->offset + stack_size;
 		}
 	}
 	

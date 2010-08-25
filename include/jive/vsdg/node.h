@@ -8,6 +8,7 @@
 #include <jive/vsdg/regcls-count.h>
 
 typedef struct jive_node jive_node;
+typedef struct jive_node_attrs jive_node_attrs;
 typedef struct jive_node_class jive_node_class;
 
 struct jive_graph;
@@ -68,6 +69,10 @@ struct jive_node {
 
 extern const jive_node_class JIVE_NODE;
 
+struct jive_node_attrs {
+	/* empty, need override */
+};
+
 typedef enum jive_node_type_flags {
 	jive_node_class_associative = 1,
 	jive_node_class_commutative = 2
@@ -83,13 +88,22 @@ struct jive_node_class {
 	/** \brief Give textual representation of node (for debugging) */
 	char * (*get_label)(const jive_node * self);
 	
-	/** \brief Copy node, using specified inputs as operands */
-	jive_node * (*copy)(const jive_node * self,
+	/** \brief Retrieve attributes of node */
+	const jive_node_attrs * (*get_attrs)(const jive_node * self);
+	
+	/** \brief Class method, create node with given attributes */
+	jive_node * (*create)(const jive_node_attrs * attrs,
 		struct jive_region * region,
-		struct jive_output * operands[]);
-		
-	/** \brief Test for equivalence with another node */
-	bool (*equiv)(const jive_node * self, const jive_node * other);
+		size_t noperands, struct jive_output * operands[]);
+	
+	/** \brief Class method, compare attributes for equality */
+	bool (*equiv)(const jive_node_attrs * first, const jive_node_attrs * second);
+	
+	/** \brief Class method, determine whether operands can be reduced */
+	bool (*can_reduce)(const struct jive_output * first, const struct jive_output * second);
+	
+	/** \brief Class method, reduce operands */
+	struct jive_output * (*reduce)(struct jive_output * first, struct jive_output * second);
 	
 	const struct jive_regcls * (*get_aux_regcls)(const jive_node * self);
 	
@@ -120,24 +134,30 @@ jive_node_get_label(const jive_node * self)
 	return self->class_->get_label(self);
 }
 
-static inline jive_node *
-jive_node_copy(const jive_node * self,
-	struct jive_region * region,
-	struct jive_output * operands[])
+static inline const jive_node_attrs *
+jive_node_get_attrs(const jive_node * self)
 {
-	return self->class_->copy(self, region, operands);
+	return self->class_->get_attrs(self);
 }
 
 static inline bool
-jive_node_equiv(const jive_node * self, const jive_node * other)
+jive_node_equiv(const jive_node * self, const jive_node_attrs * first, const jive_node_attrs * second)
 {
-	return self->class_->equiv(self, other);
+	return self->class_->equiv(first, second);
 }
 
 static inline const struct jive_regcls *
 jive_node_get_aux_regcls(const jive_node * self)
 {
 	return self->class_->get_aux_regcls(self);
+}
+
+static inline jive_node *
+jive_node_copy(const jive_node * self,
+	struct jive_region * region,
+	struct jive_output * operands[])
+{
+	return self->class_->create(jive_node_get_attrs(self), region, self->noperands, operands);
 }
 
 static inline void

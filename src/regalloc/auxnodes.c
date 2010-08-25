@@ -27,35 +27,44 @@ _jive_aux_valuecopy_node_init(jive_aux_valuecopy_node * self, jive_region * regi
 		1, &type, &origin,
 		1, &type);
 	
-	self->regcls = regcls;
-	((jive_value_input *)self->base.inputs[0])->required_regcls = self->regcls;
-	((jive_value_output *)self->base.outputs[0])->required_regcls = self->regcls;
+	self->attrs.regcls = regcls;
+	((jive_value_input *)self->base.inputs[0])->required_regcls = self->attrs.regcls;
+	((jive_value_output *)self->base.outputs[0])->required_regcls = self->attrs.regcls;
+}
+
+const jive_node_attrs *
+_jive_aux_valuecopy_node_get_attrs(const jive_node * self_)
+{
+	const jive_aux_valuecopy_node * self = (const jive_aux_valuecopy_node *) self_;
+	return &self->attrs.base;
 }
 
 static jive_node *
-_jive_aux_valuecopy_node_copy(const jive_node * self_,
+_jive_aux_valuecopy_node_create(const jive_node_attrs * attrs_,
 	struct jive_region * region,
-	struct jive_output * operands[])
+	size_t noperands, struct jive_output * operands[])
 {
-	const jive_aux_valuecopy_node * self = (const jive_aux_valuecopy_node *) self_;
-	
-	return jive_aux_valuecopy_node_create(region, self->regcls, operands[0]);
+	const jive_aux_node_attrs * attrs = (const jive_aux_node_attrs *) attrs_;
+	return jive_aux_valuecopy_node_create(region, attrs->regcls, operands[0]);
 }
 
 static bool
-_jive_aux_valuecopy_node_equiv(const jive_node * self_, const jive_node * other_)
+_jive_aux_valuecopy_node_equiv(const jive_node_attrs * first_, const jive_node_attrs * second_)
 {
-	const jive_aux_valuecopy_node * self = (const jive_aux_valuecopy_node *) self_;
-	const jive_aux_valuecopy_node * other = (const jive_aux_valuecopy_node *) other_;
-	return self->regcls == other->regcls;
+	const jive_aux_node_attrs * first = (const jive_aux_node_attrs *) first_;
+	const jive_aux_node_attrs * second = (const jive_aux_node_attrs *) second_;
+	return first->regcls == second->regcls;
 }
 
 const jive_node_class JIVE_AUX_VALUECOPY_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_aux_valuecopy_node_get_label, /* override */
-	.copy = _jive_aux_valuecopy_node_copy, /* override */
+	.get_attrs = _jive_aux_valuecopy_node_get_attrs, /* override */
+	.create = _jive_aux_valuecopy_node_create, /* override */
 	.equiv = _jive_aux_valuecopy_node_equiv, /* override */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 
@@ -87,34 +96,43 @@ _jive_aux_spill_node_init(jive_aux_spill_node * self, jive_region * region, cons
 		1, &input_type, &origin,
 		1, &output_type);
 	
-	self->regcls = regcls;
-	((jive_value_input *)self->base.inputs[0])->required_regcls = self->regcls;
+	self->attrs.regcls = regcls;
+	((jive_value_input *)self->base.inputs[0])->required_regcls = self->attrs.regcls;
+}
+
+const jive_node_attrs *
+_jive_aux_spill_node_get_attrs(const jive_node * self_)
+{
+	const jive_aux_spill_node * self = (const jive_aux_spill_node *) self_;
+	return &self->attrs.base;
 }
 
 static jive_node *
-_jive_aux_spill_node_copy(const jive_node * self_,
+_jive_aux_spill_node_create(const jive_node_attrs * attrs_,
 	struct jive_region * region,
-	struct jive_output * operands[])
+	size_t noperands, struct jive_output * operands[])
 {
-	const jive_aux_spill_node * self = (const jive_aux_spill_node *) self_;
-	
-	return jive_aux_spill_node_create(region, self->regcls, operands[0]);
+	const jive_aux_node_attrs * attrs = (const jive_aux_node_attrs *) attrs_;
+	return jive_aux_spill_node_create(region, attrs->regcls, operands[0]);
 }
 
 static bool
-_jive_aux_spill_node_equiv(const jive_node * self_, const jive_node * other_)
+_jive_aux_spill_node_equiv(const jive_node_attrs * first_, const jive_node_attrs * second_)
 {
-	const jive_aux_spill_node * self = (const jive_aux_spill_node *) self_;
-	const jive_aux_spill_node * other = (const jive_aux_spill_node *) other_;
-	return self->regcls == other->regcls;
+	const jive_aux_node_attrs * first = (const jive_aux_node_attrs *) first_;
+	const jive_aux_node_attrs * second = (const jive_aux_node_attrs *) second_;
+	return first->regcls == second->regcls;
 }
 
 const jive_node_class JIVE_AUX_SPILL_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_aux_spill_node_get_label, /* override */
-	.copy = _jive_aux_spill_node_copy, /* override */
+	.get_attrs = _jive_aux_spill_node_get_attrs, /* override */
+	.create = _jive_aux_spill_node_create, /* override */
 	.equiv = _jive_aux_spill_node_equiv, /* override */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 
@@ -146,34 +164,43 @@ _jive_aux_restore_node_init(jive_aux_restore_node * self, jive_region * region, 
 		1, &input_type, &origin,
 		1, &output_type);
 	
-	self->regcls = regcls;
-	((jive_value_output *)self->base.outputs[0])->required_regcls = self->regcls;
+	self->attrs.regcls = regcls;
+	((jive_value_output *)self->base.outputs[0])->required_regcls = self->attrs.regcls;
+}
+
+const jive_node_attrs *
+_jive_aux_restore_node_get_attrs(const jive_node * self_)
+{
+	const jive_aux_restore_node * self = (const jive_aux_restore_node *) self_;
+	return &self->attrs.base;
 }
 
 static jive_node *
-_jive_aux_restore_node_copy(const jive_node * self_,
+_jive_aux_restore_node_create(const jive_node_attrs * attrs_,
 	struct jive_region * region,
-	struct jive_output * operands[])
+	size_t noperands, struct jive_output * operands[])
 {
-	const jive_aux_restore_node * self = (const jive_aux_restore_node *) self_;
-	
-	return jive_aux_restore_node_create(region, self->regcls, operands[0]);
+	const jive_aux_node_attrs * attrs = (const jive_aux_node_attrs *) attrs_;
+	return jive_aux_restore_node_create(region, attrs->regcls, operands[0]);
 }
 
 static bool
-_jive_aux_restore_node_equiv(const jive_node * self_, const jive_node * other_)
+_jive_aux_restore_node_equiv(const jive_node_attrs * first_, const jive_node_attrs * second_)
 {
-	const jive_aux_restore_node * self = (const jive_aux_restore_node *) self_;
-	const jive_aux_restore_node * other = (const jive_aux_restore_node *) other_;
-	return self->regcls == other->regcls;
+	const jive_aux_node_attrs * first = (const jive_aux_node_attrs *) first_;
+	const jive_aux_node_attrs * second = (const jive_aux_node_attrs *) second_;
+	return first->regcls == second->regcls;
 }
 
 const jive_node_class JIVE_AUX_RESTORE_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_aux_restore_node_get_label, /* override */
-	.copy = _jive_aux_restore_node_copy, /* override */
+	.get_attrs = _jive_aux_restore_node_get_attrs, /* override */
+	.create = _jive_aux_restore_node_create, /* override */
 	.equiv = _jive_aux_restore_node_equiv, /* override */
+	.can_reduce = _jive_node_can_reduce, /* inherit */
+	.reduce = _jive_node_reduce, /* inherit */
 	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
 };
 

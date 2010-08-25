@@ -64,7 +64,7 @@ process_node(jive_node * node_)
 {
 	if (!jive_node_isinstance(node_, &JIVE_INSTRUCTION_NODE)) return;
 	jive_instruction_node * node = (jive_instruction_node *) node_;
-	const struct jive_instruction_class * icls = node->icls;
+	const struct jive_instruction_class * icls = node->attrs.icls;
 	
 	if ((icls->flags & jive_instruction_write_input) == 0) return;
 	

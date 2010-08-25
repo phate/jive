@@ -19,8 +19,11 @@ const jive_node_class JIVE_NODE = {
 	.parent = 0,
 	.fini = _jive_node_fini,
 	.get_label = _jive_node_get_label,
-	.copy = _jive_node_copy,
+	.get_attrs = _jive_node_get_attrs,
+	.create = _jive_node_create,
 	.equiv = _jive_node_equiv,
+	.can_reduce = _jive_node_can_reduce,
+	.reduce = _jive_node_reduce,
 	.get_aux_regcls = _jive_node_get_aux_regcls
 };
 
@@ -116,33 +119,47 @@ _jive_node_get_label(const jive_node * self)
 {
 	return strdup("NODE");
 }
-	
-jive_node *
-_jive_node_copy(const jive_node * self,
-	struct jive_region * region,
-	struct jive_output * operands[])
+
+bool
+_jive_node_equiv(const jive_node_attrs * first, const jive_node_attrs * second)
 {
-	jive_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
-	const jive_type * operand_types[self->noperands];
-	const jive_type * output_types[self->noutputs];
-	size_t n;
-	for(n=0; n<self->noperands; n++)
-		operand_types[n] = jive_input_get_type(self->inputs[n]);
-	for(n=0; n<self->noutputs; n++)
-		output_types[n] = jive_output_get_type(self->outputs[n]);
-	
-	other->class_ = self->class_;
-	_jive_node_init(other, region,
-		self->noperands, operand_types, operands,
-		self->noutputs, output_types);
-	
-	return other;
+	return true;
 }
 
 bool
-_jive_node_equiv(const jive_node * self, const jive_node * other)
+_jive_node_can_reduce(const jive_output * first, const jive_output * second)
 {
-	return self->class_ == other->class_;
+	return false;
+}
+
+jive_output *
+_jive_node_reduce(jive_output * first, jive_output * second)
+{
+	return 0;
+}
+
+const jive_node_attrs *
+_jive_node_get_attrs(const jive_node * self)
+{
+	return 0;
+}
+
+jive_node *
+_jive_node_create(const jive_node_attrs * attrs, struct jive_region * region,
+	size_t noperands, struct jive_output * operands[])
+{
+	jive_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
+	const jive_type * operand_types[noperands];
+	size_t n;
+	for(n=0; n<noperands; n++)
+		operand_types[n] = jive_output_get_type(operands[n]);
+	
+	other->class_ = &JIVE_NODE;
+	_jive_node_init(other, region,
+		noperands, operand_types, operands,
+		0, 0);
+	
+	return other;
 }
 
 const struct jive_regcls *

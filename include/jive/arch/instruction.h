@@ -9,6 +9,7 @@ struct jive_buffer;
 
 typedef struct jive_instruction_class jive_instruction_class;
 typedef struct jive_instruction_node jive_instruction_node;
+typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
 
 typedef enum {
 	jive_instruction_flags_none = 0,
@@ -63,10 +64,15 @@ extern const jive_instruction_class JIVE_PSEUDO_NOP;
 
 extern const jive_node_class JIVE_INSTRUCTION_NODE;
 
-struct jive_instruction_node {
-	jive_node base;
+struct jive_instruction_node_attrs {
+	jive_node_attrs base;
 	const jive_instruction_class * icls;
 	long * immediates;
+};
+
+struct jive_instruction_node {
+	jive_node base;
+	jive_instruction_node_attrs attrs;
 };
 
 jive_instruction_node *

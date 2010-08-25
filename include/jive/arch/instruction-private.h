@@ -18,14 +18,16 @@ _jive_instruction_node_fini(jive_node * self);
 
 char *
 _jive_instruction_node_get_label(const jive_node * self);
-	
+
+const jive_node_attrs *
+_jive_instruction_node_get_attrs(const jive_node * self);
+
 jive_node *
-_jive_instruction_node_copy(const jive_node * self,
-	struct jive_region * region,
-	struct jive_output * operands[]);
+_jive_instruction_node_create(const jive_node_attrs * attrs, struct jive_region * region,
+	size_t noperands, struct jive_output * operands[]);
 
 bool
-_jive_instruction_node_equiv(const jive_node * self, const jive_node * other);
+_jive_instruction_node_equiv(const jive_node_attrs * first, const jive_node_attrs * second);
 
 const struct jive_regcls *
 _jive_instruction_node_get_aux_regcls(const jive_node * self);

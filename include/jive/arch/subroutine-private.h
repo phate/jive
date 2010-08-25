@@ -14,15 +14,13 @@ _jive_subroutine_node_fini(jive_node * self);
 
 char *
 _jive_subroutine_node_get_label(const jive_node * self);
-	
+
 jive_node *
-_jive_subroutine_node_copy(const jive_node * self,
-	struct jive_region * region,
-	struct jive_output * operands[]);
+_jive_subroutine_node_create(const jive_node_attrs * attrs, struct jive_region * region,
+	size_t noperands, struct jive_output * operands[]);
 
 bool
-_jive_subroutine_node_equiv(const jive_node * self, const jive_node * other);
-
+_jive_subroutine_node_equiv(const jive_node_attrs * first, const jive_node_attrs * second);
 
 static inline void
 _jive_subroutine_init(jive_subroutine * self, jive_node * enter, jive_node * leave)

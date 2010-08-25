@@ -14,24 +14,30 @@ struct jive_transfer_instructions_factory;
 typedef struct jive_aux_valuecopy_node jive_aux_valuecopy_node;
 typedef struct jive_aux_spill_node jive_aux_spill_node;
 typedef struct jive_aux_restore_node jive_aux_restore_node;
+typedef struct jive_aux_node_attrs jive_aux_node_attrs;
+
+struct jive_aux_node_attrs {
+	jive_node_attrs base;
+	const struct jive_regcls * regcls;
+};
 
 struct jive_aux_valuecopy_node {
 	jive_node base;
-	const struct jive_regcls * regcls;
+	jive_aux_node_attrs attrs;
 };
 
 extern const jive_node_class JIVE_AUX_VALUECOPY_NODE;
 
 struct jive_aux_spill_node {
 	jive_node base;
-	const struct jive_regcls * regcls;
+	jive_aux_node_attrs attrs;
 };
 
 extern const jive_node_class JIVE_AUX_SPILL_NODE;
 
 struct jive_aux_restore_node {
 	jive_node base;
-	const struct jive_regcls * regcls;
+	jive_aux_node_attrs attrs;
 };
 
 extern const jive_node_class JIVE_AUX_RESTORE_NODE;
