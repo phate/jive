@@ -1,0 +1,19 @@
+#ifndef JIVE_BITSTRING_MULTIOP_H
+#define JIVE_BITSTRING_MULTIOP_H
+
+#include <jive/vsdg/node.h>
+#include <jive/bitstring/type.h>
+
+extern const jive_node_class JIVE_BITSTRING_MULTIOP_NODE;
+extern const jive_node_class JIVE_BITSTRING_KEEPWIDTH_MULTIOP_NODE;
+extern const jive_node_class JIVE_BITSTRING_EXPANDWIDTH_MULTIOP_NODE;
+
+typedef struct jive_node jive_bitand_node;
+extern const jive_node_class JIVE_BITAND_NODE;
+
+jive_bitand_node *
+jive_bitand_node_create(
+	struct jive_region * region,
+	size_t noperands, struct jive_output * operands[const]);
+
+#endif

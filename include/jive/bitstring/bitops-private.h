@@ -1,5 +1,6 @@
-#ifndef JIVE_INTERNAL_BITOPS_H
-#define JIVE_INTERNAL_BITOPS_H
+#ifndef JIVE_BITSTRING_BITOPS_H
+#define JIVE_BITSTRING_BITOPS_H
+
 
 #include <string.h>
 
@@ -67,6 +68,15 @@ jive_logic_xor(char a, char b)
 	}
 }
 
+/**
+	\brief Compute logic not
+	\param a
+		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
+		but unknown)
+	\return Logic "not" of bit
+		
+	Performs logical "not"
+*/
 static inline char
 jive_logic_not(char a)
 {
