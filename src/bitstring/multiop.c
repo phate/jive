@@ -106,56 +106,50 @@ _jive_bitstring_expandwidth_multiop_node_init(
 	_jive_bitstring_multiop_node_init(self, region, noperands, operands, nbits);
 }
 
-/* bit-wise and */
-
-static char *
-_jive_bitand_node_get_label(const jive_node * self)
+static void
+_jive_bitand_node_constant_reduce(char * __restrict__ dst, const char * src1, size_t nbits1, const char * src2, size_t nbits2)
 {
-	return strdup("BITAND");
+	size_t n;
+	for(n=0; n<nbits1; n++) dst[n] = jive_logic_and(src1[n], src2[n]);
 }
 
-static jive_node *
-_jive_bitand_node_create(const jive_node_attrs * attrs, struct jive_region * region,
-	size_t noperands, struct jive_output * operands[])
+static void
+_jive_bitor_node_constant_reduce(char * __restrict__ dst, const char * src1, size_t nbits1, const char * src2, size_t nbits2)
 {
-	return jive_bitand_node_create(region, noperands, operands);
+	size_t n;
+	for(n=0; n<nbits1; n++) dst[n] = jive_logic_or(src1[n], src2[n]);
 }
 
-jive_output *
-_jive_bitand_node_reduce(jive_output * first_, jive_output * second_)
+static void
+_jive_bitxor_node_constant_reduce(char * __restrict__ dst, const char * src1, size_t nbits1, const char * src2, size_t nbits2)
 {
-	if ((first_->node->class_ != &JIVE_BITCONSTANT_NODE) || (second_->node->class_ != &JIVE_BITCONSTANT_NODE))
-		return 0;
-	
-	const jive_bitconstant_node * first = (const jive_bitconstant_node *) first_->node;
-	const jive_bitconstant_node * second = (const jive_bitconstant_node *) second_->node;
-	
-	size_t n, nbits = first->attrs.nbits;
-	char bits[nbits];
-	for(n=0; n<nbits; n++)
-		bits[n] = jive_logic_and(first->attrs.bits[n], second->attrs.bits[n]);
-	
-	return jive_bitconstant_node_create(first->base.graph, nbits, bits)->base.outputs[0];
+	size_t n;
+	for(n=0; n<nbits1; n++) dst[n] = jive_logic_xor(src1[n], src2[n]);
 }
 
-const jive_node_class JIVE_BITAND_NODE = {
-	.parent = &JIVE_BITSTRING_KEEPWIDTH_MULTIOP_NODE,
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_bitand_node_get_label, /* override */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.create = _jive_bitand_node_create, /* override */
-	.equiv = _jive_bitstring_multiop_node_equiv, /* inherit */
-	.can_reduce = _jive_bitstring_multiop_node_can_reduce, /* inherit */
-	.reduce = _jive_bitand_node_reduce, /* inherit */
-	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
-};
-
-jive_bitand_node *
-jive_bitand_node_create(
-	jive_region * region,
-	size_t noperands, jive_output * operands[const])
+static void
+_jive_bitsum_node_constant_reduce(char * __restrict__ dst, const char * src1, size_t nbits1, const char * src2, size_t nbits2)
 {
-	jive_bitand_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	_jive_bitstring_keepwidth_multiop_node_init(node, region, noperands, operands);
-	return node;
+	jive_multibit_sum(dst, src1, src2, nbits1);
 }
+
+static void
+_jive_bitproduct_node_constant_reduce(char * __restrict__ dst, const char * src1, size_t nbits1, const char * src2, size_t nbits2)
+{
+	jive_multibit_multiply(dst, nbits1 + nbits2, src1, nbits1, src2, nbits2);
+}
+
+static void
+_jive_bitconcat_node_constant_reduce(char * __restrict__ dst, const char * src1, size_t nbits1, const char * src2, size_t nbits2)
+{
+	size_t n;
+	for(n=0; n<nbits1; n++) dst[n] = src1[n];
+	for(n=0; n<nbits2; n++) dst[n+nbits1] = src2[n];
+}
+
+MAKE_KEEPWIDTH_OP(bitand, BITAND)
+MAKE_KEEPWIDTH_OP(bitor, BITOR)
+MAKE_KEEPWIDTH_OP(bitxor, BITXOR)
+MAKE_KEEPWIDTH_OP(bitsum, BITSUM)
+MAKE_EXPANDWIDTH_OP(bitproduct, BITPRODUCT)
+MAKE_EXPANDWIDTH_OP(bitconcat, BITCONCAT)
