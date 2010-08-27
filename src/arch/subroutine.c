@@ -42,7 +42,7 @@ _jive_subroutine_node_get_label(const jive_node * self_)
 }
 
 jive_node *
-_jive_subroutine_node_create(const jive_node_attrs * attrs, struct jive_region * region,
+_jive_subroutine_node_create(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * operands[])
 {
 	return 0;

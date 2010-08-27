@@ -145,7 +145,7 @@ _jive_node_get_attrs(const jive_node * self)
 }
 
 jive_node *
-_jive_node_create(const jive_node_attrs * attrs, struct jive_region * region,
+_jive_node_create(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * operands[])
 {
 	jive_node * other = jive_context_malloc(region->graph->context, sizeof(*other));

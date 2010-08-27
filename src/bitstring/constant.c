@@ -3,6 +3,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg.h>
 #include <string.h>
+#include <jive/vsdg/normalization-helpers.h>
 
 static void
 _jive_bitconstant_node_init(
@@ -20,7 +21,7 @@ static const jive_node_attrs *
 _jive_bitconstant_node_get_attrs(const jive_node * self);
 
 static jive_node *
-_jive_bitconstant_node_create(const jive_node_attrs * attrs, struct jive_region * region,
+_jive_bitconstant_node_create(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * operands[]);
 
 static bool
@@ -83,7 +84,7 @@ _jive_bitconstant_node_get_attrs(const jive_node * self_)
 }
 
 static jive_node *
-_jive_bitconstant_node_create(const jive_node_attrs * attrs_, struct jive_region * region,
+_jive_bitconstant_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * operands[])
 {
 	const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *) attrs_;
@@ -109,4 +110,15 @@ jive_bitconstant_node_create(jive_graph * graph, size_t nbits, const char bits[]
 	node->base.class_ = &JIVE_BITCONSTANT_NODE;
 	_jive_bitconstant_node_init(node, graph, nbits, bits);
 	return node;
+}
+
+jive_bitstring *
+jive_bitconstant_create(jive_graph * graph, size_t nbits, const char bits[])
+{
+	jive_bitconstant_node_attrs attrs;
+	attrs.nbits = nbits;
+	attrs.bits = (char *) bits;
+	jive_node * node = jive_node_cse(&JIVE_BITCONSTANT_NODE, graph, &attrs.base, 0, NULL);
+	if (!node) node = (jive_node *) jive_bitconstant_node_create(graph, nbits, bits);
+	return (jive_bitstring_output *) node->outputs[0];
 }

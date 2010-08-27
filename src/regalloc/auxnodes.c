@@ -40,9 +40,8 @@ _jive_aux_valuecopy_node_get_attrs(const jive_node * self_)
 }
 
 static jive_node *
-_jive_aux_valuecopy_node_create(const jive_node_attrs * attrs_,
-	struct jive_region * region,
-	size_t noperands, struct jive_output * operands[])
+_jive_aux_valuecopy_node_create(jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * operands[])
 {
 	const jive_aux_node_attrs * attrs = (const jive_aux_node_attrs *) attrs_;
 	return jive_aux_valuecopy_node_create(region, attrs->regcls, operands[0]);
@@ -108,9 +107,8 @@ _jive_aux_spill_node_get_attrs(const jive_node * self_)
 }
 
 static jive_node *
-_jive_aux_spill_node_create(const jive_node_attrs * attrs_,
-	struct jive_region * region,
-	size_t noperands, struct jive_output * operands[])
+_jive_aux_spill_node_create(jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * operands[])
 {
 	const jive_aux_node_attrs * attrs = (const jive_aux_node_attrs *) attrs_;
 	return jive_aux_spill_node_create(region, attrs->regcls, operands[0]);
@@ -176,9 +174,8 @@ _jive_aux_restore_node_get_attrs(const jive_node * self_)
 }
 
 static jive_node *
-_jive_aux_restore_node_create(const jive_node_attrs * attrs_,
-	struct jive_region * region,
-	size_t noperands, struct jive_output * operands[])
+_jive_aux_restore_node_create(jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * operands[])
 {
 	const jive_aux_node_attrs * attrs = (const jive_aux_node_attrs *) attrs_;
 	return jive_aux_restore_node_create(region, attrs->regcls, operands[0]);

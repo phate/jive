@@ -73,9 +73,8 @@ _jive_instruction_node_get_attrs(const jive_node * self_)
 }
 
 jive_node *
-_jive_instruction_node_create(const jive_node_attrs * attrs_,
-	struct jive_region * region,
-	size_t noperands, struct jive_output * operands[])
+_jive_instruction_node_create(jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * operands[])
 {
 	const jive_instruction_node_attrs * attrs = (const jive_instruction_node_attrs *) attrs_;
 	

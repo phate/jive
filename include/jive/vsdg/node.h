@@ -92,8 +92,8 @@ struct jive_node_class {
 	const jive_node_attrs * (*get_attrs)(const jive_node * self);
 	
 	/** \brief Class method, create node with given attributes */
-	jive_node * (*create)(const jive_node_attrs * attrs,
-		struct jive_region * region,
+	jive_node * (*create)(struct jive_region * region,
+		const jive_node_attrs * attrs,
 		size_t noperands, struct jive_output * operands[]);
 	
 	/** \brief Class method, compare attributes for equality */
@@ -157,7 +157,7 @@ jive_node_copy(const jive_node * self,
 	struct jive_region * region,
 	struct jive_output * operands[])
 {
-	return self->class_->create(jive_node_get_attrs(self), region, self->noperands, operands);
+	return self->class_->create(region, jive_node_get_attrs(self), self->noperands, operands);
 }
 
 static inline void

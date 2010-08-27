@@ -3,6 +3,7 @@
 
 #include <jive/bitstring/multiop.h>
 #include <jive/bitstring/type.h>
+#include <jive/vsdg/normalization-helpers.h>
 
 void
 _jive_bitstring_multiop_node_init(
@@ -41,7 +42,7 @@ _jive_##instancename##_node_get_label(const jive_node * self) \
 } \
  \
 static jive_node * \
-_jive_##instancename##_node_create(const jive_node_attrs * attrs, struct jive_region * region, \
+_jive_##instancename##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * operands[]) \
 { \
 	return jive_##instancename##_node_create(region, noperands, operands); \
@@ -86,9 +87,9 @@ jive_##instancename##_node_create( \
 	jive_##instancename##_node * node = jive_context_malloc(region->graph->context, sizeof(*node)); \
 	_jive_bitstring_keepwidth_multiop_node_init(node, region, noperands, operands); \
 	return node; \
-}
+} \
 
-#define MAKE_EXPANDWIDTH_OP(instancename, CLASSNAME) \
+#define MAKE_EXPANDWIDTH_OP(instancename, CLASSNAME, node_flags) \
  \
 static char * \
 _jive_##instancename##_node_get_label(const jive_node * self) \
@@ -97,7 +98,7 @@ _jive_##instancename##_node_get_label(const jive_node * self) \
 } \
  \
 static jive_node * \
-_jive_##instancename##_node_create(const jive_node_attrs * attrs, struct jive_region * region, \
+_jive_##instancename##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * operands[]) \
 { \
 	return jive_##instancename##_node_create(region, noperands, operands); \
@@ -123,7 +124,7 @@ _jive_##instancename##_node_reduce(jive_output * first_, jive_output * second_) 
  \
 const jive_node_class JIVE_##CLASSNAME##_NODE = { \
 	.parent = &JIVE_BITSTRING_EXPANDWIDTH_MULTIOP_NODE, \
-	.flags = jive_node_class_associative | jive_node_class_commutative, \
+	.flags = node_flags, \
 	.fini = _jive_node_fini, /* inherit */ \
 	.get_label = _jive_##instancename##_node_get_label, /* override */ \
 	.get_attrs = _jive_node_get_attrs, /* inherit */ \
@@ -142,6 +143,20 @@ jive_##instancename##_node_create( \
 	jive_##instancename##_node * node = jive_context_malloc(region->graph->context, sizeof(*node)); \
 	_jive_bitstring_expandwidth_multiop_node_init(node, region, noperands, operands); \
 	return node; \
-}
+} \
+
+#define MAKE_OP_HELPER(opname, CLASSNAME) \
+ \
+jive_bitstring * \
+jive_##opname( \
+	size_t noperands, jive_bitstring * operands_[const]) \
+{ \
+	jive_node_attrs attrs = {}; \
+	jive_output * operands[noperands]; \
+	size_t n; \
+	for(n=0; n<noperands; n++) operands[n] = &operands_[n]->base.base; \
+	jive_node * node =jive_node_normalized_create(&JIVE_##CLASSNAME##_NODE, &attrs, noperands, operands); \
+	return (jive_bitstring *) node->outputs[0]; \
+} \
 
 #endif
