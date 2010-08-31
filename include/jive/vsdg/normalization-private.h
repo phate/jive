@@ -1,5 +1,5 @@
-#ifndef JIVE_VSDG_NORMALIZE_PRIVATE_H
-#define JIVE_VSDG_NORMALIZE_PRIVATE_H
+#ifndef JIVE_VSDG_NORMALIZATION_PRIVATE_H
+#define JIVE_VSDG_NORMALIZATION_PRIVATE_H
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
@@ -132,6 +132,36 @@ jive_node_normalized_create(const jive_node_class * cls, const jive_node_attrs *
 		node = cls->create(region, attrs, nexpanded_operands, operands);
 	}
 	return node;
+}
+
+static inline jive_node *
+jive_node_normalize(jive_node * node)
+{
+	/* TODO: the following two restrictions could conceivably be relaxed */
+	if (node->noperands != node->ninputs) return node;
+	if (node->noutputs != 1) return node;
+	
+	jive_output * operands[node->ninputs];
+	size_t n;
+	for(n=0; n<node->ninputs; n++) operands[n] = node->inputs[n]->origin;
+	
+	jive_output * expanded_operands[max_expanded_operands(node->class_, node->ninputs, operands)];
+	size_t nexpanded_operands = normalize_operands(node->class_, expanded_operands, node->ninputs, operands);
+	
+	if (nexpanded_operands == node->ninputs) {
+		for(n=0; n<nexpanded_operands; n++)
+			if (node->inputs[n]->origin != expanded_operands[n]) break;
+	} else n = 0;
+	
+	if (n == nexpanded_operands) return node;
+	
+	jive_output * replacement;
+	if (nexpanded_operands == 1) replacement = expanded_operands[0];
+	else replacement = node->class_->create(node->region, jive_node_get_attrs(node), nexpanded_operands, expanded_operands)->outputs[0];
+	
+	jive_output_replace(node->outputs[0], replacement);
+	
+	return replacement->node;
 }
 
 #endif

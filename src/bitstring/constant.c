@@ -3,7 +3,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg.h>
 #include <string.h>
-#include <jive/vsdg/normalization-helpers.h>
+#include <jive/vsdg/normalization-private.h>
 
 static void
 _jive_bitconstant_node_init(

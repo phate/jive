@@ -3,7 +3,7 @@
 
 #include <jive/bitstring/multiop.h>
 #include <jive/bitstring/type.h>
-#include <jive/vsdg/normalization-helpers.h>
+#include <jive/vsdg/normalization-private.h>
 
 void
 _jive_bitstring_multiop_node_init(
