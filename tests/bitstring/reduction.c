@@ -36,6 +36,8 @@ int main()
 	assert_constant(jive_bitadd(2, ops), 4, "0001");
 	assert_constant(jive_bitmultiply(2, ops), 8, "11110000");
 	assert_constant(jive_bitconcat(2, ops), 8, "11001010");
+	assert_constant(jive_bitnegate(a), 4, "1011");
+	assert_constant(jive_bitnegate(b), 4, "1101");
 	
 	jive_graph_prune(graph);
 	

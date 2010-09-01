@@ -6,5 +6,6 @@
 #include <jive/bitstring/constant.h>
 #include <jive/bitstring/symbolic-constant.h>
 #include <jive/bitstring/slice.h>
+#include <jive/bitstring/negate.h>
 
 #endif

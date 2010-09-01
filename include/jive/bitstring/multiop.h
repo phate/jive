@@ -61,10 +61,10 @@ jive_bitsum_node_create(
 	size_t noperands, struct jive_output * operands[const]);
 jive_bitstring *
 jive_bitadd(size_t noperands, jive_bitstring * operands[const]);
-static inline jive_bitadd_node *
-jive_bitadd_node_cast(jive_node * node)
+static inline jive_bitsum_node *
+jive_bitsum_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_BITADD_NODE) return (jive_bitadd_node *) node;
+	if (node->class_ == &JIVE_BITSUM_NODE) return (jive_bitsum_node *) node;
 	else return 0;
 }
 
