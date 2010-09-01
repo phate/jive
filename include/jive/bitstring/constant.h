@@ -52,4 +52,28 @@ jive_bitconstant_node_cast(jive_node * node)
 	else return 0;
 }
 
+static inline bool
+jive_bitconstant_is_zero(const jive_bitconstant_node * node)
+{
+	size_t n;
+	for(n=0; n<node->attrs.nbits; n++) if (node->attrs.bits[n] != '0') return false;
+	return true;
+}
+
+static inline bool
+jive_bitconstant_is_one(const jive_bitconstant_node * node)
+{
+	size_t n;
+	for(n=1; n<node->attrs.nbits; n++) if (node->attrs.bits[n] != '0') return false;
+	return node->attrs.bits[0] == '1';
+}
+
+static inline bool
+jive_bitconstant_is_minus_one(const jive_bitconstant_node * node)
+{
+	size_t n;
+	for(n=0; n<node->attrs.nbits; n++) if (node->attrs.bits[n] != '1') return false;
+	return true;
+}
+
 #endif
