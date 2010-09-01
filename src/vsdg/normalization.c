@@ -1,5 +1,5 @@
 #include <jive/vsdg/normalization.h>
-#include <jive/vsdg/normalization-helpers.h>
+#include <jive/vsdg/normalization-private.h>
 #include <jive/vsdg/traverser.h>
 
 void

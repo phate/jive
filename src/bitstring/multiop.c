@@ -1,5 +1,6 @@
 #include <jive/bitstring/multiop-private.h>
 #include <jive/bitstring/constant.h>
+#include <jive/bitstring/slice.h>
 #include <jive/bitstring/bitops-private.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
@@ -152,7 +153,73 @@ MAKE_KEEPWIDTH_OP(bitor, BITOR)
 MAKE_KEEPWIDTH_OP(bitxor, BITXOR)
 MAKE_KEEPWIDTH_OP(bitsum, BITSUM)
 MAKE_EXPANDWIDTH_OP(bitproduct, BITPRODUCT, jive_node_class_associative | jive_node_class_commutative)
-MAKE_EXPANDWIDTH_OP(bitconcat, BITCONCAT, jive_node_class_associative)
+
+static char *
+_jive_bitconcat_node_get_label(const jive_node * self)
+{
+	return strdup("BITCONCAT");
+}
+
+static jive_node *
+_jive_bitconcat_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, struct jive_output * operands[])
+{
+	return jive_bitconcat_node_create(region, noperands, operands);
+}
+
+jive_output *
+_jive_bitconcat_node_reduce(jive_output * first_, jive_output * second_)
+{
+	if ((first_->node->class_ == &JIVE_BITCONSTANT_NODE) && (second_->node->class_ == &JIVE_BITCONSTANT_NODE)) {
+		const jive_bitconstant_node * first = (const jive_bitconstant_node *) first_->node;
+		const jive_bitconstant_node * second = (const jive_bitconstant_node *) second_->node;
+		
+		size_t nbits = first->attrs.nbits + second->attrs.nbits;
+		char bits[nbits];
+		_jive_bitconcat_node_constant_reduce(bits,
+			first->attrs.bits, first->attrs.nbits,
+			second->attrs.bits, second->attrs.nbits);
+		
+		return jive_bitconstant_node_create(first->base.graph, nbits, bits)->base.outputs[0];
+	}
+	
+	if ((first_->node->class_ == &JIVE_BITSLICE_NODE) && (second_->node->class_ == &JIVE_BITSLICE_NODE)) {
+		if (first_->node->inputs[0]->origin != second_->node->inputs[0]->origin) return 0;
+		jive_bitstring * origin = (jive_bitstring *) first_->node->inputs[0]->origin;
+		const jive_bitslice_node * first = (const jive_bitslice_node *) first_->node;
+		const jive_bitslice_node * second = (const jive_bitslice_node *) second_->node;
+		
+		if (first->attrs.high == second->attrs.low) {
+			return &jive_bitslice(origin, first->attrs.low, second->attrs.high)->base.base;
+		}
+	}
+	
+	return 0;
+}
+
+const jive_node_class JIVE_BITCONCAT_NODE = {
+	.parent = &JIVE_BITSTRING_EXPANDWIDTH_MULTIOP_NODE,
+	.flags = jive_node_class_associative,
+	.fini = _jive_node_fini, /* inherit */
+	.get_label = _jive_bitconcat_node_get_label, /* override */
+	.get_attrs = _jive_node_get_attrs, /* inherit */
+	.create = _jive_bitconcat_node_create, /* override */
+	.equiv = _jive_bitstring_multiop_node_equiv, /* inherit */
+	.can_reduce = _jive_bitstring_multiop_node_can_reduce, /* inherit */
+	.reduce = _jive_bitconcat_node_reduce, /* inherit */
+	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
+};
+
+jive_bitconcat_node *
+jive_bitconcat_node_create(
+	jive_region * region,
+	size_t noperands, jive_output * operands[const])
+{
+	jive_bitconcat_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	_jive_bitstring_expandwidth_multiop_node_init(node, region, noperands, operands);
+	node->class_ = &JIVE_BITCONCAT_NODE;
+	return node;
+}
 
 MAKE_OP_HELPER(bitand, BITAND)
 MAKE_OP_HELPER(bitor, BITOR)

@@ -4,5 +4,7 @@
 #include <jive/bitstring/type.h>
 #include <jive/bitstring/multiop.h>
 #include <jive/bitstring/constant.h>
+#include <jive/bitstring/symbolic-constant.h>
+#include <jive/bitstring/slice.h>
 
 #endif
