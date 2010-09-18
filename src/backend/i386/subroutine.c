@@ -65,6 +65,8 @@ jive_i386_subroutine_create(
 	
 	jive_gate * stackptr_var = jive_regcls_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_esp], graph, "stackptr");
+	stackptr_var->may_spill = false;
+	
 	subroutine->return_variable = jive_regcls_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_eax], graph, "retval");
 	
