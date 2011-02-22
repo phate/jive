@@ -15,4 +15,5 @@ test_regcls_count
 test_machinedef
 test_prune_replace
 test_mutable_traverser
+test_empty_graph
 arithmetic_function

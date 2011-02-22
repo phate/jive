@@ -12,6 +12,7 @@ TESTS=\
 	test_regcls_count\
  	test_prune_replace\
  	test_mutable_traverser\
+	test_empty_graph\
  	
 # 	test_bitstring1\
 # 	test_bitstring2\

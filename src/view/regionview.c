@@ -121,6 +121,12 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 		if (node->depth_from_root < min_y) min_y = node->depth_from_root;
 	}
 	
+	if (min_y > max_y) {
+		/* this means that the region is completely empty */
+		min_y = 0;
+		max_y = 1;
+	}
+	
 	int width = reservation.max_x - reservation.min_x;
 	int height = max_y - min_y;
 	int region_pad = 1;
