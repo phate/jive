@@ -255,3 +255,147 @@ jive_textcanvas_box(jive_textcanvas * canvas,
 	jive_textcanvas_hline(canvas, x2, y2, x1, thick, stipple);
 	jive_textcanvas_vline(canvas, x1, y2, y1, thick, stipple);
 }
+
+wchar_t *
+jive_textcanvas_as_wstring(jive_textcanvas * canvas)
+{
+	size_t nchars = canvas->height * (canvas->width + 1) + 1;
+	wchar_t * data = malloc(sizeof(wchar_t) * nchars);
+	if (!data) return NULL;
+	
+	size_t x, y;
+	for(y = 0; y < canvas->height; y++) {
+		for(x = 0; x < canvas->width; x++)
+			data[y * (canvas->width + 1) + x] = canvas->data[y * canvas->stride + x];
+		data[y * (canvas->width + 1) + x] = '\n';
+	}
+	data[nchars - 1] = 0;
+	return data;
+}
+
+typedef struct dynstr {
+	char * data;
+	size_t size, space;
+} dynstr;
+
+static inline void
+dynstr_init(dynstr * s)
+{
+	s->data = 0;
+	s->size = 0;
+	s->space = 0;
+}
+
+static inline void
+dynstr_fini(dynstr * s)
+{
+	free(s->data);
+}
+
+static inline bool
+dynstr_append(dynstr * s, const char * chars, size_t count)
+{
+	if (s->size + count >= s->space) {
+		size_t space = s->space * 2 + count + 1;
+		char * data = realloc(s->data, space);
+		if (!data) return false;
+		s->data = data;
+		s->space = space;
+	}
+	size_t n;
+	for(n = 0; n < count; n++)
+		s->data[s->size + n] = chars[n];
+	s->data[s->size + n] = 0;
+	s->size = s->size + count;
+	return true;
+}
+
+char *
+jive_textcanvas_as_string(jive_textcanvas * canvas)
+{
+	dynstr ds;
+	dynstr_init(&ds);
+	
+	mbstate_t state;
+	wcrtomb(NULL, 0, &state);
+	
+	size_t x, y;
+	for(y = 0; y < canvas->height; y++) {
+		for(x = 0; x < canvas->width; x++) {
+			char tmp[MB_CUR_MAX];
+			size_t count = wcrtomb(tmp, canvas->data[y * canvas->stride + x], &state);
+			if (count == (size_t)-1) {
+				tmp[0] = '?';
+				count = 1;
+			}
+			if (!dynstr_append(&ds, tmp, count)) {
+				dynstr_fini(&ds);
+				return NULL;
+			}
+		}
+		if (!dynstr_append(&ds, "\n", 1)) {
+			dynstr_fini(&ds);
+			return NULL;
+		}
+	}
+	
+	return ds.data;
+}
+
+char *
+jive_textcanvas_as_utf8(jive_textcanvas * canvas)
+{
+	dynstr ds;
+	dynstr_init(&ds);
+	
+	mbstate_t state;
+	wcrtomb(NULL, 0, &state);
+	
+	size_t x, y;
+	for(y = 0; y < canvas->height; y++) {
+		for(x = 0; x < canvas->width; x++) {
+			wchar_t c = canvas->data[y * canvas->stride + x];
+			
+			size_t count = 0;
+			char tmp[MB_CUR_MAX];
+			
+			if (c <= 0x7f) tmp[count++] = c;
+			else if (c <= 0x7ff) {
+				tmp[count++] = 0xc0 | (c >> 6);
+				tmp[count++] = 0x80 | ((c >> 0) & 0x3f);
+			} else if (c <= 0xffff) {
+				tmp[count++] = 0xe0 | (c >> 12);
+				tmp[count++] = 0x80 | ((c >> 6) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 0) & 0x3f);
+			} else if (c <= 0x1fffff) {
+				tmp[count++] = 0xf0 | (c >> 18);
+				tmp[count++] = 0x80 | ((c >> 12) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 6) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 0) & 0x3f);
+			} else if (c <= 0x3ffffff) {
+				tmp[count++] = 0xf8 | (c >> 24);
+				tmp[count++] = 0x80 | ((c >> 18) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 12) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 6) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 0) & 0x3f);
+			} else {
+				tmp[count++] = 0xfc | (c >> 30);
+				tmp[count++] = 0x80 | ((c >> 24) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 18) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 12) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 6) & 0x3f);
+				tmp[count++] = 0x80 | ((c >> 0) & 0x3f);
+			}
+			if (!dynstr_append(&ds, tmp, count)) {
+				dynstr_fini(&ds);
+				return NULL;
+			}
+		}
+		if (!dynstr_append(&ds, "\n", 1)) {
+			dynstr_fini(&ds);
+			return NULL;
+		}
+	}
+	
+	return ds.data;
+}

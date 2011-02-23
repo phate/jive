@@ -41,4 +41,22 @@ jive_textcanvas_box(jive_textcanvas * canvas,
 	int x1, int y1, int x2, int y2,
 	bool thick, bool stipple);
 
+/**
+	\brief Return contents of text-canvas as unicode string
+*/
+wchar_t *
+jive_textcanvas_as_wstring(jive_textcanvas * canvas);
+
+/**
+	\brief Return contents of text-canvas as (locale-dependent) string
+*/
+char *
+jive_textcanvas_as_string(jive_textcanvas * canvas);
+
+/**
+	\brief Return contents of text-canvas as utf-8 encoded unicode string
+*/
+char *
+jive_textcanvas_as_utf8(jive_textcanvas * canvas);
+
 #endif

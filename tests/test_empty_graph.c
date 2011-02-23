@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <locale.h>
+#include <string.h>
 
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
@@ -12,7 +13,23 @@ int main()
 	
 	setlocale(LC_ALL, "");
 	
-	jive_view(graph, stdout);
+	wchar_t * ws = jive_view_wstring(graph);
+	const wchar_t wreference[] = {9591, 9588, '\n', 9590, 9589, '\n', 0};
+	assert(wcslen(ws) == wcslen(wreference));
+	assert(wcscmp(ws, wreference) == 0);
+	free(ws);
+	
+	char * s = jive_view_utf8(graph);
+	const char reference[] = "\xe2\x95\xb7\xe2\x95\xb4\n\xe2\x95\xb6\xe2\x95\xb5\n";
+	assert(strlen(s) == strlen(reference));
+	assert(strcmp(s, reference) == 0);
+	fputs(s, stdout);
+	free(s);
+	
+	/* locale-dependent representation, nothing can be said about it */
+	char * ls = jive_view_string(graph);
+	assert(strlen(ls) >= 3 * 2);
+	free(ls);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));
