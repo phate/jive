@@ -68,7 +68,7 @@ _jive_bitstring_type_get_label(const jive_type * self_)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	char tmp[16];
-	snprintf(tmp, sizeof(tmp), "bits%d", self->nbits);
+	snprintf(tmp, sizeof(tmp), "bits%zd", self->nbits);
 	return strdup(tmp);
 }
 
