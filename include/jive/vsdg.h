@@ -6,6 +6,7 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/cut.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/resource.h>
 #include <jive/vsdg/traverser.h>
 
 #endif
