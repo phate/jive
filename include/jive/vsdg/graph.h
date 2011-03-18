@@ -51,13 +51,13 @@ struct jive_graph {
 	} gates;
 	
 	struct {
-		struct jive_resource * first;
-		struct jive_resource * last;
-	} resources;
+		struct jive_variable * first;
+		struct jive_variable * last;
+	} variables;
 	struct {
-		struct jive_resource * first;
-		struct jive_resource * last;
-	} unused_resources;
+		struct jive_variable * first;
+		struct jive_variable * last;
+	} unused_variables;
 	
 	bool resources_fully_assigned;
 	
@@ -75,6 +75,22 @@ struct jive_graph {
 	
 	jive_output_notifier_slot on_output_create;
 	jive_output_notifier_slot on_output_destroy;
+	
+	jive_variable_notifier_slot on_variable_create;
+	jive_variable_notifier_slot on_variable_destroy;
+	jive_variable_gate_notifier_slot on_variable_assign_gate;
+	jive_variable_gate_notifier_slot on_variable_unassign_gate;
+	jive_variable_resource_class_notifier_slot on_variable_resource_class_change;
+	jive_variable_resource_name_notifier_slot on_variable_resource_name_change;
+	
+	jive_ssavar_notifier_slot on_ssavar_create;
+	jive_ssavar_notifier_slot on_ssavar_destroy;
+	jive_ssavar_input_notifier_slot on_ssavar_assign_input;
+	jive_ssavar_input_notifier_slot on_ssavar_unassign_input;
+	jive_ssavar_output_notifier_slot on_ssavar_assign_output;
+	jive_ssavar_output_notifier_slot on_ssavar_unassign_output;
+	jive_ssavar_divert_notifier_slot on_ssavar_divert_origin;
+	jive_ssavar_variable_notifier_slot on_ssavar_variable_change;
 	
 	jive_graph_valueres_tracker valueres;
 };

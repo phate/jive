@@ -169,7 +169,7 @@ jive_node_reserve(jive_node * self)
 static inline void
 jive_node_unreserve(jive_node * self)
 {
-	self->reserved ++;
+	self->reserved --;
 }
 
 struct jive_input *

@@ -48,35 +48,4 @@ struct jive_value_gate {
 	const jive_regcls * required_regcls;
 };
 
-extern const jive_resource_class JIVE_VALUE_RESOURCE;
-struct jive_value_resource {
-	jive_resource base;
-	const jive_regcls * regcls;
-	const jive_cpureg * cpureg;
-	int squeeze;
-	jive_allowed_registers_hash allowed_registers;
-	struct {
-		jive_value_resource * prev;
-		jive_value_resource * next;
-	} graph_valueres_list;
-};
-
-void
-jive_value_resource_set_regcls(jive_value_resource * self, const jive_regcls * regcls);
-
-void
-jive_value_resource_recompute_regcls(jive_value_resource * self);
-
-void
-jive_value_resource_set_cpureg(jive_value_resource * self, const jive_cpureg * cpureg);
-
-const jive_regcls *
-jive_value_resource_check_change_regcls(const jive_value_resource * self, const jive_regcls * new_regcls);
-
-static inline int
-jive_value_resource_get_squeeze(const jive_value_resource * self)
-{
-	return self->squeeze;
-}
-
 #endif

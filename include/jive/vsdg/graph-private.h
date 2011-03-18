@@ -61,6 +61,92 @@ jive_graph_notify_output_destroy(jive_graph * graph, jive_output * output)
 }
 
 static inline void
+jive_graph_notify_variable_create(jive_graph * graph, struct jive_variable * variable)
+{
+	jive_variable_notifier_slot_call(&graph->on_variable_create, variable);
+}
+
+static inline void
+jive_graph_notify_variable_destroy(jive_graph * graph, struct jive_variable * variable)
+{
+	jive_variable_notifier_slot_call(&graph->on_variable_destroy, variable);
+}
+
+static inline void
+jive_graph_notify_variable_assign_gate(jive_graph * graph, struct jive_variable * variable, struct jive_gate * gate)
+{
+	jive_variable_gate_notifier_slot_call(&graph->on_variable_assign_gate, variable, gate);
+}
+
+static inline void
+jive_graph_notify_variable_unassign_gate(jive_graph * graph, struct jive_variable * variable, struct jive_gate * gate)
+{
+	jive_variable_gate_notifier_slot_call(&graph->on_variable_unassign_gate, variable, gate);
+}
+
+static inline void
+jive_graph_notify_variable_resource_class_change(jive_graph * graph, struct jive_variable * variable, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+{
+	jive_variable_resource_class_notifier_slot_call(&graph->on_variable_resource_class_change, variable, old_rescls, new_rescls);
+}
+
+static inline void
+jive_graph_notify_variable_resource_name_change(jive_graph * graph, struct jive_variable * variable, const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls)
+{
+	jive_variable_resource_name_notifier_slot_call(&graph->on_variable_resource_name_change, variable, old_rescls, new_rescls);
+}
+
+static inline void
+jive_graph_notify_ssavar_create(jive_graph * graph, struct jive_ssavar * ssavar)
+{
+	jive_ssavar_notifier_slot_call(&graph->on_ssavar_create, ssavar);
+}
+
+static inline void
+jive_graph_notify_ssavar_destroy(jive_graph * graph, struct jive_ssavar * ssavar)
+{
+	jive_ssavar_notifier_slot_call(&graph->on_ssavar_destroy, ssavar);
+}
+
+static inline void
+jive_graph_notify_ssavar_assign_input(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_input * input)
+{
+	jive_ssavar_input_notifier_slot_call(&graph->on_ssavar_assign_input, ssavar, input);
+}
+
+static inline void
+jive_graph_notify_ssavar_unassign_input(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_input * input)
+{
+	jive_ssavar_input_notifier_slot_call(&graph->on_ssavar_unassign_input, ssavar, input);
+}
+
+static inline void
+jive_graph_notify_ssavar_assign_output(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_output * output)
+{
+	jive_ssavar_output_notifier_slot_call(&graph->on_ssavar_assign_output, ssavar, output);
+}
+
+static inline void
+jive_graph_notify_ssavar_unassign_output(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_output * output)
+{
+	jive_ssavar_output_notifier_slot_call(&graph->on_ssavar_unassign_output, ssavar, output);
+}
+
+static inline void
+jive_graph_notify_ssavar_divert_origin(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_output * old_origin, struct jive_output * new_origin)
+{
+	jive_ssavar_divert_notifier_slot_call(&graph->on_ssavar_divert_origin, ssavar, old_origin, new_origin);
+}
+
+static inline void
+jive_graph_notify_ssavar_variable_change(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_variable * old_variable, struct jive_variable * new_variable)
+{
+	jive_ssavar_variable_notifier_slot_call(&graph->on_ssavar_variable_change, ssavar, old_variable, new_variable);
+}
+
+
+#if 0
+static inline void
 jive_graph_valueres_tracker_add(jive_graph_valueres_tracker * self, jive_value_resource * resource)
 {
 	if (resource->cpureg) {
@@ -95,5 +181,6 @@ jive_graph_valueres_tracker_remove(jive_graph_valueres_tracker * self, jive_valu
 			self->max_pressure --;
 	}
 }
+#endif
 
 #endif

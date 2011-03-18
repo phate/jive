@@ -8,6 +8,10 @@ extern const jive_node_class JIVE_ABSTRACT_GAMMA_MASTER_NODE;
 extern const jive_node_class JIVE_GAMMA_SLAVE_NODE;
 extern const jive_node_class JIVE_GAMMA_MASTER_NODE;
 
+extern const jive_node_class JIVE_THETA_HEAD_NODE;
+extern const jive_node_class JIVE_THETA_TAIL_NODE;
+extern const jive_node_class JIVE_THETA_NODE;
+
 typedef jive_node jive_abstract_gamma_slave_node;
 typedef jive_node jive_abstract_gamma_master_node;
 typedef jive_node jive_gamma_slave_node;

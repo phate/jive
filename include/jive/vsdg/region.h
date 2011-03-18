@@ -1,8 +1,10 @@
 #ifndef JIVE_VSDG_REGION_H
 #define JIVE_VSDG_REGION_H
 
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stddef.h>
+
+#include <jive/vsdg/region-ssavar-use.h>
 
 typedef struct jive_region jive_region;
 
@@ -32,10 +34,9 @@ struct jive_region {
 		jive_region * prev;
 		jive_region * next;
 	} node_anchored_regions_list;
-	struct {
-		struct jive_cut * first; /* "top" */
-		struct jive_cut * last; /* "bottom" */
-	} cuts;
+	
+	jive_region_ssavar_hash used_ssavars;
+	
 	struct jive_node * anchor_node;
 };
 
