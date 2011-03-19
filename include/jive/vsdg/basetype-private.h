@@ -40,14 +40,6 @@ _jive_input_get_label(const jive_input * self);
 const jive_type *
 _jive_input_get_type(const jive_input * self);
 
-/* private input member functions */
-
-void
-jive_input_register_resource_crossings(jive_input * self);
-
-void
-jive_input_unregister_resource_crossings(jive_input * self);
-
 /* inheritable output member functions */
 
 void

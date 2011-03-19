@@ -144,6 +144,29 @@ jive_graph_notify_ssavar_variable_change(jive_graph * graph, struct jive_ssavar 
 	jive_ssavar_variable_notifier_slot_call(&graph->on_ssavar_variable_change, ssavar, old_variable, new_variable);
 }
 
+static inline void
+jive_graph_notify_region_create(jive_graph * graph, struct jive_region * region)
+{
+	jive_region_notifier_slot_call(&graph->on_region_create, region);
+}
+
+static inline void
+jive_graph_notify_region_destroy(jive_graph * graph, struct jive_region * region)
+{
+	jive_region_notifier_slot_call(&graph->on_region_create, region);
+}
+
+static inline void
+jive_graph_notify_region_add_used_ssavar(jive_graph * graph, struct jive_region * region, struct jive_ssavar * ssavar)
+{
+	jive_region_ssavar_notifier_slot_call(&graph->on_region_add_used_ssavar, region, ssavar);
+}
+
+static inline void
+jive_graph_notify_region_remove_used_ssavar(jive_graph * graph, struct jive_region * region, struct jive_ssavar * ssavar)
+{
+	jive_region_ssavar_notifier_slot_call(&graph->on_region_remove_used_ssavar, region, ssavar);
+}
 
 #if 0
 static inline void

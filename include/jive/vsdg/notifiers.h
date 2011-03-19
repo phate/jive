@@ -3,11 +3,15 @@
 
 #include <jive/context.h>
 
+struct jive_region;
 struct jive_node;
 struct jive_input;
 struct jive_output;
+struct jive_gate;
 struct jive_variable;
 struct jive_ssavar;
+struct jive_resource_class;
+struct jive_resource_name;
 
 typedef struct jive_notifier jive_notifier;
 typedef struct jive_notifier_class jive_notifier_class;
@@ -359,7 +363,7 @@ jive_variable_gate_notifier_slot_call(const jive_variable_gate_notifier_slot * s
 
 /* variable/resource_class notifiers */
 
-typedef void (*jive_variable_resource_class_notifier_function)(void * closure, const struct jive_variable * variable, const struct jive_resource_class * old_rescls, struct jive_resource_class * new_rescls);
+typedef void (*jive_variable_resource_class_notifier_function)(void * closure, const struct jive_variable * variable, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 typedef struct jive_variable_resource_class_notifier jive_variable_resource_class_notifier;
 typedef struct jive_variable_resource_class_notifier_slot jive_variable_resource_class_notifier_slot;
 
@@ -389,7 +393,7 @@ jive_variable_resource_class_notifier_slot_call(const jive_variable_resource_cla
 
 /* variable/resource_name notifiers */
 
-typedef void (*jive_variable_resource_name_notifier_function)(void * closure, const struct jive_variable * variable, const struct jive_resource_name * old_rescls, struct jive_resource_name * new_rescls);
+typedef void (*jive_variable_resource_name_notifier_function)(void * closure, const struct jive_variable * variable, const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls);
 typedef struct jive_variable_resource_name_notifier jive_variable_resource_name_notifier;
 typedef struct jive_variable_resource_name_notifier_slot jive_variable_resource_name_notifier_slot;
 
@@ -416,5 +420,66 @@ jive_variable_resource_name_notifier_slot_connect(jive_variable_resource_name_no
 
 void
 jive_variable_resource_name_notifier_slot_call(const jive_variable_resource_name_notifier_slot * self, struct jive_variable * variable, const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls);
+
+/* region notifiers */
+
+typedef void (*jive_region_notifier_function)(void * closure, struct jive_region * region);
+typedef struct jive_region_notifier jive_region_notifier;
+typedef struct jive_region_notifier_slot jive_region_notifier_slot;
+
+struct jive_region_notifier_slot {
+	struct {
+		jive_region_notifier * first;
+		jive_region_notifier * last;
+	} notifiers;
+	struct jive_context * context;
+};
+
+static inline void
+jive_region_notifier_slot_init(jive_region_notifier_slot * self, jive_context * context)
+{
+	self->notifiers.first = self->notifiers.last = 0;
+	self->context = context;
+}
+
+void
+jive_region_notifier_slot_fini(jive_region_notifier_slot * self);
+
+jive_notifier *
+jive_region_notifier_slot_connect(jive_region_notifier_slot * self, jive_region_notifier_function function, void * closure);
+
+void
+jive_region_notifier_slot_call(const jive_region_notifier_slot * self, struct jive_region * region);
+
+/* region/ssavar notifiers */
+
+typedef void (*jive_region_ssavar_notifier_function)(void * closure, struct jive_region * region, struct jive_ssavar * ssavar);
+typedef struct jive_region_ssavar_notifier jive_region_ssavar_notifier;
+typedef struct jive_region_ssavar_notifier_slot jive_region_ssavar_notifier_slot;
+
+struct jive_region_ssavar_notifier_slot {
+	struct {
+		jive_region_ssavar_notifier * first;
+		jive_region_ssavar_notifier * last;
+	} notifiers;
+	struct jive_context * context;
+};
+
+static inline void
+jive_region_ssavar_notifier_slot_init(jive_region_ssavar_notifier_slot * self, jive_context * context)
+{
+	self->notifiers.first = self->notifiers.last = 0;
+	self->context = context;
+}
+
+void
+jive_region_ssavar_notifier_slot_fini(jive_region_ssavar_notifier_slot * self);
+
+jive_notifier *
+jive_region_ssavar_notifier_slot_connect(jive_region_ssavar_notifier_slot * self, jive_region_ssavar_notifier_function function, void * closure);
+
+void
+jive_region_ssavar_notifier_slot_call(const jive_region_ssavar_notifier_slot * self, struct jive_region * region, struct jive_ssavar * region_ssavar);
+
 
 #endif

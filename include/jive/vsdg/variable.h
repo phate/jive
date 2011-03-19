@@ -106,7 +106,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other);
 void
 jive_variable_set_resource_class(jive_variable * self, const struct jive_resource_class * rescls);
 
-inline const struct jive_resource_class *
+static inline const struct jive_resource_class *
 jive_variable_get_resource_class(const jive_variable * self)
 {
 	return self->rescls;
@@ -118,7 +118,7 @@ jive_variable_recompute_rescls(jive_variable * self);
 void
 jive_variable_set_resource_name(jive_variable * self, const struct jive_resource_name * resname);
 
-inline const struct jive_resource_name *
+static inline const struct jive_resource_name *
 jive_variable_get_resource_name(const jive_variable * self)
 {
 	return self->resname;

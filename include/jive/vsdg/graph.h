@@ -64,6 +64,11 @@ struct jive_graph {
 	size_t ntraverser_slots;
 	struct jive_traverser_graphstate * traverser_slots;
 	
+	jive_region_notifier_slot on_region_create;
+	jive_region_notifier_slot on_region_destroy;
+	jive_region_ssavar_notifier_slot on_region_add_used_ssavar;
+	jive_region_ssavar_notifier_slot on_region_remove_used_ssavar;
+	
 	jive_node_notifier_slot on_node_create;
 	jive_node_notifier_slot on_node_destroy;
 	jive_node_notifier_slot on_node_place;

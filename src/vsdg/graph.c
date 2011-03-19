@@ -1,6 +1,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-private.h>
 #include <jive/vsdg/traverser-private.h>
+#include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
 
 static inline void
@@ -23,18 +24,17 @@ static inline void
 _jive_graph_init(jive_graph * self, jive_context * context)
 {
 	self->context = context;
-	self->resources.first = self->resources.last = 0;
-	self->unused_resources.first = self->unused_resources.last = 0;
+	self->variables.first = self->variables.last = 0;
+	self->unused_variables.first = self->unused_variables.last = 0;
 	self->top.first = self->top.last = 0;
 	self->bottom.first = self->bottom.last = 0;
 	self->gates.first = self->gates.last = 0;
 	self->resources_fully_assigned = false;
 	
-	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
-	_jive_region_init(self->root_region, self, 0);
-	
-	self->ntraverser_slots = 0;
-	self->traverser_slots = 0;
+	jive_region_notifier_slot_init(&self->on_region_create, context);
+	jive_region_notifier_slot_init(&self->on_region_destroy, context);
+	jive_region_ssavar_notifier_slot_init(&self->on_region_add_used_ssavar, context);
+	jive_region_ssavar_notifier_slot_init(&self->on_region_remove_used_ssavar, context);
 	
 	jive_node_notifier_slot_init(&self->on_node_create, context);
 	jive_node_notifier_slot_init(&self->on_node_destroy, context);
@@ -50,19 +50,25 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	
 	jive_variable_notifier_slot_init(&self->on_variable_create, context);
 	jive_variable_notifier_slot_init(&self->on_variable_destroy, context);
-	jive_variable_gate_notifier_slot_init(&self->on_variable_assign_gate);
-	jive_variable_gate_notifier_slot_init(&self->on_variable_unassign_gate);
-	jive_variable_resource_class_notifier_slot_init(&self->on_variable_resource_class_change);
-	jive_variable_resource_name_notifier_slot_init(&self->on_variable_resource_name_change);
+	jive_variable_gate_notifier_slot_init(&self->on_variable_assign_gate, context);
+	jive_variable_gate_notifier_slot_init(&self->on_variable_unassign_gate, context);
+	jive_variable_resource_class_notifier_slot_init(&self->on_variable_resource_class_change, context);
+	jive_variable_resource_name_notifier_slot_init(&self->on_variable_resource_name_change, context);
 	
 	jive_ssavar_notifier_slot_init(&self->on_ssavar_create, context);
 	jive_ssavar_notifier_slot_init(&self->on_ssavar_destroy, context);
-	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_assign_input);
-	jive_ssavar_input_notifier_slot_init(&on_ssavar_unassign_input);
-	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_assign_output);
-	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_unassign_output);
-	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin);
-	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change);
+	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_assign_input, context);
+	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_unassign_input, context);
+	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_assign_output, context);
+	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_unassign_output, context);
+	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin, context);
+	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change, context);
+	
+	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
+	_jive_region_init(self->root_region, self, 0);
+	
+	self->ntraverser_slots = 0;
+	self->traverser_slots = 0;
 	
 	jive_graph_valueres_tracker_init(&self->valueres, context);
 }
@@ -92,9 +98,12 @@ _jive_graph_fini(jive_graph * self)
 	
 	while(self->gates.first) jive_gate_destroy(self->gates.first);
 	
-	while(self->unused_resources.first) jive_resource_destroy(self->unused_resources.first);
+	while(self->unused_variables.first) jive_variable_destroy(self->unused_variables.first);
 	
-	jive_graph_valueres_tracker_fini(&self->valueres);
+	jive_region_notifier_slot_fini(&self->on_region_create);
+	jive_region_notifier_slot_fini(&self->on_region_destroy);
+	jive_region_ssavar_notifier_slot_fini(&self->on_region_add_used_ssavar);
+	jive_region_ssavar_notifier_slot_fini(&self->on_region_remove_used_ssavar);
 	
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);
@@ -118,7 +127,7 @@ _jive_graph_fini(jive_graph * self)
 	jive_ssavar_notifier_slot_fini(&self->on_ssavar_create);
 	jive_ssavar_notifier_slot_fini(&self->on_ssavar_destroy);
 	jive_ssavar_input_notifier_slot_fini(&self->on_ssavar_assign_input);
-	jive_ssavar_input_notifier_slot_fini(&on_ssavar_unassign_input);
+	jive_ssavar_input_notifier_slot_fini(&self->on_ssavar_unassign_input);
 	jive_ssavar_output_notifier_slot_fini(&self->on_ssavar_assign_output);
 	jive_ssavar_output_notifier_slot_fini(&self->on_ssavar_unassign_output);
 	jive_ssavar_divert_notifier_slot_fini(&self->on_ssavar_divert_origin);

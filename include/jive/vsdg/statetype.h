@@ -32,10 +32,4 @@ struct jive_state_gate {
 	jive_gate base;
 };
 
-extern const jive_resource_class JIVE_STATE_RESOURCE;
-struct jive_state_resource {
-	jive_resource base;
-};
-
-
 #endif

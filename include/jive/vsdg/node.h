@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <jive/vsdg/crossings.h>
-#include <jive/vsdg/regcls-count.h>
+#include <jive/vsdg/basetype.h>
 
 typedef struct jive_node jive_node;
 typedef struct jive_node_attrs jive_node_attrs;
 typedef struct jive_node_class jive_node_class;
+
+typedef struct jive_node_normal_form jive_node_normal_form;
 
 struct jive_graph;
 struct jive_input;
@@ -18,7 +19,6 @@ struct jive_output;
 struct jive_gate;
 struct jive_region;
 struct jive_traversal_nodestate;
-struct jive_node_location;
 
 struct jive_node {
 	const struct jive_node_class * class_;
@@ -36,17 +36,6 @@ struct jive_node {
 	
 	struct jive_input ** inputs;
 	struct jive_output ** outputs;
-	
-	struct jive_node_location * shape_location;
-	
-	jive_resource_interaction resource_interaction;
-	jive_regcls_count use_count_before;
-	jive_regcls_count use_count_after;
-	
-	struct {
-		struct jive_region * first;
-		struct jive_region * last;
-	} anchored_regions;
 	
 	struct {
 		jive_node * prev;
@@ -73,17 +62,14 @@ struct jive_node_attrs {
 	/* empty, need override */
 };
 
-typedef enum jive_node_type_flags {
-	jive_node_class_associative = 1,
-	jive_node_class_commutative = 2
-} jive_node_class_flags;
-
 struct jive_node_class {
 	const struct jive_node_class * parent;
 	const char * name;
-	jive_node_class_flags flags;
 	
 	void (*fini)(jive_node * self);
+	
+	/** \brief Retrieve node normal form */
+	const jive_node_normal_form *(*get_default_normal_form)(const jive_node * self);
 	
 	/** \brief Give textual representation of node (for debugging) */
 	char * (*get_label)(const jive_node * self);
@@ -91,29 +77,21 @@ struct jive_node_class {
 	/** \brief Retrieve attributes of node */
 	const jive_node_attrs * (*get_attrs)(const jive_node * self);
 	
+	/** \brief Compare with attribute set (of same node type) */
+	bool (*match_attrs)(const jive_node * self, const jive_node_attrs * second);
+	
 	/** \brief Class method, create node with given attributes */
 	jive_node * (*create)(struct jive_region * region,
 		const jive_node_attrs * attrs,
-		size_t noperands, struct jive_output * operands[]);
+		size_t noperands, struct jive_output * const operands[]);
 	
-	/** \brief Class method, compare attributes for equality */
-	bool (*equiv)(const jive_node_attrs * first, const jive_node_attrs * second);
-	
-	/** \brief Class method, determine whether operands can be reduced */
-	bool (*can_reduce)(const struct jive_output * first, const struct jive_output * second);
-	
-	/** \brief Class method, reduce operands */
-	struct jive_output * (*reduce)(struct jive_output * first, struct jive_output * second);
-	
-	const struct jive_regcls * (*get_aux_regcls)(const jive_node * self);
-	
-#if 0
-	/** \brief Invalidate any computed state depending on inputs (i.e. value range) */
-	void (*invalidate_inputs)(jive_node * self);
-	
-	/** \brief Recompute any auxiliary state of outputs */
-	void (*revalidate_outputs)(jive_node * self);
-#endif
+	/**
+		\brief Get auxiliary resource class
+		
+		Covers one corner case for two-operand architectures,
+		returns NULL otherwise.
+	*/
+	const struct jive_resource_class * (*get_aux_rescls)(const jive_node * self);
 };
 
 static inline bool
@@ -141,15 +119,15 @@ jive_node_get_attrs(const jive_node * self)
 }
 
 static inline bool
-jive_node_equiv(const jive_node * self, const jive_node_attrs * first, const jive_node_attrs * second)
+jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
 {
-	return self->class_->equiv(first, second);
+	return self->class_->match_attrs(self, other);
 }
 
-static inline const struct jive_regcls *
-jive_node_get_aux_regcls(const jive_node * self)
+static inline const struct jive_resource_class *
+jive_node_get_aux_rescls(const jive_node * self)
 {
-	return self->class_->get_aux_regcls(self);
+	return self->class_->get_aux_rescls(self);
 }
 
 static inline jive_node *
@@ -180,6 +158,24 @@ jive_node_add_output(jive_node * self, const struct jive_type * type);
 
 struct jive_input *
 jive_node_gate_input(jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
+
+static inline struct jive_input *
+jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
+{
+	size_t n;
+	for(n = 0; n < self->ninputs; n++)
+		if (self->inputs[n]->gate == gate) return self->inputs[n];
+	return 0;
+}
+
+static inline struct jive_output *
+jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
+{
+	size_t n;
+	for(n = 0; n < self->noutputs; n++)
+		if (self->outputs[n]->gate == gate) return self->outputs[n];
+	return 0;
+}
 
 struct jive_output *
 jive_node_gate_output(jive_node * self, struct jive_gate * gate);

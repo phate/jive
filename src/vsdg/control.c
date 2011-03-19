@@ -1,7 +1,16 @@
-#include <jive/vsdg/control-private.h>
+//#include <jive/vsdg/control-private.h>
 #include <jive/vsdg/node-private.h>
 
 #include <string.h>
+
+const jive_node_class JIVE_GAMMA_SLAVE_NODE;
+const jive_node_class JIVE_GAMMA_MASTER_NODE;
+
+const jive_node_class JIVE_THETA_HEAD_NODE;
+const jive_node_class JIVE_THETA_TAIL_NODE;
+const jive_node_class JIVE_THETA_NODE;
+
+#if 0
 
 const jive_node_class JIVE_ABSTRACT_GAMMA_SLAVE_NODE = {
 	.parent = 0,
@@ -134,3 +143,5 @@ _jive_gamma_master_node_get_label(const jive_node * self)
 {
 	return strdup("GAMMA");
 }
+
+#endif

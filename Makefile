@@ -2,24 +2,29 @@ CPPFLAGS+=-Iinclude -iquote include/private
 CFLAGS+=-Wall -Werror -Wfatal-errors -g
 
 LIBJIVE_SRC = src/context.c \
-	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
-	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/gate-interference.c src/vsdg/regcls-count.c \
-	src/vsdg/cut.c src/vsdg/region.c src/vsdg/control.c \
-	src/vsdg/node.c src/vsdg/graph.c src/vsdg/traverser.c src/vsdg/notifiers.c src/vsdg/normalization.c \
-	src/util/textcanvas.c src/util/buffer.c \
-	src/view/nodeview.c src/view/regionview.c src/view/reservationtracker.c src/view/graphview.c src/view.c \
-	\
-	src/bitstring/type.c src/bitstring/multiop.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/negate.c \
-	\
-	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
-	\
-	src/arch/instruction.c src/arch/registers.c src/arch/stackframe.c src/arch/subroutine.c \
-	\
-	src/backend/i386/registerset.c\
-	src/backend/i386/instructionset.c\
-	src/backend/i386/machine.c\
-	src/backend/i386/stackframe.c\
-	src/backend/i386/subroutine.c\
+	src/vsdg/node.c src/vsdg/region.c src/vsdg/graph.c src/vsdg/notifiers.c src/vsdg/variable.c src/vsdg/resource.c \
+	src/vsdg/gate-interference.c src/vsdg/control.c \
+	src/vsdg/basetype.c \
+
+# LIBJIVE_SRC = src/context.c \
+# 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
+# 	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/regcls-count.c \
+# 	src/vsdg/cut.c src/vsdg/region.c src/vsdg/control.c \
+# 	src/vsdg/node.c src/vsdg/graph.c src/vsdg/traverser.c src/vsdg/notifiers.c src/vsdg/normalization.c \
+# 	src/util/textcanvas.c src/util/buffer.c \
+# 	src/view/nodeview.c src/view/regionview.c src/view/reservationtracker.c src/view/graphview.c src/view.c \
+# 	\
+# 	src/bitstring/type.c src/bitstring/multiop.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/negate.c \
+# 	\
+# 	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
+# 	\
+# 	src/arch/instruction.c src/arch/registers.c src/arch/stackframe.c src/arch/subroutine.c \
+# 	\
+# 	src/backend/i386/registerset.c\
+# 	src/backend/i386/instructionset.c\
+# 	src/backend/i386/machine.c\
+# 	src/backend/i386/stackframe.c\
+# 	src/backend/i386/subroutine.c\
 
 all: check libjive.a # libjive.so
 

@@ -2,17 +2,18 @@ TESTS=\
 	test_metacontainers\
 	test_context\
 	test_graph\
-	test_graphtraverser\
-	test_resource\
-	test_interference\
-	test_shape\
-	test_shape_crossings\
-	test_subgraph_shape\
-	test_gate_interference\
-	test_regcls_count\
- 	test_prune_replace\
- 	test_mutable_traverser\
-	test_empty_graph\
+
+# 	test_graphtraverser\
+# 	test_resource\
+# 	test_interference\
+# 	test_shape\
+# 	test_shape_crossings\
+# 	test_subgraph_shape\
+# 	test_gate_interference\
+# 	test_regcls_count\
+#  	test_prune_replace\
+#  	test_mutable_traverser\
+# 	test_empty_graph\
  	
 # 	test_bitstring1\
 # 	test_bitstring2\
@@ -20,10 +21,10 @@ TESTS=\
 # 	test_machinedef\
 # 	arithmetic_function
 
-include tests/util/Makefile.sub
-include tests/regalloc/Makefile.sub
-include tests/bitstring/Makefile.sub
-include tests/i386/Makefile.sub
+# include tests/util/Makefile.sub
+# include tests/regalloc/Makefile.sub
+# include tests/bitstring/Makefile.sub
+# include tests/i386/Makefile.sub
 
 TESTPROGS=$(patsubst %, tests/%, $(TESTS))
 

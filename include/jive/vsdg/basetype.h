@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <jive/vsdg/crossings.h>
-#include <jive/vsdg/resource-interference.h>
 #include <jive/vsdg/gate-interference.h>
 
 typedef struct jive_type_class jive_type_class;
@@ -177,7 +175,7 @@ jive_input_get_type(const jive_input * self)
 	return self->class_->get_type(self);
 }
 
-jive_variable *
+struct jive_variable *
 jive_input_get_constraint(const jive_input * self);
 
 void
@@ -218,10 +216,6 @@ struct jive_output {
 	} gate_outputs_list;
 	
 	struct jive_ssavar * ssavar;
-	struct {
-		jive_output * prev;
-		jive_output * next;
-	} ssavar_output_list;
 	
 	const struct jive_resource_class * required_rescls;
 };
@@ -264,7 +258,7 @@ jive_output_get_type(const jive_output * self)
 	return self->class_->get_type(self);
 }
 
-jive_variable *
+struct jive_variable *
 jive_output_get_constraint(const jive_output * self);
 
 void
@@ -348,7 +342,7 @@ jive_gate_get_type(const jive_gate * self)
 	return self->class_->get_type(self);
 }
 
-jive_variable *
+struct jive_variable *
 jive_gate_get_constraint(jive_gate * self);
 
 static inline jive_input *

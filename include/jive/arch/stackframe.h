@@ -70,18 +70,6 @@ struct jive_stackvar_gate {
 	jive_stackvar_type type;
 };
 
-extern const jive_resource_class JIVE_STACKSLOT_RESOURCE;
-struct jive_stackvar_resource {
-	jive_state_resource base;
-	jive_stackvar_type type;
-	jive_stackframe * stackframe;
-	struct {
-		jive_stackvar_resource * prev;
-		jive_stackvar_resource * next;
-	} stackframe_vars_list;
-	jive_stackslot * slot;
-};
-
 struct jive_stackslot {
 	struct {
 		jive_stackslot * prev;
@@ -98,15 +86,6 @@ jive_stackvar_type_create(const struct jive_regcls * regcls)
 	type.base.base.class_ = &JIVE_STACKSLOT_TYPE;
 	type.regcls = regcls;
 	return type;
-}
-
-static inline jive_stackvar_resource *
-jive_stackvar_resource_cast(jive_resource * self)
-{
-	if (jive_resource_isinstance(self, &JIVE_STACKSLOT_RESOURCE))
-		return (jive_stackvar_resource *) self;
-	else
-		return 0;
 }
 
 jive_stackslot *
