@@ -348,13 +348,17 @@ jive_gate_get_constraint(jive_gate * self);
 static inline jive_input *
 jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	return self->class_->create_input(self, node, index, initial_operand);
+	jive_input * input = jive_type_create_input(jive_gate_get_type(self), node, index, initial_operand);
+	input->required_rescls = self->required_rescls;
+	return input;
 }
 
 static inline jive_output *
 jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index)
 {
-	return self->class_->create_output(self, node, index);
+	jive_output * output = jive_type_create_output(jive_gate_get_type(self), node, index);
+	output->required_rescls = self->required_rescls;
+	return output;
 }
 
 size_t

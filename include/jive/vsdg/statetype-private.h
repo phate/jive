@@ -11,9 +11,6 @@ _jive_state_type_create_input(const jive_type * self, struct jive_node * node, s
 jive_output *
 _jive_state_type_create_output(const jive_type * self, struct jive_node * node, size_t index);
 
-jive_resource *
-_jive_state_type_create_resource(const jive_type * self, struct jive_graph * graph);
-
 jive_gate *
 _jive_state_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name);
 
@@ -33,14 +30,6 @@ _jive_state_output_init(jive_state_output * self, struct jive_node * node, size_
 const jive_type *
 _jive_state_output_get_type(const jive_output * self);
 	
-/* state_resource inheritable members */
-
-void
-_jive_state_resource_init(jive_state_resource * self, struct jive_graph * graph);
-
-const jive_type *
-_jive_state_resource_get_type(const jive_resource * self);
-
 /* state_gate inheritable members */
 
 void

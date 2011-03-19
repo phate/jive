@@ -4,8 +4,8 @@ CFLAGS+=-Wall -Werror -Wfatal-errors -g
 LIBJIVE_SRC = src/context.c \
 	src/vsdg/node.c src/vsdg/region.c src/vsdg/graph.c src/vsdg/notifiers.c src/vsdg/variable.c src/vsdg/resource.c \
 	src/vsdg/gate-interference.c src/vsdg/control.c \
-	src/vsdg/basetype.c \
-	src/vsdg/traverser.c
+	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
+	src/vsdg/traverser.c \
 
 # visualization
 LIBJIVE_SRC += \
@@ -14,9 +14,9 @@ LIBJIVE_SRC += \
 	src/view/reservationtracker.c  \
 
 # LIBJIVE_SRC = \
-# 	src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
+# 	  \
 # 	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/regcls-count.c \
-# 	src/vsdg/cut.c src/vsdg/region.c src/vsdg/control.c \
+# 	src/vsdg/cut.c \
 # 	src/vsdg/normalization.c \
 # 	\
 # 	src/bitstring/type.c src/bitstring/multiop.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/negate.c \

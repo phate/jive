@@ -72,10 +72,4 @@ _jive_gate_get_label(const jive_gate * self);
 const jive_type *
 _jive_gate_get_type(const jive_gate * self);
 
-jive_input *
-_jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand);
-
-jive_output *
-_jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index);
-
 #endif

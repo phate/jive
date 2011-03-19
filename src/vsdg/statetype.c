@@ -14,10 +14,8 @@ const jive_type_class JIVE_STATE_TYPE = {
 	.get_label = _jive_type_get_label, /* inherit */
 	.create_input = _jive_state_type_create_input, /* override */
 	.create_output = _jive_state_type_create_output, /* override */
-	.create_resource = _jive_state_type_create_resource, /* override */
 	.create_gate = _jive_state_type_create_gate, /* override */
 	.equals = _jive_type_equals, /* inherit */
-	.accepts = _jive_type_accepts /* inherit */
 };
 
 const jive_input_class JIVE_STATE_INPUT = {
@@ -25,7 +23,6 @@ const jive_input_class JIVE_STATE_INPUT = {
 	.fini = _jive_input_fini, /* inherit */
 	.get_label = _jive_input_get_label, /* inherit */
 	.get_type = _jive_state_input_get_type, /* override */
-	.get_constraint = _jive_input_get_constraint /* inherit */
 };
 
 const jive_output_class JIVE_STATE_OUTPUT = {
@@ -33,7 +30,6 @@ const jive_output_class JIVE_STATE_OUTPUT = {
 	.fini = _jive_output_fini, /* inherit */
 	.get_label = _jive_output_get_label, /* inherit */
 	.get_type = _jive_state_output_get_type, /* override */
-	.get_constraint = _jive_output_get_constraint /* inherit */
 };
 
 const jive_gate_class JIVE_STATE_GATE = {
@@ -41,25 +37,6 @@ const jive_gate_class JIVE_STATE_GATE = {
 	.fini = _jive_gate_fini, /* inherit */
 	.get_label = _jive_gate_get_label, /* inherit */
 	.get_type = _jive_state_gate_get_type, /* override */
-	.get_constraint = _jive_gate_get_constraint, /* inherit */
-	.create_input = _jive_gate_create_input, /* inherit */
-	.create_output = _jive_gate_create_output /* inherit */
-};
-
-const jive_resource_class JIVE_STATE_RESOURCE = {
-	.parent = &JIVE_RESOURCE,
-	.fini = _jive_resource_fini, /* inherit */
-	.get_label = _jive_resource_get_label, /* inherit */
-	.get_type = _jive_state_resource_get_type, /* override */
-	.can_merge = _jive_resource_can_merge, /* inherit */
-	.merge = _jive_resource_merge, /* inherit */
-	.get_cpureg = _jive_resource_get_cpureg, /* inherit */
-	.get_regcls = _jive_resource_get_regcls, /* inherit */
-	.get_real_regcls = _jive_resource_get_real_regcls, /* inherit */
-	.add_squeeze = _jive_resource_add_squeeze, /* inherit */
-	.sub_squeeze = _jive_resource_sub_squeeze, /* inherit */
-	.deny_register = _jive_resource_deny_register, /* inherit */
-	.recompute_allowed_registers = _jive_resource_recompute_allowed_registers /* inherit */
 };
 
 jive_input *
@@ -78,15 +55,6 @@ _jive_state_type_create_output(const jive_type * self, struct jive_node * node, 
 	output->base.class_ = &JIVE_STATE_OUTPUT;
 	_jive_state_output_init(output, node, index);
 	return &output->base; 
-}
-
-jive_resource *
-_jive_state_type_create_resource(const jive_type * self, struct jive_graph * graph)
-{
-	jive_state_resource * resource = jive_context_malloc(graph->context, sizeof(*resource));
-	resource->base.class_ = &JIVE_STATE_RESOURCE;
-	_jive_state_resource_init(resource, graph);
-	return &resource->base; 
 }
 
 jive_gate *
@@ -118,18 +86,6 @@ _jive_state_output_init(jive_state_output * self, struct jive_node * node, size_
 
 const jive_type *
 _jive_state_output_get_type(const jive_output * self)
-{
-	return &jive_state_type_singleton.base;
-}
-
-void
-_jive_state_resource_init(jive_state_resource * self, struct jive_graph * graph)
-{
-	_jive_resource_init(&self->base, graph);
-}
-
-const jive_type *
-_jive_state_resource_get_type(const jive_resource * self)
 {
 	return &jive_state_type_singleton.base;
 }

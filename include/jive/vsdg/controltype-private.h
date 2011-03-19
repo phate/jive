@@ -11,9 +11,6 @@ _jive_control_type_create_input(const jive_type * self, struct jive_node * node,
 jive_output *
 _jive_control_type_create_output(const jive_type * self, struct jive_node * node, size_t index);
 
-jive_resource *
-_jive_control_type_create_resource(const jive_type * self, struct jive_graph * graph);
-
 /* control_input inheritable members */
 
 void
@@ -32,13 +29,5 @@ _jive_control_output_init(jive_control_output * self, struct jive_node * node, s
 
 const jive_type *
 _jive_control_output_get_type(const jive_output * self);
-	
-/* control_resource inheritable members */
-
-void
-_jive_control_resource_init(jive_control_resource * self, struct jive_graph * graph);
-
-const jive_type *
-_jive_control_resource_get_type(const jive_resource * self);
 
 #endif

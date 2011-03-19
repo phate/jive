@@ -441,8 +441,6 @@ const jive_gate_class JIVE_GATE = {
 	.fini = _jive_gate_fini,
 	.get_label = _jive_gate_get_label,
 	.get_type = _jive_gate_get_type,
-	.create_input = _jive_gate_create_input,
-	.create_output = _jive_gate_create_output
 };
 
 void
@@ -496,18 +494,6 @@ jive_gate_get_constraint(jive_gate * self)
 	jive_variable_set_resource_class(variable, self->required_rescls);
 	
 	return variable;
-}
-
-jive_input *
-_jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand)
-{
-	return jive_type_create_input(jive_gate_get_type(self), node, index, initial_operand);
-}
-
-jive_output *
-_jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index)
-{
-	return jive_type_create_output(jive_gate_get_type(self), node, index);
 }
 
 size_t
