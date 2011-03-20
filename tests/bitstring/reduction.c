@@ -30,13 +30,11 @@ int main()
 	
 	jive_output * ops[] = {a, b};
 	
-	#if 0
 	assert_constant(jive_bitand(2, ops), 4, "1000");
 	assert_constant(jive_bitor(2, ops), 4, "1110");
 	assert_constant(jive_bitxor(2, ops), 4, "0110");
 	assert_constant(jive_bitadd(2, ops), 4, "0001");
-	assert_constant(jive_bitmultiply(2, ops), 8, "11110000");
-	#endif
+	assert_constant(jive_bitmultiply(2, ops), 4, "1111");
 	assert_constant(jive_bitconcat(2, ops), 8, "11001010");
 	assert_constant(jive_bitnegate(a), 4, "1011");
 	assert_constant(jive_bitnegate(b), 4, "1101");
