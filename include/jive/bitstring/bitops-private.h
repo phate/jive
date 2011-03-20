@@ -182,6 +182,19 @@ jive_multibit_sum(
 }
 
 static inline void
+jive_multibit_negate(
+	char dst[], const char src[], size_t nbits)
+{
+	char carry = '1';
+	size_t n;
+	for(n = 0; n<nbits; n++) {
+		char tmp = jive_logic_xor(src[n], '1');
+		dst[n] = jive_logic_add(tmp, '0', carry);
+		carry = jive_logic_carry(tmp, '0', carry);
+	}
+}
+
+static inline void
 jive_multibit_multiply(
 	char product[], size_t product_nbits,
 	const char factor1[], size_t factor1_nbits,
