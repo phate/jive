@@ -1,6 +1,7 @@
 #ifndef JIVE_ARCH_STACKFRAME_H
 #define JIVE_ARCH_STACKFRAME_H
 
+#include <jive/vsdg/resource.h>
 #include <jive/vsdg/statetype.h>
 
 typedef struct jive_stackframe jive_stackframe;
@@ -9,9 +10,10 @@ typedef struct jive_stackframe_class jive_stackframe_class;
 typedef struct jive_stackvar_type jive_stackvar_type;
 typedef struct jive_stackvar_input jive_stackvar_input;
 typedef struct jive_stackvar_output jive_stackvar_output;
-typedef struct jive_stackvar_output jive_stackvar;
 typedef struct jive_stackvar_gate jive_stackvar_gate;
-typedef struct jive_stackvar_resource jive_stackvar_resource;
+
+typedef struct jive_stackslot_size_class jive_stackslot_size_class;
+typedef struct jive_reserved_stackslot_class jive_reserved_stackslot_class;
 typedef struct jive_stackslot jive_stackslot;
 
 struct jive_output;
@@ -21,14 +23,22 @@ struct jive_graph;
 struct jive_stackframe {
 	const jive_stackframe_class * class_;
 	
-	struct {
-		jive_stackvar_resource * first;
-		jive_stackvar_resource * last;
-	} vars;
+	struct jive_context * context;
+	
 	struct {
 		jive_stackslot * first;
 		jive_stackslot * last;
 	} slots;
+	
+	struct {
+		jive_stackslot_size_class * first;
+		jive_stackslot_size_class * last;
+	} stackslot_size_classes;
+	
+	struct {
+		jive_reserved_stackslot_class * first;
+		jive_reserved_stackslot_class * last;
+	} reserved_stackslot_classes;
 	
 	struct jive_region * region;
 	struct jive_output * stackptr;
@@ -44,11 +54,11 @@ extern const jive_stackframe_class JIVE_STACKFRAME_CLASS;
 
 struct jive_stackvar_type {
 	jive_state_type base;
-	const struct jive_regcls * regcls;
+	size_t size;
 };
 
-extern const jive_type_class JIVE_STACKSLOT_TYPE;
-#define JIVE_DECLARE_STACKSLOT_TYPE(name, regcls) const jive_stackvar_type name##_struct = jive_stackvar_type_create(regcls); const jive_type * name = &name##_struct.base.base
+extern const jive_type_class JIVE_STACKVAR_TYPE;
+#define JIVE_DECLARE_STACKVAR_TYPE(name, regcls) const jive_stackvar_type name##_struct = jive_stackvar_type_create(regcls); const jive_type * name = &name##_struct.base.base
 
 extern const jive_input_class JIVE_STACKSLOT_INPUT;
 struct jive_stackvar_input {
@@ -70,7 +80,50 @@ struct jive_stackvar_gate {
 	jive_stackvar_type type;
 };
 
+void
+jive_stackframe_destroy(jive_stackframe * self);
+
+const struct jive_resource_class *
+jive_stackframe_get_stackslot_resource_class(jive_stackframe * self, size_t size);
+
+const struct jive_resource_class *
+jive_stackframe_get_reserved_stackslot_resource_class(jive_stackframe * self, size_t size, long offset);
+
+static inline void
+jive_stackframe_layout(jive_stackframe * self)
+{
+	self->class_->layout(self);
+}
+
+/* resource classes */
+
+struct jive_stackslot_size_class {
+	jive_resource_class base;
+	size_t size;
+	
+	struct {
+		jive_stackslot_size_class * prev;
+		jive_stackslot_size_class * next;
+	} stackframe_stackslot_size_class_list;
+	
+	jive_stackframe * stackframe;
+};
+
+struct jive_reserved_stackslot_class {
+	jive_stackslot_size_class base;
+	
+	struct {
+		jive_reserved_stackslot_class * prev;
+		jive_reserved_stackslot_class * next;
+	} stackframe_reserved_stackslot_class_list;
+	
+	const jive_resource_name * slot;
+};
+
+/* resource names */
+
 struct jive_stackslot {
+	jive_resource_name base;
 	struct {
 		jive_stackslot * prev;
 		jive_stackslot * next;
@@ -79,19 +132,8 @@ struct jive_stackslot {
 	jive_stackframe * stackframe;
 };
 
-static inline jive_stackvar_type
-jive_stackvar_type_create(const struct jive_regcls * regcls)
-{
-	jive_stackvar_type type;
-	type.base.base.class_ = &JIVE_STACKSLOT_TYPE;
-	type.regcls = regcls;
-	return type;
-}
-
 jive_stackslot *
-jive_stackslot_create(jive_stackframe * stackframe, long offset);
+jive_stackslot_create(const jive_resource_class * rescls, long offset);
 
-void
-jive_stackframe_destroy(jive_stackframe * self);
 
 #endif
