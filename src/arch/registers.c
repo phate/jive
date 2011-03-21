@@ -12,8 +12,8 @@ static const jive_bitstring_type
 static const jive_bitstring_type
 	bits128 = {{{.class_ = &JIVE_BITSTRING_TYPE}}, .nbits = 128};
 
-const jive_type *
-jive_regcls_get_type(const jive_regcls * self)
+const struct jive_type *
+jive_register_class_get_type(const jive_register_class * self)
 {
 	switch(self->nbits) {
 		case 8: return &bits8.base.base;
@@ -25,12 +25,12 @@ jive_regcls_get_type(const jive_regcls * self)
 	}
 }
 
-jive_gate *
-jive_regcls_create_gate(const jive_regcls * self, struct jive_graph * graph, const char * name)
+struct jive_gate *
+jive_register_class_create_gate(const jive_register_class * self, struct jive_graph * graph, const char * name)
 {
-	const jive_type * type = jive_regcls_get_type(self);
+	const jive_type * type = jive_register_class_get_type(self);
 	jive_gate * gate = jive_type_create_gate(type, graph, name);
-	((jive_value_gate *)gate)->required_regcls = self;
+	gate->required_rescls = &self->base;
 	return gate;
 }
 

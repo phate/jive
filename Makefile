@@ -19,6 +19,10 @@ LIBJIVE_SRC += \
 LIBJIVE_SRC += \
 	src/bitstring/type.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/negate.c src/bitstring/concat.c src/bitstring/arithmetic.c
 
+# arch definitions
+LIBJIVE_SRC += \
+	src/arch/registers.c 
+
 # LIBJIVE_SRC = \
 # 	  \
 # 	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/regcls-count.c \
@@ -28,7 +32,7 @@ LIBJIVE_SRC += \
 # 	\
 # 	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
 # 	\
-# 	src/arch/instruction.c src/arch/registers.c src/arch/stackframe.c src/arch/subroutine.c \
+# 	src/arch/instruction.c src/arch/stackframe.c src/arch/subroutine.c \
 # 	\
 # 	src/backend/i386/registerset.c\
 # 	src/backend/i386/instructionset.c\
