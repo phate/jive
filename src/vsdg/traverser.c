@@ -347,6 +347,8 @@ struct jive_cone_traverser {
 	jive_traversal_state state_tracker;
 };
 
+#if 0
+
 static void
 jive_unshaped_downward_cone_traverser_add_frontier(jive_cone_traverser * self, jive_node * node)
 {
@@ -419,3 +421,5 @@ jive_unshaped_downward_cone_traverser_create(struct jive_node * node)
 	self->base.class_ = &JIVE_UNSHAPED_DOWNWARD_CONE_TRAVERSER;
 	return &self->base;
 }
+
+#endif

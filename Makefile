@@ -5,6 +5,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/node.c src/vsdg/region.c src/vsdg/graph.c src/vsdg/notifiers.c src/vsdg/variable.c src/vsdg/resource.c \
 	src/vsdg/gate-interference.c src/vsdg/control.c \
 	src/vsdg/basetype.c \
+	src/vsdg/traverser.c
 
 # LIBJIVE_SRC = src/context.c \
 # 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
