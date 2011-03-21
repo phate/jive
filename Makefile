@@ -7,7 +7,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/gate-interference.c src/vsdg/control.c \
 	src/vsdg/operators.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/controltype.c \
-	src/vsdg/functiontype.c \
+	src/vsdg/functiontype.c src/vsdg/function.c \
 	src/vsdg/traverser.c \
 
 # visualization
