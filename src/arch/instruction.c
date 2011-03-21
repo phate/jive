@@ -4,6 +4,7 @@
 #include <jive/vsdg/region.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/traverser.h>
+#include <jive/vsdg/variable.h>
 
 #include <string.h>
 
@@ -12,11 +13,9 @@ const jive_node_class JIVE_INSTRUCTION_NODE = {
 	.fini = _jive_instruction_node_fini, /* override */
 	.get_label = _jive_instruction_node_get_label, /* override */
 	.get_attrs = _jive_instruction_node_get_attrs, /* override */
+	.match_attrs = _jive_instruction_node_match_attrs, /* override */
 	.create = _jive_instruction_node_create, /* override */
-	.equiv = _jive_instruction_node_equiv, /* override */
-	.can_reduce = _jive_node_can_reduce, /* inherit */
-	.reduce = _jive_node_reduce, /* inherit */
-	.get_aux_regcls = _jive_instruction_node_get_aux_regcls, /* override */
+	.get_aux_rescls = _jive_instruction_node_get_aux_rescls, /* override */
 };
 
 void
@@ -24,15 +23,15 @@ _jive_instruction_node_init(
 	jive_instruction_node * self,
 	jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * operands[const],
-	const long immediates[const])
+	jive_output * const operands[],
+	const long immediates[])
 {
 	const jive_type * input_types[icls->ninputs];
 	const jive_type * output_types[icls->noutputs];
 	
 	size_t n;
-	for(n=0; n<icls->ninputs; n++) input_types[n] = jive_regcls_get_type(icls->inregs[n]);
-	for(n=0; n<icls->noutputs; n++) output_types[n] = jive_regcls_get_type(icls->outregs[n]);
+	for(n=0; n<icls->ninputs; n++) input_types[n] = jive_register_class_get_type(icls->inregs[n]);
+	for(n=0; n<icls->noutputs; n++) output_types[n] = jive_register_class_get_type(icls->outregs[n]);
 	
 	_jive_node_init(&self->base,
 		region,
@@ -40,9 +39,9 @@ _jive_instruction_node_init(
 		icls->noutputs, output_types);
 	
 	for(n=0; n<icls->ninputs; n++)
-		((jive_value_input *)self->base.inputs[n])->required_regcls = icls->inregs[n];
+		self->base.inputs[n]->required_rescls = &icls->inregs[n]->base;
 	for(n=0; n<icls->noutputs; n++)
-		((jive_value_output *)self->base.outputs[n])->required_regcls = icls->outregs[n];
+		self->base.outputs[n]->required_rescls = &icls->outregs[n]->base;
 	
 	self->attrs.icls = icls;
 	self->attrs.immediates = jive_context_malloc(self->base.graph->context, sizeof(long) * icls->nimmediates);
@@ -72,9 +71,24 @@ _jive_instruction_node_get_attrs(const jive_node * self_)
 	return &self->attrs.base;
 }
 
+bool
+_jive_instruction_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs)
+{
+	const jive_instruction_node_attrs * first = &((const jive_instruction_node *) self)->attrs;
+	const jive_instruction_node_attrs * second = (const jive_instruction_node_attrs *) attrs;
+	
+	if (first->icls != second->icls) return false;
+	size_t n;
+	for(n=0; n<first->icls->nimmediates; n++)
+		if (first->immediates[n] != second->immediates[n]) return false;
+	
+	return true;
+}
+
+
 jive_node *
 _jive_instruction_node_create(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * operands[])
+	size_t noperands, jive_output * const operands[])
 {
 	const jive_instruction_node_attrs * attrs = (const jive_instruction_node_attrs *) attrs_;
 	
@@ -85,28 +99,14 @@ _jive_instruction_node_create(jive_region * region, const jive_node_attrs * attr
 	return &other->base;
 }
 
-bool
-_jive_instruction_node_equiv(const jive_node_attrs * first_, const jive_node_attrs * second_)
-{
-	const jive_instruction_node_attrs * first = (const jive_instruction_node_attrs *) first_;
-	const jive_instruction_node_attrs * second = (const jive_instruction_node_attrs *) second_;
-	
-	if (first->icls != second->icls) return false;
-	size_t n;
-	for(n=0; n<first->icls->nimmediates; n++)
-		if (first->immediates[n] != second->immediates[n]) return false;
-	
-	return true;
-}
-
-const struct jive_regcls *
-_jive_instruction_node_get_aux_regcls(const jive_node * self_)
+const struct jive_resource_class *
+_jive_instruction_node_get_aux_rescls(const jive_node * self_)
 {
 	const jive_instruction_node * self = (const jive_instruction_node *) self_;
 	
 	if (self->attrs.icls->flags & jive_instruction_commutative) return 0;
 	if (!(self->attrs.icls->flags & jive_instruction_write_input)) return 0;
-	return self->attrs.icls->inregs[0];
+	return &self->attrs.icls->inregs[0]->base;
 }
 
 jive_instruction_node *
@@ -135,16 +135,16 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 		jive_instruction_node * instr = (jive_instruction_node *) node;
 		const jive_instruction_class * icls = instr->attrs.icls;
 		
-		const jive_cpureg * inregs[icls->ninputs];
-		const jive_cpureg * outregs[icls->noutputs];
+		const jive_register_name * inregs[icls->ninputs];
+		const jive_register_name * outregs[icls->noutputs];
 		size_t n;
 		for(n=0; n<icls->ninputs; n++) {
-			jive_value_resource * resource = (jive_value_resource *) node->inputs[n]->resource;
-			inregs[n] = resource->cpureg;
+			const jive_resource_name * resname = jive_variable_get_resource_name(node->inputs[n]->ssavar->variable);
+			inregs[n] = (const jive_register_name *)resname;
 		}
 		for(n=0; n<icls->noutputs; n++) {
-			jive_value_resource * resource = (jive_value_resource *) node->outputs[n]->resource;
-			outregs[n] = resource->cpureg;
+			const jive_resource_name * resname = jive_variable_get_resource_name(node->outputs[n]->ssavar->variable);
+			outregs[n] = (const jive_register_name *)resname;
 		}
 		
 		icls->encode(icls, buffer, inregs, outregs, instr->attrs.immediates);
@@ -156,8 +156,8 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 static void
 jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
         jive_buffer * target,
-        const jive_cpureg * inputs[],
-        const jive_cpureg * outputs[],
+        const jive_register_name * inputs[],
+        const jive_register_name * outputs[],
         const long immediates[])
 {
 }

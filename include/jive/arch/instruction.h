@@ -31,8 +31,8 @@ struct jive_instruction_class {
 	void (*encode)(
 		const jive_instruction_class * icls,
 		struct jive_buffer * target,
-		const jive_cpureg * inputs[],
-		const jive_cpureg * outputs[],
+		const jive_register_name * inputs[],
+		const jive_register_name * outputs[],
 		const long immediates[]);
 	
 	/**
@@ -43,12 +43,12 @@ struct jive_instruction_class {
 	void (*mnemonic)(
 		const jive_instruction_class * icls,
 		struct jive_buffer * target,
-		const jive_cpureg * inputs[],
-		const jive_cpureg * outputs[],
+		const jive_register_name * inputs[],
+		const jive_register_name * outputs[],
 		const long immediates[]);
 	
-	const jive_regcls * const * inregs;
-	const jive_regcls * const * outregs;
+	const jive_register_class * const * inregs;
+	const jive_register_class * const * outregs;
 	
 	jive_instruction_flags flags;
 	

@@ -10,8 +10,8 @@ _jive_instruction_node_init(
 	jive_instruction_node * self,
 	struct jive_region * region,
 	const jive_instruction_class * icls,
-	struct jive_output * operands[const],
-	const long immediates[const]);
+	struct jive_output * const operands[],
+	const long immediates[]);
 
 void
 _jive_instruction_node_fini(jive_node * self);
@@ -24,12 +24,12 @@ _jive_instruction_node_get_attrs(const jive_node * self);
 
 jive_node *
 _jive_instruction_node_create(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * operands[]);
+	size_t noperands, struct jive_output * const operands[]);
 
 bool
-_jive_instruction_node_equiv(const jive_node_attrs * first, const jive_node_attrs * second);
+_jive_instruction_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs);
 
-const struct jive_regcls *
-_jive_instruction_node_get_aux_regcls(const jive_node * self);
+const struct jive_resource_class *
+_jive_instruction_node_get_aux_rescls(const jive_node * self);
 
 #endif

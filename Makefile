@@ -21,7 +21,7 @@ LIBJIVE_SRC += \
 
 # arch definitions
 LIBJIVE_SRC += \
-	src/arch/registers.c 
+	src/arch/registers.c src/arch/instruction.c
 
 # LIBJIVE_SRC = \
 # 	  \
@@ -32,7 +32,7 @@ LIBJIVE_SRC += \
 # 	\
 # 	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
 # 	\
-# 	src/arch/instruction.c src/arch/stackframe.c src/arch/subroutine.c \
+# 	src/arch/stackframe.c src/arch/subroutine.c \
 # 	\
 # 	src/backend/i386/registerset.c\
 # 	src/backend/i386/instructionset.c\
