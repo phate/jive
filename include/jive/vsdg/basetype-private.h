@@ -8,6 +8,12 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin);
 
 /* inheritable type member functions */
 
+void
+_jive_type_fini(jive_type * self);
+
+jive_type *
+_jive_type_copy(const jive_type * self, struct jive_context * ctx);
+
 char *
 _jive_type_get_label(const jive_type * self);
 

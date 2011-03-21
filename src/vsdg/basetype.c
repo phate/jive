@@ -15,6 +15,10 @@ const jive_type jive_type_singleton = {
 	.class_ = &JIVE_TYPE
 };
 
+void
+_jive_type_fini(jive_type * self)
+{
+}
 
 char *
 _jive_type_get_label(const jive_type * self)
@@ -57,6 +61,13 @@ _jive_type_equals(const jive_type * self, const jive_type * other)
 	return self->class_ == other->class_;
 }
 
+jive_type *
+_jive_type_copy(const jive_type * self, jive_context * context)
+{
+	/* base-type non copyable */
+	return NULL;
+}
+
 bool
 _jive_type_accepts(const jive_type * self, const jive_type * other)
 {
@@ -65,11 +76,13 @@ _jive_type_accepts(const jive_type * self, const jive_type * other)
 
 const jive_type_class JIVE_TYPE = {
 	.parent = 0,
+	.fini = _jive_type_fini,
 	.get_label = _jive_type_get_label,
 	.create_input = _jive_type_create_input,
 	.create_output = _jive_type_create_output,
 	.create_gate = _jive_type_create_gate,
 	.equals = _jive_type_equals,
+	.copy = _jive_type_copy
 };
 
 /* inputs */

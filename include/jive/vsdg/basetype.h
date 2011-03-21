@@ -39,6 +39,8 @@ struct jive_type {
 
 struct jive_type_class {
 	const struct jive_type_class * parent;
+
+	void (*fini)(jive_type* self);
 	
 	/** \brief Give textual representation of type (for debugging) */
 	char * (*get_label)(const jive_type * self);
@@ -50,6 +52,9 @@ struct jive_type_class {
 	jive_gate * (*create_gate)(const jive_type * self, struct jive_graph * graph, const char * name);
 	
 	bool (*equals)(const jive_type * self, const jive_type * other);
+	
+	/** \brief Create dynamically allocated copy of type */
+	jive_type * (*copy)(const jive_type * self, struct jive_context * context);
 };
 
 extern const struct jive_type_class JIVE_TYPE;
@@ -96,6 +101,12 @@ static inline bool
 jive_type_equals(const jive_type * self, const jive_type * other)
 {
 	return (self == other) || self->class_->equals(self, other);
+}
+
+static inline jive_type *
+jive_type_copy(const jive_type * self, struct jive_context * context)
+{
+	return self->class_->copy(self, context);
 }
 
 /**

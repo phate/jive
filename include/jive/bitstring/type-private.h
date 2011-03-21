@@ -5,6 +5,9 @@
 
 /* bitstring_type inheritable members */
 
+void
+_jive_bitstring_type_fini(jive_type * self);
+
 char *
 _jive_bitstring_type_get_label(const jive_type * self);
 
@@ -16,6 +19,9 @@ _jive_bitstring_type_create_output(const jive_type * self, struct jive_node * no
 
 jive_gate *
 _jive_bitstring_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name);
+
+jive_type *
+_jive_bitstring_type_copy(const jive_type * self, struct jive_context * context);
 
 /* bitstring_input inheritable members */
 

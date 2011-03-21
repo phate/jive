@@ -15,11 +15,13 @@ static const jive_control_type jive_control_type_singleton = {
 
 const jive_type_class JIVE_CONTROL_TYPE = {
 	.parent = &JIVE_TYPE,
+	.fini = _jive_type_fini, /* inherit */
 	.get_label = _jive_type_get_label, /* inherit */
 	.create_input = _jive_control_type_create_input, /* override */
 	.create_output = _jive_control_type_create_output, /* override */
 	.create_gate = _jive_type_create_gate, /* inherit */
 	.equals = _jive_type_equals, /* inherit */
+	.copy = _jive_type_copy /* inherit */
 };
 
 const jive_input_class JIVE_CONTROL_INPUT = {

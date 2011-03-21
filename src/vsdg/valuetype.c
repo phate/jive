@@ -14,6 +14,8 @@ static const jive_value_type jive_value_type_singleton = {
 
 const jive_type_class JIVE_VALUE_TYPE = {
 	.parent = &JIVE_TYPE,
+	.fini = _jive_value_type_fini, /* override */
+	.copy = _jive_value_type_copy, /* override */
 	.get_label = _jive_type_get_label, /* inherit */
 	.create_input = _jive_value_type_create_input, /* override */
 	.create_output = _jive_value_type_create_output, /* override */
@@ -41,6 +43,25 @@ const jive_gate_class JIVE_VALUE_GATE = {
 	.get_label = _jive_gate_get_label, /* inherit */
 	.get_type = _jive_value_gate_get_type, /* override */
 };
+
+void
+_jive_value_type_fini(jive_type * self_)
+{
+	jive_value_type * self = (jive_value_type *) self_;
+	_jive_type_fini( &self->base ) ;
+}
+
+jive_type *
+_jive_value_type_copy(const jive_type * self_, jive_context * context)
+{
+	const jive_value_type * self = (const jive_value_type *) self_;
+	
+	jive_value_type * type = jive_context_malloc(context, sizeof(*type));
+	
+	type->base = self->base;
+	
+	return &type->base;
+} 
 
 jive_input *
 _jive_value_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)

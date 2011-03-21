@@ -5,6 +5,9 @@
 
 /* value_type inheritable members */
 
+void
+_jive_value_type_fini(jive_type * self);
+
 jive_input *
 _jive_value_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);
 
@@ -13,6 +16,9 @@ _jive_value_type_create_output(const jive_type * self, struct jive_node * node, 
 
 jive_gate *
 _jive_value_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name);
+
+jive_type *
+_jive_value_type_copy(const jive_type * self, struct jive_context * context);
 
 /* value_input inheritable members */
 
