@@ -8,14 +8,6 @@
 #include <jive/view/graphview.h>
 #include <jive/util/list.h>
 
-static inline const jive_regcls *
-get_input_regcls(const jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_VALUE_INPUT))
-		return ((jive_value_input *)input)->required_regcls;
-	return 0;
-}
-
 jive_inputview *
 jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 {
@@ -30,14 +22,16 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 	char * input_label = jive_input_get_label(input);
 	char * type_label = jive_type_get_label(jive_input_get_type(input));
 	
-	const jive_cpureg * cpureg = 0;
-	const jive_regcls * regcls = get_input_regcls(input);
-	if (input->resource) cpureg = jive_resource_get_cpureg(input->resource);
-	
-	if (cpureg) {
-		self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", cpureg->name, NULL);
-	} else if (regcls) {
-		self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", regcls->name, NULL);
+	jive_ssavar * ssavar = input->ssavar;
+	if (ssavar) {
+		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
+		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
+		if (resname)
+			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", resname->name, NULL);
+		else
+			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", rescls->name, NULL);
+	} else if (input->required_rescls != &jive_root_resource_class) {
+		self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", input->required_rescls->name, NULL);
 	} else {
 		self->label = jive_context_strjoin(context, input_label, ":", type_label, NULL);
 	}
@@ -68,14 +62,6 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 	jive_textcanvas_put_ascii(dst, x+1, y, self->label);
 }
 
-static inline const jive_regcls *
-get_output_regcls(const jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_VALUE_OUTPUT))
-		return ((jive_value_output *)output)->required_regcls;
-	return 0;
-}
-
 jive_outputview *
 jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 {
@@ -90,14 +76,16 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 	char * output_label = jive_output_get_label(output);
 	char * type_label = jive_type_get_label(jive_output_get_type(output));
 	
-	const jive_cpureg * cpureg = 0;
-	const jive_regcls * regcls = get_output_regcls(output);
-	if (output->resource) cpureg = jive_resource_get_cpureg(output->resource);
-	
-	if (cpureg) {
-		self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", cpureg->name, NULL);
-	} else if (regcls) {
-		self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", regcls->name, NULL);
+	jive_ssavar * ssavar = output->ssavar;
+	if (ssavar) {
+		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
+		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
+		if (resname)
+			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", resname->name, NULL);
+		else
+			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", rescls->name, NULL);
+	} else if (output->required_rescls != &jive_root_resource_class) {
+		self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", output->required_rescls->name, NULL);
 	} else {
 		self->label = jive_context_strjoin(context, output_label, ":", type_label, NULL);
 	}
