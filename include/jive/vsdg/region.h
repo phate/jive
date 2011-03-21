@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region-ssavar-use.h>
 
@@ -84,6 +85,20 @@ jive_region_get_stackframe(const jive_region * region)
 	while(region && !region->stackframe) region = region->parent;
 	if (region) return region->stackframe;
 	else return 0;
+}
+
+/** \brief Determine innermost of multiple (possibly) nested regions from operand list */
+static inline jive_region *
+jive_region_innermost(size_t noperands, jive_output * operands[const])
+{
+	jive_region * region = operands[0]->node->region;
+	size_t n;
+	for(n = 1; n < noperands; n++) {
+		if (operands[n]->node->region->depth > region->depth)
+			region = operands[n]->node->region;
+	}
+	
+	return region;
 }
 
 #endif
