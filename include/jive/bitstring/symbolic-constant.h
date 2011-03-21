@@ -29,8 +29,8 @@ struct jive_bitsymbolicconstant_node {
 	
 	Create new bitconstant node.
 */
-jive_bitsymbolicconstant_node *
-jive_bitsymbolicconstant_node_create(struct jive_graph * graph, size_t nbits, const char * name);
+jive_node *
+jive_bitsymbolicconstant_create(struct jive_graph * graph, size_t nbits, const char * name);
 
 /**
 	\brief Create symbolic constant
@@ -42,8 +42,8 @@ jive_bitsymbolicconstant_node_create(struct jive_graph * graph, size_t nbits, co
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive_bitstring *
-jive_bitsymbolicconstant_create(struct jive_graph * graph, size_t nbits, const char * name);
+jive_output *
+jive_bitsymbolicconstant(struct jive_graph * graph, size_t nbits, const char * name);
 
 static inline jive_bitsymbolicconstant_node *
 jive_bitsymbolicconstant_node_cast(jive_node * node)

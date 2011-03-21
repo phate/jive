@@ -15,12 +15,16 @@ LIBJIVE_SRC += \
 	src/view/nodeview.c src/view/regionview.c src/view/graphview.c src/view.c \
 	src/view/reservationtracker.c  \
 
+# bitstrings
+LIBJIVE_SRC += \
+	src/bitstring/type.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/concat.c
+
 # LIBJIVE_SRC = \
 # 	  \
 # 	src/vsdg/crossings.c src/vsdg/resource-interference.c src/vsdg/regcls-count.c \
 # 	src/vsdg/cut.c \
 # 	\
-# 	src/bitstring/type.c src/bitstring/multiop.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/negate.c \
+# 	src/bitstring/multiop.c src/bitstring/negate.c  \
 # 	\
 # 	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
 # 	\

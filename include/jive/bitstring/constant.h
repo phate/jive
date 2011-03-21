@@ -1,8 +1,8 @@
 #ifndef JIVE_BITSTRING_CONSTANT_H
 #define JIVE_BITSTRING_CONSTANT_H
 
-#include <jive/vsdg/node.h>
 #include <jive/bitstring/type.h>
+#include <jive/vsdg/node.h>
 
 extern const jive_node_class JIVE_BITCONSTANT_NODE;
 
@@ -29,8 +29,8 @@ struct jive_bitconstant_node {
 	
 	Create new bitconstant node.
 */
-jive_bitconstant_node *
-jive_bitconstant_node_create(struct jive_graph * graph, size_t nbits, const char bits[]);
+jive_node *
+jive_bitconstant_create(struct jive_graph * graph, size_t nbits, const char bits[]);
 
 /**
 	\brief Create bitconstant
@@ -42,8 +42,8 @@ jive_bitconstant_node_create(struct jive_graph * graph, size_t nbits, const char
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive_bitstring *
-jive_bitconstant_create(struct jive_graph * graph, size_t nbits, const char bits[]);
+jive_output *
+jive_bitconstant(struct jive_graph * graph, size_t nbits, const char bits[]);
 
 static inline jive_bitconstant_node *
 jive_bitconstant_node_cast(jive_node * node)

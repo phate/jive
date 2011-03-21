@@ -2,9 +2,11 @@
 #define JIVE_BITSTRING_SLICE_H
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators.h>
 #include <jive/bitstring/type.h>
 
-extern const jive_node_class JIVE_BITSLICE_NODE;
+extern const jive_unary_operation_class JIVE_BITSLICE_NODE_;
+#define JIVE_BITSLICE_NODE (JIVE_BITSLICE_NODE_.base)
 
 typedef struct jive_bitslice_node jive_bitslice_node;
 typedef struct jive_bitslice_node_attrs jive_bitslice_node_attrs;
@@ -30,8 +32,8 @@ struct jive_bitslice_node {
 	Create new bitslice node. Takes the bits <TT>[low:high)</TT> out
 	of the input bits.
 */
-jive_bitslice_node *
-jive_bitslice_node_create(struct jive_region * region, jive_output * origin, size_t low, size_t high);
+jive_node *
+jive_bitslice_create(struct jive_region * region, jive_output * origin, size_t low, size_t high);
 
 /**
 	\brief Create bitslice
@@ -43,8 +45,8 @@ jive_bitslice_node_create(struct jive_region * region, jive_output * origin, siz
 	Convenience function that either creates a new slice or
 	returns the output handle of an existing slice.
 */
-jive_bitstring *
-jive_bitslice(jive_bitstring * operand, size_t low, size_t high);
+jive_output *
+jive_bitslice(jive_output * operand, size_t low, size_t high);
 
 static inline jive_bitslice_node *
 jive_bitslice_node_cast(jive_node * node)

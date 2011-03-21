@@ -1,13 +1,17 @@
 #include <jive/bitstring/slice.h>
-#include <jive/bitstring/type.h>
-#include <jive/bitstring/constant.h>
-#include <jive/bitstring/symbolic-constant.h>
-#include <jive/bitstring/multiop.h>
-#include <jive/vsdg/node-private.h>
-#include <jive/vsdg.h>
-#include <string.h>
+
 #include <stdio.h>
-#include <jive/vsdg/normalization-private.h>
+#include <string.h>
+
+#include <jive/common.h>
+
+#include <jive/bitstring/type.h>
+#include <jive/bitstring/concat.h>
+#include <jive/bitstring/constant.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/operators.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
 
 static void
 _jive_bitslice_node_init(
@@ -22,23 +26,35 @@ _jive_bitslice_node_get_label(const jive_node * self);
 static const jive_node_attrs *
 _jive_bitslice_node_get_attrs(const jive_node * self);
 
+static bool
+_jive_bitslice_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs);
+
 static jive_node *
 _jive_bitslice_node_create(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * operands[]);
+	size_t noperands, struct jive_output * const operands[]);
 
 static bool
-_jive_bitslice_node_equiv(const jive_node_attrs * first, const jive_node_attrs * second);
+jive_bitslice_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
 
-const jive_node_class JIVE_BITSLICE_NODE = {
-	.parent = &JIVE_NODE,
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_bitslice_node_get_label, /* override */
-	.get_attrs = _jive_bitslice_node_get_attrs, /* override */
-	.create = _jive_bitslice_node_create, /* override */
-	.equiv = _jive_bitslice_node_equiv, /* override */
-	.can_reduce = _jive_node_can_reduce, /* inherit */
-	.reduce = _jive_node_reduce, /* inherit */
-	.get_aux_regcls = _jive_node_get_aux_regcls /* inherit */
+static bool
+jive_bitslice_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand);
+
+const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
+	.base = { /* jive_node_class */
+		.parent = &JIVE_UNARY_OPERATION,
+		.fini = _jive_node_fini, /* inherit */
+		.get_label = _jive_bitslice_node_get_label, /* override */
+		.get_attrs = _jive_bitslice_node_get_attrs, /* override */
+		.match_attrs = _jive_bitslice_node_match_attrs, /* override */
+		.create = _jive_bitslice_node_create, /* override */
+		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	},
+	
+	.single_apply_over = NULL,
+	.multi_apply_over = NULL,
+	
+	.can_reduce_operand = jive_bitslice_can_reduce_operand_, /* override */
+	.reduce_operand = jive_bitslice_reduce_operand_ /* override */
 };
 
 static void
@@ -74,71 +90,100 @@ _jive_bitslice_node_get_attrs(const jive_node * self_)
 	return &self->attrs.base;
 }
 
-static jive_node *
-_jive_bitslice_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * operands[])
-{
-	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
-	return &jive_bitslice_node_create(region, operands[0], attrs->low, attrs->high)->base;
-}
-
 static bool
-_jive_bitslice_node_equiv(const jive_node_attrs * first_, const jive_node_attrs * second_)
+_jive_bitslice_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_bitslice_node_attrs * first = (const jive_bitslice_node_attrs *) first_;
-	const jive_bitslice_node_attrs * second = (const jive_bitslice_node_attrs *) second_;
+	const jive_bitslice_node_attrs * first = &((const jive_bitslice_node *)self)->attrs;
+	const jive_bitslice_node_attrs * second = (const jive_bitslice_node_attrs *) attrs;
 	return (first->low == second->low) && (first->high == second->high);
 }
 
-jive_bitslice_node *
-jive_bitslice_node_create(struct jive_region * region, jive_output * origin, size_t low, size_t high)
+static jive_node *
+_jive_bitslice_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, struct jive_output * const operands[])
 {
+	JIVE_DEBUG_ASSERT(noperands == 1);
+	
+	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
+	
 	jive_bitslice_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->base.class_ = &JIVE_BITSLICE_NODE;
-	_jive_bitslice_node_init(node, region, origin, low, high);
-	return node;
+	_jive_bitslice_node_init(node, region, operands[0], attrs->low, attrs->high);
+	return &node->base;
 }
 
-jive_bitstring *
-jive_bitslice(jive_bitstring * operand, size_t low, size_t high)
+static bool
+jive_bitslice_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand_)
 {
-	if ((low == 0) && (high == operand->type.nbits)) return operand; 
-	jive_output * origin = &operand->base.base;
+	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
+	jive_bitstring_output * operand = (jive_bitstring_output *) operand_;
 	
-	if (origin->node->class_ == &JIVE_BITSLICE_NODE) {
+	if ((attrs->low == 0) && (attrs->high == operand->type.nbits)) return true;
+	
+	if (operand_->node->class_ == &JIVE_BITSLICE_NODE) return true;
+	if (operand_->node->class_ == &JIVE_BITCONSTANT_NODE) return true;
+	if (operand_->node->class_ == &JIVE_BITCONCAT_NODE) return true;
+	
+	return false;
+}
+
+static bool
+jive_bitslice_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output ** operand_)
+{
+	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
+	jive_bitstring_output * operand = (jive_bitstring_output *) *operand_;
+	
+	if ((attrs->low == 0) && (attrs->high == operand->type.nbits)) return true;
+	
+	if (operand->base.base.node->class_ == &JIVE_BITSLICE_NODE) {
 		const jive_bitslice_node * node = (const jive_bitslice_node *) operand->base.base.node;
-		operand = (jive_bitstring *) node->base.inputs[0];
-		return jive_bitslice(operand, low + node->attrs.low, high + node->attrs.low);
+		*operand_ = jive_bitslice(node->base.inputs[0]->origin, attrs->low + node->attrs.low, attrs->high + node->attrs.low);
+		return true;
 	}
 	
-	if (origin->node->class_ == &JIVE_BITCONSTANT_NODE) {
+	if (operand->base.base.node->class_ == &JIVE_BITCONSTANT_NODE) {
 		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->base.base.node;
-		return jive_bitconstant_create(node->base.graph, high - low, node->attrs.bits + low);
+		*operand_ = jive_bitconstant(node->base.graph, attrs->high - attrs->low, node->attrs.bits + attrs->low);
+		return true;
 	}
 	
-	if (origin->node->class_ == &JIVE_BITCONCAT_NODE) {
-		jive_node * node = origin->node;
-		jive_bitstring * operands[node->ninputs];
+	if (operand->base.base.node->class_ == &JIVE_BITCONCAT_NODE) {
+		jive_node * node = operand->base.base.node;
+		jive_output * operands[node->ninputs];
+		
 		size_t noperands = 0, pos = 0, n;
 		for(n=0; n<node->noperands; n++) {
-			jive_bitstring * operand = (jive_bitstring *) node->inputs[n]->origin;
+			jive_output * operand = node->inputs[n]->origin;
 			size_t base = pos;
-			pos = pos + operand->type.nbits;
-			if (base < high && pos > low) {
-				size_t slice_low = (low > base) ? (low - base) : 0;
-				size_t slice_high = (high < pos) ? (high - base) : (pos-base);
+			size_t nbits = ((jive_bitstring_output *)operand)->type.nbits;
+			pos = pos + nbits;
+			if (base < attrs->high && pos > attrs->low) {
+				size_t slice_low = (attrs->low > base) ? (attrs->low - base) : 0;
+				size_t slice_high = (attrs->high < pos) ? (attrs->high - base) : (pos-base);
 				operand = jive_bitslice(operand, slice_low, slice_high);
 				operands[noperands++] = operand;
 			}
 		}
 		
-		return jive_bitconcat(noperands, operands);
+		*operand_ = jive_bitconcat(noperands, operands);
+		return true;
 	}
 	
+	return false;
+}
+
+jive_node *
+jive_bitslice_create(struct jive_region * region, jive_output * operand, size_t low, size_t high)
+{
 	jive_bitslice_node_attrs attrs;
 	attrs.low = low;
 	attrs.high = high;
-	jive_node * node = jive_node_cse(&JIVE_BITSLICE_NODE, operand->base.base.node->graph, &attrs.base, 1, &origin);
-	if (!node) node = (jive_node *) jive_bitslice_node_create(origin->node->region, origin, low, high);
-	return (jive_bitstring_output *) node->outputs[0];
+	
+	return jive_unary_operation_normalized_create(&JIVE_BITSLICE_NODE, region, &attrs.base, operand);
+}
+
+jive_output *
+jive_bitslice(jive_output * operand, size_t low, size_t high)
+{
+	return jive_bitslice_create(operand->node->region, operand, low, high)->outputs[0];
 }

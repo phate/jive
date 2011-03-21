@@ -1,2 +1,4 @@
 TESTS+=\
-	bitstring/reduction
+	bitstring/slice-concat
+
+#	bitstring/reduction

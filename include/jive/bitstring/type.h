@@ -6,9 +6,7 @@
 typedef struct jive_bitstring_type jive_bitstring_type;
 typedef struct jive_bitstring_input jive_bitstring_input;
 typedef struct jive_bitstring_output jive_bitstring_output;
-typedef struct jive_bitstring_output jive_bitstring;
 typedef struct jive_bitstring_gate jive_bitstring_gate;
-typedef struct jive_bitstring_resource jive_bitstring_resource;
 
 extern const jive_type_class JIVE_BITSTRING_TYPE;
 #define JIVE_DECLARE_BITSTRING_TYPE(name, nbits) \
@@ -40,12 +38,6 @@ struct jive_bitstring_gate {
 	jive_bitstring_type type;
 };
 
-extern const jive_resource_class JIVE_BITSTRING_RESOURCE;
-struct jive_bitstring_resource {
-	jive_value_resource base;
-	jive_bitstring_type type;
-};
-
 static inline size_t
 jive_bitstring_input_nbits(const jive_bitstring_input * self)
 {
@@ -60,12 +52,6 @@ jive_bitstring_output_nbits(const jive_bitstring_output * self)
 
 static inline size_t
 jive_bitstring_gate_nbits(const jive_bitstring_gate * self)
-{
-	return self->type.nbits;
-}
-
-static inline size_t
-jive_bitstring_resource_nbits(const jive_bitstring_resource * self)
 {
 	return self->type.nbits;
 }
