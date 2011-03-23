@@ -4,6 +4,8 @@ TESTS=\
 	test_graph\
 	test_graphtraverser\
 	test_empty_graph\
+	test_mutable_traverser\
+	test_prune_replace\
 
 # 	test_resource\
 # 	test_interference\
@@ -12,8 +14,6 @@ TESTS=\
 # 	test_subgraph_shape\
 # 	test_gate_interference\
 # 	test_regcls_count\
-# 	test_mutable_traverser\
-# 	test_prune_replace\
  	
 # 	test_bitstring1\
 # 	test_bitstring2\
