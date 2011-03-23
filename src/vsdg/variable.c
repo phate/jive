@@ -50,7 +50,7 @@ static inline void
 jive_ssavar_dec_use_count(jive_ssavar * self)
 {
 	self->use_count = self->use_count - 1;
-	if (self->use_count == 1) {
+	if (self->use_count == 0) {
 		jive_graph_notify_ssavar_destroy(self->variable->graph, self);
 		
 		jive_variable_dec_use_count(self->variable);
@@ -140,7 +140,7 @@ jive_ssavar_assign_output(jive_ssavar * self, jive_output * output)
 void
 jive_ssavar_unassign_output(jive_ssavar * self, jive_output * output)
 {
-	DEBUG_ASSERT(output->ssavar == self);
+	DEBUG_ASSERT(output->ssavar == self && self->assigned_output == output);
 	
 	jive_graph_notify_ssavar_unassign_output(self->variable->graph, self, output);
 	output->ssavar = 0;
