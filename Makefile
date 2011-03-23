@@ -23,6 +23,10 @@ LIBJIVE_SRC += \
 LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackframe.c
 
+# shaper
+LIBJIVE_SRC += \
+	src/regalloc/shaped-graph.c
+
 # LIBJIVE_SRC = \
 # 	\
 # 	src/bitstring/multiop.c   \
