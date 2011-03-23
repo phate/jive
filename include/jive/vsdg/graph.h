@@ -88,6 +88,9 @@ struct jive_graph {
 	jive_variable_resource_class_notifier_slot on_variable_resource_class_change;
 	jive_variable_resource_name_notifier_slot on_variable_resource_name_change;
 	
+	jive_gate_notifier_slot on_gate_interference_add;
+	jive_gate_notifier_slot on_gate_interference_remove;
+	
 	jive_ssavar_notifier_slot on_ssavar_create;
 	jive_ssavar_notifier_slot on_ssavar_destroy;
 	jive_ssavar_input_notifier_slot on_ssavar_assign_input;

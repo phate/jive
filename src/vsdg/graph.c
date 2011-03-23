@@ -55,6 +55,9 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	jive_variable_resource_class_notifier_slot_init(&self->on_variable_resource_class_change, context);
 	jive_variable_resource_name_notifier_slot_init(&self->on_variable_resource_name_change, context);
 	
+	jive_gate_notifier_slot_init(&self->on_gate_interference_add, context);
+	jive_gate_notifier_slot_init(&self->on_gate_interference_remove, context);
+	
 	jive_ssavar_notifier_slot_init(&self->on_ssavar_create, context);
 	jive_ssavar_notifier_slot_init(&self->on_ssavar_destroy, context);
 	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_assign_input, context);
@@ -123,6 +126,9 @@ _jive_graph_fini(jive_graph * self)
 	jive_variable_gate_notifier_slot_fini(&self->on_variable_unassign_gate);
 	jive_variable_resource_class_notifier_slot_fini(&self->on_variable_resource_class_change);
 	jive_variable_resource_name_notifier_slot_fini(&self->on_variable_resource_name_change);
+	
+	jive_gate_notifier_slot_fini(&self->on_gate_interference_add);
+	jive_gate_notifier_slot_fini(&self->on_gate_interference_remove);
 	
 	jive_ssavar_notifier_slot_fini(&self->on_ssavar_create);
 	jive_ssavar_notifier_slot_fini(&self->on_ssavar_destroy);

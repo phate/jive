@@ -86,3 +86,5 @@ MAKE_NOTIFIER(ssavar_variable, SSAVAR_VARIABLE, WRAP(struct jive_ssavar * ssavar
 MAKE_NOTIFIER(ssavar_divert, SSAVAR_DIVERT, WRAP(struct jive_ssavar * ssavar, struct jive_output * old_origin, struct jive_output * new_origin), WRAP(ssavar, old_origin, new_origin))
 MAKE_NOTIFIER(ssavar_output, SSAVAR_OUTPUT, WRAP(struct jive_ssavar * ssavar, struct jive_output * output), WRAP(ssavar, output))
 MAKE_NOTIFIER(ssavar_input, SSAVAR_INPUT, WRAP(struct jive_ssavar * ssavar, struct jive_input * input), WRAP(ssavar, input))
+
+MAKE_NOTIFIER(gate, GATE, WRAP(struct jive_gate * first, struct jive_gate * second), WRAP(first, second))

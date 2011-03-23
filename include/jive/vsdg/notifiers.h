@@ -481,5 +481,34 @@ jive_region_ssavar_notifier_slot_connect(jive_region_ssavar_notifier_slot * self
 void
 jive_region_ssavar_notifier_slot_call(const jive_region_ssavar_notifier_slot * self, struct jive_region * region, struct jive_ssavar * region_ssavar);
 
+/* gate/gate notifiers */
+
+typedef void (*jive_gate_notifier_function)(void * closure, struct jive_gate * first, struct jive_gate * second);
+typedef struct jive_gate_notifier jive_gate_notifier;
+typedef struct jive_gate_notifier_slot jive_gate_notifier_slot;
+
+struct jive_gate_notifier_slot {
+	struct {
+		jive_gate_notifier * first;
+		jive_gate_notifier * last;
+	} notifiers;
+	struct jive_context * context;
+};
+
+static inline void
+jive_gate_notifier_slot_init(jive_gate_notifier_slot * self, jive_context * context)
+{
+	self->notifiers.first = self->notifiers.last = 0;
+	self->context = context;
+}
+
+void
+jive_gate_notifier_slot_fini(jive_gate_notifier_slot * self);
+
+jive_notifier *
+jive_gate_notifier_slot_connect(jive_gate_notifier_slot * self, jive_gate_notifier_function function, void * closure);
+
+void
+jive_gate_notifier_slot_call(const jive_gate_notifier_slot * self, struct jive_gate * first, struct jive_gate * second);
 
 #endif

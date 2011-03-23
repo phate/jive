@@ -125,7 +125,7 @@ _jive_input_fini(jive_input * self)
 		for(n=0; n<self->node->ninputs; n++) {
 			jive_input * other = self->node->inputs[n];
 			if (other == self || !other->gate) continue;
-			jive_gate_interference_remove(self->gate, other->gate);
+			jive_gate_interference_remove(self->node->graph, self->gate, other->gate);
 		}
 	}
 	
@@ -308,7 +308,7 @@ void _jive_output_fini(jive_output * self)
 		for(n=0; n<self->node->noutputs; n++) {
 			jive_output * other = self->node->outputs[n];
 			if (other == self || !other->gate) continue;
-			jive_gate_interference_remove(self->gate, other->gate);
+			jive_gate_interference_remove(self->node->graph, self->gate, other->gate);
 		}
 	}
 	

@@ -205,15 +205,15 @@ jive_input *
 jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
 {
 	jive_input * input = jive_gate_create_input(gate, self, self->ninputs, initial_operand);
-	jive_node_add_input_(self, input);
 	input->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
 	size_t n;
 	for(n=0; n<input->index; n++) {
 		jive_input * other = self->inputs[n];
 		if (!other->gate) continue;
-		jive_gate_interference_add(gate, other->gate);
+		jive_gate_interference_add(self->graph, gate, other->gate);
 	}
+	jive_node_add_input_(self, input);
 	return input;
 }
 
@@ -221,15 +221,15 @@ jive_output *
 jive_node_gate_output(jive_node * self, jive_gate * gate)
 {
 	jive_output * output = jive_gate_create_output(gate, self, self->noutputs);
-	jive_node_add_output_(self, output);
 	output->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
 	size_t n;
 	for(n=0; n<output->index; n++) {
 		jive_output * other = self->outputs[n];
 		if (!other->gate) continue;
-		jive_gate_interference_add(gate, other->gate);
+		jive_gate_interference_add(self->graph, gate, other->gate);
 	}
+	jive_node_add_output_(self, output);
 	return output;
 }
 
