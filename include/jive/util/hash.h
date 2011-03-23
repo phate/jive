@@ -1,6 +1,8 @@
 #ifndef JIVE_UTIL_HASH_H
 #define JIVE_UTIL_HASH_H
 
+#include <stddef.h>
+
 #include <jive/util/list.h>
 
 static inline size_t
