@@ -511,3 +511,45 @@ jive_gate_destroy(jive_gate * self)
 	self->class_->fini(self);
 	jive_context_free(self->graph->context, self);
 }
+
+void
+jive_gate_merge(jive_gate * self, jive_gate * other)
+{
+	jive_input * input, * input_next;
+	JIVE_LIST_ITERATE_SAFE(other->inputs, input, input_next, gate_inputs_list) {
+		size_t n;
+		for(n = 0; n<input->node->ninputs; n++) {
+			jive_input * other_input = input->node->inputs[n];
+			if (other_input == input) continue;
+			if (other_input->gate == 0) continue;
+			jive_gate_interference_remove(self->graph, other, other_input->gate);
+			jive_gate_interference_add(self->graph, self, other_input->gate);
+		}
+		JIVE_LIST_REMOVE(other->inputs, input, gate_inputs_list);
+		input->gate = self;
+		JIVE_LIST_PUSH_BACK(other->inputs, input, gate_inputs_list);
+	}
+	
+	jive_output * output, * output_next;
+	JIVE_LIST_ITERATE_SAFE(other->outputs, output, output_next, gate_outputs_list) {
+		size_t n;
+		for(n = 0; n<output->node->noutputs; n++) {
+			jive_output * other_output = output->node->outputs[n];
+			if (other_output == output) continue;
+			if (other_output->gate == 0) continue;
+			jive_gate_interference_remove(self->graph, other, other_output->gate);
+			jive_gate_interference_add(self->graph, self, other_output->gate);
+		}
+		JIVE_LIST_REMOVE(other->outputs, output, gate_outputs_list);
+		output->gate = self;
+		JIVE_LIST_PUSH_BACK(other->outputs, output, gate_outputs_list);
+	}
+	
+	if (self->variable)
+		jive_variable_merge(self->variable, other->variable);
+	
+	jive_context * context = self->graph->context;
+	char * name = jive_context_strjoin(context, self->name, "_", other->name, NULL);
+	jive_context_free(context, self->name);
+	self->name = name;
+}
