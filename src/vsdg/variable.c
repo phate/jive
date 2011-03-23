@@ -68,7 +68,7 @@ jive_ssavar_create(jive_output * origin, jive_variable * variable)
 	jive_ssavar * self = jive_context_malloc(context, sizeof(*self));
 	
 	self->use_count = 0;
-	self->variable = 0;
+	self->variable = variable;
 	self->variable_ssavar_list.prev = self->variable_ssavar_list.next = 0;
 	self->origin = origin;
 	self->assigned_inputs.first = self->assigned_inputs.last = 0;
