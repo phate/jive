@@ -22,6 +22,7 @@ TESTS=\
 # 	arithmetic_function
 
 # include tests/util/Makefile.sub
+include tests/shape/Makefile.sub
 # include tests/regalloc/Makefile.sub
 include tests/bitstring/Makefile.sub
 # include tests/i386/Makefile.sub

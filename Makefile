@@ -25,7 +25,7 @@ LIBJIVE_SRC += \
 
 # shaper
 LIBJIVE_SRC += \
-	src/regalloc/shaped-graph.c
+	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c
 
 # LIBJIVE_SRC = \
 # 	\
