@@ -126,6 +126,10 @@ jive_shaped_graph_destroy(jive_shaped_graph * self)
 			jive_notifier_disconnect(self->callbacks[n]);
 	}
 	
+	jive_shaped_region_destroy_cuts(jive_shaped_graph_map_region(self, self->graph->root_region));
+	
+	JIVE_DEBUG_ASSERT(self->node_map.nitems == 0);
+	
 	struct jive_shaped_region_hash_iterator region_iter;
 	region_iter = jive_shaped_region_hash_begin(&self->region_map);
 	while(region_iter.entry) {

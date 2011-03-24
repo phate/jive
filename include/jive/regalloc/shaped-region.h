@@ -6,6 +6,7 @@ typedef struct jive_cut jive_cut;
 
 struct jive_shaped_graph;
 struct jive_region;
+struct jive_node;
 
 struct jive_shaped_region {
 	struct jive_shaped_graph * shaped_graph;
@@ -23,10 +24,61 @@ struct jive_shaped_region {
 	} cuts;
 };
 
+struct jive_shaped_node;
+
+struct jive_cut {
+	jive_shaped_region * shaped_region;
+	struct {
+		jive_cut * prev;
+		jive_cut * next;
+	} region_cut_list;
+	
+	struct {
+		struct jive_shaped_node * first;
+		struct jive_shaped_node * last;
+	} locations;
+};
+
 jive_shaped_region *
 jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_region * region);
 
+/** \brief Create new top-most cut */
+jive_cut *
+jive_shaped_region_create_cut(jive_shaped_region * self);
+
 void
 jive_shaped_region_destroy(jive_shaped_region * self);
+
+void
+jive_shaped_region_destroy_cuts(jive_shaped_region * self);
+
+void
+jive_cut_destroy(jive_cut * self);
+
+/** \brief Create new cut in same region above this cut */
+jive_cut *
+jive_cut_create_above(jive_cut * self);
+
+/** \brief Create new cut in same region below this cut */
+jive_cut *
+jive_cut_create_below(jive_cut * self);
+
+/** \brief Insert node into cut */
+struct jive_shaped_node *
+jive_cut_insert(jive_cut * self, struct jive_shaped_node * before, struct jive_node * node);
+
+static inline struct jive_shaped_node *
+jive_cut_append(jive_cut * self, struct jive_node * node)
+{
+	return jive_cut_insert(self, 0, node);
+}
+
+/** \brief First node in region */
+struct jive_shaped_node *
+jive_shaped_region_first(const jive_shaped_region * self);
+
+/** \brief Last node in region */
+struct jive_shaped_node *
+jive_shaped_region_last(const jive_shaped_region * self);
 
 #endif

@@ -5,6 +5,7 @@
 #include <jive/view.h>
 
 #include <jive/regalloc/shaped-graph.h>
+#include <jive/regalloc/shaped-region.h>
 #include <jive/bitstring.h>
 
 int main()
@@ -35,6 +36,15 @@ int main()
 	jive_ssavar_assign_output(ssavar, o);
 	assert(jive_shaped_graph_map_variable(shaped_graph, var) != NULL);
 	assert(jive_shaped_graph_map_ssavar(shaped_graph, ssavar) != NULL);
+	
+	jive_shaped_region * shaped_root_region = jive_shaped_graph_map_region(shaped_graph, graph->root_region);
+	jive_cut * c1 = jive_shaped_region_create_cut(shaped_root_region);
+	jive_cut * c2 = jive_shaped_region_create_cut(shaped_root_region);
+	
+	assert(c2->region_cut_list.next == c1);
+	
+	jive_cut_append(c1, y->node);
+	jive_cut_append(c2, o->node);
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	
