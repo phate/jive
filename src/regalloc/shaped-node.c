@@ -3,6 +3,7 @@
 
 #include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
+#include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
@@ -23,6 +24,8 @@ jive_shaped_node_create(jive_cut * cut, struct jive_node * node)
 	jive_shaped_node_hash_insert(&shaped_graph->node_map, self);
 	
 	self->cut = cut;
+	
+	jive_ssavar_xpoint_hash_init(&self->ssavar_xpoints, context);
 	
 	return self;
 }
@@ -73,5 +76,6 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	/* remove from graph */
 	jive_shaped_node_hash_remove(&self->shaped_graph->node_map, self);
 	JIVE_LIST_REMOVE(self->cut->locations, self, cut_location_list);
+	jive_ssavar_xpoint_hash_fini(&self->ssavar_xpoints);
 	jive_context_free(self->shaped_graph->context, self);
 }

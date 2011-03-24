@@ -1,2 +1,4 @@
 TESTS += \
-	shape/test-simple
+	shape/test-simple \
+	shape/test-interference \
+
