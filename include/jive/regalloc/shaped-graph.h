@@ -3,6 +3,7 @@
 
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-variable.h>
+#include <jive/regalloc/shaped-node.h>
 
 #include <jive/util/hash.h>
 
@@ -17,6 +18,9 @@ typedef struct jive_shaped_variable_hash jive_shaped_variable_hash;
 JIVE_DECLARE_HASH_TYPE(jive_shaped_ssavar_hash, jive_shaped_ssavar, struct jive_ssavar *, ssavar, hash_chain);
 typedef struct jive_shaped_ssavar_hash jive_shaped_ssavar_hash;
 
+JIVE_DECLARE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, struct jive_node *, node, hash_chain);
+typedef struct jive_shaped_node_hash jive_shaped_node_hash;
+
 struct jive_graph;
 struct jive_context;
 
@@ -29,6 +33,7 @@ struct jive_shaped_graph {
 	jive_shaped_region_hash region_map;
 	jive_shaped_variable_hash variable_map;
 	jive_shaped_ssavar_hash ssavar_map;
+	jive_shaped_node_hash node_map;
 };
 
 jive_shaped_graph *
@@ -45,5 +50,8 @@ jive_shaped_graph_map_variable(const jive_shaped_graph * self, const struct jive
 
 struct jive_shaped_ssavar *
 jive_shaped_graph_map_ssavar(const jive_shaped_graph * self, const struct jive_ssavar * ssavar);
+
+struct jive_shaped_node *
+jive_shaped_graph_map_node(const jive_shaped_graph * self, const struct jive_node * node);
 
 #endif

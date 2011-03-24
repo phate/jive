@@ -9,6 +9,7 @@
 JIVE_DEFINE_HASH_TYPE(jive_shaped_region_hash, jive_shaped_region, jive_region *, region, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_shaped_ssavar_hash, jive_shaped_ssavar, struct jive_ssavar *, ssavar, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, struct jive_node *, node, hash_chain);
 
 static void
 jive_shaped_graph_region_create(void * closure, jive_region * region)
@@ -56,6 +57,14 @@ jive_shaped_graph_ssavar_destroy(void * closure, jive_ssavar * ssavar)
 }
 
 static void
+jive_shaped_graph_node_destroy(void * closure, jive_node * node)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_node * shaped_node = jive_shaped_node_hash_lookup(&shaped_graph->node_map, node);
+	if (shaped_node) jive_shaped_node_destroy(shaped_node);
+}
+
+static void
 jive_shaped_graph_add_region_recursive(jive_shaped_graph * self, jive_region * region)
 {
 	jive_shaped_graph_region_create(self, region);
@@ -84,12 +93,14 @@ jive_shaped_graph_create(jive_graph * graph)
 	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_destroy, jive_shaped_graph_variable_destroy, self);
 	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_create, jive_shaped_graph_ssavar_create, self);
 	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_destroy, jive_shaped_graph_ssavar_destroy, self);
+	self->callbacks[n++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_shaped_graph_node_destroy, self);
 	
 	JIVE_DEBUG_ASSERT(n <= sizeof(self->callbacks)/sizeof(self->callbacks[0]));
 	
 	jive_shaped_region_hash_init(&self->region_map, context);
 	jive_shaped_variable_hash_init(&self->variable_map, context);
 	jive_shaped_ssavar_hash_init(&self->ssavar_map, context);
+	jive_shaped_node_hash_init(&self->node_map, context);
 	
 	jive_variable * variable;
 	JIVE_LIST_ITERATE(graph->variables, variable, graph_variable_list) {
@@ -142,6 +153,7 @@ jive_shaped_graph_destroy(jive_shaped_graph * self)
 		ssavar_iter = next;
 	}
 	
+	jive_shaped_node_hash_fini(&self->node_map);
 	jive_shaped_ssavar_hash_fini(&self->ssavar_map);
 	jive_shaped_variable_hash_fini(&self->variable_map);
 	jive_shaped_region_hash_fini(&self->region_map);
@@ -165,4 +177,10 @@ jive_shaped_ssavar *
 jive_shaped_graph_map_ssavar(const jive_shaped_graph * self, const jive_ssavar * ssavar)
 {
 	return jive_shaped_ssavar_hash_lookup(&self->ssavar_map, ssavar);
+}
+
+jive_shaped_node *
+jive_shaped_graph_map_node(const jive_shaped_graph * self, const jive_node * node)
+{
+	return jive_shaped_node_hash_lookup(&self->node_map, node);
 }
