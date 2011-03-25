@@ -1,6 +1,8 @@
 #ifndef JIVE_REGALLOC_SHAPED_VARIABLE_H
 #define JIVE_REGALLOC_SHAPED_VARIABLE_H
 
+#include <stdbool.h>
+
 #include <jive/regalloc/xpoint.h>
 #include <jive/util/hash.h>
 
@@ -53,6 +55,8 @@ struct jive_shaped_ssavar {
 	} hash_chain;
 	
 	jive_node_xpoint_hash node_xpoints;
+	
+	bool hovering;
 };
 
 jive_shaped_ssavar *

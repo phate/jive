@@ -28,6 +28,7 @@ jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_r
 	self->shaped_graph = shaped_graph;
 	self->region = region;
 	self->cuts.first = self->cuts.last = NULL;
+	self->merged = false;
 	
 	jive_shaped_region_hash_insert(&shaped_graph->region_map, self);
 	

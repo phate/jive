@@ -67,6 +67,7 @@ jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_s
 	
 	self->shaped_graph = shaped_graph;
 	self->ssavar = ssavar;
+	self->hovering = false;
 	
 	jive_shaped_ssavar_hash_insert(&shaped_graph->ssavar_map, self);
 	

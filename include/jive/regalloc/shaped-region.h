@@ -1,6 +1,8 @@
 #ifndef JIVE_REGALLOC_SHAPED_REGION_H
 #define JIVE_REGALLOC_SHAPED_REGION_H
 
+#include <stdbool.h>
+
 typedef struct jive_shaped_region jive_shaped_region;
 typedef struct jive_cut jive_cut;
 
@@ -22,6 +24,8 @@ struct jive_shaped_region {
 		jive_cut * first;
 		jive_cut * last;
 	} cuts;
+	
+	bool merged;
 };
 
 struct jive_shaped_node;
