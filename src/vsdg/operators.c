@@ -197,6 +197,7 @@ jive_binary_operation_reduce_operand_pair_(const jive_node_class * cls, const ji
 
 const jive_node_class JIVE_NULLARY_OPERATION = {
 	.parent = &JIVE_NODE,
+	.name = "NULLARY",
 	.fini = _jive_node_fini,
 	.get_default_normal_form = _jive_node_get_default_normal_form,
 	.get_label = _jive_node_get_label,
@@ -208,7 +209,8 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 
 const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 	.base = { /* jive_node_class */
-		.parent = &JIVE_UNARY_OPERATION,
+		.parent = &JIVE_NODE,
+		.name ="UNARY",
 		.fini = _jive_node_fini, /* inherit */
 		.get_label = _jive_node_get_label, /* inherit */
 		.get_attrs = _jive_node_get_attrs, /* inherit */
@@ -226,7 +228,8 @@ const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 
 const jive_binary_operation_class JIVE_BINARY_OPERATION_ = {
 	.base = { /* jive_node_class */
-		.parent = &JIVE_BINARY_OPERATION,
+		.parent = &JIVE_NODE,
+		.name = "BINARY",
 		.fini = _jive_node_fini, /* inherit */
 		.get_label = _jive_node_get_label, /* inherit */
 		.get_attrs = _jive_node_get_attrs, /* inherit */
