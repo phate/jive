@@ -17,7 +17,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->nodes.first = self->nodes.last = 0;
 	self->subregions.first = self->subregions.last = 0;
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
-	self->is_looped = true;
+	self->is_looped = false;
 	jive_region_ssavar_hash_init(&self->used_ssavars, graph->context);
 	
 	if (parent) {
@@ -114,10 +114,11 @@ jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 			jive_ssavar_region_hash_remove(&ssavar->assigned_regions, use);
 			
 			jive_graph_notify_region_remove_used_ssavar(self->graph, self, ssavar);
+			jive_context_free(self->graph->context, use);
 		}
 	}
 	
-	jive_region_add_used_ssavar(self->parent, ssavar);
+	jive_region_remove_used_ssavar(self->parent, ssavar);
 }
 
 #if 0

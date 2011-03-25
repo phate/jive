@@ -88,6 +88,7 @@ jive_ssavar_destroy(jive_ssavar * self)
 	while (self->assigned_inputs.first)
 		jive_ssavar_unassign_input(self, self->assigned_inputs.first);
 	DEBUG_ASSERT(self->use_count == 0);
+	jive_ssavar_region_hash_fini(&self->assigned_regions);
 	JIVE_LIST_REMOVE(self->variable->unused_ssavars, self, variable_ssavar_list);
 	jive_context_free(self->variable->graph->context, self);
 }
