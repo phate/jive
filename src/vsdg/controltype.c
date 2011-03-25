@@ -58,16 +58,16 @@ void
 _jive_control_input_init(jive_control_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
 	_jive_input_init(&self->base, node, index, origin);
-	DEBUG_ASSERT(origin->node->region->anchor_node == 0);
-	origin->node->region->anchor_node = node;
+	DEBUG_ASSERT(origin->node->region->anchor == 0);
+	origin->node->region->anchor = &self->base;
 }
 
 void
 _jive_control_input_fini(jive_input * self_)
 {
 	jive_control_input * self = (jive_control_input *)self_;
-	if (self->base.origin->node->region->anchor_node == self->base.node) {
-		self->base.origin->node->region->anchor_node = 0;
+	if (self->base.origin->node->region->anchor == &self->base) {
+		self->base.origin->node->region->anchor = 0;
 	}
 	_jive_input_fini(&self->base);
 }

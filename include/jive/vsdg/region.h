@@ -11,6 +11,7 @@
 typedef struct jive_region jive_region;
 
 struct jive_graph;
+struct jive_input;
 struct jive_node;
 struct jive_cut;
 struct jive_stackframe;
@@ -36,7 +37,7 @@ struct jive_region {
 	bool is_looped;
 	jive_region_ssavar_hash used_ssavars;
 	
-	struct jive_node * anchor_node;
+	struct jive_input * anchor;
 };
 
 void

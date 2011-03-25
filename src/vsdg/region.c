@@ -25,7 +25,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 		self->depth = parent->depth + 1;
 	} else self->depth = 0;
 	
-	self->anchor_node = 0;
+	self->anchor = 0;
 	
 	jive_graph_notify_region_create(graph, self);
 }
