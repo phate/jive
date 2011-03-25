@@ -13,6 +13,7 @@
 
 const jive_node_class JIVE_NODE = {
 	.parent = 0,
+	.name = "NODE",
 	.fini = _jive_node_fini,
 	.get_default_normal_form = _jive_node_get_default_normal_form,
 	.get_label = _jive_node_get_label,
