@@ -58,6 +58,19 @@ jive_shaped_node_next_in_region(const jive_shaped_node * self)
 	return tmp;
 }
 
+static void
+jive_shaped_node_remove_all_crossed(jive_shaped_node * self)
+{
+	struct jive_ssavar_xpoint_hash_iterator i;
+	i = jive_ssavar_xpoint_hash_begin(&self->ssavar_xpoints);
+	while(i.entry) {
+		jive_xpoint * xpoint = i.entry;
+		jive_ssavar_xpoint_hash_iterator_next(&i);
+		
+		jive_shaped_node_remove_ssavar_crossed(self, xpoint->shaped_ssavar, xpoint->shaped_ssavar->ssavar->variable, xpoint->cross_count);
+	}
+}
+
 void
 jive_shaped_node_destroy(jive_shaped_node * self)
 {
@@ -73,9 +86,45 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 		}
 	}
 	
+	/* remove things that cross this node */
+	jive_shaped_node_remove_all_crossed(self);
+	
+	/* set aside crossings of vars beginning or ending here */
+	for(n = 0; n < self->node->ninputs; n++) {
+		jive_input * input = self->node->inputs[n];
+		jive_ssavar * ssavar = input->ssavar;
+		if (!ssavar) continue;
+		jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), input, input->origin);
+	}
+	for(n = 0; n < self->node->noutputs; n++) {
+		jive_output * output = self->node->outputs[n];
+		jive_input * user;
+		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
+			jive_ssavar * ssavar = user->ssavar;
+			if (!ssavar) continue;
+			jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), user, output);
+		}
+		jive_ssavar * ssavar = output->ssavar;
+		if (!ssavar) continue;
+		jive_shaped_node_remove_ssavar_after(self, jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), ssavar->variable, 1);
+	}
+	
 	/* remove from graph */
 	jive_shaped_node_hash_remove(&self->shaped_graph->node_map, self);
 	JIVE_LIST_REMOVE(self->cut->locations, self, cut_location_list);
+	
+	/* reinstate crossings for those arcs that have this node as origin */
+	for(n = 0; n < self->node->noutputs; n++) {
+		jive_output * output = self->node->outputs[n];
+		jive_input * user;
+		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
+			jive_ssavar * ssavar = user->ssavar;
+			if (!ssavar) continue;
+			jive_shaped_ssavar_xpoints_register_arc(jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), user, output);
+		}
+	}
+	
+	JIVE_DEBUG_ASSERT(self->ssavar_xpoints.nitems == 0);
 	jive_ssavar_xpoint_hash_fini(&self->ssavar_xpoints);
 	jive_context_free(self->shaped_graph->context, self);
 }

@@ -101,12 +101,91 @@ jive_cut_create_below(jive_cut * self)
 	return jive_cut_create(self->shaped_region->shaped_graph->context, self->shaped_region, self->region_cut_list.next);
 }
 
+static void
+add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_node * shaped_node, jive_shaped_node * lower)
+{
+	struct jive_ssavar_xpoint_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, lower->ssavar_xpoints, i) {
+		jive_xpoint * xpoint = i.entry;
+		if (!xpoint->before_count) continue;
+		jive_ssavar * ssavar = xpoint->shaped_ssavar->ssavar;
+		if (ssavar->origin->node == shaped_node->node) {
+			jive_shaped_node_add_ssavar_after(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
+		} else {
+			if (jive_output_isinstance(ssavar->origin, &JIVE_CONTROL_OUTPUT)) continue;
+			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
+		}
+	}
+	
+	size_t n;
+	for(n = 0; n < lower->node->ninputs; n++) {
+		jive_input * input = lower->node->inputs[n];
+		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
+		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, input->origin->node->region);
+		if (!shaped_region->merged) continue;
+		
+		/* if this is a control edge, pass through variables from the top
+		of the subregion */
+		add_crossings_from_lower_location(shaped_graph, shaped_node, jive_shaped_region_first(shaped_region));
+		/* variables passed through both the anchor node and the
+		region would be counted twice, so remove the duplicates */
+		JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, lower->ssavar_xpoints, i) {
+			jive_xpoint * xpoint = i.entry;
+			if (!xpoint->cross_count) continue;
+			jive_shaped_node_remove_ssavar_crossed(shaped_node, xpoint->shaped_ssavar,
+				xpoint->shaped_ssavar->ssavar->variable, xpoint->cross_count);
+		}
+	}
+}
+
 struct jive_shaped_node *
 jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 {
+	jive_shaped_graph * shaped_graph = self->shaped_region->shaped_graph;
 	jive_shaped_node * shaped_node = jive_shaped_node_create(self, node);
 	
 	JIVE_LIST_INSERT(self->locations, before, shaped_node, cut_location_list);
+	
+	jive_shaped_node * next = jive_shaped_node_next_in_region(shaped_node);
+	if (next) {
+		add_crossings_from_lower_location(shaped_graph, shaped_node, next);
+	} else if (node->region->anchor) {
+		next = jive_shaped_graph_map_node(shaped_graph, node->region->anchor->node);
+		struct jive_ssavar_xpoint_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, next->ssavar_xpoints, i) {
+			jive_xpoint * xpoint = i.entry;
+			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar,
+				xpoint->shaped_ssavar->ssavar->variable, xpoint->cross_count);
+		}
+	}
+	
+	/*	for region in node.anchored_regions:
+			for xpoint in loc.ssavar_xpoints.values():
+				self.shaped_graph.map_region(region).add_active_top(xpoint.shaped_ssavar, xpoint.cross_count)*/
+	
+	/* reinstate input/output variable crossings */
+	size_t n;
+	for(n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		if (!input->ssavar) continue;
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, input->ssavar);
+		jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, input->origin);
+	}
+	for(n = 0; n < node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		jive_input * user;
+		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
+			if (!user->ssavar) continue;
+			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, user->ssavar);
+			jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, user, output);
+		}
+		
+		if (!output->ssavar) continue;
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, output->ssavar);
+		jive_shaped_node_add_ssavar_after(shaped_node, shaped_ssavar, output->ssavar->variable, 1);
+		/*for region in ssavar.assigned_regions:
+			shaped_ssavar.xpoints_register_region_arc(o, region)*/
+	}
 	
 	return shaped_node;
 }
