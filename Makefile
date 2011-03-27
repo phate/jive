@@ -24,8 +24,6 @@ LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackframe.c
 
 # LIBJIVE_SRC = \
-# 	  \
-# 	src/vsdg/resource-interference.c \
 # 	\
 # 	src/bitstring/multiop.c   \
 # 	\
