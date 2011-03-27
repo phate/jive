@@ -363,7 +363,7 @@ jive_variable_gate_notifier_slot_call(const jive_variable_gate_notifier_slot * s
 
 /* variable/resource_class notifiers */
 
-typedef void (*jive_variable_resource_class_notifier_function)(void * closure, const struct jive_variable * variable, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
+typedef void (*jive_variable_resource_class_notifier_function)(void * closure, struct jive_variable * variable, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 typedef struct jive_variable_resource_class_notifier jive_variable_resource_class_notifier;
 typedef struct jive_variable_resource_class_notifier_slot jive_variable_resource_class_notifier_slot;
 
@@ -393,7 +393,7 @@ jive_variable_resource_class_notifier_slot_call(const jive_variable_resource_cla
 
 /* variable/resource_name notifiers */
 
-typedef void (*jive_variable_resource_name_notifier_function)(void * closure, const struct jive_variable * variable, const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls);
+typedef void (*jive_variable_resource_name_notifier_function)(void * closure, struct jive_variable * variable, const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls);
 typedef struct jive_variable_resource_name_notifier jive_variable_resource_name_notifier;
 typedef struct jive_variable_resource_name_notifier_slot jive_variable_resource_name_notifier_slot;
 
