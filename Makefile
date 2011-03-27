@@ -26,7 +26,6 @@ LIBJIVE_SRC += \
 # LIBJIVE_SRC = \
 # 	  \
 # 	src/vsdg/resource-interference.c \
-# 	src/vsdg/cut.c \
 # 	\
 # 	src/bitstring/multiop.c   \
 # 	\
