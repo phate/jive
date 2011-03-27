@@ -7,6 +7,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/resource-private.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, struct jive_node *, node, hash_chain);
 
@@ -26,6 +27,8 @@ jive_shaped_node_create(jive_cut * cut, struct jive_node * node)
 	self->cut = cut;
 	
 	jive_ssavar_xpoint_hash_init(&self->ssavar_xpoints, context);
+	jive_resource_class_count_init(&self->use_count_before);
+	jive_resource_class_count_init(&self->use_count_after);
 	
 	return self;
 }
@@ -126,5 +129,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	
 	JIVE_DEBUG_ASSERT(self->ssavar_xpoints.nitems == 0);
 	jive_ssavar_xpoint_hash_fini(&self->ssavar_xpoints);
+	jive_resource_class_count_fini(&self->use_count_before, self->shaped_graph->context);
+	jive_resource_class_count_fini(&self->use_count_after, self->shaped_graph->context);
 	jive_context_free(self->shaped_graph->context, self);
 }

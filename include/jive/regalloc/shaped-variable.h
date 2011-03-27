@@ -36,6 +36,12 @@ jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive
 size_t
 jive_shaped_variable_interferes_with(const jive_shaped_variable * self, const jive_shaped_variable * other);
 
+bool
+jive_shaped_variable_can_merge(const jive_shaped_variable * self, const struct jive_variable * other);
+
+const struct jive_resource_class *
+jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * self, const struct jive_resource_class * new_rescls);
+
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self);
 

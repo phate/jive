@@ -2,4 +2,5 @@ TESTS += \
 	shape/test-simple \
 	shape/test-interference \
 	shape/test-crossing-arc \
+	shape/test-rescls-shape \
 

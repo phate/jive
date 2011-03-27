@@ -2,6 +2,7 @@
 #define JIVE_REGALLOC_SHAPED_NODE_H
 
 #include <jive/regalloc/xpoint.h>
+#include <jive/vsdg/resource.h>
 
 typedef struct jive_shaped_node jive_shaped_node;
 
@@ -27,6 +28,8 @@ struct jive_shaped_node {
 	} cut_location_list;
 	
 	jive_ssavar_xpoint_hash ssavar_xpoints;
+	jive_resource_class_count use_count_before;
+	jive_resource_class_count use_count_after;
 };
 
 jive_shaped_node *

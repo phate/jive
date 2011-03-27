@@ -8,6 +8,7 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-region-private.h>
+#include <jive/vsdg/resource-private.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
 
@@ -24,6 +25,31 @@ jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive
 	jive_variable_interference_hash_init(&self->interference, context);
 	
 	return self;
+}
+
+void
+jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+{
+	jive_shaped_graph * shaped_graph = self->shaped_graph;
+	jive_ssavar * ssavar;
+	
+	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+		jive_shaped_ssavar_xpoints_change_resource_class(shaped_ssavar, old_rescls, new_rescls);
+	}
+	
+	/*
+		resname = self.variable._resname
+		if not resname:
+			for other in self.var_interference.unique():
+				other._sub_squeeze(old_rescls)
+			for other in self.var_interference.unique():
+				other._add_squeeze(new_rescls)
+		
+		self.shaped_graph.registers._remove_tracked(self, old_rescls, resname)
+		self._internal_recompute_allowed_names()
+		self.shaped_graph.registers._add_tracked(self, new_rescls, resname)
+	*/
 }
 
 void
@@ -89,6 +115,91 @@ jive_shaped_variable_interferes_with(const jive_shaped_variable * self, const ji
 		return 0;
 }
 
+bool
+jive_shaped_variable_can_merge(const jive_shaped_variable * self, const jive_variable * other)
+{
+	if (!other)
+		return true;
+	
+	jive_shaped_variable * other_shape;
+	other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
+	if (other_shape && jive_variable_interference_hash_lookup(&self->interference, other_shape))
+		return false;
+	
+	const jive_resource_class * new_rescls;
+	new_rescls = jive_resource_class_intersection(self->variable->rescls, other->rescls);
+	if (!new_rescls)
+		return false;
+	
+	const jive_resource_class * overflow;
+	overflow = jive_shaped_variable_check_change_resource_class(self, new_rescls);
+	if (overflow)
+		return false;
+	
+	if (other_shape) {
+		overflow = jive_shaped_variable_check_change_resource_class(other_shape, new_rescls);
+		if (overflow)
+			return false;
+	}
+	
+	/*
+		if self.variable._resname and other._resname and (self.variable._resname is not other._resname): return False
+	*/
+	
+	return true;
+}
+
+const jive_resource_class *
+jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * self, const jive_resource_class * new_rescls)
+{
+	const jive_resource_class * old_rescls = self->variable->rescls;
+	if (old_rescls == new_rescls)
+		return NULL;
+	
+	jive_ssavar * ssavar;
+	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
+		const jive_resource_class * overflow;
+		overflow = jive_shaped_ssavar_check_change_resource_class(shaped_ssavar, old_rescls, new_rescls);
+		if (overflow)
+			return overflow;
+	}
+	
+	jive_context * context = self->shaped_graph->context;
+	
+	jive_resource_class_count use_count;
+	jive_resource_class_count_init(&use_count);
+	
+	jive_gate * gate;
+	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
+		jive_input * input;
+		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
+			jive_node_get_use_count_input(input->node, &use_count, context);
+			const jive_resource_class * overflow;
+			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
+			if (overflow) {
+				jive_resource_class_count_fini(&use_count, context);
+				return overflow;
+			}
+		}
+		jive_output * output;
+		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
+			jive_node_get_use_count_output(output->node, &use_count, context);
+			const jive_resource_class * overflow;
+			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
+			if (overflow) {
+				jive_resource_class_count_fini(&use_count, context);
+				return overflow;
+			}
+		}
+	}
+	
+	jive_resource_class_count_fini(&use_count, context);
+	
+	return 0;
+}
+
+
 void
 jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 {
@@ -148,4 +259,43 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive_input 
 	
 	if (origin_shaped_node && input_shaped_node)
 		jive_shaped_node_remove_ssavar_after(origin_shaped_node, self, variable, 1);
+}
+
+void
+jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+{
+	jive_context * context = self->shaped_graph->context;
+	
+	struct jive_node_xpoint_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_node_xpoint_hash, self->node_xpoints, i) {
+		jive_xpoint * xpoint = i.entry;
+		jive_shaped_node * shaped_node = xpoint->shaped_node;
+		if (xpoint->before_count)
+			jive_resource_class_count_change(&shaped_node->use_count_before, context, old_rescls, new_rescls);
+		if (xpoint->after_count)
+			jive_resource_class_count_change(&shaped_node->use_count_after, context, old_rescls, new_rescls);
+	}
+}
+
+const jive_resource_class *
+jive_shaped_ssavar_check_change_resource_class(const jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+{
+	const jive_resource_class * overflow;
+	struct jive_node_xpoint_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_node_xpoint_hash, self->node_xpoints, i) {
+		jive_xpoint * xpoint = i.entry;
+		jive_shaped_node * shaped_node = xpoint->shaped_node;
+		if (xpoint->before_count) {
+			overflow = jive_resource_class_count_check_change(&shaped_node->use_count_before, old_rescls, new_rescls);
+			if (overflow)
+				return overflow;
+		}
+		if (xpoint->after_count) {
+			overflow = jive_resource_class_count_check_change(&shaped_node->use_count_after, old_rescls, new_rescls);
+			if (overflow)
+				return overflow;
+		}
+	}
+	
+	return 0;
 }

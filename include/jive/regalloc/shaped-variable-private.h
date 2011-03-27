@@ -8,6 +8,7 @@
 
 struct jive_input;
 struct jive_output;
+struct jive_resource_class;
 
 struct jive_variable_interference_part {
 	jive_shaped_variable * shaped_variable;
@@ -58,9 +59,18 @@ jive_variable_interference_remove(jive_shaped_variable * first, jive_shaped_vari
 }
 
 void
+jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
+
+void
 jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, struct jive_input * input, struct jive_output * output);
 
 void
 jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, struct jive_input * input, struct jive_output * output);
+
+void
+jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
+
+const struct jive_resource_class *
+jive_shaped_ssavar_check_change_resource_class(const jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 #endif
