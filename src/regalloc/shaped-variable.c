@@ -101,6 +101,7 @@ jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_s
 	jive_shaped_ssavar_hash_insert(&shaped_graph->ssavar_map, self);
 	
 	jive_node_xpoint_hash_init(&self->node_xpoints, context);
+	jive_region_tpoint_hash_init(&self->region_tpoints, context);
 	
 	return self;
 }
@@ -204,7 +205,9 @@ void
 jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 {
 	JIVE_DEBUG_ASSERT(self->node_xpoints.nitems == 0);
+	JIVE_DEBUG_ASSERT(self->region_tpoints.nitems == 0);
 	jive_node_xpoint_hash_fini(&self->node_xpoints);
+	jive_region_tpoint_hash_fini(&self->region_tpoints);
 	jive_shaped_ssavar_hash_remove(&self->shaped_graph->ssavar_map, self);
 	jive_context_free(self->shaped_graph->context, self);
 }
@@ -224,7 +227,7 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive_input * 
 		if (i.node)
 			jive_shaped_node_add_ssavar_crossed(i.node, self, variable, 1);
 		else
-			jive_shaped_region_add_active_top(i.region, self);
+			jive_shaped_region_add_active_top(i.region, self, 1);
 		jive_crossing_arc_iterator_next(&i);
 	}
 	
@@ -250,7 +253,7 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive_input 
 		if (i.node)
 			jive_shaped_node_remove_ssavar_crossed(i.node, self, variable, 1);
 		else
-			jive_shaped_region_remove_active_top(i.region, self);
+			jive_shaped_region_remove_active_top(i.region, self, 1);
 		jive_crossing_arc_iterator_next(&i);
 	}
 	

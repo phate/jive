@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#include <jive/regalloc/xpoint.h>
+
 typedef struct jive_shaped_region jive_shaped_region;
 typedef struct jive_cut jive_cut;
 
@@ -24,6 +26,8 @@ struct jive_shaped_region {
 		jive_cut * first;
 		jive_cut * last;
 	} cuts;
+	
+	jive_ssavar_tpoint_hash ssavar_tpoints;
 	
 	bool merged;
 };

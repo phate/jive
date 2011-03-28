@@ -3,7 +3,11 @@
 #include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node-private.h>
+#include <jive/regalloc/shaped-region-private.h>
+#include <jive/regalloc/xpoint-private.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/region.h>
 
 static jive_cut *
 jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive_cut * before)
@@ -29,6 +33,7 @@ jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_r
 	self->region = region;
 	self->cuts.first = self->cuts.last = NULL;
 	self->merged = false;
+	jive_ssavar_tpoint_hash_init(&self->ssavar_tpoints, context);
 	
 	jive_shaped_region_hash_insert(&shaped_graph->region_map, self);
 	
@@ -72,6 +77,7 @@ void
 jive_shaped_region_destroy(jive_shaped_region * self)
 {
 	jive_shaped_region_destroy_cuts(self);
+	jive_ssavar_tpoint_hash_fini(&self->ssavar_tpoints);
 	jive_shaped_region_hash_remove(&self->shaped_graph->region_map, self);
 	jive_context_free(self->shaped_graph->context, self);
 }
@@ -159,12 +165,20 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		}
 	}
 	
-	/*	for region in node.anchored_regions:
-			for xpoint in loc.ssavar_xpoints.values():
-				self.shaped_graph.map_region(region).add_active_top(xpoint.shaped_ssavar, xpoint.cross_count)*/
+	size_t n;
+	for(n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+			continue;
+		struct jive_ssavar_xpoint_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, shaped_node->ssavar_xpoints, i) {
+			jive_xpoint * xpoint = i.entry;
+			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, input->origin->node->region);
+			jive_shaped_region_add_active_top(shaped_region, xpoint->shaped_ssavar, xpoint->cross_count);
+		}
+	}
 	
 	/* reinstate input/output variable crossings */
-	size_t n;
 	for(n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		if (!input->ssavar) continue;

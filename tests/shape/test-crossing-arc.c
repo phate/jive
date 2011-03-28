@@ -8,6 +8,7 @@
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
+#include <jive/regalloc/shaped-region-private.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 
@@ -87,6 +88,15 @@ int main()
 	assert(i.region == NULL && i.node == NULL);
 	/* don't forget to reset */
 	sub->merged = false;
+	
+	assert(sub->ssavar_tpoints.nitems == 2);
+	jive_tpoint * tpoint;
+	tpoint = jive_ssavar_tpoint_hash_lookup(&sub->ssavar_tpoints, jive_shaped_graph_map_ssavar(shaped_graph, a->outputs[0]->ssavar));
+	assert(tpoint);
+	assert(tpoint->count == 1);
+	tpoint = jive_ssavar_tpoint_hash_lookup(&sub->ssavar_tpoints, jive_shaped_graph_map_ssavar(shaped_graph, b->outputs[0]->ssavar));
+	assert(tpoint);
+	assert(tpoint->count == 1);
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

@@ -61,6 +61,7 @@ struct jive_shaped_ssavar {
 	} hash_chain;
 	
 	jive_node_xpoint_hash node_xpoints;
+	jive_region_tpoint_hash region_tpoints;
 	
 	bool hovering;
 };
