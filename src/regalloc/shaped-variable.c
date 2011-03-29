@@ -8,6 +8,7 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-region-private.h>
+#include <jive/vsdg/gate-interference-private.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
 
@@ -89,10 +90,63 @@ jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * se
 	return self->allowed_names.nitems;
 }
 
+void
+jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, jive_gate * gate)
+{
+	/* during initial build of shaped_graph, other_shape might be NULL */
+	
+	struct jive_gate_interference_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+		jive_gate * other_gate = i.entry->gate;
+		jive_variable * other = other_gate->variable;
+		if (!other) continue;
+		jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
+		if (other_shape)
+			jive_variable_interference_add(self, other_shape);
+	}
+}
+
+void
+jive_shaped_variable_assign_gate(jive_shaped_variable * self, jive_gate * gate)
+{
+	struct jive_gate_interference_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+		jive_gate * other_gate = i.entry->gate;
+		jive_variable * other = other_gate->variable;
+		if (!other) continue;
+		jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
+		jive_variable_interference_add(self, other_shape);
+	}
+}
+
+void
+jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive_gate * gate)
+{
+	struct jive_gate_interference_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+		jive_gate * other_gate = i.entry->gate;
+		jive_variable * other = other_gate->variable;
+		if (!other) continue;
+		jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
+		jive_variable_interference_remove(self, other_shape);
+	}
+}
 
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self)
 {
+	jive_gate * gate;
+	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
+		struct jive_gate_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+			jive_gate * other_gate = i.entry->gate;
+			jive_variable * other = other_gate->variable;
+			if (!other) continue;
+			jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
+			if (other_shape)
+				jive_variable_interference_remove(self, other_shape);
+		}
+	}
 	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
 		self, self->variable->rescls, self->variable->resname);
 	JIVE_DEBUG_ASSERT(self->interference.nitems == 0);

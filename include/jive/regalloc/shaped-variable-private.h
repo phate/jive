@@ -11,6 +11,7 @@
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
 
+struct jive_gate;
 struct jive_input;
 struct jive_output;
 struct jive_resource_class;
@@ -189,6 +190,15 @@ jive_variable_interference_remove(jive_shaped_variable * first, jive_shaped_vari
 	}
 	return count;
 }
+
+void
+jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, struct jive_gate * gate);
+
+void
+jive_shaped_variable_assign_gate(jive_shaped_variable * self, struct jive_gate * gate);
+
+void
+jive_shaped_variable_unassign_gate(jive_shaped_variable * self, struct jive_gate * gate);
 
 void
 jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);

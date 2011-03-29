@@ -3,4 +3,5 @@ TESTS += \
 	shape/test-interference \
 	shape/test-crossing-arc \
 	shape/test-rescls-shape \
+	shape/test-gate \
 

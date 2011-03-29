@@ -29,6 +29,30 @@ jive_shaped_graph_region_destroy(void * closure, jive_region * region)
 }
 
 static void
+jive_shaped_graph_gate_interference_add(void * closure, jive_gate * first, jive_gate * second)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	if (first->variable && second->variable) {
+		jive_variable_interference_add(
+			jive_shaped_graph_map_variable(shaped_graph, first->variable),
+			jive_shaped_graph_map_variable(shaped_graph, second->variable)
+		);
+	}
+}
+
+static void
+jive_shaped_graph_gate_interference_remove(void * closure, jive_gate * first, jive_gate * second)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	if (first->variable && second->variable) {
+		jive_variable_interference_remove(
+			jive_shaped_graph_map_variable(shaped_graph, first->variable),
+			jive_shaped_graph_map_variable(shaped_graph, second->variable)
+		);
+	}
+}
+
+static void
 jive_shaped_graph_variable_create(void * closure, jive_variable * variable)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
@@ -41,6 +65,22 @@ jive_shaped_graph_variable_destroy(void * closure, jive_variable * variable)
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_variable * shaped_variable = jive_shaped_variable_hash_lookup(&shaped_graph->variable_map, variable);
 	jive_shaped_variable_destroy(shaped_variable);
+}
+
+static void
+jive_shaped_graph_variable_assign_gate(void * closure, jive_variable * variable, jive_gate * gate)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_variable * shaped_variable = jive_shaped_variable_hash_lookup(&shaped_graph->variable_map, variable);
+	jive_shaped_variable_assign_gate(shaped_variable, gate);
+}
+
+static void
+jive_shaped_graph_variable_unassign_gate(void * closure, jive_variable * variable, jive_gate * gate)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_variable * shaped_variable = jive_shaped_variable_hash_lookup(&shaped_graph->variable_map, variable);
+	jive_shaped_variable_unassign_gate(shaped_variable, gate);
 }
 
 static void
@@ -147,8 +187,12 @@ jive_shaped_graph_create(jive_graph * graph)
 	n = 0;
 	self->callbacks[n++] = jive_region_notifier_slot_connect(&graph->on_region_create, jive_shaped_graph_region_create, self);
 	self->callbacks[n++] = jive_region_notifier_slot_connect(&graph->on_region_destroy, jive_shaped_graph_region_destroy, self);
+	self->callbacks[n++] = jive_gate_notifier_slot_connect(&graph->on_gate_interference_add, jive_shaped_graph_gate_interference_add, self);
+	self->callbacks[n++] = jive_gate_notifier_slot_connect(&graph->on_gate_interference_remove, jive_shaped_graph_gate_interference_remove, self);
 	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_create, jive_shaped_graph_variable_create, self);
 	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_destroy, jive_shaped_graph_variable_destroy, self);
+	self->callbacks[n++] = jive_variable_gate_notifier_slot_connect(&graph->on_variable_assign_gate, jive_shaped_graph_variable_assign_gate, self);
+	self->callbacks[n++] = jive_variable_gate_notifier_slot_connect(&graph->on_variable_unassign_gate, jive_shaped_graph_variable_unassign_gate, self);
 	self->callbacks[n++] = jive_variable_resource_class_notifier_slot_connect(&graph->on_variable_resource_class_change, jive_shaped_graph_variable_resource_class_change, self);
 	self->callbacks[n++] = jive_variable_resource_name_notifier_slot_connect(&graph->on_variable_resource_name_change, jive_shaped_graph_variable_resource_name_change, self);
 	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_create, jive_shaped_graph_ssavar_create, self);
@@ -169,10 +213,14 @@ jive_shaped_graph_create(jive_graph * graph)
 	
 	jive_variable * variable;
 	JIVE_LIST_ITERATE(graph->variables, variable, graph_variable_list) {
-		jive_shaped_variable_create(self, variable);
+		jive_shaped_variable * shaped_variable = jive_shaped_variable_create(self, variable);
 		jive_ssavar * ssavar;
 		JIVE_LIST_ITERATE(variable->ssavars, ssavar, variable_ssavar_list) {
 			jive_shaped_ssavar_create(self, ssavar);
+		}
+		jive_gate * gate;
+		JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
+			jive_shaped_variable_initial_assign_gate(shaped_variable, gate);
 		}
 	}
 	
