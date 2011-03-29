@@ -8,7 +8,6 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-region-private.h>
-#include <jive/vsdg/resource-private.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
 
@@ -24,6 +23,9 @@ jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive
 	jive_shaped_variable_hash_insert(&shaped_graph->variable_map, self);
 	jive_variable_interference_hash_init(&self->interference, context);
 	
+	jive_allowed_resource_names_hash_init(&self->allowed_names, context);
+	jive_shaped_variable_internal_recompute_allowed_names(self);
+	
 	return self;
 }
 
@@ -38,25 +40,65 @@ jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const st
 		jive_shaped_ssavar_xpoints_change_resource_class(shaped_ssavar, old_rescls, new_rescls);
 	}
 	
+	if (!self->variable->resname) {
+		struct jive_variable_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
+			jive_shaped_variable * other = i.entry->shaped_variable;
+			jive_shaped_variable_sub_squeeze(other, old_rescls);
+			jive_shaped_variable_add_squeeze(other, new_rescls);
+		}
+	}
 	/*
-		resname = self.variable._resname
-		if not resname:
-			for other in self.var_interference.unique():
-				other._sub_squeeze(old_rescls)
-			for other in self.var_interference.unique():
-				other._add_squeeze(new_rescls)
-		
 		self.shaped_graph.registers._remove_tracked(self, old_rescls, resname)
-		self._internal_recompute_allowed_names()
+	*/
+	jive_shaped_variable_internal_recompute_allowed_names(self);
+	/*
 		self.shaped_graph.registers._add_tracked(self, new_rescls, resname)
 	*/
 }
+
+void
+jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname)
+{
+	JIVE_DEBUG_ASSERT(old_resname == new_resname || self->variable->rescls->limit == 0 || jive_shaped_variable_allowed_resource_name(self, new_resname));
+	
+	/*
+		self.shaped_graph.registers._remove_tracked(self, self.variable._rescls, old_resname)
+	*/
+	jive_shaped_variable_internal_recompute_allowed_names(self);
+	/*
+		self.shaped_graph.registers._add_tracked(self, self.variable._rescls, new_resname)
+	*/
+		
+	struct jive_variable_interference_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
+		jive_shaped_variable * other = i.entry->shaped_variable;
+		jive_allowed_resource_names_remove(&other->allowed_names, new_resname);
+		jive_shaped_variable_sub_squeeze(other, new_resname->resource_class);
+	}
+}
+
+bool
+jive_shaped_variable_allowed_resource_name(const jive_shaped_variable * self, const struct jive_resource_name * name)
+{
+	jive_allowed_resource_name * allowed = jive_allowed_resource_names_hash_lookup(&self->allowed_names, name);
+	return !!allowed;
+}
+
+size_t
+jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * self)
+{
+	return self->allowed_names.nitems;
+}
+
 
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self)
 {
 	JIVE_DEBUG_ASSERT(self->interference.nitems == 0);
 	jive_variable_interference_hash_fini(&self->interference);
+	jive_allowed_resource_names_clear(&self->allowed_names);
+	jive_allowed_resource_names_hash_fini(&self->allowed_names);
 	jive_shaped_variable_hash_remove(&self->shaped_graph->variable_map, self);
 	jive_context_free(self->shaped_graph->context, self);
 }
@@ -143,9 +185,8 @@ jive_shaped_variable_can_merge(const jive_shaped_variable * self, const jive_var
 			return false;
 	}
 	
-	/*
-		if self.variable._resname and other._resname and (self.variable._resname is not other._resname): return False
-	*/
+	if (self->variable->resname && other->resname && self->variable->resname != other->resname)
+		return false;
 	
 	return true;
 }

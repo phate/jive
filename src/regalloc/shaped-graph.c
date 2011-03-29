@@ -53,6 +53,16 @@ jive_shaped_graph_variable_resource_class_change(void * closure, jive_variable *
 }
 
 static void
+jive_shaped_graph_variable_resource_name_change(void * closure, jive_variable * variable,
+	const jive_resource_name * old_resname, const jive_resource_name * new_resname)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_variable * shaped_variable = jive_shaped_graph_map_variable(shaped_graph, variable);
+	if (shaped_variable)
+		jive_shaped_variable_resource_name_change(shaped_variable, old_resname, new_resname);
+}
+
+static void
 jive_shaped_graph_ssavar_create(void * closure, jive_ssavar * ssavar)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
@@ -139,6 +149,7 @@ jive_shaped_graph_create(jive_graph * graph)
 	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_create, jive_shaped_graph_variable_create, self);
 	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_destroy, jive_shaped_graph_variable_destroy, self);
 	self->callbacks[n++] = jive_variable_resource_class_notifier_slot_connect(&graph->on_variable_resource_class_change, jive_shaped_graph_variable_resource_class_change, self);
+	self->callbacks[n++] = jive_variable_resource_name_notifier_slot_connect(&graph->on_variable_resource_name_change, jive_shaped_graph_variable_resource_name_change, self);
 	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_create, jive_shaped_graph_ssavar_create, self);
 	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_destroy, jive_shaped_graph_ssavar_destroy, self);
 	self->callbacks[n++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_shaped_graph_node_destroy, self);

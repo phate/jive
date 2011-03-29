@@ -17,6 +17,11 @@ typedef struct jive_shaped_variable jive_shaped_variable;
 struct jive_shaped_graph;
 struct jive_variable;
 
+struct jive_resource_name;
+
+JIVE_DECLARE_HASH_TYPE(jive_allowed_resource_names_hash, struct jive_allowed_resource_name, const struct jive_resource_name *, name, chain);
+typedef struct jive_allowed_resource_names_hash jive_allowed_resource_names_hash;
+
 struct jive_shaped_variable {
 	struct jive_shaped_graph * shaped_graph;
 	
@@ -28,6 +33,8 @@ struct jive_shaped_variable {
 	} hash_chain;
 	
 	jive_variable_interference_hash interference;
+	jive_allowed_resource_names_hash allowed_names;
+	size_t squeeze;
 };
 
 jive_shaped_variable *
@@ -41,6 +48,12 @@ jive_shaped_variable_can_merge(const jive_shaped_variable * self, const struct j
 
 const struct jive_resource_class *
 jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * self, const struct jive_resource_class * new_rescls);
+
+bool
+jive_shaped_variable_allowed_resource_name(const jive_shaped_variable * self, const struct jive_resource_name * name);
+
+size_t
+jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * self);
 
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self);

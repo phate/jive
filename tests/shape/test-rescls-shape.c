@@ -7,76 +7,111 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg.h>
 
+extern const jive_register_class reg0, reg1, reg2, reg3;
+
+const jive_register_name regs[] = {
+	{
+		.base = {
+			.name = "r0",
+			.resource_class = &reg0.base
+		},
+		.code = 0
+	},
+	{
+		.base = {
+			.name = "r1",
+			.resource_class = &reg1.base
+		},
+		.code = 1
+	},
+	{
+		.base = {
+			.name = "r2",
+			.resource_class = &reg2.base
+		},
+		.code = 2
+	},
+	{
+		.base = {
+			.name = "r3",
+			.resource_class = &reg3.base
+		},
+		.code = 3
+	}
+};
+
+const jive_resource_name * allnames [] = {&regs[0].base, &regs[2].base, &regs[1].base, &regs[3].base};
+
 const jive_register_class 
 	gpr = {
 		.base = {
 			.name = "gpr",
 			.limit = 4,
-			.names = NULL,
+			.names = allnames,
 			.parent = &jive_root_resource_class,
 			.depth = 1,
 		},
-		.regs = NULL
+		.regs = regs
 	},
 	evenreg = {
 		.base = {
 			.name = "even",
 			.limit = 2,
-			.names = NULL,
+			.names = allnames + 0,
 			.parent = &gpr.base,
 			.depth = 2,
 		},
-		.regs = NULL
+		.regs = regs
 	},
 	oddreg = {
 		.base = {
 			.name = "odd",
 			.limit = 2,
-			.names = NULL,
+			.names = allnames + 2,
 			.parent = &gpr.base,
 			.depth = 2,
 		},
-		.regs = NULL
+		.regs = regs + 2
 	},
 	reg0 = {
 		.base = {
 			.name = "reg0",
 			.limit = 1,
-			.names = NULL,
+			.names = allnames,
 			.parent = &evenreg.base,
 			.depth = 3,
 		},
-		.regs = NULL
+		.regs = regs
 	},
 	reg1 = {
 		.base = {
 			.name = "reg1",
 			.limit = 1,
-			.names = NULL,
+			.names = allnames + 2,
 			.parent = &oddreg.base,
 			.depth = 3,
 		},
-		.regs = NULL
+		.regs = regs + 2
 	},
 	reg2 = {
 		.base = {
 			.name = "reg2",
 			.limit = 1,
-			.names = NULL,
+			.names = allnames + 1,
 			.parent = &evenreg.base,
 			.depth = 3,
 		},
-		.regs = NULL
+		.regs = regs + 1
 	},
 	reg3 = {
 		.base = {
 			.name = "reg3",
 			.limit = 1,
-			.names = NULL,
+			.names = allnames + 3,
 			.parent = &oddreg.base,
 			.depth = 3,
 		},
-		.regs = NULL
+		.regs = regs + 3
 	}
 ;
 
@@ -109,6 +144,7 @@ int main()
 	
 	jive_variable_set_resource_class(r1, &reg0.base);
 	jive_variable_set_resource_class(r2, &reg1.base);
+	jive_variable_set_resource_class(r3, &gpr.base);
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
@@ -119,7 +155,6 @@ int main()
 	
 	assert(jive_shaped_variable_can_merge(jive_shaped_graph_map_variable(shaped_graph, r2), r3));
 	assert(!jive_shaped_variable_can_merge(jive_shaped_graph_map_variable(shaped_graph, r2), r1));
-	jive_variable_set_resource_class(r3, &reg1.base);
 	
 	assert(jive_shaped_variable_check_change_resource_class(jive_shaped_graph_map_variable(shaped_graph, r2), &reg2.base) == 0);
 	assert(jive_shaped_variable_check_change_resource_class(jive_shaped_graph_map_variable(shaped_graph, r2), &reg0.base) == &reg0.base);
@@ -127,6 +162,21 @@ int main()
 	jive_resource_class_count * use_count = &jive_shaped_graph_map_node(shaped_graph, top)->use_count_after;
 	const jive_resource_class * overflow = jive_resource_class_count_check_add(use_count, &reg0.base);
 	assert(overflow == &reg0.base);
+	
+	assert(jive_shaped_graph_map_variable(shaped_graph, r1)->squeeze == 1);
+	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(shaped_graph, r1)) == 1);
+	assert(jive_shaped_variable_allowed_resource_name(jive_shaped_graph_map_variable(shaped_graph, r1), allnames[0]));
+	
+	assert(jive_shaped_graph_map_variable(shaped_graph, r3)->squeeze == 1);
+	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(shaped_graph, r3)) == 4);
+	
+	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, r3), jive_shaped_graph_map_variable(shaped_graph, r1)));
+	jive_variable_set_resource_name(r1, allnames[0]);
+	
+	assert(jive_shaped_graph_map_variable(shaped_graph, r1)->squeeze == 0);
+	assert(jive_shaped_graph_map_variable(shaped_graph, r3)->squeeze == 0);
+	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(shaped_graph, r3)) == 3);
+	assert(!jive_shaped_variable_allowed_resource_name(jive_shaped_graph_map_variable(shaped_graph, r3), allnames[0]));
 	
 	(void) bottom;
 	
