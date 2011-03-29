@@ -5,6 +5,8 @@
 
 #include <jive/common.h>
 #include <jive/context.h>
+#include <jive/regalloc/assignment-tracker-private.h>
+#include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
@@ -117,10 +119,12 @@ jive_shaped_variable_add_squeeze(jive_shaped_variable * self, const jive_resourc
 {
 	if (self->variable->resname || !self->variable->rescls->limit || !rescls->limit)
 		return;
-	// self.shaped_graph.registers._remove_tracked(self, self.variable._rescls, self.variable._resname)
+	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
 	if (jive_resource_class_intersection(self->variable->rescls, rescls))
 		self->squeeze ++;
-	// self.shaped_graph.registers._add_tracked(self, self.variable._rescls, self.variable._resname)
+	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
 }
 
 static inline void
@@ -128,12 +132,14 @@ jive_shaped_variable_sub_squeeze(jive_shaped_variable * self, const jive_resourc
 {
 	if (self->variable->resname || !self->variable->rescls->limit || !rescls->limit)
 		return;
-	// self.shaped_graph.registers._remove_tracked(self, self.variable._rescls, self.variable._resname)
+	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
 	if (jive_resource_class_intersection(self->variable->rescls, rescls)) {
 		JIVE_DEBUG_ASSERT(self->squeeze > 0);
 		self->squeeze --;
 	}
-	// self.shaped_graph.registers._add_tracked(self, self.variable._rescls, self.variable._resname)
+	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
 }
 
 static inline size_t

@@ -32,6 +32,11 @@ struct jive_shaped_variable {
 		jive_shaped_variable * next;
 	} hash_chain;
 	
+	struct {
+		jive_shaped_variable * prev;
+		jive_shaped_variable * next;
+	} assignment_variable_list;
+	
 	jive_variable_interference_hash interference;
 	jive_allowed_resource_names_hash allowed_names;
 	size_t squeeze;

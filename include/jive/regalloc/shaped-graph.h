@@ -1,6 +1,7 @@
 #ifndef JIVE_REGALLOC_SHAPED_GRAPH_H
 #define JIVE_REGALLOC_SHAPED_GRAPH_H
 
+#include <jive/regalloc/assignment-tracker.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/regalloc/shaped-node.h>
@@ -34,6 +35,8 @@ struct jive_shaped_graph {
 	jive_shaped_variable_hash variable_map;
 	jive_shaped_ssavar_hash ssavar_map;
 	jive_shaped_node_hash node_map;
+	
+	jive_var_assignment_tracker var_assignment_tracker;
 };
 
 jive_shaped_graph *
