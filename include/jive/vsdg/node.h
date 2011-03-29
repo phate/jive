@@ -12,6 +12,7 @@ typedef struct jive_node_class jive_node_class;
 
 typedef struct jive_node_normal_form jive_node_normal_form;
 
+struct jive_context;
 struct jive_graph;
 struct jive_input;
 struct jive_type;
@@ -19,6 +20,7 @@ struct jive_output;
 struct jive_gate;
 struct jive_region;
 struct jive_traversal_nodestate;
+struct jive_resource_class_count;
 
 struct jive_node {
 	const struct jive_node_class * class_;
@@ -179,6 +181,12 @@ jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
 
 struct jive_output *
 jive_node_gate_output(jive_node * self, struct jive_gate * gate);
+
+void
+jive_node_get_use_count_input(const jive_node * self, struct jive_resource_class_count * use_count, struct jive_context * context);
+
+void
+jive_node_get_use_count_output(const jive_node * self, struct jive_resource_class_count * use_count, struct jive_context * context);
 
 void
 jive_node_destroy(jive_node * self);

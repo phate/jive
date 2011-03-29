@@ -7,6 +7,8 @@
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/resource-private.h>
+#include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
 
 #include "debug.h"
@@ -280,6 +282,56 @@ jive_node_auto_merge_variables(jive_node * self)
 	for(n = 0; n < self->noutputs; n++)
 		jive_output_auto_merge_variable(self->outputs[n]);
 }
+
+void
+jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count * use_count, jive_context * context)
+{
+	jive_resource_class_count_clear(use_count, context);
+	
+	size_t n;
+	for(n = 0; n<self->ninputs; n++) {
+		jive_input * input = self->inputs[n];
+		
+		/* filter out multiple inputs using the same value
+		FIXME: this assumes that all inputs have the same resource
+		class requirement! */
+		if (!input->gate) {
+			bool duplicate = false;
+			size_t k;
+			for(k = 0; k<n; k++) {
+				if (self->inputs[k]->origin == input->origin)
+					duplicate = true;
+			}
+			if (duplicate) continue;
+		}
+		
+		const jive_resource_class * rescls;
+		if (input->ssavar) rescls = input->ssavar->variable->rescls;
+		else if (input->gate) rescls = input->gate->required_rescls;
+		else rescls = input->required_rescls;
+		
+		jive_resource_class_count_add(use_count, context, rescls);
+	}
+}
+
+void
+jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count * use_count, jive_context * context)
+{
+	jive_resource_class_count_clear(use_count, context);
+	
+	size_t n;
+	for(n = 0; n<self->noutputs; n++) {
+		jive_output * output = self->outputs[n];
+		
+		const jive_resource_class * rescls;
+		if (output->ssavar) rescls = output->ssavar->variable->rescls;
+		else if (output->gate) rescls = output->gate->required_rescls;
+		else rescls = output->required_rescls;
+		
+		jive_resource_class_count_add(use_count, context, rescls);
+	}
+}
+
 
 void
 jive_node_destroy(jive_node * self)
