@@ -213,6 +213,12 @@ void
 jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, struct jive_input * input, struct jive_output * output);
 
 void
+jive_shaped_ssavar_xpoints_register_arcs(jive_shaped_ssavar * self);
+
+void
+jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self);
+
+void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 const struct jive_resource_class *

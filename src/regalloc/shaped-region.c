@@ -32,7 +32,6 @@ jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_r
 	self->shaped_graph = shaped_graph;
 	self->region = region;
 	self->cuts.first = self->cuts.last = NULL;
-	self->merged = false;
 	jive_ssavar_tpoint_hash_init(&self->ssavar_tpoints, context);
 	
 	jive_shaped_region_hash_insert(&shaped_graph->region_map, self);
@@ -119,6 +118,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 			jive_shaped_node_add_ssavar_after(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		} else {
 			if (jive_output_isinstance(ssavar->origin, &JIVE_CONTROL_OUTPUT)) continue;
+			if (xpoint->shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth && ! jive_shaped_graph_map_node(shaped_graph, ssavar->origin->node)) continue;
 			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		}
 	}
@@ -128,7 +128,6 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 		jive_input * input = lower->node->inputs[n];
 		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, input->origin->node->region);
-		if (!shaped_region->merged) continue;
 		
 		/* if this is a control edge, pass through variables from the top
 		of the subregion */
@@ -148,6 +147,15 @@ struct jive_shaped_node *
 jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 {
 	jive_shaped_graph * shaped_graph = self->shaped_region->shaped_graph;
+	
+	size_t n;
+	for(n = 0; n < node->noutputs; n++) {
+		jive_ssavar * ssavar = node->outputs[n]->ssavar;
+		if (!ssavar) continue;
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+		jive_shaped_ssavar_set_boundary_region_depth(shaped_ssavar, (size_t) -1);
+	}
+	
 	jive_shaped_node * shaped_node = jive_shaped_node_create(self, node);
 	
 	JIVE_LIST_INSERT(self->locations, before, shaped_node, cut_location_list);
@@ -165,7 +173,6 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		}
 	}
 	
-	size_t n;
 	for(n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))

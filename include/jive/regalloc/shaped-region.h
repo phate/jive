@@ -28,8 +28,6 @@ struct jive_shaped_region {
 	} cuts;
 	
 	jive_ssavar_tpoint_hash ssavar_tpoints;
-	
-	bool merged;
 };
 
 struct jive_shaped_node;

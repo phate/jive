@@ -20,6 +20,7 @@ struct jive_crossing_arc {
 	
 	jive_shaped_node * start_shaped_node;
 	jive_region * start_region;
+	size_t boundary_region_depth;
 };
 
 static inline void
@@ -33,7 +34,7 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	self->target_shaped_node = target_shaped_node;
 	self->shaped_ssavar = shaped_ssavar;
 	
-	if ((!self->origin_shaped_node && !shaped_ssavar->hovering) || !target_shaped_node) {
+	if (!target_shaped_node || (!self->origin_shaped_node && shaped_ssavar->boundary_region_depth > target_shaped_node->node->region->depth)) {
 		self->start_shaped_node = NULL;
 		self->start_region = NULL;
 	} else if (jive_output_isinstance(shaped_ssavar->ssavar->origin, &JIVE_CONTROL_OUTPUT)) {
@@ -43,6 +44,14 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	} else {
 		self->start_shaped_node = jive_shaped_node_prev_in_region(target_shaped_node);
 		self->start_region = target_shaped_node->node->region;
+	}
+	
+	if (origin_shaped_node) {
+		self->boundary_region_depth = shaped_ssavar->ssavar->origin->node->region->depth;
+	} else {
+		self->boundary_region_depth = shaped_ssavar->ssavar->origin->node->region->depth;
+		if (self->boundary_region_depth < shaped_ssavar->boundary_region_depth)
+			self->boundary_region_depth = shaped_ssavar->boundary_region_depth;
 	}
 }
 
@@ -56,6 +65,7 @@ struct jive_crossing_arc_iterator {
 	jive_shaped_node * origin_shaped_node_;
 	jive_region * current_region_;
 	jive_region * exit_region_;
+	size_t boundary_region_depth_;
 };
 
 static inline void
@@ -84,12 +94,14 @@ jive_crossing_arc_iterator_init(
 	}
 	
 	self->exit_region_ = arc.start_region;
+	self->boundary_region_depth_ = arc.boundary_region_depth;
 }
 
 static inline void
 jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 {
 	if (self->node) {
+		/* trace through next node or enter anchored sub-region */
 		jive_node * node = self->node->node;
 		self->node = jive_shaped_node_prev_in_region(self->node);
 		
@@ -103,50 +115,43 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 				break;
 			}
 		}
-	} else {
-		if (self->current_region_ == self->exit_region_) {
-			/* trace out of region */
-			if (!self->region->merged) {
-				self->node = 0;
-				self->current_region_ = 0;
-				self->region = 0;
-			} else {
-				self->exit_region_ = self->exit_region_->parent;
-				if (self->exit_region_) {
-					jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, self->current_region_->anchor->node);
-					
-					self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
-					self->current_region_ = self->exit_region_;
-					self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
-				} else {
-					self->node = 0;
-					self->current_region_ = 0;
-					self->region = 0;
-				}
-			}
+	} else if (self->current_region_ == self->exit_region_) {
+		/* trace out of region (unless desired depth reached)
+		note: root region has depth 0, so implicitly terminates there */
+		if (self->current_region_->depth > self->boundary_region_depth_) {
+			self->exit_region_ = self->exit_region_->parent;
+			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, self->current_region_->anchor->node);
+			
+			self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
+			self->current_region_ = self->exit_region_;
+			self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
 		} else {
-			/* trace through neighbour regions */
-			size_t n = self->current_region_->anchor->index + 1;
-			jive_node * anchor_node = self->current_region_->anchor->node;
-			jive_input * anchor = 0;
-			while(n < anchor_node->ninputs) {
-				jive_input * input = anchor_node->inputs[n];
-				if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
-					anchor = input;
-					break;
-				}
-				n++;
+			self->node = 0;
+			self->current_region_ = 0;
+			self->region = 0;
+		}
+	} else {
+		/* trace through neighbour regions or next node in parent region */
+		size_t n = self->current_region_->anchor->index + 1;
+		jive_node * anchor_node = self->current_region_->anchor->node;
+		jive_input * anchor = 0;
+		while(n < anchor_node->ninputs) {
+			jive_input * input = anchor_node->inputs[n];
+			if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
+				anchor = input;
+				break;
 			}
-			if (anchor) {
-				self->current_region_ = anchor->origin->node->region;
-				self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
-				self->node = jive_shaped_region_last(self->region);
-			} else {
-				jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, anchor_node);
-				self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
-				self->current_region_ = self->current_region_->parent;
-				self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
-			}
+			n++;
+		}
+		if (anchor) {
+			self->current_region_ = anchor->origin->node->region;
+			self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
+			self->node = jive_shaped_region_last(self->region);
+		} else {
+			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, anchor_node);
+			self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
+			self->current_region_ = self->current_region_->parent;
+			self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
 		}
 	}
 	

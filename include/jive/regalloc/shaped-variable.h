@@ -81,11 +81,21 @@ struct jive_shaped_ssavar {
 	jive_node_xpoint_hash node_xpoints;
 	jive_region_tpoint_hash region_tpoints;
 	
-	bool hovering;
+	size_t boundary_region_depth;
 };
 
 jive_shaped_ssavar *
 jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_ssavar * ssavar);
+
+void
+jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_ssavar * self, size_t depth);
+
+static inline void
+jive_shaped_ssavar_lower_boundary_region_depth(jive_shaped_ssavar * self, size_t depth)
+{
+	if (depth < self->boundary_region_depth)
+		jive_shaped_ssavar_set_boundary_region_depth(self, depth);
+}
 
 void
 jive_shaped_ssavar_destroy(jive_shaped_ssavar * self);
