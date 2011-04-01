@@ -74,8 +74,12 @@ jive_region_contains_node(const jive_region * self, const jive_node * node)
 	return false;
 }
 
-jive_node *
-jive_region_get_bottom_node(jive_region * self);
+static inline jive_node *
+jive_region_get_bottom_node(jive_region * self)
+{
+	if (self->anchor) return self->anchor->origin->node;
+	else return 0;
+}
 
 jive_region *
 jive_region_create_subregion(jive_region * self);
