@@ -29,6 +29,24 @@ jive_shaped_graph_region_destroy(void * closure, jive_region * region)
 }
 
 static void
+jive_shaped_graph_region_add_used_ssavar(void * closure, jive_region * region, jive_ssavar * ssavar)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_ssavar * shaped_ssavar = jive_shaped_ssavar_hash_lookup(&shaped_graph->ssavar_map, ssavar);
+	
+	jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, ssavar->origin, region);
+}
+
+static void
+jive_shaped_graph_region_remove_used_ssavar(void * closure, jive_region * region, jive_ssavar * ssavar)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_ssavar * shaped_ssavar = jive_shaped_ssavar_hash_lookup(&shaped_graph->ssavar_map, ssavar);
+	
+	jive_shaped_ssavar_xpoints_unregister_region_arc(shaped_ssavar, ssavar->origin, region);
+}
+
+static void
 jive_shaped_graph_gate_interference_add(void * closure, jive_gate * first, jive_gate * second)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
@@ -187,6 +205,8 @@ jive_shaped_graph_create(jive_graph * graph)
 	n = 0;
 	self->callbacks[n++] = jive_region_notifier_slot_connect(&graph->on_region_create, jive_shaped_graph_region_create, self);
 	self->callbacks[n++] = jive_region_notifier_slot_connect(&graph->on_region_destroy, jive_shaped_graph_region_destroy, self);
+	self->callbacks[n++] = jive_region_ssavar_notifier_slot_connect(&graph->on_region_add_used_ssavar, jive_shaped_graph_region_add_used_ssavar, self);
+	self->callbacks[n++] = jive_region_ssavar_notifier_slot_connect(&graph->on_region_remove_used_ssavar, jive_shaped_graph_region_remove_used_ssavar, self);
 	self->callbacks[n++] = jive_gate_notifier_slot_connect(&graph->on_gate_interference_add, jive_shaped_graph_gate_interference_add, self);
 	self->callbacks[n++] = jive_gate_notifier_slot_connect(&graph->on_gate_interference_remove, jive_shaped_graph_gate_interference_remove, self);
 	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_create, jive_shaped_graph_variable_create, self);
