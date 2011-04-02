@@ -3,3 +3,4 @@ test-interference
 test-crossing-arc
 test-rescls-shape
 test-gate
+test-loop

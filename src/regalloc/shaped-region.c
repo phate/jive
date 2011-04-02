@@ -8,6 +8,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/region-ssavar-use-private.h>
 
 static jive_cut *
 jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive_cut * before)
@@ -149,11 +150,27 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	jive_shaped_graph * shaped_graph = self->shaped_region->shaped_graph;
 	
 	size_t n;
+	
+	/* set aside crossings for ssavars originating here */
 	for(n = 0; n < node->noutputs; n++) {
-		jive_ssavar * ssavar = node->outputs[n]->ssavar;
-		if (!ssavar) continue;
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-		jive_shaped_ssavar_set_boundary_region_depth(shaped_ssavar, (size_t) -1);
+		jive_output * output = node->outputs[n];
+		jive_ssavar * ssavar;
+		
+		JIVE_LIST_ITERATE(output->originating_ssavars, ssavar, originating_ssavar_list) {
+			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+			
+			jive_input * input;
+			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
+				jive_shaped_ssavar_xpoints_unregister_arc(shaped_ssavar, input, output);
+			}
+			struct jive_ssavar_region_hash_iterator i;
+			JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
+				jive_region * region = i.entry->region;
+				jive_shaped_ssavar_xpoints_unregister_region_arc(shaped_ssavar, output, region);
+			}
+			
+			shaped_ssavar->boundary_region_depth = (size_t) -1;
+		}
 	}
 	
 	jive_shaped_node * shaped_node = jive_shaped_node_create(self, node);
@@ -185,27 +202,46 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		}
 	}
 	
-	/* reinstate input/output variable crossings */
+	/* reinstate crossings for ssavars originating here */
+	for(n = 0; n < node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		jive_ssavar * ssavar;
+		
+		JIVE_LIST_ITERATE(output->originating_ssavars, ssavar, originating_ssavar_list) {
+			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+			
+			jive_input * input;
+			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
+				jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, output);
+			}
+			struct jive_ssavar_region_hash_iterator i;
+			JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
+				jive_region * region = i.entry->region;
+				jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, output, region);
+			}
+			
+			if (ssavar->assigned_output)
+				jive_shaped_node_add_ssavar_after(shaped_node, shaped_ssavar, ssavar->variable, 1);
+		}
+	}
+	
+	/* add crossings for ssavars used here */
 	for(n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		if (!input->ssavar) continue;
 		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, input->ssavar);
 		jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, input->origin);
 	}
-	for(n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
-		jive_input * user;
-		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			if (!user->ssavar) continue;
-			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, user->ssavar);
-			jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, user, output);
+	
+	/* if this is the bottom node of a loop region, need to register
+	crossings on behalf of this region */
+	if (node == jive_region_get_bottom_node(node->region)) {
+		struct jive_region_ssavar_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_region_ssavar_hash, node->region->used_ssavars, i) {
+			jive_ssavar * ssavar = i.entry->ssavar;
+			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+			jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, ssavar->origin, node->region);
 		}
-		
-		if (!output->ssavar) continue;
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, output->ssavar);
-		jive_shaped_node_add_ssavar_after(shaped_node, shaped_ssavar, output->ssavar->variable, 1);
-		/*for region in ssavar.assigned_regions:
-			shaped_ssavar.xpoints_register_region_arc(o, region)*/
 	}
 	
 	return shaped_node;

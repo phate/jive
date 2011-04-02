@@ -7,6 +7,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/resource-private.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, struct jive_node *, node, hash_chain);
@@ -110,6 +111,17 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 		jive_ssavar * ssavar = output->ssavar;
 		if (!ssavar) continue;
 		jive_shaped_node_remove_ssavar_after(self, jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), ssavar->variable, 1);
+	}
+	
+	/* if this is the bottom node of a loop region, unregister
+	crossings on behalf of this region */
+	if (self->node == jive_region_get_bottom_node(self->node->region)) {
+		struct jive_region_ssavar_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_region_ssavar_hash, self->node->region->used_ssavars, i) {
+			jive_ssavar * ssavar = i.entry->ssavar;
+			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
+			jive_shaped_ssavar_xpoints_unregister_region_arc(shaped_ssavar, ssavar->origin, self->node->region);
+		}
 	}
 	
 	/* remove from graph */
