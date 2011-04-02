@@ -97,6 +97,15 @@ jive_shaped_ssavar_lower_boundary_region_depth(jive_shaped_ssavar * self, size_t
 		jive_shaped_ssavar_set_boundary_region_depth(self, depth);
 }
 
+size_t
+jive_shaped_ssavar_is_active_before(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
+
+size_t
+jive_shaped_ssavar_is_crossing(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
+
+size_t
+jive_shaped_ssavar_is_active_after(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
+
 void
 jive_shaped_ssavar_destroy(jive_shaped_ssavar * self);
 

@@ -313,6 +313,30 @@ jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_ssavar * self, size_t d
 	jive_shaped_ssavar_xpoints_register_arcs(self);
 }
 
+size_t
+jive_shaped_ssavar_is_active_before(const jive_shaped_ssavar * self, const jive_shaped_node * shaped_node)
+{
+	jive_xpoint * xpoint = jive_node_xpoint_hash_lookup(&self->node_xpoints, shaped_node);
+	if (!xpoint) return 0;
+	else return xpoint->before_count;
+}
+
+size_t
+jive_shaped_ssavar_is_crossing(const jive_shaped_ssavar * self, const jive_shaped_node * shaped_node)
+{
+	jive_xpoint * xpoint = jive_node_xpoint_hash_lookup(&self->node_xpoints, shaped_node);
+	if (!xpoint) return 0;
+	else return xpoint->cross_count;
+}
+
+size_t
+jive_shaped_ssavar_is_active_after(const jive_shaped_ssavar * self, const jive_shaped_node * shaped_node)
+{
+	jive_xpoint * xpoint = jive_node_xpoint_hash_lookup(&self->node_xpoints, shaped_node);
+	if (!xpoint) return 0;
+	else return xpoint->after_count;
+}
+
 void
 jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 {
