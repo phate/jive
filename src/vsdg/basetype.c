@@ -270,7 +270,29 @@ jive_input_auto_assign_variable(jive_input * self)
 jive_ssavar *
 jive_input_auto_merge_variable(jive_input * self)
 {
-	return jive_input_auto_assign_variable(self);
+	if (self->ssavar)
+		return self->ssavar;
+	
+	jive_ssavar * ssavar = NULL;
+	
+	if (self->origin->ssavar) {
+		ssavar = self->origin->ssavar;
+	} else {
+		jive_input * user;
+		JIVE_LIST_ITERATE(self->origin->users, user, output_users_list) {
+			if (user->ssavar) {
+				ssavar = user->ssavar;
+				break;
+			}
+		}
+	}
+	
+	if (!ssavar)
+		ssavar = jive_ssavar_create(self->origin, jive_input_get_constraint(self));
+	
+	jive_variable_merge(ssavar->variable, jive_input_get_constraint(self));
+	jive_ssavar_assign_input(ssavar, self);
+	return ssavar;
 }
 
 void
@@ -401,16 +423,19 @@ jive_output_auto_assign_variable(jive_output * self)
 jive_ssavar *
 jive_output_auto_merge_variable(jive_output * self)
 {
-	if (self->ssavar == 0) {
+	if (!self->ssavar) {
 		jive_variable * variable = jive_output_get_constraint(self);
+		jive_ssavar * ssavar = NULL;
 		jive_input * user;
 		JIVE_LIST_ITERATE(self->users, user, output_users_list) {
 			if (user->ssavar) {
 				jive_variable_merge(user->ssavar->variable, variable);
+				DEBUG_ASSERT( ssavar == NULL || ssavar == user->ssavar );
+				ssavar = user->ssavar;
 				variable = user->ssavar->variable;
 			}
 		}
-		jive_ssavar * ssavar = jive_ssavar_create(self, variable);
+		if (!ssavar) ssavar = jive_ssavar_create(self, variable);
 		jive_ssavar_assign_output(ssavar, self);
 	}
 	
@@ -419,7 +444,7 @@ jive_output_auto_merge_variable(jive_output * self)
 		if (!user->ssavar) {
 			jive_variable_merge(self->ssavar->variable, jive_input_get_constraint(user));
 			jive_ssavar_assign_input(self->ssavar, user);
-		} else {
+		} else if (user->ssavar != self->ssavar) {
 			/* FIXME: maybe better to merge ssavar? */
 			jive_variable_merge(self->ssavar->variable, user->ssavar->variable);
 			jive_input_unassign_ssavar(user);
