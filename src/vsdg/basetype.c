@@ -325,6 +325,7 @@ void _jive_output_init(
 	self->gate = 0;
 	self->required_rescls = &jive_root_resource_class;
 	self->ssavar = 0;
+	self->originating_ssavars.first = self->originating_ssavars.last = 0;
 	
 	self->gate_outputs_list.prev = self->gate_outputs_list.next = 0;
 }
@@ -353,6 +354,8 @@ void _jive_output_fini(jive_output * self)
 		self->node->outputs[n] = self->node->outputs[n+1];
 		self->node->outputs[n]->index = n;
 	}
+	
+	DEBUG_ASSERT(self->originating_ssavars.first == 0);
 }
 
 char *

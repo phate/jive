@@ -33,6 +33,11 @@ struct jive_ssavar {
 	
 	struct jive_output * assigned_output;
 	
+	struct {
+		jive_ssavar * prev;
+		jive_ssavar * next;
+	} originating_ssavar_list;
+	
 	jive_ssavar_region_hash assigned_regions;
 };
 

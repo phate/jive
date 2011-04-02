@@ -228,6 +228,11 @@ struct jive_output {
 	
 	struct jive_ssavar * ssavar;
 	
+	struct {
+		struct jive_ssavar * first;
+		struct jive_ssavar * last;
+	} originating_ssavars;
+	
 	const struct jive_resource_class * required_rescls;
 };
 

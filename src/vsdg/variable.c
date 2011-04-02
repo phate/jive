@@ -39,6 +39,7 @@ jive_ssavar_inc_use_count(jive_ssavar * self)
 	if (self->use_count == 1) {
 		JIVE_LIST_REMOVE(self->variable->unused_ssavars, self, variable_ssavar_list);
 		JIVE_LIST_PUSH_BACK(self->variable->ssavars, self, variable_ssavar_list);
+		JIVE_LIST_PUSH_BACK(self->origin->originating_ssavars, self, originating_ssavar_list);
 		
 		jive_variable_inc_use_count(self->variable);
 		
@@ -55,6 +56,7 @@ jive_ssavar_dec_use_count(jive_ssavar * self)
 		
 		jive_variable_dec_use_count(self->variable);
 		
+		JIVE_LIST_REMOVE(self->origin->originating_ssavars, self, originating_ssavar_list);
 		JIVE_LIST_REMOVE(self->variable->ssavars, self, variable_ssavar_list);
 		JIVE_LIST_PUSH_BACK(self->variable->unused_ssavars, self, variable_ssavar_list);
 	}
