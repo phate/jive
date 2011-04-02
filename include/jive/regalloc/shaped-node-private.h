@@ -131,6 +131,8 @@ jive_shaped_node_add_ssavar_crossed(jive_shaped_node * self, jive_shaped_ssavar 
 	if (count == 0) return;
 	jive_xpoint * xpoint = jive_shaped_node_get_ssavar_xpoint(self, shaped_ssavar);
 	
+	xpoint->cross_count += count;
+	
 	jive_shaped_node_inc_active_before(self, xpoint, shaped_ssavar, variable, count);
 	jive_shaped_node_inc_active_after(self, xpoint, shaped_ssavar, variable, count);
 }
@@ -141,6 +143,8 @@ jive_shaped_node_remove_ssavar_crossed(jive_shaped_node * self, jive_shaped_ssav
 	if (count == 0) return;
 	jive_xpoint * xpoint = jive_ssavar_xpoint_hash_lookup(&self->ssavar_xpoints, shaped_ssavar);
 	JIVE_DEBUG_ASSERT(xpoint);
+	
+	xpoint->cross_count -= count;
 	
 	jive_shaped_node_dec_active_before(self, xpoint, shaped_ssavar, variable, count);
 	jive_shaped_node_dec_active_after(self, xpoint, shaped_ssavar, variable, count);
