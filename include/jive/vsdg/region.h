@@ -35,6 +35,10 @@ struct jive_region {
 	} region_subregions_list;
 	
 	bool is_looped;
+	
+	struct jive_node * top;
+	struct jive_node * bottom;
+	
 	jive_region_ssavar_hash used_ssavars;
 	
 	struct jive_input * anchor;
@@ -75,10 +79,15 @@ jive_region_contains_node(const jive_region * self, const jive_node * node)
 }
 
 static inline jive_node *
+jive_region_get_top_node(jive_region * self)
+{
+	return self->bottom;
+}
+
+static inline jive_node *
 jive_region_get_bottom_node(jive_region * self)
 {
-	if (self->anchor) return self->anchor->origin->node;
-	else return 0;
+	return self->bottom;
 }
 
 jive_region *

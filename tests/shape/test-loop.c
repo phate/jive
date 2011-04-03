@@ -52,6 +52,7 @@ int main()
 	jive_node * loop_head = jive_node_create(loop_region,
 		1, (const jive_type * []){type}, (jive_output *[]){top->outputs[0]},
 		1, (const jive_type * []){type});
+	loop_region->top = loop_head;
 	
 	jive_node * loop_body = jive_node_create(loop_region,
 		2, (const jive_type * []){type, type}, (jive_output *[]){loop_head->outputs[0], top->outputs[1]},
@@ -60,6 +61,7 @@ int main()
 	jive_node * loop_tail = jive_node_create(loop_region,
 		1, (const jive_type * []){type}, (jive_output *[]){loop_body->outputs[0]},
 		1, (const jive_type * []){anchor_type});
+	loop_region->bottom = loop_tail;
 	
 	jive_node * loop_anchor = jive_node_create(root,
 		1, (const jive_type * []){anchor_type}, (jive_output *[]){loop_tail->outputs[0]},

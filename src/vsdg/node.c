@@ -85,6 +85,8 @@ _jive_node_fini(jive_node * self)
 	
 	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
 	JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
+	if (self == self->region->top) self->region->top = NULL;
+	if (self == self->region->bottom) self->region->bottom = NULL;
 	
 	self->region = 0;
 	jive_context_free(context, self->inputs);

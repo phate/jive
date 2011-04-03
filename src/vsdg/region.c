@@ -17,6 +17,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->nodes.first = self->nodes.last = 0;
 	self->subregions.first = self->subregions.last = 0;
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
+	self->top = self->bottom = 0;
 	self->is_looped = false;
 	jive_region_ssavar_hash_init(&self->used_ssavars, graph->context);
 	
