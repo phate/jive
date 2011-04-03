@@ -5,7 +5,7 @@
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-region-private.h>
 #include <jive/regalloc/xpoint-private.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/region-ssavar-use-private.h>
@@ -118,7 +118,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 		if (ssavar->origin->node == shaped_node->node) {
 			jive_shaped_node_add_ssavar_after(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		} else {
-			if (jive_output_isinstance(ssavar->origin, &JIVE_CONTROL_OUTPUT)) continue;
+			if (jive_output_isinstance(ssavar->origin, &JIVE_ANCHOR_OUTPUT)) continue;
 			if (xpoint->shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth && ! jive_shaped_graph_map_node(shaped_graph, ssavar->origin->node)) continue;
 			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		}
@@ -127,7 +127,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 	size_t n;
 	for(n = 0; n < lower->node->ninputs; n++) {
 		jive_input * input = lower->node->inputs[n];
-		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) continue;
+		if (!jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) continue;
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, input->origin->node->region);
 		
 		/* if this is a control edge, pass through variables from the top
@@ -192,7 +192,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	
 	for(n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+		if (!jive_input_isinstance(input, &JIVE_ANCHOR_INPUT))
 			continue;
 		struct jive_ssavar_xpoint_hash_iterator i;
 		JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, shaped_node->ssavar_xpoints, i) {

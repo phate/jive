@@ -9,7 +9,7 @@
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-region-private.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node-private.h>
 
 int main()
@@ -25,8 +25,8 @@ int main()
 	jive_node * d = jive_bitslice_create(subregion, a->outputs[0], 1, 2);
 	jive_node * e = jive_bitslice_create(graph->root_region, b->outputs[0], 2, 3);
 	jive_node * f = jive_bitslice_create(graph->root_region, b->outputs[0], 3, 4);
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	jive_node_add_input(e, ctl, jive_node_add_output(d, ctl));
+	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
+	jive_node_add_input(e, anchor_type, jive_node_add_output(d, anchor_type));
 	
 	jive_view(graph, stdout);
 	

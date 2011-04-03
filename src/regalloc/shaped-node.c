@@ -4,7 +4,7 @@
 #include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint-private.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/region-ssavar-use-private.h>
@@ -83,7 +83,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	for(n = 0; n < self->node->ninputs; n++)
 	{
 		jive_input * input = self->node->inputs[n];
-		if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
+		if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
 			jive_region * region = input->origin->node->region;
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 			jive_shaped_region_destroy_cuts(shaped_region);

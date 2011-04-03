@@ -3,7 +3,7 @@
 #include <jive/context.h>
 #include <jive/arch/registers.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg.h>
@@ -40,7 +40,7 @@ int main()
 	jive_region * root = graph->root_region;
 	
 	JIVE_DECLARE_TYPE(type);
-	JIVE_DECLARE_CONTROL_TYPE(control_type);
+	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	
 	jive_node * top = jive_node_create(root,
 		0, NULL, NULL,
@@ -59,10 +59,10 @@ int main()
 	
 	jive_node * loop_tail = jive_node_create(loop_region,
 		1, (const jive_type * []){type}, (jive_output *[]){loop_body->outputs[0]},
-		1, (const jive_type * []){control_type});
+		1, (const jive_type * []){anchor_type});
 	
 	jive_node * loop_anchor = jive_node_create(root,
-		1, (const jive_type * []){control_type}, (jive_output *[]){loop_tail->outputs[0]},
+		1, (const jive_type * []){anchor_type}, (jive_output *[]){loop_tail->outputs[0]},
 		1, (const jive_type * []){type});
 	
 	jive_node * bottom = jive_node_create(root,

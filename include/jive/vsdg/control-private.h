@@ -1,9 +1,9 @@
 #ifndef JIVE_VSDG_CONTROL_PRIVATE_H
 #define JIVE_VSDG_CONTROL_PRIVATE_H
 
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/valuetype.h>
-#include <jive/vsdg/controltype.h>
 
 void
 _jive_abstract_gamma_slave_node_init(

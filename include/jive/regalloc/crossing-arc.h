@@ -7,7 +7,7 @@
 #include <jive/regalloc/shaped-variable.h>
 
 #include <jive/vsdg/variable.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/region.h>
 
 typedef struct jive_crossing_arc jive_crossing_arc;
@@ -37,7 +37,7 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	if (!target_shaped_node || (!self->origin_shaped_node && shaped_ssavar->boundary_region_depth > target_shaped_node->node->region->depth)) {
 		self->start_shaped_node = NULL;
 		self->start_region = NULL;
-	} else if (jive_output_isinstance(shaped_ssavar->ssavar->origin, &JIVE_CONTROL_OUTPUT)) {
+	} else if (jive_output_isinstance(shaped_ssavar->ssavar->origin, &JIVE_ANCHOR_OUTPUT)) {
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, shaped_ssavar->ssavar->origin->node->region);
 		self->start_shaped_node = jive_shaped_region_last(shaped_region);
 		self->start_region = shaped_ssavar->ssavar->origin->node->region;
@@ -108,7 +108,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		size_t n;
 		for(n = 0; n<node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
-			if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
+			if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
 				self->current_region_ = input->origin->node->region;
 				self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
 				self->node = jive_shaped_region_last(self->region);
@@ -137,7 +137,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		jive_input * anchor = 0;
 		while(n < anchor_node->ninputs) {
 			jive_input * input = anchor_node->inputs[n];
-			if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
+			if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
 				anchor = input;
 				break;
 			}

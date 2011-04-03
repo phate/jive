@@ -2,7 +2,7 @@
 #define JIVE_ARCH_SUBROUTINE_PRIVATE_H
 
 #include <jive/arch/subroutine.h>
-#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/anchortype.h>
 
 void
 _jive_subroutine_node_init(
