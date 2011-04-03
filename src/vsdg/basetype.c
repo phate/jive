@@ -496,6 +496,7 @@ _jive_gate_init(jive_gate * self, struct jive_graph * graph, const char name[])
 	jive_gate_interference_hash_init(&self->interference, graph->context);
 	self->variable_gate_list.prev = self->variable_gate_list.next = 0;
 	self->graph_gate_list.prev = self->graph_gate_list.next = 0;
+	self->required_rescls = &jive_root_resource_class;
 	
 	JIVE_LIST_PUSH_BACK(graph->gates, self, graph_gate_list);
 }
