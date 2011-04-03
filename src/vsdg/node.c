@@ -103,7 +103,7 @@ _jive_node_fini(jive_node * self)
 char *
 _jive_node_get_label(const jive_node * self)
 {
-	return strdup("NODE");
+	return strdup(self->class_->name);
 }
 
 bool
