@@ -2,3 +2,5 @@ TESTS+=\
 	function/equals \
 	function/call \
 	function/memory-leak \
+	function/test-build-lambda \
+	function/test-lambda-apply \

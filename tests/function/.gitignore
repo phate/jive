@@ -1,3 +1,5 @@
 equals
 call
 memory-leak
+test-build-lambda
+test-lambda-apply
