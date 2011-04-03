@@ -6,7 +6,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/node.c src/vsdg/region.c src/vsdg/graph.c src/vsdg/notifiers.c src/vsdg/variable.c src/vsdg/resource.c \
 	src/vsdg/gate-interference.c src/vsdg/control.c \
 	src/vsdg/operators.c \
-	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c \
+	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/controltype.c \
 	src/vsdg/functiontype.c src/vsdg/function.c \
 	src/vsdg/traverser.c \
 
