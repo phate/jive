@@ -10,6 +10,8 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/substitution.h>
+#include <jive/vsdg/traverser.h>
 
 static void
 _jive_apply_node_init(jive_apply_node * self, struct jive_region * region, jive_output * function,
@@ -401,4 +403,34 @@ jive_lambda_create(jive_region * function_region)
 void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
+	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->inputs[0]->origin->node);
+	assert(lambda_node);
+	if (!lambda_node)
+		return;
+	
+	jive_region * function_region = lambda_node->base.inputs[0]->origin->node->region;
+	jive_node * head = function_region->top;
+	jive_node * tail = function_region->bottom;
+	
+	jive_substitution_map * substitution = jive_substitution_map_create(apply_node->graph->context);
+	
+	size_t n;
+	for(n = 0; n < lambda_node->attrs.function_type.narguments; n++) {
+		jive_gate * gate = lambda_node->attrs.argument_gates[n];
+		jive_output * output = jive_node_get_gate_output(head, gate);
+		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin);
+	}
+	
+	jive_region_copy_substitute(function_region,
+		apply_node->region, substitution, false, false);
+	
+	for(n = 0; n < lambda_node->attrs.function_type.nreturns; n++) {
+		jive_gate * gate = lambda_node->attrs.return_gates[n];
+		jive_input * input = jive_node_get_gate_input(tail, gate);
+		jive_output * substituted = jive_substitution_map_lookup_output(substitution, input->origin);
+		jive_output * output = apply_node->outputs[n];
+		jive_output_replace(output, substituted);
+	}
+	
+	jive_substitution_map_destroy(substitution);
 }

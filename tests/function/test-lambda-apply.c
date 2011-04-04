@@ -4,6 +4,7 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/function.h>
+#include <jive/vsdg/node-private.h>
 
 int main()
 {
@@ -33,6 +34,24 @@ int main()
 		lambda_expr, 2, (jive_output *[]){c0, c1});
 	
 	assert(jive_type_equals(int32, jive_output_get_type(apply_node->outputs[0])));
+	
+	jive_node * interest = jive_node_create(
+		graph->root_region,
+		1, (const jive_type *[]){int32}, apply_node->outputs,
+		0, 0);
+	
+	jive_node_reserve(interest);
+	
+	jive_view(graph, stderr);
+	
+	jive_inline_lambda_apply(apply_node);
+	jive_graph_prune(graph);
+	
+	jive_node * test_sum = interest->inputs[0]->origin->node;
+	assert(jive_node_isinstance(test_sum, &JIVE_BITSUM_NODE));
+	assert(test_sum->ninputs == 2);
+	assert(test_sum->inputs[0]->origin == c0);
+	assert(test_sum->inputs[1]->origin == c1);
 	
 	jive_view(graph, stderr);
 	
