@@ -173,8 +173,15 @@ jive_graph_prune(jive_graph * self)
 	while(node) {
 		jive_node * next = node->graph_bottom_list.next;
 		
-		if (!node->reserved) jive_node_destroy(node);
+		if (!node->reserved) {
+			jive_node_destroy(node);
+			if (!next) next = self->bottom.first;
+		}
 		
 		node = next;
 	}
+	
+	jive_region * subregion, * next;
+	JIVE_LIST_ITERATE_SAFE(self->root_region->subregions, subregion, next, region_subregions_list)
+		prune_regions_recursive(subregion);
 }
