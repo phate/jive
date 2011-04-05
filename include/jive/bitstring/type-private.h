@@ -23,6 +23,9 @@ _jive_bitstring_type_create_gate(const jive_type * self, struct jive_graph * gra
 jive_type *
 _jive_bitstring_type_copy(const jive_type * self, struct jive_context * context);
 
+bool
+_jive_bitstring_type_equals(const jive_type * self, const jive_type * other);
+
 /* bitstring_input inheritable members */
 
 void

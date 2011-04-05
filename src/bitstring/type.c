@@ -15,7 +15,7 @@ const jive_type_class JIVE_BITSTRING_TYPE = {
 	.create_input = _jive_bitstring_type_create_input, /* override */
 	.create_output = _jive_bitstring_type_create_output, /* override */
 	.create_gate = _jive_bitstring_type_create_gate, /* override */
-	.equals = _jive_type_equals, /* inherit */
+	.equals = _jive_bitstring_type_equals, /* override */
 	.copy = _jive_bitstring_type_copy, /* override */
 };
 
@@ -100,6 +100,17 @@ _jive_bitstring_type_copy(const jive_type * self_, jive_context * context)
 	
 	return &type->base.base;
 }
+
+bool
+_jive_bitstring_type_equals(const jive_type * self_, const jive_type * other_)
+{
+	if (self_->class_ != other_->class_) return false;
+	const jive_bitstring_type * self = (const jive_bitstring_type *)self_;
+	const jive_bitstring_type * other = (const jive_bitstring_type *)other_;
+	
+	return self->nbits == other->nbits;
+}
+
 
 static inline void
 _jive_bitstring_type_init(jive_bitstring_type * self, size_t nbits)
