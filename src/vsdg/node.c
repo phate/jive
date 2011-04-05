@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+#include <jive/common.h>
+
 #include <jive/internal/compiler.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/basetype-private.h>
@@ -9,6 +11,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource-private.h>
+#include <jive/vsdg/substitution.h>
 #include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
 
@@ -435,6 +438,61 @@ jive_node_move(jive_node * self, jive_region * new_region)
 		jive_region * subregion = input->origin->node->region;
 		jive_region_reparent(subregion, new_region);
 	}
+}
+
+jive_node *
+jive_node_copy_substitute(const jive_node * self, jive_region * target, jive_substitution_map * substitution)
+{
+	jive_output * operands[self->noperands];
+	
+	size_t n;
+	for(n = 0; n < self->noperands; n++) {
+		operands[n] = self->inputs[n]->origin;
+		jive_output * tmp = jive_substitution_map_lookup_output(substitution, self->inputs[n]->origin);
+		if (tmp) operands[n] = tmp;
+	}
+	
+	jive_node * new_node = jive_node_copy(self, target, operands);
+	for(n = self->noperands; n < self->ninputs; n++) {
+		jive_output * origin = self->inputs[n]->origin;
+		jive_output * tmp = jive_substitution_map_lookup_output(substitution, self->inputs[n]->origin);
+		if (tmp) origin = tmp;
+		
+		if (self->inputs[n]->gate) {
+			jive_gate * gate = self->inputs[n]->gate;
+			jive_gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
+			if (!target_gate) {
+				target_gate = jive_type_create_gate(jive_gate_get_type(gate), target->graph, gate->name);
+				target_gate->required_rescls = gate->required_rescls;
+				jive_substitution_map_add_gate(substitution, gate, target_gate);
+			}
+			jive_node_gate_input(new_node, target_gate, origin);
+		} else {
+			jive_input * input = jive_node_add_input(new_node, jive_input_get_type(self->inputs[n]), origin);
+			input->required_rescls = self->inputs[n]->required_rescls;
+		}
+	}
+	
+	for(n = new_node->noutputs; n < self->noutputs; n++) {
+		if (self->outputs[n]->gate) {
+			jive_gate * gate = self->outputs[n]->gate;
+			jive_gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
+			if (!target_gate) {
+				target_gate = jive_type_create_gate(jive_gate_get_type(gate), target->graph, gate->name);
+				target_gate->required_rescls = gate->required_rescls;
+				jive_substitution_map_add_gate(substitution, gate, target_gate);
+			}
+			jive_node_gate_output(new_node, target_gate);
+		} else {
+			jive_output * output = jive_node_add_output(new_node, jive_output_get_type(self->outputs[n]));
+			output->required_rescls = self->outputs[n]->required_rescls;
+		}
+	}
+	
+	for(n = 0; n < new_node->noutputs; n++)
+		jive_substitution_map_add_output(substitution, self->outputs[n], new_node->outputs[n]);
+	
+	return new_node;
 }
 
 void

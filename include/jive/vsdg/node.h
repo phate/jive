@@ -21,6 +21,7 @@ struct jive_gate;
 struct jive_region;
 struct jive_traversal_nodestate;
 struct jive_resource_class_count;
+struct jive_substitution_map;
 
 struct jive_node {
 	const struct jive_node_class * class_;
@@ -139,6 +140,26 @@ jive_node_copy(const jive_node * self,
 {
 	return self->class_->create(region, jive_node_get_attrs(self), self->noperands, operands);
 }
+
+/**
+	\brief Copy a node with substitutions
+	\param self Node to be copied
+	\param target Target region to create node in
+	\param substitution Operand and gate substitutions
+	\return Copied node
+	
+	Create a new node that is semantically equivalent to an
+	existing node. The newly created node will use the same
+	operands as the existing node unless there is a substitution
+	registered for a particular operand.
+	
+	The given substitution map will be update so that all
+	outputs of the original node will be substituted by
+	corresponding outputs of the newly created node in
+	subsequent \ref jive_node_copy_substitute operations.
+*/
+jive_node *
+jive_node_copy_substitute(const jive_node * self, struct jive_region * target, struct jive_substitution_map * substitution);
 
 static inline void
 jive_node_reserve(jive_node * self)
