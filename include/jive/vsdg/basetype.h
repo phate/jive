@@ -109,6 +109,12 @@ jive_type_copy(const jive_type * self, struct jive_context * context)
 	return self->class_->copy(self, context);
 }
 
+static inline void
+jive_type_fini(jive_type * self)
+{
+	self->class_->fini(self);
+}
+
 /**
         \defgroup jive_input Inputs
         Inputs
