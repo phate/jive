@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
-#include <jive/util/buffer.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
-
-#include <jive/vsdg/valuetype-private.h>
+#include <jive/regalloc/shaped-graph.h>
+#include <jive/regalloc/shaped-variable.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
+#include <jive/util/buffer.h>
 
 int main()
 {
@@ -28,20 +28,22 @@ int main()
 	
 	const jive_type * type = jive_output_get_type(enter->outputs[0]);
 	jive_gate * gate = jive_type_create_gate(type, graph, "retval");
-	((jive_value_gate *) gate) -> required_regcls = &jive_i386_regcls[jive_i386_gpr_eax];
+	gate -> required_rescls = &jive_i386_regcls[jive_i386_gpr_eax].base;
 	jive_node_gate_input(leave, gate, enter->outputs[0]);
 	
 	jive_view(graph, stderr);
 	
-	jive_resource * resource = jive_type_create_resource(type, graph);
-	jive_resource_assign_output(resource, enter->outputs[0]);
-	jive_resource_assign_input(resource, leave->inputs[0]);
-	jive_value_resource_set_regcls((jive_value_resource *) resource, ((jive_value_gate *) gate) -> required_regcls);
+	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	const jive_cpureg * reg_eax = &jive_i386_regs[jive_i386_eax];
-	assert( jive_allowed_registers_hash_lookup( &((jive_value_resource *)resource)->allowed_registers, reg_eax ) );
+	jive_ssavar * ssavar = jive_output_auto_merge_variable(enter->outputs[0]);
 	
-	jive_value_resource_set_cpureg((jive_value_resource *) resource, reg_eax);
+	jive_shaped_variable * regvar = jive_shaped_graph_map_variable(shaped_graph, ssavar->variable);
+	
+	const jive_resource_name * reg_eax = &jive_i386_regs[jive_i386_eax].base;
+	assert(jive_shaped_variable_allowed_resource_name(regvar, reg_eax));
+	assert(jive_shaped_variable_allowed_resource_name_count(regvar) == 1);
+	
+	jive_variable_set_resource_name(ssavar->variable, reg_eax);
 	
 	jive_view(graph, stderr);
 	
@@ -50,6 +52,8 @@ int main()
 	jive_graph_generate_code(graph, &buffer);
 	int (*function)(void) = (int(*)(void)) jive_buffer_executable(&buffer);
 	jive_buffer_fini(&buffer);
+	
+	jive_shaped_graph_destroy(shaped_graph);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));
