@@ -33,42 +33,42 @@ _jive_bitstring_multiop_node_init(
 		1, &output_type);
 }
 
-#define MAKE_MULTIOP(name, NAME) \
+#define MAKE_MULTIOP(name_, NAME) \
 \
 static void \
-_jive_##name##_node_init( \
+_jive_##name_##_node_init( \
 	jive_node * self, \
 	jive_region * region, \
 	size_t noperands, \
 	jive_output * const operands[]) \
 { \
-	size_t nbits = 0, n; \
-	for(n=0; n<noperands; n++) \
-		nbits += ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits; \
+	size_t nbits = 0; \
+	nbits = ((const jive_bitstring_type *)jive_output_get_type(operands[0]))->nbits; \
 	_jive_bitstring_multiop_node_init(self, region, noperands, operands, nbits); \
 } \
  \
 static char * \
-_jive_##name##_node_get_label(const jive_node * self); \
+_jive_##name_##_node_get_label(const jive_node * self); \
  \
 static jive_node * \
-_jive_##name##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
+_jive_##name_##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * const operands[]); \
  \
 static bool \
-jive_##name##_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2); \
+jive_##name_##_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2); \
  \
 static bool \
-jive_##name##_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2); \
+jive_##name_##_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2); \
  \
 const jive_binary_operation_class JIVE_##NAME##_NODE_ = { \
 	.base = { /* jive_node_class */ \
 		.parent = &JIVE_BINARY_OPERATION, \
+		.name = #NAME, \
 		.fini = _jive_node_fini, /* inherit */ \
-		.get_label = _jive_##name##_node_get_label, /* override */ \
+		.get_label = _jive_##name_##_node_get_label, /* override */ \
 		.get_attrs = _jive_node_get_attrs, /* inherit */ \
 		.match_attrs = _jive_node_match_attrs, /* inherit */ \
-		.create = _jive_##name##_node_create, /* override */ \
+		.create = _jive_##name_##_node_create, /* override */ \
 		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */ \
 	}, \
 	 \
@@ -78,29 +78,29 @@ const jive_binary_operation_class JIVE_##NAME##_NODE_ = { \
 	.distributive_over = NULL, \
 	.distributive_under = NULL, \
 	 \
-	.can_reduce_operand_pair = jive_##name##_can_reduce_operand_pair_, /* override */ \
-	.reduce_operand_pair = jive_##name##_reduce_operand_pair /* override */ \
+	.can_reduce_operand_pair = jive_##name_##_can_reduce_operand_pair_, /* override */ \
+	.reduce_operand_pair = jive_##name_##_reduce_operand_pair /* override */ \
 }; \
  \
 static char * \
-_jive_##name##_node_get_label(const jive_node * self) \
+_jive_##name_##_node_get_label(const jive_node * self) \
 { \
 	return strdup(#NAME); \
 } \
  \
 static jive_node * \
-_jive_##name##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
+_jive_##name_##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * const operands[]) \
 { \
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node)); \
 	node->class_ = &JIVE_##NAME##_NODE; \
-	_jive_##name##_node_init(node, region, noperands, operands); \
+	_jive_##name_##_node_init(node, region, noperands, operands); \
 	return node; \
 } \
  \
  \
 jive_node * \
-jive_##name##_create( \
+jive_##name_##_create( \
 	struct jive_region * region, \
 	size_t noperands, struct jive_output * operands[const]) \
 { \
@@ -108,9 +108,9 @@ jive_##name##_create( \
 } \
  \
 jive_output * \
-jive_##name(size_t noperands, jive_output * operands[const]) \
+jive_##name_(size_t noperands, jive_output * operands[const]) \
 { \
-	return jive_##name##_create(jive_region_innermost(noperands, operands), noperands, operands)->outputs[0]; \
+	return jive_##name_##_create(jive_region_innermost(noperands, operands), noperands, operands)->outputs[0]; \
 } \
 
 MAKE_MULTIOP(bitand, BITAND)
