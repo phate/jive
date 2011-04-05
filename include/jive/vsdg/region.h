@@ -15,6 +15,7 @@ struct jive_input;
 struct jive_node;
 struct jive_cut;
 struct jive_stackframe;
+struct jive_substitution_map;
 
 struct jive_region {
 	struct jive_graph * graph;
@@ -46,6 +47,29 @@ struct jive_region {
 
 void
 jive_region_destroy(jive_region * self);
+
+
+/**
+	\brief Copy a region with substitutions
+	\param self Region to be copied
+	\param target Target region to create nodes in
+	\param substitution Operand and gate substitutions
+	\param copy_top Copy top node of region
+	\param copy_bottom Copy bottom node of region
+	
+	Copies all nodes of the specified region and its
+	subregions into the target region. Substitutions
+	will be performed as specified, and the substitution
+	map will be updated as nodes are copied.
+	
+	@c self must be a region with uniquely determined top
+	and bottom nodes. Optionally, these nodes are copied
+	as well.
+*/
+void
+jive_region_copy_substitute(const jive_region * self, jive_region * target,
+	struct jive_substitution_map * substitution,
+	bool copy_top, bool copy_bottom);
 
 struct jive_cut *
 jive_region_create_cut(jive_region * self);

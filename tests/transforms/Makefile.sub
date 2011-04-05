@@ -1,2 +1,3 @@
 TESTS+=\
 	transforms/push-out \
+	transforms/region-copy \
