@@ -121,24 +121,3 @@ jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 	
 	jive_region_remove_used_ssavar(self->parent, ssavar);
 }
-
-#if 0
-	def add_used_ssavar(self, ssavar):
-		if ssavar.origin.node.region.depth >= self.depth: return
-		if self.is_loop_region:
-			count = self.used_ssavars.add(ssavar, 1)
-			if count == 0:
-				ssavar.assigned_regions.add(self)
-				self.graph.on_region_add_used_ssavar(self, ssavar)
-			
-		self.parent.add_used_ssavar(ssavar)
-	
-	def remove_used_ssavar(self, ssavar):
-		if ssavar.origin.node.region.depth >= self.depth: return
-		if self.is_loop_region:
-			count = self.used_ssavars.remove(ssavar, 1)
-			if count == 0:
-				ssavar.assigned_regions.remove(self)
-				self.graph.on_region_remove_used_ssavar(self, ssavar)
-		self.parent.add_used_ssavar(ssavar)
-#endif
