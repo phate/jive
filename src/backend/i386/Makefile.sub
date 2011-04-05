@@ -1,0 +1,5 @@
+LIBJIVE_I386_SRC = \
+	registerset.c
+
+LIBJIVE_SRC += \
+	$(patsubst %, src/backend/i386/%, $(LIBJIVE_I386_SRC))

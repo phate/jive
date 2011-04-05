@@ -4,20 +4,26 @@
 #include <jive/arch/registers.h>
 
 typedef enum {
-	jive_i386_flags = 0,
-	jive_i386_gpr = 1,
-	jive_i386_gpr_byte = 2,	/* registers that are byte-addressible */
-	jive_i386_gpr_eax = 3,	
-	jive_i386_gpr_ebx = 4,
-	jive_i386_gpr_ecx = 5,	
-	jive_i386_gpr_edx = 6,
-	jive_i386_gpr_esi = 7,
-	jive_i386_gpr_edi = 8,
-	jive_i386_gpr_esp = 9,
-	jive_i386_gpr_ebp = 10,
+	/* "top-level" register classes */
+	jive_i386_gpr = 0,
+	jive_i386_fp = 1,
+	jive_i386_mmx = 2,
+	jive_i386_sse = 3,
+	jive_i386_flags = 8,
+	
+	/* sub classes */
+	jive_i386_gpr_byte = 16, /* registers that are byte-addressible */
+	jive_i386_gpr_eax = 17,	
+	jive_i386_gpr_ebx = 18,
+	jive_i386_gpr_ecx = 19,	
+	jive_i386_gpr_edx = 20,
+	jive_i386_gpr_esi = 21,
+	jive_i386_gpr_edi = 22,
+	jive_i386_gpr_esp = 23,
+	jive_i386_gpr_ebp = 24,
 } jive_i386_regcls_index;
 
-extern const struct jive_regcls jive_i386_regcls[];
+extern const struct jive_register_class jive_i386_regcls[];
 
 typedef enum {
 	jive_i386_cc = 0,
@@ -31,6 +37,6 @@ typedef enum {
 	jive_i386_esp = 8,
 } jive_i386_reg_index;
 
-extern const jive_cpureg jive_i386_regs [];
+extern const jive_register_name jive_i386_regs [];
 
 #endif

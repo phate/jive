@@ -33,6 +33,8 @@ LIBJIVE_SRC += \
 LIBJIVE_SRC += \
 	src/regalloc.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/fixup.c src/regalloc/auxnodes.c src/regalloc/reroute.c
 
+include src/backend/i386/Makefile.sub
+
 # LIBJIVE_SRC = \
 # 	\
 # 	src/bitstring/multiop.c   \
