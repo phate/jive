@@ -1,0 +1,30 @@
+#include <assert.h>
+
+#include <jive/context.h>
+#include <jive/vsdg/functiontype.h>
+#include <jive/vsdg/valuetype.h>
+
+int main()
+{
+	jive_context * context = jive_context_create();
+	
+	JIVE_DECLARE_VALUE_TYPE(value_type);
+	
+	jive_function_type t1, t2;
+	jive_function_type_init(&t1, context,
+		1, (const jive_type *[]){value_type},
+		1, (const jive_type *[]){value_type});
+	
+	jive_function_type_init(&t2, context,
+		1, (const jive_type *[]){&t1.base.base},
+		1, (const jive_type *[]){&t1.base.base});
+	
+	jive_function_type_fini(&t1);
+	jive_function_type_fini(&t2);
+	
+	assert(jive_context_is_empty(context));
+	
+	jive_context_destroy(context);
+	
+	return 0;
+}

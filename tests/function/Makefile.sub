@@ -1,3 +1,4 @@
 TESTS+=\
 	function/equals \
-	function/call
+	function/call \
+	function/memory-leak \
