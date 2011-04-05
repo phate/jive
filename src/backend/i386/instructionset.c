@@ -17,8 +17,8 @@ cpu_to_le32(uint32_t value)
 static void
 jive_i386_encode_simple(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	jive_buffer_putbyte(target, icls->code);
@@ -27,8 +27,8 @@ jive_i386_encode_simple(const jive_instruction_class * icls,
 static void
 jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	int reg = outputs[0]->code;
@@ -38,7 +38,7 @@ jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 }
 
 static inline void
-jive_i386_r2i(const jive_cpureg * r1, const jive_cpureg * r2, uint32_t displacement, jive_buffer * target)
+jive_i386_r2i(const jive_register_name * r1, const jive_register_name * r2, uint32_t displacement, jive_buffer * target)
 {
 	int regcode = (r1->code) | (r2->code<<3);
 	/* special treatment for load/store through ebp: always encode displacement parameter */
@@ -66,12 +66,12 @@ jive_i386_r2i(const jive_cpureg * r1, const jive_cpureg * r2, uint32_t displacem
 static void
 jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	uint32_t displacement = immediates[0];
-	const jive_cpureg * r1 = inputs[0], * r2;
+	const jive_register_name * r1 = inputs[0], * r2;
 	if (icls->code == 0x89)
 		r2 = inputs[1];
 	else
@@ -85,8 +85,8 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 static void
 jive_i386_encode_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	int r1 = inputs[0]->code;
@@ -101,8 +101,8 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 static void
 jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	int r1 = inputs[0]->code;
@@ -118,8 +118,8 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 static void
 jive_i386_encode_regimm(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	int r1 = inputs[0]->code;
@@ -148,8 +148,8 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 static void
 jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	int r1 = inputs[0]->code;
@@ -163,8 +163,8 @@ jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 static void
 jive_i386_encode_regmove(const jive_instruction_class * icls,
 	jive_buffer * target,
-	const jive_cpureg * inputs[],
-	const jive_cpureg * outputs[],
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
 	const long immediates[])
 {
 	int r1 = outputs[0]->code;
@@ -174,13 +174,13 @@ jive_i386_encode_regmove(const jive_instruction_class * icls,
 	jive_buffer_putbyte(target, 0xc0|r1|(r2<<3));
 }
 
-static const jive_regcls * const intreg_param[] = {
+static const jive_register_class * const intreg_param[] = {
 	&jive_i386_regcls[jive_i386_gpr],
 	&jive_i386_regcls[jive_i386_gpr],
 	&jive_i386_regcls[jive_i386_gpr]
 };
 
-static const jive_regcls * const intflags_param[] = {
+static const jive_register_class * const intflags_param[] = {
 	&jive_i386_regcls[jive_i386_gpr],
 	&jive_i386_regcls[jive_i386_flags]
 };
