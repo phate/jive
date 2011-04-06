@@ -10,6 +10,7 @@
 #include <jive/backend/i386/machine.h>
 
 #include <jive/regalloc.h>
+#include <jive/regalloc/shaped-graph.h>
 
 int main()
 {
@@ -27,18 +28,18 @@ int main()
 		&jive_i386_instructions[jive_i386_ret],
 		NULL, NULL);
 	
-	jive_gate * stackptr_var = jive_regcls_create_gate(
+	jive_gate * stackptr_var = jive_register_class_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_esp], graph, "stackptr");
-	jive_gate * retval_var = jive_regcls_create_gate(
+	jive_gate * retval_var = jive_register_class_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_eax], graph, "retval");
 	
-	jive_gate * save_ebx = jive_regcls_create_gate(
+	jive_gate * save_ebx = jive_register_class_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_ebx], graph, "save_ebx");
-	jive_gate * save_ebp = jive_regcls_create_gate(
+	jive_gate * save_ebp = jive_register_class_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_ebp], graph, "save_ebp");
-	jive_gate * save_edi = jive_regcls_create_gate(
+	jive_gate * save_edi = jive_register_class_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_edi], graph, "save_edi");
-	jive_gate * save_esi = jive_regcls_create_gate(
+	jive_gate * save_esi = jive_register_class_create_gate(
 		&jive_i386_regcls[jive_i386_gpr_esi], graph, "save_esi");
 	
 	jive_output * stackptr = jive_node_gate_output(enter, stackptr_var);
@@ -65,11 +66,12 @@ int main()
 	
 	jive_node_gate_input(leave, retval_var, add->outputs[0]);
 	
-	jive_view(graph, stderr);
+	jive_view(graph, stdout);
 	
-	jive_regalloc(graph, &jive_i386_transfer_instructions_factory);
+	jive_shaped_graph * shaped_graph = jive_regalloc(graph, NULL);
+	jive_shaped_graph_destroy(shaped_graph);
 	
-	jive_view(graph, stderr);
+	jive_view(graph, stdout);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
