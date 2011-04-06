@@ -133,6 +133,45 @@ jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive_gate * gate
 	}
 }
 
+size_t
+jive_shaped_variable_is_active_before(const jive_shaped_variable * self, const jive_shaped_node * shaped_node)
+{
+	size_t count = 0;
+	jive_ssavar * ssavar;
+	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
+		count += jive_shaped_ssavar_is_active_before(shaped_ssavar, shaped_node);
+	}
+	
+	return count;
+}
+
+size_t
+jive_shaped_variable_is_crossing(const jive_shaped_variable * self, const jive_shaped_node * shaped_node)
+{
+	size_t count = 0;
+	jive_ssavar * ssavar;
+	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
+		count += jive_shaped_ssavar_is_crossing(shaped_ssavar, shaped_node);
+	}
+	
+	return count;
+}
+
+size_t
+jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const jive_shaped_node * shaped_node)
+{
+	size_t count = 0;
+	jive_ssavar * ssavar;
+	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
+		count += jive_shaped_ssavar_is_active_after(shaped_ssavar, shaped_node);
+	}
+	
+	return count;
+}
+
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self)
 {

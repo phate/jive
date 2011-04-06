@@ -60,6 +60,15 @@ jive_shaped_variable_allowed_resource_name(const jive_shaped_variable * self, co
 size_t
 jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * self);
 
+size_t
+jive_shaped_variable_is_active_before(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
+
+size_t
+jive_shaped_variable_is_crossing(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
+
+size_t
+jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
+
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self);
 
