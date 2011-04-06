@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <sys/mman.h>
 
 #include <jive/util/buffer.h>
@@ -5,12 +6,31 @@
 void *
 jive_buffer_executable(const jive_buffer * self)
 {
-	void * addr = mmap(0, self->size, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_PRIVATE, -1, 0);
-	if (!addr) return 0;
+	void * executable = NULL;
 	
-	memcpy(addr, self->data, self->size);
-	mprotect(addr, self->size, PROT_EXEC);
-	return addr;
+	char template[] = "/tmp/jive-exec-buffer-XXXXXX";
+#if defined(_GNU_SOURCE) && defined(O_CLOEXEC)
+	int fd = mkostemp(template, O_CLOEXEC);
+#else
+	int fd = mkstemp(template);
+	if (fd >= 0) fcntl(fd, F_SETFD, FD_CLOEXEC);
+#endif
+	if (fd < 0)
+		return 0;
+	unlink(template);
+	
+	if (ftruncate(fd, self->size) == 0) {
+		void * writable = mmap(0, self->size, PROT_WRITE, MAP_SHARED, fd, 0);
+		
+		if (writable) {
+			memcpy(writable, self->data, self->size);
+			munmap(writable, self->size);
+			executable = mmap(0, self->size, PROT_EXEC, MAP_SHARED, fd, 0);
+		}
+	}
+	
+	close(fd);
+	return executable;
 }
 
 void *
