@@ -1,14 +1,17 @@
 #include <jive/regalloc/fixup.h>
+
+#include <jive/arch/instruction.h>
+#include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/vsdg/cut.h>
-#include <jive/vsdg/regcls-count-private.h>
-#include <jive/arch/instruction.h>
+#include <jive/vsdg/variable.h>
+
+#if 0
 #include <jive/regalloc/auxnodes.h>
 
 static void
-pre_op_transfer(jive_node * node, const jive_cpureg * new_cpureg)
+pre_op_transfer(jive_node * node, const jive_resource_name * new_cpureg)
 {
 	jive_output * origin = node->inputs[0]->origin;
 	
@@ -32,7 +35,7 @@ pre_op_transfer(jive_node * node, const jive_cpureg * new_cpureg)
 }
 
 static void
-post_op_transfer(jive_node * node, const jive_cpureg * new_cpureg)
+post_op_transfer(jive_node * node, const jive_resource_name * new_cpureg)
 {
 	jive_output * origin = node->outputs[0];
 
@@ -58,36 +61,43 @@ post_op_transfer(jive_node * node, const jive_cpureg * new_cpureg)
 	jive_value_resource_recompute_regcls((jive_value_resource *) new_res);
 	jive_value_resource_set_cpureg((jive_value_resource *) new_res, new_cpureg);
 }
+#endif
 
 static void
-process_node(jive_node * node_)
+process_node(jive_shaped_graph * shaped_graph, jive_node * node_)
 {
 	if (!jive_node_isinstance(node_, &JIVE_INSTRUCTION_NODE)) return;
 	jive_instruction_node * node = (jive_instruction_node *) node_;
 	const struct jive_instruction_class * icls = node->attrs.icls;
 	
+	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node_);
+	
 	if ((icls->flags & jive_instruction_write_input) == 0) return;
 	
-	const jive_cpureg * inreg0 = jive_resource_get_cpureg(node->base.inputs[0]->resource);
-	const jive_cpureg * outreg0 = jive_resource_get_cpureg(node->base.outputs[0]->resource);
+	const jive_resource_name * inreg0 = jive_variable_get_resource_name(node->base.inputs[0]->ssavar->variable);
+	const jive_resource_name * outreg0 = jive_variable_get_resource_name(node->base.outputs[0]->ssavar->variable);
 	
 	if (inreg0 == outreg0) return;
 	
-	const jive_regcls * regcls = icls->inregs[0];
+	//const jive_resource_class * regcls = &icls->inregs[0]->base;
 	
 	if (icls->flags & jive_instruction_commutative) {
-		const jive_cpureg * inreg1 = jive_resource_get_cpureg(node->base.inputs[1]->resource);
+		const jive_resource_name * inreg1 = jive_variable_get_resource_name(node->base.inputs[1]->ssavar->variable);
 		/* if it is possible to satify constraints by simply swapping inputs, do it */
 		if (outreg0 == inreg1) {
 			jive_input_swap(node->base.inputs[0], node->base.inputs[1]);
 			return;
 		}
+		
+		jive_shaped_variable * var1 = jive_shaped_graph_map_variable(shaped_graph, node->base.inputs[0]->ssavar->variable);
+		jive_shaped_variable * var2 = jive_shaped_graph_map_variable(shaped_graph, node->base.inputs[1]->ssavar->variable);
+		
 		/* if swapping makes the first operand overwritable, do it */
-		if (jive_resource_crosses(node->base.inputs[0]->resource, &node->base) &&
-		   !jive_resource_crosses(node->base.inputs[1]->resource, &node->base))
+		if (jive_shaped_variable_is_crossing(var1, shaped_node) && !jive_shaped_variable_is_crossing(var2, shaped_node))
 			jive_input_swap(node->base.inputs[0], node->base.inputs[1]);
-
 	}
+	
+	#if 0
 	
 	if (jive_resource_is_active_after(node->base.inputs[0]->resource, &node->base)) {
 		/* input register #0 is used after this instruction, therefore
@@ -95,15 +105,15 @@ process_node(jive_node * node_)
 		register, preferably using the final destination register
 		outright */
 		
-		const jive_cpureg * reg = 0;
-		if (jive_regcls_count_check_add(&node->base.use_count_before, outreg0->regcls) == 0)
+		const jive_resource_name * reg = 0;
+		if (jive_resource_class_count_check_add(&node->base.use_count_before, outreg0->regcls) == 0)
 			reg = outreg0;
 		
 		if (!reg) {
 			size_t n;
 			for(n=0; n<regcls->nregs; n++) {
-				if (jive_regcls_count_check_add(&node->base.use_count_before, regcls->regs[n].regcls)) continue;
-				if (jive_regcls_count_check_add(&node->base.use_count_after, regcls->regs[n].regcls)) continue;
+				if (jive_resource_class_count_check_add(&node->base.use_count_before, regcls->regs[n].regcls)) continue;
+				if (jive_resource_class_count_check_add(&node->base.use_count_after, regcls->regs[n].regcls)) continue;
 				reg = &regcls->regs[n];
 			}
 		}
@@ -118,16 +128,17 @@ process_node(jive_node * node_)
 	register after the operation */
 	post_op_transfer(&node->base, inreg0);
 	outreg0 = inreg0;
+	#endif
 }
 
 void
-jive_regalloc_fixup(jive_graph * graph)
+jive_regalloc_fixup(jive_shaped_graph * shaped_graph)
 {
-	jive_traverser * traverser = jive_bottomup_traverser_create(graph);
+	jive_traverser * traverser = jive_bottomup_traverser_create(shaped_graph->graph);
 	
 	jive_node * node;
 	while( (node = jive_traverser_next(traverser)) != 0) {
-		process_node(node);
+		process_node(shaped_graph, node);
 	}
 	jive_traverser_destroy(traverser);
 }

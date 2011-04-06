@@ -1,4 +1,46 @@
 #include <jive/regalloc/color.h>
+
+#include <jive/regalloc/assignment-tracker-private.h>
+#include <jive/regalloc/shaped-graph.h>
+#include <jive/regalloc/shaped-variable-private.h>
+
+static jive_shaped_variable *
+find_next_uncolored(const jive_var_assignment_tracker * tracker)
+{
+	if (tracker->pressured_max) {
+		JIVE_DEBUG_ASSERT(tracker->pressured[tracker->pressured_max - 1].first);
+		return tracker->pressured[tracker->pressured_max - 1].first;
+	} else if (tracker->trivial.first) {
+		return tracker->trivial.first;
+	} else return NULL;
+}
+
+#include <stdio.h>
+
+void
+jive_regalloc_color(jive_shaped_graph * shaped_graph)
+{
+	for(;;) {
+		jive_shaped_variable * shaped_variable = find_next_uncolored(&shaped_graph->var_assignment_tracker);
+		if (!shaped_variable)
+			break;
+		
+		printf("%p\n", shaped_variable);
+		
+		const jive_resource_name * name = 0;
+		struct jive_allowed_resource_names_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_allowed_resource_names_hash, shaped_variable->allowed_names, i) {
+			name = i.entry->name;
+			break;
+		}
+		
+		jive_variable_set_resource_name(shaped_variable->variable, name);
+	}
+}
+
+#if 0
+
+#include <jive/regalloc/color.h>
 #include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/graph-private.h>
@@ -385,3 +427,5 @@ jive_regalloc_color(jive_graph * graph)
 		color_single(graph, regcand);
 	}
 }
+
+#endif

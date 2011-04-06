@@ -2,8 +2,9 @@
 #define JIVE_REGALLOC_SHAPE_H
 
 struct jive_graph;
+struct jive_shaped_graph;
 
-void
+struct jive_shaped_graph *
 jive_regalloc_shape(struct jive_graph * graph);
 
 #endif

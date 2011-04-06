@@ -1,11 +1,41 @@
 #include <jive/regalloc/shape.h>
-#include <jive/regalloc/shaping-traverser.h>
-#include <jive/regalloc/active-place-tracker-private.h>
-#include <jive/regalloc/auxnodes.h>
-#include <jive/vsdg/crossings-private.h>
 
+#include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg.h>
 
+jive_shaped_graph *
+jive_regalloc_shape(jive_graph * graph)
+{
+	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
+	
+	jive_traverser * trav = jive_bottomup_traverser_create(graph);
+	
+	jive_node * node = jive_traverser_next(trav);
+	while(node) {
+		size_t n;
+		for(n = 0; n < node->ninputs; n++) {
+			jive_input * input = node->inputs[n];
+			jive_ssavar * ssavar = jive_input_auto_merge_variable(input);
+			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+			jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, node->region->depth);
+		}
+		for(n = 0; n < node->noutputs; n++) {
+			jive_output * output = node->outputs[n];
+			jive_output_auto_merge_variable(output);
+		}
+		
+		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, node->region);
+		jive_cut_append(jive_shaped_region_create_cut(shaped_region), node);
+		
+		node = jive_traverser_next(trav);
+	}
+	
+	jive_traverser_destroy(trav);
+	
+	return shaped_graph;
+}
+
+#if 0
 static const jive_regcls *
 check_crossing_overflow(const jive_node * node,
 	jive_resource * add_crossed[const], size_t nadd_crossed,
@@ -838,3 +868,4 @@ jive_regalloc_shape(jive_graph * graph)
 	jive_shaping_region_traverser_destroy(master_traverser);
 }
 
+#endif
