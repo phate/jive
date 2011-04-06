@@ -240,8 +240,8 @@ jive_input_swap(jive_input * self, jive_input * other)
 	self->origin = o2;
 	other->origin = o1;
 	
-	if (v2) jive_ssavar_unassign_input(v2, self);
-	if (v1) jive_ssavar_unassign_input(v1, other);
+	if (v2) jive_ssavar_assign_input(v2, self);
+	if (v1) jive_ssavar_assign_input(v1, other);
 	
 	jive_node_invalidate_depth_from_root(self->node);
 	

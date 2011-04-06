@@ -280,7 +280,7 @@ jive_variable_unassign_gate(jive_variable * self, struct jive_gate * gate)
 void
 jive_variable_merge(jive_variable * self, jive_variable * other)
 {
-	if ((other == 0) || (self == 0))
+	if ((other == 0) || (self == 0) || (other == self))
 		return;
 	
 	const jive_resource_class * new_rescls;
