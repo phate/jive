@@ -1,5 +1,6 @@
 #include <jive/vsdg/variable.h>
 
+#include <jive/common.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/control.h>
@@ -189,6 +190,11 @@ jive_ssavar_divert_origin(jive_ssavar * self, jive_output * new_origin)
 		jive_input_internal_divert_origin(input, new_origin);
 	}
 	
+	if (self->use_count) {
+		JIVE_LIST_REMOVE(old_origin->originating_ssavars, self, originating_ssavar_list);
+		JIVE_LIST_PUSH_BACK(new_origin->originating_ssavars, self, originating_ssavar_list);
+	}
+		
 	jive_graph_notify_ssavar_divert_origin(self->variable->graph, self, old_origin, new_origin);
 }
 
@@ -306,9 +312,10 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 		
 		jive_variable_inc_use_count(self);
 		
-		DEBUG_ASSERT(ssavar->use_count);
+		JIVE_DEBUG_ASSERT(ssavar->use_count != 0);
 		JIVE_LIST_REMOVE(other->ssavars, ssavar, variable_ssavar_list);
 		JIVE_LIST_PUSH_BACK(self->ssavars, ssavar, variable_ssavar_list);
+		ssavar->variable = self;
 		
 		jive_graph_notify_ssavar_variable_change(self->graph, ssavar, other, self);
 		
@@ -318,7 +325,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 	while(other->unused_ssavars.first) {
 		jive_ssavar * ssavar = other->unused_ssavars.first;
 		
-		DEBUG_ASSERT(ssavar->use_count);
+		JIVE_DEBUG_ASSERT(ssavar->use_count == 0);
 		JIVE_LIST_REMOVE(other->unused_ssavars, ssavar, variable_ssavar_list);
 		JIVE_LIST_PUSH_BACK(self->unused_ssavars, ssavar, variable_ssavar_list);
 	}
