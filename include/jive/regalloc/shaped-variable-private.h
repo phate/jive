@@ -225,6 +225,9 @@ void
 jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self);
 
 void
+jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable);
+
+void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 const struct jive_resource_class *

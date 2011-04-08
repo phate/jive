@@ -537,6 +537,48 @@ jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self)
 }
 
 void
+jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable)
+{
+	jive_shaped_graph * shaped_graph = self->shaped_graph;
+	jive_context * context = shaped_graph->context;
+	jive_shaped_variable * old_shaped_var = jive_shaped_graph_map_variable(self->shaped_graph, old_variable);
+	jive_shaped_variable * new_shaped_var = jive_shaped_graph_map_variable(self->shaped_graph, new_variable);
+	const jive_resource_class * old_rescls = jive_variable_get_resource_class(old_variable);
+	const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_variable);
+	
+	struct jive_node_xpoint_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_node_xpoint_hash, self->node_xpoints, i) {
+		jive_xpoint * xpoint= i.entry;
+		
+		jive_shaped_node * shaped_node = xpoint->shaped_node;
+		
+		struct jive_ssavar_xpoint_hash_iterator j;
+		JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, shaped_node->ssavar_xpoints, j) {
+			jive_xpoint * other_xpoint = j.entry;
+			if (other_xpoint == xpoint) continue;
+			jive_shaped_variable * other_shaped_var;
+			other_shaped_var = jive_shaped_graph_map_variable(shaped_graph, other_xpoint->shaped_ssavar->ssavar->variable);
+			
+			if (xpoint->before_count && other_xpoint->before_count) {
+				jive_variable_interference_remove(old_shaped_var, other_shaped_var);
+				jive_variable_interference_add(new_shaped_var, other_shaped_var);
+				
+			}
+			if (xpoint->after_count && other_xpoint->after_count) {
+				jive_variable_interference_remove(old_shaped_var, other_shaped_var);
+				jive_variable_interference_add(new_shaped_var, other_shaped_var);
+			}
+		}
+		if (old_rescls != new_rescls) {
+			if (xpoint->before_count)
+				jive_resource_class_count_change(&shaped_node->use_count_before, context, old_rescls, new_rescls);
+			if (xpoint->after_count)
+				jive_resource_class_count_change(&shaped_node->use_count_after, context, old_rescls, new_rescls);
+		}
+	}
+}
+
+void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
 {
 	jive_context * context = self->shaped_graph->context;

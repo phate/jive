@@ -181,6 +181,14 @@ jive_shaped_graph_ssavar_unassign_output(void * closure, jive_ssavar * ssavar, j
 }
 
 static void
+jive_shaped_graph_ssavar_variable_change(void * closure, jive_ssavar * ssavar, jive_variable * old_var, jive_variable * new_var)
+{
+	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
+	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
+	jive_shaped_ssavar_xpoints_variable_change(shaped_ssavar, old_var, new_var);
+}
+
+static void
 jive_shaped_graph_add_region_recursive(jive_shaped_graph * self, jive_region * region)
 {
 	jive_shaped_graph_region_create(self, region);
@@ -222,6 +230,7 @@ jive_shaped_graph_create(jive_graph * graph)
 	self->callbacks[n++] = jive_ssavar_input_notifier_slot_connect(&graph->on_ssavar_unassign_input, jive_shaped_graph_ssavar_unassign_input, self);
 	self->callbacks[n++] = jive_ssavar_output_notifier_slot_connect(&graph->on_ssavar_assign_output, jive_shaped_graph_ssavar_assign_output, self);
 	self->callbacks[n++] = jive_ssavar_output_notifier_slot_connect(&graph->on_ssavar_unassign_output, jive_shaped_graph_ssavar_unassign_output, self);
+	self->callbacks[n++] = jive_ssavar_variable_notifier_slot_connect(&graph->on_ssavar_variable_change, jive_shaped_graph_ssavar_variable_change, self);
 	
 	JIVE_DEBUG_ASSERT(n <= sizeof(self->callbacks)/sizeof(self->callbacks[0]));
 	
