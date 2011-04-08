@@ -107,6 +107,35 @@ jive_cut_create_below(jive_cut * self)
 	return jive_cut_create(self->shaped_region->shaped_graph->context, self->shaped_region, self->region_cut_list.next);
 }
 
+jive_cut *
+jive_cut_split(jive_cut * self, jive_shaped_node * at)
+{
+	JIVE_DEBUG_ASSERT(at == NULL || at->cut == self);
+	
+	if (at != self->locations.first) {
+		jive_cut * above = jive_cut_create_above(self);
+		while (at != self->locations.first) {
+			jive_shaped_node * loc = self->locations.first;
+			
+			JIVE_LIST_REMOVE(self->locations, loc, cut_location_list);
+			JIVE_LIST_PUSH_BACK(above->locations, loc, cut_location_list);
+			loc->cut = above;
+		}
+	}
+	if (self->locations.last) {
+		jive_cut * below = jive_cut_create_below(self);
+		while (self->locations.last) {
+			jive_shaped_node * loc = self->locations.last;
+			
+			JIVE_LIST_REMOVE(self->locations, loc, cut_location_list);
+			JIVE_LIST_PUSH_FRONT(below->locations, loc, cut_location_list);
+			loc->cut = below;
+		}
+	}
+	
+	return self;
+}
+
 static void
 add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_node * shaped_node, jive_shaped_node * lower)
 {

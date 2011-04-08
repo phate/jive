@@ -69,6 +69,10 @@ jive_cut_create_above(jive_cut * self);
 jive_cut *
 jive_cut_create_below(jive_cut * self);
 
+/** \brief Split cut at location, return empty cut before split point */
+jive_cut *
+jive_cut_split(jive_cut * self, struct jive_shaped_node * at);
+
 /** \brief Insert node into cut */
 struct jive_shaped_node *
 jive_cut_insert(jive_cut * self, struct jive_shaped_node * before, struct jive_node * node);
