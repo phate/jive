@@ -579,6 +579,37 @@ jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_varia
 }
 
 void
+jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive_output * old_origin, jive_output * new_origin)
+{
+	jive_shaped_node * old_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, old_origin->node);
+	jive_shaped_node * new_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, new_origin->node);
+	
+	jive_variable * variable = self->ssavar->variable;
+	jive_input * input;
+	struct jive_ssavar_region_hash_iterator i;
+	
+	if (old_origin_shaped_node && self->ssavar->assigned_output)
+		jive_shaped_node_remove_ssavar_after(old_origin_shaped_node, self, variable, 1);
+	JIVE_LIST_ITERATE(self->ssavar->assigned_inputs, input, ssavar_input_list) {
+		jive_shaped_ssavar_xpoints_unregister_arc(self, input, old_origin);
+	}
+	JIVE_HASH_ITERATE(jive_ssavar_region_hash, self->ssavar->assigned_regions, i) {
+		jive_region * region = i.entry->region;
+		jive_shaped_ssavar_xpoints_unregister_region_arc(self, old_origin, region);
+	}
+	
+	JIVE_LIST_ITERATE(self->ssavar->assigned_inputs, input, ssavar_input_list) {
+		jive_shaped_ssavar_xpoints_register_arc(self, input, new_origin);
+	}
+	JIVE_HASH_ITERATE(jive_ssavar_region_hash, self->ssavar->assigned_regions, i) {
+		jive_region * region = i.entry->region;
+		jive_shaped_ssavar_xpoints_register_region_arc(self, new_origin, region);
+	}
+	if (new_origin_shaped_node && self->ssavar->assigned_output)
+		jive_shaped_node_add_ssavar_after(new_origin_shaped_node, self, variable, 1);
+}
+
+void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
 {
 	jive_context * context = self->shaped_graph->context;

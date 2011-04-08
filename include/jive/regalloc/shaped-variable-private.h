@@ -228,6 +228,9 @@ void
 jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable);
 
 void
+jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, struct jive_output * old_origin, struct jive_output * new_origin);
+
+void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 const struct jive_resource_class *
