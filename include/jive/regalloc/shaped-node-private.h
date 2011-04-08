@@ -176,4 +176,32 @@ jive_shaped_node_remove_ssavar_after(jive_shaped_node * self, jive_shaped_ssavar
 	jive_xpoint_put(xpoint);
 }
 
+static inline bool
+jive_shaped_node_is_resource_name_active_after(const jive_shaped_node * self, const struct jive_resource_name * name)
+{
+	struct jive_ssavar_xpoint_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, self->ssavar_xpoints, i) {
+		jive_xpoint * xpoint = i.entry;
+		if (!xpoint->after_count) continue;
+		if (jive_variable_get_resource_name(xpoint->shaped_ssavar->ssavar->variable) == name)
+			return true;
+	}
+	
+	return false;
+}
+
+static inline bool
+jive_shaped_node_is_resource_name_active_before(const jive_shaped_node * self, const struct jive_resource_name * name)
+{
+	struct jive_ssavar_xpoint_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_ssavar_xpoint_hash, self->ssavar_xpoints, i) {
+		jive_xpoint * xpoint = i.entry;
+		if (!xpoint->before_count) continue;
+		if (jive_variable_get_resource_name(xpoint->shaped_ssavar->ssavar->variable) == name)
+			return true;
+	}
+	
+	return false;
+}
+
 #endif
