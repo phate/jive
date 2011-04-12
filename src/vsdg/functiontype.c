@@ -207,12 +207,12 @@ _jive_function_type_equals(const jive_type * self_, const jive_type * other_)
 	
 	size_t i;
 	for(i = 0; i < self->nreturns; i++){
-		if (!self->return_types[i]->class_->equals(self->return_types[i], other->return_types[i]))
+		if (!jive_type_equals(self->return_types[i], other->return_types[i]))
 			return false;
 	}
 	
 	for(i = 0; i < self->narguments; i++){
-		if (!self->argument_types[i]->class_->equals(self->argument_types[i], other->argument_types[i]))
+		if (!jive_type_equals(self->argument_types[i], other->argument_types[i]))
 			return false;
 	}
 	
