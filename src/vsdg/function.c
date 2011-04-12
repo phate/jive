@@ -258,7 +258,7 @@ jive_leave_node_create(jive_output * output)
 {
 	jive_node * node = jive_context_malloc(output->node->graph->context, sizeof(*node));
 	
-	node->class_ = &JIVE_ENTER_NODE;
+	node->class_ = &JIVE_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	_jive_node_init(node, output->node->region,
