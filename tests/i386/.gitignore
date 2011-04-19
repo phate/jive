@@ -1,5 +1,6 @@
 simple-function
 simple-regalloc
+simple-match
 arithmetic-function
 dotproduct
 match
