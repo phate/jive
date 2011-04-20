@@ -31,6 +31,7 @@ struct jive_unary_operation_class {
 };
 
 typedef enum jive_binary_operation_flags {
+	jive_binary_operation_none = 0,
 	jive_binary_operation_associative = 1,
 	jive_binary_operation_commutative = 2
 } jive_binary_operation_flags;
