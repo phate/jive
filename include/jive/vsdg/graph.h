@@ -115,4 +115,10 @@ jive_graph_prune(jive_graph * self);
 bool
 jive_graph_has_active_traversers(const jive_graph * self);
 
+void
+jive_graph_push_outward(jive_graph * self);
+
+void
+jive_graph_pull_inward(jive_graph * self);
+
 #endif

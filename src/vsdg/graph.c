@@ -185,3 +185,40 @@ jive_graph_prune(jive_graph * self)
 	JIVE_LIST_ITERATE_SAFE(self->root_region->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
 }
+
+void
+jive_graph_push_outward(jive_graph * self)
+{
+	jive_traverser * trav = jive_topdown_traverser_create(self);
+	
+	for(;;) {
+		jive_node * node = jive_traverser_next(trav);
+		if (!node)
+			break;
+		
+		while (jive_node_can_move_outward(node))
+			jive_node_move_outward(node);
+	}
+	
+	jive_traverser_destroy(trav);
+}
+
+void
+jive_graph_pull_inward(jive_graph * self)
+{
+	jive_traverser * trav = jive_bottomup_traverser_create(self);
+	
+	for(;;) {
+		jive_node * node = jive_traverser_next(trav);
+		if (!node)
+			break;
+		jive_region * region;
+		do {
+			region = node->region;
+			jive_node_move_inward(node);
+		} while (region != node->region);
+	}
+	
+	jive_traverser_destroy(trav);
+}
+

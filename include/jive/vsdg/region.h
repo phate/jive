@@ -93,6 +93,12 @@ jive_region_get_bottom_node(jive_region * self)
 jive_region *
 jive_region_create_subregion(jive_region * self);
 
+bool
+jive_region_depends_on_region(const jive_region * self, const jive_region * region);
+
+void
+jive_region_reparent(jive_region * self, jive_region * new_parent);
+
 static inline struct jive_stackframe *
 jive_region_get_stackframe(const jive_region * region)
 {

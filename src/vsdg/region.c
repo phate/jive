@@ -48,6 +48,24 @@ _jive_region_fini(jive_region * self)
 		jive_stackframe_destroy(self->stackframe); */
 }
 
+bool
+jive_region_depends_on_region(const jive_region * self, const jive_region * region)
+{
+	jive_node * node;
+	JIVE_LIST_ITERATE(self->nodes, node, region_nodes_list) {
+		if (jive_node_depends_on_region(node, region)) return true;
+	}
+	return false;
+}
+
+void
+jive_region_reparent(jive_region * self, jive_region * new_parent)
+{
+	JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
+	self->parent = new_parent;
+	JIVE_LIST_PUSH_BACK(self->parent->subregions, self, region_subregions_list);
+}
+
 void
 jive_region_destroy(jive_region * self)
 {

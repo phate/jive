@@ -191,4 +191,31 @@ jive_node_get_use_count_output(const jive_node * self, struct jive_resource_clas
 void
 jive_node_destroy(jive_node * self);
 
+/**
+	\brief Test whether node can be moved to next outer region
+*/
+bool
+jive_node_can_move_outward(const jive_node * self);
+
+/**
+	\brief Move node to outer region
+*/
+void
+jive_node_move_outward(jive_node * self);
+
+bool
+jive_node_can_move_inward(const jive_node * self);
+
+void
+jive_node_move_inward(jive_node * self);
+
+bool
+jive_node_depends_on_region(const jive_node * self, const struct jive_region * region);
+
+struct jive_region *
+jive_node_next_inner_region(const jive_node * self);
+
+void
+jive_node_move(jive_node * self, struct jive_region * new_region);
+
 #endif

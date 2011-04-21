@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <jive/internal/compiler.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
@@ -334,6 +335,107 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 	}
 }
 
+/**
+	\brief Test whether node has inputs from region
+*/
+bool
+jive_node_depends_on_region(const jive_node * self, const jive_region * region)
+{
+	size_t n;
+	for(n = 0; n < self->ninputs; n++) {
+		jive_input * input = self->inputs[n];
+		if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+			if (jive_region_depends_on_region(input->origin->node->region, region)) {
+				return true;
+			}
+		} else {
+			if (input->origin->node->region == region) {
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+bool
+jive_node_can_move_outward(const jive_node * self)
+{
+	return self->region->parent
+		&& self->region->top != self
+		&& self->region->bottom != self
+		&& !jive_node_depends_on_region(self, self->region);
+}
+
+void
+jive_node_move_outward(jive_node * self)
+{
+	jive_node_move(self, self->region->parent);
+}
+
+bool
+jive_node_can_move_inward(const jive_node * self)
+{
+	return jive_node_next_inner_region(self) != NULL;
+}
+
+struct jive_region *
+jive_node_next_inner_region(const jive_node * self)
+{
+	jive_region * current = self->region;
+	if (current->top == self || current->bottom == self)
+		return NULL;
+	jive_region * target = NULL;
+	size_t n;
+	for (n = 0; n < self->noutputs; n++) {
+		jive_output * output = self->outputs[n];
+		jive_input * user;
+		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
+			jive_region * region = user->node->region;
+			/* cannot pull anywhere if dependence in same region */
+			if (region == current)
+				return NULL;
+			while (region->parent != current)
+				region = region->parent;
+			/* can only pull if all dependencies in same region (or deeper) */
+			if (target && target != region)
+				return NULL;
+			/* don't pull into looped or lambda def regions */
+			if (region->top)
+				return NULL;
+			target = region;
+		}
+	}
+	return target;
+}
+
+void
+jive_node_move_inward(jive_node * self)
+{
+	jive_region * target = jive_node_next_inner_region(self);
+	if (!target)
+		return;
+	jive_node_move(self, target);
+}
+
+void
+jive_node_move(jive_node * self, jive_region * new_region)
+{
+	if (self->region == new_region)
+		return;
+	
+	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
+	self->region = new_region;
+	JIVE_LIST_PUSH_BACK(self->region->nodes, self, region_nodes_list);
+	size_t n;
+	for(n = 0; n < self->ninputs; n++) {
+		jive_input * input = self->inputs[n];
+		if (!jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) continue;
+		
+		jive_region * subregion = input->origin->node->region;
+		jive_region_reparent(subregion, new_region);
+	}
+}
 
 void
 jive_node_destroy(jive_node * self)
