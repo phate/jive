@@ -145,3 +145,85 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	jive_resource_class_count_fini(&self->use_count_after, self->shaped_graph->context);
 	jive_context_free(self->shaped_graph->context, self);
 }
+
+void
+jive_shaped_node_downward_iterator_init(jive_shaped_node_downward_iterator * self, jive_shaped_node * start)
+{
+	self->shaped_graph = start->shaped_graph;
+	self->current = start;
+	self->leave_region_depth = start->cut->shaped_region->region->depth;
+	self->boundary_region_depth = self->leave_region_depth;
+}
+
+void
+jive_shaped_node_downward_iterator_init_outward(jive_shaped_node_downward_iterator * self, jive_shaped_node * start)
+{
+	self->shaped_graph = start->shaped_graph;
+	self->current = start;
+	self->leave_region_depth = start->cut->shaped_region->region->depth;
+	self->boundary_region_depth = 0;
+}
+
+jive_shaped_node *
+jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * self)
+{
+	if (!self->current)
+		return NULL;
+	
+	jive_shaped_node * current = self->current;
+	jive_shaped_region * shaped_region = current->cut->shaped_region;
+	jive_shaped_node * next = jive_shaped_node_next_in_region(current);
+	bool enter_subregions = true;
+	if (!next) {
+		if (shaped_region->region->depth > self->leave_region_depth) {
+			jive_node * anchor_node = shaped_region->region->anchor->node;
+			size_t n = shaped_region->region->anchor->index + 1;
+			while (n < anchor_node->ninputs) {
+				jive_input * input = anchor_node->inputs[n];
+				if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+					jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph, input->origin->node->region);
+					next = jive_shaped_region_first(sub);
+					if (next)
+						break;
+				}
+				n = n + 1;
+			}
+			if (!next && shaped_region->region->depth > self->boundary_region_depth) {
+				enter_subregions = false;
+				next = jive_shaped_graph_map_node(self->shaped_graph, shaped_region->region->anchor->node);
+				self->leave_region_depth = shaped_region->region->anchor->node->region->depth;
+			}
+		} else if (shaped_region->region->depth > self->boundary_region_depth) {
+			enter_subregions = false;
+			next = jive_shaped_graph_map_node(self->shaped_graph, shaped_region->region->anchor->node);
+			self->leave_region_depth = shaped_region->region->anchor->node->region->depth;
+		}
+	}
+	if (next && enter_subregions) {
+		size_t n = 0;
+		while (n < next->node->ninputs) {
+			jive_input * input = next->node->inputs[n];
+			if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+				jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph, input->origin->node->region);
+				jive_shaped_node * tmp = jive_shaped_region_first(sub);
+				if (tmp) {
+					next = tmp;
+					n = 0;
+					continue;
+				}
+			}
+			n = n + 1;
+		}
+	}
+	
+	self->current = next;
+	
+	return current;
+}
+
+void
+jive_shaped_node_downward_iterator_fini(jive_shaped_node_downward_iterator * self)
+{
+	(void)self;
+}
+

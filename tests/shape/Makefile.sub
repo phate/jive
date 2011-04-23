@@ -5,4 +5,5 @@ TESTS += \
 	shape/test-rescls-shape \
 	shape/test-gate \
 	shape/test-loop \
+	shape/test-iteration \
 

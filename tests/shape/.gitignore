@@ -4,3 +4,4 @@ test-crossing-arc
 test-rescls-shape
 test-gate
 test-loop
+test-iteration
