@@ -6,4 +6,6 @@ TESTS += \
 	shape/test-gate \
 	shape/test-loop \
 	shape/test-iteration \
+	shape/test-reroute-gamma \
+	shape/test-reroute-theta \
 

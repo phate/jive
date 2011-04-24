@@ -5,3 +5,5 @@ test-rescls-shape
 test-gate
 test-loop
 test-iteration
+test-reroute-gamma
+test-reroute-theta
