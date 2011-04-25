@@ -3,11 +3,92 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <jive/common.h>
 #include <jive/context.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+
+static jive_node *
+jive_gamma_tail_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 0);
+	
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	self->class_ = &JIVE_GAMMA_TAIL_NODE;
+	_jive_node_init(self, region,
+		0, NULL, NULL,
+		1, &anchor);
+	
+	region->bottom = self;
+	return self;
+}
+
+static jive_node *
+jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 3);
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));;
+	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	self->class_ = &JIVE_GAMMA_NODE;
+	_jive_node_init(self, region,
+		3, (const jive_type *[]){anchor, anchor, ctl}, operands,
+		0, NULL);
+	
+	return self;
+}
+
+static jive_node *
+jive_theta_head_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	JIVE_DECLARE_CONTROL_TYPE(control);
+	self->class_ = &JIVE_THETA_HEAD_NODE;
+	_jive_node_init(self, region,
+		0, NULL, NULL,
+		1, &control);
+	
+	region->top = self;
+	return self;
+}
+
+static jive_node *
+jive_theta_tail_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	JIVE_DECLARE_CONTROL_TYPE(control);
+	self->class_ = &JIVE_THETA_TAIL_NODE;
+	_jive_node_init(self, region,
+		1, &control, operands,
+		1, &anchor);
+	
+	region->bottom = self;
+	return self;
+}
+
+static jive_node *
+jive_theta_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));;
+	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	self->class_ = &JIVE_THETA_NODE;
+	_jive_node_init(self, region,
+		1, &anchor, operands,
+		0, NULL);
+	
+	return self;
+}
 
 const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	.parent = &JIVE_NODE,
@@ -17,7 +98,7 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	.get_label = _jive_node_get_label,  /* inherit */
 	.get_attrs = _jive_node_get_attrs,  /* inherit */
 	.match_attrs = _jive_node_match_attrs,  /* inherit */
-	.create = _jive_node_create,  /* inherit */
+	.create = jive_gamma_tail_node_create_,  /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
 };
 
@@ -29,7 +110,7 @@ const jive_node_class JIVE_GAMMA_NODE = {
 	.get_label = _jive_node_get_label,  /* inherit */
 	.get_attrs = _jive_node_get_attrs,  /* inherit */
 	.match_attrs = _jive_node_match_attrs,  /* inherit */
-	.create = _jive_node_create,  /* inherit */
+	.create = jive_gamma_node_create_,  /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
 };
 
@@ -41,7 +122,7 @@ const jive_node_class JIVE_THETA_HEAD_NODE = {
 	.get_label = _jive_node_get_label,  /* inherit */
 	.get_attrs = _jive_node_get_attrs,  /* inherit */
 	.match_attrs = _jive_node_match_attrs,  /* inherit */
-	.create = _jive_node_create,  /* inherit */
+	.create = jive_theta_head_node_create_,  /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
 };
 
@@ -53,7 +134,7 @@ const jive_node_class JIVE_THETA_TAIL_NODE = {
 	.get_label = _jive_node_get_label,  /* inherit */
 	.get_attrs = _jive_node_get_attrs,  /* inherit */
 	.match_attrs = _jive_node_match_attrs,  /* inherit */
-	.create = _jive_node_create,  /* inherit */
+	.create = jive_theta_tail_node_create_,  /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
 };
 
@@ -65,7 +146,7 @@ const jive_node_class JIVE_THETA_NODE = {
 	.get_label = _jive_node_get_label,  /* inherit */
 	.get_attrs = _jive_node_get_attrs,  /* inherit */
 	.match_attrs = _jive_node_match_attrs,  /* inherit */
-	.create = _jive_node_create,  /* inherit */
+	.create = jive_theta_node_create_,  /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
 };
 
