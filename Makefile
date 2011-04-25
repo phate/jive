@@ -41,8 +41,6 @@ include src/backend/i386/Makefile.sub
 # 	\
 # 	src/regalloc/shaping-traverser.c src/regalloc/active-place-tracker.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/regreuse.c src/regalloc/auxnodes.c src/regalloc/fixup.c src/regalloc/stack.c src/regalloc.c \
 # 	\
-# 	src/arch/subroutine.c \
-# 	\
 # 	src/backend/i386/registerset.c\
 # 	src/backend/i386/instructionset.c\
 # 	src/backend/i386/machine.c\
