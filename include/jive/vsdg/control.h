@@ -29,4 +29,9 @@ jive_gamma_create(
 	struct jive_output * false_values[const],
 	struct jive_output * true_values[const]);
 
+struct jive_node *
+jive_theta_create(
+	struct jive_region * region,
+	size_t nvalues, const struct jive_type * types[const], struct jive_output * values[const]);
+
 #endif
