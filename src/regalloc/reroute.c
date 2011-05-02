@@ -47,7 +47,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar, j
 	jive_output * origin_inside_region = ssavar->origin;
 	const jive_type * type = jive_output_get_type(ssavar->origin);
 	char gate_name[80];
-	snprintf(gate_name, sizeof(gate_name), "route_%08x_%08x", (intptr_t) ssavar, (intptr_t) anchor_location);
+	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_location);
 	jive_gate * gate = jive_type_create_gate(type, graph, gate_name);
 	
 	if (jive_node_isinstance(anchor_node, &JIVE_THETA_NODE)) {

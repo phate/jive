@@ -198,7 +198,7 @@ jive_gamma_create(
 	size_t n;
 	for (n = 0; n < nvalues; n++) {
 		char name[80];
-		snprintf(name, sizeof(name), "gamma_%08x_%d", (intptr_t)gamma, n);
+		snprintf(name, sizeof(name), "gamma_%p_%zd", gamma, n);
 		jive_gate * gate = jive_type_create_gate(types[n], region->graph, name);
 		jive_node_gate_input(false_alt, gate, false_values[n]);
 		jive_node_gate_input(true_alt, gate, true_values[n]);
@@ -279,7 +279,7 @@ jive_theta_create(
 	size_t n;
 	for (n = 0; n < nvalues; n++) {
 		char name[80];
-		snprintf(name, sizeof(name), "theta_%08x_%d", (intptr_t)theta, n);
+		snprintf(name, sizeof(name), "theta_%p_%zd", theta, n);
 		jive_gate * gate = jive_type_create_gate(types[n], region->graph, name);
 		jive_node_gate_input(head, gate, values[n]);
 		jive_output * inner = jive_node_gate_output(head, gate);
