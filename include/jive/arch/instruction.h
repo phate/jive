@@ -75,7 +75,7 @@ struct jive_instruction_node {
 	jive_instruction_node_attrs attrs;
 };
 
-jive_instruction_node *
+jive_node *
 jive_instruction_node_create(
 	struct jive_region * region,
 	const jive_instruction_class * icls,

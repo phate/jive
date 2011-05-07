@@ -109,7 +109,7 @@ _jive_instruction_node_get_aux_rescls(const jive_node * self_)
 	return &self->attrs.icls->inregs[0]->base;
 }
 
-jive_instruction_node *
+jive_node *
 jive_instruction_node_create(
 	jive_region * region,
 	const jive_instruction_class * icls,
@@ -120,7 +120,7 @@ jive_instruction_node_create(
 	node->base.class_ = &JIVE_INSTRUCTION_NODE;
 	_jive_instruction_node_init(node, region, icls, operands, immediates);
 	
-	return node;
+	return &node->base;
 }
 
 void
