@@ -16,12 +16,12 @@ int main()
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_node * enter = (jive_node *) jive_instruction_node_create(
+	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load_imm],
 		0, (const long[]){42});
 	
-	jive_node * leave = (jive_node *) jive_instruction_node_create(
+	jive_node * leave = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_ret],
 		0, NULL);

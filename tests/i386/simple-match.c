@@ -22,7 +22,7 @@ i386_create_xfer(jive_region * region, jive_output * origin,
 {
 	jive_xfer_block xfer;
 	
-	xfer.node = (jive_node *) jive_instruction_node_create(
+	xfer.node = jive_instruction_node_create(
 		region,
 		&jive_i386_instructions[jive_i386_int_transfer],
 		(jive_output *[]){origin}, NULL);
@@ -42,12 +42,12 @@ int main()
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_node * enter = (jive_node *) jive_instruction_node_create(
+	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	
-	jive_node * leave = (jive_node *) jive_instruction_node_create(
+	jive_node * leave = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_ret],
 		NULL, NULL);
@@ -75,12 +75,12 @@ int main()
 	jive_node_gate_input(leave, save_esi, jive_node_gate_output(enter, save_esi));
 	jive_node_gate_input(leave, save_edi, jive_node_gate_output(enter, save_edi));
 	
-	jive_node * load_a = (jive_node *) jive_instruction_node_create(
+	jive_node * load_a = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load32_disp],
 		(jive_output *[]){stackptr}, (long[]){4});
 	
-	jive_node * load_b = (jive_node *) jive_instruction_node_create(
+	jive_node * load_b = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load32_disp],
 		(jive_output *[]){stackptr}, (long[]){8});

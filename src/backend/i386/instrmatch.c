@@ -38,7 +38,7 @@ match_bitbinary(jive_node * node, const jive_regselector * regselector)
 		};
 		
 		jive_node * add;
-		add = (jive_node *) jive_instruction_node_create(node->region,
+		add = jive_instruction_node_create(node->region,
 			&jive_i386_instructions[jive_i386_int_add],
 			(jive_output *[]){node->inputs[0]->origin, node->inputs[1]->origin}, NULL);
 		jive_output_replace(node->outputs[0], add->outputs[0]);
