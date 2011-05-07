@@ -1,6 +1,7 @@
 simple-function
 simple-regalloc
 simple-match
+abstract-match
 arithmetic-function
 dotproduct
 match

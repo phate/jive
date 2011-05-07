@@ -4,11 +4,10 @@
 #include <jive/arch/subroutine.h>
 
 struct jive_region;
+struct jive_node;
 
-jive_subroutine *
-jive_i386_subroutine_create(
-	struct jive_region * region,
-	size_t narguments, const jive_argument_type arguments[],
-	jive_argument_type return_type);
+/* convert according to "default" ABI */
+jive_node *
+jive_i386_subroutine_convert(struct jive_region * target_parent, struct jive_node * lambda_node);
 
 #endif

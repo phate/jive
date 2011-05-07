@@ -3,6 +3,7 @@ LIBJIVE_I386_SRC = \
 	registerset.c \
 	classifier.c \
 	instrmatch.c \
+	subroutine.c \
 
 LIBJIVE_SRC += \
 	$(patsubst %, src/backend/i386/%, $(LIBJIVE_I386_SRC))
