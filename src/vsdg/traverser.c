@@ -47,7 +47,8 @@ jive_traversal_state_alloc_nodestate(const jive_traversal_state * self, jive_nod
 const jive_traverser_class JIVE_TRAVERSER = {
 	.parent = 0,
 	.fini = _jive_traverser_fini,
-	.next = 0
+	.pass = 0,
+	.state_lookup = 0,
 };
 
 void
@@ -78,12 +79,33 @@ jive_traverser_add_frontier(jive_traverser * self, jive_traversal_state * state_
 	nodestate->traverser = self;
 }
 
+jive_node *
+jive_traverser_next(jive_traverser * self)
+{
+	if (!self->frontier.first)
+		return 0;
+	
+	jive_traversal_nodestate * nodestate = self->frontier.first;
+	jive_node * node = nodestate->node;
+	self->class_->pass(self, nodestate);
+	
+	return node;
+}
+
+void
+jive_traverser_pass(jive_traverser * self, struct jive_node * node)
+{
+	jive_traversal_nodestate * nodestate = self->class_->state_lookup(self, node);
+	self->class_->pass(self, nodestate);
+}
+
 /* full graph traversal */
 
 const jive_traverser_class JIVE_FULL_TRAVERSER = {
 	.parent = &JIVE_TRAVERSER,
 	.fini = _jive_full_traverser_fini,
-	.next = 0
+	.pass = 0,
+	.state_lookup = 0,
 };
 
 void
@@ -115,6 +137,14 @@ void
 jive_full_traverser_add_frontier(jive_full_traverser * self, jive_traversal_nodestate * nodestate)
 {
 	jive_traverser_add_frontier(&self->base, &self->state_tracker, nodestate);
+}
+
+static jive_traversal_nodestate *
+jive_full_traverser_state_lookup_(const jive_traverser * self_, struct jive_node * node)
+{
+	const jive_full_traverser * self = (const jive_full_traverser *) self_;
+	
+	return jive_traversal_state_get_nodestate(&self->state_tracker, node);
 }
 
 /* topdown traversal */
@@ -188,14 +218,13 @@ _jive_topdown_traverser_init(jive_full_traverser * self, jive_graph * graph)
 	self->input_change = jive_input_change_notifier_slot_connect(&graph->on_input_change, _jive_topdown_traverser_input_change, self);
 }
 
-static jive_node *
-_jive_topdown_traverser_next(jive_traverser * self_)
+static void
+_jive_topdown_traverser_pass(jive_traverser * self_, jive_traversal_nodestate * nodestate)
 {
 	jive_full_traverser * self = (jive_full_traverser *) self_;
-	if (!self->base.frontier.first) return 0;
-	jive_node * node = self->base.frontier.first->node;
-	jive_traversal_nodestate * nodestate = jive_traversal_state_get_nodestate(&self->state_tracker, node);
+	
 	jive_traversal_state_mark_behind(&self->state_tracker, nodestate);
+	jive_node * node = nodestate->node;
 	
 	size_t n;
 	for(n=0; n<node->noutputs; n++) {
@@ -205,14 +234,13 @@ _jive_topdown_traverser_next(jive_traverser * self_)
 			_jive_topdown_traverser_check_node(self, user->node, nodestate);
 		}
 	}
-	
-	return node;
 }
 
 static const jive_traverser_class JIVE_TOPDOWN_TRAVERSER = {
 	.parent = &JIVE_FULL_TRAVERSER,
 	.fini = _jive_full_traverser_fini,
-	.next = _jive_topdown_traverser_next
+	.pass = _jive_topdown_traverser_pass,
+	.state_lookup = jive_full_traverser_state_lookup_
 };
 
 jive_traverser *
@@ -304,14 +332,12 @@ _jive_bottomup_traverser_init(jive_full_traverser * self, jive_graph * graph)
 	self->input_change = jive_input_change_notifier_slot_connect(&graph->on_input_change, _jive_bottomup_traverser_input_change, self);
 }
 
-static jive_node *
-_jive_bottomup_traverser_next(jive_traverser * self_)
+static void
+_jive_bottomup_traverser_pass(jive_traverser * self_, jive_traversal_nodestate * nodestate)
 {
 	jive_full_traverser * self = (jive_full_traverser *) self_;
 	
-	if (!self->base.frontier.first) return 0;
-	jive_node * node = self->base.frontier.first->node;
-	jive_traversal_nodestate * nodestate = jive_traversal_state_get_nodestate(&self->state_tracker, node);
+	jive_node * node = nodestate->node;
 	jive_traversal_state_mark_behind(&self->state_tracker, nodestate);
 	
 	size_t n;
@@ -319,14 +345,13 @@ _jive_bottomup_traverser_next(jive_traverser * self_)
 		jive_traversal_nodestate * nodestate = jive_traversal_state_get_nodestate(&self->state_tracker, node->inputs[n]->origin->node);
 		_jive_bottomup_traverser_check_node(self, node->inputs[n]->origin->node, nodestate);
 	}
-	
-	return node;
 }
 
 static const jive_traverser_class JIVE_BOTTOMUP_TRAVERSER = {
 	.parent = &JIVE_FULL_TRAVERSER,
 	.fini = _jive_full_traverser_fini,
-	.next = _jive_bottomup_traverser_next
+	.pass = _jive_bottomup_traverser_pass,
+	.state_lookup = jive_full_traverser_state_lookup_
 };
 
 jive_traverser *
