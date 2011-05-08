@@ -5,6 +5,7 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
+#include <jive/vsdg/sequence.h>
 
 #include <string.h>
 
@@ -126,10 +127,11 @@ jive_instruction_node_create(
 void
 jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 {
-	jive_traverser * trav = jive_topdown_traverser_create(graph);
+	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
+	jive_seq_node * seq_node;
 	
-	jive_node * node;
-	while( (node = jive_traverser_next(trav)) != 0) {
+	JIVE_LIST_ITERATE(seq_graph->nodes, seq_node, seqnode_list) {
+		jive_node * node = seq_node->node;
 		if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) continue;
 		
 		jive_instruction_node * instr = (jive_instruction_node *) node;
@@ -150,7 +152,7 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 		icls->encode(icls, buffer, inregs, outregs, instr->attrs.immediates);
 	}
 	
-	jive_traverser_destroy(trav);
+	jive_seq_graph_destroy(seq_graph);
 }
 
 static void
