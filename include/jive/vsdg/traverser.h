@@ -6,11 +6,16 @@
 
 struct jive_graph;
 struct jive_node;
+struct jive_region;
 
+typedef struct jive_region_traverser jive_region_traverser;
+typedef struct jive_region_traverser_class jive_region_traverser_class;
 typedef struct jive_traverser jive_traverser;
 typedef struct jive_traverser_class jive_traverser_class;
 typedef struct jive_traversal_nodestate jive_traversal_nodestate;
 typedef struct jive_traversal_state jive_traversal_state;
+
+typedef struct jive_region_traverser_hash jive_region_traverser_hash;
 
 struct jive_traversal_nodestate {
 	struct jive_node * node;
@@ -21,6 +26,15 @@ struct jive_traversal_nodestate {
 		jive_traversal_nodestate * next;
 	} traverser_node_list;
 };
+
+void
+jive_region_traverser_destroy(jive_region_traverser * self);
+
+jive_traverser *
+jive_region_traverser_get_node_traverser(jive_region_traverser * self, struct jive_region * region);
+
+jive_region_traverser *
+jive_bottomup_region_traverser_create(struct jive_graph * graph);
 
 struct jive_traverser {
 	const jive_traverser_class * class_;

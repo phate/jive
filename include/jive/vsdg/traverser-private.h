@@ -14,6 +14,25 @@ struct jive_traversal_state {
 	size_t index;
 };
 
+typedef struct jive_slave_traverser jive_slave_traverser;
+JIVE_DECLARE_HASH_TYPE(jive_region_traverser_hash, jive_slave_traverser, const struct jive_region *, region, hash_chain);
+
+struct jive_region_traverser {
+	const jive_region_traverser_class * class_;
+	
+	struct jive_graph * graph;
+	jive_region_traverser_hash region_hash;
+	jive_traversal_state state_tracker;
+};
+
+struct jive_region_traverser_class {
+	void (*fini)(jive_region_traverser * self);
+	
+	void (*pass)(jive_region_traverser * self, jive_traversal_nodestate * nodestate);
+};
+
+extern const jive_traverser_class JIVE_SLAVE_TRAVERSER;
+
 extern const jive_traverser_class JIVE_TRAVERSER;
 
 void
