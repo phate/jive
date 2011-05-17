@@ -6,7 +6,7 @@
 /* inheritable instruction node member functions */
 
 void
-_jive_instruction_node_init(
+_jive_instruction_node_init_simple(
 	jive_instruction_node * self,
 	struct jive_region * region,
 	const jive_instruction_class * icls,
