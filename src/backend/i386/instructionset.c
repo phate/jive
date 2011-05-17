@@ -19,7 +19,7 @@ jive_i386_encode_simple(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	jive_buffer_putbyte(target, icls->code);
 }
@@ -29,11 +29,11 @@ jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	int reg = outputs[0]->code;
 	jive_buffer_putbyte(target, icls->code|reg);
-	uint32_t immediate = cpu_to_le32(immediates[0]);
+	uint32_t immediate = cpu_to_le32(immediates[0].offset);
 	jive_buffer_put(target, &immediate, 4);
 }
 
@@ -68,9 +68,9 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
-	uint32_t displacement = immediates[0];
+	uint32_t displacement = immediates[0].offset;
 	const jive_register_name * r1 = inputs[0], * r2;
 	if (icls->code == 0x89)
 		r2 = inputs[1];
@@ -87,7 +87,7 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
@@ -103,7 +103,7 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
@@ -120,11 +120,11 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	int r1 = inputs[0]->code;
 	DEBUG_ASSERT(r1 == outputs[0]->code);
-	int32_t immediate = immediates[0];
+	int32_t immediate = immediates[0].offset;
 	
 	bool long_form = (immediate>127) || (immediate<-128);
 	
@@ -150,7 +150,7 @@ jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	int r1 = inputs[0]->code;
 	
@@ -165,7 +165,7 @@ jive_i386_encode_regmove(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const long immediates[])
+	const jive_immediate immediates[])
 {
 	int r1 = outputs[0]->code;
 	int r2 = inputs[0]->code;
