@@ -83,11 +83,11 @@ jive_buffer_fini(jive_buffer * self)
 /**
 	\brief Reserve space in buffer
 	
-	\param buffer Buffer to append to
+	\param self Buffer to append to
 	\param size Number of bytes to append
 	\returns Pointer to first byte to be written, or NULL if resizing failed
 	
-	Resizes @c buffer such that at least @c size additional bytes
+	Resizes @c self such that at least @c size additional bytes
 	fit in. The newly-reserved space is uninitialized and should
 	immediately be filled with data.
 	
