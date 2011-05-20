@@ -231,6 +231,65 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 }
 
 static void
+emit_labels(jive_seq_node * seq_node, jive_buffer * buffer, bool after_node)
+{
+	size_t n;
+	for(n = 0; n < seq_node->attached_labels.nitems; n++) {
+		const jive_label_internal * label = seq_node->attached_labels.items[n];
+		const char * name = jive_label_internal_get_asmname(label);
+		
+		if (label->base.flags & jive_label_flags_global) {
+			jive_buffer_putstr(buffer, ".globl ");
+			jive_buffer_putstr(buffer, name);
+			jive_buffer_putstr(buffer, "\n");
+		}
+		
+		jive_buffer_putstr(buffer, name);
+		jive_buffer_putstr(buffer,":\n");
+	}
+}
+
+void
+jive_graph_generate_assembler(jive_graph * graph, struct jive_buffer * buffer)
+{
+	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
+	
+	jive_seq_node * seq_node;
+	JIVE_LIST_ITERATE(seq_graph->nodes, seq_node, seqnode_list) {
+		emit_labels(seq_node, buffer, false);
+		jive_node * node = seq_node->node;
+		if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) continue;
+		
+		jive_instruction_node * instr = (jive_instruction_node *) node;
+		const jive_instruction_class * icls = instr->attrs.icls;
+		
+		const jive_register_name * inregs[icls->ninputs];
+		const jive_register_name * outregs[icls->noutputs];
+		size_t n;
+		for(n=0; n<icls->ninputs; n++) {
+			const jive_resource_name * resname = jive_variable_get_resource_name(node->inputs[n]->ssavar->variable);
+			inregs[n] = (const jive_register_name *)resname;
+		}
+		for(n=0; n<icls->noutputs; n++) {
+			const jive_resource_name * resname = jive_variable_get_resource_name(node->outputs[n]->ssavar->variable);
+			outregs[n] = (const jive_register_name *)resname;
+		}
+		
+		jive_buffer_putstr(buffer, "\t");
+		if (icls->write_asm)
+			icls->write_asm(icls, buffer, inregs, outregs, instr->attrs.immediates);
+		else {
+			jive_buffer_putstr(buffer, "; ");
+			jive_buffer_put(buffer, icls->name, strlen(icls->name));
+		}
+		
+		jive_buffer_putstr(buffer, "\n");
+	}
+	
+	jive_seq_graph_destroy(seq_graph);
+}
+
+static void
 jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
         jive_buffer * target,
         const jive_register_name * inputs[],

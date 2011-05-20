@@ -213,4 +213,7 @@ sophisticated interface later */
 void
 jive_graph_generate_code(struct jive_graph * graph, struct jive_buffer * buffer);
 
+void
+jive_graph_generate_assembler(struct jive_graph * graph, struct jive_buffer * buffer);
+
 #endif
