@@ -5,11 +5,12 @@
 
 #include <jive/context.h>
 #include <jive/arch/registers.h>
+#include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
 #include <jive/bitstring/type.h>
 
 struct jive_buffer;
-struct jive_asm_label;
+struct jive_label;
 
 typedef struct jive_instruction_class jive_instruction_class;
 typedef struct jive_instruction_node jive_instruction_node;
@@ -17,14 +18,14 @@ typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
 typedef struct jive_immediate jive_immediate;
 
 struct jive_immediate {
-	unsigned long long offset;
-	const struct jive_asm_label * add_label;
-	const struct jive_asm_label * sub_label;
+	jive_addr offset;
+	const struct jive_label * add_label;
+	const struct jive_label * sub_label;
 	const void * modifier;
 };
 
 static inline void
-jive_immediate_init(jive_immediate * self, unsigned long long offset, const struct jive_asm_label * add_label, const struct jive_asm_label * sub_label, const void * modifier)
+jive_immediate_init(jive_immediate * self, jive_addr offset, const struct jive_label * add_label, const struct jive_label * sub_label, const void * modifier)
 {
 	self->offset = offset;
 	self->add_label = add_label;
@@ -36,10 +37,10 @@ static inline jive_immediate
 jive_immediate_add(const jive_immediate * a, const jive_immediate * b)
 {
 	jive_immediate tmp;
-	const struct jive_asm_label * add1 = a->add_label;
-	const struct jive_asm_label * add2 = b->add_label;
-	const struct jive_asm_label * sub1 = a->sub_label;
-	const struct jive_asm_label * sub2 = b->sub_label;
+	const struct jive_label * add1 = a->add_label;
+	const struct jive_label * add2 = b->add_label;
+	const struct jive_label * sub1 = a->sub_label;
+	const struct jive_label * sub2 = b->sub_label;
 	
 	if (add1 == sub2) {
 		add1 = 0;
@@ -51,12 +52,12 @@ jive_immediate_add(const jive_immediate * a, const jive_immediate * b)
 		sub1 = 0;
 	}
 	
-	unsigned long long offset = a->offset + b->offset;
+	jive_addr offset = a->offset + b->offset;
 	
 	if ((add1 && add2) || (sub1 && sub2) || (a->modifier || b->modifier)) {
-		jive_immediate_init(&tmp, (unsigned long long) -1,
-			(const struct jive_asm_label *) -1,
-			(const struct jive_asm_label *) -1,
+		jive_immediate_init(&tmp, (jive_addr) -1,
+			(const struct jive_label *) -1,
+			(const struct jive_label *) -1,
 			(const void *) -1);
 	} else {
 		jive_immediate_init(&tmp, offset, add1 ? add1 : add2, sub1 ? sub1 : sub2, NULL);
@@ -69,10 +70,10 @@ static inline jive_immediate
 jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 {
 	jive_immediate tmp;
-	const struct jive_asm_label * add1 = a->add_label;
-	const struct jive_asm_label * add2 = b->sub_label;
-	const struct jive_asm_label * sub1 = a->sub_label;
-	const struct jive_asm_label * sub2 = b->add_label;
+	const struct jive_label * add1 = a->add_label;
+	const struct jive_label * add2 = b->sub_label;
+	const struct jive_label * sub1 = a->sub_label;
+	const struct jive_label * sub2 = b->add_label;
 	
 	if (add1 == sub2) {
 		add1 = 0;
@@ -84,12 +85,12 @@ jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 		sub1 = 0;
 	}
 	
-	unsigned long long offset = a->offset - b->offset;
+	jive_addr offset = a->offset - b->offset;
 	
 	if ((add1 && add2) || (sub1 && sub2) || (a->modifier || b->modifier)) {
-		jive_immediate_init(&tmp, (unsigned long long) -1,
-			(const struct jive_asm_label *) -1,
-			(const struct jive_asm_label *) -1,
+		jive_immediate_init(&tmp, (jive_addr) -1,
+			(const struct jive_label *) -1,
+			(const struct jive_label *) -1,
 			(const void *) -1);
 	} else {
 		jive_immediate_init(&tmp, offset, add1 ? add1 : add2, sub1 ? sub1 : sub2, NULL);
@@ -99,7 +100,7 @@ jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 }
 
 static inline jive_immediate
-jive_immediate_add_offset(jive_immediate * self, unsigned long long offset)
+jive_immediate_add_offset(jive_immediate * self, jive_addr offset)
 {
 	jive_immediate tmp = *self;
 	tmp.offset += offset;
