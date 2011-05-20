@@ -42,7 +42,7 @@ static inline void *
 jive_buffer_reserve(jive_buffer * self, size_t size);
 
 static inline bool
-jive_buffer_put(jive_buffer * self, void * data, size_t size);
+jive_buffer_put(jive_buffer * self, const void * data, size_t size);
 
 static inline bool
 jive_buffer_putbyte(jive_buffer * self, unsigned char byte);
@@ -106,6 +106,23 @@ jive_buffer_reserve(jive_buffer * self, size_t size)
 }
 
 /**
+	\brief Resize buffer
+	
+	\param self Buffer to be resized
+	\param size New size of buffer in bytes
+	
+	Resizes the given buffer to the desired size. The data will be
+	truncated or expanded with undefined values.
+*/
+static inline void
+jive_buffer_resize(jive_buffer * self, size_t new_size)
+{
+	if (new_size > self->available)
+		jive_buffer_reserve_slow(self, new_size - self->available);
+	self->size = new_size;
+}
+
+/**
 	\brief Append to buffer
 	
 	\param buffer Buffer to append to
@@ -118,12 +135,18 @@ jive_buffer_reserve(jive_buffer * self, size_t size)
 	condition.
 */
 static inline bool
-jive_buffer_put(jive_buffer * self, void * data, size_t size)
+jive_buffer_put(jive_buffer * self, const void * data, size_t size)
 {
 	void * ptr = jive_buffer_reserve(self, size);
 	if (!ptr) return false;
 	memcpy(ptr, data, size);
 	return true;
+}
+
+static inline bool
+jive_buffer_putstr(jive_buffer * self, const char * str)
+{
+	return jive_buffer_put(self, str, strlen(str));
 }
 
 /**
