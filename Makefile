@@ -13,6 +13,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/negotiator.c \
 	src/vsdg/substitution.c \
 	src/vsdg/sequence.c \
+	src/vsdg/label.c \
 
 # visualization
 LIBJIVE_SRC += \

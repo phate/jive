@@ -1,4 +1,5 @@
 #include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/label.h>
 #include <jive/vsdg/region-private.h>
 #include <jive/vsdg/traverser-private.h>
 #include <jive/vsdg/variable.h>
@@ -29,6 +30,7 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	self->top.first = self->top.last = 0;
 	self->bottom.first = self->bottom.last = 0;
 	self->gates.first = self->gates.last = 0;
+	self->labels.first = self->labels.last = 0;
 	self->resources_fully_assigned = false;
 	
 	jive_region_notifier_slot_init(&self->on_region_create, context);
@@ -88,6 +90,12 @@ prune_regions_recursive(jive_region * region)
 static void
 _jive_graph_fini(jive_graph * self)
 {
+	while(self->labels.first) {
+		jive_label_internal * label = self->labels.first;
+		label->base.class_->fini(&label->base);
+		jive_context_free(self->context, label);
+	}
+	
 	while(self->bottom.first) {
 		jive_graph_prune(self);
 		jive_node * node;

@@ -15,6 +15,7 @@ struct jive_node;
 struct jive_region;
 struct jive_gate;
 struct jive_traverser_graphstate;
+struct jive_label_internal;
 
 struct jive_value_resource;
 
@@ -58,6 +59,11 @@ struct jive_graph {
 		struct jive_variable * first;
 		struct jive_variable * last;
 	} unused_variables;
+	
+	struct {
+		struct jive_label_internal * first;
+		struct jive_label_internal * last;
+	} labels;
 	
 	bool resources_fully_assigned;
 	
