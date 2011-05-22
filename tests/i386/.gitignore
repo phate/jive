@@ -2,6 +2,7 @@ simple-function
 simple-regalloc
 simple-match
 abstract-match
+named-function-def
 arithmetic-function
 dotproduct
 match
