@@ -3,6 +3,8 @@
 
 #include <jive/util/hash.h>
 
+#include <jive/vsdg/label.h>
+
 struct jive_graph;
 struct jive_node;
 struct jive_region;
@@ -13,6 +15,7 @@ typedef struct jive_seq_region jive_seq_region;
 
 struct jive_seq_node {
 	struct jive_node * node;
+	jive_seq_graph * seq_graph;
 	struct {
 		jive_seq_node * prev;
 		jive_seq_node * next;
@@ -21,6 +24,14 @@ struct jive_seq_node {
 		jive_seq_node * prev;
 		jive_seq_node * next;
 	} hash_chain;
+	
+	struct {
+		jive_label_internal ** items;
+		size_t nitems, space;
+	} attached_labels;
+	
+	size_t size;
+	jive_addr address;
 };
 
 struct jive_seq_region {
@@ -57,6 +68,8 @@ struct jive_seq_graph {
 	
 	jive_seq_node_hash node_map;
 	jive_seq_region_hash region_map;
+	
+	bool addrs_changed;
 };
 
 /**
