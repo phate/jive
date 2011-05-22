@@ -89,6 +89,18 @@ jive_graph_sequentialize(jive_graph * graph)
 	return seq;
 }
 
+jive_seq_node *
+jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node)
+{
+	return jive_seq_node_hash_lookup(&seq->node_map, node);
+}
+
+jive_seq_region *
+jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region)
+{
+	return jive_seq_region_hash_lookup(&seq->region_map, region);
+}
+
 void
 jive_seq_graph_destroy(jive_seq_graph * seq)
 {

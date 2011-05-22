@@ -68,4 +68,10 @@ jive_graph_sequentialize(struct jive_graph * graph);
 void
 jive_seq_graph_destroy(jive_seq_graph * seq);
 
+jive_seq_node *
+jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node);
+
+jive_seq_region *
+jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region);
+
 #endif
