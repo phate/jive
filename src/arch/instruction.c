@@ -241,7 +241,8 @@ jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
 
 const jive_instruction_class JIVE_PSEUDO_NOP = {
 	.name = "PSEUDO_NOP",
+	.mnemonic = "",
 	.encode = jive_encode_PSEUDO_NOP,
-	.mnemonic = jive_encode_PSEUDO_NOP,
+	.write_asm = jive_encode_PSEUDO_NOP,
 	.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0
 };

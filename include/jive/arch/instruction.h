@@ -126,8 +126,11 @@ typedef enum {
 } jive_instruction_flags;
 
 struct jive_instruction_class {
-	/** \brief Descriptive name of instruction, probably mnemonic name */
+	/** \brief Descriptive name of instruction */
 	const char * name;
+	
+	/** \brief Mnemonic name of instruction */
+	const char * mnemonic;
 	
 	/**
 		\brief Generate code
@@ -146,7 +149,7 @@ struct jive_instruction_class {
 		\param target Target buffer to put mnemonic instruction into
 		\param instruction Instruction to encode
 	*/
-	void (*mnemonic)(
+	void (*write_asm)(
 		const jive_instruction_class * icls,
 		struct jive_buffer * target,
 		const jive_register_name * inputs[],
