@@ -14,6 +14,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/substitution.c \
 	src/vsdg/sequence.c \
 	src/vsdg/label.c \
+	src/vsdg/objdef.c \
 
 # visualization
 LIBJIVE_SRC += \
