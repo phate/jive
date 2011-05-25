@@ -288,3 +288,84 @@ jive_theta_create(
 	}
 	return theta;
 }
+
+jive_node *
+jive_control_false_create(jive_region * region)
+{
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	JIVE_DECLARE_CONTROL_TYPE(control);
+	self->class_ = &JIVE_CONTROL_FALSE_NODE;
+	_jive_node_init(self, region,
+		0, NULL, NULL,
+		1, &control);
+	
+	return self;
+}
+
+jive_node *
+jive_control_true_create(jive_region * region)
+{
+	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	JIVE_DECLARE_CONTROL_TYPE(control);
+	self->class_ = &JIVE_CONTROL_TRUE_NODE;
+	_jive_node_init(self, region,
+		0, NULL, NULL,
+		1, &control);
+	
+	return self;
+}
+
+jive_output *
+jive_control_false(jive_graph * graph)
+{
+	return jive_control_false_create(graph->root_region)->outputs[0];
+}
+
+jive_output *
+jive_control_true(jive_graph * graph)
+{
+	return jive_control_true_create(graph->root_region)->outputs[0];
+}
+
+static jive_node *
+jive_control_false_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 0);
+	
+	return jive_control_false_create(region);
+}
+
+static jive_node *
+jive_control_true_node_create_(jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 0);
+	
+	return jive_control_true_create(region);
+}
+
+
+const jive_node_class JIVE_CONTROL_FALSE_NODE = {
+	.parent = &JIVE_NODE,
+	.name = "FALSE",
+	.fini = _jive_node_fini,  /* inherit */
+	.get_default_normal_form = _jive_node_get_default_normal_form,  /* inherit */
+	.get_label = _jive_node_get_label,  /* inherit */
+	.get_attrs = _jive_node_get_attrs,  /* inherit */
+	.match_attrs = _jive_node_match_attrs,  /* inherit */
+	.create = jive_control_false_node_create_,  /* override */
+	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
+};
+
+const jive_node_class JIVE_CONTROL_TRUE_NODE = {
+	.parent = &JIVE_NODE,
+	.name = "TRUE",
+	.fini = _jive_node_fini,  /* inherit */
+	.get_default_normal_form = _jive_node_get_default_normal_form,  /* inherit */
+	.get_label = _jive_node_get_label,  /* inherit */
+	.get_attrs = _jive_node_get_attrs,  /* inherit */
+	.match_attrs = _jive_node_match_attrs,  /* inherit */
+	.create = jive_control_true_node_create_,  /* override */
+	.get_aux_rescls = _jive_node_get_aux_rescls  /* inherit */
+};
