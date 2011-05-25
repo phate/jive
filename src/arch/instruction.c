@@ -198,7 +198,10 @@ generate_code(jive_seq_graph * seq_graph, struct jive_buffer * buffer)
 		}
 		
 		jive_addr addr = buffer->size;
-		icls->encode(icls, buffer, inregs, outregs, instr->attrs.immediates);
+		jive_instruction_encoding_flags flags;
+		flags = (jive_instruction_encoding_flags) seq_node->flags;
+		icls->encode(icls, buffer, inregs, outregs, instr->attrs.immediates, &flags);
+		seq_node->flags = (uint32_t) flags;
 		size_t size = buffer->size - addr;
 		
 		if (addr != seq_node->address || size != seq_node->size) {
@@ -275,10 +278,14 @@ jive_graph_generate_assembler(jive_graph * graph, struct jive_buffer * buffer)
 			outregs[n] = (const jive_register_name *)resname;
 		}
 		
+		
 		jive_buffer_putstr(buffer, "\t");
-		if (icls->write_asm)
-			icls->write_asm(icls, buffer, inregs, outregs, instr->attrs.immediates);
-		else {
+		if (icls->write_asm) {
+			jive_instruction_encoding_flags flags;
+			flags = (jive_instruction_encoding_flags) seq_node->flags;
+			icls->write_asm(icls, buffer, inregs, outregs, instr->attrs.immediates, &flags);
+			seq_node->flags = (uint32_t) flags;
+		} else {
 			jive_buffer_putstr(buffer, "; ");
 			jive_buffer_put(buffer, icls->name, strlen(icls->name));
 		}
@@ -291,10 +298,11 @@ jive_graph_generate_assembler(jive_graph * graph, struct jive_buffer * buffer)
 
 static void
 jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
-        jive_buffer * target,
-        const jive_register_name * inputs[],
-        const jive_register_name * outputs[],
-        const jive_immediate immediates[])
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 }
 

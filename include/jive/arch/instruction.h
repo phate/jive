@@ -125,6 +125,30 @@ typedef enum {
 	jive_instruction_commutative = (1<<8)
 } jive_instruction_flags;
 
+typedef enum {
+	jive_instruction_encoding_flags_none = 0,
+	/* if branch, primary target is not subsequent instruction */
+	jive_instruction_encoding_flags_primary_branch_target = (1<<1),
+	/* if branch, secondary target is not subsequent instruction */
+	jive_instruction_encoding_flags_secondary_branch_target = (1<<2),
+	
+	/* the following flags may be updated by instruction encoding itself
+	
+	instructions may (depending on label distance etc.) have to choose
+	between different displacement sizes, depending on labels; the idea is
+	to start out conservative, but allow the instruction to "expand" its
+	encoded size in case it does not fit (but never shrink) */
+	
+	jive_instruction_encoding_flags_option0 = (1<<16),
+	jive_instruction_encoding_flags_option1 = (1<<17),
+	jive_instruction_encoding_flags_option2 = (1<<18),
+	jive_instruction_encoding_flags_option3 = (1<<19),
+	jive_instruction_encoding_flags_option4 = (1<<20),
+	jive_instruction_encoding_flags_option5 = (1<<21),
+	jive_instruction_encoding_flags_option6 = (1<<22),
+	jive_instruction_encoding_flags_option7 = (1<<23),
+} jive_instruction_encoding_flags;
+
 struct jive_instruction_class {
 	/** \brief Descriptive name of instruction */
 	const char * name;
@@ -142,7 +166,8 @@ struct jive_instruction_class {
 		struct jive_buffer * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
-		const jive_immediate immediates[]);
+		const jive_immediate immediates[],
+		jive_instruction_encoding_flags * flags);
 	
 	/**
 		\brief Generate mnemonic
@@ -154,7 +179,8 @@ struct jive_instruction_class {
 		struct jive_buffer * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
-		const jive_immediate immediates[]);
+		const jive_immediate immediates[],
+		jive_instruction_encoding_flags * flags);
 	
 	const jive_register_class * const * inregs;
 	const jive_register_class * const * outregs;

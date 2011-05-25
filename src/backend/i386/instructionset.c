@@ -44,7 +44,8 @@ jive_i386_encode_simple(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putbyte(target, icls->code);
 }
@@ -54,7 +55,8 @@ jive_i386_asm_simple(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 }
@@ -64,7 +66,8 @@ jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	int reg = outputs[0]->code;
 	jive_buffer_putbyte(target, icls->code|reg);
@@ -77,7 +80,8 @@ jive_i386_asm_int_load_imm(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t");
@@ -117,7 +121,8 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	uint32_t displacement = immediates[0].offset;
 	const jive_register_name * r1 = inputs[0], * r2;
@@ -136,7 +141,8 @@ jive_i386_asm_load(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t");
@@ -150,7 +156,8 @@ jive_i386_asm_store(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t %");
@@ -164,7 +171,8 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
@@ -180,7 +188,8 @@ jive_i386_asm_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t%");
@@ -194,7 +203,8 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
@@ -211,7 +221,8 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
 	DEBUG_ASSERT(r1 == outputs[0]->code);
@@ -241,7 +252,8 @@ jive_i386_asm_regimm(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t$");
@@ -255,7 +267,8 @@ jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
 	
@@ -270,7 +283,8 @@ jive_i386_asm_unaryreg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t%");
@@ -282,7 +296,8 @@ jive_i386_encode_regmove(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	int r1 = outputs[0]->code;
 	int r2 = inputs[0]->code;
@@ -296,7 +311,8 @@ jive_i386_asm_regmove(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[])
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t%");
