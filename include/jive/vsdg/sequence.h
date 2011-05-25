@@ -32,6 +32,7 @@ struct jive_seq_node {
 	
 	size_t size;
 	jive_addr address;
+	uint32_t flags;
 };
 
 struct jive_seq_region {

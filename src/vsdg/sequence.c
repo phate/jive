@@ -14,6 +14,7 @@ jive_seq_node_create(jive_seq_graph * seq, jive_node * node)
 	jive_seq_node_hash_insert(&seq->node_map, self);
 	self->size = 0;
 	self->address = 0;
+	self->flags = 0;
 	self->attached_labels.items = 0;
 	self->attached_labels.nitems = self->attached_labels.space = 0;
 	return self;
