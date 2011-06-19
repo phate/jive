@@ -33,7 +33,7 @@ jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_r
 	self->shaped_graph = shaped_graph;
 	self->region = region;
 	self->cuts.first = self->cuts.last = NULL;
-	jive_cutvar_xpoint_hash_byssavar_init(&self->ssavar_xpoints, context);
+	jive_region_varcut_init(&self->active_top, self);
 	
 	jive_shaped_region_hash_insert(&shaped_graph->region_map, self);
 	
@@ -77,7 +77,7 @@ void
 jive_shaped_region_destroy(jive_shaped_region * self)
 {
 	jive_shaped_region_destroy_cuts(self);
-	jive_cutvar_xpoint_hash_byssavar_fini(&self->ssavar_xpoints);
+	jive_region_varcut_fini(&self->active_top);
 	jive_shaped_region_hash_remove(&self->shaped_graph->region_map, self);
 	jive_context_free(self->shaped_graph->context, self);
 }

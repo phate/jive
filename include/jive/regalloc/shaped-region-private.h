@@ -6,19 +6,13 @@
 static inline void
 jive_shaped_region_add_active_top(jive_shaped_region * self, struct jive_shaped_ssavar * shaped_ssavar, size_t count)
 {
-	jive_cutvar_xpoint * xpoint = jive_cutvar_xpoint_hash_byregion_lookup(&shaped_ssavar->region_xpoints, self);
-	if (!xpoint)
-		xpoint = jive_cutvar_xpoint_create(self, shaped_ssavar);
-	xpoint->count += count;
+	jive_region_varcut_ssavar_add(&self->active_top, shaped_ssavar, count);
 }
 
 static inline void
 jive_shaped_region_remove_active_top(jive_shaped_region * self, struct jive_shaped_ssavar * shaped_ssavar, size_t count)
 {
-	jive_cutvar_xpoint * xpoint = jive_cutvar_xpoint_hash_byregion_lookup(&shaped_ssavar->region_xpoints, self);
-	xpoint->count -= count;
-	if (xpoint->count == 0)
-		jive_cutvar_xpoint_destroy(xpoint);
+	jive_region_varcut_ssavar_remove(&self->active_top, shaped_ssavar, count);
 }
 
 #endif
