@@ -273,5 +273,6 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		}
 	}
 	
+	jive_node_notifier_slot_call(&shaped_graph->on_shaped_node_create, node);
 	return shaped_node;
 }

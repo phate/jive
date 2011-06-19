@@ -39,6 +39,8 @@ struct jive_shaped_graph {
 	
 	jive_var_assignment_tracker var_assignment_tracker;
 	
+	jive_node_notifier_slot on_shaped_node_create;
+	jive_node_notifier_slot on_shaped_node_destroy;
 	jive_shaped_region_ssavar_notifier_slot on_shaped_region_ssavar_add;
 	jive_shaped_region_ssavar_notifier_slot on_shaped_region_ssavar_remove;
 };

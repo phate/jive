@@ -249,6 +249,8 @@ jive_shaped_graph_create(jive_graph * graph)
 	jive_shaped_node_hash_init(&self->node_map, context);
 	jive_var_assignment_tracker_init(&self->var_assignment_tracker, context);
 	
+	jive_node_notifier_slot_init(&self->on_shaped_node_create, context);
+	jive_node_notifier_slot_init(&self->on_shaped_node_destroy, context);
 	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_add, context);
 	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_remove, context);
 	
@@ -317,6 +319,8 @@ jive_shaped_graph_destroy(jive_shaped_graph * self)
 	jive_shaped_region_hash_fini(&self->region_map);
 	jive_var_assignment_tracker_fini(&self->var_assignment_tracker);
 	
+	jive_node_notifier_slot_fini(&self->on_shaped_node_create);
+	jive_node_notifier_slot_fini(&self->on_shaped_node_destroy);
 	jive_shaped_region_ssavar_notifier_slot_fini(&self->on_shaped_region_ssavar_add);
 	jive_shaped_region_ssavar_notifier_slot_fini(&self->on_shaped_region_ssavar_remove);
 	
