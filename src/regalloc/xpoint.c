@@ -35,32 +35,32 @@ jive_nodevar_xpoint_destroy(jive_nodevar_xpoint * xpoint)
 	jive_context_free(context, xpoint);
 }
 
-jive_tpoint *
-jive_tpoint_create(jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar)
+jive_cutvar_xpoint *
+jive_cutvar_xpoint_create(jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar)
 {
 	jive_context * context = shaped_region->shaped_graph->context;
 	
-	jive_tpoint * tpoint = jive_context_malloc(context, sizeof(*tpoint));
-	tpoint->shaped_region = shaped_region;
-	tpoint->shaped_ssavar = shaped_ssavar;
-	tpoint->count = 0;
+	jive_cutvar_xpoint * xpoint = jive_context_malloc(context, sizeof(*xpoint));
+	xpoint->shaped_region = shaped_region;
+	xpoint->shaped_ssavar = shaped_ssavar;
+	xpoint->count = 0;
 	
-	jive_ssavar_tpoint_hash_insert(&shaped_region->ssavar_tpoints, tpoint);
-	jive_region_tpoint_hash_insert(&shaped_ssavar->region_tpoints, tpoint);
+	jive_cutvar_xpoint_hash_byssavar_insert(&shaped_region->ssavar_xpoints, xpoint);
+	jive_cutvar_xpoint_hash_byregion_insert(&shaped_ssavar->region_xpoints, xpoint);
 	
-	return tpoint;
+	return xpoint;
 }
 
 void
-jive_tpoint_destroy(jive_tpoint * tpoint)
+jive_cutvar_xpoint_destroy(jive_cutvar_xpoint * xpoint)
 {
-	jive_shaped_region * shaped_region = tpoint->shaped_region;
-	jive_shaped_ssavar * shaped_ssavar = tpoint->shaped_ssavar;
+	jive_shaped_region * shaped_region = xpoint->shaped_region;
+	jive_shaped_ssavar * shaped_ssavar = xpoint->shaped_ssavar;
 	jive_context * context = shaped_region->shaped_graph->context;
 	
-	jive_ssavar_tpoint_hash_remove(&shaped_region->ssavar_tpoints, tpoint);
-	jive_region_tpoint_hash_remove(&shaped_ssavar->region_tpoints, tpoint);
+	jive_cutvar_xpoint_hash_byssavar_remove(&shaped_region->ssavar_xpoints, xpoint);
+	jive_cutvar_xpoint_hash_byregion_remove(&shaped_ssavar->region_xpoints, xpoint);
 	
-	jive_context_free(context, tpoint);
+	jive_context_free(context, xpoint);
 }
 

@@ -27,7 +27,7 @@ struct jive_shaped_region {
 		jive_cut * last;
 	} cuts;
 	
-	jive_ssavar_tpoint_hash ssavar_tpoints;
+	jive_cutvar_xpoint_hash_byssavar ssavar_xpoints;
 };
 
 struct jive_shaped_node;

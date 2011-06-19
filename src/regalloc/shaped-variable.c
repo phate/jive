@@ -237,7 +237,7 @@ jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_s
 	jive_shaped_ssavar_hash_insert(&shaped_graph->ssavar_map, self);
 	
 	jive_nodevar_xpoint_hash_bynode_init(&self->node_xpoints, context);
-	jive_region_tpoint_hash_init(&self->region_tpoints, context);
+	jive_cutvar_xpoint_hash_byregion_init(&self->region_xpoints, context);
 	
 	return self;
 }
@@ -381,9 +381,9 @@ void
 jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 {
 	JIVE_DEBUG_ASSERT(self->node_xpoints.nitems == 0);
-	JIVE_DEBUG_ASSERT(self->region_tpoints.nitems == 0);
+	JIVE_DEBUG_ASSERT(self->region_xpoints.nitems == 0);
 	jive_nodevar_xpoint_hash_bynode_fini(&self->node_xpoints);
-	jive_region_tpoint_hash_fini(&self->region_tpoints);
+	jive_cutvar_xpoint_hash_byregion_fini(&self->region_xpoints);
 	jive_shaped_ssavar_hash_remove(&self->shaped_graph->ssavar_map, self);
 	jive_context_free(self->shaped_graph->context, self);
 }

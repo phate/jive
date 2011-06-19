@@ -88,7 +88,7 @@ struct jive_shaped_ssavar {
 	} hash_chain;
 	
 	jive_nodevar_xpoint_hash_bynode node_xpoints;
-	jive_region_tpoint_hash region_tpoints;
+	jive_cutvar_xpoint_hash_byregion region_xpoints;
 	
 	size_t boundary_region_depth;
 };
