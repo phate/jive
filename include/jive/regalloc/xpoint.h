@@ -3,14 +3,14 @@
 
 #include <jive/util/hash.h>
 
-typedef struct jive_xpoint jive_xpoint;
+typedef struct jive_nodevar_xpoint jive_nodevar_xpoint;
 typedef struct jive_tpoint jive_tpoint;
 
 struct jive_shaped_node;
 struct jive_shaped_region;
 struct jive_shaped_ssavar;
 
-struct jive_xpoint {
+struct jive_nodevar_xpoint {
 	struct jive_shaped_node * shaped_node;
 	struct jive_shaped_ssavar * shaped_ssavar;
 	
@@ -19,21 +19,21 @@ struct jive_xpoint {
 	size_t after_count;
 	
 	struct {
-		struct jive_xpoint * prev;
-		struct jive_xpoint * next;
+		struct jive_nodevar_xpoint * prev;
+		struct jive_nodevar_xpoint * next;
 	} node_hash_chain;
 	
 	struct {
-		struct jive_xpoint * prev;
-		struct jive_xpoint * next;
+		struct jive_nodevar_xpoint * prev;
+		struct jive_nodevar_xpoint * next;
 	} ssavar_hash_chain;
 };
 
-JIVE_DECLARE_HASH_TYPE(jive_node_xpoint_hash, jive_xpoint, struct jive_shaped_node *, shaped_node, node_hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_ssavar_xpoint_hash, jive_xpoint, struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_nodevar_xpoint_hash_bynode, jive_nodevar_xpoint, struct jive_shaped_node *, shaped_node, node_hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_nodevar_xpoint_hash_byssavar, jive_nodevar_xpoint, struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
 
-typedef struct jive_node_xpoint_hash jive_node_xpoint_hash;
-typedef struct jive_ssavar_xpoint_hash jive_ssavar_xpoint_hash;
+typedef struct jive_nodevar_xpoint_hash_bynode jive_nodevar_xpoint_hash_bynode;
+typedef struct jive_nodevar_xpoint_hash_byssavar jive_nodevar_xpoint_hash_byssavar;
 
 struct jive_tpoint {
 	struct jive_shaped_region * shaped_region;

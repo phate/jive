@@ -28,7 +28,7 @@ struct jive_shaped_node {
 		jive_shaped_node * next;
 	} cut_location_list;
 	
-	jive_ssavar_xpoint_hash ssavar_xpoints;
+	jive_nodevar_xpoint_hash_byssavar ssavar_xpoints;
 	jive_resource_class_count use_count_before;
 	jive_resource_class_count use_count_after;
 };
