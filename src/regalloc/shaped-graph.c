@@ -249,6 +249,9 @@ jive_shaped_graph_create(jive_graph * graph)
 	jive_shaped_node_hash_init(&self->node_map, context);
 	jive_var_assignment_tracker_init(&self->var_assignment_tracker, context);
 	
+	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_add, context);
+	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_remove, context);
+	
 	jive_variable * variable;
 	JIVE_LIST_ITERATE(graph->variables, variable, graph_variable_list) {
 		jive_shaped_variable * shaped_variable = jive_shaped_variable_create(self, variable);
@@ -313,6 +316,9 @@ jive_shaped_graph_destroy(jive_shaped_graph * self)
 	jive_shaped_variable_hash_fini(&self->variable_map);
 	jive_shaped_region_hash_fini(&self->region_map);
 	jive_var_assignment_tracker_fini(&self->var_assignment_tracker);
+	
+	jive_shaped_region_ssavar_notifier_slot_fini(&self->on_shaped_region_ssavar_add);
+	jive_shaped_region_ssavar_notifier_slot_fini(&self->on_shaped_region_ssavar_remove);
 	
 	jive_context_free(context, self);
 }

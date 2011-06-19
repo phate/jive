@@ -6,13 +6,17 @@
 static inline void
 jive_shaped_region_add_active_top(jive_shaped_region * self, struct jive_shaped_ssavar * shaped_ssavar, size_t count)
 {
-	jive_region_varcut_ssavar_add(&self->active_top, shaped_ssavar, count);
+	if (jive_region_varcut_ssavar_add(&self->active_top, shaped_ssavar, count) == 0) {
+		jive_shaped_region_ssavar_notifier_slot_call(&self->shaped_graph->on_shaped_region_ssavar_add, self, shaped_ssavar);
+	}
 }
 
 static inline void
 jive_shaped_region_remove_active_top(jive_shaped_region * self, struct jive_shaped_ssavar * shaped_ssavar, size_t count)
 {
-	jive_region_varcut_ssavar_remove(&self->active_top, shaped_ssavar, count);
+	if (jive_region_varcut_ssavar_remove(&self->active_top, shaped_ssavar, count) == count) {
+		jive_shaped_region_ssavar_notifier_slot_call(&self->shaped_graph->on_shaped_region_ssavar_remove, self, shaped_ssavar);
+	}
 }
 
 #endif
