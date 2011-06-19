@@ -40,3 +40,9 @@ check: $(TESTPROGS)
 	@for TEST in $(TESTPROGS); do \
 		echo -n "$$TEST: " ; if $$TEST >>check.log 2>&1 ; then echo pass ; else echo FAIL ; fi ; \
 	done
+
+valgrind-check: $(TESTPROGS)
+	rm -rf check.log
+	@for TEST in $(TESTPROGS); do \
+		echo -n "$$TEST: " ; if valgrind --error-exitcode=1 $$TEST >>check.log 2>&1 ; then echo pass ; else echo FAIL ; fi ; \
+	done
