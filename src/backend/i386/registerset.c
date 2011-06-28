@@ -1,6 +1,8 @@
 #include <jive/backend/i386/registerset.h>
 
 #include <jive/arch/registers.h>
+#include <jive/arch/stackframe.h>
+#include <jive/bitstring/type.h>
 
 const jive_register_name jive_i386_regs [] = {
 	[jive_i386_cc] = {.base = {.name = "cc", .resource_class = &jive_i386_regcls[jive_i386_flags].base}, .code = 0},
@@ -26,12 +28,26 @@ static const jive_resource_name * jive_i386_names [] = {
 	[jive_i386_esp] = &jive_i386_regs[jive_i386_esp].base
 };
 
+static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
+static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+
+#define CLS(x) &jive_i386_regcls[jive_i386_##x].base
+#define STACK32 &jive_stackslot_class_32_32.base
+#define VIA (const jive_resource_class * const[]) 
+
 const jive_register_class jive_i386_regcls [] = {
 	[jive_i386_flags] = {
 		.base = {
 			.name = "flags",
 			.limit = 1, .names = &jive_i386_names[jive_i386_cc],
-			.parent = &jive_root_resource_class, .depth = 1
+			.parent = &jive_root_resource_class, .depth = 1,
+			.priority = jive_resource_class_priority_reg_high,
+			.demotions = (const jive_resource_class_demotion []){
+				{CLS(eax), VIA {CLS(flags), CLS(eax), NULL}},
+				{STACK32, VIA {CLS(flags), CLS(eax), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits16.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_cc],
 		.nbits = 16
@@ -40,7 +56,13 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr",
 			.limit = 8, .names = &jive_i386_names[jive_i386_eax],
-			.parent = &jive_root_resource_class, .depth = 1
+			.parent = &jive_root_resource_class, .depth = 1,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_eax],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -49,7 +71,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_byte_addressible",
 			.limit = 4, .names = &jive_i386_names[jive_i386_eax],
-			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2
+			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_eax],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -58,7 +87,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_eax",
 			.limit = 1, .names = &jive_i386_names[jive_i386_eax],
-			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3
+			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_eax],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -67,7 +103,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_ecx",
 			.limit = 1, .names = &jive_i386_names[jive_i386_ecx],
-			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3
+			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_ecx],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -76,7 +119,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_ebx",
 			.limit = 1, .names = &jive_i386_names[jive_i386_ebx],
-			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3
+			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_ebx],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -85,7 +135,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_edx",
 			.limit = 1, .names = &jive_i386_names[jive_i386_edx],
-			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3
+			.parent = &jive_i386_regcls[jive_i386_gpr_byte].base, .depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_edx],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -94,7 +151,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_esi",
 			.limit = 1, .names = &jive_i386_names[jive_i386_esi],
-			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2
+			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_esi],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -103,7 +167,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_edi",
 			.limit = 1, .names = &jive_i386_names[jive_i386_edi],
-			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2
+			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_edi],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -112,7 +183,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_esp",
 			.limit = 1, .names = &jive_i386_names[jive_i386_esp],
-			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2
+			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_esp],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
@@ -121,7 +199,14 @@ const jive_register_class jive_i386_regcls [] = {
 		.base = {
 			.name = "gpr_ebp",
 			.limit = 1, .names = &jive_i386_names[jive_i386_ebp],
-			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2
+			.parent = &jive_i386_regcls[jive_i386_gpr].base, .depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
+				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{NULL, NULL}
+			},
+			.type = &bits32.base.base
 		},
 		.regs = &jive_i386_regs[jive_i386_ebp],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
