@@ -9,6 +9,18 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
+/* FIXME: implement methods of type */
+const jive_type_class JIVE_STACKVAR_TYPE = {
+	.parent = &JIVE_STATE_TYPE,
+	.fini = 0,
+	.get_label = 0,
+	.create_input = 0,
+	.create_output = 0,
+	.create_gate = 0,
+	.equals = 0,
+	.copy = 0
+};
+
 void
 _jive_stackframe_fini(jive_stackframe * self)
 {
@@ -68,59 +80,88 @@ jive_stackslot_create(const jive_resource_class * rescls, long offset)
 	return self;
 }
 
+#define MAKE_STACKSLOT_CLASS(SIZE) \
+const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##SIZE = { \
+	.base = { \
+		.name = "stack" #SIZE, \
+			.limit = 0, .names = NULL, \
+			.parent = &jive_root_resource_class, \
+			.depth = 1 \
+	}, \
+	.size = SIZE \
+}
+
+MAKE_STACKSLOT_CLASS(8);
+MAKE_STACKSLOT_CLASS(16);
+MAKE_STACKSLOT_CLASS(32);
+MAKE_STACKSLOT_CLASS(64);
+MAKE_STACKSLOT_CLASS(128);
+
 const jive_resource_class *
 jive_stackframe_get_stackslot_resource_class(jive_stackframe * self, size_t size)
 {
-	size = (size + 31) & ~31;
-	
-	jive_stackslot_size_class * cls;
-	JIVE_LIST_ITERATE(self->stackslot_size_classes, cls, stackframe_stackslot_size_class_list) {
-		if (cls->size == size) return &cls->base;
+	switch(size) {
+		case 8: return &jive_stackslot_class_8_8.base;
+		case 16: return &jive_stackslot_class_16_16.base;
+		case 32: return &jive_stackslot_class_32_32.base;
+		case 64: return &jive_stackslot_class_64_64.base;
+		case 128: return &jive_stackslot_class_128_128.base;
 	}
 	
-	cls = jive_context_malloc(self->context, sizeof(*cls));
-	
-	char buffer[64];
-	snprintf(buffer, sizeof(buffer), "stackslot%zd", size);
-	cls->base.name = jive_context_strdup(self->context, buffer);
-	cls->base.limit = 0;
-	cls->base.names = 0;
-	cls->base.parent = &jive_root_resource_class;
-	cls->base.depth = jive_root_resource_class.depth + 1;
-	
-	cls->stackframe = self;
-	cls->size = size;
-	JIVE_LIST_PUSH_BACK(self->stackslot_size_classes, cls, stackframe_stackslot_size_class_list);
-	
-	return &cls->base;
+	return 0;
 }
+
+#define MAKE_RESERVED_STACKSLOT_CLASS(SIZE, ALIGN, OFFSET) \
+const jive_reserved_stackslot_class jive_reserved_stackslot_class_##SIZE##_##OFFSET; \
+ \
+static const jive_stackslot jive_reserved_stackslot_##SIZE##_##OFFSET = { \
+	.base = { \
+		.name = "stackslot" #SIZE "@" #OFFSET, \
+		.resource_class = &jive_reserved_stackslot_class_##SIZE##_##OFFSET.base.base, \
+	}, \
+	.offset = OFFSET \
+}; \
+ \
+const jive_reserved_stackslot_class jive_reserved_stackslot_class_##SIZE##_##OFFSET = { \
+	.base = { \
+		.base = { \
+			.name = "stackslot" #SIZE "@" #OFFSET, \
+			.limit = 1, \
+			.names = (const jive_resource_name *[]) {&jive_reserved_stackslot_##SIZE##_##OFFSET.base}, \
+			.parent = &jive_stackslot_class_##SIZE##_##ALIGN.base, \
+			.depth = 2, \
+		}, \
+		.size = SIZE \
+	}, \
+	.slot = &jive_reserved_stackslot_##SIZE##_##OFFSET.base \
+};
+
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 0);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 4);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 8);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 12);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 16);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 20);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 24);
+MAKE_RESERVED_STACKSLOT_CLASS(32, 32, 28);
 
 const jive_resource_class *
 jive_stackframe_get_reserved_stackslot_resource_class(jive_stackframe * self, size_t size, long offset)
 {
-	const jive_resource_class * parent = jive_stackframe_get_stackslot_resource_class(self, size);
+	switch(size) {
+		case 32: switch(offset) {
+			case 0: return &jive_reserved_stackslot_class_32_0.base.base;
+			case 4: return &jive_reserved_stackslot_class_32_4.base.base;
+			case 8: return &jive_reserved_stackslot_class_32_8.base.base;
+			case 12: return &jive_reserved_stackslot_class_32_12.base.base;
+			case 16: return &jive_reserved_stackslot_class_32_16.base.base;
+			case 20: return &jive_reserved_stackslot_class_32_20.base.base;
+			case 24: return &jive_reserved_stackslot_class_32_24.base.base;
+			case 28: return &jive_reserved_stackslot_class_32_28.base.base;
+		};
+	};
 	
-	jive_reserved_stackslot_class * cls = jive_context_malloc(self->context, sizeof(*cls));
-	
-	char buffer[64];
-	snprintf(buffer, sizeof(buffer), "stackslot%zd@%ld", size, offset);
-	cls->base.base.name = jive_context_strdup(self->context, buffer);
-	cls->base.base.limit = 0;
-	cls->base.base.names = 0;
-	cls->base.base.parent = parent;
-	cls->base.base.depth = parent->depth + 1;
-	
-	cls->base.size = size;
-	cls->base.stackframe = self;
-	
-	jive_stackslot * slot = jive_stackslot_create(&cls->base.base, offset);
-	cls->slot = &slot->base;
-	cls->base.base.limit = 1;
-	cls->base.base.names = &cls->slot;
-	
-	JIVE_LIST_PUSH_BACK(self->reserved_stackslot_classes, cls, stackframe_reserved_stackslot_class_list);
-	
-	return &cls->base.base;
+	return 0;
 }
 
 /* stackslots */

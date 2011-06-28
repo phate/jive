@@ -20,6 +20,21 @@ struct jive_output;
 struct jive_region;
 struct jive_graph;
 
+extern const jive_stackslot_size_class jive_stackslot_class_8_8;
+extern const jive_stackslot_size_class jive_stackslot_class_16_16;
+extern const jive_stackslot_size_class jive_stackslot_class_32_32;
+extern const jive_stackslot_size_class jive_stackslot_class_64_64;
+extern const jive_stackslot_size_class jive_stackslot_class_128_128;
+
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_0;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_4;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_8;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_12;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_16;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_20;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_24;
+extern const jive_reserved_stackslot_class jive_reserved_stackslot_class_32_28;
+
 struct jive_stackframe {
 	const jive_stackframe_class * class_;
 	
