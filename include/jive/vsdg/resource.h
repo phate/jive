@@ -3,11 +3,25 @@
 
 #include <stddef.h>
 
+struct jive_type;
+
 typedef struct jive_resource_class jive_resource_class;
 typedef struct jive_resource_name jive_resource_name;
 typedef struct jive_resource_class_count jive_resource_class_count;
 typedef struct jive_resource_class_count_item jive_resource_class_count_item;
 typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
+typedef struct jive_resource_class_demotion jive_resource_class_demotion;
+
+typedef enum {
+	jive_resource_class_priority_invalid = 0,
+	jive_resource_class_priority_control = 1,
+	jive_resource_class_priority_reg_implicit = 2,
+	jive_resource_class_priority_reg_high = 3,
+	jive_resource_class_priority_reg_low = 4,
+	jive_resource_class_priority_mem_high = 5,
+	jive_resource_class_priority_mem_low = 6,
+	jive_resource_class_priority_lowest = 7
+} jive_resource_class_priority;
 
 struct jive_resource_class {
 	const char * name;
@@ -23,6 +37,20 @@ struct jive_resource_class {
 	
 	/** \brief Number of step from root */
 	size_t depth;
+	
+	/** \brief Priority for register allocator */
+	jive_resource_class_priority priority;
+	
+	/** \brief Paths for "demoting" this resource to a different one */
+	const jive_resource_class_demotion * demotions;
+	
+	/** \brief Port and gate type corresponding to this resource */
+	const struct jive_type * type;
+};
+
+struct jive_resource_class_demotion {
+	const jive_resource_class * target;
+	const jive_resource_class * const * path;
 };
 
 const jive_resource_class *
@@ -37,6 +65,12 @@ jive_resource_class_get_resource_names(const jive_resource_class * self,
 {
 	*count = self->limit;
 	*names = self->names;
+}
+
+static inline const struct jive_type *
+jive_resource_class_get_type(const jive_resource_class * self)
+{
+	return self->type;
 }
 
 /** \brief Find largest resource class of same general type containing this class */

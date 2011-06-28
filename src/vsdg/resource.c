@@ -35,11 +35,15 @@ jive_resource_class_relax(const jive_resource_class * self)
 	return self;
 }
 
+static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
+
 const jive_resource_class jive_root_resource_class = {
 	.name = "root",
 	.limit = 0,
 	.parent = 0,
-	.depth = 0
+	.depth = 0,
+	.priority = jive_resource_class_priority_lowest,
+	.demotions = no_demotion
 };
 
 void

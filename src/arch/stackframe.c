@@ -80,13 +80,17 @@ jive_stackslot_create(const jive_resource_class * rescls, long offset)
 	return self;
 }
 
+static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
+
 #define MAKE_STACKSLOT_CLASS(SIZE) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##SIZE = { \
 	.base = { \
 		.name = "stack" #SIZE, \
-			.limit = 0, .names = NULL, \
-			.parent = &jive_root_resource_class, \
-			.depth = 1 \
+		.limit = 0, .names = NULL, \
+		.parent = &jive_root_resource_class, \
+		.depth = 1, \
+		.priority = jive_resource_class_priority_mem_low,\
+		.demotions = no_demotion, \
 	}, \
 	.size = SIZE \
 }
@@ -130,6 +134,8 @@ const jive_reserved_stackslot_class jive_reserved_stackslot_class_##SIZE##_##OFF
 			.names = (const jive_resource_name *[]) {&jive_reserved_stackslot_##SIZE##_##OFFSET.base}, \
 			.parent = &jive_stackslot_class_##SIZE##_##ALIGN.base, \
 			.depth = 2, \
+			.priority = jive_resource_class_priority_mem_high,\
+			.demotions = no_demotion, \
 		}, \
 		.size = SIZE \
 	}, \
