@@ -6,22 +6,6 @@
 #include <jive/util/list.h>
 
 static inline void
-jive_graph_valueres_tracker_init(jive_graph_valueres_tracker * self, jive_context * context)
-{
-	self->context = context;
-	self->assigned.first = self->assigned.last = 0;
-	self->trivial.first = self->trivial.last = 0;
-	self->max_pressure = self->space = 0;
-	self->pressured = 0;
-}
-
-static inline void
-jive_graph_valueres_tracker_fini(jive_graph_valueres_tracker * self)
-{
-	jive_context_free(self->context, self->pressured);
-}
-
-static inline void
 _jive_graph_init(jive_graph * self, jive_context * context)
 {
 	self->context = context;
@@ -73,8 +57,6 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
-	
-	jive_graph_valueres_tracker_init(&self->valueres, context);
 }
 
 static void

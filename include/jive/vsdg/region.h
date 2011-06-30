@@ -71,9 +71,6 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 	struct jive_substitution_map * substitution,
 	bool copy_top, bool copy_bottom);
 
-struct jive_cut *
-jive_region_create_cut(jive_region * self);
-
 static inline bool
 jive_region_empty(const jive_region * self)
 {
