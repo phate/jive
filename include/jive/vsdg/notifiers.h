@@ -61,6 +61,36 @@ jive_node_notifier_slot_connect(jive_node_notifier_slot * self, jive_node_notifi
 void
 jive_node_notifier_slot_call(const jive_node_notifier_slot * self, struct jive_node * node);
 
+/* node depth notifiers */
+
+typedef void (*jive_node_depth_notifier_function)(void * closure, struct jive_node * node, size_t old_depth);
+typedef struct jive_node_depth_notifier jive_node_depth_notifier;
+typedef struct jive_node_depth_notifier_slot jive_node_depth_notifier_slot;
+
+struct jive_node_depth_notifier_slot {
+	struct {
+		jive_node_depth_notifier * first;
+		jive_node_depth_notifier * last;
+	} notifiers;
+	struct jive_context * context;
+};
+
+static inline void
+jive_node_depth_notifier_slot_init(jive_node_depth_notifier_slot * self, jive_context * context)
+{
+	self->notifiers.first = self->notifiers.last = 0;
+	self->context = context;
+}
+
+void
+jive_node_depth_notifier_slot_fini(jive_node_depth_notifier_slot * self);
+
+jive_notifier *
+jive_node_depth_notifier_slot_connect(jive_node_depth_notifier_slot * self, jive_node_depth_notifier_function function, void * closure);
+
+void
+jive_node_depth_notifier_slot_call(const jive_node_depth_notifier_slot * self, struct jive_node * node, size_t old_depth);
+
 /* input notifiers */
 
 typedef void (*jive_input_notifier_function)(void * closure, struct jive_input * input);

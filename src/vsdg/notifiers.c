@@ -69,6 +69,7 @@ jive_##name##_notifier_slot_call(const jive_##name##_notifier_slot * self, param
 /* node notifiers */
 
 MAKE_NOTIFIER(node, NODE, struct jive_node * node, node)
+MAKE_NOTIFIER(node_depth, NODE_DEPTH, WRAP(struct jive_node * node, size_t old_depth), WRAP(node, old_depth))
 MAKE_NOTIFIER(input, INPUT, struct jive_input * input, input)
 MAKE_NOTIFIER(input_change, INPUT_CHANGE, WRAP(struct jive_input * input, struct jive_output * old_origin, struct jive_output * new_origin), WRAP(input, old_origin, new_origin))
 MAKE_NOTIFIER(output, OUTPUT, struct jive_output * output, output)

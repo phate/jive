@@ -40,8 +40,7 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	
 	jive_node_notifier_slot_init(&self->on_node_create, context);
 	jive_node_notifier_slot_init(&self->on_node_destroy, context);
-	jive_node_notifier_slot_init(&self->on_node_place, context);
-	jive_node_notifier_slot_init(&self->on_node_remove_place, context);
+	jive_node_depth_notifier_slot_init(&self->on_node_depth_change, context);
 	
 	jive_input_notifier_slot_init(&self->on_input_create, context);
 	jive_input_change_notifier_slot_init(&self->on_input_change, context);
@@ -118,8 +117,7 @@ _jive_graph_fini(jive_graph * self)
 	
 	jive_node_notifier_slot_fini(&self->on_node_create);
 	jive_node_notifier_slot_fini(&self->on_node_destroy);
-	jive_node_notifier_slot_fini(&self->on_node_place);
-	jive_node_notifier_slot_fini(&self->on_node_remove_place);
+	jive_node_depth_notifier_slot_fini(&self->on_node_depth_change);
 	
 	jive_input_notifier_slot_fini(&self->on_input_create);
 	jive_input_change_notifier_slot_fini(&self->on_input_change);
