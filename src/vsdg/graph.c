@@ -1,7 +1,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region-private.h>
-#include <jive/vsdg/traverser-private.h>
+#include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
 
@@ -55,8 +55,8 @@ _jive_graph_init(jive_graph * self, jive_context * context)
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	_jive_region_init(self->root_region, self, 0);
 	
-	self->ntraverser_slots = 0;
-	self->traverser_slots = 0;
+	self->ntracker_slots = 0;
+	self->tracker_slots = 0;
 }
 
 static void
@@ -84,7 +84,7 @@ _jive_graph_fini(jive_graph * self)
 			node->reserved = 0;
 	}
 	
-	jive_context_free(self->context, self->traverser_slots);
+	jive_context_free(self->context, self->tracker_slots);
 	
 	prune_regions_recursive(self->root_region);
 	
@@ -144,12 +144,29 @@ jive_graph_destroy(jive_graph * self)
 	jive_context_free(self->context, self);
 }
 
+jive_tracker_slot
+jive_graph_reserve_tracker_slot_slow(jive_graph * self)
+{
+	size_t n = self->ntracker_slots;
+	
+	self->ntracker_slots ++;
+	self->tracker_slots = jive_context_realloc(self->context,
+		self->tracker_slots,
+		sizeof(self->tracker_slots[0]) * self->ntracker_slots);
+	
+	self->tracker_slots[n].slot.index = n;
+	self->tracker_slots[n].slot.cookie = 1;
+	self->tracker_slots[n].in_use = true;
+	
+	return self->tracker_slots[n].slot;
+}
+
 bool
 jive_graph_has_active_traversers(const jive_graph * self)
 {
 	size_t n;
-	for(n=0; n<self->ntraverser_slots; n++)
-		if (self->traverser_slots[n].traversal_state) return true;
+	for(n=0; n<self->ntracker_slots; n++)
+		if (self->tracker_slots[n].in_use) return true;
 	return false;
 }
 

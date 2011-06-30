@@ -6,14 +6,17 @@
 
 #include <jive/context.h>
 #include <jive/vsdg/notifiers.h>
+#include <jive/vsdg/tracker.h>
 
 typedef struct jive_graph jive_graph;
+typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
+typedef struct jive_tracker_depth_state jive_tracker_depth_state;
+typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
 
 struct jive_resource;
 struct jive_node;
 struct jive_region;
 struct jive_gate;
-struct jive_traverser_graphstate;
 struct jive_label_internal;
 
 struct jive_graph {
@@ -51,8 +54,8 @@ struct jive_graph {
 	
 	bool resources_fully_assigned;
 	
-	size_t ntraverser_slots;
-	struct jive_traverser_graphstate * traverser_slots;
+	size_t ntracker_slots;
+	jive_tracker_slot_reservation * tracker_slots;
 	
 	jive_region_notifier_slot on_region_create;
 	jive_region_notifier_slot on_region_destroy;

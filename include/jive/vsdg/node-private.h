@@ -1,8 +1,9 @@
 #ifndef JIVE_VSDG_NODE_PRIVATE_H
 #define JIVE_VSDG_NODE_PRIVATE_H
 
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/basetype.h>
+#include <jive/vsdg/node.h>
+#include <jive/vsdg/tracker.h>
 
 /* inheritable node member functions */
 

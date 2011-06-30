@@ -37,6 +37,56 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 	jive_traverser_destroy(trav);
 }
 
+void test_order_enforcement_traversal(jive_context * ctx)
+{
+	jive_graph * graph = jive_graph_create(ctx);
+	
+	JIVE_DECLARE_TYPE(type);
+	
+	jive_node * n1 = jive_node_create(graph->root_region,
+		0, NULL, NULL,
+		2, (const jive_type *[]){type, type});
+	
+	jive_node * n2 = jive_node_create(graph->root_region,
+		1, (const jive_type *[]){type}, (jive_output *[]){n1->outputs[0]},
+		1, (const jive_type *[]){type});
+	
+	jive_node * n3 = jive_node_create(graph->root_region,
+		2, (const jive_type *[]){type, type}, (jive_output *[]){n2->outputs[0], n1->outputs[1]},
+		1, (const jive_type *[]){type});
+	
+	jive_traverser * trav;
+	jive_node * tmp;
+	
+	trav = jive_topdown_traverser_create(graph);
+	
+	tmp = jive_traverser_next(trav);
+	assert(tmp==n1);
+	tmp = jive_traverser_next(trav);
+	assert(tmp==n2);
+	tmp = jive_traverser_next(trav);
+	assert(tmp==n3);
+	tmp = jive_traverser_next(trav);
+	assert(tmp==0);
+	
+	jive_traverser_destroy(trav);
+	
+	trav = jive_bottomup_traverser_create(graph);
+	
+	tmp = jive_traverser_next(trav);
+	assert(tmp==n3);
+	tmp = jive_traverser_next(trav);
+	assert(tmp==n2);
+	tmp = jive_traverser_next(trav);
+	assert(tmp==n1);
+	tmp = jive_traverser_next(trav);
+	assert(tmp==0);
+	
+	jive_traverser_destroy(trav);
+	
+	jive_graph_destroy(graph);
+}
+
 void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2)
 {
 	jive_traverser * trav;
@@ -164,6 +214,7 @@ int main()
 	
 	test_basic_traversal(graph, n1, n2);
 	test_basic_traversal(graph, n1, n2);
+	test_order_enforcement_traversal(ctx);
 	
 	test_traversal_insertion(graph, n1, n2);
 	

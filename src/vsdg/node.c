@@ -69,6 +69,9 @@ _jive_node_init(
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
 	
+	self->ntracker_slots = 0;
+	self->tracker_slots = 0;
+	
 	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
 	
@@ -101,6 +104,13 @@ _jive_node_fini(jive_node * self)
 		for(n=0; n<self->ntraverser_slots; n++)
 			jive_context_free(context, self->traverser_slots[n]);
 		jive_context_free(context, self->traverser_slots);
+	}
+	
+	if (self->tracker_slots) {
+		size_t n;
+		for(n=0; n<self->ntracker_slots; n++)
+			jive_context_free(context, self->tracker_slots[n]);
+		jive_context_free(context, self->tracker_slots);
 	}
 }
 
@@ -501,4 +511,33 @@ jive_node_destroy(jive_node * self)
 	jive_graph_notify_node_destroy(self->graph, self);
 	self->class_->fini(self);
 	jive_context_free(self->graph->context, self);
+}
+
+jive_tracker_nodestate *
+jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
+{
+	size_t new_size = slot.index + 1;
+	
+	jive_context * context = self->graph->context;
+	self->tracker_slots = jive_context_realloc(context,
+		self->tracker_slots, new_size * sizeof(self->tracker_slots[0]));
+	
+	jive_tracker_nodestate * nodestate;
+	size_t n;
+	for(n = self->ntracker_slots; n < new_size; n++) {
+		nodestate = jive_context_malloc(context, sizeof(*nodestate));
+		nodestate->node = self;
+		nodestate->cookie = 0;
+		nodestate->state = jive_tracker_nodestate_none;
+		nodestate->tag = 0;
+		self->tracker_slots[n] = nodestate;
+	}
+	self->ntracker_slots = new_size;
+	
+	nodestate = self->tracker_slots[slot.index];
+	nodestate->cookie = slot.cookie;
+	nodestate->state = jive_tracker_nodestate_none;
+	nodestate->tag = 0;
+	
+	return nodestate;
 }

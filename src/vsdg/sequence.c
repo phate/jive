@@ -42,7 +42,7 @@ jive_seq_node_attach_label(jive_seq_node * self, jive_label_internal * label, ji
 }
 
 static jive_seq_region *
-sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_region_traverser * region_trav, jive_region * region)
+sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_bottomup_region_traverser * region_trav, jive_region * region)
 {
 	jive_seq_region * seq_region = jive_context_malloc(seq->context, sizeof(*seq_region));
 	seq_region->region = region;
@@ -51,7 +51,7 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_region_t
 	jive_seq_region_hash_insert(&seq->region_map, seq_region);
 	JIVE_LIST_PUSH_BACK(seq->regions, seq_region, seqregion_list);
 	
-	jive_traverser * trav = jive_region_traverser_get_node_traverser(region_trav, region);
+	jive_traverser * trav = jive_bottomup_region_traverser_get_node_traverser(region_trav, region);
 	
 	jive_node * node = jive_traverser_next(trav);
 	while(node) {
@@ -92,7 +92,7 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_region_t
 		
 		if (control_input) {
 			node = control_input->origin->node;
-			jive_traverser_pass(trav, node);
+			jive_bottomup_region_traverser_pass(region_trav, node);
 		} else
 			node = jive_traverser_next(trav);
 	}
@@ -115,9 +115,9 @@ jive_graph_sequentialize(jive_graph * graph)
 	jive_seq_node_hash_init(&seq->node_map, context);
 	jive_seq_region_hash_init(&seq->region_map, context);
 	
-	jive_region_traverser * region_trav = jive_bottomup_region_traverser_create(graph);
+	jive_bottomup_region_traverser * region_trav = jive_bottomup_region_traverser_create(graph);
 	sequentialize_region(seq, 0, region_trav, graph->root_region);
-	jive_region_traverser_destroy(region_trav);
+	jive_bottomup_region_traverser_destroy(region_trav);
 	
 	jive_label_internal * label;
 	JIVE_LIST_ITERATE(graph->labels, label, graph_label_list) {

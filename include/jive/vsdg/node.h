@@ -1,16 +1,19 @@
 #ifndef JIVE_VSDG_NODE_H
 #define JIVE_VSDG_NODE_H
 
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include <jive/vsdg/basetype.h>
+#include <jive/vsdg/tracker.h>
 
 typedef struct jive_node jive_node;
 typedef struct jive_node_attrs jive_node_attrs;
 typedef struct jive_node_class jive_node_class;
 
 typedef struct jive_node_normal_form jive_node_normal_form;
+typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
 struct jive_context;
 struct jive_graph;
@@ -57,6 +60,9 @@ struct jive_node {
 	
 	size_t ntraverser_slots;
 	struct jive_traversal_nodestate ** traverser_slots;
+	
+	size_t ntracker_slots;
+	jive_tracker_nodestate ** tracker_slots;
 };
 
 extern const jive_node_class JIVE_NODE;
@@ -95,6 +101,17 @@ struct jive_node_class {
 		returns NULL otherwise.
 	*/
 	const struct jive_resource_class * (*get_aux_rescls)(const jive_node * self);
+};
+
+struct jive_tracker_nodestate {
+	jive_node * node;
+	size_t cookie;
+	size_t state;
+	intptr_t tag;
+	struct {
+		jive_tracker_nodestate * prev;
+		jive_tracker_nodestate * next;
+	} state_node_list;
 };
 
 static inline bool
@@ -211,6 +228,27 @@ jive_node_get_use_count_output(const jive_node * self, struct jive_resource_clas
 
 void
 jive_node_destroy(jive_node * self);
+
+/* tracking support */
+
+jive_tracker_nodestate *
+jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot);
+
+static inline jive_tracker_nodestate *
+jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
+{
+	jive_tracker_nodestate * nodestate;
+	if (slot.index < self->ntracker_slots) {
+		nodestate = self->tracker_slots[slot.index];
+		if (nodestate->cookie != slot.cookie) {
+			nodestate->state = jive_tracker_nodestate_none;
+			nodestate->cookie = slot.cookie;
+			nodestate->tag = 0;
+		}
+		return nodestate;
+	}
+	return jive_node_get_tracker_state_slow(self, slot);
+}
 
 /**
 	\brief Test whether node can be moved to next outer region
