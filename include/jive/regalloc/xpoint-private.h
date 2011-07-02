@@ -50,6 +50,26 @@ jive_varcut_map_output(const jive_varcut * self, struct jive_output * output);
 struct jive_shaped_ssavar *
 jive_varcut_map_variable(const jive_varcut * self, struct jive_variable * variable);
 
+static inline size_t
+jive_varcut_shaped_ssavar_is_active(const jive_varcut * self, struct jive_shaped_ssavar * shaped_ssavar)
+{
+	jive_cutvar_xpoint * xpoint = jive_cutvar_xpoint_hash_byssavar_lookup(&self->ssavar_map, shaped_ssavar);
+	if (xpoint)
+		return xpoint->count;
+	else
+		return 0;
+}
+
+static inline size_t
+jive_varcut_output_is_active(const jive_varcut * self, struct jive_output * output)
+{
+	jive_cutvar_xpoint * xpoint = jive_cutvar_xpoint_hash_byorigin_lookup(&self->origin_map, output);
+	if (xpoint)
+		return xpoint->count;
+	else
+		return 0;
+}
+
 void
 jive_mutable_varcut_clear(jive_mutable_varcut * self);
 
@@ -94,5 +114,11 @@ jive_region_varcut_ssavar_variable_change(jive_region_varcut * self, struct jive
 
 void
 jive_region_varcut_ssavar_rescls_change(jive_region_varcut * self, struct jive_shaped_ssavar * shaped_ssavar, const struct jive_resource_class * rescls);
+
+static inline size_t
+jive_region_varcut_output_is_active(const jive_region_varcut * self, struct jive_output * output)
+{
+	return jive_varcut_output_is_active(&self->base, output);
+}
 
 #endif
