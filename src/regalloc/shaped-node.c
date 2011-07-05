@@ -28,8 +28,8 @@ jive_shaped_node_create(jive_cut * cut, struct jive_node * node)
 	self->cut = cut;
 	
 	jive_nodevar_xpoint_hash_byssavar_init(&self->ssavar_xpoints, context);
-	jive_resource_class_count_init(&self->use_count_before);
-	jive_resource_class_count_init(&self->use_count_after);
+	jive_resource_class_count_init(&self->use_count_before, context);
+	jive_resource_class_count_init(&self->use_count_after, context);
 	
 	return self;
 }
@@ -143,8 +143,8 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	
 	JIVE_DEBUG_ASSERT(self->ssavar_xpoints.nitems == 0);
 	jive_nodevar_xpoint_hash_byssavar_fini(&self->ssavar_xpoints);
-	jive_resource_class_count_fini(&self->use_count_before, self->shaped_graph->context);
-	jive_resource_class_count_fini(&self->use_count_after, self->shaped_graph->context);
+	jive_resource_class_count_fini(&self->use_count_before);
+	jive_resource_class_count_fini(&self->use_count_after);
 	jive_context_free(self->shaped_graph->context, self);
 }
 

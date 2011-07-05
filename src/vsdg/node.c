@@ -302,7 +302,7 @@ jive_node_auto_merge_variables(jive_node * self)
 void
 jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count * use_count, jive_context * context)
 {
-	jive_resource_class_count_clear(use_count, context);
+	jive_resource_class_count_clear(use_count);
 	
 	size_t n;
 	for(n = 0; n<self->ninputs; n++) {
@@ -326,14 +326,14 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 		else if (input->gate) rescls = input->gate->required_rescls;
 		else rescls = input->required_rescls;
 		
-		jive_resource_class_count_add(use_count, context, rescls);
+		jive_resource_class_count_add(use_count, rescls);
 	}
 }
 
 void
 jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count * use_count, jive_context * context)
 {
-	jive_resource_class_count_clear(use_count, context);
+	jive_resource_class_count_clear(use_count);
 	
 	size_t n;
 	for(n = 0; n<self->noutputs; n++) {
@@ -344,7 +344,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		else if (output->gate) rescls = output->gate->required_rescls;
 		else rescls = output->required_rescls;
 		
-		jive_resource_class_count_add(use_count, context, rescls);
+		jive_resource_class_count_add(use_count, rescls);
 	}
 }
 

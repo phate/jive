@@ -39,7 +39,7 @@ jive_shaped_node_inc_active_after(jive_shaped_node * self, jive_nodevar_xpoint *
 			);
 		}
 		const jive_resource_class * overflow;
-		overflow = jive_resource_class_count_add(&self->use_count_after, self->shaped_graph->context, jive_variable_get_resource_class(variable));
+		overflow = jive_resource_class_count_add(&self->use_count_after, jive_variable_get_resource_class(variable));
 		JIVE_DEBUG_ASSERT(!overflow);
 	}
 	xpoint->after_count += count;
@@ -62,7 +62,7 @@ jive_shaped_node_dec_active_after(jive_shaped_node * self, jive_nodevar_xpoint *
 				jive_shaped_graph_map_variable(self->shaped_graph, other_xpoint->shaped_ssavar->ssavar->variable)
 			);
 		}
-		jive_resource_class_count_sub(&self->use_count_after, self->shaped_graph->context, jive_variable_get_resource_class(variable));
+		jive_resource_class_count_sub(&self->use_count_after, jive_variable_get_resource_class(variable));
 	}
 }
 
@@ -82,7 +82,7 @@ jive_shaped_node_inc_active_before(jive_shaped_node * self, jive_nodevar_xpoint 
 			);
 		}
 		const jive_resource_class * overflow;
-		overflow = jive_resource_class_count_add(&self->use_count_before, self->shaped_graph->context, jive_variable_get_resource_class(variable));
+		overflow = jive_resource_class_count_add(&self->use_count_before, jive_variable_get_resource_class(variable));
 		(void) overflow;
 		JIVE_DEBUG_ASSERT(!overflow);
 	}
@@ -106,7 +106,7 @@ jive_shaped_node_dec_active_before(jive_shaped_node * self, jive_nodevar_xpoint 
 				jive_shaped_graph_map_variable(self->shaped_graph, other_xpoint->shaped_ssavar->ssavar->variable)
 			);
 		}
-		jive_resource_class_count_sub(&self->use_count_before, self->shaped_graph->context, jive_variable_get_resource_class(variable));
+		jive_resource_class_count_sub(&self->use_count_before, jive_variable_get_resource_class(variable));
 	}
 }
 

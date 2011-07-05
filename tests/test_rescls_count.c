@@ -79,11 +79,11 @@ const jive_register_class
 void test_regcls_count(jive_context * ctx)
 {
 	jive_resource_class_count count;
-	jive_resource_class_count_init(&count);
+	jive_resource_class_count_init(&count, ctx);
 	
 	const jive_resource_class * overflow;
 	
-	overflow = jive_resource_class_count_add(&count, ctx, &reg0.base);
+	overflow = jive_resource_class_count_add(&count, &reg0.base);
 	assert(!overflow);
 	
 	overflow = jive_resource_class_count_check_add(&count, &reg1.base);
@@ -92,7 +92,7 @@ void test_regcls_count(jive_context * ctx)
 	overflow = jive_resource_class_count_check_add(&count, &reg0.base);
 	assert(overflow);
 	
-	overflow = jive_resource_class_count_add(&count, ctx, &evenreg.base);
+	overflow = jive_resource_class_count_add(&count, &evenreg.base);
 	assert(!overflow);
 	
 	overflow = jive_resource_class_count_check_add(&count, &reg2.base);
@@ -107,7 +107,7 @@ void test_regcls_count(jive_context * ctx)
 	overflow = jive_resource_class_count_check_change(&count, &evenreg.base, &reg0.base);
 	assert(overflow == &reg0.base);
 	
-	jive_resource_class_count_fini(&count, ctx);
+	jive_resource_class_count_fini(&count);
 }
 
 int main()

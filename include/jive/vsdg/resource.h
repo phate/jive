@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
+struct jive_context;
 struct jive_type;
 
 typedef struct jive_resource_class jive_resource_class;
@@ -90,7 +91,11 @@ struct jive_resource_class_count_item {
 	struct {
 		jive_resource_class_count_item * prev;
 		jive_resource_class_count_item * next;
-	} chain;
+	} hash_chain;
+	struct {
+		jive_resource_class_count_item * prev;
+		jive_resource_class_count_item * next;
+	} item_list;
 };
 
 struct jive_resource_class_count_bucket {
@@ -99,8 +104,13 @@ struct jive_resource_class_count_bucket {
 };
 
 struct jive_resource_class_count {
-	size_t nitems, nbuckets;
+	size_t nitems, nbuckets, mask;
 	jive_resource_class_count_bucket * buckets;
+	struct {
+		jive_resource_class_count_item * first;
+		jive_resource_class_count_item * last;
+	} items;
+	struct jive_context * context;
 };
 
 #endif

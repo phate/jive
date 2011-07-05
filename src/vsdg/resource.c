@@ -1,7 +1,10 @@
+#include <jive/vsdg/resource.h>
+
 #include <jive/context.h>
 #include <jive/internal/compiler.h>
+#include <jive/util/hash.h>
 #include <jive/util/list.h>
-#include <jive/vsdg/resource.h>
+#include <jive/vsdg/resource-private.h>
 
 const jive_resource_class *
 jive_resource_class_union(const jive_resource_class * self, const jive_resource_class * other)
@@ -47,15 +50,14 @@ const jive_resource_class jive_root_resource_class = {
 };
 
 void
-jive_resource_class_count_clear(jive_resource_class_count * self, jive_context * context)
+jive_resource_class_count_clear(jive_resource_class_count * self)
 {
-	size_t n;
-	for(n=0; n<self->nbuckets; n++) {
-		while(self->buckets[n].first) {
-			jive_resource_class_count_item * item = self->buckets[n].first;
-			JIVE_LIST_REMOVE(self->buckets[n], item, chain);
-			jive_context_free(context, item);
-		}
+	jive_resource_class_count_item * item, * next_item;
+	JIVE_LIST_ITERATE_SAFE(self->items, item, next_item, item_list) {
+		size_t index = jive_ptr_hash(item->resource_class) & self->mask;
+		JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
+		JIVE_LIST_REMOVE(self->items, item, item_list);
+		jive_context_free(self->context, item);
 	}
 	self->nitems = 0;
 }
@@ -63,65 +65,76 @@ jive_resource_class_count_clear(jive_resource_class_count * self, jive_context *
 static jive_resource_class_count_item *
 jive_resource_class_count_lookup_item(const jive_resource_class_count * self, const jive_resource_class * resource_class)
 {
-	if (!self->nbuckets) return 0;
-	size_t hash = ((size_t) resource_class) % self->nbuckets;
-	jive_resource_class_count_item * item = self->buckets[hash].first;
-	while(item && item->resource_class != resource_class) item = item->chain.next;
+	if (!self->nbuckets)
+		return 0;
+	size_t index = jive_ptr_hash(resource_class) & self->mask;
+	jive_resource_class_count_item * item;
 	
-	return item;
+	JIVE_LIST_ITERATE(self->buckets[index], item, item_list) {
+		if (item->resource_class == resource_class)
+			return item;
+	}
+	
+	return 0;
 }
 
-static size_t
-jive_resource_class_count_lookup(const jive_resource_class_count * self, const jive_resource_class * resource_class)
+size_t
+jive_resource_class_count_get(const jive_resource_class_count * self, const struct jive_resource_class * resource_class)
 {
 	jive_resource_class_count_item * item = jive_resource_class_count_lookup_item(self, resource_class);
-	if (item) return item->count;
-	else return 0;
+	if (item != 0)
+		return item->count;
+	else
+		return 0;
 }
 
 static void
-rehash(jive_resource_class_count * self, jive_context * context)
+rehash(jive_resource_class_count * self)
 {
-	size_t new_nbuckets = self->nitems * 2 + 1;
-	jive_resource_class_count_bucket * new_buckets = jive_context_malloc(context, sizeof(*new_buckets) * new_nbuckets);
+	size_t new_nbuckets = self->nbuckets * 2;
+	if (!new_nbuckets)
+		new_nbuckets = 4;
+	
+	self->buckets = jive_context_realloc(self->context, self->buckets, sizeof(self->buckets[0]) * new_nbuckets);
+	
 	size_t n;
 	for(n=0; n<new_nbuckets; n++)
-		new_buckets[n].first = new_buckets[n].last = 0;
+		self->buckets[n].first = self->buckets[n].last = 0;
 	
-	for(n=0; n<self->nbuckets; n++) {
-		while(self->buckets[n].first) {
-			jive_resource_class_count_item * item = self->buckets[n].first;
-			JIVE_LIST_REMOVE(self->buckets[n], item, chain);
-			size_t hash = ((size_t)item->resource_class) % new_nbuckets;
-			JIVE_LIST_PUSH_BACK(new_buckets[hash], item, chain);
-		}
-	}
-	
-	jive_context_free(context, self->buckets);
-	self->buckets = new_buckets;
 	self->nbuckets = new_nbuckets;
+	self->mask = new_nbuckets - 1;
+	
+	jive_resource_class_count_item * item;
+	JIVE_LIST_ITERATE(self->items, item, item_list) {
+		size_t index = jive_ptr_hash(item->resource_class) & self->mask;
+		JIVE_LIST_PUSH_BACK(self->buckets[index], item, hash_chain);
+	}
 }
 
 static size_t
-jive_resource_class_count_add_single(jive_resource_class_count * self, jive_context * context, const jive_resource_class * resource_class, size_t count)
+jive_resource_class_count_add_single(jive_resource_class_count * self, const jive_resource_class * resource_class, size_t count)
 {
 	jive_resource_class_count_item * item = jive_resource_class_count_lookup_item(self, resource_class);
-	if (likely(item != 0)) return item->count += count;
+	
+	if (likely(item != 0))
+		return item->count += count;
+	
 	self->nitems ++;
-	if (self->nitems >= self->nbuckets) rehash(self, context);
+	if (self->nitems >= self->nbuckets)
+		rehash(self);
 	
-	item = jive_context_malloc(context, sizeof(*item));
-	size_t hash = ((size_t) resource_class) % self->nbuckets;
+	item = jive_context_malloc(self->context, sizeof(*item));
+	size_t index = jive_ptr_hash(resource_class) & self->mask;
 	item->resource_class = resource_class;
-	item->count = 0;
-	JIVE_LIST_PUSH_BACK(self->buckets[hash], item, chain);
+	item->count = count;
+	JIVE_LIST_PUSH_BACK(self->buckets[index], item, hash_chain);
+	JIVE_LIST_PUSH_BACK(self->items, item, item_list);
 	
-	item->count += count;
 	return item->count;
 }
 
 void
-jive_resource_class_count_max(jive_resource_class_count * self, jive_context * context, const struct jive_resource_class * resource_class, size_t count)
+jive_resource_class_count_max(jive_resource_class_count * self, const struct jive_resource_class * resource_class, size_t count)
 {
 	jive_resource_class_count_item * item = jive_resource_class_count_lookup_item(self, resource_class);
 	if (likely(item != 0)) {
@@ -129,35 +142,38 @@ jive_resource_class_count_max(jive_resource_class_count * self, jive_context * c
 		return;
 	}
 	self->nitems ++;
-	if (self->nitems >= self->nbuckets) rehash(self, context);
+	if (self->nitems >= self->nbuckets)
+		rehash(self);
 	
-	item = jive_context_malloc(context, sizeof(*item));
-	size_t hash = ((size_t) resource_class) % self->nbuckets;
+	item = jive_context_malloc(self->context, sizeof(*item));
+	size_t index = jive_ptr_hash(resource_class) & self->mask;
 	item->resource_class = resource_class;
 	item->count = count;
-	JIVE_LIST_PUSH_BACK(self->buckets[hash], item, chain);
+	JIVE_LIST_PUSH_BACK(self->buckets[index], item, hash_chain);
+	JIVE_LIST_PUSH_BACK(self->items, item, item_list);
 }
 
 static void
-jive_resource_class_count_sub_single(jive_resource_class_count * self, jive_context * context, const jive_resource_class * resource_class)
+jive_resource_class_count_sub_single(jive_resource_class_count * self, const jive_resource_class * resource_class)
 {
 	jive_resource_class_count_item * item = jive_resource_class_count_lookup_item(self, resource_class);
 	item->count --;
 	if (item->count == 0) {
-		size_t hash = ((size_t) resource_class) % self->nbuckets;
-		JIVE_LIST_REMOVE(self->buckets[hash], item, chain);
-		jive_context_free(context, item);
+		size_t index = jive_ptr_hash(resource_class) & self->mask;
+		JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
+		JIVE_LIST_REMOVE(self->items, item, item_list);
+		jive_context_free(self->context, item);
 	}
 }
 
-
 const jive_resource_class *
-jive_resource_class_count_add(jive_resource_class_count * self, jive_context * context, const jive_resource_class * resource_class)
+jive_resource_class_count_add(jive_resource_class_count * self, const jive_resource_class * resource_class)
 {
 	const jive_resource_class * overflow = 0;
 	while(resource_class) {
-		size_t count = jive_resource_class_count_add_single(self, context, resource_class, 1);
-		if (count > resource_class->limit && resource_class->limit && ! overflow) overflow = resource_class;
+		size_t count = jive_resource_class_count_add_single(self, resource_class, 1);
+		if (count > resource_class->limit && resource_class->limit && ! overflow)
+			overflow = resource_class;
 		
 		resource_class = resource_class->parent;
 	}
@@ -165,27 +181,28 @@ jive_resource_class_count_add(jive_resource_class_count * self, jive_context * c
 }
 
 void
-jive_resource_class_count_sub(jive_resource_class_count * self, jive_context * context, const struct jive_resource_class * resource_class)
+jive_resource_class_count_sub(jive_resource_class_count * self, const struct jive_resource_class * resource_class)
 {
 	while(resource_class) {
-		jive_resource_class_count_sub_single(self, context, resource_class);
+		jive_resource_class_count_sub_single(self, resource_class);
 		resource_class = resource_class->parent;
 	}
 }
 
 const jive_resource_class *
-jive_resource_class_count_change(jive_resource_class_count * self, jive_context * context, const struct jive_resource_class * old_resource_class, const struct jive_resource_class * new_resource_class)
+jive_resource_class_count_change(jive_resource_class_count * self, const struct jive_resource_class * old_resource_class, const struct jive_resource_class * new_resource_class)
 {
-	jive_resource_class_count_sub(self, context, old_resource_class);
-	return jive_resource_class_count_add(self, context, new_resource_class);
+	jive_resource_class_count_sub(self, old_resource_class);
+	return jive_resource_class_count_add(self, new_resource_class);
 }
 
 const jive_resource_class *
 jive_resource_class_count_check_add(const jive_resource_class_count * self, const jive_resource_class * resource_class)
 {
 	while(resource_class) {
-		size_t count = jive_resource_class_count_lookup(self, resource_class);
-		if (count + 1 > resource_class->limit && resource_class->limit) return resource_class;
+		size_t count = jive_resource_class_count_get(self, resource_class);
+		if (count + 1 > resource_class->limit && resource_class->limit)
+			return resource_class;
 		resource_class = resource_class->parent;
 	}
 	return 0;
@@ -200,21 +217,36 @@ jive_resource_class_count_check_change(const jive_resource_class_count * self, c
 	const jive_resource_class * common_resource_class = jive_resource_class_union(old_resource_class, new_resource_class);
 	
 	while(new_resource_class != common_resource_class) {
-		size_t count = jive_resource_class_count_lookup(self, new_resource_class);
-		if (count + 1 > new_resource_class->limit && new_resource_class->limit) return new_resource_class;
+		size_t count = jive_resource_class_count_get(self, new_resource_class);
+		if (count + 1 > new_resource_class->limit && new_resource_class->limit)
+			return new_resource_class;
 		new_resource_class = new_resource_class->parent;
 	}
 	return 0;
 }
 
 void
-jive_resource_class_count_copy(jive_resource_class_count * self, jive_context * context, const jive_resource_class_count * src)
+jive_resource_class_count_copy(jive_resource_class_count * self, const jive_resource_class_count * src)
 {
-	jive_resource_class_count_clear(self, context);
-	size_t n;
-	for(n=0; n<src->nbuckets; n++) {
-		jive_resource_class_count_item * item;
-		JIVE_LIST_ITERATE(src->buckets[n], item, chain)
-			jive_resource_class_count_add_single(self, context, item->resource_class, item->count);
+	jive_resource_class_count_clear(self);
+	jive_resource_class_count_item * item;
+	JIVE_LIST_ITERATE(src->items, item, item_list) {
+		jive_resource_class_count_add_single(self, item->resource_class, item->count);
 	}
+}
+
+bool
+jive_resource_class_count_equals(const jive_resource_class_count * self, const jive_resource_class_count * other)
+{
+	if (self->nitems != other->nitems)
+		return false;
+	
+	struct jive_resource_class_count_iterator i;
+	for (i = jive_resource_class_count_begin(self); i.entry; jive_resource_class_count_iterator_next(&i)) {
+		jive_resource_class_count_item * item = i.entry;
+		if (item->count != jive_resource_class_count_get(other, item->resource_class))
+			return false;
+	}
+	
+	return true;
 }

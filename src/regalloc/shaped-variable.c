@@ -317,7 +317,7 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 	jive_context * context = self->shaped_graph->context;
 	
 	jive_resource_class_count use_count;
-	jive_resource_class_count_init(&use_count);
+	jive_resource_class_count_init(&use_count, self->shaped_graph->context);
 	
 	jive_gate * gate;
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
@@ -327,7 +327,7 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
 			if (overflow) {
-				jive_resource_class_count_fini(&use_count, context);
+				jive_resource_class_count_fini(&use_count);
 				return overflow;
 			}
 		}
@@ -337,13 +337,13 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
 			if (overflow) {
-				jive_resource_class_count_fini(&use_count, context);
+				jive_resource_class_count_fini(&use_count);
 				return overflow;
 			}
 		}
 	}
 	
-	jive_resource_class_count_fini(&use_count, context);
+	jive_resource_class_count_fini(&use_count);
 	
 	return 0;
 }
@@ -553,7 +553,6 @@ void
 jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable)
 {
 	jive_shaped_graph * shaped_graph = self->shaped_graph;
-	jive_context * context = shaped_graph->context;
 	jive_shaped_variable * old_shaped_var = jive_shaped_graph_map_variable(self->shaped_graph, old_variable);
 	jive_shaped_variable * new_shaped_var = jive_shaped_graph_map_variable(self->shaped_graph, new_variable);
 	const jive_resource_class * old_rescls = jive_variable_get_resource_class(old_variable);
@@ -584,9 +583,9 @@ jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_varia
 		}
 		if (old_rescls != new_rescls) {
 			if (xpoint->before_count)
-				jive_resource_class_count_change(&shaped_node->use_count_before, context, old_rescls, new_rescls);
+				jive_resource_class_count_change(&shaped_node->use_count_before, old_rescls, new_rescls);
 			if (xpoint->after_count)
-				jive_resource_class_count_change(&shaped_node->use_count_after, context, old_rescls, new_rescls);
+				jive_resource_class_count_change(&shaped_node->use_count_after, old_rescls, new_rescls);
 		}
 	}
 }
@@ -625,16 +624,14 @@ jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive_output *
 void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
 {
-	jive_context * context = self->shaped_graph->context;
-	
 	struct jive_nodevar_xpoint_hash_bynode_iterator i;
 	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_bynode, self->node_xpoints, i) {
 		jive_nodevar_xpoint * xpoint = i.entry;
 		jive_shaped_node * shaped_node = xpoint->shaped_node;
 		if (xpoint->before_count)
-			jive_resource_class_count_change(&shaped_node->use_count_before, context, old_rescls, new_rescls);
+			jive_resource_class_count_change(&shaped_node->use_count_before, old_rescls, new_rescls);
 		if (xpoint->after_count)
-			jive_resource_class_count_change(&shaped_node->use_count_after, context, old_rescls, new_rescls);
+			jive_resource_class_count_change(&shaped_node->use_count_after, old_rescls, new_rescls);
 	}
 }
 
