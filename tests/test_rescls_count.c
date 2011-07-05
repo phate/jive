@@ -76,7 +76,7 @@ const jive_register_class
 	}
 ;
 
-void test_regcls_count(jive_context * ctx)
+void test_rescls_count_addsub(jive_context * ctx)
 {
 	jive_resource_class_count count;
 	jive_resource_class_count_init(&count, ctx);
@@ -110,11 +110,67 @@ void test_regcls_count(jive_context * ctx)
 	jive_resource_class_count_fini(&count);
 }
 
+void test_rescls_count_compound(jive_context * ctx)
+{
+	jive_resource_class_count a, b, c;
+	jive_resource_class_count_init(&a, ctx);
+	jive_resource_class_count_init(&b, ctx);
+	jive_resource_class_count_init(&c, ctx);
+	
+	assert(jive_resource_class_count_equals(&a, &b));
+	
+	jive_resource_class_count_add(&a, &reg0.base);
+	jive_resource_class_count_add(&a, &reg1.base);
+	jive_resource_class_count_add(&b, &reg0.base);
+	assert(!jive_resource_class_count_equals(&a, &b));
+	
+	jive_resource_class_count_copy(&c, &b);
+	assert(jive_resource_class_count_equals(&b, &c));
+	
+	jive_resource_class_count_add(&c, &reg1.base);
+	assert(jive_resource_class_count_equals(&a, &c));
+	
+	jive_resource_class_count_clear(&a);
+	jive_resource_class_count_clear(&b);
+	jive_resource_class_count_clear(&c);
+	
+	jive_resource_class_count_add(&a, &reg0.base);
+	jive_resource_class_count_add(&a, &reg1.base);
+	jive_resource_class_count_add(&b, &reg1.base);
+	jive_resource_class_count_add(&b, &reg2.base);
+	jive_resource_class_count_update_intersection(&a, &b);
+	jive_resource_class_count_add(&c, &reg1.base);
+	jive_resource_class_count_add(&c, &evenreg.base);
+	assert(a.nitems == 5);
+	assert(jive_resource_class_count_equals(&a, &c));
+	
+	jive_resource_class_count_clear(&a);
+	jive_resource_class_count_clear(&b);
+	jive_resource_class_count_clear(&c);
+	
+	jive_resource_class_count_add(&a, &reg0.base);
+	jive_resource_class_count_add(&a, &reg1.base);
+	jive_resource_class_count_add(&b, &reg1.base);
+	jive_resource_class_count_add(&b, &reg2.base);
+	jive_resource_class_count_update_union(&a, &b);
+	jive_resource_class_count_add(&c, &reg0.base);
+	jive_resource_class_count_add(&c, &reg1.base);
+	jive_resource_class_count_add(&c, &reg2.base);
+	jive_resource_class_count_sub(&c, &evenreg.base);
+	assert(a.nitems == 7);
+	assert(jive_resource_class_count_equals(&a, &c));
+	
+	jive_resource_class_count_fini(&a);
+	jive_resource_class_count_fini(&b);
+	jive_resource_class_count_fini(&c);
+}
+
 int main()
 {
 	jive_context * ctx = jive_context_create();
 	
-	test_regcls_count(ctx);
+	test_rescls_count_addsub(ctx);
+	test_rescls_count_compound(ctx);
 	
 	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);

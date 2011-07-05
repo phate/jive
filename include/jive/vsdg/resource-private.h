@@ -1,6 +1,7 @@
 #ifndef JIVE_VSDG_RESOURCE_PRIVATE_H
 #define JIVE_VSDG_RESOURCE_PRIVATE_H
 
+#include <jive/context.h>
 #include <jive/vsdg/resource.h>
 
 typedef struct jive_resource_class_count_iterator jive_resource_class_count_iterator;
@@ -52,6 +53,15 @@ jive_resource_class_count_copy(jive_resource_class_count * self, const jive_reso
 
 bool
 jive_resource_class_count_equals(const jive_resource_class_count * self, const jive_resource_class_count * other); 
+
+void
+jive_resource_class_count_update_union(jive_resource_class_count * self, const jive_resource_class_count * other);
+
+void
+jive_resource_class_count_update_intersection(jive_resource_class_count * self, const jive_resource_class_count * other);
+
+void
+jive_resource_class_count_update_add(jive_resource_class_count * self, const jive_resource_class_count * other);
 
 /* iterators */
 struct jive_resource_class_count_iterator {

@@ -163,6 +163,7 @@ jive_resource_class_count_sub_single(jive_resource_class_count * self, const jiv
 		JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
 		JIVE_LIST_REMOVE(self->items, item, item_list);
 		jive_context_free(self->context, item);
+		self->nitems --;
 	}
 }
 
@@ -249,4 +250,44 @@ jive_resource_class_count_equals(const jive_resource_class_count * self, const j
 	}
 	
 	return true;
+}
+
+void
+jive_resource_class_count_update_union(jive_resource_class_count * self, const jive_resource_class_count * other)
+{
+	jive_resource_class_count_item * other_item;
+	JIVE_LIST_ITERATE(other->items, other_item, item_list) {
+		jive_resource_class_count_item * item = jive_resource_class_count_lookup_item(self, other_item->resource_class);
+		if (!item)
+			jive_resource_class_count_add_single(self, other_item->resource_class, other_item->count);
+		else
+			item->count = item->count > other_item->count ? item->count : other_item->count;
+	}
+}
+
+void
+jive_resource_class_count_update_intersection(jive_resource_class_count * self, const jive_resource_class_count * other)
+{
+	jive_resource_class_count_item * item, * next_item;
+	JIVE_LIST_ITERATE_SAFE(self->items, item, next_item, item_list) {
+		size_t count = jive_resource_class_count_get(other, item->resource_class);
+		if (!count) {
+			size_t index = jive_ptr_hash(item->resource_class) & self->mask;
+			JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
+			JIVE_LIST_REMOVE(self->items, item, item_list);
+			jive_context_free(self->context, item);
+			self->nitems --;
+		} else {
+			item->count = item->count <  count ? item->count : count;
+		}
+	}
+}
+
+void
+jive_resource_class_count_update_add(jive_resource_class_count * self, const jive_resource_class_count * other)
+{
+	jive_resource_class_count_item * item;
+	JIVE_LIST_ITERATE(other->items, item, item_list) {
+		jive_resource_class_count_add_single(self, item->resource_class, item->count);
+	}
 }
