@@ -2,6 +2,7 @@
 #define JIVE_VSDG_RESOURCE_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 struct jive_context;
 struct jive_type;
@@ -12,6 +13,7 @@ typedef struct jive_resource_class_count jive_resource_class_count;
 typedef struct jive_resource_class_count_item jive_resource_class_count_item;
 typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
 typedef struct jive_resource_class_demotion jive_resource_class_demotion;
+typedef struct jive_rescls_prio_array jive_rescls_prio_array;
 
 typedef enum {
 	jive_resource_class_priority_invalid = 0,
@@ -112,5 +114,15 @@ struct jive_resource_class_count {
 	} items;
 	struct jive_context * context;
 };
+
+struct jive_rescls_prio_array {
+	uint16_t count[8];
+};
+
+void
+jive_rescls_prio_array_compute(jive_rescls_prio_array * self, const jive_resource_class_count * count);
+
+int
+jive_rescls_prio_array_compare(const jive_rescls_prio_array * self, const jive_rescls_prio_array * other);
 
 #endif

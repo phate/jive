@@ -291,3 +291,35 @@ jive_resource_class_count_update_add(jive_resource_class_count * self, const jiv
 		jive_resource_class_count_add_single(self, item->resource_class, item->count);
 	}
 }
+
+static inline size_t
+max(size_t a, size_t b)
+{
+	return a > b ? a : b;
+}
+
+void
+jive_rescls_prio_array_compute(jive_rescls_prio_array * self, const jive_resource_class_count * count)
+{
+	size_t n;
+	for (n = 0; n < 8; n++)
+		self->count[n] = 0;
+	jive_resource_class_count_item * item;
+	JIVE_LIST_ITERATE(count->items, item, item_list) {
+		size_t index = (size_t) item->resource_class->priority;
+		self->count[index] = max(self->count[index], item->count);
+	}
+}
+
+int
+jive_rescls_prio_array_compare(const jive_rescls_prio_array * self, const jive_rescls_prio_array * other)
+{
+	size_t n;
+	for (n = 0; n < 8; n++) {
+		if (self->count[n] < other->count[n])
+			return -1;
+		if (self->count[n] > other->count[n])
+			return +1;
+	}
+	return 0;
+}

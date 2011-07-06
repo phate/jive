@@ -11,6 +11,7 @@ const jive_register_class
 			.names = NULL,
 			.parent = &jive_root_resource_class,
 			.depth = 1,
+			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL
 	},
@@ -21,6 +22,7 @@ const jive_register_class
 			.names = NULL,
 			.parent = &gpr.base,
 			.depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL
 	},
@@ -31,6 +33,7 @@ const jive_register_class
 			.names = NULL,
 			.parent = &gpr.base,
 			.depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL
 	},
@@ -41,6 +44,7 @@ const jive_register_class
 			.names = NULL,
 			.parent = &evenreg.base,
 			.depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL
 	},
@@ -51,6 +55,7 @@ const jive_register_class
 			.names = NULL,
 			.parent = &oddreg.base,
 			.depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL
 	},
@@ -61,6 +66,7 @@ const jive_register_class
 			.names = NULL,
 			.parent = &evenreg.base,
 			.depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL
 	},
@@ -71,6 +77,18 @@ const jive_register_class
 			.names = NULL,
 			.parent = &oddreg.base,
 			.depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
+		},
+		.regs = NULL
+	},
+	cc = {
+		.base = {
+			.name = "cc",
+			.limit = 1,
+			.names = NULL,
+			.parent = &jive_root_resource_class,
+			.depth = 1,
+			.priority = jive_resource_class_priority_reg_high,
 		},
 		.regs = NULL
 	}
@@ -165,12 +183,39 @@ void test_rescls_count_compound(jive_context * ctx)
 	jive_resource_class_count_fini(&c);
 }
 
+void test_rescls_count_prio(jive_context * ctx)
+{
+	jive_resource_class_count a;
+	jive_resource_class_count_init(&a, ctx);
+	
+	jive_resource_class_count_add(&a, &reg0.base);
+	jive_resource_class_count_add(&a, &reg1.base);
+	
+	jive_rescls_prio_array prio;
+	jive_rescls_prio_array_compute(&prio, &a);
+	jive_rescls_prio_array reference = {
+		.count = { [jive_resource_class_priority_reg_low] = 2, [jive_resource_class_priority_lowest] = 2 }
+	};
+	assert( jive_rescls_prio_array_compare(&prio, &reference) == 0);
+	
+	jive_resource_class_count_sub(&a, &reg1.base);
+	jive_rescls_prio_array_compute(&prio, &a);
+	assert( jive_rescls_prio_array_compare(&prio, &reference) == -1);
+	
+	jive_resource_class_count_add(&a, &cc.base);
+	jive_rescls_prio_array_compute(&prio, &a);
+	assert( jive_rescls_prio_array_compare(&prio, &reference) == +1);
+	
+	jive_resource_class_count_fini(&a);
+}
+
 int main()
 {
 	jive_context * ctx = jive_context_create();
 	
 	test_rescls_count_addsub(ctx);
 	test_rescls_count_compound(ctx);
+	test_rescls_count_prio(ctx);
 	
 	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);
