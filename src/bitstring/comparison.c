@@ -170,7 +170,7 @@ jive_output * \
 jive_##name_(jive_output * x, jive_output * y) \
 { \
 	jive_region * region = x->node->region; \
-	if (y->node->region->depth > region->depth); \
+	if (y->node->region->depth > region->depth) \
 		region = y->node->region; \
 	return jive_##name_##_create(region, x, y)->outputs[0]; \
 } \
