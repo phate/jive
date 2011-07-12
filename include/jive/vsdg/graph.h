@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <jive/common.h>
 #include <jive/context.h>
 #include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/tracker.h>
@@ -92,6 +93,13 @@ struct jive_graph {
 	jive_ssavar_divert_notifier_slot on_ssavar_divert_origin;
 	jive_ssavar_variable_notifier_slot on_ssavar_variable_change;
 };
+
+JIVE_EXPORTED_INLINE struct jive_region *
+jive_graph_get_root_region(const jive_graph * self)
+{
+	return self->root_region;
+}
+
 
 jive_graph *
 jive_graph_create(jive_context * context);
