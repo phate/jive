@@ -7,3 +7,4 @@ test-loop
 test-iteration
 test-reroute-gamma
 test-reroute-theta
+test-selector

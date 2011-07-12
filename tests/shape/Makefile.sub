@@ -8,4 +8,5 @@ TESTS += \
 	shape/test-iteration \
 	shape/test-reroute-gamma \
 	shape/test-reroute-theta \
+	shape/test-selector \
 
