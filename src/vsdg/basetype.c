@@ -595,3 +595,15 @@ jive_gate_merge(jive_gate * self, jive_gate * other)
 	jive_context_free(context, self->name);
 	self->name = name;
 }
+
+void
+jive_gate_split(jive_gate * self)
+{
+	/* split off this gate from others assigned to the same variable */
+	jive_variable * new_variable = jive_variable_create(self->variable->graph);
+	jive_variable_set_resource_class(new_variable, jive_variable_get_resource_class(self->variable));
+	jive_variable_set_resource_name(new_variable, jive_variable_get_resource_name(self->variable));
+			
+	jive_variable_unassign_gate(self->variable, self);
+	jive_variable_assign_gate(new_variable, self);
+}
