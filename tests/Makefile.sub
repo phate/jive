@@ -32,8 +32,10 @@ include tests/record/Makefile.sub
 
 TESTPROGS=$(patsubst %, tests/%, $(TESTS))
 
-$(TESTPROGS): %: %.o libjive.a
+$(TESTPROGS): %: %.o tests/testarch.o libjive.a
 # tests/testnodes.o tests/graph-sanity-checks.o libjive.a
+
+$(patsubst %, tests/%.o, $(TESTS)): CPPFLAGS+=-Itests
 
 check: $(TESTPROGS)
 	rm -rf check.log
