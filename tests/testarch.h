@@ -3,6 +3,7 @@
 
 #include <jive/arch/instruction.h>
 #include <jive/arch/registers.h>
+#include <jive/arch/transfer-instructions.h>
 
 typedef enum {
 	cls_r0 = 0,
@@ -31,9 +32,17 @@ extern const jive_register_name jive_testarch_regs [];
 
 typedef enum {
 	nop_index = 0,
-	add_index = 1
+	add_index = 1,
+	load_disp_index = 2,
+	store_disp_index = 3,
+	
+	spill_gpr_index = 4,
+	restore_gpr_index = 5,
+	move_gpr_index = 6
 } jive_testarch_instruction_index;
 
 extern const jive_instruction_class jive_testarch_instructions [];
+
+extern const struct jive_transfer_instructions_factory jive_testarch_xfer_factory;
 
 #endif
