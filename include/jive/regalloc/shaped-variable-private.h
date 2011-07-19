@@ -49,7 +49,7 @@ struct jive_allowed_resource_name {
 };
 JIVE_DEFINE_HASH_TYPE(jive_allowed_resource_names_hash, jive_allowed_resource_name, const struct jive_resource_name *, name, chain);
 
-static void
+static inline void
 jive_allowed_resource_names_add(jive_allowed_resource_names_hash * hash, const jive_resource_name * resource_name)
 {
 	jive_allowed_resource_name * allowed = jive_context_malloc(hash->context, sizeof(*allowed));
@@ -57,14 +57,14 @@ jive_allowed_resource_names_add(jive_allowed_resource_names_hash * hash, const j
 	jive_allowed_resource_names_hash_insert(hash, allowed);
 }
 
-static void
+static inline void
 jive_allowed_resource_name_destroy(jive_allowed_resource_names_hash * hash, jive_allowed_resource_name * allowed)
 {
 	jive_allowed_resource_names_hash_remove(hash, allowed);
 	jive_context_free(hash->context, allowed);
 }
 
-static void
+static inline void
 jive_allowed_resource_names_remove(jive_allowed_resource_names_hash * hash, const struct jive_resource_name * resource_name)
 {
 	jive_allowed_resource_name * allowed = jive_allowed_resource_names_hash_lookup(hash, resource_name);
@@ -72,7 +72,14 @@ jive_allowed_resource_names_remove(jive_allowed_resource_names_hash * hash, cons
 	jive_allowed_resource_name_destroy(hash, allowed);
 }
 
-static void
+static inline bool
+jive_allowed_resource_names_contains(jive_allowed_resource_names_hash * hash, const struct jive_resource_name * resource_name)
+{
+	jive_allowed_resource_name * allowed = jive_allowed_resource_names_hash_lookup(hash, resource_name);
+	return (bool) allowed;
+}
+
+static inline void
 jive_allowed_resource_names_clear(jive_allowed_resource_names_hash * hash)
 {
 	struct jive_allowed_resource_names_hash_iterator i;
@@ -143,6 +150,9 @@ jive_shaped_variable_sub_squeeze(jive_shaped_variable * self, const jive_resourc
 		self, self->variable->rescls, self->variable->resname);
 }
 
+void
+jive_shaped_variable_deny_name(jive_shaped_variable * self, const struct jive_resource_name * resname);
+
 static inline size_t
 jive_variable_interference_add(jive_shaped_variable * first, jive_shaped_variable * second)
 {
@@ -154,9 +164,9 @@ jive_variable_interference_add(jive_shaped_variable * first, jive_shaped_variabl
 		const jive_resource_name * second_name = second->variable->resname;
 		
 		if (second_name)
-			jive_allowed_resource_names_remove(&first->allowed_names, second_name);
+			jive_shaped_variable_deny_name(first, second_name);
 		if (first_name)
-			jive_allowed_resource_names_remove(&second->allowed_names, first_name);
+			jive_shaped_variable_deny_name(second, first_name);
 		
 		if (!second_name)
 			jive_shaped_variable_add_squeeze(first, second->variable->rescls);

@@ -60,6 +60,19 @@ jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const st
 }
 
 void
+jive_shaped_variable_deny_name(jive_shaped_variable * self, const struct jive_resource_name * resname)
+{
+	if (!jive_allowed_resource_names_contains(&self->allowed_names, resname))
+		return;
+		
+	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
+	jive_allowed_resource_names_remove(&self->allowed_names, resname);
+	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
+}
+
+void
 jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname)
 {
 	JIVE_DEBUG_ASSERT(old_resname == new_resname || self->variable->rescls->limit == 0 || jive_shaped_variable_allowed_resource_name(self, new_resname));
@@ -73,7 +86,7 @@ jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const str
 	struct jive_variable_interference_hash_iterator i;
 	JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
 		jive_shaped_variable * other = i.entry->shaped_variable;
-		jive_allowed_resource_names_remove(&other->allowed_names, new_resname);
+		jive_shaped_variable_deny_name(other, new_resname);
 		jive_shaped_variable_sub_squeeze(other, new_resname->resource_class);
 	}
 }
