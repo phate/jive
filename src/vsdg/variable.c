@@ -291,6 +291,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 	
 	const jive_resource_class * new_rescls;
 	new_rescls = jive_resource_class_intersection( self->rescls, other->rescls);
+	JIVE_DEBUG_ASSERT(new_rescls);
 	
 	jive_variable_set_resource_class(other, new_rescls);
 	jive_variable_set_resource_class(self, new_rescls);
