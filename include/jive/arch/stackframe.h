@@ -67,34 +67,6 @@ struct jive_stackframe_class {
 
 extern const jive_stackframe_class JIVE_STACKFRAME_CLASS;
 
-struct jive_stackvar_type {
-	jive_state_type base;
-	size_t size;
-};
-
-extern const jive_type_class JIVE_STACKVAR_TYPE;
-#define JIVE_DECLARE_STACKVAR_TYPE(name, regcls) const jive_stackvar_type name##_struct = jive_stackvar_type_create(regcls); const jive_type * name = &name##_struct.base.base
-
-extern const jive_input_class JIVE_STACKSLOT_INPUT;
-struct jive_stackvar_input {
-	jive_state_input base;
-	jive_stackvar_type type;
-	jive_stackslot * required_slot;
-};
-
-extern const jive_output_class JIVE_STACKSLOT_OUTPUT;
-struct jive_stackvar_output {
-	jive_state_output base;
-	jive_stackvar_type type;
-	jive_stackslot * required_slot;
-};
-
-extern const jive_gate_class JIVE_STACKSLOT_GATE;
-struct jive_stackvar_gate {
-	jive_state_gate base;
-	jive_stackvar_type type;
-};
-
 void
 jive_stackframe_destroy(jive_stackframe * self);
 

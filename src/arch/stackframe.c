@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <jive/arch/memory.h>
 #include <jive/arch/stackframe-private.h>
 #include <jive/arch/registers.h>
 #include <jive/context.h>
@@ -81,6 +82,7 @@ jive_stackslot_create(const jive_resource_class * rescls, long offset)
 }
 
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
+static const jive_memory_type stackvar_type = {{{&JIVE_MEMORY_TYPE}}};
 
 #define MAKE_STACKSLOT_CLASS(SIZE) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##SIZE = { \
@@ -91,6 +93,7 @@ const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##SIZE = { \
 		.depth = 1, \
 		.priority = jive_resource_class_priority_mem_low,\
 		.demotions = no_demotion, \
+		.type = &stackvar_type.base.base \
 	}, \
 	.size = SIZE \
 }
@@ -136,6 +139,7 @@ const jive_reserved_stackslot_class jive_reserved_stackslot_class_##SIZE##_##OFF
 			.depth = 2, \
 			.priority = jive_resource_class_priority_mem_high,\
 			.demotions = no_demotion, \
+			.type = &stackvar_type.base.base \
 		}, \
 		.size = SIZE \
 	}, \
@@ -168,157 +172,5 @@ jive_stackframe_get_reserved_stackslot_resource_class(jive_stackframe * self, si
 	};
 	
 	return 0;
-}
-
-/* stackslots */
-
-const jive_type_class JIVE_STACKSLOT_TYPE = {
-	.parent = &JIVE_STATE_TYPE,
-	.get_label = _jive_stackvar_type_get_label, /* override */
-	.create_input = _jive_stackvar_type_create_input, /* override */
-	.create_output = _jive_stackvar_type_create_output, /* override */
-	.create_gate = _jive_stackvar_type_create_gate, /* override */
-	.equals = _jive_stackvar_type_equals, /* override */
-};
-
-const jive_input_class JIVE_STACKSLOT_INPUT = {
-	.parent = &JIVE_INPUT,
-	.fini = _jive_input_fini, /* inherit */
-	.get_label = _jive_stackvar_input_get_label, /* override */
-	.get_type = _jive_stackvar_input_get_type, /* override */
-};
-
-const jive_output_class JIVE_STACKSLOT_OUTPUT = {
-	.parent = &JIVE_OUTPUT,
-	.fini = _jive_output_fini, /* inherit */
-	.get_label = _jive_stackvar_output_get_label, /* override */
-	.get_type = _jive_stackvar_output_get_type, /* override */
-};
-
-const jive_gate_class JIVE_STACKSLOT_GATE = {
-	.parent = &JIVE_GATE,
-	.fini = _jive_gate_fini, /* inherit */
-	.get_label = _jive_stackvar_gate_get_label, /* override */
-	.get_type = _jive_stackvar_gate_get_type, /* override */
-};
-
-char *
-_jive_stackvar_type_get_label(const jive_type * self_)
-{
-	const jive_stackvar_type * self = (const jive_stackvar_type *) self_;
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "stackslot%zd", self->size);
-	return strdup(tmp);
-}
-
-jive_input *
-_jive_stackvar_type_create_input(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
-{
-	const jive_stackvar_type * self = (const jive_stackvar_type *) self_;
-	jive_stackvar_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
-	input->base.base.class_ = &JIVE_STACKSLOT_INPUT;
-	_jive_stackvar_input_init(input, self->size, node, index, initial_operand);
-	return &input->base.base;
-}
-
-jive_output *
-_jive_stackvar_type_create_output(const jive_type * self_, struct jive_node * node, size_t index)
-{
-	const jive_stackvar_type * self = (const jive_stackvar_type *) self_;
-	jive_stackvar_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_STACKSLOT_OUTPUT;
-	_jive_stackvar_output_init(output, self->size, node, index);
-	return &output->base.base;
-}
-
-jive_gate *
-_jive_stackvar_type_create_gate(const jive_type * self_, struct jive_graph * graph, const char * name)
-{
-	const jive_stackvar_type * self = (const jive_stackvar_type *) self_;
-	jive_stackvar_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->base.base.class_ = &JIVE_STACKSLOT_GATE;
-	_jive_stackvar_gate_init(gate, self->size, graph, name);
-	return &gate->base.base;
-}
-
-bool
-_jive_stackvar_type_equals(const jive_type * self_, const jive_type * other_)
-{
-	const jive_stackvar_type * self = (const jive_stackvar_type *) self_;
-	const jive_stackvar_type * other = (const jive_stackvar_type *) other_;
-	
-	return _jive_type_equals(self_, other_) && (self->size == other->size);
-}
-
-void
-_jive_stackvar_input_init(jive_stackvar_input * self, size_t size, struct jive_node * node, size_t index, jive_output * origin)
-{
-	_jive_state_input_init(&self->base, node, index, origin);
-	self->type = jive_stackvar_type_create(size);
-	self->required_slot = 0;
-}
-
-char *
-_jive_stackvar_input_get_label(const jive_input * self_)
-{
-	const jive_stackvar_input * self = (const jive_stackvar_input *) self_;
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "stackslot%zd", self->type.size);
-	return strdup(tmp);
-}
-
-const jive_type *
-_jive_stackvar_input_get_type(const jive_input * self_)
-{
-	const jive_stackvar_input * self = (const jive_stackvar_input *) self_;
-	return &self->type.base.base;
-}
-
-void
-_jive_stackvar_output_init(jive_stackvar_output * self, size_t size, struct jive_node * node, size_t index)
-{
-	_jive_state_output_init(&self->base, node, index);
-	self->type = jive_stackvar_type_create(size);
-	self->required_slot = 0;
-}
-
-char *
-_jive_stackvar_output_get_label(const jive_output * self_)
-{
-	const jive_stackvar_output * self = (const jive_stackvar_output *) self_;
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "stackslot%zd", self->type.size);
-	return strdup(tmp);
-}
-
-const jive_type *
-_jive_stackvar_output_get_type(const jive_output * self_)
-{
-	const jive_stackvar_output * self = (const jive_stackvar_output *) self_;
-	return &self->type.base.base;
-}
-
-
-char *
-_jive_stackvar_gate_get_label(const jive_gate * self_)
-{
-	const jive_stackvar_gate * self = (const jive_stackvar_gate *) self_;
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "stackslot%zd", self->type.size);
-	return strdup(tmp);
-}
-
-void
-_jive_stackvar_gate_init(jive_stackvar_gate * self, size_t size, struct jive_graph * graph, const char * name)
-{
-	_jive_state_gate_init(&self->base, graph, name);
-	self->type = jive_stackvar_type_create(size);
-}
-
-const jive_type *
-_jive_stackvar_gate_get_type(const jive_gate * self_)
-{
-	const jive_stackvar_gate * self = (const jive_stackvar_gate *) self_;
-	return &self->type.base.base;
 }
 

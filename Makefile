@@ -31,6 +31,7 @@ LIBJIVE_SRC += \
 # arch definitions
 LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackframe.c \
+	src/arch/memory.c \
 	src/arch/regselector.c
 
 # shaper
