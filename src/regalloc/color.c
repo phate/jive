@@ -15,8 +15,6 @@ find_next_uncolored(const jive_var_assignment_tracker * tracker)
 	} else return NULL;
 }
 
-#include <stdio.h>
-
 void
 jive_regalloc_color(jive_shaped_graph * shaped_graph)
 {
@@ -25,7 +23,7 @@ jive_regalloc_color(jive_shaped_graph * shaped_graph)
 		if (!shaped_variable)
 			break;
 		
-		printf("%p\n", shaped_variable);
+		JIVE_DEBUG_ASSERT(!jive_variable_get_resource_name(shaped_variable->variable));
 		
 		const jive_resource_name * name = 0;
 		struct jive_allowed_resource_names_hash_iterator i;
@@ -33,6 +31,8 @@ jive_regalloc_color(jive_shaped_graph * shaped_graph)
 			name = i.entry->name;
 			break;
 		}
+		
+		JIVE_DEBUG_ASSERT(name);
 		
 		jive_variable_set_resource_name(shaped_variable->variable, name);
 	}
