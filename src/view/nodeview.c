@@ -27,7 +27,7 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
 		if (resname)
-			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", resname->name, NULL);
+			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":*", resname->name, NULL);
 		else
 			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", rescls->name, NULL);
 	} else if (input->required_rescls != &jive_root_resource_class) {
@@ -81,7 +81,7 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
 		if (resname)
-			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", resname->name, NULL);
+			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":*", resname->name, NULL);
 		else
 			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", rescls->name, NULL);
 	} else if (output->required_rescls != &jive_root_resource_class) {
