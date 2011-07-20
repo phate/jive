@@ -69,6 +69,15 @@ jive_shaped_variable_is_crossing(const jive_shaped_variable * self, const struct
 size_t
 jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
 
+/**
+	\brief Determine maximum cross count of this variable
+	
+	Visit all places at which this variable is alive, determine maximum
+	of use counts per register class at these places.
+*/
+void
+jive_shaped_variable_get_cross_count(const jive_shaped_variable * self, jive_resource_class_count * counts);
+
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self);
 

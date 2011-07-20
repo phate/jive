@@ -186,6 +186,26 @@ jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const ji
 }
 
 void
+jive_shaped_variable_get_cross_count(const jive_shaped_variable * self, jive_resource_class_count * counts)
+{
+	jive_resource_class_count_clear(counts);
+	
+	jive_ssavar * ssavar;
+	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
+		
+		struct jive_nodevar_xpoint_hash_bynode_iterator i;
+		JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_bynode, shaped_ssavar->node_xpoints, i) {
+			jive_nodevar_xpoint * xpoint = i.entry;
+			if (xpoint->before_count)
+				jive_resource_class_count_update_union(counts, &xpoint->shaped_node->use_count_before);
+			if (xpoint->after_count)
+				jive_resource_class_count_update_union(counts, &xpoint->shaped_node->use_count_after);
+		}
+	}
+}
+
+void
 jive_shaped_variable_destroy(jive_shaped_variable * self)
 {
 	jive_gate * gate;
@@ -213,6 +233,9 @@ jive_shaped_variable_destroy(jive_shaped_variable * self)
 jive_variable_interference *
 jive_variable_interference_create(jive_shaped_variable * first, jive_shaped_variable * second)
 {
+	/* a variable may not interfere with itself */
+	JIVE_DEBUG_ASSERT(first != second);
+	
 	jive_variable_interference * i = jive_context_malloc(first->shaped_graph->context, sizeof(*i));
 	i->first.shaped_variable = first;
 	i->first.whole = i;
