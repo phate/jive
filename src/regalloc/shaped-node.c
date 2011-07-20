@@ -62,6 +62,32 @@ jive_shaped_node_next_in_region(const jive_shaped_node * self)
 	return tmp;
 }
 
+void
+jive_shaped_node_get_active_before(const jive_shaped_node * self, jive_mutable_varcut * cut)
+{
+	jive_mutable_varcut_clear(cut);
+	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
+	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, self->ssavar_xpoints, i) {
+		jive_nodevar_xpoint * xpoint = i.entry;
+		if (xpoint->before_count) {
+			jive_mutable_varcut_ssavar_add(cut, xpoint->shaped_ssavar, xpoint->before_count);
+		}
+	}
+}
+
+void
+jive_shaped_node_get_active_after(const jive_shaped_node * self, jive_mutable_varcut * cut)
+{
+	jive_mutable_varcut_clear(cut);
+	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
+	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, self->ssavar_xpoints, i) {
+		jive_nodevar_xpoint * xpoint = i.entry;
+		if (xpoint->after_count) {
+			jive_mutable_varcut_ssavar_add(cut, xpoint->shaped_ssavar, xpoint->after_count);
+		}
+	}
+}
+
 static void
 jive_shaped_node_remove_all_crossed(jive_shaped_node * self)
 {

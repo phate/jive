@@ -40,6 +40,12 @@ jive_shaped_node *
 jive_shaped_node_next_in_region(const jive_shaped_node * self);
 
 void
+jive_shaped_node_get_active_before(const jive_shaped_node * self, jive_mutable_varcut * cut);
+
+void
+jive_shaped_node_get_active_after(const jive_shaped_node * self, jive_mutable_varcut * cut);
+
+void
 jive_shaped_node_destroy(jive_shaped_node * self);
 
 struct jive_shaped_node_downward_iterator {
