@@ -15,6 +15,53 @@ find_next_uncolored(const jive_var_assignment_tracker * tracker)
 	} else return NULL;
 }
 
+static const jive_resource_name *
+find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
+{
+	jive_variable * variable = candidate->variable;
+	
+	/* of the allowed registers, choose the one that puts the
+	smallest amount of "pressure" on interfering variables */
+	
+	jive_resource_class_count cross_count;
+	jive_resource_class_count_init(&cross_count, context);
+	
+	const jive_resource_class * rescls = jive_variable_get_resource_class(variable);
+	
+	const jive_resource_name * best_name = 0;
+	size_t best_pressure = candidate->interference.nitems + 1;
+	
+	struct jive_allowed_resource_names_hash_iterator i;
+	JIVE_HASH_ITERATE(jive_allowed_resource_names_hash, candidate->allowed_names, i) {
+		const jive_resource_name * name = i.entry->name;
+		size_t pressure = 0;
+		
+		const jive_resource_class * overflow;
+		overflow = jive_resource_class_count_check_change(&cross_count, rescls, name->resource_class);
+		if (overflow)
+			continue;
+		
+		struct jive_variable_interference_hash_iterator j;
+		JIVE_HASH_ITERATE(jive_variable_interference_hash, candidate->interference, j) {
+			jive_shaped_variable * other = j.entry->shaped_variable;
+			if (jive_allowed_resource_names_contains(&other->allowed_names, name)) {
+				/* choosing this register would reduce the number
+				of choices for another variable */
+				pressure  = pressure + 1;
+			}
+		}
+		
+		if (pressure < best_pressure) {
+			best_name = name;
+			best_pressure = pressure;
+		}
+	}
+	
+	jive_resource_class_count_fini(&cross_count);
+	
+	return best_name;
+}
+
 void
 jive_regalloc_color(jive_shaped_graph * shaped_graph)
 {
@@ -25,12 +72,7 @@ jive_regalloc_color(jive_shaped_graph * shaped_graph)
 		
 		JIVE_DEBUG_ASSERT(!jive_variable_get_resource_name(shaped_variable->variable));
 		
-		const jive_resource_name * name = 0;
-		struct jive_allowed_resource_names_hash_iterator i;
-		JIVE_HASH_ITERATE(jive_allowed_resource_names_hash, shaped_variable->allowed_names, i) {
-			name = i.entry->name;
-			break;
-		}
+		const jive_resource_name * name = find_allowed_name(shaped_graph->context, shaped_variable);
 		
 		JIVE_DEBUG_ASSERT(name);
 		
