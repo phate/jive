@@ -125,4 +125,12 @@ jive_rescls_prio_array_compute(jive_rescls_prio_array * self, const jive_resourc
 int
 jive_rescls_prio_array_compare(const jive_rescls_prio_array * self, const jive_rescls_prio_array * other);
 
+static inline void
+jive_rescls_prio_array_init(jive_rescls_prio_array * self)
+{
+	size_t n;
+	for (n = 0; n < 8; n++)
+		self->count[n] = 0;
+}
+
 #endif
