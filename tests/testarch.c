@@ -152,6 +152,12 @@ static const jive_register_class * gpr_params[] = {
 	&jive_testarch_regcls[cls_gpr]
 };
 
+static const jive_register_class * special_params[] = {
+	&jive_testarch_regcls[cls_r0],
+	&jive_testarch_regcls[cls_r1],
+	&jive_testarch_regcls[cls_r2],
+	&jive_testarch_regcls[cls_r3]
+};
 
 const jive_instruction_class jive_testarch_instructions[] = {
 	[nop_index] = {
@@ -219,6 +225,43 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.encode = 0,
 		.write_asm = 0,
 		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
+		.code = 0
+	},
+	
+	[setr0_index] = {
+		.name = "setr0",
+		.mnemonic = "setr0",
+		.encode = 0,
+		.write_asm = 0,
+		.inregs = gpr_params, .outregs = &special_params[0], .flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
+		.code = 0
+	},
+	[setr1_index] = {
+		.name = "setr1",
+		.mnemonic = "setr1",
+		.encode = 0,
+		.write_asm = 0,
+		.inregs = gpr_params, .outregs = &special_params[1], .flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
+		.code = 0
+	},
+	[setr2_index] = {
+		.name = "setr2",
+		.mnemonic = "setr2",
+		.encode = 0,
+		.write_asm = 0,
+		.inregs = gpr_params, .outregs = &special_params[2], .flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
+		.code = 0
+	},
+	[setr3_index] = {
+		.name = "setr3",
+		.mnemonic = "setr3",
+		.encode = 0,
+		.write_asm = 0,
+		.inregs = gpr_params, .outregs = &special_params[3], .flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
 		.code = 0
 	}

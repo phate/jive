@@ -38,7 +38,12 @@ typedef enum {
 	
 	spill_gpr_index = 4,
 	restore_gpr_index = 5,
-	move_gpr_index = 6
+	move_gpr_index = 6,
+	
+	setr0_index = 7,
+	setr1_index = 8,
+	setr2_index = 9,
+	setr3_index = 10,
 } jive_testarch_instruction_index;
 
 extern const jive_instruction_class jive_testarch_instructions [];
