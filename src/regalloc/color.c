@@ -44,6 +44,11 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 		struct jive_variable_interference_hash_iterator j;
 		JIVE_HASH_ITERATE(jive_variable_interference_hash, candidate->interference, j) {
 			jive_shaped_variable * other = j.entry->shaped_variable;
+			
+			/* other is colored already or trivially colorable, therefore ignore */
+			if (jive_variable_get_resource_name(other->variable) || other->allowed_names.nitems > other->squeeze)
+				continue;
+			
 			if (jive_allowed_resource_names_contains(&other->allowed_names, name)) {
 				/* choosing this register would reduce the number
 				of choices for another variable */
