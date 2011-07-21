@@ -61,6 +61,11 @@ int main()
 	jive_node * n3 = n5->inputs[0]->origin->node;
 	jive_node * n4 = n5->inputs[1]->origin->node;
 	
+	jive_node * xfer = jive_node_create(n4->region,
+		1, (const jive_type *[]){type}, (jive_output *[]){n2->outputs[1]},
+		1, (const jive_type *[]){type});
+	jive_input_divert_origin(n4->inputs[0], xfer->outputs[0]);
+	
 	jive_node * n6 = jive_node_create(r1,
 		2, (const jive_type *[]){type, type}, (jive_output *[]){n5->outputs[0], n2->outputs[2]},
 		1, (const jive_type *[]){anchor_type});
@@ -76,6 +81,7 @@ int main()
 	shape(shaped_graph, n5);
 	shape(shaped_graph, n4);
 	shape(shaped_graph, n3);
+	shape(shaped_graph, xfer);
 	shape(shaped_graph, n2);
 	shape(shaped_graph, n1);
 	
