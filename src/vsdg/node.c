@@ -59,8 +59,11 @@ _jive_node_init(
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 	
 	size_t n;
-	for(n=0; n<noperands; n++)
+	for(n=0; n<noperands; n++) {
 		jive_node_add_input(self, operand_types[n], operands[n]);
+		if (operands[n]->node->depth_from_root + 1 > self->depth_from_root)
+			 self->depth_from_root = operands[n]->node->depth_from_root + 1;
+	}
 	self->noperands = self->ninputs;
 	
 	for(n=0; n<noutputs; n++)
@@ -83,6 +86,8 @@ _jive_node_fini(jive_node * self)
 {
 	jive_context * context = self->graph->context;
 	DEBUG_ASSERT(self->region);
+	
+	jive_node_notifier_slot_call(&self->graph->on_node_destroy, self);
 	
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	
@@ -187,9 +192,11 @@ jive_node_add_input_(jive_node * self, jive_input * input)
 	self->ninputs ++;
 	self->inputs = jive_context_realloc(self->graph->context, self->inputs, sizeof(jive_input *) * self->ninputs);
 	self->inputs[input->index] = input;
-	jive_node_invalidate_depth_from_root(self);
 	
-	if (self->region) jive_graph_notify_input_create(self->graph, input);
+	if (self->region){
+		jive_node_invalidate_depth_from_root(self);
+		jive_graph_notify_input_create(self->graph, input);
+	}
 }
 
 jive_input *
@@ -277,8 +284,12 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 		if (self->inputs[n]->origin->node->depth_from_root + 1 > new_depth_from_root)
 			 new_depth_from_root = self->inputs[n]->origin->node->depth_from_root + 1;
 	
-	if (self->depth_from_root == new_depth_from_root) return;
+	size_t old_depth_from_root = self->depth_from_root;
+	if (old_depth_from_root == new_depth_from_root)
+		return;
 	self->depth_from_root = new_depth_from_root;
+	
+	jive_node_depth_notifier_slot_call(&self->graph->on_node_depth_change, self, old_depth_from_root);
 	
 	for(n=0; n<self->noutputs; n++) {
 		jive_input * user = self->outputs[n]->users.first;
