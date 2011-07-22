@@ -264,6 +264,25 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.inregs = gpr_params, .outregs = &special_params[3], .flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
 		.code = 0
+	},
+	
+	[add_gpr_index] = {
+		.name = "add_gpr",
+		.mnemonic = "add_gpr",
+		.encode = 0,
+		.write_asm = 0,
+		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_write_input | jive_instruction_commutative,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0
+	},
+	[sub_gpr_index] = {
+		.name = "sub_gpr",
+		.mnemonic = "sub_gpr",
+		.encode = 0,
+		.write_asm = 0,
+		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_write_input,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0
 	}
 };
 
