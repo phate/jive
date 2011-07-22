@@ -15,7 +15,8 @@ pre_op_transfer(jive_shaped_graph * shaped_graph, jive_node * node, const jive_r
 	jive_output * origin = node->inputs[0]->origin;
 	
 	const jive_resource_class * resource_class = jive_variable_get_resource_class(origin->ssavar->variable);
-	const jive_type * type = jive_register_class_get_type((const jive_register_class *) resource_class);
+	resource_class = jive_resource_class_relax(resource_class);
+	const jive_type * type = jive_resource_class_get_type(resource_class);
 	
 	jive_node * xfer_node = jive_aux_split_node_create(
 		node->region,
@@ -45,7 +46,8 @@ post_op_transfer(jive_shaped_graph * shaped_graph, jive_node * node, const jive_
 	jive_output * origin = node->outputs[0];
 	
 	const jive_resource_class * resource_class = jive_variable_get_resource_class(origin->ssavar->variable);
-	const jive_type * type = jive_register_class_get_type((const jive_register_class *) resource_class);
+	resource_class = jive_resource_class_relax(resource_class);
+	const jive_type * type = jive_resource_class_get_type(resource_class);
 	
 	jive_node * xfer_node = jive_aux_split_node_create(node->region,
 		type, origin, resource_class,

@@ -237,7 +237,7 @@ check_unshaped_crossing_overflow(jive_region_shaper * self,
 	jive_varcut_init(&active_after, context);
 	
 	jive_shaped_node_get_active_before(shaped_node, &active_before);
-	jive_shaped_node_get_active_after(shaped_node, &active_after);
+	jive_shaped_node_get_active_before(shaped_node, &active_after);
 	
 	bool first_input_active_after = false;
 	
@@ -647,6 +647,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_add(&active->use_counts, aux_rescls);
 			if (overflow) {
+				jive_region_shaper_undo_setup_node(self, node);
 				jive_regalloc_conflict conflict;
 				conflict.type = jive_regalloc_conflict_class;
 				conflict.item.rescls = overflow;
