@@ -65,8 +65,9 @@ _jive_unify_node_init(jive_unify_node * self,
 	struct jive_region * region, const jive_union_layout * layout,
 	size_t narguments, jive_output * const arguments[])
 {
-	//FIXME: this is ugly
-	JIVE_DEBUG_ASSERT(layout->nelements == narguments);
+	if (layout->nelements != narguments) {
+		jive_context_fatal_error(self->base.graph->context, "Type mismatch: number of parameters to unify does not match union layout");
+	}
 
 	int i;
 	const jive_type * arg_types[layout->nelements];
@@ -134,14 +135,21 @@ static void
 _jive_choose_node_init(jive_choose_node * self, struct jive_region * region,
 	size_t element, jive_output * operand)
 {
-	//FIXME: this is ugly, some other error would be nice
-	JIVE_DEBUG_ASSERT(operand->class_ == &JIVE_UNION_OUTPUT);
+	jive_context * context = region->graph->context;
+	if (operand->class_ != &JIVE_UNION_OUTPUT) {
+		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
+	}
+	
 	const jive_union_type * operand_type = (const jive_union_type *)
 		operand->class_->get_type(operand);
 
-	//FIXME: this is ugly, some other error would be nice
-	JIVE_DEBUG_ASSERT(element < operand_type->layout->nelements);
-
+	if (element > operand_type->layout->nelements) {
+		char tmp[256];
+		snprintf(tmp, sizeof(tmp), "Type mismatch: attempted to select element #%zd from union of %zd elements",
+			element, operand_type->layout->nelements);
+		jive_context_fatal_error(context, jive_context_strdup(context, tmp));
+	}
+	
 	self->attrs.element = element;
 
 	_jive_node_init(&self->base, region,

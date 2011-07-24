@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <jive/context.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
@@ -31,7 +32,10 @@ jive_objdef_node_init_(jive_objdef_node * self, jive_region * region, jive_outpu
 		1, &type, &obj,
 		0, NULL);
 	
-	/* FIXME: assert that given node is in fact the anchor of a region */
+	if (obj->node->ninputs < 1 || obj->node->inputs[0]->class_ != &JIVE_ANCHOR_INPUT) {
+		jive_context_fatal_error(region->graph->context, "Type mismatch: object definitions can only be applied to region anchor nodes");
+	}
+	
 	jive_region * objregion = obj->node->inputs[0]->origin->node->region;
 	
 	self->attrs.name = jive_context_strdup(region->graph->context, name);
