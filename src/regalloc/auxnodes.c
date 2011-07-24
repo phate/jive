@@ -41,19 +41,19 @@ static jive_node *
 jive_aux_split_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
-	/* FIXME: cannot (yet?) be copied */
-	abort();
-	#if 0
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	const jive_aux_split_node_attrs * attrs = (const jive_aux_split_node_attrs *) attrs_;
-	return jive_aux_split_node_create(region,
-		attrs->in_class,
-		jive_input_get_type(self->inputs[0]),
+	jive_node * node = jive_aux_split_node_create(region,
+		jive_resource_class_get_type(attrs->in_class),
 		operands[0],
-		attrs->out_class,
-		jive_output_get_type(self->outputs[0]));
-	#endif
-	return 0;
+		attrs->in_class,
+		jive_resource_class_get_type(attrs->out_class),
+		attrs->out_class);
+	
+	node->inputs[0]->required_rescls = attrs->in_class;
+	node->outputs[0]->required_rescls = attrs->out_class;
+	
+	return node;
 }
 
 const jive_node_class JIVE_AUX_SPLIT_NODE = {
