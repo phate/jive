@@ -10,18 +10,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
-/* FIXME: implement methods of type */
-const jive_type_class JIVE_STACKVAR_TYPE = {
-	.parent = &JIVE_STATE_TYPE,
-	.fini = 0,
-	.get_label = 0,
-	.create_input = 0,
-	.create_output = 0,
-	.create_gate = 0,
-	.equals = 0,
-	.copy = 0
-};
-
 void
 _jive_stackframe_fini(jive_stackframe * self)
 {
