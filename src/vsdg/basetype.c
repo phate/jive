@@ -29,9 +29,8 @@ _jive_type_get_label(const jive_type * self)
 jive_input *
 _jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	/* FIXME: consider raising a "logic error" instead */
-	DEBUG_ASSERT(jive_type_equals(self, jive_output_get_type(initial_operand)));
-	jive_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_context * context = node->graph->context;
+	jive_input * input = jive_context_malloc(context, sizeof(*input));
 	input->class_ = &JIVE_INPUT;
 	_jive_input_init(input, node, index, initial_operand);
 	return input;
@@ -72,6 +71,25 @@ bool
 _jive_type_accepts(const jive_type * self, const jive_type * other)
 {
 	return self->class_ == other->class_;
+}
+
+void
+jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node * node)
+{
+	jive_context * context = node->graph->context;
+	char * input_type_name = jive_type_get_label(self);
+	char * operand_type_name = jive_type_get_label(self);
+	
+	const char * error_message = "Type mismatch (and additionally memory exhaustion)";
+	
+	if (input_type_name && operand_type_name) {
+		char * msg = jive_context_strjoin(context,
+			"Type mismatch: required '", input_type_name,
+			"' got '", operand_type_name, "'", NULL);
+		error_message = msg;
+	}
+	
+	jive_context_fatal_error(context, error_message);
 }
 
 const jive_type_class JIVE_TYPE = {
@@ -202,7 +220,13 @@ jive_input_divert_origin(jive_input * self, jive_output * new_origin)
 void
 jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 {
-	DEBUG_ASSERT(jive_type_equals(jive_input_get_type(self), jive_output_get_type(new_origin)));
+	const jive_type * input_type = jive_input_get_type(self);
+	const jive_type * operand_type = jive_output_get_type(new_origin);
+	
+	if (!jive_type_equals(input_type, operand_type)) {
+		jive_raise_type_error(input_type, operand_type, self->node);
+	}
+	
 	DEBUG_ASSERT(self->node->graph == new_origin->node->graph);
 	
 	jive_output * old_origin = self->origin;

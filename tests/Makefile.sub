@@ -7,6 +7,7 @@ TESTS=\
 	test_mutable_traverser\
 	test_prune_replace\
 	test_rescls_count\
+	test_typemismatch\
 
 # 	test_resource\
 # 	test_interference\

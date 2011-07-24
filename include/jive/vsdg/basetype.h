@@ -80,10 +80,7 @@ jive_type_get_label(const jive_type * self)
 }
 
 static inline jive_input *
-jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
-{
-	return self->class_->create_input(self, node, index, initial_operand);
-}
+jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);
 
 static inline jive_output *
 jive_type_create_output(const jive_type * self, struct jive_node * node, size_t index)
@@ -401,5 +398,20 @@ jive_gate_destroy(jive_gate * self);
 /**	@}	*/
 
 /**	@}	*/
+
+void
+jive_raise_type_error(const jive_type * self, const jive_type * other, struct jive_node * node);
+
+static inline jive_input *
+jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
+{
+	const jive_type * operand_type = jive_output_get_type(initial_operand);
+	
+	if (!jive_type_equals(self, operand_type)) {
+		jive_raise_type_error(self, operand_type, node);
+	}
+	
+	return self->class_->create_input(self, node, index, initial_operand);
+}
 
 #endif
