@@ -16,4 +16,5 @@ test_machinedef
 test_prune_replace
 test_mutable_traverser
 test_empty_graph
+test_typemismatch
 arithmetic_function
