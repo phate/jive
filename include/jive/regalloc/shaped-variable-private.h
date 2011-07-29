@@ -123,6 +123,16 @@ jive_shaped_variable_internal_recompute_allowed_names(jive_shaped_variable * sel
 }
 
 static inline void
+jive_shaped_variable_recompute_allowed_names(jive_shaped_variable * self)
+{
+	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
+	jive_shaped_variable_internal_recompute_allowed_names(self);
+	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
+		self, self->variable->rescls, self->variable->resname);
+}
+
+static inline void
 jive_shaped_variable_add_squeeze(jive_shaped_variable * self, const jive_resource_class * rescls)
 {
 	if (self->variable->resname || !self->variable->rescls->limit || !rescls->limit)
@@ -191,8 +201,8 @@ jive_variable_interference_remove(jive_shaped_variable * first, jive_shaped_vari
 		const jive_resource_name * second_name = second->variable->resname;
 		
 		if (first_name || second_name) {
-			jive_shaped_variable_internal_recompute_allowed_names(first);
-			jive_shaped_variable_internal_recompute_allowed_names(second);
+			jive_shaped_variable_recompute_allowed_names(first);
+			jive_shaped_variable_recompute_allowed_names(second);
 		} else {
 			jive_shaped_variable_sub_squeeze(first, second->variable->rescls);
 			jive_shaped_variable_sub_squeeze(second, first->variable->rescls);
