@@ -3,6 +3,7 @@ TESTS+=\
 	regalloc/shape-split \
 	regalloc/regmismatch \
 	regalloc/twoop \
+	regalloc/split \
 
 #TESTS+=\
 #	regalloc/shaping-traverser \
