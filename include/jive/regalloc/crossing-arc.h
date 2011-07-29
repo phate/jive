@@ -71,6 +71,27 @@ struct jive_crossing_arc_iterator {
 static inline void
 jive_crossing_arc_iterator_init(
 	jive_crossing_arc_iterator * self,
+	jive_shaped_graph * shaped_graph,
+	jive_shaped_node * origin_shaped_node,
+	jive_shaped_node * target_shaped_node,
+	jive_region * start_region,
+	size_t boundary_region_depth)
+{
+	self->shaped_graph = shaped_graph;
+	self->origin_shaped_node_ = origin_shaped_node;
+	self->node = target_shaped_node;
+	self->current_region_ = start_region;
+	if (self->current_region_)
+		self->region = jive_shaped_graph_map_region(shaped_graph, self->current_region_);
+	else
+		self->region = 0;
+	self->exit_region_ = start_region;
+	self->boundary_region_depth_ = boundary_region_depth;
+}
+
+static inline void
+jive_crossing_arc_iterator_init_ssavar(
+	jive_crossing_arc_iterator * self,
 	jive_shaped_node * origin_shaped_node,
 	jive_shaped_node * target_shaped_node,
 	jive_shaped_ssavar * shaped_ssavar)
@@ -78,14 +99,7 @@ jive_crossing_arc_iterator_init(
 	jive_crossing_arc arc;
 	jive_crossing_arc_init(&arc, origin_shaped_node, target_shaped_node, shaped_ssavar);
 	
-	self->shaped_graph = arc.shaped_graph;
-	self->origin_shaped_node_ = arc.origin_shaped_node;
-	self->node = arc.start_shaped_node;
-	self->current_region_ = arc.start_region;
-	if (self->current_region_)
-		self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
-	else
-		self->region = NULL;
+	jive_crossing_arc_iterator_init(self, arc.shaped_graph, arc.origin_shaped_node, arc.start_shaped_node, arc.start_region, arc.boundary_region_depth);
 	
 	if (self->origin_shaped_node_ && self->node == self->origin_shaped_node_) {
 		self->node = 0;
@@ -93,8 +107,6 @@ jive_crossing_arc_iterator_init(
 		self->region = 0;
 	}
 	
-	self->exit_region_ = arc.start_region;
-	self->boundary_region_depth_ = arc.boundary_region_depth;
 }
 
 static inline void

@@ -433,7 +433,7 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive_input * 
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, input->node);
 	
 	jive_crossing_arc_iterator i;
-	jive_crossing_arc_iterator_init(&i, origin_shaped_node, input_shaped_node, self);
+	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
 	
 	while(i.region) {
 		if (i.node)
@@ -459,7 +459,7 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive_input 
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, input->node);
 	
 	jive_crossing_arc_iterator i;
-	jive_crossing_arc_iterator_init(&i, origin_shaped_node, input_shaped_node, self);
+	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
 	
 	while(i.region) {
 		if (i.node)
@@ -485,7 +485,7 @@ jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive_o
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
 	
 	jive_crossing_arc_iterator i;
-	jive_crossing_arc_iterator_init(&i, origin_shaped_node, input_shaped_node, self);
+	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
 	
 	while(i.region) {
 		if (i.node)
@@ -511,7 +511,7 @@ jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, jive
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
 	
 	jive_crossing_arc_iterator i;
-	jive_crossing_arc_iterator_init(&i, origin_shaped_node, input_shaped_node, self);
+	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
 	
 	while(i.region) {
 		if (i.node)
