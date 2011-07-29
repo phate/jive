@@ -39,6 +39,18 @@ jive_shaped_node_prev_in_region(const jive_shaped_node * self);
 jive_shaped_node *
 jive_shaped_node_next_in_region(const jive_shaped_node * self);
 
+static inline jive_shaped_node *
+jive_shaped_node_prev_in_cut(const jive_shaped_node * self)
+{
+	return self->cut_location_list.prev;
+}
+
+static inline jive_shaped_node *
+jive_shaped_node_next_in_cut(const jive_shaped_node * self)
+{
+	return self->cut_location_list.next;
+}
+
 void
 jive_shaped_node_get_active_before(const jive_shaped_node * self, jive_mutable_varcut * cut);
 
