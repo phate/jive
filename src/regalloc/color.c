@@ -72,6 +72,17 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 	return best_name;
 }
 
+static bool
+try_assign_name(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
+{
+	const jive_resource_name * name = find_allowed_name(shaped_graph->graph->context, shaped_variable);
+	if (!name)
+		return false;
+	
+	jive_variable_set_resource_name(shaped_variable->variable, name);
+	return true;
+}
+
 typedef struct regalloc_split_region regalloc_split_region;
 
 struct regalloc_split_region {
@@ -321,28 +332,51 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		regalloc_split_region_destroy(split);
 	}
 	
-	return shaped_variable;
+	jive_variable_set_resource_name(variable, name);
+	
+	return 0;
 }
 
-#include <stdio.h>
-#include <jive/view.h>
+static jive_shaped_variable *
+ssavar_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
+{
+	/* split off singly-defined ssavars from a multiply written variable */
+	
+	jive_variable * variable = shaped_variable->variable;
+	JIVE_DEBUG_ASSERT(!variable->gates.first);
+	
+	while (variable->ssavars.first != variable->ssavars.last) {
+		jive_ssavar * ssavar = variable->ssavars.last;
+		
+		jive_ssavar_split(ssavar);
+		JIVE_DEBUG_ASSERT(ssavar->variable != variable);
+		jive_variable_recompute_rescls(ssavar->variable);
+		jive_variable_recompute_rescls(variable);
+		
+		if (try_assign_name(shaped_graph, shaped_variable))
+			return 0;
+	}
+	
+	return shaped_variable;
+}
 
 static void
 jive_regalloc_color_single(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
 {
-	const jive_resource_name * name;
+	if (try_assign_name(shaped_graph, shaped_variable))
+		shaped_variable = 0;
+	if (!shaped_variable)
+		return;
 	
-	name = find_allowed_name(shaped_graph->context, shaped_variable);
+	shaped_variable = ssavar_splitting(shaped_graph, shaped_variable);
+	if (!shaped_variable)
+		return;
 	
-	if (!name) {
-		shaped_variable = lifetime_splitting(shaped_graph, shaped_variable);
-		jive_view(shaped_graph->graph, stdout);
-		name = find_allowed_name(shaped_graph->context, shaped_variable);
-	}
+	shaped_variable = lifetime_splitting(shaped_graph, shaped_variable);
+	if (!shaped_variable)
+		return;
 	
-	JIVE_DEBUG_ASSERT(name);
-	
-	jive_variable_set_resource_name(shaped_variable->variable, name);
+	JIVE_DEBUG_ASSERT(false);
 }
 
 void
