@@ -5,6 +5,7 @@
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable-private.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
 
@@ -361,10 +362,139 @@ ssavar_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped
 }
 
 static void
+merge_gate_ports(jive_gate * gate)
+{
+	jive_output * output;
+	JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list)
+		jive_output_auto_merge_variable(output);
+	
+	jive_input * input;
+	JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list)
+		jive_output_auto_merge_variable(input->origin);
+}
+
+static jive_shaped_variable *
+gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
+{
+	/* split off gates assigned to variable */
+	jive_variable * variable = shaped_variable->variable;
+	
+	if (!variable->gates.first)
+		return shaped_variable;
+	
+	const jive_resource_class * rescls = jive_variable_get_resource_class(variable);
+	const jive_type * type = jive_resource_class_get_type(rescls);
+	
+	/* insert splitting nodes before and after gates */
+	jive_gate * gate;
+	JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
+		jive_input * input;
+		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
+			jive_output * origin = input->origin;
+				
+			/* don't issue xfer instruction between "tied" gates */
+			if (origin->gate == gate) {
+				jive_input_unassign_ssavar(input);
+				continue;
+			}
+			
+			jive_node * xfer_node = jive_aux_split_node_create(
+				input->node->region,
+				type, origin, rescls,
+				type, rescls);
+			
+			jive_input * xfer_input = xfer_node->inputs[0];
+			jive_output * xfer_output = xfer_node->outputs[0];
+			
+			jive_input_auto_assign_variable(xfer_input);
+			jive_input_unassign_ssavar(input);
+			jive_input_divert_origin(input, xfer_output);
+			
+			/* determine place where to insert node -- try immediately before the gating node,
+			but move before predicating node if there is one */
+			jive_node * node = input->node;
+			size_t n;
+			for (n = 0; n < node->ninputs; n++) {
+				if (jive_input_isinstance(node->inputs[n], &JIVE_CONTROL_INPUT)) {
+					node = node->inputs[n]->origin->node;
+					break;
+				}
+			}
+			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
+			
+			jive_cut * cut = shaped_node->cut;
+			
+			cut = jive_cut_split(cut, shaped_node);
+			jive_cut_append(cut, xfer_node);
+		}
+		
+		jive_output * output;
+		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
+			/* don't issue xfer instruction between "tied" gates */
+			bool other_user = false;
+			jive_input * user;
+			JIVE_LIST_ITERATE(output->users, user, output_users_list)
+				other_user = other_user || (user->gate != gate);
+			if (!other_user) {
+				jive_ssavar_unassign_output(output->ssavar, output);
+				continue;
+			}
+			
+			jive_node * xfer_node = jive_aux_split_node_create(
+				output->node->region,
+				type, output, rescls,
+				type, rescls);
+			
+			jive_output * xfer_output = xfer_node->outputs[0];
+			
+			jive_ssavar_divert_origin(output->ssavar, xfer_output);
+			
+			/* insert at appropriate place */
+			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node);
+			jive_cut * cut = jive_cut_split(shaped_node->cut, jive_shaped_node_next_in_cut(shaped_node));
+			
+			jive_cut_append(cut, xfer_node);
+		}
+	}
+	
+	/* split off SSA variables */
+	while (variable->ssavars.first) {
+		jive_ssavar * ssavar = variable->ssavars.first;
+		jive_ssavar_split(ssavar);
+		jive_variable_recompute_rescls(ssavar->variable);
+	}
+	
+	/* now split gates */
+	while (variable->gates.first != variable->gates.last) {
+		jive_gate * gate = variable->gates.first;
+		jive_gate_split(gate);
+		merge_gate_ports(gate);
+	}
+	
+	gate = variable->gates.first;
+	merge_gate_ports(gate);
+	variable = gate->variable;
+	
+	if (variable)
+		shaped_variable = jive_shaped_graph_map_variable(shaped_graph, variable);
+	else
+		shaped_variable = 0;
+	
+	if (shaped_variable && try_assign_name(shaped_graph, shaped_variable))
+		return 0;
+	
+	return shaped_variable;
+}
+
+static void
 jive_regalloc_color_single(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
 {
 	if (try_assign_name(shaped_graph, shaped_variable))
 		shaped_variable = 0;
+	if (!shaped_variable)
+		return;
+	
+	shaped_variable = gate_splitting(shaped_graph, shaped_variable);
 	if (!shaped_variable)
 		return;
 	
