@@ -329,6 +329,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 		JIVE_DEBUG_ASSERT(ssavar->use_count == 0);
 		JIVE_LIST_REMOVE(other->unused_ssavars, ssavar, variable_ssavar_list);
 		JIVE_LIST_PUSH_BACK(self->unused_ssavars, ssavar, variable_ssavar_list);
+		ssavar->variable = self;
 	}
 }
 
