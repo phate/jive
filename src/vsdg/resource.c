@@ -4,6 +4,8 @@
 #include <jive/internal/compiler.h>
 #include <jive/util/hash.h>
 #include <jive/util/list.h>
+#include <jive/vsdg/basetype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/resource-private.h>
 
 const jive_resource_class *
@@ -25,6 +27,15 @@ jive_resource_class_intersection(const jive_resource_class * self, const jive_re
 	if (u == self) return other;
 	else if (u == other) return self;
 	else return 0;
+}
+
+jive_gate *
+jive_resource_class_create_gate(const jive_resource_class * self, jive_graph * graph, const char * name)
+{
+	const jive_type * type = jive_resource_class_get_type(self);
+	jive_gate * gate = jive_type_create_gate(type, graph, name);
+	gate->required_rescls = self;
+	return gate;
 }
 
 const jive_resource_class *

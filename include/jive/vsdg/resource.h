@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 struct jive_context;
+struct jive_graph;
 struct jive_type;
 
 typedef struct jive_resource_class jive_resource_class;
@@ -75,6 +76,9 @@ jive_resource_class_get_type(const jive_resource_class * self)
 {
 	return self->type;
 }
+
+struct jive_gate *
+jive_resource_class_create_gate(const jive_resource_class * self, struct jive_graph * graph, const char * name);
 
 /** \brief Find largest resource class of same general type containing this class */
 const jive_resource_class *
