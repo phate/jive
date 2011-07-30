@@ -6,6 +6,7 @@
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
 
@@ -486,6 +487,127 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	return shaped_variable;
 }
 
+static const jive_resource_class_demotion *
+pick_gate_evict_rescls(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable, jive_gate * gate)
+{
+	jive_context * context = shaped_graph->graph->context;
+	
+	const jive_resource_class * rescls = jive_variable_get_resource_class(shaped_variable->variable);
+	const jive_resource_class_demotion * demotion = rescls->demotions;
+	while(demotion->target) {
+		if (!demotion->target->limit)
+			return demotion;
+		
+		jive_allowed_resource_names_hash allowed_names;
+		jive_allowed_resource_names_hash_init(&allowed_names, context);
+		
+		size_t n;
+		for (n = 0; n < rescls->limit; n++)
+			jive_allowed_resource_names_add(&allowed_names, rescls->names[n]);
+		
+		struct jive_gate_interference_hash_iterator i;
+		JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
+			jive_variable * other_var = i.entry->gate->variable;
+			if (!other_var)
+				continue;
+			jive_allowed_resource_names_remove(&allowed_names, jive_variable_get_resource_name(other_var));
+		}
+		
+		bool allows_name = !!allowed_names.nitems;
+		
+		jive_allowed_resource_names_clear(&allowed_names);
+		jive_allowed_resource_names_hash_fini(&allowed_names);
+		
+		if (allows_name)
+			return demotion;
+		demotion ++;
+	}
+	
+	JIVE_DEBUG_ASSERT(false);
+	return 0;
+}
+
+static jive_shaped_variable *
+gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
+{
+	jive_graph * graph = shaped_graph->graph;
+	jive_variable * variable = shaped_variable->variable;
+	
+	if (!variable->gates.first)
+		return shaped_variable;
+	
+	JIVE_DEBUG_ASSERT(variable->gates.first == variable->gates.last);
+	
+	jive_gate * gate = variable->gates.first;
+	
+	const jive_resource_class_demotion * demotion;
+	demotion = pick_gate_evict_rescls(shaped_graph, shaped_variable, gate);
+	
+	/* FIXME: compose gate name: "spilled_" + gate->name */
+	jive_gate * spill_gate = jive_resource_class_create_gate(demotion->target, graph, "spilled");
+	
+	while (gate->outputs.first) {
+		jive_output * output = gate->outputs.first;
+		jive_output * new_output = jive_node_gate_output(output->node, spill_gate);
+		
+		JIVE_DEBUG_ASSERT(output->users.first == output->users.last);
+		
+		jive_input * user = output->users.first;
+		
+		if (user->gate == gate) {
+			/* tied gates, just pass through spilled value */
+			jive_node_gate_input(user->node, spill_gate, new_output);
+			jive_input_destroy(user);
+		} else {
+			jive_node * xfer_node = user->node;
+			jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
+			
+			jive_shaped_node * position = jive_shaped_node_next_in_region(p);
+			jive_shaped_node_destroy(p);
+			
+			jive_output * restored_output = split_bottom(shaped_graph, new_output, demotion, position);
+			jive_ssavar_unassign_output(restored_output->ssavar, restored_output);
+			
+			jive_ssavar_divert_origin(xfer_node->outputs[0]->ssavar, restored_output);
+			jive_node_destroy(xfer_node);
+		}
+		
+		jive_output_auto_merge_variable(new_output);
+		jive_output_destroy(output);
+	}
+	
+	while (gate->inputs.first) {
+		jive_input * input = gate->inputs.first;
+		jive_node * node = input->node;
+		jive_node * xfer_node = input->origin->node;
+		jive_output * origin = xfer_node->inputs[0]->origin;
+			
+		jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
+		jive_shaped_node_destroy(p);
+		
+		jive_input_destroy(input);
+		jive_node_destroy(xfer_node);
+		
+		jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, node);
+		position = jive_shaped_node_prev_in_region(position);
+		jive_output * spill_output = split_top(shaped_graph, origin, demotion, position);
+		
+		jive_input * spill_input = jive_node_gate_input(node, spill_gate, spill_output);
+		jive_input_auto_merge_variable(spill_input);
+	}
+	
+	while (variable->ssavars.first)
+		jive_ssavar_split(variable->ssavars.first);
+	
+	if (demotion->target->limit) {
+		bool success = try_assign_name(shaped_graph, shaped_variable);
+		(void) success;
+		JIVE_DEBUG_ASSERT(success);
+	}
+	
+	return 0;
+}
+
 static void
 jive_regalloc_color_single(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
 {
@@ -495,6 +617,10 @@ jive_regalloc_color_single(jive_shaped_graph * shaped_graph, jive_shaped_variabl
 		return;
 	
 	shaped_variable = gate_splitting(shaped_graph, shaped_variable);
+	if (!shaped_variable)
+		return;
+	
+	shaped_variable = gate_evict(shaped_graph, shaped_variable);
 	if (!shaped_variable)
 		return;
 	

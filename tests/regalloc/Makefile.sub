@@ -5,6 +5,7 @@ TESTS+=\
 	regalloc/twoop \
 	regalloc/split \
 	regalloc/gatesplit \
+	regalloc/gateevict \
 
 #TESTS+=\
 #	regalloc/shaping-traverser \
