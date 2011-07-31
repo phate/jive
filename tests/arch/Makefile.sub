@@ -1,0 +1,2 @@
+TESTS+=\
+	arch/test-dynamic-stackslots \
