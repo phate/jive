@@ -2,7 +2,6 @@
 
 #include <jive/common.h>
 #include <jive/arch/registers.h>
-#include <jive/arch/stackframe.h>
 #include <jive/arch/transfer-instructions.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg/graph.h>

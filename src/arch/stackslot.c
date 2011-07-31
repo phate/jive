@@ -1,4 +1,4 @@
-#include <jive/arch/stackframe.h>
+#include <jive/arch/stackslot.h>
 
 #include <pthread.h>
 #include <stdio.h>

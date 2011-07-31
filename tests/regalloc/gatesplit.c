@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <jive/arch/stackframe.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>

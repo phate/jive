@@ -1,5 +1,5 @@
-#ifndef JIVE_ARCH_STACKFRAME_H
-#define JIVE_ARCH_STACKFRAME_H
+#ifndef JIVE_ARCH_STACKSLOT_H
+#define JIVE_ARCH_STACKSLOT_H
 
 #include <jive/vsdg/resource.h>
 

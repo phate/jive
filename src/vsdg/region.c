@@ -2,7 +2,6 @@
 
 #include <jive/common.h>
 
-#include <jive/arch/stackframe.h>
 #include <jive/debug-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-ssavar-use-private.h>

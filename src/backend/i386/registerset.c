@@ -1,7 +1,7 @@
 #include <jive/backend/i386/registerset.h>
 
 #include <jive/arch/registers.h>
-#include <jive/arch/stackframe.h>
+#include <jive/arch/stackslot.h>
 #include <jive/bitstring/type.h>
 
 const jive_register_name jive_i386_regs [] = {

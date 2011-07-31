@@ -3,7 +3,7 @@
 #include <jive/common.h>
 
 #include <jive/arch/registers.h>
-#include <jive/arch/stackframe.h>
+#include <jive/arch/stackslot.h>
 #include <jive/bitstring/type.h>
 #include <jive/vsdg.h>
 
