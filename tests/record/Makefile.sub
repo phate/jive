@@ -1,2 +1,3 @@
 TESTS+=\
 	record/nesting\
+	record/innermost_region\

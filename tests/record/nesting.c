@@ -27,7 +27,7 @@ int main()
 	jive_record_layout * l0 = jive_record_layout_create(context,
 		2, l0_elements, 4, 2);
 
-	jive_output * g0 = jive_group_create(l0, 2, (jive_output * const []){c1, c2});
+	jive_output * g0 = jive_group_create(l0, 2, (jive_output * []){c1, c2});
 	
 	const jive_record_layout_element l1_elements[] = {
 		{(jive_value_type*)jive_output_get_type(c0),0},
@@ -37,7 +37,7 @@ int main()
 	jive_record_layout * l1 = jive_record_layout_create(context,
 		3, l1_elements, 4, 4);
 
-	jive_output * g1 = jive_group_create(l1, 3, (jive_output * const []){c0, g0, c3});
+	jive_output * g1 = jive_group_create(l1, 3, (jive_output * []){c0, g0, c3});
 	
 	jive_output * s0 = jive_select_create(2, g1);
 	jive_output * s1 = jive_select_create(1, g1);

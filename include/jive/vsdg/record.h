@@ -26,7 +26,7 @@ jive_group_node_create(struct jive_region * region, const jive_record_layout * l
 
 jive_output *
 jive_group_create(const jive_record_layout * layout,
-	size_t narguments, jive_output * const arguments[]);
+	size_t narguments, jive_output * arguments[const]);
 
 static inline jive_group_node *
 jive_group_node_cast(jive_node * node)

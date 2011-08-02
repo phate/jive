@@ -103,10 +103,12 @@ jive_group_node_create(struct jive_region * region, const jive_record_layout * l
 
 jive_output *
 jive_group_create(const jive_record_layout * layout,
-	size_t narguments, jive_output * const arguments[])
+	size_t narguments, jive_output * arguments[const])
 {
+	jive_region * region = jive_region_innermost(narguments, arguments);
+
 	jive_group_node * node = (jive_group_node *)
-		jive_group_node_create(arguments[0]->node->region, layout, narguments, arguments);
+		jive_group_node_create(region, layout, narguments, arguments);
 	
 	return (jive_output*)node->base.outputs[0];
 }
