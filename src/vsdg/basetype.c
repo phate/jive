@@ -78,7 +78,7 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node
 {
 	jive_context * context = node->graph->context;
 	char * input_type_name = jive_type_get_label(self);
-	char * operand_type_name = jive_type_get_label(self);
+	char * operand_type_name = jive_type_get_label(other);
 	
 	const char * error_message = "Type mismatch (and additionally memory exhaustion)";
 	
