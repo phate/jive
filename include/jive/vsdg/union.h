@@ -21,11 +21,11 @@ struct jive_unify_node {
 
 jive_node *
 jive_unify_node_create(struct jive_region * region, const jive_union_layout * layout,
-	size_t narguments, jive_output * const arguments[]);
+  jive_output * const operand);
 
 jive_output *
 jive_unify_create(const jive_union_layout * layout,
-	size_t narguments, jive_output * const arguments[]);
+  jive_output * const operand);
 
 static inline jive_unify_node *
 jive_unify_node_cast(jive_node * node)
