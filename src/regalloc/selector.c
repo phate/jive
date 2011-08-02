@@ -257,8 +257,6 @@ jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self, 
 	push_node_stack(self, node_cost);
 }
 
-#include <stdio.h>
-
 jive_node *
 jive_region_shaper_selector_select_node(jive_region_shaper_selector * self)
 {
@@ -267,16 +265,8 @@ jive_region_shaper_selector_select_node(jive_region_shaper_selector * self)
 	
 	if (self->prio_heap.nitems) {
 		jive_master_shaper_selector_revalidate(self->master);
-		size_t n, k;
-		for (n = 0; n < self->prio_heap.nitems; n++) {
-			fprintf(stderr, "%p ", self->prio_heap.items[n]->node);
-			for (k = 0; k < 8; k++)
-				fprintf(stderr, "%zd ", self->prio_heap.items[n]->prio_array.count[k]);
-			fprintf(stderr, "\n");
-		}
 		jive_node_cost * node_cost = jive_node_cost_prio_heap_peek(&self->prio_heap);
 		push_node_stack(self, node_cost);
-		fprintf(stderr, "%p\n", node_cost->node);
 		return node_cost->node;
 	}
 	
