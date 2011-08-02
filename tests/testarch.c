@@ -1,10 +1,14 @@
 #include "testarch.h"
 
+#include <stdio.h>
+
 #include <jive/common.h>
 
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
+#include <jive/arch/subroutine-private.h>
 #include <jive/bitstring/type.h>
+#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg.h>
 
 const jive_register_name jive_testarch_regs [] = {
@@ -327,3 +331,157 @@ const jive_transfer_instructions_factory jive_testarch_xfer_factory = {
 	create_xfer
 };
 
+static void
+jive_testarch_subroutine_fini_(jive_subroutine * self_)
+{
+	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
+	jive_context_free(self->base.context, self->base.parameters);
+	jive_context_free(self->base.context, self->base.returns);
+}
+
+static jive_output *
+jive_testarch_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
+{
+	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
+	jive_gate * gate = self->base.parameters[index];
+	jive_output * output = jive_node_gate_output(&self->base.enter->base, gate);
+	if (index >= 2) {
+		const jive_type * in_type = jive_gate_get_type(gate);
+		const jive_type * out_type = jive_resource_class_get_type(jive_testarch_cls_gpr);
+		jive_node * node = jive_aux_split_node_create(self->base.enter->base.region,
+			in_type, output, gate->required_rescls,
+			out_type, jive_testarch_cls_gpr);
+		output = node->outputs[0];
+	}
+	return output;
+}
+
+static jive_input *
+jive_testarch_subroutine_value_return_(jive_subroutine * self_, size_t index, jive_output * value)
+{
+	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
+	jive_gate * gate = self->base.returns[index];
+	return jive_node_gate_input(&self->base.leave->base, gate, value);
+}
+
+static jive_testarch_subroutine *
+jive_testarch_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns);
+
+static jive_subroutine *
+jive_testarch_subroutine_copy_(const jive_subroutine * self_,
+	jive_node * new_enter_node, jive_node * new_leave_node)
+{
+	jive_graph * graph = new_enter_node->region->graph;
+	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
+	
+	jive_testarch_subroutine * other = jive_testarch_subroutine_alloc(new_enter_node->region, self->base.nparameters, self->base.nreturns);
+	
+	size_t n;
+	
+	for (n = 0; n < self->base.nparameters; n++) {
+		jive_gate * old_gate = self->base.parameters[n];
+		jive_gate * new_gate = NULL;
+		
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->base.enter->base, new_enter_node);
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->base.leave->base, new_leave_node);
+		if (!new_gate)
+			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
+		
+		other->base.parameters[n] = new_gate;
+	}
+	
+	for (n = 0; n < self->base.nreturns; n++) {
+		jive_gate * old_gate = self->base.returns[n];
+		jive_gate * new_gate = NULL;
+		
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->base.enter->base, new_enter_node);
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->base.leave->base, new_leave_node);
+		if (!new_gate)
+			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
+		
+		other->base.returns[n] = new_gate;
+	}
+	
+	return &other->base;
+}
+
+static const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
+	.fini = jive_testarch_subroutine_fini_,
+	.value_parameter = jive_testarch_subroutine_value_parameter_,
+	.value_return = jive_testarch_subroutine_value_return_,
+	.copy = jive_testarch_subroutine_copy_
+};
+
+static jive_testarch_subroutine *
+jive_testarch_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns)
+{
+	jive_graph * graph = region->graph;
+	jive_context * context = graph->context;
+	
+	jive_testarch_subroutine * self;
+	self = jive_context_malloc(context, sizeof(*self));
+	jive_subroutine_init(&self->base, &JIVE_TESTARCH_SUBROUTINE, context);
+	
+	size_t n;
+	
+	self->base.nparameters = nparameters;
+	self->base.parameters = jive_context_malloc(context, sizeof(self->base.parameters[0]) * nparameters);
+	
+	for (n = 0; n < nparameters; n++)
+		self->base.parameters[n] = NULL;
+	
+	self->base.nreturns = nreturns;
+	self->base.returns = jive_context_malloc(context, sizeof(self->base.returns[0]) * nreturns);
+	
+	for (n = 0; n < nreturns; n++)
+		self->base.returns[n] = NULL;
+	
+	jive_subroutine_init(&self->base, &JIVE_TESTARCH_SUBROUTINE, context);
+	
+	return self;
+}
+
+jive_subroutine *
+jive_testarch_subroutine_create(jive_region * region,
+	size_t nparameters, const jive_argument_type parameters[],
+	size_t nreturns, const jive_argument_type returns[])
+{
+	jive_graph * graph = region->graph;
+	jive_testarch_subroutine * self = jive_testarch_subroutine_alloc(region, nparameters, nreturns);
+	
+	size_t n;
+	
+	for (n = 0; n < nparameters; n++) {
+		char argname[80];
+		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
+		const jive_resource_class * cls;
+		switch (n) {
+			case 0: cls = jive_testarch_cls_r1; break;
+			case 1: cls = jive_testarch_cls_r2; break;
+			default: cls = jive_fixed_stackslot_class_get(32, (n - 1) * 4);
+		}
+		self->base.parameters[n] = jive_resource_class_create_gate(cls, graph, argname);
+	}
+	
+	for (n = 0; n < nreturns; n++) {
+		char argname[80];
+		snprintf(argname, sizeof(argname), "ret%zd", n + 1);
+		const jive_resource_class * cls;
+		switch (n) {
+			case 0: cls = jive_testarch_cls_r1; break;
+			default: cls = jive_fixed_stackslot_class_get(32, n * 4);
+		}
+		self->base.returns[n] = jive_resource_class_create_gate(cls, graph, argname);
+	}
+	
+	jive_subroutine_create_region_and_nodes(&self->base, region);
+	
+	self->stackptr = jive_subroutine_create_passthrough(&self->base, jive_testarch_cls_r0, "stackptr");
+	self->stackptr.gate->may_spill = false;
+	
+	return &self->base;
+}

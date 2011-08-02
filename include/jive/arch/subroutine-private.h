@@ -2,40 +2,37 @@
 #define JIVE_ARCH_SUBROUTINE_PRIVATE_H
 
 #include <jive/arch/subroutine.h>
-#include <jive/vsdg/anchortype.h>
-
-void
-_jive_subroutine_node_init(
-	jive_subroutine_node * self,
-	jive_subroutine * subroutine);
-
-void
-_jive_subroutine_node_fini(jive_node * self);
-
-char *
-_jive_subroutine_node_get_label(const jive_node * self);
 
 jive_node *
-_jive_subroutine_node_create(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * operands[]);
+jive_subroutine_enter_node_create(struct jive_region * region);
 
-bool
-_jive_subroutine_node_equiv(const jive_node_attrs * first, const jive_node_attrs * second);
+jive_node *
+jive_subroutine_leave_node_create(struct jive_region * region, struct jive_output * control_transfer);
+
+jive_node *
+jive_subroutine_node_create(struct jive_region * subroutine_region, jive_subroutine * subroutine);
+
+void
+jive_subroutine_create_region_and_nodes(jive_subroutine * subroutine, struct jive_region * parent_region);
+
+jive_subroutine_passthrough
+jive_subroutine_create_passthrough(jive_subroutine * subroutine, const struct jive_resource_class * cls, const char * name);
 
 static inline void
-_jive_subroutine_init(jive_subroutine * self, jive_node * enter, jive_node * leave)
+jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context)
 {
-	self->enter = enter;
-	self->leave = leave;
-	self->region = enter->region;
+	self->class_ = cls;
 	
-	self->subroutine_node = jive_context_malloc(enter->graph->context, sizeof(*self->subroutine_node));
-	_jive_subroutine_node_init(self->subroutine_node, self);
+	self->context = context;
 	
-	JIVE_DECLARE_CONTROL_TYPE(type);
+	self->enter = NULL;
+	self->leave = NULL;
+	self->subroutine_node = NULL;
 	
-	jive_output * output = jive_node_add_output(leave, type);
-	jive_node_add_input(&self->subroutine_node->base, type, output);
+	self->region = NULL;
 }
+
+jive_gate *
+jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * new_node);
 
 #endif
