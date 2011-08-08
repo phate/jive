@@ -15,6 +15,7 @@ struct jive_transfer_instructions_factory;
 typedef struct jive_aux_split_node_attrs jive_aux_split_node_attrs;
 
 struct jive_aux_split_node_attrs {
+	jive_node_attrs base;
 	const struct jive_resource_class * in_class;
 	const struct jive_resource_class * out_class;
 };

@@ -55,13 +55,28 @@ jive_aux_split_node_create_(jive_region * region, const jive_node_attrs * attrs_
 	return node;
 }
 
+static const jive_node_attrs *
+jive_aux_split_node_get_attrs_(const jive_node * self_)
+{
+	const jive_aux_split_node * self = (const jive_aux_split_node *) self_;
+	return &self->attrs.base;
+}
+
+static bool
+jive_aux_split_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
+{
+	const jive_aux_split_node * self = (const jive_aux_split_node *) self_;
+	const jive_aux_split_node_attrs * attrs = (const jive_aux_split_node_attrs *) attrs_;
+	return (self->attrs.in_class == attrs->in_class) && (self->attrs.out_class == attrs->out_class);
+}
+
 const jive_node_class JIVE_AUX_SPLIT_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "AUX_SPLIT",
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_node_get_label, /* inherit */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.get_attrs = jive_aux_split_node_get_attrs_, /* override */
+	.match_attrs = jive_aux_split_node_match_attrs_, /* override */
 	.create = jive_aux_split_node_create_, /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
 };
