@@ -1,6 +1,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region-private.h>
+#include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
@@ -189,6 +190,18 @@ jive_graph_prune(jive_graph * self)
 	jive_region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(self->root_region->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
+}
+
+jive_graph *
+jive_graph_copy(jive_graph * self, jive_context * context)
+{
+	jive_graph * new_graph = jive_graph_create(context);
+	
+	jive_substitution_map * subst = jive_substitution_map_create(context);
+	jive_region_copy_substitute(self->root_region, new_graph->root_region, subst, false, false);
+	jive_substitution_map_destroy(subst);
+	
+	return new_graph;
 }
 
 void

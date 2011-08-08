@@ -99,6 +99,9 @@ jive_graph_create(jive_context * context);
 void
 jive_graph_destroy(jive_graph * self);
 
+jive_graph *
+jive_graph_copy(jive_graph * self, jive_context * context);
+
 void
 jive_graph_prune(jive_graph * self);
 
