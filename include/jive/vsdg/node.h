@@ -220,6 +220,24 @@ jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
 struct jive_output *
 jive_node_gate_output(jive_node * self, struct jive_gate * gate);
 
+JIVE_EXPORTED_INLINE jive_input *
+jive_node_input(const jive_node * self, size_t index)
+{
+	if (index < self->ninputs)
+		return self->inputs[index];
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE jive_output *
+jive_node_output(const jive_node * self, size_t index)
+{
+	if (index < self->noutputs)
+		return self->outputs[index];
+	else
+		return NULL;
+}
+
 void
 jive_node_get_use_count_input(const jive_node * self, struct jive_resource_class_count * use_count, struct jive_context * context);
 
