@@ -130,7 +130,7 @@ jive_region_get_stackframe(const jive_region * region)
 
 /** \brief Determine innermost of multiple (possibly) nested regions from operand list */
 static inline jive_region *
-jive_region_innermost(size_t noperands, jive_output * operands[const])
+jive_region_innermost(size_t noperands, jive_output * const operands[])
 {
 	jive_region * region = operands[0]->node->region;
 	size_t n;
