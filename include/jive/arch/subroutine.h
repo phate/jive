@@ -4,7 +4,6 @@
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/types.h>
 
 struct jive_output;
 struct jive_region;

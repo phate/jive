@@ -8,6 +8,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/resource.h>
 
 static void
 jive_subroutine_enter_node_fini_(jive_node * self_);
