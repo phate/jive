@@ -6,6 +6,8 @@
 at the end of register allocation, so these nodes are never visible
 outside the register allocator). */
 
+#include <jive/common.h>
+
 #include <jive/vsdg/node.h>
 
 struct jive_resource_class;
@@ -36,7 +38,7 @@ jive_aux_split_node_create(struct jive_region * region,
 	const jive_type * out_type,
 	const struct jive_resource_class * out_class);
 
-static inline jive_aux_split_node *
+JIVE_EXPORTED_INLINE jive_aux_split_node *
 jive_aux_split_node_cast(jive_node * self)
 {
 	if (self->class_ == &JIVE_AUX_SPLIT_NODE) return (jive_aux_split_node *) self;

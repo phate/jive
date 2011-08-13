@@ -1,6 +1,8 @@
 #ifndef JIVE_REGALLOC_NOTIFIERS_H
 #define JIVE_REGALLOC_NOTIFIERS_H
 
+#include <jive/common.h>
+
 #include <jive/vsdg/notifiers.h>
 
 struct jive_shaped_region;
@@ -20,7 +22,7 @@ struct jive_shaped_region_ssavar_notifier_slot {
 	struct jive_context * context;
 };
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_shaped_region_ssavar_notifier_slot_init(jive_shaped_region_ssavar_notifier_slot * self, jive_context * context)
 {
 	self->notifiers.first = self->notifiers.last = 0;

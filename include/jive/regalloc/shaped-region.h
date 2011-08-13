@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#include <jive/common.h>
+
 #include <jive/regalloc/xpoint.h>
 
 typedef struct jive_shaped_region jive_shaped_region;
@@ -77,7 +79,7 @@ jive_cut_split(jive_cut * self, struct jive_shaped_node * at);
 struct jive_shaped_node *
 jive_cut_insert(jive_cut * self, struct jive_shaped_node * before, struct jive_node * node);
 
-static inline struct jive_shaped_node *
+JIVE_EXPORTED_INLINE struct jive_shaped_node *
 jive_cut_append(jive_cut * self, struct jive_node * node)
 {
 	return jive_cut_insert(self, 0, node);

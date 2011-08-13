@@ -1,6 +1,8 @@
 #ifndef JIVE_REGALLOC_CROSSING_ARC_H
 #define JIVE_REGALLOC_CROSSING_ARC_H
 
+#include <jive/common.h>
+
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-region.h>
@@ -23,7 +25,7 @@ struct jive_crossing_arc {
 	size_t boundary_region_depth;
 };
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_crossing_arc_init(jive_crossing_arc * self,
 	jive_shaped_node * origin_shaped_node,
 	jive_shaped_node * target_shaped_node,
@@ -68,7 +70,7 @@ struct jive_crossing_arc_iterator {
 	size_t boundary_region_depth_;
 };
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_crossing_arc_iterator_init(
 	jive_crossing_arc_iterator * self,
 	jive_shaped_graph * shaped_graph,
@@ -89,7 +91,7 @@ jive_crossing_arc_iterator_init(
 	self->boundary_region_depth_ = boundary_region_depth;
 }
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_crossing_arc_iterator_init_ssavar(
 	jive_crossing_arc_iterator * self,
 	jive_shaped_node * origin_shaped_node,
@@ -109,7 +111,7 @@ jive_crossing_arc_iterator_init_ssavar(
 	
 }
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 {
 	if (self->node) {

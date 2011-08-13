@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#include <jive/common.h>
+
 #include <jive/regalloc/xpoint.h>
 #include <jive/util/hash.h>
 
@@ -108,7 +110,7 @@ jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_s
 void
 jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_ssavar * self, size_t depth);
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_shaped_ssavar_lower_boundary_region_depth(jive_shaped_ssavar * self, size_t depth)
 {
 	if (depth < self->boundary_region_depth)
