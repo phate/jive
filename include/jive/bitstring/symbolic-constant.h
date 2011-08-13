@@ -45,7 +45,7 @@ jive_bitsymbolicconstant_create(struct jive_graph * graph, size_t nbits, const c
 jive_output *
 jive_bitsymbolicconstant(struct jive_graph * graph, size_t nbits, const char * name);
 
-static inline jive_bitsymbolicconstant_node *
+JIVE_EXPORTED_INLINE jive_bitsymbolicconstant_node *
 jive_bitsymbolicconstant_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSYMBOLICCONSTANT_NODE) return (jive_bitsymbolicconstant_node *) node;

@@ -42,7 +42,7 @@ jive_bitequal_create(
 jive_output *
 jive_bitequal(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitequal_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITEQUAL_NODE) return node;
@@ -61,7 +61,7 @@ jive_bitnotequal_create(
 jive_output *
 jive_bitnotequal(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitnotequal_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITNOTEQUAL_NODE) return node;
@@ -80,7 +80,7 @@ jive_bitsless_create(
 jive_output *
 jive_bitsless(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitsless_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSLESS_NODE) return node;
@@ -99,7 +99,7 @@ jive_bituless_create(
 jive_output *
 jive_bituless(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bituless_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITULESS_NODE) return node;
@@ -118,7 +118,7 @@ jive_bitslesseq_create(
 jive_output *
 jive_bitslesseq(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitslesseq_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSLESSEQ_NODE) return node;
@@ -137,7 +137,7 @@ jive_bitulesseq_create(
 jive_output *
 jive_bitulesseq(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitulesseq_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITULESSEQ_NODE) return node;
@@ -156,7 +156,7 @@ jive_bitsgreater_create(
 jive_output *
 jive_bitsgreater(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitsgreater_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSGREATER_NODE) return node;
@@ -175,7 +175,7 @@ jive_bitugreater_create(
 jive_output *
 jive_bitugreater(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitugreater_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITUGREATER_NODE) return node;
@@ -194,7 +194,7 @@ jive_bitsgreatereq_create(
 jive_output *
 jive_bitsgreatereq(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitsgreatereq_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSGREATEREQ_NODE) return node;
@@ -213,7 +213,7 @@ jive_bitugreatereq_create(
 jive_output *
 jive_bitugreatereq(struct jive_output * x, struct jive_output * y);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitugreatereq_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITUGREATEREQ_NODE) return node;

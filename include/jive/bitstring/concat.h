@@ -16,7 +16,7 @@ jive_bitconcat_create(
 jive_output *
 jive_bitconcat(size_t noperands, jive_output * operands[const]);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitconcat_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITCONCAT_NODE) return node;

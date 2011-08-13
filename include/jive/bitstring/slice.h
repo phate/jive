@@ -48,7 +48,7 @@ jive_bitslice_create(struct jive_region * region, jive_output * origin, size_t l
 jive_output *
 jive_bitslice(jive_output * operand, size_t low, size_t high);
 
-static inline jive_bitslice_node *
+JIVE_EXPORTED_INLINE jive_bitslice_node *
 jive_bitslice_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSLICE_NODE) return (jive_bitslice_node *) node;

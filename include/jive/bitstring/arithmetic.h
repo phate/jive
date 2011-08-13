@@ -54,7 +54,7 @@ jive_bitand_create(
 jive_output *
 jive_bitand(size_t noperands, jive_output * operands[const]);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitand_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITAND_NODE) return node;
@@ -72,7 +72,7 @@ jive_bitor_create(
 jive_output *
 jive_bitor(size_t noperands, jive_output * operands[const]);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitor_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITOR_NODE) return node;
@@ -91,7 +91,7 @@ jive_bitxor_create(
 jive_output *
 jive_bitxor(size_t noperands, jive_output * operands[const]);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitxor_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITXOR_NODE) return node;
@@ -110,13 +110,13 @@ jive_bitsum_create(
 jive_output *
 jive_bitsum(size_t noperands, jive_output * operands[const]);
 
-static inline jive_output *
+JIVE_EXPORTED_INLINE jive_output *
 jive_bitadd(size_t noperands, jive_output * operands[const])
 {
 	return jive_bitsum(noperands, operands);
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitsum_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITSUM_NODE) return node;
@@ -135,13 +135,13 @@ jive_bitproduct_create(
 jive_output *
 jive_bitproduct(size_t noperands, jive_output * operands[const]);
 
-static inline jive_output *
+JIVE_EXPORTED_INLINE jive_output *
 jive_bitmultiply(size_t noperands, jive_output * operands[const])
 {
 	return jive_bitproduct(noperands, operands);
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitproduct_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITPRODUCT_NODE) return node;
@@ -173,7 +173,7 @@ jive_bitnegate_create(struct jive_region * region, jive_output * origin);
 jive_output *
 jive_bitnegate(jive_output * operand);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitnegate_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITNEGATE_NODE) return node;
@@ -205,7 +205,7 @@ jive_bitnot_create(struct jive_region * region, jive_output * origin);
 jive_output *
 jive_bitnot(jive_output * operand);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_bitnot_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITNOT_NODE) return node;

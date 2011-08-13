@@ -38,19 +38,19 @@ struct jive_bitstring_gate {
 	jive_bitstring_type type;
 };
 
-static inline size_t
+JIVE_EXPORTED_INLINE size_t
 jive_bitstring_input_nbits(const jive_bitstring_input * self)
 {
 	return self->type.nbits;
 }
 
-static inline size_t
+JIVE_EXPORTED_INLINE size_t
 jive_bitstring_output_nbits(const jive_bitstring_output * self)
 {
 	return self->type.nbits;
 }
 
-static inline size_t
+JIVE_EXPORTED_INLINE size_t
 jive_bitstring_gate_nbits(const jive_bitstring_gate * self)
 {
 	return self->type.nbits;

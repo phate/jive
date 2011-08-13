@@ -45,14 +45,14 @@ jive_bitconstant_create(struct jive_graph * graph, size_t nbits, const char bits
 jive_output *
 jive_bitconstant(struct jive_graph * graph, size_t nbits, const char bits[]);
 
-static inline jive_bitconstant_node *
+JIVE_EXPORTED_INLINE jive_bitconstant_node *
 jive_bitconstant_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITCONSTANT_NODE) return (jive_bitconstant_node *) node;
 	else return 0;
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_bitconstant_is_zero(const jive_bitconstant_node * node)
 {
 	size_t n;
@@ -60,7 +60,7 @@ jive_bitconstant_is_zero(const jive_bitconstant_node * node)
 	return true;
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_bitconstant_is_one(const jive_bitconstant_node * node)
 {
 	size_t n;
@@ -68,7 +68,7 @@ jive_bitconstant_is_one(const jive_bitconstant_node * node)
 	return node->attrs.bits[0] == '1';
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_bitconstant_is_minus_one(const jive_bitconstant_node * node)
 {
 	size_t n;
