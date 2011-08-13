@@ -114,7 +114,7 @@ struct jive_tracker_nodestate {
 	} state_node_list;
 };
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_node_isinstance(const jive_node * self, const jive_node_class * class_)
 {
 	const jive_node_class * c = self->class_;
@@ -126,31 +126,31 @@ jive_node_isinstance(const jive_node * self, const jive_node_class * class_)
 }
 
 /* returned string allocated with malloc */
-static inline char *
+JIVE_EXPORTED_INLINE char *
 jive_node_get_label(const jive_node * self)
 {
 	return self->class_->get_label(self);
 }
 
-static inline const jive_node_attrs *
+JIVE_EXPORTED_INLINE const jive_node_attrs *
 jive_node_get_attrs(const jive_node * self)
 {
 	return self->class_->get_attrs(self);
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
 {
 	return self->class_->match_attrs(self, other);
 }
 
-static inline const struct jive_resource_class *
+JIVE_EXPORTED_INLINE const struct jive_resource_class *
 jive_node_get_aux_rescls(const jive_node * self)
 {
 	return self->class_->get_aux_rescls(self);
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_node_copy(const jive_node * self,
 	struct jive_region * region,
 	struct jive_output * operands[])
@@ -178,13 +178,13 @@ jive_node_copy(const jive_node * self,
 jive_node *
 jive_node_copy_substitute(const jive_node * self, struct jive_region * target, struct jive_substitution_map * substitution);
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_node_reserve(jive_node * self)
 {
 	self->reserved ++;
 }
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_node_unreserve(jive_node * self)
 {
 	self->reserved --;
@@ -199,7 +199,7 @@ jive_node_add_output(jive_node * self, const struct jive_type * type);
 struct jive_input *
 jive_node_gate_input(jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
 
-static inline struct jive_input *
+JIVE_EXPORTED_INLINE struct jive_input *
 jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
 {
 	size_t n;
@@ -208,7 +208,7 @@ jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
 	return 0;
 }
 
-static inline struct jive_output *
+JIVE_EXPORTED_INLINE struct jive_output *
 jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
 {
 	size_t n;
@@ -234,7 +234,7 @@ jive_node_destroy(jive_node * self);
 jive_tracker_nodestate *
 jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot);
 
-static inline jive_tracker_nodestate *
+JIVE_EXPORTED_INLINE jive_tracker_nodestate *
 jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
 {
 	jive_tracker_nodestate * nodestate;

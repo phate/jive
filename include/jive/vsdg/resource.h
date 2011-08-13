@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <jive/common.h>
+
 struct jive_context;
 struct jive_graph;
 struct jive_type;
@@ -63,7 +65,7 @@ jive_resource_class_union(const jive_resource_class * self, const jive_resource_
 const jive_resource_class *
 jive_resource_class_intersection(const jive_resource_class * self, const jive_resource_class * other);
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_resource_class_get_resource_names(const jive_resource_class * self,
 	size_t * count, const jive_resource_name * const ** names)
 {
@@ -71,7 +73,7 @@ jive_resource_class_get_resource_names(const jive_resource_class * self,
 	*names = self->names;
 }
 
-static inline const struct jive_type *
+JIVE_EXPORTED_INLINE const struct jive_type *
 jive_resource_class_get_type(const jive_resource_class * self)
 {
 	return self->type;
@@ -129,7 +131,7 @@ jive_rescls_prio_array_compute(jive_rescls_prio_array * self, const jive_resourc
 int
 jive_rescls_prio_array_compare(const jive_rescls_prio_array * self, const jive_rescls_prio_array * other);
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_rescls_prio_array_init(jive_rescls_prio_array * self)
 {
 	size_t n;

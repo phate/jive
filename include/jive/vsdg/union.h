@@ -1,6 +1,8 @@
 #ifndef JIVE_VSDG_UNION_H
 #define JIVE_VSDG_UNION_H
 
+#include <jive/common.h>
+
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/unionlayout.h>
 
@@ -27,7 +29,7 @@ jive_output *
 jive_unify_create(const jive_union_layout * layout,
   jive_output * const operand);
 
-static inline jive_unify_node *
+JIVE_EXPORTED_INLINE jive_unify_node *
 jive_unify_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_UNIFY_NODE) return (jive_unify_node *) node;
@@ -55,7 +57,7 @@ jive_choose_node_create(struct jive_region * region, size_t element, jive_output
 jive_output *
 jive_choose_create(size_t element, jive_output * operand);
 
-static inline jive_choose_node *
+JIVE_EXPORTED_INLINE jive_choose_node *
 jive_choose_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_CHOOSE_NODE) return (jive_choose_node *) node;

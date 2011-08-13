@@ -13,7 +13,7 @@ jive_node *
 jive_apply_node_create(jive_region * region, jive_output * function,
 	size_t narguments, jive_output * const arguments[]);
 
-static inline jive_apply_node *
+JIVE_EXPORTED_INLINE jive_apply_node *
 jive_apply_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_APPLY_NODE) return (jive_apply_node *) node;
@@ -42,7 +42,7 @@ jive_symbolicfunction_node_create(struct jive_graph * graph, const char * name, 
 jive_output *
 jive_symbolicfunction_create(struct jive_graph * graph, const char * name, const jive_function_type * type);
 
-static inline jive_symbolicfunction_node *
+JIVE_EXPORTED_INLINE jive_symbolicfunction_node *
 jive_symbolicfunction_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_SYMBOLICFUNCTION_NODE) return (jive_symbolicfunction_node *) node;
@@ -78,20 +78,20 @@ jive_lambda_node_create(jive_region * function_region);
 jive_output *
 jive_lambda_create(jive_region * function_region);
 
-static inline jive_lambda_node *
+JIVE_EXPORTED_INLINE jive_lambda_node *
 jive_lambda_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_LAMBDA_NODE) return (jive_lambda_node *) node;
 	else return 0;
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_lambda_node_get_enter_node(const jive_node * self)
 {
 	return self->inputs[0]->origin->node->region->top;
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_lambda_node_get_leave_node(const jive_node * self)
 {
 	return self->inputs[0]->origin->node;

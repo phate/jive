@@ -71,13 +71,13 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 	struct jive_substitution_map * substitution,
 	bool copy_top, bool copy_bottom);
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_region_empty(const jive_region * self)
 {
 	return self->nodes.first == 0 && self->subregions.first == 0;
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_region_is_contained_by(const jive_region * self, const jive_region * other)
 {
 	while(self->depth > other->depth) {
@@ -87,7 +87,7 @@ jive_region_is_contained_by(const jive_region * self, const jive_region * other)
 	return false;
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_region_contains_node(const jive_region * self, const jive_node * node)
 {
 	const jive_region * tmp = node->region;
@@ -99,13 +99,13 @@ jive_region_contains_node(const jive_region * self, const jive_node * node)
 	return false;
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_region_get_top_node(jive_region * self)
 {
 	return self->bottom;
 }
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_region_get_bottom_node(jive_region * self)
 {
 	return self->bottom;
@@ -120,7 +120,7 @@ jive_region_depends_on_region(const jive_region * self, const jive_region * regi
 void
 jive_region_reparent(jive_region * self, jive_region * new_parent);
 
-static inline struct jive_stackframe *
+JIVE_EXPORTED_INLINE struct jive_stackframe *
 jive_region_get_stackframe(const jive_region * region)
 {
 	while(region && !region->stackframe) region = region->parent;
@@ -129,7 +129,7 @@ jive_region_get_stackframe(const jive_region * region)
 }
 
 /** \brief Determine innermost of multiple (possibly) nested regions from operand list */
-static inline jive_region *
+JIVE_EXPORTED_INLINE jive_region *
 jive_region_innermost(size_t noperands, jive_output * const operands[])
 {
 	jive_region * region = operands[0]->node->region;

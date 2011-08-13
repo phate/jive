@@ -74,25 +74,25 @@ extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
 extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;
 #define JIVE_BINARY_OPERATION (JIVE_BINARY_OPERATION_.base)
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_unary_operation_can_reduce_operand(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand)
 {
 	return ((const jive_unary_operation_class *)cls)->can_reduce_operand(cls, attrs, operand);
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_unary_operation_reduce_operand(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand)
 {
 	return ((const jive_unary_operation_class *)cls)->reduce_operand(cls, attrs, operand);
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_binary_operation_can_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
 	return ((const jive_binary_operation_class *)cls)->can_reduce_operand_pair(cls, attrs, op1, op2);
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_binary_operation_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
 {
 	return ((const jive_binary_operation_class *)cls)->reduce_operand_pair(cls, attrs, op1, op2);

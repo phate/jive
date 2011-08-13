@@ -44,19 +44,19 @@ struct jive_label {
 	jive_label_flags flags;
 };
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_label_fini(jive_label * self)
 {
 	self->class_->fini(self);
 }
 
-static inline jive_addr
+JIVE_EXPORTED_INLINE jive_addr
 jive_label_get_address(const jive_label * self, const struct jive_seq_node * for_node)
 {
 	return self->class_->get_address(self, for_node);
 }
 
-static inline const char *
+JIVE_EXPORTED_INLINE const char *
 jive_label_get_asmname(const jive_label * self)
 {
 	return self->class_->get_asmname(self);
@@ -77,19 +77,19 @@ struct jive_label_internal {
 	char * asmname;
 };
 
-static inline jive_addr
+JIVE_EXPORTED_INLINE jive_addr
 jive_label_internal_get_address(const jive_label_internal * self, const struct jive_seq_node * for_node)
 {
 	return jive_label_get_address(&self->base, for_node);
 }
 
-static inline const char *
+JIVE_EXPORTED_INLINE const char *
 jive_label_internal_get_asmname(const jive_label_internal * self)
 {
 	return jive_label_get_asmname(&self->base);
 }
 
-static inline struct jive_seq_node *
+JIVE_EXPORTED_INLINE struct jive_seq_node *
 jive_label_internal_get_attach_node(const jive_label_internal * self, const struct jive_seq_graph * seq_graph)
 {
 	const jive_label_internal_class * cls = (const jive_label_internal_class *) self->base.class_;

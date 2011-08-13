@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <jive/common.h>
 #include <jive/vsdg/region-ssavar-use.h>
 
 /**
@@ -111,7 +112,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other);
 void
 jive_variable_set_resource_class(jive_variable * self, const struct jive_resource_class * rescls);
 
-static inline const struct jive_resource_class *
+JIVE_EXPORTED_INLINE const struct jive_resource_class *
 jive_variable_get_resource_class(const jive_variable * self)
 {
 	return self->rescls;
@@ -123,7 +124,7 @@ jive_variable_recompute_rescls(jive_variable * self);
 void
 jive_variable_set_resource_name(jive_variable * self, const struct jive_resource_name * resname);
 
-static inline const struct jive_resource_name *
+JIVE_EXPORTED_INLINE const struct jive_resource_name *
 jive_variable_get_resource_name(const jive_variable * self)
 {
 	return self->resname;
@@ -135,7 +136,7 @@ jive_variable_conflicts_with(const jive_variable * self, const jive_variable * o
 bool
 jive_variable_may_spill(const jive_variable * self);
 
-static inline size_t
+JIVE_EXPORTED_INLINE size_t
 jive_variable_used(const jive_variable * self)
 {
 	return self->use_count;

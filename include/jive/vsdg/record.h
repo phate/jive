@@ -1,6 +1,8 @@
 #ifndef JIVE_VSDG_RECORD_H
 #define JIVE_VSDG_RECORD_H
 
+#include <jive/common.h>
+
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/recordlayout.h>
@@ -28,7 +30,7 @@ jive_output *
 jive_group_create(const jive_record_layout * layout,
 	size_t narguments, jive_output * arguments[const]);
 
-static inline jive_group_node *
+JIVE_EXPORTED_INLINE jive_group_node *
 jive_group_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_GROUP_NODE) return (jive_group_node *) node;
@@ -56,7 +58,7 @@ jive_select_node_create(struct jive_region * region, size_t element, jive_output
 jive_output *
 jive_select_create(size_t element, jive_output * operand);
 
-static inline jive_select_node *
+JIVE_EXPORTED_INLINE jive_select_node *
 jive_select_node_cast(jive_node * node)
 {
 	if(node->class_ == &JIVE_SELECT_NODE) return (jive_select_node *) node;
