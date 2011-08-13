@@ -34,7 +34,8 @@ LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackslot.c \
 	src/arch/memory.c \
 	src/arch/subroutine.c \
-	src/arch/regselector.c
+	src/arch/regselector.c \
+	src/arch/loadstore.c \
 
 # shaper
 LIBJIVE_SRC += \

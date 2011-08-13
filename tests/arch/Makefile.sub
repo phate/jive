@@ -1,3 +1,4 @@
 TESTS+=\
 	arch/test-dynamic-stackslots \
+	arch/test-loadstore \
 	arch/test-subroutine \
