@@ -46,6 +46,10 @@ LIBJIVE_SRC += \
 	src/regalloc.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/fixup.c src/regalloc/auxnodes.c src/regalloc/reroute.c src/regalloc/reuse.c \
 	src/regalloc/selector.c
 
+# support exported inlines
+LIBJIVE_SRC += \
+	src/exported_inlines.c
+
 include src/backend/i386/Makefile.sub
 
 # LIBJIVE_SRC = \
@@ -82,6 +86,13 @@ include src/backend/i386/Makefile.sub
 
 all: check libjive.a # libjive.so
 
+src/exported_inlines.c:
+	@( \
+		echo "#define JIVE_EXPORTED_INLINE" ; \
+		find include -name "*.h" | \
+				sed -e "s:include/\(.*\):#include <\\1>:" \
+	) > $@
+
 libjive.a: $(patsubst %.c, %.la, $(LIBJIVE_SRC))
 libjive.so: $(patsubst %.c, %.lo, $(LIBJIVE_SRC))
 
@@ -108,4 +119,4 @@ include tests/Makefile.sub
 %.so:
 	$(CC) -shared -o $@ $^
 
-.PHONY: doc
+.PHONY: doc src/exported_inlines.c
