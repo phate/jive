@@ -1,9 +1,12 @@
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/statetype-private.h>
-#include <jive/vsdg/basetype-private.h>
 
-#include <jive/vsdg/node.h>
+#include <jive/common.h>
+#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/node.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
 
 const jive_state_type jive_state_type_singleton = {
 	.base = { .class_ = &JIVE_STATE_TYPE }
@@ -123,3 +126,117 @@ _jive_state_gate_get_type(const jive_gate * self)
 	return &jive_state_type_singleton.base;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+static void
+jive_statemux_node_fini_(jive_node * self_);
+
+static const jive_node_attrs *
+jive_statemux_node_get_attrs_(const jive_node * self_);
+
+static bool
+jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
+
+static jive_node *
+jive_statemux_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, struct jive_output * const operands[]);
+
+const jive_node_class JIVE_STATEMUX_NODE = {
+	.parent = &JIVE_NODE,
+	.name = "STATEMUX",
+	.fini = jive_statemux_node_fini_, /* override */
+	.get_label = _jive_node_get_label, /* inherit */
+	.get_attrs = jive_statemux_node_get_attrs_, /* override */
+	.match_attrs = jive_statemux_node_match_attrs_, /* override */
+	.create = jive_statemux_node_create_, /* override */
+	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+};
+
+static void
+jive_statemux_node_fini_(jive_node * self_)
+{
+	jive_context * context = self_->graph->context;
+	jive_statemux_node * self = (jive_statemux_node *) self_;
+	
+	jive_type_fini(self->attrs.type);
+	jive_context_free(context, self->attrs.type);
+	
+	_jive_node_fini(&self->base);
+}
+
+static const jive_node_attrs *
+jive_statemux_node_get_attrs_(const jive_node * self_)
+{
+	const jive_statemux_node * self = (const jive_statemux_node *) self_;
+	return &self->attrs.base;
+}
+
+static bool
+jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
+{
+	const jive_statemux_node * self = (const jive_statemux_node *) self_;
+	const jive_statemux_node_attrs * attrs = (const jive_statemux_node_attrs *) attrs_;
+	return jive_type_equals(self->attrs.type, attrs->type);
+}
+
+static jive_node *
+jive_statemux_node_create_(jive_region * region, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * const operands[])
+{
+	const jive_statemux_node_attrs * attrs = (const jive_statemux_node_attrs *) attrs_;
+	return jive_statemux_node_create(region, attrs->type, noperands, operands, attrs->noutputs);
+}
+
+jive_node *
+jive_statemux_node_create(jive_region * region,
+	const jive_type * statetype,
+	size_t noperands, jive_output * const operands[],
+	size_t noutputs)
+{
+	jive_context * context = region->graph->context;
+	jive_statemux_node * node = jive_context_malloc(context, sizeof(*node));
+	
+	node->base.class_ = &JIVE_STATEMUX_NODE;
+	JIVE_DEBUG_ASSERT(jive_type_isinstance(statetype, &JIVE_STATE_TYPE));
+	
+	const jive_type * operand_types[noperands];
+	const jive_type * output_types[noutputs];
+	size_t n;
+	for (n = 0; n < noperands; n++)
+		operand_types[n] = statetype;
+	for (n = 0; n < noutputs; n++)
+		output_types[n] = statetype;
+		
+	_jive_node_init(&node->base, region,
+		noperands, operand_types, operands,
+		noutputs, output_types);
+	node->attrs.type = jive_type_copy(statetype, context);
+	node->attrs.noutputs = noutputs;
+	
+	return &node->base;
+}
+
+jive_output *
+jive_state_merge(const jive_type * statetype, size_t nstates, jive_output * const states[])
+{
+	jive_region * region = jive_region_innermost(nstates, states);
+	return jive_statemux_node_create(region, statetype, nstates, states, 1)->outputs[0];
+}
+
+jive_node *
+jive_state_split(const jive_type * statetype, jive_output * state, size_t nstates)
+{
+	jive_region * region = state->node->region;
+	return jive_statemux_node_create(region, statetype, 1, &state, nstates);
+}

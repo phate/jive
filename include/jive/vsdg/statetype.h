@@ -2,6 +2,7 @@
 #define JIVE_VSDG_STATETYPE_H
 
 #include <jive/vsdg/basetype.h>
+#include <jive/vsdg/node.h>
 
 typedef struct jive_state_type jive_state_type;
 typedef struct jive_state_input jive_state_input;
@@ -31,5 +32,33 @@ extern const jive_gate_class JIVE_STATE_GATE;
 struct jive_state_gate {
 	jive_gate base;
 };
+
+/* state multiplexing support */
+
+typedef struct jive_statemux_node_attrs jive_statemux_node_attrs;
+typedef struct jive_statemux_node jive_statemux_node;
+
+struct jive_statemux_node_attrs {
+	jive_node_attrs base;
+	size_t noutputs;
+	struct jive_type * type; /* note: dynamically allocated */
+};
+
+struct jive_statemux_node {
+	jive_node base;
+	jive_statemux_node_attrs attrs;
+};
+
+jive_node *
+jive_statemux_node_create(struct jive_region * region,
+	const jive_type * statetype,
+	size_t noperands, jive_output * const operands[],
+	size_t noutputs);
+
+jive_output *
+jive_state_merge(const jive_type * statetype, size_t nstates, jive_output * const states[]);
+
+jive_node *
+jive_state_split(const jive_type * statetype, jive_output * state, size_t nstates);
 
 #endif
