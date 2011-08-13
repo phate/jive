@@ -24,7 +24,7 @@ struct jive_immediate {
 	const void * modifier;
 };
 
-static inline void
+JIVE_EXPORTED_INLINE void
 jive_immediate_init(jive_immediate * self, jive_addr offset, const struct jive_label * add_label, const struct jive_label * sub_label, const void * modifier)
 {
 	self->offset = offset;
@@ -33,7 +33,7 @@ jive_immediate_init(jive_immediate * self, jive_addr offset, const struct jive_l
 	self->modifier = modifier;
 }
 
-static inline jive_immediate
+JIVE_EXPORTED_INLINE jive_immediate
 jive_immediate_add(const jive_immediate * a, const jive_immediate * b)
 {
 	jive_immediate tmp;
@@ -66,7 +66,7 @@ jive_immediate_add(const jive_immediate * a, const jive_immediate * b)
 	return tmp;
 }
 
-static inline jive_immediate
+JIVE_EXPORTED_INLINE jive_immediate
 jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 {
 	jive_immediate tmp;
@@ -99,7 +99,7 @@ jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 	return tmp;
 }
 
-static inline jive_immediate
+JIVE_EXPORTED_INLINE jive_immediate
 jive_immediate_add_offset(jive_immediate * self, jive_addr offset)
 {
 	jive_immediate tmp = *self;
@@ -107,7 +107,7 @@ jive_immediate_add_offset(jive_immediate * self, jive_addr offset)
 	return tmp;
 }
 
-static inline bool
+JIVE_EXPORTED_INLINE bool
 jive_immediate_equals(const jive_immediate * self, const jive_immediate * other)
 {
 	return 
@@ -224,7 +224,7 @@ jive_instruction_node_create_extended(
 	jive_output * operands[const],
 	const jive_immediate immediates[]);
 
-static inline jive_node *
+JIVE_EXPORTED_INLINE jive_node *
 jive_instruction_node_create(
 	struct jive_region * region,
 	const jive_instruction_class * icls,

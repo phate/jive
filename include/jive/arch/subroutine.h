@@ -51,7 +51,7 @@ struct jive_subroutine_passthrough {
 	jive_input * input;
 };
 
-static inline jive_subroutine_node *
+JIVE_EXPORTED_INLINE jive_subroutine_node *
 jive_subroutine_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_SUBROUTINE_NODE)
@@ -60,7 +60,7 @@ jive_subroutine_node_cast(jive_node * node)
 		return NULL;
 }
 
-static inline jive_subroutine_enter_node *
+JIVE_EXPORTED_INLINE jive_subroutine_enter_node *
 jive_subroutine_enter_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_SUBROUTINE_ENTER_NODE)
@@ -69,7 +69,7 @@ jive_subroutine_enter_node_cast(jive_node * node)
 		return NULL;
 }
 
-static inline jive_subroutine_leave_node *
+JIVE_EXPORTED_INLINE jive_subroutine_leave_node *
 jive_subroutine_leave_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_SUBROUTINE_LEAVE_NODE)
@@ -104,13 +104,13 @@ struct jive_subroutine_class {
 void
 jive_subroutine_destroy(jive_subroutine * self);
 
-static inline jive_output *
+JIVE_EXPORTED_INLINE jive_output *
 jive_subroutine_value_parameter(jive_subroutine * self, size_t index)
 {
 	return self->class_->value_parameter(self, index);
 }
 
-static inline jive_input *
+JIVE_EXPORTED_INLINE jive_input *
 jive_subroutine_value_return(jive_subroutine * self, size_t index, jive_output * value)
 {
 	return self->class_->value_return(self, index, value);
