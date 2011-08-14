@@ -51,18 +51,21 @@ struct jive_binary_operation_class {
 	bool (*reduce_operand_pair)(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2);
 };
 
-jive_node * jive_nullary_operation_normalized_create(
+jive_output *
+jive_nullary_operation_normalized_create(
 	const jive_node_class * cls,
 	struct jive_region * region,
 	const jive_node_attrs * attrs);
 
-jive_node * jive_unary_operation_normalized_create(
+jive_output *
+jive_unary_operation_normalized_create(
 	const jive_node_class * cls,
 	struct jive_region * region,
 	const jive_node_attrs * attrs,
 	jive_output * operand);
 
-jive_node * jive_binary_operation_normalized_create(
+jive_output *
+jive_binary_operation_normalized_create(
 	const jive_node_class * cls,
 	struct jive_region * region,
 	const jive_node_attrs * attrs,

@@ -132,13 +132,14 @@ jive_##name_##_create( \
 	struct jive_region * region, \
 	size_t noperands, struct jive_output * operands[const]) \
 { \
-	return	jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, noperands, operands); \
+	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, noperands, operands)->node; \
 } \
  \
 jive_output * \
 jive_##name_(size_t noperands, jive_output * operands[const]) \
 { \
-	return jive_##name_##_create(jive_region_innermost(noperands, operands), noperands, operands)->outputs[0]; \
+	jive_region * region = jive_region_innermost(noperands, operands); \
+	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, noperands, operands); \
 } \
 
 MAKE_MULTIOP(bitand, BITAND, jive_bitop_code_and)
@@ -427,13 +428,13 @@ jive_bitnegate_reduce_operand_(const jive_node_class * cls, const jive_node_attr
 jive_node *
 jive_bitnegate_create(struct jive_region * region, jive_output * operand)
 {
-	return jive_unary_operation_normalized_create(&JIVE_BITNEGATE_NODE, region, NULL, operand);
+	return jive_unary_operation_normalized_create(&JIVE_BITNEGATE_NODE, region, NULL, operand)->node;
 }
 
 jive_output *
 jive_bitnegate(jive_output * operand)
 {
-	return jive_bitnegate_create(operand->node->region, operand)->outputs[0];
+	return jive_unary_operation_normalized_create(&JIVE_BITNEGATE_NODE, operand->node->region, NULL, operand);
 }
 
 static void
@@ -544,12 +545,12 @@ jive_bitnot_reduce_operand_(const jive_node_class * cls, const jive_node_attrs *
 jive_node *
 jive_bitnot_create(struct jive_region * region, jive_output * operand)
 {
-	return jive_unary_operation_normalized_create(&JIVE_BITNOT_NODE, region, NULL, operand);
+	return jive_unary_operation_normalized_create(&JIVE_BITNOT_NODE, region, NULL, operand)->node;
 }
 
 jive_output *
 jive_bitnot(jive_output * operand)
 {
-	return jive_bitnot_create(operand->node->region, operand)->outputs[0];
+	return jive_unary_operation_normalized_create(&JIVE_BITNOT_NODE, operand->node->region, NULL, operand);
 }
 

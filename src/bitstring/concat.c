@@ -165,11 +165,12 @@ jive_bitconcat_create(
 	struct jive_region * region,
 	size_t noperands, struct jive_output * operands[const])
 {
-	return	jive_binary_operation_normalized_create(&JIVE_BITCONCAT_NODE, region, NULL, noperands, operands);
+	return jive_binary_operation_normalized_create(&JIVE_BITCONCAT_NODE, region, NULL, noperands, operands)->node;
 }
 
 jive_output *
 jive_bitconcat(size_t noperands, jive_output * operands[const])
 {
-	return jive_bitconcat_create(jive_region_innermost(noperands, operands), noperands, operands)->outputs[0];
+	jive_region * region = jive_region_innermost(noperands, operands);
+	return jive_binary_operation_normalized_create(&JIVE_BITCONCAT_NODE, region, NULL, noperands, operands);
 }

@@ -179,11 +179,15 @@ jive_bitslice_create(struct jive_region * region, jive_output * operand, size_t 
 	attrs.low = low;
 	attrs.high = high;
 	
-	return jive_unary_operation_normalized_create(&JIVE_BITSLICE_NODE, region, &attrs.base, operand);
+	return jive_unary_operation_normalized_create(&JIVE_BITSLICE_NODE, region, &attrs.base, operand)->node;
 }
 
 jive_output *
 jive_bitslice(jive_output * operand, size_t low, size_t high)
 {
-	return jive_bitslice_create(operand->node->region, operand, low, high)->outputs[0];
+	jive_bitslice_node_attrs attrs;
+	attrs.low = low;
+	attrs.high = high;
+	
+	return jive_unary_operation_normalized_create(&JIVE_BITSLICE_NODE, operand->node->region, &attrs.base, operand);
 }

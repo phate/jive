@@ -43,7 +43,7 @@ jive_node_cse(
 	return NULL;
 }
 
-jive_node *
+jive_output *
 jive_nullary_operation_normalized_create(
 	const jive_node_class * cls,
 	struct jive_region * region,
@@ -51,12 +51,12 @@ jive_nullary_operation_normalized_create(
 {
 	jive_node * node = jive_node_cse(region->graph, cls, attrs, 0, 0);
 	if (node)
-		return node;
+		return node->outputs[0];
 
-	return cls->create(region, attrs, 0, 0);
+	return cls->create(region, attrs, 0, 0)->outputs[0];
 }
 
-jive_node *
+jive_output *
 jive_unary_operation_normalized_create(
 	const jive_node_class * cls_,
 	struct jive_region * region,
@@ -68,13 +68,13 @@ jive_unary_operation_normalized_create(
 	const jive_unary_operation_class * cls = (const jive_unary_operation_class *) cls_;
 	
 	if (cls->reduce_operand(cls_, attrs, &operand))
-		return operand->node;
+		return operand;
 	
 	jive_node * node = jive_node_cse(region->graph, cls_, attrs, 1, &operand);
 	if (node)
-		return node;
+		return node->outputs[0];
 	
-	return cls_->create(region, attrs, 1, &operand);
+	return cls_->create(region, attrs, 1, &operand)->outputs[0];
 }
 
 static inline size_t
@@ -119,7 +119,7 @@ reduce_operands(const jive_node_class * cls_, const jive_node_attrs * attrs, siz
 	return noperands;
 }
 
-jive_node *
+jive_output *
 jive_binary_operation_normalized_create(
 	const jive_node_class * cls_,
 	struct jive_region * region,
@@ -162,13 +162,13 @@ jive_binary_operation_normalized_create(
 	noperands = reduce_operands(cls_, attrs, noperands, operands);
 	
 	if ((cls->flags & jive_binary_operation_associative) && (noperands == 1))
-		return operands[0]->node;
+		return operands[0];
 	
 	jive_node * node = jive_node_cse(region->graph, cls_, attrs, noperands, operands);
 	if (node)
-		return node;
+		return node->outputs[0];
 	
-	return cls_->create(region, attrs, noperands, operands);
+	return cls_->create(region, attrs, noperands, operands)->outputs[0];
 }
 
 bool
