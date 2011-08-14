@@ -37,6 +37,7 @@ LIBJIVE_SRC += \
 	src/arch/regselector.c \
 	src/arch/loadstore.c \
 	src/arch/addresstype.c \
+	src/arch/address.c \
 
 # shaper
 LIBJIVE_SRC += \
