@@ -1,6 +1,7 @@
 #ifndef JIVE_ARCH_LOADSTORE_H
 #define JIVE_ARCH_LOADSTORE_H
 
+#include <jive/common.h>
 #include <jive/vsdg/node.h>
 
 struct jive_context;
@@ -41,10 +42,28 @@ jive_load_node_create(struct jive_region * region,
 	const struct jive_type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
+JIVE_EXPORTED_INLINE jive_load_node *
+jive_load_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_LOAD_NODE)
+		return (jive_load_node *) node;
+	else
+		return NULL;
+}
+
 struct jive_node *
 jive_store_node_create(struct jive_region * region,
 	struct jive_output * address,
 	const struct jive_type * datatype, struct jive_output * value,
 	size_t nstates, struct jive_output * const states[]);
+
+JIVE_EXPORTED_INLINE jive_store_node *
+jive_store_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_STORE_NODE)
+		return (jive_store_node *) node;
+	else
+		return NULL;
+}
 
 #endif
