@@ -86,7 +86,9 @@ include src/backend/i386/Makefile.sub
 
 all: check libjive.a # libjive.so
 
-src/exported_inlines.c:
+HEADERS = $(shell find include -name "*.h")
+
+src/exported_inlines.c: $(HEADERS)
 	@( \
 		echo "#define JIVE_EXPORTED_INLINE" ; \
 		find include -name "*.h" | \
@@ -119,4 +121,4 @@ include tests/Makefile.sub
 %.so:
 	$(CC) -shared -o $@ $^
 
-.PHONY: doc src/exported_inlines.c
+.PHONY: doc
