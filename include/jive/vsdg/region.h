@@ -102,7 +102,7 @@ jive_region_contains_node(const jive_region * self, const jive_node * node)
 JIVE_EXPORTED_INLINE jive_node *
 jive_region_get_top_node(jive_region * self)
 {
-	return self->bottom;
+	return self->top;
 }
 
 JIVE_EXPORTED_INLINE jive_node *
