@@ -161,7 +161,7 @@ jive_binary_operation_normalized_create(
 	
 	noperands = reduce_operands(cls_, attrs, noperands, operands);
 	
-	if ((cls->flags & jive_binary_operation_associative) && (noperands == 1))
+	if (noperands == 1)
 		return operands[0];
 	
 	jive_node * node = jive_node_cse(region->graph, cls_, attrs, noperands, operands);
