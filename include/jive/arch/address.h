@@ -3,6 +3,7 @@
 
 #include <jive/common.h>
 #include <jive/arch/addresstype.h>
+#include <jive/bitstring/type.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/recordlayout.h>
@@ -94,5 +95,90 @@ jive_containerof_node_cast(jive_node * node)
 	else
 		return NULL;
 }
+
+/* "arraysubscript" operator: given an address that points to an element of
+an array, compute address of element offset by specified distance */
+
+extern const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_;
+#define JIVE_ARRAYSUBSCRIPT_NODE (JIVE_ARRAYSUBSCRIPT_NODE_.base)
+
+typedef struct jive_arraysubscript_node_attrs jive_arraysubscript_node_attrs;
+
+typedef struct jive_arraysubscript_node jive_arraysubscript_node;
+
+struct jive_arraysubscript_node_attrs {
+	jive_node_attrs base;
+	jive_type * element_type; /* note: dynamically allocated */
+};
+
+struct jive_arraysubscript_node {
+	jive_node base;
+	jive_arraysubscript_node_attrs attrs;
+};
+
+struct jive_node *
+jive_arraysubscript_node_create(struct jive_region * region,
+	struct jive_output * address, const struct jive_type * element_type, struct jive_output * index);
+
+struct jive_node *
+jive_arraysubscript_create(struct jive_region * region,
+	struct jive_output * address, const struct jive_type * element_type, struct jive_output * index);
+
+jive_output *
+jive_arraysubscript(struct jive_output * address, const struct jive_type * element_type, struct jive_output * index);
+
+JIVE_EXPORTED_INLINE jive_arraysubscript_node *
+jive_arraysubscript_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_ARRAYSUBSCRIPT_NODE)
+		return (jive_arraysubscript_node *) node;
+	else
+		return NULL;
+}
+
+/* "arrayindex" operator: given an address that points to an element of
+an array, compute address of element offset by specified distance */
+
+extern const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_;
+#define JIVE_ARRAYINDEX_NODE (JIVE_ARRAYINDEX_NODE_.base)
+
+typedef struct jive_arrayindex_node_attrs jive_arrayindex_node_attrs;
+
+typedef struct jive_arrayindex_node jive_arrayindex_node;
+
+struct jive_arrayindex_node_attrs {
+	jive_node_attrs base;
+	jive_type * element_type; /* note: dynamically allocated */
+	jive_bitstring_type difference_type;
+};
+
+struct jive_arrayindex_node {
+	jive_node base;
+	jive_arrayindex_node_attrs attrs;
+};
+
+struct jive_node *
+jive_arrayindex_node_create(struct jive_region * region,
+	struct jive_output * addr1, struct jive_output * addr2,
+	const struct jive_type * element_type, const struct jive_type * difference_type);
+
+struct jive_node *
+jive_arrayindex_create(struct jive_region * region,
+	struct jive_output * addr1, struct jive_output * addr2,
+	const struct jive_type * element_type, const struct jive_type * difference_type);
+
+jive_output *
+jive_arrayindex(struct jive_output * addr1, struct jive_output * addr2,
+	const struct jive_type * element_type, const struct jive_type * difference_type);
+
+JIVE_EXPORTED_INLINE jive_arrayindex_node *
+jive_arrayindex_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_ARRAYINDEX_NODE)
+		return (jive_arrayindex_node *) node;
+	else
+		return NULL;
+}
+
 
 #endif

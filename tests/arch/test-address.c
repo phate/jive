@@ -5,7 +5,7 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/arch/address.h>
-#include <jive/bitstring/type.h>
+#include <jive/bitstring.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/recordlayout.h>
 
@@ -47,6 +47,21 @@ int main()
 	
 	assert(memb4 != top->outputs[1]);
 	assert(memb3 == top->outputs[1]);
+	
+	jive_output * zero = jive_bitconstant(graph, 32, "00000000000000000000000000000000");
+	jive_output * one = jive_bitconstant(graph, 32, "10000000000000000000000000000000");
+	jive_output * minus_one = jive_bitconstant(graph, 32, "11111111111111111111111111111111");
+	
+	jive_output * a0 = jive_arraysubscript(top->outputs[0], bits32, zero);
+	assert(a0 == top->outputs[0]);
+	jive_output * a1 = jive_arraysubscript(top->outputs[0], bits32, one);
+	assert(a1 != top->outputs[0]);
+	jive_output * tmp = jive_arraysubscript(a1, bits32, minus_one);
+	jive_view(graph, stdout);
+	assert(tmp == a0);
+	
+	jive_output * diff = jive_arrayindex(a1, a0, bits32, bits32);
+	assert(diff == one);
 	
 	jive_graph_destroy(graph);
 	
