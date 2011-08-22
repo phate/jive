@@ -1,6 +1,8 @@
 #ifndef JIVE_VSDG_FUNCTION_H
 #define JIVE_VSDG_FUNCTION_H
 
+#include <jive/common.h>
+
 #include <jive/vsdg/functiontype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
