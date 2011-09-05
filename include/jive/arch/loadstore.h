@@ -42,6 +42,11 @@ jive_load_node_create(struct jive_region * region,
 	const struct jive_type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
+struct jive_output *
+jive_load_create(struct jive_output * address,
+	const struct jive_type * datatype,
+	size_t nstates, struct jive_output * const states[]);
+
 JIVE_EXPORTED_INLINE jive_load_node *
 jive_load_node_cast(jive_node * node)
 {

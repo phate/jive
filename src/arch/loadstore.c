@@ -96,6 +96,24 @@ jive_load_node_create(jive_region * region,
 	return &node->base;
 }
 
+struct jive_output *
+jive_load_create(struct jive_output * address,
+	const struct jive_type * datatype,
+	size_t nstates, struct jive_output * const states[])
+{
+	int i;
+	jive_output * outputs[nstates+1];
+	for(i = 0; i < nstates; i++){
+		outputs[i] = states[i];
+	}
+	outputs[nstates] = address;
+
+	jive_region * region = jive_region_innermost(nstates+1, outputs);
+	jive_node * node = jive_load_node_create(region, address, datatype, nstates, states);
+
+	return node->outputs[0];	
+}
+
 static void
 jive_store_node_fini_(jive_node * self_);
 
