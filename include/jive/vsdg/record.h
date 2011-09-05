@@ -14,7 +14,7 @@ typedef struct jive_group_node_attrs jive_group_node_attrs;
 
 struct jive_group_node_attrs {
 	jive_node_attrs base;
-	jive_record_layout * layout;
+	const jive_record_layout * layout;
 };
 
 struct jive_group_node {

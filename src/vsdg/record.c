@@ -23,6 +23,9 @@ _jive_group_node_create(struct jive_region * region, const jive_node_attrs * att
 static char *
 _jive_group_node_get_label(const jive_node * self_);
 
+static const jive_node_attrs *
+jive_group_node_get_attrs_(const jive_node * self);
+
 static bool
 _jive_group_node_match_attrs(const jive_node * self, const jive_node_attrs * second);
 
@@ -30,7 +33,7 @@ const jive_node_class JIVE_GROUP_NODE = {
 	.parent = &JIVE_NODE,
 	.fini = _jive_node_fini, /* inherit */
 	.get_label = _jive_group_node_get_label, /* override */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
+	.get_attrs = jive_group_node_get_attrs_, /* override */
 	.match_attrs = _jive_group_node_match_attrs, /* override */
 	.create = _jive_group_node_create, /* override */
 	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
@@ -40,6 +43,14 @@ static char *
 _jive_group_node_get_label(const jive_node * self_)
 {
 	return strdup("GROUP");
+}
+
+static const jive_node_attrs *
+jive_group_node_get_attrs_(const jive_node * self_)
+{
+	const jive_group_node * self = (const jive_group_node*)self_;
+
+	return &self->attrs.base;
 }
 
 static bool
@@ -87,6 +98,8 @@ _jive_group_node_init(jive_group_node * self,
 		1, (const jive_type **)&rtype);
 
 	type.base.base.class_->fini(&type.base.base);
+
+	self->attrs.layout = layout;
 }
 
 jive_node *
