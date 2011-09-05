@@ -7,6 +7,7 @@
 #include <jive/arch/loadstore.h>
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/arch/addresstype.h>
 
 int main()
 {
@@ -16,7 +17,7 @@ int main()
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(addrtype, 64);
+	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	JIVE_DECLARE_BITSTRING_TYPE(valuetype, 32);
 	JIVE_DECLARE_MEMORY_TYPE(memtype);
 	

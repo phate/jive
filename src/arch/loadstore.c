@@ -7,6 +7,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/arch/addresstype.h>
 
 static void
 jive_load_node_fini_(jive_node * self_);
@@ -79,7 +80,7 @@ jive_load_node_create(jive_region * region,
 	
 	node->base.class_ = &JIVE_LOAD_NODE;
 	const jive_type * address_type = jive_output_get_type(address);
-	JIVE_DEBUG_ASSERT(address_type->class_ == &JIVE_BITSTRING_TYPE);
+	JIVE_DEBUG_ASSERT(address_type->class_ == &JIVE_ADDRESS_TYPE);
 	JIVE_DEBUG_ASSERT(jive_type_isinstance(datatype, &JIVE_VALUE_TYPE));
 
 	_jive_node_init(&node->base, region,
@@ -185,7 +186,7 @@ jive_store_node_create(jive_region * region,
 	
 	node->base.class_ = &JIVE_STORE_NODE;
 	const jive_type * address_type = jive_output_get_type(address);
-	JIVE_DEBUG_ASSERT(address_type->class_ == &JIVE_BITSTRING_TYPE);
+	JIVE_DEBUG_ASSERT(address_type->class_ == &JIVE_ADDRESS_TYPE);
 	JIVE_DEBUG_ASSERT(jive_type_isinstance(datatype, &JIVE_VALUE_TYPE));
 	
 	const jive_type * operand_types[2] = {address_type, datatype};
