@@ -27,7 +27,8 @@ LIBJIVE_SRC += \
 # bitstrings
 LIBJIVE_SRC += \
 	src/bitstring/type.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/concat.c src/bitstring/arithmetic.c \
-	src/bitstring/comparison.c
+	src/bitstring/comparison.c \
+	src/bitstring/symbolic-expression.c \
 
 # arch definitions
 LIBJIVE_SRC += \
