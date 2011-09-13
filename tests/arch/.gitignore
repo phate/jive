@@ -2,3 +2,4 @@ test-address
 test-dynamic-stackslots
 test-loadstore
 test-subroutine
+test-dataobj

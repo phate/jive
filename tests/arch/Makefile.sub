@@ -3,3 +3,4 @@ TESTS+=\
 	arch/test-loadstore \
 	arch/test-subroutine \
 	arch/test-address \
+	arch/test-dataobj \

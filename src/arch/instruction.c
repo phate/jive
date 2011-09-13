@@ -1,4 +1,7 @@
 #include <jive/arch/instruction-private.h>
+
+#include <jive/arch/dataobject.h>
+#include <jive/bitstring/symbolic-expression.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
@@ -284,6 +287,55 @@ jive_instruction_node_generate_assembler(jive_seq_node * seq_node, jive_node * n
 	jive_buffer_putstr(buffer, "\n");
 }
 
+static void
+jive_bitstring_generate_assembler(const jive_bitstring_type * data_type, jive_output * data_item, jive_buffer * buffer)
+{
+	const char * prefix = NULL;
+	switch(data_type->nbits) {
+		case 8:
+			prefix = "\t.byte ";
+			break;
+		case 16:
+			prefix = "\t.value ";
+			break;
+		case 32:
+			prefix = "\t.long ";
+			break;
+		case 64:
+			prefix = "\t.quad ";
+			break;
+	}
+	if (!prefix)
+		return;
+	
+	jive_context * context = buffer->context;
+	
+	char * repr = jive_bitstring_symbolic_expression(context, data_item);
+	jive_buffer_putstr(buffer, prefix);
+	jive_buffer_putstr(buffer, repr);
+	jive_buffer_putstr(buffer, "\n");
+	jive_context_free(context, repr);
+}
+
+static void
+jive_dataitem_generate_assembler(jive_output * data_item, jive_buffer * buffer)
+{
+	const jive_type * data_type = jive_output_get_type(data_item);
+	
+	if (data_type->class_ == &JIVE_BITSTRING_TYPE)
+		jive_bitstring_generate_assembler((const jive_bitstring_type *) data_type, data_item, buffer);
+	else
+		jive_context_fatal_error(buffer->context, "Type mismatch: don't know how to generate assembler for type");
+}
+
+static void
+jive_dataitems_node_generate_assembler(jive_seq_node * seq_node, jive_node * node, jive_buffer * buffer)
+{
+	size_t n;
+	for (n = 0; n < node->ninputs; n++)
+		jive_dataitem_generate_assembler(node->inputs[n]->origin, buffer);
+}
+
 void
 jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 {
@@ -295,6 +347,8 @@ jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 		jive_node * node = seq_node->node;
 		if (jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
 			jive_instruction_node_generate_assembler(seq_node, node, buffer);
+		} else if (jive_node_isinstance(node, &JIVE_DATAITEMS_NODE)) {
+			jive_dataitems_node_generate_assembler(seq_node, node, buffer);
 		}
 	}
 	
