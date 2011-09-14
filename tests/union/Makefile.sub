@@ -1,2 +1,3 @@
 TESTS+=\
 	union/nesting\
+	union/unify_attrs\

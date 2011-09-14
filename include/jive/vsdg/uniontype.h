@@ -16,6 +16,10 @@ struct jive_union_type {
 	const jive_union_layout * layout;
 };
 
+#define JIVE_DECLARE_UNION_TYPE(name, layout) \
+	const jive_union_type name##_struct = {{{&JIVE_UNION_TYPE}}, layout}; \
+	const jive_type * name = &name##_struct.base.base
+
 extern const jive_input_class JIVE_UNION_INPUT;
 struct jive_union_input {
 	jive_value_input base;

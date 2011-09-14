@@ -13,7 +13,8 @@ typedef struct jive_unify_node_attrs jive_unify_node_attrs;
 
 struct jive_unify_node_attrs {
 	jive_node_attrs base;
-	jive_union_layout * layout;
+	const jive_union_layout * layout;
+	size_t option;
 };
 
 struct jive_unify_node {
@@ -23,17 +24,19 @@ struct jive_unify_node {
 
 jive_node *
 jive_unify_node_create(struct jive_region * region, const jive_union_layout * layout,
-  jive_output * const operand);
+	size_t option, jive_output * const operand);
 
 jive_output *
 jive_unify_create(const jive_union_layout * layout,
-  jive_output * const operand);
+	size_t option, jive_output * const operand);
 
 JIVE_EXPORTED_INLINE jive_unify_node *
 jive_unify_node_cast(jive_node * node)
 {
-	if(node->class_ == &JIVE_UNIFY_NODE) return (jive_unify_node *) node;
-	else return 0;
+	if (node->class_ == &JIVE_UNIFY_NODE)
+		return (jive_unify_node *) node;
+	else
+		return 0;
 }
 
 extern const jive_node_class JIVE_CHOOSE_NODE;
