@@ -12,6 +12,8 @@
 #include <jive/vsdg/objdef.h>
 #include <jive/vsdg/record.h>
 #include <jive/vsdg/recordtype.h>
+#include <jive/vsdg/union.h>
+#include <jive/vsdg/uniontype.h>
 
 typedef jive_output *(*data_def_fn)(jive_graph *);
 
@@ -134,6 +136,48 @@ make_record2(jive_graph * graph)
 	return jive_group_create(&layout2, 2, (jive_output * []){tmp, c1});
 }
 
+static jive_output *
+make_union1(jive_graph * graph)
+{
+	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
+	
+	static const jive_union_layout_element * elements1[] = {
+		&bits16.base,
+		&bits32.base
+	};
+	static const jive_union_layout layout1 = {
+		.context = NULL,
+		.nelements = 2, .element = elements1,
+		.alignment = 4, .total_size = 4
+	};
+	
+	jive_output * c = jive_bitconstant(graph, 16, bits);
+	
+	return jive_unify_create(&layout1, 0, c);
+}
+
+static jive_output *
+make_union2(jive_graph * graph)
+{
+	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
+	
+	static const jive_union_layout_element * elements1[] = {
+		&bits16.base,
+		&bits32.base
+	};
+	static const jive_union_layout layout1 = {
+		.context = NULL,
+		.nelements = 2, .element = elements1,
+		.alignment = 4, .total_size = 4
+	};
+	
+	jive_output * c = jive_bitconstant(graph, 32, bits);
+	
+	return jive_unify_create(&layout1, 1, c);
+}
+
 int main()
 {
 	setlocale(LC_ALL, "");
@@ -146,6 +190,8 @@ int main()
 	verify_asm_definition(ctx, make_diff, "\t.long (0xaaaaaaaa + (- foo))\n");
 	verify_asm_definition(ctx, make_record1, "\t.long 0xaaaaaaaa\n" "\t.value 0xaaaa\n" "\t.byte 0xaa\n" "\t.byte 0x00\n");
 	verify_asm_definition(ctx, make_record2, "\t.value 0xaaaa\n" "\t.value 0xaaaa\n" "\t.long 0xaaaaaaaa\n");
+	verify_asm_definition(ctx, make_union1, "\t.value 0xaaaa\n" "\t.byte 0x00\n" "\t.byte 0x00\n");
+	verify_asm_definition(ctx, make_union2, "\t.long 0xaaaaaaaa\n");
 	
 	assert(jive_context_is_empty(ctx));
 	

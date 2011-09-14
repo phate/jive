@@ -9,6 +9,9 @@
 #include <jive/vsdg/record.h>
 #include <jive/vsdg/recordlayout.h>
 #include <jive/vsdg/recordtype.h>
+#include <jive/vsdg/union.h>
+#include <jive/vsdg/unionlayout.h>
+#include <jive/vsdg/uniontype.h>
 #include <jive/vsdg/statetype.h>
 
 jive_node *
@@ -80,6 +83,37 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 			
 			jive_context_free(ctx, sub_items);
 		}
+	} else if (type_->class_ == &JIVE_UNION_TYPE) {
+		const jive_union_type * type = (const jive_union_type *) type_;
+		const jive_union_layout * layout = type->layout;
+		
+		jive_unify_node * node = jive_unify_node_cast(data->node);
+		if (!node)
+			jive_context_fatal_error(ctx, "Type mismatch: can only serialize simple union compounds");
+			
+		jive_graph * graph = data->node->graph;
+		
+		nitems = layout->total_size;
+		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
+		
+		jive_output * zero_pad = jive_bitconstant(graph, 8, "00000000");
+		size_t n;
+		for (n = 0; n < nitems; n++)
+			items[n] = zero_pad;
+			
+		size_t nsub_items;
+		jive_output ** sub_items;
+		
+		flatten_data_items(ctx, data->node->inputs[0]->origin, &nsub_items, &sub_items);
+		
+		if (nsub_items > nitems)
+			jive_context_fatal_error(ctx, "Invalid union layout: element exceeds union");
+		
+		for (n = 0; n < nsub_items; n++) {
+			items[n] = sub_items[n];
+		}
+		
+		jive_context_free(ctx, sub_items);
 	} else {
 		jive_context_fatal_error(ctx, "Type mismatch: can only serialize record and primitive data items");
 	}
