@@ -33,9 +33,8 @@ int main()
 	
 	jive_node * abstract_fn = jive_lambda_node_create(fn_region);
 	
-	jive_node * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
-	
-	jive_node_reserve(i386_fn);
+	jive_subroutine * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
+	jive_node_reserve(&i386_fn->subroutine_node->base);
 	jive_graph_prune(graph);
 	
 	jive_view(graph, stdout);

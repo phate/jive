@@ -35,13 +35,13 @@ int main()
 	
 	jive_node * abstract_fn = jive_lambda_node_create(fn_region);
 	
-	jive_node * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
-	jive_node * fn_name = jive_objdef_node_create(i386_fn->outputs[0], "add_int32");
+	jive_subroutine * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
+	jive_node * fn_name = jive_objdef_node_create(jive_subroutine_objdef(i386_fn), "add_int32");
 	
 	jive_node_reserve(fn_name);
 	jive_graph_prune(graph);
 	
-	//jive_view(graph, stdout);
+	jive_view(graph, stdout);
 	
 	jive_regselector regselector;
 	jive_regselector_init(&regselector, graph, &jive_i386_reg_classifier);
