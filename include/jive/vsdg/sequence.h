@@ -15,7 +15,7 @@ typedef struct jive_seq_region jive_seq_region;
 
 struct jive_seq_node {
 	struct jive_node * node;
-	jive_seq_graph * seq_graph;
+	jive_seq_region * seq_region;
 	struct {
 		jive_seq_node * prev;
 		jive_seq_node * next;
@@ -37,6 +37,7 @@ struct jive_seq_node {
 
 struct jive_seq_region {
 	struct jive_region * region;
+	jive_seq_graph * seq_graph;
 	struct {
 		jive_seq_region * prev;
 		jive_seq_region * next;

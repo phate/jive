@@ -7,10 +7,11 @@ JIVE_DEFINE_HASH_TYPE(jive_seq_node_hash, jive_seq_node, struct jive_node *, nod
 JIVE_DEFINE_HASH_TYPE(jive_seq_region_hash, jive_seq_region, struct jive_region *, region, hash_chain);
 
 static jive_seq_node *
-jive_seq_node_create(jive_seq_graph * seq, jive_node * node)
+jive_seq_node_create(jive_seq_graph * seq, jive_seq_region * seq_region, jive_node * node)
 {
 	jive_seq_node * self = jive_context_malloc(seq->context, sizeof(*self));
 	self->node = node;
+	self->seq_region = seq_region;
 	jive_seq_node_hash_insert(&seq->node_map, self);
 	self->size = 0;
 	self->address = 0;
@@ -46,6 +47,7 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_bottomup
 {
 	jive_seq_region * seq_region = jive_context_malloc(seq->context, sizeof(*seq_region));
 	seq_region->region = region;
+	seq_region->seq_graph = seq;
 	seq_region->first_node = 0;
 	seq_region->last_node = 0;
 	jive_seq_region_hash_insert(&seq->region_map, seq_region);
@@ -55,7 +57,7 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_bottomup
 	
 	jive_node * node = jive_traverser_next(trav);
 	while(node) {
-		jive_seq_node * current = jive_seq_node_create(seq, node);
+		jive_seq_node * current = jive_seq_node_create(seq, seq_region, node);
 		JIVE_LIST_INSERT(seq->nodes, before, current, seqnode_list);
 		
 		size_t n;

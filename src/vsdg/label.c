@@ -92,7 +92,7 @@ static jive_addr
 jive_label_internal_get_address_(const jive_label * self_, const jive_seq_node * for_node)
 {
 	const jive_label_internal * self = (const jive_label_internal *) self_;
-	jive_seq_node * seq_node = jive_label_internal_get_attach_node(self, for_node->seq_graph);
+	jive_seq_node * seq_node = jive_label_internal_get_attach_node(self, for_node->seq_region->seq_graph);
 	
 	if (seq_node) {
 		return seq_node->address;
