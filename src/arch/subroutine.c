@@ -283,6 +283,7 @@ void
 jive_subroutine_create_region_and_nodes(jive_subroutine * subroutine, jive_region * parent_region)
 {
 	jive_region * subroutine_region = jive_region_create_subregion(parent_region);
+	subroutine_region->attrs.section = jive_region_section_code;
 	jive_subroutine_leave_node_create(subroutine_region, jive_subroutine_enter_node_create(subroutine_region)->outputs[0]);
 	jive_subroutine_node_create(subroutine_region, subroutine);
 	subroutine->region = subroutine_region;
