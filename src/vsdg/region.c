@@ -10,6 +10,14 @@
 #include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
 
+static inline void
+jive_region_attrs_init(jive_region_attrs * attrs)
+{
+	attrs->align = 1;
+	attrs->section = jive_region_section_inherit;
+	attrs->is_looped = false;
+}
+
 void
 _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 {
@@ -21,7 +29,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->subregions.first = self->subregions.last = 0;
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
 	self->top = self->bottom = 0;
-	self->is_looped = false;
+	jive_region_attrs_init(&self->attrs);
 	jive_region_ssavar_hash_init(&self->used_ssavars, graph->context);
 	
 	if (parent) {
@@ -103,7 +111,7 @@ void
 jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
 	if (ssavar->origin->node->region->depth >= self->depth) return;
-	if (self->is_looped) {
+	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use;
 		use = jive_region_ssavar_hash_lookup(&self->used_ssavars, ssavar);
 		if (use)
@@ -127,7 +135,7 @@ void
 jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
 	if (ssavar->origin->node->region->depth >= self->depth) return;
-	if (self->is_looped) {
+	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use;
 		use = jive_region_ssavar_hash_lookup(&self->used_ssavars, ssavar);
 		use->count --;
@@ -218,7 +226,7 @@ pre_copy_region(jive_region * target_region, const jive_region * original_region
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(original_region->subregions, subregion, region_subregions_list) {
 		jive_region * target_subregion = jive_region_create_subregion(target_region);
-		target_subregion->is_looped = subregion->is_looped;
+		target_subregion->attrs = subregion->attrs;
 		jive_substitution_map_add_region(substitution, subregion, target_subregion);
 		pre_copy_region(target_subregion, subregion, copy_context, context, substitution, true, true);
 	}

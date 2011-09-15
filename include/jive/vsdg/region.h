@@ -17,6 +17,22 @@ struct jive_cut;
 struct jive_stackframe;
 struct jive_substitution_map;
 
+typedef struct jive_region_attrs jive_region_attrs;
+
+typedef enum jive_region_section_flags {
+	jive_region_section_inherit = 0,
+	jive_region_section_code = 1,
+	jive_region_section_data = 2,
+	jive_region_section_rodata = 3,
+	jive_region_section_bss = 4
+} jive_region_section_flags;
+
+struct jive_region_attrs {
+	size_t align;
+	jive_region_section_flags section;
+	bool is_looped;
+};
+
 struct jive_region {
 	struct jive_graph * graph;
 	jive_region * parent;
@@ -35,7 +51,7 @@ struct jive_region {
 		jive_region * next;
 	} region_subregions_list;
 	
-	bool is_looped;
+	jive_region_attrs attrs;
 	
 	struct jive_node * top;
 	struct jive_node * bottom;

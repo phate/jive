@@ -47,7 +47,7 @@ int main()
 		2, (const jive_type * []){type, type});
 	
 	jive_region * loop_region = jive_region_create_subregion(root);
-	loop_region->is_looped = true;
+	loop_region->attrs.is_looped = true;
 	
 	jive_node * loop_head = jive_node_create(loop_region,
 		1, (const jive_type * []){type}, (jive_output *[]){top->outputs[0]},
