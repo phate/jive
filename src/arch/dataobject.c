@@ -141,6 +141,7 @@ jive_dataobj(jive_output * data)
 	jive_region * parent = graph->root_region;
 	
 	jive_region * region = jive_region_create_subregion(parent);
+	region->attrs.section = jive_region_section_data;
 	
 	size_t ndata_items;
 	jive_output ** data_items;
