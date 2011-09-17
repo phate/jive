@@ -125,6 +125,12 @@ jive_subroutine_value_return(jive_subroutine * self, size_t index, jive_output *
 	return self->class_->value_return(self, index, value);
 }
 
+JIVE_EXPORTED_INLINE jive_output *
+jive_subroutine_objdef(const jive_subroutine * self)
+{
+	return self->subroutine_node->base.outputs[0];
+}
+
 /* FIXME: these are quite C-specific, so really do not belong here */
 
 enum jive_argument_type {
