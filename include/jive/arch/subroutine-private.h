@@ -35,4 +35,13 @@ jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, 
 jive_gate *
 jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * new_node);
 
+static inline void
+jive_subroutine_match_passthrough(const jive_subroutine * old_subroutine, const jive_subroutine_passthrough * old_pt,
+	jive_subroutine * new_subroutine, jive_subroutine_passthrough * new_pt)
+{
+	new_pt->output = new_subroutine->enter->base.outputs[old_pt->output->index];
+	new_pt->input = new_subroutine->leave->base.inputs[old_pt->input->index];
+	new_pt->gate = new_pt->output->gate;
+}
+
 #endif
