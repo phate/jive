@@ -375,6 +375,8 @@ jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	
 	jive_testarch_subroutine * other = jive_testarch_subroutine_alloc(new_enter_node->region, self->base.nparameters, self->base.nreturns);
+	other->base.enter = (jive_subroutine_enter_node *) new_enter_node;
+	other->base.leave = (jive_subroutine_leave_node *) new_leave_node;
 	
 	size_t n;
 	
@@ -405,6 +407,8 @@ jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 		
 		other->base.returns[n] = new_gate;
 	}
+	
+	jive_subroutine_match_passthrough(&self->base, &self->stackptr, &other->base, &other->stackptr);
 	
 	return &other->base;
 }
