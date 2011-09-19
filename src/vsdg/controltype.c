@@ -1,5 +1,7 @@
 #include <jive/vsdg/controltype.h>
 
+#include <string.h>
+
 #include <jive/debug-private.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype-private.h>
@@ -42,11 +44,34 @@ _jive_control_gate_init(jive_control_gate * self, struct jive_graph * graph, con
 const jive_type *
 _jive_control_gate_get_type(const jive_gate * self);
 
+static char *
+jive_control_type_get_label_(const jive_type * type)
+{
+	return strdup("ctl");
+};
+
+static char *
+jive_control_input_get_label_(const jive_input * input)
+{
+	return strdup("ctl");
+};
+
+static char *
+jive_control_output_get_label_(const jive_output * output)
+{
+	return strdup("ctl");
+};
+
+static char *
+jive_control_gate_get_label_(const jive_gate * gate)
+{
+	return strdup("ctl");
+};
 
 const jive_type_class JIVE_CONTROL_TYPE = {
 	.parent = &JIVE_STATE_TYPE,
 	.fini = _jive_type_fini, /* inherit */
-	.get_label = _jive_type_get_label, /* inherit */
+	.get_label = jive_control_type_get_label_, /* override */
 	.create_input = _jive_control_type_create_input, /* override */
 	.create_output = _jive_control_type_create_output, /* override */
 	.create_gate = _jive_type_create_gate, /* inherit */
@@ -57,21 +82,21 @@ const jive_type_class JIVE_CONTROL_TYPE = {
 const jive_input_class JIVE_CONTROL_INPUT = {
 	.parent = &JIVE_STATE_INPUT,
 	.fini = _jive_control_input_fini, /* override */
-	.get_label = _jive_input_get_label, /* inherit */
+	.get_label = jive_control_input_get_label_, /* override */
 	.get_type = _jive_control_input_get_type, /* override */
 };
 
 const jive_output_class JIVE_CONTROL_OUTPUT = {
 	.parent = &JIVE_STATE_OUTPUT,
 	.fini = _jive_output_fini, /* inherit */
-	.get_label = _jive_output_get_label, /* inherit */
+	.get_label = jive_control_output_get_label_, /* override */
 	.get_type = _jive_control_output_get_type, /* override */
 };
 
 const jive_gate_class JIVE_CONTROL_GATE = {
 	.parent = &JIVE_STATE_GATE,
 	.fini = _jive_gate_fini, /* inherit */
-	.get_label = _jive_gate_get_label, /* inherit */
+	.get_label = jive_control_gate_get_label_, /* override */
 	.get_type = _jive_control_gate_get_type, /* override */
 };
 
