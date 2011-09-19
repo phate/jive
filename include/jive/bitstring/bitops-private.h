@@ -1,7 +1,6 @@
 #ifndef JIVE_BITSTRING_BITOPS_H
 #define JIVE_BITSTRING_BITOPS_H
 
-
 #include <string.h>
 
 /**
@@ -113,6 +112,94 @@ jive_logic_and(char a, char b)
 		default:
 			return 'X';
 	}
+}
+
+
+static inline char
+jive_bitnotequal_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	char val = '0';
+	size_t n;
+	for(n = 0; n < nbits; n++) {
+		val = jive_logic_or(val, jive_logic_xor(c1[n], c2[n]));
+	}
+	return val;
+}
+
+
+static inline char
+jive_bitequal_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	return jive_logic_not(jive_bitnotequal_compare_constants_(c1, c2, nbits));
+}
+
+static inline char
+jive_bituless_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	size_t n;
+	char val = jive_logic_and(jive_logic_not(c1[0]), c2[0]);
+	for(n = 1; n < nbits; n++){
+		val = jive_logic_and(
+			jive_logic_or(jive_logic_not(c1[n]), c2[n]),
+			jive_logic_or(jive_logic_and(jive_logic_not(c1[n]), c2[n]), val));
+	}
+	return val;
+}
+
+static inline char
+jive_bitsless_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	char t1[nbits];
+	char t2[nbits];
+	memcpy(t1, c1, nbits);
+	memcpy(t2, c2, nbits);	
+	
+	t1[nbits-1] = jive_logic_not(t1[nbits-1]);
+	t2[nbits-1] = jive_logic_not(t2[nbits-1]);
+	
+	return jive_bituless_compare_constants_(t1, t2, nbits);
+}
+
+static inline char
+jive_bitslesseq_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	//FIXME: summarize to one formula to get a more precise result
+	char l = jive_bitsless_compare_constants_(c1, c2, nbits);
+	char e = jive_bitequal_compare_constants_(c1, c2, nbits);
+	return jive_logic_or(l, e);
+}
+
+static inline char
+jive_bitulesseq_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	//FIXME: summarize to one formula to get a more precise result
+	char l = jive_bituless_compare_constants_(c1, c2, nbits);
+	char e = jive_bitequal_compare_constants_(c1, c2, nbits);
+	return jive_logic_or(l, e);
+}
+
+static inline char
+jive_bitsgreater_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	return jive_logic_not(jive_bitslesseq_compare_constants_(c1, c2, nbits));
+}
+
+static inline char
+jive_bitugreater_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	return jive_logic_not(jive_bitulesseq_compare_constants_(c1, c2, nbits));
+}
+
+static inline char
+jive_bitsgreatereq_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	return jive_logic_not(jive_bitsless_compare_constants_(c1, c2, nbits));
+}
+
+static inline char
+jive_bitugreatereq_compare_constants_(const char * c1, const char * c2, size_t nbits)
+{
+	return jive_logic_not(jive_bituless_compare_constants_(c1, c2, nbits));
 }
 
 /**
