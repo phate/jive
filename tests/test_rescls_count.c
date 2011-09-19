@@ -70,7 +70,7 @@ void test_rescls_count_compound(jive_context * ctx)
 	jive_resource_class_count_update_intersection(&a, &b);
 	jive_resource_class_count_add(&c, &jive_testarch_regcls[cls_r1].base);
 	jive_resource_class_count_add(&c, &jive_testarch_regcls[cls_evenreg].base);
-	assert(a.nitems == 5);
+	assert(a.nitems == 6);
 	assert(jive_resource_class_count_equals(&a, &c));
 	
 	jive_resource_class_count_clear(&a);
@@ -86,7 +86,7 @@ void test_rescls_count_compound(jive_context * ctx)
 	jive_resource_class_count_add(&c, &jive_testarch_regcls[cls_r1].base);
 	jive_resource_class_count_add(&c, &jive_testarch_regcls[cls_r2].base);
 	jive_resource_class_count_sub(&c, &jive_testarch_regcls[cls_evenreg].base);
-	assert(a.nitems == 7);
+	assert(a.nitems == 8);
 	assert(jive_resource_class_count_equals(&a, &c));
 	
 	jive_resource_class_count_fini(&a);

@@ -31,4 +31,6 @@ jive_register_class_get_type(const jive_register_class * self);
 struct jive_gate *
 jive_register_class_create_gate(const jive_register_class * self, struct jive_graph * graph, const char * name);
 
+extern const jive_resource_class jive_root_register_class;
+
 #endif
