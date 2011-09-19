@@ -69,6 +69,17 @@ jive_resource_class_union(const jive_resource_class * self, const jive_resource_
 const jive_resource_class *
 jive_resource_class_intersection(const jive_resource_class * self, const jive_resource_class * other);
 
+JIVE_EXPORTED_INLINE bool
+jive_resource_class_issubclass(const jive_resource_class * self, const jive_resource_class * super_class)
+{
+	while (self) {
+		if (self == super_class)
+			return true;
+		self = self->parent;
+	}
+	return false;
+}
+
 JIVE_EXPORTED_INLINE void
 jive_resource_class_get_resource_names(const jive_resource_class * self,
 	size_t * count, const jive_resource_name * const ** names)
