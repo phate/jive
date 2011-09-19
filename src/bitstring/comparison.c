@@ -170,9 +170,7 @@ jive_output * \
 jive_##name_(jive_output * x, jive_output * y) \
 { \
 	jive_output * operands[2] = {x, y}; \
-	jive_region * region = x->node->region; \
-	if (y->node->region->depth > region->depth) \
-		region = y->node->region; \
+	jive_region * region = jive_region_innermost(2, operands); \
 	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, 2, operands); \
 } \
 
