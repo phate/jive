@@ -15,6 +15,8 @@ typedef struct jive_stackslot_size_class jive_stackslot_size_class;
 typedef struct jive_fixed_stackslot_class jive_fixed_stackslot_class;
 typedef struct jive_stackslot jive_stackslot;
 
+extern const jive_resource_class jive_root_stackslot_class;
+
 extern const jive_stackslot_size_class jive_stackslot_class_8_8;
 extern const jive_stackslot_size_class jive_stackslot_class_16_16;
 extern const jive_stackslot_size_class jive_stackslot_class_32_32;

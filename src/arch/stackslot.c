@@ -14,13 +14,23 @@
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 static const jive_memory_type stackvar_type = {{{&JIVE_MEMORY_TYPE}}};
 
+const jive_resource_class jive_root_stackslot_class = {
+	.name = "stackslot",
+	.limit = 0,
+	.parent = &jive_root_resource_class,
+	.depth = 1,
+	.is_abstract = true,
+	.priority = jive_resource_class_priority_lowest,
+	.demotions = no_demotion
+};
+
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
 	.base = { \
 		.name = "stack" #SIZE " " #ALIGNMENT, \
 		.limit = 0, .names = NULL, \
-		.parent = &jive_root_resource_class, \
-		.depth = 1, \
+		.parent = &jive_root_stackslot_class, \
+		.depth = 2, \
 		.is_abstract = false, \
 		.priority = jive_resource_class_priority_mem_low,\
 		.demotions = no_demotion, \
@@ -68,7 +78,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 	cls->base.name = name;
 	cls->base.limit = 0;
 	cls->base.names = NULL;
-	cls->base.parent = &jive_root_resource_class;
+	cls->base.parent = &jive_root_stackslot_class;
 	cls->base.depth = cls->base.parent->depth + 1;
 	cls->base.is_abstract = false;
 	cls->base.priority = jive_resource_class_priority_mem_low;
