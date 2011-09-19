@@ -234,6 +234,16 @@ jive_instruction_node_create(
 	return jive_instruction_node_create_simple(region, icls, operands, immediates);
 }
 
+JIVE_EXPORTED_INLINE jive_instruction_node *
+jive_instruction_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_INSTRUCTION_NODE)
+		return (jive_instruction_node *) node;
+	else
+		return 0;
+}
+
+
 /* FIXME: this is a placeholder function, will be replaced by a more
 sophisticated interface later */
 void
