@@ -91,6 +91,15 @@ struct jive_subroutine {
 	
 	size_t nreturns;
 	jive_gate ** returns;
+	
+	struct {
+		/* lower bound of frame (relative to initial position of stack pointer) */
+		ssize_t lower_bound;
+		/* upper bound of frame (relative to initial position of stack pointer) */
+		ssize_t upper_bound;
+		/* offset of frame pointer to initial position of stack pointer */
+		ssize_t frame_pointer_offset;
+	} frame;
 };
 
 struct jive_subroutine_class {
