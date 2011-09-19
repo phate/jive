@@ -97,7 +97,7 @@ static const jive_fixed_stackslot_class *
 jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int offset)
 {
 	char tmpname[80];
-	snprintf(tmpname, sizeof(tmpname), "stack_s%zda%zd@%d", parent->size, parent->alignment, offset);
+	snprintf(tmpname, sizeof(tmpname), "stack_s%zda%zd@%d", parent->size, parent->alignment / 8, offset / 8);
 	
 	char * name = strdup(tmpname);
 	if (!name)
@@ -118,7 +118,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	
 	slot->base.name = name;
 	slot->base.resource_class = &cls->base.base;
-	slot->offset = offset;
+	slot->offset = offset / 8;
 	
 	cls->base.base.name = name;
 	cls->base.base.limit = 1;
