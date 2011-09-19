@@ -29,6 +29,9 @@ jive_stackslot_size_class_get(size_t size, size_t alignment);
 const jive_resource_class *
 jive_fixed_stackslot_class_get(size_t size, int offset);
 
+const jive_resource_name *
+jive_stackslot_name_get(size_t size, int offset);
+
 /* resource classes and names*/
 
 struct jive_stackslot_size_class {

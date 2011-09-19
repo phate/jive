@@ -27,7 +27,7 @@ const jive_resource_class jive_root_stackslot_class = {
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
 	.base = { \
-		.name = "stack" #SIZE " " #ALIGNMENT, \
+		.name = "stack_s" #SIZE "a" #ALIGNMENT, \
 		.limit = 0, .names = NULL, \
 		.parent = &jive_root_stackslot_class, \
 		.depth = 2, \
@@ -332,4 +332,11 @@ jive_fixed_stackslot_class_get(size_t size, int offset)
 		return &cls->base.base;
 	else
 		return 0;
+}
+
+const jive_resource_name *
+jive_stackslot_name_get(size_t size, int offset)
+{
+	const jive_resource_class * rescls = jive_fixed_stackslot_class_get(size, offset);
+	return rescls->names[0];
 }
