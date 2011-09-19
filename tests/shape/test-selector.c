@@ -27,6 +27,7 @@ const jive_register_class
 			.names = res_names,
 			.parent = &jive_root_resource_class,
 			.depth = 1,
+			.is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL

@@ -1,6 +1,7 @@
 #ifndef JIVE_VSDG_RESOURCE_H
 #define JIVE_VSDG_RESOURCE_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -44,6 +45,9 @@ struct jive_resource_class {
 	/** \brief Number of step from root */
 	size_t depth;
 	
+	/** \brief Whether class is abstract */
+	bool is_abstract;
+	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
 	
@@ -77,6 +81,12 @@ JIVE_EXPORTED_INLINE const struct jive_type *
 jive_resource_class_get_type(const jive_resource_class * self)
 {
 	return self->type;
+}
+
+JIVE_EXPORTED_INLINE bool
+jive_resource_class_is_abstract(const jive_resource_class * self)
+{
+	return self->is_abstract;
 }
 
 struct jive_gate *

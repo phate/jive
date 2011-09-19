@@ -44,7 +44,7 @@ jive_resource_class_relax(const jive_resource_class * self)
 	/* hopefully this function is transitionary --
 	currently everything that is needed is the
 	class directly below the root */
-	while (self->parent != &jive_root_resource_class && self->parent)
+	while (self->parent && !jive_resource_class_is_abstract(self->parent))
 		self = self->parent;
 	return self;
 }
@@ -56,6 +56,7 @@ const jive_resource_class jive_root_resource_class = {
 	.limit = 0,
 	.parent = 0,
 	.depth = 0,
+	.is_abstract = true,
 	.priority = jive_resource_class_priority_lowest,
 	.demotions = no_demotion
 };

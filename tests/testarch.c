@@ -40,7 +40,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "r0",
 			.limit = 1, .names = allnames + 0,
-			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 3,
+			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 3, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -54,7 +54,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "r1",
 			.limit = 1, .names = allnames + 2,
-			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 3,
+			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 3, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -68,7 +68,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "r2",
 			.limit = 1, .names = allnames + 1,
-			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 3,
+			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 3, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -82,7 +82,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "r3",
 			.limit = 1, .names = allnames + 3,
-			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 3,
+			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 3, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -96,7 +96,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "even",
 			.limit = 2, .names = allnames + 0,
-			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 2,
+			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 2, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -110,7 +110,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "odd",
 			.limit = 2, .names = allnames + 2,
-			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 2,
+			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 2, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -124,7 +124,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "gpr",
 			.limit = 4, .names = allnames + 0,
-			.parent = &jive_root_resource_class, .depth = 1,
+			.parent = &jive_root_resource_class, .depth = 1, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -138,7 +138,7 @@ const jive_register_class jive_testarch_regcls [] = {
 		.base = {
 			.name = "cc",
 			.limit = 1, .names = allnames + 4,
-			.parent = &jive_root_resource_class, .depth = 1,
+			.parent = &jive_root_resource_class, .depth = 1, .is_abstract = false,
 			.priority = jive_resource_class_priority_reg_high,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(cc), CLS(gpr), NULL}},

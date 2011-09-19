@@ -21,6 +21,7 @@ const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
 		.limit = 0, .names = NULL, \
 		.parent = &jive_root_resource_class, \
 		.depth = 1, \
+		.is_abstract = false, \
 		.priority = jive_resource_class_priority_mem_low,\
 		.demotions = no_demotion, \
 		.type = &stackvar_type.base.base \
@@ -69,6 +70,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 	cls->base.names = NULL;
 	cls->base.parent = &jive_root_resource_class;
 	cls->base.depth = cls->base.parent->depth + 1;
+	cls->base.is_abstract = false;
 	cls->base.priority = jive_resource_class_priority_mem_low;
 	cls->base.demotions = no_demotion;
 	cls->base.type = &stackvar_type.base.base;
@@ -113,6 +115,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	cls->base.base.names = &cls->slot;
 	cls->base.base.parent = &parent->base;
 	cls->base.base.depth = parent->base.depth + 1;
+	cls->base.base.is_abstract = false;
 	cls->base.base.priority = jive_resource_class_priority_mem_high;
 	cls->base.base.demotions = no_demotion;
 	cls->base.base.type = &stackvar_type.base.base;
