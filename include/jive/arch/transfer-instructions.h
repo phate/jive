@@ -7,15 +7,16 @@ struct jive_region;
 struct jive_output;
 struct jive_input;
 struct jive_node;
+struct jive_resource_class;
 
 typedef struct jive_xfer_block jive_xfer_block;
 
 typedef struct jive_transfer_instructions_factory jive_transfer_instructions_factory;
 
 struct jive_xfer_block {
-	jive_input * input;
-	jive_node * node;
-	jive_output * output;
+	struct jive_input * input;
+	struct jive_node * node;
+	struct jive_output * output;
 };
 
 struct jive_transfer_instructions_factory {
