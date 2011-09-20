@@ -327,6 +327,60 @@ jive_i386_asm_regmove(const jive_instruction_class * icls,
 	jive_buffer_putstr(target, outputs[0]->base.name);
 }
 
+static void
+jive_i386_encode_call(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	uint32_t immediate = immediates[0].offset;
+	
+	jive_buffer_putbyte(target, icls->code);
+	immediate = cpu_to_le32(immediate);
+	jive_buffer_put(target, &immediate, 4);
+}
+
+static void
+jive_i386_asm_call(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, "\t");
+	jive_buffer_putimm(target, &immediates[0]);
+}
+
+static void
+jive_i386_encode_call_reg(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	int r = inputs[0]->code;
+	
+	jive_buffer_putbyte(target, 0xff);
+	jive_buffer_putbyte(target, 0xd0 | r);
+}
+
+static void
+jive_i386_asm_call_reg(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, "\t*%");
+	jive_buffer_putstr(target, inputs[0]->base.name);
+}
 
 static const jive_register_class * const intreg_param[] = {
 	&jive_i386_regcls[jive_i386_gpr],
@@ -505,5 +559,23 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.inregs = intreg_param, .outregs = intreg_param,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
 		.code = 0x89
+	},
+	[jive_i386_call] = {
+		.name = "call",
+		.mnemonic = "call",
+		.encode = jive_i386_encode_call,
+		.write_asm = jive_i386_asm_call,
+		.inregs = NULL, .outregs = NULL,
+		.ninputs = 0, .noutputs = 0, .nimmediates = 1,
+		.code = 0xe8
+	},
+	[jive_i386_call_reg] = {
+		.name = "call_reg",
+		.mnemonic = "call_reg",
+		.encode = jive_i386_encode_call_reg,
+		.write_asm = jive_i386_asm_call_reg,
+		.inregs = intreg_param, .outregs = NULL,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 0,
+		.code = 0xff
 	},
 };

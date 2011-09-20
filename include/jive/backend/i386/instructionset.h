@@ -27,7 +27,10 @@ typedef enum {
 	jive_i386_int_neg = 25,
 	jive_i386_int_not = 26,
 	
-	jive_i386_int_transfer = 32
+	jive_i386_int_transfer = 32,
+	
+	jive_i386_call = 33,
+	jive_i386_call_reg = 34
 } jive_i386_instruction_index;
 
 extern const struct jive_instruction_class jive_i386_instructions[];
