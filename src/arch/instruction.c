@@ -10,6 +10,7 @@
 #include <jive/vsdg/variable.h>
 #include <jive/vsdg/sequence.h>
 
+#include <stdio.h>
 #include <string.h>
 
 const jive_node_class JIVE_INSTRUCTION_NODE = {
@@ -237,10 +238,42 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 }
 
 static void
-emit_labels(jive_seq_node * seq_node, jive_buffer * buffer, bool after_node)
+emit_region_start_attrs(const jive_region * region, jive_buffer * buffer)
 {
+	switch (region->attrs.section) {
+		default:
+		case jive_region_section_inherit:
+			jive_buffer_putstr(buffer, ".section .inherit\n");
+			break;
+		case jive_region_section_code:
+			jive_buffer_putstr(buffer, ".section .text\n");
+			break;
+		case jive_region_section_data:
+			jive_buffer_putstr(buffer, ".section .data\n");
+			break;
+		case jive_region_section_rodata:
+			jive_buffer_putstr(buffer, ".section .rodata\n");
+			break;
+		case jive_region_section_bss:
+			jive_buffer_putstr(buffer, ".section .bss\n");
+			break;
+	};
+	if (region->attrs.align > 1) {
+		char tmp[80];
+		snprintf(tmp, sizeof(tmp), ".align %zd\n", region->attrs.align);
+		jive_buffer_putstr(buffer, tmp);
+	}
+}
+
+static void
+emit_labels(jive_seq_node * seq_node, jive_buffer * buffer)
+{
+	if (seq_node == seq_node->seq_region->first_node)
+		emit_region_start_attrs(seq_node->seq_region->region, buffer);
+	
 	size_t n;
 	for(n = 0; n < seq_node->attached_labels.nitems; n++) {
+		
 		const jive_label_internal * label = seq_node->attached_labels.items[n];
 		const char * name = jive_label_internal_get_asmname(label);
 		
@@ -343,8 +376,8 @@ jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 	
 	jive_seq_node * seq_node;
 	JIVE_LIST_ITERATE(seq_graph->nodes, seq_node, seqnode_list) {
-		emit_labels(seq_node, buffer, false);
 		jive_node * node = seq_node->node;
+		emit_labels(seq_node, buffer);
 		if (jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
 			jive_instruction_node_generate_assembler(seq_node, node, buffer);
 		} else if (jive_node_isinstance(node, &JIVE_DATAITEMS_NODE)) {
