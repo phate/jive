@@ -1,5 +1,6 @@
 #include <jive/regalloc/stackframe.h>
 
+#include <jive/arch/instruction.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine.h>
@@ -99,6 +100,25 @@ layout_stackslot(jive_shaped_graph * shaped_graph, jive_subroutine * subroutine,
 		subroutine->frame.lower_bound = offset;
 }
 
+const jive_stackslot *
+get_node_stackslot(jive_node * node)
+{
+	size_t n;
+	for (n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
+		if (jive_resource_class_issubclass(name->resource_class, &jive_root_stackslot_class))
+			return (const jive_stackslot *) name;
+	}
+	for (n = 0; n < node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		const jive_resource_name * name = jive_variable_get_resource_name(output->ssavar->variable);
+		if (jive_resource_class_issubclass(name->resource_class, &jive_root_stackslot_class))
+			return (const jive_stackslot *) name;
+	}
+	return NULL;
+}
+
 void
 jive_regalloc_stackframe(jive_shaped_graph * shaped_graph)
 {
@@ -119,6 +139,45 @@ jive_regalloc_stackframe(jive_shaped_graph * shaped_graph)
 	}
 	
 	jive_traverser_destroy(trav);
-
-	(void) graph;
 }
+
+static void
+reloc_stack_access(jive_node * node)
+{
+	const jive_instruction_node * inode = jive_instruction_node_cast(node);
+	if (!inode)
+		return;
+	
+	size_t n;
+	for (n = 0; n < inode->attrs.icls->nimmediates; n++) {
+		jive_immediate imm = inode->attrs.immediates[n];
+		if (imm.add_label == &jive_label_fpoffset) {
+			const jive_stackslot * slot = get_node_stackslot(node);
+			const jive_subroutine * subroutine = lookup_subroutine_by_node(node);
+			imm = jive_immediate_add_offset(&imm, slot->offset - subroutine->frame.frame_pointer_offset);
+			imm.add_label = 0;
+		}
+		if (imm.sub_label == &jive_label_fpoffset) {
+			const jive_stackslot * slot = get_node_stackslot(node);
+			const jive_subroutine * subroutine = lookup_subroutine_by_node(node);
+			imm = jive_immediate_add_offset(&imm, -slot->offset - subroutine->frame.frame_pointer_offset);
+			imm.add_label = 0;
+		}
+		inode->attrs.immediates[n] = imm;
+	}
+}
+
+void
+jive_regalloc_relocate_stackslots(struct jive_shaped_graph * shaped_graph)
+{
+	jive_graph * graph = shaped_graph->graph;
+	
+	jive_traverser * trav = jive_bottomup_traverser_create(graph);
+	
+	jive_node * node;
+	for ( node = jive_traverser_next(trav); node; node = jive_traverser_next(trav) ) {
+		reloc_stack_access(node);
+	}
+	jive_traverser_destroy(trav);
+}
+

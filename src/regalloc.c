@@ -16,6 +16,7 @@ jive_regalloc(struct jive_graph * graph, const struct jive_transfer_instructions
 	jive_regalloc_fixup(shaped_graph);
 	jive_regalloc_auxnodes_replace(shaped_graph, xfer);
 	jive_regalloc_stackframe(shaped_graph);
+	jive_regalloc_relocate_stackslots(shaped_graph);
 	jive_regalloc_reuse(shaped_graph);
 	
 	return shaped_graph;
