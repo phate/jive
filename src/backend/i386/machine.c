@@ -1,67 +1,72 @@
 #include <jive/backend/i386/machine.h>
+
+#include <jive/arch/instruction.h>
 #include <jive/backend/i386/instructionset.h>
-#include <jive/arch/transfer-instructions.h>
-#include <jive/arch/stackframe.h>
+#include <jive/backend/i386/registerset.h>
+#include <jive/backend/i386/subroutine.h>
 #include <jive/vsdg.h>
 
-static size_t
-jive_i386_create_copy(jive_region * region, jive_output * origin,
-	jive_input ** xfer_in, jive_node * xfer_nodes[], jive_output ** xfer_out)
+static jive_subroutine *
+lookup_subroutine_by_region(jive_region * region)
 {
-	jive_node * node = (jive_node *) jive_instruction_node_create(
-		region, &jive_i386_instructions[jive_i386_int_transfer],
-		&origin, NULL);
-	
-	*xfer_in = node->inputs[0];
-	*xfer_out = node->outputs[0];
-	xfer_nodes[0] = node;
-	return 1;
+	for (;;) {
+		if (!region->anchor)
+			return NULL;
+		jive_subroutine_node * sub = jive_subroutine_node_cast(region->anchor->node);
+		if (sub)
+			return sub->attrs.subroutine;
+		region = region->parent;
+	}
 }
 
-static size_t
-jive_i386_create_spill(jive_region * region, jive_output * origin,
-	jive_input **spill_in, jive_node * spill_nodes[], jive_node ** store_node)
+jive_xfer_block
+jive_i386_create_xfer(jive_region * region, jive_output * origin,
+	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
-	jive_stackframe * stack = jive_region_get_stackframe(region);
+	jive_xfer_block xfer;
 	
-	long displacement = 0;
-	jive_node * node = (jive_node *) jive_instruction_node_create(
-		region, &jive_i386_instructions[jive_i386_int_store32_disp],
-		(jive_output *[]){stack->stackptr, origin}, &displacement);
+	jive_subroutine * subroutine_ = lookup_subroutine_by_region(region);
+	jive_i386_subroutine * subroutine = (jive_i386_subroutine *) subroutine_;
 	
-	jive_resource_assign_input(stack->stackptr->resource, node->inputs[0]);
+	bool in_mem = jive_resource_class_relax(in_class)->parent != & jive_root_register_class;
+	bool out_mem = jive_resource_class_relax(in_class)->parent != & jive_root_register_class;
 	
-	*spill_in = node->inputs[1];
-	spill_nodes[0] = node;
-	*store_node = node;
-	return 1;
+	if (in_mem) {
+		jive_immediate displacement;
+		jive_immediate_init(&displacement, 0, &jive_label_fpoffset, NULL, NULL);
+		xfer.node = jive_instruction_node_create_extended(
+			region,
+			&jive_i386_instructions[jive_i386_int_load32_disp],
+			(jive_output *[]){subroutine->stackptr.output}, &displacement);
+		jive_input_auto_merge_variable(xfer.node->inputs[0]);
+		xfer.input = jive_node_add_input(xfer.node, jive_resource_class_get_type(in_class), origin);
+		xfer.input->required_rescls = in_class;
+		xfer.output = xfer.node->outputs[0];
+	} else if (out_mem) {
+		assert(false);
+		jive_immediate displacement;
+		jive_immediate_init(&displacement, 0, &jive_label_fpoffset, NULL, NULL);
+		xfer.node = jive_instruction_node_create_extended(
+			region,
+			&jive_i386_instructions[jive_i386_int_store32_disp],
+			(jive_output *[]){subroutine->stackptr.output, origin}, &displacement);
+		jive_input_auto_merge_variable(xfer.node->inputs[0]);
+		xfer.input = xfer.node->inputs[1];
+		xfer.output = jive_node_add_output(xfer.node, jive_resource_class_get_type(out_class));
+		xfer.output->required_rescls = out_class;
+	} else {
+		xfer.node = jive_instruction_node_create(
+			region,
+			&jive_i386_instructions[jive_i386_int_transfer],
+			(jive_output *[]){origin}, NULL);
+		xfer.input = xfer.node->inputs[0];
+		xfer.output = xfer.node->outputs[0];
+	}
+	
+	return xfer;
 }
 
-static size_t
-jive_i386_create_restore(jive_region * region, jive_output * stackslot,
-	jive_node ** load_node, jive_node * restore_nodes[], jive_output ** restore_out)
-{
-	jive_stackframe * stack = jive_region_get_stackframe(region);
-	
-	long displacement = 0;
-	jive_node * node = (jive_node *) jive_instruction_node_create(
-		region, &jive_i386_instructions[jive_i386_int_load32_disp],
-		(jive_output *[]){stack->stackptr}, &displacement);
-	
-	jive_resource_assign_input(stack->stackptr->resource, node->inputs[0]);
-	
-	*load_node = node;
-	restore_nodes[0] = node;
-	*restore_out = node->outputs[0];
-	return 1;
-}
-
-
-
-const jive_transfer_instructions_factory jive_i386_transfer_instructions_factory = {
-	.create_copy = jive_i386_create_copy,
-	.create_spill = jive_i386_create_spill,
-	.create_restore = jive_i386_create_restore,
-	.max_nodes = 1
+const jive_transfer_instructions_factory jive_i386_xfer_factory = {
+	jive_i386_create_xfer
 };
 
