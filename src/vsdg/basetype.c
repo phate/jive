@@ -86,6 +86,8 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node
 		char * msg = jive_context_strjoin(context,
 			"Type mismatch: required '", input_type_name,
 			"' got '", operand_type_name, "'", NULL);
+		free(input_type_name);
+		free(operand_type_name);
 		error_message = msg;
 	}
 	
