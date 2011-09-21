@@ -10,6 +10,7 @@
 
 #include <jive/arch/memory.h>
 #include <jive/vsdg/statetype-private.h>
+#include <jive/util/rangemap.h>
 
 const jive_resource_class_class JIVE_STACK_RESOURCE = {
 	.parent = &JIVE_ABSTRACT_RESOURCE,
@@ -149,145 +150,101 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	return cls;
 }
 
-typedef struct jive_stackslot_class_map_by_size jive_stackslot_class_map_by_size;
+typedef struct jive_slot_offset_map jive_slot_offset_map;
+typedef struct jive_slot_alignment jive_slot_alignment;
+typedef struct jive_slot_alignment_map jive_slot_alignment_map;
+typedef struct jive_slot_size jive_slot_size;
+typedef struct jive_slot_size_map jive_slot_size_map;
 
-struct jive_stackslot_class_map_by_size {
-	struct {
-		const jive_stackslot_size_class ** items;
-		size_t nitems;
-	} by_alignment;
-	struct {
-		const jive_fixed_stackslot_class ** items;
-		int begin, end;
-	} by_offset;
+JIVE_DEFINE_RANGEMAP(jive_slot_offset_map, const jive_fixed_stackslot_class *, NULL);
+
+struct jive_slot_alignment {
+	jive_slot_offset_map slot_by_offset;
+	const jive_stackslot_size_class * cls;
 };
+#define JIVE_SLOT_ALIGNMENT_INITIALIZER \
+	(jive_slot_alignment) { JIVE_RANGEMAP_INITIALIZER, NULL }
+
+JIVE_DEFINE_RANGEMAP(jive_slot_alignment_map, jive_slot_alignment, JIVE_SLOT_ALIGNMENT_INITIALIZER);
+
+struct jive_slot_size {
+	jive_slot_alignment_map by_alignment;
+};
+#define JIVE_SLOT_SIZE_INITIALIZER \
+	(jive_slot_size) { JIVE_RANGEMAP_INITIALIZER }
+
+JIVE_DEFINE_RANGEMAP(jive_slot_size_map, jive_slot_size, JIVE_SLOT_SIZE_INITIALIZER)
 
 static const jive_stackslot_size_class *
-lookup_or_create_by_alignment(jive_stackslot_class_map_by_size * self, size_t size, size_t alignment)
+lookup_or_create_size_class(jive_slot_size_map * self, size_t size, size_t alignment)
 {
-	if (alignment >= self->by_alignment.nitems) {
-		const jive_stackslot_size_class ** tmp;
-		tmp = realloc(self->by_alignment.items, (alignment + 1) * sizeof(tmp[0]));
-		if (!tmp)
-			return 0;
-		
-		size_t n;
-		for (n = self->by_alignment.nitems; n <= alignment; n++)
-			tmp[n] = 0;
-		self->by_alignment.items = tmp;
-		self->by_alignment.nitems = alignment + 1;
-	}
+	jive_slot_size * by_size = jive_slot_size_map_lookup(self, size);
+	if (!by_size)
+		return NULL;
 	
-	if (!self->by_alignment.items[alignment]) {
+	jive_slot_alignment * by_alignment = jive_slot_alignment_map_lookup(&by_size->by_alignment, alignment);
+	if (!by_alignment)
+		return NULL;
+	
+	if (!by_alignment->cls) {
 		const jive_stackslot_size_class * cls = jive_stackslot_size_class_create(size, alignment);
 		if (!cls)
 			return 0;
-		self->by_alignment.items[alignment] = cls;
+		by_alignment->cls = cls;
 	}
 	
-	return self->by_alignment.items[alignment];
+	return by_alignment->cls;
 }
 
 static const jive_fixed_stackslot_class *
-lookup_or_create_by_offset(jive_stackslot_class_map_by_size * self, size_t size, int offset)
+lookup_or_create_stackslot_class(jive_slot_size_map * self, size_t size, int offset)
 {
-	if (offset < self->by_offset.begin) {
-		const jive_fixed_stackslot_class ** tmp;
-		tmp = malloc( (self->by_offset.end - offset) * sizeof(tmp[0]) );
-		if (!tmp)
-			return 0;
-		int n;
-		for (n = offset; n < self->by_offset.begin; n++)
-			tmp[n - offset] = 0;
-		for (n = self->by_offset.begin; n < self->by_offset.end; n++)
-			tmp[n - offset] = self->by_offset.items[n - self->by_offset.begin];
-		free(self->by_offset.items);
-		self->by_offset.items = tmp;
-		self->by_offset.begin = offset;
+	size_t max_alignment = size | offset;
+	size_t alignment = 1;
+	while ((max_alignment & 1) == 0) {
+		max_alignment >>= 1;
+		alignment <<= 1;
 	}
 	
-	if (offset >= self->by_offset.end) {
-		const jive_fixed_stackslot_class ** tmp;
-		tmp = realloc( self->by_offset.items, (offset - self->by_offset.begin + 1) * sizeof(tmp[0]) );
-		if (!tmp)
-			return 0;
-		int n;
-		for (n = self->by_offset.end; n<= offset; n++)
-			tmp[n - self->by_offset.begin] = 0;
-		self->by_offset.items = tmp;
-		self->by_offset.end = offset + 1;
-	}
+	jive_slot_size * by_size = jive_slot_size_map_lookup(self, size);
+	if (!by_size)
+		return NULL;
 	
-	if (!self->by_offset.items[offset - self->by_offset.begin]) {
-		size_t max_alignment = size | offset;
-		size_t alignment = 1;
-		while ((max_alignment & 1) == 0) {
-			max_alignment >>= 1;
-			alignment <<= 1;
+	jive_slot_alignment * by_alignment = jive_slot_alignment_map_lookup(&by_size->by_alignment, alignment);
+	if (!by_alignment)
+		return NULL;
+	
+	const jive_fixed_stackslot_class ** pcls = jive_slot_offset_map_lookup(&by_alignment->slot_by_offset, offset);
+	if (!*pcls) {
+		const jive_stackslot_size_class * parent = by_alignment->cls;
+		if (!parent) {
+			parent = jive_stackslot_size_class_create(size, alignment);
+			if (!parent)
+				return NULL;
+			by_alignment->cls = parent;
 		}
-		
-		const jive_stackslot_size_class * parent = lookup_or_create_by_alignment(self, size, alignment);
-		if (!parent)
-			return 0;
 		
 		const jive_fixed_stackslot_class * cls = jive_fixed_stackslot_class_create(parent, offset);
 		if (!cls)
-			return 0;
-		self->by_offset.items[offset - self->by_offset.begin] = cls;
+			return NULL;
+		*pcls = cls;
 	}
 	
-	return self->by_offset.items[offset - self->by_offset.begin];
+	return *pcls;
 }
 
 typedef struct jive_stackslot_class_map jive_stackslot_class_map;
 
 struct jive_stackslot_class_map {
 	pthread_mutex_t lock;
-	jive_stackslot_class_map_by_size * map;
-	size_t nitems;
+	jive_slot_size_map map;
 };
-
-static jive_stackslot_class_map_by_size *
-lookup_or_create_size_map(jive_stackslot_class_map * self, size_t size)
-{
-	if (size >= self->nitems) {
-		jive_stackslot_class_map_by_size * map;
-		map = realloc(self->map, (size + 1) * sizeof(map[0]));
-		if (!map)
-			return 0;
-		
-		size_t n;
-		for (n = self->nitems; n <= size; n++) {
-			map[n].by_alignment.nitems = 0;
-			map[n].by_alignment.items = NULL;
-			map[n].by_offset.items = NULL;
-			map[n].by_offset.begin = 0;
-			map[n].by_offset.end = 0;
-		}
-		
-		self->map = map;
-		self->nitems = size + 1;
-	}
-	
-	return &self->map[size];
-}
 
 static const jive_stackslot_size_class *
 jive_stackslot_class_map_lookup_or_create_by_alignment(jive_stackslot_class_map * self, size_t size, size_t alignment)
 {
 	pthread_mutex_lock(&self->lock);
-	
-	size = size;
-	alignment = alignment;
-	
-	jive_stackslot_class_map_by_size * map = lookup_or_create_size_map(self, size);
-	if (!map) {
-		pthread_mutex_unlock(&self->lock);
-		return 0;
-	}
-	
-	const jive_stackslot_size_class * cls = lookup_or_create_by_alignment(map, size, alignment);
-	
+	const jive_stackslot_size_class * cls = lookup_or_create_size_class(&self->map, size, alignment);
 	pthread_mutex_unlock(&self->lock);
 	
 	return cls;
@@ -297,26 +254,14 @@ static const jive_fixed_stackslot_class *
 jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size, int offset)
 {
 	pthread_mutex_lock(&self->lock);
-	
-	size = size;
-	
-	jive_stackslot_class_map_by_size * map = lookup_or_create_size_map(self, size);
-	if (!map) {
-		pthread_mutex_unlock(&self->lock);
-		return 0;
-	}
-	
-	const jive_fixed_stackslot_class * cls = lookup_or_create_by_offset(map, size, offset);
-	
+	const jive_fixed_stackslot_class * cls = lookup_or_create_stackslot_class(&self->map, size, offset);
 	pthread_mutex_unlock(&self->lock);
-	
 	return cls;
 }
 
 static jive_stackslot_class_map class_map = {
 	.lock = PTHREAD_MUTEX_INITIALIZER,
-	.map = 0,
-	.nitems = 0
+	.map = JIVE_RANGEMAP_INITIALIZER,
 };
 
 const jive_resource_class *
