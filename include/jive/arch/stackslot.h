@@ -1,6 +1,7 @@
 #ifndef JIVE_ARCH_STACKSLOT_H
 #define JIVE_ARCH_STACKSLOT_H
 
+#include <unistd.h>
 #include <jive/vsdg/resource.h>
 
 typedef struct jive_stackframe jive_stackframe;
@@ -27,10 +28,10 @@ const jive_resource_class *
 jive_stackslot_size_class_get(size_t size, size_t alignment);
 
 const jive_resource_class *
-jive_fixed_stackslot_class_get(size_t size, int offset);
+jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset);
 
 const jive_resource_name *
-jive_stackslot_name_get(size_t size, int offset);
+jive_stackslot_name_get(size_t size, size_t alignment, ssize_t offset);
 
 /* resource classes and names*/
 

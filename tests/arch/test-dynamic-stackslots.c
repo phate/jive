@@ -23,20 +23,20 @@ int main()
 	cls2 = jive_stackslot_size_class_get(8, 4);
 	assert(cls1 == cls2);
 	
-	cls1 = jive_fixed_stackslot_class_get(4, 0);
+	cls1 = jive_fixed_stackslot_class_get(4, 4, 0);
 	assert(cls1->parent == &jive_stackslot_class_4_4.base);
 	assert(cls1->limit == 1 && cls1->names[0] != 0);
 	
-	cls2 = jive_fixed_stackslot_class_get(4, 0);
+	cls2 = jive_fixed_stackslot_class_get(4, 4, 0);
 	assert(cls1 == cls2);
 	
-	cls2 = jive_fixed_stackslot_class_get(4, 4);
+	cls2 = jive_fixed_stackslot_class_get(4, 4, 4);
 	assert(cls2->parent == &jive_stackslot_class_4_4.base);
 
-	cls2 = jive_fixed_stackslot_class_get(4, -4);
+	cls2 = jive_fixed_stackslot_class_get(4, 4, -4);
 	assert(cls2->parent == &jive_stackslot_class_4_4.base);
 	
-	cls2 = jive_fixed_stackslot_class_get(4, 2);
+	cls2 = jive_fixed_stackslot_class_get(4, 2, 2);
 	assert(cls2->parent != &jive_stackslot_class_4_4.base);
 	
 	return 0;

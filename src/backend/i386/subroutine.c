@@ -229,7 +229,7 @@ jive_i386_subroutine_create(jive_region * region,
 		char argname[80];
 		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
 		const jive_resource_class * cls;
-		cls = jive_fixed_stackslot_class_get(4, (n + 1) * 4);
+		cls = jive_fixed_stackslot_class_get(4, 4, (n + 1) * 4);
 		self->base.parameters[n] = jive_resource_class_create_gate(cls, graph, argname);
 		self->base.frame.upper_bound = (n + 2) * 4;
 	}
@@ -240,7 +240,7 @@ jive_i386_subroutine_create(jive_region * region,
 		const jive_resource_class * cls;
 		switch (n) {
 			case 0: cls = &jive_i386_regcls[jive_i386_gpr_eax].base; break;
-			default: cls = jive_fixed_stackslot_class_get(4, n * 4);
+			default: cls = jive_fixed_stackslot_class_get(4, 4, n * 4);
 		}
 		self->base.returns[n] = jive_resource_class_create_gate(cls, graph, argname);
 	}
@@ -258,7 +258,7 @@ jive_i386_subroutine_create(jive_region * region,
 	jive_node * ret_instr = jive_instruction_node_create(self->base.region, &jive_i386_instructions[jive_i386_ret], NULL, NULL);
 	
 	/* add dependency on return address on stack */
-	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 0);
+	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
 	const jive_type * memory_state_type = jive_resource_class_get_type(stackslot_cls);
 	jive_output * retaddr_def = jive_node_add_output(&self->base.enter->base, memory_state_type);
 	retaddr_def->required_rescls = stackslot_cls;

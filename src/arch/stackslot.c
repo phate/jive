@@ -197,15 +197,9 @@ lookup_or_create_size_class(jive_slot_size_map * self, size_t size, size_t align
 }
 
 static const jive_fixed_stackslot_class *
-lookup_or_create_stackslot_class(jive_slot_size_map * self, size_t size, int offset)
+lookup_or_create_stackslot_class(jive_slot_size_map * self, size_t size, size_t alignment, ssize_t offset)
 {
-	size_t max_alignment = size | offset;
-	size_t alignment = 1;
-	while ((max_alignment & 1) == 0) {
-		max_alignment >>= 1;
-		alignment <<= 1;
-	}
-	
+	JIVE_DEBUG_ASSERT((offset & (alignment - 1)) == 0);
 	jive_slot_size * by_size = jive_slot_size_map_lookup(self, size);
 	if (!by_size)
 		return NULL;
@@ -251,10 +245,10 @@ jive_stackslot_class_map_lookup_or_create_by_alignment(jive_stackslot_class_map 
 }
 
 static const jive_fixed_stackslot_class *
-jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size, int offset)
+jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size, size_t alignment, ssize_t offset)
 {
 	pthread_mutex_lock(&self->lock);
-	const jive_fixed_stackslot_class * cls = lookup_or_create_stackslot_class(&self->map, size, offset);
+	const jive_fixed_stackslot_class * cls = lookup_or_create_stackslot_class(&self->map, size, alignment, offset);
 	pthread_mutex_unlock(&self->lock);
 	return cls;
 }
@@ -276,10 +270,10 @@ jive_stackslot_size_class_get(size_t size, size_t alignment)
 }
 
 const jive_resource_class *
-jive_fixed_stackslot_class_get(size_t size, int offset)
+jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset)
 {
 	const jive_fixed_stackslot_class * cls;
-	cls = jive_stackslot_class_map_lookup_or_create_by_offset(&class_map, size, offset);
+	cls = jive_stackslot_class_map_lookup_or_create_by_offset(&class_map, size, alignment, offset);
 	if (cls)
 		return &cls->base.base;
 	else
@@ -287,8 +281,8 @@ jive_fixed_stackslot_class_get(size_t size, int offset)
 }
 
 const jive_resource_name *
-jive_stackslot_name_get(size_t size, int offset)
+jive_stackslot_name_get(size_t size, size_t alignment, ssize_t offset)
 {
-	const jive_resource_class * rescls = jive_fixed_stackslot_class_get(size, offset);
+	const jive_resource_class * rescls = jive_fixed_stackslot_class_get(size, alignment, offset);
 	return rescls->names[0];
 }

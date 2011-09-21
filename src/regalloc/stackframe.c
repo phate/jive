@@ -93,7 +93,7 @@ layout_stackslot(jive_shaped_graph * shaped_graph, jive_subroutine * subroutine,
 		offset -= cls->alignment;
 	}
 	
-	const jive_resource_name * name = jive_stackslot_name_get(cls->size, offset);
+	const jive_resource_name * name = jive_stackslot_name_get(cls->size, cls->alignment, offset);
 	jive_variable_set_resource_name(variable, name);
 	
 	if (offset < subroutine->frame.lower_bound)
