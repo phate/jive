@@ -15,6 +15,8 @@ typedef struct jive_stackvar_gate jive_stackvar_gate;
 typedef struct jive_stackslot_size_class jive_stackslot_size_class;
 typedef struct jive_fixed_stackslot_class jive_fixed_stackslot_class;
 typedef struct jive_stackslot jive_stackslot;
+typedef struct jive_callslot_class jive_callslot_class;
+typedef struct jive_callslot jive_callslot;
 
 extern const jive_resource_class jive_root_stackslot_class;
 
@@ -29,6 +31,9 @@ jive_stackslot_size_class_get(size_t size, size_t alignment);
 
 const jive_resource_class *
 jive_fixed_stackslot_class_get(size_t size, size_t alignment, ssize_t offset);
+
+const jive_resource_class *
+jive_callslot_class_get(size_t size, size_t alignment, ssize_t offset);
 
 const jive_resource_name *
 jive_stackslot_name_get(size_t size, size_t alignment, ssize_t offset);
@@ -51,7 +56,20 @@ struct jive_stackslot {
 	int offset;
 };
 
+struct jive_callslot_class {
+	jive_stackslot_size_class base;
+	int offset;
+	
+	const jive_resource_name * slot;
+};
+
+struct jive_callslot {
+	jive_resource_name base;
+	int offset;
+};
+
 extern const jive_resource_class_class JIVE_STACK_RESOURCE;
 extern const jive_resource_class_class JIVE_STACK_FRAMESLOT_RESOURCE;
+extern const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE;
 
 #endif
