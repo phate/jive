@@ -32,7 +32,7 @@ static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 
 #define CLS(x) &jive_i386_regcls[jive_i386_##x].base
-#define STACK32 &jive_stackslot_class_32_32.base
+#define STACK4 &jive_stackslot_class_4_4.base
 #define VIA (const jive_resource_class * const[]) 
 
 const jive_register_class jive_i386_regcls [] = {
@@ -45,7 +45,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_high,
 			.demotions = (const jive_resource_class_demotion []){
 				{CLS(eax), VIA {CLS(flags), CLS(eax), NULL}},
-				{STACK32, VIA {CLS(flags), CLS(eax), STACK32, NULL}},
+				{STACK4, VIA {CLS(flags), CLS(eax), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits16.base.base
@@ -61,7 +61,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.parent = &jive_root_register_class, .depth = 2,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -78,7 +78,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -95,7 +95,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -112,7 +112,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -129,7 +129,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -146,7 +146,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -163,7 +163,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -180,7 +180,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -197,7 +197,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -214,7 +214,7 @@ const jive_register_class jive_i386_regcls [] = {
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(gpr), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base

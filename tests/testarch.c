@@ -32,7 +32,7 @@ static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 
 #define CLS(x) &jive_testarch_regcls[cls_##x].base
-#define STACK32 &jive_stackslot_class_32_32.base
+#define STACK4 &jive_stackslot_class_4_4.base
 #define VIA (const jive_resource_class * const[]) 
 
 const jive_register_class jive_testarch_regcls [] = {
@@ -44,7 +44,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -59,7 +59,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -74,7 +74,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -89,7 +89,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -104,7 +104,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 3,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -119,7 +119,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 3,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -134,7 +134,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.parent = &jive_root_register_class, .depth = 2,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
-				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits32.base.base
@@ -150,7 +150,7 @@ const jive_register_class jive_testarch_regcls [] = {
 			.priority = jive_resource_class_priority_reg_high,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(cc), CLS(gpr), NULL}},
-				{STACK32, VIA {CLS(cc), CLS(gpr), STACK32, NULL}},
+				{STACK4, VIA {CLS(cc), CLS(gpr), STACK4, NULL}},
 				{NULL, NULL}
 			},
 			.type = &bits16.base.base
@@ -474,7 +474,7 @@ jive_testarch_subroutine_create(jive_region * region,
 		switch (n) {
 			case 0: cls = jive_testarch_cls_r1; break;
 			case 1: cls = jive_testarch_cls_r2; break;
-			default: cls = jive_fixed_stackslot_class_get(32, (n - 1) * 4);
+			default: cls = jive_fixed_stackslot_class_get(4, (n - 1) * 4);
 		}
 		self->base.parameters[n] = jive_resource_class_create_gate(cls, graph, argname);
 	}
@@ -485,7 +485,7 @@ jive_testarch_subroutine_create(jive_region * region,
 		const jive_resource_class * cls;
 		switch (n) {
 			case 0: cls = jive_testarch_cls_r1; break;
-			default: cls = jive_fixed_stackslot_class_get(32, n * 4);
+			default: cls = jive_fixed_stackslot_class_get(4, n * 4);
 		}
 		self->base.returns[n] = jive_resource_class_create_gate(cls, graph, argname);
 	}
