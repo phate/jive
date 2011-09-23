@@ -68,6 +68,31 @@ const jive_label jive_label_fpoffset = {
 	.flags = jive_label_flags_none,
 };
 
+/* special "spoffset" label */
+
+static jive_addr
+jive_label_spoffset_get_address_(const jive_label * self, const jive_seq_node * for_node)
+{
+	return 0;
+}
+
+static const char *
+jive_label_spoffset_get_asmname_(const jive_label * self)
+{
+	return NULL;
+}
+
+const jive_label_class JIVE_LABEL_SPOFFSET = {
+	.fini = 0,
+	.get_address = jive_label_spoffset_get_address_,
+	.get_asmname = jive_label_spoffset_get_asmname_,
+};
+
+const jive_label jive_label_spoffset = {
+	.class_ = &JIVE_LABEL_SPOFFSET,
+	.flags = jive_label_flags_none,
+};
+
 /* internal labels */
 
 static void

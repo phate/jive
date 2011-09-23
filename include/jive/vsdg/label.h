@@ -128,6 +128,13 @@ extern const jive_label jive_label_fpoffset;
 extern const jive_label_class JIVE_LABEL_FPOFFSET_;
 
 /**
+	\brief Special label marking offset from stack pointer
+*/
+extern const jive_label jive_label_spoffset;
+
+extern const jive_label_class JIVE_LABEL_SPOFFSET_;
+
+/**
 	\brief Label where node is sequenced
 */
 jive_label *
