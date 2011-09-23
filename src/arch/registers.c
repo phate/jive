@@ -15,12 +15,18 @@ jive_register_class_create_gate(const jive_register_class * self, struct jive_gr
 
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 
+const jive_resource_class_class JIVE_REGISTER_RESOURCE = {
+	.parent = &JIVE_ABSTRACT_RESOURCE,
+	.name = "register",
+	.is_abstract = false
+};
+
 const jive_resource_class jive_root_register_class = {
-	.name = "reg",
+	.class_ = &JIVE_ABSTRACT_RESOURCE,
+	.name = "register",
 	.limit = 0,
 	.parent = &jive_root_resource_class,
 	.depth = 1,
-	.is_abstract = true,
 	.priority = jive_resource_class_priority_lowest,
 	.demotions = no_demotion
 };

@@ -22,12 +22,12 @@ static const jive_resource_name * res_names [] = {&r0.base, &r1.base, &r2.base, 
 const jive_register_class 
 	gpr = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "gpr",
 			.limit = 4,
 			.names = res_names,
 			.parent = &jive_root_resource_class,
 			.depth = 1,
-			.is_abstract = false,
 			.priority = jive_resource_class_priority_reg_low,
 		},
 		.regs = NULL

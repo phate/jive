@@ -11,6 +11,7 @@ struct jive_context;
 struct jive_graph;
 struct jive_type;
 
+typedef struct jive_resource_class_class jive_resource_class_class;
 typedef struct jive_resource_class jive_resource_class;
 typedef struct jive_resource_name jive_resource_name;
 typedef struct jive_resource_class_count jive_resource_class_count;
@@ -31,6 +32,8 @@ typedef enum {
 } jive_resource_class_priority;
 
 struct jive_resource_class {
+	const jive_resource_class_class * class_;
+	
 	const char * name;
 	
 	/** \brief Upper limit on number of available entities in this class */
@@ -42,11 +45,8 @@ struct jive_resource_class {
 	/** \brief Parent resource class */
 	const jive_resource_class * parent;
 	
-	/** \brief Number of step from root */
+	/** \brief Number of steps from root */
 	size_t depth;
-	
-	/** \brief Whether class is abstract */
-	bool is_abstract;
 	
 	/** \brief Priority for register allocator */
 	jive_resource_class_priority priority;
@@ -56,6 +56,12 @@ struct jive_resource_class {
 	
 	/** \brief Port and gate type corresponding to this resource */
 	const struct jive_type * type;
+};
+
+struct jive_resource_class_class {
+	const jive_resource_class_class * parent;
+	const char * name;
+	bool is_abstract;
 };
 
 struct jive_resource_class_demotion {
@@ -80,6 +86,18 @@ jive_resource_class_issubclass(const jive_resource_class * self, const jive_reso
 	return false;
 }
 
+JIVE_EXPORTED_INLINE bool
+jive_resource_class_isinstance(const jive_resource_class * self, const jive_resource_class_class * cls)
+{
+	const jive_resource_class_class * tmp = self->class_;
+	while (tmp) {
+		if (tmp == cls)
+			return true;
+		tmp = tmp->parent;
+	}
+	return false;
+}
+
 JIVE_EXPORTED_INLINE void
 jive_resource_class_get_resource_names(const jive_resource_class * self,
 	size_t * count, const jive_resource_name * const ** names)
@@ -97,7 +115,7 @@ jive_resource_class_get_type(const jive_resource_class * self)
 JIVE_EXPORTED_INLINE bool
 jive_resource_class_is_abstract(const jive_resource_class * self)
 {
-	return self->is_abstract;
+	return self->class_->is_abstract;
 }
 
 struct jive_gate *
@@ -107,6 +125,7 @@ jive_resource_class_create_gate(const jive_resource_class * self, struct jive_gr
 const jive_resource_class *
 jive_resource_class_relax(const jive_resource_class * self);
 
+extern const jive_resource_class_class JIVE_ABSTRACT_RESOURCE;
 extern const jive_resource_class jive_root_resource_class;
 
 struct jive_resource_name {

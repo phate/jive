@@ -11,15 +11,27 @@
 #include <jive/arch/memory.h>
 #include <jive/vsdg/statetype-private.h>
 
+const jive_resource_class_class JIVE_STACK_RESOURCE = {
+	.parent = &JIVE_ABSTRACT_RESOURCE,
+	.name = "stack",
+	.is_abstract = false
+};
+
+const jive_resource_class_class JIVE_STACK_FRAMESLOT_RESOURCE = {
+	.parent = &JIVE_STACK_RESOURCE,
+	.name = "stack_frameslot",
+	.is_abstract = false
+};
+
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 static const jive_memory_type stackvar_type = {{{&JIVE_MEMORY_TYPE}}};
 
 const jive_resource_class jive_root_stackslot_class = {
+	.class_ = &JIVE_ABSTRACT_RESOURCE,
 	.name = "stackslot",
 	.limit = 0,
 	.parent = &jive_root_resource_class,
 	.depth = 1,
-	.is_abstract = true,
 	.priority = jive_resource_class_priority_lowest,
 	.demotions = no_demotion
 };
@@ -27,11 +39,11 @@ const jive_resource_class jive_root_stackslot_class = {
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
 	.base = { \
+		.class_ = &JIVE_STACK_RESOURCE, \
 		.name = "stack_s" #SIZE "a" #ALIGNMENT, \
 		.limit = 0, .names = NULL, \
 		.parent = &jive_root_stackslot_class, \
 		.depth = 2, \
-		.is_abstract = false, \
 		.priority = jive_resource_class_priority_mem_low,\
 		.demotions = no_demotion, \
 		.type = &stackvar_type.base.base \
@@ -75,12 +87,12 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 		return 0;
 	}
 	
+	cls->base.class_ = &JIVE_STACK_RESOURCE;
 	cls->base.name = name;
 	cls->base.limit = 0;
 	cls->base.names = NULL;
 	cls->base.parent = &jive_root_stackslot_class;
 	cls->base.depth = cls->base.parent->depth + 1;
-	cls->base.is_abstract = false;
 	cls->base.priority = jive_resource_class_priority_mem_low;
 	cls->base.demotions = no_demotion;
 	cls->base.type = &stackvar_type.base.base;
@@ -120,12 +132,12 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	slot->base.resource_class = &cls->base.base;
 	slot->offset = offset / 8;
 	
+	cls->base.base.class_ = &JIVE_STACK_FRAMESLOT_RESOURCE;
 	cls->base.base.name = name;
 	cls->base.base.limit = 1;
 	cls->base.base.names = &cls->slot;
 	cls->base.base.parent = &parent->base;
 	cls->base.base.depth = parent->base.depth + 1;
-	cls->base.base.is_abstract = false;
 	cls->base.base.priority = jive_resource_class_priority_mem_high;
 	cls->base.base.demotions = no_demotion;
 	cls->base.base.type = &stackvar_type.base.base;

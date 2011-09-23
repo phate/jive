@@ -38,9 +38,10 @@ static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 const jive_register_class jive_testarch_regcls [] = {
 	[cls_r0] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "r0",
 			.limit = 1, .names = allnames + 0,
-			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 4, .is_abstract = false,
+			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -52,9 +53,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_r1] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "r1",
 			.limit = 1, .names = allnames + 2,
-			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 4, .is_abstract = false,
+			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -66,9 +68,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_r2] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "r2",
 			.limit = 1, .names = allnames + 1,
-			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 4, .is_abstract = false,
+			.parent = &jive_testarch_regcls[cls_evenreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -80,9 +83,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_r3] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "r3",
 			.limit = 1, .names = allnames + 3,
-			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 4, .is_abstract = false,
+			.parent = &jive_testarch_regcls[cls_oddreg].base, .depth = 4,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -94,9 +98,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_evenreg] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "even",
 			.limit = 2, .names = allnames + 0,
-			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 3, .is_abstract = false,
+			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 3,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -108,9 +113,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_oddreg] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "odd",
 			.limit = 2, .names = allnames + 2,
-			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 3, .is_abstract = false,
+			.parent = &jive_testarch_regcls[cls_gpr].base, .depth = 3,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -122,9 +128,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_gpr] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "gpr",
 			.limit = 4, .names = allnames + 0,
-			.parent = &jive_root_register_class, .depth = 2, .is_abstract = false,
+			.parent = &jive_root_register_class, .depth = 2,
 			.priority = jive_resource_class_priority_reg_low,
 			.demotions = (const jive_resource_class_demotion []) {
 				{STACK32, VIA {CLS(gpr), STACK32, NULL}},
@@ -136,9 +143,10 @@ const jive_register_class jive_testarch_regcls [] = {
 	},
 	[cls_cc] = {
 		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "cc",
 			.limit = 1, .names = allnames + 4,
-			.parent = &jive_root_register_class, .depth = 2, .is_abstract = false,
+			.parent = &jive_root_register_class, .depth = 2,
 			.priority = jive_resource_class_priority_reg_high,
 			.demotions = (const jive_resource_class_demotion []) {
 				{CLS(gpr), VIA {CLS(cc), CLS(gpr), NULL}},

@@ -50,4 +50,7 @@ struct jive_stackslot {
 	int offset;
 };
 
+extern const jive_resource_class_class JIVE_STACK_RESOURCE;
+extern const jive_resource_class_class JIVE_STACK_FRAMESLOT_RESOURCE;
+
 #endif
