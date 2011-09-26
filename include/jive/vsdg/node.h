@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <jive/context.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/tracker.h>
 
@@ -15,8 +17,6 @@ typedef struct jive_node_class jive_node_class;
 typedef struct jive_node_normal_form jive_node_normal_form;
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
-struct jive_context;
-struct jive_graph;
 struct jive_input;
 struct jive_type;
 struct jive_output;
@@ -223,19 +223,25 @@ jive_node_gate_output(jive_node * self, struct jive_gate * gate);
 JIVE_EXPORTED_INLINE jive_input *
 jive_node_input(const jive_node * self, size_t index)
 {
+	jive_input * input = NULL;
 	if (index < self->ninputs)
-		return self->inputs[index];
+		input = self->inputs[index];
 	else
-		return NULL;
+		jive_context_fatal_error(self->graph->context, "Input index out of bound.");
+
+	return input;
 }
 
 JIVE_EXPORTED_INLINE jive_output *
 jive_node_output(const jive_node * self, size_t index)
 {
+	jive_output * output = NULL;
 	if (index < self->noutputs)
 		return self->outputs[index];
 	else
-		return NULL;
+		jive_context_fatal_error(self->graph->context, "Output index out of bound.");
+
+	return output;
 }
 
 void
