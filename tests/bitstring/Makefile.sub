@@ -1,4 +1,5 @@
 TESTS+=\
 	bitstring/slice-concat \
 	bitstring/reduction \
-	bitstring/bitops
+	bitstring/bitops \
+	bitstring/test-constant

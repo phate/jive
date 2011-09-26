@@ -1,6 +1,8 @@
 #ifndef JIVE_BITSTRING_CONSTANT_H
 #define JIVE_BITSTRING_CONSTANT_H
 
+#include <stdint.h>
+
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/node.h>
 
@@ -44,6 +46,18 @@ jive_bitconstant_create(struct jive_graph * graph, size_t nbits, const char bits
 */
 jive_output *
 jive_bitconstant(struct jive_graph * graph, size_t nbits, const char bits[]);
+
+jive_node *
+jive_bitconstant_create_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value);
+
+jive_output *
+jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value);
+
+jive_node *
+jive_bitconstant_create_signed(struct jive_graph * graph, size_t nbits, int64_t value);
+
+jive_output *
+jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value);
 
 JIVE_EXPORTED_INLINE jive_bitconstant_node *
 jive_bitconstant_node_cast(jive_node * node)

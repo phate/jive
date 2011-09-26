@@ -128,3 +128,53 @@ jive_bitconstant(jive_graph * graph, size_t nbits, const char bits[])
 	
 	return jive_nullary_operation_normalized_create(&JIVE_BITCONSTANT_NODE, graph->root_region, &attrs.base);
 }
+
+jive_output *
+jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value)
+{
+	char bits[nbits];
+	
+	size_t i;
+	for (i = 0; i < nbits; i++) {
+		bits[i] = '0' + (value & 1);
+		value = value >> 1;
+	}
+	
+	jive_bitconstant_node_attrs attrs;
+	attrs.nbits = nbits;
+	attrs.bits = bits;
+
+	return jive_nullary_operation_normalized_create(&JIVE_BITCONSTANT_NODE, graph->root_region,
+		&attrs.base);	
+}
+
+jive_node *
+jive_bitconstant_create_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value)
+{
+	return jive_bitconstant_unsigned(graph, nbits, value)->node;
+}
+
+jive_output *
+jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value)
+{
+	char bits[nbits];
+	
+	size_t i;
+	for (i = 0; i < nbits; i++) {
+		bits[i] = '0' + (value & 1);
+		value = value >> 1;
+	}
+	
+	jive_bitconstant_node_attrs attrs;
+	attrs.nbits = nbits;
+	attrs.bits = bits;
+
+	return jive_nullary_operation_normalized_create(&JIVE_BITCONSTANT_NODE, graph->root_region,
+		&attrs.base);	
+}
+
+jive_node *
+jive_bitconstant_create_signed(struct jive_graph * graph, size_t nbits, int64_t value)
+{
+	return jive_bitconstant_signed(graph, nbits, value)->node;
+}
