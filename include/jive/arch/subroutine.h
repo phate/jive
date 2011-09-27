@@ -51,6 +51,19 @@ struct jive_subroutine_passthrough {
 	jive_input * input;
 };
 
+typedef struct jive_value_split_factory jive_value_split_factory;
+typedef struct jive_subroutine_late_transforms jive_subroutine_late_transforms;
+
+struct jive_value_split_factory {
+	jive_output * (*split)(const jive_value_split_factory * self, jive_output * value);
+};
+
+struct jive_subroutine_late_transforms {
+	void (*value_split)(const jive_subroutine_late_transforms * self,
+		jive_output * value_in, jive_input * value_out,
+		const jive_value_split_factory * enter_split, const jive_value_split_factory * leave_split);
+};
+
 JIVE_EXPORTED_INLINE jive_subroutine_node *
 jive_subroutine_node_cast(jive_node * node)
 {
@@ -112,6 +125,7 @@ struct jive_subroutine_class {
 	jive_input * (*value_return)(jive_subroutine * self, size_t index, jive_output * value);
 	jive_subroutine * (*copy)(const jive_subroutine * self,
 		jive_node * new_enter_node, jive_node * new_leave_node);
+	void (*prepare_stackframe)(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm);
 };
 
 void
@@ -133,6 +147,12 @@ JIVE_EXPORTED_INLINE jive_output *
 jive_subroutine_objdef(const jive_subroutine * self)
 {
 	return self->subroutine_node->base.outputs[0];
+}
+
+JIVE_EXPORTED_INLINE void
+jive_subroutine_prepare_stackframe(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
+{
+	return self->class_->prepare_stackframe(self, xfrm);
 }
 
 /* FIXME: these are quite C-specific, so really do not belong here */
