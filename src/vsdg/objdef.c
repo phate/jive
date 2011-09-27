@@ -9,21 +9,6 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-typedef struct jive_objdef_node jive_objdef_node;
-typedef struct jive_objdef_node_attrs jive_objdef_node_attrs;
-
-struct jive_objdef_node_attrs {
-	jive_node_attrs base;
-	char * name;
-	jive_label * start;
-	jive_label * end;
-};
-
-struct jive_objdef_node {
-	jive_node base;
-	jive_objdef_node_attrs attrs;
-};
-
 static void
 jive_objdef_node_init_(jive_objdef_node * self, jive_region * region, jive_output * obj, const char * name)
 {
