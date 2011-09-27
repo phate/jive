@@ -1,6 +1,7 @@
 #include <jive/backend/i386/machine.h>
 
 #include <jive/arch/instruction.h>
+#include <jive/arch/stackslot.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
@@ -19,6 +20,19 @@ lookup_subroutine_by_region(jive_region * region)
 	}
 }
 
+static void
+get_slot_memory_reference(const jive_i386_subroutine * subroutine, const jive_resource_class * rescls, 
+	jive_immediate * displacement, jive_output ** base)
+{
+	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
+		jive_immediate_init(displacement, 0, &jive_label_spoffset, NULL, NULL);
+		*base = subroutine->stackptr;
+	} else {
+		jive_immediate_init(displacement, 0, &jive_label_fpoffset, NULL, NULL);
+		*base = subroutine->frameptr;
+	}
+}
+
 jive_xfer_block
 jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
@@ -33,23 +47,24 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	
 	if (in_mem) {
 		jive_immediate displacement;
-		jive_immediate_init(&displacement, 0, &jive_label_fpoffset, NULL, NULL);
+		jive_output * base;
+		get_slot_memory_reference(subroutine, in_class, &displacement, &base);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instructions[jive_i386_int_load32_disp],
-			(jive_output *[]){subroutine->stackptr.output}, &displacement);
+			&base, &displacement);
 		jive_input_auto_merge_variable(xfer.node->inputs[0]);
 		xfer.input = jive_node_add_input(xfer.node, jive_resource_class_get_type(in_class), origin);
 		xfer.input->required_rescls = in_class;
 		xfer.output = xfer.node->outputs[0];
 	} else if (out_mem) {
-		assert(false);
 		jive_immediate displacement;
-		jive_immediate_init(&displacement, 0, &jive_label_fpoffset, NULL, NULL);
+		jive_output * base;
+		get_slot_memory_reference(subroutine, out_class, &displacement, &base);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instructions[jive_i386_int_store32_disp],
-			(jive_output *[]){subroutine->stackptr.output, origin}, &displacement);
+			(jive_output *[]){base, origin}, &displacement);
 		jive_input_auto_merge_variable(xfer.node->inputs[0]);
 		xfer.input = xfer.node->inputs[1];
 		xfer.output = jive_node_add_output(xfer.node, jive_resource_class_get_type(out_class));
