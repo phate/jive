@@ -28,8 +28,8 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	jive_subroutine * subroutine_ = lookup_subroutine_by_region(region);
 	jive_i386_subroutine * subroutine = (jive_i386_subroutine *) subroutine_;
 	
-	bool in_mem = jive_resource_class_relax(in_class)->parent != & jive_root_register_class;
-	bool out_mem = jive_resource_class_relax(in_class)->parent != & jive_root_register_class;
+	bool in_mem = !jive_resource_class_isinstance(in_class, &JIVE_REGISTER_RESOURCE);
+	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
 	
 	if (in_mem) {
 		jive_immediate displacement;
