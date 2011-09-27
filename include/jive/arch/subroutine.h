@@ -99,6 +99,10 @@ struct jive_subroutine {
 		ssize_t upper_bound;
 		/* offset of frame pointer to initial position of stack pointer */
 		ssize_t frame_pointer_offset;
+		/* offset of stack pointer to initial position of stack pointer */
+		ssize_t stack_pointer_offset;
+		/* size of argument area for calls */
+		size_t call_area_size;
 	} frame;
 };
 

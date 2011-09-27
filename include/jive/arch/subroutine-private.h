@@ -34,6 +34,8 @@ jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, 
 	self->frame.lower_bound = 0;
 	self->frame.upper_bound = 0;
 	self->frame.frame_pointer_offset = 0;
+	self->frame.stack_pointer_offset = 0;
+	self->frame.call_area_size = 0;
 }
 
 jive_gate *
