@@ -310,7 +310,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	JIVE_LIST_ITERATE(self->shaped_region->cuts, cut, region_cut_list) {
 		/* test whether required inputs of new node can be passed
 		through all nodes of this cut */
-		if (!can_move_below_cut(self, cut, new_node))
+		if (!can_move_below_cut(self, cut, new_node) || !cut->region_cut_list.next)
 			break;
 		
 		/* compute set of resources active after current cut
