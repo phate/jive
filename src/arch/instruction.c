@@ -243,7 +243,6 @@ emit_region_start_attrs(const jive_region * region, jive_buffer * buffer)
 	switch (region->attrs.section) {
 		default:
 		case jive_region_section_inherit:
-			jive_buffer_putstr(buffer, ".section .inherit\n");
 			break;
 		case jive_region_section_code:
 			jive_buffer_putstr(buffer, ".section .text\n");
