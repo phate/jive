@@ -257,3 +257,50 @@ jive_label_region_end_create_exported(jive_region * region, const char * name)
 	
 	return &self->base.base;
 }
+
+/* external labels */
+
+static jive_addr
+jive_label_external_get_address_(const jive_label * self_, const jive_seq_node * for_node)
+{
+	const jive_label_external * self = (const jive_label_external *) self_;
+	return self->address;
+}
+
+static const char *
+jive_label_external_get_asmname_(const jive_label * self_)
+{
+	const jive_label_external * self = (const jive_label_external *) self_;
+	return self->asmname;
+}
+
+static void
+jive_label_external_fini_(jive_label * self_)
+{
+	jive_label_external * self = (jive_label_external *) self_;
+	jive_label_external_fini(self);
+}
+
+const jive_label_class JIVE_LABEL_EXTERNAL = {
+	.fini = jive_label_external_fini_,
+	.get_address = jive_label_external_get_address_,
+	.get_asmname = jive_label_external_get_asmname_,
+};
+
+
+void
+jive_label_external_init(jive_label_external * self, struct jive_context * context, const char * name, jive_addr address)
+{
+	self->base.class_ = &JIVE_LABEL_EXTERNAL;
+	self->base.flags = jive_label_flags_external;
+	self->context = context;
+	self->asmname = jive_context_strdup(context, name);
+	self->address = address;
+}
+
+void
+jive_label_external_fini(jive_label_external * self)
+{
+	jive_context_free(self->context, self->asmname);
+}
+

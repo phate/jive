@@ -167,9 +167,15 @@ jive_label *
 jive_label_region_end_create_exported(struct jive_region * region, const char * name);
 
 /**
-	\brief Label external to the graph from which it is referenced
+	\brief Initialize label external to the graph from which it is referenced
 */
-jive_label *
-jive_label_external_create(struct jive_context * context, const char * name, jive_addr address);
+void
+jive_label_external_init(jive_label_external * self, struct jive_context * context, const char * name, jive_addr address);
+
+/**
+	\brief Finalize label external to the graph from which it is referenced
+*/
+void
+jive_label_external_fini(jive_label_external * self);
 
 #endif
