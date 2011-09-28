@@ -17,12 +17,18 @@ cpu_to_le32(uint32_t value)
 static void
 jive_buffer_putimm(jive_buffer * target, const jive_immediate * imm)
 {
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%lld", imm->offset);
-	jive_buffer_putstr(target, tmp);
+	bool empty = true;
+	if (imm->offset) {
+		char tmp[80];
+		snprintf(tmp, sizeof(tmp), "%lld", imm->offset);
+		jive_buffer_putstr(target, tmp);
+		empty = false;
+	}
 	if (imm->add_label) {
-		jive_buffer_putstr(target, "+");
+		if (!empty)
+			jive_buffer_putstr(target, "+");
 		jive_buffer_putstr(target, jive_label_get_asmname(imm->add_label));
+		empty = false;
 	}
 	if (imm->sub_label) {
 		jive_buffer_putstr(target, "-");
@@ -160,7 +166,7 @@ jive_i386_asm_store(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
-	jive_buffer_putstr(target, "\t %");
+	jive_buffer_putstr(target, "\t%");
 	jive_buffer_putstr(target, inputs[1]->base.name);
 	jive_buffer_putstr(target, ", ");
 	jive_buffer_putdisp(target, &immediates[0], inputs[0]);
