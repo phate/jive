@@ -19,4 +19,5 @@ test_empty_graph
 test_rangemap
 test_statesplit
 test_typemismatch
+test_label_nodes
 arithmetic_function
