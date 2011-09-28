@@ -421,11 +421,17 @@ jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 	return &other->base;
 }
 
+static void
+jive_testarch_subroutine_prepare_stackframe_(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
+{
+}
+
 static const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
 	.fini = jive_testarch_subroutine_fini_,
 	.value_parameter = jive_testarch_subroutine_value_parameter_,
 	.value_return = jive_testarch_subroutine_value_return_,
-	.copy = jive_testarch_subroutine_copy_
+	.copy = jive_testarch_subroutine_copy_,
+	.prepare_stackframe = jive_testarch_subroutine_prepare_stackframe_
 };
 
 static jive_testarch_subroutine *
