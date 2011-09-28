@@ -84,7 +84,7 @@ jive_i386_asm_int_load_imm(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	jive_buffer_putstr(target, icls->mnemonic);
-	jive_buffer_putstr(target, "\t");
+	jive_buffer_putstr(target, "\t$");
 	jive_buffer_putimm(target, &immediates[0]);
 	jive_buffer_putstr(target, ", %");
 	jive_buffer_putstr(target, outputs[0]->base.name);
