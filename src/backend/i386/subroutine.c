@@ -95,11 +95,15 @@ static jive_subroutine *
 jive_i386_subroutine_copy_(const jive_subroutine * self_,
 	jive_node * new_enter_node, jive_node * new_leave_node);
 
+static void
+jive_i386_subroutine_prepare_stackframe_(jive_subroutine * self_, const jive_subroutine_late_transforms * xfrm);
+
 static const jive_subroutine_class JIVE_I386_SUBROUTINE = {
 	.fini = jive_i386_subroutine_fini_,
 	.value_parameter = jive_i386_subroutine_value_parameter_,
 	.value_return = jive_i386_subroutine_value_return_,
-	.copy = jive_i386_subroutine_copy_
+	.copy = jive_i386_subroutine_copy_,
+	.prepare_stackframe = jive_i386_subroutine_prepare_stackframe_
 };
 
 static jive_i386_subroutine *
@@ -274,4 +278,56 @@ jive_i386_subroutine_create(jive_region * region,
 	
 
 	return &self->base;
+}
+
+typedef struct jive_i386_stackptr_split_factory {
+	jive_value_split_factory base;
+	int offset;
+} jive_i386_stackptr_split_factory;
+
+static jive_output *
+do_stackptr_sub(const jive_value_split_factory * self_, jive_output * value)
+{
+	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
+	long immediates[1] = {self->offset};
+	
+	return jive_instruction_node_create_simple(
+		value->node->region,
+		&jive_i386_instructions[jive_i386_int_sub_immediate],
+		&value, immediates)->outputs[0];
+}
+
+static jive_output *
+do_stackptr_add(const jive_value_split_factory * self_, jive_output * value)
+{
+	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
+	long immediates[1] = {self->offset};
+	
+	return jive_instruction_node_create_simple(
+		value->node->region,
+		&jive_i386_instructions[jive_i386_int_add_immediate],
+		&value, immediates)->outputs[0];
+}
+
+static void
+jive_i386_subroutine_prepare_stackframe_(jive_subroutine * self_, const jive_subroutine_late_transforms * xfrm)
+{
+	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
+	self->base.frame.lower_bound -= self->base.frame.call_area_size;
+	
+	if (!self->base.frame.lower_bound)
+		return;
+	
+	self->base.frame.lower_bound = ((self->base.frame.lower_bound - 4) & ~15) + 4;
+	
+	jive_i386_stackptr_split_factory stackptr_sub = {
+		{do_stackptr_sub},
+		- self->base.frame.lower_bound
+	};
+	jive_i386_stackptr_split_factory stackptr_add = {
+		{do_stackptr_add},
+		- self->base.frame.lower_bound
+	};
+	
+	xfrm->value_split(xfrm, self->saved_esp.output, self->saved_esp.input, &stackptr_sub.base, &stackptr_add.base);
 }
