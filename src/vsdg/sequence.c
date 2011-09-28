@@ -71,7 +71,7 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_node * before, jive_bottomup
 					if (!seq_region->last_node)
 						seq_region->last_node = seq_subregion->last_node;
 					
-					current = seq_subregion->last_node;
+					current = seq_subregion->first_node;
 				} else
 					sequentialize_region(seq, 0, region_trav, input->origin->node->region);
 			}
