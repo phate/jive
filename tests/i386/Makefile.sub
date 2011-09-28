@@ -4,6 +4,7 @@ TESTS+=\
 	i386/simple-match\
 	i386/abstract-match\
 	i386/named-function-def\
+	i386/hello-world\
 	#i386/dotproduct\
 	#i386/arithmetic-function\
 	#i386/match\
