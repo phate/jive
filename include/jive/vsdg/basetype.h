@@ -205,6 +205,18 @@ jive_input_auto_merge_variable(jive_input * self);
 void
 jive_input_destroy(jive_input * self);
 
+JIVE_EXPORTED_INLINE jive_output *
+jive_input_origin(const jive_input * input)
+{
+	return input->origin;
+}
+
+JIVE_EXPORTED_INLINE struct jive_node *
+jive_input_node(const jive_input * input)
+{
+	return input->node;
+}
+
 /**	@}	*/
 
 /**
@@ -292,6 +304,12 @@ jive_output_auto_merge_variable(jive_output * self);
 
 void
 jive_output_destroy(jive_output * self);
+
+JIVE_EXPORTED_INLINE struct jive_node *
+jive_output_node(const jive_output * output)
+{
+	return output->node;
+}
 
 /**	@}	*/
 
