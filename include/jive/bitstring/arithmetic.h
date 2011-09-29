@@ -16,15 +16,16 @@ typedef enum jive_bitop_code {
 	jive_bitop_code_sum = 4,
 	jive_bitop_code_difference = 5,
 	jive_bitop_code_product = 6,
-	jive_bitop_code_hiproduct = 7,
-	jive_bitop_code_uquotient = 8,
-	jive_bitop_code_squotient = 9,
-	jive_bitop_code_mod = 10,
-	jive_bitop_code_shl = 11,
-	jive_bitop_code_shr = 12,
-	jive_bitop_code_ashr = 13,
-	jive_bitop_code_negate = 14,
-	jive_bitop_code_not = 15
+	jive_bitop_code_uhiproduct = 7,
+	jive_bitop_code_shiproduct = 8,
+	jive_bitop_code_uquotient = 9,
+	jive_bitop_code_squotient = 10,
+	jive_bitop_code_mod = 11,
+	jive_bitop_code_shl = 12,
+	jive_bitop_code_shr = 13,
+	jive_bitop_code_ashr = 14,
+	jive_bitop_code_negate = 15,
+	jive_bitop_code_not = 16
 } jive_bitop_code;
 
 struct jive_bitbinary_operation_class {
@@ -145,6 +146,170 @@ JIVE_EXPORTED_INLINE jive_node *
 jive_bitproduct_node_cast(jive_node * node)
 {
 	if (node->class_ == &JIVE_BITPRODUCT_NODE) return node;
+	else return 0;
+}
+
+
+extern const jive_bitbinary_operation_class JIVE_BITDIFFERENCE_NODE_;
+#define JIVE_BITDIFFERENCE_NODE (JIVE_BITDIFFERENCE_NODE_.base.base)
+
+jive_node *
+jive_bitdifference_create(
+	struct jive_region * region,
+	jive_output * minuend, jive_output * subtrahend);
+
+jive_output *
+jive_bitdifference(jive_output * minuend, jive_output * subtrahend);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitdifference_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITDIFFERENCE_NODE) return node;
+	else return 0;
+}
+
+
+extern const jive_bitbinary_operation_class JIVE_BITSHIPRODUCT_NODE_;
+#define JIVE_BITSHIPRODUCT_NODE (JIVE_BITSHIPRODUCT_NODE_.base.base)
+
+jive_node *
+jive_bitshiproduct_create(
+	struct jive_region * region,
+	jive_output * factor1, jive_output * factor2);
+
+jive_output *
+jive_bitshiproduct(jive_output * factor1, jive_output * factor2);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitshiproduct_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITSHIPRODUCT_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITUHIPRODUCT_NODE_;
+#define JIVE_BITUHIPRODUCT_NODE (JIVE_BITUHIPRODUCT_NODE_.base.base)
+
+jive_node *
+jive_bituhiproduct_create(
+	struct jive_region * region,
+	jive_output * factor1, jive_output * factor2);
+
+jive_output *
+jive_bituhiproduct(jive_output * factor1, jive_output * factor2);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bituhiproduct_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITUHIPRODUCT_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITUQUOTIENT_NODE_;
+#define JIVE_BITUQUOTIENT_NODE (JIVE_BITUQUOTIENT_NODE_.base.base)
+
+jive_node *
+jive_bituquotient_create(
+	struct jive_region * region,
+	jive_output * dividend, jive_output * divisor);
+
+jive_output *
+jive_bituquotient(jive_output * dividend, jive_output * divisor);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bituquotient_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITUQUOTIENT_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITSQUOTIENT_NODE_;
+#define JIVE_BITSQUOTIENT_NODE (JIVE_BITSQUOTIENT_NODE_.base.base)
+
+jive_node *
+jive_bitsquotient_create(
+	struct jive_region * region,
+	jive_output * dividend, jive_output * divisor);
+
+jive_output *
+jive_bitsquotient(jive_output * dividend, jive_output * divisor);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitsquotient_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITSQUOTIENT_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITMOD_NODE_;
+#define JIVE_BITMOD_NODE (JIVE_BITMOD_NODE_.base.base)
+
+jive_node *
+jive_bitmod_create(
+	struct jive_region * region,
+	jive_output * operand1, jive_output * operand2);
+
+jive_output *
+jive_bitmod(jive_output * operand1, jive_output * operand2);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitmod_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITMOD_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITSHL_NODE_;
+#define JIVE_BITSHL_NODE (JIVE_BITSHL_NODE_.base.base)
+
+jive_node *
+jive_bitshl_create(
+	struct jive_region * region,
+	jive_output * operand, jive_output * shift);
+
+jive_output *
+jive_bitshl(jive_output * operand, jive_output * shift);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitshl_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITSHL_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITSHR_NODE_;
+#define JIVE_BITSHR_NODE (JIVE_BITSHR_NODE_.base.base)
+
+jive_node *
+jive_bitshr_create(
+	struct jive_region * region,
+	jive_output * operand, jive_output * shift);
+
+jive_output *
+jive_bitshr(jive_output * operand, jive_output * shift);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitshr_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITSHR_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITASHR_NODE_;
+#define JIVE_BITASHR_NODE (JIVE_BITASHR_NODE_.base.base)
+
+jive_node *
+jive_bitashr_create(
+	struct jive_region * region,
+	jive_output * operand, jive_output * shift);
+
+jive_output *
+jive_bitashr(jive_output * operand, jive_output * shift);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitashr_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITASHR_NODE) return node;
 	else return 0;
 }
 

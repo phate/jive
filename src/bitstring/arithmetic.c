@@ -58,7 +58,8 @@ _jive_bitstring_multiop_node_init(
 		1, &output_type);
 }
 
-#define MAKE_MULTIOP(name_, NAME, type_) \
+/* create boiler-plate code for generic binary operation */
+#define MAKE_BASE_BINOP(name_, NAME, type_, flags_) \
 \
 static void \
 _jive_##name_##_node_init( \
@@ -85,7 +86,7 @@ static bool \
 jive_##name_##_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2); \
  \
 static bool \
-jive_##name_##_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2); \
+jive_##name_##_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2); \
  \
 const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 	.base = { /* jive_bitbinary_operation_class */ \
@@ -100,14 +101,14 @@ const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */ \
 		}, \
 		\
-		.flags = jive_binary_operation_associative | jive_binary_operation_commutative, \
+		.flags = flags_, \
 		.single_apply_under = NULL, \
 		.multi_apply_under = NULL, \
 		.distributive_over = NULL, \
 		.distributive_under = NULL, \
 		\
 		.can_reduce_operand_pair = jive_##name_##_can_reduce_operand_pair_, /* override */ \
-		.reduce_operand_pair = jive_##name_##_reduce_operand_pair /* override */ \
+		.reduce_operand_pair = jive_##name_##_reduce_operand_pair_ /* override */ \
 	}, \
 	.type = type_ \
 }; \
@@ -127,7 +128,47 @@ _jive_##name_##_node_create(struct jive_region * region, const jive_node_attrs *
 	_jive_##name_##_node_init(node, region, noperands, operands); \
 	return node; \
 } \
+
+/* create boiler-plate code for binary operation that is non-associative and non-commutative
+FIXME: no reductions for these types of nodes so far */
+#define MAKE_BINOP(name_, NAME, type_) \
  \
+MAKE_BASE_BINOP(name_, NAME, type_, jive_binary_operation_none) \
+ \
+static bool \
+jive_##name_##_can_reduce_operand_pair_(const jive_node_class * cls, \
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2) \
+{ \
+	return false; \
+} \
+ \
+static bool \
+jive_##name_##_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, \
+	jive_output ** op1, jive_output ** op2) \
+{ \
+	return false; \
+} \
+ \
+jive_output * \
+jive_##name_(jive_output * operand1, jive_output * operand2) \
+{ \
+	jive_output * operands[] = {operand1, operand2}; \
+	jive_region * region = jive_region_innermost(2, operands); \
+	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, 2, operands); \
+} \
+ \
+jive_node * \
+jive_##name_##_create( \
+	struct jive_region * region, \
+	jive_output * operand1, jive_output * operand2) \
+{ \
+	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, \
+		2, (jive_output * []){operand1, operand2})->node; \
+} \
+
+#define MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(name_, NAME, type_) \
+ \
+MAKE_BASE_BINOP(name_, NAME, type_, jive_binary_operation_associative | jive_binary_operation_commutative) \
  \
 jive_node * \
 jive_##name_##_create( \
@@ -144,12 +185,6 @@ jive_##name_(size_t noperands, jive_output * operands[const]) \
 	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, noperands, operands); \
 } \
 
-MAKE_MULTIOP(bitand, BITAND, jive_bitop_code_and)
-MAKE_MULTIOP(bitor, BITOR, jive_bitop_code_or)
-MAKE_MULTIOP(bitxor, BITXOR, jive_bitop_code_xor)
-MAKE_MULTIOP(bitsum, BITSUM, jive_bitop_code_sum)
-MAKE_MULTIOP(bitproduct, BITPRODUCT, jive_bitop_code_product)
-
 static bool
 jive_bitand_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
@@ -160,7 +195,7 @@ jive_bitand_can_reduce_operand_pair_(const jive_node_class * cls, const jive_nod
 }
 
 static bool
-jive_bitand_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+jive_bitand_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
 {
 	jive_graph * graph = (*op1)->node->graph;
 	
@@ -191,7 +226,7 @@ jive_bitor_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node
 }
 
 static bool
-jive_bitor_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+jive_bitor_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
 {
 	jive_graph * graph = (*op1)->node->graph;
 	
@@ -222,7 +257,7 @@ jive_bitxor_can_reduce_operand_pair_(const jive_node_class * cls, const jive_nod
 }
 
 static bool
-jive_bitxor_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+jive_bitxor_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
 {
 	jive_graph * graph = (*op1)->node->graph;
 	
@@ -253,7 +288,7 @@ jive_bitsum_can_reduce_operand_pair_(const jive_node_class * cls, const jive_nod
 }
 
 static bool
-jive_bitsum_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+jive_bitsum_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
 {
 	jive_graph * graph = (*op1)->node->graph;
 	
@@ -282,7 +317,7 @@ jive_bitproduct_can_reduce_operand_pair_(const jive_node_class * cls, const jive
 }
 
 static bool
-jive_bitproduct_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+jive_bitproduct_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
 {
 	jive_graph * graph = (*op1)->node->graph;
 	
@@ -300,6 +335,23 @@ jive_bitproduct_reduce_operand_pair(const jive_node_class * cls, const jive_node
 	
 	return false;
 }
+
+MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(bitand, BITAND, jive_bitop_code_and)
+MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(bitor, BITOR, jive_bitop_code_or)
+MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(bitxor, BITXOR, jive_bitop_code_xor)
+MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(bitsum, BITSUM, jive_bitop_code_sum)
+MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(bitproduct, BITPRODUCT, jive_bitop_code_product)
+MAKE_BINOP(bitdifference, BITDIFFERENCE, jive_bitop_code_difference)
+MAKE_BINOP(bitshiproduct, BITSHIPRODUCT, jive_bitop_code_shiproduct)
+MAKE_BINOP(bituhiproduct, BITUHIPRODUCT, jive_bitop_code_uhiproduct)
+MAKE_BINOP(bituquotient, BITUQUOTIENT, jive_bitop_code_uquotient)
+MAKE_BINOP(bitsquotient, BITSQUOTIENT, jive_bitop_code_squotient)
+MAKE_BINOP(bitmod, BITMOD, jive_bitop_code_mod)
+MAKE_BINOP(bitshl, BITSHL, jive_bitop_code_shl)
+MAKE_BINOP(bitshr, BITSHR, jive_bitop_code_shr)
+MAKE_BINOP(bitashr, BITASHR, jive_bitop_code_ashr)
+
+/* unary operations */
 
 const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 	.base = { /* jive_unary_operation_class */
