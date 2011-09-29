@@ -67,8 +67,10 @@ _jive_##name_##_node_init( \
 	size_t noperands, \
 	jive_output * const operands[]) \
 { \
-	size_t nbits = 0; \
-	nbits = ((const jive_bitstring_type *)jive_output_get_type(operands[0]))->nbits; \
+	if (!jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)) { \
+		jive_context_fatal_error(region->graph->context, "Type mismatch: '" #name_ "' node requires bitstring operands"); \
+	} \
+	size_t nbits = ((jive_bitstring_output *)operands[0])->type.nbits; \
 	_jive_bitstring_multiop_node_init(self, region, noperands, operands, nbits); \
 } \
  \
