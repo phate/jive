@@ -802,8 +802,8 @@ merge_ssavars_from_subregion(jive_region_shaper * self, jive_region_shaper * sub
 	jive_varcut * active_top = &sub->shaped_region->active_top.base;
 	while (redo) {
 		redo = false;
-		jive_cutvar_xpoint * xpoint;
-		JIVE_LIST_ITERATE(active_top->xpoints, xpoint, varcut_xpoints_list) {
+		jive_cutvar_xpoint * xpoint, * next_xpoint;
+		JIVE_LIST_ITERATE_SAFE(active_top->xpoints, xpoint, next_xpoint, varcut_xpoints_list) {
 			jive_shaped_ssavar * shaped_ssavar = xpoint->shaped_ssavar;
 			bool success = merge_single_ssavar_from_subregion(self, sub, shaped_ssavar);
 			if (!success) {
