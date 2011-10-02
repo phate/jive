@@ -102,7 +102,7 @@ jive_load_create(struct jive_output * address,
 	const struct jive_type * datatype,
 	size_t nstates, struct jive_output * const states[])
 {
-	int i;
+	size_t i;
 	jive_output * outputs[nstates+1];
 	for(i = 0; i < nstates; i++){
 		outputs[i] = states[i];
