@@ -1,2 +1,5 @@
 reduction
 slice-concat
+bitops
+test-arithmetic
+test-constant
