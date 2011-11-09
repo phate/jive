@@ -56,12 +56,12 @@ jive_apply_node_init_(
 	jive_output * const arguments[])
 {
 	if (function->class_ != &JIVE_FUNCTION_OUTPUT) {
-		jive_context_fatal_error(self->graph->context, "Type mismatch: need 'function' type as input to 'apply' node");
+		jive_context_fatal_error(region->graph->context, "Type mismatch: need 'function' type as input to 'apply' node");
 	}
 	jive_function_output * fct = (jive_function_output *) function;
 
 	if (fct->type.narguments != narguments) {
-		jive_context_fatal_error(self->graph->context, "Type mismatch: number of parameters to function does not match signature");
+		jive_context_fatal_error(region->graph->context, "Type mismatch: number of parameters to function does not match signature");
 	}
 
 	jive_output * args[narguments+1];
