@@ -5,3 +5,4 @@ TESTS+=\
 	arch/test-address \
 	arch/test-dataobj \
 	arch/test-memory-type \
+	arch/test-sizeof \
