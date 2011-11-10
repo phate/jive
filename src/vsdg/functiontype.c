@@ -11,78 +11,78 @@
 /* function_type inheritable members */
 
 static void
-_jive_function_type_fini(jive_type * self);
+jive_function_type_fini_(jive_type * self);
 static char *
-_jive_function_type_get_label(const jive_type * self);
+jive_function_type_get_label_(const jive_type * self);
 static jive_input *
-_jive_function_type_create_input(const jive_type * self, struct jive_node * node,
+jive_function_type_create_input_(const jive_type * self, struct jive_node * node,
 	size_t index, jive_output * initial_operand);
 static jive_output *
-_jive_function_type_create_output(const jive_type * self, struct jive_node * node,
+jive_function_type_create_output_(const jive_type * self, struct jive_node * node,
 	size_t index);
 static jive_gate *
-_jive_function_type_create_gate(const jive_type * self, struct jive_graph * graph, const char namae[]);
+jive_function_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char namae[]);
 static bool
-_jive_function_type_equals(const jive_type * self, const jive_type * other);
+jive_function_type_equals_(const jive_type * self, const jive_type * other);
 static jive_type *
-_jive_function_type_copy(const jive_type * self, struct jive_context * context);
+jive_function_type_copy_(const jive_type * self, struct jive_context * context);
 
 static void
-_jive_function_input_init(jive_function_input * self, const jive_function_type * type,
+jive_function_input_init_(jive_function_input * self, const jive_function_type * type,
 	struct jive_node * node, size_t index, jive_output * origin);
 static void
-_jive_function_input_fini(jive_input * self);
+jive_function_input_fini_(jive_input * self);
 static const jive_type *
-_jive_function_input_get_type(const jive_input * self);
+jive_function_input_get_type_(const jive_input * self);
 
 static void
-_jive_function_output_init(jive_function_output * self, const jive_function_type * type,
+jive_function_output_init_(jive_function_output * self, const jive_function_type * type,
 	struct jive_node * node, size_t index);
 static void
-_jive_function_output_fini(jive_output * self);
+jive_function_output_fini_(jive_output * self);
 static const jive_type *
-_jive_function_output_get_type(const jive_output * self);
+jive_function_output_get_type_(const jive_output * self);
 
 
 static void
-_jive_function_gate_init(jive_function_gate * self, const jive_function_type * type,
+jive_function_gate_init_(jive_function_gate * self, const jive_function_type * type,
 	struct jive_graph * graph, const char name[]);
 static void
-_jive_function_gate_fini(jive_gate * self);
+jive_function_gate_fini_(jive_gate * self);
 static const jive_type *
-_jive_function_gate_get_type(const jive_gate * self); 
+jive_function_gate_get_type_(const jive_gate * self); 
 
 
 const jive_type_class JIVE_FUNCTION_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
-	.fini = _jive_function_type_fini, /* override */
-	.get_label = _jive_function_type_get_label, /* override */
-	.create_input = _jive_function_type_create_input, /* override */
-	.create_output = _jive_function_type_create_output, /* override */
-	.create_gate = _jive_function_type_create_gate, /* override */
-	.equals = _jive_function_type_equals, /* override */
-	.copy = _jive_function_type_copy, /* override */
+	.fini = jive_function_type_fini_, /* override */
+	.get_label = jive_function_type_get_label_, /* override */
+	.create_input = jive_function_type_create_input_, /* override */
+	.create_output = jive_function_type_create_output_, /* override */
+	.create_gate = jive_function_type_create_gate_, /* override */
+	.equals = jive_function_type_equals_, /* override */
+	.copy = jive_function_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_FUNCTION_INPUT = {
 	.parent = &JIVE_VALUE_INPUT,
-	.fini = _jive_function_input_fini,  /* override */
+	.fini = jive_function_input_fini_,  /* override */
 	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = _jive_function_input_get_type, /* override */
+	.get_type = jive_function_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_FUNCTION_OUTPUT = {
 	.parent = &JIVE_VALUE_OUTPUT,
-	.fini = _jive_function_output_fini, /* override */
+	.fini = jive_function_output_fini_, /* override */
 	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = _jive_function_output_get_type, /* override */
+	.get_type = jive_function_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_FUNCTION_GATE = {
 	.parent = &JIVE_VALUE_GATE,
-	.fini = _jive_function_gate_fini, /* override */
+	.fini = jive_function_gate_fini_, /* override */
 	.get_label = jive_gate_get_label_, /* inherit */
-	.get_type = _jive_function_gate_get_type, /* override */
+	.get_type = jive_function_gate_get_type_, /* override */
 };
 
 void
@@ -119,7 +119,7 @@ jive_function_type * jive_function_type_create(jive_context * ctx,
 
 void jive_function_type_destroy(jive_function_type * type)
 {
-	_jive_function_type_fini(&type->base.base);
+	jive_function_type_fini_(&type->base.base);
 	jive_context_free(type->ctx, type);
 }
 
@@ -145,7 +145,7 @@ jive_function_type_fini(jive_function_type * self)
 }
 
 void
-_jive_function_type_fini(jive_type * self_)
+jive_function_type_fini_(jive_type * self_)
 {
 	jive_function_type * self = (jive_function_type *) self_; 
 	jive_function_type_fini(self);
@@ -153,7 +153,7 @@ _jive_function_type_fini(jive_type * self_)
 
 
 jive_type *
-_jive_function_type_copy(const jive_type * self_, jive_context * ctx)
+jive_function_type_copy_(const jive_type * self_, jive_context * ctx)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	
@@ -167,37 +167,37 @@ _jive_function_type_copy(const jive_type * self_, jive_context * ctx)
 }
 
 char *
-_jive_function_type_get_label(const jive_type * self_)
+jive_function_type_get_label_(const jive_type * self_)
 {
 	return strdup("fct");
 }
 
 jive_input *
-_jive_function_type_create_input(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_function_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	jive_function_input * input = jive_context_malloc(node->graph->context, sizeof( *input));
 	
 	input->base.base.class_ = &JIVE_FUNCTION_INPUT;
-	_jive_function_input_init(input, self, node, index, initial_operand);
+	jive_function_input_init_(input, self, node, index, initial_operand);
 	
 	return &input->base.base;
 }
 
 jive_output *
-_jive_function_type_create_output(const jive_type * self_, struct jive_node * node, size_t index)
+jive_function_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	jive_function_output * output = jive_context_malloc(node->graph->context, sizeof( *output));
 	
 	output->base.base.class_ = &JIVE_FUNCTION_OUTPUT;
-	_jive_function_output_init(output, self, node, index);
+	jive_function_output_init_(output, self, node, index);
 	
 	return &output->base.base;
 }
 
 bool
-_jive_function_type_equals(const jive_type * self_, const jive_type * other_)
+jive_function_type_equals_(const jive_type * self_, const jive_type * other_)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	const jive_function_type * other = (const jive_function_type *) other_;
@@ -220,14 +220,14 @@ _jive_function_type_equals(const jive_type * self_, const jive_type * other_)
 }
 
 jive_gate *
-_jive_function_type_create_gate(const jive_type * self_, struct jive_graph * graph, const char * name)
+jive_function_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	
 	jive_function_gate * gate = jive_context_malloc(graph->context, sizeof( *gate));
 	
 	gate->base.base.class_ = &JIVE_FUNCTION_GATE;
-	_jive_function_gate_init(gate, self, graph, name);
+	jive_function_gate_init_(gate, self, graph, name);
 	
 	return &gate->base.base;
 }
@@ -235,7 +235,7 @@ _jive_function_type_create_gate(const jive_type * self_, struct jive_graph * gra
 /* function_input inheritable members */
 
 void
-_jive_function_input_init(jive_function_input * self, const jive_function_type * type,
+jive_function_input_init_(jive_function_input * self, const jive_function_type * type,
 	struct jive_node * node, size_t index, jive_output * origin)
 {
 	jive_value_input_init_(&self->base, node, index, origin);
@@ -247,7 +247,7 @@ _jive_function_input_init(jive_function_input * self, const jive_function_type *
 }
 
 void
-_jive_function_input_fini(jive_input * self_)
+jive_function_input_fini_(jive_input * self_)
 {
 	jive_function_input * self = (jive_function_input *) self_;
 	
@@ -257,7 +257,7 @@ _jive_function_input_fini(jive_input * self_)
 }
 
 const jive_type *
-_jive_function_input_get_type(const jive_input * self_)
+jive_function_input_get_type_(const jive_input * self_)
 {
 	const jive_function_input * self = (const jive_function_input *) self_;
 	
@@ -267,7 +267,7 @@ _jive_function_input_get_type(const jive_input * self_)
 /* function_output inheritable members */
 
 void
-_jive_function_output_init(jive_function_output * self, const jive_function_type * type,
+jive_function_output_init_(jive_function_output * self, const jive_function_type * type,
   struct jive_node * node, size_t index)
 {
 	jive_value_output_init_(&self->base, node, index);
@@ -279,7 +279,7 @@ _jive_function_output_init(jive_function_output * self, const jive_function_type
 } 
 
 void
-_jive_function_output_fini(jive_output * self_)
+jive_function_output_fini_(jive_output * self_)
 {
 	jive_function_output * self = (jive_function_output *) self_;
 	
@@ -289,7 +289,7 @@ _jive_function_output_fini(jive_output * self_)
 }
 
 const jive_type *
-_jive_function_output_get_type(const jive_output * self_)
+jive_function_output_get_type_(const jive_output * self_)
 {
 	const jive_function_output * self = (const jive_function_output *) self_;
 	
@@ -299,7 +299,7 @@ _jive_function_output_get_type(const jive_output * self_)
 /* function_gate inheritable members */
 
 void
-_jive_function_gate_init(jive_function_gate * self, const jive_function_type * type,
+jive_function_gate_init_(jive_function_gate * self, const jive_function_type * type,
   struct jive_graph * graph,  const char name[])
 {
 	jive_value_gate_init_(&self->base, graph, name);
@@ -310,7 +310,7 @@ _jive_function_gate_init(jive_function_gate * self, const jive_function_type * t
 }
 
 void
-_jive_function_gate_fini(jive_gate * self_)
+jive_function_gate_fini_(jive_gate * self_)
 {
 	jive_function_gate * self = (jive_function_gate *) self_;
 	
@@ -320,7 +320,7 @@ _jive_function_gate_fini(jive_gate * self_)
 }
 
 const jive_type *
-_jive_function_gate_get_type(const jive_gate * self_)
+jive_function_gate_get_type_(const jive_gate * self_)
 {
 	const jive_function_gate * self = (const jive_function_gate *) self_;
 	
