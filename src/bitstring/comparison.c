@@ -20,12 +20,12 @@ const jive_bitcomparison_operation_class JIVE_BITCOMPARISON_NODE_ = {
 		.base = { /* jive_node_class */
 			.parent = &JIVE_BINARY_OPERATION,
 			.name = "BITCOMPARISON",
-			.fini = _jive_node_fini, /* inherit */
-			.get_label = _jive_node_get_label, /* inherit */
-			.get_attrs = _jive_node_get_attrs, /* inherit */
-			.match_attrs = _jive_node_match_attrs, /* inherit */
-			.create = _jive_node_create, /* inherit */
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+			.fini = jive_node_fini_, /* inherit */
+			.get_label = jive_node_get_label_, /* inherit */
+			.get_attrs = jive_node_get_attrs_, /* inherit */
+			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.create = jive_node_create_, /* inherit */
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		.flags = jive_binary_operation_none,
@@ -52,7 +52,7 @@ jive_bitcomparison_node_init_(
 	jive_output * operands[2] = {x, y};
 	JIVE_DECLARE_CONTROL_TYPE(output_type);
 	
-	_jive_node_init(self, region,
+	jive_node_init_(self, region,
 		2, operand_types, operands,
 		1, &output_type);
 }
@@ -119,12 +119,12 @@ const jive_bitcomparison_operation_class JIVE_##NAME##_NODE_ = { \
 		.base = { /* jive_node_class */ \
 			.parent = &JIVE_BITCOMPARISON_NODE, \
 			.name = #NAME, \
-			.fini = _jive_node_fini, /* inherit */ \
+			.fini = jive_node_fini_, /* inherit */ \
 			.get_label = jive_##name_##_node_get_label_, /* override */ \
-			.get_attrs = _jive_node_get_attrs, /* inherit */ \
-			.match_attrs = _jive_node_match_attrs, /* inherit */ \
+			.get_attrs = jive_node_get_attrs_, /* inherit */ \
+			.match_attrs = jive_node_match_attrs_, /* inherit */ \
 			.create = jive_##name_##_node_create_, /* override */ \
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */ \
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */ \
 		}, \
 		\
 		.flags = jive_binary_operation_none, \

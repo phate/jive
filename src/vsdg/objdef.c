@@ -13,7 +13,7 @@ static void
 jive_objdef_node_init_(jive_objdef_node * self, jive_region * region, jive_output * obj, const char * name)
 {
 	const jive_type * type = jive_output_get_type(obj);
-	_jive_node_init(&self->base, region,
+	jive_node_init_(&self->base, region,
 		1, &type, &obj,
 		0, NULL);
 	
@@ -45,7 +45,7 @@ jive_objdef_node_fini_(jive_node * self_)
 	jive_context_free(context, self->attrs.end);
 	*/
 	
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static char *
@@ -89,7 +89,7 @@ const jive_node_class JIVE_OBJDEF_NODE = {
 	.get_attrs = jive_objdef_node_get_attrs_, /* override */
 	.match_attrs = jive_objdef_node_match_attrs_, /* override */
 	.create = jive_objdef_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls, /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_, /* inherit */
 };
 
 jive_node *

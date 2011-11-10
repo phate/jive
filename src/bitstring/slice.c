@@ -42,12 +42,12 @@ jive_bitslice_reduce_operand_(const jive_node_class * cls, const jive_node_attrs
 const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_UNARY_OPERATION,
-		.fini = _jive_node_fini, /* inherit */
+		.fini = jive_node_fini_, /* inherit */
 		.get_label = _jive_bitslice_node_get_label, /* override */
 		.get_attrs = _jive_bitslice_node_get_attrs, /* override */
 		.match_attrs = _jive_bitslice_node_match_attrs, /* override */
 		.create = _jive_bitslice_node_create, /* override */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.single_apply_over = NULL,
@@ -66,7 +66,7 @@ _jive_bitslice_node_init(
 {
 	JIVE_DECLARE_BITSTRING_TYPE(input_type, ((jive_bitstring_output *) origin)->type.nbits);
 	JIVE_DECLARE_BITSTRING_TYPE(output_type, high - low);
-	_jive_node_init(&self->base, region,
+	jive_node_init_(&self->base, region,
 		1, &input_type, &origin,
 		1, &output_type);
 	self->attrs.low = low;

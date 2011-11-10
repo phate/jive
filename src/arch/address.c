@@ -36,12 +36,12 @@ const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
 	.base = {
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "MEMBEROF",
-		.fini = _jive_node_fini, /* inherit */
+		.fini = jive_node_fini_, /* inherit */
 		.get_label = jive_memberof_node_get_label_, /* override */
 		.get_attrs = jive_memberof_node_get_attrs_, /* override */
 		.match_attrs = jive_memberof_node_match_attrs_, /* override */
 		.create = jive_memberof_node_create_, /* override */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.single_apply_over = NULL,
@@ -128,7 +128,7 @@ jive_memberof_node_create(jive_region * region,
 	
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
 	
-	_jive_node_init(&node->base, region,
+	jive_node_init_(&node->base, region,
 		1, &address_type, &address,
 		1, &address_type);
 	node->attrs.record_layout = record_layout;
@@ -185,12 +185,12 @@ const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
 	.base = {
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "CONTAINEROF",
-		.fini = _jive_node_fini, /* inherit */
+		.fini = jive_node_fini_, /* inherit */
 		.get_label = jive_containerof_node_get_label_, /* override */
 		.get_attrs = jive_containerof_node_get_attrs_, /* override */
 		.match_attrs = jive_containerof_node_match_attrs_, /* override */
 		.create = jive_containerof_node_create_, /* override */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.single_apply_over = NULL,
@@ -277,7 +277,7 @@ jive_containerof_node_create(jive_region * region,
 	
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
 	
-	_jive_node_init(&node->base, region,
+	jive_node_init_(&node->base, region,
 		1, &address_type, &address,
 		1, &address_type);
 	node->attrs.record_layout = record_layout;
@@ -335,11 +335,11 @@ const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_ = {
 		.parent = &JIVE_BINARY_OPERATION,
 		.name = "ARRAYSUBSCRIPT",
 		.fini = jive_arraysubscript_node_fini_, /* override */
-		.get_label = _jive_node_get_label, /* inherit */
+		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_arraysubscript_node_get_attrs_, /* override */
 		.match_attrs = jive_arraysubscript_node_match_attrs_, /* override */
 		.create = jive_arraysubscript_node_create_, /* override */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.flags = jive_binary_operation_none,
@@ -358,7 +358,7 @@ jive_arraysubscript_node_fini_(jive_node * self_)
 	jive_arraysubscript_node * self = (jive_arraysubscript_node *) self_;
 	jive_type_fini(self->attrs.element_type);
 	jive_context_free(self->base.graph->context, self->attrs.element_type);
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static const jive_node_attrs *
@@ -441,7 +441,7 @@ jive_arraysubscript_node_create(jive_region * region,
 	const jive_type * operand_types[2] = {address_type, index_type};
 	jive_output * operands[2] = {address, index};
 	
-	_jive_node_init(&node->base, region,
+	jive_node_init_(&node->base, region,
 		2, operand_types, operands,
 		1, &address_type);
 	node->attrs.element_type = jive_type_copy(element_type, context);
@@ -496,11 +496,11 @@ const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_ = {
 		.parent = &JIVE_BINARY_OPERATION,
 		.name = "ARRAYINDEX",
 		.fini = jive_arrayindex_node_fini_, /* override */
-		.get_label = _jive_node_get_label, /* inherit */
+		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_arrayindex_node_get_attrs_, /* override */
 		.match_attrs = jive_arrayindex_node_match_attrs_, /* override */
 		.create = jive_arrayindex_node_create_, /* override */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.flags = jive_binary_operation_none,
@@ -519,7 +519,7 @@ jive_arrayindex_node_fini_(jive_node * self_)
 	jive_arrayindex_node * self = (jive_arrayindex_node *) self_;
 	jive_type_fini(self->attrs.element_type);
 	jive_context_free(self->base.graph->context, self->attrs.element_type);
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static const jive_node_attrs *
@@ -619,7 +619,7 @@ jive_arrayindex_node_create(jive_region * region,
 	JIVE_DEBUG_ASSERT(difference_type->class_ == &JIVE_BITSTRING_TYPE);
 	const jive_type * output_types[1] = {difference_type};
 	
-	_jive_node_init(&node->base, region,
+	jive_node_init_(&node->base, region,
 		2, operand_types, operands,
 		1, output_types);
 	node->attrs.element_type = jive_type_copy(element_type, context);

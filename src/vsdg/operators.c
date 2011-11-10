@@ -198,25 +198,25 @@ jive_binary_operation_reduce_operand_pair_(const jive_node_class * cls, const ji
 const jive_node_class JIVE_NULLARY_OPERATION = {
 	.parent = &JIVE_NODE,
 	.name = "NULLARY",
-	.fini = _jive_node_fini,
-	.get_default_normal_form = _jive_node_get_default_normal_form,
-	.get_label = _jive_node_get_label,
-	.get_attrs = _jive_node_get_attrs,
-	.match_attrs = _jive_node_match_attrs,
-	.create = _jive_node_create,
-	.get_aux_rescls = _jive_node_get_aux_rescls
+	.fini = jive_node_fini_,
+	.get_default_normal_form = jive_node_get_default_normal_form_,
+	.get_label = jive_node_get_label_,
+	.get_attrs = jive_node_get_attrs_,
+	.match_attrs = jive_node_match_attrs_,
+	.create = jive_node_create_,
+	.get_aux_rescls = jive_node_get_aux_rescls_
 };
 
 const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_NODE,
 		.name ="UNARY",
-		.fini = _jive_node_fini, /* inherit */
-		.get_label = _jive_node_get_label, /* inherit */
-		.get_attrs = _jive_node_get_attrs, /* inherit */
-		.match_attrs = _jive_node_match_attrs, /* inherit */
-		.create = _jive_node_create, /* inherit */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.fini = jive_node_fini_, /* inherit */
+		.get_label = jive_node_get_label_, /* inherit */
+		.get_attrs = jive_node_get_attrs_, /* inherit */
+		.match_attrs = jive_node_match_attrs_, /* inherit */
+		.create = jive_node_create_, /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.single_apply_over = NULL,
@@ -230,12 +230,12 @@ const jive_binary_operation_class JIVE_BINARY_OPERATION_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_NODE,
 		.name = "BINARY",
-		.fini = _jive_node_fini, /* inherit */
-		.get_label = _jive_node_get_label, /* inherit */
-		.get_attrs = _jive_node_get_attrs, /* inherit */
-		.match_attrs = _jive_node_match_attrs, /* inherit */
-		.create = _jive_node_create, /* inherit */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.fini = jive_node_fini_, /* inherit */
+		.get_label = jive_node_get_label_, /* inherit */
+		.get_attrs = jive_node_get_attrs_, /* inherit */
+		.match_attrs = jive_node_match_attrs_, /* inherit */
+		.create = jive_node_create_, /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.flags = 0,

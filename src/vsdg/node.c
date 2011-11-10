@@ -20,17 +20,17 @@
 const jive_node_class JIVE_NODE = {
 	.parent = 0,
 	.name = "NODE",
-	.fini = _jive_node_fini,
-	.get_default_normal_form = _jive_node_get_default_normal_form,
-	.get_label = _jive_node_get_label,
-	.get_attrs = _jive_node_get_attrs,
-	.match_attrs = _jive_node_match_attrs,
-	.create = _jive_node_create,
-	.get_aux_rescls = _jive_node_get_aux_rescls
+	.fini = jive_node_fini_,
+	.get_default_normal_form = jive_node_get_default_normal_form_,
+	.get_label = jive_node_get_label_,
+	.get_attrs = jive_node_get_attrs_,
+	.match_attrs = jive_node_match_attrs_,
+	.create = jive_node_create_,
+	.get_aux_rescls = jive_node_get_aux_rescls_
 };
 
 void
-_jive_node_init(
+jive_node_init_(
 	jive_node * self,
 	struct jive_region * region,
 	size_t noperands,
@@ -82,7 +82,7 @@ _jive_node_init(
 }
 
 void
-_jive_node_fini(jive_node * self)
+jive_node_fini_(jive_node * self)
 {
 	jive_context * context = self->graph->context;
 	DEBUG_ASSERT(self->region);
@@ -120,25 +120,25 @@ _jive_node_fini(jive_node * self)
 }
 
 char *
-_jive_node_get_label(const jive_node * self)
+jive_node_get_label_(const jive_node * self)
 {
 	return strdup(self->class_->name);
 }
 
 bool
-_jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
+jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other)
 {
 	return true;
 }
 
 const jive_node_attrs *
-_jive_node_get_attrs(const jive_node * self)
+jive_node_get_attrs_(const jive_node * self)
 {
 	return 0;
 }
 
 jive_node *
-_jive_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
 	jive_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
@@ -148,7 +148,7 @@ _jive_node_create(struct jive_region * region, const jive_node_attrs * attrs,
 		operand_types[n] = jive_output_get_type(operands[n]);
 	
 	other->class_ = &JIVE_NODE;
-	_jive_node_init(other, region,
+	jive_node_init_(other, region,
 		noperands, operand_types, operands,
 		0, 0);
 	
@@ -156,13 +156,13 @@ _jive_node_create(struct jive_region * region, const jive_node_attrs * attrs,
 }
 
 const struct jive_node_normal_form *
-_jive_node_get_default_normal_form(const jive_node * self)
+jive_node_get_default_normal_form_(const jive_node * self)
 {
 	return 0;
 }
 
 const struct jive_resource_class *
-_jive_node_get_aux_rescls(const jive_node * self)
+jive_node_get_aux_rescls_(const jive_node * self)
 {
 	return 0;
 }
@@ -178,7 +178,7 @@ jive_node_create(
 {
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->class_ = &JIVE_NODE;
-	_jive_node_init(node, region, noperands, operand_types, operands, noutputs, output_types);
+	jive_node_init_(node, region, noperands, operand_types, operands, noutputs, output_types);
 	
 	return node;
 }

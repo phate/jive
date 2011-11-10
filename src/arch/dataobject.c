@@ -167,12 +167,12 @@ jive_dataitems_node_create_(struct jive_region * region, const jive_node_attrs *
 const jive_node_class JIVE_DATAITEMS_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "DATAITEMS",
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_node_get_label, /* inherit */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = jive_dataitems_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static jive_node *
@@ -185,12 +185,12 @@ jive_datadef_node_create_(struct jive_region * region, const jive_node_attrs * a
 const jive_node_class JIVE_DATADEF_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "DATADEF",
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_node_get_label, /* inherit */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = jive_datadef_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static jive_node *
@@ -203,12 +203,12 @@ jive_dataobj_node_create_(struct jive_region * region, const jive_node_attrs * a
 const jive_node_class JIVE_DATAOBJ_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "DATA",
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_node_get_label, /* inherit */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = jive_dataobj_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 jive_node *
@@ -223,7 +223,7 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 	
 	node->class_ = &JIVE_DATAITEMS_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(control);
-	_jive_node_init(node, region,
+	jive_node_init_(node, region,
 		nitems, item_types, items,
 		1, &control);
 	region->bottom = node;
@@ -239,7 +239,7 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 	node->class_ = &JIVE_DATADEF_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(data_type);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
-	_jive_node_init(node, region,
+	jive_node_init_(node, region,
 		1, &data_type, &data,
 		1, &anchor);
 	region->bottom = node;
@@ -256,7 +256,7 @@ jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 	JIVE_DECLARE_STATE_TYPE(objstate_type);
 	
 	node->class_ = &JIVE_DATAOBJ_NODE;
-	_jive_node_init(node, region,
+	jive_node_init_(node, region,
 		1, &anchor_type, &anchor,
 		1, &objstate_type);
 	

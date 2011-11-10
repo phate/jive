@@ -29,12 +29,12 @@ jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 
 const jive_node_class JIVE_UNIFY_NODE = {
 	.parent = &JIVE_NODE,
-	.fini = _jive_node_fini, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
 	.get_label = jive_unify_node_get_label_, /* override */
 	.get_attrs = jive_unify_node_get_attrs_, /* override */
 	.match_attrs = jive_unify_node_match_attrs_, /* override */
 	.create = jive_unify_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static char *
@@ -83,7 +83,7 @@ jive_unify_node_init_(jive_unify_node * self,
 	
 	JIVE_DECLARE_UNION_TYPE(type, layout);
 	
-	_jive_node_init(&self->base, region,
+	jive_node_init_(&self->base, region,
 		1, &arg_type, &operand,
 		1, &type);
 	
@@ -127,12 +127,12 @@ jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 
 const jive_node_class JIVE_CHOOSE_NODE = {
 	.parent = &JIVE_NODE,
-	.fini = _jive_node_fini, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
 	.get_label = jive_choose_node_get_label_, /* override */
 	.get_attrs = jive_choose_node_get_attrs_, /* override */
 	.match_attrs = jive_choose_node_match_attrs_, /* overrride */
 	.create = jive_choose_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -156,7 +156,7 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 	
 	self->attrs.element = element;
 
-	_jive_node_init(&self->base, region,
+	jive_node_init_(&self->base, region,
 		1, (const jive_type * []){&operand_type->base.base}, &operand,
 		1, (const jive_type **) &operand_type->layout->element[element]);
 }

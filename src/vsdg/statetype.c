@@ -156,11 +156,11 @@ const jive_node_class JIVE_STATEMUX_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "STATEMUX",
 	.fini = jive_statemux_node_fini_, /* override */
-	.get_label = _jive_node_get_label, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_statemux_node_get_attrs_, /* override */
 	.match_attrs = jive_statemux_node_match_attrs_, /* override */
 	.create = jive_statemux_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -172,7 +172,7 @@ jive_statemux_node_fini_(jive_node * self_)
 	jive_type_fini(self->attrs.type);
 	jive_context_free(context, self->attrs.type);
 	
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static const jive_node_attrs *
@@ -218,7 +218,7 @@ jive_statemux_node_create(jive_region * region,
 	for (n = 0; n < noutputs; n++)
 		output_types[n] = statetype;
 		
-	_jive_node_init(&node->base, region,
+	jive_node_init_(&node->base, region,
 		noperands, operand_types, operands,
 		noutputs, output_types);
 	node->attrs.type = jive_type_copy(statetype, context);

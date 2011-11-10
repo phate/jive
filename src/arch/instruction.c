@@ -39,7 +39,7 @@ _jive_instruction_node_init_simple(
 	for(n=0; n<icls->ninputs; n++) input_types[n] = jive_register_class_get_type(icls->inregs[n]);
 	for(n=0; n<icls->noutputs; n++) output_types[n] = jive_register_class_get_type(icls->outregs[n]);
 	
-	_jive_node_init(&self->base,
+	jive_node_init_(&self->base,
 		region,
 		icls->ninputs, input_types, operands,
 		icls->noutputs, output_types);
@@ -71,7 +71,7 @@ _jive_instruction_node_init(
 	for(n=0; n<icls->ninputs; n++) input_types[n] = jive_register_class_get_type(icls->inregs[n]);
 	for(n=0; n<icls->noutputs; n++) output_types[n] = jive_register_class_get_type(icls->outregs[n]);
 	
-	_jive_node_init(&self->base,
+	jive_node_init_(&self->base,
 		region,
 		icls->ninputs, input_types, operands,
 		icls->noutputs, output_types);
@@ -95,7 +95,7 @@ _jive_instruction_node_fini(jive_node * self_)
 	jive_context * context = self->base.graph->context;
 	
 	jive_context_free(context, self->attrs.immediates);
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 char *

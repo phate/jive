@@ -26,12 +26,12 @@ _jive_apply_node_get_label(const jive_node * self_);
 
 const jive_node_class JIVE_APPLY_NODE = {
 	.parent = &JIVE_NODE,
-	.fini = _jive_node_fini, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
 	.get_label = _jive_apply_node_get_label, /* override */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = _jive_apply_node_create, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static char *
@@ -75,7 +75,7 @@ _jive_apply_node_init(
 		args[i+1] = arguments[i];
 	}
 	
-	_jive_node_init(self, region,
+	jive_node_init_(self, region,
 		narguments + 1, argument_types, args,
 		fct->type.nreturns, (const jive_type * const *) fct->type.return_types);
 }
@@ -115,7 +115,7 @@ const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
 	.get_attrs = _jive_symbolicfunction_node_get_attrs, /* inherit */
 	.match_attrs = _jive_symbolicfunction_node_match_attrs, /* override */
 	.create = _jive_symbolicfunction_node_create, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -131,7 +131,7 @@ _jive_symbolicfunction_node_init(
 		type->nreturns, (const jive_type **) type->return_types);
 
 	const jive_type * rtype = &type->base.base;
-	_jive_node_init(&node->base, graph->root_region,
+	jive_node_init_(&node->base, graph->root_region,
 		0, NULL, NULL,
 		1, &rtype);
 }
@@ -145,7 +145,7 @@ _jive_symbolicfunction_node_fini(jive_node * self_)
 	
 	jive_function_type_fini(&self->attrs.type);
 	
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static char *
@@ -222,23 +222,23 @@ jive_leave_node_create_(struct jive_region * region, const jive_node_attrs * att
 const jive_node_class JIVE_ENTER_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "ENTER",
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_node_get_label, /* inherit */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = jive_enter_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 const jive_node_class JIVE_LEAVE_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "LEAVE",
-	.fini = _jive_node_fini, /* inherit */
-	.get_label = _jive_node_get_label, /* inherit */
-	.get_attrs = _jive_node_get_attrs, /* inherit */
-	.match_attrs = _jive_node_match_attrs, /* inherit */
+	.fini = jive_node_fini_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = jive_leave_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 jive_node *
@@ -249,7 +249,7 @@ jive_enter_node_create(jive_region * region)
 	
 	node->class_ = &JIVE_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	_jive_node_init(node, region,
+	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctl);
 	region->top = node;
@@ -265,7 +265,7 @@ jive_leave_node_create(jive_output * output)
 	node->class_ = &JIVE_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
-	_jive_node_init(node, output->node->region,
+	jive_node_init_(node, output->node->region,
 		1, &ctl, &output,
 		1, &anchor);
 	output->node->region->bottom = node;
@@ -300,11 +300,11 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "LAMBDA",
 	.fini = jive_lambda_node_fini_, /* override */
-	.get_label = _jive_node_get_label, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_lambda_node_get_attrs_, /* inherit */
 	.match_attrs = jive_lambda_node_match_attrs_, /* override */
 	.create = jive_lambda_node_create_, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -331,7 +331,7 @@ jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	
 	const jive_type * function_type = &self->attrs.function_type.base.base;
-	_jive_node_init(&self->base, region,
+	jive_node_init_(&self->base, region,
 		1, &anchor_type, &function_region->bottom->outputs[0],
 		1, &function_type);
 	
@@ -353,7 +353,7 @@ jive_lambda_node_fini_(jive_node * self_)
 	jive_context_free(context, self->attrs.argument_gates);
 	jive_context_free(context, self->attrs.return_gates);
 	
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static jive_node *

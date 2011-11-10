@@ -32,7 +32,7 @@ _jive_bitstring_multiop_node_init(
 	
 	JIVE_DECLARE_BITSTRING_TYPE(output_type, nbits);
 	
-	_jive_node_init(self, region,
+	jive_node_init_(self, region,
 		noperands, operand_types, operands,
 		1, &output_type);
 }
@@ -66,12 +66,12 @@ jive_bitconcat_reduce_operand_pair(const jive_node_class * cls, const jive_node_
 const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_BINARY_OPERATION,
-		.fini = _jive_node_fini, /* inherit */
+		.fini = jive_node_fini_, /* inherit */
 		.get_label = _jive_bitconcat_node_get_label, /* override */
-		.get_attrs = _jive_node_get_attrs, /* inherit */
-		.match_attrs = _jive_node_match_attrs, /* inherit */
+		.get_attrs = jive_node_get_attrs_, /* inherit */
+		.match_attrs = jive_node_match_attrs_, /* inherit */
 		.create = _jive_bitconcat_node_create, /* override */
-		.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	.flags = jive_binary_operation_associative,

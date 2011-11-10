@@ -18,12 +18,12 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 		.base = { /* jive_node_class */
 			.parent = &JIVE_BINARY_OPERATION,
 			.name = "BITBINARY",
-			.fini = _jive_node_fini, /* inherit */
-			.get_label = _jive_node_get_label, /* inherit */
-			.get_attrs = _jive_node_get_attrs, /* inherit */
-			.match_attrs = _jive_node_match_attrs, /* inherit */
-			.create = _jive_node_create, /* inherit */
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+			.fini = jive_node_fini_, /* inherit */
+			.get_label = jive_node_get_label_, /* inherit */
+			.get_attrs = jive_node_get_attrs_, /* inherit */
+			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.create = jive_node_create_, /* inherit */
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		.flags = jive_binary_operation_none,
@@ -53,7 +53,7 @@ _jive_bitstring_multiop_node_init(
 	for(n=0; n<noperands; n++)
 		operand_types[n] = output_type;
 	
-	_jive_node_init(self, region,
+	jive_node_init_(self, region,
 		noperands, operand_types, operands,
 		1, &output_type);
 }
@@ -93,12 +93,12 @@ const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 		.base = { /* jive_node_class */ \
 			.parent = &JIVE_BITBINARY_NODE, \
 			.name = #NAME, \
-			.fini = _jive_node_fini, /* inherit */ \
+			.fini = jive_node_fini_, /* inherit */ \
 			.get_label = _jive_##name_##_node_get_label, /* override */ \
-			.get_attrs = _jive_node_get_attrs, /* inherit */ \
-			.match_attrs = _jive_node_match_attrs, /* inherit */ \
+			.get_attrs = jive_node_get_attrs_, /* inherit */ \
+			.match_attrs = jive_node_match_attrs_, /* inherit */ \
 			.create = _jive_##name_##_node_create, /* override */ \
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */ \
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */ \
 		}, \
 		\
 		.flags = flags_, \
@@ -358,12 +358,12 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 		.base = { /* jive_node_class */
 			.parent = &JIVE_UNARY_OPERATION,
 			.name = "BITUNARY",
-			.fini = _jive_node_fini, /* inherit */
-			.get_label = _jive_node_get_label, /* inherit */
-			.get_attrs = _jive_node_get_attrs, /* inherit */
-			.match_attrs = _jive_node_match_attrs, /* inherit */
-			.create = _jive_node_create, /* inherit */
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+			.fini = jive_node_fini_, /* inherit */
+			.get_label = jive_node_get_label_, /* inherit */
+			.get_attrs = jive_node_get_attrs_, /* inherit */
+			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.create = jive_node_create_, /* inherit */
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		.single_apply_over = NULL,
@@ -398,12 +398,12 @@ const jive_bitunary_operation_class JIVE_BITNEGATE_NODE_ = {
 	.base = { /* jive_unary_operation_class */
 		.base = { /* jive_node_class */
 			.parent = &JIVE_UNARY_OPERATION,
-			.fini = _jive_node_fini, /* inherit */
+			.fini = jive_node_fini_, /* inherit */
 			.get_label = jive_bitnegate_node_get_label_, /* override */
-			.get_attrs = _jive_node_get_attrs, /* inherit */
-			.match_attrs = _jive_node_match_attrs, /* inherit */
+			.get_attrs = jive_node_get_attrs_, /* inherit */
+			.match_attrs = jive_node_match_attrs_, /* inherit */
 			.create = jive_bitnegate_node_create_, /* override */
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		.single_apply_over = NULL,
@@ -423,7 +423,7 @@ jive_bitnegate_node_init_(
 {
 	size_t nbits = ((jive_bitstring_output *) origin)->type.nbits;
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
-	_jive_node_init(self, region,
+	jive_node_init_(self, region,
 		1, &type, &origin,
 		1, &type);
 }
@@ -514,12 +514,12 @@ const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
 	.base = { /* jive_unary_operation_class */
 		.base = { /* jive_node_class */
 			.parent = &JIVE_UNARY_OPERATION,
-			.fini = _jive_node_fini, /* inherit */
+			.fini = jive_node_fini_, /* inherit */
 			.get_label = jive_bitnot_node_get_label_, /* override */
-			.get_attrs = _jive_node_get_attrs, /* inherit */
-			.match_attrs = _jive_node_match_attrs, /* inherit */
+			.get_attrs = jive_node_get_attrs_, /* inherit */
+			.match_attrs = jive_node_match_attrs_, /* inherit */
 			.create = jive_bitnot_node_create_, /* override */
-			.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		.single_apply_over = NULL,
@@ -539,7 +539,7 @@ jive_bitnot_node_init_(
 {
 	size_t nbits = ((jive_bitstring_output *) origin)->type.nbits;
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
-	_jive_node_init(self, region,
+	jive_node_init_(self, region,
 		1, &type, &origin,
 		1, &type);
 }

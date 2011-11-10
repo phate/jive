@@ -37,7 +37,7 @@ const jive_node_class JIVE_BITCONSTANT_NODE = {
 	.get_attrs = _jive_bitconstant_node_get_attrs, /* override */
 	.match_attrs = _jive_bitconstant_node_match_attrs, /* override */
 	.create = _jive_bitconstant_node_create, /* override */
-	.get_aux_rescls = _jive_node_get_aux_rescls /* inherit */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -47,7 +47,7 @@ _jive_bitconstant_node_init(
 	size_t nbits, const char bits[])
 {
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
-	_jive_node_init(&self->base, region,
+	jive_node_init_(&self->base, region,
 		0, NULL, NULL,
 		1, &type);
 	self->attrs.nbits = nbits;
@@ -61,7 +61,7 @@ _jive_bitconstant_node_fini(jive_node * self_)
 {
 	jive_bitconstant_node * self = (jive_bitconstant_node *) self_;
 	jive_context_free(self->base.graph->context, self->attrs.bits);
-	_jive_node_fini(&self->base);
+	jive_node_fini_(&self->base);
 }
 
 static char *
