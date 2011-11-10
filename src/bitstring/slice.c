@@ -14,23 +14,23 @@
 #include <jive/vsdg/region.h>
 
 static void
-_jive_bitslice_node_init(
+jive_bitslice_node_init_(
 	jive_bitslice_node * self,
 	jive_region * region,
 	jive_output * origin,
 	size_t low, size_t high);
 
 static char *
-_jive_bitslice_node_get_label(const jive_node * self);
+jive_bitslice_node_get_label_(const jive_node * self);
 
 static const jive_node_attrs *
-_jive_bitslice_node_get_attrs(const jive_node * self);
+jive_bitslice_node_get_attrs_(const jive_node * self);
 
 static bool
-_jive_bitslice_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs);
+jive_bitslice_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
 static jive_node *
-_jive_bitslice_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_bitslice_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
 static bool
@@ -43,10 +43,10 @@ const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_UNARY_OPERATION,
 		.fini = jive_node_fini_, /* inherit */
-		.get_label = _jive_bitslice_node_get_label, /* override */
-		.get_attrs = _jive_bitslice_node_get_attrs, /* override */
-		.match_attrs = _jive_bitslice_node_match_attrs, /* override */
-		.create = _jive_bitslice_node_create, /* override */
+		.get_label = jive_bitslice_node_get_label_, /* override */
+		.get_attrs = jive_bitslice_node_get_attrs_, /* override */
+		.match_attrs = jive_bitslice_node_match_attrs_, /* override */
+		.create = jive_bitslice_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
@@ -58,7 +58,7 @@ const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 };
 
 static void
-_jive_bitslice_node_init(
+jive_bitslice_node_init_(
 	jive_bitslice_node * self,
 	jive_region * region,
 	jive_output * origin,
@@ -74,7 +74,7 @@ _jive_bitslice_node_init(
 }
 
 static char *
-_jive_bitslice_node_get_label(const jive_node * self_)
+jive_bitslice_node_get_label_(const jive_node * self_)
 {
 	const jive_bitslice_node * self = (const jive_bitslice_node *) self_;
 	
@@ -84,14 +84,14 @@ _jive_bitslice_node_get_label(const jive_node * self_)
 }
 
 static const jive_node_attrs *
-_jive_bitslice_node_get_attrs(const jive_node * self_)
+jive_bitslice_node_get_attrs_(const jive_node * self_)
 {
 	const jive_bitslice_node * self = (const jive_bitslice_node *) self_;
 	return &self->attrs.base;
 }
 
 static bool
-_jive_bitslice_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs)
+jive_bitslice_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
 	const jive_bitslice_node_attrs * first = &((const jive_bitslice_node *)self)->attrs;
 	const jive_bitslice_node_attrs * second = (const jive_bitslice_node_attrs *) attrs;
@@ -99,7 +99,7 @@ _jive_bitslice_node_match_attrs(const jive_node * self, const jive_node_attrs * 
 }
 
 static jive_node *
-_jive_bitslice_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
+jive_bitslice_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
@@ -108,7 +108,7 @@ _jive_bitslice_node_create(struct jive_region * region, const jive_node_attrs * 
 	
 	jive_bitslice_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->base.class_ = &JIVE_BITSLICE_NODE;
-	_jive_bitslice_node_init(node, region, operands[0], attrs->low, attrs->high);
+	jive_bitslice_node_init_(node, region, operands[0], attrs->low, attrs->high);
 	return &node->base;
 }
 

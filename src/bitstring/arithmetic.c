@@ -39,7 +39,7 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 };
 
 static void
-_jive_bitstring_multiop_node_init(
+jive_bitstring_multiop_node_init_(
 	jive_node * self,
 	struct jive_region * region,
 	size_t noperands,
@@ -62,7 +62,7 @@ _jive_bitstring_multiop_node_init(
 #define MAKE_BASE_BINOP(name_, NAME, type_, flags_) \
 \
 static void \
-_jive_##name_##_node_init( \
+jive_##name_##_node_init_( \
 	jive_node * self, \
 	jive_region * region, \
 	size_t noperands, \
@@ -72,14 +72,14 @@ _jive_##name_##_node_init( \
 		jive_context_fatal_error(region->graph->context, "Type mismatch: '" #name_ "' node requires bitstring operands"); \
 	} \
 	size_t nbits = ((jive_bitstring_output *)operands[0])->type.nbits; \
-	_jive_bitstring_multiop_node_init(self, region, noperands, operands, nbits); \
+	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits); \
 } \
  \
 static char * \
-_jive_##name_##_node_get_label(const jive_node * self); \
+jive_##name_##_node_get_label_(const jive_node * self); \
  \
 static jive_node * \
-_jive_##name_##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
+jive_##name_##_node_create_(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * const operands[]); \
  \
 static bool \
@@ -94,10 +94,10 @@ const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 			.parent = &JIVE_BITBINARY_NODE, \
 			.name = #NAME, \
 			.fini = jive_node_fini_, /* inherit */ \
-			.get_label = _jive_##name_##_node_get_label, /* override */ \
+			.get_label = jive_##name_##_node_get_label_, /* override */ \
 			.get_attrs = jive_node_get_attrs_, /* inherit */ \
 			.match_attrs = jive_node_match_attrs_, /* inherit */ \
-			.create = _jive_##name_##_node_create, /* override */ \
+			.create = jive_##name_##_node_create_, /* override */ \
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */ \
 		}, \
 		\
@@ -114,18 +114,18 @@ const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 }; \
  \
 static char * \
-_jive_##name_##_node_get_label(const jive_node * self) \
+jive_##name_##_node_get_label_(const jive_node * self) \
 { \
 	return strdup(#NAME); \
 } \
  \
 static jive_node * \
-_jive_##name_##_node_create(struct jive_region * region, const jive_node_attrs * attrs, \
+jive_##name_##_node_create_(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * const operands[]) \
 { \
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node)); \
 	node->class_ = &JIVE_##NAME##_NODE; \
-	_jive_##name_##_node_init(node, region, noperands, operands); \
+	jive_##name_##_node_init_(node, region, noperands, operands); \
 	return node; \
 } \
 

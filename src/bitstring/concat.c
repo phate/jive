@@ -13,7 +13,7 @@
 #include <jive/vsdg/region.h>
 
 static void
-_jive_bitstring_multiop_node_init(
+jive_bitstring_multiop_node_init_(
 	jive_node * self,
 	struct jive_region * region,
 	size_t noperands,
@@ -38,7 +38,7 @@ _jive_bitstring_multiop_node_init(
 }
 
 static void
-_jive_bitconcat_node_init(
+jive_bitconcat_node_init_(
 	jive_node * self,
 	jive_region * region,
 	size_t noperands,
@@ -47,14 +47,14 @@ _jive_bitconcat_node_init(
 	size_t nbits = 0, n;
 	for(n=0; n<noperands; n++)
 		nbits += ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits;
-	_jive_bitstring_multiop_node_init(self, region, noperands, operands, nbits);
+	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
 }
 
 static char *
-_jive_bitconcat_node_get_label(const jive_node * self);
+jive_bitconcat_node_get_label_(const jive_node * self);
 
 static jive_node *
-_jive_bitconcat_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
 static bool
@@ -67,10 +67,10 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_BINARY_OPERATION,
 		.fini = jive_node_fini_, /* inherit */
-		.get_label = _jive_bitconcat_node_get_label, /* override */
+		.get_label = jive_bitconcat_node_get_label_, /* override */
 		.get_attrs = jive_node_get_attrs_, /* inherit */
 		.match_attrs = jive_node_match_attrs_, /* inherit */
-		.create = _jive_bitconcat_node_create, /* override */
+		.create = jive_bitconcat_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
 	
@@ -85,18 +85,18 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 };
 
 static char *
-_jive_bitconcat_node_get_label(const jive_node * self)
+jive_bitconcat_node_get_label_(const jive_node * self)
 {
 	return strdup("BITCONCAT");
 }
 
 static jive_node *
-_jive_bitconcat_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->class_ = &JIVE_BITCONCAT_NODE;
-	_jive_bitconcat_node_init(node, region, noperands, operands);
+	jive_bitconcat_node_init_(node, region, noperands, operands);
 	return node;
 }
 
