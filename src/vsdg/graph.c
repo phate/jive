@@ -54,7 +54,7 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change, context);
 	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
-	_jive_region_init(self->root_region, self, 0);
+	jive_region_init_(self->root_region, self, 0);
 	
 	self->ntracker_slots = 0;
 	self->tracker_slots = 0;

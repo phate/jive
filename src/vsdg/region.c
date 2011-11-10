@@ -19,7 +19,7 @@ jive_region_attrs_init(jive_region_attrs * attrs)
 }
 
 void
-_jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
+jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
 {
 	self->graph = graph;
 	self->parent = parent;
@@ -43,7 +43,7 @@ _jive_region_init(jive_region * self, jive_graph * graph, jive_region * parent)
 }
 
 void
-_jive_region_fini(jive_region * self)
+jive_region_fini_(jive_region * self)
 {
 	DEBUG_ASSERT(jive_region_empty(self));
 	DEBUG_ASSERT(self->nodes.first == 0 && self->nodes.last == 0);
@@ -80,12 +80,12 @@ jive_region_reparent(jive_region * self, jive_region * new_parent)
 void
 jive_region_destroy(jive_region * self)
 {
-	_jive_region_fini(self);
+	jive_region_fini_(self);
 	jive_context_free(self->graph->context, self);
 }
 
 void
-_jive_region_prune_subregions(jive_region * self)
+jive_region_prune_subregions_(jive_region * self)
 {
 	jive_region * subregion;
 	subregion = self->subregions.first;
@@ -103,7 +103,7 @@ jive_region *
 jive_region_create_subregion(jive_region * self)
 {
 	jive_region * subregion = jive_context_malloc(self->graph->context, sizeof(*subregion));
-	_jive_region_init(subregion, self->graph, self);
+	jive_region_init_(subregion, self->graph, self);
 	return subregion;
 }
 
