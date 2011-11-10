@@ -13,7 +13,7 @@
 
 static void
 jive_group_node_init_(jive_group_node * self,
-	struct jive_region * region, const jive_record_layout * layout,
+	struct jive_region * region, const jive_record_declaration * decl,
 	size_t narguments, jive_output * const arguments[]);
 
 static jive_node *
@@ -59,9 +59,7 @@ jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 	const jive_group_node_attrs * first = (const jive_group_node_attrs *)jive_node_get_attrs(self);
 	const jive_group_node_attrs * second = (const jive_group_node_attrs *)second_;
 	
-	if(first->layout != second->layout) return false;
-
-	return true;
+	return first->decl == second->decl;
 }
 
 static jive_node *
@@ -70,60 +68,59 @@ jive_group_node_create_(struct jive_region * region, const jive_node_attrs * att
 {
 	const jive_group_node_attrs * attrs = (const jive_group_node_attrs *)attrs_ ;
 
-	return jive_group_node_create(region, attrs->layout, noperands, operands);
+	return jive_group_node_create(region, attrs->decl, noperands, operands);
 }
 
 static void
 jive_group_node_init_(jive_group_node * self,
-	struct jive_region * region, const jive_record_layout * layout,
+	struct jive_region * region, const jive_record_declaration * decl,
 	size_t narguments, jive_output * const arguments[])
 {
-	if (layout->nelements != narguments) {
+	if (decl->nelements != narguments) {
 		jive_context_fatal_error(self->base.graph->context, "Type mismatch: number of parameters to group does not match record layout");
 	}
-	JIVE_DEBUG_ASSERT(layout->nelements == narguments);
 
-	int i;
-	const jive_type * arg_types[layout->nelements];
-	for(i = 0; i < layout->nelements; i++){
-		arg_types[i] = &layout->element[i].type->base;
+	size_t n;
+	const jive_type * arg_types[narguments];
+	for(n = 0; n < narguments; n++) {
+		arg_types[n] = &decl->elements[n]->base;
 	}
 
 	jive_record_type type;
-	jive_record_type_init(&type, layout);
+	jive_record_type_init(&type, decl);
 	const jive_type * rtype = &type.base.base ;
 
 	jive_node_init_(&self->base, region,
-		layout->nelements, arg_types, arguments,
-		1, (const jive_type **)&rtype);
+		narguments, arg_types, arguments,
+		1, &rtype);
 
 	type.base.base.class_->fini(&type.base.base);
 
-	self->attrs.layout = layout;
+	self->attrs.decl = decl;
 }
 
 jive_node *
-jive_group_node_create(struct jive_region * region, const jive_record_layout * layout,
+jive_group_node_create(struct jive_region * region, const jive_record_declaration * decl,
 	size_t narguments, jive_output * const arguments[])
 {
 	jive_group_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
 	node->base.class_ = &JIVE_GROUP_NODE;
-	jive_group_node_init_(node, region, layout, narguments, arguments);
+	jive_group_node_init_(node, region, decl, narguments, arguments);
 
 	return &node->base;
 }
 
 jive_output *
-jive_group_create(const jive_record_layout * layout,
+jive_group_create(const jive_record_declaration * decl,
 	size_t narguments, jive_output * arguments[const])
 {
 	jive_region * region = jive_region_innermost(narguments, arguments);
 
 	jive_group_node * node = (jive_group_node *)
-		jive_group_node_create(region, layout, narguments, arguments);
+		jive_group_node_create(region, decl, narguments, arguments);
 	
-	return (jive_output*)node->base.outputs[0];
+	return node->base.outputs[0];
 }
 
 
@@ -161,18 +158,19 @@ jive_select_node_init_(jive_select_node * self, struct jive_region * region,
 	const jive_record_type * operand_type = (const jive_record_type *)
 		operand->class_->get_type(operand);
 
-	if (element > operand_type->layout->nelements) {
+	if (element > operand_type->decl->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp), "Type mismatch: attempted to select element #%zd from record of %zd elements",
-			element, operand_type->layout->nelements);
+			element, operand_type->decl->nelements);
 		jive_context_fatal_error(context, jive_context_strdup(context, tmp));
 	}
 	
 	self->attrs.element = element;
 
+	const jive_type * output_type = &operand_type->decl->elements[element]->base;
 	jive_node_init_(&self->base, region,
 		1, (const jive_type * []){&operand_type->base.base}, &operand,
-		1, (const jive_type **) &operand_type->layout->element[element]);
+		1, &output_type);
 }
 
 static char *

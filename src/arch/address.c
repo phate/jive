@@ -56,7 +56,7 @@ jive_memberof_node_get_label_(const jive_node * self_)
 {
 	const jive_memberof_node * self = (const jive_memberof_node *) self_;
 	char tmp[128];
-	snprintf(tmp, sizeof(tmp), "MEMBEROF %p:%zd", self->attrs.record_layout, self->attrs.index);
+	snprintf(tmp, sizeof(tmp), "MEMBEROF %p:%zd", self->attrs.record_decl, self->attrs.index);
 	return strdup(tmp);
 }
 
@@ -72,7 +72,7 @@ jive_memberof_node_match_attrs_(const jive_node * self_, const jive_node_attrs *
 {
 	const jive_memberof_node * self = (const jive_memberof_node *) self_;
 	const jive_memberof_node_attrs * attrs = (const jive_memberof_node_attrs *) attrs_;
-	return (self->attrs.record_layout == attrs->record_layout) && (self->attrs.index == attrs->index);
+	return (self->attrs.record_decl == attrs->record_decl) && (self->attrs.index == attrs->index);
 }
 
 static jive_node *
@@ -81,7 +81,7 @@ jive_memberof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	const jive_memberof_node_attrs * attrs = (const jive_memberof_node_attrs *) attrs_;
-	return jive_memberof_node_create(region, operands[0], attrs->record_layout, attrs->index);
+	return jive_memberof_node_create(region, operands[0], attrs->record_decl, attrs->index);
 }
 
 static bool
@@ -93,7 +93,7 @@ jive_memberof_can_reduce_operand_(const jive_node_class * cls, const jive_node_a
 	if (!node)
 		return false;
 	
-	if (node->attrs.record_layout == attrs->record_layout && node->attrs.index == attrs->index)
+	if (node->attrs.record_decl == attrs->record_decl && node->attrs.index == attrs->index)
 		return true;
 	
 	return false;
@@ -108,7 +108,7 @@ jive_memberof_reduce_operand_(const jive_node_class * cls, const jive_node_attrs
 	if (!node)
 		return false;
 	
-	if (node->attrs.record_layout == attrs->record_layout && node->attrs.index == attrs->index) {
+	if (node->attrs.record_decl == attrs->record_decl && node->attrs.index == attrs->index) {
 		*operand = node->base.inputs[0]->origin;
 		return true;
 	}
@@ -119,7 +119,7 @@ jive_memberof_reduce_operand_(const jive_node_class * cls, const jive_node_attrs
 jive_node *
 jive_memberof_node_create(jive_region * region,
 	jive_output * address,
-	const jive_record_layout * record_layout, size_t index)
+	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_context * context = region->graph->context;
 	jive_memberof_node * node = jive_context_malloc(context, sizeof(*node));
@@ -131,7 +131,7 @@ jive_memberof_node_create(jive_region * region,
 	jive_node_init_(&node->base, region,
 		1, &address_type, &address,
 		1, &address_type);
-	node->attrs.record_layout = record_layout;
+	node->attrs.record_decl = record_decl;
 	node->attrs.index = index;
 	
 	return &node->base;
@@ -140,10 +140,10 @@ jive_memberof_node_create(jive_region * region,
 jive_node *
 jive_memberof_create(jive_region * region,
 	jive_output * address,
-	const jive_record_layout * record_layout, size_t index)
+	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_memberof_node_attrs attrs;
-	attrs.record_layout = record_layout;
+	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
 	return jive_unary_operation_normalized_create(&JIVE_MEMBEROF_NODE, region, &attrs.base, address)->node;
@@ -151,10 +151,10 @@ jive_memberof_create(jive_region * region,
 
 jive_output *
 jive_memberof(jive_output * address,
-	const jive_record_layout * record_layout, size_t index)
+	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_memberof_node_attrs attrs;
-	attrs.record_layout = record_layout;
+	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
 	return jive_unary_operation_normalized_create(&JIVE_MEMBEROF_NODE, address->node->region, &attrs.base, address);
@@ -205,7 +205,7 @@ jive_containerof_node_get_label_(const jive_node * self_)
 {
 	const jive_containerof_node * self = (const jive_containerof_node *) self_;
 	char tmp[128];
-	snprintf(tmp, sizeof(tmp), "CONTAINEROF %p:%zd", self->attrs.record_layout, self->attrs.index);
+	snprintf(tmp, sizeof(tmp), "CONTAINEROF %p:%zd", self->attrs.record_decl, self->attrs.index);
 	return strdup(tmp);
 }
 
@@ -221,7 +221,7 @@ jive_containerof_node_match_attrs_(const jive_node * self_, const jive_node_attr
 {
 	const jive_containerof_node * self = (const jive_containerof_node *) self_;
 	const jive_containerof_node_attrs * attrs = (const jive_containerof_node_attrs *) attrs_;
-	return (self->attrs.record_layout == attrs->record_layout) && (self->attrs.index == attrs->index);
+	return (self->attrs.record_decl == attrs->record_decl) && (self->attrs.index == attrs->index);
 }
 
 static jive_node *
@@ -230,7 +230,7 @@ jive_containerof_node_create_(jive_region * region, const jive_node_attrs * attr
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	const jive_containerof_node_attrs * attrs = (const jive_containerof_node_attrs *) attrs_;
-	return jive_containerof_node_create(region, operands[0], attrs->record_layout, attrs->index);
+	return jive_containerof_node_create(region, operands[0], attrs->record_decl, attrs->index);
 }
 
 static bool
@@ -242,7 +242,7 @@ jive_containerof_can_reduce_operand_(const jive_node_class * cls, const jive_nod
 	if (!node)
 		return false;
 	
-	if (node->attrs.record_layout == attrs->record_layout && node->attrs.index == attrs->index)
+	if (node->attrs.record_decl == attrs->record_decl && node->attrs.index == attrs->index)
 		return true;
 	
 	return false;
@@ -257,7 +257,7 @@ jive_containerof_reduce_operand_(const jive_node_class * cls, const jive_node_at
 	if (!node)
 		return false;
 	
-	if (node->attrs.record_layout == attrs->record_layout && node->attrs.index == attrs->index) {
+	if (node->attrs.record_decl == attrs->record_decl && node->attrs.index == attrs->index) {
 		*operand = node->base.inputs[0]->origin;
 		return true;
 	}
@@ -268,7 +268,7 @@ jive_containerof_reduce_operand_(const jive_node_class * cls, const jive_node_at
 jive_node *
 jive_containerof_node_create(jive_region * region,
 	jive_output * address,
-	const jive_record_layout * record_layout, size_t index)
+	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_context * context = region->graph->context;
 	jive_containerof_node * node = jive_context_malloc(context, sizeof(*node));
@@ -280,7 +280,7 @@ jive_containerof_node_create(jive_region * region,
 	jive_node_init_(&node->base, region,
 		1, &address_type, &address,
 		1, &address_type);
-	node->attrs.record_layout = record_layout;
+	node->attrs.record_decl = record_decl;
 	node->attrs.index = index;
 	
 	return &node->base;
@@ -289,10 +289,10 @@ jive_containerof_node_create(jive_region * region,
 jive_node *
 jive_containerof_create(jive_region * region,
 	jive_output * address,
-	const jive_record_layout * record_layout, size_t index)
+	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_containerof_node_attrs attrs;
-	attrs.record_layout = record_layout;
+	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
 	return jive_unary_operation_normalized_create(&JIVE_CONTAINEROF_NODE, region, &attrs.base, address)->node;
@@ -300,10 +300,10 @@ jive_containerof_create(jive_region * region,
 
 jive_output *
 jive_containerof(jive_output * address,
-	const jive_record_layout * record_layout, size_t index)
+	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_containerof_node_attrs attrs;
-	attrs.record_layout = record_layout;
+	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
 	return jive_unary_operation_normalized_create(&JIVE_CONTAINEROF_NODE, address->node->region, &attrs.base, address);

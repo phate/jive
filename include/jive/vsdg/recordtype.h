@@ -2,7 +2,15 @@
 #define JIVE_VSDG_RECORD_TYPE_H
 
 #include <jive/vsdg/valuetype.h>
-#include <jive/vsdg/recordlayout.h>
+
+struct jive_value_type;
+
+typedef struct jive_record_declaration jive_record_declaration;
+
+struct jive_record_declaration {
+	size_t nelements;
+	const jive_value_type ** elements;
+};
 
 typedef struct jive_record_type jive_record_type;
 typedef struct jive_record_input jive_record_input;
@@ -13,7 +21,7 @@ extern const jive_type_class JIVE_RECORD_TYPE;
 
 struct jive_record_type {
 	jive_value_type base;
-	const jive_record_layout * layout;
+	const jive_record_declaration * decl;
 };
 
 extern const jive_input_class JIVE_RECORD_INPUT;
@@ -37,6 +45,6 @@ struct jive_record_gate {
 void
 jive_record_type_init(
 	jive_record_type * self,
-	const jive_record_layout * layout);
+	const jive_record_declaration * decl);
 
 #endif

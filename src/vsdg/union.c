@@ -11,7 +11,7 @@
 
 static void
 jive_unify_node_init_(jive_unify_node * self,
-	struct jive_region * region, const jive_union_layout * layout,
+	struct jive_region * region, const jive_union_declaration * decl,
 	size_t option, jive_output * const operand);
 
 static jive_node *
@@ -57,7 +57,7 @@ jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 	const jive_unify_node_attrs * first = (const jive_unify_node_attrs *)jive_node_get_attrs(self);
 	const jive_unify_node_attrs * second = (const jive_unify_node_attrs *)second_;
 	
-	return (first->layout == second->layout) && (first->option == second->option);
+	return (first->decl == second->decl) && (first->option == second->option);
 }
 
 static jive_node *
@@ -66,48 +66,48 @@ jive_unify_node_create_(struct jive_region * region, const jive_node_attrs * att
 {
 	const jive_unify_node_attrs * attrs = (const jive_unify_node_attrs *)attrs_ ;
 	
-	return jive_unify_node_create(region, attrs->layout, attrs->option, operands[0]);
+	return jive_unify_node_create(region, attrs->decl, attrs->option, operands[0]);
 }
 
 static void
 jive_unify_node_init_(jive_unify_node * self,
-	struct jive_region * region, const jive_union_layout * layout,
+	struct jive_region * region, const jive_union_declaration * decl,
 	size_t option, jive_output * const operand)
 {
-	if (option >= layout->nelements) {
+	if (option >= decl->nelements) {
 		jive_context_fatal_error(self->base.graph->context,
 			"Type mismatch: invalid option for union type");
 	}
 	
-	const jive_type * arg_type = &layout->element[option]->base;
+	const jive_type * arg_type = &decl->elements[option]->base;
 	
-	JIVE_DECLARE_UNION_TYPE(type, layout);
+	JIVE_DECLARE_UNION_TYPE(type, decl);
 	
 	jive_node_init_(&self->base, region,
 		1, &arg_type, &operand,
 		1, &type);
 	
 	self->attrs.option = option;
-	self->attrs.layout = layout;
+	self->attrs.decl = decl;
 }
 
 jive_node *
-jive_unify_node_create(struct jive_region * region, const jive_union_layout * layout,
+jive_unify_node_create(struct jive_region * region, const jive_union_declaration * decl,
 	size_t option, jive_output * const operand)
 {
 	jive_unify_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
 	node->base.class_ = &JIVE_UNIFY_NODE;
-	jive_unify_node_init_(node, region, layout, option, operand);
+	jive_unify_node_init_(node, region, decl, option, operand);
 
 	return &node->base;
 }
 
 jive_output *
-jive_unify_create(const jive_union_layout * layout,
+jive_unify_create(const jive_union_declaration * decl,
 	size_t option, jive_output * const operand)
 {
-	jive_node * node = jive_unify_node_create(operand->node->region, layout, option, operand);
+	jive_node * node = jive_unify_node_create(operand->node->region, decl, option, operand);
 
 	return node->outputs[0];
 }
@@ -147,18 +147,20 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 	const jive_union_type * operand_type = (const jive_union_type *)
 		operand->class_->get_type(operand);
 
-	if (element > operand_type->layout->nelements) {
+	if (element > operand_type->decl->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp), "Type mismatch: attempted to select element #%zd from union of %zd elements",
-			element, operand_type->layout->nelements);
+			element, operand_type->decl->nelements);
 		jive_context_fatal_error(context, jive_context_strdup(context, tmp));
 	}
 	
 	self->attrs.element = element;
+	
+	const jive_type * output_type = &operand_type->decl->elements[element]->base;
 
 	jive_node_init_(&self->base, region,
 		1, (const jive_type * []){&operand_type->base.base}, &operand,
-		1, (const jive_type **) &operand_type->layout->element[element]);
+		1, &output_type);
 }
 
 static char *

@@ -83,10 +83,10 @@ const jive_gate_class JIVE_RECORD_GATE = {
 
 
 void
-jive_record_type_init(jive_record_type * self, const jive_record_layout * layout)
+jive_record_type_init(jive_record_type * self, const jive_record_declaration * decl)
 {
 	self->base.base.class_ = &JIVE_RECORD_TYPE;
-	self->layout = layout ; 
+	self->decl = decl;
 }
 
 /* record_type inheritable members */
@@ -98,7 +98,7 @@ jive_record_type_copy_(const jive_type * self_, jive_context * context)
 
 	jive_record_type * type = jive_context_malloc(context, sizeof(*type));
 
-	jive_record_type_init(type, self->layout);
+	jive_record_type_init(type, self->decl);
 
 	return &type->base.base;
 }
@@ -140,7 +140,7 @@ jive_record_type_equals_(const jive_type * self_, const jive_type * other_)
 	const jive_record_type * self = (const jive_record_type *) self_;
 	const jive_record_type * other = (const jive_record_type *) other_;
 
-	return (self->layout == other->layout) ;
+	return (self->decl == other->decl) ;
 }
 
 jive_gate *
@@ -163,8 +163,8 @@ void
 jive_record_input_init_(jive_record_input * self, const jive_record_type * type,
 	struct jive_node * node, size_t index, jive_output * origin)
 {
-	jive_value_input_init_(&self->base, node, index, origin);	
-	jive_record_type_init(&self->type, type->layout);
+	jive_value_input_init_(&self->base, node, index, origin);
+	jive_record_type_init(&self->type, type->decl);
 }
 
 void
@@ -190,7 +190,7 @@ jive_record_output_init_(jive_record_output * self, const jive_record_type * typ
 	struct jive_node * node, size_t index)
 {
 	jive_value_output_init_(&self->base, node, index);
-	jive_record_type_init(&self->type, type->layout);
+	jive_record_type_init(&self->type, type->decl);
 }
 
 void
@@ -217,7 +217,7 @@ jive_record_gate_init_(jive_record_gate * self, const jive_record_type * type,
 	struct jive_graph * graph,  const char name[])
 {
 	jive_value_gate_init_(&self->base, graph, name);
-	jive_record_type_init(&self->type, type->layout);
+	jive_record_type_init(&self->type, type->decl);
 }
 
 void

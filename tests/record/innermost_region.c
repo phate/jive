@@ -5,7 +5,6 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/function.h>
 #include <jive/vsdg/record.h>
-#include <jive/vsdg/recordlayout.h>
 
 int main()
 {
@@ -23,13 +22,12 @@ int main()
 	jive_output * o0 = jive_bitconstant(graph, 8, "00000010");
 	jive_output * o1 = jive_node_gate_output(function->top, arg_gate);
 
-	const jive_record_layout_element l_elements[] = {
-		{(jive_value_type*)int8,0},
-		{(jive_value_type*)int8,1}
-	};
+	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
+	
+	static const jive_value_type * l_elements[] = { &bits8.base, &bits8.base };
+	static const jive_record_declaration l = {2, l_elements};
 
-	jive_record_layout * l = jive_record_layout_create(ctx, 2, l_elements, 4, 2);
-	jive_output * g = jive_group_create(l, 2, (jive_output * []){o0, o1});
+	jive_output * g = jive_group_create(&l, 2, (jive_output * []){o0, o1});
 	jive_output * s = jive_select_create(1, g);
 
 	jive_node_gate_input(function->bottom, ret_gate, s);
@@ -39,8 +37,6 @@ int main()
 	assert(function == g->node->region);
 
 	jive_view(graph, stderr);
-
-	jive_record_layout_destroy(l);
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

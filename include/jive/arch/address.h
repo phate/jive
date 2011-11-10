@@ -6,7 +6,7 @@
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
-#include <jive/vsdg/recordlayout.h>
+#include <jive/vsdg/recordtype.h>
 
 /* "memberof" operator: given an address that is the start of a record
 in memory, compute address of specified member of record */
@@ -20,7 +20,7 @@ typedef struct jive_memberof_node jive_memberof_node;
 
 struct jive_memberof_node_attrs {
 	jive_node_attrs base;
-	const jive_record_layout * record_layout;
+	const jive_record_declaration * record_decl;
 	size_t index;
 };
 
@@ -32,16 +32,16 @@ struct jive_memberof_node {
 struct jive_node *
 jive_memberof_node_create(struct jive_region * region,
 	struct jive_output * address,
-	const struct jive_record_layout * record_layout, size_t index);
+	const jive_record_declaration * record_decl, size_t index);
 
 struct jive_node *
 jive_memberof_create(struct jive_region * region,
 	jive_output * address,
-	const jive_record_layout * record_layout, size_t index);
+	const jive_record_declaration * record_decl, size_t index);
 
 jive_output *
 jive_memberof(jive_output * address,
-	const jive_record_layout * record_layout, size_t index);
+	const jive_record_declaration * record_decl, size_t index);
 
 JIVE_EXPORTED_INLINE jive_memberof_node *
 jive_memberof_node_cast(jive_node * node)
@@ -64,7 +64,7 @@ typedef struct jive_containerof_node jive_containerof_node;
 
 struct jive_containerof_node_attrs {
 	jive_node_attrs base;
-	const jive_record_layout * record_layout;
+	const jive_record_declaration * record_decl;
 	size_t index;
 };
 
@@ -76,16 +76,16 @@ struct jive_containerof_node {
 struct jive_node *
 jive_containerof_node_create(struct jive_region * region,
 	struct jive_output * address,
-	const struct jive_record_layout * record_layout, size_t index);
+	const jive_record_declaration * record_decl, size_t index);
 
 struct jive_node *
 jive_containerof_create(struct jive_region * region,
 	jive_output * address,
-	const jive_record_layout * record_layout, size_t index);
+	const jive_record_declaration * record_decl, size_t index);
 
 jive_output *
 jive_containerof(jive_output * address,
-	const jive_record_layout * record_layout, size_t index);
+	const jive_record_declaration * record_decl, size_t index);
 
 JIVE_EXPORTED_INLINE jive_containerof_node *
 jive_containerof_node_cast(jive_node * node)

@@ -1,5 +1,6 @@
 #include <jive/arch/dataobject.h>
 
+#include <jive/arch/memlayout.h>
 #include <jive/bitstring/constant.h>
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/anchortype.h>
@@ -7,10 +8,8 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/record.h>
-#include <jive/vsdg/recordlayout.h>
 #include <jive/vsdg/recordtype.h>
 #include <jive/vsdg/union.h>
-#include <jive/vsdg/unionlayout.h>
 #include <jive/vsdg/uniontype.h>
 #include <jive/vsdg/statetype.h>
 
@@ -30,7 +29,7 @@ is_powerof2(size_t v)
 }
 
 static void
-flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, jive_output *** ret_items)
+flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, jive_output *** ret_items, jive_memlayout_mapper * layout_mapper)
 {
 	size_t nitems = 0;
 	jive_output ** items = 0;
@@ -50,7 +49,8 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		items[0] = data;
 	} else if (type_->class_ == &JIVE_RECORD_TYPE) {
 		const jive_record_type * type = (const jive_record_type *) type_;
-		const jive_record_layout * layout = type->layout;
+		const jive_record_declaration * decl = type->decl;
+		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
 		
 		jive_group_node * node = jive_group_node_cast(data->node);
 		if (!node)
@@ -58,7 +58,7 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 			
 		jive_graph * graph = data->node->graph;
 		
-		nitems = layout->total_size;
+		nitems = layout->base.total_size;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
 		
 		jive_output * zero_pad = jive_bitconstant(graph, 8, "00000000");
@@ -66,11 +66,11 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		for (n = 0; n < nitems; n++)
 			items[n] = zero_pad;
 			
-		for (k = 0; k < layout->nelements; k++) {
+		for (k = 0; k < decl->nelements; k++) {
 			size_t nsub_items;
 			jive_output ** sub_items;
 			
-			flatten_data_items(ctx, data->node->inputs[k]->origin, &nsub_items, &sub_items);
+			flatten_data_items(ctx, data->node->inputs[k]->origin, &nsub_items, &sub_items, layout_mapper);
 			
 			if (nsub_items + layout->element[k].offset > nitems)
 				jive_context_fatal_error(ctx, "Invalid record layout: element exceeds record");
@@ -85,7 +85,8 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		}
 	} else if (type_->class_ == &JIVE_UNION_TYPE) {
 		const jive_union_type * type = (const jive_union_type *) type_;
-		const jive_union_layout * layout = type->layout;
+		const jive_union_declaration * decl = type->decl;
+		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
 		
 		jive_unify_node * node = jive_unify_node_cast(data->node);
 		if (!node)
@@ -93,7 +94,7 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 			
 		jive_graph * graph = data->node->graph;
 		
-		nitems = layout->total_size;
+		nitems = layout->base.total_size;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
 		
 		jive_output * zero_pad = jive_bitconstant(graph, 8, "00000000");
@@ -104,7 +105,7 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		size_t nsub_items;
 		jive_output ** sub_items;
 		
-		flatten_data_items(ctx, data->node->inputs[0]->origin, &nsub_items, &sub_items);
+		flatten_data_items(ctx, data->node->inputs[0]->origin, &nsub_items, &sub_items, layout_mapper);
 		
 		if (nsub_items > nitems)
 			jive_context_fatal_error(ctx, "Invalid union layout: element exceeds union");
@@ -134,7 +135,7 @@ squeeze_data_items(size_t nitems, jive_output ** items)
 }
 
 jive_output *
-jive_dataobj(jive_output * data)
+jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 {
 	jive_graph * graph = data->node->graph;
 	jive_context * context = graph->context;
@@ -145,7 +146,7 @@ jive_dataobj(jive_output * data)
 	
 	size_t ndata_items;
 	jive_output ** data_items;
-	flatten_data_items(context, data, &ndata_items, &data_items);
+	flatten_data_items(context, data, &ndata_items, &data_items, layout_mapper);
 	ndata_items = squeeze_data_items(ndata_items, data_items);
 	jive_node * items = jive_dataitems_node_create(region, ndata_items, data_items);
 	jive_context_free(context, data_items);

@@ -8,6 +8,7 @@
 #include <jive/util/buffer.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/memory.h>
+#include <jive/arch/memlayout-simple.h>
 #include <jive/arch/stackslot.h>
 #include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/label.h>
@@ -24,8 +25,8 @@
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 
-static jive_record_layout_element * string_elements;
-static jive_record_layout string_layout;
+static const jive_value_type ** string_elements;
+static jive_record_declaration string_decl;
 
 static jive_output *
 make_string(jive_graph * graph, const char * txt)
@@ -35,15 +36,11 @@ make_string(jive_graph * graph, const char * txt)
 	
 	string_elements = malloc(sizeof(*string_elements) * len);
 	for (n = 0; n < len; n++) {
-		string_elements[n].type = &bits8.base;
-		string_elements[n].offset = n;
+		string_elements[n] = &bits8.base;
 	}
 	
-	string_layout.context = NULL;
-	string_layout.nelements = len;
-	string_layout.element = string_elements;
-	string_layout.alignment = 1;
-	string_layout.total_size = len;
+	string_decl.nelements = len;
+	string_decl.elements = string_elements;
 	
 	jive_output * chars[len];
 	for (n = 0; n < len; n++) {
@@ -54,8 +51,14 @@ make_string(jive_graph * graph, const char * txt)
 		chars[n] = jive_bitconstant(graph, 8, bits);
 	}
 	
-	jive_output * tmp = jive_group_create(&string_layout, len, chars);
-	return jive_dataobj(tmp);
+	jive_output * tmp = jive_group_create(&string_decl, len, chars);
+	
+	jive_memlayout_mapper_simple layout_mapper;
+	jive_memlayout_mapper_simple_init(&layout_mapper, graph->context, 32);
+	jive_output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
+	jive_memlayout_mapper_simple_fini(&layout_mapper);
+	
+	return dataobj;
 }
 
 static const char hello_world[] = "Hello, world!\n";

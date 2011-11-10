@@ -8,8 +8,8 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/operators.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/controltype.c \
 	src/vsdg/functiontype.c src/vsdg/function.c \
-	src/vsdg/recordtype.c src/vsdg/recordlayout.c src/vsdg/record.c \
-	src/vsdg/uniontype.c src/vsdg/unionlayout.c src/vsdg/union.c \
+	src/vsdg/recordtype.c src/vsdg/record.c \
+	src/vsdg/uniontype.c src/vsdg/union.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
 	src/vsdg/negotiator.c \
@@ -39,6 +39,8 @@ LIBJIVE_SRC += \
 	src/arch/loadstore.c \
 	src/arch/addresstype.c \
 	src/arch/address.c \
+	src/arch/memlayout.c \
+	src/arch/memlayout-simple.c \
 	src/arch/dataobject.c \
 
 # shaper

@@ -7,6 +7,7 @@
 #include <jive/view.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/instruction.h>
+#include <jive/arch/memlayout-simple.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
@@ -22,8 +23,11 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 {
 	jive_graph * graph = jive_graph_create(ctx);
 	
+	jive_memlayout_mapper_simple layout_mapper;
+	jive_memlayout_mapper_simple_init(&layout_mapper, ctx, 32);
+	
 	jive_output * value = data_def(graph);
-	jive_output * dataobj = jive_dataobj(value);
+	jive_output * dataobj = jive_dataobj(value, &layout_mapper.base.base);
 	jive_node * name = jive_objdef_node_create(dataobj, "my_label");
 	jive_node_reserve(name);
 	
@@ -44,6 +48,8 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	assert(strncmp(buffer_str + strlen(expected_header), expected_data, strlen(expected_data)) == 0);
 	
 	jive_buffer_fini(&buffer);
+	
+	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));
@@ -84,22 +90,17 @@ make_record1(jive_graph * graph)
 	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
 	
-	static const jive_record_layout_element elements[] = {
-		{&bits32.base, 0},
-		{&bits16.base, 4},
-		{&bits8.base, 6}
-	};
-	static const jive_record_layout layout = {
-		.context = NULL,
-		.nelements = 3, .element = (jive_record_layout_element *) &elements,
-		.alignment = 4, .total_size = 8
+	static const jive_value_type * elements1[] = {&bits32.base, &bits16.base, &bits8.base};
+	static const jive_record_declaration decl = {
+		.nelements = 3,
+		.elements = elements1
 	};
 	
 	jive_output * c1 = jive_bitconstant(graph, 32, bits);
 	jive_output * c2 = jive_bitconstant(graph, 16, bits);
 	jive_output * c3 = jive_bitconstant(graph, 8, bits);
 	
-	return jive_group_create(&layout, 3, (jive_output * []){c1, c2, c3});
+	return jive_group_create(&decl, 3, (jive_output * []){c1, c2, c3});
 }
 
 static jive_output *
@@ -108,33 +109,25 @@ make_record2(jive_graph * graph)
 	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 	
-	static const jive_record_layout_element elements1[] = {
-		{&bits16.base, 0},
-		{&bits16.base, 2}
+	static const jive_value_type * elements1[] = {&bits16.base, &bits16.base};
+	static const jive_record_declaration decl1 = {
+		.nelements = 2,
+		.elements = elements1
 	};
-	static const jive_record_layout layout1 = {
-		.context = NULL,
-		.nelements = 2, .element = (jive_record_layout_element *) &elements1,
-		.alignment = 4, .total_size = 4
-	};
-	static const jive_record_type rec1 = {{{&JIVE_RECORD_TYPE}}, &layout1};
+	static const jive_record_type rec1 = {{{&JIVE_RECORD_TYPE}}, &decl1};
 	
-	static const jive_record_layout_element elements2[] = {
-		{&rec1.base, 0},
-		{&bits32.base, 4}
-	};
-	static const jive_record_layout layout2 = {
-		.context = NULL,
-		.nelements = 2, .element = (jive_record_layout_element *) &elements2,
-		.alignment = 4, .total_size = 8
+	static const jive_value_type * elements2[] = {&rec1.base, &bits32.base};
+	static const jive_record_declaration decl2 = {
+		.nelements = 2,
+		.elements = elements2
 	};
 	
 	jive_output * c1 = jive_bitconstant(graph, 32, bits);
 	jive_output * c2 = jive_bitconstant(graph, 16, bits);
 	
-	jive_output * tmp = jive_group_create(&layout1, 2, (jive_output *[]){c2, c2});
+	jive_output * tmp = jive_group_create(&decl1, 2, (jive_output *[]){c2, c2});
 	
-	return jive_group_create(&layout2, 2, (jive_output * []){tmp, c1});
+	return jive_group_create(&decl2, 2, (jive_output * []){tmp, c1});
 }
 
 static jive_output *
@@ -143,19 +136,15 @@ make_union1(jive_graph * graph)
 	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 	
-	static const jive_union_layout_element * elements1[] = {
-		&bits16.base,
-		&bits32.base
-	};
-	static const jive_union_layout layout1 = {
-		.context = NULL,
-		.nelements = 2, .element = elements1,
-		.alignment = 4, .total_size = 4
+	static const jive_value_type * elements1[] = {&bits16.base, &bits32.base};
+	static const jive_union_declaration decl1 = {
+		.nelements = 2,
+		.elements = elements1,
 	};
 	
 	jive_output * c = jive_bitconstant(graph, 16, bits);
 	
-	return jive_unify_create(&layout1, 0, c);
+	return jive_unify_create(&decl1, 0, c);
 }
 
 static jive_output *
@@ -164,19 +153,15 @@ make_union2(jive_graph * graph)
 	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 	
-	static const jive_union_layout_element * elements1[] = {
-		&bits16.base,
-		&bits32.base
-	};
-	static const jive_union_layout layout1 = {
-		.context = NULL,
-		.nelements = 2, .element = elements1,
-		.alignment = 4, .total_size = 4
+	static const jive_value_type * elements1[] = {&bits16.base, &bits32.base};
+	static const jive_union_declaration decl1 = {
+		.nelements = 2,
+		.elements = elements1,
 	};
 	
 	jive_output * c = jive_bitconstant(graph, 32, bits);
 	
-	return jive_unify_create(&layout1, 1, c);
+	return jive_unify_create(&decl1, 1, c);
 }
 
 int main()
