@@ -25,7 +25,7 @@ jive_##name##_notifier_unlink(jive_##name##_notifier * self) \
 } \
  \
 static void \
-_jive_##name##_notifier_disconnect(jive_notifier * _self) \
+jive_##name##_notifier_disconnect_(jive_notifier * _self) \
 { \
 	jive_##name##_notifier * self = (jive_##name##_notifier *) _self; \
 	jive_##name##_notifier_unlink(self); \
@@ -33,7 +33,7 @@ _jive_##name##_notifier_disconnect(jive_notifier * _self) \
 } \
  \
 static const jive_notifier_class JIVE_##NAME##_NOTIFIER = { \
-	.disconnect = _jive_##name##_notifier_disconnect \
+	.disconnect = jive_##name##_notifier_disconnect_ \
 }; \
  \
 void \
