@@ -6,28 +6,28 @@
 /* anchor_type inheritable members */
 
 jive_input *
-_jive_anchor_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);
+jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);
 
 jive_output *
-_jive_anchor_type_create_output(const jive_type * self, struct jive_node * node, size_t index);
+jive_anchor_type_create_output_(const jive_type * self, struct jive_node * node, size_t index);
 
 /* anchor_input inheritable members */
 
 void
-_jive_anchor_input_init(jive_anchor_input * self, struct jive_node * node, size_t index, jive_output * origin);
+jive_anchor_input_init_(jive_anchor_input * self, struct jive_node * node, size_t index, jive_output * origin);
 
 void
-_jive_anchor_input_fini(jive_input * self_);
+jive_anchor_input_fini_(jive_input * self_);
 
 const jive_type *
-_jive_anchor_input_get_type(const jive_input * self);
+jive_anchor_input_get_type_(const jive_input * self);
 
 /* anchor_output inheritable members */
 
 void
-_jive_anchor_output_init(jive_anchor_output * self, struct jive_node * node, size_t index);
+jive_anchor_output_init_(jive_anchor_output * self, struct jive_node * node, size_t index);
 
 const jive_type *
-_jive_anchor_output_get_type(const jive_output * self);
+jive_anchor_output_get_type_(const jive_output * self);
 
 #endif
