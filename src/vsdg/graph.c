@@ -7,7 +7,7 @@
 #include <jive/util/list.h>
 
 static inline void
-_jive_graph_init(jive_graph * self, jive_context * context)
+jive_graph_init_(jive_graph * self, jive_context * context)
 {
 	self->context = context;
 	self->variables.first = self->variables.last = 0;
@@ -70,7 +70,7 @@ prune_regions_recursive(jive_region * region)
 }
 
 static void
-_jive_graph_fini(jive_graph * self)
+jive_graph_fini_(jive_graph * self)
 {
 	while(self->labels.first) {
 		jive_label_internal * label = self->labels.first;
@@ -134,14 +134,14 @@ jive_graph_create(jive_context * context)
 {
 	jive_graph * graph;
 	graph = jive_context_malloc(context, sizeof(*graph));
-	_jive_graph_init(graph, context);
+	jive_graph_init_(graph, context);
 	return graph;
 }
 
 void
 jive_graph_destroy(jive_graph * self)
 {
-	_jive_graph_fini(self);
+	jive_graph_fini_(self);
 	jive_context_free(self->context, self);
 }
 
