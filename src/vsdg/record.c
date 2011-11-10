@@ -12,35 +12,35 @@
 
 
 static void
-_jive_group_node_init(jive_group_node * self,
+jive_group_node_init_(jive_group_node * self,
 	struct jive_region * region, const jive_record_layout * layout,
 	size_t narguments, jive_output * const arguments[]);
 
 static jive_node *
-_jive_group_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_group_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
 static char *
-_jive_group_node_get_label(const jive_node * self_);
+jive_group_node_get_label_(const jive_node * self_);
 
 static const jive_node_attrs *
 jive_group_node_get_attrs_(const jive_node * self);
 
 static bool
-_jive_group_node_match_attrs(const jive_node * self, const jive_node_attrs * second);
+jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
 
 const jive_node_class JIVE_GROUP_NODE = {
 	.parent = &JIVE_NODE,
 	.fini = jive_node_fini_, /* inherit */
-	.get_label = _jive_group_node_get_label, /* override */
+	.get_label = jive_group_node_get_label_, /* override */
 	.get_attrs = jive_group_node_get_attrs_, /* override */
-	.match_attrs = _jive_group_node_match_attrs, /* override */
-	.create = _jive_group_node_create, /* override */
+	.match_attrs = jive_group_node_match_attrs_, /* override */
+	.create = jive_group_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static char *
-_jive_group_node_get_label(const jive_node * self_)
+jive_group_node_get_label_(const jive_node * self_)
 {
 	return strdup("GROUP");
 }
@@ -54,7 +54,7 @@ jive_group_node_get_attrs_(const jive_node * self_)
 }
 
 static bool
-_jive_group_node_match_attrs(const jive_node * self, const jive_node_attrs * second_)
+jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * second_)
 {
 	const jive_group_node_attrs * first = (const jive_group_node_attrs *)jive_node_get_attrs(self);
 	const jive_group_node_attrs * second = (const jive_group_node_attrs *)second_;
@@ -65,7 +65,7 @@ _jive_group_node_match_attrs(const jive_node * self, const jive_node_attrs * sec
 }
 
 static jive_node *
-_jive_group_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
+jive_group_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
 	const jive_group_node_attrs * attrs = (const jive_group_node_attrs *)attrs_ ;
@@ -74,7 +74,7 @@ _jive_group_node_create(struct jive_region * region, const jive_node_attrs * att
 }
 
 static void
-_jive_group_node_init(jive_group_node * self,
+jive_group_node_init_(jive_group_node * self,
 	struct jive_region * region, const jive_record_layout * layout,
 	size_t narguments, jive_output * const arguments[])
 {
@@ -109,7 +109,7 @@ jive_group_node_create(struct jive_region * region, const jive_record_layout * l
 	jive_group_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
 	node->base.class_ = &JIVE_GROUP_NODE;
-	_jive_group_node_init(node, region, layout, narguments, arguments);
+	jive_group_node_init_(node, region, layout, narguments, arguments);
 
 	return &node->base;
 }
@@ -128,30 +128,30 @@ jive_group_create(const jive_record_layout * layout,
 
 
 static char *
-_jive_select_node_get_label(const jive_node * self);
+jive_select_node_get_label_(const jive_node * self);
 
 static const jive_node_attrs *
-_jive_select_node_get_attrs(const jive_node * self);
+jive_select_node_get_attrs_(const jive_node * self);
 
 static jive_node *
-_jive_select_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_select_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
 static bool
-_jive_select_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs);
+jive_select_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
 const jive_node_class JIVE_SELECT_NODE = {
 	.parent = &JIVE_NODE,
 	.fini = jive_node_fini_, /* inherit */
-	.get_label = _jive_select_node_get_label, /* override */
-	.get_attrs = _jive_select_node_get_attrs, /* override */
-	.match_attrs = _jive_select_node_match_attrs, /* override */
-	.create = _jive_select_node_create,	/* override */
+	.get_label = jive_select_node_get_label_, /* override */
+	.get_attrs = jive_select_node_get_attrs_, /* override */
+	.match_attrs = jive_select_node_match_attrs_, /* override */
+	.create = jive_select_node_create_,	/* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
-_jive_select_node_init(jive_select_node * self, struct jive_region * region,
+jive_select_node_init_(jive_select_node * self, struct jive_region * region,
 	size_t element, jive_output * operand)
 {
 	jive_context * context = region->graph->context;
@@ -176,7 +176,7 @@ _jive_select_node_init(jive_select_node * self, struct jive_region * region,
 }
 
 static char *
-_jive_select_node_get_label(const jive_node * self_)
+jive_select_node_get_label_(const jive_node * self_)
 {
 	const jive_select_node * self = (const jive_select_node *) self_;
 
@@ -186,7 +186,7 @@ _jive_select_node_get_label(const jive_node * self_)
 }
 
 static const jive_node_attrs *
-_jive_select_node_get_attrs(const jive_node * self_)
+jive_select_node_get_attrs_(const jive_node * self_)
 {
 	const jive_select_node * self = (const jive_select_node *)self_;
 
@@ -194,7 +194,7 @@ _jive_select_node_get_attrs(const jive_node * self_)
 } 
 
 static bool
-_jive_select_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs)
+jive_select_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
 	const jive_select_node_attrs * first = &((const jive_select_node *)self)->attrs;
 	const jive_select_node_attrs * second = (const jive_select_node_attrs *) attrs;
@@ -206,7 +206,7 @@ _jive_select_node_match_attrs(const jive_node * self, const jive_node_attrs * at
 }
 
 static jive_node *
-_jive_select_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
+jive_select_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
 	const jive_select_node_attrs * attrs = (const jive_select_node_attrs *)attrs_;
@@ -220,7 +220,7 @@ jive_select_node_create(struct jive_region * region, size_t member, jive_output 
 	jive_select_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
 	node->base.class_ = &JIVE_SELECT_NODE;
-	_jive_select_node_init(node, region, member, operand);
+	jive_select_node_init_(node, region, member, operand);
 
 	return node;	
 }
