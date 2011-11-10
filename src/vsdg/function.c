@@ -14,41 +14,41 @@
 #include <jive/vsdg/traverser.h>
 
 static void
-_jive_apply_node_init(jive_apply_node * self, struct jive_region * region, jive_output * function,
+jive_apply_node_init_(jive_apply_node * self, struct jive_region * region, jive_output * function,
 	size_t narguments, jive_output * const arguments[]);
 
 static jive_node *
-_jive_apply_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
 static char *
-_jive_apply_node_get_label(const jive_node * self_);
+jive_apply_node_get_label_(const jive_node * self_);
 
 const jive_node_class JIVE_APPLY_NODE = {
 	.parent = &JIVE_NODE,
 	.fini = jive_node_fini_, /* inherit */
-	.get_label = _jive_apply_node_get_label, /* override */
+	.get_label = jive_apply_node_get_label_, /* override */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.create = _jive_apply_node_create, /* override */
+	.create = jive_apply_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static char *
-_jive_apply_node_get_label(const jive_node * self_)
+jive_apply_node_get_label_(const jive_node * self_)
 {
 	return strdup("APPLY");
 }
 
 static jive_node *
-_jive_apply_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
 	return jive_apply_node_create(region, operands[0], noperands - 1, &operands[1]);
 }
 
 static void
-_jive_apply_node_init(
+jive_apply_node_init_(
 	jive_apply_node * self,
 	struct jive_region * region,
 	jive_output * function,
@@ -87,39 +87,39 @@ jive_apply_node_create(struct jive_region * region, jive_output * function,
 	jive_apply_node * node = jive_context_malloc(region->graph->context, sizeof( * node));
 
 	node->class_ = &JIVE_APPLY_NODE;
-	_jive_apply_node_init(node, region, function, narguments, arguments);
+	jive_apply_node_init_(node, region, function, narguments, arguments);
 
 	return node; 
 }
 
 static void
-_jive_symbolicfunction_node_fini(jive_node * self_);
+jive_symbolicfunction_node_fini_(jive_node * self_);
 
 static char *
-_jive_symbolicfunction_node_get_label(const jive_node * self_);
+jive_symbolicfunction_node_get_label_(const jive_node * self_);
 
 static const jive_node_attrs *
-_jive_symbolicfunction_node_get_attrs(const jive_node * self);
+jive_symbolicfunction_node_get_attrs_(const jive_node * self);
 
 static bool
-_jive_symbolicfunction_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs);
+jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
 static jive_node *
-_jive_symbolicfunction_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
+jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
 	.parent = &JIVE_NODE,
-	.fini = _jive_symbolicfunction_node_fini, /* override */
-	.get_label = _jive_symbolicfunction_node_get_label, /* override */
-	.get_attrs = _jive_symbolicfunction_node_get_attrs, /* inherit */
-	.match_attrs = _jive_symbolicfunction_node_match_attrs, /* override */
-	.create = _jive_symbolicfunction_node_create, /* override */
+	.fini = jive_symbolicfunction_node_fini_, /* override */
+	.get_label = jive_symbolicfunction_node_get_label_, /* override */
+	.get_attrs = jive_symbolicfunction_node_get_attrs_, /* inherit */
+	.match_attrs = jive_symbolicfunction_node_match_attrs_, /* override */
+	.create = jive_symbolicfunction_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
-_jive_symbolicfunction_node_init(
+jive_symbolicfunction_node_init_(
 	jive_symbolicfunction_node * node,
 	jive_graph * graph,
 	const char * fctname,
@@ -137,7 +137,7 @@ _jive_symbolicfunction_node_init(
 }
 
 static void
-_jive_symbolicfunction_node_fini(jive_node * self_)
+jive_symbolicfunction_node_fini_(jive_node * self_)
 {
 	jive_symbolicfunction_node * self = (jive_symbolicfunction_node *) self_;
 	
@@ -149,7 +149,7 @@ _jive_symbolicfunction_node_fini(jive_node * self_)
 }
 
 static char *
-_jive_symbolicfunction_node_get_label(const jive_node * self_)
+jive_symbolicfunction_node_get_label_(const jive_node * self_)
 {
 	const jive_symbolicfunction_node * self = (const jive_symbolicfunction_node *) self_;
 	
@@ -157,7 +157,7 @@ _jive_symbolicfunction_node_get_label(const jive_node * self_)
 }
 
 static jive_node *
-_jive_symbolicfunction_node_create(struct jive_region * region, const jive_node_attrs * attrs_,
+jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
 	const jive_symbolicfunction_node_attrs * attrs = (const jive_symbolicfunction_node_attrs *) attrs_;
@@ -165,7 +165,7 @@ _jive_symbolicfunction_node_create(struct jive_region * region, const jive_node_
 }
 
 static const jive_node_attrs *
-_jive_symbolicfunction_node_get_attrs(const jive_node * self_)
+jive_symbolicfunction_node_get_attrs_(const jive_node * self_)
 {
 	const jive_symbolicfunction_node * self = (const jive_symbolicfunction_node *) self_;
 	
@@ -173,7 +173,7 @@ _jive_symbolicfunction_node_get_attrs(const jive_node * self_)
 }
 
 static bool
-_jive_symbolicfunction_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs)
+jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
 	const jive_symbolicfunction_node_attrs * first = &((const jive_symbolicfunction_node *)self)->attrs;
 	const jive_symbolicfunction_node_attrs * second = (const jive_symbolicfunction_node_attrs *) attrs;
@@ -189,7 +189,7 @@ jive_symbolicfunction_node_create(struct jive_graph * graph, const char * name, 
 {
 	jive_symbolicfunction_node * node = jive_context_malloc(graph->context, sizeof(* node));
 	node->base.class_ = &JIVE_SYMBOLICFUNCTION_NODE;
-	_jive_symbolicfunction_node_init(node, graph, name, type);
+	jive_symbolicfunction_node_init_(node, graph, name, type);
 	return &node->base;
 } 
 
