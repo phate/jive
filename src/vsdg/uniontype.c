@@ -51,7 +51,7 @@ _jive_union_gate_get_type(const jive_gate * self);
 
 const jive_type_class JIVE_UNION_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
-	.fini = _jive_value_type_fini, /* inherit */
+	.fini = jive_value_type_fini_, /* inherit */
 	.get_label = _jive_union_type_get_label, /* override */
 	.create_input = _jive_union_type_create_input, /* override */
 	.create_output = _jive_union_type_create_output, /* overrride */
@@ -162,7 +162,7 @@ void
 _jive_union_input_init(jive_union_input * self, const jive_union_type * type,
 	struct jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_value_input_init(&self->base, node, index, origin);
+	jive_value_input_init_(&self->base, node, index, origin);
 	jive_union_type_init(&self->type, type->layout);
 }
 
@@ -188,7 +188,7 @@ void
 _jive_union_output_init(jive_union_output * self, const jive_union_type * type,
 	struct jive_node * node, size_t index)
 {
-	_jive_value_output_init(&self->base, node, index);
+	jive_value_output_init_(&self->base, node, index);
 	jive_union_type_init(&self->type, type->layout);
 }
 
@@ -215,7 +215,7 @@ void
 _jive_union_gate_init(jive_union_gate * self, const jive_union_type * type,
 	struct jive_graph * graph, const char name[])
 {
-	_jive_value_gate_init(&self->base, graph, name);
+	jive_value_gate_init_(&self->base, graph, name);
 	jive_union_type_init(&self->type, type->layout);
 }
 

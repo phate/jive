@@ -141,7 +141,7 @@ jive_function_type_fini(jive_function_type * self)
 	}
 	jive_context_free(self->ctx, self->return_types);
 	
-	_jive_value_type_fini(&self->base.base);
+	jive_value_type_fini_(&self->base.base);
 }
 
 void
@@ -238,7 +238,7 @@ void
 _jive_function_input_init(jive_function_input * self, const jive_function_type * type,
 	struct jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_value_input_init(&self->base, node, index, origin);
+	jive_value_input_init_(&self->base, node, index, origin);
 	
 	jive_function_type_init(&self->type, 
 		node->graph->context,
@@ -270,7 +270,7 @@ void
 _jive_function_output_init(jive_function_output * self, const jive_function_type * type,
   struct jive_node * node, size_t index)
 {
-	_jive_value_output_init(&self->base, node, index);
+	jive_value_output_init_(&self->base, node, index);
 	
 	jive_function_type_init(&self->type, 
 		node->graph->context,
@@ -302,7 +302,7 @@ void
 _jive_function_gate_init(jive_function_gate * self, const jive_function_type * type,
   struct jive_graph * graph,  const char name[])
 {
-	_jive_value_gate_init(&self->base, graph, name);
+	jive_value_gate_init_(&self->base, graph, name);
 	jive_function_type_init(&self->type, 
 		graph->context,
 		type->narguments, (const jive_type * const *)type->argument_types,

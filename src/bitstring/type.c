@@ -47,7 +47,7 @@ _jive_bitstring_type_fini( jive_type* self_ )
 {
 	jive_bitstring_type* self = (jive_bitstring_type*) self_ ;
 
-	_jive_value_type_fini( (jive_type*)&self->base ) ;
+	jive_value_type_fini_( (jive_type*)&self->base ) ;
 }
 
 char *
@@ -124,7 +124,7 @@ _jive_bitstring_type_init(jive_bitstring_type * self, size_t nbits)
 void
 _jive_bitstring_input_init(jive_bitstring_input * self, size_t nbits, struct jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_value_input_init(&self->base, node, index, origin);
+	jive_value_input_init_(&self->base, node, index, origin);
 	_jive_bitstring_type_init(&self->type, nbits);
 }
 
@@ -141,7 +141,7 @@ void
 _jive_bitstring_output_init(jive_bitstring_output * self, size_t nbits, struct jive_node * node, size_t index)
 {
 	self->base.base.class_ = &JIVE_BITSTRING_OUTPUT;
-	_jive_value_output_init(&self->base, node, index);
+	jive_value_output_init_(&self->base, node, index);
 	_jive_bitstring_type_init(&self->type, nbits);
 }
 
@@ -158,7 +158,7 @@ void
 _jive_bitstring_gate_init(jive_bitstring_gate * self, size_t nbits, struct jive_graph * graph, const char name[])
 {
 	self->base.base.class_ = &JIVE_BITSTRING_GATE;
-	_jive_value_gate_init(&self->base, graph, name);
+	jive_value_gate_init_(&self->base, graph, name);
 	_jive_bitstring_type_init(&self->type, nbits);
 }
 
