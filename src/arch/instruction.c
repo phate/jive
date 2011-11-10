@@ -15,16 +15,16 @@
 
 const jive_node_class JIVE_INSTRUCTION_NODE = {
 	.parent = &JIVE_NODE,
-	.fini = _jive_instruction_node_fini, /* override */
-	.get_label = _jive_instruction_node_get_label, /* override */
-	.get_attrs = _jive_instruction_node_get_attrs, /* override */
-	.match_attrs = _jive_instruction_node_match_attrs, /* override */
-	.create = _jive_instruction_node_create, /* override */
-	.get_aux_rescls = _jive_instruction_node_get_aux_rescls, /* override */
+	.fini = jive_instruction_node_fini_, /* override */
+	.get_label = jive_instruction_node_get_label_, /* override */
+	.get_attrs = jive_instruction_node_get_attrs_, /* override */
+	.match_attrs = jive_instruction_node_match_attrs_, /* override */
+	.create = jive_instruction_node_create_, /* override */
+	.get_aux_rescls = jive_instruction_node_get_aux_rescls_, /* override */
 };
 
 void
-_jive_instruction_node_init_simple(
+jive_instruction_node_init_simple_(
 	jive_instruction_node * self,
 	jive_region * region,
 	const jive_instruction_class * icls,
@@ -56,7 +56,7 @@ _jive_instruction_node_init_simple(
 }
 
 void
-_jive_instruction_node_init(
+jive_instruction_node_init_(
 	jive_instruction_node * self,
 	jive_region * region,
 	const jive_instruction_class * icls,
@@ -88,7 +88,7 @@ _jive_instruction_node_init(
 }
 
 void
-_jive_instruction_node_fini(jive_node * self_)
+jive_instruction_node_fini_(jive_node * self_)
 {
 	jive_instruction_node * self = (jive_instruction_node *) self_;
 	
@@ -99,21 +99,21 @@ _jive_instruction_node_fini(jive_node * self_)
 }
 
 char *
-_jive_instruction_node_get_label(const jive_node * self_)
+jive_instruction_node_get_label_(const jive_node * self_)
 {
 	const jive_instruction_node * self = (const jive_instruction_node *) self_;
 	return strdup(self->attrs.icls->name);
 }
 
 const jive_node_attrs *
-_jive_instruction_node_get_attrs(const jive_node * self_)
+jive_instruction_node_get_attrs_(const jive_node * self_)
 {
 	const jive_instruction_node * self = (const jive_instruction_node *) self_;
 	return &self->attrs.base;
 }
 
 bool
-_jive_instruction_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs)
+jive_instruction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
 	const jive_instruction_node_attrs * first = &((const jive_instruction_node *) self)->attrs;
 	const jive_instruction_node_attrs * second = (const jive_instruction_node_attrs *) attrs;
@@ -128,20 +128,20 @@ _jive_instruction_node_match_attrs(const jive_node * self, const jive_node_attrs
 
 
 jive_node *
-_jive_instruction_node_create(jive_region * region, const jive_node_attrs * attrs_,
+jive_instruction_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
 	const jive_instruction_node_attrs * attrs = (const jive_instruction_node_attrs *) attrs_;
 	
 	jive_instruction_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
 	other->base.class_ = &JIVE_INSTRUCTION_NODE;
-	_jive_instruction_node_init(other, region, attrs->icls, operands, attrs->immediates);
+	jive_instruction_node_init_(other, region, attrs->icls, operands, attrs->immediates);
 	
 	return &other->base;
 }
 
 const struct jive_resource_class *
-_jive_instruction_node_get_aux_rescls(const jive_node * self_)
+jive_instruction_node_get_aux_rescls_(const jive_node * self_)
 {
 	const jive_instruction_node * self = (const jive_instruction_node *) self_;
 	
@@ -159,7 +159,7 @@ jive_instruction_node_create_simple(
 {
 	jive_instruction_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->base.class_ = &JIVE_INSTRUCTION_NODE;
-	_jive_instruction_node_init_simple(node, region, icls, operands, immediates);
+	jive_instruction_node_init_simple_(node, region, icls, operands, immediates);
 	
 	return &node->base;
 }
@@ -173,7 +173,7 @@ jive_instruction_node_create_extended(
 {
 	jive_instruction_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->base.class_ = &JIVE_INSTRUCTION_NODE;
-	_jive_instruction_node_init(node, region, icls, operands, immediates);
+	jive_instruction_node_init_(node, region, icls, operands, immediates);
 	
 	return &node->base;
 }

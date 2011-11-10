@@ -6,7 +6,7 @@
 /* inheritable instruction node member functions */
 
 void
-_jive_instruction_node_init_simple(
+jive_instruction_node_init_simple_(
 	jive_instruction_node * self,
 	struct jive_region * region,
 	const jive_instruction_class * icls,
@@ -14,22 +14,22 @@ _jive_instruction_node_init_simple(
 	const long immediates[]);
 
 void
-_jive_instruction_node_fini(jive_node * self);
+jive_instruction_node_fini_(jive_node * self);
 
 char *
-_jive_instruction_node_get_label(const jive_node * self);
+jive_instruction_node_get_label_(const jive_node * self);
 
 const jive_node_attrs *
-_jive_instruction_node_get_attrs(const jive_node * self);
+jive_instruction_node_get_attrs_(const jive_node * self);
 
 jive_node *
-_jive_instruction_node_create(struct jive_region * region, const jive_node_attrs * attrs,
+jive_instruction_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
 bool
-_jive_instruction_node_match_attrs(const jive_node * self, const jive_node_attrs * attrs);
+jive_instruction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
 const struct jive_resource_class *
-_jive_instruction_node_get_aux_rescls(const jive_node * self);
+jive_instruction_node_get_aux_rescls_(const jive_node * self);
 
 #endif
