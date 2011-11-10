@@ -16,31 +16,31 @@ const jive_type_class JIVE_STATE_TYPE = {
 	.parent = &JIVE_TYPE,
 	.fini = _jive_state_type_fini, /* override */
 	.copy = _jive_state_type_copy, /* override */
-	.get_label = _jive_type_get_label, /* inherit */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = _jive_state_type_create_input, /* override */
 	.create_output = _jive_state_type_create_output, /* override */
 	.create_gate = _jive_state_type_create_gate, /* override */
-	.equals = _jive_type_equals, /* inherit */
+	.equals = jive_type_equals_, /* inherit */
 };
 
 const jive_input_class JIVE_STATE_INPUT = {
 	.parent = &JIVE_INPUT,
-	.fini = _jive_input_fini, /* inherit */
-	.get_label = _jive_input_get_label, /* inherit */
+	.fini = jive_input_fini_, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = _jive_state_input_get_type, /* override */
 };
 
 const jive_output_class JIVE_STATE_OUTPUT = {
 	.parent = &JIVE_OUTPUT,
-	.fini = _jive_output_fini, /* inherit */
-	.get_label = _jive_output_get_label, /* inherit */
+	.fini = jive_output_fini_, /* inherit */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = _jive_state_output_get_type, /* override */
 };
 
 const jive_gate_class JIVE_STATE_GATE = {
 	.parent = &JIVE_GATE,
-	.fini = _jive_gate_fini, /* inherit */
-	.get_label = _jive_gate_get_label, /* inherit */
+	.fini = jive_gate_fini_, /* inherit */
+	.get_label = jive_gate_get_label_, /* inherit */
 	.get_type = _jive_state_gate_get_type, /* override */
 };
 
@@ -48,7 +48,7 @@ void
 _jive_state_type_fini(jive_type * self_)
 {
 	jive_state_type * self = (jive_state_type *) self_;
-	_jive_type_fini( &self->base ) ;
+	jive_type_fini_( &self->base ) ;
 }
 
 jive_type *
@@ -93,7 +93,7 @@ _jive_state_type_create_gate(const jive_type * self, struct jive_graph * graph, 
 void
 _jive_state_input_init(jive_state_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_input_init(&self->base, node, index, origin);
+	jive_input_init_(&self->base, node, index, origin);
 }
 
 const jive_type *
@@ -105,7 +105,7 @@ _jive_state_input_get_type(const jive_input * self)
 void
 _jive_state_output_init(jive_state_output * self, struct jive_node * node, size_t index)
 {
-	_jive_output_init(&self->base, node, index);
+	jive_output_init_(&self->base, node, index);
 }
 
 const jive_type *
@@ -117,7 +117,7 @@ _jive_state_output_get_type(const jive_output * self)
 void
 _jive_state_gate_init(jive_state_gate * self, struct jive_graph * graph, const char * name)
 {
-	_jive_gate_init(&self->base, graph, name);
+	jive_gate_init_(&self->base, graph, name);
 }
 
 const jive_type *

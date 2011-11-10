@@ -16,61 +16,55 @@ const jive_type jive_type_singleton = {
 };
 
 void
-_jive_type_fini(jive_type * self)
+jive_type_fini_(jive_type * self)
 {
 }
 
 char *
-_jive_type_get_label(const jive_type * self)
+jive_type_get_label_(const jive_type * self)
 {
 	return strdup("X");
 }
 
 jive_input *
-_jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	jive_context * context = node->graph->context;
 	jive_input * input = jive_context_malloc(context, sizeof(*input));
 	input->class_ = &JIVE_INPUT;
-	_jive_input_init(input, node, index, initial_operand);
+	jive_input_init_(input, node, index, initial_operand);
 	return input;
 }
 
 jive_output *
-_jive_type_create_output(const jive_type * self, struct jive_node * node, size_t index)
+jive_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
 	jive_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
 	output->class_ = &JIVE_OUTPUT;
-	_jive_output_init(output, node, index);
+	jive_output_init_(output, node, index);
 	return output;
 }
 
 jive_gate *
-_jive_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name)
+jive_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
 	jive_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
 	gate->class_ = &JIVE_GATE;
-	_jive_gate_init(gate, graph, name);
+	jive_gate_init_(gate, graph, name);
 	return gate;
 }
 
 bool
-_jive_type_equals(const jive_type * self, const jive_type * other)
+jive_type_equals_(const jive_type * self, const jive_type * other)
 {
 	return self->class_ == other->class_;
 }
 
 jive_type *
-_jive_type_copy(const jive_type * self, jive_context * context)
+jive_type_copy_(const jive_type * self, jive_context * context)
 {
 	/* base-type non copyable */
 	return NULL;
-}
-
-bool
-_jive_type_accepts(const jive_type * self, const jive_type * other)
-{
-	return self->class_ == other->class_;
 }
 
 void
@@ -96,22 +90,22 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node
 
 const jive_type_class JIVE_TYPE = {
 	.parent = 0,
-	.fini = _jive_type_fini,
-	.get_label = _jive_type_get_label,
-	.create_input = _jive_type_create_input,
-	.create_output = _jive_type_create_output,
-	.create_gate = _jive_type_create_gate,
-	.equals = _jive_type_equals,
-	.copy = _jive_type_copy
+	.fini = jive_type_fini_,
+	.get_label = jive_type_get_label_,
+	.create_input = jive_type_create_input_,
+	.create_output = jive_type_create_output_,
+	.create_gate = jive_type_create_gate_,
+	.equals = jive_type_equals_,
+	.copy = jive_type_copy_
 };
 
 /* inputs */
 
 const struct jive_input_class JIVE_INPUT = {
 	.parent = 0,
-	.fini = _jive_input_fini,
-	.get_label = _jive_input_get_label,
-	.get_type = _jive_input_get_type,
+	.fini = jive_input_fini_,
+	.get_label = jive_input_get_label_,
+	.get_type = jive_input_get_type_,
 };
 
 static inline void
@@ -129,7 +123,7 @@ jive_input_remove_as_user(jive_input * self, jive_output * output)
 }
 
 void
-_jive_input_init(jive_input * self, struct jive_node * node, size_t index, jive_output * origin)
+jive_input_init_(jive_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
 	self->node = node;
 	self->index = index;
@@ -146,7 +140,7 @@ _jive_input_init(jive_input * self, struct jive_node * node, size_t index, jive_
 }
 
 void
-_jive_input_fini(jive_input * self)
+jive_input_fini_(jive_input * self)
 {
 	if (self->ssavar) jive_input_unassign_ssavar(self);
 	
@@ -175,7 +169,7 @@ _jive_input_fini(jive_input * self)
 }
 
 char *
-_jive_input_get_label(const jive_input * self)
+jive_input_get_label_(const jive_input * self)
 {
 	if (self->gate) return jive_gate_get_label(self->gate);
 	char tmp[16];
@@ -184,7 +178,7 @@ _jive_input_get_label(const jive_input * self)
 }
 
 const jive_type *
-_jive_input_get_type(const jive_input * self)
+jive_input_get_type_(const jive_input * self)
 {
 	return &jive_type_singleton;
 }
@@ -335,12 +329,12 @@ jive_input_destroy(jive_input * self)
 
 const struct jive_output_class JIVE_OUTPUT = {
 	.parent = 0,
-	.fini = &_jive_output_fini,
-	.get_label = &_jive_output_get_label,
-	.get_type = &_jive_output_get_type,
+	.fini = &jive_output_fini_,
+	.get_label = &jive_output_get_label_,
+	.get_type = &jive_output_get_type_,
 };
 
-void _jive_output_init(
+void jive_output_init_(
 	jive_output * self,
 	struct jive_node * node,
 	size_t index)
@@ -356,7 +350,7 @@ void _jive_output_init(
 	self->gate_outputs_list.prev = self->gate_outputs_list.next = 0;
 }
 
-void _jive_output_fini(jive_output * self)
+void jive_output_fini_(jive_output * self)
 {
 	DEBUG_ASSERT(self->users.first == 0 && self->users.last == 0);
 	
@@ -385,7 +379,7 @@ void _jive_output_fini(jive_output * self)
 }
 
 char *
-_jive_output_get_label(const jive_output * self)
+jive_output_get_label_(const jive_output * self)
 {
 	if (self->gate) return jive_gate_get_label(self->gate);
 	char tmp[16];
@@ -394,7 +388,7 @@ _jive_output_get_label(const jive_output * self)
 }
 
 const jive_type *
-_jive_output_get_type(const jive_output * self)
+jive_output_get_type_(const jive_output * self)
 {
 	return &jive_type_singleton;
 }
@@ -505,13 +499,13 @@ jive_output_destroy(jive_output * self)
 
 const jive_gate_class JIVE_GATE = {
 	.parent = 0,
-	.fini = _jive_gate_fini,
-	.get_label = _jive_gate_get_label,
-	.get_type = _jive_gate_get_type,
+	.fini = jive_gate_fini_,
+	.get_label = jive_gate_get_label_,
+	.get_type = jive_gate_get_type_,
 };
 
 void
-_jive_gate_init(jive_gate * self, struct jive_graph * graph, const char name[])
+jive_gate_init_(jive_gate * self, struct jive_graph * graph, const char name[])
 {
 	self->graph = graph;
 	self->name = jive_context_strdup(graph->context, name);
@@ -528,7 +522,7 @@ _jive_gate_init(jive_gate * self, struct jive_graph * graph, const char name[])
 }
 
 void
-_jive_gate_fini(jive_gate * self)
+jive_gate_fini_(jive_gate * self)
 {
 	DEBUG_ASSERT(self->inputs.first == 0 && self->inputs.last == 0);
 	DEBUG_ASSERT(self->outputs.first == 0 && self->outputs.last == 0);
@@ -542,13 +536,13 @@ _jive_gate_fini(jive_gate * self)
 }
 
 char *
-_jive_gate_get_label(const jive_gate * self)
+jive_gate_get_label_(const jive_gate * self)
 {
 	return strdup(self->name);
 }
 
 const jive_type *
-_jive_gate_get_type(const jive_gate * self)
+jive_gate_get_type_(const jive_gate * self)
 {
 	return &jive_type_singleton;
 }

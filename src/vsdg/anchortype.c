@@ -15,26 +15,26 @@ static const jive_anchor_type jive_anchor_type_singleton = {
 
 const jive_type_class JIVE_ANCHOR_TYPE = {
 	.parent = &JIVE_TYPE,
-	.fini = _jive_type_fini, /* inherit */
-	.get_label = _jive_type_get_label, /* inherit */
+	.fini = jive_type_fini_, /* inherit */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = _jive_anchor_type_create_input, /* override */
 	.create_output = _jive_anchor_type_create_output, /* override */
-	.create_gate = _jive_type_create_gate, /* inherit */
-	.equals = _jive_type_equals, /* inherit */
-	.copy = _jive_type_copy /* inherit */
+	.create_gate = jive_type_create_gate_, /* inherit */
+	.equals = jive_type_equals_, /* inherit */
+	.copy = jive_type_copy_ /* inherit */
 };
 
 const jive_input_class JIVE_ANCHOR_INPUT = {
 	.parent = &JIVE_INPUT,
 	.fini = _jive_anchor_input_fini, /* override */
-	.get_label = _jive_input_get_label, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = _jive_anchor_input_get_type, /* override */
 };
 
 const jive_output_class JIVE_ANCHOR_OUTPUT = {
 	.parent = &JIVE_OUTPUT,
-	.fini = _jive_output_fini, /* inherit */
-	.get_label = _jive_output_get_label, /* inherit */
+	.fini = jive_output_fini_, /* inherit */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = _jive_anchor_output_get_type, /* override */
 };
 
@@ -59,7 +59,7 @@ _jive_anchor_type_create_output(const jive_type * self, struct jive_node * node,
 void
 _jive_anchor_input_init(jive_anchor_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_input_init(&self->base, node, index, origin);
+	jive_input_init_(&self->base, node, index, origin);
 	DEBUG_ASSERT(origin->node->region->anchor == 0);
 	origin->node->region->anchor = &self->base;
 }
@@ -71,7 +71,7 @@ _jive_anchor_input_fini(jive_input * self_)
 	if (self->base.origin->node->region->anchor == &self->base) {
 		self->base.origin->node->region->anchor = 0;
 	}
-	_jive_input_fini(&self->base);
+	jive_input_fini_(&self->base);
 }
 
 const jive_type *
@@ -83,7 +83,7 @@ _jive_anchor_input_get_type(const jive_input * self)
 void
 _jive_anchor_output_init(jive_anchor_output * self, struct jive_node * node, size_t index)
 {
-	_jive_output_init(&self->base, node, index);
+	jive_output_init_(&self->base, node, index);
 }
 
 const jive_type *

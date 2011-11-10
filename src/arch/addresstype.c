@@ -52,28 +52,28 @@ const jive_type_class JIVE_ADDRESS_TYPE = {
 	.create_input = jive_address_type_create_input_, /* override */
 	.create_output = jive_address_type_create_output_, /* override */
 	.create_gate = jive_address_type_create_gate_, /* override */
-	.equals = _jive_type_equals, /* inherit */
+	.equals = jive_type_equals_, /* inherit */
 	.copy = jive_address_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_ADDRESS_INPUT = {
 	.parent = &JIVE_VALUE_INPUT,
 	.fini = jive_address_input_fini_, /* override */
-	.get_label = _jive_input_get_label, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = jive_address_input_get_type_ /* override */
 };
 
 const jive_output_class JIVE_ADDRESS_OUTPUT = {
 	.parent = &JIVE_VALUE_OUTPUT,
 	.fini = jive_address_output_fini_, /* override */
-	.get_label = _jive_output_get_label, /* inherit */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = jive_address_output_get_type_ /* override */
 };
 
 const jive_gate_class JIVE_ADDRESS_GATE = {
 	.parent = &JIVE_VALUE_GATE,
 	.fini = jive_address_gate_fini_, /* inherit */
-	.get_label = _jive_gate_get_label, /* inherit */
+	.get_label = jive_gate_get_label_, /* inherit */
 	.get_type = jive_address_gate_get_type_ /* override */
 };
 
@@ -156,7 +156,7 @@ jive_address_input_fini_(jive_input * self_)
 	jive_address_input * self = (jive_address_input *) self_;
 
 	self->type.base.base.class_->fini(&self->type.base.base);
-	_jive_input_fini(&self->base.base);
+	jive_input_fini_(&self->base.base);
 }
 
 const jive_type *
@@ -182,7 +182,7 @@ jive_address_output_fini_(jive_output * self_)
 	jive_address_output * self = (jive_address_output *)self_;
 
 	self->type.base.base.class_->fini(&self->type.base.base);
-	_jive_output_fini(&self->base.base);
+	jive_output_fini_(&self->base.base);
 }
 
 const jive_type *
@@ -208,7 +208,7 @@ void jive_address_gate_fini_(jive_gate * self_)
 	jive_address_gate * self = (jive_address_gate *)self_;
 
 	self->type.base.base.class_->fini(&self->type.base.base);
-	_jive_gate_fini(&self->base.base);	
+	jive_gate_fini_(&self->base.base);	
 }
 
 const jive_type *

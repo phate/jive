@@ -162,27 +162,27 @@ const jive_type_class JIVE_REUSE_TYPE = {
 	.create_input = jive_reuse_type_create_input_, /* override */
 	.create_output = jive_reuse_type_create_output_, /* override */
 	.create_gate = jive_reuse_type_create_gate_, /* override */
-	.equals = _jive_type_equals, /* inherit */
+	.equals = jive_type_equals_, /* inherit */
 };
 
 const jive_input_class JIVE_REUSE_INPUT = {
 	.parent = &JIVE_INPUT,
-	.fini = _jive_input_fini, /* inherit */
-	.get_label = _jive_input_get_label, /* inherit */
+	.fini = jive_input_fini_, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = jive_reuse_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_REUSE_OUTPUT = {
 	.parent = &JIVE_OUTPUT,
-	.fini = _jive_output_fini, /* inherit */
-	.get_label = _jive_output_get_label, /* inherit */
+	.fini = jive_output_fini_, /* inherit */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = jive_reuse_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_REUSE_GATE = {
 	.parent = &JIVE_GATE,
-	.fini = _jive_gate_fini, /* inherit */
-	.get_label = _jive_gate_get_label, /* inherit */
+	.fini = jive_gate_fini_, /* inherit */
+	.get_label = jive_gate_get_label_, /* inherit */
 	.get_type = jive_reuse_gate_get_type_, /* override */
 };
 

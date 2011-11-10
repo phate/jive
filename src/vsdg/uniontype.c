@@ -63,21 +63,21 @@ const jive_type_class JIVE_UNION_TYPE = {
 const jive_input_class JIVE_UNION_INPUT = {
 	.parent = &JIVE_VALUE_INPUT,
 	.fini = _jive_union_input_fini, /* override */
-	.get_label = _jive_input_get_label, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = _jive_union_input_get_type, /* override */
 };
 
 const jive_output_class JIVE_UNION_OUTPUT = {
 	.parent = &JIVE_VALUE_OUTPUT,
 	.fini = _jive_union_output_fini, /* override */
-	.get_label = _jive_output_get_label, /* inherit */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = _jive_union_output_get_type, /* override */
 };
 
 const jive_gate_class JIVE_UNION_GATE = {
 	.parent = &JIVE_VALUE_GATE,
 	.fini = _jive_union_gate_fini, /* override */
-	.get_label = _jive_gate_get_label, /* inherit */
+	.get_label = jive_gate_get_label_, /* inherit */
 	.get_type = _jive_union_gate_get_type, /* override */
 };
 
@@ -172,7 +172,7 @@ _jive_union_input_fini(jive_input * self_)
 	jive_union_input * self = (jive_union_input *) self_;
 
 	self->type.base.base.class_->fini(&self->type.base.base);
-	_jive_input_fini(&self->base.base);
+	jive_input_fini_(&self->base.base);
 }
 
 const jive_type *
@@ -198,7 +198,7 @@ _jive_union_output_fini(jive_output * self_)
 	jive_union_output * self = (jive_union_output *) self_;
 
 	self->type.base.base.class_->fini(&self->type.base.base);
-	_jive_output_fini(&self->base.base);
+	jive_output_fini_(&self->base.base);
 }
 
 const jive_type *
@@ -225,7 +225,7 @@ _jive_union_gate_fini(jive_gate * self_)
 	jive_union_gate * self = (jive_union_gate *) self_;
 
 	self->type.base.base.class_->fini(&self->type.base.base);
-	_jive_gate_fini(&self->base.base);
+	jive_gate_fini_(&self->base.base);
 }
 
 const jive_type *

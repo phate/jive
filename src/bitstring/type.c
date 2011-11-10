@@ -21,22 +21,22 @@ const jive_type_class JIVE_BITSTRING_TYPE = {
 
 const jive_input_class JIVE_BITSTRING_INPUT = {
 	.parent = &JIVE_VALUE_INPUT,
-	.fini = _jive_input_fini, /* inherit */
-	.get_label = _jive_input_get_label, /* inherit */
+	.fini = jive_input_fini_, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = _jive_bitstring_input_get_type, /* override */
 };
 
 const jive_output_class JIVE_BITSTRING_OUTPUT = {
 	.parent = &JIVE_VALUE_OUTPUT,
-	.fini = _jive_output_fini, /* inherit */
-	.get_label = _jive_output_get_label, /* inherit */
+	.fini = jive_output_fini_, /* inherit */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = _jive_bitstring_output_get_type, /* override */
 };
 
 const jive_gate_class JIVE_BITSTRING_GATE = {
 	.parent = &JIVE_VALUE_GATE,
-	.fini = _jive_gate_fini, /* inherit */
-	.get_label = _jive_gate_get_label, /* inherit */
+	.fini = jive_gate_fini_, /* inherit */
+	.get_label = jive_gate_get_label_, /* inherit */
 	.get_type = _jive_bitstring_gate_get_type, /* override */
 };
 
