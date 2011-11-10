@@ -5,13 +5,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define JIVE_DEFINE_RANGEMAP(NAME, VALUE_TYPE, VALUE_TYPE_INITIALIZER) \
+#define JIVE_DECLARE_RANGEMAP_TYPE(NAME, VALUE_TYPE, VALUE_TYPE_INITIALIZER) \
  \
 struct NAME { \
 	VALUE_TYPE * items; \
 	ssize_t low; \
 	ssize_t high; \
 }; \
+
+#define JIVE_DEFINE_RANGEMAP_TYPE(NAME, VALUE_TYPE, VALUE_TYPE_INITIALIZER) \
  \
 static inline void \
 NAME##_init(struct NAME * self) \

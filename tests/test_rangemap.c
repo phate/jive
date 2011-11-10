@@ -3,7 +3,8 @@
 #include <jive/util/rangemap.h>
 
 typedef struct int_map int_map;
-JIVE_DEFINE_RANGEMAP(int_map, int, -17);
+JIVE_DECLARE_RANGEMAP_TYPE(int_map, int, -17);
+JIVE_DEFINE_RANGEMAP_TYPE(int_map, int, -17);
 
 static void
 test_int_map(void)

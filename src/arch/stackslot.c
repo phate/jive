@@ -208,8 +208,10 @@ typedef struct jive_slot_alignment_map jive_slot_alignment_map;
 typedef struct jive_slot_size jive_slot_size;
 typedef struct jive_slot_size_map jive_slot_size_map;
 
-JIVE_DEFINE_RANGEMAP(jive_slot_offset_map, const jive_fixed_stackslot_class *, NULL);
-JIVE_DEFINE_RANGEMAP(jive_callslot_offset_map, const jive_callslot_class *, NULL);
+JIVE_DECLARE_RANGEMAP_TYPE(jive_slot_offset_map, const jive_fixed_stackslot_class *, NULL);
+JIVE_DEFINE_RANGEMAP_TYPE(jive_slot_offset_map, const jive_fixed_stackslot_class *, NULL);
+JIVE_DECLARE_RANGEMAP_TYPE(jive_callslot_offset_map, const jive_callslot_class *, NULL);
+JIVE_DEFINE_RANGEMAP_TYPE(jive_callslot_offset_map, const jive_callslot_class *, NULL);
 
 struct jive_slot_alignment {
 	jive_slot_offset_map slot_by_offset;
@@ -220,7 +222,8 @@ struct jive_slot_alignment {
 #define JIVE_SLOT_ALIGNMENT_INITIALIZER \
 	(jive_slot_alignment) { JIVE_RANGEMAP_INITIALIZER, JIVE_RANGEMAP_INITIALIZER, NULL }
 
-JIVE_DEFINE_RANGEMAP(jive_slot_alignment_map, jive_slot_alignment, JIVE_SLOT_ALIGNMENT_INITIALIZER);
+JIVE_DECLARE_RANGEMAP_TYPE(jive_slot_alignment_map, jive_slot_alignment, JIVE_SLOT_ALIGNMENT_INITIALIZER);
+JIVE_DEFINE_RANGEMAP_TYPE(jive_slot_alignment_map, jive_slot_alignment, JIVE_SLOT_ALIGNMENT_INITIALIZER);
 
 struct jive_slot_size {
 	jive_slot_alignment_map by_alignment;
@@ -229,7 +232,8 @@ struct jive_slot_size {
 #define JIVE_SLOT_SIZE_INITIALIZER \
 	(jive_slot_size) { JIVE_RANGEMAP_INITIALIZER }
 
-JIVE_DEFINE_RANGEMAP(jive_slot_size_map, jive_slot_size, JIVE_SLOT_SIZE_INITIALIZER)
+JIVE_DECLARE_RANGEMAP_TYPE(jive_slot_size_map, jive_slot_size, JIVE_SLOT_SIZE_INITIALIZER)
+JIVE_DEFINE_RANGEMAP_TYPE(jive_slot_size_map, jive_slot_size, JIVE_SLOT_SIZE_INITIALIZER)
 
 static const jive_stackslot_size_class *
 lookup_or_create_size_class(jive_slot_size_map * self, size_t size, size_t alignment)
