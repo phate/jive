@@ -7,16 +7,16 @@
 #include <jive/vsdg/graph.h>
 
 static inline void
-_jive_i386_stackframe_init(jive_i386_stackframe * self, jive_region * region, jive_output * stackptr_on_entry, jive_input * stackptr_on_exit)
+jive_i386_stackframe_init_(jive_i386_stackframe * self, jive_region * region, jive_output * stackptr_on_entry, jive_input * stackptr_on_exit)
 {
-	_jive_stackframe_init(&self->base, region, stackptr_on_entry);
+	jive_stackframe_init_(&self->base, region, stackptr_on_entry);
 	self->stackptr_on_entry = stackptr_on_entry;
 	self->stackptr_on_exit = stackptr_on_exit;
 	self->size = 0;
 }
 
 static void
-_jive_i386_stackframe_layout(jive_stackframe * self_)
+jive_i386_stackframe_layout_(jive_stackframe * self_)
 {
 	jive_i386_stackframe * self = (jive_i386_stackframe *) self_;
 	
@@ -98,15 +98,15 @@ _jive_i386_stackframe_layout(jive_stackframe * self_)
 }
 
 const jive_stackframe_class JIVE_I386_STACKFRAME_CLASS = {
-	.fini = _jive_stackframe_fini,
-	.layout = _jive_i386_stackframe_layout
+	.fini = jive_stackframe_fini_,
+	.layout = jive_i386_stackframe_layout_
 };
 
 jive_stackframe *
 jive_i386_stackframe_create(jive_region * region, jive_output * stackptr_on_entry, jive_input * stackptr_on_exit)
 {
 	jive_i386_stackframe * stackframe = jive_context_malloc(region->graph->context, sizeof(*stackframe));
-	_jive_i386_stackframe_init(stackframe, region, stackptr_on_entry, stackptr_on_exit);
+	jive_i386_stackframe_init_(stackframe, region, stackptr_on_entry, stackptr_on_exit);
 	stackframe->base.class_ = &JIVE_I386_STACKFRAME_CLASS;
 	
 	return &stackframe->base;
