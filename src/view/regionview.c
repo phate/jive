@@ -7,7 +7,7 @@
 #include <jive/util/list.h>
 
 void
-_jive_regionview_init(jive_regionview * self, jive_graphview * graphview, jive_region * region)
+jive_regionview_init_(jive_regionview * self, jive_graphview * graphview, jive_region * region)
 {
 	self->region = region;
 	self->x = 0;
@@ -21,7 +21,7 @@ _jive_regionview_init(jive_regionview * self, jive_graphview * graphview, jive_r
 }
 
 void
-_jive_regionview_fini(jive_regionview * self)
+jive_regionview_fini_(jive_regionview * self)
 {
 	jive_nodeview * nodeview = self->nodes.first;
 	while(nodeview) {
@@ -42,14 +42,14 @@ jive_regionview *
 jive_regionview_create(jive_graphview * graphview, jive_region * region)
 {
 	jive_regionview * regionview = jive_context_malloc(graphview->graph->context, sizeof(*regionview));
-	_jive_regionview_init(regionview, graphview, region);
+	jive_regionview_init_(regionview, graphview, region);
 	return regionview;
 }
 
 void
 jive_regionview_destroy(jive_regionview * self)
 {
-	_jive_regionview_fini(self);
+	jive_regionview_fini_(self);
 	jive_context_free(self->region->graph->context, self);
 }
 
