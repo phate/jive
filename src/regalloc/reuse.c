@@ -60,7 +60,7 @@ jive_reuse_type_init_(jive_reuse_type * self, const jive_resource_name * name)
 static void
 jive_reuse_input_init_(jive_reuse_input * self, struct jive_node * node, size_t index, jive_output * origin, const jive_resource_name * name)
 {
-	_jive_state_input_init(&self->base, node, index, origin);
+	jive_state_input_init_(&self->base, node, index, origin);
 	jive_reuse_type_init_(&self->type, name);
 }
 
@@ -74,7 +74,7 @@ jive_reuse_input_get_type_(const jive_input * self_)
 static void
 jive_reuse_output_init_(jive_reuse_output * self, struct jive_node * node, size_t index, const jive_resource_name * name)
 {
-	_jive_state_output_init(&self->base, node, index);
+	jive_state_output_init_(&self->base, node, index);
 	jive_reuse_type_init_(&self->type, name);
 }
 
@@ -88,7 +88,7 @@ jive_reuse_output_get_type_(const jive_output * self_)
 void
 jive_reuse_gate_init_(jive_reuse_gate * self, struct jive_graph * graph, const char * name, const jive_resource_name * resname)
 {
-	_jive_state_gate_init(&self->base, graph, name);
+	jive_state_gate_init_(&self->base, graph, name);
 	jive_reuse_type_init_(&self->type, resname);
 }
 
@@ -156,7 +156,7 @@ jive_reuse_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 
 const jive_type_class JIVE_REUSE_TYPE = {
 	.parent = &JIVE_TYPE,
-	.fini = _jive_state_type_fini, /* inherit */
+	.fini = jive_state_type_fini_, /* inherit */
 	.copy = jive_reuse_type_copy_, /* override */
 	.get_label = jive_reuse_type_get_label_, /* inherit */
 	.create_input = jive_reuse_type_create_input_, /* override */

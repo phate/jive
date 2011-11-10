@@ -130,7 +130,7 @@ _jive_control_type_create_gate(const jive_type * self, struct jive_graph * graph
 void
 _jive_control_input_init(jive_control_input * self, jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_state_input_init(&self->base, node, index, origin);
+	jive_state_input_init_(&self->base, node, index, origin);
 }
 
 void
@@ -149,7 +149,7 @@ _jive_control_input_get_type(const jive_input * self)
 void
 _jive_control_output_init(jive_control_output * self, jive_node * node, size_t index)
 {
-	_jive_state_output_init(&self->base, node, index);
+	jive_state_output_init_(&self->base, node, index);
 }
 
 const jive_type *
@@ -161,7 +161,7 @@ _jive_control_output_get_type(const jive_output * self)
 void
 _jive_control_gate_init(jive_control_gate * self, struct jive_graph * graph, const char * name)
 {
-	_jive_state_gate_init(&self->base, graph, name);
+	jive_state_gate_init_(&self->base, graph, name);
 }
 
 const jive_type *

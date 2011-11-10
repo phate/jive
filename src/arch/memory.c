@@ -15,7 +15,7 @@ const jive_memory_type jive_memory_type_singleton = {
 static void
 jive_memory_input_init_(jive_memory_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	_jive_state_input_init(&self->base, node, index, origin);
+	jive_state_input_init_(&self->base, node, index, origin);
 }
 
 static const jive_type *
@@ -27,7 +27,7 @@ jive_memory_input_get_type_(const jive_input * self)
 static void
 jive_memory_output_init_(jive_memory_output * self, struct jive_node * node, size_t index)
 {
-	_jive_state_output_init(&self->base, node, index);
+	jive_state_output_init_(&self->base, node, index);
 }
 
 static const jive_type *
@@ -39,7 +39,7 @@ jive_memory_output_get_type_(const jive_output * self)
 void
 jive_memory_gate_init_(jive_memory_gate * self, struct jive_graph * graph, const char * name)
 {
-	_jive_state_gate_init(&self->base, graph, name);
+	jive_state_gate_init_(&self->base, graph, name);
 }
 
 const jive_type *
@@ -95,7 +95,7 @@ jive_memory_type_create_gate_(const jive_type * self, struct jive_graph * graph,
 
 const jive_type_class JIVE_MEMORY_TYPE = {
 	.parent = &JIVE_TYPE,
-	.fini = _jive_state_type_fini, /* inherit */
+	.fini = jive_state_type_fini_, /* inherit */
 	.copy = jive_memory_type_copy_, /* override */
 	.get_label = jive_memory_type_get_label_, /* inherit */
 	.create_input = jive_memory_type_create_input_, /* override */
