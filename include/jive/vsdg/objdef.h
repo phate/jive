@@ -35,4 +35,22 @@ jive_objdef_node_cast(jive_node * node)
 		return NULL;
 }
 
+JIVE_EXPORTED_INLINE const char *
+jive_objdef_node_get_name(const jive_objdef_node * node)
+{
+	return node->attrs.name;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_label *
+jive_objdef_node_get_start_label(const jive_objdef_node * node)
+{
+	return node->attrs.start;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_label *
+jive_objdef_node_get_end_label(const jive_objdef_node * node)
+{
+	return node->attrs.end;
+}
+
 #endif
