@@ -43,7 +43,8 @@ LIBJIVE_SRC += \
 	src/arch/memlayout-simple.c \
 	src/arch/dataobject.c \
 	src/arch/sizeof.c \
-	
+	src/arch/call.c \
+
 # shaper
 LIBJIVE_SRC += \
 	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c src/regalloc/shaped-variable.c src/regalloc/shaped-node.c src/regalloc/xpoint.c \
