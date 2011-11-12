@@ -192,15 +192,25 @@ jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_
 	
 	if (!*layout) {
 		*layout = jive_context_malloc(self->base.context, sizeof(**layout));
-		size_t bytes_per_word = self->bits_per_word / 8;
 		
 		if (nbits > self->bits_per_word)
 			nbits = (nbits + self->bits_per_word - 1) & ~ (self->bits_per_word - 1);
+		else if (nbits <= 8)
+			nbits = 8;
+		else if (nbits <= 16)
+			nbits = 16;
+		else if (nbits <= 32)
+			nbits = 32;
+		else if (nbits <= 64)
+			nbits = 64;
+		else if (nbits <= 128)
+			nbits = 128;
 		
-		(*layout)->total_size = nbits / 8;
-		(*layout)->alignment = (*layout)->total_size;
-		if ((*layout)->alignment > bytes_per_word)
-			(*layout)->alignment = bytes_per_word;
+		size_t total_size = nbits / 8;
+		(*layout)->total_size = total_size;
+		(*layout)->alignment = total_size;
+		if ((*layout)->alignment > self->bytes_per_word)
+			(*layout)->alignment = self->bytes_per_word;
 	}
 	
 	return *layout;
@@ -226,6 +236,7 @@ jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, jive_cont
 {
 	jive_memlayout_mapper_cached_init_(&self->base, context);
 	self->bits_per_word = bits_per_word;
+	self->bytes_per_word = bits_per_word / 8;
 	self->base.base.class_ = &JIVE_MEMLAYOUT_MAPPER_SIMPLE;
 	
 	size_t bytes_per_word = self->bits_per_word / 8;

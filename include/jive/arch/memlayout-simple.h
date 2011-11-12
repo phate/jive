@@ -72,6 +72,7 @@ typedef struct jive_memlayout_mapper_simple jive_memlayout_mapper_simple;
 struct jive_memlayout_mapper_simple {
 	jive_memlayout_mapper_cached base;
 	size_t bits_per_word;
+	size_t bytes_per_word;
 	jive_dataitem_memlayout address_layout;
 };
 
