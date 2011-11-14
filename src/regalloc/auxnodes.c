@@ -2,6 +2,8 @@
 
 #include <jive/common.h>
 #include <jive/arch/registers.h>
+#include <jive/arch/stackslot.h>
+#include <jive/arch/subroutine.h>
 #include <jive/arch/transfer-instructions.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg/graph.h>
@@ -118,6 +120,64 @@ replace_aux_split_node(jive_shaped_node * shaped_node, jive_node * node, const j
 	jive_node_destroy(node);
 }
 
+static jive_subroutine *
+lookup_subroutine_by_node(jive_node * node)
+{
+	while (node) {
+		jive_subroutine_node * sub = jive_subroutine_node_cast(node);
+		if (sub)
+			return sub->attrs.subroutine;
+		if (node->region->anchor)
+			node = node->region->anchor->node;
+		else
+			node = NULL;
+	}
+	return NULL;
+}
+
+static void
+check_fp_sp_dependency(jive_node * node)
+{
+	const jive_subroutine * subroutine = lookup_subroutine_by_node(node);
+	if (!subroutine)
+		return;
+	
+	if (node == &subroutine->enter->base || node == &subroutine->leave->base)
+		return;
+	
+	bool need_fp_dependency = false;
+	bool need_sp_dependency = false;
+	
+	size_t n;
+	for (n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
+		if (name && jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_CALLSLOT_RESOURCE))
+			need_sp_dependency = true;
+		if (name && jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_FRAMESLOT_RESOURCE))
+			need_sp_dependency = true;
+	}
+	for (n = 0; n < node->noutputs; n++) {
+		jive_input * output = node->inputs[n];
+		const jive_resource_name * name = jive_variable_get_resource_name(output->ssavar->variable);
+		if (name && jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_CALLSLOT_RESOURCE))
+			need_sp_dependency = true;
+		if (name && jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_FRAMESLOT_RESOURCE))
+			need_sp_dependency = true;
+	}
+	
+	if (need_fp_dependency) {
+		jive_input * input = jive_subroutine_add_fp_dependency(subroutine, node);
+		if (input)
+			jive_input_auto_merge_variable(input);
+	}
+	if (need_sp_dependency) {
+		jive_input * input = jive_subroutine_add_sp_dependency(subroutine, node);
+		if (input)
+			jive_input_auto_merge_variable(input);
+	}
+}
+
 void
 jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph, const jive_transfer_instructions_factory * gen)
 {
@@ -127,7 +187,8 @@ jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph, const jive_tran
 		if (jive_node_isinstance(node, &JIVE_AUX_SPLIT_NODE)) {
 			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
 			replace_aux_split_node(shaped_node, node, gen);
-		}
+		} else
+			check_fp_sp_dependency(node);
 	}
 	jive_traverser_destroy(traverser);
 }

@@ -98,12 +98,20 @@ jive_i386_subroutine_copy_(const jive_subroutine * self_,
 static void
 jive_i386_subroutine_prepare_stackframe_(jive_subroutine * self_, const jive_subroutine_late_transforms * xfrm);
 
+static jive_input *
+jive_i386_subroutine_add_fp_dependency_(const jive_subroutine * self, jive_node * node);
+
+static jive_input *
+jive_i386_subroutine_add_sp_dependency_(const jive_subroutine * self, jive_node * node);
+
 static const jive_subroutine_class JIVE_I386_SUBROUTINE = {
 	.fini = jive_i386_subroutine_fini_,
 	.value_parameter = jive_i386_subroutine_value_parameter_,
 	.value_return = jive_i386_subroutine_value_return_,
 	.copy = jive_i386_subroutine_copy_,
-	.prepare_stackframe = jive_i386_subroutine_prepare_stackframe_
+	.prepare_stackframe = jive_i386_subroutine_prepare_stackframe_,
+	.add_fp_dependency = jive_i386_subroutine_add_fp_dependency_,
+	.add_sp_dependency = jive_i386_subroutine_add_sp_dependency_
 };
 
 static jive_i386_subroutine *
@@ -331,3 +339,30 @@ jive_i386_subroutine_prepare_stackframe_(jive_subroutine * self_, const jive_sub
 	
 	xfrm->value_split(xfrm, self->saved_esp.output, self->saved_esp.input, &stackptr_sub.base, &stackptr_add.base);
 }
+
+static jive_input *
+jive_i386_subroutine_add_fp_dependency_(const jive_subroutine * self_, jive_node * node)
+{
+	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
+	size_t n;
+	for (n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		if (input->origin == self->frameptr)
+			return NULL;
+	}
+	return jive_node_add_input(node, jive_output_get_type(self->frameptr), self->frameptr);
+}
+
+static jive_input *
+jive_i386_subroutine_add_sp_dependency_(const jive_subroutine * self_, jive_node * node)
+{
+	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
+	size_t n;
+	for (n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		if (input->origin == self->stackptr)
+			return NULL;
+	}
+	return jive_node_add_input(node, jive_output_get_type(self->stackptr), self->stackptr);
+}
+

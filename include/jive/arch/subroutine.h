@@ -126,6 +126,8 @@ struct jive_subroutine_class {
 	jive_subroutine * (*copy)(const jive_subroutine * self,
 		jive_node * new_enter_node, jive_node * new_leave_node);
 	void (*prepare_stackframe)(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm);
+	jive_input *(*add_fp_dependency)(const jive_subroutine * self, jive_node * node);
+	jive_input *(*add_sp_dependency)(const jive_subroutine * self, jive_node * node);
 };
 
 void
@@ -153,6 +155,18 @@ JIVE_EXPORTED_INLINE void
 jive_subroutine_prepare_stackframe(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
 {
 	return self->class_->prepare_stackframe(self, xfrm);
+}
+
+JIVE_EXPORTED_INLINE jive_input *
+jive_subroutine_add_fp_dependency(const jive_subroutine * self, jive_node * node)
+{
+	return self->class_->add_fp_dependency(self, node);
+}
+
+JIVE_EXPORTED_INLINE jive_input *
+jive_subroutine_add_sp_dependency(const jive_subroutine * self, jive_node * node)
+{
+	return self->class_->add_sp_dependency(self, node);
 }
 
 /* FIXME: these are quite C-specific, so really do not belong here */
