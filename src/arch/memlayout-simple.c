@@ -27,23 +27,23 @@ jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self)
 	i = jive_memlayout_record_hash_begin(&self->record_hash);
 	while (i.entry) {
 		jive_memlayout_record_entry * entry = i.entry;
+		jive_memlayout_record_hash_iterator_next(&i);
 		
 		jive_memlayout_record_hash_remove(&self->record_hash, entry);
 		jive_context_free(self->context, entry->layout.element);
 		jive_context_free(self->context, entry);
 		
-		jive_memlayout_record_hash_iterator_next(&i);
 	}
 	
 	struct jive_memlayout_union_hash_iterator j;
 	j = jive_memlayout_union_hash_begin(&self->union_hash);
 	while (j.entry) {
 		jive_memlayout_union_entry * entry = j.entry;
+		jive_memlayout_union_hash_iterator_next(&j);
 		
 		jive_memlayout_union_hash_remove(&self->union_hash, entry);
 		jive_context_free(self->context, entry);
 		
-		jive_memlayout_union_hash_iterator_next(&j);
 	}
 	
 	ssize_t k;
