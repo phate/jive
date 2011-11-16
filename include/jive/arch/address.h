@@ -8,6 +8,8 @@
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/recordtype.h>
 
+struct jive_label;
+
 /* "memberof" operator: given an address that is the start of a record
 in memory, compute address of specified member of record */
 
@@ -180,5 +182,69 @@ jive_arrayindex_node_cast(jive_node * node)
 		return NULL;
 }
 
+/* label_to_address node */
+
+extern const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE;
+
+typedef struct jive_label_to_address_node jive_label_to_address_node;
+typedef struct jive_label_to_address_node_attrs jive_label_to_address_node_attrs;
+
+struct jive_label_to_address_node_attrs {
+	jive_node_attrs base;
+	const struct jive_label * label;
+};
+
+struct jive_label_to_address_node {
+	jive_node base;
+	jive_label_to_address_node_attrs attrs;
+};
+
+jive_node *
+jive_label_to_address_node_create(struct jive_graph * graph, const struct jive_label * label);
+
+jive_output *
+jive_label_to_address_create(struct jive_graph * graph, const struct jive_label * label);
+
+JIVE_EXPORTED_INLINE jive_label_to_address_node *
+jive_label_to_address_node_cast(jive_node * node)
+{
+	if(node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE)
+		return (jive_label_to_address_node *) node;
+	else
+		return 0;
+}
+
+/* label_to_bitstring node */
+
+extern const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE;
+
+typedef struct jive_label_to_bitstring_node jive_label_to_bitstring_node;
+typedef struct jive_label_to_bitstring_node_attrs jive_label_to_bitstring_node_attrs;
+
+struct jive_label_to_bitstring_node_attrs {
+	jive_node_attrs base;
+	const struct jive_label * label;
+	size_t nbits;
+};
+
+struct jive_label_to_bitstring_node {
+	jive_node base;
+	jive_label_to_bitstring_node_attrs attrs;
+};
+
+jive_node *
+jive_label_to_bitstring_node_create(struct jive_graph * graph, const struct jive_label * label, size_t nbits);
+
+jive_output *
+jive_label_to_bitstring_create(struct jive_graph * graph, const struct jive_label * label, size_t nbits);
+
+JIVE_EXPORTED_INLINE jive_label_to_bitstring_node *
+jive_label_to_bitstring_node_cast(jive_node * node)
+{
+	if(node->class_ == &JIVE_LABEL_TO_BITSTRING_NODE)
+		return (jive_label_to_bitstring_node *) node;
+	else
+		return 0;
+}
 
 #endif
