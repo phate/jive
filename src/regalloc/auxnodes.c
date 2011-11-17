@@ -158,7 +158,7 @@ check_fp_sp_dependency(jive_node * node)
 			need_sp_dependency = true;
 	}
 	for (n = 0; n < node->noutputs; n++) {
-		jive_input * output = node->inputs[n];
+		jive_output * output = node->outputs[n];
 		const jive_resource_name * name = jive_variable_get_resource_name(output->ssavar->variable);
 		if (name && jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_CALLSLOT_RESOURCE))
 			need_sp_dependency = true;
