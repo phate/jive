@@ -80,8 +80,30 @@ jive_load_node_create(jive_region * region,
 	
 	node->base.class_ = &JIVE_LOAD_NODE;
 	const jive_type * address_type = jive_output_get_type(address);
-	JIVE_DEBUG_ASSERT(address_type->class_ == &JIVE_ADDRESS_TYPE);
-	JIVE_DEBUG_ASSERT(jive_type_isinstance(datatype, &JIVE_VALUE_TYPE));
+	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
+		char * operand_type_name = jive_type_get_label(address_type);
+		
+		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		if (operand_type_name) {
+			error_msg = jive_context_strjoin(context,
+				"Type mismatch: required 'address' or 'bitstring', got '",
+				operand_type_name, "'", NULL);
+			free(operand_type_name);
+		}
+		jive_context_fatal_error(context, error_msg);
+	}
+	if (jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
+		char * operand_type_name = jive_type_get_label(datatype);
+		
+		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		if (operand_type_name) {
+			error_msg = jive_context_strjoin(context,
+				"Type mismatch: required 'valuetype', got '",
+				operand_type_name, "'", NULL);
+			free(operand_type_name);
+		}
+		jive_context_fatal_error(context, error_msg);
+	}
 
 	jive_node_init_(&node->base, region,
 		1, &address_type, &address,
@@ -186,8 +208,30 @@ jive_store_node_create(jive_region * region,
 	
 	node->base.class_ = &JIVE_STORE_NODE;
 	const jive_type * address_type = jive_output_get_type(address);
-	JIVE_DEBUG_ASSERT(address_type->class_ == &JIVE_ADDRESS_TYPE);
-	JIVE_DEBUG_ASSERT(jive_type_isinstance(datatype, &JIVE_VALUE_TYPE));
+	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
+		char * operand_type_name = jive_type_get_label(address_type);
+		
+		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		if (operand_type_name) {
+			error_msg = jive_context_strjoin(context,
+				"Type mismatch: required 'address' or 'bitstring', got '",
+				operand_type_name, "'", NULL);
+			free(operand_type_name);
+		}
+		jive_context_fatal_error(context, error_msg);
+	}
+	if (jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
+		char * operand_type_name = jive_type_get_label(datatype);
+		
+		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		if (operand_type_name) {
+			error_msg = jive_context_strjoin(context,
+				"Type mismatch: required 'valuetype', got '",
+				operand_type_name, "'", NULL);
+			free(operand_type_name);
+		}
+		jive_context_fatal_error(context, error_msg);
+	}
 	
 	const jive_type * operand_types[2] = {address_type, datatype};
 	jive_output * operands[2] = {address, value};
