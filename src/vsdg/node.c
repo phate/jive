@@ -227,6 +227,22 @@ jive_node_add_output(jive_node * self, const jive_type * type)
 	return output;
 }
 
+jive_output *
+jive_node_add_constrained_output(jive_node * self, const jive_resource_class * rescls)
+{
+	jive_output * output = jive_node_add_output(self, jive_resource_class_get_type(rescls));
+	output->required_rescls = rescls;
+	return output;
+}
+
+jive_input *
+jive_node_add_constrained_input(jive_node * self, const jive_resource_class * rescls, jive_output * initial_operand)
+{
+	jive_input * input = jive_node_add_input(self, jive_resource_class_get_type(rescls), initial_operand);
+	input->required_rescls = rescls;
+	return input;
+}
+
 jive_input *
 jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
 {

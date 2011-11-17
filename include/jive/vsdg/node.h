@@ -196,6 +196,12 @@ jive_node_add_input(jive_node * self, const struct jive_type * type, struct jive
 struct jive_output *
 jive_node_add_output(jive_node * self, const struct jive_type * type);
 
+struct jive_output *
+jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);
+
+struct jive_input *
+jive_node_add_constrained_input(jive_node * self, const struct jive_resource_class * rescls, struct jive_output * initial_operand);
+
 struct jive_input *
 jive_node_gate_input(jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
 
