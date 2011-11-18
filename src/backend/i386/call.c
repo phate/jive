@@ -6,6 +6,7 @@
 #include <jive/arch/stackslot.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
+#include <jive/bitstring/type.h>
 #include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region.h>
@@ -20,8 +21,16 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
 	jive_output * address = node->base.inputs[0]->origin;
-	jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node);
-	if (label_node) {
+	if (address->node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE) {
+		jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node);
+		jive_immediate imm;
+		jive_immediate_init(&imm, 0, label_node->attrs.label, NULL, NULL);
+		call_instr = jive_instruction_node_create_extended(
+			region,
+			&jive_i386_instructions[jive_i386_call],
+			0, &imm);
+	} else if (address->node->class_ == &JIVE_LABEL_TO_BITSTRING_NODE) {
+		jive_label_to_bitstring_node * label_node = jive_label_to_bitstring_node_cast(address->node);
 		jive_immediate imm;
 		jive_immediate_init(&imm, 0, label_node->attrs.label, NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
