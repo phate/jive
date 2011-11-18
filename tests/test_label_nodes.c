@@ -4,6 +4,7 @@
 
 #include <jive/view.h>
 #include <jive/context.h>
+#include <jive/arch/address.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 
