@@ -83,7 +83,7 @@ jive_load_node_create(jive_region * region,
 	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
 		char * operand_type_name = jive_type_get_label(address_type);
 		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
 		if (operand_type_name) {
 			error_msg = jive_context_strjoin(context,
 				"Type mismatch: required 'address' or 'bitstring', got '",
@@ -92,17 +92,17 @@ jive_load_node_create(jive_region * region,
 		}
 		jive_context_fatal_error(context, error_msg);
 	}
-	if (jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
+	if (!jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
 		char * operand_type_name = jive_type_get_label(datatype);
 		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
 		if (operand_type_name) {
 			error_msg = jive_context_strjoin(context,
 				"Type mismatch: required 'valuetype', got '",
 				operand_type_name, "'", NULL);
 			free(operand_type_name);
 		}
-		jive_context_fatal_error(context, error_msg);
+		jive_context_fatal_error(context, error_msg);	
 	}
 
 	jive_node_init_(&node->base, region,
@@ -211,7 +211,7 @@ jive_store_node_create(jive_region * region,
 	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
 		char * operand_type_name = jive_type_get_label(address_type);
 		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
 		if (operand_type_name) {
 			error_msg = jive_context_strjoin(context,
 				"Type mismatch: required 'address' or 'bitstring', got '",
@@ -220,10 +220,10 @@ jive_store_node_create(jive_region * region,
 		}
 		jive_context_fatal_error(context, error_msg);
 	}
-	if (jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
+	if (!jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
 		char * operand_type_name = jive_type_get_label(datatype);
 		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion";
+		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
 		if (operand_type_name) {
 			error_msg = jive_context_strjoin(context,
 				"Type mismatch: required 'valuetype', got '",
