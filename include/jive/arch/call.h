@@ -8,7 +8,6 @@ struct jive_context;
 struct jive_type;
 
 extern const jive_node_class JIVE_CALL_NODE;
-extern const jive_node_class JIVE_STORE_NODE;
 
 typedef struct jive_calling_convention jive_calling_convention;
 typedef struct jive_call_node_attrs jive_call_node_attrs;

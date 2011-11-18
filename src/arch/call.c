@@ -1,6 +1,7 @@
 #include <jive/arch/call.h>
 
 #include <jive/arch/addresstype.h>
+#include <jive/bitstring/type.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
@@ -98,7 +99,20 @@ jive_call_node_create(jive_region * region,
 	node->attrs.nreturns = nreturns;
 	node->attrs.return_types = jive_context_malloc(context, sizeof(*node->attrs.return_types) * nreturns);
 	
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
+	const jive_type * address_type = jive_output_get_type(target_address);
+	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
+		char * operand_type_name = jive_type_get_label(address_type);
+		
+		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
+		if (operand_type_name) {
+			error_msg = jive_context_strjoin(context,
+				"Type mismatch: required 'address' or 'bitstring', got '",
+				operand_type_name, "'", NULL);
+			free(operand_type_name);
+		}
+		jive_context_fatal_error(context, error_msg);
+	}
+	
 	jive_output * operands[narguments + 1];
 	const jive_type * operand_types[narguments + 1];
 	
