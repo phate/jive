@@ -358,7 +358,7 @@ static void
 jive_arraysubscript_node_fini_(jive_node * self_)
 {
 	jive_arraysubscript_node * self = (jive_arraysubscript_node *) self_;
-	jive_type_fini(self->attrs.element_type);
+	jive_type_fini(&self->attrs.element_type->base);
 	jive_context_free(self->base.graph->context, self->attrs.element_type);
 	jive_node_fini_(&self->base);
 }
@@ -376,7 +376,7 @@ jive_arraysubscript_node_match_attrs_(const jive_node * self_, const jive_node_a
 	const jive_arraysubscript_node * self = (const jive_arraysubscript_node *) self_;
 	const jive_arraysubscript_node_attrs * attrs = (const jive_arraysubscript_node_attrs *) attrs_;
 	
-	return jive_type_equals(self->attrs.element_type, attrs->element_type);
+	return jive_type_equals(&self->attrs.element_type->base, &attrs->element_type->base);
 }
 
 static jive_node *
@@ -429,7 +429,7 @@ jive_arraysubscript_reduce_operand_pair_(const jive_node_class * cls, const jive
 
 jive_node *
 jive_arraysubscript_node_create(jive_region * region,
-	jive_output * address, const jive_type * element_type, jive_output * index)
+	jive_output * address, const jive_value_type * element_type, jive_output * index)
 {
 	jive_context * context = region->graph->context;
 	jive_arraysubscript_node * node = jive_context_malloc(context, sizeof(*node));
@@ -446,25 +446,26 @@ jive_arraysubscript_node_create(jive_region * region,
 	jive_node_init_(&node->base, region,
 		2, operand_types, operands,
 		1, &address_type);
-	node->attrs.element_type = jive_type_copy(element_type, context);
+	node->attrs.element_type = (jive_value_type *) jive_type_copy(&element_type->base, context);
 	
 	return &node->base;
 }
 
 jive_node *
 jive_arraysubscript_create(jive_region * region,
-	jive_output * address, const jive_type * element_type,jive_output * index)
+	jive_output * address, const jive_value_type * element_type,jive_output * index)
 {
 	return jive_arraysubscript_node_create(region, address, element_type, index);
 }
 
 jive_output *
-jive_arraysubscript(jive_output * address, const jive_type * element_type, jive_output * index)
+jive_arraysubscript(jive_output * address, const jive_value_type * element_type,
+	jive_output * index)
 {
 	jive_region * region = jive_region_innermost(2, (jive_output *[]){address, index});
 	
 	jive_arraysubscript_node_attrs attrs;
-	attrs.element_type = (jive_type *) element_type;
+	attrs.element_type = (jive_value_type *) element_type;
 	
 	jive_output * operands[2] = {address, index};
 	return jive_binary_operation_normalized_create(&JIVE_ARRAYSUBSCRIPT_NODE, region, &attrs.base, 2, operands);
@@ -517,7 +518,7 @@ static void
 jive_arrayindex_node_fini_(jive_node * self_)
 {
 	jive_arrayindex_node * self = (jive_arrayindex_node *) self_;
-	jive_type_fini(self->attrs.element_type);
+	jive_type_fini(&self->attrs.element_type->base);
 	jive_context_free(self->base.graph->context, self->attrs.element_type);
 	jive_node_fini_(&self->base);
 }
@@ -535,7 +536,7 @@ jive_arrayindex_node_match_attrs_(const jive_node * self_, const jive_node_attrs
 	const jive_arrayindex_node * self = (const jive_arrayindex_node *) self_;
 	const jive_arrayindex_node_attrs * attrs = (const jive_arrayindex_node_attrs *) attrs_;
 	
-	return jive_type_equals(self->attrs.element_type, attrs->element_type);
+	return jive_type_equals(&self->attrs.element_type->base, &attrs->element_type->base);
 }
 
 static jive_node *
@@ -548,20 +549,21 @@ jive_arrayindex_node_create_(jive_region * region, const jive_node_attrs * attrs
 }
 
 static jive_output *
-get_array_base(jive_output * addr, const jive_type * element_type)
+get_array_base(jive_output * addr, const jive_value_type * element_type)
 {
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
-	if (node && jive_type_equals(element_type, node->attrs.element_type))
+	if (node && jive_type_equals(&element_type->base, &node->attrs.element_type->base))
 		return addr->node->inputs[0]->origin;
 	else return addr;
 }
 
 static jive_output *
-get_array_index(jive_output * addr, jive_output * base, const jive_type * element_type, const jive_bitstring_type * index_type)
+get_array_index(jive_output * addr, jive_output * base, const jive_value_type * element_type,
+	const jive_bitstring_type * index_type)
 {
 	jive_output * index = NULL;
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
-	if (node && jive_type_equals(element_type, node->attrs.element_type)) {
+	if (node && jive_type_equals(&element_type->base, &node->attrs.element_type->base)) {
 		/* FIXME: correct type! */
 		index = addr->node->inputs[1]->origin;
 	} else {
@@ -606,7 +608,7 @@ jive_arrayindex_reduce_operand_pair_(const jive_node_class * cls, const jive_nod
 jive_node *
 jive_arrayindex_node_create(jive_region * region,
 	jive_output * addr1, jive_output * addr2,
-	const jive_type * element_type, const jive_type * difference_type)
+	const jive_value_type * element_type, const jive_type * difference_type)
 {
 	jive_context * context = region->graph->context;
 	jive_arrayindex_node * node = jive_context_malloc(context, sizeof(*node));
@@ -622,7 +624,7 @@ jive_arrayindex_node_create(jive_region * region,
 	jive_node_init_(&node->base, region,
 		2, operand_types, operands,
 		1, output_types);
-	node->attrs.element_type = jive_type_copy(element_type, context);
+	node->attrs.element_type = (jive_value_type *) jive_type_copy(&element_type->base, context);
 	node->attrs.difference_type = *(const jive_bitstring_type *)difference_type;
 	
 	return &node->base;
@@ -631,19 +633,19 @@ jive_arrayindex_node_create(jive_region * region,
 jive_node *
 jive_arrayindex_create(jive_region * region,
 	jive_output * addr1, jive_output * addr2,
-	const jive_type * element_type, const jive_type * difference_type)
+	const jive_value_type * element_type, const jive_type * difference_type)
 {
 	return jive_arrayindex_node_create(region, addr1, addr2, element_type, difference_type);
 }
 
 jive_output *
 jive_arrayindex(jive_output * addr1, jive_output * addr2,
-	const jive_type * element_type, const jive_type * difference_type)
+	const jive_value_type * element_type, const jive_type * difference_type)
 {
 	jive_region * region = jive_region_innermost(2, (jive_output *[]){addr1, addr2});
 	
 	jive_arrayindex_node_attrs attrs;
-	attrs.element_type = (jive_type *) element_type;
+	attrs.element_type = (jive_value_type *) element_type;
 	attrs.difference_type = *(const jive_bitstring_type *)difference_type;
 	
 	jive_output * operands[2] = {addr1, addr2};

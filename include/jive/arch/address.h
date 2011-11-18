@@ -110,7 +110,7 @@ typedef struct jive_arraysubscript_node jive_arraysubscript_node;
 
 struct jive_arraysubscript_node_attrs {
 	jive_node_attrs base;
-	jive_type * element_type; /* note: dynamically allocated */
+	jive_value_type * element_type; /* note: dynamically allocated */
 };
 
 struct jive_arraysubscript_node {
@@ -120,14 +120,17 @@ struct jive_arraysubscript_node {
 
 struct jive_node *
 jive_arraysubscript_node_create(struct jive_region * region,
-	struct jive_output * address, const struct jive_type * element_type, struct jive_output * index);
+	struct jive_output * address, const struct jive_value_type * element_type,
+	struct jive_output * index);
 
 struct jive_node *
 jive_arraysubscript_create(struct jive_region * region,
-	struct jive_output * address, const struct jive_type * element_type, struct jive_output * index);
+	struct jive_output * address, const struct jive_value_type * element_type,
+	struct jive_output * index);
 
 jive_output *
-jive_arraysubscript(struct jive_output * address, const struct jive_type * element_type, struct jive_output * index);
+jive_arraysubscript(struct jive_output * address, const struct jive_value_type * element_type,
+	struct jive_output * index);
 
 JIVE_EXPORTED_INLINE jive_arraysubscript_node *
 jive_arraysubscript_node_cast(jive_node * node)
@@ -150,7 +153,7 @@ typedef struct jive_arrayindex_node jive_arrayindex_node;
 
 struct jive_arrayindex_node_attrs {
 	jive_node_attrs base;
-	jive_type * element_type; /* note: dynamically allocated */
+	jive_value_type * element_type; /* note: dynamically allocated */
 	jive_bitstring_type difference_type;
 };
 
@@ -162,16 +165,16 @@ struct jive_arrayindex_node {
 struct jive_node *
 jive_arrayindex_node_create(struct jive_region * region,
 	struct jive_output * addr1, struct jive_output * addr2,
-	const struct jive_type * element_type, const struct jive_type * difference_type);
+	const struct jive_value_type * element_type, const struct jive_type * difference_type);
 
 struct jive_node *
 jive_arrayindex_create(struct jive_region * region,
 	struct jive_output * addr1, struct jive_output * addr2,
-	const struct jive_type * element_type, const struct jive_type * difference_type);
+	const struct jive_value_type * element_type, const struct jive_type * difference_type);
 
 jive_output *
 jive_arrayindex(struct jive_output * addr1, struct jive_output * addr2,
-	const struct jive_type * element_type, const struct jive_type * difference_type);
+	const struct jive_value_type * element_type, const struct jive_type * difference_type);
 
 JIVE_EXPORTED_INLINE jive_arrayindex_node *
 jive_arrayindex_node_cast(jive_node * node)
