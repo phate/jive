@@ -99,4 +99,25 @@ void
 jive_call_node_address_transform(struct jive_call_node * node,
 	size_t nbits);
 
+struct jive_memberof_node;
+struct jive_containerof_node;
+struct jive_arraysubscript_node;
+struct jive_arrayindex_node;
+
+void
+jive_memberof_node_address_transform(struct jive_memberof_node * node,
+	struct jive_memlayout_mapper * mapper);
+
+void
+jive_containerof_node_address_transform(struct jive_containerof_node * node,
+	struct jive_memlayout_mapper * mapper);
+
+void
+jive_arraysubscript_node_address_transform(struct jive_arraysubscript_node * node,
+	struct jive_memlayout_mapper * mapper);
+
+void
+jive_arrayindex_node_address_transform(struct jive_arrayindex_node * node,
+	struct jive_memlayout_mapper * mapper);
+
 #endif

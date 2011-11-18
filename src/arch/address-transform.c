@@ -5,6 +5,8 @@
 #include <jive/arch/call.h>
 #include <jive/arch/loadstore.h>
 #include <jive/arch/memlayout.h>
+#include <jive/bitstring/arithmetic.h>
+#include <jive/bitstring/constant.h>
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
@@ -432,4 +434,84 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 			output = jive_bitstring_to_address_create(call->outputs[i], nbits);
 		jive_output_replace(node_->outputs[i], output);
 	}
+}
+
+void
+jive_memberof_node_address_transform(jive_memberof_node * node, jive_memlayout_mapper * mapper)
+{
+	const jive_node * node_ = &node->base;
+
+	size_t index = node->attrs.index;
+	const jive_record_declaration * decl = node->attrs.record_decl;
+
+	JIVE_DEBUG_ASSERT(index < decl->nelements);
+	size_t elem_offset = jive_memlayout_mapper_map_value_type(mapper,
+		decl->elements[index])->total_size;
+	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
+
+	jive_output * offset = jive_bitconstant_unsigned(node_->graph, nbits, elem_offset);
+	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * sum = jive_bitsum(2, (jive_output *[]){address, offset});
+	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits);
+
+	jive_output_replace(node_->outputs[0], off_address);
+}
+
+void
+jive_containerof_node_address_transform(jive_containerof_node * node, jive_memlayout_mapper * mapper)
+{
+	const jive_node * node_ = &node->base;
+
+	size_t index = node->attrs.index;
+	const jive_record_declaration * decl = node->attrs.record_decl;
+
+	JIVE_DEBUG_ASSERT(index < decl->nelements);
+	size_t elem_offset = jive_memlayout_mapper_map_value_type(mapper,
+		decl->elements[index])->total_size;
+	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
+
+	jive_output * offset = jive_bitconstant_unsigned(node_->graph, nbits, elem_offset);
+	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * sum = jive_bitdifference(address, offset);
+	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits);
+
+	jive_output_replace(node_->outputs[0], off_address);
+}
+
+void
+jive_arraysubscript_node_address_transform(jive_arraysubscript_node * node,
+	struct jive_memlayout_mapper * mapper)
+{
+	const jive_node * node_ = &node->base;
+
+	size_t elem_type_size = jive_memlayout_mapper_map_value_type(mapper,
+		node->attrs.element_type)->total_size;
+	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8; 
+
+	jive_output * index = node_->inputs[1]->origin;
+	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * elem_size = jive_bitconstant_unsigned(node_->graph, nbits, elem_type_size);
+	jive_output * offset = jive_bitmultiply(2, (jive_output *[]){elem_size, index});
+	jive_output * sum = jive_bitsum(2, (jive_output *[]){address, offset});
+	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits);
+	
+	jive_output_replace(node_->outputs[0], off_address);	
+}
+
+void
+jive_arrayindex_node_address_transform(jive_arrayindex_node * node, jive_memlayout_mapper * mapper)
+{
+	const jive_node * node_ = &node->base;
+
+	size_t elem_type_size = jive_memlayout_mapper_map_value_type(mapper,
+		node->attrs.element_type)->total_size;
+	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
+
+	jive_output * address1 = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * address2 = jive_address_to_bitstring_create(node_->inputs[1]->origin, nbits);
+	jive_output * elem_size = jive_bitconstant_unsigned(node_->graph, nbits, elem_type_size);
+	jive_output * diff = jive_bitdifference(address1, address2);
+	jive_output * div = jive_bitsquotient(diff, elem_size);
+
+	jive_output_replace(node_->outputs[0], div);
 }

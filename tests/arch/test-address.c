@@ -5,8 +5,10 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/arch/address.h>
+#include <jive/arch/address_reduce.h>
 #include <jive/bitstring.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/arch/memlayout-simple.h>
 
 int main()
 {
@@ -63,6 +65,31 @@ int main()
 	jive_output * diff = jive_arrayindex(a1, a0, jive_value_type_cast(bits32), bits32);
 	assert(diff == one);
 	
+	jive_output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1],
+		jive_value_type_cast(bits32), bits32);
+
+	jive_memlayout_mapper_simple mapper;
+	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+
+	jive_node * memberof = jive_memberof_node_create(cont3->node->region, cont3, &rec, 1);
+	jive_node * arraysub = jive_arraysubscript_node_create(top->region, top->outputs[0],
+		jive_value_type_cast(bits32), one);
+	
+	jive_node * bottom = jive_node_create(graph->root_region,
+		3, (const jive_type *[]){addrtype, addrtype, bits32},
+			(jive_output *[]){memberof->outputs[0], arraysub->outputs[0], diff2},
+		0, NULL);
+	jive_node_reserve(bottom);
+
+	jive_containerof_node_address_transform(jive_containerof_node_cast(cont3->node), &mapper.base.base);	
+	jive_memberof_node_address_transform(jive_memberof_node_cast(memberof), &mapper.base.base);
+	jive_arrayindex_node_address_transform(jive_arrayindex_node_cast(diff2->node), &mapper.base.base);
+	jive_arraysubscript_node_address_transform(jive_arraysubscript_node_cast(arraysub), &mapper.base.base);
+	
+	jive_graph_prune(graph);
+	jive_view(graph, stdout);
+	
+	jive_memlayout_mapper_simple_fini(&mapper);	
 	jive_graph_destroy(graph);
 	
 	assert(jive_context_is_empty(context));
