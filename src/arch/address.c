@@ -461,9 +461,7 @@ jive_arraysubscript_create(jive_region * region,
 jive_output *
 jive_arraysubscript(jive_output * address, const jive_type * element_type, jive_output * index)
 {
-	jive_region * region = address->node->region;
-	if (index->node->region->depth > region->depth)
-		region = index->node->region;
+	jive_region * region = jive_region_innermost(2, (jive_output *[]){address, index});
 	
 	jive_arraysubscript_node_attrs attrs;
 	attrs.element_type = (jive_type *) element_type;
@@ -642,9 +640,7 @@ jive_output *
 jive_arrayindex(jive_output * addr1, jive_output * addr2,
 	const jive_type * element_type, const jive_type * difference_type)
 {
-	jive_region * region = addr1->node->region;
-	if (addr2->node->region->depth > region->depth)
-		region = addr2->node->region;
+	jive_region * region = jive_region_innermost(2, (jive_output *[]){addr1, addr2});
 	
 	jive_arrayindex_node_attrs attrs;
 	attrs.element_type = (jive_type *) element_type;
