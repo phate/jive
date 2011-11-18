@@ -4,7 +4,6 @@
 #include <jive/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/arch/address_reduce.h>
 #include <jive/arch/loadstore.h>
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>

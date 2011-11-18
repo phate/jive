@@ -7,3 +7,4 @@ TESTS+=\
 	arch/test-memory-type \
 	arch/test-sizeof \
 	arch/test_label_nodes \
+	arch/test-address-transform-nodes \
