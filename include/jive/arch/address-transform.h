@@ -87,4 +87,10 @@ void
 jive_store_node_address_transform(struct jive_store_node * node,
 	size_t nbits);
 
+struct jive_label_to_address_node;
+
+void
+jive_label_to_address_node_address_transform(struct jive_label_to_address_node * node,
+	size_t nbits);
+
 #endif

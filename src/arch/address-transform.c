@@ -1,9 +1,12 @@
 #include <jive/arch/address-transform.h>
 
+#include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout.h>
 #include <jive/arch/loadstore.h>
+#include <jive/arch/memlayout.h>
 #include <jive/bitstring/type.h>
+#include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
@@ -374,4 +377,16 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 	for (i = 0; i < nstates; i++){
 		jive_output_replace(node_->outputs[i], store->outputs[i]);
 	}
+}
+
+void
+jive_label_to_address_node_address_transform(jive_label_to_address_node * node, size_t nbits)
+{
+	const jive_node * node_ = &node->base;
+	
+	const jive_label * label = jive_label_to_address_node_get_label(node);
+
+	jive_output * label_o = jive_label_to_bitstring_create(node_->region->graph, label, nbits);
+	jive_output * addr_o = jive_bitstring_to_address_create(label_o, nbits);
+	jive_output_replace(node_->outputs[0], addr_o);
 }

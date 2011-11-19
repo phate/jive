@@ -5,8 +5,10 @@
 #include <jive/view.h>
 #include <jive/context.h>
 #include <jive/arch/address.h>
+#include <jive/arch/address-transform.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
+#include <jive/vsdg/node-private.h>
 
 int main()
 {
@@ -57,7 +59,22 @@ int main()
 	assert(!jive_node_match_attrs(o2->node, &attrs4->base));
 	assert(!jive_node_match_attrs(o2->node, &attrs3->base));
 	assert(jive_node_match_attrs(o2->node, &attrs2->base));
+	
+	JIVE_DECLARE_ADDRESS_TYPE(addr);
+	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
+	jive_node * bottom = jive_node_create(graph->root_region,
+		5, (const jive_type *[]){addr, addr, bits32, bits32, bits16},
+		(jive_output *[]){o0, o1, o2, o3, o4},
+		0, NULL);
+	jive_node_reserve(bottom);
 
+	jive_view(graph, stderr);
+
+	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o0->node), 32);
+	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o1->node), 32);
+
+	jive_graph_prune(graph);
 	jive_view(graph, stderr);
 
 	jive_graph_destroy(graph);
