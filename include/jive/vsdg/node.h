@@ -15,6 +15,7 @@ typedef struct jive_node_attrs jive_node_attrs;
 typedef struct jive_node_class jive_node_class;
 
 typedef struct jive_node_normal_form jive_node_normal_form;
+typedef struct jive_node_normal_form_class jive_node_normal_form_class;
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
 struct jive_input;
@@ -78,7 +79,7 @@ struct jive_node_class {
 	void (*fini)(jive_node * self);
 	
 	/** \brief Retrieve node normal form */
-	const jive_node_normal_form *(*get_default_normal_form)(const jive_node * self);
+	jive_node_normal_form *(*get_default_normal_form)(const jive_node_class * cls, jive_node_normal_form * parent, struct jive_graph * graph);
 	
 	/** \brief Give textual representation of node (for debugging) */
 	char * (*get_label)(const jive_node * self);
@@ -258,6 +259,88 @@ jive_node_get_use_count_output(const jive_node * self, struct jive_resource_clas
 
 void
 jive_node_destroy(jive_node * self);
+
+/* normal forms */
+
+struct jive_node_normal_form_class {
+	const jive_node_normal_form_class * parent;
+	void (*fini)(jive_node_normal_form * self);
+	/* return true, if normalized already */
+	bool (*normalize_node)(const jive_node_normal_form * self, jive_node * node);
+	/* return true, if normalized already */
+	bool (*operands_are_normalized)(const jive_node_normal_form * self, size_t noperands, jive_output * const operands[], const jive_node_attrs * attrs);
+	void (*set_mutable)(jive_node_normal_form * self, bool enable);
+	void (*set_cse)(jive_node_normal_form * self, bool enable);
+};
+
+extern const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM;
+
+struct jive_node_normal_form {
+	const jive_node_normal_form_class * class_;
+	const jive_node_class * node_class;
+	
+	jive_node_normal_form * parent;
+	struct jive_graph * graph;
+	struct {
+		jive_node_normal_form * first;
+		jive_node_normal_form * last;
+	} subclasses;
+	struct {
+		jive_node_normal_form * prev;
+		jive_node_normal_form * next;
+	} normal_form_subclass_list;
+	struct {
+		jive_node_normal_form * prev;
+		jive_node_normal_form * next;
+	} hash_chain;
+	
+	bool enable_mutable;
+	bool enable_cse;
+};
+
+JIVE_EXPORTED_INLINE void
+jive_node_normal_form_fini(jive_node_normal_form * self)
+{
+	self->class_->fini(self);
+}
+
+JIVE_EXPORTED_INLINE bool
+jive_node_normal_form_normalize_node(const jive_node_normal_form * self, jive_node * node)
+{
+	return self->class_->normalize_node(self, node);
+}
+
+JIVE_EXPORTED_INLINE bool
+jive_node_normal_form_operands_are_normalized(const jive_node_normal_form * self,
+	size_t noperands, jive_output * const operands[],
+	const jive_node_attrs * attrs)
+{
+	return self->class_->operands_are_normalized(self, noperands, operands, attrs);
+}
+
+JIVE_EXPORTED_INLINE void
+jive_node_normal_form_set_mutable(jive_node_normal_form * self, bool enable)
+{
+	return self->class_->set_mutable(self, enable);
+}
+
+JIVE_EXPORTED_INLINE bool
+jive_node_normal_form_get_mutable(jive_node_normal_form * self)
+{
+	return self->enable_mutable;
+}
+
+JIVE_EXPORTED_INLINE void
+jive_node_normal_form_set_cse(jive_node_normal_form * self, bool enable)
+{
+	return self->class_->set_cse(self, enable);
+}
+
+JIVE_EXPORTED_INLINE bool
+jive_node_normal_form_get_cse(jive_node_normal_form * self)
+{
+	return self->enable_cse;
+}
 
 /* tracking support */
 

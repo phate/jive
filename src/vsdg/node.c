@@ -155,10 +155,14 @@ jive_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	return other;
 }
 
-const struct jive_node_normal_form *
-jive_node_get_default_normal_form_(const jive_node * self)
+jive_node_normal_form *
+jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, jive_graph * graph)
 {
-	return 0;
+	jive_node_normal_form * normal_form;
+	normal_form = jive_context_malloc(graph->context, sizeof(*normal_form));
+	normal_form->class_ = &JIVE_NODE_NORMAL_FORM;
+	jive_node_normal_form_init_(normal_form, cls, parent, graph);
+	return normal_form;
 }
 
 const struct jive_resource_class *
@@ -567,4 +571,64 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 	nodestate->tag = 0;
 	
 	return nodestate;
+}
+
+/* normal forms */
+
+const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM = {
+	.parent = 0,
+	.fini = jive_node_normal_form_fini_,
+	.normalize_node = jive_node_normal_form_normalize_node_,
+	.operands_are_normalized = jive_node_normal_form_operands_are_normalized_,
+	.set_mutable = jive_node_normal_form_set_mutable_,
+	.set_cse = jive_node_normal_form_set_cse_
+};
+
+void
+jive_node_normal_form_fini_(jive_node_normal_form * self)
+{
+}
+
+bool
+jive_node_normal_form_normalize_node_(const jive_node_normal_form * self, jive_node * node)
+{
+	return true;
+}
+
+bool
+jive_node_normal_form_operands_are_normalized_(const jive_node_normal_form * self,
+	size_t noperands, jive_output * const operands[],
+	const jive_node_attrs * attrs)
+{
+	return true;
+}
+
+void
+jive_node_normal_form_set_mutable_(jive_node_normal_form * self, bool enable)
+{
+	if (self->enable_mutable == enable)
+		return;
+	
+	self->enable_mutable = enable;
+	jive_node_normal_form * child;
+	JIVE_LIST_ITERATE(self->subclasses, child, normal_form_subclass_list) {
+		jive_node_normal_form_set_mutable(child, enable);
+	}
+	if (enable)
+		jive_graph_mark_denormalized(self->graph);
+}
+
+void
+jive_node_normal_form_set_cse_(jive_node_normal_form * self, bool enable)
+{
+	if (self->enable_cse == enable)
+		return;
+	
+	self->enable_cse = enable;
+	jive_node_normal_form * child;
+	JIVE_LIST_ITERATE(self->subclasses, child, normal_form_subclass_list) {
+		jive_node_normal_form_set_cse(child, enable);
+	}
+	if (enable && self->enable_mutable)
+		jive_graph_mark_denormalized(self->graph);
 }

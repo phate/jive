@@ -233,6 +233,8 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 	
 	jive_node_invalidate_depth_from_root(self->node);
 	
+	jive_graph_mark_denormalized(new_origin->node->graph);
+	
 	jive_graph_notify_input_change(self->node->graph, self, old_origin, new_origin);
 }
 
