@@ -214,6 +214,12 @@ jive_label_to_address_node_cast(jive_node * node)
 		return 0;
 }
 
+JIVE_EXPORTED_INLINE const struct jive_label *
+jive_label_to_address_node_get_label(const struct jive_label_to_address_node * node)
+{
+	return node->attrs.label;
+}
+
 /* label_to_bitstring node */
 
 extern const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE;
@@ -245,6 +251,12 @@ jive_label_to_bitstring_node_cast(jive_node * node)
 		return (jive_label_to_bitstring_node *) node;
 	else
 		return 0;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_label *
+jive_label_to_bitstring_node_get_label(const struct jive_label_to_bitstring_node * node)
+{
+	return node->attrs.label;
 }
 
 #endif
