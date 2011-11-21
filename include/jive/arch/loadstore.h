@@ -56,6 +56,12 @@ jive_load_node_cast(jive_node * node)
 		return NULL;
 }
 
+JIVE_EXPORTED_INLINE const struct jive_value_type *
+jive_load_node_get_datatype(const jive_load_node * node)
+{
+	return node->attrs.datatype;
+}
+
 struct jive_node *
 jive_store_node_create(struct jive_region * region,
 	struct jive_output * address,
@@ -69,6 +75,12 @@ jive_store_node_cast(jive_node * node)
 		return (jive_store_node *) node;
 	else
 		return NULL;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_value_type *
+jive_store_node_get_datatype(const jive_store_node * node)
+{
+	return node->attrs.datatype;
 }
 
 #endif
