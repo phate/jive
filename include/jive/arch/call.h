@@ -29,8 +29,27 @@ struct jive_call_node {
 };
 
 struct jive_node *
-jive_call_node_create(struct jive_region * region,
+jive_call_by_address_node_create(struct jive_region * region,
 	struct jive_output * target_address, const jive_calling_convention * calling_convention,
+	size_t narguments, struct jive_output * const arguments[],
+	size_t nreturns, const struct jive_type * const return_types[]);
+
+struct jive_output * const *
+jive_call_by_address_create(struct jive_output * target_address,
+	const jive_calling_convention * calling_convention,
+	size_t narguments, struct jive_output * const arguments[],
+	size_t nreturns, const struct jive_type * const return_types[]);
+
+struct jive_node *
+jive_call_by_bitstring_node_create(struct jive_region * region,
+	struct jive_output * target_address, size_t nbits,
+	const jive_calling_convention * calling_convention,
+	size_t narguments, struct jive_output * const arguments[],
+	size_t nreturns, const struct jive_type * const return_types[]);
+
+struct jive_output * const *
+jive_call_by_bitstring_create(struct jive_output * target_address, size_t nbits,
+	const jive_calling_convention * calling_convention,
 	size_t narguments, struct jive_output * const arguments[],
 	size_t nreturns, const struct jive_type * const return_types[]);
 
