@@ -6,3 +6,4 @@ TESTS+=\
 	arch/test-dataobj \
 	arch/test-memory-type \
 	arch/test-sizeof \
+	arch/test_label_nodes \

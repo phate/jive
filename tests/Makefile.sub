@@ -10,7 +10,6 @@ TESTS=\
 	test_statesplit\
 	test_typemismatch\
 	test_rangemap\
-	test_label_nodes\
 
 # 	test_resource\
 # 	test_interference\
