@@ -1,5 +1,5 @@
-#ifndef JIVE_ARCH_LOADSTORE_H
-#define JIVE_ARCH_LOADSTORE_H
+#ifndef JIVE_ARCH_CALL_H
+#define JIVE_ARCH_CALL_H
 
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
