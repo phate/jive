@@ -29,13 +29,13 @@ int main()
 	jive_output * memstate = top->outputs[1];
 	
 	jive_node * load = jive_load_node_create(graph->root_region,
-		address, valuetype,
+		address, jive_value_type_cast(valuetype),
 		1, (jive_output *[]) {memstate});
 	
 	jive_output * value = load->outputs[0];
 	
 	jive_node * store = jive_store_node_create(graph->root_region,
-		address, valuetype, value,
+		address, jive_value_type_cast(valuetype), value,
 		1, (jive_output *[]) {memstate});
 	
 	memstate = store->outputs[0];

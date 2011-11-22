@@ -39,8 +39,8 @@ jive_load_node_fini_(jive_node * self_)
 	jive_context * context = self_->graph->context;
 	jive_load_node * self = (jive_load_node *) self_;
 	
-	jive_type_fini(self->attrs.type);
-	jive_context_free(context, self->attrs.type);
+	jive_type_fini(&self->attrs.datatype->base);
+	jive_context_free(context, self->attrs.datatype);
 	
 	jive_node_fini_(&self->base);
 }
@@ -57,7 +57,7 @@ jive_load_node_match_attrs_(const jive_node * self_, const jive_node_attrs * att
 {
 	const jive_load_node * self = (const jive_load_node *) self_;
 	const jive_load_node_attrs * attrs = (const jive_load_node_attrs *) attrs_;
-	return jive_type_equals(self->attrs.type, attrs->type);
+	return jive_type_equals(&self->attrs.datatype->base, &attrs->datatype->base);
 }
 
 static jive_node *
@@ -66,13 +66,13 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	const jive_load_node_attrs * attrs = (const jive_load_node_attrs *) attrs_;
-	return jive_load_node_create(region, operands[0], attrs->type, 0, NULL);
+	return jive_load_node_create(region, operands[0], attrs->datatype, 0, NULL);
 }
 
 jive_node *
 jive_load_node_create(jive_region * region,
 	jive_output * address,
-	const struct jive_type * datatype,
+	const struct jive_value_type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	jive_context * context = region->graph->context;
@@ -92,23 +92,11 @@ jive_load_node_create(jive_region * region,
 		}
 		jive_context_fatal_error(context, error_msg);
 	}
-	if (!jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
-		char * operand_type_name = jive_type_get_label(datatype);
-		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
-		if (operand_type_name) {
-			error_msg = jive_context_strjoin(context,
-				"Type mismatch: required 'valuetype', got '",
-				operand_type_name, "'", NULL);
-			free(operand_type_name);
-		}
-		jive_context_fatal_error(context, error_msg);	
-	}
 
 	jive_node_init_(&node->base, region,
 		1, &address_type, &address,
-		1, &datatype);
-	node->attrs.type = jive_type_copy(datatype, context);
+		1, (const jive_type * []){&datatype->base});
+	node->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base, context);
 	
 	size_t n;
 	for (n = 0; n < nstates; n++) {
@@ -121,7 +109,7 @@ jive_load_node_create(jive_region * region,
 
 struct jive_output *
 jive_load_create(struct jive_output * address,
-	const struct jive_type * datatype,
+	const struct jive_value_type * datatype,
 	size_t nstates, struct jive_output * const states[])
 {
 	size_t i;
@@ -167,8 +155,8 @@ jive_store_node_fini_(jive_node * self_)
 	jive_context * context = self_->graph->context;
 	jive_store_node * self = (jive_store_node *) self_;
 	
-	jive_type_fini(self->attrs.type);
-	jive_context_free(context, self->attrs.type);
+	jive_type_fini(&self->attrs.datatype->base);
+	jive_context_free(context, self->attrs.datatype);
 	
 	jive_node_fini_(&self->base);
 }
@@ -185,7 +173,7 @@ jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * at
 {
 	const jive_store_node * self = (const jive_store_node *) self_;
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
-	return jive_type_equals(self->attrs.type, attrs->type);
+	return jive_type_equals(&self->attrs.datatype->base, &attrs->datatype->base);
 }
 
 static jive_node *
@@ -194,13 +182,13 @@ jive_store_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
-	return jive_store_node_create(region, operands[0], attrs->type, operands[1], 0, NULL);
+	return jive_store_node_create(region, operands[0], attrs->datatype, operands[1], 0, NULL);
 }
 
 jive_node *
 jive_store_node_create(jive_region * region,
 	jive_output * address,
-	const jive_type * datatype, jive_output * value,
+	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
 	jive_context * context = region->graph->context;
@@ -220,26 +208,14 @@ jive_store_node_create(jive_region * region,
 		}
 		jive_context_fatal_error(context, error_msg);
 	}
-	if (!jive_type_isinstance(datatype, &JIVE_VALUE_TYPE)) {
-		char * operand_type_name = jive_type_get_label(datatype);
-		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
-		if (operand_type_name) {
-			error_msg = jive_context_strjoin(context,
-				"Type mismatch: required 'valuetype', got '",
-				operand_type_name, "'", NULL);
-			free(operand_type_name);
-		}
-		jive_context_fatal_error(context, error_msg);
-	}
 	
-	const jive_type * operand_types[2] = {address_type, datatype};
+	const jive_type * operand_types[2] = {address_type, &datatype->base};
 	jive_output * operands[2] = {address, value};
 	
 	jive_node_init_(&node->base, region,
 		2, operand_types, operands,
 		0, NULL);
-	node->attrs.type = jive_type_copy(datatype, context);
+	node->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base, context);
 	
 	size_t n;
 	for (n = 0; n < nstates; n++) {
