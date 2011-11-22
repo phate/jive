@@ -9,6 +9,8 @@
 #include <jive/vsdg/region.h>
 #include <jive/arch/addresstype.h>
 
+/* load node */
+
 static void
 jive_load_node_fini_(jive_node * self_);
 
@@ -66,51 +68,39 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	const jive_load_node_attrs * attrs = (const jive_load_node_attrs *) attrs_;
-	return jive_load_node_create(region, operands[0], attrs->datatype, 0, NULL);
+
+	if(jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
+		size_t nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) operands[0]);
+		return jive_load_by_bitstring_node_create(region, operands[0], nbits, attrs->datatype,
+			0, NULL);
+	} else {
+		return jive_load_by_address_node_create(region, operands[0], attrs->datatype, 0, NULL);
+	}
 }
 
-jive_node *
-jive_load_node_create(jive_region * region,
-	jive_output * address,
-	const struct jive_value_type * datatype,
+void
+jive_load_node_init_(jive_load_node * self, jive_region * region,
+	jive_output * address, const jive_type * address_type,
+	const jive_value_type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	jive_context * context = region->graph->context;
-	jive_load_node * node = jive_context_malloc(context, sizeof(*node));
-	
-	node->base.class_ = &JIVE_LOAD_NODE;
-	const jive_type * address_type = jive_output_get_type(address);
-	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
-		char * operand_type_name = jive_type_get_label(address_type);
-		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
-		if (operand_type_name) {
-			error_msg = jive_context_strjoin(context,
-				"Type mismatch: required 'address' or 'bitstring', got '",
-				operand_type_name, "'", NULL);
-			free(operand_type_name);
-		}
-		jive_context_fatal_error(context, error_msg);
-	}
 
-	jive_node_init_(&node->base, region,
+	jive_node_init_(&self->base, region,
 		1, &address_type, &address,
 		1, (const jive_type * []){&datatype->base});
-	node->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base, context);
+	self->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base, context);
 	
+	/* FIXME: check the type of the states */
 	size_t n;
 	for (n = 0; n < nstates; n++) {
 		const jive_type * type = jive_output_get_type(states[n]);
-		jive_node_add_input(&node->base, type, states[n]);
+		jive_node_add_input(&self->base, type, states[n]);
 	}
-	
-	return &node->base;
 }
 
-struct jive_output *
-jive_load_create(struct jive_output * address,
-	const struct jive_value_type * datatype,
-	size_t nstates, struct jive_output * const states[])
+static inline jive_region *
+load_node_region_innermost(jive_output * address, size_t nstates, jive_output * const states[])
 {
 	size_t i;
 	jive_output * outputs[nstates+1];
@@ -118,12 +108,65 @@ jive_load_create(struct jive_output * address,
 		outputs[i] = states[i];
 	}
 	outputs[nstates] = address;
+	
+	return jive_region_innermost(nstates+1, outputs);
+}
 
-	jive_region * region = jive_region_innermost(nstates+1, outputs);
-	jive_node * node = jive_load_node_create(region, address, datatype, nstates, states);
+jive_node *
+jive_load_by_address_node_create(jive_region * region,
+	jive_output * address,
+	const jive_value_type * datatype,
+	size_t nstates, jive_output * const states[])
+{
+	jive_load_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	
+	node->base.class_ = &JIVE_LOAD_NODE;
+	JIVE_DECLARE_ADDRESS_TYPE(address_type);
+	jive_load_node_init_(node, region, address, address_type, datatype, nstates, states);
+	
+	return &node->base;
+}
+
+jive_output *
+jive_load_by_address_create(jive_output * address,
+	const jive_value_type * datatype,
+	size_t nstates, jive_output * const states[])
+{
+	jive_region * region = load_node_region_innermost(address, nstates, states);
+	jive_node * node = jive_load_by_address_node_create(region, address, datatype,
+		nstates, states);
 
 	return node->outputs[0];	
 }
+
+jive_node *
+jive_load_by_bitstring_node_create(jive_region * region,
+	jive_output * address, size_t nbits,
+	const jive_value_type * datatype,
+	size_t nstates, jive_output * const states[])
+{
+	jive_load_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+
+	node->base.class_ = &JIVE_LOAD_NODE;
+	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);
+	jive_load_node_init_(node, region, address, address_type, datatype, nstates, states);
+
+	return &node->base;
+}
+
+jive_output *
+jive_load_by_bitstring_create(jive_output * address, size_t nbits,
+	const jive_value_type * datatype,
+	size_t nstates, jive_output * const states[])
+{
+	jive_region * region = load_node_region_innermost(address, nstates, states);
+	jive_node * node = jive_load_by_bitstring_node_create(region, address, nbits,
+		datatype, nstates, states);
+
+	return node->outputs[0];
+}
+
+/* store node */
 
 static void
 jive_store_node_fini_(jive_node * self_);
@@ -182,47 +225,105 @@ jive_store_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
-	return jive_store_node_create(region, operands[0], attrs->datatype, operands[1], 0, NULL);
+
+	if(jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
+		size_t nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) operands[0]);
+		return jive_store_by_bitstring_node_create(region, operands[0], nbits, attrs->datatype,
+			operands[1], 0, NULL);
+	} else {
+		return jive_store_by_address_node_create(region, operands[0], attrs->datatype, operands[1],
+			0, NULL);
+	}
 }
 
-jive_node *
-jive_store_node_create(jive_region * region,
-	jive_output * address,
+void
+jive_store_node_init_(jive_store_node * self, jive_region * region,
+	jive_output * address, const jive_type * address_type,
 	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	jive_context * context = region->graph->context;
-	jive_store_node * node = jive_context_malloc(context, sizeof(*node));
-	
-	node->base.class_ = &JIVE_STORE_NODE;
-	const jive_type * address_type = jive_output_get_type(address);
-	if (address_type->class_ != &JIVE_ADDRESS_TYPE && address_type->class_ != &JIVE_BITSTRING_TYPE) {
-		char * operand_type_name = jive_type_get_label(address_type);
-		
-		char * error_msg = "Type mismatch (and additionally memory exhaustion)";
-		if (operand_type_name) {
-			error_msg = jive_context_strjoin(context,
-				"Type mismatch: required 'address' or 'bitstring', got '",
-				operand_type_name, "'", NULL);
-			free(operand_type_name);
-		}
-		jive_context_fatal_error(context, error_msg);
-	}
-	
 	const jive_type * operand_types[2] = {address_type, &datatype->base};
 	jive_output * operands[2] = {address, value};
 	
-	jive_node_init_(&node->base, region,
+	jive_node_init_(&self->base, region,
 		2, operand_types, operands,
 		0, NULL);
-	node->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base, context);
-	
+	self->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base,
+		region->graph->context);
+
+	/* FIXME: check the type of the states */	
 	size_t n;
 	for (n = 0; n < nstates; n++) {
 		const jive_type * type = jive_output_get_type(states[n]);
-		jive_node_add_input(&node->base, type, states[n]);
-		jive_node_add_output(&node->base, type);
+		jive_node_add_input(&self->base, type, states[n]);
+		jive_node_add_output(&self->base, type);
 	}
+}
+
+static inline jive_region *
+store_node_region_innermost(jive_output * address, jive_output * value,
+	size_t nstates, jive_output * const states[])
+{
+	size_t i;
+	jive_output * outputs[nstates+2];
+	for(i = 0; i < nstates; i++){
+		outputs[i] = states[i];
+	}
+	outputs[nstates] = address;
+	outputs[nstates+1] = value;
+	
+	return jive_region_innermost(nstates+2, outputs);
+}
+
+jive_node *
+jive_store_by_address_node_create(jive_region * region, jive_output * address,
+	const jive_value_type * datatype, jive_output * value,
+	size_t nstates, jive_output * const states[])
+{
+	jive_store_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	
+	node->base.class_ = &JIVE_STORE_NODE;
+	JIVE_DECLARE_ADDRESS_TYPE(address_type);
+	jive_store_node_init_(node, region, address, address_type, datatype, value, nstates, states);
 	
 	return &node->base;
+}
+
+jive_output * const *
+jive_store_by_address_create(jive_output * address,
+	const jive_value_type * datatype, jive_output * value,
+	size_t nstates, jive_output * const states[])
+{
+	jive_region * region = store_node_region_innermost(address, value, nstates, states);
+	jive_node * node = jive_store_by_address_node_create(region, address, datatype, value,
+		nstates, states);
+
+	return node->outputs;
+}
+
+jive_node *
+jive_store_by_bitstring_node_create(jive_region * region,
+	jive_output * address, size_t nbits,
+	const jive_value_type * datatype, jive_output * value,
+	size_t nstates, jive_output * const states[])
+{
+	jive_store_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+
+	node->base.class_ = &JIVE_STORE_NODE;
+	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);
+	jive_store_node_init_(node, region, address, address_type, datatype, value, nstates, states);
+
+	return &node->base;
+}
+
+jive_output * const *
+jive_store_by_bitstring_create(jive_output * address, size_t nbits,
+	const jive_value_type * datatype, jive_output * value,
+	size_t nstates, jive_output * const states[])
+{
+	jive_region * region = store_node_region_innermost(address, value, nstates, states);
+	jive_node * node = jive_store_by_bitstring_node_create(region, address, nbits, datatype, value,
+		nstates, states);
+
+	return node->outputs;
 }

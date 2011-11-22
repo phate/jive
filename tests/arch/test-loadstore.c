@@ -4,6 +4,7 @@
 #include <jive/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
+#include <jive/arch/address_reduce.h>
 #include <jive/arch/loadstore.h>
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>
@@ -28,13 +29,13 @@ int main()
 	jive_output * address = top->outputs[0];
 	jive_output * memstate = top->outputs[1];
 	
-	jive_node * load = jive_load_node_create(graph->root_region,
+	jive_node * load = jive_load_by_address_node_create(graph->root_region,
 		address, jive_value_type_cast(valuetype),
 		1, (jive_output *[]) {memstate});
 	
 	jive_output * value = load->outputs[0];
 	
-	jive_node * store = jive_store_node_create(graph->root_region,
+	jive_node * store = jive_store_by_address_node_create(graph->root_region,
 		address, jive_value_type_cast(valuetype), value,
 		1, (jive_output *[]) {memstate});
 	

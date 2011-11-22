@@ -37,14 +37,25 @@ struct jive_store_node {
 };
 
 struct jive_node *
-jive_load_node_create(struct jive_region * region,
+jive_load_by_address_node_create(struct jive_region * region,
 	struct jive_output * address,
 	const struct jive_value_type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
 struct jive_output *
-jive_load_create(struct jive_output * address,
+jive_load_by_address_create(struct jive_output * address,
 	const struct jive_value_type * datatype,
+	size_t nstates, struct jive_output * const states[]);
+
+struct jive_node *
+jive_load_by_bitstring_node_create(struct jive_region * region,
+	struct jive_output * address, size_t nbits,
+	const struct jive_value_type * datatype,
+	size_t nstates, struct jive_output * const states[]);
+
+struct jive_output *
+jive_load_by_bitstring_create(struct jive_output * address,
+	size_t nbits, const struct jive_value_type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
 JIVE_EXPORTED_INLINE jive_load_node *
@@ -63,8 +74,24 @@ jive_load_node_get_datatype(const jive_load_node * node)
 }
 
 struct jive_node *
-jive_store_node_create(struct jive_region * region,
+jive_store_by_address_node_create(struct jive_region * region,
 	struct jive_output * address,
+	const struct jive_value_type * datatype, struct jive_output * value,
+	size_t nstates, struct jive_output * const states[]);
+
+struct jive_output * const *
+jive_store_by_address_create(struct jive_output * address,
+	const struct jive_value_type * datatype, struct jive_output * value,
+	size_t nstates, struct jive_output * const states[]);
+
+struct jive_node *
+jive_store_by_bitstring_node_create(struct jive_region * region,
+	struct jive_output * address, size_t nbits,
+	const struct jive_value_type * datatype, struct jive_output * value,
+	size_t nstates, struct jive_output * const states[]);
+
+struct jive_output * const *
+jive_store_by_bitstring_create(struct jive_output * address, size_t nbits,
 	const struct jive_value_type * datatype, struct jive_output * value,
 	size_t nstates, struct jive_output * const states[]);
 
