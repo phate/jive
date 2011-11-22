@@ -8,3 +8,4 @@ TESTS+=\
 	arch/test-sizeof \
 	arch/test_label_nodes \
 	arch/test-address-transform-nodes \
+	arch/test-call \

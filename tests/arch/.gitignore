@@ -1,5 +1,6 @@
 test-address
 test-address-transform-nodes
+test-call
 test-dynamic-stackslots
 test-loadstore
 test-subroutine

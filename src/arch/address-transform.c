@@ -2,7 +2,7 @@
 
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
-#include <jive/arch/memlayout.h>
+#include <jive/arch/call.h>
 #include <jive/arch/loadstore.h>
 #include <jive/arch/memlayout.h>
 #include <jive/bitstring/type.h>
@@ -389,4 +389,47 @@ jive_label_to_address_node_address_transform(jive_label_to_address_node * node, 
 	jive_output * label_o = jive_label_to_bitstring_create(node_->region->graph, label, nbits);
 	jive_output * addr_o = jive_bitstring_to_address_create(label_o, nbits);
 	jive_output_replace(node_->outputs[0], addr_o);
+}
+
+void
+jive_call_node_address_transform(jive_call_node * node, size_t nbits)
+{
+	const jive_node * node_ = &node->base;
+
+	size_t i;
+	bool transform = false;
+	jive_output * operands[node_->ninputs];
+	for (i = 0; i < node_->ninputs; i++){
+		if(jive_input_isinstance(node_->inputs[i], &JIVE_ADDRESS_INPUT)){
+			operands[i] = jive_address_to_bitstring_create(node_->inputs[i]->origin, nbits);	
+			transform = true;
+		} else {
+			operands[i] = node_->inputs[i]->origin;
+		}
+	}
+
+	const jive_type * return_types[node_->noutputs];
+	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);
+	for (i = 0; i < node_->noutputs; i++){
+		if(jive_output_isinstance(node_->outputs[i], &JIVE_ADDRESS_OUTPUT)){
+			return_types[i] = address_type;			
+			transform = true;
+		} else {
+			return_types[i] = jive_output_get_type(node_->outputs[i]);
+		}
+	}
+
+	if (!transform)
+		return;
+
+	jive_node * call = jive_call_by_bitstring_node_create(node_->region, operands[0], nbits,
+		node->attrs.calling_convention, node_->ninputs - 1, operands + 1, node_->noutputs,
+		return_types);
+
+	for (i = 0; i < node_->noutputs; i++){
+		jive_output * output = call->outputs[i];
+		if(jive_output_isinstance(node_->outputs[i], &JIVE_ADDRESS_OUTPUT))
+			output = jive_bitstring_to_address_create(call->outputs[i], nbits);
+		jive_output_replace(node_->outputs[i], output);
+	}
 }

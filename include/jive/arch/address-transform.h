@@ -93,4 +93,10 @@ void
 jive_label_to_address_node_address_transform(struct jive_label_to_address_node * node,
 	size_t nbits);
 
+struct jive_call_node;
+
+void
+jive_call_node_address_transform(struct jive_call_node * node,
+	size_t nbits);
+
 #endif
