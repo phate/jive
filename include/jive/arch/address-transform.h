@@ -74,4 +74,17 @@ jive_bitstring_to_address_node_cast(jive_node * node)
 		return 0;
 }
 
+/* reductions */
+
+struct jive_load_node;
+struct jive_store_node;
+
+void
+jive_load_node_address_transform(struct jive_load_node * node,
+	size_t nbits);
+
+void
+jive_store_node_address_transform(struct jive_store_node * node,
+	size_t nbits);
+
 #endif

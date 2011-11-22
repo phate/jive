@@ -4,10 +4,11 @@
 #include <jive/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
+#include <jive/arch/addresstype.h>
+#include <jive/arch/address-transform.h>
 #include <jive/arch/loadstore.h>
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/arch/addresstype.h>
 
 int main()
 {
@@ -43,8 +44,14 @@ int main()
 	jive_node * bottom = jive_node_create(graph->root_region,
 		1, (const jive_type *[]) {memtype}, (jive_output *[]){memstate},
 		0, NULL);
-	(void) bottom;
+	jive_node_reserve(bottom);
 	
+	jive_view(graph, stdout);
+
+	jive_load_node_address_transform(jive_load_node_cast(load), 64);
+	jive_store_node_address_transform(jive_store_node_cast(store), 64);
+
+	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 	
 	jive_context * context2 = jive_context_create();

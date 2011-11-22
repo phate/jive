@@ -2,6 +2,7 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout.h>
+#include <jive/arch/loadstore.h>
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
@@ -299,3 +300,78 @@ jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits)
 		bitstring->node->region, &attrs.base, bitstring);
 }
 
+/* reductions */
+
+void
+jive_load_node_address_transform(jive_load_node * node, size_t nbits)
+{
+	const jive_node * node_ = &node->base;
+
+	bool input_is_address = jive_input_isinstance(node_->inputs[0], &JIVE_ADDRESS_INPUT);
+	bool output_is_address = jive_output_isinstance(node_->outputs[0], &JIVE_ADDRESS_OUTPUT);
+
+	if (!input_is_address && !output_is_address)
+		return;
+
+	jive_output * address = node_->inputs[0]->origin;
+	if (input_is_address)
+		address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+
+	JIVE_DEBUG_ASSERT(jive_bitstring_output_nbits((const jive_bitstring_output *) address) == nbits);
+
+	JIVE_DECLARE_BITSTRING_TYPE(bits, nbits);
+	const jive_value_type * datatype = node->attrs.datatype;
+	if (output_is_address)
+		datatype = jive_value_type_cast(bits); 
+
+	size_t i;
+	size_t nstates = node_->ninputs - 1;
+	jive_output * states[nstates];
+	for (i = 0; i < nstates; i++){
+		states[i] = node_->inputs[i+1]->origin;
+	}
+
+	jive_output * load = jive_load_by_bitstring_create(address, nbits, datatype, nstates, states);
+	
+	if (output_is_address)
+		load = jive_bitstring_to_address_create(load, nbits);
+	
+	jive_output_replace(node_->outputs[0], load);
+}
+
+void
+jive_store_node_address_transform(jive_store_node * node, size_t nbits)
+{
+	const jive_node * node_ = &node->base;
+
+	bool input0_is_address = jive_input_isinstance(node_->inputs[0], &JIVE_ADDRESS_INPUT);
+	bool input1_is_address = jive_input_isinstance(node_->inputs[1], &JIVE_ADDRESS_INPUT);
+
+	if (!input0_is_address && !input1_is_address)
+		return;
+
+	jive_output * address = node_->inputs[0]->origin;
+	if (input0_is_address)
+		address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+
+	JIVE_DEBUG_ASSERT(jive_bitstring_output_nbits((const jive_bitstring_output *) address) == nbits);
+
+	JIVE_DECLARE_BITSTRING_TYPE(bits, nbits);
+	const jive_value_type * datatype = node->attrs.datatype;
+	if(input1_is_address)
+		datatype = jive_value_type_cast(bits);
+
+	size_t i;
+	size_t nstates = node_->ninputs - 2;
+	jive_output * states[nstates];
+	for (i = 0; i < nstates; i++){
+		states[i] = node_->inputs[i+2]->origin;
+	}
+
+	jive_node * store = jive_store_by_bitstring_node_create(node_->region, address, nbits,
+		datatype, node_->inputs[1]->origin, nstates, states);
+
+	for (i = 0; i < nstates; i++){
+		jive_output_replace(node_->outputs[i], store->outputs[i]);
+	}
+}
