@@ -120,4 +120,8 @@ void
 jive_arrayindex_node_address_transform(struct jive_arrayindex_node * node,
 	struct jive_memlayout_mapper * mapper);
 
+void
+jive_graph_address_transform(jive_graph * graph,
+	struct jive_memlayout_mapper * mapper);
+
 #endif

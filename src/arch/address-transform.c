@@ -11,6 +11,7 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/traverser.h>
 
 /* address_to_bitstring node */
 
@@ -515,3 +516,33 @@ jive_arrayindex_node_address_transform(jive_arrayindex_node * node, jive_memlayo
 
 	jive_output_replace(node_->outputs[0], div);
 }
+
+void
+jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
+{
+	jive_traverser * traverser = jive_topdown_traverser_create(graph);
+	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;	
+
+	jive_node * node = jive_traverser_next(traverser);
+	for(; node; node = jive_traverser_next(traverser)){
+		if (jive_node_isinstance(node, &JIVE_MEMBEROF_NODE))
+			jive_memberof_node_address_transform(jive_memberof_node_cast(node), mapper);
+		else if (jive_node_isinstance(node, &JIVE_CONTAINEROF_NODE))
+			jive_containerof_node_address_transform(jive_containerof_node_cast(node), mapper);
+		else if (jive_node_isinstance(node, &JIVE_ARRAYINDEX_NODE))
+			jive_arrayindex_node_address_transform(jive_arrayindex_node_cast(node), mapper);
+		else if (jive_node_isinstance(node, &JIVE_ARRAYSUBSCRIPT_NODE))
+			jive_arraysubscript_node_address_transform(jive_arraysubscript_node_cast(node), mapper);
+		else if (jive_node_isinstance(node, &JIVE_LABEL_TO_ADDRESS_NODE))
+			jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(node), nbits);
+		else if (jive_node_isinstance(node, &JIVE_LOAD_NODE))
+			jive_load_node_address_transform(jive_load_node_cast(node), nbits);
+		else if (jive_node_isinstance(node, &JIVE_STORE_NODE))
+			jive_store_node_address_transform(jive_store_node_cast(node), nbits);
+		else if (jive_node_isinstance(node, &JIVE_CALL_NODE))
+			jive_call_node_address_transform(jive_call_node_cast(node), nbits);
+	}
+
+	jive_traverser_destroy(traverser);
+}
+

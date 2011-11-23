@@ -9,3 +9,4 @@ TESTS+=\
 	arch/test_label_nodes \
 	arch/test-address-transform-nodes \
 	arch/test-call \
+	arch/test-address-transform \
