@@ -10,7 +10,8 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/function.h>
 #include <jive/vsdg/substitution.h>
-
+#include <jive/arch/address-transform.h>
+#include <jive/arch/addresstype.h>
 
 static inline void
 jive_node_add_register_input(jive_node * node, const jive_register_class * regcls, jive_output * origin)
@@ -78,6 +79,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 			substitute = jive_node_add_output(&subroutine->enter->base, jive_output_get_type(original));
 		}
 		
+		if(jive_output_isinstance(original, &JIVE_ADDRESS_OUTPUT))
+			substitute = jive_bitstring_to_address_create(substitute, 32);
 		jive_substitution_map_add_output(subst, original, substitute);
 	}
 	
@@ -91,6 +94,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		jive_output * retval = jive_substitution_map_lookup_output(subst, src_region->bottom->inputs[n]->origin);
 		
 		if (jive_input_isinstance(original, &JIVE_VALUE_INPUT)) {
+			if(jive_input_isinstance(original, &JIVE_ADDRESS_INPUT))
+				retval = jive_address_to_bitstring_create(retval, 32);
 			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
 		} else {
 			jive_node_add_input(&subroutine->leave->base, jive_input_get_type(original), retval);
