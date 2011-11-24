@@ -77,7 +77,8 @@ jive_group_node_init_(jive_group_node * self,
 	size_t narguments, jive_output * const arguments[])
 {
 	if (decl->nelements != narguments) {
-		jive_context_fatal_error(self->base.graph->context, "Type mismatch: number of parameters to group does not match record layout");
+		jive_context_fatal_error(region->graph->context,
+			"Type mismatch: number of parameters to group does not match record declaration");
 	}
 
 	size_t n;

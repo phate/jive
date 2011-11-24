@@ -75,7 +75,7 @@ jive_unify_node_init_(jive_unify_node * self,
 	size_t option, jive_output * const operand)
 {
 	if (option >= decl->nelements) {
-		jive_context_fatal_error(self->base.graph->context,
+		jive_context_fatal_error(region->graph->context,
 			"Type mismatch: invalid option for union type");
 	}
 	
@@ -141,7 +141,7 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 {
 	jive_context * context = region->graph->context;
 	if (operand->class_ != &JIVE_UNION_OUTPUT) {
-		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
+		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
 	}
 	
 	const jive_union_type * operand_type = (const jive_union_type *)
