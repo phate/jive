@@ -88,15 +88,15 @@ jive_lambda_node_cast(jive_node * node)
 }
 
 JIVE_EXPORTED_INLINE jive_node *
-jive_lambda_node_get_enter_node(const jive_node * self)
+jive_lambda_node_get_enter_node(const jive_lambda_node * self)
 {
-	return self->inputs[0]->origin->node->region->top;
+	return self->base.inputs[0]->origin->node->region->top;
 }
 
 JIVE_EXPORTED_INLINE jive_node *
-jive_lambda_node_get_leave_node(const jive_node * self)
+jive_lambda_node_get_leave_node(const jive_lambda_node * self)
 {
-	return self->inputs[0]->origin->node;
+	return self->base.inputs[0]->origin->node;
 }
 
 void
