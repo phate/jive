@@ -20,7 +20,8 @@ int main()
 	jive_bituhiproduct(c0, c1);
 	jive_bituquotient(c0, c1);
 	jive_bitsquotient(c0, c1);
-	jive_bitmod(c0, c1);
+	jive_bitumod(c0, c1);
+	jive_bitsmod(c0, c1);
 	jive_bitshl(c0, c1);
 	jive_bitshr(c0, c1);
 	jive_bitashr(c0, c1);

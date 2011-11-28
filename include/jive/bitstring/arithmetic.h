@@ -20,12 +20,13 @@ typedef enum jive_bitop_code {
 	jive_bitop_code_shiproduct = 8,
 	jive_bitop_code_uquotient = 9,
 	jive_bitop_code_squotient = 10,
-	jive_bitop_code_mod = 11,
-	jive_bitop_code_shl = 12,
-	jive_bitop_code_shr = 13,
-	jive_bitop_code_ashr = 14,
-	jive_bitop_code_negate = 15,
-	jive_bitop_code_not = 16
+	jive_bitop_code_umod = 11,
+	jive_bitop_code_smod = 12,
+	jive_bitop_code_shl = 13,
+	jive_bitop_code_shr = 14,
+	jive_bitop_code_ashr = 15,
+	jive_bitop_code_negate = 16,
+	jive_bitop_code_not = 17
 } jive_bitop_code;
 
 struct jive_bitbinary_operation_class {
@@ -241,21 +242,39 @@ jive_bitsquotient_node_cast(jive_node * node)
 	else return 0;
 }
 
-extern const jive_bitbinary_operation_class JIVE_BITMOD_NODE_;
-#define JIVE_BITMOD_NODE (JIVE_BITMOD_NODE_.base.base)
+extern const jive_bitbinary_operation_class JIVE_BITUMOD_NODE_;
+#define JIVE_BITUMOD_NODE (JIVE_BITUMOD_NODE_.base.base)
 
 jive_node *
-jive_bitmod_create(
+jive_bitumod_create(
 	struct jive_region * region,
 	jive_output * operand1, jive_output * operand2);
 
 jive_output *
-jive_bitmod(jive_output * operand1, jive_output * operand2);
+jive_bitumod(jive_output * operand1, jive_output * operand2);
 
 JIVE_EXPORTED_INLINE jive_node *
-jive_bitmod_node_cast(jive_node * node)
+jive_bitumod_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_BITMOD_NODE) return node;
+	if (node->class_ == &JIVE_BITUMOD_NODE) return node;
+	else return 0;
+}
+
+extern const jive_bitbinary_operation_class JIVE_BITSMOD_NODE_;
+#define JIVE_BITSMOD_NODE (JIVE_BITSMOD_NODE_.base.base)
+
+jive_node *
+jive_bitsmod_create(
+	struct jive_region * region,
+	jive_output * operand1, jive_output * operand2);
+
+jive_output *
+jive_bitsmod(jive_output * operand1, jive_output * operand2);
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_bitsmod_node_cast(jive_node * node)
+{
+	if (node->class_ == &JIVE_BITSMOD_NODE) return node;
 	else return 0;
 }
 
