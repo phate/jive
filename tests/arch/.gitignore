@@ -2,7 +2,9 @@ test-address
 test-address-transform
 test-address-transform-nodes
 test-call
+test-dataobj
 test-dynamic-stackslots
 test-loadstore
+test-memory-type
+test-sizeof
 test-subroutine
-test-dataobj
