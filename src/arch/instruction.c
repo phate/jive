@@ -31,7 +31,7 @@ jive_instruction_node_init_simple_(
 	jive_region * region,
 	const jive_instruction_class * icls,
 	jive_output * const operands[],
-	const long immediates[])
+	const int64_t immediates[])
 {
 	jive_context * context = region->graph->context;
 	const jive_type * input_types[icls->ninputs];
@@ -157,7 +157,7 @@ jive_instruction_node_create_simple(
 	jive_region * region,
 	const jive_instruction_class * icls,
 	jive_output * operands[const],
-	const long immediates[const])
+	const int64_t immediates[const])
 {
 	jive_instruction_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->base.class_ = &JIVE_INSTRUCTION_NODE;

@@ -73,12 +73,12 @@ int main()
 	jive_node * load_a = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load32_disp],
-		(jive_output *[]){stackptr}, (long[]){4});
+		(jive_output *[]){stackptr}, (int64_t[]){4});
 	
 	jive_node * load_b = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load32_disp],
-		(jive_output *[]){stackptr}, (long[]){8});
+		(jive_output *[]){stackptr}, (int64_t[]){8});
 	
 	jive_node * add = jive_instruction_node_create(
 		graph->root_region,

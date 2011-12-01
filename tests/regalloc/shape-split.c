@@ -40,12 +40,12 @@ create_testgraph(jive_context * ctx)
 	jive_output * v1 = jive_instruction_node_create(
 		graph->root_region,
 		&jive_testarch_instructions[load_disp_index],
-		(jive_output *[]){arg1}, (long []){0})->outputs[0];
+		(jive_output *[]){arg1}, (int64_t []){0})->outputs[0];
 	
 	jive_output * v2 = jive_instruction_node_create(
 		graph->root_region,
 		&jive_testarch_instructions[load_disp_index],
-		(jive_output *[]){arg1}, (long []){4})->outputs[0];
+		(jive_output *[]){arg1}, (int64_t []){4})->outputs[0];
 
 	jive_output * sum = jive_instruction_node_create(
 		graph->root_region,

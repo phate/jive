@@ -11,7 +11,7 @@ jive_instruction_node_init_simple_(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
 	struct jive_output * const operands[],
-	const long immediates[]);
+	const int64_t immediates[]);
 
 void
 jive_instruction_node_fini_(jive_node * self);

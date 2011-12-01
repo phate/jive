@@ -226,7 +226,7 @@ jive_instruction_node_create_simple(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
 	struct jive_output * operands[const],
-	const long immediates[const]);
+	const int64_t immediates[const]);
 
 jive_node *
 jive_instruction_node_create_extended(
@@ -240,7 +240,7 @@ jive_instruction_node_create(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
 	struct jive_output * operands[const],
-	const long immediates[const])
+	const int64_t immediates[const])
 {
 	return jive_instruction_node_create_simple(region, icls, operands, immediates);
 }

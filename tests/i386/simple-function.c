@@ -19,7 +19,7 @@ int main()
 	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load_imm],
-		0, (const long[]){42});
+		0, (const int64_t[]){42});
 	
 	jive_node * leave = jive_instruction_node_create(
 		graph->root_region,

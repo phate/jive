@@ -330,7 +330,7 @@ static jive_output *
 do_stackptr_sub(const jive_value_split_factory * self_, jive_output * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
-	long immediates[1] = {self->offset};
+	int64_t immediates[1] = {self->offset};
 	
 	return jive_instruction_node_create_simple(
 		value->node->region,
@@ -342,7 +342,7 @@ static jive_output *
 do_stackptr_add(const jive_value_split_factory * self_, jive_output * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
-	long immediates[1] = {self->offset};
+	int64_t immediates[1] = {self->offset};
 	
 	return jive_instruction_node_create_simple(
 		value->node->region,
