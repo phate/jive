@@ -341,6 +341,37 @@ jive_bitstring_init_signed(char dst[], size_t nbits, int64_t value)
 	jive_bitstring_init_unsigned(dst, nbits, (uint64_t)value);
 }
 
+static inline uint64_t
+jive_bitstring_to_unsigned(const char src[], size_t nbits)
+{
+	JIVE_DEBUG_ASSERT(nbits > 0 && nbits <= 64);
+	
+	size_t n;
+	uint64_t value = 0, tmp = 1, bit;
+	for (n = 0; n < nbits; n++) {
+		bit = tmp & ((int64_t)'0' - (int64_t)src[n]);
+		value |= bit;
+		tmp <<= 1;
+	}
+	return value;
+}
+
+static inline int64_t
+jive_bitstring_to_signed(const char src[], size_t nbits)
+{
+	JIVE_DEBUG_ASSERT(nbits > 0 && nbits <= 64);
+	
+	size_t n;
+	uint64_t value = 0, tmp = 1, bit;
+	for (n = 0; n < nbits; n++) {
+		bit = tmp & ((int64_t)'0' - (int64_t)src[n]);
+		value |= bit;
+		tmp <<= 1;
+	}
+	value = value - (bit << 1);
+	return value;
+}
+
 static inline void
 jive_multibit_shiftright(char dst[],
 	const char operand[], size_t nbits, size_t shift)

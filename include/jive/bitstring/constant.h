@@ -5,6 +5,7 @@
 
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/node.h>
+#include <jive/bitstring/bitops-private.h>
 
 extern const jive_node_class JIVE_BITCONSTANT_NODE;
 
@@ -116,6 +117,18 @@ jive_bitconstant_equals_unsigned(const jive_bitconstant_node * node, uint64_t va
 		value >>= 1;
 	}
 	return value == 0;
+}
+
+JIVE_EXPORTED_INLINE uint64_t
+jive_bitconstant_node_to_unsigned(const jive_bitconstant_node * node)
+{
+	return jive_bitstring_to_unsigned(node->attrs.bits, node->attrs.nbits);
+}
+
+JIVE_EXPORTED_INLINE int64_t
+jive_bitconstant_node_to_signed(const jive_bitconstant_node * node)
+{
+	return jive_bitstring_to_signed(node->attrs.bits, node->attrs.nbits);
 }
 
 #endif

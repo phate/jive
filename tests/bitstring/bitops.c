@@ -292,6 +292,11 @@ int main()
 			assert(jive_bitsgreatereq_compare_constants_(bs[r], bs[c], 8) == sgreatereq[r][c]);
 		}
 	}
+	
+	assert(jive_bitstring_to_unsigned("000110", 5) == 24);
+	assert(jive_bitstring_to_unsigned("000110", 6) == 24);
+	assert(jive_bitstring_to_signed("000110", 5) == -8);
+	assert(jive_bitstring_to_signed("000110", 6) == 24);
 
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
