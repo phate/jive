@@ -37,26 +37,46 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	size_t nparameters = src_region->top->noutputs - 1;
 	size_t nreturns = src_region->bottom->ninputs - 1;
 	
-	jive_argument_type parameters[nparameters];
-	jive_argument_type returns[nreturns];
+	size_t nvalue_parameters = 0, nstate_parameters = 0;
+	size_t nvalue_returns = 0, nstate_returns = 0;
+	jive_argument_type value_parameters[nparameters];
+	jive_argument_type value_returns[nreturns];
 	
 	size_t n;
-	for (n = 0; n < nparameters; n++)
-		parameters[n] = jive_argument_long; /* FIXME: pick correct type */
-	for (n = 0; n < nreturns; n++)
-		returns[n] = jive_argument_long; /* FIXME: pick correct type */
+	for (n = 0; n < nparameters; n++) {
+		jive_output * param = src_region->top->outputs[n + 1];
+		if (jive_output_isinstance(param, &JIVE_VALUE_OUTPUT)) {
+			value_parameters[nvalue_parameters ++] = jive_argument_long; /* FIXME: pick correct type */
+		} else {
+			nstate_parameters ++;
+		}
+	}
+	for (n = 0; n < nreturns; n++) {
+		jive_input * ret = src_region->bottom->inputs[n + 1];
+		if (jive_input_isinstance(ret, &JIVE_VALUE_INPUT)) {
+			value_returns[nvalue_returns ++] = jive_argument_long; /* FIXME: pick correct type */
+		} else {
+			nstate_returns ++;
+		}
+	}
 	
 	jive_subroutine * subroutine = jive_i386_subroutine_create(target_parent,
-		nparameters, parameters,
-		nreturns, returns);
+		nvalue_parameters, value_parameters,
+		nvalue_returns, value_returns);
 
 	jive_substitution_map * subst = jive_substitution_map_create(context);
 	
 	/* map all parameters */
+	nvalue_parameters = 0;
 	for (n = 1; n < src_region->top->noutputs; n++) {
 		jive_output * original = src_region->top->outputs[n];
 		
-		jive_output * substitute = jive_subroutine_value_parameter(subroutine, n - 1);
+		jive_output * substitute;
+		if (jive_output_isinstance(original, &JIVE_VALUE_OUTPUT)) {
+			substitute = jive_subroutine_value_parameter(subroutine, nvalue_parameters ++);
+		} else {
+			substitute = jive_node_add_output(&subroutine->enter->base, jive_output_get_type(original));
+		}
 		
 		jive_substitution_map_add_output(subst, original, substitute);
 	}
@@ -64,9 +84,17 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	/* transfer function body */
 	jive_region_copy_substitute(src_region, subroutine->region, subst, false, false);
 	
+	/* map all returns */
+	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom->ninputs; n++) {
-		jive_output * retval = jive_substitution_map_lookup_output(subst, src_region->bottom->inputs[1]->origin);
-		jive_subroutine_value_return(subroutine, n - 1, retval);
+		jive_input * original = src_region->bottom->inputs[n];
+		jive_output * retval = jive_substitution_map_lookup_output(subst, src_region->bottom->inputs[n]->origin);
+		
+		if (jive_input_isinstance(original, &JIVE_VALUE_INPUT)) {
+			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
+		} else {
+			jive_node_add_input(&subroutine->leave->base, jive_input_get_type(original), retval);
+		}
 	}
 	
 	jive_substitution_map_destroy(subst);
