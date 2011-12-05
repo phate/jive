@@ -355,6 +355,7 @@ const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_ = {
 		.parent = &JIVE_BINARY_OPERATION,
 		.name = "ARRAYSUBSCRIPT",
 		.fini = jive_arraysubscript_node_fini_, /* override */
+		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_arraysubscript_node_get_attrs_, /* override */
 		.match_attrs = jive_arraysubscript_node_match_attrs_, /* override */
@@ -438,7 +439,10 @@ jive_arraysubscript_reduce_operand_pair_(const jive_node_class * cls, const jive
 		jive_region * region = operands[0]->node->region;
 		if (operands[1]->node->region->depth > region->depth)
 			region = operands[1]->node->region;
-		*operand1 = jive_binary_operation_normalized_create(&JIVE_ARRAYSUBSCRIPT_NODE, region, NULL, 2, operands);
+		const jive_binary_operation_normal_form * nf =
+			(const jive_binary_operation_normal_form *)
+			jive_graph_get_nodeclass_form(region->graph, &JIVE_ARRAYSUBSCRIPT_NODE);
+		*operand1 = jive_binary_operation_normalized_create_new(nf, region, attrs_, 2, operands); \
 		return true;
 	}
 	
@@ -486,7 +490,10 @@ jive_arraysubscript(jive_output * address, const jive_value_type * element_type,
 	attrs.element_type = (jive_value_type *) element_type;
 	
 	jive_output * operands[2] = {address, index};
-	return jive_binary_operation_normalized_create(&JIVE_ARRAYSUBSCRIPT_NODE, region, &attrs.base, 2, operands);
+	const jive_binary_operation_normal_form * nf =
+		(const jive_binary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_ARRAYSUBSCRIPT_NODE);
+	return jive_binary_operation_normalized_create_new(nf, region, &attrs.base, 2, operands);
 }
 
 /* arrayindex */
@@ -515,6 +522,7 @@ const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_ = {
 		.parent = &JIVE_BINARY_OPERATION,
 		.name = "ARRAYINDEX",
 		.fini = jive_arrayindex_node_fini_, /* override */
+		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_arrayindex_node_get_attrs_, /* override */
 		.match_attrs = jive_arrayindex_node_match_attrs_, /* override */
@@ -667,7 +675,10 @@ jive_arrayindex(jive_output * addr1, jive_output * addr2,
 	attrs.difference_type = *(const jive_bitstring_type *)difference_type;
 	
 	jive_output * operands[2] = {addr1, addr2};
-	return jive_binary_operation_normalized_create(&JIVE_ARRAYINDEX_NODE, region, &attrs.base, 2, operands);
+	const jive_binary_operation_normal_form * nf =
+		(const jive_binary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_ARRAYINDEX_NODE);
+	return jive_binary_operation_normalized_create_new(nf, region, &attrs.base, 2, operands);
 }
 
 /* label_to_address node */

@@ -21,6 +21,7 @@ const jive_bitcomparison_operation_class JIVE_BITCOMPARISON_NODE_ = {
 			.parent = &JIVE_BINARY_OPERATION,
 			.name = "BITCOMPARISON",
 			.fini = jive_node_fini_, /* inherit */
+			.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -120,6 +121,7 @@ const jive_bitcomparison_operation_class JIVE_##NAME##_NODE_ = { \
 			.parent = &JIVE_BITCOMPARISON_NODE, \
 			.name = #NAME, \
 			.fini = jive_node_fini_, /* inherit */ \
+			.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */ \
 			.get_label = jive_##name_##_node_get_label_, /* override */ \
 			.get_attrs = jive_node_get_attrs_, /* inherit */ \
 			.match_attrs = jive_node_match_attrs_, /* inherit */ \
@@ -163,7 +165,10 @@ jive_##name_##_create( \
 	jive_output * x, jive_output * y) \
 { \
 	jive_output * operands[2] = {x, y}; \
-	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, 2, operands)->node; \
+	const jive_binary_operation_normal_form * nf = \
+		(const jive_binary_operation_normal_form *) \
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_##NAME##_NODE); \
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands)->node; \
 } \
  \
 jive_output * \
@@ -171,7 +176,10 @@ jive_##name_(jive_output * x, jive_output * y) \
 { \
 	jive_output * operands[2] = {x, y}; \
 	jive_region * region = jive_region_innermost(2, operands); \
-	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, 2, operands); \
+	const jive_binary_operation_normal_form * nf = \
+		(const jive_binary_operation_normal_form *) \
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_##NAME##_NODE); \
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands); \
 } \
 
 MAKE_CMPOP(bitequal, BITEQUAL, jive_bitcmp_code_equal)

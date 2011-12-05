@@ -19,6 +19,7 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 			.parent = &JIVE_BINARY_OPERATION,
 			.name = "BITBINARY",
 			.fini = jive_node_fini_, /* inherit */
+			.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -94,6 +95,7 @@ const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 			.parent = &JIVE_BITBINARY_NODE, \
 			.name = #NAME, \
 			.fini = jive_node_fini_, /* inherit */ \
+			.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */ \
 			.get_label = jive_##name_##_node_get_label_, /* override */ \
 			.get_attrs = jive_node_get_attrs_, /* inherit */ \
 			.match_attrs = jive_node_match_attrs_, /* inherit */ \
@@ -154,7 +156,10 @@ jive_##name_(jive_output * operand1, jive_output * operand2) \
 { \
 	jive_output * operands[] = {operand1, operand2}; \
 	jive_region * region = jive_region_innermost(2, operands); \
-	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, 2, operands); \
+	const jive_binary_operation_normal_form * nf = \
+		(const jive_binary_operation_normal_form *) \
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_##NAME##_NODE); \
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands); \
 } \
  \
 jive_node * \
@@ -162,27 +167,36 @@ jive_##name_##_create( \
 	struct jive_region * region, \
 	jive_output * operand1, jive_output * operand2) \
 { \
-	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, \
-		2, (jive_output * []){operand1, operand2})->node; \
+	jive_output * operands[] = {operand1, operand2}; \
+	const jive_binary_operation_normal_form * nf = \
+		(const jive_binary_operation_normal_form *) \
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_##NAME##_NODE); \
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands)->node; \
 } \
 
 #define MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(name_, NAME, type_) \
  \
 MAKE_BASE_BINOP(name_, NAME, type_, jive_binary_operation_associative | jive_binary_operation_commutative) \
  \
+jive_output * \
+jive_##name_(size_t noperands, jive_output * operands[const]) \
+{ \
+	jive_region * region = jive_region_innermost(noperands, operands); \
+	const jive_binary_operation_normal_form * nf = \
+		(const jive_binary_operation_normal_form *) \
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_##NAME##_NODE); \
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands); \
+} \
+ \
 jive_node * \
 jive_##name_##_create( \
 	struct jive_region * region, \
 	size_t noperands, struct jive_output * operands[const]) \
 { \
-	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, noperands, operands)->node; \
-} \
- \
-jive_output * \
-jive_##name_(size_t noperands, jive_output * operands[const]) \
-{ \
-	jive_region * region = jive_region_innermost(noperands, operands); \
-	return jive_binary_operation_normalized_create(&JIVE_##NAME##_NODE, region, NULL, noperands, operands); \
+	const jive_binary_operation_normal_form * nf = \
+		(const jive_binary_operation_normal_form *) \
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_##NAME##_NODE); \
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands)->node; \
 } \
 
 static bool

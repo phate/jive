@@ -67,6 +67,7 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_BINARY_OPERATION,
 		.fini = jive_node_fini_, /* inherit */
+		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_bitconcat_node_get_label_, /* override */
 		.get_attrs = jive_node_get_attrs_, /* inherit */
 		.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -165,12 +166,18 @@ jive_bitconcat_create(
 	struct jive_region * region,
 	size_t noperands, struct jive_output * operands[const])
 {
-	return jive_binary_operation_normalized_create(&JIVE_BITCONCAT_NODE, region, NULL, noperands, operands)->node;
+	const jive_binary_operation_normal_form * nf =
+		(const jive_binary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITCONCAT_NODE);
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands)->node;
 }
 
 jive_output *
 jive_bitconcat(size_t noperands, jive_output * operands[const])
 {
 	jive_region * region = jive_region_innermost(noperands, operands);
-	return jive_binary_operation_normalized_create(&JIVE_BITCONCAT_NODE, region, NULL, noperands, operands);
+	const jive_binary_operation_normal_form * nf =
+		(const jive_binary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITCONCAT_NODE);
+	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands);
 }
