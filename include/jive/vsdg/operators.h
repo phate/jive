@@ -2,10 +2,9 @@
 #define JIVE_VSDG_OPERATORS_H
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/nullary.h>
 
 struct jive_region;
-
-typedef struct jive_node_class jive_nullary_operation_class;
 
 typedef struct jive_unary_operation_class jive_unary_operation_class;
 
@@ -52,12 +51,6 @@ struct jive_binary_operation_class {
 };
 
 jive_output *
-jive_nullary_operation_normalized_create(
-	const jive_node_class * cls,
-	struct jive_region * region,
-	const jive_node_attrs * attrs);
-
-jive_output *
 jive_unary_operation_normalized_create(
 	const jive_node_class * cls,
 	struct jive_region * region,
@@ -71,7 +64,6 @@ jive_binary_operation_normalized_create(
 	const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
-extern const jive_node_class JIVE_NULLARY_OPERATION;
 extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
 #define JIVE_UNARY_OPERATION (JIVE_UNARY_OPERATION_.base)
 extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;

@@ -33,6 +33,7 @@ jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE = {
 	.parent = &JIVE_NULLARY_OPERATION,
 	.fini = jive_bitsymbolicconstant_node_fini_, /* override */
+	.get_default_normal_form = jive_nullary_operation_get_default_normal_form_, /* inherit */
 	.get_label = jive_bitsymbolicconstant_node_get_label_, /* override */
 	.get_attrs = jive_bitsymbolicconstant_node_get_attrs_, /* override */
 	.match_attrs = jive_bitsymbolicconstant_node_match_attrs_, /* override */
@@ -106,7 +107,12 @@ jive_bitsymbolicconstant_create(jive_graph * graph, size_t nbits, const char * n
 	jive_bitsymbolicconstant_node_attrs attrs;
 	attrs.nbits = nbits;
 	attrs.name = (char *)name;
-	return jive_nullary_operation_normalized_create(&JIVE_BITSYMBOLICCONSTANT_NODE, graph->root_region, &attrs.base)->node;
+	
+	const jive_nullary_operation_normal_form * nf =
+		(const jive_nullary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(graph, &JIVE_BITSYMBOLICCONSTANT_NODE);
+
+ 	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base)->node;
 }
 
 jive_output *
@@ -115,5 +121,10 @@ jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
 	jive_bitsymbolicconstant_node_attrs attrs;
 	attrs.nbits = nbits;
 	attrs.name = (char *)name;
-	return jive_nullary_operation_normalized_create(&JIVE_BITSYMBOLICCONSTANT_NODE, graph->root_region, &attrs.base);
+	
+	const jive_nullary_operation_normal_form * nf =
+		(const jive_nullary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(graph, &JIVE_BITSYMBOLICCONSTANT_NODE);
+
+ 	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base);
 }

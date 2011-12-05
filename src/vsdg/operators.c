@@ -4,16 +4,6 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-jive_node_normal_form *
-jive_nullary_operation_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, jive_graph * graph)
-{
-	jive_node * node = jive_node_cse(region->graph, cls, attrs, 0, 0);
-	if (node)
-		return node->outputs[0];
-
-	return cls->create(region, attrs, 0, 0)->outputs[0];
-}
-
 jive_output *
 jive_unary_operation_normalized_create(
 	const jive_node_class * cls_,
@@ -153,17 +143,6 @@ jive_binary_operation_reduce_operand_pair_(const jive_node_class * cls, const ji
 	return false;
 }
 
-const jive_node_class JIVE_NULLARY_OPERATION = {
-	.parent = &JIVE_NODE,
-	.name = "NULLARY",
-	.fini = jive_node_fini_,
-	.get_default_normal_form = jive_node_get_default_normal_form_,
-	.get_label = jive_node_get_label_,
-	.get_attrs = jive_node_get_attrs_,
-	.match_attrs = jive_node_match_attrs_,
-	.create = jive_node_create_,
-	.get_aux_rescls = jive_node_get_aux_rescls_
-};
 
 const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 	.base = { /* jive_node_class */
