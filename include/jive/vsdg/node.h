@@ -260,6 +260,12 @@ jive_node_get_use_count_output(const jive_node * self, struct jive_resource_clas
 void
 jive_node_destroy(jive_node * self);
 
+jive_node *
+jive_node_cse(
+	jive_graph * graph,
+	const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[]);
+
 /* normal forms */
 
 struct jive_node_normal_form_class {

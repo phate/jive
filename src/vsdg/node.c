@@ -544,6 +544,45 @@ jive_node_destroy(jive_node * self)
 	jive_context_free(self->graph->context, self);
 }
 
+static bool
+jive_node_cse_test(
+	jive_node * node,
+	const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	if (node->class_ != cls) return false;
+	if (node->ninputs != noperands) return false;
+	if (!jive_node_match_attrs(node, attrs)) return false;
+	size_t n;
+	for(n = 0; n < noperands; n++)
+		if (node->inputs[n]->origin != operands[n]) return false;
+	
+	return true;
+}
+
+jive_node *
+jive_node_cse(
+	jive_graph * graph,
+	const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	if (noperands) {
+		jive_input * input;
+		JIVE_LIST_ITERATE(operands[0]->users, input, output_users_list) {
+			jive_node * node = input->node;
+			if (jive_node_cse_test(node, cls, attrs, noperands, operands))
+				return node;
+		}
+	} else {
+		jive_node * node;
+		JIVE_LIST_ITERATE(graph->top, node, graph_top_list) {
+			if (jive_node_cse_test(node, cls, attrs, noperands, operands))
+				return node;
+		}
+	}
+	return NULL;
+}
+
 jive_tracker_nodestate *
 jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 {

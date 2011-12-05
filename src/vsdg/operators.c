@@ -4,50 +4,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-static bool
-jive_node_cse_test(
-	jive_node * node,
-	const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
-{
-	if (node->class_ != cls) return false;
-	if (node->ninputs != noperands) return false;
-	if (!jive_node_match_attrs(node, attrs)) return false;
-	size_t n;
-	for(n = 0; n < noperands; n++)
-		if (node->inputs[n]->origin != operands[n]) return false;
-	
-	return true;
-}
-
-static jive_node *
-jive_node_cse(
-	jive_graph * graph,
-	const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
-{
-	if (noperands) {
-		jive_input * input;
-		JIVE_LIST_ITERATE(operands[0]->users, input, output_users_list) {
-			jive_node * node = input->node;
-			if (jive_node_cse_test(node, cls, attrs, noperands, operands))
-				return node;
-		}
-	} else {
-		jive_node * node;
-		JIVE_LIST_ITERATE(graph->top, node, graph_top_list) {
-			if (jive_node_cse_test(node, cls, attrs, noperands, operands))
-				return node;
-		}
-	}
-	return NULL;
-}
-
-jive_output *
-jive_nullary_operation_normalized_create(
-	const jive_node_class * cls,
-	struct jive_region * region,
-	const jive_node_attrs * attrs)
+jive_node_normal_form *
+jive_nullary_operation_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, jive_graph * graph)
 {
 	jive_node * node = jive_node_cse(region->graph, cls, attrs, 0, 0);
 	if (node)
