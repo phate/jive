@@ -29,7 +29,9 @@ jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 
 const jive_node_class JIVE_UNIFY_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "UNIFY",
 	.fini = jive_node_fini_, /* inherit */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_unify_node_get_label_, /* override */
 	.get_attrs = jive_unify_node_get_attrs_, /* override */
 	.match_attrs = jive_unify_node_match_attrs_, /* override */
@@ -127,6 +129,7 @@ jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 
 const jive_node_class JIVE_CHOOSE_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "CHOOSE",
 	.fini = jive_node_fini_, /* inherit */
 	.get_label = jive_choose_node_get_label_, /* override */
 	.get_attrs = jive_choose_node_get_attrs_, /* override */

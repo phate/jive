@@ -26,7 +26,9 @@ jive_apply_node_get_label_(const jive_node * self_);
 
 const jive_node_class JIVE_APPLY_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "APPLY",
 	.fini = jive_node_fini_, /* inherit */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_apply_node_get_label_, /* override */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -110,7 +112,9 @@ jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_
 
 const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "SYMBOLICFUNCTION",
 	.fini = jive_symbolicfunction_node_fini_, /* override */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_symbolicfunction_node_get_label_, /* override */
 	.get_attrs = jive_symbolicfunction_node_get_attrs_, /* inherit */
 	.match_attrs = jive_symbolicfunction_node_match_attrs_, /* override */
@@ -223,6 +227,7 @@ const jive_node_class JIVE_ENTER_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "ENTER",
 	.fini = jive_node_fini_, /* inherit */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -234,6 +239,7 @@ const jive_node_class JIVE_LEAVE_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "LEAVE",
 	.fini = jive_node_fini_, /* inherit */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -300,6 +306,7 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "LAMBDA",
 	.fini = jive_lambda_node_fini_, /* override */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_lambda_node_get_attrs_, /* inherit */
 	.match_attrs = jive_lambda_node_match_attrs_, /* override */

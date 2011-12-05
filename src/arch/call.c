@@ -22,6 +22,7 @@ const jive_node_class JIVE_CALL_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "CALL",
 	.fini = jive_call_node_fini_, /* override */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_call_node_get_attrs_, /* override */
 	.match_attrs = jive_call_node_match_attrs_, /* override */

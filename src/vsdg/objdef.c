@@ -84,7 +84,9 @@ jive_objdef_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 
 const jive_node_class JIVE_OBJDEF_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "OBJDEF",
 	.fini = jive_objdef_node_fini_, /* override */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_objdef_node_get_label_, /* override */
 	.get_attrs = jive_objdef_node_get_attrs_, /* override */
 	.match_attrs = jive_objdef_node_match_attrs_, /* override */
