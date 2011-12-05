@@ -4,27 +4,6 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-jive_output *
-jive_unary_operation_normalized_create(
-	const jive_node_class * cls_,
-	struct jive_region * region,
-	const jive_node_attrs * attrs,
-	jive_output * operand)
-{
-	/* FIXME: unconditionally performs normalization, make dependent on
-	selected normal form per graph */
-	const jive_unary_operation_class * cls = (const jive_unary_operation_class *) cls_;
-	
-	if (cls->reduce_operand(cls_, attrs, &operand))
-		return operand;
-	
-	jive_node * node = jive_node_cse(region->graph, cls_, attrs, 1, &operand);
-	if (node)
-		return node->outputs[0];
-	
-	return cls_->create(region, attrs, 1, &operand)->outputs[0];
-}
-
 static inline size_t
 reduce_operands(const jive_node_class * cls_, const jive_node_attrs * attrs, size_t noperands, jive_output * operands[])
 {
@@ -120,18 +99,6 @@ jive_binary_operation_normalized_create(
 }
 
 bool
-jive_unary_operation_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand)
-{
-	return false;
-}
-
-bool
-jive_unary_operation_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand)
-{
-	return false;
-}
-
-bool
 jive_binary_operation_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
 	return false;
@@ -142,26 +109,6 @@ jive_binary_operation_reduce_operand_pair_(const jive_node_class * cls, const ji
 {
 	return false;
 }
-
-
-const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
-	.base = { /* jive_node_class */
-		.parent = &JIVE_NODE,
-		.name ="UNARY",
-		.fini = jive_node_fini_, /* inherit */
-		.get_label = jive_node_get_label_, /* inherit */
-		.get_attrs = jive_node_get_attrs_, /* inherit */
-		.match_attrs = jive_node_match_attrs_, /* inherit */
-		.create = jive_node_create_, /* inherit */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
-	},
-	
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
-	
-	.can_reduce_operand = jive_unary_operation_can_reduce_operand_,
-	.reduce_operand = jive_unary_operation_reduce_operand_
-};
 
 const jive_binary_operation_class JIVE_BINARY_OPERATION_ = {
 	.base = { /* jive_node_class */

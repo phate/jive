@@ -43,6 +43,7 @@ const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 		.name = "ADDRESS_TO_BITSTRING",
 		.fini = jive_node_fini_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
+		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_attrs = jive_address_to_bitstring_node_get_attrs_, /* override */
 		.match_attrs = jive_address_to_bitstring_node_match_attrs_, /* override */
 		.create = jive_address_to_bitstring_node_create_, /* override */
@@ -146,8 +147,11 @@ jive_address_to_bitstring_node_create(struct jive_region * region,
 	jive_address_to_bitstring_node_attrs attrs;
 	attrs.nbits = nbits; 
 
-	return jive_unary_operation_normalized_create(&JIVE_ADDRESS_TO_BITSTRING_NODE, region,
-		&attrs.base, address)->node; 
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_ADDRESS_TO_BITSTRING_NODE);
+
+	return jive_unary_operation_normalized_create(nf, region, &attrs.base, address)->node;
 }
 
 jive_output *
@@ -156,8 +160,11 @@ jive_address_to_bitstring_create(jive_output * address, size_t nbits)
 	jive_address_to_bitstring_node_attrs attrs;
 	attrs.nbits = nbits; 
 
-	return jive_unary_operation_normalized_create(&JIVE_ADDRESS_TO_BITSTRING_NODE,
-		address->node->region, &attrs.base, address);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(address->node->graph, &JIVE_ADDRESS_TO_BITSTRING_NODE);
+
+	return jive_unary_operation_normalized_create(nf, address->node->region, &attrs.base, address);
 }
 
 
@@ -190,6 +197,7 @@ const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "BITSTRING_TO_ADDRESS",
 		.fini = jive_node_fini_, /* inherit */
+		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_bitstring_to_address_node_get_attrs_, /* override */
 		.match_attrs = jive_bitstring_to_address_node_match_attrs_, /* override */
@@ -292,8 +300,11 @@ jive_bitstring_to_address_node_create(struct jive_region * region,
 	jive_bitstring_to_address_node_attrs attrs;
 	attrs.nbits = nbits; 
 
-	return jive_unary_operation_normalized_create(&JIVE_BITSTRING_TO_ADDRESS_NODE, region,
-		&attrs.base, bitstring)->node;
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITSTRING_TO_ADDRESS_NODE);
+
+	return jive_unary_operation_normalized_create(nf, region, &attrs.base, bitstring)->node;
 }
 
 jive_output *
@@ -302,8 +313,11 @@ jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits)
 	jive_bitstring_to_address_node_attrs attrs;
 	attrs.nbits = nbits;
 
-	return jive_unary_operation_normalized_create(&JIVE_BITSTRING_TO_ADDRESS_NODE,
-		bitstring->node->region, &attrs.base, bitstring);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(bitstring->node->graph, &JIVE_BITSTRING_TO_ADDRESS_NODE);
+
+	return jive_unary_operation_normalized_create(nf, bitstring->node->region, &attrs.base, bitstring);
 }
 
 /* reductions */

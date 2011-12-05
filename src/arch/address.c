@@ -39,6 +39,7 @@ const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "MEMBEROF",
 		.fini = jive_node_fini_, /* inherit */
+		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_memberof_node_get_label_, /* override */
 		.get_attrs = jive_memberof_node_get_attrs_, /* override */
 		.match_attrs = jive_memberof_node_match_attrs_, /* override */
@@ -148,7 +149,11 @@ jive_memberof_create(jive_region * region,
 	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
-	return jive_unary_operation_normalized_create(&JIVE_MEMBEROF_NODE, region, &attrs.base, address)->node;
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_MEMBEROF_NODE);
+
+	return jive_unary_operation_normalized_create(nf, region, &attrs.base, address)->node;
 }
 
 jive_output *
@@ -159,7 +164,11 @@ jive_memberof(jive_output * address,
 	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
-	return jive_unary_operation_normalized_create(&JIVE_MEMBEROF_NODE, address->node->region, &attrs.base, address);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(address->node->graph, &JIVE_MEMBEROF_NODE);
+
+	return jive_unary_operation_normalized_create(nf, address->node->region, &attrs.base, address);
 }
 
 /* containerof */
@@ -188,6 +197,7 @@ const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "CONTAINEROF",
 		.fini = jive_node_fini_, /* inherit */
+		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_containerof_node_get_label_, /* override */
 		.get_attrs = jive_containerof_node_get_attrs_, /* override */
 		.match_attrs = jive_containerof_node_match_attrs_, /* override */
@@ -297,7 +307,11 @@ jive_containerof_create(jive_region * region,
 	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
-	return jive_unary_operation_normalized_create(&JIVE_CONTAINEROF_NODE, region, &attrs.base, address)->node;
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_CONTAINEROF_NODE);
+
+	return jive_unary_operation_normalized_create(nf, region, &attrs.base, address)->node;
 }
 
 jive_output *
@@ -308,7 +322,11 @@ jive_containerof(jive_output * address,
 	attrs.record_decl = record_decl;
 	attrs.index = index;
 	
-	return jive_unary_operation_normalized_create(&JIVE_CONTAINEROF_NODE, address->node->region, &attrs.base, address);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(address->node->graph, &JIVE_CONTAINEROF_NODE);
+
+	return jive_unary_operation_normalized_create(nf, address->node->region, &attrs.base, address);
 }
 
 /* arraysubscript */

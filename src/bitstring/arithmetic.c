@@ -359,6 +359,7 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 			.parent = &JIVE_UNARY_OPERATION,
 			.name = "BITUNARY",
 			.fini = jive_node_fini_, /* inherit */
+			.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -397,8 +398,9 @@ jive_bitnegate_reduce_operand_(const jive_node_class * cls, const jive_node_attr
 const jive_bitunary_operation_class JIVE_BITNEGATE_NODE_ = {
 	.base = { /* jive_unary_operation_class */
 		.base = { /* jive_node_class */
-			.parent = &JIVE_UNARY_OPERATION,
+			.parent = &JIVE_BITUNARY_NODE,
 			.fini = jive_node_fini_, /* inherit */
+			.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 			.get_label = jive_bitnegate_node_get_label_, /* override */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -482,13 +484,21 @@ jive_bitnegate_reduce_operand_(const jive_node_class * cls, const jive_node_attr
 jive_node *
 jive_bitnegate_create(struct jive_region * region, jive_output * operand)
 {
-	return jive_unary_operation_normalized_create(&JIVE_BITNEGATE_NODE, region, NULL, operand)->node;
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITNEGATE_NODE);
+	
+	return jive_unary_operation_normalized_create(nf, region, NULL, operand)->node;
 }
 
 jive_output *
 jive_bitnegate(jive_output * operand)
 {
-	return jive_unary_operation_normalized_create(&JIVE_BITNEGATE_NODE, operand->node->region, NULL, operand);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(operand->node->graph, &JIVE_BITNEGATE_NODE);
+	
+	return jive_unary_operation_normalized_create(nf, operand->node->region, NULL, operand);
 }
 
 static void
@@ -513,8 +523,9 @@ jive_bitnot_reduce_operand_(const jive_node_class * cls, const jive_node_attrs *
 const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
 	.base = { /* jive_unary_operation_class */
 		.base = { /* jive_node_class */
-			.parent = &JIVE_UNARY_OPERATION,
+			.parent = &JIVE_BITUNARY_NODE,
 			.fini = jive_node_fini_, /* inherit */
+			.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 			.get_label = jive_bitnot_node_get_label_, /* override */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
@@ -599,12 +610,20 @@ jive_bitnot_reduce_operand_(const jive_node_class * cls, const jive_node_attrs *
 jive_node *
 jive_bitnot_create(struct jive_region * region, jive_output * operand)
 {
-	return jive_unary_operation_normalized_create(&JIVE_BITNOT_NODE, region, NULL, operand)->node;
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(operand->node->graph, &JIVE_BITNOT_NODE);
+	
+	return jive_unary_operation_normalized_create(nf, region, NULL, operand)->node;
 }
 
 jive_output *
 jive_bitnot(jive_output * operand)
 {
-	return jive_unary_operation_normalized_create(&JIVE_BITNOT_NODE, operand->node->region, NULL, operand);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(operand->node->graph, &JIVE_BITNOT_NODE);
+	
+	return jive_unary_operation_normalized_create(nf, operand->node->region, NULL, operand);
 }
 

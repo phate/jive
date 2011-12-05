@@ -43,6 +43,7 @@ const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_UNARY_OPERATION,
 		.fini = jive_node_fini_, /* inherit */
+		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_bitslice_node_get_label_, /* override */
 		.get_attrs = jive_bitslice_node_get_attrs_, /* override */
 		.match_attrs = jive_bitslice_node_match_attrs_, /* override */
@@ -179,7 +180,11 @@ jive_bitslice_create(struct jive_region * region, jive_output * operand, size_t 
 	attrs.low = low;
 	attrs.high = high;
 	
-	return jive_unary_operation_normalized_create(&JIVE_BITSLICE_NODE, region, &attrs.base, operand)->node;
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITSLICE_NODE);
+
+	return jive_unary_operation_normalized_create(nf, region, &attrs.base, operand)->node;
 }
 
 jive_output *
@@ -189,5 +194,9 @@ jive_bitslice(jive_output * operand, size_t low, size_t high)
 	attrs.low = low;
 	attrs.high = high;
 	
-	return jive_unary_operation_normalized_create(&JIVE_BITSLICE_NODE, operand->node->region, &attrs.base, operand);
+	const jive_unary_operation_normal_form * nf =
+		(const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(operand->node->graph, &JIVE_BITSLICE_NODE);
+
+	return jive_unary_operation_normalized_create(nf, operand->node->region, &attrs.base, operand);
 }
