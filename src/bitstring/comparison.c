@@ -35,7 +35,7 @@ const jive_bitcomparison_operation_class JIVE_BITCOMPARISON_NODE_ = {
 		.distributive_under = NULL,
 		
 		.can_reduce_operand_pair = jive_binary_operation_can_reduce_operand_pair_ /* inherit */,
-		.reduce_operand_pair = jive_binary_operation_reduce_operand_pair /* inherit */
+		.reduce_operand_pair = jive_binary_operation_reduce_operand_pair_ /* inherit */
 	},
 	.type = jive_bitcmp_code_invalid
 };

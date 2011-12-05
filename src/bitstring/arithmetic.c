@@ -33,7 +33,7 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 		.distributive_under = NULL,
 		
 		.can_reduce_operand_pair = jive_binary_operation_can_reduce_operand_pair_ /* inherit */,
-		.reduce_operand_pair = jive_binary_operation_reduce_operand_pair /* inherit */
+		.reduce_operand_pair = jive_binary_operation_reduce_operand_pair_ /* inherit */
 	},
 	.type = jive_bitop_code_invalid
 };
@@ -370,7 +370,7 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 		.multi_apply_over = NULL,
 		
 		.can_reduce_operand = jive_unary_operation_can_reduce_operand_ /* inherit */,
-		.reduce_operand = jive_unary_operation_reduce_operand /* inherit */
+		.reduce_operand = jive_unary_operation_reduce_operand_ /* inherit */
 	},
 	.type = jive_bitop_code_invalid
 };
