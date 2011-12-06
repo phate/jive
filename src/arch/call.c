@@ -1,7 +1,7 @@
 #include <jive/arch/call.h>
 
 #include <jive/arch/addresstype.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 

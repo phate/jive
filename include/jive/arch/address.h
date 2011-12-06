@@ -3,7 +3,7 @@
 
 #include <jive/common.h>
 #include <jive/arch/addresstype.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/recordtype.h>

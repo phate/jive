@@ -1,7 +1,7 @@
 #include <jive/arch/memlayout.h>
 
 #include <jive/arch/address.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/uniontype.h>
 
 const jive_dataitem_memlayout *

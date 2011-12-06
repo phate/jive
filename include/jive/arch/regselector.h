@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <jive/bitstring/arithmetic.h>
+#include <jive/types/bitstring/arithmetic.h>
 #include <jive/vsdg/negotiator.h>
 
 struct jive_graph;

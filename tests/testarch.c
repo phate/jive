@@ -7,7 +7,7 @@
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine-private.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg.h>
 

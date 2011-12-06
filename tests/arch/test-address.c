@@ -6,7 +6,7 @@
 #include <jive/vsdg.h>
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/arch/memlayout-simple.h>
 

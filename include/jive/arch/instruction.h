@@ -5,7 +5,7 @@
 
 #include <jive/context.h>
 #include <jive/arch/registers.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/sequence.h>

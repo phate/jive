@@ -12,7 +12,7 @@
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instrmatch.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/bitstring/arithmetic.h>
+#include <jive/types/bitstring/arithmetic.h>
 
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
@@ -28,7 +28,7 @@ int main()
 	
 	jive_output * a = jive_node_add_output(fn_region->top, bits32);
 	jive_output * b = jive_node_add_output(fn_region->top, bits32);
-	jive_output * sum = jive_bitadd(2, (jive_output *[]){a, b});
+	jive_output * sum = jive_bitsum(2, (jive_output *[]){a, b});
 	jive_node_add_input(fn_region->bottom, bits32, sum);
 	
 	jive_node * abstract_fn = jive_lambda_node_create(fn_region);

@@ -2,7 +2,7 @@
 #include <locale.h>
 
 #include <jive/vsdg.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/vsdg/functiontype.h>
 
 int main()

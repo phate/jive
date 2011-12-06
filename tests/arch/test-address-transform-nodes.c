@@ -5,7 +5,7 @@
 #include <jive/vsdg.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/vsdg/node-private.h>
 
 int main()

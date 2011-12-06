@@ -2,7 +2,7 @@
 #include <locale.h>
 
 #include <jive/view.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/arch/addresstype.h>
 #include <jive/vsdg/recordtype.h>
 #include <jive/vsdg/uniontype.h>

@@ -1,8 +1,8 @@
 #include <jive/arch/dataobject.h>
 
 #include <jive/arch/memlayout.h>
-#include <jive/bitstring/constant.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/constant.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>

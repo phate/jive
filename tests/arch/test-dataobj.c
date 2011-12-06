@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/arch/dataobject.h>
@@ -80,7 +80,7 @@ make_diff(jive_graph * graph)
 {
 	jive_output * c1 = jive_bitconstant(graph, 32, bits);
 	jive_output * foo = jive_bitsymbolicconstant(graph, 32, "foo");
-	return jive_bitadd(2, (jive_output *[]){c1, jive_bitnegate(foo)});
+	return jive_bitsum(2, (jive_output *[]){c1, jive_bitnegate(foo)});
 }
 
 static jive_output *

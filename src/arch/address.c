@@ -5,9 +5,9 @@
 
 #include <jive/context.h>
 #include <jive/arch/addresstype.h>
-#include <jive/bitstring/arithmetic.h>
-#include <jive/bitstring/constant.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/arithmetic.h>
+#include <jive/types/bitstring/constant.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>

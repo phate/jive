@@ -6,7 +6,7 @@
 #include <jive/arch/stackslot.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region.h>

@@ -12,7 +12,7 @@
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-variable-private.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 
 static void
 shape(jive_shaped_graph * shaped_graph, jive_node * node)

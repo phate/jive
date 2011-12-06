@@ -2,7 +2,7 @@
 
 #include <jive/context.h>
 #include <jive/vsdg.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/vsdg/union.h>
 
 int main()

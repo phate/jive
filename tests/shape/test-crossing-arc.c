@@ -4,7 +4,7 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>

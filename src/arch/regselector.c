@@ -7,7 +7,7 @@
 #include <jive/context.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
-#include <jive/bitstring/arithmetic.h>
+#include <jive/types/bitstring/arithmetic.h>
 
 typedef struct jive_regselector_option jive_regselector_option;
 

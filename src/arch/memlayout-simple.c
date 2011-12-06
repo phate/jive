@@ -1,6 +1,6 @@
 #include <jive/arch/memlayout-simple.h>
 
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/recordtype.h>
 #include <jive/vsdg/uniontype.h>
 

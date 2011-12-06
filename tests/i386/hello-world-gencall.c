@@ -23,7 +23,7 @@
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instrmatch.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>

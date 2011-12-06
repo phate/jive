@@ -4,7 +4,7 @@
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
-#include <jive/bitstring/arithmetic.h>
+#include <jive/types/bitstring/arithmetic.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/traverser.h>
 

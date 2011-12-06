@@ -11,7 +11,7 @@
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instrmatch.h>
-#include <jive/bitstring/arithmetic.h>
+#include <jive/types/bitstring/arithmetic.h>
 
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
@@ -85,7 +85,7 @@ int main()
 		&jive_i386_instructions[jive_i386_int_load32_disp],
 		(jive_output *[]){stackptr}, (int64_t[]){8});
 	
-	jive_output * sum = jive_bitadd(2, (jive_output *[]){load_a->outputs[0], load_b->outputs[0]});
+	jive_output * sum = jive_bitsum(2, (jive_output *[]){load_a->outputs[0], load_b->outputs[0]});
 	
 	jive_node_gate_input(leave, retval_var, sum);
 	

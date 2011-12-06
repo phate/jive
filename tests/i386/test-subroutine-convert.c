@@ -2,7 +2,7 @@
 #include <assert.h>
 
 #include <jive/vsdg.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>

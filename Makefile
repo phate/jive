@@ -29,9 +29,40 @@ LIBJIVE_SRC += \
 
 # bitstrings
 LIBJIVE_SRC += \
-	src/bitstring/type.c src/bitstring/constant.c src/bitstring/symbolic-constant.c src/bitstring/slice.c src/bitstring/concat.c src/bitstring/arithmetic.c \
-	src/bitstring/comparison.c \
-	src/bitstring/symbolic-expression.c \
+	src/types/bitstring/type.c \
+	src/types/bitstring/constant.c \
+	src/types/bitstring/symbolic-constant.c \
+	src/types/bitstring/slice.c \
+	src/types/bitstring/concat.c \
+	src/types/bitstring/arithmetic/bitand.c \
+	src/types/bitstring/arithmetic/bitor.c \
+	src/types/bitstring/arithmetic/bitxor.c \
+	src/types/bitstring/arithmetic/bitnot.c \
+	src/types/bitstring/arithmetic/bitnegate.c \
+	src/types/bitstring/arithmetic/bitsum.c \
+	src/types/bitstring/arithmetic/bitdifference.c \
+	src/types/bitstring/arithmetic/bitproduct.c \
+	src/types/bitstring/arithmetic/bitshiproduct.c \
+	src/types/bitstring/arithmetic/bituhiproduct.c \
+	src/types/bitstring/arithmetic/bitsquotient.c \
+	src/types/bitstring/arithmetic/bituquotient.c \
+	src/types/bitstring/arithmetic/bitumod.c \
+	src/types/bitstring/arithmetic/bitsmod.c \
+	src/types/bitstring/arithmetic/bitshl.c \
+	src/types/bitstring/arithmetic/bitshr.c \
+	src/types/bitstring/arithmetic/bitashr.c \
+	src/types/bitstring/comparison/bitequal.c \
+	src/types/bitstring/comparison/bitnotequal.c \
+	src/types/bitstring/comparison/bitsless.c \
+	src/types/bitstring/comparison/bituless.c \
+	src/types/bitstring/comparison/bitslesseq.c \
+	src/types/bitstring/comparison/bitulesseq.c \
+	src/types/bitstring/comparison/bitsgreater.c \
+	src/types/bitstring/comparison/bitugreater.c \
+	src/types/bitstring/comparison/bitsgreatereq.c \
+	src/types/bitstring/comparison/bitugreatereq.c \
+	src/types/bitstring/symbolic-expression.c \
+	src/types/bitstring/bitoperation-classes.c \
 
 # arch definitions
 LIBJIVE_SRC += \

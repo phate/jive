@@ -1,7 +1,7 @@
 #include <jive/arch/instruction-private.h>
 
 #include <jive/arch/dataobject.h>
-#include <jive/bitstring/symbolic-expression.h>
+#include <jive/types/bitstring/symbolic-expression.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>

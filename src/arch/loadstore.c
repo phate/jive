@@ -2,7 +2,7 @@
 
 #include <jive/common.h>
 #include <jive/context.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>

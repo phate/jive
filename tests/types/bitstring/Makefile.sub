@@ -1,0 +1,8 @@
+TESTS+=\
+	types/bitstring/slice-concat \
+	types/bitstring/reduction \
+	types/bitstring/test-bitstring-operations \
+	types/bitstring/test-constant \
+	types/bitstring/test-arithmetic \
+	types/bitstring/test-normalize \
+

@@ -2,7 +2,7 @@
 
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
-#include <jive/bitstring/type.h>
+#include <jive/types/bitstring/type.h>
 
 const jive_register_name jive_i386_regs [] = {
 	[jive_i386_cc] = {.base = {.name = "cc", .resource_class = &jive_i386_regcls[jive_i386_flags].base}, .code = 0},

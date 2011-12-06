@@ -1,7 +1,7 @@
 #include <jive/arch/sizeof.h>
 
 #include <jive/context.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/valuetype.h>
 #include <jive/vsdg/node-private.h>

@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/arch/addresstype.h>

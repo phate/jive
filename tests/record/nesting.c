@@ -6,7 +6,7 @@
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/record.h>
-#include <jive/bitstring.h>
+#include <jive/types/bitstring.h>
 
 int main()
 {
