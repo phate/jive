@@ -14,7 +14,7 @@ struct jive_output;
 struct jive_region;
 
 struct jive_seq_graph;
-struct jive_seq_node;
+struct jive_seq_point;
 
 typedef uint64_t jive_addr;
 
@@ -28,7 +28,7 @@ typedef struct jive_label_external jive_label_external;
 
 struct jive_label_class {
 	void (*fini)(jive_label * self);
-	jive_addr (*get_address)(const jive_label * self, const struct jive_seq_node * for_node);
+	jive_addr (*get_address)(const jive_label * self, const struct jive_seq_point * for_point);
 	const char * (*get_asmname)(const jive_label * self);
 };
 
@@ -51,9 +51,9 @@ jive_label_fini(jive_label * self)
 }
 
 JIVE_EXPORTED_INLINE jive_addr
-jive_label_get_address(const jive_label * self, const struct jive_seq_node * for_node)
+jive_label_get_address(const jive_label * self, const struct jive_seq_point * for_point)
 {
-	return self->class_->get_address(self, for_node);
+	return self->class_->get_address(self, for_point);
 }
 
 JIVE_EXPORTED_INLINE const char *
@@ -64,7 +64,7 @@ jive_label_get_asmname(const jive_label * self)
 
 struct jive_label_internal_class {
 	jive_label_class base;
-	struct jive_seq_node * (*get_attach_node)(const jive_label_internal * self, const struct jive_seq_graph * seq_graph);
+	struct jive_seq_point * (*get_attach_point)(const jive_label_internal * self, const struct jive_seq_graph * seq_graph);
 };
 
 struct jive_label_internal {
@@ -78,9 +78,9 @@ struct jive_label_internal {
 };
 
 JIVE_EXPORTED_INLINE jive_addr
-jive_label_internal_get_address(const jive_label_internal * self, const struct jive_seq_node * for_node)
+jive_label_internal_get_address(const jive_label_internal * self, const struct jive_seq_point * for_point)
 {
-	return jive_label_get_address(&self->base, for_node);
+	return jive_label_get_address(&self->base, for_point);
 }
 
 JIVE_EXPORTED_INLINE const char *
@@ -89,11 +89,11 @@ jive_label_internal_get_asmname(const jive_label_internal * self)
 	return jive_label_get_asmname(&self->base);
 }
 
-JIVE_EXPORTED_INLINE struct jive_seq_node *
+JIVE_EXPORTED_INLINE struct jive_seq_point *
 jive_label_internal_get_attach_node(const jive_label_internal * self, const struct jive_seq_graph * seq_graph)
 {
 	const jive_label_internal_class * cls = (const jive_label_internal_class *) self->base.class_;
-	return cls->get_attach_node(self, seq_graph);
+	return cls->get_attach_point(self, seq_graph);
 }
 
 struct jive_label_node {

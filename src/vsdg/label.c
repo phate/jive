@@ -21,9 +21,9 @@ jive_label_init_(jive_label * self, const jive_label_class * cls, jive_label_fla
 /* special "current" label */
 
 static jive_addr
-jive_label_current_get_address_(const jive_label * self, const jive_seq_node * for_node)
+jive_label_current_get_address_(const jive_label * self, const jive_seq_point * for_point)
 {
-	return for_node->address;
+	return for_point->address;
 }
 
 static const char *
@@ -46,7 +46,7 @@ const jive_label jive_label_current = {
 /* special "fpoffset" label */
 
 static jive_addr
-jive_label_fpoffset_get_address_(const jive_label * self, const jive_seq_node * for_node)
+jive_label_fpoffset_get_address_(const jive_label * self, const jive_seq_point * for_point)
 {
 	return 0;
 }
@@ -71,7 +71,7 @@ const jive_label jive_label_fpoffset = {
 /* special "spoffset" label */
 
 static jive_addr
-jive_label_spoffset_get_address_(const jive_label * self, const jive_seq_node * for_node)
+jive_label_spoffset_get_address_(const jive_label * self, const jive_seq_point * for_point)
 {
 	return 0;
 }
@@ -114,13 +114,13 @@ jive_label_internal_fini_(jive_label * self_)
 }
 
 static jive_addr
-jive_label_internal_get_address_(const jive_label * self_, const jive_seq_node * for_node)
+jive_label_internal_get_address_(const jive_label * self_, const jive_seq_point * for_point)
 {
 	const jive_label_internal * self = (const jive_label_internal *) self_;
-	jive_seq_node * seq_node = jive_label_internal_get_attach_node(self, for_node->seq_region->seq_graph);
+	jive_seq_point * seq_point = jive_label_internal_get_attach_node(self, for_point->seq_region->seq_graph);
 	
-	if (seq_node) {
-		return seq_node->address;
+	if (seq_point) {
+		return seq_point->address;
 	} else {
 		return 0;
 	}
@@ -140,11 +140,11 @@ jive_label_node_get_asmname_(const jive_label * self_)
 	return self->base.asmname;
 }
 
-static jive_seq_node *
-jive_label_node_get_attach_node_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
+static jive_seq_point *
+jive_label_node_get_attach_point_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
 {
 	const jive_label_node * self = (const jive_label_node *) self_;
-	return jive_seq_graph_map_node(seq_graph, self->node);
+	return &jive_seq_graph_map_node(seq_graph, self->node)->base;
 }
 
 const jive_label_internal_class JIVE_LABEL_NODE_ = {
@@ -153,7 +153,7 @@ const jive_label_internal_class JIVE_LABEL_NODE_ = {
 		.get_address = jive_label_internal_get_address_,
 		.get_asmname = jive_label_node_get_asmname_
 	},
-	.get_attach_node = jive_label_node_get_attach_node_
+	.get_attach_point = jive_label_node_get_attach_point_
 };
 
 jive_label *
@@ -181,13 +181,13 @@ jive_label_region_start_get_asmname_(const jive_label * self_)
 	return self->base.asmname;
 }
 
-static jive_seq_node *
-jive_label_region_start_get_attach_node_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
+static jive_seq_point *
+jive_label_region_start_get_attach_point_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
 {
 	const jive_label_region * self = (const jive_label_region *) self_;
 	jive_seq_region * seq_region = jive_seq_graph_map_region(seq_graph, self->region);
 	if (seq_region) {
-		return seq_region->first_node;
+		return seq_region->first_point;
 	} else
 		return 0;
 }
@@ -198,7 +198,7 @@ const jive_label_internal_class JIVE_LABEL_REGION_START_ = {
 		.get_address = jive_label_internal_get_address_,
 		.get_asmname = jive_label_region_start_get_asmname_
 	},
-	.get_attach_node = jive_label_region_start_get_attach_node_
+	.get_attach_point = jive_label_region_start_get_attach_point_
 };
 
 jive_label *
@@ -239,13 +239,13 @@ jive_label_region_end_get_asmname_(const jive_label * self_)
 	return self->base.asmname;
 }
 
-static jive_seq_node *
-jive_label_region_end_get_attach_node_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
+static jive_seq_point *
+jive_label_region_end_get_attach_point_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
 {
 	const jive_label_region * self = (const jive_label_region *) self_;
 	jive_seq_region * seq_region = jive_seq_graph_map_region(seq_graph, self->region);
 	if (seq_region) {
-		return seq_region->last_node;
+		return seq_region->last_point;
 	} else
 		return 0;
 }
@@ -256,7 +256,7 @@ const jive_label_internal_class JIVE_LABEL_REGION_END_ = {
 		.get_address = jive_label_internal_get_address_,
 		.get_asmname = jive_label_region_end_get_asmname_
 	},
-	.get_attach_node = jive_label_region_end_get_attach_node_
+	.get_attach_point = jive_label_region_end_get_attach_point_
 };
 
 jive_label *
@@ -286,7 +286,7 @@ jive_label_region_end_create_exported(jive_region * region, const char * name)
 /* external labels */
 
 static jive_addr
-jive_label_external_get_address_(const jive_label * self_, const jive_seq_node * for_node)
+jive_label_external_get_address_(const jive_label * self_, const jive_seq_point * for_point)
 {
 	const jive_label_external * self = (const jive_label_external *) self_;
 	return self->address;

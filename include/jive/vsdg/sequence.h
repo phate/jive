@@ -10,20 +10,24 @@ struct jive_node;
 struct jive_region;
 
 typedef struct jive_seq_graph jive_seq_graph;
+typedef struct jive_seq_point_class jive_seq_point_class;
+typedef struct jive_seq_point jive_seq_point;
 typedef struct jive_seq_node jive_seq_node;
 typedef struct jive_seq_region jive_seq_region;
 
-struct jive_seq_node {
-	struct jive_node * node;
+struct jive_seq_point_class {
+	const jive_seq_point_class * parent;
+	void (*fini)(jive_seq_point * self);
+};
+
+struct jive_seq_point {
+	const jive_seq_point_class * class_;
 	jive_seq_region * seq_region;
+	
 	struct {
-		jive_seq_node * prev;
-		jive_seq_node * next;
-	} seqnode_list;
-	struct {
-		jive_seq_node * prev;
-		jive_seq_node * next;
-	} hash_chain;
+		jive_seq_point * prev;
+		jive_seq_point * next;
+	} seqpoint_list;
 	
 	struct {
 		jive_label_internal ** items;
@@ -32,8 +36,43 @@ struct jive_seq_node {
 	
 	size_t size;
 	jive_addr address;
+};
+
+extern const jive_seq_point_class JIVE_SEQ_POINT;
+
+JIVE_EXPORTED_INLINE void
+jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region)
+{
+	self->seq_region = seq_region;
+	self->size = 0;
+	self->address = 0;
+	self->attached_labels.items = 0;
+	self->attached_labels.nitems = self->attached_labels.space = 0;
+}
+
+struct jive_seq_node {
+	jive_seq_point base;
+	
+	struct jive_node * node;
+	
+	struct {
+		jive_seq_node * prev;
+		jive_seq_node * next;
+	} hash_chain;
+	
 	uint32_t flags;
 };
+
+extern const jive_seq_point_class JIVE_SEQ_NODE;
+
+JIVE_EXPORTED_INLINE jive_seq_node *
+jive_seq_node_cast(jive_seq_point * self)
+{
+	if (self->class_ == &JIVE_SEQ_NODE)
+		return (jive_seq_node *) self;
+	else
+		return 0;
+}
 
 struct jive_seq_region {
 	struct jive_region * region;
@@ -47,8 +86,8 @@ struct jive_seq_region {
 		jive_seq_region * next;
 	} hash_chain;
 	
-	jive_seq_node * first_node;
-	jive_seq_node * last_node;
+	jive_seq_point * first_point;
+	jive_seq_point * last_point;
 };
 
 typedef struct jive_seq_node_hash jive_seq_node_hash;
@@ -60,9 +99,9 @@ struct jive_seq_graph {
 	struct jive_context * context;
 	struct jive_graph * graph;
 	struct {
-		jive_seq_node * first;
-		jive_seq_node * last;
-	} nodes;
+		jive_seq_point * first;
+		jive_seq_point * last;
+	} points;
 	struct {
 		jive_seq_region * first;
 		jive_seq_region * last;
@@ -73,6 +112,14 @@ struct jive_seq_graph {
 	
 	bool addrs_changed;
 };
+
+JIVE_EXPORTED_INLINE void
+jive_seq_point_destroy(jive_seq_point * self)
+{
+	jive_context * context = self->seq_region->seq_graph->context;
+	self->class_->fini(self);
+	jive_context_free(context, self);
+}
 
 /**
 	\brief Sequentialize graph
@@ -88,5 +135,9 @@ jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node);
 
 jive_seq_region *
 jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region);
+
+/* inheritable methods */
+void
+jive_seq_point_fini_(jive_seq_point * self);
 
 #endif

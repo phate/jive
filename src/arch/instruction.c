@@ -183,8 +183,9 @@ jive_instruction_node_create_extended(
 static void
 generate_code(jive_seq_graph * seq_graph, struct jive_buffer * buffer)
 {
-	jive_seq_node * seq_node;
-	JIVE_LIST_ITERATE(seq_graph->nodes, seq_node, seqnode_list) {
+	jive_seq_point * seq_point;
+	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
+		jive_seq_node * seq_node = (jive_seq_node *) seq_point;
 		jive_node * node = seq_node->node;
 		if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) continue;
 		
@@ -210,9 +211,9 @@ generate_code(jive_seq_graph * seq_graph, struct jive_buffer * buffer)
 		seq_node->flags = (uint32_t) flags;
 		size_t size = buffer->size - addr;
 		
-		if (addr != seq_node->address || size != seq_node->size) {
-			seq_node->address = addr;
-			seq_node->size = size;
+		if (addr != seq_point->address || size != seq_point->size) {
+			seq_point->address = addr;
+			seq_point->size = size;
 			seq_graph->addrs_changed = true;
 		}
 	}
@@ -267,15 +268,15 @@ emit_region_start_attrs(const jive_region * region, jive_buffer * buffer)
 }
 
 static void
-emit_labels(jive_seq_node * seq_node, jive_buffer * buffer)
+emit_labels(jive_seq_point * seq_point, jive_buffer * buffer)
 {
-	if (seq_node == seq_node->seq_region->first_node)
-		emit_region_start_attrs(seq_node->seq_region->region, buffer);
+	if (seq_point == seq_point->seq_region->first_point)
+		emit_region_start_attrs(seq_point->seq_region->region, buffer);
 	
 	size_t n;
-	for(n = 0; n < seq_node->attached_labels.nitems; n++) {
+	for(n = 0; n < seq_point->attached_labels.nitems; n++) {
 		
-		const jive_label_internal * label = seq_node->attached_labels.items[n];
+		const jive_label_internal * label = seq_point->attached_labels.items[n];
 		const char * name = jive_label_internal_get_asmname(label);
 		
 		if (label->base.flags & jive_label_flags_global) {
@@ -375,10 +376,11 @@ jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 {
 	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
 	
-	jive_seq_node * seq_node;
-	JIVE_LIST_ITERATE(seq_graph->nodes, seq_node, seqnode_list) {
+	jive_seq_point * seq_point;
+	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
+		jive_seq_node * seq_node = (jive_seq_node *) seq_point;
 		jive_node * node = seq_node->node;
-		emit_labels(seq_node, buffer);
+		emit_labels(seq_point, buffer);
 		if (jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
 			jive_instruction_node_generate_assembler(seq_node, node, buffer);
 		} else if (jive_node_isinstance(node, &JIVE_DATAITEMS_NODE)) {
