@@ -242,10 +242,8 @@ generate_code(jive_seq_graph * seq_graph, struct jive_buffer * buffer)
 }
 
 void
-jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
+jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_buffer * buffer)
 {
-	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
-	
 	size_t size = buffer->size;
 	
 	/* redo until no labels change anymore; this is actually a bit too
@@ -258,6 +256,14 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 		seq_graph->addrs_changed = false;
 		generate_code(seq_graph, buffer);
 	}
+}
+
+void
+jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
+{
+	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
+	
+	jive_seq_graph_generate_code(seq_graph, buffer);
 	
 	jive_seq_graph_destroy(seq_graph);
 }
@@ -417,10 +423,8 @@ jive_seq_node_generate_assembler(jive_seq_node * seq_node, jive_buffer * buffer)
 }
 
 void
-jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
+jive_seq_graph_generate_assembler(jive_seq_graph * seq_graph, jive_buffer * buffer)
 {
-	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
-	
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
 		emit_labels(seq_point, buffer);
@@ -428,6 +432,14 @@ jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 		if (seq_node)
 			jive_seq_node_generate_assembler(seq_node, buffer);
 	}
+}
+
+void
+jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
+{
+	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
+	
+	jive_seq_graph_generate_assembler(seq_graph, buffer);
 	
 	jive_seq_graph_destroy(seq_graph);
 }

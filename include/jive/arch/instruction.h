@@ -5,9 +5,9 @@
 
 #include <jive/context.h>
 #include <jive/arch/registers.h>
+#include <jive/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
-#include <jive/bitstring/type.h>
 
 struct jive_buffer;
 struct jive_label;
@@ -252,6 +252,7 @@ jive_instruction_node_cast(jive_node * node)
 }
 
 
+
 /* FIXME: this is a placeholder function, will be replaced by a more
 sophisticated interface later */
 void
@@ -259,5 +260,11 @@ jive_graph_generate_code(struct jive_graph * graph, struct jive_buffer * buffer)
 
 void
 jive_graph_generate_assembler(struct jive_graph * graph, struct jive_buffer * buffer);
+
+void
+jive_seq_graph_generate_code(struct jive_seq_graph * seq_graph, struct jive_buffer * buffer);
+
+void
+jive_seq_graph_generate_assembler(struct jive_seq_graph * seq_graph, struct jive_buffer * buffer);
 
 #endif
