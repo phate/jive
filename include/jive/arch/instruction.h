@@ -8,6 +8,7 @@
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/sequence.h>
 
 struct jive_buffer;
 struct jive_label;
@@ -17,6 +18,8 @@ typedef struct jive_instruction jive_instruction;
 typedef struct jive_instruction_node jive_instruction_node;
 typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
 typedef struct jive_immediate jive_immediate;
+
+typedef struct jive_seq_instruction jive_seq_instruction;
 
 struct jive_immediate {
 	jive_addr offset;
@@ -251,7 +254,30 @@ jive_instruction_node_cast(jive_node * node)
 		return 0;
 }
 
+struct jive_seq_instruction {
+	jive_seq_point base;
+	jive_instruction instr;
+	uint32_t flags;
+};
 
+extern const jive_seq_point_class JIVE_SEQ_INSTRUCTION;
+
+jive_seq_instruction *
+jive_seq_instruction_create(
+	jive_seq_point * before,
+	const jive_instruction_class * icls,
+	const jive_register_name * const * inputs,
+	const jive_register_name * const * outputs,
+	const jive_immediate immediates[]);
+
+JIVE_EXPORTED_INLINE jive_seq_instruction *
+jive_seq_instruction_cast(jive_seq_point * self)
+{
+	if (self->class_ == &JIVE_SEQ_INSTRUCTION)
+		return (jive_seq_instruction *) self;
+	else
+		return 0;
+}
 
 /* FIXME: this is a placeholder function, will be replaced by a more
 sophisticated interface later */

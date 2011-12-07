@@ -231,13 +231,34 @@ generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 }
 
 static void
+generate_code_for_seq_instruction(jive_seq_instruction * seq_instr, jive_buffer * buffer)
+{
+	jive_addr addr = buffer->size;
+	generate_code_for_instruction(&seq_instr->instr, buffer, &seq_instr->flags);
+	size_t size = buffer->size - addr;
+	
+	if (addr != seq_instr->base.address || size != seq_instr->base.size) {
+		seq_instr->base.address = addr;
+		seq_instr->base.size = size;
+		seq_instr->base.seq_region->seq_graph->addrs_changed = true;
+	}
+}
+
+static void
 generate_code(jive_seq_graph * seq_graph, struct jive_buffer * buffer)
 {
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
 		jive_seq_node * seq_node = jive_seq_node_cast(seq_point);
-		if (seq_node)
+		if (seq_node) {
 			generate_code_for_seq_node(seq_node, buffer);
+			continue;
+		}
+		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
+		if (seq_instr) {
+			generate_code_for_seq_instruction(seq_instr, buffer);
+			continue;
+		}
 	}
 }
 
@@ -412,6 +433,12 @@ jive_dataitems_node_generate_assembler(jive_seq_node * seq_node, jive_node * nod
 }
 
 static void
+jive_seq_instruction_generate_assembler(jive_seq_instruction * seq_instr, jive_buffer * buffer)
+{
+	jive_instruction_generate_assembler(&seq_instr->instr, buffer, &seq_instr->flags);
+}
+
+static void
 jive_seq_node_generate_assembler(jive_seq_node * seq_node, jive_buffer * buffer)
 {
 	jive_node * node = seq_node->node;
@@ -429,8 +456,15 @@ jive_seq_graph_generate_assembler(jive_seq_graph * seq_graph, jive_buffer * buff
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
 		emit_labels(seq_point, buffer);
 		jive_seq_node * seq_node = jive_seq_node_cast(seq_point);
-		if (seq_node)
+		if (seq_node) {
 			jive_seq_node_generate_assembler(seq_node, buffer);
+			continue;
+		}
+		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
+		if (seq_instr) {
+			jive_seq_instruction_generate_assembler(seq_instr, buffer);
+			continue;
+		}
 	}
 }
 
@@ -461,3 +495,55 @@ const jive_instruction_class JIVE_PSEUDO_NOP = {
 	.write_asm = jive_encode_PSEUDO_NOP,
 	.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0
 };
+
+static void
+jive_seq_instruction_fini_(jive_seq_point * self_)
+{
+	jive_seq_instruction * self = (jive_seq_instruction *) self_;
+	jive_context * context = self->base.seq_region->seq_graph->context;
+	jive_context_free(context, self->instr.inputs);
+	jive_context_free(context, self->instr.outputs);
+	jive_context_free(context, self->instr.immediates);
+	jive_seq_point_fini_(&self->base);
+}
+
+const jive_seq_point_class JIVE_SEQ_INSTRUCTION = {
+	.parent = &JIVE_SEQ_POINT,
+	.fini = jive_seq_instruction_fini_
+};
+
+jive_seq_instruction *
+jive_seq_instruction_create(
+	jive_seq_point * before,
+	const jive_instruction_class * icls,
+	const jive_register_name * const * inputs,
+	const jive_register_name * const * outputs,
+	const jive_immediate immediates[])
+{
+	jive_seq_region * seq_region = before->seq_region;
+	jive_seq_graph * seq = seq_region->seq_graph;
+	jive_context * context = seq->context;
+	
+	jive_seq_instruction * seq_instr = jive_context_malloc(context, sizeof(*seq_instr));
+	jive_seq_point_init(&seq_instr->base, seq_region);
+	seq_instr->instr.icls = icls;
+	seq_instr->instr.inputs = jive_context_malloc(context, icls->ninputs * sizeof(seq_instr->instr.inputs[0]));
+	seq_instr->instr.outputs = jive_context_malloc(context, icls->noutputs * sizeof(seq_instr->instr.outputs[0]));
+	seq_instr->instr.immediates = jive_context_malloc(context, icls->nimmediates * sizeof(seq_instr->instr.immediates[0]));
+	seq_instr->flags = 0;
+	
+	size_t n;
+	for (n = 0; n < icls->ninputs; n++)
+		seq_instr->instr.inputs[n] = inputs[n];
+	for (n = 0; n < icls->noutputs; n++)
+		seq_instr->instr.outputs[n] = outputs[n];
+	for (n = 0; n < icls->nimmediates; n++)
+		seq_instr->instr.immediates[n] = immediates[n];
+	
+	JIVE_LIST_INSERT(seq->points, before, &seq_instr->base, seqpoint_list);
+	if (before->seq_region->first_point == before)
+		before->seq_region->first_point = &seq_instr->base;
+	
+	return seq_instr;
+}
+
