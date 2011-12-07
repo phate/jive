@@ -181,41 +181,63 @@ jive_instruction_node_create_extended(
 }
 
 static void
+generate_code_for_instruction(const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
+{
+	const jive_instruction_class * icls = instr->icls;
+	
+	jive_instruction_encoding_flags iflags;
+	iflags = (jive_instruction_encoding_flags) *flags;
+	icls->encode(instr->icls, buffer, instr->inputs, instr->outputs, instr->immediates, &iflags);
+	*flags = (uint32_t) iflags;
+}
+
+static void
+generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
+{
+	jive_node * node = seq_node->node;
+	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE))
+		return;
+	
+	jive_instruction_node * instr_node = (jive_instruction_node *) node;
+	const jive_instruction_class * icls = instr_node->attrs.icls;
+	
+	const jive_register_name * inregs[icls->ninputs];
+	const jive_register_name * outregs[icls->noutputs];
+	size_t n;
+	for(n=0; n<icls->ninputs; n++) {
+		const jive_resource_name * resname = jive_variable_get_resource_name(node->inputs[n]->ssavar->variable);
+		inregs[n] = (const jive_register_name *)resname;
+	}
+	for(n=0; n<icls->noutputs; n++) {
+		const jive_resource_name * resname = jive_variable_get_resource_name(node->outputs[n]->ssavar->variable);
+		outregs[n] = (const jive_register_name *)resname;
+	}
+	
+	jive_instruction instr;
+	instr.icls = icls;
+	instr.inputs = inregs;
+	instr.outputs = outregs;
+	instr.immediates = instr_node->attrs.immediates;
+	
+	jive_addr addr = buffer->size;
+	generate_code_for_instruction(&instr, buffer, &seq_node->flags);
+	size_t size = buffer->size - addr;
+	
+	if (addr != seq_node->base.address || size != seq_node->base.size) {
+		seq_node->base.address = addr;
+		seq_node->base.size = size;
+		seq_node->base.seq_region->seq_graph->addrs_changed = true;
+	}
+}
+
+static void
 generate_code(jive_seq_graph * seq_graph, struct jive_buffer * buffer)
 {
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
-		jive_seq_node * seq_node = (jive_seq_node *) seq_point;
-		jive_node * node = seq_node->node;
-		if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) continue;
-		
-		jive_instruction_node * instr = (jive_instruction_node *) node;
-		const jive_instruction_class * icls = instr->attrs.icls;
-		
-		const jive_register_name * inregs[icls->ninputs];
-		const jive_register_name * outregs[icls->noutputs];
-		size_t n;
-		for(n=0; n<icls->ninputs; n++) {
-			const jive_resource_name * resname = jive_variable_get_resource_name(node->inputs[n]->ssavar->variable);
-			inregs[n] = (const jive_register_name *)resname;
-		}
-		for(n=0; n<icls->noutputs; n++) {
-			const jive_resource_name * resname = jive_variable_get_resource_name(node->outputs[n]->ssavar->variable);
-			outregs[n] = (const jive_register_name *)resname;
-		}
-		
-		jive_addr addr = buffer->size;
-		jive_instruction_encoding_flags flags;
-		flags = (jive_instruction_encoding_flags) seq_node->flags;
-		icls->encode(icls, buffer, inregs, outregs, instr->attrs.immediates, &flags);
-		seq_node->flags = (uint32_t) flags;
-		size_t size = buffer->size - addr;
-		
-		if (addr != seq_point->address || size != seq_point->size) {
-			seq_point->address = addr;
-			seq_point->size = size;
-			seq_graph->addrs_changed = true;
-		}
+		jive_seq_node * seq_node = jive_seq_node_cast(seq_point);
+		if (seq_node)
+			generate_code_for_seq_node(seq_node, buffer);
 	}
 }
 
@@ -291,10 +313,28 @@ emit_labels(jive_seq_point * seq_point, jive_buffer * buffer)
 }
 
 static void
+jive_instruction_generate_assembler(const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
+{
+	const jive_instruction_class * icls = instr->icls;
+	jive_buffer_putstr(buffer, "\t");
+	if (icls->write_asm) {
+		jive_instruction_encoding_flags iflags;
+		iflags = (jive_instruction_encoding_flags) *flags;
+		icls->write_asm(icls, buffer, instr->inputs, instr->outputs, instr->immediates, &iflags);
+		*flags = (uint32_t) iflags;
+	} else {
+		jive_buffer_putstr(buffer, "; ");
+		jive_buffer_put(buffer, icls->name, strlen(icls->name));
+	}
+	
+	jive_buffer_putstr(buffer, "\n");
+}
+
+static void
 jive_instruction_node_generate_assembler(jive_seq_node * seq_node, jive_node * node, jive_buffer * buffer)
 {
-	jive_instruction_node * instr = (jive_instruction_node *) node;
-	const jive_instruction_class * icls = instr->attrs.icls;
+	jive_instruction_node * instr_node = (jive_instruction_node *) node;
+	const jive_instruction_class * icls = instr_node->attrs.icls;
 	
 	const jive_register_name * inregs[icls->ninputs];
 	const jive_register_name * outregs[icls->noutputs];
@@ -307,19 +347,13 @@ jive_instruction_node_generate_assembler(jive_seq_node * seq_node, jive_node * n
 		const jive_resource_name * resname = jive_variable_get_resource_name(node->outputs[n]->ssavar->variable);
 		outregs[n] = (const jive_register_name *)resname;
 	}
+	jive_instruction instr;
+	instr.icls = icls;
+	instr.inputs = inregs;
+	instr.outputs = outregs;
+	instr.immediates = instr_node->attrs.immediates;
 	
-	jive_buffer_putstr(buffer, "\t");
-	if (icls->write_asm) {
-		jive_instruction_encoding_flags flags;
-		flags = (jive_instruction_encoding_flags) seq_node->flags;
-		icls->write_asm(icls, buffer, inregs, outregs, instr->attrs.immediates, &flags);
-		seq_node->flags = (uint32_t) flags;
-	} else {
-		jive_buffer_putstr(buffer, "; ");
-		jive_buffer_put(buffer, icls->name, strlen(icls->name));
-	}
-	
-	jive_buffer_putstr(buffer, "\n");
+	jive_instruction_generate_assembler(&instr, buffer, &seq_node->flags);
 }
 
 static void
@@ -371,6 +405,17 @@ jive_dataitems_node_generate_assembler(jive_seq_node * seq_node, jive_node * nod
 		jive_dataitem_generate_assembler(node->inputs[n]->origin, buffer);
 }
 
+static void
+jive_seq_node_generate_assembler(jive_seq_node * seq_node, jive_buffer * buffer)
+{
+	jive_node * node = seq_node->node;
+	if (jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
+		jive_instruction_node_generate_assembler(seq_node, node, buffer);
+	} else if (jive_node_isinstance(node, &JIVE_DATAITEMS_NODE)) {
+		jive_dataitems_node_generate_assembler(seq_node, node, buffer);
+	}
+}
+
 void
 jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 {
@@ -378,14 +423,10 @@ jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 	
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
-		jive_seq_node * seq_node = (jive_seq_node *) seq_point;
-		jive_node * node = seq_node->node;
 		emit_labels(seq_point, buffer);
-		if (jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
-			jive_instruction_node_generate_assembler(seq_node, node, buffer);
-		} else if (jive_node_isinstance(node, &JIVE_DATAITEMS_NODE)) {
-			jive_dataitems_node_generate_assembler(seq_node, node, buffer);
-		}
+		jive_seq_node * seq_node = jive_seq_node_cast(seq_point);
+		if (seq_node)
+			jive_seq_node_generate_assembler(seq_node, buffer);
 	}
 	
 	jive_seq_graph_destroy(seq_graph);

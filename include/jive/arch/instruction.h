@@ -13,6 +13,7 @@ struct jive_buffer;
 struct jive_label;
 
 typedef struct jive_instruction_class jive_instruction_class;
+typedef struct jive_instruction jive_instruction;
 typedef struct jive_instruction_node jive_instruction_node;
 typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
 typedef struct jive_immediate jive_immediate;
@@ -196,6 +197,13 @@ struct jive_instruction_class {
 };
 
 extern const jive_instruction_class JIVE_PSEUDO_NOP;
+
+struct jive_instruction {
+	const jive_instruction_class * icls;
+	const jive_register_name ** inputs;
+	const jive_register_name ** outputs;
+	jive_immediate * immediates;
+};
 
 extern const jive_node_class JIVE_INSTRUCTION_NODE;
 
