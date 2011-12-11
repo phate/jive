@@ -7,6 +7,7 @@
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/bitstring/bitops-private.h>
 
 static void
 jive_bitconstant_node_init_(
@@ -142,12 +143,7 @@ jive_output *
 jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value)
 {
 	char bits[nbits];
-	
-	size_t i;
-	for (i = 0; i < nbits; i++) {
-		bits[i] = '0' + (value & 1);
-		value = value >> 1;
-	}
+	jive_bitstring_init_unsigned(bits, nbits, value);
 	
 	jive_bitconstant_node_attrs attrs;
 	attrs.nbits = nbits;
@@ -170,12 +166,7 @@ jive_output *
 jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value)
 {
 	char bits[nbits];
-	
-	size_t i;
-	for (i = 0; i < nbits; i++) {
-		bits[i] = '0' + (value & 1);
-		value = value >> 1;
-	}
+	jive_bitstring_init_signed(bits, nbits, value);
 	
 	jive_bitconstant_node_attrs attrs;
 	attrs.nbits = nbits;
