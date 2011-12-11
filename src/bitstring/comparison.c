@@ -4,7 +4,7 @@
 
 #include <jive/common.h>
 
-#include <jive/bitstring/bitops-private.h>
+#include <jive/bitstring/bitstring-operations.h>
 #include <jive/bitstring/constant.h>
 #include <jive/bitstring/slice.h>
 #include <jive/bitstring/type.h>

@@ -7,7 +7,7 @@
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
-#include <jive/bitstring/bitops-private.h>
+#include <jive/bitstring/bitstring-operations.h>
 
 static void
 jive_bitconstant_node_init_(

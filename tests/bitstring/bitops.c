@@ -2,7 +2,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/bitstring/constant.h>
-#include <jive/bitstring/bitops-private.h>
+#include <jive/bitstring/bitstring-operations.h>
 
 char s[] =
 	{'0', '1', 'D', 'X'};

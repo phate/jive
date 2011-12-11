@@ -5,7 +5,7 @@
 
 #include <jive/bitstring/type.h>
 #include <jive/vsdg/node.h>
-#include <jive/bitstring/bitops-private.h>
+#include <jive/bitstring/bitstring-operations.h>
 
 extern const jive_node_class JIVE_BITCONSTANT_NODE;
 
