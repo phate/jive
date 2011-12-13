@@ -58,41 +58,42 @@ jive_bitcomparison_node_init_(
 		1, &output_type);
 }
 
-static bool
-jive_bitcompare_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t 
+jive_bitcompare_can_reduce_operand_pair_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
 	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
+		return jive_binop_reduction_constants;
 	
-	return false;
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitcompare_reduce_operand_pair_(const jive_node_class * cls_, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output * 
+jive_bitcompare_reduce_operand_pair_(jive_binop_reduction_path_t path,
+	const jive_node_class * cls_, const jive_node_attrs * attrs, jive_output * op1,
+	jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
+	jive_graph * graph = op1->node->graph;
 	const jive_bitcomparison_operation_class * cls;
 	cls = (const jive_bitcomparison_operation_class *) cls_;
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * n1 = (jive_bitconstant_node *) op1->node;
+		jive_bitconstant_node * n2 = (jive_bitconstant_node *) op2->node;
 		
 		size_t nbits = n1->attrs.nbits;
 		char result = cls->compare_constants(n1->attrs.bits, n2->attrs.bits, nbits);
 		
 		switch(result) {
 			case '0':
-				*op1 = jive_control_false(graph);
-				return false;
+				return jive_control_false(graph);
 			case '1':
-				*op1 = jive_control_true(graph);
-				return true;
+				return jive_control_true(graph);
 			default:
-				return false;
+				return NULL;
 		};
 	}
 	
-	return false;
+	return NULL;
 }
 
 #define MAKE_CMPOP(name_, NAME, type_) \

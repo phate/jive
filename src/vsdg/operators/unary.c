@@ -47,16 +47,19 @@ jive_unary_operation_get_default_normal_form_(const jive_node_class * cls, jive_
 	return &nf->base;
 }
 
-bool
-jive_unary_operation_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand)
+
+jive_unop_reduction_path_t
+jive_unary_operation_can_reduce_operand_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, const jive_output * operand)
 {
-	return false;
+	return jive_unop_reduction_none;
 }
 
-bool
-jive_unary_operation_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand)
+jive_output *
+jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * operand)
 {
-	return false;
+	return NULL;
 }
 
 /* normal form class */
@@ -89,7 +92,9 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	
 	if (self->enable_reducible) {
 		jive_output * tmp = node->inputs[0]->origin;
-		if (jive_unary_operation_reduce_operand(self, attrs, &tmp)) {
+		jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, tmp);
+		if (reduction != jive_unop_reduction_none) {
+			tmp = jive_unary_operation_reduce_operand(reduction, self, attrs, tmp);
 			jive_output_replace(output, tmp);
 			/* FIXME: not sure whether "destroy" is really appropriate? */
 			jive_node_destroy(node);
@@ -121,8 +126,9 @@ jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self
 	
 	jive_graph * graph = operands[0]->node->graph;
 	const jive_node_class * cls = self->base.node_class;
-	
-	if (self->enable_reducible && jive_unary_operation_can_reduce_operand(self, attrs, operands[0])) {
+
+	jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, operands[0]);	
+	if (self->enable_reducible && (reduction != jive_unop_reduction_none)) {
 		return false;
 	}
 	
@@ -142,8 +148,9 @@ jive_unary_operation_normalized_create_(const jive_unary_operation_normal_form *
 	const jive_unary_operation_class * cls = (const jive_unary_operation_class *) self->base.node_class;
 	
 	if (self->base.enable_mutable && self->enable_reducible) {
-		if (jive_unary_operation_reduce_operand(self, attrs, &operand))
-			return operand;
+		jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, operand);
+		if (reduction != jive_unop_reduction_none)
+			return jive_unary_operation_reduce_operand(reduction, self, attrs, operand);
 	}
 	
 	/* FIXME: test for factoring */

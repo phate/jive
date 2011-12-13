@@ -29,13 +29,13 @@ static jive_node *
 jive_address_to_bitstring_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static bool
+static jive_unop_reduction_path_t 
 jive_address_to_bitstring_node_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * operand);
+	const jive_node_attrs * attrs, const jive_output * operand);
 
-static bool
-jive_address_to_bitstring_node_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output ** operand);
+static jive_output * 
+jive_address_to_bitstring_node_reduce_operand_(jive_unop_reduction_path_t path,
+	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 	.base = { /* jive_node_class */
@@ -110,34 +110,31 @@ jive_address_to_bitstring_node_create_(struct jive_region * region, const jive_n
 	return &node->base;
 }
 
-static bool
+static jive_unop_reduction_path_t
 jive_address_to_bitstring_node_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs_, jive_output * operand_)
+	const jive_node_attrs * attrs_, const jive_output * operand_)
 {
-
 	const jive_address_to_bitstring_node_attrs * attrs =
 		(const jive_address_to_bitstring_node_attrs *) attrs_;
 
-	if(jive_node_isinstance(operand_->node, &JIVE_BITSTRING_TO_ADDRESS_NODE)){
-		const jive_bitstring_to_address_node * node = (const jive_bitstring_to_address_node *) node;
+	if (jive_node_isinstance(operand_->node, &JIVE_BITSTRING_TO_ADDRESS_NODE)) {
+		const jive_bitstring_to_address_node * node = (const jive_bitstring_to_address_node *)
+			operand_->node;
 		JIVE_DEBUG_ASSERT(node->attrs.nbits == attrs->nbits);
-		return true;
+		return jive_unop_reduction_inverse;
 	}
 
-	return false;	
+	return jive_unop_reduction_none;
 }
 
-static bool
-jive_address_to_bitstring_node_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs_, jive_output ** operand_)
+static jive_output * 
+jive_address_to_bitstring_node_reduce_operand_(jive_unop_reduction_path_t path,
+	const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand_)
 {
+	if (path == jive_unop_reduction_inverse)
+		return operand_->node->inputs[0]->origin;
 
-	if(jive_node_isinstance(operand_[0]->node, &JIVE_BITSTRING_TO_ADDRESS_NODE)){
-		operand_[0] = operand_[0]->node->inputs[0]->origin;
-		return true;
-	}
-
-	return false;
+	return NULL;
 }
 
 jive_node *
@@ -184,13 +181,13 @@ static jive_node *
 jive_bitstring_to_address_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static bool
+static jive_unop_reduction_path_t 
 jive_bitstring_to_address_node_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * operand);
+	const jive_node_attrs * attrs, const jive_output * operand);
 
-static bool
-jive_bitstring_to_address_node_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output ** operand);
+static jive_output * 
+jive_bitstring_to_address_node_reduce_operand_(jive_unop_reduction_path_t path,
+	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
 	.base = { /* jive_node_class */
@@ -265,32 +262,31 @@ jive_bitstring_to_address_node_create_(struct jive_region * region, const jive_n
 	return &node->base; 
 }
 
-static bool
+static jive_unop_reduction_path_t 
 jive_bitstring_to_address_node_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs_, jive_output * operand_)
+	const jive_node_attrs * attrs_, const jive_output * operand_)
 {
 	const jive_bitstring_to_address_node_attrs * attrs =
 		(const jive_bitstring_to_address_node_attrs *) attrs_;
 
-	if(jive_node_isinstance(operand_->node, &JIVE_ADDRESS_TO_BITSTRING_NODE)){
-		const jive_address_to_bitstring_node * node = (const jive_address_to_bitstring_node *) node;
+	if (jive_node_isinstance(operand_->node, &JIVE_ADDRESS_TO_BITSTRING_NODE)) {
+		const jive_address_to_bitstring_node * node = (const jive_address_to_bitstring_node *)
+			operand_->node;
 		JIVE_DEBUG_ASSERT(node->attrs.nbits == attrs->nbits);
-		return true;
+		return jive_unop_reduction_inverse;
 	}
 
-	return false;
+	return jive_unop_reduction_none;
 }
 
-static bool
-jive_bitstring_to_address_node_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs_, jive_output ** operand_)
+static jive_output * 
+jive_bitstring_to_address_node_reduce_operand_(jive_unop_reduction_path_t path,
+	const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand_)
 {
-	if(jive_node_isinstance(operand_[0]->node, &JIVE_ADDRESS_TO_BITSTRING_NODE)){
-		operand_[0] = operand_[0]->node->inputs[0]->origin;
-		return true;
-	}
+	if (path == jive_unop_reduction_inverse)
+		return operand_->node->inputs[0]->origin;
 
-	return false;
+	return NULL;
 }
 
 jive_node *

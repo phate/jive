@@ -11,6 +11,19 @@ typedef struct jive_unary_operation_class jive_unary_operation_class;
 typedef struct jive_unary_operation_normal_form_class jive_unary_operation_normal_form_class;
 typedef struct jive_unary_operation_normal_form jive_unary_operation_normal_form;
 
+typedef size_t jive_unop_reduction_path_t;
+static const jive_unop_reduction_path_t jive_unop_reduction_none = 0;
+/* operation is applied to constant, compute immediately */
+static const jive_unop_reduction_path_t jive_unop_reduction_constant = 1;
+/* operation does not change input operand */
+static const jive_unop_reduction_path_t jive_unop_reduction_idempotent = 2;
+/* operation is applied on inverse operation, can eliminate */
+static const jive_unop_reduction_path_t jive_unop_reduction_inverse = 4;
+/* operation "supersedes" immediately preceding operation */
+static const jive_unop_reduction_path_t jive_unop_reduction_narrow = 5;
+/* operation can be distributed into operands of preceding operation */
+static const jive_unop_reduction_path_t jive_unop_reduction_distribute = 6;
+
 /* node class */
 
 struct jive_unary_operation_class {
@@ -21,10 +34,12 @@ struct jive_unary_operation_class {
 	const struct jive_binary_operation_class * const * multi_apply_over;
 	
 	/* class method */
-	bool (*can_reduce_operand)(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
+	jive_unop_reduction_path_t (*can_reduce_operand)(const jive_node_class * cls,
+		const jive_node_attrs * attrs, const jive_output * operand);
 	
 	/* class method */
-	bool (*reduce_operand)(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand);
+	jive_output * (*reduce_operand)(jive_unop_reduction_path_t path, const jive_node_class * cls,
+		const jive_node_attrs * attrs, jive_output * operand);
 };
 
 extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
@@ -35,12 +50,13 @@ extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
 jive_node_normal_form *
 jive_unary_operation_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, struct jive_graph * graph);
 
-bool
-jive_unary_operation_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
+jive_unop_reduction_path_t
+jive_unary_operation_can_reduce_operand_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, const jive_output * operand);
 
-bool
-jive_unary_operation_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand);
-
+jive_output *
+jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * operand);
 
 /* normal form class */
 
@@ -83,17 +99,21 @@ jive_unary_operation_normalized_create(
 	return cls->normalized_create(self, region, attrs, operand);
 }
 
-JIVE_EXPORTED_INLINE bool
+JIVE_EXPORTED_INLINE jive_unop_reduction_path_t
 jive_unary_operation_can_reduce_operand(const jive_unary_operation_normal_form * self,
-	const jive_node_attrs * attrs, jive_output * operand)
+	const jive_node_attrs * attrs, const jive_output * operand)
 {
-	return ((const jive_unary_operation_class *)self->base.node_class)->can_reduce_operand(self->base.node_class, attrs, operand);
+	return ((const jive_unary_operation_class *)self->base.node_class)->can_reduce_operand(
+		self->base.node_class, attrs, operand);
 }
 
-JIVE_EXPORTED_INLINE bool
-jive_unary_operation_reduce_operand(const jive_unary_operation_normal_form * self, const jive_node_attrs * attrs, jive_output ** operand)
+JIVE_EXPORTED_INLINE jive_output *
+jive_unary_operation_reduce_operand(jive_unop_reduction_path_t path,
+	const jive_unary_operation_normal_form * self, const jive_node_attrs * attrs,
+	jive_output * operand)
 {
-	return ((const jive_unary_operation_class *)self->base.node_class)->reduce_operand(self->base.node_class, attrs, operand);
+	return ((const jive_unary_operation_class *)self->base.node_class)->reduce_operand(path,
+		self->base.node_class, attrs, operand);
 }
 
 JIVE_EXPORTED_INLINE void

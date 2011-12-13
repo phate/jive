@@ -57,11 +57,17 @@ static jive_node *
 jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static bool
-jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
+static jive_binop_reduction_path_t
+jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
+//static bool
+//jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
 
-static bool
-jive_bitconcat_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2);
+static jive_output *
+jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
+//static bool
+//jive_bitconcat_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2);
 
 const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.base = { /* jive_node_class */
@@ -82,7 +88,7 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.distributive_under = NULL,
 	
 	.can_reduce_operand_pair = jive_bitconcat_can_reduce_operand_pair_, /* override */
-	.reduce_operand_pair = jive_bitconcat_reduce_operand_pair /* override */
+	.reduce_operand_pair = jive_bitconcat_reduce_operand_pair_ /* override */
 };
 
 static char *
@@ -101,64 +107,62 @@ jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs *
 	return node;
 }
 
-static bool
-jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t
+jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
-	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
-	
-	if (op1->node->class_ == &JIVE_BITSLICE_NODE && op2->node->class_ == &JIVE_BITSLICE_NODE) {
+	if(jive_node_isinstance(op1->node, &JIVE_BITCONSTANT_NODE) &&
+		jive_node_isinstance(op2->node, &JIVE_BITCONSTANT_NODE))
+		return jive_binop_reduction_constants;
+
+	const jive_bitslice_node * n1 = jive_bitslice_node_cast(op1->node);
+	const jive_bitslice_node * n2 = jive_bitslice_node_cast(op2->node);
+
+	if(n1 && n2){
 		jive_output * origin1 = op1->node->inputs[0]->origin;
-		jive_output * origin2 = op2->node->inputs[1]->origin;
-		
-		if (origin1 != origin2) return false;
-		
-		const jive_bitslice_node * n1 = (const jive_bitslice_node *) op1->node;
-		const jive_bitslice_node * n2 = (const jive_bitslice_node *) op2->node;
-		
-		return n1->attrs.high == n2->attrs.low;
-		
+		jive_output * origin2 = op2->node->inputs[0]->origin;
+
+		if (origin1 != origin2)
+			return jive_binop_reduction_none;
+
+		if (n1->attrs.high == n2->attrs.low)
+			return jive_binop_reduction_merge;
+
 		/* FIXME: support sign bit */
 	}
-	
-	
-	return false;
+
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitconcat_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output *
+jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
-	
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
-		
+	jive_graph * graph = op1->node->graph;
+
+	if (path == jive_binop_reduction_constants) {
+		const jive_bitconstant_node * n1 = (const jive_bitconstant_node *) op1->node;
+		const jive_bitconstant_node * n2 = (const jive_bitconstant_node *) op2->node;
+
 		size_t nbits = n1->attrs.nbits + n2->attrs.nbits;
 		char bits[nbits];
 		memcpy(bits, n1->attrs.bits, n1->attrs.nbits);
 		memcpy(bits + n1->attrs.nbits, n2->attrs.bits, n2->attrs.nbits);
-		
-		*op1 = jive_bitconstant(graph, nbits, bits);
-		return true;
+
+		return jive_bitconstant(graph, nbits, bits);
 	}
-	
-	if ((*op1)->node->class_ == &JIVE_BITSLICE_NODE && (*op2)->node->class_ == &JIVE_BITSLICE_NODE) {
-		const jive_bitslice_node * n1 = (const jive_bitslice_node *) (*op1)->node;
-		jive_output * origin1 = (*op1)->node->inputs[0]->origin;
-		
-		const jive_bitslice_node * n2 = (const jive_bitslice_node *) (*op2)->node;
-		jive_output * origin2 = (*op2)->node->inputs[0]->origin;
-		
-		if (origin1 != origin2) return false;
-		
-		*op1 = jive_bitslice(origin1, n1->attrs.low, n2->attrs.high);
-		return true;
-		
+
+	if (path == jive_binop_reduction_merge) {
+		const jive_bitslice_node * n1 = (const jive_bitslice_node *) op1->node;
+		const jive_bitslice_node * n2 = (const jive_bitslice_node *) op2->node;
+		jive_output * origin1 = op1->node->inputs[0]->origin;
+
+		return jive_bitslice(origin1, n1->attrs.low, n2->attrs.high);
+
 		/* FIXME: support sign bit */
 	}
-	
-	return false;
+
+	return NULL;
 }
 
 jive_node *

@@ -17,11 +17,12 @@ reduce_operands(const jive_node_class * cls_, const jive_node_attrs * attrs, siz
 			while (k < noperands) {
 				jive_output * op1 = operands[n];
 				jive_output * op2 = operands[k];
-				if (cls->reduce_operand_pair(cls_, attrs, &op1, &op2)) {
+				jive_binop_reduction_path_t reduction = cls->can_reduce_operand_pair(cls_, attrs, op1, op2);
+				if (reduction != jive_binop_reduction_none) {
 					size_t j;
 					for(j = k + 2; j < noperands; j++)
 						operands[j-1] = operands[j];
-					operands[n] = op1;
+					operands[n] = cls->reduce_operand_pair(reduction, cls_, attrs, operands[n], operands[n+1]);
 					noperands --;
 					n --;
 					break;
@@ -32,7 +33,9 @@ reduce_operands(const jive_node_class * cls_, const jive_node_attrs * attrs, siz
 		}
 	} else {
 		while (n + 1 < noperands) {
-			if (cls->reduce_operand_pair(cls_, attrs, &operands[n], &operands[n + 1])) {
+			jive_binop_reduction_path_t reduction = cls->can_reduce_operand_pair(cls_, attrs, operands[n], operands[n+1]);
+			if (reduction != jive_binop_reduction_none) {
+				operands[n] = cls->reduce_operand_pair(reduction, cls_, attrs, operands[n], operands[n+1]);
 				size_t k = 0;
 				for(k = n + 2; k < noperands; k++)
 					operands[k-1] = operands[k];
@@ -101,16 +104,18 @@ jive_binary_operation_get_default_normal_form_(const jive_node_class * cls, jive
 	return &nf->base;
 }
 
-bool
-jive_binary_operation_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+jive_binop_reduction_path_t
+jive_binary_operation_can_reduce_operand_pair_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
-	return false;
+	return jive_binop_reduction_none;
 }
 
-bool
-jive_binary_operation_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+jive_output *
+jive_binary_operation_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	return false;
+	return NULL;
 }
 
 /* normal form class */

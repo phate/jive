@@ -83,11 +83,12 @@ static jive_node * \
 jive_##name_##_node_create_(struct jive_region * region, const jive_node_attrs * attrs, \
 	size_t noperands, struct jive_output * const operands[]); \
  \
-static bool \
-jive_##name_##_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2); \
+static jive_binop_reduction_path_t \
+jive_##name_##_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2); \
  \
-static bool \
-jive_##name_##_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2); \
+static jive_output * \
+jive_##name_##_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls, \
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2); \
  \
 const jive_bitbinary_operation_class JIVE_##NAME##_NODE_ = { \
 	.base = { /* jive_bitbinary_operation_class */ \
@@ -137,18 +138,18 @@ FIXME: no reductions for these types of nodes so far */
  \
 MAKE_BASE_BINOP(name_, NAME, type_, jive_binary_operation_none) \
  \
-static bool \
+static jive_binop_reduction_path_t \
 jive_##name_##_can_reduce_operand_pair_(const jive_node_class * cls, \
-	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2) \
+	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2) \
 { \
-	return false; \
+	return jive_binop_reduction_none; \
 } \
  \
-static bool \
-jive_##name_##_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, \
-	jive_output ** op1, jive_output ** op2) \
+static jive_output * \
+jive_##name_##_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls, \
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2) \
 { \
-	return false; \
+	return NULL; \
 } \
  \
 jive_output * \
@@ -199,149 +200,154 @@ jive_##name_##_create( \
 	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands)->node; \
 } \
 
-static bool
-jive_bitand_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t
+jive_bitand_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * op1, const jive_output * op2)
 {
 	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
+		return jive_binop_reduction_constants;
 
-	return false;
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitand_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output *
+jive_bitand_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
+	jive_graph * graph = (op1)->node->graph;
 	
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
-	
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (op1)->node;
+		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (op2)->node;
+		
 		size_t nbits = n1->attrs.nbits;	
 		char bits[nbits];
 		jive_multibit_and(bits, n1->attrs.bits, n2->attrs.bits, nbits);	
 
-		*op1 = jive_bitconstant(graph, nbits, bits);
-		return true;
+		return jive_bitconstant(graph, nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
-static bool
-jive_bitor_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t
+jive_bitor_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * op1, const jive_output * op2)
 {
 	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
+		return jive_binop_reduction_constants;
 
-	return false;
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitor_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output *
+jive_bitor_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
-	
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
+	jive_graph * graph = (op1)->node->graph;
+
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (op1)->node;
+		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (op2)->node;
 		
 		size_t nbits = n1->attrs.nbits;	
 		char bits[nbits];
 		jive_multibit_or(bits, n1->attrs.bits, n2->attrs.bits, nbits);	
 		
-		*op1 = jive_bitconstant(graph, nbits, bits);
-		return true;
+		return jive_bitconstant(graph, nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
-static bool
-jive_bitxor_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t
+jive_bitxor_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * op1, const jive_output * op2)
 {
 	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
+		return jive_binop_reduction_constants;
 
-	return false;
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitxor_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output *
+jive_bitxor_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
+	jive_graph * graph = (op1)->node->graph;
 	
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (op1)->node;
+		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (op2)->node;
 		
 		size_t nbits = n1->attrs.nbits;
 		char bits[nbits];
 		jive_multibit_xor(bits, n1->attrs.bits, n2->attrs.bits, nbits);
 		
-		*op1 = jive_bitconstant(graph, nbits, bits);
-		return true;
+		return jive_bitconstant(graph, nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
-static bool
-jive_bitsum_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t
+jive_bitsum_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * op1, const jive_output * op2)
 {
 	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
+		return jive_binop_reduction_constants;
 
-	return false;
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitsum_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output *
+jive_bitsum_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
+	jive_graph * graph = (op1)->node->graph;
 	
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (op1)->node;
+		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (op2)->node;
 		
 		size_t nbits = n1->attrs.nbits;
 		char bits[nbits];
 		jive_multibit_sum(bits, n1->attrs.bits, n2->attrs.bits, nbits);
 		
-		*op1 = jive_bitconstant(graph, nbits, bits);
-		return true;
+		return jive_bitconstant(graph, nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
-static bool
-jive_bitproduct_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+static jive_binop_reduction_path_t
+jive_bitproduct_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * op1, const jive_output * op2)
 {
 	if (op1->node->class_ == &JIVE_BITCONSTANT_NODE && op2->node->class_ == &JIVE_BITCONSTANT_NODE)
-		return true;
+		return jive_binop_reduction_constants;
 
-	return false;
+	return jive_binop_reduction_none;
 }
 
-static bool
-jive_bitproduct_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2)
+static jive_output *
+jive_bitproduct_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (*op1)->node->graph;
+	jive_graph * graph = (op1)->node->graph;
 	
-	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
-		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
-		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (op1)->node;
+		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (op2)->node;
 		
 		size_t nbits = n1->attrs.nbits;
 		char bits[nbits];
 		jive_multibit_multiply(bits, nbits, n1->attrs.bits, nbits, n2->attrs.bits, nbits);
 		
-		*op1 = jive_bitconstant(graph, nbits, bits);
-		return true;
+		return jive_bitconstant(graph, nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
 MAKE_ASSOCIATIVE_COMMUTATIVE_BINOP(bitand, BITAND, jive_bitop_code_and)
@@ -398,11 +404,13 @@ static jive_node *
 jive_bitnegate_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static bool
-jive_bitnegate_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
+static jive_unop_reduction_path_t 
+jive_bitnegate_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * operand);
 
-static bool
-jive_bitnegate_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand);
+static jive_output *
+jive_bitnegate_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_bitunary_operation_class JIVE_BITNEGATE_NODE_ = {
 	.base = { /* jive_unary_operation_class */
@@ -457,37 +465,36 @@ jive_bitnegate_node_create_(struct jive_region * region, const jive_node_attrs *
 	return node;
 }
 
-static bool
-jive_bitnegate_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand_)
+static jive_unop_reduction_path_t
+jive_bitnegate_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
+	const jive_output * operand_)
 {
-	if (operand_->node->class_ == &JIVE_BITNEGATE_NODE) return true;
-	if (operand_->node->class_ == &JIVE_BITCONSTANT_NODE) return true;
+	if (jive_node_isinstance(operand_->node, &JIVE_BITNEGATE_NODE))
+		return jive_unop_reduction_inverse;
+	if (jive_node_isinstance(operand_->node, &JIVE_BITCONSTANT_NODE))
+		return jive_unop_reduction_constant;
 	
-	return false;
+	return jive_unop_reduction_none;
 }
 
-static bool
-jive_bitnegate_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output ** operand_)
+static jive_output *
+jive_bitnegate_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs_, jive_output * operand_)
 {
-	jive_bitstring_output * operand = (jive_bitstring_output *) *operand_;
-	
-	if (operand->base.base.node->class_ == &JIVE_BITNEGATE_NODE) {
-		jive_node * node = operand->base.base.node;
-		*operand_ = node->inputs[0]->origin;
-		return true;
+	if (path == jive_unop_reduction_inverse) {
+		return operand_->node->inputs[0]->origin;
 	}
 	
-	if (operand->base.base.node->class_ == &JIVE_BITCONSTANT_NODE) {
-		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->base.base.node;
+	if (path == jive_unop_reduction_constant) {
+		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand_->node;
 		char bits[node->attrs.nbits];
 		
 		jive_multibit_negate(bits, node->attrs.bits, node->attrs.nbits);
 		
-		*operand_ = jive_bitconstant(node->base.graph, node->attrs.nbits, bits);
-		return true;
+		return jive_bitconstant(node->base.graph, node->attrs.nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
 jive_node *
@@ -523,11 +530,13 @@ static jive_node *
 jive_bitnot_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static bool
-jive_bitnot_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
+static jive_unop_reduction_path_t 
+jive_bitnot_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * operand);
 
-static bool
-jive_bitnot_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** operand);
+static jive_output *
+jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
 	.base = { /* jive_unary_operation_class */
@@ -582,36 +591,35 @@ jive_bitnot_node_create_(struct jive_region * region, const jive_node_attrs * at
 	return node;
 }
 
-static bool
-jive_bitnot_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand_)
+static jive_unop_reduction_path_t
+jive_bitnot_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
+	const jive_output * operand_)
 {
-	if (operand_->node->class_ == &JIVE_BITNOT_NODE) return true;
-	if (operand_->node->class_ == &JIVE_BITCONSTANT_NODE) return true;
+	if (operand_->node->class_ == &JIVE_BITNOT_NODE)
+		return jive_unop_reduction_inverse;
+	if (operand_->node->class_ == &JIVE_BITCONSTANT_NODE)
+		return jive_unop_reduction_constant;
 	
-	return false;
+	return jive_unop_reduction_none;
 }
 
-static bool
-jive_bitnot_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output ** operand_)
+static jive_output *
+jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs_, jive_output * operand_)
 {
-	jive_bitstring_output * operand = (jive_bitstring_output *) *operand_;
-	
-	if (operand->base.base.node->class_ == &JIVE_BITNOT_NODE) {
-		jive_node * node = operand->base.base.node;
-		*operand_ = node->inputs[0]->origin;
-		return true;
+	if (path == jive_unop_reduction_inverse) {
+		return operand_->node->inputs[0]->origin;
 	}
 	
-	if (operand->base.base.node->class_ == &JIVE_BITCONSTANT_NODE) {
-		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->base.base.node;
+	if (path == jive_unop_reduction_constant) {
+		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand_->node;
 		char bits[node->attrs.nbits];
 		jive_multibit_not(bits, node->attrs.bits, node->attrs.nbits);
 		
-		*operand_ = jive_bitconstant(node->base.graph, node->attrs.nbits, bits);
-		return true;
+		return jive_bitconstant(node->base.graph, node->attrs.nbits, bits);
 	}
 	
-	return false;
+	return NULL;
 }
 
 jive_node *
