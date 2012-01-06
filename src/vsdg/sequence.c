@@ -128,6 +128,7 @@ jive_graph_sequentialize(jive_graph * graph)
 	jive_context * context = graph->context;
 	jive_seq_graph * seq = jive_context_malloc(context, sizeof(*seq));
 	seq->context = context;
+	seq->graph = graph;
 	seq->points.first = 0;
 	seq->points.last = 0;
 	seq->regions.first = 0;
