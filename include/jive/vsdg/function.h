@@ -51,8 +51,8 @@ jive_symbolicfunction_node_cast(jive_node * node)
 	else return 0;
 }
 
-extern const jive_node_class JIVE_ENTER_NODE;
-extern const jive_node_class JIVE_LEAVE_NODE;
+extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
+extern const jive_node_class JIVE_LAMBDA_LEAVE_NODE;
 
 jive_region *
 jive_function_region_create(jive_region * parent);

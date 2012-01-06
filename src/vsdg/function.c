@@ -204,56 +204,56 @@ jive_symbolicfunction_create(struct jive_graph * graph, const char * name, const
 }
 
 jive_node *
-jive_enter_node_create(jive_region * region);
+jive_lambda_enter_node_create(jive_region * region);
 
 jive_node *
-jive_leave_node_create(jive_output * output);
+jive_lambda_leave_node_create(jive_output * output);
 
 static jive_node *
-jive_enter_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
+jive_lambda_enter_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
-	return jive_enter_node_create(region);
+	return jive_lambda_enter_node_create(region);
 }
 
 static jive_node *
-jive_leave_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
+jive_lambda_leave_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
-	return jive_leave_node_create(operands[0]);
+	return jive_lambda_leave_node_create(operands[0]);
 }
 
-const jive_node_class JIVE_ENTER_NODE = {
+const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 	.parent = &JIVE_NODE,
-	.name = "ENTER",
+	.name = "LAMBDA_ENTER",
 	.fini = jive_node_fini_, /* inherit */
 	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.create = jive_enter_node_create_, /* override */
+	.create = jive_lambda_enter_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
-const jive_node_class JIVE_LEAVE_NODE = {
+const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	.parent = &JIVE_NODE,
-	.name = "LEAVE",
+	.name = "LAMBDA_LEAVE",
 	.fini = jive_node_fini_, /* inherit */
 	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.create = jive_leave_node_create_, /* override */
+	.create = jive_lambda_leave_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
 jive_node *
-jive_enter_node_create(jive_region * region)
+jive_lambda_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	
-	node->class_ = &JIVE_ENTER_NODE;
+	node->class_ = &JIVE_LAMBDA_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	jive_node_init_(node, region,
 		0, NULL, NULL,
@@ -264,11 +264,11 @@ jive_enter_node_create(jive_region * region)
 }
 
 jive_node *
-jive_leave_node_create(jive_output * output)
+jive_lambda_leave_node_create(jive_output * output)
 {
 	jive_node * node = jive_context_malloc(output->node->graph->context, sizeof(*node));
 	
-	node->class_ = &JIVE_LEAVE_NODE;
+	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	jive_node_init_(node, output->node->region,
@@ -283,8 +283,9 @@ jive_region *
 jive_function_region_create(jive_region * parent)
 {
 	jive_region * region = jive_region_create_subregion(parent);
-	jive_node * enter = jive_enter_node_create(region);
-	jive_leave_node_create(enter->outputs[0]);
+
+	jive_node * enter = jive_lambda_enter_node_create(region);
+	jive_lambda_leave_node_create(enter->outputs[0]);
 	
 	return region;
 }
