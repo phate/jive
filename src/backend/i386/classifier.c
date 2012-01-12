@@ -6,8 +6,8 @@
 static jive_regselect_mask
 jive_i386_classify_type_(const jive_type * type, const jive_resource_class * rescls)
 {
-	while (rescls->parent != &jive_root_resource_class)
-		rescls = rescls->parent;
+	rescls = jive_resource_class_relax(rescls);
+	
 	if (rescls == &jive_i386_regcls[jive_i386_gpr].base)
 		return (1 << jive_i386_gpr);
 	else if (rescls == &jive_i386_regcls[jive_i386_flags].base)
