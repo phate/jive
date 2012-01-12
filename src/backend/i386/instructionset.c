@@ -3,8 +3,7 @@
 
 #include <jive/util/buffer.h>
 
-#include <jive/debug-private.h>
-
+#include <stdio.h>
 #include <stdint.h>
 
 static inline uint32_t
@@ -183,7 +182,7 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
 	
-	DEBUG_ASSERT(r1 == outputs[0]->code);
+	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
 	jive_buffer_putbyte(target, icls->code);
 	jive_buffer_putbyte(target, 0xc0|r1|(r2<<3));
@@ -215,7 +214,7 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
 	
-	DEBUG_ASSERT(r1 == outputs[0]->code);
+	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
 	jive_buffer_putbyte(target, 0x0f);
 	jive_buffer_putbyte(target, 0xaf);
@@ -231,7 +230,7 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
-	DEBUG_ASSERT(r1 == outputs[0]->code);
+	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	int32_t immediate = immediates[0].offset;
 	
 	bool long_form = (immediate>127) || (immediate<-128);
@@ -278,7 +277,7 @@ jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 {
 	int r1 = inputs[0]->code;
 	
-	DEBUG_ASSERT(r1 == outputs[0]->code);
+	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
 	jive_buffer_putbyte(target, 0xf7);
 	jive_buffer_putbyte(target, icls->code|r1);

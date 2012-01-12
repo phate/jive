@@ -2,7 +2,6 @@
 
 #include <jive/common.h>
 
-#include <jive/debug-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/substitution.h>
@@ -45,9 +44,9 @@ jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
 void
 jive_region_fini_(jive_region * self)
 {
-	DEBUG_ASSERT(jive_region_empty(self));
-	DEBUG_ASSERT(self->nodes.first == 0 && self->nodes.last == 0);
-	DEBUG_ASSERT(self->subregions.first == 0 && self->subregions.last == 0);
+	JIVE_DEBUG_ASSERT(jive_region_empty(self));
+	JIVE_DEBUG_ASSERT(self->nodes.first == 0 && self->nodes.last == 0);
+	JIVE_DEBUG_ASSERT(self->subregions.first == 0 && self->subregions.last == 0);
 	
 	jive_graph_notify_region_destroy(self->graph, self);
 	

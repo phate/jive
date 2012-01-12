@@ -1,4 +1,4 @@
-CPPFLAGS+=-Iinclude -iquote include/private
+CPPFLAGS+=-Iinclude
 CFLAGS+=-Wall -Werror -Wfatal-errors -g
 
 # VSDG core

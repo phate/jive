@@ -74,7 +74,7 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 	jive_input * user, * next_user;
 	JIVE_LIST_ITERATE_SAFE(orig_stackptr->users, user, next_user, output_users_list) {
 		if (user->node != stack_sub) jive_input_divert_origin(user, stackptr);
-		DEBUG_ASSERT(user->resource);
+		JIVE_DEBUG_ASSERT(user->resource);
 	}
 	
 	jive_node * stack_add = (jive_node *) jive_instruction_node_create(
@@ -93,8 +93,8 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 	jive_cut_append(region->cuts.first, stack_sub);
 	jive_cut_append(region->cuts.last->region_cuts_list.prev, stack_add);
 	
-	DEBUG_ASSERT(self->stackptr_on_entry->resource);
-	DEBUG_ASSERT(self->stackptr_on_exit->resource);
+	JIVE_DEBUG_ASSERT(self->stackptr_on_entry->resource);
+	JIVE_DEBUG_ASSERT(self->stackptr_on_exit->resource);
 }
 
 const jive_stackframe_class JIVE_I386_STACKFRAME_CLASS = {

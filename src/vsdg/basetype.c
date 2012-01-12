@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include <string.h>
 
-#include <jive/debug-private.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph-private.h>
@@ -209,7 +209,7 @@ jive_input_unassign_ssavar(jive_input * self)
 void
 jive_input_divert_origin(jive_input * self, jive_output * new_origin)
 {
-	DEBUG_ASSERT(!self->ssavar);
+	JIVE_DEBUG_ASSERT(!self->ssavar);
 	jive_input_internal_divert_origin(self, new_origin);
 }
 
@@ -223,7 +223,7 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 		jive_raise_type_error(input_type, operand_type, self->node);
 	}
 	
-	DEBUG_ASSERT(self->node->graph == new_origin->node->graph);
+	JIVE_DEBUG_ASSERT(self->node->graph == new_origin->node->graph);
 	
 	jive_output * old_origin = self->origin;
 	
@@ -241,8 +241,8 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 void
 jive_input_swap(jive_input * self, jive_input * other)
 {
-	DEBUG_ASSERT(jive_type_equals(jive_input_get_type(self), jive_input_get_type(other)));
-	DEBUG_ASSERT(self->node == other->node);
+	JIVE_DEBUG_ASSERT(jive_type_equals(jive_input_get_type(self), jive_input_get_type(other)));
+	JIVE_DEBUG_ASSERT(self->node == other->node);
 	
 	jive_ssavar * v1 = self->ssavar;
 	jive_ssavar * v2 = other->ssavar;
@@ -354,7 +354,7 @@ void jive_output_init_(
 
 void jive_output_fini_(jive_output * self)
 {
-	DEBUG_ASSERT(self->users.first == 0 && self->users.last == 0);
+	JIVE_DEBUG_ASSERT(self->users.first == 0 && self->users.last == 0);
 	
 	if (self->ssavar) jive_ssavar_unassign_output(self->ssavar, self);
 		
@@ -377,7 +377,7 @@ void jive_output_fini_(jive_output * self)
 		self->node->outputs[n]->index = n;
 	}
 	
-	DEBUG_ASSERT(self->originating_ssavars.first == 0);
+	JIVE_DEBUG_ASSERT(self->originating_ssavars.first == 0);
 }
 
 char *
@@ -455,7 +455,7 @@ jive_output_auto_merge_variable(jive_output * self)
 		JIVE_LIST_ITERATE(self->users, user, output_users_list) {
 			if (user->ssavar) {
 				jive_variable_merge(user->ssavar->variable, variable);
-				DEBUG_ASSERT( ssavar == NULL || ssavar == user->ssavar );
+				JIVE_DEBUG_ASSERT( ssavar == NULL || ssavar == user->ssavar );
 				ssavar = user->ssavar;
 				variable = user->ssavar->variable;
 			}
@@ -526,8 +526,8 @@ jive_gate_init_(jive_gate * self, struct jive_graph * graph, const char name[])
 void
 jive_gate_fini_(jive_gate * self)
 {
-	DEBUG_ASSERT(self->inputs.first == 0 && self->inputs.last == 0);
-	DEBUG_ASSERT(self->outputs.first == 0 && self->outputs.last == 0);
+	JIVE_DEBUG_ASSERT(self->inputs.first == 0 && self->inputs.last == 0);
+	JIVE_DEBUG_ASSERT(self->outputs.first == 0 && self->outputs.last == 0);
 	
 	if (self->variable) jive_variable_unassign_gate(self->variable, self);
 	

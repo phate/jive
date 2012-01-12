@@ -15,8 +15,6 @@
 #include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
 
-#include "debug.h"
-
 const jive_node_class JIVE_NODE = {
 	.parent = 0,
 	.name = "NODE",
@@ -85,7 +83,7 @@ void
 jive_node_fini_(jive_node * self)
 {
 	jive_context * context = self->graph->context;
-	DEBUG_ASSERT(self->region);
+	JIVE_DEBUG_ASSERT(self->region);
 	
 	jive_node_notifier_slot_call(&self->graph->on_node_destroy, self);
 	
@@ -190,7 +188,7 @@ jive_node_create(
 static void
 jive_node_add_input_(jive_node * self, jive_input * input)
 {
-	DEBUG_ASSERT(!self->graph->resources_fully_assigned);
+	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	
 	if (!self->ninputs) JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
 	self->ninputs ++;
@@ -214,7 +212,7 @@ jive_node_add_input(jive_node * self, const jive_type * type, jive_output * init
 static void
 jive_node_add_output_(jive_node * self, jive_output * output)
 {
-	DEBUG_ASSERT(!self->graph->resources_fully_assigned);
+	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	
 	self->noutputs ++;
 	self->outputs = jive_context_realloc(self->graph->context, self->outputs, sizeof(jive_output *) * self->noutputs);

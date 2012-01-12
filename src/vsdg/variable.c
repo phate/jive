@@ -9,8 +9,6 @@
 #include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/resource.h>
 
-#include "debug.h"
-
 static inline void
 jive_variable_inc_use_count(jive_variable * self)
 {
@@ -90,7 +88,7 @@ jive_ssavar_destroy(jive_ssavar * self)
 		jive_ssavar_unassign_output(self, self->assigned_output);
 	while (self->assigned_inputs.first)
 		jive_ssavar_unassign_input(self, self->assigned_inputs.first);
-	DEBUG_ASSERT(self->use_count == 0);
+	JIVE_DEBUG_ASSERT(self->use_count == 0);
 	jive_ssavar_region_hash_fini(&self->assigned_regions);
 	JIVE_LIST_REMOVE(self->variable->unused_ssavars, self, variable_ssavar_list);
 	jive_context_free(self->variable->graph->context, self);
@@ -99,7 +97,7 @@ jive_ssavar_destroy(jive_ssavar * self)
 void
 jive_ssavar_assign_input(jive_ssavar * self, jive_input * input)
 {
-	DEBUG_ASSERT(input->origin == self->origin && input->ssavar == 0);
+	JIVE_DEBUG_ASSERT(input->origin == self->origin && input->ssavar == 0);
 	
 	jive_ssavar_inc_use_count(self);
 	if (jive_node_isinstance(input->node, &JIVE_THETA_HEAD_NODE))
@@ -116,7 +114,7 @@ jive_ssavar_assign_input(jive_ssavar * self, jive_input * input)
 void
 jive_ssavar_unassign_input(jive_ssavar * self, jive_input * input)
 {
-	DEBUG_ASSERT(input->ssavar == self);
+	JIVE_DEBUG_ASSERT(input->ssavar == self);
 	
 	jive_graph_notify_ssavar_unassign_input(self->variable->graph, self, input);
 	
@@ -133,7 +131,7 @@ jive_ssavar_unassign_input(jive_ssavar * self, jive_input * input)
 void
 jive_ssavar_assign_output(jive_ssavar * self, jive_output * output)
 {
-	DEBUG_ASSERT( (self->origin == output) && (output->ssavar == 0) );
+	JIVE_DEBUG_ASSERT( (self->origin == output) && (output->ssavar == 0) );
 	
 	jive_ssavar_inc_use_count(self);
 	self->assigned_output = output;
@@ -144,7 +142,7 @@ jive_ssavar_assign_output(jive_ssavar * self, jive_output * output)
 void
 jive_ssavar_unassign_output(jive_ssavar * self, jive_output * output)
 {
-	DEBUG_ASSERT(output->ssavar == self && self->assigned_output == output);
+	JIVE_DEBUG_ASSERT(output->ssavar == self && self->assigned_output == output);
 	
 	jive_graph_notify_ssavar_unassign_output(self->variable->graph, self, output);
 	output->ssavar = 0;
@@ -155,8 +153,8 @@ jive_ssavar_unassign_output(jive_ssavar * self, jive_output * output)
 void
 jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 {
-	DEBUG_ASSERT(self->variable == other->variable);
-	DEBUG_ASSERT(self->origin == other->origin);
+	JIVE_DEBUG_ASSERT(self->variable == other->variable);
+	JIVE_DEBUG_ASSERT(self->origin == other->origin);
 	
 	if (other->assigned_output) {
 		jive_output * output = other->assigned_output;
@@ -174,7 +172,7 @@ jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 void
 jive_ssavar_divert_origin(jive_ssavar * self, jive_output * new_origin)
 {
-	DEBUG_ASSERT(new_origin->ssavar == 0);
+	JIVE_DEBUG_ASSERT(new_origin->ssavar == 0);
 	
 	jive_output * old_origin = self->origin;
 	self->origin = new_origin;
@@ -257,7 +255,7 @@ jive_variable_destroy(jive_variable * self)
 	while(self->gates.first)
 		jive_variable_unassign_gate(self, self->gates.first);
 	
-	DEBUG_ASSERT(self->use_count == 0);
+	JIVE_DEBUG_ASSERT(self->use_count == 0);
 	JIVE_LIST_REMOVE(self->graph->unused_variables, self, graph_variable_list);
 	
 	jive_context_free(self->graph->context, self);
@@ -266,7 +264,7 @@ jive_variable_destroy(jive_variable * self)
 void
 jive_variable_assign_gate(jive_variable * self, struct jive_gate * gate)
 {
-	DEBUG_ASSERT(gate->variable == 0);
+	JIVE_DEBUG_ASSERT(gate->variable == 0);
 	jive_variable_inc_use_count(self);
 	JIVE_LIST_PUSH_BACK(self->gates, gate, variable_gate_list);
 	gate->variable = self;
@@ -276,7 +274,7 @@ jive_variable_assign_gate(jive_variable * self, struct jive_gate * gate)
 void
 jive_variable_unassign_gate(jive_variable * self, struct jive_gate * gate)
 {
-	DEBUG_ASSERT(gate->variable == self);
+	JIVE_DEBUG_ASSERT(gate->variable == self);
 	jive_graph_notify_variable_unassign_gate(self->graph, self, gate);
 	JIVE_LIST_REMOVE(self->gates, gate, variable_gate_list);
 	gate->variable = 0;
@@ -296,7 +294,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 	jive_variable_set_resource_class(other, new_rescls);
 	jive_variable_set_resource_class(self, new_rescls);
 	
-	DEBUG_ASSERT(self->resname == 0 || other->resname == 0 || (self->resname == other->resname));
+	JIVE_DEBUG_ASSERT(self->resname == 0 || other->resname == 0 || (self->resname == other->resname));
 	if (other->resname && !self->resname)
 		jive_variable_set_resource_name(self, other->resname);
 	if (self->resname && !other->resname)

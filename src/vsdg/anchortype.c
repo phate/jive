@@ -4,7 +4,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/util/list.h>
-#include <jive/debug-private.h>
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
@@ -60,7 +59,7 @@ void
 jive_anchor_input_init_(jive_anchor_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
 	jive_input_init_(&self->base, node, index, origin);
-	DEBUG_ASSERT(origin->node->region->anchor == 0);
+	JIVE_DEBUG_ASSERT(origin->node->region->anchor == 0);
 	origin->node->region->anchor = &self->base;
 }
 

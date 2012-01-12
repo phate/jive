@@ -2,7 +2,6 @@
 
 #include <string.h>
 
-#include <jive/debug-private.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <jive/common.h>
 #include <jive/context.h>
-#include <jive/debug-private.h>
 #include <jive/util/list.h>
 
 #include "compiler.h"
