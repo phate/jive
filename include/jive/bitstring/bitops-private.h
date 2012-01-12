@@ -269,6 +269,41 @@ jive_multibit_sum(
 }
 
 static inline void
+jive_multibit_and(char dst[], const char op1[], const char op2[], size_t nbits)
+{
+	size_t n;
+	for(n = 0; n < nbits; n++){
+		dst[n] = jive_logic_and(op1[n], op2[n]);
+	}	
+}
+
+static inline void
+jive_multibit_or(char dst[], const char op1[], const char op2[], size_t nbits)
+{
+	size_t n;
+	for(n = 0; n < nbits; n++){
+		dst[n] = jive_logic_or(op1[n], op2[n]);
+	}
+}
+
+static inline void
+jive_multibit_xor(char dst[], const char op1[], const char op2[], size_t nbits)
+{
+	size_t n;
+	for(n = 0; n < nbits; n++){
+		dst[n] = jive_logic_xor(op1[n], op2[n]);
+	}
+}
+
+static inline void
+jive_multibit_not(char dst[], const char op[], size_t nbits)
+{
+	char tmp[nbits];
+	memset(tmp, '1', nbits);
+	jive_multibit_xor(dst, op, tmp, nbits);
+}
+
+static inline void
 jive_multibit_negate(
 	char dst[], const char src[], size_t nbits)
 {
@@ -279,6 +314,61 @@ jive_multibit_negate(
 		dst[n] = jive_logic_add(tmp, '0', carry);
 		carry = jive_logic_carry(tmp, '0', carry);
 	}
+}
+
+static inline void
+jive_multibit_difference(char dst[],
+	const char dividend[], const char divisor[], size_t nbits)
+{
+	char tmp[nbits];
+	jive_multibit_negate(tmp, divisor, nbits);
+	jive_multibit_sum(dst, dividend, tmp, nbits);
+}
+
+static inline void
+jive_bitstring_init_unsigned(char dst[], size_t nbits, uint64_t value)
+{
+	size_t i;
+	for(i = 0; i < nbits; i++){
+		dst[i] = '0' + (value & 1);
+		value = value >> 1;
+	}	
+}
+
+static inline void
+jive_bitstring_init_signed(char dst[], size_t nbits, int64_t value)
+{
+	jive_bitstring_init_unsigned(dst, nbits, (uint64_t)value);
+}
+
+static inline void
+jive_multibit_shiftright(char dst[],
+	const char operand[], size_t nbits, size_t shift)
+{
+	memset(dst, '0', nbits);
+	if(shift >= nbits) return;
+
+	memcpy(dst, operand+shift, nbits-shift);
+}
+
+static inline void
+jive_multibit_shiftleft(char dst[],
+	const char operand[], size_t nbits, size_t shift)
+{
+	memset(dst, '0', nbits);
+	if(shift >= nbits) return;
+
+	memcpy(dst+shift, operand, nbits-shift);
+}
+
+static inline void
+jive_multibit_arithmetic_shiftright(char dst[],
+	const char operand[], size_t nbits, size_t shift)
+{
+	memset(dst, operand[nbits-1], nbits);
+	if(shift >= nbits) return;
+
+	memcpy(dst, operand+shift, nbits-shift);
 }
 
 static inline void

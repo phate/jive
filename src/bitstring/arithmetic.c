@@ -216,13 +216,11 @@ jive_bitand_reduce_operand_pair_(const jive_node_class * cls, const jive_node_at
 	if ((*op1)->node->class_ == &JIVE_BITCONSTANT_NODE && (*op2)->node->class_ == &JIVE_BITCONSTANT_NODE) {
 		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
 		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
-		
-		size_t nbits = n1->attrs.nbits;
+	
+		size_t nbits = n1->attrs.nbits;	
 		char bits[nbits];
-		size_t n;
-		for(n = 0; n<nbits; n++)
-			bits[n] = jive_logic_and(n1->attrs.bits[n], n2->attrs.bits[n]);
-		
+		jive_multibit_and(bits, n1->attrs.bits, n2->attrs.bits, nbits);	
+
 		*op1 = jive_bitconstant(graph, nbits, bits);
 		return true;
 	}
@@ -248,11 +246,9 @@ jive_bitor_reduce_operand_pair_(const jive_node_class * cls, const jive_node_att
 		jive_bitconstant_node * n1 = (jive_bitconstant_node *) (*op1)->node;
 		jive_bitconstant_node * n2 = (jive_bitconstant_node *) (*op2)->node;
 		
-		size_t nbits = n1->attrs.nbits;
+		size_t nbits = n1->attrs.nbits;	
 		char bits[nbits];
-		size_t n;
-		for(n = 0; n<nbits; n++)
-			bits[n] = jive_logic_or(n1->attrs.bits[n], n2->attrs.bits[n]);
+		jive_multibit_or(bits, n1->attrs.bits, n2->attrs.bits, nbits);	
 		
 		*op1 = jive_bitconstant(graph, nbits, bits);
 		return true;
@@ -281,9 +277,7 @@ jive_bitxor_reduce_operand_pair_(const jive_node_class * cls, const jive_node_at
 		
 		size_t nbits = n1->attrs.nbits;
 		char bits[nbits];
-		size_t n;
-		for(n = 0; n<nbits; n++)
-			bits[n] = jive_logic_xor(n1->attrs.bits[n], n2->attrs.bits[n]);
+		jive_multibit_xor(bits, n1->attrs.bits, n2->attrs.bits, nbits);
 		
 		*op1 = jive_bitconstant(graph, nbits, bits);
 		return true;
@@ -610,9 +604,7 @@ jive_bitnot_reduce_operand_(const jive_node_class * cls, const jive_node_attrs *
 	if (operand->base.base.node->class_ == &JIVE_BITCONSTANT_NODE) {
 		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->base.base.node;
 		char bits[node->attrs.nbits];
-		size_t n;
-		for(n = 0; n < node->attrs.nbits; n++)
-			bits[n] = jive_logic_xor(node->attrs.bits[n], '1');
+		jive_multibit_not(bits, node->attrs.bits, node->attrs.nbits);
 		
 		*operand_ = jive_bitconstant(node->base.graph, node->attrs.nbits, bits);
 		return true;
