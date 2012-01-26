@@ -32,7 +32,7 @@ const jive_bitcomparison_operation_class JIVE_BITEQUAL_NODE_ = {
 			.create = jive_bitequal_create_, /* override */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
-		.flags = jive_binary_operation_none,
+		.flags = jive_binary_operation_commutative,
 		.single_apply_under = NULL,
 		.multi_apply_under = NULL,
 		.distributive_over = NULL,
