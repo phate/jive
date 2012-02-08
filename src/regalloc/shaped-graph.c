@@ -5,6 +5,7 @@
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/variable.h>
 

@@ -5,7 +5,6 @@
 #include <stddef.h>
 
 #include <jive/vsdg/basetype.h>
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/region-ssavar-use.h>
 
 typedef struct jive_region jive_region;
@@ -103,25 +102,13 @@ jive_region_is_contained_by(const jive_region * self, const jive_region * other)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE bool
-jive_region_contains_node(const jive_region * self, const jive_node * node)
-{
-	const jive_region * tmp = node->region;
-	while(tmp->depth >= self->depth) {
-		if (tmp == self) return true;
-		tmp = tmp->parent;
-		if (!tmp) break;
-	}
-	return false;
-}
-
-JIVE_EXPORTED_INLINE jive_node *
+JIVE_EXPORTED_INLINE struct jive_node *
 jive_region_get_top_node(jive_region * self)
 {
 	return self->top;
 }
 
-JIVE_EXPORTED_INLINE jive_node *
+JIVE_EXPORTED_INLINE struct jive_node *
 jive_region_get_bottom_node(jive_region * self)
 {
 	return self->bottom;
@@ -142,20 +129,6 @@ jive_region_get_stackframe(const jive_region * region)
 	while(region && !region->stackframe) region = region->parent;
 	if (region) return region->stackframe;
 	else return 0;
-}
-
-/** \brief Determine innermost of multiple (possibly) nested regions from operand list */
-JIVE_EXPORTED_INLINE jive_region *
-jive_region_innermost(size_t noperands, jive_output * const operands[])
-{
-	jive_region * region = operands[0]->node->region;
-	size_t n;
-	for(n = 1; n < noperands; n++) {
-		if (operands[n]->node->region->depth > region->depth)
-			region = operands[n]->node->region;
-	}
-	
-	return region;
 }
 
 #endif

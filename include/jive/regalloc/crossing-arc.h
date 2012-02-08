@@ -10,6 +10,7 @@
 
 #include <jive/vsdg/variable.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 
 typedef struct jive_crossing_arc jive_crossing_arc;
