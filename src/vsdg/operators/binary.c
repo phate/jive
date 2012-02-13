@@ -20,9 +20,9 @@ reduce_operands(const jive_node_class * cls_, const jive_node_attrs * attrs, siz
 				jive_binop_reduction_path_t reduction = cls->can_reduce_operand_pair(cls_, attrs, op1, op2);
 				if (reduction != jive_binop_reduction_none) {
 					size_t j;
-					for(j = k + 2; j < noperands; j++)
+					for(j = k + 1; j < noperands; j++)
 						operands[j-1] = operands[j];
-					operands[n] = cls->reduce_operand_pair(reduction, cls_, attrs, operands[n], operands[n+1]);
+					operands[n] = cls->reduce_operand_pair(reduction, cls_, attrs, op1, op2);
 					noperands --;
 					n --;
 					break;
@@ -249,11 +249,27 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 	
 	/* FIXME: attempt distributive transform */
 	
-	if (self->base.enable_cse) {
-		jive_node * new_node = jive_node_cse(node->graph, &cls->base, attrs, noperands, operands);
+	bool changes = false;
+	if (noperands != node->noperands) {
+		changes = true;
+	} else {
+		size_t n;
+		for (n = 0; n < node->noperands; n++)
+			if (node->inputs[n]->origin != operands[n])
+				changes = true;
+	}
+	
+	if (changes) {
+		jive_node * new_node = 0;
+		
+		if (self->base.enable_cse)
+			jive_node_cse(node->graph, &cls->base, attrs, noperands, operands);
+		
+		if (!new_node)
+			new_node = cls->base.create(node->region, attrs, noperands, operands);
+		
 		if (new_node != node) {
 			jive_output_replace(node->outputs[0], new_node->outputs[0]);
-			/* FIXME: not sure whether "destroy" is really appropriate? */
 			jive_node_destroy(node);
 			return false;
 		}

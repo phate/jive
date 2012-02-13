@@ -4,3 +4,4 @@ TESTS+=\
 	bitstring/bitops \
 	bitstring/test-constant \
 	bitstring/test-arithmetic \
+	bitstring/test-normalize \

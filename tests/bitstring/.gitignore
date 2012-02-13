@@ -3,3 +3,4 @@ slice-concat
 bitops
 test-arithmetic
 test-constant
+test-normalize
