@@ -8,3 +8,4 @@ test-loadstore
 test-memory-type
 test-sizeof
 test-subroutine
+test-memberof-transform

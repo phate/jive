@@ -10,3 +10,4 @@ TESTS+=\
 	arch/test-address-transform-nodes \
 	arch/test-call \
 	arch/test-address-transform \
+	arch/test-memberof-transform \

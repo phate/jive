@@ -1,0 +1,4 @@
+TESTS+=\
+	arch/address_transform/test-address-transform-nodes \
+	arch/address_transform/test-address-transform \
+	arch/address_transform/test-memberof-transform \
