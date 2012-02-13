@@ -9,3 +9,4 @@ test-memory-type
 test-sizeof
 test-subroutine
 test-memberof-transform
+test-containerof-transform

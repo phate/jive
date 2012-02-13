@@ -476,8 +476,7 @@ jive_containerof_node_address_transform(jive_containerof_node * node, jive_memla
 	const jive_record_declaration * decl = node->attrs.record_decl;
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements);
-	size_t elem_offset = jive_memlayout_mapper_map_value_type(mapper,
-		decl->elements[index])->total_size;
+	size_t elem_offset = jive_memlayout_mapper_map_record(mapper, decl)->element[index].offset;
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 
 	jive_output * offset = jive_bitconstant_unsigned(node_->graph, nbits, elem_offset);
