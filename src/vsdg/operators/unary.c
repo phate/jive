@@ -103,7 +103,9 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	}
 	
 	if (self->base.enable_cse) {
-		jive_node * new_node = jive_node_cse(node->region->graph, self->base.node_class, attrs, 0, 0);
+		jive_output * operands[] = { node->inputs[0]->origin };
+		jive_node * new_node = jive_node_cse(node->region->graph, self->base.node_class, attrs, 1, operands);
+		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
 			jive_output_replace(output, new_node->outputs[0]);
 			/* FIXME: not sure whether "destroy" is really appropriate? */
