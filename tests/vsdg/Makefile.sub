@@ -1,3 +1,0 @@
-TESTS+=\
-	vsdg/test-controlnodes \
-	vsdg/test-nodelocalizer \
