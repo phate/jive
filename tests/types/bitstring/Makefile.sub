@@ -7,3 +7,4 @@ TESTS+=\
 	types/bitstring/test-normalize \
 
 include tests/types/bitstring/arithmetic/Makefile.sub
+include tests/types/bitstring/comparison/Makefile.sub

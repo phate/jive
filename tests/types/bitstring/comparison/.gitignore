@@ -1,0 +1,10 @@
+test-bitequal
+test-bitnotequal
+test-bitsgreater
+test-bitsgreatereq
+test-bitsless
+test-bitslesseq
+test-bitugreater
+test-bitugreatereq
+test-bituless
+test-bitulesseq
