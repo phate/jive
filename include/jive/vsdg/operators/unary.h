@@ -80,7 +80,7 @@ jive_unary_operation_normal_form_cast(jive_node_normal_form * self)
 	const jive_node_normal_form_class * cls = self->class_;
 	while (cls) {
 		if (cls == &JIVE_UNARY_OPERATION_NORMAL_FORM)
-			return (jive_unary_operation_normal_form *)cls;
+			return (jive_unary_operation_normal_form *)self;
 		cls = cls->parent;
 	}
 	return 0;
