@@ -42,14 +42,20 @@ $(TESTPROGS): %: %.o tests/testarch.o libjive.a
 
 $(patsubst %, tests/%.o, $(TESTS)): CPPFLAGS+=-Itests
 
+TESTLOG=true
+
 check: $(TESTPROGS)
 	rm -rf check.log
-	@for TEST in $(TESTPROGS); do \
-		echo -n "$$TEST: " ; if $$TEST >>check.log 2>&1 ; then echo pass ; else echo FAIL ; fi ; \
-	done
+	@FAILED_TESTS="" ; \
+	for TEST in $(TESTPROGS); do \
+		$(TESTLOG) -n "$$TEST: " ; if $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
+	done ; \
+	if [ "x$$FAILED_TESTS" != x ] ; then echo "Failed tests:$$FAILED_TESTS" ; else echo "All tests passed" ; fi
 
 valgrind-check: $(TESTPROGS)
 	rm -rf check.log
-	@for TEST in $(TESTPROGS); do \
-		echo -n "$$TEST: " ; if valgrind --error-exitcode=1 $$TEST >>check.log 2>&1 ; then echo pass ; else echo FAIL ; fi ; \
-	done
+	@FAILED_TESTS="" ; \
+	for TEST in $(TESTPROGS); do \
+		$(TESTLOG) -n "$$TEST: " ; if valgrind --error-exitcode=1 $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
+	done ; \
+	if [ "x$$FAILED_TESTS" != x ] ; then echo "Failed tests:$$FAILED_TESTS" ; else echo "All tests passed" ; fi
