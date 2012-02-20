@@ -6,3 +6,4 @@ TESTS+=\
 	types/bitstring/test-arithmetic \
 	types/bitstring/test-normalize \
 
+include tests/types/bitstring/arithmetic/Makefile.sub
