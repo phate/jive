@@ -1,2 +1,3 @@
 TESTS+=\
 	types/bitstring/arithmetic/test-bitshr \
+	types/bitstring/arithmetic/test-bitshl \
