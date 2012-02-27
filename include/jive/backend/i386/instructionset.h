@@ -45,6 +45,17 @@ typedef enum {
 	jive_i386_int_cmp = 60,
 	jive_i386_int_cmp_immediate = 61,
 
+	jive_i386_int_jump_sless = 70,
+	jive_i386_int_jump_uless = 71,
+	jive_i386_int_jump_slesseq = 72,
+	jive_i386_int_jump_ulesseq = 73,
+	jive_i386_int_jump_equal = 74,
+	jive_i386_int_jump_notequal = 75,
+	jive_i386_int_jump_sgreater = 76,
+	jive_i386_int_jump_ugreater = 77,
+	jive_i386_int_jump_sgreatereq = 78,
+	jive_i386_int_jump_ugreatereq = 79,
+	jive_i386_jump = 80
 } jive_i386_instruction_index;
 
 extern const struct jive_instruction_class jive_i386_instructions[];

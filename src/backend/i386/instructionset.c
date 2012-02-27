@@ -574,6 +574,86 @@ jive_i386_asm_call_reg(const jive_instruction_class * icls,
 	jive_buffer_putstr(target, inputs[0]->base.name);
 }
 
+static void
+jive_i386_asm_jump(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, "\t");
+	jive_buffer_putimm(target, &immediates[0]);
+}
+
+static void
+jive_i386_encode_jump(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	/* test whether instruction needs to be changed to long form --
+	this is the case when we either need a relocation entry, or we
+	can statically determine that the jump is too far */
+	if (jive_immediate_has_symbols(&immediates[0])) {
+		*flags |= jive_instruction_encoding_flags_option0;
+	} else {
+		int64_t dist = immediates[0].offset - 2;
+		if (dist > 0x80 || dist <= -0x80)
+			*flags |= jive_instruction_encoding_flags_option0;
+	}
+	
+	if ((*flags & jive_instruction_encoding_flags_option0) == 0) {
+		/* short form */
+		uint8_t dist = immediates[0].offset - 2;
+		jive_buffer_putbyte(target, 0xeb);
+		jive_buffer_putbyte(target, dist);
+	} else {
+		/* long form */
+		uint32_t dist = cpu_to_le32(immediates[0].offset - 5);
+		jive_buffer_putbyte(target, 0xe9);
+		jive_buffer_put(target, &dist, sizeof(dist));
+		/* FIXME: possibly add relocation entry */
+	}
+}
+
+static void
+jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	/* test whether instruction needs to be changed to long form --
+	this is the case when we either need a relocation entry, or we
+	can statically determine that the jump is too far */
+	if (jive_immediate_has_symbols(&immediates[0])) {
+		*flags |= jive_instruction_encoding_flags_option0;
+	} else {
+		int64_t dist = immediates[0].offset - 2;
+		if (dist > 0x80 || dist <= -0x80)
+			*flags |= jive_instruction_encoding_flags_option0;
+	}
+	
+	if ((*flags & jive_instruction_encoding_flags_option0) == 0) {
+		/* short form */
+		uint8_t dist = immediates[0].offset - 2;
+		jive_buffer_putbyte(target, 0x70 | icls->code);
+		jive_buffer_putbyte(target, dist);
+	} else {
+		/* long form */
+		uint32_t dist = cpu_to_le32(immediates[0].offset - 6);
+		jive_buffer_putbyte(target, 0x0f);
+		jive_buffer_putbyte(target, 0x80 | icls->code);
+		jive_buffer_put(target, &dist, sizeof(dist));
+		/* FIXME: possibly add relocation entry */
+	}
+}
+
 static const jive_register_class * const intreg_param[] = {
 	&jive_i386_regcls[jive_i386_gpr],
 	&jive_i386_regcls[jive_i386_gpr],
@@ -912,8 +992,140 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.write_asm = jive_i386_asm_regimm,
 		.inregs = intreg_param,
 		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
-		.flags = jive_instruction_flags_none,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0x81 
+	},
+	[jive_i386_int_jump_sless] = {
+		.name = "int_jump_sless",
+		.mnemonic = "jl",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0xc,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_sgreatereq]
+	},
+	[jive_i386_int_jump_uless] = {
+		.name = "int_jump_uless",
+		.mnemonic = "jb",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0x2,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_ugreatereq]
+	},
+	[jive_i386_int_jump_slesseq] = {
+		.name = "int_jump_slesseq",
+		.mnemonic = "jle",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0xe,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_sgreater]
+	},
+	[jive_i386_int_jump_ulesseq] = {
+		.name = "int_jump_ulesseq",
+		.mnemonic = "jbe",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0x6,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_ugreater]
+	},
+	[jive_i386_int_jump_equal] = {
+		.name = "int_jump_equal",
+		.mnemonic = "je",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0x4,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_notequal]
+	},
+	[jive_i386_int_jump_notequal] = {
+		.name = "int_jump_notequal",
+		.mnemonic = "jne",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0x5,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_equal]
+	},
+	[jive_i386_int_jump_sgreater] = {
+		.name = "int_jump_sgreater",
+		.mnemonic = "jg",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0xf,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_slesseq]
+	},
+	[jive_i386_int_jump_ugreater] = {
+		.name = "int_jump_ugreater",
+		.mnemonic = "ja",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0x7,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_ulesseq]
+	},
+	[jive_i386_int_jump_sgreatereq] = {
+		.name = "int_jump_sgreatereq",
+		.mnemonic = "jge",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0xd,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_sless]
+	},
+	[jive_i386_int_jump_ugreatereq] = {
+		.name = "int_jump_ugreatereq",
+		.mnemonic = "jae",
+		.encode = jive_i386_encode_jump_conditional,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.outregs = NULL,
+		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.ninputs = 1, .noutputs = 0, .nimmediates = 1,
+		.code = 0x3,
+		.inverse_jump = &jive_i386_instructions[jive_i386_int_jump_uless]
+	},
+	[jive_i386_jump] = {
+		.name = "jump",
+		.mnemonic = "jmp",
+		.encode = jive_i386_encode_jump,
+		.write_asm = jive_i386_asm_jump,
+		.inregs = NULL,
+		.outregs = NULL,
+		.flags = jive_instruction_jump_relative,
+		.ninputs = 0, .noutputs = 0, .nimmediates = 1,
+		.code = 0xeb,
+		.inverse_jump = NULL
 	},
 };
