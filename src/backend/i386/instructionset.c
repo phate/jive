@@ -176,7 +176,7 @@ jive_i386_asm_store(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_regreg(const jive_instruction_class * icls,
+jive_i386_encode_regreg_readonly(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -186,10 +186,20 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	int r1 = inputs[0]->code;
 	int r2 = inputs[1]->code;
 	
-	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
-	
 	jive_buffer_putbyte(target, icls->code);
 	jive_buffer_putbyte(target, 0xc0|r1|(r2<<3));
+}
+
+static void
+jive_i386_encode_regreg(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	JIVE_DEBUG_ASSERT(inputs[0] == outputs[0]);
+	jive_i386_encode_regreg_readonly(icls, target, inputs, outputs, immediates, flags);
 }
 
 static void
@@ -394,7 +404,7 @@ jive_i386_encode_shift_regreg(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_encode_regimm(const jive_instruction_class * icls,
+jive_i386_encode_regimm_readonly(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -402,7 +412,6 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
-	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	int32_t immediate = immediates[0].offset;
 	
 	bool long_form = (immediate>127) || (immediate<-128);
@@ -422,6 +431,18 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 		immediate = cpu_to_le32(immediate);
 		jive_buffer_put(target, &immediate, 4);
 	} else jive_buffer_putbyte(target, immediate);
+}
+
+static void
+jive_i386_encode_regimm(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	JIVE_DEBUG_ASSERT(inputs[0] == outputs[0]);
+	jive_i386_encode_regimm_readonly(icls, target, inputs, outputs, immediates, flags);
 }
 
 static void
@@ -872,5 +893,27 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.inregs = intreg_param, .outregs = NULL,
 		.ninputs = 1, .noutputs = 0, .nimmediates = 0,
 		.code = 0xff
+	},
+	[jive_i386_int_cmp] = {
+		.name = "int_cmp",
+		.mnemonic = "cmpl",
+		.encode = jive_i386_encode_regreg_readonly,
+		.write_asm = jive_i386_asm_regreg,
+		.inregs = intreg_param,
+		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.flags = jive_instruction_flags_none,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0x3b
+	},
+	[jive_i386_int_cmp_immediate] = {
+		.name = "int_cmp_immediate",
+		.mnemonic = "cmpl",
+		.encode = jive_i386_encode_regimm_readonly,
+		.write_asm = jive_i386_asm_regimm,
+		.inregs = intreg_param,
+		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
+		.code = 0x81 
 	},
 };

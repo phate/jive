@@ -42,6 +42,8 @@ typedef enum {
 	jive_i386_call = 57,
 	jive_i386_call_reg = 58,
 
+	jive_i386_int_cmp = 60,
+	jive_i386_int_cmp_immediate = 61,
 
 } jive_i386_instruction_index;
 
