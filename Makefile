@@ -79,6 +79,7 @@ LIBJIVE_SRC += \
 	src/arch/sizeof.c \
 	src/arch/call.c \
 	src/arch/address-transform.c \
+	src/arch/regvalue.c \
 	
 # shaper
 LIBJIVE_SRC += \
