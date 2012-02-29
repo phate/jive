@@ -27,6 +27,12 @@ struct jive_negotiator_option {
 	/* empty */
 };
 
+typedef enum {
+	jive_negotiator_port_attach_none = 0,
+	jive_negotiator_port_attach_input = 1,
+	jive_negotiator_port_attach_output = 2
+} jive_negotiator_port_attach;
+
 struct jive_negotiator_port {
 	jive_negotiator_constraint * constraint;
 	struct {
@@ -42,6 +48,7 @@ struct jive_negotiator_port {
 	
 	jive_negotiator_option * option;
 	
+	jive_negotiator_port_attach attach;
 	struct {
 		jive_negotiator_port * prev;
 		jive_negotiator_port * next;
@@ -216,5 +223,15 @@ jive_negotiator_map_output(const jive_negotiator * self, struct jive_output * ou
 
 jive_negotiator_port *
 jive_negotiator_map_input(const jive_negotiator * self, struct jive_input * input);
+
+/* protected functions that allow to manipulate negotiator state */
+void
+jive_negotiator_port_destroy(jive_negotiator_port * self);
+
+jive_negotiator_port *
+jive_negotiator_annotate_simple_input(jive_negotiator * self, struct jive_input * input, const jive_negotiator_option * option);
+
+jive_negotiator_port *
+jive_negotiator_annotate_simple_output(jive_negotiator * self, struct jive_output * output, const jive_negotiator_option * option);
 
 #endif
