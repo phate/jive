@@ -669,3 +669,19 @@ jive_node_normal_form_set_cse_(jive_node_normal_form * self, bool enable)
 	if (enable && self->enable_mutable)
 		jive_graph_mark_denormalized(self->graph);
 }
+
+jive_node *
+jive_node_cse_create(const jive_node_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[])
+{
+	const jive_node_class * cls = self->node_class;
+	
+	jive_node * node;
+	if (self->enable_mutable && self->enable_cse) {
+		node = jive_node_cse(region->graph, cls, attrs, noperands, operands);
+		if (node)
+			return node;
+	}
+
+	return cls->create(region, attrs, noperands, operands);
+}

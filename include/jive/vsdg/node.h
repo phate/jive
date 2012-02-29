@@ -350,6 +350,20 @@ jive_node_normal_form_get_cse(jive_node_normal_form * self)
 	return self->enable_cse;
 }
 
+/**
+	\brief Attempt to find existing or create new node
+	
+	\param nf Normal form of node class
+	\param region Region to create node in
+	\param attrs Attributes of node
+	\param noperands Number of operands
+	\param operands Input operands of node
+*/
+
+jive_node *
+jive_node_cse_create(const jive_node_normal_form * nf, struct jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[]);
+
 /* tracking support */
 
 jive_tracker_nodestate *

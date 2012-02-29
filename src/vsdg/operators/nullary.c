@@ -73,14 +73,6 @@ jive_nullary_operation_normalize_node_(const jive_node_normal_form * self, jive_
 jive_output *
 jive_nullary_operation_normalized_create_(const jive_nullary_operation_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs)
 {
-	const jive_node_class * cls = self->base.node_class;
-	
-	jive_node * node;
-	if (self->base.enable_mutable && self->base.enable_cse) {
-		node = jive_node_cse(region->graph, cls, attrs, 0, 0);
-		if (node)
-			return node->outputs[0];
-	}
-
-	return cls->create(region, attrs, 0, 0)->outputs[0];
+	jive_node * node = jive_node_cse_create(&self->base, region, attrs, 0, 0);
+	return node->outputs[0];
 }
