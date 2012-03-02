@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include <jive/util/hash.h>
+#include <jive/vsdg/node.h>
 
 struct jive_context;
 struct jive_graph;
@@ -22,10 +23,37 @@ typedef struct jive_negotiator_connection jive_negotiator_connection;
 typedef struct jive_negotiator_constraint jive_negotiator_constraint;
 typedef struct jive_negotiator_constraint_class jive_negotiator_constraint_class;
 typedef struct jive_negotiator_identity_constraint jive_negotiator_identity_constraint;
+typedef struct jive_negotiator_split_node jive_negotiator_split_node;
+typedef struct jive_negotiator_split_node_attrs jive_negotiator_split_node_attrs;
+
+/* split node */
+
+extern const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE;
+
+struct jive_negotiator_split_node_attrs {
+	jive_node_attrs base;
+	jive_negotiator * negotiator;
+	jive_negotiator_option * input_option;
+	jive_type * output_type;
+	jive_negotiator_option * output_option;
+};
+
+struct jive_negotiator_split_node {
+	jive_node base;
+	jive_negotiator_split_node_attrs attrs;
+	struct {
+		jive_negotiator_split_node * prev;
+		jive_negotiator_split_node * next;
+	} split_node_list;
+};
+
+/* options */
 
 struct jive_negotiator_option {
 	/* empty */
 };
+
+/* ports */
 
 typedef enum {
 	jive_negotiator_port_attach_none = 0,
@@ -59,6 +87,8 @@ struct jive_negotiator_port {
 	} hash_key;
 };
 
+/* connections */
+
 struct jive_negotiator_connection {
 	jive_negotiator * negotiator;
 	struct {
@@ -78,6 +108,8 @@ jive_negotiator_connection_create(jive_negotiator * negotiator);
 
 void
 jive_negotiator_connection_invalidate(jive_negotiator_connection * self);
+
+/* constraints */
 
 struct jive_negotiator_constraint {
 	const jive_negotiator_constraint_class * class_;
@@ -177,6 +209,11 @@ struct jive_negotiator {
 		jive_negotiator_constraint * last;
 	} constraints;
 	
+	struct {
+		jive_negotiator_split_node * first;
+		jive_negotiator_split_node * last;
+	} split_nodes;
+	
 	jive_negotiator_option * tmp_option;
 };
 
@@ -214,6 +251,12 @@ jive_negotiator_fini_(jive_negotiator * self);
 
 void
 jive_negotiator_process(jive_negotiator * self);
+
+void
+jive_negotiator_insert_split_nodes(jive_negotiator * self);
+
+void
+jive_negotiator_remove_split_nodes(jive_negotiator * self);
 
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity_node(jive_negotiator * self, struct jive_node * node, const jive_negotiator_option * option);

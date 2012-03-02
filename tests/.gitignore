@@ -20,4 +20,5 @@ test_rangemap
 test_statesplit
 test_typemismatch
 test_label_nodes
+test_negotiator
 arithmetic_function
