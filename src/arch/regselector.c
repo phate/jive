@@ -61,7 +61,7 @@ jive_regselector_option_intersect_(const jive_negotiator * self, jive_negotiator
 	const jive_regselector_option * src = (const jive_regselector_option *) src_;
 	
 	uint32_t tmp = dst->mask & src->mask;
-	if (tmp == dst->mask)
+	if (tmp == 0)
 		return false;
 	dst->mask = tmp;
 	return true;
