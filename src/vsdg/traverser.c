@@ -183,7 +183,14 @@ jive_bottomup_traverser_node_create(void * closure, jive_node * node)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_behind);
-}	
+}
+
+static void
+jive_bottomup_revisit_traverser_node_create(void * closure, jive_node * node)
+{
+	jive_full_traverser * self = (jive_full_traverser *) closure;
+	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
+}
 
 static void
 jive_bottomup_traverser_node_destroy(void * closure, jive_node * node)
@@ -232,11 +239,33 @@ jive_bottomup_traverser_init(jive_full_traverser * self, jive_graph * graph)
 	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_bottomup_traverser_input_change, self);
 }
 
+static void
+jive_bottomup_revisit_traverser_init(jive_full_traverser * self, jive_graph * graph)
+{
+	self->base.class_ = &JIVE_BOTTOMUP_TRAVERSER;
+	jive_full_traverser_init(self, graph);
+	jive_node * node;
+	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
+		jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
+	}
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create, jive_bottomup_revisit_traverser_node_create, self);
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_bottomup_traverser_node_destroy, self);
+	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_bottomup_traverser_input_change, self);
+}
+
 jive_traverser *
 jive_bottomup_traverser_create(jive_graph * graph)
 {
 	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
 	jive_bottomup_traverser_init(self, graph);
+	return &self->base;
+}
+
+jive_traverser *
+jive_bottomup_revisit_traverser_create(jive_graph * graph)
+{
+	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_bottomup_revisit_traverser_init(self, graph);
 	return &self->base;
 }
 
