@@ -12,3 +12,4 @@ TESTS+=\
 	arch/test-address-transform \
 	arch/test-memberof-transform \
 	arch/test-containerof-transform \
+	arch/test-regselect \

@@ -3,19 +3,20 @@
 
 #include <jive/arch/instruction.h>
 #include <jive/arch/registers.h>
+#include <jive/arch/regselector.h>
 #include <jive/arch/subroutine.h>
 #include <jive/arch/transfer-instructions.h>
 
 typedef enum {
-	cls_r0 = 0,
-	cls_r1 = 1,
-	cls_r2 = 2,
-	cls_r3 = 3,
-	cls_evenreg = 4,
-	cls_oddreg = 5,
-	cls_gpr = 6,
+	cls_cc = 0,
+	cls_gpr = 1,
 	
-	cls_cc = 7
+	cls_r0 = 2,
+	cls_r1 = 3,
+	cls_r2 = 4,
+	cls_r3 = 5,
+	cls_evenreg = 6,
+	cls_oddreg = 7
 } jive_testarch_regcls_index;
 
 extern const jive_register_class jive_testarch_regcls [];
@@ -74,5 +75,7 @@ struct jive_testarch_subroutine {
 	
 	jive_subroutine_passthrough stackptr;
 };
+
+extern const jive_reg_classifier jive_testarch_reg_classifier;
 
 #endif

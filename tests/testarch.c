@@ -49,7 +49,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 0
+		.regs = jive_testarch_regs + 0,
+		.nbits = 32
 	},
 	[cls_r1] = {
 		.base = {
@@ -64,7 +65,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 2
+		.regs = jive_testarch_regs + 2,
+		.nbits = 32
 	},
 	[cls_r2] = {
 		.base = {
@@ -79,7 +81,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 1
+		.regs = jive_testarch_regs + 1,
+		.nbits = 32
 	},
 	[cls_r3] = {
 		.base = {
@@ -94,7 +97,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 3
+		.regs = jive_testarch_regs + 3,
+		.nbits = 32
 	},
 	[cls_evenreg] = {
 		.base = {
@@ -109,7 +113,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 0
+		.regs = jive_testarch_regs + 0,
+		.nbits = 32
 	},
 	[cls_oddreg] = {
 		.base = {
@@ -124,7 +129,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 2
+		.regs = jive_testarch_regs + 2,
+		.nbits = 32
 	},
 	[cls_gpr] = {
 		.base = {
@@ -139,7 +145,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs
+		.regs = jive_testarch_regs,
+		.nbits = 32
 	},
 	[cls_cc] = {
 		.base = {
@@ -155,7 +162,8 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits16.base.base
 		},
-		.regs = jive_testarch_regs + 4
+		.regs = jive_testarch_regs + 4,
+		.nbits = 32
 	},
 };
 
@@ -503,3 +511,53 @@ jive_testarch_subroutine_create(jive_region * region,
 	
 	return &self->base;
 }
+
+/* classifier */
+
+static jive_regselect_mask
+jive_testarch_classify_type_(const jive_type * type, const jive_resource_class * rescls)
+{
+	rescls = jive_resource_class_relax(rescls);
+	
+	if (rescls == &jive_testarch_regcls[cls_gpr].base)
+		return (1 << cls_gpr);
+	else if (rescls == &jive_testarch_regcls[cls_cc].base)
+		return (1 << cls_cc);
+	
+	return 0;
+}
+
+static jive_regselect_mask
+jive_testarch_classify_fixed_arithmetic_(jive_bitop_code op, size_t nbits)
+{
+	return (1 << cls_gpr);
+}
+
+static jive_regselect_mask
+jive_testarch_classify_fixed_compare_(jive_bitop_code op, size_t nbits)
+{
+	return (1 << cls_gpr);
+}
+
+static jive_regselect_mask
+jive_testarch_classify_address_(void)
+{
+	return (1 << cls_gpr);
+}
+
+static const jive_register_class * classes [] = 
+{
+	[cls_gpr] = &jive_testarch_regcls[cls_gpr],
+	[cls_cc] = &jive_testarch_regcls[cls_cc],
+};
+
+const jive_reg_classifier jive_testarch_reg_classifier = {
+	.any = (1 << cls_gpr) | (1 << cls_cc),
+	.classify_type = jive_testarch_classify_type_,
+	.classify_fixed_arithmetic = jive_testarch_classify_fixed_arithmetic_,
+	.classify_fixed_compare = jive_testarch_classify_fixed_compare_,
+	.classify_address = jive_testarch_classify_address_,
+	
+	.nclasses = 2,
+	.classes = classes,
+};
