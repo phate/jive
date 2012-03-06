@@ -4,3 +4,4 @@ bitops
 test-arithmetic
 test-constant
 test-normalize
+test-bitstring-operations
