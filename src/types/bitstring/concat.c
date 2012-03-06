@@ -71,6 +71,11 @@ jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive
 
 const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.base = { /* jive_node_class */
+		/* note that parent is JIVE_BINARY_OPERATION, not
+		JIVE_BITBINARY_OPERATION: the latter one is assumed
+		to represent "width-preserving" bit operations (i.e.
+		number of bits per operand/output matches), while
+		the concat operator violates this assumption */
 		.parent = &JIVE_BINARY_OPERATION,
 		.fini = jive_node_fini_, /* inherit */
 		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */

@@ -44,6 +44,11 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_c
 
 const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 	.base = { /* jive_node_class */
+		/* note that parent is JIVE_UNARY_OPERATION, not
+		JIVE_BITUNARY_OPERATION: the latter one is assumed
+		to represent "width-preserving" bit operations (i.e.
+		number of bits per operand/output matches), while
+		the slice operator violates this assumption */
 		.parent = &JIVE_UNARY_OPERATION,
 		.fini = jive_node_fini_, /* inherit */
 		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
