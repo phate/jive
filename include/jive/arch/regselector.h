@@ -25,6 +25,7 @@ struct jive_reg_classifier {
 	jive_regselect_mask (*classify_fixed_compare)(jive_bitop_code op, size_t nbits);
 	jive_regselect_mask (*classify_address)(void);
 	
+	size_t nclasses;
 	const jive_register_class * const * classes;
 };
 

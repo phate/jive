@@ -50,5 +50,6 @@ const jive_reg_classifier jive_i386_reg_classifier = {
 	.classify_fixed_compare = jive_i386_classify_fixed_compare_,
 	.classify_address = jive_i386_classify_address_,
 	
+	.nclasses = 5,
 	.classes = classes,
 };
