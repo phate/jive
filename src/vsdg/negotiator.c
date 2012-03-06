@@ -256,6 +256,9 @@ jive_negotiator_port_create(jive_negotiator_constraint * constraint, jive_negoti
 	self->connection = connection;
 	JIVE_LIST_PUSH_BACK(connection->ports, self, connection_port_list);
 	
+	self->specialized = false;
+	JIVE_LIST_PUSH_BACK(negotiator->unspecialized_ports, self, specialized_list);
+	
 	self->option = jive_negotiator_option_copy(negotiator, option);
 	
 	self->attach = jive_negotiator_port_attach_none;
@@ -265,7 +268,7 @@ jive_negotiator_port_create(jive_negotiator_constraint * constraint, jive_negoti
 	return self;
 }
 
-static void
+void
 jive_negotiator_port_divert(jive_negotiator_port * self, jive_negotiator_connection * new_connection)
 {
 	jive_negotiator_connection * old_connection = self->connection;
@@ -278,6 +281,21 @@ jive_negotiator_port_divert(jive_negotiator_port * self, jive_negotiator_connect
 		jive_negotiator_connection_destroy(old_connection);
 	
 	jive_negotiator_connection_invalidate(new_connection);
+}
+
+void
+jive_negotiator_port_split(jive_negotiator_port * self)
+{
+	jive_negotiator_connection * old_connection = self->connection;
+	jive_negotiator * negotiator = old_connection->negotiator;
+	jive_negotiator_connection * new_connection = jive_negotiator_connection_create(negotiator);
+	
+	JIVE_LIST_REMOVE(old_connection->ports, self, connection_port_list);
+	JIVE_LIST_PUSH_BACK(new_connection->ports, self, connection_port_list);
+	self->connection = new_connection;
+	
+	if (old_connection->ports.first == 0)
+		jive_negotiator_connection_destroy(old_connection);
 }
 
 void
@@ -307,6 +325,12 @@ void
 jive_negotiator_port_specialize(jive_negotiator_port * self)
 {
 	jive_negotiator * negotiator = self->constraint->negotiator;
+	
+	JIVE_DEBUG_ASSERT(!self->specialized);
+	JIVE_LIST_REMOVE(negotiator->unspecialized_ports, self, specialized_list);
+	JIVE_LIST_PUSH_BACK(negotiator->specialized_ports, self, specialized_list);
+	self->specialized = true;
+	
 	if (!jive_negotiator_option_specialize(negotiator, self->option))
 		return;
 	jive_negotiator_connection_invalidate(self->connection);
@@ -486,6 +510,8 @@ jive_negotiator_init_(jive_negotiator * self, const jive_negotiator_class * clas
 	self->invalidated_connections.first = self->invalidated_connections.last = 0;
 	self->constraints.first = self->constraints.last = 0;
 	self->split_nodes.first = self->split_nodes.last = 0;
+	self->unspecialized_ports.first = self->unspecialized_ports.last = 0;
+	self->specialized_ports.first = self->specialized_ports.last = 0;
 	
 	self->tmp_option = jive_negotiator_option_create(self);
 }
@@ -540,15 +566,8 @@ jive_negotiator_negotiate(jive_negotiator * self)
 void
 jive_negotiator_fully_specialize(jive_negotiator * self)
 {
-	struct jive_negotiator_input_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_negotiator_input_hash, self->input_map, i) {
-		jive_negotiator_port * port = i.entry;
-		jive_negotiator_port_specialize(port);
-		jive_negotiator_negotiate(self);
-	}
-	struct jive_negotiator_output_hash_iterator j;
-	JIVE_HASH_ITERATE(jive_negotiator_output_hash, self->output_map, j) {
-		jive_negotiator_port * port = j.entry;
+	while (self->unspecialized_ports.first) {
+		jive_negotiator_port * port = self->unspecialized_ports.first;
 		jive_negotiator_port_specialize(port);
 		jive_negotiator_negotiate(self);
 	}

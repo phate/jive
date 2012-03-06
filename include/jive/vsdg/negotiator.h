@@ -85,6 +85,12 @@ struct jive_negotiator_port {
 		struct jive_input * input;
 		struct jive_output * output;
 	} hash_key;
+	
+	bool specialized;
+	struct {
+		jive_negotiator_port * prev;
+		jive_negotiator_port * next;
+	} specialized_list;
 };
 
 /* connections */
@@ -214,11 +220,27 @@ struct jive_negotiator {
 		jive_negotiator_split_node * last;
 	} split_nodes;
 	
+	struct {
+		jive_negotiator_port * first;
+		jive_negotiator_port * last;
+	} unspecialized_ports;
+	
+	struct {
+		jive_negotiator_port * first;
+		jive_negotiator_port * last;
+	} specialized_ports;
+	
 	jive_negotiator_option * tmp_option;
 };
 
 jive_negotiator_port *
 jive_negotiator_port_create(jive_negotiator_constraint * constraint, jive_negotiator_connection * connection, const jive_negotiator_option * option);
+
+void
+jive_negotiator_port_divert(jive_negotiator_port * self, jive_negotiator_connection * new_connection);
+
+void
+jive_negotiator_port_split(jive_negotiator_port * self);
 
 /* inheritable initializer for constraint */
 void
@@ -260,6 +282,9 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self);
 
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity_node(jive_negotiator * self, struct jive_node * node, const jive_negotiator_option * option);
+
+void
+jive_negotiator_fully_specialize(jive_negotiator * self);
 
 jive_negotiator_port *
 jive_negotiator_map_output(const jive_negotiator * self, struct jive_output * output);
