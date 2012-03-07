@@ -2,6 +2,7 @@
 
 #include <jive/arch/dataobject.h>
 #include <jive/types/bitstring/symbolic-expression.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
@@ -26,38 +27,6 @@ const jive_node_class JIVE_INSTRUCTION_NODE = {
 };
 
 void
-jive_instruction_node_init_simple_(
-	jive_instruction_node * self,
-	jive_region * region,
-	const jive_instruction_class * icls,
-	jive_output * const operands[],
-	const int64_t immediates[])
-{
-	jive_context * context = region->graph->context;
-	const jive_type * input_types[icls->ninputs];
-	const jive_type * output_types[icls->noutputs];
-	
-	size_t n;
-	for(n=0; n<icls->ninputs; n++) input_types[n] = jive_register_class_get_type(icls->inregs[n]);
-	for(n=0; n<icls->noutputs; n++) output_types[n] = jive_register_class_get_type(icls->outregs[n]);
-	
-	jive_node_init_(&self->base,
-		region,
-		icls->ninputs, input_types, operands,
-		icls->noutputs, output_types);
-	
-	for(n=0; n<icls->ninputs; n++)
-		self->base.inputs[n]->required_rescls = &icls->inregs[n]->base;
-	for(n=0; n<icls->noutputs; n++)
-		self->base.outputs[n]->required_rescls = &icls->outregs[n]->base;
-	
-	self->attrs.icls = icls;
-	self->attrs.immediates = jive_context_malloc(context, sizeof(self->attrs.immediates[0]) * icls->nimmediates);
-	for(n=0; n<icls->nimmediates; n++)
-		jive_immediate_init(&self->attrs.immediates[n], immediates[n], NULL, NULL, NULL);
-}
-
-void
 jive_instruction_node_init_(
 	jive_instruction_node * self,
 	jive_region * region,
@@ -65,28 +34,55 @@ jive_instruction_node_init_(
 	jive_output * const operands[],
 	const jive_immediate immediates[])
 {
+	size_t ninputs = icls->ninputs;
+	size_t noutputs = icls->noutputs;
+	if (icls->flags & jive_instruction_jump)
+		noutputs ++;
+	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	
 	jive_context * context = region->graph->context;
-	const jive_type * input_types[icls->ninputs];
-	const jive_type * output_types[icls->noutputs];
+	const jive_type * input_types[ninputs];
+	const jive_type * output_types[noutputs];
 	
 	size_t n;
-	for(n=0; n<icls->ninputs; n++) input_types[n] = jive_register_class_get_type(icls->inregs[n]);
-	for(n=0; n<icls->noutputs; n++) output_types[n] = jive_register_class_get_type(icls->outregs[n]);
+	for (n = 0; n<icls->ninputs; n++)
+		input_types[n] = jive_register_class_get_type(icls->inregs[n]);
+	for (n = 0; n<icls->noutputs; n++)
+		output_types[n] = jive_register_class_get_type(icls->outregs[n]);
+	
+	if (icls->flags & jive_instruction_jump) {
+		output_types[icls->noutputs] = ctl;
+	}
 	
 	jive_node_init_(&self->base,
 		region,
-		icls->ninputs, input_types, operands,
-		icls->noutputs, output_types);
+		ninputs, input_types, operands,
+		noutputs, output_types);
 	
-	for(n=0; n<icls->ninputs; n++)
+	for (n = 0; n<icls->ninputs; n++)
 		self->base.inputs[n]->required_rescls = &icls->inregs[n]->base;
-	for(n=0; n<icls->noutputs; n++)
+	for (n = 0; n<icls->noutputs; n++)
 		self->base.outputs[n]->required_rescls = &icls->outregs[n]->base;
 	
 	self->attrs.icls = icls;
 	self->attrs.immediates = jive_context_malloc(context, sizeof(self->attrs.immediates[0]) * icls->nimmediates);
 	for(n=0; n<icls->nimmediates; n++)
 		self->attrs.immediates[n] = immediates[n];
+}
+
+void
+jive_instruction_node_init_simple_(
+	jive_instruction_node * self,
+	jive_region * region,
+	const jive_instruction_class * icls,
+	jive_output * const operands[],
+	const int64_t immediates[])
+{
+	jive_immediate imm[icls->nimmediates];
+	size_t n;
+	for (n = 0; n < icls->nimmediates; ++n)
+		jive_immediate_init(&imm[n], immediates[0], NULL, NULL, NULL);
+	jive_instruction_node_init_(self, region, icls, operands, imm);
 }
 
 void

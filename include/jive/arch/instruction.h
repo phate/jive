@@ -126,7 +126,13 @@ typedef enum {
 	/* instruction reuses first input register as output */
 	jive_instruction_write_input = 1,
 	/* first two input operands are commutative */
-	jive_instruction_commutative = (1<<8)
+	jive_instruction_commutative = (1<<8),
+	/* instruction is an (unconditional) jump */
+	jive_instruction_jump = (1<<12),
+	/* instruction is a relative jump */
+	jive_instruction_jump_relative = (1<<13),
+	/* instruction is a conditional jump and there is a matching "inverse" instruction */
+	jive_instruction_jump_conditional_invertible = (1<<14)
 } jive_instruction_flags;
 
 typedef enum {
@@ -197,6 +203,9 @@ struct jive_instruction_class {
 	
 	/** \brief Internal number, used for code generation */
 	int code;
+	
+	/** \brief Inverse jump class (only meaningful if flag set accordingly) */
+	const jive_instruction_class * inverse_jump;
 };
 
 extern const jive_instruction_class JIVE_PSEUDO_NOP;
