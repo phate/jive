@@ -37,6 +37,15 @@ jive_immediate_init(jive_immediate * self, jive_addr offset, const struct jive_l
 	self->modifier = modifier;
 }
 
+JIVE_EXPORTED_INLINE void
+jive_immediate_assign(const jive_immediate * self, jive_immediate * other)
+{
+	other->offset = self->offset;
+	other->add_label = self->add_label;
+	other->sub_label = self->sub_label;
+	other->modifier = self->modifier;
+}
+
 JIVE_EXPORTED_INLINE jive_immediate
 jive_immediate_add(const jive_immediate * a, const jive_immediate * b)
 {
@@ -120,6 +129,15 @@ jive_immediate_equals(const jive_immediate * self, const jive_immediate * other)
 		(self->sub_label == other->sub_label) &&
 		(self->modifier == other->modifier);
 }
+
+JIVE_EXPORTED_INLINE bool
+jive_immediate_has_symbols(const jive_immediate * self)
+{
+	return self->add_label != 0 || self->sub_label != 0 || self->modifier != 0;
+}
+
+void
+jive_immediate_simplify(jive_immediate * self, const jive_seq_point * for_point);
 
 typedef enum {
 	jive_instruction_flags_none = 0,

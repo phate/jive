@@ -14,6 +14,38 @@
 #include <stdio.h>
 #include <string.h>
 
+static const jive_seq_point *
+jive_label_get_seq_point(const jive_label * label, const jive_seq_point * current_point)
+{
+	if (label == 0) {
+		return 0;
+	} else if (label == &jive_label_current) {
+		return current_point;
+	} else if (jive_label_isinstance(label, &JIVE_LABEL_INTERNAL)) {
+		const jive_label_internal * l = (const jive_label_internal *) label;
+		return jive_label_internal_get_attach_node(l, current_point->seq_region->seq_graph);
+	}
+	return 0;
+}
+
+void
+jive_immediate_simplify(jive_immediate * self, const jive_seq_point * for_point)
+{
+	/* if both labels are in the same seq_region, they can be resolved by taking their
+	(statically known) difference */
+	const jive_seq_point * add_point = jive_label_get_seq_point(self->add_label, for_point);
+	const jive_seq_point * sub_point = jive_label_get_seq_point(self->sub_label, for_point);
+	
+	if (add_point && sub_point && add_point->seq_region->seq_graph == sub_point->seq_region->seq_graph) {
+		jive_addr delta = add_point->address - sub_point->address;
+		self->offset += delta;
+		self->add_label = 0;
+		self->sub_label = 0;
+		add_point = 0;
+		sub_point = 0;
+	}
+}
+
 const jive_node_class JIVE_INSTRUCTION_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "INSTRUCTION",
@@ -177,13 +209,28 @@ jive_instruction_node_create_extended(
 }
 
 static void
-generate_code_for_instruction(const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
+generate_code_for_instruction(jive_seq_point * seq_point,
+	const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
 {
 	const jive_instruction_class * icls = instr->icls;
 	
+	jive_immediate immediates[icls->nimmediates];
+	size_t n;
+	for (n = 0; n < icls->nimmediates; ++n)
+		jive_immediate_assign(&instr->immediates[n], &immediates[n]);
+	
+	if (icls->flags & jive_instruction_jump_relative) {
+		jive_immediate current;
+		jive_immediate_init(&current, 0, &jive_label_current, 0, 0);
+		immediates[0] = jive_immediate_sub(&immediates[0], &current);
+	}
+	
+	for (n = 0; n < icls->nimmediates; ++n)
+		jive_immediate_simplify(&immediates[n], seq_point);
+	
 	jive_instruction_encoding_flags iflags;
 	iflags = (jive_instruction_encoding_flags) *flags;
-	icls->encode(instr->icls, buffer, instr->inputs, instr->outputs, instr->immediates, &iflags);
+	icls->encode(instr->icls, buffer, instr->inputs, instr->outputs, immediates, &iflags);
 	*flags = (uint32_t) iflags;
 }
 
@@ -216,7 +263,7 @@ generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 	instr.immediates = instr_node->attrs.immediates;
 	
 	jive_addr addr = buffer->size;
-	generate_code_for_instruction(&instr, buffer, &seq_node->flags);
+	generate_code_for_instruction(&seq_node->base, &instr, buffer, &seq_node->flags);
 	size_t size = buffer->size - addr;
 	
 	if (addr != seq_node->base.address || size != seq_node->base.size) {
@@ -230,7 +277,7 @@ static void
 generate_code_for_seq_instruction(jive_seq_instruction * seq_instr, jive_buffer * buffer)
 {
 	jive_addr addr = buffer->size;
-	generate_code_for_instruction(&seq_instr->instr, buffer, &seq_instr->flags);
+	generate_code_for_instruction(&seq_instr->base, &seq_instr->instr, buffer, &seq_instr->flags);
 	size_t size = buffer->size - addr;
 	
 	if (addr != seq_instr->base.address || size != seq_instr->base.size) {
