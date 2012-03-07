@@ -27,10 +27,13 @@ typedef struct jive_label_region jive_label_region;
 typedef struct jive_label_external jive_label_external;
 
 struct jive_label_class {
+	const jive_label_class * parent;
 	void (*fini)(jive_label * self);
 	jive_addr (*get_address)(const jive_label * self, const struct jive_seq_point * for_point);
 	const char * (*get_asmname)(const jive_label * self);
 };
+
+extern const jive_label_class JIVE_LABEL;
 
 typedef enum {
 	jive_label_flags_none = 0,
@@ -62,10 +65,25 @@ jive_label_get_asmname(const jive_label * self)
 	return self->class_->get_asmname(self);
 }
 
+JIVE_EXPORTED_INLINE bool
+jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
+{
+	const jive_label_class * cls = self->class_;
+	while (cls) {
+		if (cls == class_)
+			return true;
+		cls = cls->parent;
+	}
+	return false;
+}
+
 struct jive_label_internal_class {
 	jive_label_class base;
 	struct jive_seq_point * (*get_attach_point)(const jive_label_internal * self, const struct jive_seq_graph * seq_graph);
 };
+
+extern const jive_label_internal_class JIVE_LABEL_INTERNAL_;
+#define JIVE_LABEL_INTERNAL (JIVE_LABEL_INTERNAL_.base)
 
 struct jive_label_internal {
 	jive_label base;
@@ -118,21 +136,21 @@ struct jive_label_external {
 */
 extern const jive_label jive_label_current;
 
-extern const jive_label_class JIVE_LABEL_CURRENT_;
+extern const jive_label_class JIVE_LABEL_CURRENT;
 
 /**
 	\brief Special label marking offset from frame pointer
 */
 extern const jive_label jive_label_fpoffset;
 
-extern const jive_label_class JIVE_LABEL_FPOFFSET_;
+extern const jive_label_class JIVE_LABEL_FPOFFSET;
 
 /**
 	\brief Special label marking offset from stack pointer
 */
 extern const jive_label jive_label_spoffset;
 
-extern const jive_label_class JIVE_LABEL_SPOFFSET_;
+extern const jive_label_class JIVE_LABEL_SPOFFSET;
 
 /**
 	\brief Label where node is sequenced
@@ -172,6 +190,8 @@ extern const jive_label_internal_class JIVE_LABEL_REGION_END;
 */
 jive_label *
 jive_label_region_end_create_exported(struct jive_region * region, const char * name);
+
+extern const jive_label_class JIVE_LABEL_EXTERNAL;
 
 /**
 	\brief Initialize label external to the graph from which it is referenced

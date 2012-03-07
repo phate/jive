@@ -11,6 +11,13 @@
 
 /* label, abstract base type */
 
+const jive_label_class JIVE_LABEL = {
+	.parent = 0,
+	.fini = 0,
+	.get_address = 0,
+	.get_asmname = 0
+};
+
 static void
 jive_label_init_(jive_label * self, const jive_label_class * cls, jive_label_flags flags)
 {
@@ -33,6 +40,7 @@ jive_label_current_get_asmname_(const jive_label * self)
 }
 
 const jive_label_class JIVE_LABEL_CURRENT = {
+	.parent = &JIVE_LABEL,
 	.fini = 0,
 	.get_address = jive_label_current_get_address_,
 	.get_asmname = jive_label_current_get_asmname_,
@@ -58,6 +66,7 @@ jive_label_fpoffset_get_asmname_(const jive_label * self)
 }
 
 const jive_label_class JIVE_LABEL_FPOFFSET = {
+	.parent = &JIVE_LABEL,
 	.fini = 0,
 	.get_address = jive_label_fpoffset_get_address_,
 	.get_asmname = jive_label_fpoffset_get_asmname_,
@@ -83,6 +92,7 @@ jive_label_spoffset_get_asmname_(const jive_label * self)
 }
 
 const jive_label_class JIVE_LABEL_SPOFFSET = {
+	.parent = &JIVE_LABEL,
 	.fini = 0,
 	.get_address = jive_label_spoffset_get_address_,
 	.get_asmname = jive_label_spoffset_get_asmname_,
@@ -126,6 +136,16 @@ jive_label_internal_get_address_(const jive_label * self_, const jive_seq_point 
 	}
 }
 
+const jive_label_internal_class JIVE_LABEL_INTERNAL_ = {
+	.base = {
+		.parent = &JIVE_LABEL,
+		.fini = 0,
+		.get_address = 0,
+		.get_asmname = 0
+	},
+	.get_attach_point = 0
+};
+
 /* node labels */
 
 static const char *
@@ -149,6 +169,7 @@ jive_label_node_get_attach_point_(const jive_label_internal * self_, const jive_
 
 const jive_label_internal_class JIVE_LABEL_NODE_ = {
 	.base = {
+		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
 		.get_address = jive_label_internal_get_address_,
 		.get_asmname = jive_label_node_get_asmname_
@@ -194,6 +215,7 @@ jive_label_region_start_get_attach_point_(const jive_label_internal * self_, con
 
 const jive_label_internal_class JIVE_LABEL_REGION_START_ = {
 	.base = {
+		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
 		.get_address = jive_label_internal_get_address_,
 		.get_asmname = jive_label_region_start_get_asmname_
@@ -252,6 +274,7 @@ jive_label_region_end_get_attach_point_(const jive_label_internal * self_, const
 
 const jive_label_internal_class JIVE_LABEL_REGION_END_ = {
 	.base = {
+		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
 		.get_address = jive_label_internal_get_address_,
 		.get_asmname = jive_label_region_end_get_asmname_
@@ -307,6 +330,7 @@ jive_label_external_fini_(jive_label * self_)
 }
 
 const jive_label_class JIVE_LABEL_EXTERNAL = {
+	.parent = &JIVE_LABEL,
 	.fini = jive_label_external_fini_,
 	.get_address = jive_label_external_get_address_,
 	.get_asmname = jive_label_external_get_asmname_,
