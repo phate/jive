@@ -2,6 +2,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/notifiers.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_seq_node_hash, jive_seq_node, struct jive_node *, node, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_seq_region_hash, jive_seq_region, struct jive_region *, region, hash_chain);
@@ -122,6 +123,14 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_point * before, jive_bottomu
 	return seq_region;
 }
 
+static void
+jive_seq_graph_label_create(void * closure, jive_label_internal * label)
+{
+	jive_seq_graph * self = (jive_seq_graph *) closure;
+	jive_seq_point * seq_point = jive_label_internal_get_attach_node(label, self);
+	jive_seq_point_attach_label(seq_point, label, self);
+}
+
 jive_seq_graph *
 jive_graph_sequentialize(jive_graph * graph)
 {
@@ -147,6 +156,8 @@ jive_graph_sequentialize(jive_graph * graph)
 		jive_seq_point * seq_point = jive_label_internal_get_attach_node(label, seq);
 		jive_seq_point_attach_label(seq_point, label, seq);
 	}
+	
+	seq->label_notifier = jive_label_notifier_slot_connect(&graph->on_label_create, jive_seq_graph_label_create, seq);
 	
 	return seq;
 }
@@ -177,6 +188,8 @@ jive_seq_graph_destroy(jive_seq_graph * seq)
 	}
 	jive_seq_node_hash_fini(&seq->node_map);
 	jive_seq_region_hash_fini(&seq->region_map);
+	
+	jive_notifier_disconnect(seq->label_notifier);
 	
 	jive_context_free(seq->context, seq);
 }

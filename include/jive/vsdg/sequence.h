@@ -7,6 +7,7 @@
 
 struct jive_graph;
 struct jive_node;
+struct jive_notifier;
 struct jive_region;
 
 typedef struct jive_seq_graph jive_seq_graph;
@@ -109,6 +110,8 @@ struct jive_seq_graph {
 	
 	jive_seq_node_hash node_map;
 	jive_seq_region_hash region_map;
+	
+	struct jive_notifier * label_notifier;
 	
 	bool addrs_changed;
 };
