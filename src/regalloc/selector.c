@@ -210,7 +210,7 @@ jive_node_cost_stack_remove(jive_node_cost_stack * self, jive_node_cost * item)
 {
 	JIVE_DEBUG_ASSERT(item->state == jive_node_cost_state_stack);
 	size_t index = item->index;
-	JIVE_DEBUG_ASSERT(index != (size_t) -1);
+	JIVE_DEBUG_ASSERT(index < self->nitems);
 	JIVE_DEBUG_ASSERT(self->items[index] == item);
 	
 	item->index = (size_t) -1;
@@ -234,6 +234,7 @@ jive_node_cost_stack_peek(const jive_node_cost_stack * self)
 static void
 push_node_stack(jive_region_shaper_selector * self, jive_node_cost * node_cost)
 {
+	JIVE_DEBUG_ASSERT(self->region == node_cost->node->region);
 	switch (node_cost->state) {
 		case jive_node_cost_state_ahead:
 			break;

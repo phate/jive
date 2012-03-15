@@ -475,6 +475,8 @@ do_split_end(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resourc
 	size_t n = 0;
 	while(demotion->path[n+1]) n++;
 	
+	jive_region * region = self->region;
+	
 	const jive_resource_class * in_rescls = demotion->path[n];
 	while (n != 0) {
 		n--;
@@ -482,7 +484,7 @@ do_split_end(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resourc
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_aux_split_node_create(origin->node->region,
+		jive_node * node = jive_aux_split_node_create(region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		origin = node->outputs[0];
@@ -711,13 +713,16 @@ split_merge_subregion(jive_region_shaper * self, jive_region_shaper * subregion,
 		/* demote to target resource class that... */
 		const jive_resource_class * tgt_rescls = demotion->target;
 		/* ... can be added to the current position in parent region ... */
-		if (jive_resource_class_count_check_add(parent_use_counts, tgt_rescls))
+		if (jive_resource_class_count_check_add(parent_use_counts, tgt_rescls)) {
+			demotion ++;
 			continue;
+		}
 		/* ... and that can replace the original one in sub region ... */
-		if (jive_resource_class_count_check_change(child_use_counts, from_rescls, tgt_rescls))
+		if (jive_resource_class_count_check_change(child_use_counts, from_rescls, tgt_rescls)) {
+			demotion ++;
 			continue;
+		}
 		break;
-		demotion ++;
 	}
 	JIVE_DEBUG_ASSERT(demotion->target);
 	
