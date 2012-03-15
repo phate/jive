@@ -59,6 +59,8 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin, context);
 	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change, context);
 	
+	jive_label_notifier_slot_init(&self->on_label_create, context);
+	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	jive_region_init_(self->root_region, self, 0);
 	
@@ -144,6 +146,8 @@ jive_graph_fini_(jive_graph * self)
 	jive_ssavar_output_notifier_slot_fini(&self->on_ssavar_unassign_output);
 	jive_ssavar_divert_notifier_slot_fini(&self->on_ssavar_divert_origin);
 	jive_ssavar_variable_notifier_slot_fini(&self->on_ssavar_variable_change);
+	
+	jive_label_notifier_slot_fini(&self->on_label_create);
 }
 
 jive_graph *

@@ -109,9 +109,15 @@ static void
 jive_label_internal_init_(jive_label_internal * self, const jive_label_class * cls, jive_label_flags flags, jive_graph * graph)
 {
 	jive_label_init_(&self->base, cls, flags);
-	self->graph = graph;
-	JIVE_LIST_PUSH_BACK(graph->labels, self, graph_label_list);
 	self->asmname = 0;
+	self->graph = graph;
+}
+
+static void
+jive_label_internal_register_(jive_label_internal * self)
+{
+	JIVE_LIST_PUSH_BACK(self->graph->labels, self, graph_label_list);
+	jive_label_notifier_slot_call(&self->graph->on_label_create, self);
 }
 
 static void
@@ -185,6 +191,7 @@ jive_label_node_create(jive_node * node)
 	jive_label_internal_init_(&self->base, &JIVE_LABEL_NODE, jive_label_flags_none, graph);
 	self->node = node;
 	
+	jive_label_internal_register_(&self->base);
 	return &self->base.base;
 }
 
@@ -231,6 +238,7 @@ jive_label_region_start_create(jive_region * region)
 	jive_label_internal_init_(&self->base, &JIVE_LABEL_REGION_START, jive_label_flags_none, graph);
 	self->region = region;
 	
+	jive_label_internal_register_(&self->base);
 	return &self->base.base;
 }
 
@@ -244,6 +252,7 @@ jive_label_region_start_create_exported(jive_region * region, const char * name)
 	self->base.asmname = jive_context_strdup(graph->context, name);
 	self->base.base.flags |= jive_label_flags_global;
 	
+	jive_label_internal_register_(&self->base);
 	return &self->base.base;
 }
 
@@ -290,6 +299,7 @@ jive_label_region_end_create(jive_region * region)
 	jive_label_internal_init_(&self->base, &JIVE_LABEL_REGION_END, jive_label_flags_none, graph);
 	self->region = region;
 	
+	jive_label_internal_register_(&self->base);
 	return &self->base.base;
 }
 
@@ -303,6 +313,7 @@ jive_label_region_end_create_exported(jive_region * region, const char * name)
 	self->base.asmname = jive_context_strdup(graph->context, name);
 	self->base.base.flags |= jive_label_flags_global;
 	
+	jive_label_internal_register_(&self->base);
 	return &self->base.base;
 }
 

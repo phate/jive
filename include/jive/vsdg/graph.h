@@ -101,6 +101,8 @@ struct jive_graph {
 	jive_ssavar_output_notifier_slot on_ssavar_unassign_output;
 	jive_ssavar_divert_notifier_slot on_ssavar_divert_origin;
 	jive_ssavar_variable_notifier_slot on_ssavar_variable_change;
+	
+	jive_label_notifier_slot on_label_create;
 };
 
 JIVE_EXPORTED_INLINE struct jive_region *
