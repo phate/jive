@@ -32,6 +32,10 @@ jive_buffer_putimm(jive_buffer * target, const jive_immediate * imm)
 	if (imm->sub_label) {
 		jive_buffer_putstr(target, "-");
 		jive_buffer_putstr(target, jive_label_get_asmname(imm->sub_label));
+		empty = false;
+	}
+	if (empty) {
+		jive_buffer_putstr(target, "0");
 	}
 }
 
