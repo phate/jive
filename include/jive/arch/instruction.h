@@ -290,7 +290,15 @@ struct jive_seq_instruction {
 extern const jive_seq_point_class JIVE_SEQ_INSTRUCTION;
 
 jive_seq_instruction *
-jive_seq_instruction_create(
+jive_seq_instruction_create_before(
+	jive_seq_point * before,
+	const jive_instruction_class * icls,
+	const jive_register_name * const * inputs,
+	const jive_register_name * const * outputs,
+	const jive_immediate immediates[]);
+
+jive_seq_instruction *
+jive_seq_instruction_create_after(
 	jive_seq_point * before,
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
