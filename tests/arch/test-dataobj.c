@@ -33,7 +33,7 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_assembler(graph, &buffer);
+	jive_graph_generate_assembler(graph, &buffer, NULL);
 	jive_buffer_putbyte(&buffer, 0);
 	
 	static const char expected_header[] =

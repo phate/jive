@@ -107,7 +107,7 @@ int main()
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_code(graph, &buffer);
+	jive_graph_generate_code(graph, &buffer, &jive_i386_instructions[jive_i386_jump]);
 	int (*function)(int, int) = (int(*)(int, int)) jive_buffer_executable(&buffer);
 	jive_buffer_fini(&buffer);
 	
