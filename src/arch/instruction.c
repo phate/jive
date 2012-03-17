@@ -237,9 +237,16 @@ generate_code_for_instruction(jive_seq_point * seq_point,
 static void
 generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 {
+	jive_addr addr = buffer->size;
 	jive_node * node = seq_node->node;
-	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE))
+	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
+		if (addr != seq_node->base.address) {
+			seq_node->base.address = addr;
+			seq_node->base.size = 0;
+			seq_node->base.seq_region->seq_graph->addrs_changed = true;
+		}
 		return;
+	}
 	
 	jive_instruction_node * instr_node = (jive_instruction_node *) node;
 	const jive_instruction_class * icls = instr_node->attrs.icls;
@@ -262,7 +269,6 @@ generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 	instr.outputs = outregs;
 	instr.immediates = instr_node->attrs.immediates;
 	
-	jive_addr addr = buffer->size;
 	generate_code_for_instruction(&seq_node->base, &instr, buffer, &seq_node->flags);
 	size_t size = buffer->size - addr;
 	
