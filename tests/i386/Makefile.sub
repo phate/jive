@@ -7,6 +7,7 @@ TESTS+=\
 	i386/hello-world\
 	i386/hello-world-gencall\
 	i386/test-subroutine-convert\
+	i386/test-simple-branch\
 	#i386/dotproduct\
 	#i386/arithmetic-function\
 	#i386/match\
