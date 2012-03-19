@@ -499,7 +499,8 @@ jive_testarch_subroutine_create(jive_region * region,
 		const jive_resource_class * cls;
 		switch (n) {
 			case 0: cls = jive_testarch_cls_r1; break;
-			default: cls = jive_fixed_stackslot_class_get(4, 4, n * 4);
+			case 1: cls = jive_testarch_cls_r2; break;
+			default: cls = jive_fixed_stackslot_class_get(4, 4, (n - 1) * 4);
 		}
 		self->base.returns[n] = jive_resource_class_create_gate(cls, graph, argname);
 	}
