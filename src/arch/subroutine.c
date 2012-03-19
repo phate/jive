@@ -81,6 +81,7 @@ jive_subroutine_enter_node_create(jive_region * region)
 	jive_node_init_(&node->base, region,
 		0, NULL, NULL,
 		1, &ctl);
+	((jive_control_output *) node->base.outputs[0])->active = false;
 	node->attrs.subroutine = 0;
 	region->top = &node->base;
 	

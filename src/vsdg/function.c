@@ -258,6 +258,7 @@ jive_lambda_enter_node_create(jive_region * region)
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctl);
+	((jive_control_output *)node->outputs[0])->active = false;
 	region->top = node;
 	
 	return node;
