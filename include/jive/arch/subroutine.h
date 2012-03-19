@@ -7,6 +7,7 @@
 
 struct jive_output;
 struct jive_region;
+struct jive_instructionset;
 
 extern const jive_node_class JIVE_SUBROUTINE_ENTER_NODE;
 extern const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE;
@@ -117,6 +118,8 @@ struct jive_subroutine {
 		/* size of argument area for calls */
 		size_t call_area_size;
 	} frame;
+	
+	const struct jive_instructionset * instructionset;
 };
 
 struct jive_subroutine_class {
@@ -167,6 +170,38 @@ JIVE_EXPORTED_INLINE jive_input *
 jive_subroutine_add_sp_dependency(const jive_subroutine * self, jive_node * node)
 {
 	return self->class_->add_sp_dependency(self, node);
+}
+
+JIVE_EXPORTED_INLINE jive_subroutine *
+jive_region_get_subroutine(const jive_region * region)
+{
+	for (; region; region = region->parent) {
+		jive_node * node = region->bottom;
+		if (!node)
+			continue;
+		jive_subroutine_leave_node * leave =
+			jive_subroutine_leave_node_cast(node);
+		if (!leave)
+			continue;
+		return leave->attrs.subroutine;
+	}
+	return 0;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_instructionset *
+jive_region_get_instructionset(const jive_region * region)
+{
+	for (; region; region = region->parent) {
+		jive_node * node = region->bottom;
+		if (!node)
+			continue;
+		jive_subroutine_leave_node * leave =
+			jive_subroutine_leave_node_cast(node);
+		if (!leave)
+			continue;
+		return leave->attrs.subroutine->instructionset;
+	}
+	return 0;
 }
 
 /* FIXME: these are quite C-specific, so really do not belong here */

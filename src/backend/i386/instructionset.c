@@ -1,5 +1,8 @@
+#include <jive/arch/instructionset.h>
+#include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/instructionset.h>
+#include <jive/backend/i386/machine.h>
 
 #include <jive/util/buffer.h>
 
@@ -1128,4 +1131,14 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.code = 0xeb,
 		.inverse_jump = NULL
 	},
+};
+
+static const jive_instructionset_class jive_i386_instructionset_class = {
+	.create_xfer = jive_i386_create_xfer,
+};
+
+const struct jive_instructionset jive_i386_instructionset = {
+	.class_ = &jive_i386_instructionset_class,
+	.jump_instruction_class = &jive_i386_instructions[jive_i386_jump],
+	.reg_classifier = &jive_i386_reg_classifier
 };

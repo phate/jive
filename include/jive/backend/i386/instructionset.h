@@ -3,6 +3,8 @@
 
 #include <jive/arch/instruction.h>
 
+struct jive_instructionset;
+
 typedef enum {
 	jive_i386_ret = 0,
 	
@@ -58,6 +60,7 @@ typedef enum {
 	jive_i386_jump = 80
 } jive_i386_instruction_index;
 
-extern const struct jive_instruction_class jive_i386_instructions[];
+extern const jive_instruction_class jive_i386_instructions[];
+extern const struct jive_instructionset jive_i386_instructionset;
 
 #endif

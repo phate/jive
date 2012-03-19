@@ -84,4 +84,3 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 const jive_transfer_instructions_factory jive_i386_xfer_factory = {
 	jive_i386_create_xfer
 };
-

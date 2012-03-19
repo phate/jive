@@ -1,6 +1,7 @@
 #include <jive/regalloc/auxnodes.h>
 
 #include <jive/common.h>
+#include <jive/arch/instructionset.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine.h>
@@ -99,10 +100,12 @@ jive_aux_split_node_create(jive_region * region,
 }
 
 static void
-replace_aux_split_node(jive_shaped_node * shaped_node, jive_node * node, const jive_transfer_instructions_factory * gen)
+replace_aux_split_node(jive_shaped_node * shaped_node, jive_node * node)
 {
-	jive_xfer_block xfer = gen->create_xfer(node->region, node->inputs[0]->origin,
-		node->inputs[0]->required_rescls, node->outputs[0]->required_rescls);
+	const jive_instructionset * isa = jive_region_get_instructionset(node->region);
+	
+	jive_xfer_description xfer = jive_instructionset_create_xfer(isa, node->region,
+		node->inputs[0]->origin, node->inputs[0]->required_rescls, node->outputs[0]->required_rescls);
 	if (!xfer.input)
 		xfer.input = jive_node_add_input(xfer.node, jive_input_get_type(node->inputs[0]), node->inputs[0]->origin);
 	if (!xfer.output)
@@ -180,14 +183,14 @@ check_fp_sp_dependency(jive_node * node)
 }
 
 void
-jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph, const jive_transfer_instructions_factory * gen)
+jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph)
 {
 	jive_traverser * traverser = jive_bottomup_traverser_create(shaped_graph->graph);
 	jive_node * node;
 	while( (node = jive_traverser_next(traverser)) != 0) {
 		if (jive_node_isinstance(node, &JIVE_AUX_SPLIT_NODE)) {
 			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
-			replace_aux_split_node(shaped_node, node, gen);
+			replace_aux_split_node(shaped_node, node);
 		} else
 			check_fp_sp_dependency(node);
 	}

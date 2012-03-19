@@ -57,6 +57,8 @@ typedef enum {
 	
 	add_gpr_index = 11,
 	sub_gpr_index = 12,
+	
+	jump_index = 20
 } jive_testarch_instruction_index;
 
 extern const jive_instruction_class jive_testarch_instructions [];

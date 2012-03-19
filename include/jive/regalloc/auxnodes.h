@@ -46,50 +46,6 @@ jive_aux_split_node_cast(jive_node * self)
 }
 
 void
-jive_regalloc_auxnodes_replace(struct jive_shaped_graph * shaped_graph, const struct jive_transfer_instructions_factory * gen);
-
-#if 0
-
-typedef struct jive_aux_valuecopy_node jive_aux_valuecopy_node;
-typedef struct jive_aux_spill_node jive_aux_spill_node;
-typedef struct jive_aux_restore_node jive_aux_restore_node;
-typedef struct jive_aux_node_attrs jive_aux_node_attrs;
-
-struct jive_aux_node_attrs {
-	jive_node_attrs base;
-	const struct jive_regcls * regcls;
-};
-
-struct jive_aux_valuecopy_node {
-	jive_node base;
-	jive_aux_node_attrs attrs;
-};
-
-extern const jive_node_class JIVE_AUX_VALUECOPY_NODE;
-
-struct jive_aux_spill_node {
-	jive_node base;
-	jive_aux_node_attrs attrs;
-};
-
-extern const jive_node_class JIVE_AUX_SPILL_NODE;
-
-struct jive_aux_restore_node {
-	jive_node base;
-	jive_aux_node_attrs attrs;
-};
-
-extern const jive_node_class JIVE_AUX_RESTORE_NODE;
-
-jive_node *
-jive_aux_valuecopy_node_create(struct jive_region * region, const struct jive_regcls * regcls, struct jive_output * origin);
-
-jive_node *
-jive_aux_spill_node_create(struct jive_region * region, const struct jive_regcls * regcls, struct jive_output * origin);
-
-jive_node *
-jive_aux_restore_node_create(struct jive_region * region, const struct jive_regcls * regcls, struct jive_output * stackslot);
-
-#endif
+jive_regalloc_auxnodes_replace(struct jive_shaped_graph * shaped_graph);
 
 #endif

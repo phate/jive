@@ -155,7 +155,7 @@ jive_i386_subroutine_alloc(jive_region * region, size_t nparameters, size_t nret
 	
 	jive_i386_subroutine * self;
 	self = jive_context_malloc(context, sizeof(*self));
-	jive_subroutine_init(&self->base, &JIVE_I386_SUBROUTINE, context);
+	jive_subroutine_init(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset);
 	
 	size_t n;
 	
@@ -170,8 +170,6 @@ jive_i386_subroutine_alloc(jive_region * region, size_t nparameters, size_t nret
 	
 	for (n = 0; n < nreturns; n++)
 		self->base.returns[n] = NULL;
-	
-	jive_subroutine_init(&self->base, &JIVE_I386_SUBROUTINE, context);
 	
 	return self;
 }

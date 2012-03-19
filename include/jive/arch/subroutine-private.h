@@ -19,7 +19,8 @@ jive_subroutine_passthrough
 jive_subroutine_create_passthrough(jive_subroutine * subroutine, const struct jive_resource_class * cls, const char * name);
 
 static inline void
-jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context)
+jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context,
+	const struct jive_instructionset * instructionset)
 {
 	self->class_ = cls;
 	
@@ -36,6 +37,7 @@ jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, 
 	self->frame.frame_pointer_offset = 0;
 	self->frame.stack_pointer_offset = 0;
 	self->frame.call_area_size = 0;
+	self->instructionset = instructionset;
 }
 
 jive_gate *
