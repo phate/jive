@@ -86,7 +86,7 @@ layout_stackslot(jive_shaped_graph * shaped_graph, jive_subroutine * subroutine,
 	
 	while (offset >= lower_bound) {
 		for (n = 0; n < cls->size; n++) {
-			if (!allowed_slot[offset + n])
+			if (!allowed_slot[offset - lower_bound + n])
 				break;
 		}
 		if (n == cls->size)
