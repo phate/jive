@@ -9,7 +9,7 @@
 #include <jive/regalloc/stackframe.h>
 
 jive_shaped_graph *
-jive_regalloc(struct jive_graph * graph, const struct jive_transfer_instructions_factory * xfer)
+jive_regalloc(struct jive_graph * graph)
 {
 	jive_shaped_graph * shaped_graph = jive_regalloc_shape(graph);
 	jive_regalloc_color(shaped_graph);

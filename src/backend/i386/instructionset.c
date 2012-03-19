@@ -1133,6 +1133,11 @@ const jive_instruction_class jive_i386_instructions[] = {
 	},
 };
 
+jive_xfer_description
+jive_i386_create_xfer(struct jive_region * region, struct jive_output * origin,
+	const struct jive_resource_class * in_class, const struct jive_resource_class * out_class);
+
+
 static const jive_instructionset_class jive_i386_instructionset_class = {
 	.create_xfer = jive_i386_create_xfer,
 };

@@ -5,7 +5,6 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/util/buffer.h>
-#include <jive/arch/transfer-instructions.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
@@ -48,7 +47,7 @@ int main()
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 	
-	jive_shaped_graph * shaped_graph = jive_regalloc(graph, &jive_i386_xfer_factory);
+	jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 	jive_shaped_graph_destroy(shaped_graph);
 	
 	jive_view(graph, stdout);

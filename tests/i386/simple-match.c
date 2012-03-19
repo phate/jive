@@ -5,7 +5,6 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/util/buffer.h>
-#include <jive/arch/transfer-instructions.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
@@ -16,26 +15,6 @@
 
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
-
-static jive_xfer_block
-i386_create_xfer(jive_region * region, jive_output * origin,
-	const jive_resource_class * in_class, const jive_resource_class * out_class)
-{
-	jive_xfer_block xfer;
-	
-	xfer.node = jive_instruction_node_create(
-		region,
-		&jive_i386_instructions[jive_i386_int_transfer],
-		(jive_output *[]){origin}, NULL);
-	xfer.input = xfer.node->inputs[0];
-	xfer.output = xfer.node->outputs[0];
-	
-	return xfer;
-}
-
-const jive_transfer_instructions_factory i386_xfer_factory = {
-	i386_create_xfer
-};
 
 int main()
 {
@@ -66,7 +45,7 @@ int main()
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 	
-	jive_shaped_graph * shaped_graph = jive_regalloc(graph, &i386_xfer_factory);
+	jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 	jive_shaped_graph_destroy(shaped_graph);
 	
 	jive_view(graph, stdout);

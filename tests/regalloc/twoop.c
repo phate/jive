@@ -144,7 +144,7 @@ int main()
 		fprintf(stderr, "%zd\n", n);
 		jive_graph * graph = tests[n](context);
 		jive_view(graph, stdout);
-		jive_shaped_graph * shaped_graph = jive_regalloc(graph, &jive_testarch_xfer_factory);
+		jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 		jive_view(graph, stdout);
 		jive_shaped_graph_destroy(shaped_graph);
 		jive_graph_destroy(graph);

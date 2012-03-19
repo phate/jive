@@ -316,11 +316,11 @@ const jive_instruction_class jive_testarch_instructions[] = {
 	}
 };
 
-static jive_xfer_block
+static jive_xfer_description
 create_xfer(jive_region * region, jive_output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
-	jive_xfer_block xfer;
+	jive_xfer_description xfer;
 	
 	const jive_resource_class * in_relaxed = jive_resource_class_relax(in_class);
 	const jive_resource_class * out_relaxed = jive_resource_class_relax(out_class);
@@ -352,10 +352,6 @@ create_xfer(jive_region * region, jive_output * origin,
 	
 	return xfer;
 }
-
-const jive_transfer_instructions_factory jive_testarch_xfer_factory = {
-	create_xfer
-};
 
 /* classifier */
 

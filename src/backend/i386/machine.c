@@ -1,6 +1,7 @@
 #include <jive/backend/i386/machine.h>
 
 #include <jive/arch/instruction.h>
+#include <jive/arch/instructionset.h>
 #include <jive/arch/stackslot.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
@@ -33,11 +34,11 @@ get_slot_memory_reference(const jive_i386_subroutine * subroutine, const jive_re
 	}
 }
 
-jive_xfer_block
+jive_xfer_description
 jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
-	jive_xfer_block xfer;
+	jive_xfer_description xfer;
 	
 	jive_subroutine * subroutine_ = lookup_subroutine_by_region(region);
 	jive_i386_subroutine * subroutine = (jive_i386_subroutine *) subroutine_;
@@ -80,7 +81,3 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	
 	return xfer;
 }
-
-const jive_transfer_instructions_factory jive_i386_xfer_factory = {
-	jive_i386_create_xfer
-};

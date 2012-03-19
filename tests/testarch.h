@@ -5,7 +5,6 @@
 #include <jive/arch/registers.h>
 #include <jive/arch/regselector.h>
 #include <jive/arch/subroutine.h>
-#include <jive/arch/transfer-instructions.h>
 
 typedef enum {
 	cls_cc = 0,
@@ -62,8 +61,6 @@ typedef enum {
 } jive_testarch_instruction_index;
 
 extern const jive_instruction_class jive_testarch_instructions [];
-
-extern const struct jive_transfer_instructions_factory jive_testarch_xfer_factory;
 
 jive_subroutine *
 jive_testarch_subroutine_create(struct jive_region * region,

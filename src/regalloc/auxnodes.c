@@ -5,7 +5,6 @@
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine.h>
-#include <jive/arch/transfer-instructions.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/valuetype.h>

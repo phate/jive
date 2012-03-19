@@ -3,9 +3,8 @@
 
 struct jive_graph;
 struct jive_shaped_graph;
-struct jive_transfer_instructions_factory;
 
 struct jive_shaped_graph *
-jive_regalloc(struct jive_graph * graph, const struct jive_transfer_instructions_factory * xfer);
+jive_regalloc(struct jive_graph * graph);
 
 #endif

@@ -61,7 +61,7 @@ make_dotprod_function(size_t vector_size)
 	
 	jive_subroutine_return_value(subroutine, value);
 	
-	jive_regalloc(graph, &jive_i386_transfer_instructions_factory);
+	jive_regalloc(graph);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
