@@ -53,12 +53,12 @@ int main()
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_assembler(graph, &buffer, &jive_i386_instructions[jive_i386_jump]);
+	jive_graph_generate_assembler(graph, &buffer);
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
 	
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_code(graph, &buffer, &jive_i386_instructions[jive_i386_jump]);
+	jive_graph_generate_code(graph, &buffer);
 	int (*function)(int, int) = (int(*)(int, int)) jive_buffer_executable(&buffer);
 	jive_buffer_fini(&buffer);
 	

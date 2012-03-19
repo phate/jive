@@ -1,6 +1,8 @@
 #include <jive/arch/instruction-private.h>
 
 #include <jive/arch/dataobject.h>
+#include <jive/arch/instructionset.h>
+#include <jive/arch/subroutine.h>
 #include <jive/types/bitstring/symbolic-expression.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
@@ -333,8 +335,7 @@ jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_buffer * buffer)
 /* for a conditional branch with two possibly different continuation points,
 patch in unconditional branch when condition for primary target is not met */
 static void
-jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * seq_node, jive_instruction_node * inode,
-	const jive_instruction_class * jump_icls)
+jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * seq_node, jive_instruction_node * inode)
 {
 	JIVE_DEBUG_ASSERT(inode->base.noutputs);
 	jive_output * ctl_out = inode->base.outputs[inode->base.noutputs - 1];
@@ -360,6 +361,9 @@ jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * se
 	inode->attrs.immediates[0].add_label = primary_tgt;
 	
 	if (secondary_tgt) {
+		const jive_instructionset * isa = jive_region_get_instructionset(inode->base.region);
+		const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
+		
 		jive_immediate imm;
 		jive_immediate_init(&imm, 0, secondary_tgt, 0, 0);
 		jive_seq_instruction_create_after(&seq_node->base, jump_icls,
@@ -370,8 +374,7 @@ jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * se
 /* if a region was taken "out-of-line", patch in a jump to return to the
 anchor point */
 static void
-jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_node * seq_node,
-	const jive_instruction_class * jump_icls)
+jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_node * seq_node)
 {
 	jive_seq_point * next = seq_node->base.seqpoint_list.next;
 	jive_node * anchor_node = seq_node->node->outputs[0]->users.first->node;
@@ -382,6 +385,10 @@ jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_node * seq_
 		next_node = jive_seq_node_cast(next);
 	if (next_node && next_node->node == anchor_node)
 		return;
+	
+	const jive_instructionset * isa = jive_region_get_instructionset(anchor_node->region);
+	const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
+	
 	jive_label * tgt = jive_label_node_create(anchor_node);
 	jive_immediate imm;
 	jive_immediate_init(&imm, 0, tgt, 0, 0);
@@ -390,8 +397,7 @@ jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_node * seq_
 }
 
 void
-jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph,
-	const jive_instruction_class * jump_icls)
+jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 {
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
@@ -400,19 +406,18 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph,
 			continue;
 		jive_instruction_node * inode = jive_instruction_node_cast(seq_node->node);
 		if (inode && (inode->attrs.icls->flags & jive_instruction_jump))
-			jive_seq_graph_patch_jump_targets(seq_graph, seq_node, inode, jump_icls);
+			jive_seq_graph_patch_jump_targets(seq_graph, seq_node, inode);
 		
 		if (seq_node->node == seq_node->node->region->bottom)
-			jive_seq_graph_patch_region_end(seq_graph, seq_node, jump_icls);
+			jive_seq_graph_patch_region_end(seq_graph, seq_node);
 	}
 }
 
 void
-jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer,
-	const jive_instruction_class * jump_icls)
+jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 {
 	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
-	jive_seq_graph_patch_jumps(seq_graph, jump_icls);
+	jive_seq_graph_patch_jumps(seq_graph);
 	
 	jive_seq_graph_generate_code(seq_graph, buffer);
 	
@@ -599,11 +604,10 @@ jive_seq_graph_generate_assembler(jive_seq_graph * seq_graph, jive_buffer * buff
 }
 
 void
-jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer,
-	const jive_instruction_class * jump_icls)
+jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
 {
 	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
-	jive_seq_graph_patch_jumps(seq_graph, jump_icls);
+	jive_seq_graph_patch_jumps(seq_graph);
 	
 	jive_seq_graph_generate_assembler(seq_graph, buffer);
 	

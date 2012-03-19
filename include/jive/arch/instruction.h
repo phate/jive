@@ -317,12 +317,10 @@ jive_seq_instruction_cast(jive_seq_point * self)
 /* FIXME: this is a placeholder function, will be replaced by a more
 sophisticated interface later */
 void
-jive_graph_generate_code(struct jive_graph * graph, struct jive_buffer * buffer,
-	const jive_instruction_class * jump_icls);
+jive_graph_generate_code(struct jive_graph * graph, struct jive_buffer * buffer);
 
 void
-jive_graph_generate_assembler(struct jive_graph * graph, struct jive_buffer * buffer,
-	const jive_instruction_class * jump_icls);
+jive_graph_generate_assembler(struct jive_graph * graph, struct jive_buffer * buffer);
 
 void
 jive_seq_graph_generate_code(struct jive_seq_graph * seq_graph, struct jive_buffer * buffer);
