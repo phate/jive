@@ -7,8 +7,9 @@
 #include <jive/util/buffer.h>
 #include <jive/arch/transfer-instructions.h>
 #include <jive/backend/i386/instructionset.h>
-#include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
+#include <jive/backend/i386/registerset.h>
+#include <jive/backend/i386/subroutine.h>
 
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
@@ -39,53 +40,19 @@ int main()
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_node * enter = jive_instruction_node_create(
-		graph->root_region,
-		&JIVE_PSEUDO_NOP,
-		NULL, NULL);
+	jive_subroutine * subroutine = jive_i386_subroutine_create(graph->root_region,
+		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
+		1, (jive_argument_type []) { jive_argument_int });
 	
-	jive_node * leave = jive_instruction_node_create(
-		graph->root_region,
-		&jive_i386_instructions[jive_i386_ret],
-		NULL, NULL);
-	
-	jive_gate * stackptr_var = jive_register_class_create_gate(
-		&jive_i386_regcls[jive_i386_gpr_esp], graph, "stackptr");
-	jive_gate * retval_var = jive_register_class_create_gate(
-		&jive_i386_regcls[jive_i386_gpr_eax], graph, "retval");
-	
-	jive_gate * save_ebx = jive_register_class_create_gate(
-		&jive_i386_regcls[jive_i386_gpr_ebx], graph, "save_ebx");
-	jive_gate * save_ebp = jive_register_class_create_gate(
-		&jive_i386_regcls[jive_i386_gpr_ebp], graph, "save_ebp");
-	jive_gate * save_edi = jive_register_class_create_gate(
-		&jive_i386_regcls[jive_i386_gpr_edi], graph, "save_edi");
-	jive_gate * save_esi = jive_register_class_create_gate(
-		&jive_i386_regcls[jive_i386_gpr_esi], graph, "save_esi");
-	
-	jive_output * stackptr = jive_node_gate_output(enter, stackptr_var);
-	jive_node_gate_input(leave, stackptr_var, stackptr);
-	jive_node_gate_input(leave, save_ebx, jive_node_gate_output(enter, save_ebx));
-	jive_node_gate_input(leave, save_ebp, jive_node_gate_output(enter, save_ebp));
-	jive_node_gate_input(leave, save_esi, jive_node_gate_output(enter, save_esi));
-	jive_node_gate_input(leave, save_edi, jive_node_gate_output(enter, save_edi));
-	
-	jive_node * load_a = jive_instruction_node_create(
-		graph->root_region,
-		&jive_i386_instructions[jive_i386_int_load32_disp],
-		(jive_output *[]){stackptr}, (int64_t[]){4});
-	
-	jive_node * load_b = jive_instruction_node_create(
-		graph->root_region,
-		&jive_i386_instructions[jive_i386_int_load32_disp],
-		(jive_output *[]){stackptr}, (int64_t[]){8});
+	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
+	jive_output * arg2 = jive_subroutine_value_parameter(subroutine, 1);
 	
 	jive_node * add = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_i386_instructions[jive_i386_int_add],
-		(jive_output *[]){load_a->outputs[0], load_b->outputs[0]}, NULL);
+		(jive_output *[]){arg1, arg2}, NULL);
 	
-	jive_node_gate_input(leave, retval_var, add->outputs[0]);
+	jive_subroutine_value_return(subroutine, 0, add->outputs[0]);
 	
 	jive_view(graph, stdout);
 	

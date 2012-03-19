@@ -9,34 +9,20 @@
 
 #include "testarch.h"
 
-static void
-proc_frame(jive_context * context, jive_graph ** graph, jive_node ** enter, jive_node ** leave)
-{
-	*graph = jive_graph_create(context);
-	*enter = jive_instruction_node_create(
-		(*graph)->root_region,
-		&JIVE_PSEUDO_NOP,
-		NULL, NULL);
-	*leave = jive_instruction_node_create(
-		(*graph)->root_region,
-		&JIVE_PSEUDO_NOP,
-		NULL, NULL);
-	
-	jive_gate * stackptr_var = jive_register_class_create_gate(&jive_testarch_regcls[cls_r0], *graph, "stackptr");
-	stackptr_var->may_spill = false;
-	jive_output * stackptr = jive_node_gate_output(*enter, stackptr_var);
-	jive_node_gate_input(*leave, stackptr_var, stackptr);
-}
-
 static jive_graph *
 create_testgraph_split(jive_context * context)
 {
 	/* register usage counts are satisfied locally, but there
 	is a "critical value" where no global assignment of one
 	register is possible */
-	jive_graph * graph;
-	jive_node * enter, * leave;
-	proc_frame(context, &graph, &enter, &leave);
+	jive_graph * graph = jive_graph_create(context);
+	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+		graph->root_region,
+		0, NULL,
+		0, NULL
+	);
+	jive_node * enter = &subroutine->enter->base;
+	jive_node * leave = &subroutine->leave->base;
 	
 	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "arg1");
 	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "arg2");
@@ -47,21 +33,21 @@ create_testgraph_split(jive_context * context)
 	jive_output * arg2 = jive_node_gate_output(enter, arg2_gate);
 	
 	jive_output * critical_value = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[move_gpr_index],
 		(jive_output *[]) {arg1}, NULL)->outputs[0];
 	
 	jive_output * tmp = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[setr1_index],
 		(jive_output *[]) {critical_value}, NULL)->outputs[0];
 	
 	tmp = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[setr2_index],
 		(jive_output *[]) {tmp}, NULL)->outputs[0];
 	tmp = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[add_index],
 		(jive_output *[]) {critical_value, tmp}, NULL)->outputs[0];
 	
@@ -101,9 +87,14 @@ create_testgraph_emerg_split(jive_context * context)
 	the lifetime such that no use of e falls within its
 	lifetime. */
 	
-	jive_graph * graph;
-	jive_node * enter, * leave;
-	proc_frame(context, &graph, &enter, &leave);
+	jive_graph * graph = jive_graph_create(context);
+	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+		graph->root_region,
+		0, NULL,
+		0, NULL
+	);
+	jive_node * enter = &subroutine->enter->base;
+	jive_node * leave = &subroutine->leave->base;
 	
 	jive_gate * arg3_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "arg2");
 	jive_output * arg3 = jive_node_gate_output(enter, arg3_gate);
@@ -112,7 +103,7 @@ create_testgraph_emerg_split(jive_context * context)
 	jive_gate * cls2_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "cls2");
 	jive_output * arg1 = jive_node_gate_output(enter, cls2_gate);
 	jive_node * op3 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[setr1_index],
 		(jive_output *[]) {arg1}, NULL);
 	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "cls1"), op3->outputs[0]);
@@ -120,15 +111,15 @@ create_testgraph_emerg_split(jive_context * context)
 	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "1or2");
 	jive_output * arg2 = jive_node_gate_output(enter, arg2_gate);
 	jive_node * op1 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[move_gpr_index],
 		(jive_output *[]) {arg2}, NULL);
 	jive_node * op2 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[move_gpr_index],
 		(jive_output *[]) {op1->outputs[0]}, NULL);
 	jive_node * op4 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[move_gpr_index],
 		(jive_output *[]) {op2->outputs[0]}, NULL);
 	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "cls1"), op4->outputs[0]);

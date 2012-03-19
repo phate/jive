@@ -9,31 +9,17 @@
 
 #include "testarch.h"
 
-static void
-proc_frame(jive_context * context, jive_graph ** graph, jive_node ** enter, jive_node ** leave)
-{
-	*graph = jive_graph_create(context);
-	*enter = jive_instruction_node_create(
-		(*graph)->root_region,
-		&JIVE_PSEUDO_NOP,
-		NULL, NULL);
-	*leave = jive_instruction_node_create(
-		(*graph)->root_region,
-		&JIVE_PSEUDO_NOP,
-		NULL, NULL);
-	
-	jive_gate * stackptr_var = jive_register_class_create_gate(&jive_testarch_regcls[cls_r0], *graph, "stackptr");
-	stackptr_var->may_spill = false;
-	jive_output * stackptr = jive_node_gate_output(*enter, stackptr_var);
-	jive_node_gate_input(*leave, stackptr_var, stackptr);
-}
-
 static jive_graph *
 create_testgraph_gateevict(jive_context * context)
 {
-	jive_graph * graph;
-	jive_node * enter, * leave;
-	proc_frame(context, &graph, &enter, &leave);
+	jive_graph * graph = jive_graph_create(context);
+	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+		graph->root_region,
+		0, NULL,
+		0, NULL
+	);
+	jive_node * enter = &subroutine->enter->base;
+	jive_node * leave = &subroutine->leave->base;
 	
 	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "arg1");
 	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "arg1");
@@ -41,7 +27,7 @@ create_testgraph_gateevict(jive_context * context)
 	jive_output * arg1 = jive_node_gate_output(enter, arg1_gate);
 	
 	arg1 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[move_gpr_index],
 		(jive_output *[]) {arg1}, NULL)->outputs[0];
 	
@@ -51,15 +37,15 @@ create_testgraph_gateevict(jive_context * context)
 	jive_gate * r3g = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "r3");
 	
 	jive_node * nop1 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	jive_node * nop2 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	jive_node * nop3 = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	
@@ -68,7 +54,7 @@ create_testgraph_gateevict(jive_context * context)
 	jive_node_gate_input(nop3, passthrough, jive_node_gate_output(nop2, passthrough));
 	
 	jive_output * result = jive_instruction_node_create(
-		graph->root_region,
+		subroutine->region,
 		&jive_testarch_instructions[move_gpr_index],
 		(jive_output *[]) {jive_node_gate_output(nop3, passthrough)}, NULL)->outputs[0];
 	
