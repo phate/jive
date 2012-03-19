@@ -169,4 +169,7 @@ jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self, 
 void
 jive_master_shaper_selector_revalidate(jive_master_shaper_selector * self);
 
+bool
+jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * self, struct jive_node * node);
+
 #endif

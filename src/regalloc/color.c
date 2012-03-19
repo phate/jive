@@ -10,6 +10,15 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
 
+static inline bool
+is_active_control_input(jive_input * input)
+{
+	if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+		return false;
+	
+	return ((jive_control_output *) input->origin)->active;
+}
+
 static jive_shaped_variable *
 find_next_uncolored(const jive_var_assignment_tracker * tracker)
 {
@@ -416,7 +425,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			jive_node * node = input->node;
 			size_t n;
 			for (n = 0; n < node->ninputs; n++) {
-				if (jive_input_isinstance(node->inputs[n], &JIVE_CONTROL_INPUT)) {
+				if (is_active_control_input(node->inputs[n])) {
 					node = node->inputs[n]->origin->node;
 					break;
 				}

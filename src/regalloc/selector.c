@@ -681,8 +681,8 @@ jive_master_shaper_selector_revalidate(jive_master_shaper_selector * self)
 	}
 }
 
-static bool
-check_node_ready(jive_master_shaper_selector * self, jive_node * node)
+bool
+jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * self, jive_node * node)
 {
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
@@ -700,7 +700,7 @@ check_node_ready(jive_master_shaper_selector * self, jive_node * node)
 static void
 jive_master_shaper_selector_try_add_frontier(jive_master_shaper_selector * self, jive_node * node)
 {
-	if (!check_node_ready(self, node))
+	if (!jive_master_shaper_selector_check_node_selectable(self, node))
 		return;
 	jive_node_cost * node_cost = jive_master_shaper_selector_map_node_internal(self, node);
 	if (node_cost->state != jive_node_cost_state_ahead)

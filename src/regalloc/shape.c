@@ -34,7 +34,7 @@ struct jive_region_shaper {
 	jive_shaped_region * shaped_region;
 	jive_master_shaper_selector * master_selector;
 	jive_region_shaper_selector * region_selector;
-	jive_node * predicate_producer;
+	jive_node * control_dominator;
 	
 	jive_mutable_varcut active;
 };
@@ -52,7 +52,7 @@ jive_region_shaper_create(jive_region_shaper * parent, jive_region * region, jiv
 	self->shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 	self->master_selector = master_selector;
 	self->region_selector = jive_master_shaper_selector_map_region(master_selector, region);
-	self->predicate_producer = 0;
+	self->control_dominator = 0;
 	jive_varcut_init(&self->active, self->context);
 	
 	return self;
@@ -291,7 +291,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	JIVE_DEBUG_ASSERT(!jive_shaped_graph_map_node(self->shaped_graph, new_node));
 	/* make sure nothing gets between predicate consumer and producer */
 	
-	JIVE_DEBUG_ASSERT(new_node == self->predicate_producer || self->predicate_producer == 0);
+	JIVE_DEBUG_ASSERT(new_node == self->control_dominator || self->control_dominator == 0);
 	
 	jive_cut * allowed_cut = 0;
 	
@@ -337,13 +337,18 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	/* FIXME: make sure nothings gets added to a cut containing just a region anchor */
 	jive_cut_append(allowed_cut, new_node);
 	
-	if (new_node == self->predicate_producer)
-		self->predicate_producer = 0;
+	if (new_node == self->control_dominator)
+		self->control_dominator = 0;
 	
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
-			self->predicate_producer = input->origin->node;
+		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+			continue;
+		
+		jive_control_output * ctl_output = (jive_control_output *) input->origin;
+		if (!ctl_output->active)
+			continue;
+		self->control_dominator = input->origin->node;
 	}
 	
 	for (n = 0; n < new_node->ninputs; n++) {
@@ -681,8 +686,8 @@ jive_region_shaper_process_node(jive_region_shaper * self, jive_node * node)
 jive_node *
 jive_region_shaper_pick_node(jive_region_shaper * self)
 {
-	if (self->predicate_producer)
-		return self->predicate_producer;
+	if (self->control_dominator)
+		return self->control_dominator;
 	
 	return jive_region_shaper_selector_select_node(self->region_selector);
 }
