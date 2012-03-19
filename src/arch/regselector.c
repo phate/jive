@@ -111,7 +111,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_bitbinary_operation_class * cls;
 		cls = (const jive_bitbinary_operation_class *) node->class_;
 		
-		option.mask = self->classifier->classify_fixed_arithmetic(cls->type, type->nbits);
+		option.mask = jive_reg_classifier_classify_fixed_arithmetic(self->classifier, cls->type, type->nbits);
 		
 		jive_negotiator_annotate_identity_node(&self->base, node, &option.base);
 	}
@@ -122,7 +122,7 @@ jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negoti
 {
 	jive_regselector * self = (jive_regselector *) self_;
 	jive_regselector_option * option = (jive_regselector_option *) dst;
-	option->mask = self->classifier->classify_type(jive_gate_get_type(gate), gate->required_rescls);
+	option->mask = jive_reg_classifier_classify_type(self->classifier, jive_gate_get_type(gate), gate->required_rescls);
 	return !!option->mask;
 }
 

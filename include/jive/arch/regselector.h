@@ -15,7 +15,6 @@ struct jive_type;
 typedef int jive_regselect_index;
 typedef uint32_t jive_regselect_mask;
 
-typedef struct jive_regselector jive_regselector;
 typedef struct jive_reg_classifier jive_reg_classifier;
 
 struct jive_reg_classifier {
@@ -28,6 +27,36 @@ struct jive_reg_classifier {
 	size_t nclasses;
 	const jive_register_class * const * classes;
 };
+
+JIVE_EXPORTED_INLINE jive_regselect_mask
+jive_reg_classifier_classify_type(const jive_reg_classifier * self,
+	const struct jive_type * type, const struct jive_resource_class * rescls)
+{
+	return self->classify_type(type, rescls);
+}
+
+JIVE_EXPORTED_INLINE jive_regselect_mask
+jive_reg_classifier_classify_fixed_arithmetic(const jive_reg_classifier * self,
+	jive_bitop_code op, size_t nbits)
+{
+	return self->classify_fixed_arithmetic(op, nbits);
+}
+
+JIVE_EXPORTED_INLINE jive_regselect_mask
+jive_reg_classifier_classify_fixed_compare(const jive_reg_classifier * self,
+	jive_bitop_code op, size_t nbits)
+{
+	return self->classify_fixed_compare(op, nbits);
+}
+
+JIVE_EXPORTED_INLINE jive_regselect_mask
+jive_reg_classifier_classify_address(const jive_reg_classifier * self,
+	jive_bitop_code op, size_t nbits)
+{
+	return self->classify_address();
+}
+
+typedef struct jive_regselector jive_regselector;
 
 struct jive_regselector {
 	jive_negotiator base;
