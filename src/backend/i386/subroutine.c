@@ -368,6 +368,10 @@ jive_i386_subroutine_prepare_stackframe_(jive_subroutine * self_, const jive_sub
 		- self->base.frame.lower_bound
 	};
 	
+	/* as long as no frame pointer is used, access to stack slots through stack
+	pointer must be relocated */
+	self->base.frame.frame_pointer_offset += self->base.frame.lower_bound;
+	
 	xfrm->value_split(xfrm, self->saved_esp.output, self->saved_esp.input, &stackptr_sub.base, &stackptr_add.base);
 }
 
