@@ -10,3 +10,4 @@ hello-world
 hello-world-gencall
 test-subroutine-convert
 test-simple-branch
+test-instr-match

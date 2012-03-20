@@ -1,55 +1,360 @@
 #include <jive/backend/i386/instrmatch.h>
 
+#include <jive/arch/address.h>
 #include <jive/arch/instruction.h>
+#include <jive/arch/regvalue.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
-#include <jive/types/bitstring/arithmetic.h>
+#include <jive/types/bitstring.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/traverser.h>
 
-static void
-match_bitbinary(jive_node * node, const jive_regselector * regselector)
+static inline bool
+is_gpr_immediate(jive_output * arg)
 {
-	const jive_register_class * regcls;
-	regcls = jive_regselector_map_output(regselector, node->outputs[0]);
-	if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
-		const jive_instruction_class * icls = 0;
-		const jive_bitbinary_operation_class * cls;
-		cls = (const jive_bitbinary_operation_class *) node->class_;
-		switch(cls->type) {
-			case jive_bitop_code_and:
-				icls = &jive_i386_instructions[jive_i386_int_and];
-				break;
-			case jive_bitop_code_or:
-				icls = &jive_i386_instructions[jive_i386_int_or];
-				break;
-			case jive_bitop_code_xor:
-				icls = &jive_i386_instructions[jive_i386_int_xor];
-				break;
-			case jive_bitop_code_sum:
-				icls = &jive_i386_instructions[jive_i386_int_add];
-				break;
-			case jive_bitop_code_product:
-				icls = &jive_i386_instructions[jive_i386_int_mul];
-				break;
-			default:
-				return;
-		};
-		
-		jive_node * add;
-		add = jive_instruction_node_create(node->region,
-			&jive_i386_instructions[jive_i386_int_add],
-			(jive_output *[]){node->inputs[0]->origin, node->inputs[1]->origin}, NULL);
-		jive_output_replace(node->outputs[0], add->outputs[0]);
+	return jive_node_isinstance(arg->node, &JIVE_REGVALUE_NODE);
+}
+
+static void
+swap(jive_output ** arg1, jive_output ** arg2)
+{
+	jive_output * tmp = *arg1;
+	*arg1 = *arg2;
+	*arg2 = tmp;
+}
+
+static void
+regvalue_to_immediate(const jive_output * regvalue, jive_immediate * imm)
+{
+	jive_node * rvnode = regvalue->node;
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(rvnode, &JIVE_REGVALUE_NODE));
+	jive_output * value = rvnode->inputs[1]->origin;
+	
+	jive_bitconstant_node * bcnode = jive_bitconstant_node_cast(value->node);
+	if (bcnode) {
+		jive_immediate_init(imm, jive_bitconstant_node_to_unsigned(bcnode), 0, 0, 0);
+		return;
 	}
+	
+	jive_label_to_bitstring_node * lbnode = jive_label_to_bitstring_node_cast(value->node);
+	if (lbnode) {
+		jive_immediate_init(imm, 0, lbnode->attrs.label, 0, 0);
+	}
+	
+	JIVE_DEBUG_ASSERT(false);
+}
+
+static void
+convert_bitbinary(jive_node * node,
+	const jive_instruction_class * regreg_icls,
+	const jive_instruction_class * regimm_icls)
+{
+	jive_output * arg1 = node->inputs[0]->origin;
+	jive_output * arg2 = node->inputs[1]->origin;
+	
+	bool commutative = (regreg_icls->flags & jive_instruction_commutative) != 0;
+	bool second_is_immediate = false;
+	if (commutative && is_gpr_immediate(arg1)) {
+		swap(&arg1, &arg2);
+		second_is_immediate = true;
+	} else if (is_gpr_immediate(arg2)) {
+		second_is_immediate = true;
+	}
+	
+	jive_node * instr;
+	
+	if (second_is_immediate) {
+		jive_immediate imm[1];
+		regvalue_to_immediate(arg2, &imm[0]);
+		instr = jive_instruction_node_create_extended(node->region,
+			regimm_icls,
+			(jive_output *[]){arg1}, imm);
+	} else {
+		instr = jive_instruction_node_create(node->region,
+			regreg_icls,
+			(jive_output *[]){arg1, arg2}, NULL);
+	}
+	
+	jive_output_replace(node->outputs[0], instr->outputs[0]);
+}
+
+static void
+convert_complex_bitbinary(jive_node * node,
+	const jive_instruction_class * icls,
+	size_t result_index)
+{
+	jive_output * arg1 = node->inputs[0]->origin;
+	jive_output * arg2 = node->inputs[1]->origin;
+	
+	jive_node * instr = jive_instruction_node_create(node->region,
+		icls,
+		(jive_output *[]){arg1, arg2}, NULL);
+	
+	jive_output_replace(node->outputs[0], instr->outputs[result_index]);
+}
+
+static void
+match_gpr_bitbinary(jive_node * node)
+{
+	const jive_bitbinary_operation_class * cls =
+		(const jive_bitbinary_operation_class *) node->class_;
+	switch (cls->type) {
+		case jive_bitop_code_and:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_and],
+				&jive_i386_instructions[jive_i386_int_and_immediate]);
+			return;
+		case jive_bitop_code_or:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_or],
+				&jive_i386_instructions[jive_i386_int_or_immediate]);
+			return;
+		case jive_bitop_code_xor:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_xor],
+				&jive_i386_instructions[jive_i386_int_xor_immediate]);
+			return;
+		case jive_bitop_code_sum:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_add],
+				&jive_i386_instructions[jive_i386_int_add_immediate]);
+			return;
+		case jive_bitop_code_difference:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_sub],
+				&jive_i386_instructions[jive_i386_int_sub_immediate]);
+			return;
+		case jive_bitop_code_product:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_mul],
+				&jive_i386_instructions[jive_i386_int_mul_immediate]);
+			return;
+		case jive_bitop_code_uhiproduct:
+			convert_complex_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_mul_expand_unsigned],
+				0);
+			break;
+		case jive_bitop_code_shiproduct:
+			convert_complex_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_mul_expand_signed],
+				0);
+			break;
+		case jive_bitop_code_uquotient:
+			JIVE_DEBUG_ASSERT(false);
+			convert_complex_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_udiv],
+				0);
+			break;
+		case jive_bitop_code_squotient:
+			JIVE_DEBUG_ASSERT(false);
+			convert_complex_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_sdiv],
+				0);
+			break;
+		case jive_bitop_code_umod:
+			JIVE_DEBUG_ASSERT(false);
+			convert_complex_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_udiv],
+				1);
+			break;
+		case jive_bitop_code_smod:
+			JIVE_DEBUG_ASSERT(false);
+			convert_complex_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_sdiv],
+				1);
+			break;
+		case jive_bitop_code_shl:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_shl],
+				&jive_i386_instructions[jive_i386_int_shl_immediate]);
+			return;
+		case jive_bitop_code_shr:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_shr],
+				&jive_i386_instructions[jive_i386_int_shr_immediate]);
+			return;
+		case jive_bitop_code_ashr:
+			convert_bitbinary(node,
+				&jive_i386_instructions[jive_i386_int_ashr],
+				&jive_i386_instructions[jive_i386_int_ashr_immediate]);
+			return;
+		case jive_bitop_code_negate:
+		case jive_bitop_code_not:
+		case jive_bitop_code_invalid:
+			JIVE_DEBUG_ASSERT(false);
+	}
+}
+
+static void
+convert_bitcmp(jive_node * node, const jive_instruction_class * jump_icls)
+{
+	jive_output * arg1 = node->inputs[0]->origin;
+	jive_output * arg2 = node->inputs[1]->origin;
+	
+	bool commutative = false;
+	bool second_is_immediate = false;
+	if (commutative && is_gpr_immediate(arg1)) {
+		swap(&arg1, &arg2);
+		second_is_immediate = true;
+	} else if (is_gpr_immediate(arg2)) {
+		second_is_immediate = true;
+	}
+	
+	second_is_immediate = false;
+	
+	jive_node * cmp_instr;
+	
+	if (second_is_immediate) {
+		jive_immediate imm[1];
+		regvalue_to_immediate(arg2, &imm[0]);
+		cmp_instr = jive_instruction_node_create_extended(node->region,
+			&jive_i386_instructions[jive_i386_int_cmp_immediate],
+			(jive_output *[]){arg1}, imm);
+	} else {
+		cmp_instr = jive_instruction_node_create(node->region,
+			&jive_i386_instructions[jive_i386_int_cmp],
+			(jive_output *[]){arg1, arg2}, NULL);
+	}
+	
+	jive_immediate imm[1];
+	jive_immediate_init(&imm[0], 0, 0, 0, 0);
+	jive_node * jump_instr = jive_instruction_node_create_extended(node->region,
+		jump_icls,
+		(jive_output *[]){cmp_instr->outputs[0]},
+		imm);
+	jive_output_replace(node->outputs[0], jump_instr->outputs[0]);
+}
+
+static void
+match_gpr_bitcmp(jive_node * node)
+{
+	const jive_bitcomparison_operation_class * cls =
+		(const jive_bitcomparison_operation_class *) node->class_;
+	switch (cls->type) {
+		case jive_bitcmp_code_equal:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_equal]);
+			break;
+		case jive_bitcmp_code_notequal:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_notequal]);
+			break;
+		case jive_bitcmp_code_sless:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_sless]);
+			break;
+		case jive_bitcmp_code_uless:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_uless]);
+			break;
+		case jive_bitcmp_code_slesseq:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_slesseq]);
+			break;
+		case jive_bitcmp_code_ulesseq:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_ulesseq]);
+			break;
+		case jive_bitcmp_code_sgreater:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_sgreater]);
+			break;
+		case jive_bitcmp_code_ugreater:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_ugreater]);
+			break;
+		case jive_bitcmp_code_sgreatereq:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_sgreatereq]);
+			break;
+		case jive_bitcmp_code_ugreatereq:
+			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_ugreatereq]);
+			break;
+		case jive_bitcmp_code_invalid:
+			JIVE_DEBUG_ASSERT(false);
+	}
+}
+
+static void
+match_gpr_bitunary(jive_node * node)
+{
+	const jive_bitunary_operation_class * cls =
+		(const jive_bitunary_operation_class *) node->class_;
+	const jive_instruction_class * icls = 0;
+	switch (cls->type) {
+		case jive_bitop_code_and:
+		case jive_bitop_code_or:
+		case jive_bitop_code_xor:
+		case jive_bitop_code_sum:
+		case jive_bitop_code_difference:
+		case jive_bitop_code_product:
+		case jive_bitop_code_uhiproduct:
+		case jive_bitop_code_shiproduct:
+		case jive_bitop_code_uquotient:
+		case jive_bitop_code_squotient:
+		case jive_bitop_code_umod:
+		case jive_bitop_code_smod:
+		case jive_bitop_code_shl:
+		case jive_bitop_code_shr:
+		case jive_bitop_code_ashr:
+			JIVE_DEBUG_ASSERT(false);
+		case jive_bitop_code_negate:
+			icls = &jive_i386_instructions[jive_i386_int_neg];
+			break;
+		case jive_bitop_code_not:
+			icls = &jive_i386_instructions[jive_i386_int_not];
+			break;
+		case jive_bitop_code_invalid:
+			JIVE_DEBUG_ASSERT(false);
+	}
+	jive_node * instr = jive_instruction_node_create(node->region,
+		icls,
+		(jive_output *[]){node->inputs[0]->origin}, NULL);
+	
+	jive_output_replace(node->outputs[0], instr->outputs[0]);
+}
+
+static void
+match_gpr_immediate(jive_node * node)
+{
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(node, &JIVE_REGVALUE_NODE));
+	
+	jive_immediate imm[1];
+	regvalue_to_immediate(node->outputs[0], &imm[0]);
+	
+	jive_node * instr = jive_instruction_node_create_extended(node->region,
+		&jive_i386_instructions[jive_i386_int_load_imm],
+		NULL, imm);
+	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_node_add_input(instr, ctl, node->inputs[0]->origin);
+	
+	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }
 
 static void
 match_single(jive_node * node, const jive_regselector * regselector)
 {
 	if (jive_node_isinstance(node, &JIVE_BITBINARY_NODE)) {
-		match_bitbinary(node, regselector);
+		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
+		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+			match_gpr_bitbinary(node);
+		} else {
+			JIVE_DEBUG_ASSERT(false);
+		}
+	} else if (jive_node_isinstance(node, &JIVE_BITUNARY_NODE)) {
+		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
+		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+			match_gpr_bitunary(node);
+		} else {
+			JIVE_DEBUG_ASSERT(false);
+		}
+	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
+		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[0]);
+		if (true || (regcls == &jive_i386_regcls[jive_i386_gpr])) {
+			match_gpr_bitcmp(node);
+		} else {
+			JIVE_DEBUG_ASSERT(false);
+		}
+	} else if (jive_node_isinstance(node, &JIVE_REGVALUE_NODE)) {
+		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
+		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+			match_gpr_immediate(node);
+		} else {
+			JIVE_DEBUG_ASSERT(false);
+		}
 	}
 }
 
