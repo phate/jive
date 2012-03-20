@@ -63,6 +63,14 @@ jive_seq_point_attach_label(jive_seq_point * self, jive_label_internal * label, 
 	self->attached_labels.items[self->attached_labels.nitems++] = label;
 }
 
+static bool
+is_active_control(jive_input * input)
+{
+	if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+		return false;
+	return ((jive_control_output *)input->origin)->active;
+}
+
 static jive_seq_region *
 sequentialize_region(jive_seq_graph * seq, jive_seq_point * before, jive_bottomup_region_traverser * region_trav, jive_region * region)
 {
@@ -107,7 +115,7 @@ sequentialize_region(jive_seq_graph * seq, jive_seq_point * before, jive_bottomu
 		jive_input * control_input = 0;
 		for(n = 0; n < node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
-			if (jive_input_isinstance(input, &JIVE_CONTROL_INPUT)) {
+			if (is_active_control(input)) {
 				control_input = input;
 				break;
 			}
