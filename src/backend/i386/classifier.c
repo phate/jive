@@ -13,7 +13,7 @@ jive_i386_classify_type_(const jive_type * type, const jive_resource_class * res
 	else if (rescls == &jive_i386_regcls[jive_i386_flags].base)
 		return (1 << jive_i386_flags);
 	
-	return 0;
+	return (1 << jive_i386_gpr) | (1 << jive_i386_flags);
 }
 
 static jive_regselect_mask
