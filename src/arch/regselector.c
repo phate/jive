@@ -114,6 +114,16 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = jive_reg_classifier_classify_fixed_arithmetic(self->classifier, cls->type, type->nbits);
 		
 		jive_negotiator_annotate_identity_node(&self->base, node, &option.base);
+	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
+		jive_regselector_option option;
+		const jive_bitstring_type * type;
+		type = (const jive_bitstring_type *) jive_input_get_type(node->inputs[0]);
+		
+		const jive_bitcomparison_operation_class * cls;
+		cls = (const jive_bitcomparison_operation_class *) node->class_;
+		option.mask = jive_reg_classifier_classify_fixed_compare(self->classifier, cls->type, type->nbits);
+		
+		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option.base);
 	}
 }
 
