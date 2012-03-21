@@ -18,8 +18,8 @@ extern const jive_node_class JIVE_THETA_NODE;
 struct jive_output * const *
 jive_choose(struct jive_output * predicate,
 	size_t nvalues, const struct jive_type * types[const],
-	struct jive_output * false_values[const],
-	struct jive_output * true_values[const]);
+	struct jive_output * true_values[const],
+	struct jive_output * false_values[const]);
 
 struct jive_node *
 jive_gamma_create(

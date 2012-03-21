@@ -167,15 +167,15 @@ jive_gamma_tail_node_create(jive_region * region)
 static jive_node *
 jive_gamma_node_create(jive_region * region,
 	jive_output * predicate,
-	jive_output * false_alternative,
-	jive_output * true_alternative)
+	jive_output * true_alternative,
+	jive_output * false_alternative)
 {
 	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	self->class_ = &JIVE_GAMMA_NODE;
 	jive_node_init_(self, region,
-		3, (const jive_type *[]){anchor, anchor, ctl}, (jive_output *[]){false_alternative, true_alternative, predicate},
+		3, (const jive_type *[]){anchor, anchor, ctl}, (jive_output *[]){true_alternative, false_alternative, predicate},
 		0, NULL);
 	
 	return self;
