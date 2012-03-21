@@ -40,7 +40,7 @@ int main()
 	
 	jive_output * max = *jive_choose(bge->outputs[0], 1,
 		(const jive_type *[]){bits32},
-		(jive_output *[]){p1}, (jive_output *[]){p2});
+		(jive_output *[]){p2}, (jive_output *[]){p1});
 	
 	jive_subroutine_value_return(subroutine, 0, max);
 	
