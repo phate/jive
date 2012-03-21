@@ -1027,7 +1027,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.write_asm = jive_i386_asm_regimm,
 		.inregs = intreg_param,
 		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
-		.flags = jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+		.flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0x81 
 	},
