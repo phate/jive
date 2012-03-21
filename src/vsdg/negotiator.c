@@ -634,8 +634,8 @@ jive_negotiator_annotate_gate(jive_negotiator * self, jive_gate * gate)
 
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity(jive_negotiator * self,
-	jive_input * const inputs[], size_t ninputs,
-	jive_output * const outputs[], size_t noutputs,
+	size_t ninputs, jive_input * const inputs[],
+	size_t noutputs, jive_output * const outputs[],
 	const jive_negotiator_option * option)
 {
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
@@ -672,7 +672,7 @@ jive_negotiator_annotate_identity_node(jive_negotiator * self, jive_node * node,
 	while(noutputs < node->noutputs && !node->outputs[noutputs]->gate)
 		noutputs ++;
 	jive_negotiator_constraint * constraint;
-	constraint = jive_negotiator_annotate_identity(self, node->inputs, ninputs, node->outputs, noutputs, option);
+	constraint = jive_negotiator_annotate_identity(self, ninputs, node->inputs, noutputs, node->outputs, option);
 	constraint->hash_key.node = node;
 	jive_negotiator_node_hash_insert(&self->node_map, constraint);
 	

@@ -281,6 +281,12 @@ void
 jive_negotiator_remove_split_nodes(jive_negotiator * self);
 
 jive_negotiator_constraint *
+jive_negotiator_annotate_identity(jive_negotiator * self,
+	size_t ninputs, struct jive_input * const inputs[],
+	size_t noutputs, struct jive_output * const outputs[],
+	const jive_negotiator_option * option);
+
+jive_negotiator_constraint *
 jive_negotiator_annotate_identity_node(jive_negotiator * self, struct jive_node * node, const jive_negotiator_option * option);
 
 void
