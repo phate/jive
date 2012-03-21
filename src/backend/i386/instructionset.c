@@ -307,33 +307,6 @@ jive_i386_encode_mull(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_idiv_reg(const jive_instruction_class * icls,
-	jive_buffer * target,
-	const jive_register_name * inputs[],
-	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
-	jive_instruction_encoding_flags * flags)
-{
-	jive_buffer_putstr(target, icls->mnemonic);
-	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[3]->base.name);
-}
-
-static void
-jive_i386_encode_idiv_reg(const jive_instruction_class * icls,
-	jive_buffer * target,
-	const jive_register_name * inputs[],
-	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
-	jive_instruction_encoding_flags * flags)
-{
-	int r3 = inputs[3]->code;
-
-	jive_buffer_putbyte(target, 0xf7);
-	jive_buffer_putbyte(target, 0xf8|r3);
-}
-
-static void
 jive_i386_asm_div_reg(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -343,7 +316,7 @@ jive_i386_asm_div_reg(const jive_instruction_class * icls,
 {
 	jive_buffer_putstr(target, icls->mnemonic);
 	jive_buffer_putstr(target, "\t%");
-	jive_buffer_putstr(target, inputs[3]->base.name);
+	jive_buffer_putstr(target, inputs[2]->base.name);
 }
 
 static void
@@ -354,10 +327,10 @@ jive_i386_encode_div_reg(const jive_instruction_class * icls,
 	const jive_immediate immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	int r3 = inputs[3]->code;
+	int r = inputs[2]->code;
 
 	jive_buffer_putbyte(target, 0xf7);
-	jive_buffer_putbyte(target, 0xf0|r3);
+	jive_buffer_putbyte(target, icls->code | r);
 }
 
 static void
@@ -841,15 +814,15 @@ const jive_instruction_class jive_i386_instructions[] = {
 	[jive_i386_int_sdiv] = {
 		.name = "int_sdiv",
 		.mnemonic = "idivl",
-		.encode = jive_i386_encode_idiv_reg,
-		.write_asm = jive_i386_asm_idiv_reg,
+		.encode = jive_i386_encode_div_reg,
+		.write_asm = jive_i386_asm_div_reg,
 		.inregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_gpr_edx],
 			&jive_i386_regcls[jive_i386_gpr_eax], &jive_i386_regcls[jive_i386_gpr]},
 		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_gpr_edx],
 			&jive_i386_regcls[jive_i386_gpr_eax], &jive_i386_regcls[jive_i386_flags]}, 
 		.flags = jive_instruction_flags_none,
 		.ninputs = 3, .noutputs = 3, .nimmediates = 0,
-		.code = 0xf8f7 
+		.code = 0xf8
 	},
 	[jive_i386_int_udiv] = {
 		.name = "int_udiv",
@@ -862,7 +835,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 			&jive_i386_regcls[jive_i386_gpr_eax], &jive_i386_regcls[jive_i386_flags]},
 		.flags = jive_instruction_flags_none,
 		.ninputs = 3, .noutputs = 3, .nimmediates = 0,
-		.code = 0xf0f7
+		.code = 0xf0
 	},
 	
 	/* for the immediate instructions, code consists of normal_code | (eax_code << 8),

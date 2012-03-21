@@ -30,12 +30,10 @@ compile_graph(jive_graph * graph)
 	jive_shaped_graph_destroy(shaped_graph);
 	
 	jive_buffer buffer;
-	#if 0
 	jive_buffer_init(&buffer, graph->context);
 	jive_graph_generate_assembler(graph, &buffer);
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
-	#endif
 	
 	jive_buffer_init(&buffer, graph->context);
 	jive_graph_generate_code(graph, &buffer);
@@ -343,13 +341,17 @@ ref_mulshi(uint32_t a, uint32_t b)
 	return r >> (32ULL);
 }
 
-#if 0
 static uint32_t
 ref_udiv(uint32_t a, uint32_t b) { return a / b; }
 
 static uint32_t
 ref_sdiv(uint32_t a, uint32_t b) { return (int32_t)a / (int32_t)b; }
-#endif
+
+static uint32_t
+ref_umod(uint32_t a, uint32_t b) { return a % b; }
+
+static uint32_t
+ref_smod(uint32_t a, uint32_t b) { return (int32_t)a % (int32_t)b; }
 
 static uint32_t
 ref_shr(uint32_t a, uint32_t b) { return a >> b; }
@@ -423,10 +425,10 @@ int main()
 	verify_bin_function(ref_mul, wrap_bitmultiply, true);
 	verify_bin_function(ref_muluhi, jive_bituhiproduct, true);
 	verify_bin_function(ref_mulshi, jive_bitshiproduct, true);
-	#if 0
 	verify_bin_function(ref_udiv, jive_bituquotient, false);
 	verify_bin_function(ref_sdiv, jive_bitsquotient, false);
-	#endif
+	verify_bin_function(ref_umod, jive_bitumod, false);
+	verify_bin_function(ref_smod, jive_bitsmod, false);
 	verify_bin_function(ref_shr, jive_bitshr, true);
 	verify_bin_function(ref_ashr, jive_bitashr, true);
 	verify_bin_function(ref_shl, jive_bitshl, true);

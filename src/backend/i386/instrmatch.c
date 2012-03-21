@@ -3,6 +3,7 @@
 #include <jive/arch/address.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/regvalue.h>
+#include <jive/arch/subroutine.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
@@ -81,6 +82,44 @@ convert_bitbinary(jive_node * node,
 }
 
 static void
+convert_divmod(jive_node * node, bool sign, size_t index)
+{
+	jive_output * arg1 = node->inputs[0]->origin;
+	jive_output * arg2 = node->inputs[1]->origin;
+	
+	jive_output * ext;
+	const jive_instruction_class * icls;
+	if (sign) {
+		jive_immediate imm[1];
+		jive_immediate_init(&imm[0], 31, 0, 0, 0);
+		jive_node * tmp = jive_instruction_node_create_extended(node->region,
+			&jive_i386_instructions[jive_i386_int_ashr_immediate],
+			(jive_output *[]){arg1}, imm);
+		
+		ext = tmp->outputs[0];
+		icls = &jive_i386_instructions[jive_i386_int_sdiv];
+	} else {
+		jive_immediate imm[1];
+		jive_immediate_init(&imm[0], 0, 0, 0, 0);
+		jive_node * tmp = jive_instruction_node_create_extended(node->region,
+			&jive_i386_instructions[jive_i386_int_load_imm],
+			NULL, imm);
+		
+		jive_subroutine * sub = jive_region_get_subroutine(node->region);
+		JIVE_DECLARE_CONTROL_TYPE(ctl);
+		jive_node_add_input(tmp, ctl, sub->enter->base.outputs[0]);
+		
+		ext = tmp->outputs[0];
+		icls = &jive_i386_instructions[jive_i386_int_udiv];
+	}
+	
+	jive_node * instr = jive_instruction_node_create_extended(node->region,
+		icls, (jive_output *[]){ext, arg1, arg2}, NULL);
+	
+	jive_output_replace(node->outputs[0], instr->outputs[index]);
+}
+
+static void
 convert_complex_bitbinary(jive_node * node,
 	const jive_instruction_class * icls,
 	size_t result_index)
@@ -142,28 +181,16 @@ match_gpr_bitbinary(jive_node * node)
 				0);
 			break;
 		case jive_bitop_code_uquotient:
-			JIVE_DEBUG_ASSERT(false);
-			convert_complex_bitbinary(node,
-				&jive_i386_instructions[jive_i386_int_udiv],
-				0);
+			convert_divmod(node, false, 1);
 			break;
 		case jive_bitop_code_squotient:
-			JIVE_DEBUG_ASSERT(false);
-			convert_complex_bitbinary(node,
-				&jive_i386_instructions[jive_i386_int_sdiv],
-				0);
+			convert_divmod(node, true, 1);
 			break;
 		case jive_bitop_code_umod:
-			JIVE_DEBUG_ASSERT(false);
-			convert_complex_bitbinary(node,
-				&jive_i386_instructions[jive_i386_int_udiv],
-				1);
+			convert_divmod(node, false, 0);
 			break;
 		case jive_bitop_code_smod:
-			JIVE_DEBUG_ASSERT(false);
-			convert_complex_bitbinary(node,
-				&jive_i386_instructions[jive_i386_int_sdiv],
-				1);
+			convert_divmod(node, true, 0);
 			break;
 		case jive_bitop_code_shl:
 			convert_bitbinary(node,
