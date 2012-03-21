@@ -155,10 +155,9 @@ typedef enum {
 
 typedef enum {
 	jive_instruction_encoding_flags_none = 0,
-	/* if branch, primary target is not subsequent instruction */
-	jive_instruction_encoding_flags_primary_branch_target = (1<<1),
-	/* if branch, secondary target is not subsequent instruction */
-	jive_instruction_encoding_flags_secondary_branch_target = (1<<2),
+	/* instruction is a conditional branch, and its decision logic
+	is to be inverted during codegen */
+	jive_instruction_encoding_flags_jump_conditional_invert = 1,
 	
 	/* the following flags may be updated by instruction encoding itself
 	

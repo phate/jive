@@ -218,6 +218,9 @@ generate_code_for_instruction(jive_seq_point * seq_point,
 {
 	const jive_instruction_class * icls = instr->icls;
 	
+	if ( (*flags & jive_instruction_encoding_flags_jump_conditional_invert) )
+		icls = icls->inverse_jump;
+	
 	jive_immediate immediates[icls->nimmediates];
 	size_t n;
 	for (n = 0; n < icls->nimmediates; ++n)
@@ -234,7 +237,7 @@ generate_code_for_instruction(jive_seq_point * seq_point,
 	
 	jive_instruction_encoding_flags iflags;
 	iflags = (jive_instruction_encoding_flags) *flags;
-	icls->encode(instr->icls, buffer, instr->inputs, instr->outputs, immediates, &iflags);
+	icls->encode(icls, buffer, instr->inputs, instr->outputs, immediates, &iflags);
 	*flags = (uint32_t) iflags;
 }
 
@@ -358,6 +361,16 @@ jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * se
 		secondary_tgt = jive_label_region_end_create(region);
 	}
 	
+	if ( (inode->attrs.icls->flags & jive_instruction_jump_conditional_invertible) ) {
+		jive_seq_point * sp = jive_label_internal_get_attach_node(
+			(jive_label_internal *) primary_tgt, seq_graph);
+		if (sp == seq_node->base.seqpoint_list.next) {
+			primary_tgt = secondary_tgt;
+			secondary_tgt = 0;
+			seq_node->flags |= jive_instruction_encoding_flags_jump_conditional_invert;
+		}
+	}
+	
 	inode->attrs.immediates[0].add_label = primary_tgt;
 	
 	if (secondary_tgt) {
@@ -478,6 +491,9 @@ static void
 jive_instruction_generate_assembler(const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
 {
 	const jive_instruction_class * icls = instr->icls;
+	if ( (*flags & jive_instruction_encoding_flags_jump_conditional_invert) )
+		icls = icls->inverse_jump;
+	
 	jive_buffer_putstr(buffer, "\t");
 	if (icls->write_asm) {
 		jive_instruction_encoding_flags iflags;
