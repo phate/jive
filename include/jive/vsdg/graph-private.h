@@ -89,7 +89,7 @@ jive_graph_notify_node_create(jive_graph * graph, jive_node * node)
 static inline void
 jive_graph_notify_node_destroy(jive_graph * graph, jive_node * node)
 {
-	jive_node_notifier_slot_call(&graph->on_node_create, node);
+	jive_node_notifier_slot_call(&graph->on_node_destroy, node);
 }
 
 static inline void

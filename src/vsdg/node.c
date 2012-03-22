@@ -85,8 +85,6 @@ jive_node_fini_(jive_node * self)
 	jive_context * context = self->graph->context;
 	JIVE_DEBUG_ASSERT(self->region);
 	
-	jive_node_notifier_slot_call(&self->graph->on_node_destroy, self);
-	
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	
 	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
