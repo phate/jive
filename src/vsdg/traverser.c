@@ -269,6 +269,84 @@ jive_bottomup_revisit_traverser_create(jive_graph * graph)
 	return &self->base;
 }
 
+/* cone traversers */
+
+static void
+jive_upward_cone_traverser_node_destroy(void * closure, jive_node * node)
+{
+	jive_full_traverser * self = (jive_full_traverser *) closure;
+	
+	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker, node);
+	
+	if (state != jive_traversal_nodestate_frontier)
+		return;
+	
+	size_t n;
+	for (n = 0; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		jive_bottomup_traverser_check_node(self, input->origin->node);
+	}
+}
+
+static void
+jive_upward_cone_traverser_input_change(void * closure, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+{
+	jive_full_traverser * self = (jive_full_traverser *) closure;
+	
+	/* for node of new origin, it may now belong to the cone */
+	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker, input->node);
+	if (state != jive_traversal_nodestate_ahead) {
+		state = jive_traversal_tracker_get_nodestate(&self->tracker, new_origin->node);
+		if (state == jive_traversal_nodestate_ahead)
+			jive_traversal_tracker_set_nodestate(&self->tracker, new_origin->node, jive_traversal_nodestate_frontier);
+	}
+	
+	/* for node of old origin, it may cease to belong to the cone */
+	state = jive_traversal_tracker_get_nodestate(&self->tracker, old_origin->node);
+	if (state == jive_traversal_nodestate_frontier) {
+		size_t n;
+		for (n = 0; n < old_origin->node->noutputs; n++) {
+			jive_output * output = old_origin->node->outputs[n];
+			jive_input * user;
+			JIVE_LIST_ITERATE(output->users, user, output_users_list) {
+				if (user == input)
+					continue;
+				state = jive_traversal_tracker_get_nodestate(&self->tracker, user->node);
+				if (state != jive_traversal_nodestate_ahead)
+					return;
+			}
+		}
+		jive_traversal_tracker_set_nodestate(&self->tracker, old_origin->node, jive_traversal_nodestate_ahead);
+	}
+}
+
+const jive_traverser_class JIVE_UPWARD_CONE_TRAVERSER = {
+	.fini = &jive_full_traverser_fini,
+	.next = &jive_bottomup_traverser_next,
+};
+
+static void
+jive_upward_cone_traverser_init(jive_full_traverser * self, jive_graph * graph, jive_node * node)
+{
+	self->base.class_ = &JIVE_UPWARD_CONE_TRAVERSER;
+	jive_full_traverser_init(self, graph);
+	
+	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
+	
+	/* self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create, jive_bottomup_traverser_node_create, self); */
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_upward_cone_traverser_node_destroy, self);
+	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_upward_cone_traverser_input_change, self);
+}
+
+jive_traverser *
+jive_upward_cone_traverser_create(jive_node * node)
+{
+	jive_graph * graph = node->region->graph;
+	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_upward_cone_traverser_init(self, graph, node);
+	return &self->base;
+}
+
 typedef struct jive_bottomup_slave_traverser jive_bottomup_slave_traverser;
 typedef struct jive_region_traverser_hash jive_region_traverser_hash;
 JIVE_DECLARE_HASH_TYPE(jive_region_traverser_hash, jive_bottomup_slave_traverser, const jive_region *, region, hash_chain);

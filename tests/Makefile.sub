@@ -11,6 +11,7 @@ TESTS=\
 	test_typemismatch\
 	test_rangemap\
 	test_negotiator\
+	test-cone-traverser\
 
 # 	test_resource\
 # 	test_interference\

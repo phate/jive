@@ -26,6 +26,9 @@ jive_bottomup_traverser_create(struct jive_graph * graph);
 jive_traverser *
 jive_bottomup_revisit_traverser_create(struct jive_graph * graph);
 
+jive_traverser *
+jive_upward_cone_traverser_create(struct jive_node * node);
+
 typedef struct jive_bottomup_region_traverser jive_bottomup_region_traverser;
 
 void
