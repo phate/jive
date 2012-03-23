@@ -220,16 +220,7 @@ convert_bitcmp(jive_node * node, const jive_instruction_class * jump_icls)
 	jive_output * arg1 = node->inputs[0]->origin;
 	jive_output * arg2 = node->inputs[1]->origin;
 	
-	bool commutative = false;
-	bool second_is_immediate = false;
-	if (commutative && is_gpr_immediate(arg1)) {
-		swap(&arg1, &arg2);
-		second_is_immediate = true;
-	} else if (is_gpr_immediate(arg2)) {
-		second_is_immediate = true;
-	}
-	
-	second_is_immediate = false;
+	bool second_is_immediate = is_gpr_immediate(arg2);
 	
 	jive_node * cmp_instr;
 	
