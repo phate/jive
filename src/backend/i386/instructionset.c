@@ -1029,7 +1029,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
 		.flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
-		.code = 0x81 
+		.code = 0xf8 | (0x3d << 8)
 	},
 	[jive_i386_int_jump_sless] = {
 		.name = "int_jump_sless",
