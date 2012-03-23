@@ -190,6 +190,26 @@ generate_bin_cmp_function_curryleft(jive_context * ctx, bin_op_factory_t factory
 	return function;
 }
 
+static un_function_t
+generate_bin_cmp_function_curryright(jive_context * ctx, bin_op_factory_t factory, uint32_t op2)
+{
+	un_graph u = prepare_un_graph(ctx);
+	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
+	jive_output * pred = factory(u.arg, c);
+	jive_output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
+	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
+	
+	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_output * result = *jive_choose(pred,
+		1, (const jive_type *[]){bits32},
+		&one, &zero);
+	jive_subroutine_value_return(u.sub, 0, result);
+	un_function_t function = (un_function_t) compile_graph(u.graph);
+	
+	assert(jive_context_is_empty(ctx));
+	return function;
+}
+
 static uint32_t ops[] = { 0, 1, 2, 3, 31, 32, 256, 65535, 65536, (uint32_t) -256, (uint32_t) -1 };
 
 static void
@@ -294,14 +314,17 @@ verify_bin_cmp_function(bin_function_t ref, bin_op_factory_t factory)
 	bin_function_t f = generate_bin_cmp_function(ctx, factory);
 	exercise_bin_function(ref, f, true);
 	
-	if (false) {
-		/* currently broken due to missing gamma normalization! */
-		size_t n;
-		for (n = 0; n < sizeof(ops)/sizeof(ops[0]); ++n) {
-			uint32_t op1 = ops[n];
-			un_function_t fl = generate_bin_cmp_function_curryleft(ctx, factory, op1);
-			exercise_bin_function_curryleft(ref, fl, op1, true);
-		}
+	size_t n;
+	for (n = 0; n < sizeof(ops)/sizeof(ops[0]); ++n) {
+		uint32_t op1 = ops[n];
+		un_function_t fl = generate_bin_cmp_function_curryleft(ctx, factory, op1);
+		exercise_bin_function_curryleft(ref, fl, op1, true);
+	}
+	
+	for (n = 0; n < sizeof(ops)/sizeof(ops[0]); ++n) {
+		uint32_t op2 = ops[n];
+		un_function_t fr = generate_bin_cmp_function_curryright(ctx, factory, op2);
+		exercise_bin_function_curryright(ref, fr, op2);
 	}
 	
 	assert(jive_context_is_empty(ctx));
