@@ -159,9 +159,10 @@ generate_bin_cmp_function(jive_context * ctx, bin_op_factory_t factory)
 	jive_output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	jive_output * result = *jive_choose(pred,
+	jive_output * result;
+	jive_gamma(pred,
 		1, (const jive_type *[]){bits32},
-		&one, &zero);
+		&one, &zero, &result);
 	
 	jive_subroutine_value_return(b.sub, 0, result);
 	bin_function_t function = (bin_function_t) compile_graph(b.graph);
@@ -180,9 +181,10 @@ generate_bin_cmp_function_curryleft(jive_context * ctx, bin_op_factory_t factory
 	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	jive_output * result = *jive_choose(pred,
+	jive_output * result;
+	jive_gamma(pred,
 		1, (const jive_type *[]){bits32},
-		&one, &zero);
+		&one, &zero, &result);
 	jive_subroutine_value_return(u.sub, 0, result);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	
@@ -200,9 +202,10 @@ generate_bin_cmp_function_curryright(jive_context * ctx, bin_op_factory_t factor
 	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	jive_output * result = *jive_choose(pred,
+	jive_output * result;
+	jive_gamma(pred,
 		1, (const jive_type *[]){bits32},
-		&one, &zero);
+		&one, &zero, &result);
 	jive_subroutine_value_return(u.sub, 0, result);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	

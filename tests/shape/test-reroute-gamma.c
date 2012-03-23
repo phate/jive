@@ -53,10 +53,11 @@ int main()
 		1, (const jive_type *[]){type}, n1->outputs,
 		4, (const jive_type *[]){type, type, type, control_type});
 	
-	jive_node * n5 = jive_gamma_create(
-		r1, n2->outputs[3],
+	jive_output * tmp;
+	jive_gamma(n2->outputs[3],
 		1, (const jive_type *[]){type},
-		(jive_output *[]){n2->outputs[0]}, (jive_output *[]){n2->outputs[1]});
+		(jive_output *[]){n2->outputs[0]}, (jive_output *[]){n2->outputs[1]}, &tmp);
+	jive_node * n5 = tmp->node;
 	
 	jive_node * n3 = n5->inputs[0]->origin->node;
 	jive_node * n4 = n5->inputs[1]->origin->node;

@@ -12,19 +12,12 @@ struct jive_region;
 extern const jive_node_class JIVE_GAMMA_TAIL_NODE;
 extern const jive_node_class JIVE_GAMMA_NODE;
 
-struct jive_output * const *
-jive_choose(struct jive_output * predicate,
-	size_t nvalues, const struct jive_type * types[const],
+void
+jive_gamma(struct jive_output * predicate,
+	size_t nvalues, const struct jive_type * const types[],
 	struct jive_output * const true_values[],
-	struct jive_output * const false_values[const]);
-
-struct jive_node *
-jive_gamma_create(
-	struct jive_region * region,
-	struct jive_output * predicate,
-	size_t nvalues, const struct jive_type * types[const],
-	struct jive_output * const true_values[],
-	struct jive_output * const false_values[]);
+	struct jive_output * const false_values[],
+	struct jive_output * results[]);
 
 /* normal form */
 

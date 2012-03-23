@@ -111,11 +111,11 @@ jive_gamma_node_create(jive_region * region,
 	return self;
 }
 
-jive_node *
+static jive_node *
 jive_gamma_create(
 	jive_region * region,
 	jive_output * predicate,
-	size_t nvalues, const jive_type * types[const],
+	size_t nvalues, const jive_type * const types[],
 	jive_output * const true_values[],
 	jive_output * const false_values[])
 {
@@ -137,12 +137,15 @@ jive_gamma_create(
 	return gamma;
 }
 
-jive_output * const *
-jive_choose(jive_output * predicate,
-	size_t nvalues, const jive_type * types[const],
-	jive_output * const true_values[],
-	jive_output * const false_values[])
+void
+jive_gamma(struct jive_output * predicate,
+	size_t nvalues, const struct jive_type * const types[],
+	struct jive_output * const true_values[],
+	struct jive_output * const false_values[],
+	struct jive_output * results[])
 {
+	size_t n;
+	
 	jive_graph * graph = predicate->node->region->graph;
 	jive_gamma_normal_form * nf;
 	nf = (jive_gamma_normal_form *) jive_graph_get_nodeclass_form(graph,
@@ -151,20 +154,29 @@ jive_choose(jive_output * predicate,
 	if (nf->base.enable_mutable) {
 		if (nf->enable_predicate_reduction) {
 			if (predicate->node->class_ == &JIVE_CONTROL_TRUE_NODE) {
-				return true_values;
+				for (n = 0; n < nvalues; ++n)
+					results[n] = true_values[n];
+				return;
 			} else if (predicate->node->class_ == &JIVE_CONTROL_FALSE_NODE) {
-				return false_values;
+				for (n = 0; n < nvalues; ++n)
+					results[n] = false_values[n];
+				return;
 			}
 		}
 	}
+	
 	jive_output * tmp[nvalues * 2 + 1];
-	size_t n;
 	tmp[0] = predicate;
-	for(n = 0; n < nvalues; n++) tmp[n + 1] = false_values[n];
-	for(n = 0; n < nvalues; n++) tmp[n + nvalues + 1] = true_values[n];
+	for (n = 0; n < nvalues; n++)
+		tmp[n + 1] = false_values[n];
+	for (n = 0; n < nvalues; n++)
+		tmp[n + nvalues + 1] = true_values[n];
 	jive_region * region = jive_region_innermost(nvalues * 2 + 1, tmp);
 	
-	return jive_gamma_create(region, predicate, nvalues, types, true_values, false_values)->outputs;
+	jive_node * node = jive_gamma_create(region, predicate, nvalues, types, true_values, false_values);
+	
+	for (n = 0; n < nvalues; ++n)
+		results[n] = node->outputs[n];
 }
 
 typedef struct jive_level_nodes jive_level_nodes;

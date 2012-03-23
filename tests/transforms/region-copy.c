@@ -22,10 +22,11 @@ int main()
 		3, (const jive_type *[]){type, type, control_type});
 	r1->top = top;
 	
-	jive_node * gamma = jive_gamma_create(r1,
-		top->outputs[2],
+	jive_output * tmp;
+	jive_gamma(top->outputs[2],
 		1, (const jive_type *[]){type},
-		&top->outputs[0], &top->outputs[1]);
+		&top->outputs[0], &top->outputs[1], &tmp);
+	jive_node * gamma = tmp->node;
 	
 	jive_node * bottom = jive_node_create(r1,
 		1, (const jive_type *[]){type}, &gamma->outputs[0],
