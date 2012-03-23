@@ -215,12 +215,22 @@ match_gpr_bitbinary(jive_node * node)
 }
 
 static void
-convert_bitcmp(jive_node * node, const jive_instruction_class * jump_icls)
+convert_bitcmp(jive_node * node, const jive_instruction_class * jump_icls, const jive_instruction_class * inv_jump_icls)
 {
 	jive_output * arg1 = node->inputs[0]->origin;
 	jive_output * arg2 = node->inputs[1]->origin;
 	
 	bool second_is_immediate = is_gpr_immediate(arg2);
+	if (!second_is_immediate) {
+		bool first_is_immediate = is_gpr_immediate(arg1);
+		if (first_is_immediate) {
+			jive_output * tmp = arg1;
+			arg1 = arg2;
+			arg2 = tmp;
+			jump_icls = inv_jump_icls;
+			second_is_immediate = first_is_immediate;
+		}
+	}
 	
 	jive_node * cmp_instr;
 	
@@ -252,34 +262,54 @@ match_gpr_bitcmp(jive_node * node)
 		(const jive_bitcomparison_operation_class *) node->class_;
 	switch (cls->type) {
 		case jive_bitcmp_code_equal:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_equal]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_equal],
+				&jive_i386_instructions[jive_i386_int_jump_equal]);
 			break;
 		case jive_bitcmp_code_notequal:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_notequal]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_notequal],
+				&jive_i386_instructions[jive_i386_int_jump_notequal]);
 			break;
 		case jive_bitcmp_code_sless:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_sless]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_sless],
+				&jive_i386_instructions[jive_i386_int_jump_sgreater]);
 			break;
 		case jive_bitcmp_code_uless:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_uless]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_uless],
+				&jive_i386_instructions[jive_i386_int_jump_ugreater]);
 			break;
 		case jive_bitcmp_code_slesseq:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_slesseq]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_slesseq],
+				&jive_i386_instructions[jive_i386_int_jump_sgreatereq]);
 			break;
 		case jive_bitcmp_code_ulesseq:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_ulesseq]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_ulesseq],
+				&jive_i386_instructions[jive_i386_int_jump_ugreatereq]);
 			break;
 		case jive_bitcmp_code_sgreater:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_sgreater]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_sgreater],
+				&jive_i386_instructions[jive_i386_int_jump_sless]);
 			break;
 		case jive_bitcmp_code_ugreater:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_ugreater]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_ugreater],
+				&jive_i386_instructions[jive_i386_int_jump_uless]);
 			break;
 		case jive_bitcmp_code_sgreatereq:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_sgreatereq]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_sgreatereq],
+				&jive_i386_instructions[jive_i386_int_jump_slesseq]);
 			break;
 		case jive_bitcmp_code_ugreatereq:
-			convert_bitcmp(node, &jive_i386_instructions[jive_i386_int_jump_ugreatereq]);
+			convert_bitcmp(node,
+				&jive_i386_instructions[jive_i386_int_jump_ugreatereq],
+				&jive_i386_instructions[jive_i386_int_jump_ulesseq]);
 			break;
 		case jive_bitcmp_code_invalid:
 			JIVE_DEBUG_ASSERT(false);
