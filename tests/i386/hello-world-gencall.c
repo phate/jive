@@ -84,7 +84,6 @@ int main()
 	jive_node_reserve(str_name);
 	
 	jive_label * str_label = jive_objdef_node_cast(str_name)->attrs.start;
-	jive_label * str_end_label = jive_objdef_node_cast(str_name)->attrs.end;
 	
 	jive_label_external write_label;
 	jive_label_external_init(&write_label, ctx, "write", (intptr_t) &write);
@@ -103,7 +102,7 @@ int main()
 		0, &imm);
 	jive_node_add_input(load_str_addr, control_type, control);
 	
-	jive_immediate_init(&imm, 0, str_end_label, str_label, NULL);
+	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instructions[jive_i386_int_load_imm],
