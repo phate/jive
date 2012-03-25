@@ -50,8 +50,7 @@ jive_reg_classifier_classify_fixed_compare(const jive_reg_classifier * self,
 }
 
 JIVE_EXPORTED_INLINE jive_regselect_mask
-jive_reg_classifier_classify_address(const jive_reg_classifier * self,
-	jive_bitop_code op, size_t nbits)
+jive_reg_classifier_classify_address(const jive_reg_classifier * self)
 {
 	return self->classify_address();
 }

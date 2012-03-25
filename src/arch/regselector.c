@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include <jive/arch/loadstore.h>
 #include <jive/arch/regvalue.h>
 #include <jive/common.h>
 #include <jive/context.h>
@@ -124,6 +125,26 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = jive_reg_classifier_classify_fixed_compare(self->classifier, cls->type, type->nbits);
 		
 		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option.base);
+	} else if (jive_node_isinstance(node, &JIVE_LOAD_NODE)) {
+		jive_regselector_option option;
+		
+		option.mask = jive_reg_classifier_classify_address(self->classifier);
+		jive_negotiator_annotate_identity(&self->base, 1, node->inputs, 0, NULL, &option.base);
+		
+		const jive_type * type = jive_output_get_type(node->outputs[0]);
+		const jive_resource_class * rescls = node->outputs[0]->required_rescls;
+		option.mask = jive_reg_classifier_classify_type(self->classifier, type, rescls);
+		jive_negotiator_annotate_identity(&self->base, 0, NULL, 1, node->outputs, &option.base);
+	} else if (jive_node_isinstance(node, &JIVE_STORE_NODE)) {
+		jive_regselector_option option;
+		
+		option.mask = jive_reg_classifier_classify_address(self->classifier);
+		jive_negotiator_annotate_identity(&self->base, 1, node->inputs, 0, NULL, &option.base);
+		
+		const jive_type * type = jive_input_get_type(node->inputs[1]);
+		const jive_resource_class * rescls = node->inputs[1]->required_rescls;
+		option.mask = jive_reg_classifier_classify_type(self->classifier, type, rescls);
+		jive_negotiator_annotate_identity(&self->base, 1, node->inputs + 1, 0, NULL, &option.base);
 	}
 }
 
