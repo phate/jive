@@ -440,6 +440,9 @@ jive_graph_generate_code(jive_graph * graph, struct jive_buffer * buffer)
 static void
 emit_region_start_attrs(const jive_region * region, jive_buffer * buffer)
 {
+	/* FIXME: should be based on *target* instead of *host*
+	properties... hack for the sake of OS X, oh well... */
+	#ifdef __ELF__
 	switch (region->attrs.section) {
 		default:
 		case jive_region_section_inherit:
@@ -457,6 +460,25 @@ emit_region_start_attrs(const jive_region * region, jive_buffer * buffer)
 			jive_buffer_putstr(buffer, ".section .bss\n");
 			break;
 	};
+	#else
+	switch (region->attrs.section) {
+		default:
+		case jive_region_section_inherit:
+			break;
+		case jive_region_section_code:
+			jive_buffer_putstr(buffer, ".text\n");
+			break;
+		case jive_region_section_data:
+			jive_buffer_putstr(buffer, ".data\n");
+			break;
+		case jive_region_section_rodata:
+			jive_buffer_putstr(buffer, ".data\n");
+			break;
+		case jive_region_section_bss:
+			jive_buffer_putstr(buffer, ".bss\n");
+			break;
+	};
+	#endif
 	if (region->attrs.align > 1) {
 		char tmp[80];
 		snprintf(tmp, sizeof(tmp), ".align %zd\n", region->attrs.align);
