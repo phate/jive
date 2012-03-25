@@ -2,6 +2,7 @@
 
 #include <jive/arch/address.h>
 #include <jive/arch/instruction.h>
+#include <jive/arch/loadstore.h>
 #include <jive/arch/regvalue.h>
 #include <jive/arch/subroutine.h>
 #include <jive/backend/i386/classifier.h>
@@ -372,6 +373,106 @@ match_gpr_immediate(jive_node * node)
 	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }
 
+typedef enum {
+	jive_i386_addr_mode_disp
+} jive_i386_addr_mode;
+
+typedef struct jive_i386_addr_info {
+	jive_i386_addr_mode mode;
+	union {
+		struct {
+			jive_output * base;
+			int32_t offset;
+		} disp;
+	} info;
+} jive_i386_addr_info;
+
+static jive_i386_addr_info
+classify_address(jive_output * output)
+{
+	jive_i386_addr_info info;
+	info.mode = jive_i386_addr_mode_disp;
+	info.info.disp.base = output;
+	info.info.disp.offset = 0;
+	return info;
+}
+
+static void
+match_gpr_load(jive_node * node)
+{
+	jive_i386_addr_info info = classify_address(node->inputs[0]->origin);
+	
+	jive_node * instr;
+	jive_output * value;
+	switch (info.mode) {
+		case jive_i386_addr_mode_disp: {
+			jive_immediate imm[1];
+			jive_immediate_init(&imm[0], info.info.disp.offset, 0, 0, 0);
+			instr = jive_instruction_node_create_extended(node->region,
+				&jive_i386_instructions[jive_i386_int_load32_disp],
+				(jive_output *[]){info.info.disp.base}, imm);
+			value = instr->outputs[0];
+			break;
+		}
+	}
+	
+	jive_output_replace(node->outputs[0], value);
+	size_t n;
+	for (n = 1; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		if (input->gate)
+			jive_node_gate_input(instr, input->gate, input->origin);
+		else
+			jive_node_add_input(instr, jive_input_get_type(input), input->origin);
+	}
+	for (n = 1; n < node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		jive_output * rep;
+		if (output->gate)
+			rep = jive_node_gate_output(instr, output->gate);
+		else
+			rep = jive_node_add_output(instr, jive_output_get_type(output));
+		jive_output_replace(output, rep);
+	}
+}
+
+static void
+match_gpr_store(jive_node * node)
+{
+	jive_i386_addr_info info = classify_address(node->inputs[0]->origin);
+	jive_output * value = node->inputs[1]->origin;
+	
+	jive_node * instr;
+	switch (info.mode) {
+		case jive_i386_addr_mode_disp: {
+			jive_immediate imm[1];
+			jive_immediate_init(&imm[0], info.info.disp.offset, 0, 0, 0);
+			instr = jive_instruction_node_create_extended(node->region,
+				&jive_i386_instructions[jive_i386_int_store32_disp],
+				(jive_output *[]){info.info.disp.base, value}, imm);
+			break;
+		}
+	}
+	
+	size_t n;
+	for (n = 2; n < node->ninputs; n++) {
+		jive_input * input = node->inputs[n];
+		if (input->gate)
+			jive_node_gate_input(instr, input->gate, input->origin);
+		else
+			jive_node_add_input(instr, jive_input_get_type(input), input->origin);
+	}
+	for (n = 0; n < node->noutputs; n++) {
+		jive_output * output = node->outputs[n];
+		jive_output * rep;
+		if (output->gate)
+			rep = jive_node_gate_output(instr, output->gate);
+		else
+			rep = jive_node_add_output(instr, jive_output_get_type(output));
+		jive_output_replace(output, rep);
+	}
+}
+
 static void
 match_single(jive_node * node, const jive_regselector * regselector)
 {
@@ -400,6 +501,20 @@ match_single(jive_node * node, const jive_regselector * regselector)
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
 			match_gpr_immediate(node);
+		} else {
+			JIVE_DEBUG_ASSERT(false);
+		}
+	} else if (jive_node_isinstance(node, &JIVE_LOAD_NODE)) {
+		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
+		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+			match_gpr_load(node);
+		} else {
+			JIVE_DEBUG_ASSERT(false);
+		}
+	} else if (jive_node_isinstance(node, &JIVE_STORE_NODE)) {
+		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[1]);
+		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+			match_gpr_store(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
