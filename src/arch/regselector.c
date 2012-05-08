@@ -6,6 +6,7 @@
 #include <jive/arch/regvalue.h>
 #include <jive/common.h>
 #include <jive/context.h>
+#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
@@ -146,6 +147,33 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_resource_class * rescls = node->inputs[1]->required_rescls;
 		option.mask = jive_reg_classifier_classify_type(self->classifier, type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs + 1, 0, NULL, &option.base);
+	} else if (jive_node_isinstance(node, &JIVE_AUX_SPLIT_NODE)) {
+		jive_input * input = node->inputs[0];
+		jive_output * output = node->outputs[0];
+		
+		if (jive_input_isinstance(input, &JIVE_VALUE_INPUT)) {
+			jive_regselector_option option;
+			option.mask = jive_reg_classifier_classify_type(self->classifier,
+				jive_input_get_type(input), input->required_rescls);
+			if (option.mask) {
+				jive_negotiator_annotate_identity(&self->base,
+					1, node->inputs,
+					0, NULL,
+					&option.base);
+			}
+		}
+		
+		if (jive_output_isinstance(output, &JIVE_VALUE_OUTPUT)) {
+			jive_regselector_option option;
+			option.mask = jive_reg_classifier_classify_type(self->classifier,
+				jive_output_get_type(output), output->required_rescls);
+			if (option.mask) {
+				jive_negotiator_annotate_identity(&self->base,
+					0, NULL,
+					1, node->outputs,
+					&option.base);
+			}
+		}
 	}
 }
 
