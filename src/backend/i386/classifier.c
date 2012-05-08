@@ -13,7 +13,18 @@ jive_i386_classify_type_(const jive_type * type, const jive_resource_class * res
 	else if (rescls == &jive_i386_regcls[jive_i386_flags].base)
 		return (1 << jive_i386_flags);
 	
-	return (1 << jive_i386_gpr) | (1 << jive_i386_flags);
+	if (type->class_ == &JIVE_BITSTRING_TYPE) {
+		const jive_bitstring_type * btype = (const jive_bitstring_type *) type;
+		if (btype->nbits == 32)
+			return (1 << jive_i386_gpr);
+	}
+	
+	/* no suitable register class */
+	/* FIXME: this should *probably* not be a fatal error -- but since
+	this is usually indicative of bugs in other parts of the compiler,
+	error out here to better expose problems */
+	JIVE_DEBUG_ASSERT(false);
+	return 0;
 }
 
 static jive_regselect_mask
