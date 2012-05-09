@@ -43,6 +43,7 @@ regvalue_to_immediate(const jive_output * regvalue, jive_immediate * imm)
 	jive_label_to_bitstring_node * lbnode = jive_label_to_bitstring_node_cast(value->node);
 	if (lbnode) {
 		jive_immediate_init(imm, 0, lbnode->attrs.label, 0, 0);
+		return;
 	}
 	
 	JIVE_DEBUG_ASSERT(false);
