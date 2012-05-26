@@ -24,10 +24,10 @@ typedef enum {
 	jive_resource_class_priority_invalid = 0,
 	jive_resource_class_priority_control = 1,
 	jive_resource_class_priority_reg_implicit = 2,
-	jive_resource_class_priority_reg_high = 3,
-	jive_resource_class_priority_reg_low = 4,
-	jive_resource_class_priority_mem_high = 5,
-	jive_resource_class_priority_mem_low = 6,
+	jive_resource_class_priority_mem_unique = 3,
+	jive_resource_class_priority_reg_high = 4,
+	jive_resource_class_priority_reg_low = 5,
+	jive_resource_class_priority_mem_generic = 6,
 	jive_resource_class_priority_lowest = 7
 } jive_resource_class_priority;
 
