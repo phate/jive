@@ -39,10 +39,14 @@ include tests/union/Makefile.sub
 
 TESTPROGS=$(patsubst %, tests/%, $(TESTS))
 
-$(TESTPROGS): %: %.o tests/testarch.o libjive.a
-# tests/testnodes.o tests/graph-sanity-checks.o libjive.a
+SOURCES += $(patsubst %, %.c, $(TESTPROGS)) tests/testarch.c
 
-$(patsubst %, tests/%.o, $(TESTS)): CPPFLAGS+=-Itests
+$(TESTPROGS): %: %.la tests/testarch.la libjive.a
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+$(patsubst %, tests/%.la, $(TESTS)): CPPFLAGS+=-Itests
+$(patsubst %, .dep/tests/%.la.d, $(TESTS)): CPPFLAGS+=-Itests
+$(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 
 TESTLOG=true
 

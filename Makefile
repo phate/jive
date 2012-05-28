@@ -98,6 +98,8 @@ LIBJIVE_SRC += \
 
 include src/backend/i386/Makefile.sub
 
+SOURCES += $(LIBJIVE_SRC)
+
 # LIBJIVE_SRC = \
 # 	\
 # 	src/bitstring/multiop.c   \
@@ -147,17 +149,17 @@ libjive.so: $(patsubst %.c, %.lo, $(LIBJIVE_SRC))
 doc:
 	doxygen doxygen.conf
 
-clean:
+clean: depclean
 	find . -name *.o -o -name *.lo -o -name *.la -o -name *.so -o -name *.a | xargs rm -rf
 	rm -rf $(TESTPROGS)
 
 include tests/Makefile.sub
 
 %.la: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $^
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 %.lo: %.c
-	$(CC) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $^
+	$(CC) -c -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
 %.a:
 	rm -f $@
@@ -166,5 +168,23 @@ include tests/Makefile.sub
 
 %.so:
 	$(CC) -shared -o $@ $^
+
+.dep/%.la.d: %.c
+	@mkdir -p $(dir $@)
+	@$(CC) -MM $(CFLAGS) $(CPPFLAGS) -MT $(<:.c=.la) -MP -MF $@ $<
+	@echo MAKEDEP $<
+
+.dep/%.lo.d: %.c
+	@mkdir -p $(dir $@)
+	@$(CC) -MM -DPIC -fPIC $(CFLAGS) $(CPPFLAGS) -MT $(<:.c=.lo) -MP -MF $@ $<
+
+depclean:
+	rm -rf .dep
+
+DEPEND = $(patsubst %.c, .dep/%.la.d, $(SOURCES)) $(patsubst %.c, .dep/%.lo.d, $(SOURCES))
+depend: $(DEPEND)
+ifeq ($(shell if [ -e .dep ] ; then echo yes ; fi),yes)
+-include $(DEPEND)
+endif
 
 .PHONY: doc
