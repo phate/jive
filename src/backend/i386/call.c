@@ -7,9 +7,9 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/splitnode.h>
 
 jive_node *
 jive_i386_call_node_substitute(jive_call_node * node)
@@ -72,7 +72,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		
 		offset += 4;
 		
-		jive_node * split = jive_aux_split_node_create(
+		jive_node * split = jive_splitnode_create(
 			node->base.region,
 			value_type, value, value_cls,
 			slot_type, slot_cls);

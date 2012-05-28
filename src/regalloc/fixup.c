@@ -1,11 +1,11 @@
 #include <jive/regalloc/fixup.h>
 
 #include <jive/arch/instruction.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 
@@ -18,7 +18,7 @@ pre_op_transfer(jive_shaped_graph * shaped_graph, jive_node * node, const jive_r
 	resource_class = jive_resource_class_relax(resource_class);
 	const jive_type * type = jive_resource_class_get_type(resource_class);
 	
-	jive_node * xfer_node = jive_aux_split_node_create(
+	jive_node * xfer_node = jive_splitnode_create(
 		node->region,
 		type, origin, resource_class,
 		type, resource_class);
@@ -49,7 +49,7 @@ post_op_transfer(jive_shaped_graph * shaped_graph, jive_node * node, const jive_
 	resource_class = jive_resource_class_relax(resource_class);
 	const jive_type * type = jive_resource_class_get_type(resource_class);
 	
-	jive_node * xfer_node = jive_aux_split_node_create(node->region,
+	jive_node * xfer_node = jive_splitnode_create(node->region,
 		type, origin, resource_class,
 		type, resource_class);
 	

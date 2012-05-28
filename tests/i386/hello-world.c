@@ -10,10 +10,10 @@
 #include <jive/arch/memory.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/stackslot.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
 #include <jive/vsdg/record.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
@@ -118,15 +118,15 @@ int main()
 	const jive_type * gpr_type = jive_resource_class_get_type(gpr);
 	JIVE_DECLARE_MEMORY_TYPE(memory_type);
 	
-	jive_node * arg1 = jive_aux_split_node_create(
+	jive_node * arg1 = jive_splitnode_create(
 		fn_region,
 		gpr_type, load_fd->outputs[0], gpr,
 		memory_type, jive_callslot_class_get(4, 4, 0));
-	jive_node * arg2 = jive_aux_split_node_create(
+	jive_node * arg2 = jive_splitnode_create(
 		fn_region,
 		gpr_type, load_str_addr->outputs[0], gpr,
 		memory_type, jive_callslot_class_get(4, 4, 4));
-	jive_node * arg3 = jive_aux_split_node_create(
+	jive_node * arg3 = jive_splitnode_create(
 		fn_region,
 		gpr_type, load_str_len->outputs[0], gpr,
 		memory_type, jive_callslot_class_get(4, 4, 8));

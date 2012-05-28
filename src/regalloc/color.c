@@ -1,7 +1,6 @@
 #include <jive/regalloc/color.h>
 
 #include <jive/regalloc/assignment-tracker-private.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable-private.h>
@@ -9,6 +8,7 @@
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/splitnode.h>
 
 static inline bool
 is_active_control_input(jive_input * input)
@@ -202,7 +202,7 @@ split_top(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_res
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_aux_split_node_create(origin->node->region,
+		jive_node * node = jive_splitnode_create(origin->node->region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		
@@ -232,7 +232,7 @@ split_bottom(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_aux_split_node_create(origin->node->region,
+		jive_node * node = jive_splitnode_create(origin->node->region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		jive_cut * cut = jive_cut_split(point->cut, point);
@@ -408,7 +408,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 				continue;
 			}
 			
-			jive_node * xfer_node = jive_aux_split_node_create(
+			jive_node * xfer_node = jive_splitnode_create(
 				input->node->region,
 				type, origin, rescls,
 				type, rescls);
@@ -450,7 +450,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 				continue;
 			}
 			
-			jive_node * xfer_node = jive_aux_split_node_create(
+			jive_node * xfer_node = jive_splitnode_create(
 				output->node->region,
 				type, output, rescls,
 				type, rescls);

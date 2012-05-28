@@ -1,13 +1,13 @@
 #include <jive/regalloc/shape.h>
 
 #include <jive/common.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/regalloc/selector.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/splitnode.h>
 
 typedef struct jive_region_shaper jive_region_shaper;
 
@@ -463,7 +463,7 @@ do_split_begin(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resou
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_aux_split_node_create(origin->node->region,
+		jive_node * node = jive_splitnode_create(origin->node->region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		origin = node->outputs[0];
@@ -489,7 +489,7 @@ do_split_end(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resourc
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_aux_split_node_create(region,
+		jive_node * node = jive_splitnode_create(region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		origin = node->outputs[0];
@@ -564,7 +564,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			new_rescls = jive_resource_class_relax(new_rescls);
 			const jive_type * type = jive_output_get_type(output);
 			
-			jive_node * split_node = jive_aux_split_node_create(self->region,
+			jive_node * split_node = jive_splitnode_create(self->region,
 				type, output, new_rescls,
 				type, current_rescls);
 			
@@ -611,7 +611,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			new_rescls = jive_resource_class_relax(new_rescls);
 			const jive_type * type = jive_output_get_type(output);
 			
-			jive_node * split_node = jive_aux_split_node_create(self->region,
+			jive_node * split_node = jive_splitnode_create(self->region,
 				type, output, new_rescls,
 				type, current_rescls);
 			
@@ -763,7 +763,7 @@ merge_single_ssavar_from_subregion(jive_region_shaper * self, jive_region_shaper
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
 		rescls = jive_resource_class_relax(rescls);
 		
-		jive_node * split_node = jive_aux_split_node_create(subregion->region,
+		jive_node * split_node = jive_splitnode_create(subregion->region,
 			type, output, rescls,
 			type, rescls);
 		

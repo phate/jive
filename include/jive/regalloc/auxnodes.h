@@ -1,49 +1,11 @@
 #ifndef JIVE_REGALLOC_AUXNODES_H
 #define JIVE_REGALLOC_AUXNODES_H
 
-/* auxiliary nodes that are generated during register allocation
-(all instances are replaced with machine-specific instructions
-at the end of register allocation, so these nodes are never visible
-outside the register allocator). */
-
 #include <jive/common.h>
 
-#include <jive/vsdg/node.h>
-
-struct jive_resource_class;
 struct jive_shaped_graph;
-struct jive_transfer_instructions_factory;
 
-typedef struct jive_aux_split_node_attrs jive_aux_split_node_attrs;
-
-struct jive_aux_split_node_attrs {
-	jive_node_attrs base;
-	const struct jive_resource_class * in_class;
-	const struct jive_resource_class * out_class;
-};
-
-struct jive_aux_split_node {
-	jive_node base;
-	jive_aux_split_node_attrs attrs;
-};
-
-typedef struct jive_aux_split_node jive_aux_split_node;
-extern const jive_node_class JIVE_AUX_SPLIT_NODE;
-
-jive_node *
-jive_aux_split_node_create(struct jive_region * region,
-	const jive_type * in_type,
-	struct jive_output * in_origin,
-	const struct jive_resource_class * in_class,
-	const jive_type * out_type,
-	const struct jive_resource_class * out_class);
-
-JIVE_EXPORTED_INLINE jive_aux_split_node *
-jive_aux_split_node_cast(jive_node * self)
-{
-	if (self->class_ == &JIVE_AUX_SPLIT_NODE) return (jive_aux_split_node *) self;
-	else return 0;
-}
+/* replace all "split" nodes with real instruction nodes */
 
 void
 jive_regalloc_auxnodes_replace(struct jive_shaped_graph * shaped_graph);

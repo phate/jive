@@ -9,7 +9,7 @@
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine-private.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/regalloc/auxnodes.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg.h>
 
 const jive_register_name jive_testarch_regs [] = {
@@ -434,7 +434,7 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
 	if (index >= 2) {
 		const jive_type * in_type = jive_gate_get_type(gate);
 		const jive_type * out_type = jive_resource_class_get_type(jive_testarch_cls_gpr);
-		jive_node * node = jive_aux_split_node_create(self->base.enter->base.region,
+		jive_node * node = jive_splitnode_create(self->base.enter->base.region,
 			in_type, output, gate->required_rescls,
 			out_type, jive_testarch_cls_gpr);
 		output = node->outputs[0];

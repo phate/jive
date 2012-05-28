@@ -12,7 +12,6 @@
 #include <jive/arch/memory.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/stackslot.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
 #include <jive/vsdg/record.h>

@@ -21,6 +21,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/sequence.c \
 	src/vsdg/label.c \
 	src/vsdg/objdef.c \
+	src/vsdg/splitnode.c \
 
 # visualization
 LIBJIVE_SRC += \

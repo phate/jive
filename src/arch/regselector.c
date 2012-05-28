@@ -6,10 +6,10 @@
 #include <jive/arch/regvalue.h>
 #include <jive/common.h>
 #include <jive/context.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/valuetype.h>
 #include <jive/types/bitstring/arithmetic.h>
@@ -147,7 +147,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_resource_class * rescls = node->inputs[1]->required_rescls;
 		option.mask = jive_reg_classifier_classify_type(self->classifier, type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs + 1, 0, NULL, &option.base);
-	} else if (jive_node_isinstance(node, &JIVE_AUX_SPLIT_NODE)) {
+	} else if (jive_node_isinstance(node, &JIVE_SPLITNODE)) {
 		jive_input * input = node->inputs[0];
 		jive_output * output = node->outputs[0];
 		

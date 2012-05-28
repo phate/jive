@@ -6,9 +6,9 @@
 #include <jive/arch/subroutine-private.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/instructionset.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/function.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
@@ -191,7 +191,7 @@ jive_i386_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
 	
 	const jive_type * in_type = jive_gate_get_type(gate);
 	const jive_type * out_type = jive_resource_class_get_type(&jive_i386_regcls[jive_i386_gpr].base);
-	jive_node * node = jive_aux_split_node_create(self->base.enter->base.region,
+	jive_node * node = jive_splitnode_create(self->base.enter->base.region,
 		in_type, output, gate->required_rescls,
 		out_type, &jive_i386_regcls[jive_i386_gpr].base);
 	output = node->outputs[0];

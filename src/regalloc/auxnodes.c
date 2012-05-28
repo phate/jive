@@ -11,95 +11,14 @@
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 
 #include <string.h>
 
-
 static void
-jive_aux_split_node_init_(
-	jive_aux_split_node * self,
-	jive_region * region,
-	const jive_type * in_type,
-	jive_output * in_origin,
-	const struct jive_resource_class * in_class,
-	const jive_type * out_type,
-	const struct jive_resource_class * out_class)
-{
-	self->base.class_ = &JIVE_AUX_SPLIT_NODE;
-	jive_node_init_(&self->base, region,
-		1, &in_type, &in_origin,
-		1, &out_type);
-	
-	self->attrs.in_class = in_class;
-	self->attrs.out_class = out_class;
-	self->base.inputs[0]->required_rescls = in_class;
-	self->base.outputs[0]->required_rescls = out_class;
-}
-
-static jive_node *
-jive_aux_split_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 1);
-	const jive_aux_split_node_attrs * attrs = (const jive_aux_split_node_attrs *) attrs_;
-	jive_node * node = jive_aux_split_node_create(region,
-		jive_resource_class_get_type(attrs->in_class),
-		operands[0],
-		attrs->in_class,
-		jive_resource_class_get_type(attrs->out_class),
-		attrs->out_class);
-	
-	node->inputs[0]->required_rescls = attrs->in_class;
-	node->outputs[0]->required_rescls = attrs->out_class;
-	
-	return node;
-}
-
-static const jive_node_attrs *
-jive_aux_split_node_get_attrs_(const jive_node * self_)
-{
-	const jive_aux_split_node * self = (const jive_aux_split_node *) self_;
-	return &self->attrs.base;
-}
-
-static bool
-jive_aux_split_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
-{
-	const jive_aux_split_node * self = (const jive_aux_split_node *) self_;
-	const jive_aux_split_node_attrs * attrs = (const jive_aux_split_node_attrs *) attrs_;
-	return (self->attrs.in_class == attrs->in_class) && (self->attrs.out_class == attrs->out_class);
-}
-
-const jive_node_class JIVE_AUX_SPLIT_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "AUX_SPLIT",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_aux_split_node_get_attrs_, /* override */
-	.match_attrs = jive_aux_split_node_match_attrs_, /* override */
-	.create = jive_aux_split_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
-};
-
-jive_node *
-jive_aux_split_node_create(jive_region * region,
-	const jive_type * in_type,
-	jive_output * in_origin,
-	const struct jive_resource_class * in_class,
-	const jive_type * out_type,
-	const struct jive_resource_class * out_class)
-{
-	jive_aux_split_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
-	jive_aux_split_node_init_(self, region, in_type, in_origin, in_class, out_type, out_class);
-	
-	return &self->base;
-}
-
-static void
-replace_aux_split_node(jive_shaped_node * shaped_node, jive_node * node)
+replace_splitnode(jive_shaped_node * shaped_node, jive_node * node)
 {
 	const jive_instructionset * isa = jive_region_get_instructionset(node->region);
 	
@@ -187,9 +106,9 @@ jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph)
 	jive_traverser * traverser = jive_bottomup_traverser_create(shaped_graph->graph);
 	jive_node * node;
 	while( (node = jive_traverser_next(traverser)) != 0) {
-		if (jive_node_isinstance(node, &JIVE_AUX_SPLIT_NODE)) {
+		if (jive_node_isinstance(node, &JIVE_SPLITNODE)) {
 			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
-			replace_aux_split_node(shaped_node, node);
+			replace_splitnode(shaped_node, node);
 		} else
 			check_fp_sp_dependency(node);
 	}
