@@ -93,6 +93,10 @@ LIBJIVE_SRC += \
 	src/regalloc.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/fixup.c src/regalloc/auxnodes.c src/regalloc/reroute.c src/regalloc/reuse.c \
 	src/regalloc/selector.c src/regalloc/stackframe.c
 
+# serialization
+LIBJIVE_SRC += \
+	src/serialization/token-stream.c \
+
 # support exported inlines
 LIBJIVE_SRC += \
 	src/exported_inlines.c
