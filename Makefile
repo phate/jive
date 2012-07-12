@@ -95,8 +95,11 @@ LIBJIVE_SRC += \
 
 # serialization
 LIBJIVE_SRC += \
+	src/serialization/nodecls-registry.c \
+	src/serialization/rescls-registry.c \
 	src/serialization/symtab.c \
 	src/serialization/token-stream.c \
+	src/serialization/typecls-registry.c \
 
 # support exported inlines
 LIBJIVE_SRC += \
