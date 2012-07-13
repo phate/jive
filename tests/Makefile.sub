@@ -41,8 +41,9 @@ TESTPROGS=$(patsubst %, tests/%, $(TESTS))
 
 SOURCES += $(patsubst %, %.c, $(TESTPROGS)) tests/testarch.c
 
+$(TESTPROGS): LDFLAGS+=-L. -Wl,-whole-archive -ljive -Wl,-no-whole-archive
 $(TESTPROGS): %: %.la tests/testarch.la libjive.a
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $(filter %.la, $^) $(LDFLAGS)
 
 $(patsubst %, tests/%.la, $(TESTS)): CPPFLAGS+=-Itests
 $(patsubst %, .dep/tests/%.la.d, $(TESTS)): CPPFLAGS+=-Itests
