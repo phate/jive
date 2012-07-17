@@ -1,0 +1,5 @@
+TESTS += \
+	serialization/test-bitstring-serialization \
+	serialization/test-grammar \
+	serialization/test-region-serialization \
+	serialization/test-rescls-serialization \
