@@ -95,6 +95,7 @@ LIBJIVE_SRC += \
 
 # serialization
 LIBJIVE_SRC += \
+	src/serialization/symtab.c \
 	src/serialization/token-stream.c \
 
 # support exported inlines
