@@ -95,6 +95,7 @@ LIBJIVE_SRC += \
 
 # serialization
 LIBJIVE_SRC += \
+	src/serialization/driver.c \
 	src/serialization/nodecls-registry.c \
 	src/serialization/rescls-registry.c \
 	src/serialization/symtab.c \
