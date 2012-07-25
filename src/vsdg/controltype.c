@@ -22,6 +22,9 @@ jive_control_type_create_output_(const jive_type * self, jive_node * node, size_
 jive_gate *
 jive_control_type_create_gate_(const jive_type * self, jive_graph * graph, const char * name);
 
+static jive_type *
+jive_control_type_copy_(const jive_type * self, jive_context * ctx);
+
 void
 jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin);
 
@@ -75,7 +78,7 @@ const jive_type_class JIVE_CONTROL_TYPE = {
 	.create_output = jive_control_type_create_output_, /* override */
 	.create_gate = jive_control_type_create_gate_, /* override */
 	.equals = jive_type_equals_, /* inherit */
-	.copy = jive_type_copy_ /* inherit */
+	.copy = jive_control_type_copy_ /* override */
 };
 
 const jive_input_class JIVE_CONTROL_INPUT = {
@@ -125,6 +128,14 @@ jive_control_type_create_gate_(const jive_type * self, struct jive_graph * graph
 	gate->base.base.class_ = &JIVE_CONTROL_GATE;
 	jive_control_gate_init_(gate, graph, name);
 	return &gate->base.base;
+}
+
+static jive_type *
+jive_control_type_copy_(const jive_type * self, jive_context * ctx)
+{
+	jive_control_type * other = jive_context_malloc(ctx, sizeof(*other));
+	*other = jive_control_type_singleton;
+	return &other->base.base;
 }
 
 void
