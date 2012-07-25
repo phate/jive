@@ -33,4 +33,16 @@ void
 jive_serialization_driver_fini(
 	jive_serialization_driver * self);
 
+void
+jive_serialize_graph(
+	jive_serialization_driver * self,
+	struct jive_graph * graph,
+	struct jive_token_ostream * os);
+
+bool
+jive_deserialize_graph(
+	jive_serialization_driver * self,
+	struct jive_token_istream * is,
+	struct jive_graph * graph);
+
 #endif
