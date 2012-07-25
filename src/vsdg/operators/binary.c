@@ -144,14 +144,21 @@ jive_binary_operation_normalized_create(
 	const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands_[])
 {
+	jive_binary_operation_normal_form * nf = (jive_binary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(region->graph, cls_);
 	/* FIXME: unconditionally performs normalization, make dependent on
 	selected normal form per graph */
 	const jive_binary_operation_class * cls = (const jive_binary_operation_class *) cls_;
 	
 	jive_output ** operands = NULL;
 	
+	bool expand_associative =
+		nf->base.enable_mutable &&
+		nf->enable_flatten &&
+		(cls->flags & jive_binary_operation_associative) != 0;
+	
 	/* expand associative */
-	if (cls->flags & jive_binary_operation_associative) {
+	if (expand_associative) {
 		size_t count = 0, n;
 		for(n = 0; n<noperands; n++) {
 			if (operands_[n]->node->class_ == cls_)
@@ -177,12 +184,15 @@ jive_binary_operation_normalized_create(
 			operands[n] = operands_[n];
 	}
 	
-	noperands = reduce_operands(cls_, attrs, noperands, operands);
+	if (nf->base.enable_mutable && nf->enable_reducible)
+		noperands = reduce_operands(cls_, attrs, noperands, operands);
 	
 	if (noperands == 1)
 		return operands[0];
 	
-	jive_node * node = jive_node_cse(region->graph, cls_, attrs, noperands, operands);
+	jive_node * node = 0;
+	if (nf->base.enable_mutable && nf->base.enable_cse)
+		node = jive_node_cse(region->graph, cls_, attrs, noperands, operands);
 	if (node)
 		return node->outputs[0];
 	
