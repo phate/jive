@@ -3,7 +3,7 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/machine.h>
-
+#include <jive/serialization/instrcls-registry.h>
 #include <jive/util/buffer.h>
 
 #include <stdio.h>
@@ -1179,3 +1179,8 @@ const struct jive_instructionset jive_i386_instructionset = {
 	.jump_instruction_class = &jive_i386_instructions[jive_i386_jump],
 	.reg_classifier = &jive_i386_reg_classifier
 };
+
+JIVE_SERIALIZATION_INSTRSET_REGISTER(
+	jive_i386_instructions,
+	sizeof(jive_i386_instructions) / sizeof(jive_i386_instructions[0]),
+	"i386_");

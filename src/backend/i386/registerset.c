@@ -2,6 +2,7 @@
 
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
+#include <jive/serialization/rescls-registry.h>
 #include <jive/types/bitstring/type.h>
 
 const jive_register_name jive_i386_regs [] = {
@@ -223,3 +224,7 @@ const jive_register_class jive_i386_regcls [] = {
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	}
 };
+
+JIVE_SERIALIZATION_REGCLSSET_REGISTER(jive_i386_regcls,
+	sizeof(jive_i386_regcls) / sizeof(jive_i386_regcls[0]),
+	"i386_");
