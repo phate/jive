@@ -5,6 +5,7 @@
 #include <jive/serialization/symtab.h>
 
 struct jive_graph;
+struct jive_serialization_instrcls_registry;
 struct jive_serialization_nodecls_registry;
 struct jive_serialization_typecls_registry;
 struct jive_serialization_rescls_registry;
@@ -19,6 +20,7 @@ struct jive_serialization_driver {
 	
 	jive_serialization_symtab symtab;
 	
+	const struct jive_serialization_instrcls_registry * instrcls_registry;
 	const struct jive_serialization_nodecls_registry * nodecls_registry;
 	const struct jive_serialization_typecls_registry * typecls_registry;
 	const struct jive_serialization_rescls_registry * rescls_registry;

@@ -99,6 +99,7 @@ LIBJIVE_SRC += \
 	src/serialization/bitstring.c \
 	src/serialization/driver.c \
 	src/serialization/grammar.c \
+	src/serialization/instrcls-registry.c \
 	src/serialization/nodecls-registry.c \
 	src/serialization/rescls-registry.c \
 	src/serialization/symtab.c \
