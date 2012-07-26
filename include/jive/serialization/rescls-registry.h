@@ -6,6 +6,7 @@
 
 #include <jive/common.h>
 
+struct jive_register_class;
 struct jive_resource_class;
 struct jive_resource_class_class;
 struct jive_output;
@@ -75,6 +76,12 @@ jive_serialization_rescls_register(
 	jive_rescls_deserialize_function_t deserialize);
 
 void
+jive_serialization_regclsset_register(
+	const struct jive_register_class * regset,
+	size_t count,
+	const char prefix[]);
+
+void
 jive_serialization_rescls_serialize_default(
 	const jive_serialization_rescls * self,
 	struct jive_serialization_driver * driver,
@@ -96,11 +103,17 @@ jive_serialization_rescls_deserialize_default(
 			jive_serialization_rescls_deserialize_default); \
 	} \
 
-
 #define JIVE_SERIALIZATION_META_RESCLS_REGISTER(resclscls, tag, serialize, deserialize) \
 	static void __attribute__((constructor)) register_##resclscls(void)\
 	{ \
 		jive_serialization_rescls_register(&resclscls, tag, true, serialize, deserialize); \
 	} \
+
+#define JIVE_SERIALIZATION_REGCLSSET_REGISTER(regset, count, prefix) \
+	static void __attribute__((constructor)) register_##rescls(void)\
+	{ \
+		jive_serialization_regclsset_register(regset, count, prefix); \
+	} \
+
 
 #endif

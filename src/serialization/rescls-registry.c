@@ -2,6 +2,7 @@
 
 #include <pthread.h>
 
+#include <jive/arch/registers.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
 #include <jive/util/hash.h>
@@ -251,6 +252,35 @@ jive_serialization_rescls_register(
 	sercls->deserialize = deserialize;
 	pthread_mutex_lock(&rescls_registry_singleton_lock);
 	jive_serialization_rescls_registry_insert(&rescls_registry_singleton, sercls);
+	pthread_mutex_unlock(&rescls_registry_singleton_lock);
+}
+
+void
+jive_serialization_regclsset_register(
+	const struct jive_register_class * regset,
+	size_t count,
+	const char prefix[])
+{
+	size_t prefix_len = strlen(prefix);
+	pthread_mutex_lock(&rescls_registry_singleton_lock);
+	size_t n;
+	for (n = 0; n < count; ++n) {
+		const jive_register_class * regcls = &regset[n];
+		if (!regcls->base.name)
+			continue;
+		size_t name_len = strlen(regcls->base.name);
+		char * tag = malloc(prefix_len + name_len + 1);
+		memcpy(tag, prefix, prefix_len);
+		memcpy(tag + prefix_len, regcls->base.name, name_len);
+		tag[prefix_len + name_len] = 0;
+		jive_serialization_rescls * sercls = malloc(sizeof(*sercls));
+		sercls->tag = tag;
+		sercls->cls = regcls;
+		sercls->is_meta_class = false;
+		sercls->serialize = jive_serialization_rescls_serialize_default;
+		sercls->deserialize = jive_serialization_rescls_deserialize_default;
+		jive_serialization_rescls_registry_insert(&rescls_registry_singleton, sercls);
+	}
 	pthread_mutex_unlock(&rescls_registry_singleton_lock);
 }
 
