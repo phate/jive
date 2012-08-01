@@ -173,7 +173,7 @@ jive_label_region_start_create(struct jive_region * region);
 jive_label *
 jive_label_region_start_create_exported(struct jive_region * region, const char * name);
 
-extern const jive_label_internal_class JIVE_LABEL_REGION_START;
+extern const jive_label_internal_class JIVE_LABEL_REGION_START_;
 #define JIVE_LABEL_REGION_START (JIVE_LABEL_REGION_START_.base)
 
 /**
@@ -182,7 +182,7 @@ extern const jive_label_internal_class JIVE_LABEL_REGION_START;
 jive_label *
 jive_label_region_end_create(struct jive_region * region);
 
-extern const jive_label_internal_class JIVE_LABEL_REGION_END;
+extern const jive_label_internal_class JIVE_LABEL_REGION_END_;
 #define JIVE_LABEL_REGION_END (JIVE_LABEL_REGION_END_.base)
 
 /**
