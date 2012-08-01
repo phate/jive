@@ -158,8 +158,26 @@ extern const jive_label_class JIVE_LABEL_SPOFFSET;
 jive_label *
 jive_label_node_create(struct jive_node * node);
 
+/**
+	\brief Label where node is sequenced
+	
+	Node not specified until later -- dangerous function,
+	only to be used during serialization.
+*/
+jive_label_node *
+jive_label_node_create_dangling(struct jive_graph * graph);
+
 extern const jive_label_internal_class JIVE_LABEL_NODE_;
 #define JIVE_LABEL_NODE (JIVE_LABEL_NODE_.base)
+
+/**
+	\brief Label where start of region is sequenced
+	
+	Region not specified until later -- dangerous function,
+	only to be used during serialization.
+*/
+jive_label_region *
+jive_label_region_start_create_dangling(struct jive_graph * graph);
 
 /**
 	\brief Label where start of region is sequenced
@@ -175,6 +193,15 @@ jive_label_region_start_create_exported(struct jive_region * region, const char 
 
 extern const jive_label_internal_class JIVE_LABEL_REGION_START_;
 #define JIVE_LABEL_REGION_START (JIVE_LABEL_REGION_START_.base)
+
+/**
+	\brief Label where end of region is sequenced
+	
+	Region not specified until later -- dangerous function,
+	only to be used during serialization.
+*/
+jive_label_region *
+jive_label_region_end_create_dangling(struct jive_graph * graph);
 
 /**
 	\brief Label where end of region is sequenced

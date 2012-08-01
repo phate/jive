@@ -183,15 +183,28 @@ const jive_label_internal_class JIVE_LABEL_NODE_ = {
 	.get_attach_point = jive_label_node_get_attach_point_
 };
 
+jive_label_node *
+jive_label_node_create_dangling(jive_graph * graph)
+{
+	jive_label_node * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_label_internal_init_(&self->base, &JIVE_LABEL_NODE, jive_label_flags_none, graph);
+	self->node = 0;
+	
+	jive_label_internal_register_(&self->base);
+	return self;
+}
+
 jive_label *
 jive_label_node_create(jive_node * node)
 {
-	jive_graph * graph = node->region->graph;
+	jive_graph * graph = node->graph;
+	
 	jive_label_node * self = jive_context_malloc(graph->context, sizeof(*self));
 	jive_label_internal_init_(&self->base, &JIVE_LABEL_NODE, jive_label_flags_none, graph);
 	self->node = node;
 	
 	jive_label_internal_register_(&self->base);
+	
 	return &self->base.base;
 }
 
@@ -230,12 +243,26 @@ const jive_label_internal_class JIVE_LABEL_REGION_START_ = {
 	.get_attach_point = jive_label_region_start_get_attach_point_
 };
 
+jive_label_region *
+jive_label_region_start_create_dangling(jive_graph * graph)
+{
+	jive_label_region * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_label_internal_init_(&self->base, &JIVE_LABEL_REGION_START, jive_label_flags_none, graph);
+	self->region = 0;
+	
+	jive_label_internal_register_(&self->base);
+	return self;
+}
+
 jive_label *
 jive_label_region_start_create(jive_region * region)
 {
 	jive_graph * graph = region->graph;
+	
 	jive_label_region * self = jive_context_malloc(graph->context, sizeof(*self));
 	jive_label_internal_init_(&self->base, &JIVE_LABEL_REGION_START, jive_label_flags_none, graph);
+	self->region = 0;
+	
 	self->region = region;
 	
 	jive_label_internal_register_(&self->base);
@@ -291,12 +318,23 @@ const jive_label_internal_class JIVE_LABEL_REGION_END_ = {
 	.get_attach_point = jive_label_region_end_get_attach_point_
 };
 
+jive_label_region *
+jive_label_region_end_create_dangling(jive_graph * graph)
+{
+	jive_label_region * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_label_internal_init_(&self->base, &JIVE_LABEL_REGION_END, jive_label_flags_none, graph);
+	
+	jive_label_internal_register_(&self->base);
+	return self;
+}
+
 jive_label *
 jive_label_region_end_create(jive_region * region)
 {
 	jive_graph * graph = region->graph;
 	jive_label_region * self = jive_context_malloc(graph->context, sizeof(*self));
 	jive_label_internal_init_(&self->base, &JIVE_LABEL_REGION_END, jive_label_flags_none, graph);
+	
 	self->region = region;
 	
 	jive_label_internal_register_(&self->base);
