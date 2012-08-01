@@ -112,6 +112,17 @@ void
 jive_context_fatal_error(jive_context * ctx, const char * msg);
 
 /**
+	\brief Raise fatal error if context not clean
+	\param ctx Compiler context
+	
+	Invokes the fatal error handler if the context reports
+	unreclaimed memory. Intended to be used in unit tests.
+	This function will not return to the caller.
+*/
+void
+jive_context_assert_clean(jive_context * ctx);
+
+/**
 	\brief Duplicate string
 	\param context Compiler context
 	\returns Whether any memory has been allocated to the context

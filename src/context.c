@@ -7,6 +7,7 @@
 #include <jive/util/list.h>
 
 #include "compiler.h"
+#include "platform-backtrace.h"
 
 typedef struct jive_context_block jive_context_block;
 
@@ -15,6 +16,10 @@ struct jive_context_block {
 		jive_context_block * prev;
 		jive_context_block * next;
 	} context_block_list;
+#ifdef JIVE_MALLOC_TRACE
+	jive_platform_backtrace trace;
+	size_t size;
+#endif
 };
 
 /**
@@ -71,6 +76,11 @@ jive_context_malloc(jive_context * ctx, size_t size)
 		return 0;
 	}
 	
+#ifdef JIVE_MALLOC_TRACE
+	jive_platform_backtrace_collect(&block->trace);
+	block->size = size;
+#endif
+	
 	JIVE_LIST_PUSH_BACK(ctx->blocks, block, context_block_list);
 	
 	return block + 1;
@@ -102,7 +112,33 @@ jive_context_realloc(jive_context * ctx, void * ptr, size_t new_size)
 	}
 	JIVE_LIST_PUSH_BACK(ctx->blocks, new_block, context_block_list);
 	
+#ifdef JIVE_MALLOC_TRACE
+	jive_platform_backtrace_collect(&new_block->trace);
+	new_block->size = new_size;
+#endif
+	
 	return new_block + 1;
+}
+
+void
+jive_context_assert_clean(jive_context * ctx)
+{
+	if (!ctx->blocks.first)
+		return;
+	
+#ifdef JIVE_MALLOC_TRACE
+	jive_context_block * block;
+	JIVE_LIST_ITERATE(ctx->blocks, block, context_block_list) {
+		char tmp[128];
+		ssize_t count = snprintf(tmp, sizeof(tmp), "Block size %zd at %p allocated by\n",
+			block->size, block + 1);
+		write(2, tmp, count);
+		jive_platform_backtrace_print(&block->trace);
+		write(2, "\n", 1);
+	}
+#endif
+	
+	jive_context_fatal_error(ctx, "Unreclaimed memory in context");
 }
 
 void
