@@ -5,6 +5,7 @@
 #include <jive/serialization/rescls-registry.h>
 #include <jive/serialization/typecls-registry.h>
 #include <jive/serialization/token-stream.h>
+#include <jive/arch/address.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/registers.h>
@@ -155,31 +156,6 @@ jive_memory_type_deserialize(
 }
 
 static void
-jive_serialize_immediate(
-	jive_serialization_driver * self,
-	const jive_immediate * imm,
-	jive_token_ostream * os)
-{
-	/* FIXME: labels! */
-	jive_serialize_uint(self, imm->offset, os);
-}
-
-static bool
-jive_deserialize_immediate(
-	jive_serialization_driver * self,
-	jive_token_istream * is,
-	jive_immediate * imm)
-{
-	/* FIXME: labels! */
-	uint64_t offset;
-	if (!jive_deserialize_uint(self, is, &offset))
-		return false;
-	
-	jive_immediate_init(imm, offset, NULL, NULL, NULL);
-	return true;
-}
-
-static void
 jive_instruction_serialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
@@ -257,6 +233,78 @@ jive_instruction_deserialize(
 	return parsed_immediates;
 }
 
+static void
+jive_label_to_bitstring_serialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	const jive_node_attrs * attrs_, jive_token_ostream * os)
+{
+	const jive_label_to_bitstring_node_attrs * attrs = (const jive_label_to_bitstring_node_attrs *) attrs_;
+	
+	jive_serialize_label(driver, attrs->label, os);
+	jive_serialize_char_token(driver, ',', os);
+	jive_serialize_uint(driver, attrs->nbits, os);
+}
+
+static bool
+jive_label_to_bitstring_deserialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	jive_region * region, size_t noperands,
+	jive_output * const operands[], jive_token_istream * is,
+	jive_node ** node)
+{
+	const jive_label * label;
+	uint64_t nbits;
+	if (!jive_deserialize_label(driver, is, &label))
+		return false;
+	if (!jive_deserialize_char_token(driver, is, ','))
+		return false;
+	if (!jive_deserialize_uint(driver, is, &nbits))
+		return false;
+	
+	jive_label_to_bitstring_node_attrs attrs;
+	attrs.label = label;
+	attrs.nbits = nbits;
+	
+	*node = JIVE_LABEL_TO_BITSTRING_NODE.create(region, &attrs.base,
+		0, NULL);
+	
+	return true;
+}
+
+static void
+jive_label_to_address_serialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	const jive_node_attrs * attrs_, jive_token_ostream * os)
+{
+	const jive_label_to_address_node_attrs * attrs = (const jive_label_to_address_node_attrs *) attrs_;
+	
+	jive_serialize_label(driver, attrs->label, os);
+}
+
+static bool
+jive_label_to_address_deserialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	jive_region * region, size_t noperands,
+	jive_output * const operands[], jive_token_istream * is,
+	jive_node ** node)
+{
+	const jive_label * label;
+	if (!jive_deserialize_label(driver, is, &label))
+		return false;
+	
+	jive_label_to_address_node_attrs attrs;
+	attrs.label = label;
+	
+	*node = JIVE_LABEL_TO_ADDRESS_NODE.create(region, &attrs.base,
+		0, NULL);
+	
+	return true;
+}
+
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_register_class, "register");
 JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_RESOURCE, "stackslot",
 	jive_serialization_stackslot_serialize,
@@ -274,3 +322,11 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_INSTRUCTION_NODE, "instr",
 	jive_instruction_serialize,
 	jive_instruction_deserialize);
+JIVE_SERIALIZATION_NODECLS_REGISTER(
+	JIVE_LABEL_TO_ADDRESS_NODE, "label2addr",
+	jive_label_to_address_serialize,
+	jive_label_to_address_deserialize);
+JIVE_SERIALIZATION_NODECLS_REGISTER(
+	JIVE_LABEL_TO_BITSTRING_NODE, "label2bits",
+	jive_label_to_bitstring_serialize,
+	jive_label_to_bitstring_deserialize);

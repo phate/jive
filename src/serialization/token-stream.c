@@ -241,7 +241,8 @@ is_operator(char c)
 		c == '(' || c == ')' ||
 		c == '{' || c == '}' ||
 		c == '<' || c == '>' ||
-		c == ';' || c == ',' || c == '=' || c == ':' || c == '-';
+		c == ';' || c == ',' || c == '=' || c == ':' || c == '.' ||
+		c == '-' || c == '+';
 }
 
 static void
@@ -258,6 +259,17 @@ match_keyword(const char * begin, const char * end, const char * keyword)
 	return (end - begin == len) && (memcmp(begin, keyword, len) == 0);
 }
 
+static const char keywords[][16] = {
+	[jive_token_gate - jive_token_keyword_first] = "gate",
+	[jive_token_node  - jive_token_keyword_first] = "node",
+	[jive_token_region - jive_token_keyword_first] = "region",
+	[jive_token_region_start - jive_token_keyword_first] = "region_start",
+	[jive_token_region_end - jive_token_keyword_first] = "region_end",
+	[jive_token_label - jive_token_keyword_first] = "label",
+	[jive_token_stackptr - jive_token_keyword_first] = "stackptr",
+	[jive_token_frameptr - jive_token_keyword_first] = "frameptr"
+};
+
 static void
 jive_token_istream_simple_parse(jive_token_istream_simple * self)
 {
@@ -273,12 +285,15 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 		const char * p = self->parse_point + 1;
 		while (p != self->end && is_idcont(*p))
 			++p;
-		if (match_keyword(self->parse_point, p, "gate")) {
-			self->base.next.type = jive_token_gate;
-		} else if (match_keyword(self->parse_point, p, "node")) {
-			self->base.next.type = jive_token_node;
-		} else if (match_keyword(self->parse_point, p, "region")) {
-			self->base.next.type = jive_token_region;
+		
+		jive_token_type keyword;
+		for (keyword = jive_token_keyword_first ; keyword < jive_token_keyword_last_plus1; keyword ++) {
+			if (match_keyword(self->parse_point, p, keywords[keyword - jive_token_keyword_first]))
+				break;
+		}
+		
+		if (keyword != jive_token_keyword_last_plus1) {
+			self->base.next.type = keyword;
 		} else {
 			self->base.next.type = jive_token_identifier;
 			size_t len = p - self->parse_point;

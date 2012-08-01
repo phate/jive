@@ -1,5 +1,6 @@
 test-bitstring-serialization
 test-grammar
 test-i386-serialization
+test-label-serialization
 test-region-serialization
 test-rescls-serialization

@@ -2,6 +2,8 @@
 
 JIVE_DEFINE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, struct jive_gate *, gate, gate_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_gatesym_dict, jive_serialization_gatesym, name, name_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_labelsym_hash, jive_serialization_labelsym, struct jive_label *, label, label_hash_chain);
+JIVE_DEFINE_DICT_TYPE(jive_serialization_labelsym_dict, jive_serialization_labelsym, name, name_hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_serialization_nodesym_hash, jive_serialization_nodesym, struct jive_node *, node, node_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_nodesym_dict, jive_serialization_nodesym, name, name_hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym, struct jive_output *, output, output_hash_chain);
@@ -13,6 +15,8 @@ jive_serialization_symtab_init(jive_serialization_symtab * self, jive_context * 
 	self->context = ctx;
 	jive_serialization_gatesym_hash_init(&self->gate_to_name, ctx);
 	jive_serialization_gatesym_dict_init(&self->name_to_gate, ctx);
+	jive_serialization_labelsym_hash_init(&self->label_to_name, ctx);
+	jive_serialization_labelsym_dict_init(&self->name_to_label, ctx);
 	jive_serialization_nodesym_hash_init(&self->node_to_name, ctx);
 	jive_serialization_nodesym_dict_init(&self->name_to_node, ctx);
 	jive_serialization_outputsym_hash_init(&self->output_to_name, ctx);
@@ -28,6 +32,14 @@ jive_serialization_symtab_fini(jive_serialization_symtab * self)
 		jive_serialization_gatesym * sym = gate_iter.entry;
 		jive_serialization_gatesym_hash_iterator_next(&gate_iter);
 		jive_serialization_symtab_remove_gatesym(self, sym);
+	}
+	
+	struct jive_serialization_labelsym_hash_iterator label_iter;
+	label_iter = jive_serialization_labelsym_hash_begin(&self->label_to_name);
+	while (label_iter.entry) {
+		jive_serialization_labelsym * sym = label_iter.entry;
+		jive_serialization_labelsym_hash_iterator_next(&label_iter);
+		jive_serialization_symtab_remove_labelsym(self, sym);
 	}
 	
 	struct jive_serialization_nodesym_hash_iterator node_iter;
@@ -48,6 +60,8 @@ jive_serialization_symtab_fini(jive_serialization_symtab * self)
 	
 	jive_serialization_gatesym_hash_fini(&self->gate_to_name);
 	jive_serialization_gatesym_dict_fini(&self->name_to_gate);
+	jive_serialization_labelsym_hash_fini(&self->label_to_name);
+	jive_serialization_labelsym_dict_fini(&self->name_to_label);
 	jive_serialization_nodesym_hash_fini(&self->node_to_name);
 	jive_serialization_nodesym_dict_fini(&self->name_to_node);
 	jive_serialization_outputsym_hash_fini(&self->output_to_name);
@@ -93,6 +107,47 @@ jive_serialization_symtab_name_to_gate(
 	const char * name)
 {
 	return jive_serialization_gatesym_dict_lookup(&self->name_to_gate, name);
+}
+
+void
+jive_serialization_symtab_insert_labelsym(
+	jive_serialization_symtab * self,
+	struct jive_label * label,
+	char * name)
+{
+	jive_serialization_labelsym * sym;
+	sym = jive_context_malloc(self->name_to_label.context, sizeof(*sym));
+	sym->label = label;
+	sym->name = name;
+	jive_serialization_labelsym_hash_insert(&self->label_to_name, sym);
+	jive_serialization_labelsym_dict_insert(&self->name_to_label, sym);
+}
+
+void
+jive_serialization_symtab_remove_labelsym(
+	jive_serialization_symtab * self,
+	jive_serialization_labelsym * sym)
+{
+	jive_serialization_labelsym_hash_remove(&self->label_to_name, sym);
+	jive_serialization_labelsym_dict_remove(&self->name_to_label, sym);
+	jive_context_free(self->name_to_label.context, sym->name);
+	jive_context_free(self->name_to_label.context, sym);
+}
+
+const jive_serialization_labelsym *
+jive_serialization_symtab_label_to_name(
+	jive_serialization_symtab * self,
+	const struct jive_label * label)
+{
+	return jive_serialization_labelsym_hash_lookup(&self->label_to_name, label);
+}
+
+const jive_serialization_labelsym *
+jive_serialization_symtab_name_to_label(
+	jive_serialization_symtab * self,
+	const char * name)
+{
+	return jive_serialization_labelsym_dict_lookup(&self->name_to_label, name);
 }
 
 void

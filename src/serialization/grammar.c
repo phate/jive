@@ -1,10 +1,12 @@
 #include <jive/serialization/grammar.h>
 
+#include <jive/arch/instruction.h>
 #include <jive/serialization/nodecls-registry.h>
 #include <jive/serialization/rescls-registry.h>
 #include <jive/serialization/typecls-registry.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
 
 void
@@ -286,6 +288,37 @@ jive_deserialize_defined_gate(jive_serialization_driver * self,
 		return false;
 	}
 	*gate = sym->gate;
+	jive_token_istream_advance(is);
+	
+	return true;
+}
+
+void
+jive_serialize_defined_label(jive_serialization_driver * self,
+	jive_label * label, jive_token_ostream * os)
+{
+	const jive_serialization_labelsym * sym =
+		jive_serialization_symtab_label_to_name(&self->symtab, label);
+	const char * label_ident = sym ? sym->name : "%unnamed_label%";
+	jive_token_ostream_identifier(os, label_ident);
+}
+
+bool
+jive_deserialize_defined_label(jive_serialization_driver * self,
+	jive_token_istream * is, jive_label ** label)
+{
+	const jive_token * token = jive_token_istream_current(is);
+	if (token->type != jive_token_identifier) {
+		self->error(self, "Expected label identifier");
+		return false;
+	}
+	const jive_serialization_labelsym * sym =
+		jive_serialization_symtab_name_to_label(&self->symtab, token->v.identifier);
+	if (!sym || !sym->label) {
+		self->error(self, "Expected label identifier");
+		return false;
+	}
+	*label = sym->label;
 	jive_token_istream_advance(is);
 	
 	return true;
@@ -623,6 +656,263 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 }
 
 void
+jive_serialize_label_node(jive_serialization_driver * self,
+	jive_serialization_namegen * namegen,
+	jive_label_node * label, jive_token_ostream * os)
+{
+	jive_node * node = label->node;
+	namegen->name_node(namegen, &self->symtab, node);
+	jive_serialize_defined_node(self, node, os);
+}
+
+bool
+jive_deserialize_label_node(jive_serialization_driver * self,
+	jive_token_istream * is, jive_graph * graph,
+	jive_label_node ** label)
+{
+	jive_context * context = self->context;
+	const jive_token * token = jive_token_istream_current(is);
+	if (token->type != jive_token_identifier)
+		return false;
+	*label = jive_label_node_create_dangling(graph);
+	
+	jive_unresolved_label * unresolved = jive_context_malloc(context, sizeof(*unresolved));
+	unresolved->symbol = jive_context_strdup(context, token->v.identifier);
+	unresolved->type = jive_unresolved_label_node;
+	unresolved->label = &(*label)->base;
+	JIVE_LIST_PUSH_BACK(self->unresolved_labels, unresolved, driver_unresolved_labels_list);
+	
+	jive_token_istream_advance(is);
+	
+	return true;
+}
+
+void
+jive_serialize_label_region_start(jive_serialization_driver * self,
+	jive_serialization_namegen * namegen,
+	struct jive_label_region * label, jive_token_ostream * os)
+{
+	jive_node * node = label->region->anchor->origin->node;
+	namegen->name_node(namegen, &self->symtab, node);
+	jive_serialize_defined_node(self, node, os);
+}
+
+bool
+jive_deserialize_label_region_start(jive_serialization_driver * self,
+	jive_token_istream * is, jive_graph * graph,
+	jive_label_region ** label)
+{
+	jive_context * context = self->context;
+	const jive_token * token = jive_token_istream_current(is);
+	if (token->type != jive_token_identifier)
+		return false;
+	*label = jive_label_region_start_create_dangling(graph);
+	
+	jive_unresolved_label * unresolved = jive_context_malloc(context, sizeof(*unresolved));
+	unresolved->symbol = jive_context_strdup(context, token->v.identifier);
+	unresolved->type = jive_unresolved_label_region_start;
+	unresolved->label = &(*label)->base;
+	JIVE_LIST_PUSH_BACK(self->unresolved_labels, unresolved, driver_unresolved_labels_list);
+	jive_token_istream_advance(is);
+	
+	return true;
+}
+
+void
+jive_serialize_label_region_end(jive_serialization_driver * self,
+	jive_serialization_namegen * namegen,
+	struct jive_label_region * label, jive_token_ostream * os)
+{
+	jive_node * node = label->region->anchor->origin->node;
+	namegen->name_node(namegen, &self->symtab, node);
+	jive_serialize_defined_node(self, node, os);
+}
+
+bool
+jive_deserialize_label_region_end(jive_serialization_driver * self,
+	jive_token_istream * is, jive_graph * graph,
+	jive_label_region ** label)
+{
+	jive_context * context = self->context;
+	const jive_token * token = jive_token_istream_current(is);
+	if (token->type != jive_token_identifier)
+		return false;
+	*label = jive_label_region_end_create_dangling(graph);
+	
+	jive_unresolved_label * unresolved = jive_context_malloc(context, sizeof(*unresolved));
+	unresolved->symbol = jive_context_strdup(context, token->v.identifier);
+	unresolved->type = jive_unresolved_label_region_end;
+	unresolved->label = &(*label)->base;
+	JIVE_LIST_PUSH_BACK(self->unresolved_labels, unresolved, driver_unresolved_labels_list);
+	jive_token_istream_advance(is);
+	
+	return true;
+}
+
+void
+jive_serialize_labelintexpr(jive_serialization_driver * self,
+	jive_serialization_namegen * namegen,
+	jive_label_internal * label, jive_token_ostream * os)
+{
+	if (label->base.class_ == &JIVE_LABEL_NODE) {
+		jive_token_ostream_identifier(os, "node"); /* FIXME: keyword */
+		jive_serialize_label_node(self, namegen, (jive_label_node *) label, os);
+	} else if (label->base.class_ == &JIVE_LABEL_REGION_START) {
+		jive_token_ostream_identifier(os, "region_start"); /* FIXME: keyword */
+		jive_serialize_label_region_start(self, namegen, (jive_label_region *) label, os);
+	} else if (label->base.class_ == &JIVE_LABEL_REGION_END) {
+		jive_token_ostream_identifier(os, "region_end"); /* FIXME: keyword */
+		jive_serialize_label_region_end(self, namegen, (jive_label_region *) label, os);
+	} else
+		JIVE_DEBUG_ASSERT(false);
+}
+
+bool
+jive_deserialize_labelintexpr(jive_serialization_driver * self,
+	jive_token_istream * is, jive_graph * graph,
+	jive_label_internal ** label)
+{
+	const jive_token * token = jive_token_istream_current(is);
+	
+	switch (token->type) {
+		case jive_token_node: {
+			jive_token_istream_advance(is);
+			jive_label_node * tmp;
+			if (!jive_deserialize_label_node(self, is, graph, &tmp))
+				return false;
+			*label = &tmp->base;
+			break;
+		}
+		case jive_token_region_start: {
+			jive_token_istream_advance(is);
+			jive_label_region * tmp;
+			if (!jive_deserialize_label_region_start(self, is, graph, &tmp))
+				return false;
+			*label = &tmp->base;
+			break;
+		}
+		case jive_token_region_end: {
+			jive_token_istream_advance(is);
+			jive_label_region * tmp;
+			if (!jive_deserialize_label_region_end(self, is, graph, &tmp))
+				return false;
+			*label = &tmp->base;
+			break;
+		}
+		default: {
+			self->error(self, "Expected 'node' or 'region_start' or 'region_end'");
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+void
+jive_serialize_label(jive_serialization_driver * self,
+	const jive_label * label, jive_token_ostream * os)
+{
+	if (jive_label_isinstance(label, &JIVE_LABEL_CURRENT))
+		jive_serialize_char_token(self, '.', os);
+	else if (jive_label_isinstance(label, &JIVE_LABEL_FPOFFSET))
+		jive_token_ostream_identifier(os, "frameptr"); /* FIXME: keyword */
+	else if (jive_label_isinstance(label, &JIVE_LABEL_SPOFFSET))
+		jive_token_ostream_identifier(os, "stackptr"); /* FIXME: keyword */
+	else
+		jive_serialize_defined_label(self, (jive_label *) label, os); /* FIXME: const-ness */
+}
+
+bool
+jive_deserialize_label(jive_serialization_driver * self,
+	jive_token_istream * is, const jive_label ** label)
+{
+	const jive_token * token = jive_token_istream_current(is);
+	switch (token->type) {
+		case jive_token_dot: {
+			jive_token_istream_advance(is);
+			*label = &jive_label_current;
+			return true;
+		}
+		case jive_token_frameptr: {
+			jive_token_istream_advance(is);
+			*label = &jive_label_fpoffset;
+			return true;
+		}
+		case jive_token_stackptr: {
+			jive_token_istream_advance(is);
+			*label = &jive_label_fpoffset;
+			return true;
+		}
+		case jive_token_identifier: {
+			jive_label * tmp;
+			if (!jive_deserialize_defined_label(self, is, &tmp))
+				return false;
+			*label = tmp;
+			return true;
+		}
+		default: {
+			self->error(self, "Expected '.', 'frameptr', 'stackptr' or label identifier");
+			return false;
+		}
+	}
+}
+
+void
+jive_serialize_immediate(jive_serialization_driver * self,
+	const jive_immediate * imm, jive_token_ostream * os)
+{
+	jive_serialize_uint(self, imm->offset, os);
+	if (imm->add_label) {
+		jive_serialize_char_token(self, '+', os);
+		jive_serialize_label(self, imm->add_label, os);
+	}
+	if (imm->sub_label) {
+		jive_serialize_char_token(self, '-', os);
+		jive_serialize_label(self, imm->add_label, os);
+	}
+}
+
+bool
+jive_deserialize_immediate(jive_serialization_driver * self,
+	jive_token_istream * is, jive_immediate * imm)
+{
+	uint64_t offset;
+	if (!jive_deserialize_uint(self, is, &offset))
+		return false;
+	
+	const jive_label * add_label = NULL;
+	const jive_label * sub_label = NULL;
+	
+	if (jive_token_istream_current(is)->type == jive_token_plus) {
+		jive_token_istream_advance(is);
+		if (!jive_deserialize_label(self, is, &add_label))
+			return false;
+	}
+	
+	if (jive_token_istream_current(is)->type == jive_token_minus) {
+		jive_token_istream_advance(is);
+		if (!jive_deserialize_label(self, is, &sub_label))
+			return false;
+	}
+	
+	jive_immediate_init(imm, offset, add_label, sub_label, NULL);
+	return true;
+}
+
+void
+jive_serialize_labeldef(jive_serialization_driver * self,
+	jive_serialization_namegen * namegen,
+	jive_label_internal * label, jive_token_ostream * os)
+{
+	namegen->name_label(namegen, &self->symtab, &label->base);
+	jive_serialize_defined_label(self, &label->base, os);
+	jive_serialize_char_token(self, '=', os);
+	jive_token_ostream_identifier(os, "label"); /* FIXME: keyword */
+	jive_serialize_labelintexpr(self, namegen, label, os);
+	jive_serialize_char_token(self, ';', os);
+}
+
+void
 jive_serialize_nodedef(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
 	jive_node * node, jive_token_ostream * os)
@@ -837,6 +1127,17 @@ jive_deserialize_def(jive_serialization_driver * self,
 						&self->symtab, node, name);
 					break;
 				}
+				case jive_token_label: {
+					jive_token_istream_advance(is);
+					jive_label_internal * label;
+					if (!jive_deserialize_labelintexpr(self, is, region->graph, &label)) {
+						jive_serialization_symtab_strfree(&self->symtab, name);
+						return false;
+					}
+					jive_serialization_symtab_insert_labelsym(
+						&self->symtab, &label->base, name);
+					break;
+				};
 				default: {
 					self->error(self, "Expected 'gate' or 'node'");
 					return false;

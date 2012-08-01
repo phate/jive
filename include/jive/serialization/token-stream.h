@@ -27,9 +27,21 @@ typedef enum jive_token_type {
 	jive_token_comma = ',',
 	jive_token_equal = '=',
 	jive_token_minus = '-',
+	jive_token_plus = '+',
+	jive_token_dot = '.',
+	
+	jive_token_keyword_first = 256,
+	
 	jive_token_gate = 256,
 	jive_token_node = 257,
-	jive_token_region = 258
+	jive_token_region = 258,
+	jive_token_region_start = 259,
+	jive_token_region_end = 260,
+	jive_token_label = 261,
+	jive_token_stackptr = 262,
+	jive_token_frameptr = 263,
+	
+	jive_token_keyword_last_plus1
 } jive_token_type;
 
 typedef struct jive_token jive_token;
