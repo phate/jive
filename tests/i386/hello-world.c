@@ -14,7 +14,7 @@
 #include <jive/arch/stackslot.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
-#include <jive/types/record/record.h>
+#include <jive/types/record/rcdgroup.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>

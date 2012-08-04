@@ -5,7 +5,7 @@
 #include <jive/context.h>
 #include <jive/vsdg.h>
 #include <jive/types/bitstring.h>
-#include <jive/types/record/record.h>
+#include <jive/types/record/rcdgroup.h>
 
 static int test_main(void)
 {

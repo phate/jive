@@ -13,7 +13,7 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
-#include <jive/types/record/record.h>
+#include <jive/types/record/rcdgroup.h>
 #include <jive/vsdg/union.h>
 #include <jive/vsdg/uniontype.h>
 

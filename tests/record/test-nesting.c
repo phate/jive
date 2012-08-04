@@ -7,7 +7,8 @@
 #include <jive/view.h>
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
-#include <jive/types/record/record.h>
+#include <jive/types/record/rcdgroup.h>
+#include <jive/types/record/rcdselect.h>
 #include <jive/types/bitstring.h>
 
 static int test_main(void)

@@ -72,7 +72,8 @@ LIBJIVE_SRC += \
 # records
 LIBJIVE_SRC += \
 	src/types/record/rcdtype.c \
-	src/types/record/record.c \
+	src/types/record/rcdgroup.c \
+	src/types/record/rcdselect.c \
 
 # arch definitions
 LIBJIVE_SRC += \
