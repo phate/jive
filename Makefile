@@ -15,7 +15,6 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/operators/binary.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/controltype.c \
 	src/vsdg/functiontype.c src/vsdg/function.c \
-	src/vsdg/recordtype.c src/vsdg/record.c \
 	src/vsdg/uniontype.c src/vsdg/union.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
@@ -69,6 +68,11 @@ LIBJIVE_SRC += \
 	src/types/bitstring/comparison/bitugreatereq.c \
 	src/types/bitstring/symbolic-expression.c \
 	src/types/bitstring/bitoperation-classes.c \
+
+# records
+LIBJIVE_SRC += \
+	src/types/record/recordtype.c \
+	src/types/record/record.c \
 
 # arch definitions
 LIBJIVE_SRC += \

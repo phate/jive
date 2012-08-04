@@ -1,11 +1,11 @@
-#ifndef JIVE_VSDG_RECORD_H
-#define JIVE_VSDG_RECORD_H
+#ifndef JIVE_TYPES_RECORD_RECORD_H
+#define JIVE_TYPES_RECORD_RECORD_H
 
 #include <jive/common.h>
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/basetype.h>
-#include <jive/vsdg/recordtype.h>
+#include <jive/types/record/recordtype.h>
 
 extern const jive_node_class JIVE_GROUP_NODE;
 

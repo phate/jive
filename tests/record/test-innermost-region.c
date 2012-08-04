@@ -6,7 +6,7 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/function.h>
-#include <jive/vsdg/record.h>
+#include <jive/types/record/record.h>
 
 static int test_main(void)
 {

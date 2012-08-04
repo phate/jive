@@ -6,7 +6,7 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
-#include <jive/vsdg/recordtype.h>
+#include <jive/types/record/recordtype.h>
 
 struct jive_label;
 

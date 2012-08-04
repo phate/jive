@@ -1,4 +1,4 @@
-#include <jive/vsdg/recordtype.h>
+#include <jive/types/record/recordtype.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 

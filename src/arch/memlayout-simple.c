@@ -1,7 +1,7 @@
 #include <jive/arch/memlayout-simple.h>
 
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/recordtype.h>
+#include <jive/types/record/recordtype.h>
 #include <jive/vsdg/uniontype.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry, const struct jive_record_declaration *, decl, hash_chain);
