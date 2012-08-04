@@ -5,7 +5,7 @@
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/basetype.h>
-#include <jive/types/record/recordtype.h>
+#include <jive/types/record/rcdtype.h>
 
 extern const jive_node_class JIVE_GROUP_NODE;
 

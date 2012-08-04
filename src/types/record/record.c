@@ -7,7 +7,7 @@
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
-#include <jive/types/record/recordtype.h>
+#include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/node-private.h>
 
 

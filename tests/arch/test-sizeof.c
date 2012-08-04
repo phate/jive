@@ -6,7 +6,7 @@
 #include <jive/view.h>
 #include <jive/types/bitstring.h>
 #include <jive/arch/addresstype.h>
-#include <jive/types/record/recordtype.h>
+#include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/uniontype.h>
 #include <jive/arch/sizeof.h>
 #include <jive/vsdg/node-private.h>

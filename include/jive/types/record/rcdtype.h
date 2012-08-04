@@ -1,5 +1,5 @@
-#ifndef JIVE_TYPES_RECORD_RECORDTYPE_H
-#define JIVE_TYPES_RECORD_RECORDTYPE_H
+#ifndef JIVE_TYPES_RECORD_RCDTYPE_H
+#define JIVE_TYPES_RECORD_RCDTYPE_H
 
 #include <jive/vsdg/valuetype.h>
 

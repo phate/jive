@@ -8,7 +8,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/types/record/record.h>
-#include <jive/types/record/recordtype.h>
+#include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/union.h>
 #include <jive/vsdg/uniontype.h>
 #include <jive/vsdg/statetype.h>
