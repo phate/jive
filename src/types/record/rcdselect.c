@@ -39,9 +39,9 @@ jive_select_node_init_(jive_select_node * self, struct jive_region * region,
 		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
 	}
 	const jive_record_type * operand_type = (const jive_record_type *)
-		operand->class_->get_type(operand);
-
-	if (element > operand_type->decl->nelements) {
+		jive_output_get_type(operand);
+	
+	if (element >= operand_type->decl->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp), "Type mismatch: attempted to select element #%zd from record of %zd elements",
 			element, operand_type->decl->nelements);
