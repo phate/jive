@@ -24,7 +24,7 @@ struct jive_select_node {
 	jive_select_node_attrs attrs;
 };
 
-jive_select_node *
+jive_output *
 jive_select_node_create(struct jive_region * region, size_t element, jive_output * operand);
 
 jive_output *
