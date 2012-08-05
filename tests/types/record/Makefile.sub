@@ -1,0 +1,2 @@
+TESTS += \
+	types/record/test-rcdselect \
