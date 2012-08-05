@@ -1,10 +1,9 @@
-#include <jive/types/record/rcdselect.h>
+#include <jive/types/record.h>
 
 #include <stdio.h>
 #include <string.h>
 
 #include <jive/vsdg/node-private.h>
-#include <jive/types/record/rcdtype.h>
 
 static char *
 jive_select_node_get_label_(const jive_node * self);
@@ -48,13 +47,10 @@ const jive_unary_operation_class JIVE_SELECT_NODE_ = {
 };
 
 static void
-jive_select_node_init_(jive_select_node * self, struct jive_region * region,
-	size_t element, jive_output * operand)
+perform_check(jive_context * context, const jive_output * operand, size_t element)
 {
-	jive_context * context = region->graph->context;
-	if (operand->class_ != &JIVE_RECORD_OUTPUT) {
+	if (!jive_output_isinstance(operand, &JIVE_RECORD_OUTPUT))
 		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
-	}
 	const jive_record_type * operand_type = (const jive_record_type *)
 		jive_output_get_type(operand);
 	
@@ -64,12 +60,22 @@ jive_select_node_init_(jive_select_node * self, struct jive_region * region,
 			element, operand_type->decl->nelements);
 		jive_context_fatal_error(context, jive_context_strdup(context, tmp));
 	}
+}
+
+static void
+jive_select_node_init_(jive_select_node * self, struct jive_region * region,
+	size_t element, jive_output * operand)
+{
+	jive_context * context = region->graph->context;
+	perform_check(context, operand, element);
 	
 	self->attrs.element = element;
 
+	const jive_record_type * operand_type = (const jive_record_type *)
+		jive_output_get_type(operand);
 	const jive_type * output_type = &operand_type->decl->elements[element]->base;
 	jive_node_init_(&self->base, region,
-		1, (const jive_type * []){&operand_type->base.base}, &operand,
+		1, (const jive_type * []){jive_output_get_type(operand)}, &operand,
 		1, &output_type);
 }
 
@@ -113,9 +119,16 @@ jive_select_node_create_(struct jive_region * region, const jive_node_attrs * at
 }
 
 static jive_unop_reduction_path_t
-jive_select_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
+jive_select_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
 	const jive_output * operand)
 {
+	const jive_select_node_attrs * attrs = (const jive_select_node_attrs *) attrs_;
+	
+	if (jive_node_isinstance(operand->node, &JIVE_GROUP_NODE)) {
+		perform_check(operand->node->graph->context, operand, attrs->element);
+		return jive_unop_reduction_inverse;
+	}
+
 	return jive_unop_reduction_none;
 }
 
@@ -123,6 +136,11 @@ static jive_output *
 jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
+	const jive_select_node_attrs * attrs = (const jive_select_node_attrs *) attrs_;
+
+	if (path == jive_unop_reduction_inverse)
+		return operand->node->inputs[attrs->element]->origin;
+
 	return NULL;
 }
 
@@ -140,8 +158,12 @@ jive_select_node_create(struct jive_region * region, size_t member, jive_output 
 jive_output *
 jive_select_create(size_t member, jive_output * operand)
 {
-	jive_select_node * node = jive_select_node_create(operand->node->region, member, operand);
+	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(operand->node->region->graph, &JIVE_SELECT_NODE);
 
-	return (jive_output *)node->base.outputs[0];
+	jive_select_node_attrs attrs;
+	attrs.element = member;
+
+	return jive_unary_operation_normalized_create(nf, operand->node->region, &attrs.base, operand);
 }
 
