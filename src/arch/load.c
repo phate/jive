@@ -61,15 +61,15 @@ static jive_node *
 jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
-	JIVE_DEBUG_ASSERT(noperands == 1);
 	const jive_load_node_attrs * attrs = (const jive_load_node_attrs *) attrs_;
 
 	if(jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
 		size_t nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) operands[0]);
 		return jive_load_by_bitstring_node_create(region, operands[0], nbits, attrs->datatype,
-			0, NULL);
+			noperands-1, &operands[1]);
 	} else {
-		return jive_load_by_address_node_create(region, operands[0], attrs->datatype, 0, NULL);
+		return jive_load_by_address_node_create(region, operands[0], attrs->datatype,
+			noperands-1, &operands[1]);
 	}
 }
 
