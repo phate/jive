@@ -76,7 +76,8 @@ LIBJIVE_SRC += \
 	src/arch/memory.c \
 	src/arch/subroutine.c \
 	src/arch/regselector.c \
-	src/arch/loadstore.c \
+	src/arch/load.c \
+	src/arch/store.c \
 	src/arch/addresstype.c \
 	src/arch/address.c \
 	src/arch/memlayout.c \

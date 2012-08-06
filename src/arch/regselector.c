@@ -2,7 +2,8 @@
 
 #include <stdint.h>
 
-#include <jive/arch/loadstore.h>
+#include <jive/arch/load.h>
+#include <jive/arch/store.h>
 #include <jive/arch/regvalue.h>
 #include <jive/common.h>
 #include <jive/context.h>

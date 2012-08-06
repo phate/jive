@@ -10,7 +10,8 @@
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/call.h>
-#include <jive/arch/loadstore.h>
+#include <jive/arch/load.h>
+#include <jive/arch/store.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>

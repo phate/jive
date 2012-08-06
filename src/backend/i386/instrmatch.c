@@ -2,7 +2,8 @@
 
 #include <jive/arch/address.h>
 #include <jive/arch/instruction.h>
-#include <jive/arch/loadstore.h>
+#include <jive/arch/load.h>
+#include <jive/arch/store.h>
 #include <jive/arch/regvalue.h>
 #include <jive/arch/subroutine.h>
 #include <jive/backend/i386/classifier.h>

@@ -8,7 +8,8 @@
 #include <jive/vsdg.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/address-transform.h>
-#include <jive/arch/loadstore.h>
+#include <jive/arch/load.h>
+#include <jive/arch/store.h>
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>
 

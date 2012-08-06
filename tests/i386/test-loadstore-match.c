@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <jive/arch/loadstore.h>
+#include <jive/arch/load.h>
+#include <jive/arch/store.h>
 #include <jive/arch/regselector.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instructionset.h>

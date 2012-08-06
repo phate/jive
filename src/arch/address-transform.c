@@ -3,7 +3,8 @@
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/call.h>
-#include <jive/arch/loadstore.h>
+#include <jive/arch/load.h>
+#include <jive/arch/store.h>
 #include <jive/arch/memlayout.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
