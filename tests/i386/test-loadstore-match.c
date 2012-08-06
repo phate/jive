@@ -83,16 +83,19 @@ prepare_graph(jive_context * ctx)
 	
 	jive_output * sum = jive_bitsum(2, (jive_output *[]){v1, v2});
 	jive_output * diff = jive_bitdifference(v1, v2);
-	
-	state1 = *jive_store_by_bitstring_create(
+
+	jive_output * state_;	
+	jive_store_by_bitstring_create(
 		arg1, 32,
 		(const jive_value_type *) bits32, sum,
-		1, &state1);
+		1, &state1, &state_);
+	state1 = state_;
 	
-	state2 = *jive_store_by_bitstring_create(
+	jive_store_by_bitstring_create(
 		arg2, 32,
 		(const jive_value_type *) bits32, diff,
-		1, &state2);
+		1, &state2, &state_);
+	state2 = state_;
 	
 	jive_node_add_input(&sub->leave->base, state, state1);
 	jive_node_add_input(&sub->leave->base, state, state2);
