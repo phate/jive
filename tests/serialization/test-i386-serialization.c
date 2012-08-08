@@ -4,6 +4,7 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/equivalence.h>
 #include <jive/backend/i386/instructionset.h>
+#include <jive/backend/i386/subroutine.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
@@ -23,8 +24,17 @@ int main()
 	jive_buffer buf;
 	jive_buffer_init(&buf, ctx);
 	
-	/* inhibit implicit normalization */
 	jive_graph * gr1 = jive_graph_create(ctx);
+	
+#if 0
+	jive_subroutine * s1 = jive_i386_subroutine_create(
+		gr1->root_region,
+		1,(const jive_argument_type[]) { jive_argument_int },
+		1,(const jive_argument_type[]) { jive_argument_int });
+	(void) s1;
+#endif
+	
+	/* inhibit implicit normalization */
 	jive_node_normal_form_set_mutable(
 		jive_graph_get_nodeclass_form(gr1, &JIVE_NODE),
 		false);

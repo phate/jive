@@ -10,6 +10,7 @@
 #include <jive/arch/memory.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
+#include <jive/arch/subroutine.h>
 
 static void
 jive_serialization_stackslot_serialize(
@@ -330,3 +331,13 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_LABEL_TO_BITSTRING_NODE, "label2bits",
 	jive_label_to_bitstring_serialize,
 	jive_label_to_bitstring_deserialize);
+JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
+	JIVE_SUBROUTINE_ENTER_NODE, "subroutine_enter");
+JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
+	JIVE_SUBROUTINE_LEAVE_NODE, "subroutine_leave");
+#if 0
+JIVE_SERIALIZATION_NODECLS_REGISTER(
+	JIVE_SUBROUTINE_NODE, "subroutine",
+	jive_subroutine_serialize,
+	jive_subroutine_deserialize);
+#endif

@@ -18,28 +18,6 @@ jive_subroutine_create_region_and_nodes(jive_subroutine * subroutine, struct jiv
 jive_subroutine_passthrough
 jive_subroutine_create_passthrough(jive_subroutine * subroutine, const struct jive_resource_class * cls, const char * name);
 
-static inline void
-jive_subroutine_init(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context,
-	const struct jive_instructionset * instructionset)
-{
-	self->class_ = cls;
-	
-	self->context = context;
-	
-	self->enter = NULL;
-	self->leave = NULL;
-	self->subroutine_node = NULL;
-	
-	self->region = NULL;
-	
-	self->frame.lower_bound = 0;
-	self->frame.upper_bound = 0;
-	self->frame.frame_pointer_offset = 0;
-	self->frame.stack_pointer_offset = 0;
-	self->frame.call_area_size = 0;
-	self->instructionset = instructionset;
-}
-
 jive_gate *
 jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * new_node);
 
@@ -51,5 +29,17 @@ jive_subroutine_match_passthrough(const jive_subroutine * old_subroutine, const 
 	new_pt->input = new_subroutine->leave->base.inputs[old_pt->input->index];
 	new_pt->gate = new_pt->output->gate;
 }
+
+/* base constructor */
+void
+jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context,
+	const struct jive_instructionset * instructionset,
+	size_t nparameters,
+	size_t nreturns,
+	size_t npassthroughs);
+
+/* base destructor */
+void
+jive_subroutine_fini_(jive_subroutine * self);
 
 #endif

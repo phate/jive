@@ -322,3 +322,57 @@ jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * n
 	
 	return NULL;
 }
+
+void
+jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context,
+	const struct jive_instructionset * instructionset,
+	size_t nparameters,
+	size_t nreturns,
+	size_t npassthroughs)
+{
+	self->class_ = cls;
+	
+	self->context = context;
+	
+	self->enter = NULL;
+	self->leave = NULL;
+	self->subroutine_node = NULL;
+	
+	self->region = NULL;
+	
+	self->frame.lower_bound = 0;
+	self->frame.upper_bound = 0;
+	self->frame.frame_pointer_offset = 0;
+	self->frame.stack_pointer_offset = 0;
+	self->frame.call_area_size = 0;
+	self->instructionset = instructionset;
+	
+	size_t n;
+	
+	self->nparameters = nparameters;
+	self->parameters = jive_context_malloc(context, sizeof(self->parameters[0]) * nparameters);
+	for (n = 0; n < nparameters; n++)
+		self->parameters[n] = NULL;
+	
+	self->nreturns = nreturns;
+	self->returns = jive_context_malloc(context, sizeof(self->returns[0]) * nreturns);
+	for (n = 0; n < nreturns; n++)
+		self->returns[n] = NULL;
+	
+	self->npassthroughs = npassthroughs;
+	self->passthroughs = jive_context_malloc(context, sizeof(self->passthroughs[0]) * npassthroughs);
+	for (n = 0; n < npassthroughs; n++) {
+		self->passthroughs[n].gate = NULL;
+		self->passthroughs[n].input = NULL;
+		self->passthroughs[n].output = NULL;
+	}
+}
+
+void
+jive_subroutine_fini_(jive_subroutine * self)
+{
+	jive_context * context = self->context;
+	jive_context_free(context, self->passthroughs);
+	jive_context_free(context, self->parameters);
+	jive_context_free(context, self->returns);
+}

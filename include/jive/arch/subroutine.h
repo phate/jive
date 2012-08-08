@@ -106,6 +106,9 @@ struct jive_subroutine {
 	size_t nreturns;
 	jive_gate ** returns;
 	
+	size_t npassthroughs;
+	jive_subroutine_passthrough * passthroughs;
+	
 	struct {
 		/* lower bound of frame (relative to initial position of stack pointer) */
 		ssize_t lower_bound;

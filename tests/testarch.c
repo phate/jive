@@ -417,14 +417,6 @@ const jive_instructionset testarch_isa = {
 
 /* subroutine support */
 
-static void
-jive_testarch_subroutine_fini_(jive_subroutine * self_)
-{
-	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
-	jive_context_free(self->base.context, self->base.parameters);
-	jive_context_free(self->base.context, self->base.returns);
-}
-
 static jive_output *
 jive_testarch_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
 {
@@ -505,7 +497,7 @@ jive_testarch_subroutine_prepare_stackframe_(jive_subroutine * self, const jive_
 }
 
 static const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
-	.fini = jive_testarch_subroutine_fini_,
+	.fini = jive_subroutine_fini_,
 	.value_parameter = jive_testarch_subroutine_value_parameter_,
 	.value_return = jive_testarch_subroutine_value_return_,
 	.copy = jive_testarch_subroutine_copy_,
@@ -520,21 +512,8 @@ jive_testarch_subroutine_alloc(jive_region * region, size_t nparameters, size_t 
 	
 	jive_testarch_subroutine * self;
 	self = jive_context_malloc(context, sizeof(*self));
-	jive_subroutine_init(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa);
-	
-	size_t n;
-	
-	self->base.nparameters = nparameters;
-	self->base.parameters = jive_context_malloc(context, sizeof(self->base.parameters[0]) * nparameters);
-	
-	for (n = 0; n < nparameters; n++)
-		self->base.parameters[n] = NULL;
-	
-	self->base.nreturns = nreturns;
-	self->base.returns = jive_context_malloc(context, sizeof(self->base.returns[0]) * nreturns);
-	
-	for (n = 0; n < nreturns; n++)
-		self->base.returns[n] = NULL;
+	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
+		nparameters, nreturns, 0);
 	
 	return self;
 }
