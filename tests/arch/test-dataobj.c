@@ -14,8 +14,8 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
 #include <jive/types/record/rcdgroup.h>
-#include <jive/vsdg/union.h>
-#include <jive/vsdg/uniontype.h>
+#include <jive/types/union/union.h>
+#include <jive/types/union/uniontype.h>
 
 typedef jive_output *(*data_def_fn)(jive_graph *);
 

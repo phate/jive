@@ -7,7 +7,7 @@
 #include <jive/view.h>
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/union.h>
+#include <jive/types/union/union.h>
 #include <jive/types/bitstring.h>
 
 static int test_main(void)

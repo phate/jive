@@ -15,7 +15,6 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/operators/binary.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/controltype.c \
 	src/vsdg/functiontype.c src/vsdg/function.c \
-	src/vsdg/uniontype.c src/vsdg/union.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
 	src/vsdg/negotiator.c \
@@ -74,6 +73,11 @@ LIBJIVE_SRC += \
 	src/types/record/rcdtype.c \
 	src/types/record/rcdgroup.c \
 	src/types/record/rcdselect.c \
+
+# unions
+LIBJIVE_SRC += \
+	src/types/union/uniontype.c \
+	src/types/union/union.c \
 
 # arch definitions
 LIBJIVE_SRC += \

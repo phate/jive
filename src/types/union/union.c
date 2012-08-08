@@ -1,6 +1,6 @@
-#include <jive/vsdg/union.h>
+#include <jive/types/union/union.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/uniontype.h>
+#include <jive/types/union/uniontype.h>
 #include <jive/context.h>
 #include <jive/common.h>
 #include <jive/vsdg/region.h>

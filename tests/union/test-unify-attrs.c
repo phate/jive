@@ -5,7 +5,7 @@
 #include <jive/context.h>
 #include <jive/vsdg.h>
 #include <jive/types/bitstring.h>
-#include <jive/vsdg/union.h>
+#include <jive/types/union/union.h>
 
 static int test_main(void)
 {

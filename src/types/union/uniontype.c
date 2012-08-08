@@ -1,4 +1,4 @@
-#include <jive/vsdg/uniontype.h>
+#include <jive/types/union/uniontype.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 

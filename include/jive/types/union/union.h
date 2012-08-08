@@ -1,10 +1,10 @@
-#ifndef JIVE_VSDG_UNION_H
-#define JIVE_VSDG_UNION_H
+#ifndef JIVE_TYPES_UNION_UNION_H
+#define JIVE_TYPES_UNION_UNION_H
 
 #include <jive/common.h>
 
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/uniontype.h>
+#include <jive/types/union/uniontype.h>
 
 struct jive_union_declaration;
 

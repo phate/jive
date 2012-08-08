@@ -7,7 +7,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/arch/memlayout.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/vsdg/uniontype.h>
+#include <jive/types/union/uniontype.h>
 
 /* sizeof node */
 
