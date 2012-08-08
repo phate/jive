@@ -17,6 +17,34 @@
 
 /* store node normal form */
 
+static inline bool
+store_reduce(jive_output * address, jive_output * value,
+	size_t nstates, jive_output * const istates[], jive_output * ostates[])
+{
+	if (nstates == 0)
+		return false;
+
+	jive_node * store = istates[0]->node;
+	if (!jive_node_isinstance(store, &JIVE_STORE_NODE))
+		return false;
+
+	size_t n;
+	for(n = 0; n < nstates; n++) {
+		if (istates[n]->node != store)
+			return false;
+	}
+
+	if(store->inputs[0]->origin != address)
+		return false;
+
+	if (store->inputs[1]->origin != value)
+		return false;
+
+	ostates = &store->outputs[2];
+
+	return true;
+}
+
 static inline void
 group_reduce(const jive_store_node_normal_form * self, struct jive_region * region,
 	const jive_node_attrs * attrs_, jive_output * address, jive_output * value,
@@ -66,13 +94,10 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	}
 
 	for(n = 0; n < nstates; n++) {
-	jive_output * tmp[nstates];
-		for (e = 0; e < decl->nelements; e++) {
-			size_t i;
-			for(i = 0; i < nstates; i++)
-				tmp[i] = elems_ostates[e][n];
-		}
-		ostates[n] = jive_state_merge(memtype, nstates, tmp);
+		jive_output * tmp[decl->nelements];
+		for (e = 0; e < decl->nelements; e++)
+			tmp[e] = elems_ostates[e][n];
+		ostates[n] = jive_state_merge(memtype, decl->nelements, tmp);
 	}
 }
 
@@ -98,6 +123,9 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 		if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_GROUP_NODE)) {
 			group_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
 				nstates, istates, ostates);
+			reduction = true;
+		} else if (store_reduce(node->inputs[0]->origin, node->inputs[1]->origin,
+			nstates, istates, ostates)) {
 			reduction = true;
 		}
 
@@ -145,6 +173,10 @@ jive_store_node_operands_are_normalized_(const jive_node_normal_form * self_, si
 	if (self->enable_reducible) {
 		if (jive_node_isinstance(operands[1]->node, &JIVE_GROUP_NODE))
 			return false;
+
+		jive_output * ostates[noperands-2];
+		if (store_reduce(operands[0], operands[1], noperands-2, &operands[2], ostates))
+			return false;
 	}
 
 	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))	
@@ -173,6 +205,9 @@ jive_store_node_normalized_create_(const jive_store_node_normal_form * self,
 			group_reduce(self, region, attrs, address, value, nstates, istates, ostates);
 			return;
 		}
+
+		if (store_reduce(address, value, nstates, istates, ostates))
+			return;
 	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {
