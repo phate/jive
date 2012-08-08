@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,8 +10,71 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/arch/addresstype.h>
+#include <jive/types/record/rcdgroup.h>
+#include <jive/arch/address.h>
+#include <jive/arch/address-transform.h>
+#include <jive/arch/memorytype.h>
 
 /* store node normal form */
+
+static inline void
+group_reduce(const jive_store_node_normal_form * self, struct jive_region * region,
+	const jive_node_attrs * attrs_, jive_output * address, jive_output * value,
+	size_t nstates, jive_output * const istates[], jive_output * ostates[])
+{
+	if (nstates == 0) {
+		jive_output * operands[2] = {address, value};
+		self->base.node_class->create(region, attrs_, 2, operands);
+		return;
+	}
+
+	jive_group_node * group_node = jive_group_node_cast(value->node);
+	const jive_record_declaration * decl = group_node->attrs.decl;
+
+	if (decl->nelements == 0) {
+		size_t n;
+		for (n = 0; n < nstates; n++)
+			ostates[n] = istates[n];
+		return;
+	}
+
+	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
+	if (jive_output_isinstance(address, &JIVE_BITSTRING_OUTPUT))
+		address = jive_bitstring_to_address_create(address, attrs->nbits, jive_output_get_type(address));
+
+	size_t n;
+	jive_node * split_nodes[nstates];
+	JIVE_DECLARE_MEMORY_TYPE(memtype);
+	for (n = 0; n < nstates; n++)
+		split_nodes[n] = jive_state_split(memtype, istates[n], decl->nelements);
+
+	size_t e;
+	jive_output * elems_ostates[decl->nelements][nstates];
+	for (e = 0; e < decl->nelements; e++) {
+		jive_output * elem_address = jive_memberof(address, decl, e);
+
+		jive_store_node_attrs elem_attrs;
+		elem_attrs.nbits = attrs->nbits;
+		elem_attrs.datatype = (jive_value_type *) decl->elements[e];
+
+		jive_output * elem_istates[nstates];
+		for (n = 0; n < nstates; n++)
+			elem_istates[n] = split_nodes[n]->outputs[e];
+
+		jive_store_node_normalized_create(self, region, &elem_attrs.base, elem_address,
+			group_node->base.inputs[e]->origin, nstates, elem_istates, elems_ostates[e]);	
+	}
+
+	for(n = 0; n < nstates; n++) {
+	jive_output * tmp[nstates];
+		for (e = 0; e < decl->nelements; e++) {
+			size_t i;
+			for(i = 0; i < nstates; i++)
+				tmp[i] = elems_ostates[e][n];
+		}
+		ostates[n] = jive_state_merge(memtype, nstates, tmp);
+	}
+}
 
 static bool
 jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node * node)
@@ -21,6 +84,31 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 		return true;
 
 	const jive_node_attrs * attrs = jive_node_get_attrs(node);
+
+	if (self->enable_reducible) {
+		size_t nstates = node->ninputs-2;
+		jive_output * istates[nstates];
+		jive_output * ostates[nstates];
+		
+		size_t n;
+		for (n = 0; n < nstates; n++)
+			istates[n] = node->inputs[n+2]->origin;
+
+		bool reduction = false;
+		if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_GROUP_NODE)) {
+			group_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
+				nstates, istates, ostates);
+			reduction = true;
+		}
+
+		if (reduction) {
+			for(n = 0; n < nstates; n++)
+				jive_output_replace(node->outputs[n], ostates[n]);
+			/* FIXME: not sure whether "destroy" is really appropriate? */
+			jive_node_destroy(node);
+			return false;
+		}
+	}
 
 	if (self->base.enable_cse) {
 		size_t n;
@@ -54,7 +142,12 @@ jive_store_node_operands_are_normalized_(const jive_node_normal_form * self_, si
 	jive_region * region = operands[0]->node->region;
 	const jive_node_class * cls = self->base.node_class;
 
-	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))
+	if (self->enable_reducible) {
+		if (jive_node_isinstance(operands[1]->node, &JIVE_GROUP_NODE))
+			return false;
+	}
+
+	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))	
 		return false;
 
 	return true;
@@ -74,6 +167,13 @@ jive_store_node_normalized_create_(const jive_store_node_normal_form * self,
 		operands[n+2] = istates[n];
 
 	const jive_node_class * cls = self->base.node_class;
+
+	if (self->base.enable_mutable && self->enable_reducible) {
+		if (jive_node_isinstance(value->node, &JIVE_GROUP_NODE)) {
+			group_reduce(self, region, attrs, address, value, nstates, istates, ostates);
+			return;
+		}
+	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {
 		jive_node * node = jive_node_cse(region, cls, attrs, noperands, operands);
