@@ -9,7 +9,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/types/union/union.h>
+#include <jive/types/union/unnunify.h>
 #include <jive/types/union/unntype.h>
 #include <jive/vsdg/statetype.h>
 

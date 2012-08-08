@@ -77,7 +77,8 @@ LIBJIVE_SRC += \
 # unions
 LIBJIVE_SRC += \
 	src/types/union/unntype.c \
-	src/types/union/union.c \
+	src/types/union/unnunify.c \
+	src/types/union/unnchoose.c \
 
 # arch definitions
 LIBJIVE_SRC += \
