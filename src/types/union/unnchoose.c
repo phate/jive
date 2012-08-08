@@ -42,7 +42,7 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 	const jive_union_type * operand_type = (const jive_union_type *)
 		operand->class_->get_type(operand);
 
-	if (element > operand_type->decl->nelements) {
+	if (element >= operand_type->decl->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp), "Type mismatch: attempted to select element #%zd from union of %zd elements",
 			element, operand_type->decl->nelements);
