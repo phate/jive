@@ -19,15 +19,32 @@ jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * at
 static bool
 jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
-const jive_node_class JIVE_CHOOSE_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "CHOOSE",
-	.fini = jive_node_fini_, /* inherit */
-	.get_label = jive_choose_node_get_label_, /* override */
-	.get_attrs = jive_choose_node_get_attrs_, /* override */
-	.match_attrs = jive_choose_node_match_attrs_, /* overrride */
-	.create = jive_choose_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+static jive_unop_reduction_path_t
+jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	const jive_output * operand);
+
+static jive_output *
+jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs, jive_output * output);
+
+const jive_unary_operation_class JIVE_CHOOSE_NODE_ = {
+	.base = { /* jive_node_class */
+		.parent = &JIVE_UNARY_OPERATION,
+		.name = "CHOOSE",
+		.fini = jive_node_fini_, /* inherit */
+		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
+		.get_label = jive_choose_node_get_label_, /* override */
+		.get_attrs = jive_choose_node_get_attrs_, /* override */
+		.match_attrs = jive_choose_node_match_attrs_, /* overrride */
+		.create = jive_choose_node_create_, /* override */
+		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	},
+
+	.single_apply_over = NULL,
+	.multi_apply_over = NULL,
+	
+	.can_reduce_operand = jive_choose_node_can_reduce_operand_, /* override */
+	.reduce_operand = jive_choose_node_reduce_operand_ /* override */
 };
 
 static void
@@ -97,6 +114,20 @@ jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * at
 	return &jive_choose_node_create(region, attrs->element, operands[0])->base;
 }
 
+static jive_unop_reduction_path_t
+jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
+	const jive_output * operand)
+{
+	return jive_unop_reduction_none;
+}
+
+static jive_output *
+jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
+	const jive_node_attrs * attrs_, jive_output * operand)
+{
+	return NULL;
+}
+
 jive_choose_node *
 jive_choose_node_create(struct jive_region * region, size_t member, jive_output * operand)
 {
@@ -111,8 +142,12 @@ jive_choose_node_create(struct jive_region * region, size_t member, jive_output 
 jive_output *
 jive_choose_create(size_t member, jive_output * operand)
 {
-	jive_choose_node * node = jive_choose_node_create(operand->node->region, member, operand);
+	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
+		jive_graph_get_nodeclass_form(operand->node->region->graph, &JIVE_CHOOSE_NODE);
 
-	return (jive_output *)node->base.outputs[0];
+	jive_choose_node_attrs attrs;
+	attrs.element = member;
+
+	return jive_unary_operation_normalized_create(nf, operand->node->region, &attrs.base, operand);
 }
 

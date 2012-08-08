@@ -1,9 +1,10 @@
 #ifndef JIVE_TYPES_UNION_UNNCHOOSE_H
 #define JIVE_TYPES_UNION_UNNCHOOSE_H
 
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/unary.h>
 
-extern const jive_node_class JIVE_CHOOSE_NODE;
+extern const jive_unary_operation_class JIVE_CHOOSE_NODE_;
+#define JIVE_CHOOSE_NODE (JIVE_CHOOSE_NODE_.base)
 
 typedef struct jive_choose_node jive_choose_node;
 typedef struct jive_choose_node_attrs jive_choose_node_attrs;
