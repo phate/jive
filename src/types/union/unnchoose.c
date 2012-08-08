@@ -150,9 +150,14 @@ static jive_node *
 jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
-	const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *)attrs_;
+	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	return &jive_choose_node_create(region, attrs->element, operands[0])->base;
+	const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *) attrs_;
+	jive_choose_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	node->base.class_ = &JIVE_CHOOSE_NODE;
+	jive_choose_node_init_(node, region, attrs->element, operands[0]);
+
+	return &node->base;
 }
 
 static jive_unop_reduction_path_t
@@ -179,15 +184,13 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 	return NULL;
 }
 
-jive_choose_node *
+jive_output *
 jive_choose_node_create(struct jive_region * region, size_t member, jive_output * operand)
 {
-	jive_choose_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_choose_node_attrs attrs;
+	attrs.element = member;
 
-	node->base.class_ = &JIVE_CHOOSE_NODE;
-	jive_choose_node_init_(node, region, member, operand);
-
-	return node;
+	return jive_choose_node_create_(region, &attrs.base, 1, &operand)->outputs[0];
 }
 
 jive_output *
