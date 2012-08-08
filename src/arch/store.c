@@ -14,6 +14,8 @@
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/memorytype.h>
+#include <jive/types/union/unnunify.h>
+#include <jive/types/union/unntype.h>
 
 /* store node normal form */
 
@@ -43,6 +45,31 @@ store_reduce(jive_output * address, jive_output * value,
 	ostates = &store->outputs[2];
 
 	return true;
+}
+
+static inline void
+unify_reduce(const jive_store_node_normal_form * self, struct jive_region * region,
+	const jive_node_attrs * attrs_, jive_output * address, jive_output * value,
+	size_t nstates, jive_output * const istates[], jive_output * ostates[])
+{
+	jive_unify_node * unify_node = jive_unify_node_cast(value->node);
+	const jive_union_declaration * decl = unify_node->attrs.decl;
+
+	if (decl->nelements == 0) {
+		size_t n;
+		for (n = 0; n < nstates; n++)
+			ostates[n] = istates[n];
+		return;
+	}
+	
+	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
+	
+	jive_store_node_attrs elem_attrs;
+	elem_attrs.nbits = attrs->nbits;
+	elem_attrs.datatype = (jive_value_type *) decl->elements[unify_node->attrs.option];
+	
+	jive_store_node_normalized_create(self, region, &elem_attrs.base, address,
+		unify_node->base.inputs[0]->origin, nstates, istates, ostates);	
 }
 
 static inline void
@@ -124,6 +151,10 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 			group_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
 				nstates, istates, ostates);
 			reduction = true;
+		} else if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_UNIFY_NODE)) {
+			unify_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
+				nstates, istates, ostates);
+			reduction = true;
 		} else if (store_reduce(node->inputs[0]->origin, node->inputs[1]->origin,
 			nstates, istates, ostates)) {
 			reduction = true;
@@ -173,6 +204,9 @@ jive_store_node_operands_are_normalized_(const jive_node_normal_form * self_, si
 	if (self->enable_reducible) {
 		if (jive_node_isinstance(operands[1]->node, &JIVE_GROUP_NODE))
 			return false;
+	
+		if (jive_node_isinstance(operands[1]->node, &JIVE_UNIFY_NODE))
+			return false;
 
 		jive_output * ostates[noperands-2];
 		if (store_reduce(operands[0], operands[1], noperands-2, &operands[2], ostates))
@@ -203,6 +237,11 @@ jive_store_node_normalized_create_(const jive_store_node_normal_form * self,
 	if (self->base.enable_mutable && self->enable_reducible) {
 		if (jive_node_isinstance(value->node, &JIVE_GROUP_NODE)) {
 			group_reduce(self, region, attrs, address, value, nstates, istates, ostates);
+			return;
+		}
+	
+		if (jive_node_isinstance(value->node, &JIVE_UNIFY_NODE)) {
+			unify_reduce(self, region, attrs, address, value, nstates, istates, ostates);
 			return;
 		}
 
