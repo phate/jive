@@ -4,7 +4,7 @@
 #include <jive/common.h>
 
 #include <jive/vsdg/node.h>
-#include <jive/types/union/uniontype.h>
+#include <jive/types/union/unntype.h>
 
 struct jive_union_declaration;
 

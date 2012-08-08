@@ -2,7 +2,7 @@
 
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdtype.h>
-#include <jive/types/union/uniontype.h>
+#include <jive/types/union/unntype.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry, const struct jive_record_declaration *, decl, hash_chain);
 

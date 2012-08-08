@@ -1,5 +1,5 @@
-#ifndef JIVE_TYPES_UNION_UNIONTYPE_H
-#define JIVE_TYPES_UNION_UNIONTYPE_H
+#ifndef JIVE_TYPES_UNION_UNNTYPE_H
+#define JIVE_TYPES_UNION_UNNTYPE_H
 
 #include <jive/vsdg/valuetype.h>
 

@@ -2,7 +2,7 @@
 
 #include <jive/arch/address.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/types/union/uniontype.h>
+#include <jive/types/union/unntype.h>
 
 const jive_dataitem_memlayout *
 jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const struct jive_value_type * type_)
