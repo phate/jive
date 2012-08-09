@@ -5,8 +5,31 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/arch/addresstype.h>
+#include <jive/arch/store.h>
 
 /* load_node_normal_form */
+
+static inline bool
+store_reduce(jive_output * address, size_t nstates, jive_output * const states[])
+{
+	if (nstates == 0)
+		return false;
+
+	jive_node * store = states[0]->node;
+	if (!jive_node_isinstance(store, &JIVE_STORE_NODE))
+		return false;
+
+	size_t n;
+	for (n = 0; n < nstates; n++) {
+		if (states[n]->node != store)
+			return false;
+	}
+
+	if (store->inputs[0]->origin != address)
+		return false;
+
+	return true;	
+}
 
 static bool
 jive_load_node_normalize_node_(const jive_node_normal_form * self_, jive_node * node)
@@ -16,6 +39,23 @@ jive_load_node_normalize_node_(const jive_node_normal_form * self_, jive_node * 
 		return true;
 
 	const jive_node_attrs * attrs = jive_node_get_attrs(node);
+
+	if (self->enable_reducible) {
+		size_t nstates = node->ninputs-1;
+		jive_output * states[nstates];
+
+		size_t n;
+		for (n = 0; n < nstates; n++)
+			states[n] = node->inputs[n+1]->origin;
+
+		if (store_reduce(node->inputs[0]->origin, nstates, states)) {
+			jive_node * store = node->inputs[1]->origin->node;
+			jive_output_replace(node->outputs[0], store->inputs[1]->origin);
+			/* FIXME: not sure whether "destroy" is really appropriate? */
+			jive_node_destroy(node);
+			return false;
+		}
+	}
 
 	if (self->base.enable_cse) {
 		size_t n;
@@ -49,6 +89,11 @@ jive_load_node_operands_are_normalized_(const jive_node_normal_form * self_, siz
 	jive_graph * graph = operands[0]->node->graph;
 	const jive_node_class * cls = self->base.node_class;
 
+	if (self->enable_reducible) {
+		if (store_reduce(operands[0], noperands-1, &operands[1]))
+			return false;
+	}
+
 	if (self->base.enable_cse && jive_node_cse(graph, cls, attrs, noperands, operands))
 		return false;
 
@@ -68,6 +113,11 @@ jive_load_node_normalized_create_(const jive_load_node_normal_form * self,
 		operands[n+1] = states[n];
 
 	const jive_node_class * cls = self->base.node_class;
+
+	if (self->base.enable_mutable && self->enable_reducible) {
+		if (store_reduce(address, nstates, states))
+			return states[0]->node->inputs[1]->origin;
+	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {
 		jive_node * node = jive_node_cse(region->graph, cls, attrs, noperands, operands);
