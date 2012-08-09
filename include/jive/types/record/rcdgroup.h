@@ -27,6 +27,9 @@ jive_output *
 jive_group_create(const jive_record_declaration * decl,
 	size_t narguments, jive_output * arguments[const]);
 
+jive_output *
+jive_empty_group_create(struct jive_graph * graph, const jive_record_declaration * decl);
+
 JIVE_EXPORTED_INLINE jive_group_node *
 jive_group_node_cast(jive_node * node)
 {

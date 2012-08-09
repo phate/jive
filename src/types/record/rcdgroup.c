@@ -118,3 +118,9 @@ jive_group_create(const jive_record_declaration * decl,
 	
 	return node->base.outputs[0];
 }
+
+jive_output *
+jive_empty_group_create(struct jive_graph * graph, const jive_record_declaration * decl)
+{
+	return jive_group_node_create(graph->root_region, decl, 0, NULL)->outputs[0];
+}
