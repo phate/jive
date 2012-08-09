@@ -60,6 +60,11 @@ lookup_subroutine_by_node(jive_node * node)
 static void
 check_fp_sp_dependency(jive_node * node)
 {
+	/* FIXME: this is conceptually rather broken: the nodes depend on the
+	stack *slots*, not the value of the stackptr/frameptr per se; this
+	means that it would be much better to have the "stackptr add" operation
+	perform a "write" to all stack slots to mark them as invalidated,
+	and let "reuse" introduce ordering edges accordingly */
 	const jive_subroutine * subroutine = lookup_subroutine_by_node(node);
 	if (!subroutine)
 		return;
