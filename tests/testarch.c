@@ -486,7 +486,7 @@ jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 		other->base.returns[n] = new_gate;
 	}
 	
-	jive_subroutine_match_passthrough(&self->base, &self->stackptr, &other->base, &other->stackptr);
+	jive_subroutine_match_passthrough(&self->base, &self->base.passthroughs[0], &other->base, &other->base.passthroughs[0]);
 	
 	return &other->base;
 }
@@ -513,7 +513,7 @@ jive_testarch_subroutine_alloc(jive_region * region, size_t nparameters, size_t 
 	jive_testarch_subroutine * self;
 	self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
-		nparameters, nreturns, 0);
+		nparameters, nreturns, 1);
 	
 	return self;
 }
@@ -554,8 +554,8 @@ jive_testarch_subroutine_create(jive_region * region,
 	
 	jive_subroutine_create_region_and_nodes(&self->base, region);
 	
-	self->stackptr = jive_subroutine_create_passthrough(&self->base, jive_testarch_cls_r0, "stackptr");
-	self->stackptr.gate->may_spill = false;
+	self->base.passthroughs[0] = jive_subroutine_create_passthrough(&self->base, jive_testarch_cls_r0, "stackptr");
+	self->base.passthroughs[0].gate->may_spill = false;
 	
 	return &self->base;
 }

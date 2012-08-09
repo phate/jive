@@ -152,8 +152,10 @@ jive_i386_subroutine_alloc(jive_region * region, size_t nparameters, size_t nret
 	
 	jive_i386_subroutine * self;
 	self = jive_context_malloc(context, sizeof(*self));
+	/* reserve 5 passthroughs, corresponding to callee-saved
+	esp, ebx, ebp, esi and edi registers */
 	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
-		nparameters, nreturns, 0);
+		nparameters, nreturns, 5);
 	
 	return self;
 }
@@ -224,11 +226,11 @@ jive_i386_subroutine_copy_(const jive_subroutine * self_,
 		other->base.returns[n] = new_gate;
 	}
 	
-	jive_subroutine_match_passthrough(&self->base, &self->saved_esp, &other->base, &other->saved_esp);
-	jive_subroutine_match_passthrough(&self->base, &self->saved_ebx, &other->base, &other->saved_ebx);
-	jive_subroutine_match_passthrough(&self->base, &self->saved_ebp, &other->base, &other->saved_ebp);
-	jive_subroutine_match_passthrough(&self->base, &self->saved_esi, &other->base, &other->saved_esi);
-	jive_subroutine_match_passthrough(&self->base, &self->saved_edi, &other->base, &other->saved_edi);
+	for (n = 0; n < 5; ++n) {
+		jive_subroutine_match_passthrough(
+			&self->base, &self->base.passthroughs[n],
+			&other->base, &self->base.passthroughs[n]);
+	}
 	
 	return &other->base;
 }
@@ -266,15 +268,15 @@ jive_i386_subroutine_create(jive_region * region,
 	
 	jive_subroutine_create_region_and_nodes(&self->base, region);
 	
-	self->saved_esp = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esp].base, "saved_esp");
-	self->saved_esp.gate->may_spill = false;
-	self->saved_ebx = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_ebx].base, "saved_ebx");
-	self->saved_ebp = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_ebp].base, "saved_ebp");
-	self->saved_esi = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esi].base, "saved_esi");
-	self->saved_edi = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_edi].base, "saved_edi");
+	self->base.passthroughs[0] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esp].base, "saved_esp");
+	self->base.passthroughs[0].gate->may_spill = false;
+	self->base.passthroughs[1] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_ebx].base, "saved_ebx");
+	self->base.passthroughs[2] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_ebp].base, "saved_ebp");
+	self->base.passthroughs[3] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esi].base, "saved_esi");
+	self->base.passthroughs[4] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_edi].base, "saved_edi");
 	
-	self->stackptr = self->saved_esp.output;
-	self->frameptr = self->saved_esp.output;
+	self->stackptr = self->base.passthroughs[0].output;
+	self->frameptr = self->base.passthroughs[0].output;
 	
 	/* return instruction */
 	jive_node * ret_instr = jive_instruction_node_create(self->base.region, &jive_i386_instructions[jive_i386_ret], NULL, NULL);
@@ -348,7 +350,7 @@ jive_i386_subroutine_prepare_stackframe_(jive_subroutine * self_, const jive_sub
 	pointer must be relocated */
 	self->base.frame.frame_pointer_offset += self->base.frame.lower_bound;
 	
-	xfrm->value_split(xfrm, self->saved_esp.output, self->saved_esp.input, &stackptr_sub.base, &stackptr_add.base);
+	xfrm->value_split(xfrm, self->base.passthroughs[0].output, self->base.passthroughs[0].input, &stackptr_sub.base, &stackptr_add.base);
 }
 
 static jive_input *
@@ -376,4 +378,3 @@ jive_i386_subroutine_add_sp_dependency_(const jive_subroutine * self_, jive_node
 	}
 	return jive_node_add_input(node, jive_output_get_type(self->stackptr), self->stackptr);
 }
-

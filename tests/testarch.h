@@ -71,8 +71,6 @@ typedef struct jive_testarch_subroutine jive_testarch_subroutine;
 
 struct jive_testarch_subroutine {
 	jive_subroutine base;
-	
-	jive_subroutine_passthrough stackptr;
 };
 
 extern const jive_reg_classifier jive_testarch_reg_classifier;
