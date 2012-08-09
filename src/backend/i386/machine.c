@@ -27,10 +27,10 @@ get_slot_memory_reference(const jive_i386_subroutine * subroutine, const jive_re
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
 		jive_immediate_init(displacement, 0, &jive_label_spoffset, NULL, NULL);
-		*base = subroutine->stackptr;
+		*base = subroutine->base.passthroughs[0].output;
 	} else {
 		jive_immediate_init(displacement, 0, &jive_label_fpoffset, NULL, NULL);
-		*base = subroutine->frameptr;
+		*base = subroutine->base.passthroughs[0].output;
 	}
 }
 

@@ -20,8 +20,6 @@ jive_i386_subroutine_create(struct jive_region * region,
 
 struct jive_i386_subroutine {
 	jive_subroutine base;
-	
-	jive_output * stackptr, * frameptr;
 };
 
 #endif

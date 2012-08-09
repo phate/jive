@@ -275,9 +275,6 @@ jive_i386_subroutine_create(jive_region * region,
 	self->base.passthroughs[3] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esi].base, "saved_esi");
 	self->base.passthroughs[4] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_edi].base, "saved_edi");
 	
-	self->stackptr = self->base.passthroughs[0].output;
-	self->frameptr = self->base.passthroughs[0].output;
-	
 	/* return instruction */
 	jive_node * ret_instr = jive_instruction_node_create(self->base.region, &jive_i386_instructions[jive_i386_ret], NULL, NULL);
 	
@@ -357,24 +354,28 @@ static jive_input *
 jive_i386_subroutine_add_fp_dependency_(const jive_subroutine * self_, jive_node * node)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
+	jive_output * frameptr = self->base.passthroughs[0].output;
+	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (input->origin == self->frameptr)
+		if (input->origin == frameptr)
 			return NULL;
 	}
-	return jive_node_add_input(node, jive_output_get_type(self->frameptr), self->frameptr);
+	return jive_node_add_input(node, jive_output_get_type(frameptr), frameptr);
 }
 
 static jive_input *
 jive_i386_subroutine_add_sp_dependency_(const jive_subroutine * self_, jive_node * node)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
+	jive_output * stackptr = self->base.passthroughs[0].output;
+	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (input->origin == self->stackptr)
+		if (input->origin == stackptr)
 			return NULL;
 	}
-	return jive_node_add_input(node, jive_output_get_type(self->stackptr), self->stackptr);
+	return jive_node_add_input(node, jive_output_get_type(stackptr), stackptr);
 }
