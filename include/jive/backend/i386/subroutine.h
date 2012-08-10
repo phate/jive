@@ -17,9 +17,17 @@ jive_i386_subroutine_create(struct jive_region * region,
 	size_t nparameters, const jive_argument_type parameters[],
 	size_t nreturns, const jive_argument_type returns[]);
 
+jive_subroutine *
+jive_i386_subroutine_create_takeover(
+	jive_context * context,
+	size_t nparameters, jive_gate * const parameters[],
+	size_t nreturns, jive_gate * const returns[],
+	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[]);
 
 struct jive_i386_subroutine {
 	jive_subroutine base;
 };
+
+extern const jive_subroutine_class JIVE_I386_SUBROUTINE;
 
 #endif

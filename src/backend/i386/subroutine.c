@@ -107,14 +107,6 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	return subroutine;
 }
 
-static jive_i386_subroutine *
-jive_i386_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns);
-
-static const jive_subroutine_class JIVE_I386_SUBROUTINE;
-
-static jive_i386_subroutine *
-jive_i386_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns);
-
 static jive_output *
 jive_i386_subroutine_value_parameter_(jive_subroutine * self_, size_t index);
 
@@ -134,7 +126,7 @@ jive_i386_subroutine_add_fp_dependency_(const jive_subroutine * self, jive_node 
 static jive_input *
 jive_i386_subroutine_add_sp_dependency_(const jive_subroutine * self, jive_node * node);
 
-static const jive_subroutine_class JIVE_I386_SUBROUTINE = {
+const jive_subroutine_class JIVE_I386_SUBROUTINE = {
 	.fini = jive_subroutine_fini_,
 	.value_parameter = jive_i386_subroutine_value_parameter_,
 	.value_return = jive_i386_subroutine_value_return_,
@@ -143,22 +135,6 @@ static const jive_subroutine_class JIVE_I386_SUBROUTINE = {
 	.add_fp_dependency = jive_i386_subroutine_add_fp_dependency_,
 	.add_sp_dependency = jive_i386_subroutine_add_sp_dependency_
 };
-
-static jive_i386_subroutine *
-jive_i386_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns)
-{
-	jive_graph * graph = region->graph;
-	jive_context * context = graph->context;
-	
-	jive_i386_subroutine * self;
-	self = jive_context_malloc(context, sizeof(*self));
-	/* reserve 5 passthroughs, corresponding to callee-saved
-	esp, ebx, ebp, esi and edi registers */
-	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
-		nparameters, nreturns, 5);
-	
-	return self;
-}
 
 static jive_output *
 jive_i386_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
@@ -190,9 +166,13 @@ jive_i386_subroutine_copy_(const jive_subroutine * self_,
 	jive_node * new_enter_node, jive_node * new_leave_node)
 {
 	jive_graph * graph = new_enter_node->region->graph;
+	jive_context * context = graph->context;
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
 	
-	jive_i386_subroutine * other = jive_i386_subroutine_alloc(new_enter_node->region, self->base.nparameters, self->base.nreturns);
+	jive_i386_subroutine * other = jive_context_malloc(context, sizeof(*other));
+	jive_subroutine_init_(&other->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
+		self->base.nparameters, self->base.nreturns, 5);
+	
 	other->base.enter = (jive_subroutine_enter_node *) new_enter_node;
 	other->base.leave = (jive_subroutine_leave_node *) new_leave_node;
 	
@@ -241,7 +221,10 @@ jive_i386_subroutine_create(jive_region * region,
 	size_t nreturns, const jive_argument_type returns[])
 {
 	jive_graph * graph = region->graph;
-	jive_i386_subroutine * self = jive_i386_subroutine_alloc(region, nparameters, nreturns);
+	jive_context * context = graph->context;
+	jive_i386_subroutine * self = jive_context_malloc(context, sizeof(*self));
+	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
+		nparameters, nreturns, 5);
 	self->base.frame.upper_bound = 4;
 	
 	size_t n;
@@ -288,6 +271,33 @@ jive_i386_subroutine_create(jive_region * region,
 	
 	/* divert control output of "leave" node */
 	jive_input_divert_origin(self->base.leave->base.inputs[0], ret_instr->outputs[0]);
+
+	return &self->base;
+}
+
+jive_subroutine *
+jive_i386_subroutine_create_takeover(
+	jive_context * context,
+	size_t nparameters, jive_gate * const parameters[],
+	size_t nreturns, jive_gate * const returns[],
+	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[])
+{
+	jive_i386_subroutine * self = jive_context_malloc(context, sizeof(*self));
+	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
+		nparameters, nreturns, npassthroughs);
+	self->base.frame.upper_bound = 4;
+	
+	size_t n;
+	
+	for (n = 0; n < nparameters; n++)
+		self->base.parameters[n] = parameters[n];
+	
+	for (n = 0; n < nreturns; n++)
+		self->base.returns[n] = returns[n];
+	
+	for (n = 0; n < npassthroughs; n++) {
+		self->base.passthroughs[n] = passthroughs[n];
+	}
 
 	return &self->base;
 }
