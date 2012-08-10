@@ -10,7 +10,6 @@ include tests/shape/Makefile.sub
 include tests/serialization/Makefile.sub
 include tests/transforms/Makefile.sub
 include tests/types/Makefile.sub
-include tests/union/Makefile.sub
 include tests/util/Makefile.sub
 include tests/vsdg/Makefile.sub
 
