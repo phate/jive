@@ -152,9 +152,9 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 			break;
 		};
 		default: {
-			if (token->type == jive_token_openparen)
+			if (token->type == jive_token_openparen || token->type == jive_token_lt)
 				self->paren_nest ++;
-			else if (token->type == jive_token_closeparen)
+			else if (token->type == jive_token_closeparen || token->type == jive_token_gt)
 				self->paren_nest --;
 			
 			self->need_whitespace = false;
