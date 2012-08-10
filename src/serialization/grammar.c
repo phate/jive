@@ -562,8 +562,15 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	
 	/* add ports & resource class requirements */
 	for (n = ports.nnormal; n < ports.ntotal; ++n) {
-		jive_node_gate_input(*node, ports.ports[n].gate,
-			ports.ports[n].origin);
+		if (ports.ports[n].gate) {
+			jive_node_gate_input(*node, ports.ports[n].gate,
+				ports.ports[n].origin);
+		} else {
+			const jive_resource_class * rescls = ports.ports[n].required_rescls;
+			const jive_type * type = jive_resource_class_get_type(rescls);
+			jive_input * input = jive_node_add_input(*node, type, ports.ports[n].origin);
+			input->required_rescls = rescls;
+		}
 	}
 	for (n = 0; n < ports.ntotal; ++n) {
 		(*node)->inputs[n]->required_rescls = ports.ports[n].required_rescls;
