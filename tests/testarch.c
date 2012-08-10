@@ -442,17 +442,20 @@ jive_testarch_subroutine_value_return_(jive_subroutine * self_, size_t index, ji
 	return jive_node_gate_input(&self->base.leave->base, gate, value);
 }
 
-static jive_testarch_subroutine *
-jive_testarch_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns);
+static const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE;
 
 static jive_subroutine *
 jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 	jive_node * new_enter_node, jive_node * new_leave_node)
 {
 	jive_graph * graph = new_enter_node->region->graph;
+	jive_context * context = graph->context;
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	
-	jive_testarch_subroutine * other = jive_testarch_subroutine_alloc(new_enter_node->region, self->base.nparameters, self->base.nreturns);
+	jive_testarch_subroutine * other = jive_context_malloc(context, sizeof(*other));
+	jive_subroutine_init_(&other->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
+		self->base.nparameters, self->base.nreturns, 1);
+	
 	other->base.enter = (jive_subroutine_enter_node *) new_enter_node;
 	other->base.leave = (jive_subroutine_leave_node *) new_leave_node;
 	
@@ -504,27 +507,16 @@ static const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
 	.prepare_stackframe = jive_testarch_subroutine_prepare_stackframe_
 };
 
-static jive_testarch_subroutine *
-jive_testarch_subroutine_alloc(jive_region * region, size_t nparameters, size_t nreturns)
-{
-	jive_graph * graph = region->graph;
-	jive_context * context = graph->context;
-	
-	jive_testarch_subroutine * self;
-	self = jive_context_malloc(context, sizeof(*self));
-	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
-		nparameters, nreturns, 1);
-	
-	return self;
-}
-
 jive_subroutine *
 jive_testarch_subroutine_create(jive_region * region,
 	size_t nparameters, const jive_argument_type parameters[],
 	size_t nreturns, const jive_argument_type returns[])
 {
 	jive_graph * graph = region->graph;
-	jive_testarch_subroutine * self = jive_testarch_subroutine_alloc(region, nparameters, nreturns);
+	jive_context * context = graph->context;
+	jive_testarch_subroutine * self = jive_context_malloc(context, sizeof(*self));
+	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
+		nparameters, nreturns, 1);
 	
 	size_t n;
 	
