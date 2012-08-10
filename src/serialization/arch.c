@@ -11,6 +11,7 @@
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine.h>
+#include <jive/arch/subroutine-private.h>
 
 static void
 jive_serialization_stackslot_serialize(
@@ -306,6 +307,147 @@ jive_label_to_address_deserialize(
 	return true;
 }
 
+#include <jive/backend/i386/subroutine.h>
+
+static void
+jive_subroutine_serialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	const jive_node_attrs * attrs_, jive_token_ostream * os)
+{
+	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
+	jive_subroutine * subroutine = attrs->subroutine;
+	
+	if (subroutine->class_ == &JIVE_I386_SUBROUTINE)
+		jive_token_ostream_identifier(os, "i386");
+	else
+		abort();
+	
+	size_t n;
+	for (n = 0; n < subroutine->nparameters; ++n) {
+		jive_gate * gate = subroutine->parameters[n];
+		jive_serialize_defined_gate(driver, gate, os);
+	}
+	jive_serialize_char_token(driver, ';', os);
+	for (n = 0; n < subroutine->nreturns; ++n) {
+		jive_gate * gate = subroutine->returns[n];
+		jive_serialize_defined_gate(driver, gate, os);
+	}
+	jive_serialize_char_token(driver, ';', os);
+	for (n = 0; n < subroutine->npassthroughs; ++n) {
+		jive_gate * gate = subroutine->passthroughs[n].gate;
+		jive_serialize_defined_gate(driver, gate, os);
+	}
+	jive_serialize_char_token(driver, ';', os);
+}
+
+static bool
+jive_deserialize_gatelist(jive_serialization_driver * self,
+	jive_token_istream * is,
+	size_t * ngates, jive_gate *** gates)
+{
+	*ngates = 0;
+	*gates = 0;
+	const jive_token * token = jive_token_istream_current(is);
+	while (token->type == jive_token_identifier) {
+		jive_gate * gate;
+		if (!jive_deserialize_defined_gate(self, is, &gate)) {
+			jive_context_free(self->context, *gates);
+			return false;
+		}
+		*gates = jive_context_realloc(self->context, *gates,
+			(1 + *ngates) * sizeof(jive_gate *));
+		(*gates)[*ngates] = gate;
+		(*ngates) ++;
+	}
+	
+	return true;
+}
+
+static bool
+jive_subroutine_deserialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	jive_region * region, size_t noperands,
+	jive_output * const operands[], jive_token_istream * is,
+	jive_node ** node)
+{
+	*node = 0;
+	if (noperands != 1)
+		return false;
+	
+	jive_node * leave = operands[0]->node;
+	if (leave->region->bottom != leave)
+		return false;
+	jive_node * enter = leave->region->top;
+	if (!enter)
+		return false;
+	
+	const jive_token * token = jive_token_istream_current(is);
+	if (token->type != jive_token_identifier)
+		return false;
+	if (strcmp(token->v.identifier, "i386") != 0)
+		return false;
+	jive_token_istream_advance(is);
+	
+	size_t nparameters;
+	jive_gate ** parameters;
+	if (!jive_deserialize_gatelist(driver, is, &nparameters, &parameters))
+		return false;
+	if (!jive_deserialize_char_token(driver, is, ';'))
+		return false;
+	
+	size_t nreturns;
+	jive_gate ** returns;
+	if (!jive_deserialize_gatelist(driver, is, &nreturns, &returns)) {
+		jive_context_free(driver->context, parameters);
+		return false;
+	}
+	if (!jive_deserialize_char_token(driver, is, ';')) {
+		jive_context_free(driver->context, parameters);
+		return false;
+	}
+	
+	size_t npassthroughs;
+	jive_gate ** passthrough_gates;
+	if (!jive_deserialize_gatelist(driver, is, &npassthroughs, &passthrough_gates)) {
+		jive_context_free(driver->context, returns);
+		jive_context_free(driver->context, parameters);
+		return false;
+	}
+	if (!jive_deserialize_char_token(driver, is, ';')) {
+		jive_context_free(driver->context, returns);
+		jive_context_free(driver->context, parameters);
+		return false;
+	}
+	jive_subroutine_passthrough * passthroughs;
+	passthroughs = jive_context_malloc(driver->context,
+		sizeof(passthroughs[0]) * npassthroughs);
+	
+	size_t n;
+	for (n = 0; n < npassthroughs; ++n) {
+		jive_gate * gate = passthrough_gates[n];
+		passthroughs[n].gate = gate;
+		passthroughs[n].output = jive_node_get_gate_output(enter, gate);
+		passthroughs[n].input = jive_node_get_gate_input(leave, gate);
+	}
+	
+	jive_subroutine * subroutine = jive_i386_subroutine_create_takeover(
+		driver->context,
+		nparameters, parameters,
+		nreturns, returns,
+		npassthroughs, passthroughs);
+	*node = jive_subroutine_node_create(enter->region, subroutine);
+	
+	jive_context_free(driver->context, passthroughs);
+	jive_context_free(driver->context, passthrough_gates);
+	jive_context_free(driver->context, returns);
+	jive_context_free(driver->context, parameters);
+	
+	return *node != NULL;
+}
+
+
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_register_class, "register");
 JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_RESOURCE, "stackslot",
 	jive_serialization_stackslot_serialize,
@@ -335,9 +477,7 @@ JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
 	JIVE_SUBROUTINE_ENTER_NODE, "subroutine_enter");
 JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
 	JIVE_SUBROUTINE_LEAVE_NODE, "subroutine_leave");
-#if 0
 JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_SUBROUTINE_NODE, "subroutine",
 	jive_subroutine_serialize,
 	jive_subroutine_deserialize);
-#endif

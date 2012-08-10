@@ -8,6 +8,7 @@
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
+#include <jive/view.h>
 
 static void
 my_error(jive_serialization_driver * drv, const char msg[])
@@ -26,13 +27,11 @@ int main()
 	
 	jive_graph * gr1 = jive_graph_create(ctx);
 	
-#if 0
 	jive_subroutine * s1 = jive_i386_subroutine_create(
 		gr1->root_region,
 		1,(const jive_argument_type[]) { jive_argument_int },
 		1,(const jive_argument_type[]) { jive_argument_int });
 	(void) s1;
-#endif
 	
 	/* inhibit implicit normalization */
 	jive_node_normal_form_set_mutable(
@@ -83,6 +82,9 @@ int main()
 	
 	assert (jive_graphs_equivalent(gr1, gr2,
 		1, &orig_node, &repl_node, 0, NULL, NULL));
+	
+	jive_view(gr1, stdout);
+	jive_view(gr2, stdout);
 	
 	jive_graph_destroy(gr1);
 	jive_graph_destroy(gr2);
