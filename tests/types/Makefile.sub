@@ -5,3 +5,4 @@ include tests/types/function/Makefile.sub
 include tests/types/integral/Makefile.sub
 include tests/types/real/Makefile.sub
 include tests/types/record/Makefile.sub
+include tests/types/union/Makefile.sub

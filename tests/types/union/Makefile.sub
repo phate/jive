@@ -1,0 +1,2 @@
+TESTS += \
+	types/union/test-unnchoose \
