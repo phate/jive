@@ -340,16 +340,21 @@ patch in unconditional branch when condition for primary target is not met */
 static void
 jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * seq_node, jive_instruction_node * inode)
 {
+	size_t index = inode->attrs.icls->noutputs;
 	JIVE_DEBUG_ASSERT(inode->base.noutputs);
-	jive_output * ctl_out = inode->base.outputs[inode->base.noutputs - 1];
+	jive_output * ctl_out = inode->base.outputs[index];
 	JIVE_DEBUG_ASSERT(ctl_out->class_ == &JIVE_CONTROL_OUTPUT);
 	
 	JIVE_DEBUG_ASSERT(ctl_out->users.first == ctl_out->users.last);
+	if (!ctl_out->users.first)
+		return;
 	jive_node * user = ctl_out->users.first->node;
 	JIVE_DEBUG_ASSERT(user);
 	
 	jive_label * primary_tgt = 0, * secondary_tgt = 0;
-	if (user->class_ == &JIVE_GAMMA_NODE) {
+	if (user->class_ == &JIVE_SUBROUTINE_LEAVE_NODE) {
+		return;
+	} else if (user->class_ == &JIVE_GAMMA_NODE) {
 		jive_region * primary_region = user->inputs[0]->origin->node->region;
 		jive_region * secondary_region = user->inputs[1]->origin->node->region;
 		primary_tgt = jive_label_region_start_create(primary_region);
