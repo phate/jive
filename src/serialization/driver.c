@@ -183,6 +183,12 @@ jive_serialize_graph(
 		jive_serialize_labeldef(self, &namegen.base, label, os);
 	}
 	
+	jive_gate * gate;
+	JIVE_LIST_ITERATE(graph->gates, gate, graph_gate_list) {
+		jive_serialize_gatedef(self, &namegen.base, gate, os);
+		jive_serialize_char_token(self, ';', os);
+	}
+	
 	jive_serialize_regionbody(self, &namegen.base, graph->root_region, os);
 	jive_serialization_simple_namegen_fini(&namegen);
 }

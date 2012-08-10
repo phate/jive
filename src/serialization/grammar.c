@@ -1037,14 +1037,6 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 		for (k = 0; k < level->nitems; ++k) {
 			node = level->items[k];
 			size_t j;
-			for (j = 0; j < node->noutputs; ++j) {
-				jive_gate * gate = node->outputs[j]->gate;
-				if (!gate)
-					continue;
-				namegen->name_gate(namegen, &self->symtab, gate);
-				jive_serialize_gatedef(self, namegen, gate, os);
-				jive_serialize_char_token(self, ';', os);
-			}
 			for (j = 0; j < node->ninputs; ++j) {
 				jive_input * input = node->inputs[j];
 				if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT))
