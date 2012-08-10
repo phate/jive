@@ -697,7 +697,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.mnemonic = "ret",
 		.encode = jive_i386_encode_simple,
 		.write_asm = jive_i386_asm_simple,
-		.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0,
+		.inregs = 0, .outregs = 0, .flags = jive_instruction_jump, .ninputs = 0, .noutputs = 0, .nimmediates = 0,
 		.code = 0xc3
 	},
 	
