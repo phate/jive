@@ -161,6 +161,22 @@ jive_serialization_rescls_registry_rehash(
 }
 
 static bool
+jive_serialization_rescls_exists(
+	const jive_serialization_rescls_registry * self,
+	const void * cls,
+	bool is_meta)
+{
+	jive_rescls_cls_bucket *b = self->by_cls + (jive_rescls_cls_hash(cls) & self->mask);
+	const jive_serialization_rescls * sercls = b->first;
+	while (sercls) {
+		if ((sercls->cls == cls) && (sercls->is_meta_class == is_meta))
+			return true;
+		sercls = sercls->cls_chain.next;
+	}
+	return false;
+}
+
+static bool
 jive_serialization_rescls_registry_insert(
 	jive_serialization_rescls_registry * self,
 	jive_serialization_rescls * sercls)
@@ -173,7 +189,7 @@ jive_serialization_rescls_registry_insert(
 	size_t mask = self->mask;
 	
 	JIVE_DEBUG_ASSERT(!jive_serialization_rescls_lookup_by_tag(self, sercls->tag));
-	JIVE_DEBUG_ASSERT(!jive_serialization_rescls_lookup_by_cls(self, sercls->cls));
+	JIVE_DEBUG_ASSERT(!jive_serialization_rescls_exists(self, sercls->cls, sercls->is_meta_class));
 	
 	jive_rescls_tag_bucket * tb = self->by_tag + (jive_tag_hash(sercls->tag) & mask);
 	jive_rescls_cls_bucket * cb = self->by_cls + (jive_rescls_cls_hash(sercls->cls) & mask);
