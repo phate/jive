@@ -116,6 +116,24 @@ struct jive_seq_graph {
 	bool addrs_changed;
 };
 
+JIVE_EXPORTED_INLINE jive_section
+jive_seq_region_map_to_section(const jive_seq_region * seq_region)
+{
+	return jive_region_map_to_section(seq_region->region);
+}
+
+JIVE_EXPORTED_INLINE jive_section
+jive_seq_point_map_to_section(const jive_seq_point * seq_point)
+{
+	return jive_seq_region_map_to_section(seq_point->seq_region);
+}
+
+JIVE_EXPORTED_INLINE jive_section
+jive_seq_node_map_to_section(const jive_seq_node * seq_node)
+{
+	return jive_seq_region_map_to_section(seq_node->base.seq_region);
+}
+
 JIVE_EXPORTED_INLINE void
 jive_seq_point_destroy(jive_seq_point * self)
 {
