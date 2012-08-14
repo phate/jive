@@ -19,6 +19,12 @@ typedef struct jive_node jive_dataobj_node;
 jive_output *
 jive_dataobj(jive_output * data, struct jive_memlayout_mapper * mapper);
 
+jive_output *
+jive_rodataobj(jive_output * data, struct jive_memlayout_mapper * mapper);
+
+jive_output *
+jive_bssobj(jive_output * data, struct jive_memlayout_mapper * mapper);
+
 JIVE_EXPORTED_INLINE jive_dataitems_node *
 jive_dataitems_node_cast(jive_node * node)
 {

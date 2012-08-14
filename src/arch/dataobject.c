@@ -158,6 +158,52 @@ jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 	return dataobj->outputs[0];
 }
 
+jive_output *
+jive_rodataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
+{
+	jive_graph * graph = data->node->graph;
+	jive_context * context = graph->context;
+	jive_region * parent = graph->root_region;
+
+	jive_region * region = jive_region_create_subregion(parent);
+	region->attrs.section = jive_region_section_rodata;
+
+	size_t ndata_items;
+	jive_output ** data_items;
+	flatten_data_items(context, data, &ndata_items, &data_items, layout_mapper);
+	ndata_items = squeeze_data_items(ndata_items, data_items);
+	jive_node * items = jive_dataitems_node_create(region, ndata_items, data_items);
+	jive_context_free(context, data_items);
+
+	jive_node * datadef = jive_datadef_node_create(region, items->outputs[0]);
+	jive_node * dataobj = jive_dataobj_node_create(parent, datadef->outputs[0]);
+
+	return dataobj->outputs[0];
+}
+
+jive_output *
+jive_bssobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
+{
+	jive_graph * graph = data->node->graph;
+	jive_context * context = graph->context;
+	jive_region * parent = graph->root_region;
+
+	jive_region * region = jive_region_create_subregion(parent);
+	region->attrs.section = jive_region_section_bss;
+
+	size_t ndata_items;
+	jive_output ** data_items;
+	flatten_data_items(context, data, &ndata_items, &data_items, layout_mapper);
+	ndata_items = squeeze_data_items(ndata_items, data_items);
+	jive_node * items = jive_dataitems_node_create(region, ndata_items, data_items);
+	jive_context_free(context, data_items);
+
+	jive_node * datadef = jive_datadef_node_create(region, items->outputs[0]);
+	jive_node * dataobj = jive_dataobj_node_create(parent, datadef->outputs[0]);
+
+	return dataobj->outputs[0];
+}
+
 static jive_node *
 jive_dataitems_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
