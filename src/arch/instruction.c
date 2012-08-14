@@ -41,8 +41,7 @@ jive_immediate_simplify(jive_immediate * self, const jive_seq_point * for_point)
 	const jive_seq_point * sub_point = jive_label_get_seq_point(self->sub_label, for_point);
 	
 	if (add_point && sub_point && add_point->seq_region->seq_graph == sub_point->seq_region->seq_graph) {
-		jive_addr delta = add_point->address - sub_point->address;
-		self->offset += delta;
+		self->offset += add_point->address.offset - sub_point->address.offset;
 		self->add_label = 0;
 		self->sub_label = 0;
 		add_point = 0;
@@ -244,11 +243,11 @@ generate_code_for_instruction(jive_seq_point * seq_point,
 static void
 generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 {
-	jive_addr addr = buffer->size;
+	jive_offset offset = buffer->size;
 	jive_node * node = seq_node->node;
 	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
-		if (addr != seq_node->base.address) {
-			seq_node->base.address = addr;
+		if (offset != seq_node->base.address.offset) {
+			seq_node->base.address.offset = offset;
 			seq_node->base.size = 0;
 			seq_node->base.seq_region->seq_graph->addrs_changed = true;
 		}
@@ -277,10 +276,10 @@ generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 	instr.immediates = instr_node->attrs.immediates;
 	
 	generate_code_for_instruction(&seq_node->base, &instr, buffer, &seq_node->flags);
-	size_t size = buffer->size - addr;
+	size_t size = buffer->size - offset;
 	
-	if (addr != seq_node->base.address || size != seq_node->base.size) {
-		seq_node->base.address = addr;
+	if (offset != seq_node->base.address.offset || size != seq_node->base.size) {
+		seq_node->base.address.offset = offset;
 		seq_node->base.size = size;
 		seq_node->base.seq_region->seq_graph->addrs_changed = true;
 	}
@@ -289,12 +288,12 @@ generate_code_for_seq_node(jive_seq_node * seq_node, jive_buffer * buffer)
 static void
 generate_code_for_seq_instruction(jive_seq_instruction * seq_instr, jive_buffer * buffer)
 {
-	jive_addr addr = buffer->size;
+	jive_offset offset = buffer->size;
 	generate_code_for_instruction(&seq_instr->base, &seq_instr->instr, buffer, &seq_instr->flags);
-	size_t size = buffer->size - addr;
+	size_t size = buffer->size - offset;
 	
-	if (addr != seq_instr->base.address || size != seq_instr->base.size) {
-		seq_instr->base.address = addr;
+	if (offset != seq_instr->base.address.offset || size != seq_instr->base.size) {
+		seq_instr->base.address.offset = offset;
 		seq_instr->base.size = size;
 		seq_instr->base.seq_region->seq_graph->addrs_changed = true;
 	}

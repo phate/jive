@@ -36,20 +36,11 @@ struct jive_seq_point {
 	} attached_labels;
 	
 	size_t size;
-	jive_addr address;
+	jive_address address;
 };
 
 extern const jive_seq_point_class JIVE_SEQ_POINT;
 
-JIVE_EXPORTED_INLINE void
-jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region)
-{
-	self->seq_region = seq_region;
-	self->size = 0;
-	self->address = 0;
-	self->attached_labels.items = 0;
-	self->attached_labels.nitems = self->attached_labels.space = 0;
-}
 
 struct jive_seq_node {
 	jive_seq_point base;
@@ -132,6 +123,16 @@ JIVE_EXPORTED_INLINE jive_section
 jive_seq_node_map_to_section(const jive_seq_node * seq_node)
 {
 	return jive_seq_region_map_to_section(seq_node->base.seq_region);
+}
+
+JIVE_EXPORTED_INLINE void
+jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region)
+{
+	self->seq_region = seq_region;
+	self->size = 0;
+	self->attached_labels.items = 0;
+	self->attached_labels.nitems = self->attached_labels.space = 0;
+	jive_address_init(&self->address, jive_section_invalid, 0);
 }
 
 JIVE_EXPORTED_INLINE void

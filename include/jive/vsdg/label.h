@@ -16,7 +16,7 @@ struct jive_region;
 struct jive_seq_graph;
 struct jive_seq_point;
 
-typedef uint64_t jive_addr;
+typedef uint64_t jive_offset;
 
 typedef struct jive_label_class jive_label_class;
 typedef struct jive_label jive_label;
@@ -25,11 +25,25 @@ typedef struct jive_label_internal jive_label_internal;
 typedef struct jive_label_node jive_label_node;
 typedef struct jive_label_region jive_label_region;
 typedef struct jive_label_external jive_label_external;
+typedef struct jive_address jive_address;
+
+struct jive_address {
+	jive_offset offset;
+	jive_section section;	
+};
+
+JIVE_EXPORTED_INLINE void
+jive_address_init(jive_address * self, jive_section section, jive_offset offset)
+{
+	self->offset = offset;
+	self->section = section;
+}
 
 struct jive_label_class {
 	const jive_label_class * parent;
 	void (*fini)(jive_label * self);
-	jive_addr (*get_address)(const jive_label * self, const struct jive_seq_point * for_point);
+	jive_address (*get_address)(const jive_label * self,
+		const struct jive_seq_point * for_point);
 	const char * (*get_asmname)(const jive_label * self);
 };
 
@@ -53,7 +67,7 @@ jive_label_fini(jive_label * self)
 	self->class_->fini(self);
 }
 
-JIVE_EXPORTED_INLINE jive_addr
+JIVE_EXPORTED_INLINE jive_address
 jive_label_get_address(const jive_label * self, const struct jive_seq_point * for_point)
 {
 	return self->class_->get_address(self, for_point);
@@ -95,7 +109,7 @@ struct jive_label_internal {
 	char * asmname;
 };
 
-JIVE_EXPORTED_INLINE jive_addr
+JIVE_EXPORTED_INLINE jive_address
 jive_label_internal_get_address(const jive_label_internal * self, const struct jive_seq_point * for_point)
 {
 	return jive_label_get_address(&self->base, for_point);
@@ -128,7 +142,7 @@ struct jive_label_external {
 	jive_label base;
 	struct jive_context * context;
 	char * asmname;
-	jive_addr address;
+	jive_address address;
 };
 
 /**
@@ -224,7 +238,7 @@ extern const jive_label_class JIVE_LABEL_EXTERNAL;
 	\brief Initialize label external to the graph from which it is referenced
 */
 void
-jive_label_external_init(jive_label_external * self, struct jive_context * context, const char * name, jive_addr address);
+jive_label_external_init(jive_label_external * self, struct jive_context * context, const char * name, jive_offset offset);
 
 /**
 	\brief Finalize label external to the graph from which it is referenced

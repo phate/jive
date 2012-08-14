@@ -21,15 +21,17 @@ typedef struct jive_immediate jive_immediate;
 
 typedef struct jive_seq_instruction jive_seq_instruction;
 
+typedef uint64_t jive_immediate_int;
+
 struct jive_immediate {
-	jive_addr offset;
+	jive_immediate_int offset;
 	const struct jive_label * add_label;
 	const struct jive_label * sub_label;
 	const void * modifier;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_immediate_init(jive_immediate * self, jive_addr offset, const struct jive_label * add_label, const struct jive_label * sub_label, const void * modifier)
+jive_immediate_init(jive_immediate * self, jive_immediate_int offset, const struct jive_label * add_label, const struct jive_label * sub_label, const void * modifier)
 {
 	self->offset = offset;
 	self->add_label = add_label;
@@ -65,10 +67,10 @@ jive_immediate_add(const jive_immediate * a, const jive_immediate * b)
 		sub1 = 0;
 	}
 	
-	jive_addr offset = a->offset + b->offset;
+	jive_immediate_int offset = a->offset + b->offset;
 	
 	if ((add1 && add2) || (sub1 && sub2) || (a->modifier || b->modifier)) {
-		jive_immediate_init(&tmp, (jive_addr) -1,
+		jive_immediate_init(&tmp, (jive_immediate_int) -1,
 			(const struct jive_label *) -1,
 			(const struct jive_label *) -1,
 			(const void *) -1);
@@ -98,10 +100,10 @@ jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 		sub1 = 0;
 	}
 	
-	jive_addr offset = a->offset - b->offset;
+	jive_immediate_int offset = a->offset - b->offset;
 	
 	if ((add1 && add2) || (sub1 && sub2) || (a->modifier || b->modifier)) {
-		jive_immediate_init(&tmp, (jive_addr) -1,
+		jive_immediate_init(&tmp, (jive_immediate_int) -1,
 			(const struct jive_label *) -1,
 			(const struct jive_label *) -1,
 			(const void *) -1);
@@ -113,7 +115,7 @@ jive_immediate_sub(const jive_immediate * a, const jive_immediate * b)
 }
 
 JIVE_EXPORTED_INLINE jive_immediate
-jive_immediate_add_offset(jive_immediate * self, jive_addr offset)
+jive_immediate_add_offset(jive_immediate * self, jive_immediate_int offset)
 {
 	jive_immediate tmp = *self;
 	tmp.offset += offset;
