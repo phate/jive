@@ -142,6 +142,18 @@ jive_seq_point_destroy(jive_seq_point * self)
 	jive_context_free(context, self);
 }
 
+JIVE_EXPORTED_INLINE bool
+jive_seq_point_isinstance(const jive_seq_point * self, const jive_seq_point_class * class_)
+{
+	const jive_seq_point_class * c = self->class_;
+	while (c) {
+		if (c == class_)
+			return true;
+		c = c->parent;
+	}
+	return false;
+}
+
 /**
 	\brief Sequentialize graph
 */
