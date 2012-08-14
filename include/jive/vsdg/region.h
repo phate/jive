@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <jive/vsdg/section.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/region-ssavar-use.h>
 
@@ -129,6 +130,35 @@ jive_region_get_stackframe(const jive_region * region)
 	while(region && !region->stackframe) region = region->parent;
 	if (region) return region->stackframe;
 	else return 0;
+}
+
+JIVE_EXPORTED_INLINE jive_section
+jive_region_map_to_section(const struct jive_region * region)
+{
+	while (region && (region->attrs.section == jive_region_section_inherit))
+		region = region->parent;
+
+	jive_section section = jive_section_invalid;
+	if (region) {
+		switch(region->attrs.section) {
+			case jive_region_section_code:
+				section = jive_section_code;
+				break;
+			case jive_region_section_data:
+				section = jive_section_data;
+				break;
+			case jive_region_section_rodata:
+				section = jive_section_rodata;
+				break;
+			case jive_region_section_bss:
+				section = jive_section_bss;
+				break;
+			default:
+				JIVE_DEBUG_ASSERT(0);
+		}
+	}
+	
+	return section;
 }
 
 #endif
