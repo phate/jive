@@ -10,14 +10,15 @@
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/util/buffer.h>
+#include <jive/arch/codegen_buffer.h>
 
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
-	
+
+	graph->root_region->attrs.section = jive_region_section_code;	
 	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instructions[jive_i386_int_load_imm],
@@ -49,11 +50,11 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 	
-	jive_buffer buffer;
-	jive_buffer_init(&buffer, ctx);
+	jive_codegen_buffer buffer;
+	jive_codegen_buffer_init(&buffer, ctx);
 	jive_graph_generate_code(graph, &buffer);
-	int (*function)(void) = (int(*)(void)) jive_buffer_executable(&buffer);
-	jive_buffer_fini(&buffer);
+	int (*function)(void) = (int(*)(void)) jive_codegen_buffer_map_to_memory(&buffer);
+	jive_codegen_buffer_fini(&buffer);
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

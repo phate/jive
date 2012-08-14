@@ -6,7 +6,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/view.h>
-#include <jive/util/buffer.h>
+#include <jive/arch/codegen_buffer.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
@@ -54,11 +54,11 @@ static int test_main(void)
 	
 	jive_view(graph, stdout);
 	
-	jive_buffer buffer;
-	jive_buffer_init(&buffer, ctx);
+	jive_codegen_buffer buffer;
+	jive_codegen_buffer_init(&buffer, ctx);
 	jive_graph_generate_code(graph, &buffer);
-	int (*function)(int, int) = (int(*)(int, int)) jive_buffer_executable(&buffer);
-	jive_buffer_fini(&buffer);
+	int (*function)(int, int) = (int(*)(int, int)) jive_codegen_buffer_map_to_memory(&buffer);
+	jive_codegen_buffer_fini(&buffer);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));
