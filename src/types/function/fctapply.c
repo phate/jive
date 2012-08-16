@@ -81,3 +81,21 @@ jive_apply_node_create(struct jive_region * region, jive_output * function,
 
 	return node; 
 }
+
+void
+jive_apply_create(jive_output * function, size_t narguments, jive_output * const arguments[],
+	jive_output * results[])
+{
+	size_t n;
+	size_t noperands = narguments + 1;
+	jive_output * operands[noperands];
+	for (n = 0; n < narguments; n++)
+		operands[n] = arguments[n];
+	operands[n] = function; 
+
+	jive_region * region = jive_region_innermost(noperands, operands);
+	jive_node * apply = jive_apply_node_create(region, function, narguments, arguments);
+
+	for (n = 0; n < apply->noutputs; n++)
+		results[n] = apply->outputs[n];
+}

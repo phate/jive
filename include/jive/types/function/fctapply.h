@@ -16,6 +16,10 @@ jive_node *
 jive_apply_node_create(jive_region * region, jive_output * function,
 	size_t narguments, jive_output * const arguments[]);
 
+void
+jive_apply_create(jive_output * function, size_t narguments, jive_output * const arguments[],
+	jive_output * results[]);
+
 JIVE_EXPORTED_INLINE jive_apply_node *
 jive_apply_node_cast(jive_node * node)
 {
