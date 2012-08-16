@@ -18,26 +18,17 @@ static jive_node *
 jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static char *
-jive_apply_node_get_label_(const jive_node * self_);
-
 const jive_node_class JIVE_APPLY_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "APPLY",
 	.fini = jive_node_fini_, /* inherit */
 	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_apply_node_get_label_, /* override */
+	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
 	.create = jive_apply_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
-
-static char *
-jive_apply_node_get_label_(const jive_node * self_)
-{
-	return strdup("APPLY");
-}
 
 static jive_node *
 jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -54,7 +45,7 @@ jive_apply_node_init_(
 	size_t narguments,
 	jive_output * const arguments[])
 {
-	if (function->class_ != &JIVE_FUNCTION_OUTPUT) {
+	if (!jive_output_isinstance(function, &JIVE_FUNCTION_OUTPUT)) {
 		jive_context_fatal_error(region->graph->context, "Type mismatch: need 'function' type as input to 'apply' node");
 	}
 	jive_function_output * fct = (jive_function_output *) function;
