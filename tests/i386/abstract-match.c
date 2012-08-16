@@ -13,6 +13,7 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/arch/codegen.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>

@@ -8,7 +8,7 @@
 #include <assert.h>
 
 #include <jive/context.h>
-#include <jive/vsdg/functiontype.h>
+#include <jive/types/function/fcttype.h>
 #include <jive/vsdg/valuetype.h>
 
 static int test_main(void)

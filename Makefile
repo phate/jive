@@ -15,7 +15,6 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/operators/unary.c \
 	src/vsdg/operators/binary.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/controltype.c \
-	src/vsdg/functiontype.c src/vsdg/function.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
 	src/vsdg/negotiator.c \
@@ -80,6 +79,13 @@ LIBJIVE_SRC += \
 	src/types/union/unntype.c \
 	src/types/union/unnunify.c \
 	src/types/union/unnchoose.c \
+
+# functions
+LIBJIVE_SRC += \
+	src/types/function/fcttype.c \
+	src/types/function/fctlambda.c \
+	src/types/function/fctapply.c \
+	src/types/function/symbolic.c \
 
 # arch definitions
 LIBJIVE_SRC += \

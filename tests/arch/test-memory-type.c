@@ -11,7 +11,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/arch/memory.h>
-#include <jive/vsdg/function.h>
+#include <jive/types/function/fctlambda.h>
 
 static int test_main(void)
 {

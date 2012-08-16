@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/functiontype.h>
+#include <jive/types/function/fcttype.h>
 
 #include <string.h>
 #include <stdio.h>

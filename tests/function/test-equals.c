@@ -10,7 +10,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/types/bitstring.h>
-#include <jive/vsdg/functiontype.h>
+#include <jive/types/function/fcttype.h>
 
 static int test_main(void)
 {

@@ -11,9 +11,9 @@
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/function.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/record/rcdselect.h>
+#include <jive/types/function/fctlambda.h>
 
 static int test_main(void)
 {

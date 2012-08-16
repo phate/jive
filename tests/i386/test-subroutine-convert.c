@@ -15,6 +15,7 @@
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/types/function/fctlambda.h>
 
 static int test_main(void)
 {

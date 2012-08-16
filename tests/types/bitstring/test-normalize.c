@@ -11,7 +11,7 @@
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/function.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/types/bitstring.h>
 
 static int test_main(void)

@@ -13,7 +13,7 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/function.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/arch/address-transform.h>
