@@ -323,6 +323,19 @@ struct jive_node_normal_form {
 	bool enable_cse;
 };
 
+JIVE_EXPORTED_INLINE bool
+jive_node_normal_form_isinstance(const jive_node_normal_form * self,
+	const jive_node_normal_form_class * class_)
+{
+	const jive_node_normal_form_class * cls = self->class_;
+	while (cls) {
+		if (cls == class_)
+			return true;
+		cls = cls->parent;
+	}
+	return false;
+}
+
 JIVE_EXPORTED_INLINE void
 jive_node_normal_form_fini(jive_node_normal_form * self)
 {
