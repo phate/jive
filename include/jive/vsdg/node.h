@@ -193,6 +193,17 @@ jive_node_unreserve(jive_node * self)
 	self->reserved --;
 }
 
+/**
+	\brief Check if an edge may be added to the node
+	\param self Target node
+	\param origin Origin of edge
+	
+	Check whether an edge to @c self as target node may be added,
+	originating at port @c origin.
+*/
+bool
+jive_node_valid_edge(const jive_node * self, const struct jive_output * origin);
+
 struct jive_input *
 jive_node_add_input(jive_node * self, const struct jive_type * type, struct jive_output * initial_operand);
 

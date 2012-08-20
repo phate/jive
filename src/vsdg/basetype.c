@@ -216,6 +216,7 @@ jive_input_divert_origin(jive_input * self, jive_output * new_origin)
 void
 jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 {
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self->node, new_origin));
 	const jive_type * input_type = jive_input_get_type(self);
 	const jive_type * operand_type = jive_output_get_type(new_origin);
 	

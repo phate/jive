@@ -583,6 +583,8 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			jive_ssavar_assign_output(ssavar, output);
 			jive_mutable_varcut_ssavar_rescls_change(active, shaped_ssavar, jive_variable_get_resource_class(ssavar->variable));
 		}
+		
+		jive_ssavar_assert_consistent(shaped_ssavar->ssavar);
 	}
 	
 	for (n = 0; n < node->noutputs ; n++) {

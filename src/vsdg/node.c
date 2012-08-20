@@ -76,6 +76,9 @@ jive_node_init_(
 	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
 	
+	for (n = 0; n < self->ninputs; ++n)
+		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin));
+	
 	jive_graph_notify_node_create(self->graph, self);
 }
 
@@ -194,9 +197,25 @@ jive_node_add_input_(jive_node * self, jive_input * input)
 	self->inputs[input->index] = input;
 	
 	if (self->region){
+		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin));
 		jive_node_invalidate_depth_from_root(self);
 		jive_graph_notify_input_create(self->graph, input);
 	}
+}
+
+bool
+jive_node_valid_edge(const jive_node * self, const jive_output * origin)
+{
+	jive_region * origin_region = origin->node->region;
+	jive_region * target_region = self->region;
+	if (origin->class_ == &JIVE_ANCHOR_OUTPUT)
+		origin_region = origin_region->parent;
+	while (target_region) {
+		if (target_region == origin_region)
+			return true;
+		target_region = target_region->parent;
+	}
+	return false;
 }
 
 jive_input *

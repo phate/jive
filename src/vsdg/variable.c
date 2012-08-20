@@ -95,6 +95,19 @@ jive_ssavar_destroy(jive_ssavar * self)
 }
 
 void
+jive_ssavar_assert_consistent(const jive_ssavar * self)
+{
+	jive_output * origin = self->origin;
+	if (!origin)
+		return;
+	
+	jive_input * input;
+	JIVE_LIST_ITERATE(origin->users, input, output_users_list) {
+		JIVE_DEBUG_ASSERT(input->ssavar == origin->ssavar);
+	}
+}
+
+void
 jive_ssavar_assign_input(jive_ssavar * self, jive_input * input)
 {
 	JIVE_DEBUG_ASSERT(input->origin == self->origin && input->ssavar == 0);

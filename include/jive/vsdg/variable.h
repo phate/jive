@@ -69,6 +69,17 @@ jive_ssavar_split(jive_ssavar * self);
 void
 jive_ssavar_destroy(jive_ssavar * self);
 
+/**
+	\brief Perform conistenty check on ssavar
+	\param self ssavar to check
+	
+	Perform check whether the ssavar internal structure is
+	consistent (and terminate process with an assertion failure
+	otherwise).
+*/
+void
+jive_ssavar_assert_consistent(const jive_ssavar * self);
+
 struct jive_variable {
 	struct jive_graph * graph;
 	struct {
