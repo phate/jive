@@ -156,15 +156,28 @@ jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 	JIVE_DEBUG_ASSERT(self->variable == other->variable);
 	JIVE_DEBUG_ASSERT(self->origin == other->origin);
 	
-	if (other->assigned_output) {
-		jive_output * output = other->assigned_output;
-		jive_ssavar_unassign_output(other, output);
-		jive_ssavar_assign_output(self, output);
-	}
+	jive_output * assigned_output = other->assigned_output;
+	struct {
+		jive_input * first;
+		jive_input * last;
+	} assigned_inputs = {0, 0};
 	
-	while(other->assigned_inputs.first) {
+	/* undo all assignments, then redo assignments: there must never
+	be a state when "self" and "other" are alive at the same time,
+	but doing "piecemeal" reassignment might cause this */
+	if (assigned_output)
+		jive_ssavar_unassign_output(other, assigned_output);
+	while (other->assigned_inputs.first) {
 		jive_input * input = other->assigned_inputs.first;
 		jive_ssavar_unassign_input(other, input);
+		JIVE_LIST_PUSH_BACK(assigned_inputs, input, ssavar_input_list);
+	}
+	
+	if (assigned_output)
+		jive_ssavar_assign_output(self, assigned_output);
+	while (assigned_inputs.first) {
+		jive_input * input = assigned_inputs.first;
+		JIVE_LIST_REMOVE(assigned_inputs, input, ssavar_input_list);
 		jive_ssavar_assign_input(self, input);
 	}
 }

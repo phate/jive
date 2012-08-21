@@ -1,0 +1,2 @@
+TESTS+=\
+	vsdg/test-ssavar-merge \

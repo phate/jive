@@ -36,6 +36,7 @@ include tests/function/Makefile.sub
 include tests/transforms/Makefile.sub
 include tests/record/Makefile.sub
 include tests/union/Makefile.sub
+include tests/vsdg/Makefile.sub
 include tests/serialization/Makefile.sub
 
 TESTPROGS=$(patsubst %, tests/%, $(TESTS))
