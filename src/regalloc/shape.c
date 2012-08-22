@@ -1,6 +1,7 @@
 #include <jive/regalloc/shape.h>
 
 #include <jive/common.h>
+#include <jive/regalloc/reroute.h>
 #include <jive/regalloc/selector.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint-private.h>
@@ -519,6 +520,9 @@ static void
 resolve_conflict_spill(jive_region_shaper * self, const jive_resource_class * rescls, jive_regalloc_conflict conflict)
 {
 	jive_ssavar * to_spill = select_spill(self, conflict);
+	JIVE_DEBUG_ASSERT(to_spill);
+	to_spill = jive_regalloc_reroute_at_point(to_spill, jive_shaped_region_first(self->shaped_region));
+	JIVE_DEBUG_ASSERT(to_spill);
 	
 	const jive_resource_class_demotion * demotion = select_split_path(self, to_spill, rescls);
 	
