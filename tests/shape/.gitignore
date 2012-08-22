@@ -5,6 +5,9 @@ test-rescls-shape
 test-gate
 test-loop
 test-iteration
-test-reroute-gamma
-test-reroute-theta
+test-reroute-gamma1
+test-reroute-gamma2
+test-reroute-gamma3
+test-reroute-theta1
+test-reroute-theta2
 test-selector
