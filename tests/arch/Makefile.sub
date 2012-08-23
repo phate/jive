@@ -13,3 +13,4 @@ TESTS+=\
 	arch/test-regselect \
 	arch/test-sizeof \
 	arch/test-subroutine \
+	arch/test-load \
