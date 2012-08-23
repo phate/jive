@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -79,7 +81,7 @@ make_dotprod_function(size_t vector_size)
 }
 
 
-int main(int argc, char ** argv)
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -98,3 +100,5 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
+
+JIVE_UNIT_TEST_REGISTER("i386/dotproduct", test_main);

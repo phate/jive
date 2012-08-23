@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
@@ -140,7 +142,7 @@ void test_map(jive_context * context)
 	int_int_hashmap_fini(&map);
 }
 
-int main()
+static int test_main(void)
 {
 	jive_context * context = jive_context_create();
 	test_set(context);
@@ -150,3 +152,5 @@ int main()
 	jive_context_destroy(context);
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("util/test-metacontainers", test_main);

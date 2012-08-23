@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -268,8 +270,7 @@ verify_deserialize_nodeexpr(
 	deserialize_ctx_fini(&ctx);
 }
 
-int
-main()
+static int test_main(void)
 {
 	verify_serialize_rescls(&jive_root_resource_class, "root<>");
 	verify_serialize_rescls(&jive_root_register_class, "register<>");
@@ -349,3 +350,5 @@ main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("serialization/test-grammar", test_main);

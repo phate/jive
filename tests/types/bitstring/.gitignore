@@ -1,6 +1,0 @@
-test-arithmetic
-test-bitstring-operations
-test-constant
-test-normalize
-test-reduction
-test-slice-concat

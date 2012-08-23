@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -99,7 +101,7 @@ prepare_graph(jive_context * ctx)
 
 typedef void (*testfn_t)(int *, int *);
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -125,3 +127,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("i386/test-loadstore-match", test_main);

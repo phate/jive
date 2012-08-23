@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 
@@ -11,7 +13,7 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/arch/memlayout-simple.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
@@ -98,3 +100,5 @@ int main()
 
 	return 0;	
 }
+
+JIVE_UNIT_TEST_REGISTER("arch/test-sizeof", test_main);

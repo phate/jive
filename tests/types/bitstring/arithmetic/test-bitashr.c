@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <locale.h>
 #include <assert.h>
 
@@ -6,7 +8,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/vsdg/node-private.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
@@ -59,3 +61,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitashr", test_main);

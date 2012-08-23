@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 
@@ -10,7 +12,7 @@
 #include <jive/arch/memory.h>
 #include <jive/vsdg/node-private.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -70,3 +72,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("arch/test-loadstore", test_main);

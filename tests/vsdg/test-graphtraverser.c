@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 //#include "testnodes.h"
 //#include "graph-sanity-checks.h"
@@ -168,7 +170,7 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	jive_graph_prune(graph);
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -227,3 +229,5 @@ int main()
 	jive_context_destroy(ctx);
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-graphtraverser", test_main);

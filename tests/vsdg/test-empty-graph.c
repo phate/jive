@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 #include <string.h>
@@ -6,7 +8,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/view.h>
 
-int main()
+static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
@@ -37,3 +39,4 @@ int main()
 	
 	return 0;
 }
+JIVE_UNIT_TEST_REGISTER("vsdg/test-empty-graph", test_main);

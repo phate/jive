@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 #include <string.h>
@@ -6,7 +8,7 @@
 #include <jive/vsdg.h>
 #include <jive/types/bitstring.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -128,3 +130,5 @@ int main()
 }
 
 
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-slice-concat", test_main);

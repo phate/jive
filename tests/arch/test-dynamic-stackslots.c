@@ -1,8 +1,10 @@
+#include "test-registry.h"
+
 #include <assert.h>
 
 #include <jive/arch/stackslot.h>
 
-int main()
+static int test_main(void)
 {
 	const jive_resource_class * cls1, * cls2;
 	
@@ -41,3 +43,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("arch/test-dynamic-stackslots", test_main);

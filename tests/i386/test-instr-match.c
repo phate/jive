@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -439,7 +441,7 @@ static jive_output * wrap_bitsum(jive_output * a, jive_output * b)
 static jive_output * wrap_bitmultiply(jive_output * a, jive_output * b)
 { return jive_bitmultiply(2, (jive_output *[]){a, b}); }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -475,3 +477,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("i386/test-instr-match", test_main);

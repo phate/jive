@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 #include <jive/context.h>
@@ -9,7 +11,7 @@
 
 #include "testarch.h"
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -90,3 +92,5 @@ int main()
 	jive_context_destroy(ctx);
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("shape/test-rescls-shape", test_main);

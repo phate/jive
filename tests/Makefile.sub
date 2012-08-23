@@ -14,12 +14,13 @@ include tests/union/Makefile.sub
 include tests/util/Makefile.sub
 include tests/vsdg/Makefile.sub
 
-TESTPROGS=$(patsubst %, tests/%, $(TESTS))
+TESTPROGS=test-runner
 
-SOURCES += $(patsubst %, %.c, $(TESTPROGS)) tests/testarch.c
+TEST_SOURCES = tests/testarch.c tests/test-runner.c tests/test-registry.c $(patsubst %, tests/%.c, $(TESTS))
+SOURCES += $(TEST_SOURCES)
 
-$(TESTPROGS): LDFLAGS+=-L. -Wl,-whole-archive -ljive -Wl,-no-whole-archive
-$(TESTPROGS): %: %.la tests/testarch.la libjive.a
+tests/test-runner: LDFLAGS+=-L. -Wl,-whole-archive -ljive -Wl,-no-whole-archive
+tests/test-runner: %: $(patsubst %.c, %.la, $(TEST_SOURCES)) libjive.a
 	$(CC) -o $@ $(filter %.la, $^) $(LDFLAGS)
 
 $(patsubst %, tests/%.la, $(TESTS)): CPPFLAGS+=-Itests
@@ -28,18 +29,18 @@ $(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 
 TESTLOG=true
 
-check: $(TESTPROGS)
+check: tests/test-runner
 	rm -rf check.log
 	@FAILED_TESTS="" ; \
-	for TEST in $(TESTPROGS); do \
-		$(TESTLOG) -n "$$TEST: " ; if $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
+	for TEST in $(TESTS); do \
+		$(TESTLOG) -n "$$TEST: " ; if tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
 	done ; \
 	if [ "x$$FAILED_TESTS" != x ] ; then echo "Failed tests:$$FAILED_TESTS" ; else echo "All tests passed" ; fi
 
-valgrind-check: $(TESTPROGS)
+valgrind-check: tests/test-runner
 	rm -rf check.log
 	@FAILED_TESTS="" ; \
-	for TEST in $(TESTPROGS); do \
-		$(TESTLOG) -n "$$TEST: " ; if valgrind --error-exitcode=1 $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
+	for TEST in $(TESTS); do \
+		$(TESTLOG) -n "$$TEST: " ; if valgrind --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
 	done ; \
 	if [ "x$$FAILED_TESTS" != x ] ; then echo "Failed tests:$$FAILED_TESTS" ; else echo "All tests passed" ; fi

@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <locale.h>
 #include <assert.h>
 
@@ -8,7 +10,7 @@
 #include <jive/arch/addresstype.h>
 #include <jive/backend/i386/subroutine.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -43,3 +45,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("i386/test-subroutine-convert", test_main);

@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -105,7 +107,7 @@ test_mutable_upward_cone_3(jive_context * ctx)
 	jive_graph_destroy(g.graph);
 }
 
-int main()
+static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
 	
@@ -119,3 +121,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-cone-traverser", test_main);

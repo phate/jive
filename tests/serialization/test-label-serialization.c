@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <stdio.h>
 #include <locale.h>
 
@@ -17,7 +19,7 @@ my_error(jive_serialization_driver * drv, const char msg[])
 	abort();
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -73,3 +75,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("serialization/test-label-serialization", test_main);

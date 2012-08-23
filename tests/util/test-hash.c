@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <jive/context.h>
 #include <jive/util/hash.h>
@@ -19,7 +21,7 @@ JIVE_DEFINE_HASH_TYPE(my_hash, my_item, void *, key, hash_chain);
 typedef struct my_hash my_hash;
 typedef struct my_hash_iterator my_hash_iterator;
 
-int main()
+static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
 	
@@ -57,3 +59,5 @@ int main()
 	jive_context_destroy(ctx);
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("util/test-hash", test_main);

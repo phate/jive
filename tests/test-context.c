@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <setjmp.h>
 #include <jive/context.h>
@@ -8,7 +10,7 @@ static void jump(void * where, const char * msg)
 	longjmp(*buffer, 1);
 }
 
-int main(int argc, char **argv)
+static int test_main(void)
 {
 	jive_context * ctx=jive_context_create();
 	
@@ -32,3 +34,5 @@ int main(int argc, char **argv)
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("test-context", test_main);

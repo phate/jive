@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -17,7 +19,7 @@ assert_constant(jive_output * bitstr, size_t nbits, const char bits[])
 	assert(strncmp(node->attrs.bits, bits, nbits) == 0);
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -77,3 +79,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-reduction", test_main);

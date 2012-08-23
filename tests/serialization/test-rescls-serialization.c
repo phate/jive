@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -62,8 +64,7 @@ verify_deserialize(const char * repr, const jive_resource_class * expect_rescls)
 	assert(rescls == expect_rescls);
 }
 
-int
-main()
+static int test_main(void)
 {
 	verify_serialize(&jive_root_resource_class, "root<>");
 	verify_serialize(&jive_root_register_class, "register<>");
@@ -80,3 +81,5 @@ main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("serialization/test-rescls-serialization", test_main);

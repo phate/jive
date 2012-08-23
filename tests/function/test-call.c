@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 
@@ -7,7 +9,7 @@
 #include <jive/vsdg/function.h>
 #include <jive/view.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale( LC_ALL, "" ) ;
 
@@ -38,3 +40,5 @@ int main()
 
 	return 0 ;
 }
+
+JIVE_UNIT_TEST_REGISTER("function/test-call", test_main);

@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -12,7 +14,7 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -81,3 +83,5 @@ int main()
 	return 0;
 }
 
+
+JIVE_UNIT_TEST_REGISTER("i386/test-simple-branch", test_main);

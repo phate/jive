@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 #include <stdio.h>
@@ -8,7 +10,7 @@
 #include <jive/vsdg/union.h>
 #include <jive/types/bitstring.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
@@ -47,3 +49,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("union/test-nesting", test_main);

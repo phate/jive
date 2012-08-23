@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <locale.h>
 
 #include <jive/context.h>
@@ -335,8 +337,7 @@ expect_options(jive_negotiator * nego, jive_output * o, test_option_t o_o, jive_
 	}
 }
 
-int
-main(int argc, char ** argv)
+static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
@@ -404,3 +405,5 @@ main(int argc, char ** argv)
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-negotiator", test_main);

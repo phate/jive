@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -164,7 +166,7 @@ make_union2(jive_graph * graph)
 	return jive_unify_create(&decl1, 1, c);
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -186,3 +188,5 @@ int main()
 	return 0;
 }
 
+
+JIVE_UNIT_TEST_REGISTER("arch/test-dataobj", test_main);

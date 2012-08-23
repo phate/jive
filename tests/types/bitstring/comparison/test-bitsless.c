@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <locale.h>
 #include <assert.h>
 #include <stdint.h>
@@ -7,7 +9,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
@@ -52,3 +54,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsless", test_main);

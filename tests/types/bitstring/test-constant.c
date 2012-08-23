@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 
@@ -9,7 +11,7 @@
 #define ONE_64  "10000000" "00000000" "00000000" "00000000" "00000000" "00000000" "00000000" "00000000"
 #define MONE_64 "11111111" "11111111" "11111111" "11111111" "11111111" "11111111" "11111111" "11111111"
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
@@ -51,3 +53,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-constant", test_main);

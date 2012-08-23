@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -33,7 +35,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 	return jive_cut_append(cut, node);
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -129,3 +131,5 @@ int main()
 	jive_context_destroy(ctx);
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("shape/test-reroute-theta1", test_main);

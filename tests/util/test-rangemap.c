@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 
 #include <jive/util/rangemap.h>
@@ -28,9 +30,10 @@ test_int_map(void)
 	int_map_fini(&a);
 }
 
-int
-main()
+static int test_main(void)
 {
 	test_int_map();
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("util/test-rangemap", test_main);

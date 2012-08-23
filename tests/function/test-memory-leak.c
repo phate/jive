@@ -1,10 +1,12 @@
+#include "test-registry.h"
+
 #include <assert.h>
 
 #include <jive/context.h>
 #include <jive/vsdg/functiontype.h>
 #include <jive/vsdg/valuetype.h>
 
-int main()
+static int test_main(void)
 {
 	jive_context * context = jive_context_create();
 	
@@ -28,3 +30,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("function/test-memory-leak", test_main);

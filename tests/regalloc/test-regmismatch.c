@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -169,7 +171,7 @@ static const creator_function_t tests[] = {
 	create_testgraph_mismatch6
 };
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
@@ -191,3 +193,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("regalloc/test-regmismatch", test_main);

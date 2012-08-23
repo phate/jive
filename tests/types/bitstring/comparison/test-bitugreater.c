@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <locale.h>
 #include <assert.h>
 #include <stdint.h>
@@ -8,7 +10,7 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/comparison/bitugreater.h>
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
@@ -54,3 +56,5 @@ int main()
 	return 0;
 }
 
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreater", test_main);

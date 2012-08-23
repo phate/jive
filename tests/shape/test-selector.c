@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 #include <stdio.h>
@@ -115,7 +117,7 @@ create_restore_node(jive_graph * graph,
 	return node;
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -261,3 +263,4 @@ int main()
 	
 	return 0;
 }
+JIVE_UNIT_TEST_REGISTER("shape/test-selector", test_main);

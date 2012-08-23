@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <locale.h>
 #include <stdio.h>
@@ -9,7 +11,7 @@
 
 #include "testarch.h"
 
-jive_graph *
+static jive_graph *
 create_testgraph(jive_context * ctx)
 {
 	jive_graph * graph = jive_graph_create(ctx);
@@ -52,7 +54,7 @@ create_testgraph(jive_context * ctx)
 	return graph;
 }
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -69,3 +71,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("regalloc/test-shape-split", test_main);

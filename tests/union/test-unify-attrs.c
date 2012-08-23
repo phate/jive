@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 
 #include <jive/context.h>
@@ -5,7 +7,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/vsdg/union.h>
 
-int main()
+static int test_main(void)
 {
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
@@ -29,3 +31,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("union/test-unify-attrs", test_main);

@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -65,7 +67,7 @@ make_string(jive_graph * graph, const char * txt)
 
 static const char hello_world[] = "Hello, world!\n";
 
-int main()
+static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
@@ -168,3 +170,5 @@ int main()
 	return 0;
 }
 
+
+JIVE_UNIT_TEST_REGISTER("i386/hello-world-gencall", test_main);

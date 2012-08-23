@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 
 #include <jive/context.h>
@@ -120,7 +122,7 @@ void test_rescls_count_prio(jive_context * ctx)
 	jive_resource_class_count_fini(&a);
 }
 
-int main()
+static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
 	
@@ -132,3 +134,5 @@ int main()
 	jive_context_destroy(ctx);
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-rescls-count", test_main);

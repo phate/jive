@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
@@ -30,7 +32,7 @@ void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node
 	jive_traverser_destroy(trav);
 }
 
-int main()
+static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
@@ -64,3 +66,5 @@ int main()
 	
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-mutable-traverser", test_main);

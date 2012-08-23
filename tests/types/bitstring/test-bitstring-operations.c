@@ -1,3 +1,5 @@
+#include "test-registry.h"
+
 #include <assert.h>
 
 #include <jive/vsdg.h>
@@ -248,7 +250,7 @@ char uless[10][10] = {
 	{'0', '1', '0', 'D', 'D', 'X', '0', 'X', 'X', 'D'}};	
 
 
-int main()
+static int test_main(void)
 {
 
 	int r, c;
@@ -356,3 +358,5 @@ int main()
 
 	return 0;
 }
+
+JIVE_UNIT_TEST_REGISTER("types/bitstring/test-bitstring-operations", test_main);
