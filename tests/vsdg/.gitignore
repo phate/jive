@@ -1,1 +1,11 @@
+test-cone-traverser
+test-empty-graph
+test-graph
+test-graphtraverser
+test-mutable-traverser
+test-negotiator
+test-prune-replace
+test-rescls-count
 test-ssavar-merge
+test-statesplit
+test-typemismatch

@@ -1,2 +1,12 @@
 TESTS+=\
+	vsdg/test-cone-traverser \
+	vsdg/test-empty-graph \
+	vsdg/test-graph \
+	vsdg/test-graphtraverser \
+	vsdg/test-mutable-traverser \
+	vsdg/test-negotiator \
+	vsdg/test-prune-replace \
+	vsdg/test-rescls-count \
 	vsdg/test-ssavar-merge \
+	vsdg/test-statesplit \
+	vsdg/test-typemismatch \

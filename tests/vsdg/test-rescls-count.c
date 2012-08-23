@@ -1,6 +1,6 @@
 #include <assert.h>
+
 #include <jive/context.h>
-#include <jive/arch/registers.h>
 #include <jive/vsdg/resource-private.h>
 
 #include "testarch.h"

@@ -1,7 +1,6 @@
-reduction
-slice-concat
-bitops
 test-arithmetic
+test-bitstring-operations
 test-constant
 test-normalize
-test-bitstring-operations
+test-reduction
+test-slice-concat

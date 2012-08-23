@@ -1,21 +1,8 @@
 TESTS+=\
-	regalloc/simple \
-	regalloc/shape-split \
-	regalloc/regmismatch \
-	regalloc/twoop \
-	regalloc/split \
-	regalloc/gatesplit \
-	regalloc/gateevict \
-
-#TESTS+=\
-#	regalloc/shaping-traverser \
-#	regalloc/simple-shaping \
-#	regalloc/regmismatch \
-
-#TESTS+=\
-#	regalloc/test_rat
-#
-#tests/regalloc/test_rat: tests/regalloc/rat.o
-
-#tests/regalloc/simple-shaping: tests/regalloc/testarch.o
-#tests/regalloc/regmismatch: tests/regalloc/testarch.o
+	regalloc/test-gatesplit \
+	regalloc/test-gateevict \
+	regalloc/test-regmismatch \
+	regalloc/test-shape-split \
+	regalloc/test-simple \
+	regalloc/test-split \
+	regalloc/test-twoop \

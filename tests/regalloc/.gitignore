@@ -1,7 +1,7 @@
-simple
-shape-split
-regmismatch
-twoop
-split
-gatesplit
-gateevict
+test-gateevict
+test-gatesplit
+test-regmismatch
+test-shape-split
+test-simple
+test-split
+test-twoop

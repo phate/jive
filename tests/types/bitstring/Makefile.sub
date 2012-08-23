@@ -1,10 +1,10 @@
 TESTS+=\
-	types/bitstring/slice-concat \
-	types/bitstring/reduction \
+	types/bitstring/test-arithmetic \
 	types/bitstring/test-bitstring-operations \
 	types/bitstring/test-constant \
-	types/bitstring/test-arithmetic \
 	types/bitstring/test-normalize \
+	types/bitstring/test-reduction \
+	types/bitstring/test-slice-concat \
 
 include tests/types/bitstring/arithmetic/Makefile.sub
 include tests/types/bitstring/comparison/Makefile.sub

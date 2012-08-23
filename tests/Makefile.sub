@@ -1,43 +1,18 @@
-TESTS=\
-	test_metacontainers\
-	test_context\
-	test_graph\
-	test_graphtraverser\
-	test_empty_graph\
-	test_mutable_traverser\
-	test_prune_replace\
-	test_rescls_count\
-	test_statesplit\
-	test_typemismatch\
-	test_rangemap\
-	test_negotiator\
-	test-cone-traverser\
+TESTS= \
+	test-context \
 
-# 	test_resource\
-# 	test_interference\
-# 	test_shape\
-# 	test_shape_crossings\
-# 	test_subgraph_shape\
-# 	test_gate_interference\
- 	
-# 	test_bitstring1\
-# 	test_bitstring2\
-# 	test_bitstring3\
-# 	test_machinedef\
-# 	arithmetic_function
-
-# include tests/util/Makefile.sub
 include tests/arch/Makefile.sub
-include tests/shape/Makefile.sub
-include tests/regalloc/Makefile.sub
-include tests/types/Makefile.sub
-include tests/i386/Makefile.sub
 include tests/function/Makefile.sub
-include tests/transforms/Makefile.sub
+include tests/i386/Makefile.sub
 include tests/record/Makefile.sub
-include tests/union/Makefile.sub
-include tests/vsdg/Makefile.sub
+include tests/regalloc/Makefile.sub
+include tests/shape/Makefile.sub
 include tests/serialization/Makefile.sub
+include tests/transforms/Makefile.sub
+include tests/types/Makefile.sub
+include tests/union/Makefile.sub
+include tests/util/Makefile.sub
+include tests/vsdg/Makefile.sub
 
 TESTPROGS=$(patsubst %, tests/%, $(TESTS))
 

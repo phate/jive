@@ -1,2 +1,4 @@
 TESTS += \
-	util/hash
+	util/test-hash \
+	util/test-metacontainers \
+	util/test-rangemap \

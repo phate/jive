@@ -1,4 +1,4 @@
 TESTS+=\
-	record/nesting\
-	record/innermost_region\
-	record/group_attrs\
+	record/test-group-attrs\
+	record/test-innermost-region\
+	record/test-nesting\

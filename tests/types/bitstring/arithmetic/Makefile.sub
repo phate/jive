@@ -1,17 +1,17 @@
 TESTS+=\
-	types/bitstring/arithmetic/test-bitshr \
-	types/bitstring/arithmetic/test-bitshl \
-	types/bitstring/arithmetic/test-bitashr \
 	types/bitstring/arithmetic/test-bitand \
-	types/bitstring/arithmetic/test-bitor \
-	types/bitstring/arithmetic/test-bitnot \
-	types/bitstring/arithmetic/test-bitxor \
+	types/bitstring/arithmetic/test-bitashr \
 	types/bitstring/arithmetic/test-bitnegate \
-	types/bitstring/arithmetic/test-bitsum \
-	types/bitstring/arithmetic/test-bitsquotient \
+	types/bitstring/arithmetic/test-bitnot \
+	types/bitstring/arithmetic/test-bitor \
 	types/bitstring/arithmetic/test-bitproduct \
 	types/bitstring/arithmetic/test-bitshiproduct \
+	types/bitstring/arithmetic/test-bitshl \
+	types/bitstring/arithmetic/test-bitshr \
 	types/bitstring/arithmetic/test-bitsmod \
+	types/bitstring/arithmetic/test-bitsquotient \
+	types/bitstring/arithmetic/test-bitsum \
 	types/bitstring/arithmetic/test-bituhiproduct \
 	types/bitstring/arithmetic/test-bitumod \
 	types/bitstring/arithmetic/test-bituquotient \
+	types/bitstring/arithmetic/test-bitxor \
