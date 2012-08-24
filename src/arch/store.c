@@ -155,6 +155,9 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 			unify_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
 				nstates, istates, ostates);
 			reduction = true;
+		} else if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_EMPTY_UNIFY_NODE)) {
+			for (n = 0; n < nstates; n++)
+				ostates[n] = istates[n];	
 		} else if (store_reduce(node->inputs[0]->origin, node->inputs[1]->origin,
 			nstates, istates, ostates)) {
 			reduction = true;
