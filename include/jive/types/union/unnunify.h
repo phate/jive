@@ -1,11 +1,12 @@
 #ifndef JIVE_TYPES_UNION_UNNUNIFY_H
 #define JIVE_TYPES_UNION_UNNUNIFY_H
 
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/unary.h>
 
 struct jive_union_declaration;
 
-extern const jive_node_class JIVE_UNIFY_NODE;
+extern const jive_unary_operation_class JIVE_UNIFY_NODE_;
+#define JIVE_UNIFY_NODE (JIVE_UNIFY_NODE_.base)
 
 typedef struct jive_unify_node jive_unify_node;
 typedef struct jive_unify_node_attrs jive_unify_node_attrs;
