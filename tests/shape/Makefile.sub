@@ -4,6 +4,7 @@ TESTS += \
 	shape/test-interference \
 	shape/test-iteration \
 	shape/test-loop \
+	shape/test-loop-subregion \
 	shape/test-reroute-gamma1 \
 	shape/test-reroute-gamma2 \
 	shape/test-reroute-gamma3 \
