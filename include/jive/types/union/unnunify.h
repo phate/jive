@@ -5,6 +5,8 @@
 
 struct jive_union_declaration;
 
+/* unify node */
+
 extern const jive_unary_operation_class JIVE_UNIFY_NODE_;
 #define JIVE_UNIFY_NODE (JIVE_UNIFY_NODE_.base)
 
@@ -35,6 +37,35 @@ jive_unify_node_cast(jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_UNIFY_NODE))
 		return (jive_unify_node *) node;
+	else
+		return NULL;
+}
+
+/* empty unify node */
+
+extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
+
+typedef struct jive_empty_unify_node jive_empty_unify_node;
+typedef struct jive_empty_unify_node_attrs jive_empty_unify_node_attrs;
+
+struct jive_empty_unify_node_attrs {
+	jive_node_attrs base;
+	const struct jive_union_declaration * decl;
+};
+
+struct jive_empty_unify_node {
+	jive_node base;
+	jive_empty_unify_node_attrs attrs;
+};
+
+jive_output *
+jive_empty_unify_create(struct jive_graph * graph, const struct jive_union_declaration * decl);
+
+JIVE_EXPORTED_INLINE jive_empty_unify_node *
+jive_empty_unify_node_cast(jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_EMPTY_UNIFY_NODE))
+		return (jive_empty_unify_node *) node;
 	else
 		return NULL;
 }
