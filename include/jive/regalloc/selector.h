@@ -132,7 +132,7 @@ struct jive_node *
 jive_region_shaper_selector_select_node(jive_region_shaper_selector * self);
 
 struct jive_ssavar *
-jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const struct jive_resource_class * rescls);
+jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const struct jive_resource_class * rescls, struct jive_node * disallow_origins);
 
 void
 jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self, struct jive_node * node);

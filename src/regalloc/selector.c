@@ -449,7 +449,8 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 }
 
 jive_ssavar *
-jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const jive_resource_class * rescls)
+jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const jive_resource_class * rescls,
+	jive_node * disallow_origins)
 {
 	size_t nsorted_ssavars = self->shaped_region->active_top.base.ssavar_map.nitems;
 	jive_ssavar * sorted_ssavars[nsorted_ssavars];
@@ -460,6 +461,9 @@ jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, con
 		k --;
 		jive_ssavar * ssavar = sorted_ssavars[k];
 		if (!jive_variable_may_spill(ssavar->variable))
+			continue;
+		
+		if (ssavar->origin->node == disallow_origins)
 			continue;
 		
 		const jive_resource_class * var_rescls = jive_variable_get_resource_class(ssavar->variable);

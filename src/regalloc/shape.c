@@ -440,11 +440,11 @@ jive_region_shaper_undo_setup_node(jive_region_shaper * self, jive_node * node)
 }
 
 static jive_ssavar *
-select_spill(jive_region_shaper * self, jive_regalloc_conflict conflict)
+select_spill(jive_region_shaper * self, jive_regalloc_conflict conflict, jive_node * disallow_origins)
 {
 	switch(conflict.type) {
 		case jive_regalloc_conflict_class:
-			return jive_region_shaper_selector_select_spill(self->region_selector, conflict.item.rescls);
+			return jive_region_shaper_selector_select_spill(self->region_selector, conflict.item.rescls, disallow_origins);
 		case jive_regalloc_conflict_name:
 			return conflict.item.ssavar;
 		default:
@@ -522,9 +522,10 @@ select_split_path(jive_region_shaper * self, jive_ssavar * ssavar, const jive_re
 }
 
 static void
-resolve_conflict_spill(jive_region_shaper * self, const jive_resource_class * rescls, jive_regalloc_conflict conflict)
+resolve_conflict_spill(jive_region_shaper * self, const jive_resource_class * rescls, jive_regalloc_conflict conflict,
+	jive_node * disallow_origins)
 {
-	jive_ssavar * to_spill = select_spill(self, conflict);
+	jive_ssavar * to_spill = select_spill(self, conflict, disallow_origins);
 	JIVE_DEBUG_ASSERT(to_spill);
 	to_spill = jive_regalloc_reroute_at_point(to_spill, jive_shaped_region_first(self->shaped_region));
 	JIVE_DEBUG_ASSERT(to_spill);
@@ -556,7 +557,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 		
 		if (conflict.type != jive_regalloc_conflict_none) {
 			jive_region_shaper_undo_setup_node(self, node);
-			resolve_conflict_spill(self, jive_variable_get_resource_class(new_constraint), conflict);
+			resolve_conflict_spill(self, jive_variable_get_resource_class(new_constraint), conflict, NULL);
 			return false;
 		}
 		
@@ -638,7 +639,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 		
 		if (conflict.type != jive_regalloc_conflict_none) {
 			jive_region_shaper_undo_setup_node(self, node);
-			resolve_conflict_spill(self, jive_variable_get_resource_class(new_constraint), conflict);
+			resolve_conflict_spill(self, jive_variable_get_resource_class(new_constraint), conflict, node);
 			return false;
 		}
 		
@@ -669,7 +670,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 				jive_regalloc_conflict conflict;
 				conflict.type = jive_regalloc_conflict_class;
 				conflict.item.rescls = overflow;
-				resolve_conflict_spill(self, aux_rescls, conflict);
+				resolve_conflict_spill(self, aux_rescls, conflict, node);
 				return false;
 			}
 		}
