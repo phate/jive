@@ -172,8 +172,15 @@ select_split_path(jive_shaped_graph * shaped_graph, const jive_resource_class * 
 			jive_crossing_arc_iterator_init(&i, shaped_graph, start_point, jive_shaped_node_prev_in_region(end_point), end_point->node->region, 0);
 			
 			while (i.region) {
-				if (!i.node)
+				if (!i.node) {
+					if (i.region->region->attrs.is_looped) {
+						/* FIXME: for looped regions, and if used inside,
+						check for interference with whole of loop body */
+						abort();
+					}
+					jive_crossing_arc_iterator_next(&i);
 					continue;
+				}
 				
 				if (jive_resource_class_count_check_add(&i.node->use_count_before, demotion->target)) {
 					allowed = false;
