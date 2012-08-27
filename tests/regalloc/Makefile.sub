@@ -1,6 +1,7 @@
 TESTS+=\
 	regalloc/test-gatesplit \
 	regalloc/test-gateevict \
+	regalloc/test-loop-overflow \
 	regalloc/test-regmismatch \
 	regalloc/test-shape-split \
 	regalloc/test-simple \

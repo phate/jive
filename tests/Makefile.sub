@@ -29,18 +29,23 @@ $(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 
 TESTLOG=true
 
+EXPECT_FAIL_TESTS = regalloc/test-loop-overflow
+EXPECT_PASS_TESTS = $(filter-out $(EXPECT_FAIL_TESTS),$(TESTS))
+
 check: tests/test-runner
 	rm -rf check.log
-	@FAILED_TESTS="" ; \
-	for TEST in $(TESTS); do \
-		$(TESTLOG) -n "$$TEST: " ; if tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
+	@UNEXPECTED_FAILED_TESTS="" ; \
+	for TEST in $(EXPECT_PASS_TESTS); do \
+		$(TESTLOG) -n "$$TEST: " ; if tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; UNEXPECTED_FAILED_TESTS="$$UNEXPECTED_FAILED_TESTS $$TEST" ; fi ; \
 	done ; \
-	if [ "x$$FAILED_TESTS" != x ] ; then echo "Failed tests:$$FAILED_TESTS" ; else echo "All tests passed" ; fi
+	if [ "x$$UNEXPECTED_FAILED_TESTS" != x ] ; then echo "Failed tests:$$UNEXPECTED_FAILED_TESTS" ; else echo "All tests passed" ; fi ; \
+	if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
 
 valgrind-check: tests/test-runner
 	rm -rf check.log
-	@FAILED_TESTS="" ; \
-	for TEST in $(TESTS); do \
-		$(TESTLOG) -n "$$TEST: " ; if valgrind --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$FAILED_TESTS $$TEST" ; fi ; \
+	@UNEXPECTED_FAILED_TESTS="" ; \
+	for TEST in $(EXPECT_PASS_TESTS); do \
+		$(TESTLOG) -n "$$TEST: " ; if valgrind --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$UNEXPECTED_FAILED_TESTS $$TEST" ; fi ; \
 	done ; \
-	if [ "x$$FAILED_TESTS" != x ] ; then echo "Failed tests:$$FAILED_TESTS" ; else echo "All tests passed" ; fi
+	if [ "x$$UNEXPECTED_FAILED_TESTS" != x ] ; then echo "Failed tests:$$UNEXPECTED_FAILED_TESTS" ; else echo "All tests passed" ; fi ; \
+	if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
