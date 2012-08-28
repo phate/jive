@@ -1,18 +1,16 @@
 TESTS+=\
 	arch/test-address \
-	arch/test-address-transform \
-	arch/test-address-transform-nodes \
 	arch/test-call \
 	arch/test-codegen \
-	arch/test-containerof-transform \
 	arch/test-dataobj \
 	arch/test-dynamic-stackslots \
 	arch/test-label-nodes \
 	arch/test-load \
 	arch/test-loadstore \
-	arch/test-memberof-transform \
 	arch/test-memory-type \
 	arch/test-relocation \
 	arch/test-regselect \
 	arch/test-sizeof \
 	arch/test-subroutine \
+
+include tests/arch/address-transform/Makefile.sub

@@ -1,0 +1,9 @@
+test-address
+test-call
+test-dataobj
+test-dynamic-stackslots
+test-loadstore
+test-memory-type
+test-sizeof
+test-subroutine
+test-regselect
