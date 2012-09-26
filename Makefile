@@ -1,8 +1,8 @@
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall -Werror -Wfatal-errors -g
+CFLAGS+=-Wall -Werror -Wfatal-errors -g -m32
 
 CPPFLAGS+=-DJIVE_MALLOC_TRACE
-LDFLAGS+=-rdynamic
+LDFLAGS+=-rdynamic -m32
 
 # VSDG core
 LIBJIVE_SRC = src/context.c \

@@ -161,7 +161,7 @@ static int test_main(void)
 	jive_buffer_init(&buffer, ctx);
 	jive_graph_generate_assembler(graph, &buffer);
 	
-	FILE * gcc_pipe = popen("gcc -x assembler -", "w");
+	FILE * gcc_pipe = popen("gcc -m32 -x assembler -", "w");
 	fwrite(buffer.data, buffer.size, 1, stdout);
 	fwrite(buffer.data, buffer.size, 1, gcc_pipe);
 	int gcc_status = pclose(gcc_pipe);
