@@ -6,6 +6,7 @@
 #ifndef JIVE_REGALLOC_SHAPED_REGION_PRIVATE_H
 #define JIVE_REGALLOC_SHAPED_REGION_PRIVATE_H
 
+#include <jive/regalloc/notifiers.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/xpoint-private.h>
