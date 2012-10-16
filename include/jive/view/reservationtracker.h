@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * See COPYING for terms of redistribution.
+ */
+
 #ifndef JIVE_VIEW_RESERVATIONTRACKER_H
 #define JIVE_VIEW_RESERVATIONTRACKER_H
 

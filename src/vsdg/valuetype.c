@@ -1,3 +1,9 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/vsdg/valuetype.h>
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/graph-private.h>

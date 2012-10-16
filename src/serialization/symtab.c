@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/serialization/symtab.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, struct jive_gate *, gate, gate_hash_chain);

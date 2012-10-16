@@ -1,3 +1,8 @@
+/*
+ * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/arch/store.h>
 
 #include <jive/vsdg/valuetype.h>

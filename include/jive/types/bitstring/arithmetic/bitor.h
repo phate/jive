@@ -1,3 +1,8 @@
+/*
+ * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #ifndef JIVE_TYPES_BITSTRING_ARITHMETIC_BITOR_H
 #define JIVE_TYPES_BITSTRING_ARITHMETIC_BITOR_H
 

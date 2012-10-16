@@ -1,3 +1,9 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #ifndef JIVE_VSDG_GRAPH_H
 #define JIVE_VSDG_GRAPH_H
 

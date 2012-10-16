@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/backend/i386/stackframe.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/arch/stackframe-private.h>

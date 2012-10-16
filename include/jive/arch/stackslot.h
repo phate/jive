@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * See COPYING for terms of redistribution.
+ */
+
 #ifndef JIVE_ARCH_STACKSLOT_H
 #define JIVE_ARCH_STACKSLOT_H
 

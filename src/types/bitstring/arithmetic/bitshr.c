@@ -1,3 +1,8 @@
+/*
+ * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/types/bitstring/arithmetic/bitshr.h>
 
 #include <jive/vsdg/region.h>

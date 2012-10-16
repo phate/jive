@@ -1,3 +1,8 @@
+/*
+ * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/types/union/unntype.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>

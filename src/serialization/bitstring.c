@@ -1,3 +1,8 @@
+/*
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/serialization/driver.h>
 #include <jive/serialization/grammar.h>
 #include <jive/serialization/nodecls-registry.h>
