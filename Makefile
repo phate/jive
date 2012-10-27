@@ -3,10 +3,7 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall -Werror -Wfatal-errors -g -m32
-
-CPPFLAGS+=-DJIVE_MALLOC_TRACE
-LDFLAGS+=-rdynamic -m32
+CFLAGS+=-Wall -Werror -Wfatal-errors -g
 
 # VSDG core
 LIBJIVE_SRC = src/context.c \
@@ -222,3 +219,7 @@ ifeq ($(shell if [ -e .dep ] ; then echo yes ; fi),yes)
 endif
 
 .PHONY: doc
+
+ifeq ($(shell if [ -e .Makefile.override ] ; then echo yes ; fi),yes)
+include .Makefile.override
+endif
