@@ -27,7 +27,7 @@ struct jive_reg_classifier {
 	jive_regselect_mask any;
 	jive_regselect_mask (*classify_type)(const struct jive_type * type, const struct jive_resource_class * rescls);
 	jive_regselect_mask (*classify_fixed_arithmetic)(jive_bitop_code op, size_t nbits);
-	jive_regselect_mask (*classify_fixed_compare)(jive_bitop_code op, size_t nbits);
+	jive_regselect_mask (*classify_fixed_compare)(jive_bitcmp_code op, size_t nbits);
 	jive_regselect_mask (*classify_address)(void);
 	
 	size_t nclasses;
@@ -50,7 +50,7 @@ jive_reg_classifier_classify_fixed_arithmetic(const jive_reg_classifier * self,
 
 JIVE_EXPORTED_INLINE jive_regselect_mask
 jive_reg_classifier_classify_fixed_compare(const jive_reg_classifier * self,
-	jive_bitop_code op, size_t nbits)
+	jive_bitcmp_code op, size_t nbits)
 {
 	return self->classify_fixed_compare(op, nbits);
 }

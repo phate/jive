@@ -381,7 +381,7 @@ jive_testarch_classify_fixed_arithmetic_(jive_bitop_code op, size_t nbits)
 }
 
 static jive_regselect_mask
-jive_testarch_classify_fixed_compare_(jive_bitop_code op, size_t nbits)
+jive_testarch_classify_fixed_compare_(jive_bitcmp_code op, size_t nbits)
 {
 	return (1 << cls_gpr);
 }

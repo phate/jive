@@ -5,6 +5,7 @@
 
 #include <jive/serialization/token-stream.h>
 
+#include <inttypes.h>
 #include <stdio.h>
 
 #include <jive/util/buffer.h>
@@ -151,7 +152,7 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 		case jive_token_integral: {
 			jive_token_ostream_simple_flush_whitespace(self);
 			char repr[64];
-			snprintf(repr, sizeof(repr), "%lld", token->v.integral);
+			snprintf(repr, sizeof(repr), "%"PRId64, token->v.integral);
 			jive_buffer_putstr(self->buffer, repr);
 			self->need_whitespace = true;
 			break;

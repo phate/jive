@@ -12,6 +12,7 @@
 #include <jive/serialization/instrcls-registry.h>
 #include <jive/util/buffer.h>
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -28,7 +29,7 @@ jive_buffer_putimm(jive_buffer * target, const jive_immediate * imm)
 	bool empty = true;
 	if (imm->offset) {
 		char tmp[80];
-		snprintf(tmp, sizeof(tmp), "%lld", imm->offset);
+		snprintf(tmp, sizeof(tmp), "%" PRId64, imm->offset);
 		jive_buffer_putstr(target, tmp);
 		empty = false;
 	}

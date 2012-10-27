@@ -39,7 +39,7 @@ jive_i386_classify_fixed_arithmetic_(jive_bitop_code op, size_t nbits)
 }
 
 static jive_regselect_mask
-jive_i386_classify_fixed_compare_(jive_bitop_code op, size_t nbits)
+jive_i386_classify_fixed_compare_(jive_bitcmp_code op, size_t nbits)
 {
 	return (1 << jive_i386_gpr);
 }
