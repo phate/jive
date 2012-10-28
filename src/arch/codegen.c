@@ -145,16 +145,13 @@ generate_code(jive_seq_graph * seq_graph, struct jive_compilate * cgbuffer)
 void
 jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_compilate * buffer)
 {
-	jive_compilate_state state;
-	jive_compilate_save_state(buffer, &state);
-	
 	/* redo until no labels change anymore; this is actually a bit too
 	pessimistic, as we only need to redo if
 	- a *forward* reference label may have changed AND
 	- the encoding of at least one instruction depends on
 	  the value of one of the changed labels */
 	while (seq_graph->addrs_changed) {
-		jive_compilate_reset(buffer, &state);
+		jive_compilate_clear(buffer);
 		seq_graph->addrs_changed = false;
 		generate_code(seq_graph, buffer);
 	}

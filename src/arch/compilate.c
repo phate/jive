@@ -27,21 +27,12 @@ jive_compilate_fini(struct jive_compilate * self)
 }
 
 void
-jive_compilate_save_state(const jive_compilate * self, jive_compilate_state * state)
+jive_compilate_clear(jive_compilate * self)
 {
-	state->code_buffer_size = self->code_buffer.size;
-	state->data_buffer_size = self->data_buffer.size;
-	state->rodata_buffer_size = self->rodata_buffer.size;
-	state->bss_buffer_size = self->bss_buffer.size;
-}
-
-void
-jive_compilate_reset(jive_compilate * self, const jive_compilate_state * state)
-{
-	jive_buffer_resize(&self->code_buffer, state->code_buffer_size);
-	jive_buffer_resize(&self->data_buffer, state->data_buffer_size);
-	jive_buffer_resize(&self->rodata_buffer, state->rodata_buffer_size);
-	jive_buffer_resize(&self->bss_buffer, state->bss_buffer_size);
+	jive_buffer_resize(&self->code_buffer, 0);
+	jive_buffer_resize(&self->data_buffer, 0);
+	jive_buffer_resize(&self->rodata_buffer, 0);
+	jive_buffer_resize(&self->bss_buffer, 0);
 }
 
 jive_buffer *
