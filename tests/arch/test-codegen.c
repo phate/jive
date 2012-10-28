@@ -35,8 +35,8 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	jive_codegen_buffer buffer;
-	jive_codegen_buffer_init(&buffer, context);
+	jive_compilate buffer;
+	jive_compilate_init(&buffer, context);
 	jive_graph_generate_code(graph, &buffer);
 
 	assert(buffer.data_buffer.size == 1);
@@ -48,7 +48,7 @@ static int test_main(void)
 	assert(buffer.bss_buffer.size == 4);
 	assert(((int32_t *)buffer.bss_buffer.data)[0] == 32);
 	
-	jive_codegen_buffer_fini(&buffer);
+	jive_compilate_fini(&buffer);
 	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

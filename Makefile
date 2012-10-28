@@ -98,7 +98,7 @@ LIBJIVE_SRC += \
 	src/arch/call.c \
 	src/arch/address-transform.c \
 	src/arch/regvalue.c \
-	src/arch/codegen_buffer.c \
+	src/arch/compilate.c \
 	src/arch/codegen.c \
 	
 # shaper

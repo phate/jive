@@ -66,11 +66,11 @@ static int test_main(void)
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
 
-	jive_codegen_buffer cgbuffer;	
-	jive_codegen_buffer_init(&cgbuffer, ctx);
+	jive_compilate cgbuffer;	
+	jive_compilate_init(&cgbuffer, ctx);
 	jive_graph_generate_code(graph, &cgbuffer);
-	int (*function)(int, int) = (int(*)(int, int)) jive_codegen_buffer_map_to_memory(&cgbuffer);
-	jive_codegen_buffer_fini(&cgbuffer);
+	int (*function)(int, int) = (int(*)(int, int)) jive_compilate_map_to_memory(&cgbuffer);
+	jive_compilate_fini(&cgbuffer);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

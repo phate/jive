@@ -114,13 +114,13 @@ jive_seq_node_generate_code(jive_seq_node * seq_node, jive_buffer * buffer)
 }
 
 static void
-generate_code(jive_seq_graph * seq_graph, struct jive_codegen_buffer * cgbuffer)
+generate_code(jive_seq_graph * seq_graph, struct jive_compilate * cgbuffer)
 {
 	jive_seq_point * seq_point;
 	jive_section section;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
 		section = jive_seq_point_map_to_section(seq_point->seq_region->first_point);
-		jive_buffer * buffer = jive_codegen_buffer_get_buffer(cgbuffer, section);	
+		jive_buffer * buffer = jive_compilate_get_buffer(cgbuffer, section);	
 		if (!buffer) continue;
 
 		jive_offset offset = buffer->size;		
@@ -143,19 +143,18 @@ generate_code(jive_seq_graph * seq_graph, struct jive_codegen_buffer * cgbuffer)
 }
 
 void
-jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_codegen_buffer * buffer)
+jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_compilate * buffer)
 {
-	jive_codegen_buffer_state state;
-	jive_codegen_buffer_save_state(buffer, &state);	
-
-
+	jive_compilate_state state;
+	jive_compilate_save_state(buffer, &state);
+	
 	/* redo until no labels change anymore; this is actually a bit too
 	pessimistic, as we only need to redo if
 	- a *forward* reference label may have changed AND
 	- the encoding of at least one instruction depends on
 	  the value of one of the changed labels */
 	while (seq_graph->addrs_changed) {
-		jive_codegen_buffer_reset(buffer, &state);
+		jive_compilate_reset(buffer, &state);
 		seq_graph->addrs_changed = false;
 		generate_code(seq_graph, buffer);
 	}
@@ -258,7 +257,7 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 }
 
 void
-jive_graph_generate_code(jive_graph * graph, struct jive_codegen_buffer * buffer)
+jive_graph_generate_code(jive_graph * graph, struct jive_compilate * buffer)
 {
 	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
 	jive_seq_graph_patch_jumps(seq_graph);

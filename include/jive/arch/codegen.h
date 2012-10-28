@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_CODEGEN_H
 #define JIVE_ARCH_CODEGEN_H
 
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/compilate.h>
 
 struct jive_buffer;
 struct jive_graph;
@@ -16,14 +16,14 @@ struct jive_seq_graph;
 /* FIXME: this is a placeholder function, will be replaced by a more
 sophisticated interface later */
 void
-jive_graph_generate_code(struct jive_graph * graph, struct jive_codegen_buffer * buffer);
+jive_graph_generate_code(struct jive_graph * graph, struct jive_compilate * buffer);
 
 void
 jive_graph_generate_assembler(struct jive_graph * graph, struct jive_buffer * buffer);
 
 void
 jive_seq_graph_generate_code(struct jive_seq_graph * seq_graph,
-	struct jive_codegen_buffer * buffer);
+	struct jive_compilate * buffer);
 
 void
 jive_seq_graph_generate_assembler(struct jive_seq_graph * seq_graph, struct jive_buffer * buffer);

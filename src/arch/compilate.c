@@ -3,13 +3,13 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/compilate.h>
 
 #include <fcntl.h>
 #include <sys/mman.h>
 
 void
-jive_codegen_buffer_init(struct jive_codegen_buffer * self, struct jive_context * context)
+jive_compilate_init(struct jive_compilate * self, struct jive_context * context)
 {
 	jive_buffer_init(&self->code_buffer, context);
 	jive_buffer_init(&self->data_buffer, context);
@@ -18,7 +18,7 @@ jive_codegen_buffer_init(struct jive_codegen_buffer * self, struct jive_context 
 }
 
 void
-jive_codegen_buffer_fini(struct jive_codegen_buffer * self)
+jive_compilate_fini(struct jive_compilate * self)
 {
 	jive_buffer_fini(&self->code_buffer);
 	jive_buffer_fini(&self->data_buffer);
@@ -27,7 +27,7 @@ jive_codegen_buffer_fini(struct jive_codegen_buffer * self)
 }
 
 void
-jive_codegen_buffer_save_state(const jive_codegen_buffer * self, jive_codegen_buffer_state * state)
+jive_compilate_save_state(const jive_compilate * self, jive_compilate_state * state)
 {
 	state->code_buffer_size = self->code_buffer.size;
 	state->data_buffer_size = self->data_buffer.size;
@@ -36,7 +36,7 @@ jive_codegen_buffer_save_state(const jive_codegen_buffer * self, jive_codegen_bu
 }
 
 void
-jive_codegen_buffer_reset(jive_codegen_buffer * self, const jive_codegen_buffer_state * state)
+jive_compilate_reset(jive_compilate * self, const jive_compilate_state * state)
 {
 	jive_buffer_resize(&self->code_buffer, state->code_buffer_size);
 	jive_buffer_resize(&self->data_buffer, state->data_buffer_size);
@@ -45,7 +45,7 @@ jive_codegen_buffer_reset(jive_codegen_buffer * self, const jive_codegen_buffer_
 }
 
 jive_buffer *
-jive_codegen_buffer_get_buffer(struct jive_codegen_buffer * self, jive_section section)
+jive_compilate_get_buffer(struct jive_compilate * self, jive_section section)
 {
 	switch(section) {
 		case jive_section_code:
@@ -62,7 +62,7 @@ jive_codegen_buffer_get_buffer(struct jive_codegen_buffer * self, jive_section s
 }
 
 void *
-jive_codegen_buffer_map_to_memory(const jive_codegen_buffer * self)
+jive_compilate_map_to_memory(const jive_compilate * self)
 {
 	void * executable = NULL;
 	

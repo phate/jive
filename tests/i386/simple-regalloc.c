@@ -48,11 +48,11 @@ static int test_main(void)
 	
 	jive_view(graph, stdout);
 	
-	jive_codegen_buffer buffer;
-	jive_codegen_buffer_init(&buffer, ctx);
+	jive_compilate buffer;
+	jive_compilate_init(&buffer, ctx);
 	jive_graph_generate_code(graph, &buffer);
-	int (*function)(int, int) = (int(*)(int, int)) jive_codegen_buffer_map_to_memory(&buffer);
-	jive_codegen_buffer_fini(&buffer);
+	int (*function)(int, int) = (int(*)(int, int)) jive_compilate_map_to_memory(&buffer);
+	jive_compilate_fini(&buffer);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

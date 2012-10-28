@@ -43,12 +43,12 @@ compile_graph(jive_graph * graph)
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
 
-	jive_codegen_buffer cgbuffer;	
-	jive_codegen_buffer_init(&cgbuffer, graph->context);
+	jive_compilate cgbuffer;	
+	jive_compilate_init(&cgbuffer, graph->context);
 	jive_graph_generate_code(graph, &cgbuffer);
 	
-	void * result = jive_codegen_buffer_map_to_memory(&cgbuffer);
-	jive_codegen_buffer_fini(&cgbuffer);
+	void * result = jive_compilate_map_to_memory(&cgbuffer);
+	jive_compilate_fini(&cgbuffer);
 	
 	jive_graph_destroy(graph);
 	

@@ -18,7 +18,7 @@
 
 struct jive_buffer;
 struct jive_label;
-struct jive_codegen_buffer;
+struct jive_compilate;
 
 typedef struct jive_instruction_class jive_instruction_class;
 typedef struct jive_instruction jive_instruction;
