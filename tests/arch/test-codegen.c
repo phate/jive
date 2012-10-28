@@ -35,20 +35,26 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	jive_compilate buffer;
-	jive_compilate_init(&buffer, context);
-	jive_graph_generate_code(graph, &buffer);
+	jive_compilate compilate;
+	jive_compilate_init(&compilate, context);
+	jive_graph_generate_code(graph, &compilate);
 
-	assert(buffer.data_buffer.size == 1);
-	assert(((int8_t *)buffer.data_buffer.data)[0] == 8);
+	jive_buffer * data_buffer = jive_compilate_get_buffer(&compilate,
+		jive_stdsectionid_data);
+	assert(data_buffer->size == 1);
+	assert(((int8_t *)data_buffer->data)[0] == 8);
 
-	assert(buffer.rodata_buffer.size == 2);
-	assert(((int16_t *)buffer.rodata_buffer.data)[0] == 16); 
+	jive_buffer * rodata_buffer = jive_compilate_get_buffer(&compilate,
+		jive_stdsectionid_rodata);
+	assert(rodata_buffer->size == 2);
+	assert(((int16_t *)rodata_buffer->data)[0] == 16); 
 
-	assert(buffer.bss_buffer.size == 4);
-	assert(((int32_t *)buffer.bss_buffer.data)[0] == 32);
+	jive_buffer * bss_buffer = jive_compilate_get_buffer(&compilate,
+		jive_stdsectionid_bss);
+	assert(bss_buffer->size == 4);
+	assert(((int32_t *)bss_buffer->data)[0] == 32);
 	
-	jive_compilate_fini(&buffer);
+	jive_compilate_fini(&compilate);
 	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));
