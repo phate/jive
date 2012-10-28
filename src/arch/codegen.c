@@ -21,7 +21,7 @@
 
 static void
 generate_code_for_instruction(jive_seq_point * seq_point,
-	const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
+	const jive_instruction * instr, jive_section * section, uint32_t * flags)
 {
 	const jive_instruction_class * icls = instr->icls;
 	
@@ -44,12 +44,12 @@ generate_code_for_instruction(jive_seq_point * seq_point,
 	
 	jive_instruction_encoding_flags iflags;
 	iflags = (jive_instruction_encoding_flags) *flags;
-	icls->encode(icls, buffer, instr->inputs, instr->outputs, immediates, &iflags);
+	icls->encode(icls, section, instr->inputs, instr->outputs, immediates, &iflags);
 	*flags = (uint32_t) iflags;
 }
 
 static void
-jive_dataitem_generate_code(jive_node * data_item, jive_buffer * buffer)
+jive_dataitem_generate_code(jive_node * data_item, jive_section * section)
 {
 	jive_bitconstant_node * node = jive_bitconstant_node_cast(data_item);
 	if (node) {
@@ -63,25 +63,26 @@ jive_dataitem_generate_code(jive_node * data_item, jive_buffer * buffer)
 		for (n = 0; n < nbits; n++) {
 			data |= (bits[n] - '0') << (n % 8);
 			if ((n % 8) == 7) {
-				jive_buffer_putbyte(buffer, data);
+				jive_buffer_putbyte(&section->contents, data);
 				data = 0;
 			}
 		}
 	} else {
-		jive_context_fatal_error(buffer->context, "Type mismatch: don't know how to generate code for node");
+		jive_context_fatal_error(section->contents.context,
+			"Type mismatch: don't know how to generate code for node");
 	}
 }
 
 static void
-jive_dataitems_node_generate_code(jive_seq_node * seq_node, jive_buffer * buffer)
+jive_dataitems_node_generate_code(jive_seq_node * seq_node, jive_section * section)
 {
 	size_t n;
 	for (n = 0; n < seq_node->node->ninputs; n++)
-		jive_dataitem_generate_code(seq_node->node->inputs[n]->origin->node, buffer);
+		jive_dataitem_generate_code(seq_node->node->inputs[n]->origin->node, section);
 }
 
 static void
-jive_seq_node_generate_code(jive_seq_node * seq_node, jive_buffer * buffer)
+jive_seq_node_generate_code(jive_seq_node * seq_node, jive_section * section)
 {
 	if (jive_node_isinstance(seq_node->node, &JIVE_INSTRUCTION_NODE)) {
 		jive_instruction_node * instr_node = (jive_instruction_node *) seq_node->node;
@@ -107,35 +108,37 @@ jive_seq_node_generate_code(jive_seq_node * seq_node, jive_buffer * buffer)
 		instr.inputs = inregs;
 		instr.outputs = outregs;
 		instr.immediates = instr_node->attrs.immediates;
-		generate_code_for_instruction(&seq_node->base, &instr, buffer, &seq_node->flags);
+		generate_code_for_instruction(&seq_node->base, &instr, section, &seq_node->flags);
 	} else if (jive_node_isinstance(seq_node->node, &JIVE_DATAITEMS_NODE)) {
-		jive_dataitems_node_generate_code(seq_node, buffer);
+		jive_dataitems_node_generate_code(seq_node, section);
 	}
 }
 
 static void
-generate_code(jive_seq_graph * seq_graph, struct jive_compilate * cgbuffer)
+generate_code(jive_seq_graph * seq_graph, struct jive_compilate * compilate)
 {
 	jive_seq_point * seq_point;
-	jive_stdsectionid section;
+	
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
-		section = jive_seq_point_map_to_section(seq_point->seq_region->first_point);
-		jive_buffer * buffer = jive_compilate_get_buffer(cgbuffer, section);	
-		if (!buffer) continue;
+		jive_stdsectionid sectionid =
+			jive_seq_point_map_to_section(seq_point->seq_region->first_point);
+		jive_section * section = jive_compilate_get_standard_section(
+			compilate, sectionid);
+		if (!section) continue;
 
-		jive_offset offset = buffer->size;		
+		jive_offset offset = section->contents.size;
 		if (jive_seq_point_isinstance(seq_point, &JIVE_SEQ_NODE)) {
 			jive_seq_node * seq_node = (jive_seq_node *) seq_point;
-			jive_seq_node_generate_code(seq_node, buffer);
+			jive_seq_node_generate_code(seq_node, section);
 		} else if (jive_seq_point_isinstance(seq_point, &JIVE_SEQ_INSTRUCTION)) {
 			jive_seq_instruction * seq_instr = (jive_seq_instruction *) seq_point;
-			generate_code_for_instruction(&seq_instr->base, &seq_instr->instr, buffer,
+			generate_code_for_instruction(&seq_instr->base, &seq_instr->instr, section,
 				&seq_instr->flags);	
 		} 
 
-		size_t size = buffer->size - offset;
+		size_t size = section->contents.size - offset;
 		if (offset != seq_point->address.offset || size != seq_point->size) {
-			jive_address_init(&seq_point->address, section, offset);
+			jive_address_init(&seq_point->address, sectionid, offset);
 			seq_point->size = size;
 			seq_point->seq_region->seq_graph->addrs_changed = true;
 		}

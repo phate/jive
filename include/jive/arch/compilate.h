@@ -29,6 +29,18 @@ struct jive_section {
 	} compilate_section_list;
 };
 
+JIVE_EXPORTED_INLINE void
+jive_section_put(jive_section * self, const void * data, size_t size)
+{
+	jive_buffer_put(&self->contents, data, size);
+}
+
+JIVE_EXPORTED_INLINE void
+jive_section_putbyte(jive_section * self, uint8_t byte)
+{
+	jive_buffer_putbyte(&self->contents, byte);
+}
+
 struct jive_compilate {
 	jive_context * context;
 	struct {

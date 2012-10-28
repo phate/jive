@@ -17,8 +17,9 @@
 #include <jive/vsdg/sequence.h>
 
 struct jive_buffer;
-struct jive_label;
 struct jive_compilate;
+struct jive_label;
+struct jive_section;
 
 typedef struct jive_instruction_class jive_instruction_class;
 typedef struct jive_instruction jive_instruction;
@@ -199,7 +200,7 @@ struct jive_instruction_class {
 	*/
 	void (*encode)(
 		const jive_instruction_class * icls,
-		struct jive_buffer * target,
+		struct jive_section * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
 		const jive_immediate immediates[],

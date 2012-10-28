@@ -6,6 +6,7 @@
 
 #include <jive/arch/instruction-private.h>
 
+#include <jive/arch/compilate.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
@@ -213,6 +214,16 @@ jive_instruction_node_create_extended(
 
 static void
 jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_immediate immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+}
+
+static void
+jive_write_asm_PSEUDO_NOP(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -225,7 +236,7 @@ const jive_instruction_class JIVE_PSEUDO_NOP = {
 	.name = "PSEUDO_NOP",
 	.mnemonic = "",
 	.encode = jive_encode_PSEUDO_NOP,
-	.write_asm = jive_encode_PSEUDO_NOP,
+	.write_asm = jive_write_asm_PSEUDO_NOP,
 	.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0
 };
 
