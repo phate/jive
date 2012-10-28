@@ -15,7 +15,90 @@
 
 typedef struct jive_compilate jive_compilate;
 typedef struct jive_compilate_map jive_compilate_map;
+typedef struct jive_relocation_entry jive_relocation_entry;
+typedef struct jive_relocation_target jive_relocation_target;
+typedef enum jive_relocation_target_type jive_relocation_target_type;
+typedef struct jive_relocation_type jive_relocation_type;
 typedef struct jive_section jive_section;
+
+/**
+	\brief Architecture-specific representation of relocation type
+*/
+struct jive_relocation_type {
+	uint32_t arch_code;
+};
+
+/**
+	\brief Relocation target type
+*/
+enum jive_relocation_target_type {
+	jive_relocation_target_type_section = 0,
+	jive_relocation_target_type_label_external = 1
+};
+
+/**
+	\brief Relocation target
+	
+	May be either a label that is external to the compilate, or a reference
+	to a section in the compilate itself.
+*/
+struct jive_relocation_target {
+	jive_relocation_target_type type;
+	union {
+		const jive_label_external * label_external;
+		jive_stdsectionid sectionid;
+	} value;
+};
+
+JIVE_EXPORTED_INLINE jive_relocation_target
+jive_relocation_target_section(jive_stdsectionid sectionid)
+{
+	jive_relocation_target target;
+	target.type = jive_relocation_target_type_section;
+	target.value.sectionid = sectionid;
+	return target;
+}
+
+JIVE_EXPORTED_INLINE jive_relocation_target
+jive_relocation_target_label_external(const jive_label_external * label)
+{
+	jive_relocation_target target;
+	target.type = jive_relocation_target_type_label_external;
+	target.value.label_external = label;
+	return target;
+}
+
+/**
+	\brief Relocation table entry
+*/
+struct jive_relocation_entry {
+	/** \brief Offset within section of relocation record */
+	jive_offset offset;
+	/** \brief Type of relocation to be applied */
+	jive_relocation_type type;
+	/** \brief Target address of relocation operation */
+	jive_relocation_target target;
+	/** \brief Additional offset to be applied to symbol */
+	jive_offset value;
+	struct {
+		jive_relocation_entry * prev;
+		jive_relocation_entry * next;
+	} section_relocation_list;
+};
+
+/**
+	\brief Apply relocation processing in a single location
+	\param where Location of the data item
+	\param max_size Maximum allowed size of data item
+	\param offset Assumed offset of data item
+	\param type Relocation type
+	\param symoffset Offset of the symbol being referenced
+	\param value Additional value from the relocation record
+	\returns True if relocation could be applied
+*/
+typedef bool (*jive_process_relocation_function)(
+	void * where, size_t max_size, jive_offset offset,
+	jive_relocation_type type, jive_offset target, jive_offset value);
 
 /**
 	\brief Section of a compilate
@@ -23,6 +106,10 @@ typedef struct jive_section jive_section;
 struct jive_section {
 	jive_stdsectionid id;
 	jive_buffer contents;
+	struct {
+		jive_relocation_entry * first;
+		jive_relocation_entry * last;
+	} relocations;
 	struct {
 		jive_section * prev;
 		jive_section * next;
@@ -40,6 +127,11 @@ jive_section_putbyte(jive_section * self, uint8_t byte)
 {
 	jive_buffer_putbyte(&self->contents, byte);
 }
+
+void
+jive_section_put_reloc(jive_section * self, const void * data, size_t size,
+	jive_relocation_type type, jive_relocation_target target,
+	jive_offset value);
 
 struct jive_compilate {
 	jive_context * context;
@@ -98,7 +190,8 @@ jive_compilate_get_buffer(jive_compilate * self, jive_stdsectionid section);
 	and not dependent on any jive_context.
 */
 jive_compilate_map *
-jive_compilate_load(const jive_compilate * self);
+jive_compilate_load(const jive_compilate * self,
+	jive_process_relocation_function relocate);
 
 /**
 	\brief Destroy a compilate map

@@ -14,11 +14,16 @@ static void jive_section_init(jive_section * self, jive_context * context,
 {
 	self->id = sectionid;
 	jive_buffer_init(&self->contents, context);
+	self->relocations.first = self->relocations.last = 0;
 }
 
 static void jive_section_clear(jive_section * self)
 {
 	jive_buffer_resize(&self->contents, 0);
+	jive_relocation_entry * entry, * saved_entry;
+	JIVE_LIST_ITERATE_SAFE(self->relocations, entry, saved_entry, section_relocation_list) {
+		jive_context_free(self->contents.context, entry);
+	}
 }
 
 static void jive_section_fini(jive_section * self)
@@ -26,6 +31,26 @@ static void jive_section_fini(jive_section * self)
 	jive_section_clear(self);
 	jive_buffer_fini(&self->contents);
 }
+
+void
+jive_section_put_reloc(jive_section * self, const void * data, size_t size,
+	jive_relocation_type type, jive_relocation_target target,
+	jive_offset value)
+{
+	jive_offset offset = self->contents.size;
+	jive_section_put(self, data, size);
+	
+	jive_context * context = self->contents.context;
+	
+	jive_relocation_entry * entry = jive_context_malloc(context,
+		sizeof(*entry));
+	entry->offset = offset;
+	entry->type = type;
+	entry->target = target;
+	entry->value = value;
+	JIVE_LIST_PUSH_BACK(self->relocations, entry, section_relocation_list);
+}
+
 
 /* round up size of section to next multiple of 4096 (which is assumed
  to be the page size... */
@@ -134,8 +159,63 @@ jive_compilate_map_destroy(jive_compilate_map * self)
 	free(self);
 }
 
+static bool
+resolve_relocation_target(
+	jive_relocation_target target,
+	const jive_compilate_map * map,
+	void ** resolved)
+{
+	switch (target.type) {
+		case jive_relocation_target_type_section: {
+			size_t n;
+			for (n = 0; n < map->nsections; ++n) {
+				if (map->sections[n].section->id == target.value.sectionid) {
+					*resolved = map->sections[n].base;
+					return true;
+				}
+			}
+			return false;
+		}
+		case jive_relocation_target_type_label_external: {
+			/* FIXME: maybe label_external should have
+			just an offset, nothing else? */
+			*resolved = (void *) (intptr_t)
+				target.value.label_external->address.offset;
+			return true;
+		}
+		default: {
+			return false;
+		}
+	}
+}
+
+static bool
+section_process_relocations(
+	void * base_writable,
+	jive_offset base,
+	const jive_compilate_map * map,
+	const jive_section * section,
+	jive_process_relocation_function relocate)
+{
+	const jive_relocation_entry * entry;
+	JIVE_LIST_ITERATE(section->relocations, entry, section_relocation_list) {
+		void * where = entry->offset + (char *) base_writable;
+		jive_offset offset = entry->offset + base;
+		void * target;
+		if (!resolve_relocation_target(entry->target, map, &target))
+			return false;
+		if (!relocate(where, section->contents.size - entry->offset,
+			offset, entry->type, (intptr_t) target, entry->value)) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 jive_compilate_map *
-jive_compilate_load(const jive_compilate * self)
+jive_compilate_load(const jive_compilate * self,
+	jive_process_relocation_function relocate)
 {
 	size_t total_size = 0, section_count = 0;
 	const jive_section * section;
@@ -166,12 +246,12 @@ jive_compilate_load(const jive_compilate * self)
 	contents */
 	size_t offset = 0, n = 0;
 	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
+		void * addr = offset + (char *) writable;
 		map->sections[n].section = section;
-		map->sections[n].base = offset + (char *) writable;
+		map->sections[n].base = addr;
 		map->sections[n].size = jive_section_size_roundup(section);
 		
-		memcpy(map->sections[n].base,
-		       section->contents.data, section->contents.size);
+		memcpy(addr, section->contents.data, section->contents.size);
 		
 		/* If this is a code section, create another mapping, this time
 		executable. We cannot generally assume that we can later change
@@ -182,21 +262,25 @@ jive_compilate_load(const jive_compilate * self)
 		/* FIXME: use section attributes instead of id to decide
 		whether section should be executable. */
 		if (section->id == jive_stdsectionid_code) {
-			map->sections[n].base =
-				mmap(0, map->sections[n].size, PROT_READ|PROT_EXEC, MAP_SHARED, fd, offset);
+			void * exec_addr = mmap(0, map->sections[n].size,
+				PROT_READ|PROT_EXEC, MAP_SHARED, fd, offset);
+			map->sections[n].base = exec_addr;
 		}
 		
 		offset += map->sections[n].size;
+		++n;
 	}
 	
 	/* finalize all sections and switch them over to their correct 
 	permissions */
 	offset = 0;
 	n = 0;
+	bool success = true;
 	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
 		void * base = offset + (char *) writable;
 		
-		/* FIXME: process relocations here */
+		success = success && section_process_relocations(base,
+			(jive_offset) (intptr_t) map->sections[n].base, map, section, relocate);
 		
 		switch (section->id) {
 			case jive_stdsectionid_code: {
@@ -204,14 +288,16 @@ jive_compilate_load(const jive_compilate * self)
 				/* The contents of the memory region might
 				have been changed, the following should force
 				synchronization of the icache. */
-				mprotect(map->sections[n].base, map->sections[n].size,
+				void * exec_addr = (void *) (intptr_t)
+					map->sections[n].base;
+				mprotect(exec_addr, map->sections[n].size,
 					PROT_NONE);
-				mprotect(map->sections[n].base, map->sections[n].size,
+				mprotect(exec_addr, map->sections[n].size,
 					PROT_READ|PROT_EXEC);
 				break;
 			}
 			case jive_stdsectionid_rodata: {
-				mprotect(map->sections[n].base, map->sections[n].size,
+				mprotect(base, map->sections[n].size,
 					PROT_READ);
 				break;
 			}
@@ -221,6 +307,13 @@ jive_compilate_load(const jive_compilate * self)
 		}
 		
 		offset += map->sections[n].size;
+		++n;
+	}
+	
+	if (!success) {
+		jive_compilate_map_unmap(map);
+		jive_compilate_map_destroy(map);
+		return NULL;
 	}
 	
 	return map;
@@ -239,7 +332,7 @@ jive_compilate_map_unmap(const jive_compilate_map * self)
 void *
 jive_compilate_map_to_memory(const jive_compilate * self)
 {
-	jive_compilate_map * map = jive_compilate_load(self);
+	jive_compilate_map * map = jive_compilate_load(self, NULL);
 	if (!map)
 		return 0;
 	

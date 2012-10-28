@@ -12,6 +12,7 @@ TESTS+=\
 	arch/test-loadstore \
 	arch/test-memberof-transform \
 	arch/test-memory-type \
+	arch/test-relocation \
 	arch/test-regselect \
 	arch/test-sizeof \
 	arch/test-subroutine \
