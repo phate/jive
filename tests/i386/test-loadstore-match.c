@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <locale.h>
 
+#include <jive/arch/codegen.h>
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
 #include <jive/arch/regselector.h>
@@ -23,7 +24,6 @@
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring.h>
-#include <jive/arch/codegen_buffer.h>
 #include <jive/vsdg.h>
 
 static void *

@@ -16,6 +16,7 @@
 #include <jive/util/buffer.h>
 #include <jive/arch/address.h>
 #include <jive/arch/call.h>
+#include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/memlayout-simple.h>

@@ -12,7 +12,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/view.h>
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/codegen.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>

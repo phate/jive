@@ -15,6 +15,7 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
+#include <jive/arch/codegen.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>

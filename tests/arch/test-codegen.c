@@ -14,7 +14,7 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/dataobject.h>
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/codegen.h>
 
 static int test_main(void)
 {

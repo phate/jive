@@ -16,7 +16,7 @@
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/codegen.h>
 
 static int test_main(void)
 {

@@ -14,6 +14,7 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/util/buffer.h>
+#include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/memlayout-simple.h>

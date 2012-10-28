@@ -13,6 +13,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/vsdg.h>
 #include <jive/view.h>
+#include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/memlayout-simple.h>

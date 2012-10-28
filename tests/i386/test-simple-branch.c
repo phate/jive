@@ -16,7 +16,7 @@
 #include <jive/backend/i386/subroutine.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/codegen.h>
 #include <jive/vsdg.h>
 #include <jive/view.h>
 

@@ -21,7 +21,7 @@
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring.h>
-#include <jive/arch/codegen_buffer.h>
+#include <jive/arch/codegen.h>
 #include <jive/vsdg.h>
 
 static void *
