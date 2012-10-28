@@ -6,6 +6,7 @@ LIBJIVE_I386_SRC = \
 	subroutine.c \
 	machine.c \
 	call.c \
+	relocation.c \
 
 LIBJIVE_SRC += \
 	$(patsubst %, src/backend/i386/%, $(LIBJIVE_I386_SRC))
