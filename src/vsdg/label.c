@@ -63,7 +63,7 @@ static jive_address
 jive_label_fpoffset_get_address_(const jive_label * self, const jive_seq_point * for_point)
 {
 	jive_address tmp;
-	jive_address_init(&tmp, jive_section_invalid, 0);
+	jive_address_init(&tmp, jive_stdsectionid_invalid, 0);
 	return tmp;
 }
 
@@ -91,7 +91,7 @@ static jive_address
 jive_label_spoffset_get_address_(const jive_label * self, const jive_seq_point * for_point)
 {
 	jive_address tmp;
-	jive_address_init(&tmp, jive_section_invalid, 0);
+	jive_address_init(&tmp, jive_stdsectionid_invalid, 0);
 	return tmp;
 }
 
@@ -149,7 +149,7 @@ jive_label_internal_get_address_(const jive_label * self_, const jive_seq_point 
 		return seq_point->address;
 	} else {
 		jive_address tmp;
-		jive_address_init(&tmp, jive_section_invalid, 0);
+		jive_address_init(&tmp, jive_stdsectionid_invalid, 0);
 		return tmp;
 	}
 }
@@ -405,7 +405,7 @@ jive_label_external_init(jive_label_external * self, struct jive_context * conte
 	self->base.flags = jive_label_flags_external;
 	self->context = context;
 	self->asmname = jive_context_strdup(context, name);
-	jive_address_init(&self->address, jive_section_external, offset);
+	jive_address_init(&self->address, jive_stdsectionid_external, offset);
 }
 
 void

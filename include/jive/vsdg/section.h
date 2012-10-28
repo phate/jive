@@ -6,13 +6,13 @@
 #ifndef JIVE_VSDG_SECTION_H
 #define JIVE_VSDG_SECTION_H
 
-typedef enum jive_section {
-	jive_section_invalid = 0,
-	jive_section_external = 1,
-	jive_section_code = 2,
-	jive_section_data = 3,
-	jive_section_rodata = 4,
-	jive_section_bss = 5
-} jive_section;
+typedef enum jive_stdsectionid {
+	jive_stdsectionid_invalid = 0,
+	jive_stdsectionid_external = 1,
+	jive_stdsectionid_code = 2,
+	jive_stdsectionid_data = 3,
+	jive_stdsectionid_rodata = 4,
+	jive_stdsectionid_bss = 5
+} jive_stdsectionid;
 
 #endif

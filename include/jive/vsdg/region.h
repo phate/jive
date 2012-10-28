@@ -138,26 +138,26 @@ jive_region_get_stackframe(const jive_region * region)
 	else return 0;
 }
 
-JIVE_EXPORTED_INLINE jive_section
+JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_region_map_to_section(const struct jive_region * region)
 {
 	while (region && (region->attrs.section == jive_region_section_inherit))
 		region = region->parent;
 
-	jive_section section = jive_section_invalid;
+	jive_stdsectionid section = jive_stdsectionid_invalid;
 	if (region) {
 		switch(region->attrs.section) {
 			case jive_region_section_code:
-				section = jive_section_code;
+				section = jive_stdsectionid_code;
 				break;
 			case jive_region_section_data:
-				section = jive_section_data;
+				section = jive_stdsectionid_data;
 				break;
 			case jive_region_section_rodata:
-				section = jive_section_rodata;
+				section = jive_stdsectionid_rodata;
 				break;
 			case jive_region_section_bss:
-				section = jive_section_bss;
+				section = jive_stdsectionid_bss;
 				break;
 			default:
 				JIVE_DEBUG_ASSERT(0);

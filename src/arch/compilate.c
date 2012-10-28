@@ -36,16 +36,16 @@ jive_compilate_clear(jive_compilate * self)
 }
 
 jive_buffer *
-jive_compilate_get_buffer(struct jive_compilate * self, jive_section section)
+jive_compilate_get_buffer(struct jive_compilate * self, jive_stdsectionid section)
 {
 	switch(section) {
-		case jive_section_code:
+		case jive_stdsectionid_code:
 			return &self->code_buffer;
-		case jive_section_data:
+		case jive_stdsectionid_data:
 			return &self->data_buffer;
-		case jive_section_rodata:
+		case jive_stdsectionid_rodata:
 			return &self->rodata_buffer;
-		case jive_section_bss:
+		case jive_stdsectionid_bss:
 			return &self->bss_buffer;
 		default:
 			return NULL; 

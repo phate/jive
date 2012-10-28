@@ -36,7 +36,7 @@ void
 jive_compilate_clear(jive_compilate * self);
 
 jive_buffer *
-jive_compilate_get_buffer(struct jive_compilate * self, jive_section section);
+jive_compilate_get_buffer(struct jive_compilate * self, jive_stdsectionid section);
 
 void *
 jive_compilate_map_to_memory(const jive_compilate * self);

@@ -35,11 +35,11 @@ typedef struct jive_address jive_address;
 
 struct jive_address {
 	jive_offset offset;
-	jive_section section;	
+	jive_stdsectionid section;	
 };
 
 JIVE_EXPORTED_INLINE void
-jive_address_init(jive_address * self, jive_section section, jive_offset offset)
+jive_address_init(jive_address * self, jive_stdsectionid section, jive_offset offset)
 {
 	self->offset = offset;
 	self->section = section;

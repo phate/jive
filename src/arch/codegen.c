@@ -117,7 +117,7 @@ static void
 generate_code(jive_seq_graph * seq_graph, struct jive_compilate * cgbuffer)
 {
 	jive_seq_point * seq_point;
-	jive_section section;
+	jive_stdsectionid section;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
 		section = jive_seq_point_map_to_section(seq_point->seq_region->first_point);
 		jive_buffer * buffer = jive_compilate_get_buffer(cgbuffer, section);	

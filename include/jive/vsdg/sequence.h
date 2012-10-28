@@ -113,19 +113,19 @@ struct jive_seq_graph {
 	bool addrs_changed;
 };
 
-JIVE_EXPORTED_INLINE jive_section
+JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_seq_region_map_to_section(const jive_seq_region * seq_region)
 {
 	return jive_region_map_to_section(seq_region->region);
 }
 
-JIVE_EXPORTED_INLINE jive_section
+JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_seq_point_map_to_section(const jive_seq_point * seq_point)
 {
 	return jive_seq_region_map_to_section(seq_point->seq_region);
 }
 
-JIVE_EXPORTED_INLINE jive_section
+JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_seq_node_map_to_section(const jive_seq_node * seq_node)
 {
 	return jive_seq_region_map_to_section(seq_node->base.seq_region);
@@ -138,7 +138,7 @@ jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region)
 	self->size = 0;
 	self->attached_labels.items = 0;
 	self->attached_labels.nitems = self->attached_labels.space = 0;
-	jive_address_init(&self->address, jive_section_invalid, 0);
+	jive_address_init(&self->address, jive_stdsectionid_invalid, 0);
 }
 
 JIVE_EXPORTED_INLINE void
