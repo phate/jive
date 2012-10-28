@@ -14,8 +14,8 @@
 #include <jive/vsdg/section.h>
 
 typedef struct jive_compilate jive_compilate;
+typedef struct jive_compilate_map jive_compilate_map;
 typedef struct jive_section jive_section;
-
 
 /**
 	\brief Section of a compilate
@@ -49,6 +49,20 @@ struct jive_compilate {
 	} sections;
 };
 
+
+/** \brief Represent a compilate loaded into process' address space */
+struct jive_compilate_map {
+	struct {
+		/** \brief Section descriptor from compilate */
+		const jive_section * section;
+		/** \brief Base address in process' address space */
+		void * base;
+		/** \brief Size of loaded section */
+		size_t size;
+	} * sections;
+	size_t nsections;
+};
+
 void
 jive_compilate_init(jive_compilate * self, struct jive_context * context);
 
@@ -57,7 +71,7 @@ jive_compilate_fini(jive_compilate * self);
 
 /**
 	\brief Clear compilation object
-	\param self compilation object
+	\param self The compilate to be cleared
 	
 	Clears the contents of the given compilation object, i.e. subsequently
 	it behaves as if it were newly allocated (actual buffers allocated
@@ -72,6 +86,41 @@ jive_compilate_get_standard_section(jive_compilate * self,
 
 jive_buffer *
 jive_compilate_get_buffer(jive_compilate * self, jive_stdsectionid section);
+
+/**
+	\brief Load a compilate into process' address space
+	\param self The compilate to be loaded
+	\returns A description of where sections have been mapped
+	
+	Maps all of the sections contained in the compilate into the process'
+	address space. Returns a structure describing the mapping of the
+	sections to the address space. The returned structure is malloc'd
+	and not dependent on any jive_context.
+*/
+jive_compilate_map *
+jive_compilate_load(const jive_compilate * self);
+
+/**
+	\brief Destroy a compilate map
+	\param self The compilate map to be destroyed
+	
+	Destroys a compilate map, freeing all allocated memory used to
+	represent the map itself. The memory regions described by this
+	map are *not* affected, see \ref jive_compilate_map_unmap
+*/
+void
+jive_compilate_map_destroy(jive_compilate_map * self);
+
+/**
+	\brief Unmap a mapping of a compilate
+	\param self Mapping to be removed
+	
+	Unmaps the mapping described by a compilate map. The data structure
+	representing the mapping itself will not be freed, see
+	\ref jive_compilate_map_destroy
+*/
+void
+jive_compilate_map_unmap(const jive_compilate_map * self);
 
 void *
 jive_compilate_map_to_memory(const jive_compilate * self);
