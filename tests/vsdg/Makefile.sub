@@ -1,6 +1,7 @@
 TESTS+=\
 	vsdg/test-cone-traverser \
 	vsdg/test-empty-graph \
+	vsdg/test-floating-regions \
 	vsdg/test-graph \
 	vsdg/test-graphtraverser \
 	vsdg/test-mutable-traverser \
