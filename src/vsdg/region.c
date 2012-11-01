@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -73,11 +74,25 @@ jive_region_depends_on_region(const jive_region * self, const jive_region * regi
 	return false;
 }
 
+static void
+jive_region_set_depth_recursive(jive_region * self, size_t new_depth)
+{
+	self->depth = new_depth;
+
+	jive_region * subregion;
+	JIVE_LIST_ITERATE(self->subregions, subregion, region_subregions_list) {
+		jive_region_set_depth_recursive(subregion, new_depth + 1);
+	}
+}
+
 void
 jive_region_reparent(jive_region * self, jive_region * new_parent)
 {
 	JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
 	self->parent = new_parent;
+	size_t new_depth = new_parent->depth + 1;
+	if (new_depth != self->depth)
+		jive_region_set_depth_recursive(self, new_depth);
 	JIVE_LIST_PUSH_BACK(self->parent->subregions, self, region_subregions_list);
 }
 
