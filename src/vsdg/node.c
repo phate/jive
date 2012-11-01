@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -32,6 +33,59 @@ const jive_node_class JIVE_NODE = {
 	.get_aux_rescls = jive_node_get_aux_rescls_
 };
 
+static void
+jive_node_region_reparent(jive_node * self, jive_output * operand)
+{
+	jive_region * node_region = self->region;
+	/*we only need to move regions inwards*/
+	if (node_region && node_region->attrs.is_floating) {
+		jive_region * output_region = operand->node->region;
+		bool contained = jive_region_is_contained_by(output_region, node_region);
+		if (output_region != node_region && !contained && output_region->depth >= node_region->depth)
+			jive_region_reparent(node_region, output_region);
+	}
+}
+
+static void
+jive_uninitialized_node_add_output_(jive_node * self, jive_output * output)
+{
+	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
+	
+	self->noutputs ++;
+	self->outputs = jive_context_realloc(self->graph->context, self->outputs, sizeof(jive_output *) * self->noutputs);
+	self->outputs[output->index] = output;
+}
+
+static jive_output *
+jive_uninitialized_node_add_output(jive_node * self, const jive_type * type)
+{
+	jive_output * output = jive_type_create_output(type, self, self->noutputs);
+	jive_uninitialized_node_add_output_(self, output);
+	return output;
+}
+
+static void
+jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
+{
+	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
+	
+	if (!self->ninputs) JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
+	self->ninputs ++;
+	self->inputs = jive_context_realloc(self->graph->context, self->inputs, sizeof(jive_input *) * self->ninputs);
+	self->inputs[input->index] = input;
+
+}
+
+static jive_input *
+jive_uninitialized_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
+{
+	jive_node_region_reparent(self, initial_operand);
+
+	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	jive_uninitialized_node_add_input_(self, input);
+	return input;
+}
+
 void
 jive_node_init_(
 	jive_node * self,
@@ -54,32 +108,28 @@ jive_node_init_(
 	
 	self->reserved = 0;
 	
-	/* set region to zero for now to inhibit notification about
-	created inputs/outputs while constructing the node */
-	self->region = 0;
+	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
+	self->region = region;
 	
 	JIVE_LIST_PUSH_BACK(self->graph->top, self, graph_top_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 	
 	size_t n;
 	for(n=0; n<noperands; n++) {
-		jive_node_add_input(self, operand_types[n], operands[n]);
+		jive_uninitialized_node_add_input(self, operand_types[n], operands[n]);
 		if (operands[n]->node->depth_from_root + 1 > self->depth_from_root)
 			 self->depth_from_root = operands[n]->node->depth_from_root + 1;
 	}
 	self->noperands = self->ninputs;
 	
 	for(n=0; n<noutputs; n++)
-		jive_node_add_output(self, output_types[n]);
+		jive_uninitialized_node_add_output(self, output_types[n]);
 	
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
 	
 	self->ntracker_slots = 0;
 	self->tracker_slots = 0;
-	
-	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
-	self->region = region;
 	
 	for (n = 0; n < self->ninputs; ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin));
@@ -194,18 +244,11 @@ jive_node_create(
 static void
 jive_node_add_input_(jive_node * self, jive_input * input)
 {
-	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-	
-	if (!self->ninputs) JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
-	self->ninputs ++;
-	self->inputs = jive_context_realloc(self->graph->context, self->inputs, sizeof(jive_input *) * self->ninputs);
-	self->inputs[input->index] = input;
-	
-	if (self->region){
-		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin));
-		jive_node_invalidate_depth_from_root(self);
-		jive_graph_notify_input_create(self->graph, input);
-	}
+	jive_uninitialized_node_add_input_(self, input);
+
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin));
+	jive_node_invalidate_depth_from_root(self);
+	jive_graph_notify_input_create(self->graph, input);
 }
 
 bool
@@ -226,6 +269,8 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 jive_input *
 jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
 {
+	jive_node_region_reparent(self, initial_operand);
+
 	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
 	jive_node_add_input_(self, input);
 	return input;
@@ -234,11 +279,7 @@ jive_node_add_input(jive_node * self, const jive_type * type, jive_output * init
 static void
 jive_node_add_output_(jive_node * self, jive_output * output)
 {
-	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-	
-	self->noutputs ++;
-	self->outputs = jive_context_realloc(self->graph->context, self->outputs, sizeof(jive_output *) * self->noutputs);
-	self->outputs[output->index] = output;
+	jive_uninitialized_node_add_output_(self, output);
 	
 	if (self->region) jive_graph_notify_output_create(self->graph, output);
 }
