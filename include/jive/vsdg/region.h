@@ -37,6 +37,7 @@ struct jive_region_attrs {
 	size_t align;
 	jive_region_section_flags section;
 	bool is_looped;
+	bool is_floating;
 };
 
 struct jive_region {
@@ -123,6 +124,9 @@ jive_region_get_bottom_node(jive_region * self)
 
 jive_region *
 jive_region_create_subregion(jive_region * self);
+
+struct jive_region *
+jive_floating_region_create(struct jive_graph * graph);
 
 bool
 jive_region_depends_on_region(const jive_region * self, const jive_region * region);

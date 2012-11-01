@@ -21,6 +21,7 @@ jive_region_attrs_init(jive_region_attrs * attrs)
 	attrs->align = 1;
 	attrs->section = jive_region_section_inherit;
 	attrs->is_looped = false;
+	attrs->is_floating = false;
 }
 
 void
@@ -123,6 +124,15 @@ jive_region_create_subregion(jive_region * self)
 {
 	jive_region * subregion = jive_context_malloc(self->graph->context, sizeof(*subregion));
 	jive_region_init_(subregion, self->graph, self);
+	return subregion;
+}
+
+jive_region *
+jive_floating_region_create(struct jive_graph * graph)
+{
+	jive_region * subregion = jive_context_malloc(graph->context, sizeof(*subregion));
+	jive_region_init_(subregion, graph, graph->root_region);
+	subregion->attrs.is_floating = true;
 	return subregion;
 }
 
