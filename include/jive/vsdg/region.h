@@ -134,6 +134,9 @@ jive_region_depends_on_region(const jive_region * self, const jive_region * regi
 void
 jive_region_reparent(jive_region * self, jive_region * new_parent);
 
+jive_region *
+jive_region_compute_outermost_parent(const jive_region * self);
+
 JIVE_EXPORTED_INLINE struct jive_stackframe *
 jive_region_get_stackframe(const jive_region * region)
 {

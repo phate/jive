@@ -14,6 +14,7 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 #include <jive/util/list.h>
+#include <jive/vsdg/anchortype.h>
 
 static inline void
 jive_region_attrs_init(jive_region_attrs * attrs)
@@ -288,4 +289,35 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 	}
 	
 	jive_copy_context_fini(&copy_context, context);
+}
+
+jive_region *
+jive_region_compute_outermost_parent(const jive_region * self)
+{
+	jive_region * outermost = self->graph->root_region;
+
+	jive_node * node;
+	JIVE_LIST_ITERATE (self->nodes, node, region_nodes_list) {
+		size_t i;
+		for (i = 0; i < node->ninputs; i++) {
+			if (jive_input_isinstance(node->inputs[i], &JIVE_ANCHOR_INPUT))
+				continue;
+			
+			jive_region * tmp = node->inputs[i]->origin->node->region;
+			if (tmp == self)
+				continue;
+
+			if (tmp->depth > outermost->depth)
+				outermost = tmp;
+		}
+	}
+
+	jive_region * subregion;
+	JIVE_LIST_ITERATE (self->subregions, subregion, region_subregions_list) {
+		jive_region * tmp = jive_region_compute_outermost_parent(subregion);
+		if (tmp->depth > outermost->depth)
+			outermost = tmp;
+	}
+
+	return outermost;
 }
