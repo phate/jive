@@ -59,7 +59,7 @@ jive_tracker_pop_top(jive_tracker * self, size_t state);
 struct jive_node *
 jive_tracker_pop_bottom(jive_tracker * self, size_t state);
 
-typedef enum {
+typedef enum jive_traversal_nodestate {
 	jive_traversal_nodestate_ahead = -1,
 	jive_traversal_nodestate_frontier = 0,
 	jive_traversal_nodestate_behind = +1

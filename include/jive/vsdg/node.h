@@ -30,7 +30,7 @@ struct jive_type;
 struct jive_output;
 struct jive_gate;
 struct jive_region;
-struct jive_traversal_nodestate;
+enum jive_traversal_nodestate;
 struct jive_resource_class_count;
 struct jive_substitution_map;
 
@@ -67,7 +67,7 @@ struct jive_node {
 	} graph_bottom_list;
 	
 	size_t ntraverser_slots;
-	struct jive_traversal_nodestate ** traverser_slots;
+	enum jive_traversal_nodestate ** traverser_slots;
 	
 	size_t ntracker_slots;
 	jive_tracker_nodestate ** tracker_slots;
