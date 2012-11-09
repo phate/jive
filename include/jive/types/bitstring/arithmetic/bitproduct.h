@@ -13,10 +13,10 @@ extern const jive_bitbinary_operation_class JIVE_BITPRODUCT_NODE_;
 
 jive_node *
 jive_bitproduct_create(struct jive_region * region,
-	size_t noperands, struct jive_output * operands[const]);
+	size_t noperands, struct jive_output * const * operands);
 
 jive_output *
-jive_bitmultiply(size_t noperands, jive_output * operands[const]);
+jive_bitmultiply(size_t noperands, jive_output * const * operands);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_bitproduct_node_cast(jive_node * node)

@@ -110,14 +110,14 @@ jive_bitxor_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 }
 
 jive_node *
-jive_bitxor_create(jive_region * region, size_t noperands, jive_output * operands[const])
+jive_bitxor_create(jive_region * region, size_t noperands, jive_output * const * operands)
 {
 	return jive_binary_operation_normalized_create(&JIVE_BITXOR_NODE, region, NULL,
 		noperands, operands)->node;
 }
 
 jive_output *
-jive_bitxor(size_t noperands, jive_output * operands[const])
+jive_bitxor(size_t noperands, jive_output * const * operands)
 {
 	jive_region * region = jive_region_innermost(noperands, operands);
 	return jive_binary_operation_normalized_create(&JIVE_BITXOR_NODE, region, NULL,

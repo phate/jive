@@ -16,10 +16,10 @@ extern const jive_binary_operation_class JIVE_BITCONCAT_NODE_;
 jive_node *
 jive_bitconcat_create(
 	struct jive_region * region,
-	size_t noperands, struct jive_output * operands[const]);
+	size_t noperands, struct jive_output * const * operands);
 
 jive_output *
-jive_bitconcat(size_t noperands, jive_output * operands[const]);
+jive_bitconcat(size_t noperands, struct jive_output * const * operands);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_bitconcat_node_cast(jive_node * node)

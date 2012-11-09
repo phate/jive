@@ -179,7 +179,7 @@ jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive
 jive_node *
 jive_bitconcat_create(
 	struct jive_region * region,
-	size_t noperands, struct jive_output * operands[const])
+	size_t noperands, struct jive_output * const * operands)
 {
 	const jive_binary_operation_normal_form * nf =
 		(const jive_binary_operation_normal_form *)
@@ -188,7 +188,7 @@ jive_bitconcat_create(
 }
 
 jive_output *
-jive_bitconcat(size_t noperands, jive_output * operands[const])
+jive_bitconcat(size_t noperands, struct jive_output * const * operands)
 {
 	jive_region * region = jive_region_innermost(noperands, operands);
 	const jive_binary_operation_normal_form * nf =
