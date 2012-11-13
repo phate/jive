@@ -17,6 +17,7 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/theta.h>
 #include <jive/vsdg/variable.h>
 
 static void

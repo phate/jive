@@ -13,6 +13,7 @@
 #include <jive/vsdg/region-private.h>
 #include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/theta.h>
 
 static inline void
 jive_variable_inc_use_count(jive_variable * self)

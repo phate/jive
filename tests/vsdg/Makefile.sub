@@ -6,6 +6,7 @@ TESTS+=\
 	vsdg/test-graphtraverser \
 	vsdg/test-mutable-traverser \
 	vsdg/test-negotiator \
+	vsdg/test-nested-floating-theta \
 	vsdg/test-prune-replace \
 	vsdg/test-rescls-count \
 	vsdg/test-ssavar-merge \

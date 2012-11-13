@@ -11,6 +11,7 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/equivalence.h>
+#include <jive/vsdg/theta.h>
 #include <jive/types/bitstring.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
@@ -42,9 +43,10 @@ static int test_main(void)
 	jive_output * c;
 	jive_gamma(true_out, 1, (const jive_type*[]){jive_output_get_type(a)}, &a, &b, &c);
 	
-	jive_node * theta = jive_theta_create(gr1->root_region,
-		1, (const jive_type *[]){jive_output_get_type(c)}, &c);
-	jive_output * d = theta->outputs[0];
+	jive_theta theta = jive_theta_begin(gr1);
+	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);
+	jive_theta_end(theta, theta.region->top->outputs[0], 1, &loopvar);
+	jive_output * d = loopvar.value;
 	
 	jive_output * e = jive_bitnot(d);
 	

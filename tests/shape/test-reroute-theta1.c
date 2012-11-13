@@ -10,8 +10,8 @@
 #include <locale.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/theta.h>
 #include <jive/view.h>
 
 #include <jive/regalloc/reroute.h>
@@ -60,18 +60,20 @@ static int test_main(void)
 		1, (const jive_type *[]){type}, dummy->outputs,
 		2, (const jive_type *[]){type, type});
 	
-	jive_node * theta_node = jive_theta_create(r1,
-		1, (const jive_type *[]){type}, (jive_output *[]){top->outputs[0]});
+	jive_theta theta = jive_theta_begin(graph);
+	jive_region * loop_region = theta.region;
 	
+	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, top->outputs[0]);
 	
-	jive_region * loop_region = theta_node->inputs[0]->origin->node->region;
+	jive_node * theta_op = jive_node_create(loop_region,
+		2, (const jive_type *[]){type, type}, (jive_output *[]){loopvar1.value, top->outputs[1]},
+		2, (const jive_type *[]){ctl, type});
+	
+	jive_theta_loopvar_leave(theta, loopvar1.gate, theta_op->outputs[1]);
+	jive_node * theta_node = jive_theta_end(theta, theta_op->outputs[0],
+		1, &loopvar1);
 	jive_node * theta_head = loop_region->top;
 	jive_node * theta_tail = loop_region->bottom;
-	jive_node * theta_op = jive_node_create(loop_region,
-		2, (const jive_type *[]){type, type}, (jive_output *[]){theta_head->outputs[1], top->outputs[1]},
-		2, (const jive_type *[]){ctl, type});
-	jive_input_divert_origin(theta_tail->inputs[0], theta_op->outputs[0]);
-	jive_input_divert_origin(theta_tail->inputs[1], theta_op->outputs[1]);
 	
 	jive_node * bottom = jive_node_create(r1,
 		2, (const jive_type *[]){type, type}, (jive_output *[]){theta_node->outputs[0], top->outputs[1]},

@@ -11,6 +11,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/theta.h>
 
 JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_GAMMA_NODE, "gamma");
 JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_GAMMA_TAIL_NODE, "gamma_tail");

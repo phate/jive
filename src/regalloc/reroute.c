@@ -15,6 +15,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/theta.h>
 #include <jive/vsdg/variable.h>
 
 typedef struct jive_input_vector jive_input_vector;

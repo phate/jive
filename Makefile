@@ -15,6 +15,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/operators/unary.c \
 	src/vsdg/operators/binary.c \
 	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/controltype.c \
+	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
 	src/vsdg/negotiator.c \
