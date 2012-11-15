@@ -38,4 +38,7 @@ jive_control_true_create(struct jive_region * region);
 struct jive_output *
 jive_control_true(struct jive_graph * graph);
 
+extern const jive_node_class JIVE_CONTROL_FALSE_NODE;
+extern const jive_node_class JIVE_CONTROL_TRUE_NODE;
+
 #endif

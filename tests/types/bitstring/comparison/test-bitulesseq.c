@@ -12,6 +12,7 @@
 
 #include <jive/vsdg.h>
 #include <jive/view.h>
+#include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/comparison/bitulesseq.h>
