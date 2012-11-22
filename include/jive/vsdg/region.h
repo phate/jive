@@ -15,6 +15,7 @@
 #include <jive/vsdg/region-ssavar-use.h>
 
 typedef struct jive_region jive_region;
+typedef struct jive_floating_region jive_floating_region;
 
 struct jive_graph;
 struct jive_input;
@@ -68,6 +69,13 @@ struct jive_region {
 	struct jive_input * anchor;
 };
 
+/**
+	\brief Represents one region in the "floating" state
+*/
+struct jive_floating_region {
+	jive_region * region;
+};
+
 void
 jive_region_destroy(jive_region * self);
 
@@ -110,6 +118,14 @@ jive_region_is_contained_by(const jive_region * self, const jive_region * other)
 	return false;
 }
 
+JIVE_EXPORTED_INLINE bool
+jive_region_valid_edge_source(const jive_region * self, const jive_region * from)
+{
+	while (self->depth > from->depth)
+		self = self->parent;
+	return self == from;
+}
+
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_region_get_top_node(jive_region * self)
 {
@@ -125,17 +141,11 @@ jive_region_get_bottom_node(jive_region * self)
 jive_region *
 jive_region_create_subregion(jive_region * self);
 
-struct jive_region *
-jive_floating_region_create(struct jive_graph * graph);
-
-bool
-jive_region_depends_on_region(const jive_region * self, const jive_region * region);
-
 void
 jive_region_reparent(jive_region * self, jive_region * new_parent);
 
-jive_region *
-jive_region_compute_outermost_parent(const jive_region * self);
+bool
+jive_region_depends_on_region(const jive_region * self, const jive_region * region);
 
 JIVE_EXPORTED_INLINE struct jive_stackframe *
 jive_region_get_stackframe(const jive_region * region)
@@ -173,5 +183,14 @@ jive_region_map_to_section(const struct jive_region * region)
 	
 	return section;
 }
+
+jive_floating_region
+jive_floating_region_create(struct jive_graph * graph);
+
+void
+jive_region_check_move_floating(jive_region * self, jive_region * edge_origin);
+
+void
+jive_floating_region_settle(jive_floating_region region);
 
 #endif

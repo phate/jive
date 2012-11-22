@@ -36,42 +36,37 @@ static int test_main(void)
 		1, &vtype);
 
 
-	jive_region * floating = jive_floating_region_create(graph);
-	jive_node * fnode0 = jive_node_create(floating,
+	jive_floating_region floating = jive_floating_region_create(graph);
+	jive_node * fnode0 = jive_node_create(floating.region,
 		1, (const jive_type *[]){vtype},
 			(jive_output *[]){node0->outputs[0]},
 		1, &vtype);
 
 	jive_view(graph, stdout);
-	assert(floating->parent == graph->root_region);
+	assert(floating.region->parent == graph->root_region);
 
-	jive_node * fnode1 = jive_node_create(floating,
+	jive_node * fnode1 = jive_node_create(floating.region,
 		3, (const jive_type *[]){vtype, vtype, vtype},
 			(jive_output *[]){node0->outputs[0], node1->outputs[0], fnode0->outputs[0]},
 		1, &vtype);
 
 	jive_view(graph, stdout);
-	assert(floating->parent == region1);
+	assert(floating.region->parent == region1);
 
-	jive_node * fnode2 = jive_node_create(floating,
+	jive_node * fnode2 = jive_node_create(floating.region,
 		5, (const jive_type *[]){vtype, vtype, vtype, vtype, vtype},
 			(jive_output *[]){node0->outputs[0], node1->outputs[0], node2->outputs[0],
 			fnode0->outputs[0], fnode1->outputs[0]},
 		0, NULL);
 
 	jive_view(graph, stdout);
-	assert(floating->parent == region2);
+	assert(floating.region->parent == region2);
 
 	jive_input_divert_origin(fnode2->inputs[1], node0->outputs[0]);
-	assert(floating->parent == region2);	
+	assert(floating.region->parent == region2);
 
 	jive_input_divert_origin(fnode1->inputs[1], node0->outputs[0]);
-	assert(floating->parent == region2);	
-
-	jive_input_divert_origin(fnode2->inputs[2], node0->outputs[0]);
-
-	jive_view(graph, stdout);
-	assert(floating->parent == graph->root_region);
+	assert(floating.region->parent == region2);
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

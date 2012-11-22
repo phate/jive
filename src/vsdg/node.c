@@ -34,19 +34,6 @@ const jive_node_class JIVE_NODE = {
 };
 
 static void
-jive_node_region_reparent(jive_node * self, jive_output * operand)
-{
-	jive_region * node_region = self->region;
-	/*we only need to move regions inwards*/
-	if (node_region && node_region->attrs.is_floating) {
-		jive_region * output_region = operand->node->region;
-		bool contained = jive_region_is_contained_by(output_region, node_region);
-		if (output_region != node_region && !contained && output_region->depth >= node_region->depth)
-			jive_region_reparent(node_region, output_region);
-	}
-}
-
-static void
 jive_uninitialized_node_add_output_(jive_node * self, jive_output * output)
 {
 	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
@@ -79,8 +66,11 @@ jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
 static jive_input *
 jive_uninitialized_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
 {
-	jive_node_region_reparent(self, initial_operand);
-
+	if (self->graph->floating_region_count && type->class_ != &JIVE_ANCHOR_TYPE) {
+		jive_region * origin_region = initial_operand->node->region;
+		jive_region_check_move_floating(self->region, origin_region);
+	}
+	
 	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
 	jive_uninitialized_node_add_input_(self, input);
 	return input;
@@ -269,7 +259,10 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 jive_input *
 jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
 {
-	jive_node_region_reparent(self, initial_operand);
+	if (self->graph->floating_region_count && type->class_ != &JIVE_ANCHOR_TYPE) {
+		jive_region * origin_region = initial_operand->node->region;
+		jive_region_check_move_floating(self->region, origin_region);
+	}
 
 	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
 	jive_node_add_input_(self, input);
@@ -311,6 +304,11 @@ jive_node_add_constrained_input(jive_node * self, const jive_resource_class * re
 jive_input *
 jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
 {
+	if (self->graph->floating_region_count) {
+		jive_region * origin_region = initial_operand->node->region;
+		jive_region_check_move_floating(self->region, origin_region);
+	}
+
 	jive_input * input = jive_gate_create_input(gate, self, self->ninputs, initial_operand);
 	input->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);

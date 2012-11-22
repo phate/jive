@@ -26,6 +26,7 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	self->labels.first = self->labels.last = 0;
 	self->resources_fully_assigned = false;
 	self->normalized = true;
+	self->floating_region_count = 0;
 	
 	jive_node_normal_form_hash_init(&self->node_normal_forms, context);
 	

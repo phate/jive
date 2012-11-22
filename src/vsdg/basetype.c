@@ -223,15 +223,23 @@ jive_input_divert_origin(jive_input * self, jive_output * new_origin)
 void
 jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 {
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self->node, new_origin));
 	const jive_type * input_type = jive_input_get_type(self);
 	const jive_type * operand_type = jive_output_get_type(new_origin);
 	
 	if (!jive_type_equals(input_type, operand_type)) {
 		jive_raise_type_error(input_type, operand_type, self->node);
 	}
+	if (input_type->class_ == &JIVE_ANCHOR_TYPE) {
+		jive_context_fatal_error(self->node->graph->context,
+			"Type mismatch: Cannot divert edges of 'anchor' type");
+	}
 	
 	JIVE_DEBUG_ASSERT(self->node->graph == new_origin->node->graph);
+	
+	if (self->node->graph->floating_region_count)
+		jive_region_check_move_floating(self->node->region, new_origin->node->region);
+	
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self->node, new_origin));
 	
 	jive_output * old_origin = self->origin;
 	
@@ -244,16 +252,6 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 	jive_graph_mark_denormalized(new_origin->node->graph);
 	
 	jive_graph_notify_input_change(self->node->graph, self, old_origin, new_origin);
-
-	jive_region * node_region = self->node->region;
-	jive_region * old_origin_region = old_origin->node->region;
-	jive_region * new_origin_region = new_origin->node->region;
-	/* we only need to move regions outwards */
-	if (node_region->attrs.is_floating && old_origin_region != new_origin_region) {
-		JIVE_DEBUG_ASSERT(!jive_output_isinstance(old_origin, &JIVE_ANCHOR_OUTPUT));
-		jive_region * outermost = jive_region_compute_outermost_parent(node_region);
-		jive_region_reparent(node_region, outermost);
-	}
 }
 
 void

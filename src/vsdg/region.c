@@ -128,13 +128,23 @@ jive_region_create_subregion(jive_region * self)
 	return subregion;
 }
 
-jive_region *
-jive_floating_region_create(struct jive_graph * graph)
+jive_floating_region
+jive_floating_region_create(jive_graph * graph)
 {
-	jive_region * subregion = jive_context_malloc(graph->context, sizeof(*subregion));
-	jive_region_init_(subregion, graph, graph->root_region);
-	subregion->attrs.is_floating = true;
-	return subregion;
+	jive_floating_region floating_region;
+	floating_region.region = jive_context_malloc(graph->context, sizeof(*floating_region.region));
+	jive_region_init_(floating_region.region, graph, graph->root_region);
+	floating_region.region ->attrs.is_floating = true;
+	graph->floating_region_count ++;
+	return floating_region;
+}
+
+void
+jive_floating_region_settle(jive_floating_region floating_region)
+{
+	JIVE_DEBUG_ASSERT(floating_region.region->attrs.is_floating);
+	floating_region.region->attrs.is_floating = false;
+	floating_region.region->graph->floating_region_count --;
 }
 
 void
@@ -291,33 +301,25 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 	jive_copy_context_fini(&copy_context, context);
 }
 
-jive_region *
-jive_region_compute_outermost_parent(const jive_region * self)
+void
+jive_region_check_move_floating(jive_region * self, jive_region * edge_origin)
 {
-	jive_region * outermost = self->graph->root_region;
-
-	jive_node * node;
-	JIVE_LIST_ITERATE (self->nodes, node, region_nodes_list) {
-		size_t i;
-		for (i = 0; i < node->ninputs; i++) {
-			if (jive_input_isinstance(node->inputs[i], &JIVE_ANCHOR_INPUT))
-				continue;
-			
-			jive_region * tmp = node->inputs[i]->origin->node->region;
-			if (tmp == self)
-				continue;
-
-			if (tmp->depth > outermost->depth)
-				outermost = tmp;
-		}
+	jive_region * movable = self;
+	jive_region * parent = self->parent;
+	/* find closest common parent, as well as the region directly below it
+	on the path */
+	while (movable->depth > edge_origin->depth) {
+		movable = parent;
+		parent = parent->parent;
 	}
-
-	jive_region * subregion;
-	JIVE_LIST_ITERATE (self->subregions, subregion, region_subregions_list) {
-		jive_region * tmp = jive_region_compute_outermost_parent(subregion);
-		if (tmp->depth > outermost->depth)
-			outermost = tmp;
-	}
-
-	return outermost;
+	/* if the search ends up in the origin region of the new edge, then we
+	know that the edge to be inserted points from one outer region into
+	an inner region, and is thus valid */
+	if (movable == edge_origin)
+		return;
+	/* if the search ends up somewhere else, then we have found the
+	region which we must reparent to make this a valid edge */
+	if (!movable->attrs.is_floating)
+		jive_context_fatal_error(self->graph->context, "Invalid edge");
+	jive_region_reparent(movable, edge_origin);
 }

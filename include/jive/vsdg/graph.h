@@ -67,6 +67,7 @@ struct jive_graph {
 	
 	bool resources_fully_assigned;
 	bool normalized;
+	size_t floating_region_count;
 	
 	size_t ntracker_slots;
 	jive_tracker_slot_reservation * tracker_slots;
