@@ -137,6 +137,7 @@ jive_graphview_draw(jive_graphview * self)
 		jive_inputview * inputview = i.entry;
 		jive_outputview * outputview = jive_outputview_map_lookup(&self->outputmap, inputview->input->origin);
 		
+		JIVE_DEBUG_ASSERT(outputview->nodeview->placed);
 		int begin_x = outputview->nodeview->x + jive_outputview_get_edge_offset(outputview);
 		int begin_y = jive_nodeview_get_y(outputview->nodeview) + outputview->nodeview->height - 1;
 		int bend_y = jive_nodeview_get_y(inputview->nodeview) + inputview->edge_bend_y;
