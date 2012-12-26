@@ -65,6 +65,17 @@ jive_bitconstant_create_signed(struct jive_graph * graph, size_t nbits, int64_t 
 jive_output *
 jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value);
 
+JIVE_EXPORTED_INLINE struct jive_output *
+jive_bitconstant_undefined(struct jive_graph * graph, size_t nbits)
+{
+	size_t i;
+	char bits[nbits];
+	for (i = 0; i < nbits; i++)
+		bits[i] = 'X';
+
+	return jive_bitconstant(graph, nbits, bits);
+}
+
 JIVE_EXPORTED_INLINE jive_bitconstant_node *
 jive_bitconstant_node_cast(jive_node * node)
 {
