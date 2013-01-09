@@ -364,7 +364,21 @@ jive_instruction_generate_assembler(const jive_instruction * instr, jive_buffer 
 	if (icls->write_asm) {
 		jive_instruction_encoding_flags iflags;
 		iflags = (jive_instruction_encoding_flags) *flags;
-		icls->write_asm(icls, buffer, instr->inputs, instr->outputs, instr->immediates, &iflags);
+		
+		jive_asmgen_imm imm[icls->nimmediates];
+		size_t n;
+		for (n = 0; n < icls->nimmediates; ++n) {
+			imm[n].value = instr->immediates[n].offset;
+			if (instr->immediates[n].add_label)
+				imm[n].add_symbol = jive_label_get_asmname(instr->immediates[n].add_label);
+			else
+				imm[n].add_symbol = 0;
+			if (instr->immediates[n].sub_label)
+				imm[n].sub_symbol = jive_label_get_asmname(instr->immediates[n].sub_label);
+			else
+				imm[n].sub_symbol = 0;
+		}
+		icls->write_asm(icls, buffer, instr->inputs, instr->outputs, imm, &iflags);
 		*flags = (uint32_t) iflags;
 	} else {
 		jive_buffer_putstr(buffer, "; ");

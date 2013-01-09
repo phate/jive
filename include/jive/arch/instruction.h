@@ -21,15 +21,17 @@ struct jive_compilate;
 struct jive_label;
 struct jive_section;
 
+typedef struct jive_asmgen_imm jive_asmgen_imm;
+typedef struct jive_immediate jive_immediate;
 typedef struct jive_instruction_class jive_instruction_class;
 typedef struct jive_instruction jive_instruction;
 typedef struct jive_instruction_node jive_instruction_node;
 typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
-typedef struct jive_immediate jive_immediate;
-
 typedef struct jive_seq_instruction jive_seq_instruction;
 
 typedef uint64_t jive_immediate_int;
+
+/* immediates, as represented in the graph */
 
 struct jive_immediate {
 	jive_immediate_int offset;
@@ -149,6 +151,25 @@ jive_immediate_has_symbols(const jive_immediate * self)
 void
 jive_immediate_simplify(jive_immediate * self, const jive_seq_point * for_point);
 
+/* immediates, as represented during asm generation */
+
+struct jive_asmgen_imm {
+	/** \brief Numeric portion of immediate value */
+	jive_immediate_int value;
+	/** \brief Symbol to be added to base value
+	 
+	String representation of the symbol to be added, or NULL if there
+	is no symbol to be added. */
+	const char * add_symbol;
+	/** \brief Symbol to be subtracted from base value
+	
+	String representation of the symbol to be subtracted, or NULL if
+	there is no symbol to be subtracted. */
+	const char * sub_symbol;
+};
+
+/* instruction representation */
+
 typedef enum {
 	jive_instruction_flags_none = 0,
 	/* instruction reuses first input register as output */
@@ -216,7 +237,7 @@ struct jive_instruction_class {
 		struct jive_buffer * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
-		const jive_immediate immediates[],
+		const jive_asmgen_imm immediates[],
 		jive_instruction_encoding_flags * flags);
 	
 	const jive_register_class * const * inregs;

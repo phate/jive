@@ -227,7 +227,7 @@ jive_write_asm_PSEUDO_NOP(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_asmgen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 }
