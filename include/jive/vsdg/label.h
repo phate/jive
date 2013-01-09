@@ -50,7 +50,6 @@ struct jive_label_class {
 	void (*fini)(jive_label * self);
 	jive_address (*get_address)(const jive_label * self,
 		const struct jive_seq_point * for_point);
-	const char * (*get_asmname)(const jive_label * self);
 };
 
 extern const jive_label_class JIVE_LABEL;
@@ -77,12 +76,6 @@ JIVE_EXPORTED_INLINE jive_address
 jive_label_get_address(const jive_label * self, const struct jive_seq_point * for_point)
 {
 	return self->class_->get_address(self, for_point);
-}
-
-JIVE_EXPORTED_INLINE const char *
-jive_label_get_asmname(const jive_label * self)
-{
-	return self->class_->get_asmname(self);
 }
 
 JIVE_EXPORTED_INLINE bool
@@ -119,12 +112,6 @@ JIVE_EXPORTED_INLINE jive_address
 jive_label_internal_get_address(const jive_label_internal * self, const struct jive_seq_point * for_point)
 {
 	return jive_label_get_address(&self->base, for_point);
-}
-
-JIVE_EXPORTED_INLINE const char *
-jive_label_internal_get_asmname(const jive_label_internal * self)
-{
-	return jive_label_get_asmname(&self->base);
 }
 
 JIVE_EXPORTED_INLINE struct jive_seq_point *

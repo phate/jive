@@ -744,11 +744,9 @@ jive_label_to_address_node_get_label_(const jive_node * self_)
 {
 	const jive_label_to_address_node * self = (const jive_label_to_address_node *) self_;
 	
-	const char * label_name = jive_label_get_asmname(self->attrs.label);
-	size_t size = strlen(label_name) + strlen("addrof:") + 1;
-	char * tmp = malloc(size);
-	snprintf(tmp, size, "addrof:%s", label_name);
-	return tmp;
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "addrof:label%p", self->attrs.label);
+	return strdup(tmp);
 }
 
 static jive_node *
@@ -852,11 +850,9 @@ jive_label_to_bitstring_node_get_label_(const jive_node * self_)
 {
 	const jive_label_to_bitstring_node * self = (const jive_label_to_bitstring_node *) self_;
 	
-	const char * label_name = jive_label_get_asmname(self->attrs.label);
-	size_t size = strlen(label_name) + strlen("addrof:") + 1;
-	char * tmp = malloc(size);
-	snprintf(tmp, size, "addrof:%s", label_name);
-	return tmp;
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "addrof:label%p", self->attrs.label);
+	return strdup(tmp);
 }
 
 static jive_node *

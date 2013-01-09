@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <locale.h>
 
+#include <jive/arch/label-mapper.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
@@ -62,7 +63,9 @@ static int test_main(void)
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_assembler(graph, &buffer);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx);
+	jive_graph_generate_assembler(graph, name_mapper, &buffer);
+	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
 

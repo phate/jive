@@ -16,6 +16,7 @@
 #include <jive/util/buffer.h>
 #include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
+#include <jive/arch/label-mapper.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/stackslot.h>
@@ -166,7 +167,9 @@ static int test_main(void)
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_assembler(graph, &buffer);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx);
+	jive_graph_generate_assembler(graph, name_mapper, &buffer);
+	jive_label_name_mapper_destroy(name_mapper);
 	
 	FILE * gcc_pipe = popen("gcc -m32 -x assembler -", "w");
 	fwrite(buffer.data, buffer.size, 1, stdout);

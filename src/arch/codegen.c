@@ -12,6 +12,7 @@
 #include <jive/arch/dataobject.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/instructionset.h>
+#include <jive/arch/label-mapper.h>
 #include <jive/arch/subroutine.h>
 #include <jive/types/bitstring/symbolic-expression.h>
 #include <jive/types/bitstring/constant.h>
@@ -331,7 +332,10 @@ emit_region_start_attrs(const jive_region * region, jive_buffer * buffer)
 }
 
 static void
-emit_labels(jive_seq_point * seq_point, jive_buffer * buffer)
+emit_labels(
+	jive_seq_point * seq_point,
+	jive_label_name_mapper * name_mapper,
+	jive_buffer * buffer)
 {
 	if (seq_point == seq_point->seq_region->first_point)
 		emit_region_start_attrs(seq_point->seq_region->region, buffer);
@@ -340,7 +344,7 @@ emit_labels(jive_seq_point * seq_point, jive_buffer * buffer)
 	for(n = 0; n < seq_point->attached_labels.nitems; n++) {
 		
 		const jive_label_internal * label = seq_point->attached_labels.items[n];
-		const char * name = jive_label_internal_get_asmname(label);
+		const char * name = jive_label_name_mapper_map_label_internal(name_mapper, label);
 		
 		if (label->base.flags & jive_label_flags_global) {
 			jive_buffer_putstr(buffer, ".globl ");
@@ -354,7 +358,11 @@ emit_labels(jive_seq_point * seq_point, jive_buffer * buffer)
 }
 
 static void
-jive_instruction_generate_assembler(const jive_instruction * instr, jive_buffer * buffer, uint32_t * flags)
+jive_instruction_generate_assembler(
+	const jive_instruction * instr,
+	jive_label_name_mapper * name_mapper,
+	jive_buffer * buffer,
+	uint32_t * flags)
 {
 	const jive_instruction_class * icls = instr->icls;
 	if ( (*flags & jive_instruction_encoding_flags_jump_conditional_invert) )
@@ -370,11 +378,11 @@ jive_instruction_generate_assembler(const jive_instruction * instr, jive_buffer 
 		for (n = 0; n < icls->nimmediates; ++n) {
 			imm[n].value = instr->immediates[n].offset;
 			if (instr->immediates[n].add_label)
-				imm[n].add_symbol = jive_label_get_asmname(instr->immediates[n].add_label);
+				imm[n].add_symbol = jive_label_name_mapper_map_label(name_mapper, instr->immediates[n].add_label);
 			else
 				imm[n].add_symbol = 0;
 			if (instr->immediates[n].sub_label)
-				imm[n].sub_symbol = jive_label_get_asmname(instr->immediates[n].sub_label);
+				imm[n].sub_symbol = jive_label_name_mapper_map_label(name_mapper, instr->immediates[n].sub_label);
 			else
 				imm[n].sub_symbol = 0;
 		}
@@ -389,7 +397,11 @@ jive_instruction_generate_assembler(const jive_instruction * instr, jive_buffer 
 }
 
 static void
-jive_instruction_node_generate_assembler(jive_seq_node * seq_node, jive_node * node, jive_buffer * buffer)
+jive_instruction_node_generate_assembler(
+	jive_seq_node * seq_node,
+	jive_label_name_mapper * name_mapper,
+	jive_node * node,
+	jive_buffer * buffer)
 {
 	jive_instruction_node * instr_node = (jive_instruction_node *) node;
 	const jive_instruction_class * icls = instr_node->attrs.icls;
@@ -411,7 +423,7 @@ jive_instruction_node_generate_assembler(jive_seq_node * seq_node, jive_node * n
 	instr.outputs = outregs;
 	instr.immediates = instr_node->attrs.immediates;
 	
-	jive_instruction_generate_assembler(&instr, buffer, &seq_node->flags);
+	jive_instruction_generate_assembler(&instr, name_mapper, buffer, &seq_node->flags);
 }
 
 static void
@@ -464,48 +476,60 @@ jive_dataitems_node_generate_assembler(jive_seq_node * seq_node, jive_node * nod
 }
 
 static void
-jive_seq_instruction_generate_assembler(jive_seq_instruction * seq_instr, jive_buffer * buffer)
+jive_seq_instruction_generate_assembler(
+	jive_seq_instruction * seq_instr,
+	jive_label_name_mapper * name_mapper,
+	jive_buffer * buffer)
 {
-	jive_instruction_generate_assembler(&seq_instr->instr, buffer, &seq_instr->flags);
+	jive_instruction_generate_assembler(&seq_instr->instr, name_mapper, buffer, &seq_instr->flags);
 }
 
 static void
-jive_seq_node_generate_assembler(jive_seq_node * seq_node, jive_buffer * buffer)
+jive_seq_node_generate_assembler(
+	jive_seq_node * seq_node,
+	jive_label_name_mapper * name_mapper,
+	jive_buffer * buffer)
 {
 	jive_node * node = seq_node->node;
 	if (jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) {
-		jive_instruction_node_generate_assembler(seq_node, node, buffer);
+		jive_instruction_node_generate_assembler(seq_node, name_mapper, node, buffer);
 	} else if (jive_node_isinstance(node, &JIVE_DATAITEMS_NODE)) {
 		jive_dataitems_node_generate_assembler(seq_node, node, buffer);
 	}
 }
 
 void
-jive_seq_graph_generate_assembler(jive_seq_graph * seq_graph, jive_buffer * buffer)
+jive_seq_graph_generate_assembler(
+	jive_seq_graph * seq_graph,
+	jive_label_name_mapper * name_mapper,
+	jive_buffer * buffer)
 {
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
-		emit_labels(seq_point, buffer);
+		emit_labels(seq_point, name_mapper, buffer);
 		jive_seq_node * seq_node = jive_seq_node_cast(seq_point);
 		if (seq_node) {
-			jive_seq_node_generate_assembler(seq_node, buffer);
+			jive_seq_node_generate_assembler(seq_node, name_mapper, buffer);
 			continue;
 		}
 		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
 		if (seq_instr) {
-			jive_seq_instruction_generate_assembler(seq_instr, buffer);
+			jive_seq_instruction_generate_assembler(seq_instr, name_mapper, buffer);
 			continue;
 		}
 	}
 }
 
 void
-jive_graph_generate_assembler(jive_graph * graph, jive_buffer * buffer)
+jive_graph_generate_assembler(
+	jive_graph * graph,
+	jive_label_name_mapper * mapper,
+	jive_buffer * buffer)
 {
 	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
 	jive_seq_graph_patch_jumps(seq_graph);
 	
-	jive_seq_graph_generate_assembler(seq_graph, buffer);
+	jive_seq_graph_generate_assembler(seq_graph, mapper, buffer);
 	
 	jive_seq_graph_destroy(seq_graph);
 }

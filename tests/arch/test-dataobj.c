@@ -16,6 +16,7 @@
 #include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/instruction.h>
+#include <jive/arch/label-mapper.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/label.h>
@@ -41,7 +42,9 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
-	jive_graph_generate_assembler(graph, &buffer);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx);
+	jive_graph_generate_assembler(graph, name_mapper, &buffer);
+	jive_label_name_mapper_destroy(name_mapper);
 	jive_buffer_putbyte(&buffer, 0);
 	
 	static const char expected_header[] =

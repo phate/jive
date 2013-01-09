@@ -12,6 +12,7 @@
 #include <locale.h>
 
 #include <jive/arch/codegen.h>
+#include <jive/arch/label-mapper.h>
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
 #include <jive/arch/regselector.h>
@@ -41,7 +42,9 @@ compile_graph(jive_graph * graph)
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, graph->context);
-	jive_graph_generate_assembler(graph, &buffer);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(graph->context);
+	jive_graph_generate_assembler(graph, name_mapper, &buffer);
+	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
 

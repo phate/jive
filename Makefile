@@ -109,6 +109,7 @@ LIBJIVE_SRC += \
 	src/arch/regvalue.c \
 	src/arch/compilate.c \
 	src/arch/codegen.c \
+	src/arch/label-mapper.c \
 	
 # shaper
 LIBJIVE_SRC += \

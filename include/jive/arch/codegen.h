@@ -11,6 +11,7 @@
 
 struct jive_buffer;
 struct jive_graph;
+struct jive_label_name_mapper;
 struct jive_seq_graph;
 
 /* FIXME: this is a placeholder function, will be replaced by a more
@@ -19,7 +20,10 @@ void
 jive_graph_generate_code(struct jive_graph * graph, struct jive_compilate * buffer);
 
 void
-jive_graph_generate_assembler(struct jive_graph * graph, struct jive_buffer * buffer);
+jive_graph_generate_assembler(
+	struct jive_graph * graph,
+	struct jive_label_name_mapper * mapper,
+	struct jive_buffer * buffer);
 
 /* compile given graph; note that any previous contents of the target buffer will
  * be discarded */
@@ -28,6 +32,9 @@ jive_seq_graph_generate_code(struct jive_seq_graph * seq_graph,
 	struct jive_compilate * buffer);
 
 void
-jive_seq_graph_generate_assembler(struct jive_seq_graph * seq_graph, struct jive_buffer * buffer);
+jive_seq_graph_generate_assembler(
+	struct jive_seq_graph * seq_graph,
+	struct jive_label_name_mapper * mapper,
+	struct jive_buffer * buffer);
 
 #endif
