@@ -35,7 +35,7 @@ typedef struct jive_address jive_address;
 
 struct jive_address {
 	jive_offset offset;
-	jive_stdsectionid section;	
+	jive_stdsectionid section;
 };
 
 JIVE_EXPORTED_INLINE void
@@ -48,8 +48,6 @@ jive_address_init(jive_address * self, jive_stdsectionid section, jive_offset of
 struct jive_label_class {
 	const jive_label_class * parent;
 	void (*fini)(jive_label * self);
-	jive_address (*get_address)(const jive_label * self,
-		const struct jive_seq_point * for_point);
 };
 
 extern const jive_label_class JIVE_LABEL;
@@ -70,12 +68,6 @@ JIVE_EXPORTED_INLINE void
 jive_label_fini(jive_label * self)
 {
 	self->class_->fini(self);
-}
-
-JIVE_EXPORTED_INLINE jive_address
-jive_label_get_address(const jive_label * self, const struct jive_seq_point * for_point)
-{
-	return self->class_->get_address(self, for_point);
 }
 
 JIVE_EXPORTED_INLINE bool
@@ -108,12 +100,6 @@ struct jive_label_internal {
 	char * asmname;
 };
 
-JIVE_EXPORTED_INLINE jive_address
-jive_label_internal_get_address(const jive_label_internal * self, const struct jive_seq_point * for_point)
-{
-	return jive_label_get_address(&self->base, for_point);
-}
-
 JIVE_EXPORTED_INLINE struct jive_seq_point *
 jive_label_internal_get_attach_node(const jive_label_internal * self, const struct jive_seq_graph * seq_graph)
 {
@@ -135,7 +121,6 @@ struct jive_label_external {
 	jive_label base;
 	struct jive_context * context;
 	char * asmname;
-	jive_address address;
 };
 
 /**
@@ -228,13 +213,16 @@ jive_label_region_end_create_exported(struct jive_region * region, const char * 
 extern const jive_label_class JIVE_LABEL_EXTERNAL;
 
 /**
-	\brief Initialize label external to the graph from which it is referenced
+	\brief Initialize label external
 */
 void
-jive_label_external_init(jive_label_external * self, struct jive_context * context, const char * name, jive_offset offset);
+jive_label_external_init(
+	jive_label_external * self,
+	struct jive_context * context,
+	const char * name);
 
 /**
-	\brief Finalize label external to the graph from which it is referenced
+	\brief Finalize label external
 */
 void
 jive_label_external_fini(jive_label_external * self);

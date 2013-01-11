@@ -47,7 +47,7 @@ static int test_main(void)
 	jive_output * containerof = jive_containerof(address1, &decl, 1);
 
 	jive_label_external write_label;
-	jive_label_external_init(&write_label, context, "write", (intptr_t) &write);	
+	jive_label_external_init(&write_label, context, "write");
 	jive_output * label = jive_label_to_address_create(graph, &write_label.base);
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		label, NULL,

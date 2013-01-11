@@ -20,7 +20,6 @@
 const jive_label_class JIVE_LABEL = {
 	.parent = 0,
 	.fini = 0,
-	.get_address = 0,
 };
 
 static void
@@ -32,16 +31,9 @@ jive_label_init_(jive_label * self, const jive_label_class * cls, jive_label_fla
 
 /* special "current" label */
 
-static jive_address
-jive_label_current_get_address_(const jive_label * self, const jive_seq_point * for_point)
-{
-	return for_point->address;
-}
-
 const jive_label_class JIVE_LABEL_CURRENT = {
 	.parent = &JIVE_LABEL,
 	.fini = 0,
-	.get_address = jive_label_current_get_address_,
 };
 
 const jive_label jive_label_current = {
@@ -51,18 +43,9 @@ const jive_label jive_label_current = {
 
 /* special "fpoffset" label */
 
-static jive_address 
-jive_label_fpoffset_get_address_(const jive_label * self, const jive_seq_point * for_point)
-{
-	jive_address tmp;
-	jive_address_init(&tmp, jive_stdsectionid_invalid, 0);
-	return tmp;
-}
-
 const jive_label_class JIVE_LABEL_FPOFFSET = {
 	.parent = &JIVE_LABEL,
 	.fini = 0,
-	.get_address = jive_label_fpoffset_get_address_,
 };
 
 const jive_label jive_label_fpoffset = {
@@ -72,18 +55,9 @@ const jive_label jive_label_fpoffset = {
 
 /* special "spoffset" label */
 
-static jive_address
-jive_label_spoffset_get_address_(const jive_label * self, const jive_seq_point * for_point)
-{
-	jive_address tmp;
-	jive_address_init(&tmp, jive_stdsectionid_invalid, 0);
-	return tmp;
-}
-
 const jive_label_class JIVE_LABEL_SPOFFSET = {
 	.parent = &JIVE_LABEL,
 	.fini = 0,
-	.get_address = jive_label_spoffset_get_address_,
 };
 
 const jive_label jive_label_spoffset = {
@@ -117,26 +91,10 @@ jive_label_internal_fini_(jive_label * self_)
 	JIVE_LIST_REMOVE(self->graph->labels, self, graph_label_list);
 }
 
-static jive_address
-jive_label_internal_get_address_(const jive_label * self_, const jive_seq_point * for_point)
-{
-	const jive_label_internal * self = (const jive_label_internal *) self_;
-	jive_seq_point * seq_point = jive_label_internal_get_attach_node(self, for_point->seq_region->seq_graph);
-	
-	if (seq_point) {
-		return seq_point->address;
-	} else {
-		jive_address tmp;
-		jive_address_init(&tmp, jive_stdsectionid_invalid, 0);
-		return tmp;
-	}
-}
-
 const jive_label_internal_class JIVE_LABEL_INTERNAL_ = {
 	.base = {
 		.parent = &JIVE_LABEL,
 		.fini = 0,
-		.get_address = 0,
 	},
 	.get_attach_point = 0
 };
@@ -154,7 +112,6 @@ const jive_label_internal_class JIVE_LABEL_NODE_ = {
 	.base = {
 		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
-		.get_address = jive_label_internal_get_address_,
 	},
 	.get_attach_point = jive_label_node_get_attach_point_
 };
@@ -201,7 +158,6 @@ const jive_label_internal_class JIVE_LABEL_REGION_START_ = {
 	.base = {
 		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
-		.get_address = jive_label_internal_get_address_,
 	},
 	.get_attach_point = jive_label_region_start_get_attach_point_
 };
@@ -263,7 +219,6 @@ const jive_label_internal_class JIVE_LABEL_REGION_END_ = {
 	.base = {
 		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
-		.get_address = jive_label_internal_get_address_,
 	},
 	.get_attach_point = jive_label_region_end_get_attach_point_
 };
@@ -307,13 +262,6 @@ jive_label_region_end_create_exported(jive_region * region, const char * name)
 
 /* external labels */
 
-static jive_address
-jive_label_external_get_address_(const jive_label * self_, const jive_seq_point * for_point)
-{
-	const jive_label_external * self = (const jive_label_external *) self_;
-	return self->address;
-}
-
 static void
 jive_label_external_fini_(jive_label * self_)
 {
@@ -324,18 +272,19 @@ jive_label_external_fini_(jive_label * self_)
 const jive_label_class JIVE_LABEL_EXTERNAL = {
 	.parent = &JIVE_LABEL,
 	.fini = jive_label_external_fini_,
-	.get_address = jive_label_external_get_address_,
 };
 
 
 void
-jive_label_external_init(jive_label_external * self, struct jive_context * context, const char * name, jive_offset offset)
+jive_label_external_init(
+	jive_label_external * self,
+	struct jive_context * context,
+	const char * name)
 {
 	self->base.class_ = &JIVE_LABEL_EXTERNAL;
 	self->base.flags = jive_label_flags_external;
 	self->context = context;
 	self->asmname = jive_context_strdup(context, name);
-	jive_address_init(&self->address, jive_stdsectionid_external, offset);
 }
 
 void

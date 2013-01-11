@@ -112,5 +112,4 @@ static int test_main(void)
 	return 0;
 }
 
-
 JIVE_UNIT_TEST_REGISTER("i386/test-resolve-reloc", test_main);

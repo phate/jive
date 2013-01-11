@@ -93,7 +93,7 @@ static int test_main(void)
 	jive_label * str_label = jive_objdef_node_cast(str_name)->attrs.start;
 	
 	jive_label_external write_label;
-	jive_label_external_init(&write_label, ctx, "write", (intptr_t) &write);
+	jive_label_external_init(&write_label, ctx, "write");
 	
 	jive_node * fn_name = jive_objdef_node_create(jive_subroutine_objdef(i386_fn), "main");
 	

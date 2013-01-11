@@ -26,8 +26,8 @@ static int test_main(void)
 	
 	jive_label_external foobar, bla;
 	
-	jive_label_external_init(&foobar, context, "foobar", 0);
-	jive_label_external_init(&bla, context, "bla", 1);
+	jive_label_external_init(&foobar, context, "foobar");
+	jive_label_external_init(&bla, context, "bla");
 
 	jive_output * o0 = jive_label_to_address_create(graph, &foobar.base);
 	jive_output * o1 = jive_label_to_address_create(graph, &bla.base);
