@@ -161,6 +161,21 @@ jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_compilate * buffer
 	}
 }
 
+static bool
+jive_label_points_to_node(
+	const jive_seq_graph * seq_graph,
+	const jive_label * label,
+	const jive_seq_point * to)
+{
+	if (!jive_label_isinstance(label, &JIVE_LABEL_INTERNAL))
+		return false;
+	
+	const jive_label_internal * label_int = (const jive_label_internal *) label;
+	jive_seq_point * sp = jive_label_internal_get_attach_node(label_int, seq_graph);
+	
+	return sp == to;
+}
+
 /* for a conditional branch with two possibly different continuation points,
 patch in unconditional branch when condition for primary target is not met */
 static void
@@ -193,9 +208,7 @@ jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * se
 	}
 	
 	if ( (inode->attrs.icls->flags & jive_instruction_jump_conditional_invertible) ) {
-		jive_seq_point * sp = jive_label_internal_get_attach_node(
-			(jive_label_internal *) primary_tgt, seq_graph);
-		if (sp == seq_node->base.seqpoint_list.next) {
+		if (jive_label_points_to_node(seq_graph, primary_tgt, seq_node->base.seqpoint_list.next)) {
 			primary_tgt = secondary_tgt;
 			secondary_tgt = 0;
 			seq_node->flags |= jive_instruction_encoding_flags_jump_conditional_invert;
