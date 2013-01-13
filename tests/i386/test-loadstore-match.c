@@ -48,12 +48,14 @@ compile_graph(jive_graph * graph)
 	fwrite(buffer.data, buffer.size, 1, stderr);
 	jive_buffer_fini(&buffer);
 
-	jive_compilate cgbuffer;	
-	jive_compilate_init(&cgbuffer, graph->context);
-	jive_graph_generate_code(graph, &cgbuffer);
+	jive_compilate compilate;
+	jive_compilate_init(&compilate, graph->context);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(graph->context);
+	jive_graph_generate_code(graph, symbol_mapper, &compilate);
+	jive_label_symbol_mapper_destroy(symbol_mapper);
 	
-	void * result = jive_compilate_map_to_memory(&cgbuffer);
-	jive_compilate_fini(&cgbuffer);
+	void * result = jive_compilate_map_to_memory(&compilate);
+	jive_compilate_fini(&compilate);
 	
 	jive_graph_destroy(graph);
 	

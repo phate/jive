@@ -10,13 +10,14 @@
 #include <stdio.h>
 #include <locale.h>
 
+#include <jive/arch/codegen.h>
+#include <jive/arch/label-mapper.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/arch/codegen.h>
 
 static int test_main(void)
 {
@@ -56,11 +57,13 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 	
-	jive_compilate buffer;
-	jive_compilate_init(&buffer, ctx);
-	jive_graph_generate_code(graph, &buffer);
-	int (*function)(void) = (int(*)(void)) jive_compilate_map_to_memory(&buffer);
-	jive_compilate_fini(&buffer);
+	jive_compilate compilate;
+	jive_compilate_init(&compilate, ctx);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(ctx);
+	jive_graph_generate_code(graph, symbol_mapper, &compilate);
+	jive_label_symbol_mapper_destroy(symbol_mapper);
+	int (*function)(void) = (int(*)(void)) jive_compilate_map_to_memory(&compilate);
+	jive_compilate_fini(&compilate);
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

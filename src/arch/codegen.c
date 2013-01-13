@@ -22,8 +22,11 @@
 #include <jive/vsdg/variable.h>
 
 static void
-generate_code_for_instruction(jive_seq_point * seq_point,
-	const jive_instruction * instr, jive_section * section, uint32_t * flags)
+generate_code_for_instruction(
+	jive_seq_point * seq_point,
+	const jive_instruction * instr,
+	jive_label_symbol_mapper * symbol_mapper,
+	jive_section * section, uint32_t * flags)
 {
 	const jive_instruction_class * icls = instr->icls;
 	
@@ -84,7 +87,10 @@ jive_dataitems_node_generate_code(jive_seq_node * seq_node, jive_section * secti
 }
 
 static void
-jive_seq_node_generate_code(jive_seq_node * seq_node, jive_section * section)
+jive_seq_node_generate_code(
+	jive_seq_node * seq_node,
+	jive_label_symbol_mapper * symbol_mapper,
+	jive_section * section)
 {
 	if (jive_node_isinstance(seq_node->node, &JIVE_INSTRUCTION_NODE)) {
 		jive_instruction_node * instr_node = (jive_instruction_node *) seq_node->node;
@@ -110,14 +116,22 @@ jive_seq_node_generate_code(jive_seq_node * seq_node, jive_section * section)
 		instr.inputs = inregs;
 		instr.outputs = outregs;
 		instr.immediates = instr_node->attrs.immediates;
-		generate_code_for_instruction(&seq_node->base, &instr, section, &seq_node->flags);
+		generate_code_for_instruction(
+			&seq_node->base,
+			&instr,
+			symbol_mapper,
+			section,
+			&seq_node->flags);
 	} else if (jive_node_isinstance(seq_node->node, &JIVE_DATAITEMS_NODE)) {
 		jive_dataitems_node_generate_code(seq_node, section);
 	}
 }
 
 static void
-generate_code(jive_seq_graph * seq_graph, struct jive_compilate * compilate)
+generate_code(
+	jive_seq_graph * seq_graph,
+	jive_label_symbol_mapper * symbol_mapper,
+	jive_compilate * compilate)
 {
 	jive_seq_point * seq_point;
 	
@@ -131,11 +145,15 @@ generate_code(jive_seq_graph * seq_graph, struct jive_compilate * compilate)
 		jive_offset offset = section->contents.size;
 		if (jive_seq_point_isinstance(seq_point, &JIVE_SEQ_NODE)) {
 			jive_seq_node * seq_node = (jive_seq_node *) seq_point;
-			jive_seq_node_generate_code(seq_node, section);
+			jive_seq_node_generate_code(seq_node, symbol_mapper, section);
 		} else if (jive_seq_point_isinstance(seq_point, &JIVE_SEQ_INSTRUCTION)) {
 			jive_seq_instruction * seq_instr = (jive_seq_instruction *) seq_point;
-			generate_code_for_instruction(&seq_instr->base, &seq_instr->instr, section,
-				&seq_instr->flags);	
+			generate_code_for_instruction(
+				&seq_instr->base,
+				&seq_instr->instr,
+				symbol_mapper,
+				section,
+				&seq_instr->flags);
 		} 
 
 		size_t size = section->contents.size - offset;
@@ -148,7 +166,10 @@ generate_code(jive_seq_graph * seq_graph, struct jive_compilate * compilate)
 }
 
 void
-jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_compilate * buffer)
+jive_seq_graph_generate_code(
+	jive_seq_graph * seq_graph,
+	jive_label_symbol_mapper * symbol_mapper,
+	jive_compilate * buffer)
 {
 	/* redo until no labels change anymore; this is actually a bit too
 	pessimistic, as we only need to redo if
@@ -158,7 +179,7 @@ jive_seq_graph_generate_code(jive_seq_graph * seq_graph, jive_compilate * buffer
 	while (seq_graph->addrs_changed) {
 		jive_compilate_clear(buffer);
 		seq_graph->addrs_changed = false;
-		generate_code(seq_graph, buffer);
+		generate_code(seq_graph, symbol_mapper, buffer);
 	}
 }
 
@@ -272,12 +293,15 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 }
 
 void
-jive_graph_generate_code(jive_graph * graph, struct jive_compilate * buffer)
+jive_graph_generate_code(
+	jive_graph * graph,
+	jive_label_symbol_mapper * symbol_mapper,
+	jive_compilate * buffer)
 {
 	jive_seq_graph * seq_graph = jive_graph_sequentialize(graph);
 	jive_seq_graph_patch_jumps(seq_graph);
 	
-	jive_seq_graph_generate_code(seq_graph, buffer);
+	jive_seq_graph_generate_code(seq_graph, symbol_mapper, buffer);
 	
 	jive_seq_graph_destroy(seq_graph);
 }

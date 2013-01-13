@@ -115,3 +115,40 @@ jive_label_name_mapper_simple_create(jive_context * context)
 	
 	return &mapper->base;
 }
+
+typedef struct jive_label_symbol_mapper_simple jive_label_symbol_mapper_simple;
+
+struct jive_label_symbol_mapper_simple {
+	jive_label_symbol_mapper base;
+	jive_context * context;
+};
+
+static void
+jive_label_symbol_mapper_simple_destroy_(jive_label_symbol_mapper * self_)
+{
+	jive_label_symbol_mapper_simple * self = (jive_label_symbol_mapper_simple *) self_;
+	jive_context_free(self->context, self);
+}
+
+static const struct jive_linker_symbol *
+jive_label_symbol_mapper_simple_map_label_external_(jive_label_symbol_mapper * self_, const jive_label_external * label_)
+{
+	const jive_label_external_symbol * label = (const jive_label_external_symbol *) label_;
+	return &label->symbol;
+}
+
+static const jive_label_symbol_mapper_class JIVE_LABEL_SYMBOL_MAPPER_SIMPLE = {
+	.destroy = jive_label_symbol_mapper_simple_destroy_,
+	.map_label_external = jive_label_symbol_mapper_simple_map_label_external_
+};
+
+jive_label_symbol_mapper *
+jive_label_symbol_mapper_simple_create(jive_context * context)
+{
+	jive_label_symbol_mapper_simple * mapper;
+	mapper = jive_context_malloc(context, sizeof(*mapper));
+	mapper->base.class_ = &JIVE_LABEL_SYMBOL_MAPPER_SIMPLE;
+	mapper->context = context;
+	
+	return &mapper->base;
+}

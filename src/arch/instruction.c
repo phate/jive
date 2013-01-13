@@ -7,6 +7,7 @@
 #include <jive/arch/instruction-private.h>
 
 #include <jive/arch/compilate.h>
+#include <jive/arch/label-mapper.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>

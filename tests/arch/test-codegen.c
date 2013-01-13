@@ -8,13 +8,14 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/arch/instruction.h>
-#include <jive/types/bitstring/constant.h>
-#include <jive/arch/memlayout-simple.h>
-#include <jive/arch/dataobject.h>
 #include <jive/arch/codegen.h>
+#include <jive/arch/dataobject.h>
+#include <jive/arch/label-mapper.h>
+#include <jive/arch/memlayout-simple.h>
+#include <jive/types/bitstring/constant.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {
@@ -37,7 +38,9 @@ static int test_main(void)
 
 	jive_compilate compilate;
 	jive_compilate_init(&compilate, context);
-	jive_graph_generate_code(graph, &compilate);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(context);
+	jive_graph_generate_code(graph, symbol_mapper, &compilate);
+	jive_label_symbol_mapper_destroy(symbol_mapper);
 
 	jive_buffer * data_buffer = jive_compilate_get_buffer(&compilate,
 		jive_stdsectionid_data);
