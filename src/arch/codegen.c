@@ -21,6 +21,114 @@
 #include <jive/vsdg/theta.h>
 #include <jive/vsdg/variable.h>
 
+static const jive_seq_point *
+jive_label_get_seq_point(const jive_label * label, const jive_seq_point * current_point)
+{
+	if (label == 0) {
+		return 0;
+	} else if (label == &jive_label_current) {
+		return current_point;
+	} else if (jive_label_isinstance(label, &JIVE_LABEL_INTERNAL)) {
+		const jive_label_internal * l = (const jive_label_internal *) label;
+		return jive_label_internal_get_attach_node(l, current_point->seq_region->seq_graph);
+	}
+	return 0;
+}
+
+/* map the label to a suitable symref:
+- for an internal label, map to section+offset
+- for an external label, map to reference to linker symbol_mapper
+- otherwise we just have a statically known value */
+static void
+jive_imm_add_label_resolve(
+	jive_codegen_imm * imm,
+	const jive_seq_point * current,
+	jive_label_symbol_mapper * symbol_mapper,
+	const jive_label * label)
+{
+	if (!label)
+		return;
+	
+	const jive_seq_point * sp = jive_label_get_seq_point(label, current);
+	if (sp) {
+		jive_stdsectionid section = jive_seq_point_map_to_section(sp);
+		imm->info = jive_codegen_imm_info_static_unknown;
+		if (sp->address.offset != -1)
+			imm->value += sp->address.offset;
+		imm->symref = jive_symref_section(section);
+	} else if (jive_label_isinstance(label, &JIVE_LABEL_EXTERNAL)) {
+		const jive_label_external * label_ext = (const jive_label_external*) label;
+		imm->info = jive_codegen_imm_info_static_unknown;
+		imm->symref = jive_symref_linker_symbol(
+			jive_label_symbol_mapper_map_label_external(
+			symbol_mapper,
+			label_ext));
+	}
+}
+
+/* subtract address of a sequence point from a given immediate */
+static void
+jive_imm_sub_label_resolve(
+	jive_codegen_imm * imm,
+	const jive_seq_point * current,
+	const jive_label * label)
+{
+	if (!label)
+		return;
+	
+	const jive_seq_point * target = jive_label_get_seq_point(label, current);
+	if (!target)
+		return;
+	
+	jive_stdsectionid current_section = jive_seq_point_map_to_section(current);
+	jive_stdsectionid target_section = jive_seq_point_map_to_section(target);
+	
+	if (current_section == target_section) {
+		if (target->address.offset != -1 && current->address.offset != -1) {
+			imm->value += current->address.offset - target->address.offset;
+		}
+		imm->pc_relative = true;
+		imm->info = jive_codegen_imm_info_static_unknown;
+	}
+}
+
+static jive_codegen_imm
+jive_immediate_resolve(
+	const jive_immediate * self,
+	jive_label_symbol_mapper * symbol_mapper,
+	const jive_seq_point * for_point)
+{
+	/* catch the case of taking the difference of two internal labels in
+	 * the same section: this can be resolved at compile time */
+	
+	const jive_seq_point * add_point = jive_label_get_seq_point(self->add_label, for_point);
+	const jive_seq_point * sub_point = jive_label_get_seq_point(self->sub_label, for_point);
+	
+	if (add_point && sub_point && jive_seq_point_map_to_section(add_point) == jive_seq_point_map_to_section(sub_point)) {
+		jive_codegen_imm immval;
+		immval.value = add_point->address.offset - sub_point->address.offset + self->offset;
+		if (add_point->address.offset != -1 && sub_point->address.offset != -1)
+			immval.info = jive_codegen_imm_info_dynamic_known;
+		else
+			immval.info = jive_codegen_imm_info_dynamic_unknown;
+		immval.symref = jive_symref_none();
+		immval.pc_relative = false;
+		return immval;
+	}
+	
+	jive_codegen_imm imm;
+	imm.value = self->offset;
+	imm.info = jive_codegen_imm_info_dynamic_known;
+	imm.symref = jive_symref_none();
+	imm.pc_relative = false;
+	
+	jive_imm_add_label_resolve(&imm, for_point, symbol_mapper, self->add_label);
+	
+	jive_imm_sub_label_resolve(&imm, for_point, self->sub_label);
+	
+	return imm;
+}
+
 static void
 generate_code_for_instruction(
 	jive_seq_point * seq_point,
@@ -33,23 +141,23 @@ generate_code_for_instruction(
 	if ( (*flags & jive_instruction_encoding_flags_jump_conditional_invert) )
 		icls = icls->inverse_jump;
 	
-	jive_immediate immediates[icls->nimmediates];
+	jive_codegen_imm immvals[icls->nimmediates];
 	size_t n;
-	for (n = 0; n < icls->nimmediates; ++n)
-		jive_immediate_assign(&instr->immediates[n], &immediates[n]);
 	
-	if (icls->flags & jive_instruction_jump_relative) {
-		jive_immediate current;
-		jive_immediate_init(&current, 0, &jive_label_current, 0, 0);
-		immediates[0] = jive_immediate_sub(&immediates[0], &current);
+	for (n = 0; n < icls->nimmediates; ++n) {
+		jive_immediate tmp;
+		jive_immediate_assign(&instr->immediates[n], &tmp);
+		if (n == 0 && (icls->flags & jive_instruction_jump_relative)) {
+			jive_immediate current;
+			jive_immediate_init(&current, 0, &jive_label_current, 0, 0);
+			tmp = jive_immediate_sub(&tmp, &current);
+		}
+		immvals[n] = jive_immediate_resolve(&tmp, symbol_mapper, seq_point);
 	}
-	
-	for (n = 0; n < icls->nimmediates; ++n)
-		jive_immediate_simplify(&immediates[n], seq_point);
 	
 	jive_instruction_encoding_flags iflags;
 	iflags = (jive_instruction_encoding_flags) *flags;
-	icls->encode(icls, section, instr->inputs, instr->outputs, immediates, &iflags);
+	icls->encode(icls, section, instr->inputs, instr->outputs, immvals, &iflags);
 	*flags = (uint32_t) iflags;
 }
 

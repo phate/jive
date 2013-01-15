@@ -50,6 +50,44 @@ jive_buffer_putimm(jive_buffer * target, const jive_asmgen_imm * imm)
 	}
 }
 
+/* test whether the given immediate (plus offset) must be assumed to be
+outside the [-0x80..0x80) range, thus forcing to do an alternate instruction
+encoding; the encoding flags are also checked and possibly updated, to
+ensure that instruction encoding ultimately reaches a fixed point */
+static inline bool
+jive_i386_check_long_form(
+	const jive_codegen_imm * imm,
+	jive_instruction_encoding_flags * flags,
+	jive_immediate_int offset)
+{
+	bool need_long_form;
+	
+	switch (imm->info) {
+		case jive_codegen_imm_info_dynamic_known:
+		case jive_codegen_imm_info_static_known: {
+			int64_t dist = imm->value + offset;
+			need_long_form = (dist >= 0x80) || (dist < -0x80);
+			break;
+		}
+		case jive_codegen_imm_info_static_unknown: {
+			need_long_form = true;
+			break;
+		}
+		case jive_codegen_imm_info_dynamic_unknown: {
+			need_long_form = false;
+			break;
+		}
+	}
+	
+	if ( (*flags & jive_instruction_encoding_flags_option0) != 0) {
+		need_long_form = true;
+	} else if (need_long_form) {
+		*flags |= jive_instruction_encoding_flags_option0;
+	}
+	
+	return need_long_form;
+}
+
 static void
 jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp, const jive_register_name * reg)
 {
@@ -64,7 +102,7 @@ jive_i386_encode_simple(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	jive_section_putbyte(target, icls->code);
@@ -86,12 +124,12 @@ jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int reg = outputs[0]->code;
 	jive_section_putbyte(target, icls->code|reg);
-	uint32_t immediate = cpu_to_le32(immediates[0].offset);
+	uint32_t immediate = cpu_to_le32(immediates[0].value);
 	jive_section_put(target, &immediate, 4);
 }
 
@@ -144,10 +182,9 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	uint32_t displacement = immediates[0].offset;
 	const jive_register_name * r1 = inputs[0], * r2;
 	if (icls->code == 0x89)
 		r2 = inputs[1];
@@ -156,7 +193,7 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	
 	jive_section_putbyte(target, icls->code);
 	
-	jive_i386_r2i(r1, r2, displacement, target);
+	jive_i386_r2i(r1, r2, immediates[0].value, target);
 }
 
 static void
@@ -194,7 +231,7 @@ jive_i386_encode_regreg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	JIVE_DEBUG_ASSERT(inputs[0] == outputs[0]);
@@ -226,7 +263,7 @@ jive_i386_encode_cmp_regreg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[1]->code;
@@ -257,7 +294,7 @@ jive_i386_encode_imull(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
@@ -274,7 +311,7 @@ jive_i386_encode_mul_regreg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
@@ -305,7 +342,7 @@ jive_i386_encode_mull(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
@@ -335,7 +372,7 @@ jive_i386_encode_div_reg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r = inputs[2]->code;
@@ -349,13 +386,13 @@ jive_i386_encode_shift_regimm(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
 	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
-	uint8_t count = (uint8_t) immediates[0].offset;
+	uint8_t count = (uint8_t) immediates[0].value;
 	
 	if (count == 1) {
 		jive_section_putbyte(target, 0xd1);
@@ -385,7 +422,7 @@ jive_i386_encode_shift_regreg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
@@ -400,11 +437,11 @@ jive_i386_encode_regimm_readonly(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
-	int32_t immediate = immediates[0].offset;
+	int32_t immediate = immediates[0].value;
 	
 	bool long_form = (immediate>127) || (immediate<-128);
 	
@@ -430,7 +467,7 @@ jive_i386_encode_regimm(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	JIVE_DEBUG_ASSERT(inputs[0] == outputs[0]);
@@ -457,12 +494,12 @@ jive_i386_encode_mul_regimm(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
 	int r2 = outputs[0]->code;
-	int32_t immediate = immediates[0].offset;
+	int32_t immediate = immediates[0].value;
 	
 	bool long_form = (immediate>127) || (immediate<-128);
 	
@@ -502,7 +539,7 @@ jive_i386_encode_unaryreg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
@@ -531,7 +568,7 @@ jive_i386_encode_regmove(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = outputs[0]->code;
@@ -561,10 +598,10 @@ jive_i386_encode_call(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	uint32_t immediate = immediates[0].offset;
+	uint32_t immediate = immediates[0].value;
 	
 	jive_section_putbyte(target, icls->code);
 	immediate = cpu_to_le32(immediate);
@@ -589,7 +626,7 @@ jive_i386_encode_call_reg(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 	int r = inputs[0]->code;
@@ -629,28 +666,17 @@ jive_i386_encode_jump(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	/* test whether instruction needs to be changed to long form --
-	this is the case when we either need a relocation entry, or we
-	can statically determine that the jump is too far */
-	if (jive_immediate_has_symbols(&immediates[0])) {
-		*flags |= jive_instruction_encoding_flags_option0;
-	} else {
-		int64_t dist = immediates[0].offset - 2;
-		if (dist > 0x80 || dist <= -0x80)
-			*flags |= jive_instruction_encoding_flags_option0;
-	}
+	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, -2);
 	
-	if ((*flags & jive_instruction_encoding_flags_option0) == 0) {
-		/* short form */
-		uint8_t dist = immediates[0].offset - 2;
+	if (!need_long_form) {
+		uint8_t dist = immediates[0].value - 2;
 		jive_section_putbyte(target, 0xeb);
 		jive_section_putbyte(target, dist);
 	} else {
-		/* long form */
-		uint32_t dist = cpu_to_le32(immediates[0].offset - 5);
+		uint32_t dist = cpu_to_le32(immediates[0].value - 5);
 		jive_section_putbyte(target, 0xe9);
 		jive_section_put(target, &dist, sizeof(dist));
 		/* FIXME: possibly add relocation entry */
@@ -662,28 +688,17 @@ jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	/* test whether instruction needs to be changed to long form --
-	this is the case when we either need a relocation entry, or we
-	can statically determine that the jump is too far */
-	if (jive_immediate_has_symbols(&immediates[0])) {
-		*flags |= jive_instruction_encoding_flags_option0;
-	} else {
-		int64_t dist = immediates[0].offset - 2;
-		if (dist > 0x80 || dist <= -0x80)
-			*flags |= jive_instruction_encoding_flags_option0;
-	}
+	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, -2);
 	
-	if ((*flags & jive_instruction_encoding_flags_option0) == 0) {
-		/* short form */
-		uint8_t dist = immediates[0].offset - 2;
+	if (!need_long_form) {
+		uint8_t dist = immediates[0].value - 2;
 		jive_section_putbyte(target, 0x70 | icls->code);
 		jive_section_putbyte(target, dist);
 	} else {
-		/* long form */
-		uint32_t dist = cpu_to_le32(immediates[0].offset - 6);
+		uint32_t dist = cpu_to_le32(immediates[0].value - 6);
 		jive_section_putbyte(target, 0x0f);
 		jive_section_putbyte(target, 0x80 | icls->code);
 		jive_section_put(target, &dist, sizeof(dist));

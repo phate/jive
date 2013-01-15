@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include <jive/context.h>
+#include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
@@ -23,6 +24,7 @@ struct jive_label_symbol_mapper;
 struct jive_section;
 
 typedef struct jive_asmgen_imm jive_asmgen_imm;
+typedef struct jive_codegen_imm jive_codegen_imm;
 typedef struct jive_immediate jive_immediate;
 typedef struct jive_instruction_class jive_instruction_class;
 typedef struct jive_instruction jive_instruction;
@@ -149,8 +151,45 @@ jive_immediate_has_symbols(const jive_immediate * self)
 	return self->add_label != 0 || self->sub_label != 0 || self->modifier != 0;
 }
 
-void
-jive_immediate_simplify(jive_immediate * self, const jive_seq_point * for_point);
+/* immediates, as represented during code generation */
+
+/** \brief Information about compile-time knowledge of value */
+typedef enum jive_codegen_imm_info jive_codegen_imm_info;
+typedef struct jive_codegen_imm jive_codegen_imm;
+
+typedef enum jive_codegen_imm_info jive_codegen_imm_info;
+enum jive_codegen_imm_info {
+	/* the value is known at present time, and will be the same on
+	each translation attempt; instruction encoding should use given value
+	as is */
+	jive_codegen_imm_info_static_known = 0,
+	/* the value is known to be unknowable at translation time; instruction
+	encoding must ensure that an arbitrary value can be substituted at link
+	time */
+	jive_codegen_imm_info_static_unknown = 1,
+	/* the value is known at present time, but might change for future
+	translation attempts; instruction encoding should use given value as
+	is, but if the current value allows a "smaller" code representation
+	as the one used in a previous translation attempt, it should stick
+	with the larger representation (to ensure eventual convergence) */
+	jive_codegen_imm_info_dynamic_known = 2,
+	/* the value is not known at the present time, but a value will be
+	supplied in subsequent translation attempts; instruction encoding
+	should assume an arbitrary value at its own discretion and perform
+	a dummy encoding */
+	jive_codegen_imm_info_dynamic_unknown = 3
+};
+
+struct jive_codegen_imm {
+	/** \brief Knowledge about immediate value */
+	jive_codegen_imm_info info;
+	/** \brief Numeric portion of immediate value */
+	jive_immediate_int value;
+	/** \brief Referenced symbol */
+	jive_symref symref;
+	/** \brief Whether the symbol is to be interpreted pc-relative */
+	bool pc_relative;
+};
 
 /* immediates, as represented during asm generation */
 
@@ -225,7 +264,7 @@ struct jive_instruction_class {
 		struct jive_section * target,
 		const jive_register_name * inputs[],
 		const jive_register_name * outputs[],
-		const jive_immediate immediates[],
+		const jive_codegen_imm immediates[],
 		jive_instruction_encoding_flags * flags);
 	
 	/**

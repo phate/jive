@@ -20,37 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static const jive_seq_point *
-jive_label_get_seq_point(const jive_label * label, const jive_seq_point * current_point)
-{
-	if (label == 0) {
-		return 0;
-	} else if (label == &jive_label_current) {
-		return current_point;
-	} else if (jive_label_isinstance(label, &JIVE_LABEL_INTERNAL)) {
-		const jive_label_internal * l = (const jive_label_internal *) label;
-		return jive_label_internal_get_attach_node(l, current_point->seq_region->seq_graph);
-	}
-	return 0;
-}
-
-void
-jive_immediate_simplify(jive_immediate * self, const jive_seq_point * for_point)
-{
-	/* if both labels are in the same seq_region, they can be resolved by taking their
-	(statically known) difference */
-	const jive_seq_point * add_point = jive_label_get_seq_point(self->add_label, for_point);
-	const jive_seq_point * sub_point = jive_label_get_seq_point(self->sub_label, for_point);
-	
-	if (add_point && sub_point && add_point->seq_region->seq_graph == sub_point->seq_region->seq_graph) {
-		self->offset += add_point->address.offset - sub_point->address.offset;
-		self->add_label = 0;
-		self->sub_label = 0;
-		add_point = 0;
-		sub_point = 0;
-	}
-}
-
 const jive_node_class JIVE_INSTRUCTION_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "INSTRUCTION",
@@ -218,7 +187,7 @@ jive_encode_PSEUDO_NOP(const jive_instruction_class * icls,
 	jive_section * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
-	const jive_immediate immediates[],
+	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
 }
