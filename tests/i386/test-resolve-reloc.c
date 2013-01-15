@@ -24,6 +24,32 @@ write_msg(const char * s)
 	vrfy = s;
 }
 
+const jive_linker_symbol msg_symbol;
+const jive_linker_symbol write_msg_symbol;
+
+static bool sym_resolve(const jive_linker_symbol_resolver * self,
+	const jive_linker_symbol * symbol,
+	const void ** addr)
+{
+	if (symbol == &msg_symbol) {
+		*addr = msg;
+		return true;
+	} else if (symbol == &write_msg_symbol) {
+		*addr = write_msg;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+static const jive_linker_symbol_resolver_class sym_resolver_cls = {
+	.resolve = sym_resolve
+};
+
+static const jive_linker_symbol_resolver sym_resolver = {
+	.class_ = &sym_resolver_cls
+};
+
 static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
@@ -40,13 +66,10 @@ static int test_main(void)
 	jive_section_put(text, prologue, sizeof(prologue));
 	
 	/* movl $msg, %eax */
-	jive_label_external msg_label;
-	jive_label_external_init(&msg_label, ctx, "msg",
-		(jive_offset) (intptr_t) msg);
 	jive_section_putbyte(text, 0xb8);
 	int32_t displacement = 0;
 	jive_section_put_reloc(text, &displacement, sizeof(displacement),
-		JIVE_R_386_32, jive_relocation_target_label_external(&msg_label), 0);
+		JIVE_R_386_32, jive_symref_linker_symbol(&msg_symbol), 0);
 	
 	static const char xfer[] = {
 		0x89, 0x04, 0x24 /* movl %eax,(%esp) */
@@ -54,13 +77,11 @@ static int test_main(void)
 	jive_section_put(text, xfer, sizeof(xfer));
 	
 	/* call write_msg */
-	jive_label_external write_msg_label;
-	jive_label_external_init(&write_msg_label, ctx, "write_msg",
-		(jive_offset) (intptr_t) write_msg);
+	(void) write_msg;
 	jive_section_putbyte(text, 0xe8);
 	int32_t rel = -4;
 	jive_section_put_reloc(text, &rel, sizeof(rel),
-		JIVE_R_386_PC32, jive_relocation_target_label_external(&write_msg_label), 0);
+		JIVE_R_386_PC32, jive_symref_linker_symbol(&write_msg_symbol), 0);
 	
 	static const char epilogue[] = {
 		0x83, 0xc4, 0x08, /* addl $0x08, %esp */
@@ -69,12 +90,12 @@ static int test_main(void)
 	};
 	jive_section_put(text, epilogue, sizeof(epilogue));
 	
-	jive_compilate_map * map = jive_compilate_load(&compilate,
+	jive_compilate_map * map = jive_compilate_load(
+		&compilate,
+		&sym_resolver,
 		jive_i386_process_relocation);
 	
 	jive_compilate_fini(&compilate);
-	jive_label_external_fini(&write_msg_label);
-	jive_label_external_fini(&msg_label);
 	assert(jive_context_is_empty(ctx));
 	
 	void (*function)(void) =

@@ -9,15 +9,16 @@
 
 #include <stdint.h>
 
+#include <jive/arch/linker-symbol.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/section.h>
 
+struct jive_linker_symbol_resolver;
+
 typedef struct jive_compilate jive_compilate;
 typedef struct jive_compilate_map jive_compilate_map;
 typedef struct jive_relocation_entry jive_relocation_entry;
-typedef struct jive_relocation_target jive_relocation_target;
-typedef enum jive_relocation_target_type jive_relocation_target_type;
 typedef struct jive_relocation_type jive_relocation_type;
 typedef struct jive_section jive_section;
 
@@ -29,46 +30,6 @@ struct jive_relocation_type {
 };
 
 /**
-	\brief Relocation target type
-*/
-enum jive_relocation_target_type {
-	jive_relocation_target_type_section = 0,
-	jive_relocation_target_type_label_external = 1
-};
-
-/**
-	\brief Relocation target
-	
-	May be either a label that is external to the compilate, or a reference
-	to a section in the compilate itself.
-*/
-struct jive_relocation_target {
-	jive_relocation_target_type type;
-	union {
-		const jive_label_external * label_external;
-		jive_stdsectionid sectionid;
-	} value;
-};
-
-JIVE_EXPORTED_INLINE jive_relocation_target
-jive_relocation_target_section(jive_stdsectionid sectionid)
-{
-	jive_relocation_target target;
-	target.type = jive_relocation_target_type_section;
-	target.value.sectionid = sectionid;
-	return target;
-}
-
-JIVE_EXPORTED_INLINE jive_relocation_target
-jive_relocation_target_label_external(const jive_label_external * label)
-{
-	jive_relocation_target target;
-	target.type = jive_relocation_target_type_label_external;
-	target.value.label_external = label;
-	return target;
-}
-
-/**
 	\brief Relocation table entry
 */
 struct jive_relocation_entry {
@@ -77,7 +38,7 @@ struct jive_relocation_entry {
 	/** \brief Type of relocation to be applied */
 	jive_relocation_type type;
 	/** \brief Target address of relocation operation */
-	jive_relocation_target target;
+	jive_symref target;
 	/** \brief Additional offset to be applied to symbol */
 	jive_offset value;
 	struct {
@@ -130,7 +91,7 @@ jive_section_putbyte(jive_section * self, uint8_t byte)
 
 void
 jive_section_put_reloc(jive_section * self, const void * data, size_t size,
-	jive_relocation_type type, jive_relocation_target target,
+	jive_relocation_type type, jive_symref target,
 	jive_offset value);
 
 struct jive_compilate {
@@ -191,6 +152,7 @@ jive_compilate_get_buffer(jive_compilate * self, jive_stdsectionid section);
 */
 jive_compilate_map *
 jive_compilate_load(const jive_compilate * self,
+	const struct jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate);
 
 /**

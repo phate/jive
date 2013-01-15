@@ -34,7 +34,7 @@ static void jive_section_fini(jive_section * self)
 
 void
 jive_section_put_reloc(jive_section * self, const void * data, size_t size,
-	jive_relocation_type type, jive_relocation_target target,
+	jive_relocation_type type, jive_symref target,
 	jive_offset value)
 {
 	jive_offset offset = self->contents.size;
@@ -161,27 +161,24 @@ jive_compilate_map_destroy(jive_compilate_map * self)
 
 static bool
 resolve_relocation_target(
-	jive_relocation_target target,
+	jive_symref target,
 	const jive_compilate_map * map,
-	void ** resolved)
+	const jive_linker_symbol_resolver * sym_resolver,
+	const void ** resolved)
 {
 	switch (target.type) {
-		case jive_relocation_target_type_section: {
+		case jive_symref_type_section: {
 			size_t n;
 			for (n = 0; n < map->nsections; ++n) {
-				if (map->sections[n].section->id == target.value.sectionid) {
+				if (map->sections[n].section->id == target.ref.section) {
 					*resolved = map->sections[n].base;
 					return true;
 				}
 			}
 			return false;
 		}
-		case jive_relocation_target_type_label_external: {
-			/* FIXME: maybe label_external should have
-			just an offset, nothing else? */
-			*resolved = (void *) (intptr_t)
-				target.value.label_external->address.offset;
-			return true;
+		case jive_symref_type_linker_symbol: {
+			return jive_linker_symbol_resolver_resolve(sym_resolver, target.ref.linker_symbol, resolved);
 		}
 		default: {
 			return false;
@@ -195,14 +192,15 @@ section_process_relocations(
 	jive_offset base,
 	const jive_compilate_map * map,
 	const jive_section * section,
+	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
 {
 	const jive_relocation_entry * entry;
 	JIVE_LIST_ITERATE(section->relocations, entry, section_relocation_list) {
 		void * where = entry->offset + (char *) base_writable;
 		jive_offset offset = entry->offset + base;
-		void * target;
-		if (!resolve_relocation_target(entry->target, map, &target))
+		const void * target;
+		if (!resolve_relocation_target(entry->target, map, sym_resolver, &target))
 			return false;
 		if (!relocate(where, section->contents.size - entry->offset,
 			offset, entry->type, (intptr_t) target, entry->value)) {
@@ -215,6 +213,7 @@ section_process_relocations(
 
 jive_compilate_map *
 jive_compilate_load(const jive_compilate * self,
+	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
 {
 	size_t total_size = 0, section_count = 0;
@@ -280,7 +279,8 @@ jive_compilate_load(const jive_compilate * self,
 		void * base = offset + (char *) writable;
 		
 		success = success && section_process_relocations(base,
-			(jive_offset) (intptr_t) map->sections[n].base, map, section, relocate);
+			(jive_offset) (intptr_t) map->sections[n].base,
+			map, section, sym_resolver, relocate);
 		
 		switch (section->id) {
 			case jive_stdsectionid_code: {
@@ -332,7 +332,7 @@ jive_compilate_map_unmap(const jive_compilate_map * self)
 void *
 jive_compilate_map_to_memory(const jive_compilate * self)
 {
-	jive_compilate_map * map = jive_compilate_load(self, NULL);
+	jive_compilate_map * map = jive_compilate_load(self, NULL, NULL);
 	if (!map)
 		return 0;
 	

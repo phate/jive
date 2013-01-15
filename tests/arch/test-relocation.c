@@ -48,13 +48,14 @@ static int test_main()
 	
 	int64_t value = 0;
 	jive_section_put_reloc(data, &value, sizeof(value), ABS64,
-		jive_relocation_target_section(jive_stdsectionid_rodata),
+		jive_symref_section(jive_stdsectionid_rodata),
 		0);
 	jive_section_put_reloc(rodata, &value, sizeof(value), REL64,
-		jive_relocation_target_section(jive_stdsectionid_data),
+		jive_symref_section(jive_stdsectionid_data),
 		0);
 	
 	jive_compilate_map * map = jive_compilate_load(&compilate,
+		NULL,
 		process_relocation);
 	
 	jive_compilate_fini(&compilate);
