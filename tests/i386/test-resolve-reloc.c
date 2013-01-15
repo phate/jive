@@ -63,9 +63,9 @@ static int test_main(void)
 		JIVE_R_386_PC32, jive_relocation_target_label_external(&write_msg_label), 0);
 	
 	static const char epilogue[] = {
-		0x83, 0xc4, 0x08,
-		0x5d,
-		0xc3
+		0x83, 0xc4, 0x08, /* addl $0x08, %esp */
+		0x5d, /* pop %ebp */
+		0xc3 /* ret */
 	};
 	jive_section_put(text, epilogue, sizeof(epilogue));
 	
