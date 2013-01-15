@@ -8,6 +8,7 @@
 #include <jive/arch/instructionset.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/registerset.h>
+#include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/machine.h>
 #include <jive/serialization/instrcls-registry.h>
@@ -89,6 +90,76 @@ jive_i386_check_long_form(
 }
 
 static void
+jive_i386_encode_imm8(
+	const jive_codegen_imm * imm,
+	jive_immediate_int offset,
+	size_t coded_size_so_far,
+	jive_section * target)
+{
+	jive_relocation_type reltype =
+		imm->pc_relative ?
+		JIVE_R_386_PC8 :
+		JIVE_R_386_8;
+	
+	uint8_t value = imm->value + offset;
+	if (imm->pc_relative)
+		value -= coded_size_so_far;
+	
+	switch (imm->info) {
+		case jive_codegen_imm_info_dynamic_known:
+		case jive_codegen_imm_info_static_known: {
+			jive_section_putbyte(target, value);
+			break;
+		}
+		case jive_codegen_imm_info_dynamic_unknown: {
+			jive_section_putbyte(target, 0);
+			break;
+		}
+		case jive_codegen_imm_info_static_unknown: {
+			jive_section_put_reloc(target, &value, 1,
+				reltype, imm->symref, 0);
+			break;
+		}
+	}
+}
+
+static void
+jive_i386_encode_imm32(
+	const jive_codegen_imm * imm,
+	jive_immediate_int offset,
+	size_t coded_size_so_far,
+	jive_section * target)
+{
+	jive_relocation_type reltype =
+		imm->pc_relative ?
+		JIVE_R_386_PC32 :
+		JIVE_R_386_32;
+	
+	uint32_t value = imm->value + offset;
+	if (imm->pc_relative)
+		value -= coded_size_so_far;
+	value = cpu_to_le32(value);
+	
+	switch (imm->info) {
+		case jive_codegen_imm_info_dynamic_known:
+		case jive_codegen_imm_info_static_known: {
+			jive_section_put(target, &value, sizeof(value));
+			break;
+		}
+		case jive_codegen_imm_info_dynamic_unknown: {
+			value = 0;
+			jive_section_put(target, &value, sizeof(value));
+			break;
+		}
+		case jive_codegen_imm_info_static_unknown: {
+			jive_section_put_reloc(target, &value, sizeof(value),
+				reltype, imm->symref, 0);
+			break;
+		}
+	}
+}
+
+static void
 jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp, const jive_register_name * reg)
 {
 	jive_buffer_putimm(target, disp);
@@ -129,8 +200,7 @@ jive_i386_encode_int_load_imm(const jive_instruction_class * icls,
 {
 	int reg = outputs[0]->code;
 	jive_section_putbyte(target, icls->code|reg);
-	uint32_t immediate = cpu_to_le32(immediates[0].value);
-	jive_section_put(target, &immediate, 4);
+	jive_i386_encode_imm32(&immediates[0], 0, 1, target);
 }
 
 static void
@@ -149,30 +219,45 @@ jive_i386_asm_int_load_imm(const jive_instruction_class * icls,
 }
 
 static inline void
-jive_i386_r2i(const jive_register_name * r1, const jive_register_name * r2,
-	uint32_t displacement, jive_section * target)
+jive_i386_r2i(
+	const jive_register_name * r1,
+	const jive_register_name * r2,
+	const jive_codegen_imm * imm,
+	size_t coded_size_so_far,
+	jive_instruction_encoding_flags * flags,
+	jive_section * target)
 {
+	bool need_long_form = jive_i386_check_long_form(imm, flags, 0);
+	
 	int regcode = (r1->code) | (r2->code<<3);
+	
 	/* special treatment for load/store through ebp: always encode displacement parameter */
-	bool code_displacement = displacement || (r1->code==5);
-	bool large_displacement = (displacement>127) || (displacement<-128);
+	bool code_displacement =
+		(r1->code == 5) ||
+		need_long_form ||
+		imm->value != 0 ||
+		imm->info != jive_codegen_imm_info_static_known;
+	
 	if (code_displacement) {
-		if (large_displacement) regcode |= 0x80;
-		else regcode |= 0x40;
+		if (need_long_form)
+			regcode |= 0x80;
+		else
+			regcode |= 0x40;
 	}
 	
 	jive_section_putbyte(target, regcode);
+	coded_size_so_far ++;
 	if (r1->code == 4) {
 		/* esp special treatment */
 		jive_section_putbyte(target, 0x24);
+		coded_size_so_far ++;
 	}
 	
 	if (code_displacement) {
-		if (large_displacement) {
-			displacement = cpu_to_le32(displacement);
-			jive_section_put(target, &displacement, 4);
+		if (need_long_form) {
+			jive_i386_encode_imm32(imm, 0, coded_size_so_far, target);
 		} else {
-			jive_section_putbyte(target, displacement);
+			jive_i386_encode_imm8(imm, 0, coded_size_so_far, target);
 		}
 	}
 }
@@ -193,7 +278,7 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 	
 	jive_section_putbyte(target, icls->code);
 	
-	jive_i386_r2i(r1, r2, immediates[0].value, target);
+	jive_i386_r2i(r1, r2, &immediates[0], 1, flags, target);
 }
 
 static void
@@ -392,15 +477,18 @@ jive_i386_encode_shift_regimm(const jive_instruction_class * icls,
 	int r1 = inputs[0]->code;
 	JIVE_DEBUG_ASSERT(r1 == outputs[0]->code);
 	
-	uint8_t count = (uint8_t) immediates[0].value;
+	bool code_constant_one =
+		immediates[0].info == jive_codegen_imm_info_static_known &&
+		immediates[0].value == 1 &&
+		immediates[0].symref.type == jive_symref_type_none;
 	
-	if (count == 1) {
+	if (code_constant_one) {
 		jive_section_putbyte(target, 0xd1);
 		jive_section_putbyte(target, icls->code | r1);
 	} else {
 		jive_section_putbyte(target, 0xc1);
 		jive_section_putbyte(target, icls->code | r1);
-		jive_section_putbyte(target, count);
+		jive_i386_encode_imm8(&immediates[0], 0, 2, target);
 	}
 }
 
@@ -441,25 +529,27 @@ jive_i386_encode_regimm_readonly(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	int r1 = inputs[0]->code;
-	int32_t immediate = immediates[0].value;
 	
-	bool long_form = (immediate>127) || (immediate<-128);
+	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, 0);
+	size_t coded_size_so_far = 0;
 	
-	char prefix = long_form ? 0x81 : 0x83;
+	char prefix = need_long_form ? 0x81 : 0x83;
 	
-	if (r1 == 0 && long_form) {
+	if (r1 == 0 && need_long_form) {
 		char opcode = icls->code >> 8;
 		jive_section_putbyte(target, opcode);
+		coded_size_so_far ++;
 	} else {
 		char opcode = icls->code & 255;
 		jive_section_putbyte(target, prefix);
 		jive_section_putbyte(target, opcode | r1);
+		coded_size_so_far += 2;
 	}
 	
-	if (long_form) {
-		immediate = cpu_to_le32(immediate);
-		jive_section_put(target, &immediate, 4);
-	} else jive_section_putbyte(target, immediate);
+	if (need_long_form)
+		jive_i386_encode_imm32(&immediates[0], 0, coded_size_so_far, target);
+	else
+		jive_i386_encode_imm8(&immediates[0], 0, coded_size_so_far, target);
 }
 
 static void
@@ -499,21 +589,19 @@ jive_i386_encode_mul_regimm(const jive_instruction_class * icls,
 {
 	int r1 = inputs[0]->code;
 	int r2 = outputs[0]->code;
-	int32_t immediate = immediates[0].value;
 	
-	bool long_form = (immediate>127) || (immediate<-128);
+	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, 0);
 	
 	char regcode = 0xc0 | (r2 << 3) | (r1 << 0);
 	
-	if (long_form) {
+	if (need_long_form) {
 		jive_section_putbyte(target, 0x69);
 		jive_section_putbyte(target, regcode);
-		immediate = cpu_to_le32(immediate);
-		jive_section_put(target, &immediate, 4);
+		jive_i386_encode_imm32(&immediates[0], 0, 2, target);
 	} else {
 		jive_section_putbyte(target, 0x6b);
 		jive_section_putbyte(target, regcode);
-		jive_section_putbyte(target, immediate);
+		jive_i386_encode_imm8(&immediates[0], 0, 2, target);
 	}
 }
 
@@ -601,11 +689,8 @@ jive_i386_encode_call(const jive_instruction_class * icls,
 	const jive_codegen_imm immediates[],
 	jive_instruction_encoding_flags * flags)
 {
-	uint32_t immediate = immediates[0].value;
-	
 	jive_section_putbyte(target, icls->code);
-	immediate = cpu_to_le32(immediate);
-	jive_section_put(target, &immediate, 4);
+	jive_i386_encode_imm32(&immediates[0], 0, 1, target);
 }
 
 static void
@@ -672,14 +757,11 @@ jive_i386_encode_jump(const jive_instruction_class * icls,
 	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, -2);
 	
 	if (!need_long_form) {
-		uint8_t dist = immediates[0].value - 2;
 		jive_section_putbyte(target, 0xeb);
-		jive_section_putbyte(target, dist);
+		jive_i386_encode_imm8(&immediates[0], -2, 1, target);
 	} else {
-		uint32_t dist = cpu_to_le32(immediates[0].value - 5);
 		jive_section_putbyte(target, 0xe9);
-		jive_section_put(target, &dist, sizeof(dist));
-		/* FIXME: possibly add relocation entry */
+		jive_i386_encode_imm32(&immediates[0], -5, 1, target);
 	}
 }
 
@@ -694,15 +776,12 @@ jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
 	bool need_long_form = jive_i386_check_long_form(&immediates[0], flags, -2);
 	
 	if (!need_long_form) {
-		uint8_t dist = immediates[0].value - 2;
 		jive_section_putbyte(target, 0x70 | icls->code);
-		jive_section_putbyte(target, dist);
+		jive_i386_encode_imm8(&immediates[0], -2, 1, target);
 	} else {
-		uint32_t dist = cpu_to_le32(immediates[0].value - 6);
 		jive_section_putbyte(target, 0x0f);
 		jive_section_putbyte(target, 0x80 | icls->code);
-		jive_section_put(target, &dist, sizeof(dist));
-		/* FIXME: possibly add relocation entry */
+		jive_i386_encode_imm32(&immediates[0], -6, 2, target);
 	}
 }
 
