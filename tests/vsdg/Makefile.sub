@@ -7,6 +7,7 @@ TESTS+=\
 	vsdg/test-mutable-traverser \
 	vsdg/test-negotiator \
 	vsdg/test-nested-floating-theta \
+	vsdg/test-phi \
 	vsdg/test-prune-replace \
 	vsdg/test-rescls-count \
 	vsdg/test-ssavar-merge \

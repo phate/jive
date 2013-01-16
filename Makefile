@@ -26,6 +26,7 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/objdef.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/equivalence.c \
+	src/vsdg/phi.c \
 
 # visualization
 LIBJIVE_SRC += \
