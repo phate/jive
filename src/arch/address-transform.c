@@ -382,8 +382,11 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits, nbits);
 	const jive_value_type * datatype = node->attrs.datatype;
-	if(input1_is_address)
+	jive_output * value = node_->inputs[1]->origin;
+	if(input1_is_address){
 		datatype = jive_value_type_cast(bits);
+		value = jive_address_to_bitstring_create(node_->inputs[1]->origin, nbits);
+	}
 
 	size_t i;
 	size_t nstates = node_->ninputs - 2;
@@ -393,7 +396,7 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 	}
 
 	jive_node * store = jive_store_by_bitstring_node_create(node_->region, address, nbits,
-		datatype, node_->inputs[1]->origin, nstates, states);
+		datatype, value, nstates, states);
 
 	for (i = 0; i < nstates; i++){
 		jive_output_replace(node_->outputs[i], store->outputs[i]);
