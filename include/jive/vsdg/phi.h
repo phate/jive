@@ -1,5 +1,6 @@
 /*
  * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -38,52 +39,51 @@ extern const jive_node_class JIVE_PHI_NODE;
 extern const jive_node_class JIVE_PHI_ENTER_NODE;
 extern const jive_node_class JIVE_PHI_LEAVE_NODE;
 
-typedef struct jive_phi_node jive_phi_node;
-typedef struct jive_phi_node_attrs jive_phi_node_attrs;
+typedef struct jive_phi jive_phi;
+typedef struct jive_phi_fixvar jive_phi_fixvar;
 
-struct jive_phi_node_attrs {
-	jive_node_attrs base;
-	jive_gate ** gates;
+struct jive_phi_build_state;
+
+/**
+	\brief Represent a phi construct under construction
+*/
+struct jive_phi {
+	struct jive_region * region;
+	struct jive_phi_build_state * internal_state;
 };
 
-struct jive_phi_node {
-	jive_node base;
-	jive_phi_node_attrs attrs;
+/**
+	\brief Represent information about a phi fixpoint value
+*/
+struct jive_phi_fixvar {
+	struct jive_output * value;
+	struct jive_gate * gate;
 };
 
-//struct jive_region *
-//jive_phi_region_create(struct jive_region * region);
+/**
+	\brief Begin constructing a phi region
+*/
+jive_phi
+jive_phi_begin(struct jive_graph * graph);
 
-struct jive_region *
-jive_phi_region_create(struct jive_region * parent,
-	size_t narguments, const struct jive_type * argument_types[], struct jive_output * arguments[]);
+/**
+	\brief Add a fixpoint variable of given type
+*/
+jive_phi_fixvar
+jive_phi_fixvar_enter(jive_phi self, const struct jive_type * type);
 
-struct jive_output *
-jive_phi_region_finalize(struct jive_region * phi_region,
-	size_t nreturns, struct jive_output * returns[]);
-
+/**
+	\brief Set fixpoint value of variable
+*/
 void
-jive_phi_create(struct jive_region * phi_region, struct jive_output * results[]);
+jive_phi_fixvar_leave(jive_phi self, jive_gate * var,
+	struct jive_output * post_value);
 
-JIVE_EXPORTED_INLINE jive_phi_node *
-jive_phi_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
-		return (jive_phi_node *) node;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_phi_node_get_enter_node(const jive_phi_node * self)
-{
-	return self->base.inputs[0]->origin->node->region->top;
-}
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_phi_node_get_leave_node(const jive_phi_node * self)
-{
-	return self->base.inputs[0]->origin->node;
-}
+/**
+	\brief End constructing a phi region
+*/
+struct jive_node *
+jive_phi_end(jive_phi self,
+	     size_t npost_values, jive_phi_fixvar * fix_values);
 
 #endif
