@@ -34,6 +34,7 @@ static jive_node *
 jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
+	JIVE_DEBUG_ASSERT(noperands > 0);
 	return jive_apply_node_create(region, operands[0], noperands - 1, &operands[1]);
 }
 
