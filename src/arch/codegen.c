@@ -218,12 +218,20 @@ jive_seq_node_generate_code(
 				seq_node->node->outputs[n]->ssavar->variable);
 			outregs[n] = (const jive_register_name *) resname;
 		}
-
+		
+		jive_immediate immediates[icls->nimmediates];
+		for (n = 0; n < icls->nimmediates; ++n) {
+			jive_input * imm_input = seq_node->node->inputs[n + icls->ninputs];
+			jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->origin->node);
+			JIVE_DEBUG_ASSERT(immnode);
+			immediates[n] = immnode->attrs.value;
+		}
+		
 		jive_instruction instr;
 		instr.icls = icls;
 		instr.inputs = inregs;
 		instr.outputs = outregs;
-		instr.immediates = instr_node->attrs.immediates;
+		instr.immediates = immediates;
 		generate_code_for_instruction(
 			&seq_node->base,
 			&instr,
@@ -345,7 +353,16 @@ jive_seq_graph_patch_jump_targets(jive_seq_graph * seq_graph, jive_seq_node * se
 		}
 	}
 	
-	inode->attrs.immediates[0].add_label = primary_tgt;
+	jive_input * imm_input = inode->base.inputs[inode->attrs.icls->ninputs];
+	jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->origin->node);
+	JIVE_DEBUG_ASSERT(immnode);
+	jive_immediate imm = immnode->attrs.value;
+	imm.add_label = primary_tgt;
+	jive_ssavar * ssavar = imm_input->ssavar;
+	if (ssavar)
+		jive_ssavar_unassign_input(ssavar, imm_input);
+	jive_output * new_imm = jive_immediate_create(inode->base.region->graph, &imm);
+	jive_input_divert_origin(imm_input, new_imm);
 	
 	if (secondary_tgt) {
 		const jive_instructionset * isa = jive_region_get_instructionset(inode->base.region);
@@ -540,20 +557,28 @@ jive_instruction_node_generate_assembler(
 	
 	const jive_register_name * inregs[icls->ninputs];
 	const jive_register_name * outregs[icls->noutputs];
+	jive_immediate immediates[icls->nimmediates];
 	size_t n;
-	for(n=0; n<icls->ninputs; n++) {
+	for(n = 0; n < icls->ninputs; n++) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(node->inputs[n]->ssavar->variable);
 		inregs[n] = (const jive_register_name *)resname;
 	}
-	for(n=0; n<icls->noutputs; n++) {
+	for(n = 0; n < icls->noutputs; n++) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(node->outputs[n]->ssavar->variable);
 		outregs[n] = (const jive_register_name *)resname;
 	}
+	for (n = 0; n < icls->nimmediates; ++n) {
+		jive_input * imm_input = seq_node->node->inputs[n + icls->ninputs];
+		jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->origin->node);
+		JIVE_DEBUG_ASSERT(immnode);
+		immediates[n] = immnode->attrs.value;
+	}
+	
 	jive_instruction instr;
 	instr.icls = icls;
 	instr.inputs = inregs;
 	instr.outputs = outregs;
-	instr.immediates = instr_node->attrs.immediates;
+	instr.immediates = immediates;
 	
 	jive_instruction_generate_assembler(&instr, name_mapper, buffer, &seq_node->flags);
 }

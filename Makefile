@@ -127,6 +127,8 @@ LIBJIVE_SRC += \
 	src/arch/compilate.c \
 	src/arch/codegen.c \
 	src/arch/label-mapper.c \
+	src/arch/immediate-node.c \
+	src/arch/immediate-type.c \
 	
 # shaper
 LIBJIVE_SRC += \

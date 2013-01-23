@@ -11,6 +11,7 @@
 #include <jive/serialization/typecls-registry.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/arch/address.h>
+#include <jive/arch/immediate-node.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/registers.h>
@@ -174,14 +175,6 @@ jive_instruction_serialize(
 		jive_serialization_instrcls_lookup_by_cls(reg, attrs->icls);
 	
 	jive_token_ostream_identifier(os, sercls->tag);
-	
-	size_t n;
-	for (n = 0; n < attrs->icls->nimmediates; ++n) {
-		if (n != 0)
-			jive_token_ostream_char(os, ',');
-		const jive_immediate * imm = &attrs->immediates[n];
-		jive_serialize_immediate(driver, imm, os);
-	}
 }
 
 static bool
@@ -207,37 +200,12 @@ jive_instruction_deserialize(
 	}
 	jive_token_istream_advance(is);
 	
-	jive_immediate * immediates;
-	immediates = jive_context_malloc(driver->context,
-		icls->nimmediates * sizeof(immediates[0]));
+	jive_instruction_node_attrs attrs;
+	attrs.icls = icls;
+	*node = JIVE_INSTRUCTION_NODE.create(region, &attrs.base,
+		noperands, operands);
 	
-	bool parsed_immediates = true;
-	size_t index;
-	for (index = 0; index < icls->nimmediates; ++ index) {
-		if (index != 0) {
-			if (!jive_deserialize_char_token(driver, is, ',')) {
-				parsed_immediates = false;
-				break;
-			}
-		}
-		if (!jive_deserialize_immediate(driver, is, &immediates[index])) {
-			parsed_immediates = false;
-			break;
-		}
-	}
-	
-	if (parsed_immediates) {
-		jive_instruction_node_attrs attrs;
-		attrs.icls = icls;
-		attrs.immediates = immediates;
-		
-		*node = JIVE_INSTRUCTION_NODE.create(region, &attrs.base,
-			noperands, operands);
-	}
-	
-	jive_context_free(driver->context, immediates);
-	
-	return parsed_immediates;
+	return true;
 }
 
 static void
@@ -452,6 +420,33 @@ jive_subroutine_deserialize(
 	return *node != NULL;
 }
 
+static void
+jive_immediate_serialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	const jive_node_attrs * attrs_, jive_token_ostream * os)
+{
+	const jive_immediate_node_attrs * attrs = (const jive_immediate_node_attrs *) attrs_;
+	jive_serialize_immediate(driver, &attrs->value, os);
+}
+
+static bool
+jive_immediate_deserialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	jive_region * region, size_t noperands,
+	jive_output * const operands[], jive_token_istream * is,
+	jive_node ** node)
+{
+	jive_immediate_node_attrs attrs;
+	
+	if (!jive_deserialize_immediate(driver, is, &attrs.value))
+		return false;
+	
+	*node = JIVE_IMMEDIATE_NODE.create(region, &attrs.base, noperands, operands);
+	
+	return true;
+}
 
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_register_class, "register");
 JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_RESOURCE, "stackslot",
@@ -486,3 +481,7 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_SUBROUTINE_NODE, "subroutine",
 	jive_subroutine_serialize,
 	jive_subroutine_deserialize);
+JIVE_SERIALIZATION_NODECLS_REGISTER(
+	JIVE_IMMEDIATE_NODE, "immediate",
+	jive_immediate_serialize,
+	jive_immediate_deserialize);

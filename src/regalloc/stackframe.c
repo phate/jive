@@ -5,6 +5,7 @@
 
 #include <jive/regalloc/stackframe.h>
 
+#include <jive/arch/immediate-node.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/memory.h>
 #include <jive/arch/stackslot.h>
@@ -112,6 +113,8 @@ get_node_frameslot(jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
+		if (!input->ssavar)
+			continue;
 		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
 		if (jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_FRAMESLOT_RESOURCE))
 			return (const jive_stackslot *) name;
@@ -131,6 +134,8 @@ get_node_callslot(jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
+		if (!input->ssavar)
+			continue;
 		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
 		if (jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_CALLSLOT_RESOURCE))
 			return (const jive_callslot *) name;
@@ -197,9 +202,14 @@ reloc_stack_access(jive_node * node)
 	if (!inode)
 		return;
 	
+	const jive_instruction_class * icls = inode->attrs.icls;
 	size_t n;
-	for (n = 0; n < inode->attrs.icls->nimmediates; n++) {
-		jive_immediate imm = inode->attrs.immediates[n];
+	for (n = 0; n < icls->nimmediates; n++) {
+		jive_input * imm_input = node->inputs[n + icls->ninputs];
+		jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->origin->node);
+		JIVE_DEBUG_ASSERT(immnode);
+		
+		jive_immediate imm = immnode->attrs.value;
 		if (imm.add_label == &jive_label_fpoffset) {
 			const jive_stackslot * slot = get_node_frameslot(node);
 			const jive_subroutine * subroutine = lookup_subroutine_by_node(node);
@@ -224,7 +234,10 @@ reloc_stack_access(jive_node * node)
 			imm = jive_immediate_add_offset(&imm, -slot->offset + subroutine->frame.stack_pointer_offset);
 			imm.sub_label = 0;
 		}
-		inode->attrs.immediates[n] = imm;
+		if (!jive_immediate_equals(&imm, &immnode->attrs.value)) {
+			jive_output * new_immval = jive_immediate_create(node->region->graph, &imm);
+			jive_input_divert_origin(imm_input, new_immval);
+		}
 	}
 }
 
