@@ -32,9 +32,6 @@ jive_lambda_enter_node_create(jive_region * region)
 	return node;
 }
 
-jive_node *
-jive_lambda_leave_node_create(jive_output * output);
-
 static jive_node *
 jive_lambda_enter_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
