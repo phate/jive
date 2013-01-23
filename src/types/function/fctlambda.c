@@ -56,6 +56,8 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 jive_node *
 jive_lambda_leave_node_create(jive_output * output)
 {
+	JIVE_DEBUG_ASSERT(output->node->region->bottom == NULL);
+	
 	jive_node * node = jive_context_malloc(output->node->graph->context, sizeof(*node));
 	
 	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
@@ -73,6 +75,7 @@ static jive_node *
 jive_lambda_leave_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[])
 {
+	JIVE_DEBUG_ASSERT(noperands > 0);
 	return jive_lambda_leave_node_create(operands[0]);
 }
 
@@ -179,6 +182,7 @@ static jive_node *
 jive_lambda_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
+	JIVE_DEBUG_ASSERT(noperands > 0);
 	return jive_lambda_node_create(operands[0]->node->region);
 }
 
