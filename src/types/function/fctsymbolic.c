@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/types/function/symbolic.h>
+#include <jive/types/function/fctsymbolic.h>
 
 #include <string.h>
 

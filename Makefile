@@ -88,7 +88,7 @@ LIBJIVE_SRC += \
 	src/types/function/fcttype.c \
 	src/types/function/fctlambda.c \
 	src/types/function/fctapply.c \
-	src/types/function/symbolic.c \
+	src/types/function/fctsymbolic.c \
 
 # arch definitions
 LIBJIVE_SRC += \

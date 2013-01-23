@@ -4,8 +4,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_TYPES_FUNCTION_SYMBOLIC_H
-#define JIVE_TYPES_FUNCTION_SYMBOLIC_H
+#ifndef JIVE_TYPES_FUNCTION_FCTSYMBOLIC_H
+#define JIVE_TYPES_FUNCTION_FCTSYMBOLIC_H
 
 #include <jive/vsdg/node.h>
 #include <jive/types/function/fcttype.h>

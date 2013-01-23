@@ -12,7 +12,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
-#include <jive/types/function/symbolic.h>
+#include <jive/types/function/fctsymbolic.h>
 #include <jive/view.h>
 
 static int test_main(void)
