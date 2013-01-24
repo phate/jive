@@ -194,6 +194,7 @@ doc:
 clean: depclean
 	find . -name *.o -o -name *.lo -o -name *.la -o -name *.so -o -name *.a | xargs rm -rf
 	rm -rf $(TESTPROGS)
+	rm -rf a.out
 
 include tests/Makefile.sub
 
