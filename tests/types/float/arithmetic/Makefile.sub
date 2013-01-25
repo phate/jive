@@ -1,2 +1,3 @@
 TESTS+=\
 	types/float/arithmetic/test-fltsum \
+	types/float/arithmetic/test-fltdifference \
