@@ -1,0 +1,2 @@
+TESTS+=\
+	types/float/arithmetic/test-fltsum \

@@ -1,2 +1,4 @@
 TESTS+=\
 	types/float/test-fltconstant \
+
+include tests/types/float/arithmetic/Makefile.sub
