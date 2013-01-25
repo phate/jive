@@ -1,0 +1,3 @@
+TESTS+=\
+	types/float/comparison/test-fltless \
+
