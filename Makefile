@@ -82,6 +82,7 @@ LIBJIVE_SRC += \
 	src/types/float/arithmetic/fltquotient.c \
 	src/types/float/arithmetic/fltnegate.c \
 	src/types/float/comparison/fltless.c \
+	src/types/float/comparison/fltlesseq.c \
 
 # records
 LIBJIVE_SRC += \
