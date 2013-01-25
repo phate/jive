@@ -2,4 +2,5 @@ TESTS+=\
 	types/float/comparison/test-fltless \
 	types/float/comparison/test-fltlesseq \
 	types/float/comparison/test-fltequal \
+	types/float/comparison/test-fltnotequal \
 
