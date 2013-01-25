@@ -128,15 +128,15 @@ jive_gamma_create(
 	jive_region * true_region = jive_region_create_subregion(region);
 	jive_node * false_alt = jive_gamma_tail_node_create(false_region);
 	jive_node * true_alt = jive_gamma_tail_node_create(true_region);
-	jive_node * gamma = jive_gamma_node_create(region, predicate, false_alt->outputs[0], true_alt->outputs[0]);
+	jive_node * gamma = jive_gamma_node_create(region, predicate, true_alt->outputs[0], false_alt->outputs[0]);
 	
 	size_t n;
 	for (n = 0; n < nvalues; n++) {
 		char name[80];
 		snprintf(name, sizeof(name), "gamma_%p_%zd", gamma, n);
 		jive_gate * gate = jive_type_create_gate(types[n], region->graph, name);
-		jive_node_gate_input(false_alt, gate, true_values[n]);
-		jive_node_gate_input(true_alt, gate, false_values[n]);
+		jive_node_gate_input(true_alt, gate, true_values[n]);
+		jive_node_gate_input(false_alt, gate, false_values[n]);
 		jive_node_gate_output(gamma, gate);
 	}
 	return gamma;
