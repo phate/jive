@@ -71,6 +71,10 @@ LIBJIVE_SRC += \
 	src/types/bitstring/symbolic-expression.c \
 	src/types/bitstring/bitoperation-classes.c \
 
+# floats
+LIBJIVE_SRC += \
+	src/types/float/flttype.c \
+
 # records
 LIBJIVE_SRC += \
 	src/types/record/rcdtype.c \
