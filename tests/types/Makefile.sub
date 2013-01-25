@@ -1,1 +1,2 @@
 include tests/types/bitstring/Makefile.sub
+include tests/types/float/Makefile.sub

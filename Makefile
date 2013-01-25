@@ -74,6 +74,7 @@ LIBJIVE_SRC += \
 # floats
 LIBJIVE_SRC += \
 	src/types/float/flttype.c \
+	src/types/float/fltconstant.c	\
 	src/types/float/fltoperation-classes.c \
 
 # records
