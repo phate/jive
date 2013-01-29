@@ -19,6 +19,7 @@
 #include <jive/backend/i386/instrmatch.h>
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
+#include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/subroutine.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
@@ -52,7 +53,10 @@ compile_graph(jive_graph * graph)
 	jive_graph_generate_code(graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
 	
-	void * result = jive_compilate_map_to_memory(&compilate);
+	jive_compilate_map * map = jive_compilate_load(&compilate,
+		NULL, jive_i386_process_relocation);
+	void * result = jive_compilate_map_get_stdsection(map, jive_stdsectionid_code);
+	jive_compilate_map_destroy(map);
 	jive_compilate_fini(&compilate);
 	
 	jive_graph_destroy(graph);

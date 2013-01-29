@@ -167,6 +167,26 @@ void
 jive_compilate_map_destroy(jive_compilate_map * self);
 
 /**
+	\brief Lookup a section base in a mapped compilate
+	\param self The compilate map describing the loaded compilate
+	\param id The standard section id of the requested section
+	
+	Lookup the address where the start of a specific section has been
+	mapped into the process' address space. Returns NULL if no such
+	section has been mapped.
+*/
+JIVE_EXPORTED_INLINE void *
+jive_compilate_map_get_stdsection(const jive_compilate_map * self, jive_stdsectionid id)
+{
+	size_t n;
+	for (n = 0; n < self->nsections; ++n) {
+		if (self->sections[n].section->id == id)
+			return self->sections[n].base;
+	}
+	return NULL;
+}
+
+/**
 	\brief Unmap a mapping of a compilate
 	\param self Mapping to be removed
 	
@@ -176,8 +196,5 @@ jive_compilate_map_destroy(jive_compilate_map * self);
 */
 void
 jive_compilate_map_unmap(const jive_compilate_map * self);
-
-void *
-jive_compilate_map_to_memory(const jive_compilate * self);
 
 #endif

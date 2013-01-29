@@ -14,6 +14,7 @@
 #include <jive/arch/label-mapper.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
+#include <jive/backend/i386/relocation.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/view.h>
@@ -62,7 +63,11 @@ static int test_main(void)
 	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(ctx);
 	jive_graph_generate_code(graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
-	int (*function)(void) = (int(*)(void)) jive_compilate_map_to_memory(&compilate);
+	jive_compilate_map * map = jive_compilate_load(&compilate,
+		NULL, jive_i386_process_relocation);
+	void * result = jive_compilate_map_get_stdsection(map, jive_stdsectionid_code);
+	int (*function)(void) = (int(*)(void)) result;
+	jive_compilate_map_destroy(map);
 	jive_compilate_fini(&compilate);
 	
 	jive_shaped_graph_destroy(shaped_graph);

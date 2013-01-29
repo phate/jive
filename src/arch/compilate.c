@@ -336,22 +336,3 @@ jive_compilate_map_unmap(const jive_compilate_map * self)
 		munmap(ptr, self->sections[n].size);
 	}
 }
-
-void *
-jive_compilate_map_to_memory(const jive_compilate * self)
-{
-	jive_compilate_map * map = jive_compilate_load(self, NULL, NULL);
-	if (!map)
-		return 0;
-	
-	void * executable = 0;
-	
-	size_t n;
-	for (n = 0; n < map->nsections; ++n) {
-		if (map->sections[n].section->id == jive_stdsectionid_code)
-			executable = map->sections[n].base;
-	}
-	jive_compilate_map_destroy(map);
-	
-	return executable;
-}
