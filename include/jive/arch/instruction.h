@@ -14,10 +14,10 @@
 #include <jive/arch/instruction-class.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
+#include <jive/arch/sequence.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/sequence.h>
 
 typedef struct jive_instruction jive_instruction;
 typedef struct jive_instruction_node jive_instruction_node;

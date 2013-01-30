@@ -15,7 +15,6 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/sequence.h>
 #include <jive/vsdg/valuetype.h>
 
 typedef struct jive_immediate jive_immediate;

@@ -10,6 +10,7 @@
 #include <jive/arch/immediate-type.h>
 #include <jive/arch/immediate-node.h>
 #include <jive/arch/label-mapper.h>
+#include <jive/arch/sequence.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
@@ -17,7 +18,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/vsdg/sequence.h>
 
 #include <stdio.h>
 #include <string.h>

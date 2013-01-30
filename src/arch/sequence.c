@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/sequence.h>
+#include <jive/arch/sequence.h>
 
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>

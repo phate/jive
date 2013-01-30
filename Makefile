@@ -21,7 +21,6 @@ LIBJIVE_SRC = src/context.c \
 	src/vsdg/traverser.c \
 	src/vsdg/negotiator.c \
 	src/vsdg/substitution.c \
-	src/vsdg/sequence.c \
 	src/vsdg/label.c \
 	src/vsdg/objdef.c \
 	src/vsdg/splitnode.c \
@@ -126,6 +125,7 @@ LIBJIVE_SRC += \
 	src/arch/regvalue.c \
 	src/arch/compilate.c \
 	src/arch/codegen.c \
+	src/arch/sequence.c \
 	src/arch/label-mapper.c \
 	src/arch/immediate-node.c \
 	src/arch/immediate-type.c \

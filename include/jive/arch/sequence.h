@@ -4,8 +4,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_VSDG_SEQUENCE_H
-#define JIVE_VSDG_SEQUENCE_H
+#ifndef JIVE_ARCH_SEQUENCE_H
+#define JIVE_ARCH_SEQUENCE_H
 
 #include <jive/util/hash.h>
 

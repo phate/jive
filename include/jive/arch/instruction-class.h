@@ -13,10 +13,10 @@
 #include <jive/arch/immediate-value.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
+#include <jive/arch/sequence.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/sequence.h>
 
 struct jive_buffer;
 struct jive_compilate;
