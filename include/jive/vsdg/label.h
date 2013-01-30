@@ -84,7 +84,6 @@ jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
 
 struct jive_label_internal_class {
 	jive_label_class base;
-	struct jive_seq_point * (*get_attach_point)(const jive_label_internal * self, const struct jive_seq_graph * seq_graph);
 };
 
 extern const jive_label_internal_class JIVE_LABEL_INTERNAL_;
@@ -99,13 +98,6 @@ struct jive_label_internal {
 	} graph_label_list;
 	char * asmname;
 };
-
-JIVE_EXPORTED_INLINE struct jive_seq_point *
-jive_label_internal_get_attach_node(const jive_label_internal * self, const struct jive_seq_graph * seq_graph)
-{
-	const jive_label_internal_class * cls = (const jive_label_internal_class *) self->base.class_;
-	return cls->get_attach_point(self, seq_graph);
-}
 
 struct jive_label_node {
 	jive_label_internal base;

@@ -13,7 +13,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/sequence.h>
 
 /* label, abstract base type */
 
@@ -95,25 +94,16 @@ const jive_label_internal_class JIVE_LABEL_INTERNAL_ = {
 	.base = {
 		.parent = &JIVE_LABEL,
 		.fini = 0,
-	},
-	.get_attach_point = 0
+	}
 };
 
 /* node labels */
-
-static jive_seq_point *
-jive_label_node_get_attach_point_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
-{
-	const jive_label_node * self = (const jive_label_node *) self_;
-	return &jive_seq_graph_map_node(seq_graph, self->node)->base;
-}
 
 const jive_label_internal_class JIVE_LABEL_NODE_ = {
 	.base = {
 		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
-	},
-	.get_attach_point = jive_label_node_get_attach_point_
+	}
 };
 
 jive_label_node *
@@ -143,23 +133,11 @@ jive_label_node_create(jive_node * node)
 
 /* region labels */
 
-static jive_seq_point *
-jive_label_region_start_get_attach_point_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
-{
-	const jive_label_region * self = (const jive_label_region *) self_;
-	jive_seq_region * seq_region = jive_seq_graph_map_region(seq_graph, self->region);
-	if (seq_region) {
-		return seq_region->first_point;
-	} else
-		return 0;
-}
-
 const jive_label_internal_class JIVE_LABEL_REGION_START_ = {
 	.base = {
 		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
-	},
-	.get_attach_point = jive_label_region_start_get_attach_point_
+	}
 };
 
 jive_label_region *
@@ -204,23 +182,11 @@ jive_label_region_start_create_exported(jive_region * region, const char * name)
 
 /* region labels */
 
-static jive_seq_point *
-jive_label_region_end_get_attach_point_(const jive_label_internal * self_, const jive_seq_graph * seq_graph)
-{
-	const jive_label_region * self = (const jive_label_region *) self_;
-	jive_seq_region * seq_region = jive_seq_graph_map_region(seq_graph, self->region);
-	if (seq_region) {
-		return seq_region->last_point;
-	} else
-		return 0;
-}
-
 const jive_label_internal_class JIVE_LABEL_REGION_END_ = {
 	.base = {
 		.parent = &JIVE_LABEL_INTERNAL,
 		.fini = jive_label_internal_fini_,
-	},
-	.get_attach_point = jive_label_region_end_get_attach_point_
+	}
 };
 
 jive_label_region *

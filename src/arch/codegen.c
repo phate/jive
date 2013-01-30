@@ -30,7 +30,7 @@ jive_label_get_seq_point(const jive_label * label, const jive_seq_point * curren
 		return current_point;
 	} else if (jive_label_isinstance(label, &JIVE_LABEL_INTERNAL)) {
 		const jive_label_internal * l = (const jive_label_internal *) label;
-		return jive_label_internal_get_attach_node(l, current_point->seq_region->seq_graph);
+		return jive_seq_graph_map_label_internal(current_point->seq_region->seq_graph, l);
 	}
 	return 0;
 }
@@ -301,7 +301,7 @@ jive_label_points_to_node(
 		return false;
 	
 	const jive_label_internal * label_int = (const jive_label_internal *) label;
-	jive_seq_point * sp = jive_label_internal_get_attach_node(label_int, seq_graph);
+	jive_seq_point * sp = jive_seq_graph_map_label_internal(seq_graph, label_int);
 	
 	return sp == to;
 }

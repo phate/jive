@@ -141,7 +141,7 @@ static void
 jive_seq_graph_label_create(void * closure, jive_label_internal * label)
 {
 	jive_seq_graph * self = (jive_seq_graph *) closure;
-	jive_seq_point * seq_point = jive_label_internal_get_attach_node(label, self);
+	jive_seq_point * seq_point = jive_seq_graph_map_label_internal(self, label);
 	jive_seq_point_attach_label(seq_point, label, self);
 }
 
@@ -167,7 +167,7 @@ jive_graph_sequentialize(jive_graph * graph)
 	
 	jive_label_internal * label;
 	JIVE_LIST_ITERATE(graph->labels, label, graph_label_list) {
-		jive_seq_point * seq_point = jive_label_internal_get_attach_node(label, seq);
+		jive_seq_point * seq_point = jive_seq_graph_map_label_internal(seq, label);
 		jive_seq_point_attach_label(seq_point, label, seq);
 	}
 	
@@ -208,3 +208,31 @@ jive_seq_graph_destroy(jive_seq_graph * seq)
 	jive_context_free(seq->context, seq);
 }
 
+jive_seq_point *
+jive_seq_graph_map_label_internal(const jive_seq_graph * self, const jive_label_internal * label_)
+{
+	if (jive_label_isinstance((const jive_label *)label_, &JIVE_LABEL_NODE)) {
+		const jive_label_node * label = (const jive_label_node *) label_;
+		return &jive_seq_graph_map_node(self, label->node)->base;
+	} else if (jive_label_isinstance((const jive_label *)label_, &JIVE_LABEL_REGION_START)) {
+		const jive_label_region * label = (const jive_label_region *) label_;
+		jive_seq_region * seq_region = jive_seq_graph_map_region(self, label->region);
+		if (seq_region) {
+			return seq_region->first_point;
+		} else {
+			return 0;
+		}
+	} else if (jive_label_isinstance((const jive_label *)label_, &JIVE_LABEL_REGION_END)) {
+		const jive_label_region * label = (const jive_label_region *) label_;
+		jive_seq_region * seq_region = jive_seq_graph_map_region(self, label->region);
+		if (seq_region) {
+			return seq_region->last_point;
+		} else {
+			return 0;
+		}
+	} else {
+		/* there must not be other types of internal labels */
+		JIVE_DEBUG_ASSERT(false);
+		return 0;
+	}
+}
