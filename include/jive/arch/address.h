@@ -147,8 +147,9 @@ jive_arraysubscript_node_cast(jive_node * node)
 		return NULL;
 }
 
-/* "arrayindex" operator: given an address that points to an element of
-an array, compute address of element offset by specified distance */
+/* "arrayindex" operator: given two addresses that each point to an
+element of an array and the array element type, compute the
+difference of their indices */ 
 
 extern const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_;
 #define JIVE_ARRAYINDEX_NODE (JIVE_ARRAYINDEX_NODE_.base)
