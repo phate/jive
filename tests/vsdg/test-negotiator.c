@@ -6,6 +6,7 @@
 #include "test-registry.h"
 
 #include <locale.h>
+#include <assert.h>
 
 #include <jive/context.h>
 #include <jive/types/bitstring/type.h>

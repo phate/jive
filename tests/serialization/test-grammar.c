@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include <jive/types/bitstring.h>
 #include <jive/context.h>

@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <locale.h>
+#include <assert.h>
 
 #include <jive/vsdg.h>
 #include <jive/vsdg/equivalence.h>
