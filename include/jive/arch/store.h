@@ -32,13 +32,10 @@ struct jive_store_node_normal_form {
 JIVE_EXPORTED_INLINE jive_store_node_normal_form *
 jive_store_node_normal_form_cast(jive_node_normal_form * self)
 {
-	const jive_node_normal_form_class * cls = self->class_;
-	while (cls) {
-		if (cls == &JIVE_STORE_NODE_NORMAL_FORM)
-			return (jive_store_node_normal_form *) self;
-		cls = cls->parent;
-	}
-	return NULL;
+	if (jive_node_normal_form_isinstance(self, &JIVE_STORE_NODE_NORMAL_FORM))
+		return (jive_store_node_normal_form *) self;
+	else
+		return NULL;
 }
 
 JIVE_EXPORTED_INLINE void
