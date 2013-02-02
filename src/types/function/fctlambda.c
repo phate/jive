@@ -229,7 +229,7 @@ void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
 	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->inputs[0]->origin->node);
-	assert(lambda_node);
+	JIVE_DEBUG_ASSERT(lambda_node);
 	if (!lambda_node)
 		return;
 	
