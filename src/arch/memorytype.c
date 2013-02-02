@@ -42,13 +42,13 @@ jive_memory_output_get_type_(const jive_output * self)
 	return &jive_memory_type_singleton.base.base;
 }
 
-void
+static void
 jive_memory_gate_init_(jive_memory_gate * self, struct jive_graph * graph, const char * name)
 {
 	jive_state_gate_init_(&self->base, graph, name);
 }
 
-const jive_type *
+static const jive_type *
 jive_memory_gate_get_type_(const jive_gate * self)
 {
 	return &jive_memory_type_singleton.base.base;
