@@ -6,9 +6,12 @@
 #ifndef JIVE_COMMON_H
 #define JIVE_COMMON_H
 
-#include <assert.h>
-
-#define JIVE_DEBUG_ASSERT(x) assert(x)
+#ifdef JIVE_DEBUG 
+#	include <assert.h>
+#	define JIVE_DEBUG_ASSERT(x) assert(x)
+#else
+#	define JIVE_DEBUG_ASSERT(x) (void)(x)
+#endif
 
 #ifndef JIVE_EXPORTED_INLINE
 # define JIVE_EXPORTED_INLINE static inline

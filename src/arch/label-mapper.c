@@ -20,8 +20,9 @@ jive_label_name_mapper_map_label(
 		return ".";
 	else if (jive_label_isinstance(label, &JIVE_LABEL_INTERNAL))
 		return jive_label_name_mapper_map_label_internal(self, (const jive_label_internal *) label);
-	else
-		JIVE_DEBUG_ASSERT(0);
+	
+	JIVE_DEBUG_ASSERT(0);
+	return NULL;
 }
 
 
