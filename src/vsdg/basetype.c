@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -30,7 +30,7 @@ jive_type_fini_(jive_type * self)
 char *
 jive_type_get_label_(const jive_type * self)
 {
-	return strdup("X");
+	return strdup(self->class_->name);
 }
 
 jive_input *
@@ -97,6 +97,7 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node
 
 const jive_type_class JIVE_TYPE = {
 	.parent = 0,
+	.name = "X",
 	.fini = jive_type_fini_,
 	.get_label = jive_type_get_label_,
 	.create_input = jive_type_create_input_,

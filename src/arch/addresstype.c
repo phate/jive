@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,8 +13,6 @@
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/node.h>
 
-static char *
-jive_address_type_get_label_(const jive_type * self);
 static jive_input *
 jive_address_type_create_input_(const jive_type * self, jive_node * node,
 	size_t index, jive_output * initial_operand);
@@ -53,8 +51,9 @@ jive_address_gate_get_type_(const jive_gate * self);
 
 const jive_type_class JIVE_ADDRESS_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
+	.name = "addr",
 	.fini = jive_value_type_fini_, /* inherit */
-	.get_label = jive_address_type_get_label_, /* override */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_address_type_create_input_, /* override */
 	.create_output = jive_address_type_create_output_, /* override */
 	.create_gate = jive_address_type_create_gate_, /* override */
@@ -99,12 +98,6 @@ jive_address_type_copy_(const jive_type * self_, jive_context * context)
 	jive_address_type_init(type);
 
 	return &type->base.base;	
-}
-
-char *
-jive_address_type_get_label_(const jive_type * self_)
-{
-	return strdup("addr");
 }
 
 jive_input *

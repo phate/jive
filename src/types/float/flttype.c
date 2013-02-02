@@ -14,8 +14,9 @@
 
 const jive_type_class JIVE_FLOAT_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
+	.name = "flt",
 	.fini = jive_value_type_fini_, /* inherit */
-	.get_label = jive_float_type_get_label_, /* override */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_float_type_create_input_, /* override */
 	.create_output  = jive_float_type_create_output_, /* override */
 	.create_gate = jive_float_type_create_gate_, /* override */
@@ -45,12 +46,6 @@ const jive_gate_class JIVE_FLOAT_GATE = {
 };
 
 /* float_type inheritable members */
-
-char *
-jive_float_type_get_label_(const jive_type * self_)
-{
-	return strdup("flt");
-}
 
 jive_input *
 jive_float_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,

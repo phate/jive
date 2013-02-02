@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,8 +14,6 @@
 
 /*union_type inheritable members*/
 
-static char *
-jive_union_type_get_label_(const jive_type * self);
 static jive_input *
 jive_union_type_create_input_(const jive_type * self, struct jive_node * node,
 	size_t index, jive_output * initial_operand);
@@ -56,8 +54,9 @@ jive_union_gate_get_type_(const jive_gate * self);
 
 const jive_type_class JIVE_UNION_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
+	.name = "union",
 	.fini = jive_value_type_fini_, /* inherit */
-	.get_label = jive_union_type_get_label_, /* override */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_union_type_create_input_, /* override */
 	.create_output = jive_union_type_create_output_, /* overrride */
 	.create_gate = jive_union_type_create_gate_, /* override */
@@ -105,12 +104,6 @@ jive_union_type_copy_(const jive_type * self_, jive_context * context)
 	jive_union_type_init(type, self->decl);
 
 	return &type->base.base;
-}
-
-char *
-jive_union_type_get_label_(const jive_type * self_)
-{
-	return strdup("union");
 }
 
 jive_input *

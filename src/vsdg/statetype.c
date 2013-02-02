@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -19,6 +20,7 @@ const jive_state_type jive_state_type_singleton = {
 
 const jive_type_class JIVE_STATE_TYPE = {
 	.parent = &JIVE_TYPE,
+	.name = "X",
 	.fini = jive_state_type_fini_, /* override */
 	.copy = jive_state_type_copy_, /* override */
 	.get_label = jive_type_get_label_, /* inherit */

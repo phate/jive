@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -19,6 +20,7 @@ static const jive_anchor_type jive_anchor_type_singleton = {
 
 const jive_type_class JIVE_ANCHOR_TYPE = {
 	.parent = &JIVE_TYPE,
+	.name = "X",
 	.fini = jive_type_fini_, /* inherit */
 	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_anchor_type_create_input_, /* override */

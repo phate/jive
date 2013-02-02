@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -46,6 +46,7 @@ struct jive_type {
 
 struct jive_type_class {
 	const struct jive_type_class * parent;
+	const char * name;
 
 	void (*fini)(jive_type* self);
 	

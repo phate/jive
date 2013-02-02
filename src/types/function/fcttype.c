@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -18,8 +18,6 @@
 
 static void
 jive_function_type_fini_(jive_type * self);
-static char *
-jive_function_type_get_label_(const jive_type * self);
 static jive_input *
 jive_function_type_create_input_(const jive_type * self, struct jive_node * node,
 	size_t index, jive_output * initial_operand);
@@ -61,8 +59,9 @@ jive_function_gate_get_type_(const jive_gate * self);
 
 const jive_type_class JIVE_FUNCTION_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
+	.name = "fct",
 	.fini = jive_function_type_fini_, /* override */
-	.get_label = jive_function_type_get_label_, /* override */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_function_type_create_input_, /* override */
 	.create_output = jive_function_type_create_output_, /* override */
 	.create_gate = jive_function_type_create_gate_, /* override */
@@ -170,12 +169,6 @@ jive_function_type_copy_(const jive_type * self_, jive_context * ctx)
 		self->nreturns, (const jive_type * const *) self->return_types);
 	
 	return &type->base.base;
-}
-
-char *
-jive_function_type_get_label_(const jive_type * self_)
-{
-	return strdup("fct");
 }
 
 jive_input *

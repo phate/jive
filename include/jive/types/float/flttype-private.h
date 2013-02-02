@@ -10,9 +10,6 @@
 
 /* float_type inheritable members */
 
-char *
-jive_float_type_get_label_(const jive_type * self);
-
 jive_input *
 jive_float_type_create_input_(const jive_type * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand);

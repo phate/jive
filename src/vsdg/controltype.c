@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -53,12 +53,6 @@ const jive_type *
 jive_control_gate_get_type_(const jive_gate * self);
 
 static char *
-jive_control_type_get_label_(const jive_type * type)
-{
-	return strdup("ctl");
-};
-
-static char *
 jive_control_input_get_label_(const jive_input * input)
 {
 	return strdup("ctl");
@@ -78,8 +72,9 @@ jive_control_gate_get_label_(const jive_gate * gate)
 
 const jive_type_class JIVE_CONTROL_TYPE = {
 	.parent = &JIVE_STATE_TYPE,
+	.name = "ctl",
 	.fini = jive_type_fini_, /* inherit */
-	.get_label = jive_control_type_get_label_, /* override */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_control_type_create_input_, /* override */
 	.create_output = jive_control_type_create_output_, /* override */
 	.create_gate = jive_control_type_create_gate_, /* override */

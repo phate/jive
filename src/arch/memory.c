@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -66,12 +66,6 @@ jive_memory_type_copy_(const jive_type * self_, jive_context * context)
 	return &type->base.base;
 }
 
-static char *
-jive_memory_type_get_label_(const jive_type * self)
-{
-	return strdup("mem");
-}
-
 static jive_input *
 jive_memory_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
@@ -101,9 +95,10 @@ jive_memory_type_create_gate_(const jive_type * self, struct jive_graph * graph,
 
 const jive_type_class JIVE_MEMORY_TYPE = {
 	.parent = &JIVE_STATE_TYPE,
+	.name = "mem",
 	.fini = jive_state_type_fini_, /* inherit */
 	.copy = jive_memory_type_copy_, /* override */
-	.get_label = jive_memory_type_get_label_, /* inherit */
+	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_memory_type_create_input_, /* override */
 	.create_output = jive_memory_type_create_output_, /* override */
 	.create_gate = jive_memory_type_create_gate_, /* override */
