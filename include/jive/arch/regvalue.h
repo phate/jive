@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -42,7 +43,7 @@ jive_regvalue(jive_output * ctl, const jive_register_class * regcls, jive_output
 JIVE_EXPORTED_INLINE jive_regvalue_node *
 jive_regvalue_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_REGVALUE_NODE)
+	if (jive_node_isinstance(node, &JIVE_REGVALUE_NODE))
 		return (jive_regvalue_node *) node;
 	else
 		return 0;

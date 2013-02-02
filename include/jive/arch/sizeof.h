@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -37,7 +37,7 @@ jive_sizeof_create(struct jive_region * region,
 JIVE_EXPORTED_INLINE jive_sizeof_node *
 jive_sizeof_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_SIZEOF_NODE)
+	if (jive_node_isinstance(node, &JIVE_SIZEOF_NODE))
 		return (jive_sizeof_node *) node;
 	else
 		return NULL;

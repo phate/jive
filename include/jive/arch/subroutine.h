@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -73,7 +74,7 @@ struct jive_subroutine_late_transforms {
 JIVE_EXPORTED_INLINE jive_subroutine_node *
 jive_subroutine_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_SUBROUTINE_NODE)
+	if (jive_node_isinstance(node, &JIVE_SUBROUTINE_NODE))
 		return (jive_subroutine_node *) node;
 	else
 		return NULL;
@@ -82,7 +83,7 @@ jive_subroutine_node_cast(jive_node * node)
 JIVE_EXPORTED_INLINE jive_subroutine_enter_node *
 jive_subroutine_enter_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_SUBROUTINE_ENTER_NODE)
+	if (jive_node_isinstance(node, &JIVE_SUBROUTINE_ENTER_NODE))
 		return (jive_subroutine_enter_node *) node;
 	else
 		return NULL;
@@ -91,7 +92,7 @@ jive_subroutine_enter_node_cast(jive_node * node)
 JIVE_EXPORTED_INLINE jive_subroutine_leave_node *
 jive_subroutine_leave_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_SUBROUTINE_LEAVE_NODE)
+	if (jive_node_isinstance(node, &JIVE_SUBROUTINE_LEAVE_NODE))
 		return (jive_subroutine_leave_node *) node;
 	else
 		return NULL;

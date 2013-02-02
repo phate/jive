@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -54,7 +54,7 @@ jive_memberof(jive_output * address,
 JIVE_EXPORTED_INLINE jive_memberof_node *
 jive_memberof_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_MEMBEROF_NODE)
+	if (jive_node_isinstance(node, &JIVE_MEMBEROF_NODE))
 		return (jive_memberof_node *) node;
 	else
 		return NULL;
@@ -98,7 +98,7 @@ jive_containerof(jive_output * address,
 JIVE_EXPORTED_INLINE jive_containerof_node *
 jive_containerof_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_CONTAINEROF_NODE)
+	if (jive_node_isinstance(node, &JIVE_CONTAINEROF_NODE))
 		return (jive_containerof_node *) node;
 	else
 		return NULL;
@@ -141,7 +141,7 @@ jive_arraysubscript(struct jive_output * address, const struct jive_value_type *
 JIVE_EXPORTED_INLINE jive_arraysubscript_node *
 jive_arraysubscript_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_ARRAYSUBSCRIPT_NODE)
+	if (jive_node_isinstance(node, &JIVE_ARRAYSUBSCRIPT_NODE))
 		return (jive_arraysubscript_node *) node;
 	else
 		return NULL;
@@ -186,7 +186,7 @@ jive_arrayindex(struct jive_output * addr1, struct jive_output * addr2,
 JIVE_EXPORTED_INLINE jive_arrayindex_node *
 jive_arrayindex_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_ARRAYINDEX_NODE)
+	if (jive_node_isinstance(node, &JIVE_ARRAYINDEX_NODE))
 		return (jive_arrayindex_node *) node;
 	else
 		return NULL;
@@ -218,7 +218,7 @@ jive_label_to_address_create(struct jive_graph * graph, const struct jive_label 
 JIVE_EXPORTED_INLINE jive_label_to_address_node *
 jive_label_to_address_node_cast(jive_node * node)
 {
-	if(node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE)
+	if(jive_node_isinstance(node, &JIVE_LABEL_TO_ADDRESS_NODE))
 		return (jive_label_to_address_node *) node;
 	else
 		return 0;
@@ -257,7 +257,7 @@ jive_label_to_bitstring_create(struct jive_graph * graph, const struct jive_labe
 JIVE_EXPORTED_INLINE jive_label_to_bitstring_node *
 jive_label_to_bitstring_node_cast(jive_node * node)
 {
-	if(node->class_ == &JIVE_LABEL_TO_BITSTRING_NODE)
+	if(jive_node_isinstance(node, &JIVE_LABEL_TO_BITSTRING_NODE))
 		return (jive_label_to_bitstring_node *) node;
 	else
 		return 0;

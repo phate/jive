@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -62,7 +62,7 @@ jive_call_by_bitstring_create(struct jive_output * target_address, size_t nbits,
 JIVE_EXPORTED_INLINE jive_call_node *
 jive_call_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_CALL_NODE)
+	if (jive_node_isinstance(node, &JIVE_CALL_NODE))
 		return (jive_call_node *) node;
 	else
 		return NULL;

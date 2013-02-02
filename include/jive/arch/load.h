@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -103,7 +103,7 @@ jive_load_by_bitstring_create(struct jive_output * address,
 JIVE_EXPORTED_INLINE jive_load_node *
 jive_load_node_cast(jive_node * node)
 {
-	if (node->class_ == &JIVE_LOAD_NODE)
+	if (jive_node_isinstance(node, &JIVE_LOAD_NODE))
 		return (jive_load_node *) node;
 	else
 		return NULL;
