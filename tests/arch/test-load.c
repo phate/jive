@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -12,7 +12,7 @@
 #include <jive/vsdg.h>
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
-#include <jive/arch/memory.h>
+#include <jive/arch/memorytype.h>
 #include <jive/arch/addresstype.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node-private.h>

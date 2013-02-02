@@ -1,10 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_ARCH_MEMORY_H
-#define JIVE_ARCH_MEMORY_H
+#ifndef JIVE_ARCH_MEMORYTYPE_H
+#define JIVE_ARCH_MEMORYTYPE_H
 
 #include <jive/vsdg/statetype.h>
 

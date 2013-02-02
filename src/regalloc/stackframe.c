@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -7,7 +8,7 @@
 
 #include <jive/arch/immediate-node.h>
 #include <jive/arch/instruction.h>
-#include <jive/arch/memory.h>
+#include <jive/arch/memorytype.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine.h>
 #include <jive/regalloc/shaped-graph.h>

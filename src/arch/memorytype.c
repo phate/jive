@@ -4,7 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/memory.h>
+#include <jive/arch/memorytype.h>
 
 #include <string.h>
 

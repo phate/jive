@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -20,7 +20,7 @@
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
 #include <jive/arch/memlayout-simple.h>
-#include <jive/arch/memory.h>
+#include <jive/arch/memorytype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/label.h>
 

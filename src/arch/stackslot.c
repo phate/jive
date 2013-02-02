@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,7 +14,7 @@
 #include <jive/common.h>
 #include <jive/context.h>
 
-#include <jive/arch/memory.h>
+#include <jive/arch/memorytype.h>
 #include <jive/vsdg/statetype-private.h>
 #include <jive/util/rangemap.h>
 

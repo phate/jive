@@ -108,7 +108,7 @@ LIBJIVE_SRC += \
 # arch definitions
 LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackslot.c \
-	src/arch/memory.c \
+	src/arch/memorytype.c \
 	src/arch/subroutine.c \
 	src/arch/regselector.c \
 	src/arch/load.c \
