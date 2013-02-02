@@ -410,12 +410,6 @@ jive_variable_set_resource_name(jive_variable * self, const jive_resource_name *
 }
 
 bool
-jive_variable_conflicts_with(const jive_variable * self, const jive_variable * other)
-{
-	return false; /* WTF?!? */
-}
-
-bool
 jive_variable_may_spill(const jive_variable * self)
 {
 	jive_gate * gate;

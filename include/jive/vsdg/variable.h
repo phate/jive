@@ -147,9 +147,6 @@ jive_variable_get_resource_name(const jive_variable * self)
 }
 
 bool
-jive_variable_conflicts_with(const jive_variable * self, const jive_variable * other);
-
-bool
 jive_variable_may_spill(const jive_variable * self);
 
 JIVE_EXPORTED_INLINE size_t
