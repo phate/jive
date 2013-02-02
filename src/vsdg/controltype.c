@@ -34,9 +34,6 @@ jive_control_type_copy_(const jive_type * self, jive_context * ctx);
 void
 jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin);
 
-void
-jive_control_input_fini_(jive_input * self_);
-
 const jive_type *
 jive_control_input_get_type_(const jive_input * self);
 
@@ -52,24 +49,6 @@ jive_control_gate_init_(jive_control_gate * self, struct jive_graph * graph, con
 const jive_type *
 jive_control_gate_get_type_(const jive_gate * self);
 
-static char *
-jive_control_input_get_label_(const jive_input * input)
-{
-	return strdup("ctl");
-};
-
-static char *
-jive_control_output_get_label_(const jive_output * output)
-{
-	return strdup("ctl");
-};
-
-static char *
-jive_control_gate_get_label_(const jive_gate * gate)
-{
-	return strdup("ctl");
-};
-
 const jive_type_class JIVE_CONTROL_TYPE = {
 	.parent = &JIVE_STATE_TYPE,
 	.name = "ctl",
@@ -84,22 +63,22 @@ const jive_type_class JIVE_CONTROL_TYPE = {
 
 const jive_input_class JIVE_CONTROL_INPUT = {
 	.parent = &JIVE_STATE_INPUT,
-	.fini = jive_control_input_fini_, /* override */
-	.get_label = jive_control_input_get_label_, /* override */
+	.fini = jive_input_fini_, /* inherit */
+	.get_label = jive_input_get_label_, /* inherit */
 	.get_type = jive_control_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_CONTROL_OUTPUT = {
 	.parent = &JIVE_STATE_OUTPUT,
 	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_control_output_get_label_, /* override */
+	.get_label = jive_output_get_label_, /* inherit */
 	.get_type = jive_control_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_CONTROL_GATE = {
 	.parent = &JIVE_STATE_GATE,
 	.fini = jive_gate_fini_, /* inherit */
-	.get_label = jive_control_gate_get_label_, /* override */
+	.get_label = jive_gate_get_label_, /* inherit */
 	.get_type = jive_control_gate_get_type_, /* override */
 };
 
@@ -143,13 +122,6 @@ void
 jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin)
 {
 	jive_state_input_init_(&self->base, node, index, origin);
-}
-
-void
-jive_control_input_fini_(jive_input * self_)
-{
-	jive_control_input * self = (jive_control_input *)self_;
-	jive_input_fini_(&self->base.base);
 }
 
 const jive_type *
