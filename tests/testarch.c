@@ -460,7 +460,8 @@ jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 	
 	jive_testarch_subroutine * other = jive_context_malloc(context, sizeof(*other));
 	jive_subroutine_init_(&other->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
-		self->base.nparameters, self->base.nreturns, 1);
+		self->base.nparameters, self->base.parameter_types,
+		self->base.nreturns, self->base.return_types, 1);
 	
 	other->base.enter = (jive_subroutine_enter_node *) new_enter_node;
 	other->base.leave = (jive_subroutine_leave_node *) new_leave_node;
@@ -515,14 +516,14 @@ static const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
 
 jive_subroutine *
 jive_testarch_subroutine_create(jive_region * region,
-	size_t nparameters, const jive_argument_type parameters[],
-	size_t nreturns, const jive_argument_type returns[])
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[])
 {
 	jive_graph * graph = region->graph;
 	jive_context * context = graph->context;
 	jive_testarch_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
-		nparameters, nreturns, 1);
+		nparameters, parameter_types, nreturns, return_types, 1);
 	
 	size_t n;
 	

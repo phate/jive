@@ -329,10 +329,10 @@ jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * n
 }
 
 void
-jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context,
-	const struct jive_instructionset * instructionset,
-	size_t nparameters,
-	size_t nreturns,
+jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
+	jive_context * context, const struct jive_instructionset * instructionset,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[],
 	size_t npassthroughs)
 {
 	self->class_ = cls;
@@ -356,13 +356,20 @@ jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
 	
 	self->nparameters = nparameters;
 	self->parameters = jive_context_malloc(context, sizeof(self->parameters[0]) * nparameters);
-	for (n = 0; n < nparameters; n++)
+	self->parameter_types = jive_context_malloc(context,
+		sizeof(self->parameter_types[0]) * nparameters);
+	for (n = 0; n < nparameters; n++) {
 		self->parameters[n] = NULL;
+		self->parameter_types[n] = parameter_types[n];
+	}
 	
 	self->nreturns = nreturns;
 	self->returns = jive_context_malloc(context, sizeof(self->returns[0]) * nreturns);
-	for (n = 0; n < nreturns; n++)
+	self->return_types = jive_context_malloc(context, sizeof(self->returns[0]) * nreturns);
+	for (n = 0; n < nreturns; n++) {
 		self->returns[n] = NULL;
+		self->return_types[n] = return_types[n];
+	}
 	
 	self->npassthroughs = npassthroughs;
 	self->passthroughs = jive_context_malloc(context, sizeof(self->passthroughs[0]) * npassthroughs);
@@ -379,5 +386,7 @@ jive_subroutine_fini_(jive_subroutine * self)
 	jive_context * context = self->context;
 	jive_context_free(context, self->passthroughs);
 	jive_context_free(context, self->parameters);
+	jive_context_free(context, self->parameter_types);
 	jive_context_free(context, self->returns);
+	jive_context_free(context, self->return_types);
 }

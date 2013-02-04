@@ -177,8 +177,9 @@ jive_i386_subroutine_copy_(const jive_subroutine * self_,
 	
 	jive_i386_subroutine * other = jive_context_malloc(context, sizeof(*other));
 	jive_subroutine_init_(&other->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
-		self->base.nparameters, self->base.nreturns, 5);
-	
+		self->base.nparameters, self->base.parameter_types,
+		self->base.nreturns, self->base.return_types, 5);
+
 	other->base.enter = (jive_subroutine_enter_node *) new_enter_node;
 	other->base.leave = (jive_subroutine_leave_node *) new_leave_node;
 	
@@ -223,14 +224,14 @@ jive_i386_subroutine_copy_(const jive_subroutine * self_,
 
 jive_subroutine *
 jive_i386_subroutine_create(jive_region * region,
-	size_t nparameters, const jive_argument_type parameters[],
-	size_t nreturns, const jive_argument_type returns[])
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[])
 {
 	jive_graph * graph = region->graph;
 	jive_context * context = graph->context;
 	jive_i386_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
-		nparameters, nreturns, 5);
+		nparameters, parameter_types, nreturns, return_types, 5);
 	self->base.frame.upper_bound = 4;
 	
 	size_t n;
@@ -288,9 +289,13 @@ jive_i386_subroutine_create_takeover(
 	size_t nreturns, jive_gate * const returns[],
 	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[])
 {
+	/* FIXME: set parameter/return_types properly, add support in deserialization */
+	jive_argument_type parameter_types[nparameters];
+	jive_argument_type return_types[nreturns];
+
 	jive_i386_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context, &jive_i386_instructionset,
-		nparameters, nreturns, npassthroughs);
+		nparameters, parameter_types, nreturns, return_types, npassthroughs);
 	self->base.frame.upper_bound = 4;
 	
 	size_t n;

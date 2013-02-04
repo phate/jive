@@ -37,10 +37,10 @@ jive_subroutine_match_passthrough(const jive_subroutine * old_subroutine, const 
 
 /* base constructor */
 void
-jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls, jive_context * context,
-	const struct jive_instructionset * instructionset,
-	size_t nparameters,
-	size_t nreturns,
+jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
+	jive_context * context, const struct jive_instructionset * instructionset,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[],
 	size_t npassthroughs);
 
 /* base destructor */

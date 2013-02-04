@@ -107,9 +107,11 @@ struct jive_subroutine {
 	struct jive_region * region;
 	
 	size_t nparameters;
+	jive_argument_type * parameter_types;
 	jive_gate ** parameters;
 	
 	size_t nreturns;
+	jive_argument_type * return_types;
 	jive_gate ** returns;
 	
 	size_t npassthroughs;
