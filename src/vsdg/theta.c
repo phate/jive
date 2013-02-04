@@ -1,5 +1,6 @@
 /*
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -167,7 +168,6 @@ jive_theta_create(
 
 typedef struct jive_theta_build_state jive_theta_build_state;
 struct jive_theta_build_state {
-	jive_node * head;
 	size_t nloopvars;
 	jive_theta_loopvar * loopvars;
 	jive_floating_region floating;
@@ -185,7 +185,7 @@ jive_theta_begin(jive_graph * graph)
 	state->loopvars = 0;
 	
 	state->floating.region->attrs.is_looped = true;
-	state->head = jive_theta_head_node_create(self.region);
+	jive_theta_head_node_create(self.region);
 	
 	self.internal_state = state;
 	
@@ -196,7 +196,7 @@ jive_theta_loopvar
 jive_theta_loopvar_enter(jive_theta self, struct jive_output * pre_value)
 {
 	jive_theta_build_state * state = self.internal_state;
-	jive_node * head = state->head;
+	jive_node * head = self.region->top;
 	jive_graph * graph = head->region->graph;
 	jive_context * context = graph->context;
 	
@@ -208,7 +208,7 @@ jive_theta_loopvar_enter(jive_theta self, struct jive_output * pre_value)
 		state->loopvars, sizeof(state->loopvars[0]) * state->nloopvars);
 	
 	char gate_name[80];
-	snprintf(gate_name, sizeof(gate_name), "loopvar_%p_%zd", state->head, index);
+	snprintf(gate_name, sizeof(gate_name), "loopvar_%p_%zd", head, index);
 	state->loopvars[index].gate = jive_type_create_gate(type, graph, gate_name);
 	jive_node_gate_input(head, state->loopvars[index].gate, pre_value);
 	state->loopvars[index].value = jive_node_gate_output(head,
@@ -230,7 +230,7 @@ jive_theta_loopvar_leave(jive_theta self, jive_gate * var,
 		return;
 	}
 	
-	jive_context_fatal_error(state->head->region->graph->context,
+	jive_context_fatal_error(self.region->graph->context,
 		"Lookup of loop-variant variable failed");
 }
 
@@ -239,13 +239,13 @@ jive_theta_end(jive_theta self, jive_output * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values)
 {
 	jive_theta_build_state * state = self.internal_state;
-	jive_node * head = state->head;
+	jive_node * head = self.region->top; 
 	jive_graph * graph = head->region->graph;
 	jive_context * context = graph->context;
 	
 	size_t n;
 	
-	jive_node * tail = jive_theta_tail_node_create(state->head->region,
+	jive_node * tail = jive_theta_tail_node_create(self.region,
 		predicate);
 	for (n = 0; n < state->nloopvars; ++n)
 		jive_node_gate_input(tail, state->loopvars[n].gate, state->loopvars[n].value);
