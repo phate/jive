@@ -785,6 +785,40 @@ jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
 	}
 }
 
+static void
+jive_i386_asm_fp(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_asmgen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, "\t");
+	jive_buffer_putdisp(target, &immediates[0], inputs[0]);
+}
+
+static void
+jive_i386_encode_fp(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	const jive_register_name * r1 = inputs[0];
+	const jive_register_name * r2 = outputs[0];	
+
+	jive_section_putbyte(target, 0xD9);
+	
+	jive_i386_r2i(r1, r2, &immediates[0], 1, flags, target);
+}
+
+static const jive_register_class * const fpreg_param[] = {
+	&jive_i386_regcls[jive_i386_fp],
+	&jive_i386_regcls[jive_i386_fp]
+};
+
 static const jive_register_class * const intreg_param[] = {
 	&jive_i386_regcls[jive_i386_gpr],
 	&jive_i386_regcls[jive_i386_gpr],
@@ -1267,6 +1301,18 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.ninputs = 0, .noutputs = 0, .nimmediates = 1,
 		.code = 0xeb,
 		.inverse_jump = NULL
+	},
+
+	[jive_i386_fp_load_disp] = {
+		.name = "fp_load_disp",
+		.mnemonic = "flds",
+		.encode = jive_i386_encode_fp,
+		.write_asm = jive_i386_asm_fp,
+		.inregs = intreg_param,
+		.outregs = fpreg_param,
+		.flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
+		.code = 0x0	
 	},
 };
 
