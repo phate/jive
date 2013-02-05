@@ -374,6 +374,18 @@ jive_i386_encode_cmp_regreg(const jive_instruction_class * icls,
 }
 
 static void
+jive_i386_encode_cmp_regreg_sse(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_section_putbyte(target, 0x0F);
+	jive_i386_encode_cmp_regreg(icls, target, inputs, outputs, immediates, flags);
+}
+
+static void
 jive_i386_asm_imul(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -1497,6 +1509,17 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.flags = jive_instruction_write_input,
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
 		.code = 0x5E
+	},
+	[jive_i386_float_cmp] = {
+		.name = "float_cmp",
+		.mnemonic = "ucomiss",
+		.encode = jive_i386_encode_cmp_regreg_sse, 
+		.write_asm = jive_i386_asm_regreg,
+		.inregs = ssereg_param,
+		.outregs = (const jive_register_class *[]){&jive_i386_regcls[jive_i386_flags]},
+		.flags = jive_instruction_flags_none,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0x2E
 	},
 };
 
