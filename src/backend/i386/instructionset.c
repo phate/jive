@@ -841,6 +841,24 @@ jive_i386_encode_sseload_abs(const jive_instruction_class * icls,
 }
 
 static void
+jive_i386_encode_regreg_sse(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	JIVE_DEBUG_ASSERT(inputs[0] == outputs[0]);
+	
+	int r1 = inputs[0]->code;
+	int r2 = inputs[1]->code;
+	
+	jive_section_putbyte(target, 0x0F);
+	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, 0xc0|r2|(r1<<3));
+}
+
+static void
 jive_i386_asm_fp(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -1408,6 +1426,18 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.flags = jive_instruction_flags_none,
 		.ninputs = 2, .noutputs = 0, .nimmediates = 1,
 		.code = 0x11
+	},
+
+	[jive_i386_sse_xor] = {
+		.name = "xor",
+		.mnemonic = "xorps",
+		.encode = jive_i386_encode_regreg_sse,
+		.write_asm = jive_i386_asm_regreg,
+		.inregs = ssereg_param,
+		.outregs = ssereg_param,
+		.flags = jive_instruction_write_input | jive_instruction_commutative,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0x57
 	},
 };
 
