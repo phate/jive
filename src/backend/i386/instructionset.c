@@ -1397,6 +1397,18 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.ninputs = 0, .noutputs = 1, .nimmediates = 1,
 		.code = 0x10 
 	},
+	[jive_i386_sse_store32_disp] = {
+		.name = "sse_store32_disp",
+		.mnemonic = "movss",
+		.encode = jive_i386_encode_loadstoresse_disp,
+		.write_asm = jive_i386_asm_store,
+		.inregs = (const jive_register_class *[]){
+			&jive_i386_regcls[jive_i386_gpr], &jive_i386_regcls[jive_i386_sse]},
+		.outregs = NULL,
+		.flags = jive_instruction_flags_none,
+		.ninputs = 2, .noutputs = 0, .nimmediates = 1,
+		.code = 0x11
+	},
 };
 
 jive_xfer_description

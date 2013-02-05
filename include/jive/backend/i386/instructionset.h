@@ -69,6 +69,7 @@ typedef enum {
 
 	jive_i386_sse_load32_disp = 120,
 	jive_i386_sse_load_abs = 121,
+	jive_i386_sse_store32_disp = 122,
 } jive_i386_instruction_index;
 
 extern const jive_instruction_class jive_i386_instructions[];
