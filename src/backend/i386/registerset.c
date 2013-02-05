@@ -10,17 +10,30 @@
 #include <jive/arch/stackslot.h>
 #include <jive/serialization/rescls-registry.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/types/float/flttype.h>
 
 const jive_register_name jive_i386_regs [] = {
-	[jive_i386_cc] = {.base = {.name = "cc", .resource_class = &jive_i386_regcls[jive_i386_flags].base}, .code = 0},
-	[jive_i386_eax] = {.base = {.name = "eax", .resource_class = &jive_i386_regcls[jive_i386_gpr_eax].base}, .code = 0},
-	[jive_i386_ecx] = {.base = {.name = "ecx", .resource_class = &jive_i386_regcls[jive_i386_gpr_ecx].base}, .code = 1},
-	[jive_i386_edx] = {.base = {.name = "edx", .resource_class = &jive_i386_regcls[jive_i386_gpr_edx].base}, .code = 2},
-	[jive_i386_ebx] = {.base = {.name = "ebx", .resource_class = &jive_i386_regcls[jive_i386_gpr_ebx].base}, .code = 3},
-	[jive_i386_esi] = {.base = {.name = "esi", .resource_class = &jive_i386_regcls[jive_i386_gpr_esi].base}, .code = 6},
-	[jive_i386_edi] = {.base = {.name = "edi", .resource_class = &jive_i386_regcls[jive_i386_gpr_edi].base}, .code = 7},
-	[jive_i386_ebp] = {.base = {.name = "ebp", .resource_class = &jive_i386_regcls[jive_i386_gpr_ebp].base}, .code = 5},
-	[jive_i386_esp] = {.base = {.name = "esp", .resource_class = &jive_i386_regcls[jive_i386_gpr_esp].base}, .code = 4},
+	[jive_i386_cc] = {.base = {.name = "cc",
+		.resource_class = &jive_i386_regcls[jive_i386_flags].base}, .code = 0},
+	[jive_i386_eax] = {.base = {.name = "eax",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_eax].base}, .code = 0},
+	[jive_i386_ecx] = {.base = {.name = "ecx",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_ecx].base}, .code = 1},
+	[jive_i386_edx] = {.base = {.name = "edx",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_edx].base}, .code = 2},
+	[jive_i386_ebx] = {.base = {.name = "ebx",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_ebx].base}, .code = 3},
+	[jive_i386_esi] = {.base = {.name = "esi",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_esi].base}, .code = 6},
+	[jive_i386_edi] = {.base = {.name = "edi",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_edi].base}, .code = 7},
+	[jive_i386_ebp] = {.base = {.name = "ebp",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_ebp].base}, .code = 5},
+	[jive_i386_esp] = {.base = {.name = "esp",
+		.resource_class = &jive_i386_regcls[jive_i386_gpr_esp].base}, .code = 4},
+
+	[jive_i386_st0] = {.base = {.name = "st0",
+		.resource_class = &jive_i386_regcls[jive_i386_fp_st0].base}, .code = 0},
 };
 
 static const jive_resource_name * jive_i386_names [] = {
@@ -32,11 +45,14 @@ static const jive_resource_name * jive_i386_names [] = {
 	[jive_i386_esi] = &jive_i386_regs[jive_i386_esi].base,
 	[jive_i386_edi] = &jive_i386_regs[jive_i386_edi].base,
 	[jive_i386_ebp] = &jive_i386_regs[jive_i386_ebp].base,
-	[jive_i386_esp] = &jive_i386_regs[jive_i386_esp].base
+	[jive_i386_esp] = &jive_i386_regs[jive_i386_esp].base,
+
+	[jive_i386_st0] = &jive_i386_regs[jive_i386_st0].base,
 };
 
 static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
 static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+static const jive_float_type flt = {{{&JIVE_FLOAT_TYPE}}};
 
 #define CLS(x) &jive_i386_regcls[jive_i386_##x].base
 #define STACK4 &jive_stackslot_class_4_4.base
@@ -228,7 +244,41 @@ const jive_register_class jive_i386_regcls [] = {
 		},
 		.regs = &jive_i386_regs[jive_i386_ebp],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
-	}
+	},
+
+	[jive_i386_fp] = {
+		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
+			.name = "fp",
+			.limit = 1, .names = &jive_i386_names[jive_i386_st0],
+			.parent = &jive_root_register_class, .depth = 2,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{STACK4, VIA {CLS(fp), STACK4, NULL}},
+				{NULL, NULL}
+			},
+			.type = &flt.base.base
+		},
+		.regs = &jive_i386_regs[jive_i386_st0],
+		.nbits = 80, .int_arithmetic_width = 80, .loadstore_width = 80
+	},
+	[jive_i386_fp_st0] = {
+		.base = {
+			.class_ = &JIVE_REGISTER_RESOURCE,
+			.name = "fp_st0",
+			.limit = 1, .names = &jive_i386_names[jive_i386_st0],
+			.parent = &jive_i386_regcls[jive_i386_fp].base, .depth = 3,
+			.priority = jive_resource_class_priority_reg_low,
+			.demotions = (const jive_resource_class_demotion []) {
+				{CLS(fp), VIA {CLS(fp), CLS(fp), NULL}},
+				{STACK4, VIA {CLS(gpr), STACK4, NULL}},
+				{NULL, NULL}
+			},
+			.type = &flt.base.base
+		},
+		.regs = &jive_i386_regs[jive_i386_st0],
+		.nbits = 80, .int_arithmetic_width = 80, .loadstore_width = 80
+	},
 };
 
 JIVE_SERIALIZATION_REGCLSSET_REGISTER(jive_i386_regcls,

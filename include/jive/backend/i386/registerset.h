@@ -16,7 +16,7 @@ typedef enum {
 	jive_i386_sse = 3,
 	jive_i386_flags = 8,
 	
-	/* sub classes */
+	/* gpr sub classes */
 	jive_i386_gpr_byte = 16, /* registers that are byte-addressible */
 	jive_i386_gpr_eax = 17,	
 	jive_i386_gpr_ebx = 18,
@@ -26,6 +26,9 @@ typedef enum {
 	jive_i386_gpr_edi = 22,
 	jive_i386_gpr_esp = 23,
 	jive_i386_gpr_ebp = 24,
+
+	/* fp sub classes */
+	jive_i386_fp_st0 = 33,
 } jive_i386_regcls_index;
 
 extern const struct jive_register_class jive_i386_regcls[];
@@ -34,6 +37,8 @@ extern const struct jive_register_class jive_i386_regcls[];
 #define jive_i386_cls_fp (&jive_i386_regcls[jive_i386_fp].base)
 #define jive_i386_cls_mmx (&jive_i386_regcls[jive_i386_mmx].base)
 #define jive_i386_cls_sse (&jive_i386_regcls[jive_i386_sse].base)
+
+/* gpr register classes */
 #define jive_i386_cls_flags (&jive_i386_regcls[jive_i386_flags].base)
 #define jive_i386_cls_byte (&jive_i386_regcls[jive_i386_gpr_byte].base)
 #define jive_i386_cls_eax (&jive_i386_regcls[jive_i386_gpr_eax].base)
@@ -45,7 +50,11 @@ extern const struct jive_register_class jive_i386_regcls[];
 #define jive_i386_cls_esp (&jive_i386_regcls[jive_i386_gpr_esp].base)
 #define jive_i386_cls_ebp (&jive_i386_regcls[jive_i386_gpr_ebp].base)
 
+/* fp register classes */
+#define jive_i386_cls_st0 (&jive_i386_regcls[jive_i386_fp_st0].base)
+
 typedef enum {
+	/* gpr registers */
 	jive_i386_cc = 0,
 	jive_i386_eax = 1,
 	jive_i386_ecx = 2,
@@ -55,6 +64,10 @@ typedef enum {
 	jive_i386_edi = 6,
 	jive_i386_ebp = 7,
 	jive_i386_esp = 8,
+
+	/* fp registers */
+	jive_i386_st0 = 9,
+
 } jive_i386_reg_index;
 
 extern const jive_register_name jive_i386_regs [];
