@@ -282,7 +282,7 @@ jive_i386_encode_loadstore32_disp(const jive_instruction_class * icls,
 }
 
 static void
-jive_i386_asm_load(const jive_instruction_class * icls,
+jive_i386_asm_load_disp(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
 	const jive_register_name * outputs[],
@@ -820,7 +820,7 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.name = "int_load32_disp",
 		.mnemonic = "movl",
 		.encode = jive_i386_encode_loadstore32_disp,
-		.write_asm = jive_i386_asm_load,
+		.write_asm = jive_i386_asm_load_disp,
 		.inregs = intreg_param, .outregs = intreg_param, .flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0x8b
