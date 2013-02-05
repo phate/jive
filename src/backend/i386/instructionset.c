@@ -786,6 +786,30 @@ jive_i386_encode_jump_conditional(const jive_instruction_class * icls,
 }
 
 static void
+jive_i386_encode_loadstoresse_disp(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	const jive_register_name * r1 = inputs[0], * r2;
+
+	jive_section_putbyte(target, 0xF3);
+	jive_section_putbyte(target, 0x0F);
+	
+	if (icls->code == 0x11)
+		r2 = inputs[1];
+	else
+		r2 = outputs[0];
+	
+	jive_section_putbyte(target, icls->code);
+	
+	jive_i386_r2i(r1, r2, &immediates[0], 3, flags, target);
+	
+}
+
+static void
 jive_i386_asm_fp(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -817,6 +841,11 @@ jive_i386_encode_fp(const jive_instruction_class * icls,
 static const jive_register_class * const fpreg_param[] = {
 	&jive_i386_regcls[jive_i386_fp],
 	&jive_i386_regcls[jive_i386_fp]
+};
+
+static const jive_register_class * const ssereg_param[] = {
+	&jive_i386_regcls[jive_i386_sse],
+	&jive_i386_regcls[jive_i386_sse]
 };
 
 static const jive_register_class * const intreg_param[] = {
@@ -1313,6 +1342,18 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0x0	
+	},
+
+	[jive_i386_sse_load32_disp] = {
+		.name = "sse_load32_disp",
+		.mnemonic = "movss",
+		.encode = jive_i386_encode_loadstoresse_disp,
+		.write_asm = jive_i386_asm_load_disp,
+		.inregs = intreg_param,
+		.outregs = ssereg_param,
+		.flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
+		.code = 0x10
 	},
 };
 
