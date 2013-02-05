@@ -297,6 +297,21 @@ jive_i386_asm_load_disp(const jive_instruction_class * icls,
 }
 
 static void
+jive_i386_asm_load_abs(const jive_instruction_class * icls,
+	jive_buffer * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_asmgen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_buffer_putstr(target, icls->mnemonic);
+	jive_buffer_putstr(target, "\t");
+	jive_buffer_putimm(target, &immediates[0]);
+	jive_buffer_putstr(target, ", %");
+	jive_buffer_putstr(target, outputs[0]->base.name);
+}
+
+static void
 jive_i386_asm_store(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -807,6 +822,22 @@ jive_i386_encode_loadstoresse_disp(const jive_instruction_class * icls,
 	
 	jive_i386_r2i(r1, r2, &immediates[0], 3, flags, target);
 	
+}
+
+static void
+jive_i386_encode_sseload_abs(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_section_putbyte(target, 0xF3);
+	jive_section_putbyte(target, 0x0F);
+	jive_section_putbyte(target, icls->code);
+	jive_section_putbyte(target, 0x5 | outputs[0]->code << 3);
+
+	jive_i386_encode_imm32(&immediates[0], 0, 4, target);
 }
 
 static void
@@ -1354,6 +1385,17 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0x10
+	},
+	[jive_i386_sse_load_abs] = {
+		.name = "sse_load_abs",
+		.mnemonic = "movss",
+		.encode = jive_i386_encode_sseload_abs,
+		.write_asm = jive_i386_asm_load_abs,
+		.inregs = NULL,
+		.outregs = ssereg_param,
+		.flags = jive_instruction_flags_none,
+		.ninputs = 0, .noutputs = 1, .nimmediates = 1,
+		.code = 0x10 
 	},
 };
 
