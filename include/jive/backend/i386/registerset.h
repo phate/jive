@@ -29,6 +29,16 @@ typedef enum {
 
 	/* fp sub classes */
 	jive_i386_fp_st0 = 33,
+
+	/* sse sub classes */
+	jive_i386_sse_xmm0 = 41,
+	jive_i386_sse_xmm1 = 42,
+	jive_i386_sse_xmm2 = 43,
+	jive_i386_sse_xmm3 = 44,
+	jive_i386_sse_xmm4 = 45,
+	jive_i386_sse_xmm5 = 46,
+	jive_i386_sse_xmm6 = 47,
+	jive_i386_sse_xmm7 = 48,
 } jive_i386_regcls_index;
 
 extern const struct jive_register_class jive_i386_regcls[];
@@ -53,6 +63,16 @@ extern const struct jive_register_class jive_i386_regcls[];
 /* fp register classes */
 #define jive_i386_cls_st0 (&jive_i386_regcls[jive_i386_fp_st0].base)
 
+/* sse register classes */
+#define jive_i386_cls_xmm0 (&jive_i386_regcls[jive_i386_sse_xmm0].base)
+#define jive_i386_cls_xmm1 (&jive_i386_regcls[jive_i386_sse_xmm1].base)
+#define jive_i386_cls_xmm2 (&jive_i386_regcls[jive_i386_sse_xmm2].base)
+#define jive_i386_cls_xmm3 (&jive_i386_regcls[jive_i386_sse_xmm3].base)
+#define jive_i386_cls_xmm4 (&jive_i386_regcls[jive_i386_sse_xmm4].base)
+#define jive_i386_cls_xmm5 (&jive_i386_regcls[jive_i386_sse_xmm5].base)
+#define jive_i386_cls_xmm6 (&jive_i386_regcls[jive_i386_sse_xmm6].base)
+#define jive_i386_cls_xmm7 (&jive_i386_regcls[jive_i386_sse_xmm7].base)
+
 typedef enum {
 	/* gpr registers */
 	jive_i386_cc = 0,
@@ -68,6 +88,15 @@ typedef enum {
 	/* fp registers */
 	jive_i386_st0 = 9,
 
+	/* sse registers */
+	jive_i386_xmm0 = 10,
+	jive_i386_xmm1 = 11,
+	jive_i386_xmm2 = 12,
+	jive_i386_xmm3 = 13,
+	jive_i386_xmm4 = 14,
+	jive_i386_xmm5 = 15,
+	jive_i386_xmm6 = 16,
+	jive_i386_xmm7 = 17,
 } jive_i386_reg_index;
 
 extern const jive_register_name jive_i386_regs [];
