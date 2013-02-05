@@ -859,6 +859,20 @@ jive_i386_encode_regreg_sse(const jive_instruction_class * icls,
 }
 
 static void
+jive_i386_encode_regreg_sse_prefixed(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	JIVE_DEBUG_ASSERT(inputs[0] == outputs[0]);
+	
+	jive_section_putbyte(target, 0xF3);
+	jive_i386_encode_regreg_sse(icls, target, inputs, outputs, immediates, flags);
+}
+
+static void
 jive_i386_asm_fp(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -1438,6 +1452,18 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.flags = jive_instruction_write_input | jive_instruction_commutative,
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
 		.code = 0x57
+	},
+
+	[jive_i386_float_add] = {
+		.name = "flt_add",
+		.mnemonic = "addss",
+		.encode = jive_i386_encode_regreg_sse_prefixed,
+		.write_asm = jive_i386_asm_regreg,
+		.inregs = ssereg_param, 
+		.outregs = ssereg_param,
+		.flags = jive_instruction_write_input | jive_instruction_commutative,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0x58 
 	},
 };
 
