@@ -79,6 +79,7 @@ typedef enum {
 	jive_i386_float_div = 133,
 
 	jive_i386_float_cmp = 140,
+	jive_i386_float_transfer = 141
 } jive_i386_instruction_index;
 
 extern const jive_instruction_class jive_i386_instructions[];

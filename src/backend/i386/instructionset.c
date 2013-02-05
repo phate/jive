@@ -694,6 +694,19 @@ jive_i386_encode_regmove(const jive_instruction_class * icls,
 }
 
 static void
+jive_i386_encode_regmove_sse(const jive_instruction_class * icls,
+	jive_section * target,
+	const jive_register_name * inputs[],
+	const jive_register_name * outputs[],
+	const jive_codegen_imm immediates[],
+	jive_instruction_encoding_flags * flags)
+{
+	jive_section_putbyte(target, 0xF3);
+	jive_section_putbyte(target, 0x0F);
+	jive_i386_encode_regmove(icls, target, outputs, inputs, immediates, flags);
+}
+
+static void
 jive_i386_asm_regmove(const jive_instruction_class * icls,
 	jive_buffer * target,
 	const jive_register_name * inputs[],
@@ -1520,6 +1533,17 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.flags = jive_instruction_flags_none,
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
 		.code = 0x2E
+	},
+	[jive_i386_float_transfer] = {
+		.name = "float_transfer",
+		.mnemonic = "movss",
+		.encode = jive_i386_encode_regmove_sse,
+		.write_asm = jive_i386_asm_regmove,
+		.inregs = ssereg_param,
+		.outregs = ssereg_param,
+		.flags = jive_instruction_flags_none,
+		.ninputs = 1, .noutputs = 1, .nimmediates = 0,
+		.code = 0x10
 	},
 };
 
