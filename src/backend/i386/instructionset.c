@@ -1476,6 +1476,17 @@ const jive_instruction_class jive_i386_instructions[] = {
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
 		.code = 0x5C
 	},
+	[jive_i386_float_mul] = {
+		.name = "flt_mul",
+		.mnemonic = "mulss",
+		.encode = jive_i386_encode_regreg_sse_prefixed,
+		.write_asm = jive_i386_asm_regreg,
+		.inregs = ssereg_param,
+		.outregs = ssereg_param,
+		.flags = jive_instruction_write_input | jive_instruction_commutative,
+		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
+		.code = 0x59
+	},
 };
 
 jive_xfer_description
