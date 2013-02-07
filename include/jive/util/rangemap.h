@@ -1,10 +1,10 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_UTIL_RANGEMAP
-#define JIVE_UTIL_RANGEMAP
+#ifndef JIVE_UTIL_RANGEMAP_H
+#define JIVE_UTIL_RANGEMAP_H
 
 #include <stdbool.h>
 #include <stdlib.h>

@@ -1,10 +1,10 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_BUFFER_H
-#define JIVE_BUFFER_H
+#ifndef JIVE_UTIL_BUFFER_H
+#define JIVE_UTIL_BUFFER_H
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@
 /** \file jive/buffer.h */
 
 /**
-	\defgroup jive_buffer Expandable buffers 
+	\defgroup jive_buffer Expandable buffers
 	
 	Management of expandable buffers
 	

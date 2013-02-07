@@ -1,10 +1,10 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_GATE_INTERFERENCE_PRIVATE_H
-#define JIVE_GATE_INTERFERENCE_PRIVATE_H
+#ifndef JIVE_VSDG_GATE_INTERFERENCE_PRIVATE_H
+#define JIVE_VSDG_GATE_INTERFERENCE_PRIVATE_H
 
 #include <stdlib.h>
 

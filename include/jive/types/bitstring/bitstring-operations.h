@@ -1,10 +1,12 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #ifndef JIVE_TYPES_BITSTRING_BITSTRING_OPERATIONS_H
 #define JIVE_TYPES_BITSTRING_BITSTRING_OPERATIONS_H
+
+#include <jive/common.h>
 
 #include <string.h>
 

@@ -1,16 +1,17 @@
 /*
+ * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_BITSTRING_CONSTANT_H
-#define JIVE_BITSTRING_CONSTANT_H
+#ifndef JIVE_TYPES_BITSTRING_CONSTANT_H
+#define JIVE_TYPES_BITSTRING_CONSTANT_H
 
 #include <stdint.h>
 
+#include <jive/types/bitstring/bitstring-operations.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node.h>
-#include <jive/types/bitstring/bitstring-operations.h>
 
 extern const jive_node_class JIVE_BITCONSTANT_NODE;
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_ARCH_COMPILATE_BUFFER_H
-#define JIVE_ARCH_COMPILATE_BUFFER_H
+#ifndef JIVE_ARCH_COMPILATE_H
+#define JIVE_ARCH_COMPILATE_H
 
 #include <stdint.h>
 
