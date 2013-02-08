@@ -3,4 +3,5 @@ TESTS += \
 	util/test-metacontainers \
 	util/test-rangemap \
 	util/test-set \
+	util/test-sort \
 	util/test-stack \
