@@ -16,7 +16,6 @@
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/sequence.h>
 #include <jive/arch/subroutine.h>
-#include <jive/types/bitstring/symbolic-expression.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/util/byteswap.h>
 #include <jive/vsdg/control.h>

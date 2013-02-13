@@ -67,7 +67,6 @@ LIBJIVE_SRC += \
 	src/types/bitstring/comparison/bitugreater.c \
 	src/types/bitstring/comparison/bitsgreatereq.c \
 	src/types/bitstring/comparison/bitugreatereq.c \
-	src/types/bitstring/symbolic-expression.c \
 	src/types/bitstring/bitoperation-classes.c \
 
 # floats
