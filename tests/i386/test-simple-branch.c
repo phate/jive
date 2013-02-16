@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,8 +7,8 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
 
 #include <jive/arch/codegen.h>
 #include <jive/arch/label-mapper.h>
@@ -18,8 +18,8 @@
 #include <jive/backend/i386/subroutine.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/vsdg.h>
 #include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {
@@ -78,7 +78,7 @@ static int test_main(void)
 	jive_compilate_fini(&compilate);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
+	jive_context_assert_clean(ctx);
 	
 	jive_context_destroy(ctx);
 	
