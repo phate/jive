@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -22,6 +22,7 @@ static void jive_section_clear(jive_section * self)
 	jive_buffer_resize(&self->contents, 0);
 	jive_relocation_entry * entry, * saved_entry;
 	JIVE_LIST_ITERATE_SAFE(self->relocations, entry, saved_entry, section_relocation_list) {
+		JIVE_LIST_REMOVE(self->relocations, entry, section_relocation_list);
 		jive_context_free(self->contents.context, entry);
 	}
 }
