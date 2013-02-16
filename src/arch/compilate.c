@@ -181,10 +181,17 @@ resolve_relocation_target(
 		case jive_symref_type_linker_symbol: {
 			return jive_linker_symbol_resolver_resolve(sym_resolver, target.ref.linker_symbol, resolved);
 		}
-		default: {
-			return false;
+		case jive_symref_type_none: {
+			/* This case can occur when an absolute value (i.e.:
+			zero-based offset) is to be put into an instruction that
+			requires pc-relative encoding for that operand; just
+			returning zero may seem odd, but is correct. */
+			*resolved = 0;
+			return true;
 		}
 	}
+	
+	return false;
 }
 
 static bool
@@ -271,7 +278,7 @@ jive_compilate_load(const jive_compilate * self,
 		++n;
 	}
 	
-	/* finalize all sections and switch them over to their correct 
+	/* finalize all sections and switch them over to their correct
 	permissions */
 	offset = 0;
 	n = 0;
