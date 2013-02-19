@@ -40,7 +40,7 @@ compile_graph(jive_graph * graph)
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, graph->context);
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(graph->context);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(graph->context, NULL, 0);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(buffer.data, buffer.size, 1, stderr);

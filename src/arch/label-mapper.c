@@ -47,6 +47,9 @@ struct jive_label_name_mapper_simple {
 	jive_named_int_label_hash named_int_labels;
 	jive_context * context;
 	size_t int_label_seqno;
+	
+	const jive_symbol_name_pair * pairs;
+	size_t npairs;
 };
 
 static void
@@ -105,13 +108,18 @@ static const jive_label_name_mapper_class JIVE_LABEL_NAME_MAPPER_SIMPLE = {
 };
 
 jive_label_name_mapper *
-jive_label_name_mapper_simple_create(jive_context * context)
+jive_label_name_mapper_simple_create(
+	jive_context * context,
+	const jive_symbol_name_pair * pairs,
+	size_t npairs)
 {
 	jive_label_name_mapper_simple * mapper;
 	mapper = jive_context_malloc(context, sizeof(*mapper));
 	mapper->base.class_ = &JIVE_LABEL_NAME_MAPPER_SIMPLE;
 	mapper->context = context;
 	mapper->int_label_seqno = 0;
+	mapper->pairs = pairs;
+	mapper->npairs = npairs;
 	jive_named_int_label_hash_init(&mapper->named_int_labels, context);
 	
 	return &mapper->base;

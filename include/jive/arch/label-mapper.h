@@ -52,8 +52,17 @@ jive_label_name_mapper_map_label(
 	jive_label_name_mapper * self,
 	const jive_label * label);
 
+typedef struct jive_symbol_name_pair jive_symbol_name_pair;
+struct jive_symbol_name_pair {
+	const jive_linker_symbol * symbol;
+	const char * name;
+};
+
 jive_label_name_mapper *
-jive_label_name_mapper_simple_create(jive_context * context);
+jive_label_name_mapper_simple_create(
+	jive_context * context,
+	const jive_symbol_name_pair * pairs,
+	size_t npairs);
 
 struct jive_label_symbol_mapper_class {
 	void (*destroy)(jive_label_symbol_mapper * self);
