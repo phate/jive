@@ -15,7 +15,12 @@
 #include <jive/vsdg/region.h>
 
 static void
-jive_objdef_node_init_(jive_objdef_node * self, jive_region * region, jive_output * obj, const char * name)
+jive_objdef_node_init_(
+	jive_objdef_node * self,
+	jive_region * region,
+	jive_output * obj,
+	const char * name,
+	const struct jive_linker_symbol * symbol)
 {
 	const jive_type * type = jive_output_get_type(obj);
 	jive_node_init_(&self->base, region,
@@ -29,6 +34,7 @@ jive_objdef_node_init_(jive_objdef_node * self, jive_region * region, jive_outpu
 	jive_region * objregion = obj->node->inputs[0]->origin->node->region;
 	
 	self->attrs.name = jive_context_strdup(region->graph->context, name);
+	self->attrs.symbol = symbol;
 	self->attrs.start = jive_label_region_start_create_exported(objregion, name);
 	self->attrs.end = jive_label_region_end_create(objregion);
 }
@@ -82,7 +88,7 @@ jive_objdef_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	
 	jive_objdef_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
 	other->base.class_ = &JIVE_OBJDEF_NODE;
-	jive_objdef_node_init_(other, region, operands[0], attrs->name);
+	jive_objdef_node_init_(other, region, operands[0], attrs->name, attrs->symbol);
 	
 	return &other->base;
 }
@@ -100,12 +106,15 @@ const jive_node_class JIVE_OBJDEF_NODE = {
 };
 
 jive_node *
-jive_objdef_node_create(jive_output * output, const char * name)
+jive_objdef_node_create(
+	jive_output * output,
+	const char * name,
+	const struct jive_linker_symbol * symbol)
 {
 	jive_region * region = output->node->region;
 	jive_objdef_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
 	self->base.class_ = &JIVE_OBJDEF_NODE;
-	jive_objdef_node_init_(self, region, output, name);
+	jive_objdef_node_init_(self, region, output, name, symbol);
 	
 	return &self->base;
 }

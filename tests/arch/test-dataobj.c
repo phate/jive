@@ -37,7 +37,11 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	
 	jive_output * value = data_def(graph);
 	jive_output * dataobj = jive_dataobj(value, &layout_mapper.base.base);
-	jive_node * name = jive_objdef_node_create(dataobj, "my_label");
+	jive_linker_symbol my_label_symbol;
+	jive_node * name = jive_objdef_node_create(
+		dataobj,
+		"my_label",
+		&my_label_symbol);
 	jive_node_reserve(name);
 	
 	jive_buffer buffer;

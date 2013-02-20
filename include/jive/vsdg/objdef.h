@@ -10,6 +10,7 @@
 #include <jive/vsdg/node.h>
 
 struct jive_label;
+struct jive_linker_symbol;
 struct jive_output;
 
 typedef struct jive_objdef_node jive_objdef_node;
@@ -20,6 +21,7 @@ extern const struct jive_node_class JIVE_OBJDEF_NODE;
 struct jive_objdef_node_attrs {
 	jive_node_attrs base;
 	char * name;
+	const struct jive_linker_symbol * symbol;
 	struct jive_label * start;
 	struct jive_label * end;
 };
@@ -30,7 +32,10 @@ struct jive_objdef_node {
 };
 
 struct jive_node *
-jive_objdef_node_create(struct jive_output * output, const char * name);
+jive_objdef_node_create(
+	struct jive_output * output,
+	const char * name,
+	const struct jive_linker_symbol * symbol);
 
 JIVE_EXPORTED_INLINE jive_objdef_node *
 jive_objdef_node_cast(jive_node * node)
