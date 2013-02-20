@@ -17,8 +17,6 @@ typedef struct jive_label_symbol_mapper_class jive_label_symbol_mapper_class;
 
 struct jive_label_name_mapper_class {
 	void (*destroy)(jive_label_name_mapper * self);
-	const char * (*map_label_internal)(jive_label_name_mapper * self, const jive_label_internal * label);
-	const char * (*map_label_external)(jive_label_name_mapper * self, const jive_label_external * label);
 	const char * (*map_named_symbol)(jive_label_name_mapper * self, const jive_linker_symbol * symbol);
 	const char * (*map_anon_symbol)(jive_label_name_mapper * self, const void * symbol);
 };
@@ -33,21 +31,6 @@ jive_label_name_mapper_destroy(jive_label_name_mapper * self)
 	self->class_->destroy(self);
 }
 
-JIVE_EXPORTED_INLINE const char *
-jive_label_name_mapper_map_label_internal(
-	jive_label_name_mapper * self,
-	const jive_label_internal * label)
-{
-	return self->class_->map_label_internal(self, label);
-}
-
-JIVE_EXPORTED_INLINE const char *
-jive_label_name_mapper_map_label_external(
-	jive_label_name_mapper * self,
-	const jive_label_external * label)
-{
-	return self->class_->map_label_external(self, label);
-}
 
 JIVE_EXPORTED_INLINE const char *
 jive_label_name_mapper_map_named_symbol(
