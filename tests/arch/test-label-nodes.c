@@ -9,10 +9,11 @@
 #include <locale.h>
 #include <string.h>
 
-#include <jive/view.h>
-#include <jive/context.h>
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
+#include <jive/arch/linker-symbol.h>
+#include <jive/context.h>
+#include <jive/view.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
@@ -26,8 +27,10 @@ static int test_main(void)
 	
 	jive_label_external foobar, bla;
 	
-	jive_label_external_init(&foobar, context, "foobar");
-	jive_label_external_init(&bla, context, "bla");
+	jive_linker_symbol foobar_symbol;
+	jive_linker_symbol bla_symbol;
+	jive_label_external_init(&foobar, context, "foobar", &foobar_symbol);
+	jive_label_external_init(&bla, context, "bla", &bla_symbol);
 
 	jive_output * o0 = jive_label_to_address_create(graph, &foobar.base);
 	jive_output * o1 = jive_label_to_address_create(graph, &bla.base);

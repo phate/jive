@@ -98,8 +98,9 @@ static int test_main(void)
 	
 	jive_label * str_label = jive_objdef_node_cast(str_name)->attrs.start;
 	
+	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
-	jive_label_external_init(&write_label, ctx, "write");
+	jive_label_external_init(&write_label, ctx, "write", &write_symbol);
 	
 	jive_linker_symbol main_symbol;
 	jive_node * fn_name = jive_objdef_node_create(
@@ -159,9 +160,10 @@ static int test_main(void)
 	jive_buffer_init(&buffer, ctx);
 	jive_symbol_name_pair symtab[] = {
 		{&hello_world_symbol, "hello_world"},
-		{&main_symbol, "main"}
+		{&main_symbol, "main"},
+		{&write_symbol, "write"},
 	};
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, symtab, 2);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, symtab, 3);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	

@@ -15,12 +15,10 @@
 
 struct jive_context;
 struct jive_graph;
+struct jive_linker_symbol;
 struct jive_node;
 struct jive_output;
 struct jive_region;
-
-struct jive_seq_graph;
-struct jive_seq_point;
 
 typedef uint64_t jive_offset;
 
@@ -113,6 +111,7 @@ struct jive_label_external {
 	jive_label base;
 	struct jive_context * context;
 	char * asmname;
+	const struct jive_linker_symbol * symbol;
 };
 
 /**
@@ -211,7 +210,8 @@ void
 jive_label_external_init(
 	jive_label_external * self,
 	struct jive_context * context,
-	const char * name);
+	const char * name,
+	const struct jive_linker_symbol * symbol);
 
 /**
 	\brief Finalize label external

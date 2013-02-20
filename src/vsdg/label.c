@@ -245,12 +245,14 @@ void
 jive_label_external_init(
 	jive_label_external * self,
 	struct jive_context * context,
-	const char * name)
+	const char * name,
+	const struct jive_linker_symbol * symbol)
 {
 	self->base.class_ = &JIVE_LABEL_EXTERNAL;
 	self->base.flags = jive_label_flags_external;
 	self->context = context;
 	self->asmname = jive_context_strdup(context, name);
+	self->symbol = symbol;
 }
 
 void

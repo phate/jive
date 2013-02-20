@@ -16,6 +16,7 @@
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/call.h>
+#include <jive/arch/linker-symbol.h>
 #include <jive/arch/load.h>
 #include <jive/arch/store.h>
 #include <jive/arch/memlayout-simple.h>
@@ -46,8 +47,9 @@ static int test_main(void)
 	jive_output * memberof = jive_memberof(address0, &decl, 0);
 	jive_output * containerof = jive_containerof(address1, &decl, 1);
 
+	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
-	jive_label_external_init(&write_label, context, "write");
+	jive_label_external_init(&write_label, context, "write", &write_symbol);
 	jive_output * label = jive_label_to_address_create(graph, &write_label.base);
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		label, NULL,
