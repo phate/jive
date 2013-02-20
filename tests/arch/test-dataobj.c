@@ -68,7 +68,7 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
+	jive_context_assert_clean(ctx);
 }
 
 static const char bits[] = "01010101010101010101010101010101";
@@ -89,14 +89,6 @@ static jive_output *
 make_32bit_const(jive_graph * graph)
 {
 	return jive_bitconstant(graph, 32, bits);
-}
-
-static jive_output *
-make_diff(jive_graph * graph)
-{
-	jive_output * c1 = jive_bitconstant(graph, 32, bits);
-	jive_output * foo = jive_bitsymbolicconstant(graph, 32, "foo");
-	return jive_bitsum(2, (jive_output *[]){c1, jive_bitnegate(foo)});
 }
 
 static jive_output *
@@ -189,10 +181,9 @@ static int test_main(void)
 	verify_asm_definition(ctx, make_8bit_const, "\t.byte 0xaa\n");
 	verify_asm_definition(ctx, make_16bit_const, "\t.value 0xaaaa\n");
 	verify_asm_definition(ctx, make_32bit_const, "\t.long 0xaaaaaaaa\n");
-	verify_asm_definition(ctx, make_diff, "\t.long (0xaaaaaaaa + (- foo))\n");
-	verify_asm_definition(ctx, make_record1, "\t.long 0xaaaaaaaa\n" "\t.value 0xaaaa\n" "\t.byte 0xaa\n" "\t.byte 0x00\n");
+	verify_asm_definition(ctx, make_record1, "\t.long 0xaaaaaaaa\n" "\t.value 0xaaaa\n" "\t.byte 0xaa\n" "\t.byte 0x0\n");
 	verify_asm_definition(ctx, make_record2, "\t.value 0xaaaa\n" "\t.value 0xaaaa\n" "\t.long 0xaaaaaaaa\n");
-	verify_asm_definition(ctx, make_union1, "\t.value 0xaaaa\n" "\t.byte 0x00\n" "\t.byte 0x00\n");
+	verify_asm_definition(ctx, make_union1, "\t.value 0xaaaa\n" "\t.byte 0x0\n" "\t.byte 0x0\n");
 	verify_asm_definition(ctx, make_union2, "\t.long 0xaaaaaaaa\n");
 	
 	assert(jive_context_is_empty(ctx));

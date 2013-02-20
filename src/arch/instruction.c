@@ -10,7 +10,6 @@
 #include <jive/arch/immediate-type.h>
 #include <jive/arch/immediate-node.h>
 #include <jive/arch/label-mapper.h>
-#include <jive/arch/sequence.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
@@ -189,86 +188,3 @@ const jive_instruction_class JIVE_PSEUDO_NOP = {
 	.write_asm = jive_write_asm_PSEUDO_NOP,
 	.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0
 };
-
-static void
-jive_seq_instruction_fini_(jive_seq_point * self_)
-{
-	jive_seq_instruction * self = (jive_seq_instruction *) self_;
-	jive_context * context = self->base.seq_region->seq_graph->context;
-	jive_context_free(context, self->instr.inputs);
-	jive_context_free(context, self->instr.outputs);
-	jive_context_free(context, self->instr.immediates);
-	jive_seq_point_fini_(&self->base);
-}
-
-const jive_seq_point_class JIVE_SEQ_INSTRUCTION = {
-	.parent = &JIVE_SEQ_POINT,
-	.fini = jive_seq_instruction_fini_
-};
-
-static jive_seq_instruction *
-jive_seq_instruction_create(
-	jive_seq_region * seq_region,
-	const jive_instruction_class * icls,
-	const jive_register_name * const * inputs,
-	const jive_register_name * const * outputs,
-	const jive_immediate immediates[])
-{
-	jive_seq_graph * seq = seq_region->seq_graph;
-	jive_context * context = seq->context;
-	
-	jive_seq_instruction * seq_instr = jive_context_malloc(context, sizeof(*seq_instr));
-	seq_instr->base.class_ = &JIVE_SEQ_INSTRUCTION;
-	jive_seq_point_init(&seq_instr->base, seq_region);
-	seq_instr->instr.icls = icls;
-	seq_instr->instr.inputs = jive_context_malloc(context, icls->ninputs * sizeof(seq_instr->instr.inputs[0]));
-	seq_instr->instr.outputs = jive_context_malloc(context, icls->noutputs * sizeof(seq_instr->instr.outputs[0]));
-	seq_instr->instr.immediates = jive_context_malloc(context, icls->nimmediates * sizeof(seq_instr->instr.immediates[0]));
-	seq_instr->flags = 0;
-	
-	size_t n;
-	for (n = 0; n < icls->ninputs; n++)
-		seq_instr->instr.inputs[n] = inputs[n];
-	for (n = 0; n < icls->noutputs; n++)
-		seq_instr->instr.outputs[n] = outputs[n];
-	for (n = 0; n < icls->nimmediates; n++)
-		seq_instr->instr.immediates[n] = immediates[n];
-	
-	return seq_instr;
-}
-
-jive_seq_instruction *
-jive_seq_instruction_create_before(
-	jive_seq_point * before,
-	const jive_instruction_class * icls,
-	const jive_register_name * const * inputs,
-	const jive_register_name * const * outputs,
-	const jive_immediate immediates[])
-{
-	jive_seq_graph * seq = before->seq_region->seq_graph;
-	jive_seq_instruction * seq_instr = jive_seq_instruction_create(
-		before->seq_region, icls, inputs, outputs, immediates);
-	
-	JIVE_LIST_INSERT(seq->points, before, &seq_instr->base, seqpoint_list);
-	if (before->seq_region->first_point == before)
-		before->seq_region->first_point = &seq_instr->base;
-	
-	return seq_instr;
-}
-
-jive_seq_instruction *
-jive_seq_instruction_create_after(
-	jive_seq_point * after,
-	const jive_instruction_class * icls,
-	const jive_register_name * const * inputs,
-	const jive_register_name * const * outputs,
-	const jive_immediate immediates[])
-{
-	jive_seq_graph * seq = after->seq_region->seq_graph;
-	jive_seq_instruction * seq_instr = jive_seq_instruction_create(
-		after->seq_region, icls, inputs, outputs, immediates);
-	
-	JIVE_LIST_INSERT(seq->points, after->seqpoint_list.next, &seq_instr->base, seqpoint_list);
-	
-	return seq_instr;
-}
