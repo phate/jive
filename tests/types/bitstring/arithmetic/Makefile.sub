@@ -1,6 +1,7 @@
 TESTS+=\
 	types/bitstring/arithmetic/test-bitand \
 	types/bitstring/arithmetic/test-bitashr \
+	types/bitstring/arithmetic/test-bitdifference \
 	types/bitstring/arithmetic/test-bitnegate \
 	types/bitstring/arithmetic/test-bitnot \
 	types/bitstring/arithmetic/test-bitor \
