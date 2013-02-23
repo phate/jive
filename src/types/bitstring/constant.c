@@ -54,7 +54,10 @@ jive_bitconstant_node_init_(
 	jive_region * region,
 	size_t nbits, const char bits[])
 {
-	JIVE_DEBUG_ASSERT(nbits != 0);
+	if (nbits == 0)
+		jive_context_fatal_error(region->graph->context,
+			"bitconstant: number of bits must be greater than zero.");
+
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
 	jive_node_init_(&self->base, region,
 		0, NULL, NULL,
