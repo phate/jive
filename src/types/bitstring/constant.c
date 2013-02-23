@@ -109,6 +109,8 @@ static jive_node *
 jive_bitconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
+	JIVE_DEBUG_ASSERT(noperands == 0);
+
 	const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *) attrs_;
 	
 	jive_bitconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
