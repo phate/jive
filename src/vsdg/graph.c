@@ -3,6 +3,7 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/util/list.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
@@ -10,9 +11,9 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
-#include <jive/util/list.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form, struct jive_node_class *, node_class, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form,
+	struct jive_node_class *, node_class, hash_chain);
 
 static inline void
 jive_graph_init_(jive_graph * self, jive_context * context)
@@ -246,6 +247,10 @@ jive_graph_push_outward(jive_graph * self)
 	}
 	
 	jive_traverser_destroy(trav);
+
+#ifdef JIVE_DEBUG
+	jive_region_verify_hull(self->root_region);
+#endif
 }
 
 void
@@ -265,6 +270,10 @@ jive_graph_pull_inward(jive_graph * self)
 	}
 	
 	jive_traverser_destroy(trav);
+
+#ifdef JIVE_DEBUG
+	jive_region_verify_hull(self->root_region);
+#endif
 }
 
 jive_node_normal_form *

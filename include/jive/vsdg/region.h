@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,17 +10,17 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <jive/vsdg/section.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/region-ssavar-use.h>
+#include <jive/vsdg/section.h>
 
-typedef struct jive_region jive_region;
 typedef struct jive_floating_region jive_floating_region;
+typedef struct jive_region jive_region;
 
+struct jive_cut;
 struct jive_graph;
 struct jive_input;
 struct jive_node;
-struct jive_cut;
 struct jive_stackframe;
 struct jive_substitution_map;
 
@@ -41,6 +41,26 @@ struct jive_region_attrs {
 	bool is_floating;
 };
 
+typedef struct jive_region_hull_entry jive_region_hull_entry;
+
+struct jive_region_hull_entry {
+	struct {
+		struct jive_region_hull_entry * prev;
+		struct jive_region_hull_entry * next;
+	} region_hull_list;
+
+	struct {
+		struct jive_region_hull_entry * prev;
+		struct jive_region_hull_entry * next;
+	} input_hull_list;
+
+	/* the input that the entry represents */
+	struct jive_input * input;
+
+	/* the region where entry lives */
+	struct jive_region * region;
+};
+
 struct jive_region {
 	struct jive_graph * graph;
 	jive_region * parent;
@@ -58,6 +78,10 @@ struct jive_region {
 		jive_region * prev;
 		jive_region * next;
 	} region_subregions_list;
+	struct {
+		struct jive_region_hull_entry * first;
+		struct jive_region_hull_entry * last;
+	} hull;
 	
 	jive_region_attrs attrs;
 	
@@ -192,5 +216,32 @@ jive_region_check_move_floating(jive_region * self, jive_region * edge_origin);
 
 void
 jive_floating_region_settle(jive_floating_region region);
+
+void
+jive_region_hull_add_input(struct jive_region * region, struct jive_input * input);
+
+JIVE_EXPORTED_INLINE void
+jive_region_hull_add_hull_to_parents(struct jive_region * region)
+{
+	jive_region_hull_entry * entry, * next;
+	JIVE_LIST_ITERATE_SAFE(region->hull, entry, next, region_hull_list)
+		jive_region_hull_add_input(region->parent, entry->input);
+}
+
+void
+jive_region_hull_remove_input(struct jive_region * region, struct jive_input * input);
+
+JIVE_EXPORTED_INLINE void
+jive_region_hull_remove_hull_from_parents(struct jive_region * region)
+{
+	jive_region_hull_entry * entry, * next;
+	JIVE_LIST_ITERATE_SAFE(region->hull, entry, next, region_hull_list)
+		jive_region_hull_remove_input(region->parent, entry->input);
+}
+
+#ifdef JIVE_DEBUG
+void
+jive_region_verify_hull(struct jive_region * region);
+#endif
 
 #endif

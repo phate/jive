@@ -7,15 +7,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <jive/vsdg/node-private.h>
+#include <jive/util/list.h>
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/basetype-private.h>
-#include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/gate-interference-private.h>
+#include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/variable.h>
-#include <jive/util/list.h>
-#include <jive/vsdg/anchortype.h>
 
 /* static type instance, to be returned by type queries */
 const jive_type jive_type_singleton = {
@@ -34,7 +34,8 @@ jive_type_get_label_(const jive_type * self)
 }
 
 jive_input *
-jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t index,
+	jive_output * initial_operand)
 {
 	jive_context * context = node->graph->context;
 	jive_input * input = jive_context_malloc(context, sizeof(*input));
@@ -143,8 +144,10 @@ jive_input_init_(jive_input * self, struct jive_node * node, size_t index, jive_
 	self->output_users_list.prev = self->output_users_list.next = 0;
 	self->gate_inputs_list.prev = self->gate_inputs_list.next = 0;
 	self->ssavar_input_list.prev = self->ssavar_input_list.next = 0;
+	self->hull.first = self->hull.last = 0;
 	
 	jive_input_add_as_user(self, origin);
+	jive_region_hull_add_input(node->region, self);
 }
 
 void
@@ -174,6 +177,8 @@ jive_input_fini_(jive_input * self)
 	}
 	if (!self->node->ninputs)
 		JIVE_LIST_PUSH_BACK(self->node->graph->top, self->node, graph_top_list);
+
+	jive_region_hull_remove_input(self->node->region, self);
 }
 
 char *
@@ -236,7 +241,10 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 	}
 	
 	JIVE_DEBUG_ASSERT(self->node->graph == new_origin->node->graph);
-	
+
+	if (self->origin->node->region != self->node->region)
+		jive_region_hull_remove_input(self->node->region, self);
+
 	if (self->node->graph->floating_region_count)
 		jive_region_check_move_floating(self->node->region, new_origin->node->region);
 	
@@ -248,11 +256,18 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 	self->origin = new_origin;
 	jive_input_add_as_user(self, new_origin);
 	
+	if (new_origin->node->region != self->node->region)
+		jive_region_hull_add_input(self->node->region, self);
+
 	jive_node_invalidate_depth_from_root(self->node);
 	
 	jive_graph_mark_denormalized(new_origin->node->graph);
 	
 	jive_graph_notify_input_change(self->node->graph, self, old_origin, new_origin);
+
+#ifdef JIVE_DEBUG
+	jive_region_verify_hull(self->node->region->graph->root_region);
+#endif
 }
 
 void

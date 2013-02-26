@@ -7,32 +7,32 @@
 #ifndef JIVE_VSDG_BASETYPE_H
 #define JIVE_VSDG_BASETYPE_H
 
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include <jive/common.h>
 #include <jive/vsdg/gate-interference.h>
 
-typedef struct jive_type_class jive_type_class;
 typedef struct jive_type jive_type;
+typedef struct jive_type_class jive_type_class;
 
-typedef struct jive_input_class jive_input_class;
 typedef struct jive_input jive_input;
+typedef struct jive_input_class jive_input_class;
 
-typedef struct jive_output_class jive_output_class;
 typedef struct jive_output jive_output;
+typedef struct jive_output_class jive_output_class;
 
-typedef struct jive_gate_class jive_gate_class;
 typedef struct jive_gate jive_gate;
+typedef struct jive_gate_class jive_gate_class;
 
-struct jive_ssavar;
-struct jive_variable;
-struct jive_resource_class;
 struct jive_cpureg;
-struct jive_regcls;
-struct jive_region;
 struct jive_graph;
 struct jive_node;
+struct jive_regcls;
+struct jive_region;
+struct jive_resource_class;
+struct jive_ssavar;
+struct jive_variable;
 
 /**
         \defgroup jive_type Types
@@ -53,7 +53,8 @@ struct jive_type_class {
 	/** \brief Give textual representation of type (for debugging) */
 	char * (*get_label)(const jive_type * self);
 	
-	jive_input * (*create_input)(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);
+	jive_input * (*create_input)(const jive_type * self, struct jive_node * node, size_t index,
+		jive_output * initial_operand);
 	
 	jive_output * (*create_output)(const jive_type * self, struct jive_node * node, size_t index);
 	
@@ -67,7 +68,8 @@ struct jive_type_class {
 
 extern const struct jive_type_class JIVE_TYPE;
 
-#define JIVE_DECLARE_TYPE(name) const jive_type name##_struct = {&JIVE_TYPE}, * name = &name##_struct
+#define JIVE_DECLARE_TYPE(name) \
+	const jive_type name##_struct = {&JIVE_TYPE}, * name = &name##_struct
 
 JIVE_EXPORTED_INLINE bool
 jive_type_isinstance(const jive_type * self, const jive_type_class * class_)
@@ -88,7 +90,8 @@ jive_type_get_label(const jive_type * self)
 }
 
 JIVE_EXPORTED_INLINE jive_input *
-jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);
+jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
+	jive_output * initial_operand);
 
 JIVE_EXPORTED_INLINE jive_output *
 jive_type_create_output(const jive_type * self, struct jive_node * node, size_t index)
@@ -149,6 +152,11 @@ struct jive_input {
 		jive_input * prev;
 		jive_input * next;
 	} ssavar_input_list;
+
+	struct {
+		struct jive_region_hull_entry * first;
+		struct jive_region_hull_entry * last;
+	} hull;
 	
 	const struct jive_resource_class * required_rescls;
 };
@@ -368,7 +376,8 @@ struct jive_gate_class {
 	
 	const jive_type * (*get_type)(const jive_gate * self);
 	
-	jive_input * (*create_input)(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand);
+	jive_input * (*create_input)(const jive_gate * self, struct jive_node * node, size_t index,
+		jive_output * initial_operand);
 	
 	jive_output * (*create_output)(const jive_gate * self, struct jive_node * node, size_t index);
 };
@@ -402,9 +411,11 @@ struct jive_variable *
 jive_gate_get_constraint(jive_gate * self);
 
 JIVE_EXPORTED_INLINE jive_input *
-jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index,
+	jive_output * initial_operand)
 {
-	jive_input * input = jive_type_create_input(jive_gate_get_type(self), node, index, initial_operand);
+	jive_input * input = jive_type_create_input(jive_gate_get_type(self), node, index,
+		initial_operand);
 	input->required_rescls = self->required_rescls;
 	return input;
 }
@@ -440,7 +451,8 @@ void
 jive_raise_type_error(const jive_type * self, const jive_type * other, struct jive_node * node);
 
 JIVE_EXPORTED_INLINE jive_input *
-jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
+	jive_output * initial_operand)
 {
 	const jive_type * operand_type = jive_output_get_type(initial_operand);
 	
