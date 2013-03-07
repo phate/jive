@@ -18,6 +18,8 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
 
+struct jive_immediate_node;
+
 typedef struct jive_instruction_node jive_instruction_node;
 typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
 
@@ -64,6 +66,16 @@ jive_instruction_node_cast(jive_node * node)
 		return (jive_instruction_node *) node;
 	else
 		return 0;
+}
+
+JIVE_EXPORTED_INLINE struct jive_immediate_node *
+jive_instruction_node_get_immediate(
+	const jive_instruction_node * node,
+	size_t index)
+{
+	const jive_instruction_class * icls = node->attrs.icls;
+	jive_input * input = node->base.inputs[index + icls->ninputs];
+	return (struct jive_immediate_node *) input->origin->node;
 }
 
 #endif

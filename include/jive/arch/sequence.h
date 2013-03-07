@@ -189,11 +189,32 @@ struct jive_seq_instruction {
 	const jive_instruction_class * icls;
 	const jive_register_name ** inputs;
 	const jive_register_name ** outputs;
-	jive_immediate * immediates;
 	jive_seq_imm * imm;
 	
 	/* FIXME: change type to represent coding options */
 	jive_instruction_encoding_flags flags;
+};
+
+typedef enum jive_seq_label_type {
+	jive_seq_label_type_none = 0,
+	jive_seq_label_type_internal = 1,
+	jive_seq_label_type_external = 2
+} jive_seq_label_type;
+
+struct jive_seq_label {
+	jive_seq_label_type type;
+	union {
+		jive_seq_point * internal;
+		const jive_linker_symbol * external;
+	};
+};
+
+/* immediates as represented in the sequentialized graph */
+struct jive_seq_imm {
+	jive_immediate_int value;
+	jive_seq_label add_label;
+	jive_seq_label sub_label;
+	const void * modifier;
 };
 
 extern const jive_seq_point_class JIVE_SEQ_INSTRUCTION;
@@ -204,7 +225,7 @@ jive_seq_instruction_create(
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
 	const jive_register_name * const * outputs,
-	const jive_immediate immediates[],
+	const jive_seq_imm immediates[],
 	jive_node * node);
 
 jive_seq_instruction *
@@ -213,7 +234,7 @@ jive_seq_instruction_create_before(
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
 	const jive_register_name * const * outputs,
-	const jive_immediate immediates[]);
+	const jive_seq_imm immediates[]);
 
 jive_seq_instruction *
 jive_seq_instruction_create_after(
@@ -221,7 +242,7 @@ jive_seq_instruction_create_after(
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
 	const jive_register_name * const * outputs,
-	const jive_immediate immediates[]);
+	const jive_seq_imm immediates[]);
 
 JIVE_EXPORTED_INLINE jive_seq_instruction *
 jive_seq_instruction_cast(jive_seq_point * self)
@@ -270,27 +291,4 @@ jive_seq_data_cast(jive_seq_point * self)
 	else
 		return 0;
 }
-
-typedef enum jive_seq_label_type {
-	jive_seq_label_type_none = 0,
-	jive_seq_label_type_internal = 1,
-	jive_seq_label_type_external = 2
-} jive_seq_label_type;
-
-struct jive_seq_label {
-	jive_seq_label_type type;
-	union {
-		jive_seq_point * internal;
-		const jive_linker_symbol * external;
-	};
-};
-
-/* immediates as represented in the sequentialized graph */
-struct jive_seq_imm {
-	jive_immediate_int value;
-	jive_seq_label add_label;
-	jive_seq_label sub_label;
-	const void * modifier;
-};
-
 #endif

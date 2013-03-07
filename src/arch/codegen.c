@@ -252,21 +252,6 @@ jive_seq_graph_generate_code(
 	}
 }
 
-static bool
-jive_label_points_to_node(
-	const jive_seq_graph * seq_graph,
-	const jive_label * label,
-	const jive_seq_point * to)
-{
-	if (!jive_label_isinstance(label, &JIVE_LABEL_INTERNAL))
-		return false;
-	
-	const jive_label_internal * label_int = (const jive_label_internal *) label;
-	jive_seq_point * sp = jive_seq_graph_map_label_internal(seq_graph, label_int);
-	
-	return sp == to;
-}
-
 /* for a conditional branch with two possibly different continuation points,
 patch in unconditional branch when condition for primary target is not met */
 static void
@@ -286,44 +271,49 @@ jive_seq_graph_patch_jump_targets(
 	jive_node * user = ctl_out->users.first->node;
 	JIVE_DEBUG_ASSERT(user);
 	
-	jive_label * primary_tgt = 0, * secondary_tgt = 0;
+	jive_seq_point * primary_tgt = 0, * secondary_tgt = 0;
 	if (user->class_ == &JIVE_SUBROUTINE_LEAVE_NODE) {
 		return;
 	} else if (user->class_ == &JIVE_GAMMA_NODE) {
 		jive_region * primary_region = user->inputs[0]->origin->node->region;
 		jive_region * secondary_region = user->inputs[1]->origin->node->region;
-		primary_tgt = jive_label_region_start_create(primary_region);
-		secondary_tgt = jive_label_region_start_create(secondary_region);
+		primary_tgt = jive_seq_graph_map_region(seq_graph, primary_region)->first_point;
+		secondary_tgt = jive_seq_graph_map_region(seq_graph, secondary_region)->first_point;
 	} else {
 		JIVE_DEBUG_ASSERT(user->class_ == &JIVE_THETA_TAIL_NODE);
 		jive_region * region = user->region;
-		primary_tgt = jive_label_region_start_create(region);
-		secondary_tgt = jive_label_region_end_create(region);
+		primary_tgt = jive_seq_graph_map_region(seq_graph, region)->first_point;
+		secondary_tgt = jive_seq_graph_map_region(seq_graph, region)->last_point;
 	}
 	
 	if ( (inode->attrs.icls->flags & jive_instruction_jump_conditional_invertible) ) {
-		if (jive_label_points_to_node(seq_graph, primary_tgt, seq_instr->base.seqpoint_list.next)) {
+		if (primary_tgt == seq_instr->base.seqpoint_list.next) {
 			primary_tgt = secondary_tgt;
 			secondary_tgt = 0;
 			seq_instr->flags |= jive_instruction_encoding_flags_jump_conditional_invert;
 		}
 	}
 	
-	jive_immediate imm = seq_instr->immediates[0];
-	JIVE_DEBUG_ASSERT(imm.add_label == NULL);
-	imm.add_label = primary_tgt;
-	seq_instr->immediates[0] = imm;
 	seq_instr->imm[0].value = 0;
 	seq_instr->imm[0].add_label.type = jive_seq_label_type_internal;
-	seq_instr->imm[0].add_label.internal =
-		jive_seq_graph_map_label_internal(seq_graph, (jive_label_internal*)primary_tgt);
+	seq_instr->imm[0].add_label.internal = primary_tgt;
 	
 	if (secondary_tgt) {
 		const jive_instructionset * isa = jive_region_get_instructionset(inode->base.region);
 		const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 		
-		jive_immediate imm;
-		jive_immediate_init(&imm, 0, secondary_tgt, 0, 0);
+		jive_seq_imm imm = {
+			.value = 0,
+			.add_label = {
+				.type = jive_seq_label_type_internal,
+				.internal = secondary_tgt
+			},
+			.sub_label = {
+				.type = jive_seq_label_type_none,
+			},
+			.modifier = NULL
+		};
+		
 		jive_seq_instruction_create_after(&seq_instr->base, jump_icls,
 			NULL, NULL, &imm);
 	}
@@ -341,17 +331,20 @@ jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_point * seq
 	const jive_instructionset * isa = jive_region_get_instructionset(anchor_node->region);
 	const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 	
-	jive_label * tgt = jive_label_node_create(anchor_node);
-	jive_immediate imm;
-	jive_immediate_init(&imm, 0, tgt, 0, 0);
-	jive_seq_instruction * seq_instr = jive_seq_instruction_create_after(seq_point, jump_icls,
+	jive_seq_imm imm = {
+		.value = 0,
+		.add_label = {
+			.type = jive_seq_label_type_internal,
+			.internal = jive_seq_graph_map_node(seq_graph, anchor_node)
+		},
+		.sub_label = {
+			.type = jive_seq_label_type_none,
+		},
+		.modifier = NULL
+	};
+	
+	jive_seq_instruction_create_after(seq_point, jump_icls,
 		NULL, NULL, &imm);
-	seq_instr->imm[0].value = 0;
-	seq_instr->imm[0].add_label.type = jive_seq_label_type_internal;
-	seq_instr->imm[0].add_label.internal =
-		jive_seq_graph_map_node(seq_graph, anchor_node);
-	seq_instr->imm[0].sub_label.type = jive_seq_label_type_none;
-	seq_instr->imm[0].modifier = 0;
 }
 
 void

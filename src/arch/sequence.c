@@ -126,17 +126,12 @@ sequentialize_region(
 			const jive_instruction_class * icls = inode->attrs.icls;
 			const jive_register_name * inregs[icls->ninputs];
 			const jive_register_name * outregs[icls->noutputs];
-			jive_immediate immediates[icls->nimmediates];
+			jive_seq_imm immediates[icls->nimmediates];
 			size_t n;
 			for (n = 0; n < icls->ninputs; ++n)
 				inregs[n] = (const jive_register_name *)node->inputs[n]->ssavar->variable->resname;
 			for (n = 0; n < icls->noutputs; ++n)
 				outregs[n] = (const jive_register_name *)node->outputs[n]->ssavar->variable->resname;
-			for (n = 0; n < icls->nimmediates; ++n) {
-				jive_immediate_node * immnode = jive_immediate_node_cast(
-					node->inputs[n + icls->ninputs]->origin->node);
-				immediates[n] = immnode->attrs.value;
-			}
 			current = &jive_seq_instruction_create(
 				seq_region,
 				icls,
@@ -303,12 +298,15 @@ jive_graph_sequentialize(jive_graph * graph)
 		const jive_instruction_class * icls = inode->attrs.icls;
 		size_t n;
 		for (n = 0; n < icls->nimmediates; ++ n) {
-			seq_instr->imm[n].value = seq_instr->immediates[n].offset;
+			jive_immediate_node * imm_node =
+				jive_instruction_node_get_immediate(inode, n);
+			jive_immediate imm = imm_node->attrs.value;
+			seq_instr->imm[n].value = imm.offset;
 			seq_instr->imm[n].add_label = jive_seq_graph_convert_label(
-				seq, seq_instr->immediates[n].add_label, seq_point);
+				seq, imm.add_label, seq_point);
 			seq_instr->imm[n].sub_label = jive_seq_graph_convert_label(
-				seq, seq_instr->immediates[n].sub_label, seq_point);
-			seq_instr->imm[n].modifier = seq_instr->immediates[n].modifier;
+				seq, imm.sub_label, seq_point);
+			seq_instr->imm[n].modifier = imm.modifier;
 		}
 	}
 	
@@ -381,7 +379,6 @@ jive_seq_instruction_fini_(jive_seq_point * self_)
 	jive_context * context = self->base.seq_region->seq_graph->context;
 	jive_context_free(context, self->inputs);
 	jive_context_free(context, self->outputs);
-	jive_context_free(context, self->immediates);
 	jive_context_free(context, self->imm);
 	jive_seq_point_fini_(&self->base);
 }
@@ -408,8 +405,6 @@ jive_seq_instruction_create_shell(
 		icls->ninputs * sizeof(seq_instr->inputs[0]));
 	seq_instr->outputs = jive_context_malloc(context,
 		icls->noutputs * sizeof(seq_instr->outputs[0]));
-	seq_instr->immediates = jive_context_malloc(context,
-		icls->nimmediates * sizeof(seq_instr->immediates[0]));
 	seq_instr->imm = jive_context_malloc(context,
 		icls->nimmediates * sizeof(seq_instr->imm[0]));
 	seq_instr->flags = jive_instruction_encoding_flags_none;
@@ -423,7 +418,7 @@ jive_seq_instruction_create(
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
 	const jive_register_name * const * outputs,
-	const jive_immediate immediates[],
+	const jive_seq_imm immediates[],
 	jive_node * node)
 {
 	jive_seq_instruction * seq_instr = jive_seq_instruction_create_shell(
@@ -435,7 +430,7 @@ jive_seq_instruction_create(
 	for (n = 0; n < icls->noutputs; n++)
 		seq_instr->outputs[n] = outputs[n];
 	for (n = 0; n < icls->nimmediates; n++)
-		seq_instr->immediates[n] = immediates[n];
+		seq_instr->imm[n] = immediates[n];
 	
 	return seq_instr;
 }
@@ -446,7 +441,7 @@ jive_seq_instruction_create_before(
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
 	const jive_register_name * const * outputs,
-	const jive_immediate immediates[])
+	const jive_seq_imm immediates[])
 {
 	jive_seq_graph * seq = before->seq_region->seq_graph;
 	jive_seq_instruction * seq_instr = jive_seq_instruction_create(
@@ -465,7 +460,7 @@ jive_seq_instruction_create_after(
 	const jive_instruction_class * icls,
 	const jive_register_name * const * inputs,
 	const jive_register_name * const * outputs,
-	const jive_immediate immediates[])
+	const jive_seq_imm immediates[])
 {
 	jive_seq_graph * seq = after->seq_region->seq_graph;
 	jive_seq_instruction * seq_instr = jive_seq_instruction_create(
