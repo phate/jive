@@ -74,8 +74,8 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
 };
 
-const jive_node_class JIVE_GAMMA_NODE = {
-	.parent = &JIVE_NODE,
+const jive_anchor_node_class JIVE_GAMMA_NODE = {
+	.parent = &JIVE_ANCHOR_NODE,
 	.name = "GAMMA",
 	.fini = jive_node_fini_,  /* inherit */
 	.get_default_normal_form = jive_gamma_node_get_default_normal_form_,  /* override */

@@ -8,7 +8,7 @@
 #define JIVE_VSDG_GAMMA_H
 
 #include <jive/vsdg/controltype.h>
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/anchor.h>
 
 struct jive_graph;
 struct jive_output;
@@ -16,7 +16,7 @@ struct jive_type;
 struct jive_region;
 
 extern const jive_node_class JIVE_GAMMA_TAIL_NODE;
-extern const jive_node_class JIVE_GAMMA_NODE;
+extern const jive_anchor_node_class JIVE_GAMMA_NODE;
 
 void
 jive_gamma(struct jive_output * predicate,
