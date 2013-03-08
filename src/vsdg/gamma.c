@@ -158,11 +158,11 @@ jive_gamma(struct jive_output * predicate,
 		&JIVE_GAMMA_NODE);
 	
 	if (nf->base.enable_mutable && nf->enable_predicate_reduction) {
-		if (predicate->node->class_ == &JIVE_CONTROL_TRUE_NODE) {
+		if (jive_node_isinstance(predicate->node, &JIVE_CONTROL_TRUE_NODE)) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = true_values[n];
 			return;
-		} else if (predicate->node->class_ == &JIVE_CONTROL_FALSE_NODE) {
+		} else if (jive_node_isinstance(predicate->node, &JIVE_CONTROL_FALSE_NODE)) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = false_values[n];
 			return;
@@ -316,9 +316,9 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 	if (self->enable_predicate_reduction) {
 		jive_output * pred = node->inputs[2]->origin;
 		jive_node * branch = 0;
-		if (pred->node->class_ == &JIVE_CONTROL_TRUE_NODE)
+		if (jive_node_isinstance(pred->node, &JIVE_CONTROL_TRUE_NODE))
 			branch = node->inputs[0]->origin->node;
-		else if (pred->node->class_ == &JIVE_CONTROL_FALSE_NODE)
+		else if (jive_node_isinstance(pred->node, &JIVE_CONTROL_FALSE_NODE))
 			branch = node->inputs[1]->origin->node;
 		
 		if (!branch)
@@ -364,9 +364,9 @@ jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * se
 	
 	if (self->enable_predicate_reduction) {
 		jive_output * pred = operands[2];
-		if (pred->node->class_ == &JIVE_CONTROL_TRUE_NODE)
+		if (jive_node_isinstance(pred->node, &JIVE_CONTROL_TRUE_NODE))
 			return false;
-		if (pred->node->class_ == &JIVE_CONTROL_FALSE_NODE)
+		if (jive_node_isinstance(pred->node, &JIVE_CONTROL_FALSE_NODE))
 			return false;
 	}
 	
