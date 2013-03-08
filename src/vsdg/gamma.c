@@ -412,7 +412,7 @@ jive_gamma_normal_form_class_set_predicate_reduction_(jive_gamma_normal_form * s
 	JIVE_LIST_ITERATE(self->base.subclasses, child, normal_form_subclass_list) {
 		jive_gamma_normal_form_set_predicate_reduction((jive_gamma_normal_form *)child, enable);
 	}
-	if (enable && self->enable_predicate_reduction)
+	if (enable && self->base.enable_mutable)
 		jive_graph_mark_denormalized(self->base.graph);
 }
 
@@ -427,7 +427,7 @@ jive_gamma_normal_form_class_set_invariant_reduction_(jive_gamma_normal_form * s
 	JIVE_LIST_ITERATE(self->base.subclasses, child, normal_form_subclass_list) {
 		jive_gamma_normal_form_set_invariant_reduction((jive_gamma_normal_form *)child, enable);
 	}
-	if (enable && self->enable_invariant_reduction)
+	if (enable && self->base.enable_mutable)
 		jive_graph_mark_denormalized(self->base.graph);
 }
 
