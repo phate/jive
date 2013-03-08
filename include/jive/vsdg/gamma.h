@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -63,13 +64,10 @@ jive_gamma_normal_form_set_invariant_reduction(jive_gamma_normal_form * self, bo
 JIVE_EXPORTED_INLINE jive_gamma_normal_form *
 jive_gamma_normal_form_cast(jive_node_normal_form * self)
 {
-	const jive_node_normal_form_class * cls = self->class_;
-	while (cls) {
-		if (cls == &JIVE_GAMMA_NORMAL_FORM)
-			return (jive_gamma_normal_form *) self;
-		cls = cls->parent;
-	}
-	return 0;
+	if (jive_node_normal_form_isinstance(self, &JIVE_GAMMA_NORMAL_FORM))
+		return (jive_gamma_normal_form *) self;
+	else
+		return NULL;
 }
 
 /* protected virtual methods */
