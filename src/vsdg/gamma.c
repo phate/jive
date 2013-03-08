@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -291,7 +292,7 @@ jive_region_move(const jive_region * self, jive_region * target)
 
 const jive_gamma_normal_form_class JIVE_GAMMA_NORMAL_FORM_ = {
 	.base = {
-		.parent = 0,
+		.parent = &JIVE_NODE_NORMAL_FORM,
 		.fini = jive_node_normal_form_fini_,
 		.normalize_node = jive_gamma_normal_form_normalize_node_,
 		.operands_are_normalized = jive_gamma_normal_form_operands_are_normalized_,
