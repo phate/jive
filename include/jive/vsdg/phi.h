@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -35,7 +35,7 @@ jive_phi_node_normal_form_cast(jive_node_normal_form * self)
 
 /* phi node */
 
-extern const jive_node_class JIVE_PHI_NODE;
+extern const jive_anchor_node_class JIVE_PHI_NODE;
 extern const jive_node_class JIVE_PHI_ENTER_NODE;
 extern const jive_node_class JIVE_PHI_LEAVE_NODE;
 

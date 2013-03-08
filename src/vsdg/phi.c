@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -201,8 +201,8 @@ static jive_node *
 jive_phi_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[]);
 
-const jive_node_class JIVE_PHI_NODE = {
-	.parent = &JIVE_NODE,
+const jive_anchor_node_class JIVE_PHI_NODE = {
+	.parent = &JIVE_ANCHOR_NODE,
 	.name = "PHI",
 	.fini = jive_node_fini_, /* inherit */
 	.get_default_normal_form = jive_phi_node_get_default_normal_form_, /* override */
