@@ -56,9 +56,9 @@ jive_gamma_node_get_default_normal_form_(const jive_node_class * cls, jive_node_
 {
 	jive_gamma_normal_form * normal_form;
 	normal_form = jive_context_malloc(graph->context, sizeof(*normal_form));
-	normal_form->base.class_ = &JIVE_GAMMA_NORMAL_FORM;
+	normal_form->base.base.class_ = &JIVE_GAMMA_NORMAL_FORM;
 	jive_gamma_normal_form_init_(normal_form, cls, parent, graph);
-	return &normal_form->base;
+	return &normal_form->base.base;
 }
 
 
@@ -157,7 +157,7 @@ jive_gamma(struct jive_output * predicate,
 	nf = (jive_gamma_normal_form *) jive_graph_get_nodeclass_form(graph,
 		&JIVE_GAMMA_NODE);
 	
-	if (nf->base.enable_mutable && nf->enable_predicate_reduction) {
+	if (nf->base.base.enable_mutable && nf->enable_predicate_reduction) {
 		if (jive_node_isinstance(predicate->node, &JIVE_CONTROL_TRUE_NODE)) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = true_values[n];
@@ -182,7 +182,7 @@ jive_gamma(struct jive_output * predicate,
 	for (n = 0; n < nvalues; ++n)
 		results[n] = node->outputs[n];
 	
-	if (nf->base.enable_mutable && nf->enable_invariant_reduction) {
+	if (nf->base.base.enable_mutable && nf->enable_invariant_reduction) {
 		jive_node * true_branch = node->inputs[0]->origin->node;
 		jive_node * false_branch = node->inputs[1]->origin->node;
 		for (n = nvalues; n > 0; --n) {
@@ -291,13 +291,16 @@ jive_region_move(const jive_region * self, jive_region * target)
 /* normal forms */
 
 const jive_gamma_normal_form_class JIVE_GAMMA_NORMAL_FORM_ = {
-	.base = {
-		.parent = &JIVE_NODE_NORMAL_FORM,
-		.fini = jive_node_normal_form_fini_,
-		.normalize_node = jive_gamma_normal_form_normalize_node_,
-		.operands_are_normalized = jive_gamma_normal_form_operands_are_normalized_,
-		.set_mutable = jive_node_normal_form_set_mutable_,
-		.set_cse = jive_node_normal_form_set_cse_
+	.base = { /* jive_anchor_node_normal_form_class */
+		.base = {	/* jive_node_normal_form_class */
+			.parent = &JIVE_ANCHOR_NODE_NORMAL_FORM,
+			.fini = jive_node_normal_form_fini_,	/* inherit */
+			.normalize_node = jive_gamma_normal_form_normalize_node_,	/* override */
+			.operands_are_normalized = jive_gamma_normal_form_operands_are_normalized_,	/* override */
+			.set_mutable = jive_node_normal_form_set_mutable_,	/* inherit */
+			.set_cse = jive_node_normal_form_set_cse_	/* inherit */
+		},
+		.set_reducible = jive_gamma_normal_form_class_set_reducible_	/* override */
 	},
 	.set_predicate_reduction = jive_gamma_normal_form_class_set_predicate_reduction_,
 	.set_invariant_reduction = jive_gamma_normal_form_class_set_invariant_reduction_,
@@ -308,7 +311,7 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 {
 	const jive_gamma_normal_form * self = (const jive_gamma_normal_form *) self_;
 	
-	if (!self->base.enable_mutable)
+	if (!self->base.base.enable_mutable)
 		return true;
 	
 	JIVE_DEBUG_ASSERT(node->noperands == 3);
@@ -357,7 +360,7 @@ jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * se
 {
 	const jive_gamma_normal_form * self = (const jive_gamma_normal_form *) self_;
 	
-	if (!self->base.enable_mutable)
+	if (!self->base.base.enable_mutable)
 		return true;
 	
 	JIVE_DEBUG_ASSERT(noperands == 3);
@@ -388,7 +391,7 @@ jive_gamma_normal_form_init_(jive_gamma_normal_form * self,
 	const jive_node_class * cls, jive_node_normal_form * parent_,
 	jive_graph * graph)
 {
-	jive_node_normal_form_init_(&self->base, cls, parent_, graph);
+	jive_anchor_node_normal_form_init_(&self->base, cls, parent_, graph);
 	
 	jive_gamma_normal_form * parent = jive_gamma_normal_form_cast(parent_);
 	
@@ -402,18 +405,42 @@ jive_gamma_normal_form_init_(jive_gamma_normal_form * self,
 }
 
 void
+jive_gamma_normal_form_class_set_reducible_(jive_anchor_node_normal_form * self_, bool enable)
+{
+	if (self_->enable_reducible == enable)
+		return;
+
+	jive_gamma_normal_form * self = (jive_gamma_normal_form *) self_;
+
+	jive_node_normal_form * child;
+	JIVE_LIST_ITERATE(self->base.base.subclasses, child, normal_form_subclass_list)
+		jive_gamma_normal_form_class_set_reducible_((jive_anchor_node_normal_form *)child, enable);
+
+	self->base.enable_reducible = enable;
+	self->enable_predicate_reduction = enable;
+	self->enable_invariant_reduction = enable;
+
+	if (self->base.base.enable_mutable && enable)
+		jive_graph_mark_denormalized(self->base.base.graph);
+}
+
+void
 jive_gamma_normal_form_class_set_predicate_reduction_(jive_gamma_normal_form * self, bool enable)
 {
 	if (self->enable_predicate_reduction == enable)
 		return;
 	
-	self->enable_predicate_reduction = enable;
 	jive_node_normal_form * child;
-	JIVE_LIST_ITERATE(self->base.subclasses, child, normal_form_subclass_list) {
+	JIVE_LIST_ITERATE(self->base.base.subclasses, child, normal_form_subclass_list) {
 		jive_gamma_normal_form_set_predicate_reduction((jive_gamma_normal_form *)child, enable);
 	}
-	if (enable && self->base.enable_mutable)
-		jive_graph_mark_denormalized(self->base.graph);
+
+	self->enable_predicate_reduction = enable;
+	if (enable)
+		self->base.enable_reducible = enable;
+
+	if (enable && self->base.base.enable_mutable)
+		jive_graph_mark_denormalized(self->base.base.graph);
 }
 
 void
@@ -422,12 +449,15 @@ jive_gamma_normal_form_class_set_invariant_reduction_(jive_gamma_normal_form * s
 	if (self->enable_invariant_reduction == enable)
 		return;
 	
-	self->enable_invariant_reduction = enable;
 	jive_node_normal_form * child;
-	JIVE_LIST_ITERATE(self->base.subclasses, child, normal_form_subclass_list) {
+	JIVE_LIST_ITERATE(self->base.base.subclasses, child, normal_form_subclass_list) {
 		jive_gamma_normal_form_set_invariant_reduction((jive_gamma_normal_form *)child, enable);
 	}
-	if (enable && self->base.enable_mutable)
-		jive_graph_mark_denormalized(self->base.graph);
-}
 
+	self->enable_invariant_reduction = enable;
+	if (enable)
+		self->base.enable_reducible = enable;
+
+	if (enable && self->base.base.enable_mutable)
+		jive_graph_mark_denormalized(self->base.base.graph);
+}
