@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,35 +7,34 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
 #include <sys/wait.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
-#include <jive/util/buffer.h>
 #include <jive/arch/address.h>
 #include <jive/arch/call.h>
 #include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/label-mapper.h>
-#include <jive/arch/memorytype.h>
 #include <jive/arch/memlayout-simple.h>
+#include <jive/arch/memorytype.h>
 #include <jive/arch/stackslot.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/objdef.h>
-#include <jive/types/record/rcdgroup.h>
 #include <jive/backend/i386/call.h>
-#include <jive/backend/i386/instructionset.h>
-#include <jive/backend/i386/registerset.h>
-#include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instrmatch.h>
+#include <jive/backend/i386/instructionset.h>
+#include <jive/backend/i386/machine.h>
+#include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/types/bitstring.h>
-
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
+#include <jive/types/bitstring.h>
+#include <jive/types/record/rcdgroup.h>
+#include <jive/util/buffer.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
+#include <jive/vsdg/label.h>
+#include <jive/vsdg/objdef.h>
 
 static const jive_value_type ** string_elements;
 static jive_record_declaration string_decl;
@@ -90,13 +89,13 @@ static int test_main(void)
 	jive_node * leave = &i386_fn->leave->base;
 	
 	jive_linker_symbol hello_world_symbol;
+	jive_label_external hello_world_label;
+	jive_label_external_init(&hello_world_label, ctx, "hello_world", &hello_world_symbol);
 	jive_node * str_name = jive_objdef_node_create(
 		make_string(graph, hello_world),
 		"hello_world",
 		&hello_world_symbol);
 	jive_node_reserve(str_name);
-	
-	jive_label * str_label = jive_objdef_node_cast(str_name)->attrs.start;
 	
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
@@ -113,7 +112,7 @@ static int test_main(void)
 	JIVE_DECLARE_STATE_TYPE(control_type);
 	jive_output * control = jive_node_add_output(enter, control_type);
 	
-	jive_immediate_init(&imm, 0, str_label, NULL, NULL);
+	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instructions[jive_i386_int_load_imm],
@@ -178,6 +177,7 @@ static int test_main(void)
 	
 	jive_graph_destroy(graph);
 	jive_label_external_fini(&write_label);
+	jive_label_external_fini(&hello_world_label);
 	
 	assert(jive_context_is_empty(ctx));
 	
