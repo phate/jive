@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -30,15 +30,12 @@ jive_objdef_node_init_(
 		0, NULL);
 	
 	if (obj->node->ninputs < 1 || obj->node->inputs[0]->class_ != &JIVE_ANCHOR_INPUT) {
-		jive_context_fatal_error(region->graph->context, "Type mismatch: object definitions can only be applied to region anchor nodes");
+		jive_context_fatal_error(region->graph->context,
+			"Type mismatch: object definitions can only be applied to region anchor nodes");
 	}
-	
-	jive_region * objregion = obj->node->inputs[0]->origin->node->region;
 	
 	self->attrs.name = jive_context_strdup(region->graph->context, name);
 	self->attrs.symbol = symbol;
-	self->attrs.start = jive_label_region_start_create_exported(objregion, name);
-	self->attrs.end = jive_label_region_end_create(objregion);
 }
 
 static void
@@ -49,14 +46,6 @@ jive_objdef_node_fini_(jive_node * self_)
 	jive_context * context = self->base.graph->context;
 	
 	jive_context_free(context, self->attrs.name);
-	
-	/* note: cannot free the labels here -- they might still be referenced! */
-	/*
-	jive_label_fini(self->attrs.start);
-	jive_context_free(context, self->attrs.start);
-	jive_label_fini(self->attrs.end);
-	jive_context_free(context, self->attrs.end);
-	*/
 	
 	jive_node_fini_(&self->base);
 }

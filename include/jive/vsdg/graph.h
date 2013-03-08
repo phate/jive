@@ -27,7 +27,6 @@ struct jive_node;
 struct jive_node_class;
 struct jive_region;
 struct jive_gate;
-struct jive_label_internal;
 struct jive_node_normal_form;
 
 JIVE_DECLARE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form, struct jive_node_class *, node_class, hash_chain);
@@ -55,11 +54,6 @@ struct jive_graph {
 		struct jive_variable * first;
 		struct jive_variable * last;
 	} unused_variables;
-	
-	struct {
-		struct jive_label_internal * first;
-		struct jive_label_internal * last;
-	} labels;
 	
 	bool resources_fully_assigned;
 	bool normalized;
@@ -104,8 +98,6 @@ struct jive_graph {
 	jive_ssavar_output_notifier_slot on_ssavar_unassign_output;
 	jive_ssavar_divert_notifier_slot on_ssavar_divert_origin;
 	jive_ssavar_variable_notifier_slot on_ssavar_variable_change;
-	
-	jive_label_notifier_slot on_label_create;
 };
 
 JIVE_EXPORTED_INLINE struct jive_region *

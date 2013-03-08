@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -22,8 +22,6 @@ struct jive_objdef_node_attrs {
 	jive_node_attrs base;
 	char * name;
 	const struct jive_linker_symbol * symbol;
-	struct jive_label * start;
-	struct jive_label * end;
 };
 
 struct jive_objdef_node {
@@ -50,18 +48,6 @@ JIVE_EXPORTED_INLINE const char *
 jive_objdef_node_get_name(const jive_objdef_node * node)
 {
 	return node->attrs.name;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_label *
-jive_objdef_node_get_start_label(const jive_objdef_node * node)
-{
-	return node->attrs.start;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_label *
-jive_objdef_node_get_end_label(const jive_objdef_node * node)
-{
-	return node->attrs.end;
 }
 
 #endif

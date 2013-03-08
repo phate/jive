@@ -177,9 +177,6 @@ jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node);
 jive_seq_region *
 jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region);
 
-jive_seq_point *
-jive_seq_graph_map_label_internal(const jive_seq_graph * self, const jive_label_internal * label);
-
 /* inheritable methods */
 void
 jive_seq_point_fini_(jive_seq_point * self);

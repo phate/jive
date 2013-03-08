@@ -18,7 +18,6 @@ struct jive_variable;
 struct jive_ssavar;
 struct jive_resource_class;
 struct jive_resource_name;
-struct jive_label_internal;
 
 typedef struct jive_notifier jive_notifier;
 typedef struct jive_notifier_class jive_notifier_class;
@@ -547,36 +546,5 @@ jive_gate_notifier_slot_connect(jive_gate_notifier_slot * self, jive_gate_notifi
 
 void
 jive_gate_notifier_slot_call(const jive_gate_notifier_slot * self, struct jive_gate * first, struct jive_gate * second);
-
-/* label notifiers */
-
-typedef void (*jive_label_notifier_function)(void * closure, struct jive_label_internal * label);
-typedef struct jive_label_notifier jive_label_notifier;
-typedef struct jive_label_notifier_slot jive_label_notifier_slot;
-
-struct jive_label_notifier_slot {
-	struct {
-		jive_label_notifier * first;
-		jive_label_notifier * last;
-	} notifiers;
-	struct jive_context * context;
-};
-
-JIVE_EXPORTED_INLINE void
-jive_label_notifier_slot_init(jive_label_notifier_slot * self, jive_context * context)
-{
-	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
-}
-
-void
-jive_label_notifier_slot_fini(jive_label_notifier_slot * self);
-
-jive_notifier *
-jive_label_notifier_slot_connect(jive_label_notifier_slot * self, jive_label_notifier_function function, void * closure);
-
-void
-jive_label_notifier_slot_call(const jive_label_notifier_slot * self, struct jive_label_internal * label);
-
 
 #endif

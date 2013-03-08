@@ -237,11 +237,6 @@ jive_seq_graph_convert_label(
 		result.type = jive_seq_label_type_internal;
 		result.internal = current;
 		current->local_symbol = true;
-	} else if (jive_label_isinstance(label, &JIVE_LABEL_INTERNAL)) {
-		result.type = jive_seq_label_type_internal;
-		result.internal = jive_seq_graph_map_label_internal(self,
-			(const jive_label_internal *) label);
-		result.internal->local_symbol = true;
 	} else if (jive_label_isinstance(label, &JIVE_LABEL_EXTERNAL)) {
 		result.type = jive_seq_label_type_external;
 		result.external = ((const jive_label_external *) label)->symbol;
@@ -341,35 +336,6 @@ jive_seq_graph_destroy(jive_seq_graph * seq)
 	jive_seq_region_hash_fini(&seq->region_map);
 	
 	jive_context_free(seq->context, seq);
-}
-
-jive_seq_point *
-jive_seq_graph_map_label_internal(const jive_seq_graph * self, const jive_label_internal * label_)
-{
-	if (jive_label_isinstance((const jive_label *)label_, &JIVE_LABEL_NODE)) {
-		const jive_label_node * label = (const jive_label_node *) label_;
-		return jive_seq_graph_map_node(self, label->node);
-	} else if (jive_label_isinstance((const jive_label *)label_, &JIVE_LABEL_REGION_START)) {
-		const jive_label_region * label = (const jive_label_region *) label_;
-		jive_seq_region * seq_region = jive_seq_graph_map_region(self, label->region);
-		if (seq_region) {
-			return seq_region->first_point;
-		} else {
-			return 0;
-		}
-	} else if (jive_label_isinstance((const jive_label *)label_, &JIVE_LABEL_REGION_END)) {
-		const jive_label_region * label = (const jive_label_region *) label_;
-		jive_seq_region * seq_region = jive_seq_graph_map_region(self, label->region);
-		if (seq_region) {
-			return seq_region->last_point;
-		} else {
-			return 0;
-		}
-	} else {
-		/* there must not be other types of internal labels */
-		JIVE_DEBUG_ASSERT(false);
-		return 0;
-	}
 }
 
 static void

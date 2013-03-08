@@ -94,4 +94,3 @@ MAKE_NOTIFIER(ssavar_output, SSAVAR_OUTPUT, WRAP(struct jive_ssavar * ssavar, st
 MAKE_NOTIFIER(ssavar_input, SSAVAR_INPUT, WRAP(struct jive_ssavar * ssavar, struct jive_input * input), WRAP(ssavar, input))
 
 MAKE_NOTIFIER(gate, GATE, WRAP(struct jive_gate * first, struct jive_gate * second), WRAP(first, second))
-MAKE_NOTIFIER(label, LABEL, WRAP(struct jive_label_internal * label), WRAP(label))

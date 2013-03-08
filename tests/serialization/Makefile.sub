@@ -2,6 +2,5 @@ TESTS += \
 	serialization/test-bitstring-serialization \
 	serialization/test-grammar \
 	serialization/test-i386-serialization \
-	serialization/test-label-serialization \
 	serialization/test-region-serialization \
 	serialization/test-rescls-serialization \

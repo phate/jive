@@ -15,9 +15,6 @@
 struct jive_graph;
 struct jive_immediate;
 struct jive_input;
-struct jive_label_internal;
-struct jive_label_node;
-struct jive_label_region;
 struct jive_node;
 struct jive_output;
 struct jive_region;
@@ -202,54 +199,6 @@ bool
 jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	jive_token_istream * is, struct jive_region * region, struct jive_node ** node);
 
-/* label_node := 'node' identifier */
-
-void
-jive_serialize_label_node(jive_serialization_driver * self,
-	jive_serialization_namegen * namegen,
-	struct jive_label_node * label, jive_token_ostream * os);
-
-bool
-jive_deserialize_label_node(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive_graph * graph,
-	struct jive_label_node ** label);
-
-/* label_region_start := 'region_start' identifier */
-
-void
-jive_serialize_label_region_start(jive_serialization_driver * self,
-	jive_serialization_namegen * namegen,
-	struct jive_label_region * label, jive_token_ostream * os);
-
-bool
-jive_deserialize_label_region_start(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive_graph * graph,
-	struct jive_label_region ** label);
-
-/* label_region_end := 'region_end' identifier */
-
-void
-jive_serialize_label_region_end(jive_serialization_driver * self,
-	jive_serialization_namegen * namegen,
-	struct jive_label_region * label, jive_token_ostream * os);
-
-bool
-jive_deserialize_label_region_end(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive_graph * graph,
-	struct jive_label_region ** label);
-
-/* labelintexpr := ( label_node | label_region_start | label_region_end ) */
-
-void
-jive_serialize_labelintexpr(jive_serialization_driver * self,
-	jive_serialization_namegen * namegen,
-	struct jive_label_internal * label, jive_token_ostream * os);
-
-bool
-jive_deserialize_labelintexpr(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive_graph * graph,
-	struct jive_label_internal ** label);
-
 /* label := ('.' | 'frameptr' | 'stackptr' | defined_label) */
 
 void
@@ -271,17 +220,11 @@ bool
 jive_deserialize_immediate(jive_serialization_driver * self,
 	jive_token_istream * is, struct jive_immediate * imm);
 
-/* def := labeldef | nodedef | gatedef | regiondef */
-/* labeldef := new_label_id '=' 'label' labelintexpr ';' */
+/* def := nodedef | gatedef | regiondef */
 /* nodedef := new_node_id '=' 'node' node_expr ';' */
 /* gatedef := new_gate_id '=' 'gate' gate_expr ';' */
 /* regiondef := 'region' '{' regionbody '}' */
 /* regionbody := [def [def...]] */
-
-void
-jive_serialize_labeldef(jive_serialization_driver * self,
-	jive_serialization_namegen * namegen,
-	struct jive_label_internal * label, jive_token_ostream * os);
 
 void
 jive_serialize_nodedef(jive_serialization_driver * self,

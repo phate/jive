@@ -22,8 +22,8 @@ struct jive_anon_label {
 	} hash_chain;
 };
 
-JIVE_DECLARE_HASH_TYPE(jive_anon_label_hash, jive_anon_label, const jive_label_internal *, symbol, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_anon_label_hash, jive_anon_label, const jive_label_internal *, symbol, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_anon_label_hash, jive_anon_label, const void *, symbol, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_anon_label_hash, jive_anon_label, const void *, symbol, hash_chain);
 
 struct jive_label_name_mapper_simple {
 	jive_label_name_mapper base;

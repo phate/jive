@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -22,14 +22,10 @@ struct jive_region;
 
 typedef uint64_t jive_offset;
 
-typedef struct jive_label_class jive_label_class;
-typedef struct jive_label jive_label;
-typedef struct jive_label_internal_class jive_label_internal_class;
-typedef struct jive_label_internal jive_label_internal;
-typedef struct jive_label_node jive_label_node;
-typedef struct jive_label_region jive_label_region;
-typedef struct jive_label_external jive_label_external;
 typedef struct jive_address jive_address;
+typedef struct jive_label jive_label;
+typedef struct jive_label_class jive_label_class;
+typedef struct jive_label_external jive_label_external;
 
 struct jive_address {
 	jive_offset offset;
@@ -80,33 +76,6 @@ jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
 	return false;
 }
 
-struct jive_label_internal_class {
-	jive_label_class base;
-};
-
-extern const jive_label_internal_class JIVE_LABEL_INTERNAL_;
-#define JIVE_LABEL_INTERNAL (JIVE_LABEL_INTERNAL_.base)
-
-struct jive_label_internal {
-	jive_label base;
-	struct jive_graph * graph;
-	struct {
-		jive_label_internal * prev;
-		jive_label_internal * next;
-	} graph_label_list;
-	char * asmname;
-};
-
-struct jive_label_node {
-	jive_label_internal base;
-	struct jive_node * node;
-};
-
-struct jive_label_region {
-	jive_label_internal base;
-	struct jive_region * region;
-};
-
 struct jive_label_external {
 	jive_label base;
 	struct jive_context * context;
@@ -134,72 +103,6 @@ extern const jive_label_class JIVE_LABEL_FPOFFSET;
 extern const jive_label jive_label_spoffset;
 
 extern const jive_label_class JIVE_LABEL_SPOFFSET;
-
-/**
-	\brief Label where node is sequenced
-*/
-jive_label *
-jive_label_node_create(struct jive_node * node);
-
-/**
-	\brief Label where node is sequenced
-	
-	Node not specified until later -- dangerous function,
-	only to be used during serialization.
-*/
-jive_label_node *
-jive_label_node_create_dangling(struct jive_graph * graph);
-
-extern const jive_label_internal_class JIVE_LABEL_NODE_;
-#define JIVE_LABEL_NODE (JIVE_LABEL_NODE_.base)
-
-/**
-	\brief Label where start of region is sequenced
-	
-	Region not specified until later -- dangerous function,
-	only to be used during serialization.
-*/
-jive_label_region *
-jive_label_region_start_create_dangling(struct jive_graph * graph);
-
-/**
-	\brief Label where start of region is sequenced
-*/
-jive_label *
-jive_label_region_start_create(struct jive_region * region);
-
-/**
-	\brief Exported label where start of region is sequenced
-*/
-jive_label *
-jive_label_region_start_create_exported(struct jive_region * region, const char * name);
-
-extern const jive_label_internal_class JIVE_LABEL_REGION_START_;
-#define JIVE_LABEL_REGION_START (JIVE_LABEL_REGION_START_.base)
-
-/**
-	\brief Label where end of region is sequenced
-	
-	Region not specified until later -- dangerous function,
-	only to be used during serialization.
-*/
-jive_label_region *
-jive_label_region_end_create_dangling(struct jive_graph * graph);
-
-/**
-	\brief Label where end of region is sequenced
-*/
-jive_label *
-jive_label_region_end_create(struct jive_region * region);
-
-extern const jive_label_internal_class JIVE_LABEL_REGION_END_;
-#define JIVE_LABEL_REGION_END (JIVE_LABEL_REGION_END_.base)
-
-/**
-	\brief Exported label where end of region is sequenced
-*/
-jive_label *
-jive_label_region_end_create_exported(struct jive_region * region, const char * name);
 
 extern const jive_label_class JIVE_LABEL_EXTERNAL;
 

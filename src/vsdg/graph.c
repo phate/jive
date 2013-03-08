@@ -24,7 +24,6 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	self->unused_variables.first = self->unused_variables.last = 0;
 	self->bottom.first = self->bottom.last = 0;
 	self->gates.first = self->gates.last = 0;
-	self->labels.first = self->labels.last = 0;
 	self->resources_fully_assigned = false;
 	self->normalized = true;
 	self->floating_region_count = 0;
@@ -66,8 +65,6 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin, context);
 	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change, context);
 	
-	jive_label_notifier_slot_init(&self->on_label_create, context);
-	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	jive_region_init_(self->root_region, self, 0);
 	
@@ -87,12 +84,6 @@ prune_regions_recursive(jive_region * region)
 static void
 jive_graph_fini_(jive_graph * self)
 {
-	while(self->labels.first) {
-		jive_label_internal * label = self->labels.first;
-		label->base.class_->fini(&label->base);
-		jive_context_free(self->context, label);
-	}
-	
 	while(self->bottom.first) {
 		jive_graph_prune(self);
 		jive_node * node;
@@ -153,8 +144,6 @@ jive_graph_fini_(jive_graph * self)
 	jive_ssavar_output_notifier_slot_fini(&self->on_ssavar_unassign_output);
 	jive_ssavar_divert_notifier_slot_fini(&self->on_ssavar_divert_origin);
 	jive_ssavar_variable_notifier_slot_fini(&self->on_ssavar_variable_change);
-	
-	jive_label_notifier_slot_fini(&self->on_label_create);
 }
 
 jive_graph *
