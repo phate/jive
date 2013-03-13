@@ -9,17 +9,18 @@
 #include <stdint.h>
 
 #include <jive/arch/load.h>
-#include <jive/arch/store.h>
 #include <jive/arch/regvalue.h>
+#include <jive/arch/store.h>
 #include <jive/common.h>
 #include <jive/context.h>
+#include <jive/types/bitstring/arithmetic.h>
+#include <jive/types/float/flttype.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/valuetype.h>
-#include <jive/types/bitstring/arithmetic.h>
 
 typedef struct jive_regselector_option jive_regselector_option;
 
@@ -42,7 +43,8 @@ jive_regselector_option_create_(const jive_negotiator * self)
 }
 
 static bool
-jive_regselector_option_equals_(const jive_negotiator * self, const jive_negotiator_option * o1_, const jive_negotiator_option * o2_)
+jive_regselector_option_equals_(const jive_negotiator * self, const jive_negotiator_option * o1_,
+	const jive_negotiator_option * o2_)
 {
 	const jive_regselector_option * o1 = (const jive_regselector_option *) o1_;
 	const jive_regselector_option * o2 = (const jive_regselector_option *) o2_;
@@ -67,7 +69,8 @@ jive_regselector_option_specialize_(const jive_negotiator * self, jive_negotiato
 }
 
 static bool
-jive_regselector_option_intersect_(const jive_negotiator * self, jive_negotiator_option * dst_, const jive_negotiator_option * src_)
+jive_regselector_option_intersect_(const jive_negotiator * self, jive_negotiator_option * dst_,
+	const jive_negotiator_option * src_)
 {
 	jive_regselector_option * dst = (jive_regselector_option *) dst_;
 	const jive_regselector_option * src = (const jive_regselector_option *) src_;
@@ -80,7 +83,8 @@ jive_regselector_option_intersect_(const jive_negotiator * self, jive_negotiator
 }
 
 static bool
-jive_regselector_option_assign_(const jive_negotiator * self, jive_negotiator_option * dst_, const jive_negotiator_option * src_)
+jive_regselector_option_assign_(const jive_negotiator * self, jive_negotiator_option * dst_,
+	const jive_negotiator_option * src_)
 {
 	jive_regselector_option * dst = (jive_regselector_option *) dst_;
 	const jive_regselector_option * src = (const jive_regselector_option *) src_;
@@ -113,7 +117,22 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		jive_regselector_option option;
 		option.mask = jive_regselector_classify_regcls(self, regcls);
 		jive_negotiator_annotate_simple_output(&self->base, node->outputs[0], &option.base);
-	} else if (jive_node_isinstance(node, &JIVE_BITBINARY_NODE) || (jive_node_isinstance(node, &JIVE_BITUNARY_NODE))) {
+	} else if (jive_node_isinstance(node, &JIVE_FLTBINARY_NODE) ||
+		(jive_node_isinstance(node, &JIVE_FLTUNARY_NODE))) {
+		jive_regselector_option option;
+		const jive_fltbinary_operation_class * cls;
+		cls = (const jive_fltbinary_operation_class *) node->class_;
+		option.mask = jive_reg_classifier_classify_float_arithmetic(self->classifier, cls->type);
+		jive_negotiator_annotate_identity_node(&self->base, node, &option.base);
+	} else if (jive_node_isinstance(node, &JIVE_FLTCOMPARISON_NODE)) {
+		jive_regselector_option option;
+		const jive_fltcomparison_operation_class * cls;
+		cls = (const jive_fltcomparison_operation_class *) node->class_;
+		option.mask = jive_reg_classifier_classify_float_compare(self->classifier, cls->type);
+
+		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option.base);
+	} else if (jive_node_isinstance(node, &JIVE_BITBINARY_NODE)
+		|| (jive_node_isinstance(node, &JIVE_BITUNARY_NODE))) {
 		jive_regselector_option option;
 		const jive_bitstring_type * type;
 		type = (const jive_bitstring_type *) jive_output_get_type(node->outputs[0]);
@@ -121,7 +140,8 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_bitbinary_operation_class * cls;
 		cls = (const jive_bitbinary_operation_class *) node->class_;
 		
-		option.mask = jive_reg_classifier_classify_fixed_arithmetic(self->classifier, cls->type, type->nbits);
+		option.mask = jive_reg_classifier_classify_fixed_arithmetic(self->classifier, cls->type,
+			type->nbits);
 		
 		jive_negotiator_annotate_identity_node(&self->base, node, &option.base);
 	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
@@ -131,7 +151,8 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		
 		const jive_bitcomparison_operation_class * cls;
 		cls = (const jive_bitcomparison_operation_class *) node->class_;
-		option.mask = jive_reg_classifier_classify_fixed_compare(self->classifier, cls->type, type->nbits);
+		option.mask = jive_reg_classifier_classify_fixed_compare(self->classifier, cls->type,
+			type->nbits);
 		
 		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option.base);
 	} else if (jive_node_isinstance(node, &JIVE_LOAD_NODE)) {
@@ -185,13 +206,15 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 }
 
 static bool
-jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negotiator_option * dst, const jive_gate * gate)
+jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negotiator_option * dst,
+	const jive_gate * gate)
 {
 	if (!jive_gate_isinstance(gate, &JIVE_VALUE_GATE))
 		return false;
 	jive_regselector * self = (jive_regselector *) self_;
 	jive_regselector_option * option = (jive_regselector_option *) dst;
-	option->mask = jive_reg_classifier_classify_type(self->classifier, jive_gate_get_type(gate), gate->required_rescls);
+	option->mask = jive_reg_classifier_classify_type(self->classifier, jive_gate_get_type(gate),
+		gate->required_rescls);
 	return !!option->mask;
 }
 
@@ -336,7 +359,8 @@ jive_regselector_pull(jive_regselector * self)
 }
 
 void
-jive_regselector_init(jive_regselector * self, struct jive_graph * graph, const jive_reg_classifier * classifier)
+jive_regselector_init(jive_regselector * self, struct jive_graph * graph,
+	const jive_reg_classifier * classifier)
 {
 	jive_negotiator_init_(&self->base, &JIVE_REGSELECTOR_CLASS, graph);
 	self->classifier = classifier;

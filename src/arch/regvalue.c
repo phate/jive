@@ -12,8 +12,8 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 
 static void
@@ -58,23 +58,14 @@ jive_regvalue_node_init_(
 	const jive_register_class * regcls,
 	jive_output * value)
 {
-	if (!jive_output_isinstance(value, &JIVE_BITSTRING_OUTPUT)) {
-		jive_context_fatal_error(region->graph->context, "Type mismatch: regvalue node requires bitstring operand");
-	}
-	size_t nbits = ((jive_bitstring_output *)value)->type.nbits;
-	
-	if (nbits != regcls->nbits) {
-		jive_context_fatal_error(region->graph->context, "Type mismatch: size of value must match register size");
-	}
-	
 	JIVE_DECLARE_CONTROL_TYPE(ctl_type);
-	JIVE_DECLARE_BITSTRING_TYPE(bitstring_type, nbits);
-	const jive_type * operand_types[] = {ctl_type, bitstring_type};
+	const jive_type * vtype = jive_output_get_type(value);
+	const jive_type * operand_types[] = {ctl_type, vtype};
 	jive_output * operands[] = {ctl, value};
 	
 	jive_node_init_(&self->base, region,
 		2, operand_types, operands,
-		1, &bitstring_type);
+		1, &vtype);
 	
 	self->attrs.regcls = regcls;
 	self->base.outputs[0]->required_rescls = &regcls->base;
