@@ -3,89 +3,104 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall -Werror -Wfatal-errors -g
+CFLAGS+=-Wall -Werror -Wfatal-errors -g --std=gnu99
 
 # VSDG core
-LIBJIVE_SRC = src/context.c \
+LIBJIVE_SRC = \
 	src/collector.c \
-	src/vsdg/node.c src/vsdg/region.c src/vsdg/graph.c src/vsdg/notifiers.c src/vsdg/variable.c src/vsdg/resource.c \
-	src/vsdg/gate-interference.c src/vsdg/control.c \
+	src/context.c \
+	src/vsdg/anchor.c \
+	src/vsdg/anchortype.c \
+	src/vsdg/basetype.c \
+	src/vsdg/control.c \
+	src/vsdg/controltype.c \
+	src/vsdg/equivalence.c \
 	src/vsdg/gamma.c \
+	src/vsdg/gate-interference.c \
+	src/vsdg/graph.c \
+	src/vsdg/label.c \
+	src/vsdg/negotiator.c \
+	src/vsdg/node.c \
+	src/vsdg/notifiers.c \
+	src/vsdg/objdef.c \
 	src/vsdg/operators.c \
+	src/vsdg/operators/binary.c \
 	src/vsdg/operators/nullary.c \
 	src/vsdg/operators/unary.c \
-	src/vsdg/operators/binary.c \
-	src/vsdg/basetype.c src/vsdg/statetype.c src/vsdg/valuetype.c src/vsdg/anchortype.c src/vsdg/anchor.c \
-	src/vsdg/controltype.c \
+	src/vsdg/phi.c \
+	src/vsdg/region.c \
+	src/vsdg/resource.c \
+	src/vsdg/splitnode.c \
+	src/vsdg/statetype.c \
+	src/vsdg/substitution.c \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
-	src/vsdg/negotiator.c \
-	src/vsdg/substitution.c \
-	src/vsdg/label.c \
-	src/vsdg/objdef.c \
-	src/vsdg/splitnode.c \
-	src/vsdg/equivalence.c \
-	src/vsdg/phi.c \
+	src/vsdg/valuetype.c \
+	src/vsdg/variable.c \
 
 # visualization
 LIBJIVE_SRC += \
-	src/util/textcanvas.c src/util/buffer.c \
-	src/view/nodeview.c src/view/regionview.c src/view/graphview.c src/view.c \
+	src/util/buffer.c \
+	src/util/textcanvas.c \
+	src/view.c \
+	src/view/graphview.c \
+	src/view/nodeview.c \
+	src/view/regionview.c \
 	src/view/reservationtracker.c  \
 
 # bitstrings
 LIBJIVE_SRC += \
-	src/types/bitstring/type.c \
-	src/types/bitstring/constant.c \
-	src/types/bitstring/symbolic-constant.c \
-	src/types/bitstring/slice.c \
-	src/types/bitstring/concat.c \
 	src/types/bitstring/arithmetic/bitand.c \
-	src/types/bitstring/arithmetic/bitor.c \
-	src/types/bitstring/arithmetic/bitxor.c \
-	src/types/bitstring/arithmetic/bitnot.c \
-	src/types/bitstring/arithmetic/bitnegate.c \
-	src/types/bitstring/arithmetic/bitsum.c \
+	src/types/bitstring/arithmetic/bitashr.c \
 	src/types/bitstring/arithmetic/bitdifference.c \
+	src/types/bitstring/arithmetic/bitnegate.c \
+	src/types/bitstring/arithmetic/bitnot.c \
+	src/types/bitstring/arithmetic/bitor.c \
 	src/types/bitstring/arithmetic/bitproduct.c \
 	src/types/bitstring/arithmetic/bitshiproduct.c \
-	src/types/bitstring/arithmetic/bituhiproduct.c \
-	src/types/bitstring/arithmetic/bitsquotient.c \
-	src/types/bitstring/arithmetic/bituquotient.c \
-	src/types/bitstring/arithmetic/bitumod.c \
-	src/types/bitstring/arithmetic/bitsmod.c \
 	src/types/bitstring/arithmetic/bitshl.c \
 	src/types/bitstring/arithmetic/bitshr.c \
-	src/types/bitstring/arithmetic/bitashr.c \
+	src/types/bitstring/arithmetic/bitsmod.c \
+	src/types/bitstring/arithmetic/bitsquotient.c \
+	src/types/bitstring/arithmetic/bitsum.c \
+	src/types/bitstring/arithmetic/bituhiproduct.c \
+	src/types/bitstring/arithmetic/bitumod.c \
+	src/types/bitstring/arithmetic/bituquotient.c \
+	src/types/bitstring/arithmetic/bitxor.c \
+	src/types/bitstring/bitoperation-classes.c \
 	src/types/bitstring/comparison/bitequal.c \
 	src/types/bitstring/comparison/bitnotequal.c \
-	src/types/bitstring/comparison/bitsless.c \
-	src/types/bitstring/comparison/bituless.c \
-	src/types/bitstring/comparison/bitslesseq.c \
-	src/types/bitstring/comparison/bitulesseq.c \
 	src/types/bitstring/comparison/bitsgreater.c \
-	src/types/bitstring/comparison/bitugreater.c \
 	src/types/bitstring/comparison/bitsgreatereq.c \
+	src/types/bitstring/comparison/bitsless.c \
+	src/types/bitstring/comparison/bitslesseq.c \
+	src/types/bitstring/comparison/bitugreater.c \
 	src/types/bitstring/comparison/bitugreatereq.c \
-	src/types/bitstring/bitoperation-classes.c \
+	src/types/bitstring/comparison/bituless.c \
+	src/types/bitstring/comparison/bitulesseq.c \
+	src/types/bitstring/concat.c \
+	src/types/bitstring/constant.c \
+	src/types/bitstring/slice.c \
+	src/types/bitstring/symbolic-constant.c \
+	src/types/bitstring/type.c \
 
 # floats
 LIBJIVE_SRC += \
-	src/types/float/flttype.c \
-	src/types/float/fltconstant.c	\
-	src/types/float/fltoperation-classes.c \
-	src/types/float/arithmetic/fltsum.c \
 	src/types/float/arithmetic/fltdifference.c \
+	src/types/float/arithmetic/fltnegate.c \
 	src/types/float/arithmetic/fltproduct.c \
 	src/types/float/arithmetic/fltquotient.c \
-	src/types/float/arithmetic/fltnegate.c \
+	src/types/float/arithmetic/fltsum.c \
+	src/types/float/comparison/fltequal.c \
+	src/types/float/comparison/fltgreater.c \
+	src/types/float/comparison/fltgreatereq.c \
 	src/types/float/comparison/fltless.c \
 	src/types/float/comparison/fltlesseq.c \
-	src/types/float/comparison/fltequal.c \
 	src/types/float/comparison/fltnotequal.c \
-	src/types/float/comparison/fltgreatereq.c \
-	src/types/float/comparison/fltgreater.c \
+	src/types/float/fltconstant.c \
+	src/types/float/fltoperation-classes.c \
+	src/types/float/flttype.c \
 
 # reals
 LIBJIVE_SRC += \
@@ -106,22 +121,22 @@ LIBJIVE_SRC += \
 
 # records
 LIBJIVE_SRC += \
-	src/types/record/rcdtype.c \
 	src/types/record/rcdgroup.c \
 	src/types/record/rcdselect.c \
+	src/types/record/rcdtype.c \
 
 # unions
 LIBJIVE_SRC += \
+	src/types/union/unnchoose.c \
 	src/types/union/unntype.c \
 	src/types/union/unnunify.c \
-	src/types/union/unnchoose.c \
 
 # functions
 LIBJIVE_SRC += \
-	src/types/function/fcttype.c \
-	src/types/function/fctlambda.c \
 	src/types/function/fctapply.c \
+	src/types/function/fctlambda.c \
 	src/types/function/fctsymbolic.c \
+	src/types/function/fcttype.c \
 
 # arch definitions
 LIBJIVE_SRC += \
