@@ -19,21 +19,6 @@
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
 
-static inline void
-jive_node_add_register_input(jive_node * node, const jive_register_class * regcls, jive_output * origin)
-{
-	const jive_type * type = jive_register_class_get_type(regcls);
-	jive_input * retval = jive_node_add_input(node, type, origin);
-	retval->required_rescls = &regcls->base;
-}
-
-static inline void
-jive_function_region_callee_saved(jive_region * region, const jive_register_class * regcls)
-{
-	jive_gate * save_gate = jive_register_class_create_gate(regcls, region->graph, regcls->base.name);
-	jive_node_gate_input(region->bottom, save_gate, jive_node_gate_output(region->top, save_gate));
-}
-
 /* convert according to "default" ABI */
 jive_subroutine *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
