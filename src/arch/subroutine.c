@@ -1,10 +1,11 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/subroutine.h>
 #include <jive/arch/subroutine-private.h>
+#include <jive/arch/subroutine.h>
 
 #include <string.h>
 
@@ -233,11 +234,11 @@ jive_subroutine_node_create_(struct jive_region * region, const jive_node_attrs 
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	JIVE_DEBUG_ASSERT(operands[0]->node->region->parent == region);
 	jive_region * subroutine_region = operands[0]->node->region;
-		
+	
 	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
 	
 	jive_subroutine * subroutine = attrs->subroutine;
-	subroutine = subroutine->class_->copy(subroutine, subroutine_region->top, subroutine_region->bottom);
+	subroutine = jive_subroutine_copy(subroutine, subroutine_region->top, subroutine_region->bottom);
 	
 	return jive_subroutine_node_create(operands[0]->node->region, subroutine);
 }
@@ -296,18 +297,26 @@ jive_subroutine_create_region_and_nodes(jive_subroutine * subroutine, jive_regio
 {
 	jive_region * subroutine_region = jive_region_create_subregion(parent_region);
 	subroutine_region->attrs.section = jive_region_section_code;
-	jive_subroutine_leave_node_create(subroutine_region, jive_subroutine_enter_node_create(subroutine_region)->outputs[0]);
+	jive_subroutine_leave_node_create(
+		subroutine_region,
+		jive_subroutine_enter_node_create(subroutine_region)->outputs[0]);
 	jive_subroutine_node_create(subroutine_region, subroutine);
 	subroutine->region = subroutine_region;
 }
 
 jive_subroutine_passthrough
-jive_subroutine_create_passthrough(jive_subroutine * subroutine, const jive_resource_class * cls, const char * name)
+jive_subroutine_create_passthrough(
+	jive_subroutine * subroutine,
+	const jive_resource_class * cls,
+	const char * name)
 {
 	jive_subroutine_passthrough passthrough;
-	passthrough.gate = jive_resource_class_create_gate(cls, subroutine->subroutine_node->base.region->graph, name);
-	passthrough.output = jive_node_gate_output(&subroutine->enter->base, passthrough.gate);
-	passthrough.input = jive_node_gate_input(&subroutine->leave->base, passthrough.gate, passthrough.output);
+	passthrough.gate = jive_resource_class_create_gate(
+		cls, subroutine->subroutine_node->base.region->graph, name);
+	passthrough.output = jive_node_gate_output(
+		&subroutine->enter->base, passthrough.gate);
+	passthrough.input = jive_node_gate_input(
+		&subroutine->leave->base, passthrough.gate, passthrough.output);
 	return passthrough;
 }
 
@@ -331,9 +340,95 @@ jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * n
 	return NULL;
 }
 
+jive_subroutine *
+jive_subroutine_copy(const jive_subroutine * self,
+	jive_node * new_enter_node, jive_node * new_leave_node)
+{
+	jive_graph * graph = new_enter_node->region->graph;
+	jive_context * context = graph->context;
+	
+	jive_subroutine * other = jive_context_malloc(context, sizeof(*other));
+	jive_subroutine_init_(other, self->class_, context,
+		self->nparameters, self->parameter_types,
+		self->nreturns, self->return_types,
+		self->npassthroughs);
+
+	other->enter = (jive_subroutine_enter_node *) new_enter_node;
+	other->leave = (jive_subroutine_leave_node *) new_leave_node;
+	
+	size_t n;
+	
+	for (n = 0; n < self->nparameters; n++) {
+		jive_gate * old_gate = self->parameters[n];
+		jive_gate * new_gate = NULL;
+		
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->enter->base, new_enter_node);
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->leave->base, new_leave_node);
+		if (!new_gate)
+			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
+		
+		other->parameters[n] = new_gate;
+	}
+	
+	for (n = 0; n < self->nreturns; n++) {
+		jive_gate * old_gate = self->returns[n];
+		jive_gate * new_gate = NULL;
+		
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->enter->base, new_enter_node);
+		if (!new_gate)
+			new_gate = jive_subroutine_match_gate(old_gate, &self->leave->base, new_leave_node);
+		if (!new_gate)
+			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
+		
+		other->returns[n] = new_gate;
+	}
+	
+	for (n = 0; n < self->npassthroughs; ++n) {
+		jive_subroutine_match_passthrough(
+			self, &self->passthroughs[n],
+			other, &other->passthroughs[n]);
+	}
+	
+	return other;
+}
+
+jive_subroutine *
+jive_subroutine_create_takeover(
+	jive_context * context, const jive_subroutine_class * class_,
+	size_t nparameters, jive_gate * const parameters[],
+	size_t nreturns, jive_gate * const returns[],
+	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[])
+{
+	/* FIXME: set parameter/return_types properly, add support in deserialization */
+	jive_argument_type parameter_types[nparameters];
+	jive_argument_type return_types[nreturns];
+
+	jive_subroutine * self = jive_context_malloc(context, sizeof(*self));
+	jive_subroutine_init_(self, class_, context,
+		nparameters, parameter_types, nreturns, return_types, npassthroughs);
+	self->frame.upper_bound = 4;
+	
+	size_t n;
+	
+	for (n = 0; n < nparameters; n++)
+		self->parameters[n] = parameters[n];
+	
+	for (n = 0; n < nreturns; n++)
+		self->returns[n] = returns[n];
+	
+	for (n = 0; n < npassthroughs; n++) {
+		self->passthroughs[n] = passthroughs[n];
+	}
+
+	return self;
+}
+
 void
 jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
-	jive_context * context, const struct jive_instructionset * instructionset,
+	jive_context * context,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[],
 	size_t npassthroughs)
@@ -353,7 +448,6 @@ jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
 	self->frame.frame_pointer_offset = 0;
 	self->frame.stack_pointer_offset = 0;
 	self->frame.call_area_size = 0;
-	self->instructionset = instructionset;
 	
 	size_t n;
 	

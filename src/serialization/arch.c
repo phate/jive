@@ -406,8 +406,8 @@ jive_subroutine_deserialize(
 		passthroughs[n].input = jive_node_get_gate_input(leave, gate);
 	}
 	
-	jive_subroutine * subroutine = jive_i386_subroutine_create_takeover(
-		driver->context,
+	jive_subroutine * subroutine = jive_subroutine_create_takeover(
+		driver->context, &JIVE_I386_SUBROUTINE,
 		nparameters, parameters,
 		nreturns, returns,
 		npassthroughs, passthroughs);

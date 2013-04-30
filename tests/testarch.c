@@ -485,61 +485,10 @@ jive_testarch_subroutine_value_return_(jive_subroutine * self_, size_t index, ji
 
 extern const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE;
 
-static jive_subroutine *
-jive_testarch_subroutine_copy_(const jive_subroutine * self_,
-	jive_node * new_enter_node, jive_node * new_leave_node)
-{
-	jive_graph * graph = new_enter_node->region->graph;
-	jive_context * context = graph->context;
-	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
-	
-	jive_testarch_subroutine * other = jive_context_malloc(context, sizeof(*other));
-	jive_subroutine_init_(&other->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
-		self->base.nparameters, self->base.parameter_types,
-		self->base.nreturns, self->base.return_types, 1);
-	
-	other->base.enter = (jive_subroutine_enter_node *) new_enter_node;
-	other->base.leave = (jive_subroutine_leave_node *) new_leave_node;
-	
-	size_t n;
-	
-	for (n = 0; n < self->base.nparameters; n++) {
-		jive_gate * old_gate = self->base.parameters[n];
-		jive_gate * new_gate = NULL;
-		
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->base.enter->base, new_enter_node);
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->base.leave->base, new_leave_node);
-		if (!new_gate)
-			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
-		
-		other->base.parameters[n] = new_gate;
-	}
-	
-	for (n = 0; n < self->base.nreturns; n++) {
-		jive_gate * old_gate = self->base.returns[n];
-		jive_gate * new_gate = NULL;
-		
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->base.enter->base, new_enter_node);
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->base.leave->base, new_leave_node);
-		if (!new_gate)
-			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
-		
-		other->base.returns[n] = new_gate;
-	}
-	
-	jive_subroutine_match_passthrough(
-		&self->base, &self->base.passthroughs[0], &other->base, &other->base.passthroughs[0]);
-	
-	return &other->base;
-}
-
 static void
 jive_testarch_subroutine_prepare_stackframe_(
-	jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
+	jive_subroutine * self,
+	const jive_subroutine_late_transforms * xfrm)
 {
 }
 
@@ -547,8 +496,8 @@ const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
 	.fini = jive_subroutine_fini_,
 	.value_parameter = jive_testarch_subroutine_value_parameter_,
 	.value_return = jive_testarch_subroutine_value_return_,
-	.copy = jive_testarch_subroutine_copy_,
-	.prepare_stackframe = jive_testarch_subroutine_prepare_stackframe_
+	.prepare_stackframe = jive_testarch_subroutine_prepare_stackframe_,
+	.instructionset = &testarch_isa
 };
 
 jive_subroutine *
@@ -559,7 +508,7 @@ jive_testarch_subroutine_create(jive_region * region,
 	jive_graph * graph = region->graph;
 	jive_context * context = graph->context;
 	jive_testarch_subroutine * self = jive_context_malloc(context, sizeof(*self));
-	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context, &testarch_isa,
+	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context,
 		nparameters, parameter_types, nreturns, return_types, 1);
 	
 	size_t n;

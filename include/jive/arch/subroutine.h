@@ -11,9 +11,9 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
+struct jive_instructionset;
 struct jive_output;
 struct jive_region;
-struct jive_instructionset;
 
 extern const jive_node_class JIVE_SUBROUTINE_ENTER_NODE;
 extern const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE;
@@ -67,8 +67,8 @@ struct jive_subroutine_passthrough {
 	jive_input * input;
 };
 
-typedef struct jive_value_split_factory jive_value_split_factory;
 typedef struct jive_subroutine_late_transforms jive_subroutine_late_transforms;
+typedef struct jive_value_split_factory jive_value_split_factory;
 
 struct jive_value_split_factory {
 	jive_output * (*split)(const jive_value_split_factory * self, jive_output * value);
@@ -138,19 +138,16 @@ struct jive_subroutine {
 		/* size of argument area for calls */
 		size_t call_area_size;
 	} frame;
-	
-	const struct jive_instructionset * instructionset;
 };
 
 struct jive_subroutine_class {
 	void (*fini)(jive_subroutine * self);
 	jive_output * (*value_parameter)(jive_subroutine * self, size_t index);
 	jive_input * (*value_return)(jive_subroutine * self, size_t index, jive_output * value);
-	jive_subroutine * (*copy)(const jive_subroutine * self,
-		jive_node * new_enter_node, jive_node * new_leave_node);
 	void (*prepare_stackframe)(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm);
 	jive_input *(*add_fp_dependency)(const jive_subroutine * self, jive_node * node);
 	jive_input *(*add_sp_dependency)(const jive_subroutine * self, jive_node * node);
+	const struct jive_instructionset * instructionset;
 };
 
 void
@@ -175,7 +172,9 @@ jive_subroutine_objdef(const jive_subroutine * self)
 }
 
 JIVE_EXPORTED_INLINE void
-jive_subroutine_prepare_stackframe(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
+jive_subroutine_prepare_stackframe(
+	jive_subroutine * self,
+	const jive_subroutine_late_transforms * xfrm)
 {
 	return self->class_->prepare_stackframe(self, xfrm);
 }
@@ -219,7 +218,7 @@ jive_region_get_instructionset(const jive_region * region)
 			jive_subroutine_leave_node_cast(node);
 		if (!leave)
 			continue;
-		return leave->attrs.subroutine->instructionset;
+		return leave->attrs.subroutine->class_->instructionset;
 	}
 	return 0;
 }
