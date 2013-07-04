@@ -59,6 +59,9 @@ jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
 	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	
 	if (!self->ninputs) JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
+	if (self->ninputs == 0)
+		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
+
 	self->ninputs ++;
 	self->inputs = jive_context_realloc(self->graph->context, self->inputs,
 		sizeof(jive_input *) * self->ninputs);
@@ -80,6 +83,7 @@ jive_uninitialized_node_add_input(jive_node * self, const jive_type * type,
 
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(self->region->graph->root_region);
+	jive_region_verify_top_node_list(self->region->graph->root_region);
 #endif
 
 	return input;
@@ -111,6 +115,7 @@ jive_node_init_(
 	self->region = region;
 	
 	JIVE_LIST_PUSH_BACK(self->graph->top, self, graph_top_list);
+	JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 	
 	size_t n;
@@ -150,6 +155,8 @@ jive_node_fini_(jive_node * self)
 	
 	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
 	JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
+	JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
+
 	if (self == self->region->top) self->region->top = NULL;
 	if (self == self->region->bottom) self->region->bottom = NULL;
 	
@@ -279,6 +286,7 @@ jive_node_add_input(jive_node * self, const jive_type * type, jive_output * init
 
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(self->region->graph->root_region);
+	jive_region_verify_top_node_list(self->region->graph->root_region);
 #endif
 
 	return input;
@@ -558,9 +566,13 @@ jive_node_move(jive_node * self, jive_region * new_region)
 			"Node can only be moved along the region path to the root.");
 
 	size_t n;
-	/* remove all node inputs from the hull */
+	/* remove all node inputs from hull of old region and update notion of
+	top nodes of old region */
 	for (n = 0; n < self->ninputs; n++)
 		jive_region_hull_remove_input(self->region, self->inputs[n]);
+	if (self->ninputs == 0) {
+		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
+	}
 		
 	/* remove all node output users in new region from the hulls */
 	for (n = 0; n < self->noutputs; n++) {
@@ -569,11 +581,14 @@ jive_node_move(jive_node * self, jive_region * new_region)
 			jive_region_hull_remove_input(user->node->region, user);
 	}
 
+
 	/* move the node to the new region */
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	self->region = new_region;
 	JIVE_LIST_PUSH_BACK(self->region->nodes, self, region_nodes_list);
 
+	/* re-add all node inputs to hull of new region and update notion
+	of top nodes of new region */
 	for (n = 0; n < self->ninputs; n++) {
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
 		if (jive_input_isinstance(self->inputs[n], &JIVE_ANCHOR_INPUT)) {
@@ -584,6 +599,10 @@ jive_node_move(jive_node * self, jive_region * new_region)
 			jive_region_hull_add_input(new_region, self->inputs[n]);
 		}
 	}
+	if (self->ninputs == 0) {
+		JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
+	}
+
 
 	/* add all output users to the hulls */
 	for (n = 0; n < self->noutputs; n++) {

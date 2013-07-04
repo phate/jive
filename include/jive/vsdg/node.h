@@ -55,6 +55,11 @@ struct jive_node {
 		jive_node * prev;
 		jive_node * next;
 	} region_nodes_list;
+
+	struct {
+		jive_node * prev;
+		jive_node * next;
+	} region_top_node_list;
 	
 	struct {
 		jive_node * prev;

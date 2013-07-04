@@ -139,16 +139,28 @@ const jive_traverser_class JIVE_TOPDOWN_TRAVERSER = {
 };
 
 static void
+jive_topdown_traverser_init_top_nodes(jive_full_traverser * self, jive_region * region)
+{
+	jive_region * subregion;
+	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
+		jive_topdown_traverser_init_top_nodes(self, subregion);
+
+	jive_node * node;
+	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
+		jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
+}
+
+static void
 jive_topdown_traverser_init(jive_full_traverser * self, jive_graph * graph)
 {
 	self->base.class_ = &JIVE_TOPDOWN_TRAVERSER;
 	jive_full_traverser_init(self, graph);
-	jive_node * node;
-	JIVE_LIST_ITERATE(graph->top, node, graph_top_list) {
-		jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
-	}
-	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create, jive_topdown_traverser_node_create, self);
-	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_topdown_traverser_input_change, self);
+	jive_topdown_traverser_init_top_nodes(self, graph->root_region);
+
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create,
+		jive_topdown_traverser_node_create, self);
+	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(
+		&graph->on_input_change, jive_topdown_traverser_input_change, self);
 }
 
 jive_traverser *

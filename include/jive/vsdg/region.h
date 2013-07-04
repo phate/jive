@@ -66,10 +66,17 @@ struct jive_region {
 	jive_region * parent;
 	size_t depth;
 	struct jive_stackframe * stackframe;
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
 	} nodes;
+
+	struct {
+		struct jive_node * first;
+		struct jive_node * last;
+	} top_nodes;
+
 	struct {
 		jive_region * first;
 		jive_region * last;
@@ -242,6 +249,9 @@ jive_region_hull_remove_hull_from_parents(struct jive_region * region)
 #ifdef JIVE_DEBUG
 void
 jive_region_verify_hull(struct jive_region * region);
+
+void
+jive_region_verify_top_node_list(struct jive_region * region);
 #endif
 
 #endif

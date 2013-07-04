@@ -33,6 +33,7 @@ jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->stackframe = 0;
 	
 	self->nodes.first = self->nodes.last = 0;
+	self->top_nodes.first = self->top_nodes.last = 0;
 	self->subregions.first = self->subregions.last = 0;
 	self->hull.first = self->hull.last = 0;
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
@@ -422,6 +423,33 @@ jive_region_verify_hull(struct jive_region * region)
 	jive_region_hull_entry * entry;
 	JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
 		if (entry->input->origin->node->region->depth >= region->depth)
+			JIVE_DEBUG_ASSERT(0);
+	}
+}
+
+void
+jive_region_verify_top_node_list(struct jive_region * region)
+{
+	jive_region * subregion;
+	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
+		jive_region_verify_top_node_list(subregion);
+
+	/* check whether all nodes in the top_node_list are really nullary nodes */
+	jive_node * node;
+	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
+		JIVE_DEBUG_ASSERT(node->ninputs == 0);
+
+	/* check whether all nullary nodes from the region are in the top_node_list */
+	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list) {
+		if (node->ninputs != 0)
+			continue;
+
+		jive_node * top;
+		JIVE_LIST_ITERATE(region->top_nodes, top, region_top_node_list) {
+			if (top == node)
+				break;
+		}
+		if (top == NULL)
 			JIVE_DEBUG_ASSERT(0);
 	}
 }

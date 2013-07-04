@@ -176,6 +176,8 @@ jive_input_fini_(jive_input * self)
 	}
 	if (!self->node->ninputs)
 		JIVE_LIST_PUSH_BACK(self->node->graph->top, self->node, graph_top_list);
+	if (self->node->ninputs == 0)
+		JIVE_LIST_PUSH_BACK(self->node->region->top_nodes, self->node, region_top_node_list);
 
 	jive_region_hull_remove_input(self->node->region, self);
 }
