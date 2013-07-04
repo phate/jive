@@ -676,7 +676,7 @@ jive_node_cse_test(
 
 jive_node *
 jive_node_cse(
-	jive_graph * graph,
+	jive_region * region,
 	const jive_node_class * cls, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
@@ -689,8 +689,9 @@ jive_node_cse(
 		}
 	} else {
 		jive_node * node;
-		JIVE_LIST_ITERATE(graph->top, node, graph_top_list) {
-			if (jive_node_cse_test(node, cls, attrs, noperands, operands))
+		JIVE_LIST_ITERATE(region->graph->top, node, graph_top_list) {
+			if (jive_node_cse_test(node, cls, attrs, noperands, operands) &&
+				(jive_region_is_contained_by(region, node->region) || node->region == region))
 				return node;
 		}
 	}
@@ -794,7 +795,7 @@ jive_node_cse_create(const jive_node_normal_form * self, struct jive_region * re
 	
 	jive_node * node;
 	if (self->enable_mutable && self->enable_cse) {
-		node = jive_node_cse(region->graph, cls, attrs, noperands, operands);
+		node = jive_node_cse(region, cls, attrs, noperands, operands);
 		if (node)
 			return node;
 	}

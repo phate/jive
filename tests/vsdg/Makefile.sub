@@ -13,3 +13,4 @@ TESTS+=\
 	vsdg/test-ssavar-merge \
 	vsdg/test-statesplit \
 	vsdg/test-typemismatch \
+	vsdg/test-node_cse \

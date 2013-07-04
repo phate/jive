@@ -68,7 +68,7 @@ jive_load_node_normalize_node_(const jive_node_normal_form * self_, jive_node * 
 		for (n = 0; n < node->ninputs; n++)
 			operands[n] = node->inputs[n]->origin;
 
-		jive_node * new_node = jive_node_cse(node->region->graph, self->base.node_class, attrs,
+		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs,
 			node->ninputs, operands);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
@@ -91,7 +91,7 @@ jive_load_node_operands_are_normalized_(const jive_node_normal_form * self_, siz
 	if (!self->base.enable_mutable)
 		return true;
 
-	jive_graph * graph = operands[0]->node->graph;
+	jive_region * region = operands[0]->node->region;
 	const jive_node_class * cls = self->base.node_class;
 
 	if (self->enable_reducible) {
@@ -99,7 +99,7 @@ jive_load_node_operands_are_normalized_(const jive_node_normal_form * self_, siz
 			return false;
 	}
 
-	if (self->base.enable_cse && jive_node_cse(graph, cls, attrs, noperands, operands))
+	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))
 		return false;
 
 	return true;
@@ -125,7 +125,7 @@ jive_load_node_normalized_create_(const jive_load_node_normal_form * self,
 	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {
-		jive_node * node = jive_node_cse(region->graph, cls, attrs, noperands, operands);
+		jive_node * node = jive_node_cse(region, cls, attrs, noperands, operands);
 		if (node)
 			return node->outputs[0];
 	}

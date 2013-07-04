@@ -198,7 +198,7 @@ jive_binary_operation_normalized_create(
 	
 	jive_node * node = 0;
 	if (nf->base.enable_mutable && nf->base.enable_cse)
-		node = jive_node_cse(region->graph, cls_, attrs, noperands, operands);
+		node = jive_node_cse(region, cls_, attrs, noperands, operands);
 	if (node)
 		return node->outputs[0];
 	
@@ -279,7 +279,7 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 		jive_node * new_node = 0;
 		
 		if (self->base.enable_cse)
-			jive_node_cse(node->graph, &cls->base, attrs, noperands, operands);
+			jive_node_cse(node->region, &cls->base, attrs, noperands, operands);
 		
 		if (!new_node)
 			new_node = cls->base.create(node->region, attrs, noperands, operands);
@@ -469,7 +469,7 @@ jive_binary_operation_normalized_create_(
 	/* FIXME: attempt distributive transform */
 	
 	if (self->base.enable_mutable && self->base.enable_cse) {
-		jive_node * new_node = jive_node_cse(region->graph, &cls->base, attrs, noperands, operands);
+		jive_node * new_node = jive_node_cse(region, &cls->base, attrs, noperands, operands);
 		if (new_node) {
 			return new_node->outputs[0];
 		}

@@ -26,7 +26,7 @@ jive_phi_node_normal_form_normalize_node_(const jive_node_normal_form * self_, j
 	const jive_node_attrs * attrs = jive_node_get_attrs(node);
 
 	if (self->base.enable_cse) {
-		jive_node * new_node = jive_node_cse(node->region->graph, self->base.node_class, attrs, 1,
+		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1,
 			&node->inputs[0]->origin);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
@@ -50,10 +50,10 @@ jive_phi_node_normal_form_operands_are_normalized_(const jive_node_normal_form *
 
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	jive_graph * graph = operands[0]->node->graph;
+	jive_region * region = operands[0]->node->region;
 	const jive_node_class * cls = self->base.node_class;
 
-	if (self->base.enable_cse && jive_node_cse(graph, cls, attrs, noperands, operands))
+	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))
 		return false;
 
 	return true;
@@ -79,7 +79,7 @@ jive_phi_node_normalized_create_(const jive_phi_node_normal_form * self,
 
 	if (self->base.enable_cse) {
 		size_t n;
-		jive_node * node = jive_node_cse(phi_region->graph, cls, NULL, 1, &operand);
+		jive_node * node = jive_node_cse(phi_region, cls, NULL, 1, &operand);
 		if (node) {
 			for (n = 0; n < node->noutputs; n++)
 				results[n] = node->outputs[n];

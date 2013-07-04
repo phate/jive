@@ -62,7 +62,7 @@ jive_nullary_operation_normalize_node_(const jive_node_normal_form * self, jive_
 		return true;
 	
 	if (self->enable_cse) {
-		new_node = jive_node_cse(node->region->graph, node->class_,
+		new_node = jive_node_cse(node->region, node->class_,
 			jive_node_get_attrs(node), 0, NULL);
 	}
 	

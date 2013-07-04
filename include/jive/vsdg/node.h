@@ -281,7 +281,7 @@ jive_node_destroy(jive_node * self);
 
 jive_node *
 jive_node_cse(
-	jive_graph * graph,
+	jive_region * region,
 	const jive_node_class * cls, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 

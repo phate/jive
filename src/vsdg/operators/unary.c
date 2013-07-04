@@ -110,7 +110,7 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	
 	if (self->base.enable_cse) {
 		jive_output * operands[] = { node->inputs[0]->origin };
-		jive_node * new_node = jive_node_cse(node->region->graph, self->base.node_class, attrs, 1, operands);
+		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1, operands);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
 			jive_output_replace(output, new_node->outputs[0]);
@@ -124,7 +124,8 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 }
 
 bool
-jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self_, size_t noperands, jive_output * const operands[], const jive_node_attrs * attrs)
+jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self_, size_t noperands,
+	jive_output * const operands[], const jive_node_attrs * attrs)
 {
 	const jive_unary_operation_normal_form * self = (const jive_unary_operation_normal_form *) self_;
 	if (!self->base.enable_mutable)
@@ -132,10 +133,11 @@ jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self
 	
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	
-	jive_graph * graph = operands[0]->node->graph;
+	jive_region * region = operands[0]->node->region;
 	const jive_node_class * cls = self->base.node_class;
 
-	jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, operands[0]);	
+	jive_unop_reduction_path_t reduction;
+	reduction = jive_unary_operation_can_reduce_operand(self, attrs, operands[0]);
 	if (self->enable_reducible && (reduction != jive_unop_reduction_none)) {
 		return false;
 	}
@@ -144,14 +146,15 @@ jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self
 	
 	/* FIXME: test for gamma */
 	
-	if (self->base.enable_cse && jive_node_cse(graph, cls, attrs, noperands, operands))
+	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))
 		return false;
 	
 	return true;
 }
 
 jive_output *
-jive_unary_operation_normalized_create_(const jive_unary_operation_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs, jive_output * operand)
+jive_unary_operation_normalized_create_(const jive_unary_operation_normal_form * self,
+	struct jive_region * region, const jive_node_attrs * attrs, jive_output * operand)
 {
 	const jive_unary_operation_class * cls = (const jive_unary_operation_class *) self->base.node_class;
 	
@@ -166,7 +169,7 @@ jive_unary_operation_normalized_create_(const jive_unary_operation_normal_form *
 	/* FIXME: test for gamma */
 	
 	if (self->base.enable_mutable && self->base.enable_cse) {
-		jive_node * node = jive_node_cse(region->graph, &cls->base, attrs, 1, &operand);
+		jive_node * node = jive_node_cse(region, &cls->base, attrs, 1, &operand);
 		if (node)
 			return node->outputs[0];
 	}
