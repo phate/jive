@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -663,7 +664,7 @@ jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self, 
 			
 		node_cost->force_tree_root = force_tree_root;
 		node_cost->blocked_rescls_priority = blocked_rescls_priority;
-		jive_resource_class_count_copy(&node_cost->rescls_cost, &cost);	
+		jive_resource_class_count_copy(&node_cost->rescls_cost, &cost);
 		compute_prio_value(node_cost);
 		
 		if (node_cost->state == jive_node_cost_state_queue)
@@ -841,6 +842,20 @@ input_change(void * self_, jive_input * input, jive_output * old_origin, jive_ou
 	}
 }
 
+static void
+jive_master_shaper_selector_init_region_recursive(
+	jive_master_shaper_selector * self,
+	jive_region * region)
+{
+	jive_node * node;
+	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
+		jive_master_shaper_selector_invalidate_node(self, node);
+	jive_region * subregion;
+	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
+		jive_master_shaper_selector_init_region_recursive(self, subregion);
+	}
+}
+
 jive_master_shaper_selector *
 jive_master_shaper_selector_create(jive_shaped_graph * shaped_graph)
 {
@@ -857,21 +872,23 @@ jive_master_shaper_selector_create(jive_shaped_graph * shaped_graph)
 	jive_region_shaper_selector_hash_init(&self->region_map, context);
 	jive_computation_tracker_init(&self->cost_computation_state_tracker, graph);
 	
+	jive_master_shaper_selector_init_region_recursive(self, graph->root_region);
 	jive_node * node;
-	JIVE_LIST_ITERATE(graph->top, node, graph_top_list) {
-		jive_master_shaper_selector_invalidate_node(self, node);
-	}
-	
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
 		jive_master_shaper_selector_try_add_frontier(self, node);
 	}
 	
 	size_t n = 0;
-	self->callbacks[n++] = jive_node_notifier_slot_connect(&graph->on_node_create, node_create, self);
-	self->callbacks[n++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, input_change, self);
-	self->callbacks[n++] = jive_node_notifier_slot_connect(&shaped_graph->on_shaped_node_create, shaped_node_create, self);
-	self->callbacks[n++] = jive_shaped_region_ssavar_notifier_slot_connect(&shaped_graph->on_shaped_region_ssavar_add, shaped_region_ssavar_add, self);
-	self->callbacks[n++] = jive_shaped_region_ssavar_notifier_slot_connect(&shaped_graph->on_shaped_region_ssavar_remove, shaped_region_ssavar_remove, self);
+	self->callbacks[n++] = jive_node_notifier_slot_connect
+		(&graph->on_node_create, node_create, self);
+	self->callbacks[n++] = jive_input_change_notifier_slot_connect
+		(&graph->on_input_change, input_change, self);
+	self->callbacks[n++] = jive_node_notifier_slot_connect(
+		&shaped_graph->on_shaped_node_create, shaped_node_create, self);
+	self->callbacks[n++] = jive_shaped_region_ssavar_notifier_slot_connect(
+		&shaped_graph->on_shaped_region_ssavar_add, shaped_region_ssavar_add, self);
+	self->callbacks[n++] = jive_shaped_region_ssavar_notifier_slot_connect(
+		&shaped_graph->on_shaped_region_ssavar_remove, shaped_region_ssavar_remove, self);
 	
 	JIVE_DEBUG_ASSERT(n == sizeof(self->callbacks)/sizeof(self->callbacks[0]));
 	

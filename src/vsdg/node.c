@@ -58,7 +58,6 @@ jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
 {
 	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	
-	if (!self->ninputs) JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
 	if (self->ninputs == 0)
 		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
 
@@ -114,7 +113,6 @@ jive_node_init_(
 	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
 	
-	JIVE_LIST_PUSH_BACK(self->graph->top, self, graph_top_list);
 	JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 	
@@ -154,7 +152,6 @@ jive_node_fini_(jive_node * self)
 	while(self->ninputs) jive_input_destroy(self->inputs[self->ninputs - 1]);
 	
 	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
-	JIVE_LIST_REMOVE(self->graph->top, self, graph_top_list);
 	JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
 
 	if (self == self->region->top) self->region->top = NULL;
@@ -708,13 +705,15 @@ jive_node_cse(
 				return node;
 		}
 	} else {
-		jive_node * node;
-		JIVE_LIST_ITERATE(region->graph->top, node, graph_top_list) {
-			if (jive_node_cse_test(node, cls, attrs, noperands, operands) &&
-				(jive_region_is_contained_by(region, node->region) || node->region == region))
-				return node;
+		while (region) {
+			jive_node * node;
+			JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
+				if (jive_node_cse_test(node, cls, attrs, noperands, operands))
+					return node;
+			region = region->parent;
 		}
 	}
+
 	return NULL;
 }
 

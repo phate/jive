@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,10 +35,6 @@ JIVE_DECLARE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form,
 struct jive_graph {
 	jive_context * context;
 	
-	struct {
-		struct jive_node * first;
-		struct jive_node * last;
-	} top;
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;

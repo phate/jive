@@ -174,8 +174,6 @@ jive_input_fini_(jive_input * self)
 		self->node->inputs[n] = self->node->inputs[n+1];
 		self->node->inputs[n]->index = n;
 	}
-	if (!self->node->ninputs)
-		JIVE_LIST_PUSH_BACK(self->node->graph->top, self->node, graph_top_list);
 	if (self->node->ninputs == 0)
 		JIVE_LIST_PUSH_BACK(self->node->region->top_nodes, self->node, region_top_node_list);
 

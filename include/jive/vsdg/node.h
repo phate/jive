@@ -64,11 +64,6 @@ struct jive_node {
 	struct {
 		jive_node * prev;
 		jive_node * next;
-	} graph_top_list;
-	
-	struct {
-		jive_node * prev;
-		jive_node * next;
 	} graph_bottom_list;
 	
 	size_t ntraverser_slots;

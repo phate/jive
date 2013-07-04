@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,7 +22,6 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	self->context = context;
 	self->variables.first = self->variables.last = 0;
 	self->unused_variables.first = self->unused_variables.last = 0;
-	self->top.first = self->top.last = 0;
 	self->bottom.first = self->bottom.last = 0;
 	self->gates.first = self->gates.last = 0;
 	self->labels.first = self->labels.last = 0;
