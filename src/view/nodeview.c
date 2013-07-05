@@ -6,11 +6,12 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <jive/vsdg.h>
 #include <jive/arch/registers.h>
 #include <jive/view/nodeview.h>
 #include <jive/view/reservationtracker.h>
 #include <jive/view/graphview.h>
+#include <jive/vsdg.h>
+#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 
 jive_inputview *
@@ -24,8 +25,11 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 	self->input = input;
 	self->label = 0;
 	
+	jive_buffer type_label_buffer;
+	jive_buffer_init(&type_label_buffer, context);
 	char * input_label = jive_input_get_label(input);
-	char * type_label = jive_type_get_label(jive_input_get_type(input));
+	jive_type_get_label(jive_input_get_type(input), &type_label_buffer);
+	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	
 	jive_ssavar * ssavar = input->ssavar;
 	if (ssavar) {
@@ -42,7 +46,7 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 	}
 	
 	free(input_label);
-	free(type_label);
+	jive_buffer_fini(&type_label_buffer);
 	
 	self->x = 0;
 	self->y = 0;
@@ -78,9 +82,12 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 	self->output = output;
 	self->label = 0;
 	
+	jive_buffer type_label_buffer;
+	jive_buffer_init(&type_label_buffer, context);
 	char * output_label = jive_output_get_label(output);
-	char * type_label = jive_type_get_label(jive_output_get_type(output));
-	
+	jive_type_get_label(jive_output_get_type(output), &type_label_buffer);
+	const char * type_label = jive_buffer_to_string(&type_label_buffer);
+
 	jive_ssavar * ssavar = output->ssavar;
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
@@ -96,7 +103,7 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 	}
 	
 	free(output_label);
-	free(type_label);
+	jive_buffer_fini(&type_label_buffer);
 	
 	self->x = 0;
 	self->y = 0;

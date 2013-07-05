@@ -13,6 +13,7 @@
 
 #include <jive/regalloc/shaped-graph.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/node.h>
@@ -116,13 +117,13 @@ jive_reuse_type_copy_(const jive_type * self_, jive_context * context)
 	return &type->base.base;
 }
 
-static char *
-jive_reuse_type_get_label_(const jive_type * self_)
+static void
+jive_reuse_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "reuse %s", self->name->name);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static jive_input *

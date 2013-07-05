@@ -4,6 +4,7 @@
  */
 
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 
@@ -13,8 +14,8 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *
-jive_bitstring_type_get_label_(const jive_type * self);
+static void
+jive_bitstring_type_get_label_(const jive_type * self, struct jive_buffer * buffer);
 
 static jive_input *
 jive_bitstring_type_create_input_(const jive_type * self, struct jive_node * node, size_t index,
@@ -88,13 +89,13 @@ const jive_gate_class JIVE_BITSTRING_GATE = {
 
 /* bitstring_type inheritable members */
 
-static char *
-jive_bitstring_type_get_label_(const jive_type * self_)
+static void
+jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	char tmp[16];
 	snprintf(tmp, sizeof(tmp), "bits%zd", self->nbits);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static jive_input *

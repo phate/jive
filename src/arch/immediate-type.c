@@ -7,6 +7,7 @@
 
 #include <string.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
@@ -96,10 +97,10 @@ jive_immediate_type_fini_( jive_type* self_ )
 	jive_value_type_fini_( (jive_type*)&self->base ) ;
 }
 
-static char *
-jive_immediate_type_get_label_(const jive_type * self_)
+static void
+jive_immediate_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {
-	return strdup("immediate");
+	jive_buffer_putstr(buffer, "immediate");
 }
 
 static jive_input *

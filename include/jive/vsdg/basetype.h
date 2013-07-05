@@ -25,6 +25,7 @@ typedef struct jive_output_class jive_output_class;
 typedef struct jive_gate jive_gate;
 typedef struct jive_gate_class jive_gate_class;
 
+struct jive_buffer;
 struct jive_cpureg;
 struct jive_graph;
 struct jive_node;
@@ -51,7 +52,7 @@ struct jive_type_class {
 	void (*fini)(jive_type* self);
 	
 	/** \brief Give textual representation of type (for debugging) */
-	char * (*get_label)(const jive_type * self);
+	void (*get_label)(const jive_type * self, struct jive_buffer * buffer);
 	
 	jive_input * (*create_input)(const jive_type * self, struct jive_node * node, size_t index,
 		jive_output * initial_operand);
@@ -83,10 +84,10 @@ jive_type_isinstance(const jive_type * self, const jive_type_class * class_)
 }
 
 /* returned string dynamically using malloc */
-JIVE_EXPORTED_INLINE char *
-jive_type_get_label(const jive_type * self)
+JIVE_EXPORTED_INLINE void
+jive_type_get_label(const jive_type * self, struct jive_buffer * buffer)
 {
-	return self->class_->get_label(self);
+	self->class_->get_label(self, buffer);
 }
 
 JIVE_EXPORTED_INLINE jive_input *

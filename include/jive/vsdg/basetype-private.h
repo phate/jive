@@ -20,8 +20,8 @@ jive_type_fini_(jive_type * self);
 jive_type *
 jive_type_copy_(const jive_type * self, struct jive_context * ctx);
 
-char *
-jive_type_get_label_(const jive_type * self);
+void
+jive_type_get_label_(const jive_type * self, struct jive_buffer * buffer);
 
 jive_input *
 jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand);

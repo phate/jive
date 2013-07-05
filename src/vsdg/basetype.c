@@ -5,8 +5,8 @@
  */
 
 #include <stdio.h>
-#include <string.h>
 
+#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/basetype-private.h>
@@ -27,10 +27,10 @@ jive_type_fini_(jive_type * self)
 {
 }
 
-char *
-jive_type_get_label_(const jive_type * self)
+void
+jive_type_get_label_(const jive_type * self, struct jive_buffer * buffer)
 {
-	return strdup(self->class_->name);
+	jive_buffer_putstr(buffer, self->class_->name);
 }
 
 jive_input *
@@ -79,20 +79,19 @@ void
 jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node * node)
 {
 	jive_context * context = node->graph->context;
-	char * input_type_name = jive_type_get_label(self);
-	char * operand_type_name = jive_type_get_label(other);
+
+	jive_buffer input_type_buffer, operand_type_buffer;
+	jive_buffer_init(&input_type_buffer, context);
+	jive_buffer_init(&operand_type_buffer, context);
+	jive_type_get_label(self, &input_type_buffer);
+	jive_type_get_label(other, &operand_type_buffer);
 	
-	const char * error_message = "Type mismatch (and additionally memory exhaustion)";
-	
-	if (input_type_name && operand_type_name) {
-		char * msg = jive_context_strjoin(context,
-			"Type mismatch: required '", input_type_name,
-			"' got '", operand_type_name, "'", NULL);
-		free(input_type_name);
-		free(operand_type_name);
-		error_message = msg;
-	}
-	
+	char * error_message = jive_context_strjoin(context,
+		"Type mismatch: required '", jive_buffer_to_string(&input_type_buffer),
+		"' got '", jive_buffer_to_string(&operand_type_buffer), "'", NULL);
+
+	jive_buffer_fini(&input_type_buffer);
+	jive_buffer_fini(&operand_type_buffer);
 	jive_context_fatal_error(context, error_message);
 }
 
