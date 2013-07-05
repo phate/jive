@@ -11,6 +11,7 @@
 #include <jive/common.h>
 
 #include <jive/internal/compiler.h>
+#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/basetype-private.h>
@@ -171,10 +172,10 @@ jive_node_fini_(jive_node * self)
 	}
 }
 
-char *
-jive_node_get_label_(const jive_node * self)
+void
+jive_node_get_label_(const jive_node * self, struct jive_buffer * buffer)
 {
-	return strdup(self->class_->name);
+	jive_buffer_putstr(buffer, self->class_->name);
 }
 
 bool

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,6 +8,7 @@
 
 #include <string.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/anchortype.h>
@@ -16,8 +17,8 @@
 static void
 jive_symbolicfunction_node_fini_(jive_node * self_);
 
-static char *
-jive_symbolicfunction_node_get_label_(const jive_node * self_);
+static void
+jive_symbolicfunction_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_symbolicfunction_node_get_attrs_(const jive_node * self);
@@ -71,12 +72,11 @@ jive_symbolicfunction_node_fini_(jive_node * self_)
 	jive_node_fini_(&self->base);
 }
 
-static char *
-jive_symbolicfunction_node_get_label_(const jive_node * self_)
+static void
+jive_symbolicfunction_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_symbolicfunction_node * self = (const jive_symbolicfunction_node *) self_;
-	
-	return strdup(self->attrs.name);
+	jive_buffer_putstr(buffer, self->attrs.name);
 }
 
 static jive_node *

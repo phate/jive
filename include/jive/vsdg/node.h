@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -89,7 +89,7 @@ struct jive_node_class {
 	jive_node_normal_form *(*get_default_normal_form)(const jive_node_class * cls, jive_node_normal_form * parent, struct jive_graph * graph);
 	
 	/** \brief Give textual representation of node (for debugging) */
-	char * (*get_label)(const jive_node * self);
+	void (*get_label)(const jive_node * self, struct jive_buffer * buffer);
 	
 	/** \brief Retrieve attributes of node */
 	const jive_node_attrs * (*get_attrs)(const jive_node * self);
@@ -133,11 +133,10 @@ jive_node_isinstance(const jive_node * self, const jive_node_class * class_)
 	return false;
 }
 
-/* returned string allocated with malloc */
-JIVE_EXPORTED_INLINE char *
-jive_node_get_label(const jive_node * self)
+JIVE_EXPORTED_INLINE void
+jive_node_get_label(const jive_node * self, struct jive_buffer * buffer)
 {
-	return self->class_->get_label(self);
+	self->class_->get_label(self, buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_node_attrs *

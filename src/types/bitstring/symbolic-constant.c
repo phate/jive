@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
@@ -22,8 +23,8 @@ jive_bitsymbolicconstant_node_init_(
 static void
 jive_bitsymbolicconstant_node_fini_(jive_node * self);
 
-static char *
-jive_bitsymbolicconstant_node_get_label_(const jive_node * self);
+static void
+jive_bitsymbolicconstant_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_bitsymbolicconstant_node_get_attrs_(const jive_node * self);
@@ -71,12 +72,11 @@ jive_bitsymbolicconstant_node_fini_(jive_node * self_)
 	jive_node_fini_(&self->base);
 }
 
-static char *
-jive_bitsymbolicconstant_node_get_label_(const jive_node * self_)
+static void
+jive_bitsymbolicconstant_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_bitsymbolicconstant_node * self = (const jive_bitsymbolicconstant_node *) self_;
-	
-	return strdup(self->attrs.name);
+	jive_buffer_putstr(buffer, self->attrs.name);
 }
 
 static const jive_node_attrs *

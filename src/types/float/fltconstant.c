@@ -5,6 +5,7 @@
 
 #include <jive/types/float/fltconstant.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/operators/nullary.h>
@@ -15,8 +16,8 @@
 static void
 jive_fltconstant_node_init_(jive_fltconstant_node * self, jive_region * region, uint32_t value);
 
-static char *
-jive_fltconstant_node_get_label_(const jive_node * self);
+static void
+jive_fltconstant_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_fltconstant_node_get_attrs_(const jive_node * self);
@@ -51,8 +52,8 @@ jive_fltconstant_node_init_(jive_fltconstant_node * self, jive_region * region, 
 }
 
 
-static char *
-jive_fltconstant_node_get_label_(const jive_node * self_)
+static void
+jive_fltconstant_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_fltconstant_node * self = (const jive_fltconstant_node *) self_;
 
@@ -66,7 +67,7 @@ jive_fltconstant_node_get_label_(const jive_node * self_)
 
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "%f", c.f);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *

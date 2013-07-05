@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -15,6 +15,7 @@
 #include <jive/types/bitstring/concat.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
@@ -27,8 +28,8 @@ jive_bitslice_node_init_(
 	jive_output * origin,
 	size_t low, size_t high);
 
-static char *
-jive_bitslice_node_get_label_(const jive_node * self);
+static void
+jive_bitslice_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_bitslice_node_get_attrs_(const jive_node * self);
@@ -88,14 +89,14 @@ jive_bitslice_node_init_(
 	self->attrs.high = high;
 }
 
-static char *
-jive_bitslice_node_get_label_(const jive_node * self_)
+static void
+jive_bitslice_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_bitslice_node * self = (const jive_bitslice_node *) self_;
 	
 	char tmp[32];
 	snprintf(tmp, sizeof(tmp), "SLICE[%zd:%zd)", self->attrs.low, self->attrs.high);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,6 +13,7 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/slice.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
@@ -56,8 +57,8 @@ jive_bitconcat_node_init_(
 	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
 }
 
-static char *
-jive_bitconcat_node_get_label_(const jive_node * self);
+static void
+jive_bitconcat_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static jive_node *
 jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -102,10 +103,10 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	.reduce_operand_pair = jive_bitconcat_reduce_operand_pair_ /* override */
 };
 
-static char *
-jive_bitconcat_node_get_label_(const jive_node * self)
+static void
+jive_bitconcat_node_get_label_(const jive_node * self, struct jive_buffer * buffer)
 {
-	return strdup("BITCONCAT");
+	jive_buffer_putstr(buffer, "BITCONCAT");
 }
 
 static jive_node *

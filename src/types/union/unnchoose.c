@@ -1,17 +1,18 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/union.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/node-private.h>
 
 #include <stdio.h>
 #include <string.h>
 
-static char *
-jive_choose_node_get_label_(const jive_node * self);
+static void
+jive_choose_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_choose_node_get_attrs_(const jive_node * self);
@@ -87,14 +88,14 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 		1, &output_type);
 }
 
-static char *
-jive_choose_node_get_label_(const jive_node * self_)
+static void
+jive_choose_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_choose_node * self = (const jive_choose_node *) self_;
 
 	char tmp[32];
 	snprintf(tmp, sizeof(tmp), "CHOOSE(%zd)", self->attrs.element);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,6 +9,7 @@
 #include <string.h>
 
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
@@ -22,8 +24,8 @@ jive_regvalue_node_init_(
 	const jive_register_class * regcls,
 	jive_output * value);
 
-static char *
-jive_regvalue_node_get_label_(const jive_node * self);
+static void
+jive_regvalue_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_regvalue_node_get_attrs_(const jive_node * self);
@@ -76,11 +78,11 @@ jive_regvalue_node_init_(
 	self->base.outputs[0]->required_rescls = &regcls->base;
 }
 
-static char *
-jive_regvalue_node_get_label_(const jive_node * self_)
+static void
+jive_regvalue_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_regvalue_node * self = (const jive_regvalue_node *) self_;
-	return strdup(self->attrs.regcls->base.name);
+	jive_buffer_putstr(buffer, self->attrs.regcls->base.name);
 }
 
 static const jive_node_attrs *

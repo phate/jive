@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,6 +14,7 @@
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
@@ -21,8 +22,8 @@
 
 /* memberof */
 
-static char *
-jive_memberof_node_get_label_(const jive_node * self_);
+static void
+jive_memberof_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_memberof_node_get_attrs_(const jive_node * self_);
@@ -62,13 +63,13 @@ const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
 	.reduce_operand = jive_memberof_reduce_operand_ /* override */
 };
 
-static char *
-jive_memberof_node_get_label_(const jive_node * self_)
+static void
+jive_memberof_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_memberof_node * self = (const jive_memberof_node *) self_;
 	char tmp[128];
 	snprintf(tmp, sizeof(tmp), "MEMBEROF %p:%zd", self->attrs.record_decl, self->attrs.index);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *
@@ -175,8 +176,8 @@ jive_memberof(jive_output * address,
 
 /* containerof */
 
-static char *
-jive_containerof_node_get_label_(const jive_node * self_);
+static void
+jive_containerof_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_containerof_node_get_attrs_(const jive_node * self_);
@@ -216,13 +217,13 @@ const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
 	.reduce_operand = jive_containerof_reduce_operand_ /* override */
 };
 
-static char *
-jive_containerof_node_get_label_(const jive_node * self_)
+static void
+jive_containerof_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_containerof_node * self = (const jive_containerof_node *) self_;
 	char tmp[128];
 	snprintf(tmp, sizeof(tmp), "CONTAINEROF %p:%zd", self->attrs.record_decl, self->attrs.index);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *
@@ -693,8 +694,8 @@ jive_arrayindex(jive_output * addr1, jive_output * addr2,
 static void
 jive_label_to_address_node_fini_(jive_node * self);
 
-static char *
-jive_label_to_address_node_get_label_(const jive_node * self);
+static void
+jive_label_to_address_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_label_to_address_node_get_attrs_(const jive_node * self);
@@ -739,14 +740,14 @@ jive_label_to_address_node_fini_(jive_node * self_)
 	jive_node_fini_(&self->base);
 }
 
-static char *
-jive_label_to_address_node_get_label_(const jive_node * self_)
+static void
+jive_label_to_address_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_label_to_address_node * self = (const jive_label_to_address_node *) self_;
 	
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "addrof:label%p", self->attrs.label);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static jive_node *
@@ -798,8 +799,8 @@ jive_label_to_address_create(struct jive_graph * graph, const jive_label * label
 static void
 jive_label_to_bitstring_node_fini_(jive_node * self);
 
-static char *
-jive_label_to_bitstring_node_get_label_(const jive_node * self);
+static void
+jive_label_to_bitstring_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_label_to_bitstring_node_get_attrs_(const jive_node * self);
@@ -845,14 +846,14 @@ jive_label_to_bitstring_node_fini_(jive_node * self_)
 	jive_node_fini_(&self->base);
 }
 
-static char *
-jive_label_to_bitstring_node_get_label_(const jive_node * self_)
+static void
+jive_label_to_bitstring_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_label_to_bitstring_node * self = (const jive_label_to_bitstring_node *) self_;
 	
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "addrof:label%p", self->attrs.label);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static jive_node *

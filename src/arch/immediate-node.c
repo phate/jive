@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,6 +11,7 @@
 #include <string.h>
 
 #include <jive/arch/immediate-type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/nullary.h>
@@ -19,13 +21,13 @@
 
 /* immediate node */
 
-static char *
-jive_immediate_node_get_label_(const jive_node * self_)
+static void
+jive_immediate_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_immediate_node * self = (const jive_immediate_node *) self_;
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "%"PRId64, self->attrs.value.offset);
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *

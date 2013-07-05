@@ -1,10 +1,11 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/union/unnunify.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/types/union/unntype.h>
 #include <jive/vsdg/operators/nullary.h>
@@ -22,8 +23,8 @@ static jive_node *
 jive_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
-static char *
-jive_unify_node_get_label_(const jive_node * self_);
+static void
+jive_unify_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_unify_node_get_attrs_(const jive_node * self);
@@ -51,10 +52,10 @@ const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
 	.reduce_operand = jive_unary_operation_reduce_operand_ /* inherit */
 };
 
-static char *
-jive_unify_node_get_label_(const jive_node * self_)
+static void
+jive_unify_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
-	return strdup("UNIFY");
+	jive_buffer_putstr(buffer, "UNIFY");
 }
 
 static const jive_node_attrs *

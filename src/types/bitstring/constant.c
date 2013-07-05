@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
@@ -23,8 +24,8 @@ jive_bitconstant_node_init_(
 static void
 jive_bitconstant_node_fini_(jive_node * self);
 
-static char *
-jive_bitconstant_node_get_label_(const jive_node * self);
+static void
+jive_bitconstant_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_bitconstant_node_get_attrs_(const jive_node * self);
@@ -72,8 +73,8 @@ jive_bitconstant_node_fini_(jive_node * self_)
 	jive_node_fini_(&self->base);
 }
 
-static char *
-jive_bitconstant_node_get_label_(const jive_node * self_)
+static void
+jive_bitconstant_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_bitconstant_node * self = (const jive_bitconstant_node *) self_;
 	
@@ -82,7 +83,7 @@ jive_bitconstant_node_get_label_(const jive_node * self_)
 	for(n=0; n<self->attrs.nbits; n++)
 		tmp[n] = self->attrs.bits[self->attrs.nbits - n - 1];
 	tmp[n] = 0;
-	return strdup(tmp);
+	jive_buffer_putstr(buffer, tmp);
 }
 
 static const jive_node_attrs *

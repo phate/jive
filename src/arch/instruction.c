@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -82,11 +82,11 @@ jive_instruction_node_init_(
 	self->attrs.icls = icls;
 }
 
-char *
-jive_instruction_node_get_label_(const jive_node * self_)
+void
+jive_instruction_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_instruction_node * self = (const jive_instruction_node *) self_;
-	return strdup(self->attrs.icls->name);
+	jive_buffer_putstr(buffer, self->attrs.icls->name);
 }
 
 const jive_node_attrs *

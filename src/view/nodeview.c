@@ -158,9 +158,12 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	char nodeid[32];
 	snprintf(nodeid, sizeof(nodeid), "%zx", (size_t) node);
 	
-	char * node_label = jive_node_get_label(node);
-	self->node_label = jive_context_strjoin(context, node_label, ":", nodeid, NULL);
-	free(node_label);
+	jive_buffer node_label_buffer;
+	jive_buffer_init(&node_label_buffer, context);
+	jive_node_get_label(node, &node_label_buffer);
+	self->node_label = jive_context_strjoin(context,
+		jive_buffer_to_string(&node_label_buffer), ":", nodeid, NULL);
+	jive_buffer_fini(&node_label_buffer);
 	
 	int input_width = -3, output_width = -3;
 	int cur_x;

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,6 +9,7 @@
 #include <string.h>
 
 #include <jive/context.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
@@ -59,11 +61,11 @@ jive_objdef_node_fini_(jive_node * self_)
 	jive_node_fini_(&self->base);
 }
 
-static char *
-jive_objdef_node_get_label_(const jive_node * self_)
+static void
+jive_objdef_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_objdef_node * self = (const jive_objdef_node *) self_;
-	return strdup(self->attrs.name);
+	jive_buffer_putstr(buffer, self->attrs.name);
 }
 
 const jive_node_attrs *

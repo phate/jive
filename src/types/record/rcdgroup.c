@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -7,6 +7,7 @@
 
 #include <string.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/node-private.h>
 
 static void
@@ -18,8 +19,8 @@ static jive_node *
 jive_group_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
-static char *
-jive_group_node_get_label_(const jive_node * self_);
+static void
+jive_group_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
 jive_group_node_get_attrs_(const jive_node * self);
@@ -39,10 +40,10 @@ const jive_node_class JIVE_GROUP_NODE = {
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
-static char *
-jive_group_node_get_label_(const jive_node * self_)
+static void
+jive_group_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
-	return strdup("GROUP");
+	jive_buffer_putstr(buffer, "GROUP");
 }
 
 static const jive_node_attrs *
