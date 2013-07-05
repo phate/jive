@@ -180,13 +180,18 @@ jive_input_fini_(jive_input * self)
 	jive_region_hull_remove_input(self->node->region, self);
 }
 
-char *
-jive_input_get_label_(const jive_input * self)
+void
+jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer)
 {
-	if (self->gate) return jive_gate_get_label(self->gate);
-	char tmp[16];
-	snprintf(tmp, sizeof(tmp), "#%zd", self->index);
-	return strdup(tmp);
+	if (self->gate) {
+		char * label = jive_gate_get_label(self->gate);
+		jive_buffer_putstr(buffer, label);
+		free(label);
+	} else {
+		char tmp[16];
+		snprintf(tmp, sizeof(tmp), "#%zd", self->index);
+		jive_buffer_putstr(buffer, tmp);
+	}
 }
 
 const jive_type *

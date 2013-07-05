@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,10 +26,12 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 	self->input = input;
 	self->label = 0;
 	
-	jive_buffer type_label_buffer;
+	jive_buffer type_label_buffer, input_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
-	char * input_label = jive_input_get_label(input);
+	jive_buffer_init(&input_label_buffer, context);
+	jive_input_get_label(input, &input_label_buffer);
 	jive_type_get_label(jive_input_get_type(input), &type_label_buffer);
+	const char * input_label = jive_buffer_to_string(&input_label_buffer);
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	
 	jive_ssavar * ssavar = input->ssavar;
@@ -45,7 +48,7 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 		self->label = jive_context_strjoin(context, input_label, ":", type_label, NULL);
 	}
 	
-	free(input_label);
+	jive_buffer_fini(&input_label_buffer);
 	jive_buffer_fini(&type_label_buffer);
 	
 	self->x = 0;

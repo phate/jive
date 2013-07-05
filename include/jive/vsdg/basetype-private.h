@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -43,8 +43,8 @@ jive_input_init_(jive_input * self, struct jive_node * node, size_t index, jive_
 void
 jive_input_fini_(jive_input * self);
 
-char *
-jive_input_get_label_(const jive_input * self);
+void
+jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer);
 
 const jive_type *
 jive_input_get_type_(const jive_input * self);

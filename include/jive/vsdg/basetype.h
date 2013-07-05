@@ -168,7 +168,7 @@ struct jive_input_class {
 	void (*fini)(jive_input * self);
 	
 	/** \brief Give textual representation of type (for debugging) */
-	char * (*get_label)(const jive_input * self);
+	void (*get_label)(const jive_input * self, struct jive_buffer * buffer);
 	
 	/** \brief Retrieve type of input */
 	const jive_type * (*get_type)(const jive_input * self);
@@ -193,11 +193,10 @@ jive_input_divert_origin(jive_input * self, jive_output * new_origin);
 void
 jive_input_swap(jive_input * self, jive_input * other);
 
-/* returned string dynamically using malloc */
-JIVE_EXPORTED_INLINE char *
-jive_input_get_label(const jive_input * self)
+JIVE_EXPORTED_INLINE void
+jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)
 {
-	return self->class_->get_label(self);
+	self->class_->get_label(self, buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_type *
