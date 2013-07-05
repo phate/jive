@@ -85,11 +85,13 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 	self->output = output;
 	self->label = 0;
 	
-	jive_buffer type_label_buffer;
+	jive_buffer type_label_buffer, output_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
-	char * output_label = jive_output_get_label(output);
+	jive_buffer_init(&output_label_buffer, context);
+	jive_output_get_label(output, &output_label_buffer);
 	jive_type_get_label(jive_output_get_type(output), &type_label_buffer);
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
+	const char * output_label = jive_buffer_to_string(&output_label_buffer);
 
 	jive_ssavar * ssavar = output->ssavar;
 	if (ssavar) {
@@ -105,7 +107,7 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 		self->label = jive_context_strjoin(context, output_label, ":", type_label, NULL);
 	}
 	
-	free(output_label);
+	jive_buffer_fini(&output_label_buffer);
 	jive_buffer_fini(&type_label_buffer);
 	
 	self->x = 0;

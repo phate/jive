@@ -60,8 +60,8 @@ jive_output_init_(
 void
 jive_output_fini_(jive_output * self);
 
-char *
-jive_output_get_label_(const jive_output * self);
+void
+jive_output_get_label_(const jive_output * self, struct jive_buffer * buffer);
 
 const jive_type *
 jive_output_get_type_(const jive_output * self);

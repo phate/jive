@@ -273,7 +273,7 @@ struct jive_output_class {
 	void (*fini)(jive_output * self);
 	
 	/** \brief Give textual representation of type (for debugging) */
-	char * (*get_label)(const jive_output * self);
+	void (*get_label)(const jive_output * self, struct jive_buffer * buffer);
 	
 	/** \brief Retrieve type of output */
 	const jive_type * (*get_type)(const jive_output * self);
@@ -292,11 +292,10 @@ jive_output_isinstance(const jive_output * self, const jive_output_class * class
 	return false;
 }
 
-/* returned string dynamically using malloc */
-JIVE_EXPORTED_INLINE char *
-jive_output_get_label(const jive_output * self)
+JIVE_EXPORTED_INLINE void
+jive_output_get_label(const jive_output * self, struct jive_buffer * buffer)
 {
-	return self->class_->get_label(self);
+	self->class_->get_label(self, buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_type *
