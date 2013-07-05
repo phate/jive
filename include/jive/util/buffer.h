@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <jive/common.h>
 #include <jive/context.h>
 
 /** \file jive/buffer.h */
@@ -56,6 +57,34 @@ void *
 jive_buffer_executable(const jive_buffer * self);
 
 /* implementation */
+
+JIVE_EXPORTED_INLINE const char *
+jive_buffer_to_string(struct jive_buffer * self)
+{
+	jive_buffer_putbyte(self, '\0');
+	return self->data;
+}
+
+JIVE_EXPORTED_INLINE struct jive_buffer *
+jive_buffer_create(struct jive_context * context)
+{
+	struct jive_buffer * buffer = jive_context_malloc(context, sizeof(*buffer));
+	jive_buffer_init(buffer, context);
+	return buffer;
+}
+
+JIVE_EXPORTED_INLINE void
+jive_buffer_destroy(struct jive_buffer * self)
+{
+	jive_buffer_fini(self);
+	jive_context_free(self->context, self);
+}
+
+JIVE_EXPORTED_INLINE void
+jive_buffer_clear(struct jive_buffer * self)
+{
+	self->size = 0;
+}
 
 void *
 jive_buffer_reserve_slow(jive_buffer * self, size_t size);
