@@ -184,9 +184,7 @@ void
 jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer)
 {
 	if (self->gate) {
-		char * label = jive_gate_get_label(self->gate);
-		jive_buffer_putstr(buffer, label);
-		free(label);
+		jive_gate_get_label(self->gate, buffer);
 	} else {
 		char tmp[16];
 		snprintf(tmp, sizeof(tmp), "#%zd", self->index);
@@ -420,9 +418,7 @@ void
 jive_output_get_label_(const jive_output * self, struct jive_buffer * buffer)
 {
 	if (self->gate) {
-		char * label = jive_gate_get_label(self->gate);
-		jive_buffer_putstr(buffer, label);
-		free(label);
+		jive_gate_get_label(self->gate, buffer);
 	} else {
 		char tmp[16];
 		snprintf(tmp, sizeof(tmp), "#%zd", self->index);
@@ -578,10 +574,10 @@ jive_gate_fini_(jive_gate * self)
 	JIVE_LIST_REMOVE(self->graph->gates, self, graph_gate_list);
 }
 
-char *
-jive_gate_get_label_(const jive_gate * self)
+void
+jive_gate_get_label_(const jive_gate * self, struct jive_buffer * buffer)
 {
-	return strdup(self->name);
+	jive_buffer_putstr(buffer, self->name);
 }
 
 const jive_type *

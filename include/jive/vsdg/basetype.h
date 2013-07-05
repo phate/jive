@@ -371,7 +371,7 @@ struct jive_gate_class {
 	
 	void (*fini)(jive_gate * self);
 	
-	char * (*get_label)(const jive_gate * self);
+	void (*get_label)(const jive_gate * self, struct jive_buffer * buffer);
 	
 	const jive_type * (*get_type)(const jive_gate * self);
 	
@@ -394,10 +394,10 @@ jive_gate_isinstance(const jive_gate * self, const jive_gate_class * class_)
 	return false;
 }
 
-JIVE_EXPORTED_INLINE char *
-jive_gate_get_label(const jive_gate * self)
+JIVE_EXPORTED_INLINE void
+jive_gate_get_label(const jive_gate * self, struct jive_buffer * buffer)
 {
-	return self->class_->get_label(self);
+	self->class_->get_label(self, buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_type *

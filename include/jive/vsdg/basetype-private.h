@@ -75,8 +75,8 @@ jive_gate_init_(jive_gate * self, struct jive_graph * graph, const char name[]);
 void
 jive_gate_fini_(jive_gate * self);
 
-char *
-jive_gate_get_label_(const jive_gate * self);
+void
+jive_gate_get_label_(const jive_gate * self, struct jive_buffer * buffer);
 
 const jive_type *
 jive_gate_get_type_(const jive_gate * self);
