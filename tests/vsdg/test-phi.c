@@ -67,6 +67,8 @@ static int test_main()
 
 	jive_view(graph, stderr);
 
+	assert(jive_input_isinstance(phi.region->bottom->inputs[0], &JIVE_CONTROL_INPUT));
+
 	jive_function_type_destroy(f0type);
 	jive_function_type_destroy(f1type);
 	jive_function_type_destroy(f2type);

@@ -155,13 +155,15 @@ const jive_node_class JIVE_PHI_ENTER_NODE = {
 static jive_node *
 jive_phi_leave_node_create(jive_region * region)
 {
+	JIVE_DEBUG_ASSERT(region->top != NULL);
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
 	node->class_ = &JIVE_PHI_LEAVE_NODE;
 	JIVE_DECLARE_ANCHOR_TYPE(anctype);
+	JIVE_DECLARE_CONTROL_TYPE(ctltype);
 	jive_node_init_(node, region,
-		0, 0, 0,
+		1, &ctltype, &region->top->outputs[0],
 		1, &anctype);
 	region->bottom = node;
 
