@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,6 +10,7 @@
 #include <jive/vsdg/node.h>
 #include <jive/types/function/fcttype.h>
 
+typedef struct jive_lambda jive_lambda;
 typedef struct jive_lambda_node jive_lambda_node;
 typedef struct jive_lambda_node_attrs jive_lambda_node_attrs;
 
@@ -28,6 +29,32 @@ struct jive_lambda_node {
 	jive_node base;
 	jive_lambda_node_attrs attrs;
 };
+
+struct jive_lambda_build_state;
+
+/**
+	\brief Represent a lambda construct under construction
+*/
+struct jive_lambda {
+	struct jive_region * region;
+	size_t narguments;
+	struct jive_output ** arguments;
+	struct jive_lambda_build_state * internal_state;
+};
+
+/**
+	\brief Begin constructing a lambda region
+*/
+struct jive_lambda *
+jive_lambda_begin(struct jive_graph * graph,
+	size_t narguments, const jive_type * const argument_types[], const char * const argument_names[]);
+
+/**
+	\brief End constructing a lambda region
+*/
+struct jive_output *
+jive_lambda_end(struct jive_lambda * lambda,
+	size_t nresults, const jive_type * const result_types[], struct jive_output * const results[]);
 
 jive_region *
 jive_function_region_create(jive_region * parent);

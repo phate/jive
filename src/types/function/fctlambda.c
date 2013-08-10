@@ -6,6 +6,7 @@
 
 #include <jive/types/function/fctlambda.h>
 
+#include <stdio.h>
 #include <string.h>
 
 #include <jive/vsdg/controltype.h>
@@ -223,6 +224,71 @@ jive_output *
 jive_lambda_create(jive_region * function_region)
 {
 	return jive_lambda_node_create(function_region)->outputs[0];
+}
+
+/* lambda instantiation */
+
+typedef struct jive_lambda_build_state jive_lambda_build_state;
+struct jive_lambda_build_state {
+	jive_floating_region floating;
+};
+
+struct jive_lambda *
+jive_lambda_begin(struct jive_graph * graph,
+	size_t narguments, const jive_type * const argument_types[], const char * const argument_names[])
+{
+	jive_context * context = graph->context;
+
+	jive_lambda * lambda = jive_context_malloc(context, sizeof(*lambda));
+	jive_lambda_build_state * state;
+	state = jive_context_malloc(graph->context, sizeof(*state));
+	state->floating = jive_floating_region_create(graph);
+	lambda->region = state->floating.region;
+	lambda->arguments = jive_context_malloc(graph->context, sizeof(*lambda->arguments) * narguments);
+	lambda->narguments = narguments;
+
+	jive_lambda_enter_node_create(lambda->region);
+
+	size_t n;
+	for (n = 0; n < narguments; n++) {
+		jive_gate * gate = jive_type_create_gate(argument_types[n], graph, argument_names[n]);
+		lambda->arguments[n] = jive_node_gate_output(lambda->region->top, gate);
+	}
+
+	lambda->internal_state = state;
+
+	return lambda;
+}
+
+jive_output *
+jive_lambda_end(jive_lambda * self,
+	size_t nresults, const jive_type * const result_types[], jive_output * const results[])
+{
+	jive_lambda_build_state * state = self->internal_state;
+	jive_region * region = self->region;
+	jive_graph * graph = region->graph;
+	jive_context * context = graph->context;
+
+	jive_node * leave = jive_lambda_leave_node_create(region->top->outputs[0]);
+
+	size_t n;
+	for (n = 0; n < nresults; n++) {
+		char gate_name[80];
+		snprintf(gate_name, sizeof(gate_name), "res_%p_%zd", leave, n);
+		jive_gate * gate = jive_type_create_gate(result_types[n], graph, gate_name);
+		jive_node_gate_input(leave, gate, results[n]);
+	}
+
+	jive_floating_region_settle(state->floating);
+
+	jive_node * anchor = jive_lambda_node_create(region);
+	JIVE_DEBUG_ASSERT(anchor->noutputs == 1);
+
+	jive_context_free(context, self->arguments);
+	jive_context_free(context, state);
+	jive_context_free(context, self);
+
+	return anchor->outputs[0];
 }
 
 void
