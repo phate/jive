@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -15,7 +15,7 @@
 
 /* lambda enter node */
 
-jive_node *
+static jive_node *
 jive_lambda_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
@@ -53,7 +53,7 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 
 /* lambda leave node */
 
-jive_node *
+static jive_node *
 jive_lambda_leave_node_create(jive_output * output)
 {
 	JIVE_DEBUG_ASSERT(output->node->region->bottom == NULL);
