@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,15 +35,13 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_region * fn_region = jive_function_region_create(graph->root_region);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	
-	jive_output * a = jive_node_add_output(fn_region->top, bits32);
-	jive_output * b = jive_node_add_output(fn_region->top, bits32);
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){a, b});
-	jive_node_add_input(fn_region->bottom, bits32, sum);
-	
-	jive_node * abstract_fn = jive_lambda_node_create(fn_region);
+	jive_lambda * lambda = jive_lambda_begin(graph,
+		2, (const jive_type *[]){bits32, bits32}, (const char *[]){"arg1", "arg2"});
+
+	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
+
+	jive_node * abstract_fn = jive_lambda_end(lambda, 1, &bits32, &sum)->node;
 	
 	jive_subroutine * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
 	jive_linker_symbol add_int32_symbol;

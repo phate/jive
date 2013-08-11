@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -17,38 +18,35 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(int32, 32);
+
+	jive_lambda * outer_function = jive_lambda_begin(graph, 1, &int32, (const char *[]){"arg"});
 	
-	jive_region * outer_function = jive_function_region_create(graph->root_region);
-	jive_region * inner_function = jive_function_region_create(outer_function);
+	jive_lambda * inner_function = jive_lambda_begin(graph, 1, &int32, (const char *[]){"arg1"});
+
+	jive_output * sum = jive_bitsum(2, (jive_output *[]){inner_function->arguments[0],
+		outer_function->arguments[0]});
+
+	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, &int32, &sum)->node;
 	
-	jive_gate * arg1_gate = jive_type_create_gate(int32, graph, "arg1");
-	jive_gate * arg2_gate = jive_type_create_gate(int32, graph, "arg2");
-	jive_output * arg1 = jive_node_gate_output(inner_function->top, arg1_gate);
-	jive_output * arg2 = jive_node_gate_output(inner_function->top, arg2_gate);
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){arg1, arg2});
-	jive_gate * inner_ret_gate = jive_type_create_gate(int32, graph, "inner_ret");
-	jive_node_gate_input(inner_function->bottom, inner_ret_gate, sum);
-	jive_node * inner_lambda = jive_lambda_node_create(inner_function);
+	jive_node * apply = jive_apply_node_create(outer_function->region, inner_lambda->outputs[0],
+		1, outer_function->arguments);
 	
-	jive_gate * arg_gate = jive_type_create_gate(int32, graph, "arg");
-	jive_output * arg = jive_node_gate_output(outer_function->top, arg_gate);
-	jive_node * apply = jive_apply_node_create(outer_function, inner_lambda->outputs[0], 2, (jive_output *[]){arg, arg});
-	jive_gate * outer_ret_gate = jive_type_create_gate(int32, graph, "outer_ret");
-	jive_node_gate_input(outer_function->bottom, outer_ret_gate, apply->outputs[0]);
-	jive_node * outer_lambda = jive_lambda_node_create(outer_function);
-	
+	jive_node * outer_lambda = jive_lambda_end(outer_function, 1, &int32, &apply->outputs[0])->node;
 	jive_node_reserve(outer_lambda);
 	
+	jive_view(graph, stderr);
+
+	jive_input_divert_origin(sum->node->inputs[1], sum->node->inputs[0]->origin);
+
 	jive_view(graph, stderr);
 	
 	assert(jive_node_can_move_outward(inner_lambda));
 	jive_graph_push_outward(graph);
 	assert(inner_lambda->region == graph->root_region);
-	assert(inner_function->parent == graph->root_region);
+	assert(inner_lambda->inputs[0]->origin->node->region->parent == graph->root_region);
 	
 	jive_view(graph, stderr);
 	

@@ -30,6 +30,27 @@ struct jive_lambda_node {
 	jive_lambda_node_attrs attrs;
 };
 
+JIVE_EXPORTED_INLINE jive_lambda_node *
+jive_lambda_node_cast(jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
+		return (jive_lambda_node *) node;
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_lambda_node_get_enter_node(const jive_lambda_node * self)
+{
+	return self->base.inputs[0]->origin->node->region->top;
+}
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_lambda_node_get_leave_node(const jive_lambda_node * self)
+{
+	return self->base.inputs[0]->origin->node;
+}
+
 struct jive_lambda_build_state;
 
 /**
@@ -55,36 +76,6 @@ jive_lambda_begin(struct jive_graph * graph,
 struct jive_output *
 jive_lambda_end(struct jive_lambda * lambda,
 	size_t nresults, const jive_type * const result_types[], struct jive_output * const results[]);
-
-jive_region *
-jive_function_region_create(jive_region * parent);
-
-jive_node *
-jive_lambda_node_create(jive_region * function_region);
-
-jive_output *
-jive_lambda_create(jive_region * function_region);
-
-JIVE_EXPORTED_INLINE jive_lambda_node *
-jive_lambda_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
-		return (jive_lambda_node *) node;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_lambda_node_get_enter_node(const jive_lambda_node * self)
-{
-	return self->base.inputs[0]->origin->node->region->top;
-}
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_lambda_node_get_leave_node(const jive_lambda_node * self)
-{
-	return self->base.inputs[0]->origin->node;
-}
 
 void
 jive_inline_lambda_apply(jive_node * apply_node);

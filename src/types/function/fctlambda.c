@@ -92,43 +92,7 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
 
-jive_region *
-jive_function_region_create(jive_region * parent)
-{
-	jive_region * region = jive_region_create_subregion(parent);
-
-	jive_node * enter = jive_lambda_enter_node_create(region);
-	jive_lambda_leave_node_create(enter->outputs[0]);
-	
-	return region;
-}
-
 /* lambda node */
-
-static void
-jive_lambda_node_fini_(jive_node * self_);
-
-static const jive_node_attrs *
-jive_lambda_node_get_attrs_(const jive_node * self);
-
-static bool
-jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
-
-static jive_node *
-jive_lambda_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
-
-const jive_node_class JIVE_LAMBDA_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LAMBDA",
-	.fini = jive_lambda_node_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_lambda_node_get_attrs_, /* inherit */
-	.match_attrs = jive_lambda_node_match_attrs_, /* override */
-	.create = jive_lambda_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
-};
 
 static void
 jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
@@ -164,6 +128,15 @@ jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
 		self->attrs.argument_gates[n] = function_region->top->outputs[n+1]->gate;
 	for(n = 0; n < nreturns; n++)
 		self->attrs.return_gates[n] = function_region->bottom->inputs[n+1]->gate;
+}
+
+static jive_node *
+jive_lambda_node_create(jive_region * function_region)
+{
+	jive_lambda_node * node = jive_context_malloc(function_region->graph->context, sizeof(*node));
+	node->base.class_ = &JIVE_LAMBDA_NODE;
+	jive_lambda_node_init_(node, function_region);
+	return &node->base;
 }
 
 static void
@@ -211,20 +184,17 @@ jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 	return true;
 }
 
-jive_node *
-jive_lambda_node_create(jive_region * function_region)
-{
-	jive_lambda_node * node = jive_context_malloc(function_region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_LAMBDA_NODE;
-	jive_lambda_node_init_(node, function_region);
-	return &node->base;
-}
-
-jive_output *
-jive_lambda_create(jive_region * function_region)
-{
-	return jive_lambda_node_create(function_region)->outputs[0];
-}
+const jive_node_class JIVE_LAMBDA_NODE = {
+	.parent = &JIVE_NODE,
+	.name = "LAMBDA",
+	.fini = jive_lambda_node_fini_, /* override */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_lambda_node_get_attrs_, /* inherit */
+	.match_attrs = jive_lambda_node_match_attrs_, /* override */
+	.create = jive_lambda_node_create_, /* override */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+};
 
 /* lambda instantiation */
 

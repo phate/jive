@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -34,20 +34,17 @@ static int test_main()
 	fns[1] = jive_phi_fixvar_enter(phi, &f1type->base.base);
 	fns[2] = jive_phi_fixvar_enter(phi, &f2type->base.base);
 
-	jive_region * lambda_region0 = jive_function_region_create(phi.region);
-	jive_region * lambda_region1 = jive_function_region_create(phi.region);
-	jive_region * lambda_region2 = jive_function_region_create(phi.region);
+	jive_lambda * l0 = jive_lambda_begin(graph, 0, NULL, NULL);
+	jive_lambda * l1 = jive_lambda_begin(graph, 0, NULL, NULL);
+	jive_lambda * l2 = jive_lambda_begin(graph, 1, &vtype, (const char *[]){"arg"});
 
-	jive_gate * arg_gate = jive_type_create_gate(vtype, graph, "arg");
-	jive_gate * ret0_gate = jive_type_create_gate(vtype, graph, "ret0");
-	jive_output * arg = jive_node_gate_output(jive_region_get_top_node(lambda_region2), arg_gate);
+	jive_output * lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
+	jive_output * lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
+
 	jive_output * ret;
-	jive_apply_create(fns[2].value, 1, &arg, &ret);
-	jive_node_gate_input(jive_region_get_bottom_node(lambda_region2), ret0_gate, ret);
+	jive_apply_create(fns[2].value, 1, l2->arguments, &ret);
 
-	jive_output * lambda0 = jive_lambda_create(lambda_region0);
-	jive_output * lambda1 = jive_lambda_create(lambda_region1);
-	jive_output * lambda2 = jive_lambda_create(lambda_region2);
+	jive_output * lambda2 = jive_lambda_end(l2, 1, &vtype, &ret);
 
 	jive_phi_fixvar_leave(phi, fns[0].gate, lambda0);
 	jive_phi_fixvar_leave(phi, fns[1].gate, lambda1);

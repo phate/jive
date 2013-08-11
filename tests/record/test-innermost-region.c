@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -22,28 +22,23 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 
-	jive_region * function = jive_function_region_create(graph->root_region);
-
 	JIVE_DECLARE_BITSTRING_TYPE(int8, 8);
-	jive_gate * arg_gate = jive_type_create_gate(int8, graph, "arg");
-	jive_gate * ret_gate = jive_type_create_gate(int8, graph, "ret");
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, &int8, (const char *[]){"arg"});
 
 	jive_output * o0 = jive_bitconstant(graph, 8, "00000010");
-	jive_output * o1 = jive_node_gate_output(function->top, arg_gate);
 
 	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
 	
 	static const jive_value_type * l_elements[] = { &bits8.base, &bits8.base };
 	static const jive_record_declaration l = {2, l_elements};
 
-	jive_output * g = jive_group_create(&l, 2, (jive_output * []){o0, o1});
+	jive_output * g = jive_group_create(&l, 2, (jive_output * []){o0, lambda->arguments[0]});
 	jive_output * s = jive_select_create(1, g);
 
-	jive_node_gate_input(function->bottom, ret_gate, s);
-	jive_node * lambda_node = jive_lambda_node_create(function);
+	jive_node * lambda_node = jive_lambda_end(lambda, 1, &int8, &s)->node;
 	jive_node_reserve(lambda_node);
 
-	assert(function == g->node->region);
+	assert(lambda_node->inputs[0]->origin->node->region == g->node->region);
 
 	jive_view(graph, stderr);
 

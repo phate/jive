@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,15 +21,9 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_region * fr = jive_function_region_create(graph->root_region);
-	jive_node * top = jive_region_get_top_node(fr);
-	jive_node * bottom = jive_region_get_bottom_node(fr);
-
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	jive_gate * arg_gate = jive_type_create_gate(bits32, graph, "arg");
-	jive_gate * ret_gate = jive_type_create_gate(bits32, graph, "ret");
-	jive_output * arg = jive_node_gate_output(top, arg_gate);
-	
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, &bits32, (const char *[]){"arg"});
+
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 4);
 	
@@ -37,17 +31,17 @@ static int test_main(void)
 	assert(sum_nf);
 	jive_node_normal_form_set_mutable(sum_nf, false);
 
-	jive_output * sum0 = jive_bitsum(2, (jive_output *[]){arg, c0});
+	jive_output * sum0 = jive_bitsum(2, (jive_output *[]){lambda->arguments[0], c0});
 	assert(jive_node_isinstance(sum0->node, &JIVE_BITSUM_NODE));
 	assert(sum0->node->noperands == 2);
 	
 	jive_output * sum1 = jive_bitsum(2, (jive_output *[]){sum0, c1});
 	assert(jive_node_isinstance(sum1->node, &JIVE_BITSUM_NODE));
 	assert(sum1->node->noperands == 2);
-	
-	jive_input * retval = jive_node_gate_input(bottom, ret_gate, sum1);
 
-	jive_node * lambda_node = jive_lambda_node_create(fr);
+	jive_node * lambda_node = jive_lambda_end(lambda, 1, &bits32, &sum1)->node;
+	jive_input * retval = lambda_node->inputs[0]->origin->node->inputs[1];
+	jive_output * arg = lambda_node->inputs[0]->origin->node->inputs[0]->origin->node->outputs[1];
 	jive_node_reserve(lambda_node);
 	
 	jive_node_normal_form_set_mutable(sum_nf, true);
