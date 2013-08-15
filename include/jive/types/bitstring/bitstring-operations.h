@@ -29,6 +29,8 @@ jive_bitstring_to_unsigned(const char src[], size_t nbits)
 static inline int64_t
 jive_bitstring_to_signed(const char src[], size_t nbits)
 {
+	JIVE_DEBUG_ASSERT(nbits > 0 && nbits <= 64);
+
 	int diff = 64 - nbits;
 	int64_t value = (int64_t) jive_bitstring_to_unsigned(src, nbits);
 
