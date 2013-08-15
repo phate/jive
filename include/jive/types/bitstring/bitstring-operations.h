@@ -206,10 +206,14 @@ jive_bitstring_slesseq(const char * c1, const char * c2, size_t nbits)
 static inline char
 jive_bitstring_ulesseq(const char * c1, const char * c2, size_t nbits)
 {
-	//FIXME: summarize to one formula to get a more precise result
-	char l = jive_bitstring_uless(c1, c2, nbits);
-	char e = jive_bitstring_equal(c1, c2, nbits);
-	return jive_bit_or(l, e);
+	size_t n;
+	char val = '1';
+	for(n = 0; n < nbits; n++){
+		val = jive_bit_and(jive_bit_and(jive_bit_or(jive_bit_not(c1[n]), c2[n]),
+			jive_bit_or(jive_bit_not(c1[n]), val)), jive_bit_or(val, c2[n]));
+	}
+
+	return val;
 }
 
 static inline char
