@@ -396,10 +396,14 @@ static inline void
 jive_bitstring_shiftleft(char dst[],
 	const char operand[], size_t nbits, size_t shift)
 {
-	memset(dst, '0', nbits);
-	if(shift >= nbits) return;
+	if(shift >= nbits) {
+		memset(dst, '0', nbits);
+		return;
+	}
 
-	memcpy(dst+shift, operand, nbits-shift);
+	dst = memmove(dst+shift, operand, nbits-shift);
+	memset(dst-shift, '0', shift);
+	dst = dst-shift;
 }
 
 static inline void
