@@ -432,6 +432,18 @@ jive_bitstring_is_defined(const char bs[], size_t nbits)
 	return true;
 }
 
+static inline bool
+jive_bitstring_is_known(const char bs[], size_t nbits)
+{
+	size_t n;
+	for (n = 0; n < nbits; n++) {
+		if (bs[n] == 'X' || bs[n] == 'D')
+			return false;
+	}
+
+	return true;
+}
+
 static inline void
 jive_bitstring_product(
 	char product[], size_t product_nbits,
