@@ -444,6 +444,14 @@ jive_bitstring_is_known(const char bs[], size_t nbits)
 	return true;
 }
 
+static inline bool
+jive_bitstring_is_negative(const char bs[], size_t nbits)
+{
+	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(bs, nbits));
+
+	return bs[nbits-1] == '1';
+}
+
 static inline void
 jive_bitstring_product(
 	char product[], size_t product_nbits,
