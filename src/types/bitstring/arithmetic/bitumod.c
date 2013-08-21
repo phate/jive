@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -54,7 +54,8 @@ jive_bitumod_node_init_(jive_node * self, jive_region * region,
 	size_t noperands, jive_output * const operands[])
 {
 	if (!jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context, "Type mismatch: bitumod node requires bitstring operands");
+		jive_context_fatal_error(region->graph->context,
+			"Type mismatch: bitumod node requires bitstring operands");
 	}
 	size_t nbits = ((jive_bitstring_output *)operands[0])->type.nbits;
 	
@@ -84,6 +85,10 @@ static jive_binop_reduction_path_t
 jive_bitumod_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
+	if (jive_node_isinstance(op1->node, &JIVE_BITCONSTANT_NODE) &&
+		jive_node_isinstance(op2->node, &JIVE_BITCONSTANT_NODE))
+		return jive_binop_reduction_constants;
+
 	return jive_binop_reduction_none;
 }
 
@@ -92,6 +97,20 @@ jive_bitumod_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs,
 	jive_output * op1, jive_output * op2)
 {
+	jive_graph * graph = op1->node->graph;
+
+	if (path == jive_binop_reduction_constants) {
+		jive_bitconstant_node * dividend = (jive_bitconstant_node *)op1->node;
+		jive_bitconstant_node * divisor = (jive_bitconstant_node *)op2->node;
+
+		size_t nbits = dividend->attrs.nbits;
+		char quotient[nbits], remainder[nbits];
+		jive_bitstring_division_unsigned(quotient, remainder,
+			dividend->attrs.bits, divisor->attrs.bits, nbits);
+
+		return jive_bitconstant(graph, nbits, remainder);
+	}
+
 	return NULL;
 }
 
