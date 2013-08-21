@@ -300,6 +300,11 @@ static int test_main(void)
 	assert(jive_bitstring_to_signed("000110", 5) == -8);
 	assert(jive_bitstring_to_signed("000110", 6) == 24);
 
+	char dst128[128];
+	jive_bitstring_init_unsigned(dst128, 128, 4);
+	assert(jive_bitstring_to_signed(dst128, 64) == 4);
+	assert(jive_bitstring_to_signed(dst128+64, 64) == 0);
+
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 	
