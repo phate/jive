@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -349,11 +349,24 @@ static int test_main(void)
 			jive_node * diff1 = jive_bitconstant_create_signed(graph, 32, r-c);
 			jive_node * diff2 = jive_bitconstant_create(graph, 32, dst32);
 			assert(jive_node_match_attrs(diff1, jive_node_get_attrs(diff2)));
+
+			if (r >= 0 && c > 0) {
+				char quotient[32], remainder[32];
+				jive_bitstring_division_unsigned(quotient, remainder, cr->attrs.bits, cc->attrs.bits, 32);
+
+				jive_node * div1 = jive_bitconstant_create_unsigned(graph, 32, r/c);
+				jive_node * div2 = jive_bitconstant_create(graph, 32, quotient);
+				assert(jive_node_match_attrs(div1, jive_node_get_attrs(div2)));
+
+				jive_node * mod1 = jive_bitconstant_create_unsigned(graph, 32, r%c);
+				jive_node * mod2 = jive_bitconstant_create(graph, 32, remainder);
+				assert(jive_node_match_attrs(mod1, jive_node_get_attrs(mod2)));
+			}
 		}
 	}	
 
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
+	jive_context_assert_clean(context);
 	jive_context_destroy(context);
 
 	return 0;
