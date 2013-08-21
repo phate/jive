@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -27,18 +27,28 @@ static int test_main(void)
 		2, (const jive_type *[]){bits32, bits32});
 	jive_node_reserve(top);
 
-	jive_output * squot = jive_bitsquotient(top->outputs[0], top->outputs[1]);
+	jive_output * c0 = jive_bitconstant_signed(graph, 32, 7);
+	jive_output * c1 = jive_bitconstant_signed(graph, 32, -3);
+
+	jive_output * squot0 = jive_bitsquotient(top->outputs[0], top->outputs[1]);
+	jive_output * squot1 = jive_bitsquotient(c0, c1);
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){bits32}, (jive_output *[]){squot}, 0, NULL);
+		2, (const jive_type *[]){bits32, bits32}, (jive_output *[]){squot0, squot1}, 0, NULL);
 	jive_node_reserve(bottom);	
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
+	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITSQUOTIENT_NODE));
+	assert(jive_node_isinstance(bottom->inputs[1]->origin->node, &JIVE_BITCONSTANT_NODE));
+
+	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(bottom->inputs[1]->origin->node);
+	assert(jive_bitconstant_equals_signed(bc1, -2));
+
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
+	jive_context_assert_clean(context);
 	jive_context_destroy(context);
 
 	return 0;
