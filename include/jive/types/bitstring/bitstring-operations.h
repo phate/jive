@@ -454,6 +454,39 @@ jive_bitstring_is_negative(const char bs[], size_t nbits)
 }
 
 static inline void
+jive_bitstring_division_unsigned(char quotient[], char remainder[],
+	const char dividend[], const char divisor[], size_t nbits)
+{
+	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(dividend, nbits));
+	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(divisor, nbits));
+
+	char zero[nbits];
+	jive_bitstring_init_unsigned(zero, nbits, 0);
+	if (jive_bitstring_equal(divisor, zero, nbits) == '1') {
+		//FIXME: Ideally, I would like to throw a jive_context_fatal_error here.
+		JIVE_DEBUG_ASSERT(0);
+		return;
+	}
+
+	char N[nbits], D[nbits];
+	memcpy(N, dividend, nbits);
+	memcpy(D, divisor, nbits);
+
+	memset(quotient, '0', nbits);
+	memset(remainder, '0', nbits);
+
+	size_t n;
+	for (n = 0; n < nbits; n++) {
+		jive_bitstring_shiftleft(remainder, remainder, nbits, 1);
+		remainder[0] = N[nbits-n-1];
+		if (jive_bitstring_ugreatereq(remainder, D, nbits) == '1') {
+			jive_bitstring_difference(remainder, remainder, D, nbits);
+			quotient[nbits-n-1] = '1';
+		}
+	}
+}
+
+static inline void
 jive_bitstring_product(
 	char product[], size_t product_nbits,
 	const char factor1[], size_t factor1_nbits,
