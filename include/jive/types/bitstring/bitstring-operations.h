@@ -379,6 +379,8 @@ static inline void
 jive_bitstring_init_signed(char dst[], size_t nbits, int64_t value)
 {
 	jive_bitstring_init_unsigned(dst, nbits, (uint64_t)value);
+	if (nbits > 64)
+		memset(dst+64, '0' + ((value >> 63) & 1), nbits-64);
 }
 
 static inline void
