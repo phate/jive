@@ -302,8 +302,9 @@ jive_bitstring_sum(
 	unsigned int n;
 	char carry='0';
 	for(n=0; n<nbits; n++) {
-		sum[n]=jive_bit_sum(op1[n], op2[n], carry);
-		carry=jive_bit_carry(op1[n], op2[n], carry);
+		char s1 = op1[n], s2 = op2[n];
+		sum[n]=jive_bit_sum(s1, s2, carry);
+		carry=jive_bit_carry(s1, s2, carry);
 	}
 }
 
