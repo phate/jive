@@ -358,11 +358,11 @@ jive_bitstring_negate(
 
 static inline void
 jive_bitstring_difference(char dst[],
-	const char dividend[], const char divisor[], size_t nbits)
+	const char minuend[], const char subtrahend[], size_t nbits)
 {
 	char tmp[nbits];
-	jive_bitstring_negate(tmp, divisor, nbits);
-	jive_bitstring_sum(dst, dividend, tmp, nbits);
+	jive_bitstring_negate(tmp, subtrahend, nbits);
+	jive_bitstring_sum(dst, minuend, tmp, nbits);
 }
 
 static inline void
