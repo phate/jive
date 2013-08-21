@@ -375,6 +375,19 @@ static int test_main(void)
 				jive_node * mod2 = jive_bitconstant_create(graph, 32, remainder);
 				assert(jive_node_match_attrs(mod1, jive_node_get_attrs(mod2)));
 			}
+
+			if (c != 0) {
+				char quotient[32], remainder[32];
+				jive_bitstring_division_signed(quotient, remainder, cr->attrs.bits, cc->attrs.bits, 32);
+
+				jive_node * div1 = jive_bitconstant_create_signed(graph, 32, r/c);
+				jive_node * div2 = jive_bitconstant_create(graph, 32, quotient);
+				assert(jive_node_match_attrs(div1, jive_node_get_attrs(div2)));
+
+				jive_node * mod1 = jive_bitconstant_create_signed(graph, 32, r%c);
+				jive_node * mod2 = jive_bitconstant_create(graph, 32, remainder);
+				assert(jive_node_match_attrs(mod1, jive_node_get_attrs(mod2)));
+			}
 		}
 	}	
 
