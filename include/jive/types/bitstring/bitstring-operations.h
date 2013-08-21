@@ -487,6 +487,32 @@ jive_bitstring_division_unsigned(char quotient[], char remainder[],
 }
 
 static inline void
+jive_bitstring_division_signed(char quotient[], char remainder[],
+	const char dividend[], const char divisor[], size_t nbits)
+{
+	const char * N = dividend, * D = divisor;
+	char Nbits[nbits], Dbits[nbits];
+	if (jive_bitstring_is_negative(dividend, nbits)) {
+		jive_bitstring_negate(Nbits, dividend, nbits);
+		N = Nbits;
+	}
+	if (jive_bitstring_is_negative(divisor, nbits)) {
+		jive_bitstring_negate(Dbits, divisor, nbits);
+		D = Dbits;
+	}
+
+	jive_bitstring_division_unsigned(quotient, remainder, N, D, nbits);
+
+	if (jive_bitstring_is_negative(dividend, nbits))
+		jive_bitstring_negate(remainder, remainder, nbits);
+
+	bool neg_dividend = jive_bitstring_is_negative(dividend, nbits);
+	bool neg_divisor = jive_bitstring_is_negative(divisor, nbits);
+	if (neg_dividend ^ neg_divisor)
+		jive_bitstring_negate(quotient, quotient, nbits);
+}
+
+static inline void
 jive_bitstring_product(
 	char product[], size_t product_nbits,
 	const char factor1[], size_t factor1_nbits,
