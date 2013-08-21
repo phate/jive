@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -30,14 +30,17 @@ static int test_main(void)
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 4);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 5);
+	jive_output * c2 = jive_bitconstant_undefined(graph, 32);
 
 	jive_output * nequal0 = jive_bitnotequal(top->outputs[0], top->outputs[1]);
 	jive_output * nequal1 = jive_bitnotequal(c0, c0);
 	jive_output * nequal2 = jive_bitnotequal(c0, c1);
+	jive_output * nequal3 = jive_bitnotequal(c0, c2);
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
 	jive_node * bottom = jive_node_create(graph->root_region,
-		3, (const jive_type *[]){ctype, ctype, ctype}, (jive_output *[]){nequal0, nequal1, nequal2},
+		4, (const jive_type *[]){ctype, ctype, ctype, ctype},
+		(jive_output *[]){nequal0, nequal1, nequal2, nequal3},
 		0, NULL);
 	jive_node_reserve(bottom);
 	
@@ -47,13 +50,13 @@ static int test_main(void)
 	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITNOTEQUAL_NODE));
 	assert(jive_node_isinstance(bottom->inputs[1]->origin->node, &JIVE_CONTROL_FALSE_NODE));
 	assert(jive_node_isinstance(bottom->inputs[2]->origin->node, &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(bottom->inputs[3]->origin->node, &JIVE_BITNOTEQUAL_NODE));
 
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
+	jive_context_assert_clean(context);
 	jive_context_destroy(context);
 
 	return 0;
 }
-
 
 JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitnotequal", test_main);

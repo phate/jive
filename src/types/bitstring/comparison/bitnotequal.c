@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -20,8 +20,8 @@ jive_bitnotequal_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
 
 static jive_output *
-jive_bitnotequal_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
+jive_bitnotequal_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
+	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
 
 const jive_bitcomparison_operation_class JIVE_BITNOTEQUAL_NODE_ = {
 	.base = { /* jive_binary_operation_class */
@@ -54,7 +54,8 @@ jive_bitnotequal_node_init_(jive_node * self, jive_region * region,
 	jive_output * operand1, jive_output * operand2)
 {
 	if (!jive_output_isinstance(operand1, &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context, "Type mismatch: bitnotequal node requires bitstring operands");
+		jive_context_fatal_error(region->graph->context,
+			"Type mismatch: bitnotequal node requires bitstring operands");
 	}
 	size_t nbits = ((jive_bitstring_output *)operand1)->type.nbits;
 
@@ -82,8 +83,19 @@ static jive_binop_reduction_path_t
 jive_bitnotequal_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
-	if (jive_node_isinstance(op1->node, &JIVE_BITCONSTANT_NODE) && jive_node_isinstance(op2->node, &JIVE_BITCONSTANT_NODE))
-		return jive_binop_reduction_constants;
+	const jive_bitconstant_node * n1 = jive_bitconstant_node_cast(op1->node);
+	const jive_bitconstant_node * n2 = jive_bitconstant_node_cast(op2->node);
+
+	if (n1 && n2) {
+		JIVE_DEBUG_ASSERT(n1->attrs.nbits == n2->attrs.nbits);
+		char result = jive_bitstring_notequal(n1->attrs.bits, n2->attrs.bits, n1->attrs.nbits);
+
+		switch (result) {
+			case '0': return 1;
+			case '1': return 2;
+			default: return jive_binop_reduction_none;
+		}
+	}
 
 	return jive_binop_reduction_none;
 }
@@ -92,25 +104,16 @@ static jive_output *
 jive_bitnotequal_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
 	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	if (path == jive_binop_reduction_constants) {
-		const jive_bitconstant_node * n1 = (const jive_bitconstant_node *) op1->node;
-		const jive_bitconstant_node * n2 = (const jive_bitconstant_node *) op2->node;
+	jive_graph * graph = op1->node->graph;
 
-		JIVE_DEBUG_ASSERT(n1->attrs.nbits == n2->attrs.nbits);
-		char result = jive_bitstring_notequal(n1->attrs.bits, n2->attrs.bits,
-			n1->attrs.nbits);
-
-		switch(result){
-			case '0':
-				return jive_control_false(op1->node->graph);
-			case '1':
-				return jive_control_true(op1->node->graph);
-			default:
-				return NULL;
-		};
+	switch (path) {
+		case 1:
+			return jive_control_false(graph);
+		case 2:
+			return jive_control_true(graph);
+		default:
+			return NULL;
 	}
-
-	return NULL;
 }
 
 jive_node *
@@ -130,4 +133,3 @@ jive_bitnotequal(jive_output * operand1, jive_output * operand2)
 
 	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands);
 }
-
