@@ -8,6 +8,7 @@
 
 #include <jive/common.h>
 
+#include <stdbool.h>
 #include <string.h>
 
 static inline uint64_t
@@ -417,6 +418,18 @@ jive_bitstring_arithmetic_shiftright(char dst[],
 
 	dst = memmove(dst, operand+shift, nbits-shift);
 	memset(dst+nbits-shift, operand[nbits-1], shift);
+}
+
+static inline bool
+jive_bitstring_is_defined(const char bs[], size_t nbits)
+{
+	size_t n;
+	for (n = 0; n < nbits; n++) {
+		if (bs[n] == 'X')
+			return false;
+	}
+
+	return true;
 }
 
 static inline void
