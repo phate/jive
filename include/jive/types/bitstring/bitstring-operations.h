@@ -410,10 +410,13 @@ static inline void
 jive_bitstring_arithmetic_shiftright(char dst[],
 	const char operand[], size_t nbits, size_t shift)
 {
-	memset(dst, operand[nbits-1], nbits);
-	if(shift >= nbits) return;
+	if(shift >= nbits) {
+		memset(dst, operand[nbits-1], nbits);
+		return;
+	}
 
-	memcpy(dst, operand+shift, nbits-shift);
+	dst = memmove(dst, operand+shift, nbits-shift);
+	memset(dst+nbits-shift, operand[nbits-1], shift);
 }
 
 static inline void
