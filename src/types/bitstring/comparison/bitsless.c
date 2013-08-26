@@ -56,9 +56,6 @@ static void
 jive_bitsless_node_init_(jive_node * self, jive_region * region,
 	jive_output * operand1, jive_output * operand2)
 {
-	if (!jive_output_isinstance(operand1, &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context, "Type mismatch: bitsless node requires bitstring operands");
-	}
 	size_t nbits = ((jive_bitstring_output *)operand1)->type.nbits;
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
