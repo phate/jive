@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,10 +10,6 @@
 
 extern const jive_bitcomparison_operation_class JIVE_BITEQUAL_NODE_;
 #define JIVE_BITEQUAL_NODE (JIVE_BITEQUAL_NODE_.base.base)
-
-jive_node *
-jive_bitequal_create(struct jive_region * region,
-	struct jive_output * operand1, struct jive_output * operand2);
 
 jive_output *
 jive_bitequal(struct jive_output * operand1, struct jive_output * operand2);

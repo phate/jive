@@ -145,13 +145,6 @@ jive_bitsgreater_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	}
 }
 
-jive_node *
-jive_bitsgreater_create(jive_region * region,
-	jive_output * operand1, jive_output * operand2)
-{
-	return jive_bitsgreater_create_(region, NULL, 2, (jive_output *[]){operand1, operand2});
-}
-
 jive_output *
 jive_bitsgreater(jive_output * operand1, jive_output * operand2)
 {

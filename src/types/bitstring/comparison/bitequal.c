@@ -119,13 +119,6 @@ jive_bitequal_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const 
 	}
 }
 
-jive_node *
-jive_bitequal_create(jive_region * region,
-	jive_output * operand1, jive_output * operand2)
-{
-	return jive_bitequal_create_(region, NULL, 2, (jive_output *[]){operand1, operand2});
-}
-
 jive_output *
 jive_bitequal(jive_output * operand1, jive_output * operand2)
 {

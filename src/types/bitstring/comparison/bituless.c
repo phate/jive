@@ -143,13 +143,6 @@ jive_bituless_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	}
 }
 
-jive_node *
-jive_bituless_create(jive_region * region,
-	jive_output * operand1, jive_output * operand2)
-{
-	return jive_bituless_create_(region, NULL, 2, (jive_output *[]){operand1, operand2});
-}
-
 jive_output *
 jive_bituless(jive_output * operand1, jive_output * operand2)
 {
