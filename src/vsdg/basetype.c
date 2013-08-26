@@ -76,10 +76,8 @@ jive_type_copy_(const jive_type * self, jive_context * context)
 }
 
 void
-jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node * node)
+jive_raise_type_error(const jive_type * self, const jive_type * other, jive_context * context)
 {
-	jive_context * context = node->graph->context;
-
 	jive_buffer input_type_buffer, operand_type_buffer;
 	jive_buffer_init(&input_type_buffer, context);
 	jive_buffer_init(&operand_type_buffer, context);
@@ -93,6 +91,18 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_node
 	jive_buffer_fini(&input_type_buffer);
 	jive_buffer_fini(&operand_type_buffer);
 	jive_context_fatal_error(context, error_message);
+}
+
+struct jive_input *
+jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
+	jive_output * initial_operand)
+{
+	const jive_type * operand_type = jive_output_get_type(initial_operand);
+
+	if (!jive_type_equals(self, operand_type))
+		jive_raise_type_error(self, operand_type, node->graph->context);
+
+	return self->class_->create_input(self, node, index, initial_operand);
 }
 
 const jive_type_class JIVE_TYPE = {
@@ -235,7 +245,7 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 	const jive_type * operand_type = jive_output_get_type(new_origin);
 	
 	if (!jive_type_equals(input_type, operand_type)) {
-		jive_raise_type_error(input_type, operand_type, self->node);
+		jive_raise_type_error(input_type, operand_type, self->node->graph->context);
 	}
 	if (input_type->class_ == &JIVE_ANCHOR_TYPE) {
 		jive_context_fatal_error(self->node->graph->context,
