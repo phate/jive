@@ -6,8 +6,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-//#include "testnodes.h"
-//#include "graph-sanity-checks.h"
 #include <locale.h>
 
 #include <jive/vsdg.h>
