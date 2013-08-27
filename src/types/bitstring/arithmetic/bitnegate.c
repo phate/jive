@@ -51,10 +51,6 @@ jive_bitnegate_node_init_(
 	jive_region * region,
 	jive_output * operand)
 {
-	if (!jive_output_isinstance(operand, &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context,
-			"Type mismatch: bitnegate node requires bitstring operands");
-	}
 	size_t nbits = ((jive_bitstring_output *) operand)->type.nbits;
 
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);

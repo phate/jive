@@ -53,10 +53,6 @@ static void
 jive_bitshr_node_init_(jive_node * self, jive_region * region,
 	size_t noperands, jive_output * const operands[])
 {
-	if (!jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context,
-			"Type mismatch: bitshr node requires bitstring operands");
-	}
 	size_t nbits = ((jive_bitstring_output *)operands[0])->type.nbits;
 	
 	size_t n;
