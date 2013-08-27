@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,10 +10,6 @@
 
 extern const jive_bitbinary_operation_class JIVE_BITSHL_NODE_;
 #define JIVE_BITSHL_NODE (JIVE_BITSHL_NODE_.base.base)
-
-jive_node *
-jive_bitshl_create(struct jive_region * region,
-	jive_output * operand, jive_output * shift);
 
 jive_output *
 jive_bitshl(jive_output * operand, jive_output * shift);

@@ -195,16 +195,6 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 	return NULL;
 }
 
-jive_node *
-jive_bitslice_create(struct jive_region * region, jive_output * operand, size_t low, size_t high)
-{
-	jive_bitslice_node_attrs attrs;
-	attrs.low = low;
-	attrs.high = high;
-
-	return jive_bitslice_node_create_(region, &attrs.base, 1, &operand);
-}
-
 jive_output *
 jive_bitslice(jive_output * operand, size_t low, size_t high)
 {

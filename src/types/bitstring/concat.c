@@ -202,15 +202,6 @@ jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive
 	return NULL;
 }
 
-jive_node *
-jive_bitconcat_create(
-	struct jive_region * region,
-	size_t noperands, struct jive_output * const * operands)
-{
-	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE_, region->graph, NULL,
-		noperands, operands)->node;
-}
-
 jive_output *
 jive_bitconcat(size_t noperands, struct jive_output * const * operands)
 {

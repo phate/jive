@@ -36,32 +36,14 @@ struct jive_bitconstant_node {
 	\param bits Values of bits
 	\returns Bitstring value representing constant
 	
-	Create new bitconstant node.
-*/
-jive_node *
-jive_bitconstant_create(struct jive_graph * graph, size_t nbits, const char bits[]);
-
-/**
-	\brief Create bitconstant
-	\param graph Graph to create constant in
-	\param nbits Number of bits
-	\param bits Values of bits
-	\returns Bitstring value representing constant
-	
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
 jive_output *
 jive_bitconstant(struct jive_graph * graph, size_t nbits, const char bits[]);
 
-jive_node *
-jive_bitconstant_create_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value);
-
 jive_output *
 jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value);
-
-jive_node *
-jive_bitconstant_create_signed(struct jive_graph * graph, size_t nbits, int64_t value);
 
 jive_output *
 jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value);

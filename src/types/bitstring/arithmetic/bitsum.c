@@ -109,13 +109,6 @@ jive_bitsum_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const ji
 	return NULL;
 }
 
-jive_node *
-jive_bitsum_create(jive_region * region, size_t noperands, jive_output * const * operands)
-{
-	return jive_binary_operation_create_normalized(&JIVE_BITSUM_NODE_.base, region->graph, NULL,
-		noperands, operands)->node;
-}
-
 jive_output *
 jive_bitsum(size_t noperands, jive_output * const * operands)
 {

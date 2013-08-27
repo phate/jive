@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,20 +25,6 @@ struct jive_bitslice_node {
 	jive_node base;
 	jive_bitslice_node_attrs attrs;
 };
-
-/**
-	\brief Create bitslice
-	\param region Region to put node into
-	\param origin Input value
-	\param low Low bit
-	\param high High bit
-	\returns Bitstring value representing slice
-	
-	Create new bitslice node. Takes the bits <TT>[low:high)</TT> out
-	of the input bits.
-*/
-jive_node *
-jive_bitslice_create(struct jive_region * region, jive_output * origin, size_t low, size_t high);
 
 /**
 	\brief Create bitslice

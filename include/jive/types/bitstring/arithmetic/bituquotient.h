@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,10 +10,6 @@
 
 extern const jive_bitbinary_operation_class JIVE_BITUQUOTIENT_NODE_;
 #define JIVE_BITUQUOTIENT_NODE (JIVE_BITUQUOTIENT_NODE_.base.base)
-
-jive_node *
-jive_bituquotient_create(struct jive_region * region,
-	jive_output * dividend, jive_output * divisor);
 
 jive_output *
 jive_bituquotient(jive_output * dividend, jive_output * divisor);

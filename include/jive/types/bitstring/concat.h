@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -12,11 +12,6 @@
 
 extern const jive_binary_operation_class JIVE_BITCONCAT_NODE_;
 #define JIVE_BITCONCAT_NODE (JIVE_BITCONCAT_NODE_.base)
-
-jive_node *
-jive_bitconcat_create(
-	struct jive_region * region,
-	size_t noperands, struct jive_output * const * operands);
 
 jive_output *
 jive_bitconcat(size_t noperands, struct jive_output * const * operands);

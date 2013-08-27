@@ -96,13 +96,6 @@ jive_bitshiproduct_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	return NULL;
 }
 
-jive_node *
-jive_bitshiproduct_create(jive_region * region, jive_output * factor1, jive_output * factor2)
-{
-	return jive_binary_operation_create_normalized(&JIVE_BITSHIPRODUCT_NODE_.base, region->graph,
-		NULL, 2, (jive_output * []){factor1, factor2})->node;
-}
-
 jive_output *
 jive_bitshiproduct(jive_output * factor1, jive_output * factor2)
 {

@@ -114,13 +114,6 @@ jive_bitshl_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	return NULL;
 }
 
-jive_node *
-jive_bitshl_create(jive_region * region, jive_output * operand, jive_output * shift)
-{
-	return jive_binary_operation_create_normalized(&JIVE_BITSHL_NODE_.base, region->graph, NULL,
-		2, (jive_output * []){operand, shift})->node;
-}
-
 jive_output *
 jive_bitshl(jive_output * operand, jive_output * shift)
 {

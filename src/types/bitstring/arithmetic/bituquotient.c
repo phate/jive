@@ -116,13 +116,6 @@ jive_bituquotient_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	return NULL;
 }
 
-jive_node *
-jive_bituquotient_create(jive_region * region, jive_output * dividend, jive_output * divisor)
-{
-	return jive_binary_operation_create_normalized(&JIVE_BITUQUOTIENT_NODE_.base, region->graph,
-		NULL, 2, (jive_output * []){dividend, divisor})->node;
-}
-
 jive_output *
 jive_bituquotient(jive_output * dividend, jive_output * divisor)
 {

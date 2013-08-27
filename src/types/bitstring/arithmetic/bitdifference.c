@@ -96,13 +96,6 @@ jive_bitdifference_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	return NULL;
 }
 
-jive_node *
-jive_bitdifference_create(jive_region * region, jive_output * op1, jive_output * op2)
-{
-	return jive_binary_operation_create_normalized(&JIVE_BITDIFFERENCE_NODE_.base, region->graph,
-		NULL, 2, (jive_output * []){op1, op2})->node;
-}
-
 jive_output *
 jive_bitdifference(jive_output * op1, jive_output * op2)
 {

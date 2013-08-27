@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,18 +10,6 @@
 
 extern const jive_bitunary_operation_class JIVE_BITNOT_NODE_;
 #define JIVE_BITNOT_NODE (JIVE_BITNOT_NODE_.base.base)
-
-/**
-	\brief Create bitnot
-	\param region Region to put node into
-	\param origin Input value
-	\returns Bitstring value representing not
-	
-	Create new bitnot node. Computes the two's complement
-	of the input bitstring.
-*/
-jive_node *
-jive_bitnot_create(struct jive_region * region, jive_output * origin);
 
 /**
 	\brief Create bitnot
