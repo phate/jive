@@ -1,10 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testnodes.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -16,7 +17,6 @@
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-variable-private.h>
-#include <jive/types/bitstring.h>
 
 static int test_main(void)
 {
@@ -24,9 +24,12 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_output * x = jive_bitsymbolicconstant(graph, 8, "x");
-	jive_output * y = jive_bitsymbolicconstant(graph, 8, "y");
-	jive_node * n = jive_bitconcat_create(graph->root_region, 2, (jive_output *[]){x, y});
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	jive_output * x = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype)->outputs[0];
+	jive_output * y = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype)->outputs[0];
+	jive_node * n = jive_test_node_create(graph->root_region, 2, (const jive_type *[]){vtype, vtype},
+		(jive_output *[]){x, y}, 1, &vtype);
+
 	jive_output_auto_assign_variable(x);
 	jive_output_auto_assign_variable(y);
 	

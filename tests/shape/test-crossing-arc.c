@@ -1,10 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testnodes.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -12,7 +13,6 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 
-#include <jive/types/bitstring.h>
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
@@ -25,14 +25,16 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
-	
-	jive_node * a = jive_bitsymbolicconstant_create(graph, 8, "a");
-	jive_node * b = jive_bitsymbolicconstant_create(graph, 8, "b");
-	jive_node * c = jive_bitslice_create(graph->root_region, a->outputs[0], 0, 1);
+
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	jive_node * a = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype);
+	jive_node * b = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype);
+	jive_node * c = jive_test_node_create(graph->root_region, 1, &vtype, &a->outputs[0], 1, &vtype);
 	jive_region * subregion = jive_region_create_subregion(graph->root_region);
-	jive_node * d = jive_bitslice_create(subregion, a->outputs[0], 1, 2);
-	jive_node * e = jive_bitslice_create(graph->root_region, b->outputs[0], 2, 3);
-	jive_node * f = jive_bitslice_create(graph->root_region, b->outputs[0], 3, 4);
+	jive_node * d = jive_test_node_create(subregion, 1, &vtype, &a->outputs[0], 1, &vtype);
+	jive_node * e = jive_test_node_create(graph->root_region, 1, &vtype, &b->outputs[0], 1, &vtype);
+	jive_node * f = jive_test_node_create(graph->root_region, 1, &vtype, &b->outputs[0], 1, &vtype);
+
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	jive_node_add_input(e, anchor_type, jive_node_add_output(d, anchor_type));
 	
