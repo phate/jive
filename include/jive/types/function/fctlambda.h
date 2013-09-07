@@ -10,6 +10,8 @@
 #include <jive/vsdg/node.h>
 #include <jive/types/function/fcttype.h>
 
+/* lambda node */
+
 typedef struct jive_lambda jive_lambda;
 typedef struct jive_lambda_node jive_lambda_node;
 typedef struct jive_lambda_node_attrs jive_lambda_node_attrs;
@@ -35,6 +37,15 @@ jive_lambda_node_cast(jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
 		return (jive_lambda_node *) node;
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_lambda_node *
+jive_lambda_node_const_cast(const struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
+		return (const struct jive_lambda_node *)node;
 	else
 		return NULL;
 }
