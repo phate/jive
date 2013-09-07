@@ -35,9 +35,15 @@ jive_phi_node_normal_form_cast(jive_node_normal_form * self)
 
 /* phi node */
 
-extern const jive_node_class JIVE_PHI_NODE;
+typedef struct jive_phi_node jive_phi_node;
+
+extern const jive_anchor_node_class JIVE_PHI_NODE;
 extern const jive_node_class JIVE_PHI_ENTER_NODE;
 extern const jive_node_class JIVE_PHI_LEAVE_NODE;
+
+struct jive_phi_node {
+	jive_anchor_node base;
+};
 
 typedef struct jive_phi jive_phi;
 typedef struct jive_phi_fixvar jive_phi_fixvar;

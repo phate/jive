@@ -250,14 +250,14 @@ static jive_node *
 jive_phi_node_create(jive_region * phi_region,
 	jive_output * phi_body)
 {
-	jive_node * self = jive_context_malloc(phi_region->graph->context, sizeof(*self));;
+	jive_phi_node * self = jive_context_malloc(phi_region->graph->context, sizeof(*self));;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
-	self->class_ = &JIVE_PHI_NODE;
-	jive_node_init_(self, phi_region,
+	self->base.base.class_ = &JIVE_PHI_NODE;
+	jive_node_init_(&self->base.base, phi_region,
 		1, &anchor, &phi_body,
 		0, NULL);
 	
-	return self;
+	return &self->base.base;
 }
 
 /* phi instantiation */
