@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 
+#include <jive/vsdg/anchor-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>

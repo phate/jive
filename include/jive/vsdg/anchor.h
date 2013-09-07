@@ -37,13 +37,7 @@ jive_anchor_node_const_cast(const struct jive_node * node)
 		return NULL;
 }
 
-/* node class inheritable methods */
-
-jive_node_normal_form *
-jive_anchor_node_get_default_normal_form_(const jive_node_class * cls,
-	jive_node_normal_form * parent, struct jive_graph * graph);
-
-/* normal form class */
+/* anchor node normal form */
 
 typedef struct jive_anchor_node_normal_form jive_anchor_node_normal_form;
 typedef struct jive_anchor_node_normal_form_class jive_anchor_node_normal_form_class;
@@ -77,14 +71,5 @@ jive_anchor_node_normal_form_set_reducible(jive_anchor_node_normal_form * self, 
 	cls = (const jive_anchor_node_normal_form_class *) self->base.class_;
 	cls->set_reducible(self, reducible);	
 }
-
-/* normal form class inhertiable methods */
-
-void
-jive_anchor_node_normal_form_init_(jive_anchor_node_normal_form * self,
-	const jive_node_class * cls, jive_node_normal_form * parent_, struct jive_graph * graph);
-
-void
-jive_anchor_node_normal_form_set_reducible_(jive_anchor_node_normal_form * self_, bool reducible);
 
 #endif 
