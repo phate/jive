@@ -68,6 +68,12 @@ jive_lambda_node_get_region(const jive_lambda_node * self)
 	return jive_lambda_node_get_leave_node(self)->region;
 }
 
+bool
+jive_lambda_is_self_recursive(const struct jive_lambda_node * self);
+
+void
+jive_inline_lambda_apply(jive_node * apply_node);
+
 /* lambda instantiation */
 
 /**
@@ -96,8 +102,5 @@ jive_lambda_begin(struct jive_graph * graph,
 struct jive_output *
 jive_lambda_end(struct jive_lambda * lambda,
 	size_t nresults, const jive_type * const result_types[], struct jive_output * const results[]);
-
-void
-jive_inline_lambda_apply(jive_node * apply_node);
 
 #endif

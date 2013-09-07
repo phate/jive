@@ -4,14 +4,16 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
 
 #include <stdio.h>
 #include <string.h>
 
+#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/phi.h>
 #include <jive/vsdg/substitution.h>
 
 /* lambda enter node */
@@ -198,6 +200,44 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	.create = jive_lambda_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
+
+bool
+jive_lambda_is_self_recursive(const struct jive_lambda_node * self_)
+{
+	JIVE_DEBUG_ASSERT(self_->base.noutputs == 1);
+
+	const jive_node * self = &self_->base;
+	const jive_region * lambda_region = jive_lambda_node_get_region(self_);
+
+	if (jive_phi_region_const_cast(self->region) == NULL)
+		return false;
+
+	/* find index of lambda output in the phi leave node */
+	jive_input * user;
+	size_t index = self->region->top->noutputs;
+	JIVE_LIST_ITERATE(self->outputs[0]->users, user, output_users_list) {
+		if (jive_node_isinstance(user->node, &JIVE_PHI_LEAVE_NODE)) {
+			index = user->index;
+			break;
+		}
+	}
+	JIVE_DEBUG_ASSERT(index != self->region->top->noutputs);
+
+	/* the lambda is self recursive if the function input of an apply node in the lambda region
+		originates from the same index in the phi enter node */
+	jive_region_hull_entry * entry;
+	JIVE_LIST_ITERATE(lambda_region->hull, entry, input_hull_list) {
+		if (!jive_node_isinstance(entry->input->node, &JIVE_APPLY_NODE))
+			continue;
+		if (!jive_node_isinstance(entry->input->origin->node, &JIVE_PHI_ENTER_NODE))
+			continue;
+
+		if (entry->input->origin->index == index)
+			return true;
+	}
+
+	return false;
+}
 
 /* lambda instantiation */
 
