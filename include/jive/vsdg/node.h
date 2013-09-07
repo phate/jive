@@ -424,6 +424,14 @@ jive_node *
 jive_node_cse_create(const jive_node_normal_form * nf, struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
+JIVE_EXPORTED_INLINE bool
+jive_node_normalize(jive_node * self)
+{
+	jive_graph * graph = self->region->graph;
+	const jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, self->class_);
+	return jive_node_normal_form_normalize_node(nf, self);
+}
+
 /* tracking support */
 
 jive_tracker_nodestate *
