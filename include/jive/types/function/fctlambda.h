@@ -56,6 +56,9 @@ struct jive_lambda_build_state;
 /**
 	\brief Represent a lambda construct under construction
 */
+
+typedef struct jive_lambda jive_lambda;
+
 struct jive_lambda {
 	struct jive_region * region;
 	size_t narguments;
