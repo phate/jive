@@ -19,6 +19,24 @@ struct jive_anchor_node {
 	jive_node base;
 };
 
+JIVE_EXPORTED_INLINE struct jive_anchor_node *
+jive_anchor_node_cast(struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_ANCHOR_NODE))
+		return (struct jive_anchor_node *) node;
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_anchor_node *
+jive_anchor_node_const_cast(const struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_ANCHOR_NODE))
+		return (const struct jive_anchor_node *) node;
+	else
+		return NULL;
+}
+
 /* node class inheritable methods */
 
 jive_node_normal_form *
