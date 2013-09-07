@@ -45,6 +45,24 @@ struct jive_phi_node {
 	jive_anchor_node base;
 };
 
+JIVE_EXPORTED_INLINE struct jive_phi_node *
+jive_phi_node_cast(struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
+		return (struct jive_phi_node *) node;
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_phi_node *
+jive_phi_node_const_cast(const struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
+		return (const struct jive_phi_node *) node;
+	else
+		return NULL;
+}
+
 typedef struct jive_phi jive_phi;
 typedef struct jive_phi_fixvar jive_phi_fixvar;
 
