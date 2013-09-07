@@ -62,6 +62,13 @@ jive_lambda_node_get_leave_node(const jive_lambda_node * self)
 	return self->base.inputs[0]->origin->node;
 }
 
+JIVE_EXPORTED_INLINE struct jive_region *
+jive_lambda_node_get_region(const jive_lambda_node * self)
+{
+	return jive_lambda_node_get_leave_node(self)->region;
+}
+
+/* lambda instantiation */
 
 /**
 	\brief Represent a lambda construct under construction
