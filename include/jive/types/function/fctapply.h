@@ -33,4 +33,13 @@ jive_apply_node_cast(jive_node * node)
 		return NULL;
 }
 
+JIVE_EXPORTED_INLINE const struct jive_apply_node *
+jive_apply_node_const_cast(const struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_APPLY_NODE))
+		return (const jive_apply_node *) node;
+	else
+		return NULL;
+}
+
 #endif
