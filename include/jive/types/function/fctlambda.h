@@ -62,7 +62,6 @@ jive_lambda_node_get_leave_node(const jive_lambda_node * self)
 	return self->base.inputs[0]->origin->node;
 }
 
-struct jive_lambda_build_state;
 
 /**
 	\brief Represent a lambda construct under construction
