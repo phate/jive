@@ -63,6 +63,32 @@ jive_phi_node_const_cast(const struct jive_node * node)
 		return NULL;
 }
 
+JIVE_EXPORTED_INLINE struct jive_region *
+jive_phi_region_cast(struct jive_region * region)
+{
+	if (region->bottom == NULL)
+		return NULL;
+
+	JIVE_DEBUG_ASSERT(jive_output_has_single_user(region->bottom->outputs[0]));
+	if (jive_node_isinstance(region->bottom->outputs[0]->users.first->node, &JIVE_PHI_NODE))
+		return region;
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_region *
+jive_phi_region_const_cast(const struct jive_region * region)
+{
+	if (region->bottom == NULL)
+		return NULL;
+
+	JIVE_DEBUG_ASSERT(jive_output_has_single_user(region->bottom->outputs[0]));
+	if (jive_node_isinstance(region->bottom->outputs[0]->users.first->node, &JIVE_PHI_NODE))
+		return region;
+	else
+		return NULL;
+}
+
 typedef struct jive_phi jive_phi;
 typedef struct jive_phi_fixvar jive_phi_fixvar;
 
