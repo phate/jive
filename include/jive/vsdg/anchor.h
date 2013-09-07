@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,9 +8,16 @@
 
 #include <jive/vsdg/node.h>
 
-/* node class */
+/* anchor node */
 
-extern const jive_node_class JIVE_ANCHOR_NODE;
+typedef struct jive_anchor_node jive_anchor_node;
+typedef struct jive_node_class jive_anchor_node_class;
+
+extern const jive_anchor_node_class JIVE_ANCHOR_NODE;
+
+struct jive_anchor_node {
+	jive_node base;
+};
 
 /* node class inheritable methods */
 
