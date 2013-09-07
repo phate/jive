@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,9 +8,13 @@
 
 #include <jive/vsdg/node.h>
 
-typedef struct jive_node jive_apply_node;
+typedef struct jive_apply_node jive_apply_node;
 
 extern const jive_node_class JIVE_APPLY_NODE;
+
+struct jive_apply_node {
+	jive_node base;
+};
 
 jive_node *
 jive_apply_node_create(jive_region * region, jive_output * function,
