@@ -304,6 +304,8 @@ jive_lambda_end(jive_lambda * self,
 	return anchor->outputs[0];
 }
 
+/* lambda inlining */
+
 void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
@@ -337,4 +339,201 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	}
 	
 	jive_substitution_map_destroy(substitution);
+}
+
+/* lambda dead parameters removal */
+
+static bool
+lambda_parameter_is_unused(const struct jive_output * parameter)
+{
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node, &JIVE_LAMBDA_ENTER_NODE));
+
+	return jive_output_has_no_user(parameter);
+}
+
+static bool
+lambda_parameter_is_passthrough(const struct jive_output * parameter)
+{
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node, &JIVE_LAMBDA_ENTER_NODE));
+
+	jive_node * leave = parameter->node->region->bottom;
+	return jive_output_has_single_user(parameter) && (parameter->users.first->node == leave);
+}
+
+static bool
+lambda_result_is_passthrough(const struct jive_input * result)
+{
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(result->node, &JIVE_LAMBDA_LEAVE_NODE));
+
+	if (jive_node_isinstance(result->origin->node, &JIVE_LAMBDA_ENTER_NODE))
+		return lambda_parameter_is_passthrough(result->origin);
+
+	return false;
+}
+
+static void
+replace_apply_node(const jive_apply_node * apply_,
+	jive_output * new_fct, const jive_lambda_node * old_lambda,
+	size_t nalive_parameters, jive_output * alive_parameters[],
+	size_t nalive_results, jive_input * alive_results[])
+{
+	const struct jive_node * apply = &apply_->base;
+	const jive_node * old_leave = jive_lambda_node_get_leave_node(old_lambda);
+
+	/* collect the arguments for the new apply node */
+	size_t n;
+	jive_output * alive_arguments[nalive_parameters];
+	for (n = 0; n < nalive_parameters; n++) {
+		size_t index = alive_parameters[n]->index;
+		alive_arguments[n] = apply->inputs[index]->origin;
+	}
+
+	jive_output * new_apply_results[nalive_results];
+	jive_apply_create(new_fct, nalive_parameters, alive_arguments, new_apply_results);
+
+	/* replace outputs from old apply node through the outputs from the new one */
+	size_t nalive_apply_results = 0;
+	for (n = 1; n < old_leave->ninputs; n++) {
+		jive_input * result = old_leave->inputs[n];
+		if (result == alive_results[nalive_apply_results])
+			jive_output_replace(apply->outputs[n-1], new_apply_results[nalive_apply_results++]);
+		else
+			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index]->origin);
+	}
+	JIVE_DEBUG_ASSERT(nalive_results == nalive_apply_results);
+}
+
+static void
+replace_all_apply_nodes(jive_output * fct,
+	jive_output * new_fct, const jive_lambda_node * old_lambda,
+	size_t nalive_parameters, jive_output * alive_parameters[],
+	size_t nalive_results, jive_input * alive_results[])
+{
+	bool is_lambda = jive_node_isinstance(fct->node, &JIVE_LAMBDA_NODE);
+	bool is_phi_enter = jive_node_isinstance(fct->node, &JIVE_PHI_ENTER_NODE);
+	bool is_phi = jive_node_isinstance(fct->node, &JIVE_PHI_NODE);
+	JIVE_DEBUG_ASSERT(is_lambda || is_phi_enter || is_phi);
+
+	jive_input * user;
+	JIVE_LIST_ITERATE(fct->users, user, output_users_list) {
+		const jive_apply_node * apply = jive_apply_node_const_cast(user->node);
+		if (apply != NULL)
+			replace_apply_node(apply, new_fct, old_lambda,
+				nalive_parameters, alive_parameters, nalive_results, alive_results);
+
+		if (jive_node_isinstance(user->node, &JIVE_PHI_LEAVE_NODE)) {
+			jive_node * phi_leave = user->node;
+
+			/* adjust the outer call sides */
+			jive_node * phi_node = phi_leave->outputs[0]->users.first->node;
+			new_fct = phi_node->outputs[phi_node->noutputs-1];
+			replace_all_apply_nodes(phi_node->outputs[user->index-1], new_fct,
+				old_lambda, nalive_parameters, alive_parameters, nalive_results, alive_results);
+
+			/* adjust the inner call sides */
+			jive_node * phi_enter = phi_leave->region->top;
+			new_fct = phi_enter->outputs[phi_enter->noutputs-1];
+			replace_all_apply_nodes(phi_enter->outputs[user->index], new_fct, old_lambda,
+				nalive_parameters, alive_parameters, nalive_results, alive_results);
+
+			jive_node_normalize(phi_node);
+		}
+	}
+}
+
+
+bool
+jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self)
+{
+	JIVE_DEBUG_ASSERT(self->base.noutputs == 1);
+
+	jive_graph * graph = self->base.region->graph;
+	jive_context * context = graph->context;
+	const jive_node * enter = jive_lambda_node_get_enter_node(self);
+	const jive_node * leave = jive_lambda_node_get_leave_node(self);
+	const jive_region * lambda_region = enter->region;
+	jive_output * fct = self->base.outputs[0];
+
+	/* collect liveness information about parameters */
+	size_t n;
+	size_t nalive_parameters = 0;
+	size_t nparameters = enter->noutputs-1;
+	jive_output * alive_parameters[nparameters];
+	const jive_type * alive_parameter_types[nparameters];
+	const char * alive_parameter_names[nparameters];
+	for (n = 1; n < enter->noutputs; n++) {
+		jive_output * parameter = enter->outputs[n];
+
+		if (lambda_parameter_is_unused(parameter))
+			continue;
+		if (lambda_parameter_is_passthrough(parameter))
+			continue;
+
+		alive_parameters[nalive_parameters] = parameter;
+		alive_parameter_types[nalive_parameters] = jive_output_get_type(parameter);
+		alive_parameter_names[nalive_parameters++] = parameter->gate->name;
+	}
+
+	/* all parameters are alive, we don't need to do anything */
+	if (nalive_parameters == nparameters)
+		return false;
+
+	/* collect liveness information about results */
+	size_t nalive_results = 0;
+	size_t nresults = leave->ninputs-1;
+	jive_input * alive_results[nresults];
+	const jive_type * alive_result_types[nresults];
+	for (n = 1; n < leave->ninputs; n++) {
+		jive_input * result = leave->inputs[n];
+
+		if (lambda_result_is_passthrough(result))
+			continue;
+
+		alive_results[nalive_results] = result;
+		alive_result_types[nalive_results++] = jive_input_get_type(result);
+	}
+
+	/* If the old lambda is embedded within a phi region, extend the phi region with the new lambda */
+	bool embedded_in_phi = false;
+	jive_phi_node * phi_node = NULL;
+	jive_phi_extension * phi_ext = NULL;
+	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
+		phi_node = jive_phi_node_cast(jive_region_get_anchor(lambda_region->parent));
+
+		jive_function_type * fcttype = jive_function_type_create(context,
+			nalive_parameters, alive_parameter_types, nalive_results, alive_result_types);
+		phi_ext = jive_phi_begin_extension(phi_node, 1, (const jive_type *[]){&fcttype->base.base});
+		jive_function_type_destroy(fcttype);
+		embedded_in_phi = true;
+	}
+
+	/* create new lambda */
+	jive_substitution_map * map = jive_substitution_map_create(context);
+	jive_lambda * lambda = jive_lambda_begin(graph, nalive_parameters, alive_parameter_types,
+		alive_parameter_names);
+
+	for (n = 0; n < nalive_parameters; n++)
+		jive_substitution_map_add_output(map, alive_parameters[n], lambda->arguments[n]);
+
+	jive_region_copy_substitute(lambda_region, lambda->region, map, false, false);
+
+	jive_output * new_results[nalive_results];
+	for (n = 0; n < nalive_results; n++) {
+		new_results[n] = jive_substitution_map_lookup_output(map, alive_results[n]->origin);
+		JIVE_DEBUG_ASSERT(new_results[n] != NULL);
+	}
+
+	jive_output * new_fct = jive_lambda_end(lambda, nalive_results, alive_result_types, new_results);
+	jive_substitution_map_destroy(map);
+
+	/* end the phi extension */
+	if (embedded_in_phi) {
+		phi_ext->fixvars[0] = new_fct;
+		jive_phi_end_extension(phi_ext);
+	}
+
+	replace_all_apply_nodes(fct, new_fct, (const jive_lambda_node *)&self->base,
+		nalive_parameters, alive_parameters, nalive_results, alive_results);
+
+	return true;
 }
