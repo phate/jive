@@ -8,6 +8,7 @@ TESTS+=\
 	vsdg/test-negotiator \
 	vsdg/test-nested-floating-theta \
 	vsdg/test-phi \
+	vsdg/test-phi_extension \
 	vsdg/test-prune-replace \
 	vsdg/test-rescls-count \
 	vsdg/test-ssavar-merge \

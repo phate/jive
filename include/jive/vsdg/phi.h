@@ -154,4 +154,27 @@ struct jive_node *
 jive_phi_end(jive_phi self,
 	     size_t npost_values, jive_phi_fixvar * fix_values);
 
+/**
+	\brief Represent a phi construct under extension
+*/
+typedef struct jive_phi_extension jive_phi_extension;
+struct jive_phi_extension {
+	struct jive_phi_node * phi_node;
+	size_t nfixvars;
+	struct jive_output ** fixvars;
+};
+
+/**
+	\brief Begin extending a phi construct
+*/
+struct jive_phi_extension *
+jive_phi_begin_extension(struct jive_phi_node * phi_node, size_t nfixvars,
+	const jive_type * fixvar_types[]);
+
+/**
+	\brief End extending a phi construct
+*/
+struct jive_output **
+jive_phi_end_extension(struct jive_phi_extension * self);
+
 #endif

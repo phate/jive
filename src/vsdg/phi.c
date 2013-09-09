@@ -365,3 +365,52 @@ jive_phi_end(jive_phi self,
 	
 	return anchor;
 }
+
+struct jive_phi_extension *
+jive_phi_begin_extension(struct jive_phi_node * phi_node, size_t nfixvars,
+	const jive_type * fixvar_types[])
+{
+	jive_graph * graph = phi_node->base.base.region->graph;
+	jive_context * context = graph->context;
+	jive_node * enter = jive_phi_node_get_enter_node(phi_node);
+
+	jive_phi_extension * phi_ext = jive_context_malloc(context, sizeof(*phi_ext));
+	phi_ext->fixvars = jive_context_malloc(context, sizeof(*phi_ext->fixvars) * nfixvars);
+	phi_ext->nfixvars = nfixvars;
+	phi_ext->phi_node = phi_node;
+
+	size_t n;
+	char gate_name[80];
+	size_t offset = enter->noutputs-1;
+	for (n = 0; n < nfixvars; n++) {
+		snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, offset+n);
+		jive_gate * gate = jive_type_create_gate(fixvar_types[n], graph, gate_name);
+		phi_ext->fixvars[n] = jive_node_gate_output(enter, gate);
+	}
+
+	return phi_ext;
+}
+
+struct jive_output **
+jive_phi_end_extension(struct jive_phi_extension * self)
+{
+	jive_node * phi_node = &self->phi_node->base.base;
+	jive_context * context = phi_node->region->graph->context;
+	jive_node * enter = jive_phi_node_get_enter_node(self->phi_node);
+	jive_node * leave = jive_phi_node_get_leave_node(self->phi_node);
+
+	size_t n;
+	size_t offset = leave->ninputs;
+	for (n = 0; n < self->nfixvars; n++) {
+		jive_gate * gate = enter->outputs[offset+n]->gate;
+		jive_node_gate_input(leave, gate, self->fixvars[n]);
+		jive_node_gate_output(phi_node, gate);
+	}
+
+	jive_graph_mark_denormalized(phi_node->region->graph);
+
+	jive_context_free(context, self->fixvars);
+	jive_context_free(context, self);
+
+	return &phi_node->outputs[offset-1];
+}
