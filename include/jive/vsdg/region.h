@@ -169,6 +169,15 @@ jive_region_get_bottom_node(jive_region * self)
 	return self->bottom;
 }
 
+JIVE_EXPORTED_INLINE struct jive_node *
+jive_region_get_anchor(struct jive_region * self)
+{
+	if (self->anchor)
+		return self->anchor->node;
+
+	return NULL;
+}
+
 jive_region *
 jive_region_create_subregion(jive_region * self);
 
