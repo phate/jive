@@ -76,6 +76,12 @@ jive_phi_node_get_leave_node(const struct jive_phi_node * self)
 }
 
 JIVE_EXPORTED_INLINE struct jive_region *
+jive_phi_node_get_region(const struct jive_phi_node * self)
+{
+	return jive_phi_node_get_leave_node(self)->region;
+}
+
+JIVE_EXPORTED_INLINE struct jive_region *
 jive_phi_region_cast(struct jive_region * region)
 {
 	if (region->bottom == NULL)
