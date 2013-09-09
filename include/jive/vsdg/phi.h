@@ -63,6 +63,18 @@ jive_phi_node_const_cast(const struct jive_node * node)
 		return NULL;
 }
 
+JIVE_EXPORTED_INLINE struct jive_node *
+jive_phi_node_get_enter_node(const struct jive_phi_node * self)
+{
+	return self->base.base.inputs[0]->origin->node->region->top;
+}
+
+JIVE_EXPORTED_INLINE struct jive_node *
+jive_phi_node_get_leave_node(const struct jive_phi_node * self)
+{
+	return self->base.base.inputs[0]->origin->node;
+}
+
 JIVE_EXPORTED_INLINE struct jive_region *
 jive_phi_region_cast(struct jive_region * region)
 {
