@@ -123,6 +123,9 @@ jive_type_fini(jive_type * self)
 	self->class_->fini(self);
 }
 
+void
+jive_type_destroy(struct jive_type * self, struct jive_context * context);
+
 /**
         \defgroup jive_input Inputs
         Inputs

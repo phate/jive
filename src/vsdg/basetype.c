@@ -117,6 +117,13 @@ const jive_type_class JIVE_TYPE = {
 	.copy = jive_type_copy_
 };
 
+void
+jive_type_destroy(struct jive_type * self, struct jive_context * context)
+{
+	jive_type_fini(self);
+	jive_context_free(context, self);
+}
+
 /* inputs */
 
 const struct jive_input_class JIVE_INPUT = {
