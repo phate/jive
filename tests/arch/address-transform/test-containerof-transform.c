@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -24,6 +24,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
+	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	JIVE_DECLARE_BITSTRING_TYPE(bits8, 8);
 	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
@@ -42,20 +43,24 @@ static int test_main(void)
 		0, NULL, NULL,
 		4, (const jive_type *[]){bits32, bits32, bits32, bits32});
 
-	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32);
-	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32);
-	jive_output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32);
-	jive_output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32);
+	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32, addrtype);
+	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
+	jive_output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32, addrtype);
+	jive_output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32, addrtype);
 	
 	jive_output * container0 = jive_containerof(address0, &decl, 0);
 	jive_output * container1 = jive_containerof(address1, &decl, 1);
 	jive_output * container2 = jive_containerof(address2, &decl, 2);
 	jive_output * container3 = jive_containerof(address3, &decl, 3);
 
-	jive_output * offset0 = jive_address_to_bitstring_create(container0, 32);
-	jive_output * offset1 = jive_address_to_bitstring_create(container1, 32);
-	jive_output * offset2 = jive_address_to_bitstring_create(container2, 32);
-	jive_output * offset3 = jive_address_to_bitstring_create(container3, 32);
+	jive_output * offset0 = jive_address_to_bitstring_create(container0, 32,
+		jive_output_get_type(container0));
+	jive_output * offset1 = jive_address_to_bitstring_create(container1, 32,
+		jive_output_get_type(container1));
+	jive_output * offset2 = jive_address_to_bitstring_create(container2, 32,
+		jive_output_get_type(container2));
+	jive_output * offset3 = jive_address_to_bitstring_create(container3, 32,
+		jive_output_get_type(container3));
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, (const jive_type *[]){bits32, bits32, bits32, bits32},

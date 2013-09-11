@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,7 +25,10 @@
 
 static void
 jive_address_to_bitstring_node_init_(jive_address_to_bitstring_node * self, jive_region * region,
-	jive_output * address, size_t nbits);
+	jive_output * address, size_t nbits, jive_type * original_type);
+
+static void
+jive_address_to_bitstring_node_fini_(jive_node * self);
 
 static const jive_node_attrs *
 jive_address_to_bitstring_node_get_attrs_(const jive_node * self);
@@ -54,7 +57,8 @@ const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "ADDRESS_TO_BITSTRING",
-		.fini = jive_node_fini_, /* inherit */
+		.fini = jive_address_to_bitstring_node_fini_, /* override */
+		.get_label = jive_node_get_label_, /* inherit */
 		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_address_to_bitstring_node_get_attrs_, /* override */
@@ -71,28 +75,61 @@ const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 	.reduce_operand = jive_address_to_bitstring_node_reduce_operand_ /* override */
 };
 
+static jive_type *
+convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_context * context,
+	jive_node * node)
+{
+	if (jive_type_isinstance(type, &JIVE_ADDRESS_TYPE)) {
+		JIVE_DECLARE_BITSTRING_TYPE(bittype, nbits);
+		return jive_type_copy(bittype, context);
+	}
+
+	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_raise_type_error(addrtype, type, context);
+
+	return NULL; /* silence the compiler */
+}
+
 static void
 jive_address_to_bitstring_node_init_(
 	jive_address_to_bitstring_node * self,
 	jive_region * region,
 	jive_output * address,
-	size_t nbits)
+	size_t nbits,	jive_type * original_type)
 {
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);
+	jive_context * context = region->graph->context;
+
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	const jive_type * addrtype = jive_output_get_type(address);
+	if (!jive_type_isinstance(addrtype, &JIVE_VALUE_TYPE))
+		jive_raise_type_error(vtype, addrtype, context);
+
+	JIVE_DEBUG_ASSERT(jive_type_equals(addrtype, original_type));
+	jive_type * return_type = convert_address_to_bitstring_type(addrtype, nbits, context, &self->base);
 
 	jive_node_init_(&self->base, region,
 		1, &addrtype, &address,
-		1, &btype);
+		1, (const jive_type **)&return_type);
 
 	self->attrs.nbits = nbits;
+	self->attrs.original_type = jive_type_copy(original_type, context);
+
+	jive_type_destroy(return_type, context);
+}
+
+static void
+jive_address_to_bitstring_node_fini_(jive_node * self_)
+{
+	jive_address_to_bitstring_node * self = (jive_address_to_bitstring_node *)self_;
+	jive_type_destroy(self->attrs.original_type, self_->graph->context);
+	jive_node_fini_(self_);
 }
 
 static const jive_node_attrs *
 jive_address_to_bitstring_node_get_attrs_(const jive_node * self_)
 {
 	const jive_address_to_bitstring_node * self = (const jive_address_to_bitstring_node *) self_;
-	
+
 	return &self->attrs.base;
 }
 
@@ -104,7 +141,10 @@ jive_address_to_bitstring_node_match_attrs_(const jive_node * self, const jive_n
 	const jive_address_to_bitstring_node_attrs * second =
 		(const jive_address_to_bitstring_node_attrs *) attrs;
 	
-	return (first->nbits == second->nbits);
+	if (first->nbits != second->nbits)
+		return false;
+
+	return jive_type_equals(first->original_type, second->original_type);
 }
 
 static void
@@ -114,9 +154,9 @@ jive_address_to_bitstring_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	if(!jive_address_output_const_cast(operands[0]))
-		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	if (!jive_output_isinstance(operands[0], &JIVE_VALUE_OUTPUT))
+		jive_raise_type_error(vtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -131,26 +171,32 @@ jive_address_to_bitstring_node_create_(struct jive_region * region, const jive_n
 	jive_address_to_bitstring_node * node = jive_context_malloc(region->graph->context,
 		sizeof(*node));
 	node->base.class_ = &JIVE_ADDRESS_TO_BITSTRING_NODE;
-	jive_address_to_bitstring_node_init_(node, region, operands[0], attrs->nbits);
+	jive_address_to_bitstring_node_init_(node, region, operands[0], attrs->nbits,
+		attrs->original_type);
 
 	return &node->base;
 }
 
 static jive_unop_reduction_path_t
 jive_address_to_bitstring_node_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs_, const jive_output * operand_)
+	const jive_node_attrs * attrs_, const jive_output * operand)
 {
-	const jive_address_to_bitstring_node_attrs * attrs =
-		(const jive_address_to_bitstring_node_attrs *) attrs_;
+	const jive_address_to_bitstring_node_attrs * attrs;
+	attrs = (const jive_address_to_bitstring_node_attrs *) attrs_;
 
-	if (jive_node_isinstance(operand_->node, &JIVE_BITSTRING_TO_ADDRESS_NODE)) {
-		const jive_bitstring_to_address_node * node = (const jive_bitstring_to_address_node *)
-			operand_->node;
-		JIVE_DEBUG_ASSERT(node->attrs.nbits == attrs->nbits);
-		return jive_unop_reduction_inverse;
-	}
+	if (!jive_node_isinstance(operand->node, &JIVE_BITSTRING_TO_ADDRESS_NODE))
+		return jive_unop_reduction_none;
 
-	return jive_unop_reduction_none;
+	const jive_bitstring_to_address_node * node;
+	node = (const jive_bitstring_to_address_node *) operand->node;
+
+	if (node->attrs.nbits != attrs->nbits)
+		return jive_unop_reduction_none;
+
+	if (!jive_type_equals(node->attrs.original_type, attrs->original_type))
+		return jive_unop_reduction_none;
+
+	return jive_unop_reduction_inverse;
 }
 
 static jive_output * 
@@ -165,20 +211,23 @@ jive_address_to_bitstring_node_reduce_operand_(jive_unop_reduction_path_t path,
 
 jive_node *
 jive_address_to_bitstring_node_create(struct jive_region * region,
-	jive_output * address, size_t nbits)
+	jive_output * address, size_t nbits, const jive_type * original_type)
 {
 	jive_address_to_bitstring_node_attrs attrs;
-	attrs.nbits = nbits; 
+	attrs.nbits = nbits;
+	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_, region->graph,
 		&attrs.base, address)->node;
 }
 
 jive_output *
-jive_address_to_bitstring_create(jive_output * address, size_t nbits)
+jive_address_to_bitstring_create(jive_output * address, size_t nbits,
+	const jive_type * original_type)
 {
 	jive_address_to_bitstring_node_attrs attrs;
-	attrs.nbits = nbits; 
+	attrs.nbits = nbits;
+	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_,
 		address->node->graph, &attrs.base, address);
@@ -189,7 +238,10 @@ jive_address_to_bitstring_create(jive_output * address, size_t nbits)
 
 static void
 jive_bitstring_to_address_node_init_(jive_bitstring_to_address_node * self, jive_region * region,
-	jive_output * bitstring, size_t nbits);
+	jive_output * bitstring, size_t nbits, jive_type * original_type);
+
+static void
+jive_bitstring_to_address_node_fini_(jive_node * self);
 
 static const jive_node_attrs *
 jive_bitstring_to_address_node_get_attrs_(const jive_node * self);
@@ -218,7 +270,7 @@ const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "BITSTRING_TO_ADDRESS",
-		.fini = jive_node_fini_, /* inherit */
+		.fini = jive_bitstring_to_address_node_fini_, /* override */
 		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_bitstring_to_address_node_get_attrs_, /* override */
@@ -240,16 +292,29 @@ jive_bitstring_to_address_node_init_(
 	jive_bitstring_to_address_node * self,
 	jive_region * region,
 	jive_output * bitstring,
-	size_t nbits)
+	size_t nbits, jive_type * original_type)
 {
-	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_context * context = region->graph->context;
+
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	const jive_type * bittype = jive_output_get_type(bitstring);
+	if (!jive_type_isinstance(bittype, &JIVE_VALUE_TYPE))
+		jive_raise_type_error(vtype, bittype, context);
 
 	jive_node_init_(&self->base, region,
-		1, &btype, &bitstring,
-		1, &addrtype);
+		1, &bittype, &bitstring,
+		1, (const jive_type **)&original_type);
 
 	self->attrs.nbits = nbits;
+	self->attrs.original_type = jive_type_copy(original_type, context);
+}
+
+static void
+jive_bitstring_to_address_node_fini_(jive_node * self_)
+{
+	jive_bitstring_to_address_node * self = (jive_bitstring_to_address_node *)self_;
+	jive_type_destroy(self->attrs.original_type, self_->graph->context);
+	jive_node_fini_(self_);
 }
 
 static const jive_node_attrs *
@@ -268,7 +333,10 @@ jive_bitstring_to_address_node_match_attrs_(const jive_node * self, const jive_n
 	const jive_bitstring_to_address_node_attrs * second =
 		(const jive_bitstring_to_address_node_attrs *) attrs;
 
-	return (first->nbits == second->nbits);
+	if (first->nbits != second->nbits)
+		return false;
+
+	return jive_type_equals(first->original_type, second->original_type);
 }
 
 static void
@@ -278,12 +346,9 @@ jive_bitstring_to_address_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	const jive_bitstring_to_address_node_attrs * attrs;
-	attrs = (const jive_bitstring_to_address_node_attrs *)attrs_;
-
-	JIVE_DECLARE_BITSTRING_TYPE(bstype, attrs->nbits);
-	if (!jive_type_equals(bstype, jive_output_get_type(operands[0])))
-		jive_raise_type_error(bstype, jive_output_get_type(operands[0]), context);
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	if (!jive_output_isinstance(operands[0], &JIVE_VALUE_OUTPUT))
+		jive_raise_type_error(vtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -298,26 +363,32 @@ jive_bitstring_to_address_node_create_(struct jive_region * region, const jive_n
 	jive_bitstring_to_address_node * node = jive_context_malloc(region->graph->context,
 		sizeof(*node));
 	node->base.class_ = &JIVE_BITSTRING_TO_ADDRESS_NODE;
-	jive_bitstring_to_address_node_init_(node, region, operands[0], attrs->nbits);
+	jive_bitstring_to_address_node_init_(node, region, operands[0], attrs->nbits,
+		attrs->original_type);
 
 	return &node->base; 
 }
 
 static jive_unop_reduction_path_t 
 jive_bitstring_to_address_node_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs_, const jive_output * operand_)
+	const jive_node_attrs * attrs_, const jive_output * operand)
 {
-	const jive_bitstring_to_address_node_attrs * attrs =
-		(const jive_bitstring_to_address_node_attrs *) attrs_;
+	const jive_bitstring_to_address_node_attrs * attrs;
+	attrs = (const jive_bitstring_to_address_node_attrs *) attrs_;
 
-	if (jive_node_isinstance(operand_->node, &JIVE_ADDRESS_TO_BITSTRING_NODE)) {
-		const jive_address_to_bitstring_node * node = (const jive_address_to_bitstring_node *)
-			operand_->node;
-		JIVE_DEBUG_ASSERT(node->attrs.nbits == attrs->nbits);
-		return jive_unop_reduction_inverse;
-	}
+	if (!jive_node_isinstance(operand->node, &JIVE_ADDRESS_TO_BITSTRING_NODE))
+		return jive_unop_reduction_none;
 
-	return jive_unop_reduction_none;
+	const jive_address_to_bitstring_node * node;
+	node = (const jive_address_to_bitstring_node *)operand->node;
+
+	if (node->attrs.nbits != attrs->nbits)
+		return jive_unop_reduction_none;
+
+	if (!jive_type_equals(node->attrs.original_type, attrs->original_type))
+		return jive_unop_reduction_none;
+
+	return jive_unop_reduction_inverse;
 }
 
 static jive_output * 
@@ -332,20 +403,23 @@ jive_bitstring_to_address_node_reduce_operand_(jive_unop_reduction_path_t path,
 
 jive_node *
 jive_bitstring_to_address_node_create(struct jive_region * region,
-	jive_output * bitstring, size_t nbits)
+	jive_output * bitstring, size_t nbits, const jive_type * original_type)
 {
 	jive_bitstring_to_address_node_attrs attrs;
-	attrs.nbits = nbits; 
+	attrs.nbits = nbits;
+	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_, region->graph,
 		&attrs.base, bitstring)->node;
 }
 
 jive_output *
-jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits)
+jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits,
+	const jive_type * original_type)
 {
 	jive_bitstring_to_address_node_attrs attrs;
 	attrs.nbits = nbits;
+	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_,
 		bitstring->node->graph, &attrs.base, bitstring);
@@ -366,7 +440,7 @@ jive_load_node_address_transform(jive_load_node * node, size_t nbits)
 
 	jive_output * address = node_->inputs[0]->origin;
 	if (input_is_address)
-		address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+		address = jive_address_to_bitstring_create(address, nbits, jive_output_get_type(address));
 
 	JIVE_DEBUG_ASSERT(jive_bitstring_output_nbits((const jive_bitstring_output *) address) == nbits);
 
@@ -385,7 +459,7 @@ jive_load_node_address_transform(jive_load_node * node, size_t nbits)
 	jive_output * load = jive_load_by_bitstring_create(address, nbits, datatype, nstates, states);
 	
 	if (output_is_address)
-		load = jive_bitstring_to_address_create(load, nbits);
+		load = jive_bitstring_to_address_create(load, nbits, jive_output_get_type(node_->outputs[0]));
 	
 	jive_output_replace(node_->outputs[0], load);
 }
@@ -403,7 +477,7 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 
 	jive_output * address = node_->inputs[0]->origin;
 	if (input0_is_address)
-		address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+		address = jive_address_to_bitstring_create(address, nbits, jive_output_get_type(address));
 
 	JIVE_DEBUG_ASSERT(jive_bitstring_output_nbits((const jive_bitstring_output *) address) == nbits);
 
@@ -412,7 +486,8 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 	jive_output * value = node_->inputs[1]->origin;
 	if(input1_is_address){
 		datatype = jive_value_type_cast(bits);
-		value = jive_address_to_bitstring_create(node_->inputs[1]->origin, nbits);
+		value = jive_address_to_bitstring_create(node_->inputs[1]->origin, nbits,
+			jive_output_get_type(value));
 	}
 
 	size_t i;
@@ -438,7 +513,8 @@ jive_label_to_address_node_address_transform(jive_label_to_address_node * node, 
 	const jive_label * label = jive_label_to_address_node_get_label(node);
 
 	jive_output * label_o = jive_label_to_bitstring_create(node_->region->graph, label, nbits);
-	jive_output * addr_o = jive_bitstring_to_address_create(label_o, nbits);
+	jive_output * addr_o = jive_bitstring_to_address_create(label_o, nbits,
+		jive_output_get_type(node_->outputs[0]));
 	jive_output_replace(node_->outputs[0], addr_o);
 }
 
@@ -452,7 +528,8 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 	jive_output * operands[node_->ninputs];
 	for (i = 0; i < node_->ninputs; i++){
 		if(jive_input_isinstance(node_->inputs[i], &JIVE_ADDRESS_INPUT)){
-			operands[i] = jive_address_to_bitstring_create(node_->inputs[i]->origin, nbits);	
+			operands[i] = jive_address_to_bitstring_create(node_->inputs[i]->origin, nbits,
+				jive_output_get_type(node_->inputs[i]->origin));
 			transform = true;
 		} else {
 			operands[i] = node_->inputs[i]->origin;
@@ -480,7 +557,8 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 	for (i = 0; i < node_->noutputs; i++){
 		jive_output * output = call->outputs[i];
 		if(jive_output_isinstance(node_->outputs[i], &JIVE_ADDRESS_OUTPUT))
-			output = jive_bitstring_to_address_create(call->outputs[i], nbits);
+			output = jive_bitstring_to_address_create(call->outputs[i], nbits,
+				jive_output_get_type(node_->outputs[i]));
 		jive_output_replace(node_->outputs[i], output);
 	}
 }
@@ -498,9 +576,11 @@ jive_memberof_node_address_transform(jive_memberof_node * node, jive_memlayout_m
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 
 	jive_output * offset = jive_bitconstant_unsigned(node_->graph, nbits, elem_offset);
-	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits,
+		jive_output_get_type(node_->inputs[0]->origin));
 	jive_output * sum = jive_bitsum(2, (jive_output *[]){address, offset});
-	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits);
+	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits,
+		jive_output_get_type(node_->outputs[0]));
 
 	jive_output_replace(node_->outputs[0], off_address);
 }
@@ -518,9 +598,11 @@ jive_containerof_node_address_transform(jive_containerof_node * node, jive_memla
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 
 	jive_output * offset = jive_bitconstant_unsigned(node_->graph, nbits, elem_offset);
-	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits,
+		jive_output_get_type(node_->inputs[0]->origin));
 	jive_output * sum = jive_bitdifference(address, offset);
-	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits);
+	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits,
+		jive_output_get_type(node_->outputs[0]));
 
 	jive_output_replace(node_->outputs[0], off_address);
 }
@@ -536,11 +618,13 @@ jive_arraysubscript_node_address_transform(jive_arraysubscript_node * node,
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8; 
 
 	jive_output * index = node_->inputs[1]->origin;
-	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
+	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits,
+		jive_output_get_type(node_->inputs[0]->origin));
 	jive_output * elem_size = jive_bitconstant_unsigned(node_->graph, nbits, elem_type_size);
 	jive_output * offset = jive_bitmultiply(2, (jive_output *[]){elem_size, index});
 	jive_output * sum = jive_bitsum(2, (jive_output *[]){address, offset});
-	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits);
+	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits,
+		jive_output_get_type(node_->outputs[0]));
 	
 	jive_output_replace(node_->outputs[0], off_address);	
 }
@@ -554,8 +638,10 @@ jive_arrayindex_node_address_transform(jive_arrayindex_node * node, jive_memlayo
 		node->attrs.element_type)->total_size;
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 
-	jive_output * address1 = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits);
-	jive_output * address2 = jive_address_to_bitstring_create(node_->inputs[1]->origin, nbits);
+	jive_output * address1 = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits,
+		jive_output_get_type(node_->inputs[0]->origin));
+	jive_output * address2 = jive_address_to_bitstring_create(node_->inputs[1]->origin, nbits,
+		jive_output_get_type(node_->inputs[1]->origin));
 	jive_output * elem_size = jive_bitconstant_unsigned(node_->graph, nbits, elem_type_size);
 	jive_output * diff = jive_bitdifference(address1, address2);
 	jive_output * div = jive_bitsquotient(diff, elem_size);

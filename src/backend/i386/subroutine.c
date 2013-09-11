@@ -71,7 +71,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		}
 		
 		if(jive_output_isinstance(original, &JIVE_ADDRESS_OUTPUT))
-			substitute = jive_bitstring_to_address_create(substitute, 32);
+			substitute = jive_bitstring_to_address_create(substitute, 32,
+				jive_output_get_type(original));
 		jive_substitution_map_add_output(subst, original, substitute);
 	}
 	
@@ -86,7 +87,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		
 		if (jive_input_isinstance(original, &JIVE_VALUE_INPUT)) {
 			if(jive_input_isinstance(original, &JIVE_ADDRESS_INPUT))
-				retval = jive_address_to_bitstring_create(retval, 32);
+				retval = jive_address_to_bitstring_create(retval, 32, jive_output_get_type(retval));
 			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
 		} else {
 			jive_node_add_input(&subroutine->leave->base, jive_input_get_type(original), retval);

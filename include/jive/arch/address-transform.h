@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,6 +23,7 @@ typedef struct jive_address_to_bitstring_node_attrs jive_address_to_bitstring_no
 struct jive_address_to_bitstring_node_attrs {
 	jive_node_attrs base;
 	size_t nbits;
+	jive_type * original_type;
 };
 
 struct jive_address_to_bitstring_node {
@@ -32,10 +33,11 @@ struct jive_address_to_bitstring_node {
 
 jive_node *
 jive_address_to_bitstring_node_create(struct jive_region * region,
-	jive_output * address, size_t nbits);
+	jive_output * address, size_t nbits, const jive_type * original_type);
 
 jive_output *
-jive_address_to_bitstring_create(jive_output * address, size_t nbits);
+jive_address_to_bitstring_create(jive_output * address, size_t nbits,
+	const jive_type * original_type);
 
 JIVE_EXPORTED_INLINE jive_address_to_bitstring_node *
 jive_address_to_bitstring_node_cast(jive_node * node)
@@ -57,6 +59,7 @@ typedef struct jive_bitstring_to_address_node_attrs jive_bitstring_to_address_no
 struct jive_bitstring_to_address_node_attrs {
 	jive_node_attrs base;
 	size_t nbits;
+	jive_type * original_type;
 };
 
 struct jive_bitstring_to_address_node {
@@ -66,10 +69,11 @@ struct jive_bitstring_to_address_node {
 
 jive_node *
 jive_bitstring_to_address_node_create(struct jive_region * region,
-	jive_output * bitstring, size_t nbits);
+	jive_output * bitstring, size_t nbits, const jive_type * original_type);
 
 jive_output *
-jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits);
+jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits,
+	const jive_type * original_type);
 
 JIVE_EXPORTED_INLINE jive_bitstring_to_address_node *
 jive_bitstring_to_address_node_cast(jive_node * node)

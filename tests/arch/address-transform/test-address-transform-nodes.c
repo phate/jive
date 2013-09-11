@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -30,11 +30,12 @@ static int test_main(void)
 		0, NULL, NULL,
 		3, (const jive_type *[]){addrtype, bits32, bits64});
 
-	jive_output * b0 = jive_address_to_bitstring_create(top->outputs[0], 32);
-	jive_output * a0 = jive_bitstring_to_address_create(b0, 32);
+	jive_output * b0 = jive_address_to_bitstring_create(top->outputs[0], 32,
+		jive_output_get_type(top->outputs[0]));
+	jive_output * a0 = jive_bitstring_to_address_create(b0, 32, addrtype);
 
-	jive_output * a1 = jive_bitstring_to_address_create(top->outputs[1], 32);
-	jive_output * b1 = jive_address_to_bitstring_create(a1, 32);
+	jive_output * a1 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
+	jive_output * b1 = jive_address_to_bitstring_create(a1, 32, addrtype);
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type*[]){addrtype, bits32}, (jive_output *[]){a0, b1},
@@ -43,16 +44,18 @@ static int test_main(void)
 	assert(bottom->inputs[0]->origin == top->outputs[0]);
 	assert(bottom->inputs[1]->origin == top->outputs[1]);
 
-	jive_output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32);
-	jive_output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32);
-	jive_output * a2 = jive_address_to_bitstring_create(top->outputs[0], 32);
-	jive_output * a3 = jive_address_to_bitstring_create(top->outputs[0], 32);
+	jive_output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
+	jive_output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
+	jive_output * a2 = jive_address_to_bitstring_create(top->outputs[0], 32,
+		jive_output_get_type(top->outputs[0]));
+	jive_output * a3 = jive_address_to_bitstring_create(top->outputs[0], 32,
+		jive_output_get_type(top->outputs[0]));
 	
 	assert(jive_node_match_attrs(a2->node, jive_node_get_attrs(a3->node)));
 	assert(jive_node_match_attrs(b2->node, jive_node_get_attrs(b3->node)));
 
-	jive_output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64);
-	jive_output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64);
+	jive_output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64, addrtype);
+	jive_output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64, addrtype);
 
 	assert(!jive_node_match_attrs(a2->node, jive_node_get_attrs(a4->node)));
 	assert(!jive_node_match_attrs(b2->node, jive_node_get_attrs(b4->node)));

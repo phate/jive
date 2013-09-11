@@ -38,8 +38,8 @@ static int test_main(void)
 		0, NULL, NULL,
 		3, (const jive_type *[]){bits64, bits64, mem});
 
-	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64);
-	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64);
+	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, addr);
+	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, addr);
 
 	jive_record_declaration decl = {2,
 		(const jive_value_type *[]){jive_value_type_cast(addr), jive_value_type_cast(addr)}};	
@@ -68,7 +68,8 @@ static int test_main(void)
 	jive_node * store = jive_store_by_address_node_create(graph->root_region, arraysub,
 		jive_value_type_cast(bits64), arrayindex, 1, &top->outputs[2]);
 
-	jive_output * o_addr = jive_address_to_bitstring_create(load, 64);
+	jive_output * o_addr = jive_address_to_bitstring_create(load, 64,
+		jive_output_get_type(load));
 	
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){bits64, mem}, (jive_output *[]){o_addr, store->outputs[0]},
