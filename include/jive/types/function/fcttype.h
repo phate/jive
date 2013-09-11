@@ -12,7 +12,6 @@ typedef struct jive_function_type jive_function_type;
 typedef struct jive_function_input jive_function_input;
 typedef struct jive_function_output jive_function_output;
 typedef struct jive_function_gate jive_function_gate;
-typedef struct jive_function_resource jive_function_resource;
 
 extern const jive_type_class JIVE_FUNCTION_TYPE;
 
