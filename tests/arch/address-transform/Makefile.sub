@@ -2,4 +2,5 @@ TESTS += \
 	arch/address-transform/test-address-transform-nodes \
 	arch/address-transform/test-memberof-transform \
 	arch/address-transform/test-containerof-transform \
+	arch/address-transform/test-lambda_transform \
 	arch/address-transform/test-address-transform \
