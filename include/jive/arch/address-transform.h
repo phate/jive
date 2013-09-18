@@ -86,6 +86,7 @@ jive_bitstring_to_address_node_cast(jive_node * node)
 
 /* reductions */
 
+struct jive_apply_node;
 struct jive_lambda_node;
 struct jive_load_node;
 struct jive_store_node;
@@ -112,6 +113,9 @@ jive_call_node_address_transform(struct jive_call_node * node,
 
 void
 jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t nbits);
+
+void
+jive_apply_node_address_transform(const struct jive_apply_node * node, size_t nbits);
 
 struct jive_memberof_node;
 struct jive_containerof_node;

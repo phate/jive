@@ -15,6 +15,7 @@
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/label.h>
@@ -713,6 +714,38 @@ jive_arrayindex_node_address_transform(jive_arrayindex_node * node, jive_memlayo
 }
 
 void
+jive_apply_node_address_transform(const struct jive_apply_node * node, size_t nbits)
+{
+	jive_input * fct = node->base.inputs[0];
+
+	const jive_type * fcttype = jive_input_get_type(fct);
+	if (!type_contains_address(fcttype))
+		return;
+
+	size_t nresults = node->base.noutputs;
+	size_t narguments = node->base.ninputs-1;
+
+	size_t n;
+	jive_output * arguments[narguments];
+	for (n = 1; n < node->base.ninputs; n++) {
+		jive_input * argument = node->base.inputs[n];
+		arguments[n-1] = jive_address_to_bitstring_create(argument->origin, nbits,
+			jive_input_get_type(argument));
+	}
+	jive_output * function = jive_address_to_bitstring_create(fct->origin, nbits, fcttype);
+
+	jive_output * results[nresults];
+	jive_apply_create(function, narguments, arguments, results);
+
+	for (n = 0; n < nresults; n++) {
+		jive_output * original = node->base.outputs[n];
+		jive_output * substitute = jive_bitstring_to_address_create(results[n], nbits,
+			jive_output_get_type(original));
+		jive_output_replace(original, substitute);
+	}
+}
+
+void
 jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(node->base.noutputs == 1);
@@ -813,6 +846,10 @@ jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
 			jive_store_node_address_transform(jive_store_node_cast(node), nbits);
 		else if (jive_node_isinstance(node, &JIVE_CALL_NODE))
 			jive_call_node_address_transform(jive_call_node_cast(node), nbits);
+
+		const jive_apply_node * apply_node = jive_apply_node_const_cast(node);
+		if (apply_node != NULL)
+			jive_apply_node_address_transform(apply_node, nbits);
 	}
 
 	jive_traverser_destroy(traverser);
