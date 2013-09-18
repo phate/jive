@@ -7,6 +7,7 @@
 #include <jive/types/real/rloperation-classes-private.h>
 #include <jive/types/real/rltype.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 static jive_node *

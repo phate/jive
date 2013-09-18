@@ -8,6 +8,7 @@
 
 #include <jive/arch/addresstype.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 

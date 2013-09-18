@@ -35,7 +35,7 @@ jive_test_node_create(struct jive_region * region,
 	const struct jive_type * const result_types[]);
 
 void
-jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
+jive_test_node_create_normalized(struct jive_graph * graph, size_t noperands,
 	const struct jive_type * const operand_types[], struct jive_output * const operands[],
 	size_t nresults, const struct jive_type * const result_types[], jive_output * results[]);
 

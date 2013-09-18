@@ -12,6 +12,7 @@
 #include <jive/view.h>
 #include <jive/view.h>
 #include <jive/types/bitstring.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)

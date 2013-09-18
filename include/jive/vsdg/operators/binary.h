@@ -66,7 +66,7 @@ extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;
 
 JIVE_EXPORTED_INLINE jive_output *
 jive_binary_operation_create_normalized(const jive_binary_operation_class * class_,
-	jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
+	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
 	jive_output * const operands[])
 {
 	jive_output * result;

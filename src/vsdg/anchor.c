@@ -1,10 +1,11 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/anchor-private.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 /* node class */

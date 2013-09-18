@@ -6,8 +6,9 @@
 #include <jive/types/union/unnunify.h>
 
 #include <jive/util/buffer.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/types/union/unntype.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/nullary.h>
 
 #include <string.h>

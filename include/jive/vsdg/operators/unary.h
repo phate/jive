@@ -52,8 +52,8 @@ extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
 #define JIVE_UNARY_OPERATION (JIVE_UNARY_OPERATION_.base)
 
 JIVE_EXPORTED_INLINE jive_output *
-jive_unary_operation_create_normalized(const jive_unary_operation_class * class_, jive_graph * graph,
-	const jive_node_attrs * attrs, jive_output * operand)
+jive_unary_operation_create_normalized(const jive_unary_operation_class * class_,
+	struct jive_graph * graph, const jive_node_attrs * attrs, jive_output * operand)
 {
 	jive_output * result;
 	jive_node_create_normalized(&class_->base, graph, attrs, 1, &operand, &result);

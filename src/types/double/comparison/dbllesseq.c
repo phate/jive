@@ -5,9 +5,9 @@
 
 #include <jive/types/double/comparison/dbllesseq.h>
 #include <jive/types/double/dbloperation-classes-private.h>
-
 #include <jive/types/double/dbltype.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 static jive_node *

@@ -5,6 +5,7 @@
 
 #include "testnodes.h"
 
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 /* test node */

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -899,4 +899,12 @@ jive_node_cse_create(const jive_node_normal_form * self, struct jive_region * re
 	}
 
 	return cls->create(region, attrs, noperands, operands);
+}
+
+bool
+jive_node_normalize(struct jive_node * self)
+{
+	jive_graph * graph = self->region->graph;
+	const jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, self->class_);
+	return jive_node_normal_form_normalize_node(nf, self);
 }

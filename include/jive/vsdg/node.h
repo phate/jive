@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -12,7 +12,6 @@
 #include <stdint.h>
 
 #include <jive/context.h>
-#include <jive/vsdg/graph.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/tracker.h>
@@ -279,7 +278,7 @@ struct jive_node_normal_form_class {
 	bool (*normalize_node)(const jive_node_normal_form * self, jive_node * node);
 	/* return true, if normalized already */
 	bool (*operands_are_normalized)(const jive_node_normal_form * self, size_t noperands, jive_output * const operands[], const jive_node_attrs * attrs);
-	void (*normalized_create)(const jive_node_normal_form * self, jive_graph * graph,
+	void (*normalized_create)(const jive_node_normal_form * self, struct jive_graph * graph,
 		const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
 		jive_output * results[]);
 	void (*set_mutable)(jive_node_normal_form * self, bool enable);
@@ -345,9 +344,9 @@ jive_node_normal_form_operands_are_normalized(const jive_node_normal_form * self
 }
 
 JIVE_EXPORTED_INLINE void
-jive_node_normal_form_normalized_create(const jive_node_normal_form * self, jive_graph * graph,
-	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
-	jive_output * results[])
+jive_node_normal_form_normalized_create(const jive_node_normal_form * self,
+	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
+	jive_output * const operands[], jive_output * results[])
 {
 	return self->class_->normalized_create(self, graph, attrs, noperands, operands, results);
 }
@@ -395,13 +394,8 @@ jive_node *
 jive_node_cse_create(const jive_node_normal_form * nf, struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[]);
 
-JIVE_EXPORTED_INLINE bool
-jive_node_normalize(jive_node * self)
-{
-	jive_graph * graph = self->region->graph;
-	const jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, self->class_);
-	return jive_node_normal_form_normalize_node(nf, self);
-}
+bool
+jive_node_normalize(struct jive_node * self);
 
 /* tracking support */
 

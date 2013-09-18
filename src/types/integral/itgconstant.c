@@ -6,6 +6,7 @@
 #include <jive/types/integral/itgconstant.h>
 #include <jive/types/integral/itgtype.h>
 #include <jive/util/buffer.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 #include <string.h>

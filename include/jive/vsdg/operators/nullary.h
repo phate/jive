@@ -24,7 +24,7 @@ extern const jive_node_class JIVE_NULLARY_OPERATION;
 
 JIVE_EXPORTED_INLINE jive_output *
 jive_nullary_operation_create_normalized(const jive_nullary_operation_class * cls,
-	jive_graph * graph, const jive_node_attrs * attrs)
+	struct jive_graph * graph, const jive_node_attrs * attrs)
 {
 	jive_output * result;
 	jive_node_create_normalized(cls, graph, attrs, 0, NULL, &result);

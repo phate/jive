@@ -6,9 +6,10 @@
 #include <jive/types/float/comparison/fltless.h>
 #include <jive/types/float/fltoperation-classes-private.h>
 
-#include <jive/vsdg/controltype.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/types/float/flttype.h>
+#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/node-private.h>
 
 static jive_node *
 jive_fltless_node_create_(struct jive_region * region, const jive_node_attrs * attrs,

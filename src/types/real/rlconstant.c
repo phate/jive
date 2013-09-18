@@ -9,6 +9,7 @@
 #include <jive/util/double.h>
 #include <jive/util/float.h>
 #include <jive/util/math.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/nullary.h>
 

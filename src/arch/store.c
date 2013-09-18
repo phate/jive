@@ -5,6 +5,7 @@
 
 #include <jive/arch/store.h>
 
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/valuetype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/type.h>

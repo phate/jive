@@ -17,6 +17,7 @@
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
 
 static void
 my_handle_error(jive_serialization_driver * ctx, const char msg[])

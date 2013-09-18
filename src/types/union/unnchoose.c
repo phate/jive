@@ -5,8 +5,9 @@
 
 #include <jive/types/union.h>
 
-#include <jive/util/buffer.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/util/buffer.h>
 
 #include <stdio.h>
 #include <string.h>

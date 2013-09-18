@@ -7,6 +7,7 @@
 #define JIVE_ARCH_ADDRESS_TRANSFORM_H
 
 #include <jive/common.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 
 struct jive_memlayout_mapper;

@@ -9,6 +9,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/types/float/fltoperation-classes-private.h>
 #include <jive/types/float/flttype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/nullary.h>
 
 #include <stdio.h>

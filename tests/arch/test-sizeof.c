@@ -15,6 +15,7 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 #include <jive/arch/sizeof.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/arch/memlayout-simple.h>

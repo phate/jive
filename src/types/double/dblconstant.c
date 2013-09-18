@@ -6,6 +6,7 @@
 #include <jive/types/double/dblconstant.h>
 #include <jive/types/double/dbltype.h>
 #include <jive/util/buffer.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/nullary.h>
 

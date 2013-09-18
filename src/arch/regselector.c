@@ -17,6 +17,7 @@
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>

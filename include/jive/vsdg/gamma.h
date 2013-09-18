@@ -7,8 +7,9 @@
 #ifndef JIVE_VSDG_GAMMA_H
 #define JIVE_VSDG_GAMMA_H
 
-#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/anchor.h>
+#include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
 
 struct jive_graph;
 struct jive_output;

@@ -7,6 +7,7 @@
 #include <jive/types/integral/itgoperation-classes-private.h>
 #include <jive/types/integral/itgtype.h>
 #include <jive/vsdg/controltype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
 static jive_node *

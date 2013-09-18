@@ -5,6 +5,7 @@
 
 #include <jive/arch/load.h>
 
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/valuetype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/node-private.h>
