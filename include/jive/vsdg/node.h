@@ -249,29 +249,11 @@ jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
 struct jive_output *
 jive_node_gate_output(jive_node * self, struct jive_gate * gate);
 
-JIVE_EXPORTED_INLINE jive_input *
-jive_node_input(const jive_node * self, size_t index)
-{
-	jive_input * input = NULL;
-	if (index < self->ninputs)
-		input = self->inputs[index];
-	else
-		jive_context_fatal_error(self->graph->context, "Input index out of bound.");
+struct jive_input *
+jive_node_input(const struct jive_node * self, size_t index);
 
-	return input;
-}
-
-JIVE_EXPORTED_INLINE jive_output *
-jive_node_output(const jive_node * self, size_t index)
-{
-	jive_output * output = NULL;
-	if (index < self->noutputs)
-		return self->outputs[index];
-	else
-		jive_context_fatal_error(self->graph->context, "Output index out of bound.");
-
-	return output;
-}
+struct jive_output *
+jive_node_output(const struct jive_node * self, size_t index);
 
 void
 jive_node_get_use_count_input(const jive_node * self, struct jive_resource_class_count * use_count, struct jive_context * context);

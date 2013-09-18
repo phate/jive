@@ -374,6 +374,30 @@ jive_node_gate_output(jive_node * self, jive_gate * gate)
 	return output;
 }
 
+struct jive_input *
+jive_node_input(const struct jive_node * self, size_t index)
+{
+	jive_input * input = NULL;
+	if (index < self->ninputs)
+		input = self->inputs[index];
+	else
+		jive_context_fatal_error(self->graph->context, "Input index out of bound.");
+
+	return input;
+}
+
+struct jive_output *
+jive_node_output(const struct jive_node * self, size_t index)
+{
+	jive_output * output = NULL;
+	if (index < self->noutputs)
+		return self->outputs[index];
+	else
+		jive_context_fatal_error(self->graph->context, "Output index out of bound.");
+
+	return output;
+}
+
 void
 jive_node_add_successor(jive_node * self)
 {
