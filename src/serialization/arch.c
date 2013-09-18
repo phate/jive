@@ -449,6 +449,8 @@ jive_immediate_deserialize(
 	return true;
 }
 
+JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
+	JIVE_GRAPH_TAIL_NODE, "graph_tail");
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_register_class, "register");
 JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_RESOURCE, "stackslot",
 	jive_serialization_stackslot_serialize,

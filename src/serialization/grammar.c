@@ -868,6 +868,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
 	struct jive_region * region, jive_token_ostream * os)
 {
+	/*FIXME: serialization does not take care of graph tail node*/
 	jive_context * context = self->context;
 	jive_sorted_nodes sorted;
 	jive_sorted_nodes_init(&sorted);
@@ -882,12 +883,15 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 		const jive_level_nodes * level = &sorted.depths[n];
 		for (k = 0; k < level->nitems; ++k) {
 			node = level->items[k];
+
 			size_t j;
 			for (j = 0; j < node->ninputs; ++j) {
 				jive_input * input = node->inputs[j];
 				if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT))
 					jive_serialize_regiondef(self, namegen, input->origin->node->region, os);
 			}
+			if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
+				continue;
 			jive_serialize_nodedef(self, namegen, node, os);
 			jive_serialize_char_token(self, ';', os);
 		}

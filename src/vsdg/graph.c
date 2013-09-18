@@ -5,13 +5,45 @@
  */
 
 #include <jive/util/list.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
 #include <jive/vsdg/region-private.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
+
+/* graph tail node */
+
+static jive_node *
+jive_graph_tail_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
+	size_t noperands, struct jive_output * const operands[])
+{
+	JIVE_DEBUG_ASSERT(region->bottom == NULL);
+
+	jive_graph_tail_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	node->base.class_ = &JIVE_GRAPH_TAIL_NODE;
+	jive_node_init_(&node->base, region, 0, NULL, NULL, 0, NULL);
+	return &node->base;
+}
+
+const jive_node_class JIVE_GRAPH_TAIL_NODE = {
+	.parent = &JIVE_NODE,
+	.name = "GRAPH_TAIL",
+	.fini = jive_node_fini_, /* inherit */
+	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
+	.get_label = jive_node_get_label_, /* inherit */
+	.get_attrs = jive_node_get_attrs_, /* inherit */
+	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherit */
+	.create = jive_graph_tail_node_create_, /* override */
+	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+};
+
+/* graph */
 
 JIVE_DEFINE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form,
 	const struct jive_node_class *, node_class, hash_chain);
@@ -67,6 +99,8 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	jive_region_init_(self->root_region, self, 0);
+	self->root_region->bottom = jive_graph_tail_node_create_(self->root_region, NULL, 0, NULL);
+	jive_node_reserve(self->root_region->bottom);
 	
 	self->ntracker_slots = 0;
 	self->tracker_slots = 0;

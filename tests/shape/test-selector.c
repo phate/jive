@@ -147,7 +147,9 @@ static int test_main(void)
 	jive_node * s5 = create_computation_node(
 		graph, 2, (jive_output *[]){s4->outputs[0], f->outputs[0]}, 1);
 	
-	jive_node * bottom = create_computation_node(graph, 1, (jive_output *[]){s5->outputs[0]}, 0);
+	jive_node_add_input(graph->root_region->bottom, jive_output_get_type(s5->outputs[0]),
+		s5->outputs[0]);
+	jive_node * bottom = graph->root_region->bottom;
 	
 	//jive_view(graph, stdout);
 	

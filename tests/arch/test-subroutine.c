@@ -42,7 +42,8 @@ static int test_main(void)
 	jive_context * context2 = jive_context_create();
 	jive_graph * graph2 = jive_graph_copy(graph, context2);
 	
-	jive_subroutine_node * anchor2 = jive_subroutine_node_cast(graph2->bottom.first);
+	jive_subroutine_node * anchor2 = jive_subroutine_node_cast(
+		graph2->bottom.first->graph_bottom_list.next);
 	assert(anchor2);
 	jive_subroutine * sub2 = anchor2->attrs.subroutine;
 	assert(sub2);

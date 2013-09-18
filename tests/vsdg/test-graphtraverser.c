@@ -26,12 +26,16 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 	tmp = jive_traverser_next(trav);
 	assert(tmp==n2);
 	tmp = jive_traverser_next(trav);
+	assert(tmp == graph->root_region->bottom);
+	tmp = jive_traverser_next(trav);
 	assert(tmp==0);
 	
 	jive_traverser_destroy(trav);
 	
 	trav = jive_bottomup_traverser_create(graph);
 	
+	tmp = jive_traverser_next(trav);
+	assert(tmp == graph->root_region->bottom);
 	tmp = jive_traverser_next(trav);
 	assert(tmp==n2);
 	tmp = jive_traverser_next(trav);
@@ -64,7 +68,9 @@ void test_order_enforcement_traversal(jive_context * ctx)
 	jive_node * tmp;
 	
 	trav = jive_topdown_traverser_create(graph);
-	
+
+	tmp = jive_traverser_next(trav);
+	assert(tmp = graph->root_region->bottom);
 	tmp = jive_traverser_next(trav);
 	assert(tmp==n1);
 	tmp = jive_traverser_next(trav);
@@ -82,6 +88,8 @@ void test_order_enforcement_traversal(jive_context * ctx)
 	assert(tmp==n3);
 	tmp = jive_traverser_next(trav);
 	assert(tmp==n2);
+	tmp = jive_traverser_next(trav);
+	assert(tmp == graph->root_region->bottom);
 	tmp = jive_traverser_next(trav);
 	assert(tmp==n1);
 	tmp = jive_traverser_next(trav);
@@ -186,7 +194,8 @@ static int test_main(void)
 	jive_node * n2 = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){type, type}, n1->outputs,
 		1, (const jive_type *[]){type});
-	
+
+	jive_node_add_input(graph->root_region->bottom, type, n2->outputs[0]);
 	(void)n1;
 	(void)n2;
 	
@@ -215,7 +224,7 @@ static int test_main(void)
 		Topdown traversal will encounter n1, n2, in this order.
 	*/
 	
-	jive_node_reserve(n2);
+	jive_node_reserve(graph->root_region->bottom);
 	
 	test_basic_traversal(graph, n1, n2);
 	test_basic_traversal(graph, n1, n2);

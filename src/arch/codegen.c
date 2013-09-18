@@ -344,6 +344,9 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
 		if (!seq_point->node)
 			continue;
+		if (jive_node_isinstance(seq_point->node, &JIVE_GRAPH_TAIL_NODE))
+			continue;
+
 		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
 		if (seq_instr && (seq_instr->icls->flags & jive_instruction_jump)) {
 			jive_instruction_node * inode = jive_instruction_node_cast(seq_point->node);

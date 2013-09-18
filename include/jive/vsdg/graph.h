@@ -12,9 +12,40 @@
 
 #include <jive/common.h>
 #include <jive/context.h>
+#include <jive/vsdg/node.h>
 #include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/tracker.h>
 #include <jive/util/hash.h>
+
+/* graph tail node */
+
+typedef struct jive_graph_tail_node jive_graph_tail_node;
+
+extern const jive_node_class JIVE_GRAPH_TAIL_NODE;
+
+struct jive_graph_tail_node {
+	jive_node base;
+};
+
+JIVE_EXPORTED_INLINE struct jive_graph_tail_node *
+jive_graph_tail_node_cast(struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
+		return (struct jive_graph_tail_node *) node;
+	else
+		return NULL;
+}
+
+JIVE_EXPORTED_INLINE const struct jive_graph_tail_node *
+jive_graph_tail_node_const_cast(const struct jive_node * node)
+{
+	if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
+		return (const struct jive_graph_tail_node *) node;
+	else
+		return NULL;
+}
+
+/* graph */
 
 typedef struct jive_graph jive_graph;
 typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
