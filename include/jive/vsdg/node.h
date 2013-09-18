@@ -167,14 +167,8 @@ jive_node_get_aux_rescls(const jive_node * self)
 	return self->class_->get_aux_rescls(self);
 }
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_node_copy(const jive_node * self,
-	struct jive_region * region,
-	struct jive_output * operands[])
-{
-	jive_graph_mark_denormalized(region->graph);
-	return self->class_->create(region, jive_node_get_attrs(self), self->noperands, operands);
-}
+struct jive_node *
+jive_node_copy(const jive_node * self, struct jive_region * region, struct jive_output * operands[]);
 
 /**
 	\brief Copy a node with substitutions
