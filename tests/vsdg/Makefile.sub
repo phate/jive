@@ -14,3 +14,4 @@ TESTS+=\
 	vsdg/test-statesplit \
 	vsdg/test-typemismatch \
 	vsdg/test-node_cse \
+	vsdg/test-empty_graph_pruning \
