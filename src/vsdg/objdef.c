@@ -15,6 +15,7 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/statetype.h>
 
 static void
 jive_objdef_node_init_(
@@ -24,10 +25,11 @@ jive_objdef_node_init_(
 	const char * name,
 	const struct jive_linker_symbol * symbol)
 {
+	JIVE_DECLARE_STATE_TYPE(stype);
 	const jive_type * type = jive_output_get_type(obj);
 	jive_node_init_(&self->base, region,
 		1, &type, &obj,
-		0, NULL);
+		1, &stype);
 	
 	if (obj->node->ninputs < 1 || obj->node->inputs[0]->class_ != &JIVE_ANCHOR_INPUT) {
 		jive_context_fatal_error(region->graph->context,
