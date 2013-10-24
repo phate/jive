@@ -121,6 +121,7 @@ LIBJIVE_SRC += \
 
 # doubles
 LIBJIVE_SRC += \
+	src/types/double/dblconstant.c	\
 	src/types/double/dbloperation-classes.c \
 	src/types/double/dbltype.c \
 
