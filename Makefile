@@ -119,6 +119,10 @@ LIBJIVE_SRC += \
 	src/types/real/rloperation-classes.c \
 	src/types/real/rltype.c \
 
+# doubles
+LIBJIVE_SRC += \
+	src/types/double/dbltype.c \
+
 # records
 LIBJIVE_SRC += \
 	src/types/record/rcdgroup.c \
