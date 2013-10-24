@@ -121,6 +121,11 @@ LIBJIVE_SRC += \
 
 # doubles
 LIBJIVE_SRC += \
+	src/types/double/arithmetic/dbldifference.c \
+	src/types/double/arithmetic/dblnegate.c \
+	src/types/double/arithmetic/dblproduct.c \
+	src/types/double/arithmetic/dblquotient.c \
+	src/types/double/arithmetic/dblsum.c \
 	src/types/double/dblconstant.c	\
 	src/types/double/dbloperation-classes.c \
 	src/types/double/dbltype.c \
