@@ -1,3 +1,4 @@
 include tests/types/bitstring/Makefile.sub
+include tests/types/double/Makefile.sub
 include tests/types/float/Makefile.sub
 include tests/types/real/Makefile.sub

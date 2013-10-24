@@ -1,0 +1,6 @@
+TESTS+=\
+	types/double/arithmetic/test-dbldifference \
+	types/double/arithmetic/test-dblnegate \
+	types/double/arithmetic/test-dblproduct \
+	types/double/arithmetic/test-dblquotient \
+	types/double/arithmetic/test-dblsum \
