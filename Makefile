@@ -126,6 +126,12 @@ LIBJIVE_SRC += \
 	src/types/double/arithmetic/dblproduct.c \
 	src/types/double/arithmetic/dblquotient.c \
 	src/types/double/arithmetic/dblsum.c \
+	src/types/double/comparison/dblequal.c \
+	src/types/double/comparison/dblgreater.c \
+	src/types/double/comparison/dblgreatereq.c \
+	src/types/double/comparison/dblless.c \
+	src/types/double/comparison/dbllesseq.c \
+	src/types/double/comparison/dblnotequal.c \
 	src/types/double/dblconstant.c	\
 	src/types/double/dbloperation-classes.c \
 	src/types/double/dbltype.c \
