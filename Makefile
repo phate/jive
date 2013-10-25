@@ -157,6 +157,7 @@ LIBJIVE_SRC += \
 
 # integrals
 LIBJIVE_SRC += \
+	src/types/integral/itgoperation-classes.c \
 	src/types/integral/itgtype.c \
 
 # arch definitions
