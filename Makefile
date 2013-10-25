@@ -157,6 +157,16 @@ LIBJIVE_SRC += \
 
 # integrals
 LIBJIVE_SRC += \
+	src/types/integral/arithmetic/itgand.c \
+	src/types/integral/arithmetic/itgdifference.c \
+	src/types/integral/arithmetic/itgmodulo.c \
+	src/types/integral/arithmetic/itgnegate.c \
+	src/types/integral/arithmetic/itgnot.c \
+	src/types/integral/arithmetic/itgor.c \
+	src/types/integral/arithmetic/itgproduct.c \
+	src/types/integral/arithmetic/itgquotient.c \
+	src/types/integral/arithmetic/itgsum.c \
+	src/types/integral/arithmetic/itgxor.c \
 	src/types/integral/itgconstant.c \
 	src/types/integral/itgoperation-classes.c \
 	src/types/integral/itgtype.c \
