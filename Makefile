@@ -167,6 +167,12 @@ LIBJIVE_SRC += \
 	src/types/integral/arithmetic/itgquotient.c \
 	src/types/integral/arithmetic/itgsum.c \
 	src/types/integral/arithmetic/itgxor.c \
+	src/types/integral/comparison/itgequal.c \
+	src/types/integral/comparison/itgless.c \
+	src/types/integral/comparison/itglesseq.c \
+	src/types/integral/comparison/itggreater.c \
+	src/types/integral/comparison/itggreatereq.c \
+	src/types/integral/comparison/itgnotequal.c \
 	src/types/integral/itgconstant.c \
 	src/types/integral/itgoperation-classes.c \
 	src/types/integral/itgtype.c \
