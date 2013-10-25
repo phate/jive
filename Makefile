@@ -155,6 +155,10 @@ LIBJIVE_SRC += \
 	src/types/function/fctsymbolic.c \
 	src/types/function/fcttype.c \
 
+# integrals
+LIBJIVE_SRC += \
+	src/types/integral/itgtype.c \
+
 # arch definitions
 LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackslot.c \
