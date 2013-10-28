@@ -1,6 +1,7 @@
 TESTS += \
 	util/test-bitstring \
 	util/test-hash \
+	util/test-math \
 	util/test-metacontainers \
 	util/test-rangemap \
 	util/test-set \
