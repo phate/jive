@@ -1,5 +1,5 @@
 # Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
-# Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+# Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
@@ -86,6 +86,10 @@ LIBJIVE_SRC += \
 	src/types/float/comparison/fltnotequal.c \
 	src/types/float/comparison/fltgreatereq.c \
 	src/types/float/comparison/fltgreater.c \
+
+# reals
+LIBJIVE_SRC += \
+	src/types/real/rltype.c \
 
 # records
 LIBJIVE_SRC += \
