@@ -89,6 +89,7 @@ LIBJIVE_SRC += \
 
 # reals
 LIBJIVE_SRC += \
+	src/types/real/rlconstant.c \
 	src/types/real/rloperation-classes.c \
 	src/types/real/rltype.c \
 
