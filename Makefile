@@ -89,6 +89,11 @@ LIBJIVE_SRC += \
 
 # reals
 LIBJIVE_SRC += \
+	src/types/real/arithmetic/rldifference.c \
+	src/types/real/arithmetic/rlnegate.c \
+	src/types/real/arithmetic/rlproduct.c \
+	src/types/real/arithmetic/rlquotient.c \
+	src/types/real/arithmetic/rlsum.c \
 	src/types/real/rlconstant.c \
 	src/types/real/rloperation-classes.c \
 	src/types/real/rltype.c \
