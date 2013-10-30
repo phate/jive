@@ -94,6 +94,12 @@ LIBJIVE_SRC += \
 	src/types/real/arithmetic/rlproduct.c \
 	src/types/real/arithmetic/rlquotient.c \
 	src/types/real/arithmetic/rlsum.c \
+	src/types/real/comparison/rlequal.c \
+	src/types/real/comparison/rlgreater.c \
+	src/types/real/comparison/rlgreatereq.c \
+	src/types/real/comparison/rlless.c \
+	src/types/real/comparison/rllesseq.c \
+	src/types/real/comparison/rlnotequal.c \
 	src/types/real/rlconstant.c \
 	src/types/real/rloperation-classes.c \
 	src/types/real/rltype.c \
