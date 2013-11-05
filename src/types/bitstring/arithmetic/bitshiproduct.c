@@ -1,14 +1,12 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/bitstring/arithmetic/bitshiproduct.h>
-
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/constant.h>
-#include <jive/types/bitstring/bitstring-operations.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
 
 static jive_node *
 jive_bitshiproduct_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -44,7 +42,7 @@ const jive_bitbinary_operation_class JIVE_BITSHIPRODUCT_NODE_ = {
 		.distributive_under = NULL,
 
 		.can_reduce_operand_pair = jive_bitshiproduct_node_can_reduce_operand_pair_, /* override */
-		.reduce_operand_pair = jive_bitshiproduct_node_reduce_operand_pair_ /* override */	
+		.reduce_operand_pair = jive_bitshiproduct_node_reduce_operand_pair_ /* override */
 	},
 	.type = jive_bitop_code_shiproduct
 };
@@ -54,7 +52,8 @@ jive_bitshiproduct_node_init_(jive_node * self, jive_region * region,
 	size_t noperands, jive_output * const operands[])
 {
 	if (!jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context, "Type mismatch: bitshiproduct node requires bitstring operands");
+		jive_context_fatal_error(region->graph->context,
+			"Type mismatch: bitshiproduct node requires bitstring operands");
 	}
 	size_t nbits = ((jive_bitstring_output *)operands[0])->type.nbits;
 	

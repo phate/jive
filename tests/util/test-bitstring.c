@@ -7,10 +7,9 @@
 #include "test-registry.h"
 
 #include <assert.h>
+#include <stdint.h>
 
-#include <jive/vsdg.h>
-#include <jive/types/bitstring/constant.h>
-#include <jive/types/bitstring/bitstring-operations.h>
+#include <jive/util/bitstring.h>
 
 char s[] =
 	{'0', '1', 'D', 'X'};
@@ -34,9 +33,9 @@ char and[4][4] = {
 	{'0', '0', '0', '0'},
 	{'0', '1', 'D', 'X'},
 	{'0', 'D', 'D', 'X'},
-	{'0', 'X', 'X', 'X'}};  
+	{'0', 'X', 'X', 'X'}};
 
-const char * bs[] = {	
+const char * bs[] = {
 	"00000000",
 	"11111111",
 	"10000000",
@@ -46,7 +45,7 @@ const char * bs[] = {
 	"XD001100",
 	"XXXXDDDD",
 	"10XDDX01",
-	"0DDDDDD1"}; 
+	"0DDDDDD1"};
 
 const char * bitstring_not[10] = {
 	"11111111",
@@ -136,7 +135,7 @@ char equal[10][10] = {
 	{'0', '0', '0', '0', '0', '0', 'X', 'X', '0', '0'},
 	{'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'},
 	{'0', '0', '0', '0', '0', '0', '0', 'X', 'X', '0'},
-	{'0', '0', '0', 'D', 'D', 'X', '0', 'X', '0', 'D'}};	
+	{'0', '0', '0', 'D', 'D', 'X', '0', 'X', '0', 'D'}};
 
 char notequal[10][10] = {
 	{'0', '1', '1', '1', '1', '1', '1', 'X', '1', '1'},
@@ -148,7 +147,7 @@ char notequal[10][10] = {
 	{'1', '1', '1', '1', '1', '1', 'X', 'X', '1', '1'},
 	{'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'},
 	{'1', '1', '1', '1', '1', '1', '1', 'X', 'X', '1'},
-	{'1', '1', '1', 'D', 'D', 'X', '1', 'X', '1', 'D'}};	
+	{'1', '1', '1', 'D', 'D', 'X', '1', 'X', '1', 'D'}};
 
 char sgreatereq[10][10] = {
 	{'1', '1', '0', '1', '1', '1', '0', 'X', '1', '1'},
@@ -245,7 +244,7 @@ char uless[10][10] = {
 	{'0', '1', '0', '1', '1', '1', 'X', 'X', '1', '1'},
 	{'0', 'X', 'X', 'X', 'D', 'X', 'X', 'X', 'X', 'X'},
 	{'0', '1', '0', '1', '1', '1', '0', 'X', 'X', 'X'},
-	{'0', '1', '0', 'D', 'D', 'X', '0', 'X', 'X', 'D'}};	
+	{'0', '1', '0', 'D', 'D', 'X', '0', 'X', 'X', 'D'}};
 
 
 static int test_main(void)
@@ -269,30 +268,30 @@ static int test_main(void)
 		for(c=0; c < 10; c++){
 			jive_bitstring_and(dst, bs[r], bs[c], 8);
 			assert(!strncmp(dst, bitstring_and[r][c], 8));
-			
+
 			jive_bitstring_or(dst, bs[r], bs[c], 8);
 			assert(!strncmp(dst, bitstring_or[r][c], 8));
 
 			jive_bitstring_xor(dst, bs[r], bs[c], 8);
 			assert(!strncmp(dst, bitstring_xor[r][c], 8));
-	
+
 			assert(jive_bitstring_equal(bs[r], bs[c], 8) == equal[r][c]);
 			assert(jive_bitstring_notequal(bs[r], bs[c], 8) == notequal[r][c]);
 
 			assert(jive_bitstring_uless(bs[r], bs[c], 8) == uless[r][c]);
 			assert(jive_bitstring_sless(bs[r], bs[c], 8) == sless[r][c]);
-			
+
 			assert(jive_bitstring_ulesseq(bs[r], bs[c], 8) == ulesseq[r][c]);
 			assert(jive_bitstring_slesseq(bs[r], bs[c], 8) == slesseq[r][c]);
-			
+
 			assert(jive_bitstring_ugreater(bs[r], bs[c], 8) == ugreater[r][c]);
 			assert(jive_bitstring_sgreater(bs[r], bs[c], 8) == sgreater[r][c]);
-			
+
 			assert(jive_bitstring_ugreatereq(bs[r], bs[c], 8) == ugreatereq[r][c]);
 			assert(jive_bitstring_sgreatereq(bs[r], bs[c], 8) == sgreatereq[r][c]);
 		}
 	}
-	
+
 	assert(jive_bitstring_to_unsigned("000110", 5) == 24);
 	assert(jive_bitstring_to_unsigned("000110", 6) == 24);
 	assert(jive_bitstring_to_signed("000110", 5) == -8);
@@ -311,89 +310,80 @@ static int test_main(void)
 	assert(jive_bitstring_to_signed(dst128, 64) == 4);
 	assert(jive_bitstring_to_signed(dst128+64, 64) == 0);
 
-	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
-	
 	char dst32[32];
 	for(r = -4; r < 5; r++){
-		jive_bitconstant_node * cr = (jive_bitconstant_node *)
-			jive_bitconstant_create_signed(graph, 32, r);
+		char rbits[32];
+		jive_bitstring_init_signed(rbits, 32, r);
 
-		jive_bitstring_negate(dst32, cr->attrs.bits, 32);
-		jive_node * neg1 = jive_bitconstant_create_signed(graph, 32, -r);
-		jive_node * neg2 = jive_bitconstant_create(graph, 32, dst32);
-		assert(jive_node_match_attrs(neg1, jive_node_get_attrs(neg2)));  
+		char neg[32];
+		jive_bitstring_negate(dst32, rbits, 32);
+		jive_bitstring_init_signed(neg, 32, -r);
+		assert(jive_bitstring_equal(dst32, neg, 32) == '1');
 
-		jive_bitstring_shiftleft(dst32, cr->attrs.bits, 32, 1);
+		jive_bitstring_shiftleft(dst32, rbits, 32, 1);
 		int64_t value = jive_bitstring_to_signed(dst32, 32);
 		assert(value == r << 1);
-		jive_bitstring_shiftright(dst32, cr->attrs.bits, 32, 34);
+		jive_bitstring_shiftright(dst32, rbits, 32, 34);
 		value = jive_bitstring_to_signed(dst32, 32);
 		assert(value == 0);
 
-		jive_bitstring_arithmetic_shiftright(dst32, cr->attrs.bits, 32, 1);
+		jive_bitstring_arithmetic_shiftright(dst32, rbits, 32, 1);
 		value = jive_bitstring_to_signed(dst32, 32);
 		assert(value == r >> 1);
-		jive_bitstring_arithmetic_shiftright(dst32, cr->attrs.bits, 32, 34);
+		jive_bitstring_arithmetic_shiftright(dst32, rbits, 32, 34);
 		value = jive_bitstring_to_signed(dst32, 32);
 		assert(value == (r < 0 ? -1 : 0));
 
 		if(r >= 0){
-			jive_bitstring_shiftright(dst32, cr->attrs.bits, 32, 1);
+			jive_bitstring_shiftright(dst32, rbits, 32, 1);
 			int64_t value = jive_bitstring_to_signed(dst32, 32);
 			assert(value == r >> 1);
-			jive_bitstring_shiftright(dst32, cr->attrs.bits, 32, 34);
+			jive_bitstring_shiftright(dst32, rbits, 32, 34);
 			value = jive_bitstring_to_signed(dst32, 32);
 			assert(value == 0);
 		}
 
 		for(c = -4; c < 5; c++){
-			jive_bitconstant_node * cc = (jive_bitconstant_node *)
-				jive_bitconstant_create_signed(graph, 32, c);
+			char cbits[32];
+			jive_bitstring_init_signed(cbits, 32, c);
 
-			jive_bitstring_sum(dst32, cr->attrs.bits, cc->attrs.bits, 32);
-			jive_node * sum1 = jive_bitconstant_create_signed(graph, 32, r+c);
-			jive_node * sum2 = jive_bitconstant_create(graph, 32, dst32);
-			assert(jive_node_match_attrs(sum1, jive_node_get_attrs(sum2)));
-		
-			jive_bitstring_difference(dst32, cr->attrs.bits, cc->attrs.bits, 32);
-			jive_node * diff1 = jive_bitconstant_create_signed(graph, 32, r-c);
-			jive_node * diff2 = jive_bitconstant_create(graph, 32, dst32);
-			assert(jive_node_match_attrs(diff1, jive_node_get_attrs(diff2)));
+			char sum[32];
+			jive_bitstring_sum(dst32, rbits, cbits, 32);
+			jive_bitstring_init_signed(sum, 32, r+c);
+			assert(jive_bitstring_equal(dst32, sum, 32) == '1');
+
+			char diff[32];
+			jive_bitstring_difference(dst32, rbits, cbits, 32);
+			jive_bitstring_init_signed(diff, 32, r-c);
+			assert(jive_bitstring_equal(dst32, diff, 32) == '1');
 
 			if (r >= 0 && c > 0) {
 				char quotient[32], remainder[32];
-				jive_bitstring_division_unsigned(quotient, remainder, cr->attrs.bits, cc->attrs.bits, 32);
+				jive_bitstring_division_unsigned(quotient, remainder, rbits, cbits, 32);
 
-				jive_node * div1 = jive_bitconstant_create_unsigned(graph, 32, r/c);
-				jive_node * div2 = jive_bitconstant_create(graph, 32, quotient);
-				assert(jive_node_match_attrs(div1, jive_node_get_attrs(div2)));
+				char div[32], mod[32];
+				jive_bitstring_init_signed(div, 32, r/c);
+				jive_bitstring_init_signed(mod, 32, r%c);
 
-				jive_node * mod1 = jive_bitconstant_create_unsigned(graph, 32, r%c);
-				jive_node * mod2 = jive_bitconstant_create(graph, 32, remainder);
-				assert(jive_node_match_attrs(mod1, jive_node_get_attrs(mod2)));
+				assert(jive_bitstring_equal(quotient, div, 32) == '1');
+				assert(jive_bitstring_equal(remainder, mod, 32) == '1');
 			}
 
 			if (c != 0) {
 				char quotient[32], remainder[32];
-				jive_bitstring_division_signed(quotient, remainder, cr->attrs.bits, cc->attrs.bits, 32);
+				jive_bitstring_division_signed(quotient, remainder, rbits, cbits, 32);
 
-				jive_node * div1 = jive_bitconstant_create_signed(graph, 32, r/c);
-				jive_node * div2 = jive_bitconstant_create(graph, 32, quotient);
-				assert(jive_node_match_attrs(div1, jive_node_get_attrs(div2)));
+				char div[32], mod[32];
+				jive_bitstring_init_signed(div, 32, r/c);
+				jive_bitstring_init_signed(mod, 32, r%c);
 
-				jive_node * mod1 = jive_bitconstant_create_signed(graph, 32, r%c);
-				jive_node * mod2 = jive_bitconstant_create(graph, 32, remainder);
-				assert(jive_node_match_attrs(mod1, jive_node_get_attrs(mod2)));
+				assert(jive_bitstring_equal(quotient, div, 32) == '1');
+				assert(jive_bitstring_equal(remainder, mod, 32) == '1');
 			}
 		}
-	}	
-
-	jive_graph_destroy(graph);
-	jive_context_assert_clean(context);
-	jive_context_destroy(context);
+	}
 
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("types/bitstring/test-bitstring-operations", test_main);
+JIVE_UNIT_TEST_REGISTER("util/test-bitstring", test_main);

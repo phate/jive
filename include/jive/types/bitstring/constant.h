@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -9,8 +9,8 @@
 
 #include <stdint.h>
 
-#include <jive/types/bitstring/bitstring-operations.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/util/bitstring.h>
 #include <jive/vsdg/node.h>
 
 extern const jive_node_class JIVE_BITCONSTANT_NODE;

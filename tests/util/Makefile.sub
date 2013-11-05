@@ -1,4 +1,5 @@
 TESTS += \
+	util/test-bitstring \
 	util/test-hash \
 	util/test-metacontainers \
 	util/test-rangemap \

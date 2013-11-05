@@ -1,14 +1,12 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/bitstring/arithmetic/bitnot.h>
-
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/constant.h>
-#include <jive/types/bitstring/bitstring-operations.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
 
 static jive_node *
 jive_bitnot_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -52,7 +50,8 @@ jive_bitnot_node_init_(
 	jive_output * operand)
 {
 	if (!jive_output_isinstance(operand, &JIVE_BITSTRING_OUTPUT)){
-		jive_context_fatal_error(region->graph->context, "Type mismatch: bitnot node requires bitstring operands");
+		jive_context_fatal_error(region->graph->context,
+			"Type mismatch: bitnot node requires bitstring operands");
 	}
 	size_t nbits = ((jive_bitstring_output *) operand)->type.nbits;
 	

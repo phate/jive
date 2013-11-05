@@ -9,7 +9,6 @@
 
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/bitoperation-classes.h>
-#include <jive/types/bitstring/bitstring-operations.h>
 #include <jive/types/bitstring/comparison.h>
 #include <jive/types/bitstring/concat.h>
 #include <jive/types/bitstring/constant.h>

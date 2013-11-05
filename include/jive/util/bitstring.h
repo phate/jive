@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_TYPES_BITSTRING_BITSTRING_OPERATIONS_H
-#define JIVE_TYPES_BITSTRING_BITSTRING_OPERATIONS_H
+#ifndef JIVE_UTIL_BITSTRING_H
+#define JIVE_UTIL_BITSTRING_H
 
 #include <jive/common.h>
 
@@ -47,7 +47,7 @@ jive_bitstring_to_signed(const char src[], size_t nbits)
 		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
 		but unknown)
 	\return Logic "or" of bits
-		
+
 	Performs logical "or"
 */
 static inline char
@@ -79,7 +79,7 @@ jive_bit_or(char a, char b)
 		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
 		but unknown)
 	\return Logic "xor" of bits
-		
+
 	Performs logical "xor"
 */
 static inline char
@@ -108,7 +108,7 @@ jive_bit_xor(char a, char b)
 		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
 		but unknown)
 	\return Logic "not" of bit
-		
+
 	Performs logical "not"
 */
 static inline char
@@ -126,7 +126,7 @@ jive_bit_not(char a)
 		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
 		but unknown)
 	\return Logic "and" of bits
-		
+
 	Performs logical "and"
 */
 static inline char
@@ -187,11 +187,11 @@ jive_bitstring_sless(const char * c1, const char * c2, size_t nbits)
 	char t1[nbits];
 	char t2[nbits];
 	memcpy(t1, c1, nbits);
-	memcpy(t2, c2, nbits);	
-	
+	memcpy(t2, c2, nbits);
+
 	t1[nbits-1] = jive_bit_not(t1[nbits-1]);
 	t2[nbits-1] = jive_bit_not(t2[nbits-1]);
-	
+
 	return jive_bitstring_uless(t1, t2, nbits);
 }
 
@@ -258,7 +258,7 @@ jive_bitstring_ugreatereq(const char * c1, const char * c2, size_t nbits)
 		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
 		but unknown)
 	\return Carry that occurs when adding the three input bits
-		
+
 	Compute carry that results from the sum of the three parameters
 */
 static inline char
@@ -279,7 +279,7 @@ jive_bit_carry(char a, char b, char c)
 		bit; must be '0', '1', 'X' (undefined) or 'D' (defined,
 		but unknown)
 	\return Sum of three input bits
-		
+
 	Compute sum of the three parameters (not accounting for overflow)
 */
 static inline char
@@ -319,7 +319,7 @@ jive_bitstring_and(char dst[], const char op1[], const char op2[], size_t nbits)
 	size_t n;
 	for(n = 0; n < nbits; n++){
 		dst[n] = jive_bit_and(op1[n], op2[n]);
-	}	
+	}
 }
 
 static inline void
@@ -377,7 +377,7 @@ jive_bitstring_init_unsigned(char dst[], size_t nbits, uint64_t value)
 	for(i = 0; i < nbits; i++){
 		dst[i] = '0' + (value & 1);
 		value = value >> 1;
-	}	
+	}
 }
 
 static inline void
@@ -535,7 +535,7 @@ jive_bitstring_product(
 		for(n2=0; t<product_nbits; n2++,t++) {
 			char b2 = factor2[p2];
 			if (p2<factor2_nbits-1) p2++;
-			
+
 			char s = jive_bit_and(b1, b2);
 			char new_carry = jive_bit_carry(s, product[t], carry);
 			product[t] = jive_bit_sum(s, product[t], carry);

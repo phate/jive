@@ -4,11 +4,9 @@
  */
 
 #include <jive/types/bitstring/arithmetic/bitumod.h>
-
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/types/bitstring/constant.h>
-#include <jive/types/bitstring/bitstring-operations.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
 
 static jive_node *
 jive_bitumod_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -44,7 +42,7 @@ const jive_bitbinary_operation_class JIVE_BITUMOD_NODE_ = {
 		.distributive_under = NULL,
 
 		.can_reduce_operand_pair = jive_bitumod_node_can_reduce_operand_pair_, /* override */
-		.reduce_operand_pair = jive_bitumod_node_reduce_operand_pair_ /* override */	
+		.reduce_operand_pair = jive_bitumod_node_reduce_operand_pair_ /* override */
 	},
 	.type = jive_bitop_code_umod
 };
