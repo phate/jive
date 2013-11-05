@@ -400,6 +400,17 @@ jive_bitstring_is_zero(const char bits[], size_t nbits)
 	return true;
 }
 
+static inline bool
+jive_bitstring_is_minus_one(const char bits[], size_t nbits)
+{
+	size_t n;
+	for (n = 0; n < nbits; n++)
+		if (bits[n] != '1')
+			return false;
+
+	return true;
+}
+
 static inline void
 jive_bitstring_shiftright(char dst[],
 	const char operand[], size_t nbits, size_t shift)
