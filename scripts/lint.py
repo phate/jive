@@ -12,7 +12,12 @@ if "--all" in options:
 elif not filenames:
 	# by default, lint files touched by the current commit
 	pending = [f for f in os.popen("git status --short").read().split("\n") if f]
-	filenames = [f[3:] for f in pending if f[0:2] != "??" and f[0:2] != "D "]
+	filenames = []
+	for f in pending:
+		if f[0:2] == "??": continue
+		if f[0:2] == "D ": continue
+		if f[0:2] == "R ": filenames.append(f[f.find("->")+3:])
+		else: filenames.append(f[3:])
 else:
 	# otherwise just lint files specified on the command line
 	pass
