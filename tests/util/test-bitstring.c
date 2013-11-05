@@ -310,6 +310,12 @@ static int test_main(void)
 	assert(jive_bitstring_to_signed(dst128, 64) == 4);
 	assert(jive_bitstring_to_signed(dst128+64, 64) == 0);
 
+	jive_bitstring_init_unsigned(dst128, 128, 0);
+	assert(jive_bitstring_is_zero(dst128, 128));
+
+	jive_bitstring_init_signed(dst128, 128, -1);
+	assert(!jive_bitstring_is_zero(dst128, 128));
+
 	char dst32[32];
 	for(r = -4; r < 5; r++){
 		char rbits[32];

@@ -389,6 +389,17 @@ jive_bitstring_init_signed(char dst[], size_t nbits, int64_t value)
 		memset(dst+64, '0' + ((value >> 63) & 1), nbits-64);
 }
 
+static inline bool
+jive_bitstring_is_zero(const char bits[], size_t nbits)
+{
+	size_t n;
+	for (n = 0; n < nbits; n++)
+		if (bits[n] != '0')
+			return false;
+
+	return true;
+}
+
 static inline void
 jive_bitstring_shiftright(char dst[],
 	const char operand[], size_t nbits, size_t shift)
