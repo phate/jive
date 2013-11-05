@@ -1,5 +1,6 @@
 TESTS += \
 	util/test-bitstring \
+	util/test-float \
 	util/test-hash \
 	util/test-math \
 	util/test-metacontainers \
