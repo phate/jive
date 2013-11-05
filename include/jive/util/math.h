@@ -34,4 +34,19 @@ jive_min_signed(int64_t x, int64_t y)
 	return x < y ? x : y;
 }
 
+JIVE_EXPORTED_INLINE uint64_t
+jive_gcd(uint64_t x, uint64_t y)
+{
+	JIVE_DEBUG_ASSERT(x != 0 || y != 0);
+
+	uint64_t t;
+	while (y) {
+		t = x;
+		x = y;
+		y = t % y;
+	}
+
+	return x;
+}
+
 #endif
