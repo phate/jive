@@ -479,9 +479,7 @@ jive_bitstring_division_unsigned(char quotient[], char remainder[],
 	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(dividend, nbits));
 	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(divisor, nbits));
 
-	char zero[nbits];
-	jive_bitstring_init_unsigned(zero, nbits, 0);
-	if (jive_bitstring_equal(divisor, zero, nbits) == '1') {
+	if (jive_bitstring_is_zero(divisor, nbits)) {
 		//FIXME: Ideally, I would like to throw a jive_context_fatal_error here.
 		JIVE_DEBUG_ASSERT(0);
 		return;
