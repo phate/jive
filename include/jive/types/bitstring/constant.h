@@ -122,15 +122,7 @@ jive_bitconstant_is_minus_one(const jive_bitconstant_node * node)
 JIVE_EXPORTED_INLINE bool
 jive_bitconstant_equals_signed(const jive_bitconstant_node * node, int64_t value)
 {
-	size_t n;
-	int bit = 0;
-	for (n = 0; n < node->attrs.nbits; n++) {
-		bit = (value & 1);
-		if (node->attrs.bits[n] != '0' + bit)
-			return false;
-		value >>= 1;
-	}
-	return value == (0 - bit);
+	return jive_bitstring_equals_signed(node->attrs.bits, node->attrs.nbits, value);
 }
 
 JIVE_EXPORTED_INLINE bool
