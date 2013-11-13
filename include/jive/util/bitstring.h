@@ -565,4 +565,19 @@ jive_bitstring_product(
 	}
 }
 
+static inline bool
+jive_bitstring_equals_unsigned(const char * bits, size_t nbits, uint64_t value)
+{
+	size_t n;
+	int bit = 0;
+	for (n = 0; n < nbits; n++) {
+		bit = (value & 1);
+		if (bits[n] != '0' + bit)
+			return false;
+		value >>= 1;
+	}
+
+	return value == 0;
+}
+
 #endif
