@@ -389,6 +389,15 @@ jive_bitstring_init_signed(char dst[], size_t nbits, int64_t value)
 		memset(dst+64, '0' + ((value >> 63) & 1), nbits-64);
 }
 
+static inline void
+jive_bitstring_extend_unsigned(char dst[], size_t dstbits, const char src[], size_t srcbits)
+{
+	JIVE_DEBUG_ASSERT(dstbits >= srcbits);
+
+	dst = memmove(dst, src, srcbits);
+	memset(dst+srcbits, '0', dstbits-srcbits);
+}
+
 static inline bool
 jive_bitstring_is_zero(const char bits[], size_t nbits)
 {
