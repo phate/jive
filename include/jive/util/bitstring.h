@@ -419,6 +419,15 @@ jive_bitstring_is_zero(const char bits[], size_t nbits)
 }
 
 static inline bool
+jive_bitstring_is_one(const char bits[], size_t nbits)
+{
+	if (nbits >= 0 && bits[0] != '1')
+		return false;
+
+	return jive_bitstring_is_zero(bits+1, nbits-1);
+}
+
+static inline bool
 jive_bitstring_is_minus_one(const char bits[], size_t nbits)
 {
 	size_t n;
