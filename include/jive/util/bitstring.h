@@ -595,4 +595,30 @@ jive_bitstring_equals_signed(const char * bits, size_t nbits, int64_t value)
 	return value == (0 - bit);
 }
 
+static inline void
+jive_bitstring_gcd(char gcd[], const char x[], const char y[], size_t nbits)
+{
+	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(x, nbits) && jive_bitstring_is_known(y, nbits));
+	JIVE_DEBUG_ASSERT(!jive_bitstring_is_zero(x, nbits) || !jive_bitstring_is_zero(y, nbits));
+
+	char D[nbits];
+	memcpy(gcd, x, nbits);
+	memcpy(D, y, nbits);
+
+	while (!jive_bitstring_is_zero(D, nbits)) {
+		char remainder[nbits];
+		memset(remainder, '0', nbits);
+
+		size_t n;
+		for (n = 0; n < nbits; n++) {
+			jive_bitstring_shiftleft(remainder, remainder, nbits, 1);
+			remainder[0] = gcd[nbits-n-1];
+			if (jive_bitstring_ugreatereq(remainder, D, nbits) == '1')
+				jive_bitstring_difference(remainder, remainder, D, nbits);
+		}
+		memcpy(gcd, D, nbits);
+		memcpy(D, remainder, nbits);
+	}
+}
+
 #endif
