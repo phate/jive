@@ -648,4 +648,16 @@ jive_bitstring_gcd(char gcd[], const char x[], const char y[], size_t nbits)
 	}
 }
 
+static inline size_t
+jive_bitstring_nlz(const char bits[], size_t nbits)
+{
+	size_t n;
+	for (n = 0; n < nbits; n++) {
+		if (bits[nbits-n-1] != '0')
+			break;
+	}
+
+	return n;
+}
+
 #endif
