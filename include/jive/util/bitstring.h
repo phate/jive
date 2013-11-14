@@ -9,6 +9,7 @@
 #include <jive/common.h>
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 static inline uint64_t
