@@ -328,6 +328,10 @@ static int test_main(void)
 	jive_bitstring_extend_signed(dst128, 128, "1", 1);
 	assert(jive_bitstring_is_minus_one(dst128, 128));
 
+	assert(jive_bitstring_nlz("0000", 4) == 4);
+	assert(jive_bitstring_nlz("0100", 4) == 2);
+	assert(jive_bitstring_nlz("1", 1) == 0);
+
 	char dst32[32];
 	for(r = -4; r < 5; r++){
 		char rbits[32];
