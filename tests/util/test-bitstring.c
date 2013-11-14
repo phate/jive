@@ -10,6 +10,7 @@
 #include <stdint.h>
 
 #include <jive/util/bitstring.h>
+#include <jive/util/math.h>
 
 char s[] =
 	{'0', '1', 'D', 'X'};
@@ -375,6 +376,13 @@ static int test_main(void)
 
 				assert(jive_bitstring_equal(quotient, div, 32) == '1');
 				assert(jive_bitstring_equal(remainder, mod, 32) == '1');
+
+				char gcd[32];
+				jive_bitstring_gcd(gcd, rbits, cbits, 32);
+				assert(jive_bitstring_equals_unsigned(gcd, 32, jive_gcd(r, c)));
+
+				jive_bitstring_gcd(gcd, cbits, rbits, 32);
+				assert(jive_bitstring_equals_unsigned(gcd, 32, jive_gcd(c, r)));
 			}
 
 			if (c != 0) {
