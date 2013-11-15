@@ -47,21 +47,6 @@ replace_splitnode(jive_shaped_node * shaped_node, jive_node * node)
 	jive_node_destroy(node);
 }
 
-static jive_subroutine *
-lookup_subroutine_by_node(jive_node * node)
-{
-	while (node) {
-		jive_subroutine_node * sub = jive_subroutine_node_cast(node);
-		if (sub)
-			return sub->attrs.subroutine;
-		if (node->region->anchor)
-			node = node->region->anchor->node;
-		else
-			node = NULL;
-	}
-	return NULL;
-}
-
 static void
 check_fp_sp_dependency(jive_node * node)
 {
@@ -70,9 +55,10 @@ check_fp_sp_dependency(jive_node * node)
 	means that it would be much better to have the "stackptr add" operation
 	perform a "write" to all stack slots to mark them as invalidated,
 	and let "reuse" introduce ordering edges accordingly */
-	const jive_subroutine * subroutine = lookup_subroutine_by_node(node);
-	if (!subroutine)
+	const jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
+	if (!sub)
 		return;
+	const jive_subroutine * subroutine = sub->attrs.subroutine;
 	
 	if (node == &subroutine->enter->base || node == &subroutine->leave->base)
 		return;

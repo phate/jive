@@ -114,9 +114,10 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 			&jive_i386_instr_int_load_imm,
 			NULL, imm);
 		
-		jive_subroutine * sub = jive_region_get_subroutine(node->region);
+		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
+		jive_node * enter = sub->base.inputs[0]->origin->node->region->top;
 		JIVE_DECLARE_CONTROL_TYPE(ctl);
-		jive_node_add_input(tmp, ctl, sub->enter->base.outputs[0]);
+		jive_node_add_input(tmp, ctl, enter->outputs[0]);
 		
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_udiv;

@@ -191,18 +191,16 @@ jive_subroutine_add_sp_dependency(const jive_subroutine * self, jive_node * node
 	return self->class_->add_sp_dependency(self, node);
 }
 
-JIVE_EXPORTED_INLINE jive_subroutine *
-jive_region_get_subroutine(const jive_region * region)
+JIVE_EXPORTED_INLINE jive_subroutine_node *
+jive_region_get_subroutine_node(const jive_region * region)
 {
 	for (; region; region = region->parent) {
-		jive_node * node = region->bottom;
-		if (!node)
+		if (!region->anchor)
 			continue;
-		jive_subroutine_leave_node * leave =
-			jive_subroutine_leave_node_cast(node);
-		if (!leave)
-			continue;
-		return leave->attrs.subroutine;
+		jive_subroutine_node * sub = jive_subroutine_node_cast(
+			region->anchor->node);
+		if (sub)
+			return sub;
 	}
 	return 0;
 }
@@ -210,17 +208,11 @@ jive_region_get_subroutine(const jive_region * region)
 JIVE_EXPORTED_INLINE const struct jive_instructionset *
 jive_region_get_instructionset(const jive_region * region)
 {
-	for (; region; region = region->parent) {
-		jive_node * node = region->bottom;
-		if (!node)
-			continue;
-		jive_subroutine_leave_node * leave =
-			jive_subroutine_leave_node_cast(node);
-		if (!leave)
-			continue;
-		return leave->attrs.subroutine->class_->instructionset;
-	}
-	return 0;
+	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
+	if (sub)
+		return sub->attrs.subroutine->class_->instructionset;
+	else
+		return NULL;
 }
 
 #endif
