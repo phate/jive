@@ -496,6 +496,9 @@ const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
 	.fini = jive_subroutine_fini_,
 	.value_parameter = jive_testarch_subroutine_value_parameter_,
 	.value_return = jive_testarch_subroutine_value_return_,
+};
+
+static const jive_subroutine_abi_class JIVE_TESTARCH_SUBROUTINE_ABI = {
 	.prepare_stackframe = jive_testarch_subroutine_prepare_stackframe_,
 	.instructionset = &testarch_isa
 };
@@ -510,6 +513,7 @@ jive_testarch_subroutine_create(jive_region * region,
 	jive_testarch_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context,
 		nparameters, parameter_types, nreturns, return_types, 1);
+	self->base.abi_class = &JIVE_TESTARCH_SUBROUTINE_ABI;
 	
 	size_t n;
 	

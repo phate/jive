@@ -27,6 +27,7 @@ typedef struct jive_subroutine_enter_node jive_subroutine_enter_node;
 typedef struct jive_subroutine_leave_node jive_subroutine_leave_node;
 typedef struct jive_subroutine_node jive_subroutine_node;
 
+typedef struct jive_subroutine_abi_class jive_subroutine_abi_class;
 typedef struct jive_subroutine_class jive_subroutine_class;
 typedef enum jive_argument_type jive_argument_type;
 
@@ -109,6 +110,7 @@ jive_subroutine_leave_node_cast(jive_node * node)
 
 struct jive_subroutine {
 	const jive_subroutine_class * class_;
+	const jive_subroutine_abi_class * abi_class;
 	jive_context * context;
 	jive_subroutine_node * subroutine_node;
 	jive_subroutine_enter_node * enter;
@@ -144,6 +146,9 @@ struct jive_subroutine_class {
 	void (*fini)(jive_subroutine * self);
 	jive_output * (*value_parameter)(jive_subroutine * self, size_t index);
 	jive_input * (*value_return)(jive_subroutine * self, size_t index, jive_output * value);
+};
+
+struct jive_subroutine_abi_class {
 	void (*prepare_stackframe)(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm);
 	jive_input *(*add_fp_dependency)(const jive_subroutine * self, jive_node * node);
 	jive_input *(*add_sp_dependency)(const jive_subroutine * self, jive_node * node);
@@ -176,19 +181,19 @@ jive_subroutine_prepare_stackframe(
 	jive_subroutine * self,
 	const jive_subroutine_late_transforms * xfrm)
 {
-	return self->class_->prepare_stackframe(self, xfrm);
+	return self->abi_class->prepare_stackframe(self, xfrm);
 }
 
 JIVE_EXPORTED_INLINE jive_input *
 jive_subroutine_add_fp_dependency(const jive_subroutine * self, jive_node * node)
 {
-	return self->class_->add_fp_dependency(self, node);
+	return self->abi_class->add_fp_dependency(self, node);
 }
 
 JIVE_EXPORTED_INLINE jive_input *
 jive_subroutine_add_sp_dependency(const jive_subroutine * self, jive_node * node)
 {
-	return self->class_->add_sp_dependency(self, node);
+	return self->abi_class->add_sp_dependency(self, node);
 }
 
 JIVE_EXPORTED_INLINE jive_subroutine_node *
@@ -210,7 +215,7 @@ jive_region_get_instructionset(const jive_region * region)
 {
 	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
 	if (sub)
-		return sub->attrs.subroutine->class_->instructionset;
+		return sub->attrs.subroutine->abi_class->instructionset;
 	else
 		return NULL;
 }

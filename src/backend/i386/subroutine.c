@@ -120,6 +120,9 @@ const jive_subroutine_class JIVE_I386_SUBROUTINE = {
 	.fini = jive_subroutine_fini_,
 	.value_parameter = jive_i386_subroutine_value_parameter_,
 	.value_return = jive_i386_subroutine_value_return_,
+};
+
+const jive_subroutine_abi_class JIVE_I386_SUBROUTINE_ABI = {
 	.prepare_stackframe = jive_i386_subroutine_prepare_stackframe_,
 	.add_fp_dependency = jive_i386_subroutine_add_fp_dependency_,
 	.add_sp_dependency = jive_i386_subroutine_add_sp_dependency_,
@@ -161,6 +164,7 @@ jive_i386_subroutine_create(jive_region * region,
 	jive_i386_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context,
 		nparameters, parameter_types, nreturns, return_types, 5);
+	self->base.abi_class = &JIVE_I386_SUBROUTINE_ABI;
 	self->base.frame.upper_bound = 4;
 	
 	size_t n;
