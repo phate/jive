@@ -13,29 +13,17 @@
 #include <jive/backend/i386/subroutine.h>
 #include <jive/vsdg.h>
 
-static jive_subroutine *
-lookup_subroutine_by_region(jive_region * region)
-{
-	for (;;) {
-		if (!region->anchor)
-			return NULL;
-		jive_subroutine_node * sub = jive_subroutine_node_cast(region->anchor->node);
-		if (sub)
-			return sub->attrs.subroutine;
-		region = region->parent;
-	}
-}
-
 static void
-get_slot_memory_reference(const jive_i386_subroutine * subroutine, const jive_resource_class * rescls, 
-	jive_immediate * displacement, jive_output ** base)
+get_slot_memory_reference(const jive_resource_class * rescls, 
+	jive_immediate * displacement, jive_output ** base,
+	jive_output * sp, jive_output * fp)
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
 		jive_immediate_init(displacement, 0, &jive_label_spoffset, NULL, NULL);
-		*base = subroutine->base.passthroughs[0].output;
+		*base = sp;
 	} else {
 		jive_immediate_init(displacement, 0, &jive_label_fpoffset, NULL, NULL);
-		*base = subroutine->base.passthroughs[0].output;
+		*base = fp;
 	}
 }
 
@@ -45,8 +33,10 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 {
 	jive_xfer_description xfer;
 	
-	jive_subroutine * subroutine_ = lookup_subroutine_by_region(region);
-	jive_i386_subroutine * subroutine = (jive_i386_subroutine *) subroutine_;
+	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
+	
+	jive_output * sp = jive_subroutine_node_get_sp(sub);
+	jive_output * fp = jive_subroutine_node_get_fp(sub);
 	
 	bool in_mem = !jive_resource_class_isinstance(in_class, &JIVE_REGISTER_RESOURCE);
 	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
@@ -54,7 +44,7 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	if (in_mem) {
 		jive_immediate displacement;
 		jive_output * base;
-		get_slot_memory_reference(subroutine, in_class, &displacement, &base);
+		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_int_load32_disp,
@@ -66,7 +56,7 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 	} else if (out_mem) {
 		jive_immediate displacement;
 		jive_output * base;
-		get_slot_memory_reference(subroutine, out_class, &displacement, &base);
+		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_int_store32_disp,

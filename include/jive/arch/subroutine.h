@@ -108,6 +108,20 @@ jive_subroutine_leave_node_cast(jive_node * node)
 		return NULL;
 }
 
+typedef struct jive_subroutine_stackframe_info jive_subroutine_stackframe_info;
+struct jive_subroutine_stackframe_info {
+	/* lower bound of frame (relative to initial position of stack pointer) */
+	ssize_t lower_bound;
+	/* upper bound of frame (relative to initial position of stack pointer) */
+	ssize_t upper_bound;
+	/* offset of frame pointer to initial position of stack pointer */
+	ssize_t frame_pointer_offset;
+	/* offset of stack pointer to initial position of stack pointer */
+	ssize_t stack_pointer_offset;
+	/* size of argument area for calls */
+	size_t call_area_size;
+};
+
 struct jive_subroutine {
 	const jive_subroutine_class * class_;
 	const jive_subroutine_abi_class * abi_class;
@@ -128,18 +142,7 @@ struct jive_subroutine {
 	size_t npassthroughs;
 	jive_subroutine_passthrough * passthroughs;
 	
-	struct {
-		/* lower bound of frame (relative to initial position of stack pointer) */
-		ssize_t lower_bound;
-		/* upper bound of frame (relative to initial position of stack pointer) */
-		ssize_t upper_bound;
-		/* offset of frame pointer to initial position of stack pointer */
-		ssize_t frame_pointer_offset;
-		/* offset of stack pointer to initial position of stack pointer */
-		ssize_t stack_pointer_offset;
-		/* size of argument area for calls */
-		size_t call_area_size;
-	} frame;
+	jive_subroutine_stackframe_info frame;
 };
 
 struct jive_subroutine_class {
@@ -177,23 +180,23 @@ jive_subroutine_objdef(const jive_subroutine * self)
 }
 
 JIVE_EXPORTED_INLINE void
-jive_subroutine_prepare_stackframe(
-	jive_subroutine * self,
+jive_subroutine_node_prepare_stackframe(
+	jive_subroutine_node * self,
 	const jive_subroutine_late_transforms * xfrm)
 {
-	return self->abi_class->prepare_stackframe(self, xfrm);
+	return self->attrs.subroutine->abi_class->prepare_stackframe(self->attrs.subroutine, xfrm);
 }
 
 JIVE_EXPORTED_INLINE jive_input *
-jive_subroutine_add_fp_dependency(const jive_subroutine * self, jive_node * node)
+jive_subroutine_node_add_fp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
-	return self->abi_class->add_fp_dependency(self, node);
+	return self->attrs.subroutine->abi_class->add_fp_dependency(self->attrs.subroutine, node);
 }
 
 JIVE_EXPORTED_INLINE jive_input *
-jive_subroutine_add_sp_dependency(const jive_subroutine * self, jive_node * node)
+jive_subroutine_node_add_sp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
-	return self->abi_class->add_sp_dependency(self, node);
+	return self->attrs.subroutine->abi_class->add_sp_dependency(self->attrs.subroutine, node);
 }
 
 JIVE_EXPORTED_INLINE jive_subroutine_node *
@@ -218,6 +221,26 @@ jive_region_get_instructionset(const jive_region * region)
 		return sub->attrs.subroutine->abi_class->instructionset;
 	else
 		return NULL;
+}
+
+JIVE_EXPORTED_INLINE jive_output *
+jive_subroutine_node_get_sp(const jive_subroutine_node * self)
+{
+	return self->attrs.subroutine->passthroughs[0].output;
+}
+
+JIVE_EXPORTED_INLINE jive_output *
+jive_subroutine_node_get_fp(const jive_subroutine_node * self)
+{
+	/* FIXME: this is only correct if we are compiling "omit-framepointer",
+	but it is only a transitionary stage during subroutine refactoring */
+	return self->attrs.subroutine->passthroughs[0].output;
+}
+
+JIVE_EXPORTED_INLINE jive_subroutine_stackframe_info *
+jive_subroutine_node_get_stackframe_info(const jive_subroutine_node * self)
+{
+	return &self->attrs.subroutine->frame;
 }
 
 #endif

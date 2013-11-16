@@ -58,9 +58,10 @@ check_fp_sp_dependency(jive_node * node)
 	const jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 	if (!sub)
 		return;
-	const jive_subroutine * subroutine = sub->attrs.subroutine;
+	jive_node * leave = sub->base.inputs[0]->origin->node;
+	jive_node * enter = leave->region->top;
 	
-	if (node == &subroutine->enter->base || node == &subroutine->leave->base)
+	if (node == enter || node == leave)
 		return;
 	
 	bool need_fp_dependency = false;
@@ -85,12 +86,12 @@ check_fp_sp_dependency(jive_node * node)
 	}
 	
 	if (need_fp_dependency) {
-		jive_input * input = jive_subroutine_add_fp_dependency(subroutine, node);
+		jive_input * input = jive_subroutine_node_add_fp_dependency(sub, node);
 		if (input)
 			jive_input_auto_merge_variable(input);
 	}
 	if (need_sp_dependency) {
-		jive_input * input = jive_subroutine_add_sp_dependency(subroutine, node);
+		jive_input * input = jive_subroutine_node_add_sp_dependency(sub, node);
 		if (input)
 			jive_input_auto_merge_variable(input);
 	}
