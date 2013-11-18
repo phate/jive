@@ -182,6 +182,7 @@ LIBJIVE_SRC += \
 	src/arch/registers.c src/arch/instruction.c src/arch/stackslot.c \
 	src/arch/memorytype.c \
 	src/arch/subroutine.c \
+	src/arch/subroutine/nodes.c \
 	src/arch/regselector.c \
 	src/arch/load.c \
 	src/arch/store.c \

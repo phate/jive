@@ -12,6 +12,7 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine-private.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/function/fctlambda.h>

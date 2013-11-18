@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -51,17 +51,12 @@ jive_subroutine_create_takeover(
 	size_t nreturns, jive_gate * const returns[],
 	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[]);
 
-static inline void
+void
 jive_subroutine_match_passthrough(
 	const jive_subroutine * old_subroutine,
 	const jive_subroutine_passthrough * old_pt,
 	jive_subroutine * new_subroutine,
-	jive_subroutine_passthrough * new_pt)
-{
-	new_pt->output = new_subroutine->enter->base.outputs[old_pt->output->index];
-	new_pt->input = new_subroutine->leave->base.inputs[old_pt->input->index];
-	new_pt->gate = new_pt->output->gate;
-}
+	jive_subroutine_passthrough * new_pt);
 
 /* base constructor */
 void

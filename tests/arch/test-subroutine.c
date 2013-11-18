@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/view.h>
 #include "testarch.h"
 

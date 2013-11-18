@@ -1,24 +1,25 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/serialization/driver.h>
-#include <jive/serialization/grammar.h>
-#include <jive/serialization/instrcls-registry.h>
-#include <jive/serialization/nodecls-registry.h>
-#include <jive/serialization/rescls-registry.h>
-#include <jive/serialization/typecls-registry.h>
-#include <jive/serialization/token-stream.h>
 #include <jive/arch/address.h>
 #include <jive/arch/immediate-node.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
-#include <jive/arch/subroutine.h>
 #include <jive/arch/subroutine-private.h>
+#include <jive/arch/subroutine.h>
+#include <jive/arch/subroutine/nodes.h>
+#include <jive/serialization/driver.h>
+#include <jive/serialization/grammar.h>
+#include <jive/serialization/instrcls-registry.h>
+#include <jive/serialization/nodecls-registry.h>
+#include <jive/serialization/rescls-registry.h>
+#include <jive/serialization/token-stream.h>
+#include <jive/serialization/typecls-registry.h>
 
 static void
 jive_serialization_stackslot_serialize(

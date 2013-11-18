@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -11,6 +11,7 @@
 #include <jive/arch/memorytype.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/util/hash.h>

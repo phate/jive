@@ -14,6 +14,7 @@
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine-private.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/splitnode.h>

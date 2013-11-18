@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,16 +7,17 @@
 #include "test-registry.h"
 
 #include <assert.h>
+#include <locale.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <locale.h>
 
 #include <jive/arch/codegen.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/regselector.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/classifier.h>
-#include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/instrmatch.h>
+#include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>

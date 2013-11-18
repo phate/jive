@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -8,13 +8,14 @@
 #include <jive/arch/instruction.h>
 #include <jive/arch/instructionset.h>
 #include <jive/arch/stackslot.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
 #include <jive/vsdg.h>
 
 static void
-get_slot_memory_reference(const jive_resource_class * rescls, 
+get_slot_memory_reference(const jive_resource_class * rescls,
 	jive_immediate * displacement, jive_output ** base,
 	jive_output * sp, jive_output * fp)
 {

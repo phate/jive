@@ -10,6 +10,7 @@
 #include <locale.h>
 
 #include <jive/arch/regvalue.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include "testarch.h"

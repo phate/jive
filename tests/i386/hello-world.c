@@ -19,6 +19,7 @@
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/stackslot.h>
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/backend/i386/call.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instrmatch.h>
