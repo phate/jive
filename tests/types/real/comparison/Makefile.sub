@@ -1,0 +1,8 @@
+TESTS+=\
+	types/real/comparison/test-rlequal \
+	types/real/comparison/test-rlgreater \
+	types/real/comparison/test-rlgreatereq \
+	types/real/comparison/test-rlless \
+	types/real/comparison/test-rllesseq \
+	types/real/comparison/test-rlnotequal \
+
