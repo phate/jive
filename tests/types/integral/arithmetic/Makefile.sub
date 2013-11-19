@@ -1,0 +1,11 @@
+TESTS+=\
+	types/integral/arithmetic/test-itgand \
+	types/integral/arithmetic/test-itgdifference \
+	types/integral/arithmetic/test-itgmodulo \
+	types/integral/arithmetic/test-itgnegate \
+	types/integral/arithmetic/test-itgnot \
+	types/integral/arithmetic/test-itgor \
+	types/integral/arithmetic/test-itgproduct \
+	types/integral/arithmetic/test-itgquotient \
+	types/integral/arithmetic/test-itgsum \
+	types/integral/arithmetic/test-itgxor \

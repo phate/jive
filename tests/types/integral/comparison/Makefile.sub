@@ -1,0 +1,8 @@
+TESTS+=\
+	types/integral/comparison/test-itgequal \
+	types/integral/comparison/test-itggreater \
+	types/integral/comparison/test-itggreatereq \
+	types/integral/comparison/test-itgless \
+	types/integral/comparison/test-itglesseq \
+	types/integral/comparison/test-itgnotequal \
+

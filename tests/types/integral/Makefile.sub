@@ -1,0 +1,5 @@
+TESTS+=\
+	types/integral/test-itgconstant \
+
+include tests/types/integral/arithmetic/Makefile.sub
+include tests/types/integral/comparison/Makefile.sub
