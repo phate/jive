@@ -20,7 +20,7 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(graph->root_region,
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(graph->root_region,
 		4, (jive_argument_type []){jive_argument_long, jive_argument_long, jive_argument_long, jive_argument_long},
 		1, (jive_argument_type []){jive_argument_long});
 	
@@ -46,7 +46,7 @@ static int test_main(void)
 	jive_subroutine_node * anchor2 = jive_subroutine_node_cast(
 		graph2->bottom.first->graph_bottom_list.next);
 	assert(anchor2);
-	jive_subroutine * sub2 = anchor2->attrs.subroutine;
+	jive_subroutine_deprecated * sub2 = anchor2->attrs.subroutine;
 	assert(sub2);
 	assert(sub2->nparameters == 4);
 	assert(sub2->parameters[0] && jive_node_get_gate_output(&sub2->enter->base, sub2->parameters[0]));

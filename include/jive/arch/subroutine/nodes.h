@@ -20,7 +20,7 @@ typedef struct jive_subroutine_node jive_subroutine_node;
 
 struct jive_subroutine_node_attrs {
 	jive_node_attrs base;
-	struct jive_subroutine * subroutine;
+	struct jive_subroutine_deprecated * subroutine;
 };
 
 struct jive_subroutine_node {
@@ -70,6 +70,6 @@ jive_node *
 jive_subroutine_leave_node_create(jive_region * region, jive_output * control_transfer);
 
 jive_node *
-jive_subroutine_node_create(jive_region * subroutine_region, struct jive_subroutine * subroutine);
+jive_subroutine_node_create(jive_region * subroutine_region, struct jive_subroutine_deprecated * subroutine);
 
 #endif

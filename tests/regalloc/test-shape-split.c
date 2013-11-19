@@ -22,7 +22,7 @@ create_testgraph(jive_context * ctx)
 {
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		1, (const jive_argument_type[]) { jive_argument_int },
 		1, (const jive_argument_type[]) { jive_argument_int }

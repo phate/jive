@@ -24,7 +24,7 @@ create_testgraph_split(jive_context * context)
 	is a "critical value" where no global assignment of one
 	register is possible */
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL
@@ -96,7 +96,7 @@ create_testgraph_emerg_split(jive_context * context)
 	lifetime. */
 	
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL

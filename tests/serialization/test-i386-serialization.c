@@ -35,7 +35,7 @@ static int test_main(void)
 	
 	jive_graph * gr1 = jive_graph_create(ctx);
 	
-	jive_subroutine * s1 = jive_i386_subroutine_create(
+	jive_subroutine_deprecated * s1 = jive_i386_subroutine_create(
 		gr1->root_region,
 		1,(const jive_argument_type[]) { jive_argument_int },
 		1,(const jive_argument_type[]) { jive_argument_int });

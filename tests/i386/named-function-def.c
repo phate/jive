@@ -43,7 +43,7 @@ static int test_main(void)
 
 	jive_node * abstract_fn = jive_lambda_end(lambda, 1, &bits32, &sum)->node;
 	
-	jive_subroutine * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
+	jive_subroutine_deprecated * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
 	jive_linker_symbol add_int32_symbol;
 	jive_node * fn_name = jive_objdef_node_create(
 		jive_subroutine_objdef(i386_fn),

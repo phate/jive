@@ -14,15 +14,15 @@ struct jive_node;
 typedef struct jive_i386_subroutine jive_i386_subroutine;
 
 /* convert according to "default" ABI */
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_i386_subroutine_convert(struct jive_region * target_parent, struct jive_node * lambda_node);
 
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_i386_subroutine_create(struct jive_region * region,
 	size_t nparameters, const jive_argument_type parameters[],
 	size_t nreturns, const jive_argument_type returns[]);
 
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_i386_subroutine_create_takeover(
 	jive_context * context,
 	size_t nparameters, jive_gate * const parameters[],
@@ -30,7 +30,7 @@ jive_i386_subroutine_create_takeover(
 	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[]);
 
 struct jive_i386_subroutine {
-	jive_subroutine base;
+	jive_subroutine_deprecated base;
 };
 
 extern const jive_subroutine_class JIVE_I386_SUBROUTINE;

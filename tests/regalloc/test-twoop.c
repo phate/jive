@@ -23,7 +23,7 @@ create_testgraph_postop_xfer(jive_context * context)
 	/* requires post-op transfer to satisfy register constraints */
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
 		0, NULL
@@ -50,7 +50,7 @@ create_testgraph_preop_xfer(jive_context * context)
 	/* requires pre-op transfer to satisfy register constraints */
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
 		0, NULL
@@ -80,7 +80,7 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 	/* requires pre-op transfer to auxiliary register to satisfy register constraints */
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
 		0, NULL
@@ -111,7 +111,7 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 	additionally, the auxiliary register must be reserved by the shaper */
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
 		0, NULL

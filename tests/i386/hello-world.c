@@ -82,7 +82,7 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine * i386_fn =
+	jive_subroutine_deprecated * i386_fn =
 		jive_i386_subroutine_create(graph->root_region,
 		0, NULL,
 		0, NULL);

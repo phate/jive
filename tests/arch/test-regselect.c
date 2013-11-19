@@ -23,7 +23,7 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		4, (jive_argument_type []) {
 			jive_argument_long, jive_argument_long,

@@ -20,16 +20,16 @@ jive_subroutine_leave_node_create(
 jive_node *
 jive_subroutine_node_create(
 	struct jive_region * subroutine_region,
-	jive_subroutine * subroutine);
+	jive_subroutine_deprecated * subroutine);
 
 void
 jive_subroutine_create_region_and_nodes(
-	jive_subroutine * subroutine,
+	jive_subroutine_deprecated * subroutine,
 	struct jive_region * parent_region);
 
 jive_subroutine_passthrough
 jive_subroutine_create_passthrough(
-	jive_subroutine * subroutine,
+	jive_subroutine_deprecated * subroutine,
 	const struct jive_resource_class * cls,
 	const char * name);
 
@@ -39,12 +39,12 @@ jive_subroutine_match_gate(
 	jive_node * old_node,
 	jive_node * new_node);
 
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_subroutine_copy(
-	const jive_subroutine * self,
+	const jive_subroutine_deprecated * self,
 	jive_node * new_enter_node, jive_node * new_leave_node);
 
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_subroutine_create_takeover(
 	jive_context * context, const jive_subroutine_class * class_,
 	size_t nparameters, jive_gate * const parameters[],
@@ -53,14 +53,14 @@ jive_subroutine_create_takeover(
 
 void
 jive_subroutine_match_passthrough(
-	const jive_subroutine * old_subroutine,
+	const jive_subroutine_deprecated * old_subroutine,
 	const jive_subroutine_passthrough * old_pt,
-	jive_subroutine * new_subroutine,
+	jive_subroutine_deprecated * new_subroutine,
 	jive_subroutine_passthrough * new_pt);
 
 /* base constructor */
 void
-jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
+jive_subroutine_init_(jive_subroutine_deprecated * self, const jive_subroutine_class * cls,
 	jive_context * context,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[],
@@ -68,6 +68,6 @@ jive_subroutine_init_(jive_subroutine * self, const jive_subroutine_class * cls,
 
 /* base destructor */
 void
-jive_subroutine_fini_(jive_subroutine * self);
+jive_subroutine_fini_(jive_subroutine_deprecated * self);
 
 #endif

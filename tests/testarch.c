@@ -459,7 +459,7 @@ const jive_instructionset testarch_isa = {
 /* subroutine support */
 
 static jive_output *
-jive_testarch_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
+jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t index)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive_gate * gate = self->base.parameters[index];
@@ -477,7 +477,7 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
 }
 
 static jive_input *
-jive_testarch_subroutine_value_return_(jive_subroutine * self_, size_t index, jive_output * value)
+jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index, jive_output * value)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive_gate * gate = self->base.returns[index];
@@ -488,7 +488,7 @@ extern const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE;
 
 static void
 jive_testarch_subroutine_prepare_stackframe_(
-	jive_subroutine * self,
+	jive_subroutine_deprecated * self,
 	const jive_subroutine_late_transforms * xfrm)
 {
 }
@@ -504,7 +504,7 @@ static const jive_subroutine_abi_class JIVE_TESTARCH_SUBROUTINE_ABI = {
 	.instructionset = &testarch_isa
 };
 
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_testarch_subroutine_create(jive_region * region,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[])

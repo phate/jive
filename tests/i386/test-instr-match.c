@@ -75,14 +75,14 @@ typedef jive_output * (bin_op_factory_t)(jive_output *, jive_output *);
 typedef struct {
 	jive_graph * graph;
 	jive_output * arg;
-	jive_subroutine * sub;
+	jive_subroutine_deprecated * sub;
 } un_graph;
 
 typedef struct {
 	jive_graph * graph;
 	jive_output * arg1;
 	jive_output * arg2;
-	jive_subroutine * sub;
+	jive_subroutine_deprecated * sub;
 } bin_graph;
 
 static un_graph

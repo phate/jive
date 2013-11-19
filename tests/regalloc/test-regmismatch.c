@@ -22,7 +22,7 @@ create_testgraph_mismatch1(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
 		1, (const jive_argument_type[]) { jive_argument_int }
@@ -39,7 +39,7 @@ create_testgraph_mismatch2(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
 		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int }
@@ -57,7 +57,7 @@ static jive_graph *
 create_testgraph_mismatch3(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL
@@ -83,7 +83,7 @@ static jive_graph *
 create_testgraph_mismatch4(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL
@@ -108,7 +108,7 @@ static jive_graph *
 create_testgraph_mismatch5(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL
@@ -142,7 +142,7 @@ static jive_graph *
 create_testgraph_mismatch6(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL

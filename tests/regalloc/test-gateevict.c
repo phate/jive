@@ -21,7 +21,7 @@ static jive_graph *
 create_testgraph_gateevict(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
 		graph->root_region,
 		0, NULL,
 		0, NULL

@@ -73,7 +73,7 @@ prepare_graph(jive_context * ctx)
 	jive_graph * graph;
 	graph = jive_graph_create(ctx);
 	
-	jive_subroutine * sub = jive_i386_subroutine_create(
+	jive_subroutine_deprecated * sub = jive_i386_subroutine_create(
 		graph->root_region,
 		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
 		0, NULL);

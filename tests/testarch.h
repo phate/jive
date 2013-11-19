@@ -46,7 +46,7 @@ extern const jive_instruction_class jive_testarch_instr_sub_gpr;
 
 extern const jive_instruction_class jive_testarch_instr_jump;
 
-jive_subroutine *
+jive_subroutine_deprecated *
 jive_testarch_subroutine_create(struct jive_region * region,
 	size_t nparameters, const jive_argument_type parameters[],
 	size_t nreturns, const jive_argument_type returns[]);
@@ -54,7 +54,7 @@ jive_testarch_subroutine_create(struct jive_region * region,
 typedef struct jive_testarch_subroutine jive_testarch_subroutine;
 
 struct jive_testarch_subroutine {
-	jive_subroutine base;
+	jive_subroutine_deprecated base;
 };
 
 extern const jive_reg_classifier jive_testarch_reg_classifier;

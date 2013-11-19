@@ -5,8 +5,8 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 
-jive_subroutine *
-jive_subroutine_copy(const jive_subroutine * self,
+jive_subroutine_deprecated *
+jive_subroutine_copy(const jive_subroutine_deprecated * self,
 	jive_node * new_enter_node, jive_node * new_leave_node);
 
 static jive_node *
@@ -120,7 +120,7 @@ static void
 jive_subroutine_node_fini_(jive_node * self_)
 {
 	jive_subroutine_node * self = (jive_subroutine_node *) self_;
-	jive_subroutine * subroutine = self->attrs.subroutine;
+	jive_subroutine_deprecated * subroutine = self->attrs.subroutine;
 	if (subroutine) {
 		JIVE_DEBUG_ASSERT(subroutine->subroutine_node == self);
 		subroutine->subroutine_node = 0;
@@ -153,14 +153,14 @@ jive_subroutine_node_create_(struct jive_region * region, const jive_node_attrs 
 	
 	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
 	
-	jive_subroutine * subroutine = attrs->subroutine;
+	jive_subroutine_deprecated * subroutine = attrs->subroutine;
 	subroutine = jive_subroutine_copy(subroutine, subroutine_region->top, subroutine_region->bottom);
 	
 	return jive_subroutine_node_create(operands[0]->node->region, subroutine);
 }
 
 jive_node *
-jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine * subroutine)
+jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_deprecated * subroutine)
 {
 	jive_region * region = subroutine_region->parent;
 	

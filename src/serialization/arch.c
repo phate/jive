@@ -291,7 +291,7 @@ jive_subroutine_serialize(
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
 	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
-	jive_subroutine * subroutine = attrs->subroutine;
+	jive_subroutine_deprecated * subroutine = attrs->subroutine;
 	
 	if (subroutine->class_ == &JIVE_I386_SUBROUTINE)
 		jive_token_ostream_identifier(os, "i386");
@@ -407,7 +407,7 @@ jive_subroutine_deserialize(
 		passthroughs[n].input = jive_node_get_gate_input(leave, gate);
 	}
 	
-	jive_subroutine * subroutine = jive_subroutine_create_takeover(
+	jive_subroutine_deprecated * subroutine = jive_subroutine_create_takeover(
 		driver->context, &JIVE_I386_SUBROUTINE,
 		nparameters, parameters,
 		nreturns, returns,

@@ -19,7 +19,7 @@ struct jive_subroutine_enter_node;
 struct jive_subroutine_leave_node;
 struct jive_subroutine_node;
 
-typedef struct jive_subroutine jive_subroutine;
+typedef struct jive_subroutine_deprecated jive_subroutine_deprecated;
 
 typedef struct jive_subroutine_node_attrs jive_subroutine_node_attrs;
 
@@ -71,7 +71,7 @@ struct jive_subroutine_stackframe_info {
 	size_t call_area_size;
 };
 
-struct jive_subroutine {
+struct jive_subroutine_deprecated {
 	const jive_subroutine_class * class_;
 	const jive_subroutine_abi_class * abi_class;
 	jive_context * context;
@@ -95,29 +95,29 @@ struct jive_subroutine {
 };
 
 struct jive_subroutine_class {
-	void (*fini)(jive_subroutine * self);
-	jive_output * (*value_parameter)(jive_subroutine * self, size_t index);
-	jive_input * (*value_return)(jive_subroutine * self, size_t index, jive_output * value);
+	void (*fini)(jive_subroutine_deprecated * self);
+	jive_output * (*value_parameter)(jive_subroutine_deprecated * self, size_t index);
+	jive_input * (*value_return)(jive_subroutine_deprecated * self, size_t index, jive_output * value);
 };
 
 struct jive_subroutine_abi_class {
-	void (*prepare_stackframe)(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm);
-	jive_input *(*add_fp_dependency)(const jive_subroutine * self, jive_node * node);
-	jive_input *(*add_sp_dependency)(const jive_subroutine * self, jive_node * node);
+	void (*prepare_stackframe)(jive_subroutine_deprecated * self, const jive_subroutine_late_transforms * xfrm);
+	jive_input *(*add_fp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
+	jive_input *(*add_sp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
 	const struct jive_instructionset * instructionset;
 };
 
 void
-jive_subroutine_destroy(jive_subroutine * self);
+jive_subroutine_destroy(jive_subroutine_deprecated * self);
 
 JIVE_EXPORTED_INLINE jive_output *
-jive_subroutine_value_parameter(jive_subroutine * self, size_t index)
+jive_subroutine_value_parameter(jive_subroutine_deprecated * self, size_t index)
 {
 	return self->class_->value_parameter(self, index);
 }
 
 JIVE_EXPORTED_INLINE jive_input *
-jive_subroutine_value_return(jive_subroutine * self, size_t index, jive_output * value)
+jive_subroutine_value_return(jive_subroutine_deprecated * self, size_t index, jive_output * value)
 {
 	return self->class_->value_return(self, index, value);
 }
@@ -153,6 +153,6 @@ jive_subroutine_stackframe_info *
 jive_subroutine_node_get_stackframe_info(const struct jive_subroutine_node * self);
 
 jive_output *
-jive_subroutine_objdef(const jive_subroutine * self);
+jive_subroutine_objdef(const jive_subroutine_deprecated * self);
 
 #endif
