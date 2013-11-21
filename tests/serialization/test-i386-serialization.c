@@ -35,11 +35,18 @@ static int test_main(void)
 	
 	jive_graph * gr1 = jive_graph_create(ctx);
 	
-	jive_subroutine_deprecated * s1 = jive_i386_subroutine_create(
-		gr1->root_region,
+	jive_subroutine sub = jive_i386_subroutine_begin(
+		gr1,
 		1,(const jive_argument_type[]) { jive_argument_int },
 		1,(const jive_argument_type[]) { jive_argument_int });
-	(void) s1;
+
+	// FIXME: test should fail with the following disabled; it happens
+	// to fail with the following enabled :(
+#if 0
+	jive_subroutine_simple_set_result(sub, 0,
+		jive_subroutine_simple_get_argument(sub, 0));
+#endif
+	jive_subroutine_end(sub);
 	
 	/* inhibit implicit normalization */
 	jive_node_normal_form_set_mutable(
@@ -65,6 +72,8 @@ static int test_main(void)
 		NULL);
 	
 	jive_node * orig_node = n3;
+	
+	jive_view(gr1, stdout);
 	
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv, ctx);

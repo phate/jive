@@ -13,14 +13,14 @@ struct jive_node;
 
 typedef struct jive_i386_subroutine jive_i386_subroutine;
 
-/* convert according to "default" ABI */
-jive_subroutine_deprecated *
-jive_i386_subroutine_convert(struct jive_region * target_parent, struct jive_node * lambda_node);
+jive_subroutine
+jive_i386_subroutine_begin(jive_graph * graph,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[]);
 
-jive_subroutine_deprecated *
-jive_i386_subroutine_create(struct jive_region * region,
-	size_t nparameters, const jive_argument_type parameters[],
-	size_t nreturns, const jive_argument_type returns[]);
+/* convert according to "default" ABI */
+jive_node *
+jive_i386_subroutine_convert(struct jive_region * target_parent, struct jive_node * lambda_node);
 
 jive_subroutine_deprecated *
 jive_i386_subroutine_create_takeover(

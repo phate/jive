@@ -75,14 +75,14 @@ typedef jive_output * (bin_op_factory_t)(jive_output *, jive_output *);
 typedef struct {
 	jive_graph * graph;
 	jive_output * arg;
-	jive_subroutine_deprecated * sub;
+	jive_subroutine sub;
 } un_graph;
 
 typedef struct {
 	jive_graph * graph;
 	jive_output * arg1;
 	jive_output * arg2;
-	jive_subroutine_deprecated * sub;
+	jive_subroutine sub;
 } bin_graph;
 
 static un_graph
@@ -91,13 +91,12 @@ prepare_un_graph(jive_context * ctx)
 	un_graph u;
 	u.graph = jive_graph_create(ctx);
 	
-	u.sub = jive_i386_subroutine_create(
-		u.graph->root_region,
+	u.sub = jive_i386_subroutine_begin(
+		u.graph,
 		1, (jive_argument_type []) { jive_argument_int },
 		1, (jive_argument_type []) { jive_argument_int });
-	jive_graph_export(u.graph, u.sub->subroutine_node->base.outputs[0]);
 	
-	u.arg = jive_subroutine_value_parameter(u.sub, 0);
+	u.arg = jive_subroutine_simple_get_argument(u.sub, 0);
 	
 	return u;
 }
@@ -107,7 +106,8 @@ generate_un_function(jive_context * ctx, un_op_factory_t factory)
 {
 	un_graph u = prepare_un_graph(ctx);
 	jive_output * result = factory(u.arg);
-	jive_subroutine_value_return(u.sub, 0, result);
+	jive_subroutine_simple_set_result(u.sub, 0, result);
+	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	
 	assert(jive_context_is_empty(ctx));
@@ -120,14 +120,13 @@ prepare_bin_graph(jive_context * ctx)
 	bin_graph b;
 	b.graph = jive_graph_create(ctx);
 	
-	b.sub = jive_i386_subroutine_create(
-		b.graph->root_region,
+	b.sub = jive_i386_subroutine_begin(
+		b.graph,
 		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
 		1, (jive_argument_type []) { jive_argument_int });
-	jive_graph_export(b.graph, b.sub->subroutine_node->base.outputs[0]);
 	
-	b.arg1 = jive_subroutine_value_parameter(b.sub, 0);
-	b.arg2 = jive_subroutine_value_parameter(b.sub, 1);
+	b.arg1 = jive_subroutine_simple_get_argument(b.sub, 0);
+	b.arg2 = jive_subroutine_simple_get_argument(b.sub, 1);
 	
 	return b;
 }
@@ -137,7 +136,8 @@ generate_bin_function(jive_context * ctx, bin_op_factory_t factory)
 {
 	bin_graph b = prepare_bin_graph(ctx);
 	jive_output * result = factory(b.arg1, b.arg2);
-	jive_subroutine_value_return(b.sub, 0, result);
+	jive_subroutine_simple_set_result(b.sub, 0, result);
+	jive_graph_export(b.graph, jive_subroutine_end(b.sub)->outputs[0]);
 	bin_function_t function = (bin_function_t) compile_graph(b.graph);
 	
 	assert(jive_context_is_empty(ctx));
@@ -150,7 +150,8 @@ generate_bin_function_curryleft(jive_context * ctx, bin_op_factory_t factory, ui
 	un_graph u = prepare_un_graph(ctx);
 	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op1);
 	jive_output * result = factory(c, u.arg);
-	jive_subroutine_value_return(u.sub, 0, result);
+	jive_subroutine_simple_set_result(u.sub, 0, result);
+	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	
 	assert(jive_context_is_empty(ctx));
@@ -163,7 +164,8 @@ generate_bin_function_curryright(jive_context * ctx, bin_op_factory_t factory, u
 	un_graph u = prepare_un_graph(ctx);
 	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
 	jive_output * result = factory(u.arg, c);
-	jive_subroutine_value_return(u.sub, 0, result);
+	jive_subroutine_simple_set_result(u.sub, 0, result);
+	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	
 	assert(jive_context_is_empty(ctx));
@@ -184,7 +186,8 @@ generate_bin_cmp_function(jive_context * ctx, bin_op_factory_t factory)
 		1, (const jive_type *[]){bits32},
 		&one, &zero, &result);
 	
-	jive_subroutine_value_return(b.sub, 0, result);
+	jive_subroutine_simple_set_result(b.sub, 0, result);
+	jive_graph_export(b.graph, jive_subroutine_end(b.sub)->outputs[0]);
 	bin_function_t function = (bin_function_t) compile_graph(b.graph);
 	
 	assert(jive_context_is_empty(ctx));
@@ -205,7 +208,8 @@ generate_bin_cmp_function_curryleft(jive_context * ctx, bin_op_factory_t factory
 	jive_gamma(pred,
 		1, (const jive_type *[]){bits32},
 		&one, &zero, &result);
-	jive_subroutine_value_return(u.sub, 0, result);
+	jive_subroutine_simple_set_result(u.sub, 0, result);
+	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	
 	assert(jive_context_is_empty(ctx));
@@ -226,7 +230,8 @@ generate_bin_cmp_function_curryright(jive_context * ctx, bin_op_factory_t factor
 	jive_gamma(pred,
 		1, (const jive_type *[]){bits32},
 		&one, &zero, &result);
-	jive_subroutine_value_return(u.sub, 0, result);
+	jive_subroutine_simple_set_result(u.sub, 0, result);
+	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
 	
 	assert(jive_context_is_empty(ctx));

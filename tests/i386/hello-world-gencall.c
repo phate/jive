@@ -81,13 +81,12 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine_deprecated * i386_fn =
-		jive_i386_subroutine_create(graph->root_region,
+	jive_subroutine i386_fn = jive_i386_subroutine_begin(
+		graph,
 		0, NULL,
 		0, NULL);
-	jive_region * fn_region = i386_fn->region;
-	jive_node * enter = &i386_fn->enter->base;
-	jive_node * leave = &i386_fn->leave->base;
+	jive_region * fn_region = i386_fn.region;
+	jive_node * enter = fn_region->top;
 	
 	jive_linker_symbol hello_world_symbol;
 	jive_label_external hello_world_label;
@@ -103,10 +102,6 @@ static int test_main(void)
 	jive_label_external_init(&write_label, ctx, "write", &write_symbol);
 	
 	jive_linker_symbol main_symbol;
-	jive_node * fn_name = jive_objdef_node_create(
-		jive_subroutine_objdef(i386_fn),
-		"main",
-		&main_symbol);
 	
 	jive_immediate imm;
 	
@@ -140,9 +135,19 @@ static int test_main(void)
 		3, (jive_output *[]){load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]},
 		0, NULL);
 	
-	JIVE_DECLARE_STATE_TYPE(state_type);
-	jive_node_add_input(leave, state_type, jive_node_add_output(call_write, state_type));
+	/* mark call as affecting global state */
+	jive_output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
+	const jive_type * memtype = jive_output_get_type(memstate);
+	jive_node_add_input(call_write, memtype, memstate);
+	jive_subroutine_simple_set_global_state(
+		i386_fn, jive_node_add_output(call_write, memtype));
 	
+	jive_node * main_fn = jive_subroutine_end(i386_fn);
+	
+	jive_node * fn_name = jive_objdef_node_create(
+		main_fn->outputs[0],
+		"main",
+		&main_symbol);
 	jive_graph_export(graph, fn_name->outputs[0]);
 	jive_graph_prune(graph);
 	//jive_view(graph, stdout);

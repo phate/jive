@@ -41,8 +41,8 @@ static int test_main(void)
 
 	jive_node * abstract_fn = jive_lambda_end(lambda, 1, &bits32, &sum)->node;
 	
-	jive_subroutine_deprecated * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
-	jive_graph_export(graph, i386_fn->subroutine_node->base.outputs[0]);
+	jive_node * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
+	jive_graph_export(graph, i386_fn->outputs[0]);
 	jive_graph_prune(graph);
 	
 	jive_view(graph, stdout);

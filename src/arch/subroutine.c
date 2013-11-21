@@ -94,12 +94,6 @@ jive_subroutine_match_passthrough(
 	new_pt->gate = new_pt->output->gate;
 }
 
-jive_output *
-jive_subroutine_objdef(const jive_subroutine_deprecated * self)
-{
-	return self->subroutine_node->base.outputs[0];
-}
-
 void
 jive_subroutine_destroy(jive_subroutine_deprecated * self)
 {

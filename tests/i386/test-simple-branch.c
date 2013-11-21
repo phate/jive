@@ -28,15 +28,14 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_subroutine_deprecated * subroutine = jive_i386_subroutine_create(
-		graph->root_region,
+	jive_subroutine subroutine = jive_i386_subroutine_begin(graph,
 		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
 		1, (jive_argument_type []) { jive_argument_int });
 	
-	jive_region * fn_region = subroutine->region;
+	jive_output * p1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive_output * p2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	
-	jive_output * p1 = jive_subroutine_value_parameter(subroutine, 0);
-	jive_output * p2 = jive_subroutine_value_parameter(subroutine, 1);
+	jive_region * fn_region = subroutine.region;
 	
 	jive_node * cmp = jive_instruction_node_create(
 		fn_region, &jive_i386_instr_int_cmp,
@@ -53,7 +52,9 @@ static int test_main(void)
 		(const jive_type *[]){bits32},
 		(jive_output *[]){p2}, (jive_output *[]){p1}, &max);
 	
-	jive_subroutine_value_return(subroutine, 0, max);
+	jive_subroutine_simple_set_result(subroutine, 0, max);
+	
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	jive_view(graph, stdout);
 	

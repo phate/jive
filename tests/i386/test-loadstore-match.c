@@ -73,18 +73,20 @@ prepare_graph(jive_context * ctx)
 	jive_graph * graph;
 	graph = jive_graph_create(ctx);
 	
-	jive_subroutine_deprecated * sub = jive_i386_subroutine_create(
-		graph->root_region,
+	jive_subroutine sub = jive_i386_subroutine_begin(graph,
 		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
 		0, NULL);
-	jive_graph_export(graph, sub->subroutine_node->base.outputs[0]);
 	
-	JIVE_DECLARE_STATE_TYPE(state);
-	jive_output * state1 = jive_node_add_output(&sub->enter->base, state);
-	jive_output * state2 = jive_node_add_output(&sub->enter->base, state);
+	jive_output * memstate = jive_subroutine_simple_get_global_state(sub);
+	const jive_type * memtype = jive_output_get_type(memstate);
 	
-	jive_output * arg1 = jive_subroutine_value_parameter(sub, 0);
-	jive_output * arg2 = jive_subroutine_value_parameter(sub, 1);
+	jive_node * statesplit = jive_state_split(memtype, memstate, 2);
+	
+	jive_output * state1 = statesplit->outputs[0];
+	jive_output * state2 = statesplit->outputs[0];
+	
+	jive_output * arg1 = jive_subroutine_simple_get_argument(sub, 0);
+	jive_output * arg2 = jive_subroutine_simple_get_argument(sub, 1);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
 	
@@ -114,8 +116,10 @@ prepare_graph(jive_context * ctx)
 		1, &state2, &state_);
 	state2 = state_;
 	
-	jive_node_add_input(&sub->leave->base, state, state1);
-	jive_node_add_input(&sub->leave->base, state, state2);
+	memstate = jive_state_merge(memtype, 2, (jive_output*[]){state1, state2});
+	jive_subroutine_simple_set_global_state(sub, memstate);
+	
+	jive_graph_export(graph, jive_subroutine_end(sub)->outputs[0]);
 	
 	return graph;
 }

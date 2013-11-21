@@ -192,7 +192,4 @@ jive_subroutine_node_get_fp(const struct jive_subroutine_node * self);
 jive_subroutine_stackframe_info *
 jive_subroutine_node_get_stackframe_info(const struct jive_subroutine_node * self);
 
-jive_output *
-jive_subroutine_objdef(const jive_subroutine_deprecated * self);
-
 #endif

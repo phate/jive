@@ -20,8 +20,13 @@
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/substitution.h>
 
+static jive_subroutine_deprecated *
+jive_i386_subroutine_create(jive_region * region,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[]);
+
 /* convert according to "default" ABI */
-jive_subroutine_deprecated *
+jive_node *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
 {
 	jive_region * src_region = lambda_node->inputs[0]->origin->node->region;
@@ -98,7 +103,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	
 	jive_substitution_map_destroy(subst);
 	
-	return subroutine;
+	return &subroutine->subroutine_node->base;
 }
 
 static jive_output *
@@ -155,7 +160,7 @@ jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t in
 	return jive_node_gate_input(&self->base.leave->base, gate, value);
 }
 
-jive_subroutine_deprecated *
+static jive_subroutine_deprecated *
 jive_i386_subroutine_create(jive_region * region,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[])
@@ -222,6 +227,24 @@ jive_i386_subroutine_create(jive_region * region,
 	jive_input_divert_origin(self->base.leave->base.inputs[0], ret_instr->outputs[0]);
 
 	return &self->base;
+}
+
+jive_subroutine
+jive_i386_subroutine_begin(jive_graph * graph,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[])
+{
+	jive_subroutine_deprecated * s = jive_i386_subroutine_create(
+		graph->root_region,
+		nparameters, parameter_types,
+		nreturns, return_types);
+	
+	jive_subroutine sub = {
+		.region = s->region,
+		.old_subroutine_struct = s
+	};
+	
+	return sub;
 }
 
 typedef struct jive_i386_stackptr_split_factory {
