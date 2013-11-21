@@ -303,3 +303,26 @@ jive_subroutine_fini_(jive_subroutine_deprecated * self)
 	jive_context_free(context, self->returns);
 	jive_context_free(context, self->return_types);
 }
+
+jive_node *
+jive_subroutine_end(jive_subroutine self)
+{
+	return &self.old_subroutine_struct->subroutine_node->base;
+}
+
+jive_output *
+jive_subroutine_simple_get_argument(
+	jive_subroutine self,
+	size_t index)
+{
+	return jive_subroutine_value_parameter(self.old_subroutine_struct, index);
+}
+
+void
+jive_subroutine_simple_set_result(
+	jive_subroutine self,
+	size_t index,
+	jive_output * value)
+{
+	jive_subroutine_value_return(self.old_subroutine_struct, index, value);
+}

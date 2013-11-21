@@ -19,6 +19,40 @@ struct jive_subroutine_enter_node;
 struct jive_subroutine_leave_node;
 struct jive_subroutine_node;
 
+typedef struct jive_subroutine jive_subroutine;
+struct jive_subroutine_builder;
+
+struct jive_subroutine {
+	struct jive_region * region;
+	struct jive_subroutine_deprecated * old_subroutine_struct;
+};
+
+/**
+	\brief Begin constructing a subroutine region
+*/
+jive_subroutine
+jive_subroutine_begin(struct jive_graph * graph);
+
+/**
+	\brief End constructing a subroutine region
+*/
+struct jive_node *
+jive_subroutine_end(jive_subroutine self);
+
+/**
+	\brief Get argument value
+*/
+struct jive_output *
+jive_subroutine_simple_get_argument(
+	jive_subroutine self,
+	size_t index);
+
+void
+jive_subroutine_simple_set_result(
+	jive_subroutine self,
+	size_t index,
+	struct jive_output * value);
+
 typedef struct jive_subroutine_deprecated jive_subroutine_deprecated;
 
 typedef struct jive_subroutine_node_attrs jive_subroutine_node_attrs;
