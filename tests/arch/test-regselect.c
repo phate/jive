@@ -23,18 +23,15 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
-		graph->root_region,
-		4, (jive_argument_type []) {
+	jive_subroutine subroutine = jive_testarch_subroutine_begin(
+		graph,
+		4, (jive_argument_type []){
 			jive_argument_long, jive_argument_long,
 			jive_argument_long, jive_argument_long
 		},
-		1, (jive_argument_type []){jive_argument_long}
-	);
+		1, (jive_argument_type []){jive_argument_long});
 	
-	jive_graph_export(graph, subroutine->subroutine_node->base.outputs[0]);
-	
-	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
+	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	
 	jive_output * lit = jive_bitconstant_unsigned(graph, 32, 42);
 	jive_output * sym = jive_bitsymbolicconstant(graph, 32, "symbol");
@@ -42,7 +39,9 @@ static int test_main(void)
 	jive_output * sum1 = jive_bitsum(2, (jive_output*[]){arg1, lit});
 	jive_output * sum2 = jive_bitsum(2, (jive_output*[]){lit, bitnot});
 	jive_output * res = jive_bituquotient(sum1, sum2);
-	jive_subroutine_value_return(subroutine, 0, res);
+	jive_subroutine_simple_set_result(subroutine, 0, res);
+	
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	jive_view(graph, stdout);
 	

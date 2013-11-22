@@ -51,6 +51,11 @@ jive_testarch_subroutine_create(struct jive_region * region,
 	size_t nparameters, const jive_argument_type parameters[],
 	size_t nreturns, const jive_argument_type returns[]);
 
+jive_subroutine
+jive_testarch_subroutine_begin(struct jive_graph * graph,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[]);
+
 typedef struct jive_testarch_subroutine jive_testarch_subroutine;
 
 struct jive_testarch_subroutine {

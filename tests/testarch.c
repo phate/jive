@@ -552,3 +552,24 @@ jive_testarch_subroutine_create(jive_region * region,
 	
 	return &self->base;
 }
+
+jive_subroutine
+jive_testarch_subroutine_begin(jive_graph * graph,
+	size_t nparameters, const jive_argument_type parameter_types[],
+	size_t nreturns, const jive_argument_type return_types[])
+{
+	jive_subroutine_deprecated * s = jive_testarch_subroutine_create(
+		graph->root_region,
+		nparameters, parameter_types,
+		nreturns, return_types);
+	
+	jive_subroutine sub = {
+		.region = s->region,
+		.old_subroutine_struct = s
+	};
+	
+	s->region->bottom = NULL;
+	
+	return sub;
+}
+

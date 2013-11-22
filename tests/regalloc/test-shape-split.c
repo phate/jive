@@ -21,24 +21,26 @@ static jive_graph *
 create_testgraph(jive_context * ctx)
 {
 	jive_graph * graph = jive_graph_create(ctx);
-	
-	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
-		graph->root_region,
+	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		1, (const jive_argument_type[]) { jive_argument_int },
 		1, (const jive_argument_type[]) { jive_argument_int }
 	);
+
+	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	const jive_type * memtype = jive_output_get_type(memstate);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node;
+	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_node * enter = &subroutine->enter->base;
-	jive_node * leave = &subroutine->leave->base;
-	jive_region * region = subroutine->region;
+	jive_region * region = subroutine.region;
 	
 	jive_gate * callee_saved_r2 = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "saved_r2");
-	jive_node_gate_input(leave, callee_saved_r2, jive_node_gate_output(enter, callee_saved_r2));
+	jive_node_gate_input(leave_mux, callee_saved_r2, jive_node_gate_output(enter_mux, callee_saved_r2));
 	
 	jive_gate * callee_saved_r3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "saved_r0");
-	jive_node_gate_input(leave, callee_saved_r3, jive_node_gate_output(enter, callee_saved_r3));
+	jive_node_gate_input(leave_mux, callee_saved_r3, jive_node_gate_output(enter_mux, callee_saved_r3));
 	
-	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
+	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	
 	jive_output * v1 = jive_instruction_node_create(
 		region,
@@ -55,7 +57,9 @@ create_testgraph(jive_context * ctx)
 		&jive_testarch_instr_add,
 		(jive_output *[]){v1, v2}, 0)->outputs[0];
 	
-	jive_subroutine_value_return(subroutine, 0, sum);
+	jive_subroutine_simple_set_result(subroutine, 0, sum);
+	
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	return graph;
 }

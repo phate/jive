@@ -24,43 +24,45 @@ create_testgraph_split(jive_context * context)
 	is a "critical value" where no global assignment of one
 	register is possible */
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
-		graph->root_region,
+	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
-		0, NULL
-	);
-	jive_node * enter = &subroutine->enter->base;
-	jive_node * leave = &subroutine->leave->base;
+		0, NULL);
+	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	const jive_type * memtype = jive_output_get_type(memstate);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node;
+	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg1");
 	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
 	
 	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval");
 	
-	jive_output * arg1 = jive_node_gate_output(enter, arg1_gate);
-	jive_output * arg2 = jive_node_gate_output(enter, arg2_gate);
+	jive_output * arg1 = jive_node_gate_output(enter_mux, arg1_gate);
+	jive_output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
 	
 	jive_output * critical_value = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_move_gpr,
 		(jive_output *[]) {arg1}, NULL)->outputs[0];
 	
 	jive_output * tmp = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_setr1,
 		(jive_output *[]) {critical_value}, NULL)->outputs[0];
-	
 	tmp = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_setr2,
 		(jive_output *[]) {tmp}, NULL)->outputs[0];
 	tmp = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_add,
 		(jive_output *[]) {critical_value, tmp}, NULL)->outputs[0];
 	
-	jive_node_gate_input(leave, retval_gate, tmp);
-	jive_node_gate_input(leave, arg2_gate, arg2);
+	jive_node_gate_input(leave_mux, retval_gate, tmp);
+	jive_node_gate_input(leave_mux, arg2_gate, arg2);
+	
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	return graph;
 }
@@ -88,7 +90,7 @@ create_testgraph_emerg_split(jive_context * context)
 	Due to number of intefering values, a will be assigned
 	r1 first (denying r1 to e), and subsequently b will
 	be considered. Even after life range split, assigning
-	the only possible choice r2 to b, it leaves no register
+	the only possible choice r2 to b, it leave_muxs no register
 	for e over its lifetime.
 	
 	The register allocator must allow r2 for b after splitting
@@ -96,46 +98,49 @@ create_testgraph_emerg_split(jive_context * context)
 	lifetime. */
 	
 	jive_graph * graph = jive_graph_create(context);
-	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(
-		graph->root_region,
+	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
-		0, NULL
-	);
-	jive_node * enter = &subroutine->enter->base;
-	jive_node * leave = &subroutine->leave->base;
+		0, NULL);
+	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	const jive_type * memtype = jive_output_get_type(memstate);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node;
+	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive_gate * arg3_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
-	jive_output * arg3 = jive_node_gate_output(enter, arg3_gate);
-	jive_node_gate_input(leave, arg3_gate, arg3);
+	jive_output * arg3 = jive_node_gate_output(enter_mux, arg3_gate);
+	jive_node_gate_input(leave_mux, arg3_gate, arg3);
 	
 	jive_gate * cls2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2");
-	jive_output * arg1 = jive_node_gate_output(enter, cls2_gate);
+	jive_output * arg1 = jive_node_gate_output(enter_mux, cls2_gate);
 	jive_node * op3 = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_setr1,
 		(jive_output *[]) {arg1}, NULL);
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), op3->outputs[0]);
+	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), op3->outputs[0]);
 	
 	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "1or2");
-	jive_output * arg2 = jive_node_gate_output(enter, arg2_gate);
+	jive_output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
 	jive_node * op1 = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_move_gpr,
 		(jive_output *[]) {arg2}, NULL);
 	jive_node * op2 = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_move_gpr,
 		(jive_output *[]) {op1->outputs[0]}, NULL);
 	jive_node * op4 = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_move_gpr,
 		(jive_output *[]) {op2->outputs[0]}, NULL);
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"), op4->outputs[0]);
+	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"), op4->outputs[0]);
 	
 	JIVE_DECLARE_STATE_TYPE(state_type);
 	
 	jive_node_add_input(op3, state_type, jive_node_add_output(op2, state_type));
 	jive_node_add_input(op4, state_type, jive_node_add_output(op3, state_type));
+	
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	return graph;
 }

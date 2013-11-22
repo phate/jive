@@ -20,23 +20,25 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine_deprecated * subroutine = jive_testarch_subroutine_create(graph->root_region,
+	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		4, (jive_argument_type []){jive_argument_long, jive_argument_long, jive_argument_long, jive_argument_long},
 		1, (jive_argument_type []){jive_argument_long});
 	
-	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_value_parameter(subroutine, 1);
-	jive_output * arg3 = jive_subroutine_value_parameter(subroutine, 2);
+	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive_output * arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
 	
 	jive_output * s1 = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_add,
 		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
 	jive_output * s2 = jive_instruction_node_create(
-		subroutine->region,
+		subroutine.region,
 		&jive_testarch_instr_add,
 		(jive_output *[]) {s1, arg3}, NULL)->outputs[0];
-	jive_subroutine_value_return(subroutine, 0, s2);
+	jive_subroutine_simple_set_result(subroutine, 0, s2);
+	
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	jive_view(graph, stdout);
 	

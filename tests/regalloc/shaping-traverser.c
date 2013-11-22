@@ -40,7 +40,7 @@ static int test_main(void)
 		(jive_output *[]){n1->outputs[0], n2->outputs[0]},
 		0, NULL);
 	
-	jive_node_reserve(n3);
+	jive_graph_export(graph, n3->outputs[0]);
 	
 	jive_shaping_region_traverser * regtrav = jive_shaping_region_traverser_create(graph);
 	
