@@ -513,7 +513,7 @@ jive_testarch_subroutine_create(jive_region * region,
 	jive_context * context = graph->context;
 	jive_testarch_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_TESTARCH_SUBROUTINE, context,
-		nparameters, parameter_types, nreturns, return_types, 1);
+		nparameters, parameter_types, nreturns, return_types, 2);
 	self->base.abi_class = &JIVE_TESTARCH_SUBROUTINE_ABI;
 	
 	size_t n;
@@ -544,9 +544,11 @@ jive_testarch_subroutine_create(jive_region * region,
 	
 	jive_subroutine_create_region_and_nodes(&self->base, region);
 	
-	self->base.passthroughs[0] = jive_subroutine_create_passthrough(
+	self->base.passthroughs[0] = jive_subroutine_create_passthrough_memorystate(
+		&self->base, "mem");
+	self->base.passthroughs[1] = jive_subroutine_create_passthrough(
 		&self->base, &jive_testarch_regcls_r0.base, "stackptr");
-	self->base.passthroughs[0].gate->may_spill = false;
+	self->base.passthroughs[1].gate->may_spill = false;
 	
 	return &self->base;
 }

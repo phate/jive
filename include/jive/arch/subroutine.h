@@ -53,6 +53,12 @@ jive_subroutine_simple_set_result(
 	size_t index,
 	struct jive_output * value);
 
+struct jive_output *
+jive_subroutine_simple_get_global_state(const jive_subroutine self);
+
+void
+jive_subroutine_simple_set_global_state(jive_subroutine self, struct jive_output * state);
+
 typedef struct jive_subroutine_deprecated jive_subroutine_deprecated;
 
 typedef struct jive_subroutine_node_attrs jive_subroutine_node_attrs;

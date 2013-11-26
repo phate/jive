@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include <jive/arch/memorytype.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/common.h>
 #include <jive/vsdg/anchortype.h>
@@ -64,7 +65,7 @@ jive_region_get_instructionset(const jive_region * region)
 jive_output *
 jive_subroutine_node_get_sp(const jive_subroutine_node * self)
 {
-	return self->attrs.subroutine->passthroughs[0].output;
+	return self->attrs.subroutine->passthroughs[1].output;
 }
 
 jive_output *
@@ -72,7 +73,7 @@ jive_subroutine_node_get_fp(const jive_subroutine_node * self)
 {
 	/* FIXME: this is only correct if we are compiling "omit-framepointer",
 	but it is only a transitionary stage during subroutine refactoring */
-	return self->attrs.subroutine->passthroughs[0].output;
+	return self->attrs.subroutine->passthroughs[1].output;
 }
 
 jive_subroutine_stackframe_info *
@@ -135,6 +136,25 @@ jive_subroutine_create_passthrough(
 		&subroutine->leave->base, passthrough.gate, passthrough.output);
 	return passthrough;
 }
+
+jive_subroutine_passthrough
+jive_subroutine_create_passthrough_memorystate(
+	jive_subroutine_deprecated * subroutine,
+	const char * name)
+{
+	JIVE_DECLARE_MEMORY_TYPE(memory_type);
+	
+	jive_subroutine_passthrough passthrough;
+	passthrough.gate = jive_type_create_gate(
+		memory_type, subroutine->subroutine_node->base.region->graph,
+		name);
+	passthrough.output = jive_node_gate_output(
+		&subroutine->enter->base, passthrough.gate);
+	passthrough.input = jive_node_gate_input(
+		&subroutine->leave->base, passthrough.gate, passthrough.output);
+	return passthrough;
+}
+	
 
 jive_gate *
 jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * new_node)
@@ -307,6 +327,7 @@ jive_subroutine_fini_(jive_subroutine_deprecated * self)
 jive_node *
 jive_subroutine_end(jive_subroutine self)
 {
+	self.region->bottom = &self.old_subroutine_struct->leave->base;
 	return &self.old_subroutine_struct->subroutine_node->base;
 }
 
@@ -325,4 +346,16 @@ jive_subroutine_simple_set_result(
 	jive_output * value)
 {
 	jive_subroutine_value_return(self.old_subroutine_struct, index, value);
+}
+
+jive_output *
+jive_subroutine_simple_get_global_state(const jive_subroutine self)
+{
+	return self.old_subroutine_struct->passthroughs[0].input->origin;
+}
+
+void
+jive_subroutine_simple_set_global_state(jive_subroutine self, struct jive_output * state)
+{
+	jive_input_divert_origin(self.old_subroutine_struct->passthroughs[0].input, state);
 }

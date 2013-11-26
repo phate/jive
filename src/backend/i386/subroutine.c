@@ -164,7 +164,7 @@ jive_i386_subroutine_create(jive_region * region,
 	jive_context * context = graph->context;
 	jive_i386_subroutine * self = jive_context_malloc(context, sizeof(*self));
 	jive_subroutine_init_(&self->base, &JIVE_I386_SUBROUTINE, context,
-		nparameters, parameter_types, nreturns, return_types, 5);
+		nparameters, parameter_types, nreturns, return_types, 6);
 	self->base.abi_class = &JIVE_I386_SUBROUTINE_ABI;
 	self->base.frame.upper_bound = 4;
 	
@@ -192,16 +192,18 @@ jive_i386_subroutine_create(jive_region * region,
 	
 	jive_subroutine_create_region_and_nodes(&self->base, region);
 	
-	self->base.passthroughs[0] = jive_subroutine_create_passthrough(
-		&self->base, &jive_i386_regcls_gpr_esp.base, "saved_esp");
-	self->base.passthroughs[0].gate->may_spill = false;
+	self->base.passthroughs[0] = jive_subroutine_create_passthrough_memorystate(
+		&self->base, "mem");
 	self->base.passthroughs[1] = jive_subroutine_create_passthrough(
-		&self->base, &jive_i386_regcls_gpr_ebx.base, "saved_ebx");
+		&self->base, &jive_i386_regcls_gpr_esp.base, "saved_esp");
+	self->base.passthroughs[1].gate->may_spill = false;
 	self->base.passthroughs[2] = jive_subroutine_create_passthrough(
-		&self->base, &jive_i386_regcls_gpr_ebp.base, "saved_ebp");
+		&self->base, &jive_i386_regcls_gpr_ebx.base, "saved_ebx");
 	self->base.passthroughs[3] = jive_subroutine_create_passthrough(
-		&self->base, &jive_i386_regcls_gpr_esi.base, "saved_esi");
+		&self->base, &jive_i386_regcls_gpr_ebp.base, "saved_ebp");
 	self->base.passthroughs[4] = jive_subroutine_create_passthrough(
+		&self->base, &jive_i386_regcls_gpr_esi.base, "saved_esi");
+	self->base.passthroughs[5] = jive_subroutine_create_passthrough(
 		&self->base, &jive_i386_regcls_gpr_edi.base, "saved_edi");
 	
 	/* return instruction */
@@ -276,15 +278,15 @@ jive_i386_subroutine_prepare_stackframe_(
 	pointer must be relocated */
 	self->base.frame.frame_pointer_offset += self->base.frame.lower_bound;
 	
-	xfrm->value_split(xfrm, self->base.passthroughs[0].output,
-		self->base.passthroughs[0].input, &stackptr_sub.base, &stackptr_add.base);
+	xfrm->value_split(xfrm, self->base.passthroughs[1].output,
+		self->base.passthroughs[1].input, &stackptr_sub.base, &stackptr_add.base);
 }
 
 static jive_input *
 jive_i386_subroutine_add_fp_dependency_(const jive_subroutine_deprecated * self_, jive_node * node)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
-	jive_output * frameptr = self->base.passthroughs[0].output;
+	jive_output * frameptr = self->base.passthroughs[1].output;
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
@@ -299,7 +301,7 @@ static jive_input *
 jive_i386_subroutine_add_sp_dependency_(const jive_subroutine_deprecated * self_, jive_node * node)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
-	jive_output * stackptr = self->base.passthroughs[0].output;
+	jive_output * stackptr = self->base.passthroughs[1].output;
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {

@@ -33,6 +33,11 @@ jive_subroutine_create_passthrough(
 	const struct jive_resource_class * cls,
 	const char * name);
 
+jive_subroutine_passthrough
+jive_subroutine_create_passthrough_memorystate(
+	jive_subroutine_deprecated * subroutine,
+	const char * name);
+
 jive_gate *
 jive_subroutine_match_gate(
 	jive_gate * gate,
