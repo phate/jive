@@ -3,7 +3,7 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-Wall -Werror -Wfatal-errors -g --std=gnu99
+CFLAGS+=-g --std=c++0x -xc++ -fpermissive
 
 # VSDG core
 LIBJIVE_SRC = \

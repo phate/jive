@@ -21,7 +21,7 @@ SOURCES += $(TEST_SOURCES)
 
 tests/test-runner: LDFLAGS+=-L. -Wl,-whole-archive -ljive -Wl,-no-whole-archive
 tests/test-runner: %: $(patsubst %.c, %.la, $(TEST_SOURCES)) libjive.a
-	$(CC) -o $@ $(filter %.la, $^) $(LDFLAGS)
+	$(CXX) -o $@ $(filter %.la, $^) $(LDFLAGS)
 
 $(patsubst %, tests/%.la, $(TESTS)): CPPFLAGS+=-Itests
 $(patsubst %, .dep/tests/%.la.d, $(TESTS)): CPPFLAGS+=-Itests
