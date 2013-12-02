@@ -4,8 +4,34 @@
  */
 
 #include <jive/types/float/fltoperation-classes.h>
+#include <jive/types/float/fltoperation-classes-private.h>
+#include <jive/types/float/flttype.h>
 
 #include <jive/vsdg/node-private.h>
+
+static void
+jive_fltoperation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	if (noperands == 0)
+		return;
+
+	size_t n;
+	JIVE_DECLARE_FLOAT_TYPE(flttype);
+	for (n = 0; n < noperands; n++) {
+		if (!jive_float_output_const_cast(operands[n]))
+			jive_raise_type_error(flttype, jive_output_get_type(operands[n]), context);
+	}
+}
+
+/* fltbinary operation class */
+
+void
+jive_fltbinary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	jive_fltoperation_check_operands_(cls, attrs, noperands, operands, context);
+}
 
 const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 	.base = {	/* jive_binary_operation_class */
@@ -17,6 +43,7 @@ const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_fltbinary_operation_check_operands_, /* override */
 			.create = jive_node_create_, /* inherit */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
@@ -33,6 +60,15 @@ const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 	.type = jive_fltop_code_invalid
 };
 
+/* fltunary operation class */
+
+void
+jive_fltunary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	jive_fltoperation_check_operands_(cls, attrs, noperands, operands, context);
+}
+
 const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 	.base = { /* jive_unary_operation_class */
 		.base = { /* jive_node_class */
@@ -43,6 +79,7 @@ const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_fltunary_operation_check_operands_, /* override */
 			.create = jive_node_create_, /* inherit */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
@@ -56,6 +93,16 @@ const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 	.type = jive_fltop_code_invalid
 };
 
+/* fltcomparison operation class */
+
+void
+jive_fltcomparison_operation_check_operands_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_context * context)
+{
+	jive_fltoperation_check_operands_(cls, attrs, noperands, operands, context);
+}
+
 const jive_fltcomparison_operation_class JIVE_FLTCOMPARISON_NODE_ = {
 	.base = { /* jive_binary_operation_class */
 		.base = { /* jive_node_class */
@@ -66,6 +113,7 @@ const jive_fltcomparison_operation_class JIVE_FLTCOMPARISON_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_fltcomparison_operation_check_operands_, /* override */
 			.create = jive_node_create_, /* inherit */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},

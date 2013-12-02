@@ -7,6 +7,7 @@
 
 #include <jive/util/buffer.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/types/float/fltoperation-classes-private.h>
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/operators/nullary.h>
 
@@ -36,6 +37,7 @@ const jive_node_class JIVE_FLTCONSTANT_NODE = {
 	.get_label = jive_fltconstant_node_get_label_, /* override */
 	.get_attrs = jive_fltconstant_node_get_attrs_, /* override */
 	.match_attrs = jive_fltconstant_node_match_attrs_, /* override */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_fltconstant_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
