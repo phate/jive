@@ -35,6 +35,10 @@ static jive_node *
 jive_memberof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[]);
 
+static void
+jive_memberof_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 static jive_unop_reduction_path_t 
 jive_memberof_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
 	const jive_output * operand);
@@ -52,6 +56,7 @@ const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
 		.get_label = jive_memberof_node_get_label_, /* override */
 		.get_attrs = jive_memberof_node_get_attrs_, /* override */
 		.match_attrs = jive_memberof_node_match_attrs_, /* override */
+		.check_operands = jive_memberof_node_check_operands_, /* override */
 		.create = jive_memberof_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -85,6 +90,17 @@ jive_memberof_node_match_attrs_(const jive_node * self_, const jive_node_attrs *
 	const jive_memberof_node * self = (const jive_memberof_node *) self_;
 	const jive_memberof_node_attrs * attrs = (const jive_memberof_node_attrs *) attrs_;
 	return (self->attrs.record_decl == attrs->record_decl) && (self->attrs.index == attrs->index);
+}
+
+static void
+jive_memberof_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+
+	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	if(!jive_address_output_const_cast(operands[0]))
+		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
