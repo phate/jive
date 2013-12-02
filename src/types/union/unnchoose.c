@@ -24,6 +24,10 @@ jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * at
 static bool
 jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
+static void
+jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 static jive_unop_reduction_path_t
 jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
 	const jive_output * operand);
@@ -41,6 +45,7 @@ const jive_unary_operation_class JIVE_CHOOSE_NODE_ = {
 		.get_label = jive_choose_node_get_label_, /* override */
 		.get_attrs = jive_choose_node_get_attrs_, /* override */
 		.match_attrs = jive_choose_node_match_attrs_, /* overrride */
+		.check_operands = jive_choose_node_check_operands_, /* override */
 		.create = jive_choose_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -116,6 +121,28 @@ jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 		return false;
 
 	return true;
+}
+
+static void
+jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+
+	const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *)attrs_;
+
+	const jive_union_output * output = jive_union_output_const_cast(operands[0]);
+	if (!output)
+		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
+
+	const jive_union_type * type = (const jive_union_type *)jive_output_get_type(operands[0]);
+	if (attrs->element >= type->decl->nelements) {
+		char tmp[256];
+		snprintf(tmp, sizeof(tmp),
+			"Type mismatch: attempted to select element #%zd from union of %zd elements", attrs->element,
+			type->decl->nelements);
+		jive_context_fatal_error(context, tmp);
+	}
 }
 
 static jive_node *

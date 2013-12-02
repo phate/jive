@@ -32,6 +32,10 @@ jive_unify_node_get_attrs_(const jive_node * self);
 static bool
 jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
 
+static void
+jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
 	.base = { /* jive_node_class */
 		.parent = &JIVE_UNARY_OPERATION,
@@ -41,6 +45,7 @@ const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
 		.get_label = jive_unify_node_get_label_, /* override */
 		.get_attrs = jive_unify_node_get_attrs_, /* override */
 		.match_attrs = jive_unify_node_match_attrs_, /* override */
+		.check_operands = jive_unify_node_check_operands_, /* override */
 		.create = jive_unify_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -73,6 +78,22 @@ jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 	const jive_unify_node_attrs * second = (const jive_unify_node_attrs *)second_;
 	
 	return (first->decl == second->decl) && (first->option == second->option);
+}
+
+static void
+jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+
+	const jive_unify_node_attrs * attrs = (const jive_unify_node_attrs *)attrs_;
+
+	if (attrs->option >= attrs->decl->nelements)
+		jive_context_fatal_error(context, "Type mismatch: invalid option for union type");
+
+	const jive_type * type = &attrs->decl->elements[attrs->option]->base;
+	if (!jive_type_equals(type, jive_output_get_type(operands[0])))
+		jive_raise_type_error(type, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -150,6 +171,7 @@ const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */ 
 	.get_attrs = jive_empty_unify_node_get_attrs_, /* override */
 	.match_attrs = jive_empty_unify_node_match_attrs_, /* override */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_empty_unify_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
