@@ -36,6 +36,10 @@ jive_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 const jive_node_attrs *
 jive_node_get_attrs_(const jive_node * self);
 
+void
+jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 jive_node *
 jive_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);

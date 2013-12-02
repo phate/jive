@@ -96,6 +96,9 @@ struct jive_node_class {
 	
 	/** \brief Compare with attribute set (of same node type) */
 	bool (*match_attrs)(const jive_node * self, const jive_node_attrs * second);
+
+	void (*check_operands)(const jive_node_class * cls, const jive_node_attrs * attrs,
+		size_t noperands, jive_output * const operands[], jive_context * context);
 	
 	/** \brief Class method, create node with given attributes */
 	jive_node * (*create)(struct jive_region * region,
@@ -149,6 +152,13 @@ JIVE_EXPORTED_INLINE bool
 jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
 {
 	return self->class_->match_attrs(self, other);
+}
+
+JIVE_EXPORTED_INLINE void
+jive_node_check_operands(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	return cls->check_operands(cls, attrs, noperands, operands, context);
 }
 
 JIVE_EXPORTED_INLINE const struct jive_resource_class *

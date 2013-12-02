@@ -30,6 +30,7 @@ const jive_node_class JIVE_NODE = {
 	.get_label = jive_node_get_label_,
 	.get_attrs = jive_node_get_attrs_,
 	.match_attrs = jive_node_match_attrs_,
+	.check_operands = jive_node_check_operands_,
 	.create = jive_node_create_,
 	.get_aux_rescls = jive_node_get_aux_rescls_
 };
@@ -192,6 +193,19 @@ const jive_node_attrs *
 jive_node_get_attrs_(const jive_node * self)
 {
 	return 0;
+}
+
+void
+jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	if (cls->parent == &JIVE_NODE)
+		return;
+
+	if (noperands == 0)
+		return;
+
+	jive_context_fatal_error(context, "Checking of node operands failed.");
 }
 
 jive_node *
