@@ -33,6 +33,11 @@ jive_address_to_bitstring_node_get_attrs_(const jive_node * self);
 static bool
 jive_address_to_bitstring_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
+static void
+jive_address_to_bitstring_node_check_operands_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_context * context);
+
 static jive_node *
 jive_address_to_bitstring_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
@@ -54,6 +59,7 @@ const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_attrs = jive_address_to_bitstring_node_get_attrs_, /* override */
 		.match_attrs = jive_address_to_bitstring_node_match_attrs_, /* override */
+		.check_operands = jive_address_to_bitstring_node_check_operands_, /* override */
 		.create = jive_address_to_bitstring_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -99,6 +105,18 @@ jive_address_to_bitstring_node_match_attrs_(const jive_node * self, const jive_n
 		(const jive_address_to_bitstring_node_attrs *) attrs;
 	
 	return (first->nbits == second->nbits);
+}
+
+static void
+jive_address_to_bitstring_node_check_operands_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+
+	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	if(!jive_address_output_const_cast(operands[0]))
+		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -179,6 +197,11 @@ jive_bitstring_to_address_node_get_attrs_(const jive_node * self);
 static bool
 jive_bitstring_to_address_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
+static void
+jive_bitstring_to_address_node_check_operands_(const jive_node_class * cls,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_context * context);
+
 static jive_node *
 jive_bitstring_to_address_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
@@ -200,6 +223,7 @@ const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_bitstring_to_address_node_get_attrs_, /* override */
 		.match_attrs = jive_bitstring_to_address_node_match_attrs_, /* override */
+		.check_operands = jive_bitstring_to_address_node_check_operands_, /* override */
 		.create = jive_bitstring_to_address_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -245,6 +269,21 @@ jive_bitstring_to_address_node_match_attrs_(const jive_node * self, const jive_n
 		(const jive_bitstring_to_address_node_attrs *) attrs;
 
 	return (first->nbits == second->nbits);
+}
+
+static void
+jive_bitstring_to_address_node_check_operands_(const jive_node_class * cls,
+	const jive_node_attrs * attrs_, size_t noperands, jive_output * const operands[],
+	jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+
+	const jive_bitstring_to_address_node_attrs * attrs;
+	attrs = (const jive_bitstring_to_address_node_attrs *)attrs_;
+
+	JIVE_DECLARE_BITSTRING_TYPE(bstype, attrs->nbits);
+	if (!jive_type_equals(bstype, jive_output_get_type(operands[0])))
+		jive_raise_type_error(bstype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
