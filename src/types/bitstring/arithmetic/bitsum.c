@@ -4,6 +4,7 @@
  */
 
 #include <jive/types/bitstring/arithmetic/bitsum.h>
+#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
@@ -31,6 +32,7 @@ const jive_bitbinary_operation_class JIVE_BITSUM_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_bitbinary_operation_check_operands_, /* inherit */
 			.create = jive_bitsum_create_, /* override */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},

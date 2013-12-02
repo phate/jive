@@ -9,6 +9,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/constant.h>
 
 static jive_node *
@@ -34,6 +35,7 @@ const jive_bitcomparison_operation_class JIVE_BITSLESS_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_bitcomparison_operation_check_operands_, /* inherit */
 			.create = jive_bitsless_create_, /* override */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},

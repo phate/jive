@@ -12,6 +12,7 @@
 #include <jive/common.h>
 
 #include <jive/types/bitstring/arithmetic.h>
+#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/concat.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
@@ -62,6 +63,7 @@ const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 		.get_label = jive_bitslice_node_get_label_, /* override */
 		.get_attrs = jive_bitslice_node_get_attrs_, /* override */
 		.match_attrs = jive_bitslice_node_match_attrs_, /* override */
+		.check_operands = jive_bitunary_operation_check_operands_, /* inherit */
 		.create = jive_bitslice_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},

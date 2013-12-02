@@ -60,6 +60,10 @@ jive_bitconcat_node_init_(
 static void
 jive_bitconcat_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
+static void
+jive_bitconcat_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 static jive_node *
 jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
@@ -89,6 +93,7 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 		.get_label = jive_bitconcat_node_get_label_, /* override */
 		.get_attrs = jive_node_get_attrs_, /* inherit */
 		.match_attrs = jive_node_match_attrs_, /* inherit */
+		.check_operands = jive_bitconcat_node_check_operands_, /* override */
 		.create = jive_bitconcat_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -107,6 +112,26 @@ static void
 jive_bitconcat_node_get_label_(const jive_node * self, struct jive_buffer * buffer)
 {
 	jive_buffer_putstr(buffer, "BITCONCAT");
+}
+
+static void
+jive_bitconcat_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	if (noperands == 0)
+		jive_context_fatal_error(context, "Bitconcat needs at least one operand.");
+
+	size_t n;
+	for (n = 0; n < noperands; n++) {
+		const jive_bitstring_output * output = jive_bitstring_output_const_cast(operands[n]);
+		if (!output)
+			jive_context_fatal_error(context, "bitconcat node requires bitstring operands.");
+
+		size_t nbits = jive_bitstring_output_nbits(output);
+		if (nbits == 0)
+			jive_context_fatal_error(context,
+				"Type mismatch: length of bitstring must be greater than zero.");
+	}
 }
 
 static jive_node *
