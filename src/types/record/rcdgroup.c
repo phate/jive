@@ -28,6 +28,10 @@ jive_group_node_get_attrs_(const jive_node * self);
 static bool
 jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
 
+static void
+jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 const jive_node_class JIVE_GROUP_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "GROUP",
@@ -36,6 +40,7 @@ const jive_node_class JIVE_GROUP_NODE = {
 	.get_label = jive_group_node_get_label_, /* override */
 	.get_attrs = jive_group_node_get_attrs_, /* override */
 	.match_attrs = jive_group_node_match_attrs_, /* override */
+	.check_operands = jive_group_node_check_operands_, /* override */
 	.create = jive_group_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -61,6 +66,23 @@ jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 	const jive_group_node_attrs * second = (const jive_group_node_attrs *)second_;
 	
 	return first->decl == second->decl;
+}
+
+static void
+jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	const jive_group_node_attrs * attrs = (const jive_group_node_attrs *)attrs_;
+	if (attrs->decl->nelements != noperands)
+		jive_context_fatal_error(context,
+			"Type mismatch: number of parameters to group does not match record declaration");
+
+	size_t n;
+	for (n = 0; n < noperands; n++) {
+		const jive_type * type = &attrs->decl->elements[n]->base;
+		if (!jive_type_equals(type, jive_output_get_type(operands[n])))
+			jive_raise_type_error(type, jive_output_get_type(operands[n]), context);
+	}
 }
 
 static jive_node *
