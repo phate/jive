@@ -132,6 +132,10 @@ jive_store_node_get_attrs_(const jive_node * self_);
 static bool
 jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
 
+static void
+jive_store_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 static jive_node *
 jive_store_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[]);
@@ -144,6 +148,7 @@ const jive_node_class JIVE_STORE_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_store_node_get_attrs_, /* override */
 	.match_attrs = jive_store_node_match_attrs_, /* override */
+	.check_operands = jive_store_node_check_operands_, /* override */
 	.create = jive_store_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -188,6 +193,25 @@ jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * at
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
 	bool dtype = jive_type_equals(&self->attrs.datatype->base, &attrs->datatype->base);
 	return (dtype && (self->attrs.nbits == attrs->nbits));
+}
+
+static void
+jive_store_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands > 1);
+
+	const jive_address_output * addro = jive_address_output_const_cast(operands[0]);
+	const jive_bitstring_output * bitso = jive_bitstring_output_const_cast(operands[0]);
+
+	if (!addro && !bitso)
+		jive_context_fatal_error(context, "Type mismatch: required address or bitstring type.");
+
+	JIVE_DECLARE_VALUE_TYPE(vtype);
+	if (!jive_output_isinstance(operands[1], &JIVE_VALUE_OUTPUT))
+		jive_raise_type_error(vtype, jive_output_get_type(operands[1]), context);
+
+	/* FIXME: check the type of the states */
 }
 
 static jive_node *
