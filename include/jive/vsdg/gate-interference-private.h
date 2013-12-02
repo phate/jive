@@ -29,7 +29,7 @@ struct jive_gate_interference {
 	size_t count;
 };
 
-JIVE_DEFINE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, struct jive_gate *, gate, chain);
+JIVE_DEFINE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, const struct jive_gate *, gate, chain);
 
 jive_gate_interference *
 jive_gate_interference_create(struct jive_gate * first, struct jive_gate * second);

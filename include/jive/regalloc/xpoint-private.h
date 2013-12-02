@@ -9,13 +9,13 @@
 #include <jive/context.h>
 #include <jive/regalloc/xpoint.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_nodevar_xpoint_hash_bynode, jive_nodevar_xpoint, struct jive_shaped_node *, shaped_node, node_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_nodevar_xpoint_hash_byssavar, jive_nodevar_xpoint, struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_nodevar_xpoint_hash_bynode, jive_nodevar_xpoint, const struct jive_shaped_node *, shaped_node, node_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_nodevar_xpoint_hash_byssavar, jive_nodevar_xpoint, const struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
 
-JIVE_DEFINE_HASH_TYPE(jive_cutvar_xpoint_hash_byssavar, jive_cutvar_xpoint, struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_cutvar_xpoint_hash_byorigin, jive_cutvar_xpoint, struct jive_output *, origin, origin_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_cutvar_xpoint_hash_byvariable, jive_cutvar_xpoint, struct jive_variable *, variable, variable_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_regvar_xpoint_hash_byregion, jive_regvar_xpoint, struct jive_shaped_region *, shaped_region, region_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_cutvar_xpoint_hash_byssavar, jive_cutvar_xpoint, const struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_cutvar_xpoint_hash_byorigin, jive_cutvar_xpoint, const struct jive_output *, origin, origin_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_cutvar_xpoint_hash_byvariable, jive_cutvar_xpoint, const struct jive_variable *, variable, variable_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_regvar_xpoint_hash_byregion, jive_regvar_xpoint, const struct jive_shaped_region *, shaped_region, region_hash_chain);
 
 jive_nodevar_xpoint *
 jive_nodevar_xpoint_create(struct jive_shaped_node * shaped_node, struct jive_shaped_ssavar * shaped_ssavar);

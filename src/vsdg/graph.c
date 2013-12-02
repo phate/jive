@@ -14,7 +14,7 @@
 #include <jive/vsdg/variable.h>
 
 JIVE_DEFINE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form,
-	struct jive_node_class *, node_class, hash_chain);
+	const struct jive_node_class *, node_class, hash_chain);
 
 static inline void
 jive_graph_init_(jive_graph * self, jive_context * context)

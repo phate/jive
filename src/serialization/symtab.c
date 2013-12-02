@@ -5,13 +5,13 @@
 
 #include <jive/serialization/symtab.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, struct jive_gate *, gate, gate_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, const struct jive_gate *, gate, gate_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_gatesym_dict, jive_serialization_gatesym, name, name_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_serialization_labelsym_hash, jive_serialization_labelsym, struct jive_label *, label, label_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_labelsym_hash, jive_serialization_labelsym, const struct jive_label *, label, label_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_labelsym_dict, jive_serialization_labelsym, name, name_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_serialization_nodesym_hash, jive_serialization_nodesym, struct jive_node *, node, node_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_nodesym_hash, jive_serialization_nodesym, const struct jive_node *, node, node_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_nodesym_dict, jive_serialization_nodesym, name, name_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym, struct jive_output *, output, output_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym, const struct jive_output *, output, output_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_outputsym_dict, jive_serialization_outputsym, name, name_hash_chain);
 
 void

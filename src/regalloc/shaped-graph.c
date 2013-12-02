@@ -14,10 +14,10 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/variable.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_shaped_region_hash, jive_shaped_region, jive_region *, region, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_shaped_ssavar_hash, jive_shaped_ssavar, struct jive_ssavar *, ssavar, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, struct jive_node *, node, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_shaped_region_hash, jive_shaped_region, const jive_region *, region, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, const struct jive_variable *, variable, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_shaped_ssavar_hash, jive_shaped_ssavar, const struct jive_ssavar *, ssavar, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, const struct jive_node *, node, hash_chain);
 
 static void
 jive_shaped_graph_region_create(void * closure, jive_region * region)

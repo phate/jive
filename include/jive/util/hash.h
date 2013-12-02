@@ -96,7 +96,7 @@ hash_type##_remove(struct hash_type * self, entry_type * entry) \
 } \
  \
 static inline entry_type * \
-hash_type##_lookup(const struct hash_type * self, const key_type keyval) \
+hash_type##_lookup(const struct hash_type * self, key_type keyval) \
 { \
 	if (!self->nbuckets) return 0; \
 	 \

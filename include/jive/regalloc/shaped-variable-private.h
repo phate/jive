@@ -36,7 +36,7 @@ struct jive_variable_interference {
 	size_t count;
 };
 
-JIVE_DEFINE_HASH_TYPE(jive_variable_interference_hash, struct jive_variable_interference_part, struct jive_shaped_variable *, shaped_variable, chain);
+JIVE_DEFINE_HASH_TYPE(jive_variable_interference_hash, struct jive_variable_interference_part, const struct jive_shaped_variable *, shaped_variable, chain);
 
 jive_variable_interference *
 jive_variable_interference_create(jive_shaped_variable * first, jive_shaped_variable * second);
