@@ -107,6 +107,11 @@ jive_node_normal_form_operands_are_normalized_(const jive_node_normal_form * sel
 	const jive_node_attrs * attrs);
 
 void
+jive_node_normal_form_normalized_create_(const jive_node_normal_form * self, jive_graph * graph,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_output * result[]);
+
+void
 jive_node_normal_form_set_mutable_(jive_node_normal_form * self, bool enable);
 
 void

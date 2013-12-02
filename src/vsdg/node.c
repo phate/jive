@@ -753,6 +753,7 @@ const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM = {
 	.fini = jive_node_normal_form_fini_,
 	.normalize_node = jive_node_normal_form_normalize_node_,
 	.operands_are_normalized = jive_node_normal_form_operands_are_normalized_,
+	.normalized_create = jive_node_normal_form_normalized_create_,
 	.set_mutable = jive_node_normal_form_set_mutable_,
 	.set_cse = jive_node_normal_form_set_cse_
 };
@@ -774,6 +775,29 @@ jive_node_normal_form_operands_are_normalized_(const jive_node_normal_form * sel
 	const jive_node_attrs * attrs)
 {
 	return true;
+}
+
+void
+jive_node_normal_form_normalized_create_(const jive_node_normal_form * self, jive_graph * graph,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_output * results[])
+{
+	const jive_node_class * cls = self->node_class;
+
+	jive_region * region = graph->root_region;
+	if (noperands != 0)
+		region = jive_region_innermost(noperands, operands);
+
+	jive_node * node = NULL;
+	if (self->enable_mutable && self->enable_cse)
+		node = jive_node_cse(region, cls, attrs, noperands, operands);
+
+	if (!node)
+		node = cls->create(region, attrs, noperands, operands);
+
+	size_t n;
+	for (n = 0; n < node->noutputs; n++)
+		results[n] = node->outputs[n];
 }
 
 void

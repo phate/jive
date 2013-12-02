@@ -293,6 +293,9 @@ struct jive_node_normal_form_class {
 	bool (*normalize_node)(const jive_node_normal_form * self, jive_node * node);
 	/* return true, if normalized already */
 	bool (*operands_are_normalized)(const jive_node_normal_form * self, size_t noperands, jive_output * const operands[], const jive_node_attrs * attrs);
+	void (*normalized_create)(const jive_node_normal_form * self, jive_graph * graph,
+		const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+		jive_output * results[]);
 	void (*set_mutable)(jive_node_normal_form * self, bool enable);
 	void (*set_cse)(jive_node_normal_form * self, bool enable);
 };
@@ -356,6 +359,14 @@ jive_node_normal_form_operands_are_normalized(const jive_node_normal_form * self
 }
 
 JIVE_EXPORTED_INLINE void
+jive_node_normal_form_normalized_create(const jive_node_normal_form * self, jive_graph * graph,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_output * results[])
+{
+	return self->class_->normalized_create(self, graph, attrs, noperands, operands, results);
+}
+
+JIVE_EXPORTED_INLINE void
 jive_node_normal_form_set_mutable(jive_node_normal_form * self, bool enable)
 {
 	return self->class_->set_mutable(self, enable);
@@ -377,6 +388,16 @@ JIVE_EXPORTED_INLINE bool
 jive_node_normal_form_get_cse(jive_node_normal_form * self)
 {
 	return self->enable_cse;
+}
+
+JIVE_EXPORTED_INLINE void
+jive_node_create_normalized(const jive_node_class * class_, jive_graph * graph,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_output * results[])
+{
+	/* FIXME: insert type checking of operands here */
+	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, class_);
+	jive_node_normal_form_normalized_create(nf, graph, attrs, noperands, operands, results);
 }
 
 /**
