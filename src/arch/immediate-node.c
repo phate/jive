@@ -72,6 +72,7 @@ const jive_node_class JIVE_IMMEDIATE_NODE = {
 	.get_label = jive_immediate_node_get_label_, /* override */
 	.get_attrs = jive_immediate_node_get_attrs_, /* override */
 	.match_attrs = jive_immediate_node_match_attrs_, /* override */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_immediate_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_, /* inherit */
 };
