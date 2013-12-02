@@ -4,6 +4,7 @@
  */
 
 #include <jive/types/real/arithmetic/rlproduct.h>
+#include <jive/types/real/rloperation-classes-private.h>
 #include <jive/types/real/rltype.h>
 #include <jive/vsdg/node-private.h>
 
@@ -21,6 +22,7 @@ const jive_rlbinary_operation_class JIVE_RLPRODUCT_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_rlbinary_operation_check_operands_, /* override */
 			.create = jive_rlproduct_node_create_, /* overrride */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
