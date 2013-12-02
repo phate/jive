@@ -363,6 +363,10 @@ jive_arraysubscript_node_get_attrs_(const jive_node * self_);
 static bool
 jive_arraysubscript_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
 
+static void
+jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context);
+
 static jive_binop_reduction_path_t 
 jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs_, const jive_output * operand1, const jive_output * operand2);
 
@@ -378,6 +382,7 @@ const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_ = {
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_arraysubscript_node_get_attrs_, /* override */
 		.match_attrs = jive_arraysubscript_node_match_attrs_, /* override */
+		.check_operands = jive_arraysubscript_node_check_operands_, /* override */
 		.create = jive_arraysubscript_node_create_, /* override */
 		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 	},
@@ -415,6 +420,17 @@ jive_arraysubscript_node_match_attrs_(const jive_node * self_, const jive_node_a
 	const jive_arraysubscript_node_attrs * attrs = (const jive_arraysubscript_node_attrs *) attrs_;
 	
 	return jive_type_equals(&self->attrs.element_type->base, &attrs->element_type->base);
+}
+
+static void
+jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
+	size_t noperands, jive_output * const operands[], jive_context * context)
+{
+	JIVE_DEBUG_ASSERT(noperands == 2);
+
+	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	if(!jive_address_output_const_cast(operands[0]))
+		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
