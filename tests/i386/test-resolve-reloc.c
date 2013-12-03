@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,7 +35,7 @@ static bool sym_resolve(const jive_linker_symbol_resolver * self,
 		*addr = msg;
 		return true;
 	} else if (symbol == &write_msg_symbol) {
-		*addr = write_msg;
+		*addr = (const void *) write_msg;
 		return true;
 	} else {
 		return false;
@@ -58,7 +58,7 @@ static int test_main(void)
 	
 	jive_section * text = jive_compilate_get_standard_section(&compilate, jive_stdsectionid_code);
 	
-	static const char prologue[] = {
+	static const uint8_t prologue[] = {
 		0x55, /* push %ebp */
 		0x89, 0xe5, /* movl %esp, %ebp */
 		0x83, 0xec, 0x08 /* subl $0x08, %esp */
@@ -71,7 +71,7 @@ static int test_main(void)
 	jive_section_put_reloc(text, &displacement, sizeof(displacement),
 		JIVE_R_386_32, jive_symref_linker_symbol(&msg_symbol), 0);
 	
-	static const char xfer[] = {
+	static const uint8_t xfer[] = {
 		0x89, 0x04, 0x24 /* movl %eax,(%esp) */
 	};
 	jive_section_put(text, xfer, sizeof(xfer));
@@ -83,7 +83,7 @@ static int test_main(void)
 	jive_section_put_reloc(text, &rel, sizeof(rel),
 		JIVE_R_386_PC32, jive_symref_linker_symbol(&write_msg_symbol), 0);
 	
-	static const char epilogue[] = {
+	static const uint8_t epilogue[] = {
 		0x83, 0xc4, 0x08, /* addl $0x08, %esp */
 		0x5d, /* pop %ebp */
 		0xc3 /* ret */
