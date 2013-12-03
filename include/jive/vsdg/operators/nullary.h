@@ -22,6 +22,15 @@ typedef struct jive_nullary_operation_normal_form jive_nullary_operation_normal_
 
 extern const jive_node_class JIVE_NULLARY_OPERATION;
 
+JIVE_EXPORTED_INLINE jive_output *
+jive_nullary_operation_create_normalized(const jive_nullary_operation_class * cls,
+	jive_graph * graph, const jive_node_attrs * attrs)
+{
+	jive_output * result;
+	jive_node_create_normalized(cls, graph, attrs, 0, NULL, &result);
+	return result;
+}
+
 /* node class inheritable methods */
 
 jive_node_normal_form *
