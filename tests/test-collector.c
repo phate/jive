@@ -13,7 +13,7 @@
 static bool fini_called = false;
 
 static void
-fini(size_t * foobar)
+fini(void * unused)
 {
 	fini_called = true;
 }

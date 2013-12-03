@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -44,7 +45,7 @@ jive_collector_create(struct jive_context * context)
 }
 
 void
-jive_collector_register(struct jive_collector * self, void * ptr, void * fini)
+jive_collector_register(struct jive_collector * self, void * ptr, void (*fini)(void*))
 {
 	jive_collector_entry * entry = jive_context_malloc(self->context, sizeof(*entry));
 	entry->ptr = ptr;
