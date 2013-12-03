@@ -107,18 +107,13 @@ jive_bitnegate_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_
 jive_node *
 jive_bitnegate_create(struct jive_region * region, jive_output * operand)
 {
-	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(operand->node->region->graph, &JIVE_BITNEGATE_NODE);
-
-	return jive_unary_operation_normalized_create(nf, region, NULL, operand)->node;
+	return jive_unary_operation_create_normalized(&JIVE_BITNEGATE_NODE_.base, region->graph, NULL,
+		operand)->node;
 }
 
 jive_output *
 jive_bitnegate(jive_output * operand)
 {
-	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(operand->node->region->graph, &JIVE_BITNEGATE_NODE);
-	
-	return jive_unary_operation_normalized_create(nf, operand->node->region, NULL, operand);
+	return jive_unary_operation_create_normalized(&JIVE_BITNEGATE_NODE_.base, operand->node->graph,
+		NULL, operand);
 }
-

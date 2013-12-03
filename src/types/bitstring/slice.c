@@ -199,12 +199,8 @@ jive_bitslice_create(struct jive_region * region, jive_output * operand, size_t 
 	jive_bitslice_node_attrs attrs;
 	attrs.low = low;
 	attrs.high = high;
-	
-	const jive_unary_operation_normal_form * nf =
-		(const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITSLICE_NODE);
 
-	return jive_unary_operation_normalized_create(nf, region, &attrs.base, operand)->node;
+	return jive_bitslice_node_create_(region, &attrs.base, 1, &operand);
 }
 
 jive_output *
@@ -213,10 +209,7 @@ jive_bitslice(jive_output * operand, size_t low, size_t high)
 	jive_bitslice_node_attrs attrs;
 	attrs.low = low;
 	attrs.high = high;
-	
-	const jive_unary_operation_normal_form * nf =
-		(const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(operand->node->graph, &JIVE_BITSLICE_NODE);
 
-	return jive_unary_operation_normalized_create(nf, operand->node->region, &attrs.base, operand);
+	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE_, operand->node->graph,
+		&attrs.base, operand);
 }

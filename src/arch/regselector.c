@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -280,12 +280,10 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				operands[n] = regvalue;
 			}
 			
-			const jive_unary_operation_normal_form * nf =
-				(const jive_unary_operation_normal_form *)
-				jive_graph_get_nodeclass_form(self->base.graph, origin->class_);
-
-			jive_output * subst = jive_unary_operation_normalized_create(nf,
-				region, jive_node_get_attrs(origin), operands[0]);
+			const jive_bitunary_operation_class * cls;
+			cls = (const jive_bitunary_operation_class *)origin->class_;
+			jive_output * subst = jive_unary_operation_create_normalized(&cls->base, region->graph,
+				jive_node_get_attrs(origin), operands[0]);
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->outputs[0]));
 			jive_output_replace(node->outputs[0], subst);

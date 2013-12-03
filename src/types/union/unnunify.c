@@ -126,10 +126,8 @@ jive_unify_create(const jive_union_declaration * decl,
 	attrs.decl = decl;
 	attrs.option = option;
 
-	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(operand->node->graph, &JIVE_UNIFY_NODE);
-
-	return jive_unary_operation_normalized_create(nf, operand->node->region, &attrs.base, operand);
+	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE_, operand->node->graph,
+		&attrs.base, operand);
 }
 
 /* empty unify node */

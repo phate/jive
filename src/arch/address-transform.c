@@ -152,11 +152,8 @@ jive_address_to_bitstring_node_create(struct jive_region * region,
 	jive_address_to_bitstring_node_attrs attrs;
 	attrs.nbits = nbits; 
 
-	const jive_unary_operation_normal_form * nf =
-		(const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_ADDRESS_TO_BITSTRING_NODE);
-
-	return jive_unary_operation_normalized_create(nf, region, &attrs.base, address)->node;
+	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_, region->graph,
+		&attrs.base, address)->node;
 }
 
 jive_output *
@@ -165,11 +162,8 @@ jive_address_to_bitstring_create(jive_output * address, size_t nbits)
 	jive_address_to_bitstring_node_attrs attrs;
 	attrs.nbits = nbits; 
 
-	const jive_unary_operation_normal_form * nf =
-		(const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(address->node->graph, &JIVE_ADDRESS_TO_BITSTRING_NODE);
-
-	return jive_unary_operation_normalized_create(nf, address->node->region, &attrs.base, address);
+	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_,
+		address->node->graph, &attrs.base, address);
 }
 
 
@@ -304,11 +298,8 @@ jive_bitstring_to_address_node_create(struct jive_region * region,
 	jive_bitstring_to_address_node_attrs attrs;
 	attrs.nbits = nbits; 
 
-	const jive_unary_operation_normal_form * nf =
-		(const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITSTRING_TO_ADDRESS_NODE);
-
-	return jive_unary_operation_normalized_create(nf, region, &attrs.base, bitstring)->node;
+	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_, region->graph,
+		&attrs.base, bitstring)->node;
 }
 
 jive_output *
@@ -317,11 +308,8 @@ jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits)
 	jive_bitstring_to_address_node_attrs attrs;
 	attrs.nbits = nbits;
 
-	const jive_unary_operation_normal_form * nf =
-		(const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(bitstring->node->graph, &JIVE_BITSTRING_TO_ADDRESS_NODE);
-
-	return jive_unary_operation_normalized_create(nf, bitstring->node->region, &attrs.base, bitstring);
+	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_,
+		bitstring->node->graph, &attrs.base, bitstring);
 }
 
 /* reductions */

@@ -60,8 +60,6 @@ jive_rlnegate_node_create_(struct jive_region * region, const jive_node_attrs * 
 struct jive_output *
 jive_rlnegate(struct jive_output * operand)
 {
-	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(operand->node->region->graph, &JIVE_RLNEGATE_NODE);
-
-	return jive_unary_operation_normalized_create(nf, operand->node->region, NULL, operand);
+	return jive_unary_operation_create_normalized(&JIVE_RLNEGATE_NODE_.base, operand->node->graph,
+		NULL, operand);
 }

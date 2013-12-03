@@ -164,12 +164,10 @@ jive_select_node_create(struct jive_region * region, size_t member, jive_output 
 jive_output *
 jive_select_create(size_t member, jive_output * operand)
 {
-	const jive_unary_operation_normal_form * nf = (const jive_unary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(operand->node->region->graph, &JIVE_SELECT_NODE);
-
 	jive_select_node_attrs attrs;
 	attrs.element = member;
 
-	return jive_unary_operation_normalized_create(nf, operand->node->region, &attrs.base, operand);
+	return jive_unary_operation_create_normalized(&JIVE_SELECT_NODE_, operand->node->graph,
+		&attrs.base, operand);
 }
 
