@@ -120,16 +120,16 @@ jive_compilate_get_buffer(struct jive_compilate * self, jive_stdsectionid id)
 static int
 get_tmpfd(size_t size)
 {
-	char template[] = "/tmp/jive-exec-buffer-XXXXXX";
+	char filename_template[] = "/tmp/jive-exec-buffer-XXXXXX";
 #if defined(_GNU_SOURCE) && defined(O_CLOEXEC)
-	int fd = mkostemp(template, O_CLOEXEC);
+	int fd = mkostemp(filename_template, O_CLOEXEC);
 #else
-	int fd = mkstemp(template);
+	int fd = mkstemp(filename_template);
 	if (fd >= 0) fcntl(fd, F_SETFD, FD_CLOEXEC);
 #endif
 	if (fd < 0)
 		return -1;
-	unlink(template);
+	unlink(filename_template);
 	
 	if (ftruncate(fd, size) != 0) {
 		close(fd);
