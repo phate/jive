@@ -1,19 +1,19 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/arch/sizeof.h>
 
+#include <jive/arch/memlayout.h>
 #include <jive/context.h>
 #include <jive/types/bitstring.h>
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/valuetype.h>
-#include <jive/vsdg/node-private.h>
-#include <jive/arch/memlayout.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/region.h>
+#include <jive/vsdg/valuetype.h>
 
 /* sizeof node */
 
@@ -48,7 +48,7 @@ jive_sizeof_node_fini_(jive_node * self_)
 	jive_sizeof_node * self = (jive_sizeof_node *)self_;
 	
 	jive_context_free(self_->graph->context, self->attrs.type);
-	jive_node_fini_(&self->base);		
+	jive_node_fini_(&self->base);
 }
 
 static const jive_node_attrs *
@@ -72,7 +72,7 @@ static jive_node *
 jive_sizeof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
-	const jive_sizeof_node_attrs * attrs = (const jive_sizeof_node_attrs *)attrs_;	
+	const jive_sizeof_node_attrs * attrs = (const jive_sizeof_node_attrs *)attrs_;
 	
 	return jive_sizeof_node_create(region, attrs->type);
 }
@@ -112,8 +112,8 @@ void
 jive_sizeof_node_reduce(const jive_sizeof_node * node, jive_memlayout_mapper * mapper)
 {
 	const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_value_type(mapper,
-		node->attrs.type); 
+		node->attrs.type);
 	
-	jive_output * new = jive_bitconstant_unsigned(node->base.graph, 32, layout->total_size);
-	jive_output_replace(node->base.outputs[0], new);		
+	jive_output * new_node = jive_bitconstant_unsigned(node->base.graph, 32, layout->total_size);
+	jive_output_replace(node->base.outputs[0], new_node);
 }
