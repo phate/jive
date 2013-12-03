@@ -41,7 +41,8 @@ compile_graph(jive_graph * graph)
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, graph->context);
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(graph->context, NULL, 0);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(
+		graph->context, NULL, 0);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(buffer.data, buffer.size, 1, stderr);
@@ -251,7 +252,8 @@ exercise_bin_function(bin_function_t ref, bin_function_t f, bool allow_2nd_zero)
 }
 
 static void
-exercise_bin_function_curryleft(bin_function_t ref, un_function_t f, uint32_t op1, bool allow_2nd_zero)
+exercise_bin_function_curryleft(
+	bin_function_t ref, un_function_t f, uint32_t op1, bool allow_2nd_zero)
 {
 	size_t n;
 	for (n = 0; n < sizeof(ops)/sizeof(ops[0]); ++n) {
@@ -442,20 +444,35 @@ ref_sge(uint32_t a, uint32_t b) { return (int32_t)a >= (int32_t)b; }
 static uint32_t
 ref_uge(uint32_t a, uint32_t b) { return a >= b; }
 
-static jive_output * wrap_bitand(jive_output * a, jive_output * b)
-{ return jive_bitand(2, (jive_output *[]){a, b}); }
+static jive_output *
+wrap_bitand(jive_output * a, jive_output * b)
+{
+	return jive_bitand(2, (jive_output *[]){a, b});
+}
 
-static jive_output * wrap_bitor(jive_output * a, jive_output * b)
-{ return jive_bitor(2, (jive_output *[]){a, b}); }
+static jive_output *
+wrap_bitor(jive_output * a, jive_output * b)
+{
+	return jive_bitor(2, (jive_output *[]){a, b});
+}
 
-static jive_output * wrap_bitxor(jive_output * a, jive_output * b)
-{ return jive_bitxor(2, (jive_output *[]){a, b}); }
+static jive_output *
+wrap_bitxor(jive_output * a, jive_output * b)
+{
+	return jive_bitxor(2, (jive_output *[]){a, b});
+}
 
-static jive_output * wrap_bitsum(jive_output * a, jive_output * b)
-{ return jive_bitsum(2, (jive_output *[]){a, b}); }
+static jive_output *
+wrap_bitsum(jive_output * a, jive_output * b)
+{
+	return jive_bitsum(2, (jive_output *[]){a, b});
+}
 
-static jive_output * wrap_bitmultiply(jive_output * a, jive_output * b)
-{ return jive_bitmultiply(2, (jive_output *[]){a, b}); }
+static jive_output *
+wrap_bitmultiply(jive_output * a, jive_output * b)
+{
+	return jive_bitmultiply(2, (jive_output *[]){a, b});
+}
 
 static int test_main(void)
 {
