@@ -1,28 +1,29 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
 #include <jive/context.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/view.h>
 #include <jive/vsdg/negotiator.h>
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/node.h>
 
 /* negotiator test node */
 
 typedef uint32_t test_option_t;
 
-const jive_node_class NEGTESTNODE;
+extern const jive_node_class NEGTESTNODE;
 
-typedef struct negtestnode_attrs negtestnode_attrs;
 typedef struct negtestnode negtestnode;
+typedef struct negtestnode_attrs negtestnode_attrs;
 
 struct negtestnode_attrs {
 	jive_node_attrs base;
@@ -214,7 +215,10 @@ test_negotiator_option_create_(const jive_negotiator * self)
 }
 
 static bool
-test_negotiator_option_equals_(const jive_negotiator * self, const jive_negotiator_option * o1_, const jive_negotiator_option * o2_)
+test_negotiator_option_equals_(
+	const jive_negotiator * self,
+	const jive_negotiator_option * o1_,
+	const jive_negotiator_option * o2_)
 {
 	const test_negotiator_option * o1 = (const test_negotiator_option *) o1_;
 	const test_negotiator_option * o2 = (const test_negotiator_option *) o2_;
@@ -222,7 +226,9 @@ test_negotiator_option_equals_(const jive_negotiator * self, const jive_negotiat
 }
 
 static bool
-test_negotiator_option_specialize_(const jive_negotiator * self, jive_negotiator_option * option_)
+test_negotiator_option_specialize_(
+	const jive_negotiator * self,
+	jive_negotiator_option * option_)
 {
 	test_negotiator_option * option = (test_negotiator_option *) option_;
 	
@@ -239,7 +245,10 @@ test_negotiator_option_specialize_(const jive_negotiator * self, jive_negotiator
 }
 
 static bool
-test_negotiator_option_intersect_(const jive_negotiator * self, jive_negotiator_option * dst_, const jive_negotiator_option * src_)
+test_negotiator_option_intersect_(
+	const jive_negotiator * self,
+	jive_negotiator_option * dst_,
+	const jive_negotiator_option * src_)
 {
 	test_negotiator_option * dst = (test_negotiator_option *) dst_;
 	const test_negotiator_option * src = (const test_negotiator_option *) src_;
@@ -252,7 +261,10 @@ test_negotiator_option_intersect_(const jive_negotiator * self, jive_negotiator_
 }
 
 static bool
-test_negotiator_option_assign_(const jive_negotiator * self, jive_negotiator_option * dst_, const jive_negotiator_option * src_)
+test_negotiator_option_assign_(
+	const jive_negotiator * self,
+	jive_negotiator_option * dst_,
+	const jive_negotiator_option * src_)
 {
 	test_negotiator_option * dst = (test_negotiator_option *) dst_;
 	const test_negotiator_option * src = (const test_negotiator_option *) src_;
@@ -286,7 +298,10 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 }
 
 static bool
-test_negotiator_option_gate_default_(const jive_negotiator * self_, jive_negotiator_option * dst, const jive_gate * gate)
+test_negotiator_option_gate_default_(
+	const jive_negotiator * self_,
+	jive_negotiator_option * dst,
+	const jive_gate * gate)
 {
 	test_negotiator_option * option = (test_negotiator_option *) dst;
 	option->mask = 1;
@@ -327,7 +342,12 @@ test_negotiator_fini(jive_negotiator * self)
 typedef jive_negotiator test_negotiator;
 
 static void
-expect_options(jive_negotiator * nego, jive_output * o, test_option_t o_o, jive_input * i, test_option_t o_i)
+expect_options(
+	jive_negotiator * nego,
+	jive_output * o,
+	test_option_t o_o,
+	jive_input * i,
+	test_option_t o_i)
 {
 	jive_negotiator_port * p_o = jive_negotiator_map_output(nego, o);
 	jive_negotiator_port * p_i = jive_negotiator_map_input(nego, i);
