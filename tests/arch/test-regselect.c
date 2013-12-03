@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,9 +21,14 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_subroutine * subroutine = jive_testarch_subroutine_create(graph->root_region,
-		4, (jive_argument_type []){jive_argument_long, jive_argument_long, jive_argument_long, jive_argument_long},
-		1, (jive_argument_type []){jive_argument_long});
+	jive_subroutine * subroutine = jive_testarch_subroutine_create(
+		graph->root_region,
+		4, (jive_argument_type []) {
+			jive_argument_long, jive_argument_long,
+			jive_argument_long, jive_argument_long
+		},
+		1, (jive_argument_type []){jive_argument_long}
+	);
 	
 	jive_node_reserve(&subroutine->subroutine_node->base);
 	
@@ -31,9 +36,9 @@ static int test_main(void)
 	
 	jive_output * lit = jive_bitconstant_unsigned(graph, 32, 42);
 	jive_output * sym = jive_bitsymbolicconstant(graph, 32, "symbol");
-	jive_output * not = jive_bitnot(sym);
+	jive_output * bitnot = jive_bitnot(sym);
 	jive_output * sum1 = jive_bitsum(2, (jive_output*[]){arg1, lit});
-	jive_output * sum2 = jive_bitsum(2, (jive_output*[]){lit, not});
+	jive_output * sum2 = jive_bitsum(2, (jive_output*[]){lit, bitnot});
 	jive_output * res = jive_bituquotient(sum1, sum2);
 	jive_subroutine_value_return(subroutine, 0, res);
 	
