@@ -83,11 +83,6 @@ jive_immediate_create(
 {
 	jive_immediate_node_attrs attrs;
 	attrs.value = *immediate_value;
-	
-	const jive_nullary_operation_normal_form * nf =
-		(const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_IMMEDIATE_NODE);
 
-	return jive_nullary_operation_normalized_create(
-		nf, graph->root_region, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_IMMEDIATE_NODE, graph, &attrs.base);
 }

@@ -123,12 +123,8 @@ jive_bitconstant_create(jive_graph * graph, size_t nbits, const char bits[])
 	jive_bitconstant_node_attrs attrs;
 	attrs.nbits = nbits;
 	attrs.bits = (char *) bits;
-	
-	const jive_nullary_operation_normal_form * nf =
-		(const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_BITCONSTANT_NODE);
 
- 	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base)->node;
+	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs.base)->node;
 }
 
 jive_output *
@@ -137,12 +133,8 @@ jive_bitconstant(jive_graph * graph, size_t nbits, const char bits[])
 	jive_bitconstant_node_attrs attrs;
 	attrs.nbits = nbits;
 	attrs.bits = (char *) bits;
-	
-	const jive_nullary_operation_normal_form * nf =
-		(const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_BITCONSTANT_NODE);
 
- 	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs.base);
 }
 
 jive_output *
@@ -155,11 +147,7 @@ jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t valu
 	attrs.nbits = nbits;
 	attrs.bits = bits;
 
-	const jive_nullary_operation_normal_form * nf =
-		(const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_BITCONSTANT_NODE);
-
- 	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs.base);
 }
 
 jive_node *
@@ -177,12 +165,8 @@ jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value)
 	jive_bitconstant_node_attrs attrs;
 	attrs.nbits = nbits;
 	attrs.bits = bits;
-	
-	const jive_nullary_operation_normal_form * nf =
-		(const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_BITCONSTANT_NODE);
 
- 	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs.base);
 }
 
 jive_node *

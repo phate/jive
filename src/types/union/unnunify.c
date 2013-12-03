@@ -206,9 +206,5 @@ jive_empty_unify_create(struct jive_graph * graph, const jive_union_declaration 
 	jive_empty_unify_node_attrs attrs;
 	attrs.decl = decl;
 
-	const jive_nullary_operation_normal_form * nf = (const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_EMPTY_UNIFY_NODE);
-
-	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_EMPTY_UNIFY_NODE, graph, &attrs.base);
 }
-

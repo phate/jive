@@ -175,10 +175,7 @@ jive_rlconstant(struct jive_graph * graph, bool sign, size_t nnbits, const char 
 	attrs.ndbits = jive_max_unsigned(nbits-jive_bitstring_nlz(d, nbits), 1);
 	attrs.denominator = (char *) d;
 
-	const jive_nullary_operation_normal_form * nf = (const jive_nullary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(graph, &JIVE_RLCONSTANT_NODE);
-
-	return jive_nullary_operation_normalized_create(nf, graph->root_region, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_RLCONSTANT_NODE, graph, &attrs.base);
 }
 
 struct jive_output *
