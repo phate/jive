@@ -427,11 +427,9 @@ jive_arraysubscript_reduce_operand_pair_(jive_binop_reduction_path_t path, const
 		
 		operands[0] = node->base.inputs[0]->origin;
 		operands[1] = sum;
-		jive_region * region = jive_region_innermost(2, (jive_output *[]){operands[0], operands[1]});
-		const jive_binary_operation_normal_form * nf = (const jive_binary_operation_normal_form *)
-			jive_graph_get_nodeclass_form(region->graph, &JIVE_ARRAYSUBSCRIPT_NODE);
 		
-		return jive_binary_operation_normalized_create_new(nf, region, attrs_, 2, operands);
+		return jive_binary_operation_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE_,
+			operand1->node->graph, attrs_, 2, operands);
 	}
 	
 	return NULL;
@@ -478,10 +476,8 @@ jive_arraysubscript(jive_output * address, const jive_value_type * element_type,
 	attrs.element_type = (jive_value_type *) element_type;
 	
 	jive_output * operands[2] = {address, index};
-	const jive_binary_operation_normal_form * nf =
-		(const jive_binary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_ARRAYSUBSCRIPT_NODE);
-	return jive_binary_operation_normalized_create_new(nf, region, &attrs.base, 2, operands);
+	return jive_binary_operation_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE_, region->graph,
+		&attrs.base, 2, operands);
 }
 
 /* arrayindex */
@@ -671,10 +667,8 @@ jive_arrayindex(jive_output * addr1, jive_output * addr2,
 	attrs.difference_type = *(const jive_bitstring_type *)difference_type;
 	
 	jive_output * operands[2] = {addr1, addr2};
-	const jive_binary_operation_normal_form * nf =
-		(const jive_binary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_ARRAYINDEX_NODE);
-	return jive_binary_operation_normalized_create_new(nf, region, &attrs.base, 2, operands);
+	return jive_binary_operation_create_normalized(&JIVE_ARRAYINDEX_NODE_, region->graph,
+		&attrs.base, 2, operands);
 }
 
 /* label_to_address node */

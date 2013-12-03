@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -151,10 +151,7 @@ jive_bitugreatereq_create(jive_region * region,
 jive_output *
 jive_bitugreatereq(jive_output * operand1, jive_output * operand2)
 {
-	jive_output * operands[] = {operand1, operand2};
-	jive_region * region = jive_region_innermost(2, operands);
-	const jive_binary_operation_normal_form * nf = (const jive_binary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITUGREATEREQ_NODE);
-
-	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands);
+	jive_graph * graph = operand1->node->graph;
+	return jive_binary_operation_create_normalized(&JIVE_BITUGREATEREQ_NODE_.base, graph, NULL, 2,
+		(jive_output *[]){operand1, operand2});
 }

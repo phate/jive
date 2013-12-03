@@ -64,7 +64,7 @@ jive_rldifference_node_create_(jive_region * region, const jive_node_attrs * att
 struct jive_output *
 jive_rldifference(struct jive_output * op1, struct jive_output * op2)
 {
-	jive_region * region = jive_region_innermost(2, (jive_output *[]){op1, op2});
-	return jive_binary_operation_normalized_create(&JIVE_RLDIFFERENCE_NODE, region, NULL,
+	jive_graph * graph = op1->node->graph;
+	return jive_binary_operation_create_normalized(&JIVE_RLDIFFERENCE_NODE_.base, graph, NULL,
 		2, (jive_output *[]){op1, op2});
 }

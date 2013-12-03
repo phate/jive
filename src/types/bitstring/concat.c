@@ -182,18 +182,16 @@ jive_bitconcat_create(
 	struct jive_region * region,
 	size_t noperands, struct jive_output * const * operands)
 {
-	const jive_binary_operation_normal_form * nf =
-		(const jive_binary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITCONCAT_NODE);
-	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands)->node;
+	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE_, region->graph, NULL,
+		noperands, operands)->node;
 }
 
 jive_output *
 jive_bitconcat(size_t noperands, struct jive_output * const * operands)
 {
-	jive_region * region = jive_region_innermost(noperands, operands);
-	const jive_binary_operation_normal_form * nf =
-		(const jive_binary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_BITCONCAT_NODE);
-	return jive_binary_operation_normalized_create_new(nf, region, NULL, noperands, operands);
+	JIVE_DEBUG_ASSERT(noperands != 0);
+
+	jive_graph * graph = operands[0]->node->graph;
+	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE_, graph, NULL, noperands,
+		operands);
 }

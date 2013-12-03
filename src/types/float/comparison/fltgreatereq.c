@@ -65,13 +65,7 @@ jive_fltgreatereq_node_create_(struct jive_region * region, const jive_node_attr
 jive_output *
 jive_fltgreatereq(jive_output * op1, jive_output * op2)
 {
-	jive_output * operands[] = {op1, op2};
-	jive_region * region = jive_region_innermost(2, operands);
-	const jive_binary_operation_normal_form * nf = (const jive_binary_operation_normal_form *)
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_FLTGREATEREQ_NODE);
-
-	return jive_binary_operation_normalized_create_new(nf, region, NULL, 2, operands);
+	jive_graph * graph = op1->node->graph;
+	return jive_binary_operation_create_normalized(&JIVE_FLTGREATEREQ_NODE_.base, graph, NULL, 2,
+		(jive_output *[]){op1, op2});
 }
-
-
-

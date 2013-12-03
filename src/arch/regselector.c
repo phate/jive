@@ -258,9 +258,10 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				operands[n] = regvalue;
 			}
 			
-			jive_output * subst = jive_binary_operation_normalized_create(
-				origin->class_, region, jive_node_get_attrs(origin),
-				origin->noperands, operands);
+			const jive_bitbinary_operation_class * cls;
+			cls = (const jive_bitbinary_operation_class *)origin->class_;
+			jive_output * subst = jive_binary_operation_create_normalized(&cls->base, region->graph,
+				jive_node_get_attrs(origin), origin->noperands, operands);
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->outputs[0]));
 			jive_output_replace(node->outputs[0], subst);

@@ -97,15 +97,14 @@ jive_bituhiproduct_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 jive_node *
 jive_bituhiproduct_create(jive_region * region, jive_output * factor1, jive_output * factor2)
 {
-	return jive_binary_operation_normalized_create(&JIVE_BITUHIPRODUCT_NODE, region, NULL,
-		2, (jive_output * []){factor1, factor2})->node;
+	return jive_binary_operation_create_normalized(&JIVE_BITUHIPRODUCT_NODE_.base, region->graph,
+		NULL, 2, (jive_output * []){factor1, factor2})->node;
 }
 
 jive_output *
 jive_bituhiproduct(jive_output * factor1, jive_output * factor2)
 {
-	jive_output * operands[] = {factor1, factor2};
-	jive_region * region = jive_region_innermost(2, operands);
-	return jive_binary_operation_normalized_create(&JIVE_BITUHIPRODUCT_NODE, region, NULL,
-		2, operands);
+	jive_graph * graph = factor1->node->graph;
+	return jive_binary_operation_create_normalized(&JIVE_BITUHIPRODUCT_NODE_.base, graph, NULL, 2,
+		(jive_output *[]){factor1, factor2});
 }
