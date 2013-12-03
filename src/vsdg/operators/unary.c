@@ -70,12 +70,40 @@ jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive
 
 /* normal form class */
 
+/* FIXME: change name to jive_unary_operation_normalized_create_ after the other normalized_create
+	interface has been removed. */
+void
+jive_unary_operation_normalized_create_new_(const jive_node_normal_form * self_, jive_graph * graph,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_output * results[])
+{
+	JIVE_DEBUG_ASSERT(noperands == 1);
+
+	const jive_unary_operation_normal_form * self = (const jive_unary_operation_normal_form *) self_;
+
+	if (self->base.enable_mutable && self->enable_reducible) {
+		jive_unop_reduction_path_t reduction;
+		reduction = jive_unary_operation_can_reduce_operand(self, attrs, operands[0]);
+		if (reduction != jive_unop_reduction_none) {
+			results[0] = jive_unary_operation_reduce_operand(reduction, self, attrs, operands[0]);
+			return;
+		}
+	}
+
+	/* FIXME: test for factoring */
+
+	/* FIXME: test for gamma */
+
+	jive_node_normal_form_normalized_create_(self_, graph, attrs, noperands, operands, results);
+}
+
 const jive_unary_operation_normal_form_class JIVE_UNARY_OPERATION_NORMAL_FORM_ = {
 	.base = {
 		.parent = &JIVE_NODE_NORMAL_FORM,
 		.fini = jive_node_normal_form_fini_, /* inherit */
 		.normalize_node = jive_unary_operation_normalize_node_, /* override */
 		.operands_are_normalized = jive_unary_operation_operands_are_normalized_, /* inherit */
+		.normalized_create = jive_unary_operation_normalized_create_new_, /* override */
 		.set_mutable = jive_node_normal_form_set_mutable_, /* inherit */
 		.set_cse = jive_node_normal_form_set_cse_ /* inherit */
 	},
