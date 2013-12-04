@@ -64,6 +64,16 @@ struct jive_binary_operation_class {
 extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;
 #define JIVE_BINARY_OPERATION (JIVE_BINARY_OPERATION_.base)
 
+JIVE_EXPORTED_INLINE jive_output *
+jive_binary_operation_create_normalized(const jive_binary_operation_class * class_,
+	jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
+	jive_output * const operands[])
+{
+	jive_output * result;
+	jive_node_create_normalized(&class_->base, graph, attrs, noperands, operands, &result);
+	return result;
+}
+
 /* node class inheritable methods */
 
 jive_node_normal_form *

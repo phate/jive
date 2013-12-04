@@ -126,12 +126,73 @@ jive_binary_operation_reduce_operand_pair_(jive_binop_reduction_path_t path, con
 
 /* normal form class */
 
+/* FIXME: rename to jive_binary_operation_normal_form_normalized_create_ after we removed
+	the old interface
+*/
+void
+jive_binary_operation_normalized_create_new_(const jive_node_normal_form * self_,
+	jive_graph * graph, const jive_node_attrs * attrs,
+	size_t noperands_, jive_output * const operands_[], jive_output * results[])
+{
+	const jive_binary_operation_normal_form * self = (const jive_binary_operation_normal_form *)self_;
+	const jive_binary_operation_class * cls = (const jive_binary_operation_class *) self_->node_class;
+
+	jive_output ** operands = NULL;
+	size_t noperands = 0;
+
+	/* possibly expand associative */
+	if (self->base.enable_mutable && self->enable_flatten &&
+		(cls->flags & jive_binary_operation_associative)) {
+		size_t count = 0, n;
+		for (n = 0; n < noperands_; n++) {
+			if (operands_[n]->node->class_ == &cls->base)
+				count += operands_[n]->node->noperands;
+			else
+				count ++;
+		}
+
+		operands = alloca(sizeof(operands[0]) * count);
+		count = 0;
+		for (n = 0; n < noperands_; n++) {
+			if (operands_[n]->node->class_ == &cls->base) {
+				size_t k;
+				for(k = 0; k < operands_[n]->node->noperands; k++)
+					operands[count++] = operands_[n]->node->inputs[k]->origin;
+			} else operands[count++] = operands_[n];
+		}
+		noperands = count;
+	} else {
+		operands = alloca(sizeof(operands[0]) * noperands_);
+		size_t n;
+		for (n = 0; n < noperands_; n++)
+			operands[n] = operands_[n];
+		noperands = noperands_;
+	}
+
+	if (self->base.enable_mutable && self->enable_reducible) {
+		noperands = reduce_operands(&cls->base, attrs, noperands, operands);
+
+		if (noperands == 1){
+			results[0] = operands[0];
+			return;
+		}
+	}
+
+	/* FIXME: reorder for commutative operation */
+
+	/* FIXME: attempt distributive transform */
+
+	return jive_node_normal_form_normalized_create_(self_, graph, attrs, noperands, operands,
+		results);
+}
+
 const jive_binary_operation_normal_form_class JIVE_BINARY_OPERATION_NORMAL_FORM_ = {
 	.base = {
 		.parent = &JIVE_NODE_NORMAL_FORM,
 		.fini = jive_node_normal_form_fini_, /* inherit */
 		.normalize_node = jive_binary_operation_normalize_node_, /* override */
 		.operands_are_normalized = jive_binary_operation_operands_are_normalized_, /* inherit */
+		.normalized_create = jive_binary_operation_normalized_create_new_, /* override */
 		.set_mutable = jive_node_normal_form_set_mutable_, /* inherit */
 		.set_cse = jive_node_normal_form_set_cse_ /* inherit */
 	},
