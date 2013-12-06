@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -15,22 +15,22 @@
 char s[] =
 	{'0', '1', 'D', 'X'};
 
-char not[] =
+char not_result[] =
 	{'1', '0', 'D', 'X'};
 
-char or[4][4] = {
+char or_result[4][4] = {
 	{'0', '1', 'D', 'X'},
 	{'1', '1', '1', '1'},
 	{'D', '1', 'D', 'X'},
 	{'X', '1', 'X', 'X'}};
 
-char xor [4][4] = {
+char xor_result[4][4] = {
 	{'0', '1', 'D', 'X'},
 	{'1', '0', 'D', 'X'},
 	{'D', 'D', 'D', 'X'},
 	{'X', 'X', 'X', 'X'}};
 
-char and[4][4] = {
+char and_result[4][4] = {
 	{'0', '0', '0', '0'},
 	{'0', '1', 'D', 'X'},
 	{'0', 'D', 'D', 'X'},
@@ -253,11 +253,11 @@ static int test_main(void)
 
 	int r, c;
 	for(r=0; r < 4; r++){
-			assert(not[r] == jive_bit_not(s[r]));
+		assert(not_result[r] == jive_bit_not(s[r]));
 		for(c=0; c < 4; c++){
-			assert(or[r][c] == jive_bit_or(s[r], s[c]));
-			assert(xor[r][c] == jive_bit_xor(s[r], s[c]));
-			assert(and[r][c] == jive_bit_and(s[r], s[c]));
+			assert(or_result[r][c] == jive_bit_or(s[r], s[c]));
+			assert(xor_result[r][c] == jive_bit_xor(s[r], s[c]));
+			assert(and_result[r][c] == jive_bit_and(s[r], s[c]));
 		}
 	}
 
