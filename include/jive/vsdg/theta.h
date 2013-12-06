@@ -19,7 +19,7 @@ struct jive_type;
 
 extern const jive_node_class JIVE_THETA_HEAD_NODE;
 extern const jive_node_class JIVE_THETA_TAIL_NODE;
-extern const jive_anchor_node_class JIVE_THETA_NODE;
+extern const jive_node_class JIVE_THETA_NODE;
 
 typedef struct jive_theta jive_theta;
 typedef struct jive_theta_loopvar jive_theta_loopvar;

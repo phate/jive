@@ -9,7 +9,7 @@
 
 /* node class */
 
-const jive_anchor_node_class JIVE_ANCHOR_NODE = {
+const jive_node_class JIVE_ANCHOR_NODE = {
 	.parent = &JIVE_NODE,
 	.name = "ANCHOR",
 	.fini = jive_node_fini_, /* inherit */
@@ -17,6 +17,7 @@ const jive_anchor_node_class JIVE_ANCHOR_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherrit */
 	.create = jive_node_create_, /* inherit */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };

@@ -146,6 +146,7 @@ const jive_node_class JIVE_PHI_ENTER_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherrit */
 	.create = jive_phi_enter_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -187,6 +188,7 @@ const jive_node_class JIVE_PHI_LEAVE_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherrit */
 	.create = jive_phi_leave_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -201,7 +203,7 @@ static jive_node *
 jive_phi_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[]);
 
-const jive_anchor_node_class JIVE_PHI_NODE = {
+const jive_node_class JIVE_PHI_NODE = {
 	.parent = &JIVE_ANCHOR_NODE,
 	.name = "PHI",
 	.fini = jive_node_fini_, /* inherit */
@@ -209,6 +211,7 @@ const jive_anchor_node_class JIVE_PHI_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherrit */
 	.create = jive_phi_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };

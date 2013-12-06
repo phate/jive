@@ -70,11 +70,12 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	.get_label = jive_node_get_label_,  /* inherit */
 	.get_attrs = jive_node_get_attrs_,  /* inherit */
 	.match_attrs = jive_node_match_attrs_,  /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherrit */
 	.create = jive_gamma_tail_node_create_,  /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
 };
 
-const jive_anchor_node_class JIVE_GAMMA_NODE = {
+const jive_node_class JIVE_GAMMA_NODE = {
 	.parent = &JIVE_ANCHOR_NODE,
 	.name = "GAMMA",
 	.fini = jive_node_fini_,  /* inherit */
@@ -82,6 +83,7 @@ const jive_anchor_node_class JIVE_GAMMA_NODE = {
 	.get_label = jive_node_get_label_,  /* inherit */
 	.get_attrs = jive_node_get_attrs_,  /* inherit */
 	.match_attrs = jive_node_match_attrs_,  /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherrit */
 	.create = jive_gamma_node_create_,  /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
 };

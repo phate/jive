@@ -10,9 +10,7 @@
 
 /* node class */
 
-typedef struct jive_node_class jive_anchor_node_class;
-
-extern const jive_anchor_node_class JIVE_ANCHOR_NODE;
+extern const jive_node_class JIVE_ANCHOR_NODE;
 
 /* node class inheritable methods */
 
