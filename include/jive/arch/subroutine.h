@@ -30,6 +30,15 @@ typedef struct jive_subroutine_node jive_subroutine_node;
 typedef struct jive_subroutine_class jive_subroutine_class;
 typedef enum jive_argument_type jive_argument_type;
 
+/* FIXME: these are quite C-specific, so really do not belong here */
+enum jive_argument_type {
+	jive_argument_void = 0,
+	jive_argument_pointer = 1,
+	jive_argument_int = 2,
+	jive_argument_long = 3,
+	jive_argument_float = 4
+};
+
 struct jive_subroutine_node_attrs {
 	jive_node_attrs base;
 	jive_subroutine * subroutine;
@@ -214,15 +223,5 @@ jive_region_get_instructionset(const jive_region * region)
 	}
 	return 0;
 }
-
-/* FIXME: these are quite C-specific, so really do not belong here */
-
-enum jive_argument_type {
-	jive_argument_void = 0,
-	jive_argument_pointer = 1,
-	jive_argument_int = 2,
-	jive_argument_long = 3,
-	jive_argument_float = 4
-};
 
 #endif
