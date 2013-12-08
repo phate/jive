@@ -73,8 +73,8 @@ static int test_main(void)
 	
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){bits64, mem}, (jive_output *[]){o_addr, store->outputs[0]},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &addr);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);
 

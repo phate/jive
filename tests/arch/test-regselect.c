@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -30,7 +31,7 @@ static int test_main(void)
 		1, (jive_argument_type []){jive_argument_long}
 	);
 	
-	jive_node_reserve(&subroutine->subroutine_node->base);
+	jive_graph_export(graph, subroutine->subroutine_node->base.outputs[0]);
 	
 	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
 	

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -223,8 +224,6 @@ static int test_main(void)
 		
 		Topdown traversal will encounter n1, n2, in this order.
 	*/
-	
-	jive_node_reserve(graph->root_region->bottom);
 	
 	test_basic_traversal(graph, n1, n2);
 	test_basic_traversal(graph, n1, n2);

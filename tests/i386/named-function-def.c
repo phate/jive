@@ -49,8 +49,8 @@ static int test_main(void)
 		jive_subroutine_objdef(i386_fn),
 		"add_int32",
 		&add_int32_symbol);
-	
-	jive_node_reserve(fn_name);
+
+	jive_graph_export(graph, fn_name->outputs[0]);
 	jive_graph_prune(graph);
 	
 	jive_view(graph, stdout);

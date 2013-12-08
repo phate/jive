@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -39,11 +39,12 @@ static int test_main(void)
 	jive_output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
 	jive_output * u1 = jive_empty_unify_create(graph, &decl_empty);
 
+	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){&unntype.base.base, &unntype_empty.base.base},
 			(jive_output *[]){u0, u1},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &bits64);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

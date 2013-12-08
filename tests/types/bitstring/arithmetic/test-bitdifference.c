@@ -24,13 +24,12 @@ static int test_main(void)
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, (const jive_type *[]){bits32, bits32});
-	jive_node_reserve(top);
 
 	jive_output * diff = jive_bitdifference(top->outputs[0], top->outputs[1]);
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		1, &bits32, &diff, 0, NULL);
-	jive_node_reserve(bottom);
+		1, &bits32, &diff, 1, &bits32);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

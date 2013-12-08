@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -76,7 +76,7 @@ prepare_graph(jive_context * ctx)
 		graph->root_region,
 		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
 		0, NULL);
-	jive_node_reserve(&sub->subroutine_node->base);
+	jive_graph_export(graph, sub->subroutine_node->base.outputs[0]);
 	
 	JIVE_DECLARE_STATE_TYPE(state);
 	jive_output * state1 = jive_node_add_output(&sub->enter->base, state);

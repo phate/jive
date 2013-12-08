@@ -35,7 +35,7 @@ static int test_main(void)
 		1, outer_function->arguments);
 	
 	jive_node * outer_lambda = jive_lambda_end(outer_function, 1, &int32, &apply->outputs[0])->node;
-	jive_node_reserve(outer_lambda);
+	jive_graph_export(graph, outer_lambda->outputs[0]);
 	
 	jive_view(graph, stderr);
 

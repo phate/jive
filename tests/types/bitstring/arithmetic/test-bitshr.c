@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,7 +25,6 @@ static int test_main(void)
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, (const jive_type *[]){bits32, bits32});
-	jive_node_reserve(top);
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 16);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 2);
@@ -37,8 +36,8 @@ static int test_main(void)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, (const jive_type *[]){bits32, bits32, bits32}, (jive_output *[]){shr0, shr1, shr2},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &bits32);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);

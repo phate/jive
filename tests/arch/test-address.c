@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -86,8 +86,8 @@ static int test_main(void)
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, (const jive_type *[]){addrtype, addrtype, bits32},
 			(jive_output *[]){memberof->outputs[0], arraysub->outputs[0], diff2},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &addrtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_containerof_node_address_transform(jive_containerof_node_cast(cont3->node), &mapper.base.base);	
 	jive_memberof_node_address_transform(jive_memberof_node_cast(memberof), &mapper.base.base);

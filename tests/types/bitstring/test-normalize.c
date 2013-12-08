@@ -42,7 +42,7 @@ static int test_main(void)
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, &bits32, &sum1)->node;
 	jive_input * retval = lambda_node->inputs[0]->origin->node->inputs[1];
 	jive_output * arg = lambda_node->inputs[0]->origin->node->inputs[0]->origin->node->outputs[1];
-	jive_node_reserve(lambda_node);
+	jive_graph_export(graph, lambda_node->outputs[0]);
 	
 	jive_node_normal_form_set_mutable(sum_nf, true);
 	jive_graph_normalize(graph);

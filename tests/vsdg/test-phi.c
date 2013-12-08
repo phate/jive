@@ -56,8 +56,8 @@ static int test_main()
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, (const jive_type *[]){&f0type->base.base, &f1type->base.base, &f2type->base.base}, results,
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &vtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

@@ -31,8 +31,8 @@ test_main(void)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		1, &ctype, &less,
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &itgtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

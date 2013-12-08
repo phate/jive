@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -41,8 +41,8 @@ static int test_main(void)
 	jive_output * sum = jive_bitsum(2, (jive_output *[]){arg1, arg2});
 	
 	jive_subroutine_value_return(subroutine, 0, sum);
-	
-	jive_node_reserve(&subroutine->subroutine_node->base);
+
+	jive_graph_export(graph, subroutine->subroutine_node->base.outputs[0]);
 	jive_view(graph, stdout);
 	
 	jive_regselector regselector;

@@ -65,8 +65,8 @@ static int test_main(void)
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, (const jive_type *[]){bits32, bits32, bits32, bits32},
 		(jive_output *[]){offset0, offset1, offset2, offset3},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &bits8);
+	jive_graph_export(graph, bottom->outputs[0]);
 	
 	jive_view(graph, stdout);
 

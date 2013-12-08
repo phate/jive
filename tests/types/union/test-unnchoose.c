@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -49,8 +49,8 @@ static int test_main(void)
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, (const jive_type *[]){&bits16.base.base, &bits8.base.base, &bits16.base.base,
 			&bits8.base.base}, (jive_output *[]){c0, c1, c2, c3},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &addrtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -28,7 +28,6 @@ static int test_main(void)
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, (const jive_type *[]){addr, bits16, addr});
-	jive_node_reserve(top);
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		top->outputs[0], NULL,
@@ -37,8 +36,8 @@ static int test_main(void)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, (const jive_type *[]){bits16, addr, addr}, call->outputs,
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &addr);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);
 

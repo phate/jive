@@ -39,9 +39,9 @@ static int test_main(void)
 	assert(jive_type_equals(bits32, jive_output_get_type(apply_node->outputs[0])));
 	
 	jive_node * interest = jive_node_create(graph->root_region,
-		1, &bits32, apply_node->outputs, 0, 0);
+		1, &bits32, apply_node->outputs, 1, &bits32);
 	
-	jive_node_reserve(interest);
+	jive_graph_export(graph, interest->outputs[0]);
 	
 	jive_view(graph, stderr);
 

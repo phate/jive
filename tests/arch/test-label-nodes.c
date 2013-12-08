@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -76,8 +77,8 @@ static int test_main(void)
 	jive_node * bottom = jive_node_create(graph->root_region,
 		5, (const jive_type *[]){addr, addr, bits32, bits32, bits16},
 		(jive_output *[]){o0, o1, o2, o3, o4},
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &addr);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);
 

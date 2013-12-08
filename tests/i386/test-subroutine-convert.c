@@ -33,7 +33,7 @@ static int test_main(void)
 		jive_value_type_cast(bits32), constant);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, &addr, &address)->node;
-	jive_node_reserve(lambda_node);
+	jive_graph_export(graph, lambda_node->outputs[0]);
 
 	jive_i386_subroutine_convert(graph->root_region, lambda_node);
 

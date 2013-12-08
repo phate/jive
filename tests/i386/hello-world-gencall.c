@@ -95,7 +95,7 @@ static int test_main(void)
 		make_string(graph, hello_world),
 		"hello_world",
 		&hello_world_symbol);
-	jive_node_reserve(str_name);
+	jive_graph_export(graph, str_name->outputs[0]);
 	
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
@@ -142,7 +142,7 @@ static int test_main(void)
 	JIVE_DECLARE_STATE_TYPE(state_type);
 	jive_node_add_input(leave, state_type, jive_node_add_output(call_write, state_type));
 	
-	jive_node_reserve(fn_name);
+	jive_graph_export(graph, fn_name->outputs[0]);
 	jive_graph_prune(graph);
 	//jive_view(graph, stdout);
 	

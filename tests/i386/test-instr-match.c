@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -94,7 +94,7 @@ prepare_un_graph(jive_context * ctx)
 		u.graph->root_region,
 		1, (jive_argument_type []) { jive_argument_int },
 		1, (jive_argument_type []) { jive_argument_int });
-	jive_node_reserve(&u.sub->subroutine_node->base);
+	jive_graph_export(u.graph, u.sub->subroutine_node->base.outputs[0]);
 	
 	u.arg = jive_subroutine_value_parameter(u.sub, 0);
 	
@@ -123,7 +123,7 @@ prepare_bin_graph(jive_context * ctx)
 		b.graph->root_region,
 		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
 		1, (jive_argument_type []) { jive_argument_int });
-	jive_node_reserve(&b.sub->subroutine_node->base);
+	jive_graph_export(b.graph, b.sub->subroutine_node->base.outputs[0]);
 	
 	b.arg1 = jive_subroutine_value_parameter(b.sub, 0);
 	b.arg2 = jive_subroutine_value_parameter(b.sub, 1);

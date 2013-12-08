@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -42,7 +42,7 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 		dataobj,
 		"my_label",
 		&my_label_symbol);
-	jive_node_reserve(name);
+	jive_graph_export(graph, name->outputs[0]);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);

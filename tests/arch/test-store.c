@@ -75,8 +75,8 @@ static int test_main(void)
 	jive_node * bottom = jive_node_create(graph->root_region,
 		6, (const jive_type *[]){memtype, memtype, memtype, memtype, memtype, memtype},
 			(jive_output *[]){state0, state1[0], state1[1], state2, state3, state4},
-		0, NULL);	
-	jive_node_reserve(bottom);
+		1, &memtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
