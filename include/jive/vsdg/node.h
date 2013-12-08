@@ -376,15 +376,10 @@ jive_node_normal_form_get_cse(jive_node_normal_form * self)
 	return self->enable_cse;
 }
 
-JIVE_EXPORTED_INLINE void
-jive_node_create_normalized(const jive_node_class * class_, jive_graph * graph,
+void
+jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * graph,
 	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
-	jive_output * results[])
-{
-	jive_node_check_operands(class_, attrs, noperands, operands, graph->context);
-	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, class_);
-	jive_node_normal_form_normalized_create(nf, graph, attrs, noperands, operands, results);
-}
+	jive_output * results[]);
 
 /**
 	\brief Attempt to find existing or create new node

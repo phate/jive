@@ -762,6 +762,16 @@ jive_node_cse(
 	return NULL;
 }
 
+void
+jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * graph,
+	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	jive_output * results[])
+{
+	jive_node_check_operands(class_, attrs, noperands, operands, graph->context);
+	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, class_);
+	jive_node_normal_form_normalized_create(nf, graph, attrs, noperands, operands, results);
+}
+
 jive_tracker_nodestate *
 jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 {
