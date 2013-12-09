@@ -28,6 +28,7 @@ jive_itgconstant_node_create_(struct jive_region * region, const jive_node_attrs
 
 const jive_nullary_operation_class JIVE_ITGCONSTANT_NODE = {
 	.parent = &JIVE_NULLARY_OPERATION,
+	.name = "ITGCONSTANT",
 	.fini = jive_itgconstant_node_fini_, /* override */
 	.get_default_normal_form = jive_nullary_operation_get_default_normal_form_, /* inherit */
 	.get_label = jive_itgconstant_node_get_label_, /* override */
