@@ -19,6 +19,7 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 	.get_label = jive_node_get_label_,
 	.get_attrs = jive_node_get_attrs_,
 	.match_attrs = jive_node_match_attrs_,
+	.check_operands = NULL,
 	.create = jive_node_create_,
 	.get_aux_rescls = jive_node_get_aux_rescls_
 };
