@@ -58,6 +58,7 @@ const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 		number of bits per operand/output matches), while
 		the slice operator violates this assumption */
 		.parent = &JIVE_UNARY_OPERATION,
+		.name = "BITSLICE",
 		.fini = jive_node_fini_, /* inherit */
 		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_bitslice_node_get_label_, /* override */

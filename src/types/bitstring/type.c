@@ -57,6 +57,7 @@ jive_bitstring_gate_get_type_(const jive_gate * self);
 
 const jive_type_class JIVE_BITSTRING_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
+	.name = "bit",
 	.fini = jive_value_type_fini_, /* inherit */
 	.get_label = jive_bitstring_type_get_label_, /* override */
 	.create_input = jive_bitstring_type_create_input_, /* override */

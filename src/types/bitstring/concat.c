@@ -88,6 +88,7 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 		number of bits per operand/output matches), while
 		the concat operator violates this assumption */
 		.parent = &JIVE_BINARY_OPERATION,
+		.name = "BITCONCAT",
 		.fini = jive_node_fini_, /* inherit */
 		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_bitconcat_node_get_label_, /* override */
