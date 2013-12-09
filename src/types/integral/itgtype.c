@@ -51,12 +51,12 @@ const jive_type_class JIVE_INTEGRAL_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
 	.name = "igt",
 	.fini = jive_integral_type_fini_, /* inherit */
-	.copy = jive_integral_type_copy_, /* override */
 	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_integral_type_create_input_, /* override */
 	.create_output = jive_integral_type_create_output_, /* override */
 	.create_gate = jive_integral_type_create_gate_, /* override */
 	.equals = jive_type_equals_, /* inherit */
+	.copy = jive_integral_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_INTEGRAL_INPUT = {
