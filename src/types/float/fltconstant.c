@@ -32,6 +32,7 @@ jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs
 
 const jive_node_class JIVE_FLTCONSTANT_NODE = {
 	.parent = &JIVE_NULLARY_OPERATION,
+	.name = "FLTCONSTANT",
 	.fini = jive_node_fini_, /* inherit */
 	.get_default_normal_form = jive_nullary_operation_get_default_normal_form_, /* inherit */
 	.get_label = jive_fltconstant_node_get_label_, /* override */
