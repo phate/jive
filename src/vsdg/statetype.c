@@ -167,6 +167,7 @@ const jive_node_class JIVE_STATEMUX_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_statemux_node_get_attrs_, /* override */
 	.match_attrs = jive_statemux_node_match_attrs_, /* override */
+	.check_operands = NULL,
 	.create = jive_statemux_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
