@@ -110,6 +110,7 @@ const jive_store_node_normal_form_class JIVE_STORE_NODE_NORMAL_FORM_ = {
 		.fini = jive_node_normal_form_fini_, /* inherit */
 		.normalize_node = jive_store_node_normalize_node_, /* override */
 		.operands_are_normalized = jive_store_node_operands_are_normalized_, /* override */
+		.normalized_create = NULL, /* inherit */
 		.set_mutable = jive_node_normal_form_set_mutable_, /* inherit */
 		.set_cse = jive_node_normal_form_set_cse_, /* inherit */
 	},

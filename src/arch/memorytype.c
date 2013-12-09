@@ -97,12 +97,12 @@ const jive_type_class JIVE_MEMORY_TYPE = {
 	.parent = &JIVE_STATE_TYPE,
 	.name = "mem",
 	.fini = jive_state_type_fini_, /* inherit */
-	.copy = jive_memory_type_copy_, /* override */
 	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_memory_type_create_input_, /* override */
 	.create_output = jive_memory_type_create_output_, /* override */
 	.create_gate = jive_memory_type_create_gate_, /* override */
 	.equals = jive_type_equals_, /* inherit */
+	.copy = jive_memory_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_MEMORY_INPUT = {

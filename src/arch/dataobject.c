@@ -225,6 +225,7 @@ const jive_node_class JIVE_DATAITEMS_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_dataitems_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -244,6 +245,7 @@ const jive_node_class JIVE_DATADEF_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_datadef_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -263,6 +265,7 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_dataobj_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };

@@ -302,17 +302,12 @@ jive_seq_graph_patch_jump_targets(
 		const jive_instructionset * isa = jive_region_get_instructionset(inode->base.region);
 		const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 		
-		jive_seq_imm imm = {
-			.value = 0,
-			.add_label = {
-				.type = jive_seq_label_type_internal,
-				.internal = secondary_tgt
-			},
-			.sub_label = {
-				.type = jive_seq_label_type_none,
-			},
-			.modifier = NULL
-		};
+		jive_seq_imm imm;
+		imm.value = 0;
+		imm.add_label.type = jive_seq_label_type_internal;
+		imm.add_label.internal = secondary_tgt;
+		imm.sub_label.type = jive_seq_label_type_none;
+		imm.modifier = NULL;
 		
 		jive_seq_instruction_create_after(&seq_instr->base, jump_icls,
 			NULL, NULL, &imm);
@@ -331,17 +326,12 @@ jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_point * seq
 	const jive_instructionset * isa = jive_region_get_instructionset(anchor_node->region);
 	const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 	
-	jive_seq_imm imm = {
-		.value = 0,
-		.add_label = {
-			.type = jive_seq_label_type_internal,
-			.internal = jive_seq_graph_map_node(seq_graph, anchor_node)
-		},
-		.sub_label = {
-			.type = jive_seq_label_type_none,
-		},
-		.modifier = NULL
-	};
+	jive_seq_imm imm;
+	imm.value = 0;
+	imm.add_label.type = jive_seq_label_type_internal;
+	imm.add_label.internal = jive_seq_graph_map_node(seq_graph, anchor_node);
+	imm.sub_label.type = jive_seq_label_type_none;
+	imm.modifier = NULL;
 	
 	jive_seq_instruction_create_after(seq_point, jump_icls,
 		NULL, NULL, &imm);
@@ -532,19 +522,19 @@ jive_seq_data_generate_assembler(
 		const char * format = NULL;
 		switch (item->format) {
 			case jive_seq_dataitem_fmt_8:
-				format = "\t.byte 0x%"PRIx64"\n";
+				format = "\t.byte 0x%" PRIx64 "\n";
 				break;
 			case jive_seq_dataitem_fmt_le16:
 			case jive_seq_dataitem_fmt_be16:
-				format = "\t.value 0x%"PRIx64"\n";
+				format = "\t.value 0x%" PRIx64 "\n";
 				break;
 			case jive_seq_dataitem_fmt_le32:
 			case jive_seq_dataitem_fmt_be32:
-				format = "\t.long 0x%"PRIx64"\n";
+				format = "\t.long 0x%" PRIx64 "\n";
 				break;
 			case jive_seq_dataitem_fmt_le64:
 			case jive_seq_dataitem_fmt_be64:
-				format = "\t.quad 0x%"PRIx64"\n";
+				format = "\t.quad 0x%" PRIx64 "\n";
 				break;
 			default:
 				format = NULL;

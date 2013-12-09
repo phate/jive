@@ -1,10 +1,12 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/arch/registers.h>
+
+#include <jive/vsdg/basetype.h>
 
 const struct jive_type *
 jive_register_class_get_type(const jive_register_class * self)
@@ -30,8 +32,10 @@ const jive_resource_class jive_root_register_class = {
 	.class_ = &JIVE_ABSTRACT_RESOURCE,
 	.name = "register",
 	.limit = 0,
+	.names = NULL,
 	.parent = &jive_root_resource_class,
 	.depth = 1,
 	.priority = jive_resource_class_priority_lowest,
-	.demotions = no_demotion
+	.demotions = no_demotion,
+	.type = NULL
 };

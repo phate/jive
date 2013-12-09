@@ -150,6 +150,7 @@ jive_immediate_type_init_(jive_immediate_type * self)
 
 const jive_type_class JIVE_IMMEDIATE_TYPE = {
 	.parent = &JIVE_VALUE_TYPE,
+	.name = "JIVE_IMMEDIATE_TYPE",
 	.fini = jive_immediate_type_fini_, /* override */
 	.get_label = jive_immediate_type_get_label_, /* override */
 	.create_input = jive_immediate_type_create_input_, /* override */

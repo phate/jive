@@ -43,10 +43,12 @@ const jive_resource_class jive_root_stackslot_class = {
 	.class_ = &JIVE_ABSTRACT_RESOURCE,
 	.name = "stackslot",
 	.limit = 0,
+	.names = NULL,
 	.parent = &jive_root_resource_class,
 	.depth = 1,
 	.priority = jive_resource_class_priority_lowest,
-	.demotions = no_demotion
+	.demotions = no_demotion,
+	.type = NULL
 };
 
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \

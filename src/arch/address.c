@@ -758,11 +758,13 @@ jive_label_to_address_node_create_(struct jive_region * region, const jive_node_
 
 const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "LABEL_TO_ADDRESS_NODE",
 	.fini = jive_label_to_address_node_fini_, /* override */
 	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_label_to_address_node_get_label_, /* override */
 	.get_attrs = jive_label_to_address_node_get_attrs_, /* override */
 	.match_attrs = jive_label_to_address_node_match_attrs_, /* override */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_label_to_address_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -863,11 +865,13 @@ jive_label_to_bitstring_node_create_(struct jive_region * region, const jive_nod
 
 const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
 	.parent = &JIVE_NODE,
+	.name = "LABEL_TO_BITSTRING_NODE",
 	.fini = jive_label_to_bitstring_node_fini_, /* override */
 	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
 	.get_label = jive_label_to_bitstring_node_get_label_, /* override */
 	.get_attrs = jive_label_to_bitstring_node_get_attrs_, /* override */
 	.match_attrs = jive_label_to_bitstring_node_match_attrs_, /* override */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_label_to_bitstring_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };

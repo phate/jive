@@ -26,7 +26,7 @@ jive_immediate_node_get_label_(const jive_node * self_, struct jive_buffer * buf
 {
 	const jive_immediate_node * self = (const jive_immediate_node *) self_;
 	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%"PRId64, self->attrs.value.offset);
+	snprintf(tmp, sizeof(tmp), "%" PRId64, self->attrs.value.offset);
 	jive_buffer_putstr(buffer, tmp);
 }
 
