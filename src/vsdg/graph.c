@@ -100,7 +100,6 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	jive_region_init_(self->root_region, self, 0);
 	self->root_region->bottom = jive_graph_tail_node_create_(self->root_region, NULL, 0, NULL);
-	jive_node_reserve(self->root_region->bottom);
 	
 	self->ntracker_slots = 0;
 	self->tracker_slots = 0;
@@ -118,12 +117,8 @@ prune_regions_recursive(jive_region * region)
 static void
 jive_graph_fini_(jive_graph * self)
 {
-	while(self->bottom.first) {
-		jive_graph_prune(self);
-		jive_node * node;
-		JIVE_LIST_ITERATE(self->bottom, node, graph_bottom_list)
-			node->reserved = 0;
-	}
+	jive_node_destroy(self->root_region->bottom);
+	jive_graph_prune(self);
 	
 	jive_context_free(self->context, self->tracker_slots);
 	
@@ -230,7 +225,7 @@ jive_graph_prune(jive_graph * self)
 	while(node) {
 		jive_node * next = node->graph_bottom_list.next;
 		
-		if (!node->reserved) {
+		if (node != self->root_region->bottom) {
 			jive_node_destroy(node);
 			if (!next) next = self->bottom.first;
 		}
