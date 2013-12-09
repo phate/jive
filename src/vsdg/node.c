@@ -109,8 +109,6 @@ jive_node_init_(
 	self->noutputs = 0;
 	self->outputs = 0;
 	
-	self->reserved = 0;
-	
 	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
 	

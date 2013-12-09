@@ -45,7 +45,6 @@ struct jive_node {
 	size_t ninputs;
 	size_t noperands;
 	size_t noutputs;
-	size_t reserved;
 	
 	struct jive_input ** inputs;
 	struct jive_output ** outputs;
@@ -188,18 +187,6 @@ jive_node_copy(const jive_node * self, struct jive_region * region, struct jive_
 */
 jive_node *
 jive_node_copy_substitute(const jive_node * self, struct jive_region * target, struct jive_substitution_map * substitution);
-
-JIVE_EXPORTED_INLINE void
-jive_node_reserve(jive_node * self)
-{
-	self->reserved ++;
-}
-
-JIVE_EXPORTED_INLINE void
-jive_node_unreserve(jive_node * self)
-{
-	self->reserved --;
-}
 
 /**
 	\brief Check if an edge may be added to the node

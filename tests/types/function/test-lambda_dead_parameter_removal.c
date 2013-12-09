@@ -33,8 +33,8 @@ test_simple_lambda(struct jive_graph * graph)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){vtype, vtype}, results,
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &vtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);
 
@@ -82,8 +82,8 @@ test_recursive_lambda(struct jive_graph * graph)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type *[]){vtype, vtype}, results,
-		0, NULL);
-	jive_node_reserve(bottom);
+		1, &vtype);
+	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);
 
