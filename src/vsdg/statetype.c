@@ -22,12 +22,12 @@ const jive_type_class JIVE_STATE_TYPE = {
 	.parent = &JIVE_TYPE,
 	.name = "X",
 	.fini = jive_state_type_fini_, /* override */
-	.copy = jive_state_type_copy_, /* override */
 	.get_label = jive_type_get_label_, /* inherit */
 	.create_input = jive_state_type_create_input_, /* override */
 	.create_output = jive_state_type_create_output_, /* override */
 	.create_gate = jive_state_type_create_gate_, /* override */
 	.equals = jive_type_equals_, /* inherit */
+	.copy = jive_state_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_STATE_INPUT = {
