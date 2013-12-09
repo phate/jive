@@ -43,6 +43,7 @@ const jive_itgunary_operation_class JIVE_ITGUNARY_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_itgunary_operation_check_operands_, /* override */
 			.create = jive_node_create_, /* inherit */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
@@ -73,6 +74,7 @@ const jive_itgbinary_operation_class JIVE_ITGBINARY_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_itgbinary_operation_check_operands_, /* override */
 			.create = jive_node_create_, /* inherit */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
@@ -107,6 +109,7 @@ const jive_itgcomparison_operation_class JIVE_ITGCOMPARISON_NODE_ = {
 			.get_label = jive_node_get_label_, /* inherit */
 			.get_attrs = jive_node_get_attrs_, /* inherit */
 			.match_attrs = jive_node_match_attrs_, /* inherit */
+			.check_operands = jive_itgcomparison_operation_check_operands_, /* override */
 			.create = jive_node_create_, /* inherit */
 			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 		},
