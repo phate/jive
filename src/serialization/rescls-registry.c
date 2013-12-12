@@ -39,9 +39,9 @@ static jive_rescls_cls_bucket jive_rescls_empty_cls_bucket;
 static jive_serialization_rescls_registry rescls_registry_singleton = {
 	.by_tag = &jive_rescls_empty_tag_bucket,
 	.by_cls = &jive_rescls_empty_cls_bucket,
-	.mask = 0,
 	.nbuckets = 0,
 	.nitems = 0,
+	.mask = 0,
 	.initialized = false
 };
 static pthread_mutex_t rescls_registry_singleton_lock = PTHREAD_MUTEX_INITIALIZER;

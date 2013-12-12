@@ -38,9 +38,9 @@ static jive_instrcls_cls_bucket jive_instrcls_empty_cls_bucket;
 static jive_serialization_instrcls_registry instrcls_registry_singleton = {
 	.by_tag = &jive_instrcls_empty_tag_bucket,
 	.by_cls = &jive_instrcls_empty_cls_bucket,
-	.mask = 0,
 	.nbuckets = 0,
 	.nitems = 0,
+	.mask = 0,
 	.initialized = false
 };
 static pthread_mutex_t instrcls_registry_singleton_lock = PTHREAD_MUTEX_INITIALIZER;

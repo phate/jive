@@ -265,13 +265,18 @@ match_keyword(const char * begin, const char * end, const char * keyword)
 	return (end - begin == len) && (memcmp(begin, keyword, len) == 0);
 }
 
-static const char keywords[][16] = {
-	[jive_token_gate - jive_token_keyword_first] = "gate",
-	[jive_token_node  - jive_token_keyword_first] = "node",
-	[jive_token_region - jive_token_keyword_first] = "region",
-	[jive_token_label - jive_token_keyword_first] = "label",
-	[jive_token_stackptr - jive_token_keyword_first] = "stackptr",
-	[jive_token_frameptr - jive_token_keyword_first] = "frameptr"
+struct keyword_tokens {
+	jive_token_type token;
+	char keyword[16];
+};
+
+static const struct keyword_tokens keywords[] = {
+	{ jive_token_gate, "gate"},
+	{ jive_token_node, "node"},
+	{ jive_token_region, "region"},
+	{ jive_token_label, "label"},
+	{ jive_token_stackptr, "stackptr"},
+	{ jive_token_frameptr, "frameptr"}
 };
 
 static void
@@ -290,10 +295,12 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 		while (p != self->end && is_idcont(*p))
 			++p;
 		
-		jive_token_type keyword;
-		for (keyword = jive_token_keyword_first ; keyword < jive_token_keyword_last_plus1; keyword ++) {
-			if (match_keyword(self->parse_point, p, keywords[keyword - jive_token_keyword_first]))
+		jive_token_type keyword = jive_token_keyword_last_plus1;
+		for (size_t n = 0; n < sizeof(keywords)/sizeof(keywords[0]); ++n) {
+			if (match_keyword(self->parse_point, p, keywords[n].keyword)) {
+				keyword = keywords[n].token;
 				break;
+			}
 		}
 		
 		if (keyword != jive_token_keyword_last_plus1) {
