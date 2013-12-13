@@ -50,7 +50,7 @@ static int test_main(void)
 	
 	jive_shaped_variable * regvar = jive_shaped_graph_map_variable(shaped_graph, ssavar->variable);
 	
-	const jive_resource_name * reg_eax = &jive_i386_regs[jive_i386_eax].base;
+	const jive_resource_name * reg_eax = &jive_i386_reg_eax.base;
 	assert(jive_shaped_variable_allowed_resource_name(regvar, reg_eax));
 	assert(jive_shaped_variable_allowed_resource_name_count(regvar) == 1);
 	
