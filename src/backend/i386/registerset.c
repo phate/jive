@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -82,7 +82,7 @@ static const jive_float_type flt = {{{&JIVE_FLOAT_TYPE}}};
 
 #define CLS(x) &jive_i386_regcls[jive_i386_##x].base
 #define STACK4 &jive_stackslot_class_4_4.base
-#define VIA (const jive_resource_class * const[]) 
+#define VIA (const jive_resource_class * const[])
 
 const jive_register_class jive_i386_regcls [] = {
 	[jive_i386_flags] = {
@@ -99,7 +99,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits16.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_cc],
 		.nbits = 16
 	},
 	[jive_i386_gpr] = {
@@ -115,7 +114,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_eax],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_byte] = {
@@ -132,7 +130,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_eax],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_eax] = {
@@ -149,7 +146,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_eax],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_ecx] = {
@@ -166,7 +162,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_ecx],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_ebx] = {
@@ -183,7 +178,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_ebx],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_edx] = {
@@ -200,7 +194,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_edx],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_esi] = {
@@ -217,7 +210,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_esi],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_edi] = {
@@ -234,7 +226,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_edi],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_esp] = {
@@ -251,7 +242,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_esp],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 	[jive_i386_gpr_ebp] = {
@@ -268,7 +258,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_ebp],
 		.nbits = 32, .int_arithmetic_width = 32, .loadstore_width = 8|16|32
 	},
 
@@ -285,7 +274,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_st0],
 		.nbits = 80, .int_arithmetic_width = 80, .loadstore_width = 80
 	},
 	[jive_i386_fp_st0] = {
@@ -302,7 +290,6 @@ const jive_register_class jive_i386_regcls [] = {
 			},
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_st0],
 		.nbits = 80, .int_arithmetic_width = 80, .loadstore_width = 80
 	},
 	
@@ -313,10 +300,9 @@ const jive_register_class jive_i386_regcls [] = {
 			.limit = 8, .names = &jive_i386_names[jive_i386_xmm0],
 			.parent = &jive_root_register_class, .depth = 2,
 			.priority = jive_resource_class_priority_reg_low,
-			.demotions = NULL, 
+			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm0],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm0] = {
@@ -329,7 +315,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm0],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm1] = {
@@ -342,7 +327,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm1],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm2] = {
@@ -355,7 +339,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm2],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm3] = {
@@ -368,7 +351,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm3],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm4] = {
@@ -381,7 +363,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm4],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm5] = {
@@ -394,7 +375,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm5],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm6] = {
@@ -407,7 +387,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm6],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 	[jive_i386_sse_xmm7] = {
@@ -420,7 +399,6 @@ const jive_register_class jive_i386_regcls [] = {
 			.demotions = NULL,
 			.type = &flt.base.base
 		},
-		.regs = &jive_i386_regs[jive_i386_xmm7],
 		.nbits = 32, .int_arithmetic_width = 128, .loadstore_width = 128
 	},
 };

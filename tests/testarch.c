@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -15,16 +15,30 @@
 #include <jive/arch/stackslot.h>
 #include <jive/arch/subroutine-private.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg.h>
+#include <jive/vsdg/splitnode.h>
 
 const jive_register_name jive_testarch_regs [] = {
-	[reg_r0] = {.base = {.name = "r0", .resource_class = &jive_testarch_regcls[cls_r0].base }, .code = 0},
-	[reg_r2] = {.base = {.name = "r2", .resource_class = &jive_testarch_regcls[cls_r2].base }, .code = 2},
-	[reg_r1] = {.base = {.name = "r1", .resource_class = &jive_testarch_regcls[cls_r1].base }, .code = 1},
-	[reg_r3] = {.base = {.name = "r3", .resource_class = &jive_testarch_regcls[cls_r3].base }, .code = 3},
-	
-	[reg_cc] = {.base = {.name = "cc", .resource_class = &jive_testarch_regcls[cls_cc].base }, .code = 0},
+	[reg_r0] = {
+		.base = {.name = "r0", .resource_class = &jive_testarch_regcls[cls_r0].base },
+		.code = 0
+	},
+	[reg_r2] = {
+		.base = {.name = "r2", .resource_class = &jive_testarch_regcls[cls_r2].base },
+		.code = 2
+	},
+	[reg_r1] = {
+		.base = {.name = "r1", .resource_class = &jive_testarch_regcls[cls_r1].base },
+		.code = 1
+	},
+	[reg_r3] = {
+		.base = {.name = "r3", .resource_class = &jive_testarch_regcls[cls_r3].base },
+		.code = 3
+	},
+	[reg_cc] = {
+		.base = {.name = "cc", .resource_class = &jive_testarch_regcls[cls_cc].base },
+		.code = 0
+	},
 };
 
 static const jive_resource_name * allnames [] = {
@@ -40,7 +54,7 @@ static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
 
 #define CLS(x) &jive_testarch_regcls[cls_##x].base
 #define STACK4 &jive_stackslot_class_4_4.base
-#define VIA (const jive_resource_class * const[]) 
+#define VIA (const jive_resource_class * const[])
 
 const jive_register_class jive_testarch_regcls [] = {
 	[cls_r0] = {
@@ -56,7 +70,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 0,
 		.nbits = 32
 	},
 	[cls_r1] = {
@@ -72,7 +85,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 2,
 		.nbits = 32
 	},
 	[cls_r2] = {
@@ -88,7 +100,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 1,
 		.nbits = 32
 	},
 	[cls_r3] = {
@@ -104,7 +115,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 3,
 		.nbits = 32
 	},
 	[cls_evenreg] = {
@@ -120,7 +130,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 0,
 		.nbits = 32
 	},
 	[cls_oddreg] = {
@@ -136,7 +145,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs + 2,
 		.nbits = 32
 	},
 	[cls_gpr] = {
@@ -152,7 +160,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits32.base.base
 		},
-		.regs = jive_testarch_regs,
 		.nbits = 32
 	},
 	[cls_cc] = {
@@ -169,7 +176,6 @@ const jive_register_class jive_testarch_regcls [] = {
 			},
 			.type = &bits16.base.base
 		},
-		.regs = jive_testarch_regs + 4,
 		.nbits = 32
 	},
 };
@@ -192,7 +198,9 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.mnemonic = "nop",
 		.encode = 0,
 		.write_asm = 0,
-		.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0,
+		.inregs = 0, .outregs = 0,
+		.flags = jive_instruction_flags_none,
+		.ninputs = 0, .noutputs = 0, .nimmediates = 0,
 		.code = 0
 	},
 	
@@ -201,7 +209,8 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.mnemonic = "add",
 		.encode = 0,
 		.write_asm = 0,
-		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_write_input | jive_instruction_commutative,
+		.inregs = gpr_params, .outregs = gpr_params,
+		.flags = jive_instruction_write_input | jive_instruction_commutative,
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
 		.code = 0
 	},
@@ -211,7 +220,8 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.mnemonic = "load_disp",
 		.encode = 0,
 		.write_asm = 0,
-		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_flags_none,
+		.inregs = gpr_params, .outregs = gpr_params,
+		.flags = jive_instruction_flags_none,
 		.ninputs = 1, .noutputs = 1, .nimmediates = 1,
 		.code = 0
 	},
@@ -298,7 +308,8 @@ const jive_instruction_class jive_testarch_instructions[] = {
 		.mnemonic = "add_gpr",
 		.encode = 0,
 		.write_asm = 0,
-		.inregs = gpr_params, .outregs = gpr_params, .flags = jive_instruction_write_input | jive_instruction_commutative,
+		.inregs = gpr_params, .outregs = gpr_params,
+		.flags = jive_instruction_write_input | jive_instruction_commutative,
 		.ninputs = 2, .noutputs = 1, .nimmediates = 0,
 		.code = 0
 	},
@@ -392,8 +403,7 @@ jive_testarch_classify_address_(void)
 	return (1 << cls_gpr);
 }
 
-static const jive_register_class * classes [] = 
-{
+static const jive_register_class * classes [] = {
 	[cls_gpr] = &jive_testarch_regcls[cls_gpr],
 	[cls_cc] = &jive_testarch_regcls[cls_cc],
 };
@@ -496,13 +506,15 @@ jive_testarch_subroutine_copy_(const jive_subroutine * self_,
 		other->base.returns[n] = new_gate;
 	}
 	
-	jive_subroutine_match_passthrough(&self->base, &self->base.passthroughs[0], &other->base, &other->base.passthroughs[0]);
+	jive_subroutine_match_passthrough(
+		&self->base, &self->base.passthroughs[0], &other->base, &other->base.passthroughs[0]);
 	
 	return &other->base;
 }
 
 static void
-jive_testarch_subroutine_prepare_stackframe_(jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
+jive_testarch_subroutine_prepare_stackframe_(
+	jive_subroutine * self, const jive_subroutine_late_transforms * xfrm)
 {
 }
 
@@ -553,7 +565,8 @@ jive_testarch_subroutine_create(jive_region * region,
 	
 	jive_subroutine_create_region_and_nodes(&self->base, region);
 	
-	self->base.passthroughs[0] = jive_subroutine_create_passthrough(&self->base, jive_testarch_cls_r0, "stackptr");
+	self->base.passthroughs[0] = jive_subroutine_create_passthrough(
+		&self->base, jive_testarch_cls_r0, "stackptr");
 	self->base.passthroughs[0].gate->may_spill = false;
 	
 	return &self->base;

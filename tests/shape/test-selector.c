@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -26,8 +26,7 @@ const jive_register_name
 
 static const jive_resource_name * res_names [] = {&r0.base, &r1.base, &r2.base, &r3.base};
 
-const jive_register_class 
-	gpr = {
+const jive_register_class gpr = {
 		.base = {
 			.class_ = &JIVE_REGISTER_RESOURCE,
 			.name = "gpr",
@@ -37,7 +36,6 @@ const jive_register_class
 			.depth = 1,
 			.priority = jive_resource_class_priority_reg_low,
 		},
-		.regs = NULL
 	}
 ;
 
@@ -138,11 +136,16 @@ static int test_main(void)
 	jive_node * e = create_computation_node(graph, 1, (jive_output *[]){l1->outputs[0]}, 1);
 	jive_node * f = create_computation_node(graph, 1, (jive_output *[]){l2->outputs[0]}, 1);
 	
-	jive_node * s1 = create_computation_node(graph, 2, (jive_output *[]){a->outputs[0], b->outputs[0]}, 1);
-	jive_node * s2 = create_computation_node(graph, 2, (jive_output *[]){c->outputs[0], s1->outputs[0]}, 1);
-	jive_node * s3 = create_computation_node(graph, 2, (jive_output *[]){s2->outputs[0], d->outputs[0]}, 1);
-	jive_node * s4 = create_computation_node(graph, 2, (jive_output *[]){e->outputs[0], s3->outputs[0]}, 1);
-	jive_node * s5 = create_computation_node(graph, 2, (jive_output *[]){s4->outputs[0], f->outputs[0]}, 1);
+	jive_node * s1 = create_computation_node(
+		graph, 2, (jive_output *[]){a->outputs[0], b->outputs[0]}, 1);
+	jive_node * s2 = create_computation_node(
+		graph, 2, (jive_output *[]){c->outputs[0], s1->outputs[0]}, 1);
+	jive_node * s3 = create_computation_node(
+		graph, 2, (jive_output *[]){s2->outputs[0], d->outputs[0]}, 1);
+	jive_node * s4 = create_computation_node(
+		graph, 2, (jive_output *[]){e->outputs[0], s3->outputs[0]}, 1);
+	jive_node * s5 = create_computation_node(
+		graph, 2, (jive_output *[]){s4->outputs[0], f->outputs[0]}, 1);
 	
 	jive_node * bottom = create_computation_node(graph, 1, (jive_output *[]){s5->outputs[0]}, 0);
 	
@@ -174,27 +177,34 @@ static int test_main(void)
 		assert(jive_master_shaper_selector_map_node(master_selector, l1)->force_tree_root == true);
 		assert(jive_master_shaper_selector_map_node(master_selector, l2)->force_tree_root == false);
 		
-		assert(jive_master_shaper_selector_map_node(master_selector, l1)->blocked_rescls_priority == jive_root_resource_class.priority);
-		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->blocked_rescls_priority == jive_root_resource_class.priority);
+		assert(jive_master_shaper_selector_map_node(master_selector, l1)->blocked_rescls_priority
+			== jive_root_resource_class.priority);
+		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->blocked_rescls_priority
+			== jive_root_resource_class.priority);
 		
-		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->state == jive_node_cost_state_queue);
-		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->index == 0);
+		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->state
+			== jive_node_cost_state_queue);
+		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->index
+			== 0);
 	}
-	
+
 	jive_node * node;
 	
 	assert(region_selector->prio_heap.nitems == 1);
 	node = jive_region_shaper_selector_select_node(region_selector);
 	assert(node == bottom);
-	assert(jive_master_shaper_selector_map_node(master_selector, bottom)->state == jive_node_cost_state_stack);
+	assert(jive_master_shaper_selector_map_node(master_selector, bottom)->state
+		== jive_node_cost_state_stack);
 	shape(shaped_graph, node);
 	
-	assert(jive_master_shaper_selector_map_node(master_selector, s5)->prio_array.count[0] == gpr.base.priority);
+	assert(jive_master_shaper_selector_map_node(master_selector, s5)->prio_array.count[0]
+		== gpr.base.priority);
 	node = jive_region_shaper_selector_select_node(region_selector);
 	assert(node == s5);
 	shape(shaped_graph, node);
 	
-	assert(jive_master_shaper_selector_map_node(master_selector, f)->prio_array.count[0] == gpr.base.priority);
+	assert(jive_master_shaper_selector_map_node(master_selector, f)->prio_array.count[0]
+		== gpr.base.priority);
 	assert(region_selector->prio_heap.nitems == 2);
 	assert(region_selector->prio_heap.items[0]->node == f);
 	assert(region_selector->prio_heap.items[1]->node == s4);
@@ -236,11 +246,14 @@ static int test_main(void)
 	
 	jive_node * tmp = jive_region_shaper_selector_select_node(region_selector);
 	assert(tmp == a || tmp == b);
-	assert(jive_master_shaper_selector_map_node(master_selector, tmp)->state == jive_node_cost_state_stack);
+	assert(jive_master_shaper_selector_map_node(master_selector, tmp)->state
+		== jive_node_cost_state_stack);
 	jive_node * spill = create_spill_node(graph, tmp->outputs[0]);
-	assert(jive_master_shaper_selector_map_node(master_selector, spill)->state == jive_node_cost_state_stack);
+	assert(jive_master_shaper_selector_map_node(master_selector, spill)->state
+		== jive_node_cost_state_stack);
 	jive_node * restore = create_restore_node(graph, spill->outputs[0]);
-	assert(jive_master_shaper_selector_map_node(master_selector, restore)->state == jive_node_cost_state_stack);
+	assert(jive_master_shaper_selector_map_node(master_selector, restore)->state
+		== jive_node_cost_state_stack);
 	jive_ssavar * ssavar = tmp->outputs[0]->users.first->ssavar;
 	jive_ssavar_divert_origin(ssavar, restore->outputs[0]);
 	
