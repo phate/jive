@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,11 +9,11 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/view.h>
-#include <jive/vsdg.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
 #include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)
@@ -34,7 +34,7 @@ static int test_main(void)
 	jive_output * a0 = jive_bitstring_to_address_create(b0, 32);
 
 	jive_output * a1 = jive_bitstring_to_address_create(top->outputs[1], 32);
-	jive_output * b1 = jive_address_to_bitstring_create(a1, 32);	
+	jive_output * b1 = jive_address_to_bitstring_create(a1, 32);
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, (const jive_type*[]){addrtype, bits32}, (jive_output *[]){a0, b1},
