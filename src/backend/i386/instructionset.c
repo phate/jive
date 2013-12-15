@@ -1243,6 +1243,7 @@ const jive_instruction_class jive_i386_instr_int_transfer = {
 	.encode = jive_i386_encode_regmove,
 	.write_asm = jive_i386_asm_regmove,
 	.inregs = intreg_param, .outregs = intreg_param,
+	.flags = jive_instruction_flags_none,
 	.ninputs = 1, .noutputs = 1, .nimmediates = 0,
 	.code = 0x89
 };
@@ -1252,6 +1253,7 @@ const jive_instruction_class jive_i386_instr_call = {
 	.encode = jive_i386_encode_call,
 	.write_asm = jive_i386_asm_call,
 	.inregs = NULL, .outregs = NULL,
+	.flags = jive_instruction_flags_none,
 	.ninputs = 0, .noutputs = 0, .nimmediates = 1,
 	.code = 0xe8
 };
@@ -1261,6 +1263,7 @@ const jive_instruction_class jive_i386_instr_call_reg = {
 	.encode = jive_i386_encode_call_reg,
 	.write_asm = jive_i386_asm_call_reg,
 	.inregs = intreg_param, .outregs = NULL,
+	.flags = jive_instruction_flags_none,
 	.ninputs = 1, .noutputs = 0, .nimmediates = 0,
 	.code = 0xff
 };
