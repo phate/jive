@@ -111,9 +111,9 @@ void test_rescls_count_prio(jive_context * ctx)
 	
 	jive_rescls_prio_array prio;
 	jive_rescls_prio_array_compute(&prio, &a);
-	jive_rescls_prio_array reference = {
-		.count = { [jive_resource_class_priority_reg_low] = 2, [jive_resource_class_priority_lowest] = 2 }
-	};
+	jive_rescls_prio_array reference = {};
+	reference.count[jive_resource_class_priority_reg_low] = 2;
+	reference.count[jive_resource_class_priority_lowest] = 2;
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == 0);
 	
 	jive_resource_class_count_sub(&a, &jive_testarch_regcls_r1.base);
