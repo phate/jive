@@ -447,7 +447,7 @@ jive_bitstring_shiftright(char dst[],
 		return;
 	}
 
-	dst = memmove(dst, operand+shift, nbits-shift);
+	memmove(dst, operand+shift, nbits-shift);
 	memset(dst+nbits-shift, '0', shift);
 }
 
@@ -460,9 +460,8 @@ jive_bitstring_shiftleft(char dst[],
 		return;
 	}
 
-	dst = memmove(dst+shift, operand, nbits-shift);
-	memset(dst-shift, '0', shift);
-	dst = dst-shift;
+	memmove(dst+shift, operand, nbits-shift);
+	memset(dst, '0', shift);
 }
 
 static inline void
@@ -474,7 +473,7 @@ jive_bitstring_arithmetic_shiftright(char dst[],
 		return;
 	}
 
-	dst = memmove(dst, operand+shift, nbits-shift);
+	memmove(dst, operand+shift, nbits-shift);
 	memset(dst+nbits-shift, operand[nbits-1], shift);
 }
 
