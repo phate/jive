@@ -37,7 +37,7 @@ static int test_main(void)
 	
 	jive_node * add = jive_instruction_node_create(
 		subroutine->region,
-		&jive_i386_instructions[jive_i386_int_add],
+		&jive_i386_instr_int_add,
 		(jive_output *[]){arg1, arg2}, NULL);
 	
 	jive_subroutine_value_return(subroutine, 0, add->outputs[0]);

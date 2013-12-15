@@ -115,21 +115,21 @@ static int test_main(void)
 	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_addr, control_type, control);
 	
 	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_len, control_type, control);
 	
 	jive_immediate_init(&imm, 1, NULL, NULL, NULL);
 	jive_node * load_fd = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_fd, control_type, control);
 	

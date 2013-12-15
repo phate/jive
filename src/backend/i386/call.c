@@ -33,7 +33,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		jive_immediate_init(&imm, 0, label_node->attrs.label, NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
 			region,
-			&jive_i386_instructions[jive_i386_call],
+			&jive_i386_instr_call,
 			0, &imm);
 	} else if (address->node->class_ == &JIVE_LABEL_TO_BITSTRING_NODE) {
 		jive_label_to_bitstring_node * label_node = jive_label_to_bitstring_node_cast(address->node);
@@ -41,13 +41,13 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		jive_immediate_init(&imm, 0, label_node->attrs.label, NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
 			region,
-			&jive_i386_instructions[jive_i386_call],
+			&jive_i386_instr_call,
 			0, &imm);
 	} else {
 		/* FIXME: cast address to bitstring first */
 		call_instr = jive_instruction_node_create(
 			region,
-			&jive_i386_instructions[jive_i386_call_reg],
+			&jive_i386_instr_call_reg,
 			(jive_output * []){address}, NULL);
 	}
 	

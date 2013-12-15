@@ -29,12 +29,12 @@ static int test_main(void)
 	graph->root_region->attrs.section = jive_region_section_code;	
 	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, (const int64_t[]){42});
 	
 	jive_node * leave = jive_instruction_node_create(
 		graph->root_region,
-		&jive_i386_instructions[jive_i386_ret],
+		&jive_i386_instr_ret,
 		0, NULL);
 	
 	const jive_type * type = jive_output_get_type(enter->outputs[0]);

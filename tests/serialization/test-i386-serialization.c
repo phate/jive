@@ -48,19 +48,19 @@ static int test_main(void)
 	
 	jive_node * n1 = jive_instruction_node_create_simple(
 		gr1->root_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		NULL,
 		(int64_t[]){42});
 	
 	jive_node * n2 = jive_instruction_node_create_simple(
 		gr1->root_region,
-		&jive_i386_instructions[jive_i386_int_load32_disp],
+		&jive_i386_instr_int_load32_disp,
 		(jive_output *[]){n1->outputs[0]},
 		(int64_t[]){17});
 	
 	jive_node * n3 = jive_instruction_node_create_simple(
 		gr1->root_region,
-		&jive_i386_instructions[jive_i386_int_mul_expand_signed],
+		&jive_i386_instr_int_mul_expand_signed,
 		(jive_output *[]){n1->outputs[0], n2->outputs[0]},
 		NULL);
 	

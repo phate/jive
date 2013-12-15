@@ -251,7 +251,7 @@ jive_i386_subroutine_create(jive_region * region,
 	self->base.passthroughs[4] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls_gpr_edi.base, "saved_edi");
 	
 	/* return instruction */
-	jive_node * ret_instr = jive_instruction_node_create(self->base.region, &jive_i386_instructions[jive_i386_ret], NULL, NULL);
+	jive_node * ret_instr = jive_instruction_node_create(self->base.region, &jive_i386_instr_ret, NULL, NULL);
 	
 	/* add dependency on return address on stack */
 	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
@@ -311,7 +311,7 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive_output * value)
 	
 	return jive_instruction_node_create_simple(
 		value->node->region,
-		&jive_i386_instructions[jive_i386_int_sub_immediate],
+		&jive_i386_instr_int_sub_immediate,
 		&value, immediates)->outputs[0];
 }
 
@@ -323,7 +323,7 @@ do_stackptr_add(const jive_value_split_factory * self_, jive_output * value)
 	
 	return jive_instruction_node_create_simple(
 		value->node->region,
-		&jive_i386_instructions[jive_i386_int_add_immediate],
+		&jive_i386_instr_int_add_immediate,
 		&value, immediates)->outputs[0];
 }
 

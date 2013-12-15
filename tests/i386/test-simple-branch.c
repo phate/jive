@@ -39,11 +39,11 @@ static int test_main(void)
 	jive_output * p2 = jive_subroutine_value_parameter(subroutine, 1);
 	
 	jive_node * cmp = jive_instruction_node_create(
-		fn_region, &jive_i386_instructions[jive_i386_int_cmp],
+		fn_region, &jive_i386_instr_int_cmp,
 		(jive_output *[]){p1, p2}, NULL);
 	
 	jive_node * bge = jive_instruction_node_create(
-		fn_region, &jive_i386_instructions[jive_i386_int_jump_sgreatereq],
+		fn_region, &jive_i386_instr_int_jump_sgreatereq,
 		(jive_output *[]){cmp->outputs[0]}, (int64_t[]){0});
 	
 	const jive_type * bits32 = jive_output_get_type(p1);

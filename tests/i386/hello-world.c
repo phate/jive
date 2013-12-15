@@ -117,21 +117,21 @@ static int test_main(void)
 	
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_addr, state_type, state);
 	
 	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_len, state_type, state);
 	
 	jive_immediate_init(&imm, 1, NULL, NULL, NULL);
 	jive_node * load_fd = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_int_load_imm],
+		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_fd, state_type, state);
 	
@@ -155,7 +155,7 @@ static int test_main(void)
 	jive_immediate_init(&imm, 0, &write_label.base, NULL, NULL);
 	jive_node * call_write = jive_instruction_node_create_extended(
 		fn_region,
-		&jive_i386_instructions[jive_i386_call],
+		&jive_i386_instr_call,
 		0, &imm);
 	jive_node_add_input(call_write, memory_type, arg1->outputs[0])->required_rescls
 		= jive_callslot_class_get(4, 4, 0);

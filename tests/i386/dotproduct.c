@@ -41,18 +41,18 @@ make_dotprod_function(size_t vector_size)
 		long displacement = n * 4;
 		jive_node * a1 = (jive_node *) jive_instruction_node_create(
 			subroutine->region,
-			&jive_i386_instructions[jive_i386_int_load32_disp],
+			&jive_i386_instr_int_load32_disp,
 			&p1, &displacement);
 		jive_output * v1 = a1->outputs[0];
 		jive_node * a2 = (jive_node *) jive_instruction_node_create(
 			subroutine->region,
-			&jive_i386_instructions[jive_i386_int_load32_disp],
+			&jive_i386_instr_int_load32_disp,
 			&p2, &displacement);
 		jive_output * v2 = a2->outputs[0];
 		
 		jive_node * m = (jive_node *) jive_instruction_node_create(
 			subroutine->region,
-			&jive_i386_instructions[jive_i386_int_mul],
+			&jive_i386_instr_int_mul,
 			(jive_output *[]){v1, v2}, 0);
 		operands[n] = m->outputs[0];
 	}
@@ -61,7 +61,7 @@ make_dotprod_function(size_t vector_size)
 	for(n=1; n<vector_size; n++) {
 		jive_node * s = (jive_node *) jive_instruction_node_create(
 			subroutine->region,
-			&jive_i386_instructions[jive_i386_int_add],
+			&jive_i386_instr_int_add,
 			(jive_output *[]){value, operands[n]}, 0);
 		value = s->outputs[0];
 	}
