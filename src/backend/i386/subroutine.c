@@ -135,10 +135,10 @@ jive_i386_subroutine_value_parameter_(jive_subroutine * self_, size_t index)
 	jive_output * output = jive_node_gate_output(&self->base.enter->base, gate);
 	
 	const jive_type * in_type = jive_gate_get_type(gate);
-	const jive_type * out_type = jive_resource_class_get_type(&jive_i386_regcls[jive_i386_gpr].base);
+	const jive_type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
 	jive_node * node = jive_splitnode_create(self->base.enter->base.region,
 		in_type, output, gate->required_rescls,
-		out_type, &jive_i386_regcls[jive_i386_gpr].base);
+		out_type, &jive_i386_regcls_gpr.base);
 	output = node->outputs[0];
 	
 	return output;
@@ -235,7 +235,7 @@ jive_i386_subroutine_create(jive_region * region,
 		snprintf(argname, sizeof(argname), "ret%zd", n + 1);
 		const jive_resource_class * cls;
 		switch (n) {
-			case 0: cls = &jive_i386_regcls[jive_i386_gpr_eax].base; break;
+			case 0: cls = &jive_i386_regcls_gpr_eax.base; break;
 			default: cls = jive_fixed_stackslot_class_get(4, 4, n * 4);
 		}
 		self->base.returns[n] = jive_resource_class_create_gate(cls, graph, argname);
@@ -243,12 +243,12 @@ jive_i386_subroutine_create(jive_region * region,
 	
 	jive_subroutine_create_region_and_nodes(&self->base, region);
 	
-	self->base.passthroughs[0] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esp].base, "saved_esp");
+	self->base.passthroughs[0] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls_gpr_esp.base, "saved_esp");
 	self->base.passthroughs[0].gate->may_spill = false;
-	self->base.passthroughs[1] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_ebx].base, "saved_ebx");
-	self->base.passthroughs[2] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_ebp].base, "saved_ebp");
-	self->base.passthroughs[3] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_esi].base, "saved_esi");
-	self->base.passthroughs[4] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls[jive_i386_gpr_edi].base, "saved_edi");
+	self->base.passthroughs[1] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls_gpr_ebx.base, "saved_ebx");
+	self->base.passthroughs[2] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls_gpr_ebp.base, "saved_ebp");
+	self->base.passthroughs[3] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls_gpr_esi.base, "saved_esi");
+	self->base.passthroughs[4] = jive_subroutine_create_passthrough(&self->base, &jive_i386_regcls_gpr_edi.base, "saved_edi");
 	
 	/* return instruction */
 	jive_node * ret_instr = jive_instruction_node_create(self->base.region, &jive_i386_instructions[jive_i386_ret], NULL, NULL);

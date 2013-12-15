@@ -52,10 +52,10 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	}
 	
 	/* mark caller-saved regs as clobbered */
-	jive_output * clobber_eax = jive_node_add_constrained_output(call_instr, jive_i386_cls_eax);
-	jive_output * clobber_edx = jive_node_add_constrained_output(call_instr, jive_i386_cls_edx);
-	jive_output * clobber_ecx = jive_node_add_constrained_output(call_instr, jive_i386_cls_ecx);
-	jive_output * clobber_flags = jive_node_add_constrained_output(call_instr, jive_i386_cls_flags);
+	jive_output * clobber_eax = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_gpr_eax.base);
+	jive_output * clobber_edx = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_gpr_edx.base);
+	jive_output * clobber_ecx = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_gpr_ecx.base);
+	jive_output * clobber_flags = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_flags.base);
 	(void) clobber_edx;
 	(void) clobber_ecx;
 	(void) clobber_flags;
@@ -70,7 +70,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		const jive_type * value_type = jive_output_get_type(value);
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
-			value_cls = jive_i386_cls_gpr;
+			value_cls = &jive_i386_regcls_gpr.base;
 		}
 		
 		const jive_resource_class * slot_cls = jive_callslot_class_get(4, 4, offset);

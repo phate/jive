@@ -39,7 +39,7 @@ static int test_main(void)
 	
 	const jive_type * type = jive_output_get_type(enter->outputs[0]);
 	jive_gate * gate = jive_type_create_gate(type, graph, "retval");
-	gate -> required_rescls = &jive_i386_regcls[jive_i386_gpr_eax].base;
+	gate -> required_rescls = &jive_i386_regcls_gpr_eax.base;
 	jive_node_gate_input(leave, gate, enter->outputs[0]);
 	
 	jive_view(graph, stderr);

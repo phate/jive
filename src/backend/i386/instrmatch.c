@@ -486,42 +486,42 @@ match_single(jive_node * node, const jive_regselector * regselector)
 {
 	if (jive_node_isinstance(node, &JIVE_BITBINARY_NODE)) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
-		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_bitbinary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (jive_node_isinstance(node, &JIVE_BITUNARY_NODE)) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
-		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_bitunary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[0]);
-		if (true || (regcls == &jive_i386_regcls[jive_i386_gpr])) {
+		if (true || (regcls == &jive_i386_regcls_gpr)) {
 			match_gpr_bitcmp(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (jive_node_isinstance(node, &JIVE_REGVALUE_NODE)) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
-		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_immediate(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (jive_node_isinstance(node, &JIVE_LOAD_NODE)) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
-		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_load(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (jive_node_isinstance(node, &JIVE_STORE_NODE)) {
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[1]);
-		if (regcls == &jive_i386_regcls[jive_i386_gpr]) {
+		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_store(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);

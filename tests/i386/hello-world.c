@@ -135,7 +135,7 @@ static int test_main(void)
 		0, &imm);
 	jive_node_add_input(load_fd, state_type, state);
 	
-	const jive_resource_class * gpr = &jive_i386_regcls[jive_i386_gpr].base;
+	const jive_resource_class * gpr = &jive_i386_regcls_gpr.base;
 	const jive_type * gpr_type = jive_resource_class_get_type(gpr);
 	JIVE_DECLARE_MEMORY_TYPE(memory_type);
 	
