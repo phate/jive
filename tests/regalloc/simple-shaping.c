@@ -36,15 +36,15 @@ static int test_main(void)
 		NULL, NULL);
 	
 	jive_gate * stackptr_var;
-	stackptr_var = jive_regcls_create_gate( &jive_testarch_regcls[cls_r4], graph, "stackptr" );
+	stackptr_var = jive_regcls_create_gate( &jive_testarch_regcls_r4, graph, "stackptr" );
 	
 	jive_node_gate_input(leave, stackptr_var, jive_node_gate_output(enter, stackptr_var));
 	jive_output * arg1 = jive_node_gate_output(enter,
-		jive_regcls_create_gate( &jive_testarch_regcls[cls_regs], graph, "arg1"));
+		jive_regcls_create_gate( &jive_testarch_regcls_regs, graph, "arg1"));
 	jive_output * arg2 = jive_node_gate_output(enter,
-		jive_regcls_create_gate( &jive_testarch_regcls[cls_regs], graph, "arg1"));
+		jive_regcls_create_gate( &jive_testarch_regcls_regs, graph, "arg1"));
 	jive_output * arg3 = jive_node_gate_output(enter,
-		jive_regcls_create_gate( &jive_testarch_regcls[cls_regs], graph, "arg1"));
+		jive_regcls_create_gate( &jive_testarch_regcls_regs, graph, "arg1"));
 	
 	add1 = (jive_node *) jive_instruction_node_create(region,
 		&jive_testarch_instructions[instr_add],
@@ -54,7 +54,7 @@ static int test_main(void)
 		&jive_testarch_instructions[instr_add],
 		(jive_output *[]){add1->outputs[0], arg3}, NULL);
 	
-	jive_node_gate_input(leave, jive_regcls_create_gate( &jive_testarch_regcls[cls_r1], graph, "ret1"), add2->outputs[0]);
+	jive_node_gate_input(leave, jive_regcls_create_gate( &jive_testarch_regcls_r1, graph, "ret1"), add2->outputs[0]);
 	
 	jive_view(graph, stderr);
 	

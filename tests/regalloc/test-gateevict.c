@@ -28,20 +28,20 @@ create_testgraph_gateevict(jive_context * context)
 	jive_node * enter = &subroutine->enter->base;
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "arg1");
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "arg1");
+	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "arg1");
+	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "arg1");
 	
 	jive_output * arg1 = jive_node_gate_output(enter, arg1_gate);
 	
 	arg1 = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[move_gpr_index],
+		&jive_testarch_instr_move_gpr,
 		(jive_output *[]) {arg1}, NULL)->outputs[0];
 	
-	jive_gate * passthrough = jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "passthrough");
-	jive_gate * r1g = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "r1");
-	jive_gate * r2g = jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "r2");
-	jive_gate * r3g = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "r3");
+	jive_gate * passthrough = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "passthrough");
+	jive_gate * r1g = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "r1");
+	jive_gate * r2g = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "r2");
+	jive_gate * r3g = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "r3");
 	
 	jive_node * nop1 = jive_instruction_node_create(
 		subroutine->region,
@@ -62,7 +62,7 @@ create_testgraph_gateevict(jive_context * context)
 	
 	jive_output * result = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[move_gpr_index],
+		&jive_testarch_instr_move_gpr,
 		(jive_output *[]) {jive_node_gate_output(nop3, passthrough)}, NULL)->outputs[0];
 	
 	jive_node_gate_input(leave, retval_gate, result);

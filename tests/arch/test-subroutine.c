@@ -29,11 +29,11 @@ static int test_main(void)
 	
 	jive_output * s1 = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[add_index],
+		&jive_testarch_instr_add,
 		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
 	jive_output * s2 = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[add_index],
+		&jive_testarch_instr_add,
 		(jive_output *[]) {s1, arg3}, NULL)->outputs[0];
 	jive_subroutine_value_return(subroutine, 0, s2);
 	

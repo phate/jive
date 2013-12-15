@@ -56,7 +56,7 @@ static int test_main(void)
 	if (!rv)
 		rv = jive_regvalue_node_cast(n2);
 	assert(rv);
-	assert(rv->attrs.regcls == &jive_testarch_regcls[cls_gpr]);
+	assert(rv->attrs.regcls == &jive_testarch_regcls_gpr);
 	
 	sum2 = res->node->inputs[1]->origin;
 	n1 = sum2->node->inputs[0]->origin->node;

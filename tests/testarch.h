@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -11,61 +11,40 @@
 #include <jive/arch/regselector.h>
 #include <jive/arch/subroutine.h>
 
-typedef enum {
-	cls_cc = 0,
-	cls_gpr = 1,
-	
-	cls_r0 = 2,
-	cls_r1 = 3,
-	cls_r2 = 4,
-	cls_r3 = 5,
-	cls_evenreg = 6,
-	cls_oddreg = 7
-} jive_testarch_regcls_index;
+extern const jive_register_class jive_testarch_regcls_cc;
+extern const jive_register_class jive_testarch_regcls_gpr;
 
-extern const jive_register_class jive_testarch_regcls [];
+extern const jive_register_class jive_testarch_regcls_r0;
+extern const jive_register_class jive_testarch_regcls_r1;
+extern const jive_register_class jive_testarch_regcls_r2;
+extern const jive_register_class jive_testarch_regcls_r3;
+extern const jive_register_class jive_testarch_regcls_evenreg;
+extern const jive_register_class jive_testarch_regcls_oddreg;
 
-#define jive_testarch_cls_r0 (&jive_testarch_regcls[cls_r0].base)
-#define jive_testarch_cls_r1 (&jive_testarch_regcls[cls_r1].base)
-#define jive_testarch_cls_r2 (&jive_testarch_regcls[cls_r2].base)
-#define jive_testarch_cls_r3 (&jive_testarch_regcls[cls_r3].base)
-#define jive_testarch_cls_evenreg (&jive_testarch_regcls[cls_evenreg].base)
-#define jive_testarch_cls_oddreg (&jive_testarch_regcls[cls_oddreg].base)
-#define jive_testarch_cls_gpr (&jive_testarch_regcls[cls_gpr].base)
+extern const jive_register_name jive_testarch_reg_r0;
+extern const jive_register_name jive_testarch_reg_r1;
+extern const jive_register_name jive_testarch_reg_r2;
+extern const jive_register_name jive_testarch_reg_r3;
+extern const jive_register_name jive_testarch_reg_cc;
 
-typedef enum {
-	reg_r0 = 0,
-	reg_r1 = 2,
-	reg_r2 = 1,
-	reg_r3 = 3,
-	
-	reg_cc = 4
-} jive_testarch_reg_index;
+extern const jive_instruction_class jive_testarch_instr_nop;
+extern const jive_instruction_class jive_testarch_instr_add;
+extern const jive_instruction_class jive_testarch_instr_load_disp;
+extern const jive_instruction_class jive_testarch_instr_store_disp;
 
-extern const jive_register_name jive_testarch_regs [];
+extern const jive_instruction_class jive_testarch_instr_spill_gpr;
+extern const jive_instruction_class jive_testarch_instr_restore_gpr;
+extern const jive_instruction_class jive_testarch_instr_move_gpr;
 
-typedef enum {
-	nop_index = 0,
-	add_index = 1,
-	load_disp_index = 2,
-	store_disp_index = 3,
-	
-	spill_gpr_index = 4,
-	restore_gpr_index = 5,
-	move_gpr_index = 6,
-	
-	setr0_index = 7,
-	setr1_index = 8,
-	setr2_index = 9,
-	setr3_index = 10,
-	
-	add_gpr_index = 11,
-	sub_gpr_index = 12,
-	
-	jump_index = 20
-} jive_testarch_instruction_index;
+extern const jive_instruction_class jive_testarch_instr_setr0;
+extern const jive_instruction_class jive_testarch_instr_setr1;
+extern const jive_instruction_class jive_testarch_instr_setr2;
+extern const jive_instruction_class jive_testarch_instr_setr3;
 
-extern const jive_instruction_class jive_testarch_instructions [];
+extern const jive_instruction_class jive_testarch_instr_add_gpr;
+extern const jive_instruction_class jive_testarch_instr_sub_gpr;
+
+extern const jive_instruction_class jive_testarch_instr_jump;
 
 jive_subroutine *
 jive_testarch_subroutine_create(struct jive_region * region,

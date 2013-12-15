@@ -29,13 +29,13 @@ create_testgraph_postop_xfer(jive_context * context)
 	);
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "retval");
+	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "retval");
 	
 	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
 	jive_output * arg2 = jive_subroutine_value_parameter(subroutine, 1);
 	jive_output * retval = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[sub_gpr_index],
+		&jive_testarch_instr_sub_gpr,
 		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
 	jive_node_gate_input(leave, retval_gate, retval);
 	
@@ -55,14 +55,14 @@ create_testgraph_preop_xfer(jive_context * context)
 	);
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "retval");
-	jive_gate * retval2_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "retval2");
+	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "retval");
+	jive_gate * retval2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "retval2");
 	
 	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
 	jive_output * arg2 = jive_subroutine_value_parameter(subroutine, 1);
 	jive_output * retval = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[sub_gpr_index],
+		&jive_testarch_instr_sub_gpr,
 		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
 	jive_node_gate_input(leave, retval_gate, retval);
 	jive_node_gate_input(leave, retval2_gate, arg1);
@@ -83,14 +83,14 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 	);
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "retval");
-	jive_gate * retval2_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "retval2");
+	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "retval");
+	jive_gate * retval2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "retval2");
 	
 	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
 	jive_output * arg2 = jive_subroutine_value_parameter(subroutine, 1);
 	jive_output * retval = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[sub_gpr_index],
+		&jive_testarch_instr_sub_gpr,
 		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
 	jive_node_gate_input(leave, retval_gate, retval);
 	jive_node_gate_input(leave, retval2_gate, arg1);
@@ -113,15 +113,15 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 	jive_node * enter = &subroutine->enter->base;
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_gate * save_r3_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "save_r3");
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "retval");
-	jive_gate * retval2_gate = jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "retval2");
+	jive_gate * save_r3_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "save_r3");
+	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "retval");
+	jive_gate * retval2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "retval2");
 	
 	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
 	jive_output * arg2 = jive_subroutine_value_parameter(subroutine, 1);
 	jive_output * retval = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[sub_gpr_index],
+		&jive_testarch_instr_sub_gpr,
 		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
 	jive_node_gate_input(leave, retval_gate, retval);
 	jive_node_gate_input(leave, retval2_gate, arg1);

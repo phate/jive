@@ -31,27 +31,27 @@ create_testgraph(jive_context * ctx)
 	jive_node * leave = &subroutine->leave->base;
 	jive_region * region = subroutine->region;
 	
-	jive_gate * callee_saved_r2 = jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "saved_r2");
+	jive_gate * callee_saved_r2 = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "saved_r2");
 	jive_node_gate_input(leave, callee_saved_r2, jive_node_gate_output(enter, callee_saved_r2));
 	
-	jive_gate * callee_saved_r3 = jive_register_class_create_gate(&jive_testarch_regcls[cls_r3], graph, "saved_r0");
+	jive_gate * callee_saved_r3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "saved_r0");
 	jive_node_gate_input(leave, callee_saved_r3, jive_node_gate_output(enter, callee_saved_r3));
 	
 	jive_output * arg1 = jive_subroutine_value_parameter(subroutine, 0);
 	
 	jive_output * v1 = jive_instruction_node_create(
 		region,
-		&jive_testarch_instructions[load_disp_index],
+		&jive_testarch_instr_load_disp,
 		(jive_output *[]){arg1}, (int64_t []){0})->outputs[0];
 	
 	jive_output * v2 = jive_instruction_node_create(
 		region,
-		&jive_testarch_instructions[load_disp_index],
+		&jive_testarch_instr_load_disp,
 		(jive_output *[]){arg1}, (int64_t []){4})->outputs[0];
 
 	jive_output * sum = jive_instruction_node_create(
 		region,
-		&jive_testarch_instructions[add_index],
+		&jive_testarch_instr_add,
 		(jive_output *[]){v1, v2}, 0)->outputs[0];
 	
 	jive_subroutine_value_return(subroutine, 0, sum);

@@ -64,16 +64,16 @@ create_testgraph_mismatch3(jive_context * context)
 	jive_node * enter = &subroutine->enter->base;
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "cls1"));
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"), arg1);
+	jive_output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"));
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"), arg1);
 	
-	jive_output * arg2 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"));
+	jive_output * arg2 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	jive_node * node = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[setr1_index],
+		&jive_testarch_instr_setr1,
 		&arg2, NULL);
 	arg2 = node->outputs[0];
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"), arg2);
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"), arg2);
 	
 	return graph;
 }
@@ -90,15 +90,15 @@ create_testgraph_mismatch4(jive_context * context)
 	jive_node * enter = &subroutine->enter->base;
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"));
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "cls1"), arg1);
+	jive_output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), arg1);
 	
-	jive_output * arg2 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"));
+	jive_output * arg2 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	jive_node * node = jive_instruction_node_create(
 		subroutine->region,
-		&jive_testarch_instructions[setr1_index],
+		&jive_testarch_instr_setr1,
 		&arg2, NULL);
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"), node->outputs[0]);
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"), node->outputs[0]);
 	
 	return graph;
 }
@@ -115,24 +115,24 @@ create_testgraph_mismatch5(jive_context * context)
 	jive_node * enter = &subroutine->enter->base;
 	jive_node * leave = &subroutine->leave->base;
 	
-	jive_output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "reg"));
+	jive_output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	
 	jive_node * tmp1 = jive_instruction_node_create(
 		subroutine->region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
-	jive_node_gate_input(tmp1, jive_register_class_create_gate(&jive_testarch_regcls[cls_r1], graph, "cls1"), arg1);
-	jive_output * out1 = jive_node_gate_output(tmp1, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "regs"));
+	jive_node_gate_input(tmp1, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), arg1);
+	jive_output * out1 = jive_node_gate_output(tmp1, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "regs"));
 	
 	jive_node * tmp2 = jive_instruction_node_create(
 		subroutine->region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
-	jive_node_gate_input(tmp2, jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "cls2"), arg1);
-	jive_output * out2 = jive_node_gate_output(tmp2, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "regs"));
+	jive_node_gate_input(tmp2, jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2"), arg1);
+	jive_output * out2 = jive_node_gate_output(tmp2, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "regs"));
 	
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "retval1"), out1);
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "retval2"), out2);
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval1"), out1);
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval2"), out2);
 	
 	return graph;
 }
@@ -154,13 +154,13 @@ create_testgraph_mismatch6(jive_context * context)
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	
-	jive_node_gate_input(mid, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon"), jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon")));
+	jive_node_gate_input(mid, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon"), jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon")));
 	
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon"), jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon")));
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon"), jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon")));
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon"), jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon")));
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon"), jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon")));
 	
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "r2"), jive_node_gate_output(mid, jive_register_class_create_gate(&jive_testarch_regcls[cls_gpr], graph, "anon")));
-	jive_node_gate_output(mid, jive_register_class_create_gate(&jive_testarch_regcls[cls_r2], graph, "r2"));
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "r2"), jive_node_gate_output(mid, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "anon")));
+	jive_node_gate_output(mid, jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "r2"));
 	
 	return graph;
 }
