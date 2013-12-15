@@ -59,7 +59,7 @@ jive_serialization_instrcls_register(
 
 void
 jive_serialization_instrset_register(
-	const struct jive_instruction_class * const instrclss,
+	const struct jive_instruction_class * const * instrclss,
 	size_t ninstrclss,
 	const char prefix[]);
 

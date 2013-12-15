@@ -1562,7 +1562,78 @@ const struct jive_instructionset jive_i386_instructionset = {
 	.reg_classifier = &jive_i386_reg_classifier
 };
 
+static const jive_instruction_class * const registered_instrs[] = {
+	&jive_i386_instructions[jive_i386_ret],
+	
+	&jive_i386_instructions[jive_i386_int_load_imm],
+	&jive_i386_instructions[jive_i386_int_load32_disp],
+	&jive_i386_instructions[jive_i386_int_store32_disp],
+	
+	&jive_i386_instructions[jive_i386_int_add],
+	&jive_i386_instructions[jive_i386_int_sub],
+	&jive_i386_instructions[jive_i386_int_and],
+	&jive_i386_instructions[jive_i386_int_or],
+	&jive_i386_instructions[jive_i386_int_xor],
+	&jive_i386_instructions[jive_i386_int_mul],
+	&jive_i386_instructions[jive_i386_int_sdiv],
+	&jive_i386_instructions[jive_i386_int_udiv],
+	&jive_i386_instructions[jive_i386_int_shl],	
+	&jive_i386_instructions[jive_i386_int_shr],
+	&jive_i386_instructions[jive_i386_int_ashr],
+	&jive_i386_instructions[jive_i386_int_mul_expand_signed],
+	&jive_i386_instructions[jive_i386_int_mul_expand_unsigned],
+	
+	&jive_i386_instructions[jive_i386_int_add_immediate],
+	&jive_i386_instructions[jive_i386_int_sub_immediate],
+	&jive_i386_instructions[jive_i386_int_and_immediate],
+	&jive_i386_instructions[jive_i386_int_or_immediate],
+	&jive_i386_instructions[jive_i386_int_xor_immediate],
+	&jive_i386_instructions[jive_i386_int_mul_immediate],
+	&jive_i386_instructions[jive_i386_int_shl_immediate],
+	&jive_i386_instructions[jive_i386_int_shr_immediate],
+	&jive_i386_instructions[jive_i386_int_ashr_immediate],
+	
+	&jive_i386_instructions[jive_i386_int_neg],
+	&jive_i386_instructions[jive_i386_int_not],
+	
+	&jive_i386_instructions[jive_i386_int_transfer],
+	
+	&jive_i386_instructions[jive_i386_call],
+	&jive_i386_instructions[jive_i386_call_reg],
+
+	&jive_i386_instructions[jive_i386_int_cmp],
+	&jive_i386_instructions[jive_i386_int_cmp_immediate],
+
+	&jive_i386_instructions[jive_i386_int_jump_sless],
+	&jive_i386_instructions[jive_i386_int_jump_uless],
+	&jive_i386_instructions[jive_i386_int_jump_slesseq],
+	&jive_i386_instructions[jive_i386_int_jump_ulesseq],
+	&jive_i386_instructions[jive_i386_int_jump_equal],
+	&jive_i386_instructions[jive_i386_int_jump_notequal],
+	&jive_i386_instructions[jive_i386_int_jump_sgreater],
+	&jive_i386_instructions[jive_i386_int_jump_ugreater],
+	&jive_i386_instructions[jive_i386_int_jump_sgreatereq],
+	&jive_i386_instructions[jive_i386_int_jump_ugreatereq],
+	&jive_i386_instructions[jive_i386_jump],
+
+	&jive_i386_instructions[jive_i386_fp_load_disp],
+
+	&jive_i386_instructions[jive_i386_sse_load32_disp],
+	&jive_i386_instructions[jive_i386_sse_load_abs],
+	&jive_i386_instructions[jive_i386_sse_store32_disp],
+
+	&jive_i386_instructions[jive_i386_sse_xor], 
+
+	&jive_i386_instructions[jive_i386_float_add],
+	&jive_i386_instructions[jive_i386_float_sub],
+	&jive_i386_instructions[jive_i386_float_mul],
+	&jive_i386_instructions[jive_i386_float_div],
+
+	&jive_i386_instructions[jive_i386_float_cmp],
+	&jive_i386_instructions[jive_i386_float_transfer]
+};
+
 JIVE_SERIALIZATION_INSTRSET_REGISTER(
-	jive_i386_instructions,
-	sizeof(jive_i386_instructions) / sizeof(jive_i386_instructions[0]),
+	registered_instrs,
+	sizeof(registered_instrs) / sizeof(registered_instrs[0]),
 	"i386_");

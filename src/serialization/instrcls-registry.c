@@ -246,7 +246,7 @@ jive_serialization_instrcls_register(
 
 void
 jive_serialization_instrset_register(
-	const struct jive_instruction_class * instrclss,
+	const struct jive_instruction_class * const * instrclss,
 	size_t ninstrclss,
 	const char prefix[])
 {
@@ -254,7 +254,7 @@ jive_serialization_instrset_register(
 	size_t prefix_len = strlen(prefix);
 	size_t n;
 	for (n = 0; n < ninstrclss; ++n) {
-		const struct jive_instruction_class * icls = &instrclss[n];
+		const struct jive_instruction_class * icls = instrclss[n];
 		if (!icls->name)
 			continue;
 		jive_serialization_instrcls * sercls = malloc(sizeof(*sercls));
