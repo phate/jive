@@ -82,7 +82,7 @@ jive_serialization_rescls_register(
 
 void
 jive_serialization_regclsset_register(
-	const struct jive_register_class * regset,
+	const struct jive_register_class * const * regset,
 	size_t count,
 	const char prefix[]);
 

@@ -278,7 +278,7 @@ jive_serialization_rescls_register(
 
 void
 jive_serialization_regclsset_register(
-	const struct jive_register_class * regset,
+	const struct jive_register_class * const * regclsset,
 	size_t count,
 	const char prefix[])
 {
@@ -286,7 +286,7 @@ jive_serialization_regclsset_register(
 	pthread_mutex_lock(&rescls_registry_singleton_lock);
 	size_t n;
 	for (n = 0; n < count; ++n) {
-		const jive_register_class * regcls = &regset[n];
+		const jive_register_class * regcls = regclsset[n];
 		if (!regcls->base.name)
 			continue;
 		size_t name_len = strlen(regcls->base.name);
