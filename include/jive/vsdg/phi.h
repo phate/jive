@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -7,8 +7,9 @@
 #ifndef JIVE_VSDG_PHI_H
 #define JIVE_VSDG_PHI_H
 
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/anchor.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/node.h>
 
 /* phi node normal form */
 
@@ -84,6 +85,8 @@ jive_phi_node_get_region(const struct jive_phi_node * self)
 JIVE_EXPORTED_INLINE struct jive_region *
 jive_phi_region_cast(struct jive_region * region)
 {
+	if (region->graph->root_region == region)
+		return NULL;
 	if (region->bottom == NULL)
 		return NULL;
 
@@ -97,6 +100,8 @@ jive_phi_region_cast(struct jive_region * region)
 JIVE_EXPORTED_INLINE const struct jive_region *
 jive_phi_region_const_cast(const struct jive_region * region)
 {
+	if (region->graph->root_region == region)
+		return NULL;
 	if (region->bottom == NULL)
 		return NULL;
 
