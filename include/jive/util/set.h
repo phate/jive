@@ -22,6 +22,7 @@ struct set_type##_bucket { \
 	struct set_type##_entry * last; \
 }; \
 \
+typedef struct set_type set_type; \
 struct set_type { \
 	struct jive_context * context; \
 	size_t nitems, nbuckets, mask; \
