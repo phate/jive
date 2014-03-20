@@ -14,6 +14,7 @@
 
 #define JIVE_DECLARE_STACK_TYPE(stack_type, item_type) \
 \
+typedef struct stack_type stack_type; \
 struct stack_type { \
 	struct jive_context * context; \
 	item_type * items; \
