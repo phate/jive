@@ -217,6 +217,13 @@ set_type##_replace(struct set_type * self, const struct set_type * other) \
 	*self = *other; \
 } \
 \
+static inline bool \
+set_type##_is_empty(const struct set_type * self) \
+{ \
+	return (set_type##_size(self) == 0); \
+} \
+\
+static inline void \
 set_type##_union(const struct set_type * self, const struct set_type * other, \
 	struct set_type * result) \
 { \
