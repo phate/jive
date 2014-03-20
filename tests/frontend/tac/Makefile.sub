@@ -1,0 +1,2 @@
+TESTS+=\
+	frontend/tac/test-tac \

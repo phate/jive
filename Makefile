@@ -207,7 +207,9 @@ LIBJIVE_SRC += \
 	src/frontend/clg_node.c \
 	src/frontend/clg.c \
 	src/frontend/cfg_node.c \
+	src/frontend/basic_block.c \
 	src/frontend/cfg.c \
+	src/frontend/tac/three_address_code.c \
 	
 # shaper
 LIBJIVE_SRC += \
