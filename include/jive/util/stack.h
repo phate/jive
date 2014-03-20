@@ -100,5 +100,15 @@ stack_type##_clear(struct stack_type * self) \
 { \
 	self->nitems = 0; \
 } \
+\
+static inline void \
+stack_type##_copy(const struct stack_type * self, struct stack_type * other) \
+{ \
+	stack_type##_clear(other); \
+\
+	size_t n; \
+	for (n = 0; n < self->nitems; n++) \
+		stack_type##_push(other, self->items[n]); \
+} \
 
 #endif
