@@ -1,0 +1,3 @@
+TESTS+=\
+	frontend/tac/bitstring/arithmetic/test-bitsum \
+

@@ -1,5 +1,5 @@
 # Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
-# Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+# Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
@@ -215,6 +215,7 @@ LIBJIVE_SRC += \
 	src/frontend/tac/reference.c \
 	src/frontend/tac/call.c \
 	src/frontend/tac/bitstring/bitconstant.c \
+	src/frontend/tac/bitstring/arithmetic/bitsum.c \
 	
 # shaper
 LIBJIVE_SRC += \
