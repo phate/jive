@@ -94,5 +94,11 @@ stack_type##_is_empty(const struct stack_type * self) \
 { \
 	return stack_type##_size(self) == 0; \
 } \
+\
+static inline void \
+stack_type##_clear(struct stack_type * self) \
+{ \
+	self->nitems = 0; \
+} \
 
 #endif
