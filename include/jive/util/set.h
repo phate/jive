@@ -6,6 +6,7 @@
 #ifndef JIVE_UTIL_SET_H
 #define JIVE_UTIL_SET_H
 
+#include <jive/context.h>
 #include <jive/util/hash.h>
 
 #define JIVE_DECLARE_SET_TYPE(set_type, item_type) \
