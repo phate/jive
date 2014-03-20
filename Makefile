@@ -211,6 +211,7 @@ LIBJIVE_SRC += \
 	src/frontend/cfg.c \
 	src/frontend/tac/three_address_code.c \
 	src/frontend/tac/variable.c \
+	src/frontend/tac/assignment.c \
 	
 # shaper
 LIBJIVE_SRC += \
