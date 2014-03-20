@@ -88,5 +88,11 @@ stack_type##_contains(const struct stack_type * self, item_type item) \
 	\
 	return false; \
 } \
+\
+static inline bool \
+stack_type##_is_empty(const struct stack_type * self) \
+{ \
+	return stack_type##_size(self) == 0; \
+} \
 
 #endif
