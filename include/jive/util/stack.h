@@ -46,7 +46,7 @@ stack_type##_fini(struct stack_type * self) \
 } \
 \
 static inline void \
-stack_type##_push(struct stack_type * self, const item_type item) \
+stack_type##_push(struct stack_type * self, item_type item) \
 { \
 	if (self->size == self->nitems) { \
 		size_t new_size = 2 * self->size + 1; \
@@ -57,7 +57,7 @@ stack_type##_push(struct stack_type * self, const item_type item) \
 } \
 \
 static inline item_type \
-stack_type##_top(struct stack_type * self) \
+stack_type##_top(const struct stack_type * self) \
 { \
 	JIVE_DEBUG_ASSERT(self->nitems != 0); \
 	return self->items[self->nitems-1]; \
