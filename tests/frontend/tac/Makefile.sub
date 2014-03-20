@@ -1,2 +1,3 @@
 TESTS+=\
 	frontend/tac/test-tac \
+	frontend/tac/test-variable \
