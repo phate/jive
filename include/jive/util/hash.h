@@ -108,6 +108,12 @@ hash_type##_lookup(const struct hash_type * self, key_type keyval) \
 	return entry; \
 } \
  \
+static inline size_t \
+hash_type##_size(const struct hash_type * self) \
+{ \
+	return self->nitems; \
+} \
+\
 static inline void \
 hash_type##_iterator_next_bucket(struct hash_type##_iterator * iterator) \
 { \
