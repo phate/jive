@@ -210,6 +210,13 @@ set_type##_copy(const struct set_type * self, struct set_type * other) \
 		set_type##_insert(other, iterator.entry->item); \
 } \
 \
+static inline void \
+set_type##_replace(struct set_type * self, const struct set_type * other) \
+{ \
+	set_type##_fini(self); \
+	*self = *other; \
+} \
+\
 set_type##_union(const struct set_type * self, const struct set_type * other, \
 	struct set_type * result) \
 { \
