@@ -209,6 +209,7 @@ LIBJIVE_SRC += \
 	src/frontend/cfg_node.c \
 	src/frontend/basic_block.c \
 	src/frontend/cfg.c \
+	src/frontend/cfg-scc.c \
 	src/frontend/tac/three_address_code.c \
 	src/frontend/tac/variable.c \
 	src/frontend/tac/assignment.c \
