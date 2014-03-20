@@ -49,10 +49,13 @@ do { \
 	else (list_head).last = (object)->anchor.prev; \
 } while(0) \
 
+#define JIVE_LIST_ITERATE_FROM(start, object, anchor) \
+	for (object = start; object; object = object->anchor.next)
+
 /* iterate through linked list of objects; the list may not be modified during
 iteration */
 #define JIVE_LIST_ITERATE(list_head, object, anchor) \
-	for(object = (list_head).first; object; object = object->anchor.next)
+	JIVE_LIST_ITERATE_FROM((list_head.first), object, anchor)
 
 /* iterate through linked list of objects; the list may not be modified during
 iteration, except for the current element which may be removed from the list */
