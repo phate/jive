@@ -214,6 +214,7 @@ LIBJIVE_SRC += \
 	src/frontend/tac/assignment.c \
 	src/frontend/tac/reference.c \
 	src/frontend/tac/call.c \
+	src/frontend/tac/bitstring/bitconstant.c \
 	
 # shaper
 LIBJIVE_SRC += \
