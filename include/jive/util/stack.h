@@ -63,6 +63,14 @@ stack_type##_top(const struct stack_type * self) \
 	return self->items[self->nitems-1]; \
 } \
 \
+static inline item_type \
+stack_type##_poptop(struct stack_type * self) \
+{ \
+	item_type item = stack_type##_top(self); \
+	stack_type##_pop(self); \
+	return item; \
+} \
+\
 static inline size_t \
 stack_type##_size(const struct stack_type * self) \
 { \
