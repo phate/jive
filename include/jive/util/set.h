@@ -202,6 +202,14 @@ set_type##_equals(const struct set_type * self, const struct set_type * other) \
 } \
 \
 static inline void \
+set_type##_copy(const struct set_type * self, struct set_type * other) \
+{ \
+	set_type##_clear(other); \
+	struct set_type##_iterator iterator; \
+	for (iterator = set_type##_begin(self); iterator.entry; set_type##_iterator_next(&iterator)) \
+		set_type##_insert(other, iterator.entry->item); \
+} \
+\
 set_type##_union(const struct set_type * self, const struct set_type * other, \
 	struct set_type * result) \
 { \
