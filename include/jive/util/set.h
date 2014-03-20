@@ -10,7 +10,7 @@
 
 #define JIVE_DECLARE_SET_TYPE(set_type, item_type) \
 struct set_type##_entry { \
-	const item_type  * item; \
+	item_type  * item; \
 	struct { \
 		struct set_type##_entry * prev; \
 		struct set_type##_entry * next; \
@@ -104,7 +104,7 @@ set_type##_contains(const struct set_type * self, const item_type * item) \
 } \
 \
 static inline void \
-set_type##_insert(struct set_type * self, const item_type * item) \
+set_type##_insert(struct set_type * self, item_type * item) \
 { \
 	if (set_type##_contains(self, item)) \
 		return; \
@@ -139,7 +139,7 @@ set_type##_remove(struct set_type * self, const item_type * item) \
 } \
 \
 static inline size_t \
-set_type##_size(struct set_type * self) \
+set_type##_size(const struct set_type * self) \
 { \
 	return self->nitems; \
 } \
