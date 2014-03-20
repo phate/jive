@@ -76,5 +76,17 @@ stack_type##_size(const struct stack_type * self) \
 { \
 	return self->nitems; \
 } \
+\
+static inline bool \
+stack_type##_contains(const struct stack_type * self, item_type item) \
+{ \
+	size_t n; \
+	for (n = 0; n < self->nitems; n++) {\
+		if (self->items[n] == item) \
+			return true; \
+	} \
+	\
+	return false; \
+} \
 
 #endif
