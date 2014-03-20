@@ -213,6 +213,7 @@ LIBJIVE_SRC += \
 	src/frontend/tac/variable.c \
 	src/frontend/tac/assignment.c \
 	src/frontend/tac/reference.c \
+	src/frontend/tac/call.c \
 	
 # shaper
 LIBJIVE_SRC += \
