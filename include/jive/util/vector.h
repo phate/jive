@@ -14,6 +14,7 @@ struct jive_context;
 
 #define JIVE_DECLARE_VECTOR_TYPE(vector_type, value_type) \
  \
+typedef struct vector_type vector_type; \
 struct vector_type { \
 	value_type * items; \
 	size_t size, space; \
