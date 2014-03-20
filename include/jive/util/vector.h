@@ -75,5 +75,11 @@ vector_type##_swap(struct vector_type * self, size_t index1, size_t index2) \
 	self->items[index1] = self->items[index2]; \
 	self->items[index2] = tmp; \
 } \
+\
+static inline bool \
+vector_type##_is_empty(const struct vector_type * self) \
+{ \
+	return vector_type##_size(self) == 0; \
+}
 
 #endif
