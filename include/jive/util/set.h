@@ -246,6 +246,18 @@ set_type##_intersection(const struct set_type * self, const struct set_type * ot
 			set_type##_insert(result, iterator.entry->item); \
 	} \
 } \
+\
+static inline void \
+set_type##_difference(const struct set_type * self, const struct set_type * other, \
+	struct set_type * result) \
+{ \
+	set_type##_clear(result); \
+	struct set_type##_iterator iterator; \
+	for (iterator = set_type##_begin(self); iterator.entry; set_type##_iterator_next(&iterator)) { \
+		if (!set_type##_contains(other, iterator.entry->item)) \
+			set_type##_insert(result, iterator.entry->item); \
+	} \
+} \
 
 #define JIVE_SET_ITERATE(set_type, set, iterator) \
 	for (iterator = set_type##_begin(&set); iterator.entry; set_type##_iterator_next(&iterator))
