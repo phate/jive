@@ -201,6 +201,13 @@ LIBJIVE_SRC += \
 	src/arch/label-mapper.c \
 	src/arch/immediate-node.c \
 	src/arch/immediate-type.c \
+
+# frontend
+LIBJIVE_SRC += \
+	src/frontend/clg_node.c \
+	src/frontend/clg.c \
+	src/frontend/cfg_node.c \
+	src/frontend/cfg.c \
 	
 # shaper
 LIBJIVE_SRC += \
