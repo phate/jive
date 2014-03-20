@@ -216,6 +216,7 @@ LIBJIVE_SRC += \
 	src/frontend/tac/call.c \
 	src/frontend/tac/bitstring/bitconstant.c \
 	src/frontend/tac/bitstring/arithmetic/bitsum.c \
+	src/frontend/tac/bitstring/comparison/bitequal.c \
 	
 # shaper
 LIBJIVE_SRC += \
