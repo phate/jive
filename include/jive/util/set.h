@@ -187,6 +187,20 @@ set_type##_begin(const struct set_type * self) \
 	return iterator; \
 } \
 \
+static inline bool \
+set_type##_equals(const struct set_type * self, const struct set_type * other) \
+{ \
+	if (set_type##_size(self) != set_type##_size(other)) \
+		return false; \
+	\
+	struct set_type##_iterator iterator; \
+	for (iterator = set_type##_begin(self); iterator.entry; set_type##_iterator_next(&iterator)) \
+		if (!set_type##_contains(other, iterator.entry->item)) \
+			return false;	\
+	\
+	return true; \
+} \
+\
 static inline void \
 set_type##_union(const struct set_type * self, const struct set_type * other, \
 	struct set_type * result) \
