@@ -67,5 +67,13 @@ vector_type##_push_back(struct vector_type * self, jive_context * context, value
 	self->items[self->size] = value; \
 	self->size ++; \
 } \
+\
+static inline void \
+vector_type##_swap(struct vector_type * self, size_t index1, size_t index2) \
+{ \
+	value_type tmp = vector_type##_item(self, index1); \
+	self->items[index1] = self->items[index2]; \
+	self->items[index2] = tmp; \
+} \
 
 #endif
