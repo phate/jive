@@ -1,13 +1,16 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/union.h>
 
+#include <jive/arch/addresstype.h>
+#include <jive/arch/load.h>
+#include <jive/types/bitstring/type.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/util/buffer.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -160,6 +163,8 @@ jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * at
 	return &node->base;
 }
 
+static const jive_unop_reduction_path_t jive_choose_reduction_load = 128;
+
 static jive_unop_reduction_path_t
 jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
 	const jive_output * operand)
@@ -171,6 +176,9 @@ jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_nod
 	if (jive_node_isinstance(operand->node, &JIVE_UNIFY_NODE))
 		return jive_unop_reduction_inverse;
 
+	if (jive_node_isinstance(operand->node, &JIVE_LOAD_NODE))
+		return jive_choose_reduction_load;
+
 	return jive_unop_reduction_none;
 }
 
@@ -180,6 +188,30 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 {
 	if (path == jive_unop_reduction_inverse)
 		return operand->node->inputs[0]->origin;
+
+	if (path == jive_choose_reduction_load) {
+		jive_node * load_node = operand->node;
+		jive_output * address = load_node->inputs[0]->origin;
+
+		const jive_union_declaration * decl = ((const jive_union_type *)
+			jive_output_get_type(load_node->outputs[0]))->decl;
+		const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *) attrs_;
+
+		size_t n;
+		size_t nstates = load_node->ninputs-1;
+		jive_output * states[nstates];
+		for (n = 0; n < nstates; n++)
+			states[n] = load_node->inputs[n+1]->origin;
+	
+		if (jive_output_isinstance(address, &JIVE_ADDRESS_OUTPUT)) {
+			return jive_load_by_address_create(address, decl->elements[attrs->element],
+				nstates, states);
+		} else {
+			size_t nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) address);
+			return jive_load_by_bitstring_create(address, nbits, decl->elements[attrs->element],
+				nstates, states);
+		}
+	}
 
 	return NULL;
 }
