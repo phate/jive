@@ -434,7 +434,9 @@ const jive_reg_classifier jive_testarch_reg_classifier = {
 	.any = (1 << jive_testarch_classify_gpr) | (1 << jive_testarch_classify_cc),
 	.classify_type = jive_testarch_classify_type_,
 	.classify_fixed_arithmetic = jive_testarch_classify_fixed_arithmetic_,
+	.classify_float_arithmetic = NULL,
 	.classify_fixed_compare = jive_testarch_classify_fixed_compare_,
+	.classify_float_compare = NULL,
 	.classify_address = jive_testarch_classify_address_,
 	
 	.nclasses = 2,
