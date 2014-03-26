@@ -123,7 +123,6 @@ const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 		.parent = &JIVE_UNARY_OPERATION,
 		.name = "ADDRESS_TO_BITSTRING",
 		.fini = jive_address_to_bitstring_node_fini_, /* override */
-		.get_label = jive_node_get_label_, /* inherit */
 		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
 		.get_label = jive_node_get_label_, /* inherit */
 		.get_attrs = jive_address_to_bitstring_node_get_attrs_, /* override */
