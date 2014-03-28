@@ -350,6 +350,26 @@ const jive_instruction_class jive_testarch_instr_jump = {
 	.ninputs = 0, .noutputs = 0, .nimmediates = 0,
 	.code = 0
 };
+const jive_instruction_class jive_testarch_instr_jumpz = {
+	.name = "jumpz",
+	.mnemonic = "jumpz",
+	.encode = 0,
+	.write_asm = 0,
+	.inregs = gpr_params, .outregs = 0, .flags = jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	.ninputs = 1, .noutputs = 0, .nimmediates = 0,
+	.code = 0,
+	.inverse_jump = &jive_testarch_instr_jumpnz
+};
+const jive_instruction_class jive_testarch_instr_jumpnz = {
+	.name = "jumpnz",
+	.mnemonic = "jumpnz",
+	.encode = 0,
+	.write_asm = 0,
+	.inregs = gpr_params, .outregs = 0, .flags = jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	.ninputs = 1, .noutputs = 0, .nimmediates = 0,
+	.code = 0,
+	.inverse_jump = &jive_testarch_instr_jumpz
+};
 
 static jive_xfer_description
 create_xfer(jive_region * region, jive_output * origin,

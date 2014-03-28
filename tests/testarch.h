@@ -45,6 +45,8 @@ extern const jive_instruction_class jive_testarch_instr_add_gpr;
 extern const jive_instruction_class jive_testarch_instr_sub_gpr;
 
 extern const jive_instruction_class jive_testarch_instr_jump;
+extern const jive_instruction_class jive_testarch_instr_jumpz;
+extern const jive_instruction_class jive_testarch_instr_jumpnz;
 
 jive_subroutine_deprecated *
 jive_testarch_subroutine_create(struct jive_region * region,
