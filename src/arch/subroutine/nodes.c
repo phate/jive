@@ -21,6 +21,7 @@ const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_subroutine_enter_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -62,6 +63,7 @@ const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_node_get_attrs_, /* inherit */
 	.match_attrs = jive_node_match_attrs_, /* inherit */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_subroutine_leave_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };
@@ -112,6 +114,7 @@ const jive_node_class JIVE_SUBROUTINE_NODE = {
 	.get_label = jive_node_get_label_, /* inherit */
 	.get_attrs = jive_subroutine_node_get_attrs_, /* override */
 	.match_attrs = jive_subroutine_node_match_attrs_, /* override */
+	.check_operands = jive_node_check_operands_, /* inherit */
 	.create = jive_subroutine_node_create_, /* override */
 	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
 };

@@ -501,6 +501,8 @@ const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE = {
 
 static const jive_subroutine_abi_class JIVE_TESTARCH_SUBROUTINE_ABI = {
 	.prepare_stackframe = jive_testarch_subroutine_prepare_stackframe_,
+	.add_fp_dependency = NULL,
+	.add_sp_dependency = NULL,
 	.instructionset = &testarch_isa
 };
 
