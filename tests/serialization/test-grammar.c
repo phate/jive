@@ -316,39 +316,52 @@ static int test_main(void)
 		jive_graph_get_nodeclass_form(graph, &JIVE_NODE), false);
 	
 	jive_output * zero8 = jive_bitconstant(graph, 8, "00000000");
+	const char * tmparray0[] = {"out"};
 	verify_serialize_nodeexpr(zero8->node,
 		0, NULL, NULL, /* gates */
 		NULL, /* inputs */
-		(const char *[]){"out"} /* outputs */,
+		tmparray0 /* outputs */,
 		"(;) bitconstant<\"00000000\"> (out:root<>;)");
+	const char * tmparray1[] = {"out"};
 	verify_deserialize_nodeexpr("(;) bitconstant<\"00000000\"> (out:root<>;)",
 		graph->root_region,
 		NULL, NULL, /* input names & origins */
-		(const char *[]){"out"}, /* output names */
+		tmparray1, /* output names */
 		zero8->node);
 	
 	jive_output * one8 = jive_bitconstant(graph, 8, "10000000");
 	jive_output * two8 = jive_bitconstant(graph, 8, "01000000");
-	jive_output * add8 = jive_bitsum(2, (jive_output *[]) {one8, two8});
+	jive_output * tmparray2[] = {one8, two8};
+	jive_output * add8 = jive_bitsum(2, tmparray2);
 	assert(add8->node->class_ == &JIVE_BITSUM_NODE);
 	assert(add8->node != zero8->node);
+	const char * tmparray3[] = {"a", "b"};
+	const char * tmparray4[] = {"sum"};
 	verify_serialize_nodeexpr(add8->node,
 		0, NULL, NULL, /* gates */
-		(const char *[]){"a", "b"}, (const char *[]){"sum"},
+		tmparray3, tmparray4,
 		"(a:root<> b:root<>;) bitsum<> (sum:root<>;)");
+	const char * tmparray5[] = {"a", "b"};
+	jive_output * tmparray6[] = {one8, two8};
+	const char * tmparray7[] = {"sum"};
 	verify_deserialize_nodeexpr("(a:root<> b:root<>;) bitsum<> (sum:root<>;)",
 		graph->root_region,
-		(const char *[]){"a", "b"}, (jive_output *[]) {one8, two8}, /* input names & origins */
-		(const char *[]){"sum"}, /* output names */
+		tmparray5, tmparray6, /* input names & origins */
+		tmparray7, /* output names */
 		add8->node);
+	jive_output * tmparray8[] = {one8, two8};
 	
-	jive_output * cat16 = jive_bitconcat(2, (jive_output *[]) {one8, two8});
+	jive_output * cat16 = jive_bitconcat(2, tmparray8);
 	jive_node * cat16n = cat16->node;
 	jive_node_gate_input(cat16n, bit8gate, zero8);
 	jive_node_gate_output(cat16n, stackgate);
+	const char * tmparray9[] = {"bit8gate", "stackgate"};
+	jive_gate* tmparray10[] = {bit8gate, stackgate};
+	const char * tmparray11[] = {"a", "b", "c"};
+	const char * tmparray12[] = {"out", "r"};
 	verify_serialize_nodeexpr(cat16n,
-		2, (const char *[]){"bit8gate", "stackgate"}, (jive_gate*[]){bit8gate, stackgate}, /* gates */
-		(const char *[]){"a", "b", "c"}, (const char *[]){"out", "r"},
+		2, tmparray9, tmparray10, /* gates */
+		tmparray11, tmparray12,
 		"(a:root<> b:root<>;c:root<>:bit8gate) bitconcat<> (out:root<>;r:stackslot<4,4>:stackgate)");
 	
 	jive_graph_destroy(graph);

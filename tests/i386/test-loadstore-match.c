@@ -72,9 +72,10 @@ prepare_graph(jive_context * ctx)
 {
 	jive_graph * graph;
 	graph = jive_graph_create(ctx);
+	jive_argument_type  tmparray0[] = { jive_argument_int, jive_argument_int };
 	
 	jive_subroutine sub = jive_i386_subroutine_begin(graph,
-		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
+		2, tmparray0,
 		0, NULL);
 	
 	jive_output * memstate = jive_subroutine_simple_get_global_state(sub);
@@ -99,8 +100,9 @@ prepare_graph(jive_context * ctx)
 		arg2, 32,
 		(const jive_value_type *) bits32,
 		1, &state2);
+	jive_output * tmparray1[] = {v1, v2};
 	
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){v1, v2});
+	jive_output * sum = jive_bitsum(2, tmparray1);
 	jive_output * diff = jive_bitdifference(v1, v2);
 
 	jive_output * state_;
@@ -115,8 +117,9 @@ prepare_graph(jive_context * ctx)
 		(const jive_value_type *) bits32, diff,
 		1, &state2, &state_);
 	state2 = state_;
+	jive_output* tmparray2[] = {state1, state2};
 	
-	memstate = jive_state_merge(memtype, 2, (jive_output*[]){state1, state2});
+	memstate = jive_state_merge(memtype, 2, tmparray2);
 	jive_subroutine_simple_set_global_state(sub, memstate);
 	
 	jive_graph_export(graph, jive_subroutine_end(sub)->outputs[0]);

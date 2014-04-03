@@ -231,10 +231,10 @@ jive_memlayout_mapper_simple_map_address_(jive_memlayout_mapper * self_)
 }
 
 const jive_memlayout_mapper_class JIVE_MEMLAYOUT_MAPPER_SIMPLE = {
-	.map_record = jive_memlayout_mapper_simple_map_record_,
-	.map_union = jive_memlayout_mapper_simple_map_union_,
-	.map_bitstring = jive_memlayout_mapper_simple_map_bitstring_,
-	.map_address = jive_memlayout_mapper_simple_map_address_
+	map_record : jive_memlayout_mapper_simple_map_record_,
+	map_union : jive_memlayout_mapper_simple_map_union_,
+	map_bitstring : jive_memlayout_mapper_simple_map_bitstring_,
+	map_address : jive_memlayout_mapper_simple_map_address_
 };
 
 void

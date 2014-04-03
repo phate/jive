@@ -21,9 +21,11 @@ static jive_graph *
 create_testgraph(jive_context * ctx)
 {
 	jive_graph * graph = jive_graph_create(ctx);
+	const jive_argument_type tmparray0[] = { jive_argument_int };
+	const jive_argument_type tmparray1[] = { jive_argument_int };
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
-		1, (const jive_argument_type[]) { jive_argument_int },
-		1, (const jive_argument_type[]) { jive_argument_int }
+		1, tmparray0,
+		1, tmparray1
 	);
 
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
@@ -41,21 +43,26 @@ create_testgraph(jive_context * ctx)
 	jive_node_gate_input(leave_mux, callee_saved_r3, jive_node_gate_output(enter_mux, callee_saved_r3));
 	
 	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive_output * tmparray2[] = {arg1};
+	int64_t  tmparray3[] = {0};
 	
 	jive_output * v1 = jive_instruction_node_create(
 		region,
 		&jive_testarch_instr_load_disp,
-		(jive_output *[]){arg1}, (int64_t []){0})->outputs[0];
+		tmparray2, tmparray3)->outputs[0];
+	jive_output * tmparray4[] = {arg1};
+	int64_t  tmparray5[] = {4};
 	
 	jive_output * v2 = jive_instruction_node_create(
 		region,
 		&jive_testarch_instr_load_disp,
-		(jive_output *[]){arg1}, (int64_t []){4})->outputs[0];
+		tmparray4, tmparray5)->outputs[0];
+jive_output * tmparray6[] = {v1, v2};
 
 	jive_output * sum = jive_instruction_node_create(
 		region,
 		&jive_testarch_instr_add,
-		(jive_output *[]){v1, v2}, 0)->outputs[0];
+		tmparray6, 0)->outputs[0];
 	
 	jive_subroutine_simple_set_result(subroutine, 0, sum);
 	

@@ -41,14 +41,16 @@ create_testgraph(jive_context * ctx)
 	jive_output * arg3 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg3"));
 	
 	jive_output * sum;
+	jive_output * tmparray0[] = {arg1, arg2};
 	sum = jive_instruction_node_create(
 		graph->root_region,
 		&jive_testarch_instr_add,
-		(jive_output *[]){arg1, arg2}, 0)->outputs[0];
+		tmparray0, 0)->outputs[0];
+	jive_output * tmparray1[] = {sum, arg3};
 	sum = jive_instruction_node_create(
 		graph->root_region,
 		&jive_testarch_instr_add,
-		(jive_output *[]){sum, arg3}, 0)->outputs[0];
+		tmparray1, 0)->outputs[0];
 	
 	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "ret1"), sum);
 	

@@ -37,16 +37,16 @@ jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE = {
-	.parent = &JIVE_NULLARY_OPERATION,
-	.name = "BITSYMBOLICCONSTANT",
-	.fini = jive_bitsymbolicconstant_node_fini_, /* override */
-	.get_default_normal_form = jive_nullary_operation_get_default_normal_form_, /* inherit */
-	.get_label = jive_bitsymbolicconstant_node_get_label_, /* override */
-	.get_attrs = jive_bitsymbolicconstant_node_get_attrs_, /* override */
-	.match_attrs = jive_bitsymbolicconstant_node_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_bitsymbolicconstant_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NULLARY_OPERATION,
+	name : "BITSYMBOLICCONSTANT",
+	fini : jive_bitsymbolicconstant_node_fini_, /* override */
+	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
+	get_label : jive_bitsymbolicconstant_node_get_label_, /* override */
+	get_attrs : jive_bitsymbolicconstant_node_get_attrs_, /* override */
+	match_attrs : jive_bitsymbolicconstant_node_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_bitsymbolicconstant_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

@@ -152,7 +152,7 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 		case jive_token_integral: {
 			jive_token_ostream_simple_flush_whitespace(self);
 			char repr[64];
-			snprintf(repr, sizeof(repr), "%"PRId64, token->v.integral);
+			snprintf(repr, sizeof(repr), "%""lld", token->v.integral);
 			jive_buffer_putstr(self->buffer, repr);
 			self->need_whitespace = true;
 			break;
@@ -184,8 +184,8 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 }
 
 static const jive_token_ostream_class JIVE_TOKEN_OSTREAM_SIMPLE = {
-	.destroy = jive_token_ostream_simple_destroy_,
-	.put = jive_token_ostream_simple_put_
+	destroy : jive_token_ostream_simple_destroy_,
+	put : jive_token_ostream_simple_put_
 };
 
 jive_token_ostream *
@@ -374,8 +374,8 @@ jive_token_istream_simple_advance_(jive_token_istream * self_)
 }
 
 static const jive_token_istream_class JIVE_TOKEN_ISTREAM_SIMPLE = {
-	.destroy = jive_token_istream_simple_destroy_,
-	.advance = jive_token_istream_simple_advance_
+	destroy : jive_token_istream_simple_destroy_,
+	advance : jive_token_istream_simple_advance_
 };
 
 jive_token_istream *

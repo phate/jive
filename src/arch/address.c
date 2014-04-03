@@ -48,24 +48,24 @@ jive_memberof_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_c
 	const jive_node_attrs * attrs_, jive_output * operand_);
 
 const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
-	.base = {
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "MEMBEROF",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_memberof_node_get_label_, /* override */
-		.get_attrs = jive_memberof_node_get_attrs_, /* override */
-		.match_attrs = jive_memberof_node_match_attrs_, /* override */
-		.check_operands = jive_memberof_node_check_operands_, /* override */
-		.create = jive_memberof_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : {
+		parent : &JIVE_UNARY_OPERATION,
+		name : "MEMBEROF",
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_memberof_node_get_label_, /* override */
+		get_attrs : jive_memberof_node_get_attrs_, /* override */
+		match_attrs : jive_memberof_node_match_attrs_, /* override */
+		check_operands : jive_memberof_node_check_operands_, /* override */
+		create : jive_memberof_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 	
-	.can_reduce_operand = jive_memberof_can_reduce_operand_, /* override */
-	.reduce_operand = jive_memberof_reduce_operand_ /* override */
+	can_reduce_operand : jive_memberof_can_reduce_operand_, /* override */
+	reduce_operand : jive_memberof_reduce_operand_ /* override */
 };
 
 static void
@@ -212,24 +212,24 @@ jive_containerof_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 	const jive_node_attrs * attrs_, jive_output * operand_);
 
 const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
-	.base = {
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "CONTAINEROF",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_containerof_node_get_label_, /* override */
-		.get_attrs = jive_containerof_node_get_attrs_, /* override */
-		.match_attrs = jive_containerof_node_match_attrs_, /* override */
-		.check_operands = jive_containerof_node_check_operands_, /* override */
-		.create = jive_containerof_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : {
+		parent : &JIVE_UNARY_OPERATION,
+		name : "CONTAINEROF",
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_containerof_node_get_label_, /* override */
+		get_attrs : jive_containerof_node_get_attrs_, /* override */
+		match_attrs : jive_containerof_node_match_attrs_, /* override */
+		check_operands : jive_containerof_node_check_operands_, /* override */
+		create : jive_containerof_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 	
-	.can_reduce_operand = jive_containerof_can_reduce_operand_, /* override */
-	.reduce_operand = jive_containerof_reduce_operand_ /* override */
+	can_reduce_operand : jive_containerof_can_reduce_operand_, /* override */
+	reduce_operand : jive_containerof_reduce_operand_ /* override */
 };
 
 static void
@@ -374,27 +374,27 @@ static jive_output *
 jive_arraysubscript_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand1, jive_output * operand2);
 
 const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_ = {
-	.base = {
-		.parent = &JIVE_BINARY_OPERATION,
-		.name = "ARRAYSUBSCRIPT",
-		.fini = jive_arraysubscript_node_fini_, /* override */
-		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_node_get_label_, /* inherit */
-		.get_attrs = jive_arraysubscript_node_get_attrs_, /* override */
-		.match_attrs = jive_arraysubscript_node_match_attrs_, /* override */
-		.check_operands = jive_arraysubscript_node_check_operands_, /* override */
-		.create = jive_arraysubscript_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : {
+		parent : &JIVE_BINARY_OPERATION,
+		name : "ARRAYSUBSCRIPT",
+		fini : jive_arraysubscript_node_fini_, /* override */
+		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_node_get_label_, /* inherit */
+		get_attrs : jive_arraysubscript_node_get_attrs_, /* override */
+		match_attrs : jive_arraysubscript_node_match_attrs_, /* override */
+		check_operands : jive_arraysubscript_node_check_operands_, /* override */
+		create : jive_arraysubscript_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.flags = jive_binary_operation_none,
-	.single_apply_under = NULL,
-	.multi_apply_under = NULL,
-	.distributive_over = NULL,
-	.distributive_under = NULL,
+	flags : jive_binary_operation_none,
+	single_apply_under : NULL,
+	multi_apply_under : NULL,
+	distributive_over : NULL,
+	distributive_under : NULL,
 	
-	.can_reduce_operand_pair = jive_arraysubscript_can_reduce_operand_pair_, /* override */
-	.reduce_operand_pair = jive_arraysubscript_reduce_operand_pair_ /* override */
+	can_reduce_operand_pair : jive_arraysubscript_can_reduce_operand_pair_, /* override */
+	reduce_operand_pair : jive_arraysubscript_reduce_operand_pair_ /* override */
 };
 
 static void
@@ -518,7 +518,8 @@ jive_output *
 jive_arraysubscript(jive_output * address, const jive_value_type * element_type,
 	jive_output * index)
 {
-	jive_region * region = jive_region_innermost(2, (jive_output *[]){address, index});
+	jive_output * tmparray0[] = {address, index};
+	jive_region * region = jive_region_innermost(2, tmparray0);
 	
 	jive_arraysubscript_node_attrs attrs;
 	attrs.element_type = (jive_value_type *) element_type;
@@ -556,27 +557,27 @@ jive_arrayindex_reduce_operand_pair_(jive_binop_reduction_path_t path, const jiv
 	const jive_node_attrs * attrs_, jive_output * operand1, jive_output * operand2);
 
 const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_ = {
-	.base = {
-		.parent = &JIVE_BINARY_OPERATION,
-		.name = "ARRAYINDEX",
-		.fini = jive_arrayindex_node_fini_, /* override */
-		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_node_get_label_, /* inherit */
-		.get_attrs = jive_arrayindex_node_get_attrs_, /* override */
-		.match_attrs = jive_arrayindex_node_match_attrs_, /* override */
-		.check_operands = jive_arrayindex_node_check_operands_, /* inherit */
-		.create = jive_arrayindex_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : {
+		parent : &JIVE_BINARY_OPERATION,
+		name : "ARRAYINDEX",
+		fini : jive_arrayindex_node_fini_, /* override */
+		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_node_get_label_, /* inherit */
+		get_attrs : jive_arrayindex_node_get_attrs_, /* override */
+		match_attrs : jive_arrayindex_node_match_attrs_, /* override */
+		check_operands : jive_arrayindex_node_check_operands_, /* inherit */
+		create : jive_arrayindex_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.flags = jive_binary_operation_none,
-	.single_apply_under = NULL,
-	.multi_apply_under = NULL,
-	.distributive_over = NULL,
-	.distributive_under = NULL,
+	flags : jive_binary_operation_none,
+	single_apply_under : NULL,
+	multi_apply_under : NULL,
+	distributive_over : NULL,
+	distributive_under : NULL,
 	
-	.can_reduce_operand_pair = jive_arrayindex_can_reduce_operand_pair_, /* override */
-	.reduce_operand_pair = jive_arrayindex_reduce_operand_pair_ /* override */
+	can_reduce_operand_pair : jive_arrayindex_can_reduce_operand_pair_, /* override */
+	reduce_operand_pair : jive_arrayindex_reduce_operand_pair_ /* override */
 };
 
 static void
@@ -684,7 +685,8 @@ jive_arrayindex_reduce_operand_pair_(jive_binop_reduction_path_t path, const jiv
 			&attrs->difference_type);
 	
 		index2 = jive_bitnegate(index2);
-		return jive_bitsum(2, (jive_output *[]){index1, index2});
+		jive_output * tmparray1[] = {index1, index2};
+		return jive_bitsum(2, tmparray1);
 	}
 
 	return NULL;
@@ -727,7 +729,8 @@ jive_output *
 jive_arrayindex(jive_output * addr1, jive_output * addr2,
 	const jive_value_type * element_type, const jive_type * difference_type)
 {
-	jive_region * region = jive_region_innermost(2, (jive_output *[]){addr1, addr2});
+	jive_output * tmparray2[] = {addr1, addr2};
+	jive_region * region = jive_region_innermost(2, tmparray2);
 	
 	jive_arrayindex_node_attrs attrs;
 	attrs.element_type = (jive_value_type *) element_type;
@@ -757,16 +760,16 @@ jive_label_to_address_node_create_(struct jive_region * region, const jive_node_
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LABEL_TO_ADDRESS_NODE",
-	.fini = jive_label_to_address_node_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_label_to_address_node_get_label_, /* override */
-	.get_attrs = jive_label_to_address_node_get_attrs_, /* override */
-	.match_attrs = jive_label_to_address_node_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_label_to_address_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "LABEL_TO_ADDRESS_NODE",
+	fini : jive_label_to_address_node_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_label_to_address_node_get_label_, /* override */
+	get_attrs : jive_label_to_address_node_get_attrs_, /* override */
+	match_attrs : jive_label_to_address_node_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_label_to_address_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -864,16 +867,16 @@ jive_label_to_bitstring_node_create_(struct jive_region * region, const jive_nod
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LABEL_TO_BITSTRING_NODE",
-	.fini = jive_label_to_bitstring_node_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_label_to_bitstring_node_get_label_, /* override */
-	.get_attrs = jive_label_to_bitstring_node_get_attrs_, /* override */
-	.match_attrs = jive_label_to_bitstring_node_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_label_to_bitstring_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "LABEL_TO_BITSTRING_NODE",
+	fini : jive_label_to_bitstring_node_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_label_to_bitstring_node_get_label_, /* override */
+	get_attrs : jive_label_to_bitstring_node_get_attrs_, /* override */
+	match_attrs : jive_label_to_bitstring_node_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_label_to_bitstring_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

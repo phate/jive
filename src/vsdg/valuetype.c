@@ -15,40 +15,40 @@
 #include <jive/util/list.h>
 
 static const jive_value_type jive_value_type_singleton = {
-	.base = {.class_ = &JIVE_VALUE_TYPE}
+	base : {class_ : &JIVE_VALUE_TYPE}
 };
 
 const jive_type_class JIVE_VALUE_TYPE = {
-	.parent = &JIVE_TYPE,
-	.name = "X",
-	.fini = jive_value_type_fini_, /* override */
-	.get_label = jive_type_get_label_, /* inherit */
-	.create_input = jive_value_type_create_input_, /* override */
-	.create_output = jive_value_type_create_output_, /* override */
-	.create_gate = jive_value_type_create_gate_, /* override */
-	.equals = jive_type_equals_, /* inherit */
-	.copy = jive_value_type_copy_, /* override */
+	parent : &JIVE_TYPE,
+	name : "X",
+	fini : jive_value_type_fini_, /* override */
+	get_label : jive_type_get_label_, /* inherit */
+	create_input : jive_value_type_create_input_, /* override */
+	create_output : jive_value_type_create_output_, /* override */
+	create_gate : jive_value_type_create_gate_, /* override */
+	equals : jive_type_equals_, /* inherit */
+	copy : jive_value_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_VALUE_INPUT = {
-	.parent = &JIVE_INPUT,
-	.fini = jive_input_fini_, /* inherit */
-	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = jive_value_input_get_type_, /* override */
+	parent : &JIVE_INPUT,
+	fini : jive_input_fini_, /* inherit */
+	get_label : jive_input_get_label_, /* inherit */
+	get_type : jive_value_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_VALUE_OUTPUT = {
-	.parent = &JIVE_OUTPUT,
-	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = jive_value_output_get_type_, /* override */
+	parent : &JIVE_OUTPUT,
+	fini : jive_output_fini_, /* inherit */
+	get_label : jive_output_get_label_, /* inherit */
+	get_type : jive_value_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_VALUE_GATE = {
-	.parent = &JIVE_GATE,
-	.fini = jive_gate_fini_, /* inherit */
-	.get_label = jive_gate_get_label_, /* inherit */
-	.get_type = jive_value_gate_get_type_, /* override */
+	parent : &JIVE_GATE,
+	fini : jive_gate_fini_, /* inherit */
+	get_label : jive_gate_get_label_, /* inherit */
+	get_type : jive_value_gate_get_type_, /* override */
 };
 
 void

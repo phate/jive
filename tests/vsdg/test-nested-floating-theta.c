@@ -22,10 +22,11 @@ static int test_main(void)
 	
 	JIVE_DECLARE_VALUE_TYPE(type);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	const jive_type * tmparray0[] = {type};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
 	
 	jive_theta theta1 = jive_theta_begin(graph);
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta1, top->outputs[0]);

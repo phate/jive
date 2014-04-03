@@ -135,8 +135,8 @@ jive_topdown_traverser_input_change(void * closure, jive_input * input, jive_out
 }
 
 const jive_traverser_class JIVE_TOPDOWN_TRAVERSER = {
-	.fini = &jive_full_traverser_fini,
-	.next = &jive_topdown_traverser_next,
+	fini : &jive_full_traverser_fini,
+	next : &jive_topdown_traverser_next,
 };
 
 static void
@@ -239,8 +239,8 @@ jive_bottomup_traverser_input_change(void * closure, jive_input * input, jive_ou
 }
 
 const jive_traverser_class JIVE_BOTTOMUP_TRAVERSER = {
-	.fini = &jive_full_traverser_fini,
-	.next = &jive_bottomup_traverser_next,
+	fini : &jive_full_traverser_fini,
+	next : &jive_bottomup_traverser_next,
 };
 
 static void
@@ -339,8 +339,8 @@ jive_upward_cone_traverser_input_change(void * closure, jive_input * input, jive
 }
 
 const jive_traverser_class JIVE_UPWARD_CONE_TRAVERSER = {
-	.fini = &jive_full_traverser_fini,
-	.next = &jive_bottomup_traverser_next,
+	fini : &jive_full_traverser_fini,
+	next : &jive_bottomup_traverser_next,
 };
 
 static void
@@ -413,8 +413,8 @@ jive_bottomup_slave_traverser_next(jive_traverser * self_)
 }
 
 const jive_traverser_class JIVE_BOTTOMUP_SLAVE_TRAVERSER = {
-	.fini = 0,
-	.next = jive_bottomup_slave_traverser_next,
+	fini : 0,
+	next : jive_bottomup_slave_traverser_next,
 };
 
 static jive_bottomup_slave_traverser *

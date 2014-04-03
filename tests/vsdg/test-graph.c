@@ -22,15 +22,17 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	
 	JIVE_DECLARE_TYPE(type);
+	const jive_type * tmparray0[] = {type};
 	
 	jive_node * n1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
 	assert(n1);
 	assert(n1->depth_from_root == 0);
+	const jive_type * tmparray1[] = {type};
 	
 	jive_node * n2 = jive_node_create(region,
-		1, (const jive_type *[]){type}, &n1->outputs[0],
+		1, tmparray1, &n1->outputs[0],
 		0, NULL);
 	assert(n2);
 	assert(n2->depth_from_root == 1);

@@ -74,9 +74,11 @@ static int test_main(void)
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
 	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
+	const jive_type * tmparray0[] = {addr, addr, bits32, bits32, bits16};
+	jive_output * tmparray1[] = {o0, o1, o2, o3, o4};
 	jive_node * bottom = jive_node_create(graph->root_region,
-		5, (const jive_type *[]){addr, addr, bits32, bits32, bits16},
-		(jive_output *[]){o0, o1, o2, o3, o4},
+		5, tmparray0,
+		tmparray1,
 		1, &addr);
 	jive_graph_export(graph, bottom->outputs[0]);
 

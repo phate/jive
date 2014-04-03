@@ -123,16 +123,16 @@ static jive_input *
 jive_i386_subroutine_add_sp_dependency_(const jive_subroutine_deprecated * self, jive_node * node);
 
 const jive_subroutine_class JIVE_I386_SUBROUTINE = {
-	.fini = jive_subroutine_fini_,
-	.value_parameter = jive_i386_subroutine_value_parameter_,
-	.value_return = jive_i386_subroutine_value_return_,
+	fini : jive_subroutine_fini_,
+	value_parameter : jive_i386_subroutine_value_parameter_,
+	value_return : jive_i386_subroutine_value_return_,
 };
 
 const jive_subroutine_abi_class JIVE_I386_SUBROUTINE_ABI = {
-	.prepare_stackframe = jive_i386_subroutine_prepare_stackframe_,
-	.add_fp_dependency = jive_i386_subroutine_add_fp_dependency_,
-	.add_sp_dependency = jive_i386_subroutine_add_sp_dependency_,
-	.instructionset = &jive_i386_instructionset
+	prepare_stackframe : jive_i386_subroutine_prepare_stackframe_,
+	add_fp_dependency : jive_i386_subroutine_add_fp_dependency_,
+	add_sp_dependency : jive_i386_subroutine_add_sp_dependency_,
+	instructionset : &jive_i386_instructionset
 };
 
 static jive_output *
@@ -240,8 +240,8 @@ jive_i386_subroutine_begin(jive_graph * graph,
 		nreturns, return_types);
 	
 	jive_subroutine sub = {
-		.region = s->region,
-		.old_subroutine_struct = s
+		region : s->region,
+		old_subroutine_struct : s
 	};
 	
 	return sub;

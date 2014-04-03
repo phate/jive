@@ -13,36 +13,36 @@
 #include <string.h>
 
 const jive_type_class JIVE_FLOAT_TYPE = {
-	.parent = &JIVE_VALUE_TYPE,
-	.name = "flt",
-	.fini = jive_value_type_fini_, /* inherit */
-	.get_label = jive_type_get_label_, /* inherit */
-	.create_input = jive_float_type_create_input_, /* override */
+	parent : &JIVE_VALUE_TYPE,
+	name : "flt",
+	fini : jive_value_type_fini_, /* inherit */
+	get_label : jive_type_get_label_, /* inherit */
+	create_input : jive_float_type_create_input_, /* override */
 	.create_output  = jive_float_type_create_output_, /* override */
-	.create_gate = jive_float_type_create_gate_, /* override */
-	.equals = jive_type_equals_, /* override */
-	.copy = jive_float_type_copy_, /* override */ 
+	create_gate : jive_float_type_create_gate_, /* override */
+	equals : jive_type_equals_, /* override */
+	copy : jive_float_type_copy_, /* override */ 
 };
 
 const jive_input_class JIVE_FLOAT_INPUT = {
-	.parent = &JIVE_VALUE_INPUT,
-	.fini = jive_input_fini_, /* inherit */
-	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = jive_float_input_get_type_, /* override */
+	parent : &JIVE_VALUE_INPUT,
+	fini : jive_input_fini_, /* inherit */
+	get_label : jive_input_get_label_, /* inherit */
+	get_type : jive_float_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_FLOAT_OUTPUT = {
-	.parent = &JIVE_VALUE_OUTPUT,
-	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = jive_float_output_get_type_, /* override */
+	parent : &JIVE_VALUE_OUTPUT,
+	fini : jive_output_fini_, /* inherit */
+	get_label : jive_output_get_label_, /* inherit */
+	get_type : jive_float_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_FLOAT_GATE = {
-	.parent = &JIVE_VALUE_GATE,
-	.fini = jive_gate_fini_, /* inherit */
-	.get_label = jive_gate_get_label_, /* inherit */
-	.get_type = jive_float_gate_get_type_, /* override */
+	parent : &JIVE_VALUE_GATE,
+	fini : jive_gate_fini_, /* inherit */
+	get_label : jive_gate_get_label_, /* inherit */
+	get_type : jive_float_gate_get_type_, /* override */
 };
 
 /* float_type inheritable members */

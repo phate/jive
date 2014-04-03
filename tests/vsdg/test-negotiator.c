@@ -72,16 +72,16 @@ negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class NEGTESTNODE = {
-	.parent = &JIVE_NODE,
-	.name = "NEGTESTNODE",
-	.fini = negtestnode_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = negtestnode_get_attrs_, /* override */
-	.match_attrs = negtestnode_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = negtestnode_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "NEGTESTNODE",
+	fini : negtestnode_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : negtestnode_get_attrs_, /* override */
+	match_attrs : negtestnode_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : negtestnode_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -311,16 +311,16 @@ test_negotiator_option_gate_default_(
 }
 
 static const jive_negotiator_class TEST_NEGOTIATOR_CLASS = {
-	.option_fini = test_negotiator_option_fini_,
-	.option_create = test_negotiator_option_create_,
-	.option_equals = test_negotiator_option_equals_,
-	.option_specialize = test_negotiator_option_specialize_,
-	.option_intersect = test_negotiator_option_intersect_,
-	.option_assign = test_negotiator_option_assign_,
-	.option_gate_default = test_negotiator_option_gate_default_,
-	.annotate_node_proper = test_negotiator_annotate_node_proper_,
-	.annotate_node = jive_negotiator_annotate_node_,
-	.process_region = jive_negotiator_process_region_
+	option_fini : test_negotiator_option_fini_,
+	option_create : test_negotiator_option_create_,
+	option_equals : test_negotiator_option_equals_,
+	option_specialize : test_negotiator_option_specialize_,
+	option_intersect : test_negotiator_option_intersect_,
+	option_assign : test_negotiator_option_assign_,
+	option_gate_default : test_negotiator_option_gate_default_,
+	annotate_node_proper : test_negotiator_annotate_node_proper_,
+	annotate_node : jive_negotiator_annotate_node_,
+	process_region : jive_negotiator_process_region_
 };
 
 void

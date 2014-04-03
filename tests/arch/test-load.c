@@ -27,9 +27,10 @@ static int test_main()
 	JIVE_DECLARE_MEMORY_TYPE(memtype);
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	const jive_type * tmparray0[] = {addrtype, addrtype, memtype, bits32};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		4, (const jive_type *[]){addrtype, addrtype, memtype, bits32});
+		4, tmparray0);
 
 	jive_output * load0 = jive_load_by_address_create(top->outputs[0],
 		jive_value_type_cast(bits32), 1, &top->outputs[2]);
@@ -40,9 +41,11 @@ static int test_main()
 	jive_output * load1 = jive_load_by_address_create(top->outputs[1],
 		jive_value_type_cast(bits32), 1, &state);
 	assert(load1 == top->outputs[3]);
+const jive_type * tmparray1[] = {bits32, bits32};
+jive_output * tmparray2[] = {load0, load1};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){bits32, bits32}, (jive_output *[]){load0, load1},
+		2, tmparray1, tmparray2,
 		1, &addrtype);
 	jive_graph_export(graph, bottom->outputs[0]);
 

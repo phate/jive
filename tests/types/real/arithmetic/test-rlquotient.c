@@ -21,9 +21,10 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_REAL_TYPE(rltype);
+	const jive_type* tmparray0[] = {rltype, rltype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type*[]){rltype, rltype});
+		2, tmparray0);
 
 	jive_output * div = jive_rlquotient(top->outputs[0], top->outputs[1]);
 

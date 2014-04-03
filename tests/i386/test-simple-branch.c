@@ -27,30 +27,38 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
+	jive_argument_type  tmparray0[] = { jive_argument_int, jive_argument_int };
+	jive_argument_type  tmparray1[] = { jive_argument_int };
 	
 	jive_subroutine subroutine = jive_i386_subroutine_begin(graph,
-		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
-		1, (jive_argument_type []) { jive_argument_int });
+		2, tmparray0,
+		1, tmparray1);
 	
 	jive_output * p1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	jive_output * p2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	
 	jive_region * fn_region = subroutine.region;
+	jive_output * tmparray2[] = {p1, p2};
 	
 	jive_node * cmp = jive_instruction_node_create(
 		fn_region, &jive_i386_instr_int_cmp,
-		(jive_output *[]){p1, p2}, NULL);
+		tmparray2, NULL);
+	jive_output * tmparray3[] = {cmp->outputs[0]};
+	int64_t tmparray4[] = {0};
 	
 	jive_node * bge = jive_instruction_node_create(
 		fn_region, &jive_i386_instr_int_jump_sgreatereq,
-		(jive_output *[]){cmp->outputs[0]}, (int64_t[]){0});
+		tmparray3, tmparray4);
 	
 	const jive_type * bits32 = jive_output_get_type(p1);
 	
 	jive_output * max;
+	const jive_type * tmparray5[] = {bits32};
+	jive_output * tmparray6[] = {p2};
+	jive_output * tmparray7[] = {p1};
 	jive_gamma(bge->outputs[0], 1,
-		(const jive_type *[]){bits32},
-		(jive_output *[]){p2}, (jive_output *[]){p1}, &max);
+		tmparray5,
+		tmparray6, tmparray7, &max);
 	
 	jive_subroutine_simple_set_result(subroutine, 0, max);
 	

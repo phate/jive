@@ -14,28 +14,28 @@ jive_itgnot_node_create_(struct jive_region * region, const jive_node_attrs * at
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_itgunary_operation_class JIVE_ITGNOT_NODE_ = {
-	.base = { /* jive_unary_operation_class */
-		.base = { /* jive_node_class */
-			.parent = &JIVE_ITGUNARY_NODE,
-			.name = "ITGNOT",
-			.fini = jive_node_fini_, /* inherit */
-			.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-			.get_label = jive_node_get_label_, /* inherit */
-			.get_attrs = jive_node_get_attrs_, /* inherit */
-			.match_attrs = jive_node_match_attrs_, /* inherit */
-			.check_operands = jive_itgunary_operation_check_operands_, /* inherit */
-			.create = jive_itgnot_node_create_, /* override */
-			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_unary_operation_class */
+		base : { /* jive_node_class */
+			parent : &JIVE_ITGUNARY_NODE,
+			name : "ITGNOT",
+			fini : jive_node_fini_, /* inherit */
+			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+			get_label : jive_node_get_label_, /* inherit */
+			get_attrs : jive_node_get_attrs_, /* inherit */
+			match_attrs : jive_node_match_attrs_, /* inherit */
+			check_operands : jive_itgunary_operation_check_operands_, /* inherit */
+			create : jive_itgnot_node_create_, /* override */
+			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
-		.single_apply_over = NULL,
-		.multi_apply_over = NULL,
+		single_apply_over : NULL,
+		multi_apply_over : NULL,
 
-		.can_reduce_operand = jive_unary_operation_can_reduce_operand_, /* inherit */
-		.reduce_operand = jive_unary_operation_reduce_operand_ /* inherit */
+		can_reduce_operand : jive_unary_operation_can_reduce_operand_, /* inherit */
+		reduce_operand : jive_unary_operation_reduce_operand_ /* inherit */
 	},
 
-	.type = jive_itgop_code_not
+	type : jive_itgop_code_not
 };
 
 static void

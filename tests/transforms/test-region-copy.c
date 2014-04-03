@@ -23,20 +23,23 @@ static int test_main(void)
 	
 	JIVE_DECLARE_TYPE(type);
 	JIVE_DECLARE_CONTROL_TYPE(control_type);
+	const jive_type * tmparray0[] = {type, type, control_type};
 	
 	jive_node * top = jive_node_create(r1,
 		0, NULL, NULL,
-		3, (const jive_type *[]){type, type, control_type});
+		3, tmparray0);
 	r1->top = top;
 	
 	jive_output * tmp;
+	const jive_type * tmparray1[] = {type};
 	jive_gamma(top->outputs[2],
-		1, (const jive_type *[]){type},
+		1, tmparray1,
 		&top->outputs[0], &top->outputs[1], &tmp);
 	jive_node * gamma = tmp->node;
+	const jive_type * tmparray2[] = {type};
 	
 	jive_node * bottom = jive_node_create(r1,
-		1, (const jive_type *[]){type}, &gamma->outputs[0],
+		1, tmparray2, &gamma->outputs[0],
 		0, NULL);
 	r1->bottom = bottom;
 	

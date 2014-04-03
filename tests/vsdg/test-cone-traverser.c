@@ -27,22 +27,28 @@ prepare_graph(jive_context * ctx)
 	
 	jive_region * region = g.graph->root_region;
 	JIVE_DECLARE_TYPE(type);
+	const jive_type * tmparray0[] = {type};
 	
 	g.a1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
+	const jive_type * tmparray1[] = {type};
+	const jive_type * tmparray2[] = {type};
 	
 	g.a2 = jive_node_create(region,
-		1, (const jive_type *[]){type}, &g.a1->outputs[0],
-		0, (const jive_type *[]){type});
+		1, tmparray1, &g.a1->outputs[0],
+		0, tmparray2);
+	const jive_type * tmparray3[] = {type};
 	
 	g.b1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray3);
+	const jive_type * tmparray4[] = {type};
+	const jive_type * tmparray5[] = {type};
 	
 	g.b2 = jive_node_create(region,
-		1, (const jive_type *[]){type}, &g.b1->outputs[0],
-		0, (const jive_type *[]){type});
+		1, tmparray4, &g.b1->outputs[0],
+		0, tmparray5);
 	
 	return g;
 }

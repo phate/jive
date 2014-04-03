@@ -51,37 +51,50 @@ static int test_main(void)
 	
 	JIVE_DECLARE_TYPE(type);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
+	const jive_type * tmparray0[] = {type};
 	
 	jive_node * n1 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
 	
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
+	const jive_type * tmparray1[] = {type};
+	const jive_type * tmparray2[] = {type};
 	
 	jive_node * n2 = jive_node_create(r1,
-		1, (const jive_type *[]){type}, n1->outputs,
-		1, (const jive_type *[]){type});
+		1, tmparray1, n1->outputs,
+		1, tmparray2);
 	
 	jive_region * r2 = jive_region_create_subregion(r1);
 	jive_region * r3 = jive_region_create_subregion(r1);
+	const jive_type * tmparray3[] = {type};
+	const jive_type * tmparray4[] = {anchor_type};
 	
 	jive_node * n3 = jive_node_create(r2,
-		1, (const jive_type *[]){type}, n2->outputs,
-		1, (const jive_type *[]){anchor_type});
+		1, tmparray3, n2->outputs,
+		1, tmparray4);
+	const jive_type * tmparray5[] = {type};
+	const jive_type * tmparray6[] = {anchor_type};
 	jive_node * n4 = jive_node_create(r3,
-		1, (const jive_type *[]){type}, n2->outputs,
-		1, (const jive_type *[]){anchor_type});
+		1, tmparray5, n2->outputs,
+		1, tmparray6);
+	const jive_type * tmparray7[] = {anchor_type, anchor_type};
+	jive_output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
+	const jive_type * tmparray9[] = {type};
 	
 	jive_node * n5 = jive_node_create(r1,
-		2, (const jive_type *[]){anchor_type, anchor_type}, (jive_output *[]){n3->outputs[0], n4->outputs[0]},
-		1, (const jive_type *[]){type});
+		2, tmparray7, tmparray8,
+		1, tmparray9);
+	const jive_type * tmparray10[] = {type};
+	const jive_type * tmparray11[] = {anchor_type};
 	
 	jive_node * n6 = jive_node_create(r1,
-		1, (const jive_type *[]){type}, n5->outputs,
-		1, (const jive_type *[]){anchor_type});
+		1, tmparray10, n5->outputs,
+		1, tmparray11);
+	const jive_type * tmparray12[] = {anchor_type};
 	
 	jive_node * n7 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){anchor_type}, n6->outputs,
+		1, tmparray12, n6->outputs,
 		0, NULL);
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);

@@ -22,7 +22,8 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, &bits32, (const char *[]){"arg"});
+	const char * tmparray0[] = {"arg"};
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, &bits32, tmparray0);
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 4);
@@ -30,12 +31,14 @@ static int test_main(void)
 	jive_node_normal_form * sum_nf = jive_graph_get_nodeclass_form(graph, &JIVE_BITSUM_NODE);
 	assert(sum_nf);
 	jive_node_normal_form_set_mutable(sum_nf, false);
+jive_output * tmparray1[] = {lambda->arguments[0], c0};
 
-	jive_output * sum0 = jive_bitsum(2, (jive_output *[]){lambda->arguments[0], c0});
+	jive_output * sum0 = jive_bitsum(2, tmparray1);
 	assert(jive_node_isinstance(sum0->node, &JIVE_BITSUM_NODE));
 	assert(sum0->node->noperands == 2);
+	jive_output * tmparray2[] = {sum0, c1};
 	
-	jive_output * sum1 = jive_bitsum(2, (jive_output *[]){sum0, c1});
+	jive_output * sum1 = jive_bitsum(2, tmparray2);
 	assert(jive_node_isinstance(sum1->node, &JIVE_BITSUM_NODE));
 	assert(sum1->node->noperands == 2);
 

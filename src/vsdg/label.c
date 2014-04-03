@@ -17,44 +17,44 @@
 /* label, abstract base type */
 
 const jive_label_class JIVE_LABEL = {
-	.parent = 0,
-	.fini = 0,
+	parent : 0,
+	fini : 0,
 };
 
 /* special "current" label */
 
 const jive_label_class JIVE_LABEL_CURRENT = {
-	.parent = &JIVE_LABEL,
-	.fini = 0,
+	parent : &JIVE_LABEL,
+	fini : 0,
 };
 
 const jive_label jive_label_current = {
-	.class_ = &JIVE_LABEL_CURRENT,
-	.flags = jive_label_flags_none,
+	class_ : &JIVE_LABEL_CURRENT,
+	flags : jive_label_flags_none,
 };
 
 /* special "fpoffset" label */
 
 const jive_label_class JIVE_LABEL_FPOFFSET = {
-	.parent = &JIVE_LABEL,
-	.fini = 0,
+	parent : &JIVE_LABEL,
+	fini : 0,
 };
 
 const jive_label jive_label_fpoffset = {
-	.class_ = &JIVE_LABEL_FPOFFSET,
-	.flags = jive_label_flags_none,
+	class_ : &JIVE_LABEL_FPOFFSET,
+	flags : jive_label_flags_none,
 };
 
 /* special "spoffset" label */
 
 const jive_label_class JIVE_LABEL_SPOFFSET = {
-	.parent = &JIVE_LABEL,
-	.fini = 0,
+	parent : &JIVE_LABEL,
+	fini : 0,
 };
 
 const jive_label jive_label_spoffset = {
-	.class_ = &JIVE_LABEL_SPOFFSET,
-	.flags = jive_label_flags_none,
+	class_ : &JIVE_LABEL_SPOFFSET,
+	flags : jive_label_flags_none,
 };
 
 /* external labels */
@@ -67,8 +67,8 @@ jive_label_external_fini_(jive_label * self_)
 }
 
 const jive_label_class JIVE_LABEL_EXTERNAL = {
-	.parent = &JIVE_LABEL,
-	.fini = jive_label_external_fini_,
+	parent : &JIVE_LABEL,
+	fini : jive_label_external_fini_,
 };
 
 

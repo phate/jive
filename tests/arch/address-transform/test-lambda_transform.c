@@ -24,8 +24,9 @@ test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+const char * tmparray0[] = {"x"};
 
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrtype, (const char *[]){"x"});
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrtype, tmparray0);
 	jive_output * fct = jive_lambda_end(lambda, 1, &addrtype, lambda->arguments);
 
 	const jive_type * fcttype = jive_output_get_type(fct);

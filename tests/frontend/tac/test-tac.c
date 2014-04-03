@@ -23,8 +23,9 @@ static int test_main(void)
 	jive_basic_block * basic_block = jive_basic_block_cast(jive_basic_block_create(clg_node->cfg));
 
 	jive_three_address_code * op0 = jive_three_address_code_create_(basic_block, NULL, 0, NULL);
+	struct jive_three_address_code * tmparray0[] = {op0, op0};
 	jive_three_address_code_create_(basic_block, NULL,
-		2, (struct jive_three_address_code *[]){op0, op0});
+		2, tmparray0);
 
 //	jive_cfg_view(cfg);
 

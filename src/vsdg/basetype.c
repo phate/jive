@@ -19,7 +19,7 @@
 
 /* static type instance, to be returned by type queries */
 const jive_type jive_type_singleton = {
-	.class_ = &JIVE_TYPE
+	class_ : &JIVE_TYPE
 };
 
 void
@@ -106,15 +106,15 @@ jive_type_create_input(const jive_type * self, struct jive_node * node, size_t i
 }
 
 const jive_type_class JIVE_TYPE = {
-	.parent = 0,
-	.name = "X",
-	.fini = jive_type_fini_,
-	.get_label = jive_type_get_label_,
-	.create_input = jive_type_create_input_,
-	.create_output = jive_type_create_output_,
-	.create_gate = jive_type_create_gate_,
-	.equals = jive_type_equals_,
-	.copy = jive_type_copy_
+	parent : 0,
+	name : "X",
+	fini : jive_type_fini_,
+	get_label : jive_type_get_label_,
+	create_input : jive_type_create_input_,
+	create_output : jive_type_create_output_,
+	create_gate : jive_type_create_gate_,
+	equals : jive_type_equals_,
+	copy : jive_type_copy_
 };
 
 void
@@ -127,10 +127,10 @@ jive_type_destroy(struct jive_type * self, struct jive_context * context)
 /* inputs */
 
 const struct jive_input_class JIVE_INPUT = {
-	.parent = 0,
-	.fini = jive_input_fini_,
-	.get_label = jive_input_get_label_,
-	.get_type = jive_input_get_type_,
+	parent : 0,
+	fini : jive_input_fini_,
+	get_label : jive_input_get_label_,
+	get_type : jive_input_get_type_,
 };
 
 static inline void
@@ -381,10 +381,10 @@ jive_input_destroy(jive_input * self)
 /* outputs */
 
 const struct jive_output_class JIVE_OUTPUT = {
-	.parent = 0,
-	.fini = &jive_output_fini_,
-	.get_label = &jive_output_get_label_,
-	.get_type = &jive_output_get_type_,
+	parent : 0,
+	fini : &jive_output_fini_,
+	get_label : &jive_output_get_label_,
+	get_type : &jive_output_get_type_,
 };
 
 void jive_output_init_(
@@ -554,10 +554,10 @@ jive_output_destroy(jive_output * self)
 /* gates */
 
 const jive_gate_class JIVE_GATE = {
-	.parent = 0,
-	.fini = jive_gate_fini_,
-	.get_label = jive_gate_get_label_,
-	.get_type = jive_gate_get_type_,
+	parent : 0,
+	fini : jive_gate_fini_,
+	get_label : jive_gate_get_label_,
+	get_type : jive_gate_get_type_,
 };
 
 void

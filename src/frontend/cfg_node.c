@@ -16,11 +16,11 @@
 #include <string.h>
 
 const struct jive_cfg_node_class JIVE_CFG_NODE = {
-	.parent = 0,
-	.name = "CFG_NODE",
-	.fini = jive_cfg_node_fini_,
-	.get_label = jive_cfg_node_get_label_,
-	.create = jive_cfg_node_create_
+	parent : 0,
+	name : "CFG_NODE",
+	fini : jive_cfg_node_fini_,
+	get_label : jive_cfg_node_get_label_,
+	create : jive_cfg_node_create_
 };
 
 void

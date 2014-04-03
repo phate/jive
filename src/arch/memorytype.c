@@ -15,7 +15,7 @@
 #include <jive/vsdg/statetype-private.h>
 
 const jive_memory_type jive_memory_type_singleton = {
-	.base = { .base = { .class_ = &JIVE_MEMORY_TYPE } }
+	base : { base : { class_ : &JIVE_MEMORY_TYPE } }
 };
 
 static void
@@ -94,35 +94,35 @@ jive_memory_type_create_gate_(const jive_type * self, struct jive_graph * graph,
 }
 
 const jive_type_class JIVE_MEMORY_TYPE = {
-	.parent = &JIVE_STATE_TYPE,
-	.name = "mem",
-	.fini = jive_state_type_fini_, /* inherit */
-	.get_label = jive_type_get_label_, /* inherit */
-	.create_input = jive_memory_type_create_input_, /* override */
-	.create_output = jive_memory_type_create_output_, /* override */
-	.create_gate = jive_memory_type_create_gate_, /* override */
-	.equals = jive_type_equals_, /* inherit */
-	.copy = jive_memory_type_copy_, /* override */
+	parent : &JIVE_STATE_TYPE,
+	name : "mem",
+	fini : jive_state_type_fini_, /* inherit */
+	get_label : jive_type_get_label_, /* inherit */
+	create_input : jive_memory_type_create_input_, /* override */
+	create_output : jive_memory_type_create_output_, /* override */
+	create_gate : jive_memory_type_create_gate_, /* override */
+	equals : jive_type_equals_, /* inherit */
+	copy : jive_memory_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_MEMORY_INPUT = {
-	.parent = &JIVE_STATE_INPUT,
-	.fini = jive_input_fini_, /* inherit */
-	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = jive_memory_input_get_type_, /* override */
+	parent : &JIVE_STATE_INPUT,
+	fini : jive_input_fini_, /* inherit */
+	get_label : jive_input_get_label_, /* inherit */
+	get_type : jive_memory_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_MEMORY_OUTPUT = {
-	.parent = &JIVE_STATE_OUTPUT,
-	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = jive_memory_output_get_type_, /* override */
+	parent : &JIVE_STATE_OUTPUT,
+	fini : jive_output_fini_, /* inherit */
+	get_label : jive_output_get_label_, /* inherit */
+	get_type : jive_memory_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_MEMORY_GATE = {
-	.parent = &JIVE_STATE_GATE,
-	.fini = jive_gate_fini_, /* inherit */
-	.get_label = jive_gate_get_label_, /* inherit */
-	.get_type = jive_memory_gate_get_type_, /* override */
+	parent : &JIVE_STATE_GATE,
+	fini : jive_gate_fini_, /* inherit */
+	get_label : jive_gate_get_label_, /* inherit */
+	get_type : jive_memory_gate_get_type_, /* override */
 };
 

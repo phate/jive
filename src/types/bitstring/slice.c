@@ -51,29 +51,29 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_c
 	const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
-	.base = { /* jive_node_class */
+	base : { /* jive_node_class */
 		/* note that parent is JIVE_UNARY_OPERATION, not
 		JIVE_BITUNARY_OPERATION: the latter one is assumed
 		to represent "width-preserving" bit operations (i.e.
 		number of bits per operand/output matches), while
 		the slice operator violates this assumption */
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "BITSLICE",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_bitslice_node_get_label_, /* override */
-		.get_attrs = jive_bitslice_node_get_attrs_, /* override */
-		.match_attrs = jive_bitslice_node_match_attrs_, /* override */
-		.check_operands = jive_bitunary_operation_check_operands_, /* inherit */
-		.create = jive_bitslice_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+		parent : &JIVE_UNARY_OPERATION,
+		name : "BITSLICE",
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_bitslice_node_get_label_, /* override */
+		get_attrs : jive_bitslice_node_get_attrs_, /* override */
+		match_attrs : jive_bitslice_node_match_attrs_, /* override */
+		check_operands : jive_bitunary_operation_check_operands_, /* inherit */
+		create : jive_bitslice_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 	
-	.can_reduce_operand = jive_bitslice_can_reduce_operand_, /* override */
-	.reduce_operand = jive_bitslice_reduce_operand_ /* override */
+	can_reduce_operand : jive_bitslice_can_reduce_operand_, /* override */
+	reduce_operand : jive_bitslice_reduce_operand_ /* override */
 };
 
 static void

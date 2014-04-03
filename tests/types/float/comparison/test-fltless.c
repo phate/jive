@@ -23,9 +23,10 @@ static int test_main(void)
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
 	JIVE_DECLARE_FLOAT_TYPE(flttype);
+	const jive_type* tmparray0[] = {flttype, flttype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type*[]){flttype, flttype});
+		2, tmparray0);
 
 	jive_output * less = jive_fltless(top->outputs[0], top->outputs[1]);
 

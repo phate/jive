@@ -37,7 +37,7 @@ jive_##name##_notifier_disconnect_(jive_notifier * _self) \
 } \
  \
 static const jive_notifier_class JIVE_##NAME##_NOTIFIER = { \
-	.disconnect = jive_##name##_notifier_disconnect_ \
+	disconnect : jive_##name##_notifier_disconnect_ \
 }; \
  \
 void \

@@ -26,9 +26,10 @@ test_main(void)
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	jive_function_type * fcttype = jive_function_type_create(context, 1, &addrtype, 1, &addrtype);
+const jive_type * tmparray0[] = {&fcttype->base.base, addrtype};
 
 	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL, 2, (const jive_type *[]){&fcttype->base.base, addrtype});
+		0, NULL, NULL, 2, tmparray0);
 
 	jive_output * results[1];
 	jive_apply_create(top->outputs[0], 1, &top->outputs[1], results);

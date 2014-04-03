@@ -44,11 +44,12 @@ jive_i386_call_node_substitute(jive_call_node * node)
 			&jive_i386_instr_call,
 			0, &imm);
 	} else {
+		jive_output *  tmparray0[] = {address};
 		/* FIXME: cast address to bitstring first */
 		call_instr = jive_instruction_node_create(
 			region,
 			&jive_i386_instr_call_reg,
-			(jive_output * []){address}, NULL);
+			tmparray0, NULL);
 	}
 	
 	/* mark caller-saved regs as clobbered */

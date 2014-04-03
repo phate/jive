@@ -24,9 +24,10 @@ static int test_main()
 
 	JIVE_DECLARE_VALUE_TYPE(vtype);
 	jive_function_type * f0type = jive_function_type_create(context, 0, NULL, 0, NULL);
+	const jive_type * tmparray0[] = {vtype};
 	jive_function_type * f1type = jive_function_type_create(context, 0, NULL, 0, NULL);	
 	jive_function_type * f2type = jive_function_type_create(context, 1, &vtype,
-		1, (const jive_type *[]){vtype});
+		1, tmparray0);
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fns[3];
@@ -36,7 +37,8 @@ static int test_main()
 
 	jive_lambda * l0 = jive_lambda_begin(graph, 0, NULL, NULL);
 	jive_lambda * l1 = jive_lambda_begin(graph, 0, NULL, NULL);
-	jive_lambda * l2 = jive_lambda_begin(graph, 1, &vtype, (const char *[]){"arg"});
+	const char * tmparray1[] = {"arg"};
+	jive_lambda * l2 = jive_lambda_begin(graph, 1, &vtype, tmparray1);
 
 	jive_output * lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
 	jive_output * lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
@@ -53,9 +55,10 @@ static int test_main()
 	jive_phi_end(phi, 3, fns);
 
 	jive_output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
+const jive_type * tmparray2[] = {&f0type->base.base, &f1type->base.base, &f2type->base.base};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		3, (const jive_type *[]){&f0type->base.base, &f1type->base.base, &f2type->base.base}, results,
+		3, tmparray2, results,
 		1, &vtype);
 	jive_graph_export(graph, bottom->outputs[0]);
 

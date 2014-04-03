@@ -45,8 +45,9 @@ jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	self->class_ = &JIVE_GAMMA_NODE;
+	const jive_type * tmparray0[] = {anchor, anchor, ctl};
 	jive_node_init_(self, region,
-		3, (const jive_type *[]){anchor, anchor, ctl}, operands,
+		3, tmparray0, operands,
 		0, NULL);
 	
 	return self;
@@ -64,29 +65,29 @@ jive_gamma_node_get_default_normal_form_(const jive_node_class * cls, jive_node_
 
 
 const jive_node_class JIVE_GAMMA_TAIL_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "GAMMA_TAIL",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_,  /* inherit */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherrit */
-	.create = jive_gamma_tail_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_NODE,
+	name : "GAMMA_TAIL",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherrit */
+	create : jive_gamma_tail_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_GAMMA_NODE = {
-	.parent = &JIVE_ANCHOR_NODE,
-	.name = "GAMMA",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_gamma_node_get_default_normal_form_,  /* override */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherrit */
-	.create = jive_gamma_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_ANCHOR_NODE,
+	name : "GAMMA",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_gamma_node_get_default_normal_form_,  /* override */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherrit */
+	create : jive_gamma_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 static jive_node *
@@ -113,8 +114,10 @@ jive_gamma_node_create(jive_region * region,
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	self->class_ = &JIVE_GAMMA_NODE;
+	const jive_type * tmparray1[] = {anchor, anchor, ctl};
+	jive_output * tmparray2[] = {true_alternative, false_alternative, predicate};
 	jive_node_init_(self, region,
-		3, (const jive_type *[]){anchor, anchor, ctl}, (jive_output *[]){true_alternative, false_alternative, predicate},
+		3, tmparray1, tmparray2,
 		0, NULL);
 	
 	return self;
@@ -294,20 +297,20 @@ jive_region_move(const jive_region * self, jive_region * target)
 /* normal forms */
 
 const jive_gamma_normal_form_class JIVE_GAMMA_NORMAL_FORM_ = {
-	.base = { /* jive_anchor_node_normal_form_class */
-		.base = {	/* jive_node_normal_form_class */
-			.parent = &JIVE_ANCHOR_NODE_NORMAL_FORM,
-			.fini = jive_node_normal_form_fini_,	/* inherit */
-			.normalize_node = jive_gamma_normal_form_normalize_node_,	/* override */
-			.operands_are_normalized = jive_gamma_normal_form_operands_are_normalized_,	/* override */
-			.normalized_create = NULL,
-			.set_mutable = jive_node_normal_form_set_mutable_,	/* inherit */
-			.set_cse = jive_node_normal_form_set_cse_	/* inherit */
+	base : { /* jive_anchor_node_normal_form_class */
+		base : {	/* jive_node_normal_form_class */
+			parent : &JIVE_ANCHOR_NODE_NORMAL_FORM,
+			fini : jive_node_normal_form_fini_,	/* inherit */
+			normalize_node : jive_gamma_normal_form_normalize_node_,	/* override */
+			operands_are_normalized : jive_gamma_normal_form_operands_are_normalized_,	/* override */
+			normalized_create : NULL,
+			set_mutable : jive_node_normal_form_set_mutable_,	/* inherit */
+			set_cse : jive_node_normal_form_set_cse_	/* inherit */
 		},
-		.set_reducible = jive_gamma_normal_form_class_set_reducible_	/* override */
+		set_reducible : jive_gamma_normal_form_class_set_reducible_	/* override */
 	},
-	.set_predicate_reduction = jive_gamma_normal_form_class_set_predicate_reduction_,
-	.set_invariant_reduction = jive_gamma_normal_form_class_set_invariant_reduction_,
+	set_predicate_reduction : jive_gamma_normal_form_class_set_predicate_reduction_,
+	set_invariant_reduction : jive_gamma_normal_form_class_set_invariant_reduction_,
 };
 
 bool

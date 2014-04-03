@@ -40,24 +40,28 @@ create_testgraph_split(jive_context * context)
 	
 	jive_output * arg1 = jive_node_gate_output(enter_mux, arg1_gate);
 	jive_output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
+	jive_output * tmparray0[] = {arg1};
 	
 	jive_output * critical_value = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_move_gpr,
-		(jive_output *[]) {arg1}, NULL)->outputs[0];
+		tmparray0, NULL)->outputs[0];
+	jive_output * tmparray1[] = {critical_value};
 	
 	jive_output * tmp = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_setr1,
-		(jive_output *[]) {critical_value}, NULL)->outputs[0];
+		tmparray1, NULL)->outputs[0];
+	jive_output * tmparray2[] = {tmp};
 	tmp = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_setr2,
-		(jive_output *[]) {tmp}, NULL)->outputs[0];
+		tmparray2, NULL)->outputs[0];
+	jive_output * tmparray3[] = {critical_value, tmp};
 	tmp = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
-		(jive_output *[]) {critical_value, tmp}, NULL)->outputs[0];
+		tmparray3, NULL)->outputs[0];
 	
 	jive_node_gate_input(leave_mux, retval_gate, tmp);
 	jive_node_gate_input(leave_mux, arg2_gate, arg2);
@@ -113,26 +117,30 @@ create_testgraph_emerg_split(jive_context * context)
 	
 	jive_gate * cls2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2");
 	jive_output * arg1 = jive_node_gate_output(enter_mux, cls2_gate);
+	jive_output * tmparray4[] = {arg1};
 	jive_node * op3 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_setr1,
-		(jive_output *[]) {arg1}, NULL);
+		tmparray4, NULL);
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), op3->outputs[0]);
 	
 	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "1or2");
 	jive_output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
+	jive_output * tmparray5[] = {arg2};
 	jive_node * op1 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_move_gpr,
-		(jive_output *[]) {arg2}, NULL);
+		tmparray5, NULL);
+	jive_output * tmparray6[] = {op1->outputs[0]};
 	jive_node * op2 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_move_gpr,
-		(jive_output *[]) {op1->outputs[0]}, NULL);
+		tmparray6, NULL);
+	jive_output * tmparray7[] = {op2->outputs[0]};
 	jive_node * op4 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_move_gpr,
-		(jive_output *[]) {op2->outputs[0]}, NULL);
+		tmparray7, NULL);
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"), op4->outputs[0]);
 	
 	JIVE_DECLARE_STATE_TYPE(state_type);

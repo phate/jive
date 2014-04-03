@@ -38,27 +38,36 @@ static int test_main(void)
 	
 	jive_region * region = graph->root_region;
 	JIVE_DECLARE_TYPE(type);
+	const jive_type * tmparray0[] = {type};
 	jive_node * n1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
+	const jive_type * tmparray1[] = {type};
+	const jive_type * tmparray2[] = {type};
 	
 	jive_node * n2 = jive_node_create(region,
-		1, (const jive_type *[]){type}, &n1->outputs[0],
-		1, (const jive_type *[]){type});
+		1, tmparray1, &n1->outputs[0],
+		1, tmparray2);
+	const jive_type * tmparray3[] = {type};
+	const jive_type * tmparray4[] = {type};
 	
 	jive_node * n3 = jive_node_create(region,
-		1, (const jive_type *[]){type}, &n2->outputs[0],
-		1, (const jive_type *[]){type});
+		1, tmparray3, &n2->outputs[0],
+		1, tmparray4);
+	const jive_type * tmparray5[] = {type, type};
+	jive_output * tmparray6[] = {n2->outputs[0], n3->outputs[0]};
 	
 	jive_node * bottom = jive_node_create(region,
-		2, (const jive_type *[]){type, type}, (jive_output *[]){n2->outputs[0], n3->outputs[0]},
+		2, tmparray5, tmparray6,
 		1, &type);
 	
 	jive_graph_export(graph, bottom->outputs[0]);
+	const jive_type * tmparray7[] = {type};
+	const jive_type * tmparray8[] = {type};
 	
 	jive_node * n4 = jive_node_create(region,
-		1, (const jive_type *[]){type}, &n1->outputs[0],
-		1, (const jive_type *[]){type});
+		1, tmparray7, &n1->outputs[0],
+		1, tmparray8);
 	
 	jive_output_replace(n2->outputs[0], n4->outputs[0]);
 	assert(n2->outputs[0]->users.first == 0);

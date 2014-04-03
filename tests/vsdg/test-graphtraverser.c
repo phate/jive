@@ -52,18 +52,25 @@ void test_order_enforcement_traversal(jive_context * ctx)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	JIVE_DECLARE_TYPE(type);
+	const jive_type * tmparray0[] = {type, type};
 	
 	jive_node * n1 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type *[]){type, type});
+		2, tmparray0);
+	const jive_type * tmparray1[] = {type};
+	jive_output * tmparray2[] = {n1->outputs[0]};
+	const jive_type * tmparray3[] = {type};
 	
 	jive_node * n2 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){type}, (jive_output *[]){n1->outputs[0]},
-		1, (const jive_type *[]){type});
+		1, tmparray1, tmparray2,
+		1, tmparray3);
+	const jive_type * tmparray4[] = {type, type};
+	jive_output * tmparray5[] = {n2->outputs[0], n1->outputs[1]};
+	const jive_type * tmparray6[] = {type};
 	
 	jive_node * n3 = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){type, type}, (jive_output *[]){n2->outputs[0], n1->outputs[1]},
-		1, (const jive_type *[]){type});
+		2, tmparray4, tmparray5,
+		1, tmparray6);
 	
 	jive_traverser * trav;
 	jive_node * tmp;
@@ -111,19 +118,22 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	JIVE_DECLARE_TYPE(type);
 	node = jive_traverser_next(trav);
 	assert(node==n1);
+	const jive_type * tmparray7[] = {type};
 	
 	/* At this point, n1 has been visited, now create some nodes */
 	
 	jive_node * n3 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray7);
+	const jive_type * tmparray8[] = {type};
 	
 	jive_node * n4 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){type}, &n3->outputs[0],
+		1, tmparray8, &n3->outputs[0],
 		0, NULL);
+	const jive_type * tmparray9[] = {type};
 	
 	jive_node * n5 = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){type}, &n2->outputs[0],
+		1, tmparray9, &n2->outputs[0],
 		0, NULL);
 	
 	/*
@@ -188,13 +198,16 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	JIVE_DECLARE_TYPE(type);
+	const jive_type * tmparray10[] = {type, type};
 	jive_node * n1 = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type *[]){type, type});
+		2, tmparray10);
+	const jive_type * tmparray11[] = {type, type};
+	const jive_type * tmparray12[] = {type};
 	
 	jive_node * n2 = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){type, type}, n1->outputs,
-		1, (const jive_type *[]){type});
+		2, tmparray11, n1->outputs,
+		1, tmparray12);
 
 	jive_node_add_input(graph->root_region->bottom, type, n2->outputs[0]);
 	(void)n1;

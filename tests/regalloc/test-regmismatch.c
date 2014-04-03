@@ -21,10 +21,12 @@ static jive_graph *
 create_testgraph_mismatch1(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
+	const jive_argument_type tmparray0[] = { jive_argument_int, jive_argument_int };
+	const jive_argument_type tmparray1[] = { jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
-		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
-		1, (const jive_argument_type[]) { jive_argument_int }
+		2, tmparray0,
+		1, tmparray1
 	);
 	
 	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
@@ -38,10 +40,12 @@ static jive_graph *
 create_testgraph_mismatch2(jive_context * context)
 {
 	jive_graph * graph = jive_graph_create(context);
+	const jive_argument_type tmparray2[] = { jive_argument_int, jive_argument_int };
+	const jive_argument_type tmparray3[] = { jive_argument_int, jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
-		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int },
-		2, (const jive_argument_type[]) { jive_argument_int, jive_argument_int }
+		2, tmparray2,
+		2, tmparray3
 	);
 	
 	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);

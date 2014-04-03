@@ -19,52 +19,52 @@
 #include <jive/util/rangemap.h>
 
 const jive_resource_class_class JIVE_STACK_RESOURCE = {
-	.parent = &JIVE_ABSTRACT_RESOURCE,
-	.name = "stack",
-	.is_abstract = false
+	parent : &JIVE_ABSTRACT_RESOURCE,
+	name : "stack",
+	is_abstract : false
 };
 
 const jive_resource_class_class JIVE_STACK_FRAMESLOT_RESOURCE = {
-	.parent = &JIVE_STACK_RESOURCE,
-	.name = "stack_frameslot",
-	.is_abstract = false
+	parent : &JIVE_STACK_RESOURCE,
+	name : "stack_frameslot",
+	is_abstract : false
 };
 
 const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE = {
-	.parent = &JIVE_STACK_RESOURCE,
-	.name = "stack_callslot",
-	.is_abstract = false
+	parent : &JIVE_STACK_RESOURCE,
+	name : "stack_callslot",
+	is_abstract : false
 };
 
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
 static const jive_memory_type stackvar_type = {{{&JIVE_MEMORY_TYPE}}};
 
 const jive_resource_class jive_root_stackslot_class = {
-	.class_ = &JIVE_ABSTRACT_RESOURCE,
-	.name = "stackslot",
-	.limit = 0,
-	.names = NULL,
-	.parent = &jive_root_resource_class,
-	.depth = 1,
-	.priority = jive_resource_class_priority_lowest,
-	.demotions = no_demotion,
-	.type = NULL
+	class_ : &JIVE_ABSTRACT_RESOURCE,
+	name : "stackslot",
+	limit : 0,
+	names : NULL,
+	parent : &jive_root_resource_class,
+	depth : 1,
+	priority : jive_resource_class_priority_lowest,
+	demotions : no_demotion,
+	type : NULL
 };
 
 #define MAKE_STACKSLOT_CLASS(SIZE, ALIGNMENT) \
 const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
-	.base = { \
-		.class_ = &JIVE_STACK_RESOURCE, \
-		.name = "stack_s" #SIZE "a" #ALIGNMENT, \
-		.limit = 0, .names = NULL, \
-		.parent = &jive_root_stackslot_class, \
-		.depth = 2, \
-		.priority = jive_resource_class_priority_mem_generic,\
-		.demotions = no_demotion, \
-		.type = &stackvar_type.base.base \
+	base : { \
+		class_ : &JIVE_STACK_RESOURCE, \
+		name : "stack_s" #SIZE "a" #ALIGNMENT, \
+		limit : 0, names : NULL, \
+		parent : &jive_root_stackslot_class, \
+		depth : 2, \
+		priority : jive_resource_class_priority_mem_generic,\
+		demotions : no_demotion, \
+		type : &stackvar_type.base.base \
 	}, \
-	.size = SIZE, \
-	.alignment = ALIGNMENT \
+	size : SIZE, \
+	alignment : ALIGNMENT \
 }
 
 MAKE_STACKSLOT_CLASS(1, 1);
@@ -362,8 +362,8 @@ jive_callslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * se
 }
 
 static jive_stackslot_class_map class_map = {
-	.lock = PTHREAD_MUTEX_INITIALIZER,
-	.map = JIVE_RANGEMAP_INITIALIZER,
+	lock : PTHREAD_MUTEX_INITIALIZER,
+	map : JIVE_RANGEMAP_INITIALIZER,
 };
 
 const jive_resource_class *

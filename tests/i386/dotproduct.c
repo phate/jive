@@ -27,10 +27,11 @@ make_dotprod_function(size_t vector_size)
 {
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
+	jive_argument_type  tmparray0[] = { jive_argument_pointer, jive_argument_pointer };
 	
 	jive_subroutine subroutine = jive_i386_subroutine_begin(
 		graph,
-		2, (jive_argument_type []) { jive_argument_pointer, jive_argument_pointer },
+		2, tmparray0,
 		jive_argument_int);
 	
 	jive_output * p1 = jive_subroutine_simple_get_argument(subroutine, 0);
@@ -50,20 +51,22 @@ make_dotprod_function(size_t vector_size)
 			&jive_i386_instr_int_load32_disp,
 			&p2, &displacement);
 		jive_output * v2 = a2->outputs[0];
+		jive_output * tmparray1[] = {v1, v2};
 		
 		jive_node * m = (jive_node *) jive_instruction_node_create(
 			subroutine.region,
 			&jive_i386_instr_int_mul,
-			(jive_output *[]){v1, v2}, 0);
+			tmparray1, 0);
 		operands[n] = m->outputs[0];
 	}
 	
 	jive_output * value = operands[0];
 	for(n=1; n<vector_size; n++) {
+		jive_output * tmparray2[] = {value, operands[n]};
 		jive_node * s = (jive_node *) jive_instruction_node_create(
 			subroutine.region,
 			&jive_i386_instr_int_add,
-			(jive_output *[]){value, operands[n]}, 0);
+			tmparray2, 0);
 		value = s->outputs[0];
 	}
 	

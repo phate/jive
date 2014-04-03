@@ -49,8 +49,8 @@ jive_seq_point_fini_(jive_seq_point * self)
 }
 
 const jive_seq_point_class JIVE_SEQ_POINT = {
-	.parent = 0,
-	.fini = jive_seq_point_fini_
+	parent : 0,
+	fini : jive_seq_point_fini_
 };
 
 static void
@@ -61,8 +61,8 @@ jive_seq_node_fini_(jive_seq_point * self_)
 }
 
 const jive_seq_point_class JIVE_SEQ_NODE = {
-	.parent = &JIVE_SEQ_POINT,
-	.fini = jive_seq_node_fini_
+	parent : &JIVE_SEQ_POINT,
+	fini : jive_seq_node_fini_
 };
 
 static jive_seq_point *
@@ -350,8 +350,8 @@ jive_seq_instruction_fini_(jive_seq_point * self_)
 }
 
 const jive_seq_point_class JIVE_SEQ_INSTRUCTION = {
-	.parent = &JIVE_SEQ_POINT,
-	.fini = jive_seq_instruction_fini_
+	parent : &JIVE_SEQ_POINT,
+	fini : jive_seq_instruction_fini_
 };
 
 jive_seq_instruction *
@@ -447,8 +447,8 @@ jive_seq_data_fini_(jive_seq_point * self_)
 }
 
 const jive_seq_point_class JIVE_SEQ_DATA = {
-	.parent = &JIVE_SEQ_POINT,
-	.fini = jive_seq_data_fini_
+	parent : &JIVE_SEQ_POINT,
+	fini : jive_seq_data_fini_
 };
 
 jive_seq_data *

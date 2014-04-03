@@ -30,10 +30,10 @@ typedef struct jive_instruction_class jive_instruction_class;
 /* immediates, as represented during code generation */
 
 /** \brief Information about compile-time knowledge of value */
-typedef enum jive_codegen_imm_info jive_codegen_imm_info;
+
 typedef struct jive_codegen_imm jive_codegen_imm;
 
-typedef enum jive_codegen_imm_info jive_codegen_imm_info;
+
 enum jive_codegen_imm_info {
 	/* the value is known at present time, and will be the same on
 	each translation attempt; instruction encoding should use given value

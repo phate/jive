@@ -28,18 +28,21 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	JIVE_DECLARE_TYPE(type);
 	JIVE_DECLARE_VALUE_TYPE(value_type);
+	const jive_type * tmparray0[] = {type};
 	
 	jive_node * n1 = jive_node_create(region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
 	
 	bool error_handler_called = false;
 	
 	jmp_buf buffer;
 	if (setjmp(buffer) == 0) {
 		jive_set_fatal_error_handler(ctx, jump, &buffer);
+		const jive_type * tmparray1[] = {value_type};
+		jive_output * tmparray2[] = {n1->outputs[0]};
 		jive_node_create(region,
-			1, (const jive_type *[]){value_type}, (jive_output *[]){n1->outputs[0]},
+			1, tmparray1, tmparray2,
 			0, 0);
 	} else {
 		error_handler_called = true;

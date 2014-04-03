@@ -43,11 +43,11 @@ static bool sym_resolve(const jive_linker_symbol_resolver * self,
 }
 
 static const jive_linker_symbol_resolver_class sym_resolver_cls = {
-	.resolve = sym_resolve
+	resolve : sym_resolve
 };
 
 static const jive_linker_symbol_resolver sym_resolver = {
-	.class_ = &sym_resolver_cls
+	class_ : &sym_resolver_cls
 };
 
 static int test_main(void)

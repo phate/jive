@@ -31,19 +31,23 @@ static int test_main(void)
 
 	static const jive_record_declaration decl_empty = {0, NULL};
 	static const jive_record_type rcdtype_empty = {{{&JIVE_RECORD_TYPE}}, &decl_empty};
+	const jive_type * tmparray0[] = {&bits8.base.base, &bits16.base.base, &bits32.base.base};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		3, (const jive_type *[]){&bits8.base.base, &bits16.base.base, &bits32.base.base});
+		3, tmparray0);
+jive_output * tmparray1[] = {top->outputs[0],
+		top->outputs[1], top->outputs[2]};
 
-	jive_output * g0 = jive_group_create(&decl, 3, (jive_output *[]){top->outputs[0],
-		top->outputs[1], top->outputs[2]});
+	jive_output * g0 = jive_group_create(&decl, 3, tmparray1);
 	jive_output * g1 = jive_empty_group_create(graph, &decl_empty);
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
+	const jive_type * tmparray2[] = {&rcdtype.base.base, &rcdtype_empty.base.base};
+	jive_output * tmparray3[] = {g0, g1};
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){&rcdtype.base.base, &rcdtype_empty.base.base},
-			(jive_output *[]){g0, g1},
+		2, tmparray2,
+			tmparray3,
 		1, &bits64);
 	jive_graph_export(graph, bottom->outputs[0]);
 

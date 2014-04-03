@@ -21,11 +21,11 @@ static jive_clg_node *
 jive_clg_node_create_(struct jive_clg * clg, const char * name);
 
 const struct jive_clg_node_class JIVE_CLG_NODE = {
-	.parent = 0,
-	.name = "CLG_NODE",
-	.fini = jive_clg_node_fini_,
-	.get_label = jive_clg_node_get_label_,
-	.create = jive_clg_node_create_
+	parent : 0,
+	name : "CLG_NODE",
+	fini : jive_clg_node_fini_,
+	get_label : jive_clg_node_get_label_,
+	create : jive_clg_node_create_
 };
 
 void

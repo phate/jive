@@ -23,9 +23,10 @@ test_main(void)
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
 	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
+	const jive_type* tmparray0[] = {dbltype, dbltype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type*[]){dbltype, dbltype});
+		2, tmparray0);
 
 	jive_output * neq = jive_dblnotequal(top->outputs[0], top->outputs[1]);
 

@@ -43,40 +43,58 @@ static int test_main(void)
 	
 	JIVE_DECLARE_TYPE(type);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
+	const jive_type *  tmparray0[] = {type, type};
 	
 	jive_node * top = jive_node_create(root,
 		0, NULL, NULL,
-		2, (const jive_type * []){type, type});
+		2, tmparray0);
 	
 	jive_region * loop_region = jive_region_create_subregion(root);
 	loop_region->attrs.is_looped = true;
+	const jive_type *  tmparray1[] = {type};
+	jive_output * tmparray2[] = {top->outputs[0]};
+	const jive_type *  tmparray3[] = {type};
 	
 	jive_node * loop_head = jive_node_create(loop_region,
-		1, (const jive_type * []){type}, (jive_output *[]){top->outputs[0]},
-		1, (const jive_type * []){type});
+		1, tmparray1, tmparray2,
+		1, tmparray3);
 	loop_region->top = loop_head;
 	
 	jive_region * loop_subregion = jive_region_create_subregion(loop_region);
+	const jive_type *  tmparray4[] = {type, type};
+	jive_output * tmparray5[] = {loop_head->outputs[0], top->outputs[1]};
+	const jive_type *  tmparray6[] = {anchor_type};
 	
 	jive_node * loop_body = jive_node_create(loop_subregion,
-		2, (const jive_type * []){type, type}, (jive_output *[]){loop_head->outputs[0], top->outputs[1]},
-		1, (const jive_type * []){anchor_type});
+		2, tmparray4, tmparray5,
+		1, tmparray6);
+	const jive_type *  tmparray7[] = {anchor_type};
+	jive_output * tmparray8[] = {loop_body->outputs[0]};
+	const jive_type *  tmparray9[] = {type};
 	
 	jive_node * loop_body_anchor = jive_node_create(loop_region,
-		1, (const jive_type * []){anchor_type}, (jive_output *[]){loop_body->outputs[0]},
-		1, (const jive_type * []){type});
+		1, tmparray7, tmparray8,
+		1, tmparray9);
+	const jive_type *  tmparray10[] = {type};
+	jive_output * tmparray11[] = {loop_body_anchor->outputs[0]};
+	const jive_type *  tmparray12[] = {anchor_type};
 	
 	jive_node * loop_tail = jive_node_create(loop_region,
-		1, (const jive_type * []){type}, (jive_output *[]){loop_body_anchor->outputs[0]},
-		1, (const jive_type * []){anchor_type});
+		1, tmparray10, tmparray11,
+		1, tmparray12);
 	loop_region->bottom = loop_tail;
+	const jive_type *  tmparray13[] = {anchor_type};
+	jive_output * tmparray14[] = {loop_tail->outputs[0]};
+	const jive_type *  tmparray15[] = {type};
 	
 	jive_node * loop_anchor = jive_node_create(root,
-		1, (const jive_type * []){anchor_type}, (jive_output *[]){loop_tail->outputs[0]},
-		1, (const jive_type * []){type});
+		1, tmparray13, tmparray14,
+		1, tmparray15);
+	const jive_type *  tmparray16[] = {type};
+	jive_output * tmparray17[] = {loop_anchor->outputs[0]};
 	
 	jive_node * bottom = jive_node_create(root,
-		1, (const jive_type * []){type}, (jive_output *[]){loop_anchor->outputs[0]},
+		1, tmparray16, tmparray17,
 		0, NULL);
 	
 	// jive_node_reserve(bottom);

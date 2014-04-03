@@ -526,19 +526,19 @@ jive_seq_data_generate_assembler(
 		const char * format = NULL;
 		switch (item->format) {
 			case jive_seq_dataitem_fmt_8:
-				format = "\t.byte 0x%" PRIx64 "\n";
+				format = "\t.byte 0x%" "llx" "\n";
 				break;
 			case jive_seq_dataitem_fmt_le16:
 			case jive_seq_dataitem_fmt_be16:
-				format = "\t.value 0x%" PRIx64 "\n";
+				format = "\t.value 0x%" "llx" "\n";
 				break;
 			case jive_seq_dataitem_fmt_le32:
 			case jive_seq_dataitem_fmt_be32:
-				format = "\t.long 0x%" PRIx64 "\n";
+				format = "\t.long 0x%" "llx" "\n";
 				break;
 			case jive_seq_dataitem_fmt_le64:
 			case jive_seq_dataitem_fmt_be64:
-				format = "\t.quad 0x%" PRIx64 "\n";
+				format = "\t.quad 0x%" "llx" "\n";
 				break;
 			default:
 				format = NULL;

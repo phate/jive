@@ -39,22 +39,22 @@ jive_node *
 jive_instruction_node_create_simple(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
-	struct jive_output * operands[const],
-	const int64_t immediates[const]);
+	struct jive_output * const * operands,
+	const int64_t * immediates);
 
 jive_node *
 jive_instruction_node_create_extended(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * operands[const],
+	jive_output * const * operands,
 	const jive_immediate immediates[]);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_instruction_node_create(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
-	struct jive_output * operands[const],
-	const int64_t immediates[const])
+	struct jive_output * const * operands,
+	const int64_t * immediates)
 {
 	return jive_instruction_node_create_simple(region, icls, operands, immediates);
 }

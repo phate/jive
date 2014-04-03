@@ -19,10 +19,11 @@ create_testgraph(jive_context * context)
 {
 	/* requires post-op transfer to satisfy register constraints */
 	jive_graph * graph = jive_graph_create(context);
+	const jive_argument_type tmparray0[] = { jive_argument_int, jive_argument_int, jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(
 		graph,
-		3, (const jive_argument_type[]) { jive_argument_int, jive_argument_int, jive_argument_int },
+		3, tmparray0,
 		0, NULL
 	);
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
@@ -40,16 +41,18 @@ create_testgraph(jive_context * context)
 	jive_theta_loopvar loopvar2 = jive_theta_loopvar_enter(theta, arg2);
 
 	jive_region * theta_region = theta.region;
+	jive_output * tmparray1[] = {loopvar1.value, arg3};
 	
 	jive_output * val = jive_instruction_node_create(
 		theta_region,
 		&jive_testarch_instr_add_gpr,
-		(jive_output *[]) {loopvar1.value, arg3}, NULL)->outputs[0];
+		tmparray1, NULL)->outputs[0];
+	jive_output * tmparray2[] = {val};
 	
 	jive_output * ctl = jive_instruction_node_create(
 		theta_region,
 		&jive_testarch_instr_jumpz,
-		(jive_output *[]) {val}, NULL)->outputs[0];
+		tmparray2, NULL)->outputs[0];
 	
 	jive_theta_loopvar_leave(theta, loopvar1.gate, val);
 	jive_theta_loopvar_leave(theta, loopvar2.gate, val);

@@ -24,30 +24,30 @@ jive_bitshl_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	jive_output * op1, jive_output * op2);
 
 const jive_bitbinary_operation_class JIVE_BITSHL_NODE_ = {
-	.base = { /* jive_bitbinary_operation_class */
-		.base = { /* jive_node_class */
-			.parent = &JIVE_BITBINARY_NODE,
-			.name = "BITSHL",
-			.fini = jive_node_fini_, /* inherit */
-			.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
-			.get_label = jive_node_get_label_, /* inherit */
-			.get_attrs = jive_node_get_attrs_, /* inherit */
-			.match_attrs = jive_node_match_attrs_, /* inherit */
-			.check_operands = jive_bitbinary_operation_check_operands_, /* inherit */
-			.create = jive_bitshl_create_, /* override */
-			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_bitbinary_operation_class */
+		base : { /* jive_node_class */
+			parent : &JIVE_BITBINARY_NODE,
+			name : "BITSHL",
+			fini : jive_node_fini_, /* inherit */
+			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+			get_label : jive_node_get_label_, /* inherit */
+			get_attrs : jive_node_get_attrs_, /* inherit */
+			match_attrs : jive_node_match_attrs_, /* inherit */
+			check_operands : jive_bitbinary_operation_check_operands_, /* inherit */
+			create : jive_bitshl_create_, /* override */
+			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
-		.flags = jive_binary_operation_none,
-		.single_apply_under = NULL,
-		.multi_apply_under = NULL,
-		.distributive_over = NULL,
-		.distributive_under = NULL,
+		flags : jive_binary_operation_none,
+		single_apply_under : NULL,
+		multi_apply_under : NULL,
+		distributive_over : NULL,
+		distributive_under : NULL,
 
-		.can_reduce_operand_pair = jive_bitshl_node_can_reduce_operand_pair_, /* override */
-		.reduce_operand_pair = jive_bitshl_node_reduce_operand_pair_ /* override */
+		can_reduce_operand_pair : jive_bitshl_node_can_reduce_operand_pair_, /* override */
+		reduce_operand_pair : jive_bitshl_node_reduce_operand_pair_ /* override */
 	},
-	.type = jive_bitop_code_shl
+	type : jive_bitop_code_shl
 };
 
 static void
@@ -117,8 +117,9 @@ jive_output *
 jive_bitshl(jive_output * operand, jive_output * shift)
 {
 	jive_graph * graph = operand->node->graph;
+	jive_output * tmparray0[] = {operand, shift};
 	return jive_binary_operation_create_normalized(&JIVE_BITSHL_NODE_.base, graph, NULL, 2,
-		(jive_output *[]){operand, shift});
+		tmparray0);
 }
 
 

@@ -52,7 +52,8 @@ static int test_main(void)
 	jive_output * y = jive_bitsymbolicconstant(graph, 16, "y");
 	
 	{
-		jive_output * concat = jive_bitconcat(2, (jive_output * []){x, y});
+		jive_output *  tmparray0[] = {x, y};
+		jive_output * concat = jive_bitconcat(2, tmparray0);
 		jive_output * slice = jive_bitslice(concat, 8, 24);
 		jive_node * node = ((jive_output *) slice)->node;
 		assert(node->class_ == &JIVE_BITCONCAT_NODE);
@@ -73,7 +74,8 @@ static int test_main(void)
 	{
 		jive_output * slice1 = jive_bitslice(x, 0, 8);
 		jive_output * slice2 = jive_bitslice(x, 8, 16);
-		jive_output * concat = jive_bitconcat(2, (jive_output *[]){slice1, slice2});
+		jive_output * tmparray1[] = {slice1, slice2};
+		jive_output * concat = jive_bitconcat(2, tmparray1);
 		assert(concat == x);
 	}
 	

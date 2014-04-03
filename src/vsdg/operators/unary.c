@@ -13,24 +13,24 @@
 /* node class */
 
 const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
-	.base = { /* jive_node_class */
-		.parent = &JIVE_NODE,
+	base : { /* jive_node_class */
+		parent : &JIVE_NODE,
 		.name ="UNARY",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* override */
-		.get_label = jive_node_get_label_, /* inherit */
-		.get_attrs = jive_node_get_attrs_, /* inherit */
-		.match_attrs = jive_node_match_attrs_, /* inherit */
-		.check_operands = NULL,
-		.create = jive_node_create_, /* inherit */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* override */
+		get_label : jive_node_get_label_, /* inherit */
+		get_attrs : jive_node_get_attrs_, /* inherit */
+		match_attrs : jive_node_match_attrs_, /* inherit */
+		check_operands : NULL,
+		create : jive_node_create_, /* inherit */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 	
-	.can_reduce_operand = jive_unary_operation_can_reduce_operand_,
-	.reduce_operand = jive_unary_operation_reduce_operand_
+	can_reduce_operand : jive_unary_operation_can_reduce_operand_,
+	reduce_operand : jive_unary_operation_reduce_operand_
 };
 
 /* node class inheritable methods */
@@ -99,17 +99,17 @@ jive_unary_operation_normalized_create_new_(const jive_node_normal_form * self_,
 }
 
 const jive_unary_operation_normal_form_class JIVE_UNARY_OPERATION_NORMAL_FORM_ = {
-	.base = {
-		.parent = &JIVE_NODE_NORMAL_FORM,
-		.fini = jive_node_normal_form_fini_, /* inherit */
-		.normalize_node = jive_unary_operation_normalize_node_, /* override */
-		.operands_are_normalized = jive_unary_operation_operands_are_normalized_, /* inherit */
-		.normalized_create = jive_unary_operation_normalized_create_new_, /* override */
-		.set_mutable = jive_node_normal_form_set_mutable_, /* inherit */
-		.set_cse = jive_node_normal_form_set_cse_ /* inherit */
+	base : {
+		parent : &JIVE_NODE_NORMAL_FORM,
+		fini : jive_node_normal_form_fini_, /* inherit */
+		normalize_node : jive_unary_operation_normalize_node_, /* override */
+		operands_are_normalized : jive_unary_operation_operands_are_normalized_, /* inherit */
+		normalized_create : jive_unary_operation_normalized_create_new_, /* override */
+		set_mutable : jive_node_normal_form_set_mutable_, /* inherit */
+		set_cse : jive_node_normal_form_set_cse_ /* inherit */
 	},
-	.set_reducible = jive_unary_operation_set_reducible_,
-	.normalized_create = jive_unary_operation_normalized_create_
+	set_reducible : jive_unary_operation_set_reducible_,
+	normalized_create : jive_unary_operation_normalized_create_
 };
 
 /* normal form inheritable methods */

@@ -103,8 +103,8 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 }
 
 const jive_stackframe_class JIVE_I386_STACKFRAME_CLASS = {
-	.fini = jive_stackframe_fini_,
-	.layout = jive_i386_stackframe_layout_
+	fini : jive_stackframe_fini_,
+	layout : jive_i386_stackframe_layout_
 };
 
 jive_stackframe *

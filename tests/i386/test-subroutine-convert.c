@@ -26,7 +26,8 @@ static int test_main(void)
 
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addr, (const char *[]){"arg"});
+	const char * tmparray0[] = {"arg"};
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addr, tmparray0);
 
 	jive_output * constant = jive_bitconstant_unsigned(graph, 32, 2);
 	jive_output * address = jive_arraysubscript(lambda->arguments[0],

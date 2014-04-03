@@ -26,20 +26,21 @@ jive_bitsum_code_create_(struct jive_basic_block * basic_block,
 	size_t noperands, struct jive_three_address_code * const operands[]);
 
 const struct jive_three_address_code_class JIVE_BITSUM_CODE = {
-	.parent = &JIVE_THREE_ADDRESS_CODE,
-	.name = "BITSUM",
-	.fini = jive_three_address_code_fini_, /* inherit */
-	.get_label = jive_bitsum_code_get_label_, /* override */
-	.get_attrs = jive_three_address_code_get_attrs_, /* inherit */
-	.create = jive_bitsum_code_create_ /* override */
+	parent : &JIVE_THREE_ADDRESS_CODE,
+	name : "BITSUM",
+	fini : jive_three_address_code_fini_, /* inherit */
+	get_label : jive_bitsum_code_get_label_, /* override */
+	get_attrs : jive_three_address_code_get_attrs_, /* inherit */
+	create : jive_bitsum_code_create_ /* override */
 };
 
 static void
 jive_bitsum_code_init_(jive_bitsum_code * self, struct jive_basic_block * basic_block,
 	struct jive_three_address_code * summand1, struct jive_three_address_code * summand2)
 {
+	jive_three_address_code * tmparray0[] = {summand1, summand2};
 	jive_three_address_code_init_(&self->base, basic_block,
-	2, (jive_three_address_code *[]){summand1, summand2});
+	2, tmparray0);
 }
 
 static void
@@ -68,6 +69,7 @@ jive_three_address_code *
 jive_bitsum_code_create(struct jive_basic_block * basic_block, jive_three_address_code * summand1,
 	jive_three_address_code * summand2)
 {
+	jive_three_address_code * tmparray1[] = {summand1, summand2};
 	return jive_bitsum_code_create_(basic_block, NULL,
-		2, (jive_three_address_code *[]){summand1, summand2});
+		2, tmparray1);
 }

@@ -23,13 +23,16 @@ static int test_main(void)
 	jive_graph* graph = jive_graph_create( context ) ; 
 
 	JIVE_DECLARE_BITSTRING_TYPE( btype, 8 ) ;
+	const jive_type*  tmparray0[] = { btype };
+	const jive_type*  tmparray1[] = { btype };
 	jive_function_type* ftype = jive_function_type_create( context,
-		1, (const jive_type* []) { btype },
-		1, (const jive_type* []) { btype } ) ;
+		1, tmparray0,
+		1, tmparray1 ) ;
 
 	jive_output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
 	jive_output* func = jive_symbolicfunction_create( graph, "sin", ftype ) ;
-	jive_node* apply = jive_apply_node_create( graph->root_region, func, 1, (jive_output* []){ constant } ) ;
+	jive_output*  tmparray2[] = { constant };
+	jive_node* apply = jive_apply_node_create( graph->root_region, func, 1, tmparray2 ) ;
 	assert(apply->noutputs == 1);
 	jive_output* ret = apply->outputs[0];
 

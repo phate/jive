@@ -49,38 +49,48 @@ static int test_main(void)
 	JIVE_DECLARE_TYPE(type);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
+	const jive_type * tmparray0[] = {type};
 	
 	jive_node * dummy = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){type});
+		1, tmparray0);
 	
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
+	const jive_type * tmparray1[] = {type};
+	const jive_type * tmparray2[] = {type, type};
 	
 	jive_node * top = jive_node_create(r1,
-		1, (const jive_type *[]){type}, dummy->outputs,
-		2, (const jive_type *[]){type, type});
+		1, tmparray1, dummy->outputs,
+		2, tmparray2);
 	
 	jive_theta theta = jive_theta_begin(graph);
 	jive_region * loop_region = theta.region;
 	
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, top->outputs[0]);
+	const jive_type * tmparray3[] = {type, type};
+	jive_output * tmparray4[] = {loopvar1.value, top->outputs[1]};
+	const jive_type * tmparray5[] = {ctl, type};
 	
 	jive_node * theta_op = jive_node_create(loop_region,
-		2, (const jive_type *[]){type, type}, (jive_output *[]){loopvar1.value, top->outputs[1]},
-		2, (const jive_type *[]){ctl, type});
+		2, tmparray3, tmparray4,
+		2, tmparray5);
 	
 	jive_theta_loopvar_leave(theta, loopvar1.gate, theta_op->outputs[1]);
 	jive_node * theta_node = jive_theta_end(theta, theta_op->outputs[0],
 		1, &loopvar1);
 	jive_node * theta_head = loop_region->top;
 	jive_node * theta_tail = loop_region->bottom;
+	const jive_type * tmparray6[] = {type, type};
+	jive_output * tmparray7[] = {theta_node->outputs[0], top->outputs[1]};
+	const jive_type * tmparray8[] = {anchor_type};
 	
 	jive_node * bottom = jive_node_create(r1,
-		2, (const jive_type *[]){type, type}, (jive_output *[]){theta_node->outputs[0], top->outputs[1]},
-		1, (const jive_type *[]){anchor_type});
+		2, tmparray6, tmparray7,
+		1, tmparray8);
+	const jive_type * tmparray9[] = {anchor_type};
 	
 	jive_node * subroutine_anchor = jive_node_create(graph->root_region,
-		1, (const jive_type *[]){anchor_type}, bottom->outputs,
+		1, tmparray9, bottom->outputs,
 		0, NULL);
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);

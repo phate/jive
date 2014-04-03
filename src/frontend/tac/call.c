@@ -25,12 +25,12 @@ jive_call_code_create_(struct jive_basic_block * basic_block,
 	size_t noperands, struct jive_three_address_code * const operands[]);
 
 const struct jive_three_address_code_class JIVE_CALL_CODE = {
-	.parent = &JIVE_CALL_CODE,
-	.name = "CALL",
-	.fini = jive_three_address_code_fini_, /* inherit */
-	.get_label = jive_call_code_get_label_, /* override */
-	.get_attrs = jive_call_code_get_attrs_, /* override */
-	.create = jive_call_code_create_ /* override */
+	parent : &JIVE_CALL_CODE,
+	name : "CALL",
+	fini : jive_three_address_code_fini_, /* inherit */
+	get_label : jive_call_code_get_label_, /* override */
+	get_attrs : jive_call_code_get_attrs_, /* override */
+	create : jive_call_code_create_ /* override */
 };
 
 static void

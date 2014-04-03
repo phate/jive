@@ -22,16 +22,16 @@
 #include <string.h>
 
 const jive_node_class JIVE_INSTRUCTION_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "INSTRUCTION",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_instruction_node_get_label_, /* override */
-	.get_attrs = jive_instruction_node_get_attrs_, /* override */
-	.match_attrs = jive_instruction_node_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_instruction_node_create_, /* override */
-	.get_aux_rescls = jive_instruction_node_get_aux_rescls_, /* override */
+	parent : &JIVE_NODE,
+	name : "INSTRUCTION",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_instruction_node_get_label_, /* override */
+	get_attrs : jive_instruction_node_get_attrs_, /* override */
+	match_attrs : jive_instruction_node_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_instruction_node_create_, /* override */
+	get_aux_rescls : jive_instruction_node_get_aux_rescls_, /* override */
 };
 
 void
@@ -133,8 +133,8 @@ jive_node *
 jive_instruction_node_create_simple(
 	jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * operands[const],
-	const int64_t immediates[const])
+	jive_output * const * operands,
+	const int64_t * immediates)
 {
 	jive_immediate imm[icls->nimmediates];
 	size_t n;
@@ -147,7 +147,7 @@ jive_node *
 jive_instruction_node_create_extended(
 	jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * operands[const],
+	jive_output * const * operands,
 	const jive_immediate immediates[])
 {
 	jive_output * immvalues[icls->nimmediates];
@@ -183,9 +183,9 @@ jive_write_asm_PSEUDO_NOP(const jive_instruction_class * icls,
 }
 
 const jive_instruction_class JIVE_PSEUDO_NOP = {
-	.name = "PSEUDO_NOP",
-	.mnemonic = "",
-	.encode = jive_encode_PSEUDO_NOP,
-	.write_asm = jive_write_asm_PSEUDO_NOP,
-	.inregs = 0, .outregs = 0, .flags = jive_instruction_flags_none, .ninputs = 0, .noutputs = 0, .nimmediates = 0
+	name : "PSEUDO_NOP",
+	mnemonic : "",
+	encode : jive_encode_PSEUDO_NOP,
+	write_asm : jive_write_asm_PSEUDO_NOP,
+	inregs : 0, outregs : 0, flags : jive_instruction_flags_none, ninputs : 0, noutputs : 0, nimmediates : 0
 };

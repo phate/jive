@@ -25,30 +25,30 @@ jive_bitnotequal_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
 
 const jive_bitcomparison_operation_class JIVE_BITNOTEQUAL_NODE_ = {
-	.base = { /* jive_binary_operation_class */
-		.base = { /* jive_node_class */
-			.parent = &JIVE_BITCOMPARISON_NODE,
-			.name = "BITNOTEQUAL",
-			.fini = jive_node_fini_, /* inherit */
-			.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
-			.get_label = jive_node_get_label_, /* inherit */
-			.get_attrs = jive_node_get_attrs_, /* inherit */
-			.match_attrs = jive_node_match_attrs_, /* inherit */
-			.check_operands = jive_bitcomparison_operation_check_operands_, /* inherit */
-			.create = jive_bitnotequal_create_, /* override */
-			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_binary_operation_class */
+		base : { /* jive_node_class */
+			parent : &JIVE_BITCOMPARISON_NODE,
+			name : "BITNOTEQUAL",
+			fini : jive_node_fini_, /* inherit */
+			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+			get_label : jive_node_get_label_, /* inherit */
+			get_attrs : jive_node_get_attrs_, /* inherit */
+			match_attrs : jive_node_match_attrs_, /* inherit */
+			check_operands : jive_bitcomparison_operation_check_operands_, /* inherit */
+			create : jive_bitnotequal_create_, /* override */
+			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
-		.flags = jive_binary_operation_commutative,
-		.single_apply_under = NULL,
-		.multi_apply_under = NULL,
-		.distributive_over = NULL,
-		.distributive_under = NULL,
+		flags : jive_binary_operation_commutative,
+		single_apply_under : NULL,
+		multi_apply_under : NULL,
+		distributive_over : NULL,
+		distributive_under : NULL,
 	
-		.can_reduce_operand_pair = jive_bitnotequal_node_can_reduce_operand_pair_, /* override */
-		.reduce_operand_pair = jive_bitnotequal_node_reduce_operand_pair_ /* override */
+		can_reduce_operand_pair : jive_bitnotequal_node_can_reduce_operand_pair_, /* override */
+		reduce_operand_pair : jive_bitnotequal_node_reduce_operand_pair_ /* override */
 	},
-	.type = jive_bitcmp_code_notequal,
-	.compare_constants = NULL
+	type : jive_bitcmp_code_notequal,
+	compare_constants : NULL
 };
 
 static void
@@ -59,8 +59,10 @@ jive_bitnotequal_node_init_(jive_node * self, jive_region * region,
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
 	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);
+	const jive_type * tmparray0[] = {btype, btype};
+	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
-		2, (const jive_type *[]){btype, btype}, (jive_output *[]){operand1, operand2},
+		2, tmparray0, tmparray1,
 		1, &ctype);
 }
 
@@ -118,6 +120,7 @@ jive_output *
 jive_bitnotequal(jive_output * operand1, jive_output * operand2)
 {
 	jive_graph * graph = operand1->node->graph;
+	jive_output * tmparray2[] = {operand1, operand2};
 	return jive_binary_operation_create_normalized(&JIVE_BITNOTEQUAL_NODE_.base, graph, NULL, 2,
-		(jive_output *[]){operand1, operand2});
+		tmparray2);
 }

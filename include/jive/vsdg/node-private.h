@@ -56,10 +56,10 @@ jive_node *
 jive_node_create(
 	struct jive_region * region,
 	size_t noperands,
-	const struct jive_type * operand_types[const],
-	struct jive_output * operands[const],
+	const struct jive_type * const * operand_types,
+	struct jive_output * const * operands,
 	size_t noutputs,
-	const struct jive_type * output_types[const]);
+	const struct jive_type * const * output_types);
 
 void
 jive_node_add_successor(jive_node * self);

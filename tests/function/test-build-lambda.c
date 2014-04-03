@@ -20,8 +20,10 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	const jive_type * tmparray0[] = {bits32, bits32};
+	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph,
-		2, (const jive_type *[]){bits32, bits32}, (const char *[]){"arg1", "arg2"});
+		2, tmparray0, tmparray1);
 
 	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
@@ -30,7 +32,8 @@ static int test_main(void)
 	jive_view(graph, stderr);
 	
 	jive_function_type ftype;
-	jive_function_type_init(&ftype, ctx, 2, (const jive_type *[]){bits32, bits32}, 1, &bits32);
+	const jive_type * tmparray2[] = {bits32, bits32};
+	jive_function_type_init(&ftype, ctx, 2, tmparray2, 1, &bits32);
 
 	assert(jive_type_equals(&ftype.base.base, jive_output_get_type(fct)));
 	

@@ -19,23 +19,27 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	
 	jive_graph * graph = jive_graph_create(context);
+	jive_argument_type  tmparray0[] = {jive_argument_long, jive_argument_long, jive_argument_long, jive_argument_long};
+	jive_argument_type  tmparray1[] = {jive_argument_long};
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
-		4, (jive_argument_type []){jive_argument_long, jive_argument_long, jive_argument_long, jive_argument_long},
-		1, (jive_argument_type []){jive_argument_long});
+		4, tmparray0,
+		1, tmparray1);
 	
 	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	jive_output * arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
+	jive_output * tmparray2[] = {arg1, arg2};
 	
 	jive_output * s1 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
-		(jive_output *[]) {arg1, arg2}, NULL)->outputs[0];
+		tmparray2, NULL)->outputs[0];
+	jive_output * tmparray3[] = {s1, arg3};
 	jive_output * s2 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
-		(jive_output *[]) {s1, arg3}, NULL)->outputs[0];
+		tmparray3, NULL)->outputs[0];
 	jive_subroutine_simple_set_result(subroutine, 0, s2);
 	
 	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);

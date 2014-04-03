@@ -28,12 +28,12 @@ jive_variable_code_create_(struct jive_basic_block * basic_block,
 	size_t noperands, struct jive_three_address_code * const operands[]);
 
 const struct jive_three_address_code_class JIVE_VARIABLE_CODE = {
-	.parent = &JIVE_THREE_ADDRESS_CODE,
-	.name = "VARIABLE",
-	.fini = jive_variable_code_fini_, /* override */
-	.get_label = jive_variable_code_get_label_, /* override */
-	.get_attrs = jive_variable_code_get_attrs_, /* override */
-	.create = jive_variable_code_create_ /* override */
+	parent : &JIVE_THREE_ADDRESS_CODE,
+	name : "VARIABLE",
+	fini : jive_variable_code_fini_, /* override */
+	get_label : jive_variable_code_get_label_, /* override */
+	get_attrs : jive_variable_code_get_attrs_, /* override */
+	create : jive_variable_code_create_ /* override */
 };
 
 static void

@@ -151,17 +151,17 @@ jive_load_node_set_reducible_(jive_load_node_normal_form * self, bool enable)
 }
 
 const jive_load_node_normal_form_class JIVE_LOAD_NODE_NORMAL_FORM_ = {
-	.base = { /* jive_node_normal_form_class */
-		.parent = &JIVE_NODE_NORMAL_FORM,
-		.fini = jive_node_normal_form_fini_, /* inherit */
-		.normalize_node = jive_load_node_normalize_node_, /* override */
-		.operands_are_normalized = jive_load_node_operands_are_normalized_, /* override */
-		.normalized_create = NULL, /* inherit */
-		.set_mutable = jive_node_normal_form_set_mutable_, /* inherit */
-		.set_cse = jive_node_normal_form_set_cse_ /* inherit */
+	base : { /* jive_node_normal_form_class */
+		parent : &JIVE_NODE_NORMAL_FORM,
+		fini : jive_node_normal_form_fini_, /* inherit */
+		normalize_node : jive_load_node_normalize_node_, /* override */
+		operands_are_normalized : jive_load_node_operands_are_normalized_, /* override */
+		normalized_create : NULL, /* inherit */
+		set_mutable : jive_node_normal_form_set_mutable_, /* inherit */
+		set_cse : jive_node_normal_form_set_cse_ /* inherit */
 	},
-	.set_reducible = jive_load_node_set_reducible_, 
-	.normalized_create = jive_load_node_normalized_create_ 
+	set_reducible : jive_load_node_set_reducible_, 
+	normalized_create : jive_load_node_normalized_create_ 
 };
 
 /* load node */
@@ -188,16 +188,16 @@ jive_load_node_create_(struct jive_region * region, const jive_node_attrs * attr
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_LOAD_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LOAD",
-	.fini = jive_load_node_fini_, /* override */
-	.get_default_normal_form = jive_load_node_get_default_normal_form_, /* override */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_load_node_get_attrs_, /* override */
-	.match_attrs = jive_load_node_match_attrs_, /* override */
-	.check_operands = jive_load_node_check_operands_, /* override */
-	.create = jive_load_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "LOAD",
+	fini : jive_load_node_fini_, /* override */
+	get_default_normal_form : jive_load_node_get_default_normal_form_, /* override */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_load_node_get_attrs_, /* override */
+	match_attrs : jive_load_node_match_attrs_, /* override */
+	check_operands : jive_load_node_check_operands_, /* override */
+	create : jive_load_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -279,10 +279,11 @@ jive_load_node_init_(jive_load_node * self, jive_region * region,
 	size_t nstates, jive_output * const states[])
 {
 	jive_context * context = region->graph->context;
+const jive_type *  tmparray0[] = {&datatype->base};
 
 	jive_node_init_(&self->base, region,
 		1, &address_type, &address,
-		1, (const jive_type * []){&datatype->base});
+		1, tmparray0);
 
 	self->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base, context);
 	self->attrs.nbits = 0;

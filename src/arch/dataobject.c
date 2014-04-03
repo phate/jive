@@ -218,16 +218,16 @@ jive_dataitems_node_create_(struct jive_region * region, const jive_node_attrs *
 }
 
 const jive_node_class JIVE_DATAITEMS_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "DATAITEMS",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_node_get_attrs_, /* inherit */
-	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_dataitems_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "DATAITEMS",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_node_get_attrs_, /* inherit */
+	match_attrs : jive_node_match_attrs_, /* inherit */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_dataitems_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static jive_node *
@@ -238,16 +238,16 @@ jive_datadef_node_create_(struct jive_region * region, const jive_node_attrs * a
 }
 
 const jive_node_class JIVE_DATADEF_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "DATADEF",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_node_get_attrs_, /* inherit */
-	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_datadef_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "DATADEF",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_node_get_attrs_, /* inherit */
+	match_attrs : jive_node_match_attrs_, /* inherit */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_datadef_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static jive_node *
@@ -258,16 +258,16 @@ jive_dataobj_node_create_(struct jive_region * region, const jive_node_attrs * a
 }
 
 const jive_node_class JIVE_DATAOBJ_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "DATA",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_node_get_attrs_, /* inherit */
-	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_dataobj_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "DATA",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_node_get_attrs_, /* inherit */
+	match_attrs : jive_node_match_attrs_, /* inherit */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_dataobj_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 jive_node *

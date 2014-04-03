@@ -27,17 +27,19 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	const jive_value_type * tmparray0[] = {(jive_value_type *)bits32, (jive_value_type *)bits32};
 	
 	jive_record_declaration rec = {
-		.nelements = 2,
-		.elements = (const jive_value_type *[]){(jive_value_type *)bits32, (jive_value_type *)bits32}
+		nelements : 2,
+		elements : tmparray0
 	};
 	
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	const jive_type * tmparray1[] = {addrtype, addrtype};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type *[]) {addrtype, addrtype});
+		2, tmparray1);
 	
 	jive_output * memb1 = jive_memberof(top->outputs[0], &rec, 0);
 	jive_output * memb2 = jive_memberof(top->outputs[0], &rec, 1);
@@ -82,10 +84,12 @@ static int test_main(void)
 	jive_node * memberof = jive_memberof_node_create(cont3->node->region, cont3, &rec, 1);
 	jive_node * arraysub = jive_arraysubscript_node_create(top->region, top->outputs[0],
 		jive_value_type_cast(bits32), one);
+	const jive_type * tmparray2[] = {addrtype, addrtype, bits32};
+	jive_output * tmparray3[] = {memberof->outputs[0], arraysub->outputs[0], diff2};
 	
 	jive_node * bottom = jive_node_create(graph->root_region,
-		3, (const jive_type *[]){addrtype, addrtype, bits32},
-			(jive_output *[]){memberof->outputs[0], arraysub->outputs[0], diff2},
+		3, tmparray2,
+			tmparray3,
 		1, &addrtype);
 	jive_graph_export(graph, bottom->outputs[0]);
 

@@ -94,9 +94,9 @@ jive_label_name_mapper_simple_map_named_symbol_(
 }
 
 static const jive_label_name_mapper_class JIVE_LABEL_NAME_MAPPER_SIMPLE = {
-	.destroy = jive_label_name_mapper_simple_destroy_,
-	.map_named_symbol = jive_label_name_mapper_simple_map_named_symbol_,
-	.map_anon_symbol = jive_label_name_mapper_simple_map_anon_symbol_
+	destroy : jive_label_name_mapper_simple_destroy_,
+	map_named_symbol : jive_label_name_mapper_simple_map_named_symbol_,
+	map_anon_symbol : jive_label_name_mapper_simple_map_anon_symbol_
 };
 
 jive_label_name_mapper *
@@ -139,8 +139,8 @@ jive_label_symbol_mapper_simple_map_label_external_(jive_label_symbol_mapper * s
 }
 
 static const jive_label_symbol_mapper_class JIVE_LABEL_SYMBOL_MAPPER_SIMPLE = {
-	.destroy = jive_label_symbol_mapper_simple_destroy_,
-	.map_label_external = jive_label_symbol_mapper_simple_map_label_external_
+	destroy : jive_label_symbol_mapper_simple_destroy_,
+	map_label_external : jive_label_symbol_mapper_simple_map_label_external_
 };
 
 jive_label_symbol_mapper *

@@ -31,9 +31,11 @@ static int test_main(void)
 	jive_output * not0 = jive_bitnot(top->outputs[0]);
 	jive_output * not1 = jive_bitnot(c0);
 	jive_output * not2 = jive_bitnot(not1);
+const jive_type * tmparray0[] = {bits32, bits32, bits32};
+jive_output * tmparray1[] = {not0, not1, not2};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		3, (const jive_type *[]){bits32, bits32, bits32}, (jive_output *[]){not0, not1, not2},
+		3, tmparray0, tmparray1,
 		1, &bits32);
 	jive_graph_export(graph, bottom->outputs[0]);
 

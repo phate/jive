@@ -130,9 +130,10 @@ static int test_main(void)
 	jive_node_add_input(load_fd, control_type, control);
 	
 	jive_output * write_fn_address = jive_label_to_address_create(graph, &write_label.base);
+	jive_output * tmparray0[] = {load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]};
 	jive_node * call_write = jive_call_by_address_node_create(
 		fn_region, write_fn_address, NULL,
-		3, (jive_output *[]){load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]},
+		3, tmparray0,
 		0, NULL);
 	
 	/* mark call as affecting global state */

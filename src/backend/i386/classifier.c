@@ -83,14 +83,14 @@ jive_i386_classify_address_(void)
 }
 
 const jive_reg_classifier jive_i386_reg_classifier = {
-	.any = (1 << jive_i386_classify_gpr) | (1 << jive_i386_classify_flags),
-	.classify_type = jive_i386_classify_type_,
-	.classify_fixed_arithmetic = jive_i386_classify_fixed_arithmetic_,
-	.classify_float_arithmetic = jive_i386_classify_float_arithmetic_,
-	.classify_fixed_compare = jive_i386_classify_fixed_compare_,
-	.classify_float_compare = jive_i386_classify_float_compare_,
-	.classify_address = jive_i386_classify_address_,
+	any : (1 << jive_i386_classify_gpr) | (1 << jive_i386_classify_flags),
+	classify_type : jive_i386_classify_type_,
+	classify_fixed_arithmetic : jive_i386_classify_fixed_arithmetic_,
+	classify_float_arithmetic : jive_i386_classify_float_arithmetic_,
+	classify_fixed_compare : jive_i386_classify_fixed_compare_,
+	classify_float_compare : jive_i386_classify_float_compare_,
+	classify_address : jive_i386_classify_address_,
 	
-	.nclasses = 5,
-	.classes = classes,
+	nclasses : 5,
+	classes : classes,
 };

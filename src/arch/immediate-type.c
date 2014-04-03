@@ -35,10 +35,10 @@ jive_immediate_input_get_type_(const jive_input * self_)
 }
 
 const jive_input_class JIVE_IMMEDIATE_INPUT = {
-	.parent = &JIVE_VALUE_INPUT,
-	.fini = jive_input_fini_, /* inherit */
-	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = jive_immediate_input_get_type_, /* override */
+	parent : &JIVE_VALUE_INPUT,
+	fini : jive_input_fini_, /* inherit */
+	get_label : jive_input_get_label_, /* inherit */
+	get_type : jive_immediate_input_get_type_, /* override */
 };
 
 /* immediate_output inheritable members */
@@ -58,10 +58,10 @@ jive_immediate_output_get_type_(const jive_output * self_)
 }
 
 const jive_output_class JIVE_IMMEDIATE_OUTPUT = {
-	.parent = &JIVE_VALUE_OUTPUT,
-	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = jive_immediate_output_get_type_, /* override */
+	parent : &JIVE_VALUE_OUTPUT,
+	fini : jive_output_fini_, /* inherit */
+	get_label : jive_output_get_label_, /* inherit */
+	get_type : jive_immediate_output_get_type_, /* override */
 };
 
 /* immediate_gate inheritable members */
@@ -81,10 +81,10 @@ jive_immediate_gate_get_type_(const jive_gate * self_)
 }
 
 const jive_gate_class JIVE_IMMEDIATE_GATE = {
-	.parent = &JIVE_VALUE_GATE,
-	.fini = jive_gate_fini_, /* inherit */
-	.get_label = jive_gate_get_label_, /* inherit */
-	.get_type = jive_immediate_gate_get_type_, /* override */
+	parent : &JIVE_VALUE_GATE,
+	fini : jive_gate_fini_, /* inherit */
+	get_label : jive_gate_get_label_, /* inherit */
+	get_type : jive_immediate_gate_get_type_, /* override */
 };
 
 /* immediate type */
@@ -149,13 +149,13 @@ jive_immediate_type_init_(jive_immediate_type * self)
 }
 
 const jive_type_class JIVE_IMMEDIATE_TYPE = {
-	.parent = &JIVE_VALUE_TYPE,
-	.name = "JIVE_IMMEDIATE_TYPE",
-	.fini = jive_immediate_type_fini_, /* override */
-	.get_label = jive_immediate_type_get_label_, /* override */
-	.create_input = jive_immediate_type_create_input_, /* override */
-	.create_output = jive_immediate_type_create_output_, /* override */
-	.create_gate = jive_immediate_type_create_gate_, /* override */
-	.equals = jive_type_equals_, /* inherit */
-	.copy = jive_immediate_type_copy_, /* override */
+	parent : &JIVE_VALUE_TYPE,
+	name : "JIVE_IMMEDIATE_TYPE",
+	fini : jive_immediate_type_fini_, /* override */
+	get_label : jive_immediate_type_get_label_, /* override */
+	create_input : jive_immediate_type_create_input_, /* override */
+	create_output : jive_immediate_type_create_output_, /* override */
+	create_gate : jive_immediate_type_create_gate_, /* override */
+	equals : jive_type_equals_, /* inherit */
+	copy : jive_immediate_type_copy_, /* override */
 };

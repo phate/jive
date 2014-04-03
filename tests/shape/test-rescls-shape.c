@@ -26,17 +26,23 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	
 	JIVE_DECLARE_TYPE(type);
+	const jive_type * tmparray0[] = {type, type};
 	
 	jive_node * top = jive_node_create(region,
 		0, NULL, NULL,
-		2, (const jive_type *[]){type, type});
+		2, tmparray0);
+	const jive_type * tmparray1[] = {type, };
+	jive_output * tmparray2[] = {top->outputs[0]};
+	const jive_type * tmparray3[] = {type};
 	
 	jive_node * mid = jive_node_create(region,
-		1, (const jive_type *[]){type, }, (jive_output *[]){top->outputs[0]},
-		1, (const jive_type *[]){type});
+		1, tmparray1, tmparray2,
+		1, tmparray3);
+	const jive_type * tmparray4[] = {type, type};
+	jive_output * tmparray5[] = {mid->outputs[0], top->outputs[1]};
 	
 	jive_node * bottom = jive_node_create(region,
-		2, (const jive_type *[]){type, type}, (jive_output *[]){mid->outputs[0], top->outputs[1]},
+		2, tmparray4, tmparray5,
 		0, NULL);
 	
 	jive_variable * r1 = jive_output_auto_merge_variable(top->outputs[1])->variable;

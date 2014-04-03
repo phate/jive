@@ -42,24 +42,24 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 	const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_unary_operation_class JIVE_SELECT_NODE_ = {
-	.base = { /* jive_node_class */
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "SELECT",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_select_node_get_label_, /* override */
-		.get_attrs = jive_select_node_get_attrs_, /* override */
-		.match_attrs = jive_select_node_match_attrs_, /* override */
-		.check_operands = jive_select_node_check_operands_, /* override */
-		.create = jive_select_node_create_,	/* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_node_class */
+		parent : &JIVE_UNARY_OPERATION,
+		name : "SELECT",
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_select_node_get_label_, /* override */
+		get_attrs : jive_select_node_get_attrs_, /* override */
+		match_attrs : jive_select_node_match_attrs_, /* override */
+		check_operands : jive_select_node_check_operands_, /* override */
+		create : jive_select_node_create_,	/* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 	
-	.can_reduce_operand = jive_select_can_reduce_operand_, /* override */
-	.reduce_operand = jive_select_reduce_operand_ /* override */
+	can_reduce_operand : jive_select_can_reduce_operand_, /* override */
+	reduce_operand : jive_select_reduce_operand_ /* override */
 };
 
 static void
@@ -90,8 +90,9 @@ jive_select_node_init_(jive_select_node * self, struct jive_region * region,
 	const jive_record_type * operand_type = (const jive_record_type *)
 		jive_output_get_type(operand);
 	const jive_type * output_type = &operand_type->decl->elements[element]->base;
+	const jive_type *  tmparray0[] = {jive_output_get_type(operand)};
 	jive_node_init_(&self->base, region,
-		1, (const jive_type * []){jive_output_get_type(operand)}, &operand,
+		1, tmparray0, &operand,
 		1, &output_type);
 }
 

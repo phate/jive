@@ -38,24 +38,24 @@ jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	size_t noperands, jive_output * const operands[], jive_context * context);
 
 const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
-	.base = { /* jive_node_class */
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "UNIFY",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_unify_node_get_label_, /* override */
-		.get_attrs = jive_unify_node_get_attrs_, /* override */
-		.match_attrs = jive_unify_node_match_attrs_, /* override */
-		.check_operands = jive_unify_node_check_operands_, /* override */
-		.create = jive_unify_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_node_class */
+		parent : &JIVE_UNARY_OPERATION,
+		name : "UNIFY",
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_unify_node_get_label_, /* override */
+		get_attrs : jive_unify_node_get_attrs_, /* override */
+		match_attrs : jive_unify_node_match_attrs_, /* override */
+		check_operands : jive_unify_node_check_operands_, /* override */
+		create : jive_unify_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 
-	.can_reduce_operand = jive_unary_operation_can_reduce_operand_, /* inherit */
-	.reduce_operand = jive_unary_operation_reduce_operand_ /* inherit */
+	can_reduce_operand : jive_unary_operation_can_reduce_operand_, /* inherit */
+	reduce_operand : jive_unary_operation_reduce_operand_ /* inherit */
 };
 
 static void
@@ -165,16 +165,16 @@ static bool
 jive_empty_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
 
 const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
-	.parent = &JIVE_NULLARY_OPERATION,
-	.name = "UNIFY",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_nullary_operation_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */ 
-	.get_attrs = jive_empty_unify_node_get_attrs_, /* override */
-	.match_attrs = jive_empty_unify_node_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_empty_unify_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NULLARY_OPERATION,
+	name : "UNIFY",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */ 
+	get_attrs : jive_empty_unify_node_get_attrs_, /* override */
+	match_attrs : jive_empty_unify_node_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_empty_unify_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

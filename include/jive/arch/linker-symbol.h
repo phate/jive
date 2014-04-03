@@ -40,7 +40,7 @@ jive_linker_symbol_resolver_resolve(
 	return self->class_->resolve(self, symbol, addr);
 }
 
-typedef enum jive_symref_type jive_symref_type;
+
 enum jive_symref_type {
 	/* no symbol referenced */
 	jive_symref_type_none = 0,

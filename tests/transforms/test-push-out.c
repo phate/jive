@@ -21,13 +21,16 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(int32, 32);
+const char * tmparray0[] = {"arg"};
 
-	jive_lambda * outer_function = jive_lambda_begin(graph, 1, &int32, (const char *[]){"arg"});
+	jive_lambda * outer_function = jive_lambda_begin(graph, 1, &int32, tmparray0);
+	const char * tmparray1[] = {"arg1"};
 	
-	jive_lambda * inner_function = jive_lambda_begin(graph, 1, &int32, (const char *[]){"arg1"});
+	jive_lambda * inner_function = jive_lambda_begin(graph, 1, &int32, tmparray1);
+jive_output * tmparray2[] = {inner_function->arguments[0],
+		outer_function->arguments[0]};
 
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){inner_function->arguments[0],
-		outer_function->arguments[0]});
+	jive_output * sum = jive_bitsum(2, tmparray2);
 
 	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, &int32, &sum)->node;
 	

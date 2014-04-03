@@ -15,40 +15,40 @@
 #include <jive/vsdg/region.h>
 
 const jive_state_type jive_state_type_singleton = {
-	.base = { .class_ = &JIVE_STATE_TYPE }
+	base : { class_ : &JIVE_STATE_TYPE }
 };
 
 const jive_type_class JIVE_STATE_TYPE = {
-	.parent = &JIVE_TYPE,
-	.name = "X",
-	.fini = jive_state_type_fini_, /* override */
-	.get_label = jive_type_get_label_, /* inherit */
-	.create_input = jive_state_type_create_input_, /* override */
-	.create_output = jive_state_type_create_output_, /* override */
-	.create_gate = jive_state_type_create_gate_, /* override */
-	.equals = jive_type_equals_, /* inherit */
-	.copy = jive_state_type_copy_, /* override */
+	parent : &JIVE_TYPE,
+	name : "X",
+	fini : jive_state_type_fini_, /* override */
+	get_label : jive_type_get_label_, /* inherit */
+	create_input : jive_state_type_create_input_, /* override */
+	create_output : jive_state_type_create_output_, /* override */
+	create_gate : jive_state_type_create_gate_, /* override */
+	equals : jive_type_equals_, /* inherit */
+	copy : jive_state_type_copy_, /* override */
 };
 
 const jive_input_class JIVE_STATE_INPUT = {
-	.parent = &JIVE_INPUT,
-	.fini = jive_input_fini_, /* inherit */
-	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = jive_state_input_get_type_, /* override */
+	parent : &JIVE_INPUT,
+	fini : jive_input_fini_, /* inherit */
+	get_label : jive_input_get_label_, /* inherit */
+	get_type : jive_state_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_STATE_OUTPUT = {
-	.parent = &JIVE_OUTPUT,
-	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = jive_state_output_get_type_, /* override */
+	parent : &JIVE_OUTPUT,
+	fini : jive_output_fini_, /* inherit */
+	get_label : jive_output_get_label_, /* inherit */
+	get_type : jive_state_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_STATE_GATE = {
-	.parent = &JIVE_GATE,
-	.fini = jive_gate_fini_, /* inherit */
-	.get_label = jive_gate_get_label_, /* inherit */
-	.get_type = jive_state_gate_get_type_, /* override */
+	parent : &JIVE_GATE,
+	fini : jive_gate_fini_, /* inherit */
+	get_label : jive_gate_get_label_, /* inherit */
+	get_type : jive_state_gate_get_type_, /* override */
 };
 
 void
@@ -160,16 +160,16 @@ jive_statemux_node_create_(struct jive_region * region, const jive_node_attrs * 
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_STATEMUX_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "STATEMUX",
-	.fini = jive_statemux_node_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_statemux_node_get_attrs_, /* override */
-	.match_attrs = jive_statemux_node_match_attrs_, /* override */
-	.check_operands = NULL,
-	.create = jive_statemux_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "STATEMUX",
+	fini : jive_statemux_node_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_statemux_node_get_attrs_, /* override */
+	match_attrs : jive_statemux_node_match_attrs_, /* override */
+	check_operands : NULL,
+	create : jive_statemux_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

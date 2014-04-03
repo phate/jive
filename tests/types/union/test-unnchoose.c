@@ -32,10 +32,11 @@ static int test_main(void)
 	static const jive_union_type unntype = {{{&JIVE_UNION_TYPE}}, &decl};
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	const jive_type * tmparray0[] = {&bits8.base.base, 
+			&unntype.base.base, &unntype.base.base, addrtype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		4, (const jive_type *[]){&bits8.base.base, 
-			&unntype.base.base, &unntype.base.base, addrtype});
+		4, tmparray0);
 
 	jive_output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
 	jive_output * load = jive_load_by_address_create(top->outputs[3], &unntype.base,
@@ -45,10 +46,12 @@ static int test_main(void)
 	jive_output * c1 = jive_choose_create(0, u0);
 	jive_output * c2 = jive_choose_create(1, top->outputs[2]);
 	jive_output * c3 = jive_choose_create(0, load);
+const jive_type * tmparray1[] = {&bits16.base.base, &bits8.base.base, &bits16.base.base,
+			&bits8.base.base};
+jive_output * tmparray2[] = {c0, c1, c2, c3};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		4, (const jive_type *[]){&bits16.base.base, &bits8.base.base, &bits16.base.base,
-			&bits8.base.base}, (jive_output *[]){c0, c1, c2, c3},
+		4, tmparray1, tmparray2,
 		1, &addrtype);
 	jive_graph_export(graph, bottom->outputs[0]);
 

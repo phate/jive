@@ -31,15 +31,18 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
+	jive_argument_type  tmparray0[] = { jive_argument_int, jive_argument_int };
+	jive_argument_type  tmparray1[] = { jive_argument_int };
 	
 	jive_subroutine subroutine = jive_i386_subroutine_begin(graph,
-		2, (jive_argument_type []) { jive_argument_int, jive_argument_int },
-		1, (jive_argument_type []) { jive_argument_int });
+		2, tmparray0,
+		1, tmparray1);
 	
 	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive_output * tmparray2[] = {arg1, arg2};
 	
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){arg1, arg2});
+	jive_output * sum = jive_bitsum(2, tmparray2);
 	
 	jive_subroutine_simple_set_result(subroutine, 0, sum);
 	

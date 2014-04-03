@@ -65,7 +65,7 @@ typedef struct jive_subroutine_node_attrs jive_subroutine_node_attrs;
 
 typedef struct jive_subroutine_abi_class jive_subroutine_abi_class;
 typedef struct jive_subroutine_class jive_subroutine_class;
-typedef enum jive_argument_type jive_argument_type;
+
 
 /* FIXME: these are quite C-specific, so really do not belong here */
 enum jive_argument_type {

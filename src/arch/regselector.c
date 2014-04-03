@@ -220,16 +220,16 @@ jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negoti
 }
 
 static const jive_negotiator_class JIVE_REGSELECTOR_CLASS = {
-	.option_fini = jive_regselector_option_fini_,
-	.option_create = jive_regselector_option_create_,
-	.option_equals = jive_regselector_option_equals_,
-	.option_specialize = jive_regselector_option_specialize_,
-	.option_intersect = jive_regselector_option_intersect_,
-	.option_assign = jive_regselector_option_assign_,
-	.option_gate_default = jive_regselector_option_gate_default_,
-	.annotate_node_proper = jive_regselector_annotate_node_proper_,
-	.annotate_node = jive_negotiator_annotate_node_,
-	.process_region = jive_negotiator_process_region_
+	option_fini : jive_regselector_option_fini_,
+	option_create : jive_regselector_option_create_,
+	option_equals : jive_regselector_option_equals_,
+	option_specialize : jive_regselector_option_specialize_,
+	option_intersect : jive_regselector_option_intersect_,
+	option_assign : jive_regselector_option_assign_,
+	option_gate_default : jive_regselector_option_gate_default_,
+	annotate_node_proper : jive_regselector_annotate_node_proper_,
+	annotate_node : jive_negotiator_annotate_node_,
+	process_region : jive_negotiator_process_region_
 };
 
 static const jive_register_class *

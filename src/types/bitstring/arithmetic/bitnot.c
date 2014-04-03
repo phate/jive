@@ -23,27 +23,27 @@ jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 	const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
-	.base = { /* jive_unary_operation_class */
-		.base = { /* jive_node_class */
-			.parent = &JIVE_BITUNARY_NODE,
-			.name = "BITNOT",
-			.fini = jive_node_fini_, /* inherit */
-			.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-			.get_label = jive_node_get_label_, /* inherit */
-			.get_attrs = jive_node_get_attrs_, /* inherit */
-			.match_attrs = jive_node_match_attrs_, /* inherit */
-			.check_operands = jive_bitunary_operation_check_operands_, /* inherit */
-			.create = jive_bitnot_create_, /* override */
-			.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_unary_operation_class */
+		base : { /* jive_node_class */
+			parent : &JIVE_BITUNARY_NODE,
+			name : "BITNOT",
+			fini : jive_node_fini_, /* inherit */
+			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+			get_label : jive_node_get_label_, /* inherit */
+			get_attrs : jive_node_get_attrs_, /* inherit */
+			match_attrs : jive_node_match_attrs_, /* inherit */
+			check_operands : jive_bitunary_operation_check_operands_, /* inherit */
+			create : jive_bitnot_create_, /* override */
+			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		
-		.single_apply_over = NULL,
-		.multi_apply_over = NULL,
+		single_apply_over : NULL,
+		multi_apply_over : NULL,
 		
-		.can_reduce_operand = jive_bitnot_can_reduce_operand_, /* override */
-		.reduce_operand = jive_bitnot_reduce_operand_ /* override */
+		can_reduce_operand : jive_bitnot_can_reduce_operand_, /* override */
+		reduce_operand : jive_bitnot_reduce_operand_ /* override */
 	},
-	.type = jive_bitop_code_not
+	type : jive_bitop_code_not
 };
 
 static void

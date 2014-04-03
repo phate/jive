@@ -17,22 +17,28 @@ static void
 test_simple_lambda(struct jive_graph * graph)
 {
 	JIVE_DECLARE_VALUE_TYPE(vtype);
+	const jive_type * tmparray0[] = {vtype, vtype, vtype};
 	jive_node * top = jive_node_create(graph->root_region, 0, NULL, NULL, 3,
-		(const jive_type *[]){vtype, vtype, vtype});
+		tmparray0);
+const jive_type * tmparray1[] = {vtype, vtype, vtype};
+const char * tmparray2[] = {"x", "y", "z"};
 
 	jive_lambda * lambda = jive_lambda_begin(graph,
-		3, (const jive_type *[]){vtype, vtype, vtype}, (const char *[]){"x", "y", "z"});
+		3, tmparray1, tmparray2);
 
 	jive_node * node = jive_node_create(lambda->region, 1, &vtype, &lambda->arguments[0], 1, &vtype);
+const jive_type * tmparray3[] = {vtype, vtype};
+jive_output * tmparray4[] = {node->outputs[0], lambda->arguments[1]};
 
-	jive_output * fct = jive_lambda_end(lambda, 2, (const jive_type *[]){vtype, vtype},
-		(jive_output *[]){node->outputs[0], lambda->arguments[1]});
+	jive_output * fct = jive_lambda_end(lambda, 2, tmparray3,
+		tmparray4);
 
 	jive_output * results[2];
 	jive_apply_create(fct, 3, top->outputs, results);
+const jive_type * tmparray5[] = {vtype, vtype};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){vtype, vtype}, results,
+		2, tmparray5, results,
 		1, &vtype);
 	jive_graph_export(graph, bottom->outputs[0]);
 
@@ -54,34 +60,43 @@ static void
 test_recursive_lambda(struct jive_graph * graph)
 {
 	JIVE_DECLARE_VALUE_TYPE(vtype);
+	const jive_type * tmparray6[] = {vtype, vtype, vtype};
 	jive_node * top = jive_node_create(graph->root_region, 0, NULL, NULL, 3,
-		(const jive_type *[]){vtype, vtype, vtype});
+		tmparray6);
+const jive_type * tmparray7[] = {vtype, vtype, vtype};
+const jive_type * tmparray8[] = {vtype, vtype};
 
 	jive_function_type * fcttype = jive_function_type_create(graph->context,
-		3, (const jive_type *[]){vtype, vtype, vtype}, 2, (const jive_type *[]){vtype, vtype});
+		3, tmparray7, 2, tmparray8);
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, &fcttype->base.base);
+const jive_type * tmparray9[] = {vtype, vtype, vtype};
+const char * tmparray10[] = {"x", "y", "z"};
 
 	jive_lambda * lambda = jive_lambda_begin(graph,
-		3, (const jive_type *[]){vtype, vtype, vtype}, (const char *[]){"x", "y", "z"});
+		3, tmparray9, tmparray10);
 
 	jive_node * node = jive_node_create(lambda->region, 1, &vtype, &lambda->arguments[0], 1, &vtype);
 
 	jive_output * results[2];
+	jive_output * tmparray11[] = {node->outputs[0], node->outputs[0], node->outputs[0]};
 	jive_apply_create(fv.value, 3,
-		(jive_output *[]){node->outputs[0], node->outputs[0], node->outputs[0]}, results);
+		tmparray11, results);
+const jive_type * tmparray12[] = {vtype, vtype};
+jive_output * tmparray13[] = {results[0], lambda->arguments[1]};
 
 	jive_output * fct = jive_lambda_end(lambda, 2,
-		(const jive_type *[]){vtype, vtype}, (jive_output *[]){results[0], lambda->arguments[1]});
+		tmparray12, tmparray13);
 
 	jive_phi_fixvar_leave(phi, fv.gate, fct);
 	jive_phi_end(phi, 1, &fv);
 
 	jive_apply_create(fv.value, 3, top->outputs, results);
+const jive_type * tmparray14[] = {vtype, vtype};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){vtype, vtype}, results,
+		2, tmparray14, results,
 		1, &vtype);
 	jive_graph_export(graph, bottom->outputs[0]);
 

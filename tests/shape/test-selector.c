@@ -19,22 +19,22 @@
 extern const jive_register_class gpr;
 
 const jive_register_name
-	r0 = {.base = {.name = "r0", .resource_class = &gpr.base}, .code = 0},
-	r1 = {.base = {.name = "r1", .resource_class = &gpr.base}, .code = 0},
-	r2 = {.base = {.name = "r2", .resource_class = &gpr.base}, .code = 0},
-	r3 = {.base = {.name = "r3", .resource_class = &gpr.base}, .code = 0};
+	r0 = {base : {name : "r0", resource_class : &gpr.base}, code : 0},
+	r1 = {base : {name : "r1", resource_class : &gpr.base}, code : 0},
+	r2 = {base : {name : "r2", resource_class : &gpr.base}, code : 0},
+	r3 = {base : {name : "r3", resource_class : &gpr.base}, code : 0};
 
 static const jive_resource_name * res_names [] = {&r0.base, &r1.base, &r2.base, &r3.base};
 
 const jive_register_class gpr = {
-		.base = {
-			.class_ = &JIVE_REGISTER_RESOURCE,
-			.name = "gpr",
-			.limit = 4,
-			.names = res_names,
-			.parent = &jive_root_resource_class,
-			.depth = 1,
-			.priority = jive_resource_class_priority_reg_low,
+		base : {
+			class_ : &JIVE_REGISTER_RESOURCE,
+			name : "gpr",
+			limit : 4,
+			names : res_names,
+			parent : &jive_root_resource_class,
+			depth : 1,
+			priority : jive_resource_class_priority_reg_low,
 		},
 	}
 ;
@@ -127,25 +127,38 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	jive_node * n1 = create_computation_node(graph, 0, NULL, 2);
-	jive_node * l1 = create_computation_node(graph, 1, (jive_output *[]){n1->outputs[0]}, 1);
-	jive_node * l2 = create_computation_node(graph, 1, (jive_output *[]){n1->outputs[1]}, 1);
-	jive_node * a = create_computation_node(graph, 1, (jive_output *[]){l1->outputs[0]}, 1);
-	jive_node * b = create_computation_node(graph, 1, (jive_output *[]){l1->outputs[0]}, 1);
-	jive_node * c = create_computation_node(graph, 1, (jive_output *[]){l1->outputs[0]}, 1);
-	jive_node * d = create_computation_node(graph, 1, (jive_output *[]){l1->outputs[0]}, 1);
-	jive_node * e = create_computation_node(graph, 1, (jive_output *[]){l1->outputs[0]}, 1);
-	jive_node * f = create_computation_node(graph, 1, (jive_output *[]){l2->outputs[0]}, 1);
+	jive_output * tmparray0[] = {n1->outputs[0]};
+	jive_node * l1 = create_computation_node(graph, 1, tmparray0, 1);
+	jive_output * tmparray1[] = {n1->outputs[1]};
+	jive_node * l2 = create_computation_node(graph, 1, tmparray1, 1);
+	jive_output * tmparray2[] = {l1->outputs[0]};
+	jive_node * a = create_computation_node(graph, 1, tmparray2, 1);
+	jive_output * tmparray3[] = {l1->outputs[0]};
+	jive_node * b = create_computation_node(graph, 1, tmparray3, 1);
+	jive_output * tmparray4[] = {l1->outputs[0]};
+	jive_node * c = create_computation_node(graph, 1, tmparray4, 1);
+	jive_output * tmparray5[] = {l1->outputs[0]};
+	jive_node * d = create_computation_node(graph, 1, tmparray5, 1);
+	jive_output * tmparray6[] = {l1->outputs[0]};
+	jive_node * e = create_computation_node(graph, 1, tmparray6, 1);
+	jive_output * tmparray7[] = {l2->outputs[0]};
+	jive_node * f = create_computation_node(graph, 1, tmparray7, 1);
+	jive_output * tmparray8[] = {a->outputs[0], b->outputs[0]};
 	
 	jive_node * s1 = create_computation_node(
-		graph, 2, (jive_output *[]){a->outputs[0], b->outputs[0]}, 1);
+		graph, 2, tmparray8, 1);
+	jive_output * tmparray9[] = {c->outputs[0], s1->outputs[0]};
 	jive_node * s2 = create_computation_node(
-		graph, 2, (jive_output *[]){c->outputs[0], s1->outputs[0]}, 1);
+		graph, 2, tmparray9, 1);
+	jive_output * tmparray10[] = {s2->outputs[0], d->outputs[0]};
 	jive_node * s3 = create_computation_node(
-		graph, 2, (jive_output *[]){s2->outputs[0], d->outputs[0]}, 1);
+		graph, 2, tmparray10, 1);
+	jive_output * tmparray11[] = {e->outputs[0], s3->outputs[0]};
 	jive_node * s4 = create_computation_node(
-		graph, 2, (jive_output *[]){e->outputs[0], s3->outputs[0]}, 1);
+		graph, 2, tmparray11, 1);
+	jive_output * tmparray12[] = {s4->outputs[0], f->outputs[0]};
 	jive_node * s5 = create_computation_node(
-		graph, 2, (jive_output *[]){s4->outputs[0], f->outputs[0]}, 1);
+		graph, 2, tmparray12, 1);
 	
 	jive_node_add_input(graph->root_region->bottom, jive_output_get_type(s5->outputs[0]),
 		s5->outputs[0]);

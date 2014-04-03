@@ -81,32 +81,32 @@ jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive
 //jive_bitconcat_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2);
 
 const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
-	.base = { /* jive_node_class */
+	base : { /* jive_node_class */
 		/* note that parent is JIVE_BINARY_OPERATION, not
 		JIVE_BITBINARY_OPERATION: the latter one is assumed
 		to represent "width-preserving" bit operations (i.e.
 		number of bits per operand/output matches), while
 		the concat operator violates this assumption */
-		.parent = &JIVE_BINARY_OPERATION,
-		.name = "BITCONCAT",
-		.fini = jive_node_fini_, /* inherit */
-		.get_default_normal_form = jive_binary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_bitconcat_node_get_label_, /* override */
-		.get_attrs = jive_node_get_attrs_, /* inherit */
-		.match_attrs = jive_node_match_attrs_, /* inherit */
-		.check_operands = jive_bitconcat_node_check_operands_, /* override */
-		.create = jive_bitconcat_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+		parent : &JIVE_BINARY_OPERATION,
+		name : "BITCONCAT",
+		fini : jive_node_fini_, /* inherit */
+		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_bitconcat_node_get_label_, /* override */
+		get_attrs : jive_node_get_attrs_, /* inherit */
+		match_attrs : jive_node_match_attrs_, /* inherit */
+		check_operands : jive_bitconcat_node_check_operands_, /* override */
+		create : jive_bitconcat_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
-	.flags = jive_binary_operation_associative,
-	.single_apply_under = NULL,
-	.multi_apply_under = NULL,
-	.distributive_over = NULL,
-	.distributive_under = NULL,
+	flags : jive_binary_operation_associative,
+	single_apply_under : NULL,
+	multi_apply_under : NULL,
+	distributive_over : NULL,
+	distributive_under : NULL,
 	
-	.can_reduce_operand_pair = jive_bitconcat_can_reduce_operand_pair_, /* override */
-	.reduce_operand_pair = jive_bitconcat_reduce_operand_pair_ /* override */
+	can_reduce_operand_pair : jive_bitconcat_can_reduce_operand_pair_, /* override */
+	reduce_operand_pair : jive_bitconcat_reduce_operand_pair_ /* override */
 };
 
 static void

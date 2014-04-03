@@ -25,12 +25,13 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
+const int64_t tmparray0[] = {42};
 
 	graph->root_region->attrs.section = jive_region_section_code;	
 	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instr_int_load_imm,
-		0, (const int64_t[]){42});
+		0, tmparray0);
 	
 	jive_node * leave = jive_instruction_node_create(
 		graph->root_region,

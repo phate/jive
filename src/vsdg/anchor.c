@@ -11,16 +11,16 @@
 /* node class */
 
 const jive_node_class JIVE_ANCHOR_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "ANCHOR",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_anchor_node_get_default_normal_form_, /* override */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_node_get_attrs_, /* inherit */
-	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherrit */
-	.create = jive_node_create_, /* inherit */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "ANCHOR",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_anchor_node_get_default_normal_form_, /* override */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_node_get_attrs_, /* inherit */
+	match_attrs : jive_node_match_attrs_, /* inherit */
+	check_operands : jive_node_check_operands_, /* inherrit */
+	create : jive_node_create_, /* inherit */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* node class inhertiable methods */
@@ -40,16 +40,16 @@ jive_anchor_node_get_default_normal_form_(const jive_node_class * cls,
 /* normal form class */
 
 const jive_anchor_node_normal_form_class JIVE_ANCHOR_NODE_NORMAL_FORM_ = {
-	.base = { /* jive_node_normal_form_class */
-		.parent = &JIVE_NODE_NORMAL_FORM,
-		.fini = jive_node_normal_form_fini_, /* inherit */
-		.normalize_node = jive_node_normal_form_normalize_node_, /* inherit */
-		.operands_are_normalized = jive_node_normal_form_operands_are_normalized_, /* inherit */
-		.normalized_create = NULL,
-		.set_mutable = jive_node_normal_form_set_mutable_, /* inherit */
-		.set_cse = jive_node_normal_form_set_cse_, /* inherit */
+	base : { /* jive_node_normal_form_class */
+		parent : &JIVE_NODE_NORMAL_FORM,
+		fini : jive_node_normal_form_fini_, /* inherit */
+		normalize_node : jive_node_normal_form_normalize_node_, /* inherit */
+		operands_are_normalized : jive_node_normal_form_operands_are_normalized_, /* inherit */
+		normalized_create : NULL,
+		set_mutable : jive_node_normal_form_set_mutable_, /* inherit */
+		set_cse : jive_node_normal_form_set_cse_, /* inherit */
 	},
-	.set_reducible = jive_anchor_node_normal_form_set_reducible_
+	set_reducible : jive_anchor_node_normal_form_set_reducible_
 };
 
 void

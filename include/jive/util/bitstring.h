@@ -394,7 +394,7 @@ jive_bitstring_extend_unsigned(char dst[], size_t dstbits, const char src[], siz
 {
 	JIVE_DEBUG_ASSERT(dstbits >= srcbits);
 
-	dst = memmove(dst, src, srcbits);
+	memmove(dst, src, srcbits);
 	memset(dst+srcbits, '0', dstbits-srcbits);
 }
 
@@ -403,7 +403,7 @@ jive_bitstring_extend_signed(char dst[], size_t dstbits, const char src[], size_
 {
 	JIVE_DEBUG_ASSERT(dstbits >= srcbits);
 
-	dst = memmove(dst, src, srcbits);
+	memmove(dst, src, srcbits);
 	memset(dst+srcbits, src[srcbits-1], dstbits-srcbits);
 }
 

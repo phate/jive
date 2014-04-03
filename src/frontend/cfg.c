@@ -24,11 +24,11 @@ static struct jive_cfg_node *
 jive_cfg_enter_node_create_(struct jive_cfg * cfg);
 
 const struct jive_cfg_node_class JIVE_CFG_ENTER_NODE = {
-	.parent = &JIVE_CFG_NODE,
-	.name = "ENTER",
-	.fini = jive_cfg_node_fini_, /* inherit */
-	.get_label = jive_cfg_node_get_label_, /* inherit */
-	.create = jive_cfg_enter_node_create_ /* override */
+	parent : &JIVE_CFG_NODE,
+	name : "ENTER",
+	fini : jive_cfg_node_fini_, /* inherit */
+	get_label : jive_cfg_node_get_label_, /* inherit */
+	create : jive_cfg_enter_node_create_ /* override */
 };
 
 static struct jive_cfg_node *
@@ -46,11 +46,11 @@ static struct jive_cfg_node *
 jive_cfg_exit_node_create_(struct jive_cfg * cfg);
 
 const jive_cfg_node_class JIVE_CFG_EXIT_NODE = {
-	.parent = &JIVE_CFG_NODE,
-	.name = "EXIT",
-	.fini = jive_cfg_node_fini_, /* inherit */
-	.get_label = jive_cfg_node_get_label_, /* inherit */
-	.create = jive_cfg_exit_node_create_ /* override */
+	parent : &JIVE_CFG_NODE,
+	name : "EXIT",
+	fini : jive_cfg_node_fini_, /* inherit */
+	get_label : jive_cfg_node_get_label_, /* inherit */
+	create : jive_cfg_exit_node_create_ /* override */
 };
 
 static struct jive_cfg_node *

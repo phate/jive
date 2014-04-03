@@ -32,19 +32,21 @@ static int test_main(void)
 	JIVE_DECLARE_BITSTRING_TYPE(bits18, 18);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
-
-	jive_record_declaration r_decl = {3, (const jive_value_type * []){
+const jive_value_type *  tmparray0[] = {
 		(const jive_value_type *)bits4,
 		(const jive_value_type *)bits8,
-		(const jive_value_type *)bits18}};
+		(const jive_value_type *)bits18};
+
+	jive_record_declaration r_decl = {3, tmparray0};
 	
 	jive_record_type record_t;
-	jive_record_type_init(&record_t, &r_decl);	
-
-	jive_union_declaration u_decl = {3, (const jive_value_type * []){
+	const jive_value_type *  tmparray1[] = {
 		(const jive_value_type *)bits4,
 		(const jive_value_type *)bits8,
-		(const jive_value_type *)bits18}};
+		(const jive_value_type *)bits18};
+	jive_record_type_init(&record_t, &r_decl);	
+
+	jive_union_declaration u_decl = {3, tmparray1};
 
 	jive_union_type union_t;
 	jive_union_type_init(&union_t, &u_decl);
@@ -59,11 +61,13 @@ static int test_main(void)
 	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t.base);
 
 	assert(jive_node_match_attrs(s1->node, jive_node_get_attrs(s2->node)));
+	const jive_type *  tmparray2[] = {bits32, bits32, bits32, bits32, bits32, bits32, bits32, bits32};
+	jive_output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
 	assert(!jive_node_match_attrs(s0->node, jive_node_get_attrs(s3->node)));	
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		8, (const jive_type * []){bits32, bits32, bits32, bits32, bits32, bits32, bits32, bits32},
-		(jive_output * []){s0, s1, s2, s3, s4, s5, s6, s7},
+		8, tmparray2,
+		tmparray3,
 		1, &addr);
 	jive_graph_export(graph, bottom->outputs[0]);
 

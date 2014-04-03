@@ -22,9 +22,10 @@ static int test_main(void)
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
 	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
+	const jive_type* tmparray0[] = {itgtype, itgtype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type*[]){itgtype, itgtype});
+		2, tmparray0);
 
 	jive_output * greater = jive_itggreater(top->outputs[0], top->outputs[1]);
 

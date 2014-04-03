@@ -31,18 +31,21 @@ static int test_main(void)
 
 	static const jive_union_declaration decl_empty = {0, NULL};
 	static const jive_union_type unntype_empty = {{{&JIVE_UNION_TYPE}}, &decl_empty};
+	const jive_type * tmparray0[] = {&bits8.base.base};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, (const jive_type *[]){&bits8.base.base});
+		1, tmparray0);
 
 	jive_output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
 	jive_output * u1 = jive_empty_unify_create(graph, &decl_empty);
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
+	const jive_type * tmparray1[] = {&unntype.base.base, &unntype_empty.base.base};
+	jive_output * tmparray2[] = {u0, u1};
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){&unntype.base.base, &unntype_empty.base.base},
-			(jive_output *[]){u0, u1},
+		2, tmparray1,
+			tmparray2,
 		1, &bits64);
 	jive_graph_export(graph, bottom->outputs[0]);
 

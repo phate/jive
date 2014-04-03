@@ -23,16 +23,16 @@
 #include <jive/vsdg/variable.h>
 
 const jive_node_class JIVE_NODE = {
-	.parent = 0,
-	.name = "NODE",
-	.fini = jive_node_fini_,
-	.get_default_normal_form = jive_node_get_default_normal_form_,
-	.get_label = jive_node_get_label_,
-	.get_attrs = jive_node_get_attrs_,
-	.match_attrs = jive_node_match_attrs_,
-	.check_operands = jive_node_check_operands_,
-	.create = jive_node_create_,
-	.get_aux_rescls = jive_node_get_aux_rescls_
+	parent : 0,
+	name : "NODE",
+	fini : jive_node_fini_,
+	get_default_normal_form : jive_node_get_default_normal_form_,
+	get_label : jive_node_get_label_,
+	get_attrs : jive_node_get_attrs_,
+	match_attrs : jive_node_match_attrs_,
+	check_operands : jive_node_check_operands_,
+	create : jive_node_create_,
+	get_aux_rescls : jive_node_get_aux_rescls_
 };
 
 static void
@@ -245,10 +245,10 @@ jive_node *
 jive_node_create(
 	struct jive_region * region,
 	size_t noperands,
-	const struct jive_type * operand_types[const],
-	struct jive_output * operands[const],
+	const struct jive_type * const * operand_types,
+	struct jive_output * const * operands,
 	size_t noutputs,
-	const struct jive_type * output_types[const])
+	const struct jive_type * const * output_types)
 {
 	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	node->class_ = &JIVE_NODE;
@@ -802,13 +802,13 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 /* normal forms */
 
 const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM = {
-	.parent = 0,
-	.fini = jive_node_normal_form_fini_,
-	.normalize_node = jive_node_normal_form_normalize_node_,
-	.operands_are_normalized = jive_node_normal_form_operands_are_normalized_,
-	.normalized_create = jive_node_normal_form_normalized_create_,
-	.set_mutable = jive_node_normal_form_set_mutable_,
-	.set_cse = jive_node_normal_form_set_cse_
+	parent : 0,
+	fini : jive_node_normal_form_fini_,
+	normalize_node : jive_node_normal_form_normalize_node_,
+	operands_are_normalized : jive_node_normal_form_operands_are_normalized_,
+	normalized_create : jive_node_normal_form_normalized_create_,
+	set_mutable : jive_node_normal_form_set_mutable_,
+	set_cse : jive_node_normal_form_set_cse_
 };
 
 void

@@ -23,8 +23,10 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	const jive_type * tmparray0[] = {bits32, bits32};
+	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph,
-		2, (const jive_type *[]){bits32, bits32}, (const char *[]){"arg1", "arg2"});
+		2, tmparray0, tmparray1);
 
 	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
@@ -32,9 +34,10 @@ static int test_main(void)
 	
 	jive_output * c0 = jive_bitconstant(graph, 32, "01010100000000000000000000000000");
 	jive_output * c1 = jive_bitconstant(graph, 32, "10010010000000000000000000000000");
+	jive_output * tmparray2[] = {c0, c1};
 	
 	jive_node * apply_node = jive_apply_node_create(graph->root_region,
-		lambda_expr, 2, (jive_output *[]){c0, c1});
+		lambda_expr, 2, tmparray2);
 	
 	assert(jive_type_equals(bits32, jive_output_get_type(apply_node->outputs[0])));
 	

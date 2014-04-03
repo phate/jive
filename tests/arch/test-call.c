@@ -25,17 +25,20 @@ static int test_main(void)
 
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
 	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
+	const jive_type * tmparray0[] = {addr, bits16, addr};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		3, (const jive_type *[]){addr, bits16, addr});
+		3, tmparray0);
+const jive_type * tmparray1[] = {bits16, addr, addr};
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		top->outputs[0], NULL,
 		2, top->outputs + 1,
-		3, (const jive_type *[]){bits16, addr, addr});
+		3, tmparray1);
+const jive_type * tmparray2[] = {bits16, addr, addr};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		3, (const jive_type *[]){bits16, addr, addr}, call->outputs,
+		3, tmparray2, call->outputs,
 		1, &addr);
 	jive_graph_export(graph, bottom->outputs[0]);
 

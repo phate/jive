@@ -15,33 +15,33 @@
 #include <jive/vsdg/graph.h>
 
 static const jive_anchor_type jive_anchor_type_singleton = {
-	.base = { .class_ = &JIVE_ANCHOR_TYPE }
+	base : { class_ : &JIVE_ANCHOR_TYPE }
 };
 
 const jive_type_class JIVE_ANCHOR_TYPE = {
-	.parent = &JIVE_TYPE,
-	.name = "X",
-	.fini = jive_type_fini_, /* inherit */
-	.get_label = jive_type_get_label_, /* inherit */
-	.create_input = jive_anchor_type_create_input_, /* override */
-	.create_output = jive_anchor_type_create_output_, /* override */
-	.create_gate = jive_type_create_gate_, /* inherit */
-	.equals = jive_type_equals_, /* inherit */
-	.copy = jive_type_copy_ /* inherit */
+	parent : &JIVE_TYPE,
+	name : "X",
+	fini : jive_type_fini_, /* inherit */
+	get_label : jive_type_get_label_, /* inherit */
+	create_input : jive_anchor_type_create_input_, /* override */
+	create_output : jive_anchor_type_create_output_, /* override */
+	create_gate : jive_type_create_gate_, /* inherit */
+	equals : jive_type_equals_, /* inherit */
+	copy : jive_type_copy_ /* inherit */
 };
 
 const jive_input_class JIVE_ANCHOR_INPUT = {
-	.parent = &JIVE_INPUT,
-	.fini = jive_anchor_input_fini_, /* override */
-	.get_label = jive_input_get_label_, /* inherit */
-	.get_type = jive_anchor_input_get_type_, /* override */
+	parent : &JIVE_INPUT,
+	fini : jive_anchor_input_fini_, /* override */
+	get_label : jive_input_get_label_, /* inherit */
+	get_type : jive_anchor_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_ANCHOR_OUTPUT = {
-	.parent = &JIVE_OUTPUT,
-	.fini = jive_output_fini_, /* inherit */
-	.get_label = jive_output_get_label_, /* inherit */
-	.get_type = jive_anchor_output_get_type_, /* override */
+	parent : &JIVE_OUTPUT,
+	fini : jive_output_fini_, /* inherit */
+	get_label : jive_output_get_label_, /* inherit */
+	get_type : jive_anchor_output_get_type_, /* override */
 };
 
 jive_input *

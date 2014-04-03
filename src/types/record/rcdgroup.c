@@ -34,16 +34,16 @@ jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	size_t noperands, jive_output * const operands[], jive_context * context);
 
 const jive_node_class JIVE_GROUP_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "GROUP",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_group_node_get_label_, /* override */
-	.get_attrs = jive_group_node_get_attrs_, /* override */
-	.match_attrs = jive_group_node_match_attrs_, /* override */
-	.check_operands = jive_group_node_check_operands_, /* override */
-	.create = jive_group_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "GROUP",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_group_node_get_label_, /* override */
+	get_attrs : jive_group_node_get_attrs_, /* override */
+	match_attrs : jive_group_node_match_attrs_, /* override */
+	check_operands : jive_group_node_check_operands_, /* override */
+	create : jive_group_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -138,7 +138,7 @@ jive_group_node_create(struct jive_region * region, const jive_record_declaratio
 
 jive_output *
 jive_group_create(const jive_record_declaration * decl,
-	size_t narguments, jive_output * arguments[const])
+	size_t narguments, jive_output * const * arguments)
 {
 	jive_region * region = jive_region_innermost(narguments, arguments);
 

@@ -27,8 +27,10 @@ static int test_main(void)
 	JIVE_DECLARE_VALUE_TYPE(vtype);
 	jive_output * x = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype)->outputs[0];
 	jive_output * y = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype)->outputs[0];
-	jive_node * n = jive_test_node_create(graph->root_region, 2, (const jive_type *[]){vtype, vtype},
-		(jive_output *[]){x, y}, 1, &vtype);
+	const jive_type * tmparray0[] = {vtype, vtype};
+	jive_output * tmparray1[] = {x, y};
+	jive_node * n = jive_test_node_create(graph->root_region, 2, tmparray0,
+		tmparray1, 1, &vtype);
 
 	jive_output_auto_assign_variable(x);
 	jive_output_auto_assign_variable(y);

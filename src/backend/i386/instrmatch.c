@@ -79,13 +79,15 @@ convert_bitbinary(jive_node * node,
 	if (second_is_immediate) {
 		jive_immediate imm[1];
 		regvalue_to_immediate(arg2, &imm[0]);
+		jive_output * tmparray0[] = {arg1};
 		instr = jive_instruction_node_create_extended(node->region,
 			regimm_icls,
-			(jive_output *[]){arg1}, imm);
+			tmparray0, imm);
 	} else {
+		jive_output * tmparray1[] = {arg1, arg2};
 		instr = jive_instruction_node_create(node->region,
 			regreg_icls,
-			(jive_output *[]){arg1, arg2}, NULL);
+			tmparray1, NULL);
 	}
 	
 	jive_output_replace(node->outputs[0], instr->outputs[0]);
@@ -102,9 +104,10 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 	if (sign) {
 		jive_immediate imm[1];
 		jive_immediate_init(&imm[0], 31, 0, 0, 0);
+		jive_output * tmparray2[] = {arg1};
 		jive_node * tmp = jive_instruction_node_create_extended(node->region,
 			&jive_i386_instr_int_ashr_immediate,
-			(jive_output *[]){arg1}, imm);
+			tmparray2, imm);
 		
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_sdiv;
@@ -123,9 +126,10 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_udiv;
 	}
+	jive_output * tmparray3[] = {ext, arg1, arg2};
 	
 	jive_node * instr = jive_instruction_node_create_extended(node->region,
-		icls, (jive_output *[]){ext, arg1, arg2}, NULL);
+		icls, tmparray3, NULL);
 	
 	jive_output_replace(node->outputs[0], instr->outputs[index]);
 }
@@ -137,10 +141,11 @@ convert_complex_bitbinary(jive_node * node,
 {
 	jive_output * arg1 = node->inputs[0]->origin;
 	jive_output * arg2 = node->inputs[1]->origin;
+	jive_output * tmparray4[] = {arg1, arg2};
 	
 	jive_node * instr = jive_instruction_node_create(node->region,
 		icls,
-		(jive_output *[]){arg1, arg2}, NULL);
+		tmparray4, NULL);
 	
 	jive_output_replace(node->outputs[0], instr->outputs[result_index]);
 }
@@ -248,20 +253,23 @@ convert_bitcmp(jive_node * node, const jive_instruction_class * jump_icls, const
 	if (second_is_immediate) {
 		jive_immediate imm[1];
 		regvalue_to_immediate(arg2, &imm[0]);
+		jive_output * tmparray5[] = {arg1};
 		cmp_instr = jive_instruction_node_create_extended(node->region,
 			&jive_i386_instr_int_cmp_immediate,
-			(jive_output *[]){arg1}, imm);
+			tmparray5, imm);
 	} else {
+		jive_output * tmparray6[] = {arg1, arg2};
 		cmp_instr = jive_instruction_node_create(node->region,
 			&jive_i386_instr_int_cmp,
-			(jive_output *[]){arg1, arg2}, NULL);
+			tmparray6, NULL);
 	}
 	
 	jive_immediate imm[1];
 	jive_immediate_init(&imm[0], 0, 0, 0, 0);
+	jive_output * tmparray7[] = {cmp_instr->outputs[0]};
 	jive_node * jump_instr = jive_instruction_node_create_extended(node->region,
 		jump_icls,
-		(jive_output *[]){cmp_instr->outputs[0]},
+		tmparray7,
 		imm);
 	jive_output_replace(node->outputs[0], jump_instr->outputs[0]);
 }
@@ -359,9 +367,10 @@ match_gpr_bitunary(jive_node * node)
 		case jive_bitop_code_invalid:
 			JIVE_DEBUG_ASSERT(false);
 	}
+	jive_output * tmparray8[] = {node->inputs[0]->origin};
 	jive_node * instr = jive_instruction_node_create(node->region,
 		icls,
-		(jive_output *[]){node->inputs[0]->origin}, NULL);
+		tmparray8, NULL);
 	
 	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }
@@ -418,9 +427,10 @@ match_gpr_load(jive_node * node)
 		case jive_i386_addr_mode_disp: {
 			jive_immediate imm[1];
 			jive_immediate_init(&imm[0], info.info.disp.offset, 0, 0, 0);
+			jive_output * tmparray9[] = {info.info.disp.base};
 			instr = jive_instruction_node_create_extended(node->region,
 				&jive_i386_instr_int_load32_disp,
-				(jive_output *[]){info.info.disp.base}, imm);
+				tmparray9, imm);
 			value = instr->outputs[0];
 			break;
 		}
@@ -457,9 +467,10 @@ match_gpr_store(jive_node * node)
 		case jive_i386_addr_mode_disp: {
 			jive_immediate imm[1];
 			jive_immediate_init(&imm[0], info.info.disp.offset, 0, 0, 0);
+			jive_output * tmparray10[] = {info.info.disp.base, value};
 			instr = jive_instruction_node_create_extended(node->region,
 				&jive_i386_instr_int_store32_disp,
-				(jive_output *[]){info.info.disp.base, value}, imm);
+				tmparray10, imm);
 			break;
 		}
 	}

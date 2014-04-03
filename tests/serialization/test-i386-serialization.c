@@ -34,11 +34,13 @@ static int test_main(void)
 	jive_buffer_init(&buf, ctx);
 	
 	jive_graph * gr1 = jive_graph_create(ctx);
+	const jive_argument_type tmparray0[] = { jive_argument_int };
+	const jive_argument_type tmparray1[] = { jive_argument_int };
 	
 	jive_subroutine sub = jive_i386_subroutine_begin(
 		gr1,
-		1,(const jive_argument_type[]) { jive_argument_int },
-		1,(const jive_argument_type[]) { jive_argument_int });
+		1,tmparray0,
+		1,tmparray1);
 
 	// FIXME: test should fail with the following disabled; it happens
 	// to fail with the following enabled :(
@@ -52,23 +54,27 @@ static int test_main(void)
 	jive_node_normal_form_set_mutable(
 		jive_graph_get_nodeclass_form(gr1, &JIVE_NODE),
 		false);
+	int64_t tmparray2[] = {42};
 	
 	jive_node * n1 = jive_instruction_node_create_simple(
 		gr1->root_region,
 		&jive_i386_instr_int_load_imm,
 		NULL,
-		(int64_t[]){42});
+		tmparray2);
+	jive_output * tmparray3[] = {n1->outputs[0]};
+	int64_t tmparray4[] = {17};
 	
 	jive_node * n2 = jive_instruction_node_create_simple(
 		gr1->root_region,
 		&jive_i386_instr_int_load32_disp,
-		(jive_output *[]){n1->outputs[0]},
-		(int64_t[]){17});
+		tmparray3,
+		tmparray4);
+	jive_output * tmparray5[] = {n1->outputs[0], n2->outputs[0]};
 	
 	jive_node * n3 = jive_instruction_node_create_simple(
 		gr1->root_region,
 		&jive_i386_instr_int_mul_expand_signed,
-		(jive_output *[]){n1->outputs[0], n2->outputs[0]},
+		tmparray5,
 		NULL);
 	
 	jive_node * orig_node = n3;

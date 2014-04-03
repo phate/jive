@@ -174,7 +174,7 @@ jive_token_istream_signed_integral(jive_token_istream * is, int64_t * value)
 	const jive_token * current = jive_token_istream_current(is);
 	const jive_token * next = jive_token_istream_next(is);
 	if (current->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) INT64_MAX) {
+		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
 			*value = current->v.integral;
 			jive_token_istream_advance(is);
 			return true;
@@ -182,7 +182,7 @@ jive_token_istream_signed_integral(jive_token_istream * is, int64_t * value)
 			return false;
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= 1 + ~ (uint64_t) INT64_MIN) {
+		if (current->v.integral <= 1 + ~ (uint64_t) (-0x7fffffffffffffffLL-1)) {
 			*value = - next->v.integral;
 			jive_token_istream_advance(is);
 			jive_token_istream_advance(is);

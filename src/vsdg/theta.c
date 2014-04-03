@@ -66,42 +66,42 @@ jive_theta_node_create_(jive_region * region, const jive_node_attrs * attrs,
 }
 
 const jive_node_class JIVE_THETA_HEAD_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "THETA_HEAD",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_,  /* inherit */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherrit */
-	.create = jive_theta_head_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_NODE,
+	name : "THETA_HEAD",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherrit */
+	create : jive_theta_head_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_THETA_TAIL_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "THETA_TAIL",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_,  /* inherit */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherrit */
-	.create = jive_theta_tail_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_NODE,
+	name : "THETA_TAIL",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherrit */
+	create : jive_theta_tail_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_THETA_NODE = {
-	.parent = &JIVE_ANCHOR_NODE,
-	.name = "THETA",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_anchor_node_get_default_normal_form_,  /* inherit */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherrit */
-	.create = jive_theta_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_ANCHOR_NODE,
+	name : "THETA",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_anchor_node_get_default_normal_form_,  /* inherit */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherrit */
+	create : jive_theta_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 static jive_node *
@@ -150,7 +150,7 @@ jive_theta_node_create(jive_region * region,
 jive_node *
 jive_theta_create(
 	jive_region * region,
-	size_t nvalues, const jive_type * types[const], jive_output * values[const])
+	size_t nvalues, const jive_type * const * types, jive_output * const * values)
 {
 	jive_region * loop_region = jive_region_create_subregion(region);
 	jive_node * head = jive_theta_head_node_create(loop_region);

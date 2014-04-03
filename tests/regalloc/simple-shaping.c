@@ -45,14 +45,16 @@ static int test_main(void)
 		jive_regcls_create_gate( &jive_testarch_regcls_regs, graph, "arg1"));
 	jive_output * arg3 = jive_node_gate_output(enter,
 		jive_regcls_create_gate( &jive_testarch_regcls_regs, graph, "arg1"));
+	jive_output * tmparray0[] = {arg1, arg2};
 	
 	add1 = (jive_node *) jive_instruction_node_create(region,
 		&jive_testarch_instructions[instr_add],
-		(jive_output *[]){arg1, arg2}, NULL);
+		tmparray0, NULL);
+	jive_output * tmparray1[] = {add1->outputs[0], arg3};
 	
 	add2 = (jive_node *) jive_instruction_node_create(region,
 		&jive_testarch_instructions[instr_add],
-		(jive_output *[]){add1->outputs[0], arg3}, NULL);
+		tmparray1, NULL);
 	
 	jive_node_gate_input(leave, jive_regcls_create_gate( &jive_testarch_regcls_r1, graph, "ret1"), add2->outputs[0]);
 	

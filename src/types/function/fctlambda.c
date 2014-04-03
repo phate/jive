@@ -44,16 +44,16 @@ jive_lambda_enter_node_create_(struct jive_region * region, const jive_node_attr
 }
 
 const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LAMBDA_ENTER",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_node_get_attrs_, /* inherit */
-	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.check_operands = NULL,
-	.create = jive_lambda_enter_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "LAMBDA_ENTER",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_node_get_attrs_, /* inherit */
+	match_attrs : jive_node_match_attrs_, /* inherit */
+	check_operands : NULL,
+	create : jive_lambda_enter_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* lambda leave node */
@@ -85,16 +85,16 @@ jive_lambda_leave_node_create_(struct jive_region * region, const jive_node_attr
 }
 
 const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LAMBDA_LEAVE",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_node_get_attrs_, /* inherit */
-	.match_attrs = jive_node_match_attrs_, /* inherit */
-	.check_operands = NULL,
-	.create = jive_lambda_leave_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "LAMBDA_LEAVE",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_node_get_attrs_, /* inherit */
+	match_attrs : jive_node_match_attrs_, /* inherit */
+	check_operands : NULL,
+	create : jive_lambda_leave_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* lambda node */
@@ -190,16 +190,16 @@ jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 }
 
 const jive_node_class JIVE_LAMBDA_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "LAMBDA",
-	.fini = jive_lambda_node_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_node_get_label_, /* inherit */
-	.get_attrs = jive_lambda_node_get_attrs_, /* inherit */
-	.match_attrs = jive_lambda_node_match_attrs_, /* override */
-	.check_operands = NULL,
-	.create = jive_lambda_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "LAMBDA",
+	fini : jive_lambda_node_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_node_get_label_, /* inherit */
+	get_attrs : jive_lambda_node_get_attrs_, /* inherit */
+	match_attrs : jive_lambda_node_match_attrs_, /* override */
+	check_operands : NULL,
+	create : jive_lambda_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 bool
@@ -503,7 +503,8 @@ jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self)
 
 		jive_function_type * fcttype = jive_function_type_create(context,
 			nalive_parameters, alive_parameter_types, nalive_results, alive_result_types);
-		phi_ext = jive_phi_begin_extension(phi_node, 1, (const jive_type *[]){&fcttype->base.base});
+		const jive_type * tmparray0[] = {&fcttype->base.base};
+		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);
 		jive_function_type_destroy(fcttype);
 		embedded_in_phi = true;
 	}

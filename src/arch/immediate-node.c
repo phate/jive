@@ -26,7 +26,7 @@ jive_immediate_node_get_label_(const jive_node * self_, struct jive_buffer * buf
 {
 	const jive_immediate_node * self = (const jive_immediate_node *) self_;
 	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%" PRId64, self->attrs.value.offset);
+	snprintf(tmp, sizeof(tmp), "%" "lld", self->attrs.value.offset);
 	jive_buffer_putstr(buffer, tmp);
 }
 
@@ -54,10 +54,11 @@ jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_
 	
 	jive_immediate_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
 	JIVE_DECLARE_IMMEDIATE_TYPE(immediate_type);
+	const jive_type* tmparray0[] = {immediate_type};
 	jive_node_init_(&self->base,
 		region,
 		0, 0, 0,
-		1, (const jive_type*[]){immediate_type});
+		1, tmparray0);
 	self->base.class_ = &JIVE_IMMEDIATE_NODE;
 	self->attrs = *attrs;
 	
@@ -65,16 +66,16 @@ jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_
 }
 
 const jive_node_class JIVE_IMMEDIATE_NODE = {
-	.parent = &JIVE_NULLARY_OPERATION,
-	.name = "IMMEDIATE",
-	.fini = jive_node_fini_, /* inherit */
-	.get_default_normal_form = jive_nullary_operation_get_default_normal_form_, /* inherit */
-	.get_label = jive_immediate_node_get_label_, /* override */
-	.get_attrs = jive_immediate_node_get_attrs_, /* override */
-	.match_attrs = jive_immediate_node_match_attrs_, /* override */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_immediate_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_, /* inherit */
+	parent : &JIVE_NULLARY_OPERATION,
+	name : "IMMEDIATE",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
+	get_label : jive_immediate_node_get_label_, /* override */
+	get_attrs : jive_immediate_node_get_attrs_, /* override */
+	match_attrs : jive_immediate_node_match_attrs_, /* override */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_immediate_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_, /* inherit */
 };
 
 jive_output *

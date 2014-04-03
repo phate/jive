@@ -14,12 +14,12 @@
 #include <string.h>
 
 const struct jive_three_address_code_class JIVE_THREE_ADDRESS_CODE = {
-	.parent = 0,
-	.name = "THREE_ADDRESS_CODE",
-	.fini = jive_three_address_code_fini_,
-	.get_label = jive_three_address_code_get_label_,
-	.get_attrs = jive_three_address_code_get_attrs_,
-	.create = jive_three_address_code_create_
+	parent : 0,
+	name : "THREE_ADDRESS_CODE",
+	fini : jive_three_address_code_fini_,
+	get_label : jive_three_address_code_get_label_,
+	get_attrs : jive_three_address_code_get_attrs_,
+	create : jive_three_address_code_create_
 };
 
 void

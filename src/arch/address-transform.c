@@ -119,24 +119,24 @@ jive_address_to_bitstring_node_reduce_operand_(jive_unop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
-	.base = { /* jive_node_class */
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "ADDRESS_TO_BITSTRING",
-		.fini = jive_address_to_bitstring_node_fini_, /* override */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_node_get_label_, /* inherit */
-		.get_attrs = jive_address_to_bitstring_node_get_attrs_, /* override */
-		.match_attrs = jive_address_to_bitstring_node_match_attrs_, /* override */
-		.check_operands = jive_address_to_bitstring_node_check_operands_, /* override */
-		.create = jive_address_to_bitstring_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_node_class */
+		parent : &JIVE_UNARY_OPERATION,
+		name : "ADDRESS_TO_BITSTRING",
+		fini : jive_address_to_bitstring_node_fini_, /* override */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_node_get_label_, /* inherit */
+		get_attrs : jive_address_to_bitstring_node_get_attrs_, /* override */
+		match_attrs : jive_address_to_bitstring_node_match_attrs_, /* override */
+		check_operands : jive_address_to_bitstring_node_check_operands_, /* override */
+		create : jive_address_to_bitstring_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 	
-	.can_reduce_operand = jive_address_to_bitstring_node_can_reduce_operand_, /* override */
-	.reduce_operand = jive_address_to_bitstring_node_reduce_operand_ /* override */
+	can_reduce_operand : jive_address_to_bitstring_node_can_reduce_operand_, /* override */
+	reduce_operand : jive_address_to_bitstring_node_reduce_operand_ /* override */
 };
 
 static void
@@ -323,24 +323,24 @@ jive_bitstring_to_address_node_reduce_operand_(jive_unop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * operand);
 
 const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
-	.base = { /* jive_node_class */
-		.parent = &JIVE_UNARY_OPERATION,
-		.name = "BITSTRING_TO_ADDRESS",
-		.fini = jive_bitstring_to_address_node_fini_, /* override */
-		.get_default_normal_form = jive_unary_operation_get_default_normal_form_, /* inherit */
-		.get_label = jive_node_get_label_, /* inherit */
-		.get_attrs = jive_bitstring_to_address_node_get_attrs_, /* override */
-		.match_attrs = jive_bitstring_to_address_node_match_attrs_, /* override */
-		.check_operands = jive_bitstring_to_address_node_check_operands_, /* override */
-		.create = jive_bitstring_to_address_node_create_, /* override */
-		.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	base : { /* jive_node_class */
+		parent : &JIVE_UNARY_OPERATION,
+		name : "BITSTRING_TO_ADDRESS",
+		fini : jive_bitstring_to_address_node_fini_, /* override */
+		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+		get_label : jive_node_get_label_, /* inherit */
+		get_attrs : jive_bitstring_to_address_node_get_attrs_, /* override */
+		match_attrs : jive_bitstring_to_address_node_match_attrs_, /* override */
+		check_operands : jive_bitstring_to_address_node_check_operands_, /* override */
+		create : jive_bitstring_to_address_node_create_, /* override */
+		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
-	.single_apply_over = NULL,
-	.multi_apply_over = NULL,
+	single_apply_over : NULL,
+	multi_apply_over : NULL,
 
-	.can_reduce_operand = jive_bitstring_to_address_node_can_reduce_operand_, /* override */
-	.reduce_operand = jive_bitstring_to_address_node_reduce_operand_ /* override */	
+	can_reduce_operand : jive_bitstring_to_address_node_can_reduce_operand_, /* override */
+	reduce_operand : jive_bitstring_to_address_node_reduce_operand_ /* override */	
 };
 
 static void
@@ -641,7 +641,8 @@ jive_memberof_node_address_transform(jive_memberof_node * node, jive_memlayout_m
 	jive_output * offset = jive_bitconstant_unsigned(node_->graph, nbits, elem_offset);
 	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits,
 		jive_output_get_type(node_->inputs[0]->origin));
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){address, offset});
+	jive_output * tmparray0[] = {address, offset};
+	jive_output * sum = jive_bitsum(2, tmparray0);
 	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits,
 		jive_output_get_type(node_->outputs[0]));
 
@@ -684,8 +685,10 @@ jive_arraysubscript_node_address_transform(jive_arraysubscript_node * node,
 	jive_output * address = jive_address_to_bitstring_create(node_->inputs[0]->origin, nbits,
 		jive_output_get_type(node_->inputs[0]->origin));
 	jive_output * elem_size = jive_bitconstant_unsigned(node_->graph, nbits, elem_type_size);
-	jive_output * offset = jive_bitmultiply(2, (jive_output *[]){elem_size, index});
-	jive_output * sum = jive_bitsum(2, (jive_output *[]){address, offset});
+	jive_output * tmparray1[] = {elem_size, index};
+	jive_output * offset = jive_bitmultiply(2, tmparray1);
+	jive_output * tmparray2[] = {address, offset};
+	jive_output * sum = jive_bitsum(2, tmparray2);
 	jive_output * off_address = jive_bitstring_to_address_create(sum, nbits,
 		jive_output_get_type(node_->outputs[0]));
 	

@@ -30,7 +30,7 @@ jive_group_node_create(struct jive_region * region, const jive_record_declaratio
 
 jive_output *
 jive_group_create(const jive_record_declaration * decl,
-	size_t narguments, jive_output * arguments[const]);
+	size_t narguments, jive_output * const * arguments);
 
 jive_output *
 jive_empty_group_create(struct jive_graph * graph, const jive_record_declaration * decl);

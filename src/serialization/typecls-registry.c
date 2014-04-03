@@ -35,12 +35,12 @@ struct jive_serialization_typecls_registry {
 static jive_typecls_tag_bucket jive_typecls_empty_tag_bucket;
 static jive_typecls_cls_bucket jive_typecls_empty_cls_bucket;
 static jive_serialization_typecls_registry typecls_registry_singleton = {
-	.by_tag = &jive_typecls_empty_tag_bucket,
-	.by_cls = &jive_typecls_empty_cls_bucket,
-	.nbuckets = 0,
-	.nitems = 0,
-	.mask = 0,
-	.initialized = false
+	by_tag : &jive_typecls_empty_tag_bucket,
+	by_cls : &jive_typecls_empty_cls_bucket,
+	nbuckets : 0,
+	nitems : 0,
+	mask : 0,
+	initialized : false
 };
 static pthread_mutex_t typecls_registry_singleton_lock = PTHREAD_MUTEX_INITIALIZER;
 

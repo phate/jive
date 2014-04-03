@@ -34,15 +34,17 @@ static int test_main(void)
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
 	JIVE_DECLARE_MEMORY_TYPE(mem);
 	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
+	const jive_type * tmparray0[] = {bits64, bits64, mem};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		3, (const jive_type *[]){bits64, bits64, mem});
+		3, tmparray0);
 
 	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, addr);
 	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, addr);
+const jive_value_type * tmparray1[] = {jive_value_type_cast(addr), jive_value_type_cast(addr)};
 
 	jive_record_declaration decl = {2,
-		(const jive_value_type *[]){jive_value_type_cast(addr), jive_value_type_cast(addr)}};	
+		tmparray1};	
 
 	jive_output * memberof = jive_memberof(address0, &decl, 0);
 	jive_output * containerof = jive_containerof(address1, &decl, 1);
@@ -51,10 +53,12 @@ static int test_main(void)
 	jive_label_external write_label;
 	jive_label_external_init(&write_label, context, "write", &write_symbol);
 	jive_output * label = jive_label_to_address_create(graph, &write_label.base);
+	jive_output * tmparray2[] = {memberof, containerof};
+	const jive_type * tmparray3[] = {addr, addr};
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		label, NULL,
-		2, (jive_output *[]){memberof, containerof},
-		2, (const jive_type *[]){addr, addr});
+		2, tmparray2,
+		2, tmparray3);
 
 	jive_output * constant = jive_bitconstant_unsigned(graph, 64, 1);	
 	jive_output * arraysub = jive_arraysubscript(call->outputs[0], jive_value_type_cast(addr),
@@ -70,9 +74,11 @@ static int test_main(void)
 
 	jive_output * o_addr = jive_address_to_bitstring_create(load, 64,
 		jive_output_get_type(load));
+	const jive_type * tmparray4[] = {bits64, mem};
+	jive_output * tmparray5[] = {o_addr, store->outputs[0]};
 	
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){bits64, mem}, (jive_output *[]){o_addr, store->outputs[0]},
+		2, tmparray4, tmparray5,
 		1, &addr);
 	jive_graph_export(graph, bottom->outputs[0]);
 

@@ -32,16 +32,16 @@ jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_
 	size_t noperands, struct jive_output * const operands[]);
 
 const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "SYMBOLICFUNCTION",
-	.fini = jive_symbolicfunction_node_fini_, /* override */
-	.get_default_normal_form = jive_node_get_default_normal_form_, /* inherit */
-	.get_label = jive_symbolicfunction_node_get_label_, /* override */
-	.get_attrs = jive_symbolicfunction_node_get_attrs_, /* inherit */
-	.match_attrs = jive_symbolicfunction_node_match_attrs_, /* override */
-	.check_operands = NULL,
-	.create = jive_symbolicfunction_node_create_, /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_ /* inherit */
+	parent : &JIVE_NODE,
+	name : "SYMBOLICFUNCTION",
+	fini : jive_symbolicfunction_node_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : jive_symbolicfunction_node_get_label_, /* override */
+	get_attrs : jive_symbolicfunction_node_get_attrs_, /* inherit */
+	match_attrs : jive_symbolicfunction_node_match_attrs_, /* override */
+	check_operands : NULL,
+	create : jive_symbolicfunction_node_create_, /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

@@ -73,27 +73,27 @@ jive_control_true_node_create_(jive_region * region, const jive_node_attrs * att
 
 
 const jive_node_class JIVE_CONTROL_FALSE_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "FALSE",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_,  /* inherit */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_control_false_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_NODE,
+	name : "FALSE",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_control_false_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_CONTROL_TRUE_NODE = {
-	.parent = &JIVE_NODE,
-	.name = "TRUE",
-	.fini = jive_node_fini_,  /* inherit */
-	.get_default_normal_form = jive_node_get_default_normal_form_,  /* inherit */
-	.get_label = jive_node_get_label_,  /* inherit */
-	.get_attrs = jive_node_get_attrs_,  /* inherit */
-	.match_attrs = jive_node_match_attrs_,  /* inherit */
-	.check_operands = jive_node_check_operands_, /* inherit */
-	.create = jive_control_true_node_create_,  /* override */
-	.get_aux_rescls = jive_node_get_aux_rescls_  /* inherit */
+	parent : &JIVE_NODE,
+	name : "TRUE",
+	fini : jive_node_fini_,  /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_label : jive_node_get_label_,  /* inherit */
+	get_attrs : jive_node_get_attrs_,  /* inherit */
+	match_attrs : jive_node_match_attrs_,  /* inherit */
+	check_operands : jive_node_check_operands_, /* inherit */
+	create : jive_control_true_node_create_,  /* override */
+	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };

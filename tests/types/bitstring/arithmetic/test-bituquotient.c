@@ -22,18 +22,21 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	const jive_type * tmparray0[] = {bits32, bits32};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		2, (const jive_type *[]){bits32, bits32});
+		2, tmparray0);
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 7);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 3);
 
 	jive_output * uquot0 = jive_bituquotient(top->outputs[0], top->outputs[1]);
 	jive_output * uquot1 = jive_bituquotient(c0, c1);
+const jive_type * tmparray1[] = {bits32, bits32};
+jive_output * tmparray2[] = {uquot0, uquot1};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		2, (const jive_type *[]){bits32, bits32}, (jive_output *[]){uquot0, uquot1}, 1, &bits32);
+		2, tmparray1, tmparray2, 1, &bits32);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

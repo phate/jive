@@ -100,15 +100,16 @@ make_record1(jive_graph * graph)
 	
 	static const jive_value_type * elements1[] = {&bits32.base, &bits16.base, &bits8.base};
 	static const jive_record_declaration decl = {
-		.nelements = 3,
-		.elements = elements1
+		nelements : 3,
+		elements : elements1
 	};
 	
 	jive_output * c1 = jive_bitconstant(graph, 32, bits);
 	jive_output * c2 = jive_bitconstant(graph, 16, bits);
 	jive_output * c3 = jive_bitconstant(graph, 8, bits);
+	jive_output *  tmparray0[] = {c1, c2, c3};
 	
-	return jive_group_create(&decl, 3, (jive_output * []){c1, c2, c3});
+	return jive_group_create(&decl, 3, tmparray0);
 }
 
 static jive_output *
@@ -119,23 +120,25 @@ make_record2(jive_graph * graph)
 	
 	static const jive_value_type * elements1[] = {&bits16.base, &bits16.base};
 	static const jive_record_declaration decl1 = {
-		.nelements = 2,
-		.elements = elements1
+		nelements : 2,
+		elements : elements1
 	};
 	static const jive_record_type rec1 = {{{&JIVE_RECORD_TYPE}}, &decl1};
 	
 	static const jive_value_type * elements2[] = {&rec1.base, &bits32.base};
 	static const jive_record_declaration decl2 = {
-		.nelements = 2,
-		.elements = elements2
+		nelements : 2,
+		elements : elements2
 	};
 	
 	jive_output * c1 = jive_bitconstant(graph, 32, bits);
 	jive_output * c2 = jive_bitconstant(graph, 16, bits);
+	jive_output * tmparray1[] = {c2, c2};
 	
-	jive_output * tmp = jive_group_create(&decl1, 2, (jive_output *[]){c2, c2});
+	jive_output * tmp = jive_group_create(&decl1, 2, tmparray1);
+	jive_output *  tmparray2[] = {tmp, c1};
 	
-	return jive_group_create(&decl2, 2, (jive_output * []){tmp, c1});
+	return jive_group_create(&decl2, 2, tmparray2);
 }
 
 static jive_output *
@@ -146,8 +149,8 @@ make_union1(jive_graph * graph)
 	
 	static const jive_value_type * elements1[] = {&bits16.base, &bits32.base};
 	static const jive_union_declaration decl1 = {
-		.nelements = 2,
-		.elements = elements1,
+		nelements : 2,
+		elements : elements1,
 	};
 	
 	jive_output * c = jive_bitconstant(graph, 16, bits);
@@ -163,8 +166,8 @@ make_union2(jive_graph * graph)
 	
 	static const jive_value_type * elements1[] = {&bits16.base, &bits32.base};
 	static const jive_union_declaration decl1 = {
-		.nelements = 2,
-		.elements = elements1,
+		nelements : 2,
+		elements : elements1,
 	};
 	
 	jive_output * c = jive_bitconstant(graph, 32, bits);
