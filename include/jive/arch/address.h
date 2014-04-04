@@ -26,8 +26,7 @@ typedef struct jive_memberof_node_attrs jive_memberof_node_attrs;
 
 typedef struct jive_memberof_node jive_memberof_node;
 
-struct jive_memberof_node_attrs {
-	jive_node_attrs base;
+struct jive_memberof_node_attrs : public jive_node_attrs {
 	const jive_record_declaration * record_decl;
 	size_t index;
 };
@@ -70,8 +69,7 @@ typedef struct jive_containerof_node_attrs jive_containerof_node_attrs;
 
 typedef struct jive_containerof_node jive_containerof_node;
 
-struct jive_containerof_node_attrs {
-	jive_node_attrs base;
+struct jive_containerof_node_attrs : public jive_node_attrs {
 	const jive_record_declaration * record_decl;
 	size_t index;
 };
@@ -114,8 +112,7 @@ typedef struct jive_arraysubscript_node_attrs jive_arraysubscript_node_attrs;
 
 typedef struct jive_arraysubscript_node jive_arraysubscript_node;
 
-struct jive_arraysubscript_node_attrs {
-	jive_node_attrs base;
+struct jive_arraysubscript_node_attrs : public jive_node_attrs {
 	jive_value_type * element_type; /* note: dynamically allocated */
 };
 
@@ -158,8 +155,7 @@ typedef struct jive_arrayindex_node_attrs jive_arrayindex_node_attrs;
 
 typedef struct jive_arrayindex_node jive_arrayindex_node;
 
-struct jive_arrayindex_node_attrs {
-	jive_node_attrs base;
+struct jive_arrayindex_node_attrs : public jive_node_attrs {
 	jive_value_type * element_type; /* note: dynamically allocated */
 	jive_bitstring_type difference_type;
 };
@@ -199,8 +195,7 @@ extern const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE;
 typedef struct jive_label_to_address_node jive_label_to_address_node;
 typedef struct jive_label_to_address_node_attrs jive_label_to_address_node_attrs;
 
-struct jive_label_to_address_node_attrs {
-	jive_node_attrs base;
+struct jive_label_to_address_node_attrs : public jive_node_attrs {
 	const struct jive_label * label;
 };
 
@@ -237,8 +232,7 @@ extern const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE;
 typedef struct jive_label_to_bitstring_node jive_label_to_bitstring_node;
 typedef struct jive_label_to_bitstring_node_attrs jive_label_to_bitstring_node_attrs;
 
-struct jive_label_to_bitstring_node_attrs {
-	jive_node_attrs base;
+struct jive_label_to_bitstring_node_attrs : public jive_node_attrs {
 	const struct jive_label * label;
 	size_t nbits;
 };

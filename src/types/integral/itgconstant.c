@@ -81,7 +81,7 @@ static const jive_node_attrs *
 jive_itgconstant_node_get_attrs_(const jive_node * self_)
 {
 	const jive_itgconstant_node * self = (const jive_itgconstant_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -122,5 +122,5 @@ jive_itgconstant(struct jive_graph * graph, size_t nbits, const char bits[])
 	attrs.nbits = nbits;
 	attrs.bits = (char *) bits;
 
-	return jive_nullary_operation_create_normalized(&JIVE_ITGCONSTANT_NODE, graph, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_ITGCONSTANT_NODE, graph, &attrs);
 }

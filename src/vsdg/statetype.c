@@ -188,7 +188,7 @@ static const jive_node_attrs *
 jive_statemux_node_get_attrs_(const jive_node * self_)
 {
 	const jive_statemux_node * self = (const jive_statemux_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool

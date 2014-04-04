@@ -16,8 +16,7 @@ extern const jive_unary_operation_class JIVE_BITSLICE_NODE_;
 typedef struct jive_bitslice_node jive_bitslice_node;
 typedef struct jive_bitslice_node_attrs jive_bitslice_node_attrs;
 
-struct jive_bitslice_node_attrs {
-	jive_node_attrs base;
+struct jive_bitslice_node_attrs : public jive_node_attrs {
 	size_t low, high;
 };
 

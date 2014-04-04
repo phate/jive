@@ -17,8 +17,7 @@ struct jive_shaped_graph;
 
 typedef struct jive_splitnode_attrs jive_splitnode_attrs;
 
-struct jive_splitnode_attrs {
-	jive_node_attrs base;
+struct jive_splitnode_attrs : public jive_node_attrs {
 	const struct jive_resource_class * in_class;
 	const struct jive_resource_class * out_class;
 };

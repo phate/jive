@@ -82,7 +82,7 @@ static const jive_node_attrs *
 jive_regvalue_node_get_attrs_(const jive_node * self_)
 {
 	const jive_regvalue_node * self = (const jive_regvalue_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -117,6 +117,6 @@ jive_regvalue(jive_output * ctl, const jive_register_class * regcls, jive_output
 	
 	const jive_node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &JIVE_REGVALUE_NODE);
-	jive_node * node = jive_node_cse_create(nf, region, &attrs.base, 2, operands);
+	jive_node * node = jive_node_cse_create(nf, region, &attrs, 2, operands);
 	return node->outputs[0];
 }

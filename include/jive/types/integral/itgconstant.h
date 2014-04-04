@@ -13,8 +13,7 @@ typedef struct jive_itgconstant_node_attrs jive_itgconstant_node_attrs;
 
 extern const jive_nullary_operation_class JIVE_ITGCONSTANT_NODE;
 
-struct jive_itgconstant_node_attrs {
-	jive_node_attrs base;
+struct jive_itgconstant_node_attrs : public jive_node_attrs {
 	size_t nbits;
 	char * bits;
 };

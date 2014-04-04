@@ -18,8 +18,7 @@ extern const jive_unary_operation_class JIVE_UNIFY_NODE_;
 typedef struct jive_unify_node jive_unify_node;
 typedef struct jive_unify_node_attrs jive_unify_node_attrs;
 
-struct jive_unify_node_attrs {
-	jive_node_attrs base;
+struct jive_unify_node_attrs : public jive_node_attrs {
 	const struct jive_union_declaration * decl;
 	size_t option;
 };
@@ -53,8 +52,7 @@ extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
 typedef struct jive_empty_unify_node jive_empty_unify_node;
 typedef struct jive_empty_unify_node_attrs jive_empty_unify_node_attrs;
 
-struct jive_empty_unify_node_attrs {
-	jive_node_attrs base;
+struct jive_empty_unify_node_attrs : public jive_node_attrs {
 	const struct jive_union_declaration * decl;
 };
 

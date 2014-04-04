@@ -204,7 +204,7 @@ jive_instruction_deserialize(
 	
 	jive_instruction_node_attrs attrs;
 	attrs.icls = icls;
-	*node = JIVE_INSTRUCTION_NODE.create(region, &attrs.base,
+	*node = JIVE_INSTRUCTION_NODE.create(region, &attrs,
 		noperands, operands);
 	
 	return true;
@@ -244,7 +244,7 @@ jive_label_to_bitstring_deserialize(
 	attrs.label = label;
 	attrs.nbits = nbits;
 	
-	*node = JIVE_LABEL_TO_BITSTRING_NODE.create(region, &attrs.base,
+	*node = JIVE_LABEL_TO_BITSTRING_NODE.create(region, &attrs,
 		0, NULL);
 	
 	return true;
@@ -276,7 +276,7 @@ jive_label_to_address_deserialize(
 	jive_label_to_address_node_attrs attrs;
 	attrs.label = label;
 	
-	*node = JIVE_LABEL_TO_ADDRESS_NODE.create(region, &attrs.base,
+	*node = JIVE_LABEL_TO_ADDRESS_NODE.create(region, &attrs,
 		0, NULL);
 	
 	return true;
@@ -445,7 +445,7 @@ jive_immediate_deserialize(
 	if (!jive_deserialize_immediate(driver, is, &attrs.value))
 		return false;
 	
-	*node = JIVE_IMMEDIATE_NODE.create(region, &attrs.base, noperands, operands);
+	*node = JIVE_IMMEDIATE_NODE.create(region, &attrs, noperands, operands);
 	
 	return true;
 }

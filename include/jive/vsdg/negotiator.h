@@ -35,8 +35,7 @@ typedef struct jive_negotiator_split_node_attrs jive_negotiator_split_node_attrs
 
 extern const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE;
 
-struct jive_negotiator_split_node_attrs {
-	jive_node_attrs base;
+struct jive_negotiator_split_node_attrs : public jive_node_attrs {
 	jive_negotiator * negotiator;
 	jive_negotiator_option * input_option;
 	jive_type * output_type;

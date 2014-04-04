@@ -34,7 +34,7 @@ static const jive_node_attrs *
 jive_immediate_node_get_attrs_(const jive_node * self_)
 {
 	const jive_immediate_node * self = (const jive_immediate_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -86,5 +86,5 @@ jive_immediate_create(
 	jive_immediate_node_attrs attrs;
 	attrs.value = *immediate_value;
 
-	return jive_nullary_operation_create_normalized(&JIVE_IMMEDIATE_NODE, graph, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_IMMEDIATE_NODE, graph, &attrs);
 }

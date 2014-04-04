@@ -179,7 +179,7 @@ jive_address_to_bitstring_node_get_attrs_(const jive_node * self_)
 {
 	const jive_address_to_bitstring_node * self = (const jive_address_to_bitstring_node *) self_;
 
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -274,7 +274,7 @@ jive_address_to_bitstring_node_create(struct jive_region * region,
 	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_, region->graph,
-		&attrs.base, address)->node;
+		&attrs, address)->node;
 }
 
 jive_output *
@@ -286,7 +286,7 @@ jive_address_to_bitstring_create(jive_output * address, size_t nbits,
 	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_,
-		address->node->graph, &attrs.base, address);
+		address->node->graph, &attrs, address);
 }
 
 
@@ -378,7 +378,7 @@ jive_bitstring_to_address_node_get_attrs_(const jive_node * self_)
 {
 	const jive_bitstring_to_address_node * self = (const jive_bitstring_to_address_node *) self_;
 
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -473,7 +473,7 @@ jive_bitstring_to_address_node_create(struct jive_region * region,
 	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_, region->graph,
-		&attrs.base, bitstring)->node;
+		&attrs, bitstring)->node;
 }
 
 jive_output *
@@ -485,7 +485,7 @@ jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits,
 	attrs.original_type = (jive_type *)original_type;
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_,
-		bitstring->node->graph, &attrs.base, bitstring);
+		bitstring->node->graph, &attrs, bitstring);
 }
 
 /* reductions */

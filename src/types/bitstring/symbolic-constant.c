@@ -85,7 +85,7 @@ static const jive_node_attrs *
 jive_bitsymbolicconstant_node_get_attrs_(const jive_node * self_)
 {
 	const jive_bitsymbolicconstant_node * self = (const jive_bitsymbolicconstant_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -116,7 +116,7 @@ jive_bitsymbolicconstant_create(jive_graph * graph, size_t nbits, const char * n
 	attrs.name = (char *)name;
 
 	return jive_nullary_operation_create_normalized(&JIVE_BITSYMBOLICCONSTANT_NODE, graph,
-		&attrs.base)->node;
+		&attrs)->node;
 }
 
 jive_output *
@@ -127,5 +127,5 @@ jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
 	attrs.name = (char *)name;
 
 	return jive_nullary_operation_create_normalized(&JIVE_BITSYMBOLICCONSTANT_NODE, graph,
-		&attrs.base);
+		&attrs);
 }

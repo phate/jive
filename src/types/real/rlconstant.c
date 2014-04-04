@@ -107,7 +107,7 @@ static const jive_node_attrs *
 jive_rlconstant_node_get_attrs_(const jive_node * self_)
 {
 	const jive_rlconstant_node * self = (const jive_rlconstant_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -178,7 +178,7 @@ jive_rlconstant(struct jive_graph * graph, bool sign, size_t nnbits, const char 
 	attrs.ndbits = jive_max_unsigned(nbits-jive_bitstring_nlz(d, nbits), 1);
 	attrs.denominator = (char *) d;
 
-	return jive_nullary_operation_create_normalized(&JIVE_RLCONSTANT_NODE, graph, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_RLCONSTANT_NODE, graph, &attrs);
 }
 
 struct jive_output *

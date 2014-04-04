@@ -14,8 +14,7 @@ extern const jive_node_class JIVE_RLCONSTANT_NODE;
 typedef struct jive_rlconstant_node jive_rlconstant_node;
 typedef struct jive_rlconstant_node_attrs jive_rlconstant_node_attrs;
 
-struct jive_rlconstant_node_attrs {
-	jive_node_attrs base;
+struct jive_rlconstant_node_attrs : public jive_node_attrs {
 	bool sign;
 	size_t nnbits;
 	char * numerator;

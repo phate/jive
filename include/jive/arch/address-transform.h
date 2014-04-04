@@ -20,8 +20,7 @@ extern const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_;
 typedef struct jive_address_to_bitstring_node jive_address_to_bitstring_node;
 typedef struct jive_address_to_bitstring_node_attrs jive_address_to_bitstring_node_attrs;
 
-struct jive_address_to_bitstring_node_attrs {
-	jive_node_attrs base;
+struct jive_address_to_bitstring_node_attrs : public jive_node_attrs {
 	size_t nbits;
 	jive_type * original_type;
 };
@@ -56,8 +55,7 @@ extern const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_;
 typedef struct jive_bitstring_to_address_node jive_bitstring_to_address_node;
 typedef struct jive_bitstring_to_address_node_attrs jive_bitstring_to_address_node_attrs;
 
-struct jive_bitstring_to_address_node_attrs {
-	jive_node_attrs base;
+struct jive_bitstring_to_address_node_attrs : public jive_node_attrs {
 	size_t nbits;
 	jive_type * original_type;
 };

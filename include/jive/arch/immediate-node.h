@@ -19,8 +19,7 @@ typedef struct jive_immediate_node_attrs jive_immediate_node_attrs;
 
 extern const jive_node_class JIVE_IMMEDIATE_NODE;
 
-struct jive_immediate_node_attrs {
-	jive_node_attrs base;
+struct jive_immediate_node_attrs : public jive_node_attrs {
 	jive_immediate value;
 };
 

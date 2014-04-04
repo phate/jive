@@ -111,7 +111,7 @@ jive_select_node_get_attrs_(const jive_node * self_)
 {
 	const jive_select_node * self = (const jive_select_node *)self_;
 
-	return &self->attrs.base;
+	return &self->attrs;
 } 
 
 static bool
@@ -229,7 +229,7 @@ jive_select_node_create(struct jive_region * region, size_t member, jive_output 
 	jive_select_node_attrs attrs;
 	attrs.element = member;
 
-	return jive_select_node_create_(region, &attrs.base, 1, &operand)->outputs[0];
+	return jive_select_node_create_(region, &attrs, 1, &operand)->outputs[0];
 }
 
 jive_output *
@@ -239,6 +239,6 @@ jive_select_create(size_t member, jive_output * operand)
 	attrs.element = member;
 
 	return jive_unary_operation_create_normalized(&JIVE_SELECT_NODE_, operand->node->graph,
-		&attrs.base, operand);
+		&attrs, operand);
 }
 

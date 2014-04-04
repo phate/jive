@@ -78,7 +78,7 @@ static const jive_node_attrs *
 jive_fltconstant_node_get_attrs_(const jive_node * self_)
 {
 	const jive_fltconstant_node * self = (const jive_fltconstant_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -112,5 +112,5 @@ jive_fltconstant(struct jive_graph * graph, uint32_t value)
 	jive_fltconstant_node_attrs attrs;
 	attrs.value = value;
 
-	return jive_nullary_operation_create_normalized(&JIVE_FLTCONSTANT_NODE, graph, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_FLTCONSTANT_NODE, graph, &attrs);
 }

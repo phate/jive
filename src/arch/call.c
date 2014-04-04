@@ -59,7 +59,7 @@ static const jive_node_attrs *
 jive_call_node_get_attrs_(const jive_node * self_)
 {
 	const jive_call_node * self = (const jive_call_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool

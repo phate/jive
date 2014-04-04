@@ -15,8 +15,7 @@ extern const jive_node_class JIVE_SYMBOLICFUNCTION_NODE;
 typedef struct jive_symbolicfunction_node jive_symbolicfunction_node;
 typedef struct jive_symbolicfunction_node_attrs jive_symbolicfunction_node_attrs;
 
-struct jive_symbolicfunction_node_attrs {
-	jive_node_attrs base;
+struct jive_symbolicfunction_node_attrs : public jive_node_attrs {
 	const char * name;
 	jive_function_type type;
 };

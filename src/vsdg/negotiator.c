@@ -176,7 +176,7 @@ static const jive_node_attrs *
 jive_negotiator_split_node_get_attrs_(const jive_node * self_)
 {
 	const jive_negotiator_split_node * self = (const jive_negotiator_split_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -238,7 +238,7 @@ jive_negotiator_split(
 	
 	const jive_node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &JIVE_NEGOTIATOR_SPLIT_NODE);
-	jive_node * node = jive_node_cse_create(nf, region, &attrs.base, 1, &operand);
+	jive_node * node = jive_node_cse_create(nf, region, &attrs, 1, &operand);
 	return node->outputs[0];
 }
 

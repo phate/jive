@@ -68,7 +68,7 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	elem_attrs.nbits = attrs->nbits;
 	elem_attrs.datatype = (jive_value_type *) decl->elements[unify_node->attrs.option];
 	
-	jive_store_node_normalized_create(self, region, &elem_attrs.base, address,
+	jive_store_node_normalized_create(self, region, &elem_attrs, address,
 		unify_node->base.inputs[0]->origin, nstates, istates, ostates);	
 }
 
@@ -116,7 +116,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 		for (n = 0; n < nstates; n++)
 			elem_istates[n] = split_nodes[n]->outputs[e];
 
-		jive_store_node_normalized_create(self, region, &elem_attrs.base, elem_address,
+		jive_store_node_normalized_create(self, region, &elem_attrs, elem_address,
 			group_node->base.inputs[e]->origin, nstates, elem_istates, elems_ostates[e]);	
 	}
 
@@ -362,7 +362,7 @@ static const jive_node_attrs *
 jive_store_node_get_attrs_(const jive_node * self_)
 {
 	const jive_store_node * self = (const jive_store_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -480,7 +480,7 @@ jive_store_by_address_create(jive_output * address,
 	attrs.nbits = 0;
 	attrs.datatype = (jive_value_type *) datatype;
 
-	jive_store_node_normalized_create(nf, region, &attrs.base, address, value,
+	jive_store_node_normalized_create(nf, region, &attrs, address, value,
 		nstates, istates, ostates); 
 }
 
@@ -513,6 +513,6 @@ jive_store_by_bitstring_create(jive_output * address, size_t nbits,
 	attrs.nbits = nbits;
 	attrs.datatype = (jive_value_type *) datatype;
 
-	jive_store_node_normalized_create(nf, region, &attrs.base, address, value,
+	jive_store_node_normalized_create(nf, region, &attrs, address, value,
 		nstates, istates, ostates);
 }

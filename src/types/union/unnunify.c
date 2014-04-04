@@ -69,7 +69,7 @@ jive_unify_node_get_attrs_(const jive_node * self_)
 {
 	const jive_unify_node * self = (const jive_unify_node*)self_;
 	
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -149,7 +149,7 @@ jive_unify_create(const jive_union_declaration * decl,
 	attrs.option = option;
 
 	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE_, operand->node->graph,
-		&attrs.base, operand);
+		&attrs, operand);
 }
 
 /* empty unify node */
@@ -194,7 +194,7 @@ jive_empty_unify_node_get_attrs_(const jive_node * self_)
 {
 	const jive_empty_unify_node * self = (const jive_empty_unify_node *) self_;
 	
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -227,5 +227,5 @@ jive_empty_unify_create(struct jive_graph * graph, const jive_union_declaration 
 	jive_empty_unify_node_attrs attrs;
 	attrs.decl = decl;
 
-	return jive_nullary_operation_create_normalized(&JIVE_EMPTY_UNIFY_NODE, graph, &attrs.base);
+	return jive_nullary_operation_create_normalized(&JIVE_EMPTY_UNIFY_NODE, graph, &attrs);
 }

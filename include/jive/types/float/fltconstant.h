@@ -13,8 +13,7 @@ extern const jive_node_class JIVE_FLTCONSTANT_NODE;
 typedef struct jive_fltconstant_node jive_fltconstant_node;
 typedef struct jive_fltconstant_node_attrs jive_fltconstant_node_attrs;
 
-struct jive_fltconstant_node_attrs {
-	jive_node_attrs base;
+struct jive_fltconstant_node_attrs : public jive_node_attrs {
 	uint32_t value;
 };
 

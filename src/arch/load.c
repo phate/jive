@@ -230,7 +230,7 @@ static const jive_node_attrs *
 jive_load_node_get_attrs_(const jive_node * self_)
 {
 	const jive_load_node * self = (const jive_load_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -342,7 +342,7 @@ jive_load_by_address_create(jive_output * address,
 	attrs.nbits = 0;
 	attrs.datatype = (jive_value_type *)datatype;
 	
-	return jive_load_node_normalized_create(nf, region, &attrs.base, address, nstates, states);
+	return jive_load_node_normalized_create(nf, region, &attrs, address, nstates, states);
 }
 
 jive_node *
@@ -374,6 +374,6 @@ jive_load_by_bitstring_create(jive_output * address, size_t nbits,
 	attrs.nbits = nbits;
 	attrs.datatype = (jive_value_type *)datatype;
 
-	return jive_load_node_normalized_create(nf, region, &attrs.base, address, nstates, states);
+	return jive_load_node_normalized_create(nf, region, &attrs, address, nstates, states);
 }
 

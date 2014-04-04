@@ -46,8 +46,8 @@ static int test_main(void)
 	assert(attrs0->label == &foobar.base);
 	assert(attrs1->label == &bla.base);
 	
-	assert(!jive_node_match_attrs(o0->node, &attrs1->base));
-	assert(jive_node_match_attrs(o1->node, &attrs1->base));
+	assert(!jive_node_match_attrs(o0->node, attrs1));
+	assert(jive_node_match_attrs(o1->node, attrs1));
 	
 	jive_output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
 	jive_output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);	
@@ -67,9 +67,9 @@ static int test_main(void)
 	assert(attrs3->label == &bla.base);
 	assert(attrs4->label == &foobar.base);
 	
-	assert(!jive_node_match_attrs(o2->node, &attrs4->base));
-	assert(!jive_node_match_attrs(o2->node, &attrs3->base));
-	assert(jive_node_match_attrs(o2->node, &attrs2->base));
+	assert(!jive_node_match_attrs(o2->node, attrs4));
+	assert(!jive_node_match_attrs(o2->node, attrs3));
+	assert(jive_node_match_attrs(o2->node, attrs2));
 	
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
 	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);

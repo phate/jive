@@ -61,7 +61,7 @@ static const jive_node_attrs *
 jive_test_node_get_attrs_(const jive_node * self_)
 {
 	const jive_test_node * self = (const jive_test_node *)self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -147,9 +147,9 @@ jive_test_node_create(struct jive_region * region,
 	attrs.result_types = (const jive_type **)result_types;
 
 	/* FIXME: maybe introduce a jive_node_create function that does all this */
-	jive_test_node_check_operands_(&JIVE_TEST_NODE, &attrs.base, noperands, operands,
+	jive_test_node_check_operands_(&JIVE_TEST_NODE, &attrs, noperands, operands,
 		region->graph->context);
-	jive_node * node = jive_test_node_create_(region, &attrs.base, noperands, operands);
+	jive_node * node = jive_test_node_create_(region, &attrs, noperands, operands);
 
 	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(region->graph, &JIVE_TEST_NODE);
 	if (nf->enable_mutable && nf->enable_cse)
@@ -169,5 +169,5 @@ jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
 	attrs.nresults = nresults;
 	attrs.result_types = (const jive_type **)result_types;
 
-	jive_node_create_normalized(&JIVE_TEST_NODE, graph, &attrs.base, noperands, operands, results);
+	jive_node_create_normalized(&JIVE_TEST_NODE, graph, &attrs, noperands, operands, results);
 }

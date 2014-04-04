@@ -43,8 +43,7 @@ struct jive_state_gate {
 typedef struct jive_statemux_node_attrs jive_statemux_node_attrs;
 typedef struct jive_statemux_node jive_statemux_node;
 
-struct jive_statemux_node_attrs {
-	jive_node_attrs base;
+struct jive_statemux_node_attrs : public jive_node_attrs {
 	size_t noutputs;
 	struct jive_type * type; /* note: dynamically allocated */
 };

@@ -22,8 +22,7 @@ typedef struct jive_call_node jive_call_node;
 /* FIXME: opaque type for now -- to be filled in later */
 struct jive_calling_convention;
 
-struct jive_call_node_attrs {
-	jive_node_attrs base;
+struct jive_call_node_attrs : public jive_node_attrs {
 	const jive_calling_convention * calling_convention;
 	size_t nreturns;
 	jive_type ** return_types;

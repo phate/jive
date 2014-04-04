@@ -64,8 +64,7 @@ extern const jive_node_class JIVE_LOAD_NODE;
 typedef struct jive_load_node_attrs jive_load_node_attrs;
 typedef struct jive_load_node jive_load_node;
 
-struct jive_load_node_attrs {
-	jive_node_attrs base;
+struct jive_load_node_attrs : public jive_node_attrs {
 	size_t nbits;
 	struct jive_value_type * datatype;
 };

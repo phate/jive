@@ -106,7 +106,7 @@ static const jive_node_attrs *
 jive_bitslice_node_get_attrs_(const jive_node * self_)
 {
 	const jive_bitslice_node * self = (const jive_bitslice_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -204,5 +204,5 @@ jive_bitslice(jive_output * operand, size_t low, size_t high)
 	attrs.high = high;
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE_, operand->node->graph,
-		&attrs.base, operand);
+		&attrs, operand);
 }

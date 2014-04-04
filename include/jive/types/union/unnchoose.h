@@ -14,8 +14,7 @@ extern const jive_unary_operation_class JIVE_CHOOSE_NODE_;
 typedef struct jive_choose_node jive_choose_node;
 typedef struct jive_choose_node_attrs jive_choose_node_attrs;
 
-struct jive_choose_node_attrs {
-	jive_node_attrs base;
+struct jive_choose_node_attrs : public jive_node_attrs {
 	size_t element;
 };
 

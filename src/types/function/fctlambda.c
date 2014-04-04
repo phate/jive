@@ -170,7 +170,7 @@ jive_lambda_node_get_attrs_(const jive_node * self_)
 {
 	const jive_lambda_node * self = (const jive_lambda_node *) self_;
 	
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool

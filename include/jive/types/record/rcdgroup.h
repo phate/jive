@@ -14,8 +14,7 @@ extern const jive_node_class JIVE_GROUP_NODE;
 typedef struct jive_group_node jive_group_node;
 typedef struct jive_group_node_attrs jive_group_node_attrs;
 
-struct jive_group_node_attrs {
-	jive_node_attrs base;
+struct jive_group_node_attrs : public jive_node_attrs {
 	const jive_record_declaration * decl;
 };
 

@@ -81,7 +81,7 @@ static const jive_node_attrs *
 jive_memberof_node_get_attrs_(const jive_node * self_)
 {
 	const jive_memberof_node * self = (const jive_memberof_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -168,7 +168,7 @@ jive_memberof_create(jive_region * region,
 	attrs.record_decl = record_decl;
 	attrs.index = index;
 
-	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE_, region->graph, &attrs.base,
+	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE_, region->graph, &attrs,
 		address)->node;
 }
 
@@ -181,7 +181,7 @@ jive_memberof(jive_output * address,
 	attrs.index = index;
 
 	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE_, address->node->graph,
-		&attrs.base, address);
+		&attrs, address);
 }
 
 /* containerof */
@@ -245,7 +245,7 @@ static const jive_node_attrs *
 jive_containerof_node_get_attrs_(const jive_node * self_)
 {
 	const jive_containerof_node * self = (const jive_containerof_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -333,7 +333,7 @@ jive_containerof_create(jive_region * region,
 	attrs.index = index;
 
 	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE_, region->graph,
-		&attrs.base, address)->node;
+		&attrs, address)->node;
 }
 
 jive_output *
@@ -345,7 +345,7 @@ jive_containerof(jive_output * address,
 	attrs.index = index;
 
 	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE_, address->node->graph,
-		&attrs.base, address);
+		&attrs, address);
 }
 
 /* arraysubscript */
@@ -410,7 +410,7 @@ static const jive_node_attrs *
 jive_arraysubscript_node_get_attrs_(const jive_node * self_)
 {
 	const jive_arraysubscript_node * self = (const jive_arraysubscript_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -526,7 +526,7 @@ jive_arraysubscript(jive_output * address, const jive_value_type * element_type,
 	
 	jive_output * operands[2] = {address, index};
 	return jive_binary_operation_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE_, region->graph,
-		&attrs.base, 2, operands);
+		&attrs, 2, operands);
 }
 
 /* arrayindex */
@@ -593,7 +593,7 @@ static const jive_node_attrs *
 jive_arrayindex_node_get_attrs_(const jive_node * self_)
 {
 	const jive_arrayindex_node * self = (const jive_arrayindex_node *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -738,7 +738,7 @@ jive_arrayindex(jive_output * addr1, jive_output * addr2,
 	
 	jive_output * operands[2] = {addr1, addr2};
 	return jive_binary_operation_create_normalized(&JIVE_ARRAYINDEX_NODE_, region->graph,
-		&attrs.base, 2, operands);
+		&attrs, 2, operands);
 }
 
 /* label_to_address node */
@@ -818,7 +818,7 @@ jive_label_to_address_node_get_attrs_(const jive_node * self_)
 {
 	const jive_label_to_address_node * self = (const jive_label_to_address_node *) self_;
 
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -927,7 +927,7 @@ jive_label_to_bitstring_node_get_attrs_(const jive_node * self_)
 {
 	const jive_label_to_bitstring_node * self = (const jive_label_to_bitstring_node *) self_;
 
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool

@@ -14,8 +14,7 @@ extern const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE;
 typedef struct jive_bitsymbolicconstant_node jive_bitsymbolicconstant_node;
 typedef struct jive_bitsymbolicconstant_node_attrs jive_bitsymbolicconstant_node_attrs;
 
-struct jive_bitsymbolicconstant_node_attrs {
-	jive_node_attrs base;
+struct jive_bitsymbolicconstant_node_attrs : public jive_node_attrs {
 	size_t nbits;
 	char * name;
 };

@@ -16,8 +16,7 @@ extern const jive_node_class JIVE_SIZEOF_NODE;
 typedef struct jive_sizeof_node jive_sizeof_node;
 typedef struct jive_sizeof_node_attrs jive_sizeof_node_attrs;
 
-struct jive_sizeof_node_attrs {
-	jive_node_attrs base;
+struct jive_sizeof_node_attrs : public jive_node_attrs {
 	struct jive_value_type * type;
 };
 

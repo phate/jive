@@ -18,8 +18,7 @@ typedef struct jive_subroutine_enter_node jive_subroutine_enter_node;
 typedef struct jive_subroutine_leave_node jive_subroutine_leave_node;
 typedef struct jive_subroutine_node jive_subroutine_node;
 
-struct jive_subroutine_node_attrs {
-	jive_node_attrs base;
+struct jive_subroutine_node_attrs : public jive_node_attrs {
 	struct jive_subroutine_deprecated * subroutine;
 };
 

@@ -13,8 +13,7 @@ extern const jive_node_class JIVE_DBLCONSTANT_NODE;
 typedef struct jive_dblconstant_node jive_dblconstant_node;
 typedef struct jive_dblconstant_node_attrs jive_dblconstant_node_attrs;
 
-struct jive_dblconstant_node_attrs {
-	jive_node_attrs base;
+struct jive_dblconstant_node_attrs : public jive_node_attrs {
 	uint64_t value;
 };
 

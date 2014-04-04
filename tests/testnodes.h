@@ -15,8 +15,7 @@ extern const jive_node_class JIVE_TEST_NODE;
 typedef struct jive_test_node jive_test_node;
 typedef struct jive_test_node_attrs jive_test_node_attrs;
 
-struct jive_test_node_attrs {
-	jive_node_attrs base;
+struct jive_test_node_attrs : public jive_node_attrs {
 	size_t noperands;
 	size_t nresults;
 	const jive_type ** operand_types;

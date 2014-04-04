@@ -25,8 +25,7 @@ typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
 
 extern const jive_node_class JIVE_INSTRUCTION_NODE;
 
-struct jive_instruction_node_attrs {
-	jive_node_attrs base;
+struct jive_instruction_node_attrs : public jive_node_attrs {
 	const jive_instruction_class * icls;
 };
 

@@ -26,8 +26,7 @@ extern const jive_node_class NEGTESTNODE;
 typedef struct negtestnode negtestnode;
 typedef struct negtestnode_attrs negtestnode_attrs;
 
-struct negtestnode_attrs {
-	jive_node_attrs base;
+struct negtestnode_attrs : public jive_node_attrs {
 	size_t ninputs;
 	test_option_t * input_options;
 	size_t noutputs;
@@ -139,7 +138,7 @@ static const jive_node_attrs *
 negtestnode_get_attrs_(const jive_node * self_)
 {
 	const negtestnode * self = (const negtestnode *) self_;
-	return &self->attrs.base;
+	return &self->attrs;
 }
 
 static bool
@@ -190,7 +189,7 @@ jive_negtestnode_create(
 	
 	const jive_node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &NEGTESTNODE);
-	jive_node * node = jive_node_cse_create(nf, region, &attrs.base, noperands, operands);
+	jive_node * node = jive_node_cse_create(nf, region, &attrs, noperands, operands);
 	return node;
 }
 

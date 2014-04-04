@@ -18,8 +18,7 @@ typedef struct jive_objdef_node_attrs jive_objdef_node_attrs;
 
 extern const struct jive_node_class JIVE_OBJDEF_NODE;
 
-struct jive_objdef_node_attrs {
-	jive_node_attrs base;
+struct jive_objdef_node_attrs : public jive_node_attrs {
 	char * name;
 	const struct jive_linker_symbol * symbol;
 };

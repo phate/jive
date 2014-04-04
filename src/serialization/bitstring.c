@@ -38,7 +38,7 @@ jive_bitconstant_deserialize(
 	attrs.bits = (char *) token->v.string.str;
 	attrs.nbits = token->v.string.len;
 	
-	*node = JIVE_BITCONSTANT_NODE.create(region, &attrs.base,
+	*node = JIVE_BITCONSTANT_NODE.create(region, &attrs,
 		noperands, operands);
 	
 	jive_token_istream_advance(is);
@@ -85,7 +85,7 @@ jive_bitslice_deserialize(
 	attrs.low = low;
 	attrs.high = high;
 	
-	*node = JIVE_BITSLICE_NODE.create(region, &attrs.base,
+	*node = JIVE_BITSLICE_NODE.create(region, &attrs,
 		noperands, operands);
 	
 	return true;
