@@ -48,7 +48,7 @@ jive_itgdifference_node_init_(jive_itgdifference_node * self, jive_region * regi
 	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
 	const jive_type * tmparray0[] = {itgtype, itgtype};
 	jive_output * tmparray1[] = {dividend, divisor};
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
 		1, &itgtype);
 }
@@ -60,10 +60,10 @@ jive_itgdifference_node_create_(jive_region * region, const jive_node_attrs * at
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	jive_itgdifference_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_ITGDIFFERENCE_NODE;
+	node->class_ = &JIVE_ITGDIFFERENCE_NODE;
 	jive_itgdifference_node_init_(node, region, operands[0], operands[1]);
 
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

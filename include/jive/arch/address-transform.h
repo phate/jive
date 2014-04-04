@@ -25,8 +25,7 @@ struct jive_address_to_bitstring_node_attrs : public jive_node_attrs {
 	jive_type * original_type;
 };
 
-struct jive_address_to_bitstring_node {
-	jive_node base;
+struct jive_address_to_bitstring_node : public jive_node {
 	jive_address_to_bitstring_node_attrs attrs;
 };
 
@@ -60,8 +59,7 @@ struct jive_bitstring_to_address_node_attrs : public jive_node_attrs {
 	jive_type * original_type;
 };
 
-struct jive_bitstring_to_address_node {
-	jive_node base;
+struct jive_bitstring_to_address_node : public jive_node {
 	jive_bitstring_to_address_node_attrs attrs;
 };
 

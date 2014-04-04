@@ -68,7 +68,7 @@ jive_apply_node_init_(
 		args[i+1] = arguments[i];
 	}
 	
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		narguments + 1, argument_types, args,
 		fct->type.nreturns, (const jive_type * const *) fct->type.return_types);
 }
@@ -79,10 +79,10 @@ jive_apply_node_create(struct jive_region * region, jive_output * function,
 {
 	jive_apply_node * node = jive_context_malloc(region->graph->context, sizeof( * node));
 
-	node->base.class_ = &JIVE_APPLY_NODE;
+	node->class_ = &JIVE_APPLY_NODE;
 	jive_apply_node_init_(node, region, function, narguments, arguments);
 
-	return &node->base;
+	return node;
 }
 
 void

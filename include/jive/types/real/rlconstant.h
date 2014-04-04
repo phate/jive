@@ -22,8 +22,7 @@ struct jive_rlconstant_node_attrs : public jive_node_attrs {
 	char * denominator;
 };
 
-struct jive_rlconstant_node {
-	jive_node base;
+struct jive_rlconstant_node : public jive_node {
 	jive_rlconstant_node_attrs attrs;
 };
 

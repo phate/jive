@@ -12,8 +12,7 @@ typedef struct jive_apply_node jive_apply_node;
 
 extern const jive_node_class JIVE_APPLY_NODE;
 
-struct jive_apply_node {
-	jive_node base;
+struct jive_apply_node : public jive_node {
 };
 
 jive_node *

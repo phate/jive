@@ -22,8 +22,7 @@ struct jive_splitnode_attrs : public jive_node_attrs {
 	const struct jive_resource_class * out_class;
 };
 
-struct jive_splitnode {
-	jive_node base;
+struct jive_splitnode : public jive_node {
 	jive_splitnode_attrs attrs;
 };
 

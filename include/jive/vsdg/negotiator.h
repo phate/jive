@@ -42,8 +42,7 @@ struct jive_negotiator_split_node_attrs : public jive_node_attrs {
 	jive_negotiator_option * output_option;
 };
 
-struct jive_negotiator_split_node {
-	jive_node base;
+struct jive_negotiator_split_node : public jive_node {
 	jive_negotiator_split_node_attrs attrs;
 	struct {
 		jive_negotiator_split_node * prev;

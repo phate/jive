@@ -119,7 +119,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 			NULL, imm);
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
-		jive_node * enter = sub->base.inputs[0]->origin->node->region->top;
+		jive_node * enter = sub->inputs[0]->origin->node->region->top;
 		JIVE_DECLARE_CONTROL_TYPE(ctl);
 		jive_node_add_input(tmp, ctl, enter->outputs[0]);
 		

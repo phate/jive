@@ -13,8 +13,7 @@ typedef struct jive_itgproduct_node jive_itgproduct_node;
 extern const jive_itgbinary_operation_class JIVE_ITGPRODUCT_NODE_;
 #define JIVE_ITGPRODUCT_NODE (JIVE_ITGPRODUCT_NODE_.base.base)
 
-struct jive_itgproduct_node {
-	jive_node base;
+struct jive_itgproduct_node : public jive_node {
 };
 
 struct jive_output *

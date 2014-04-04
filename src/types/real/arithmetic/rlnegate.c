@@ -43,7 +43,7 @@ jive_rlnegate_node_init_(struct jive_rlnegate_node * self, struct jive_region * 
 	struct jive_output * operand)
 {
 	JIVE_DECLARE_REAL_TYPE(rltype);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, &rltype, &operand,
 		1, &rltype);
 }
@@ -55,9 +55,9 @@ jive_rlnegate_node_create_(struct jive_region * region, const jive_node_attrs * 
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
 	jive_rlnegate_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_RLNEGATE_NODE;
+	node->class_ = &JIVE_RLNEGATE_NODE;
 	jive_rlnegate_node_init_(node, region, operands[0]);
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

@@ -125,11 +125,11 @@ jive_negotiator_split_node_init_(
 	const jive_type * output_type,
 	jive_negotiator_option * output_option)
 {
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, &input_type, &operand,
 		1, &output_type);
 	
-	jive_context * context = self->base.region->graph->context;
+	jive_context * context = self->region->graph->context;
 	
 	self->attrs.negotiator = negotiator;
 	self->attrs.input_option = jive_negotiator_option_copy(negotiator, input_option);
@@ -138,8 +138,8 @@ jive_negotiator_split_node_init_(
 	
 	JIVE_LIST_PUSH_BACK(negotiator->split_nodes, self, split_node_list);
 	
-	jive_negotiator_annotate_simple_input(negotiator, self->base.inputs[0], input_option);
-	jive_negotiator_annotate_simple_output(negotiator, self->base.outputs[0], output_option);
+	jive_negotiator_annotate_simple_input(negotiator, self->inputs[0], input_option);
+	jive_negotiator_annotate_simple_output(negotiator, self->outputs[0], output_option);
 }
 
 static void
@@ -165,7 +165,7 @@ jive_negotiator_split_node_fini_(jive_node * self_)
 	
 	jive_negotiator_split_node_detach(self);
 	
-	jive_context * context = self->base.region->graph->context;
+	jive_context * context = self->region->graph->context;
 	jive_type_fini(self->attrs.output_type);
 	jive_context_free(context, self->attrs.output_type);
 	
@@ -211,12 +211,12 @@ jive_negotiator_split_node_create_(struct jive_region * region, const jive_node_
 	const jive_negotiator_split_node_attrs * attrs = (const jive_negotiator_split_node_attrs *) attrs_;
 	
 	jive_negotiator_split_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_NEGOTIATOR_SPLIT_NODE;
+	node->class_ = &JIVE_NEGOTIATOR_SPLIT_NODE;
 	jive_negotiator_split_node_init_(node, attrs->negotiator, region,
 		jive_output_get_type(operands[0]), attrs->input_option, operands[0],
 		attrs->output_type, attrs->output_option);
 	
-	return &node->base;
+	return node;
 }
 
 static jive_output *
@@ -825,7 +825,7 @@ void
 jive_negotiator_remove_split_nodes(jive_negotiator * self)
 {
 	while (self->split_nodes.first) {
-		jive_node * split_node = &self->split_nodes.first->base;
+		jive_node * split_node = self->split_nodes.first;
 		jive_negotiator_port * input_port = jive_negotiator_map_input(self, split_node->inputs[0]);
 		jive_negotiator_port * output_port = jive_negotiator_map_output(self, split_node->outputs[0]);
 		jive_negotiator_port_destroy(input_port);

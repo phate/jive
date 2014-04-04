@@ -13,8 +13,7 @@ typedef struct jive_rlgreatereq_node jive_rlgreatereq_node;
 extern const jive_rlcomparison_operation_class JIVE_RLGREATEREQ_NODE_;
 #define JIVE_RLGREATEREQ_NODE (JIVE_RLGREATEREQ_NODE_.base.base)
 
-struct jive_rlgreatereq_node {
-	jive_node base;
+struct jive_rlgreatereq_node : public jive_node {
 };
 
 struct jive_output *

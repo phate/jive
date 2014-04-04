@@ -262,8 +262,8 @@ jive_seq_graph_patch_jump_targets(
 	jive_instruction_node * inode)
 {
 	size_t index = inode->attrs.icls->noutputs;
-	JIVE_DEBUG_ASSERT(inode->base.noutputs);
-	jive_output * ctl_out = inode->base.outputs[index];
+	JIVE_DEBUG_ASSERT(inode->noutputs);
+	jive_output * ctl_out = inode->outputs[index];
 	JIVE_DEBUG_ASSERT(ctl_out->class_ == &JIVE_CONTROL_OUTPUT);
 	
 	JIVE_DEBUG_ASSERT(ctl_out->users.first == ctl_out->users.last);
@@ -300,7 +300,7 @@ jive_seq_graph_patch_jump_targets(
 	seq_instr->imm[0].add_label.internal = primary_tgt;
 	
 	if (secondary_tgt) {
-		const jive_instructionset * isa = jive_region_get_instructionset(inode->base.region);
+		const jive_instructionset * isa = jive_region_get_instructionset(inode->region);
 		const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 		
 		jive_seq_imm imm;

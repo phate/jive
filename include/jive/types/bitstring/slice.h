@@ -20,8 +20,7 @@ struct jive_bitslice_node_attrs : public jive_node_attrs {
 	size_t low, high;
 };
 
-struct jive_bitslice_node {
-	jive_node base;
+struct jive_bitslice_node : public jive_node {
 	jive_bitslice_node_attrs attrs;
 };
 

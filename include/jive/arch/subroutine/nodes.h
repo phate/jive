@@ -22,17 +22,14 @@ struct jive_subroutine_node_attrs : public jive_node_attrs {
 	struct jive_subroutine_deprecated * subroutine;
 };
 
-struct jive_subroutine_node {
-	jive_node base;
+struct jive_subroutine_node : public jive_node {
 	struct jive_subroutine_node_attrs attrs;
 };
 
-struct jive_subroutine_enter_node {
-	jive_node base;
+struct jive_subroutine_enter_node : public jive_node {
 };
 
-struct jive_subroutine_leave_node {
-	jive_node base;
+struct jive_subroutine_leave_node : public jive_node {
 };
 
 JIVE_EXPORTED_INLINE jive_subroutine_node *

@@ -55,11 +55,11 @@ static int test_main(void)
 	jive_subroutine_deprecated * sub2 = anchor2->attrs.subroutine;
 	assert(sub2);
 	assert(sub2->nparameters == 4);
-	assert(sub2->parameters[0] && jive_node_get_gate_output(&sub2->enter->base, sub2->parameters[0]));
-	assert(sub2->parameters[1] && jive_node_get_gate_output(&sub2->enter->base, sub2->parameters[1]));
-	assert(sub2->parameters[2] && jive_node_get_gate_output(&sub2->enter->base, sub2->parameters[2]));
+	assert(sub2->parameters[0] && jive_node_get_gate_output(sub2->enter, sub2->parameters[0]));
+	assert(sub2->parameters[1] && jive_node_get_gate_output(sub2->enter, sub2->parameters[1]));
+	assert(sub2->parameters[2] && jive_node_get_gate_output(sub2->enter, sub2->parameters[2]));
 	assert(sub2->parameters[3]);
-	assert(jive_node_get_gate_output(&sub2->enter->base, sub2->parameters[3]) == NULL);
+	assert(jive_node_get_gate_output(sub2->enter, sub2->parameters[3]) == NULL);
 	
 	jive_graph_destroy(graph);
 	

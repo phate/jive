@@ -34,8 +34,7 @@ struct negtestnode_attrs : public jive_node_attrs {
 	jive_type ** output_types;
 };
 
-struct negtestnode {
-	jive_node base;
+struct negtestnode : public jive_node {
 	negtestnode_attrs attrs;
 	struct {
 		negtestnode * prev;
@@ -97,10 +96,10 @@ negtestnode_init_(
 	const test_option_t output_options[],
 	const jive_type * const output_types[])
 {
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		noperands, operand_types, operands,
 		noutputs, output_types);
-	jive_context * context = self->base.region->graph->context;
+	jive_context * context = self->region->graph->context;
 	
 	self->attrs.ninputs = noperands;
 	self->attrs.input_options = jive_context_malloc(context, sizeof(test_option_t) * noperands);
@@ -122,7 +121,7 @@ negtestnode_fini_(jive_node * self_)
 {
 	negtestnode * self = (negtestnode *) self_;
 	
-	jive_context * context = self->base.region->graph->context;
+	jive_context * context = self->region->graph->context;
 	jive_context_free(context, self->attrs.input_options);
 	jive_context_free(context, self->attrs.output_options);
 	size_t n;
@@ -154,7 +153,7 @@ negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	const negtestnode_attrs * attrs = (const negtestnode_attrs *) attrs_;
 	
 	negtestnode * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &NEGTESTNODE;
+	node->class_ = &NEGTESTNODE;
 	const jive_type * operand_types[noperands];
 	size_t n;
 	for (n = 0; n < noperands; n++)
@@ -164,7 +163,7 @@ negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 		noperands, attrs->input_options, operand_types, operands,
 		attrs->noutputs, attrs->output_options, (const jive_type * const *) attrs->output_types);
 	
-	return &node->base;
+	return node;
 }
 
 static jive_node *

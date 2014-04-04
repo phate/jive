@@ -13,8 +13,7 @@ typedef struct jive_dblquotient_node jive_dblquotient_node;
 extern const jive_dblbinary_operation_class JIVE_DBLQUOTIENT_NODE_;
 #define JIVE_DBLQUOTIENT_NODE (JIVE_DBLQUOTIENT_NODE_.base.base)
 
-struct jive_dblquotient_node {
-	jive_node base;
+struct jive_dblquotient_node : public jive_node {
 };
 
 struct jive_output *

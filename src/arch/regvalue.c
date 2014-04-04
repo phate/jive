@@ -63,12 +63,12 @@ jive_regvalue_node_init_(
 	const jive_type * operand_types[] = {ctl_type, vtype};
 	jive_output * operands[] = {ctl, value};
 	
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		2, operand_types, operands,
 		1, &vtype);
 	
 	self->attrs.regcls = regcls;
-	self->base.outputs[0]->required_rescls = &regcls->base;
+	self->outputs[0]->required_rescls = &regcls->base;
 }
 
 static void
@@ -100,10 +100,10 @@ jive_regvalue_node_create_(struct jive_region * region, const jive_node_attrs * 
 	const jive_regvalue_node_attrs * attrs = (const jive_regvalue_node_attrs *) attrs_;
 	
 	jive_regvalue_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_REGVALUE_NODE;
+	node->class_ = &JIVE_REGVALUE_NODE;
 	jive_regvalue_node_init_(node, region, operands[0], attrs->regcls, operands[1]);
 	
-	return &node->base;
+	return node;
 }
 
 jive_output *

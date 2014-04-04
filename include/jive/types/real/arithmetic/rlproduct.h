@@ -13,8 +13,7 @@ typedef struct jive_rlproduct_node jive_rlproduct_node;
 extern const jive_rlbinary_operation_class JIVE_RLPRODUCT_NODE_;
 #define JIVE_RLPRODUCT_NODE (JIVE_RLPRODUCT_NODE_.base.base)
 
-struct jive_rlproduct_node {
-	jive_node base;
+struct jive_rlproduct_node : public jive_node {
 };
 
 struct jive_output *

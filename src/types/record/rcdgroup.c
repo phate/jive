@@ -115,7 +115,7 @@ jive_group_node_init_(jive_group_node * self,
 	jive_record_type_init(&type, decl);
 	const jive_type * rtype = &type.base.base ;
 
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		narguments, arg_types, arguments,
 		1, &rtype);
 
@@ -130,10 +130,10 @@ jive_group_node_create(struct jive_region * region, const jive_record_declaratio
 {
 	jive_group_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
-	node->base.class_ = &JIVE_GROUP_NODE;
+	node->class_ = &JIVE_GROUP_NODE;
 	jive_group_node_init_(node, region, decl, narguments, arguments);
 
-	return &node->base;
+	return node;
 }
 
 jive_output *
@@ -145,7 +145,7 @@ jive_group_create(const jive_record_declaration * decl,
 	jive_group_node * node = (jive_group_node *)
 		jive_group_node_create(region, decl, narguments, arguments);
 	
-	return node->base.outputs[0];
+	return node->outputs[0];
 }
 
 jive_output *

@@ -13,8 +13,7 @@ typedef struct jive_dblgreatereq_node jive_dblgreatereq_node;
 extern const jive_dblcomparison_operation_class JIVE_DBLGREATEREQ_NODE_;
 #define JIVE_DBLGREATEREQ_NODE (JIVE_DBLGREATEREQ_NODE_.base.base)
 
-struct jive_dblgreatereq_node {
-	jive_node base;
+struct jive_dblgreatereq_node : public jive_node {
 };
 
 struct jive_output *

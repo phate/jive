@@ -13,8 +13,7 @@ typedef struct jive_dblsum_node jive_dblsum_node;
 extern const jive_dblbinary_operation_class JIVE_DBLSUM_NODE_;
 #define JIVE_DBLSUM_NODE (JIVE_DBLSUM_NODE_.base.base)
 
-struct jive_dblsum_node {
-	jive_node base;
+struct jive_dblsum_node : public jive_node {
 };
 
 struct jive_output *

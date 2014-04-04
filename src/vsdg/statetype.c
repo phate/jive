@@ -181,7 +181,7 @@ jive_statemux_node_fini_(jive_node * self_)
 	jive_type_fini(self->attrs.type);
 	jive_context_free(context, self->attrs.type);
 	
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 
 static const jive_node_attrs *
@@ -216,7 +216,7 @@ jive_statemux_node_create(jive_region * region,
 	jive_context * context = region->graph->context;
 	jive_statemux_node * node = jive_context_malloc(context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_STATEMUX_NODE;
+	node->class_ = &JIVE_STATEMUX_NODE;
 	JIVE_DEBUG_ASSERT(jive_type_isinstance(statetype, &JIVE_STATE_TYPE));
 	
 	const jive_type * operand_types[noperands];
@@ -227,13 +227,13 @@ jive_statemux_node_create(jive_region * region,
 	for (n = 0; n < noutputs; n++)
 		output_types[n] = statetype;
 		
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		noperands, operand_types, operands,
 		noutputs, output_types);
 	node->attrs.type = jive_type_copy(statetype, context);
 	node->attrs.noutputs = noutputs;
 	
-	return &node->base;
+	return node;
 }
 
 jive_output *

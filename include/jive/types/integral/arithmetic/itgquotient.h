@@ -13,8 +13,7 @@ typedef struct jive_itgquotient_node jive_itgquotient_node;
 extern const jive_itgbinary_operation_class JIVE_ITGQUOTIENT_NODE_;
 #define JIVE_ITGQUOTIENT_NODE (JIVE_ITGQUOTIENT_NODE_.base.base)
 
-struct jive_itgquotient_node {
-	jive_node base;
+struct jive_itgquotient_node : public jive_node {
 };
 
 struct jive_output *

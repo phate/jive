@@ -85,7 +85,7 @@ jive_bitslice_node_init_(
 {
 	JIVE_DECLARE_BITSTRING_TYPE(input_type, ((jive_bitstring_output *) origin)->type.nbits);
 	JIVE_DECLARE_BITSTRING_TYPE(output_type, high - low);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, &input_type, &origin,
 		1, &output_type);
 	self->attrs.low = low;
@@ -126,9 +126,9 @@ jive_bitslice_node_create_(struct jive_region * region, const jive_node_attrs * 
 	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
 	
 	jive_bitslice_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_BITSLICE_NODE;
+	node->class_ = &JIVE_BITSLICE_NODE;
 	jive_bitslice_node_init_(node, region, operands[0], attrs->low, attrs->high);
-	return &node->base;
+	return node;
 }
 
 static jive_unop_reduction_path_t
@@ -162,13 +162,13 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 	
 	if (path == jive_unop_reduction_narrow) {
 		const jive_bitslice_node * node = (const jive_bitslice_node *) operand->base.base.node;
-		return jive_bitslice(node->base.inputs[0]->origin, attrs->low + node->attrs.low,
+		return jive_bitslice(node->inputs[0]->origin, attrs->low + node->attrs.low,
 			attrs->high + node->attrs.low);
 	}
 	
 	if (path == jive_unop_reduction_constant) {
 		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->base.base.node;
-		return jive_bitconstant(node->base.graph, attrs->high - attrs->low,
+		return jive_bitconstant(node->graph, attrs->high - attrs->low,
 			node->attrs.bits + attrs->low);
 	}
 	

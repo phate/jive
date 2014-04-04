@@ -27,7 +27,7 @@ jive_objdef_node_init_(
 {
 	JIVE_DECLARE_STATE_TYPE(stype);
 	const jive_type * type = jive_output_get_type(obj);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, &type, &obj,
 		1, &stype);
 	
@@ -45,11 +45,11 @@ jive_objdef_node_fini_(jive_node * self_)
 {
 	jive_objdef_node * self = (jive_objdef_node *) self_;
 	
-	jive_context * context = self->base.graph->context;
+	jive_context * context = self->graph->context;
 	
 	jive_context_free(context, self->attrs.name);
 	
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 
 static void
@@ -80,10 +80,10 @@ jive_objdef_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	const jive_objdef_node_attrs * attrs = (const jive_objdef_node_attrs *) attrs_;
 	
 	jive_objdef_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
-	other->base.class_ = &JIVE_OBJDEF_NODE;
+	other->class_ = &JIVE_OBJDEF_NODE;
 	jive_objdef_node_init_(other, region, operands[0], attrs->name, attrs->symbol);
 	
-	return &other->base;
+	return other;
 }
 
 const jive_node_class JIVE_OBJDEF_NODE = {
@@ -107,8 +107,8 @@ jive_objdef_node_create(
 {
 	jive_region * region = output->node->region;
 	jive_objdef_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
-	self->base.class_ = &JIVE_OBJDEF_NODE;
+	self->class_ = &JIVE_OBJDEF_NODE;
 	jive_objdef_node_init_(self, region, output, name, symbol);
 	
-	return &self->base;
+	return self;
 }

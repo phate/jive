@@ -36,10 +36,10 @@ test_main()
 
 	jive_view(graph, stderr);
 
-	assert(phi_node->base.base.noutputs == 3);
-	assert(phi_node->base.base.outputs[0] == fv.value);
-	assert(phi_node->base.base.outputs[1] == results[0]);
-	assert(phi_node->base.base.outputs[2] == results[1]);
+	assert(phi_node->noutputs == 3);
+	assert(phi_node->outputs[0] == fv.value);
+	assert(phi_node->outputs[1] == results[0]);
+	assert(phi_node->outputs[2] == results[1]);
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

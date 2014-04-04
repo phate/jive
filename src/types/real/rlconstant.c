@@ -51,7 +51,7 @@ jive_rlconstant_node_init_(jive_rlconstant_node * self, jive_region * region, bo
 	size_t nnbits, const char * numerator, size_t ndbits, const char * denominator)
 {
 	JIVE_DECLARE_REAL_TYPE(rltype);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &rltype);
 
@@ -73,9 +73,9 @@ static void
 jive_rlconstant_node_fini_(jive_node * self_)
 {
 	jive_rlconstant_node * self = (jive_rlconstant_node *) self_;
-	jive_context_free(self->base.graph->context, self->attrs.numerator);
-	jive_context_free(self->base.graph->context, self->attrs.denominator);
-	jive_node_fini_(&self->base);
+	jive_context_free(self->graph->context, self->attrs.numerator);
+	jive_context_free(self->graph->context, self->attrs.denominator);
+	jive_node_fini_(self);
 }
 
 static void
@@ -143,11 +143,11 @@ jive_rlconstant_node_create_(struct jive_region * region, const jive_node_attrs 
 	const jive_rlconstant_node_attrs * attrs = (const jive_rlconstant_node_attrs *) attrs_;
 
 	jive_rlconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_RLCONSTANT_NODE;
+	node->class_ = &JIVE_RLCONSTANT_NODE;
 	jive_rlconstant_node_init_(node, region, attrs->sign, attrs->nnbits, attrs->numerator,
 		attrs->ndbits, attrs->denominator);
 
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

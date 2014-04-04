@@ -18,8 +18,7 @@ struct jive_itgconstant_node_attrs : public jive_node_attrs {
 	char * bits;
 };
 
-struct jive_itgconstant_node {
-	jive_node base;
+struct jive_itgconstant_node : public jive_node {
 	jive_itgconstant_node_attrs attrs;
 };
 

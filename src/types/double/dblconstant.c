@@ -46,7 +46,7 @@ static void
 jive_dblconstant_node_init_(jive_dblconstant_node * self, jive_region * region, uint64_t value)
 {
 	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &dbltype);
 
@@ -98,10 +98,10 @@ jive_dblconstant_node_create_(struct jive_region * region, const jive_node_attrs
 	const jive_dblconstant_node_attrs * attrs = (const jive_dblconstant_node_attrs *) attrs_;
 
 	jive_dblconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_DBLCONSTANT_NODE;
+	node->class_ = &JIVE_DBLCONSTANT_NODE;
 	jive_dblconstant_node_init_(node, region, attrs->value);
 
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

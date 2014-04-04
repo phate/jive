@@ -13,8 +13,7 @@ typedef struct jive_dblnegate_node jive_dblnegate_node;
 extern const jive_dblunary_operation_class JIVE_DBLNEGATE_NODE_;
 #define JIVE_DBLNEGATE_NODE (JIVE_DBLNEGATE_NODE_.base.base)
 
-struct jive_dblnegate_node {
-	jive_node base;
+struct jive_dblnegate_node : public jive_node {
 };
 
 struct jive_output *

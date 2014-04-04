@@ -17,8 +17,7 @@ struct jive_fltconstant_node_attrs : public jive_node_attrs {
 	uint32_t value;
 };
 
-struct jive_fltconstant_node {
-	jive_node base;
+struct jive_fltconstant_node : public jive_node {
 	jive_fltconstant_node_attrs attrs;
 };
 

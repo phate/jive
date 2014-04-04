@@ -23,8 +23,7 @@ typedef struct jive_graph_tail_node jive_graph_tail_node;
 
 extern const jive_node_class JIVE_GRAPH_TAIL_NODE;
 
-struct jive_graph_tail_node {
-	jive_node base;
+struct jive_graph_tail_node : public jive_node {
 };
 
 JIVE_EXPORTED_INLINE struct jive_graph_tail_node *

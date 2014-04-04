@@ -48,7 +48,7 @@ jive_rldifference_node_init_(jive_rldifference_node * self, jive_region * region
 	JIVE_DECLARE_REAL_TYPE(rltype);
 	const jive_type * tmparray0[] = {rltype, rltype};
 	jive_output * tmparray1[] = {op1, op2};
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
 		1, &rltype);
 }
@@ -60,10 +60,10 @@ jive_rldifference_node_create_(jive_region * region, const jive_node_attrs * att
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	jive_rldifference_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_RLDIFFERENCE_NODE;
+	node->class_ = &JIVE_RLDIFFERENCE_NODE;
 	jive_rldifference_node_init_(node, region, operands[0], operands[1]);
 
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

@@ -55,14 +55,14 @@ jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_
 	jive_immediate_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
 	JIVE_DECLARE_IMMEDIATE_TYPE(immediate_type);
 	const jive_type* tmparray0[] = {immediate_type};
-	jive_node_init_(&self->base,
+	jive_node_init_(self,
 		region,
 		0, 0, 0,
 		1, tmparray0);
-	self->base.class_ = &JIVE_IMMEDIATE_NODE;
+	self->class_ = &JIVE_IMMEDIATE_NODE;
 	self->attrs = *attrs;
 	
-	return &self->base;
+	return self;
 }
 
 const jive_node_class JIVE_IMMEDIATE_NODE = {

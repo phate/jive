@@ -13,8 +13,7 @@ typedef struct jive_itgnegate_node jive_itgnegate_node;
 extern const jive_itgunary_operation_class JIVE_ITGNEGATE_NODE_;
 #define JIVE_ITGNEGATE_NODE (JIVE_ITGNEGATE_NODE_.base.base)
 
-struct jive_itgnegate_node {
-	jive_node base;
+struct jive_itgnegate_node : public jive_node {
 };
 
 struct jive_output *

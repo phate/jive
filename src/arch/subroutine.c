@@ -89,8 +89,8 @@ jive_subroutine_match_passthrough(
 	jive_subroutine_deprecated * new_subroutine,
 	jive_subroutine_passthrough * new_pt)
 {
-	new_pt->output = new_subroutine->enter->base.outputs[old_pt->output->index];
-	new_pt->input = new_subroutine->leave->base.inputs[old_pt->input->index];
+	new_pt->output = new_subroutine->enter->outputs[old_pt->output->index];
+	new_pt->input = new_subroutine->leave->inputs[old_pt->input->index];
 	new_pt->gate = new_pt->output->gate;
 }
 
@@ -123,11 +123,11 @@ jive_subroutine_create_passthrough(
 {
 	jive_subroutine_passthrough passthrough;
 	passthrough.gate = jive_resource_class_create_gate(
-		cls, subroutine->subroutine_node->base.region->graph, name);
+		cls, subroutine->subroutine_node->region->graph, name);
 	passthrough.output = jive_node_gate_output(
-		&subroutine->enter->base, passthrough.gate);
+		subroutine->enter, passthrough.gate);
 	passthrough.input = jive_node_gate_input(
-		&subroutine->leave->base, passthrough.gate, passthrough.output);
+		subroutine->leave, passthrough.gate, passthrough.output);
 	return passthrough;
 }
 
@@ -140,12 +140,12 @@ jive_subroutine_create_passthrough_memorystate(
 	
 	jive_subroutine_passthrough passthrough;
 	passthrough.gate = jive_type_create_gate(
-		memory_type, subroutine->subroutine_node->base.region->graph,
+		memory_type, subroutine->subroutine_node->region->graph,
 		name);
 	passthrough.output = jive_node_gate_output(
-		&subroutine->enter->base, passthrough.gate);
+		subroutine->enter, passthrough.gate);
 	passthrough.input = jive_node_gate_input(
-		&subroutine->leave->base, passthrough.gate, passthrough.output);
+		subroutine->leave, passthrough.gate, passthrough.output);
 	return passthrough;
 }
 	
@@ -193,9 +193,9 @@ jive_subroutine_copy(const jive_subroutine_deprecated * self,
 		jive_gate * new_gate = NULL;
 		
 		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->enter->base, new_enter_node);
+			new_gate = jive_subroutine_match_gate(old_gate, self->enter, new_enter_node);
 		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->leave->base, new_leave_node);
+			new_gate = jive_subroutine_match_gate(old_gate, self->leave, new_leave_node);
 		if (!new_gate)
 			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
 		
@@ -207,9 +207,9 @@ jive_subroutine_copy(const jive_subroutine_deprecated * self,
 		jive_gate * new_gate = NULL;
 		
 		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->enter->base, new_enter_node);
+			new_gate = jive_subroutine_match_gate(old_gate, self->enter, new_enter_node);
 		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, &self->leave->base, new_leave_node);
+			new_gate = jive_subroutine_match_gate(old_gate, self->leave, new_leave_node);
 		if (!new_gate)
 			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
 		
@@ -321,8 +321,8 @@ jive_subroutine_fini_(jive_subroutine_deprecated * self)
 jive_node *
 jive_subroutine_end(jive_subroutine self)
 {
-	self.region->bottom = &self.old_subroutine_struct->leave->base;
-	return &self.old_subroutine_struct->subroutine_node->base;
+	self.region->bottom = self.old_subroutine_struct->leave;
+	return self.old_subroutine_struct->subroutine_node;
 }
 
 jive_output *

@@ -48,8 +48,7 @@ struct jive_statemux_node_attrs : public jive_node_attrs {
 	struct jive_type * type; /* note: dynamically allocated */
 };
 
-struct jive_statemux_node {
-	jive_node base;
+struct jive_statemux_node : public jive_node {
 	jive_statemux_node_attrs attrs;
 };
 

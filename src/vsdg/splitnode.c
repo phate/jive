@@ -22,15 +22,15 @@ jive_splitnode_init_(
 	const jive_type * out_type,
 	const struct jive_resource_class * out_class)
 {
-	self->base.class_ = &JIVE_SPLITNODE;
-	jive_node_init_(&self->base, region,
+	self->class_ = &JIVE_SPLITNODE;
+	jive_node_init_(self, region,
 		1, &in_type, &in_origin,
 		1, &out_type);
 	
 	self->attrs.in_class = in_class;
 	self->attrs.out_class = out_class;
-	self->base.inputs[0]->required_rescls = in_class;
-	self->base.outputs[0]->required_rescls = out_class;
+	self->inputs[0]->required_rescls = in_class;
+	self->outputs[0]->required_rescls = out_class;
 }
 
 static jive_node *
@@ -104,5 +104,5 @@ jive_splitnode_create(jive_region * region,
 	if (nf->enable_mutable && nf->enable_cse)
 		jive_graph_mark_denormalized(graph);
 	
-	return &self->base;
+	return self;
 }

@@ -13,8 +13,7 @@ typedef struct jive_rlsum_node jive_rlsum_node;
 extern const jive_rlbinary_operation_class JIVE_RLSUM_NODE_;
 #define JIVE_RLSUM_NODE (JIVE_RLSUM_NODE_.base.base)
 
-struct jive_rlsum_node {
-	jive_node base;
+struct jive_rlsum_node : public jive_node {
 };
 
 struct jive_output *

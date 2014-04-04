@@ -13,8 +13,7 @@ typedef struct jive_rlequal_node jive_rlequal_node;
 extern const jive_rlcomparison_operation_class JIVE_RLEQUAL_NODE_;
 #define JIVE_RLEQUAL_NODE (JIVE_RLEQUAL_NODE_.base.base)
 
-struct jive_rlequal_node {
-	jive_node base;
+struct jive_rlequal_node : public jive_node {
 };
 
 struct jive_output *

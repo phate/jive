@@ -23,8 +23,7 @@ struct jive_unify_node_attrs : public jive_node_attrs {
 	size_t option;
 };
 
-struct jive_unify_node {
-	jive_node base;
+struct jive_unify_node : public jive_node {
 	jive_unify_node_attrs attrs;
 };
 
@@ -56,8 +55,7 @@ struct jive_empty_unify_node_attrs : public jive_node_attrs {
 	const struct jive_union_declaration * decl;
 };
 
-struct jive_empty_unify_node {
-	jive_node base;
+struct jive_empty_unify_node : public jive_node {
 	jive_empty_unify_node_attrs attrs;
 };
 

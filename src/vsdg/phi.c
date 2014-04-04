@@ -253,12 +253,12 @@ jive_phi_node_create(jive_region * phi_region,
 {
 	jive_phi_node * self = jive_context_malloc(phi_region->graph->context, sizeof(*self));;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
-	self->base.base.class_ = &JIVE_PHI_NODE;
-	jive_node_init_(&self->base.base, phi_region,
+	self->class_ = &JIVE_PHI_NODE;
+	jive_node_init_(self, phi_region,
 		1, &anchor, &phi_body,
 		0, NULL);
 	
-	return &self->base.base;
+	return self;
 }
 
 /* phi instantiation */
@@ -371,7 +371,7 @@ struct jive_phi_extension *
 jive_phi_begin_extension(struct jive_phi_node * phi_node, size_t nfixvars,
 	const jive_type * fixvar_types[])
 {
-	jive_graph * graph = phi_node->base.base.region->graph;
+	jive_graph * graph = phi_node->region->graph;
 	jive_context * context = graph->context;
 	jive_node * enter = jive_phi_node_get_enter_node(phi_node);
 
@@ -395,7 +395,7 @@ jive_phi_begin_extension(struct jive_phi_node * phi_node, size_t nfixvars,
 struct jive_output **
 jive_phi_end_extension(struct jive_phi_extension * self)
 {
-	jive_node * phi_node = &self->phi_node->base.base;
+	jive_node * phi_node = self->phi_node;
 	jive_context * context = phi_node->region->graph->context;
 	jive_node * enter = jive_phi_node_get_enter_node(self->phi_node);
 	jive_node * leave = jive_phi_node_get_leave_node(self->phi_node);

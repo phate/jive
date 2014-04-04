@@ -13,8 +13,7 @@ typedef struct jive_itgand_node jive_itgand_node;
 extern const jive_itgbinary_operation_class JIVE_ITGAND_NODE_;
 #define JIVE_ITGAND_NODE (JIVE_ITGAND_NODE_.base.base)
 
-struct jive_itgand_node {
-	jive_node base;
+struct jive_itgand_node : public jive_node {
 };
 
 struct jive_output *

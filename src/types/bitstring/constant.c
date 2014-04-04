@@ -60,7 +60,7 @@ jive_bitconstant_node_init_(
 			"bitconstant: number of bits must be greater than zero.");
 
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &type);
 	self->attrs.nbits = nbits;
@@ -73,8 +73,8 @@ static void
 jive_bitconstant_node_fini_(jive_node * self_)
 {
 	jive_bitconstant_node * self = (jive_bitconstant_node *) self_;
-	jive_context_free(self->base.graph->context, self->attrs.bits);
-	jive_node_fini_(&self->base);
+	jive_context_free(self->graph->context, self->attrs.bits);
+	jive_node_fini_(self);
 }
 
 static void
@@ -118,10 +118,10 @@ jive_bitconstant_node_create_(struct jive_region * region, const jive_node_attrs
 	const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *) attrs_;
 	
 	jive_bitconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_BITCONSTANT_NODE;
+	node->class_ = &JIVE_BITCONSTANT_NODE;
 	jive_bitconstant_node_init_(node, region, attrs->nbits, attrs->bits);
 	
-	return &node->base;
+	return node;
 }
 
 jive_output *

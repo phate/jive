@@ -13,8 +13,7 @@ typedef struct jive_rlnegate_node jive_rlnegate_node;
 extern const jive_rlunary_operation_class JIVE_RLNEGATE_NODE_;
 #define JIVE_RLNEGATE_NODE (JIVE_RLNEGATE_NODE_.base.base)
 
-struct jive_rlnegate_node {
-	jive_node base;
+struct jive_rlnegate_node : public jive_node {
 };
 
 struct jive_output *

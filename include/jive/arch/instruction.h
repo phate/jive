@@ -29,8 +29,7 @@ struct jive_instruction_node_attrs : public jive_node_attrs {
 	const jive_instruction_class * icls;
 };
 
-struct jive_instruction_node {
-	jive_node base;
+struct jive_instruction_node : public jive_node {
 	jive_instruction_node_attrs attrs;
 };
 
@@ -73,7 +72,7 @@ jive_instruction_node_get_immediate(
 	size_t index)
 {
 	const jive_instruction_class * icls = node->attrs.icls;
-	jive_input * input = node->base.inputs[index + icls->ninputs];
+	jive_input * input = node->inputs[index + icls->ninputs];
 	return (struct jive_immediate_node *) input->origin->node;
 }
 

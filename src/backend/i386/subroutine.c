@@ -73,7 +73,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		if (jive_output_isinstance(original, &JIVE_VALUE_OUTPUT)) {
 			substitute = jive_subroutine_value_parameter(subroutine, nvalue_parameters ++);
 		} else {
-			substitute = jive_node_add_output(&subroutine->enter->base, jive_output_get_type(original));
+			substitute = jive_node_add_output(subroutine->enter, jive_output_get_type(original));
 		}
 		
 		if(jive_output_isinstance(original, &JIVE_ADDRESS_OUTPUT))
@@ -97,13 +97,13 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 				retval = jive_address_to_bitstring_create(retval, 32, jive_output_get_type(retval));
 			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
 		} else {
-			jive_node_add_input(&subroutine->leave->base, jive_input_get_type(original), retval);
+			jive_node_add_input(subroutine->leave, jive_input_get_type(original), retval);
 		}
 	}
 	
 	jive_substitution_map_destroy(subst);
 	
-	return &subroutine->subroutine_node->base;
+	return subroutine->subroutine_node;
 }
 
 static jive_output *
@@ -140,11 +140,11 @@ jive_i386_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
 	jive_gate * gate = self->base.parameters[index];
-	jive_output * output = jive_node_gate_output(&self->base.enter->base, gate);
+	jive_output * output = jive_node_gate_output(self->base.enter, gate);
 	
 	const jive_type * in_type = jive_gate_get_type(gate);
 	const jive_type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
-	jive_node * node = jive_splitnode_create(self->base.enter->base.region,
+	jive_node * node = jive_splitnode_create(self->base.enter->region,
 		in_type, output, gate->required_rescls,
 		out_type, &jive_i386_regcls_gpr.base);
 	output = node->outputs[0];
@@ -157,7 +157,7 @@ jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t in
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
 	jive_gate * gate = self->base.returns[index];
-	return jive_node_gate_input(&self->base.leave->base, gate, value);
+	return jive_node_gate_input(self->base.leave, gate, value);
 }
 
 static jive_subroutine_deprecated *
@@ -218,13 +218,13 @@ jive_i386_subroutine_create(jive_region * region,
 	/* add dependency on return address on stack */
 	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
 	const jive_type * memory_state_type = jive_resource_class_get_type(stackslot_cls);
-	jive_output * retaddr_def = jive_node_add_output(&self->base.enter->base, memory_state_type);
+	jive_output * retaddr_def = jive_node_add_output(self->base.enter, memory_state_type);
 	retaddr_def->required_rescls = stackslot_cls;
 	jive_input * retaddr_use = jive_node_add_input(ret_instr, memory_state_type, retaddr_def);
 	retaddr_use->required_rescls = stackslot_cls;
 	
 	/* divert control output of "leave" node */
-	jive_input_divert_origin(self->base.leave->base.inputs[0], ret_instr->outputs[0]);
+	jive_input_divert_origin(self->base.leave->inputs[0], ret_instr->outputs[0]);
 
 	return &self->base;
 }

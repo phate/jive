@@ -48,7 +48,7 @@ static void
 jive_fltconstant_node_init_(jive_fltconstant_node * self, jive_region * region, uint32_t value)
 {
 	JIVE_DECLARE_FLOAT_TYPE(flttype);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &flttype);
 	
@@ -100,10 +100,10 @@ jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs
 	const jive_fltconstant_node_attrs * attrs = (const jive_fltconstant_node_attrs *) attrs_;
 
 	jive_fltconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_FLTCONSTANT_NODE;
+	node->class_ = &JIVE_FLTCONSTANT_NODE;
 	jive_fltconstant_node_init_(node, region, attrs->value);
 
-	return &node->base;
+	return node;
 }
 
 jive_output *

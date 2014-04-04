@@ -13,8 +13,7 @@ typedef struct jive_rldifference_node jive_rldifference_node;
 extern const jive_rlbinary_operation_class JIVE_RLDIFFERENCE_NODE_;
 #define JIVE_RLDIFFERENCE_NODE (JIVE_RLDIFFERENCE_NODE_.base.base)
 
-struct jive_rldifference_node {
-	jive_node base;
+struct jive_rldifference_node : public jive_node {
 };
 
 struct jive_output *

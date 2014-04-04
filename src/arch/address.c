@@ -146,17 +146,17 @@ jive_memberof_node_create(jive_region * region,
 	jive_context * context = region->graph->context;
 	jive_memberof_node * node = jive_context_malloc(context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_MEMBEROF_NODE;
+	node->class_ = &JIVE_MEMBEROF_NODE;
 	
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
 	
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		1, &address_type, &address,
 		1, &address_type);
 	node->attrs.record_decl = record_decl;
 	node->attrs.index = index;
 	
-	return &node->base;
+	return node;
 }
 
 jive_node *
@@ -310,17 +310,17 @@ jive_containerof_node_create(jive_region * region,
 	jive_context * context = region->graph->context;
 	jive_containerof_node * node = jive_context_malloc(context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_CONTAINEROF_NODE;
+	node->class_ = &JIVE_CONTAINEROF_NODE;
 	
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
 	
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		1, &address_type, &address,
 		1, &address_type);
 	node->attrs.record_decl = record_decl;
 	node->attrs.index = index;
 	
-	return &node->base;
+	return node;
 }
 
 jive_node *
@@ -402,8 +402,8 @@ jive_arraysubscript_node_fini_(jive_node * self_)
 {
 	jive_arraysubscript_node * self = (jive_arraysubscript_node *) self_;
 	jive_type_fini(&self->attrs.element_type->base);
-	jive_context_free(self->base.graph->context, self->attrs.element_type);
-	jive_node_fini_(&self->base);
+	jive_context_free(self->graph->context, self->attrs.element_type);
+	jive_node_fini_(self);
 }
 
 static const jive_node_attrs *
@@ -455,7 +455,7 @@ jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node);
 	if (node &&
 		jive_type_equals(&attrs->element_type->base, &node->attrs.element_type->base) &&
-		jive_type_equals(jive_output_get_type(operand2), jive_input_get_type(node->base.inputs[1])))
+		jive_type_equals(jive_output_get_type(operand2), jive_input_get_type(node->inputs[1])))
 		return jive_binop_reduction_lfold;
 	
 	return jive_binop_reduction_none;
@@ -470,10 +470,10 @@ jive_arraysubscript_reduce_operand_pair_(jive_binop_reduction_path_t path, const
 
 	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node);
 	if (path == jive_binop_reduction_lfold) {
-		jive_output * operands[2] = {node->base.inputs[1]->origin, operand2};
+		jive_output * operands[2] = {node->inputs[1]->origin, operand2};
 		jive_output * sum = jive_bitsum(2, operands);
 		
-		operands[0] = node->base.inputs[0]->origin;
+		operands[0] = node->inputs[0]->origin;
 		operands[1] = sum;
 		
 		return jive_binary_operation_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE_,
@@ -490,7 +490,7 @@ jive_arraysubscript_node_create(jive_region * region,
 	jive_context * context = region->graph->context;
 	jive_arraysubscript_node * node = jive_context_malloc(context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
+	node->class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
 	
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
 	const jive_type * index_type = jive_output_get_type(index);
@@ -499,12 +499,12 @@ jive_arraysubscript_node_create(jive_region * region,
 	const jive_type * operand_types[2] = {address_type, index_type};
 	jive_output * operands[2] = {address, index};
 	
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		2, operand_types, operands,
 		1, &address_type);
 	node->attrs.element_type = (jive_value_type *) jive_type_copy(&element_type->base, context);
 	
-	return &node->base;
+	return node;
 }
 
 jive_node *
@@ -585,8 +585,8 @@ jive_arrayindex_node_fini_(jive_node * self_)
 {
 	jive_arrayindex_node * self = (jive_arrayindex_node *) self_;
 	jive_type_fini(&self->attrs.element_type->base);
-	jive_context_free(self->base.graph->context, self->attrs.element_type);
-	jive_node_fini_(&self->base);
+	jive_context_free(self->graph->context, self->attrs.element_type);
+	jive_node_fini_(self);
 }
 
 static const jive_node_attrs *
@@ -700,7 +700,7 @@ jive_arrayindex_node_create(jive_region * region,
 	jive_context * context = region->graph->context;
 	jive_arrayindex_node * node = jive_context_malloc(context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_ARRAYINDEX_NODE;
+	node->class_ = &JIVE_ARRAYINDEX_NODE;
 	
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
 	const jive_type * operand_types[2] = {address_type, address_type};
@@ -708,13 +708,13 @@ jive_arrayindex_node_create(jive_region * region,
 	JIVE_DEBUG_ASSERT(difference_type->class_ == &JIVE_BITSTRING_TYPE);
 	const jive_type * output_types[1] = {difference_type};
 	
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		2, operand_types, operands,
 		1, output_types);
 	node->attrs.element_type = (jive_value_type *) jive_type_copy(&element_type->base, context);
 	node->attrs.difference_type = *(const jive_bitstring_type *)difference_type;
 	
-	return &node->base;
+	return node;
 }
 
 jive_node *
@@ -779,7 +779,7 @@ jive_label_to_address_node_init_(
 	const jive_label * label)
 {
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	jive_node_init_(&self->base, graph->root_region,
+	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,
 		1, &addrtype);
 	
@@ -791,7 +791,7 @@ jive_label_to_address_node_fini_(jive_node * self_)
 {
 	jive_label_to_address_node * self = (jive_label_to_address_node *) self_;
 	
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 
 static void
@@ -836,10 +836,10 @@ jive_node *
 jive_label_to_address_node_create(struct jive_graph * graph, const jive_label * label)
 {
 	jive_label_to_address_node * node = jive_context_malloc(graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
+	node->class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
 	jive_label_to_address_node_init_(node, graph, label);
 
-	return &node->base;
+	return node;
 }
 
 jive_output *
@@ -886,7 +886,7 @@ jive_label_to_bitstring_node_init_(
 	const jive_label * label, size_t nbits)
 {
 	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);
-	jive_node_init_(&self->base, graph->root_region,
+	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,
 		1, &btype);
 
@@ -899,7 +899,7 @@ jive_label_to_bitstring_node_fini_(jive_node * self_)
 {
 	jive_label_to_bitstring_node * self = (jive_label_to_bitstring_node *) self_;
 
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 
 static void
@@ -945,10 +945,10 @@ jive_node *
 jive_label_to_bitstring_node_create(struct jive_graph * graph, const jive_label * label, size_t nbits)
 {
 	jive_label_to_bitstring_node * node = jive_context_malloc(graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_LABEL_TO_BITSTRING_NODE;
+	node->class_ = &JIVE_LABEL_TO_BITSTRING_NODE;
 	jive_label_to_bitstring_node_init_(node, graph, label, nbits);
 
-	return &node->base;
+	return node;
 }
 
 jive_output *

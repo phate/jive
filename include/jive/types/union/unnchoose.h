@@ -18,8 +18,7 @@ struct jive_choose_node_attrs : public jive_node_attrs {
 	size_t element;
 };
 
-struct jive_choose_node {
-	jive_node base;
+struct jive_choose_node : public jive_node {
 	jive_choose_node_attrs attrs;
 };
 

@@ -70,15 +70,15 @@ jive_instruction_node_init_(
 		output_types[icls->noutputs] = ctl;
 	}
 	
-	jive_node_init_(&self->base,
+	jive_node_init_(self,
 		region,
 		ninputs + nimmediates, input_types, inputs,
 		noutputs, output_types);
 	
 	for (n = 0; n<icls->ninputs; n++)
-		self->base.inputs[n]->required_rescls = &icls->inregs[n]->base;
+		self->inputs[n]->required_rescls = &icls->inregs[n]->base;
 	for (n = 0; n<icls->noutputs; n++)
-		self->base.outputs[n]->required_rescls = &icls->outregs[n]->base;
+		self->outputs[n]->required_rescls = &icls->outregs[n]->base;
 	
 	self->attrs.icls = icls;
 }
@@ -113,10 +113,10 @@ jive_instruction_node_create_(jive_region * region, const jive_node_attrs * attr
 	const jive_instruction_node_attrs * attrs = (const jive_instruction_node_attrs *) attrs_;
 	
 	jive_instruction_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
-	other->base.class_ = &JIVE_INSTRUCTION_NODE;
+	other->class_ = &JIVE_INSTRUCTION_NODE;
 	jive_instruction_node_init_(other, region, attrs->icls, operands, operands + attrs->icls->ninputs);
 	
-	return &other->base;
+	return other;
 }
 
 const struct jive_resource_class *
@@ -156,10 +156,10 @@ jive_instruction_node_create_extended(
 		immvalues[n] = jive_immediate_create(region->graph, &immediates[n]);
 	}
 	jive_instruction_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_INSTRUCTION_NODE;
+	node->class_ = &JIVE_INSTRUCTION_NODE;
 	jive_instruction_node_init_(node, region, icls, operands, immvalues);
 	
-	return &node->base;
+	return node;
 }
 
 static void

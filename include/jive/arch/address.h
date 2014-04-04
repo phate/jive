@@ -31,8 +31,7 @@ struct jive_memberof_node_attrs : public jive_node_attrs {
 	size_t index;
 };
 
-struct jive_memberof_node {
-	jive_node base;
+struct jive_memberof_node : public jive_node {
 	jive_memberof_node_attrs attrs;
 };
 
@@ -74,8 +73,7 @@ struct jive_containerof_node_attrs : public jive_node_attrs {
 	size_t index;
 };
 
-struct jive_containerof_node {
-	jive_node base;
+struct jive_containerof_node : public jive_node {
 	jive_containerof_node_attrs attrs;
 };
 
@@ -116,8 +114,7 @@ struct jive_arraysubscript_node_attrs : public jive_node_attrs {
 	jive_value_type * element_type; /* note: dynamically allocated */
 };
 
-struct jive_arraysubscript_node {
-	jive_node base;
+struct jive_arraysubscript_node : public jive_node {
 	jive_arraysubscript_node_attrs attrs;
 };
 
@@ -160,8 +157,7 @@ struct jive_arrayindex_node_attrs : public jive_node_attrs {
 	jive_bitstring_type difference_type;
 };
 
-struct jive_arrayindex_node {
-	jive_node base;
+struct jive_arrayindex_node : public jive_node {
 	jive_arrayindex_node_attrs attrs;
 };
 
@@ -199,8 +195,7 @@ struct jive_label_to_address_node_attrs : public jive_node_attrs {
 	const struct jive_label * label;
 };
 
-struct jive_label_to_address_node {
-	jive_node base;
+struct jive_label_to_address_node : public jive_node {
 	jive_label_to_address_node_attrs attrs;
 };
 
@@ -237,8 +232,7 @@ struct jive_label_to_bitstring_node_attrs : public jive_node_attrs {
 	size_t nbits;
 };
 
-struct jive_label_to_bitstring_node {
-	jive_node base;
+struct jive_label_to_bitstring_node : public jive_node {
 	jive_label_to_bitstring_node_attrs attrs;
 };
 

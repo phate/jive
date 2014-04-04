@@ -57,7 +57,7 @@ jive_symbolicfunction_node_init_(
 		type->nreturns, (const jive_type **) type->return_types);
 
 	const jive_type * rtype = &type->base.base;
-	jive_node_init_(&node->base, graph->root_region,
+	jive_node_init_(node, graph->root_region,
 		0, NULL, NULL,
 		1, &rtype);
 }
@@ -71,7 +71,7 @@ jive_symbolicfunction_node_fini_(jive_node * self_)
 	
 	jive_function_type_fini(&self->attrs.type);
 	
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 
 static void
@@ -113,9 +113,9 @@ jive_node *
 jive_symbolicfunction_node_create(struct jive_graph * graph, const char * name, const jive_function_type * type) 
 {
 	jive_symbolicfunction_node * node = jive_context_malloc(graph->context, sizeof(* node));
-	node->base.class_ = &JIVE_SYMBOLICFUNCTION_NODE;
+	node->class_ = &JIVE_SYMBOLICFUNCTION_NODE;
 	jive_symbolicfunction_node_init_(node, graph, name, type);
-	return &node->base;
+	return node;
 } 
 
 jive_output *

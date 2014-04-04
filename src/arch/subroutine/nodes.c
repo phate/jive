@@ -40,15 +40,15 @@ jive_subroutine_enter_node_create(jive_region * region)
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
 	jive_subroutine_enter_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_SUBROUTINE_ENTER_NODE;
+	node->class_ = &JIVE_SUBROUTINE_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctl);
-	((jive_control_output *) node->base.outputs[0])->active = false;
-	region->top = &node->base;
+	((jive_control_output *) node->outputs[0])->active = false;
+	region->top = node;
 	
-	return &node->base;
+	return node;
 }
 
 static jive_node *
@@ -82,15 +82,15 @@ jive_subroutine_leave_node_create(jive_region * region, jive_output * control_tr
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 	jive_subroutine_leave_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_SUBROUTINE_LEAVE_NODE;
+	node->class_ = &JIVE_SUBROUTINE_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		1, &ctl, &control_transfer,
 		1, &anchor);
-	region->bottom = &node->base;
+	region->bottom = node;
 	
-	return &node->base;
+	return node;
 }
 
 static void
@@ -129,7 +129,7 @@ jive_subroutine_node_fini_(jive_node * self_)
 		subroutine->subroutine_node = 0;
 		jive_subroutine_destroy(subroutine);
 	}
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 static const jive_node_attrs *
 jive_subroutine_node_get_attrs_(const jive_node * self_)
@@ -179,10 +179,10 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 	
 	jive_subroutine_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_SUBROUTINE_NODE;
+	node->class_ = &JIVE_SUBROUTINE_NODE;
 	JIVE_DECLARE_STATE_TYPE(objstate_type);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		1, &anchor, &subroutine_region->bottom->outputs[0],
 		1, &objstate_type);
 	node->attrs.subroutine = subroutine;
@@ -190,5 +190,5 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 	subroutine->enter = enter;
 	subroutine->leave = leave;
 	
-	return &node->base;
+	return node;
 }

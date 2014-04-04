@@ -23,8 +23,7 @@ struct jive_immediate_node_attrs : public jive_node_attrs {
 	jive_immediate value;
 };
 
-struct jive_immediate_node {
-	jive_node base;
+struct jive_immediate_node : public jive_node {
 	jive_immediate_node_attrs attrs;
 };
 

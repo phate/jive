@@ -22,8 +22,7 @@ struct jive_test_node_attrs : public jive_node_attrs {
 	const jive_type ** result_types;
 };
 
-struct jive_test_node {
-	jive_node base;
+struct jive_test_node : public jive_node {
 	jive_test_node_attrs attrs;
 };
 

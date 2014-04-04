@@ -120,7 +120,7 @@ jive_unify_node_init_(jive_unify_node * self,
 	
 	JIVE_DECLARE_UNION_TYPE(type, decl);
 	
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, &arg_type, &operand,
 		1, &type);
 	
@@ -134,10 +134,10 @@ jive_unify_node_create(struct jive_region * region, const jive_union_declaration
 {
 	jive_unify_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
 
-	node->base.class_ = &JIVE_UNIFY_NODE;
+	node->class_ = &JIVE_UNIFY_NODE;
 	jive_unify_node_init_(node, region, decl, option, operand);
 
-	return &node->base;
+	return node;
 }
 
 jive_output *
@@ -182,7 +182,7 @@ jive_empty_unify_node_init_(jive_empty_unify_node * self,
 	struct jive_region * region, const jive_union_declaration * decl)
 {
 	JIVE_DECLARE_UNION_TYPE(type, decl);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &type);
 	
@@ -215,10 +215,10 @@ jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs
 	const jive_empty_unify_node_attrs * attrs = (const jive_empty_unify_node_attrs *) attrs_;
 	
 	jive_empty_unify_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_EMPTY_UNIFY_NODE;
+	node->class_ = &JIVE_EMPTY_UNIFY_NODE;
 	jive_empty_unify_node_init_(node, region, attrs->decl);
 	
-	return &node->base;
+	return node;
 }
 
 jive_output *

@@ -56,7 +56,7 @@ jive_bitsymbolicconstant_node_init_(
 	size_t nbits, const char * name)
 {
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &type);
 	self->attrs.nbits = nbits;
@@ -70,8 +70,8 @@ static void
 jive_bitsymbolicconstant_node_fini_(jive_node * self_)
 {
 	jive_bitsymbolicconstant_node * self = (jive_bitsymbolicconstant_node *) self_;
-	jive_context_free(self->base.graph->context, self->attrs.name);
-	jive_node_fini_(&self->base);
+	jive_context_free(self->graph->context, self->attrs.name);
+	jive_node_fini_(self);
 }
 
 static void
@@ -103,9 +103,9 @@ jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 {
 	const jive_bitsymbolicconstant_node_attrs * attrs = (const jive_bitsymbolicconstant_node_attrs *) attrs_;
 	jive_bitsymbolicconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_BITSYMBOLICCONSTANT_NODE;
+	node->class_ = &JIVE_BITSYMBOLICCONSTANT_NODE;
 	jive_bitsymbolicconstant_node_init_(node, region, attrs->nbits, attrs->name);
-	return &node->base;
+	return node;
 }
 
 jive_node *

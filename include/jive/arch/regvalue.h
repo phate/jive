@@ -21,8 +21,7 @@ struct jive_regvalue_node_attrs : public jive_node_attrs {
 	const jive_register_class * regcls;
 };
 
-struct jive_regvalue_node {
-	jive_node base;
+struct jive_regvalue_node : public jive_node {
 	jive_regvalue_node_attrs attrs;
 };
 

@@ -23,8 +23,7 @@ struct jive_objdef_node_attrs : public jive_node_attrs {
 	const struct jive_linker_symbol * symbol;
 };
 
-struct jive_objdef_node {
-	jive_node base;
+struct jive_objdef_node : public jive_node {
 	jive_objdef_node_attrs attrs;
 };
 

@@ -13,8 +13,7 @@ typedef struct jive_dblproduct_node jive_dblproduct_node;
 extern const jive_dblbinary_operation_class JIVE_DBLPRODUCT_NODE_;
 #define JIVE_DBLPRODUCT_NODE (JIVE_DBLPRODUCT_NODE_.base.base)
 
-struct jive_dblproduct_node {
-	jive_node base;
+struct jive_dblproduct_node : public jive_node {
 };
 
 struct jive_output *

@@ -42,8 +42,7 @@ extern const jive_anchor_node_class JIVE_PHI_NODE;
 extern const jive_node_class JIVE_PHI_ENTER_NODE;
 extern const jive_node_class JIVE_PHI_LEAVE_NODE;
 
-struct jive_phi_node {
-	jive_anchor_node base;
+struct jive_phi_node : public jive_anchor_node {
 };
 
 JIVE_EXPORTED_INLINE struct jive_phi_node *
@@ -67,13 +66,13 @@ jive_phi_node_const_cast(const struct jive_node * node)
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_phi_node_get_enter_node(const struct jive_phi_node * self)
 {
-	return self->base.base.inputs[0]->origin->node->region->top;
+	return self->inputs[0]->origin->node->region->top;
 }
 
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_phi_node_get_leave_node(const struct jive_phi_node * self)
 {
-	return self->base.base.inputs[0]->origin->node;
+	return self->inputs[0]->origin->node;
 }
 
 JIVE_EXPORTED_INLINE struct jive_region *

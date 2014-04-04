@@ -17,7 +17,7 @@ jive_test_node_init_(jive_test_node * self, jive_region * region,
 {
 	jive_context * context = region->graph->context;
 
-	jive_node_init_(&self->base, region, noperands, operand_types, operands, nresults, result_types);
+	jive_node_init_(self, region, noperands, operand_types, operands, nresults, result_types);
 
 	self->attrs.noperands = noperands;
 	self->attrs.operand_types = jive_context_malloc(context,
@@ -115,11 +115,11 @@ jive_test_node_create_(struct jive_region * region, const jive_node_attrs * attr
 	JIVE_DEBUG_ASSERT(noperands == attrs->noperands);
 
 	jive_test_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_TEST_NODE;
+	node->class_ = &JIVE_TEST_NODE;
 	jive_test_node_init_(node, region, attrs->noperands, attrs->operand_types, operands,
 		attrs->nresults, attrs->result_types);
 
-	return &node->base;
+	return node;
 }
 
 const jive_node_class JIVE_TEST_NODE = {

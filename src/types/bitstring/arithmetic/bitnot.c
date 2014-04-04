@@ -97,7 +97,7 @@ jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 		char bits[node->attrs.nbits];
 		jive_bitstring_not(bits, node->attrs.bits, node->attrs.nbits);
 		
-		return jive_bitconstant(node->base.graph, node->attrs.nbits, bits);
+		return jive_bitconstant(node->graph, node->attrs.nbits, bits);
 	}
 	
 	return NULL;

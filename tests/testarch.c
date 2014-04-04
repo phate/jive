@@ -493,12 +493,12 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, si
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive_gate * gate = self->base.parameters[index];
-	jive_output * output = jive_node_gate_output(&self->base.enter->base, gate);
+	jive_output * output = jive_node_gate_output(self->base.enter, gate);
 	if (index >= 2) {
 		const jive_type * in_type = jive_gate_get_type(gate);
 		const jive_type * out_type =
 			jive_resource_class_get_type(&jive_testarch_regcls_gpr.base);
-		jive_node * node = jive_splitnode_create(self->base.enter->base.region,
+		jive_node * node = jive_splitnode_create(self->base.enter->region,
 			in_type, output, gate->required_rescls,
 			out_type, &jive_testarch_regcls_gpr.base);
 		output = node->outputs[0];
@@ -511,7 +511,7 @@ jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive_gate * gate = self->base.returns[index];
-	return jive_node_gate_input(&self->base.leave->base, gate, value);
+	return jive_node_gate_input(self->base.leave, gate, value);
 }
 
 extern const jive_subroutine_class JIVE_TESTARCH_SUBROUTINE;

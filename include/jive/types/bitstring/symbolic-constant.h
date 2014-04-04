@@ -19,8 +19,7 @@ struct jive_bitsymbolicconstant_node_attrs : public jive_node_attrs {
 	char * name;
 };
 
-struct jive_bitsymbolicconstant_node {
-	jive_node base;
+struct jive_bitsymbolicconstant_node : public jive_node {
 	jive_bitsymbolicconstant_node_attrs attrs;
 };
 

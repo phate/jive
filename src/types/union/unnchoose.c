@@ -93,7 +93,7 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 		jive_output_get_type(operand);
 	const jive_type * output_type = &operand_type->decl->elements[element]->base;
 	const jive_type *  tmparray0[] = {jive_output_get_type(operand)};
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, tmparray0, &operand,
 		1, &output_type);
 }
@@ -158,10 +158,10 @@ jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * at
 
 	const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *) attrs_;
 	jive_choose_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_CHOOSE_NODE;
+	node->class_ = &JIVE_CHOOSE_NODE;
 	jive_choose_node_init_(node, region, attrs->element, operands[0]);
 
-	return &node->base;
+	return node;
 }
 
 static const jive_unop_reduction_path_t jive_choose_reduction_load = 128;

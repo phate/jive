@@ -50,7 +50,7 @@ jive_rlgreater_node_init_(struct jive_rlgreater_node * self, struct jive_region 
 	JIVE_DECLARE_REAL_TYPE(rltype);
 	const jive_type * tmparray0[] = {rltype, rltype};
 	jive_output * tmparray1[] = {op1, op2};
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
 		1, &ctype);
 }
@@ -62,10 +62,10 @@ jive_rlgreater_node_create_(struct jive_region * region, const jive_node_attrs *
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	jive_rlgreater_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_RLGREATER_NODE;
+	node->class_ = &JIVE_RLGREATER_NODE;
 	jive_rlgreater_node_init_(node, region, operands[0], operands[1]);
 
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

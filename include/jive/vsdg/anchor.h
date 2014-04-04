@@ -15,8 +15,7 @@ typedef struct jive_node_class jive_anchor_node_class;
 
 extern const jive_anchor_node_class JIVE_ANCHOR_NODE;
 
-struct jive_anchor_node {
-	jive_node base;
+struct jive_anchor_node : public jive_node {
 };
 
 JIVE_EXPORTED_INLINE struct jive_anchor_node *

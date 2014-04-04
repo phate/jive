@@ -13,8 +13,7 @@ typedef struct jive_itggreater_node jive_itggreater_node;
 extern const jive_itgcomparison_operation_class JIVE_ITGGREATER_NODE_;
 #define JIVE_ITGGREATER_NODE (JIVE_ITGGREATER_NODE_.base.base)
 
-struct jive_itggreater_node {
-	jive_node base;
+struct jive_itggreater_node : public jive_node {
 };
 
 struct jive_output *

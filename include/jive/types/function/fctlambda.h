@@ -26,8 +26,7 @@ struct jive_lambda_node_attrs : public jive_node_attrs {
 	jive_gate ** return_gates;
 };
 
-struct jive_lambda_node {
-	jive_node base;
+struct jive_lambda_node : public jive_node {
 	jive_lambda_node_attrs attrs;
 };
 
@@ -52,13 +51,13 @@ jive_lambda_node_const_cast(const struct jive_node * node)
 JIVE_EXPORTED_INLINE jive_node *
 jive_lambda_node_get_enter_node(const jive_lambda_node * self)
 {
-	return self->base.inputs[0]->origin->node->region->top;
+	return self->inputs[0]->origin->node->region->top;
 }
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_lambda_node_get_leave_node(const jive_lambda_node * self)
 {
-	return self->base.inputs[0]->origin->node;
+	return self->inputs[0]->origin->node;
 }
 
 JIVE_EXPORTED_INLINE struct jive_region *

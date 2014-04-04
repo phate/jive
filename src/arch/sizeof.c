@@ -50,7 +50,7 @@ jive_sizeof_node_fini_(jive_node * self_)
 	jive_sizeof_node * self = (jive_sizeof_node *)self_;
 	
 	jive_context_free(self_->graph->context, self->attrs.type);
-	jive_node_fini_(&self->base);
+	jive_node_fini_(self);
 }
 
 static const jive_node_attrs *
@@ -86,19 +86,19 @@ jive_sizeof_node_create(jive_region * region,
 	jive_context * context = region->graph->context;
 	jive_sizeof_node * node = jive_context_malloc(context, sizeof(*node));
 	
-	node->base.class_ = &JIVE_SIZEOF_NODE;
+	node->class_ = &JIVE_SIZEOF_NODE;
 	
 	/* FIXME: either need a "universal" integer type,
 	or some way to specify the representation type for the
 	sizeof operator */
 	JIVE_DECLARE_BITSTRING_TYPE(btype, 32);
-	jive_node_init_(&node->base, region,
+	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &btype);
 	
 	node->attrs.type = (jive_value_type *)jive_type_copy(&type->base, context);
 	
-	return &node->base;
+	return node;
 }
 
 jive_output *
@@ -116,6 +116,6 @@ jive_sizeof_node_reduce(const jive_sizeof_node * node, jive_memlayout_mapper * m
 	const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_value_type(mapper,
 		node->attrs.type);
 	
-	jive_output * new_node = jive_bitconstant_unsigned(node->base.graph, 32, layout->total_size);
-	jive_output_replace(node->base.outputs[0], new_node);
+	jive_output * new_node = jive_bitconstant_unsigned(node->graph, 32, layout->total_size);
+	jive_output_replace(node->outputs[0], new_node);
 }

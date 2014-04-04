@@ -42,7 +42,7 @@ static void
 jive_itgnot_node_init_(jive_itgnot_node * self, jive_region * region, jive_output * operand)
 {
 	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		1, &itgtype, &operand,
 		1, &itgtype);
 }
@@ -54,9 +54,9 @@ jive_itgnot_node_create_(struct jive_region * region, const jive_node_attrs * at
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
 	jive_itgnot_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_ITGNOT_NODE;
+	node->class_ = &JIVE_ITGNOT_NODE;
 	jive_itgnot_node_init_(node, region, operands[0]);
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

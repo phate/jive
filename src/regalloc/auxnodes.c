@@ -59,7 +59,7 @@ check_fp_sp_dependency(jive_node * node)
 	const jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 	if (!sub)
 		return;
-	jive_node * leave = sub->base.inputs[0]->origin->node;
+	jive_node * leave = sub->inputs[0]->origin->node;
 	jive_node * enter = leave->region->top;
 	
 	if (node == enter || node == leave)

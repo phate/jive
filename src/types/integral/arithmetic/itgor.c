@@ -51,7 +51,7 @@ jive_itgor_node_init_(jive_itgor_node * self, jive_region * region,
 	for (n = 0; n < noperands; n++)
 		operand_types[n] = itgtype;
 
-	jive_node_init_(&self->base, region,
+	jive_node_init_(self, region,
 		noperands, operand_types, operands,
 		1, &itgtype);
 }
@@ -61,10 +61,10 @@ jive_itgor_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
 	jive_itgor_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
-	node->base.class_ = &JIVE_ITGOR_NODE;
+	node->class_ = &JIVE_ITGOR_NODE;
 	jive_itgor_node_init_(node, region, noperands, operands);
 
-	return &node->base;
+	return node;
 }
 
 struct jive_output *

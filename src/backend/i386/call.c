@@ -20,13 +20,13 @@
 jive_node *
 jive_i386_call_node_substitute(jive_call_node * node)
 {
-	jive_region * region = node->base.region;
+	jive_region * region = node->region;
 	
-	size_t nargs = node->base.noperands - 1;
+	size_t nargs = node->noperands - 1;
 	
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
-	jive_output * address = node->base.inputs[0]->origin;
+	jive_output * address = node->inputs[0]->origin;
 	if (address->node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE) {
 		jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node);
 		jive_immediate imm;
@@ -65,7 +65,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	a pointer to the return value area as first (hidden) parameter */
 	size_t n, offset = 0;
 	for (n = 0; n < nargs; n++) {
-		jive_output * value = node->base.inputs[n + 1]->origin;
+		jive_output * value = node->inputs[n + 1]->origin;
 		
 		const jive_resource_class * value_cls = value->required_rescls;
 		const jive_type * value_type = jive_output_get_type(value);
@@ -80,7 +80,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		offset += 4;
 		
 		jive_node * split = jive_splitnode_create(
-			node->base.region,
+			node->region,
 			value_type, value, value_cls,
 			slot_type, slot_cls);
 		
@@ -92,11 +92,11 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	
 	if (node->attrs.nreturns == 1) {
 		/* FIXME: assumes  int32 */
-		jive_output_replace(node->base.outputs[0], clobber_eax);
+		jive_output_replace(node->outputs[0], clobber_eax);
 	}
 	
-	for (n = node->base.noperands; n < node->base.ninputs; n++) {
-		jive_input * orig_input = node->base.inputs[n];
+	for (n = node->noperands; n < node->ninputs; n++) {
+		jive_input * orig_input = node->inputs[n];
 		if (orig_input->gate) {
 			jive_node_gate_input(call_instr, orig_input->gate, orig_input->origin);
 		} else {
@@ -104,8 +104,8 @@ jive_i386_call_node_substitute(jive_call_node * node)
 			new_input->required_rescls = orig_input->required_rescls;
 		}
 	}
-	for (n = node->attrs.nreturns; n < node->base.noutputs; n++) {
-		jive_output * orig_output = node->base.outputs[n];
+	for (n = node->attrs.nreturns; n < node->noutputs; n++) {
+		jive_output * orig_output = node->outputs[n];
 		jive_output * new_output;
 		if (orig_output->gate) {
 			new_output = jive_node_gate_output(call_instr, orig_output->gate);

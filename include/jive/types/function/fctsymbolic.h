@@ -20,8 +20,7 @@ struct jive_symbolicfunction_node_attrs : public jive_node_attrs {
 	jive_function_type type;
 };
 
-struct jive_symbolicfunction_node {
-	jive_node base;
+struct jive_symbolicfunction_node : public jive_node {
 	jive_symbolicfunction_node_attrs attrs; 
 };
 

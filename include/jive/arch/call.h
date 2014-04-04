@@ -28,8 +28,7 @@ struct jive_call_node_attrs : public jive_node_attrs {
 	jive_type ** return_types;
 };
 
-struct jive_call_node {
-	jive_node base;
+struct jive_call_node : public jive_node {
 	jive_call_node_attrs attrs;
 };
 

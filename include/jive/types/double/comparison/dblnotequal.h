@@ -13,8 +13,7 @@ typedef struct jive_dblnotequal_node jive_dblnotequal_node;
 extern const jive_dblcomparison_operation_class JIVE_DBLNOTEQUAL_NODE_;
 #define JIVE_DBLNOTEQUAL_NODE (JIVE_DBLNOTEQUAL_NODE_.base.base)
 
-struct jive_dblnotequal_node {
-	jive_node base;
+struct jive_dblnotequal_node : public jive_node {
 };
 
 struct jive_output *

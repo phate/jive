@@ -13,8 +13,7 @@ typedef struct jive_rlquotient_node jive_rlquotient_node;
 extern const jive_rlbinary_operation_class JIVE_RLQUOTIENT_NODE_;
 #define JIVE_RLQUOTIENT_NODE (JIVE_RLQUOTIENT_NODE_.base.base)
 
-struct jive_rlquotient_node {
-	jive_node base;
+struct jive_rlquotient_node : public jive_node {
 };
 
 struct jive_output *

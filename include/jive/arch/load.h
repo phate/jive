@@ -69,8 +69,7 @@ struct jive_load_node_attrs : public jive_node_attrs {
 	struct jive_value_type * datatype;
 };
 
-struct jive_load_node {
-	jive_node base;
+struct jive_load_node : public jive_node {
 	jive_load_node_attrs attrs;
 };
 

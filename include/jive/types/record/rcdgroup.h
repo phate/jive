@@ -18,8 +18,7 @@ struct jive_group_node_attrs : public jive_node_attrs {
 	const jive_record_declaration * decl;
 };
 
-struct jive_group_node {
-	jive_node base;
+struct jive_group_node : public jive_node {
 	jive_group_node_attrs attrs;
 };
 

@@ -17,8 +17,7 @@ struct jive_dblconstant_node_attrs : public jive_node_attrs {
 	uint64_t value;
 };
 
-struct jive_dblconstant_node {
-	jive_node base;
+struct jive_dblconstant_node : public jive_node {
 	jive_dblconstant_node_attrs attrs;
 };
 
