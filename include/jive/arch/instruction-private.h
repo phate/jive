@@ -24,7 +24,4 @@ jive_instruction_node_create_(struct jive_region * region, const jive_node_attrs
 bool
 jive_instruction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
-const struct jive_resource_class *
-jive_instruction_node_get_aux_rescls_(const jive_node * self);
-
 #endif

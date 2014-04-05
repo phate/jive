@@ -25,7 +25,6 @@ const jive_dblbinary_operation_class JIVE_DBLSUM_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_dblbinary_operation_check_operands_, /* inherit */
 			create : jive_dblsum_node_create_, /* override */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
 		flags : jive_binary_operation_commutative,

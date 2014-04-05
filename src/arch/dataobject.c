@@ -227,7 +227,6 @@ const jive_node_class JIVE_DATAITEMS_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_dataitems_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static jive_node *
@@ -247,7 +246,6 @@ const jive_node_class JIVE_DATADEF_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_datadef_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static jive_node *
@@ -267,7 +265,6 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_dataobj_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 jive_node *

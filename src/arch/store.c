@@ -329,7 +329,6 @@ const jive_node_class JIVE_STORE_NODE = {
 	match_attrs : jive_store_node_match_attrs_, /* override */
 	check_operands : jive_store_node_check_operands_, /* override */
 	create : jive_store_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

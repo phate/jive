@@ -53,7 +53,6 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_lambda_enter_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* lambda leave node */
@@ -94,7 +93,6 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_lambda_leave_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* lambda node */
@@ -199,7 +197,6 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	match_attrs : jive_lambda_node_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_lambda_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 bool

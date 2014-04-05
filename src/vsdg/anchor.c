@@ -20,7 +20,6 @@ const jive_node_class JIVE_ANCHOR_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_node_create_, /* inherit */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* node class inhertiable methods */

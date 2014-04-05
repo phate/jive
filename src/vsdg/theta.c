@@ -75,7 +75,6 @@ const jive_node_class JIVE_THETA_HEAD_NODE = {
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_head_node_create_,  /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_THETA_TAIL_NODE = {
@@ -88,7 +87,6 @@ const jive_node_class JIVE_THETA_TAIL_NODE = {
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_tail_node_create_,  /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_THETA_NODE = {
@@ -101,7 +99,6 @@ const jive_node_class JIVE_THETA_NODE = {
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_node_create_,  /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 static jive_node *

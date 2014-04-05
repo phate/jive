@@ -43,7 +43,6 @@ const jive_rlbinary_operation_class JIVE_RLBINARY_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_rlbinary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
 		flags : jive_binary_operation_none,
@@ -80,7 +79,6 @@ const jive_rlunary_operation_class JIVE_RLUNARY_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_rlunary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
 		single_apply_over : NULL,
@@ -115,7 +113,6 @@ const jive_rlcomparison_operation_class JIVE_RLCOMPARISON_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_rlcomparison_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
 		flags : jive_binary_operation_none,

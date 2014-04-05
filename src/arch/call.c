@@ -35,7 +35,6 @@ const jive_node_class JIVE_CALL_NODE = {
 	match_attrs : jive_call_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_call_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

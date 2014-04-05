@@ -48,7 +48,6 @@ const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
 		match_attrs : jive_unify_node_match_attrs_, /* override */
 		check_operands : jive_unify_node_check_operands_, /* override */
 		create : jive_unify_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
 	single_apply_over : NULL,
@@ -174,7 +173,6 @@ const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
 	match_attrs : jive_empty_unify_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_empty_unify_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

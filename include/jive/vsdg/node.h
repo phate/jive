@@ -102,14 +102,6 @@ struct jive_node_class {
 	jive_node * (*create)(struct jive_region * region,
 		const jive_node_attrs * attrs,
 		size_t noperands, struct jive_output * const operands[]);
-	
-	/**
-		\brief Get auxiliary resource class
-		
-		Covers one corner case for two-operand architectures,
-		returns NULL otherwise.
-	*/
-	const struct jive_resource_class * (*get_aux_rescls)(const jive_node * self);
 };
 
 struct jive_tracker_nodestate {
@@ -157,12 +149,6 @@ jive_node_check_operands(const jive_node_class * cls, const jive_node_attrs * at
 	size_t noperands, jive_output * const operands[], jive_context * context)
 {
 	return cls->check_operands(cls, attrs, noperands, operands, context);
-}
-
-JIVE_EXPORTED_INLINE const struct jive_resource_class *
-jive_node_get_aux_rescls(const jive_node * self)
-{
-	return self->class_->get_aux_rescls(self);
 }
 
 struct jive_node *

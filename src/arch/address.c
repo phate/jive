@@ -58,7 +58,6 @@ const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
 		match_attrs : jive_memberof_node_match_attrs_, /* override */
 		check_operands : jive_memberof_node_check_operands_, /* override */
 		create : jive_memberof_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	single_apply_over : NULL,
@@ -222,7 +221,6 @@ const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
 		match_attrs : jive_containerof_node_match_attrs_, /* override */
 		check_operands : jive_containerof_node_check_operands_, /* override */
 		create : jive_containerof_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	single_apply_over : NULL,
@@ -384,7 +382,6 @@ const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_ = {
 		match_attrs : jive_arraysubscript_node_match_attrs_, /* override */
 		check_operands : jive_arraysubscript_node_check_operands_, /* override */
 		create : jive_arraysubscript_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	flags : jive_binary_operation_none,
@@ -567,7 +564,6 @@ const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_ = {
 		match_attrs : jive_arrayindex_node_match_attrs_, /* override */
 		check_operands : jive_arrayindex_node_check_operands_, /* inherit */
 		create : jive_arrayindex_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	flags : jive_binary_operation_none,
@@ -769,7 +765,6 @@ const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE = {
 	match_attrs : jive_label_to_address_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_label_to_address_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void
@@ -876,7 +871,6 @@ const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
 	match_attrs : jive_label_to_bitstring_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_label_to_bitstring_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

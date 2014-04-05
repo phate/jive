@@ -51,7 +51,6 @@ const jive_unary_operation_class JIVE_CHOOSE_NODE_ = {
 		match_attrs : jive_choose_node_match_attrs_, /* overrride */
 		check_operands : jive_choose_node_check_operands_, /* override */
 		create : jive_choose_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
 	single_apply_over : NULL,

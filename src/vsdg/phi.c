@@ -150,7 +150,6 @@ const jive_node_class JIVE_PHI_ENTER_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_phi_enter_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* phi leave node */
@@ -192,7 +191,6 @@ const jive_node_class JIVE_PHI_LEAVE_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_phi_leave_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* phi node */
@@ -215,7 +213,6 @@ const jive_node_class JIVE_PHI_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_phi_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 

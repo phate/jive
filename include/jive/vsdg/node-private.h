@@ -47,9 +47,6 @@ jive_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 bool
 jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other);
 
-const struct jive_resource_class *
-jive_node_get_aux_rescls_(const jive_node * self);
-
 /* private node member functions */
 
 jive_node *

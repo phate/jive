@@ -63,7 +63,6 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitbinary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		flags : jive_binary_operation_none,
@@ -99,7 +98,6 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitunary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		single_apply_over : NULL,
@@ -133,7 +131,6 @@ const jive_bitcomparison_operation_class JIVE_BITCOMPARISON_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitcomparison_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		flags : jive_binary_operation_none,

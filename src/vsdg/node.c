@@ -32,7 +32,6 @@ const jive_node_class JIVE_NODE = {
 	match_attrs : jive_node_match_attrs_,
 	check_operands : jive_node_check_operands_,
 	create : jive_node_create_,
-	get_aux_rescls : jive_node_get_aux_rescls_
 };
 
 static void
@@ -233,12 +232,6 @@ jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal
 	normal_form->class_ = &JIVE_NODE_NORMAL_FORM;
 	jive_node_normal_form_init_(normal_form, cls, parent, graph);
 	return normal_form;
-}
-
-const struct jive_resource_class *
-jive_node_get_aux_rescls_(const jive_node * self)
-{
-	return 0;
 }
 
 jive_node *

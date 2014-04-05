@@ -25,7 +25,6 @@ const jive_itgbinary_operation_class JIVE_ITGOR_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_itgbinary_operation_check_operands_, /* inherit */
 			create : jive_itgor_node_create_, /* override */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
 		flags : jive_binary_operation_associative | jive_binary_operation_commutative,

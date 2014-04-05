@@ -43,7 +43,6 @@ const jive_node_class JIVE_GROUP_NODE = {
 	match_attrs : jive_group_node_match_attrs_, /* override */
 	check_operands : jive_group_node_check_operands_, /* override */
 	create : jive_group_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

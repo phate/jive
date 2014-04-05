@@ -129,7 +129,6 @@ const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
 		match_attrs : jive_address_to_bitstring_node_match_attrs_, /* override */
 		check_operands : jive_address_to_bitstring_node_check_operands_, /* override */
 		create : jive_address_to_bitstring_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
 	single_apply_over : NULL,
@@ -332,7 +331,6 @@ const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
 		match_attrs : jive_bitstring_to_address_node_match_attrs_, /* override */
 		check_operands : jive_bitstring_to_address_node_check_operands_, /* override */
 		create : jive_bitstring_to_address_node_create_, /* override */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 
 	single_apply_over : NULL,

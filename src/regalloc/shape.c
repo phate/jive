@@ -5,6 +5,7 @@
 
 #include <jive/regalloc/shape.h>
 
+#include <jive/arch/instruction.h>
 #include <jive/common.h>
 #include <jive/regalloc/reroute.h>
 #include <jive/regalloc/selector.h>
@@ -14,6 +15,22 @@
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/splitnode.h>
+
+static const jive_resource_class *
+get_aux_rescls(const jive_node * node) {
+	if (node->class_ != &JIVE_INSTRUCTION_NODE) {
+		return nullptr;
+	}
+	const jive_instruction_node * inode =
+		static_cast<const jive_instruction_node *>(node);
+	if (inode->attrs.icls->flags & jive_instruction_commutative) {
+		return nullptr;
+	}
+	if (!(inode->attrs.icls->flags & jive_instruction_write_input)) {
+		return nullptr;
+	}
+	return &inode->attrs.icls->inregs[0]->base;
+}
 
 typedef struct jive_region_shaper jive_region_shaper;
 
@@ -174,7 +191,7 @@ check_crossing_overflow(jive_region_shaper * self,
 	
 	if (conflict.type == jive_regalloc_conflict_none && first_input_passthrough) {
 		const jive_resource_class * rescls, * overflow;
-		rescls = jive_node_get_aux_rescls(shaped_node->node);
+		rescls = get_aux_rescls(shaped_node->node);
 		overflow = jive_resource_class_count_check_add(&active_before.use_counts, rescls);
 		if (overflow) {
 			conflict.type = jive_regalloc_conflict_class;
@@ -277,7 +294,7 @@ check_unshaped_crossing_overflow(jive_region_shaper * self,
 	
 	if (conflict.type == jive_regalloc_conflict_none && first_input_active_after) {
 		const jive_resource_class * rescls, * overflow;
-		rescls = jive_node_get_aux_rescls(new_node);
+		rescls = get_aux_rescls(new_node);
 		overflow = jive_resource_class_count_check_add(&active_before.use_counts, rescls);
 		if (overflow) {
 			conflict.type = jive_regalloc_conflict_class;
@@ -661,7 +678,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 	if (node->ninputs) {
 		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, node->inputs[0]->ssavar);
 		if (jive_varcut_shaped_ssavar_is_active(&self->shaped_region->active_top.base, shaped_ssavar)) {
-			const jive_resource_class * aux_rescls = jive_node_get_aux_rescls(node);
+			const jive_resource_class * aux_rescls = get_aux_rescls(node);
 			
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_add(&active->use_counts, aux_rescls);

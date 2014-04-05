@@ -26,7 +26,6 @@ const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltbinary_operation_check_operands_, /* inherit */
 			create : jive_fltnegate_node_create_, /* overrride */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		
 		single_apply_over : NULL,

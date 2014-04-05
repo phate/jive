@@ -40,7 +40,6 @@ const jive_node_class JIVE_GRAPH_TAIL_NODE = {
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_graph_tail_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 /* graph */

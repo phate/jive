@@ -31,7 +31,6 @@ const jive_node_class JIVE_INSTRUCTION_NODE = {
 	match_attrs : jive_instruction_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_instruction_node_create_, /* override */
-	get_aux_rescls : jive_instruction_node_get_aux_rescls_, /* override */
 };
 
 void
@@ -117,16 +116,6 @@ jive_instruction_node_create_(jive_region * region, const jive_node_attrs * attr
 	jive_instruction_node_init_(other, region, attrs->icls, operands, operands + attrs->icls->ninputs);
 	
 	return other;
-}
-
-const struct jive_resource_class *
-jive_instruction_node_get_aux_rescls_(const jive_node * self_)
-{
-	const jive_instruction_node * self = (const jive_instruction_node *) self_;
-	
-	if (self->attrs.icls->flags & jive_instruction_commutative) return 0;
-	if (!(self->attrs.icls->flags & jive_instruction_write_input)) return 0;
-	return &self->attrs.icls->inregs[0]->base;
 }
 
 jive_node *

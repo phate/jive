@@ -41,7 +41,6 @@ const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
 	match_attrs : jive_symbolicfunction_node_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_symbolicfunction_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

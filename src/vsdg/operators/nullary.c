@@ -21,7 +21,6 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 	match_attrs : jive_node_match_attrs_,
 	check_operands : NULL,
 	create : jive_node_create_,
-	get_aux_rescls : jive_node_get_aux_rescls_
 };
 
 /* node class inheritable methods */

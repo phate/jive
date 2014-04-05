@@ -45,7 +45,6 @@ const jive_itgunary_operation_class JIVE_ITGUNARY_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_itgunary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		single_apply_over : NULL,
 		multi_apply_over : NULL,
@@ -76,7 +75,6 @@ const jive_itgbinary_operation_class JIVE_ITGBINARY_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_itgbinary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 		flags : jive_binary_operation_none,
 		single_apply_under : NULL,
@@ -111,7 +109,6 @@ const jive_itgcomparison_operation_class JIVE_ITGCOMPARISON_NODE_ = {
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_itgcomparison_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
-			get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 		},
 
 		flags : jive_binary_operation_none,

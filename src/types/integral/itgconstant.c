@@ -37,7 +37,6 @@ const jive_nullary_operation_class JIVE_ITGCONSTANT_NODE = {
 	match_attrs : jive_itgconstant_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_itgconstant_node_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 static void

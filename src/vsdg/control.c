@@ -82,7 +82,6 @@ const jive_node_class JIVE_CONTROL_FALSE_NODE = {
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_control_false_node_create_,  /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };
 
 const jive_node_class JIVE_CONTROL_TRUE_NODE = {
@@ -95,5 +94,4 @@ const jive_node_class JIVE_CONTROL_TRUE_NODE = {
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_control_true_node_create_,  /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_  /* inherit */
 };

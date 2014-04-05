@@ -23,7 +23,6 @@ const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 		match_attrs : jive_node_match_attrs_, /* inherit */
 		check_operands : NULL,
 		create : jive_node_create_, /* inherit */
-		get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 	},
 	
 	single_apply_over : NULL,

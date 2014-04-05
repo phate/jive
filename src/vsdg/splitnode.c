@@ -77,7 +77,6 @@ const jive_node_class JIVE_SPLITNODE = {
 	match_attrs : jive_splitnode_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_splitnode_create_, /* override */
-	get_aux_rescls : jive_node_get_aux_rescls_ /* inherit */
 };
 
 jive_node *
