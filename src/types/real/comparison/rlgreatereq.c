@@ -61,7 +61,7 @@ jive_rlgreatereq_node_create_(struct jive_region * region, const jive_node_attrs
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_rlgreatereq_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_rlgreatereq_node * node = new jive_rlgreatereq_node;
 	node->class_ = &JIVE_RLGREATEREQ_NODE;
 	jive_rlgreatereq_node_init_(node, region, operands[0], operands[1]);
 

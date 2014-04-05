@@ -61,7 +61,7 @@ jive_itgnotequal_node_create_(struct jive_region * region, const jive_node_attrs
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_itgnotequal_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_itgnotequal_node * node = new jive_itgnotequal_node;
 	node->class_ = &JIVE_ITGNOTEQUAL_NODE;
 	jive_itgnotequal_node_init_(node, region, operands[0], operands[1]);
 

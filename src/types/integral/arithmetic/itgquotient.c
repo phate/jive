@@ -60,7 +60,7 @@ jive_itgquotient_node_create_(jive_region * region, const jive_node_attrs * attr
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_itgquotient_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_itgquotient_node * node = new jive_itgquotient_node;
 	node->class_ = &JIVE_ITGQUOTIENT_NODE;
 	jive_itgquotient_node_init_(node, region, operands[0], operands[1]);
 

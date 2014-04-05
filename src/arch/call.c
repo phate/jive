@@ -151,7 +151,7 @@ jive_call_by_address_node_create(jive_region * region,
 	size_t narguments, jive_output * const arguments[],
 	size_t nreturns, const jive_type * const return_types[])
 {
-	jive_call_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_call_node * node = new jive_call_node;
 
 	node->class_ = &JIVE_CALL_NODE;
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
@@ -180,7 +180,7 @@ jive_call_by_bitstring_node_create(jive_region * region,
 	size_t narguments, jive_output * const arguments[],
 	size_t nreturns, const jive_type * const return_types[])
 {
-	jive_call_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_call_node * node = new jive_call_node;
 
 	node->class_ = &JIVE_CALL_NODE;
 	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);

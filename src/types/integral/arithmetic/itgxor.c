@@ -60,7 +60,7 @@ static jive_node *
 jive_itgxor_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
-	jive_itgxor_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_itgxor_node * node = new jive_itgxor_node;
 	node->class_ = &JIVE_ITGXOR_NODE;
 	jive_itgxor_node_init_(node, region, noperands, operands);
 

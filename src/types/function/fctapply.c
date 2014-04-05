@@ -77,7 +77,7 @@ jive_node *
 jive_apply_node_create(struct jive_region * region, jive_output * function,
 	size_t narguments, jive_output * const arguments[])
 {
-	jive_apply_node * node = jive_context_malloc(region->graph->context, sizeof( * node));
+	jive_apply_node * node = new jive_apply_node;
 
 	node->class_ = &JIVE_APPLY_NODE;
 	jive_apply_node_init_(node, region, function, narguments, arguments);

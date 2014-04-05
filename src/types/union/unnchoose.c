@@ -157,7 +157,7 @@ jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * at
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
 	const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *) attrs_;
-	jive_choose_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_choose_node * node = new jive_choose_node;
 	node->class_ = &JIVE_CHOOSE_NODE;
 	jive_choose_node_init_(node, region, attrs->element, operands[0]);
 

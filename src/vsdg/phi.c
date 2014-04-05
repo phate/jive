@@ -118,7 +118,7 @@ static jive_node *
 jive_phi_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_node * node = new jive_node;
 
 	node->class_ = &JIVE_PHI_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctltype);
@@ -160,7 +160,7 @@ jive_phi_leave_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top != NULL);
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
-	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_node * node = new jive_node;
 
 	node->class_ = &JIVE_PHI_LEAVE_NODE;
 	JIVE_DECLARE_ANCHOR_TYPE(anctype);
@@ -237,7 +237,7 @@ jive_phi_node_create_(struct jive_region * region, const jive_node_attrs * attrs
 	size_t noperands, struct jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));;
+	jive_node * self = new jive_node;;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, region,
@@ -251,7 +251,7 @@ static jive_node *
 jive_phi_node_create(jive_region * phi_region,
 	jive_output * phi_body)
 {
-	jive_phi_node * self = jive_context_malloc(phi_region->graph->context, sizeof(*self));;
+	jive_phi_node * self = new jive_phi_node;;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, phi_region,

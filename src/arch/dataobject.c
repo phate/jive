@@ -273,7 +273,7 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 jive_node *
 jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * const items[])
 {
-	jive_datadef_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_datadef_node * node = new jive_datadef_node;
 	
 	const jive_type * item_types[nitems];
 	size_t n;
@@ -293,7 +293,7 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 jive_node *
 jive_datadef_node_create(jive_region * region, jive_output * data)
 {
-	jive_datadef_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_datadef_node * node = new jive_datadef_node;
 	
 	node->class_ = &JIVE_DATADEF_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(data_type);
@@ -309,7 +309,7 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 jive_node *
 jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 {
-	jive_dataobj_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_dataobj_node * node = new jive_dataobj_node;
 	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	JIVE_DECLARE_STATE_TYPE(objstate_type);

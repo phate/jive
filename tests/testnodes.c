@@ -114,7 +114,7 @@ jive_test_node_create_(struct jive_region * region, const jive_node_attrs * attr
 	const jive_test_node_attrs * attrs = (const jive_test_node_attrs *)attrs_;
 	JIVE_DEBUG_ASSERT(noperands == attrs->noperands);
 
-	jive_test_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_test_node * node = new jive_test_node;
 	node->class_ = &JIVE_TEST_NODE;
 	jive_test_node_init_(node, region, attrs->noperands, attrs->operand_types, operands,
 		attrs->nresults, attrs->result_types);

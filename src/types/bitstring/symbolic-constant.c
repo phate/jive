@@ -102,7 +102,7 @@ jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 	size_t noperands, struct jive_output * const operands[])
 {
 	const jive_bitsymbolicconstant_node_attrs * attrs = (const jive_bitsymbolicconstant_node_attrs *) attrs_;
-	jive_bitsymbolicconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_bitsymbolicconstant_node * node = new jive_bitsymbolicconstant_node;
 	node->class_ = &JIVE_BITSYMBOLICCONSTANT_NODE;
 	jive_bitsymbolicconstant_node_init_(node, region, attrs->nbits, attrs->name);
 	return node;

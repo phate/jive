@@ -142,7 +142,7 @@ jive_rlconstant_node_create_(struct jive_region * region, const jive_node_attrs 
 {
 	const jive_rlconstant_node_attrs * attrs = (const jive_rlconstant_node_attrs *) attrs_;
 
-	jive_rlconstant_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_rlconstant_node * node = new jive_rlconstant_node;
 	node->class_ = &JIVE_RLCONSTANT_NODE;
 	jive_rlconstant_node_init_(node, region, attrs->sign, attrs->nnbits, attrs->numerator,
 		attrs->ndbits, attrs->denominator);

@@ -112,7 +112,7 @@ jive_instruction_node_create_(jive_region * region, const jive_node_attrs * attr
 {
 	const jive_instruction_node_attrs * attrs = (const jive_instruction_node_attrs *) attrs_;
 	
-	jive_instruction_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
+	jive_instruction_node * other = new jive_instruction_node;
 	other->class_ = &JIVE_INSTRUCTION_NODE;
 	jive_instruction_node_init_(other, region, attrs->icls, operands, operands + attrs->icls->ninputs);
 	
@@ -155,7 +155,7 @@ jive_instruction_node_create_extended(
 	for (n = 0; n < icls->nimmediates; ++n) {
 		immvalues[n] = jive_immediate_create(region->graph, &immediates[n]);
 	}
-	jive_instruction_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_instruction_node * node = new jive_instruction_node;
 	node->class_ = &JIVE_INSTRUCTION_NODE;
 	jive_instruction_node_init_(node, region, icls, operands, immvalues);
 	

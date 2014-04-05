@@ -53,7 +53,7 @@ jive_itgnot_node_create_(struct jive_region * region, const jive_node_attrs * at
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	jive_itgnot_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_itgnot_node * node = new jive_itgnot_node;
 	node->class_ = &JIVE_ITGNOT_NODE;
 	jive_itgnot_node_init_(node, region, operands[0]);
 	return node;

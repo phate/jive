@@ -52,7 +52,7 @@ jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_
 {
 	const jive_immediate_node_attrs * attrs = (const jive_immediate_node_attrs *) attrs_;
 	
-	jive_immediate_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_immediate_node * self = new jive_immediate_node;
 	JIVE_DECLARE_IMMEDIATE_TYPE(immediate_type);
 	const jive_type* tmparray0[] = {immediate_type};
 	jive_node_init_(self,

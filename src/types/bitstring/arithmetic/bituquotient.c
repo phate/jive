@@ -73,7 +73,7 @@ jive_bituquotient_create_(jive_region * region, const jive_node_attrs * attrs,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_node * node = new jive_node;
 	node->class_ = &JIVE_BITUQUOTIENT_NODE;
 	jive_bituquotient_node_init_(node, region, noperands, operands);
 

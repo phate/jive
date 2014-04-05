@@ -84,7 +84,7 @@ jive_sizeof_node_create(jive_region * region,
 	const jive_value_type * type)
 {
 	jive_context * context = region->graph->context;
-	jive_sizeof_node * node = jive_context_malloc(context, sizeof(*node));
+	jive_sizeof_node * node = new jive_sizeof_node;
 	
 	node->class_ = &JIVE_SIZEOF_NODE;
 	

@@ -152,7 +152,7 @@ negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 {
 	const negtestnode_attrs * attrs = (const negtestnode_attrs *) attrs_;
 	
-	negtestnode * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	negtestnode * node = new negtestnode;
 	node->class_ = &NEGTESTNODE;
 	const jive_type * operand_types[noperands];
 	size_t n;

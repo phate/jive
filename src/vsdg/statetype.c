@@ -214,7 +214,7 @@ jive_statemux_node_create(jive_region * region,
 	size_t noutputs)
 {
 	jive_context * context = region->graph->context;
-	jive_statemux_node * node = jive_context_malloc(context, sizeof(*node));
+	jive_statemux_node * node = new jive_statemux_node;
 	
 	node->class_ = &JIVE_STATEMUX_NODE;
 	JIVE_DEBUG_ASSERT(jive_type_isinstance(statetype, &JIVE_STATE_TYPE));

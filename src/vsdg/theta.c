@@ -22,7 +22,7 @@ static jive_node *
 jive_theta_head_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_node * self = new jive_node;
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
@@ -38,7 +38,7 @@ jive_theta_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 	size_t noperands, jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_node * self = new jive_node;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_TAIL_NODE;
@@ -55,7 +55,7 @@ jive_theta_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));;
+	jive_node * self = new jive_node;;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_THETA_NODE;
 	jive_node_init_(self, region,
@@ -107,7 +107,7 @@ const jive_node_class JIVE_THETA_NODE = {
 static jive_node *
 jive_theta_head_node_create(jive_region * region)
 {
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_node * self = new jive_node;
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
@@ -121,7 +121,7 @@ jive_theta_head_node_create(jive_region * region)
 static jive_node *
 jive_theta_tail_node_create(jive_region * region, jive_output * predicate)
 {
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_node * self = new jive_node;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_TAIL_NODE;
@@ -137,7 +137,7 @@ static jive_node *
 jive_theta_node_create(jive_region * region,
 	jive_output * loop_body)
 {
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));;
+	jive_node * self = new jive_node;;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_THETA_NODE;
 	jive_node_init_(self, region,

@@ -217,8 +217,7 @@ jive_address_to_bitstring_node_create_(struct jive_region * region, const jive_n
 	const jive_address_to_bitstring_node_attrs * attrs =
 		(const jive_address_to_bitstring_node_attrs *) attrs_;
 
-	jive_address_to_bitstring_node * node = jive_context_malloc(region->graph->context,
-		sizeof(*node));
+	jive_address_to_bitstring_node * node = new jive_address_to_bitstring_node;
 	node->class_ = &JIVE_ADDRESS_TO_BITSTRING_NODE;
 	jive_address_to_bitstring_node_init_(node, region, operands[0], attrs->nbits,
 		attrs->original_type);
@@ -416,8 +415,7 @@ jive_bitstring_to_address_node_create_(struct jive_region * region, const jive_n
 	const jive_bitstring_to_address_node_attrs * attrs =
 		(const jive_bitstring_to_address_node_attrs *) attrs_;
 
-	jive_bitstring_to_address_node * node = jive_context_malloc(region->graph->context,
-		sizeof(*node));
+	jive_bitstring_to_address_node * node = new jive_bitstring_to_address_node;
 	node->class_ = &JIVE_BITSTRING_TO_ADDRESS_NODE;
 	jive_bitstring_to_address_node_init_(node, region, operands[0], attrs->nbits,
 		attrs->original_type);

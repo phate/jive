@@ -457,7 +457,7 @@ jive_store_by_address_node_create(jive_region * region, jive_output * address,
 	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	jive_store_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_store_node * node = new jive_store_node;
 	
 	node->class_ = &JIVE_STORE_NODE;
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
@@ -490,7 +490,7 @@ jive_store_by_bitstring_node_create(jive_region * region,
 	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	jive_store_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_store_node * node = new jive_store_node;
 
 	node->class_ = &JIVE_STORE_NODE;
 	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);

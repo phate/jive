@@ -144,7 +144,7 @@ jive_memberof_node_create(jive_region * region,
 	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_context * context = region->graph->context;
-	jive_memberof_node * node = jive_context_malloc(context, sizeof(*node));
+	jive_memberof_node * node = new jive_memberof_node;
 	
 	node->class_ = &JIVE_MEMBEROF_NODE;
 	
@@ -308,7 +308,7 @@ jive_containerof_node_create(jive_region * region,
 	const jive_record_declaration * record_decl, size_t index)
 {
 	jive_context * context = region->graph->context;
-	jive_containerof_node * node = jive_context_malloc(context, sizeof(*node));
+	jive_containerof_node * node = new jive_containerof_node;
 	
 	node->class_ = &JIVE_CONTAINEROF_NODE;
 	
@@ -488,7 +488,7 @@ jive_arraysubscript_node_create(jive_region * region,
 	jive_output * address, const jive_value_type * element_type, jive_output * index)
 {
 	jive_context * context = region->graph->context;
-	jive_arraysubscript_node * node = jive_context_malloc(context, sizeof(*node));
+	jive_arraysubscript_node * node = new jive_arraysubscript_node;
 	
 	node->class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
 	
@@ -698,7 +698,7 @@ jive_arrayindex_node_create(jive_region * region,
 	const jive_value_type * element_type, const jive_type * difference_type)
 {
 	jive_context * context = region->graph->context;
-	jive_arrayindex_node * node = jive_context_malloc(context, sizeof(*node));
+	jive_arrayindex_node * node = new jive_arrayindex_node;
 	
 	node->class_ = &JIVE_ARRAYINDEX_NODE;
 	
@@ -835,7 +835,7 @@ jive_label_to_address_node_match_attrs_(const jive_node * self, const jive_node_
 jive_node *
 jive_label_to_address_node_create(struct jive_graph * graph, const jive_label * label)
 {
-	jive_label_to_address_node * node = jive_context_malloc(graph->context, sizeof(*node));
+	jive_label_to_address_node * node = new jive_label_to_address_node;
 	node->class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
 	jive_label_to_address_node_init_(node, graph, label);
 
@@ -944,7 +944,7 @@ jive_label_to_bitstring_node_match_attrs_(const jive_node * self, const jive_nod
 jive_node *
 jive_label_to_bitstring_node_create(struct jive_graph * graph, const jive_label * label, size_t nbits)
 {
-	jive_label_to_bitstring_node * node = jive_context_malloc(graph->context, sizeof(*node));
+	jive_label_to_bitstring_node * node = new jive_label_to_bitstring_node;
 	node->class_ = &JIVE_LABEL_TO_BITSTRING_NODE;
 	jive_label_to_bitstring_node_init_(node, graph, label, nbits);
 

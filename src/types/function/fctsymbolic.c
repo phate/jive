@@ -112,7 +112,7 @@ jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_
 jive_node *
 jive_symbolicfunction_node_create(struct jive_graph * graph, const char * name, const jive_function_type * type) 
 {
-	jive_symbolicfunction_node * node = jive_context_malloc(graph->context, sizeof(* node));
+	jive_symbolicfunction_node * node = new jive_symbolicfunction_node;
 	node->class_ = &JIVE_SYMBOLICFUNCTION_NODE;
 	jive_symbolicfunction_node_init_(node, graph, name, type);
 	return node;

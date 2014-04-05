@@ -98,7 +98,7 @@ jive_splitnode_create(jive_region * region,
 	
 	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph , &JIVE_SPLITNODE);
 	
-	jive_splitnode * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_splitnode * self = new jive_splitnode;
 	jive_splitnode_init_(self, region, in_type, in_origin, in_class, out_type, out_class);
 	
 	if (nf->enable_mutable && nf->enable_cse)

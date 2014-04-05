@@ -128,7 +128,7 @@ jive_node *
 jive_group_node_create(struct jive_region * region, const jive_record_declaration * decl,
 	size_t narguments, jive_output * const arguments[])
 {
-	jive_group_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_group_node * node = new jive_group_node;
 
 	node->class_ = &JIVE_GROUP_NODE;
 	jive_group_node_init_(node, region, decl, narguments, arguments);

@@ -319,7 +319,7 @@ jive_load_by_address_node_create(jive_region * region,
 	const jive_value_type * datatype,
 	size_t nstates, jive_output * const states[])
 {
-	jive_load_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_load_node * node = new jive_load_node;
 	
 	node->class_ = &JIVE_LOAD_NODE;
 	JIVE_DECLARE_ADDRESS_TYPE(address_type);
@@ -351,7 +351,7 @@ jive_load_by_bitstring_node_create(jive_region * region,
 	const jive_value_type * datatype,
 	size_t nstates, jive_output * const states[])
 {
-	jive_load_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_load_node * node = new jive_load_node;
 
 	node->class_ = &JIVE_LOAD_NODE;
 	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);

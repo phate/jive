@@ -54,7 +54,7 @@ jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs *
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	jive_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_node * node = new jive_node;
 	node->class_ = &JIVE_FLTNEGATE_NODE;
 	jive_fltnegate_node_init_(node, region, operands[0]);
 	return node;

@@ -210,7 +210,7 @@ jive_negotiator_split_node_create_(struct jive_region * region, const jive_node_
 {
 	const jive_negotiator_split_node_attrs * attrs = (const jive_negotiator_split_node_attrs *) attrs_;
 	
-	jive_negotiator_split_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_negotiator_split_node * node = new jive_negotiator_split_node;
 	node->class_ = &JIVE_NEGOTIATOR_SPLIT_NODE;
 	jive_negotiator_split_node_init_(node, attrs->negotiator, region,
 		jive_output_get_type(operands[0]), attrs->input_option, operands[0],

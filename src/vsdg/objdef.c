@@ -106,7 +106,7 @@ jive_objdef_node_create(
 	const struct jive_linker_symbol * symbol)
 {
 	jive_region * region = output->node->region;
-	jive_objdef_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_objdef_node * self = new jive_objdef_node;
 	self->class_ = &JIVE_OBJDEF_NODE;
 	jive_objdef_node_init_(self, region, output, name, symbol);
 	

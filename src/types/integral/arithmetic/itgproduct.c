@@ -61,7 +61,7 @@ static jive_node *
 jive_itgproduct_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
-	jive_itgproduct_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_itgproduct_node * node = new jive_itgproduct_node;
 	node->class_ = &JIVE_ITGPRODUCT_NODE;
 	jive_itgproduct_node_init_(node, region, noperands, operands);
 

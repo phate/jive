@@ -18,7 +18,7 @@
 jive_node *
 jive_control_false_create(jive_region * region)
 {
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_node * self = new jive_node;
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_CONTROL_FALSE_NODE;
 	jive_node_init_(self, region,
@@ -31,7 +31,7 @@ jive_control_false_create(jive_region * region)
 jive_node *
 jive_control_true_create(jive_region * region)
 {
-	jive_node * self = jive_context_malloc(region->graph->context, sizeof(*self));
+	jive_node * self = new jive_node;
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_CONTROL_TRUE_NODE;
 	jive_node_init_(self, region,

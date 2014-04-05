@@ -38,7 +38,7 @@ jive_node *
 jive_subroutine_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_subroutine_enter_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_subroutine_enter_node * node = new jive_subroutine_enter_node;
 	
 	node->class_ = &JIVE_SUBROUTINE_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
@@ -80,7 +80,7 @@ jive_node *
 jive_subroutine_leave_node_create(jive_region * region, jive_output * control_transfer)
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
-	jive_subroutine_leave_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_subroutine_leave_node * node = new jive_subroutine_leave_node;
 	
 	node->class_ = &JIVE_SUBROUTINE_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
@@ -177,7 +177,7 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 	jive_subroutine_enter_node * enter = (jive_subroutine_enter_node *) subroutine_region->top;
 	jive_subroutine_leave_node * leave = (jive_subroutine_leave_node *) subroutine_region->bottom;
 	
-	jive_subroutine_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_subroutine_node * node = new jive_subroutine_node;
 	
 	node->class_ = &JIVE_SUBROUTINE_NODE;
 	JIVE_DECLARE_STATE_TYPE(objstate_type);

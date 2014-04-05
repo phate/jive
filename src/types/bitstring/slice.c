@@ -125,7 +125,7 @@ jive_bitslice_node_create_(struct jive_region * region, const jive_node_attrs * 
 	
 	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
 	
-	jive_bitslice_node * node = jive_context_malloc(region->graph->context, sizeof(*node));
+	jive_bitslice_node * node = new jive_bitslice_node;
 	node->class_ = &JIVE_BITSLICE_NODE;
 	jive_bitslice_node_init_(node, region, operands[0], attrs->low, attrs->high);
 	return node;
