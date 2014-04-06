@@ -33,7 +33,13 @@ enum jive_traversal_nodestate;
 struct jive_resource_class_count;
 struct jive_substitution_map;
 
-struct jive_node {
+class jive_node {
+public:
+	virtual ~jive_node() noexcept;
+	
+	virtual const jive_node_attrs &
+	get_attrs() const noexcept;
+	
 	const struct jive_node_class * class_;
 	
 	struct jive_graph * graph;
@@ -73,7 +79,17 @@ struct jive_node {
 
 extern const jive_node_class JIVE_NODE;
 
+template<typename Attrs>
+class jive_make_node final : public jive_node {
+public:
+	jive_make_node(const Attrs & attributes) : attrs(attributes) {}
+	jive_make_node(Attrs && attributes) noexcept : attrs(attributes) {}
+
+	Attrs attrs;
+};
+
 struct jive_node_attrs {
+	virtual ~jive_node_attrs() noexcept;
 	/* empty, need override */
 };
 

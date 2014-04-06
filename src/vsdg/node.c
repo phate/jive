@@ -22,6 +22,16 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/variable.h>
 
+jive_node_attrs::~jive_node_attrs() noexcept {}
+
+jive_node::~jive_node() noexcept {}
+
+const jive_node_attrs &
+jive_node::get_attrs() const noexcept
+{
+	return *class_->get_attrs(this);
+}
+
 const jive_node_class JIVE_NODE = {
 	parent : 0,
 	name : "NODE",
