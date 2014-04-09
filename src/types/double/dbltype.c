@@ -57,13 +57,13 @@ jive_double_type_copy_(const jive_type * self_, jive_context * context)
 	const jive_double_type * self = (const jive_double_type *) self_;
 	jive_double_type * type = new jive_double_type;
 	*type = *self;
-	return &type->base.base;
+	return type;
 }
 
 static inline void
 jive_double_type_init_(jive_double_type * self)
 {
-	self->base.base.class_ = &JIVE_DOUBLE_TYPE;
+	self->class_ = &JIVE_DOUBLE_TYPE;
 }
 
 const jive_type_class JIVE_DOUBLE_TYPE = {
@@ -92,7 +92,7 @@ static const jive_type *
 jive_double_input_get_type_(const jive_input * self_)
 {
 	const jive_double_input * self = (const jive_double_input *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 const jive_input_class JIVE_DOUBLE_INPUT = {
@@ -116,7 +116,7 @@ static const jive_type *
 jive_double_output_get_type_(const jive_output * self_)
 {
 	const jive_double_output * self = (const jive_double_output *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 const jive_output_class JIVE_DOUBLE_OUTPUT = {
@@ -140,7 +140,7 @@ static const jive_type *
 jive_double_gate_get_type_(const jive_gate * self_)
 {
 	const jive_double_gate * self = (const jive_double_gate *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 const jive_gate_class JIVE_DOUBLE_GATE = {

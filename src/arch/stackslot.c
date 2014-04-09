@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -37,7 +37,7 @@ const jive_resource_class_class JIVE_STACK_CALLSLOT_RESOURCE = {
 };
 
 static const jive_resource_class_demotion no_demotion[] = {{NULL, NULL}};
-static const jive_memory_type stackvar_type = {{{&JIVE_MEMORY_TYPE}}};
+static const jive_memory_type stackvar_type;
 
 const jive_resource_class jive_root_stackslot_class = {
 	class_ : &JIVE_ABSTRACT_RESOURCE,
@@ -61,7 +61,7 @@ const jive_stackslot_size_class jive_stackslot_class_##SIZE##_##ALIGNMENT = { \
 		depth : 2, \
 		priority : jive_resource_class_priority_mem_generic,\
 		demotions : no_demotion, \
-		type : &stackvar_type.base.base \
+		type : &stackvar_type \
 	}, \
 	size : SIZE, \
 	alignment : ALIGNMENT \
@@ -110,7 +110,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 	cls->base.depth = cls->base.parent->depth + 1;
 	cls->base.priority = jive_resource_class_priority_mem_generic;
 	cls->base.demotions = no_demotion;
-	cls->base.type = &stackvar_type.base.base;
+	cls->base.type = &stackvar_type;
 	cls->size = size;
 	cls->alignment = alignment;
 	
@@ -155,7 +155,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	cls->base.base.depth = parent->base.depth + 1;
 	cls->base.base.priority = jive_resource_class_priority_mem_unique;
 	cls->base.base.demotions = no_demotion;
-	cls->base.base.type = &stackvar_type.base.base;
+	cls->base.base.type = &stackvar_type;
 	cls->base.size = parent->size;
 	cls->base.alignment = parent->alignment;
 	
@@ -199,7 +199,7 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	cls->base.base.depth = parent->base.depth + 1;
 	cls->base.base.priority = jive_resource_class_priority_mem_unique;
 	cls->base.base.demotions = no_demotion;
-	cls->base.base.type = &stackvar_type.base.base;
+	cls->base.base.type = &stackvar_type;
 	cls->base.size = parent->size;
 	cls->base.alignment = parent->alignment;
 	

@@ -14,10 +14,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/statetype-private.h>
 
-const jive_memory_type jive_memory_type_singleton = {
-	base : { base : { class_ : &JIVE_MEMORY_TYPE } }
-};
-
 static void
 jive_memory_input_init_(jive_memory_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
@@ -27,7 +23,8 @@ jive_memory_input_init_(jive_memory_input * self, struct jive_node * node, size_
 static const jive_type *
 jive_memory_input_get_type_(const jive_input * self)
 {
-	return &jive_memory_type_singleton.base.base;
+	static jive_memory_type memory_type; memory_type.class_ = &JIVE_MEMORY_TYPE;
+	return &memory_type;
 }
 
 static void
@@ -39,7 +36,8 @@ jive_memory_output_init_(jive_memory_output * self, struct jive_node * node, siz
 static const jive_type *
 jive_memory_output_get_type_(const jive_output * self)
 {
-	return &jive_memory_type_singleton.base.base;
+	static jive_memory_type memory_type; memory_type.class_ = &JIVE_MEMORY_TYPE;
+	return &memory_type;
 }
 
 static void
@@ -51,7 +49,8 @@ jive_memory_gate_init_(jive_memory_gate * self, struct jive_graph * graph, const
 static const jive_type *
 jive_memory_gate_get_type_(const jive_gate * self)
 {
-	return &jive_memory_type_singleton.base.base;
+	static jive_memory_type memory_type; memory_type.class_ = &JIVE_MEMORY_TYPE;
+	return &memory_type;
 }
 
 static jive_type *
@@ -60,10 +59,9 @@ jive_memory_type_copy_(const jive_type * self_, jive_context * context)
 	const jive_memory_type * self = (const jive_memory_type *) self_;
 	
 	jive_memory_type * type = new jive_memory_type;
+	type->class_ = &JIVE_MEMORY_TYPE;	
 	
-	type->base = self->base;
-	
-	return &type->base.base;
+	return type;
 }
 
 static jive_input *

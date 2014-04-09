@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -57,8 +57,8 @@ const jive_value_type *  tmparray0[] = {
 	jive_output * s3 = jive_sizeof_create(graph->root_region, (const jive_value_type *)bits18);
 	jive_output * s4 = jive_sizeof_create(graph->root_region, (const jive_value_type *)bits32);
 	jive_output * s5 = jive_sizeof_create(graph->root_region, (const jive_value_type *)addr);
-	jive_output * s6 = jive_sizeof_create(graph->root_region, &record_t.base);
-	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t.base);
+	jive_output * s6 = jive_sizeof_create(graph->root_region, &record_t);
+	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t);
 
 	assert(jive_node_match_attrs(s1->node, jive_node_get_attrs(s2->node)));
 	const jive_type *  tmparray2[] = {bits32, bits32, bits32, bits32, bits32, bits32, bits32, bits32};

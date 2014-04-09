@@ -107,7 +107,7 @@ jive_function_type_init(
 	for(i = 0; i < nreturns; i++)
 		self->return_types[i] = jive_type_copy(return_types[i], ctx);
 	
-	self->base.base.class_ = &JIVE_FUNCTION_TYPE;
+	self->class_ = &JIVE_FUNCTION_TYPE;
 	self->ctx = ctx;
 	self->nreturns = nreturns;
 	self->narguments = narguments;
@@ -124,7 +124,7 @@ jive_function_type * jive_function_type_create(jive_context * ctx,
 
 void jive_function_type_destroy(jive_function_type * type)
 {
-	jive_function_type_fini_(&type->base.base);
+	jive_function_type_fini_(type);
 	delete type;
 }
 
@@ -144,7 +144,7 @@ jive_function_type_fini(jive_function_type * self)
 	}
 	jive_context_free(self->ctx, self->return_types);
 	
-	jive_value_type_fini_(&self->base.base);
+	jive_value_type_fini_(self);
 }
 
 void
@@ -166,7 +166,7 @@ jive_function_type_copy_(const jive_type * self_, jive_context * ctx)
 		self->narguments, (const jive_type * const *) self->argument_types,
 		self->nreturns, (const jive_type * const *) self->return_types);
 	
-	return &type->base.base;
+	return type;
 }
 
 jive_input *
@@ -258,7 +258,7 @@ jive_function_input_get_type_(const jive_input * self_)
 {
 	const jive_function_input * self = (const jive_function_input *) self_;
 	
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* function_output inheritable members */
@@ -290,7 +290,7 @@ jive_function_output_get_type_(const jive_output * self_)
 {
 	const jive_function_output * self = (const jive_function_output *) self_;
 	
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* function_gate inheritable members */
@@ -321,5 +321,5 @@ jive_function_gate_get_type_(const jive_gate * self_)
 {
 	const jive_function_gate * self = (const jive_function_gate *) self_;
 	
-	return &self->type.base.base;
+	return &self->type;
 }

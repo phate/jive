@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,11 +14,10 @@ typedef struct jive_double_type jive_double_type;
 
 extern const jive_type_class JIVE_DOUBLE_TYPE;
 #define JIVE_DECLARE_DOUBLE_TYPE(name) \
-	const jive_double_type name##_struct = {{{&JIVE_DOUBLE_TYPE}}}; \
-	const jive_type * name = &name##_struct.base.base
+	jive_double_type name##_struct; name##_struct.class_ = &JIVE_DOUBLE_TYPE; \
+	const jive_type * name = &name##_struct
 
-struct jive_double_type {
-	jive_value_type base;
+struct jive_double_type : public jive_value_type {
 };
 
 JIVE_EXPORTED_INLINE const jive_double_type *

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -75,8 +75,8 @@ static const jive_resource_name * jive_testarch_regcls_cc_names [] = {
 #define STACK4 &jive_stackslot_class_4_4.base
 #define VIA (const jive_resource_class * const[])
 
-static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
-static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+static const jive_bitstring_type bits16(16);
+static const jive_bitstring_type bits32(32);
 const jive_resource_class_demotion  tmparray0[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}
@@ -90,7 +90,7 @@ const jive_register_class jive_testarch_regcls_r0 = {
 		parent : &jive_testarch_regcls_evenreg.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray0,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -106,7 +106,7 @@ const jive_register_class jive_testarch_regcls_r1 = {
 		parent : &jive_testarch_regcls_oddreg.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray1,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -122,7 +122,7 @@ const jive_register_class jive_testarch_regcls_r2 = {
 		parent : &jive_testarch_regcls_evenreg.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray2,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -138,7 +138,7 @@ const jive_register_class jive_testarch_regcls_r3 = {
 		parent : &jive_testarch_regcls_oddreg.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray3,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -154,7 +154,7 @@ const jive_register_class jive_testarch_regcls_evenreg = {
 		parent : &jive_testarch_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray4,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -170,7 +170,7 @@ const jive_register_class jive_testarch_regcls_oddreg = {
 		parent : &jive_testarch_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray5,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -186,7 +186,7 @@ const jive_register_class jive_testarch_regcls_gpr = {
 		parent : &jive_root_register_class, depth : 2,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray6,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32
 };
@@ -203,7 +203,7 @@ const jive_register_class jive_testarch_regcls_cc = {
 		parent : &jive_root_register_class, depth : 2,
 		priority : jive_resource_class_priority_reg_high,
 		demotions : tmparray7,
-		type : &bits16.base.base
+		type : &bits16
 	},
 	nbits : 32
 };

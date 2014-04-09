@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -141,9 +141,9 @@ static const jive_resource_name * jive_i386_regcls_sse_xmm7_names [] = {
 #define STACK4 &jive_stackslot_class_4_4.base
 #define VIA (const jive_resource_class * const[])
 
-static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
-static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
-static const jive_float_type flt = {{{&JIVE_FLOAT_TYPE}}};
+static const jive_bitstring_type bits16(16);
+static const jive_bitstring_type bits32(32);
+static const jive_float_type flt;
 const jive_resource_class_demotion  tmparray0[] = {
 			{CLS(gpr_eax), VIA {CLS(flags), CLS(gpr_eax), NULL}},
 			{STACK4, VIA {CLS(flags), CLS(gpr_eax), STACK4, NULL}},
@@ -158,7 +158,7 @@ const jive_register_class jive_i386_regcls_flags = {
 		parent : &jive_root_register_class, depth : 2,
 		priority : jive_resource_class_priority_reg_high,
 		demotions : tmparray0,
-		type : &bits16.base.base
+		type : &bits16
 	},
 	nbits : 16
 };
@@ -174,7 +174,7 @@ const jive_register_class jive_i386_regcls_gpr = {
 		parent : &jive_root_register_class, depth : 2,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray1,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -191,7 +191,7 @@ const jive_register_class jive_i386_regcls_gpr_byte = {
 		parent : &jive_i386_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray2,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -208,7 +208,7 @@ const jive_register_class jive_i386_regcls_gpr_eax = {
 		parent : &jive_i386_regcls_gpr_byte.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray3,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -225,7 +225,7 @@ const jive_register_class jive_i386_regcls_gpr_ecx = {
 		parent : &jive_i386_regcls_gpr_byte.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray4,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -242,7 +242,7 @@ const jive_register_class jive_i386_regcls_gpr_ebx = {
 		parent : &jive_i386_regcls_gpr_byte.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray5,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -259,7 +259,7 @@ const jive_register_class jive_i386_regcls_gpr_edx = {
 		parent : &jive_i386_regcls_gpr_byte.base, depth : 4,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray6,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -276,7 +276,7 @@ const jive_register_class jive_i386_regcls_gpr_esi = {
 		parent : &jive_i386_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray7,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -293,7 +293,7 @@ const jive_register_class jive_i386_regcls_gpr_edi = {
 		parent : &jive_i386_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray8,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -310,7 +310,7 @@ const jive_register_class jive_i386_regcls_gpr_esp = {
 		parent : &jive_i386_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray9,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -327,7 +327,7 @@ const jive_register_class jive_i386_regcls_gpr_ebp = {
 		parent : &jive_i386_regcls_gpr.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray10,
-		type : &bits32.base.base
+		type : &bits32
 	},
 	nbits : 32, int_arithmetic_width : 32, loadstore_width : 8|16|32
 };
@@ -344,7 +344,7 @@ const jive_register_class jive_i386_regcls_fp = {
 		parent : &jive_root_register_class, depth : 2,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray11,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 80, int_arithmetic_width : 80, loadstore_width : 80
 };
@@ -361,7 +361,7 @@ const jive_register_class jive_i386_regcls_fp_st0 = {
 		parent : &jive_i386_regcls_fp.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : tmparray12,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 80, int_arithmetic_width : 80, loadstore_width : 80
 };
@@ -374,7 +374,7 @@ const jive_register_class jive_i386_regcls_sse = {
 		parent : &jive_root_register_class, depth : 2,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -386,7 +386,7 @@ const jive_register_class jive_i386_regcls_sse_xmm0 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -398,7 +398,7 @@ const jive_register_class jive_i386_regcls_sse_xmm1 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -410,7 +410,7 @@ const jive_register_class jive_i386_regcls_sse_xmm2 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -422,7 +422,7 @@ const jive_register_class jive_i386_regcls_sse_xmm3 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -434,7 +434,7 @@ const jive_register_class jive_i386_regcls_sse_xmm4 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -446,7 +446,7 @@ const jive_register_class jive_i386_regcls_sse_xmm5 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -458,7 +458,7 @@ const jive_register_class jive_i386_regcls_sse_xmm6 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
@@ -470,7 +470,7 @@ const jive_register_class jive_i386_regcls_sse_xmm7 = {
 		parent : &jive_i386_regcls_sse.base, depth : 3,
 		priority : jive_resource_class_priority_reg_low,
 		demotions : NULL,
-		type : &flt.base.base
+		type : &flt
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };

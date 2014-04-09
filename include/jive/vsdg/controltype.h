@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,10 +15,11 @@ typedef struct jive_control_output jive_control_output;
 typedef struct jive_control_gate jive_control_gate;
 
 extern const jive_type_class JIVE_CONTROL_TYPE;
-#define JIVE_DECLARE_CONTROL_TYPE(name) const jive_control_type name##_struct = {{{&JIVE_CONTROL_TYPE}}}; const jive_type * name = &name##_struct.base.base
+#define JIVE_DECLARE_CONTROL_TYPE(name) \
+	jive_control_type name##_struct; name##_struct.class_ = &JIVE_CONTROL_TYPE; \
+	const jive_type * name = &name##_struct
 
-struct jive_control_type {
-	jive_state_type base;
+struct jive_control_type : public jive_state_type {
 };
 
 extern const jive_input_class JIVE_CONTROL_INPUT;

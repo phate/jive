@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,7 +35,7 @@ static int test_main(void)
 	const jive_type * tmparray2[] = {bits32, bits32};
 	jive_function_type_init(&ftype, ctx, 2, tmparray2, 1, &bits32);
 
-	assert(jive_type_equals(&ftype.base.base, jive_output_get_type(fct)));
+	assert(jive_type_equals(&ftype, jive_output_get_type(fct)));
 	
 	jive_function_type_fini(&ftype);
 	jive_graph_destroy(graph);

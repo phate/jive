@@ -90,7 +90,7 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 
 	const jive_union_type * operand_type = (const jive_union_type *)
 		jive_output_get_type(operand);
-	const jive_type * output_type = &operand_type->decl->elements[element]->base;
+	const jive_type * output_type = operand_type->decl->elements[element];
 	const jive_type *  tmparray0[] = {jive_output_get_type(operand)};
 	jive_node_init_(self, region,
 		1, tmparray0, &operand,

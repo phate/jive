@@ -88,7 +88,7 @@ const jive_gate_class JIVE_UNION_GATE = {
 void
 jive_union_type_init(jive_union_type * self, const jive_union_declaration * decl)
 {
-	self->base.base.class_ = &JIVE_UNION_TYPE;
+	self->class_ = &JIVE_UNION_TYPE;
 	self->decl = decl;
 }
 
@@ -103,7 +103,7 @@ jive_union_type_copy_(const jive_type * self_, jive_context * context)
 
 	jive_union_type_init(type, self->decl);
 
-	return &type->base.base;
+	return type;
 }
 
 jive_input *
@@ -169,7 +169,7 @@ jive_union_input_fini_(jive_input * self_)
 {
 	jive_union_input * self = (jive_union_input *) self_;
 
-	self->type.base.base.class_->fini(&self->type.base.base);
+	self->type.class_->fini(&self->type);
 	jive_input_fini_(&self->base.base);
 }
 
@@ -177,7 +177,7 @@ const jive_type *
 jive_union_input_get_type_(const jive_input * self_)
 {
 	const jive_union_input * self = (const jive_union_input *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* union_output inheritable members */
@@ -195,7 +195,7 @@ jive_union_output_fini_(jive_output * self_)
 {
 	jive_union_output * self = (jive_union_output *) self_;
 
-	self->type.base.base.class_->fini(&self->type.base.base);
+	self->type.class_->fini(&self->type);
 	jive_output_fini_(&self->base.base);
 }
 
@@ -204,7 +204,7 @@ jive_union_output_get_type_(const jive_output *self_)
 {
 	const jive_union_output * self = (const jive_union_output *) self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* union_gate inheritable members */
@@ -222,7 +222,7 @@ jive_union_gate_fini_(jive_gate * self_)
 {
 	jive_union_gate * self = (jive_union_gate *) self_;
 
-	self->type.base.base.class_->fini(&self->type.base.base);
+	jive_type_fini(&self->type);
 	jive_gate_fini_(&self->base.base);
 }
 
@@ -231,5 +231,5 @@ jive_union_gate_get_type_(const jive_gate * self_)
 {
 	const jive_union_gate * self = (const jive_union_gate *) self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }

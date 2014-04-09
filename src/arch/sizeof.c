@@ -47,8 +47,8 @@ static void
 jive_sizeof_node_fini_(jive_node * self_)
 {
 	jive_sizeof_node * self = (jive_sizeof_node *)self_;
-	
-	jive_type_destroy(&self->attrs.type->base, self_->graph->context);
+
+	jive_type_destroy(self->attrs.type, self_->graph->context);
 	jive_node_fini_(self);
 }
 
@@ -66,7 +66,7 @@ jive_sizeof_node_match_attrs_(const jive_node * self, const jive_node_attrs * se
 	const jive_sizeof_node_attrs * first = (const jive_sizeof_node_attrs *)jive_node_get_attrs(self);
 	const jive_sizeof_node_attrs * second = (const jive_sizeof_node_attrs *)second_;
 	
-	return jive_type_equals(&first->type->base, &second->type->base);
+	return jive_type_equals(first->type, second->type);
 }
 
 static jive_node *
@@ -95,7 +95,7 @@ jive_sizeof_node_create(jive_region * region,
 		0, NULL, NULL,
 		1, &btype);
 	
-	node->attrs.type = (jive_value_type *)jive_type_copy(&type->base, context);
+	node->attrs.type = (jive_value_type *)jive_type_copy(type, context);
 	
 	return node;
 }

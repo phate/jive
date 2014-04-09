@@ -120,7 +120,7 @@ jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
 	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	
-	const jive_type * function_type = &self->attrs.function_type.base.base;
+	const jive_type * function_type = &self->attrs.function_type;
 	jive_node_init_(self, region,
 		1, &anchor_type, &function_region->bottom->outputs[0],
 		1, &function_type);
@@ -177,7 +177,7 @@ jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 	const jive_lambda_node_attrs * first = &((const jive_lambda_node *)self)->attrs;
 	const jive_lambda_node_attrs * second = (const jive_lambda_node_attrs *) attrs;
 
-	if (!jive_type_equals(&first->function_type.base.base, &second->function_type.base.base)) return false;
+	if (!jive_type_equals(&first->function_type, &second->function_type)) return false;
 	size_t n;
 	for(n = 0; n < first->function_type.narguments; n++)
 		if (first->argument_gates[n] != second->argument_gates[n]) return false;
@@ -500,7 +500,7 @@ jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self)
 
 		jive_function_type * fcttype = jive_function_type_create(context,
 			nalive_parameters, alive_parameter_types, nalive_results, alive_result_types);
-		const jive_type * tmparray0[] = {&fcttype->base.base};
+		const jive_type * tmparray0[] = {fcttype};
 		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);
 		jive_function_type_destroy(fcttype);
 		embedded_in_phi = true;

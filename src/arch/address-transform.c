@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -72,7 +72,7 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 		jive_function_type_init(&return_type, context, narguments, argument_types, nresults,
 			result_types);
 
-		jive_type * new_fcttype = jive_type_copy(&return_type.base.base, context);
+		jive_type * new_fcttype = jive_type_copy(&return_type, context);
 
 		for (n = 0; n < narguments; n++)
 			jive_type_destroy((jive_type *)argument_types[n], context);
@@ -762,7 +762,7 @@ jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t 
 
 	const jive_function_type * fcttype = jive_function_type_const_cast(type);
 	jive_function_type * new_fcttype = (jive_function_type *) convert_address_to_bitstring_type(
-		&fcttype->base.base, nbits, context);
+		fcttype, nbits, context);
 
 	size_t n;
 	size_t nparameters = fcttype->narguments;
@@ -796,7 +796,7 @@ jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t 
 	jive_output * new_fct = jive_lambda_end(lambda, new_fcttype->nreturns,
 		(const jive_type **)new_fcttype->return_types, results);
 
-	jive_type_destroy(&new_fcttype->base.base, context);
+	jive_type_destroy(new_fcttype, context);
 	jive_output_replace(fct, jive_bitstring_to_address_create(new_fct, nbits, type));
 }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -43,12 +43,12 @@ static jive_record_declaration string_decl;
 static jive_output *
 make_string(jive_graph * graph, const char * txt)
 {
-	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
+	static const jive_bitstring_type bits8(8);
 	size_t len = strlen(txt), n;
 	
 	string_elements = malloc(sizeof(*string_elements) * len);
 	for (n = 0; n < len; n++) {
-		string_elements[n] = &bits8.base;
+		string_elements[n] = &bits8;
 	}
 	
 	string_decl.nelements = len;

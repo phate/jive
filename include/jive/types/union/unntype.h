@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,14 +23,14 @@ typedef struct jive_union_type jive_union_type;
 
 extern const jive_type_class JIVE_UNION_TYPE;
 
-struct jive_union_type {
-	jive_value_type base;
+struct jive_union_type : public jive_value_type {
 	const jive_union_declaration * decl;
 };
 
 #define JIVE_DECLARE_UNION_TYPE(name, decl) \
-	const jive_union_type name##_struct = {{{&JIVE_UNION_TYPE}}, decl}; \
-	const jive_type * name = &name##_struct.base.base
+	jive_union_type name##_struct; \
+	name##_struct.class_ = &JIVE_UNION_TYPE; name##_struct.decl = decl; \
+	const jive_type * name = &name##_struct
 
 void
 jive_union_type_init(jive_union_type * self, const jive_union_declaration * decl);

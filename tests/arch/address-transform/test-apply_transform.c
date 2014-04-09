@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -26,7 +26,7 @@ test_main(void)
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	jive_function_type * fcttype = jive_function_type_create(context, 1, &addrtype, 1, &addrtype);
-const jive_type * tmparray0[] = {&fcttype->base.base, addrtype};
+	const jive_type * tmparray0[] = {fcttype, addrtype};
 
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL, 2, tmparray0);

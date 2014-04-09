@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -55,7 +55,7 @@ jive_symbolicfunction_node_init_(
 		type->narguments, (const jive_type **) type->argument_types,
 		type->nreturns, (const jive_type **) type->return_types);
 
-	const jive_type * rtype = &type->base.base;
+	const jive_type * rtype = type;
 	jive_node_init_(node, graph->root_region,
 		0, NULL, NULL,
 		1, &rtype);
@@ -102,7 +102,7 @@ jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_
 	const jive_symbolicfunction_node_attrs * first = &((const jive_symbolicfunction_node *)self)->attrs;
 	const jive_symbolicfunction_node_attrs * second = (const jive_symbolicfunction_node_attrs *) attrs;
 
-	if (!jive_type_equals(&first->type.base.base, &second->type.base.base)) return false;
+	if (!jive_type_equals(&first->type, &second->type)) return false;
 	if (strcmp(first->name, second->name)) return false;
 
 	return true;

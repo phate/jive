@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,10 +13,6 @@
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
-
-static const jive_anchor_type jive_anchor_type_singleton = {
-	base : { class_ : &JIVE_ANCHOR_TYPE }
-};
 
 const jive_type_class JIVE_ANCHOR_TYPE = {
 	parent : &JIVE_TYPE,
@@ -83,7 +79,8 @@ jive_anchor_input_fini_(jive_input * self_)
 const jive_type *
 jive_anchor_input_get_type_(const jive_input * self)
 {
-	return &jive_anchor_type_singleton.base;
+	static jive_anchor_type anchor_type; anchor_type.class_ = &JIVE_ANCHOR_TYPE;
+	return &anchor_type;
 }
 
 void
@@ -95,5 +92,6 @@ jive_anchor_output_init_(jive_anchor_output * self, struct jive_node * node, siz
 const jive_type *
 jive_anchor_output_get_type_(const jive_output * self)
 {
-	return &jive_anchor_type_singleton.base;
+	static jive_anchor_type anchor_type; anchor_type.class_ = &JIVE_ANCHOR_TYPE;
+	return &anchor_type;
 }

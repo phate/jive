@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,8 +13,7 @@
 extern const jive_type_class JIVE_FUNCTION_TYPE;
 
 typedef struct jive_function_type jive_function_type;
-struct jive_function_type {
-	jive_value_type base;
+struct jive_function_type : public jive_value_type {
 	struct jive_context * ctx;
 	size_t nreturns;
 	jive_type ** return_types;

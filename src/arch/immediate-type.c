@@ -32,7 +32,7 @@ static const jive_type *
 jive_immediate_input_get_type_(const jive_input * self_)
 {
 	const jive_immediate_input * self = (const jive_immediate_input *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 const jive_input_class JIVE_IMMEDIATE_INPUT = {
@@ -55,7 +55,7 @@ static const jive_type *
 jive_immediate_output_get_type_(const jive_output * self_)
 {
 	const jive_immediate_output * self = (const jive_immediate_output *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 const jive_output_class JIVE_IMMEDIATE_OUTPUT = {
@@ -78,7 +78,7 @@ static const jive_type *
 jive_immediate_gate_get_type_(const jive_gate * self_)
 {
 	const jive_immediate_gate * self = (const jive_immediate_gate *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 const jive_gate_class JIVE_IMMEDIATE_GATE = {
@@ -95,7 +95,7 @@ jive_immediate_type_fini_( jive_type* self_ )
 {
 	jive_immediate_type* self = (jive_immediate_type*) self_ ;
 
-	jive_value_type_fini_( (jive_type*)&self->base ) ;
+	jive_value_type_fini_(self);
 }
 
 static void
@@ -140,13 +140,13 @@ jive_immediate_type_copy_(const jive_type * self_, jive_context * context)
 	
 	*type = *self;
 	
-	return &type->base.base;
+	return type;
 }
 
 static void
 jive_immediate_type_init_(jive_immediate_type * self)
 {
-	self->base.base.class_ = &JIVE_IMMEDIATE_TYPE;
+	self->class_ = &JIVE_IMMEDIATE_TYPE;
 }
 
 const jive_type_class JIVE_IMMEDIATE_TYPE = {

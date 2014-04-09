@@ -85,7 +85,7 @@ const jive_gate_class JIVE_ADDRESS_GATE = {
 void
 jive_address_type_init(jive_address_type * self)
 {
-	self->base.base.class_ = &JIVE_ADDRESS_TYPE;
+	self->class_ = &JIVE_ADDRESS_TYPE;
 }
 
 /* address_type inheritable members */
@@ -97,7 +97,7 @@ jive_address_type_copy_(const jive_type * self_, jive_context * context)
 
 	jive_address_type_init(type);
 
-	return &type->base.base;	
+	return type;
 }
 
 jive_input *
@@ -154,7 +154,7 @@ jive_address_input_fini_(jive_input * self_)
 {
 	jive_address_input * self = (jive_address_input *) self_;
 
-	self->type.base.base.class_->fini(&self->type.base.base);
+	self->type.class_->fini(&self->type);
 	jive_input_fini_(&self->base.base);
 }
 
@@ -162,7 +162,7 @@ const jive_type *
 jive_address_input_get_type_(const jive_input * self_)
 {
 	const jive_address_input * self = (const jive_address_input *)self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* address_output inheritable members */
@@ -180,7 +180,7 @@ jive_address_output_fini_(jive_output * self_)
 {
 	jive_address_output * self = (jive_address_output *)self_;
 
-	self->type.base.base.class_->fini(&self->type.base.base);
+	self->type.class_->fini(&self->type);
 	jive_output_fini_(&self->base.base);
 }
 
@@ -189,7 +189,7 @@ jive_address_output_get_type_(const jive_output * self_)
 {
 	const jive_address_output * self = (const jive_address_output *)self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /*address_gate inheritable members */
@@ -206,7 +206,7 @@ void jive_address_gate_fini_(jive_gate * self_)
 {
 	jive_address_gate * self = (jive_address_gate *)self_;
 
-	self->type.base.base.class_->fini(&self->type.base.base);
+	self->type.class_->fini(&self->type);
 	jive_gate_fini_(&self->base.base);	
 }
 
@@ -215,5 +215,5 @@ jive_address_gate_get_type_(const jive_gate * self_)
 {
 	const jive_address_gate * self = (const jive_address_gate *) self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }

@@ -25,30 +25,30 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 	
-	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
-	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
-	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+	static const jive_bitstring_type bits8(8);
+	static const jive_bitstring_type bits16(16);
+	static const jive_bitstring_type bits32(32);
 
-	static const jive_value_type * decl_elems[] = {&bits8.base, &bits16.base, &bits32.base};
+	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_record_declaration rcddecl = {3, decl_elems};
-	static const jive_record_type rcdtype = {{{&JIVE_RECORD_TYPE}}, &rcddecl};
+	static jive_record_type rcdtype; rcdtype.class_ = &JIVE_RECORD_TYPE; rcdtype.decl = &rcddecl;
 	
 	static const jive_union_declaration unndecl = {3, decl_elems};
-	static const jive_union_type unntype = {{{&JIVE_UNION_TYPE}}, &unndecl};
+	static jive_union_type unntype; unntype.class_ = &JIVE_UNION_TYPE; unntype.decl = &unndecl;
 
 	static const jive_union_declaration empty_unndecl = {0, NULL};
-	static const jive_union_type empty_unntype = {{{&JIVE_UNION_TYPE}}, &empty_unndecl};
+	static jive_union_type empty_unntype; empty_unntype.class_ = &JIVE_UNION_TYPE;
+		empty_unntype.decl = &empty_unndecl;
 
 	JIVE_DECLARE_MEMORY_TYPE(memtype);
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	const jive_type * tmparray0[] = {addrtype, memtype, &bits8.base.base, &bits16.base.base,
-			&bits32.base.base, memtype};
+	const jive_type * tmparray0[] = {addrtype, memtype, &bits8, &bits16, &bits32, memtype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
 
 	jive_output * state0;
-	jive_store_by_address_create(top->outputs[0], &bits32.base, top->outputs[4],
+	jive_store_by_address_create(top->outputs[0], &bits32, top->outputs[4],
 		1, &top->outputs[1], &state0);
 
 	jive_output * state1[2];
@@ -56,23 +56,23 @@ static int test_main(void)
 		top->outputs[3], top->outputs[4]};
 	jive_output * group = jive_group_create(&rcddecl, 3, tmparray1);
 	jive_output * tmparray2[] = {top->outputs[1], top->outputs[5]};
-	jive_store_by_address_create(top->outputs[0], &rcdtype.base, group,
+	jive_store_by_address_create(top->outputs[0], &rcdtype, group,
 		2, tmparray2, state1);
 
 	jive_output * state2;
 	jive_output * unify = jive_unify_create(&unndecl, 2, top->outputs[4]);
-	jive_store_by_address_create(top->outputs[0], &unntype.base, unify,
+	jive_store_by_address_create(top->outputs[0], &unntype, unify,
 		1, &top->outputs[1], &state2);
 
 	jive_output * state3;
-	jive_store_by_address_create(top->outputs[0], &bits32.base, top->outputs[4],
+	jive_store_by_address_create(top->outputs[0], &bits32, top->outputs[4],
 		1, &top->outputs[1], &state3);
-	jive_store_by_address_create(top->outputs[0], &bits32.base, top->outputs[4],
+	jive_store_by_address_create(top->outputs[0], &bits32, top->outputs[4],
 		1, &state3, &state3);
 
 	jive_output * state4;
 	unify = jive_empty_unify_create(graph, &empty_unndecl);
-	jive_store_by_address_create(top->outputs[0], &empty_unntype.base, unify,
+	jive_store_by_address_create(top->outputs[0], &empty_unntype, unify,
 		1, &top->outputs[1], &state4);
 const jive_type * tmparray3[] = {memtype, memtype, memtype, memtype, memtype, memtype};
 jive_output * tmparray4[] = {state0, state1[0], state1[1], state2, state3, state4};

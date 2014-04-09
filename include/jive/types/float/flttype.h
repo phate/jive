@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,11 +14,11 @@ typedef struct jive_float_type jive_float_type;
 
 extern const jive_type_class JIVE_FLOAT_TYPE;
 #define JIVE_DECLARE_FLOAT_TYPE(name) \
-	const jive_float_type name##_struct = {{{&JIVE_FLOAT_TYPE}}}; \
-	const jive_type * name = &name##_struct.base.base
+	jive_float_type name##_struct; name##_struct.class_ = &JIVE_FLOAT_TYPE; \
+	const jive_type * name = &name##_struct
 
-struct jive_float_type {
-	jive_value_type base;
+struct jive_float_type : public jive_value_type {
+	jive_float_type() { class_ = &JIVE_FLOAT_TYPE; }
 };
 
 JIVE_EXPORTED_INLINE const jive_float_type *

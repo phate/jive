@@ -21,17 +21,18 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 	
-	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
-	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
-	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
+	static const jive_bitstring_type bits8(8);
+	static const jive_bitstring_type bits16(16);
+	static const jive_bitstring_type bits32(32);
 
-	static const jive_value_type * decl_elems[] = {&bits8.base, &bits16.base, &bits32.base};
+	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_record_declaration decl = {3, decl_elems};
-	static const jive_record_type rcdtype = {{{&JIVE_RECORD_TYPE}}, &decl};
+	static jive_record_type rcdtype; rcdtype.class_ = &JIVE_RECORD_TYPE; rcdtype.decl = &decl;
 
 	static const jive_record_declaration decl_empty = {0, NULL};
-	static const jive_record_type rcdtype_empty = {{{&JIVE_RECORD_TYPE}}, &decl_empty};
-	const jive_type * tmparray0[] = {&bits8.base.base, &bits16.base.base, &bits32.base.base};
+	static jive_record_type rcdtype_empty; rcdtype_empty.class_ = &JIVE_RECORD_TYPE;
+		rcdtype_empty.decl = &decl_empty;
+	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
@@ -43,7 +44,7 @@ jive_output * tmparray1[] = {top->outputs[0],
 	jive_output * g1 = jive_empty_group_create(graph, &decl_empty);
 
 	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
-	const jive_type * tmparray2[] = {&rcdtype.base.base, &rcdtype_empty.base.base};
+	const jive_type * tmparray2[] = {&rcdtype, &rcdtype_empty};
 	jive_output * tmparray3[] = {g0, g1};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, tmparray2,

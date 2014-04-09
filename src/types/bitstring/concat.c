@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -28,13 +28,13 @@ jive_bitstring_multiop_node_init_(
 	size_t nbits)
 {
 	const jive_type * operand_types[noperands];
-	jive_bitstring_type operand_type_structs[noperands];
+	jive_bitstring_type * operand_type_structs[noperands];
 	size_t n;
 	
 	for(n=0; n<noperands; n++) {
-		operand_type_structs[n].base.base.class_ = &JIVE_BITSTRING_TYPE;
-		operand_type_structs[n].nbits = ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits;
-		operand_types[n] = &operand_type_structs[n].base.base;
+		size_t nbits = ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits;
+		operand_type_structs[n] = new jive_bitstring_type(nbits);
+		operand_types[n] = operand_type_structs[n];
 	}
 	
 	JIVE_DECLARE_BITSTRING_TYPE(output_type, nbits);
@@ -42,6 +42,9 @@ jive_bitstring_multiop_node_init_(
 	jive_node_init_(self, region,
 		noperands, operand_types, operands,
 		1, &output_type);
+
+	for (n = 0; n < noperands; n++)
+		delete operand_type_structs[n];
 }
 
 static void

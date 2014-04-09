@@ -81,13 +81,13 @@ jive_float_type_copy_(const jive_type * self_, jive_context * context)
 	const jive_float_type * self = (const jive_float_type *) self_;
 	jive_float_type * type = new jive_float_type;
 	*type = *self;
-	return &type->base.base;
+	return type;
 }
 
 static inline void
 jive_float_type_init_(jive_float_type * self)
 {
-	self->base.base.class_ = &JIVE_FLOAT_TYPE;
+	self->class_ = &JIVE_FLOAT_TYPE;
 }
 
 /* float_input inheritable members */
@@ -104,7 +104,7 @@ const jive_type *
 jive_float_input_get_type_(const jive_input * self_)
 {
 	const jive_float_input * self = (const jive_float_input *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* float_output inheritable members */
@@ -121,7 +121,7 @@ const jive_type *
 jive_float_output_get_type_(const jive_output * self_)
 {
 	const jive_float_output * self = (const jive_float_output *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* bitstring_gate inheritable members */
@@ -138,5 +138,5 @@ const jive_type *
 jive_float_gate_get_type_(const jive_gate * self_)
 {
 	const jive_float_gate * self = (const jive_float_gate *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }

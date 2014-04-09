@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -94,11 +94,11 @@ make_32bit_const(jive_graph * graph)
 static jive_output *
 make_record1(jive_graph * graph)
 {
-	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
-	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
-	static const jive_bitstring_type bits8 = {{{&JIVE_BITSTRING_TYPE}}, 8};
+	static const jive_bitstring_type bits32(32);
+	static const jive_bitstring_type bits16(16);
+	static const jive_bitstring_type bits8(8);
 	
-	static const jive_value_type * elements1[] = {&bits32.base, &bits16.base, &bits8.base};
+	static const jive_value_type * elements1[] = {&bits32, &bits16, &bits8};
 	static const jive_record_declaration decl = {
 		nelements : 3,
 		elements : elements1
@@ -115,17 +115,17 @@ make_record1(jive_graph * graph)
 static jive_output *
 make_record2(jive_graph * graph)
 {
-	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
-	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
+	static const jive_bitstring_type bits32(32);
+	static const jive_bitstring_type bits16(16);
 	
-	static const jive_value_type * elements1[] = {&bits16.base, &bits16.base};
+	static const jive_value_type * elements1[] = {&bits16, &bits16};
 	static const jive_record_declaration decl1 = {
 		nelements : 2,
 		elements : elements1
 	};
-	static const jive_record_type rec1 = {{{&JIVE_RECORD_TYPE}}, &decl1};
+	static jive_record_type rec1; rec1.class_ = &JIVE_RECORD_TYPE; rec1.decl = &decl1;
 	
-	static const jive_value_type * elements2[] = {&rec1.base, &bits32.base};
+	static const jive_value_type * elements2[] = {&rec1, &bits32};
 	static const jive_record_declaration decl2 = {
 		nelements : 2,
 		elements : elements2
@@ -144,10 +144,10 @@ make_record2(jive_graph * graph)
 static jive_output *
 make_union1(jive_graph * graph)
 {
-	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
-	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
+	static const jive_bitstring_type bits32(32);
+	static const jive_bitstring_type bits16(16);
 	
-	static const jive_value_type * elements1[] = {&bits16.base, &bits32.base};
+	static const jive_value_type * elements1[] = {&bits16, &bits32};
 	static const jive_union_declaration decl1 = {
 		nelements : 2,
 		elements : elements1,
@@ -161,10 +161,10 @@ make_union1(jive_graph * graph)
 static jive_output *
 make_union2(jive_graph * graph)
 {
-	static const jive_bitstring_type bits32 = {{{&JIVE_BITSTRING_TYPE}}, 32};
-	static const jive_bitstring_type bits16 = {{{&JIVE_BITSTRING_TYPE}}, 16};
+	static const jive_bitstring_type bits32(32);
+	static const jive_bitstring_type bits16(16);
 	
-	static const jive_value_type * elements1[] = {&bits16.base, &bits32.base};
+	static const jive_value_type * elements1[] = {&bits16, &bits32};
 	static const jive_union_declaration decl1 = {
 		nelements : 2,
 		elements : elements1,

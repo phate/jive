@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -79,7 +79,7 @@ jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_att
 
 	size_t n;
 	for (n = 0; n < noperands; n++) {
-		const jive_type * type = &attrs->decl->elements[n]->base;
+		const jive_type * type = attrs->decl->elements[n];
 		if (!jive_type_equals(type, jive_output_get_type(operands[n])))
 			jive_raise_type_error(type, jive_output_get_type(operands[n]), context);
 	}
@@ -107,18 +107,18 @@ jive_group_node_init_(jive_group_node * self,
 	size_t n;
 	const jive_type * arg_types[narguments];
 	for(n = 0; n < narguments; n++) {
-		arg_types[n] = &decl->elements[n]->base;
+		arg_types[n] = decl->elements[n];
 	}
 
 	jive_record_type type;
 	jive_record_type_init(&type, decl);
-	const jive_type * rtype = &type.base.base ;
+	const jive_type * rtype = &type ;
 
 	jive_node_init_(self, region,
 		narguments, arg_types, arguments,
 		1, &rtype);
 
-	type.base.base.class_->fini(&type.base.base);
+	type.class_->fini(&type);
 
 	self->attrs.decl = decl;
 }

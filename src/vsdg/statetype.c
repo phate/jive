@@ -14,10 +14,6 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-const jive_state_type jive_state_type_singleton = {
-	base : { class_ : &JIVE_STATE_TYPE }
-};
-
 const jive_type_class JIVE_STATE_TYPE = {
 	parent : &JIVE_TYPE,
 	name : "X",
@@ -52,10 +48,9 @@ const jive_gate_class JIVE_STATE_GATE = {
 };
 
 void
-jive_state_type_fini_(jive_type * self_)
+jive_state_type_fini_(jive_type * self)
 {
-	jive_state_type * self = (jive_state_type *) self_;
-	jive_type_fini_( &self->base ) ;
+	jive_type_fini_(self);
 }
 
 jive_type *
@@ -64,10 +59,9 @@ jive_state_type_copy_(const jive_type * self_, jive_context * context)
 	const jive_state_type * self = (const jive_state_type *) self_;
 	
 	jive_state_type * type = new jive_state_type;
+	type->class_ = &JIVE_STATE_TYPE;	
 	
-	type->base = self->base;
-	
-	return &type->base;
+	return type;
 }
 
 jive_input *
@@ -106,7 +100,8 @@ jive_state_input_init_(jive_state_input * self, struct jive_node * node, size_t 
 const jive_type *
 jive_state_input_get_type_(const jive_input * self)
 {
-	return &jive_state_type_singleton.base;
+	static jive_state_type state_type; state_type.class_ = &JIVE_STATE_TYPE;
+	return &state_type;
 }
 
 void
@@ -118,7 +113,8 @@ jive_state_output_init_(jive_state_output * self, struct jive_node * node, size_
 const jive_type *
 jive_state_output_get_type_(const jive_output * self)
 {
-	return &jive_state_type_singleton.base;
+	static jive_state_type state_type; state_type.class_ = &JIVE_STATE_TYPE;
+	return &state_type;
 }
 
 void
@@ -130,7 +126,8 @@ jive_state_gate_init_(jive_state_gate * self, struct jive_graph * graph, const c
 const jive_type *
 jive_state_gate_get_type_(const jive_gate * self)
 {
-	return &jive_state_type_singleton.base;
+	static jive_state_type state_type; state_type.class_ = &JIVE_STATE_TYPE;
+	return &state_type;
 }
 
 

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -42,10 +43,10 @@ const jive_type*  tmparray1[] = { btype0 };
 		2, tmparray6,
 		1, tmparray7 ) ;
 
-	assert( jive_type_equals( &type0->base.base, &type0->base.base ) ) ;
-	assert( jive_type_equals( &type0->base.base, &type1->base.base ) ) ;
-	assert( !jive_type_equals( &type0->base.base, &type2->base.base ) ) ;
-	assert( !jive_type_equals( &type0->base.base, &type3->base.base ) ) ;
+	assert( jive_type_equals( type0, type0 ) ) ;
+	assert( jive_type_equals( type0, type1 ) ) ;
+	assert( !jive_type_equals( type0, type2 ) ) ;
+	assert( !jive_type_equals( type0, type3 ) ) ;
 	
 	jive_function_type_destroy( type0 ) ;
 	jive_function_type_destroy( type1 ) ;

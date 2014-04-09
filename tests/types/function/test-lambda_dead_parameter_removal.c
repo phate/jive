@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -70,7 +70,7 @@ const jive_type * tmparray8[] = {vtype, vtype};
 		3, tmparray7, 2, tmparray8);
 
 	jive_phi phi = jive_phi_begin(graph);
-	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, &fcttype->base.base);
+	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, fcttype);
 const jive_type * tmparray9[] = {vtype, vtype, vtype};
 const char * tmparray10[] = {"x", "y", "z"};
 

@@ -136,11 +136,9 @@ jive_bitstring_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	
-	jive_bitstring_type * type = new jive_bitstring_type;
+	jive_bitstring_type * type = new jive_bitstring_type(self->nbits);
 	
-	*type = *self;
-	
-	return &type->base.base;
+	return type;
 }
 
 static bool
@@ -157,7 +155,7 @@ jive_bitstring_type_equals_(const jive_type * self_, const jive_type * other_)
 static inline void
 jive_bitstring_type_init_(jive_bitstring_type * self, size_t nbits)
 {
-	self->base.base.class_ = &JIVE_BITSTRING_TYPE;
+	self->class_ = &JIVE_BITSTRING_TYPE;
 	self->nbits = nbits;
 }
 
@@ -175,7 +173,7 @@ static const jive_type *
 jive_bitstring_input_get_type_(const jive_input * self_)
 {
 	const jive_bitstring_input * self = (const jive_bitstring_input *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* bitstring_output inheritable members */
@@ -193,7 +191,7 @@ static const jive_type *
 jive_bitstring_output_get_type_(const jive_output * self_)
 {
 	const jive_bitstring_output * self = (const jive_bitstring_output *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* bitstring_gate inheritable members */
@@ -211,5 +209,5 @@ static const jive_type *
 jive_bitstring_gate_get_type_(const jive_gate * self_)
 {
 	const jive_bitstring_gate * self = (const jive_bitstring_gate *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }

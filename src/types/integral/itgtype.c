@@ -85,14 +85,14 @@ const jive_gate_class JIVE_INTEGRAL_GATE = {
 static inline void
 jive_integral_type_init_(jive_integral_type * self)
 {
-	self->base.base.class_ = &JIVE_INTEGRAL_TYPE;
+	self->class_ = &JIVE_INTEGRAL_TYPE;
 }
 
 static void
 jive_integral_type_fini_(jive_type * self_)
 {
 	jive_integral_type * self = (jive_integral_type *) self_;
-	jive_value_type_fini_(&self->base.base);
+	jive_value_type_fini_(self);
 }
 
 static jive_type *
@@ -100,9 +100,9 @@ jive_integral_type_copy_(const jive_type * self_, struct jive_context * context)
 {
 	const jive_integral_type * self = (const jive_integral_type *) self_;
 	jive_integral_type * type = new jive_integral_type;
-	type->base = self->base;
+	type->class_ = &JIVE_INTEGRAL_TYPE;
 
-	return &type->base.base;
+	return type;
 }
 
 static jive_input *
@@ -152,7 +152,7 @@ jive_integral_input_get_type_(const jive_input * self_)
 {
 	const jive_integral_input * self = (const jive_integral_input *) self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* integral_output members */
@@ -170,7 +170,7 @@ jive_integral_output_get_type_(const jive_output * self_)
 {
 	const jive_integral_output * self = (const jive_integral_output *) self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }
 
 /* integral_gate members */
@@ -189,5 +189,5 @@ jive_integral_gate_get_type_(const jive_gate * self_)
 {
 	const jive_integral_gate * self = (const jive_integral_gate *) self_;
 
-	return &self->type.base.base;
+	return &self->type;
 }

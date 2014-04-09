@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -154,7 +154,7 @@ typedef struct jive_arrayindex_node jive_arrayindex_node;
 
 struct jive_arrayindex_node_attrs : public jive_node_attrs {
 	jive_value_type * element_type; /* note: dynamically allocated */
-	jive_bitstring_type difference_type;
+	jive_bitstring_type * difference_type;
 };
 
 struct jive_arrayindex_node : public jive_node {

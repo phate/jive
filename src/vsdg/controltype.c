@@ -15,10 +15,6 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/statetype-private.h>
 
-static const jive_control_type jive_control_type_singleton = {
-	base : { base : { class_ : &JIVE_CONTROL_TYPE } }
-};
-
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand);
 
@@ -114,8 +110,8 @@ static jive_type *
 jive_control_type_copy_(const jive_type * self, jive_context * ctx)
 {
 	jive_control_type * other = new jive_control_type;
-	*other = jive_control_type_singleton;
-	return &other->base.base;
+	other->class_ = &JIVE_CONTROL_TYPE;
+	return other;
 }
 
 static void
@@ -127,7 +123,8 @@ jive_control_input_init_(jive_control_input * self, jive_node * node, size_t ind
 static const jive_type *
 jive_control_input_get_type_(const jive_input * self)
 {
-	return &jive_control_type_singleton.base.base;
+	static jive_control_type control_type; control_type.class_ = &JIVE_CONTROL_TYPE;
+	return &control_type;
 }
 
 static void
@@ -139,7 +136,8 @@ jive_control_output_init_(jive_control_output * self, jive_node * node, size_t i
 static const jive_type *
 jive_control_output_get_type_(const jive_output * self)
 {
-	return &jive_control_type_singleton.base.base;
+	static jive_control_type control_type; control_type.class_ = &JIVE_CONTROL_TYPE;
+	return &control_type;
 }
 
 static void
@@ -151,5 +149,6 @@ jive_control_gate_init_(jive_control_gate * self, struct jive_graph * graph, con
 static const jive_type *
 jive_control_gate_get_type_(const jive_gate * self)
 {
-	return &jive_control_type_singleton.base.base;
+	static jive_control_type control_type; control_type.class_ = &JIVE_CONTROL_TYPE;
+	return &control_type;
 }

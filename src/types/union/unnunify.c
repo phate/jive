@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -91,7 +91,7 @@ jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	if (attrs->option >= attrs->decl->nelements)
 		jive_context_fatal_error(context, "Type mismatch: invalid option for union type");
 
-	const jive_type * type = &attrs->decl->elements[attrs->option]->base;
+	const jive_type * type = attrs->decl->elements[attrs->option];
 	if (!jive_type_equals(type, jive_output_get_type(operands[0])))
 		jive_raise_type_error(type, jive_output_get_type(operands[0]), context);
 }
@@ -115,7 +115,7 @@ jive_unify_node_init_(jive_unify_node * self,
 			"Type mismatch: invalid option for union type");
 	}
 	
-	const jive_type * arg_type = &decl->elements[option]->base;
+	const jive_type * arg_type = decl->elements[option];
 	
 	JIVE_DECLARE_UNION_TYPE(type, decl);
 	

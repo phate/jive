@@ -337,7 +337,7 @@ jive_store_node_fini_(jive_node * self_)
 	jive_context * context = self_->graph->context;
 	jive_store_node * self = (jive_store_node *) self_;
 
-	jive_type_destroy(&self->attrs.datatype->base, context);
+	jive_type_destroy(self->attrs.datatype, context);
 	
 	jive_node_fini_(self);
 }
@@ -368,7 +368,7 @@ jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * at
 {
 	const jive_store_node * self = (const jive_store_node *) self_;
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
-	bool dtype = jive_type_equals(&self->attrs.datatype->base, &attrs->datatype->base);
+	bool dtype = jive_type_equals(self->attrs.datatype, attrs->datatype);
 	return (dtype && (self->attrs.nbits == attrs->nbits));
 }
 
@@ -412,14 +412,13 @@ jive_store_node_init_(jive_store_node * self, jive_region * region,
 	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	const jive_type * operand_types[2] = {address_type, &datatype->base};
+	const jive_type * operand_types[2] = {address_type, datatype};
 	jive_output * operands[2] = {address, value};
 	
 	jive_node_init_(self, region,
 		2, operand_types, operands,
 		0, NULL);
-	self->attrs.datatype = (jive_value_type *) jive_type_copy(&datatype->base,
-		region->graph->context);
+	self->attrs.datatype = (jive_value_type *) jive_type_copy(datatype, region->graph->context);
 	self->attrs.nbits = 0;
 	if (jive_type_isinstance(address_type, &JIVE_BITSTRING_TYPE)) {
 		const jive_bitstring_type * btype = (const jive_bitstring_type *) address_type;

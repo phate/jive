@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -17,10 +18,11 @@ typedef struct jive_state_gate jive_state_gate;
 typedef struct jive_state_resource jive_state_resource;
 
 extern const jive_type_class JIVE_STATE_TYPE;
-#define JIVE_DECLARE_STATE_TYPE(name) const jive_state_type name##_struct = {{&JIVE_STATE_TYPE}}; const jive_type * name = &name##_struct.base
+#define JIVE_DECLARE_STATE_TYPE(name) \
+	jive_state_type name##_struct; name##_struct.class_ = &JIVE_STATE_TYPE; \
+	const jive_type * name = &name##_struct
 
-struct jive_state_type {
-	jive_type base;
+struct jive_state_type : public jive_type {
 };
 
 extern const jive_input_class JIVE_STATE_INPUT;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,11 +14,11 @@ typedef struct jive_bitstring_type jive_bitstring_type;
 
 extern const jive_type_class JIVE_BITSTRING_TYPE;
 #define JIVE_DECLARE_BITSTRING_TYPE(name, nbits) \
-	const jive_bitstring_type name##_struct = {{{&JIVE_BITSTRING_TYPE}}, nbits}; \
-	const jive_type * name = &name##_struct.base.base
+	jive_bitstring_type name##_struct(nbits); \
+	const jive_type * name = &name##_struct
 
-struct jive_bitstring_type {
-	jive_value_type base;
+struct jive_bitstring_type : public jive_value_type {
+	jive_bitstring_type(size_t nbits_) : nbits(nbits_) { class_ = &JIVE_BITSTRING_TYPE; }
 	size_t nbits;
 };
 

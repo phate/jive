@@ -31,10 +31,12 @@ typedef struct jive_reuse_gate jive_reuse_gate;
 typedef struct jive_reuse_resource jive_reuse_resource;
 
 extern const jive_type_class JIVE_REUSE_TYPE;
-#define JIVE_DECLARE_REUSE_TYPE(name_, resname) const jive_reuse_type name_##_struct = {{{&JIVE_REUSE_TYPE}}, resname}; const jive_type * name_ = &name_##_struct.base.base
+#define JIVE_DECLARE_REUSE_TYPE(name_, resname) \
+	jive_reuse_type name_##_struct; \
+	name_##_struct.class_ = &JIVE_REUSE_TYPE; name_##_struct.name = resname; \
+	const jive_type * name_ = &name_##_struct
 
-struct jive_reuse_type {
-	jive_state_type base;
+struct jive_reuse_type : public jive_state_type {
 	const jive_resource_name * name;
 };
 
@@ -59,7 +61,7 @@ struct jive_reuse_gate {
 static void
 jive_reuse_type_init_(jive_reuse_type * self, const jive_resource_name * name)
 {
-	self->base.base.class_ = &JIVE_REUSE_TYPE;
+	self->class_ = &JIVE_REUSE_TYPE;
 	self->name = name;
 }
 
@@ -75,7 +77,7 @@ static const jive_type *
 jive_reuse_input_get_type_(const jive_input * self_)
 {
 	const jive_reuse_input * self = (const jive_reuse_input *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 static void
@@ -89,7 +91,7 @@ static const jive_type *
 jive_reuse_output_get_type_(const jive_output * self_)
 {
 	const jive_reuse_output * self = (const jive_reuse_output *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 void
@@ -103,7 +105,7 @@ const jive_type *
 jive_reuse_gate_get_type_(const jive_gate * self_)
 {
 	const jive_reuse_gate * self = (const jive_reuse_gate *) self_;
-	return &self->type.base.base;
+	return &self->type;
 }
 
 static jive_type *
@@ -115,7 +117,7 @@ jive_reuse_type_copy_(const jive_type * self_, jive_context * context)
 	
 	jive_reuse_type_init_(type, self->name);
 	
-	return &type->base.base;
+	return type;
 }
 
 static void

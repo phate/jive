@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -31,9 +31,9 @@ static int test_main()
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fns[3];
-	fns[0] = jive_phi_fixvar_enter(phi, &f0type->base.base);
-	fns[1] = jive_phi_fixvar_enter(phi, &f1type->base.base);
-	fns[2] = jive_phi_fixvar_enter(phi, &f2type->base.base);
+	fns[0] = jive_phi_fixvar_enter(phi, f0type);
+	fns[1] = jive_phi_fixvar_enter(phi, f1type);
+	fns[2] = jive_phi_fixvar_enter(phi, f2type);
 
 	jive_lambda * l0 = jive_lambda_begin(graph, 0, NULL, NULL);
 	jive_lambda * l1 = jive_lambda_begin(graph, 0, NULL, NULL);
@@ -55,7 +55,7 @@ static int test_main()
 	jive_phi_end(phi, 3, fns);
 
 	jive_output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
-const jive_type * tmparray2[] = {&f0type->base.base, &f1type->base.base, &f2type->base.base};
+	const jive_type * tmparray2[] = {f0type, f1type, f2type};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2, results,

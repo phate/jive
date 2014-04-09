@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,11 +14,10 @@ typedef struct jive_real_type jive_real_type;
 
 extern const jive_type_class JIVE_REAL_TYPE;
 #define JIVE_DECLARE_REAL_TYPE(name) \
-	const jive_real_type name##_struct = {{{&JIVE_REAL_TYPE}}}; \
-	const jive_type * name = &name##_struct.base.base
+	jive_real_type name##_struct; name##_struct.class_ = &JIVE_REAL_TYPE; \
+	const jive_type * name = &name##_struct
 
-struct jive_real_type {
-	jive_value_type base;
+struct jive_real_type : public jive_value_type {
 };
 
 JIVE_EXPORTED_INLINE struct jive_real_type *

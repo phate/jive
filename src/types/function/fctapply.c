@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -59,7 +59,7 @@ jive_apply_node_init_(
 	jive_output * args[narguments+1];
 	const jive_type * argument_types[narguments+1];
 	args[0] = function;
-	argument_types[0] = &fct->type.base.base; 
+	argument_types[0] = &fct->type;
  
 	size_t i;
 	for(i = 0; i < fct->type.narguments; i++){

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,8 +24,8 @@ static int test_main(void)
 	jive_function_type_init(&t1, context,
 		1, tmparray0,
 		1, tmparray1);
-	const jive_type * tmparray2[] = {&t1.base.base};
-	const jive_type * tmparray3[] = {&t1.base.base};
+	const jive_type * tmparray2[] = {&t1};
+	const jive_type * tmparray3[] = {&t1};
 	
 	jive_function_type_init(&t2, context,
 		1, tmparray2,

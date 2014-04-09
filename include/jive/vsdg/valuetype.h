@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -16,10 +16,11 @@ typedef struct jive_value_output jive_value_output;
 typedef struct jive_value_gate jive_value_gate;
 
 extern const jive_type_class JIVE_VALUE_TYPE;
-#define JIVE_DECLARE_VALUE_TYPE(name) const jive_value_type name##_struct = {{&JIVE_VALUE_TYPE}}; const jive_type * name = &name##_struct.base
+#define JIVE_DECLARE_VALUE_TYPE(name) \
+	jive_value_type name##_struct; name##_struct.class_ = &JIVE_VALUE_TYPE; \
+	const jive_type * name = &name##_struct
 
-struct jive_value_type {
-	jive_type base;
+struct jive_value_type : public jive_type {
 };
 
 extern const jive_input_class JIVE_VALUE_INPUT;

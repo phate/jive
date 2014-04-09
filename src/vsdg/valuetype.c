@@ -14,10 +14,6 @@
 
 #include <jive/util/list.h>
 
-static const jive_value_type jive_value_type_singleton = {
-	base : {class_ : &JIVE_VALUE_TYPE}
-};
-
 const jive_type_class JIVE_VALUE_TYPE = {
 	parent : &JIVE_TYPE,
 	name : "X",
@@ -52,10 +48,9 @@ const jive_gate_class JIVE_VALUE_GATE = {
 };
 
 void
-jive_value_type_fini_(jive_type * self_)
+jive_value_type_fini_(jive_type * self)
 {
-	jive_value_type * self = (jive_value_type *) self_;
-	jive_type_fini_( &self->base ) ;
+	jive_type_fini_(self);
 }
 
 jive_type *
@@ -64,10 +59,9 @@ jive_value_type_copy_(const jive_type * self_, jive_context * context)
 	const jive_value_type * self = (const jive_value_type *) self_;
 	
 	jive_value_type * type = new jive_value_type;
+	type->class_ = &JIVE_VALUE_TYPE;	
 	
-	type->base = self->base;
-	
-	return &type->base;
+	return type;
 } 
 
 jive_input *
@@ -108,7 +102,8 @@ jive_value_input_init_(jive_value_input * self, struct jive_node * node, size_t 
 const jive_type *
 jive_value_input_get_type_(const jive_input * self)
 {
-	return &jive_value_type_singleton.base;
+	static jive_value_type value_type; value_type.class_ = &JIVE_VALUE_TYPE;
+	return &value_type;
 }
 
 /* value outputs */
@@ -122,7 +117,8 @@ jive_value_output_init_(jive_value_output * self, struct jive_node * node, size_
 const jive_type *
 jive_value_output_get_type_(const jive_output * self)
 {
-	return &jive_value_type_singleton.base;
+	static jive_value_type value_type; value_type.class_ = &JIVE_VALUE_TYPE;
+	return &value_type;
 }
 
 /* value gates */
@@ -136,5 +132,6 @@ jive_value_gate_init_(jive_value_gate * self, struct jive_graph * graph, const c
 const jive_type *
 jive_value_gate_get_type_(const jive_gate * self)
 {
-	return &jive_value_type_singleton.base;
+	static jive_value_type value_type; value_type.class_ = &JIVE_VALUE_TYPE;
+	return &value_type;
 }
