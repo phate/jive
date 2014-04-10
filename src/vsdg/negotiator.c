@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -165,8 +166,7 @@ jive_negotiator_split_node_fini_(jive_node * self_)
 	jive_negotiator_split_node_detach(self);
 	
 	jive_context * context = self->region->graph->context;
-	jive_type_fini(self->attrs.output_type);
-	jive_context_free(context, self->attrs.output_type);
+	jive_type_destroy(self->attrs.output_type, context);
 	
 	jive_node_fini_(self_);
 }

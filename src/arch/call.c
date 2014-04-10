@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 Nico 2014 Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -45,8 +45,7 @@ jive_call_node_fini_(jive_node * self_)
 	
 	size_t n;
 	for (n = 0; n < self->attrs.nreturns; n++) {
-		jive_type_fini(self->attrs.return_types[n]);
-		jive_context_free(context, self->attrs.return_types[n]);
+		jive_type_destroy(self->attrs.return_types[n], context);
 	}
 	
 	jive_context_free(context, self->attrs.return_types);

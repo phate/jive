@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -136,7 +136,7 @@ jive_bitstring_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	
-	jive_bitstring_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_bitstring_type * type = new jive_bitstring_type;
 	
 	*type = *self;
 	

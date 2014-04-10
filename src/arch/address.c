@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -398,8 +398,7 @@ static void
 jive_arraysubscript_node_fini_(jive_node * self_)
 {
 	jive_arraysubscript_node * self = (jive_arraysubscript_node *) self_;
-	jive_type_fini(&self->attrs.element_type->base);
-	jive_context_free(self->graph->context, self->attrs.element_type);
+	jive_type_destroy(&self->attrs.element_type->base, self_->graph->context);
 	jive_node_fini_(self);
 }
 
@@ -580,8 +579,7 @@ static void
 jive_arrayindex_node_fini_(jive_node * self_)
 {
 	jive_arrayindex_node * self = (jive_arrayindex_node *) self_;
-	jive_type_fini(&self->attrs.element_type->base);
-	jive_context_free(self->graph->context, self->attrs.element_type);
+	jive_type_destroy(&self->attrs.element_type->base, self_->graph->context);
 	jive_node_fini_(self);
 }
 

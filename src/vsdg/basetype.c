@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -121,7 +121,7 @@ void
 jive_type_destroy(struct jive_type * self, struct jive_context * context)
 {
 	jive_type_fini(self);
-	jive_context_free(context, self);
+	delete self;
 }
 
 /* inputs */

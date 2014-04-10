@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -99,7 +99,7 @@ jive_union_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
 
-	jive_union_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_union_type * type = new jive_union_type;
 
 	jive_union_type_init(type, self->decl);
 

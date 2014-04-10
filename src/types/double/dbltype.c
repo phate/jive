@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -55,7 +55,7 @@ static jive_type *
 jive_double_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_double_type * self = (const jive_double_type *) self_;
-	jive_double_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_double_type * type = new jive_double_type;
 	*type = *self;
 	return &type->base.base;
 }

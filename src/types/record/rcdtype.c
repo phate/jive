@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -100,7 +100,7 @@ jive_record_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_record_type * self = (const jive_record_type *) self_;
 
-	jive_record_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_record_type * type = new jive_record_type;
 
 	jive_record_type_init(type, self->decl);
 

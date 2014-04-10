@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -48,7 +48,7 @@ jive_sizeof_node_fini_(jive_node * self_)
 {
 	jive_sizeof_node * self = (jive_sizeof_node *)self_;
 	
-	jive_context_free(self_->graph->context, self->attrs.type);
+	jive_type_destroy(&self->attrs.type->base, self_->graph->context);
 	jive_node_fini_(self);
 }
 

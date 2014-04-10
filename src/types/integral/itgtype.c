@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -99,7 +99,7 @@ static jive_type *
 jive_integral_type_copy_(const jive_type * self_, struct jive_context * context)
 {
 	const jive_integral_type * self = (const jive_integral_type *) self_;
-	jive_integral_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_integral_type * type = new jive_integral_type;
 	type->base = self->base;
 
 	return &type->base.base;

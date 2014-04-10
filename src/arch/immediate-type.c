@@ -1,5 +1,6 @@
 /*
  * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -135,7 +136,7 @@ jive_immediate_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_immediate_type * self = (const jive_immediate_type *) self_;
 	
-	jive_immediate_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_immediate_type * type = new jive_immediate_type;
 	
 	*type = *self;
 	

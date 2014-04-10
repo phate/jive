@@ -336,9 +336,8 @@ jive_store_node_fini_(jive_node * self_)
 {
 	jive_context * context = self_->graph->context;
 	jive_store_node * self = (jive_store_node *) self_;
-	
-	jive_type_fini(&self->attrs.datatype->base);
-	jive_context_free(context, self->attrs.datatype);
+
+	jive_type_destroy(&self->attrs.datatype->base, context);
 	
 	jive_node_fini_(self);
 }

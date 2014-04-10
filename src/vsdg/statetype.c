@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -63,7 +63,7 @@ jive_state_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_state_type * self = (const jive_state_type *) self_;
 	
-	jive_state_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_state_type * type = new jive_state_type;
 	
 	type->base = self->base;
 	
@@ -176,9 +176,8 @@ jive_statemux_node_fini_(jive_node * self_)
 {
 	jive_context * context = self_->graph->context;
 	jive_statemux_node * self = (jive_statemux_node *) self_;
-	
-	jive_type_fini(self->attrs.type);
-	jive_context_free(context, self->attrs.type);
+
+	jive_type_destroy(self->attrs.type, context);
 	
 	jive_node_fini_(self);
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -110,7 +111,7 @@ jive_reuse_type_copy_(const jive_type * self_, jive_context * context)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	
-	jive_reuse_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_reuse_type * type = new jive_reuse_type;
 	
 	jive_reuse_type_init_(type, self->name);
 	

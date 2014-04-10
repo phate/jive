@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -113,7 +113,7 @@ jive_control_type_create_gate_(const jive_type * self, struct jive_graph * graph
 static jive_type *
 jive_control_type_copy_(const jive_type * self, jive_context * ctx)
 {
-	jive_control_type * other = jive_context_malloc(ctx, sizeof(*other));
+	jive_control_type * other = new jive_control_type;
 	*other = jive_control_type_singleton;
 	return &other->base.base;
 }

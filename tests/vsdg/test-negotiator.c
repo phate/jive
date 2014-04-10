@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -125,8 +125,7 @@ negtestnode_fini_(jive_node * self_)
 	jive_context_free(context, self->attrs.output_options);
 	size_t n;
 	for (n = 0; n < self->attrs.noutputs; n++) {
-		jive_type_fini(self->attrs.output_types[n]);
-		jive_context_free(context, self->attrs.output_types[n]);
+		jive_type_destroy(self->attrs.output_types[n], context);
 	}
 	jive_context_free(context, self->attrs.output_types);
 	jive_node_fini_(self_);

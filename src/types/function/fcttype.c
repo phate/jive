@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -117,7 +117,7 @@ jive_function_type * jive_function_type_create(jive_context * ctx,
 	size_t narguments, const jive_type * const argument_types[],
 	size_t nreturns, const jive_type * const return_types[])
 {
-	jive_function_type * type = jive_context_malloc(ctx, sizeof(*type));
+	jive_function_type * type = new jive_function_type;
 	jive_function_type_init(type, ctx, narguments, argument_types, nreturns, return_types);
 	return type;
 }
@@ -125,7 +125,7 @@ jive_function_type * jive_function_type_create(jive_context * ctx,
 void jive_function_type_destroy(jive_function_type * type)
 {
 	jive_function_type_fini_(&type->base.base);
-	jive_context_free(type->ctx, type);
+	delete type;
 }
 
 /* function_type inheritable members */
@@ -135,14 +135,12 @@ jive_function_type_fini(jive_function_type * self)
 {
 	size_t i;
 	for(i = 0; i < self->narguments; i++){
-		jive_type_fini(self->argument_types[i]);
-		jive_context_free(self->ctx, self->argument_types[i]);
+		jive_type_destroy(self->argument_types[i], self->ctx);
 	}
 	jive_context_free(self->ctx, self->argument_types);
 	
 	for(i = 0; i < self->nreturns; i++){
-		jive_type_fini(self->return_types[i]);
-		jive_context_free(self->ctx, self->return_types[i]);
+		jive_type_destroy(self->return_types[i], self->ctx);
 	}
 	jive_context_free(self->ctx, self->return_types);
 	
@@ -162,7 +160,7 @@ jive_function_type_copy_(const jive_type * self_, jive_context * ctx)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	
-	jive_function_type * type = jive_context_malloc(ctx, sizeof( *type));
+	jive_function_type * type = new jive_function_type;
 	
 	jive_function_type_init(type, ctx,
 		self->narguments, (const jive_type * const *) self->argument_types,

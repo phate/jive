@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -130,8 +131,7 @@ verify_deserialize_type(const char * repr, const jive_type * expect_type)
 	jive_type * type;
 	assert(jive_deserialize_type(&ctx.drv, ctx.is, &type));
 	assert(jive_type_equals(type, expect_type));
-	jive_type_fini(type);
-	jive_context_free(ctx.ctx, type);
+	jive_type_destroy(type, ctx.ctx);
 	
 	deserialize_ctx_fini(&ctx);
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -172,8 +173,7 @@ jive_deserialize_type(jive_serialization_driver * self,
 	
 	if (!jive_deserialize_char_token(self, is, '>')) {
 		if (*type) {
-			jive_type_fini(*type);
-			jive_context_free(self->context, *type);
+			jive_type_destroy(*type, self->context);
 		}
 		return false;
 	}
@@ -259,9 +259,8 @@ jive_deserialize_gateexpr(jive_serialization_driver * self,
 	}
 	*gate = jive_type_create_gate(type, graph, name);
 	(*gate)->required_rescls = rescls;
-	
-	jive_type_fini(type);
-	jive_context_free(self->context, type);
+
+	jive_type_destroy(type, self->context);
 	jive_context_free(self->context, name);
 	
 	return true;

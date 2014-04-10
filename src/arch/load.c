@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -204,9 +204,8 @@ jive_load_node_fini_(jive_node * self_)
 {
 	jive_context * context = self_->graph->context;
 	jive_load_node * self = (jive_load_node *) self_;
-	
-	jive_type_fini(&self->attrs.datatype->base);
-	jive_context_free(context, self->attrs.datatype);
+
+	jive_type_destroy(&self->attrs.datatype->base, context);
 	
 	jive_node_fini_(self);
 }

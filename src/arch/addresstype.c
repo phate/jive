@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -93,7 +93,7 @@ jive_address_type_init(jive_address_type * self)
 jive_type *
 jive_address_type_copy_(const jive_type * self_, jive_context * context)
 {
-	jive_address_type * type = jive_context_malloc(context, sizeof(*type));
+	jive_address_type * type = new jive_address_type;
 
 	jive_address_type_init(type);
 
