@@ -61,9 +61,9 @@ jive_output *
 jive_float_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	jive_float_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_FLOAT_OUTPUT;
+	output->class_ = &JIVE_FLOAT_OUTPUT;
 	jive_float_output_init_(output, node, index);
-	return &output->base.base;
+	return output;
 }
 
 jive_gate *
@@ -112,8 +112,8 @@ jive_float_input_get_type_(const jive_input * self_)
 void
 jive_float_output_init_(jive_float_output * self, struct jive_node * node, size_t index)
 {
-	self->base.base.class_ = &JIVE_FLOAT_OUTPUT;
-	jive_value_output_init_(&self->base, node, index);
+	self->class_ = &JIVE_FLOAT_OUTPUT;
+	jive_value_output_init_(self, node, index);
 	jive_float_type_init_(&self->type);
 }
 

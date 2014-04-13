@@ -115,9 +115,9 @@ jive_bitstring_type_create_output_(const jive_type * self_, struct jive_node * n
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	jive_bitstring_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_BITSTRING_OUTPUT;
+	output->class_ = &JIVE_BITSTRING_OUTPUT;
 	jive_bitstring_output_init_(output, self->nbits, node, index);
-	return &output->base.base;
+	return output;
 }
 
 static jive_gate *
@@ -182,8 +182,8 @@ static void
 jive_bitstring_output_init_(jive_bitstring_output * self, size_t nbits, struct jive_node * node,
 	size_t index)
 {
-	self->base.base.class_ = &JIVE_BITSTRING_OUTPUT;
-	jive_value_output_init_(&self->base, node, index);
+	self->class_ = &JIVE_BITSTRING_OUTPUT;
+	jive_value_output_init_(self, node, index);
 	jive_bitstring_type_init_(&self->type, nbits);
 }
 

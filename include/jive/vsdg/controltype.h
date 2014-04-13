@@ -27,8 +27,7 @@ struct jive_control_input : public jive_state_input {
 };
 
 extern const jive_output_class JIVE_CONTROL_OUTPUT;
-struct jive_control_output {
-	jive_state_output base;
+struct jive_control_output : public jive_state_output {
 	bool active;
 };
 

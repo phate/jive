@@ -73,8 +73,7 @@ jive_address_input_cast(jive_input * self)
 typedef struct jive_address_output jive_address_output;
 
 extern const jive_output_class JIVE_ADDRESS_OUTPUT;
-struct jive_address_output {
-	jive_value_output base;
+struct jive_address_output : public jive_value_output {
 	jive_address_type type;
 };
 

@@ -71,8 +71,7 @@ jive_float_input_cast(jive_input * self)
 typedef struct jive_float_output jive_float_output;
 
 extern const jive_output_class JIVE_FLOAT_OUTPUT;
-struct jive_float_output {
-	jive_value_output base;
+struct jive_float_output : public jive_value_output {
 	jive_float_type type;
 };
 

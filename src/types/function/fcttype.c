@@ -187,10 +187,10 @@ jive_function_type_create_output_(const jive_type * self_, struct jive_node * no
 	const jive_function_type * self = (const jive_function_type *) self_;
 	jive_function_output * output = jive_context_malloc(node->graph->context, sizeof( *output));
 	
-	output->base.base.class_ = &JIVE_FUNCTION_OUTPUT;
+	output->class_ = &JIVE_FUNCTION_OUTPUT;
 	jive_function_output_init_(output, self, node, index);
 	
-	return &output->base.base;
+	return output;
 }
 
 bool
@@ -267,7 +267,7 @@ void
 jive_function_output_init_(jive_function_output * self, const jive_function_type * type,
   struct jive_node * node, size_t index)
 {
-	jive_value_output_init_(&self->base, node, index);
+	jive_value_output_init_(self, node, index);
 	
 	jive_function_type_init(&self->type, 
 		node->graph->context,
@@ -282,7 +282,7 @@ jive_function_output_fini_(jive_output * self_)
 	
 	jive_function_type_fini(&self->type);
 	
-	jive_output_fini_(&self->base.base);
+	jive_output_fini_(self);
 }
 
 const jive_type *

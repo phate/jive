@@ -89,8 +89,7 @@ jive_function_input_const_cast(const struct jive_input * input)
 extern const jive_output_class JIVE_FUNCTION_OUTPUT;
 
 typedef struct jive_function_output jive_function_output;
-struct jive_function_output {
-	jive_value_output base;
+struct jive_function_output : public jive_value_output {
 	jive_function_type type;
 };
 

@@ -28,8 +28,7 @@ struct jive_value_input : public jive_input {
 };
 
 extern const jive_output_class JIVE_VALUE_OUTPUT;
-struct jive_value_output {
-	jive_output base;
+struct jive_value_output : public jive_output {
 };
 
 extern const jive_gate_class JIVE_VALUE_GATE;

@@ -37,9 +37,9 @@ static jive_output *
 jive_double_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	jive_double_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_DOUBLE_OUTPUT;
+	output->class_ = &JIVE_DOUBLE_OUTPUT;
 	jive_double_output_init_(output, node, index);
-	return &output->base.base;
+	return output;
 }
 
 static jive_gate *
@@ -107,8 +107,8 @@ const jive_input_class JIVE_DOUBLE_INPUT = {
 static void
 jive_double_output_init_(jive_double_output * self, struct jive_node * node, size_t index)
 {
-	self->base.base.class_ = &JIVE_DOUBLE_OUTPUT;
-	jive_value_output_init_(&self->base, node, index);
+	self->class_ = &JIVE_DOUBLE_OUTPUT;
+	jive_value_output_init_(self, node, index);
 	jive_double_type_init_(&self->type);
 }
 

@@ -126,10 +126,10 @@ jive_record_type_create_output_(const jive_type * self_, struct jive_node * node
 	const jive_record_type * self = (const jive_record_type *) self_;
 	jive_record_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
 
-	output->base.base.class_ = &JIVE_RECORD_OUTPUT;
+	output->class_ = &JIVE_RECORD_OUTPUT;
 	jive_record_output_init_(output, self, node, index);
 
-	return &output->base.base;
+	return output;
 }
 
 bool
@@ -187,7 +187,7 @@ void
 jive_record_output_init_(jive_record_output * self, const jive_record_type * type,
 	struct jive_node * node, size_t index)
 {
-	jive_value_output_init_(&self->base, node, index);
+	jive_value_output_init_(self, node, index);
 	jive_record_type_init(&self->type, type->decl);
 }
 
@@ -197,7 +197,7 @@ jive_record_output_fini_(jive_output * self_)
 	jive_record_output * self = (jive_record_output *) self_;
 
 	jive_type_fini(&self->type);
-	jive_output_fini_(&self->base.base);
+	jive_output_fini_(self);
 }
 
 const jive_type *

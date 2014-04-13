@@ -79,8 +79,7 @@ jive_record_input_cast(jive_input * self)
 typedef struct jive_record_output jive_record_output;
 
 extern const jive_output_class JIVE_RECORD_OUTPUT;
-struct jive_record_output {
-	jive_value_output base;
+struct jive_record_output : public jive_value_output {
 	jive_record_type type;
 };
 

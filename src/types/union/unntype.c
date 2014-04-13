@@ -125,10 +125,10 @@ jive_union_type_create_output_(const jive_type * self_, struct jive_node * node,
 	const jive_union_type * self = (const jive_union_type *) self_;
 	jive_union_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
 
-	output->base.base.class_ = &JIVE_UNION_OUTPUT;
+	output->class_ = &JIVE_UNION_OUTPUT;
 	jive_union_output_init_(output, self, node, index);
 
-	return &output->base.base;
+	return output;
 }
 
 bool
@@ -186,7 +186,7 @@ void
 jive_union_output_init_(jive_union_output * self, const jive_union_type * type,
 	struct jive_node * node, size_t index)
 {
-	jive_value_output_init_(&self->base, node, index);
+	jive_value_output_init_(self, node, index);
 	jive_union_type_init(&self->type, type->decl);
 }
 
@@ -196,7 +196,7 @@ jive_union_output_fini_(jive_output * self_)
 	jive_union_output * self = (jive_union_output *) self_;
 
 	self->type.class_->fini(&self->type);
-	jive_output_fini_(&self->base.base);
+	jive_output_fini_(self);
 }
 
 const jive_type *

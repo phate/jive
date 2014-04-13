@@ -47,7 +47,7 @@ const jive_input_class JIVE_IMMEDIATE_INPUT = {
 static void
 jive_immediate_output_init_(jive_immediate_output * self, struct jive_node * node, size_t index)
 {
-	jive_value_output_init_(&self->base, node, index);
+	jive_value_output_init_(self, node, index);
 	jive_immediate_type_init_(&self->type);
 }
 
@@ -117,9 +117,9 @@ static jive_output *
 jive_immediate_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	jive_immediate_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_IMMEDIATE_OUTPUT;
+	output->class_ = &JIVE_IMMEDIATE_OUTPUT;
 	jive_immediate_output_init_(output, node, index);
-	return &output->base.base;
+	return output;
 }
 
 static jive_gate *

@@ -70,8 +70,7 @@ jive_double_input_cast(jive_input * self)
 typedef struct jive_double_output jive_double_output;
 
 extern const jive_output_class JIVE_DOUBLE_OUTPUT;
-struct jive_double_output {
-	jive_value_output base;
+struct jive_double_output : public jive_value_output {
 	jive_double_type type;
 };
 

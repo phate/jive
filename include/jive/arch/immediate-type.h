@@ -28,8 +28,7 @@ struct jive_immediate_input : public jive_value_input {
 };
 
 extern const jive_output_class JIVE_IMMEDIATE_OUTPUT;
-struct jive_immediate_output {
-	jive_value_output base;
+struct jive_immediate_output : public jive_value_output {
 	jive_immediate_type type;
 };
 

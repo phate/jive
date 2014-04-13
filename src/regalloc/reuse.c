@@ -46,8 +46,7 @@ struct jive_reuse_input : public jive_state_input {
 };
 
 extern const jive_output_class JIVE_REUSE_OUTPUT;
-struct jive_reuse_output {
-	jive_state_output base;
+struct jive_reuse_output : public jive_state_output {
 	jive_reuse_type type;
 };
 
@@ -82,7 +81,7 @@ jive_reuse_input_get_type_(const jive_input * self_)
 static void
 jive_reuse_output_init_(jive_reuse_output * self, struct jive_node * node, size_t index, const jive_resource_name * name)
 {
-	jive_state_output_init_(&self->base, node, index);
+	jive_state_output_init_(self, node, index);
 	jive_reuse_type_init_(&self->type, name);
 }
 
@@ -145,9 +144,9 @@ jive_reuse_type_create_output_(const jive_type * self_, struct jive_node * node,
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	
 	jive_reuse_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_REUSE_OUTPUT;
+	output->class_ = &JIVE_REUSE_OUTPUT;
 	jive_reuse_output_init_(output, node, index, self->name);
-	return &output->base.base;
+	return output;
 }
 
 static jive_gate *

@@ -85,8 +85,7 @@ jive_union_input_cast(jive_input * self)
 typedef struct jive_union_output jive_union_output;
 
 extern const jive_output_class JIVE_UNION_OUTPUT;
-struct jive_union_output {
-	jive_value_output base;
+struct jive_union_output : public jive_value_output {
 	jive_union_type type;
 };
 

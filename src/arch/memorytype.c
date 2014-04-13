@@ -30,7 +30,7 @@ jive_memory_input_get_type_(const jive_input * self)
 static void
 jive_memory_output_init_(jive_memory_output * self, struct jive_node * node, size_t index)
 {
-	jive_state_output_init_(&self->base, node, index);
+	jive_state_output_init_(self, node, index);
 }
 
 static const jive_type *
@@ -77,9 +77,9 @@ static jive_output *
 jive_memory_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
 	jive_memory_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
-	output->base.base.class_ = &JIVE_MEMORY_OUTPUT;
+	output->class_ = &JIVE_MEMORY_OUTPUT;
 	jive_memory_output_init_(output, node, index);
-	return &output->base.base;
+	return output;
 }
 
 static jive_gate *

@@ -70,8 +70,7 @@ jive_integral_input_const_cast(const struct jive_input * input)
 typedef struct jive_integral_output jive_integral_output;
 
 extern const jive_output_class JIVE_INTEGRAL_OUTPUT;
-struct jive_integral_output {
-	jive_value_output base;
+struct jive_integral_output : public jive_value_output {
 	jive_integral_type type;
 };
 
