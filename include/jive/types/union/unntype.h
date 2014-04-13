@@ -58,8 +58,7 @@ jive_union_type_cast(jive_type * self)
 typedef struct jive_union_input jive_union_input;
 
 extern const jive_input_class JIVE_UNION_INPUT;
-struct jive_union_input {
-	jive_value_input base;
+struct jive_union_input : public jive_value_input {
 	jive_union_type type;
 };
 

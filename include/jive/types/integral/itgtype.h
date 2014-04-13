@@ -43,8 +43,7 @@ jive_integral_type_const_cast(const struct jive_type * type)
 typedef struct jive_integral_input jive_integral_input;
 
 extern const jive_input_class JIVE_INTEGRAL_INPUT;
-struct jive_integral_input {
-	jive_value_input base;
+struct jive_integral_input : public jive_value_input {
 	jive_integral_type type;
 };
 

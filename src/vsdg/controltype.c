@@ -82,9 +82,9 @@ static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)
 {
 	jive_control_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
-	input->base.base.class_ = &JIVE_CONTROL_INPUT;
+	input->class_ = &JIVE_CONTROL_INPUT;
 	jive_control_input_init_(input, node, index, initial_operand);
-	return &input->base.base;
+	return input;
 }
 
 static jive_output *
@@ -117,7 +117,7 @@ jive_control_type_copy_(const jive_type * self, jive_context * ctx)
 static void
 jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin)
 {
-	jive_state_input_init_(&self->base, node, index, origin);
+	jive_state_input_init_(self, node, index, origin);
 }
 
 static const jive_type *

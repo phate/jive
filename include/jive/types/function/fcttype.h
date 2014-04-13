@@ -62,8 +62,7 @@ jive_function_type_destroy(jive_function_type * type);
 extern const jive_input_class JIVE_FUNCTION_INPUT;
 
 typedef struct jive_function_input jive_function_input;
-struct jive_function_input {
-	jive_value_input base;
+struct jive_function_input : public jive_value_input {
 	jive_function_type type;
 };
 

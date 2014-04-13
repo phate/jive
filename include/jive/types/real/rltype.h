@@ -43,8 +43,7 @@ jive_real_type_const_cast(const struct jive_type * type)
 typedef struct jive_real_input jive_real_input;
 
 extern const jive_input_class JIVE_REAL_INPUT;
-struct jive_real_input {
-	jive_value_input base;
+struct jive_real_input : public jive_value_input {
 	jive_real_type type;
 };
 

@@ -44,9 +44,9 @@ jive_input *
 jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	jive_anchor_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
-	input->base.class_ = &JIVE_ANCHOR_INPUT;
+	input->class_ = &JIVE_ANCHOR_INPUT;
 	jive_anchor_input_init_(input, node, index, initial_operand);
-	return &input->base; 
+	return input;
 }
 
 jive_output *
@@ -61,19 +61,19 @@ jive_anchor_type_create_output_(const jive_type * self, struct jive_node * node,
 void
 jive_anchor_input_init_(jive_anchor_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	jive_input_init_(&self->base, node, index, origin);
+	jive_input_init_(self, node, index, origin);
 	JIVE_DEBUG_ASSERT(origin->node->region->anchor == 0);
-	origin->node->region->anchor = &self->base;
+	origin->node->region->anchor = self;
 }
 
 void
 jive_anchor_input_fini_(jive_input * self_)
 {
 	jive_anchor_input * self = (jive_anchor_input *)self_;
-	if (self->base.origin->node->region->anchor == &self->base) {
-		self->base.origin->node->region->anchor = 0;
+	if (self->origin->node->region->anchor == self) {
+		self->origin->node->region->anchor = 0;
 	}
-	jive_input_fini_(&self->base);
+	jive_input_fini_(self);
 }
 
 const jive_type *

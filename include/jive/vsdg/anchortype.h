@@ -22,8 +22,7 @@ struct jive_anchor_type : public jive_type {
 };
 
 extern const jive_input_class JIVE_ANCHOR_INPUT;
-struct jive_anchor_input {
-	jive_input base;
+struct jive_anchor_input : public jive_input {
 };
 
 extern const jive_output_class JIVE_ANCHOR_OUTPUT;

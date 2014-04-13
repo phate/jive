@@ -175,10 +175,10 @@ jive_function_type_create_input_(const jive_type * self_, struct jive_node * nod
 	const jive_function_type * self = (const jive_function_type *) self_;
 	jive_function_input * input = jive_context_malloc(node->graph->context, sizeof( *input));
 	
-	input->base.base.class_ = &JIVE_FUNCTION_INPUT;
+	input->class_ = &JIVE_FUNCTION_INPUT;
 	jive_function_input_init_(input, self, node, index, initial_operand);
 	
-	return &input->base.base;
+	return input;
 }
 
 jive_output *
@@ -235,7 +235,7 @@ void
 jive_function_input_init_(jive_function_input * self, const jive_function_type * type,
 	struct jive_node * node, size_t index, jive_output * origin)
 {
-	jive_value_input_init_(&self->base, node, index, origin);
+	jive_value_input_init_(self, node, index, origin);
 	
 	jive_function_type_init(&self->type, 
 		node->graph->context,
@@ -250,7 +250,7 @@ jive_function_input_fini_(jive_input * self_)
 	
 	jive_function_type_fini(&self->type);
 	
-	jive_input_fini_(&self->base.base);
+	jive_input_fini_(self);
 }
 
 const jive_type *

@@ -43,8 +43,7 @@ jive_double_type_cast(jive_type * self)
 typedef struct jive_double_input jive_double_input;
 
 extern const jive_input_class JIVE_DOUBLE_INPUT;
-struct jive_double_input {
-	jive_value_input base;
+struct jive_double_input : public jive_value_input {
 	jive_double_type type;
 };
 

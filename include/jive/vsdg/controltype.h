@@ -23,8 +23,7 @@ struct jive_control_type : public jive_state_type {
 };
 
 extern const jive_input_class JIVE_CONTROL_INPUT;
-struct jive_control_input {
-	jive_state_input base;
+struct jive_control_input : public jive_state_input {
 };
 
 extern const jive_output_class JIVE_CONTROL_OUTPUT;

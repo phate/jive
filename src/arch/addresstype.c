@@ -107,10 +107,10 @@ jive_address_type_create_input_(const jive_type * self_, jive_node * node,
 	const jive_address_type * self = (const jive_address_type *) self_;
 	jive_address_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
 
-	input->base.base.class_ = &JIVE_ADDRESS_INPUT;
+	input->class_ = &JIVE_ADDRESS_INPUT;
 	jive_address_input_init_(input, self, node, index, initial_operand);
 
-	return &input->base.base;
+	return input;
 }
 
 jive_output *
@@ -145,7 +145,7 @@ void
 jive_address_input_init_(jive_address_input * self, const jive_address_type * type,
 	jive_node * node, size_t index, jive_output * origin)
 {
-	jive_value_input_init_(&self->base, node, index, origin);
+	jive_value_input_init_(self, node, index, origin);
 	jive_address_type_init(&self->type);
 }
 
@@ -155,7 +155,7 @@ jive_address_input_fini_(jive_input * self_)
 	jive_address_input * self = (jive_address_input *) self_;
 
 	self->type.class_->fini(&self->type);
-	jive_input_fini_(&self->base.base);
+	jive_input_fini_(self);
 }
 
 const jive_type *

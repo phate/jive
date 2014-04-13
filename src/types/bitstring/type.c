@@ -105,9 +105,9 @@ jive_bitstring_type_create_input_(const jive_type * self_, struct jive_node * no
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	jive_bitstring_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
-	input->base.base.class_ = &JIVE_BITSTRING_INPUT;
+	input->class_ = &JIVE_BITSTRING_INPUT;
 	jive_bitstring_input_init_(input, self->nbits, node, index, initial_operand);
-	return &input->base.base;
+	return input;
 }
 
 static jive_output *
@@ -165,7 +165,7 @@ static void
 jive_bitstring_input_init_(jive_bitstring_input * self, size_t nbits, struct jive_node * node,
 	size_t index, jive_output * origin)
 {
-	jive_value_input_init_(&self->base, node, index, origin);
+	jive_value_input_init_(self, node, index, origin);
 	jive_bitstring_type_init_(&self->type, nbits);
 }
 

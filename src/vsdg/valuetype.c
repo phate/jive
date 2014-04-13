@@ -68,9 +68,9 @@ jive_input *
 jive_value_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	jive_value_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
-	input->base.class_ = &JIVE_VALUE_INPUT;
+	input->class_ = &JIVE_VALUE_INPUT;
 	jive_value_input_init_(input, node, index, initial_operand);
-	return &input->base; 
+	return input;
 }
 
 jive_output *
@@ -96,7 +96,7 @@ jive_value_type_create_gate_(const jive_type * self, struct jive_graph * graph, 
 void
 jive_value_input_init_(jive_value_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	jive_input_init_(&self->base, node, index, origin);
+	jive_input_init_(self, node, index, origin);
 }
 
 const jive_type *

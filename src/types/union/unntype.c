@@ -113,10 +113,10 @@ jive_union_type_create_input_(const jive_type * self_, struct jive_node * node,
 	const jive_union_type * self = (const jive_union_type *) self_;
 	jive_union_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
 
-	input->base.base.class_ = &JIVE_UNION_INPUT;
+	input->class_ = &JIVE_UNION_INPUT;
 	jive_union_input_init_(input, self, node, index, initial_operand);
 
-	return &input->base.base;
+	return input;
 }
 
 jive_output *
@@ -160,7 +160,7 @@ void
 jive_union_input_init_(jive_union_input * self, const jive_union_type * type,
 	struct jive_node * node, size_t index, jive_output * origin)
 {
-	jive_value_input_init_(&self->base, node, index, origin);
+	jive_value_input_init_(self, node, index, origin);
 	jive_union_type_init(&self->type, type->decl);
 }
 
@@ -170,7 +170,7 @@ jive_union_input_fini_(jive_input * self_)
 	jive_union_input * self = (jive_union_input *) self_;
 
 	self->type.class_->fini(&self->type);
-	jive_input_fini_(&self->base.base);
+	jive_input_fini_(self);
 }
 
 const jive_type *

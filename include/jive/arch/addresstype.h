@@ -46,8 +46,7 @@ jive_address_type_cast(jive_type * self)
 typedef struct jive_address_input jive_address_input;
 
 extern const jive_input_class JIVE_ADDRESS_INPUT;
-struct jive_address_input {
-	jive_value_input base;
+struct jive_address_input : public jive_value_input {
 	jive_address_type type;
 };
 

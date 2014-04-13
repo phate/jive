@@ -24,8 +24,7 @@ struct jive_value_type : public jive_type {
 };
 
 extern const jive_input_class JIVE_VALUE_INPUT;
-struct jive_value_input {
-	jive_input base;
+struct jive_value_input : public jive_input {
 };
 
 extern const jive_output_class JIVE_VALUE_OUTPUT;

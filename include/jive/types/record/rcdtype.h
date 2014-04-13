@@ -52,8 +52,7 @@ jive_record_type_cast(jive_type * self)
 typedef struct jive_record_input jive_record_input;
 
 extern const jive_input_class JIVE_RECORD_INPUT;
-struct jive_record_input {
-	jive_value_input base;
+struct jive_record_input : public jive_value_input {
 	jive_record_type type;
 };
 

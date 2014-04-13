@@ -26,8 +26,7 @@ struct jive_memory_type : public jive_state_type {
 };
 
 extern const jive_input_class JIVE_MEMORY_INPUT;
-struct jive_memory_input {
-	jive_state_input base;
+struct jive_memory_input : public jive_state_input {
 };
 
 extern const jive_output_class JIVE_MEMORY_OUTPUT;

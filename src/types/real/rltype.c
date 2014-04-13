@@ -26,9 +26,9 @@ jive_real_type_create_input_(const jive_type * self_, struct jive_node * node, s
 	jive_output * initial_operand)
 {
 	jive_real_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
-	input->base.base.class_ = &JIVE_REAL_INPUT;
+	input->class_ = &JIVE_REAL_INPUT;
 	jive_real_input_init_(input, node, index, initial_operand);
-	return &input->base.base;
+	return input;
 }
 
 jive_output *
@@ -82,7 +82,7 @@ void
 jive_real_input_init_(jive_real_input * self, struct jive_node * node, size_t index,
 	jive_output * origin)
 {
-	jive_value_input_init_(&self->base, node, index, origin);
+	jive_value_input_init_(self, node, index, origin);
 	jive_real_type_init_(&self->type);
 }
 
