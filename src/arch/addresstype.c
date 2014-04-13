@@ -23,7 +23,7 @@ static jive_gate *
 jive_address_type_create_gate_(const jive_type * self, jive_graph * graph,
 	const char name[]);
 static jive_type *
-jive_address_type_copy_(const jive_type * self, jive_context * context);
+jive_address_type_copy_(const jive_type * self);
 
 static void
 jive_address_input_init_(jive_address_input * self, const jive_address_type * type,
@@ -91,7 +91,7 @@ jive_address_type_init(jive_address_type * self)
 /* address_type inheritable members */
 
 jive_type *
-jive_address_type_copy_(const jive_type * self_, jive_context * context)
+jive_address_type_copy_(const jive_type * self_)
 {
 	jive_address_type * type = new jive_address_type;
 

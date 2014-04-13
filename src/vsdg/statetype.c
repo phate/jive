@@ -54,7 +54,7 @@ jive_state_type_fini_(jive_type * self)
 }
 
 jive_type *
-jive_state_type_copy_(const jive_type * self_, jive_context * context)
+jive_state_type_copy_(const jive_type * self_)
 {
 	const jive_state_type * self = (const jive_state_type *) self_;
 	
@@ -225,7 +225,7 @@ jive_statemux_node_create(jive_region * region,
 	jive_node_init_(node, region,
 		noperands, operand_types, operands,
 		noutputs, output_types);
-	node->attrs.type = jive_type_copy(statetype, context);
+	node->attrs.type = jive_type_copy(statetype);
 	node->attrs.noutputs = noutputs;
 	
 	return node;

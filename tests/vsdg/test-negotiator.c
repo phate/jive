@@ -112,7 +112,7 @@ negtestnode_init_(
 	for (n = 0; n < noutputs; ++n)
 		self->attrs.output_options[n] = output_options[n];
 	for (n = 0; n < noutputs; ++n)
-		self->attrs.output_types[n] = jive_type_copy(output_types[n], context);
+		self->attrs.output_types[n] = jive_type_copy(output_types[n]);
 }
 
 static void

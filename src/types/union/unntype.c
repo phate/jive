@@ -26,7 +26,7 @@ jive_union_type_create_gate_(const jive_type * self, struct jive_graph * graph,
 static bool
 jive_union_type_equals_(const jive_type * self, const jive_type * other);
 static jive_type *
-jive_union_type_copy_(const jive_type * self, struct jive_context * context);
+jive_union_type_copy_(const jive_type * self);
 
 static void
 jive_union_input_init_(jive_union_input * self, const jive_union_type * type,
@@ -95,7 +95,7 @@ jive_union_type_init(jive_union_type * self, const jive_union_declaration * decl
 /* record_type inheritable members */
 
 jive_type *
-jive_union_type_copy_(const jive_type * self_, jive_context * context)
+jive_union_type_copy_(const jive_type * self_)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
 

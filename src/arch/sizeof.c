@@ -95,7 +95,7 @@ jive_sizeof_node_create(jive_region * region,
 		0, NULL, NULL,
 		1, &btype);
 	
-	node->attrs.type = (jive_value_type *)jive_type_copy(type, context);
+	node->attrs.type = (jive_value_type *)jive_type_copy(type);
 	
 	return node;
 }

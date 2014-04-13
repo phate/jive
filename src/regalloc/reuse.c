@@ -106,7 +106,7 @@ jive_reuse_gate_get_type_(const jive_gate * self_)
 }
 
 static jive_type *
-jive_reuse_type_copy_(const jive_type * self_, jive_context * context)
+jive_reuse_type_copy_(const jive_type * self_)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	

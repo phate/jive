@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -64,7 +64,7 @@ struct jive_type_class {
 	bool (*equals)(const jive_type * self, const jive_type * other);
 	
 	/** \brief Create dynamically allocated copy of type */
-	jive_type * (*copy)(const jive_type * self, struct jive_context * context);
+	jive_type * (*copy)(const jive_type * self);
 };
 
 extern const struct jive_type_class JIVE_TYPE;
@@ -112,9 +112,9 @@ jive_type_equals(const jive_type * self, const jive_type * other)
 }
 
 JIVE_EXPORTED_INLINE jive_type *
-jive_type_copy(const jive_type * self, struct jive_context * context)
+jive_type_copy(const jive_type * self)
 {
-	return self->class_->copy(self, context);
+	return self->class_->copy(self);
 }
 
 JIVE_EXPORTED_INLINE void

@@ -54,7 +54,7 @@ jive_memory_gate_get_type_(const jive_gate * self)
 }
 
 static jive_type *
-jive_memory_type_copy_(const jive_type * self_, jive_context * context)
+jive_memory_type_copy_(const jive_type * self_)
 {
 	const jive_memory_type * self = (const jive_memory_type *) self_;
 	

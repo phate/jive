@@ -29,7 +29,7 @@ jive_function_type_create_gate_(const jive_type * self, struct jive_graph * grap
 static bool
 jive_function_type_equals_(const jive_type * self, const jive_type * other);
 static jive_type *
-jive_function_type_copy_(const jive_type * self, struct jive_context * context);
+jive_function_type_copy_(const jive_type * self);
 
 static void
 jive_function_input_init_(jive_function_input * self, const jive_function_type * type,
@@ -102,11 +102,11 @@ jive_function_type_init(
 	
 	size_t i;
 	for(i = 0; i < narguments; i++)
-		self->argument_types[i] = jive_type_copy(argument_types[i], ctx);
+		self->argument_types[i] = jive_type_copy(argument_types[i]);
 	
 	for(i = 0; i < nreturns; i++)
-		self->return_types[i] = jive_type_copy(return_types[i], ctx);
-	
+		self->return_types[i] = jive_type_copy(return_types[i]);
+
 	self->class_ = &JIVE_FUNCTION_TYPE;
 	self->ctx = ctx;
 	self->nreturns = nreturns;
@@ -156,13 +156,13 @@ jive_function_type_fini_(jive_type * self_)
 
 
 jive_type *
-jive_function_type_copy_(const jive_type * self_, jive_context * ctx)
+jive_function_type_copy_(const jive_type * self_)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	
 	jive_function_type * type = new jive_function_type;
 	
-	jive_function_type_init(type, ctx,
+	jive_function_type_init(type, self->ctx,
 		self->narguments, (const jive_type * const *) self->argument_types,
 		self->nreturns, (const jive_type * const *) self->return_types);
 	

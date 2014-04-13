@@ -69,7 +69,7 @@ jive_type_equals_(const jive_type * self, const jive_type * other)
 }
 
 jive_type *
-jive_type_copy_(const jive_type * self, jive_context * context)
+jive_type_copy_(const jive_type * self)
 {
 	/* base-type non copyable */
 	return NULL;

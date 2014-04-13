@@ -50,7 +50,7 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 {
 	if (jive_type_isinstance(type, &JIVE_ADDRESS_TYPE)) {
 		JIVE_DECLARE_BITSTRING_TYPE(bittype, nbits);
-		return jive_type_copy(bittype, context);
+		return jive_type_copy(bittype);
 	}
 
 	const jive_function_type * fcttype = jive_function_type_const_cast(type);
@@ -72,7 +72,7 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 		jive_function_type_init(&return_type, context, narguments, argument_types, nresults,
 			result_types);
 
-		jive_type * new_fcttype = jive_type_copy(&return_type, context);
+		jive_type * new_fcttype = jive_type_copy(&return_type);
 
 		for (n = 0; n < narguments; n++)
 			jive_type_destroy((jive_type *)argument_types[n], context);
@@ -160,7 +160,7 @@ jive_address_to_bitstring_node_init_(
 		1, (const jive_type **)&return_type);
 
 	self->attrs.nbits = nbits;
-	self->attrs.original_type = jive_type_copy(original_type, context);
+	self->attrs.original_type = jive_type_copy(original_type);
 
 	jive_type_destroy(return_type, context);
 }
@@ -359,7 +359,7 @@ jive_bitstring_to_address_node_init_(
 		1, (const jive_type **)&original_type);
 
 	self->attrs.nbits = nbits;
-	self->attrs.original_type = jive_type_copy(original_type, context);
+	self->attrs.original_type = jive_type_copy(original_type);
 }
 
 static void

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -18,7 +18,7 @@ void
 jive_type_fini_(jive_type * self);
 
 jive_type *
-jive_type_copy_(const jive_type * self, struct jive_context * ctx);
+jive_type_copy_(const jive_type * self);
 
 void
 jive_type_get_label_(const jive_type * self, struct jive_buffer * buffer);

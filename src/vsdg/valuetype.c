@@ -54,7 +54,7 @@ jive_value_type_fini_(jive_type * self)
 }
 
 jive_type *
-jive_value_type_copy_(const jive_type * self_, jive_context * context)
+jive_value_type_copy_(const jive_type * self_)
 {
 	const jive_value_type * self = (const jive_value_type *) self_;
 	

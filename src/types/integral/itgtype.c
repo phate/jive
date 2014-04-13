@@ -14,7 +14,7 @@ static void
 jive_integral_type_fini_(jive_type * self_);
 
 static jive_type *
-jive_integral_type_copy_(const jive_type * self_, struct jive_context * context);
+jive_integral_type_copy_(const jive_type * self_);
 
 static jive_input *
 jive_integral_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
@@ -96,7 +96,7 @@ jive_integral_type_fini_(jive_type * self_)
 }
 
 static jive_type *
-jive_integral_type_copy_(const jive_type * self_, struct jive_context * context)
+jive_integral_type_copy_(const jive_type * self_)
 {
 	const jive_integral_type * self = (const jive_integral_type *) self_;
 	jive_integral_type * type = new jive_integral_type;

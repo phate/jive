@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,7 +21,7 @@ jive_gate *
 jive_float_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name);
 
 jive_type *
-jive_float_type_copy_(const jive_type * self, struct jive_context * context);
+jive_float_type_copy_(const jive_type * self);
 
 /* float_input inheritable members */
 

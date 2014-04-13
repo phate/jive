@@ -132,7 +132,7 @@ jive_immediate_type_create_gate_(const jive_type * self_, struct jive_graph * gr
 }
 
 static jive_type *
-jive_immediate_type_copy_(const jive_type * self_, jive_context * context)
+jive_immediate_type_copy_(const jive_type * self_)
 {
 	const jive_immediate_type * self = (const jive_immediate_type *) self_;
 	

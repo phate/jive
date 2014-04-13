@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -41,7 +42,7 @@ jive_control_type_deserialize(
 	jive_type ** type)
 {
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	*type = jive_type_copy(ctl, driver->context);
+	*type = jive_type_copy(ctl);
 	return true;
 }
 

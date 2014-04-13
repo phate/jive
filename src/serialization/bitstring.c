@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -152,7 +153,7 @@ jive_bitstring_type_deserialize(
 	/* FIXME: check number of bits */
 	
 	JIVE_DECLARE_BITSTRING_TYPE(ctl, nbits);
-	*type = jive_type_copy(ctl, driver->context);
+	*type = jive_type_copy(ctl);
 	return true;
 }
 

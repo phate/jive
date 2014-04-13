@@ -52,7 +52,7 @@ jive_double_type_create_gate_(const jive_type * self_, struct jive_graph * graph
 }
 
 static jive_type *
-jive_double_type_copy_(const jive_type * self_, jive_context * context)
+jive_double_type_copy_(const jive_type * self_)
 {
 	const jive_double_type * self = (const jive_double_type *) self_;
 	jive_double_type * type = new jive_double_type;

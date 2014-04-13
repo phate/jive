@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -161,7 +161,7 @@ jive_memory_type_deserialize(
 	jive_type ** type)
 {
 	JIVE_DECLARE_MEMORY_TYPE(ctl);
-	*type = jive_type_copy(ctl, driver->context);
+	*type = jive_type_copy(ctl);
 	return true;
 }
 

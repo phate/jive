@@ -50,7 +50,7 @@ jive_real_type_create_gate_(const jive_type * self_, struct jive_graph * graph, 
 }
 
 jive_type *
-jive_real_type_copy_(const jive_type * self_, jive_context * context)
+jive_real_type_copy_(const jive_type * self_)
 {
 	const jive_real_type * self = (const jive_real_type *) self_;
 	jive_real_type * type = new jive_real_type;

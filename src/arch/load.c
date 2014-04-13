@@ -283,7 +283,7 @@ jive_load_node_init_(jive_load_node * self, jive_region * region,
 		1, &address_type, &address,
 		1, tmparray0);
 
-	self->attrs.datatype = (jive_value_type *) jive_type_copy(datatype, context);
+	self->attrs.datatype = (jive_value_type *) jive_type_copy(datatype);
 	self->attrs.nbits = 0;
 	if(jive_type_isinstance(address_type, &JIVE_BITSTRING_TYPE)) {
 		const jive_bitstring_type * btype = (const jive_bitstring_type *) address_type;

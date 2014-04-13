@@ -29,10 +29,10 @@ jive_test_node_init_(jive_test_node * self, jive_region * region,
 
 	size_t n;
 	for (n = 0; n < noperands; n++)
-		self->attrs.operand_types[n] = jive_type_copy(operand_types[n], context);
+		self->attrs.operand_types[n] = jive_type_copy(operand_types[n]);
 
 	for (n = 0; n < nresults; n++)
-		self->attrs.result_types[n] = jive_type_copy(result_types[n], context);
+		self->attrs.result_types[n] = jive_type_copy(result_types[n]);
 }
 
 static void

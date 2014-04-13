@@ -76,7 +76,7 @@ jive_float_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 }
 
 jive_type *
-jive_float_type_copy_(const jive_type * self_, jive_context * context)
+jive_float_type_copy_(const jive_type * self_)
 {
 	const jive_float_type * self = (const jive_float_type *) self_;
 	jive_float_type * type = new jive_float_type;

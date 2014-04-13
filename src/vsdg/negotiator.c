@@ -133,7 +133,7 @@ jive_negotiator_split_node_init_(
 	
 	self->attrs.negotiator = negotiator;
 	self->attrs.input_option = jive_negotiator_option_copy(negotiator, input_option);
-	self->attrs.output_type = jive_type_copy(output_type, context);
+	self->attrs.output_type = jive_type_copy(output_type);
 	self->attrs.output_option = jive_negotiator_option_copy(negotiator, output_option);
 	
 	JIVE_LIST_PUSH_BACK(negotiator->split_nodes, self, split_node_list);

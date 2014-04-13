@@ -498,7 +498,7 @@ jive_arraysubscript_node_create(jive_region * region,
 	jive_node_init_(node, region,
 		2, operand_types, operands,
 		1, &address_type);
-	node->attrs.element_type = (jive_value_type *) jive_type_copy(element_type, context);
+	node->attrs.element_type = (jive_value_type *) jive_type_copy(element_type);
 	
 	return node;
 }
@@ -707,8 +707,8 @@ jive_arrayindex_node_create(jive_region * region,
 	jive_node_init_(node, region,
 		2, operand_types, operands,
 		1, output_types);
-	node->attrs.element_type = (jive_value_type *) jive_type_copy(element_type, context);
-	node->attrs.difference_type = (jive_bitstring_type *) jive_type_copy(difference_type, context);
+	node->attrs.element_type = (jive_value_type *) jive_type_copy(element_type);
+	node->attrs.difference_type = (jive_bitstring_type *) jive_type_copy(difference_type);
 	
 	return node;
 }

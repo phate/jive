@@ -29,7 +29,7 @@ jive_bitstring_type_create_gate_(const jive_type * self, struct jive_graph * gra
 	const char * name);
 
 static jive_type *
-jive_bitstring_type_copy_(const jive_type * self, struct jive_context * context);
+jive_bitstring_type_copy_(const jive_type * self);
 
 static bool
 jive_bitstring_type_equals_(const jive_type * self, const jive_type * other);
@@ -132,7 +132,7 @@ jive_bitstring_type_create_gate_(const jive_type * self_, struct jive_graph * gr
 }
 
 static jive_type *
-jive_bitstring_type_copy_(const jive_type * self_, jive_context * context)
+jive_bitstring_type_copy_(const jive_type * self_)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	

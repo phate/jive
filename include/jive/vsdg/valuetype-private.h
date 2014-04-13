@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -24,7 +24,7 @@ jive_gate *
 jive_value_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name);
 
 jive_type *
-jive_value_type_copy_(const jive_type * self, struct jive_context * context);
+jive_value_type_copy_(const jive_type * self);
 
 /* value_input inheritable members */
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico 2014 Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -126,7 +126,7 @@ jive_call_node_init_(jive_call_node * self,
 		sizeof(*self->attrs.return_types) * nreturns);
 	
 	for (n = 0; n < nreturns; n++)
-		self->attrs.return_types[n] = jive_type_copy(return_types[n], context);
+		self->attrs.return_types[n] = jive_type_copy(return_types[n]);
 }
 
 static inline jive_region *

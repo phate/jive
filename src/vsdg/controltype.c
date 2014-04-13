@@ -25,7 +25,7 @@ static jive_gate *
 jive_control_type_create_gate_(const jive_type * self, jive_graph * graph, const char * name);
 
 static jive_type *
-jive_control_type_copy_(const jive_type * self, jive_context * ctx);
+jive_control_type_copy_(const jive_type * self);
 
 static void
 jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin);
@@ -107,7 +107,7 @@ jive_control_type_create_gate_(const jive_type * self, struct jive_graph * graph
 }
 
 static jive_type *
-jive_control_type_copy_(const jive_type * self, jive_context * ctx)
+jive_control_type_copy_(const jive_type * self)
 {
 	jive_control_type * other = new jive_control_type;
 	other->class_ = &JIVE_CONTROL_TYPE;
