@@ -86,9 +86,9 @@ jive_gate *
 jive_value_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
 	jive_value_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->base.class_ = &JIVE_VALUE_GATE;
+	gate->class_ = &JIVE_VALUE_GATE;
 	jive_value_gate_init_(gate, graph, name);
-	return &gate->base; 
+	return gate;
 }
 
 /* value inputs */
@@ -126,7 +126,7 @@ jive_value_output_get_type_(const jive_output * self)
 void
 jive_value_gate_init_(jive_value_gate * self, struct jive_graph * graph, const char * name)
 {
-	jive_gate_init_(&self->base, graph, name);
+	jive_gate_init_(self, graph, name);
 }
 
 const jive_type *

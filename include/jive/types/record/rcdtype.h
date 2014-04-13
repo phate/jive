@@ -106,8 +106,7 @@ jive_record_output_cast(jive_output * self)
 typedef struct jive_record_gate jive_record_gate;
 
 extern const jive_gate_class JIVE_RECORD_GATE;
-struct jive_record_gate {
-	jive_value_gate base;
+struct jive_record_gate : public jive_value_gate {
 	jive_record_type type;
 };
 

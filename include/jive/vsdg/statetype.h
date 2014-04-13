@@ -34,8 +34,7 @@ struct jive_state_output : public jive_output {
 };
 
 extern const jive_gate_class JIVE_STATE_GATE;
-struct jive_state_gate {
-	jive_gate base;
+struct jive_state_gate : public jive_gate {
 };
 
 /* state multiplexing support */

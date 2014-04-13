@@ -33,8 +33,7 @@ struct jive_immediate_output : public jive_value_output {
 };
 
 extern const jive_gate_class JIVE_IMMEDIATE_GATE;
-struct jive_immediate_gate {
-	jive_value_gate base;
+struct jive_immediate_gate : public jive_value_gate {
 	jive_immediate_type type;
 };
 

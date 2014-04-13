@@ -97,8 +97,7 @@ jive_real_output_const_cast(const struct jive_output * output)
 typedef struct jive_real_gate jive_real_gate;
 
 extern const jive_gate_class JIVE_REAL_GATE;
-struct jive_real_gate {
-	jive_value_gate base;
+struct jive_real_gate : public jive_value_gate {
 	jive_real_type type;
 };
 

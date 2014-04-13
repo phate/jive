@@ -101,9 +101,9 @@ static jive_gate *
 jive_control_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
 	jive_control_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->base.base.class_ = &JIVE_CONTROL_GATE;
+	gate->class_ = &JIVE_CONTROL_GATE;
 	jive_control_gate_init_(gate, graph, name);
-	return &gate->base.base;
+	return gate;
 }
 
 static jive_type *
@@ -143,7 +143,7 @@ jive_control_output_get_type_(const jive_output * self)
 static void
 jive_control_gate_init_(jive_control_gate * self, struct jive_graph * graph, const char * name)
 {
-	jive_state_gate_init_(&self->base, graph, name);
+	jive_state_gate_init_(self, graph, name);
 }
 
 static const jive_type *

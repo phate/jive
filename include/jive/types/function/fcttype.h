@@ -116,8 +116,7 @@ jive_function_output_const_cast(const struct jive_output * output)
 extern const jive_gate_class JIVE_FUNCTION_GATE;
 
 typedef struct jive_function_gate jive_function_gate;
-struct jive_function_gate {
-	jive_value_gate base;
+struct jive_function_gate : public jive_value_gate {
 	jive_function_type type;
 };
 

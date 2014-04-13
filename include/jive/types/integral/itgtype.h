@@ -97,8 +97,7 @@ jive_integral_output_const_cast(const struct jive_output * output)
 typedef struct jive_integral_gate jive_integral_gate;
 
 extern const jive_gate_class JIVE_INTEGRAL_GATE;
-struct jive_integral_gate {
-	jive_value_gate base;
+struct jive_integral_gate : public jive_value_gate {
 	jive_integral_type type;
 };
 

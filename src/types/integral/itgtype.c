@@ -131,10 +131,10 @@ jive_integral_type_create_gate_(const jive_type * self_, struct jive_graph * gra
 	const char * name)
 {
 	jive_integral_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->base.base.class_ = &JIVE_INTEGRAL_GATE;
+	gate->class_ = &JIVE_INTEGRAL_GATE;
 	jive_integral_gate_init_(gate, graph, name);
 
-	return &gate->base.base;
+	return gate;
 }
 
 /* integral_input members */
@@ -179,8 +179,8 @@ static inline void
 jive_integral_gate_init_(jive_integral_gate * self, struct jive_graph * graph,
 	const char name[])
 {
-	self->base.base.class_ = &JIVE_INTEGRAL_GATE;
-	jive_value_gate_init_(&self->base, graph, name);
+	self->class_ = &JIVE_INTEGRAL_GATE;
+	jive_value_gate_init_(self, graph, name);
 	jive_integral_type_init_(&self->type);
 }
 

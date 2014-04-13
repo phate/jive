@@ -126,9 +126,9 @@ jive_bitstring_type_create_gate_(const jive_type * self_, struct jive_graph * gr
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	jive_bitstring_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->base.base.class_ = &JIVE_BITSTRING_GATE;
+	gate->class_ = &JIVE_BITSTRING_GATE;
 	jive_bitstring_gate_init_(gate, self->nbits, graph, name);
-	return &gate->base.base;
+	return gate;
 }
 
 static jive_type *
@@ -200,8 +200,8 @@ static void
 jive_bitstring_gate_init_(jive_bitstring_gate * self, size_t nbits, struct jive_graph * graph,
 	const char name[])
 {
-	self->base.base.class_ = &JIVE_BITSTRING_GATE;
-	jive_value_gate_init_(&self->base, graph, name);
+	self->class_ = &JIVE_BITSTRING_GATE;
+	jive_value_gate_init_(self, graph, name);
 	jive_bitstring_type_init_(&self->type, nbits);
 }
 

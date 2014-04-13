@@ -32,8 +32,7 @@ struct jive_control_output : public jive_state_output {
 };
 
 extern const jive_gate_class JIVE_CONTROL_GATE;
-struct jive_control_gate {
-	jive_state_gate base;
+struct jive_control_gate : public jive_state_gate {
 };
 
 

@@ -34,8 +34,7 @@ struct jive_memory_output : public jive_state_output {
 };
 
 extern const jive_gate_class JIVE_MEMORY_GATE;
-struct jive_memory_gate {
-	jive_state_gate base;
+struct jive_memory_gate : public jive_state_gate {
 };
 
 #endif

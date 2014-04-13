@@ -97,8 +97,7 @@ jive_double_output_cast(jive_output * self)
 typedef struct jive_double_gate jive_double_gate;
 
 extern const jive_gate_class JIVE_DOUBLE_GATE;
-struct jive_double_gate {
-	jive_value_gate base;
+struct jive_double_gate : public jive_value_gate {
 	jive_double_type type;
 };
 

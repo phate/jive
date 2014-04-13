@@ -44,9 +44,9 @@ jive_gate *
 jive_real_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
 	jive_real_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->base.base.class_ = &JIVE_REAL_GATE;
+	gate->class_ = &JIVE_REAL_GATE;
 	jive_real_gate_init_(gate, graph, name);
-	return &gate->base.base;
+	return gate;
 }
 
 jive_type *
@@ -129,8 +129,8 @@ const jive_output_class JIVE_REAL_OUTPUT = {
 void
 jive_real_gate_init_(jive_real_gate * self, struct jive_graph * graph, const char name[])
 {
-	self->base.base.class_ = &JIVE_REAL_GATE;
-	jive_value_gate_init_(&self->base, graph, name);
+	self->class_ = &JIVE_REAL_GATE;
+	jive_value_gate_init_(self, graph, name);
 	jive_real_type_init_(&self->type);
 }
 

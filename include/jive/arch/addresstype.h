@@ -100,8 +100,7 @@ jive_address_output_cast(jive_output * self)
 typedef struct jive_address_gate jive_address_gate;
 
 extern const jive_gate_class JIVE_ADDRESS_GATE;
-struct jive_address_gate {
-	jive_value_gate base;
+struct jive_address_gate : public jive_value_gate {
 	jive_address_type type;
 };
 

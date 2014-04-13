@@ -133,10 +133,10 @@ jive_address_type_create_gate_(const jive_type * self_, jive_graph * graph,
 
 	jive_address_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
 
-	gate->base.base.class_ = &JIVE_ADDRESS_GATE;
+	gate->class_ = &JIVE_ADDRESS_GATE;
 	jive_address_gate_init_(gate, self, graph, name);
 
-	return &gate->base.base;
+	return gate;
 }
 
 /* address_input inheritable members */
@@ -198,7 +198,7 @@ void
 jive_address_gate_init_(jive_address_gate * self, const jive_address_type * type,
 	jive_graph * graph, const char name[])
 {
-	jive_value_gate_init_(&self->base, graph, name);
+	jive_value_gate_init_(self, graph, name);
 	jive_address_type_init(&self->type);
 }
 
@@ -207,7 +207,7 @@ void jive_address_gate_fini_(jive_gate * self_)
 	jive_address_gate * self = (jive_address_gate *)self_;
 
 	self->type.class_->fini(&self->type);
-	jive_gate_fini_(&self->base.base);	
+	jive_gate_fini_(self);
 }
 
 const jive_type *
