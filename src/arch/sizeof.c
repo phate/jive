@@ -48,7 +48,7 @@ jive_sizeof_node_fini_(jive_node * self_)
 {
 	jive_sizeof_node * self = (jive_sizeof_node *)self_;
 
-	jive_type_destroy(self->attrs.type, self_->graph->context);
+	jive_type_destroy(self->attrs.type);
 	jive_node_fini_(self);
 }
 

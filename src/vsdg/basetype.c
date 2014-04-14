@@ -118,7 +118,7 @@ const jive_type_class JIVE_TYPE = {
 };
 
 void
-jive_type_destroy(struct jive_type * self, struct jive_context * context)
+jive_type_destroy(struct jive_type * self)
 {
 	jive_type_fini(self);
 	delete self;

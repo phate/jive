@@ -43,12 +43,12 @@ jive_test_node_fini_(jive_node * self_)
 
 	size_t n;
 	for (n = 0; n < self->attrs.noperands; n++) {
-		jive_type_destroy(self->attrs.operand_types[n], context);
+		jive_type_destroy(self->attrs.operand_types[n]);
 	}
 	jive_context_free(context, self->attrs.operand_types);
 
 	for (n = 0; n < self->attrs.nresults; n++) {
-		jive_type_destroy(self->attrs.result_types[n], context);
+		jive_type_destroy(self->attrs.result_types[n]);
 	}
 	jive_context_free(context, self->attrs.result_types);
 

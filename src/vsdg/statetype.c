@@ -174,7 +174,7 @@ jive_statemux_node_fini_(jive_node * self_)
 	jive_context * context = self_->graph->context;
 	jive_statemux_node * self = (jive_statemux_node *) self_;
 
-	jive_type_destroy(self->attrs.type, context);
+	jive_type_destroy(self->attrs.type);
 	
 	jive_node_fini_(self);
 }

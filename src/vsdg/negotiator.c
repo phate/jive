@@ -165,8 +165,7 @@ jive_negotiator_split_node_fini_(jive_node * self_)
 	
 	jive_negotiator_split_node_detach(self);
 	
-	jive_context * context = self->region->graph->context;
-	jive_type_destroy(self->attrs.output_type, context);
+	jive_type_destroy(self->attrs.output_type);
 	
 	jive_node_fini_(self_);
 }

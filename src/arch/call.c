@@ -45,7 +45,7 @@ jive_call_node_fini_(jive_node * self_)
 	
 	size_t n;
 	for (n = 0; n < self->attrs.nreturns; n++) {
-		jive_type_destroy(self->attrs.return_types[n], context);
+		jive_type_destroy(self->attrs.return_types[n]);
 	}
 	
 	jive_context_free(context, self->attrs.return_types);

@@ -398,7 +398,7 @@ static void
 jive_arraysubscript_node_fini_(jive_node * self_)
 {
 	jive_arraysubscript_node * self = (jive_arraysubscript_node *) self_;
-	jive_type_destroy(self->attrs.element_type, self_->graph->context);
+	jive_type_destroy(self->attrs.element_type);
 	jive_node_fini_(self);
 }
 
@@ -579,8 +579,8 @@ static void
 jive_arrayindex_node_fini_(jive_node * self_)
 {
 	jive_arrayindex_node * self = (jive_arrayindex_node *) self_;
-	jive_type_destroy(self->attrs.element_type, self_->graph->context);
-	jive_type_destroy(self->attrs.difference_type, self->graph->context);
+	jive_type_destroy(self->attrs.element_type);
+	jive_type_destroy(self->attrs.difference_type);
 	jive_node_fini_(self);
 }
 

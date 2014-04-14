@@ -205,7 +205,7 @@ jive_load_node_fini_(jive_node * self_)
 	jive_context * context = self_->graph->context;
 	jive_load_node * self = (jive_load_node *) self_;
 
-	jive_type_destroy(self->attrs.datatype, context);
+	jive_type_destroy(self->attrs.datatype);
 	
 	jive_node_fini_(self);
 }

@@ -125,7 +125,7 @@ negtestnode_fini_(jive_node * self_)
 	jive_context_free(context, self->attrs.output_options);
 	size_t n;
 	for (n = 0; n < self->attrs.noutputs; n++) {
-		jive_type_destroy(self->attrs.output_types[n], context);
+		jive_type_destroy(self->attrs.output_types[n]);
 	}
 	jive_context_free(context, self->attrs.output_types);
 	jive_node_fini_(self_);

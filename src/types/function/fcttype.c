@@ -135,12 +135,12 @@ jive_function_type_fini(jive_function_type * self)
 {
 	size_t i;
 	for(i = 0; i < self->narguments; i++){
-		jive_type_destroy(self->argument_types[i], self->ctx);
+		jive_type_destroy(self->argument_types[i]);
 	}
 	jive_context_free(self->ctx, self->argument_types);
 	
 	for(i = 0; i < self->nreturns; i++){
-		jive_type_destroy(self->return_types[i], self->ctx);
+		jive_type_destroy(self->return_types[i]);
 	}
 	jive_context_free(self->ctx, self->return_types);
 	

@@ -75,9 +75,9 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 		jive_type * new_fcttype = jive_type_copy(&return_type);
 
 		for (n = 0; n < narguments; n++)
-			jive_type_destroy((jive_type *)argument_types[n], context);
+			jive_type_destroy((jive_type *)argument_types[n]);
 		for (n = 0; n < nresults; n++)
-			jive_type_destroy((jive_type *)result_types[n], context);
+			jive_type_destroy((jive_type *)result_types[n]);
 		jive_function_type_fini(&return_type);
 
 		return new_fcttype;
@@ -162,14 +162,14 @@ jive_address_to_bitstring_node_init_(
 	self->attrs.nbits = nbits;
 	self->attrs.original_type = jive_type_copy(original_type);
 
-	jive_type_destroy(return_type, context);
+	jive_type_destroy(return_type);
 }
 
 static void
 jive_address_to_bitstring_node_fini_(jive_node * self_)
 {
 	jive_address_to_bitstring_node * self = (jive_address_to_bitstring_node *)self_;
-	jive_type_destroy(self->attrs.original_type, self_->graph->context);
+	jive_type_destroy(self->attrs.original_type);
 	jive_node_fini_(self_);
 }
 
@@ -366,7 +366,7 @@ static void
 jive_bitstring_to_address_node_fini_(jive_node * self_)
 {
 	jive_bitstring_to_address_node * self = (jive_bitstring_to_address_node *)self_;
-	jive_type_destroy(self->attrs.original_type, self_->graph->context);
+	jive_type_destroy(self->attrs.original_type);
 	jive_node_fini_(self_);
 }
 
@@ -796,7 +796,7 @@ jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t 
 	jive_output * new_fct = jive_lambda_end(lambda, new_fcttype->nreturns,
 		(const jive_type **)new_fcttype->return_types, results);
 
-	jive_type_destroy(new_fcttype, context);
+	jive_type_destroy(new_fcttype);
 	jive_output_replace(fct, jive_bitstring_to_address_create(new_fct, nbits, type));
 }
 
