@@ -36,10 +36,6 @@ struct negtestnode_attrs : public jive_node_attrs {
 
 struct negtestnode : public jive_node {
 	negtestnode_attrs attrs;
-	struct {
-		negtestnode * prev;
-		negtestnode * next;
-	} split_node_list;
 };
 
 static void
