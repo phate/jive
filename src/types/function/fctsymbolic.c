@@ -51,7 +51,7 @@ jive_symbolicfunction_node_init_(
 	const jive_function_type * type)
 {
 	node->attrs.name = jive_context_strdup(graph->context, fctname);
-	jive_function_type_init(&node->attrs.type, graph->context,
+	jive_function_type_init(&node->attrs.type,
 		type->narguments, (const jive_type **) type->argument_types,
 		type->nreturns, (const jive_type **) type->return_types);
 

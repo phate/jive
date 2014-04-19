@@ -69,8 +69,7 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 			result_types[n] = convert_address_to_bitstring_type(fcttype->return_types[n], nbits, context);
 
 		jive_function_type return_type;
-		jive_function_type_init(&return_type, context, narguments, argument_types, nresults,
-			result_types);
+		jive_function_type_init(&return_type, narguments, argument_types, nresults, result_types);
 
 		jive_type * new_fcttype = jive_type_copy(&return_type);
 

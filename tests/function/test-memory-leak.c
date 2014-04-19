@@ -21,15 +21,11 @@ static int test_main(void)
 	jive_function_type t1, t2;
 	const jive_type * tmparray0[] = {value_type};
 	const jive_type * tmparray1[] = {value_type};
-	jive_function_type_init(&t1, context,
-		1, tmparray0,
-		1, tmparray1);
+	jive_function_type_init(&t1, 1, tmparray0, 1, tmparray1);
+
 	const jive_type * tmparray2[] = {&t1};
 	const jive_type * tmparray3[] = {&t1};
-	
-	jive_function_type_init(&t2, context,
-		1, tmparray2,
-		1, tmparray3);
+	jive_function_type_init(&t2, 1, tmparray2, 1, tmparray3);
 	
 	jive_function_type_fini(&t1);
 	jive_function_type_fini(&t2);

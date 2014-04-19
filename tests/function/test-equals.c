@@ -24,22 +24,22 @@ static int test_main(void)
 const jive_type*  tmparray0[] = { btype0 };
 const jive_type*  tmparray1[] = { btype0 };
 
-	jive_function_type* type0 = jive_function_type_create( context,
+	jive_function_type* type0 = jive_function_type_create(
 		1, tmparray0,
 		1, tmparray1 ) ;
 	const jive_type*  tmparray2[] = { btype0 };
 	const jive_type*  tmparray3[] = { btype1 };
-	jive_function_type* type1 = jive_function_type_create( context,
+	jive_function_type* type1 = jive_function_type_create(
 		1, tmparray2,
 		1, tmparray3 ) ;
 	const jive_type*  tmparray4[] = { btype0 };
 	const jive_type*  tmparray5[] = { btype1, btype1 };
-	jive_function_type* type2 = jive_function_type_create( context,
+	jive_function_type* type2 = jive_function_type_create(
 		1, tmparray4,
 		2, tmparray5 ) ;
 	const jive_type*  tmparray6[] = { btype0, btype0 };
 	const jive_type*  tmparray7[] = { btype0 };
-	jive_function_type* type3 = jive_function_type_create( context,
+	jive_function_type* type3 = jive_function_type_create(
 		2, tmparray6,
 		1, tmparray7 ) ;
 

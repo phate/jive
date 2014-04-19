@@ -114,8 +114,7 @@ jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
 	for(n = 0; n < nreturns; n++)
 		return_types[n] = jive_input_get_type(function_region->bottom->inputs[n+1]);
 	
-	jive_function_type_init(&self->attrs.function_type, context,
-		narguments, argument_types,
+	jive_function_type_init(&self->attrs.function_type, narguments, argument_types,
 		nreturns, return_types);
 	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
@@ -498,7 +497,7 @@ jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self)
 	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
 		phi_node = jive_phi_node_cast(jive_region_get_anchor(lambda_region->parent));
 
-		jive_function_type * fcttype = jive_function_type_create(context,
+		jive_function_type * fcttype = jive_function_type_create(
 			nalive_parameters, alive_parameter_types, nalive_results, alive_result_types);
 		const jive_type * tmparray0[] = {fcttype};
 		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);

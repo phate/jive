@@ -93,12 +93,11 @@ const jive_gate_class JIVE_FUNCTION_GATE = {
 void
 jive_function_type_init(
 	jive_function_type * self,
-	jive_context * ctx,
 	size_t narguments, const jive_type * const argument_types[],
 	size_t nreturns, const jive_type * const return_types[])
 {
-	self->argument_types = jive_context_malloc(ctx, sizeof(jive_type *) * narguments); 
-	self->return_types = jive_context_malloc(ctx, sizeof(jive_type *) * nreturns);
+	self->argument_types = new jive_type*[narguments];
+	self->return_types = new jive_type*[nreturns];
 	
 	size_t i;
 	for(i = 0; i < narguments; i++)
@@ -108,17 +107,16 @@ jive_function_type_init(
 		self->return_types[i] = jive_type_copy(return_types[i]);
 
 	self->class_ = &JIVE_FUNCTION_TYPE;
-	self->ctx = ctx;
 	self->nreturns = nreturns;
 	self->narguments = narguments;
 }
 
-jive_function_type * jive_function_type_create(jive_context * ctx,
+jive_function_type * jive_function_type_create(
 	size_t narguments, const jive_type * const argument_types[],
 	size_t nreturns, const jive_type * const return_types[])
 {
 	jive_function_type * type = new jive_function_type;
-	jive_function_type_init(type, ctx, narguments, argument_types, nreturns, return_types);
+	jive_function_type_init(type, narguments, argument_types, nreturns, return_types);
 	return type;
 }
 
@@ -137,12 +135,12 @@ jive_function_type_fini(jive_function_type * self)
 	for(i = 0; i < self->narguments; i++){
 		jive_type_destroy(self->argument_types[i]);
 	}
-	jive_context_free(self->ctx, self->argument_types);
+	delete[] self->argument_types;
 	
 	for(i = 0; i < self->nreturns; i++){
 		jive_type_destroy(self->return_types[i]);
 	}
-	jive_context_free(self->ctx, self->return_types);
+	delete[] self->return_types;
 	
 	jive_value_type_fini_(self);
 }
@@ -162,7 +160,7 @@ jive_function_type_copy_(const jive_type * self_)
 	
 	jive_function_type * type = new jive_function_type;
 	
-	jive_function_type_init(type, self->ctx,
+	jive_function_type_init(type,
 		self->narguments, (const jive_type * const *) self->argument_types,
 		self->nreturns, (const jive_type * const *) self->return_types);
 	
@@ -238,7 +236,6 @@ jive_function_input_init_(jive_function_input * self, const jive_function_type *
 	jive_value_input_init_(self, node, index, origin);
 	
 	jive_function_type_init(&self->type, 
-		node->graph->context,
 		type->narguments, (const jive_type * const *)type->argument_types,
 		type->nreturns, (const jive_type * const *)type->return_types);
 }
@@ -270,7 +267,6 @@ jive_function_output_init_(jive_function_output * self, const jive_function_type
 	jive_value_output_init_(self, node, index);
 	
 	jive_function_type_init(&self->type, 
-		node->graph->context,
 		type->narguments, (const jive_type * const *)type->argument_types,
 		type->nreturns, (const jive_type * const *)type->return_types);
 } 
@@ -301,7 +297,6 @@ jive_function_gate_init_(jive_function_gate * self, const jive_function_type * t
 {
 	jive_value_gate_init_(self, graph, name);
 	jive_function_type_init(&self->type, 
-		graph->context,
 		type->narguments, (const jive_type * const *)type->argument_types,
 		type->nreturns, (const jive_type * const *)type->return_types);
 }

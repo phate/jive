@@ -25,7 +25,7 @@ test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	jive_function_type * fcttype = jive_function_type_create(context, 1, &addrtype, 1, &addrtype);
+	jive_function_type * fcttype = jive_function_type_create(1, &addrtype, 1, &addrtype);
 	const jive_type * tmparray0[] = {fcttype, addrtype};
 
 	jive_node * top = jive_node_create(graph->root_region,

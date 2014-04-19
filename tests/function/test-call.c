@@ -25,7 +25,7 @@ static int test_main(void)
 	JIVE_DECLARE_BITSTRING_TYPE( btype, 8 ) ;
 	const jive_type*  tmparray0[] = { btype };
 	const jive_type*  tmparray1[] = { btype };
-	jive_function_type* ftype = jive_function_type_create( context,
+	jive_function_type* ftype = jive_function_type_create(
 		1, tmparray0,
 		1, tmparray1 ) ;
 

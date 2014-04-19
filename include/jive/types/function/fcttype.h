@@ -14,7 +14,6 @@ extern const jive_type_class JIVE_FUNCTION_TYPE;
 
 typedef struct jive_function_type jive_function_type;
 struct jive_function_type : public jive_value_type {
-	struct jive_context * ctx;
 	size_t nreturns;
 	jive_type ** return_types;
 	size_t narguments;
@@ -42,7 +41,6 @@ jive_function_type_const_cast(const struct jive_type * type)
 void
 jive_function_type_init(
 	jive_function_type * self,
-	struct jive_context * context,
 	size_t narguments, const jive_type * const argument_types[],
 	size_t nreturns, const jive_type * const return_types[]);
 
@@ -50,7 +48,7 @@ void
 jive_function_type_fini(jive_function_type * self);
 
 jive_function_type *
-jive_function_type_create(struct jive_context * context,
+jive_function_type_create(
 	size_t narguments, const jive_type * const argument_types[],
 	size_t nreturns, const jive_type * const return_types[]);
 

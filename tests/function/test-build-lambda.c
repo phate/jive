@@ -33,7 +33,7 @@ static int test_main(void)
 	
 	jive_function_type ftype;
 	const jive_type * tmparray2[] = {bits32, bits32};
-	jive_function_type_init(&ftype, ctx, 2, tmparray2, 1, &bits32);
+	jive_function_type_init(&ftype, 2, tmparray2, 1, &bits32);
 
 	assert(jive_type_equals(&ftype, jive_output_get_type(fct)));
 	

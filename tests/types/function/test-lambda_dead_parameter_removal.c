@@ -66,8 +66,7 @@ test_recursive_lambda(struct jive_graph * graph)
 const jive_type * tmparray7[] = {vtype, vtype, vtype};
 const jive_type * tmparray8[] = {vtype, vtype};
 
-	jive_function_type * fcttype = jive_function_type_create(graph->context,
-		3, tmparray7, 2, tmparray8);
+	jive_function_type * fcttype = jive_function_type_create(3, tmparray7, 2, tmparray8);
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, fcttype);
