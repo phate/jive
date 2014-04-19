@@ -117,7 +117,7 @@ jive_output *
 jive_address_type_create_output_(const jive_type * self_, jive_node * node, size_t index)
 {
 	const jive_address_type * self = (const jive_address_type *) self_;
-	jive_address_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_address_output * output = new jive_address_output;
 
 	output->class_ = &JIVE_ADDRESS_OUTPUT;
 	jive_address_output_init_(output, self, node, index);

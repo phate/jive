@@ -183,7 +183,7 @@ jive_output *
 jive_function_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
-	jive_function_output * output = jive_context_malloc(node->graph->context, sizeof( *output));
+	jive_function_output * output = new jive_function_output;
 	
 	output->class_ = &JIVE_FUNCTION_OUTPUT;
 	jive_function_output_init_(output, self, node, index);

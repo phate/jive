@@ -123,7 +123,7 @@ jive_output *
 jive_union_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
-	jive_union_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_union_output * output = new jive_union_output;
 
 	output->class_ = &JIVE_UNION_OUTPUT;
 	jive_union_output_init_(output, self, node, index);

@@ -119,7 +119,7 @@ jive_integral_type_create_input_(const jive_type * self_, struct jive_node * nod
 static jive_output *
 jive_integral_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
-	jive_integral_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_integral_output * output = new jive_integral_output;
 	output->class_ = &JIVE_INTEGRAL_OUTPUT;
 	jive_integral_output_init_(output, node, index);
 

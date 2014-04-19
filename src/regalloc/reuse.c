@@ -142,7 +142,7 @@ jive_reuse_type_create_output_(const jive_type * self_, struct jive_node * node,
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	
-	jive_reuse_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_reuse_output * output = new jive_reuse_output;
 	output->class_ = &JIVE_REUSE_OUTPUT;
 	jive_reuse_output_init_(output, node, index, self->name);
 	return output;

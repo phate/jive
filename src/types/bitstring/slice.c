@@ -82,7 +82,8 @@ jive_bitslice_node_init_(
 	jive_output * origin,
 	size_t low, size_t high)
 {
-	JIVE_DECLARE_BITSTRING_TYPE(input_type, ((jive_bitstring_output *) origin)->type.nbits);
+	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)origin);
+	JIVE_DECLARE_BITSTRING_TYPE(input_type, nbits);
 	JIVE_DECLARE_BITSTRING_TYPE(output_type, high - low);
 	jive_node_init_(self, region,
 		1, &input_type, &origin,
@@ -137,7 +138,7 @@ jive_bitslice_can_reduce_operand_(const jive_node_class * cls, const jive_node_a
 	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
 	jive_bitstring_output * operand = (jive_bitstring_output *) operand_;
 	
-	if ((attrs->low == 0) && (attrs->high == operand->type.nbits))
+	if ((attrs->low == 0) && (attrs->high == jive_bitstring_output_nbits(operand)))
 		return jive_unop_reduction_idempotent;
 	if (operand_->node->class_ == &JIVE_BITSLICE_NODE)
 		return jive_unop_reduction_narrow;
@@ -179,7 +180,7 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 		for (n=0; n<node->noperands; n++) {
 			jive_output * operand = node->inputs[n]->origin;
 			size_t base = pos;
-			size_t nbits = ((jive_bitstring_output *)operand)->type.nbits;
+			size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand);
 			pos = pos + nbits;
 			if (base < attrs->high && pos > attrs->low) {
 				size_t slice_low = (attrs->low > base) ? (attrs->low - base) : 0;

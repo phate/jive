@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -55,7 +55,7 @@ static void
 jive_bitslesseq_node_init_(jive_node * self, jive_region * region,
 	jive_output * operand1, jive_output * operand2)
 {
-	size_t nbits = ((jive_bitstring_output *)operand1)->type.nbits;
+	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand1);
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
 	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);

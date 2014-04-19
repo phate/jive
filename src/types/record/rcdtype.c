@@ -124,7 +124,7 @@ jive_output *
 jive_record_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_record_type * self = (const jive_record_type *) self_;
-	jive_record_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_record_output * output = new jive_record_output;
 
 	output->class_ = &JIVE_RECORD_OUTPUT;
 	jive_record_output_init_(output, self, node, index);

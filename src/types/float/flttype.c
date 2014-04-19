@@ -60,7 +60,7 @@ jive_float_type_create_input_(const jive_type * self_, struct jive_node * node, 
 jive_output *
 jive_float_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
-	jive_float_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_float_output * output = new jive_float_output;
 	output->class_ = &JIVE_FLOAT_OUTPUT;
 	jive_float_output_init_(output, node, index);
 	return output;

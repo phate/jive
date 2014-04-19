@@ -80,7 +80,7 @@ typedef struct jive_bitstring_output jive_bitstring_output;
 
 extern const jive_output_class JIVE_BITSTRING_OUTPUT;
 struct jive_bitstring_output : public jive_value_output {
-	jive_bitstring_type type;
+	jive_bitstring_type * type;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_output *
@@ -104,7 +104,7 @@ jive_bitstring_output_const_cast(const jive_output * output)
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_output_nbits(const jive_bitstring_output * self)
 {
-	return self->type.nbits;
+	return self->type->nbits;
 }
 
 /* bitstring gate */

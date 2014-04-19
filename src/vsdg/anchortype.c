@@ -52,7 +52,7 @@ jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, 
 jive_output *
 jive_anchor_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
-	jive_anchor_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_anchor_output * output = new jive_anchor_output;
 	output->class_ = &JIVE_ANCHOR_OUTPUT;
 	jive_anchor_output_init_(output, node, index);
 	return output;

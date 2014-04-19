@@ -47,7 +47,7 @@ jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t 
 jive_output *
 jive_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
-	jive_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_output * output = new jive_output;
 	output->class_ = &JIVE_OUTPUT;
 	jive_output_init_(output, node, index);
 	return output;
@@ -548,7 +548,7 @@ jive_output_destroy(jive_output * self)
 	if (self->node->region) jive_graph_notify_output_destroy(self->node->graph, self);
 	
 	self->class_->fini(self);
-	jive_context_free(self->node->graph->context, self);
+	delete self;
 }
 
 /* gates */

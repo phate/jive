@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -51,7 +51,7 @@ jive_bitnegate_node_init_(
 	jive_region * region,
 	jive_output * operand)
 {
-	size_t nbits = ((jive_bitstring_output *) operand)->type.nbits;
+	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand);
 
 	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
 	jive_node_init_(self, region,

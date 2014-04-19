@@ -90,7 +90,7 @@ jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t
 static jive_output *
 jive_control_type_create_output_(const jive_type * self, jive_node * node, size_t index)
 {
-	jive_control_output * output = jive_context_malloc(node->graph->context, sizeof(*output));
+	jive_control_output * output = new jive_control_output;
 	output->class_ = &JIVE_CONTROL_OUTPUT;
 	output->active = true;
 	jive_control_output_init_(output, node, index);

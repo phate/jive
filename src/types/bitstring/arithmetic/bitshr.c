@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -53,7 +53,7 @@ static void
 jive_bitshr_node_init_(jive_node * self, jive_region * region,
 	size_t noperands, jive_output * const operands[])
 {
-	size_t nbits = ((jive_bitstring_output *)operands[0])->type.nbits;
+	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operands[0]);
 	
 	size_t n;
 	const jive_type * operand_types[noperands];
