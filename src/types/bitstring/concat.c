@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -15,8 +15,8 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 
 static void
@@ -74,14 +74,10 @@ jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs *
 static jive_binop_reduction_path_t
 jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
-//static bool
-//jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
 
 static jive_output *
 jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
 	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
-//static bool
-//jive_bitconcat_reduce_operand_pair(const jive_node_class * cls, const jive_node_attrs * attrs, jive_output ** op1, jive_output ** op2);
 
 const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 	base : { /* jive_node_class */
@@ -95,7 +91,7 @@ const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_bitconcat_node_get_label_, /* override */
-		get_attrs : jive_node_get_attrs_, /* inherit */
+		get_attrs : nullptr,
 		match_attrs : jive_node_match_attrs_, /* inherit */
 		check_operands : jive_bitconcat_node_check_operands_, /* override */
 		create : jive_bitconcat_node_create_, /* override */
@@ -143,7 +139,7 @@ jive_bitconcat_node_create_(struct jive_region * region, const jive_node_attrs *
 {
 	JIVE_DEBUG_ASSERT(noperands >= 2);
 
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::concat_operation());
 	node->class_ = &JIVE_BITCONCAT_NODE;
 	jive_bitconcat_node_init_(node, region, noperands, operands);
 	return node;
@@ -167,7 +163,7 @@ jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls,
 		if (origin1 != origin2)
 			return jive_binop_reduction_none;
 
-		if (n1->attrs.high == n2->attrs.low)
+		if (n1->operation().high() == n2->operation().low())
 			return jive_binop_reduction_merge;
 
 		/* FIXME: support sign bit */
@@ -186,10 +182,10 @@ jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive
 		const jive_bitconstant_node * n1 = (const jive_bitconstant_node *) op1->node;
 		const jive_bitconstant_node * n2 = (const jive_bitconstant_node *) op2->node;
 
-		size_t nbits = n1->attrs.nbits + n2->attrs.nbits;
+		size_t nbits = n1->operation().bits.size() + n2->operation().bits.size();
 		char bits[nbits];
-		memcpy(bits, n1->attrs.bits, n1->attrs.nbits);
-		memcpy(bits + n1->attrs.nbits, n2->attrs.bits, n2->attrs.nbits);
+		memcpy(bits, &n1->operation().bits[0], n1->operation().bits.size());
+		memcpy(bits + n1->operation().bits.size(), &n2->operation().bits[0], n2->operation().bits.size());
 
 		return jive_bitconstant(graph, nbits, bits);
 	}
@@ -199,7 +195,7 @@ jive_bitconcat_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive
 		const jive_bitslice_node * n2 = (const jive_bitslice_node *) op2->node;
 		jive_output * origin1 = op1->node->inputs[0]->origin;
 
-		return jive_bitslice(origin1, n1->attrs.low, n2->attrs.high);
+		return jive_bitslice(origin1, n1->operation().low(), n2->operation().high());
 
 		/* FIXME: support sign bit */
 	}
@@ -213,6 +209,7 @@ jive_bitconcat(size_t noperands, struct jive_output * const * operands)
 	JIVE_DEBUG_ASSERT(noperands != 0);
 
 	jive_graph * graph = operands[0]->node->graph;
-	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE_, graph, NULL, noperands,
-		operands);
+	jive::bitstring::concat_operation op;
+	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE_, graph,
+		&op, noperands, operands);
 }

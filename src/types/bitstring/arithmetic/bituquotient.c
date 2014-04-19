@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -31,7 +32,7 @@ const jive_bitbinary_operation_class JIVE_BITUQUOTIENT_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitbinary_operation_check_operands_, /* inherit */
 			create : jive_bituquotient_create_, /* override */
@@ -73,7 +74,7 @@ jive_bituquotient_create_(jive_region * region, const jive_node_attrs * attrs,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::uquotient_operation());
 	node->class_ = &JIVE_BITUQUOTIENT_NODE;
 	jive_bituquotient_node_init_(node, region, noperands, operands);
 
@@ -104,10 +105,10 @@ jive_bituquotient_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 		jive_bitconstant_node * dividend = (jive_bitconstant_node *)op1->node;
 		jive_bitconstant_node * divisor = (jive_bitconstant_node *)op2->node;
 
-		size_t nbits = dividend->attrs.nbits;
+		size_t nbits = dividend->operation().bits.size();
 		char quotient[nbits], remainder[nbits];
 		jive_bitstring_division_unsigned(quotient, remainder,
-			dividend->attrs.bits, divisor->attrs.bits, nbits);
+			&dividend->operation().bits[0], &divisor->operation().bits[0], nbits);
 
 		return jive_bitconstant(graph, nbits, quotient);
 	}
@@ -120,6 +121,7 @@ jive_bituquotient(jive_output * dividend, jive_output * divisor)
 {
 	jive_graph * graph = dividend->node->graph;
 	jive_output * tmparray0[] = {dividend, divisor};
-	return jive_binary_operation_create_normalized(&JIVE_BITUQUOTIENT_NODE_.base, graph, NULL, 2,
+	jive::bitstring::uquotient_operation op;
+	return jive_binary_operation_create_normalized(&JIVE_BITUQUOTIENT_NODE_.base, graph, &op, 2,
 		tmparray0);
 }

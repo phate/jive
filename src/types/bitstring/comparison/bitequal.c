@@ -1,16 +1,17 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/bitstring/comparison/bitequal.h>
 
-#include <jive/vsdg/region.h>
+#include <jive/types/bitstring/bitoperation-classes-private.h>
+#include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/bitstring/bitoperation-classes-private.h>
-#include <jive/types/bitstring/constant.h>
+#include <jive/vsdg/region.h>
 
 static jive_node *
 jive_bitequal_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -33,7 +34,7 @@ const jive_bitcomparison_operation_class JIVE_BITEQUAL_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitcomparison_operation_check_operands_, /* inherit */
 			create : jive_bitequal_create_, /* override */
@@ -72,7 +73,7 @@ jive_bitequal_create_(struct jive_region * region, const jive_node_attrs * attrs
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::equal_operation());
 	node->class_ = &JIVE_BITEQUAL_NODE;
 	jive_bitequal_node_init_(node, region, operands[0], operands[1]);
 
@@ -87,8 +88,9 @@ jive_bitequal_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_bitconstant_node * n2 = jive_bitconstant_node_cast(op2->node);
 
 	if (n1 && n2) {
-		JIVE_DEBUG_ASSERT(n1->attrs.nbits == n2->attrs.nbits);
-		char result = jive_bitstring_equal(n1->attrs.bits, n2->attrs.bits, n1->attrs.nbits);
+		JIVE_DEBUG_ASSERT(n1->operation().bits.size() == n2->operation().bits.size());
+		char result = jive_bitstring_equal(
+			&n1->operation().bits[0], &n2->operation().bits[0], n1->operation().bits.size());
 
 		switch (result) {
 			case '0': return 1;
@@ -101,7 +103,8 @@ jive_bitequal_node_can_reduce_operand_pair_(const jive_node_class * cls,
 }
 
 static jive_output *
-jive_bitequal_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
+jive_bitequal_node_reduce_operand_pair_(
+	jive_binop_reduction_path_t path, const jive_node_class * cls,
 	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
 	jive_graph * graph = op1->node->graph;
@@ -121,6 +124,7 @@ jive_bitequal(jive_output * operand1, jive_output * operand2)
 {
 	jive_graph * graph = operand1->node->graph;
 	jive_output * tmparray2[] = {operand1, operand2};
-	return jive_binary_operation_create_normalized(&JIVE_BITEQUAL_NODE_.base, graph, NULL, 2,
+	jive::bitstring::equal_operation op;
+	return jive_binary_operation_create_normalized(&JIVE_BITEQUAL_NODE_.base, graph, &op, 2,
 		tmparray2);
 }

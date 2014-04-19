@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -149,7 +149,7 @@ sequentialize_region(
 					jive_bitconstant_node_cast(input->origin->node);
 				jive_seq_dataitem * item = &data->items[n];
 				if (cnode) {
-					switch (cnode->attrs.nbits) {
+					switch (cnode->operation().bits.size()) {
 						case 8:
 							item->format = jive_seq_dataitem_fmt_8;
 							break;

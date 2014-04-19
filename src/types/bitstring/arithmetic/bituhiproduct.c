@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -31,7 +32,7 @@ const jive_bitbinary_operation_class JIVE_BITUHIPRODUCT_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitbinary_operation_check_operands_, /* inherit */
 			create : jive_bituhiproduct_create_, /* override */
@@ -73,7 +74,7 @@ jive_bituhiproduct_create_(jive_region * region, const jive_node_attrs * attrs,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::uhiproduct_operation());
 	node->class_ = &JIVE_BITUHIPRODUCT_NODE;
 	jive_bituhiproduct_node_init_(node, region, noperands, operands);
 
@@ -100,6 +101,7 @@ jive_bituhiproduct(jive_output * factor1, jive_output * factor2)
 {
 	jive_graph * graph = factor1->node->graph;
 	jive_output * tmparray0[] = {factor1, factor2};
-	return jive_binary_operation_create_normalized(&JIVE_BITUHIPRODUCT_NODE_.base, graph, NULL, 2,
+	jive::bitstring::uhiproduct_operation op;
+	return jive_binary_operation_create_normalized(&JIVE_BITUHIPRODUCT_NODE_.base, graph, &op, 2,
 		tmparray0);
 }

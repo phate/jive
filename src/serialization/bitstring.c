@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -18,8 +18,9 @@ jive_bitconstant_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *) attrs_;
-	jive_token_ostream_string(os, attrs->bits, attrs->nbits);
+	const jive::bitstring::constant_operation * attrs =
+		(const jive::bitstring::constant_operation *) attrs_;
+	jive_token_ostream_string(os, &attrs->bits[0], attrs->bits.size());
 }
 
 static bool
@@ -35,9 +36,11 @@ jive_bitconstant_deserialize(
 		driver->error(driver, "Expected string");
 		return false;
 	}
-	jive_bitconstant_node_attrs attrs;
-	attrs.bits = (char *) token->v.string.str;
-	attrs.nbits = token->v.string.len;
+	jive::bitstring::constant_operation attrs;
+	
+	char * bits = token->v.string.str;
+	size_t nbits = token->v.string.len;
+	attrs.bits = std::vector<char>(bits, bits + nbits);
 	
 	*node = JIVE_BITCONSTANT_NODE.create(region, &attrs,
 		noperands, operands);
@@ -58,10 +61,10 @@ jive_bitslice_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *) attrs_;
-	jive_token_ostream_integral(os, attrs->low);
+	const jive::bitstring::slice_operation * attrs = (const jive::bitstring::slice_operation *) attrs_;
+	jive_token_ostream_integral(os, attrs->low());
 	jive_token_ostream_char(os, ',');
-	jive_token_ostream_integral(os, attrs->high);
+	jive_token_ostream_integral(os, attrs->high());
 }
 
 static bool
@@ -72,8 +75,6 @@ jive_bitslice_deserialize(
 	jive_output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
-	jive_bitslice_node_attrs attrs;
-	
 	uint64_t low, high;
 	if (!jive_deserialize_uint(driver, is, &low))
 		return false;
@@ -82,9 +83,8 @@ jive_bitslice_deserialize(
 	if (!jive_deserialize_uint(driver, is, &high))
 		return false;
 	/* FIXME: check low < high, high < nbits */
-	
-	attrs.low = low;
-	attrs.high = high;
+
+	jive::bitstring::slice_operation attrs(low, high);
 	
 	*node = JIVE_BITSLICE_NODE.create(region, &attrs,
 		noperands, operands);
@@ -157,4 +157,7 @@ jive_bitstring_type_deserialize(
 	return true;
 }
 
-JIVE_SERIALIZATION_TYPECLS_REGISTER(JIVE_BITSTRING_TYPE, "bits", jive_bitstring_type_serialize, jive_bitstring_type_deserialize);
+JIVE_SERIALIZATION_TYPECLS_REGISTER(
+	JIVE_BITSTRING_TYPE, "bits",
+	jive_bitstring_type_serialize,
+	jive_bitstring_type_deserialize);

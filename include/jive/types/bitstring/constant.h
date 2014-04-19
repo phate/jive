@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,24 +8,26 @@
 #define JIVE_TYPES_BITSTRING_CONSTANT_H
 
 #include <stdint.h>
+#include <vector>
 
 #include <jive/types/bitstring/type.h>
 #include <jive/util/bitstring.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators.h>
 
 extern const jive_node_class JIVE_BITCONSTANT_NODE;
 
-typedef struct jive_bitconstant_node jive_bitconstant_node;
-typedef struct jive_bitconstant_node_attrs jive_bitconstant_node_attrs;
+namespace jive {
+namespace bitstring {
 
-struct jive_bitconstant_node_attrs : public jive_node_attrs {
-	size_t nbits;
-	char * bits;
+struct constant_operation final : public nullary_operation {
+	std::vector<char> bits;
 };
 
-struct jive_bitconstant_node : public jive_node {
-	jive_bitconstant_node_attrs attrs;
-};
+}
+}
+
+typedef jive::operation_node<jive::bitstring::constant_operation> jive_bitconstant_node;
 
 /**
 	\brief Create bitconstant
@@ -78,49 +80,58 @@ jive_bitconstant_node_cast(jive_node * node)
 JIVE_EXPORTED_INLINE bool
 jive_bitconstant_is_zero(const jive_bitconstant_node * node)
 {
-	size_t n;
-	for(n=0; n<node->attrs.nbits; n++) if (node->attrs.bits[n] != '0') return false;
+	for (const char bit : node->operation().bits) {
+		if (bit != '0') return false;
+	}
 	return true;
 }
 
 JIVE_EXPORTED_INLINE bool
 jive_bitconstant_is_one(const jive_bitconstant_node * node)
 {
-	size_t n;
-	for(n=1; n<node->attrs.nbits; n++) if (node->attrs.bits[n] != '0') return false;
-	return node->attrs.bits[0] == '1';
+	char expect = '1';
+	for (const char bit : node->operation().bits) {
+		if (bit != expect) return false;
+		expect = '0';
+	}
+	return true;
 }
 
 JIVE_EXPORTED_INLINE bool
 jive_bitconstant_is_minus_one(const jive_bitconstant_node * node)
 {
-	size_t n;
-	for(n=0; n<node->attrs.nbits; n++) if (node->attrs.bits[n] != '1') return false;
+	for (const char bit : node->operation().bits) {
+		if (bit != '1') return false;
+	}
 	return true;
 }
 
 JIVE_EXPORTED_INLINE bool
 jive_bitconstant_equals_signed(const jive_bitconstant_node * node, int64_t value)
 {
-	return jive_bitstring_equals_signed(node->attrs.bits, node->attrs.nbits, value);
+	return jive_bitstring_equals_signed(
+		&node->operation().bits[0], node->operation().bits.size(), value);
 }
 
 JIVE_EXPORTED_INLINE bool
 jive_bitconstant_equals_unsigned(const jive_bitconstant_node * node, uint64_t value)
 {
-	return jive_bitstring_equals_unsigned(node->attrs.bits, node->attrs.nbits, value);
+	return jive_bitstring_equals_unsigned(
+		&node->operation().bits[0], node->operation().bits.size(), value);
 }
 
 JIVE_EXPORTED_INLINE uint64_t
 jive_bitconstant_node_to_unsigned(const jive_bitconstant_node * node)
 {
-	return jive_bitstring_to_unsigned(node->attrs.bits, node->attrs.nbits);
+	return jive_bitstring_to_unsigned(
+		&node->operation().bits[0], node->operation().bits.size());
 }
 
 JIVE_EXPORTED_INLINE int64_t
 jive_bitconstant_node_to_signed(const jive_bitconstant_node * node)
 {
-	return jive_bitstring_to_signed(node->attrs.bits, node->attrs.nbits);
+	return jive_bitstring_to_signed(
+		&node->operation().bits[0], node->operation().bits.size());
 }
 
 #endif

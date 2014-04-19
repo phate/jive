@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -6,22 +7,27 @@
 #ifndef JIVE_TYPES_BITSTRING_SYMBOLIC_CONSTANT_H
 #define JIVE_TYPES_BITSTRING_SYMBOLIC_CONSTANT_H
 
-#include <jive/vsdg/node.h>
+#include <string>
+
 #include <jive/types/bitstring/type.h>
+#include <jive/vsdg/node.h>
+#include <jive/vsdg/operators.h>
 
 extern const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE;
 
-typedef struct jive_bitsymbolicconstant_node jive_bitsymbolicconstant_node;
-typedef struct jive_bitsymbolicconstant_node_attrs jive_bitsymbolicconstant_node_attrs;
+namespace jive {
+namespace bitstring {
 
-struct jive_bitsymbolicconstant_node_attrs : public jive_node_attrs {
+struct symbolicconstant_operation : public unary_operation {
 	size_t nbits;
-	char * name;
+	std::string name;
 };
 
-struct jive_bitsymbolicconstant_node : public jive_node {
-	jive_bitsymbolicconstant_node_attrs attrs;
-};
+}
+}
+
+typedef jive::operation_node<jive::bitstring::symbolicconstant_operation>
+	jive_bitsymbolicconstant_node;
 
 /**
 	\brief Create symbolic constant

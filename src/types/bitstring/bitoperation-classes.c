@@ -1,12 +1,23 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/bitstring/bitoperation-classes.h>
 
-#include <jive/vsdg/operators.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/operators.h>
+
+namespace jive {
+
+bits_unary_operation::~bits_unary_operation() noexcept {}
+
+bits_binary_operation::~bits_binary_operation() noexcept {}
+
+bits_compare_operation::~bits_compare_operation() noexcept {}
+
+}
 
 static void
 jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
@@ -59,7 +70,7 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitbinary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
@@ -94,7 +105,7 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitunary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
@@ -127,7 +138,7 @@ const jive_bitcomparison_operation_class JIVE_BITCOMPARISON_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitcomparison_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */

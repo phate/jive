@@ -9,9 +9,28 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/operators.h>
 
+namespace jive {
+
+class bits_unary_operation : public unary_operation {
+public:
+	virtual ~bits_unary_operation() noexcept;
+};
+
+class bits_binary_operation : public binary_operation {
+public:
+	virtual ~bits_binary_operation() noexcept;
+};
+
+class bits_compare_operation : public binary_operation {
+public:
+	virtual ~bits_compare_operation() noexcept;
+};
+
+}
+
 typedef struct jive_bitbinary_operation_class jive_bitbinary_operation_class;
-typedef struct jive_bitunary_operation_class jive_bitunary_operation_class;
 typedef struct jive_bitcomparison_operation_class jive_bitcomparison_operation_class;
+typedef struct jive_bitunary_operation_class jive_bitunary_operation_class;
 
 typedef enum jive_bitop_code {
 	jive_bitop_code_invalid = 0,

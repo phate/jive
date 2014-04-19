@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -10,6 +11,15 @@
 
 extern const jive_bitbinary_operation_class JIVE_BITSHR_NODE_;
 #define JIVE_BITSHR_NODE (JIVE_BITSHR_NODE_.base.base)
+
+namespace jive {
+namespace bitstring {
+
+class shr_operation final : public jive::bits_binary_operation {
+};
+
+}
+}
 
 jive_output *
 jive_bitshr(jive_output * operand, jive_output * shift);

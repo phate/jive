@@ -1,16 +1,17 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/bitstring/comparison/bitsgreater.h>
 
-#include <jive/vsdg/region.h>
+#include <jive/types/bitstring/bitoperation-classes-private.h>
+#include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/bitstring/bitoperation-classes-private.h>
-#include <jive/types/bitstring/constant.h>
+#include <jive/vsdg/region.h>
 
 static jive_node *
 jive_bitsgreater_create_(struct jive_region * region, const jive_node_attrs * attrs,
@@ -33,7 +34,7 @@ const jive_bitcomparison_operation_class JIVE_BITSGREATER_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitcomparison_operation_check_operands_, /* inherit */
 			create : jive_bitsgreater_create_, /* override */
@@ -72,14 +73,14 @@ jive_bitsgreater_create_(struct jive_region * region, const jive_node_attrs * at
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::sgreater_operation());
 	node->class_ = &JIVE_BITSGREATER_NODE;
 	jive_bitsgreater_node_init_(node, region, operands[0], operands[1]);
 
 	return node;
 }
 
-static jive_binop_reduction_path_t 
+static jive_binop_reduction_path_t
 jive_bitsgreater_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
@@ -88,9 +89,9 @@ jive_bitsgreater_node_can_reduce_operand_pair_(const jive_node_class * cls,
 
 	/* constant < constant */
 	if (n1 && n2) {
-		JIVE_DEBUG_ASSERT(n1->attrs.nbits == n2->attrs.nbits);
-		char result = jive_bitstring_sgreater(n1->attrs.bits, n2->attrs.bits,
-			n1->attrs.nbits);
+		JIVE_DEBUG_ASSERT(n1->operation().bits.size() == n2->operation().bits.size());
+		char result = jive_bitstring_sgreater(
+			&n1->operation().bits[0], &n2->operation().bits[0], n1->operation().bits.size());
 
 		switch(result){
 			case '0': return 1;
@@ -100,24 +101,24 @@ jive_bitsgreater_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	}
 
 	/* INT_MIN > constant */
-	if (n1){
-		size_t nbits = n1->attrs.nbits;
+	if (n1) {
+		size_t nbits = n1->operation().bits.size();
 		char int_min[nbits];
 		jive_bitstring_init_signed(int_min, nbits, 0);
 		int_min[nbits-1] = jive_bit_not(int_min[nbits-1]);
 	
-		if (jive_bitstring_equal(n1->attrs.bits, int_min, nbits) == '1')
+		if (jive_bitstring_equal(&n1->operation().bits[0], int_min, nbits) == '1')
 			return 3;
 	}
 	
 	/* constant > INT_MAX */
-	if (n2){
-		size_t nbits = n2->attrs.nbits;
+	if (n2) {
+		size_t nbits = n2->operation().bits.size();
 		char int_max[nbits];
 		jive_bitstring_init_signed(int_max, nbits, -1);
 		int_max[nbits-1] = jive_bit_not(int_max[nbits-1]);
 
-		if (jive_bitstring_equal(n2->attrs.bits, int_max, nbits) == '1')
+		if (jive_bitstring_equal(&n2->operation().bits[0], int_max, nbits) == '1')
 			return 4;
 	}
 
@@ -148,6 +149,7 @@ jive_bitsgreater(jive_output * operand1, jive_output * operand2)
 {
 	jive_graph * graph = operand1->node->graph;
 	jive_output * tmparray2[] = {operand1, operand2};
-	return jive_binary_operation_create_normalized(&JIVE_BITSGREATER_NODE_.base, graph, NULL, 2,
+	jive::bitstring::sgreater_operation op;
+	return jive_binary_operation_create_normalized(&JIVE_BITSGREATER_NODE_.base, graph, &op, 2,
 		tmparray2);
 }

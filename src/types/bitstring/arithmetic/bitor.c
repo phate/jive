@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -30,7 +31,7 @@ const jive_bitbinary_operation_class JIVE_BITOR_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitbinary_operation_check_operands_, /* inherit */
 			create : jive_bitor_create_, /* override */
@@ -70,7 +71,7 @@ static jive_node *
 jive_bitor_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::or_operation());
 	node->class_ = &JIVE_BITOR_NODE;
 	jive_bitor_node_init_(node, region, noperands, operands);
 
@@ -98,9 +99,9 @@ jive_bitor_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jiv
 		jive_bitconstant_node * n1 = jive_bitconstant_node_cast((op1)->node);
 		jive_bitconstant_node * n2 = jive_bitconstant_node_cast((op2)->node);
 
-		size_t nbits = n1->attrs.nbits;
+		size_t nbits = n1->operation().bits.size();
 		char bits[nbits];
-		jive_bitstring_or(bits, n1->attrs.bits, n2->attrs.bits, nbits);
+		jive_bitstring_or(bits, &n1->operation().bits[0], &n2->operation().bits[0], nbits);
 
 		return jive_bitconstant(graph, nbits, bits);
 	}
@@ -114,6 +115,7 @@ jive_bitor(size_t noperands, jive_output * const * operands)
 	JIVE_DEBUG_ASSERT(noperands != 0);
 
 	jive_graph * graph = operands[0]->node->graph;
-	return jive_binary_operation_create_normalized(&JIVE_BITOR_NODE_.base, graph, NULL, noperands,
+	jive::bitstring::or_operation op;
+	return jive_binary_operation_create_normalized(&JIVE_BITOR_NODE_.base, graph, &op, noperands,
 		operands);
 }

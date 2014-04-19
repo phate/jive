@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -10,6 +11,15 @@
 
 extern const jive_bitcomparison_operation_class JIVE_BITNOTEQUAL_NODE_;
 #define JIVE_BITNOTEQUAL_NODE (JIVE_BITNOTEQUAL_NODE_.base.base)
+
+namespace jive {
+namespace bitstring {
+
+class notequal_operation final : public jive::bits_compare_operation {
+};
+
+}
+}
 
 jive_output *
 jive_bitnotequal(struct jive_output * operand1, struct jive_output * operand2);

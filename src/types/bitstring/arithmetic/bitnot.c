@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -30,7 +31,7 @@ const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_bitunary_operation_check_operands_, /* inherit */
 			create : jive_bitnot_create_, /* override */
@@ -66,7 +67,7 @@ jive_bitnot_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::bitstring::not_operation());
 	node->class_ = &JIVE_BITNOT_NODE;
 	jive_bitnot_node_init_(node, region, operands[0]);
 	return node;
@@ -94,10 +95,10 @@ jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 	
 	if (path == jive_unop_reduction_constant) {
 		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand_->node;
-		char bits[node->attrs.nbits];
-		jive_bitstring_not(bits, node->attrs.bits, node->attrs.nbits);
+		char bits[node->operation().bits.size()];
+		jive_bitstring_not(bits, &node->operation().bits[0], node->operation().bits.size());
 		
-		return jive_bitconstant(node->graph, node->attrs.nbits, bits);
+		return jive_bitconstant(node->graph, node->operation().bits.size(), bits);
 	}
 	
 	return NULL;
@@ -106,6 +107,7 @@ jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 jive_output *
 jive_bitnot(jive_output * operand)
 {
+	jive::bitstring::not_operation op;
 	return jive_unary_operation_create_normalized(&JIVE_BITNOT_NODE_.base, operand->node->graph,
-		NULL, operand);
+		&op, operand);
 }

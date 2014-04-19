@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -10,9 +10,9 @@
 #include <locale.h>
 #include <string.h>
 
+#include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/types/bitstring.h>
 
 static int test_main(void)
 {
@@ -35,8 +35,9 @@ static int test_main(void)
 		assert(a->node->class_ == &JIVE_BITCONSTANT_NODE);
 		const jive_bitstring_type * type = (const jive_bitstring_type *) jive_output_get_type(a);
 		assert(type->nbits()==4);
-		const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *)jive_node_get_attrs(a->node);
-		assert(memcmp(attrs->bits, "1101", 4)==0);
+		const jive::bitstring::constant_operation * attrs =
+			(const jive::bitstring::constant_operation *)jive_node_get_attrs(a->node);
+		assert(memcmp(&attrs->bits[0], "1101", 4) == 0);
 	}
 	
 	{
@@ -45,8 +46,9 @@ static int test_main(void)
 		jive_output * b = jive_bitslice(a, 1, 3);
 	
 		assert(b->node->class_ == &JIVE_BITSLICE_NODE);
-		const jive_bitslice_node_attrs * attrs = (const jive_bitslice_node_attrs *)jive_node_get_attrs(b->node);
-		assert(attrs->low==3 && attrs->high==5);
+		const jive::bitstring::slice_operation * attrs =
+			(const jive::bitstring::slice_operation *)jive_node_get_attrs(b->node);
+		assert(attrs->low() == 3 && attrs->high() == 5);
 	}
 	
 	{
@@ -105,9 +107,10 @@ static int test_main(void)
 		jive_output * a = jive_bitconcat(2, list1);
 		
 		assert(a->node->class_ == &JIVE_BITCONSTANT_NODE);
-		const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *) jive_node_get_attrs(a->node);
-		assert(attrs->nbits == 16);
-		assert(memcmp(attrs->bits, "0011011111001000", 16) == 0);
+		const jive::bitstring::constant_operation * attrs =
+			(const jive::bitstring::constant_operation *) jive_node_get_attrs(a->node);
+		assert(attrs->bits.size() == 16);
+		assert(memcmp(&attrs->bits[0], "0011011111001000", 16) == 0);
 	}
 	
 	{

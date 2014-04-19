@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -42,7 +43,7 @@ const jive_node_class JIVE_BITCONSTANT_NODE = {
 	fini : jive_bitconstant_node_fini_, /* override */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
 	get_label : jive_bitconstant_node_get_label_, /* override */
-	get_attrs : jive_bitconstant_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_bitconstant_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_bitconstant_node_create_, /* override */
@@ -63,17 +64,12 @@ jive_bitconstant_node_init_(
 	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &typeptr);
-	self->attrs.nbits = nbits;
-	self->attrs.bits = jive_context_malloc(region->graph->context, nbits);
-	size_t n;
-	for(n=0; n<nbits; n++) self->attrs.bits[n] = bits[n];
 }
 
 static void
 jive_bitconstant_node_fini_(jive_node * self_)
 {
 	jive_bitconstant_node * self = (jive_bitconstant_node *) self_;
-	jive_context_free(self->graph->context, self->attrs.bits);
 	jive_node_fini_(self);
 }
 
@@ -82,31 +78,22 @@ jive_bitconstant_node_get_label_(const jive_node * self_, struct jive_buffer * b
 {
 	const jive_bitconstant_node * self = (const jive_bitconstant_node *) self_;
 	
-	char tmp[self->attrs.nbits + 1];
+	char tmp[self->operation().bits.size() + 1];
 	size_t n;
-	for(n=0; n<self->attrs.nbits; n++)
-		tmp[n] = self->attrs.bits[self->attrs.nbits - n - 1];
+	for (n = 0; n < self->operation().bits.size(); n++)
+		tmp[n] = self->operation().bits[self->operation().bits.size() - n - 1];
 	tmp[n] = 0;
 	jive_buffer_putstr(buffer, tmp);
-}
-
-static const jive_node_attrs *
-jive_bitconstant_node_get_attrs_(const jive_node * self_)
-{
-	const jive_bitconstant_node * self = (const jive_bitconstant_node *) self_;
-	return &self->attrs;
 }
 
 static bool
 jive_bitconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_bitconstant_node_attrs * first = &((const jive_bitconstant_node *) self)->attrs;
-	const jive_bitconstant_node_attrs * second = (const jive_bitconstant_node_attrs *) attrs;
-	if (first->nbits != second->nbits) return false;
-	size_t n;
-	for(n=0; n<first->nbits; n++)
-		if (first->bits[n] != second->bits[n]) return false;
-	return true;
+	const jive::bitstring::constant_operation * first =
+		&((const jive_bitconstant_node *) self)->operation();
+	const jive::bitstring::constant_operation * second =
+		(const jive::bitstring::constant_operation *) attrs;
+	return first->bits == second->bits;
 }
 
 static jive_node *
@@ -115,11 +102,12 @@ jive_bitconstant_node_create_(struct jive_region * region, const jive_node_attrs
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 
-	const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *) attrs_;
+	const jive::bitstring::constant_operation * attrs =
+		(const jive::bitstring::constant_operation *) attrs_;
 	
-	jive_bitconstant_node * node = new jive_bitconstant_node;
+	jive_bitconstant_node * node = new jive_bitconstant_node(*attrs);
 	node->class_ = &JIVE_BITCONSTANT_NODE;
-	jive_bitconstant_node_init_(node, region, attrs->nbits, attrs->bits);
+	jive_bitconstant_node_init_(node, region, attrs->bits.size(), &attrs->bits[0]);
 	
 	return node;
 }
@@ -127,9 +115,8 @@ jive_bitconstant_node_create_(struct jive_region * region, const jive_node_attrs
 jive_output *
 jive_bitconstant(jive_graph * graph, size_t nbits, const char bits[])
 {
-	jive_bitconstant_node_attrs attrs;
-	attrs.nbits = nbits;
-	attrs.bits = (char *) bits;
+	jive::bitstring::constant_operation attrs;
+	attrs.bits = std::vector<char>(bits, bits + nbits);
 
 	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs);
 }
@@ -140,9 +127,8 @@ jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t valu
 	char bits[nbits];
 	jive_bitstring_init_unsigned(bits, nbits, value);
 	
-	jive_bitconstant_node_attrs attrs;
-	attrs.nbits = nbits;
-	attrs.bits = bits;
+	jive::bitstring::constant_operation attrs;
+	attrs.bits = std::vector<char>(bits, bits + nbits);
 
 	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs);
 }
@@ -153,9 +139,8 @@ jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value)
 	char bits[nbits];
 	jive_bitstring_init_signed(bits, nbits, value);
 	
-	jive_bitconstant_node_attrs attrs;
-	attrs.nbits = nbits;
-	attrs.bits = bits;
+	jive::bitstring::constant_operation attrs;
+	attrs.bits = std::vector<char>(bits, bits + nbits);
 
 	return jive_nullary_operation_create_normalized(&JIVE_BITCONSTANT_NODE, graph, &attrs);
 }

@@ -1,18 +1,18 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
 #include <assert.h>
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
-#include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 static void
 assert_constant(jive_output * bitstr, size_t nbits, const char bits[])
@@ -20,8 +20,8 @@ assert_constant(jive_output * bitstr, size_t nbits, const char bits[])
 	jive_bitconstant_node * node = jive_bitconstant_node_cast(bitstr->node);
 	assert(node);
 	
-	assert(node->attrs.nbits == nbits);
-	assert(strncmp(node->attrs.bits, bits, nbits) == 0);
+	assert(node->operation().bits.size() == nbits);
+	assert(strncmp(&node->operation().bits[0], bits, nbits) == 0);
 }
 
 static int test_main(void)
@@ -61,11 +61,13 @@ static int test_main(void)
 		assert(node->inputs[0]->origin->node->class_ == &JIVE_BITSLICE_NODE);
 		assert(node->inputs[1]->origin->node->class_ == &JIVE_BITSLICE_NODE);
 		
-		const jive_bitslice_node_attrs * attrs;
-		attrs = (const jive_bitslice_node_attrs *) jive_node_get_attrs(node->inputs[0]->origin->node);
-		assert( (attrs->low == 8) && (attrs->high == 16) );
-		attrs = (const jive_bitslice_node_attrs *) jive_node_get_attrs(node->inputs[1]->origin->node);
-		assert( (attrs->low == 0) && (attrs->high == 8) );
+		const jive::bitstring::slice_operation * attrs;
+		attrs = (const jive::bitstring::slice_operation *)
+			jive_node_get_attrs(node->inputs[0]->origin->node);
+		assert( (attrs->low() == 8) && (attrs->high() == 16) );
+		attrs = (const jive::bitstring::slice_operation *)
+			jive_node_get_attrs(node->inputs[1]->origin->node);
+		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
 		assert(node->inputs[0]->origin->node->inputs[0]->origin == x);
 		assert(node->inputs[1]->origin->node->inputs[0]->origin == y);
