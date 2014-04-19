@@ -43,7 +43,7 @@ const jive_output_class JIVE_ANCHOR_OUTPUT = {
 jive_input *
 jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_anchor_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_anchor_input * input = new jive_anchor_input;
 	input->class_ = &JIVE_ANCHOR_INPUT;
 	jive_anchor_input_init_(input, node, index, initial_operand);
 	return input;

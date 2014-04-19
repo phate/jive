@@ -131,7 +131,7 @@ jive_reuse_type_create_input_(const jive_type * self_, struct jive_node * node, 
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	
-	jive_reuse_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_reuse_input * input = new jive_reuse_input;
 	input->class_ = &JIVE_REUSE_INPUT;
 	jive_reuse_input_init_(input, node, index, initial_operand, self->name);
 	return input;

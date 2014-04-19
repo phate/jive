@@ -105,7 +105,7 @@ jive_address_type_create_input_(const jive_type * self_, jive_node * node,
 	size_t index, jive_output * initial_operand)
 {
 	const jive_address_type * self = (const jive_address_type *) self_;
-	jive_address_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_address_input * input = new jive_address_input;
 
 	input->class_ = &JIVE_ADDRESS_INPUT;
 	jive_address_input_init_(input, self, node, index, initial_operand);

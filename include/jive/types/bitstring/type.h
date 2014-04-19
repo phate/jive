@@ -47,7 +47,7 @@ typedef struct jive_bitstring_input jive_bitstring_input;
 
 extern const jive_input_class JIVE_BITSTRING_INPUT;
 struct jive_bitstring_input : public jive_value_input {
-	jive_bitstring_type type;
+	jive_bitstring_type * type;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_input *
@@ -71,7 +71,7 @@ jive_bitstring_input_const_cast(const jive_input * input)
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_input_nbits(const jive_bitstring_input * self)
 {
-	return self->type.nbits;
+	return self->type->nbits;
 }
 
 /* bitstring output */

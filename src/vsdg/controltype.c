@@ -81,7 +81,7 @@ const jive_gate_class JIVE_CONTROL_GATE = {
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_control_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_control_input * input = new jive_control_input;
 	input->class_ = &JIVE_CONTROL_INPUT;
 	jive_control_input_init_(input, node, index, initial_operand);
 	return input;

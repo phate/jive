@@ -51,7 +51,7 @@ jive_input *
 jive_float_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * initial_operand)
 {
-	jive_float_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_float_input * input = new jive_float_input;
 	input->class_ = &JIVE_FLOAT_INPUT;
 	jive_float_input_init_(input, node, index, initial_operand);
 	return input;

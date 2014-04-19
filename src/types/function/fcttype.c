@@ -171,7 +171,7 @@ jive_input *
 jive_function_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
-	jive_function_input * input = jive_context_malloc(node->graph->context, sizeof( *input));
+	jive_function_input * input = new jive_function_input;
 	
 	input->class_ = &JIVE_FUNCTION_INPUT;
 	jive_function_input_init_(input, self, node, index, initial_operand);

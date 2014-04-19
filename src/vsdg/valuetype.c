@@ -67,7 +67,7 @@ jive_value_type_copy_(const jive_type * self_)
 jive_input *
 jive_value_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_value_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_value_input * input = new jive_value_input;
 	input->class_ = &JIVE_VALUE_INPUT;
 	jive_value_input_init_(input, node, index, initial_operand);
 	return input;

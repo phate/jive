@@ -109,7 +109,7 @@ static jive_input *
 jive_integral_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * origin)
 {
-	jive_integral_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_integral_input * input = new jive_integral_input;
 	input->class_ = &JIVE_INTEGRAL_INPUT;
 	jive_integral_input_init_(input, node, index, origin);
 

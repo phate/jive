@@ -67,7 +67,7 @@ jive_memory_type_copy_(const jive_type * self_)
 static jive_input *
 jive_memory_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_memory_input * input = jive_context_malloc(node->graph->context, sizeof(*input));
+	jive_memory_input * input = new jive_memory_input;
 	input->class_ = &JIVE_MEMORY_INPUT;
 	jive_memory_input_init_(input, node, index, initial_operand);
 	return input;

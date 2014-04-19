@@ -38,7 +38,7 @@ jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t 
 	jive_output * initial_operand)
 {
 	jive_context * context = node->graph->context;
-	jive_input * input = jive_context_malloc(context, sizeof(*input));
+	jive_input * input = new jive_input;
 	input->class_ = &JIVE_INPUT;
 	jive_input_init_(input, node, index, initial_operand);
 	return input;
@@ -375,7 +375,7 @@ jive_input_destroy(jive_input * self)
 	if (self->node->region) jive_graph_notify_input_destroy(self->node->graph, self);
 	
 	self->class_->fini(self);
-	jive_context_free(self->node->graph->context, self);
+	delete self;
 }
 
 /* outputs */
