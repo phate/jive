@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -30,7 +30,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	if (address->node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE) {
 		jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node);
 		jive_immediate imm;
-		jive_immediate_init(&imm, 0, label_node->attrs.label, NULL, NULL);
+		jive_immediate_init(&imm, 0, label_node->operation().label(), NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_call,
@@ -38,7 +38,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	} else if (address->node->class_ == &JIVE_LABEL_TO_BITSTRING_NODE) {
 		jive_label_to_bitstring_node * label_node = jive_label_to_bitstring_node_cast(address->node);
 		jive_immediate imm;
-		jive_immediate_init(&imm, 0, label_node->attrs.label, NULL, NULL);
+		jive_immediate_init(&imm, 0, label_node->operation().label(), NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_call,
@@ -53,10 +53,14 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	}
 	
 	/* mark caller-saved regs as clobbered */
-	jive_output * clobber_eax = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_gpr_eax.base);
-	jive_output * clobber_edx = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_gpr_edx.base);
-	jive_output * clobber_ecx = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_gpr_ecx.base);
-	jive_output * clobber_flags = jive_node_add_constrained_output(call_instr, &jive_i386_regcls_flags.base);
+	jive_output * clobber_eax = jive_node_add_constrained_output(
+		call_instr, &jive_i386_regcls_gpr_eax.base);
+	jive_output * clobber_edx = jive_node_add_constrained_output(
+		call_instr, &jive_i386_regcls_gpr_edx.base);
+	jive_output * clobber_ecx = jive_node_add_constrained_output(
+		call_instr, &jive_i386_regcls_gpr_ecx.base);
+	jive_output * clobber_flags = jive_node_add_constrained_output(
+		call_instr, &jive_i386_regcls_flags.base);
 	(void) clobber_edx;
 	(void) clobber_ecx;
 	(void) clobber_flags;
@@ -100,7 +104,10 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		if (orig_input->gate) {
 			jive_node_gate_input(call_instr, orig_input->gate, orig_input->origin);
 		} else {
-			jive_input * new_input = jive_node_add_input(call_instr, jive_input_get_type(orig_input), orig_input->origin);
+			jive_input * new_input = jive_node_add_input(
+				call_instr,
+				jive_input_get_type(orig_input),
+				orig_input->origin);
 			new_input->required_rescls = orig_input->required_rescls;
 		}
 	}

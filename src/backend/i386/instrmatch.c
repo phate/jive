@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -50,7 +50,7 @@ regvalue_to_immediate(const jive_output * regvalue, jive_immediate * imm)
 	
 	jive_label_to_bitstring_node * lbnode = jive_label_to_bitstring_node_cast(value->node);
 	if (lbnode) {
-		jive_immediate_init(imm, 0, lbnode->attrs.label, 0, 0);
+		jive_immediate_init(imm, 0, lbnode->operation().label(), 0, 0);
 		return;
 	}
 	
@@ -231,7 +231,10 @@ match_gpr_bitbinary(jive_node * node)
 }
 
 static void
-convert_bitcmp(jive_node * node, const jive_instruction_class * jump_icls, const jive_instruction_class * inv_jump_icls)
+convert_bitcmp(
+	jive_node * node,
+	const jive_instruction_class * jump_icls,
+	const jive_instruction_class * inv_jump_icls)
 {
 	jive_output * arg1 = node->inputs[0]->origin;
 	jive_output * arg2 = node->inputs[1]->origin;

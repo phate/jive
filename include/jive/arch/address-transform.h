@@ -7,6 +7,7 @@
 #ifndef JIVE_ARCH_ADDRESS_TRANSFORM_H
 #define JIVE_ARCH_ADDRESS_TRANSFORM_H
 
+#include <jive/arch/address.h>
 #include <jive/common.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/vsdg/graph.h>
@@ -96,10 +97,8 @@ void
 jive_store_node_address_transform(struct jive_store_node * node,
 	size_t nbits);
 
-struct jive_label_to_address_node;
-
 void
-jive_label_to_address_node_address_transform(struct jive_label_to_address_node * node,
+jive_label_to_address_node_address_transform(jive_label_to_address_node * node,
 	size_t nbits);
 
 struct jive_call_node;
@@ -114,25 +113,20 @@ jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits);
 void
 jive_apply_node_address_transform(const struct jive_apply_node * node, size_t nbits);
 
-struct jive_memberof_node;
-struct jive_containerof_node;
-struct jive_arraysubscript_node;
-struct jive_arrayindex_node;
-
 void
-jive_memberof_node_address_transform(struct jive_memberof_node * node,
+jive_memberof_node_address_transform(jive_memberof_node * node,
 	struct jive_memlayout_mapper * mapper);
 
 void
-jive_containerof_node_address_transform(struct jive_containerof_node * node,
+jive_containerof_node_address_transform(jive_containerof_node * node,
 	struct jive_memlayout_mapper * mapper);
 
 void
-jive_arraysubscript_node_address_transform(struct jive_arraysubscript_node * node,
+jive_arraysubscript_node_address_transform(jive_arraysubscript_node * node,
 	struct jive_memlayout_mapper * mapper);
 
 void
-jive_arrayindex_node_address_transform(struct jive_arrayindex_node * node,
+jive_arrayindex_node_address_transform(jive_arrayindex_node * node,
 	struct jive_memlayout_mapper * mapper);
 
 void

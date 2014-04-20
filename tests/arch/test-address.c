@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,14 +9,14 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/arch/address-transform.h>
+#include <jive/arch/address.h>
+#include <jive/arch/memlayout-simple.h>
 #include <jive/context.h>
+#include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/arch/address.h>
-#include <jive/arch/address-transform.h>
-#include <jive/types/bitstring.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/arch/memlayout-simple.h>
 
 static int test_main(void)
 {
@@ -80,27 +80,38 @@ static int test_main(void)
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, context, 32);
 
-	jive_node * memberof = jive_memberof_node_create(cont3->node->region, cont3, &rec, 1);
-	jive_node * arraysub = jive_arraysubscript_node_create(top->region, top->outputs[0], &bits32, one);
+	jive_output * memberof = jive_memberof(cont3, &rec, 1);
+	jive_output * arraysub = jive_arraysubscript(top->outputs[0],
+		&bits32, one);
+
 	const jive_type * tmparray2[] = {&addrtype, &addrtype, &bits32};
-	jive_output * tmparray3[] = {memberof->outputs[0], arraysub->outputs[0], diff2};
+	jive_output * tmparray3[] = {memberof, arraysub, diff2};
 
 	const jive_type * typeptr = &addrtype;
+
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2,
 			tmparray3,
 		1, &typeptr);
 	jive_graph_export(graph, bottom->outputs[0]);
 
-	jive_containerof_node_address_transform(jive_containerof_node_cast(cont3->node), &mapper.base.base);	
-	jive_memberof_node_address_transform(jive_memberof_node_cast(memberof), &mapper.base.base);
-	jive_arrayindex_node_address_transform(jive_arrayindex_node_cast(diff2->node), &mapper.base.base);
-	jive_arraysubscript_node_address_transform(jive_arraysubscript_node_cast(arraysub), &mapper.base.base);
+	jive_containerof_node_address_transform(
+		jive_containerof_node_cast(cont3->node),
+		&mapper.base.base);
+	jive_memberof_node_address_transform(
+		jive_memberof_node_cast(memberof->node),
+		&mapper.base.base);
+	jive_arrayindex_node_address_transform(
+		jive_arrayindex_node_cast(diff2->node),
+		&mapper.base.base);
+	jive_arraysubscript_node_address_transform(
+		jive_arraysubscript_node_cast(arraysub->node),
+		&mapper.base.base);
 	
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 	
-	jive_memlayout_mapper_simple_fini(&mapper);	
+	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
 	
 	assert(jive_context_is_empty(context));

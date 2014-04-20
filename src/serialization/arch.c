@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -216,11 +216,12 @@ jive_label_to_bitstring_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive_label_to_bitstring_node_attrs * attrs = (const jive_label_to_bitstring_node_attrs *) attrs_;
+	const jive::address::label_to_bitstring_operation * attrs =
+		(const jive::address::label_to_bitstring_operation *) attrs_;
 	
-	jive_serialize_label(driver, attrs->label, os);
+	jive_serialize_label(driver, attrs->label(), os);
 	jive_serialize_char_token(driver, ',', os);
-	jive_serialize_uint(driver, attrs->nbits, os);
+	jive_serialize_uint(driver, attrs->nbits(), os);
 }
 
 static bool
@@ -240,9 +241,7 @@ jive_label_to_bitstring_deserialize(
 	if (!jive_deserialize_uint(driver, is, &nbits))
 		return false;
 	
-	jive_label_to_bitstring_node_attrs attrs;
-	attrs.label = label;
-	attrs.nbits = nbits;
+	jive::address::label_to_bitstring_operation attrs(label, nbits);
 	
 	*node = JIVE_LABEL_TO_BITSTRING_NODE.create(region, &attrs,
 		0, NULL);
@@ -256,9 +255,10 @@ jive_label_to_address_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive_label_to_address_node_attrs * attrs = (const jive_label_to_address_node_attrs *) attrs_;
+	const jive::address::label_to_address_operation * attrs =
+		(const jive::address::label_to_address_operation *) attrs_;
 	
-	jive_serialize_label(driver, attrs->label, os);
+	jive_serialize_label(driver, attrs->label(), os);
 }
 
 static bool
@@ -273,8 +273,7 @@ jive_label_to_address_deserialize(
 	if (!jive_deserialize_label(driver, is, &label))
 		return false;
 	
-	jive_label_to_address_node_attrs attrs;
-	attrs.label = label;
+	jive::address::label_to_address_operation attrs(label);
 	
 	*node = JIVE_LABEL_TO_ADDRESS_NODE.create(region, &attrs,
 		0, NULL);

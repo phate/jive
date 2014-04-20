@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -10,8 +10,8 @@
 #include <locale.h>
 #include <string.h>
 
-#include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
+#include <jive/arch/address.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/context.h>
 #include <jive/view.h>
@@ -36,36 +36,41 @@ static int test_main(void)
 	jive_output * o0 = jive_label_to_address_create(graph, &foobar.base);
 	jive_output * o1 = jive_label_to_address_create(graph, &bla.base);
 
-	const jive_label_to_address_node_attrs * attrs0 = (const jive_label_to_address_node_attrs *)
-		jive_node_get_attrs(o0->node);
-	const jive_label_to_address_node_attrs * attrs1 = (const jive_label_to_address_node_attrs *)
-		jive_node_get_attrs(o1->node);
+	const jive::address::label_to_address_operation * attrs0 =
+		(const jive::address::label_to_address_operation *)
+			jive_node_get_attrs(o0->node);
+	const jive::address::label_to_address_operation * attrs1 =
+		(const jive::address::label_to_address_operation *)
+			jive_node_get_attrs(o1->node);
 
 	assert(attrs0);
 	assert(attrs1);
-	assert(attrs0->label == &foobar.base);
-	assert(attrs1->label == &bla.base);
+	assert(attrs0->label() == &foobar.base);
+	assert(attrs1->label() == &bla.base);
 	
 	assert(!jive_node_match_attrs(o0->node, attrs1));
 	assert(jive_node_match_attrs(o1->node, attrs1));
 	
 	jive_output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
-	jive_output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);	
+	jive_output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
 	jive_output * o4 = jive_label_to_bitstring_create(graph, &foobar.base, 16);
 
-	const jive_label_to_bitstring_node_attrs * attrs2 = (const jive_label_to_bitstring_node_attrs *)
-		jive_node_get_attrs(o2->node);
-	const jive_label_to_bitstring_node_attrs * attrs3 = (const jive_label_to_bitstring_node_attrs *)
-		jive_node_get_attrs(o3->node);
-	const jive_label_to_bitstring_node_attrs * attrs4 = (const jive_label_to_bitstring_node_attrs *)
-		jive_node_get_attrs(o4->node);
+	const jive::address::label_to_address_operation * attrs2 =
+		(const jive::address::label_to_address_operation *)
+			jive_node_get_attrs(o2->node);
+	const jive::address::label_to_address_operation * attrs3 =
+		(const jive::address::label_to_address_operation *)
+			jive_node_get_attrs(o3->node);
+	const jive::address::label_to_address_operation * attrs4 =
+		(const jive::address::label_to_address_operation *)
+			jive_node_get_attrs(o4->node);
 
 	assert(attrs2);
 	assert(attrs3);
 	assert(attrs4);
-	assert(attrs2->label == &foobar.base);
-	assert(attrs3->label == &bla.base);
-	assert(attrs4->label == &foobar.base);
+	assert(attrs2->label() == &foobar.base);
+	assert(attrs3->label() == &bla.base);
+	assert(attrs4->label() == &foobar.base);
 	
 	assert(!jive_node_match_attrs(o2->node, attrs4));
 	assert(!jive_node_match_attrs(o2->node, attrs3));
