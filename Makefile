@@ -24,6 +24,7 @@ LIBJIVE_SRC = \
 	src/vsdg/notifiers.c \
 	src/vsdg/objdef.c \
 	src/vsdg/operators.c \
+	src/vsdg/operators/base.c \
 	src/vsdg/operators/binary.c \
 	src/vsdg/operators/nullary.c \
 	src/vsdg/operators/unary.c \

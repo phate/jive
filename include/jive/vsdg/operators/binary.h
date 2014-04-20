@@ -9,10 +9,24 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/base.h>
+
+namespace jive {
+
+/**
+	\brief Binary operator
+	
+	Operator taking two arguments (with well-defined reduction for more
+	operands if operator is associative).
+*/
+class binary_operation : public operation {
+public:
+	virtual ~binary_operation() noexcept;
+};
+
+}
 
 struct jive_region;
-
-struct jive_unary_operation_class;
 
 typedef struct jive_binary_operation_class jive_binary_operation_class;
 

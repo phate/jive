@@ -9,6 +9,12 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
+namespace jive {
+
+nullary_operation::~nullary_operation() noexcept {}
+
+}
+
 /* node class */
 
 const jive_node_class JIVE_NULLARY_OPERATION = {

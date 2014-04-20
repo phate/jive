@@ -10,6 +10,12 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
+namespace jive {
+
+binary_operation::~binary_operation() noexcept {}
+
+}
+
 static inline size_t
 reduce_operands(const jive_node_class * cls_, const jive_node_attrs * attrs, size_t noperands, jive_output * operands[])
 {

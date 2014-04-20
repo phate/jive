@@ -10,6 +10,12 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
+namespace jive {
+
+unary_operation::~unary_operation() noexcept {}
+
+}
+
 /* node class */
 
 const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {

@@ -10,19 +10,22 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <utility>
 
 #include <jive/context.h>
 #include <jive/vsdg/basetype.h>
+#include <jive/vsdg/operators/base.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/tracker.h>
 
 typedef struct jive_node jive_node;
-typedef struct jive_node_attrs jive_node_attrs;
 typedef struct jive_node_class jive_node_class;
 
 typedef struct jive_node_normal_form jive_node_normal_form;
 typedef struct jive_node_normal_form_class jive_node_normal_form_class;
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
+
+typedef jive::operation jive_node_attrs;
 
 struct jive_input;
 struct jive_type;
@@ -37,8 +40,8 @@ class jive_node {
 public:
 	virtual ~jive_node() noexcept;
 	
-	virtual const jive_node_attrs &
-	get_attrs() const noexcept;
+	virtual const jive::operation &
+	operation() const noexcept;
 	
 	const struct jive_node_class * class_;
 	
@@ -79,19 +82,49 @@ public:
 
 extern const jive_node_class JIVE_NODE;
 
-template<typename Attrs>
-class jive_make_node final : public jive_node {
+namespace jive {
+
+// Define node representing a specific operation.
+template<typename Operation>
+class operation_node final : public jive_node {
 public:
-	jive_make_node(const Attrs & attributes) : attrs(attributes) {}
-	jive_make_node(Attrs && attributes) noexcept : attrs(attributes) {}
+	virtual ~operation_node() noexcept {}
 
-	Attrs attrs;
+	// Construct copying the operator.
+	operation_node(const Operation & operation)
+		: operation_(operation)
+	{}
+
+	// Construct moving the operator.
+	operation_node(Operation && operation) noexcept
+		: operation_(std::move(operation))
+	{}
+
+	virtual const Operation &
+	operation() const noexcept override
+	{
+		return operation_;
+	}
+
+private:
+	Operation operation_;
 };
 
-struct jive_node_attrs {
-	virtual ~jive_node_attrs() noexcept;
-	/* empty, need override */
-};
+template<typename Operation>
+operation_node<Operation> *
+create_operation_node(const Operation & operation)
+{
+	return new operation_node<Operation>(operation);
+}
+
+template<typename Operation>
+operation_node<Operation> *
+create_operation_node(Operation && operation)
+{
+	return new operation_node<Operation>(std::move(operation));
+}
+
+}
 
 struct jive_node_class {
 	const struct jive_node_class * parent;
@@ -151,7 +184,7 @@ jive_node_get_label(const jive_node * self, struct jive_buffer * buffer)
 JIVE_EXPORTED_INLINE const jive_node_attrs *
 jive_node_get_attrs(const jive_node * self)
 {
-	return self->class_->get_attrs(self);
+	return &self->operation();
 }
 
 JIVE_EXPORTED_INLINE bool

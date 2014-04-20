@@ -9,8 +9,21 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/base.h>
 
-struct jive_binary_operation_class;
+namespace jive {
+
+/**
+	\brief Unary operator
+	
+	Operator taking a single argument.
+*/
+class unary_operation : public operation {
+public:
+	virtual ~unary_operation() noexcept;
+};
+
+}
 
 typedef struct jive_unary_operation_class jive_unary_operation_class;
 

@@ -9,8 +9,20 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/base.h>
 
-struct jive_node;
+namespace jive {
+
+/**
+	\brief Nullary operator (operator taking no formal arguments)
+*/
+class nullary_operation : public operation {
+public:
+	virtual ~nullary_operation() noexcept;
+};
+
+}
+
 struct jive_output;
 struct jive_region;
 
