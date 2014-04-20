@@ -62,22 +62,7 @@ JIVE_EXPORTED_INLINE const char *
 jive_buffer_to_string(struct jive_buffer * self)
 {
 	jive_buffer_putbyte(self, '\0');
-	return self->data;
-}
-
-JIVE_EXPORTED_INLINE struct jive_buffer *
-jive_buffer_create(struct jive_context * context)
-{
-	struct jive_buffer * buffer = jive_context_malloc(context, sizeof(*buffer));
-	jive_buffer_init(buffer, context);
-	return buffer;
-}
-
-JIVE_EXPORTED_INLINE void
-jive_buffer_destroy(struct jive_buffer * self)
-{
-	jive_buffer_fini(self);
-	jive_context_free(self->context, self);
+	return static_cast<const char*>(self->data);
 }
 
 JIVE_EXPORTED_INLINE void
