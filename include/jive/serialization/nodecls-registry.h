@@ -10,10 +10,8 @@
 #include <stddef.h>
 
 #include <jive/common.h>
+#include <jive/vsdg/node.h>
 
-struct jive_node;
-struct jive_node_attrs;
-struct jive_node_class;
 struct jive_output;
 struct jive_region;
 struct jive_serialization_driver;
@@ -25,7 +23,7 @@ typedef struct jive_serialization_nodecls jive_serialization_nodecls;
 typedef void (*jive_nodecls_serialize_function_t)(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
-	const struct jive_node_attrs * attrs,
+	const jive_node_attrs * attrs,
 	struct jive_token_ostream * os);
 
 typedef bool (*jive_nodecls_deserialize_function_t)(
@@ -83,7 +81,7 @@ void
 jive_serialization_nodecls_serialize_default(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
-	const struct jive_node_attrs * attrs,
+	const jive_node_attrs * attrs,
 	struct jive_token_ostream * os);
 
 bool
