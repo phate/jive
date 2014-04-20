@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -27,5 +27,12 @@ jive_control_true(struct jive_graph * graph);
 
 extern const jive_node_class JIVE_CONTROL_FALSE_NODE;
 extern const jive_node_class JIVE_CONTROL_TRUE_NODE;
+
+class jive_op_control_constant final : public jive::operation {
+public:
+	constexpr jive_op_control_constant(bool value) noexcept : value_(value) {}
+private:
+	bool value_;
+};
 
 #endif

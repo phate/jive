@@ -1,6 +1,6 @@
 /*
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -36,47 +36,53 @@ jive_phi_node_normal_form_cast(jive_node_normal_form * self)
 
 /* phi node */
 
-typedef struct jive_phi_node jive_phi_node;
-
 extern const jive_anchor_node_class JIVE_PHI_NODE;
 extern const jive_node_class JIVE_PHI_ENTER_NODE;
 extern const jive_node_class JIVE_PHI_LEAVE_NODE;
 
-struct jive_phi_node : public jive_anchor_node {
+class jive_op_phi_enter final : public jive::operation {
 };
 
-JIVE_EXPORTED_INLINE struct jive_phi_node *
+class jive_op_phi_leave final : public jive::operation {
+};
+
+class jive_op_phi final : public jive::operation {
+};
+
+typedef jive::operation_node<jive_op_phi> jive_phi_node;
+
+JIVE_EXPORTED_INLINE jive_phi_node *
 jive_phi_node_cast(struct jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
-		return (struct jive_phi_node *) node;
+		return (jive_phi_node *) node;
 	else
 		return NULL;
 }
 
-JIVE_EXPORTED_INLINE const struct jive_phi_node *
+JIVE_EXPORTED_INLINE const jive_phi_node *
 jive_phi_node_const_cast(const struct jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
-		return (const struct jive_phi_node *) node;
+		return (const jive_phi_node *) node;
 	else
 		return NULL;
 }
 
 JIVE_EXPORTED_INLINE struct jive_node *
-jive_phi_node_get_enter_node(const struct jive_phi_node * self)
+jive_phi_node_get_enter_node(const jive_phi_node * self)
 {
 	return self->inputs[0]->origin->node->region->top;
 }
 
 JIVE_EXPORTED_INLINE struct jive_node *
-jive_phi_node_get_leave_node(const struct jive_phi_node * self)
+jive_phi_node_get_leave_node(const jive_phi_node * self)
 {
 	return self->inputs[0]->origin->node;
 }
 
 JIVE_EXPORTED_INLINE struct jive_region *
-jive_phi_node_get_region(const struct jive_phi_node * self)
+jive_phi_node_get_region(const jive_phi_node * self)
 {
 	return jive_phi_node_get_leave_node(self)->region;
 }
@@ -163,7 +169,7 @@ jive_phi_end(jive_phi self,
 */
 typedef struct jive_phi_extension jive_phi_extension;
 struct jive_phi_extension {
-	struct jive_phi_node * phi_node;
+	jive_phi_node * phi_node;
 	size_t nfixvars;
 	struct jive_output ** fixvars;
 };
@@ -172,7 +178,7 @@ struct jive_phi_extension {
 	\brief Begin extending a phi construct
 */
 struct jive_phi_extension *
-jive_phi_begin_extension(struct jive_phi_node * phi_node, size_t nfixvars,
+jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
 	const jive_type * fixvar_types[]);
 
 /**

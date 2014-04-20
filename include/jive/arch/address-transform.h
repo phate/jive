@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,6 +8,7 @@
 #define JIVE_ARCH_ADDRESS_TRANSFORM_H
 
 #include <jive/common.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 
@@ -83,7 +85,6 @@ jive_bitstring_to_address_node_cast(jive_node * node)
 /* reductions */
 
 struct jive_apply_node;
-struct jive_lambda_node;
 struct jive_load_node;
 struct jive_store_node;
 
@@ -108,7 +109,7 @@ jive_call_node_address_transform(struct jive_call_node * node,
 	size_t nbits);
 
 void
-jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t nbits);
+jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits);
 
 void
 jive_apply_node_address_transform(const struct jive_apply_node * node, size_t nbits);

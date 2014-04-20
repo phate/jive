@@ -22,7 +22,7 @@ static jive_node *
 jive_theta_head_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_theta_head());
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
@@ -38,7 +38,7 @@ jive_theta_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 	size_t noperands, jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_theta_tail());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_TAIL_NODE;
@@ -55,7 +55,7 @@ jive_theta_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	jive_node * self = new jive_node;;
+	jive_node * self = jive::create_operation_node(jive_op_theta());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_THETA_NODE;
 	jive_node_init_(self, region,
@@ -71,7 +71,7 @@ const jive_node_class JIVE_THETA_HEAD_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : jive_node_get_attrs_,  /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_head_node_create_,  /* override */
@@ -83,7 +83,7 @@ const jive_node_class JIVE_THETA_TAIL_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : jive_node_get_attrs_,  /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_tail_node_create_,  /* override */
@@ -95,7 +95,7 @@ const jive_node_class JIVE_THETA_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_anchor_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : jive_node_get_attrs_,  /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_node_create_,  /* override */
@@ -104,7 +104,7 @@ const jive_node_class JIVE_THETA_NODE = {
 static jive_node *
 jive_theta_head_node_create(jive_region * region)
 {
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_theta_head());
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
@@ -118,7 +118,7 @@ jive_theta_head_node_create(jive_region * region)
 static jive_node *
 jive_theta_tail_node_create(jive_region * region, jive_output * predicate)
 {
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_theta_tail());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(control);
 	self->class_ = &JIVE_THETA_TAIL_NODE;
@@ -134,7 +134,7 @@ static jive_node *
 jive_theta_node_create(jive_region * region,
 	jive_output * loop_body)
 {
-	jive_node * self = new jive_node;;
+	jive_node * self = jive::create_operation_node(jive_op_theta());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_THETA_NODE;
 	jive_node_init_(self, region,

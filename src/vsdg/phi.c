@@ -118,7 +118,7 @@ static jive_node *
 jive_phi_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive_op_phi_enter());
 
 	node->class_ = &JIVE_PHI_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctltype);
@@ -146,7 +146,7 @@ const jive_node_class JIVE_PHI_ENTER_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_phi_enter_node_create_, /* override */
@@ -159,7 +159,7 @@ jive_phi_leave_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top != NULL);
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive_op_phi_leave());
 
 	node->class_ = &JIVE_PHI_LEAVE_NODE;
 	JIVE_DECLARE_ANCHOR_TYPE(anctype);
@@ -187,7 +187,7 @@ const jive_node_class JIVE_PHI_LEAVE_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_phi_leave_node_create_, /* override */
@@ -209,7 +209,7 @@ const jive_node_class JIVE_PHI_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_phi_node_get_default_normal_form_, /* override */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_phi_node_create_, /* override */
@@ -234,7 +234,7 @@ jive_phi_node_create_(struct jive_region * region, const jive_node_attrs * attrs
 	size_t noperands, struct jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	jive_node * self = new jive_node;;
+	jive_node * self = jive::create_operation_node(jive_op_phi());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, region,
@@ -248,7 +248,7 @@ static jive_node *
 jive_phi_node_create(jive_region * phi_region,
 	jive_output * phi_body)
 {
-	jive_phi_node * self = new jive_phi_node;;
+	jive_phi_node * self = new jive_phi_node(jive_op_phi());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, phi_region,
@@ -365,7 +365,7 @@ jive_phi_end(jive_phi self,
 }
 
 struct jive_phi_extension *
-jive_phi_begin_extension(struct jive_phi_node * phi_node, size_t nfixvars,
+jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
 	const jive_type * fixvar_types[])
 {
 	jive_graph * graph = phi_node->region->graph;

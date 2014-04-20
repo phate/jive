@@ -68,6 +68,14 @@ jive_function_type::jive_function_type(const jive_function_type & rhs)
 		return_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(rhs.return_type(i))));
 }
 
+jive_function_type::jive_function_type(jive_function_type && other) noexcept
+	: jive_value_type(&JIVE_FUNCTION_TYPE)
+	, return_types_(std::move(other.return_types_))
+	, argument_types_(std::move(other.argument_types_))
+{
+}
+
+
 /* function_type inheritable members */
 
 void

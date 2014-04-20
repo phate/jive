@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -23,7 +23,7 @@ static jive_node *
 jive_lambda_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive_op_lambda_enter());
 	
 	node->class_ = &JIVE_LAMBDA_ENTER_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
@@ -49,7 +49,7 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_lambda_enter_node_create_, /* override */
@@ -62,7 +62,7 @@ jive_lambda_leave_node_create(jive_output * output)
 {
 	JIVE_DEBUG_ASSERT(output->node->region->bottom == NULL);
 	
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive_op_lambda_leave());
 	
 	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
@@ -89,7 +89,7 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_lambda_leave_node_create_, /* override */
@@ -97,44 +97,93 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 
 /* lambda node */
 
+jive_op_lambda::~jive_op_lambda() noexcept
+{
+}
+
+jive_op_lambda::jive_op_lambda(
+	const jive_op_lambda & other)
+	: jive_op_lambda(
+		other.function_type_,
+		other.argument_gates_,
+		other.return_gates_)
+{
+}
+
+jive_op_lambda::jive_op_lambda(
+	jive_op_lambda && other)
+	: jive_op_lambda(
+		std::move(other.function_type_),
+		std::move(other.argument_gates_),
+		std::move(other.return_gates_))
+{
+}
+
+jive_op_lambda::jive_op_lambda(
+	const jive_function_type & function_type,
+	const std::vector<jive_gate *> & argument_gates,
+	const std::vector<jive_gate *> & return_gates)
+	: function_type_(function_type)
+	, argument_gates_(argument_gates)
+	, return_gates_(return_gates)
+{
+}
+
+jive_op_lambda::jive_op_lambda(
+	jive_function_type && function_type,
+	std::vector<jive_gate *> && argument_gates,
+	std::vector<jive_gate *> && return_gates) noexcept
+	: function_type_(std::move(function_type))
+	, argument_gates_(std::move(argument_gates))
+	, return_gates_(std::move(return_gates))
+{
+}
+
 static void
-jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
+jive_lambda_node_init_(
+	jive_lambda_node * self,
+	jive_region * function_region)
 {
 	jive_region * region = function_region->parent;
 	jive_context * context = function_region->graph->context;
 	
-	size_t narguments = function_region->top->noutputs - 1;
-	size_t nreturns = function_region->bottom->ninputs - 1;
-	size_t n;
-	
-	const jive_type * argument_types[narguments];
-	for(n = 0; n < narguments; n++)
-		argument_types[n] = jive_output_get_type(function_region->top->outputs[n+1]);
-	const jive_type * return_types[nreturns];
-	for(n = 0; n < nreturns; n++)
-		return_types[n] = jive_input_get_type(function_region->bottom->inputs[n+1]);
-
-	self->attrs.function_type = new jive_function_type(narguments, argument_types,
-		nreturns, return_types);
-	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	
+	const jive_type * function_type = &self->operation().function_type();
 	jive_node_init_(self, region,
 		1, &anchor_type, &function_region->bottom->outputs[0],
-		1, &self->attrs.function_type);
+		1, &function_type);
 	
-	self->attrs.argument_gates = jive_context_malloc(context, narguments * sizeof(jive_gate *));
-	self->attrs.return_gates = jive_context_malloc(context, nreturns * sizeof(jive_gate *));
-	for(n = 0; n < narguments; n++)
-		self->attrs.argument_gates[n] = function_region->top->outputs[n+1]->gate;
-	for(n = 0; n < nreturns; n++)
-		self->attrs.return_gates[n] = function_region->bottom->inputs[n+1]->gate;
 }
 
 static jive_node *
 jive_lambda_node_create(jive_region * function_region)
 {
-	jive_lambda_node * node = new jive_lambda_node;
+	jive_context * context = function_region->graph->context;
+
+	size_t narguments = function_region->top->noutputs - 1;
+	size_t nreturns = function_region->bottom->ninputs - 1;
+	
+	const jive_type * argument_types[narguments];
+	std::vector<jive_gate *> argument_gates;
+	for (size_t n = 0; n < narguments; n++) {
+		argument_types[n] = jive_output_get_type(function_region->top->outputs[n+1]);
+		argument_gates.push_back(function_region->top->outputs[n+1]->gate);
+	}
+	const jive_type * return_types[nreturns];
+	std::vector<jive_gate *> return_gates;
+	for (size_t n = 0; n < nreturns; n++) {
+		return_types[n] = jive_input_get_type(function_region->bottom->inputs[n+1]);
+		return_gates.push_back(function_region->bottom->inputs[n+1]->gate);
+	}
+	
+	jive_function_type function_type(
+		narguments, argument_types,
+		nreturns, return_types);
+	
+	jive_op_lambda op(std::move(function_type), std::move(argument_gates), std::move(return_gates));
+	
+	jive_lambda_node * node = new jive_lambda_node(op);
 	node->class_ = &JIVE_LAMBDA_NODE;
 	jive_lambda_node_init_(node, function_region);
 	return node;
@@ -143,14 +192,7 @@ jive_lambda_node_create(jive_region * function_region)
 static void
 jive_lambda_node_fini_(jive_node * self_)
 {
-	jive_context * context = self_->graph->context;
-	jive_lambda_node * self = (jive_lambda_node *) self_;
-	
-	jive_type_destroy(self->attrs.function_type);
-	jive_context_free(context, self->attrs.argument_gates);
-	jive_context_free(context, self->attrs.return_gates);
-	
-	jive_node_fini_(self);
+	jive_node_fini_(self_);
 }
 
 static jive_node *
@@ -161,28 +203,16 @@ jive_lambda_node_create_(struct jive_region * region, const jive_node_attrs * at
 	return jive_lambda_node_create(operands[0]->node->region);
 }
 
-static const jive_node_attrs *
-jive_lambda_node_get_attrs_(const jive_node * self_)
-{
-	const jive_lambda_node * self = (const jive_lambda_node *) self_;
-	
-	return &self->attrs;
-}
-
 static bool
 jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_lambda_node_attrs * first = &((const jive_lambda_node *)self)->attrs;
-	const jive_lambda_node_attrs * second = (const jive_lambda_node_attrs *) attrs;
+	const jive_op_lambda * first = &((const jive_lambda_node *)self)->operation();
+	const jive_op_lambda * second = (const jive_op_lambda *) attrs;
 
-	if (!jive_type_equals(first->function_type, second->function_type)) return false;
-	size_t n;
-	for(n = 0; n < first->function_type->narguments(); n++)
-		if (first->argument_gates[n] != second->argument_gates[n]) return false;
-	for(n = 0; n < first->function_type->nreturns(); n++)
-		if (first->return_gates[n] != second->return_gates[n]) return false;
-
-	return true;
+	return
+		jive_type_equals(&first->function_type(), &second->function_type()) &&
+		first->argument_gates() == second->argument_gates() &&
+		first->return_gates() == second->return_gates();
 }
 
 const jive_node_class JIVE_LAMBDA_NODE = {
@@ -191,14 +221,14 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	fini : jive_lambda_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_lambda_node_get_attrs_, /* inherit */
+	get_attrs : nullptr, /* inherit */
 	match_attrs : jive_lambda_node_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_lambda_node_create_, /* override */
 };
 
 bool
-jive_lambda_is_self_recursive(const struct jive_lambda_node * self_)
+jive_lambda_is_self_recursive(const jive_lambda_node * self_)
 {
 	JIVE_DEBUG_ASSERT(self_->noutputs == 1);
 
@@ -316,9 +346,8 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	
 	jive_substitution_map * substitution = jive_substitution_map_create(apply_node->graph->context);
 	
-	size_t n;
-	for(n = 0; n < lambda_node->attrs.function_type->narguments(); n++) {
-		jive_gate * gate = lambda_node->attrs.argument_gates[n];
+	for(size_t n = 0; n < lambda_node->operation().function_type().narguments(); n++) {
+		jive_gate * gate = lambda_node->operation().argument_gates()[n];
 		jive_output * output = jive_node_get_gate_output(head, gate);
 		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin);
 	}
@@ -326,8 +355,8 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_region_copy_substitute(function_region,
 		apply_node->region, substitution, false, false);
 	
-	for(n = 0; n < lambda_node->attrs.function_type->nreturns(); n++) {
-		jive_gate * gate = lambda_node->attrs.return_gates[n];
+	for(size_t n = 0; n < lambda_node->operation().function_type().nreturns(); n++) {
+		jive_gate * gate = lambda_node->operation().return_gates()[n];
 		jive_input * input = jive_node_get_gate_input(tail, gate);
 		jive_output * substituted = jive_substitution_map_lookup_output(substitution, input->origin);
 		jive_output * output = apply_node->outputs[n];
@@ -439,7 +468,7 @@ replace_all_apply_nodes(jive_output * fct,
 
 
 bool
-jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self)
+jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs == 1);
 

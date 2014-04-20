@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,27 +7,70 @@
 #ifndef JIVE_TYPES_FUNCTION_FCTLAMBDA_H
 #define JIVE_TYPES_FUNCTION_FCTLAMBDA_H
 
-#include <jive/vsdg/node.h>
+#include <memory>
+#include <vector>
+
 #include <jive/types/function/fcttype.h>
+#include <jive/vsdg/node.h>
 
 /* lambda node */
 
 typedef struct jive_lambda jive_lambda;
-typedef struct jive_lambda_node jive_lambda_node;
-typedef struct jive_lambda_node_attrs jive_lambda_node_attrs;
 
 extern const jive_node_class JIVE_LAMBDA_NODE;
 extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
 extern const jive_node_class JIVE_LAMBDA_LEAVE_NODE;
 
-struct jive_lambda_node_attrs : public jive_node_attrs {
-	jive_function_type * function_type;
-	jive_gate ** argument_gates;
-	jive_gate ** return_gates;
+class jive_op_lambda final : public jive::operation {
+public:
+	virtual ~jive_op_lambda() noexcept;
+
+	jive_op_lambda(
+		const jive_op_lambda & other);
+
+	jive_op_lambda(
+		jive_op_lambda && other);
+
+	jive_op_lambda(
+		const jive_function_type & function_type,
+		const std::vector<jive_gate *> & argument_gates,
+		const std::vector<jive_gate *> & return_gates);
+
+	jive_op_lambda(
+		jive_function_type && function_type,
+		std::vector<jive_gate *> && argument_gates,
+		std::vector<jive_gate *> && return_gates) noexcept;
+
+	inline const jive_function_type &
+	function_type() const noexcept
+	{
+		return function_type_;
+	}
+
+	inline const std::vector<jive_gate *>
+	argument_gates() const noexcept
+	{
+		return argument_gates_;
+	}
+
+	inline const std::vector<jive_gate *>
+	return_gates() const noexcept
+	{
+		return return_gates_;
+	}
+
+private:
+	jive_function_type function_type_;
+	std::vector<jive_gate *> argument_gates_;
+	std::vector<jive_gate *> return_gates_;
 };
 
-struct jive_lambda_node : public jive_node {
-	jive_lambda_node_attrs attrs;
+typedef jive::operation_node<jive_op_lambda> jive_lambda_node;
+
+class jive_op_lambda_enter final : public jive::operation {
+};
+
+class jive_op_lambda_leave final : public jive::operation {
 };
 
 JIVE_EXPORTED_INLINE jive_lambda_node *
@@ -39,11 +82,11 @@ jive_lambda_node_cast(jive_node * node)
 		return NULL;
 }
 
-JIVE_EXPORTED_INLINE const struct jive_lambda_node *
-jive_lambda_node_const_cast(const struct jive_node * node)
+JIVE_EXPORTED_INLINE const jive_lambda_node *
+jive_lambda_node_const_cast(const jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
-		return (const struct jive_lambda_node *)node;
+		return (const jive_lambda_node *)node;
 	else
 		return NULL;
 }
@@ -67,13 +110,13 @@ jive_lambda_node_get_region(const jive_lambda_node * self)
 }
 
 bool
-jive_lambda_is_self_recursive(const struct jive_lambda_node * self);
+jive_lambda_is_self_recursive(const jive_lambda_node * self);
 
 void
 jive_inline_lambda_apply(jive_node * apply_node);
 
 bool
-jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self);
+jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self);
 
 /* lambda instantiation */
 

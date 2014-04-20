@@ -25,7 +25,7 @@ jive_gamma_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 	
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_gamma_tail());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_GAMMA_TAIL_NODE;
 	jive_node_init_(self, region,
@@ -41,7 +41,7 @@ jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 3);
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	self->class_ = &JIVE_GAMMA_NODE;
@@ -70,7 +70,7 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : jive_node_get_attrs_,  /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_gamma_tail_node_create_,  /* override */
@@ -82,7 +82,7 @@ const jive_node_class JIVE_GAMMA_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_gamma_node_get_default_normal_form_,  /* override */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : jive_node_get_attrs_,  /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_gamma_node_create_,  /* override */
@@ -91,7 +91,7 @@ const jive_node_class JIVE_GAMMA_NODE = {
 static jive_node *
 jive_gamma_tail_node_create(jive_region * region)
 {
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_gamma_tail());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	self->class_ = &JIVE_GAMMA_TAIL_NODE;
 	jive_node_init_(self, region,
@@ -108,7 +108,7 @@ jive_gamma_node_create(jive_region * region,
 	jive_output * true_alternative,
 	jive_output * false_alternative)
 {
-	jive_node * self = new jive_node;
+	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	self->class_ = &JIVE_GAMMA_NODE;

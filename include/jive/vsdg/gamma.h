@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,11 +13,17 @@
 
 struct jive_graph;
 struct jive_output;
-struct jive_type;
 struct jive_region;
+struct jive_type;
 
 extern const jive_node_class JIVE_GAMMA_TAIL_NODE;
 extern const jive_node_class JIVE_GAMMA_NODE;
+
+class jive_op_gamma_tail final : public jive::operation {
+};
+
+class jive_op_gamma final : public jive::operation {
+};
 
 void
 jive_gamma(struct jive_output * predicate,
@@ -28,8 +34,8 @@ jive_gamma(struct jive_output * predicate,
 
 /* normal form */
 
-typedef struct jive_gamma_normal_form_class jive_gamma_normal_form_class;
 typedef struct jive_gamma_normal_form jive_gamma_normal_form;
+typedef struct jive_gamma_normal_form_class jive_gamma_normal_form_class;
 
 struct jive_gamma_normal_form_class {
 	jive_anchor_node_normal_form_class base;

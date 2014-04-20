@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,6 +8,7 @@
 #define JIVE_VSDG_THETA_H
 
 #include <jive/vsdg/anchor.h>
+#include <jive/vsdg/node.h>
 
 struct jive_gate;
 struct jive_graph;
@@ -20,6 +21,15 @@ struct jive_type;
 extern const jive_node_class JIVE_THETA_HEAD_NODE;
 extern const jive_node_class JIVE_THETA_TAIL_NODE;
 extern const jive_node_class JIVE_THETA_NODE;
+
+class jive_op_theta_head final : public jive::operation {
+};
+
+class jive_op_theta_tail final : public jive::operation {
+};
+
+class jive_op_theta final : public jive::operation {
+};
 
 typedef struct jive_theta jive_theta;
 typedef struct jive_theta_loopvar jive_theta_loopvar;

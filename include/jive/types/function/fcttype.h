@@ -25,6 +25,8 @@ public:
 
 	jive_function_type(const jive_function_type & rhs);
 
+	jive_function_type(jive_function_type && other) noexcept;
+
 	inline size_t nreturns() const noexcept { return return_types_.size(); }
 
 	inline size_t narguments() const noexcept { return argument_types_.size(); }
@@ -34,6 +36,12 @@ public:
 
 	inline const jive_type * argument_type(size_t index) const noexcept
 		{ return argument_types_[index].get(); }
+
+	inline const std::vector<std::unique_ptr<jive_type>> &
+	return_types() const noexcept { return return_types_; }
+
+	inline const std::vector<std::unique_ptr<jive_type>> &
+	argument_types() const noexcept { return argument_types_; }
 
 private:
 	std::vector<std::unique_ptr<jive_type>> return_types_;

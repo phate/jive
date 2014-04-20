@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -737,7 +737,7 @@ jive_apply_node_address_transform(const struct jive_apply_node * node, size_t nb
 }
 
 void
-jive_lambda_node_address_transform(const struct jive_lambda_node * node, size_t nbits)
+jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(node->noutputs == 1);
 
