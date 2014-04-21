@@ -29,7 +29,7 @@ static int test_main(void)
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_union_declaration decl = {3, decl_elems};
-	static jive_union_type unntype; unntype.class_ = &JIVE_UNION_TYPE; unntype.decl = &decl;
+	static jive_union_type unntype(&decl);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	const jive_type * tmparray0[] = {&bits8, &unntype, &unntype, addrtype};

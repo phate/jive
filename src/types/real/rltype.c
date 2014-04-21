@@ -10,10 +10,6 @@
 #include <jive/vsdg/valuetype-private.h>
 
 void
-jive_real_input_init_(jive_real_input * self, struct jive_node * node, size_t index,
-	jive_output * origin);
-
-void
 jive_real_gate_init_(jive_real_gate * self, struct jive_graph * graph, const char name[]);
 
 void
@@ -21,32 +17,30 @@ jive_real_output_init_(jive_real_output * self, struct jive_node * node, size_t 
 
 /* real type */
 
+jive_real_type::~jive_real_type() noexcept {}
+
+jive_real_type::jive_real_type() noexcept
+	: jive_value_type(&JIVE_REAL_TYPE)
+{}
+
 jive_input *
 jive_real_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * initial_operand)
 {
-	jive_real_input * input = new jive_real_input;
-	input->class_ = &JIVE_REAL_INPUT;
-	jive_real_input_init_(input, node, index, initial_operand);
+	jive_real_input * input = new jive_real_input(node, index, initial_operand);
 	return input;
 }
 
 jive_output *
 jive_real_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
-	jive_real_output * output = new jive_real_output;
-	output->class_ = &JIVE_REAL_OUTPUT;
-	jive_real_output_init_(output, node, index);
-	return output;
+	return new jive_real_output(node, index);
 }
 
 jive_gate *
 jive_real_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
-	jive_real_gate * gate = new jive_real_gate;
-	gate->class_ = &JIVE_REAL_GATE;
-	jive_real_gate_init_(gate, graph, name);
-	return gate;
+	return new jive_real_gate(graph, name);
 }
 
 jive_type *
@@ -78,19 +72,18 @@ const jive_type_class JIVE_REAL_TYPE = {
 
 /* real input */
 
-void
-jive_real_input_init_(jive_real_input * self, struct jive_node * node, size_t index,
-	jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	jive_real_type_init_(&self->type);
-}
+jive_real_input::~jive_real_input() noexcept {}
+
+jive_real_input::jive_real_input(struct jive_node * node, size_t index,
+	jive_output * origin) noexcept
+	: jive_value_input(&JIVE_REAL_INPUT, node, index, origin)
+{}
 
 const jive_type *
 jive_real_input_get_type_(const jive_input * self_)
 {
 	const jive_real_input * self = (const jive_real_input *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_input_class JIVE_REAL_INPUT = {
@@ -102,19 +95,17 @@ const jive_input_class JIVE_REAL_INPUT = {
 
 /* real output */
 
-void
-jive_real_output_init_(jive_real_output * self, struct jive_node * node, size_t index)
-{
-	self->class_ = &JIVE_REAL_OUTPUT;
-	jive_value_output_init_(self, node, index);
-	jive_real_type_init_(&self->type);
-}
+jive_real_output::~jive_real_output() noexcept {}
+
+jive_real_output::jive_real_output(struct jive_node * node, size_t index)
+	: jive_value_output(&JIVE_REAL_OUTPUT, node, index)
+{}
 
 const jive_type *
 jive_real_output_get_type_(const jive_output * self_)
 {
 	const jive_real_output * self = (const jive_real_output *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_output_class JIVE_REAL_OUTPUT = {
@@ -126,19 +117,17 @@ const jive_output_class JIVE_REAL_OUTPUT = {
 
 /* real gate */
 
-void
-jive_real_gate_init_(jive_real_gate * self, struct jive_graph * graph, const char name[])
-{
-	self->class_ = &JIVE_REAL_GATE;
-	jive_value_gate_init_(self, graph, name);
-	jive_real_type_init_(&self->type);
-}
+jive_real_gate::~jive_real_gate() noexcept {}
+
+jive_real_gate::jive_real_gate(jive_graph * graph, const char name[])
+	: jive_value_gate(&JIVE_REAL_GATE, graph, name)
+{}
 
 const jive_type *
 jive_real_gate_get_type_(const jive_gate * self_)
 {
 	const jive_real_gate * self = (const jive_real_gate *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_gate_class JIVE_REAL_GATE = {

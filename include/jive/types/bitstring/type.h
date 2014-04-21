@@ -17,9 +17,16 @@ extern const jive_type_class JIVE_BITSTRING_TYPE;
 	jive_bitstring_type name##_struct(nbits); \
 	const jive_type * name = &name##_struct
 
-struct jive_bitstring_type : public jive_value_type {
-	jive_bitstring_type(size_t nbits_) : nbits(nbits_) { class_ = &JIVE_BITSTRING_TYPE; }
-	size_t nbits;
+class jive_bitstring_type final : public jive_value_type {
+public:
+	virtual ~jive_bitstring_type() noexcept;
+
+	jive_bitstring_type(size_t nbits) noexcept;
+
+	inline size_t nbits() const noexcept { return nbits_; }
+
+private:
+	size_t nbits_;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_type *
@@ -46,8 +53,19 @@ jive_bitstring_type_const_cast(const jive_type * type)
 typedef struct jive_bitstring_input jive_bitstring_input;
 
 extern const jive_input_class JIVE_BITSTRING_INPUT;
-struct jive_bitstring_input : public jive_value_input {
-	jive_bitstring_type * type;
+class jive_bitstring_input final : public jive_value_input {
+public:
+	virtual ~jive_bitstring_input() noexcept;
+
+	jive_bitstring_input(size_t nbits, struct jive_node * node, size_t index,
+		jive_output * origin) noexcept;
+
+	virtual const jive_bitstring_type & type() const noexcept { return type_; }
+
+	inline size_t nbits() const noexcept { return type_.nbits(); }
+	
+private:
+	jive_bitstring_type type_;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_input *
@@ -71,7 +89,7 @@ jive_bitstring_input_const_cast(const jive_input * input)
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_input_nbits(const jive_bitstring_input * self)
 {
-	return self->type->nbits;
+	return self->nbits();
 }
 
 /* bitstring output */
@@ -79,8 +97,18 @@ jive_bitstring_input_nbits(const jive_bitstring_input * self)
 typedef struct jive_bitstring_output jive_bitstring_output;
 
 extern const jive_output_class JIVE_BITSTRING_OUTPUT;
-struct jive_bitstring_output : public jive_value_output {
-	jive_bitstring_type * type;
+class jive_bitstring_output final : public jive_value_output {
+public:
+	virtual ~jive_bitstring_output() noexcept;
+
+	jive_bitstring_output(size_t nbits, struct jive_node * node, size_t index);
+
+	virtual const jive_bitstring_type & type() const noexcept { return type_; }
+
+	inline size_t nbits() const noexcept { return type_.nbits(); }
+
+private:
+	jive_bitstring_type type_;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_output *
@@ -104,7 +132,7 @@ jive_bitstring_output_const_cast(const jive_output * output)
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_output_nbits(const jive_bitstring_output * self)
 {
-	return self->type->nbits;
+	return self->nbits();
 }
 
 /* bitstring gate */
@@ -112,8 +140,18 @@ jive_bitstring_output_nbits(const jive_bitstring_output * self)
 typedef struct jive_bitstring_gate jive_bitstring_gate;
 
 extern const jive_gate_class JIVE_BITSTRING_GATE;
-struct jive_bitstring_gate : public jive_value_gate {
-	jive_bitstring_type * type;
+class jive_bitstring_gate final : public jive_value_gate {
+public:
+	virtual ~jive_bitstring_gate() noexcept;
+
+	jive_bitstring_gate(size_t nbits, jive_graph * graph, const char name[]);
+
+	virtual const jive_bitstring_type & type() const noexcept { return type_; }
+
+	inline size_t nbits() const noexcept { return type_.nbits(); }	
+
+private:
+	jive_bitstring_type type_;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_gate *
@@ -137,7 +175,7 @@ jive_bitstring_gate_const_cast(const jive_gate * gate)
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_gate_nbits(const jive_bitstring_gate * self)
 {
-	return self->type->nbits;
+	return self->nbits();
 }
 
 #endif

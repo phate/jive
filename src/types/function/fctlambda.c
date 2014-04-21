@@ -30,7 +30,7 @@ jive_lambda_enter_node_create(jive_region * region)
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctl);
-	((jive_control_output *)node->outputs[0])->active = false;
+	((jive_control_output *)node->outputs[0])->set_active(false);
 	region->top = node;
 	
 	return node;
@@ -113,16 +113,15 @@ jive_lambda_node_init_(jive_lambda_node * self, jive_region * function_region)
 	const jive_type * return_types[nreturns];
 	for(n = 0; n < nreturns; n++)
 		return_types[n] = jive_input_get_type(function_region->bottom->inputs[n+1]);
-	
-	jive_function_type_init(&self->attrs.function_type, narguments, argument_types,
+
+	self->attrs.function_type = new jive_function_type(narguments, argument_types,
 		nreturns, return_types);
 	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	
-	const jive_type * function_type = &self->attrs.function_type;
 	jive_node_init_(self, region,
 		1, &anchor_type, &function_region->bottom->outputs[0],
-		1, &function_type);
+		1, &self->attrs.function_type);
 	
 	self->attrs.argument_gates = jive_context_malloc(context, narguments * sizeof(jive_gate *));
 	self->attrs.return_gates = jive_context_malloc(context, nreturns * sizeof(jive_gate *));
@@ -147,7 +146,7 @@ jive_lambda_node_fini_(jive_node * self_)
 	jive_context * context = self_->graph->context;
 	jive_lambda_node * self = (jive_lambda_node *) self_;
 	
-	jive_function_type_fini(&self->attrs.function_type);
+	jive_type_destroy(self->attrs.function_type);
 	jive_context_free(context, self->attrs.argument_gates);
 	jive_context_free(context, self->attrs.return_gates);
 	
@@ -176,11 +175,11 @@ jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 	const jive_lambda_node_attrs * first = &((const jive_lambda_node *)self)->attrs;
 	const jive_lambda_node_attrs * second = (const jive_lambda_node_attrs *) attrs;
 
-	if (!jive_type_equals(&first->function_type, &second->function_type)) return false;
+	if (!jive_type_equals(first->function_type, second->function_type)) return false;
 	size_t n;
-	for(n = 0; n < first->function_type.narguments; n++)
+	for(n = 0; n < first->function_type->narguments(); n++)
 		if (first->argument_gates[n] != second->argument_gates[n]) return false;
-	for(n = 0; n < first->function_type.nreturns; n++)
+	for(n = 0; n < first->function_type->nreturns(); n++)
 		if (first->return_gates[n] != second->return_gates[n]) return false;
 
 	return true;
@@ -318,7 +317,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_substitution_map * substitution = jive_substitution_map_create(apply_node->graph->context);
 	
 	size_t n;
-	for(n = 0; n < lambda_node->attrs.function_type.narguments; n++) {
+	for(n = 0; n < lambda_node->attrs.function_type->narguments(); n++) {
 		jive_gate * gate = lambda_node->attrs.argument_gates[n];
 		jive_output * output = jive_node_get_gate_output(head, gate);
 		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin);
@@ -327,7 +326,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_region_copy_substitute(function_region,
 		apply_node->region, substitution, false, false);
 	
-	for(n = 0; n < lambda_node->attrs.function_type.nreturns; n++) {
+	for(n = 0; n < lambda_node->attrs.function_type->nreturns(); n++) {
 		jive_gate * gate = lambda_node->attrs.return_gates[n];
 		jive_input * input = jive_node_get_gate_input(tail, gate);
 		jive_output * substituted = jive_substitution_map_lookup_output(substitution, input->origin);
@@ -497,11 +496,10 @@ jive_lambda_node_remove_dead_parameters(const struct jive_lambda_node * self)
 	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
 		phi_node = jive_phi_node_cast(jive_region_get_anchor(lambda_region->parent));
 
-		jive_function_type * fcttype = jive_function_type_create(
-			nalive_parameters, alive_parameter_types, nalive_results, alive_result_types);
-		const jive_type * tmparray0[] = {fcttype};
+		jive_function_type fcttype(nalive_parameters, alive_parameter_types, nalive_results,
+			alive_result_types);
+		const jive_type * tmparray0[] = {&fcttype};
 		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);
-		jive_function_type_destroy(fcttype);
 		embedded_in_phi = true;
 	}
 

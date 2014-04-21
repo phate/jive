@@ -51,9 +51,7 @@ jive_symbolicfunction_node_init_(
 	const jive_function_type * type)
 {
 	node->attrs.name = jive_context_strdup(graph->context, fctname);
-	jive_function_type_init(&node->attrs.type,
-		type->narguments, (const jive_type **) type->argument_types,
-		type->nreturns, (const jive_type **) type->return_types);
+	node->attrs.type = new jive_function_type(*type);
 
 	const jive_type * rtype = type;
 	jive_node_init_(node, graph->root_region,
@@ -68,7 +66,7 @@ jive_symbolicfunction_node_fini_(jive_node * self_)
 	
 	jive_context_free(self_->graph->context, (char *)self->attrs.name);
 	
-	jive_function_type_fini(&self->attrs.type);
+	jive_type_destroy(self->attrs.type);
 	
 	jive_node_fini_(self);
 }
@@ -85,7 +83,7 @@ jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_
 	size_t noperands, struct jive_output * const operands[])
 {
 	const jive_symbolicfunction_node_attrs * attrs = (const jive_symbolicfunction_node_attrs *) attrs_;
-	return jive_symbolicfunction_node_create(region->graph, attrs->name, &attrs->type);
+	return jive_symbolicfunction_node_create(region->graph, attrs->name, attrs->type);
 }
 
 static const jive_node_attrs *
@@ -102,7 +100,7 @@ jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_
 	const jive_symbolicfunction_node_attrs * first = &((const jive_symbolicfunction_node *)self)->attrs;
 	const jive_symbolicfunction_node_attrs * second = (const jive_symbolicfunction_node_attrs *) attrs;
 
-	if (!jive_type_equals(&first->type, &second->type)) return false;
+	if (!jive_type_equals(first->type, second->type)) return false;
 	if (strcmp(first->name, second->name)) return false;
 
 	return true;

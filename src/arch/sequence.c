@@ -96,7 +96,7 @@ is_active_control(jive_input * input)
 {
 	if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
 		return false;
-	return ((jive_control_output *)input->origin)->active;
+	return ((jive_control_output *)input->origin)->active();
 }
 
 static jive_seq_region *

@@ -27,10 +27,6 @@ static jive_gate *
 jive_integral_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 	const char * name);
 
-static inline void
-jive_integral_input_init_(jive_integral_input * self_, struct jive_node * node, size_t index,
-	jive_output * origin);
-
 static const jive_type *
 jive_integral_input_get_type_(const jive_input * self_);
 
@@ -82,11 +78,11 @@ const jive_gate_class JIVE_INTEGRAL_GATE = {
 
 /* integral_type members */
 
-static inline void
-jive_integral_type_init_(jive_integral_type * self)
-{
-	self->class_ = &JIVE_INTEGRAL_TYPE;
-}
+jive_integral_type::~jive_integral_type() noexcept {}
+
+jive_integral_type::jive_integral_type() noexcept
+	: jive_value_type(&JIVE_INTEGRAL_TYPE)
+{}
 
 static void
 jive_integral_type_fini_(jive_type * self_)
@@ -109,85 +105,67 @@ static jive_input *
 jive_integral_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * origin)
 {
-	jive_integral_input * input = new jive_integral_input;
-	input->class_ = &JIVE_INTEGRAL_INPUT;
-	jive_integral_input_init_(input, node, index, origin);
-
-	return input;
+	return new jive_integral_input(node, index, origin);
 }
 
 static jive_output *
 jive_integral_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
-	jive_integral_output * output = new jive_integral_output;
-	output->class_ = &JIVE_INTEGRAL_OUTPUT;
-	jive_integral_output_init_(output, node, index);
-
-	return output;
+	return new jive_integral_output(node, index);
 }
 
 static jive_gate *
 jive_integral_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 	const char * name)
 {
-	jive_integral_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->class_ = &JIVE_INTEGRAL_GATE;
-	jive_integral_gate_init_(gate, graph, name);
-
-	return gate;
+	return new jive_integral_gate(graph, name);
 }
 
 /* integral_input members */
 
-static inline void
-jive_integral_input_init_(jive_integral_input * self, struct jive_node * node, size_t index,
+jive_integral_input::~jive_integral_input() noexcept {}
+
+jive_integral_input::jive_integral_input(struct jive_node * node, size_t index,
 	jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	jive_integral_type_init_(&self->type);
-}
+	: jive_value_input(&JIVE_INTEGRAL_INPUT, node, index, origin)
+{}
 
 static const jive_type *
 jive_integral_input_get_type_(const jive_input * self_)
 {
 	const jive_integral_input * self = (const jive_integral_input *) self_;
 
-	return &self->type;
+	return &self->type();
 }
 
 /* integral_output members */
 
-static inline void
-jive_integral_output_init_(jive_integral_output * self, struct jive_node * node, size_t index)
-{
-	self->class_ = &JIVE_INTEGRAL_OUTPUT;
-	jive_value_output_init_(self, node, index);
-	jive_integral_type_init_(&self->type);
-}
+jive_integral_output::~jive_integral_output() noexcept {}
+
+jive_integral_output::jive_integral_output(jive_node * node, size_t index)
+	: jive_value_output(&JIVE_INTEGRAL_OUTPUT, node, index)
+{}
 
 static const jive_type *
 jive_integral_output_get_type_(const jive_output * self_)
 {
 	const jive_integral_output * self = (const jive_integral_output *) self_;
 
-	return &self->type;
+	return &self->type();
 }
 
 /* integral_gate members */
 
-static inline void
-jive_integral_gate_init_(jive_integral_gate * self, struct jive_graph * graph,
-	const char name[])
-{
-	self->class_ = &JIVE_INTEGRAL_GATE;
-	jive_value_gate_init_(self, graph, name);
-	jive_integral_type_init_(&self->type);
-}
+jive_integral_gate::~jive_integral_gate() noexcept {}
+
+jive_integral_gate::jive_integral_gate(jive_graph * graph, const char name[])
+	: jive_value_gate(&JIVE_INTEGRAL_GATE, graph, name)
+{}
 
 static const jive_type *
 jive_integral_gate_get_type_(const jive_gate * self_)
 {
 	const jive_integral_gate * self = (const jive_integral_gate *) self_;
 
-	return &self->type;
+	return &self->type();
 }

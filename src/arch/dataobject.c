@@ -44,10 +44,10 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 	if (type_->class_ == &JIVE_BITSTRING_TYPE) {
 		const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
 		
-		if (type->nbits < 8 || !is_powerof2(type->nbits))
+		if (type->nbits() < 8 || !is_powerof2(type->nbits()))
 			jive_context_fatal_error(ctx, "Type mismatch: primitive data items must be power-of-two bytes in size");
 		
-		nitems = type->nbits / 8;
+		nitems = type->nbits() / 8;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
 		
 		size_t n;
@@ -56,7 +56,7 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		items[0] = data;
 	} else if (type_->class_ == &JIVE_RECORD_TYPE) {
 		const jive_record_type * type = (const jive_record_type *) type_;
-		const jive_record_declaration * decl = type->decl;
+		const jive_record_declaration * decl = type->declaration();
 		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
 		
 		jive_group_node * node = jive_group_node_cast(data->node);
@@ -92,7 +92,7 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		}
 	} else if (type_->class_ == &JIVE_UNION_TYPE) {
 		const jive_union_type * type = (const jive_union_type *) type_;
-		const jive_union_declaration * decl = type->decl;
+		const jive_union_declaration * decl = type->declaration();
 		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
 		
 		jive_unify_node * node = jive_unify_node_cast(data->node);

@@ -18,28 +18,56 @@ extern const jive_type_class JIVE_TEST_VALUE_TYPE;
 	jive_test_value_type name##_struct; name##_struct.class_ = &JIVE_TEST_VALUE_TYPE; \
 	const jive_type * name = &name##_struct
 
-struct jive_test_value_type : public jive_value_type {
+class jive_test_value_type final : public jive_value_type {
+public:
+	virtual ~jive_test_value_type() noexcept;
+
+	jive_test_value_type() noexcept;
 };
 
 typedef struct jive_test_value_input jive_test_value_input;
 
 extern const jive_input_class JIVE_TEST_VALUE_INPUT;
-struct jive_test_value_input : public jive_value_input {
-	jive_test_value_type type;
+class jive_test_value_input final : public jive_value_input {
+public:
+	virtual ~jive_test_value_input() noexcept;
+
+	jive_test_value_input(jive_node * node, size_t index, jive_output * output) noexcept;
+
+	virtual const jive_test_value_type & type() const noexcept { return type_; }
+
+private:
+	jive_test_value_type type_;
 };
 
 typedef struct jive_test_value_output jive_test_value_output;
 
 extern const jive_output_class JIVE_TEST_VALUE_OUTPUT;
-struct jive_test_value_output : public jive_value_output {
-	jive_test_value_type type;
+class jive_test_value_output final : public jive_value_output {
+public:
+	virtual ~jive_test_value_output() noexcept;
+
+	jive_test_value_output(jive_node * node, size_t index);
+
+	virtual const jive_test_value_type & type() const noexcept { return type_; }
+
+private:
+	jive_test_value_type type_;
 };
 
 typedef struct jive_test_value_gate jive_test_value_gate;
 
 extern const jive_gate_class JIVE_TEST_VALUE_GATE;
-struct jive_test_value_gate : public jive_value_gate {
-	jive_test_value_type type;
+class jive_test_value_gate final : public jive_value_gate {
+public:
+	virtual ~jive_test_value_gate() noexcept;
+
+	jive_test_value_gate(jive_graph * graph, const char name[]);
+
+	virtual const jive_test_value_type & type() const noexcept { return type_; }
+
+private:
+	jive_test_value_type type_;
 };
 
 /* test state type */
@@ -51,28 +79,56 @@ extern const jive_type_class JIVE_TEST_STATE_TYPE;
 	jive_test_state_type name##_struct; name##_struct.class_ = &JIVE_TEST_STATE_TYPE; \
 	const jive_type * name = &name##_struct
 
-struct jive_test_state_type : public jive_state_type {
+class jive_test_state_type final : public jive_state_type {
+public:
+	virtual ~jive_test_state_type() noexcept;
+
+	jive_test_state_type() noexcept;
 };
 
 typedef struct jive_test_state_input jive_test_state_input;
 
 extern const jive_input_class JIVE_TEST_STATE_INPUT;
-struct jive_test_state_input : public jive_state_input {
-	jive_test_state_type type;
+class jive_test_state_input final : public jive_state_input {
+public:
+	virtual ~jive_test_state_input() noexcept;
+
+	jive_test_state_input(jive_node * node, size_t index, jive_output * origin) noexcept;
+
+	virtual const jive_test_state_type & type() const noexcept { return type_; }
+
+private:
+	jive_test_state_type type_;
 };
 
 typedef struct jive_test_state_output jive_test_state_output;
 
 extern const jive_output_class JIVE_TEST_STATE_OUTPUT;
-struct jive_test_state_output : public jive_state_output {
-	jive_test_state_type type;
+class jive_test_state_output final : public jive_state_output {
+public:
+	virtual ~jive_test_state_output() noexcept;
+
+	jive_test_state_output(jive_node * node, size_t index);
+
+	virtual const jive_test_state_type & type() const noexcept { return type_; }
+
+private:
+	jive_test_state_type type_;
 };
 
 typedef struct jive_test_state_gate jive_test_state_gate;
 
 extern const jive_gate_class JIVE_TEST_STATE_GATE;
-struct jive_test_state_gate : public jive_state_gate {
-	jive_test_state_type type;
+class jive_test_state_gate final : public jive_state_gate {
+public:
+	virtual ~jive_test_state_gate() noexcept;
+
+	jive_test_state_gate(jive_graph * graph, const char name[]);
+
+	virtual const jive_test_state_type & type() const noexcept { return type_; }
+
+private:
+	jive_test_state_type type_;
 };
 
 #endif

@@ -123,7 +123,7 @@ make_record2(jive_graph * graph)
 		nelements : 2,
 		elements : elements1
 	};
-	static jive_record_type rec1; rec1.class_ = &JIVE_RECORD_TYPE; rec1.decl = &decl1;
+	static jive_record_type rec1(&decl1);
 	
 	static const jive_value_type * elements2[] = {&rec1, &bits32};
 	static const jive_record_declaration decl2 = {

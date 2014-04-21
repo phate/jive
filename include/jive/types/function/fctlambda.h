@@ -21,7 +21,7 @@ extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
 extern const jive_node_class JIVE_LAMBDA_LEAVE_NODE;
 
 struct jive_lambda_node_attrs : public jive_node_attrs {
-	jive_function_type function_type;
+	jive_function_type * function_type;
 	jive_gate ** argument_gates;
 	jive_gate ** return_gates;
 };

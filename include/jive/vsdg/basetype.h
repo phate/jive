@@ -41,10 +41,6 @@ struct jive_variable;
         @{
 */
 
-struct jive_type {
-	const struct jive_type_class * class_;
-};
-
 struct jive_type_class {
 	const struct jive_type_class * parent;
 	const char * name;
@@ -68,6 +64,17 @@ struct jive_type_class {
 };
 
 extern const struct jive_type_class JIVE_TYPE;
+
+class jive_type {
+public:
+	virtual ~jive_type() noexcept;
+
+protected:
+	jive_type(const jive_type_class * class__) noexcept;
+
+public:
+	const struct jive_type_class * class_;
+};
 
 JIVE_EXPORTED_INLINE bool
 jive_type_isinstance(const jive_type * self, const jive_type_class * class_)
@@ -129,7 +136,17 @@ jive_type_destroy(struct jive_type * self);
         @{
 */
 
-struct jive_input {
+class jive_input {
+public:
+	virtual ~jive_input() noexcept;
+
+protected:
+	jive_input(const jive_input_class * class_, struct jive_node * node, size_t index,
+		jive_output * origin);
+
+public:
+	virtual const jive_type & type() const noexcept = 0;
+
 	const struct jive_input_class * class_;
 	
 	struct jive_node * node;
@@ -239,7 +256,17 @@ jive_input_node(const jive_input * input)
         @{
 */
 
-struct jive_output {
+class jive_output {
+public:
+	virtual ~jive_output() noexcept;
+
+protected:
+	jive_output(const struct jive_output_class * class_, struct jive_node * node,
+		size_t index);
+
+public:
+	virtual const jive_type & type() const noexcept = 0;
+
 	const struct jive_output_class * class_;
 	
 	struct jive_node * node;
@@ -344,7 +371,16 @@ jive_output_node(const jive_output * output)
         @{
 */
 
-struct jive_gate {
+class jive_gate {
+public:
+	virtual ~jive_gate() noexcept;
+
+protected:
+	jive_gate(const jive_gate_class * class_, struct jive_graph * graph, const char name[]);
+
+public:
+	virtual const jive_type & type() const noexcept = 0;
+
 	const struct jive_gate_class * class_;
 	
 	struct jive_graph * graph;

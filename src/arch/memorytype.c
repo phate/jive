@@ -14,44 +14,51 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/statetype-private.h>
 
-static void
-jive_memory_input_init_(jive_memory_input * self, struct jive_node * node, size_t index, jive_output * origin)
-{
-	jive_state_input_init_(self, node, index, origin);
-}
+jive_memory_input::~jive_memory_input() noexcept {}
+
+jive_memory_input::jive_memory_input(struct jive_node * node, size_t index,
+	jive_output * origin) noexcept
+	: jive_state_input(&JIVE_MEMORY_INPUT, node, index, origin)
+{}
 
 static const jive_type *
-jive_memory_input_get_type_(const jive_input * self)
+jive_memory_input_get_type_(const jive_input * self_)
 {
-	static jive_memory_type memory_type; memory_type.class_ = &JIVE_MEMORY_TYPE;
-	return &memory_type;
+	const jive_memory_input * self = (const jive_memory_input *) self_;
+	return &self->type();
 }
 
-static void
-jive_memory_output_init_(jive_memory_output * self, struct jive_node * node, size_t index)
-{
-	jive_state_output_init_(self, node, index);
-}
+jive_memory_output::~jive_memory_output() noexcept {}
 
-static const jive_type *
-jive_memory_output_get_type_(const jive_output * self)
-{
-	static jive_memory_type memory_type; memory_type.class_ = &JIVE_MEMORY_TYPE;
-	return &memory_type;
-}
-
-static void
-jive_memory_gate_init_(jive_memory_gate * self, struct jive_graph * graph, const char * name)
-{
-	jive_state_gate_init_(self, graph, name);
-}
+jive_memory_output::jive_memory_output(jive_node * node, size_t index)
+	: jive_state_output(&JIVE_MEMORY_OUTPUT, node, index)
+{}
 
 static const jive_type *
-jive_memory_gate_get_type_(const jive_gate * self)
+jive_memory_output_get_type_(const jive_output * self_)
 {
-	static jive_memory_type memory_type; memory_type.class_ = &JIVE_MEMORY_TYPE;
-	return &memory_type;
+	const jive_memory_output * self = (const jive_memory_output *) self_;
+	return &self->type();
 }
+
+jive_memory_gate::~jive_memory_gate() noexcept {}
+
+jive_memory_gate::jive_memory_gate(jive_graph * graph, const char name[])
+	: jive_state_gate(&JIVE_MEMORY_GATE, graph, name)
+{}
+
+static const jive_type *
+jive_memory_gate_get_type_(const jive_gate * self_)
+{
+	const jive_memory_gate * self = (const jive_memory_gate *) self_;
+	return &self->type();
+}
+
+jive_memory_type::~jive_memory_type() noexcept {}
+
+jive_memory_type::jive_memory_type() noexcept
+	: jive_state_type(&JIVE_MEMORY_TYPE)
+{}
 
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)
@@ -67,28 +74,19 @@ jive_memory_type_copy_(const jive_type * self_)
 static jive_input *
 jive_memory_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_memory_input * input = new jive_memory_input;
-	input->class_ = &JIVE_MEMORY_INPUT;
-	jive_memory_input_init_(input, node, index, initial_operand);
-	return input;
+	return new jive_memory_input(node, index, initial_operand);
 }
 
 static jive_output *
 jive_memory_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
-	jive_memory_output * output = new jive_memory_output;
-	output->class_ = &JIVE_MEMORY_OUTPUT;
-	jive_memory_output_init_(output, node, index);
-	return output;
+	return new jive_memory_output(node, index);
 }
 
 static jive_gate *
 jive_memory_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_memory_gate * gate = new jive_memory_gate;
-	gate->class_ = &JIVE_MEMORY_GATE;
-	jive_memory_gate_init_(gate, graph, name);
-	return gate;
+	return new jive_memory_gate(graph, name);
 }
 
 const jive_type_class JIVE_MEMORY_TYPE = {

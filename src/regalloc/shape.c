@@ -369,7 +369,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 			continue;
 		
 		jive_control_output * ctl_output = (jive_control_output *) input->origin;
-		if (!ctl_output->active)
+		if (!ctl_output->active())
 			continue;
 		self->control_dominator = input->origin->node;
 	}

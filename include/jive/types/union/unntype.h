@@ -23,17 +23,21 @@ typedef struct jive_union_type jive_union_type;
 
 extern const jive_type_class JIVE_UNION_TYPE;
 
-struct jive_union_type : public jive_value_type {
-	const jive_union_declaration * decl;
+class jive_union_type final : public jive_value_type {
+public:
+	virtual ~jive_union_type() noexcept;
+
+	jive_union_type(const jive_union_declaration * decl) noexcept;
+
+	inline const jive_union_declaration * declaration() const noexcept { return decl_; }
+
+private:
+	const jive_union_declaration * decl_;
 };
 
 #define JIVE_DECLARE_UNION_TYPE(name, decl) \
-	jive_union_type name##_struct; \
-	name##_struct.class_ = &JIVE_UNION_TYPE; name##_struct.decl = decl; \
+	jive_union_type name##_struct(decl); \
 	const jive_type * name = &name##_struct
-
-void
-jive_union_type_init(jive_union_type * self, const jive_union_declaration * decl);
 
 JIVE_EXPORTED_INLINE const jive_union_type *
 jive_union_type_const_cast(const jive_type * self)
@@ -58,8 +62,19 @@ jive_union_type_cast(jive_type * self)
 typedef struct jive_union_input jive_union_input;
 
 extern const jive_input_class JIVE_UNION_INPUT;
-struct jive_union_input : public jive_value_input {
-	jive_union_type type;
+class jive_union_input final : public jive_value_input {
+public:
+	virtual ~jive_union_input() noexcept;
+
+	jive_union_input(const jive_union_declaration * decl, struct jive_node * node, size_t index,
+		jive_output * origin);
+
+	virtual const jive_union_type & type() const noexcept { return type_; }
+
+	inline const jive_union_declaration * declaration() const noexcept { return type_.declaration(); }
+
+private:
+	jive_union_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_union_input *
@@ -85,8 +100,18 @@ jive_union_input_cast(jive_input * self)
 typedef struct jive_union_output jive_union_output;
 
 extern const jive_output_class JIVE_UNION_OUTPUT;
-struct jive_union_output : public jive_value_output {
-	jive_union_type type;
+class jive_union_output final : public jive_value_output {
+public:
+	virtual ~jive_union_output() noexcept;
+
+	jive_union_output(const jive_union_declaration * decl, jive_node * node, size_t index);
+
+	virtual const jive_union_type & type() const noexcept { return type_; }
+
+	inline const jive_union_declaration * declaration() const noexcept { return type_.declaration(); }
+
+private:
+	jive_union_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_union_output *
@@ -112,8 +137,19 @@ jive_union_output_cast(jive_output * self)
 typedef struct jive_union_gate jive_union_gate;
 
 extern const jive_gate_class JIVE_UNION_GATE;
-struct jive_union_gate : public jive_value_gate {
-	jive_union_type type;
+class jive_union_gate final : public jive_value_gate {
+public:
+	virtual ~jive_union_gate() noexcept;
+
+	jive_union_gate(const jive_union_declaration * decl, jive_graph * graph,
+		const char name[]);
+
+	virtual const jive_union_type & type() const noexcept { return type_; }
+
+	inline const jive_union_declaration * declaration() const noexcept { return type_.declaration(); }
+
+private:
+	jive_union_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_union_gate *

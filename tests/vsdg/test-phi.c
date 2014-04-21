@@ -25,17 +25,16 @@ static int test_main()
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
-	jive_function_type * f0type = jive_function_type_create(0, NULL, 0, NULL);
+	jive_function_type f0type(0, NULL, 0, NULL);
 	const jive_type * tmparray0[] = {vtype};
-	jive_function_type * f1type = jive_function_type_create(0, NULL, 0, NULL);
-	jive_function_type * f2type = jive_function_type_create(1, &vtype,
-		1, tmparray0);
+	jive_function_type f1type(0, NULL, 0, NULL);
+	jive_function_type f2type(1, &vtype, 1, tmparray0);
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fns[3];
-	fns[0] = jive_phi_fixvar_enter(phi, f0type);
-	fns[1] = jive_phi_fixvar_enter(phi, f1type);
-	fns[2] = jive_phi_fixvar_enter(phi, f2type);
+	fns[0] = jive_phi_fixvar_enter(phi, &f0type);
+	fns[1] = jive_phi_fixvar_enter(phi, &f1type);
+	fns[2] = jive_phi_fixvar_enter(phi, &f2type);
 
 	jive_lambda * l0 = jive_lambda_begin(graph, 0, NULL, NULL);
 	jive_lambda * l1 = jive_lambda_begin(graph, 0, NULL, NULL);
@@ -57,7 +56,7 @@ static int test_main()
 	jive_phi_end(phi, 3, fns);
 
 	jive_output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
-	const jive_type * tmparray2[] = {f0type, f1type, f2type};
+	const jive_type * tmparray2[] = {&f0type, &f1type, &f2type};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2, results,
@@ -74,9 +73,6 @@ static int test_main()
 	assert(jive_lambda_is_self_recursive(lambda_node2));
 	assert(jive_input_isinstance(phi.region->bottom->inputs[0], &JIVE_CONTROL_INPUT));
 
-	jive_function_type_destroy(f0type);
-	jive_function_type_destroy(f1type);
-	jive_function_type_destroy(f2type);
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);

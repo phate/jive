@@ -17,10 +17,11 @@
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/variable.h>
 
-/* static type instance, to be returned by type queries */
-const jive_type jive_type_singleton = {
-	class_ : &JIVE_TYPE
-};
+jive_type::~jive_type() noexcept {}
+
+jive_type::jive_type(const jive_type_class * class__) noexcept
+	: class_(class__)
+{}
 
 void
 jive_type_fini_(jive_type * self)
@@ -37,29 +38,19 @@ jive_input *
 jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand)
 {
-	jive_context * context = node->graph->context;
-	jive_input * input = new jive_input;
-	input->class_ = &JIVE_INPUT;
-	jive_input_init_(input, node, index, initial_operand);
-	return input;
+	return nullptr;
 }
 
 jive_output *
 jive_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
-	jive_output * output = new jive_output;
-	output->class_ = &JIVE_OUTPUT;
-	jive_output_init_(output, node, index);
-	return output;
+	return nullptr;
 }
 
 jive_gate *
 jive_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_gate * gate = new jive_gate;
-	gate->class_ = &JIVE_GATE;
-	jive_gate_init_(gate, graph, name);
-	return gate;
+	return nullptr;
 }
 
 bool
@@ -147,54 +138,59 @@ jive_input_remove_as_user(jive_input * self, jive_output * output)
 	jive_node_remove_successor(self->origin->node);
 }
 
-void
-jive_input_init_(jive_input * self, struct jive_node * node, size_t index, jive_output * origin)
+jive_input::jive_input(const jive_input_class * class__, struct jive_node * node_, size_t index_,
+	jive_output * origin_)
+	: class_(class__)
+	, node(node_)
+	, index(index_)
+	, origin(origin_)
+	, gate(nullptr)
+	, required_rescls(&jive_root_resource_class)
+	, ssavar(nullptr)
 {
-	self->node = node;
-	self->index = index;
-	self->origin = origin;
-	self->gate = 0;
-	self->required_rescls = &jive_root_resource_class;
-	self->ssavar = 0;
-	
-	self->output_users_list.prev = self->output_users_list.next = 0;
-	self->gate_inputs_list.prev = self->gate_inputs_list.next = 0;
-	self->ssavar_input_list.prev = self->ssavar_input_list.next = 0;
-	self->hull.first = self->hull.last = 0;
-	
-	jive_input_add_as_user(self, origin);
-	jive_region_hull_add_input(node->region, self);
+	output_users_list.prev = output_users_list.next = nullptr;
+	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
+	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
+	hull.first = hull.last = nullptr;
+
+	jive_input_add_as_user(this, origin);
+	jive_region_hull_add_input(node->region, this);
+}
+
+jive_input::~jive_input() noexcept
+{
+	if (ssavar)
+		jive_input_unassign_ssavar(this);
+
+	if (gate) {
+		JIVE_LIST_REMOVE(gate->inputs, this, gate_inputs_list);
+
+		size_t n;
+		for (n = 0; n < node->ninputs; n++) {
+			jive_input * other = node->inputs[n];
+			if (other == this || !other->gate)
+				continue;
+			jive_gate_interference_remove(node->graph, gate, other->gate);
+		}
+	}
+
+	jive_input_remove_as_user(this, origin);
+
+	size_t n;
+	node->ninputs--;
+	for (n = index; n < node->ninputs; n++) {
+		node->inputs[n] = node->inputs[n+1];
+		node->inputs[n]->index = n;
+	}
+	if (node->ninputs == 0)
+		JIVE_LIST_PUSH_BACK(node->region->top_nodes, node, region_top_node_list);
+
+	jive_region_hull_remove_input(node->region, this);
 }
 
 void
 jive_input_fini_(jive_input * self)
 {
-	if (self->ssavar) jive_input_unassign_ssavar(self);
-	
-	if (self->gate) {
-		jive_gate * gate = self->gate;
-		JIVE_LIST_REMOVE(gate->inputs, self, gate_inputs_list);
-		
-		size_t n;
-		for(n=0; n<self->node->ninputs; n++) {
-			jive_input * other = self->node->inputs[n];
-			if (other == self || !other->gate) continue;
-			jive_gate_interference_remove(self->node->graph, self->gate, other->gate);
-		}
-	}
-	
-	jive_input_remove_as_user(self, self->origin);
-	
-	size_t n;
-	self->node->ninputs --;
-	for(n = self->index; n<self->node->ninputs; n++) {
-		self->node->inputs[n] = self->node->inputs[n+1];
-		self->node->inputs[n]->index = n;
-	}
-	if (self->node->ninputs == 0)
-		JIVE_LIST_PUSH_BACK(self->node->region->top_nodes, self->node, region_top_node_list);
-
-	jive_region_hull_remove_input(self->node->region, self);
 }
 
 void
@@ -212,7 +208,7 @@ jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer)
 const jive_type *
 jive_input_get_type_(const jive_input * self)
 {
-	return &jive_type_singleton;
+	return nullptr;
 }
 
 jive_variable *
@@ -387,48 +383,51 @@ const struct jive_output_class JIVE_OUTPUT = {
 	get_type : &jive_output_get_type_,
 };
 
-void jive_output_init_(
-	jive_output * self,
-	struct jive_node * node,
-	size_t index)
+jive_output::jive_output(const struct jive_output_class * class__, struct jive_node * node_,
+	size_t index_)
+	: class_(class__)
+	, node(node_)
+	, index(index_)
+	, gate(nullptr)
+	, ssavar(nullptr)
+	, required_rescls(&jive_root_resource_class)
 {
-	self->node = node;
-	self->index = index;
-	self->users.first = self->users.last = 0;
-	self->gate = 0;
-	self->required_rescls = &jive_root_resource_class;
-	self->ssavar = 0;
-	self->originating_ssavars.first = self->originating_ssavars.last = 0;
+	users.first = users.last = nullptr;
+	originating_ssavars.first = originating_ssavars.last = nullptr;
+	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
+}
+
+jive_output::~jive_output() noexcept
+{
+	JIVE_DEBUG_ASSERT(users.first == nullptr && users.last == nullptr);
 	
-	self->gate_outputs_list.prev = self->gate_outputs_list.next = 0;
+	if (ssavar)
+		jive_ssavar_unassign_output(ssavar, this);
+		
+	if (gate) {
+		JIVE_LIST_REMOVE(gate->outputs, this, gate_outputs_list);
+		
+		size_t n;
+		for (n = 0; n < node->noutputs; n++) {
+			jive_output * other = node->outputs[n];
+			if (other == this || !other->gate)
+				continue;
+			jive_gate_interference_remove(node->graph, gate, other->gate);
+		}
+	}
+	
+	node->noutputs--;
+	size_t n;
+	for (n = index; n < node->noutputs; n++) {
+		node->outputs[n] = node->outputs[n+1];
+		node->outputs[n]->index = n;
+	}
+	
+	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
 
 void jive_output_fini_(jive_output * self)
 {
-	JIVE_DEBUG_ASSERT(self->users.first == 0 && self->users.last == 0);
-	
-	if (self->ssavar) jive_ssavar_unassign_output(self->ssavar, self);
-		
-	if (self->gate) {
-		jive_gate * gate = self->gate;
-		JIVE_LIST_REMOVE(gate->outputs, self, gate_outputs_list);
-		
-		size_t n;
-		for(n=0; n<self->node->noutputs; n++) {
-			jive_output * other = self->node->outputs[n];
-			if (other == self || !other->gate) continue;
-			jive_gate_interference_remove(self->node->graph, self->gate, other->gate);
-		}
-	}
-	
-	self->node->noutputs --;
-	size_t n;
-	for(n=self->index; n<self->node->noutputs; n++) {
-		self->node->outputs[n] = self->node->outputs[n+1];
-		self->node->outputs[n]->index = n;
-	}
-	
-	JIVE_DEBUG_ASSERT(self->originating_ssavars.first == 0);
 }
 
 void
@@ -446,7 +445,7 @@ jive_output_get_label_(const jive_output * self, struct jive_buffer * buffer)
 const jive_type *
 jive_output_get_type_(const jive_output * self)
 {
-	return &jive_type_singleton;
+	return nullptr;
 }
 	
 jive_variable *
@@ -560,35 +559,41 @@ const jive_gate_class JIVE_GATE = {
 	get_type : jive_gate_get_type_,
 };
 
-void
-jive_gate_init_(jive_gate * self, struct jive_graph * graph, const char name[])
+jive_gate::jive_gate(const jive_gate_class * class__, jive_graph * graph,
+	const char name_[])
+	: class_(class__)
+	, graph (graph)
 {
-	self->graph = graph;
-	self->name = jive_context_strdup(graph->context, name);
-	self->inputs.first = self->inputs.last = 0;
-	self->outputs.first = self->outputs.last = 0;
-	self->may_spill = true;
-	self->variable = 0;
-	jive_gate_interference_hash_init(&self->interference, graph->context);
-	self->variable_gate_list.prev = self->variable_gate_list.next = 0;
-	self->graph_gate_list.prev = self->graph_gate_list.next = 0;
-	self->required_rescls = &jive_root_resource_class;
+	name = jive_context_strdup(graph->context, name_);
+	inputs.first = inputs.last = nullptr;
+	outputs.first = outputs.last = nullptr;
+	may_spill = true;
+	variable = nullptr;
+	jive_gate_interference_hash_init(&interference, graph->context);
+	variable_gate_list.prev = variable_gate_list.next = nullptr;
+	graph_gate_list.prev = graph_gate_list.next = nullptr;
+	required_rescls = &jive_root_resource_class;
 	
-	JIVE_LIST_PUSH_BACK(graph->gates, self, graph_gate_list);
+	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
+}
+
+jive_gate::~jive_gate() noexcept
+{
+	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
+	JIVE_DEBUG_ASSERT(outputs.first == nullptr && outputs.last == nullptr);
+	
+	if (variable)
+		jive_variable_unassign_gate(variable, this);
+	
+	jive_gate_interference_hash_fini(&interference);
+	jive_context_free(graph->context, name);
+	
+	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
 }
 
 void
 jive_gate_fini_(jive_gate * self)
 {
-	JIVE_DEBUG_ASSERT(self->inputs.first == 0 && self->inputs.last == 0);
-	JIVE_DEBUG_ASSERT(self->outputs.first == 0 && self->outputs.last == 0);
-	
-	if (self->variable) jive_variable_unassign_gate(self->variable, self);
-	
-	jive_gate_interference_hash_fini(&self->interference);
-	jive_context_free(self->graph->context, self->name);
-	
-	JIVE_LIST_REMOVE(self->graph->gates, self, graph_gate_list);
 }
 
 void
@@ -600,7 +605,7 @@ jive_gate_get_label_(const jive_gate * self, struct jive_buffer * buffer)
 const jive_type *
 jive_gate_get_type_(const jive_gate * self)
 {
-	return &jive_type_singleton;
+	return nullptr; 
 }
 
 jive_variable *
@@ -626,7 +631,6 @@ jive_gate_interferes_with(const jive_gate * self, const jive_gate * other)
 void
 jive_gate_destroy(jive_gate * self)
 {
-	self->class_->fini(self);
 	delete self;
 }
 

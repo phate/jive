@@ -16,24 +16,58 @@ typedef struct jive_control_gate jive_control_gate;
 
 extern const jive_type_class JIVE_CONTROL_TYPE;
 #define JIVE_DECLARE_CONTROL_TYPE(name) \
-	jive_control_type name##_struct; name##_struct.class_ = &JIVE_CONTROL_TYPE; \
+	jive_control_type name##_struct; \
 	const jive_type * name = &name##_struct
 
-struct jive_control_type : public jive_state_type {
+class jive_control_type final : public jive_state_type {
+public:
+	virtual ~jive_control_type() noexcept;
+
+	jive_control_type() noexcept;
 };
 
 extern const jive_input_class JIVE_CONTROL_INPUT;
-struct jive_control_input : public jive_state_input {
+class jive_control_input final : public jive_state_input {
+public:
+	virtual ~jive_control_input() noexcept;
+
+	jive_control_input(struct jive_node * node, size_t index, jive_output * initial_operand) noexcept;
+
+	virtual const jive_control_type & type() const noexcept { return type_; }
+
+private:
+	jive_control_type type_;
 };
 
 extern const jive_output_class JIVE_CONTROL_OUTPUT;
-struct jive_control_output : public jive_state_output {
-	bool active;
+class jive_control_output final : public jive_state_output {
+public:
+	virtual ~jive_control_output() noexcept;
+
+	jive_control_output(bool active, struct jive_node * node, size_t index);
+
+	virtual const jive_control_type & type() const noexcept { return type_; }
+
+	inline void set_active(bool active) noexcept { active_ = active; }
+
+	inline bool active() const noexcept { return active_; }
+
+private:
+	bool active_;
+	jive_control_type type_;
 };
 
 extern const jive_gate_class JIVE_CONTROL_GATE;
-struct jive_control_gate : public jive_state_gate {
-};
+class jive_control_gate final : public jive_state_gate {
+public:
+	virtual ~jive_control_gate() noexcept;
 
+	jive_control_gate(jive_graph * graph, const char name[]);
+
+	virtual const jive_control_type & type() const noexcept { return type_; }
+
+private:
+	jive_control_type type_;
+};
 
 #endif

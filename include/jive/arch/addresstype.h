@@ -14,14 +14,15 @@ typedef struct jive_address_type jive_address_type;
 
 extern const jive_type_class JIVE_ADDRESS_TYPE;
 #define JIVE_DECLARE_ADDRESS_TYPE(name) \
-	jive_address_type name##_struct; name##_struct.class_ = &JIVE_ADDRESS_TYPE; \
+	jive_address_type name##_struct; \
 	const jive_type * name = &name##_struct
 
-struct jive_address_type : public jive_value_type {
-};
+class jive_address_type final : public jive_value_type {
+public:
+	virtual ~jive_address_type() noexcept;
 
-void
-jive_address_type_init(jive_address_type * self);
+	jive_address_type() noexcept;
+};
 
 JIVE_EXPORTED_INLINE const jive_address_type *
 jive_address_type_const_cast(const jive_type * self)
@@ -46,8 +47,16 @@ jive_address_type_cast(jive_type * self)
 typedef struct jive_address_input jive_address_input;
 
 extern const jive_input_class JIVE_ADDRESS_INPUT;
-struct jive_address_input : public jive_value_input {
-	jive_address_type type;
+class jive_address_input final : public jive_value_input {
+public:
+	virtual ~jive_address_input() noexcept;
+
+	jive_address_input(struct jive_node * node, size_t index, jive_output * origin);
+
+	virtual const jive_address_type & type() const noexcept { return type_; }
+
+private:
+	jive_address_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_address_input *
@@ -73,8 +82,16 @@ jive_address_input_cast(jive_input * self)
 typedef struct jive_address_output jive_address_output;
 
 extern const jive_output_class JIVE_ADDRESS_OUTPUT;
-struct jive_address_output : public jive_value_output {
-	jive_address_type type;
+class jive_address_output final : public jive_value_output {
+public:
+	virtual ~jive_address_output() noexcept;
+
+	jive_address_output(jive_node * node, size_t index);
+
+	virtual const jive_address_type & type() const noexcept { return type_; }
+
+private:
+	jive_address_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_address_output *
@@ -100,8 +117,16 @@ jive_address_output_cast(jive_output * self)
 typedef struct jive_address_gate jive_address_gate;
 
 extern const jive_gate_class JIVE_ADDRESS_GATE;
-struct jive_address_gate : public jive_value_gate {
-	jive_address_type type;
+class jive_address_gate final : public jive_value_gate {
+public:
+	virtual ~jive_address_gate() noexcept;
+
+	jive_address_gate(jive_graph * graph, const char name[]);
+
+	virtual const jive_address_type & type() const noexcept { return type_; }
+
+private:
+	jive_address_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_address_gate *

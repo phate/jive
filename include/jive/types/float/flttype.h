@@ -14,11 +14,14 @@ typedef struct jive_float_type jive_float_type;
 
 extern const jive_type_class JIVE_FLOAT_TYPE;
 #define JIVE_DECLARE_FLOAT_TYPE(name) \
-	jive_float_type name##_struct; name##_struct.class_ = &JIVE_FLOAT_TYPE; \
+	jive_float_type name##_struct; \
 	const jive_type * name = &name##_struct
 
-struct jive_float_type : public jive_value_type {
-	jive_float_type() { class_ = &JIVE_FLOAT_TYPE; }
+class jive_float_type final : public jive_value_type {
+public:
+	virtual ~jive_float_type() noexcept;
+
+	jive_float_type() noexcept;
 };
 
 JIVE_EXPORTED_INLINE const jive_float_type *
@@ -44,8 +47,16 @@ jive_float_type_cast(jive_type * self)
 typedef struct jive_float_input jive_float_input;
 
 extern const jive_input_class JIVE_FLOAT_INPUT;
-struct jive_float_input : public jive_value_input {
-	jive_float_type type;
+class jive_float_input final : public jive_value_input {
+public:
+	virtual ~jive_float_input() noexcept;
+
+	jive_float_input(struct jive_node * node, size_t index, jive_output * origin);
+
+	virtual const jive_float_type & type() const noexcept { return type_; }
+
+private:
+	jive_float_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_float_input *
@@ -71,8 +82,16 @@ jive_float_input_cast(jive_input * self)
 typedef struct jive_float_output jive_float_output;
 
 extern const jive_output_class JIVE_FLOAT_OUTPUT;
-struct jive_float_output : public jive_value_output {
-	jive_float_type type;
+class jive_float_output final : public jive_value_output {
+public:
+	virtual ~jive_float_output() noexcept;
+
+	jive_float_output(struct jive_node * node, size_t index);
+
+	virtual const jive_float_type & type() const noexcept { return type_; }
+
+private:
+	jive_float_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_float_output *
@@ -98,8 +117,16 @@ jive_float_output_cast(jive_output * self)
 typedef struct jive_float_gate jive_float_gate;
 
 extern const jive_gate_class JIVE_FLOAT_GATE;
-struct jive_float_gate : public jive_value_gate {
-	jive_float_type type;
+class jive_float_gate final : public jive_value_gate {
+public:
+	virtual ~jive_float_gate() noexcept;
+
+	jive_float_gate(jive_graph * graph, const char name[]);
+
+	virtual const jive_float_type & type() const noexcept { return type_; }
+
+private:
+	jive_float_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_float_gate *

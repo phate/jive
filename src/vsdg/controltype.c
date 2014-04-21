@@ -27,14 +27,8 @@ jive_control_type_create_gate_(const jive_type * self, jive_graph * graph, const
 static jive_type *
 jive_control_type_copy_(const jive_type * self);
 
-static void
-jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin);
-
 static const jive_type *
 jive_control_input_get_type_(const jive_input * self);
-
-static void
-jive_control_output_init_(jive_control_output * self, jive_node * node, size_t index);
 
 static const jive_type *
 jive_control_output_get_type_(const jive_output * self);
@@ -78,32 +72,29 @@ const jive_gate_class JIVE_CONTROL_GATE = {
 	get_type : jive_control_gate_get_type_, /* override */
 };
 
+jive_control_type::~jive_control_type() noexcept {}
+
+jive_control_type::jive_control_type() noexcept
+	: jive_state_type(&JIVE_CONTROL_TYPE)
+{}
+
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_control_input * input = new jive_control_input;
-	input->class_ = &JIVE_CONTROL_INPUT;
-	jive_control_input_init_(input, node, index, initial_operand);
+	jive_control_input * input = new jive_control_input(node, index, initial_operand);
 	return input;
 }
 
 static jive_output *
 jive_control_type_create_output_(const jive_type * self, jive_node * node, size_t index)
 {
-	jive_control_output * output = new jive_control_output;
-	output->class_ = &JIVE_CONTROL_OUTPUT;
-	output->active = true;
-	jive_control_output_init_(output, node, index);
-	return output;
+	return new jive_control_output(true, node, index);
 }
 
 static jive_gate *
 jive_control_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_control_gate * gate = new jive_control_gate;
-	gate->class_ = &JIVE_CONTROL_GATE;
-	jive_control_gate_init_(gate, graph, name);
-	return gate;
+	return new jive_control_gate(graph, name);
 }
 
 static jive_type *
@@ -114,11 +105,12 @@ jive_control_type_copy_(const jive_type * self)
 	return other;
 }
 
-static void
-jive_control_input_init_(jive_control_input * self, jive_node * node, size_t index, jive_output * origin)
-{
-	jive_state_input_init_(self, node, index, origin);
-}
+jive_control_input::~jive_control_input() noexcept {}
+
+jive_control_input::jive_control_input(struct jive_node * node, size_t index,
+	jive_output * initial_operand) noexcept
+	: jive_state_input(&JIVE_CONTROL_INPUT, node, index, initial_operand)
+{}
 
 static const jive_type *
 jive_control_input_get_type_(const jive_input * self)
@@ -127,11 +119,13 @@ jive_control_input_get_type_(const jive_input * self)
 	return &control_type;
 }
 
-static void
-jive_control_output_init_(jive_control_output * self, jive_node * node, size_t index)
-{
-	jive_state_output_init_(self, node, index);
-}
+jive_control_output::~jive_control_output() noexcept {}
+
+jive_control_output::jive_control_output(bool active, struct jive_node * node,
+	size_t index)
+	: jive_state_output(&JIVE_CONTROL_OUTPUT, node, index)
+	, active_(active)
+{}
 
 static const jive_type *
 jive_control_output_get_type_(const jive_output * self)
@@ -140,11 +134,11 @@ jive_control_output_get_type_(const jive_output * self)
 	return &control_type;
 }
 
-static void
-jive_control_gate_init_(jive_control_gate * self, struct jive_graph * graph, const char * name)
-{
-	jive_state_gate_init_(self, graph, name);
-}
+jive_control_gate::~jive_control_gate() noexcept {}
+
+jive_control_gate::jive_control_gate(jive_graph * graph, const char name[])
+	: jive_state_gate(&JIVE_CONTROL_GATE, graph, name)
+{}
 
 static const jive_type *
 jive_control_gate_get_type_(const jive_gate * self)

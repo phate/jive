@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -142,7 +142,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		cls = (const jive_bitbinary_operation_class *) node->class_;
 		
 		option.mask = jive_reg_classifier_classify_fixed_arithmetic(self->classifier, cls->type,
-			type->nbits);
+			type->nbits());
 		
 		jive_negotiator_annotate_identity_node(&self->base, node, &option.base);
 	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
@@ -153,7 +153,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_bitcomparison_operation_class * cls;
 		cls = (const jive_bitcomparison_operation_class *) node->class_;
 		option.mask = jive_reg_classifier_classify_fixed_compare(self->classifier, cls->type,
-			type->nbits);
+			type->nbits());
 		
 		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option.base);
 	} else if (jive_node_isinstance(node, &JIVE_LOAD_NODE)) {

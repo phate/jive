@@ -90,40 +90,29 @@ const jive_gate_class JIVE_FUNCTION_GATE = {
 	get_type : jive_function_gate_get_type_, /* override */
 };
 
-void
-jive_function_type_init(
-	jive_function_type * self,
-	size_t narguments, const jive_type * const argument_types[],
-	size_t nreturns, const jive_type * const return_types[])
+jive_function_type::~jive_function_type() noexcept {}
+
+jive_function_type::jive_function_type(size_t narguments, const jive_type ** argument_types,
+	size_t nreturns, const jive_type ** return_types)
+	: jive_value_type(&JIVE_FUNCTION_TYPE)
 {
-	self->argument_types = new jive_type*[narguments];
-	self->return_types = new jive_type*[nreturns];
-	
 	size_t i;
-	for(i = 0; i < narguments; i++)
-		self->argument_types[i] = jive_type_copy(argument_types[i]);
-	
-	for(i = 0; i < nreturns; i++)
-		self->return_types[i] = jive_type_copy(return_types[i]);
+	for (i = 0; i < narguments; i++)
+		argument_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(argument_types[i])));
 
-	self->class_ = &JIVE_FUNCTION_TYPE;
-	self->nreturns = nreturns;
-	self->narguments = narguments;
+	for (i = 0; i < nreturns; i++)
+		return_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(return_types[i])));
 }
 
-jive_function_type * jive_function_type_create(
-	size_t narguments, const jive_type * const argument_types[],
-	size_t nreturns, const jive_type * const return_types[])
+jive_function_type::jive_function_type(const jive_function_type & rhs)
+	: jive_value_type(&JIVE_FUNCTION_TYPE)
 {
-	jive_function_type * type = new jive_function_type;
-	jive_function_type_init(type, narguments, argument_types, nreturns, return_types);
-	return type;
-}
+	size_t i;
+	for (i = 0; i < rhs.narguments(); i++)
+		argument_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(rhs.argument_type(i))));
 
-void jive_function_type_destroy(jive_function_type * type)
-{
-	jive_function_type_fini_(type);
-	delete type;
+	for (i = 0; i < rhs.nreturns(); i++)
+		return_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(rhs.return_type(i))));
 }
 
 /* function_type inheritable members */
@@ -131,18 +120,6 @@ void jive_function_type_destroy(jive_function_type * type)
 void
 jive_function_type_fini(jive_function_type * self)
 {
-	size_t i;
-	for(i = 0; i < self->narguments; i++){
-		jive_type_destroy(self->argument_types[i]);
-	}
-	delete[] self->argument_types;
-	
-	for(i = 0; i < self->nreturns; i++){
-		jive_type_destroy(self->return_types[i]);
-	}
-	delete[] self->return_types;
-	
-	jive_value_type_fini_(self);
 }
 
 void
@@ -157,38 +134,22 @@ jive_type *
 jive_function_type_copy_(const jive_type * self_)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
-	
-	jive_function_type * type = new jive_function_type;
-	
-	jive_function_type_init(type,
-		self->narguments, (const jive_type * const *) self->argument_types,
-		self->nreturns, (const jive_type * const *) self->return_types);
-	
-	return type;
+	return new jive_function_type(*self);
 }
 
 jive_input *
-jive_function_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_function_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
+	jive_output * initial_operand)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
-	jive_function_input * input = new jive_function_input;
-	
-	input->class_ = &JIVE_FUNCTION_INPUT;
-	jive_function_input_init_(input, self, node, index, initial_operand);
-	
-	return input;
+	return new jive_function_input(*self, node, index, initial_operand);
 }
 
 jive_output *
 jive_function_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
-	jive_function_output * output = new jive_function_output;
-	
-	output->class_ = &JIVE_FUNCTION_OUTPUT;
-	jive_function_output_init_(output, self, node, index);
-	
-	return output;
+	return new jive_function_output(*self, node, index);
 }
 
 bool
@@ -197,17 +158,17 @@ jive_function_type_equals_(const jive_type * self_, const jive_type * other_)
 	const jive_function_type * self = (const jive_function_type *) self_;
 	const jive_function_type * other = (const jive_function_type *) other_;
 	
-	if (self->nreturns != other->nreturns) return false;
-	if (self->narguments != other->narguments) return false;
+	if (self->nreturns() != other->nreturns()) return false;
+	if (self->narguments() != other->narguments()) return false;
 	
 	size_t i;
-	for(i = 0; i < self->nreturns; i++){
-		if (!jive_type_equals(self->return_types[i], other->return_types[i]))
+	for(i = 0; i < self->nreturns(); i++){
+		if (!jive_type_equals(self->return_type(i), other->return_type(i)))
 			return false;
 	}
 	
-	for(i = 0; i < self->narguments; i++){
-		if (!jive_type_equals(self->argument_types[i], other->argument_types[i]))
+	for(i = 0; i < self->narguments(); i++){
+		if (!jive_type_equals(self->argument_type(i), other->argument_type(i)))
 			return false;
 	}
 	
@@ -215,70 +176,61 @@ jive_function_type_equals_(const jive_type * self_, const jive_type * other_)
 }
 
 jive_gate *
-jive_function_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
+jive_function_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
+	const char * name)
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
-	
-	jive_function_gate * gate = new jive_function_gate;
-	
-	gate->class_ = &JIVE_FUNCTION_GATE;
-	jive_function_gate_init_(gate, self, graph, name);
-	
-	return gate;
+	return new jive_function_gate(*self, graph, name);
 }
 
 /* function_input inheritable members */
 
-void
-jive_function_input_init_(jive_function_input * self, const jive_function_type * type,
-	struct jive_node * node, size_t index, jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	
-	jive_function_type_init(&self->type, 
-		type->narguments, (const jive_type * const *)type->argument_types,
-		type->nreturns, (const jive_type * const *)type->return_types);
-}
+jive_function_input::jive_function_input(size_t narguments, const jive_type ** argument_types,
+	size_t nreturns, const jive_type ** return_types, struct jive_node * node, size_t index,
+	jive_output * origin)
+	: jive_value_input(&JIVE_FUNCTION_INPUT, node, index, origin)
+	, type_(narguments, argument_types, nreturns, return_types)
+{}
+
+jive_function_input::jive_function_input(const jive_function_type & type, jive_node * node,
+	size_t index, jive_output * origin)
+	: jive_value_input(&JIVE_FUNCTION_INPUT, node, index, origin)
+	, type_(type)
+{}
+
+jive_function_input::~jive_function_input() noexcept {}
 
 void
 jive_function_input_fini_(jive_input * self_)
 {
-	jive_function_input * self = (jive_function_input *) self_;
-	
-	jive_function_type_fini(&self->type);
-	
-	jive_input_fini_(self);
 }
 
 const jive_type *
 jive_function_input_get_type_(const jive_input * self_)
 {
 	const jive_function_input * self = (const jive_function_input *) self_;
-	
-	return &self->type;
+	return &self->type();
 }
 
 /* function_output inheritable members */
 
-void
-jive_function_output_init_(jive_function_output * self, const jive_function_type * type,
-  struct jive_node * node, size_t index)
-{
-	jive_value_output_init_(self, node, index);
-	
-	jive_function_type_init(&self->type, 
-		type->narguments, (const jive_type * const *)type->argument_types,
-		type->nreturns, (const jive_type * const *)type->return_types);
-} 
+jive_function_output::jive_function_output(size_t narguments, const jive_type ** argument_types,
+	size_t nreturns, const jive_type ** return_types, jive_node * node, size_t index)
+	: jive_value_output(&JIVE_FUNCTION_OUTPUT, node, index)
+	, type_(narguments, argument_types, nreturns, return_types)
+{}
+
+jive_function_output::jive_function_output(const jive_function_type & type, jive_node * node,
+	size_t index)
+	: jive_value_output(&JIVE_FUNCTION_OUTPUT, node, index)
+	, type_(type)
+{}
+
+jive_function_output::~jive_function_output() noexcept {}
 
 void
 jive_function_output_fini_(jive_output * self_)
 {
-	jive_function_output * self = (jive_function_output *) self_;
-	
-	jive_function_type_fini(&self->type);
-	
-	jive_output_fini_(self);
 }
 
 const jive_type *
@@ -286,29 +238,28 @@ jive_function_output_get_type_(const jive_output * self_)
 {
 	const jive_function_output * self = (const jive_function_output *) self_;
 	
-	return &self->type;
+	return &self->type();
 }
 
 /* function_gate inheritable members */
 
-void
-jive_function_gate_init_(jive_function_gate * self, const jive_function_type * type,
-  struct jive_graph * graph,  const char name[])
-{
-	jive_value_gate_init_(self, graph, name);
-	jive_function_type_init(&self->type, 
-		type->narguments, (const jive_type * const *)type->argument_types,
-		type->nreturns, (const jive_type * const *)type->return_types);
-}
+jive_function_gate::jive_function_gate(size_t narguments, const jive_type ** argument_types,
+	size_t nreturns, const jive_type ** return_types, jive_graph * graph, const char name[])
+	: jive_value_gate(&JIVE_FUNCTION_GATE, graph, name)
+	, type_(narguments, argument_types, nreturns, return_types)
+{}
+
+jive_function_gate::jive_function_gate(const jive_function_type & type, jive_graph * graph,
+	const char name[])
+	: jive_value_gate(&JIVE_FUNCTION_GATE, graph, name)
+	, type_(type)
+{}
+
+jive_function_gate::~jive_function_gate() noexcept {}
 
 void
 jive_function_gate_fini_(jive_gate * self_)
 {
-	jive_function_gate * self = (jive_function_gate *) self_;
-	
-	jive_function_type_fini(&self->type);
-	
-	jive_gate_fini_(self);
 }
 
 const jive_type *
@@ -316,5 +267,5 @@ jive_function_gate_get_type_(const jive_gate * self_)
 {
 	const jive_function_gate * self = (const jive_function_gate *) self_;
 	
-	return &self->type;
+	return &self->type();
 }

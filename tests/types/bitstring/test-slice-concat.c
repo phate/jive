@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -33,7 +34,7 @@ static int test_main(void)
 		
 		assert(a->node->class_ == &JIVE_BITCONSTANT_NODE);
 		const jive_bitstring_type * type = (const jive_bitstring_type *) jive_output_get_type(a);
-		assert(type->nbits==4);
+		assert(type->nbits()==4);
 		const jive_bitconstant_node_attrs * attrs = (const jive_bitconstant_node_attrs *)jive_node_get_attrs(a->node);
 		assert(memcmp(attrs->bits, "1101", 4)==0);
 	}

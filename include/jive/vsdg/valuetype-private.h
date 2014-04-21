@@ -28,24 +28,15 @@ jive_value_type_copy_(const jive_type * self);
 
 /* value_input inheritable members */
 
-void
-jive_value_input_init_(jive_value_input * self, struct jive_node * node, size_t index, jive_output * origin);
-
 const jive_type *
 jive_value_input_get_type_(const jive_input * self);
 
 /* value_output inheritable members */
 
-void
-jive_value_output_init_(jive_value_output * self, struct jive_node * node, size_t index);
-
 const jive_type *
 jive_value_output_get_type_(const jive_output * self);
 
 /* value_gate inheritable members */
-
-void
-jive_value_gate_init_(jive_value_gate * self, struct jive_graph * graph, const char name[]);
 
 const jive_type *
 jive_value_gate_get_type_(const jive_gate * self);

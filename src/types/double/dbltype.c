@@ -12,43 +12,33 @@
 #include <jive/vsdg/node.h>
 
 static void
-jive_double_input_init_(jive_double_input * self, struct jive_node * node, size_t index,
-	jive_output * origin);
-
-static void
-jive_double_output_init_(jive_double_output * self, struct jive_node * node, size_t index);
-
-static void
 jive_double_gate_init_(jive_double_gate * self, struct jive_graph * graph, const char name[]);
 
 /* double type */
+
+jive_double_type::~jive_double_type() noexcept {}
+
+jive_double_type::jive_double_type() noexcept
+	: jive_value_type(&JIVE_DOUBLE_TYPE)
+{}
 
 static jive_input *
 jive_double_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * initial_operand)
 {
-	jive_double_input * input = new jive_double_input;
-	input->class_ = &JIVE_DOUBLE_INPUT;
-	jive_double_input_init_(input, node, index, initial_operand);
-	return input;
+	return new jive_double_input(node, index, initial_operand);
 }
 
 static jive_output *
 jive_double_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
-	jive_double_output * output = new jive_double_output;
-	output->class_ = &JIVE_DOUBLE_OUTPUT;
-	jive_double_output_init_(output, node, index);
-	return output;
+	return new jive_double_output(node, index);
 }
 
 static jive_gate *
 jive_double_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
-	jive_double_gate * gate = new jive_double_gate;
-	gate->class_ = &JIVE_DOUBLE_GATE;
-	jive_double_gate_init_(gate, graph, name);
-	return gate;
+	return new jive_double_gate(graph, name);
 }
 
 static jive_type *
@@ -80,19 +70,18 @@ const jive_type_class JIVE_DOUBLE_TYPE = {
 
 /* double input */
 
-static void
-jive_double_input_init_(jive_double_input * self, struct jive_node * node, size_t index,
-	jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	jive_double_type_init_(&self->type);
-}
+jive_double_input::~jive_double_input() noexcept {}
+
+jive_double_input::jive_double_input(struct jive_node * node, size_t index,
+	jive_output * origin) noexcept
+	: jive_value_input(&JIVE_DOUBLE_INPUT, node, index, origin)
+{}
 
 static const jive_type *
 jive_double_input_get_type_(const jive_input * self_)
 {
 	const jive_double_input * self = (const jive_double_input *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_input_class JIVE_DOUBLE_INPUT = {
@@ -104,19 +93,17 @@ const jive_input_class JIVE_DOUBLE_INPUT = {
 
 /* double output */
 
-static void
-jive_double_output_init_(jive_double_output * self, struct jive_node * node, size_t index)
-{
-	self->class_ = &JIVE_DOUBLE_OUTPUT;
-	jive_value_output_init_(self, node, index);
-	jive_double_type_init_(&self->type);
-}
+jive_double_output::~jive_double_output() noexcept {}
+
+jive_double_output::jive_double_output(struct jive_node * node, size_t index)
+	: jive_value_output(&JIVE_DOUBLE_OUTPUT, node, index)
+{}
 
 static const jive_type *
 jive_double_output_get_type_(const jive_output * self_)
 {
 	const jive_double_output * self = (const jive_double_output *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_output_class JIVE_DOUBLE_OUTPUT = {
@@ -128,19 +115,17 @@ const jive_output_class JIVE_DOUBLE_OUTPUT = {
 
 /* double gate */
 
-static void
-jive_double_gate_init_(jive_double_gate * self, struct jive_graph * graph, const char name[])
-{
-	self->class_ = &JIVE_DOUBLE_GATE;
-	jive_value_gate_init_(self, graph, name);
-	jive_double_type_init_(&self->type);
-}
+jive_double_gate::~jive_double_gate() noexcept {}
+
+jive_double_gate::jive_double_gate(jive_graph * graph, const char name[])
+	: jive_value_gate(&JIVE_DOUBLE_GATE, graph, name)
+{}
 
 static const jive_type *
 jive_double_gate_get_type_(const jive_gate * self_)
 {
 	const jive_double_gate * self = (const jive_double_gate *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_gate_class JIVE_DOUBLE_GATE = {

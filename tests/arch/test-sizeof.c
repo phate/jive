@@ -39,17 +39,15 @@ const jive_value_type *  tmparray0[] = {
 
 	jive_record_declaration r_decl = {3, tmparray0};
 	
-	jive_record_type record_t;
+	jive_record_type record_t(&r_decl);
 	const jive_value_type *  tmparray1[] = {
 		(const jive_value_type *)bits4,
 		(const jive_value_type *)bits8,
 		(const jive_value_type *)bits18};
-	jive_record_type_init(&record_t, &r_decl);	
 
 	jive_union_declaration u_decl = {3, tmparray1};
 
-	jive_union_type union_t;
-	jive_union_type_init(&union_t, &u_decl);
+	jive_union_type union_t(&u_decl);
 
 	jive_output * s0 = jive_sizeof_create(graph->root_region, (const jive_value_type *)bits4);
 	jive_output * s1 = jive_sizeof_create(graph->root_region, (const jive_value_type *)bits8);

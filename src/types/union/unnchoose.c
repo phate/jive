@@ -70,10 +70,10 @@ perform_check(jive_context * context, const jive_output * operand, size_t elemen
 	const jive_union_type * operand_type = (const jive_union_type *)
 		jive_output_get_type(operand);
 
-	if (element >= operand_type->decl->nelements) {
+	if (element >= operand_type->declaration()->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp), "Type mismatch: attempted to select element #%zd from union of %zd elements",
-			element, operand_type->decl->nelements);
+			element, operand_type->declaration()->nelements);
 		jive_context_fatal_error(context, jive_context_strdup(context, tmp));
 	}
 
@@ -90,7 +90,7 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 
 	const jive_union_type * operand_type = (const jive_union_type *)
 		jive_output_get_type(operand);
-	const jive_type * output_type = operand_type->decl->elements[element];
+	const jive_type * output_type = operand_type->declaration()->elements[element];
 	const jive_type *  tmparray0[] = {jive_output_get_type(operand)};
 	jive_node_init_(self, region,
 		1, tmparray0, &operand,
@@ -140,11 +140,11 @@ jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_at
 		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
 
 	const jive_union_type * type = (const jive_union_type *)jive_output_get_type(operands[0]);
-	if (attrs->element >= type->decl->nelements) {
+	if (attrs->element >= type->declaration()->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp),
 			"Type mismatch: attempted to select element #%zd from union of %zd elements", attrs->element,
-			type->decl->nelements);
+			type->declaration()->nelements);
 		jive_context_fatal_error(context, tmp);
 	}
 }
@@ -194,7 +194,7 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 		jive_output * address = load_node->inputs[0]->origin;
 
 		const jive_union_declaration * decl = ((const jive_union_type *)
-			jive_output_get_type(load_node->outputs[0]))->decl;
+			jive_output_get_type(load_node->outputs[0]))->declaration();
 		const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *) attrs_;
 
 		size_t n;

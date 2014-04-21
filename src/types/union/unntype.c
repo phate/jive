@@ -85,12 +85,12 @@ const jive_gate_class JIVE_UNION_GATE = {
 	get_type : jive_union_gate_get_type_, /* override */
 };
 
-void
-jive_union_type_init(jive_union_type * self, const jive_union_declaration * decl)
-{
-	self->class_ = &JIVE_UNION_TYPE;
-	self->decl = decl;
-}
+jive_union_type::~jive_union_type() noexcept {}
+
+jive_union_type::jive_union_type(const jive_union_declaration * decl) noexcept
+	: jive_value_type(&JIVE_UNION_TYPE)
+	, decl_(decl)
+{}
 
 /* record_type inheritable members */
 
@@ -99,9 +99,7 @@ jive_union_type_copy_(const jive_type * self_)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
 
-	jive_union_type * type = new jive_union_type;
-
-	jive_union_type_init(type, self->decl);
+	jive_union_type * type = new jive_union_type(self->declaration());
 
 	return type;
 }
@@ -111,11 +109,7 @@ jive_union_type_create_input_(const jive_type * self_, struct jive_node * node,
 	size_t index, jive_output * initial_operand)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
-	jive_union_input * input = new jive_union_input;
-
-	input->class_ = &JIVE_UNION_INPUT;
-	jive_union_input_init_(input, self, node, index, initial_operand);
-
+	jive_union_input * input = new jive_union_input(self->declaration(), node, index, initial_operand);
 	return input;
 }
 
@@ -123,12 +117,7 @@ jive_output *
 jive_union_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
-	jive_union_output * output = new jive_union_output;
-
-	output->class_ = &JIVE_UNION_OUTPUT;
-	jive_union_output_init_(output, self, node, index);
-
-	return output;
+	return new jive_union_output(self->declaration(), node, index);
 }
 
 bool
@@ -137,7 +126,7 @@ jive_union_type_equals_(const jive_type * self_, const jive_type * other_)
 	const jive_union_type * self = (const jive_union_type *) self_;
 	const jive_union_type * other = (const jive_union_type *) other_;
 
-	return (self->decl == other->decl);
+	return (self->declaration() == other->declaration());
 }
 
 jive_gate *
@@ -145,58 +134,46 @@ jive_union_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 	const char * name)
 {
 	const jive_union_type * self = (const jive_union_type *) self_;
-
-	jive_union_gate * gate = new jive_union_gate;
-
-	gate->class_ = &JIVE_UNION_GATE;
-	jive_union_gate_init_(gate, self, graph, name);
-
-	return gate;
+	return new jive_union_gate(self->declaration(), graph, name);
 }
 
 /* union_input inheritable members */
 
-void
-jive_union_input_init_(jive_union_input * self, const jive_union_type * type,
-	struct jive_node * node, size_t index, jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	jive_union_type_init(&self->type, type->decl);
-}
+jive_union_input::jive_union_input(const jive_union_declaration * decl, struct jive_node * node,
+	size_t index, jive_output * origin)
+	: jive_value_input(&JIVE_UNION_INPUT, node, index, origin)
+	, type_(decl)
+{}
+
+jive_union_input::~jive_union_input() noexcept
+{}
 
 void
 jive_union_input_fini_(jive_input * self_)
 {
-	jive_union_input * self = (jive_union_input *) self_;
-
-	self->type.class_->fini(&self->type);
-	jive_input_fini_(self);
 }
 
 const jive_type *
 jive_union_input_get_type_(const jive_input * self_)
 {
 	const jive_union_input * self = (const jive_union_input *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 /* union_output inheritable members */
 
-void
-jive_union_output_init_(jive_union_output * self, const jive_union_type * type,
-	struct jive_node * node, size_t index)
-{
-	jive_value_output_init_(self, node, index);
-	jive_union_type_init(&self->type, type->decl);
-}
+jive_union_output::jive_union_output(const jive_union_declaration * decl, jive_node * node,
+	size_t index)
+	: jive_value_output(&JIVE_UNION_OUTPUT, node, index)
+	, type_(decl)
+{}
+
+jive_union_output::~jive_union_output() noexcept
+{}
 
 void
 jive_union_output_fini_(jive_output * self_)
 {
-	jive_union_output * self = (jive_union_output *) self_;
-
-	self->type.class_->fini(&self->type);
-	jive_output_fini_(self);
 }
 
 const jive_type *
@@ -204,26 +181,22 @@ jive_union_output_get_type_(const jive_output *self_)
 {
 	const jive_union_output * self = (const jive_union_output *) self_;
 
-	return &self->type;
+	return &self->type();
 }
 
 /* union_gate inheritable members */
 
-void
-jive_union_gate_init_(jive_union_gate * self, const jive_union_type * type,
-	struct jive_graph * graph, const char name[])
-{
-	jive_value_gate_init_(self, graph, name);
-	jive_union_type_init(&self->type, type->decl);
-}
+jive_union_gate::jive_union_gate(const jive_union_declaration * decl, jive_graph * graph,
+	const char name[])
+	: jive_value_gate(&JIVE_UNION_GATE, graph, name)
+	, type_(decl)
+{}
+
+jive_union_gate::~jive_union_gate() noexcept {}
 
 void
 jive_union_gate_fini_(jive_gate * self_)
 {
-	jive_union_gate * self = (jive_union_gate *) self_;
-
-	jive_type_fini(&self->type);
-	jive_gate_fini_(self);
 }
 
 const jive_type *
@@ -231,5 +204,5 @@ jive_union_gate_get_type_(const jive_gate * self_)
 {
 	const jive_union_gate * self = (const jive_union_gate *) self_;
 
-	return &self->type;
+	return &self->type();
 }

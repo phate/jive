@@ -32,77 +32,136 @@ typedef struct jive_reuse_resource jive_reuse_resource;
 
 extern const jive_type_class JIVE_REUSE_TYPE;
 #define JIVE_DECLARE_REUSE_TYPE(name_, resname) \
-	jive_reuse_type name_##_struct; \
-	name_##_struct.class_ = &JIVE_REUSE_TYPE; name_##_struct.name = resname; \
+	jive_reuse_type name_##_struct(resname); \
 	const jive_type * name_ = &name_##_struct
 
-struct jive_reuse_type : public jive_state_type {
-	const jive_resource_name * name;
+class jive_reuse_type final : public jive_state_type {
+public:
+	virtual ~jive_reuse_type() noexcept {};
+
+	jive_reuse_type(const jive_resource_name * name) noexcept;
+
+	inline const jive_resource_name * name() const noexcept { return name_; }
+
+private:
+	const jive_resource_name * name_;
 };
 
 extern const jive_input_class JIVE_REUSE_INPUT;
-struct jive_reuse_input : public jive_state_input {
-	jive_reuse_type type;
+class jive_reuse_input final : public jive_state_input {
+public:
+	virtual ~jive_reuse_input() noexcept;
+
+	jive_reuse_input(const jive_resource_name * name, struct jive_node * node, size_t index,
+		jive_output * origin);
+
+	virtual const jive_reuse_type & type() const noexcept { return type_; }
+
+	inline const jive_resource_name * name() const noexcept { return type_.name(); }
+
+private:
+	jive_reuse_type type_;
 };
 
 extern const jive_output_class JIVE_REUSE_OUTPUT;
-struct jive_reuse_output : public jive_state_output {
-	jive_reuse_type type;
+class jive_reuse_output final : public jive_state_output {
+public:
+	virtual ~jive_reuse_output() noexcept;
+
+	jive_reuse_output(const jive_resource_name * name, jive_node * node, size_t index);
+
+	virtual const jive_reuse_type & type() const noexcept { return type_; }
+
+	inline const jive_resource_name * name() const noexcept { return type_.name(); }
+
+private:
+	jive_reuse_type type_;
 };
 
 extern const jive_gate_class JIVE_REUSE_GATE;
-struct jive_reuse_gate : public jive_state_gate {
-	jive_reuse_type type;
+class jive_reuse_gate final : public jive_state_gate {
+public:
+	virtual ~jive_reuse_gate() noexcept;
+
+	jive_reuse_gate(const jive_resource_name * name_, jive_graph * graph, const char name[]);
+
+	virtual const jive_reuse_type & type() const noexcept { return type_; }
+
+	inline const jive_resource_name * name() const noexcept { return type_.name(); }
+
+private:
+	jive_reuse_type type_;
 };
 
+jive_reuse_type::jive_reuse_type(const jive_resource_name * name) noexcept
+	: jive_state_type(&JIVE_REUSE_TYPE)
+	, name_(name)
+{}
+
+
+jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,
+	size_t index, jive_output * origin)
+	: jive_state_input(&JIVE_REUSE_INPUT, node, index, origin)
+	, type_(name)
+{}
+
+jive_reuse_input::~jive_reuse_input() noexcept {}
+
 static void
-jive_reuse_type_init_(jive_reuse_type * self, const jive_resource_name * name)
+jive_reuse_input_init_(jive_reuse_input * self, struct jive_node * node, size_t index,
+	jive_output * origin, const jive_resource_name * name)
 {
-	self->class_ = &JIVE_REUSE_TYPE;
-	self->name = name;
 }
 
-
 static void
-jive_reuse_input_init_(jive_reuse_input * self, struct jive_node * node, size_t index, jive_output * origin, const jive_resource_name * name)
+jive_reuse_input_fini_(jive_input * self_)
 {
-	jive_state_input_init_(self, node, index, origin);
-	jive_reuse_type_init_(&self->type, name);
 }
 
 static const jive_type *
 jive_reuse_input_get_type_(const jive_input * self_)
 {
 	const jive_reuse_input * self = (const jive_reuse_input *) self_;
-	return &self->type;
+	return &self->type();
 }
 
+jive_reuse_output::jive_reuse_output(const jive_resource_name * name, jive_node * node, size_t index)
+	: jive_state_output(&JIVE_REUSE_OUTPUT, node, index)
+	, type_(name)
+{}
+
+jive_reuse_output::~jive_reuse_output() noexcept {}
+
 static void
-jive_reuse_output_init_(jive_reuse_output * self, struct jive_node * node, size_t index, const jive_resource_name * name)
+jive_reuse_output_fini_(jive_output * self_)
 {
-	jive_state_output_init_(self, node, index);
-	jive_reuse_type_init_(&self->type, name);
 }
 
 static const jive_type *
 jive_reuse_output_get_type_(const jive_output * self_)
 {
 	const jive_reuse_output * self = (const jive_reuse_output *) self_;
-	return &self->type;
+	return &self->type();
 }
 
-void
-jive_reuse_gate_init_(jive_reuse_gate * self, struct jive_graph * graph, const char * name, const jive_resource_name * resname)
+jive_reuse_gate::jive_reuse_gate(const jive_resource_name * name, jive_graph * graph,
+	const char name_[])
+	: jive_state_gate(&JIVE_REUSE_GATE, graph, name_)
+	, type_(name)
+{}
+
+jive_reuse_gate::~jive_reuse_gate() noexcept {}
+
+static void
+jive_reuse_gate_fini_(jive_gate * self_)
 {
-	jive_state_gate_init_(self, graph, name);
-	jive_reuse_type_init_(&self->type, resname);
 }
 
 const jive_type *
 jive_reuse_gate_get_type_(const jive_gate * self_)
 {
 	const jive_reuse_gate * self = (const jive_reuse_gate *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 static jive_type *
@@ -110,11 +169,7 @@ jive_reuse_type_copy_(const jive_type * self_)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	
-	jive_reuse_type * type = new jive_reuse_type;
-	
-	jive_reuse_type_init_(type, self->name);
-	
-	return type;
+	return new jive_reuse_type(self->name());
 }
 
 static void
@@ -122,7 +177,7 @@ jive_reuse_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "reuse %s", self->name->name);
+	snprintf(tmp, sizeof(tmp), "reuse %s", self->name()->name);
 	jive_buffer_putstr(buffer, tmp);
 }
 
@@ -130,34 +185,21 @@ static jive_input *
 jive_reuse_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	
-	jive_reuse_input * input = new jive_reuse_input;
-	input->class_ = &JIVE_REUSE_INPUT;
-	jive_reuse_input_init_(input, node, index, initial_operand, self->name);
-	return input;
+	return new jive_reuse_input(self->name(), node, index, initial_operand);
 }
 
 static jive_output *
 jive_reuse_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	
-	jive_reuse_output * output = new jive_reuse_output;
-	output->class_ = &JIVE_REUSE_OUTPUT;
-	jive_reuse_output_init_(output, node, index, self->name);
-	return output;
+	return new jive_reuse_output(self->name(), node, index);
 }
 
 static jive_gate *
 jive_reuse_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	
-	jive_reuse_gate * gate = new jive_reuse_gate;
-	gate->class_ = &JIVE_REUSE_GATE;
-	jive_reuse_gate_init_(gate, graph, name, self->name);
-	
-	return gate;
+	return new jive_reuse_gate(self->name(), graph, name);
 }
 
 const jive_type_class JIVE_REUSE_TYPE = {
@@ -174,21 +216,21 @@ const jive_type_class JIVE_REUSE_TYPE = {
 
 const jive_input_class JIVE_REUSE_INPUT = {
 	parent : &JIVE_INPUT,
-	fini : jive_input_fini_, /* inherit */
+	fini : jive_reuse_input_fini_, /* override */
 	get_label : jive_input_get_label_, /* inherit */
 	get_type : jive_reuse_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_REUSE_OUTPUT = {
 	parent : &JIVE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
+	fini : jive_reuse_output_fini_, /* override */
 	get_label : jive_output_get_label_, /* inherit */
 	get_type : jive_reuse_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_REUSE_GATE = {
 	parent : &JIVE_GATE,
-	fini : jive_gate_fini_, /* inherit */
+	fini : jive_reuse_gate_fini_, /* override */
 	get_label : jive_gate_get_label_, /* inherit */
 	get_type : jive_reuse_gate_get_type_, /* override */
 };

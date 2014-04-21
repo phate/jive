@@ -31,13 +31,11 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 	
-	jive_function_type ftype;
 	const jive_type * tmparray2[] = {bits32, bits32};
-	jive_function_type_init(&ftype, 2, tmparray2, 1, &bits32);
+	jive_function_type ftype(2, tmparray2, 1, &bits32);
 
 	assert(jive_type_equals(&ftype, jive_output_get_type(fct)));
 	
-	jive_function_type_fini(&ftype);
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);

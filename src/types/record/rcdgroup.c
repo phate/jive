@@ -110,8 +110,7 @@ jive_group_node_init_(jive_group_node * self,
 		arg_types[n] = decl->elements[n];
 	}
 
-	jive_record_type type;
-	jive_record_type_init(&type, decl);
+	jive_record_type type(decl);
 	const jive_type * rtype = &type ;
 
 	jive_node_init_(self, region,

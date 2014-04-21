@@ -99,12 +99,19 @@ const jive_gate_class JIVE_BITSTRING_GATE = {
 
 /* bitstring_type inheritable members */
 
+jive_bitstring_type::~jive_bitstring_type() noexcept {}
+
+jive_bitstring_type::jive_bitstring_type(size_t nbits) noexcept
+	: jive_value_type(&JIVE_BITSTRING_TYPE)
+	, nbits_(nbits)
+{}
+
 static void
 jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	char tmp[16];
-	snprintf(tmp, sizeof(tmp), "bits%zd", self->nbits);
+	snprintf(tmp, sizeof(tmp), "bits%zd", self->nbits());
 	jive_buffer_putstr(buffer, tmp);
 }
 
@@ -113,9 +120,8 @@ jive_bitstring_type_create_input_(const jive_type * self_, struct jive_node * no
 	jive_output * initial_operand)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	jive_bitstring_input * input = new jive_bitstring_input;
-	input->class_ = &JIVE_BITSTRING_INPUT;
-	jive_bitstring_input_init_(input, self->nbits, node, index, initial_operand);
+	jive_bitstring_input * input = new jive_bitstring_input(self->nbits(), node, index,
+		initial_operand);
 	return input;
 }
 
@@ -123,10 +129,7 @@ static jive_output *
 jive_bitstring_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	jive_bitstring_output * output = new jive_bitstring_output;
-	output->class_ = &JIVE_BITSTRING_OUTPUT;
-	jive_bitstring_output_init_(output, self->nbits, node, index);
-	return output;
+	return new jive_bitstring_output(self->nbits(), node, index);
 }
 
 static jive_gate *
@@ -134,10 +137,7 @@ jive_bitstring_type_create_gate_(const jive_type * self_, struct jive_graph * gr
 	const char * name)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	jive_bitstring_gate * gate = new jive_bitstring_gate;
-	gate->class_ = &JIVE_BITSTRING_GATE;
-	jive_bitstring_gate_init_(gate, self->nbits, graph, name);
-	return gate;
+	return new jive_bitstring_gate(self->nbits(), graph, name);
 }
 
 static jive_type *
@@ -145,7 +145,7 @@ jive_bitstring_type_copy_(const jive_type * self_)
 {
 	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
 	
-	jive_bitstring_type * type = new jive_bitstring_type(self->nbits);
+	jive_bitstring_type * type = new jive_bitstring_type(self->nbits());
 	
 	return type;
 }
@@ -157,90 +157,71 @@ jive_bitstring_type_equals_(const jive_type * self_, const jive_type * other_)
 	const jive_bitstring_type * self = (const jive_bitstring_type *)self_;
 	const jive_bitstring_type * other = (const jive_bitstring_type *)other_;
 	
-	return self->nbits == other->nbits;
-}
-
-
-static inline void
-jive_bitstring_type_init_(jive_bitstring_type * self, size_t nbits)
-{
-	self->class_ = &JIVE_BITSTRING_TYPE;
-	self->nbits = nbits;
+	return self->nbits() == other->nbits();
 }
 
 /* bitstring_input inheritable members */
 
-static void
-jive_bitstring_input_init_(jive_bitstring_input * self, size_t nbits, struct jive_node * node,
-	size_t index, jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	self->type = new jive_bitstring_type(nbits);
-}
+jive_bitstring_input::jive_bitstring_input(size_t nbits, struct jive_node * node, size_t index,
+	jive_output * origin) noexcept
+	: jive_value_input(&JIVE_BITSTRING_INPUT, node, index, origin)
+	, type_(nbits)
+{}
+
+jive_bitstring_input::~jive_bitstring_input() noexcept {}
 
 static void
 jive_bitstring_input_fini_(jive_input * self_)
 {
-	jive_bitstring_input * self = (jive_bitstring_input *) self_;
-	jive_type_destroy(self->type);
-	jive_input_fini_(self);
 }
 
 static const jive_type *
 jive_bitstring_input_get_type_(const jive_input * self_)
 {
 	const jive_bitstring_input * self = (const jive_bitstring_input *) self_;
-	return self->type;
+	return &self->type();
 }
 
 /* bitstring_output inheritable members */
 
-static void
-jive_bitstring_output_init_(jive_bitstring_output * self, size_t nbits, struct jive_node * node,
+jive_bitstring_output::jive_bitstring_output(size_t nbits, struct jive_node * node,
 	size_t index)
-{
-	self->class_ = &JIVE_BITSTRING_OUTPUT;
-	jive_value_output_init_(self, node, index);
-	self->type = new jive_bitstring_type(nbits);
-}
+	: jive_value_output(&JIVE_BITSTRING_OUTPUT, node, index)
+	, type_(nbits)
+{}
+
+jive_bitstring_output::~jive_bitstring_output() noexcept {}
 
 static void
 jive_bitstring_output_fini_(jive_output * self_)
 {
-	jive_bitstring_output * self = (jive_bitstring_output *) self_;
-	jive_type_destroy(self->type);
-	jive_output_fini_(self);
 }
 
 static const jive_type *
 jive_bitstring_output_get_type_(const jive_output * self_)
 {
 	const jive_bitstring_output * self = (const jive_bitstring_output *) self_;
-	return self->type;
+	return &self->type();
 }
 
 /* bitstring_gate inheritable members */
 
-static void
-jive_bitstring_gate_init_(jive_bitstring_gate * self, size_t nbits, struct jive_graph * graph,
+jive_bitstring_gate::jive_bitstring_gate(size_t nbits, jive_graph * graph,
 	const char name[])
-{
-	self->class_ = &JIVE_BITSTRING_GATE;
-	jive_value_gate_init_(self, graph, name);
-	self->type = new jive_bitstring_type(nbits);
-}
+	: jive_value_gate(&JIVE_BITSTRING_GATE, graph, name)
+	, type_(nbits)
+{}
+
+jive_bitstring_gate::~jive_bitstring_gate() noexcept {}
 
 static void
 jive_bitstring_gate_fini_(jive_gate * self_)
 {
-	jive_bitstring_gate * self = (jive_bitstring_gate *) self_;
-	jive_type_destroy(self->type);
-	jive_gate_fini_(self);
 }
 
 static const jive_type *
 jive_bitstring_gate_get_type_(const jive_gate * self_)
 {
 	const jive_bitstring_gate * self = (const jive_bitstring_gate *) self_;
-	return self->type;
+	return &self->type();
 }

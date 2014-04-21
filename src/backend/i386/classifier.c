@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -36,7 +36,7 @@ jive_i386_classify_type_(const jive_type * type, const jive_resource_class * res
 	
 	if (type->class_ == &JIVE_BITSTRING_TYPE) {
 		const jive_bitstring_type * btype = (const jive_bitstring_type *) type;
-		if (btype->nbits == 32)
+		if (btype->nbits() == 32)
 			return (1 << jive_i386_classify_gpr);
 	}
 

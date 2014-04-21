@@ -16,19 +16,41 @@ typedef struct jive_value_output jive_value_output;
 typedef struct jive_value_gate jive_value_gate;
 
 extern const jive_type_class JIVE_VALUE_TYPE;
-struct jive_value_type : public jive_type {
+class jive_value_type : public jive_type {
+public:
+	virtual ~jive_value_type() noexcept;
+
+protected:
+	jive_value_type(const jive_type_class * class_) noexcept;
 };
 
 extern const jive_input_class JIVE_VALUE_INPUT;
-struct jive_value_input : public jive_input {
+class jive_value_input : public jive_input {
+public:
+	virtual ~jive_value_input() noexcept;
+
+protected:
+	jive_value_input(const jive_input_class * class_, struct jive_node * node, size_t index,
+		jive_output * initial_operand) noexcept;
 };
 
 extern const jive_output_class JIVE_VALUE_OUTPUT;
-struct jive_value_output : public jive_output {
+class jive_value_output : public jive_output {
+public:
+	virtual ~jive_value_output() noexcept;
+
+protected:
+	jive_value_output(const jive_output_class * class_, struct jive_node * node,
+		size_t index);
 };
 
 extern const jive_gate_class JIVE_VALUE_GATE;
-struct jive_value_gate : public jive_gate {
+class jive_value_gate : public jive_gate {
+public:
+	virtual ~jive_value_gate() noexcept;
+
+protected:
+	jive_value_gate(const jive_gate_class * class_, jive_graph * graph, const char name[]);
 };
 
 JIVE_EXPORTED_INLINE const jive_value_type *

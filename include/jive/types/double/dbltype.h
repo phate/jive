@@ -14,10 +14,14 @@ typedef struct jive_double_type jive_double_type;
 
 extern const jive_type_class JIVE_DOUBLE_TYPE;
 #define JIVE_DECLARE_DOUBLE_TYPE(name) \
-	jive_double_type name##_struct; name##_struct.class_ = &JIVE_DOUBLE_TYPE; \
+	jive_double_type name##_struct; \
 	const jive_type * name = &name##_struct
 
-struct jive_double_type : public jive_value_type {
+class jive_double_type final : public jive_value_type {
+public:
+	virtual ~jive_double_type() noexcept;
+
+	jive_double_type() noexcept;
 };
 
 JIVE_EXPORTED_INLINE const jive_double_type *
@@ -43,8 +47,15 @@ jive_double_type_cast(jive_type * self)
 typedef struct jive_double_input jive_double_input;
 
 extern const jive_input_class JIVE_DOUBLE_INPUT;
-struct jive_double_input : public jive_value_input {
-	jive_double_type type;
+class jive_double_input final : public jive_value_input {
+public:
+	virtual ~jive_double_input() noexcept;
+	jive_double_input(struct jive_node * node, size_t index, jive_output * origin) noexcept;
+
+	virtual const jive_double_type & type() const noexcept { return type_; }
+
+private:
+	jive_double_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_double_input *
@@ -70,8 +81,16 @@ jive_double_input_cast(jive_input * self)
 typedef struct jive_double_output jive_double_output;
 
 extern const jive_output_class JIVE_DOUBLE_OUTPUT;
-struct jive_double_output : public jive_value_output {
-	jive_double_type type;
+class jive_double_output final : public jive_value_output {
+public:
+	virtual ~jive_double_output() noexcept;
+
+	jive_double_output(struct jive_node * node, size_t index);
+
+	virtual const jive_double_type & type() const noexcept { return type_; }
+
+private:
+	jive_double_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_double_output *
@@ -97,8 +116,16 @@ jive_double_output_cast(jive_output * self)
 typedef struct jive_double_gate jive_double_gate;
 
 extern const jive_gate_class JIVE_DOUBLE_GATE;
-struct jive_double_gate : public jive_value_gate {
-	jive_double_type type;
+class jive_double_gate final : public jive_value_gate {
+public:
+	virtual ~jive_double_gate() noexcept;
+
+	jive_double_gate(jive_graph * graph, const char name[]);
+
+	virtual const jive_double_type & type() const noexcept { return type_; }
+
+private:
+	jive_double_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_double_gate *

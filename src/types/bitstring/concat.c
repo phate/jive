@@ -32,7 +32,7 @@ jive_bitstring_multiop_node_init_(
 	size_t n;
 	
 	for(n=0; n<noperands; n++) {
-		size_t nbits = ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits;
+		size_t nbits = ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits();
 		operand_type_structs[n] = new jive_bitstring_type(nbits);
 		operand_types[n] = operand_type_structs[n];
 	}
@@ -56,7 +56,7 @@ jive_bitconcat_node_init_(
 {
 	size_t nbits = 0, n;
 	for(n=0; n<noperands; n++)
-		nbits += ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits;
+		nbits += ((const jive_bitstring_type *)jive_output_get_type(operands[n]))->nbits();
 	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
 }
 

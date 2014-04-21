@@ -29,7 +29,7 @@ static int test_main()
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_record_declaration decl = {3, decl_elems};
-	static jive_record_type rcdtype; rcdtype.class_ = &JIVE_RECORD_TYPE; rcdtype.decl = &decl;
+	static jive_record_type rcdtype(&decl);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, addrtype};

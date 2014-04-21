@@ -22,12 +22,17 @@ struct jive_record_declaration {
 typedef struct jive_record_type jive_record_type;
 
 extern const jive_type_class JIVE_RECORD_TYPE;
-struct jive_record_type : public jive_value_type {
-	const jive_record_declaration * decl;
-};
+class jive_record_type final : public jive_value_type {
+public:
+	virtual ~jive_record_type() noexcept;
 
-void
-jive_record_type_init(jive_record_type * self, const jive_record_declaration * decl);
+	jive_record_type(const jive_record_declaration * decl) noexcept;
+
+	inline const jive_record_declaration * declaration() const noexcept { return decl_; }
+
+private:
+	const jive_record_declaration * decl_;
+};
 
 JIVE_EXPORTED_INLINE const jive_record_type *
 jive_record_type_const_cast(const jive_type * self)
@@ -52,8 +57,19 @@ jive_record_type_cast(jive_type * self)
 typedef struct jive_record_input jive_record_input;
 
 extern const jive_input_class JIVE_RECORD_INPUT;
-struct jive_record_input : public jive_value_input {
-	jive_record_type type;
+class jive_record_input final : public jive_value_input {
+public:
+	virtual ~jive_record_input() noexcept;
+
+	jive_record_input(const jive_record_declaration * decl, struct jive_node * node, size_t index,
+		jive_output * origin);
+
+	virtual const jive_record_type & type() const noexcept { return type_; }
+
+	inline const jive_record_declaration * declaration() const noexcept { return type_.declaration(); }
+
+private:
+	jive_record_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_record_input *
@@ -79,8 +95,19 @@ jive_record_input_cast(jive_input * self)
 typedef struct jive_record_output jive_record_output;
 
 extern const jive_output_class JIVE_RECORD_OUTPUT;
-struct jive_record_output : public jive_value_output {
-	jive_record_type type;
+class jive_record_output final : public jive_value_output {
+public:
+	virtual ~jive_record_output() noexcept;
+
+	jive_record_output(const jive_record_declaration * decl, struct jive_node * nodex,
+		size_t index);
+
+	virtual const jive_record_type & type() const noexcept { return type_; }
+
+	inline const jive_record_declaration * declaration() const noexcept { return type_.declaration(); }
+
+private:
+	jive_record_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_record_output *
@@ -106,8 +133,19 @@ jive_record_output_cast(jive_output * self)
 typedef struct jive_record_gate jive_record_gate;
 
 extern const jive_gate_class JIVE_RECORD_GATE;
-struct jive_record_gate : public jive_value_gate {
-	jive_record_type type;
+class jive_record_gate final : public jive_value_gate {
+public:
+	virtual ~jive_record_gate() noexcept;
+
+	jive_record_gate(const jive_record_declaration * decl, jive_graph * graph,
+		const char name[]);
+
+	virtual const jive_record_type & type() const noexcept { return type_; }
+
+	inline const jive_record_declaration * declaration() const noexcept { return type_.declaration(); }
+
+private:
+	jive_record_type type_;
 };
 
 JIVE_EXPORTED_INLINE const jive_record_gate *

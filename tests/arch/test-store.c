@@ -31,14 +31,13 @@ static int test_main(void)
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_record_declaration rcddecl = {3, decl_elems};
-	static jive_record_type rcdtype; rcdtype.class_ = &JIVE_RECORD_TYPE; rcdtype.decl = &rcddecl;
+	static jive_record_type rcdtype(&rcddecl);
 	
 	static const jive_union_declaration unndecl = {3, decl_elems};
-	static jive_union_type unntype; unntype.class_ = &JIVE_UNION_TYPE; unntype.decl = &unndecl;
+	static jive_union_type unntype(&unndecl);
 
 	static const jive_union_declaration empty_unndecl = {0, NULL};
-	static jive_union_type empty_unntype; empty_unntype.class_ = &JIVE_UNION_TYPE;
-		empty_unntype.decl = &empty_unndecl;
+	static jive_union_type empty_unntype(&empty_unndecl);
 
 	JIVE_DECLARE_MEMORY_TYPE(memtype);
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);

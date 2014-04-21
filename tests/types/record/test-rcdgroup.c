@@ -27,11 +27,10 @@ static int test_main(void)
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_record_declaration decl = {3, decl_elems};
-	static jive_record_type rcdtype; rcdtype.class_ = &JIVE_RECORD_TYPE; rcdtype.decl = &decl;
+	static jive_record_type rcdtype(&decl);
 
 	static const jive_record_declaration decl_empty = {0, NULL};
-	static jive_record_type rcdtype_empty; rcdtype_empty.class_ = &JIVE_RECORD_TYPE;
-		rcdtype_empty.decl = &decl_empty;
+	static jive_record_type rcdtype_empty(&decl_empty);
 	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32};
 	
 	jive_node * top = jive_node_create(graph->root_region,

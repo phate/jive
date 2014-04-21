@@ -47,6 +47,12 @@ const jive_gate_class JIVE_VALUE_GATE = {
 	get_type : jive_value_gate_get_type_, /* override */
 };
 
+jive_value_type::~jive_value_type() noexcept {}
+
+jive_value_type::jive_value_type(const jive_type_class * class_) noexcept
+	: jive_type(class_)
+{}
+
 void
 jive_value_type_fini_(jive_type * self)
 {
@@ -56,82 +62,73 @@ jive_value_type_fini_(jive_type * self)
 jive_type *
 jive_value_type_copy_(const jive_type * self_)
 {
-	const jive_value_type * self = (const jive_value_type *) self_;
-	
-	jive_value_type * type = new jive_value_type;
-	type->class_ = &JIVE_VALUE_TYPE;	
-	
-	return type;
+	return nullptr;
 } 
 
 jive_input *
 jive_value_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
-	jive_value_input * input = new jive_value_input;
-	input->class_ = &JIVE_VALUE_INPUT;
-	jive_value_input_init_(input, node, index, initial_operand);
-	return input;
+	return nullptr;
 }
 
 jive_output *
 jive_value_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
 {
-	jive_value_output * output = new jive_value_output;
-	output->class_ = &JIVE_VALUE_OUTPUT;
-	jive_value_output_init_(output, node, index);
-	return output;
+	return nullptr;
 }
 
 jive_gate *
 jive_value_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_value_gate * gate = new jive_value_gate;
-	gate->class_ = &JIVE_VALUE_GATE;
-	jive_value_gate_init_(gate, graph, name);
-	return gate;
+	return nullptr;
 }
 
 /* value inputs */
 
+jive_value_input::~jive_value_input() noexcept {};
+
+jive_value_input::jive_value_input(const jive_input_class * class_, struct jive_node * node,
+	size_t index, jive_output * initial_operand) noexcept
+	: jive_input(class_, node, index, initial_operand)
+{}
+
 void
 jive_value_input_init_(jive_value_input * self, struct jive_node * node, size_t index, jive_output * origin)
 {
-	jive_input_init_(self, node, index, origin);
 }
 
 const jive_type *
 jive_value_input_get_type_(const jive_input * self)
 {
-	static jive_value_type value_type; value_type.class_ = &JIVE_VALUE_TYPE;
-	return &value_type;
+	return nullptr;
 }
 
 /* value outputs */
 
-void
-jive_value_output_init_(jive_value_output * self, struct jive_node * node, size_t index)
-{
-	jive_output_init_(self, node, index);
-}
+jive_value_output::~jive_value_output() noexcept {}
+
+jive_value_output::jive_value_output(const jive_output_class * class_, struct jive_node * node,
+	size_t index)
+	: jive_output(class_, node, index)
+{}
 
 const jive_type *
 jive_value_output_get_type_(const jive_output * self)
 {
-	static jive_value_type value_type; value_type.class_ = &JIVE_VALUE_TYPE;
-	return &value_type;
+	return nullptr;
 }
 
 /* value gates */
 
-void
-jive_value_gate_init_(jive_value_gate * self, struct jive_graph * graph, const char * name)
-{
-	jive_gate_init_(self, graph, name);
-}
+jive_value_gate::~jive_value_gate() noexcept {}
+
+jive_value_gate::jive_value_gate(const jive_gate_class * class_, jive_graph * graph,
+	const char name[])
+	: jive_gate(class_, graph, name)
+{}
 
 const jive_type *
 jive_value_gate_get_type_(const jive_gate * self)
 {
-	static jive_value_type value_type; value_type.class_ = &JIVE_VALUE_TYPE;
-	return &value_type;
+	return nullptr;
 }

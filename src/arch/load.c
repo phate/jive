@@ -287,7 +287,7 @@ jive_load_node_init_(jive_load_node * self, jive_region * region,
 	self->attrs.nbits = 0;
 	if(jive_type_isinstance(address_type, &JIVE_BITSTRING_TYPE)) {
 		const jive_bitstring_type * btype = (const jive_bitstring_type *) address_type;
-		self->attrs.nbits = btype->nbits;	
+		self->attrs.nbits = btype->nbits();
 	}
 	
 	/* FIXME: check the type of the states */

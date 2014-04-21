@@ -136,7 +136,7 @@ jive_bitstring_type_serialize(
 	jive_token_ostream * os)
 {
 	const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
-	jive_serialize_uint(driver, type->nbits, os);
+	jive_serialize_uint(driver, type->nbits(), os);
 }
 
 bool

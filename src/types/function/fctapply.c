@@ -52,24 +52,28 @@ jive_apply_node_init_(
 	}
 	jive_function_output * fct = (jive_function_output *) function;
 
-	if (fct->type.narguments != narguments) {
+	if (fct->narguments() != narguments) {
 		jive_context_fatal_error(region->graph->context, "Type mismatch: number of parameters to function does not match signature");
 	}
 
 	jive_output * args[narguments+1];
 	const jive_type * argument_types[narguments+1];
 	args[0] = function;
-	argument_types[0] = &fct->type;
+	argument_types[0] = &fct->type();
  
 	size_t i;
-	for(i = 0; i < fct->type.narguments; i++){
-		argument_types[i+1] = fct->type.argument_types[i];
+	for(i = 0; i < fct->narguments(); i++){
+		argument_types[i+1] = fct->argument_type(i);
 		args[i+1] = arguments[i];
 	}
 	
+	const jive_type * return_types[fct->nreturns()];
+	for (i = 0; i < fct->nreturns(); i++)
+		return_types[i] = fct->return_type(i);
+
 	jive_node_init_(self, region,
 		narguments + 1, argument_types, args,
-		fct->type.nreturns, (const jive_type * const *) fct->type.return_types);
+		fct->nreturns(), return_types);
 }
 
 jive_node *

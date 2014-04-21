@@ -643,9 +643,9 @@ get_array_index(jive_output * addr, const jive_output * base, const jive_value_t
 		/* FIXME: correct type! */
 		index = addr->node->inputs[1]->origin;
 	} else {
-		char bits[index_type->nbits];
-		memset(bits, '0', index_type->nbits);
-		index = jive_bitconstant(addr->node->graph, index_type->nbits, bits);
+		char bits[index_type->nbits()];
+		memset(bits, '0', index_type->nbits());
+		index = jive_bitconstant(addr->node->graph, index_type->nbits(), bits);
 	}
 	
 	return index;

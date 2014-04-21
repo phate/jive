@@ -15,18 +15,40 @@ typedef struct jive_anchor_output jive_anchor_output;
 
 extern const jive_type_class JIVE_ANCHOR_TYPE;
 #define JIVE_DECLARE_ANCHOR_TYPE(name) \
-	jive_anchor_type name##_struct; name##_struct.class_ = &JIVE_ANCHOR_TYPE; \
+	jive_anchor_type name##_struct; \
 	const jive_type * name = &name##_struct
 
-struct jive_anchor_type : public jive_type {
+class jive_anchor_type final : public jive_type {
+public:
+	virtual ~jive_anchor_type() noexcept;
+
+	jive_anchor_type() noexcept;
 };
 
 extern const jive_input_class JIVE_ANCHOR_INPUT;
-struct jive_anchor_input : public jive_input {
+class jive_anchor_input final : public jive_input {
+public:
+	virtual ~jive_anchor_input() noexcept;
+
+	jive_anchor_input(struct jive_node * node, size_t index, jive_output * origin) noexcept;
+
+	virtual const jive_anchor_type & type() const noexcept { return type_; }
+
+private:
+	jive_anchor_type type_;
 };
 
 extern const jive_output_class JIVE_ANCHOR_OUTPUT;
-struct jive_anchor_output : public jive_output {
+class jive_anchor_output final : public jive_output {
+public:
+	virtual ~jive_anchor_output() noexcept;
+
+	jive_anchor_output(struct jive_node * node, size_t index);
+
+	virtual const jive_anchor_type & type() const noexcept { return type_; }
+
+private:
+	jive_anchor_type type_;
 };
 
 #endif

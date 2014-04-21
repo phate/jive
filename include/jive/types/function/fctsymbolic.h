@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -17,7 +17,7 @@ typedef struct jive_symbolicfunction_node_attrs jive_symbolicfunction_node_attrs
 
 struct jive_symbolicfunction_node_attrs : public jive_node_attrs {
 	const char * name;
-	jive_function_type type;
+	jive_function_type * type;
 };
 
 struct jive_symbolicfunction_node : public jive_node {

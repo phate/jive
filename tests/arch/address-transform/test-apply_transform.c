@@ -25,8 +25,8 @@ test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	jive_function_type * fcttype = jive_function_type_create(1, &addrtype, 1, &addrtype);
-	const jive_type * tmparray0[] = {fcttype, addrtype};
+	jive_function_type fcttype(1, &addrtype, 1, &addrtype);
+	const jive_type * tmparray0[] = {&fcttype, addrtype};
 
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL, 2, tmparray0);
@@ -46,7 +46,6 @@ test_main(void)
 
 	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITSTRING_TO_ADDRESS_NODE));
 
-	jive_function_type_destroy(fcttype);
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);
 	jive_context_destroy(context);

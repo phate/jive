@@ -8,16 +8,36 @@
 
 #include <jive/vsdg/valuetype.h>
 
+#include <memory>
+#include <vector>
+
 /* function type */
 
 extern const jive_type_class JIVE_FUNCTION_TYPE;
 
 typedef struct jive_function_type jive_function_type;
-struct jive_function_type : public jive_value_type {
-	size_t nreturns;
-	jive_type ** return_types;
-	size_t narguments;
-	jive_type ** argument_types;
+class jive_function_type final : public jive_value_type {
+public:
+	virtual ~jive_function_type() noexcept;
+
+	jive_function_type(size_t narguments, const jive_type ** argument_types,
+		size_t nreturns, const jive_type ** return_types);
+
+	jive_function_type(const jive_function_type & rhs);
+
+	inline size_t nreturns() const noexcept { return return_types_.size(); }
+
+	inline size_t narguments() const noexcept { return argument_types_.size(); }
+
+	inline const jive_type * return_type(size_t index) const noexcept
+		{ return return_types_[index].get(); }
+
+	inline const jive_type * argument_type(size_t index) const noexcept
+		{ return argument_types_[index].get(); }
+
+private:
+	std::vector<std::unique_ptr<jive_type>> return_types_;
+	std::vector<std::unique_ptr<jive_type>> argument_types_;
 };
 
 JIVE_EXPORTED_INLINE struct jive_function_type *
@@ -38,30 +58,35 @@ jive_function_type_const_cast(const struct jive_type * type)
 		return NULL;
 }
 
-void
-jive_function_type_init(
-	jive_function_type * self,
-	size_t narguments, const jive_type * const argument_types[],
-	size_t nreturns, const jive_type * const return_types[]);
-
-void
-jive_function_type_fini(jive_function_type * self);
-
-jive_function_type *
-jive_function_type_create(
-	size_t narguments, const jive_type * const argument_types[],
-	size_t nreturns, const jive_type * const return_types[]);
-
-void
-jive_function_type_destroy(jive_function_type * type);
-
 /* function input */
 
 extern const jive_input_class JIVE_FUNCTION_INPUT;
 
 typedef struct jive_function_input jive_function_input;
-struct jive_function_input : public jive_value_input {
-	jive_function_type type;
+class jive_function_input final : public jive_value_input {
+public:
+	virtual ~jive_function_input() noexcept;
+
+	jive_function_input(const jive_function_type & type, jive_node * node, size_t index,
+		jive_output * origin);
+
+	jive_function_input(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+		const jive_type ** return_types, struct jive_node * node, size_t index, jive_output * origin);
+
+	virtual const jive_function_type & type() const noexcept { return type_; }
+
+	inline size_t narguments() const noexcept { return type_.narguments(); }
+
+	inline size_t nreturns() const noexcept { return type_.nreturns(); }
+
+	inline const jive_type * argument_type(size_t index) const noexcept
+		{ return type_.argument_type(index); }
+
+	inline const jive_type * return_type(size_t index) const noexcept
+		{ return type_.return_type(index); }
+
+private:
+	jive_function_type type_;
 };
 
 JIVE_EXPORTED_INLINE struct jive_function_input *
@@ -87,8 +112,29 @@ jive_function_input_const_cast(const struct jive_input * input)
 extern const jive_output_class JIVE_FUNCTION_OUTPUT;
 
 typedef struct jive_function_output jive_function_output;
-struct jive_function_output : public jive_value_output {
-	jive_function_type type;
+class jive_function_output final : public jive_value_output {
+public:
+	virtual ~jive_function_output() noexcept;
+
+	jive_function_output(const jive_function_type & type, jive_node * node, size_t index);
+
+	jive_function_output(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+		const jive_type ** return_types, jive_node * node, size_t index);
+
+	virtual const jive_function_type & type() const noexcept { return type_; }
+
+	inline size_t narguments() const noexcept { return type_.narguments(); }
+
+	inline size_t nreturns() const noexcept { return type_.nreturns(); }
+
+	inline const jive_type * argument_type(size_t index) const noexcept
+		{ return type_.argument_type(index); }
+
+	inline const jive_type * return_type(size_t index) const noexcept
+		{ return type_.return_type(index); }
+
+private:
+	jive_function_type type_;
 };
 
 JIVE_EXPORTED_INLINE struct jive_function_output *
@@ -114,8 +160,29 @@ jive_function_output_const_cast(const struct jive_output * output)
 extern const jive_gate_class JIVE_FUNCTION_GATE;
 
 typedef struct jive_function_gate jive_function_gate;
-struct jive_function_gate : public jive_value_gate {
-	jive_function_type type;
+class jive_function_gate final : public jive_value_gate {
+public:
+	virtual ~jive_function_gate() noexcept;
+
+	jive_function_gate(const jive_function_type & type, jive_graph * graph, const char name[]);
+
+	jive_function_gate(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+		const jive_type ** return_types, jive_graph * graph, const char name[]);
+
+	virtual const jive_function_type & type() const noexcept { return type_; }
+
+	inline size_t narguments() const noexcept { return type_.narguments(); }
+
+	inline size_t nreturns() const noexcept { return type_.nreturns(); }
+
+	inline const jive_type * argument_type(size_t index) const noexcept
+		{ return type_.argument_type(index); }
+
+	inline const jive_type * return_type(size_t index) const noexcept
+		{ return type_.return_type(index); }
+
+private:
+	jive_function_type type_;
 };
 
 JIVE_EXPORTED_INLINE struct jive_function_gate *

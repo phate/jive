@@ -38,9 +38,6 @@ jive_type_equals_(const jive_type * self, const jive_type * other);
 /* inheritable input member functions */
 
 void
-jive_input_init_(jive_input * self, struct jive_node * node, size_t index, jive_output * origin);
-
-void
 jive_input_fini_(jive_input * self);
 
 void
@@ -50,12 +47,6 @@ const jive_type *
 jive_input_get_type_(const jive_input * self);
 
 /* inheritable output member functions */
-
-void
-jive_output_init_(
-	jive_output * self,
-	struct jive_node * node,
-	size_t index);
 
 void
 jive_output_fini_(jive_output * self);
@@ -68,9 +59,6 @@ jive_output_get_type_(const jive_output * self);
 
 
 /* inheritable gate member functions */
-
-void
-jive_gate_init_(jive_gate * self, struct jive_graph * graph, const char name[]);
 
 void
 jive_gate_fini_(jive_gate * self);

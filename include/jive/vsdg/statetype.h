@@ -18,19 +18,41 @@ typedef struct jive_state_gate jive_state_gate;
 typedef struct jive_state_resource jive_state_resource;
 
 extern const jive_type_class JIVE_STATE_TYPE;
-struct jive_state_type : public jive_type {
+class jive_state_type : public jive_type {
+public:
+	virtual ~jive_state_type() noexcept;
+
+protected:
+	jive_state_type(const jive_type_class * class_) noexcept;
 };
 
 extern const jive_input_class JIVE_STATE_INPUT;
-struct jive_state_input : public jive_input {
+class jive_state_input : public jive_input {
+public:
+	virtual ~jive_state_input() noexcept;
+
+protected:
+	jive_state_input(const struct jive_input_class * class_, struct jive_node * node, size_t index,
+		jive_output * origin) noexcept;
 };
 
 extern const jive_output_class JIVE_STATE_OUTPUT;
-struct jive_state_output : public jive_output {
+class jive_state_output : public jive_output {
+public:
+	virtual ~jive_state_output() noexcept;
+
+protected:
+	jive_state_output(const struct jive_output_class * class_, struct jive_node * node,
+		size_t index);
 };
 
 extern const jive_gate_class JIVE_STATE_GATE;
-struct jive_state_gate : public jive_gate {
+class jive_state_gate : public jive_gate {
+public:
+	virtual ~jive_state_gate() noexcept;
+
+protected:
+	jive_state_gate(const jive_gate_class * class_, jive_graph * graph, const char name[]);
 };
 
 /* state multiplexing support */

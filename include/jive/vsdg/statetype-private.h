@@ -28,24 +28,15 @@ jive_state_type_copy_(const jive_type * self);
 
 /* state_input inheritable members */
 
-void
-jive_state_input_init_(jive_state_input * self, struct jive_node * node, size_t index, jive_output * origin);
-
 const jive_type *
 jive_state_input_get_type_(const jive_input * self);
 
 /* state_output inheritable members */
 
-void
-jive_state_output_init_(jive_state_output * self, struct jive_node * node, size_t index);
-
 const jive_type *
 jive_state_output_get_type_(const jive_output * self);
 	
 /* state_gate inheritable members */
-
-void
-jive_state_gate_init_(jive_state_gate * self, struct jive_graph * graph, const char name[]);
 
 char *
 jive_state_gate_get_label_(const jive_gate * self);

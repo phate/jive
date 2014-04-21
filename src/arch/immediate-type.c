@@ -15,24 +15,20 @@
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 
-static void
-jive_immediate_type_init_(jive_immediate_type * self);
-
 /* immediate_input */
 
-static void
-jive_immediate_input_init_(jive_immediate_input * self, struct jive_node * node, size_t index,
+jive_immediate_input::~jive_immediate_input() noexcept {}
+
+jive_immediate_input::jive_immediate_input(struct jive_node * node, size_t index,
 	jive_output * origin)
-{
-	jive_value_input_init_(self, node, index, origin);
-	jive_immediate_type_init_(&self->type);
-}
+	: jive_value_input(&JIVE_IMMEDIATE_INPUT, node, index, origin)
+{}
 
 static const jive_type *
 jive_immediate_input_get_type_(const jive_input * self_)
 {
 	const jive_immediate_input * self = (const jive_immediate_input *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_input_class JIVE_IMMEDIATE_INPUT = {
@@ -44,18 +40,17 @@ const jive_input_class JIVE_IMMEDIATE_INPUT = {
 
 /* immediate_output inheritable members */
 
-static void
-jive_immediate_output_init_(jive_immediate_output * self, struct jive_node * node, size_t index)
-{
-	jive_value_output_init_(self, node, index);
-	jive_immediate_type_init_(&self->type);
-}
+jive_immediate_output::~jive_immediate_output() noexcept {}
+
+jive_immediate_output::jive_immediate_output(jive_node * node, size_t index)
+	: jive_value_output(&JIVE_IMMEDIATE_OUTPUT, node, index)
+{}
 
 static const jive_type *
 jive_immediate_output_get_type_(const jive_output * self_)
 {
 	const jive_immediate_output * self = (const jive_immediate_output *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_output_class JIVE_IMMEDIATE_OUTPUT = {
@@ -67,18 +62,17 @@ const jive_output_class JIVE_IMMEDIATE_OUTPUT = {
 
 /* immediate_gate inheritable members */
 
-static void
-jive_immediate_gate_init_(jive_immediate_gate * self, struct jive_graph * graph, const char name[])
-{
-	jive_value_gate_init_(self, graph, name);
-	jive_immediate_type_init_(&self->type);
-}
+jive_immediate_gate::~jive_immediate_gate() noexcept {}
+
+jive_immediate_gate::jive_immediate_gate(jive_graph * graph, const char name[])
+	: jive_value_gate(&JIVE_IMMEDIATE_GATE, graph, name)
+{}
 
 static const jive_type *
 jive_immediate_gate_get_type_(const jive_gate * self_)
 {
 	const jive_immediate_gate * self = (const jive_immediate_gate *) self_;
-	return &self->type;
+	return &self->type();
 }
 
 const jive_gate_class JIVE_IMMEDIATE_GATE = {
@@ -89,6 +83,12 @@ const jive_gate_class JIVE_IMMEDIATE_GATE = {
 };
 
 /* immediate type */
+
+jive_immediate_type::~jive_immediate_type() noexcept {}
+
+jive_immediate_type::jive_immediate_type() noexcept
+	: jive_value_type(&JIVE_IMMEDIATE_TYPE)
+{}
 
 static void
 jive_immediate_type_fini_( jive_type* self_ )
@@ -105,30 +105,22 @@ jive_immediate_type_get_label_(const jive_type * self_, struct jive_buffer * buf
 }
 
 static jive_input *
-jive_immediate_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
+jive_immediate_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
+	jive_output * initial_operand)
 {
-	jive_immediate_input * input = new jive_immediate_input;
-	input->class_ = &JIVE_IMMEDIATE_INPUT;
-	jive_immediate_input_init_(input, node, index, initial_operand);
-	return input;
+	return new jive_immediate_input(node, index, initial_operand);
 }
 
 static jive_output *
 jive_immediate_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
 {
-	jive_immediate_output * output = new jive_immediate_output;
-	output->class_ = &JIVE_IMMEDIATE_OUTPUT;
-	jive_immediate_output_init_(output, node, index);
-	return output;
+	return new jive_immediate_output(node, index);
 }
 
 static jive_gate *
 jive_immediate_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
-	jive_immediate_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
-	gate->class_ = &JIVE_IMMEDIATE_GATE;
-	jive_immediate_gate_init_(gate, graph, name);
-	return gate;
+	return new jive_immediate_gate(graph, name);
 }
 
 static jive_type *
@@ -141,12 +133,6 @@ jive_immediate_type_copy_(const jive_type * self_)
 	*type = *self;
 	
 	return type;
-}
-
-static void
-jive_immediate_type_init_(jive_immediate_type * self)
-{
-	self->class_ = &JIVE_IMMEDIATE_TYPE;
 }
 
 const jive_type_class JIVE_IMMEDIATE_TYPE = {
