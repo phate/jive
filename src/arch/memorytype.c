@@ -85,7 +85,7 @@ jive_memory_type_create_output_(const jive_type * self, struct jive_node * node,
 static jive_gate *
 jive_memory_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_memory_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_memory_gate * gate = new jive_memory_gate;
 	gate->class_ = &JIVE_MEMORY_GATE;
 	jive_memory_gate_init_(gate, graph, name);
 	return gate;

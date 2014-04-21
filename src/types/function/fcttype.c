@@ -219,7 +219,7 @@ jive_function_type_create_gate_(const jive_type * self_, struct jive_graph * gra
 {
 	const jive_function_type * self = (const jive_function_type *) self_;
 	
-	jive_function_gate * gate = jive_context_malloc(graph->context, sizeof( *gate));
+	jive_function_gate * gate = new jive_function_gate;
 	
 	gate->class_ = &JIVE_FUNCTION_GATE;
 	jive_function_gate_init_(gate, self, graph, name);

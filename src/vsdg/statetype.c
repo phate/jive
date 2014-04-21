@@ -85,7 +85,7 @@ jive_state_type_create_output_(const jive_type * self, struct jive_node * node, 
 jive_gate *
 jive_state_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_state_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_state_gate * gate = new jive_state_gate;
 	gate->class_ = &JIVE_STATE_GATE;
 	jive_state_gate_init_(gate, graph, name);
 	return gate;

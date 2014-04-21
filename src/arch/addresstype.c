@@ -131,7 +131,7 @@ jive_address_type_create_gate_(const jive_type * self_, jive_graph * graph,
 {
 	const jive_address_type * self = (const jive_address_type *)self_;
 
-	jive_address_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_address_gate * gate = new jive_address_gate;
 
 	gate->class_ = &JIVE_ADDRESS_GATE;
 	jive_address_gate_init_(gate, self, graph, name);

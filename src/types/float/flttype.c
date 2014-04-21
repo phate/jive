@@ -69,7 +69,7 @@ jive_float_type_create_output_(const jive_type * self_, struct jive_node * node,
 jive_gate *
 jive_float_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
 {
-	jive_float_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_float_gate * gate = new jive_float_gate;
 	gate->class_ = &JIVE_FLOAT_GATE;
 	jive_float_gate_init_(gate, graph, name);
 	return gate;

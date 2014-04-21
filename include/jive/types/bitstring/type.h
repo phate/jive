@@ -113,7 +113,7 @@ typedef struct jive_bitstring_gate jive_bitstring_gate;
 
 extern const jive_gate_class JIVE_BITSTRING_GATE;
 struct jive_bitstring_gate : public jive_value_gate {
-	jive_bitstring_type type;
+	jive_bitstring_type * type;
 };
 
 JIVE_EXPORTED_INLINE jive_bitstring_gate *
@@ -137,7 +137,7 @@ jive_bitstring_gate_const_cast(const jive_gate * gate)
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_gate_nbits(const jive_bitstring_gate * self)
 {
-	return self->type.nbits;
+	return self->type->nbits;
 }
 
 #endif

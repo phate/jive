@@ -56,7 +56,7 @@ jive_type_create_output_(const jive_type * self, struct jive_node * node, size_t
 jive_gate *
 jive_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_gate * gate = new jive_gate;
 	gate->class_ = &JIVE_GATE;
 	jive_gate_init_(gate, graph, name);
 	return gate;
@@ -627,7 +627,7 @@ void
 jive_gate_destroy(jive_gate * self)
 {
 	self->class_->fini(self);
-	jive_context_free(self->graph->context, self);
+	delete self;
 }
 
 void

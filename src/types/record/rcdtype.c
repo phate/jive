@@ -147,7 +147,7 @@ jive_record_type_create_gate_(const jive_type * self_, struct jive_graph * graph
 {
 	const jive_record_type * self = (const jive_record_type *) self_;
 
-	jive_record_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_record_gate * gate = new jive_record_gate;
 
 	gate->class_ = &JIVE_RECORD_GATE;
 	jive_record_gate_init_(gate, self, graph, name);

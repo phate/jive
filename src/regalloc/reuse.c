@@ -153,7 +153,7 @@ jive_reuse_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 {
 	const jive_reuse_type * self = (const jive_reuse_type *) self_;
 	
-	jive_reuse_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_reuse_gate * gate = new jive_reuse_gate;
 	gate->class_ = &JIVE_REUSE_GATE;
 	jive_reuse_gate_init_(gate, graph, name, self->name);
 	

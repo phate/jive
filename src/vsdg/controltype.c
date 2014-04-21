@@ -100,7 +100,7 @@ jive_control_type_create_output_(const jive_type * self, jive_node * node, size_
 static jive_gate *
 jive_control_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	jive_control_gate * gate = jive_context_malloc(graph->context, sizeof(*gate));
+	jive_control_gate * gate = new jive_control_gate;
 	gate->class_ = &JIVE_CONTROL_GATE;
 	jive_control_gate_init_(gate, graph, name);
 	return gate;
