@@ -16,7 +16,7 @@ include tests/vsdg/Makefile.sub
 
 TESTPROGS=test-runner
 
-TEST_SOURCES = tests/testarch.c tests/testnodes.c tests/test-runner.c tests/test-registry.c $(patsubst %, tests/%.c, $(TESTS))
+TEST_SOURCES = tests/testtypes.c tests/testarch.c tests/testnodes.c tests/test-runner.c tests/test-registry.c $(patsubst %, tests/%.c, $(TESTS))
 SOURCES += $(TEST_SOURCES)
 
 tests/test-runner: LDFLAGS+=-L. -Wl,-whole-archive -ljive -Wl,-no-whole-archive
