@@ -1,9 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -21,7 +23,7 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	JIVE_DECLARE_STATE_TYPE(statetype);
+	JIVE_DECLARE_TEST_STATE_TYPE(statetype);
 	const jive_type * tmparray0[] = {statetype, statetype};
 	
 	jive_node * top = jive_node_create(graph->root_region,

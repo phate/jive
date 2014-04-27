@@ -3,7 +3,9 @@
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
+
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -22,7 +24,7 @@ static int test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
+	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
 	jive_function_type * f0type = jive_function_type_create(0, NULL, 0, NULL);
 	const jive_type * tmparray0[] = {vtype};
 	jive_function_type * f1type = jive_function_type_create(0, NULL, 0, NULL);

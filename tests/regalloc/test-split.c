@@ -1,9 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -143,7 +145,7 @@ create_testgraph_emerg_split(jive_context * context)
 		tmparray7, NULL);
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"), op4->outputs[0]);
 	
-	JIVE_DECLARE_STATE_TYPE(state_type);
+	JIVE_DECLARE_TEST_STATE_TYPE(state_type);
 	
 	jive_node_add_input(op3, state_type, jive_node_add_output(op2, state_type));
 	jive_node_add_input(op4, state_type, jive_node_add_output(op3, state_type));

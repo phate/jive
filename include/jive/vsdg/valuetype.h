@@ -16,10 +16,6 @@ typedef struct jive_value_output jive_value_output;
 typedef struct jive_value_gate jive_value_gate;
 
 extern const jive_type_class JIVE_VALUE_TYPE;
-#define JIVE_DECLARE_VALUE_TYPE(name) \
-	jive_value_type name##_struct; name##_struct.class_ = &JIVE_VALUE_TYPE; \
-	const jive_type * name = &name##_struct
-
 struct jive_value_type : public jive_type {
 };
 

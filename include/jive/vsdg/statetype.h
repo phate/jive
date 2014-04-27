@@ -18,10 +18,6 @@ typedef struct jive_state_gate jive_state_gate;
 typedef struct jive_state_resource jive_state_resource;
 
 extern const jive_type_class JIVE_STATE_TYPE;
-#define JIVE_DECLARE_STATE_TYPE(name) \
-	jive_state_type name##_struct; name##_struct.class_ = &JIVE_STATE_TYPE; \
-	const jive_type * name = &name##_struct
-
 struct jive_state_type : public jive_type {
 };
 

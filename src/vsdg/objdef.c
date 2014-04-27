@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -11,6 +11,7 @@
 #include <jive/context.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-private.h>
@@ -25,7 +26,10 @@ jive_objdef_node_init_(
 	const char * name,
 	const struct jive_linker_symbol * symbol)
 {
-	JIVE_DECLARE_STATE_TYPE(stype);
+	/* FIXME: this is horribly wrong, but we don't have another type right now for putting in here,
+						this entire node needs to be remodeled
+	*/
+	JIVE_DECLARE_CONTROL_TYPE(stype);
 	const jive_type * type = jive_output_get_type(obj);
 	jive_node_init_(self, region,
 		1, &type, &obj,

@@ -146,10 +146,9 @@ jive_address_to_bitstring_node_init_(
 {
 	jive_context * context = region->graph->context;
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
 	const jive_type * addrtype = jive_output_get_type(address);
 	if (!jive_type_isinstance(addrtype, &JIVE_VALUE_TYPE))
-		jive_raise_type_error(vtype, addrtype, context);
+		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	JIVE_DEBUG_ASSERT(jive_type_equals(addrtype, original_type));
 	jive_type * return_type = convert_address_to_bitstring_type(addrtype, nbits, context);
@@ -201,9 +200,8 @@ jive_address_to_bitstring_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
 	if (!jive_output_isinstance(operands[0], &JIVE_VALUE_OUTPUT))
-		jive_raise_type_error(vtype, jive_output_get_type(operands[0]), context);
+		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 }
 
 static jive_node *
@@ -348,10 +346,9 @@ jive_bitstring_to_address_node_init_(
 {
 	jive_context * context = region->graph->context;
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
 	const jive_type * bittype = jive_output_get_type(bitstring);
 	if (!jive_type_isinstance(bittype, &JIVE_VALUE_TYPE))
-		jive_raise_type_error(vtype, bittype, context);
+		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	jive_node_init_(self, region,
 		1, &bittype, &bitstring,
@@ -398,9 +395,8 @@ jive_bitstring_to_address_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
 	if (!jive_output_isinstance(operands[0], &JIVE_VALUE_OUTPUT))
-		jive_raise_type_error(vtype, jive_output_get_type(operands[0]), context);
+		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 }
 
 static jive_node *

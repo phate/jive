@@ -4,6 +4,7 @@
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -23,7 +24,7 @@ static int test_main(void)
 	
 	jive_region * region = graph->root_region;
 	
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	
 	jive_node * node = jive_node_create(region,
 		0, NULL, NULL,

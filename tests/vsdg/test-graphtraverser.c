@@ -1,10 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -51,7 +52,7 @@ void test_order_enforcement_traversal(jive_context * ctx)
 {
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	const jive_type * tmparray0[] = {type, type};
 	
 	jive_node * n1 = jive_node_create(graph->root_region,
@@ -115,7 +116,7 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	
 	trav = jive_topdown_traverser_create(graph);
 	
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	node = jive_traverser_next(trav);
 	assert(node==n1);
 	const jive_type * tmparray7[] = {type};
@@ -197,7 +198,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	const jive_type * tmparray10[] = {type, type};
 	jive_node * n1 = jive_node_create(graph->root_region,
 		0, NULL, NULL,

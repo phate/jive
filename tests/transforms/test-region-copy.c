@@ -1,9 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -21,7 +23,7 @@ static int test_main(void)
 	
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
 	
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	JIVE_DECLARE_CONTROL_TYPE(control_type);
 	const jive_type * tmparray0[] = {type, type, control_type};
 	

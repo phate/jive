@@ -1,5 +1,12 @@
+/*
+ * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #include <jive/arch/subroutine/nodes.h>
 
+#include <jive/arch/memorytype.h>
 #include <jive/arch/subroutine.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
@@ -177,7 +184,11 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 	jive_subroutine_node * node = new jive_subroutine_node;
 	
 	node->class_ = &JIVE_SUBROUTINE_NODE;
-	JIVE_DECLARE_STATE_TYPE(objstate_type);
+	/*
+		FIXME: a subroutine node should not have a memory type as output, put it is the only type
+						we have right now
+	*/
+	JIVE_DECLARE_MEMORY_TYPE(objstate_type);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	jive_node_init_(node, region,
 		1, &anchor, &subroutine_region->bottom->outputs[0],

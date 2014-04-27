@@ -69,9 +69,6 @@ struct jive_type_class {
 
 extern const struct jive_type_class JIVE_TYPE;
 
-#define JIVE_DECLARE_TYPE(name) \
-	const jive_type name##_struct = {&JIVE_TYPE}, * name = &name##_struct
-
 JIVE_EXPORTED_INLINE bool
 jive_type_isinstance(const jive_type * self, const jive_type_class * class_)
 {

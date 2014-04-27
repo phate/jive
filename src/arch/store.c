@@ -384,9 +384,8 @@ jive_store_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	if (!addro && !bitso)
 		jive_context_fatal_error(context, "Type mismatch: required address or bitstring type.");
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
 	if (!jive_output_isinstance(operands[1], &JIVE_VALUE_OUTPUT))
-		jive_raise_type_error(vtype, jive_output_get_type(operands[1]), context);
+		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	/* FIXME: check the type of the states */
 }

@@ -1,4 +1,10 @@
+/*
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * See COPYING for terms of redistribution.
+ */
+
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -41,7 +47,7 @@ static int test_main(void)
 	
 	jive_region * root = graph->root_region;
 	
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	const jive_type *  tmparray0[] = {type, type};
 	

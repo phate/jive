@@ -5,6 +5,7 @@
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 
@@ -16,7 +17,7 @@ static int test_main(void)
 {
 	jive_context * context = jive_context_create();
 	
-	JIVE_DECLARE_VALUE_TYPE(value_type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(value_type);
 	
 	jive_function_type t1, t2;
 	const jive_type * tmparray0[] = {value_type};

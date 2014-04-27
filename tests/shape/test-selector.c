@@ -1,9 +1,11 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -65,7 +67,7 @@ create_computation_node(jive_graph * graph,
 	size_t noperands, jive_output ** operands,
 	size_t noutputs)
 {
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	const jive_type * input_types[noperands];
 	const jive_type * output_types[noperands];
 	
@@ -92,7 +94,7 @@ static jive_node *
 create_spill_node(jive_graph * graph,
 	jive_output * operand)
 {
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	
 	jive_node * node = jive_node_create(graph->root_region,
 		1, &type, &operand,
@@ -108,7 +110,7 @@ static jive_node *
 create_restore_node(jive_graph * graph,
 	jive_output * operand)
 {
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	
 	jive_node * node = jive_node_create(graph->root_region,
 		1, &type, &operand,

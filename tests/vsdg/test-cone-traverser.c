@@ -1,9 +1,11 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -26,7 +28,7 @@ prepare_graph(jive_context * ctx)
 	g.graph = jive_graph_create(ctx);
 	
 	jive_region * region = g.graph->root_region;
-	JIVE_DECLARE_TYPE(type);
+	JIVE_DECLARE_TEST_VALUE_TYPE(type);
 	const jive_type * tmparray0[] = {type};
 	
 	g.a1 = jive_node_create(region,

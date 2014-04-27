@@ -1,11 +1,12 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/arch/dataobject.h>
 
+#include <jive/arch/memorytype.h>
 #include <jive/arch/memlayout.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
@@ -309,7 +310,8 @@ jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 	jive_dataobj_node * node = new jive_dataobj_node;
 	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
-	JIVE_DECLARE_STATE_TYPE(objstate_type);
+	/* FIXME: a data object should not have a memory type as output */
+	JIVE_DECLARE_MEMORY_TYPE(objstate_type);
 	
 	node->class_ = &JIVE_DATAOBJ_NODE;
 	jive_node_init_(node, region,

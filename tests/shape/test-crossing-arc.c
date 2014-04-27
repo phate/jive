@@ -1,11 +1,12 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 #include "testnodes.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -26,7 +27,7 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
+	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
 	jive_node * a = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype);
 	jive_node * b = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype);
 	jive_node * c = jive_test_node_create(graph->root_region, 1, &vtype, &a->outputs[0], 1, &vtype);

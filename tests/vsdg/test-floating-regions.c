@@ -1,9 +1,10 @@
 /*
- * Copyright 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <locale.h>
 #include <assert.h>
@@ -19,7 +20,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
+	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
 	jive_region * region0 = graph->root_region;
 	jive_node * node0 = jive_node_create(region0,
 		0, NULL, NULL,

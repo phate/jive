@@ -4,6 +4,7 @@
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <locale.h>
 
@@ -16,7 +17,7 @@
 static void
 test_simple_lambda(struct jive_graph * graph)
 {
-	JIVE_DECLARE_VALUE_TYPE(vtype);
+	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
 	const jive_type * tmparray0[] = {vtype, vtype, vtype};
 	jive_node * top = jive_node_create(graph->root_region, 0, NULL, NULL, 3,
 		tmparray0);
@@ -59,7 +60,7 @@ const jive_type * tmparray5[] = {vtype, vtype};
 static void
 test_recursive_lambda(struct jive_graph * graph)
 {
-	JIVE_DECLARE_VALUE_TYPE(vtype);
+	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
 	const jive_type * tmparray6[] = {vtype, vtype, vtype};
 	jive_node * top = jive_node_create(graph->root_region, 0, NULL, NULL, 3,
 		tmparray6);

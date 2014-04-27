@@ -1,9 +1,10 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -20,7 +21,7 @@ test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_VALUE_TYPE(vtype);
+	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, vtype);
 	jive_phi_fixvar_leave(phi, fv.gate, fv.value);

@@ -5,6 +5,7 @@
  */
 
 #include "test-registry.h"
+#include "testtypes.h"
 
 #include <assert.h>
 #include <locale.h>
@@ -105,7 +106,7 @@ static int test_main(void)
 	
 	jive_immediate imm;
 	
-	JIVE_DECLARE_STATE_TYPE(control_type);
+	JIVE_DECLARE_TEST_STATE_TYPE(control_type);
 	jive_output * control = jive_node_add_output(enter, control_type);
 	
 	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
