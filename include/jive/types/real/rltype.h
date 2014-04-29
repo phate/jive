@@ -93,22 +93,4 @@ private:
 	jive_real_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_real_gate *
-jive_real_gate_cast(struct jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_REAL_GATE))
-		return (struct jive_real_gate *) gate;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_real_gate *
-jive_real_gate_const_cast(const struct jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_REAL_GATE))
-		return (const struct jive_real_gate *) gate;
-	else
-		return NULL;
-}
-
 #endif

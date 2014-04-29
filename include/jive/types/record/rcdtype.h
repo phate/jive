@@ -112,22 +112,4 @@ private:
 	jive_record_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_record_gate *
-jive_record_gate_const_cast(const jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_RECORD_GATE))
-		return (const jive_record_gate *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_record_gate *
-jive_record_gate_cast(jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_RECORD_GATE))
-		return (jive_record_gate *)self;
-	else
-		return NULL;
-}
-
 #endif

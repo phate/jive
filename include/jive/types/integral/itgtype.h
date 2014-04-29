@@ -93,22 +93,4 @@ private:
 	jive_integral_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_integral_gate *
-jive_integral_gate_cast(struct jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_INTEGRAL_GATE))
-		return (struct jive_integral_gate *) gate;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_integral_gate *
-jive_integral_gate_const_cast(const struct jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_INTEGRAL_GATE))
-		return (const struct jive_integral_gate *) gate;
-	else
-		return NULL;
-}
-
 #endif

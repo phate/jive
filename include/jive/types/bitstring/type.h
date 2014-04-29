@@ -118,24 +118,6 @@ private:
 	jive_bitstring_type type_;
 };
 
-JIVE_EXPORTED_INLINE jive_bitstring_gate *
-jive_bitstring_gate_cast(jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_BITSTRING_GATE))
-		return (jive_bitstring_gate *) gate;
-	else
-		return 0;
-}
-
-JIVE_EXPORTED_INLINE const jive_bitstring_gate *
-jive_bitstring_gate_const_cast(const jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_BITSTRING_GATE))
-		return (const jive_bitstring_gate *) gate;
-	else
-		return 0;
-}
-
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_gate_nbits(const jive_bitstring_gate * self)
 {

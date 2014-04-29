@@ -116,22 +116,4 @@ private:
 	jive_union_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_union_gate *
-jive_union_gate_const_cast(const jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_UNION_GATE))
-		return (const jive_union_gate *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_union_gate *
-jive_union_gate_cast(jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_UNION_GATE))
-		return (jive_union_gate *)self;
-	else
-		return NULL;
-}
-
 #endif

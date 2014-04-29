@@ -414,17 +414,6 @@ struct jive_gate_class {
 
 extern const struct jive_gate_class JIVE_GATE;
 
-JIVE_EXPORTED_INLINE bool
-jive_gate_isinstance(const jive_gate * self, const jive_gate_class * class_)
-{
-	const jive_gate_class * c = self->class_;
-	while(c) {
-		if (c == class_) return true;
-		c = c->parent;
-	}
-	return false;
-}
-
 JIVE_EXPORTED_INLINE void
 jive_gate_get_label(const jive_gate * self, struct jive_buffer * buffer)
 {

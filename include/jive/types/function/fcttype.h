@@ -149,22 +149,4 @@ private:
 	jive_function_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_function_gate *
-jive_function_gate_cast(struct jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_FUNCTION_GATE))
-		return (jive_function_gate *) gate;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_function_gate *
-jive_function_gate_const_cast(const struct jive_gate * gate)
-{
-	if (jive_gate_isinstance(gate, &JIVE_FUNCTION_GATE))
-		return (const jive_function_gate *) gate;
-	else
-		return NULL;
-}
-
 #endif

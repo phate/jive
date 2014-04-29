@@ -92,22 +92,4 @@ private:
 	jive_double_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_double_gate *
-jive_double_gate_const_cast(const jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_DOUBLE_GATE))
-		return (const jive_double_gate *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_double_gate *
-jive_double_gate_cast(jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_DOUBLE_GATE))
-		return (jive_double_gate *)self;
-	else
-		return NULL;
-}
-
 #endif

@@ -93,22 +93,4 @@ private:
 	jive_address_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_address_gate *
-jive_address_gate_const_cast(const jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_ADDRESS_GATE))
-		return (const jive_address_gate *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_address_gate *
-jive_address_gate_cast(jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_ADDRESS_GATE))
-		return (jive_address_gate *)self;
-	else
-		return NULL;
-}
-
 #endif

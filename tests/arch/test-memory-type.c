@@ -32,7 +32,7 @@ static int test_main(void)
 
 	assert(dynamic_cast<jive_state_output*>(arg));
 	assert(dynamic_cast<jive_state_input*>(ret));
-	assert(jive_gate_isinstance(arg_gate, &JIVE_STATE_GATE));
+	assert(dynamic_cast<jive_state_gate*>(arg_gate));
 	assert(jive_type_isinstance(memtype, &JIVE_STATE_TYPE));
 
 	jive_graph_destroy(graph);

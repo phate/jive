@@ -93,22 +93,4 @@ private:
 	jive_float_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_float_gate *
-jive_float_gate_const_cast(const jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_FLOAT_GATE))
-		return (const jive_float_gate *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_float_gate *
-jive_float_gate_cast(jive_gate * self)
-{
-	if (jive_gate_isinstance(self, &JIVE_FLOAT_GATE))
-		return (jive_float_gate *)self;
-	else
-		return NULL;
-}
-
 #endif
