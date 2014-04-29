@@ -189,6 +189,18 @@ jive_input::~jive_input() noexcept
 }
 
 void
+jive_input::label(jive_buffer & buffer) const
+{
+	if (gate) {
+		jive_gate_get_label(gate, &buffer);
+	} else {
+		char tmp[16];
+		snprintf(tmp, sizeof(tmp), "#%zd", index);
+		jive_buffer_putstr(&buffer, tmp);
+	}
+}
+
+void
 jive_input_fini_(jive_input * self)
 {
 }
@@ -196,13 +208,7 @@ jive_input_fini_(jive_input * self)
 void
 jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer)
 {
-	if (self->gate) {
-		jive_gate_get_label(self->gate, buffer);
-	} else {
-		char tmp[16];
-		snprintf(tmp, sizeof(tmp), "#%zd", self->index);
-		jive_buffer_putstr(buffer, tmp);
-	}
+	self->label(*buffer);
 }
 
 const jive_type *
@@ -426,6 +432,18 @@ jive_output::~jive_output() noexcept
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
 
+void
+jive_output::label(jive_buffer & buffer) const
+{
+	if (gate) {
+		jive_gate_get_label(gate, &buffer);
+	} else {
+		char tmp[16];
+		snprintf(tmp, sizeof(tmp), "#%zd", index);
+		jive_buffer_putstr(&buffer, tmp);
+	}
+}
+
 void jive_output_fini_(jive_output * self)
 {
 }
@@ -433,13 +451,7 @@ void jive_output_fini_(jive_output * self)
 void
 jive_output_get_label_(const jive_output * self, struct jive_buffer * buffer)
 {
-	if (self->gate) {
-		jive_gate_get_label(self->gate, buffer);
-	} else {
-		char tmp[16];
-		snprintf(tmp, sizeof(tmp), "#%zd", self->index);
-		jive_buffer_putstr(buffer, tmp);
-	}
+	self->label(*buffer);
 }
 
 const jive_type *
@@ -592,6 +604,12 @@ jive_gate::~jive_gate() noexcept
 }
 
 void
+jive_gate::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, name);
+}
+
+void
 jive_gate_fini_(jive_gate * self)
 {
 }
@@ -599,7 +617,7 @@ jive_gate_fini_(jive_gate * self)
 void
 jive_gate_get_label_(const jive_gate * self, struct jive_buffer * buffer)
 {
-	jive_buffer_putstr(buffer, self->name);
+	self->label(*buffer);
 }
 
 const jive_type *

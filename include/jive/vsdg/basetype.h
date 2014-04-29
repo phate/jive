@@ -147,6 +147,8 @@ protected:
 public:
 	virtual const jive_type & type() const noexcept = 0;
 
+	virtual void label(jive_buffer & buffer) const;
+
 	const struct jive_input_class * class_;
 	
 	struct jive_node * node;
@@ -267,6 +269,8 @@ protected:
 public:
 	virtual const jive_type & type() const noexcept = 0;
 
+	virtual void label(jive_buffer & buffer) const;
+
 	const struct jive_output_class * class_;
 	
 	struct jive_node * node;
@@ -380,6 +384,8 @@ protected:
 
 public:
 	virtual const jive_type & type() const noexcept = 0;
+
+	virtual void label(jive_buffer & buffer) const;
 
 	const struct jive_gate_class * class_;
 	
