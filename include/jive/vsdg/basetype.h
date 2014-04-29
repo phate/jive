@@ -218,7 +218,7 @@ jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)
 JIVE_EXPORTED_INLINE const jive_type *
 jive_input_get_type(const jive_input * self)
 {
-	return self->class_->get_type(self);
+	return &self->type();
 }
 
 struct jive_variable *
@@ -339,7 +339,7 @@ jive_output_get_label(const jive_output * self, struct jive_buffer * buffer)
 JIVE_EXPORTED_INLINE const jive_type *
 jive_output_get_type(const jive_output * self)
 {
-	return self->class_->get_type(self);
+	return &self->type();
 }
 
 struct jive_variable *
@@ -450,7 +450,7 @@ jive_gate_get_label(const jive_gate * self, struct jive_buffer * buffer)
 JIVE_EXPORTED_INLINE const jive_type *
 jive_gate_get_type(const jive_gate * self)
 {
-	return self->class_->get_type(self);
+	return &self->type();
 }
 
 struct jive_variable *
