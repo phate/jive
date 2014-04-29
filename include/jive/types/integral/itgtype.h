@@ -59,24 +59,6 @@ private:
 	jive_integral_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_integral_input *
-jive_integral_input_cast(struct jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_INTEGRAL_INPUT))
-		return (struct jive_integral_input *) input;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_integral_input *
-jive_integral_input_const_cast(const struct jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_INTEGRAL_INPUT))
-		return (const struct jive_integral_input *) input;
-	else
-		return NULL;
-}
-
 /* integral output */
 
 typedef struct jive_integral_output jive_integral_output;

@@ -77,24 +77,6 @@ private:
 	jive_union_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_union_input *
-jive_union_input_const_cast(const jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_UNION_INPUT))
-		return (const jive_union_input *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_union_input *
-jive_union_input_cast(jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_UNION_INPUT))
-		return (jive_union_input *)self;
-	else
-		return NULL;
-}
-
 /* union output */
 
 typedef struct jive_union_output jive_union_output;

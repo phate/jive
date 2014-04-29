@@ -59,24 +59,6 @@ private:
 	jive_real_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_real_input *
-jive_real_input_cast(struct jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_REAL_INPUT))
-		return (struct jive_real_input *) input;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_real_input *
-jive_real_input_const_cast(const struct jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_REAL_INPUT))
-		return (const struct jive_real_input *) input;
-	else
-		return NULL;
-}
-
 /* real output */
 
 typedef struct jive_real_output jive_real_output;

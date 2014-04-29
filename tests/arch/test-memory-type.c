@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -31,7 +31,7 @@ static int test_main(void)
 	jive_input * ret = jive_node_gate_input(node1, ret_gate, arg);
 
 	assert(jive_output_isinstance(arg, &JIVE_STATE_OUTPUT));
-	assert(jive_input_isinstance(ret, &JIVE_STATE_INPUT));
+	assert(dynamic_cast<jive_state_input*>(ret));
 	assert(jive_gate_isinstance(arg_gate, &JIVE_STATE_GATE));
 	assert(jive_type_isinstance(memtype, &JIVE_STATE_TYPE));
 

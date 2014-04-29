@@ -89,24 +89,6 @@ private:
 	jive_function_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_function_input *
-jive_function_input_cast(struct jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_FUNCTION_INPUT))
-		return (jive_function_input *) input;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_function_input *
-jive_function_input_const_cast(const struct jive_input * input)
-{
-	if (jive_input_isinstance(input, &JIVE_FUNCTION_INPUT))
-		return (const jive_function_input *) input;
-	else
-		return NULL;
-}
-
 /* function output */
 
 extern const jive_output_class JIVE_FUNCTION_OUTPUT;

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -116,7 +117,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	for(n = 0; n < self->node->ninputs; n++)
 	{
 		jive_input * input = self->node->inputs[n];
-		if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+		if (dynamic_cast<jive_anchor_input*>(input)) {
 			jive_region * region = input->origin->node->region;
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 			jive_shaped_region_destroy_cuts(shaped_region);
@@ -213,7 +214,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 			size_t n = shaped_region->region->anchor->index + 1;
 			while (n < anchor_node->ninputs) {
 				jive_input * input = anchor_node->inputs[n];
-				if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+				if (dynamic_cast<jive_anchor_input*>(input)) {
 					jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph, input->origin->node->region);
 					next = jive_shaped_region_first(sub);
 					if (next)
@@ -236,7 +237,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 		size_t n = 0;
 		while (n < next->node->ninputs) {
 			jive_input * input = next->node->inputs[n];
-			if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+			if (dynamic_cast<jive_anchor_input*>(input)) {
 				jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph, input->origin->node->region);
 				jive_shaped_node * tmp = jive_shaped_region_first(sub);
 				if (tmp) {

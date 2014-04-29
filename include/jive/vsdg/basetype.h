@@ -194,17 +194,6 @@ struct jive_input_class {
 
 extern const jive_input_class JIVE_INPUT;
 
-JIVE_EXPORTED_INLINE bool
-jive_input_isinstance(const jive_input * self, const jive_input_class * class_)
-{
-	const jive_input_class * c = self->class_;
-	while(c) {
-		if (c == class_) return true;
-		c = c->parent;
-	}
-	return false;
-}
-
 void
 jive_input_divert_origin(jive_input * self, jive_output * new_origin);
 

@@ -58,24 +58,6 @@ private:
 	jive_double_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_double_input *
-jive_double_input_const_cast(const jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_DOUBLE_INPUT))
-		return (const jive_double_input *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_double_input *
-jive_double_input_cast(jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_DOUBLE_INPUT))
-		return (jive_double_input *)self;
-	else
-		return NULL;
-}
-
 /* double output */
 
 typedef struct jive_double_output jive_double_output;

@@ -59,24 +59,6 @@ private:
 	jive_float_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_float_input *
-jive_float_input_const_cast(const jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_FLOAT_INPUT))
-		return (const jive_float_input *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_float_input *
-jive_float_input_cast(jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_FLOAT_INPUT))
-		return (jive_float_input *)self;
-	else
-		return NULL;
-}
-
 /* float output */
 
 typedef struct jive_float_output jive_float_output;

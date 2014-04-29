@@ -416,7 +416,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (!jive_input_isinstance(input, &JIVE_ANCHOR_INPUT))
+		if (!dynamic_cast<jive_anchor_input*>(input))
 			continue;
 		
 		jive_names_use inner_names_use;

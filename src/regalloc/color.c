@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -18,7 +19,7 @@
 static inline bool
 is_active_control_input(jive_input * input)
 {
-	if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+	if (!dynamic_cast<jive_control_input*>(input))
 		return false;
 	
 	return ((jive_control_output *) input->origin)->active();

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -229,7 +230,7 @@ can_move_below_cut(jive_region_shaper * self, jive_cut * cut, jive_node * new_no
 		size_t n;
 		for (n = 0; n < node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
-			if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT)) {
+			if (dynamic_cast<jive_anchor_input*>(input)) {
 				if (!can_move_below_region(self, input->origin->node->region, new_node))
 					return false;
 			}
@@ -325,7 +326,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	bool force_proper_cut = false;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (jive_input_isinstance(input, &JIVE_ANCHOR_INPUT) || jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+		if (dynamic_cast<jive_anchor_input*>(input) || dynamic_cast<jive_control_input*>(input))
 			force_proper_cut = true;
 	}
 	
@@ -348,7 +349,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		/* don't put node between a control dependency edge */
 		bool is_control = false;
 		for (n = 0; n < next_node->ninputs; n++)
-			if (jive_input_isinstance(next_node->inputs[n], &JIVE_CONTROL_INPUT)) is_control = true;
+			if (dynamic_cast<jive_control_input*>(next_node->inputs[n])) is_control = true;
 		if (conflict.type == jive_regalloc_conflict_none && !is_control)
 			allowed_cut = cut;
 	}
@@ -365,7 +366,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (!jive_input_isinstance(input, &JIVE_CONTROL_INPUT))
+		if (!dynamic_cast<jive_control_input*>(input))
 			continue;
 		
 		jive_control_output * ctl_output = (jive_control_output *) input->origin;
@@ -865,7 +866,7 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 	size_t n;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (!jive_input_isinstance(input, &JIVE_ANCHOR_INPUT))
+		if (!dynamic_cast<jive_anchor_input*>(input))
 			continue;
 		jive_region_shaper * subshaper = jive_region_shaper_create(self, input->origin->node->region, self->master_selector);
 		subshapers[nsubshapers++] = subshaper;

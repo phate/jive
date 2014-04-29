@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -51,7 +51,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	}
 	for (n = 0; n < nreturns; n++) {
 		jive_input * ret = src_region->bottom->inputs[n + 1];
-		if (jive_input_isinstance(ret, &JIVE_VALUE_INPUT)) {
+		if (dynamic_cast<jive_value_input*>(ret)) {
 			value_returns[nvalue_returns ++] = jive_argument_long; /* FIXME: pick correct type */
 		} else {
 			nstate_returns ++;
@@ -92,8 +92,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		jive_output * retval = jive_substitution_map_lookup_output(
 			subst, src_region->bottom->inputs[n]->origin);
 		
-		if (jive_input_isinstance(original, &JIVE_VALUE_INPUT)) {
-			if(jive_input_isinstance(original, &JIVE_ADDRESS_INPUT))
+		if (dynamic_cast<jive_value_input*>(original)) {
+			if(dynamic_cast<jive_address_input*>(original))
 				retval = jive_address_to_bitstring_create(retval, 32, jive_output_get_type(retval));
 			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
 		} else {

@@ -72,24 +72,6 @@ private:
 	jive_record_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_record_input *
-jive_record_input_const_cast(const jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_RECORD_INPUT))
-		return (const jive_record_input *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_record_input *
-jive_record_input_cast(jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_RECORD_INPUT))
-		return (jive_record_input *)self;
-	else
-		return NULL;
-}
-
 /* record output */
 
 typedef struct jive_record_output jive_record_output;

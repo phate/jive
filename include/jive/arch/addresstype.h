@@ -59,24 +59,6 @@ private:
 	jive_address_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_address_input *
-jive_address_input_const_cast(const jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_ADDRESS_INPUT))
-		return (const jive_address_input *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_address_input *
-jive_address_input_cast(jive_input * self)
-{
-	if (jive_input_isinstance(self, &JIVE_ADDRESS_INPUT))
-		return (jive_address_input *)self;
-	else
-		return NULL;
-}
-
 /* address output */
 
 typedef struct jive_address_output jive_address_output;
