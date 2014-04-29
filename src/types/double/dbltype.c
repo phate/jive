@@ -82,22 +82,8 @@ jive_double_input::jive_double_input(struct jive_node * node, size_t index,
 jive_double_output::~jive_double_output() noexcept {}
 
 jive_double_output::jive_double_output(struct jive_node * node, size_t index)
-	: jive_value_output(&JIVE_DOUBLE_OUTPUT, node, index)
+	: jive_value_output(node, index)
 {}
-
-static const jive_type *
-jive_double_output_get_type_(const jive_output * self_)
-{
-	const jive_double_output * self = (const jive_double_output *) self_;
-	return &self->type();
-}
-
-const jive_output_class JIVE_DOUBLE_OUTPUT = {
-	parent : &JIVE_VALUE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_double_output_get_type_, /* override */
-};
 
 /* double gate */
 

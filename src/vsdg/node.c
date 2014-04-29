@@ -265,7 +265,7 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 {
 	jive_region * origin_region = origin->node->region;
 	jive_region * target_region = self->region;
-	if (origin->class_ == &JIVE_ANCHOR_OUTPUT)
+	if (dynamic_cast<const jive_anchor_output*>(origin))
 		origin_region = origin_region->parent;
 	while (target_region) {
 		if (target_region == origin_region)

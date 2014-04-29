@@ -84,22 +84,8 @@ jive_real_input::jive_real_input(struct jive_node * node, size_t index,
 jive_real_output::~jive_real_output() noexcept {}
 
 jive_real_output::jive_real_output(struct jive_node * node, size_t index)
-	: jive_value_output(&JIVE_REAL_OUTPUT, node, index)
+	: jive_value_output(node, index)
 {}
-
-const jive_type *
-jive_real_output_get_type_(const jive_output * self_)
-{
-	const jive_real_output * self = (const jive_real_output *) self_;
-	return &self->type();
-}
-
-const jive_output_class JIVE_REAL_OUTPUT = {
-	parent : &JIVE_VALUE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_real_output_get_type_, /* override */
-};
 
 /* real gate */
 

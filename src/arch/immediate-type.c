@@ -29,22 +29,8 @@ jive_immediate_input::jive_immediate_input(struct jive_node * node, size_t index
 jive_immediate_output::~jive_immediate_output() noexcept {}
 
 jive_immediate_output::jive_immediate_output(jive_node * node, size_t index)
-	: jive_value_output(&JIVE_IMMEDIATE_OUTPUT, node, index)
+	: jive_value_output(node, index)
 {}
-
-static const jive_type *
-jive_immediate_output_get_type_(const jive_output * self_)
-{
-	const jive_immediate_output * self = (const jive_immediate_output *) self_;
-	return &self->type();
-}
-
-const jive_output_class JIVE_IMMEDIATE_OUTPUT = {
-	parent : &JIVE_VALUE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_immediate_output_get_type_, /* override */
-};
 
 /* immediate_gate inheritable members */
 

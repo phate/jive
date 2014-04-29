@@ -57,9 +57,6 @@ private:
 
 /* double output */
 
-typedef struct jive_double_output jive_double_output;
-
-extern const jive_output_class JIVE_DOUBLE_OUTPUT;
 class jive_double_output final : public jive_value_output {
 public:
 	virtual ~jive_double_output() noexcept;

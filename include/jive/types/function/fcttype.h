@@ -88,9 +88,6 @@ private:
 
 /* function output */
 
-extern const jive_output_class JIVE_FUNCTION_OUTPUT;
-
-typedef struct jive_function_output jive_function_output;
 class jive_function_output final : public jive_value_output {
 public:
 	virtual ~jive_function_output() noexcept;

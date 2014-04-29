@@ -76,9 +76,6 @@ private:
 
 /* union output */
 
-typedef struct jive_union_output jive_union_output;
-
-extern const jive_output_class JIVE_UNION_OUTPUT;
 class jive_union_output final : public jive_value_output {
 public:
 	virtual ~jive_union_output() noexcept;

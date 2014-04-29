@@ -73,9 +73,6 @@ jive_bitstring_input_nbits(const jive_bitstring_input * self)
 
 /* bitstring output */
 
-typedef struct jive_bitstring_output jive_bitstring_output;
-
-extern const jive_output_class JIVE_BITSTRING_OUTPUT;
 class jive_bitstring_output final : public jive_value_output {
 public:
 	virtual ~jive_bitstring_output() noexcept;

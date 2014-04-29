@@ -60,7 +60,6 @@ private:
 	jive_reuse_type type_;
 };
 
-extern const jive_output_class JIVE_REUSE_OUTPUT;
 class jive_reuse_output final : public jive_state_output {
 public:
 	virtual ~jive_reuse_output() noexcept;
@@ -105,23 +104,11 @@ jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_
 jive_reuse_input::~jive_reuse_input() noexcept {}
 
 jive_reuse_output::jive_reuse_output(const jive_resource_name * name, jive_node * node, size_t index)
-	: jive_state_output(&JIVE_REUSE_OUTPUT, node, index)
+	: jive_state_output(node, index)
 	, type_(name)
 {}
 
 jive_reuse_output::~jive_reuse_output() noexcept {}
-
-static void
-jive_reuse_output_fini_(jive_output * self_)
-{
-}
-
-static const jive_type *
-jive_reuse_output_get_type_(const jive_output * self_)
-{
-	const jive_reuse_output * self = (const jive_reuse_output *) self_;
-	return &self->type();
-}
 
 jive_reuse_gate::jive_reuse_gate(const jive_resource_name * name, jive_graph * graph,
 	const char name_[])
@@ -191,13 +178,6 @@ const jive_type_class JIVE_REUSE_TYPE = {
 	create_gate : jive_reuse_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_reuse_type_copy_, /* override */
-};
-
-const jive_output_class JIVE_REUSE_OUTPUT = {
-	parent : &JIVE_OUTPUT,
-	fini : jive_reuse_output_fini_, /* override */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_reuse_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_REUSE_GATE = {

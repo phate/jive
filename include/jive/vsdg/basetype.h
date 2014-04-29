@@ -17,8 +17,7 @@ typedef struct jive_type jive_type;
 typedef struct jive_type_class jive_type_class;
 
 class jive_input;
-typedef struct jive_output jive_output;
-typedef struct jive_output_class jive_output_class;
+class jive_output;
 
 typedef struct jive_gate jive_gate;
 typedef struct jive_gate_class jive_gate_class;
@@ -233,16 +232,13 @@ public:
 	virtual ~jive_output() noexcept;
 
 protected:
-	jive_output(const struct jive_output_class * class_, struct jive_node * node,
-		size_t index);
+	jive_output(struct jive_node * node, size_t index);
 
 public:
 	virtual const jive_type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
 
-	const struct jive_output_class * class_;
-	
 	struct jive_node * node;
 	size_t index;
 	
@@ -267,20 +263,6 @@ public:
 	const struct jive_resource_class * required_rescls;
 };
 
-struct jive_output_class {
-	const struct jive_output_class * parent;
-	
-	void (*fini)(jive_output * self);
-	
-	/** \brief Give textual representation of type (for debugging) */
-	void (*get_label)(const jive_output * self, struct jive_buffer * buffer);
-	
-	/** \brief Retrieve type of output */
-	const jive_type * (*get_type)(const jive_output * self);
-};
-
-extern const struct jive_output_class JIVE_OUTPUT;
-
 JIVE_EXPORTED_INLINE bool
 jive_output_has_no_user(const struct jive_output * self)
 {
@@ -296,7 +278,7 @@ jive_output_has_single_user(const struct jive_output * self)
 JIVE_EXPORTED_INLINE void
 jive_output_get_label(const jive_output * self, struct jive_buffer * buffer)
 {
-	self->class_->get_label(self, buffer);
+	self->label(*buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_type *

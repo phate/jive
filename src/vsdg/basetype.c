@@ -355,17 +355,8 @@ jive_input_destroy(jive_input * self)
 
 /* outputs */
 
-const struct jive_output_class JIVE_OUTPUT = {
-	parent : 0,
-	fini : &jive_output_fini_,
-	get_label : &jive_output_get_label_,
-	get_type : &jive_output_get_type_,
-};
-
-jive_output::jive_output(const struct jive_output_class * class__, struct jive_node * node_,
-	size_t index_)
-	: class_(class__)
-	, node(node_)
+jive_output::jive_output(struct jive_node * node_, size_t index_)
+	: node(node_)
 	, index(index_)
 	, gate(nullptr)
 	, ssavar(nullptr)
@@ -417,22 +408,6 @@ jive_output::label(jive_buffer & buffer) const
 	}
 }
 
-void jive_output_fini_(jive_output * self)
-{
-}
-
-void
-jive_output_get_label_(const jive_output * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
-const jive_type *
-jive_output_get_type_(const jive_output * self)
-{
-	return nullptr;
-}
-	
 jive_variable *
 jive_output_get_constraint(const jive_output * self)
 {
@@ -531,7 +506,6 @@ jive_output_destroy(jive_output * self)
 {
 	if (self->node->region) jive_graph_notify_output_destroy(self->node->graph, self);
 	
-	self->class_->fini(self);
 	delete self;
 }
 

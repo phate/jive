@@ -37,9 +37,6 @@ private:
 	jive_test_value_type type_;
 };
 
-typedef struct jive_test_value_output jive_test_value_output;
-
-extern const jive_output_class JIVE_TEST_VALUE_OUTPUT;
 class jive_test_value_output final : public jive_value_output {
 public:
 	virtual ~jive_test_value_output() noexcept;
@@ -95,9 +92,6 @@ private:
 	jive_test_state_type type_;
 };
 
-typedef struct jive_test_state_output jive_test_state_output;
-
-extern const jive_output_class JIVE_TEST_STATE_OUTPUT;
 class jive_test_state_output final : public jive_state_output {
 public:
 	virtual ~jive_test_state_output() noexcept;

@@ -58,9 +58,6 @@ private:
 
 /* real output */
 
-typedef struct jive_real_output jive_real_output;
-
-extern const jive_output_class JIVE_REAL_OUTPUT;
 class jive_real_output final : public jive_value_output {
 public:
 	virtual ~jive_real_output() noexcept;

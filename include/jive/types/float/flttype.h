@@ -58,9 +58,6 @@ private:
 
 /* float output */
 
-typedef struct jive_float_output jive_float_output;
-
-extern const jive_output_class JIVE_FLOAT_OUTPUT;
 class jive_float_output final : public jive_value_output {
 public:
 	virtual ~jive_float_output() noexcept;

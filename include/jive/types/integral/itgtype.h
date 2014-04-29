@@ -58,9 +58,6 @@ private:
 
 /* integral output */
 
-typedef struct jive_integral_output jive_integral_output;
-
-extern const jive_output_class JIVE_INTEGRAL_OUTPUT;
 class jive_integral_output final : public jive_value_output {
 public:
 	virtual ~jive_integral_output() noexcept;

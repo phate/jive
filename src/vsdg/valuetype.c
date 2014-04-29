@@ -26,13 +26,6 @@ const jive_type_class JIVE_VALUE_TYPE = {
 	copy : jive_value_type_copy_, /* override */
 };
 
-const jive_output_class JIVE_VALUE_OUTPUT = {
-	parent : &JIVE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_value_output_get_type_, /* override */
-};
-
 const jive_gate_class JIVE_VALUE_GATE = {
 	parent : &JIVE_GATE,
 	fini : jive_gate_fini_, /* inherit */
@@ -89,16 +82,9 @@ jive_value_input::jive_value_input(struct jive_node * node, size_t index,
 
 jive_value_output::~jive_value_output() noexcept {}
 
-jive_value_output::jive_value_output(const jive_output_class * class_, struct jive_node * node,
-	size_t index)
-	: jive_output(class_, node, index)
+jive_value_output::jive_value_output(struct jive_node * node, size_t index)
+	: jive_output(node, index)
 {}
-
-const jive_type *
-jive_value_output_get_type_(const jive_output * self)
-{
-	return nullptr;
-}
 
 /* value gates */
 

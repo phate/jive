@@ -24,13 +24,6 @@ const jive_type_class JIVE_FLOAT_TYPE = {
 	copy : jive_float_type_copy_, /* override */ 
 };
 
-const jive_output_class JIVE_FLOAT_OUTPUT = {
-	parent : &JIVE_VALUE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_float_output_get_type_, /* override */
-};
-
 const jive_gate_class JIVE_FLOAT_GATE = {
 	parent : &JIVE_VALUE_GATE,
 	fini : jive_gate_fini_, /* inherit */
@@ -95,17 +88,10 @@ jive_float_input::jive_float_input(struct jive_node * node, size_t index,
 jive_float_output::~jive_float_output() noexcept {}
 
 jive_float_output::jive_float_output(struct jive_node * node, size_t index)
-	: jive_value_output(&JIVE_FLOAT_OUTPUT, node, index)
+	: jive_value_output(node, index)
 {}
 
-const jive_type *
-jive_float_output_get_type_(const jive_output * self_)
-{
-	const jive_float_output * self = (const jive_float_output *) self_;
-	return &self->type();
-}
-
-/* bitstring_gate inheritable members */
+/* float_gate inheritable members */
 
 jive_float_gate::~jive_float_gate() noexcept {}
 

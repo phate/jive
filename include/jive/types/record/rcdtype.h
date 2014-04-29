@@ -71,9 +71,6 @@ private:
 
 /* record output */
 
-typedef struct jive_record_output jive_record_output;
-
-extern const jive_output_class JIVE_RECORD_OUTPUT;
 class jive_record_output final : public jive_value_output {
 public:
 	virtual ~jive_record_output() noexcept;

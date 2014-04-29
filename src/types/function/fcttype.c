@@ -32,15 +32,6 @@ static jive_type *
 jive_function_type_copy_(const jive_type * self);
 
 static void
-jive_function_output_init_(jive_function_output * self, const jive_function_type * type,
-	struct jive_node * node, size_t index);
-static void
-jive_function_output_fini_(jive_output * self);
-static const jive_type *
-jive_function_output_get_type_(const jive_output * self);
-
-
-static void
 jive_function_gate_init_(jive_function_gate * self, const jive_function_type * type,
 	struct jive_graph * graph, const char name[]);
 static void
@@ -59,13 +50,6 @@ const jive_type_class JIVE_FUNCTION_TYPE = {
 	create_gate : jive_function_type_create_gate_, /* override */
 	equals : jive_function_type_equals_, /* override */
 	copy : jive_function_type_copy_, /* override */
-};
-
-const jive_output_class JIVE_FUNCTION_OUTPUT = {
-	parent : &JIVE_VALUE_OUTPUT,
-	fini : jive_function_output_fini_, /* override */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_function_output_get_type_, /* override */
 };
 
 const jive_gate_class JIVE_FUNCTION_GATE = {
@@ -189,30 +173,17 @@ jive_function_input::~jive_function_input() noexcept {}
 
 jive_function_output::jive_function_output(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, jive_node * node, size_t index)
-	: jive_value_output(&JIVE_FUNCTION_OUTPUT, node, index)
+	: jive_value_output(node, index)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 jive_function_output::jive_function_output(const jive_function_type & type, jive_node * node,
 	size_t index)
-	: jive_value_output(&JIVE_FUNCTION_OUTPUT, node, index)
+	: jive_value_output(node, index)
 	, type_(type)
 {}
 
 jive_function_output::~jive_function_output() noexcept {}
-
-void
-jive_function_output_fini_(jive_output * self_)
-{
-}
-
-const jive_type *
-jive_function_output_get_type_(const jive_output * self_)
-{
-	const jive_function_output * self = (const jive_function_output *) self_;
-	
-	return &self->type();
-}
 
 /* function_gate inheritable members */
 

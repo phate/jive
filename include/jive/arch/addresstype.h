@@ -58,9 +58,6 @@ private:
 
 /* address output */
 
-typedef struct jive_address_output jive_address_output;
-
-extern const jive_output_class JIVE_ADDRESS_OUTPUT;
 class jive_address_output final : public jive_value_output {
 public:
 	virtual ~jive_address_output() noexcept;

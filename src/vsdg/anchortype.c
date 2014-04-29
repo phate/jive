@@ -26,13 +26,6 @@ const jive_type_class JIVE_ANCHOR_TYPE = {
 	copy : jive_type_copy_ /* inherit */
 };
 
-const jive_output_class JIVE_ANCHOR_OUTPUT = {
-	parent : &JIVE_OUTPUT,
-	fini : jive_output_fini_, /* inherit */
-	get_label : jive_output_get_label_, /* inherit */
-	get_type : jive_anchor_output_get_type_, /* override */
-};
-
 jive_anchor_type::~jive_anchor_type() noexcept {}
 
 jive_anchor_type::jive_anchor_type() noexcept
@@ -69,12 +62,5 @@ jive_anchor_input::~jive_anchor_input() noexcept
 jive_anchor_output::~jive_anchor_output() noexcept {}
 
 jive_anchor_output::jive_anchor_output(struct jive_node * node, size_t index)
-	: jive_output(&JIVE_ANCHOR_OUTPUT, node, index)
+	: jive_output(node, index)
 {}
-
-const jive_type *
-jive_anchor_output_get_type_(const jive_output * self)
-{
-	static jive_anchor_type anchor_type; anchor_type.class_ = &JIVE_ANCHOR_TYPE;
-	return &anchor_type;
-}

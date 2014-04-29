@@ -10,7 +10,6 @@
 #include <jive/vsdg/basetype.h>
 
 typedef struct jive_anchor_type jive_anchor_type;
-typedef struct jive_anchor_output jive_anchor_output;
 
 extern const jive_type_class JIVE_ANCHOR_TYPE;
 #define JIVE_DECLARE_ANCHOR_TYPE(name) \
@@ -36,7 +35,6 @@ private:
 	jive_anchor_type type_;
 };
 
-extern const jive_output_class JIVE_ANCHOR_OUTPUT;
 class jive_anchor_output final : public jive_output {
 public:
 	virtual ~jive_anchor_output() noexcept;

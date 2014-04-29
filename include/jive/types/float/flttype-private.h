@@ -23,14 +23,6 @@ jive_float_type_create_gate_(const jive_type * self, struct jive_graph * graph, 
 jive_type *
 jive_float_type_copy_(const jive_type * self);
 
-/* float_output inhertiables members */
-
-void
-jive_float_output_init_(jive_float_output * self, struct jive_node * node, size_t index);
-
-const jive_type *
-jive_float_output_get_type_(const jive_output * self);
-
 /* float_gate inhertiable members */
 
 void

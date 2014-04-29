@@ -10,7 +10,6 @@
 #include <jive/vsdg/statetype.h>
 
 typedef struct jive_control_type jive_control_type;
-typedef struct jive_control_output jive_control_output;
 typedef struct jive_control_gate jive_control_gate;
 
 extern const jive_type_class JIVE_CONTROL_TYPE;
@@ -37,7 +36,6 @@ private:
 	jive_control_type type_;
 };
 
-extern const jive_output_class JIVE_CONTROL_OUTPUT;
 class jive_control_output final : public jive_state_output {
 public:
 	virtual ~jive_control_output() noexcept;
