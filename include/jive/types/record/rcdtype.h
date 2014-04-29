@@ -88,9 +88,6 @@ private:
 
 /* record gate */
 
-typedef struct jive_record_gate jive_record_gate;
-
-extern const jive_gate_class JIVE_RECORD_GATE;
 class jive_record_gate final : public jive_value_gate {
 public:
 	virtual ~jive_record_gate() noexcept;

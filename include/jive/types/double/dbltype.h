@@ -71,9 +71,6 @@ private:
 
 /* double gate */
 
-typedef struct jive_double_gate jive_double_gate;
-
-extern const jive_gate_class JIVE_DOUBLE_GATE;
 class jive_double_gate final : public jive_value_gate {
 public:
 	virtual ~jive_double_gate() noexcept;

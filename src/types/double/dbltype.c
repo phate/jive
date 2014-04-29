@@ -11,9 +11,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
-static void
-jive_double_gate_init_(jive_double_gate * self, struct jive_graph * graph, const char name[]);
-
 /* double type */
 
 jive_double_type::~jive_double_type() noexcept {}
@@ -90,19 +87,5 @@ jive_double_output::jive_double_output(struct jive_node * node, size_t index)
 jive_double_gate::~jive_double_gate() noexcept {}
 
 jive_double_gate::jive_double_gate(jive_graph * graph, const char name[])
-	: jive_value_gate(&JIVE_DOUBLE_GATE, graph, name)
+	: jive_value_gate(graph, name)
 {}
-
-static const jive_type *
-jive_double_gate_get_type_(const jive_gate * self_)
-{
-	const jive_double_gate * self = (const jive_double_gate *) self_;
-	return &self->type();
-}
-
-const jive_gate_class JIVE_DOUBLE_GATE = {
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_gate_fini_, /* inherit */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_double_gate_get_type_, /* override */
-};

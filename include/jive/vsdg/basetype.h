@@ -16,11 +16,9 @@
 typedef struct jive_type jive_type;
 typedef struct jive_type_class jive_type_class;
 
+class jive_gate;
 class jive_input;
 class jive_output;
-
-typedef struct jive_gate jive_gate;
-typedef struct jive_gate_class jive_gate_class;
 
 struct jive_buffer;
 struct jive_cpureg;
@@ -321,14 +319,12 @@ public:
 	virtual ~jive_gate() noexcept;
 
 protected:
-	jive_gate(const jive_gate_class * class_, struct jive_graph * graph, const char name[]);
+	jive_gate(struct jive_graph * graph, const char name[]);
 
 public:
 	virtual const jive_type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
-
-	const struct jive_gate_class * class_;
 	
 	struct jive_graph * graph;
 	struct {
@@ -360,27 +356,10 @@ public:
 	const struct jive_resource_class * required_rescls;
 };
 
-struct jive_gate_class {
-	const struct jive_gate_class * parent;
-	
-	void (*fini)(jive_gate * self);
-	
-	void (*get_label)(const jive_gate * self, struct jive_buffer * buffer);
-	
-	const jive_type * (*get_type)(const jive_gate * self);
-	
-	jive_input * (*create_input)(const jive_gate * self, struct jive_node * node, size_t index,
-		jive_output * initial_operand);
-	
-	jive_output * (*create_output)(const jive_gate * self, struct jive_node * node, size_t index);
-};
-
-extern const struct jive_gate_class JIVE_GATE;
-
 JIVE_EXPORTED_INLINE void
 jive_gate_get_label(const jive_gate * self, struct jive_buffer * buffer)
 {
-	self->class_->get_label(self, buffer);
+	self->label(*buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_type *

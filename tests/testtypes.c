@@ -21,11 +21,6 @@ jive_test_value_type_create_gate_(const jive_type * self, jive_graph * graph, co
 static jive_type *
 jive_test_value_type_copy_(const jive_type * self);
 
-static void
-jive_test_value_gate_fini_(jive_gate * self);
-static const jive_type *
-jive_test_value_gate_get_type_(const jive_gate * self);
-
 const jive_type_class JIVE_TEST_VALUE_TYPE = {
 	parent : &JIVE_VALUE_TYPE,
 	name : "test_value",
@@ -36,13 +31,6 @@ const jive_type_class JIVE_TEST_VALUE_TYPE = {
 	create_gate : jive_test_value_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_test_value_type_copy_, /* override */
-};
-
-const jive_gate_class JIVE_TEST_VALUE_GATE = {
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_test_value_gate_fini_, /* override */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_test_value_gate_get_type_ /* override */
 };
 
 jive_test_value_type::~jive_test_value_type() noexcept {}
@@ -92,20 +80,8 @@ jive_test_value_output::jive_test_value_output(jive_node * node, size_t index)
 jive_test_value_gate::~jive_test_value_gate() noexcept {}
 
 jive_test_value_gate::jive_test_value_gate(jive_graph * graph, const char name[])
-	: jive_value_gate(&JIVE_TEST_VALUE_GATE, graph, name)
+	: jive_value_gate(graph, name)
 {}
-
-static void
-jive_test_value_gate_fini_(jive_gate * self_)
-{
-}
-
-static const jive_type *
-jive_test_value_gate_get_type_(const jive_gate * self_)
-{
-	const jive_test_value_gate * self = (const jive_test_value_gate *) self_;
-	return &self->type();
-}
 
 /* test state type */
 
@@ -119,11 +95,6 @@ jive_test_state_type_create_gate_(const jive_type * self, jive_graph * graph, co
 static jive_type *
 jive_test_state_type_copy_(const jive_type * self);
 
-static void
-jive_test_state_gate_fini_(jive_gate * self);
-static const jive_type *
-jive_test_state_gate_get_type_(const jive_gate * self);
-
 const jive_type_class JIVE_TEST_STATE_TYPE = {
 	parent : &JIVE_STATE_TYPE,
 	name : "test_state",
@@ -134,13 +105,6 @@ const jive_type_class JIVE_TEST_STATE_TYPE = {
 	create_gate : jive_test_state_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_test_state_type_copy_, /* override */
-};
-
-const jive_gate_class JIVE_TEST_STATE_GATE = {
-	parent : &JIVE_STATE_GATE,
-	fini : jive_test_state_gate_fini_, /* override */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_test_state_gate_get_type_ /* override */
 };
 
 jive_test_state_type::~jive_test_state_type() noexcept {}
@@ -190,17 +154,5 @@ jive_test_state_output::jive_test_state_output(jive_node * node, size_t index)
 jive_test_state_gate::~jive_test_state_gate() noexcept {}
 
 jive_test_state_gate::jive_test_state_gate(jive_graph * graph, const char name[])
-	: jive_state_gate(&JIVE_TEST_STATE_GATE, graph, name)
+	: jive_state_gate(graph, name)
 {}
-
-static void
-jive_test_state_gate_fini_(jive_gate * self_)
-{
-}
-
-static const jive_type *
-jive_test_state_gate_get_type_(const jive_gate * self_)
-{
-	const jive_test_state_gate * self = (const jive_test_state_gate *) self_;
-	return &self->type();
-}

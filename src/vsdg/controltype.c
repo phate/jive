@@ -27,12 +27,6 @@ jive_control_type_create_gate_(const jive_type * self, jive_graph * graph, const
 static jive_type *
 jive_control_type_copy_(const jive_type * self);
 
-static void
-jive_control_gate_init_(jive_control_gate * self, struct jive_graph * graph, const char name[]);
-
-static const jive_type *
-jive_control_gate_get_type_(const jive_gate * self);
-
 const jive_type_class JIVE_CONTROL_TYPE = {
 	parent : &JIVE_STATE_TYPE,
 	name : "ctl",
@@ -43,13 +37,6 @@ const jive_type_class JIVE_CONTROL_TYPE = {
 	create_gate : jive_control_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_control_type_copy_ /* override */
-};
-
-const jive_gate_class JIVE_CONTROL_GATE = {
-	parent : &JIVE_STATE_GATE,
-	fini : jive_gate_fini_, /* inherit */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_control_gate_get_type_, /* override */
 };
 
 jive_control_type::~jive_control_type() noexcept {}
@@ -103,12 +90,5 @@ jive_control_output::jive_control_output(bool active, struct jive_node * node,
 jive_control_gate::~jive_control_gate() noexcept {}
 
 jive_control_gate::jive_control_gate(jive_graph * graph, const char name[])
-	: jive_state_gate(&JIVE_CONTROL_GATE, graph, name)
+	: jive_state_gate(graph, name)
 {}
-
-static const jive_type *
-jive_control_gate_get_type_(const jive_gate * self)
-{
-	static jive_control_type control_type; control_type.class_ = &JIVE_CONTROL_TYPE;
-	return &control_type;
-}

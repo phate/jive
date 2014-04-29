@@ -95,9 +95,6 @@ jive_bitstring_output_nbits(const jive_bitstring_output * self)
 
 /* bitstring gate */
 
-typedef struct jive_bitstring_gate jive_bitstring_gate;
-
-extern const jive_gate_class JIVE_BITSTRING_GATE;
 class jive_bitstring_gate final : public jive_value_gate {
 public:
 	virtual ~jive_bitstring_gate() noexcept;

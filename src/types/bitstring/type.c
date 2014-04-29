@@ -34,16 +34,6 @@ jive_bitstring_type_copy_(const jive_type * self);
 static bool
 jive_bitstring_type_equals_(const jive_type * self, const jive_type * other);
 
-static void
-jive_bitstring_gate_init_(jive_bitstring_gate * self, size_t nbits, struct jive_graph * graph,
-	const char name[]);
-
-static void
-jive_bitstring_gate_fini_(jive_gate * self);
-
-static const jive_type *
-jive_bitstring_gate_get_type_(const jive_gate * self);
-
 const jive_type_class JIVE_BITSTRING_TYPE = {
 	parent : &JIVE_VALUE_TYPE,
 	name : "bit",
@@ -54,13 +44,6 @@ const jive_type_class JIVE_BITSTRING_TYPE = {
 	create_gate : jive_bitstring_type_create_gate_, /* override */
 	equals : jive_bitstring_type_equals_, /* override */
 	copy : jive_bitstring_type_copy_, /* override */
-};
-
-const jive_gate_class JIVE_BITSTRING_GATE = {
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_bitstring_gate_fini_, /* override */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_bitstring_gate_get_type_, /* override */
 };
 
 /* bitstring_type inheritable members */
@@ -150,20 +133,8 @@ jive_bitstring_output::~jive_bitstring_output() noexcept {}
 
 jive_bitstring_gate::jive_bitstring_gate(size_t nbits, jive_graph * graph,
 	const char name[])
-	: jive_value_gate(&JIVE_BITSTRING_GATE, graph, name)
+	: jive_value_gate(graph, name)
 	, type_(nbits)
 {}
 
 jive_bitstring_gate::~jive_bitstring_gate() noexcept {}
-
-static void
-jive_bitstring_gate_fini_(jive_gate * self_)
-{
-}
-
-static const jive_type *
-jive_bitstring_gate_get_type_(const jive_gate * self_)
-{
-	const jive_bitstring_gate * self = (const jive_bitstring_gate *) self_;
-	return &self->type();
-}

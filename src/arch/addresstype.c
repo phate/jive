@@ -25,14 +25,6 @@ jive_address_type_create_gate_(const jive_type * self, jive_graph * graph,
 static jive_type *
 jive_address_type_copy_(const jive_type * self);
 
-static void
-jive_address_gate_init_(jive_address_gate * self, const jive_address_type * type,
-	jive_graph * graph, const char name[]);
-static void
-jive_address_gate_fini_(jive_gate * self);
-static const jive_type *
-jive_address_gate_get_type_(const jive_gate * self);
-
 const jive_type_class JIVE_ADDRESS_TYPE = {
 	parent : &JIVE_VALUE_TYPE,
 	name : "addr",
@@ -43,13 +35,6 @@ const jive_type_class JIVE_ADDRESS_TYPE = {
 	create_gate : jive_address_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_address_type_copy_, /* override */
-};
-
-const jive_gate_class JIVE_ADDRESS_GATE = {
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_address_gate_fini_, /* inherit */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_address_gate_get_type_ /* override */
 };
 
 /* address_type inheritable members */
@@ -109,20 +94,5 @@ jive_address_output::jive_address_output(jive_node * node, size_t index)
 jive_address_gate::~jive_address_gate() noexcept {}
 
 jive_address_gate::jive_address_gate(jive_graph * graph, const char name[])
-	: jive_value_gate(&JIVE_ADDRESS_GATE, graph, name)
+	: jive_value_gate(graph, name)
 {}
-
-void jive_address_gate_fini_(jive_gate * self_)
-{
-	jive_address_gate * self = (jive_address_gate *)self_;
-
-	jive_gate_fini_(self);
-}
-
-const jive_type *
-jive_address_gate_get_type_(const jive_gate * self_)
-{
-	const jive_address_gate * self = (const jive_address_gate *) self_;
-
-	return &self->type();
-}

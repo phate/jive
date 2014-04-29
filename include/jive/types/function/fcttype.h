@@ -115,9 +115,6 @@ private:
 
 /* function gate */
 
-extern const jive_gate_class JIVE_FUNCTION_GATE;
-
-typedef struct jive_function_gate jive_function_gate;
 class jive_function_gate final : public jive_value_gate {
 public:
 	virtual ~jive_function_gate() noexcept;

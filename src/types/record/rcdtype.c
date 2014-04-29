@@ -28,14 +28,6 @@ jive_record_type_equals_(const jive_type * self, const jive_type * other);
 static jive_type *
 jive_record_type_copy_(const jive_type * self);
 
-static void
-jive_record_gate_init_(jive_record_gate * self, const jive_record_type * type,
-	struct jive_graph * graph, const char name[]);
-static void
-jive_record_gate_fini_(jive_gate * self);
-static const jive_type *
-jive_record_gate_get_type_(const jive_gate * self);
-
 const jive_type_class JIVE_RECORD_TYPE = {
 	parent : &JIVE_VALUE_TYPE,
 	name : "rcd",
@@ -46,13 +38,6 @@ const jive_type_class JIVE_RECORD_TYPE = {
 	create_gate : jive_record_type_create_gate_, /* override */
 	equals : jive_record_type_equals_, /* override */
 	copy : jive_record_type_copy_, /* override */
-} ;
-
-const jive_gate_class JIVE_RECORD_GATE = { 
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_record_gate_fini_, /* override */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_record_gate_get_type_, /* override */
 } ;
 
 jive_record_type::~jive_record_type() noexcept {}
@@ -128,21 +113,8 @@ jive_record_output::~jive_record_output() noexcept {}
 
 jive_record_gate::jive_record_gate(const jive_record_declaration * decl, jive_graph * graph,
 	const char name[])
-	: jive_value_gate(&JIVE_RECORD_GATE, graph, name)
+	: jive_value_gate(graph, name)
 	, type_(decl)
 {}
 
 jive_record_gate::~jive_record_gate() noexcept {}
-
-void
-jive_record_gate_fini_(jive_gate * self_)
-{
-}
-
-const jive_type *
-jive_record_gate_get_type_(const jive_gate * self_)
-{
-	const jive_record_gate * self = (const jive_record_gate *) self_;
-
-	return &self->type();
-}

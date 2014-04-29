@@ -9,7 +9,6 @@
 
 #include <jive/vsdg/valuetype.h>
 
-typedef struct jive_immediate_gate jive_immediate_gate;
 typedef struct jive_immediate_type jive_immediate_type;
 
 extern const jive_type_class JIVE_IMMEDIATE_TYPE;
@@ -48,7 +47,6 @@ private:
 	jive_immediate_type type_;
 };
 
-extern const jive_gate_class JIVE_IMMEDIATE_GATE;
 class jive_immediate_gate final : public jive_value_gate {
 public:
 	virtual ~jive_immediate_gate() noexcept;

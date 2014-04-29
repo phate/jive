@@ -72,9 +72,6 @@ private:
 
 /* real gate */
 
-typedef struct jive_real_gate jive_real_gate;
-
-extern const jive_gate_class JIVE_REAL_GATE;
 class jive_real_gate final : public jive_value_gate {
 public:
 	virtual ~jive_real_gate() noexcept;

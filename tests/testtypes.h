@@ -49,9 +49,6 @@ private:
 	jive_test_value_type type_;
 };
 
-typedef struct jive_test_value_gate jive_test_value_gate;
-
-extern const jive_gate_class JIVE_TEST_VALUE_GATE;
 class jive_test_value_gate final : public jive_value_gate {
 public:
 	virtual ~jive_test_value_gate() noexcept;
@@ -104,9 +101,6 @@ private:
 	jive_test_state_type type_;
 };
 
-typedef struct jive_test_state_gate jive_test_state_gate;
-
-extern const jive_gate_class JIVE_TEST_STATE_GATE;
 class jive_test_state_gate final : public jive_state_gate {
 public:
 	virtual ~jive_test_state_gate() noexcept;

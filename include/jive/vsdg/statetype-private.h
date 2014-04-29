@@ -26,12 +26,4 @@ jive_state_type_create_gate_(const jive_type * self, struct jive_graph * graph, 
 jive_type *
 jive_state_type_copy_(const jive_type * self);
 
-/* state_gate inheritable members */
-
-char *
-jive_state_gate_get_label_(const jive_gate * self);
-
-const jive_type *
-jive_state_gate_get_type_(const jive_gate * self);
-
 #endif

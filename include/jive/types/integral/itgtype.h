@@ -72,9 +72,6 @@ private:
 
 /* integral gate */
 
-typedef struct jive_integral_gate jive_integral_gate;
-
-extern const jive_gate_class JIVE_INTEGRAL_GATE;
 class jive_integral_gate final : public jive_value_gate {
 public:
 	virtual ~jive_integral_gate() noexcept;

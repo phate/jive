@@ -511,17 +511,8 @@ jive_output_destroy(jive_output * self)
 
 /* gates */
 
-const jive_gate_class JIVE_GATE = {
-	parent : 0,
-	fini : jive_gate_fini_,
-	get_label : jive_gate_get_label_,
-	get_type : jive_gate_get_type_,
-};
-
-jive_gate::jive_gate(const jive_gate_class * class__, jive_graph * graph,
-	const char name_[])
-	: class_(class__)
-	, graph (graph)
+jive_gate::jive_gate(jive_graph * graph, const char name_[])
+	: graph (graph)
 {
 	name = jive_context_strdup(graph->context, name_);
 	inputs.first = inputs.last = nullptr;
@@ -554,23 +545,6 @@ void
 jive_gate::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, name);
-}
-
-void
-jive_gate_fini_(jive_gate * self)
-{
-}
-
-void
-jive_gate_get_label_(const jive_gate * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
-const jive_type *
-jive_gate_get_type_(const jive_gate * self)
-{
-	return nullptr; 
 }
 
 jive_variable *

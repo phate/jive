@@ -23,12 +23,4 @@ jive_float_type_create_gate_(const jive_type * self, struct jive_graph * graph, 
 jive_type *
 jive_float_type_copy_(const jive_type * self);
 
-/* float_gate inhertiable members */
-
-void
-jive_float_gate_init_(jive_float_gate * self, struct jive_graph * graph, const char name[]);
-
-const jive_type *
-jive_float_gate_get_type_(const jive_gate * self);
-
 #endif

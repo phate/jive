@@ -74,7 +74,6 @@ private:
 	jive_reuse_type type_;
 };
 
-extern const jive_gate_class JIVE_REUSE_GATE;
 class jive_reuse_gate final : public jive_state_gate {
 public:
 	virtual ~jive_reuse_gate() noexcept;
@@ -112,23 +111,11 @@ jive_reuse_output::~jive_reuse_output() noexcept {}
 
 jive_reuse_gate::jive_reuse_gate(const jive_resource_name * name, jive_graph * graph,
 	const char name_[])
-	: jive_state_gate(&JIVE_REUSE_GATE, graph, name_)
+	: jive_state_gate(graph, name_)
 	, type_(name)
 {}
 
 jive_reuse_gate::~jive_reuse_gate() noexcept {}
-
-static void
-jive_reuse_gate_fini_(jive_gate * self_)
-{
-}
-
-const jive_type *
-jive_reuse_gate_get_type_(const jive_gate * self_)
-{
-	const jive_reuse_gate * self = (const jive_reuse_gate *) self_;
-	return &self->type();
-}
 
 static jive_type *
 jive_reuse_type_copy_(const jive_type * self_)
@@ -178,13 +165,6 @@ const jive_type_class JIVE_REUSE_TYPE = {
 	create_gate : jive_reuse_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_reuse_type_copy_, /* override */
-};
-
-const jive_gate_class JIVE_REUSE_GATE = {
-	parent : &JIVE_GATE,
-	fini : jive_reuse_gate_fini_, /* override */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_reuse_gate_get_type_, /* override */
 };
 
 /* structures for tracking current active set and users */

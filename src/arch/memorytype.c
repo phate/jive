@@ -30,15 +30,8 @@ jive_memory_output::jive_memory_output(jive_node * node, size_t index)
 jive_memory_gate::~jive_memory_gate() noexcept {}
 
 jive_memory_gate::jive_memory_gate(jive_graph * graph, const char name[])
-	: jive_state_gate(&JIVE_MEMORY_GATE, graph, name)
+	: jive_state_gate(graph, name)
 {}
-
-static const jive_type *
-jive_memory_gate_get_type_(const jive_gate * self_)
-{
-	const jive_memory_gate * self = (const jive_memory_gate *) self_;
-	return &self->type();
-}
 
 jive_memory_type::~jive_memory_type() noexcept {}
 
@@ -86,11 +79,3 @@ const jive_type_class JIVE_MEMORY_TYPE = {
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_memory_type_copy_, /* override */
 };
-
-const jive_gate_class JIVE_MEMORY_GATE = {
-	parent : &JIVE_STATE_GATE,
-	fini : jive_gate_fini_, /* inherit */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_memory_gate_get_type_, /* override */
-};
-

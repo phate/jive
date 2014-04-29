@@ -72,9 +72,6 @@ private:
 
 /* float gate */
 
-typedef struct jive_float_gate jive_float_gate;
-
-extern const jive_gate_class JIVE_FLOAT_GATE;
 class jive_float_gate final : public jive_value_gate {
 public:
 	virtual ~jive_float_gate() noexcept;

@@ -37,22 +37,8 @@ jive_immediate_output::jive_immediate_output(jive_node * node, size_t index)
 jive_immediate_gate::~jive_immediate_gate() noexcept {}
 
 jive_immediate_gate::jive_immediate_gate(jive_graph * graph, const char name[])
-	: jive_value_gate(&JIVE_IMMEDIATE_GATE, graph, name)
+	: jive_value_gate(graph, name)
 {}
-
-static const jive_type *
-jive_immediate_gate_get_type_(const jive_gate * self_)
-{
-	const jive_immediate_gate * self = (const jive_immediate_gate *) self_;
-	return &self->type();
-}
-
-const jive_gate_class JIVE_IMMEDIATE_GATE = {
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_gate_fini_, /* inherit */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_immediate_gate_get_type_, /* override */
-};
 
 /* immediate type */
 

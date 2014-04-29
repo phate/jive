@@ -92,9 +92,6 @@ private:
 
 /* union gate */
 
-typedef struct jive_union_gate jive_union_gate;
-
-extern const jive_gate_class JIVE_UNION_GATE;
 class jive_union_gate final : public jive_value_gate {
 public:
 	virtual ~jive_union_gate() noexcept;

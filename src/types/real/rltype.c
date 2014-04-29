@@ -92,19 +92,5 @@ jive_real_output::jive_real_output(struct jive_node * node, size_t index)
 jive_real_gate::~jive_real_gate() noexcept {}
 
 jive_real_gate::jive_real_gate(jive_graph * graph, const char name[])
-	: jive_value_gate(&JIVE_REAL_GATE, graph, name)
+	: jive_value_gate(graph, name)
 {}
-
-const jive_type *
-jive_real_gate_get_type_(const jive_gate * self_)
-{
-	const jive_real_gate * self = (const jive_real_gate *) self_;
-	return &self->type();
-}
-
-const jive_gate_class JIVE_REAL_GATE = {
-	parent : &JIVE_VALUE_GATE,
-	fini : jive_gate_fini_, /* inherit */
-	get_label : jive_gate_get_label_, /* inherit */
-	get_type : jive_real_gate_get_type_, /* override */
-};

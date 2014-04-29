@@ -10,8 +10,6 @@
 #include <jive/vsdg/statetype.h>
 
 typedef struct jive_memory_type jive_memory_type;
-typedef struct jive_memory_gate jive_memory_gate;
-typedef struct jive_memory_resource jive_memory_resource;
 
 extern const jive_type_class JIVE_MEMORY_TYPE;
 #define JIVE_DECLARE_MEMORY_TYPE(name) \
@@ -49,7 +47,6 @@ private:
 	jive_memory_type type_;
 };
 
-extern const jive_gate_class JIVE_MEMORY_GATE;
 class jive_memory_gate final : public jive_state_gate {
 public:
 	virtual ~jive_memory_gate() noexcept;

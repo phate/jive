@@ -72,9 +72,6 @@ private:
 
 /* address gate */
 
-typedef struct jive_address_gate jive_address_gate;
-
-extern const jive_gate_class JIVE_ADDRESS_GATE;
 class jive_address_gate final : public jive_value_gate {
 public:
 	virtual ~jive_address_gate() noexcept;
