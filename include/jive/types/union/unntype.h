@@ -96,24 +96,6 @@ private:
 	jive_union_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_union_output *
-jive_union_output_const_cast(const jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_UNION_OUTPUT))
-		return (const jive_union_output *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_union_output *
-jive_union_output_cast(jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_UNION_OUTPUT))
-		return (jive_union_output *)self;
-	else
-		return NULL;
-}
-
 /* union gate */
 
 typedef struct jive_union_gate jive_union_gate;

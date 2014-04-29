@@ -198,7 +198,7 @@ jive_address_to_bitstring_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	if (!jive_output_isinstance(operands[0], &JIVE_VALUE_OUTPUT))
+	if (!dynamic_cast<jive_value_output*>(operands[0]))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 }
 
@@ -393,7 +393,7 @@ jive_bitstring_to_address_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	if (!jive_output_isinstance(operands[0], &JIVE_VALUE_OUTPUT))
+	if (!dynamic_cast<jive_value_output*>(operands[0]))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 }
 
@@ -485,7 +485,7 @@ jive_load_node_address_transform(jive_load_node * node, size_t nbits)
 	const jive_node * node_ = node;
 
 	bool input_is_address = dynamic_cast<jive_address_input*>(node_->inputs[0]);
-	bool output_is_address = jive_output_isinstance(node_->outputs[0], &JIVE_ADDRESS_OUTPUT);
+	bool output_is_address = dynamic_cast<jive_address_output*>(node_->outputs[0]);
 
 	if (!input_is_address && !output_is_address)
 		return;
@@ -591,7 +591,7 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 	const jive_type * return_types[node_->noutputs];
 	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);
 	for (i = 0; i < node_->noutputs; i++){
-		if(jive_output_isinstance(node_->outputs[i], &JIVE_ADDRESS_OUTPUT)){
+		if(dynamic_cast<jive_address_output*>(node_->outputs[i])){
 			return_types[i] = address_type;			
 			transform = true;
 		} else {
@@ -608,7 +608,7 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 
 	for (i = 0; i < node_->noutputs; i++){
 		jive_output * output = call->outputs[i];
-		if(jive_output_isinstance(node_->outputs[i], &JIVE_ADDRESS_OUTPUT))
+		if(dynamic_cast<jive_address_output*>(node_->outputs[i]))
 			output = jive_bitstring_to_address_create(call->outputs[i], nbits,
 				jive_output_get_type(node_->outputs[i]));
 		jive_output_replace(node_->outputs[i], output);

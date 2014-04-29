@@ -63,7 +63,7 @@ const jive_unary_operation_class JIVE_CHOOSE_NODE_ = {
 static inline void
 perform_check(jive_context * context, const jive_output * operand, size_t element)
 {
-	if (!jive_output_isinstance(operand, &JIVE_UNION_OUTPUT)) {
+	if (!dynamic_cast<const jive_union_output*>(operand)) {
 		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
 	}
 	
@@ -135,7 +135,7 @@ jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_at
 
 	const jive_choose_node_attrs * attrs = (const jive_choose_node_attrs *)attrs_;
 
-	const jive_union_output * output = jive_union_output_const_cast(operands[0]);
+	const jive_union_output * output = dynamic_cast<const jive_union_output*>(operands[0]);
 	if (!output)
 		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
 
@@ -203,7 +203,7 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 		for (n = 0; n < nstates; n++)
 			states[n] = load_node->inputs[n+1]->origin;
 	
-		if (jive_output_isinstance(address, &JIVE_ADDRESS_OUTPUT)) {
+		if (dynamic_cast<jive_address_output*>(address)) {
 			return jive_load_by_address_create(address, decl->elements[attrs->element],
 				nstates, states);
 		} else {

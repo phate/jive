@@ -19,7 +19,7 @@ jive_fltoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 	size_t n;
 	JIVE_DECLARE_FLOAT_TYPE(flttype);
 	for (n = 0; n < noperands; n++) {
-		if (!jive_float_output_const_cast(operands[n]))
+		if (!dynamic_cast<const jive_float_output*>(operands[n]))
 			jive_raise_type_error(flttype, jive_output_get_type(operands[n]), context);
 	}
 }

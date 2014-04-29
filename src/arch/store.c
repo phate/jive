@@ -94,7 +94,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	}
 
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
-	if (jive_output_isinstance(address, &JIVE_BITSTRING_OUTPUT))
+	if (dynamic_cast<jive_bitstring_output*>(address))
 		address = jive_bitstring_to_address_create(address, attrs->nbits, jive_output_get_type(address));
 
 	size_t n;
@@ -378,13 +378,13 @@ jive_store_node_check_operands_(const jive_node_class * cls, const jive_node_att
 {
 	JIVE_DEBUG_ASSERT(noperands > 1);
 
-	const jive_address_output * addro = jive_address_output_const_cast(operands[0]);
-	const jive_bitstring_output * bitso = jive_bitstring_output_const_cast(operands[0]);
+	const jive_address_output * addro = dynamic_cast<const jive_address_output*>(operands[0]);
+	const jive_bitstring_output * bitso = dynamic_cast<const jive_bitstring_output*>(operands[0]);
 
 	if (!addro && !bitso)
 		jive_context_fatal_error(context, "Type mismatch: required address or bitstring type.");
 
-	if (!jive_output_isinstance(operands[1], &JIVE_VALUE_OUTPUT))
+	if (!dynamic_cast<jive_value_output*>(operands[1]))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	/* FIXME: check the type of the states */
@@ -396,7 +396,7 @@ jive_store_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
 
-	if(jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
+	if(dynamic_cast<jive_bitstring_output*>(operands[0])){
 		return jive_store_by_bitstring_node_create(region, operands[0], attrs->nbits, attrs->datatype,
 			operands[1], noperands-2, &operands[2]);
 	} else {

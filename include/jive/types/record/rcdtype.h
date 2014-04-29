@@ -92,24 +92,6 @@ private:
 	jive_record_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_record_output *
-jive_record_output_const_cast(const jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_RECORD_OUTPUT))
-		return (const jive_record_output *)self;
-	else
-		return 0;
-}
-
-JIVE_EXPORTED_INLINE jive_record_output *
-jive_record_output_cast(jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_RECORD_OUTPUT))
-		return (jive_record_output *)self;
-	else
-		return 0;
-}
-
 /* record gate */
 
 typedef struct jive_record_gate jive_record_gate;

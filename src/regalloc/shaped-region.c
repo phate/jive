@@ -153,7 +153,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 		if (ssavar->origin->node == shaped_node->node) {
 			jive_shaped_node_add_ssavar_after(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		} else {
-			if (jive_output_isinstance(ssavar->origin, &JIVE_ANCHOR_OUTPUT)) continue;
+			if (dynamic_cast<jive_anchor_output*>(ssavar->origin)) continue;
 			if (xpoint->shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth && ! jive_shaped_graph_map_node(shaped_graph, ssavar->origin->node)) continue;
 			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		}

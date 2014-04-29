@@ -46,7 +46,7 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	if (!target_shaped_node || (!self->origin_shaped_node && shaped_ssavar->boundary_region_depth > target_shaped_node->node->region->depth)) {
 		self->start_shaped_node = NULL;
 		self->start_region = NULL;
-	} else if (jive_output_isinstance(shaped_ssavar->ssavar->origin, &JIVE_ANCHOR_OUTPUT)) {
+	} else if (dynamic_cast<jive_anchor_output*>(shaped_ssavar->ssavar->origin)) {
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, shaped_ssavar->ssavar->origin->node->region);
 		self->start_shaped_node = jive_shaped_region_last(shaped_region);
 		self->start_region = shaped_ssavar->ssavar->origin->node->region;

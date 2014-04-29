@@ -76,24 +76,6 @@ private:
 	jive_integral_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_integral_output *
-jive_integral_output_cast(struct jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_INTEGRAL_OUTPUT))
-		return (struct jive_integral_output *) output;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_integral_output *
-jive_integral_output_const_cast(const struct jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_INTEGRAL_OUTPUT))
-		return (const struct jive_integral_output *) output;
-	else
-		return NULL;
-}
-
 /* integral gate */
 
 typedef struct jive_integral_gate jive_integral_gate;

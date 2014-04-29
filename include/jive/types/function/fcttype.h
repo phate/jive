@@ -119,24 +119,6 @@ private:
 	jive_function_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_function_output *
-jive_function_output_cast(struct jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_FUNCTION_OUTPUT))
-		return (jive_function_output *) output;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_function_output *
-jive_function_output_const_cast(const struct jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_FUNCTION_OUTPUT))
-		return (const jive_function_output *) output;
-	else
-		return NULL;
-}
-
 /* function gate */
 
 extern const jive_gate_class JIVE_FUNCTION_GATE;

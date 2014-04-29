@@ -75,24 +75,6 @@ private:
 	jive_double_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_double_output *
-jive_double_output_const_cast(const jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_DOUBLE_OUTPUT))
-		return (const jive_double_output *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_double_output *
-jive_double_output_cast(jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_DOUBLE_OUTPUT))
-		return (jive_double_output *)self;
-	else
-		return NULL;
-}
-
 /* double gate */
 
 typedef struct jive_double_gate jive_double_gate;

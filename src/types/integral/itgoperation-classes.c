@@ -19,7 +19,7 @@ jive_itgoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 	size_t n;
 	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
 	for (n = 0; n < noperands; n++) {
-		if (!jive_integral_output_const_cast(operands[n]))
+		if (!dynamic_cast<const jive_integral_output*>(operands[n]))
 			jive_raise_type_error(itgtype, jive_output_get_type(operands[n]), context);
 	}
 }

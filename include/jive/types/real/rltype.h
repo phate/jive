@@ -76,24 +76,6 @@ private:
 	jive_real_type type_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_real_output *
-jive_real_output_cast(struct jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_REAL_OUTPUT))
-		return (struct jive_real_output *) output;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_real_output *
-jive_real_output_const_cast(const struct jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_REAL_OUTPUT))
-		return (const struct jive_real_output *) output;
-	else
-		return NULL;
-}
-
 /* real gate */
 
 typedef struct jive_real_gate jive_real_gate;

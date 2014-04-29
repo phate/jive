@@ -126,7 +126,7 @@ jive_bitconcat_node_check_operands_(const jive_node_class * cls, const jive_node
 
 	size_t n;
 	for (n = 0; n < noperands; n++) {
-		const jive_bitstring_output * output = jive_bitstring_output_const_cast(operands[n]);
+		const jive_bitstring_output * output = dynamic_cast<const jive_bitstring_output*>(operands[n]);
 		if (!output)
 			jive_context_fatal_error(context, "bitconcat node requires bitstring operands.");
 

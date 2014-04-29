@@ -98,7 +98,7 @@ jive_memberof_node_check_operands_(const jive_node_class * cls, const jive_node_
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	if(!jive_address_output_const_cast(operands[0]))
+	if(!dynamic_cast<const jive_address_output*>(operands[0]))
 		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
 }
 
@@ -261,7 +261,7 @@ jive_containerof_node_check_operands_(const jive_node_class * cls, const jive_no
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	if(!jive_address_output_const_cast(operands[0]))
+	if(!dynamic_cast<const jive_address_output*>(operands[0]))
 		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
 }
 
@@ -425,7 +425,7 @@ jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	if(!jive_address_output_const_cast(operands[0]))
+	if(!dynamic_cast<const jive_address_output*>(operands[0]))
 		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
 }
 
@@ -609,7 +609,7 @@ jive_arrayindex_node_check_operands_(const jive_node_class * cls, const jive_nod
 	size_t n;
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
 	for (n = 0; n < noperands; n++) {
-		if(!jive_address_output_const_cast(operands[n]))
+		if(!dynamic_cast<const jive_address_output*>(operands[n]))
 			jive_raise_type_error(addrtype, jive_output_get_type(operands[n]), context);
 	}
 }

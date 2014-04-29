@@ -30,7 +30,7 @@ static int test_main(void)
 	jive_output * arg = jive_node_gate_output(node0, arg_gate);
 	jive_input * ret = jive_node_gate_input(node1, ret_gate, arg);
 
-	assert(jive_output_isinstance(arg, &JIVE_STATE_OUTPUT));
+	assert(dynamic_cast<jive_state_output*>(arg));
 	assert(dynamic_cast<jive_state_input*>(ret));
 	assert(jive_gate_isinstance(arg_gate, &JIVE_STATE_GATE));
 	assert(jive_type_isinstance(memtype, &JIVE_STATE_TYPE));

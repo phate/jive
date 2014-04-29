@@ -18,7 +18,7 @@ jive_dbloperation_check_operands_(const jive_node_class * cls, const jive_node_a
 	size_t n;
 	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
 	for (n = 0; n < noperands; n++) {
-		if (!jive_double_output_const_cast(operands[n]))
+		if (!dynamic_cast<const jive_double_output*>(operands[n]))
 			jive_raise_type_error(dbltype, jive_output_get_type(operands[n]), context);
 	}
 }

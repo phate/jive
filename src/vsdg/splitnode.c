@@ -89,7 +89,7 @@ jive_splitnode_create(jive_region * region,
 {
 	jive_graph * graph = region->graph;
 	
-	bool input_is_value = jive_output_isinstance(in_origin, &JIVE_VALUE_OUTPUT);
+	bool input_is_value = dynamic_cast<jive_value_output*>(in_origin);
 	bool output_is_value = jive_type_isinstance(out_type, &JIVE_VALUE_TYPE);
 	
 	if (!input_is_value && !output_is_value)

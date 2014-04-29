@@ -503,7 +503,7 @@ maybe_inner_node(jive_master_shaper_selector * self, jive_node * node)
 		if (!output_user_count)
 			continue;
 		
-		if (!jive_output_isinstance(output, &JIVE_STATE_OUTPUT))
+		if (!dynamic_cast<jive_state_output*>(output))
 			nonstate_count ++;
 		
 		user_count += output_user_count;

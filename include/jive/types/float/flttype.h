@@ -76,24 +76,6 @@ private:
 	jive_float_type type_;
 };
 
-JIVE_EXPORTED_INLINE const jive_float_output *
-jive_float_output_const_cast(const jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_FLOAT_OUTPUT))
-		return (const jive_float_output *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_float_output *
-jive_float_output_cast(jive_output * self)
-{
-	if (jive_output_isinstance(self, &JIVE_FLOAT_OUTPUT))
-		return (jive_float_output *)self;
-	else
-		return NULL;
-}
-
 /* float gate */
 
 typedef struct jive_float_gate jive_float_gate;

@@ -301,17 +301,6 @@ struct jive_output_class {
 extern const struct jive_output_class JIVE_OUTPUT;
 
 JIVE_EXPORTED_INLINE bool
-jive_output_isinstance(const jive_output * self, const jive_output_class * class_)
-{
-	const jive_output_class * c = self->class_;
-	while(c) {
-		if (c == class_) return true;
-		c = c->parent;
-	}
-	return false;
-}
-
-JIVE_EXPORTED_INLINE bool
 jive_output_has_no_user(const struct jive_output * self)
 {
 	return self->users.first == NULL;

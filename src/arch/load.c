@@ -246,8 +246,8 @@ jive_load_node_check_operands_(const jive_node_class * cls, const jive_node_attr
 {
 	JIVE_DEBUG_ASSERT(noperands > 0);
 
-	const jive_address_output * addro = jive_address_output_const_cast(operands[0]);
-	const jive_bitstring_output * bitso = jive_bitstring_output_const_cast(operands[0]);
+	const jive_address_output * addro = dynamic_cast<const jive_address_output*>(operands[0]);
+	const jive_bitstring_output * bitso = dynamic_cast<const jive_bitstring_output*>(operands[0]);
 
 	if (!addro && !bitso)
 		jive_context_fatal_error(context, "Type mismatch: required address or bitstring type.");
@@ -261,7 +261,7 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 {
 	const jive_load_node_attrs * attrs = (const jive_load_node_attrs *) attrs_;
 
-	if(jive_output_isinstance(operands[0], &JIVE_BITSTRING_OUTPUT)){
+	if(dynamic_cast<jive_bitstring_output*>(operands[0])){
 		return jive_load_by_bitstring_node_create(region, operands[0], attrs->nbits, attrs->datatype,
 			noperands-1, &operands[1]);
 	} else {

@@ -93,24 +93,6 @@ private:
 	jive_bitstring_type type_;
 };
 
-JIVE_EXPORTED_INLINE jive_bitstring_output *
-jive_bitstring_output_cast(jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_BITSTRING_OUTPUT))
-		return (jive_bitstring_output *) output;
-	else
-		return 0;
-}
-
-JIVE_EXPORTED_INLINE const jive_bitstring_output *
-jive_bitstring_output_const_cast(const jive_output * output)
-{
-	if (jive_output_isinstance(output, &JIVE_BITSTRING_OUTPUT))
-		return (const jive_bitstring_output *) output;
-	else
-		return 0;
-}
-
 JIVE_EXPORTED_INLINE size_t
 jive_bitstring_output_nbits(const jive_bitstring_output * self)
 {
