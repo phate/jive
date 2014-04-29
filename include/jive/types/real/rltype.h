@@ -44,14 +44,11 @@ jive_real_type_const_cast(const struct jive_type * type)
 
 /* real input */
 
-typedef struct jive_real_input jive_real_input;
-
-extern const jive_input_class JIVE_REAL_INPUT;
 class jive_real_input final : public jive_value_input {
 public:
 	virtual ~jive_real_input() noexcept;
 
-	jive_real_input(struct jive_node * node, size_t index, jive_output * initial_operand) noexcept;
+	jive_real_input(struct jive_node * node, size_t index, jive_output * initial_operand);
 
 	virtual const jive_real_type & type() const noexcept { return type_; }
 

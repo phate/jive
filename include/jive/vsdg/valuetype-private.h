@@ -26,11 +26,6 @@ jive_value_type_create_gate_(const jive_type * self, struct jive_graph * graph, 
 jive_type *
 jive_value_type_copy_(const jive_type * self);
 
-/* value_input inheritable members */
-
-const jive_type *
-jive_value_input_get_type_(const jive_input * self);
-
 /* value_output inheritable members */
 
 const jive_type *

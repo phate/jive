@@ -11,7 +11,6 @@
 #include <jive/arch/registers.h>
 
 typedef struct jive_value_type jive_value_type;
-typedef struct jive_value_input jive_value_input;
 typedef struct jive_value_output jive_value_output;
 typedef struct jive_value_gate jive_value_gate;
 
@@ -24,14 +23,12 @@ protected:
 	jive_value_type(const jive_type_class * class_) noexcept;
 };
 
-extern const jive_input_class JIVE_VALUE_INPUT;
 class jive_value_input : public jive_input {
 public:
 	virtual ~jive_value_input() noexcept;
 
 protected:
-	jive_value_input(const jive_input_class * class_, struct jive_node * node, size_t index,
-		jive_output * initial_operand) noexcept;
+	jive_value_input(struct jive_node * node, size_t index, jive_output * initial_operand);
 };
 
 extern const jive_output_class JIVE_VALUE_OUTPUT;

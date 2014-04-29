@@ -10,7 +10,6 @@
 #include <jive/vsdg/statetype.h>
 
 typedef struct jive_memory_type jive_memory_type;
-typedef struct jive_memory_input jive_memory_input;
 typedef struct jive_memory_output jive_memory_output;
 typedef struct jive_memory_output jive_memory;
 typedef struct jive_memory_gate jive_memory_gate;
@@ -28,12 +27,11 @@ public:
 	jive_memory_type() noexcept;
 };
 
-extern const jive_input_class JIVE_MEMORY_INPUT;
 class jive_memory_input final : public jive_state_input {
 public:
 	virtual ~jive_memory_input() noexcept;
 
-	jive_memory_input(struct jive_node * node, size_t index, jive_output * origin) noexcept;
+	jive_memory_input(struct jive_node * node, size_t index, jive_output * origin);
 
 	virtual const jive_memory_type & type() const noexcept { return type_; }
 

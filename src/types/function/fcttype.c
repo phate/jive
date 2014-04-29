@@ -32,14 +32,6 @@ static jive_type *
 jive_function_type_copy_(const jive_type * self);
 
 static void
-jive_function_input_init_(jive_function_input * self, const jive_function_type * type,
-	struct jive_node * node, size_t index, jive_output * origin);
-static void
-jive_function_input_fini_(jive_input * self);
-static const jive_type *
-jive_function_input_get_type_(const jive_input * self);
-
-static void
 jive_function_output_init_(jive_function_output * self, const jive_function_type * type,
 	struct jive_node * node, size_t index);
 static void
@@ -67,13 +59,6 @@ const jive_type_class JIVE_FUNCTION_TYPE = {
 	create_gate : jive_function_type_create_gate_, /* override */
 	equals : jive_function_type_equals_, /* override */
 	copy : jive_function_type_copy_, /* override */
-};
-
-const jive_input_class JIVE_FUNCTION_INPUT = {
-	parent : &JIVE_VALUE_INPUT,
-	fini : jive_function_input_fini_,  /* override */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_function_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_FUNCTION_OUTPUT = {
@@ -188,29 +173,17 @@ jive_function_type_create_gate_(const jive_type * self_, struct jive_graph * gra
 jive_function_input::jive_function_input(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, struct jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_value_input(&JIVE_FUNCTION_INPUT, node, index, origin)
+	: jive_value_input(node, index, origin)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 jive_function_input::jive_function_input(const jive_function_type & type, jive_node * node,
 	size_t index, jive_output * origin)
-	: jive_value_input(&JIVE_FUNCTION_INPUT, node, index, origin)
+	: jive_value_input(node, index, origin)
 	, type_(type)
 {}
 
 jive_function_input::~jive_function_input() noexcept {}
-
-void
-jive_function_input_fini_(jive_input * self_)
-{
-}
-
-const jive_type *
-jive_function_input_get_type_(const jive_input * self_)
-{
-	const jive_function_input * self = (const jive_function_input *) self_;
-	return &self->type();
-}
 
 /* function_output inheritable members */
 

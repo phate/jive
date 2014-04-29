@@ -35,17 +35,6 @@ jive_type_create_gate_(const jive_type * self, struct jive_graph * graph, const 
 bool
 jive_type_equals_(const jive_type * self, const jive_type * other);
 
-/* inheritable input member functions */
-
-void
-jive_input_fini_(jive_input * self);
-
-void
-jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer);
-
-const jive_type *
-jive_input_get_type_(const jive_input * self);
-
 /* inheritable output member functions */
 
 void

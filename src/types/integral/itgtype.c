@@ -27,9 +27,6 @@ static jive_gate *
 jive_integral_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
 	const char * name);
 
-static const jive_type *
-jive_integral_input_get_type_(const jive_input * self_);
-
 static inline void
 jive_integral_output_init_(jive_integral_output * self_, struct jive_node * node, size_t index);
 
@@ -53,13 +50,6 @@ const jive_type_class JIVE_INTEGRAL_TYPE = {
 	create_gate : jive_integral_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_integral_type_copy_, /* override */
-};
-
-const jive_input_class JIVE_INTEGRAL_INPUT = {
-	parent : &JIVE_VALUE_INPUT,
-	fini : jive_input_fini_, /* inherit */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_integral_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_INTEGRAL_OUTPUT = {
@@ -127,16 +117,8 @@ jive_integral_input::~jive_integral_input() noexcept {}
 
 jive_integral_input::jive_integral_input(struct jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_value_input(&JIVE_INTEGRAL_INPUT, node, index, origin)
+	: jive_value_input(node, index, origin)
 {}
-
-static const jive_type *
-jive_integral_input_get_type_(const jive_input * self_)
-{
-	const jive_integral_input * self = (const jive_integral_input *) self_;
-
-	return &self->type();
-}
 
 /* integral_output members */
 

@@ -75,23 +75,9 @@ const jive_type_class JIVE_REAL_TYPE = {
 jive_real_input::~jive_real_input() noexcept {}
 
 jive_real_input::jive_real_input(struct jive_node * node, size_t index,
-	jive_output * origin) noexcept
-	: jive_value_input(&JIVE_REAL_INPUT, node, index, origin)
+	jive_output * origin)
+	: jive_value_input(node, index, origin)
 {}
-
-const jive_type *
-jive_real_input_get_type_(const jive_input * self_)
-{
-	const jive_real_input * self = (const jive_real_input *) self_;
-	return &self->type();
-}
-
-const jive_input_class JIVE_REAL_INPUT = {
-	parent : &JIVE_VALUE_INPUT,
-	fini : jive_input_fini_, /* inherit */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_real_input_get_type_, /* override */
-};
 
 /* real output */
 

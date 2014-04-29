@@ -44,9 +44,6 @@ jive_address_type_cast(jive_type * self)
 
 /* address input */
 
-typedef struct jive_address_input jive_address_input;
-
-extern const jive_input_class JIVE_ADDRESS_INPUT;
 class jive_address_input final : public jive_value_input {
 public:
 	virtual ~jive_address_input() noexcept;

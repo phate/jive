@@ -10,7 +10,6 @@
 #include <jive/vsdg/basetype.h>
 
 typedef struct jive_anchor_type jive_anchor_type;
-typedef struct jive_anchor_input jive_anchor_input;
 typedef struct jive_anchor_output jive_anchor_output;
 
 extern const jive_type_class JIVE_ANCHOR_TYPE;
@@ -25,12 +24,11 @@ public:
 	jive_anchor_type() noexcept;
 };
 
-extern const jive_input_class JIVE_ANCHOR_INPUT;
 class jive_anchor_input final : public jive_input {
 public:
 	virtual ~jive_anchor_input() noexcept;
 
-	jive_anchor_input(struct jive_node * node, size_t index, jive_output * origin) noexcept;
+	jive_anchor_input(struct jive_node * node, size_t index, jive_output * origin);
 
 	virtual const jive_anchor_type & type() const noexcept { return type_; }
 

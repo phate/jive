@@ -26,13 +26,6 @@ const jive_type_class JIVE_ANCHOR_TYPE = {
 	copy : jive_type_copy_ /* inherit */
 };
 
-const jive_input_class JIVE_ANCHOR_INPUT = {
-	parent : &JIVE_INPUT,
-	fini : jive_anchor_input_fini_, /* override */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_anchor_input_get_type_, /* override */
-};
-
 const jive_output_class JIVE_ANCHOR_OUTPUT = {
 	parent : &JIVE_OUTPUT,
 	fini : jive_output_fini_, /* inherit */
@@ -60,8 +53,8 @@ jive_anchor_type_create_output_(const jive_type * self, struct jive_node * node,
 }
 
 jive_anchor_input::jive_anchor_input(struct jive_node * node, size_t index,
-	jive_output * origin) noexcept
-	: jive_input(&JIVE_ANCHOR_INPUT, node, index, origin)
+	jive_output * origin)
+	: jive_input(node, index, origin)
 {
 	JIVE_DEBUG_ASSERT(origin->node->region->anchor == nullptr);
 	origin->node->region->anchor = this;
@@ -71,18 +64,6 @@ jive_anchor_input::~jive_anchor_input() noexcept
 {
 	if (origin->node->region->anchor == this)
 		origin->node->region->anchor = nullptr;
-}
-
-void
-jive_anchor_input_fini_(jive_input * self_)
-{
-}
-
-const jive_type *
-jive_anchor_input_get_type_(const jive_input * self)
-{
-	static jive_anchor_type anchor_type; anchor_type.class_ = &JIVE_ANCHOR_TYPE;
-	return &anchor_type;
 }
 
 jive_anchor_output::~jive_anchor_output() noexcept {}

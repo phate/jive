@@ -10,7 +10,6 @@
 #include <jive/vsdg/valuetype.h>
 
 typedef struct jive_immediate_gate jive_immediate_gate;
-typedef struct jive_immediate_input jive_immediate_input;
 typedef struct jive_immediate_output jive_immediate_output;
 typedef struct jive_immediate_type jive_immediate_type;
 
@@ -26,7 +25,6 @@ public:
 	jive_immediate_type() noexcept;
 };
 
-extern const jive_input_class JIVE_IMMEDIATE_INPUT;
 class jive_immediate_input final : public jive_value_input {
 public:
 	virtual ~jive_immediate_input() noexcept;

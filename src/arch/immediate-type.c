@@ -21,22 +21,8 @@ jive_immediate_input::~jive_immediate_input() noexcept {}
 
 jive_immediate_input::jive_immediate_input(struct jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_value_input(&JIVE_IMMEDIATE_INPUT, node, index, origin)
+	: jive_value_input(node, index, origin)
 {}
-
-static const jive_type *
-jive_immediate_input_get_type_(const jive_input * self_)
-{
-	const jive_immediate_input * self = (const jive_immediate_input *) self_;
-	return &self->type();
-}
-
-const jive_input_class JIVE_IMMEDIATE_INPUT = {
-	parent : &JIVE_VALUE_INPUT,
-	fini : jive_input_fini_, /* inherit */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_immediate_input_get_type_, /* override */
-};
 
 /* immediate_output inheritable members */
 

@@ -10,7 +10,6 @@
 #include <jive/vsdg/statetype.h>
 
 typedef struct jive_control_type jive_control_type;
-typedef struct jive_control_input jive_control_input;
 typedef struct jive_control_output jive_control_output;
 typedef struct jive_control_gate jive_control_gate;
 
@@ -26,12 +25,11 @@ public:
 	jive_control_type() noexcept;
 };
 
-extern const jive_input_class JIVE_CONTROL_INPUT;
 class jive_control_input final : public jive_state_input {
 public:
 	virtual ~jive_control_input() noexcept;
 
-	jive_control_input(struct jive_node * node, size_t index, jive_output * initial_operand) noexcept;
+	jive_control_input(struct jive_node * node, size_t index, jive_output * initial_operand);
 
 	virtual const jive_control_type & type() const noexcept { return type_; }
 

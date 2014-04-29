@@ -11,7 +11,6 @@
 #include <jive/vsdg/node.h>
 
 typedef struct jive_state_type jive_state_type;
-typedef struct jive_state_input jive_state_input;
 typedef struct jive_state_output jive_state_output;
 typedef struct jive_state_output jive_state;
 typedef struct jive_state_gate jive_state_gate;
@@ -26,14 +25,12 @@ protected:
 	jive_state_type(const jive_type_class * class_) noexcept;
 };
 
-extern const jive_input_class JIVE_STATE_INPUT;
 class jive_state_input : public jive_input {
 public:
 	virtual ~jive_state_input() noexcept;
 
 protected:
-	jive_state_input(const struct jive_input_class * class_, struct jive_node * node, size_t index,
-		jive_output * origin) noexcept;
+	jive_state_input(struct jive_node * node, size_t index, jive_output * origin);
 };
 
 extern const jive_output_class JIVE_STATE_OUTPUT;

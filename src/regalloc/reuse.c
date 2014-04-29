@@ -24,11 +24,9 @@
 #include <jive/vsdg/variable.h>
 
 typedef struct jive_reuse_type jive_reuse_type;
-typedef struct jive_reuse_input jive_reuse_input;
 typedef struct jive_reuse_output jive_reuse_output;
 typedef struct jive_reuse_output jive_reuse;
 typedef struct jive_reuse_gate jive_reuse_gate;
-typedef struct jive_reuse_resource jive_reuse_resource;
 
 extern const jive_type_class JIVE_REUSE_TYPE;
 #define JIVE_DECLARE_REUSE_TYPE(name_, resname) \
@@ -47,7 +45,6 @@ private:
 	const jive_resource_name * name_;
 };
 
-extern const jive_input_class JIVE_REUSE_INPUT;
 class jive_reuse_input final : public jive_state_input {
 public:
 	virtual ~jive_reuse_input() noexcept;
@@ -101,29 +98,11 @@ jive_reuse_type::jive_reuse_type(const jive_resource_name * name) noexcept
 
 jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,
 	size_t index, jive_output * origin)
-	: jive_state_input(&JIVE_REUSE_INPUT, node, index, origin)
+	: jive_state_input(node, index, origin)
 	, type_(name)
 {}
 
 jive_reuse_input::~jive_reuse_input() noexcept {}
-
-static void
-jive_reuse_input_init_(jive_reuse_input * self, struct jive_node * node, size_t index,
-	jive_output * origin, const jive_resource_name * name)
-{
-}
-
-static void
-jive_reuse_input_fini_(jive_input * self_)
-{
-}
-
-static const jive_type *
-jive_reuse_input_get_type_(const jive_input * self_)
-{
-	const jive_reuse_input * self = (const jive_reuse_input *) self_;
-	return &self->type();
-}
 
 jive_reuse_output::jive_reuse_output(const jive_resource_name * name, jive_node * node, size_t index)
 	: jive_state_output(&JIVE_REUSE_OUTPUT, node, index)
@@ -212,13 +191,6 @@ const jive_type_class JIVE_REUSE_TYPE = {
 	create_gate : jive_reuse_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_reuse_type_copy_, /* override */
-};
-
-const jive_input_class JIVE_REUSE_INPUT = {
-	parent : &JIVE_INPUT,
-	fini : jive_reuse_input_fini_, /* override */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_reuse_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_REUSE_OUTPUT = {

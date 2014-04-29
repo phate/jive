@@ -50,15 +50,12 @@ jive_bitstring_type_const_cast(const jive_type * type)
 
 /* bitstring input */
 
-typedef struct jive_bitstring_input jive_bitstring_input;
-
-extern const jive_input_class JIVE_BITSTRING_INPUT;
 class jive_bitstring_input final : public jive_value_input {
 public:
 	virtual ~jive_bitstring_input() noexcept;
 
 	jive_bitstring_input(size_t nbits, struct jive_node * node, size_t index,
-		jive_output * origin) noexcept;
+		jive_output * origin);
 
 	virtual const jive_bitstring_type & type() const noexcept { return type_; }
 

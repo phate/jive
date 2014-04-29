@@ -44,9 +44,6 @@ jive_integral_type_const_cast(const struct jive_type * type)
 
 /* integral input */
 
-typedef struct jive_integral_input jive_integral_input;
-
-extern const jive_input_class JIVE_INTEGRAL_INPUT;
 class jive_integral_input final : public jive_value_input {
 public:
 	virtual ~jive_integral_input() noexcept;

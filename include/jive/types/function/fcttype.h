@@ -60,9 +60,6 @@ jive_function_type_const_cast(const struct jive_type * type)
 
 /* function input */
 
-extern const jive_input_class JIVE_FUNCTION_INPUT;
-
-typedef struct jive_function_input jive_function_input;
 class jive_function_input final : public jive_value_input {
 public:
 	virtual ~jive_function_input() noexcept;

@@ -44,9 +44,6 @@ jive_float_type_cast(jive_type * self)
 
 /* float input */
 
-typedef struct jive_float_input jive_float_input;
-
-extern const jive_input_class JIVE_FLOAT_INPUT;
 class jive_float_input final : public jive_value_input {
 public:
 	virtual ~jive_float_input() noexcept;

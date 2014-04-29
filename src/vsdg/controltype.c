@@ -28,9 +28,6 @@ static jive_type *
 jive_control_type_copy_(const jive_type * self);
 
 static const jive_type *
-jive_control_input_get_type_(const jive_input * self);
-
-static const jive_type *
 jive_control_output_get_type_(const jive_output * self);
 
 static void
@@ -49,13 +46,6 @@ const jive_type_class JIVE_CONTROL_TYPE = {
 	create_gate : jive_control_type_create_gate_, /* override */
 	equals : jive_type_equals_, /* inherit */
 	copy : jive_control_type_copy_ /* override */
-};
-
-const jive_input_class JIVE_CONTROL_INPUT = {
-	parent : &JIVE_STATE_INPUT,
-	fini : jive_input_fini_, /* inherit */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_control_input_get_type_, /* override */
 };
 
 const jive_output_class JIVE_CONTROL_OUTPUT = {
@@ -108,16 +98,9 @@ jive_control_type_copy_(const jive_type * self)
 jive_control_input::~jive_control_input() noexcept {}
 
 jive_control_input::jive_control_input(struct jive_node * node, size_t index,
-	jive_output * initial_operand) noexcept
-	: jive_state_input(&JIVE_CONTROL_INPUT, node, index, initial_operand)
+	jive_output * initial_operand)
+	: jive_state_input(node, index, initial_operand)
 {}
-
-static const jive_type *
-jive_control_input_get_type_(const jive_input * self)
-{
-	static jive_control_type control_type; control_type.class_ = &JIVE_CONTROL_TYPE;
-	return &control_type;
-}
 
 jive_control_output::~jive_control_output() noexcept {}
 

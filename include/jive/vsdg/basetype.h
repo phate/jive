@@ -16,9 +16,7 @@
 typedef struct jive_type jive_type;
 typedef struct jive_type_class jive_type_class;
 
-typedef struct jive_input jive_input;
-typedef struct jive_input_class jive_input_class;
-
+class jive_input;
 typedef struct jive_output jive_output;
 typedef struct jive_output_class jive_output_class;
 
@@ -141,15 +139,12 @@ public:
 	virtual ~jive_input() noexcept;
 
 protected:
-	jive_input(const jive_input_class * class_, struct jive_node * node, size_t index,
-		jive_output * origin);
+	jive_input(struct jive_node * node, size_t index, jive_output * origin);
 
 public:
 	virtual const jive_type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
-
-	const struct jive_input_class * class_;
 	
 	struct jive_node * node;
 	size_t index;
@@ -180,20 +175,6 @@ public:
 	const struct jive_resource_class * required_rescls;
 };
 
-struct jive_input_class {
-	const struct jive_input_class * parent;
-	
-	void (*fini)(jive_input * self);
-	
-	/** \brief Give textual representation of type (for debugging) */
-	void (*get_label)(const jive_input * self, struct jive_buffer * buffer);
-	
-	/** \brief Retrieve type of input */
-	const jive_type * (*get_type)(const jive_input * self);
-};
-
-extern const jive_input_class JIVE_INPUT;
-
 void
 jive_input_divert_origin(jive_input * self, jive_output * new_origin);
 
@@ -203,7 +184,7 @@ jive_input_swap(jive_input * self, jive_input * other);
 JIVE_EXPORTED_INLINE void
 jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)
 {
-	self->class_->get_label(self, buffer);
+	self->label(*buffer);
 }
 
 JIVE_EXPORTED_INLINE const jive_type *

@@ -35,7 +35,7 @@ jive_objdef_node_init_(
 		1, &type, &obj,
 		1, &stype);
 	
-	if (obj->node->ninputs < 1 || obj->node->inputs[0]->class_ != &JIVE_ANCHOR_INPUT) {
+	if (obj->node->ninputs < 1 || !dynamic_cast<jive_anchor_input*>(obj->node->inputs[0])) {
 		jive_context_fatal_error(region->graph->context,
 			"Type mismatch: object definitions can only be applied to region anchor nodes");
 	}

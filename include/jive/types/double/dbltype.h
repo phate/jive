@@ -44,13 +44,10 @@ jive_double_type_cast(jive_type * self)
 
 /* double input */
 
-typedef struct jive_double_input jive_double_input;
-
-extern const jive_input_class JIVE_DOUBLE_INPUT;
 class jive_double_input final : public jive_value_input {
 public:
 	virtual ~jive_double_input() noexcept;
-	jive_double_input(struct jive_node * node, size_t index, jive_output * origin) noexcept;
+	jive_double_input(struct jive_node * node, size_t index, jive_output * origin);
 
 	virtual const jive_double_type & type() const noexcept { return type_; }
 

@@ -25,14 +25,11 @@ public:
 	jive_test_value_type() noexcept;
 };
 
-typedef struct jive_test_value_input jive_test_value_input;
-
-extern const jive_input_class JIVE_TEST_VALUE_INPUT;
 class jive_test_value_input final : public jive_value_input {
 public:
 	virtual ~jive_test_value_input() noexcept;
 
-	jive_test_value_input(jive_node * node, size_t index, jive_output * output) noexcept;
+	jive_test_value_input(jive_node * node, size_t index, jive_output * output);
 
 	virtual const jive_test_value_type & type() const noexcept { return type_; }
 
@@ -86,14 +83,11 @@ public:
 	jive_test_state_type() noexcept;
 };
 
-typedef struct jive_test_state_input jive_test_state_input;
-
-extern const jive_input_class JIVE_TEST_STATE_INPUT;
 class jive_test_state_input final : public jive_state_input {
 public:
 	virtual ~jive_test_state_input() noexcept;
 
-	jive_test_state_input(jive_node * node, size_t index, jive_output * origin) noexcept;
+	jive_test_state_input(jive_node * node, size_t index, jive_output * origin);
 
 	virtual const jive_test_state_type & type() const noexcept { return type_; }
 

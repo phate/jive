@@ -29,11 +29,6 @@ static jive_type *
 jive_record_type_copy_(const jive_type * self);
 
 static void
-jive_record_input_fini_(jive_input * self);
-static const jive_type *
-jive_record_input_get_type_(const jive_input * self);
-
-static void
 jive_record_output_init_(jive_record_output * self, const jive_record_type * type,
 	struct jive_node * node, size_t index);
 static void
@@ -59,13 +54,6 @@ const jive_type_class JIVE_RECORD_TYPE = {
 	create_gate : jive_record_type_create_gate_, /* override */
 	equals : jive_record_type_equals_, /* override */
 	copy : jive_record_type_copy_, /* override */
-} ;
-
-const jive_input_class JIVE_RECORD_INPUT = { 
-	parent : &JIVE_VALUE_INPUT,
-	fini : jive_record_input_fini_,  /* override */
-	get_label : jive_input_get_label_, /* inherit */
-	get_type : jive_record_input_get_type_, /* override */
 } ;
 
 const jive_output_class JIVE_RECORD_OUTPUT = { 
@@ -135,23 +123,11 @@ jive_record_type_create_gate_(const jive_type * self_, struct jive_graph * graph
 
 jive_record_input::jive_record_input(const jive_record_declaration * decl, struct jive_node * node,
 	size_t index, jive_output * origin)
-	: jive_value_input(&JIVE_RECORD_INPUT, node, index, origin)
+	: jive_value_input(node, index, origin)
 	, type_(decl)
 {}
 
 jive_record_input::~jive_record_input() noexcept {}
-
-void
-jive_record_input_fini_(jive_input * self_)
-{
-}
-
-const jive_type *
-jive_record_input_get_type_(const jive_input * self_)
-{
-	const jive_record_input * self = (const jive_record_input *) self_;
-	return &self->type();
-}
 
 /* record_output inheritable members */
 

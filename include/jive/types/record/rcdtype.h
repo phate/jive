@@ -54,9 +54,6 @@ jive_record_type_cast(jive_type * self)
 
 /* record input */
 
-typedef struct jive_record_input jive_record_input;
-
-extern const jive_input_class JIVE_RECORD_INPUT;
 class jive_record_input final : public jive_value_input {
 public:
 	virtual ~jive_record_input() noexcept;

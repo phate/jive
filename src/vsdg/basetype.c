@@ -117,13 +117,6 @@ jive_type_destroy(struct jive_type * self)
 
 /* inputs */
 
-const struct jive_input_class JIVE_INPUT = {
-	parent : 0,
-	fini : jive_input_fini_,
-	get_label : jive_input_get_label_,
-	get_type : jive_input_get_type_,
-};
-
 static inline void
 jive_input_add_as_user(jive_input * self, jive_output * output)
 {
@@ -138,10 +131,8 @@ jive_input_remove_as_user(jive_input * self, jive_output * output)
 	jive_node_remove_successor(self->origin->node);
 }
 
-jive_input::jive_input(const jive_input_class * class__, struct jive_node * node_, size_t index_,
-	jive_output * origin_)
-	: class_(class__)
-	, node(node_)
+jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * origin_)
+	: node(node_)
 	, index(index_)
 	, origin(origin_)
 	, gate(nullptr)
@@ -198,23 +189,6 @@ jive_input::label(jive_buffer & buffer) const
 		snprintf(tmp, sizeof(tmp), "#%zd", index);
 		jive_buffer_putstr(&buffer, tmp);
 	}
-}
-
-void
-jive_input_fini_(jive_input * self)
-{
-}
-
-void
-jive_input_get_label_(const jive_input * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
-const jive_type *
-jive_input_get_type_(const jive_input * self)
-{
-	return nullptr;
 }
 
 jive_variable *
@@ -376,7 +350,6 @@ jive_input_destroy(jive_input * self)
 	if (self->ssavar) jive_ssavar_unassign_input(self->ssavar, self);
 	if (self->node->region) jive_graph_notify_input_destroy(self->node->graph, self);
 	
-	self->class_->fini(self);
 	delete self;
 }
 

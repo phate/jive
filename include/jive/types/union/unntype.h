@@ -59,9 +59,6 @@ jive_union_type_cast(jive_type * self)
 
 /* union input */
 
-typedef struct jive_union_input jive_union_input;
-
-extern const jive_input_class JIVE_UNION_INPUT;
 class jive_union_input final : public jive_value_input {
 public:
 	virtual ~jive_union_input() noexcept;
