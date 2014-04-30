@@ -13,10 +13,6 @@
 typedef struct jive_address_type jive_address_type;
 
 extern const jive_type_class JIVE_ADDRESS_TYPE;
-#define JIVE_DECLARE_ADDRESS_TYPE(name) \
-	jive_address_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_address_type final : public jive_value_type {
 public:
 	virtual ~jive_address_type() noexcept;

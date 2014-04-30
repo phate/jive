@@ -71,15 +71,15 @@ static int test_main(void)
 	assert(!jive_node_match_attrs(o2->node, attrs3));
 	assert(jive_node_match_attrs(o2->node, attrs2));
 	
-	JIVE_DECLARE_ADDRESS_TYPE(addr);
+	jive_address_type addr;
 	jive_bitstring_type bits32(32);
 	jive_bitstring_type bits16(16);
-	const jive_type * tmparray0[] = {addr, addr, &bits32, &bits32, &bits16};
+	const jive_type * tmparray0[] = {&addr, &addr, &bits32, &bits32, &bits16};
 	jive_output * tmparray1[] = {o0, o1, o2, o3, o4};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		5, tmparray0,
 		tmparray1,
-		1, &addr);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);

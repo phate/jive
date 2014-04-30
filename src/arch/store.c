@@ -456,8 +456,8 @@ jive_store_by_address_node_create(jive_region * region, jive_output * address,
 	jive_store_node * node = new jive_store_node;
 	
 	node->class_ = &JIVE_STORE_NODE;
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
-	jive_store_node_init_(node, region, address, address_type, datatype, value, nstates, states);
+	jive_address_type address_type;
+	jive_store_node_init_(node, region, address, &address_type, datatype, value, nstates, states);
 	
 	return node;
 }

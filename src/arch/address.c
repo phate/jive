@@ -97,9 +97,9 @@ jive_memberof_node_check_operands_(const jive_node_class * cls, const jive_node_
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	if(!dynamic_cast<const jive_address_output*>(operands[0]))
-		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
+		jive_raise_type_error(&addrtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -147,11 +147,12 @@ jive_memberof_node_create(jive_region * region,
 	
 	node->class_ = &JIVE_MEMBEROF_NODE;
 	
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
+	jive_address_type address_type;
+	const jive_type * addrptr = &address_type;
 	
 	jive_node_init_(node, region,
-		1, &address_type, &address,
-		1, &address_type);
+		1, &addrptr, &address,
+		1, &addrptr);
 	node->attrs.record_decl = record_decl;
 	node->attrs.index = index;
 	
@@ -260,9 +261,9 @@ jive_containerof_node_check_operands_(const jive_node_class * cls, const jive_no
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	if(!dynamic_cast<const jive_address_output*>(operands[0]))
-		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
+		jive_raise_type_error(&addrtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -310,11 +311,12 @@ jive_containerof_node_create(jive_region * region,
 	
 	node->class_ = &JIVE_CONTAINEROF_NODE;
 	
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
+	jive_address_type address_type;
+	const jive_type * addrptr = &address_type;
 	
 	jive_node_init_(node, region,
-		1, &address_type, &address,
-		1, &address_type);
+		1, &addrptr, &address,
+		1, &addrptr);
 	node->attrs.record_decl = record_decl;
 	node->attrs.index = index;
 	
@@ -424,9 +426,9 @@ jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	if(!dynamic_cast<const jive_address_output*>(operands[0]))
-		jive_raise_type_error(addrtype, jive_output_get_type(operands[0]), context);
+		jive_raise_type_error(&addrtype, jive_output_get_type(operands[0]), context);
 }
 
 static jive_node *
@@ -488,16 +490,17 @@ jive_arraysubscript_node_create(jive_region * region,
 	
 	node->class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
 	
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
+	jive_address_type address_type;
+	const jive_type * addrptr = &address_type;
 	const jive_type * index_type = jive_output_get_type(index);
 	JIVE_DEBUG_ASSERT(index_type->class_ == &JIVE_BITSTRING_TYPE);
 	
-	const jive_type * operand_types[2] = {address_type, index_type};
+	const jive_type * operand_types[2] = {&address_type, index_type};
 	jive_output * operands[2] = {address, index};
 	
 	jive_node_init_(node, region,
 		2, operand_types, operands,
-		1, &address_type);
+		1, &addrptr);
 	node->attrs.element_type = (jive_value_type *) jive_type_copy(element_type);
 	
 	return node;
@@ -607,10 +610,10 @@ jive_arrayindex_node_check_operands_(const jive_node_class * cls, const jive_nod
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	size_t n;
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	for (n = 0; n < noperands; n++) {
 		if(!dynamic_cast<const jive_address_output*>(operands[n]))
-			jive_raise_type_error(addrtype, jive_output_get_type(operands[n]), context);
+			jive_raise_type_error(&addrtype, jive_output_get_type(operands[n]), context);
 	}
 }
 
@@ -698,8 +701,8 @@ jive_arrayindex_node_create(jive_region * region,
 	
 	node->class_ = &JIVE_ARRAYINDEX_NODE;
 	
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
-	const jive_type * operand_types[2] = {address_type, address_type};
+	jive_address_type address_type;
+	const jive_type * operand_types[2] = {&address_type, &address_type};
 	jive_output * operands[2] = {addr1, addr2};
 	JIVE_DEBUG_ASSERT(difference_type->class_ == &JIVE_BITSTRING_TYPE);
 	const jive_type * output_types[1] = {difference_type};
@@ -773,10 +776,11 @@ jive_label_to_address_node_init_(
 	jive_graph * graph,
 	const jive_label * label)
 {
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
+	const jive_type * addrptr = &addrtype;
 	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,
-		1, &addrtype);
+		1, &addrptr);
 	
 	self->attrs.label = label;
 }

@@ -152,8 +152,8 @@ jive_call_by_address_node_create(jive_region * region,
 	jive_call_node * node = new jive_call_node;
 
 	node->class_ = &JIVE_CALL_NODE;
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
-	jive_call_node_init_(node, region, target_address, address_type, calling_convention,
+	jive_address_type address_type;
+	jive_call_node_init_(node, region, target_address, &address_type, calling_convention,
 		narguments, arguments, nreturns, return_types);
 
 	return node;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,11 +23,12 @@ test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-const char * tmparray0[] = {"x"};
+	jive_address_type addrtype;
+	const jive_type * addrptr = &addrtype;
+	const char * tmparray0[] = {"x"};
 
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrtype, tmparray0);
-	jive_output * fct = jive_lambda_end(lambda, 1, &addrtype, lambda->arguments);
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrptr, tmparray0);
+	jive_output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
 	const jive_type * fcttype = jive_output_get_type(fct);
 	jive_node * bottom = jive_node_create(graph->root_region,

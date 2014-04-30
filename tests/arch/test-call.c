@@ -23,23 +23,23 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addr);
+	jive_address_type addr;
 	jive_bitstring_type bits16(16);
-	const jive_type * tmparray0[] = {addr, &bits16, addr};
+	const jive_type * tmparray0[] = {&addr, &bits16, &addr};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
-	const jive_type * tmparray1[] = {&bits16, addr, addr};
+	const jive_type * tmparray1[] = {&bits16, &addr, &addr};
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		top->outputs[0], NULL,
 		2, top->outputs + 1,
 		3, tmparray1);
-	const jive_type * tmparray2[] = {&bits16, addr, addr};
+	const jive_type * tmparray2[] = {&bits16, &addr, &addr};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2, call->outputs,
-		1, &addr);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);

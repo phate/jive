@@ -31,7 +31,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addr);
+	jive_address_type addr;
 	JIVE_DECLARE_MEMORY_TYPE(mem);
 	jive_bitstring_type bits64(64);
 	const jive_type * tmparray0[] = {&bits64, &bits64, mem};
@@ -39,9 +39,9 @@ static int test_main(void)
 		0, NULL, NULL,
 		3, tmparray0);
 
-	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, addr);
-	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, addr);
-	const jive_value_type * tmparray1[] = {jive_value_type_cast(addr), jive_value_type_cast(addr)};
+	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, &addr);
+	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, &addr);
+	const jive_value_type * tmparray1[] = {&addr, &addr};
 
 	jive_record_declaration decl = {2,
 		tmparray1};	
@@ -54,21 +54,18 @@ static int test_main(void)
 	jive_label_external_init(&write_label, context, "write", &write_symbol);
 	jive_output * label = jive_label_to_address_create(graph, &write_label.base);
 	jive_output * tmparray2[] = {memberof, containerof};
-	const jive_type * tmparray3[] = {addr, addr};
+	const jive_type * tmparray3[] = {&addr, &addr};
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		label, NULL,
 		2, tmparray2,
 		2, tmparray3);
 
 	jive_output * constant = jive_bitconstant_unsigned(graph, 64, 1);	
-	jive_output * arraysub = jive_arraysubscript(call->outputs[0], jive_value_type_cast(addr),
-		constant); 
+	jive_output * arraysub = jive_arraysubscript(call->outputs[0], &addr, constant);
 
-	jive_output * arrayindex = jive_arrayindex(call->outputs[0], call->outputs[1],
-		jive_value_type_cast(addr), &bits64);
+	jive_output * arrayindex = jive_arrayindex(call->outputs[0], call->outputs[1], &addr, &bits64);
 	
-	jive_output * load = jive_load_by_address_create(arraysub, jive_value_type_cast(addr),
-		1, &top->outputs[2]);
+	jive_output * load = jive_load_by_address_create(arraysub, &addr, 1, &top->outputs[2]);
 	jive_node * store = jive_store_by_address_node_create(graph->root_region, arraysub,
 		&bits64, arrayindex, 1, &top->outputs[2]);
 
@@ -79,7 +76,7 @@ static int test_main(void)
 	
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, tmparray4, tmparray5,
-		1, &addr);
+		1, tmparray3);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);

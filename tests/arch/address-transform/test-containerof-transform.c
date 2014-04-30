@@ -24,7 +24,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	jive_bitstring_type bits8(8);
 	jive_bitstring_type bits16(16);
 	jive_bitstring_type bits32(32);
@@ -40,10 +40,10 @@ static int test_main(void)
 		0, NULL, NULL,
 		4, tmparray1);
 
-	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32, addrtype);
-	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
-	jive_output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32, addrtype);
-	jive_output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32, addrtype);
+	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
+	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
+	jive_output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32, &addrtype);
+	jive_output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32, &addrtype);
 	
 	jive_output * container0 = jive_containerof(address0, &decl, 0);
 	jive_output * container1 = jive_containerof(address1, &decl, 1);

@@ -34,8 +34,8 @@ static int test_main(void)
 		elements : tmparray0
 	};
 	
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	const jive_type * tmparray1[] = {addrtype, addrtype};
+	jive_address_type addrtype;
+	const jive_type * tmparray1[] = {&addrtype, &addrtype};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
@@ -82,13 +82,14 @@ static int test_main(void)
 
 	jive_node * memberof = jive_memberof_node_create(cont3->node->region, cont3, &rec, 1);
 	jive_node * arraysub = jive_arraysubscript_node_create(top->region, top->outputs[0], &bits32, one);
-	const jive_type * tmparray2[] = {addrtype, addrtype, &bits32};
+	const jive_type * tmparray2[] = {&addrtype, &addrtype, &bits32};
 	jive_output * tmparray3[] = {memberof->outputs[0], arraysub->outputs[0], diff2};
-	
+
+	const jive_type * typeptr = &addrtype;
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2,
 			tmparray3,
-		1, &addrtype);
+		1, &typeptr);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_containerof_node_address_transform(jive_containerof_node_cast(cont3->node), &mapper.base.base);	

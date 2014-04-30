@@ -23,21 +23,21 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	jive_bitstring_type bits32(32);
 	jive_bitstring_type bits64(64);
-	const jive_type * tmparray0[] = {addrtype, &bits32, &bits64};
+	const jive_type * tmparray0[] = {&addrtype, &bits32, &bits64};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
 
 	jive_output * b0 = jive_address_to_bitstring_create(top->outputs[0], 32,
 		jive_output_get_type(top->outputs[0]));
-	jive_output * a0 = jive_bitstring_to_address_create(b0, 32, addrtype);
+	jive_output * a0 = jive_bitstring_to_address_create(b0, 32, &addrtype);
 
-	jive_output * a1 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
-	jive_output * b1 = jive_address_to_bitstring_create(a1, 32, addrtype);
-	const jive_type* tmparray1[] = {addrtype, &bits32};
+	jive_output * a1 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
+	jive_output * b1 = jive_address_to_bitstring_create(a1, 32, &addrtype);
+	const jive_type* tmparray1[] = {&addrtype, &bits32};
 	jive_output * tmparray2[] = {a0, b1};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
@@ -47,8 +47,8 @@ static int test_main(void)
 	assert(bottom->inputs[0]->origin == top->outputs[0]);
 	assert(bottom->inputs[1]->origin == top->outputs[1]);
 
-	jive_output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
-	jive_output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32, addrtype);
+	jive_output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
+	jive_output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
 	jive_output * a2 = jive_address_to_bitstring_create(top->outputs[0], 32,
 		jive_output_get_type(top->outputs[0]));
 	jive_output * a3 = jive_address_to_bitstring_create(top->outputs[0], 32,
@@ -57,8 +57,8 @@ static int test_main(void)
 	assert(jive_node_match_attrs(a2->node, jive_node_get_attrs(a3->node)));
 	assert(jive_node_match_attrs(b2->node, jive_node_get_attrs(b3->node)));
 
-	jive_output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64, addrtype);
-	jive_output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64, addrtype);
+	jive_output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64, &addrtype);
+	jive_output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64, &addrtype);
 
 	assert(!jive_node_match_attrs(a2->node, jive_node_get_attrs(a4->node)));
 	assert(!jive_node_match_attrs(b2->node, jive_node_get_attrs(b4->node)));

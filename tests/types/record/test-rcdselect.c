@@ -31,8 +31,8 @@ static int test_main()
 	static const jive_record_declaration decl = {3, decl_elems};
 	static jive_record_type rcdtype(&decl);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, addrtype};
+	jive_address_type addrtype;
+	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
@@ -51,7 +51,7 @@ jive_output * tmparray1[] = {top->outputs[0],
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, tmparray2, tmparray3,
-		1, &addrtype);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

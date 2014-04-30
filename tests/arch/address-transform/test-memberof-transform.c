@@ -24,7 +24,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
+	jive_address_type addrtype;
 	jive_bitstring_type bits8(8);
 	jive_bitstring_type bits16(16);
 	jive_bitstring_type bits32(32);
@@ -46,7 +46,7 @@ static int test_main(void)
 		0, NULL, NULL,
 		1, tmparray10);
 
-	jive_output * address = jive_bitstring_to_address_create(top->outputs[0], 32, addrtype);
+	jive_output * address = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
 
 	jive_output * member0 = jive_memberof(address, &decl, 0);
 	jive_output * member1 = jive_memberof(address, &decl, 1);

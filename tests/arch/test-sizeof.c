@@ -31,7 +31,7 @@ static int test_main(void)
 	jive_bitstring_type bits8(8);
 	jive_bitstring_type bits18(18);
 	jive_bitstring_type bits32(32);
-	JIVE_DECLARE_ADDRESS_TYPE(addr);
+	jive_address_type addr;
 	const jive_value_type *  tmparray0[] = {&bits4, &bits8, &bits18};
 
 	jive_record_declaration r_decl = {3, tmparray0};
@@ -48,7 +48,7 @@ static int test_main(void)
 	jive_output * s2 = jive_sizeof_create(graph->root_region, &bits8);
 	jive_output * s3 = jive_sizeof_create(graph->root_region, &bits18);
 	jive_output * s4 = jive_sizeof_create(graph->root_region, &bits32);
-	jive_output * s5 = jive_sizeof_create(graph->root_region, (const jive_value_type *)addr);
+	jive_output * s5 = jive_sizeof_create(graph->root_region, &addr);
 	jive_output * s6 = jive_sizeof_create(graph->root_region, &record_t);
 	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t);
 
@@ -61,7 +61,7 @@ static int test_main(void)
 	jive_node * bottom = jive_node_create(graph->root_region,
 		8, tmparray2,
 		tmparray3,
-		1, &addr);
+		1, tmparray2);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);

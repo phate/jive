@@ -24,9 +24,10 @@ test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	jive_function_type fcttype(1, &addrtype, 1, &addrtype);
-	const jive_type * tmparray0[] = {&fcttype, addrtype};
+	jive_address_type addrtype;
+	const jive_type * addrptr = &addrtype;
+	jive_function_type fcttype(1, &addrptr, 1, &addrptr);
+	const jive_type * tmparray0[] = {&fcttype, &addrtype};
 
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL, 2, tmparray0);
@@ -35,7 +36,7 @@ test_main(void)
 	jive_apply_create(top->outputs[0], 1, &top->outputs[1], results);
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		1, &addrtype, results, 0, NULL);
+		1, &addrptr, results, 0, NULL);
 	(void)bottom;
 
 	jive_view(graph, stdout);

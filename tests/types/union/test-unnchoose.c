@@ -31,8 +31,8 @@ static int test_main(void)
 	static const jive_union_declaration decl = {3, decl_elems};
 	static jive_union_type unntype(&decl);
 
-	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	const jive_type * tmparray0[] = {&bits8, &unntype, &unntype, addrtype};
+	jive_address_type addrtype;
+	const jive_type * tmparray0[] = {&bits8, &unntype, &unntype, &addrtype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		4, tmparray0);
@@ -49,7 +49,7 @@ static int test_main(void)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, tmparray1, tmparray2,
-		1, &addrtype);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

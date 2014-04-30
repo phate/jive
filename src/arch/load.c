@@ -320,8 +320,8 @@ jive_load_by_address_node_create(jive_region * region,
 	jive_load_node * node = new jive_load_node;
 	
 	node->class_ = &JIVE_LOAD_NODE;
-	JIVE_DECLARE_ADDRESS_TYPE(address_type);
-	jive_load_node_init_(node, region, address, address_type, datatype, nstates, states);
+	jive_address_type address_type;
+	jive_load_node_init_(node, region, address, &address_type, datatype, nstates, states);
 	
 	return node;
 }
