@@ -90,10 +90,11 @@ jive_sizeof_node_create(jive_region * region,
 	/* FIXME: either need a "universal" integer type,
 	or some way to specify the representation type for the
 	sizeof operator */
-	JIVE_DECLARE_BITSTRING_TYPE(btype, 32);
+	jive_bitstring_type btype(32);
+	const jive_type * typeptr = &btype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
-		1, &btype);
+		1, &typeptr);
 	
 	node->attrs.type = (jive_value_type *)jive_type_copy(type);
 	

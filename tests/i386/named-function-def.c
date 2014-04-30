@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,15 +35,16 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	const jive_type * tmparray0[] = {bits32, bits32};
+	jive_bitstring_type bits32(32);
+	const jive_type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph,
 		2, tmparray0, tmparray1);
 
 	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
-	jive_node * abstract_fn = jive_lambda_end(lambda, 1, &bits32, &sum)->node;
+	const jive_type * tmparray12[] = {&bits32};
+	jive_node * abstract_fn = jive_lambda_end(lambda, 1, tmparray12, &sum)->node;
 	
 	jive_node * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
 	jive_linker_symbol add_int32_symbol;

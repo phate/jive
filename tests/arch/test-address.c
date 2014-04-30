@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -26,8 +26,8 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	const jive_value_type * tmparray0[] = {(jive_value_type *)bits32, (jive_value_type *)bits32};
+	jive_bitstring_type bits32(32);
+	const jive_value_type * tmparray0[] = {(jive_value_type *)&bits32, (jive_value_type *)&bits32};
 	
 	jive_record_declaration rec = {
 		nelements : 2,
@@ -64,27 +64,25 @@ static int test_main(void)
 	jive_output * one = jive_bitconstant(graph, 32, "10000000000000000000000000000000");
 	jive_output * minus_one = jive_bitconstant(graph, 32, "11111111111111111111111111111111");
 	
-	jive_output * a0 = jive_arraysubscript(top->outputs[0], jive_value_type_cast(bits32), zero);
+	jive_output * a0 = jive_arraysubscript(top->outputs[0], &bits32, zero);
 	assert(a0 == top->outputs[0]);
-	jive_output * a1 = jive_arraysubscript(top->outputs[0], jive_value_type_cast(bits32), one);
+	jive_output * a1 = jive_arraysubscript(top->outputs[0], &bits32, one);
 	assert(a1 != top->outputs[0]);
-	jive_output * tmp = jive_arraysubscript(a1, jive_value_type_cast(bits32), minus_one);
+	jive_output * tmp = jive_arraysubscript(a1, &bits32, minus_one);
 	jive_view(graph, stdout);
 	assert(tmp == a0);
 	
-	jive_output * diff = jive_arrayindex(a1, a0, jive_value_type_cast(bits32), bits32);
+	jive_output * diff = jive_arrayindex(a1, a0, &bits32, &bits32);
 	assert(diff == one);
 	
-	jive_output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1],
-		jive_value_type_cast(bits32), bits32);
+	jive_output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1], &bits32, &bits32);
 
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, context, 32);
 
 	jive_node * memberof = jive_memberof_node_create(cont3->node->region, cont3, &rec, 1);
-	jive_node * arraysub = jive_arraysubscript_node_create(top->region, top->outputs[0],
-		jive_value_type_cast(bits32), one);
-	const jive_type * tmparray2[] = {addrtype, addrtype, bits32};
+	jive_node * arraysub = jive_arraysubscript_node_create(top->region, top->outputs[0], &bits32, one);
+	const jive_type * tmparray2[] = {addrtype, addrtype, &bits32};
 	jive_output * tmparray3[] = {memberof->outputs[0], arraysub->outputs[0], diff2};
 	
 	jive_node * bottom = jive_node_create(graph->root_region,

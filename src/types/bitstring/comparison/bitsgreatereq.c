@@ -58,8 +58,8 @@ jive_bitsgreatereq_node_init_(jive_node * self, jive_region * region,
 	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand1);
 
 	JIVE_DECLARE_CONTROL_TYPE(ctype);
-	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);
-	const jive_type * tmparray0[] = {btype, btype};
+	jive_bitstring_type btype(nbits);
+	const jive_type * tmparray0[] = {&btype, &btype};
 	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,

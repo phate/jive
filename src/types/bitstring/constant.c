@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -58,10 +58,11 @@ jive_bitconstant_node_init_(
 		jive_context_fatal_error(region->graph->context,
 			"bitconstant: number of bits must be greater than zero.");
 
-	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
+	jive_bitstring_type type(nbits);
+	const jive_type * typeptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &type);
+		1, &typeptr);
 	self->attrs.nbits = nbits;
 	self->attrs.bits = jive_context_malloc(region->graph->context, nbits);
 	size_t n;

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,9 +21,10 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_bitstring_type bits32(32);
 	const char * tmparray0[] = {"arg"};
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, &bits32, tmparray0);
+	const jive_type * tmparray11[] = {&bits32};
+	jive_lambda * lambda = jive_lambda_begin(graph, 1, tmparray11, tmparray0);
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 4);
@@ -31,7 +32,7 @@ static int test_main(void)
 	jive_node_normal_form * sum_nf = jive_graph_get_nodeclass_form(graph, &JIVE_BITSUM_NODE);
 	assert(sum_nf);
 	jive_node_normal_form_set_mutable(sum_nf, false);
-jive_output * tmparray1[] = {lambda->arguments[0], c0};
+	jive_output * tmparray1[] = {lambda->arguments[0], c0};
 
 	jive_output * sum0 = jive_bitsum(2, tmparray1);
 	assert(jive_node_isinstance(sum0->node, &JIVE_BITSUM_NODE));
@@ -42,7 +43,7 @@ jive_output * tmparray1[] = {lambda->arguments[0], c0};
 	assert(jive_node_isinstance(sum1->node, &JIVE_BITSUM_NODE));
 	assert(sum1->node->noperands == 2);
 
-	jive_node * lambda_node = jive_lambda_end(lambda, 1, &bits32, &sum1)->node;
+	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node;
 	jive_input * retval = lambda_node->inputs[0]->origin->node->inputs[1];
 	jive_output * arg = lambda_node->inputs[0]->origin->node->inputs[0]->origin->node->outputs[1];
 	jive_graph_export(graph, lambda_node->outputs[0]);

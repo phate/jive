@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -184,9 +184,9 @@ generate_bin_cmp_function(jive_context * ctx, bin_op_factory_t factory)
 	jive_output * zero = jive_bitconstant_unsigned(b.graph, 32, 0);
 	jive_output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_bitstring_type bits32(32);
 	jive_output * result;
-	const jive_type * tmparray4[] = {bits32};
+	const jive_type * tmparray4[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray4,
 		&one, &zero, &result);
@@ -208,9 +208,9 @@ generate_bin_cmp_function_curryleft(jive_context * ctx, bin_op_factory_t factory
 	jive_output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_bitstring_type bits32(32);
 	jive_output * result;
-	const jive_type * tmparray5[] = {bits32};
+	const jive_type * tmparray5[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray5,
 		&one, &zero, &result);
@@ -231,9 +231,9 @@ generate_bin_cmp_function_curryright(jive_context * ctx, bin_op_factory_t factor
 	jive_output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_bitstring_type bits32(32);
 	jive_output * result;
-	const jive_type * tmparray6[] = {bits32};
+	const jive_type * tmparray6[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray6,
 		&one, &zero, &result);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -89,17 +89,13 @@ prepare_graph(jive_context * ctx)
 	jive_output * arg1 = jive_subroutine_simple_get_argument(sub, 0);
 	jive_output * arg2 = jive_subroutine_simple_get_argument(sub, 1);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_bitstring_type bits32(32);
 	
 	jive_output * v1 = jive_load_by_bitstring_create(
-		arg1, 32,
-		(const jive_value_type *) bits32,
-		1, &state1);
+		arg1, 32, &bits32, 1, &state1);
 	
 	jive_output * v2 = jive_load_by_bitstring_create(
-		arg2, 32,
-		(const jive_value_type *) bits32,
-		1, &state2);
+		arg2, 32, &bits32, 1, &state2);
 	jive_output * tmparray1[] = {v1, v2};
 	
 	jive_output * sum = jive_bitsum(2, tmparray1);
@@ -107,14 +103,12 @@ prepare_graph(jive_context * ctx)
 
 	jive_output * state_;
 	jive_store_by_bitstring_create(
-		arg1, 32,
-		(const jive_value_type *) bits32, sum,
+		arg1, 32, &bits32, sum,
 		1, &state1, &state_);
 	state1 = state_;
 	
 	jive_store_by_bitstring_create(
-		arg2, 32,
-		(const jive_value_type *) bits32, diff,
+		arg2, 32, &bits32, diff,
 		1, &state2, &state_);
 	state2 = state_;
 	jive_output* tmparray2[] = {state1, state2};

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -24,18 +24,18 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
-	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
-	const jive_type * tmparray0[] = {addr, bits16, addr};
+	jive_bitstring_type bits16(16);
+	const jive_type * tmparray0[] = {addr, &bits16, addr};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
-const jive_type * tmparray1[] = {bits16, addr, addr};
+	const jive_type * tmparray1[] = {&bits16, addr, addr};
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		top->outputs[0], NULL,
 		2, top->outputs + 1,
 		3, tmparray1);
-const jive_type * tmparray2[] = {bits16, addr, addr};
+	const jive_type * tmparray2[] = {&bits16, addr, addr};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2, call->outputs,

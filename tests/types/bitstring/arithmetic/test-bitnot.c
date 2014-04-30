@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,22 +21,23 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
+	jive_bitstring_type bits32(32);
+	const jive_type * tmparray11[] = {&bits32};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, &bits32);
+		1, tmparray11);
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 
 	jive_output * not0 = jive_bitnot(top->outputs[0]);
 	jive_output * not1 = jive_bitnot(c0);
 	jive_output * not2 = jive_bitnot(not1);
-const jive_type * tmparray0[] = {bits32, bits32, bits32};
-jive_output * tmparray1[] = {not0, not1, not2};
+	const jive_type * tmparray0[] = {&bits32, &bits32, &bits32};
+	jive_output * tmparray1[] = {not0, not1, not2};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray0, tmparray1,
-		1, &bits32);
+		1, tmparray11);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_prune(graph);

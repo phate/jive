@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -33,15 +33,15 @@ static int test_main(void)
 
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
 	JIVE_DECLARE_MEMORY_TYPE(mem);
-	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
-	const jive_type * tmparray0[] = {bits64, bits64, mem};
+	jive_bitstring_type bits64(64);
+	const jive_type * tmparray0[] = {&bits64, &bits64, mem};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
 
 	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, addr);
 	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, addr);
-const jive_value_type * tmparray1[] = {jive_value_type_cast(addr), jive_value_type_cast(addr)};
+	const jive_value_type * tmparray1[] = {jive_value_type_cast(addr), jive_value_type_cast(addr)};
 
 	jive_record_declaration decl = {2,
 		tmparray1};	
@@ -65,16 +65,16 @@ const jive_value_type * tmparray1[] = {jive_value_type_cast(addr), jive_value_ty
 		constant); 
 
 	jive_output * arrayindex = jive_arrayindex(call->outputs[0], call->outputs[1],
-		jive_value_type_cast(addr), bits64);
+		jive_value_type_cast(addr), &bits64);
 	
 	jive_output * load = jive_load_by_address_create(arraysub, jive_value_type_cast(addr),
 		1, &top->outputs[2]);
 	jive_node * store = jive_store_by_address_node_create(graph->root_region, arraysub,
-		jive_value_type_cast(bits64), arrayindex, 1, &top->outputs[2]);
+		&bits64, arrayindex, 1, &top->outputs[2]);
 
 	jive_output * o_addr = jive_address_to_bitstring_create(load, 64,
 		jive_output_get_type(load));
-	const jive_type * tmparray4[] = {bits64, mem};
+	const jive_type * tmparray4[] = {&bits64, mem};
 	jive_output * tmparray5[] = {o_addr, store->outputs[0]};
 	
 	jive_node * bottom = jive_node_create(graph->root_region,

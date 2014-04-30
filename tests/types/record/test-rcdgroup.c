@@ -42,13 +42,12 @@ jive_output * tmparray1[] = {top->outputs[0],
 	jive_output * g0 = jive_group_create(&decl, 3, tmparray1);
 	jive_output * g1 = jive_empty_group_create(graph, &decl_empty);
 
-	JIVE_DECLARE_BITSTRING_TYPE(bits64, 64);
 	const jive_type * tmparray2[] = {&rcdtype, &rcdtype_empty};
 	jive_output * tmparray3[] = {g0, g1};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, tmparray2,
 			tmparray3,
-		1, &bits64);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

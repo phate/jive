@@ -152,8 +152,8 @@ jive_bitstring_type_deserialize(
 	
 	/* FIXME: check number of bits */
 	
-	JIVE_DECLARE_BITSTRING_TYPE(ctl, nbits);
-	*type = jive_type_copy(ctl);
+	jive_bitstring_type ctl(nbits);
+	*type = jive_type_copy(&ctl);
 	return true;
 }
 

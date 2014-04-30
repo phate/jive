@@ -37,11 +37,11 @@ jive_bitstring_multiop_node_init_(
 		operand_types[n] = operand_type_structs[n];
 	}
 	
-	JIVE_DECLARE_BITSTRING_TYPE(output_type, nbits);
-	
+	jive_bitstring_type output_type(nbits);
+	const jive_type * type_array[] = {&output_type};
 	jive_node_init_(self, region,
 		noperands, operand_types, operands,
-		1, &output_type);
+		1, type_array);
 
 	for (n = 0; n < noperands; n++)
 		delete operand_type_structs[n];

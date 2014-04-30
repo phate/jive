@@ -879,10 +879,11 @@ jive_label_to_bitstring_node_init_(
 	jive_graph * graph,
 	const jive_label * label, size_t nbits)
 {
-	JIVE_DECLARE_BITSTRING_TYPE(btype, nbits);
+	jive_bitstring_type btype(nbits);
+	const jive_type * typeptr = &btype;
 	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,
-		1, &btype);
+		1, &typeptr);
 
 	self->attrs.nbits = nbits;
 	self->attrs.label = label;

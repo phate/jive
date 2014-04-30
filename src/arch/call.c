@@ -181,8 +181,8 @@ jive_call_by_bitstring_node_create(jive_region * region,
 	jive_call_node * node = new jive_call_node;
 
 	node->class_ = &JIVE_CALL_NODE;
-	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);
-	jive_call_node_init_(node, region, target_address, address_type, calling_convention,
+	jive_bitstring_type address_type(nbits);
+	jive_call_node_init_(node, region, target_address, &address_type, calling_convention,
 		narguments, arguments, nreturns, return_types);
 
 	return node;

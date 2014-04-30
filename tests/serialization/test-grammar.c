@@ -292,9 +292,9 @@ static int test_main(void)
 	verify_deserialize_rescls("stack_callslot<4,4,32>", jive_callslot_class_get(4, 4, 32));
 	verify_deserialize_rescls("stack_callslot<4,4,-32>", jive_callslot_class_get(4, 4, -32));
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits8, 8);
-	verify_serialize_type(bits8, "bits<8>");
-	verify_deserialize_type("bits<8>", bits8);
+	jive_bitstring_type bits8(8);
+	verify_serialize_type(&bits8, "bits<8>");
+	verify_deserialize_type("bits<8>", &bits8);
 	
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
 	verify_serialize_type(ctl, "control<>");
@@ -303,7 +303,7 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_gate * bit8gate = jive_type_create_gate(bits8, graph, "bit8gate");
+	jive_gate * bit8gate = jive_type_create_gate(&bits8, graph, "bit8gate");
 	verify_serialize_gateexpr(bit8gate, "\"bit8gate\" root<> bits<8>");
 	verify_deserialize_gateexpr("\"bit8gate\" root<> bits<8>", bit8gate);
 	

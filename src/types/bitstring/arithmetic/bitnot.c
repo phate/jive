@@ -53,10 +53,11 @@ jive_bitnot_node_init_(
 {
 	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
+	jive_bitstring_type type(nbits);
+	const jive_type * type_array[] = {&type};
 	jive_node_init_(self, region,
-		1, &type, &operand,
-		1, &type);
+		1, type_array, &operand,
+		1, type_array);
 }
 
 static jive_node *

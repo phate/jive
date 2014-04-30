@@ -56,13 +56,14 @@ jive_bitand_node_init_(jive_node * self, jive_region * region,
 	
 	size_t n;
 	const jive_type * operand_types[noperands];
-	JIVE_DECLARE_BITSTRING_TYPE(output_type, nbits);
+	jive_bitstring_type output_type(nbits);
 	for(n = 0; n < noperands; n++)
-		operand_types[n] = output_type;
+		operand_types[n] = &output_type;
 
+	const jive_type * tmparray0[] = {&output_type};
 	jive_node_init_(self, region,
 		noperands, operand_types, operands,
-		1, &output_type);
+		1, tmparray0);
 }
 
 static jive_node *

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -72,9 +72,9 @@ static int test_main(void)
 	assert(jive_node_match_attrs(o2->node, attrs2));
 	
 	JIVE_DECLARE_ADDRESS_TYPE(addr);
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
-	const jive_type * tmparray0[] = {addr, addr, bits32, bits32, bits16};
+	jive_bitstring_type bits32(32);
+	jive_bitstring_type bits16(16);
+	const jive_type * tmparray0[] = {addr, addr, &bits32, &bits32, &bits16};
 	jive_output * tmparray1[] = {o0, o1, o2, o3, o4};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		5, tmparray0,

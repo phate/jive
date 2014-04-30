@@ -489,8 +489,8 @@ jive_store_by_bitstring_node_create(jive_region * region,
 	jive_store_node * node = new jive_store_node;
 
 	node->class_ = &JIVE_STORE_NODE;
-	JIVE_DECLARE_BITSTRING_TYPE(address_type, nbits);
-	jive_store_node_init_(node, region, address, address_type, datatype, value, nstates, states);
+	jive_bitstring_type address_type(nbits);
+	jive_store_node_init_(node, region, address, &address_type, datatype, value, nstates, states);
 
 	return node;
 }

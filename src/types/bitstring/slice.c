@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -83,11 +83,13 @@ jive_bitslice_node_init_(
 	size_t low, size_t high)
 {
 	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)origin);
-	JIVE_DECLARE_BITSTRING_TYPE(input_type, nbits);
-	JIVE_DECLARE_BITSTRING_TYPE(output_type, high - low);
+	jive_bitstring_type input_type(nbits);
+	jive_bitstring_type output_type(high - low);
+	const jive_type * input_typeptr = &input_type;
+	const jive_type * output_typeptr = &output_type;
 	jive_node_init_(self, region,
-		1, &input_type, &origin,
-		1, &output_type);
+		1, &input_typeptr, &origin,
+		1, &output_typeptr);
 	self->attrs.low = low;
 	self->attrs.high = high;
 }

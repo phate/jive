@@ -13,10 +13,6 @@
 typedef struct jive_bitstring_type jive_bitstring_type;
 
 extern const jive_type_class JIVE_BITSTRING_TYPE;
-#define JIVE_DECLARE_BITSTRING_TYPE(name, nbits) \
-	jive_bitstring_type name##_struct(nbits); \
-	const jive_type * name = &name##_struct
-
 class jive_bitstring_type final : public jive_value_type {
 public:
 	virtual ~jive_bitstring_type() noexcept;

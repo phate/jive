@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -22,15 +22,16 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	const jive_type * tmparray0[] = {bits32, bits32};
+	jive_bitstring_type bits32(32);
+	const jive_type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph,
 		2, tmparray0, tmparray1);
 
 	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
-	jive_output * lambda_expr = jive_lambda_end(lambda, 1, &bits32, &sum);
+	const jive_type * tmparray11[] = {&bits32};
+	jive_output * lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);
 	
 	jive_output * c0 = jive_bitconstant(graph, 32, "01010100000000000000000000000000");
 	jive_output * c1 = jive_bitconstant(graph, 32, "10010010000000000000000000000000");
@@ -39,10 +40,11 @@ static int test_main(void)
 	jive_node * apply_node = jive_apply_node_create(graph->root_region,
 		lambda_expr, 2, tmparray2);
 	
-	assert(jive_type_equals(bits32, jive_output_get_type(apply_node->outputs[0])));
-	
+	assert(jive_type_equals(&bits32, jive_output_get_type(apply_node->outputs[0])));
+
+	const jive_type * tmparray12[] = {&bits32};
 	jive_node * interest = jive_node_create(graph->root_region,
-		1, &bits32, apply_node->outputs, 1, &bits32);
+		1, tmparray12, apply_node->outputs, 1, tmparray12);
 	
 	jive_graph_export(graph, interest->outputs[0]);
 	

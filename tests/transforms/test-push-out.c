@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -20,24 +20,26 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	JIVE_DECLARE_BITSTRING_TYPE(int32, 32);
-const char * tmparray0[] = {"arg"};
+	jive_bitstring_type int32(32);
+	const char * tmparray0[] = {"arg"};
 
-	jive_lambda * outer_function = jive_lambda_begin(graph, 1, &int32, tmparray0);
+	const jive_type * tmparray11[] = {&int32};
+	jive_lambda * outer_function = jive_lambda_begin(graph, 1, tmparray11, tmparray0);
 	const char * tmparray1[] = {"arg1"};
 	
-	jive_lambda * inner_function = jive_lambda_begin(graph, 1, &int32, tmparray1);
-jive_output * tmparray2[] = {inner_function->arguments[0],
+	jive_lambda * inner_function = jive_lambda_begin(graph, 1, tmparray11, tmparray1);
+	jive_output * tmparray2[] = {inner_function->arguments[0],
 		outer_function->arguments[0]};
 
 	jive_output * sum = jive_bitsum(2, tmparray2);
 
-	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, &int32, &sum)->node;
+	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, tmparray11, &sum)->node;
 	
 	jive_node * apply = jive_apply_node_create(outer_function->region, inner_lambda->outputs[0],
 		1, outer_function->arguments);
 	
-	jive_node * outer_lambda = jive_lambda_end(outer_function, 1, &int32, &apply->outputs[0])->node;
+	jive_node * outer_lambda = jive_lambda_end(outer_function, 1, tmparray11,
+		&apply->outputs[0])->node;
 	jive_graph_export(graph, outer_lambda->outputs[0]);
 	
 	jive_view(graph, stderr);

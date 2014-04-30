@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -22,9 +23,9 @@ static int test_main(void)
 	jive_context* context = jive_context_create() ;
 	jive_graph* graph = jive_graph_create( context ) ; 
 
-	JIVE_DECLARE_BITSTRING_TYPE( btype, 8 ) ;
-	const jive_type*  tmparray0[] = { btype };
-	const jive_type*  tmparray1[] = { btype };
+	jive_bitstring_type btype(8);
+	const jive_type*  tmparray0[] = { &btype };
+	const jive_type*  tmparray1[] = { &btype };
 	jive_function_type ftype(1, tmparray0, 1, tmparray1) ;
 
 	jive_output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
@@ -35,7 +36,7 @@ static int test_main(void)
 	jive_output* ret = apply->outputs[0];
 
 	const jive_type * ret_type = &ret->type();
-	assert(jive_type_equals(ret_type, btype));
+	assert(jive_type_equals(ret_type, &btype));
 
 	jive_view( graph, stderr ) ;
 

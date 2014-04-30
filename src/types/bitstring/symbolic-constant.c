@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -54,10 +54,11 @@ jive_bitsymbolicconstant_node_init_(
 	jive_region * region,
 	size_t nbits, const char * name)
 {
-	JIVE_DECLARE_BITSTRING_TYPE(type, nbits);
+	jive_bitstring_type type(nbits);
+	const jive_type * typeptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &type);
+		1, &typeptr);
 	self->attrs.nbits = nbits;
 	size_t len = strlen(name);
 	self->attrs.name = jive_context_malloc(region->graph->context, len + 1);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,31 +25,26 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	JIVE_DECLARE_ADDRESS_TYPE(addrtype);
-	JIVE_DECLARE_BITSTRING_TYPE(bits8, 8);
-	JIVE_DECLARE_BITSTRING_TYPE(bits16, 16);
-	JIVE_DECLARE_BITSTRING_TYPE(bits32, 32);
-	const jive_value_type *  tmparray0[] = {
-			(const jive_value_type *) bits8,
-			(const jive_value_type *) bits16,
-			(const jive_value_type *) bits32,
-			(const jive_value_type *) bits32
-		};
+	jive_bitstring_type bits8(8);
+	jive_bitstring_type bits16(16);
+	jive_bitstring_type bits32(32);
+	const jive_value_type *  tmparray0[] = {&bits8, &bits16, &bits32, &bits32};
 	
 	jive_record_declaration decl = {
 		nelements : 4,
 		elements : tmparray0
 	};
-	const jive_value_type * tmparray1[] = {jive_value_type_cast(bits8), jive_value_type_cast(bits16),
-		jive_value_type_cast(bits32), jive_value_type_cast(bits32)};
+	const jive_value_type * tmparray1[] = {&bits8, &bits16, &bits32, &bits32};
 	
 	/*
 	jive_record_declaration * decl = jive_record_declaration_create(context, 4,
 		tmparray1);	
 	*/
 
+	const jive_type * tmparray10[] = {&bits32};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
-		1, &bits32);
+		1, tmparray10);
 
 	jive_output * address = jive_bitstring_to_address_create(top->outputs[0], 32, addrtype);
 
@@ -66,13 +61,14 @@ static int test_main(void)
 		jive_output_get_type(member2));
 	jive_output * offset3 = jive_address_to_bitstring_create(member3, 32,
 		jive_output_get_type(member3));
-const jive_type * tmparray2[] = {bits32, bits32, bits32, bits32};
+	const jive_type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
 jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
+	const jive_type * tmparray11[] = {&bits8};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, tmparray2,
 		tmparray3,
-		1, &bits8);
+		1, tmparray11);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);
