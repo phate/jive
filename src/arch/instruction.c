@@ -47,7 +47,7 @@ jive_instruction_node_init_(
 	if (icls->flags & jive_instruction_jump)
 		noutputs ++;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	JIVE_DECLARE_IMMEDIATE_TYPE(imm);
+	jive_immediate_type imm;
 	
 	const jive_type * input_types[ninputs + nimmediates];
 	jive_output * inputs[ninputs + nimmediates];
@@ -59,7 +59,7 @@ jive_instruction_node_init_(
 		inputs[n] = operands[n];
 	}
 	for (n = 0; n < icls->nimmediates; ++n) {
-		input_types[n + ninputs] = imm;
+		input_types[n + ninputs] = &imm;
 		inputs[n + ninputs] = immediates[n];
 	}
 	for (n = 0; n < icls->noutputs; n++)
