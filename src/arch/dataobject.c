@@ -311,12 +311,12 @@ jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 	
 	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
 	/* FIXME: a data object should not have a memory type as output */
-	JIVE_DECLARE_MEMORY_TYPE(objstate_type);
-	
+	jive_memory_type objstate_type;
+	const jive_type * typeptr = &objstate_type;
 	node->class_ = &JIVE_DATAOBJ_NODE;
 	jive_node_init_(node, region,
 		1, &anchor_type, &anchor,
-		1, &objstate_type);
+		1, &typeptr);
 	
 	return node;
 }

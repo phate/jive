@@ -23,9 +23,9 @@ static int test_main(void)
 	jive_node * node0 = jive_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
 	jive_node * node1 = jive_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
 
-	JIVE_DECLARE_MEMORY_TYPE(memtype);
-	jive_gate * arg_gate = jive_type_create_gate(memtype, graph, "arg");
-	jive_gate * ret_gate = jive_type_create_gate(memtype, graph, "ret");
+	jive_memory_type memtype;
+	jive_gate * arg_gate = jive_type_create_gate(&memtype, graph, "arg");
+	jive_gate * ret_gate = jive_type_create_gate(&memtype, graph, "ret");
 
 	jive_output * arg = jive_node_gate_output(node0, arg_gate);
 	jive_input * ret = jive_node_gate_input(node1, ret_gate, arg);
@@ -33,7 +33,7 @@ static int test_main(void)
 	assert(dynamic_cast<jive_state_output*>(arg));
 	assert(dynamic_cast<jive_state_input*>(ret));
 	assert(dynamic_cast<jive_state_gate*>(arg_gate));
-	assert(jive_type_isinstance(memtype, &JIVE_STATE_TYPE));
+	assert(jive_type_isinstance(&memtype, &JIVE_STATE_TYPE));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

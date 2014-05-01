@@ -39,9 +39,9 @@ static int test_main(void)
 	static const jive_union_declaration empty_unndecl = {0, NULL};
 	static jive_union_type empty_unntype(&empty_unndecl);
 
-	JIVE_DECLARE_MEMORY_TYPE(memtype);
+	jive_memory_type memtype;
 	jive_address_type addrtype;
-	const jive_type * tmparray0[] = {&addrtype, memtype, &bits8, &bits16, &bits32, memtype};
+	const jive_type * tmparray0[] = {&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
@@ -73,13 +73,13 @@ static int test_main(void)
 	unify = jive_empty_unify_create(graph, &empty_unndecl);
 	jive_store_by_address_create(top->outputs[0], &empty_unntype, unify,
 		1, &top->outputs[1], &state4);
-const jive_type * tmparray3[] = {memtype, memtype, memtype, memtype, memtype, memtype};
-jive_output * tmparray4[] = {state0, state1[0], state1[1], state2, state3, state4};
+	const jive_type * tmparray3[] = {&memtype, &memtype, &memtype, &memtype, &memtype, &memtype};
+	jive_output * tmparray4[] = {state0, state1[0], state1[1], state2, state3, state4};
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		6, tmparray3,
 			tmparray4,
-		1, &memtype);
+		1, tmparray3);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

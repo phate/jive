@@ -188,11 +188,12 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 		FIXME: a subroutine node should not have a memory type as output, put it is the only type
 						we have right now
 	*/
-	JIVE_DECLARE_MEMORY_TYPE(objstate_type);
+	jive_memory_type objstate_type;
+	const jive_type * typeptr = &objstate_type;
 	JIVE_DECLARE_ANCHOR_TYPE(anchor);
 	jive_node_init_(node, region,
 		1, &anchor, &subroutine_region->bottom->outputs[0],
-		1, &objstate_type);
+		1, &typeptr);
 	node->attrs.subroutine = subroutine;
 	subroutine->subroutine_node = node;
 	subroutine->enter = enter;

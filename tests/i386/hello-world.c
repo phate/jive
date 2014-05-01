@@ -134,31 +134,31 @@ static int test_main(void)
 	
 	const jive_resource_class * gpr = &jive_i386_regcls_gpr.base;
 	const jive_type * gpr_type = jive_resource_class_get_type(gpr);
-	JIVE_DECLARE_MEMORY_TYPE(memory_type);
+	jive_memory_type memory_type;
 	
 	jive_node * arg1 = jive_splitnode_create(
 		fn_region,
 		gpr_type, load_fd->outputs[0], gpr,
-		memory_type, jive_callslot_class_get(4, 4, 0));
+		&memory_type, jive_callslot_class_get(4, 4, 0));
 	jive_node * arg2 = jive_splitnode_create(
 		fn_region,
 		gpr_type, load_str_addr->outputs[0], gpr,
-		memory_type, jive_callslot_class_get(4, 4, 4));
+		&memory_type, jive_callslot_class_get(4, 4, 4));
 	jive_node * arg3 = jive_splitnode_create(
 		fn_region,
 		gpr_type, load_str_len->outputs[0], gpr,
-		memory_type, jive_callslot_class_get(4, 4, 8));
+		&memory_type, jive_callslot_class_get(4, 4, 8));
 	
 	jive_immediate_init(&imm, 0, &write_label.base, NULL, NULL);
 	jive_node * call_write = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_call,
 		0, &imm);
-	jive_node_add_input(call_write, memory_type, arg1->outputs[0])->required_rescls
+	jive_node_add_input(call_write, &memory_type, arg1->outputs[0])->required_rescls
 		= jive_callslot_class_get(4, 4, 0);
-	jive_node_add_input(call_write, memory_type, arg2->outputs[0])->required_rescls
+	jive_node_add_input(call_write, &memory_type, arg2->outputs[0])->required_rescls
 		= jive_callslot_class_get(4, 4, 4);
-	jive_node_add_input(call_write, memory_type, arg3->outputs[0])->required_rescls
+	jive_node_add_input(call_write, &memory_type, arg3->outputs[0])->required_rescls
 		= jive_callslot_class_get(4, 4, 8);
 	
 	/* mark call as affecting global state */

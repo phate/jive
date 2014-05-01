@@ -32,9 +32,9 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	jive_address_type addr;
-	JIVE_DECLARE_MEMORY_TYPE(mem);
+	jive_memory_type mem;
 	jive_bitstring_type bits64(64);
-	const jive_type * tmparray0[] = {&bits64, &bits64, mem};
+	const jive_type * tmparray0[] = {&bits64, &bits64, &mem};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
@@ -71,7 +71,7 @@ static int test_main(void)
 
 	jive_output * o_addr = jive_address_to_bitstring_create(load, 64,
 		jive_output_get_type(load));
-	const jive_type * tmparray4[] = {&bits64, mem};
+	const jive_type * tmparray4[] = {&bits64, &mem};
 	jive_output * tmparray5[] = {o_addr, store->outputs[0]};
 	
 	jive_node * bottom = jive_node_create(graph->root_region,

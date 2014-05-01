@@ -24,10 +24,10 @@ static int test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_MEMORY_TYPE(memtype);
+	jive_memory_type memtype;
 	jive_address_type addrtype;
 	jive_bitstring_type bits32(32);
-	const jive_type * tmparray0[] = {&addrtype, &addrtype, memtype, &bits32};
+	const jive_type * tmparray0[] = {&addrtype, &addrtype, &memtype, &bits32};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		4, tmparray0);

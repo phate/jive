@@ -99,9 +99,9 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 
 	size_t n;
 	jive_node * split_nodes[nstates];
-	JIVE_DECLARE_MEMORY_TYPE(memtype);
+	jive_memory_type memtype;
 	for (n = 0; n < nstates; n++)
-		split_nodes[n] = jive_state_split(memtype, istates[n], decl->nelements);
+		split_nodes[n] = jive_state_split(&memtype, istates[n], decl->nelements);
 
 	size_t e;
 	jive_output * elems_ostates[decl->nelements][nstates];
@@ -124,7 +124,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 		jive_output * tmp[decl->nelements];
 		for (e = 0; e < decl->nelements; e++)
 			tmp[e] = elems_ostates[e][n];
-		ostates[n] = jive_state_merge(memtype, decl->nelements, tmp);
+		ostates[n] = jive_state_merge(&memtype, decl->nelements, tmp);
 	}
 }
 

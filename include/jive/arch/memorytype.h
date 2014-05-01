@@ -12,10 +12,6 @@
 typedef struct jive_memory_type jive_memory_type;
 
 extern const jive_type_class JIVE_MEMORY_TYPE;
-#define JIVE_DECLARE_MEMORY_TYPE(name) \
-	jive_memory_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_memory_type final : public jive_state_type {
 public:
 	virtual ~jive_memory_type() noexcept;

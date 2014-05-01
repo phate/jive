@@ -160,8 +160,8 @@ jive_memory_type_deserialize(
 	jive_token_istream * is,
 	jive_type ** type)
 {
-	JIVE_DECLARE_MEMORY_TYPE(ctl);
-	*type = jive_type_copy(ctl);
+	jive_memory_type ctl;
+	*type = jive_type_copy(&ctl);
 	return true;
 }
 
