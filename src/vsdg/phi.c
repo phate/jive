@@ -162,11 +162,12 @@ jive_phi_leave_node_create(jive_region * region)
 	jive_node * node = jive::create_operation_node(jive_op_phi_leave());
 
 	node->class_ = &JIVE_PHI_LEAVE_NODE;
-	JIVE_DECLARE_ANCHOR_TYPE(anctype);
+	jive_anchor_type anctype;
+	const jive_type * ancptr = &anctype;
 	JIVE_DECLARE_CONTROL_TYPE(ctltype);
 	jive_node_init_(node, region,
 		1, &ctltype, &region->top->outputs[0],
-		1, &anctype);
+		1, &ancptr);
 	region->bottom = node;
 
 	return node;
@@ -235,10 +236,11 @@ jive_phi_node_create_(struct jive_region * region, const jive_node_attrs * attrs
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	jive_node * self = jive::create_operation_node(jive_op_phi());
-	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	jive_anchor_type anchor;
+	const jive_type *anchorptr = &anchor;
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, region,
-		1, &anchor, operands,
+		1, &anchorptr, operands,
 		0, NULL);
 	
 	return self;
@@ -249,10 +251,11 @@ jive_phi_node_create(jive_region * phi_region,
 	jive_output * phi_body)
 {
 	jive_phi_node * self = new jive_phi_node(jive_op_phi());
-	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	jive_anchor_type anchor;
+	const jive_type * ancptr = &anchor;
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, phi_region,
-		1, &anchor, &phi_body,
+		1, &ancptr, &phi_body,
 		0, NULL);
 	
 	return self;

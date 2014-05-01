@@ -49,7 +49,7 @@ static int test_main(void)
 	jive_region * root = graph->root_region;
 	
 	JIVE_DECLARE_TEST_VALUE_TYPE(type);
-	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
+	jive_anchor_type anchor_type;
 	const jive_type *  tmparray0[] = {type, type};
 	
 	jive_node * top = jive_node_create(root,
@@ -75,13 +75,13 @@ static int test_main(void)
 		1, tmparray6);
 	const jive_type *  tmparray7[] = {type};
 	jive_output * tmparray8[] = {loop_body->outputs[0]};
-	const jive_type *  tmparray9[] = {anchor_type};
+	const jive_type *  tmparray9[] = {&anchor_type};
 	
 	jive_node * loop_tail = jive_node_create(loop_region,
 		1, tmparray7, tmparray8,
 		1, tmparray9);
 	loop_region->bottom = loop_tail;
-	const jive_type *  tmparray10[] = {anchor_type};
+	const jive_type *  tmparray10[] = {&anchor_type};
 	jive_output * tmparray11[] = {loop_tail->outputs[0]};
 	const jive_type *  tmparray12[] = {type};
 	

@@ -66,10 +66,11 @@ jive_lambda_leave_node_create(jive_output * output)
 	
 	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
 	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	JIVE_DECLARE_ANCHOR_TYPE(anchor);
+	jive_anchor_type anchor;
+	const jive_type * ancptr = &anchor;
 	jive_node_init_(node, output->node->region,
 		1, &ctl, &output,
-		1, &anchor);
+		1, &ancptr);
 	output->node->region->bottom = node;
 	
 	return node;
@@ -147,13 +148,12 @@ jive_lambda_node_init_(
 	jive_region * region = function_region->parent;
 	jive_context * context = function_region->graph->context;
 	
-	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
-	
+	jive_anchor_type anchor_type;
+	const jive_type * ancptr = &anchor_type;	
 	const jive_type * function_type = &self->operation().function_type();
 	jive_node_init_(self, region,
-		1, &anchor_type, &function_region->bottom->outputs[0],
+		1, &ancptr, &function_region->bottom->outputs[0],
 		1, &function_type);
-	
 }
 
 static jive_node *

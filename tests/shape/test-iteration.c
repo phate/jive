@@ -51,7 +51,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	JIVE_DECLARE_TEST_VALUE_TYPE(type);
-	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
+	jive_anchor_type anchor_type;
 	const jive_type * tmparray0[] = {type};
 	
 	jive_node * n1 = jive_node_create(graph->root_region,
@@ -69,17 +69,17 @@ static int test_main(void)
 	jive_region * r2 = jive_region_create_subregion(r1);
 	jive_region * r3 = jive_region_create_subregion(r1);
 	const jive_type * tmparray3[] = {type};
-	const jive_type * tmparray4[] = {anchor_type};
+	const jive_type * tmparray4[] = {&anchor_type};
 	
 	jive_node * n3 = jive_node_create(r2,
 		1, tmparray3, n2->outputs,
 		1, tmparray4);
 	const jive_type * tmparray5[] = {type};
-	const jive_type * tmparray6[] = {anchor_type};
+	const jive_type * tmparray6[] = {&anchor_type};
 	jive_node * n4 = jive_node_create(r3,
 		1, tmparray5, n2->outputs,
 		1, tmparray6);
-	const jive_type * tmparray7[] = {anchor_type, anchor_type};
+	const jive_type * tmparray7[] = {&anchor_type, &anchor_type};
 	jive_output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
 	const jive_type * tmparray9[] = {type};
 	
@@ -87,12 +87,12 @@ static int test_main(void)
 		2, tmparray7, tmparray8,
 		1, tmparray9);
 	const jive_type * tmparray10[] = {type};
-	const jive_type * tmparray11[] = {anchor_type};
+	const jive_type * tmparray11[] = {&anchor_type};
 	
 	jive_node * n6 = jive_node_create(r1,
 		1, tmparray10, n5->outputs,
 		1, tmparray11);
-	const jive_type * tmparray12[] = {anchor_type};
+	const jive_type * tmparray12[] = {&anchor_type};
 	
 	jive_node * n7 = jive_node_create(graph->root_region,
 		1, tmparray12, n6->outputs,

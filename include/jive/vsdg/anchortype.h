@@ -12,10 +12,6 @@
 typedef struct jive_anchor_type jive_anchor_type;
 
 extern const jive_type_class JIVE_ANCHOR_TYPE;
-#define JIVE_DECLARE_ANCHOR_TYPE(name) \
-	jive_anchor_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_anchor_type final : public jive_type {
 public:
 	virtual ~jive_anchor_type() noexcept;

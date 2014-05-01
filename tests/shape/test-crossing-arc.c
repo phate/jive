@@ -36,8 +36,8 @@ static int test_main(void)
 	jive_node * e = jive_test_node_create(graph->root_region, 1, &vtype, &b->outputs[0], 1, &vtype);
 	jive_node * f = jive_test_node_create(graph->root_region, 1, &vtype, &b->outputs[0], 1, &vtype);
 
-	JIVE_DECLARE_ANCHOR_TYPE(anchor_type);
-	jive_node_add_input(e, anchor_type, jive_node_add_output(d, anchor_type));
+	jive_anchor_type anchor_type;
+	jive_node_add_input(e, &anchor_type, jive_node_add_output(d, &anchor_type));
 	
 	jive_view(graph, stdout);
 	
