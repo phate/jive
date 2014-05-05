@@ -46,8 +46,8 @@ jive_fltgreatereq_node_init_(struct jive_node * self, struct jive_region * regio
 {
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_FLOAT_TYPE(flttype);
-	const jive_type * tmparray0[] = {flttype, flttype};
+	jive_float_type flttype;
+	const jive_type * tmparray0[] = {&flttype, &flttype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,

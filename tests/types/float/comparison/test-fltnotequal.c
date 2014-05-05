@@ -24,8 +24,8 @@ test_main(void)
 
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_FLOAT_TYPE(flttype);
-	const jive_type* tmparray0[] = {flttype, flttype};
+	jive_float_type flttype;
+	const jive_type* tmparray0[] = {&flttype, &flttype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray0);

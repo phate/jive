@@ -13,10 +13,6 @@
 typedef struct jive_float_type jive_float_type;
 
 extern const jive_type_class JIVE_FLOAT_TYPE;
-#define JIVE_DECLARE_FLOAT_TYPE(name) \
-	jive_float_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_float_type final : public jive_value_type {
 public:
 	virtual ~jive_float_type() noexcept;

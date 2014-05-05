@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -41,10 +41,11 @@ static void
 jive_fltnegate_node_init_(struct jive_node * self, struct jive_region * region,
 	struct jive_output * operand)
 {
-	JIVE_DECLARE_FLOAT_TYPE(flttype);
+	jive_float_type flttype;
+	const jive_type * flttype_ptr = &flttype;
 	jive_node_init_(self, region,
-		1, &flttype, &operand,
-		1, &flttype);
+		1, &flttype_ptr, &operand,
+		1, &flttype_ptr);
 }
 
 static jive_node *

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -46,10 +46,11 @@ const jive_node_class JIVE_FLTCONSTANT_NODE = {
 static void
 jive_fltconstant_node_init_(jive_fltconstant_node * self, jive_region * region, uint32_t value)
 {
-	JIVE_DECLARE_FLOAT_TYPE(flttype);
+	jive_float_type flttype;
+	const jive_type * flttype_ptr = &flttype;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &flttype);
+		1, &flttype_ptr);
 	
 	self->attrs.value = value;
 }

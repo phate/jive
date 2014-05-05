@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -17,10 +17,10 @@ jive_fltoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 		return;
 
 	size_t n;
-	JIVE_DECLARE_FLOAT_TYPE(flttype);
+	jive_float_type flttype;
 	for (n = 0; n < noperands; n++) {
 		if (!dynamic_cast<const jive_float_output*>(operands[n]))
-			jive_raise_type_error(flttype, jive_output_get_type(operands[n]), context);
+			jive_raise_type_error(&flttype, jive_output_get_type(operands[n]), context);
 	}
 }
 
