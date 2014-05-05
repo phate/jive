@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -40,10 +40,11 @@ const jive_itgunary_operation_class JIVE_ITGNEGATE_NODE_ = {
 static void
 jive_itgnegate_node_init_(jive_itgnegate_node * self, jive_region * region, jive_output * operand)
 {
-	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
+	jive_integral_type itgtype;
+	const jive_type * itgtype_ptr = &itgtype;
 	jive_node_init_(self, region,
-		1, &itgtype, &operand,
-		1, &itgtype);
+		1, &itgtype_ptr, &operand,
+		1, &itgtype_ptr);
 }
 
 static jive_node *

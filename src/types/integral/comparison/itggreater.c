@@ -47,8 +47,8 @@ jive_itggreater_node_init_(jive_itggreater_node * self, jive_region * region,
 {
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
-	const jive_type * tmparray0[] = {itgtype, itgtype};
+	jive_integral_type itgtype;
+	const jive_type * tmparray0[] = {&itgtype, &itgtype};
 	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,

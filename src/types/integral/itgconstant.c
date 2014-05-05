@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -44,10 +44,11 @@ jive_itgconstant_node_init_(jive_itgconstant_node * self, struct jive_region * r
 	size_t nbits, const char bits[])
 {
 	JIVE_DEBUG_ASSERT(nbits != 0);
-	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
+	jive_integral_type itgtype;
+	const jive_type * itgtype_ptr = &itgtype;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &itgtype);
+		1, &itgtype_ptr);
 	self->attrs.nbits = nbits;
 	self->attrs.bits = jive_context_malloc(region->graph->context, nbits);
 	size_t n;

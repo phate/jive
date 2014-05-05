@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -47,13 +47,13 @@ jive_itgproduct_node_init_(jive_itgproduct_node * self, jive_region * region,
 {
 	size_t n;
 	const jive_type * operand_types[noperands];
-	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
+	jive_integral_type itgtype;
 	for (n = 0; n < noperands; n++)
-		operand_types[n] = itgtype;
+		operand_types[n] = &itgtype;
 
 	jive_node_init_(self, region,
 		noperands, operand_types, operands,
-		1, &itgtype);
+		1, operand_types);
 }
 
 static jive_node *
