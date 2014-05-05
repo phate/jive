@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,8 +21,8 @@ test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
-	const jive_type* tmparray0[] = {dbltype, dbltype};
+	jive_double_type dbltype;
+	const jive_type* tmparray0[] = {&dbltype, &dbltype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray0);
@@ -30,8 +30,8 @@ test_main(void)
 	jive_output * sub = jive_dbldifference(top->outputs[0], top->outputs[1]);
 
 	jive_node * bottom = jive_node_create(graph->root_region,
-		1, &dbltype, &sub,
-		1, &dbltype);
+		1, tmparray0, &sub,
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

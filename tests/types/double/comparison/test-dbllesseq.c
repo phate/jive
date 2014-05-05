@@ -22,8 +22,8 @@ static int test_main(void)
 
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
-	const jive_type* tmparray0[] = {dbltype, dbltype};
+	jive_double_type dbltype;
+	const jive_type* tmparray0[] = {&dbltype, &dbltype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray0);
@@ -32,7 +32,7 @@ static int test_main(void)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		1, &ctype_ptr, &lesseq,
-		1, &dbltype);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

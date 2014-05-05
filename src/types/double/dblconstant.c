@@ -44,10 +44,11 @@ const jive_node_class JIVE_DBLCONSTANT_NODE = {
 static void
 jive_dblconstant_node_init_(jive_dblconstant_node * self, jive_region * region, uint64_t value)
 {
-	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
+	jive_double_type dbltype;
+	const jive_type * dbltype_ptr = &dbltype;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &dbltype);
+		1, &dbltype_ptr);
 
 	self->attrs.value = value;
 }

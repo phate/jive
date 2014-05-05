@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -44,12 +44,12 @@ static void
 jive_dbldifference_node_init_(jive_node * self, jive_region * region,
 	struct jive_output * op1, struct jive_output * op2)
 {
-	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
-	const jive_type * tmparray0[] = {dbltype, dbltype};
+	jive_double_type dbltype;
+	const jive_type * tmparray0[] = {&dbltype, &dbltype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
-		1, &dbltype);
+		1, tmparray0);
 }
 
 static jive_node *

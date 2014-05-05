@@ -13,10 +13,6 @@
 typedef struct jive_double_type jive_double_type;
 
 extern const jive_type_class JIVE_DOUBLE_TYPE;
-#define JIVE_DECLARE_DOUBLE_TYPE(name) \
-	jive_double_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_double_type final : public jive_value_type {
 public:
 	virtual ~jive_double_type() noexcept;

@@ -47,8 +47,8 @@ jive_dblgreater_node_init_(struct jive_node * self, struct jive_region * region,
 {
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
-	const jive_type * tmparray0[] = {dbltype, dbltype};
+	jive_double_type dbltype;
+	const jive_type * tmparray0[] = {&dbltype, &dbltype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,

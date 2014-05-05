@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -40,10 +40,11 @@ static void
 jive_dblnegate_node_init_(struct jive_node * self, struct jive_region * region,
 	struct jive_output * operand)
 {
-	JIVE_DECLARE_DOUBLE_TYPE(dbltype);
+	jive_double_type dbltype;
+	const jive_type * dbltype_ptr = &dbltype;
 	jive_node_init_(self, region,
-		1, &dbltype, &operand,
-		1, &dbltype);
+		1, &dbltype_ptr, &operand,
+		1, &dbltype_ptr);
 }
 
 static jive_node *
