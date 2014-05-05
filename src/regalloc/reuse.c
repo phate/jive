@@ -29,10 +29,6 @@ typedef struct jive_reuse_output jive_reuse;
 typedef struct jive_reuse_gate jive_reuse_gate;
 
 extern const jive_type_class JIVE_REUSE_TYPE;
-#define JIVE_DECLARE_REUSE_TYPE(name_, resname) \
-	jive_reuse_type name_##_struct(resname); \
-	const jive_type * name_ = &name_##_struct
-
 class jive_reuse_type final : public jive_state_type {
 public:
 	virtual ~jive_reuse_type() noexcept {};
@@ -294,13 +290,13 @@ jive_names_use_clobber(jive_names_use * self, const jive_resource_name * name, j
 {
 	jive_used_name * used_name = jive_names_use_lookup(self, name);
 	
-	JIVE_DECLARE_REUSE_TYPE(type, name);
+	jive_reuse_type type(name);
 	size_t n;
 	for (n = 0; n < used_name->read.nitems; n++) {
 		jive_node * before = used_name->read.items[n];
 		
 		if (node != before)
-			jive_node_add_input(node, type, jive_node_add_output(before, type));
+			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
 	
 	jive_node_vector_push_back(&used_name->clobber, node, self->hash.context);
@@ -312,18 +308,18 @@ jive_names_use_write(jive_names_use * self, const jive_resource_name * name, jiv
 {
 	jive_used_name * used_name = jive_names_use_lookup(self, name);
 	
-	JIVE_DECLARE_REUSE_TYPE(type, name);
+	jive_reuse_type type(name);
 	
 	size_t n;
 	for (n = 0; n < used_name->read.nitems; n++) {
 		jive_node * before = used_name->read.items[n];
 		if (node != before)
-			jive_node_add_input(node, type, jive_node_add_output(before, type));
+			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
 	for (n = 0; n < used_name->clobber.nitems; n++) {
 		jive_node * before = used_name->clobber.items[n];
 		if (node != before)
-			jive_node_add_input(node, type, jive_node_add_output(before, type));
+			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
 	
 	jive_node_vector_clear(&used_name->read);
