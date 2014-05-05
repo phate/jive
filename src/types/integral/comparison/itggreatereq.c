@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -45,13 +45,14 @@ static void
 jive_itggreatereq_node_init_(jive_itggreatereq_node * self, jive_region * region,
 	jive_output * operand1, jive_output * operand2)
 {
-	JIVE_DECLARE_CONTROL_TYPE(ctype);
+	jive_control_type ctype;
+	const jive_type * ctype_ptr = &ctype;
 	JIVE_DECLARE_INTEGRAL_TYPE(itgtype);
 	const jive_type * tmparray0[] = {itgtype, itgtype};
 	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
-		1, &ctype);
+		1, &ctype_ptr);
 }
 
 static jive_node *

@@ -1,6 +1,6 @@
 /*
  * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,11 +23,12 @@ jive_theta_head_node_create_(jive_region * region, const jive_node_attrs * attrs
 	size_t noperands, jive_output * const operands[])
 {
 	jive_node * self = jive::create_operation_node(jive_op_theta_head());
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &control);
+		1, &control_ptr);
 	
 	region->top = self;
 	return self;
@@ -41,10 +42,11 @@ jive_theta_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 	jive_node * self = jive::create_operation_node(jive_op_theta_tail());
 	jive_anchor_type anchor;
 	const jive_type * ancptr = &anchor;
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_TAIL_NODE;
 	jive_node_init_(self, region,
-		1, &control, operands,
+		1, &control_ptr, operands,
 		1, &ancptr);
 	
 	region->bottom = self;
@@ -107,11 +109,12 @@ static jive_node *
 jive_theta_head_node_create(jive_region * region)
 {
 	jive_node * self = jive::create_operation_node(jive_op_theta_head());
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &control);
+		1, &control_ptr);
 	
 	region->top = self;
 	return self;
@@ -123,10 +126,11 @@ jive_theta_tail_node_create(jive_region * region, jive_output * predicate)
 	jive_node * self = jive::create_operation_node(jive_op_theta_tail());
 	jive_anchor_type anchor;
 	const jive_type * ancptr = &anchor;
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_TAIL_NODE;
 	jive_node_init_(self, region,
-		1, &control, &predicate,
+		1, &control_ptr, &predicate,
 		1, &ancptr);
 	
 	region->bottom = self;

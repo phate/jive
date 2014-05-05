@@ -12,10 +12,6 @@
 typedef struct jive_control_type jive_control_type;
 
 extern const jive_type_class JIVE_CONTROL_TYPE;
-#define JIVE_DECLARE_CONTROL_TYPE(name) \
-	jive_control_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_control_type final : public jive_state_type {
 public:
 	virtual ~jive_control_type() noexcept;

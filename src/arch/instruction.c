@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -46,7 +46,7 @@ jive_instruction_node_init_(
 	size_t noutputs = icls->noutputs;
 	if (icls->flags & jive_instruction_jump)
 		noutputs ++;
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_control_type ctl;
 	jive_immediate_type imm;
 	
 	const jive_type * input_types[ninputs + nimmediates];
@@ -66,7 +66,7 @@ jive_instruction_node_init_(
 		output_types[n] = jive_register_class_get_type(icls->outregs[n]);
 	
 	if (icls->flags & jive_instruction_jump) {
-		output_types[icls->noutputs] = ctl;
+		output_types[icls->noutputs] = &ctl;
 	}
 	
 	jive_node_init_(self,

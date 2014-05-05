@@ -23,7 +23,8 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 	
 	JIVE_DECLARE_TEST_VALUE_TYPE(type);
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_control_type ctype;
+	const jive_type * ctype_ptr = &ctype;
 	const jive_type * tmparray0[] = {type};
 	
 	jive_node * top = jive_node_create(graph->root_region,
@@ -55,20 +56,20 @@ static int test_main(void)
 	
 	jive_node * pred3 = jive_node_create(theta3.region,
 		1, &type, &loopvar3.value,
-		1, &ctl);
+		1, &ctype_ptr);
 	jive_view(graph, stdout);
 	jive_theta_end(theta3, pred3->outputs[0], 1, &loopvar3);
 	
 	jive_view(graph, stdout);
 	jive_node * pred2 = jive_node_create(theta2.region,
 		1, &type, &loopvar3.value,
-		1, &ctl);
+		1, &ctype_ptr);
 	jive_view(graph, stdout);
 	jive_theta_end(theta2, pred2->outputs[0], 1, &loopvar2);
 	
 	jive_node * pred1 = jive_node_create(theta1.region,
 		1, &type, &loopvar2.value,
-		1, &ctl);
+		1, &ctype_ptr);
 	jive_theta_end(theta1, pred1->outputs[0], 1, &loopvar1);
 	
 	jive_view(graph, stdout);

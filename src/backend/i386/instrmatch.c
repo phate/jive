@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -120,8 +120,8 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 		jive_node * enter = sub->inputs[0]->origin->node->region->top;
-		JIVE_DECLARE_CONTROL_TYPE(ctl);
-		jive_node_add_input(tmp, ctl, enter->outputs[0]);
+		jive_control_type ctl;
+		jive_node_add_input(tmp, &ctl, enter->outputs[0]);
 		
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_udiv;
@@ -389,8 +389,8 @@ match_gpr_immediate(jive_node * node)
 	jive_node * instr = jive_instruction_node_create_extended(node->region,
 		&jive_i386_instr_int_load_imm,
 		NULL, imm);
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
-	jive_node_add_input(instr, ctl, node->inputs[0]->origin);
+	jive_control_type ctl;
+	jive_node_add_input(instr, &ctl, node->inputs[0]->origin);
 	
 	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }

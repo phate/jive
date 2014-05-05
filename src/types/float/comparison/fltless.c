@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -44,13 +44,14 @@ static void
 jive_fltless_node_init_(struct jive_node * self, struct jive_region * region,
 	struct jive_output * op1, struct jive_output * op2)
 {
-	JIVE_DECLARE_CONTROL_TYPE(ctype);
+	jive_control_type ctype;
+	const jive_type * ctype_ptr = &ctype;
 	JIVE_DECLARE_FLOAT_TYPE(flttype);
 	const jive_type * tmparray0[] = {flttype, flttype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
-		1, &ctype);
+		1, &ctype_ptr);
 }
 
 static jive_node *

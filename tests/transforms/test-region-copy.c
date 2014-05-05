@@ -24,8 +24,8 @@ static int test_main(void)
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
 	
 	JIVE_DECLARE_TEST_VALUE_TYPE(type);
-	JIVE_DECLARE_CONTROL_TYPE(control_type);
-	const jive_type * tmparray0[] = {type, type, control_type};
+	jive_control_type control_type;
+	const jive_type * tmparray0[] = {type, type, &control_type};
 	
 	jive_node * top = jive_node_create(r1,
 		0, NULL, NULL,

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -57,9 +57,9 @@ jive_regvalue_node_init_(
 	const jive_register_class * regcls,
 	jive_output * value)
 {
-	JIVE_DECLARE_CONTROL_TYPE(ctl_type);
+	jive_control_type ctl_type;
 	const jive_type * vtype = jive_output_get_type(value);
-	const jive_type * operand_types[] = {ctl_type, vtype};
+	const jive_type * operand_types[] = {&ctl_type, vtype};
 	jive_output * operands[] = {ctl, value};
 	
 	jive_node_init_(self, region,

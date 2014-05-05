@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -20,11 +21,12 @@ jive_control_false_create(jive_region * region)
 {
 	jive_node * self = jive::create_operation_node(
 		jive_op_control_constant(false));
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	self->class_ = &JIVE_CONTROL_FALSE_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &control);
+		1, &control_ptr);
 	
 	return self;
 }
@@ -34,11 +36,12 @@ jive_control_true_create(jive_region * region)
 {
 	jive_node * self = jive::create_operation_node(
 		jive_op_control_constant(true));
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	self->class_ = &JIVE_CONTROL_TRUE_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &control);
+		1, &control_ptr);
 	
 	return self;
 }

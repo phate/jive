@@ -41,8 +41,8 @@ static int test_main(void)
 	jive_output * uless3 = jive_bituless(c2, top->outputs[0]);
 	jive_output * uless4 = jive_bituless(top->outputs[1], c3);
 
-	JIVE_DECLARE_CONTROL_TYPE(ctype);
-	const jive_type * tmparray1[] = {ctype, ctype, ctype, ctype, ctype};
+	jive_control_type ctype;
+	const jive_type * tmparray1[] = {&ctype, &ctype, &ctype, &ctype, &ctype};
 	jive_output * tmparray2[] = {uless0, uless1, uless2, uless3, uless4};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		5, tmparray1,

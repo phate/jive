@@ -37,8 +37,8 @@ static int test_main(void)
 	jive_output * nequal2 = jive_bitnotequal(c0, c1);
 	jive_output * nequal3 = jive_bitnotequal(c0, c2);
 
-	JIVE_DECLARE_CONTROL_TYPE(ctype);
-	const jive_type * tmparray1[] = {ctype, ctype, ctype, ctype};
+	jive_control_type ctype;
+	const jive_type * tmparray1[] = {&ctype, &ctype, &ctype, &ctype};
 	jive_output * tmparray2[] = {nequal0, nequal1, nequal2, nequal3};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		4, tmparray1,

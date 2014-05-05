@@ -42,8 +42,8 @@ static int test_main(void)
 	jive_output * ugreatereq4 = jive_bitugreatereq(c2, top->outputs[0]);
 	jive_output * ugreatereq5 = jive_bitugreatereq(top->outputs[1], c3);
 
-	JIVE_DECLARE_CONTROL_TYPE(ctype);
-	const jive_type * tmparray1[] = {ctype, ctype, ctype, ctype, ctype, ctype};
+	jive_control_type ctype;
+	const jive_type * tmparray1[] = {&ctype, &ctype, &ctype, &ctype, &ctype, &ctype};
 	jive_output * tmparray2[] = {ugreatereq0, ugreatereq1, ugreatereq2, ugreatereq3, ugreatereq4, ugreatereq5};
 	jive_node * bottom = jive_node_create(graph->root_region,
 		6, tmparray1,

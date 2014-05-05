@@ -58,13 +58,14 @@ jive_bitslesseq_node_init_(jive_node * self, jive_region * region,
 {
 	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand1);
 
-	JIVE_DECLARE_CONTROL_TYPE(ctype);
+	jive_control_type ctype;
+	const jive_type * ctype_ptr = &ctype;
 	jive_bitstring_type btype(nbits);
 	const jive_type * tmparray0[] = {&btype, &btype};
 	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
-		1, &ctype);
+		1, &ctype_ptr);
 }
 
 static jive_node *

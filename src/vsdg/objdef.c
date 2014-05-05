@@ -29,11 +29,12 @@ jive_objdef_node_init_(
 	/* FIXME: this is horribly wrong, but we don't have another type right now for putting in here,
 						this entire node needs to be remodeled
 	*/
-	JIVE_DECLARE_CONTROL_TYPE(stype);
+	jive_control_type stype;
+	const jive_type * stype_ptr = &stype;
 	const jive_type * type = jive_output_get_type(obj);
 	jive_node_init_(self, region,
 		1, &type, &obj,
-		1, &stype);
+		1, &stype_ptr);
 	
 	if (obj->node->ninputs < 1 || !dynamic_cast<jive_anchor_input*>(obj->node->inputs[0])) {
 		jive_context_fatal_error(region->graph->context,

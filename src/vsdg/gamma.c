@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -44,9 +44,9 @@ jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	JIVE_DEBUG_ASSERT(noperands == 3);
 	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	jive_anchor_type anchor;
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_control_type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
-	const jive_type * tmparray0[] = {&anchor, &anchor, ctl};
+	const jive_type * tmparray0[] = {&anchor, &anchor, &ctl};
 	jive_node_init_(self, region,
 		3, tmparray0, operands,
 		0, NULL);
@@ -112,9 +112,9 @@ jive_gamma_node_create(jive_region * region,
 {
 	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	jive_anchor_type anchor;
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_control_type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
-	const jive_type * tmparray1[] = {&anchor, &anchor, ctl};
+	const jive_type * tmparray1[] = {&anchor, &anchor, &ctl};
 	jive_output * tmparray2[] = {true_alternative, false_alternative, predicate};
 	jive_node_init_(self, region,
 		3, tmparray1, tmparray2,

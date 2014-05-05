@@ -279,10 +279,11 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 		item_types[n] = jive_output_get_type(items[n]);
 	
 	node->class_ = &JIVE_DATAITEMS_NODE;
-	JIVE_DECLARE_CONTROL_TYPE(control);
+	jive_control_type control;
+	const jive_type * control_ptr = &control;
 	jive_node_init_(node, region,
 		nitems, item_types, items,
-		1, &control);
+		1, &control_ptr);
 	region->bottom = node;
 	
 	return node;
@@ -294,11 +295,12 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 	jive_datadef_node * node = new jive_datadef_node;
 	
 	node->class_ = &JIVE_DATADEF_NODE;
-	JIVE_DECLARE_CONTROL_TYPE(data_type);
+	jive_control_type data_type;
+	const jive_type * data_type_ptr = &data_type;
 	jive_anchor_type anchor;
 	const jive_type * ancptr = &anchor;
 	jive_node_init_(node, region,
-		1, &data_type, &data,
+		1, &data_type_ptr, &data,
 		1, &ancptr);
 	region->bottom = node;
 	

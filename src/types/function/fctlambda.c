@@ -26,10 +26,11 @@ jive_lambda_enter_node_create(jive_region * region)
 	jive_node * node = jive::create_operation_node(jive_op_lambda_enter());
 	
 	node->class_ = &JIVE_LAMBDA_ENTER_NODE;
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_control_type ctl;
+	const jive_type * ctl_ptr = &ctl;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
-		1, &ctl);
+		1, &ctl_ptr);
 	((jive_control_output *)node->outputs[0])->set_active(false);
 	region->top = node;
 	
@@ -65,11 +66,12 @@ jive_lambda_leave_node_create(jive_output * output)
 	jive_node * node = jive::create_operation_node(jive_op_lambda_leave());
 	
 	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
-	JIVE_DECLARE_CONTROL_TYPE(ctl);
+	jive_control_type ctl;
+	const jive_type * ctl_ptr = &ctl;
 	jive_anchor_type anchor;
 	const jive_type * ancptr = &anchor;
 	jive_node_init_(node, output->node->region,
-		1, &ctl, &output,
+		1, &ctl_ptr, &output,
 		1, &ancptr);
 	output->node->region->bottom = node;
 	
