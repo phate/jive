@@ -13,10 +13,6 @@
 typedef struct jive_real_type jive_real_type;
 
 extern const jive_type_class JIVE_REAL_TYPE;
-#define JIVE_DECLARE_REAL_TYPE(name) \
-	jive_real_type name##_struct; \
-	const jive_type * name = &name##_struct
-
 class jive_real_type final : public jive_value_type {
 public:
 	virtual ~jive_real_type() noexcept;

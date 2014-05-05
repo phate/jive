@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -41,10 +41,11 @@ static void
 jive_rlnegate_node_init_(struct jive_rlnegate_node * self, struct jive_region * region,
 	struct jive_output * operand)
 {
-	JIVE_DECLARE_REAL_TYPE(rltype);
+	jive_real_type rltype;
+	const jive_type * rltype_ptr = &rltype;
 	jive_node_init_(self, region,
-		1, &rltype, &operand,
-		1, &rltype);
+		1, &rltype_ptr, &operand,
+		1, &rltype_ptr);
 }
 
 static jive_node *

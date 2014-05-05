@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -49,10 +49,11 @@ static void
 jive_rlconstant_node_init_(jive_rlconstant_node * self, jive_region * region, bool sign,
 	size_t nnbits, const char * numerator, size_t ndbits, const char * denominator)
 {
-	JIVE_DECLARE_REAL_TYPE(rltype);
+	jive_real_type rltype;
+	const jive_type * rltype_ptr = &rltype;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &rltype);
+		1, &rltype_ptr);
 
 	self->attrs.sign = sign;
 

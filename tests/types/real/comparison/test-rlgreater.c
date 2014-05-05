@@ -23,8 +23,8 @@ test_main(void)
 
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_REAL_TYPE(rltype);
-	const jive_type* tmparray0[] = {rltype, rltype};
+	jive_real_type rltype;
+	const jive_type* tmparray0[] = {&rltype, &rltype};
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray0);
@@ -33,7 +33,7 @@ test_main(void)
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		1, &ctype_ptr, &greater,
-		1, &rltype);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

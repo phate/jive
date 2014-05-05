@@ -47,8 +47,8 @@ jive_rlequal_node_init_(jive_rlequal_node * self, jive_region * region,
 {
 	jive_control_type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	JIVE_DECLARE_REAL_TYPE(rltype);
-	const jive_type * tmparray0[] = {rltype, rltype};
+	jive_real_type rltype;
+	const jive_type * tmparray0[] = {&rltype, &rltype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
