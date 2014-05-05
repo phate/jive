@@ -35,10 +35,6 @@ private:
 	const jive_union_declaration * decl_;
 };
 
-#define JIVE_DECLARE_UNION_TYPE(name, decl) \
-	jive_union_type name##_struct(decl); \
-	const jive_type * name = &name##_struct
-
 JIVE_EXPORTED_INLINE const jive_union_type *
 jive_union_type_const_cast(const jive_type * self)
 {

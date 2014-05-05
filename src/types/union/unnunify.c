@@ -117,11 +117,11 @@ jive_unify_node_init_(jive_unify_node * self,
 	
 	const jive_type * arg_type = decl->elements[option];
 	
-	JIVE_DECLARE_UNION_TYPE(type, decl);
-	
+	jive_union_type type(decl);
+	const jive_type * type_ptr = &type;
 	jive_node_init_(self, region,
 		1, &arg_type, &operand,
-		1, &type);
+		1, &type_ptr);
 	
 	self->attrs.option = option;
 	self->attrs.decl = decl;
@@ -179,10 +179,11 @@ static void
 jive_empty_unify_node_init_(jive_empty_unify_node * self,
 	struct jive_region * region, const jive_union_declaration * decl)
 {
-	JIVE_DECLARE_UNION_TYPE(type, decl);
+	jive_union_type type(decl);
+	const jive_type * type_ptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
-		1, &type);
+		1, &type_ptr);
 	
 	self->attrs.decl = decl;
 }
