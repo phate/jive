@@ -1,5 +1,0 @@
-TESTS+=\
-	types/double/test-dblconstant \
-
-include tests/types/double/arithmetic/Makefile.sub
-include tests/types/double/comparison/Makefile.sub

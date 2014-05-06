@@ -103,40 +103,6 @@ LIBJIVE_SRC += \
 	src/types/float/fltoperation-classes.c \
 	src/types/float/flttype.c \
 
-# reals
-LIBJIVE_SRC += \
-	src/types/real/arithmetic/rldifference.c \
-	src/types/real/arithmetic/rlnegate.c \
-	src/types/real/arithmetic/rlproduct.c \
-	src/types/real/arithmetic/rlquotient.c \
-	src/types/real/arithmetic/rlsum.c \
-	src/types/real/comparison/rlequal.c \
-	src/types/real/comparison/rlgreater.c \
-	src/types/real/comparison/rlgreatereq.c \
-	src/types/real/comparison/rlless.c \
-	src/types/real/comparison/rllesseq.c \
-	src/types/real/comparison/rlnotequal.c \
-	src/types/real/rlconstant.c \
-	src/types/real/rloperation-classes.c \
-	src/types/real/rltype.c \
-
-# doubles
-LIBJIVE_SRC += \
-	src/types/double/arithmetic/dbldifference.c \
-	src/types/double/arithmetic/dblnegate.c \
-	src/types/double/arithmetic/dblproduct.c \
-	src/types/double/arithmetic/dblquotient.c \
-	src/types/double/arithmetic/dblsum.c \
-	src/types/double/comparison/dblequal.c \
-	src/types/double/comparison/dblgreater.c \
-	src/types/double/comparison/dblgreatereq.c \
-	src/types/double/comparison/dblless.c \
-	src/types/double/comparison/dbllesseq.c \
-	src/types/double/comparison/dblnotequal.c \
-	src/types/double/dblconstant.c	\
-	src/types/double/dbloperation-classes.c \
-	src/types/double/dbltype.c \
-
 # records
 LIBJIVE_SRC += \
 	src/types/record/rcdgroup.c \
@@ -155,28 +121,6 @@ LIBJIVE_SRC += \
 	src/types/function/fctlambda.c \
 	src/types/function/fctsymbolic.c \
 	src/types/function/fcttype.c \
-
-# integrals
-LIBJIVE_SRC += \
-	src/types/integral/arithmetic/itgand.c \
-	src/types/integral/arithmetic/itgdifference.c \
-	src/types/integral/arithmetic/itgmodulo.c \
-	src/types/integral/arithmetic/itgnegate.c \
-	src/types/integral/arithmetic/itgnot.c \
-	src/types/integral/arithmetic/itgor.c \
-	src/types/integral/arithmetic/itgproduct.c \
-	src/types/integral/arithmetic/itgquotient.c \
-	src/types/integral/arithmetic/itgsum.c \
-	src/types/integral/arithmetic/itgxor.c \
-	src/types/integral/comparison/itgequal.c \
-	src/types/integral/comparison/itgless.c \
-	src/types/integral/comparison/itglesseq.c \
-	src/types/integral/comparison/itggreater.c \
-	src/types/integral/comparison/itggreatereq.c \
-	src/types/integral/comparison/itgnotequal.c \
-	src/types/integral/itgconstant.c \
-	src/types/integral/itgoperation-classes.c \
-	src/types/integral/itgtype.c \
 
 # arch definitions
 LIBJIVE_SRC += \

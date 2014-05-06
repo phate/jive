@@ -1,6 +1,0 @@
-TESTS+=\
-	types/real/arithmetic/test-rldifference \
-	types/real/arithmetic/test-rlnegate \
-	types/real/arithmetic/test-rlproduct \
-	types/real/arithmetic/test-rlquotient \
-	types/real/arithmetic/test-rlsum \

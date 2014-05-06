@@ -1,5 +1,0 @@
-TESTS+=\
-	types/real/test-rlconstant \
-
-include tests/types/real/arithmetic/Makefile.sub
-include tests/types/real/comparison/Makefile.sub

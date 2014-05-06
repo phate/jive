@@ -1,8 +1,0 @@
-TESTS+=\
-	types/double/comparison/test-dblequal \
-	types/double/comparison/test-dblgreater \
-	types/double/comparison/test-dblgreatereq \
-	types/double/comparison/test-dblless \
-	types/double/comparison/test-dbllesseq \
-	types/double/comparison/test-dblnotequal \
-

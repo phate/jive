@@ -1,8 +1,5 @@
 include tests/types/bitstring/Makefile.sub
-include tests/types/double/Makefile.sub
 include tests/types/float/Makefile.sub
 include tests/types/function/Makefile.sub
-include tests/types/integral/Makefile.sub
-include tests/types/real/Makefile.sub
 include tests/types/record/Makefile.sub
 include tests/types/union/Makefile.sub
