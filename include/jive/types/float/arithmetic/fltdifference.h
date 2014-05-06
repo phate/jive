@@ -11,6 +11,15 @@
 extern const jive_fltbinary_operation_class JIVE_FLTDIFFERENCE_NODE_;
 #define JIVE_FLTDIFFERENCE_NODE (JIVE_FLTDIFFERENCE_NODE_.base.base)
 
+namespace jive {
+namespace flt {
+
+class difference_operation final : public jive::flt_binary_operation {
+};
+
+}
+}
+
 jive_output *
 jive_fltdifference(struct jive_output * operand1, struct jive_output * operand2);
 

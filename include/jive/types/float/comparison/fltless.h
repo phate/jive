@@ -11,6 +11,15 @@
 extern const jive_fltcomparison_operation_class JIVE_FLTLESS_NODE_;
 #define JIVE_FLTLESS_NODE (JIVE_FLTLESS_NODE_.base.base)
 
+namespace jive {
+namespace flt {
+
+class less_operation final : public jive::flt_compare_operation {
+};
+
+}
+}
+
 jive_output *
 jive_fltless(struct jive_output * operand1, struct jive_output * operand2);
 

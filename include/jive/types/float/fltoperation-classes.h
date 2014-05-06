@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,9 +9,28 @@
 
 #include <jive/vsdg/operators.h>
 
+namespace jive {
+
+class flt_unary_operation : public unary_operation {
+public:
+	virtual ~flt_unary_operation() noexcept;
+};
+
+class flt_binary_operation : public binary_operation {
+public:
+	virtual ~flt_binary_operation() noexcept;
+};
+
+class flt_compare_operation : public binary_operation {
+public:
+	virtual ~flt_compare_operation() noexcept;
+};
+
+}
+
 typedef struct jive_fltbinary_operation_class jive_fltbinary_operation_class;
-typedef struct jive_fltunary_operation_class jive_fltunary_operation_class;
 typedef struct jive_fltcomparison_operation_class jive_fltcomparison_operation_class;
+typedef struct jive_fltunary_operation_class jive_fltunary_operation_class;
 
 typedef enum jive_fltop_code {
 	jive_fltop_code_invalid = 0,

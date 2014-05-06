@@ -16,9 +16,6 @@
 #include <string.h>
 
 static void
-jive_fltconstant_node_init_(jive_fltconstant_node * self, jive_region * region, uint32_t value);
-
-static void
 jive_fltconstant_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 static const jive_node_attrs *
@@ -37,24 +34,11 @@ const jive_node_class JIVE_FLTCONSTANT_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
 	get_label : jive_fltconstant_node_get_label_, /* override */
-	get_attrs : jive_fltconstant_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_fltconstant_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_fltconstant_node_create_, /* override */
 };
-
-static void
-jive_fltconstant_node_init_(jive_fltconstant_node * self, jive_region * region, uint32_t value)
-{
-	jive_float_type flttype;
-	const jive_type * flttype_ptr = &flttype;
-	jive_node_init_(self, region,
-		0, NULL, NULL,
-		1, &flttype_ptr);
-	
-	self->attrs.value = value;
-}
-
 
 static void
 jive_fltconstant_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
@@ -67,41 +51,35 @@ jive_fltconstant_node_get_label_(const jive_node * self_, struct jive_buffer * b
 	};
 
 	union u c;
-	c.i = self->attrs.value;	
+	c.i = self->operation().value();
 
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "%f", c.f);
 	jive_buffer_putstr(buffer, tmp);
 }
 
-static const jive_node_attrs *
-jive_fltconstant_node_get_attrs_(const jive_node * self_)
-{
-	const jive_fltconstant_node * self = (const jive_fltconstant_node *) self_;
-	return &self->attrs;
-}
-
 static bool
 jive_fltconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_fltconstant_node_attrs * first = &((const jive_fltconstant_node *) self)->attrs;
-	const jive_fltconstant_node_attrs * second = (const jive_fltconstant_node_attrs *) attrs;
+	const jive::flt::constant_operation * first = &((const jive_fltconstant_node *) self)->operation();
+	const jive::flt::constant_operation * second = (const jive::flt::constant_operation *) attrs;
 
-	if(first->value != second->value)
-		return false;
-	
-	return true;
+	return first->value() == second->value();
 }
 
 static jive_node *
 jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
-	const jive_fltconstant_node_attrs * attrs = (const jive_fltconstant_node_attrs *) attrs_;
+	const jive::flt::constant_operation * attrs = (const jive::flt::constant_operation *) attrs_;
 
-	jive_fltconstant_node * node = new jive_fltconstant_node;
+	jive_fltconstant_node * node = new jive_fltconstant_node(*attrs);
 	node->class_ = &JIVE_FLTCONSTANT_NODE;
-	jive_fltconstant_node_init_(node, region, attrs->value);
+	jive_float_type flttype;
+	const jive_type * tmparray0[] = {&flttype};
+	jive_node_init_(node, region,
+		0, NULL, NULL,
+		1, tmparray0);
 
 	return node;
 }
@@ -109,8 +87,7 @@ jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs
 jive_output *
 jive_fltconstant(struct jive_graph * graph, uint32_t value)
 {
-	jive_fltconstant_node_attrs attrs;
-	attrs.value = value;
+	jive::flt::constant_operation attrs(value);
 
 	return jive_nullary_operation_create_normalized(&JIVE_FLTCONSTANT_NODE, graph, &attrs);
 }

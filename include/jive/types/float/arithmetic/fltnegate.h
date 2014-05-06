@@ -11,6 +11,15 @@
 extern const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_;
 #define JIVE_FLTNEGATE_NODE (JIVE_FLTNEGATE_NODE_.base.base)
 
+namespace jive {
+namespace flt {
+
+class negate_operation final : public jive::flt_unary_operation {
+};
+
+}
+}
+
 jive_output *
 jive_fltnegate(struct jive_output * operand);
 

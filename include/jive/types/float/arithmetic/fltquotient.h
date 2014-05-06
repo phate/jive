@@ -11,6 +11,15 @@
 extern const jive_fltbinary_operation_class JIVE_FLTQUOTIENT_NODE_;
 #define JIVE_FLTQUOTIENT_NODE (JIVE_FLTQUOTIENT_NODE_.base.base)
 
+namespace jive {
+namespace flt {
+
+class quotient_operation final : public jive::flt_binary_operation {
+};
+
+}
+}
+
 jive_output *
 jive_fltquotient(struct jive_output * operand1, struct jive_output * operand2);
 

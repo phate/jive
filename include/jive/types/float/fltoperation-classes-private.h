@@ -6,6 +6,8 @@
 #ifndef JIVE_TYPES_FLOAT_FLTOPERATION_CLASSES_PRIVATE_H
 #define JIVE_TYPES_FLOAT_FLTOPERATION_CLASSES_PRIVATE_H
 
+#include <jive/vsdg/node.h>
+
 /* fltbinary operation class inhertiable members */
 
 void

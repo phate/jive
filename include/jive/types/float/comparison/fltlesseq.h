@@ -11,6 +11,15 @@
 extern const jive_fltcomparison_operation_class JIVE_FLTLESSEQ_NODE_;
 #define JIVE_FLTLESSEQ_NODE (JIVE_FLTLESSEQ_NODE_.base.base)
 
+namespace jive {
+namespace flt {
+
+class lesseq_operation final : public jive::flt_compare_operation {
+};
+
+}
+}
+
 struct jive_output *
 jive_fltlesseq(struct jive_output * operand1, struct jive_output * operand2);
 

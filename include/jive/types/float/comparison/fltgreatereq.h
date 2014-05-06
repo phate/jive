@@ -11,6 +11,15 @@
 extern const jive_fltcomparison_operation_class JIVE_FLTGREATEREQ_NODE_;
 #define JIVE_FLTGREATEREQ_NODE (JIVE_FLTGREATEREQ_NODE_.base.base)
 
+namespace jive {
+namespace flt {
+
+class greatereq_operation final : public jive::flt_compare_operation {
+};
+
+}
+}
+
 struct jive_output *
 jive_fltgreatereq(struct jive_output * operand1, struct jive_output * operand2);
 

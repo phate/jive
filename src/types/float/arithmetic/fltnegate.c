@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -22,7 +23,7 @@ const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : jive_node_get_attrs_, /* inherit */
+			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltbinary_operation_check_operands_, /* inherit */
 			create : jive_fltnegate_node_create_, /* overrride */
@@ -54,7 +55,7 @@ jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs *
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	jive_node * node = new jive_node;
+	jive_node * node = jive::create_operation_node(jive::flt::negate_operation());
 	node->class_ = &JIVE_FLTNEGATE_NODE;
 	jive_fltnegate_node_init_(node, region, operands[0]);
 	return node;
@@ -63,6 +64,7 @@ jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs *
 jive_output *
 jive_fltnegate(struct jive_output * operand)
 {
+	jive::flt::negate_operation op;
 	return jive_unary_operation_create_normalized(&JIVE_FLTNEGATE_NODE_.base, operand->node->graph,
-		NULL, operand);
+		&op, operand);
 }

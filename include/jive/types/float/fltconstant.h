@@ -7,19 +7,29 @@
 #define JIVE_TYPES_FLOAT_FLTCONSTANT_H
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators.h>
 
 extern const jive_node_class JIVE_FLTCONSTANT_NODE;
 
-typedef struct jive_fltconstant_node jive_fltconstant_node;
-typedef struct jive_fltconstant_node_attrs jive_fltconstant_node_attrs;
+namespace jive {
+namespace flt {
 
-struct jive_fltconstant_node_attrs : public jive_node_attrs {
-	uint32_t value;
+class constant_operation final : public jive::nullary_operation {
+public:
+	inline constexpr constant_operation(uint32_t value) noexcept
+		: value_(value) {}
+	inline constexpr constant_operation(const constant_operation& other) noexcept
+		: value_(other.value_) {}
+	
+	uint32_t value() const noexcept { return value_; }
+private:
+	uint32_t value_;
 };
 
-struct jive_fltconstant_node : public jive_node {
-	jive_fltconstant_node_attrs attrs;
-};
+}
+}
+
+typedef jive::operation_node<jive::flt::constant_operation> jive_fltconstant_node;
 
 jive_output *
 jive_fltconstant(struct jive_graph * graph, uint32_t value);
