@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -11,19 +12,25 @@
 extern const jive_unary_operation_class JIVE_CHOOSE_NODE_;
 #define JIVE_CHOOSE_NODE (JIVE_CHOOSE_NODE_.base)
 
-typedef struct jive_choose_node jive_choose_node;
-typedef struct jive_choose_node_attrs jive_choose_node_attrs;
+namespace jive {
+namespace unn {
 
-struct jive_choose_node_attrs : public jive_node_attrs {
-	size_t element;
+class choose_operation final : public unary_operation {
+public:
+	inline constexpr
+	choose_operation(size_t element) noexcept : element_(element) {}
+
+	inline size_t
+	element() const noexcept { return element_; }
+
+private:
+	size_t element_;
 };
 
-struct jive_choose_node : public jive_node {
-	jive_choose_node_attrs attrs;
-};
+}
+}
 
-jive_output *
-jive_choose_node_create(struct jive_region * region, size_t element, jive_output * operand);
+typedef jive::operation_node<jive::unn::choose_operation> jive_choose_node;
 
 jive_output *
 jive_choose_create(size_t element, jive_output * operand);

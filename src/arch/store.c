@@ -54,7 +54,7 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
 	jive_unify_node * unify_node = jive_unify_node_cast(value->node);
-	const jive_union_declaration * decl = unify_node->attrs.decl;
+	const jive_union_declaration * decl = unify_node->operation().declaration();
 
 	if (decl->nelements == 0) {
 		size_t n;
@@ -67,7 +67,7 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 
 	jive_store_node_attrs elem_attrs;
 	elem_attrs.nbits = attrs->nbits;
-	elem_attrs.datatype = (jive_value_type *) decl->elements[unify_node->attrs.option];
+	elem_attrs.datatype = (jive_value_type *) decl->elements[unify_node->operation().option()];
 
 	jive_store_node_normalized_create(self, region, &elem_attrs, address,
 		unify_node->inputs[0]->origin(), nstates, istates, ostates);
