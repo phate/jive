@@ -779,7 +779,7 @@ jive_negotiator_maybe_split_edge(jive_negotiator * self, jive_output * origin, j
 	
 	jive_negotiator_port * split_output_port = jive_negotiator_map_output(self, split_output);
 	
-	jive_input_divert_origin(input, split_output);
+	input->divert_origin(split_output);
 	jive_negotiator_port_divert(input_port, split_output_port->connection);
 }
 

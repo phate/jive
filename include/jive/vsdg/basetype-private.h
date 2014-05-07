@@ -9,9 +9,6 @@
 
 #include <jive/vsdg/basetype.h>
 
-void
-jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin);
-
 /* inheritable type member functions */
 
 void

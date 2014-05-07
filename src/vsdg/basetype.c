@@ -213,6 +213,57 @@ jive_input::swap(jive_input * other) noexcept
 }
 
 void
+jive_input::divert_origin(jive_output * new_origin) noexcept
+{
+	JIVE_DEBUG_ASSERT(!this->ssavar);
+	internal_divert_origin(new_origin);
+}
+
+void
+jive_input::internal_divert_origin(jive_output * new_origin) noexcept
+{
+	const jive_type * input_type = jive_input_get_type(this);
+	const jive_type * operand_type = jive_output_get_type(new_origin);
+
+	if (!jive_type_equals(input_type, operand_type)) {
+		jive_raise_type_error(input_type, operand_type, this->node->graph->context);
+	}
+	if (input_type->class_ == &JIVE_ANCHOR_TYPE) {
+		jive_context_fatal_error(this->node->graph->context,
+			"Type mismatch: Cannot divert edges of 'anchor' type");
+	}
+
+	JIVE_DEBUG_ASSERT(this->node->graph == new_origin->node->graph);
+
+	if (this->origin->node->region != this->node->region)
+		jive_region_hull_remove_input(this->node->region, this);
+
+	if (this->node->graph->floating_region_count)
+		jive_region_check_move_floating(this->node->region, new_origin->node->region);
+
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node, new_origin));
+
+	jive_output * old_origin = this->origin;
+
+	jive_input_remove_as_user(this, old_origin);
+	this->origin = new_origin;
+	jive_input_add_as_user(this, new_origin);
+
+	if (new_origin->node->region != this->node->region)
+		jive_region_hull_add_input(this->node->region, this);
+
+	jive_node_invalidate_depth_from_root(this->node);
+
+	jive_graph_mark_denormalized(new_origin->node->graph);
+
+	jive_graph_notify_input_change(this->node->graph, this, old_origin, new_origin);
+
+#ifdef JIVE_DEBUG
+	jive_region_verify_hull(this->node->region->graph->root_region);
+#endif
+}
+
+void
 jive_input::label(jive_buffer & buffer) const
 {
 	if (gate) {
@@ -245,57 +296,6 @@ void
 jive_input_unassign_ssavar(jive_input * self)
 {
 	if (self->ssavar) jive_ssavar_unassign_input(self->ssavar, self);
-}
-
-void
-jive_input_divert_origin(jive_input * self, jive_output * new_origin)
-{
-	JIVE_DEBUG_ASSERT(!self->ssavar);
-	jive_input_internal_divert_origin(self, new_origin);
-}
-
-void
-jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
-{
-	const jive_type * input_type = jive_input_get_type(self);
-	const jive_type * operand_type = jive_output_get_type(new_origin);
-	
-	if (!jive_type_equals(input_type, operand_type)) {
-		jive_raise_type_error(input_type, operand_type, self->node->graph->context);
-	}
-	if (input_type->class_ == &JIVE_ANCHOR_TYPE) {
-		jive_context_fatal_error(self->node->graph->context,
-			"Type mismatch: Cannot divert edges of 'anchor' type");
-	}
-	
-	JIVE_DEBUG_ASSERT(self->node->graph == new_origin->node->graph);
-
-	if (self->origin->node->region != self->node->region)
-		jive_region_hull_remove_input(self->node->region, self);
-
-	if (self->node->graph->floating_region_count)
-		jive_region_check_move_floating(self->node->region, new_origin->node->region);
-	
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self->node, new_origin));
-	
-	jive_output * old_origin = self->origin;
-	
-	jive_input_remove_as_user(self, old_origin);
-	self->origin = new_origin;
-	jive_input_add_as_user(self, new_origin);
-	
-	if (new_origin->node->region != self->node->region)
-		jive_region_hull_add_input(self->node->region, self);
-
-	jive_node_invalidate_depth_from_root(self->node);
-	
-	jive_graph_mark_denormalized(new_origin->node->graph);
-	
-	jive_graph_notify_input_change(self->node->graph, self, old_origin, new_origin);
-
-#ifdef JIVE_DEBUG
-	jive_region_verify_hull(self->node->region->graph->root_region);
-#endif
 }
 
 jive_ssavar *
@@ -497,7 +497,7 @@ jive_output_replace(jive_output * self, jive_output * other)
 {
 	while(self->users.first) {
 		jive_input * input = self->users.first;
-		jive_input_divert_origin(input, other);
+		input->divert_origin(other);
 	}
 }
 

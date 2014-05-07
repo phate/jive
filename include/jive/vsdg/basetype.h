@@ -142,6 +142,13 @@ public:
 	virtual const jive_type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
+
+	/*
+		FIXME: Try to merge internal_divert_origin and divert_origin methods.
+	*/
+	void internal_divert_origin(jive_output * new_origin) noexcept;
+
+	void divert_origin(jive_output * new_origin) noexcept;
 	
 	/*
 		FIXME: This function is only used two times in src/regalloc/fixup.c. See whether we can
@@ -178,8 +185,6 @@ public:
 	const struct jive_resource_class * required_rescls;
 };
 
-void
-jive_input_divert_origin(jive_input * self, jive_output * new_origin);
 
 JIVE_EXPORTED_INLINE void
 jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)

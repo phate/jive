@@ -351,5 +351,5 @@ jive_subroutine_simple_get_global_state(const jive_subroutine self)
 void
 jive_subroutine_simple_set_global_state(jive_subroutine self, struct jive_output * state)
 {
-	jive_input_divert_origin(self.old_subroutine_struct->passthroughs[0].input, state);
+	self.old_subroutine_struct->passthroughs[0].input->divert_origin(state);
 }

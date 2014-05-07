@@ -347,7 +347,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		size_t n;
 		for (n = 0; n < split->users.nitems; n++) {
 			jive_input * user = split->users.items[n];
-			jive_input_divert_origin(user, restored_value);
+			user->divert_origin(restored_value);
 		}
 		
 		jive_output_auto_merge_variable(restored_value);
@@ -431,7 +431,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			
 			jive_input_auto_assign_variable(xfer_input);
 			jive_input_unassign_ssavar(input);
-			jive_input_divert_origin(input, xfer_output);
+			input->divert_origin(xfer_output);
 			
 			/* determine place where to insert node -- try immediately before the gating node,
 			but move before predicating node if there is one */

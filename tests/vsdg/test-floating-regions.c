@@ -69,10 +69,10 @@ jive_output * tmparray5[] = {node0->outputs[0], node1->outputs[0], node2->output
 	jive_view(graph, stdout);
 	assert(floating.region->parent == region2);
 
-	jive_input_divert_origin(fnode2->inputs[1], node0->outputs[0]);
+	fnode2->inputs[1]->divert_origin(node0->outputs[0]);
 	assert(floating.region->parent == region2);
 
-	jive_input_divert_origin(fnode1->inputs[1], node0->outputs[0]);
+	fnode1->inputs[1]->divert_origin(node0->outputs[0]);
 	assert(floating.region->parent == region2);
 
 	jive_graph_destroy(graph);

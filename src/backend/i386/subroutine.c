@@ -224,7 +224,7 @@ jive_i386_subroutine_create(jive_region * region,
 	retaddr_use->required_rescls = stackslot_cls;
 	
 	/* divert control output of "leave" node */
-	jive_input_divert_origin(self->base.leave->inputs[0], ret_instr->outputs[0]);
+	self->base.leave->inputs[0]->divert_origin(ret_instr->outputs[0]);
 
 	return &self->base;
 }

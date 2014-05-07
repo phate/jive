@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -225,7 +225,7 @@ reloc_stack_access(jive_node * node)
 		}
 		if (!jive_immediate_equals(&imm, &immnode->attrs.value)) {
 			jive_output * new_immval = jive_immediate_create(node->region->graph, &imm);
-			jive_input_divert_origin(imm_input, new_immval);
+			imm_input->divert_origin(new_immval);
 		}
 	}
 }
@@ -286,7 +286,7 @@ do_split(const jive_subroutine_late_transforms * self_, jive_output * port_in, j
 			jive_output_auto_merge_variable(output);
 	}
 	jive_ssavar_unassign_input(ssavar_interior, port_out);
-	jive_input_divert_origin(port_out, value_leave);
+	port_out->divert_origin(value_leave);
 	jive_ssavar_assign_input(ssavar_leave, port_out);
 	
 	/* insert at beginning/end of region */

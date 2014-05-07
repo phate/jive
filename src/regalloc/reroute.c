@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -90,7 +91,7 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	jive_ssavar_assign_output(ssavar_below, out);
 	for (n = 0; n < jive_input_vector_size(users_below); ++n) {
 		jive_input * input = jive_input_vector_item(users_below, n);
-		jive_input_divert_origin(input, out);
+		input->divert_origin(out);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
 	for (n = 0; n < jive_input_vector_size(&users1); ++n) {
@@ -176,7 +177,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	/* all loop users must use new definition from inside loop ... */
 	JIVE_LIST_ITERATE_SAFE(origin->users, user, next, output_users_list) {
 		if (jive_region_contains_node(loop_region, user->node) && user != into_loop) {
-			jive_input_divert_origin(user, def_inside);
+			user->divert_origin(def_inside);
 		}
 	}
 	/* ... but assign ssavar only to those that had an ssavar
@@ -196,7 +197,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	jive_ssavar_assign_output(ssavar_below, def_outside);
 	for (n = 0; n < jive_input_vector_size(users_below); ++n) {
 		jive_input * input = jive_input_vector_item(users_below, n);
-		jive_input_divert_origin(input, def_outside);
+		input->divert_origin(def_outside);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
 	

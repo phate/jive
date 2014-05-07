@@ -36,7 +36,7 @@ pre_op_transfer(jive_shaped_graph * shaped_graph, jive_node * node, const jive_r
 	jive_input_unassign_ssavar(node->inputs[0]);
 	
 	/* divert & insert */
-	jive_input_divert_origin(node->inputs[0], xfer_output);
+	node->inputs[0]->divert_origin(xfer_output);
 	jive_ssavar * new_var = jive_output_auto_merge_variable(xfer_output);
 	
 	jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, node);

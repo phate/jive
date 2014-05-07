@@ -44,7 +44,7 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 
-	jive_input_divert_origin(sum->node->inputs[1], sum->node->inputs[0]->origin);
+	sum->node->inputs[1]->divert_origin(sum->node->inputs[0]->origin);
 
 	jive_view(graph, stderr);
 	

@@ -111,7 +111,7 @@ test_mutable_upward_cone_3(jive_context * ctx)
 	
 	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
 	
-	jive_input_divert_origin(g.a2->inputs[0], g.b1->outputs[0]);
+	g.a2->inputs[0]->divert_origin(g.b1->outputs[0]);
 	assert( jive_traverser_next(trav) == g.a2 );
 	assert( jive_traverser_next(trav) == g.b1 );
 	

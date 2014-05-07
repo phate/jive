@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -217,7 +218,7 @@ jive_ssavar_divert_origin(jive_ssavar * self, jive_output * new_origin)
 	
 	jive_input * input;
 	JIVE_LIST_ITERATE(self->assigned_inputs, input, ssavar_input_list) {
-		jive_input_internal_divert_origin(input, new_origin);
+		input->internal_divert_origin(new_origin);
 	}
 	
 	if (self->use_count) {
