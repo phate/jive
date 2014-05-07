@@ -55,11 +55,11 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 
-	jive_node * test_sum = interest->inputs[0]->origin->node;
+	jive_node * test_sum = interest->inputs[0]->origin()->node;
 	assert(jive_node_isinstance(test_sum, &JIVE_BITSUM_NODE));
 	assert(test_sum->ninputs == 2);
-	assert(test_sum->inputs[0]->origin == c0);
-	assert(test_sum->inputs[1]->origin == c1);
+	assert(test_sum->inputs[0]->origin() == c0);
+	assert(test_sum->inputs[1]->origin() == c1);
 	
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(ctx);

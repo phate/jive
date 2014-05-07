@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -131,7 +131,7 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	jive_output * output = node->outputs[0];
 	
 	if (self->enable_reducible) {
-		jive_output * tmp = node->inputs[0]->origin;
+		jive_output * tmp = node->inputs[0]->origin();
 		jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, tmp);
 		if (reduction != jive_unop_reduction_none) {
 			tmp = jive_unary_operation_reduce_operand(reduction, self, attrs, tmp);
@@ -143,7 +143,7 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	}
 	
 	if (self->base.enable_cse) {
-		jive_output * operands[] = { node->inputs[0]->origin };
+		jive_output * operands[] = { node->inputs[0]->origin() };
 		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1, operands);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -124,8 +125,8 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const
 	
 	size_t n = 0;
 	for (n = 0; n < n1->ninputs; ++n) {
-		jive_output * o1 = n1->inputs[n]->origin;
-		jive_output * o2 = n2->inputs[n]->origin;
+		jive_output * o1 = n1->inputs[n]->origin();
+		jive_output * o2 = n2->inputs[n]->origin();
 		
 		jive_node_equiv_entry * entry = jive_equiv_state_lookup(self, o1->node);
 		if (entry->second && entry->second != o2->node)

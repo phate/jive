@@ -29,7 +29,7 @@ jive_i386_subroutine_create(jive_region * region,
 jive_node *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
 {
-	jive_region * src_region = lambda_node->inputs[0]->origin->node->region;
+	jive_region * src_region = lambda_node->inputs[0]->origin()->node->region;
 	jive_context * context = target_parent->graph->context;
 	
 	size_t nparameters = src_region->top->noutputs - 1;
@@ -90,7 +90,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	for (n = 1; n < src_region->bottom->ninputs; n++) {
 		jive_input * original = src_region->bottom->inputs[n];
 		jive_output * retval = jive_substitution_map_lookup_output(
-			subst, src_region->bottom->inputs[n]->origin);
+			subst, src_region->bottom->inputs[n]->origin());
 		
 		if (dynamic_cast<jive_value_input*>(original)) {
 			if(dynamic_cast<jive_address_input*>(original))
@@ -314,7 +314,7 @@ jive_i386_subroutine_add_fp_dependency_(const jive_subroutine_deprecated * self_
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (input->origin == frameptr)
+		if (input->origin() == frameptr)
 			return NULL;
 	}
 	return jive_node_add_input(node, jive_output_get_type(frameptr), frameptr);
@@ -329,7 +329,7 @@ jive_i386_subroutine_add_sp_dependency_(const jive_subroutine_deprecated * self_
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (input->origin == stackptr)
+		if (input->origin() == stackptr)
 			return NULL;
 	}
 	return jive_node_add_input(node, jive_output_get_type(stackptr), stackptr);

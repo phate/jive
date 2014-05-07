@@ -77,7 +77,8 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 			size_t nsub_items;
 			jive_output ** sub_items;
 			
-			flatten_data_items(ctx, data->node->inputs[k]->origin, &nsub_items, &sub_items, layout_mapper);
+			flatten_data_items(ctx, data->node->inputs[k]->origin(), &nsub_items, &sub_items,
+				layout_mapper);
 			
 			if (nsub_items + layout->element[k].offset > nitems)
 				jive_context_fatal_error(ctx, "Invalid record layout: element exceeds record");
@@ -112,7 +113,7 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		size_t nsub_items;
 		jive_output ** sub_items;
 		
-		flatten_data_items(ctx, data->node->inputs[0]->origin, &nsub_items, &sub_items, layout_mapper);
+		flatten_data_items(ctx, data->node->inputs[0]->origin(), &nsub_items, &sub_items, layout_mapper);
 		
 		if (nsub_items > nitems)
 			jive_context_fatal_error(ctx, "Invalid union layout: element exceeds union");

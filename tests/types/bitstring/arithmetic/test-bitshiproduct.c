@@ -38,7 +38,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITSHIPRODUCT_NODE));
+	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITSHIPRODUCT_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

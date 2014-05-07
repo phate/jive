@@ -44,8 +44,8 @@ static int test_main(void)
 		2, tmparray1, tmparray2,
 		0, NULL);
 
-	assert(bottom->inputs[0]->origin == top->outputs[0]);
-	assert(bottom->inputs[1]->origin == top->outputs[1]);
+	assert(bottom->inputs[0]->origin() == top->outputs[0]);
+	assert(bottom->inputs[1]->origin() == top->outputs[1]);
 
 	jive_output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
 	jive_output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);

@@ -540,7 +540,7 @@ jive_shaped_ssavar_xpoints_register_arcs(jive_shaped_ssavar * self)
 	jive_variable * variable = ssavar->variable;
 	jive_input * input;
 	JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
-		jive_shaped_ssavar_xpoints_register_arc(self, input, input->origin);
+		jive_shaped_ssavar_xpoints_register_arc(self, input, input->origin());
 	}
 	if (ssavar->assigned_output) {
 		jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, ssavar->assigned_output->node);
@@ -562,7 +562,7 @@ jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self)
 	jive_variable * variable = ssavar->variable;
 	jive_input * input;
 	JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
-		jive_shaped_ssavar_xpoints_unregister_arc(self, input, input->origin);
+		jive_shaped_ssavar_xpoints_unregister_arc(self, input, input->origin());
 	}
 	if (ssavar->assigned_output) {
 		jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, ssavar->assigned_output->node);

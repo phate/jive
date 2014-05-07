@@ -40,7 +40,7 @@ regvalue_to_immediate(const jive_output * regvalue, jive_immediate * imm)
 {
 	jive_node * rvnode = regvalue->node;
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(rvnode, &JIVE_REGVALUE_NODE));
-	jive_output * value = rvnode->inputs[1]->origin;
+	jive_output * value = rvnode->inputs[1]->origin();
 	
 	jive_bitconstant_node * bcnode = jive_bitconstant_node_cast(value->node);
 	if (bcnode) {
@@ -62,8 +62,8 @@ convert_bitbinary(jive_node * node,
 	const jive_instruction_class * regreg_icls,
 	const jive_instruction_class * regimm_icls)
 {
-	jive_output * arg1 = node->inputs[0]->origin;
-	jive_output * arg2 = node->inputs[1]->origin;
+	jive_output * arg1 = node->inputs[0]->origin();
+	jive_output * arg2 = node->inputs[1]->origin();
 	
 	bool commutative = (regreg_icls->flags & jive_instruction_commutative) != 0;
 	bool second_is_immediate = false;
@@ -96,8 +96,8 @@ convert_bitbinary(jive_node * node,
 static void
 convert_divmod(jive_node * node, bool sign, size_t index)
 {
-	jive_output * arg1 = node->inputs[0]->origin;
-	jive_output * arg2 = node->inputs[1]->origin;
+	jive_output * arg1 = node->inputs[0]->origin();
+	jive_output * arg2 = node->inputs[1]->origin();
 	
 	jive_output * ext;
 	const jive_instruction_class * icls;
@@ -119,7 +119,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 			NULL, imm);
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
-		jive_node * enter = sub->inputs[0]->origin->node->region->top;
+		jive_node * enter = sub->inputs[0]->origin()->node->region->top;
 		jive_control_type ctl;
 		jive_node_add_input(tmp, &ctl, enter->outputs[0]);
 		
@@ -139,8 +139,8 @@ convert_complex_bitbinary(jive_node * node,
 	const jive_instruction_class * icls,
 	size_t result_index)
 {
-	jive_output * arg1 = node->inputs[0]->origin;
-	jive_output * arg2 = node->inputs[1]->origin;
+	jive_output * arg1 = node->inputs[0]->origin();
+	jive_output * arg2 = node->inputs[1]->origin();
 	jive_output * tmparray4[] = {arg1, arg2};
 	
 	jive_node * instr = jive_instruction_node_create(node->region,
@@ -236,8 +236,8 @@ convert_bitcmp(
 	const jive_instruction_class * jump_icls,
 	const jive_instruction_class * inv_jump_icls)
 {
-	jive_output * arg1 = node->inputs[0]->origin;
-	jive_output * arg2 = node->inputs[1]->origin;
+	jive_output * arg1 = node->inputs[0]->origin();
+	jive_output * arg2 = node->inputs[1]->origin();
 	
 	bool second_is_immediate = is_gpr_immediate(arg2);
 	if (!second_is_immediate) {
@@ -370,7 +370,7 @@ match_gpr_bitunary(jive_node * node)
 		case jive_bitop_code_invalid:
 			JIVE_DEBUG_ASSERT(false);
 	}
-	jive_output * tmparray8[] = {node->inputs[0]->origin};
+	jive_output * tmparray8[] = {node->inputs[0]->origin()};
 	jive_node * instr = jive_instruction_node_create(node->region,
 		icls,
 		tmparray8, NULL);
@@ -390,7 +390,7 @@ match_gpr_immediate(jive_node * node)
 		&jive_i386_instr_int_load_imm,
 		NULL, imm);
 	jive_control_type ctl;
-	jive_node_add_input(instr, &ctl, node->inputs[0]->origin);
+	jive_node_add_input(instr, &ctl, node->inputs[0]->origin());
 	
 	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }
@@ -422,7 +422,7 @@ classify_address(jive_output * output)
 static void
 match_gpr_load(jive_node * node)
 {
-	jive_i386_addr_info info = classify_address(node->inputs[0]->origin);
+	jive_i386_addr_info info = classify_address(node->inputs[0]->origin());
 	
 	jive_node * instr;
 	jive_output * value;
@@ -444,9 +444,9 @@ match_gpr_load(jive_node * node)
 	for (n = 1; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		if (input->gate)
-			jive_node_gate_input(instr, input->gate, input->origin);
+			jive_node_gate_input(instr, input->gate, input->origin());
 		else
-			jive_node_add_input(instr, jive_input_get_type(input), input->origin);
+			jive_node_add_input(instr, jive_input_get_type(input), input->origin());
 	}
 	for (n = 1; n < node->noutputs; n++) {
 		jive_output * output = node->outputs[n];
@@ -462,8 +462,8 @@ match_gpr_load(jive_node * node)
 static void
 match_gpr_store(jive_node * node)
 {
-	jive_i386_addr_info info = classify_address(node->inputs[0]->origin);
-	jive_output * value = node->inputs[1]->origin;
+	jive_i386_addr_info info = classify_address(node->inputs[0]->origin());
+	jive_output * value = node->inputs[1]->origin();
 	
 	jive_node * instr;
 	switch (info.mode) {
@@ -482,9 +482,9 @@ match_gpr_store(jive_node * node)
 	for (n = 2; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		if (input->gate)
-			jive_node_gate_input(instr, input->gate, input->origin);
+			jive_node_gate_input(instr, input->gate, input->origin());
 		else
-			jive_node_add_input(instr, jive_input_get_type(input), input->origin);
+			jive_node_add_input(instr, jive_input_get_type(input), input->origin());
 	}
 	for (n = 0; n < node->noutputs; n++) {
 		jive_output * output = node->outputs[n];

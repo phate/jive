@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -276,8 +276,8 @@ jive_seq_graph_patch_jump_targets(
 	if (user->class_ == &JIVE_SUBROUTINE_LEAVE_NODE) {
 		return;
 	} else if (user->class_ == &JIVE_GAMMA_NODE) {
-		jive_region * primary_region = user->inputs[0]->origin->node->region;
-		jive_region * secondary_region = user->inputs[1]->origin->node->region;
+		jive_region * primary_region = user->inputs[0]->origin()->node->region;
+		jive_region * secondary_region = user->inputs[1]->origin()->node->region;
 		primary_tgt = jive_seq_graph_map_region(seq_graph, primary_region)->first_point;
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, secondary_region)->first_point;
 	} else {

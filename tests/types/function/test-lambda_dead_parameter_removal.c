@@ -50,9 +50,9 @@ const jive_type * tmparray5[] = {vtype, vtype};
 
 	jive_view(graph, stderr);
 
-	assert(bottom->inputs[1]->origin->node == top);
+	assert(bottom->inputs[1]->origin()->node == top);
 
-	jive_node * apply = bottom->inputs[0]->origin->node;
+	jive_node * apply = bottom->inputs[0]->origin()->node;
 	assert(apply->ninputs == 2);
 
 }

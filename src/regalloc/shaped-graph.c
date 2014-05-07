@@ -155,7 +155,7 @@ jive_shaped_graph_ssavar_assign_input(void * closure, jive_ssavar * ssavar, jive
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-	jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, input->origin);
+	jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, input->origin());
 }
 
 static void
@@ -163,7 +163,7 @@ jive_shaped_graph_ssavar_unassign_input(void * closure, jive_ssavar * ssavar, ji
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-	jive_shaped_ssavar_xpoints_unregister_arc(shaped_ssavar, input, input->origin);
+	jive_shaped_ssavar_xpoints_unregister_arc(shaped_ssavar, input, input->origin());
 }
 
 static void

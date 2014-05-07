@@ -126,15 +126,15 @@ static int test_main(void)
 	assert(theta_tail->inputs[2]->gate == gate);
 	assert(theta_node->outputs[1]->gate == gate);
 	
-	assert(theta_head->inputs[1]->origin == top->outputs[1]);
-	assert(theta_tail->inputs[2]->origin == theta_head->outputs[2]);
-	assert(bottom->inputs[1]->origin == theta_node->outputs[1]);
+	assert(theta_head->inputs[1]->origin() == top->outputs[1]);
+	assert(theta_tail->inputs[2]->origin() == theta_head->outputs[2]);
+	assert(bottom->inputs[1]->origin() == theta_node->outputs[1]);
 	
 	assert(top->outputs[1]->ssavar == orig_ssavar);
 	assert(theta_head->inputs[1]->ssavar == orig_ssavar);
 	assert(theta_head->outputs[2]->ssavar == ssavar_p);
 	assert(theta_tail->inputs[2]->ssavar == ssavar_p);
-	assert(theta_op->inputs[1]->origin == theta_head->outputs[2]);
+	assert(theta_op->inputs[1]->origin() == theta_head->outputs[2]);
 	assert(theta_op->inputs[1]->ssavar == ssavar_p);
 	
 	jive_ssavar * ssavar_below = bottom->inputs[1]->ssavar;

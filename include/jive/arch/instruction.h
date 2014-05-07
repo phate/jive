@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -73,7 +73,7 @@ jive_instruction_node_get_immediate(
 {
 	const jive_instruction_class * icls = node->attrs.icls;
 	jive_input * input = node->inputs[index + icls->ninputs];
-	return (struct jive_immediate_node *) input->origin->node;
+	return (struct jive_immediate_node *) input->origin()->node;
 }
 
 #endif

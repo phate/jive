@@ -55,8 +55,8 @@ jive_anchor_input::jive_anchor_input(struct jive_node * node, size_t index,
 
 jive_anchor_input::~jive_anchor_input() noexcept
 {
-	if (origin->node->region->anchor == this)
-		origin->node->region->anchor = nullptr;
+	if (origin()->node->region->anchor == this)
+		origin()->node->region->anchor = nullptr;
 }
 
 jive_anchor_output::~jive_anchor_output() noexcept {}

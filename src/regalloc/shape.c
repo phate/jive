@@ -231,13 +231,13 @@ can_move_below_cut(jive_region_shaper * self, jive_cut * cut, jive_node * new_no
 		for (n = 0; n < node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
 			if (dynamic_cast<jive_anchor_input*>(input)) {
-				if (!can_move_below_region(self, input->origin->node->region, new_node))
+				if (!can_move_below_region(self, input->origin()->node->region, new_node))
 					return false;
 			}
 		}
 		
 		for (n = 0; n < node->ninputs; n++) {
-			if (node->inputs[n]->origin->node == new_node)
+			if (node->inputs[n]->origin()->node == new_node)
 				return false;
 		}
 		
@@ -369,10 +369,10 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		if (!dynamic_cast<jive_control_input*>(input))
 			continue;
 		
-		jive_control_output * ctl_output = (jive_control_output *) input->origin;
+		jive_control_output * ctl_output = (jive_control_output *) input->origin();
 		if (!ctl_output->active())
 			continue;
-		self->control_dominator = input->origin->node;
+		self->control_dominator = input->origin()->node;
 	}
 	
 	for (n = 0; n < new_node->ninputs; n++) {
@@ -623,7 +623,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		JIVE_DEBUG_ASSERT(!input->ssavar);
-		jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(active, input->origin);
+		jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(active, input->origin());
 		jive_variable * new_constraint = jive_input_get_constraint(input);
 		
 		jive_shaped_variable * shaped_variable = 0;
@@ -662,7 +662,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 		}
 		
 		if (!shaped_ssavar) {
-			jive_ssavar * ssavar = jive_ssavar_create(input->origin, new_constraint);
+			jive_ssavar * ssavar = jive_ssavar_create(input->origin(), new_constraint);
 			jive_ssavar_assign_input(ssavar, input);
 			shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
 			jive_mutable_varcut_ssavar_add(active, shaped_ssavar, 1);
@@ -868,7 +868,8 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 		jive_input * input = new_node->inputs[n];
 		if (!dynamic_cast<jive_anchor_input*>(input))
 			continue;
-		jive_region_shaper * subshaper = jive_region_shaper_create(self, input->origin->node->region, self->master_selector);
+		jive_region_shaper * subshaper = jive_region_shaper_create(self,
+			input->origin()->node->region, self->master_selector);
 		subshapers[nsubshapers++] = subshaper;
 	}
 	

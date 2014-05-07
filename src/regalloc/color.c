@@ -22,7 +22,7 @@ is_active_control_input(jive_input * input)
 	if (!dynamic_cast<jive_control_input*>(input))
 		return false;
 	
-	return ((jive_control_output *) input->origin)->active();
+	return ((jive_control_output *) input->origin())->active();
 }
 
 static jive_shaped_variable *
@@ -393,7 +393,7 @@ merge_gate_ports(jive_gate * gate)
 	
 	jive_input * input;
 	JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list)
-		jive_output_auto_merge_variable(input->origin);
+		jive_output_auto_merge_variable(input->origin());
 }
 
 static jive_shaped_variable *
@@ -413,7 +413,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
 		jive_input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
-			jive_output * origin = input->origin;
+			jive_output * origin = input->origin();
 				
 			/* don't issue xfer instruction between "tied" gates */
 			if (origin->gate == gate) {
@@ -439,7 +439,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			size_t n;
 			for (n = 0; n < node->ninputs; n++) {
 				if (is_active_control_input(node->inputs[n])) {
-					node = node->inputs[n]->origin->node;
+					node = node->inputs[n]->origin()->node;
 					break;
 				}
 			}
@@ -601,8 +601,8 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	while (gate->inputs.first) {
 		jive_input * input = gate->inputs.first;
 		jive_node * node = input->node;
-		jive_node * xfer_node = input->origin->node;
-		jive_output * origin = xfer_node->inputs[0]->origin;
+		jive_node * xfer_node = input->origin()->node;
+		jive_output * origin = xfer_node->inputs[0]->origin();
 			
 		jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
 		jive_shaped_node_destroy(p);

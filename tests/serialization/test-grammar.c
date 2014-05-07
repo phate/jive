@@ -215,7 +215,7 @@ verify_serialize_nodeexpr(jive_node * node,
 			jive_serialization_symtab_strdup(&ctx.drv.symtab, gate_names[n]));
 	for (n = 0; n < node->ninputs; ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab,
-			node->inputs[n]->origin,
+			node->inputs[n]->origin(),
 			jive_serialization_symtab_strdup(&ctx.drv.symtab, input_names[n]));
 	for (n = 0; n < node->noutputs; ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab,
@@ -258,7 +258,7 @@ verify_deserialize_nodeexpr(
 	assert(node->noutputs == expected_node->noutputs);
 	
 	for (n = 0; n < node->ninputs; ++n) {
-		assert(node->inputs[n]->origin == expected_node->inputs[n]->origin);
+		assert(node->inputs[n]->origin() == expected_node->inputs[n]->origin());
 		assert(node->inputs[n]->required_rescls == expected_node->inputs[n]->required_rescls);
 		assert(node->inputs[n]->gate == expected_node->inputs[n]->gate);
 	}

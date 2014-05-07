@@ -128,13 +128,13 @@ static inline void
 jive_input_remove_as_user(jive_input * self, jive_output * output)
 {
 	JIVE_LIST_REMOVE(output->users, self, output_users_list);
-	jive_node_remove_successor(self->origin->node);
+	jive_node_remove_successor(self->origin()->node);
 }
 
-jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * origin_)
+jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * origin)
 	: node(node_)
 	, index(index_)
-	, origin(origin_)
+	, origin_(origin)
 	, gate(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, ssavar(nullptr)
@@ -165,7 +165,7 @@ jive_input::~jive_input() noexcept
 		}
 	}
 
-	jive_input_remove_as_user(this, origin);
+	jive_input_remove_as_user(this, origin_);
 
 	size_t n;
 	node->ninputs--;
@@ -191,8 +191,8 @@ jive_input::swap(jive_input * other) noexcept
 	if (v1) jive_ssavar_unassign_input(v1, this);
 	if (v2) jive_ssavar_unassign_input(v2, other);
 
-	jive_output * o1 = this->origin;
-	jive_output * o2 = other->origin;
+	jive_output * o1 = this->origin();
+	jive_output * o2 = other->origin();
 
 	jive_input_remove_as_user(this, o1);
 	jive_input_remove_as_user(other, o2);
@@ -200,8 +200,8 @@ jive_input::swap(jive_input * other) noexcept
 	jive_input_add_as_user(this, o2);
 	jive_input_add_as_user(other, o1);
 
-	this->origin = o2;
-	other->origin = o1;
+	this->origin_ = o2;
+	other->origin_ = o1;
 
 	if (v2) jive_ssavar_assign_input(v2, this);
 	if (v1) jive_ssavar_assign_input(v1, other);
@@ -235,7 +235,7 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 
 	JIVE_DEBUG_ASSERT(this->node->graph == new_origin->node->graph);
 
-	if (this->origin->node->region != this->node->region)
+	if (this->origin()->node->region != this->node->region)
 		jive_region_hull_remove_input(this->node->region, this);
 
 	if (this->node->graph->floating_region_count)
@@ -243,10 +243,10 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node, new_origin));
 
-	jive_output * old_origin = this->origin;
+	jive_output * old_origin = this->origin();
 
 	jive_input_remove_as_user(this, old_origin);
-	this->origin = new_origin;
+	this->origin_ = new_origin;
 	jive_input_add_as_user(this, new_origin);
 
 	if (new_origin->node->region != this->node->region)
@@ -305,11 +305,11 @@ jive_input_auto_assign_variable(jive_input * self)
 		return self->ssavar;
 	
 	jive_ssavar * ssavar;
-	if (self->origin->ssavar) {
-		ssavar = self->origin->ssavar;
+	if (self->origin()->ssavar) {
+		ssavar = self->origin()->ssavar;
 		jive_variable_merge(ssavar->variable, jive_input_get_constraint(self));
 	} else {
-		ssavar = jive_ssavar_create(self->origin, jive_input_get_constraint(self));
+		ssavar = jive_ssavar_create(self->origin(), jive_input_get_constraint(self));
 	}
 	
 	jive_ssavar_assign_input(ssavar, self);
@@ -324,11 +324,11 @@ jive_input_auto_merge_variable(jive_input * self)
 	
 	jive_ssavar * ssavar = NULL;
 	
-	if (self->origin->ssavar) {
-		ssavar = self->origin->ssavar;
+	if (self->origin()->ssavar) {
+		ssavar = self->origin()->ssavar;
 	} else {
 		jive_input * user;
-		JIVE_LIST_ITERATE(self->origin->users, user, output_users_list) {
+		JIVE_LIST_ITERATE(self->origin()->users, user, output_users_list) {
 			if (user->ssavar) {
 				ssavar = user->ssavar;
 				break;
@@ -337,7 +337,7 @@ jive_input_auto_merge_variable(jive_input * self)
 	}
 	
 	if (!ssavar)
-		ssavar = jive_ssavar_create(self->origin, jive_input_get_constraint(self));
+		ssavar = jive_ssavar_create(self->origin(), jive_input_get_constraint(self));
 	
 	jive_variable_merge(ssavar->variable, jive_input_get_constraint(self));
 	jive_ssavar_assign_input(ssavar, self);

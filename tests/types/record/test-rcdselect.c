@@ -59,9 +59,9 @@ jive_output * tmparray1[] = {top->outputs[0],
 
 	jive_view(graph, stderr);
 
-	assert(bottom->inputs[1]->origin->node == top);
+	assert(bottom->inputs[1]->origin()->node == top);
 	assert(!jive_node_match_attrs(s0->node, jive_node_get_attrs(s2->node)));
-	assert(jive_node_isinstance(bottom->inputs[3]->origin->node, &JIVE_LOAD_NODE));
+	assert(jive_node_isinstance(bottom->inputs[3]->origin()->node, &JIVE_LOAD_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

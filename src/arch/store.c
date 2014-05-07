@@ -36,10 +36,10 @@ store_reduce(jive_output * address, jive_output * value,
 			return false;
 	}
 
-	if(store->inputs[0]->origin != address)
+	if(store->inputs[0]->origin() != address)
 		return false;
 
-	if (store->inputs[1]->origin != value)
+	if (store->inputs[1]->origin() != value)
 		return false;
 
 	ostates = &store->outputs[2];
@@ -69,7 +69,7 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	elem_attrs.datatype = (jive_value_type *) decl->elements[unify_node->attrs.option];
 	
 	jive_store_node_normalized_create(self, region, &elem_attrs, address,
-		unify_node->inputs[0]->origin, nstates, istates, ostates);	
+		unify_node->inputs[0]->origin(), nstates, istates, ostates);
 }
 
 static inline void
@@ -117,7 +117,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 			elem_istates[n] = split_nodes[n]->outputs[e];
 
 		jive_store_node_normalized_create(self, region, &elem_attrs, elem_address,
-			group_node->inputs[e]->origin, nstates, elem_istates, elems_ostates[e]);	
+			group_node->inputs[e]->origin(), nstates, elem_istates, elems_ostates[e]);
 	}
 
 	for(n = 0; n < nstates; n++) {
@@ -144,21 +144,21 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 		
 		size_t n;
 		for (n = 0; n < nstates; n++)
-			istates[n] = node->inputs[n+2]->origin;
+			istates[n] = node->inputs[n+2]->origin();
 
 		bool reduction = false;
-		if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_GROUP_NODE)) {
-			group_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
+		if (jive_node_isinstance(node->inputs[1]->origin()->node, &JIVE_GROUP_NODE)) {
+			group_reduce(self, node->region, attrs, node->inputs[0]->origin(), node->inputs[1]->origin(),
 				nstates, istates, ostates);
 			reduction = true;
-		} else if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_UNIFY_NODE)) {
-			unify_reduce(self, node->region, attrs, node->inputs[0]->origin, node->inputs[1]->origin,
+		} else if (jive_node_isinstance(node->inputs[1]->origin()->node, &JIVE_UNIFY_NODE)) {
+			unify_reduce(self, node->region, attrs, node->inputs[0]->origin(), node->inputs[1]->origin(),
 				nstates, istates, ostates);
 			reduction = true;
-		} else if (jive_node_isinstance(node->inputs[1]->origin->node, &JIVE_EMPTY_UNIFY_NODE)) {
+		} else if (jive_node_isinstance(node->inputs[1]->origin()->node, &JIVE_EMPTY_UNIFY_NODE)) {
 			for (n = 0; n < nstates; n++)
 				ostates[n] = istates[n];	
-		} else if (store_reduce(node->inputs[0]->origin, node->inputs[1]->origin,
+		} else if (store_reduce(node->inputs[0]->origin(), node->inputs[1]->origin(),
 			nstates, istates, ostates)) {
 			reduction = true;
 		}
@@ -176,7 +176,7 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 		size_t n;
 		jive_output * operands[node->ninputs];
 		for(n = 0; n < node->ninputs; n++)
-			operands[n] = node->inputs[n]->origin;
+			operands[n] = node->inputs[n]->origin();
 
 		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs,
 			node->ninputs, operands);

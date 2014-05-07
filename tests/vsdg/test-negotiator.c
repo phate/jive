@@ -407,15 +407,15 @@ static int test_main(void)
 	
 	jive_negotiator_insert_split_nodes(&nego);
 	
-	assert(n2->inputs[0]->origin == n1->outputs[0]);
-	assert(n4->inputs[0]->origin != n3->outputs[0]);
-	jive_node * split_node = n4->inputs[0]->origin->node;
+	assert(n2->inputs[0]->origin() == n1->outputs[0]);
+	assert(n4->inputs[0]->origin() != n3->outputs[0]);
+	jive_node * split_node = n4->inputs[0]->origin()->node;
 	expect_options(&nego, n3->outputs[0], 1, split_node->inputs[0], 1);
 	expect_options(&nego, split_node->outputs[0], 2, n4->inputs[0], 2);
 	
 	jive_negotiator_remove_split_nodes(&nego);
 	
-	assert(n4->inputs[0]->origin == n3->outputs[0]);
+	assert(n4->inputs[0]->origin() == n3->outputs[0]);
 	expect_options(&nego, n3->outputs[0], 1, n4->inputs[0], 2);
 	
 	test_negotiator_fini(&nego);

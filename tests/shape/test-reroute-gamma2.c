@@ -39,7 +39,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 	for (n = 0; n < node->ninputs; n++) {
 		jive_ssavar * ssavar = 0;
 		jive_input * user;
-		JIVE_LIST_ITERATE(node->inputs[n]->origin->users, user, output_users_list) {
+		JIVE_LIST_ITERATE(node->inputs[n]->origin()->users, user, output_users_list) {
 			if (user->ssavar && jive_region_contains_node(user->node->region, node)) {
 				ssavar = user->ssavar;
 				break;
@@ -124,10 +124,10 @@ static int test_main(void)
 	
 	shape(shaped_graph, bottom);
 	shape(shaped_graph, gamma_node);
-	shape(shaped_graph, gamma_node->inputs[0]->origin->node);
+	shape(shaped_graph, gamma_node->inputs[0]->origin()->node);
 	shape(shaped_graph, l1);
 	shape(shaped_graph, l2);
-	shape(shaped_graph, gamma_node->inputs[1]->origin->node);
+	shape(shaped_graph, gamma_node->inputs[1]->origin()->node);
 	shape(shaped_graph, r1);
 	jive_shaped_node * p = shape(shaped_graph, r2);
 	
@@ -140,7 +140,7 @@ static int test_main(void)
 	
 	jive_ssavar * ssavar_p = jive_regalloc_reroute_at_point(orig_ssavar, p);
 	
-	jive_output * new_orig = bottom->inputs[2]->origin;
+	jive_output * new_orig = bottom->inputs[2]->origin();
 	jive_gate * reroute_gate = new_orig->gate;
 	assert(new_orig->node == gamma_node && reroute_gate && reroute_gate->variable == var);
 	
@@ -149,10 +149,10 @@ static int test_main(void)
 	assert(bottom->inputs[2]->ssavar == ssavar_below);
 	assert(ssavar_below->variable == var);
 	
-	jive_input * in_l = jive_node_get_gate_input(gamma_node->inputs[0]->origin->node, reroute_gate);
+	jive_input * in_l = jive_node_get_gate_input(gamma_node->inputs[0]->origin()->node, reroute_gate);
 	jive_ssavar * ssavar_l = in_l->ssavar;
 	assert(ssavar_l->variable == var);
-	jive_input * in_r = jive_node_get_gate_input(gamma_node->inputs[1]->origin->node, reroute_gate);
+	jive_input * in_r = jive_node_get_gate_input(gamma_node->inputs[1]->origin()->node, reroute_gate);
 	jive_ssavar * ssavar_r = in_r->ssavar;
 	assert(ssavar_r->variable == var);
 	assert(ssavar_r == ssavar_p);

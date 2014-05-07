@@ -161,7 +161,7 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 	
 	if (path == jive_unop_reduction_narrow) {
 		const jive_bitslice_node * node = (const jive_bitslice_node *) operand->node;
-		return jive_bitslice(node->inputs[0]->origin, attrs->low() + node->operation().low(),
+		return jive_bitslice(node->inputs[0]->origin(), attrs->low() + node->operation().low(),
 			attrs->high() + node->operation().low());
 	}
 	
@@ -177,7 +177,7 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 		
 		size_t noperands = 0, pos = 0, n;
 		for (n=0; n<node->noperands; n++) {
-			jive_output * operand = node->inputs[n]->origin;
+			jive_output * operand = node->inputs[n]->origin();
 			size_t base = pos;
 			size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand);
 			pos = pos + nbits;

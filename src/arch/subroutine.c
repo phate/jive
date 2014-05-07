@@ -345,7 +345,7 @@ jive_subroutine_simple_set_result(
 jive_output *
 jive_subroutine_simple_get_global_state(const jive_subroutine self)
 {
-	return self.old_subroutine_struct->passthroughs[0].input->origin;
+	return self.old_subroutine_struct->passthroughs[0].input->origin();
 }
 
 void

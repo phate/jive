@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -73,7 +73,8 @@ jive_topdown_traverser_predecessors_visited(jive_full_traverser * self, jive_nod
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (jive_traversal_tracker_get_nodestate(&self->tracker, input->origin->node) != jive_traversal_nodestate_behind)
+		if (jive_traversal_tracker_get_nodestate(&self->tracker, input->origin()->node)
+			!= jive_traversal_nodestate_behind)
 			return false;
 	}
 	return true;
@@ -191,7 +192,7 @@ jive_bottomup_traverser_next(jive_traverser * self_)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_bottomup_traverser_check_node(self, input->origin->node);
+		jive_bottomup_traverser_check_node(self, input->origin()->node);
 	}
 	return node;
 }
@@ -217,7 +218,7 @@ jive_bottomup_traverser_node_destroy(void * closure, jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_bottomup_traverser_check_node(self, input->origin->node);
+		jive_bottomup_traverser_check_node(self, input->origin()->node);
 	}
 }
 
@@ -302,7 +303,7 @@ jive_upward_cone_traverser_node_destroy(void * closure, jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_bottomup_traverser_check_node(self, input->origin->node);
+		jive_bottomup_traverser_check_node(self, input->origin()->node);
 	}
 }
 
@@ -467,7 +468,7 @@ jive_bottomup_region_traverser_check_above(jive_bottomup_region_traverser * self
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
 		
-		jive_node * above = input->origin->node;
+		jive_node * above = input->origin()->node;
 		jive_tracker_nodestate * nodestate = jive_bottomup_region_traverser_map_node(self, above);
 		if (nodestate->state != jive_tracker_nodestate_none)
 			continue;

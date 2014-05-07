@@ -52,11 +52,11 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITUGREATER_NODE));
-	assert(jive_node_isinstance(bottom->inputs[1]->origin->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[2]->origin->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[3]->origin->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[4]->origin->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITUGREATER_NODE));
+	assert(jive_node_isinstance(bottom->inputs[1]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(bottom->inputs[2]->origin()->node, &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(bottom->inputs[3]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(bottom->inputs[4]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

@@ -69,7 +69,7 @@ static int test_main()
 	jive_view(graph, stderr);
 
 	const jive_lambda_node * lambda_node2;
-	lambda_node2 = jive_lambda_node_const_cast(phi.region->bottom->inputs[3]->origin->node);
+	lambda_node2 = jive_lambda_node_const_cast(phi.region->bottom->inputs[3]->origin()->node);
 	assert(jive_lambda_is_self_recursive(lambda_node2));
 	assert(dynamic_cast<jive_control_input*>(phi.region->bottom->inputs[0]));
 

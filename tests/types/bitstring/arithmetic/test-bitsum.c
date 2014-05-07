@@ -46,10 +46,10 @@ jive_output * tmparray1[] = {top->outputs[0], top->outputs[1]};
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITSUM_NODE));
-	assert(jive_node_isinstance(bottom->inputs[1]->origin->node, &JIVE_BITCONSTANT_NODE));
+	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITSUM_NODE));
+	assert(jive_node_isinstance(bottom->inputs[1]->origin()->node, &JIVE_BITCONSTANT_NODE));
 
-	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(bottom->inputs[1]->origin->node);
+	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(bottom->inputs[1]->origin()->node);
 	assert(jive_bitconstant_equals_unsigned(bc1, 8));
 
 	jive_graph_destroy(graph);

@@ -44,13 +44,15 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_node);
 	jive_gate * gate = jive_type_create_gate(type, graph, gate_name);
 	
-	jive_region * region1 = anchor_node->inputs[0]->origin->node->region;
-	jive_region * region2 = anchor_node->inputs[1]->origin->node->region;
+	jive_region * region1 = anchor_node->inputs[0]->origin()->node->region;
+	jive_region * region2 = anchor_node->inputs[1]->origin()->node->region;
 	jive_input_vector users1, users2;
 	jive_input_vector_init(&users1);
 	jive_input_vector_init(&users2);
-	jive_input * in1 = jive_node_gate_input(anchor_node->inputs[0]->origin->node, gate, ssavar->origin);
-	jive_input * in2 = jive_node_gate_input(anchor_node->inputs[1]->origin->node, gate, ssavar->origin);
+	jive_input * in1 = jive_node_gate_input(anchor_node->inputs[0]->origin()->node, gate,
+		ssavar->origin);
+	jive_input * in2 = jive_node_gate_input(anchor_node->inputs[1]->origin()->node, gate,
+		ssavar->origin);
 	jive_input_vector_push_back(&users1, graph->context, in1);
 	jive_input_vector_push_back(&users2, graph->context, in2);
 	jive_output * out = jive_node_gate_output(anchor_node, gate);
@@ -141,7 +143,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_node);
 	jive_gate * gate = jive_type_create_gate(type, graph, gate_name);
 	
-	jive_region * loop_region = anchor_node->inputs[0]->origin->node->region;
+	jive_region * loop_region = anchor_node->inputs[0]->origin()->node->region;
 	jive_node * loop_head = loop_region->top;
 	jive_node * loop_tail = loop_region->bottom;
 	

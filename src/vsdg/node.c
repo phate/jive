@@ -140,7 +140,7 @@ jive_node_init_(
 	self->tracker_slots = 0;
 	
 	for (n = 0; n < self->ninputs; ++n)
-		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin));
+		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin()));
 	
 	jive_graph_notify_node_create(self->graph, self);
 }
@@ -263,7 +263,7 @@ jive_node_add_input_(jive_node * self, jive_input * input)
 {
 	jive_uninitialized_node_add_input_(self, input);
 
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin));
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
 	jive_node_invalidate_depth_from_root(self);
 	jive_graph_notify_input_create(self->graph, input);
 }
@@ -419,8 +419,8 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 {
 	size_t new_depth_from_root = 0, n;
 	for(n=0; n<self->ninputs; n++)
-		if (self->inputs[n]->origin->node->depth_from_root + 1 > new_depth_from_root)
-			 new_depth_from_root = self->inputs[n]->origin->node->depth_from_root + 1;
+		if (self->inputs[n]->origin()->node->depth_from_root + 1 > new_depth_from_root)
+			 new_depth_from_root = self->inputs[n]->origin()->node->depth_from_root + 1;
 	
 	size_t old_depth_from_root = self->depth_from_root;
 	if (old_depth_from_root == new_depth_from_root)
@@ -465,7 +465,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 			bool duplicate = false;
 			size_t k;
 			for(k = 0; k<n; k++) {
-				if (self->inputs[k]->origin == input->origin)
+				if (self->inputs[k]->origin() == input->origin())
 					duplicate = true;
 			}
 			if (duplicate) continue;
@@ -509,11 +509,11 @@ jive_node_depends_on_region(const jive_node * self, const jive_region * region)
 	for(n = 0; n < self->ninputs; n++) {
 		jive_input * input = self->inputs[n];
 		if (dynamic_cast<jive_anchor_input*>(input)) {
-			if (jive_region_depends_on_region(input->origin->node->region, region)) {
+			if (jive_region_depends_on_region(input->origin()->node->region, region)) {
 				return true;
 			}
 		} else {
-			if (input->origin->node->region == region) {
+			if (input->origin()->node->region == region) {
 				return true;
 			}
 		}
@@ -626,9 +626,9 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	for (n = 0; n < self->ninputs; n++) {
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
 		if (dynamic_cast<jive_anchor_input*>(self->inputs[n])) {
-			jive_region * subregion = self->inputs[n]->origin->node->region;
+			jive_region * subregion = self->inputs[n]->origin()->node->region;
 			jive_region_reparent(subregion, new_region);
-		} else if (self->inputs[n]->origin->node->region != new_region) {
+		} else if (self->inputs[n]->origin()->node->region != new_region) {
 			/* or add the node's input to the hull */
 			jive_region_hull_add_input(new_region, self->inputs[n]);
 		}
@@ -663,15 +663,15 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 	
 	size_t n;
 	for(n = 0; n < self->noperands; n++) {
-		operands[n] = self->inputs[n]->origin;
-		jive_output * tmp = jive_substitution_map_lookup_output(substitution, self->inputs[n]->origin);
+		operands[n] = self->inputs[n]->origin();
+		jive_output * tmp = jive_substitution_map_lookup_output(substitution, self->inputs[n]->origin());
 		if (tmp) operands[n] = tmp;
 	}
 	
 	jive_node * new_node = jive_node_copy(self, target, operands);
 	for(n = self->noperands; n < self->ninputs; n++) {
-		jive_output * origin = self->inputs[n]->origin;
-		jive_output * tmp = jive_substitution_map_lookup_output(substitution, self->inputs[n]->origin);
+		jive_output * origin = self->inputs[n]->origin();
+		jive_output * tmp = jive_substitution_map_lookup_output(substitution, self->inputs[n]->origin());
 		if (tmp) origin = tmp;
 		
 		if (self->inputs[n]->gate) {
@@ -730,7 +730,7 @@ jive_node_cse_test(
 	if (!jive_node_match_attrs(node, attrs)) return false;
 	size_t n;
 	for(n = 0; n < noperands; n++)
-		if (node->inputs[n]->origin != operands[n]) return false;
+		if (node->inputs[n]->origin() != operands[n]) return false;
 	
 	return true;
 }

@@ -540,7 +540,7 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	/* consider cost of all inputs */
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (assumed_active(self, input->origin, region))
+		if (assumed_active(self, input->origin(), region))
 			continue;
 		const jive_resource_class * rescls = jive_resource_class_relax(input->required_rescls);
 		jive_resource_class_count_add(&input_cost, rescls);
@@ -552,12 +552,12 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	bool first = true;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_node_cost * last_eval = jive_master_shaper_selector_map_node(self, input->origin->node);
+		jive_node_cost * last_eval = jive_master_shaper_selector_map_node(self, input->origin()->node);
 		
 		if (last_eval->force_tree_root)
 			continue;
 		jive_resource_class_count_copy(&this_eval_cost, &input_cost);
-		if (!assumed_active(self, input->origin, region)) {
+		if (!assumed_active(self, input->origin(), region)) {
 			const jive_resource_class * rescls = jive_resource_class_relax(input->required_rescls);
 			jive_resource_class_count_add(&this_eval_cost, rescls);
 		}
@@ -617,12 +617,12 @@ compute_blocked_rescls_priority(jive_master_shaper_selector * self, jive_node * 
 	
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_node_cost * upper = jive_master_shaper_selector_map_node(self, input->origin->node);
+		jive_node_cost * upper = jive_master_shaper_selector_map_node(self, input->origin()->node);
 		
 		const jive_resource_class * input_rescls = jive_resource_class_relax(input->required_rescls);
 		
 		if (upper->force_tree_root) {
-			if (assumed_active(self, input->origin, region)) {
+			if (assumed_active(self, input->origin(), region)) {
 				blocked_rescls_priority = jive_rescls_priority_min(blocked_rescls_priority, input_rescls->priority);
 			}
 		} else {
@@ -767,7 +767,7 @@ jive_master_shaper_selector_mark_shaped(jive_master_shaper_selector * self, jive
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_master_shaper_selector_try_add_frontier(self, input->origin->node);
+		jive_master_shaper_selector_try_add_frontier(self, input->origin()->node);
 	}
 }
 
@@ -807,9 +807,9 @@ node_create(void * self_, jive_node * node)
 	bool stacked = false;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_master_shaper_selector_invalidate_node(self, input->origin->node);
+		jive_master_shaper_selector_invalidate_node(self, input->origin()->node);
 		
-		if (jive_master_shaper_selector_remove_frontier(self, input->origin->node))
+		if (jive_master_shaper_selector_remove_frontier(self, input->origin()->node))
 			stacked = true;
 	}
 	

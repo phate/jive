@@ -29,9 +29,10 @@ replace_splitnode(jive_shaped_node * shaped_node, jive_node * node)
 	const jive_instructionset * isa = jive_region_get_instructionset(node->region);
 	
 	jive_xfer_description xfer = jive_instructionset_create_xfer(isa, node->region,
-		node->inputs[0]->origin, node->inputs[0]->required_rescls, node->outputs[0]->required_rescls);
+		node->inputs[0]->origin(), node->inputs[0]->required_rescls, node->outputs[0]->required_rescls);
 	if (!xfer.input)
-		xfer.input = jive_node_add_input(xfer.node, jive_input_get_type(node->inputs[0]), node->inputs[0]->origin);
+		xfer.input = jive_node_add_input(xfer.node, jive_input_get_type(node->inputs[0]),
+			node->inputs[0]->origin());
 	if (!xfer.output)
 		xfer.output = jive_node_add_output(xfer.node, jive_output_get_type(node->outputs[0]));
 	
@@ -59,7 +60,7 @@ check_fp_sp_dependency(jive_node * node)
 	const jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 	if (!sub)
 		return;
-	jive_node * leave = sub->inputs[0]->origin->node;
+	jive_node * leave = sub->inputs[0]->origin()->node;
 	jive_node * enter = leave->region->top;
 	
 	if (node == enter || node == leave)

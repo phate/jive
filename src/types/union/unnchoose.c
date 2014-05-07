@@ -187,11 +187,11 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin;
+		return operand->node->inputs[0]->origin();
 
 	if (path == jive_choose_reduction_load) {
 		jive_node * load_node = operand->node;
-		jive_output * address = load_node->inputs[0]->origin;
+		jive_output * address = load_node->inputs[0]->origin();
 
 		const jive_union_declaration * decl = ((const jive_union_type *)
 			jive_output_get_type(load_node->outputs[0]))->declaration();
@@ -201,7 +201,7 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 		size_t nstates = load_node->ninputs-1;
 		jive_output * states[nstates];
 		for (n = 0; n < nstates; n++)
-			states[n] = load_node->inputs[n+1]->origin;
+			states[n] = load_node->inputs[n+1]->origin();
 	
 		if (dynamic_cast<jive_address_output*>(address)) {
 			return jive_load_by_address_create(address, decl->elements[attrs->element],

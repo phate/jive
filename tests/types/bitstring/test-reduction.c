@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -58,19 +59,19 @@ static int test_main(void)
 		jive_node * node = ((jive_output *) slice)->node;
 		assert(node->class_ == &JIVE_BITCONCAT_NODE);
 		assert(node->ninputs == 2);
-		assert(node->inputs[0]->origin->node->class_ == &JIVE_BITSLICE_NODE);
-		assert(node->inputs[1]->origin->node->class_ == &JIVE_BITSLICE_NODE);
+		assert(node->inputs[0]->origin()->node->class_ == &JIVE_BITSLICE_NODE);
+		assert(node->inputs[1]->origin()->node->class_ == &JIVE_BITSLICE_NODE);
 		
 		const jive::bitstring::slice_operation * attrs;
 		attrs = (const jive::bitstring::slice_operation *)
-			jive_node_get_attrs(node->inputs[0]->origin->node);
+			jive_node_get_attrs(node->inputs[0]->origin()->node);
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
 		attrs = (const jive::bitstring::slice_operation *)
-			jive_node_get_attrs(node->inputs[1]->origin->node);
+			jive_node_get_attrs(node->inputs[1]->origin()->node);
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
-		assert(node->inputs[0]->origin->node->inputs[0]->origin == x);
-		assert(node->inputs[1]->origin->node->inputs[0]->origin == y);
+		assert(node->inputs[0]->origin()->node->inputs[0]->origin() == x);
+		assert(node->inputs[1]->origin()->node->inputs[0]->origin() == y);
 	}
 	
 	{

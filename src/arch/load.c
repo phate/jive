@@ -31,7 +31,7 @@ store_reduce(jive_output * address, size_t nstates, jive_output * const states[]
 			return false;
 	}
 
-	if (store->inputs[0]->origin != address)
+	if (store->inputs[0]->origin() != address)
 		return false;
 
 	return true;	
@@ -52,11 +52,11 @@ jive_load_node_normalize_node_(const jive_node_normal_form * self_, jive_node * 
 
 		size_t n;
 		for (n = 0; n < nstates; n++)
-			states[n] = node->inputs[n+1]->origin;
+			states[n] = node->inputs[n+1]->origin();
 
-		if (store_reduce(node->inputs[0]->origin, nstates, states)) {
-			jive_node * store = node->inputs[1]->origin->node;
-			jive_output_replace(node->outputs[0], store->inputs[1]->origin);
+		if (store_reduce(node->inputs[0]->origin(), nstates, states)) {
+			jive_node * store = node->inputs[1]->origin()->node;
+			jive_output_replace(node->outputs[0], store->inputs[1]->origin());
 			/* FIXME: not sure whether "destroy" is really appropriate? */
 			jive_node_destroy(node);
 			return false;
@@ -67,7 +67,7 @@ jive_load_node_normalize_node_(const jive_node_normal_form * self_, jive_node * 
 		size_t n;
 		jive_output * operands[node->ninputs];
 		for (n = 0; n < node->ninputs; n++)
-			operands[n] = node->inputs[n]->origin;
+			operands[n] = node->inputs[n]->origin();
 
 		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs,
 			node->ninputs, operands);
@@ -122,7 +122,7 @@ jive_load_node_normalized_create_(const jive_load_node_normal_form * self,
 
 	if (self->base.enable_mutable && self->enable_reducible) {
 		if (store_reduce(address, nstates, states))
-			return states[0]->node->inputs[1]->origin;
+			return states[0]->node->inputs[1]->origin();
 	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {

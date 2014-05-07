@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -26,7 +26,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
-	jive_output * address = node->inputs[0]->origin;
+	jive_output * address = node->inputs[0]->origin();
 	if (address->node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE) {
 		jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node);
 		jive_immediate imm;
@@ -69,7 +69,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	a pointer to the return value area as first (hidden) parameter */
 	size_t n, offset = 0;
 	for (n = 0; n < nargs; n++) {
-		jive_output * value = node->inputs[n + 1]->origin;
+		jive_output * value = node->inputs[n + 1]->origin();
 		
 		const jive_resource_class * value_cls = value->required_rescls;
 		const jive_type * value_type = jive_output_get_type(value);
@@ -102,12 +102,12 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	for (n = node->noperands; n < node->ninputs; n++) {
 		jive_input * orig_input = node->inputs[n];
 		if (orig_input->gate) {
-			jive_node_gate_input(call_instr, orig_input->gate, orig_input->origin);
+			jive_node_gate_input(call_instr, orig_input->gate, orig_input->origin());
 		} else {
 			jive_input * new_input = jive_node_add_input(
 				call_instr,
 				jive_input_get_type(orig_input),
-				orig_input->origin);
+				orig_input->origin());
 			new_input->required_rescls = orig_input->required_rescls;
 		}
 	}

@@ -138,7 +138,7 @@ jive_memberof_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_c
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin;
+		return operand->node->inputs[0]->origin();
 	
 	return NULL;
 }
@@ -271,7 +271,7 @@ jive_containerof_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin;
+		return operand->node->inputs[0]->origin();
 	
 	return NULL;
 }
@@ -467,10 +467,10 @@ jive_arraysubscript_reduce_operand_pair_(
 
 	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node);
 	if (path == jive_binop_reduction_lfold) {
-		jive_output * operands[2] = {node->inputs[1]->origin, operand2};
+		jive_output * operands[2] = {node->inputs[1]->origin(), operand2};
 		jive_output * sum = jive_bitsum(2, operands);
 		
-		operands[0] = node->inputs[0]->origin;
+		operands[0] = node->inputs[0]->origin();
 		operands[1] = sum;
 		
 		return jive_binary_operation_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE_,
@@ -627,7 +627,7 @@ get_array_base(const jive_output * addr, const jive_value_type * element_type)
 {
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
 	if (node && jive_type_equals(element_type, &node->operation().element_type()))
-		return addr->node->inputs[0]->origin;
+		return addr->node->inputs[0]->origin();
 	else return addr;
 }
 
@@ -639,7 +639,7 @@ get_array_index(jive_output * addr, const jive_output * base, const jive_value_t
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
 	if (node && jive_type_equals(element_type, &node->operation().element_type())) {
 		/* FIXME: correct type! */
-		index = addr->node->inputs[1]->origin;
+		index = addr->node->inputs[1]->origin();
 	} else {
 		char bits[index_type->nbits()];
 		memset(bits, '0', index_type->nbits());

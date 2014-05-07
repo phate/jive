@@ -156,10 +156,11 @@ public:
 	*/
 	void swap(jive_input * other) noexcept;
 
+	inline jive_output * origin() const noexcept { return origin_; }
+
 	struct jive_node * node;
 	size_t index;
-	
-	jive_output * origin;
+
 	struct {
 		jive_input * prev;
 		jive_input * next;
@@ -183,8 +184,10 @@ public:
 	} hull;
 	
 	const struct jive_resource_class * required_rescls;
-};
 
+private:
+	jive_output * origin_;
+};
 
 JIVE_EXPORTED_INLINE void
 jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)
@@ -212,12 +215,6 @@ jive_input_auto_merge_variable(jive_input * self);
 
 void
 jive_input_destroy(jive_input * self);
-
-JIVE_EXPORTED_INLINE jive_output *
-jive_input_origin(const jive_input * input)
-{
-	return input->origin;
-}
 
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_input_node(const jive_input * input)

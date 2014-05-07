@@ -90,7 +90,7 @@ jive_bitnot_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 	const jive_node_attrs * attrs_, jive_output * operand_)
 {
 	if (path == jive_unop_reduction_inverse) {
-		return operand_->node->inputs[0]->origin;
+		return operand_->node->inputs[0]->origin();
 	}
 	
 	if (path == jive_unop_reduction_constant) {

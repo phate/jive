@@ -96,7 +96,7 @@ is_active_control(jive_input * input)
 {
 	if (!dynamic_cast<jive_control_input*>(input))
 		return false;
-	return ((jive_control_output *)input->origin)->active();
+	return ((jive_control_output *)input->origin())->active();
 }
 
 static jive_seq_region *
@@ -146,7 +146,7 @@ sequentialize_region(
 			for (n = 0; n < node->ninputs; ++n) {
 				jive_input * input = node->inputs[n];
 				jive_bitconstant_node * cnode =
-					jive_bitconstant_node_cast(input->origin->node);
+					jive_bitconstant_node_cast(input->origin()->node);
 				jive_seq_dataitem * item = &data->items[n];
 				if (cnode) {
 					switch (cnode->operation().bits.size()) {
@@ -184,7 +184,8 @@ sequentialize_region(
 			if (dynamic_cast<jive_anchor_input*>(input)) {
 				jive_seq_region * seq_subregion;
 				if (n == 0) {
-					seq_subregion = sequentialize_region(seq, current, region_trav, input->origin->node->region);
+					seq_subregion = sequentialize_region(seq, current, region_trav,
+						input->origin()->node->region);
 					
 					if (!seq_region->last_point)
 						seq_region->last_point = seq_subregion->last_point;
@@ -193,7 +194,7 @@ sequentialize_region(
 					
 					seq_subregion->inlined = true;
 				} else {
-					seq_subregion = sequentialize_region(seq, 0, region_trav, input->origin->node->region);
+					seq_subregion = sequentialize_region(seq, 0, region_trav, input->origin()->node->region);
 					seq_subregion->inlined = false;
 				}
 			}
@@ -215,7 +216,7 @@ sequentialize_region(
 		}
 		
 		if (control_input) {
-			node = control_input->origin->node;
+			node = control_input->origin()->node;
 			jive_bottomup_region_traverser_pass(region_trav, node);
 		} else
 			node = jive_traverser_next(trav);
@@ -276,8 +277,8 @@ jive_graph_sequentialize(jive_graph * graph)
 	JIVE_LIST_ITERATE(seq->points, seq_point, seqpoint_list) {
 		if (seq_point->node && jive_node_isinstance(seq_point->node, &JIVE_OBJDEF_NODE)) {
 			jive_objdef_node * onode = (jive_objdef_node *) seq_point->node;
-			jive_node * anchor = seq_point->node->inputs[0]->origin->node;
-			jive_region * region = anchor->inputs[0]->origin->node->region;
+			jive_node * anchor = seq_point->node->inputs[0]->origin()->node;
+			jive_region * region = anchor->inputs[0]->origin()->node->region;
 			jive_seq_region * seq_region = jive_seq_graph_map_region(seq, region);
 			jive_seq_point_attach_symbol(seq_region->first_point,
 				onode->attrs.symbol, seq);

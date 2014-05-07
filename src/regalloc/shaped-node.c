@@ -118,7 +118,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	{
 		jive_input * input = self->node->inputs[n];
 		if (dynamic_cast<jive_anchor_input*>(input)) {
-			jive_region * region = input->origin->node->region;
+			jive_region * region = input->origin()->node->region;
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 			jive_shaped_region_destroy_cuts(shaped_region);
 		}
@@ -132,7 +132,8 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 		jive_input * input = self->node->inputs[n];
 		jive_ssavar * ssavar = input->ssavar;
 		if (!ssavar) continue;
-		jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), input, input->origin);
+		jive_shaped_ssavar_xpoints_unregister_arc(
+			jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), input, input->origin());
 	}
 	for(n = 0; n < self->node->noutputs; n++) {
 		jive_output * output = self->node->outputs[n];
@@ -215,7 +216,8 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 			while (n < anchor_node->ninputs) {
 				jive_input * input = anchor_node->inputs[n];
 				if (dynamic_cast<jive_anchor_input*>(input)) {
-					jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph, input->origin->node->region);
+					jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph,
+						input->origin()->node->region);
 					next = jive_shaped_region_first(sub);
 					if (next)
 						break;
@@ -238,7 +240,8 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 		while (n < next->node->ninputs) {
 			jive_input * input = next->node->inputs[n];
 			if (dynamic_cast<jive_anchor_input*>(input)) {
-				jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph, input->origin->node->region);
+				jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph,
+					input->origin()->node->region);
 				jive_shaped_node * tmp = jive_shaped_region_first(sub);
 				if (tmp) {
 					next = tmp;

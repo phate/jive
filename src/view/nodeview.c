@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -230,7 +230,7 @@ jive_nodeview_layout(jive_nodeview * self, struct jive_reservationtracker * rese
 	size_t n;
 	for(n=0; n<self->node->ninputs; n++) {
 		jive_inputview * inputview = self->inputs[n];
-		jive_output * origin = self->node->inputs[n]->origin;
+		jive_output * origin = self->node->inputs[n]->origin();
 		jive_outputview * outputview = jive_outputview_map_lookup(&graphview->outputmap, origin);
 		if (!outputview->nodeview->placed) continue;
 		

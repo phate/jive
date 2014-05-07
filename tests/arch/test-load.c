@@ -52,7 +52,7 @@ static int test_main()
 
 	jive_view(graph, stderr);
 
-	assert(bottom->inputs[1]->origin->node == top);
+	assert(bottom->inputs[1]->origin()->node == top);
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

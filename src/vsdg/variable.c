@@ -117,7 +117,7 @@ jive_ssavar_assert_consistent(const jive_ssavar * self)
 void
 jive_ssavar_assign_input(jive_ssavar * self, jive_input * input)
 {
-	JIVE_DEBUG_ASSERT(input->origin == self->origin && input->ssavar == 0);
+	JIVE_DEBUG_ASSERT(input->origin() == self->origin && input->ssavar == 0);
 	
 	jive_ssavar_inc_use_count(self);
 	if (jive_node_isinstance(input->node, &JIVE_THETA_HEAD_NODE))

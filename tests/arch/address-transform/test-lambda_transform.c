@@ -42,7 +42,7 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin->node, &JIVE_BITSTRING_TO_ADDRESS_NODE));
+	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITSTRING_TO_ADDRESS_NODE));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

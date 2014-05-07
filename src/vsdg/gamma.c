@@ -189,8 +189,8 @@ jive_gamma(struct jive_output * predicate,
 		results[n] = node->outputs[n];
 	
 	if (nf->base.base.enable_mutable && nf->enable_invariant_reduction) {
-		jive_node * true_branch = node->inputs[0]->origin->node;
-		jive_node * false_branch = node->inputs[1]->origin->node;
+		jive_node * true_branch = node->inputs[0]->origin()->node;
+		jive_node * false_branch = node->inputs[1]->origin()->node;
 		for (n = nvalues; n > 0; --n) {
 			if (true_values[n-1] != false_values[n-1])
 				continue;
@@ -324,12 +324,12 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 	JIVE_DEBUG_ASSERT(node->noperands == 3);
 	
 	if (self->enable_predicate_reduction) {
-		jive_output * pred = node->inputs[2]->origin;
+		jive_output * pred = node->inputs[2]->origin();
 		jive_node * branch = 0;
 		if (jive_node_isinstance(pred->node, &JIVE_CONTROL_TRUE_NODE))
-			branch = node->inputs[0]->origin->node;
+			branch = node->inputs[0]->origin()->node;
 		else if (jive_node_isinstance(pred->node, &JIVE_CONTROL_FALSE_NODE))
-			branch = node->inputs[1]->origin->node;
+			branch = node->inputs[1]->origin()->node;
 		
 		if (!branch)
 			return true;
@@ -337,20 +337,20 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 		jive_region_move(branch->region, node->region);
 		size_t n;
 		for (n = 0; n < node->noutputs; n++) {
-			jive_output_replace(node->outputs[n], branch->inputs[n]->origin);
+			jive_output_replace(node->outputs[n], branch->inputs[n]->origin());
 		}
 		
 		return false;
 	}
 	
 	if (self->enable_invariant_reduction) {
-		jive_node * true_branch = node->inputs[0]->origin->node;
-		jive_node * false_branch = node->inputs[1]->origin->node;
+		jive_node * true_branch = node->inputs[0]->origin()->node;
+		jive_node * false_branch = node->inputs[1]->origin()->node;
 		size_t n;
 		for (n = node->noutputs; n > 0; --n) {
-			if (true_branch->inputs[n-1]->origin != false_branch->inputs[n-1]->origin)
+			if (true_branch->inputs[n-1]->origin() != false_branch->inputs[n-1]->origin())
 				continue;
-			jive_output_replace(node->outputs[n-1], true_branch->inputs[n-1]->origin);
+			jive_output_replace(node->outputs[n-1], true_branch->inputs[n-1]->origin());
 			jive_output_destroy(node->outputs[n-1]);
 			jive_input_destroy(true_branch->inputs[n-1]);
 			jive_input_destroy(false_branch->inputs[n-1]);
@@ -385,7 +385,7 @@ jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * se
 		jive_node * false_branch = operands[1]->node;
 		size_t n;
 		for (n = true_branch->ninputs; n > 0; --n) {
-			if (true_branch->inputs[n-1]->origin == false_branch->inputs[n-1]->origin)
+			if (true_branch->inputs[n-1]->origin() == false_branch->inputs[n-1]->origin())
 				return false;
 		}
 	}

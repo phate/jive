@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -163,7 +163,7 @@ jive_binary_operation_normalized_create_new_(const jive_node_normal_form * self_
 			if (operands_[n]->node->class_ == &cls->base) {
 				size_t k;
 				for(k = 0; k < operands_[n]->node->noperands; k++)
-					operands[count++] = operands_[n]->node->inputs[k]->origin;
+					operands[count++] = operands_[n]->node->inputs[k]->origin();
 			} else operands[count++] = operands_[n];
 		}
 		noperands = count;
@@ -246,7 +246,7 @@ jive_binary_operation_normalized_create(
 			if (operands_[n]->node->class_ == cls_) {
 				size_t k;
 				for(k = 0; k<operands_[n]->node->ninputs; k++)
-					operands[count++] = operands_[n]->node->inputs[k]->origin;
+					operands[count++] = operands_[n]->node->inputs[k]->origin();
 			} else operands[count++] = operands_[n];
 		}
 		noperands = count;
@@ -293,8 +293,8 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 	if (self->enable_flatten && (cls->flags & jive_binary_operation_associative)) {
 		size_t count = 0, n;
 		for (n = 0; n < node->noperands; n++) {
-			if (node->inputs[n]->origin->node->class_ == &cls->base)
-				count += node->inputs[n]->origin->node->noperands;
+			if (node->inputs[n]->origin()->node->class_ == &cls->base)
+				count += node->inputs[n]->origin()->node->noperands;
 			else
 				count ++;
 		}
@@ -302,18 +302,18 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 		operands = alloca(sizeof(operands[0]) * count);
 		count = 0;
 		for (n = 0; n < node->noperands; n++) {
-			if (node->inputs[n]->origin->node->class_ == &cls->base) {
+			if (node->inputs[n]->origin()->node->class_ == &cls->base) {
 				size_t k;
-				for(k = 0; k < node->inputs[n]->origin->node->noperands; k++)
-					operands[count++] = node->inputs[n]->origin->node->inputs[k]->origin;
-			} else operands[count++] = node->inputs[n]->origin;
+				for(k = 0; k < node->inputs[n]->origin()->node->noperands; k++)
+					operands[count++] = node->inputs[n]->origin()->node->inputs[k]->origin();
+			} else operands[count++] = node->inputs[n]->origin();
 		}
 		noperands = count;
 	} else {
 		operands = alloca(sizeof(operands[0]) * node->noperands);
 		size_t n;
 		for (n = 0; n < node->noperands; n++)
-			operands[n] = node->inputs[n]->origin;
+			operands[n] = node->inputs[n]->origin();
 		noperands = node->noperands;
 	}
 	
@@ -338,7 +338,7 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 	} else {
 		size_t n;
 		for (n = 0; n < node->noperands; n++)
-			if (node->inputs[n]->origin != operands[n])
+			if (node->inputs[n]->origin() != operands[n])
 				changes = true;
 	}
 	
@@ -512,7 +512,7 @@ jive_binary_operation_normalized_create_(
 			if (operands_[n]->node->class_ == &cls->base) {
 				size_t k;
 				for(k = 0; k < operands_[n]->node->noperands; k++)
-					operands[count++] = operands_[n]->node->inputs[k]->origin;
+					operands[count++] = operands_[n]->node->inputs[k]->origin();
 			} else operands[count++] = operands_[n];
 		}
 		noperands = count;

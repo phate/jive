@@ -18,7 +18,7 @@
 static void
 pre_op_transfer(jive_shaped_graph * shaped_graph, jive_node * node, const jive_resource_name * new_cpureg)
 {
-	jive_output * origin = node->inputs[0]->origin;
+	jive_output * origin = node->inputs[0]->origin();
 	
 	const jive_resource_class * resource_class = jive_variable_get_resource_class(origin->ssavar->variable);
 	resource_class = jive_resource_class_relax(resource_class);

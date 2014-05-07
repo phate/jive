@@ -79,9 +79,9 @@ static int test_main(void)
 		
 		assert(b->node->class_ == &JIVE_BITCONCAT_NODE);
 		assert(b->node->ninputs == 3);
-		assert(b->node->inputs[0]->origin == base_x);
-		assert(b->node->inputs[1]->origin == base_y);
-		assert(b->node->inputs[2]->origin == base_z);
+		assert(b->node->inputs[0]->origin() == base_x);
+		assert(b->node->inputs[1]->origin() == base_y);
+		assert(b->node->inputs[2]->origin() == base_z);
 	}
 	
 	{

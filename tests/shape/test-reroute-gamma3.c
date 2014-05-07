@@ -38,7 +38,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 	for (n = 0; n < node->ninputs; n++) {
 		jive_ssavar * ssavar = 0;
 		jive_input * user;
-		JIVE_LIST_ITERATE(node->inputs[n]->origin->users, user, output_users_list) {
+		JIVE_LIST_ITERATE(node->inputs[n]->origin()->users, user, output_users_list) {
 			if (user->ssavar && jive_region_contains_node(user->node->region, node)) {
 				ssavar = user->ssavar;
 				break;
@@ -123,10 +123,10 @@ static int test_main(void)
 	
 	shape(shaped_graph, bottom);
 	shape(shaped_graph, gamma_node);
-	shape(shaped_graph, gamma_node->inputs[0]->origin->node);
+	shape(shaped_graph, gamma_node->inputs[0]->origin()->node);
 	shape(shaped_graph, l1);
 	shape(shaped_graph, l2);
-	shape(shaped_graph, gamma_node->inputs[1]->origin->node);
+	shape(shaped_graph, gamma_node->inputs[1]->origin()->node);
 	shape(shaped_graph, r1);
 	jive_shaped_node * p = shape(shaped_graph, r2);
 	

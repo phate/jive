@@ -257,10 +257,10 @@ jive_lambda_is_self_recursive(const jive_lambda_node * self_)
 	JIVE_LIST_ITERATE(lambda_region->hull, entry, input_hull_list) {
 		if (!jive_node_isinstance(entry->input->node, &JIVE_APPLY_NODE))
 			continue;
-		if (!jive_node_isinstance(entry->input->origin->node, &JIVE_PHI_ENTER_NODE))
+		if (!jive_node_isinstance(entry->input->origin()->node, &JIVE_PHI_ENTER_NODE))
 			continue;
 
-		if (entry->input->origin->index == index)
+		if (entry->input->origin()->index == index)
 			return true;
 	}
 
@@ -337,12 +337,12 @@ jive_lambda_end(jive_lambda * self,
 void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
-	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->inputs[0]->origin->node);
+	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->inputs[0]->origin()->node);
 	JIVE_DEBUG_ASSERT(lambda_node);
 	if (!lambda_node)
 		return;
 	
-	jive_region * function_region = lambda_node->inputs[0]->origin->node->region;
+	jive_region * function_region = lambda_node->inputs[0]->origin()->node->region;
 	jive_node * head = function_region->top;
 	jive_node * tail = function_region->bottom;
 	
@@ -351,7 +351,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	for(size_t n = 0; n < lambda_node->operation().function_type().narguments(); n++) {
 		jive_gate * gate = lambda_node->operation().argument_gates()[n];
 		jive_output * output = jive_node_get_gate_output(head, gate);
-		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin);
+		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin());
 	}
 	
 	jive_region_copy_substitute(function_region,
@@ -360,7 +360,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	for(size_t n = 0; n < lambda_node->operation().function_type().nreturns(); n++) {
 		jive_gate * gate = lambda_node->operation().return_gates()[n];
 		jive_input * input = jive_node_get_gate_input(tail, gate);
-		jive_output * substituted = jive_substitution_map_lookup_output(substitution, input->origin);
+		jive_output * substituted = jive_substitution_map_lookup_output(substitution, input->origin());
 		jive_output * output = apply_node->outputs[n];
 		jive_output_replace(output, substituted);
 	}
@@ -392,8 +392,8 @@ lambda_result_is_passthrough(const struct jive_input * result)
 {
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(result->node, &JIVE_LAMBDA_LEAVE_NODE));
 
-	if (jive_node_isinstance(result->origin->node, &JIVE_LAMBDA_ENTER_NODE))
-		return lambda_parameter_is_passthrough(result->origin);
+	if (jive_node_isinstance(result->origin()->node, &JIVE_LAMBDA_ENTER_NODE))
+		return lambda_parameter_is_passthrough(result->origin());
 
 	return false;
 }
@@ -412,7 +412,7 @@ replace_apply_node(const jive_apply_node * apply_,
 	jive_output * alive_arguments[nalive_parameters];
 	for (n = 0; n < nalive_parameters; n++) {
 		size_t index = alive_parameters[n]->index;
-		alive_arguments[n] = apply->inputs[index]->origin;
+		alive_arguments[n] = apply->inputs[index]->origin();
 	}
 
 	jive_output * new_apply_results[nalive_results];
@@ -425,7 +425,7 @@ replace_apply_node(const jive_apply_node * apply_,
 		if (result == alive_results[nalive_apply_results])
 			jive_output_replace(apply->outputs[n-1], new_apply_results[nalive_apply_results++]);
 		else
-			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index]->origin);
+			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index]->origin());
 	}
 	JIVE_DEBUG_ASSERT(nalive_results == nalive_apply_results);
 }
@@ -546,7 +546,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 
 	jive_output * new_results[nalive_results];
 	for (n = 0; n < nalive_results; n++) {
-		new_results[n] = jive_substitution_map_lookup_output(map, alive_results[n]->origin);
+		new_results[n] = jive_substitution_map_lookup_output(map, alive_results[n]->origin());
 		JIVE_DEBUG_ASSERT(new_results[n] != NULL);
 	}
 

@@ -44,19 +44,19 @@ static int test_main(void)
 	assert(sum1->node->noperands == 2);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node;
-	jive_input * retval = lambda_node->inputs[0]->origin->node->inputs[1];
-	jive_output * arg = lambda_node->inputs[0]->origin->node->inputs[0]->origin->node->outputs[1];
+	jive_input * retval = lambda_node->inputs[0]->origin()->node->inputs[1];
+	jive_output * arg = lambda_node->inputs[0]->origin()->node->inputs[0]->origin()->node->outputs[1];
 	jive_graph_export(graph, lambda_node->outputs[0]);
 	
 	jive_node_normal_form_set_mutable(sum_nf, true);
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
 	
-	jive_output * expected_sum = retval->origin;
+	jive_output * expected_sum = retval->origin();
 	assert(jive_node_isinstance(expected_sum->node, &JIVE_BITSUM_NODE));
 	assert(expected_sum->node->noperands == 2);
-	jive_output * op1 = expected_sum->node->inputs[0]->origin;
-	jive_output * op2 = expected_sum->node->inputs[1]->origin;
+	jive_output * op1 = expected_sum->node->inputs[0]->origin();
+	jive_output * op2 = expected_sum->node->inputs[1]->origin();
 	if (!jive_node_isinstance(op1->node, &JIVE_BITCONSTANT_NODE)) {
 		jive_output * tmp = op1; op1 = op2; op2 = tmp;
 	}

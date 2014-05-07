@@ -27,7 +27,7 @@ void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node
 		seen_n1 = seen_n1 || (tmp == n1);
 		seen_n2 = seen_n2 || (tmp == n2);
 		seen_n3 = seen_n3 || (tmp == n3);
-		if (n3->inputs[0]->origin == n1->outputs[0])
+		if (n3->inputs[0]->origin() == n1->outputs[0])
 			n3->inputs[0]->divert_origin(n2->outputs[0]);
 		else
 			n3->inputs[0]->divert_origin(n1->outputs[0]);

@@ -267,14 +267,14 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	
 	if (node->class_ == &JIVE_REGVALUE_NODE) {
 		const jive_register_class * regcls = ((jive_regvalue_node *) node)->attrs.regcls;
-		jive_node * origin = node->inputs[1]->origin->node;
+		jive_node * origin = node->inputs[1]->origin()->node;
 		JIVE_DEBUG_ASSERT(origin->region == root_region);
 		
 		if (jive_node_isinstance(origin, &JIVE_BITBINARY_NODE)) {
 			jive_output * operands[origin->noperands];
 			size_t n;
 			for (n = 0; n < origin->noperands; n++) {
-				jive_output * operand = origin->inputs[n]->origin;
+				jive_output * operand = origin->inputs[n]->origin();
 				jive_output * regvalue = jive_regvalue(ctl, regcls, operand);
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
@@ -297,7 +297,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 			jive_output * operands[origin->noperands];
 			size_t n;
 			for (n = 0; n < origin->noperands; n++) {
-				jive_output * operand = origin->inputs[n]->origin;
+				jive_output * operand = origin->inputs[n]->origin();
 				jive_output * regvalue = jive_regvalue(ctl, regcls, operand);
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
@@ -323,7 +323,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (input->origin->node->region != root_region)
+		if (input->origin()->node->region != root_region)
 			continue;
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 		if (!port)
@@ -332,7 +332,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 		if (!regcls)
 			continue;
 		
-		jive_output * regvalue = jive_regvalue(ctl, regcls, input->origin);
+		jive_output * regvalue = jive_regvalue(ctl, regcls, input->origin());
 		jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 		if (!reg_port) {
 			self->base.class_->annotate_node(&self->base, regvalue->node);

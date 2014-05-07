@@ -28,8 +28,8 @@ jive_phi_node_normal_form_normalize_node_(const jive_node_normal_form * self_, j
 	const jive_node_attrs * attrs = jive_node_get_attrs(node);
 
 	if (self->base.enable_cse) {
-		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1,
-			&node->inputs[0]->origin);
+		jive_output * tmp = node->inputs[0]->origin();
+		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1, &tmp);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
 			jive_output_replace(node->outputs[0], new_node->outputs[0]);

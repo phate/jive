@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -36,7 +37,7 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 		jive_input * input = node->inputs[n];
 		jive_inputview * inputview = nodeview->inputs[n];
 		jive_inputview_map_insert(&self->inputmap, inputview);
-		jive_graphview_add_node_recursive(self, input->origin->node);
+		jive_graphview_add_node_recursive(self, input->origin()->node);
 	}
 }
 
@@ -135,7 +136,8 @@ jive_graphview_draw(jive_graphview * self)
 	struct jive_inputview_map_iterator i;
 	JIVE_HASH_ITERATE(jive_inputview_map, self->inputmap, i) {
 		jive_inputview * inputview = i.entry;
-		jive_outputview * outputview = jive_outputview_map_lookup(&self->outputmap, inputview->input->origin);
+		jive_outputview * outputview = jive_outputview_map_lookup(&self->outputmap,
+			inputview->input->origin());
 		
 		JIVE_DEBUG_ASSERT(outputview->nodeview->placed);
 		int begin_x = outputview->nodeview->x + jive_outputview_get_edge_offset(outputview);

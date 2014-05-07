@@ -44,14 +44,14 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 
-	sum->node->inputs[1]->divert_origin(sum->node->inputs[0]->origin);
+	sum->node->inputs[1]->divert_origin(sum->node->inputs[0]->origin());
 
 	jive_view(graph, stderr);
 	
 	assert(jive_node_can_move_outward(inner_lambda));
 	jive_graph_push_outward(graph);
 	assert(inner_lambda->region == graph->root_region);
-	assert(inner_lambda->inputs[0]->origin->node->region->parent == graph->root_region);
+	assert(inner_lambda->inputs[0]->origin()->node->region->parent == graph->root_region);
 	
 	jive_view(graph, stderr);
 	
