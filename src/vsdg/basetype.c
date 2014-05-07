@@ -180,6 +180,39 @@ jive_input::~jive_input() noexcept
 }
 
 void
+jive_input::swap(jive_input * other) noexcept
+{
+	JIVE_DEBUG_ASSERT(jive_type_equals(jive_input_get_type(this), jive_input_get_type(other)));
+	JIVE_DEBUG_ASSERT(this->node == other->node);
+
+	jive_ssavar * v1 = this->ssavar;
+	jive_ssavar * v2 = other->ssavar;
+
+	if (v1) jive_ssavar_unassign_input(v1, this);
+	if (v2) jive_ssavar_unassign_input(v2, other);
+
+	jive_output * o1 = this->origin;
+	jive_output * o2 = other->origin;
+
+	jive_input_remove_as_user(this, o1);
+	jive_input_remove_as_user(other, o2);
+
+	jive_input_add_as_user(this, o2);
+	jive_input_add_as_user(other, o1);
+
+	this->origin = o2;
+	other->origin = o1;
+
+	if (v2) jive_ssavar_assign_input(v2, this);
+	if (v1) jive_ssavar_assign_input(v1, other);
+
+	jive_node_invalidate_depth_from_root(this->node);
+
+	jive_graph_notify_input_change(this->node->graph, this, o1, o2);
+	jive_graph_notify_input_change(this->node->graph, other, o2, o1);
+}
+
+void
 jive_input::label(jive_buffer & buffer) const
 {
 	if (gate) {
@@ -263,39 +296,6 @@ jive_input_internal_divert_origin(jive_input * self, jive_output * new_origin)
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(self->node->region->graph->root_region);
 #endif
-}
-
-void
-jive_input_swap(jive_input * self, jive_input * other)
-{
-	JIVE_DEBUG_ASSERT(jive_type_equals(jive_input_get_type(self), jive_input_get_type(other)));
-	JIVE_DEBUG_ASSERT(self->node == other->node);
-	
-	jive_ssavar * v1 = self->ssavar;
-	jive_ssavar * v2 = other->ssavar;
-	
-	if (v1) jive_ssavar_unassign_input(v1, self);
-	if (v2) jive_ssavar_unassign_input(v2, other);
-	
-	jive_output * o1 = self->origin;
-	jive_output * o2 = other->origin;
-	
-	jive_input_remove_as_user(self, o1);
-	jive_input_remove_as_user(other, o2);
-	
-	jive_input_add_as_user(self, o2);
-	jive_input_add_as_user(other, o1);
-	
-	self->origin = o2;
-	other->origin = o1;
-	
-	if (v2) jive_ssavar_assign_input(v2, self);
-	if (v1) jive_ssavar_assign_input(v1, other);
-	
-	jive_node_invalidate_depth_from_root(self->node);
-	
-	jive_graph_notify_input_change(self->node->graph, self, o1, o2);
-	jive_graph_notify_input_change(self->node->graph, other, o2, o1);
 }
 
 jive_ssavar *

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -97,7 +98,7 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 		const jive_resource_name * inreg1 = jive_variable_get_resource_name(node->inputs[1]->ssavar->variable);
 		/* if it is possible to satify constraints by simply swapping inputs, do it */
 		if (outreg0 == inreg1) {
-			jive_input_swap(node->inputs[0], node->inputs[1]);
+			node->inputs[0]->swap(node->inputs[1]);
 			jive_variable_merge(node->inputs[0]->ssavar->variable, node->outputs[0]->ssavar->variable);
 			return;
 		}
@@ -107,7 +108,7 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 		
 		/* if swapping makes the first operand overwritable, do it */
 		if (jive_shaped_variable_is_crossing(var1, shaped_node) && !jive_shaped_variable_is_crossing(var2, shaped_node))
-			jive_input_swap(node->inputs[0], node->inputs[1]);
+			node->inputs[0]->swap(node->inputs[1]);
 		inreg0 = jive_variable_get_resource_name(node->inputs[0]->ssavar->variable);
 	}
 	

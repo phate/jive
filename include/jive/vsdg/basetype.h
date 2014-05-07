@@ -143,6 +143,12 @@ public:
 
 	virtual void label(jive_buffer & buffer) const;
 	
+	/*
+		FIXME: This function is only used two times in src/regalloc/fixup.c. See whether we can
+		actually remove it and add a replacement in the register allocator.
+	*/
+	void swap(jive_input * other) noexcept;
+
 	struct jive_node * node;
 	size_t index;
 	
@@ -174,9 +180,6 @@ public:
 
 void
 jive_input_divert_origin(jive_input * self, jive_output * new_origin);
-
-void
-jive_input_swap(jive_input * self, jive_input * other);
 
 JIVE_EXPORTED_INLINE void
 jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)
