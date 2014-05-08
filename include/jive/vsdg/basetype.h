@@ -87,7 +87,7 @@ jive_type_isinstance(const jive_type * self, const jive_type_class * class_)
 JIVE_EXPORTED_INLINE void
 jive_type_get_label(const jive_type * self, struct jive_buffer * buffer)
 {
-	self->class_->get_label(self, buffer);
+	self->label(*buffer);
 }
 
 struct jive_input *
