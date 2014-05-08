@@ -113,7 +113,7 @@ jive_type_create_gate(const jive_type * self, struct jive_graph * graph, const c
 JIVE_EXPORTED_INLINE bool
 jive_type_equals(const jive_type * self, const jive_type * other)
 {
-	return (self == other) || self->class_->equals(self, other);
+	return *self == *other;
 }
 
 JIVE_EXPORTED_INLINE jive_type *
