@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
@@ -75,6 +76,11 @@ jive_function_type::jive_function_type(jive_function_type && other) noexcept
 {
 }
 
+void
+jive_function_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "fct");
+}
 
 /* function_type inheritable members */
 

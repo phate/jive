@@ -17,6 +17,8 @@ public:
 	virtual ~jive_control_type() noexcept;
 
 	jive_control_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 class jive_control_input final : public jive_state_input {

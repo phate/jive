@@ -30,6 +30,8 @@ public:
 
 	inline const jive_record_declaration * declaration() const noexcept { return decl_; }
 
+	virtual void label(jive_buffer & buffer) const override;
+
 private:
 	const jive_record_declaration * decl_;
 };

@@ -4,12 +4,13 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/util/buffer.h>
+#include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/anchortype-private.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
-#include <jive/util/list.h>
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
@@ -31,6 +32,12 @@ jive_anchor_type::~jive_anchor_type() noexcept {}
 jive_anchor_type::jive_anchor_type() noexcept
 	: jive_type(&JIVE_ANCHOR_TYPE)
 {}
+
+void
+jive_anchor_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "X");
+}
 
 jive_input *
 jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)

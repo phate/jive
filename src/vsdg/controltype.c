@@ -8,6 +8,7 @@
 
 #include <string.h>
 
+#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>
@@ -44,6 +45,12 @@ jive_control_type::~jive_control_type() noexcept {}
 jive_control_type::jive_control_type() noexcept
 	: jive_state_type(&JIVE_CONTROL_TYPE)
 {}
+
+void
+jive_control_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "ctl");
+}
 
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)

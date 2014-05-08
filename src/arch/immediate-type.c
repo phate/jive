@@ -48,6 +48,12 @@ jive_immediate_type::jive_immediate_type() noexcept
 	: jive_value_type(&JIVE_IMMEDIATE_TYPE)
 {}
 
+void
+jive_immediate_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "imm");
+}
+
 static void
 jive_immediate_type_fini_( jive_type* self_ )
 {

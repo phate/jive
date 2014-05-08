@@ -55,6 +55,14 @@ jive_bitstring_type::jive_bitstring_type(size_t nbits) noexcept
 	, nbits_(nbits)
 {}
 
+void
+jive_bitstring_type::label(jive_buffer & buffer) const
+{
+	char tmp[16];
+	snprintf(tmp, sizeof(tmp), "bits%zd", nbits());
+	jive_buffer_putstr(&buffer, tmp);
+}
+
 static void
 jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {

@@ -4,6 +4,7 @@
  */
 
 #include <jive/types/float/flttype-private.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/basetype-private.h>
 
@@ -31,6 +32,12 @@ jive_float_type::~jive_float_type() noexcept {}
 jive_float_type::jive_float_type() noexcept
 	: jive_value_type(&JIVE_FLOAT_TYPE)
 {}
+
+void
+jive_float_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "flt");
+}
 
 jive_input *
 jive_float_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,

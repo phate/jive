@@ -4,6 +4,7 @@
  */
 
 #include <jive/types/record/rcdtype.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 
@@ -46,6 +47,12 @@ jive_record_type::jive_record_type(const jive_record_declaration * decl) noexcep
 	: jive_value_type(&JIVE_RECORD_TYPE)
 	, decl_(decl)
 {}
+
+void
+jive_record_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "rcd");
+}
 
 /* record_type inheritable members */
 

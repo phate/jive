@@ -23,6 +23,8 @@ public:
 	virtual ~jive_test_value_type() noexcept;
 
 	jive_test_value_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 class jive_test_value_input final : public jive_value_input {
@@ -75,6 +77,8 @@ public:
 	virtual ~jive_test_state_type() noexcept;
 
 	jive_test_state_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 class jive_test_state_input final : public jive_state_input {

@@ -4,6 +4,7 @@
  */
 
 #include <jive/types/union/unntype.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 
@@ -46,6 +47,12 @@ jive_union_type::jive_union_type(const jive_union_declaration * decl) noexcept
 	: jive_value_type(&JIVE_UNION_TYPE)
 	, decl_(decl)
 {}
+
+void
+jive_union_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "unn");
+}
 
 /* record_type inheritable members */
 

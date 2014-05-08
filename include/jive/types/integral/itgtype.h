@@ -18,6 +18,8 @@ public:
 	virtual ~jive_integral_type() noexcept;
 
 	jive_integral_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 JIVE_EXPORTED_INLINE struct jive_integral_type *

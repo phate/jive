@@ -8,6 +8,7 @@
 
 #include <string.h>
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/valuetype-private.h>
@@ -44,6 +45,12 @@ jive_address_type::~jive_address_type() noexcept {}
 jive_address_type::jive_address_type() noexcept
 	: jive_value_type(&JIVE_ADDRESS_TYPE)
 {}
+
+void
+jive_address_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "addr");
+}
 
 jive_type *
 jive_address_type_copy_(const jive_type * self_)

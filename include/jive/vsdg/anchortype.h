@@ -17,6 +17,8 @@ public:
 	virtual ~jive_anchor_type() noexcept;
 
 	jive_anchor_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 class jive_anchor_input final : public jive_input {

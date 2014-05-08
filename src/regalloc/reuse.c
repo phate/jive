@@ -37,6 +37,8 @@ public:
 
 	inline const jive_resource_name * name() const noexcept { return name_; }
 
+	virtual void label(jive_buffer & buffer) const override;
+
 private:
 	const jive_resource_name * name_;
 };
@@ -89,6 +91,13 @@ jive_reuse_type::jive_reuse_type(const jive_resource_name * name) noexcept
 	, name_(name)
 {}
 
+void
+jive_reuse_type::label(jive_buffer & buffer) const
+{
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "reuse %s", name()->name);
+	jive_buffer_putstr(&buffer, tmp);
+}
 
 jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,
 	size_t index, jive_output * origin)

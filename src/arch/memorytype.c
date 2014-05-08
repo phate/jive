@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include <jive/context.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
@@ -38,6 +39,12 @@ jive_memory_type::~jive_memory_type() noexcept {}
 jive_memory_type::jive_memory_type() noexcept
 	: jive_state_type(&JIVE_MEMORY_TYPE)
 {}
+
+void
+jive_memory_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "mem");
+}
 
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)

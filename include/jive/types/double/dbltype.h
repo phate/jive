@@ -18,6 +18,8 @@ public:
 	virtual ~jive_double_type() noexcept;
 
 	jive_double_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 JIVE_EXPORTED_INLINE const jive_double_type *

@@ -43,6 +43,8 @@ public:
 	inline const std::vector<std::unique_ptr<jive_type>> &
 	argument_types() const noexcept { return argument_types_; }
 
+	virtual void label(jive_buffer & buffer) const override;
+
 private:
 	std::vector<std::unique_ptr<jive_type>> return_types_;
 	std::vector<std::unique_ptr<jive_type>> argument_types_;

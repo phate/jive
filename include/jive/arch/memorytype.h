@@ -17,6 +17,8 @@ public:
 	virtual ~jive_memory_type() noexcept;
 
 	jive_memory_type() noexcept;
+
+	virtual void label(jive_buffer & buffer) const override;
 };
 
 class jive_memory_input final : public jive_state_input {

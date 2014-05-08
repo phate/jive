@@ -21,6 +21,8 @@ public:
 
 	inline size_t nbits() const noexcept { return nbits_; }
 
+	virtual void label(jive_buffer & buffer) const override;
+
 private:
 	size_t nbits_;
 };

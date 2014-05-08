@@ -4,7 +4,7 @@
  */
 
 #include <jive/types/double/dbltype.h>
-
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
 
@@ -18,6 +18,12 @@ jive_double_type::~jive_double_type() noexcept {}
 jive_double_type::jive_double_type() noexcept
 	: jive_value_type(&JIVE_DOUBLE_TYPE)
 {}
+
+void
+jive_double_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "dbl");
+}
 
 static jive_input *
 jive_double_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,

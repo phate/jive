@@ -4,7 +4,7 @@
  */
 
 #include <jive/types/integral/itgtype.h>
-
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
@@ -46,6 +46,12 @@ jive_integral_type::~jive_integral_type() noexcept {}
 jive_integral_type::jive_integral_type() noexcept
 	: jive_value_type(&JIVE_INTEGRAL_TYPE)
 {}
+
+void
+jive_integral_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "itg");
+}
 
 static void
 jive_integral_type_fini_(jive_type * self_)

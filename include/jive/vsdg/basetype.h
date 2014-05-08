@@ -68,6 +68,8 @@ protected:
 	jive_type(const jive_type_class * class__) noexcept;
 
 public:
+	virtual void label(jive_buffer & buffer) const = 0;
+
 	const struct jive_type_class * class_;
 };
 

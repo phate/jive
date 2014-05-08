@@ -5,6 +5,7 @@
 
 #include "testtypes.h"
 
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/statetype-private.h>
 #include <jive/vsdg/valuetype-private.h>
@@ -38,6 +39,12 @@ jive_test_value_type::~jive_test_value_type() noexcept {}
 jive_test_value_type::jive_test_value_type() noexcept
 	: jive_value_type(&JIVE_TEST_VALUE_TYPE)
 {}
+
+void
+jive_test_value_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "test_value");
+}
 
 static jive_type *
 jive_test_value_type_copy_(const jive_type * self_)
@@ -112,6 +119,12 @@ jive_test_state_type::~jive_test_state_type() noexcept {}
 jive_test_state_type::jive_test_state_type() noexcept
 	: jive_state_type(&JIVE_TEST_STATE_TYPE)
 {}
+
+void
+jive_test_state_type::label(jive_buffer & buffer) const
+{
+	jive_buffer_putstr(&buffer, "test_state");
+}
 
 static jive_type *
 jive_test_state_type_copy_(const jive_type * self_)
