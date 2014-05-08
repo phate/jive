@@ -23,6 +23,8 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
+	virtual bool operator==(const jive_type & other) const noexcept override;
+
 private:
 	size_t nbits_;
 };

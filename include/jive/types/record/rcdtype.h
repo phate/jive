@@ -32,6 +32,8 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
+	virtual bool operator==(const jive_type & type) const noexcept override;
+
 private:
 	const jive_record_declaration * decl_;
 };

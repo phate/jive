@@ -53,6 +53,12 @@ jive_integral_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "itg");
 }
 
+bool
+jive_integral_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_integral_type*>(&other) != nullptr;
+}
+
 static void
 jive_integral_type_fini_(jive_type * self_)
 {

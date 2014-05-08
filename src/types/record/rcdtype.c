@@ -54,6 +54,13 @@ jive_record_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "rcd");
 }
 
+bool
+jive_record_type::operator==(const jive_type & _other) const noexcept
+{
+	const jive_record_type * other = dynamic_cast<const jive_record_type*>(&_other);
+	return other != nullptr && this->declaration() == other->declaration();
+}
+
 /* record_type inheritable members */
 
 jive_type *

@@ -20,6 +20,8 @@ public:
 	jive_real_type() noexcept;
 
 	virtual void label(jive_buffer & buffer) const override;
+
+	virtual bool operator==(const jive_type & other) const noexcept override;
 };
 
 JIVE_EXPORTED_INLINE struct jive_real_type *

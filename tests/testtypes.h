@@ -25,6 +25,8 @@ public:
 	jive_test_value_type() noexcept;
 
 	virtual void label(jive_buffer & buffer) const override;
+
+	virtual bool operator==(const jive_type & other) const noexcept override;
 };
 
 class jive_test_value_input final : public jive_value_input {
@@ -79,6 +81,8 @@ public:
 	jive_test_state_type() noexcept;
 
 	virtual void label(jive_buffer & buffer) const override;
+
+	virtual bool operator==(const jive_type & other) const noexcept override;
 };
 
 class jive_test_state_input final : public jive_state_input {

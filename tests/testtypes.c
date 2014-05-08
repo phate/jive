@@ -46,6 +46,12 @@ jive_test_value_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "test_value");
 }
 
+bool
+jive_test_value_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_test_value_type*>(&other) != nullptr;
+}
+
 static jive_type *
 jive_test_value_type_copy_(const jive_type * self_)
 {
@@ -124,6 +130,12 @@ void
 jive_test_state_type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "test_state");
+}
+
+bool
+jive_test_state_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_test_state_type*>(&other) != nullptr;
 }
 
 static jive_type *

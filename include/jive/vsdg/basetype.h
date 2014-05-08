@@ -70,6 +70,10 @@ protected:
 public:
 	virtual void label(jive_buffer & buffer) const = 0;
 
+	virtual bool operator==(const jive_type & other) const noexcept = 0;
+
+	inline bool operator!=(const jive_type & other) const noexcept { return !(*this == other); }
+
 	const struct jive_type_class * class_;
 };
 

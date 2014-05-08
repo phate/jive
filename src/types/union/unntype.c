@@ -54,6 +54,13 @@ jive_union_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "unn");
 }
 
+bool
+jive_union_type::operator==(const jive_type & _other) const noexcept
+{
+	const jive_union_type * other = dynamic_cast<const jive_union_type*>(&_other);
+	return other != nullptr && this->declaration() == other->declaration();
+}
+
 /* record_type inheritable members */
 
 jive_type *

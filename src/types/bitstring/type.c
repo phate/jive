@@ -55,12 +55,20 @@ jive_bitstring_type::jive_bitstring_type(size_t nbits) noexcept
 	, nbits_(nbits)
 {}
 
+
 void
 jive_bitstring_type::label(jive_buffer & buffer) const
 {
 	char tmp[16];
 	snprintf(tmp, sizeof(tmp), "bits%zd", nbits());
 	jive_buffer_putstr(&buffer, tmp);
+}
+
+bool
+jive_bitstring_type::operator==(const jive_type & _other) const noexcept
+{
+	const jive_bitstring_type * other = dynamic_cast<const jive_bitstring_type*>(&_other);
+	return other != nullptr && this->nbits() == other->nbits();
 }
 
 static void

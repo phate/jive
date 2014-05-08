@@ -52,6 +52,12 @@ jive_control_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "ctl");
 }
 
+bool
+jive_control_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_control_type*>(&other) != nullptr;
+}
+
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)
 {

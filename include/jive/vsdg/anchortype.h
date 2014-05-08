@@ -19,6 +19,8 @@ public:
 	jive_anchor_type() noexcept;
 
 	virtual void label(jive_buffer & buffer) const override;
+
+	virtual bool operator==(const jive_type & other) const noexcept override;
 };
 
 class jive_anchor_input final : public jive_input {

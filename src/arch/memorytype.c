@@ -46,6 +46,12 @@ jive_memory_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "mem");
 }
 
+bool
+jive_memory_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_memory_type*>(&other) != nullptr;
+}
+
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)
 {

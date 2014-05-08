@@ -39,6 +39,8 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
+	virtual bool operator==(const jive_type & type) const noexcept override;
+
 private:
 	const jive_resource_name * name_;
 };
@@ -97,6 +99,12 @@ jive_reuse_type::label(jive_buffer & buffer) const
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "reuse %s", name()->name);
 	jive_buffer_putstr(&buffer, tmp);
+}
+
+bool
+jive_reuse_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_reuse_type*>(&other) != nullptr;
 }
 
 jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,

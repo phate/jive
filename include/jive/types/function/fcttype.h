@@ -45,6 +45,8 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
+	virtual bool operator==(const jive_type & other) const noexcept override;
+
 private:
 	std::vector<std::unique_ptr<jive_type>> return_types_;
 	std::vector<std::unique_ptr<jive_type>> argument_types_;

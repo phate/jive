@@ -25,6 +25,12 @@ jive_double_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "dbl");
 }
 
+bool
+jive_double_type::operator==(const jive_type & other) const noexcept
+{
+	return dynamic_cast<const jive_double_type*>(&other) != nullptr;
+}
+
 static jive_input *
 jive_double_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * initial_operand)

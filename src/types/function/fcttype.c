@@ -82,6 +82,32 @@ jive_function_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "fct");
 }
 
+bool
+jive_function_type::operator==(const jive_type & _other) const noexcept
+{
+	const jive_function_type * other = dynamic_cast<const jive_function_type*>(&_other);
+	if (other == nullptr)
+		return false;
+
+	if (this->nreturns() != other->nreturns())
+		return false;
+
+	if (this->narguments() != other->narguments())
+		return false;
+
+	for (size_t i = 0; i < this->nreturns(); i++){
+		if (*this->return_type(i) != *other->return_type(i))
+			return false;
+	}
+
+	for (size_t i = 0; i < this->narguments(); i++){
+		if (*this->argument_type(i) != *other->argument_type(i))
+			return false;
+	}
+
+	return true;
+}
+
 /* function_type inheritable members */
 
 void
