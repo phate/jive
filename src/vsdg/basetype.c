@@ -150,8 +150,12 @@ jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * or
 
 jive_input::~jive_input() noexcept
 {
-	if (ssavar)
+	if (ssavar) {
+		jive_ssavar_unassign_input(ssavar, this);
 		jive_input_unassign_ssavar(this);
+	}
+
+	jive_graph_notify_input_destroy(node->graph, this);
 
 	if (gate) {
 		JIVE_LIST_REMOVE(gate->inputs, this, gate_inputs_list);
@@ -342,15 +346,6 @@ jive_input_auto_merge_variable(jive_input * self)
 	jive_variable_merge(ssavar->variable, jive_input_get_constraint(self));
 	jive_ssavar_assign_input(ssavar, self);
 	return ssavar;
-}
-
-void
-jive_input_destroy(jive_input * self)
-{
-	if (self->ssavar) jive_ssavar_unassign_input(self->ssavar, self);
-	if (self->node->region) jive_graph_notify_input_destroy(self->node->graph, self);
-	
-	delete self;
 }
 
 /* outputs */

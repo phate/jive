@@ -155,7 +155,8 @@ jive_node_fini_(jive_node * self)
 	
 	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
 	
-	while(self->ninputs) jive_input_destroy(self->inputs[self->ninputs - 1]);
+	while (self->ninputs)
+		delete self->inputs[self->ninputs-1];
 	
 	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
 	JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);

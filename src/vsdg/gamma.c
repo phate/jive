@@ -196,8 +196,8 @@ jive_gamma(struct jive_output * predicate,
 				continue;
 			results[n-1] = true_values[n-1];
 			jive_output_destroy(node->outputs[n-1]);
-			jive_input_destroy(true_branch->inputs[n-1]);
-			jive_input_destroy(false_branch->inputs[n-1]);
+			delete true_branch->inputs[n-1];
+			delete false_branch->inputs[n-1];
 		}
 	}
 }
@@ -352,8 +352,8 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 				continue;
 			jive_output_replace(node->outputs[n-1], true_branch->inputs[n-1]->origin());
 			jive_output_destroy(node->outputs[n-1]);
-			jive_input_destroy(true_branch->inputs[n-1]);
-			jive_input_destroy(false_branch->inputs[n-1]);
+			delete true_branch->inputs[n-1];
+			delete false_branch->inputs[n-1];
 		}
 	}
 	

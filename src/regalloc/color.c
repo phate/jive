@@ -579,7 +579,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		if (user->gate == gate) {
 			/* tied gates, just pass through spilled value */
 			jive_node_gate_input(user->node, spill_gate, new_output);
-			jive_input_destroy(user);
+			delete user;
 		} else {
 			jive_node * xfer_node = user->node;
 			jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
@@ -607,7 +607,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
 		jive_shaped_node_destroy(p);
 		
-		jive_input_destroy(input);
+		delete input;
 		jive_node_destroy(xfer_node);
 		
 		jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, node);
