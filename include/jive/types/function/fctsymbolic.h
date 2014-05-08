@@ -1,34 +1,53 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #ifndef JIVE_TYPES_FUNCTION_FCTSYMBOLIC_H
 #define JIVE_TYPES_FUNCTION_FCTSYMBOLIC_H
 
-#include <jive/vsdg/node.h>
+#include <string>
+
 #include <jive/types/function/fcttype.h>
+#include <jive/vsdg/node.h>
+
+namespace jive {
+namespace fct {
+
+class symfunction_operation final : public jive::operation {
+public:
+	virtual ~symfunction_operation() noexcept;
+
+	symfunction_operation(
+		const std::string & name,
+		const jive_function_type & type);
+
+	symfunction_operation(
+		const std::string && name,
+		const jive_function_type && type) noexcept;
+
+	inline const std::string& name() const noexcept { return name_; }
+	inline const jive_function_type& type() const noexcept { return type_; }
+private:
+	std::string name_;
+	jive_function_type type_;
+};
+
+}
+}
+
+typedef jive::operation_node<jive::fct::symfunction_operation> jive_symbolicfunction_node;
 
 extern const jive_node_class JIVE_SYMBOLICFUNCTION_NODE;
 
-typedef struct jive_symbolicfunction_node jive_symbolicfunction_node;
-typedef struct jive_symbolicfunction_node_attrs jive_symbolicfunction_node_attrs;
-
-struct jive_symbolicfunction_node_attrs : public jive_node_attrs {
-	const char * name;
-	jive_function_type * type;
-};
-
-struct jive_symbolicfunction_node : public jive_node {
-	jive_symbolicfunction_node_attrs attrs; 
-};
-
 jive_node *
-jive_symbolicfunction_node_create(struct jive_graph * graph, const char * name, const jive_function_type * type);
+jive_symbolicfunction_node_create(
+	struct jive_graph * graph, const char * name, const jive_function_type * type);
 
 jive_output *
-jive_symbolicfunction_create(struct jive_graph * graph, const char * name, const jive_function_type * type);
+jive_symbolicfunction_create(
+	struct jive_graph * graph, const char * name, const jive_function_type * type);
 
 JIVE_EXPORTED_INLINE jive_symbolicfunction_node *
 jive_symbolicfunction_node_cast(jive_node * node)

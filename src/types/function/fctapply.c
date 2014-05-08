@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -25,7 +26,7 @@ const jive_node_class JIVE_APPLY_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_apply_node_create_, /* override */
@@ -48,12 +49,16 @@ jive_apply_node_init_(
 	jive_output * const arguments[])
 {
 	if (!dynamic_cast<const jive_function_output*>(function)) {
-		jive_context_fatal_error(region->graph->context, "Type mismatch: need 'function' type as input to 'apply' node");
+		jive_context_fatal_error(
+			region->graph->context,
+			 "Type mismatch: need 'function' type as input to 'apply' node");
 	}
 	jive_function_output * fct = (jive_function_output *) function;
 
 	if (fct->narguments() != narguments) {
-		jive_context_fatal_error(region->graph->context, "Type mismatch: number of parameters to function does not match signature");
+		jive_context_fatal_error(
+			region->graph->context,
+			"Type mismatch: number of parameters to function does not match signature");
 	}
 
 	jive_output * args[narguments+1];
@@ -80,7 +85,8 @@ jive_node *
 jive_apply_node_create(struct jive_region * region, jive_output * function,
 	size_t narguments, jive_output * const arguments[])
 {
-	jive_apply_node * node = new jive_apply_node;
+	jive::fct::apply_operation op;
+	jive_apply_node * node = new jive_apply_node(op);
 
 	node->class_ = &JIVE_APPLY_NODE;
 	jive_apply_node_init_(node, region, function, narguments, arguments);
@@ -97,7 +103,7 @@ jive_apply_create(jive_output * function, size_t narguments, jive_output * const
 	jive_output * operands[noperands];
 	for (n = 0; n < narguments; n++)
 		operands[n] = arguments[n];
-	operands[n] = function; 
+	operands[n] = function;
 
 	jive_region * region = jive_region_innermost(noperands, operands);
 	jive_node * apply = jive_apply_node_create(region, function, narguments, arguments);

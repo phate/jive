@@ -703,7 +703,7 @@ jive_arrayindex_node_address_transform(jive_arrayindex_node * node, jive_memlayo
 }
 
 void
-jive_apply_node_address_transform(const struct jive_apply_node * node, size_t nbits)
+jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits)
 {
 	jive_input * fct = node->inputs[0];
 

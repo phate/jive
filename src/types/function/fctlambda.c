@@ -23,7 +23,7 @@ static jive_node *
 jive_lambda_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_node * node = jive::create_operation_node(jive_op_lambda_enter());
+	jive_node * node = jive::create_operation_node(jive::fct::lambda_enter_operation());
 	
 	node->class_ = &JIVE_LAMBDA_ENTER_NODE;
 	jive_control_type ctl;
@@ -63,7 +63,7 @@ jive_lambda_leave_node_create(jive_output * output)
 {
 	JIVE_DEBUG_ASSERT(output->node->region->bottom == NULL);
 	
-	jive_node * node = jive::create_operation_node(jive_op_lambda_leave());
+	jive_node * node = jive::create_operation_node(jive::fct::lambda_leave_operation());
 	
 	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
 	jive_control_type ctl;
@@ -100,29 +100,32 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 
 /* lambda node */
 
-jive_op_lambda::~jive_op_lambda() noexcept
+namespace jive {
+namespace fct {
+
+lambda_operation::~lambda_operation() noexcept
 {
 }
 
-jive_op_lambda::jive_op_lambda(
-	const jive_op_lambda & other)
-	: jive_op_lambda(
+lambda_operation::lambda_operation(
+	const lambda_operation & other)
+	: lambda_operation(
 		other.function_type_,
 		other.argument_gates_,
 		other.return_gates_)
 {
 }
 
-jive_op_lambda::jive_op_lambda(
-	jive_op_lambda && other)
-	: jive_op_lambda(
+lambda_operation::lambda_operation(
+	lambda_operation && other)
+	: lambda_operation(
 		std::move(other.function_type_),
 		std::move(other.argument_gates_),
 		std::move(other.return_gates_))
 {
 }
 
-jive_op_lambda::jive_op_lambda(
+lambda_operation::lambda_operation(
 	const jive_function_type & function_type,
 	const std::vector<jive_gate *> & argument_gates,
 	const std::vector<jive_gate *> & return_gates)
@@ -132,7 +135,7 @@ jive_op_lambda::jive_op_lambda(
 {
 }
 
-jive_op_lambda::jive_op_lambda(
+lambda_operation::lambda_operation(
 	jive_function_type && function_type,
 	std::vector<jive_gate *> && argument_gates,
 	std::vector<jive_gate *> && return_gates) noexcept
@@ -140,6 +143,9 @@ jive_op_lambda::jive_op_lambda(
 	, argument_gates_(std::move(argument_gates))
 	, return_gates_(std::move(return_gates))
 {
+}
+
+}
 }
 
 static void
@@ -183,7 +189,10 @@ jive_lambda_node_create(jive_region * function_region)
 		narguments, argument_types,
 		nreturns, return_types);
 	
-	jive_op_lambda op(std::move(function_type), std::move(argument_gates), std::move(return_gates));
+	jive::fct::lambda_operation op(
+		std::move(function_type),
+		std::move(argument_gates),
+		std::move(return_gates));
 	
 	jive_lambda_node * node = new jive_lambda_node(op);
 	node->class_ = &JIVE_LAMBDA_NODE;
@@ -208,8 +217,8 @@ jive_lambda_node_create_(struct jive_region * region, const jive_node_attrs * at
 static bool
 jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_op_lambda * first = &((const jive_lambda_node *)self)->operation();
-	const jive_op_lambda * second = (const jive_op_lambda *) attrs;
+	const jive::fct::lambda_operation * first = &((const jive_lambda_node *)self)->operation();
+	const jive::fct::lambda_operation * second = (const jive::fct::lambda_operation *) attrs;
 
 	return
 		jive_type_equals(&first->function_type(), &second->function_type()) &&

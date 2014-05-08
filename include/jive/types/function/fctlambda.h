@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,30 +13,25 @@
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/node.h>
 
-/* lambda node */
+namespace jive {
+namespace fct {
 
-typedef struct jive_lambda jive_lambda;
-
-extern const jive_node_class JIVE_LAMBDA_NODE;
-extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
-extern const jive_node_class JIVE_LAMBDA_LEAVE_NODE;
-
-class jive_op_lambda final : public jive::operation {
+class lambda_operation final : public jive::operation {
 public:
-	virtual ~jive_op_lambda() noexcept;
+	virtual ~lambda_operation() noexcept;
 
-	jive_op_lambda(
-		const jive_op_lambda & other);
+	lambda_operation(
+		const lambda_operation & other);
 
-	jive_op_lambda(
-		jive_op_lambda && other);
+	lambda_operation(
+		lambda_operation && other);
 
-	jive_op_lambda(
+	lambda_operation(
 		const jive_function_type & function_type,
 		const std::vector<jive_gate *> & argument_gates,
 		const std::vector<jive_gate *> & return_gates);
 
-	jive_op_lambda(
+	lambda_operation(
 		jive_function_type && function_type,
 		std::vector<jive_gate *> && argument_gates,
 		std::vector<jive_gate *> && return_gates) noexcept;
@@ -65,13 +60,20 @@ private:
 	std::vector<jive_gate *> return_gates_;
 };
 
-typedef jive::operation_node<jive_op_lambda> jive_lambda_node;
-
-class jive_op_lambda_enter final : public jive::operation {
+class lambda_enter_operation final : public jive::operation {
 };
 
-class jive_op_lambda_leave final : public jive::operation {
+class lambda_leave_operation final : public jive::operation {
 };
+
+}
+}
+
+typedef jive::operation_node<jive::fct::lambda_operation> jive_lambda_node;
+
+extern const jive_node_class JIVE_LAMBDA_NODE;
+extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
+extern const jive_node_class JIVE_LAMBDA_LEAVE_NODE;
 
 JIVE_EXPORTED_INLINE jive_lambda_node *
 jive_lambda_node_cast(jive_node * node)
