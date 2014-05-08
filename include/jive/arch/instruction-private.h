@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,9 +13,6 @@
 
 void
 jive_instruction_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
-
-const jive_node_attrs *
-jive_instruction_node_get_attrs_(const jive_node * self);
 
 jive_node *
 jive_instruction_node_create_(struct jive_region * region, const jive_node_attrs * attrs,

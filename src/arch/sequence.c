@@ -123,7 +123,7 @@ sequentialize_region(
 		jive_dataitems_node * dnode = jive_dataitems_node_cast(node);
 		jive_seq_point * current;
 		if (inode) {
-			const jive_instruction_class * icls = inode->attrs.icls;
+			const jive_instruction_class * icls = inode->operation().icls();
 			const jive_register_name * inregs[icls->ninputs];
 			const jive_register_name * outregs[icls->noutputs];
 			jive_seq_imm immediates[icls->nimmediates];
@@ -291,7 +291,7 @@ jive_graph_sequentialize(jive_graph * graph)
 			jive_instruction_node_cast(seq_point->node);
 		if (!inode)
 			continue;
-		const jive_instruction_class * icls = inode->attrs.icls;
+		const jive_instruction_class * icls = inode->operation().icls();
 		size_t n;
 		for (n = 0; n < icls->nimmediates; ++ n) {
 			jive_immediate_node * imm_node =

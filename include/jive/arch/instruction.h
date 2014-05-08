@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -18,20 +18,32 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
 
+namespace jive {
+
+class instruction_operation final : public operation {
+public:
+	explicit inline constexpr
+	instruction_operation(const jive_instruction_class * icls) noexcept
+		: icls_(icls)
+	{
+	}
+
+	inline const jive_instruction_class * icls() const noexcept
+	{
+		return icls_;
+	}
+
+private:
+	const jive_instruction_class * icls_;
+};
+
+}
+
 struct jive_immediate_node;
 
-typedef struct jive_instruction_node jive_instruction_node;
-typedef struct jive_instruction_node_attrs jive_instruction_node_attrs;
+typedef jive::operation_node<jive::instruction_operation> jive_instruction_node;
 
 extern const jive_node_class JIVE_INSTRUCTION_NODE;
-
-struct jive_instruction_node_attrs : public jive_node_attrs {
-	const jive_instruction_class * icls;
-};
-
-struct jive_instruction_node : public jive_node {
-	jive_instruction_node_attrs attrs;
-};
 
 jive_node *
 jive_instruction_node_create_simple(
@@ -71,7 +83,7 @@ jive_instruction_node_get_immediate(
 	const jive_instruction_node * node,
 	size_t index)
 {
-	const jive_instruction_class * icls = node->attrs.icls;
+	const jive_instruction_class * icls = node->operation().icls();
 	jive_input * input = node->inputs[index + icls->ninputs];
 	return (struct jive_immediate_node *) input->origin()->node;
 }

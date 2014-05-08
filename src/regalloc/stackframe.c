@@ -35,7 +35,10 @@ get_req_stackslot(jive_variable * variable)
 }
 
 static void
-layout_stackslot(jive_shaped_graph * shaped_graph, jive_subroutine_stackframe_info * frame, jive_variable * variable)
+layout_stackslot(
+	jive_shaped_graph * shaped_graph,
+	jive_subroutine_stackframe_info * frame,
+	jive_variable * variable)
 {
 	if (variable->resname)
 		return;
@@ -68,7 +71,8 @@ layout_stackslot(jive_shaped_graph * shaped_graph, jive_subroutine_stackframe_in
 		const jive_stackslot * other_slot = get_req_stackslot(other_var->variable);
 		if (!other_slot)
 			continue;
-		const jive_stackslot_size_class * other_cls = (const jive_stackslot_size_class *) other_slot->base.resource_class;
+		const jive_stackslot_size_class * other_cls =
+			(const jive_stackslot_size_class *) other_slot->base.resource_class;
 		
 		for (n = 0; n < other_cls->size; n++)
 			allowed_slot[n + other_slot->offset - lower_bound] = false;
@@ -137,7 +141,10 @@ get_node_callslot(jive_node * node)
 }
 
 static void
-update_call_area_size(jive_graph * graph, jive_subroutine_stackframe_info * frame, jive_variable * variable)
+update_call_area_size(
+	jive_graph * graph,
+	jive_subroutine_stackframe_info * frame,
+	jive_variable * variable)
 {
 	/* unless this is a callslot class, bail out */
 	const jive_resource_class * rescls = variable->rescls;
@@ -191,7 +198,7 @@ reloc_stack_access(jive_node * node)
 	if (!inode)
 		return;
 	
-	const jive_instruction_class * icls = inode->attrs.icls;
+	const jive_instruction_class * icls = inode->operation().icls();
 	size_t n;
 	for (n = 0; n < icls->nimmediates; n++) {
 		jive_input * imm_input = node->inputs[n + icls->ninputs];
@@ -238,10 +245,14 @@ typedef struct jive_regalloc_stackframe_transforms {
 
 
 static void
-do_split(const jive_subroutine_late_transforms * self_, jive_output * port_in, jive_input * port_out,
-	const jive_value_split_factory * enter_split, const jive_value_split_factory * leave_split)
+do_split(
+	const jive_subroutine_late_transforms * self_,
+	jive_output * port_in, jive_input * port_out,
+	const jive_value_split_factory * enter_split,
+	const jive_value_split_factory * leave_split)
 {
-	const jive_regalloc_stackframe_transforms * self = (const jive_regalloc_stackframe_transforms *) self_;
+	const jive_regalloc_stackframe_transforms * self =
+		(const jive_regalloc_stackframe_transforms *) self_;
 	
 	size_t n;
 	
@@ -320,7 +331,9 @@ region_subroutine_prepare_stackframe(jive_shaped_graph * shaped_graph, jive_regi
 }
 
 static void
-region_subroutine_prepare_stackframe_recursive(jive_shaped_graph * shaped_graph, jive_region * region)
+region_subroutine_prepare_stackframe_recursive(
+	jive_shaped_graph * shaped_graph,
+	jive_region * region)
 {
 	region_subroutine_prepare_stackframe(shaped_graph, region);
 	jive_region * subregion;

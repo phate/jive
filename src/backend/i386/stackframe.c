@@ -1,18 +1,22 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/backend/i386/stackframe.h>
-#include <jive/backend/i386/instructionset.h>
-#include <jive/arch/stackframe-private.h>
 #include <jive/arch/instruction.h>
-#include <jive/vsdg/region.h>
+#include <jive/arch/stackframe-private.h>
+#include <jive/backend/i386/instructionset.h>
+#include <jive/backend/i386/stackframe.h>
 #include <jive/vsdg/cut.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/region.h>
 
 static inline void
-jive_i386_stackframe_init_(jive_i386_stackframe * self, jive_region * region, jive_output * stackptr_on_entry, jive_input * stackptr_on_exit)
+jive_i386_stackframe_init_(
+	jive_i386_stackframe * self,
+	jive_region * region,
+	jive_output * stackptr_on_entry,
+	jive_input * stackptr_on_exit)
 {
 	jive_stackframe_init_(&self->base, region, stackptr_on_entry);
 	self->stackptr_on_entry = stackptr_on_entry;
@@ -44,14 +48,14 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 		jive_input * input;
 		JIVE_LIST_ITERATE(var->base.inputs, input, resource_input_list) {
 			jive_instruction_node * node = (jive_instruction_node *) input->node;
-			if (node->attrs.icls == &jive_i386_instr_int_load32_disp)
+			if (node->operation().icls() == &jive_i386_instr_int_load32_disp)
 				node->attrs.immediates[0] = slot->offset + stack_size;
 		}
 		
 		jive_output * output;
 		JIVE_LIST_ITERATE(var->base.outputs, output, resource_output_list) {
 			jive_instruction_node * node = (jive_instruction_node *) output->node;
-			if (node->attrs.icls == &jive_i386_instr_int_store32_disp)
+			if (node->operation().icls() == &jive_i386_instr_int_store32_disp)
 				node->attrs.immediates[0] = slot->offset + stack_size;
 		}
 	}
@@ -72,7 +76,9 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 	
 	jive_resource_assign_output(stackptr_reg, stack_sub->outputs[0]);
 	jive_resource_assign_input(stackptr_reg, stack_sub->inputs[0]);
-	jive_resource_assign_output(jive_output_get_constraint(stack_sub->outputs[1]), stack_sub->outputs[1]);
+	jive_resource_assign_output(
+		jive_output_get_constraint(stack_sub->outputs[1]),
+		stack_sub->outputs[1]);
 	
 	jive_output * stackptr = stack_sub->outputs[0];
 	
@@ -89,7 +95,9 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 	
 	jive_resource_assign_output(stackptr_reg, stack_add->outputs[0]);
 	jive_resource_assign_input(stackptr_reg, stack_add->inputs[0]);
-	jive_resource_assign_output(jive_output_get_constraint(stack_add->outputs[1]), stack_add->outputs[1]);
+	jive_resource_assign_output(
+		jive_output_get_constraint(stack_add->outputs[1]),
+		stack_add->outputs[1]);
 	
 	jive_output * restored_stackptr = stack_add->outputs[0];
 	
@@ -108,9 +116,13 @@ const jive_stackframe_class JIVE_I386_STACKFRAME_CLASS = {
 };
 
 jive_stackframe *
-jive_i386_stackframe_create(jive_region * region, jive_output * stackptr_on_entry, jive_input * stackptr_on_exit)
+jive_i386_stackframe_create(
+	jive_region * region,
+	jive_output * stackptr_on_entry,
+	jive_input * stackptr_on_exit)
 {
-	jive_i386_stackframe * stackframe = jive_context_malloc(region->graph->context, sizeof(*stackframe));
+	jive_i386_stackframe * stackframe =
+		jive_context_malloc(region->graph->context, sizeof(*stackframe));
 	jive_i386_stackframe_init_(stackframe, region, stackptr_on_entry, stackptr_on_exit);
 	stackframe->base.class_ = &JIVE_I386_STACKFRAME_CLASS;
 	

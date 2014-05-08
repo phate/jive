@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,8 +13,8 @@
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/splitnode.h>
 
 static const jive_resource_class *
@@ -24,13 +24,13 @@ get_aux_rescls(const jive_node * node) {
 	}
 	const jive_instruction_node * inode =
 		static_cast<const jive_instruction_node *>(node);
-	if (inode->attrs.icls->flags & jive_instruction_commutative) {
+	if (inode->operation().icls()->flags & jive_instruction_commutative) {
 		return nullptr;
 	}
-	if (!(inode->attrs.icls->flags & jive_instruction_write_input)) {
+	if (!(inode->operation().icls()->flags & jive_instruction_write_input)) {
 		return nullptr;
 	}
-	return &inode->attrs.icls->inregs[0]->base;
+	return &inode->operation().icls()->inregs[0]->base;
 }
 
 typedef struct jive_region_shaper jive_region_shaper;
@@ -64,7 +64,10 @@ struct jive_region_shaper {
 };
 
 jive_region_shaper *
-jive_region_shaper_create(jive_region_shaper * parent, jive_region * region, jive_master_shaper_selector * master_selector)
+jive_region_shaper_create(
+	jive_region_shaper * parent,
+	jive_region * region,
+	jive_master_shaper_selector * master_selector)
 {
 	jive_context * context = region->graph->context;
 	jive_region_shaper * self = jive_context_malloc(context, sizeof(*self));
@@ -109,7 +112,8 @@ varcut_checked_add(jive_region_shaper * self, jive_mutable_varcut * varcut, jive
 	
 	const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
 	
-	const jive_resource_class * overflow = jive_resource_class_count_check_add(&varcut->use_counts, rescls);
+	const jive_resource_class * overflow =
+		jive_resource_class_count_check_add(&varcut->use_counts, rescls);
 	if (overflow) {
 		conflict.type = jive_regalloc_conflict_class;
 		conflict.item.rescls = overflow;
@@ -159,13 +163,15 @@ check_crossing_overflow(jive_region_shaper * self,
 	bool first_input_passthrough = false;
 	if (shaped_node->node->ninputs) {
 		first_input_var = shaped_node->node->inputs[0]->ssavar;
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, first_input_var);
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(
+			self->shaped_graph, first_input_var);
 		first_input_passthrough = (jive_varcut_shaped_ssavar_is_active(&active_after, shaped_ssavar) > 0);
 	}
 	
 	size_t n;
 	for (n = 0; n < new_node->noutputs; n++) {
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, new_node->outputs[n]->ssavar);
+		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(
+			self->shaped_graph, new_node->outputs[n]->ssavar);
 		if (jive_varcut_shaped_ssavar_is_active(&active_before, shaped_ssavar))
 			jive_mutable_varcut_ssavar_remove_full(&active_before, shaped_ssavar);
 		if (jive_varcut_shaped_ssavar_is_active(&active_after, shaped_ssavar))
@@ -268,7 +274,8 @@ check_unshaped_crossing_overflow(jive_region_shaper * self,
 	if (new_node->ninputs) {
 		jive_ssavar * ssavar = new_node->inputs[0]->ssavar;
 		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
-		first_input_active_after = (bool) jive_varcut_shaped_ssavar_is_active(&active_after, shaped_ssavar);
+		first_input_active_after =
+			(bool) jive_varcut_shaped_ssavar_is_active(&active_after, shaped_ssavar);
 	}
 	
 	jive_regalloc_conflict conflict;
@@ -278,7 +285,9 @@ check_unshaped_crossing_overflow(jive_region_shaper * self,
 	for (n = 0; n < new_node->noutputs; n++) {
 		jive_ssavar * ssavar = new_node->outputs[n]->ssavar;
 		
-		jive_mutable_varcut_ssavar_remove_full(&active_before, jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar));
+		jive_mutable_varcut_ssavar_remove_full(
+			&active_before,
+			jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar));
 	
 		conflict = varcut_checked_add(self, &active_after, ssavar);
 		if (conflict.type != jive_regalloc_conflict_none)
@@ -376,12 +385,17 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	}
 	
 	for (n = 0; n < new_node->ninputs; n++) {
-		JIVE_DEBUG_ASSERT(jive_shaped_graph_map_ssavar(self->shaped_graph, new_node->inputs[n]->ssavar)->boundary_region_depth <= self->region->depth);
+		JIVE_DEBUG_ASSERT(jive_shaped_graph_map_ssavar(
+			self->shaped_graph, new_node->inputs[n]->ssavar)->boundary_region_depth
+				<= self->region->depth);
 	}
 }
 
 static jive_regalloc_conflict
-check_ssavar_replacement_conflict(const jive_varcut * ssavar_set, jive_shaped_ssavar * shaped_ssavar, jive_variable * new_var)
+check_ssavar_replacement_conflict(
+	const jive_varcut * ssavar_set,
+	jive_shaped_ssavar * shaped_ssavar,
+	jive_variable * new_var)
 {
 	jive_cutvar_xpoint * original, * other;
 	
@@ -397,7 +411,8 @@ check_ssavar_replacement_conflict(const jive_varcut * ssavar_set, jive_shaped_ss
 	
 	const jive_resource_class * overflow, * new_rescls = jive_variable_get_resource_class(new_var);
 	if (original) {
-		overflow = jive_resource_class_count_check_change(&ssavar_set->use_counts, original->rescls, new_rescls);
+		overflow = jive_resource_class_count_check_change(
+			&ssavar_set->use_counts, original->rescls, new_rescls);
 	} else {
 		overflow = jive_resource_class_count_check_add(&ssavar_set->use_counts, new_rescls);
 	}
@@ -458,21 +473,31 @@ jive_region_shaper_undo_setup_node(jive_region_shaper * self, jive_node * node)
 }
 
 static jive_ssavar *
-select_spill(jive_region_shaper * self, jive_regalloc_conflict conflict, jive_node * disallow_origins)
+select_spill(
+	jive_region_shaper * self,
+	jive_regalloc_conflict conflict,
+	jive_node * disallow_origins)
 {
 	switch(conflict.type) {
-		case jive_regalloc_conflict_class:
-			return jive_region_shaper_selector_select_spill(self->region_selector, conflict.item.rescls, disallow_origins);
-		case jive_regalloc_conflict_name:
+		case jive_regalloc_conflict_class: {
+			return jive_region_shaper_selector_select_spill(
+				self->region_selector, conflict.item.rescls, disallow_origins);
+		}
+		case jive_regalloc_conflict_name: {
 			return conflict.item.ssavar;
-		default:
+		}
+		default: {
 			JIVE_DEBUG_ASSERT(false);
 			return 0;
+		}
 	}
 }
 
 static jive_output *
-do_split_begin(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resource_class_demotion * demotion)
+do_split_begin(
+	jive_region_shaper * self,
+	jive_ssavar * ssavar,
+	const jive_resource_class_demotion * demotion)
 {
 	/*
 		FIXME: reroute
@@ -498,7 +523,11 @@ do_split_begin(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resou
 }
 
 static void
-do_split_end(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resource_class_demotion * demotion, jive_output * split_origin)
+do_split_end(
+	jive_region_shaper * self,
+	jive_ssavar * ssavar,
+	const jive_resource_class_demotion * demotion,
+	jive_output * split_origin)
 {
 	jive_output * origin = split_origin;
 	size_t n = 0;
@@ -524,7 +553,10 @@ do_split_end(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resourc
 }
 
 static const jive_resource_class_demotion *
-select_split_path(jive_region_shaper * self, jive_ssavar * ssavar, const jive_resource_class * required_rescls)
+select_split_path(
+	jive_region_shaper * self,
+	jive_ssavar * ssavar,
+	const jive_resource_class * required_rescls)
 {
 	const jive_resource_class * from_rescls = jive_variable_get_resource_class(ssavar->variable);
 	const jive_resource_class_demotion * demotion = from_rescls->demotions;
@@ -540,7 +572,10 @@ select_split_path(jive_region_shaper * self, jive_ssavar * ssavar, const jive_re
 }
 
 static void
-resolve_conflict_spill(jive_region_shaper * self, const jive_resource_class * rescls, jive_regalloc_conflict conflict,
+resolve_conflict_spill(
+	jive_region_shaper * self,
+	const jive_resource_class * rescls,
+	jive_regalloc_conflict conflict,
 	jive_node * disallow_origins)
 {
 	jive_ssavar * to_spill = select_spill(self, conflict, disallow_origins);
@@ -580,14 +615,19 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 		}
 		
 		jive_shaped_variable * shaped_variable = 0;
-		if (shaped_ssavar)
-			shaped_variable = jive_shaped_graph_map_variable(self->shaped_graph, shaped_ssavar->ssavar->variable);
-		bool merge_conflict = shaped_variable && !jive_shaped_variable_can_merge(shaped_variable, new_constraint);
+		if (shaped_ssavar) {
+			shaped_variable = jive_shaped_graph_map_variable(
+				self->shaped_graph, shaped_ssavar->ssavar->variable);
+		}
+		bool merge_conflict =
+			shaped_variable &&
+			!jive_shaped_variable_can_merge(shaped_variable, new_constraint);
 		
 		if (merge_conflict) {
 			jive_region_shaper_undo_setup_node(self, node);
 			
-			const jive_resource_class * current_rescls = jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
+			const jive_resource_class * current_rescls =
+				jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
 			const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_constraint);
 			new_rescls = jive_resource_class_relax(new_rescls);
 			const jive_type * type = jive_output_get_type(output);
@@ -609,7 +649,9 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			jive_ssavar * ssavar = shaped_ssavar->ssavar;
 			jive_variable_merge(ssavar->variable, new_constraint);
 			jive_ssavar_assign_output(ssavar, output);
-			jive_mutable_varcut_ssavar_rescls_change(active, shaped_ssavar, jive_variable_get_resource_class(ssavar->variable));
+			jive_mutable_varcut_ssavar_rescls_change(
+				active, shaped_ssavar,
+				jive_variable_get_resource_class(ssavar->variable));
 		}
 		
 		jive_ssavar_assert_consistent(shaped_ssavar->ssavar);
@@ -617,7 +659,8 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 	
 	for (n = 0; n < node->noutputs ; n++) {
 		jive_output * output = node->outputs[n];
-		jive_mutable_varcut_ssavar_remove_full(active, jive_shaped_graph_map_ssavar(self->shaped_graph, output->ssavar));
+		jive_mutable_varcut_ssavar_remove_full(
+			active, jive_shaped_graph_map_ssavar(self->shaped_graph, output->ssavar));
 	}
 	
 	for (n = 0; n < node->ninputs; n++) {
@@ -627,16 +670,20 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 		jive_variable * new_constraint = jive_input_get_constraint(input);
 		
 		jive_shaped_variable * shaped_variable = 0;
-		if (shaped_ssavar)
-			shaped_variable = jive_shaped_graph_map_variable(self->shaped_graph, shaped_ssavar->ssavar->variable);
-		bool merge_conflict = shaped_variable && !jive_shaped_variable_can_merge(shaped_variable, new_constraint);
+		if (shaped_ssavar) {
+			shaped_variable = jive_shaped_graph_map_variable(
+				self->shaped_graph, shaped_ssavar->ssavar->variable);
+		}
+		bool merge_conflict =
+			shaped_variable && !jive_shaped_variable_can_merge(shaped_variable, new_constraint);
 		
 		if (merge_conflict) {
 			jive_region_shaper_undo_setup_node(self, node);
 			
 			/* FIXME: reroute is missing here!!! */
 			jive_output * output = shaped_ssavar->ssavar->origin;
-			const jive_resource_class * current_rescls = jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
+			const jive_resource_class * current_rescls =
+				jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
 			const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_constraint);
 			new_rescls = jive_resource_class_relax(new_rescls);
 			const jive_type * type = jive_output_get_type(output);
@@ -670,14 +717,18 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			jive_ssavar * ssavar = shaped_ssavar->ssavar;
 			jive_variable_merge(ssavar->variable, new_constraint);
 			jive_ssavar_assign_input(ssavar, input);
-			jive_mutable_varcut_ssavar_rescls_change(active, shaped_ssavar, jive_variable_get_resource_class(ssavar->variable));
+			jive_mutable_varcut_ssavar_rescls_change(
+				active,
+				shaped_ssavar,
+				jive_variable_get_resource_class(ssavar->variable));
 		}
 		
 		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, self->region->depth);
 	}
 	
 	if (node->ninputs) {
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, node->inputs[0]->ssavar);
+		jive_shaped_ssavar * shaped_ssavar =
+			jive_shaped_graph_map_ssavar(self->shaped_graph, node->inputs[0]->ssavar);
 		if (jive_varcut_shaped_ssavar_is_active(&self->shaped_region->active_top.base, shaped_ssavar)) {
 			const jive_resource_class * aux_rescls = get_aux_rescls(node);
 			
@@ -736,13 +787,18 @@ flush_pending(jive_region_shaper * self)
 }
 
 static void
-split_merge_subregion(jive_region_shaper * self, jive_region_shaper * subregion, jive_ssavar * ssavar)
+split_merge_subregion(
+	jive_region_shaper * self,
+	jive_region_shaper * subregion,
+	jive_ssavar * ssavar)
 {
 	const jive_resource_class * from_rescls = jive_variable_get_resource_class(ssavar->variable);
 	const jive_resource_class_demotion * demotion = from_rescls->demotions;
 	
-	const jive_resource_class_count * parent_use_counts = &self->shaped_region->active_top.base.use_counts;
-	const jive_resource_class_count * child_use_counts = &subregion->shaped_region->active_top.base.use_counts;
+	const jive_resource_class_count * parent_use_counts =
+		&self->shaped_region->active_top.base.use_counts;
+	const jive_resource_class_count * child_use_counts =
+		&subregion->shaped_region->active_top.base.use_counts;
 	
 	while(demotion->target) {
 		/* demote to target resource class that... */
@@ -767,7 +823,10 @@ split_merge_subregion(jive_region_shaper * self, jive_region_shaper * subregion,
 }
 
 static bool
-merge_single_ssavar_from_subregion(jive_region_shaper * self, jive_region_shaper * subregion, jive_shaped_ssavar * shaped_ssavar)
+merge_single_ssavar_from_subregion(
+	jive_region_shaper * self,
+	jive_region_shaper * subregion,
+	jive_shaped_ssavar * shaped_ssavar)
 {
 	jive_ssavar * ssavar = shaped_ssavar->ssavar;
 		
@@ -781,8 +840,12 @@ merge_single_ssavar_from_subregion(jive_region_shaper * self, jive_region_shaper
 	/* determine ssavar in parent leading to same origin (if active at all) */
 		
 	jive_shaped_ssavar * parent_origin_shaped_ssavar;
-	parent_origin_shaped_ssavar = jive_varcut_map_output(&self->shaped_region->active_top.base, ssavar->origin);
-	conflict = check_ssavar_replacement_conflict(&self->shaped_region->active_top.base, parent_origin_shaped_ssavar, ssavar->variable);
+	parent_origin_shaped_ssavar =
+		jive_varcut_map_output(&self->shaped_region->active_top.base, ssavar->origin);
+	conflict = check_ssavar_replacement_conflict(
+		&self->shaped_region->active_top.base,
+		parent_origin_shaped_ssavar,
+		ssavar->variable);
 	if (conflict.type == jive_regalloc_conflict_name) {
 		/* some other variable in parent cannot be active at the same
 		time as this variable -- need to split in subregion */
@@ -814,8 +877,10 @@ merge_single_ssavar_from_subregion(jive_region_shaper * self, jive_region_shaper
 	but it might still not be possible to merge the parent's constraints with the
 	value in the subregion */
 	
-	jive_shaped_variable * shaped_variable = jive_shaped_graph_map_variable(self->shaped_graph, ssavar->variable);
-	if (parent_origin_shaped_ssavar && ! jive_shaped_variable_can_merge(shaped_variable, parent_origin_shaped_ssavar->ssavar->variable)) {
+	jive_shaped_variable * shaped_variable =
+		jive_shaped_graph_map_variable(self->shaped_graph, ssavar->variable);
+	if (parent_origin_shaped_ssavar && ! jive_shaped_variable_can_merge(
+		shaped_variable, parent_origin_shaped_ssavar->ssavar->variable)) {
 		/* nope, applying parent constraint to var in subregion causes some kind
 		of conflict, split */
 		split_merge_subregion(self, subregion, ssavar);
@@ -868,8 +933,10 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 		jive_input * input = new_node->inputs[n];
 		if (!dynamic_cast<jive_anchor_input*>(input))
 			continue;
-		jive_region_shaper * subshaper = jive_region_shaper_create(self,
-			input->origin()->node->region, self->master_selector);
+		jive_region_shaper * subshaper = jive_region_shaper_create(
+			self,
+			input->origin()->node->region,
+			self->master_selector);
 		subshapers[nsubshapers++] = subshaper;
 	}
 	

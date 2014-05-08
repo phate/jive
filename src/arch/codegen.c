@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -261,7 +261,7 @@ jive_seq_graph_patch_jump_targets(
 	jive_seq_instruction * seq_instr,
 	jive_instruction_node * inode)
 {
-	size_t index = inode->attrs.icls->noutputs;
+	size_t index = inode->operation().icls()->noutputs;
 	JIVE_DEBUG_ASSERT(inode->noutputs);
 	jive_output * ctl_out = inode->outputs[index];
 	JIVE_DEBUG_ASSERT(dynamic_cast<jive_control_output*>(ctl_out));
@@ -287,7 +287,7 @@ jive_seq_graph_patch_jump_targets(
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, region)->last_point;
 	}
 	
-	if ( (inode->attrs.icls->flags & jive_instruction_jump_conditional_invertible) ) {
+	if ( (inode->operation().icls()->flags & jive_instruction_jump_conditional_invertible) ) {
 		if (primary_tgt == seq_instr->base.seqpoint_list.next) {
 			primary_tgt = secondary_tgt;
 			secondary_tgt = 0;
