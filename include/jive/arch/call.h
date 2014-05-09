@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,30 +7,56 @@
 #ifndef JIVE_ARCH_CALL_H
 #define JIVE_ARCH_CALL_H
 
+#include <memory>
+#include <vector>
+
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
 
 struct jive_context;
 struct jive_type;
 
-extern const jive_node_class JIVE_CALL_NODE;
-
-typedef struct jive_calling_convention jive_calling_convention;
-typedef struct jive_call_node_attrs jive_call_node_attrs;
-typedef struct jive_call_node jive_call_node;
-
 /* FIXME: opaque type for now -- to be filled in later */
 struct jive_calling_convention;
 
-struct jive_call_node_attrs : public jive_node_attrs {
-	const jive_calling_convention * calling_convention;
-	size_t nreturns;
-	jive_type ** return_types;
+namespace jive {
+
+class call_operation final : public operation {
+public:
+	virtual ~call_operation() noexcept;
+
+	call_operation(
+		const jive_calling_convention * calling_convention,
+		const std::vector<std::unique_ptr<jive_type>> & return_types);
+
+	inline
+	call_operation(
+		const jive_calling_convention * calling_convention,
+		std::vector<std::unique_ptr<jive_type>> && return_types) noexcept
+		: calling_convention_(calling_convention)
+		, return_types_(std::move(return_types))
+	{
+	}
+
+	call_operation(const call_operation & other);
+
+	call_operation(call_operation && other) = default;
+
+	inline const jive_calling_convention *
+	calling_convention() const noexcept { return calling_convention_; }
+
+	inline const std::vector<std::unique_ptr<jive_type>> &
+	return_types() const noexcept { return return_types_; }
+private:
+	const jive_calling_convention * calling_convention_;
+	std::vector<std::unique_ptr<jive_type>> return_types_;
 };
 
-struct jive_call_node : public jive_node {
-	jive_call_node_attrs attrs;
-};
+}
+
+extern const jive_node_class JIVE_CALL_NODE;
+
+typedef jive::operation_node<jive::call_operation> jive_call_node;
 
 struct jive_node *
 jive_call_by_address_node_create(struct jive_region * region,

@@ -600,7 +600,7 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 		return;
 
 	jive_node * call = jive_call_by_bitstring_node_create(node_->region, operands[0], nbits,
-		node->attrs.calling_convention, node_->ninputs - 1, operands + 1, node_->noutputs,
+		node->operation().calling_convention(), node_->ninputs - 1, operands + 1, node_->noutputs,
 		return_types);
 
 	for (i = 0; i < node_->noutputs; i++){

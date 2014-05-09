@@ -8,6 +8,7 @@
 #define JIVE_ARCH_ADDRESS_TRANSFORM_H
 
 #include <jive/arch/address.h>
+#include <jive/arch/call.h>
 #include <jive/common.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fctapply.h>
@@ -101,10 +102,8 @@ void
 jive_label_to_address_node_address_transform(jive_label_to_address_node * node,
 	size_t nbits);
 
-struct jive_call_node;
-
 void
-jive_call_node_address_transform(struct jive_call_node * node,
+jive_call_node_address_transform(jive_call_node * node,
 	size_t nbits);
 
 void
