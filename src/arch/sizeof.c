@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -22,9 +22,6 @@ static jive_node *
 jive_sizeof_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
 	size_t noperands, struct jive_output * const operands[]);
 
-static const jive_node_attrs *
-jive_sizeof_node_get_attrs_(const jive_node * self);
-
 static bool
 jive_sizeof_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
 
@@ -37,7 +34,7 @@ const jive_node_class JIVE_SIZEOF_NODE = {
 	fini : jive_sizeof_node_fini_,	/* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_sizeof_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_sizeof_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_sizeof_node_create_, /* override */
@@ -48,42 +45,26 @@ jive_sizeof_node_fini_(jive_node * self_)
 {
 	jive_sizeof_node * self = (jive_sizeof_node *)self_;
 
-	jive_type_destroy(self->attrs.type);
 	jive_node_fini_(self);
-}
-
-static const jive_node_attrs *
-jive_sizeof_node_get_attrs_(const jive_node * self_)
-{
-	const jive_sizeof_node * self = (const jive_sizeof_node *)self_;
-	
-	return &self->attrs;
 }
 
 static bool
 jive_sizeof_node_match_attrs_(const jive_node * self, const jive_node_attrs * second_)
 {
-	const jive_sizeof_node_attrs * first = (const jive_sizeof_node_attrs *)jive_node_get_attrs(self);
-	const jive_sizeof_node_attrs * second = (const jive_sizeof_node_attrs *)second_;
+	const jive::sizeof_operation * first = &((const jive_sizeof_node *)self)->operation();
+	const jive::sizeof_operation * second = (const jive::sizeof_operation *)second_;
 	
-	return jive_type_equals(first->type, second->type);
+	return jive_type_equals(&first->type(), &second->type());
 }
 
 static jive_node *
 jive_sizeof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
-	const jive_sizeof_node_attrs * attrs = (const jive_sizeof_node_attrs *)attrs_;
+	const jive::sizeof_operation * attrs = (const jive::sizeof_operation *)attrs_;
 	
-	return jive_sizeof_node_create(region, attrs->type);
-}
-
-jive_node *
-jive_sizeof_node_create(jive_region * region,
-	const jive_value_type * type)
-{
 	jive_context * context = region->graph->context;
-	jive_sizeof_node * node = new jive_sizeof_node;
+	jive_sizeof_node * node = new jive_sizeof_node(*attrs);
 	
 	node->class_ = &JIVE_SIZEOF_NODE;
 	
@@ -96,7 +77,27 @@ jive_sizeof_node_create(jive_region * region,
 		0, NULL, NULL,
 		1, &typeptr);
 	
-	node->attrs.type = (jive_value_type *)jive_type_copy(type);
+	return node;
+}
+
+jive_node *
+jive_sizeof_node_create(jive_region * region,
+	const jive_value_type * type)
+{
+	;
+	jive_context * context = region->graph->context;
+	jive_sizeof_node * node = new jive_sizeof_node(jive::sizeof_operation(*type));
+	
+	node->class_ = &JIVE_SIZEOF_NODE;
+	
+	/* FIXME: either need a "universal" integer type,
+	or some way to specify the representation type for the
+	sizeof operator */
+	jive_bitstring_type btype(32);
+	const jive_type * typeptr = &btype;
+	jive_node_init_(node, region,
+		0, NULL, NULL,
+		1, &typeptr);
 	
 	return node;
 }
@@ -114,7 +115,7 @@ void
 jive_sizeof_node_reduce(const jive_sizeof_node * node, jive_memlayout_mapper * mapper)
 {
 	const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_value_type(mapper,
-		node->attrs.type);
+		&node->operation().type());
 	
 	jive_output * new_node = jive_bitconstant_unsigned(node->graph, 32, layout->total_size);
 	jive_output_replace(node->outputs[0], new_node);
