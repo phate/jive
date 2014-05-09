@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -114,7 +114,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 	jive_regselector * self = (jive_regselector *) self_;
 	
 	if (node->class_ == &JIVE_REGVALUE_NODE) {
-		const jive_register_class * regcls = ((jive_regvalue_node *) node)->attrs.regcls;
+		const jive_register_class * regcls = ((jive_regvalue_node *) node)->operation().regcls();
 		jive_regselector_option option;
 		option.mask = jive_regselector_classify_regcls(self, regcls);
 		jive_negotiator_annotate_simple_output(&self->base, node->outputs[0], &option.base);
@@ -266,7 +266,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 		return;
 	
 	if (node->class_ == &JIVE_REGVALUE_NODE) {
-		const jive_register_class * regcls = ((jive_regvalue_node *) node)->attrs.regcls;
+		const jive_register_class * regcls = ((jive_regvalue_node *) node)->operation().regcls();
 		jive_node * origin = node->inputs[1]->origin()->node;
 		JIVE_DEBUG_ASSERT(origin->region == root_region);
 		

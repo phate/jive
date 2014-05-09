@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -14,16 +14,24 @@
 
 extern const jive_node_class JIVE_REGVALUE_NODE;
 
-typedef struct jive_regvalue_node jive_regvalue_node;
-typedef struct jive_regvalue_node_attrs jive_regvalue_node_attrs;
+namespace jive {
 
-struct jive_regvalue_node_attrs : public jive_node_attrs {
-	const jive_register_class * regcls;
+class regvalue_operation final : public jive_node_attrs {
+public:
+	inline explicit constexpr
+	regvalue_operation(const jive_register_class * regcls) noexcept
+		: regcls_(regcls)
+	{
+	}
+
+	inline const jive_register_class * regcls() const { return regcls_; }
+private:
+	const jive_register_class * regcls_;
 };
 
-struct jive_regvalue_node : public jive_node {
-	jive_regvalue_node_attrs attrs;
-};
+}
+
+typedef jive::operation_node<jive::regvalue_operation> jive_regvalue_node;
 
 /**
 	\brief Create register constant

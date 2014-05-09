@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -61,7 +61,7 @@ static int test_main(void)
 	if (!rv)
 		rv = jive_regvalue_node_cast(n2);
 	assert(rv);
-	assert(rv->attrs.regcls == &jive_testarch_regcls_gpr);
+	assert(rv->operation().regcls() == &jive_testarch_regcls_gpr);
 	
 	sum2 = res->node->inputs[1]->origin();
 	n1 = sum2->node->inputs[0]->origin()->node;
