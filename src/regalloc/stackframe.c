@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -209,7 +209,7 @@ reloc_stack_access(jive_node * node)
 		JIVE_DEBUG_ASSERT(sub);
 		jive_subroutine_stackframe_info * frame = jive_subroutine_node_get_stackframe_info(sub);
 		
-		jive_immediate imm = immnode->attrs.value;
+		jive_immediate imm = immnode->operation().value();
 		if (imm.add_label == &jive_label_fpoffset) {
 			const jive_stackslot * slot = get_node_frameslot(node);
 			imm = jive_immediate_add_offset(&imm, slot->offset - frame->frame_pointer_offset);
@@ -230,7 +230,7 @@ reloc_stack_access(jive_node * node)
 			imm = jive_immediate_add_offset(&imm, -slot->offset + frame->stack_pointer_offset);
 			imm.sub_label = 0;
 		}
-		if (!jive_immediate_equals(&imm, &immnode->attrs.value)) {
+		if (!jive_immediate_equals(&imm, &immnode->operation().value())) {
 			jive_output * new_immval = jive_immediate_create(node->region->graph, &imm);
 			imm_input->divert_origin(new_immval);
 		}

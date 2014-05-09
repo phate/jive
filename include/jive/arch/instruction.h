@@ -17,10 +17,11 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/nullary.h>
 
 namespace jive {
 
-class instruction_operation final : public operation {
+class instruction_operation final : public nullary_operation {
 public:
 	explicit inline constexpr
 	instruction_operation(const jive_instruction_class * icls) noexcept
@@ -38,8 +39,6 @@ private:
 };
 
 }
-
-struct jive_immediate_node;
 
 typedef jive::operation_node<jive::instruction_operation> jive_instruction_node;
 
@@ -78,14 +77,14 @@ jive_instruction_node_cast(jive_node * node)
 		return 0;
 }
 
-JIVE_EXPORTED_INLINE struct jive_immediate_node *
+JIVE_EXPORTED_INLINE jive_immediate_node *
 jive_instruction_node_get_immediate(
 	const jive_instruction_node * node,
 	size_t index)
 {
 	const jive_instruction_class * icls = node->operation().icls();
 	jive_input * input = node->inputs[index + icls->ninputs];
-	return (struct jive_immediate_node *) input->origin()->node;
+	return (jive_immediate_node *) input->origin()->node;
 }
 
 #endif

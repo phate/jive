@@ -296,7 +296,7 @@ jive_graph_sequentialize(jive_graph * graph)
 		for (n = 0; n < icls->nimmediates; ++ n) {
 			jive_immediate_node * imm_node =
 				jive_instruction_node_get_immediate(inode, n);
-			jive_immediate imm = imm_node->attrs.value;
+			jive_immediate imm = imm_node->operation().value();
 			seq_instr->imm[n].value = imm.offset;
 			seq_instr->imm[n].add_label = jive_seq_graph_convert_label(
 				seq, imm.add_label, seq_point);

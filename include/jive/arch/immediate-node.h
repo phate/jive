@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,23 +9,32 @@
 
 #include <string.h>
 
-#include <jive/context.h>
 #include <jive/arch/immediate-value.h>
 #include <jive/arch/linker-symbol.h>
+#include <jive/context.h>
 #include <jive/vsdg/node.h>
 
-typedef struct jive_immediate_node jive_immediate_node;
-typedef struct jive_immediate_node_attrs jive_immediate_node_attrs;
+namespace jive {
+class immediate_operation final : public operation {
+public:
+	virtual ~immediate_operation() noexcept;
+
+	inline constexpr
+	immediate_operation(jive_immediate value) noexcept
+		: value_(value)
+	{
+	}
+
+	inline const jive_immediate & value() const noexcept { return value_; }
+
+private:
+	jive_immediate value_;
+};
+}
+
+typedef jive::operation_node<jive::immediate_operation> jive_immediate_node;
 
 extern const jive_node_class JIVE_IMMEDIATE_NODE;
-
-struct jive_immediate_node_attrs : public jive_node_attrs {
-	jive_immediate value;
-};
-
-struct jive_immediate_node : public jive_node {
-	jive_immediate_node_attrs attrs;
-};
 
 jive_output *
 jive_immediate_create(

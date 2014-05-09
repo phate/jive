@@ -426,8 +426,8 @@ jive_immediate_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive_immediate_node_attrs * attrs = (const jive_immediate_node_attrs *) attrs_;
-	jive_serialize_immediate(driver, &attrs->value, os);
+	const jive::immediate_operation * attrs = (const jive::immediate_operation *) attrs_;
+	jive_serialize_immediate(driver, &attrs->value(), os);
 }
 
 static bool
@@ -438,12 +438,13 @@ jive_immediate_deserialize(
 	jive_output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
-	jive_immediate_node_attrs attrs;
-	
-	if (!jive_deserialize_immediate(driver, is, &attrs.value))
+	jive_immediate imm;
+	if (!jive_deserialize_immediate(driver, is, &imm))
 		return false;
 	
-	*node = JIVE_IMMEDIATE_NODE.create(region, &attrs, noperands, operands);
+	jive::immediate_operation op(imm);
+	
+	*node = JIVE_IMMEDIATE_NODE.create(region, &op, noperands, operands);
 	
 	return true;
 }
