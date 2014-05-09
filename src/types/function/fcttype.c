@@ -58,6 +58,18 @@ jive_function_type::jive_function_type(size_t narguments, const jive_type ** arg
 		return_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(return_types[i])));
 }
 
+jive_function_type::jive_function_type(
+	const std::vector<std::unique_ptr<jive_type>> & argument_types,
+	const std::vector<std::unique_ptr<jive_type>> & return_types)
+	: jive_value_type(&JIVE_FUNCTION_TYPE)
+{
+	for (size_t i = 0; i < argument_types.size(); i++)
+		argument_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(argument_types[i].get())));
+
+	for (size_t i = 0; i < return_types.size(); i++)
+		return_types_.push_back(std::unique_ptr<jive_type>(jive_type_copy(return_types[i].get())));
+}
+
 jive_function_type::jive_function_type(const jive_function_type & rhs)
 	: jive_value_type(&JIVE_FUNCTION_TYPE)
 {

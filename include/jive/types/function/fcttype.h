@@ -23,6 +23,9 @@ public:
 	jive_function_type(size_t narguments, const jive_type ** argument_types,
 		size_t nreturns, const jive_type ** return_types);
 
+	jive_function_type(const std::vector<std::unique_ptr<jive_type>> & argument_types,
+		const std::vector<std::unique_ptr<jive_type>> & return_types);
+
 	jive_function_type(const jive_function_type & rhs);
 
 	jive_function_type(jive_function_type && other) noexcept;
