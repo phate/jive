@@ -24,11 +24,11 @@ static int test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
+	jive_test_value_type vtype;
 	jive_function_type f0type(0, NULL, 0, NULL);
-	const jive_type * tmparray0[] = {vtype};
+	const jive_type * tmparray0[] = {&vtype};
 	jive_function_type f1type(0, NULL, 0, NULL);
-	jive_function_type f2type(1, &vtype, 1, tmparray0);
+	jive_function_type f2type(1, tmparray0, 1, tmparray0);
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fns[3];
@@ -39,7 +39,7 @@ static int test_main()
 	jive_lambda * l0 = jive_lambda_begin(graph, 0, NULL, NULL);
 	jive_lambda * l1 = jive_lambda_begin(graph, 0, NULL, NULL);
 	const char * tmparray1[] = {"arg"};
-	jive_lambda * l2 = jive_lambda_begin(graph, 1, &vtype, tmparray1);
+	jive_lambda * l2 = jive_lambda_begin(graph, 1, tmparray0, tmparray1);
 
 	jive_output * lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
 	jive_output * lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
@@ -47,7 +47,7 @@ static int test_main()
 	jive_output * ret;
 	jive_apply_create(fns[2].value, 1, l2->arguments, &ret);
 
-	jive_output * lambda2 = jive_lambda_end(l2, 1, &vtype, &ret);
+	jive_output * lambda2 = jive_lambda_end(l2, 1, tmparray0, &ret);
 
 	jive_phi_fixvar_leave(phi, fns[0].gate, lambda0);
 	jive_phi_fixvar_leave(phi, fns[1].gate, lambda1);
@@ -60,7 +60,7 @@ static int test_main()
 
 	jive_node * bottom = jive_node_create(graph->root_region,
 		3, tmparray2, results,
-		1, &vtype);
+		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

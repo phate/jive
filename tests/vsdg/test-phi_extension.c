@@ -21,16 +21,16 @@ test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
+	jive_test_value_type vtype;
 	jive_phi phi = jive_phi_begin(graph);
-	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, vtype);
+	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, &vtype);
 	jive_phi_fixvar_leave(phi, fv.gate, fv.value);
 	jive_phi_end(phi, 1, &fv);
 
 	jive_view(graph, stderr);
 
 	jive_phi_node * phi_node = jive_phi_node_cast(fv.value->node);
-	const jive_type * tmparray0[] = {vtype, vtype};
+	const jive_type * tmparray0[] = {&vtype, &vtype};
 	jive_phi_extension * phi_ext = jive_phi_begin_extension(phi_node,
 		2, tmparray0);
 	jive_output ** results = jive_phi_end_extension(phi_ext);

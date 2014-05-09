@@ -106,29 +106,29 @@ static int test_main(void)
 	
 	jive_immediate imm;
 	
-	JIVE_DECLARE_TEST_STATE_TYPE(control_type);
-	jive_output * control = jive_node_add_output(enter, control_type);
+	jive_test_state_type control_type;
+	jive_output * control = jive_node_add_output(enter, &control_type);
 	
 	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
-	jive_node_add_input(load_str_addr, control_type, control);
+	jive_node_add_input(load_str_addr, &control_type, control);
 	
 	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
-	jive_node_add_input(load_str_len, control_type, control);
+	jive_node_add_input(load_str_len, &control_type, control);
 	
 	jive_immediate_init(&imm, 1, NULL, NULL, NULL);
 	jive_node * load_fd = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
-	jive_node_add_input(load_fd, control_type, control);
+	jive_node_add_input(load_fd, &control_type, control);
 	
 	jive_output * write_fn_address = jive_label_to_address_create(graph, &write_label.base);
 	jive_output * tmparray0[] = {load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]};

@@ -108,29 +108,29 @@ static int test_main(void)
 	jive_immediate imm;
 	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
 	
-	JIVE_DECLARE_TEST_STATE_TYPE(state_type);
+	jive_test_state_type state_type;
 	
-	jive_output * state = jive_node_add_output(enter, state_type);
+	jive_output * state = jive_node_add_output(enter, &state_type);
 	
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
-	jive_node_add_input(load_str_addr, state_type, state);
+	jive_node_add_input(load_str_addr, &state_type, state);
 	
 	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
-	jive_node_add_input(load_str_len, state_type, state);
+	jive_node_add_input(load_str_len, &state_type, state);
 	
 	jive_immediate_init(&imm, 1, NULL, NULL, NULL);
 	jive_node * load_fd = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
-	jive_node_add_input(load_fd, state_type, state);
+	jive_node_add_input(load_fd, &state_type, state);
 	
 	const jive_resource_class * gpr = &jive_i386_regcls_gpr.base;
 	const jive_type * gpr_type = jive_resource_class_get_type(gpr);

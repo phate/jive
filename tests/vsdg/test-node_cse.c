@@ -21,9 +21,10 @@ test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
+	jive_test_value_type vtype;
+	const jive_type * vtype_ptr = &vtype;
 	jive_region * inner_region = jive_region_create_subregion(graph->root_region);
-	jive_node * inner_node = jive_node_create(inner_region, 0, NULL, NULL, 1, &vtype);
+	jive_node * inner_node = jive_node_create(inner_region, 0, NULL, NULL, 1, &vtype_ptr);
 	jive_node_normal_form * normal_form = jive_graph_get_nodeclass_form(graph, &JIVE_NODE);
 	jive_node * outer_node = jive_node_cse_create(normal_form, graph->root_region, NULL, 0, NULL);
 

@@ -17,9 +17,9 @@ static int test_main(void)
 {
 	jive_context * context = jive_context_create();
 	
-	JIVE_DECLARE_TEST_VALUE_TYPE(value_type);
-	
-	jive_function_type t1(1, &value_type, 1, &value_type);
+	jive_test_value_type value_type;
+	const jive_type * value_type_ptr = &value_type;
+	jive_function_type t1(1, &value_type_ptr, 1, &value_type_ptr);
 
 	const jive_type * tmparray2[] = {&t1};
 	const jive_type * tmparray3[] = {&t1};

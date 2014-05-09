@@ -67,15 +67,15 @@ create_computation_node(jive_graph * graph,
 	size_t noperands, jive_output ** operands,
 	size_t noutputs)
 {
-	JIVE_DECLARE_TEST_VALUE_TYPE(type);
+	jive_test_value_type type;
 	const jive_type * input_types[noperands];
 	const jive_type * output_types[noperands];
 	
 	size_t n;
 	for (n = 0; n < noperands; n++)
-		input_types[n] = type;
+		input_types[n] = &type;
 	for (n = 0; n < noutputs; n++)
-		output_types[n] = type;
+		output_types[n] = &type;
 	
 	
 	jive_node * node = jive_node_create(graph->root_region,
@@ -94,11 +94,11 @@ static jive_node *
 create_spill_node(jive_graph * graph,
 	jive_output * operand)
 {
-	JIVE_DECLARE_TEST_VALUE_TYPE(type);
-	
+	jive_test_value_type type;
+	const jive_type * type_ptr = &type;
 	jive_node * node = jive_node_create(graph->root_region,
-		1, &type, &operand,
-		1, &type);
+		1, &type_ptr, &operand,
+		1, &type_ptr);
 	
 	node->inputs[0]->required_rescls = &gpr.base;
 	node->outputs[0]->required_rescls = &jive_root_resource_class;
@@ -110,11 +110,11 @@ static jive_node *
 create_restore_node(jive_graph * graph,
 	jive_output * operand)
 {
-	JIVE_DECLARE_TEST_VALUE_TYPE(type);
-	
+	jive_test_value_type type;
+	const jive_type * type_ptr = &type;
 	jive_node * node = jive_node_create(graph->root_region,
-		1, &type, &operand,
-		1, &type);
+		1, &type_ptr, &operand,
+		1, &type_ptr);
 	
 	node->inputs[0]->required_rescls = &jive_root_resource_class;
 	node->outputs[0]->required_rescls = &gpr.base;

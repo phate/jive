@@ -14,10 +14,6 @@
 typedef struct jive_test_value_type jive_test_value_type;
 
 extern const jive_type_class JIVE_TEST_VALUE_TYPE;
-#define JIVE_DECLARE_TEST_VALUE_TYPE(name) \
-	jive_test_value_type name##_struct; name##_struct.class_ = &JIVE_TEST_VALUE_TYPE; \
-	const jive_type * name = &name##_struct
-
 class jive_test_value_type final : public jive_value_type {
 public:
 	virtual ~jive_test_value_type() noexcept;
@@ -72,10 +68,6 @@ private:
 typedef struct jive_test_state_type jive_test_state_type;
 
 extern const jive_type_class JIVE_TEST_STATE_TYPE;
-#define JIVE_DECLARE_TEST_STATE_TYPE(name) \
-	jive_test_state_type name##_struct; name##_struct.class_ = &JIVE_TEST_STATE_TYPE; \
-	const jive_type * name = &name##_struct
-
 class jive_test_state_type final : public jive_state_type {
 public:
 	virtual ~jive_test_state_type() noexcept;

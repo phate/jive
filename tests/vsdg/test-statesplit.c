@@ -23,17 +23,17 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	JIVE_DECLARE_TEST_STATE_TYPE(statetype);
-	const jive_type * tmparray0[] = {statetype, statetype};
+	jive_test_state_type statetype;
+	const jive_type * tmparray0[] = {&statetype, &statetype};
 	
 	jive_node * top = jive_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray0);
 	
-	jive_output * merged = jive_state_merge(statetype, 2, top->outputs);
+	jive_output * merged = jive_state_merge(&statetype, 2, top->outputs);
 	
-	jive_node * split = jive_state_split(statetype, merged, 2);
-	const jive_type * tmparray1[] = {statetype, statetype};
+	jive_node * split = jive_state_split(&statetype, merged, 2);
+	const jive_type * tmparray1[] = {&statetype, &statetype};
 	
 	jive_node * bottom = jive_node_create(graph->root_region,
 		2, tmparray1, split->outputs,

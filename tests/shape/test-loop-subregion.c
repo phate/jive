@@ -47,9 +47,9 @@ static int test_main(void)
 	
 	jive_region * root = graph->root_region;
 	
-	JIVE_DECLARE_TEST_VALUE_TYPE(type);
+	jive_test_value_type type;
 	jive_anchor_type anchor_type;
-	const jive_type *  tmparray0[] = {type, type};
+	const jive_type *  tmparray0[] = {&type, &type};
 	
 	jive_node * top = jive_node_create(root,
 		0, NULL, NULL,
@@ -57,9 +57,9 @@ static int test_main(void)
 	
 	jive_region * loop_region = jive_region_create_subregion(root);
 	loop_region->attrs.is_looped = true;
-	const jive_type *  tmparray1[] = {type};
+	const jive_type *  tmparray1[] = {&type};
 	jive_output * tmparray2[] = {top->outputs[0]};
-	const jive_type *  tmparray3[] = {type};
+	const jive_type *  tmparray3[] = {&type};
 	
 	jive_node * loop_head = jive_node_create(loop_region,
 		1, tmparray1, tmparray2,
@@ -67,7 +67,7 @@ static int test_main(void)
 	loop_region->top = loop_head;
 	
 	jive_region * loop_subregion = jive_region_create_subregion(loop_region);
-	const jive_type *  tmparray4[] = {type, type};
+	const jive_type *  tmparray4[] = {&type, &type};
 	jive_output * tmparray5[] = {loop_head->outputs[0], top->outputs[1]};
 	const jive_type *  tmparray6[] = {&anchor_type};
 	
@@ -76,12 +76,12 @@ static int test_main(void)
 		1, tmparray6);
 	const jive_type *  tmparray7[] = {&anchor_type};
 	jive_output * tmparray8[] = {loop_body->outputs[0]};
-	const jive_type *  tmparray9[] = {type};
+	const jive_type *  tmparray9[] = {&type};
 	
 	jive_node * loop_body_anchor = jive_node_create(loop_region,
 		1, tmparray7, tmparray8,
 		1, tmparray9);
-	const jive_type *  tmparray10[] = {type};
+	const jive_type *  tmparray10[] = {&type};
 	jive_output * tmparray11[] = {loop_body_anchor->outputs[0]};
 	const jive_type *  tmparray12[] = {&anchor_type};
 	
@@ -91,12 +91,12 @@ static int test_main(void)
 	loop_region->bottom = loop_tail;
 	const jive_type *  tmparray13[] = {&anchor_type};
 	jive_output * tmparray14[] = {loop_tail->outputs[0]};
-	const jive_type *  tmparray15[] = {type};
+	const jive_type *  tmparray15[] = {&type};
 	
 	jive_node * loop_anchor = jive_node_create(root,
 		1, tmparray13, tmparray14,
 		1, tmparray15);
-	const jive_type *  tmparray16[] = {type};
+	const jive_type *  tmparray16[] = {&type};
 	jive_output * tmparray17[] = {loop_anchor->outputs[0]};
 	
 	jive_node * bottom = jive_node_create(root,

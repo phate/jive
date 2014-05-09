@@ -27,14 +27,18 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 
-	JIVE_DECLARE_TEST_VALUE_TYPE(vtype);
-	jive_node * a = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype);
-	jive_node * b = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype);
-	jive_node * c = jive_test_node_create(graph->root_region, 1, &vtype, &a->outputs[0], 1, &vtype);
+	jive_test_value_type vtype;
+	const jive_type * vtype_ptr = &vtype;
+	jive_node * a = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype_ptr);
+	jive_node * b = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype_ptr);
+	jive_node * c = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &a->outputs[0], 1,
+		&vtype_ptr);
 	jive_region * subregion = jive_region_create_subregion(graph->root_region);
-	jive_node * d = jive_test_node_create(subregion, 1, &vtype, &a->outputs[0], 1, &vtype);
-	jive_node * e = jive_test_node_create(graph->root_region, 1, &vtype, &b->outputs[0], 1, &vtype);
-	jive_node * f = jive_test_node_create(graph->root_region, 1, &vtype, &b->outputs[0], 1, &vtype);
+	jive_node * d = jive_test_node_create(subregion, 1, &vtype_ptr, &a->outputs[0], 1, &vtype_ptr);
+	jive_node * e = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &b->outputs[0], 1,
+		&vtype_ptr);
+	jive_node * f = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &b->outputs[0], 1,
+		&vtype_ptr);
 
 	jive_anchor_type anchor_type;
 	jive_node_add_input(e, &anchor_type, jive_node_add_output(d, &anchor_type));

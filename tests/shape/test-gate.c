@@ -24,15 +24,15 @@ static int test_main(void)
 	
 	jive_region * region = graph->root_region;
 	
-	JIVE_DECLARE_TEST_VALUE_TYPE(type);
+	jive_test_value_type type;
 	
 	jive_node * node = jive_node_create(region,
 		0, NULL, NULL,
 		0, NULL);
 	
-	jive_gate * g1 = jive_type_create_gate(type, graph, "g1");
-	jive_gate * g2 = jive_type_create_gate(type, graph, "g2");
-	jive_gate * g3 = jive_type_create_gate(type, graph, "g3");
+	jive_gate * g1 = jive_type_create_gate(&type, graph, "g1");
+	jive_gate * g2 = jive_type_create_gate(&type, graph, "g2");
+	jive_gate * g3 = jive_type_create_gate(&type, graph, "g3");
 	
 	jive_node_gate_output(node, g1);
 	jive_node_gate_output(node, g2);

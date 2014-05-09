@@ -145,10 +145,10 @@ create_testgraph_emerg_split(jive_context * context)
 		tmparray7, NULL);
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"), op4->outputs[0]);
 	
-	JIVE_DECLARE_TEST_STATE_TYPE(state_type);
+	jive_test_state_type state_type;
 	
-	jive_node_add_input(op3, state_type, jive_node_add_output(op2, state_type));
-	jive_node_add_input(op4, state_type, jive_node_add_output(op3, state_type));
+	jive_node_add_input(op3, &state_type, jive_node_add_output(op2, &state_type));
+	jive_node_add_input(op4, &state_type, jive_node_add_output(op3, &state_type));
 	
 	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
