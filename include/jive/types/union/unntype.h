@@ -35,6 +35,7 @@ public:
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
+	virtual std::unique_ptr<jive_type> copy() const override;
 private:
 	const jive_union_declaration * decl_;
 };

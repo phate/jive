@@ -59,6 +59,12 @@ jive_integral_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_integral_type*>(&other) != nullptr;
 }
 
+std::unique_ptr<jive_type>
+jive_integral_type::copy() const
+{
+	return std::unique_ptr<jive_type>(new jive_integral_type());
+}
+
 static void
 jive_integral_type_fini_(jive_type * self_)
 {

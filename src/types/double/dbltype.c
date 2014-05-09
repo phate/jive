@@ -31,6 +31,12 @@ jive_double_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_double_type*>(&other) != nullptr;
 }
 
+std::unique_ptr<jive_type>
+jive_double_type::copy() const
+{
+	return std::unique_ptr<jive_type>(new jive_double_type());
+}
+
 static jive_input *
 jive_double_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * initial_operand)

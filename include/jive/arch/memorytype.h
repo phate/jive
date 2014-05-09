@@ -21,6 +21,8 @@ public:
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
+
+	virtual std::unique_ptr<jive_type> copy() const override;
 };
 
 class jive_memory_input final : public jive_state_input {

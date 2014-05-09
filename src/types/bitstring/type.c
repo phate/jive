@@ -71,6 +71,12 @@ jive_bitstring_type::operator==(const jive_type & _other) const noexcept
 	return other != nullptr && this->nbits() == other->nbits();
 }
 
+std::unique_ptr<jive_type>
+jive_bitstring_type::copy() const
+{
+	return std::unique_ptr<jive_type>(new jive_bitstring_type(this->nbits()));
+}
+
 static void
 jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {

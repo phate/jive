@@ -61,6 +61,12 @@ jive_union_type::operator==(const jive_type & _other) const noexcept
 	return other != nullptr && this->declaration() == other->declaration();
 }
 
+std::unique_ptr<jive_type>
+jive_union_type::copy() const
+{
+	return std::unique_ptr<jive_type>(new jive_union_type(this->declaration()));
+}
+
 /* record_type inheritable members */
 
 jive_type *

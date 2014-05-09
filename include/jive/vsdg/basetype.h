@@ -7,6 +7,7 @@
 #ifndef JIVE_VSDG_BASETYPE_H
 #define JIVE_VSDG_BASETYPE_H
 
+#include <memory>
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -73,6 +74,8 @@ public:
 	virtual bool operator==(const jive_type & other) const noexcept = 0;
 
 	inline bool operator!=(const jive_type & other) const noexcept { return !(*this == other); }
+
+	virtual std::unique_ptr<jive_type> copy() const = 0;
 
 	const struct jive_type_class * class_;
 };

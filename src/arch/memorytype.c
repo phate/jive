@@ -52,6 +52,12 @@ jive_memory_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_memory_type*>(&other) != nullptr;
 }
 
+std::unique_ptr<jive_type>
+jive_memory_type::copy() const
+{
+	return std::unique_ptr<jive_type>(new jive_memory_type());
+}
+
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)
 {

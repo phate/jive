@@ -120,6 +120,12 @@ jive_function_type::operator==(const jive_type & _other) const noexcept
 	return true;
 }
 
+std::unique_ptr<jive_type>
+jive_function_type::copy() const
+{
+ return std::unique_ptr<jive_type>(new jive_function_type(argument_types_, return_types_));
+}
+
 /* function_type inheritable members */
 
 void
