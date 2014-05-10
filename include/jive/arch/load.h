@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -6,12 +7,15 @@
 #ifndef JIVE_ARCH_LOAD_H
 #define JIVE_ARCH_LOAD_H
 
+#include <memory>
+
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/valuetype.h>
 
 /* load normal form */
 
-typedef struct jive_load_node_normal_form jive_load_node_normal_form;
-typedef struct jive_load_node_normal_form_class jive_load_node_normal_form_class;
+struct jive_load_node_normal_form;
+struct jive_load_node_normal_form_class;
 
 struct jive_load_node_normal_form_class {
 	jive_node_normal_form_class base;
@@ -59,19 +63,39 @@ jive_load_node_set_reducible(jive_load_node_normal_form * self, bool reducible)
 
 /* load node */
 
+namespace jive {
+
+class load_operation final : public operation {
+public:
+	inline
+	load_operation(size_t nbits, const jive_value_type * datatype)
+		: nbits_(nbits)
+		, datatype_(dynamic_cast<jive_value_type *>(jive_type_copy(datatype)))
+	{
+	}
+
+	inline
+	load_operation(const load_operation & other)
+		: nbits_(other.nbits())
+		, datatype_(dynamic_cast<jive_value_type *>(jive_type_copy(&other.datatype())))
+	{
+	}
+
+	inline
+	load_operation(load_operation && other) noexcept = default;
+
+	inline size_t nbits() const noexcept { return nbits_; }
+	inline const jive_value_type & datatype() const noexcept { return *datatype_; }
+private:
+	size_t nbits_;
+	std::unique_ptr<jive_value_type> datatype_;
+};
+
+}
+
 extern const jive_node_class JIVE_LOAD_NODE;
 
-typedef struct jive_load_node_attrs jive_load_node_attrs;
-typedef struct jive_load_node jive_load_node;
-
-struct jive_load_node_attrs : public jive_node_attrs {
-	size_t nbits;
-	struct jive_value_type * datatype;
-};
-
-struct jive_load_node : public jive_node {
-	jive_load_node_attrs attrs;
-};
+typedef jive::operation_node<jive::load_operation> jive_load_node;
 
 struct jive_node *
 jive_load_by_address_node_create(struct jive_region * region,
@@ -102,18 +126,6 @@ jive_load_node_cast(jive_node * node)
 		return (jive_load_node *) node;
 	else
 		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_value_type *
-jive_load_node_get_datatype(const jive_load_node * node)
-{
-	return node->attrs.datatype;
-}
-
-JIVE_EXPORTED_INLINE size_t
-jive_load_node_get_nbits(const jive_load_node * node)
-{
-	return node->attrs.nbits;
 }
 
 #endif

@@ -9,6 +9,7 @@
 
 #include <jive/arch/address.h>
 #include <jive/arch/call.h>
+#include <jive/arch/load.h>
 #include <jive/common.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
@@ -135,11 +136,10 @@ jive_bitstring_to_address_node_cast(jive_node * node)
 
 /* reductions */
 
-struct jive_load_node;
 struct jive_store_node;
 
 void
-jive_load_node_address_transform(struct jive_load_node * node,
+jive_load_node_address_transform(jive_load_node * node,
 	size_t nbits);
 
 void

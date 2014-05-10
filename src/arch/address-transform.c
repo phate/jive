@@ -457,7 +457,7 @@ jive_load_node_address_transform(jive_load_node * node, size_t nbits)
 	JIVE_DEBUG_ASSERT(jive_bitstring_output_nbits((const jive_bitstring_output *) address) == nbits);
 
 	jive_bitstring_type bits(nbits);
-	const jive_value_type * datatype = node->attrs.datatype;
+	const jive_value_type * datatype = &node->operation().datatype();
 	if (output_is_address)
 		datatype = &bits;
 
