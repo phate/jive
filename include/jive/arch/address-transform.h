@@ -10,10 +10,82 @@
 #include <jive/arch/address.h>
 #include <jive/arch/call.h>
 #include <jive/common.h>
-#include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fctapply.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
+
+namespace jive {
+
+class address_to_bitstring_operation final : public unary_operation {
+public:
+	inline
+	address_to_bitstring_operation(
+		size_t nbits,
+		const jive_type * original_type)
+		: nbits_(nbits)
+		, original_type_(jive_type_copy(original_type))
+	{
+	}
+
+	inline
+	address_to_bitstring_operation(
+		address_to_bitstring_operation && other) noexcept = default;
+
+	inline
+	address_to_bitstring_operation(
+		const address_to_bitstring_operation & other)
+		: nbits_(other.nbits_)
+		, original_type_(jive_type_copy(other.original_type_.get()))
+	{
+	}
+
+	inline size_t nbits() const noexcept { return nbits_; }
+	inline const jive_type & original_type() const noexcept { return *original_type_; }
+
+private:
+	size_t nbits_;
+	std::unique_ptr<jive_type> original_type_;
+};
+
+class bitstring_to_address_operation final : public unary_operation {
+public:
+	inline
+	bitstring_to_address_operation(
+		size_t nbits,
+		const jive_type * original_type)
+		: nbits_(nbits)
+		, original_type_(jive_type_copy(original_type))
+	{
+	}
+
+	inline
+	bitstring_to_address_operation(
+		bitstring_to_address_operation && other) noexcept = default;
+
+	inline
+	bitstring_to_address_operation(
+		const bitstring_to_address_operation & other)
+		: nbits_(other.nbits_)
+		, original_type_(jive_type_copy(other.original_type_.get()))
+	{
+	}
+
+	inline size_t nbits() const noexcept { return nbits_; }
+	inline const jive_type & original_type() const noexcept { return *original_type_; }
+
+private:
+	size_t nbits_;
+	std::unique_ptr<jive_type> original_type_;
+};
+
+}
+
+typedef jive::operation_node<jive::address_to_bitstring_operation>
+	jive_address_to_bitstring_node;
+
+typedef jive::operation_node<jive::bitstring_to_address_operation>
+	jive_bitstring_to_address_node;
 
 struct jive_memlayout_mapper;
 
@@ -21,18 +93,6 @@ struct jive_memlayout_mapper;
 
 extern const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_;
 #define JIVE_ADDRESS_TO_BITSTRING_NODE (JIVE_ADDRESS_TO_BITSTRING_NODE_.base)
-
-typedef struct jive_address_to_bitstring_node jive_address_to_bitstring_node;
-typedef struct jive_address_to_bitstring_node_attrs jive_address_to_bitstring_node_attrs;
-
-struct jive_address_to_bitstring_node_attrs : public jive_node_attrs {
-	size_t nbits;
-	jive_type * original_type;
-};
-
-struct jive_address_to_bitstring_node : public jive_node {
-	jive_address_to_bitstring_node_attrs attrs;
-};
 
 jive_node *
 jive_address_to_bitstring_node_create(struct jive_region * region,
@@ -55,18 +115,6 @@ jive_address_to_bitstring_node_cast(jive_node * node)
 
 extern const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_;
 #define JIVE_BITSTRING_TO_ADDRESS_NODE (JIVE_BITSTRING_TO_ADDRESS_NODE_.base)
-
-typedef struct jive_bitstring_to_address_node jive_bitstring_to_address_node;
-typedef struct jive_bitstring_to_address_node_attrs jive_bitstring_to_address_node_attrs;
-
-struct jive_bitstring_to_address_node_attrs : public jive_node_attrs {
-	size_t nbits;
-	jive_type * original_type;
-};
-
-struct jive_bitstring_to_address_node : public jive_node {
-	jive_bitstring_to_address_node_attrs attrs;
-};
 
 jive_node *
 jive_bitstring_to_address_node_create(struct jive_region * region,
