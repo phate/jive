@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,6 +7,7 @@
 #ifndef JIVE_ARCH_SUBROUTINE_H
 #define JIVE_ARCH_SUBROUTINE_H
 
+#include <jive/arch/subroutine/nodes.h>
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
@@ -14,10 +15,6 @@
 struct jive_instructionset;
 struct jive_output;
 struct jive_region;
-
-struct jive_subroutine_enter_node;
-struct jive_subroutine_leave_node;
-struct jive_subroutine_node;
 
 typedef struct jive_subroutine jive_subroutine;
 struct jive_subroutine_builder;
@@ -115,9 +112,9 @@ struct jive_subroutine_deprecated {
 	const jive_subroutine_class * class_;
 	const jive_subroutine_abi_class * abi_class;
 	jive_context * context;
-	struct jive_subroutine_node * subroutine_node;
-	struct jive_subroutine_enter_node * enter;
-	struct jive_subroutine_leave_node * leave;
+	jive_subroutine_node * subroutine_node;
+	jive_subroutine_enter_node * enter;
+	jive_subroutine_leave_node * leave;
 	struct jive_region * region;
 	
 	size_t nparameters;
@@ -141,7 +138,9 @@ struct jive_subroutine_class {
 };
 
 struct jive_subroutine_abi_class {
-	void (*prepare_stackframe)(jive_subroutine_deprecated * self, const jive_subroutine_late_transforms * xfrm);
+	void (*prepare_stackframe)(
+		jive_subroutine_deprecated * self,
+		const jive_subroutine_late_transforms * xfrm);
 	jive_input *(*add_fp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
 	jive_input *(*add_sp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
 	const struct jive_instructionset * instructionset;
@@ -164,32 +163,32 @@ jive_subroutine_value_return(jive_subroutine_deprecated * self, size_t index, ji
 
 void
 jive_subroutine_node_prepare_stackframe(
-	struct jive_subroutine_node * self,
+	jive_subroutine_node * self,
 	const jive_subroutine_late_transforms * xfrm);
 
 jive_input *
 jive_subroutine_node_add_fp_dependency(
-	const struct jive_subroutine_node * self,
+	const jive_subroutine_node * self,
 	jive_node * node);
 
 jive_input *
 jive_subroutine_node_add_sp_dependency(
-	const struct jive_subroutine_node * self,
+	const jive_subroutine_node * self,
 	jive_node * node);
 
-struct jive_subroutine_node *
+jive_subroutine_node *
 jive_region_get_subroutine_node(const jive_region * region);
 
 const struct jive_instructionset *
 jive_region_get_instructionset(const jive_region * region);
 
 jive_output *
-jive_subroutine_node_get_sp(const struct jive_subroutine_node * self);
+jive_subroutine_node_get_sp(const jive_subroutine_node * self);
 
 jive_output *
-jive_subroutine_node_get_fp(const struct jive_subroutine_node * self);
+jive_subroutine_node_get_fp(const jive_subroutine_node * self);
 
 jive_subroutine_stackframe_info *
-jive_subroutine_node_get_stackframe_info(const struct jive_subroutine_node * self);
+jive_subroutine_node_get_stackframe_info(const jive_subroutine_node * self);
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -23,19 +23,22 @@ jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_node * self,
 	const jive_subroutine_late_transforms * xfrm)
 {
-	return self->attrs.subroutine->abi_class->prepare_stackframe(self->attrs.subroutine, xfrm);
+	return self->operation().subroutine()->abi_class->prepare_stackframe(
+		self->operation().subroutine(), xfrm);
 }
 
 jive_input *
 jive_subroutine_node_add_fp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
-	return self->attrs.subroutine->abi_class->add_fp_dependency(self->attrs.subroutine, node);
+	return self->operation().subroutine()->abi_class->add_fp_dependency(
+		self->operation().subroutine(), node);
 }
 
 jive_input *
 jive_subroutine_node_add_sp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
-	return self->attrs.subroutine->abi_class->add_sp_dependency(self->attrs.subroutine, node);
+	return self->operation().subroutine()->abi_class->add_sp_dependency(
+		self->operation().subroutine(), node);
 }
 
 jive_subroutine_node *
@@ -57,7 +60,7 @@ jive_region_get_instructionset(const jive_region * region)
 {
 	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
 	if (sub)
-		return sub->attrs.subroutine->abi_class->instructionset;
+		return sub->operation().subroutine()->abi_class->instructionset;
 	else
 		return NULL;
 }
@@ -65,7 +68,7 @@ jive_region_get_instructionset(const jive_region * region)
 jive_output *
 jive_subroutine_node_get_sp(const jive_subroutine_node * self)
 {
-	return self->attrs.subroutine->passthroughs[1].output;
+	return self->operation().subroutine()->passthroughs[1].output;
 }
 
 jive_output *
@@ -73,13 +76,13 @@ jive_subroutine_node_get_fp(const jive_subroutine_node * self)
 {
 	/* FIXME: this is only correct if we are compiling "omit-framepointer",
 	but it is only a transitionary stage during subroutine refactoring */
-	return self->attrs.subroutine->passthroughs[1].output;
+	return self->operation().subroutine()->passthroughs[1].output;
 }
 
 jive_subroutine_stackframe_info *
 jive_subroutine_node_get_stackframe_info(const jive_subroutine_node * self)
 {
-	return &self->attrs.subroutine->frame;
+	return &self->operation().subroutine()->frame;
 }
 
 void
@@ -97,14 +100,16 @@ jive_subroutine_match_passthrough(
 void
 jive_subroutine_destroy(jive_subroutine_deprecated * self)
 {
-	if (self->subroutine_node)
-		self->subroutine_node->attrs.subroutine = 0;
+	/*if (self->subroutine_node)
+		self->subroutine_node->operation().subroutine() = 0;*/
 	self->class_->fini(self);
 	jive_context_free(self->context, self);
 }
 
 void
-jive_subroutine_create_region_and_nodes(jive_subroutine_deprecated * subroutine, jive_region * parent_region)
+jive_subroutine_create_region_and_nodes(
+	jive_subroutine_deprecated * subroutine,
+	jive_region * parent_region)
 {
 	jive_region * subroutine_region = jive_region_create_subregion(parent_region);
 	subroutine_region->attrs.section = jive_region_section_code;

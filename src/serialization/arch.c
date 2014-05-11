@@ -288,8 +288,8 @@ jive_subroutine_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
-	jive_subroutine_deprecated * subroutine = attrs->subroutine;
+	const jive::subroutine_operation * attrs = (const jive::subroutine_operation *) attrs_;
+	jive_subroutine_deprecated * subroutine = attrs->subroutine();
 	
 	if (subroutine->class_ == &JIVE_I386_SUBROUTINE)
 		jive_token_ostream_identifier(os, "i386");

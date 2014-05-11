@@ -26,7 +26,7 @@ const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_subroutine_enter_node_create_, /* override */
@@ -44,7 +44,8 @@ jive_node *
 jive_subroutine_enter_node_create(jive_region * region)
 {
 	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_subroutine_enter_node * node = new jive_subroutine_enter_node;
+	jive_subroutine_enter_node * node = new jive_subroutine_enter_node(
+		jive::subroutine_enter_operation());
 	
 	node->class_ = &JIVE_SUBROUTINE_ENTER_NODE;
 	jive_control_type ctl;
@@ -68,7 +69,7 @@ const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_subroutine_leave_node_create_, /* override */
@@ -86,7 +87,8 @@ jive_node *
 jive_subroutine_leave_node_create(jive_region * region, jive_output * control_transfer)
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
-	jive_subroutine_leave_node * node = new jive_subroutine_leave_node;
+	jive_subroutine_leave_node * node = new jive_subroutine_leave_node(
+		jive::subroutine_leave_operation());
 	
 	node->class_ = &JIVE_SUBROUTINE_LEAVE_NODE;
 	jive_control_type ctl;
@@ -104,9 +106,6 @@ jive_subroutine_leave_node_create(jive_region * region, jive_output * control_tr
 static void
 jive_subroutine_node_fini_(jive_node * self_);
 
-static const jive_node_attrs *
-jive_subroutine_node_get_attrs_(const jive_node * self_);
-
 static bool
 jive_subroutine_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
 
@@ -120,7 +119,7 @@ const jive_node_class JIVE_SUBROUTINE_NODE = {
 	fini : jive_subroutine_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_subroutine_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_subroutine_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_subroutine_node_create_, /* override */
@@ -130,7 +129,7 @@ static void
 jive_subroutine_node_fini_(jive_node * self_)
 {
 	jive_subroutine_node * self = (jive_subroutine_node *) self_;
-	jive_subroutine_deprecated * subroutine = self->attrs.subroutine;
+	jive_subroutine_deprecated * subroutine = self->operation().subroutine();
 	if (subroutine) {
 		JIVE_DEBUG_ASSERT(subroutine->subroutine_node == self);
 		subroutine->subroutine_node = 0;
@@ -138,19 +137,12 @@ jive_subroutine_node_fini_(jive_node * self_)
 	}
 	jive_node_fini_(self);
 }
-static const jive_node_attrs *
-jive_subroutine_node_get_attrs_(const jive_node * self_)
-{
-	const jive_subroutine_node * self = (const jive_subroutine_node *) self_;
-	return &self->attrs;
-}
-
 static bool
 jive_subroutine_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
 {
 	const jive_subroutine_node * self = (const jive_subroutine_node *) self_;
-	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
-	return self->attrs.subroutine == attrs->subroutine;
+	const jive::subroutine_operation * attrs = (const jive::subroutine_operation *) attrs_;
+	return self->operation().subroutine() == attrs->subroutine();
 }
 
 static jive_node *
@@ -161,16 +153,18 @@ jive_subroutine_node_create_(struct jive_region * region, const jive_node_attrs 
 	JIVE_DEBUG_ASSERT(operands[0]->node->region->parent == region);
 	jive_region * subroutine_region = operands[0]->node->region;
 	
-	const jive_subroutine_node_attrs * attrs = (const jive_subroutine_node_attrs *) attrs_;
+	const jive::subroutine_operation * attrs = (const jive::subroutine_operation *) attrs_;
 	
-	jive_subroutine_deprecated * subroutine = attrs->subroutine;
+	jive_subroutine_deprecated * subroutine = attrs->subroutine();
 	subroutine = jive_subroutine_copy(subroutine, subroutine_region->top, subroutine_region->bottom);
 	
 	return jive_subroutine_node_create(operands[0]->node->region, subroutine);
 }
 
 jive_node *
-jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_deprecated * subroutine)
+jive_subroutine_node_create(
+	jive_region * subroutine_region,
+	jive_subroutine_deprecated * subroutine)
 {
 	jive_region * region = subroutine_region->parent;
 	
@@ -184,7 +178,7 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 	jive_subroutine_enter_node * enter = (jive_subroutine_enter_node *) subroutine_region->top;
 	jive_subroutine_leave_node * leave = (jive_subroutine_leave_node *) subroutine_region->bottom;
 	
-	jive_subroutine_node * node = new jive_subroutine_node;
+	jive_subroutine_node * node = new jive_subroutine_node(jive::subroutine_operation(subroutine));
 	
 	node->class_ = &JIVE_SUBROUTINE_NODE;
 	/*
@@ -198,7 +192,6 @@ jive_subroutine_node_create(jive_region * subroutine_region, jive_subroutine_dep
 	jive_node_init_(node, region,
 		1, &ancptr, &subroutine_region->bottom->outputs[0],
 		1, &typeptr);
-	node->attrs.subroutine = subroutine;
 	subroutine->subroutine_node = node;
 	subroutine->enter = enter;
 	subroutine->leave = leave;

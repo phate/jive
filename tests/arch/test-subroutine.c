@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -19,7 +20,12 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	
 	jive_graph * graph = jive_graph_create(context);
-	jive_argument_type  tmparray0[] = {jive_argument_long, jive_argument_long, jive_argument_long, jive_argument_long};
+	jive_argument_type  tmparray0[] = {
+		jive_argument_long,
+		jive_argument_long,
+		jive_argument_long,
+		jive_argument_long
+	};
 	jive_argument_type  tmparray1[] = {jive_argument_long};
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -52,7 +58,7 @@ static int test_main(void)
 	jive_subroutine_node * anchor2 = jive_subroutine_node_cast(
 		graph2->bottom.first->graph_bottom_list.next);
 	assert(anchor2);
-	jive_subroutine_deprecated * sub2 = anchor2->attrs.subroutine;
+	jive_subroutine_deprecated * sub2 = anchor2->operation().subroutine();
 	assert(sub2);
 	assert(sub2->nparameters == 4);
 	assert(sub2->parameters[0] && jive_node_get_gate_output(sub2->enter, sub2->parameters[0]));
