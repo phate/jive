@@ -63,13 +63,13 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 		return;
 	}
 
-	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
+	const jive::store_operation * attrs = (const jive::store_operation *) attrs_;
 
-	jive_store_node_attrs elem_attrs;
-	elem_attrs.nbits = attrs->nbits;
-	elem_attrs.datatype = (jive_value_type *) decl->elements[unify_node->operation().option()];
+	jive::store_operation op(
+		attrs->nbits(),
+		decl->elements[unify_node->operation().option()]);
 
-	jive_store_node_normalized_create(self, region, &elem_attrs, address,
+	jive_store_node_normalized_create(self, region, &op, address,
 		unify_node->inputs[0]->origin(), nstates, istates, ostates);
 }
 
@@ -94,9 +94,10 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 		return;
 	}
 
-	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
+	const jive::store_operation * attrs = (const jive::store_operation *) attrs_;
 	if (dynamic_cast<jive_bitstring_output*>(address))
-		address = jive_bitstring_to_address_create(address, attrs->nbits, jive_output_get_type(address));
+		address = jive_bitstring_to_address_create(
+			address, attrs->nbits(), jive_output_get_type(address));
 
 	size_t n;
 	jive_node * split_nodes[nstates];
@@ -109,15 +110,13 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	for (e = 0; e < decl->nelements; e++) {
 		jive_output * elem_address = jive_memberof(address, decl, e);
 
-		jive_store_node_attrs elem_attrs;
-		elem_attrs.nbits = attrs->nbits;
-		elem_attrs.datatype = (jive_value_type *) decl->elements[e];
+		jive::store_operation op(attrs->nbits(), decl->elements[e]);
 
 		jive_output * elem_istates[nstates];
 		for (n = 0; n < nstates; n++)
 			elem_istates[n] = split_nodes[n]->outputs[e];
 
-		jive_store_node_normalized_create(self, region, &elem_attrs, elem_address,
+		jive_store_node_normalized_create(self, region, &op, elem_address,
 			group_node->inputs[e]->origin(), nstates, elem_istates, elems_ostates[e]);
 	}
 
@@ -306,9 +305,6 @@ static jive_node_normal_form *
 jive_store_node_get_default_normal_form_(const jive_node_class * cls,
 	jive_node_normal_form * parent_, struct jive_graph * graph);
 
-static const jive_node_attrs *
-jive_store_node_get_attrs_(const jive_node * self_);
-
 static bool
 jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
 
@@ -326,7 +322,7 @@ const jive_node_class JIVE_STORE_NODE = {
 	fini : jive_store_node_fini_, /* override */
 	get_default_normal_form : jive_store_node_get_default_normal_form_, /* override */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_store_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_store_node_match_attrs_, /* override */
 	check_operands : jive_store_node_check_operands_, /* override */
 	create : jive_store_node_create_, /* override */
@@ -335,12 +331,7 @@ const jive_node_class JIVE_STORE_NODE = {
 static void
 jive_store_node_fini_(jive_node * self_)
 {
-	jive_context * context = self_->graph->context;
-	jive_store_node * self = (jive_store_node *) self_;
-
-	jive_type_destroy(self->attrs.datatype);
-
-	jive_node_fini_(self);
+	jive_node_fini_(self_);
 }
 
 static jive_node_normal_form *
@@ -357,20 +348,13 @@ jive_store_node_get_default_normal_form_(const jive_node_class * cls,
 	return &nf->base;
 }
 
-static const jive_node_attrs *
-jive_store_node_get_attrs_(const jive_node * self_)
-{
-	const jive_store_node * self = (const jive_store_node *) self_;
-	return &self->attrs;
-}
-
 static bool
 jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
 {
 	const jive_store_node * self = (const jive_store_node *) self_;
-	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
-	bool dtype = jive_type_equals(self->attrs.datatype, attrs->datatype);
-	return (dtype && (self->attrs.nbits == attrs->nbits));
+	const jive::store_operation * attrs = (const jive::store_operation *) attrs_;
+	bool dtype = jive_type_equals(&self->operation().datatype(), &attrs->datatype());
+	return (dtype && (self->operation().nbits() == attrs->nbits()));
 }
 
 static void
@@ -395,13 +379,14 @@ static jive_node *
 jive_store_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
-	const jive_store_node_attrs * attrs = (const jive_store_node_attrs *) attrs_;
+	const jive::store_operation * attrs = (const jive::store_operation *) attrs_;
 
 	if(dynamic_cast<jive_bitstring_output*>(operands[0])){
-		return jive_store_by_bitstring_node_create(region, operands[0], attrs->nbits, attrs->datatype,
+		return jive_store_by_bitstring_node_create(
+			region, operands[0], attrs->nbits(), &attrs->datatype(),
 			operands[1], noperands-2, &operands[2]);
 	} else {
-		return jive_store_by_address_node_create(region, operands[0], attrs->datatype, operands[1],
+		return jive_store_by_address_node_create(region, operands[0], &attrs->datatype(), operands[1],
 			noperands-2, &operands[2]);
 	}
 }
@@ -418,12 +403,6 @@ jive_store_node_init_(jive_store_node * self, jive_region * region,
 	jive_node_init_(self, region,
 		2, operand_types, operands,
 		0, NULL);
-	self->attrs.datatype = (jive_value_type *) jive_type_copy(datatype);
-	self->attrs.nbits = 0;
-	if (jive_type_isinstance(address_type, &JIVE_BITSTRING_TYPE)) {
-		const jive_bitstring_type * btype = (const jive_bitstring_type *) address_type;
-		self->attrs.nbits = btype->nbits();
-	}
 
 	/* FIXME: check the type of the states */
 	size_t n;
@@ -454,7 +433,7 @@ jive_store_by_address_node_create(jive_region * region, jive_output * address,
 	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	jive_store_node * node = new jive_store_node;
+	jive_store_node * node = new jive_store_node(jive::store_operation(0, datatype));
 
 	node->class_ = &JIVE_STORE_NODE;
 	jive_address_type address_type;
@@ -473,11 +452,9 @@ jive_store_by_address_create(jive_output * address,
 
 	jive_region * region = store_node_region_innermost(address, value, nstates, istates);
 
-	jive_store_node_attrs attrs;
-	attrs.nbits = 0;
-	attrs.datatype = (jive_value_type *) datatype;
+	jive::store_operation op(0, datatype);
 
-	jive_store_node_normalized_create(nf, region, &attrs, address, value,
+	jive_store_node_normalized_create(nf, region, &op, address, value,
 		nstates, istates, ostates);
 }
 
@@ -487,7 +464,7 @@ jive_store_by_bitstring_node_create(jive_region * region,
 	const jive_value_type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	jive_store_node * node = new jive_store_node;
+	jive_store_node * node = new jive_store_node(jive::store_operation(nbits, datatype));
 
 	node->class_ = &JIVE_STORE_NODE;
 	jive_bitstring_type address_type(nbits);
@@ -506,10 +483,8 @@ jive_store_by_bitstring_create(jive_output * address, size_t nbits,
 
 	jive_region * region = store_node_region_innermost(address, value, nstates, istates);
 
-	jive_store_node_attrs attrs;
-	attrs.nbits = nbits;
-	attrs.datatype = (jive_value_type *) datatype;
+	jive::store_operation op(nbits, datatype);
 
-	jive_store_node_normalized_create(nf, region, &attrs, address, value,
+	jive_store_node_normalized_create(nf, region, &op, address, value,
 		nstates, istates, ostates);
 }
