@@ -12,15 +12,28 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 
+namespace jive {
+
+class dataitems_operation final : public operation {
+};
+
+class datadef_operation final : public operation {
+};
+
+class dataobj_operation final : public operation {
+};
+
+}
+
 extern const jive_node_class JIVE_DATAITEMS_NODE;
 extern const jive_node_class JIVE_DATADEF_NODE;
 extern const jive_node_class JIVE_DATAOBJ_NODE;
 
 struct jive_memlayout_mapper;
 
-typedef struct jive_node jive_dataitems_node;
-typedef struct jive_node jive_datadef_node;
-typedef struct jive_node jive_dataobj_node;
+typedef jive::operation_node<jive::dataitems_operation> jive_dataitems_node;
+typedef jive::operation_node<jive::datadef_operation> jive_datadef_node;
+typedef jive::operation_node<jive::dataobj_operation> jive_dataobj_node;
 
 jive_output *
 jive_dataobj(jive_output * data, struct jive_memlayout_mapper * mapper);

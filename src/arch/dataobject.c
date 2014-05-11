@@ -1,23 +1,23 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/arch/dataobject.h>
 
-#include <jive/arch/memorytype.h>
 #include <jive/arch/memlayout.h>
+#include <jive/arch/memorytype.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/types/record/rcdgroup.h>
+#include <jive/types/record/rcdtype.h>
+#include <jive/types/union/unntype.h>
+#include <jive/types/union/unnunify.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/record/rcdgroup.h>
-#include <jive/types/record/rcdtype.h>
-#include <jive/types/union/unnunify.h>
-#include <jive/types/union/unntype.h>
 #include <jive/vsdg/statetype.h>
 
 jive_node *
@@ -36,7 +36,12 @@ is_powerof2(size_t v)
 }
 
 static void
-flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, jive_output *** ret_items, jive_memlayout_mapper * layout_mapper)
+flatten_data_items(
+	jive_context * ctx,
+	jive_output * data,
+	size_t * ret_nitems,
+	jive_output *** ret_items,
+	jive_memlayout_mapper * layout_mapper)
 {
 	size_t nitems = 0;
 	jive_output ** items = 0;
@@ -45,7 +50,9 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
 		
 		if (type->nbits() < 8 || !is_powerof2(type->nbits()))
-			jive_context_fatal_error(ctx, "Type mismatch: primitive data items must be power-of-two bytes in size");
+			jive_context_fatal_error(
+				ctx,
+				"Type mismatch: primitive data items must be power-of-two bytes in size");
 		
 		nitems = type->nbits() / 8;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
@@ -124,7 +131,9 @@ flatten_data_items(jive_context * ctx, jive_output * data, size_t * ret_nitems, 
 		
 		jive_context_free(ctx, sub_items);
 	} else {
-		jive_context_fatal_error(ctx, "Type mismatch: can only serialize record and primitive data items");
+		jive_context_fatal_error(
+			ctx,
+			"Type mismatch: can only serialize record and primitive data items");
 	}
 	
 	*ret_nitems = nitems;
@@ -225,7 +234,7 @@ const jive_node_class JIVE_DATAITEMS_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_dataitems_node_create_, /* override */
@@ -244,7 +253,7 @@ const jive_node_class JIVE_DATADEF_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_datadef_node_create_, /* override */
@@ -263,7 +272,7 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_dataobj_node_create_, /* override */
@@ -272,7 +281,7 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 jive_node *
 jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * const items[])
 {
-	jive_datadef_node * node = new jive_datadef_node;
+	jive_datadef_node * node = new jive_datadef_node(jive::datadef_operation());
 	
 	const jive_type * item_types[nitems];
 	size_t n;
@@ -293,7 +302,7 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 jive_node *
 jive_datadef_node_create(jive_region * region, jive_output * data)
 {
-	jive_datadef_node * node = new jive_datadef_node;
+	jive_datadef_node * node = new jive_datadef_node(jive::datadef_operation());
 	
 	node->class_ = &JIVE_DATADEF_NODE;
 	jive_control_type data_type;
@@ -311,7 +320,7 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 jive_node *
 jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 {
-	jive_dataobj_node * node = new jive_dataobj_node;
+	jive_dataobj_node * node = new jive_dataobj_node(jive::dataobj_operation());
 	
 	jive_anchor_type anchor_type;
 	const jive_type * ancptr = &anchor_type;
