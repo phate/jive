@@ -281,7 +281,7 @@ jive_graph_sequentialize(jive_graph * graph)
 			jive_region * region = anchor->inputs[0]->origin()->node->region;
 			jive_seq_region * seq_region = jive_seq_graph_map_region(seq, region);
 			jive_seq_point_attach_symbol(seq_region->first_point,
-				onode->attrs.symbol, seq);
+				onode->operation().symbol(), seq);
 		}
 		jive_seq_instruction * seq_instr =
 			jive_seq_instruction_cast(seq_point);

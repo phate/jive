@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -22,9 +22,7 @@ static void
 jive_objdef_node_init_(
 	jive_objdef_node * self,
 	jive_region * region,
-	jive_output * obj,
-	const char * name,
-	const struct jive_linker_symbol * symbol)
+	jive_output * obj)
 {
 	/* FIXME: this is horribly wrong, but we don't have another type right now for putting in here,
 						this entire node needs to be remodeled
@@ -40,35 +38,19 @@ jive_objdef_node_init_(
 		jive_context_fatal_error(region->graph->context,
 			"Type mismatch: object definitions can only be applied to region anchor nodes");
 	}
-	
-	self->attrs.name = jive_context_strdup(region->graph->context, name);
-	self->attrs.symbol = symbol;
 }
 
 static void
 jive_objdef_node_fini_(jive_node * self_)
 {
-	jive_objdef_node * self = (jive_objdef_node *) self_;
-	
-	jive_context * context = self->graph->context;
-	
-	jive_context_free(context, self->attrs.name);
-	
-	jive_node_fini_(self);
+	jive_node_fini_(self_);
 }
 
 static void
 jive_objdef_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
 {
 	const jive_objdef_node * self = (const jive_objdef_node *) self_;
-	jive_buffer_putstr(buffer, self->attrs.name);
-}
-
-const jive_node_attrs *
-jive_objdef_node_get_attrs_(const jive_node * self_)
-{
-	const jive_objdef_node * self = (const jive_objdef_node *) self_;
-	return &self->attrs;
+	jive_buffer_putstr(buffer, self->operation().name().c_str());
 }
 
 static bool
@@ -77,16 +59,15 @@ jive_objdef_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 	return false;
 }
 
-
 static jive_node *
 jive_objdef_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
-	const jive_objdef_node_attrs * attrs = (const jive_objdef_node_attrs *) attrs_;
+	const jive::objdef_operation * attrs = (const jive::objdef_operation *) attrs_;
 	
-	jive_objdef_node * other = jive_context_malloc(region->graph->context, sizeof(*other));
+	jive_objdef_node * other = new jive_objdef_node(*attrs);
 	other->class_ = &JIVE_OBJDEF_NODE;
-	jive_objdef_node_init_(other, region, operands[0], attrs->name, attrs->symbol);
+	jive_objdef_node_init_(other, region, operands[0]);
 	
 	return other;
 }
@@ -97,7 +78,7 @@ const jive_node_class JIVE_OBJDEF_NODE = {
 	fini : jive_objdef_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_objdef_node_get_label_, /* override */
-	get_attrs : jive_objdef_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_objdef_node_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_objdef_node_create_, /* override */
@@ -110,9 +91,10 @@ jive_objdef_node_create(
 	const struct jive_linker_symbol * symbol)
 {
 	jive_region * region = output->node->region;
-	jive_objdef_node * self = new jive_objdef_node;
+	jive_objdef_node * self = new jive_objdef_node(
+		jive::objdef_operation(name, symbol));
 	self->class_ = &JIVE_OBJDEF_NODE;
-	jive_objdef_node_init_(self, region, output, name, symbol);
+	jive_objdef_node_init_(self, region, output);
 	
 	return self;
 }
