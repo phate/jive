@@ -74,6 +74,12 @@ jive_negotiator_option_copy(const jive_negotiator * self, const jive_negotiator_
 
 /* split node */
 
+const jive::negotiator_split_operation &
+jive_negotiator_split_node::operation() const noexcept
+{
+	return attrs;
+}
+
 static void
 jive_negotiator_split_node_init_(
 	jive_negotiator_split_node * self,
@@ -90,9 +96,6 @@ jive_negotiator_split_node_init_(
 static void
 jive_negotiator_split_node_fini_(jive_node * self);
 
-static const jive_node_attrs *
-jive_negotiator_split_node_get_attrs_(const jive_node * self);
-
 static bool
 jive_negotiator_split_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
@@ -106,7 +109,7 @@ const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE = {
 	fini : jive_negotiator_split_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_negotiator_split_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_negotiator_split_node_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_negotiator_split_node_create_, /* override */
@@ -170,18 +173,11 @@ jive_negotiator_split_node_fini_(jive_node * self_)
 	jive_node_fini_(self_);
 }
 
-static const jive_node_attrs *
-jive_negotiator_split_node_get_attrs_(const jive_node * self_)
-{
-	const jive_negotiator_split_node * self = (const jive_negotiator_split_node *) self_;
-	return &self->attrs;
-}
-
 static bool
 jive_negotiator_split_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_negotiator_split_node_attrs * first = &((const jive_negotiator_split_node *) self)->attrs;
-	const jive_negotiator_split_node_attrs * second = (const jive_negotiator_split_node_attrs *) attrs;
+	const jive::negotiator_split_operation * first = &((const jive_negotiator_split_node *) self)->attrs;
+	const jive::negotiator_split_operation * second = (const jive::negotiator_split_operation *) attrs;
 	
 	if (!jive_type_equals(first->output_type, second->output_type))
 		return false;
@@ -206,7 +202,7 @@ static jive_node *
 jive_negotiator_split_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
-	const jive_negotiator_split_node_attrs * attrs = (const jive_negotiator_split_node_attrs *) attrs_;
+	const jive::negotiator_split_operation * attrs = (const jive::negotiator_split_operation *) attrs_;
 	
 	jive_negotiator_split_node * node = new jive_negotiator_split_node;
 	node->class_ = &JIVE_NEGOTIATOR_SPLIT_NODE;
@@ -228,7 +224,7 @@ jive_negotiator_split(
 	/* all members are used "const", but since the structure also
 	represents the attributes of a live node, they cannot be qualified
 	as such */
-	jive_negotiator_split_node_attrs attrs;
+	jive::negotiator_split_operation attrs;
 	attrs.negotiator = negotiator;
 	attrs.input_option = (jive_negotiator_option *) input_option;
 	attrs.output_type = (jive_type *) output_type;

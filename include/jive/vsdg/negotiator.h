@@ -10,6 +10,7 @@
 
 #include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/unary.h>
 
 struct jive_context;
 struct jive_graph;
@@ -29,21 +30,28 @@ typedef struct jive_negotiator_constraint jive_negotiator_constraint;
 typedef struct jive_negotiator_constraint_class jive_negotiator_constraint_class;
 typedef struct jive_negotiator_identity_constraint jive_negotiator_identity_constraint;
 typedef struct jive_negotiator_split_node jive_negotiator_split_node;
-typedef struct jive_negotiator_split_node_attrs jive_negotiator_split_node_attrs;
 
 /* split node */
 
 extern const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE;
 
-struct jive_negotiator_split_node_attrs : public jive_node_attrs {
+namespace jive {
+
+class negotiator_split_operation final : public unary_operation {
+public:
 	jive_negotiator * negotiator;
 	jive_negotiator_option * input_option;
 	jive_type * output_type;
 	jive_negotiator_option * output_option;
 };
 
+}
+
 struct jive_negotiator_split_node : public jive_node {
-	jive_negotiator_split_node_attrs attrs;
+	virtual const jive::negotiator_split_operation &
+	operation() const noexcept override;
+
+	jive::negotiator_split_operation attrs;
 	struct {
 		jive_negotiator_split_node * prev;
 		jive_negotiator_split_node * next;
