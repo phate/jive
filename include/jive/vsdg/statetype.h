@@ -1,11 +1,13 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #ifndef JIVE_VSDG_STATETYPE_H
 #define JIVE_VSDG_STATETYPE_H
+
+#include <memory>
 
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
@@ -47,17 +49,38 @@ protected:
 
 /* state multiplexing support */
 
-typedef struct jive_statemux_node_attrs jive_statemux_node_attrs;
-typedef struct jive_statemux_node jive_statemux_node;
+namespace jive {
 
-struct jive_statemux_node_attrs : public jive_node_attrs {
-	size_t noutputs;
-	struct jive_type * type; /* note: dynamically allocated */
+class statemux_operation final : public operation {
+public:
+	inline statemux_operation(
+		size_t noutputs,
+		const jive_type & type)
+		: noutputs_(noutputs)
+		, type_(jive_type_copy(&type))
+	{
+	}
+
+	inline statemux_operation(
+		const statemux_operation & other)
+		: noutputs_(other.noutputs())
+		, type_(jive_type_copy(&other.type()))
+	{
+	}
+
+	inline statemux_operation(
+		statemux_operation && other) noexcept = default;
+
+	inline size_t noutputs() const noexcept { return noutputs_; }
+	inline const jive_type & type() const noexcept { return *type_; }
+private:
+	size_t noutputs_;
+	std::unique_ptr<jive_type> type_;
 };
 
-struct jive_statemux_node : public jive_node {
-	jive_statemux_node_attrs attrs;
-};
+}
+
+typedef jive::operation_node<jive::statemux_operation> jive_statemux_node;
 
 jive_node *
 jive_statemux_node_create(struct jive_region * region,
