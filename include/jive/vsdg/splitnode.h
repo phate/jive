@@ -11,22 +11,34 @@
 #include <jive/common.h>
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/unary.h>
 
 struct jive_resource_class;
-struct jive_shaped_graph;
 
-typedef struct jive_splitnode_attrs jive_splitnode_attrs;
+namespace jive {
 
-struct jive_splitnode_attrs : public jive_node_attrs {
-	const struct jive_resource_class * in_class;
-	const struct jive_resource_class * out_class;
+class split_operation final : public unary_operation {
+public:
+	constexpr split_operation(
+		const jive_resource_class * in_class,
+		const jive_resource_class * out_class) noexcept
+		: in_class_(in_class)
+		, out_class_(out_class)
+	{
+	}
+
+	inline const jive_resource_class * in_class() const noexcept { return in_class_; }
+	inline const jive_resource_class * out_class() const noexcept { return out_class_; }
+
+private:
+	const jive_resource_class * in_class_;
+	const jive_resource_class * out_class_;
 };
 
-struct jive_splitnode : public jive_node {
-	jive_splitnode_attrs attrs;
-};
+}
 
-typedef struct jive_splitnode jive_splitnode;
+typedef jive::operation_node<jive::split_operation> jive_splitnode;
+
 extern const jive_node_class JIVE_SPLITNODE;
 
 jive_node *

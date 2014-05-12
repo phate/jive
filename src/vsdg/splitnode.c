@@ -27,8 +27,6 @@ jive_splitnode_init_(
 		1, &in_type, &in_origin,
 		1, &out_type);
 	
-	self->attrs.in_class = in_class;
-	self->attrs.out_class = out_class;
 	self->inputs[0]->required_rescls = in_class;
 	self->outputs[0]->required_rescls = out_class;
 }
@@ -38,33 +36,28 @@ jive_splitnode_create_(jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	const jive_splitnode_attrs * attrs = (const jive_splitnode_attrs *) attrs_;
+	const jive::split_operation * attrs = (const jive::split_operation *) attrs_;
 	jive_node * node = jive_splitnode_create(region,
-		jive_resource_class_get_type(attrs->in_class),
+		jive_resource_class_get_type(attrs->in_class()),
 		operands[0],
-		attrs->in_class,
-		jive_resource_class_get_type(attrs->out_class),
-		attrs->out_class);
+		attrs->in_class(),
+		jive_resource_class_get_type(attrs->out_class()),
+		attrs->out_class());
 	
-	node->inputs[0]->required_rescls = attrs->in_class;
-	node->outputs[0]->required_rescls = attrs->out_class;
+	node->inputs[0]->required_rescls = attrs->in_class();
+	node->outputs[0]->required_rescls = attrs->out_class();
 	
 	return node;
-}
-
-static const jive_node_attrs *
-jive_splitnode_get_attrs_(const jive_node * self_)
-{
-	const jive_splitnode * self = (const jive_splitnode *) self_;
-	return &self->attrs;
 }
 
 static bool
 jive_splitnode_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
 {
 	const jive_splitnode * self = (const jive_splitnode *) self_;
-	const jive_splitnode_attrs * attrs = (const jive_splitnode_attrs *) attrs_;
-	return (self->attrs.in_class == attrs->in_class) && (self->attrs.out_class == attrs->out_class);
+	const jive::split_operation * attrs = (const jive::split_operation *) attrs_;
+	return
+		self->operation().in_class() == attrs->in_class() &&
+		self->operation().out_class() == attrs->out_class();
 }
 
 const jive_node_class JIVE_SPLITNODE = {
@@ -73,7 +66,7 @@ const jive_node_class JIVE_SPLITNODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_splitnode_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_splitnode_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_splitnode_create_, /* override */
@@ -97,7 +90,7 @@ jive_splitnode_create(jive_region * region,
 	
 	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph , &JIVE_SPLITNODE);
 	
-	jive_splitnode * self = new jive_splitnode;
+	jive_splitnode * self = new jive_splitnode(jive::split_operation(in_class, out_class));
 	jive_splitnode_init_(self, region, in_type, in_origin, in_class, out_type, out_class);
 	
 	if (nf->enable_mutable && nf->enable_cse)
