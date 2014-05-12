@@ -1,17 +1,17 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/util/list.h>
-#include <jive/vsdg/graph.h>
 #include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/region.h>
+#include <jive/vsdg/node.h>
 #include <jive/vsdg/region-private.h>
+#include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
@@ -24,7 +24,7 @@ jive_graph_tail_node_create_(struct jive_region * region, const jive_node_attrs 
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 
-	jive_graph_tail_node * node = new jive_graph_tail_node;
+	jive_graph_tail_node * node = new jive_graph_tail_node(jive::graph_tail_operation());
 	node->class_ = &JIVE_GRAPH_TAIL_NODE;
 	jive_node_init_(node, region, 0, NULL, NULL, 0, NULL);
 	return node;
@@ -36,7 +36,7 @@ const jive_node_class JIVE_GRAPH_TAIL_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_node_get_attrs_, /* inherit */
+	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_graph_tail_node_create_, /* override */

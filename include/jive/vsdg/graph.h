@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,39 +7,43 @@
 #ifndef JIVE_VSDG_GRAPH_H
 #define JIVE_VSDG_GRAPH_H
 
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include <jive/common.h>
 #include <jive/context.h>
+#include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/tracker.h>
-#include <jive/util/hash.h>
 
 /* graph tail node */
 
-typedef struct jive_graph_tail_node jive_graph_tail_node;
+namespace jive {
+
+class graph_tail_operation final : public operation {
+};
+
+}
+
+typedef jive::operation_node<jive::graph_tail_operation> jive_graph_tail_node;
 
 extern const jive_node_class JIVE_GRAPH_TAIL_NODE;
 
-struct jive_graph_tail_node : public jive_node {
-};
-
-JIVE_EXPORTED_INLINE struct jive_graph_tail_node *
+JIVE_EXPORTED_INLINE jive_graph_tail_node *
 jive_graph_tail_node_cast(struct jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
-		return (struct jive_graph_tail_node *) node;
+		return (jive_graph_tail_node *) node;
 	else
 		return NULL;
 }
 
-JIVE_EXPORTED_INLINE const struct jive_graph_tail_node *
+JIVE_EXPORTED_INLINE const jive_graph_tail_node *
 jive_graph_tail_node_const_cast(const struct jive_node * node)
 {
 	if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
-		return (const struct jive_graph_tail_node *) node;
+		return (const jive_graph_tail_node *) node;
 	else
 		return NULL;
 }
@@ -47,19 +51,23 @@ jive_graph_tail_node_const_cast(const struct jive_node * node)
 /* graph */
 
 typedef struct jive_graph jive_graph;
-typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
+typedef struct jive_node_normal_form_hash jive_node_normal_form_hash;
 typedef struct jive_tracker_depth_state jive_tracker_depth_state;
 typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
-typedef struct jive_node_normal_form_hash jive_node_normal_form_hash;
+typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 
-struct jive_resource;
+struct jive_gate;
 struct jive_node;
 struct jive_node_class;
-struct jive_region;
-struct jive_gate;
 struct jive_node_normal_form;
+struct jive_region;
+struct jive_resource;
 
-JIVE_DECLARE_HASH_TYPE(jive_node_normal_form_hash, struct jive_node_normal_form, struct jive_node_class *, node_class, hash_chain);
+JIVE_DECLARE_HASH_TYPE(
+	jive_node_normal_form_hash,
+	struct jive_node_normal_form,
+	struct jive_node_class *,
+	node_class, hash_chain);
 
 struct jive_graph {
 	jive_context * context;
