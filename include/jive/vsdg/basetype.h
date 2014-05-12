@@ -167,6 +167,8 @@ public:
 
 	inline jive_output * origin() const noexcept { return origin_; }
 
+	inline jive_node * producer() const noexcept;
+
 	struct jive_node * node;
 	size_t index;
 
@@ -425,5 +427,11 @@ jive_gate_destroy(jive_gate * self);
 void
 jive_raise_type_error(const jive_type * self, const jive_type * other,
 	struct jive_context * context);
+
+inline jive_node *
+jive_input::producer() const noexcept
+{
+	return origin()->node;
+}
 
 #endif
