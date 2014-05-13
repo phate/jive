@@ -58,6 +58,12 @@ jive_memory_type::copy() const
 	return std::unique_ptr<jive_type>(new jive_memory_type());
 }
 
+jive_input *
+jive_memory_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_memory_input(node, index, origin);
+}
+
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)
 {

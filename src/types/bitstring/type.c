@@ -77,6 +77,12 @@ jive_bitstring_type::copy() const
 	return std::unique_ptr<jive_type>(new jive_bitstring_type(this->nbits()));
 }
 
+jive_input *
+jive_bitstring_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_bitstring_input(nbits_, node, index, origin);
+}
+
 static void
 jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {

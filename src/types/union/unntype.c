@@ -67,6 +67,12 @@ jive_union_type::copy() const
 	return std::unique_ptr<jive_type>(new jive_union_type(this->declaration()));
 }
 
+jive_input *
+jive_union_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_union_input(declaration(), node, index, origin);
+}
+
 /* record_type inheritable members */
 
 jive_type *

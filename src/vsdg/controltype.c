@@ -64,6 +64,12 @@ jive_control_type::copy() const
 	return std::unique_ptr<jive_type>(new jive_control_type());
 }
 
+jive_input *
+jive_control_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_control_input(node, index, origin);
+}
+
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)
 {

@@ -52,6 +52,12 @@ jive_anchor_type::copy() const
 }
 
 jive_input *
+jive_anchor_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_anchor_input(node, index, origin);
+}
+
+jive_input *
 jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {
 	return new jive_anchor_input(node, index, initial_operand);

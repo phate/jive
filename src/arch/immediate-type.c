@@ -66,6 +66,12 @@ jive_immediate_type::copy() const
 	return std::unique_ptr<jive_type>(new jive_immediate_type());
 }
 
+jive_input *
+jive_immediate_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_immediate_input(node, index, origin);
+}
+
 static void
 jive_immediate_type_fini_( jive_type* self_ )
 {

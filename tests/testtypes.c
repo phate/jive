@@ -58,6 +58,12 @@ jive_test_value_type::copy() const
 	return std::unique_ptr<jive_test_value_type>(new jive_test_value_type());
 }
 
+jive_input *
+jive_test_value_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_test_value_input(node, index, origin);
+}
+
 static jive_type *
 jive_test_value_type_copy_(const jive_type * self_)
 {
@@ -148,6 +154,12 @@ std::unique_ptr<jive_type>
 jive_test_state_type::copy() const
 {
 	return std::unique_ptr<jive_test_state_type>(new jive_test_state_type());
+}
+
+jive_input *
+jive_test_state_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_test_state_input(node, index, origin);
 }
 
 static jive_type *

@@ -126,6 +126,12 @@ jive_function_type::copy() const
  return std::unique_ptr<jive_type>(new jive_function_type(argument_types_, return_types_));
 }
 
+jive_input *
+jive_function_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+{
+	return new jive_function_input(*this, node, index, origin);
+}
+
 /* function_type inheritable members */
 
 void
