@@ -1,4 +1,5 @@
 /*
+ * Copyright 2010 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -10,6 +11,31 @@
 
 /* test node */
 
+test_operation::~test_operation() noexcept {}
+
+test_operation::test_operation(
+	size_t noperands, const jive_type * const operand_types[],
+	size_t nresults, const jive_type * const result_types[])
+{
+	for (size_t n = 0; n < noperands; ++n) {
+		operand_types_.emplace_back(jive_type_copy(operand_types[n]));
+	}
+	for (size_t n = 0; n < nresults; ++n) {
+		result_types_.emplace_back(jive_type_copy(result_types[n]));
+	}
+}
+
+test_operation::test_operation(const test_operation & other)
+{
+	for (const auto & optype : other.operand_types()) {
+		operand_types_.emplace_back(jive_type_copy(optype.get()));
+	}
+	for (const auto & restype : other.result_types()) {
+		result_types_.emplace_back(jive_type_copy(restype.get()));
+	}
+}
+
+
 static void
 jive_test_node_init_(jive_test_node * self, jive_region * region,
 	size_t noperands, const jive_type * const operand_types[], jive_output * const operands[],
@@ -18,70 +44,33 @@ jive_test_node_init_(jive_test_node * self, jive_region * region,
 	jive_context * context = region->graph->context;
 
 	jive_node_init_(self, region, noperands, operand_types, operands, nresults, result_types);
-
-	self->attrs.noperands = noperands;
-	self->attrs.operand_types = jive_context_malloc(context,
-		sizeof(*self->attrs.operand_types) * noperands);
-
-	self->attrs.nresults = nresults;
-	self->attrs.result_types = jive_context_malloc(context,
-		sizeof(*self->attrs.result_types) * nresults);
-
-	size_t n;
-	for (n = 0; n < noperands; n++)
-		self->attrs.operand_types[n] = jive_type_copy(operand_types[n]);
-
-	for (n = 0; n < nresults; n++)
-		self->attrs.result_types[n] = jive_type_copy(result_types[n]);
 }
 
 static void
 jive_test_node_fini_(jive_node * self_)
 {
-	jive_test_node * self = (jive_test_node *)self_;
-	jive_context * context = self_->graph->context;
-
-	size_t n;
-	for (n = 0; n < self->attrs.noperands; n++) {
-		jive_type_destroy(self->attrs.operand_types[n]);
-	}
-	jive_context_free(context, self->attrs.operand_types);
-
-	for (n = 0; n < self->attrs.nresults; n++) {
-		jive_type_destroy(self->attrs.result_types[n]);
-	}
-	jive_context_free(context, self->attrs.result_types);
-
 	jive_node_fini_(self_);
-}
-
-static const jive_node_attrs *
-jive_test_node_get_attrs_(const jive_node * self_)
-{
-	const jive_test_node * self = (const jive_test_node *)self_;
-	return &self->attrs;
 }
 
 static bool
 jive_test_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive_test_node_attrs * first = &((const jive_test_node *)self)->attrs;
-	const jive_test_node_attrs * second = (const jive_test_node_attrs *)attrs;
+	const test_operation * first = &((const jive_test_node *)self)->operation();
+	const test_operation * second = (const test_operation *)attrs;
 
-	if (first->noperands != second->noperands)
+	if (first->operand_types().size() != second->operand_types().size())
 		return false;
 
-	if (first->nresults != second->nresults)
+	if (first->result_types().size() != second->result_types().size())
 		return false;
 
-	size_t n;
-	for (n = 0; n < first->noperands; n++) {
-		if (!jive_type_equals(first->operand_types[n], second->operand_types[n]))
+	for (size_t n = 0; n < first->operand_types().size(); ++n) {
+		if (!jive_type_equals(&*first->operand_types()[n], &*second->operand_types()[n]))
 			return false;
 	}
 
-	for (n = 0; n < first->nresults; n++) {
-		if (!jive_type_equals(first->result_types[n], second->result_types[n]))
+	for (size_t n = 0; n < first->result_types().size(); ++n) {
+		if (!jive_type_equals(&*first->result_types()[n], &*second->result_types()[n]))
 			return false;
 	}
 
@@ -93,15 +82,16 @@ jive_test_node_check_operands_(const jive_node_class * cls, const jive_node_attr
 	size_t noperands, jive_output * const operands[], jive_context * context)
 {
 
-	const jive_test_node_attrs * attrs = (const jive_test_node_attrs *)attrs_;
+	const test_operation * attrs = (const test_operation *)attrs_;
 
-	if (noperands != attrs->noperands)
+	if (noperands != attrs->operand_types().size())
 		jive_context_fatal_error(context, "Type mismatch: Number of operands do not coincide.");
 
 	size_t n;
-	for (n = 0; n < attrs->noperands; n++) {
-		if (!jive_type_equals(attrs->operand_types[n], jive_output_get_type(operands[n])))
-			jive_raise_type_error(attrs->operand_types[n], jive_output_get_type(operands[n]), context);
+	for (n = 0; n < attrs->operand_types().size(); n++) {
+		const jive_type & type = *attrs->operand_types()[n];
+		if (!jive_type_equals(&type, jive_output_get_type(operands[n])))
+			jive_raise_type_error(&type, jive_output_get_type(operands[n]), context);
 	}
 }
 
@@ -109,13 +99,22 @@ static jive_node *
 jive_test_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive_output * const operands[])
 {
-	const jive_test_node_attrs * attrs = (const jive_test_node_attrs *)attrs_;
-	JIVE_DEBUG_ASSERT(noperands == attrs->noperands);
+	const test_operation * attrs = (const test_operation *)attrs_;
+	JIVE_DEBUG_ASSERT(noperands == attrs->operand_types().size());
 
-	jive_test_node * node = new jive_test_node;
+	jive_test_node * node = new jive_test_node(*attrs);
 	node->class_ = &JIVE_TEST_NODE;
-	jive_test_node_init_(node, region, attrs->noperands, attrs->operand_types, operands,
-		attrs->nresults, attrs->result_types);
+	const jive_type * operand_types[noperands];
+	for (size_t n = 0; n < noperands; ++n) {
+		operand_types[n] = &*attrs->operand_types()[n];
+	}
+	size_t nresults = attrs->result_types().size();
+	const jive_type * result_types[nresults];
+	for (size_t n = 0; n < nresults; ++n) {
+		result_types[n] = &*attrs->result_types()[n];
+	}
+	jive_test_node_init_(node, region, noperands, operand_types, operands,
+		nresults, result_types);
 
 	return node;
 }
@@ -126,7 +125,7 @@ const jive_node_class JIVE_TEST_NODE = {
 	fini : jive_test_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : jive_test_node_get_attrs_, /* override */
+	get_attrs : nullptr,
 	match_attrs : jive_test_node_match_attrs_, /* override */
 	check_operands : jive_test_node_check_operands_, /* override */
 	create : jive_test_node_create_, /* override */
@@ -137,16 +136,13 @@ jive_test_node_create(struct jive_region * region,
 	size_t noperands, const jive_type * const operand_types[], jive_output * const operands[],
 	size_t nresults, const jive_type * const result_types[])
 {
-	jive_test_node_attrs attrs;
-	attrs.noperands = noperands;
-	attrs.operand_types = (const jive_type **)operand_types;
-	attrs.nresults = nresults;
-	attrs.result_types = (const jive_type **)result_types;
+	test_operation op(noperands, operand_types, nresults, result_types);
+	assert(op.result_types().size() == nresults);
 
 	/* FIXME: maybe introduce a jive_node_create function that does all this */
-	jive_test_node_check_operands_(&JIVE_TEST_NODE, &attrs, noperands, operands,
+	jive_test_node_check_operands_(&JIVE_TEST_NODE, &op, noperands, operands,
 		region->graph->context);
-	jive_node * node = jive_test_node_create_(region, &attrs, noperands, operands);
+	jive_node * node = jive_test_node_create_(region, &op, noperands, operands);
 
 	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(region->graph, &JIVE_TEST_NODE);
 	if (nf->enable_mutable && nf->enable_cse)
@@ -160,11 +156,7 @@ jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
 	const jive_type * const operand_types[], jive_output * const operands[], size_t nresults,
 	const jive_type * const result_types[], jive_output * results[])
 {
-	jive_test_node_attrs attrs;
-	attrs.noperands = noperands;
-	attrs.operand_types = (const jive_type **)operand_types;
-	attrs.nresults = nresults;
-	attrs.result_types = (const jive_type **)result_types;
+	test_operation op(noperands, operand_types, nresults, result_types);
 
-	jive_node_create_normalized(&JIVE_TEST_NODE, graph, &attrs, noperands, operands, results);
+	jive_node_create_normalized(&JIVE_TEST_NODE, graph, &op, noperands, operands, results);
 }
