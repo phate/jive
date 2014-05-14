@@ -73,6 +73,12 @@ jive_record_type::create_input(jive_node * node, size_t index, jive_output * ori
 	return new jive_record_input(this->declaration(), node, index, origin);
 }
 
+jive_output *
+jive_record_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_record_output(this->declaration(), node, index);
+}
+
 /* record_type inheritable members */
 
 jive_type *

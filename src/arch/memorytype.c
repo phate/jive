@@ -64,6 +64,12 @@ jive_memory_type::create_input(jive_node * node, size_t index, jive_output * ori
 	return new jive_memory_input(node, index, origin);
 }
 
+jive_output *
+jive_memory_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_memory_output(node, index);
+}
+
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)
 {

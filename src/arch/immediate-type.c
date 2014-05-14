@@ -72,6 +72,12 @@ jive_immediate_type::create_input(jive_node * node, size_t index, jive_output * 
 	return new jive_immediate_input(node, index, origin);
 }
 
+jive_output *
+jive_immediate_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_immediate_output(node, index);
+}
+
 static void
 jive_immediate_type_fini_( jive_type* self_ )
 {

@@ -132,6 +132,12 @@ jive_function_type::create_input(jive_node * node, size_t index, jive_output * o
 	return new jive_function_input(*this, node, index, origin);
 }
 
+jive_output *
+jive_function_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_function_output(*this, node, index);
+}
+
 /* function_type inheritable members */
 
 void

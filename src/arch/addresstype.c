@@ -70,6 +70,12 @@ jive_address_type::create_input(jive_node * node, size_t index, jive_output * or
 	return new jive_address_input(node, index, origin);
 }
 
+jive_output *
+jive_address_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_address_output(node, index);
+}
+
 jive_type *
 jive_address_type_copy_(const jive_type * self_)
 {

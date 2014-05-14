@@ -26,6 +26,8 @@ public:
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
+
+	virtual jive_output * create_output(jive_node * node, size_t index) const override;
 };
 
 class jive_immediate_input final : public jive_value_input {

@@ -73,6 +73,12 @@ jive_union_type::create_input(jive_node * node, size_t index, jive_output * orig
 	return new jive_union_input(declaration(), node, index, origin);
 }
 
+jive_output *
+jive_union_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_union_output(this->declaration(), node, index);
+}
+
 /* record_type inheritable members */
 
 jive_type *

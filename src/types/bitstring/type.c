@@ -83,6 +83,12 @@ jive_bitstring_type::create_input(jive_node * node, size_t index, jive_output * 
 	return new jive_bitstring_input(nbits_, node, index, origin);
 }
 
+jive_output *
+jive_bitstring_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_bitstring_output(nbits(), node, index);
+}
+
 static void
 jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
 {

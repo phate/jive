@@ -46,6 +46,8 @@ public:
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
 
+	virtual jive_output * create_output(jive_node * node, size_t index) const override;
+
 private:
 	const jive_resource_name * name_;
 };
@@ -122,6 +124,12 @@ jive_input *
 jive_reuse_type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive_reuse_input(name(), node, index, origin);
+}
+
+jive_output *
+jive_reuse_type::create_output(jive_node * node, size_t index) const
+{
+	return new jive_reuse_output(name(), node, index);
 }
 
 jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,
