@@ -76,6 +76,12 @@ jive_address_type::create_output(jive_node * node, size_t index) const
 	return new jive_address_output(node, index);
 }
 
+jive_gate *
+jive_address_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_address_gate(graph, name);
+}
+
 jive_type *
 jive_address_type_copy_(const jive_type * self_)
 {

@@ -76,6 +76,12 @@ jive_control_type::create_output(jive_node * node, size_t index) const
 	return new jive_control_output(true, node, index);
 }
 
+jive_gate *
+jive_control_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_control_gate(graph, name);
+}
+
 static jive_input *
 jive_control_type_create_input_(const jive_type * self, jive_node * node, size_t index, jive_output * initial_operand)
 {

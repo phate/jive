@@ -78,6 +78,12 @@ jive_immediate_type::create_output(jive_node * node, size_t index) const
 	return new jive_immediate_output(node, index);
 }
 
+jive_gate *
+jive_immediate_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_immediate_gate(graph, name);
+}
+
 static void
 jive_immediate_type_fini_( jive_type* self_ )
 {

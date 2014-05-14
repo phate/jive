@@ -70,6 +70,12 @@ jive_memory_type::create_output(jive_node * node, size_t index) const
 	return new jive_memory_output(node, index);
 }
 
+jive_gate *
+jive_memory_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_memory_gate(graph, name);
+}
+
 static jive_type *
 jive_memory_type_copy_(const jive_type * self_)
 {

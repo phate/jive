@@ -41,6 +41,8 @@ public:
 
 	virtual jive_output * create_output(jive_node * node, size_t index) const override;
 
+	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
+
 private:
 	const jive_record_declaration * decl_;
 };

@@ -29,6 +29,8 @@ public:
 		jive_output * origin) const override;
 
 	virtual jive_output * create_output(jive_node * node, size_t index) const override;
+
+	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
 JIVE_EXPORTED_INLINE const jive_float_type *

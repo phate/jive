@@ -79,6 +79,12 @@ jive_union_type::create_output(jive_node * node, size_t index) const
 	return new jive_union_output(this->declaration(), node, index);
 }
 
+jive_gate *
+jive_union_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_union_gate(this->declaration(), graph, name);
+}
+
 /* record_type inheritable members */
 
 jive_type *

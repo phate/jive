@@ -63,6 +63,15 @@ jive_anchor_type::create_output(jive_node * node, size_t index) const
 	return new jive_anchor_output(node, index);
 }
 
+jive_gate *
+jive_anchor_type::create_gate(jive_graph * graph, const char * name) const
+{
+	/*
+		FIXME: this is an ugly solution
+	*/
+	return nullptr;
+}
+
 jive_input *
 jive_anchor_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
 {

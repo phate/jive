@@ -138,6 +138,12 @@ jive_function_type::create_output(jive_node * node, size_t index) const
 	return new jive_function_output(*this, node, index);
 }
 
+jive_gate *
+jive_function_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_function_gate(*this, graph, name);
+}
+
 /* function_type inheritable members */
 
 void

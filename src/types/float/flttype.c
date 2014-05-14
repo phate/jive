@@ -63,6 +63,12 @@ jive_float_type::create_output(jive_node * node, size_t index) const
 	return new jive_float_output(node, index);
 }
 
+jive_gate *
+jive_float_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_float_gate(graph, name);
+}
+
 jive_input *
 jive_float_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
 	jive_output * initial_operand)

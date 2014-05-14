@@ -87,6 +87,11 @@ public:
 	*/
 	virtual jive_output * create_output(jive_node * node, size_t index) const = 0;
 
+	/*
+		FIXME: change return type to std::unique_ptr<jive_gate>
+	*/
+	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const = 0;
+
 	const struct jive_type_class * class_;
 };
 

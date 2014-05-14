@@ -48,6 +48,8 @@ public:
 
 	virtual jive_output * create_output(jive_node * node, size_t index) const override;
 
+	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
+
 private:
 	const jive_resource_name * name_;
 };
@@ -130,6 +132,12 @@ jive_output *
 jive_reuse_type::create_output(jive_node * node, size_t index) const
 {
 	return new jive_reuse_output(name(), node, index);
+}
+
+jive_gate *
+jive_reuse_type::create_gate(jive_graph * graph, const char * name) const
+{
+	return new jive_reuse_gate(this->name(), graph, name);
 }
 
 jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,

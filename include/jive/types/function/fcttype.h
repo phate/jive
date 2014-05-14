@@ -57,6 +57,8 @@ public:
 
 	virtual jive_output * create_output(jive_node * node, size_t index) const override;
 
+	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
+
 private:
 	std::vector<std::unique_ptr<jive_type>> return_types_;
 	std::vector<std::unique_ptr<jive_type>> argument_types_;
