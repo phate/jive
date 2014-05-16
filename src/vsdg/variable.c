@@ -8,7 +8,6 @@
 
 #include <jive/common.h>
 #include <jive/util/list.h>
-#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-private.h>

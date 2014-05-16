@@ -14,9 +14,6 @@
 #include <jive/common.h>
 #include <jive/vsdg/gate-interference.h>
 
-typedef struct jive_type jive_type;
-typedef struct jive_type_class jive_type_class;
-
 class jive_gate;
 class jive_input;
 class jive_output;
@@ -37,36 +34,12 @@ struct jive_variable;
         @{
 */
 
-struct jive_type_class {
-	const struct jive_type_class * parent;
-	const char * name;
-
-	void (*fini)(jive_type* self);
-	
-	/** \brief Give textual representation of type (for debugging) */
-	void (*get_label)(const jive_type * self, struct jive_buffer * buffer);
-	
-	jive_input * (*create_input)(const jive_type * self, struct jive_node * node, size_t index,
-		jive_output * initial_operand);
-	
-	jive_output * (*create_output)(const jive_type * self, struct jive_node * node, size_t index);
-	
-	jive_gate * (*create_gate)(const jive_type * self, struct jive_graph * graph, const char * name);
-	
-	bool (*equals)(const jive_type * self, const jive_type * other);
-	
-	/** \brief Create dynamically allocated copy of type */
-	jive_type * (*copy)(const jive_type * self);
-};
-
-extern const struct jive_type_class JIVE_TYPE;
-
 class jive_type {
 public:
 	virtual ~jive_type() noexcept;
 
 protected:
-	jive_type(const jive_type_class * class__) noexcept;
+	inline constexpr jive_type() noexcept {};
 
 public:
 	virtual void label(jive_buffer & buffer) const = 0;
@@ -91,8 +64,6 @@ public:
 		FIXME: change return type to std::unique_ptr<jive_gate>
 	*/
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const = 0;
-
-	const struct jive_type_class * class_;
 };
 
 JIVE_EXPORTED_INLINE void
@@ -132,7 +103,6 @@ jive_type_copy(const jive_type * self)
 JIVE_EXPORTED_INLINE void
 jive_type_fini(jive_type * self)
 {
-	self->class_->fini(self);
 }
 
 void

@@ -19,9 +19,6 @@ struct jive_record_declaration {
 
 /* record type */
 
-typedef struct jive_record_type jive_record_type;
-
-extern const jive_type_class JIVE_RECORD_TYPE;
 class jive_record_type final : public jive_value_type {
 public:
 	virtual ~jive_record_type() noexcept;

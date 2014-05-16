@@ -423,7 +423,7 @@ jive_arraysubscript_node_create_(jive_region * region, const jive_node_attrs * a
 	const jive_type * typeptr = &address_type;
 
 	const jive_type * index_type = jive_output_get_type(index);
-	JIVE_DEBUG_ASSERT(index_type->class_ == &JIVE_BITSTRING_TYPE);
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive_bitstring_type*>(index_type));
 
 	const jive_type * operand_types[2] = {&address_type, index_type};
 	

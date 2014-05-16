@@ -13,9 +13,6 @@
 
 /* function type */
 
-extern const jive_type_class JIVE_FUNCTION_TYPE;
-
-typedef struct jive_function_type jive_function_type;
 class jive_function_type final : public jive_value_type {
 public:
 	virtual ~jive_function_type() noexcept;

@@ -9,14 +9,11 @@
 
 #include <jive/vsdg/basetype.h>
 
-typedef struct jive_anchor_type jive_anchor_type;
-
-extern const jive_type_class JIVE_ANCHOR_TYPE;
 class jive_anchor_type final : public jive_type {
 public:
 	virtual ~jive_anchor_type() noexcept;
 
-	jive_anchor_type() noexcept;
+	inline constexpr jive_anchor_type() noexcept : jive_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

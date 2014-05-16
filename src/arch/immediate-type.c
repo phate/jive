@@ -12,8 +12,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/basetype-private.h>
-#include <jive/vsdg/valuetype-private.h>
 
 /* immediate_input */
 
@@ -43,10 +41,6 @@ jive_immediate_gate::jive_immediate_gate(jive_graph * graph, const char name[])
 /* immediate type */
 
 jive_immediate_type::~jive_immediate_type() noexcept {}
-
-jive_immediate_type::jive_immediate_type() noexcept
-	: jive_value_type(&JIVE_IMMEDIATE_TYPE)
-{}
 
 void
 jive_immediate_type::label(jive_buffer & buffer) const
@@ -83,60 +77,3 @@ jive_immediate_type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive_immediate_gate(graph, name);
 }
-
-static void
-jive_immediate_type_fini_( jive_type* self_ )
-{
-	jive_immediate_type* self = (jive_immediate_type*) self_ ;
-
-	jive_value_type_fini_(self);
-}
-
-static void
-jive_immediate_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
-{
-	jive_buffer_putstr(buffer, "immediate");
-}
-
-static jive_input *
-jive_immediate_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
-	jive_output * initial_operand)
-{
-	return new jive_immediate_input(node, index, initial_operand);
-}
-
-static jive_output *
-jive_immediate_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
-{
-	return new jive_immediate_output(node, index);
-}
-
-static jive_gate *
-jive_immediate_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
-{
-	return new jive_immediate_gate(graph, name);
-}
-
-static jive_type *
-jive_immediate_type_copy_(const jive_type * self_)
-{
-	const jive_immediate_type * self = (const jive_immediate_type *) self_;
-	
-	jive_immediate_type * type = new jive_immediate_type;
-	
-	*type = *self;
-	
-	return type;
-}
-
-const jive_type_class JIVE_IMMEDIATE_TYPE = {
-	parent : &JIVE_VALUE_TYPE,
-	name : "JIVE_IMMEDIATE_TYPE",
-	fini : jive_immediate_type_fini_, /* override */
-	get_label : jive_immediate_type_get_label_, /* override */
-	create_input : jive_immediate_type_create_input_, /* override */
-	create_output : jive_immediate_type_create_output_, /* override */
-	create_gate : jive_immediate_type_create_gate_, /* override */
-	equals : jive_type_equals_, /* inherit */
-	copy : jive_immediate_type_copy_, /* override */
-};

@@ -12,12 +12,10 @@
 
 #include <jive/arch/immediate-type.h>
 #include <jive/util/buffer.h>
-#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/nullary.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/valuetype-private.h>
 
 /* immediate node */
 

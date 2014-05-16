@@ -12,15 +12,12 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
 
-typedef struct jive_state_type jive_state_type;
-
-extern const jive_type_class JIVE_STATE_TYPE;
 class jive_state_type : public jive_type {
 public:
 	virtual ~jive_state_type() noexcept;
 
 protected:
-	jive_state_type(const jive_type_class * class_) noexcept;
+	inline constexpr jive_state_type() noexcept : jive_type() {};
 };
 
 class jive_state_input : public jive_input {

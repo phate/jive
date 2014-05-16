@@ -34,13 +34,13 @@ jive_i386_classify_type_(const jive_type * type, const jive_resource_class * res
 	else if (rescls == &jive_i386_regcls_flags.base)
 		return (1 << jive_i386_classify_flags);
 	
-	if (type->class_ == &JIVE_BITSTRING_TYPE) {
+	if (dynamic_cast<const jive_bitstring_type*>(type)) {
 		const jive_bitstring_type * btype = (const jive_bitstring_type *) type;
 		if (btype->nbits() == 32)
 			return (1 << jive_i386_classify_gpr);
 	}
 
-	if (type->class_ == &JIVE_FLOAT_TYPE) {
+	if (dynamic_cast<const jive_float_type*>(type)) {
 		return (1 << jive_i386_classify_sse);
 	}
 	

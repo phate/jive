@@ -10,14 +10,11 @@
 
 /* float type */
 
-typedef struct jive_float_type jive_float_type;
-
-extern const jive_type_class JIVE_FLOAT_TYPE;
 class jive_float_type final : public jive_value_type {
 public:
 	virtual ~jive_float_type() noexcept;
 
-	jive_float_type() noexcept;
+	inline constexpr jive_float_type() noexcept : jive_value_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

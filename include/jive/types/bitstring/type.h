@@ -10,9 +10,6 @@
 
 /* bitstring type */
 
-typedef struct jive_bitstring_type jive_bitstring_type;
-
-extern const jive_type_class JIVE_BITSTRING_TYPE;
 class jive_bitstring_type final : public jive_value_type {
 public:
 	virtual ~jive_bitstring_type() noexcept;

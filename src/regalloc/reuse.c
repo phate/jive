@@ -16,19 +16,12 @@
 
 #include <jive/util/buffer.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/statetype-private.h>
+#include <jive/vsdg/statetype.h>
 #include <jive/vsdg/variable.h>
 
-typedef struct jive_reuse_type jive_reuse_type;
-typedef struct jive_reuse_output jive_reuse_output;
-typedef struct jive_reuse_output jive_reuse;
-typedef struct jive_reuse_gate jive_reuse_gate;
-
-extern const jive_type_class JIVE_REUSE_TYPE;
 class jive_reuse_type final : public jive_state_type {
 public:
 	virtual ~jive_reuse_type() noexcept {};
@@ -98,7 +91,7 @@ private:
 };
 
 jive_reuse_type::jive_reuse_type(const jive_resource_name * name) noexcept
-	: jive_state_type(&JIVE_REUSE_TYPE)
+	: jive_state_type()
 	, name_(name)
 {}
 
@@ -162,56 +155,6 @@ jive_reuse_gate::jive_reuse_gate(const jive_resource_name * name, jive_graph * g
 {}
 
 jive_reuse_gate::~jive_reuse_gate() noexcept {}
-
-static jive_type *
-jive_reuse_type_copy_(const jive_type * self_)
-{
-	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	
-	return new jive_reuse_type(self->name());
-}
-
-static void
-jive_reuse_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
-{
-	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "reuse %s", self->name()->name);
-	jive_buffer_putstr(buffer, tmp);
-}
-
-static jive_input *
-jive_reuse_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index, jive_output * initial_operand)
-{
-	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	return new jive_reuse_input(self->name(), node, index, initial_operand);
-}
-
-static jive_output *
-jive_reuse_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
-{
-	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	return new jive_reuse_output(self->name(), node, index);
-}
-
-static jive_gate *
-jive_reuse_type_create_gate_(const jive_type * self_, struct jive_graph * graph, const char * name)
-{
-	const jive_reuse_type * self = (const jive_reuse_type *) self_;
-	return new jive_reuse_gate(self->name(), graph, name);
-}
-
-const jive_type_class JIVE_REUSE_TYPE = {
-	parent : &JIVE_TYPE,
-	name : "REUSE",
-	fini : jive_state_type_fini_, /* inherit */
-	get_label : jive_reuse_type_get_label_, /* inherit */
-	create_input : jive_reuse_type_create_input_, /* override */
-	create_output : jive_reuse_type_create_output_, /* override */
-	create_gate : jive_reuse_type_create_gate_, /* override */
-	equals : jive_type_equals_, /* inherit */
-	copy : jive_reuse_type_copy_, /* override */
-};
 
 /* structures for tracking current active set and users */
 

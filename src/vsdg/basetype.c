@@ -9,7 +9,6 @@
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-private.h>
@@ -18,53 +17,6 @@
 #include <jive/vsdg/variable.h>
 
 jive_type::~jive_type() noexcept {}
-
-jive_type::jive_type(const jive_type_class * class__) noexcept
-	: class_(class__)
-{}
-
-void
-jive_type_fini_(jive_type * self)
-{
-}
-
-void
-jive_type_get_label_(const jive_type * self, struct jive_buffer * buffer)
-{
-	jive_buffer_putstr(buffer, self->class_->name);
-}
-
-jive_input *
-jive_type_create_input_(const jive_type * self, struct jive_node * node, size_t index,
-	jive_output * initial_operand)
-{
-	return nullptr;
-}
-
-jive_output *
-jive_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
-{
-	return nullptr;
-}
-
-jive_gate *
-jive_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
-{
-	return nullptr;
-}
-
-bool
-jive_type_equals_(const jive_type * self, const jive_type * other)
-{
-	return self->class_ == other->class_;
-}
-
-jive_type *
-jive_type_copy_(const jive_type * self)
-{
-	/* base-type non copyable */
-	return NULL;
-}
 
 void
 jive_raise_type_error(const jive_type * self, const jive_type * other, jive_context * context)
@@ -95,18 +47,6 @@ jive_type_create_input(const jive_type * self, struct jive_node * node, size_t i
 
 	return self->create_input(node, index, origin);
 }
-
-const jive_type_class JIVE_TYPE = {
-	parent : 0,
-	name : "X",
-	fini : jive_type_fini_,
-	get_label : jive_type_get_label_,
-	create_input : jive_type_create_input_,
-	create_output : jive_type_create_output_,
-	create_gate : jive_type_create_gate_,
-	equals : jive_type_equals_,
-	copy : jive_type_copy_
-};
 
 void
 jive_type_destroy(struct jive_type * self)
@@ -232,7 +172,7 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 	if (!jive_type_equals(input_type, operand_type)) {
 		jive_raise_type_error(input_type, operand_type, this->node->graph->context);
 	}
-	if (input_type->class_ == &JIVE_ANCHOR_TYPE) {
+	if (dynamic_cast<const jive_anchor_type*>(input_type)) {
 		jive_context_fatal_error(this->node->graph->context,
 			"Type mismatch: Cannot divert edges of 'anchor' type");
 	}

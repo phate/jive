@@ -11,14 +11,11 @@
 
 /* test value type */
 
-typedef struct jive_test_value_type jive_test_value_type;
-
-extern const jive_type_class JIVE_TEST_VALUE_TYPE;
 class jive_test_value_type final : public jive_value_type {
 public:
 	virtual ~jive_test_value_type() noexcept;
 
-	jive_test_value_type() noexcept;
+	inline constexpr jive_test_value_type() noexcept : jive_value_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
@@ -72,14 +69,11 @@ private:
 
 /* test state type */
 
-typedef struct jive_test_state_type jive_test_state_type;
-
-extern const jive_type_class JIVE_TEST_STATE_TYPE;
 class jive_test_state_type final : public jive_state_type {
 public:
 	virtual ~jive_test_state_type() noexcept;
 
-	jive_test_state_type() noexcept;
+	inline constexpr jive_test_state_type() noexcept : jive_state_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

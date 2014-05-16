@@ -5,8 +5,6 @@
 
 #include <jive/types/bitstring/type.h>
 #include <jive/util/buffer.h>
-#include <jive/vsdg/basetype-private.h>
-#include <jive/vsdg/valuetype-private.h>
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
@@ -14,47 +12,14 @@
 #include <stdio.h>
 #include <string.h>
 
-static void
-jive_bitstring_type_get_label_(const jive_type * self, struct jive_buffer * buffer);
-
-static jive_input *
-jive_bitstring_type_create_input_(const jive_type * self, struct jive_node * node, size_t index,
-	jive_output * initial_operand);
-
-static jive_output *
-jive_bitstring_type_create_output_(const jive_type * self, struct jive_node * node, size_t index);
-
-static jive_gate *
-jive_bitstring_type_create_gate_(const jive_type * self, struct jive_graph * graph,
-	const char * name);
-
-static jive_type *
-jive_bitstring_type_copy_(const jive_type * self);
-
-static bool
-jive_bitstring_type_equals_(const jive_type * self, const jive_type * other);
-
-const jive_type_class JIVE_BITSTRING_TYPE = {
-	parent : &JIVE_VALUE_TYPE,
-	name : "bit",
-	fini : jive_value_type_fini_, /* inherit */
-	get_label : jive_bitstring_type_get_label_, /* override */
-	create_input : jive_bitstring_type_create_input_, /* override */
-	create_output : jive_bitstring_type_create_output_, /* override */
-	create_gate : jive_bitstring_type_create_gate_, /* override */
-	equals : jive_bitstring_type_equals_, /* override */
-	copy : jive_bitstring_type_copy_, /* override */
-};
-
 /* bitstring_type inheritable members */
 
 jive_bitstring_type::~jive_bitstring_type() noexcept {}
 
 jive_bitstring_type::jive_bitstring_type(size_t nbits) noexcept
-	: jive_value_type(&JIVE_BITSTRING_TYPE)
+	: jive_value_type()
 	, nbits_(nbits)
 {}
-
 
 void
 jive_bitstring_type::label(jive_buffer & buffer) const
@@ -93,60 +58,6 @@ jive_gate *
 jive_bitstring_type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive_bitstring_gate(nbits(), graph, name);
-}
-
-static void
-jive_bitstring_type_get_label_(const jive_type * self_, struct jive_buffer * buffer)
-{
-	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	char tmp[16];
-	snprintf(tmp, sizeof(tmp), "bits%zd", self->nbits());
-	jive_buffer_putstr(buffer, tmp);
-}
-
-static jive_input *
-jive_bitstring_type_create_input_(const jive_type * self_, struct jive_node * node, size_t index,
-	jive_output * initial_operand)
-{
-	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	jive_bitstring_input * input = new jive_bitstring_input(self->nbits(), node, index,
-		initial_operand);
-	return input;
-}
-
-static jive_output *
-jive_bitstring_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
-{
-	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	return new jive_bitstring_output(self->nbits(), node, index);
-}
-
-static jive_gate *
-jive_bitstring_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
-	const char * name)
-{
-	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	return new jive_bitstring_gate(self->nbits(), graph, name);
-}
-
-static jive_type *
-jive_bitstring_type_copy_(const jive_type * self_)
-{
-	const jive_bitstring_type * self = (const jive_bitstring_type *) self_;
-	
-	jive_bitstring_type * type = new jive_bitstring_type(self->nbits());
-	
-	return type;
-}
-
-static bool
-jive_bitstring_type_equals_(const jive_type * self_, const jive_type * other_)
-{
-	if (self_->class_ != other_->class_) return false;
-	const jive_bitstring_type * self = (const jive_bitstring_type *)self_;
-	const jive_bitstring_type * other = (const jive_bitstring_type *)other_;
-	
-	return self->nbits() == other->nbits();
 }
 
 /* bitstring_input inheritable members */

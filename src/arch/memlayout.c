@@ -13,14 +13,14 @@
 const jive_dataitem_memlayout *
 jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const struct jive_value_type * type_)
 {
-	if (type_->class_ == &JIVE_BITSTRING_TYPE) {
+	if (dynamic_cast<const jive_bitstring_type*>(type_)) {
 		return jive_memlayout_mapper_map_bitstring(self, ((const jive_bitstring_type *) type_)->nbits());
-	} else if (type_->class_ == &JIVE_ADDRESS_TYPE) {
+	} else if (dynamic_cast<const jive_address_type*>(type_)) {
 		return jive_memlayout_mapper_map_address(self);
-	} else if (type_->class_ == &JIVE_RECORD_TYPE) {
+	} else if (dynamic_cast<const jive_record_type*>(type_)) {
 		const jive_record_type * type = (const jive_record_type *) type_;
 		return &jive_memlayout_mapper_map_record(self, type->declaration())->base;
-	} else if (type_->class_ == &JIVE_UNION_TYPE) {
+	} else if (dynamic_cast<const jive_union_type*>(type_)) {
 		const jive_union_type * type = (const jive_union_type *) type_;
 		return &jive_memlayout_mapper_map_union(self, type->declaration())->base;
 	}

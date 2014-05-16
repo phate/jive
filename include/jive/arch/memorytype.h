@@ -9,14 +9,11 @@
 
 #include <jive/vsdg/statetype.h>
 
-typedef struct jive_memory_type jive_memory_type;
-
-extern const jive_type_class JIVE_MEMORY_TYPE;
 class jive_memory_type final : public jive_state_type {
 public:
 	virtual ~jive_memory_type() noexcept;
 
-	jive_memory_type() noexcept;
+	inline constexpr jive_memory_type() noexcept : jive_state_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

@@ -46,7 +46,7 @@ flatten_data_items(
 	size_t nitems = 0;
 	jive_output ** items = 0;
 	const jive_type * type_ = jive_output_get_type(data);
-	if (type_->class_ == &JIVE_BITSTRING_TYPE) {
+	if (dynamic_cast<const jive_bitstring_type*>(type_)) {
 		const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
 		
 		if (type->nbits() < 8 || !is_powerof2(type->nbits()))
@@ -61,7 +61,7 @@ flatten_data_items(
 		for (n = 0; n < nitems; n++)
 			items[n] = NULL;
 		items[0] = data;
-	} else if (type_->class_ == &JIVE_RECORD_TYPE) {
+	} else if (dynamic_cast<const jive_record_type*>(type_)) {
 		const jive_record_type * type = (const jive_record_type *) type_;
 		const jive_record_declaration * decl = type->declaration();
 		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
@@ -98,7 +98,7 @@ flatten_data_items(
 			
 			jive_context_free(ctx, sub_items);
 		}
-	} else if (type_->class_ == &JIVE_UNION_TYPE) {
+	} else if (dynamic_cast<const jive_union_type*>(type_)) {
 		const jive_union_type * type = (const jive_union_type *) type_;
 		const jive_union_declaration * decl = type->declaration();
 		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);

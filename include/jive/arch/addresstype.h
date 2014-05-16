@@ -10,14 +10,11 @@
 
 /* address type */
 
-typedef struct jive_address_type jive_address_type;
-
-extern const jive_type_class JIVE_ADDRESS_TYPE;
 class jive_address_type final : public jive_value_type {
 public:
 	virtual ~jive_address_type() noexcept;
 
-	jive_address_type() noexcept;
+	inline constexpr jive_address_type() noexcept : jive_value_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

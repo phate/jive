@@ -14,7 +14,6 @@
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/basetype-private.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region.h>
@@ -73,7 +72,7 @@ static jive_input *
 jive_uninitialized_node_add_input(jive_node * self, const jive_type * type,
 	jive_output * initial_operand)
 {
-	if (self->graph->floating_region_count && type->class_ != &JIVE_ANCHOR_TYPE) {
+	if (self->graph->floating_region_count && !dynamic_cast<const jive_anchor_type*>(type)) {
 		jive_region * origin_region = initial_operand->node->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}
@@ -240,7 +239,7 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 jive_input *
 jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
 {
-	if (self->graph->floating_region_count && type->class_ != &JIVE_ANCHOR_TYPE) {
+	if (self->graph->floating_region_count && dynamic_cast<const jive_anchor_type*>(type)) {
 		jive_region * origin_region = initial_operand->node->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}

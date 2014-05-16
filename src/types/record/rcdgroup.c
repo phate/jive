@@ -116,8 +116,6 @@ jive_group_node_init_(jive_group_node * self,
 	jive_node_init_(self, region,
 		narguments, arg_types, arguments,
 		1, &rtype);
-
-	type.class_->fini(&type);
 }
 
 jive_output *

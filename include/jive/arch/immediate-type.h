@@ -9,14 +9,11 @@
 
 #include <jive/vsdg/valuetype.h>
 
-typedef struct jive_immediate_type jive_immediate_type;
-
-extern const jive_type_class JIVE_IMMEDIATE_TYPE;
 class jive_immediate_type final : public jive_value_type {
 public:
 	virtual ~jive_immediate_type() noexcept;
 
-	jive_immediate_type() noexcept;
+	inline constexpr jive_immediate_type() noexcept : jive_value_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

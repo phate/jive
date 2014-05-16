@@ -9,15 +9,12 @@
 
 #include <jive/vsdg/basetype.h>
 
-typedef struct jive_value_type jive_value_type;
-
-extern const jive_type_class JIVE_VALUE_TYPE;
 class jive_value_type : public jive_type {
 public:
 	virtual ~jive_value_type() noexcept;
 
 protected:
-	jive_value_type(const jive_type_class * class_) noexcept;
+	inline constexpr jive_value_type() noexcept : jive_type() {};
 };
 
 class jive_value_input : public jive_input {

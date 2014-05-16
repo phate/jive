@@ -5,8 +5,6 @@
 
 #include <jive/types/record/rcdtype.h>
 #include <jive/util/buffer.h>
-#include <jive/vsdg/basetype-private.h>
-#include <jive/vsdg/valuetype-private.h>
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
@@ -15,36 +13,10 @@
 
 /* record_type inheritable members */
 
-static jive_input *
-jive_record_type_create_input_(const jive_type * self, struct jive_node * node,
-	size_t index, jive_output * initial_operand);
-static jive_output *
-jive_record_type_create_output_(const jive_type * self, struct jive_node * node,
-	size_t index);
-static jive_gate *
-jive_record_type_create_gate_(const jive_type * self, struct jive_graph * graph,
-	const char name[]);
-static bool
-jive_record_type_equals_(const jive_type * self, const jive_type * other);
-static jive_type *
-jive_record_type_copy_(const jive_type * self);
-
-const jive_type_class JIVE_RECORD_TYPE = {
-	parent : &JIVE_VALUE_TYPE,
-	name : "rcd",
-	fini : jive_value_type_fini_, /* inherit */
-	get_label : jive_type_get_label_, /* inherit */
-	create_input : jive_record_type_create_input_, /* override */
-	create_output : jive_record_type_create_output_, /* override */
-	create_gate : jive_record_type_create_gate_, /* override */
-	equals : jive_record_type_equals_, /* override */
-	copy : jive_record_type_copy_, /* override */
-} ;
-
 jive_record_type::~jive_record_type() noexcept {}
 
 jive_record_type::jive_record_type(const jive_record_declaration * decl) noexcept
-	: jive_value_type(&JIVE_RECORD_TYPE)
+	: jive_value_type()
 	, decl_(decl)
 {}
 
@@ -83,48 +55,6 @@ jive_gate *
 jive_record_type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive_record_gate(this->declaration(), graph, name);
-}
-
-/* record_type inheritable members */
-
-jive_type *
-jive_record_type_copy_(const jive_type * self_)
-{
-	const jive_record_type * self = (const jive_record_type *) self_;
-
-	return new jive_record_type(self->declaration());
-}
-
-jive_input *
-jive_record_type_create_input_(const jive_type * self_, struct jive_node * node,
-	size_t index, jive_output * initial_operand)
-{
-	const jive_record_type * self = (const jive_record_type *) self_;
-	return new jive_record_input(self->declaration(), node, index, initial_operand);
-}
-
-jive_output *
-jive_record_type_create_output_(const jive_type * self_, struct jive_node * node, size_t index)
-{
-	const jive_record_type * self = (const jive_record_type *) self_;
-	return new jive_record_output(self->declaration(), node, index);
-}
-
-bool
-jive_record_type_equals_(const jive_type * self_, const jive_type * other_)
-{
-	const jive_record_type * self = (const jive_record_type *) self_;
-	const jive_record_type * other = (const jive_record_type *) other_;
-
-	return (self->declaration() == other->declaration()) ;
-}
-
-jive_gate *
-jive_record_type_create_gate_(const jive_type * self_, struct jive_graph * graph,
-	const char * name)
-{
-	const jive_record_type * self = (const jive_record_type *) self_;
-	return new jive_record_gate(self->declaration(), graph, name);
 }
 
 /* record_input inheritable members */

@@ -19,10 +19,6 @@ struct jive_union_declaration {
 
 /* union type */
 
-typedef struct jive_union_type jive_union_type;
-
-extern const jive_type_class JIVE_UNION_TYPE;
-
 class jive_union_type final : public jive_value_type {
 public:
 	virtual ~jive_union_type() noexcept;

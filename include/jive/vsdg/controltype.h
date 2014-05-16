@@ -9,14 +9,11 @@
 
 #include <jive/vsdg/statetype.h>
 
-typedef struct jive_control_type jive_control_type;
-
-extern const jive_type_class JIVE_CONTROL_TYPE;
 class jive_control_type final : public jive_state_type {
 public:
 	virtual ~jive_control_type() noexcept;
 
-	jive_control_type() noexcept;
+	inline constexpr jive_control_type() noexcept : jive_state_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 

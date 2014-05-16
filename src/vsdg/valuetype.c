@@ -5,62 +5,14 @@
  */
 
 #include <jive/vsdg/valuetype.h>
-#include <jive/vsdg/valuetype-private.h>
 #include <jive/vsdg/graph-private.h>
-#include <jive/vsdg/basetype-private.h>
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
 
 #include <jive/util/list.h>
 
-const jive_type_class JIVE_VALUE_TYPE = {
-	parent : &JIVE_TYPE,
-	name : "X",
-	fini : jive_value_type_fini_, /* override */
-	get_label : jive_type_get_label_, /* inherit */
-	create_input : jive_value_type_create_input_, /* override */
-	create_output : jive_value_type_create_output_, /* override */
-	create_gate : jive_value_type_create_gate_, /* override */
-	equals : jive_type_equals_, /* inherit */
-	copy : jive_value_type_copy_, /* override */
-};
-
 jive_value_type::~jive_value_type() noexcept {}
-
-jive_value_type::jive_value_type(const jive_type_class * class_) noexcept
-	: jive_type(class_)
-{}
-
-void
-jive_value_type_fini_(jive_type * self)
-{
-	jive_type_fini_(self);
-}
-
-jive_type *
-jive_value_type_copy_(const jive_type * self_)
-{
-	return nullptr;
-} 
-
-jive_input *
-jive_value_type_create_input_(const jive_type * self, struct jive_node * node, size_t index, jive_output * initial_operand)
-{
-	return nullptr;
-}
-
-jive_output *
-jive_value_type_create_output_(const jive_type * self, struct jive_node * node, size_t index)
-{
-	return nullptr;
-}
-
-jive_gate *
-jive_value_type_create_gate_(const jive_type * self, struct jive_graph * graph, const char * name)
-{
-	return nullptr;
-}
 
 /* value inputs */
 

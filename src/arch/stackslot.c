@@ -15,7 +15,6 @@
 #include <jive/context.h>
 
 #include <jive/arch/memorytype.h>
-#include <jive/vsdg/statetype-private.h>
 #include <jive/util/rangemap.h>
 
 const jive_resource_class_class JIVE_STACK_RESOURCE = {
