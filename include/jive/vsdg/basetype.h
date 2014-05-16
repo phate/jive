@@ -125,7 +125,7 @@ jive_type_create_output(const jive_type * self, struct jive_node * node, size_t 
 JIVE_EXPORTED_INLINE jive_gate *
 jive_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name)
 {
-	return self->class_->create_gate(self, graph, name);
+	return self->create_gate(graph, name);
 }
 
 JIVE_EXPORTED_INLINE bool
