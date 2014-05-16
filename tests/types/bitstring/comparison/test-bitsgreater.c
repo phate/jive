@@ -14,8 +14,7 @@
 #include <jive/view.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/bitstring/constant.h>
-#include <jive/types/bitstring/comparison/bitsgreater.h>
+#include <jive/types/bitstring.h>
 
 static int test_main(void)
 {
@@ -26,37 +25,34 @@ static int test_main(void)
 
 	jive_bitstring_type bits32(32);
 	const jive_type * tmparray0[] = {&bits32, &bits32};
-	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
 
+	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 	jive_output * c0 = jive_bitconstant_signed(graph, 32, 4);
 	jive_output * c1 = jive_bitconstant_signed(graph, 32, 5);
 	jive_output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
 	jive_output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
 
-	jive_output * sgreater0 = jive_bitsgreater(top->outputs[0], top->outputs[1]);
+	jive_output * sgreater0 = jive_bitsgreater(s0, s1);
 	jive_output * sgreater1 = jive_bitsgreater(c0, c1);
 	jive_output * sgreater2 = jive_bitsgreater(c1, c0);
-	jive_output * sgreater3 = jive_bitsgreater(top->outputs[0], c2);
-	jive_output * sgreater4 = jive_bitsgreater(c3, top->outputs[1]);
+	jive_output * sgreater3 = jive_bitsgreater(s0, c2);
+	jive_output * sgreater4 = jive_bitsgreater(c3, s1);
 
-	jive_control_type ctype;
-	const jive_type * tmparray1[] = {&ctype, &ctype, &ctype, &ctype, &ctype};
-	jive_output * tmparray2[] = {sgreater0, sgreater1, sgreater2, sgreater3, sgreater4};
-	jive_node * bottom = jive_node_create(graph->root_region,
-		5, tmparray1,
-		tmparray2, 1, tmparray0);
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, sgreater0);
+	jive_graph_export(graph, sgreater1);
+	jive_graph_export(graph, sgreater2);
+	jive_graph_export(graph, sgreater3);
+	jive_graph_export(graph, sgreater4);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITSGREATER_NODE));
-	assert(jive_node_isinstance(bottom->inputs[1]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[2]->origin()->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[3]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[4]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(sgreater0->node, &JIVE_BITSGREATER_NODE));
+	assert(jive_node_isinstance(sgreater1->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(sgreater2->node, &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(sgreater3->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(sgreater4->node, &JIVE_CONTROL_FALSE_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

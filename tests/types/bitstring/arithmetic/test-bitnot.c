@@ -21,34 +21,29 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_bitstring_type bits32(32);
-	const jive_type * tmparray11[] = {&bits32};
-	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL,
-		1, tmparray11);
+	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 
-	jive_output * not0 = jive_bitnot(top->outputs[0]);
+	jive_output * not0 = jive_bitnot(s0);
 	jive_output * not1 = jive_bitnot(c0);
 	jive_output * not2 = jive_bitnot(not1);
-	const jive_type * tmparray0[] = {&bits32, &bits32, &bits32};
-	jive_output * tmparray1[] = {not0, not1, not2};
 
-	jive_node * bottom = jive_node_create(graph->root_region,
-		3, tmparray0, tmparray1,
-		1, tmparray11);
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, not0);
+	jive_graph_export(graph, not1);
+	jive_graph_export(graph, not2);
+
 
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITNOT_NODE));
-	assert(jive_node_isinstance(bottom->inputs[1]->origin()->node, &JIVE_BITCONSTANT_NODE));
-	assert(jive_node_isinstance(bottom->inputs[2]->origin()->node, &JIVE_BITCONSTANT_NODE));
+	assert(jive_node_isinstance(not0->node, &JIVE_BITNOT_NODE));
+	assert(jive_node_isinstance(not1->node, &JIVE_BITCONSTANT_NODE));
+	assert(jive_node_isinstance(not2->node, &JIVE_BITCONSTANT_NODE));
 
-	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(bottom->inputs[1]->origin()->node);
-	jive_bitconstant_node * bc2 = jive_bitconstant_node_cast(bottom->inputs[2]->origin()->node);
+	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(not1->node);
+	jive_bitconstant_node * bc2 = jive_bitconstant_node_cast(not2->node);
 	assert(jive_bitconstant_equals_signed(bc1, -4));
 	assert(jive_bitconstant_equals_signed(bc2, 3));
 

@@ -14,8 +14,7 @@
 #include <jive/view.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/bitstring/constant.h>
-#include <jive/types/bitstring/comparison/bituless.h>
+#include <jive/types/bitstring.h>
 
 static int test_main(void)
 {
@@ -24,39 +23,33 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_bitstring_type bits32(32);
-	const jive_type * tmparray0[] = {&bits32, &bits32};
-	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
-
+	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 	jive_output * c0 = jive_bitconstant_signed(graph, 32, 4);
 	jive_output * c1 = jive_bitconstant_signed(graph, 32, 5);
 	jive_output * c2 = jive_bitconstant_signed(graph, 32, (0xffffffffUL));
 	jive_output * c3 = jive_bitconstant_signed(graph, 32, 0);
 
-	jive_output * uless0 = jive_bituless(top->outputs[0], top->outputs[1]);
+	jive_output * uless0 = jive_bituless(s0, s1);
 	jive_output * uless1 = jive_bituless(c0, c1);
 	jive_output * uless2 = jive_bituless(c1, c0);
-	jive_output * uless3 = jive_bituless(c2, top->outputs[0]);
-	jive_output * uless4 = jive_bituless(top->outputs[1], c3);
+	jive_output * uless3 = jive_bituless(c2, s0);
+	jive_output * uless4 = jive_bituless(s1, c3);
 
-	jive_control_type ctype;
-	const jive_type * tmparray1[] = {&ctype, &ctype, &ctype, &ctype, &ctype};
-	jive_output * tmparray2[] = {uless0, uless1, uless2, uless3, uless4};
-	jive_node * bottom = jive_node_create(graph->root_region,
-		5, tmparray1,
-		tmparray2, 1, tmparray0);
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, uless0);
+	jive_graph_export(graph, uless1);
+	jive_graph_export(graph, uless2);
+	jive_graph_export(graph, uless3);
+	jive_graph_export(graph, uless4);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITULESS_NODE));
-	assert(jive_node_isinstance(bottom->inputs[1]->origin()->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[2]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[3]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[4]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(uless0->node, &JIVE_BITULESS_NODE));
+	assert(jive_node_isinstance(uless1->node, &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(uless2->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(uless3->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(uless4->node, &JIVE_CONTROL_FALSE_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

@@ -22,23 +22,18 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_bitstring_type bits32(32);
-	const jive_type * tmparray0[] = {&bits32, &bits32};
-	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
+	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 
-	jive_output * shiproduct = jive_bitshiproduct(top->outputs[0], top->outputs[1]);
+	jive_output * shiproduct = jive_bitshiproduct(s0, s1);
 
-	jive_node * bottom = jive_node_create(graph->root_region,
-		1, tmparray0, &shiproduct, 1, tmparray0);
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, shiproduct);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITSHIPRODUCT_NODE));
+	assert(jive_node_isinstance(shiproduct->node, &JIVE_BITSHIPRODUCT_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

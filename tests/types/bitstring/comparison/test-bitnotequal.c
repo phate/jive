@@ -22,37 +22,29 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_bitstring_type bits32(32);
-	const jive_type * tmparray0[] = {&bits32, &bits32};
-	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
-
+	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 4);
 	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 5);
 	jive_output * c2 = jive_bitconstant_undefined(graph, 32);
 
-	jive_output * nequal0 = jive_bitnotequal(top->outputs[0], top->outputs[1]);
+	jive_output * nequal0 = jive_bitnotequal(s0, s1);
 	jive_output * nequal1 = jive_bitnotequal(c0, c0);
 	jive_output * nequal2 = jive_bitnotequal(c0, c1);
 	jive_output * nequal3 = jive_bitnotequal(c0, c2);
 
-	jive_control_type ctype;
-	const jive_type * tmparray1[] = {&ctype, &ctype, &ctype, &ctype};
-	jive_output * tmparray2[] = {nequal0, nequal1, nequal2, nequal3};
-	jive_node * bottom = jive_node_create(graph->root_region,
-		4, tmparray1,
-		tmparray2,
-		1, tmparray0);
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, nequal0);
+	jive_graph_export(graph, nequal1);
+	jive_graph_export(graph, nequal2);
+	jive_graph_export(graph, nequal3);
 	
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITNOTEQUAL_NODE));
-	assert(jive_node_isinstance(bottom->inputs[1]->origin()->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[2]->origin()->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(bottom->inputs[3]->origin()->node, &JIVE_BITNOTEQUAL_NODE));
+	assert(jive_node_isinstance(nequal0->node, &JIVE_BITNOTEQUAL_NODE));
+	assert(jive_node_isinstance(nequal1->node, &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(nequal2->node, &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(nequal3->node, &JIVE_BITNOTEQUAL_NODE));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);
