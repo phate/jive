@@ -38,25 +38,6 @@ private:
 	size_t nbits_;
 };
 
-JIVE_EXPORTED_INLINE jive_bitstring_type *
-jive_bitstring_type_cast(jive_type * type)
-{
-	if (jive_type_isinstance(type, &JIVE_BITSTRING_TYPE))
-		return (jive_bitstring_type *) type;
-	else
-		return 0;
-}
-
-JIVE_EXPORTED_INLINE const jive_bitstring_type *
-jive_bitstring_type_const_cast(const jive_type * type)
-{
-	if (jive_type_isinstance(type, &JIVE_BITSTRING_TYPE))
-		return (const jive_bitstring_type *) type;
-	else
-		return 0;
-}
-
-
 /* bitstring input */
 
 class jive_bitstring_input final : public jive_value_input {

@@ -83,7 +83,7 @@ jive_splitnode_create(jive_region * region,
 	jive_graph * graph = region->graph;
 	
 	bool input_is_value = dynamic_cast<jive_value_output*>(in_origin);
-	bool output_is_value = jive_type_isinstance(out_type, &JIVE_VALUE_TYPE);
+	bool output_is_value = dynamic_cast<const jive_value_type*>(out_type) != nullptr;
 	
 	if (!input_is_value && !output_is_value)
 		jive_context_fatal_error(graph->context, "States may not be split by a splitnode");

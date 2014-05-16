@@ -64,24 +64,6 @@ private:
 	std::vector<std::unique_ptr<jive_type>> argument_types_;
 };
 
-JIVE_EXPORTED_INLINE struct jive_function_type *
-jive_function_type_cast(struct jive_type * type)
-{
-	if (jive_type_isinstance(type, &JIVE_FUNCTION_TYPE))
-		return (jive_function_type *) type;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const struct jive_function_type *
-jive_function_type_const_cast(const struct jive_type * type)
-{
-	if (jive_type_isinstance(type, &JIVE_FUNCTION_TYPE))
-		return (const jive_function_type *) type;
-	else
-		return NULL;
-}
-
 /* function input */
 
 class jive_function_input final : public jive_value_input {

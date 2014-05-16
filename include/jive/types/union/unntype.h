@@ -48,24 +48,6 @@ private:
 	const jive_union_declaration * decl_;
 };
 
-JIVE_EXPORTED_INLINE const jive_union_type *
-jive_union_type_const_cast(const jive_type * self)
-{
-	if (jive_type_isinstance(self, &JIVE_UNION_TYPE))
-		return (const jive_union_type *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_union_type *
-jive_union_type_cast(jive_type * self)
-{
-	if (jive_type_isinstance(self, &JIVE_UNION_TYPE))
-		return (jive_union_type *)self;
-	else
-		return NULL;
-}
-
 /* union input */
 
 class jive_union_input final : public jive_value_input {

@@ -27,10 +27,10 @@
 static bool
 type_contains_address(const jive_type * type)
 {
-	if (jive_type_isinstance(type, &JIVE_ADDRESS_TYPE))
+	if (dynamic_cast<const jive_address_type*>(type))
 		return true;
 
-	const jive_function_type * fcttype = jive_function_type_const_cast(type);
+	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
 	if (fcttype != NULL) {
 		size_t n;
 		for (n = 0; n < fcttype->narguments(); n++)
@@ -47,12 +47,12 @@ type_contains_address(const jive_type * type)
 static jive_type *
 convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_context * context)
 {
-	if (jive_type_isinstance(type, &JIVE_ADDRESS_TYPE)) {
+	if (dynamic_cast<const jive_address_type*>(type)) {
 		jive_bitstring_type bittype(nbits);
 		return jive_type_copy(&bittype);
 	}
 
-	const jive_function_type * fcttype = jive_function_type_const_cast(type);
+	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
 	if (fcttype != NULL) {
 
 		size_t n;
@@ -141,7 +141,7 @@ jive_address_to_bitstring_node_init_(
 	jive_context * context = region->graph->context;
 
 	const jive_type * addrtype = jive_output_get_type(address);
-	if (!jive_type_isinstance(addrtype, &JIVE_VALUE_TYPE))
+	if (!dynamic_cast<const jive_value_type*>(addrtype))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	JIVE_DEBUG_ASSERT(jive_type_equals(addrtype, original_type));
@@ -322,7 +322,7 @@ jive_bitstring_to_address_node_init_(
 	jive_context * context = region->graph->context;
 
 	const jive_type * bittype = jive_output_get_type(bitstring);
-	if (!jive_type_isinstance(bittype, &JIVE_VALUE_TYPE))
+	if (!dynamic_cast<const jive_value_type*>(bittype))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	jive_node_init_(self, region,
@@ -712,7 +712,7 @@ jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
 	jive_node * leave = jive_lambda_node_get_leave_node(node);
 	jive_region * region = jive_lambda_node_get_region(node);
 
-	const jive_function_type * fcttype = jive_function_type_const_cast(type);
+	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
 	jive_function_type * new_fcttype = (jive_function_type *) convert_address_to_bitstring_type(
 		fcttype, nbits, context);
 

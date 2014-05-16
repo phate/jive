@@ -145,7 +145,7 @@ jive_statemux_node_create(jive_region * region,
 	size_t noperands, jive_output * const operands[],
 	size_t noutputs)
 {
-	JIVE_DEBUG_ASSERT(jive_type_isinstance(statetype, &JIVE_STATE_TYPE));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive_state_type*>(statetype));
 	jive_context * context = region->graph->context;
 	jive_statemux_node * node = new jive_statemux_node(
 		jive::statemux_operation(noutputs, *statetype));

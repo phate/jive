@@ -95,17 +95,6 @@ public:
 	const struct jive_type_class * class_;
 };
 
-JIVE_EXPORTED_INLINE bool
-jive_type_isinstance(const jive_type * self, const jive_type_class * class_)
-{
-	const jive_type_class * c = self->class_;
-	while(c) {
-		if (c == class_) return true;
-		c = c->parent;
-	}
-	return false;
-}
-
 JIVE_EXPORTED_INLINE void
 jive_type_get_label(const jive_type * self, struct jive_buffer * buffer)
 {

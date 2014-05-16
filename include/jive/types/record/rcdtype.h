@@ -47,24 +47,6 @@ private:
 	const jive_record_declaration * decl_;
 };
 
-JIVE_EXPORTED_INLINE const jive_record_type *
-jive_record_type_const_cast(const jive_type * self)
-{
-	if (jive_type_isinstance(self, &JIVE_RECORD_TYPE))
-		return (const jive_record_type *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_record_type *
-jive_record_type_cast(jive_type * self)
-{
-	if (jive_type_isinstance(self, &JIVE_RECORD_TYPE))
-		return (jive_record_type *)self;
-	else
-		return NULL;
-}
-
 /* record input */
 
 class jive_record_input final : public jive_value_input {

@@ -33,24 +33,6 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-JIVE_EXPORTED_INLINE const jive_float_type *
-jive_float_type_const_cast(const jive_type * self)
-{
-	if (jive_type_isinstance(self, &JIVE_FLOAT_TYPE))
-		return (const jive_float_type *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_float_type *
-jive_float_type_cast(jive_type * self)
-{
-	if (jive_type_isinstance(self, &JIVE_FLOAT_TYPE))
-		return (jive_float_type *)self;
-	else
-		return NULL;
-}
-
 /* float input */
 
 class jive_float_input final : public jive_value_input {

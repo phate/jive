@@ -45,13 +45,4 @@ protected:
 	jive_value_gate(jive_graph * graph, const char name[]);
 };
 
-JIVE_EXPORTED_INLINE const jive_value_type *
-jive_value_type_cast(const jive_type * type)
-{
-	if (jive_type_isinstance(type, &JIVE_VALUE_TYPE))
-		return (const jive_value_type *) type;
-	else
-		return NULL;
-}
-
 #endif

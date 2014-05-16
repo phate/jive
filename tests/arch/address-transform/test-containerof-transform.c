@@ -83,10 +83,10 @@ static int test_main(void)
 	for(; node; node = jive_traverser_next(traverser)){
 		size_t i;
 		for(i = 0; i < node->ninputs; i++){
-			assert(!jive_type_isinstance(jive_input_get_type(node->inputs[i]), &JIVE_ADDRESS_TYPE));	
+			assert(!dynamic_cast<const jive_address_type*>(jive_input_get_type(node->inputs[i])));
 		}
 		for(i = 0; i < node->noutputs; i++){
-			assert(!jive_type_isinstance(jive_output_get_type(node->outputs[i]), &JIVE_ADDRESS_TYPE));	
+			assert(!dynamic_cast<const jive_address_type*>(jive_output_get_type(node->outputs[i])));
 		}
 	}
 	jive_traverser_destroy(traverser);
