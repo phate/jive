@@ -119,7 +119,7 @@ jive_type_create_input(const jive_type * self, struct jive_node * node, size_t i
 JIVE_EXPORTED_INLINE jive_output *
 jive_type_create_output(const jive_type * self, struct jive_node * node, size_t index)
 {
-	return self->class_->create_output(self, node, index);
+	return self->create_output(node, index);
 }
 
 JIVE_EXPORTED_INLINE jive_gate *
