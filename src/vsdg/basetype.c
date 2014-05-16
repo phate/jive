@@ -86,14 +86,14 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_cont
 
 struct jive_input *
 jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
-	jive_output * initial_operand)
+	jive_output * origin)
 {
-	const jive_type * operand_type = jive_output_get_type(initial_operand);
+	const jive_type * operand_type = jive_output_get_type(origin);
 
 	if (!jive_type_equals(self, operand_type))
 		jive_raise_type_error(self, operand_type, node->graph->context);
 
-	return self->class_->create_input(self, node, index, initial_operand);
+	return self->create_input(node, index, origin);
 }
 
 const jive_type_class JIVE_TYPE = {
