@@ -8,7 +8,6 @@
 #define JIVE_VSDG_VALUETYPE_H
 
 #include <jive/vsdg/basetype.h>
-#include <jive/arch/registers.h>
 
 typedef struct jive_value_type jive_value_type;
 

@@ -11,6 +11,7 @@
 #include <locale.h>
 #include <stdio.h>
 
+#include <jive/arch/registers.h>
 #include <jive/regalloc/selector.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
