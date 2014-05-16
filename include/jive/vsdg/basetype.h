@@ -137,7 +137,7 @@ jive_type_equals(const jive_type * self, const jive_type * other)
 JIVE_EXPORTED_INLINE jive_type *
 jive_type_copy(const jive_type * self)
 {
-	return self->class_->copy(self);
+	return self->copy();
 }
 
 JIVE_EXPORTED_INLINE void
