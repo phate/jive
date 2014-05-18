@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -11,5 +12,6 @@
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/fltconstant.h>
 #include <jive/types/float/flttype.h>
+#include <jive/types/float/symbolic-constant.h>
 
 #endif

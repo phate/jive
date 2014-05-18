@@ -1,18 +1,18 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/vsdg.h>
+#include <jive/types/float.h>
 #include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/float/flttype.h>
-#include <jive/types/float/comparison/fltequal.h>
 
 static int test_main(void)
 {
@@ -21,20 +21,11 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_control_type ctype;
-	const jive_type * ctype_ptr = &ctype;
-	jive_float_type flttype;
-	const jive_type* tmparray0[] = {&flttype, &flttype};
-	jive_node * top = jive_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
+	jive_output * s0 = jive_fltsymbolicconstant(graph, "s0");
+	jive_output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive_output * equal = jive_fltequal(s0, s1);
 
-	jive_output * equal = jive_fltequal(top->outputs[0], top->outputs[1]);
-
-	jive_node * bottom = jive_node_create(graph->root_region,
-		1, &ctype_ptr, &equal,
-		1, &ctype_ptr);
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, equal);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
