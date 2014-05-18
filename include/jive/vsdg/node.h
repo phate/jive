@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,6 +13,7 @@
 #include <utility>
 
 #include <jive/context.h>
+#include <jive/util/buffer.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/operators/base.h>
 #include <jive/vsdg/region.h>
@@ -27,11 +28,11 @@ typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
 typedef jive::operation jive_node_attrs;
 
-struct jive_input;
-struct jive_type;
-struct jive_output;
 struct jive_gate;
+struct jive_input;
+struct jive_output;
 struct jive_region;
+struct jive_type;
 enum jive_traversal_nodestate;
 struct jive_resource_class_count;
 struct jive_substitution_map;
@@ -133,7 +134,8 @@ struct jive_node_class {
 	void (*fini)(jive_node * self);
 	
 	/** \brief Retrieve node normal form */
-	jive_node_normal_form *(*get_default_normal_form)(const jive_node_class * cls, jive_node_normal_form * parent, struct jive_graph * graph);
+	jive_node_normal_form *(*get_default_normal_form)(
+		const jive_node_class * cls, jive_node_normal_form * parent, struct jive_graph * graph);
 	
 	/** \brief Give textual representation of node (for debugging) */
 	void (*get_label)(const jive_node * self, struct jive_buffer * buffer);
@@ -175,7 +177,12 @@ jive_node_isinstance(const jive_node * self, const jive_node_class * class_)
 JIVE_EXPORTED_INLINE void
 jive_node_get_label(const jive_node * self, struct jive_buffer * buffer)
 {
-	self->class_->get_label(self, buffer);
+	if (self->class_->get_label) {
+		self->class_->get_label(self, buffer);
+	} else {
+		std::string s = self->operation().debug_string();
+		jive_buffer_putstr(buffer, s.c_str());
+	}
 }
 
 JIVE_EXPORTED_INLINE const jive_node_attrs *
@@ -187,18 +194,40 @@ jive_node_get_attrs(const jive_node * self)
 JIVE_EXPORTED_INLINE bool
 jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
 {
-	return self->class_->match_attrs(self, other);
+	if (self->class_->match_attrs) {
+		return self->class_->match_attrs(self, other);
+	} else {
+		return self->operation() == *other;
+	}
+}
+
+JIVE_EXPORTED_INLINE jive_node *
+jive_node_create(
+	const jive_node_class * class_,
+	const jive::operation & op,
+	jive_region * region,
+	size_t noperands,
+	jive_output * const operands[])
+{
+	if (class_->create) {
+		return class_->create(region, &op, noperands, operands);
+	} else {
+		return op.create_node(region, noperands, operands);
+	}
 }
 
 JIVE_EXPORTED_INLINE void
 jive_node_check_operands(const jive_node_class * cls, const jive_node_attrs * attrs,
 	size_t noperands, jive_output * const operands[], jive_context * context)
 {
-	return cls->check_operands(cls, attrs, noperands, operands, context);
+	if (cls->check_operands) {
+		return cls->check_operands(cls, attrs, noperands, operands, context);
+	}
 }
 
 struct jive_node *
-jive_node_copy(const jive_node * self, struct jive_region * region, struct jive_output * operands[]);
+jive_node_copy(
+	const jive_node * self, struct jive_region * region, struct jive_output * operands[]);
 
 /**
 	\brief Copy a node with substitutions
@@ -218,7 +247,8 @@ jive_node_copy(const jive_node * self, struct jive_region * region, struct jive_
 	subsequent \ref jive_node_copy_substitute operations.
 */
 jive_node *
-jive_node_copy_substitute(const jive_node * self, struct jive_region * target, struct jive_substitution_map * substitution);
+jive_node_copy_substitute(
+	const jive_node * self, struct jive_region * target, struct jive_substitution_map * substitution);
 
 /**
 	\brief Check if an edge may be added to the node
@@ -232,7 +262,8 @@ bool
 jive_node_valid_edge(const jive_node * self, const struct jive_output * origin);
 
 struct jive_input *
-jive_node_add_input(jive_node * self, const struct jive_type * type, struct jive_output * initial_operand);
+jive_node_add_input(
+	jive_node * self, const struct jive_type * type, struct jive_output * initial_operand);
 
 struct jive_output *
 jive_node_add_output(jive_node * self, const struct jive_type * type);
@@ -241,10 +272,12 @@ struct jive_output *
 jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);
 
 struct jive_input *
-jive_node_add_constrained_input(jive_node * self, const struct jive_resource_class * rescls, struct jive_output * initial_operand);
+jive_node_add_constrained_input(
+	jive_node * self, const struct jive_resource_class * rescls, struct jive_output * initial_operand);
 
 struct jive_input *
-jive_node_gate_input(jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
+jive_node_gate_input(
+	jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
 
 JIVE_EXPORTED_INLINE struct jive_input *
 jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
@@ -274,10 +307,14 @@ struct jive_output *
 jive_node_output(const struct jive_node * self, size_t index);
 
 void
-jive_node_get_use_count_input(const jive_node * self, struct jive_resource_class_count * use_count, struct jive_context * context);
+jive_node_get_use_count_input(
+	const jive_node * self,
+	struct jive_resource_class_count * use_count, struct jive_context * context);
 
 void
-jive_node_get_use_count_output(const jive_node * self, struct jive_resource_class_count * use_count, struct jive_context * context);
+jive_node_get_use_count_output(
+	const jive_node * self,
+	struct jive_resource_class_count * use_count, struct jive_context * context);
 
 void
 jive_node_destroy(jive_node * self);
@@ -296,7 +333,10 @@ struct jive_node_normal_form_class {
 	/* return true, if normalized already */
 	bool (*normalize_node)(const jive_node_normal_form * self, jive_node * node);
 	/* return true, if normalized already */
-	bool (*operands_are_normalized)(const jive_node_normal_form * self, size_t noperands, jive_output * const operands[], const jive_node_attrs * attrs);
+	bool (*operands_are_normalized)(
+		const jive_node_normal_form * self,
+		size_t noperands, jive_output * const operands[],
+		const jive_node_attrs * attrs);
 	void (*normalized_create)(const jive_node_normal_form * self, struct jive_graph * graph,
 		const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
 		jive_output * results[]);
@@ -410,8 +450,12 @@ jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * 
 */
 
 jive_node *
-jive_node_cse_create(const jive_node_normal_form * nf, struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[]);
+jive_node_cse_create(
+	const jive_node_normal_form * nf,
+	struct jive_region * region,
+	const jive_node_attrs * attrs,
+	size_t noperands,
+	jive_output * const operands[]);
 
 bool
 jive_node_normalize(struct jive_node * self);

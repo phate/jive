@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,6 +13,21 @@
 namespace jive {
 
 unary_operation::~unary_operation() noexcept {}
+
+jive_unop_reduction_path_t
+unary_operation::can_reduce_operand(
+	const jive_output * arg) const noexcept
+{
+	return jive_unop_reduction_none;
+}
+
+jive_output *
+unary_operation::reduce_operand(
+	jive_unop_reduction_path_t path,
+	jive_output * arg) const
+{
+	return nullptr;
+}
 
 }
 
@@ -40,7 +55,10 @@ const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 /* node class inheritable methods */
 
 jive_node_normal_form *
-jive_unary_operation_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent_, struct jive_graph * graph)
+jive_unary_operation_get_default_normal_form_(
+	const jive_node_class * cls,
+	jive_node_normal_form * parent_,
+	jive_graph * graph)
 {
 	jive_context * context = graph->context;
 	jive_unary_operation_normal_form * nf = jive_context_malloc(context, sizeof(*nf));
@@ -189,10 +207,12 @@ jive_output *
 jive_unary_operation_normalized_create_(const jive_unary_operation_normal_form * self,
 	struct jive_region * region, const jive_node_attrs * attrs, jive_output * operand)
 {
-	const jive_unary_operation_class * cls = (const jive_unary_operation_class *) self->base.node_class;
+	const jive_unary_operation_class * cls =
+		(const jive_unary_operation_class *) self->base.node_class;
 	
 	if (self->base.enable_mutable && self->enable_reducible) {
-		jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, operand);
+		jive_unop_reduction_path_t reduction =
+			jive_unary_operation_can_reduce_operand(self, attrs, operand);
 		if (reduction != jive_unop_reduction_none)
 			return jive_unary_operation_reduce_operand(reduction, self, attrs, operand);
 	}

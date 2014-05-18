@@ -606,7 +606,7 @@ struct jive_node *
 jive_node_copy(const jive_node * self, struct jive_region * region, struct jive_output * operands[])
 {
 	jive_graph_mark_denormalized(region->graph);
-	return self->class_->create(region, jive_node_get_attrs(self), self->noperands, operands);
+	jive_node_create(self->class_, *jive_node_get_attrs(self), region, self->noperands, operands);
 }
 
 jive_node *
@@ -800,8 +800,9 @@ jive_node_normal_form_normalized_create_(const jive_node_normal_form * self, jiv
 	if (self->enable_mutable && self->enable_cse)
 		node = jive_node_cse(region, cls, attrs, noperands, operands);
 
-	if (!node)
-		node = cls->create(region, attrs, noperands, operands);
+	if (!node) {
+		node = jive_node_create(cls, *attrs, region, noperands, operands);
+	}
 
 	size_t n;
 	for (n = 0; n < node->noutputs; n++)
@@ -851,7 +852,7 @@ jive_node_cse_create(const jive_node_normal_form * self, struct jive_region * re
 			return node;
 	}
 
-	return cls->create(region, attrs, noperands, operands);
+	return jive_node_create(cls, *attrs, region, noperands, operands);
 }
 
 bool
