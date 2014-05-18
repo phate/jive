@@ -66,12 +66,6 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const = 0;
 };
 
-JIVE_EXPORTED_INLINE void
-jive_type_get_label(const jive_type * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
 struct jive_input *
 jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand);

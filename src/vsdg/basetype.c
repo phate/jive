@@ -24,8 +24,8 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_cont
 	jive_buffer input_type_buffer, operand_type_buffer;
 	jive_buffer_init(&input_type_buffer, context);
 	jive_buffer_init(&operand_type_buffer, context);
-	jive_type_get_label(self, &input_type_buffer);
-	jive_type_get_label(other, &operand_type_buffer);
+	self->label(input_type_buffer);
+	other->label(operand_type_buffer);
 	
 	char * error_message = jive_context_strjoin(context,
 		"Type mismatch: required '", jive_buffer_to_string(&input_type_buffer),
