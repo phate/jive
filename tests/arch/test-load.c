@@ -17,6 +17,8 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main()
 {
 	setlocale(LC_ALL, "");
@@ -28,7 +30,7 @@ static int test_main()
 	jive_address_type addrtype;
 	jive_bitstring_type bits32(32);
 	const jive_type * tmparray0[] = {&addrtype, &addrtype, &memtype, &bits32};
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		4, tmparray0);
 
@@ -42,7 +44,7 @@ static int test_main()
 	const jive_type * tmparray1[] = {&bits32, &bits32};
 	jive_output * tmparray2[] = {load0, load1};
 
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray1, tmparray2,
 		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);

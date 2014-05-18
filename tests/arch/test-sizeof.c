@@ -20,6 +20,8 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/arch/memlayout-simple.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -58,7 +60,7 @@ static int test_main(void)
 	jive_output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
 	assert(!jive_node_match_attrs(s0->node, jive_node_get_attrs(s3->node)));	
 
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		8, tmparray2,
 		tmparray3,
 		1, tmparray2);

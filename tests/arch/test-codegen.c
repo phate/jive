@@ -17,6 +17,8 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");	

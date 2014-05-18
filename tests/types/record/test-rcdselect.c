@@ -16,6 +16,8 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
 
+#include "testnodes.h"
+
 static int test_main()
 {
 	setlocale(LC_ALL, "");
@@ -33,10 +35,10 @@ static int test_main()
 
 	jive_address_type addrtype;
 	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype};
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
-jive_output * tmparray1[] = {top->outputs[0],
+	jive_output * tmparray1[] = {top->outputs[0],
 		top->outputs[1], top->outputs[2]};
 
 	jive_output * g0 = jive_group_create(&decl, 3, tmparray1);
@@ -49,7 +51,7 @@ jive_output * tmparray1[] = {top->outputs[0],
 	const jive_type * tmparray2[] = {&bits16, &bits16, &bits32, &bits8};
 	jive_output * tmparray3[] = {s0, s1, s2, s3};
 
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		4, tmparray2, tmparray3,
 		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);

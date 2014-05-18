@@ -16,6 +16,8 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -27,7 +29,7 @@ static int test_main(void)
 	jive_bitstring_type bits32(32);
 	jive_bitstring_type bits64(64);
 	const jive_type * tmparray0[] = {&addrtype, &bits32, &bits64};
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
 
@@ -40,7 +42,7 @@ static int test_main(void)
 	const jive_type* tmparray1[] = {&addrtype, &bits32};
 	jive_output * tmparray2[] = {a0, b1};
 
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray1, tmparray2,
 		0, NULL);
 

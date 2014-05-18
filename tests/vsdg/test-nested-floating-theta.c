@@ -15,6 +15,8 @@
 #include <jive/vsdg/theta.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -27,7 +29,7 @@ static int test_main(void)
 	const jive_type * ctype_ptr = &ctype;
 	const jive_type * tmparray0[] = {&type};
 	
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
 	
@@ -54,20 +56,20 @@ static int test_main(void)
 	assert(theta2.region->parent == theta1.region);
 	assert(theta1.region->parent == graph->root_region);
 	
-	jive_node * pred3 = jive_node_create(theta3.region,
+	jive_node * pred3 = jive_test_node_create(theta3.region,
 		1, tmparray0, &loopvar3.value,
 		1, &ctype_ptr);
 	jive_view(graph, stdout);
 	jive_theta_end(theta3, pred3->outputs[0], 1, &loopvar3);
 	
 	jive_view(graph, stdout);
-	jive_node * pred2 = jive_node_create(theta2.region,
+	jive_node * pred2 = jive_test_node_create(theta2.region,
 		1, tmparray0, &loopvar3.value,
 		1, &ctype_ptr);
 	jive_view(graph, stdout);
 	jive_theta_end(theta2, pred2->outputs[0], 1, &loopvar2);
 	
-	jive_node * pred1 = jive_node_create(theta1.region,
+	jive_node * pred1 = jive_test_node_create(theta1.region,
 		1, tmparray0, &loopvar2.value,
 		1, &ctype_ptr);
 	jive_theta_end(theta1, pred1->outputs[0], 1, &loopvar1);

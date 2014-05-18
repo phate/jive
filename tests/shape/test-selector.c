@@ -19,6 +19,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/resource-private.h>
 
+#include "testnodes.h"
+
 extern const jive_register_class gpr;
 
 const jive_register_name
@@ -79,7 +81,7 @@ create_computation_node(jive_graph * graph,
 		output_types[n] = &type;
 	
 	
-	jive_node * node = jive_node_create(graph->root_region,
+	jive_node * node = jive_test_node_create(graph->root_region,
 		noperands, input_types, operands,
 		noutputs, output_types);
 	
@@ -97,7 +99,7 @@ create_spill_node(jive_graph * graph,
 {
 	jive_test_value_type type;
 	const jive_type * type_ptr = &type;
-	jive_node * node = jive_node_create(graph->root_region,
+	jive_node * node = jive_test_node_create(graph->root_region,
 		1, &type_ptr, &operand,
 		1, &type_ptr);
 	
@@ -113,7 +115,7 @@ create_restore_node(jive_graph * graph,
 {
 	jive_test_value_type type;
 	const jive_type * type_ptr = &type;
-	jive_node * node = jive_node_create(graph->root_region,
+	jive_node * node = jive_test_node_create(graph->root_region,
 		1, &type_ptr, &operand,
 		1, &type_ptr);
 	

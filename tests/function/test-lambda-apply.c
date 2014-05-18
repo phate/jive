@@ -15,6 +15,8 @@
 #include <jive/types/function/fctlambda.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -43,7 +45,7 @@ static int test_main(void)
 	assert(jive_type_equals(&bits32, jive_output_get_type(apply_node->outputs[0])));
 
 	const jive_type * tmparray12[] = {&bits32};
-	jive_node * interest = jive_node_create(graph->root_region,
+	jive_node * interest = jive_test_node_create(graph->root_region,
 		1, tmparray12, apply_node->outputs, 1, tmparray12);
 	
 	jive_graph_export(graph, interest->outputs[0]);

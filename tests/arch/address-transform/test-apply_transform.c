@@ -16,6 +16,8 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int
 test_main(void)
 {
@@ -29,13 +31,13 @@ test_main(void)
 	jive_function_type fcttype(1, &addrptr, 1, &addrptr);
 	const jive_type * tmparray0[] = {&fcttype, &addrtype};
 
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL, 2, tmparray0);
 
 	jive_output * results[1];
 	jive_apply_create(top->outputs[0], 1, &top->outputs[1], results);
 
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		1, &addrptr, results, 0, NULL);
 	(void)bottom;
 

@@ -14,6 +14,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/substitution.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -27,7 +29,7 @@ static int test_main(void)
 	jive_control_type control_type;
 	const jive_type * tmparray0[] = {&type, &type, &control_type};
 	
-	jive_node * top = jive_node_create(r1,
+	jive_node * top = jive_test_node_create(r1,
 		0, NULL, NULL,
 		3, tmparray0);
 	r1->top = top;
@@ -40,7 +42,7 @@ static int test_main(void)
 	jive_node * gamma = tmp->node;
 	const jive_type * tmparray2[] = {&type};
 	
-	jive_node * bottom = jive_node_create(r1,
+	jive_node * bottom = jive_test_node_create(r1,
 		1, tmparray2, &gamma->outputs[0],
 		0, NULL);
 	r1->bottom = bottom;

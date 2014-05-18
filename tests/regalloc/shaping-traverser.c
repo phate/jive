@@ -26,20 +26,20 @@ static int test_main(void)
 	JIVE_DECLARE_CONTROL_TYPE(ctrl);
 	const jive_type * tmparray0[] = {type};
 	
-	jive_node * n1 = jive_node_create(region,
+	jive_node * n1 = jive_test_node_create(region,
 		0, NULL, NULL,
 		1, tmparray0);
 		
 	jive_region * sub = jive_region_create_subregion(region);
 	const jive_type * tmparray1[] = {ctrl};
 	
-	jive_node * n2 = jive_node_create(sub,
+	jive_node * n2 = jive_test_node_create(sub,
 		0, NULL, NULL,
 		1, tmparray1);
 	const jive_type * tmparray2[] = {type, ctrl};
 	jive_output * tmparray3[] = {n1->outputs[0], n2->outputs[0]};
 	
-	jive_node * n3 = jive_node_create(region,
+	jive_node * n3 = jive_test_node_create(region,
 		2, tmparray2,
 		tmparray3,
 		0, NULL);

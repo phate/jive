@@ -17,6 +17,7 @@
 #include <jive/vsdg.h>
 
 #include "testarch.h"
+#include "testnodes.h"
 
 static int test_main(void)
 {
@@ -30,20 +31,20 @@ static int test_main(void)
 	jive_test_value_type type;
 	const jive_type * tmparray0[] = {&type, &type};
 	
-	jive_node * top = jive_node_create(region,
+	jive_node * top = jive_test_node_create(region,
 		0, NULL, NULL,
 		2, tmparray0);
 	const jive_type * tmparray1[] = {&type, };
 	jive_output * tmparray2[] = {top->outputs[0]};
 	const jive_type * tmparray3[] = {&type};
 	
-	jive_node * mid = jive_node_create(region,
+	jive_node * mid = jive_test_node_create(region,
 		1, tmparray1, tmparray2,
 		1, tmparray3);
 	const jive_type * tmparray4[] = {&type, &type};
 	jive_output * tmparray5[] = {mid->outputs[0], top->outputs[1]};
 	
-	jive_node * bottom = jive_node_create(region,
+	jive_node * bottom = jive_test_node_create(region,
 		2, tmparray4, tmparray5,
 		0, NULL);
 	

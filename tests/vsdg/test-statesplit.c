@@ -15,6 +15,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/statetype.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -26,7 +28,7 @@ static int test_main(void)
 	jive_test_state_type statetype;
 	const jive_type * tmparray0[] = {&statetype, &statetype};
 	
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray0);
 	
@@ -35,7 +37,7 @@ static int test_main(void)
 	jive_node * split = jive_state_split(&statetype, merged, 2);
 	const jive_type * tmparray1[] = {&statetype, &statetype};
 	
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray1, split->outputs,
 		0, NULL);
 	(void) bottom;

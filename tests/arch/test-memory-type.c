@@ -13,6 +13,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/arch/memorytype.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -20,8 +22,8 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_node * node0 = jive_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
-	jive_node * node1 = jive_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
+	jive_node * node0 = jive_test_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
+	jive_node * node1 = jive_test_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
 
 	jive_memory_type memtype;
 	jive_gate * arg_gate = jive_type_create_gate(&memtype, graph, "arg");

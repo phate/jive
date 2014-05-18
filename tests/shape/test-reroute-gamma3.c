@@ -26,6 +26,8 @@ used below the gamma point */
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/types/bitstring.h>
 
+#include "testnodes.h"
+
 static jive_shaped_node *
 shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
@@ -66,37 +68,37 @@ static int test_main(void)
 	jive_control_type control_type;
 	const jive_type * tmparray0[] = {&type};
 	
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
 	const jive_type * tmparray1[] = {&type};
 	const jive_type * tmparray2[] = {&control_type};
 	
-	jive_node * pred = jive_node_create(graph->root_region,
+	jive_node * pred = jive_test_node_create(graph->root_region,
 		1, tmparray1, top->outputs,
 		1, tmparray2);
 	const jive_type * tmparray3[] = {&type};
 	const jive_type * tmparray4[] = {&type};
 	
-	jive_node * l1 = jive_node_create(graph->root_region,
+	jive_node * l1 = jive_test_node_create(graph->root_region,
 		1, tmparray3, top->outputs,
 		1, tmparray4);
 	const jive_type * tmparray5[] = {&type};
 	const jive_type * tmparray6[] = {&type};
 	
-	jive_node * l2 = jive_node_create(graph->root_region,
+	jive_node * l2 = jive_test_node_create(graph->root_region,
 		1, tmparray5, top->outputs,
 		1, tmparray6);
 	const jive_type * tmparray7[] = {&type};
 	const jive_type * tmparray8[] = {&type};
 	
-	jive_node * r1 = jive_node_create(graph->root_region,
+	jive_node * r1 = jive_test_node_create(graph->root_region,
 		1, tmparray7, top->outputs,
 		1, tmparray8);
 	const jive_type * tmparray9[] = {&type};
 	const jive_type * tmparray10[] = {&type};
 	
-	jive_node * r2 = jive_node_create(graph->root_region,
+	jive_node * r2 = jive_test_node_create(graph->root_region,
 		1, tmparray9, top->outputs,
 		1, tmparray10);
 	
@@ -113,7 +115,7 @@ static int test_main(void)
 	const jive_type * tmparray14[] = {&type, &type, &type};
 	jive_output * tmparray15[] = {gamma[0], gamma[1]};
 	
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray14, tmparray15,
 		0, NULL);
 	

@@ -15,6 +15,8 @@
 
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 typedef struct graph_desc {
 	jive_graph * graph;
 	jive_node * a1, * a2;
@@ -31,24 +33,24 @@ prepare_graph(jive_context * ctx)
 	jive_test_value_type type;
 	const jive_type * tmparray0[] = {&type};
 	
-	g.a1 = jive_node_create(region,
+	g.a1 = jive_test_node_create(region,
 		0, NULL, NULL,
 		1, tmparray0);
 	const jive_type * tmparray1[] = {&type};
 	const jive_type * tmparray2[] = {&type};
 	
-	g.a2 = jive_node_create(region,
+	g.a2 = jive_test_node_create(region,
 		1, tmparray1, &g.a1->outputs[0],
 		0, tmparray2);
 	const jive_type * tmparray3[] = {&type};
 	
-	g.b1 = jive_node_create(region,
+	g.b1 = jive_test_node_create(region,
 		0, NULL, NULL,
 		1, tmparray3);
 	const jive_type * tmparray4[] = {&type};
 	const jive_type * tmparray5[] = {&type};
 	
-	g.b2 = jive_node_create(region,
+	g.b2 = jive_test_node_create(region,
 		1, tmparray4, &g.b1->outputs[0],
 		0, tmparray5);
 	

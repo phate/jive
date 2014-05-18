@@ -18,6 +18,8 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -37,7 +39,7 @@ static int test_main(void)
 	jive_address_type addrtype;
 	const jive_type * tmparray1[] = {&addrtype, &addrtype};
 	
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		2, tmparray1);
 	
@@ -89,7 +91,7 @@ static int test_main(void)
 
 	const jive_type * typeptr = &addrtype;
 
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		3, tmparray2,
 			tmparray3,
 		1, &typeptr);

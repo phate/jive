@@ -17,6 +17,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -42,7 +44,7 @@ static int test_main(void)
 	*/
 
 	const jive_type * tmparray10[] = {&bits32};
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray10);
 
@@ -65,7 +67,7 @@ static int test_main(void)
 jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
 	const jive_type * tmparray11[] = {&bits8};
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		4, tmparray2,
 		tmparray3,
 		1, tmparray11);

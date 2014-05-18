@@ -16,6 +16,8 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static void jump(void * where, const char * msg)
 {
 	jmp_buf * buffer=(jmp_buf *)where;
@@ -32,7 +34,7 @@ static int test_main(void)
 	jive_test_value_type value_type;
 	const jive_type * tmparray0[] = {&type};
 	
-	jive_node * n1 = jive_node_create(region,
+	jive_node * n1 = jive_test_node_create(region,
 		0, NULL, NULL,
 		1, tmparray0);
 	
@@ -43,7 +45,7 @@ static int test_main(void)
 		jive_set_fatal_error_handler(ctx, jump, &buffer);
 		const jive_type * tmparray1[] = {&value_type};
 		jive_output * tmparray2[] = {n1->outputs[0]};
-		jive_node_create(region,
+		jive_test_node_create(region,
 			1, tmparray1, tmparray2,
 			0, 0);
 	} else {

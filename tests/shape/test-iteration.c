@@ -21,6 +21,8 @@
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/types/bitstring.h>
 
+#include "testnodes.h"
+
 static void
 shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
@@ -54,7 +56,7 @@ static int test_main(void)
 	jive_anchor_type anchor_type;
 	const jive_type * tmparray0[] = {&type};
 	
-	jive_node * n1 = jive_node_create(graph->root_region,
+	jive_node * n1 = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
 	
@@ -62,7 +64,7 @@ static int test_main(void)
 	const jive_type * tmparray1[] = {&type};
 	const jive_type * tmparray2[] = {&type};
 	
-	jive_node * n2 = jive_node_create(r1,
+	jive_node * n2 = jive_test_node_create(r1,
 		1, tmparray1, n1->outputs,
 		1, tmparray2);
 	
@@ -71,30 +73,30 @@ static int test_main(void)
 	const jive_type * tmparray3[] = {&type};
 	const jive_type * tmparray4[] = {&anchor_type};
 	
-	jive_node * n3 = jive_node_create(r2,
+	jive_node * n3 = jive_test_node_create(r2,
 		1, tmparray3, n2->outputs,
 		1, tmparray4);
 	const jive_type * tmparray5[] = {&type};
 	const jive_type * tmparray6[] = {&anchor_type};
-	jive_node * n4 = jive_node_create(r3,
+	jive_node * n4 = jive_test_node_create(r3,
 		1, tmparray5, n2->outputs,
 		1, tmparray6);
 	const jive_type * tmparray7[] = {&anchor_type, &anchor_type};
 	jive_output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
 	const jive_type * tmparray9[] = {&type};
 	
-	jive_node * n5 = jive_node_create(r1,
+	jive_node * n5 = jive_test_node_create(r1,
 		2, tmparray7, tmparray8,
 		1, tmparray9);
 	const jive_type * tmparray10[] = {&type};
 	const jive_type * tmparray11[] = {&anchor_type};
 	
-	jive_node * n6 = jive_node_create(r1,
+	jive_node * n6 = jive_test_node_create(r1,
 		1, tmparray10, n5->outputs,
 		1, tmparray11);
 	const jive_type * tmparray12[] = {&anchor_type};
 	
-	jive_node * n7 = jive_node_create(graph->root_region,
+	jive_node * n7 = jive_test_node_create(graph->root_region,
 		1, tmparray12, n6->outputs,
 		0, NULL);
 	

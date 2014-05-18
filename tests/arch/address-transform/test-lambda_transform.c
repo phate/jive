@@ -15,6 +15,8 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int
 test_main(void)
 {
@@ -31,7 +33,7 @@ test_main(void)
 	jive_output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
 	const jive_type * fcttype = jive_output_get_type(fct);
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		1, &fcttype, &fct,
 		0, NULL);
 	(void) bottom;

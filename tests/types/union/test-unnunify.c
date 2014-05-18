@@ -14,6 +14,8 @@
 #include <jive/types/union.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -33,7 +35,7 @@ static int test_main(void)
 	static jive_union_type unntype_empty(&decl_empty);
 	const jive_type * tmparray0[] = {&bits8};
 	
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
 
@@ -42,7 +44,7 @@ static int test_main(void)
 
 	const jive_type * tmparray1[] = {&unntype, &unntype_empty};
 	jive_output * tmparray2[] = {u0, u1};
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray1,
 			tmparray2,
 		1, tmparray0);

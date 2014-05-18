@@ -28,6 +28,9 @@ public:
 	test_operation(const test_operation & other);
 
 	inline
+	test_operation() noexcept {}
+
+	inline
 	test_operation(test_operation && other) noexcept = default;
 	
 	inline const std::vector<std::unique_ptr<jive_type>> &

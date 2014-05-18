@@ -18,6 +18,8 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 
+#include "testnodes.h"
+
 static jive_shaped_node *
 shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
@@ -52,7 +54,7 @@ static int test_main(void)
 	jive_anchor_type anchor_type;
 	const jive_type *  tmparray0[] = {&type, &type};
 	
-	jive_node * top = jive_node_create(root,
+	jive_node * top = jive_test_node_create(root,
 		0, NULL, NULL,
 		2, tmparray0);
 	
@@ -62,7 +64,7 @@ static int test_main(void)
 	jive_output * tmparray2[] = {top->outputs[0]};
 	const jive_type *  tmparray3[] = {&type};
 	
-	jive_node * loop_head = jive_node_create(loop_region,
+	jive_node * loop_head = jive_test_node_create(loop_region,
 		1, tmparray1, tmparray2,
 		1, tmparray3);
 	loop_region->top = loop_head;
@@ -70,14 +72,14 @@ static int test_main(void)
 	jive_output * tmparray5[] = {loop_head->outputs[0], top->outputs[1]};
 	const jive_type *  tmparray6[] = {&type};
 	
-	jive_node * loop_body = jive_node_create(loop_region,
+	jive_node * loop_body = jive_test_node_create(loop_region,
 		2, tmparray4, tmparray5,
 		1, tmparray6);
 	const jive_type *  tmparray7[] = {&type};
 	jive_output * tmparray8[] = {loop_body->outputs[0]};
 	const jive_type *  tmparray9[] = {&anchor_type};
 	
-	jive_node * loop_tail = jive_node_create(loop_region,
+	jive_node * loop_tail = jive_test_node_create(loop_region,
 		1, tmparray7, tmparray8,
 		1, tmparray9);
 	loop_region->bottom = loop_tail;
@@ -85,13 +87,13 @@ static int test_main(void)
 	jive_output * tmparray11[] = {loop_tail->outputs[0]};
 	const jive_type *  tmparray12[] = {&type};
 	
-	jive_node * loop_anchor = jive_node_create(root,
+	jive_node * loop_anchor = jive_test_node_create(root,
 		1, tmparray10, tmparray11,
 		1, tmparray12);
 	const jive_type *  tmparray13[] = {&type};
 	jive_output * tmparray14[] = {loop_anchor->outputs[0]};
 	
-	jive_node * bottom = jive_node_create(root,
+	jive_node * bottom = jive_test_node_create(root,
 		1, tmparray13, tmparray14,
 		1, tmparray0);
 	

@@ -15,6 +15,8 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -26,7 +28,7 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	
-	jive_node * node = jive_node_create(region,
+	jive_node * node = jive_test_node_create(region,
 		0, NULL, NULL,
 		0, NULL);
 	

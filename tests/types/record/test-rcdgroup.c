@@ -14,6 +14,8 @@
 #include <jive/types/record.h>
 #include <jive/vsdg/node-private.h>
 
+#include "testnodes.h"
+
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
@@ -33,10 +35,10 @@ static int test_main(void)
 	static jive_record_type rcdtype_empty(&decl_empty);
 	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32};
 	
-	jive_node * top = jive_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
-jive_output * tmparray1[] = {top->outputs[0],
+	jive_output * tmparray1[] = {top->outputs[0],
 		top->outputs[1], top->outputs[2]};
 
 	jive_output * g0 = jive_group_create(&decl, 3, tmparray1);
@@ -44,7 +46,7 @@ jive_output * tmparray1[] = {top->outputs[0],
 
 	const jive_type * tmparray2[] = {&rcdtype, &rcdtype_empty};
 	jive_output * tmparray3[] = {g0, g1};
-	jive_node * bottom = jive_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray2,
 			tmparray3,
 		1, tmparray0);
