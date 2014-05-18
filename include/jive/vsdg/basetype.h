@@ -70,12 +70,6 @@ struct jive_input *
 jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand);
 
-JIVE_EXPORTED_INLINE jive_output *
-jive_type_create_output(const jive_type * self, struct jive_node * node, size_t index)
-{
-	return self->create_output(node, index);
-}
-
 /**
         \defgroup jive_input Inputs
         Inputs
@@ -336,7 +330,7 @@ jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t i
 JIVE_EXPORTED_INLINE jive_output *
 jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index)
 {
-	jive_output * output = jive_type_create_output(jive_gate_get_type(self), node, index);
+	jive_output * output = jive_gate_get_type(self)->create_output(node, index);
 	output->required_rescls = self->required_rescls;
 	return output;
 }
