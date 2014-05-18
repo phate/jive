@@ -303,7 +303,7 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_gate * bit8gate = jive_type_create_gate(&bits8, graph, "bit8gate");
+	jive_gate * bit8gate = bits8.create_gate(graph, "bit8gate");
 	verify_serialize_gateexpr(bit8gate, "\"bit8gate\" root<> bits<8>");
 	verify_deserialize_gateexpr("\"bit8gate\" root<> bits<8>", bit8gate);
 	

@@ -163,7 +163,7 @@ jive_theta_create(
 	for (n = 0; n < nvalues; n++) {
 		char name[80];
 		snprintf(name, sizeof(name), "theta_%p_%zd", theta, n);
-		jive_gate * gate = jive_type_create_gate(types[n], region->graph, name);
+		jive_gate * gate = types[n]->create_gate(region->graph, name);
 		jive_node_gate_input(head, gate, values[n]);
 		jive_output * inner = jive_node_gate_output(head, gate);
 		jive_node_gate_input(tail, gate, inner);
@@ -215,7 +215,7 @@ jive_theta_loopvar_enter(jive_theta self, struct jive_output * pre_value)
 	
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "loopvar_%p_%zd", head, index);
-	state->loopvars[index].gate = jive_type_create_gate(type, graph, gate_name);
+	state->loopvars[index].gate = type->create_gate(graph, gate_name);
 	jive_node_gate_input(head, state->loopvars[index].gate, pre_value);
 	state->loopvars[index].value = jive_node_gate_output(head,
 		state->loopvars[index].gate);

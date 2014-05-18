@@ -39,7 +39,7 @@ const int64_t tmparray0[] = {42};
 		0, NULL);
 	
 	const jive_type * type = jive_output_get_type(enter->outputs[0]);
-	jive_gate * gate = jive_type_create_gate(type, graph, "retval");
+	jive_gate * gate = type->create_gate(graph, "retval");
 	gate -> required_rescls = &jive_i386_regcls_gpr_eax.base;
 	jive_node_gate_input(leave, gate, enter->outputs[0]);
 	

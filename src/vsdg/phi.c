@@ -303,7 +303,7 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive_type * type)
 	
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, index);
-	state->fixvars[index].gate = jive_type_create_gate(type, graph, gate_name);
+	state->fixvars[index].gate = type->create_gate(graph, gate_name);
 	state->fixvars[index].value = jive_node_gate_output(enter, state->fixvars[index].gate);
 	
 	return state->fixvars[index];
@@ -384,7 +384,7 @@ jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
 	size_t offset = enter->noutputs-1;
 	for (n = 0; n < nfixvars; n++) {
 		snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, offset+n);
-		jive_gate * gate = jive_type_create_gate(fixvar_types[n], graph, gate_name);
+		jive_gate * gate = fixvar_types[n]->create_gate(graph, gate_name);
 		phi_ext->fixvars[n] = jive_node_gate_output(enter, gate);
 	}
 

@@ -82,12 +82,6 @@ jive_type_create_output(const jive_type * self, struct jive_node * node, size_t 
 	return self->create_output(node, index);
 }
 
-JIVE_EXPORTED_INLINE jive_gate *
-jive_type_create_gate(const jive_type * self, struct jive_graph * graph, const char * name)
-{
-	return self->create_gate(graph, name);
-}
-
 /**
         \defgroup jive_input Inputs
         Inputs

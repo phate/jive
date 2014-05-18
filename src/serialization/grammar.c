@@ -257,7 +257,7 @@ jive_deserialize_gateexpr(jive_serialization_driver * self,
 		jive_context_free(self->context, name);
 		return false;
 	}
-	*gate = jive_type_create_gate(type, graph, name);
+	*gate = type->create_gate(graph, name);
 	(*gate)->required_rescls = rescls;
 
 	delete type;

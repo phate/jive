@@ -144,9 +144,7 @@ jive_subroutine_create_passthrough_memorystate(
 	jive_memory_type memory_type;
 	
 	jive_subroutine_passthrough passthrough;
-	passthrough.gate = jive_type_create_gate(
-		&memory_type, subroutine->subroutine_node->region->graph,
-		name);
+	passthrough.gate = memory_type.create_gate(subroutine->subroutine_node->region->graph, name);
 	passthrough.output = jive_node_gate_output(
 		subroutine->enter, passthrough.gate);
 	passthrough.input = jive_node_gate_input(

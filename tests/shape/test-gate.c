@@ -32,9 +32,9 @@ static int test_main(void)
 		0, NULL, NULL,
 		0, NULL);
 	
-	jive_gate * g1 = jive_type_create_gate(&type, graph, "g1");
-	jive_gate * g2 = jive_type_create_gate(&type, graph, "g2");
-	jive_gate * g3 = jive_type_create_gate(&type, graph, "g3");
+	jive_gate * g1 = type.create_gate(graph, "g1");
+	jive_gate * g2 = type.create_gate(graph, "g2");
+	jive_gate * g3 = type.create_gate(graph, "g3");
 	
 	jive_node_gate_output(node, g1);
 	jive_node_gate_output(node, g2);
