@@ -100,11 +100,6 @@ jive_type_copy(const jive_type * self)
 	return self->copy();
 }
 
-JIVE_EXPORTED_INLINE void
-jive_type_fini(jive_type * self)
-{
-}
-
 void
 jive_type_destroy(struct jive_type * self);
 

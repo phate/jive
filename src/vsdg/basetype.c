@@ -51,7 +51,6 @@ jive_type_create_input(const jive_type * self, struct jive_node * node, size_t i
 void
 jive_type_destroy(struct jive_type * self)
 {
-	jive_type_fini(self);
 	delete self;
 }
 
