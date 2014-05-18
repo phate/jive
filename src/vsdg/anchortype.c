@@ -15,6 +15,12 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
 
+static jive_type *
+jive_anchor_type_copy_(const jive_type * self_)
+{
+	return new jive_anchor_type();
+}
+
 const jive_type_class JIVE_ANCHOR_TYPE = {
 	parent : &JIVE_TYPE,
 	name : "X",
@@ -24,7 +30,7 @@ const jive_type_class JIVE_ANCHOR_TYPE = {
 	create_output : jive_anchor_type_create_output_, /* override */
 	create_gate : jive_type_create_gate_, /* inherit */
 	equals : jive_type_equals_, /* inherit */
-	copy : jive_type_copy_ /* inherit */
+	copy : jive_anchor_type_copy_ /* inherit */
 };
 
 jive_anchor_type::~jive_anchor_type() noexcept {}
