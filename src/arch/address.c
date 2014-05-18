@@ -391,7 +391,7 @@ jive_arraysubscript_node_match_attrs_(const jive_node * self_, const jive_node_a
 	const jive::address::arraysubscript_operation * attrs =
 		(const jive::address::arraysubscript_operation *) attrs_;
 	
-	return jive_type_equals(&self->operation().element_type(), &attrs->element_type());
+	return self->operation().element_type() == attrs->element_type();
 }
 
 static void
@@ -446,9 +446,8 @@ jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls,
 		return jive_binop_reduction_rneutral;
 	
 	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node);
-	if (node &&
-		jive_type_equals(&attrs->element_type(), &node->operation().element_type()) &&
-		jive_type_equals(jive_output_get_type(operand2), jive_input_get_type(node->inputs[1])))
+	if (node && attrs->element_type() == node->operation().element_type() &&
+		*jive_output_get_type(operand2) == *jive_input_get_type(node->inputs[1]))
 		return jive_binop_reduction_lfold;
 	
 	return jive_binop_reduction_none;
@@ -579,7 +578,7 @@ jive_arrayindex_node_match_attrs_(const jive_node * self_, const jive_node_attrs
 	const jive::address::arrayindex_operation * attrs =
 		(const jive::address::arrayindex_operation *) attrs_;
 	
-	return jive_type_equals(&self->operation().element_type(), &attrs->element_type());
+	return self->operation().element_type() == attrs->element_type();
 }
 
 static void
@@ -622,7 +621,7 @@ static const jive_output *
 get_array_base(const jive_output * addr, const jive_value_type * element_type)
 {
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
-	if (node && jive_type_equals(element_type, &node->operation().element_type()))
+	if (node && *element_type == node->operation().element_type())
 		return addr->node->inputs[0]->origin();
 	else return addr;
 }
@@ -633,7 +632,7 @@ get_array_index(jive_output * addr, const jive_output * base, const jive_value_t
 {
 	jive_output * index = NULL;
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
-	if (node && jive_type_equals(element_type, &node->operation().element_type())) {
+	if (node && *element_type == node->operation().element_type()) {
 		/* FIXME: correct type! */
 		index = addr->node->inputs[1]->origin();
 	} else {

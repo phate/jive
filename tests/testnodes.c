@@ -65,12 +65,12 @@ jive_test_node_match_attrs_(const jive_node * self, const jive_node_attrs * attr
 		return false;
 
 	for (size_t n = 0; n < first->operand_types().size(); ++n) {
-		if (!jive_type_equals(&*first->operand_types()[n], &*second->operand_types()[n]))
+		if (*first->operand_types()[n] != *second->operand_types()[n])
 			return false;
 	}
 
 	for (size_t n = 0; n < first->result_types().size(); ++n) {
-		if (!jive_type_equals(&*first->result_types()[n], &*second->result_types()[n]))
+		if (*first->result_types()[n] != *second->result_types()[n])
 			return false;
 	}
 
@@ -90,7 +90,7 @@ jive_test_node_check_operands_(const jive_node_class * cls, const jive_node_attr
 	size_t n;
 	for (n = 0; n < attrs->operand_types().size(); n++) {
 		const jive_type & type = *attrs->operand_types()[n];
-		if (!jive_type_equals(&type, jive_output_get_type(operands[n])))
+		if (type != *jive_output_get_type(operands[n]))
 			jive_raise_type_error(&type, jive_output_get_type(operands[n]), context);
 	}
 }

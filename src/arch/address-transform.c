@@ -143,7 +143,7 @@ jive_address_to_bitstring_node_init_(
 	if (!dynamic_cast<const jive_value_type*>(addrtype))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
-	JIVE_DEBUG_ASSERT(jive_type_equals(addrtype, original_type));
+	JIVE_DEBUG_ASSERT(*addrtype == *original_type);
 	jive_type * return_type = convert_address_to_bitstring_type(addrtype, nbits, context);
 
 	jive_node_init_(self, region,
@@ -170,7 +170,7 @@ jive_address_to_bitstring_node_match_attrs_(const jive_node * self, const jive_n
 	if (first->nbits() != second->nbits())
 		return false;
 
-	return jive_type_equals(&first->original_type(), &second->original_type());
+	return first->original_type() == second->original_type();
 }
 
 static void
@@ -215,7 +215,7 @@ jive_address_to_bitstring_node_can_reduce_operand_(const jive_node_class * cls,
 		if (node->operation().nbits() != attrs->nbits())
 			return jive_unop_reduction_none;
 
-		if (!jive_type_equals(&node->operation().original_type(), &attrs->original_type()))
+		if (node->operation().original_type() != attrs->original_type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;
@@ -345,7 +345,7 @@ jive_bitstring_to_address_node_match_attrs_(const jive_node * self, const jive_n
 	if (first->nbits() != second->nbits())
 		return false;
 
-	return jive_type_equals(&first->original_type(), &second->original_type());
+	return first->original_type() == second->original_type();
 }
 
 static void
@@ -390,7 +390,7 @@ jive_bitstring_to_address_node_can_reduce_operand_(const jive_node_class * cls,
 		if (node->operation().nbits() != attrs->nbits())
 			return jive_unop_reduction_none;
 
-		if (!jive_type_equals(&node->operation().original_type(), &attrs->original_type()))
+		if (node->operation().original_type() != attrs->original_type())
 			return jive_unop_reduction_none;
 
 		return jive_unop_reduction_inverse;

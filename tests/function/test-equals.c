@@ -38,10 +38,10 @@ static int test_main(void)
 	const jive_type*  tmparray7[] = { &btype0 };
 	jive_function_type type3(2, tmparray6, 1, tmparray7);
 
-	assert( jive_type_equals( &type0, &type0 ) ) ;
-	assert( jive_type_equals( &type0, &type1 ) ) ;
-	assert( !jive_type_equals( &type0, &type2 ) ) ;
-	assert( !jive_type_equals( &type0, &type3 ) ) ;
+	assert(type0 == type0);
+	assert(type0 == type1);
+	assert(type0 != type2);
+	assert(type0 != type3);
 	
 	assert( jive_context_is_empty(context) ) ;
 	jive_context_destroy( context ) ;

@@ -352,7 +352,7 @@ jive_store_node_match_attrs_(const jive_node * self_, const jive_node_attrs * at
 {
 	const jive_store_node * self = (const jive_store_node *) self_;
 	const jive::store_operation * attrs = (const jive::store_operation *) attrs_;
-	bool dtype = jive_type_equals(&self->operation().datatype(), &attrs->datatype());
+	bool dtype = self->operation().datatype() == attrs->datatype();
 	return (dtype && (self->operation().nbits() == attrs->nbits()));
 }
 

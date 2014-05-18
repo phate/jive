@@ -78,7 +78,7 @@ jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs *
 {
 	const jive_statemux_node * self = (const jive_statemux_node *) self_;
 	const jive::statemux_operation * attrs = (const jive::statemux_operation *) attrs_;
-	return jive_type_equals(&self->operation().type(), &attrs->type());
+	return self->operation().type() == attrs->type();
 }
 
 static jive_node *

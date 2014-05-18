@@ -70,7 +70,7 @@ jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	size_t n;
 	for (n = 0; n < noperands; n++) {
 		const jive_type * type = attrs->declaration()->elements[n];
-		if (!jive_type_equals(type, jive_output_get_type(operands[n])))
+		if (*type != *jive_output_get_type(operands[n]))
 			jive_raise_type_error(type, jive_output_get_type(operands[n]), context);
 	}
 }

@@ -112,7 +112,7 @@ jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_
 
 	return
 		first->name() == second->name() &&
-		jive_type_equals(&first->type(), &second->type());
+		first->type() == second->type();
 }
 
 jive_node *

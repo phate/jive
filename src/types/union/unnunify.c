@@ -83,7 +83,7 @@ jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_att
 		jive_context_fatal_error(context, "Type mismatch: invalid option for union type");
 
 	const jive_type * type = attrs->declaration()->elements[attrs->option()];
-	if (!jive_type_equals(type, jive_output_get_type(operands[0])))
+	if (*type != *jive_output_get_type(operands[0]))
 		jive_raise_type_error(type, jive_output_get_type(operands[0]), context);
 }
 

@@ -219,7 +219,7 @@ jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 	const jive::fct::lambda_operation * second = (const jive::fct::lambda_operation *) attrs;
 
 	return
-		jive_type_equals(&first->function_type(), &second->function_type()) &&
+		first->function_type() == second->function_type() &&
 		first->argument_gates() == second->argument_gates() &&
 		first->return_gates() == second->return_gates();
 }

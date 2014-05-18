@@ -71,7 +71,7 @@ jive_call_node_match_attrs_(const jive_node * self_, const jive_node_attrs * att
 	
 	size_t n;
 	for (n = 0; n < attrs->return_types().size(); n++) {
-		if (!jive_type_equals(&*self->operation().return_types()[n], &*attrs->return_types()[n]))
+		if (*self->operation().return_types()[n] != *attrs->return_types()[n])
 			return false;
 	}
 	

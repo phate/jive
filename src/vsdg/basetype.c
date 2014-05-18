@@ -42,7 +42,7 @@ jive_type_create_input(const jive_type * self, struct jive_node * node, size_t i
 {
 	const jive_type * operand_type = jive_output_get_type(origin);
 
-	if (!jive_type_equals(self, operand_type))
+	if (*self != *operand_type)
 		jive_raise_type_error(self, operand_type, node->graph->context);
 
 	return self->create_input(node, index, origin);
@@ -119,7 +119,7 @@ jive_input::~jive_input() noexcept
 void
 jive_input::swap(jive_input * other) noexcept
 {
-	JIVE_DEBUG_ASSERT(jive_type_equals(jive_input_get_type(this), jive_input_get_type(other)));
+	JIVE_DEBUG_ASSERT(*jive_input_get_type(this) == *jive_input_get_type(other));
 	JIVE_DEBUG_ASSERT(this->node == other->node);
 
 	jive_ssavar * v1 = this->ssavar;
@@ -162,7 +162,7 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 	const jive_type * input_type = jive_input_get_type(this);
 	const jive_type * operand_type = jive_output_get_type(new_origin);
 
-	if (!jive_type_equals(input_type, operand_type)) {
+	if (*input_type != *operand_type) {
 		jive_raise_type_error(input_type, operand_type, this->node->graph->context);
 	}
 	if (dynamic_cast<const jive_anchor_type*>(input_type)) {

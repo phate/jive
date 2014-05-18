@@ -88,12 +88,6 @@ jive_type_create_gate(const jive_type * self, struct jive_graph * graph, const c
 	return self->create_gate(graph, name);
 }
 
-JIVE_EXPORTED_INLINE bool
-jive_type_equals(const jive_type * self, const jive_type * other)
-{
-	return *self == *other;
-}
-
 /**
         \defgroup jive_input Inputs
         Inputs

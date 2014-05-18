@@ -35,8 +35,7 @@ static int test_main(void)
 	assert(apply->noutputs == 1);
 	jive_output* ret = apply->outputs[0];
 
-	const jive_type * ret_type = &ret->type();
-	assert(jive_type_equals(ret_type, &btype));
+	assert(ret->type() == btype);
 
 	jive_view( graph, stderr ) ;
 

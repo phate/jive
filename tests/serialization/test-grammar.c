@@ -130,7 +130,7 @@ verify_deserialize_type(const char * repr, const jive_type * expect_type)
 	
 	jive_type * type;
 	assert(jive_deserialize_type(&ctx.drv, ctx.is, &type));
-	assert(jive_type_equals(type, expect_type));
+	assert(*type == *expect_type);
 	delete type;
 	
 	deserialize_ctx_fini(&ctx);
@@ -188,7 +188,7 @@ verify_deserialize_gateexpr(const char * repr, jive_gate * expect_gate)
 	jive_gate * gate;
 	assert(jive_deserialize_gateexpr(&ctx.drv, ctx.is, g, &gate));
 	assert(strcmp(gate->name, expect_gate->name) == 0);
-	assert(jive_type_equals(jive_gate_get_type(gate), jive_gate_get_type(expect_gate)));
+	assert(*jive_gate_get_type(gate) == *jive_gate_get_type(expect_gate));
 	assert(gate->required_rescls == expect_gate->required_rescls);
 	
 	jive_graph_destroy(g);
@@ -269,7 +269,7 @@ verify_deserialize_nodeexpr(
 		assert(sym && sym->output == node->outputs[n]);
 		const jive_type * type = jive_output_get_type(node->outputs[n]);
 		const jive_type * expected_type = jive_output_get_type(expected_node->outputs[n]);
-		assert(jive_type_equals(type, expected_type));
+		assert(*type == *expected_type);
 		assert(node->outputs[n]->required_rescls == expected_node->outputs[n]->required_rescls);
 		assert(node->outputs[n]->gate == expected_node->outputs[n]->gate);
 	}

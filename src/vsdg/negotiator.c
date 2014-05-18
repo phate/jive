@@ -178,7 +178,7 @@ jive_negotiator_split_node_match_attrs_(const jive_node * self, const jive_node_
 	const jive::negotiator_split_operation * first = &((const jive_negotiator_split_node *) self)->attrs;
 	const jive::negotiator_split_operation * second = (const jive::negotiator_split_operation *) attrs;
 	
-	if (!jive_type_equals(first->output_type, second->output_type))
+	if (*first->output_type != *second->output_type)
 		return false;
 	
 	if (first->negotiator != second->negotiator)

@@ -53,7 +53,7 @@ jive_sizeof_node_match_attrs_(const jive_node * self, const jive_node_attrs * se
 	const jive::sizeof_operation * first = &((const jive_sizeof_node *)self)->operation();
 	const jive::sizeof_operation * second = (const jive::sizeof_operation *)second_;
 	
-	return jive_type_equals(&first->type(), &second->type());
+	return first->type() == second->type();
 }
 
 static jive_node *

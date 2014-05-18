@@ -221,7 +221,7 @@ jive_load_node_match_attrs_(const jive_node * self_, const jive_node_attrs * att
 {
 	const jive_load_node * self = (const jive_load_node *) self_;
 	const jive::load_operation * attrs = (const jive::load_operation *) attrs_;
-	bool dtype = jive_type_equals(&self->operation().datatype(), &attrs->datatype());
+	bool dtype = self->operation().datatype() == attrs->datatype();
 	return (dtype && (self->operation().nbits() == attrs->nbits()));
 }
 
