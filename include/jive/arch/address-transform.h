@@ -26,7 +26,7 @@ public:
 		size_t nbits,
 		const jive_type * original_type)
 		: nbits_(nbits)
-		, original_type_(jive_type_copy(original_type))
+		, original_type_(original_type->copy())
 	{
 	}
 
@@ -38,7 +38,7 @@ public:
 	address_to_bitstring_operation(
 		const address_to_bitstring_operation & other)
 		: nbits_(other.nbits_)
-		, original_type_(jive_type_copy(other.original_type_.get()))
+		, original_type_(other.original_type_->copy())
 	{
 	}
 
@@ -57,7 +57,7 @@ public:
 		size_t nbits,
 		const jive_type * original_type)
 		: nbits_(nbits)
-		, original_type_(jive_type_copy(original_type))
+		, original_type_(original_type->copy())
 	{
 	}
 
@@ -69,7 +69,7 @@ public:
 	bitstring_to_address_operation(
 		const bitstring_to_address_operation & other)
 		: nbits_(other.nbits_)
-		, original_type_(jive_type_copy(other.original_type_.get()))
+		, original_type_(other.original_type_->copy())
 	{
 	}
 

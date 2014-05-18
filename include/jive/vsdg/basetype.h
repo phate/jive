@@ -94,12 +94,6 @@ jive_type_equals(const jive_type * self, const jive_type * other)
 	return *self == *other;
 }
 
-JIVE_EXPORTED_INLINE jive_type *
-jive_type_copy(const jive_type * self)
-{
-	return self->copy();
-}
-
 /**
         \defgroup jive_input Inputs
         Inputs

@@ -135,7 +135,7 @@ jive_negotiator_split_node_init_(
 	
 	self->attrs.negotiator = negotiator;
 	self->attrs.input_option = jive_negotiator_option_copy(negotiator, input_option);
-	self->attrs.output_type = jive_type_copy(output_type);
+	self->attrs.output_type = output_type->copy();
 	self->attrs.output_option = jive_negotiator_option_copy(negotiator, output_option);
 	
 	JIVE_LIST_PUSH_BACK(negotiator->split_nodes, self, split_node_list);
@@ -167,7 +167,7 @@ jive_negotiator_split_node_fini_(jive_node * self_)
 	
 	jive_negotiator_split_node_detach(self);
 	
-	jive_type_destroy(self->attrs.output_type);
+	delete self->attrs.output_type;
 	
 	jive_node_fini_(self_);
 }
@@ -226,7 +226,7 @@ jive_negotiator_split(
 	jive::negotiator_split_operation attrs;
 	attrs.negotiator = negotiator;
 	attrs.input_option = (jive_negotiator_option *) input_option;
-	attrs.output_type = (jive_type *) output_type;
+	attrs.output_type = output_type->copy();
 	attrs.output_option = (jive_negotiator_option *) output_option;
 	
 	const jive_node_normal_form * nf =

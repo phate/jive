@@ -70,14 +70,14 @@ public:
 	inline
 	store_operation(size_t nbits, const jive_value_type * datatype)
 		: nbits_(nbits)
-		, datatype_(dynamic_cast<jive_value_type *>(jive_type_copy(datatype)))
+		, datatype_(datatype->copy())
 	{
 	}
 
 	inline
 	store_operation(const store_operation & other)
 		: nbits_(other.nbits())
-		, datatype_(dynamic_cast<jive_value_type *>(jive_type_copy(&other.datatype())))
+		, datatype_(other.datatype().copy())
 	{
 	}
 

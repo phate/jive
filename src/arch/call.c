@@ -22,7 +22,7 @@ call_operation::call_operation(
 	: calling_convention_(calling_convention)
 {
 	for (const std::unique_ptr<jive_type> & type : return_types) {
-		return_types_.emplace_back(jive_type_copy(type.get()));
+		return_types_.emplace_back(type->copy());
 	}
 }
 
@@ -149,7 +149,7 @@ jive_call_by_address_node_create(jive_region * region,
 {
 	std::vector<std::unique_ptr<jive_type>> return_types_tmp;
 	for (size_t n = 0; n < nreturns; ++n) {
-		return_types_tmp.emplace_back(jive_type_copy(return_types[n]));
+		return_types_tmp.emplace_back(return_types[n]->copy());
 	}
 	jive::call_operation op(calling_convention, return_types_tmp);
 
@@ -184,7 +184,7 @@ jive_call_by_bitstring_node_create(jive_region * region,
 {
 	std::vector<std::unique_ptr<jive_type>> return_types_tmp;
 	for (size_t n = 0; n < nreturns; ++n) {
-		return_types_tmp.emplace_back(jive_type_copy(return_types[n]));
+		return_types_tmp.emplace_back(return_types[n]->copy());
 	}
 	jive::call_operation op(calling_convention, return_types_tmp);
 	jive_call_node * node = new jive_call_node(op);

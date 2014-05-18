@@ -18,20 +18,20 @@ test_operation::test_operation(
 	size_t nresults, const jive_type * const result_types[])
 {
 	for (size_t n = 0; n < noperands; ++n) {
-		operand_types_.emplace_back(jive_type_copy(operand_types[n]));
+		operand_types_.emplace_back(operand_types[n]->copy());
 	}
 	for (size_t n = 0; n < nresults; ++n) {
-		result_types_.emplace_back(jive_type_copy(result_types[n]));
+		result_types_.emplace_back(result_types[n]->copy());
 	}
 }
 
 test_operation::test_operation(const test_operation & other)
 {
 	for (const auto & optype : other.operand_types()) {
-		operand_types_.emplace_back(jive_type_copy(optype.get()));
+		operand_types_.emplace_back(optype->copy());
 	}
 	for (const auto & restype : other.result_types()) {
-		result_types_.emplace_back(jive_type_copy(restype.get()));
+		result_types_.emplace_back(restype->copy());
 	}
 }
 

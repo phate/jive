@@ -21,13 +21,13 @@ class sizeof_operation final : public operation {
 public:
 	inline explicit
 	sizeof_operation(const jive_value_type & type)
-		: type_(dynamic_cast<jive_value_type *>(jive_type_copy(&type)))
+		: type_(type.copy())
 	{
 	}
 
 	inline
 	sizeof_operation(const sizeof_operation & other)
-		: type_(dynamic_cast<jive_value_type *>(jive_type_copy(&other.type())))
+		: type_(other.type().copy())
 	{
 	}
 

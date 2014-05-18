@@ -54,14 +54,14 @@ public:
 		size_t noutputs,
 		const jive_type & type)
 		: noutputs_(noutputs)
-		, type_(jive_type_copy(&type))
+		, type_(type.copy())
 	{
 	}
 
 	inline statemux_operation(
 		const statemux_operation & other)
 		: noutputs_(other.noutputs())
-		, type_(jive_type_copy(&other.type()))
+		, type_(other.type().copy())
 	{
 	}
 

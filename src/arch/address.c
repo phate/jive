@@ -312,7 +312,7 @@ namespace address {
 
 arraysubscript_operation::arraysubscript_operation(
 	const arraysubscript_operation & other)
-	: element_type_((jive_value_type*) jive_type_copy(other.element_type_.get()))
+	: element_type_(other.element_type_->copy())
 {
 }
 
@@ -324,7 +324,7 @@ arraysubscript_operation::arraysubscript_operation(
 
 arraysubscript_operation::arraysubscript_operation(
 	const jive_value_type& type)
-	: element_type_((jive_value_type*) jive_type_copy(&type))
+	: element_type_(type.copy())
 {
 }
 
@@ -498,7 +498,7 @@ namespace address {
 
 arrayindex_operation::arrayindex_operation(
 	const arrayindex_operation & other)
-	: element_type_((jive_value_type *) jive_type_copy(&other.element_type())),
+	: element_type_(other.element_type().copy()),
 	difference_type_(other.difference_type())
 {
 }
@@ -513,7 +513,7 @@ arrayindex_operation::arrayindex_operation(
 arrayindex_operation::arrayindex_operation(
 	const jive_value_type & element_type,
 	size_t nbits)
-	: element_type_((jive_value_type *) jive_type_copy(&element_type)),
+	: element_type_(element_type.copy()),
 	difference_type_(nbits)
 {
 }

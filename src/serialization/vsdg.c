@@ -41,8 +41,7 @@ jive_control_type_deserialize(
 	jive_token_istream * is,
 	jive_type ** type)
 {
-	jive_control_type ctl;
-	*type = jive_type_copy(&ctl);
+	*type = new jive_control_type();
 	return true;
 }
 
