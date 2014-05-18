@@ -43,6 +43,12 @@ public:
 	
 	virtual const jive::operation &
 	operation() const noexcept = 0;
+
+	inline jive_node * producer(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < ninputs);
+		return inputs[index]->producer();
+	}
 	
 	const struct jive_node_class * class_;
 	
