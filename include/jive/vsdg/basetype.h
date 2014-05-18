@@ -100,9 +100,6 @@ jive_type_copy(const jive_type * self)
 	return self->copy();
 }
 
-void
-jive_type_destroy(struct jive_type * self);
-
 /**
         \defgroup jive_input Inputs
         Inputs

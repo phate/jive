@@ -131,7 +131,7 @@ verify_deserialize_type(const char * repr, const jive_type * expect_type)
 	jive_type * type;
 	assert(jive_deserialize_type(&ctx.drv, ctx.is, &type));
 	assert(jive_type_equals(type, expect_type));
-	jive_type_destroy(type);
+	delete type;
 	
 	deserialize_ctx_fini(&ctx);
 }

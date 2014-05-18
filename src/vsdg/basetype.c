@@ -48,12 +48,6 @@ jive_type_create_input(const jive_type * self, struct jive_node * node, size_t i
 	return self->create_input(node, index, origin);
 }
 
-void
-jive_type_destroy(struct jive_type * self)
-{
-	delete self;
-}
-
 /* inputs */
 
 static inline void
