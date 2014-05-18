@@ -40,7 +40,7 @@ static int test_main(void)
 	assert(jive_node_isinstance(uquot0->node, &JIVE_BITUQUOTIENT_NODE));
 	assert(jive_node_isinstance(uquot1->node, &JIVE_BITCONSTANT_NODE));
 
-	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(uquot1->node);
+	jive_bitconstant_node * bc1 = dynamic_cast<jive_bitconstant_node *>(uquot1->node);
 	assert(jive_bitconstant_equals_unsigned(bc1, 2));
 
 	jive_graph_destroy(graph);

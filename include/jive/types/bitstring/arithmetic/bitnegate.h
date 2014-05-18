@@ -32,14 +32,4 @@ class negate_operation final : public jive::bits_unary_operation {
 jive_output *
 jive_bitnegate(jive_output * operand);
 
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitnegate_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITNEGATE_NODE))
-		return node;
-	else
-		return 0;
-}
-
 #endif

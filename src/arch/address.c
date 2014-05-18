@@ -444,7 +444,7 @@ jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive::address::arraysubscript_operation * attrs =
 		(const jive::address::arraysubscript_operation *) attrs_;
 	
-	jive_bitconstant_node * offset_constant = jive_bitconstant_node_cast(operand2->node);
+	jive_bitconstant_node * offset_constant = dynamic_cast<jive_bitconstant_node *>(operand2->node);
 	if (offset_constant && jive_bitconstant_is_zero(offset_constant))
 		return jive_binop_reduction_rneutral;
 	

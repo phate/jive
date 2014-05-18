@@ -153,8 +153,8 @@ jive_bitconcat_can_reduce_operand_pair_(const jive_node_class * cls,
 		jive_node_isinstance(op2->node, &JIVE_BITCONSTANT_NODE))
 		return jive_binop_reduction_constants;
 
-	const jive_bitslice_node * n1 = jive_bitslice_node_cast(op1->node);
-	const jive_bitslice_node * n2 = jive_bitslice_node_cast(op2->node);
+	const jive_bitslice_node * n1 = dynamic_cast<jive_bitslice_node *>(op1->node);
+	const jive_bitslice_node * n2 = dynamic_cast<jive_bitslice_node *>(op2->node);
 
 	if(n1 && n2){
 		jive_output * origin1 = op1->node->inputs[0]->origin();

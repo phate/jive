@@ -24,13 +24,4 @@ class sgreatereq_operation final : public jive::bits_compare_operation {
 jive_output *
 jive_bitsgreatereq(struct jive_output * operand1, struct jive_output * operand2);
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitsgreatereq_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITSGREATEREQ_NODE))
-		return node;
-	else
-		return NULL;
-}
-
 #endif

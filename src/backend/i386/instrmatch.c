@@ -42,7 +42,7 @@ regvalue_to_immediate(const jive_output * regvalue, jive_immediate * imm)
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(rvnode, &JIVE_REGVALUE_NODE));
 	jive_output * value = rvnode->inputs[1]->origin();
 	
-	jive_bitconstant_node * bcnode = jive_bitconstant_node_cast(value->node);
+	jive_bitconstant_node * bcnode = dynamic_cast<jive_bitconstant_node *>(value->node);
 	if (bcnode) {
 		jive_immediate_init(imm, jive_bitconstant_node_to_unsigned(bcnode), 0, 0, 0);
 		return;

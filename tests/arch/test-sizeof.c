@@ -79,21 +79,21 @@ static int test_main(void)
 	jive_traverser_destroy(traverser);
 	jive_graph_prune(graph);
 
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[0]->origin()->node), 1));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[1]->origin()->node), 1));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[2]->origin()->node), 1));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[3]->origin()->node), 4));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[4]->origin()->node), 4));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[5]->origin()->node), 4));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[6]->origin()->node), 8));
-	assert(jive_bitconstant_equals_unsigned(jive_bitconstant_node_cast(
+	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
 		bottom->inputs[7]->origin()->node), 4));
 	
 	jive_view(graph, stdout);

@@ -24,13 +24,4 @@ class ashr_operation final : public jive::bits_binary_operation {
 jive_output *
 jive_bitashr(jive_output * operand, jive_output * shift);
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitashr_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITASHR_NODE))
-		return node;
-	else
-		return 0;
-}
-
 #endif

@@ -146,7 +146,7 @@ sequentialize_region(
 			for (n = 0; n < node->ninputs; ++n) {
 				jive_input * input = node->inputs[n];
 				jive_bitconstant_node * cnode =
-					jive_bitconstant_node_cast(input->origin()->node);
+					dynamic_cast<jive_bitconstant_node *>(input->origin()->node);
 				jive_seq_dataitem * item = &data->items[n];
 				if (cnode) {
 					switch (cnode->operation().bits.size()) {

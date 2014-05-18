@@ -24,13 +24,4 @@ class umod_operation final : public jive::bits_binary_operation {
 jive_output *
 jive_bitumod(jive_output * operand1, jive_output * operand2);
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitumod_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITUMOD_NODE))
-		return node;
-	else
-		return 0;
-}
-
 #endif

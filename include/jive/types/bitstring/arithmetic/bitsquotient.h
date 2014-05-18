@@ -24,13 +24,4 @@ class squotient_operation final : public jive::bits_binary_operation {
 jive_output *
 jive_bitsquotient(jive_output * dividend, jive_output * divisor);
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitsquotient_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITSQUOTIENT_NODE))
-		return node;
-	else
-		return 0;
-}
-
 #endif

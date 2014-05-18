@@ -84,8 +84,8 @@ static jive_binop_reduction_path_t
 jive_bitnotequal_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
-	const jive_bitconstant_node * n1 = jive_bitconstant_node_cast(op1->node);
-	const jive_bitconstant_node * n2 = jive_bitconstant_node_cast(op2->node);
+	const jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>(op1->node);
+	const jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>(op2->node);
 
 	if (n1 && n2) {
 		JIVE_DEBUG_ASSERT(n1->operation().bits.size() == n2->operation().bits.size());

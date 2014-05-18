@@ -18,7 +18,7 @@
 static void
 assert_constant(jive_output * bitstr, size_t nbits, const char bits[])
 {
-	jive_bitconstant_node * node = jive_bitconstant_node_cast(bitstr->node);
+	jive_bitconstant_node * node = dynamic_cast<jive_bitconstant_node *>(bitstr->node);
 	assert(node);
 	
 	assert(node->operation().bits.size() == nbits);

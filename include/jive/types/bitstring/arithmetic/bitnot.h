@@ -31,13 +31,4 @@ class not_operation final : public jive::bits_unary_operation {
 jive_output *
 jive_bitnot(jive_output * operand);
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitnot_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITNOT_NODE))
-		return node;
-	else
-		return 0;
-}
-
 #endif

@@ -50,10 +50,10 @@ static int test_main(void)
 	assert(jive_node_isinstance(ashr3->node, &JIVE_BITCONSTANT_NODE));
 	assert(jive_node_isinstance(ashr4->node, &JIVE_BITCONSTANT_NODE));
 
-	jive_bitconstant_node * bc1 = jive_bitconstant_node_cast(ashr1->node);
-	jive_bitconstant_node * bc2 = jive_bitconstant_node_cast(ashr2->node);
-	jive_bitconstant_node * bc3 = jive_bitconstant_node_cast(ashr3->node);
-	jive_bitconstant_node * bc4 = jive_bitconstant_node_cast(ashr4->node);
+	jive_bitconstant_node * bc1 = dynamic_cast<jive_bitconstant_node *>(ashr1->node);
+	jive_bitconstant_node * bc2 = dynamic_cast<jive_bitconstant_node *>(ashr2->node);
+	jive_bitconstant_node * bc3 = dynamic_cast<jive_bitconstant_node *>(ashr3->node);
+	jive_bitconstant_node * bc4 = dynamic_cast<jive_bitconstant_node *>(ashr4->node);
 	assert(jive_bitconstant_equals_unsigned(bc1, 4));
 	assert(jive_bitconstant_equals_unsigned(bc2, 0));
 	assert(jive_bitconstant_equals_signed(bc3, -4));

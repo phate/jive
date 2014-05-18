@@ -100,8 +100,8 @@ jive_bitshl_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	jive_graph * graph = (op1)->node->graph;
 
 	if(path == jive_binop_reduction_constants){
-		jive_bitconstant_node * n1 = jive_bitconstant_node_cast((op1)->node);
-		jive_bitconstant_node * n2 = jive_bitconstant_node_cast((op2)->node);
+		jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>((op1)->node);
+		jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>((op2)->node);
 
 		size_t nbits = n1->operation().bits.size();
 		char bits[nbits];

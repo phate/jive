@@ -24,13 +24,4 @@ class product_operation final : public jive::bits_binary_operation {
 jive_output *
 jive_bitmultiply(size_t noperands, jive_output * const * operands);
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_bitproduct_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_BITPRODUCT_NODE))
-		return node;
-	else
-		return 0;
-}
-
 #endif

@@ -36,10 +36,10 @@ static int test_main(void)
 	assert(b1->node == b2->node);
 	assert(b1->node == b3->node);
 	
-	assert(jive_bitconstant_node_to_unsigned(jive_bitconstant_node_cast(b1->node)) == 204);
-	assert(jive_bitconstant_node_to_signed(jive_bitconstant_node_cast(b1->node)) == -52);
-	assert(jive_bitconstant_node_to_unsigned(jive_bitconstant_node_cast(b4->node)) == 204);
-	assert(jive_bitconstant_node_to_signed(jive_bitconstant_node_cast(b4->node)) == 204);
+	assert(jive_bitconstant_node_to_unsigned(dynamic_cast<jive_bitconstant_node *>(b1->node)) == 204);
+	assert(jive_bitconstant_node_to_signed(dynamic_cast<jive_bitconstant_node *>(b1->node)) == -52);
+	assert(jive_bitconstant_node_to_unsigned(dynamic_cast<jive_bitconstant_node *>(b4->node)) == 204);
+	assert(jive_bitconstant_node_to_signed(dynamic_cast<jive_bitconstant_node *>(b4->node)) == 204);
 	
 	jive_output * plus_one_128 = jive_bitconstant(graph, 128, ONE_64 ZERO_64);
 	assert(jive_bitconstant_equals_unsigned((jive_bitconstant_node *) plus_one_128->node, 1));

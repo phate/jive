@@ -97,25 +97,25 @@ static int test_main(void)
 	assert(jive_node_isinstance(sum, &JIVE_BITDIFFERENCE_NODE));
 	jive_node * constant = sum->inputs[1]->origin()->node;
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
-	assert(jive_bitconstant_equals_signed(jive_bitconstant_node_cast(constant), 0));
+	assert(jive_bitconstant_equals_signed(dynamic_cast<jive_bitconstant_node *>(constant), 0));
 	
 	sum = bottom->inputs[1]->origin()->node;
 	assert(jive_node_isinstance(sum, &JIVE_BITDIFFERENCE_NODE));
 	constant = sum->inputs[1]->origin()->node;
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
-	assert(jive_bitconstant_equals_signed(jive_bitconstant_node_cast(constant), 2));
+	assert(jive_bitconstant_equals_signed(dynamic_cast<jive_bitconstant_node *>(constant), 2));
 
 	sum = bottom->inputs[2]->origin()->node;
 	assert(jive_node_isinstance(sum, &JIVE_BITDIFFERENCE_NODE));
 	constant = sum->inputs[1]->origin()->node;
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
-	assert(jive_bitconstant_equals_signed(jive_bitconstant_node_cast(constant), 4));
+	assert(jive_bitconstant_equals_signed(dynamic_cast<jive_bitconstant_node *>(constant), 4));
 
 	sum = bottom->inputs[3]->origin()->node;
 	assert(jive_node_isinstance(sum, &JIVE_BITDIFFERENCE_NODE));
 	constant = sum->inputs[1]->origin()->node;
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
-	assert(jive_bitconstant_equals_signed(jive_bitconstant_node_cast(constant), 8));
+	assert(jive_bitconstant_equals_signed(dynamic_cast<jive_bitconstant_node *>(constant), 8));
 	
 	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);

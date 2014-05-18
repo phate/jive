@@ -53,11 +53,4 @@ typedef jive::operation_node<jive::bitstring::slice_operation> jive_bitslice_nod
 jive_output *
 jive_bitslice(jive_output * operand, size_t low, size_t high);
 
-JIVE_EXPORTED_INLINE jive_bitslice_node *
-jive_bitslice_node_cast(jive_node * node)
-{
-	if (node->class_ == &JIVE_BITSLICE_NODE) return (jive_bitslice_node *) node;
-	else return 0;
-}
-
 #endif
