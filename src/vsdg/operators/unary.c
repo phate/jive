@@ -27,7 +27,7 @@ const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 		get_label : jive_node_get_label_, /* inherit */
 		match_attrs : jive_node_match_attrs_, /* inherit */
 		check_operands : NULL,
-		create : jive_node_create_, /* inherit */
+		create : nullptr,
 	},
 	
 	single_apply_over : NULL,

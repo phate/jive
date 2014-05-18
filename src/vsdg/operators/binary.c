@@ -72,7 +72,7 @@ const jive_binary_operation_class JIVE_BINARY_OPERATION_ = {
 		get_label : jive_node_get_label_, /* inherit */
 		match_attrs : jive_node_match_attrs_, /* inherit */
 		check_operands : NULL,
-		create : jive_node_create_, /* inherit */
+		create : nullptr,
 	},
 	
 	flags : 0,

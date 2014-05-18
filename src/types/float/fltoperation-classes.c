@@ -61,7 +61,7 @@ const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 			get_label : jive_node_get_label_, /* inherit */
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltbinary_operation_check_operands_, /* override */
-			create : jive_node_create_, /* inherit */
+			create : nullptr,
 		},
 	
 		flags : jive_binary_operation_none,
@@ -95,7 +95,7 @@ const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 			get_label : jive_node_get_label_, /* inherit */
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltunary_operation_check_operands_, /* override */
-			create : jive_node_create_, /* inherit */
+			create : nullptr,
 		},
 	
 		single_apply_over : NULL,
@@ -127,7 +127,7 @@ const jive_fltcomparison_operation_class JIVE_FLTCOMPARISON_NODE_ = {
 			get_label : jive_node_get_label_, /* inherit */
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltcomparison_operation_check_operands_, /* override */
-			create : jive_node_create_, /* inherit */
+			create : nullptr,
 		},
 
 		flags : jive_binary_operation_none,

@@ -25,7 +25,7 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 	get_label : jive_node_get_label_,
 	match_attrs : jive_node_match_attrs_,
 	check_operands : NULL,
-	create : jive_node_create_,
+	create : nullptr,
 };
 
 /* node class inheritable methods */

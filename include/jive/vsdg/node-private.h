@@ -46,15 +46,6 @@ jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other);
 
 /* private node member functions */
 
-jive_node *
-jive_node_create(
-	struct jive_region * region,
-	size_t noperands,
-	const struct jive_type * const * operand_types,
-	struct jive_output * const * operands,
-	size_t noutputs,
-	const struct jive_type * const * output_types);
-
 void
 jive_node_add_successor(jive_node * self);
 

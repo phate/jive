@@ -18,7 +18,7 @@ const jive_node_class JIVE_ANCHOR_NODE = {
 	get_label : jive_node_get_label_, /* inherit */
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
-	create : jive_node_create_, /* inherit */
+	create : nullptr,
 };
 
 /* node class inhertiable methods */

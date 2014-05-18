@@ -24,12 +24,6 @@
 
 jive_node::~jive_node() noexcept {}
 
-const jive_node_attrs &
-jive_node::operation() const noexcept
-{
-	return *class_->get_attrs(this);
-}
-
 const jive_node_class JIVE_NODE = {
 	parent : 0,
 	name : "NODE",
@@ -38,7 +32,7 @@ const jive_node_class JIVE_NODE = {
 	get_label : jive_node_get_label_,
 	match_attrs : jive_node_match_attrs_,
 	check_operands : jive_node_check_operands_,
-	create : jive_node_create_,
+	create : nullptr,
 };
 
 static void
@@ -207,24 +201,6 @@ jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * a
 	jive_context_fatal_error(context, "Checking of node operands failed.");
 }
 
-jive_node *
-jive_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
-{
-	jive_node * other = new jive_node;
-	const jive_type * operand_types[noperands];
-	size_t n;
-	for(n=0; n<noperands; n++)
-		operand_types[n] = jive_output_get_type(operands[n]);
-	
-	other->class_ = &JIVE_NODE;
-	jive_node_init_(other, region,
-		noperands, operand_types, operands,
-		0, 0);
-	
-	return other;
-}
-
 jive_node_normal_form *
 jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent,
 	jive_graph * graph)
@@ -234,22 +210,6 @@ jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal
 	normal_form->class_ = &JIVE_NODE_NORMAL_FORM;
 	jive_node_normal_form_init_(normal_form, cls, parent, graph);
 	return normal_form;
-}
-
-jive_node *
-jive_node_create(
-	struct jive_region * region,
-	size_t noperands,
-	const struct jive_type * const * operand_types,
-	struct jive_output * const * operands,
-	size_t noutputs,
-	const struct jive_type * const * output_types)
-{
-	jive_node * node = new jive_node;
-	node->class_ = &JIVE_NODE;
-	jive_node_init_(node, region, noperands, operand_types, operands, noutputs, output_types);
-	
-	return node;
 }
 
 static void

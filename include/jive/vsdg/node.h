@@ -41,7 +41,7 @@ public:
 	virtual ~jive_node() noexcept;
 	
 	virtual const jive::operation &
-	operation() const noexcept;
+	operation() const noexcept = 0;
 	
 	const struct jive_node_class * class_;
 	
