@@ -89,7 +89,6 @@ const jive_node_class NEGTESTNODE = {
 	fini : negtestnode_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : negtestnode_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : negtestnode_create_, /* override */

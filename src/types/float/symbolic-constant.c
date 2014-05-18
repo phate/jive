@@ -30,7 +30,6 @@ const jive_node_class JIVE_FLTSYMBOLICCONSTANT_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
 	get_label : jive_fltsymbolicconstant_node_get_label_, /* override */
-	get_attrs : nullptr,
 	match_attrs : jive_fltsymbolicconstant_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_fltsymbolicconstant_node_create_, /* override */

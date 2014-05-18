@@ -59,7 +59,6 @@ const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltbinary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
@@ -94,7 +93,6 @@ const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltunary_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */
@@ -127,7 +125,6 @@ const jive_fltcomparison_operation_class JIVE_FLTCOMPARISON_NODE_ = {
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 			get_label : jive_node_get_label_, /* inherit */
-			get_attrs : nullptr,
 			match_attrs : jive_node_match_attrs_, /* inherit */
 			check_operands : jive_fltcomparison_operation_check_operands_, /* override */
 			create : jive_node_create_, /* inherit */

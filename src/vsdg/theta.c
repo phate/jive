@@ -75,7 +75,6 @@ const jive_node_class JIVE_THETA_HEAD_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_head_node_create_,  /* override */
@@ -87,7 +86,6 @@ const jive_node_class JIVE_THETA_TAIL_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_tail_node_create_,  /* override */
@@ -99,7 +97,6 @@ const jive_node_class JIVE_THETA_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_anchor_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_theta_node_create_,  /* override */

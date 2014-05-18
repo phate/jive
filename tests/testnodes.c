@@ -125,7 +125,6 @@ const jive_node_class JIVE_TEST_NODE = {
 	fini : jive_test_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_test_node_match_attrs_, /* override */
 	check_operands : jive_test_node_check_operands_, /* override */
 	create : jive_test_node_create_, /* override */

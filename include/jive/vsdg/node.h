@@ -138,9 +138,6 @@ struct jive_node_class {
 	/** \brief Give textual representation of node (for debugging) */
 	void (*get_label)(const jive_node * self, struct jive_buffer * buffer);
 	
-	/** \brief Retrieve attributes of node */
-	const jive_node_attrs * (*get_attrs)(const jive_node * self);
-	
 	/** \brief Compare with attribute set (of same node type) */
 	bool (*match_attrs)(const jive_node * self, const jive_node_attrs * second);
 

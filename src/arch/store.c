@@ -322,7 +322,6 @@ const jive_node_class JIVE_STORE_NODE = {
 	fini : jive_store_node_fini_, /* override */
 	get_default_normal_form : jive_store_node_get_default_normal_form_, /* override */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_store_node_match_attrs_, /* override */
 	check_operands : jive_store_node_check_operands_, /* override */
 	create : jive_store_node_create_, /* override */

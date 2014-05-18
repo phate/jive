@@ -83,7 +83,6 @@ const jive_node_class JIVE_CONTROL_FALSE_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_control_false_node_create_,  /* override */
@@ -95,7 +94,6 @@ const jive_node_class JIVE_CONTROL_TRUE_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_control_true_node_create_,  /* override */

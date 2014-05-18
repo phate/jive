@@ -42,7 +42,6 @@ const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_unify_node_get_label_, /* override */
-		get_attrs : nullptr,
 		match_attrs : jive_unify_node_match_attrs_, /* override */
 		check_operands : jive_unify_node_check_operands_, /* override */
 		create : jive_unify_node_create_, /* override */
@@ -145,7 +144,6 @@ const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_empty_unify_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_empty_unify_node_create_, /* override */

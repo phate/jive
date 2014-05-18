@@ -34,7 +34,6 @@ const jive_node_class JIVE_SIZEOF_NODE = {
 	fini : jive_sizeof_node_fini_,	/* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_sizeof_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_sizeof_node_create_, /* override */

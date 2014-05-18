@@ -36,7 +36,6 @@ const jive_node_class JIVE_NODE = {
 	fini : jive_node_fini_,
 	get_default_normal_form : jive_node_get_default_normal_form_,
 	get_label : jive_node_get_label_,
-	get_attrs : jive_node_get_attrs_,
 	match_attrs : jive_node_match_attrs_,
 	check_operands : jive_node_check_operands_,
 	create : jive_node_create_,
@@ -193,12 +192,6 @@ bool
 jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other)
 {
 	return true;
-}
-
-const jive_node_attrs *
-jive_node_get_attrs_(const jive_node * self)
-{
-	return 0;
 }
 
 void

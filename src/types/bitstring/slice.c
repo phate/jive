@@ -61,7 +61,6 @@ const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_bitslice_node_get_label_, /* override */
-		get_attrs : nullptr,
 		match_attrs : jive_bitslice_node_match_attrs_, /* override */
 		check_operands : jive_bitunary_operation_check_operands_, /* inherit */
 		create : jive_bitslice_node_create_, /* override */

@@ -23,7 +23,6 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 	fini : jive_node_fini_,
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_,
 	get_label : jive_node_get_label_,
-	get_attrs : jive_node_get_attrs_,
 	match_attrs : jive_node_match_attrs_,
 	check_operands : NULL,
 	create : jive_node_create_,

@@ -25,7 +25,6 @@ const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* override */
 		get_label : jive_node_get_label_, /* inherit */
-		get_attrs : jive_node_get_attrs_, /* inherit */
 		match_attrs : jive_node_match_attrs_, /* inherit */
 		check_operands : NULL,
 		create : jive_node_create_, /* inherit */

@@ -50,7 +50,6 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_lambda_enter_node_create_, /* override */
@@ -92,7 +91,6 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_, /* inherit */
 	check_operands : NULL,
 	create : jive_lambda_leave_node_create_, /* override */
@@ -232,7 +230,6 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	fini : jive_lambda_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_node_get_label_, /* inherit */
-	get_attrs : nullptr, /* inherit */
 	match_attrs : jive_lambda_node_match_attrs_, /* override */
 	check_operands : NULL,
 	create : jive_lambda_node_create_, /* override */

@@ -46,7 +46,6 @@ const jive_unary_operation_class JIVE_SELECT_NODE_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_select_node_get_label_, /* override */
-		get_attrs : nullptr,
 		match_attrs : jive_select_node_match_attrs_, /* override */
 		check_operands : jive_select_node_check_operands_, /* override */
 		create : jive_select_node_create_,	/* override */

@@ -51,7 +51,6 @@ const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_memberof_node_get_label_, /* override */
-		get_attrs : nullptr,
 		match_attrs : jive_memberof_node_match_attrs_, /* override */
 		check_operands : jive_memberof_node_check_operands_, /* override */
 		create : jive_memberof_node_create_, /* override */
@@ -184,7 +183,6 @@ const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_containerof_node_get_label_, /* override */
-		get_attrs : nullptr,
 		match_attrs : jive_containerof_node_match_attrs_, /* override */
 		check_operands : jive_containerof_node_check_operands_, /* override */
 		create : jive_containerof_node_create_, /* override */
@@ -364,7 +362,6 @@ const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_ = {
 		fini : jive_arraysubscript_node_fini_, /* override */
 		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_node_get_label_, /* inherit */
-		get_attrs : nullptr,
 		match_attrs : jive_arraysubscript_node_match_attrs_, /* override */
 		check_operands : jive_arraysubscript_node_check_operands_, /* override */
 		create : jive_arraysubscript_node_create_, /* override */
@@ -553,7 +550,6 @@ const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_ = {
 		fini : jive_arrayindex_node_fini_, /* override */
 		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
 		get_label : jive_node_get_label_, /* inherit */
-		get_attrs : nullptr,
 		match_attrs : jive_arrayindex_node_match_attrs_, /* override */
 		check_operands : jive_arrayindex_node_check_operands_, /* inherit */
 		create : jive_arrayindex_node_create_, /* override */
@@ -723,7 +719,6 @@ const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE = {
 	fini : jive_label_to_address_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_label_to_address_node_get_label_, /* override */
-	get_attrs : nullptr,
 	match_attrs : jive_label_to_address_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_label_to_address_node_create_, /* override */
@@ -823,7 +818,6 @@ const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
 	fini : jive_label_to_bitstring_node_fini_, /* override */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : jive_label_to_bitstring_node_get_label_, /* override */
-	get_attrs : nullptr,
 	match_attrs : jive_label_to_bitstring_node_match_attrs_, /* override */
 	check_operands : jive_node_check_operands_, /* inherit */
 	create : jive_label_to_bitstring_node_create_, /* override */

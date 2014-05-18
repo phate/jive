@@ -71,7 +71,6 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_gamma_tail_node_create_,  /* override */
@@ -83,7 +82,6 @@ const jive_node_class JIVE_GAMMA_NODE = {
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_gamma_node_get_default_normal_form_,  /* override */
 	get_label : jive_node_get_label_,  /* inherit */
-	get_attrs : nullptr,
 	match_attrs : jive_node_match_attrs_,  /* inherit */
 	check_operands : jive_node_check_operands_, /* inherrit */
 	create : jive_gamma_node_create_,  /* override */
