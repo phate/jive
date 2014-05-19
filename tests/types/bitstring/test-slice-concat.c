@@ -32,11 +32,11 @@ static int test_main(void)
 		/* slice of constant */
 		jive_output * a = jive_bitslice(base_const1, 2, 6);
 		
-		assert(a->node->class_ == &JIVE_BITCONSTANT_NODE);
+		assert(a->node()->class_ == &JIVE_BITCONSTANT_NODE);
 		const jive_bitstring_type * type = (const jive_bitstring_type *) jive_output_get_type(a);
 		assert(type->nbits()==4);
 		const jive::bitstring::constant_operation * attrs =
-			(const jive::bitstring::constant_operation *)jive_node_get_attrs(a->node);
+			(const jive::bitstring::constant_operation *)jive_node_get_attrs(a->node());
 		assert(memcmp(&attrs->bits[0], "1101", 4) == 0);
 	}
 	
@@ -45,9 +45,9 @@ static int test_main(void)
 		jive_output * a = jive_bitslice(base_x, 2, 6);
 		jive_output * b = jive_bitslice(a, 1, 3);
 	
-		assert(b->node->class_ == &JIVE_BITSLICE_NODE);
+		assert(b->node()->class_ == &JIVE_BITSLICE_NODE);
 		const jive::bitstring::slice_operation * attrs =
-			(const jive::bitstring::slice_operation *)jive_node_get_attrs(b->node);
+			(const jive::bitstring::slice_operation *)jive_node_get_attrs(b->node());
 		assert(attrs->low() == 3 && attrs->high() == 5);
 	}
 	
@@ -77,11 +77,11 @@ static int test_main(void)
 		jive_output * list2[] = {a, base_z};
 		jive_output * b = jive_bitconcat(2, list2);
 		
-		assert(b->node->class_ == &JIVE_BITCONCAT_NODE);
-		assert(b->node->ninputs == 3);
-		assert(b->node->inputs[0]->origin() == base_x);
-		assert(b->node->inputs[1]->origin() == base_y);
-		assert(b->node->inputs[2]->origin() == base_z);
+		assert(b->node()->class_ == &JIVE_BITCONCAT_NODE);
+		assert(b->node()->ninputs == 3);
+		assert(b->node()->inputs[0]->origin() == base_x);
+		assert(b->node()->inputs[1]->origin() == base_y);
+		assert(b->node()->inputs[2]->origin() == base_z);
 	}
 	
 	{
@@ -106,9 +106,9 @@ static int test_main(void)
 		jive_output * list1[] = {base_const1, base_const2};
 		jive_output * a = jive_bitconcat(2, list1);
 		
-		assert(a->node->class_ == &JIVE_BITCONSTANT_NODE);
+		assert(a->node()->class_ == &JIVE_BITCONSTANT_NODE);
 		const jive::bitstring::constant_operation * attrs =
-			(const jive::bitstring::constant_operation *) jive_node_get_attrs(a->node);
+			(const jive::bitstring::constant_operation *) jive_node_get_attrs(a->node());
 		assert(attrs->bits.size() == 16);
 		assert(memcmp(&attrs->bits[0], "0011011111001000", 16) == 0);
 	}

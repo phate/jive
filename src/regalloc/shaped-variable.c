@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -361,7 +362,7 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 		}
 		jive_output * output;
 		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
-			jive_node_get_use_count_output(output->node, &use_count, context);
+			jive_node_get_use_count_output(output->node(), &use_count, context);
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
 			if (overflow) {
@@ -383,7 +384,8 @@ jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_ssavar * self, size_t d
 		return;
 		
 	/* if node is shaped, boundary region is ignored */
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, self->ssavar->origin->node);
+	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		self->ssavar->origin->node());
 	if (origin_shaped_node) {
 		self->boundary_region_depth = depth;
 		return;
@@ -434,7 +436,8 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive_input * 
 {
 	jive_variable * variable = self->ssavar->variable;
 	
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, output->node);
+	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		output->node());
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, input->node);
 	
 	jive_crossing_arc_iterator i;
@@ -460,7 +463,8 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive_input 
 {
 	jive_variable * variable = self->ssavar->variable;
 	
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, output->node);
+	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		output->node());
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, input->node);
 	
 	jive_crossing_arc_iterator i;
@@ -486,7 +490,8 @@ jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive_o
 {
 	jive_variable * variable = self->ssavar->variable;
 		
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, output->node);
+	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		output->node());
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
 	
 	jive_crossing_arc_iterator i;
@@ -512,7 +517,8 @@ jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, jive
 {
 	jive_variable * variable = self->ssavar->variable;
 		
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, output->node);
+	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		output->node());
 	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
 	
 	jive_crossing_arc_iterator i;
@@ -543,7 +549,8 @@ jive_shaped_ssavar_xpoints_register_arcs(jive_shaped_ssavar * self)
 		jive_shaped_ssavar_xpoints_register_arc(self, input, input->origin());
 	}
 	if (ssavar->assigned_output) {
-		jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, ssavar->assigned_output->node);
+		jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+			ssavar->assigned_output->node());
 		if (origin_shaped_node)
 			jive_shaped_node_add_ssavar_after(origin_shaped_node, self, variable, 1);
 	}
@@ -565,7 +572,8 @@ jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self)
 		jive_shaped_ssavar_xpoints_unregister_arc(self, input, input->origin());
 	}
 	if (ssavar->assigned_output) {
-		jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, ssavar->assigned_output->node);
+		jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+			ssavar->assigned_output->node());
 		if (origin_shaped_node)
 			jive_shaped_node_remove_ssavar_after(origin_shaped_node, self, variable, 1);
 	}
@@ -621,8 +629,10 @@ jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_varia
 void
 jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive_output * old_origin, jive_output * new_origin)
 {
-	jive_shaped_node * old_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, old_origin->node);
-	jive_shaped_node * new_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, new_origin->node);
+	jive_shaped_node * old_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		old_origin->node());
+	jive_shaped_node * new_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		new_origin->node());
 	
 	jive_variable * variable = self->ssavar->variable;
 	jive_input * input;

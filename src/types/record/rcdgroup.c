@@ -124,7 +124,7 @@ jive_group_create(const jive_record_declaration * decl,
 {
 	jive::rcd::group_operation op(decl);
 	jive_output * result;
-	jive_graph * graph = arguments[0]->node->region->graph;
+	jive_graph * graph = arguments[0]->node()->region->graph;
 	jive_node_create_normalized(&JIVE_GROUP_NODE, graph, &op, narguments, arguments, &result);
 	return result;
 }

@@ -38,12 +38,12 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(not0->node, &JIVE_BITNOT_NODE));
-	assert(jive_node_isinstance(not1->node, &JIVE_BITCONSTANT_NODE));
-	assert(jive_node_isinstance(not2->node, &JIVE_BITCONSTANT_NODE));
+	assert(jive_node_isinstance(not0->node(), &JIVE_BITNOT_NODE));
+	assert(jive_node_isinstance(not1->node(), &JIVE_BITCONSTANT_NODE));
+	assert(jive_node_isinstance(not2->node(), &JIVE_BITCONSTANT_NODE));
 
-	jive_bitconstant_node * bc1 = dynamic_cast<jive_bitconstant_node *>(not1->node);
-	jive_bitconstant_node * bc2 = dynamic_cast<jive_bitconstant_node *>(not2->node);
+	jive_bitconstant_node * bc1 = dynamic_cast<jive_bitconstant_node *>(not1->node());
+	jive_bitconstant_node * bc2 = dynamic_cast<jive_bitconstant_node *>(not2->node());
 	assert(jive_bitconstant_equals_signed(bc1, -4));
 	assert(jive_bitconstant_equals_signed(bc2, 3));
 

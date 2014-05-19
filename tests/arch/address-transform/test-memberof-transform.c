@@ -96,27 +96,27 @@ jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
 	}
 	jive_traverser_destroy(traverser);
 
-	jive_node * sum = bottom->inputs[0]->origin()->node;
+	jive_node * sum = bottom->producer(0);
 	assert(jive_node_isinstance(sum, &JIVE_BITSUM_NODE));
-	jive_node * constant = sum->inputs[1]->origin()->node;
+	jive_node * constant = sum->producer(1);
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(constant), 0));
 	
-	sum = bottom->inputs[1]->origin()->node;
+	sum = bottom->producer(1);
 	assert(jive_node_isinstance(sum, &JIVE_BITSUM_NODE));
-	constant = sum->inputs[1]->origin()->node;
+	constant = sum->producer(1);
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(constant), 2));
 
-	sum = bottom->inputs[2]->origin()->node;
+	sum = bottom->producer(2);
 	assert(jive_node_isinstance(sum, &JIVE_BITSUM_NODE));
-	constant = sum->inputs[1]->origin()->node;
+	constant = sum->producer(1);
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(constant), 4));
 
-	sum = bottom->inputs[3]->origin()->node;
+	sum = bottom->producer(3);
 	assert(jive_node_isinstance(sum, &JIVE_BITSUM_NODE));
-	constant = sum->inputs[1]->origin()->node;
+	constant = sum->producer(1);
 	assert(jive_node_isinstance(constant, &JIVE_BITCONSTANT_NODE));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(constant), 8));
 

@@ -27,13 +27,13 @@ store_reduce(jive_output * address, jive_output * value,
 	if (nstates == 0)
 		return false;
 
-	jive_node * store = istates[0]->node;
+	jive_node * store = istates[0]->node();
 	if (!jive_node_isinstance(store, &JIVE_STORE_NODE))
 		return false;
 
 	size_t n;
 	for(n = 0; n < nstates; n++) {
-		if (istates[n]->node != store)
+		if (istates[n]->node() != store)
 			return false;
 	}
 
@@ -53,7 +53,7 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	const jive_node_attrs * attrs_, jive_output * address, jive_output * value,
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
-	jive_unify_node * unify_node = jive_unify_node_cast(value->node);
+	jive_unify_node * unify_node = jive_unify_node_cast(value->node());
 	const jive_union_declaration * decl = unify_node->operation().declaration();
 
 	if (decl->nelements == 0) {
@@ -84,7 +84,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 		return;
 	}
 
-	jive_group_node * group_node = jive_group_node_cast(value->node);
+	jive_group_node * group_node = jive_group_node_cast(value->node());
 	const jive_record_declaration * decl = group_node->operation().declaration();
 
 	if (decl->nelements == 0) {
@@ -147,15 +147,15 @@ jive_store_node_normalize_node_(const jive_node_normal_form * self_, jive_node *
 			istates[n] = node->inputs[n+2]->origin();
 
 		bool reduction = false;
-		if (jive_node_isinstance(node->inputs[1]->origin()->node, &JIVE_GROUP_NODE)) {
+		if (jive_node_isinstance(node->producer(1), &JIVE_GROUP_NODE)) {
 			group_reduce(self, node->region, attrs, node->inputs[0]->origin(), node->inputs[1]->origin(),
 				nstates, istates, ostates);
 			reduction = true;
-		} else if (jive_node_isinstance(node->inputs[1]->origin()->node, &JIVE_UNIFY_NODE)) {
+		} else if (jive_node_isinstance(node->producer(1), &JIVE_UNIFY_NODE)) {
 			unify_reduce(self, node->region, attrs, node->inputs[0]->origin(), node->inputs[1]->origin(),
 				nstates, istates, ostates);
 			reduction = true;
-		} else if (jive_node_isinstance(node->inputs[1]->origin()->node, &JIVE_EMPTY_UNIFY_NODE)) {
+		} else if (jive_node_isinstance(node->producer(1), &JIVE_EMPTY_UNIFY_NODE)) {
 			for (n = 0; n < nstates; n++)
 				ostates[n] = istates[n];
 		} else if (store_reduce(node->inputs[0]->origin(), node->inputs[1]->origin(),
@@ -201,14 +201,14 @@ jive_store_node_operands_are_normalized_(const jive_node_normal_form * self_, si
 	if (!self->base.enable_mutable)
 		return true;
 
-	jive_region * region = operands[0]->node->region;
+	jive_region * region = operands[0]->node()->region;
 	const jive_node_class * cls = self->base.node_class;
 
 	if (self->enable_reducible) {
-		if (jive_node_isinstance(operands[1]->node, &JIVE_GROUP_NODE))
+		if (jive_node_isinstance(operands[1]->node(), &JIVE_GROUP_NODE))
 			return false;
 
-		if (jive_node_isinstance(operands[1]->node, &JIVE_UNIFY_NODE))
+		if (jive_node_isinstance(operands[1]->node(), &JIVE_UNIFY_NODE))
 			return false;
 
 		jive_output * ostates[noperands-2];
@@ -238,12 +238,12 @@ jive_store_node_normalized_create_(const jive_store_node_normal_form * self,
 	const jive_node_class * cls = self->base.node_class;
 
 	if (self->base.enable_mutable && self->enable_reducible) {
-		if (jive_node_isinstance(value->node, &JIVE_GROUP_NODE)) {
+		if (jive_node_isinstance(value->node(), &JIVE_GROUP_NODE)) {
 			group_reduce(self, region, attrs, address, value, nstates, istates, ostates);
 			return;
 		}
 
-		if (jive_node_isinstance(value->node, &JIVE_UNIFY_NODE)) {
+		if (jive_node_isinstance(value->node(), &JIVE_UNIFY_NODE)) {
 			unify_reduce(self, region, attrs, address, value, nstates, istates, ostates);
 			return;
 		}
@@ -447,7 +447,7 @@ jive_store_by_address_create(jive_output * address,
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
 	const jive_store_node_normal_form * nf = (const jive_store_node_normal_form *)
-		jive_graph_get_nodeclass_form(address->node->region->graph, &JIVE_STORE_NODE);
+		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_STORE_NODE);
 
 	jive_region * region = store_node_region_innermost(address, value, nstates, istates);
 
@@ -478,7 +478,7 @@ jive_store_by_bitstring_create(jive_output * address, size_t nbits,
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
 	const jive_store_node_normal_form * nf = (const jive_store_node_normal_form *)
-		jive_graph_get_nodeclass_form(address->node->region->graph, &JIVE_STORE_NODE);
+		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_STORE_NODE);
 
 	jive_region * region = store_node_region_innermost(address, value, nstates, istates);
 

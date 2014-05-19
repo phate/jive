@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -51,8 +51,8 @@ static int test_main(void)
 	
 	assert(c2->region_cut_list.next == c1);
 	
-	jive_cut_append(c1, y->node);
-	jive_cut_append(c2, o->node);
+	jive_cut_append(c1, y->node());
+	jive_cut_append(c2, o->node());
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

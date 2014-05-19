@@ -343,7 +343,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 		jive_names_use inner_names_use;
 		jive_names_use_init(&inner_names_use, context);
 		
-		jive_regalloc_reuse_record_region(shaped_graph, input->origin()->node->region, &inner_names_use);
+		jive_regalloc_reuse_record_region(shaped_graph, input->producer()->region, &inner_names_use);
 		
 		jive_used_name * inner_used_name;
 		JIVE_LIST_ITERATE(inner_names_use.list, inner_used_name, used_names_list) {

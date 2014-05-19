@@ -64,6 +64,6 @@ jive_output *
 jive_fltnegate(struct jive_output * operand)
 {
 	jive::flt::negate_operation op;
-	return jive_unary_operation_create_normalized(&JIVE_FLTNEGATE_NODE_.base, operand->node->graph,
+	return jive_unary_operation_create_normalized(&JIVE_FLTNEGATE_NODE_.base, operand->node()->graph,
 		&op, operand);
 }

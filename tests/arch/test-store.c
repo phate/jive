@@ -89,8 +89,8 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	assert(state2->node->inputs[1]->origin()->node == top);
-	assert(state3->node->inputs[2]->origin()->node == top);
+	assert(state2->node()->producer(1) == top);
+	assert(state3->node()->producer(2) == top);
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

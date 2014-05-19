@@ -150,11 +150,12 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 		jive_nodevar_xpoint * xpoint = i.entry;
 		if (!xpoint->before_count) continue;
 		jive_ssavar * ssavar = xpoint->shaped_ssavar->ssavar;
-		if (ssavar->origin->node == shaped_node->node) {
+		if (ssavar->origin->node() == shaped_node->node) {
 			jive_shaped_node_add_ssavar_after(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		} else {
 			if (dynamic_cast<jive_anchor_output*>(ssavar->origin)) continue;
-			if (xpoint->shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth && ! jive_shaped_graph_map_node(shaped_graph, ssavar->origin->node)) continue;
+			if (xpoint->shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth &&
+				!jive_shaped_graph_map_node(shaped_graph, ssavar->origin->node())) continue;
 			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar, ssavar->variable, xpoint->before_count);
 		}
 	}
@@ -164,7 +165,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 		jive_input * input = lower->node->inputs[n];
 		if (!dynamic_cast<jive_anchor_input*>(input)) continue;
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph,
-			input->origin()->node->region);
+			input->producer()->region);
 		
 		/* if this is a control edge, pass through variables from the top
 		of the subregion */
@@ -234,7 +235,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, shaped_node->ssavar_xpoints, i) {
 			jive_nodevar_xpoint * xpoint = i.entry;
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph,
-				input->origin()->node->region);
+				input->producer()->region);
 			jive_shaped_region_add_active_top(shaped_region, xpoint->shaped_ssavar, xpoint->cross_count);
 		}
 	}

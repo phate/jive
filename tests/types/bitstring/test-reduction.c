@@ -18,7 +18,7 @@
 static void
 assert_constant(jive_output * bitstr, size_t nbits, const char bits[])
 {
-	jive_bitconstant_node * node = dynamic_cast<jive_bitconstant_node *>(bitstr->node);
+	jive_bitconstant_node * node = dynamic_cast<jive_bitconstant_node *>(bitstr->node());
 	assert(node);
 	
 	assert(node->operation().bits.size() == nbits);
@@ -56,22 +56,20 @@ static int test_main(void)
 		jive_output *  tmparray0[] = {x, y};
 		jive_output * concat = jive_bitconcat(2, tmparray0);
 		jive_output * slice = jive_bitslice(concat, 8, 24);
-		jive_node * node = ((jive_output *) slice)->node;
+		jive_node * node = ((jive_output *) slice)->node();
 		assert(node->class_ == &JIVE_BITCONCAT_NODE);
 		assert(node->ninputs == 2);
-		assert(node->inputs[0]->origin()->node->class_ == &JIVE_BITSLICE_NODE);
-		assert(node->inputs[1]->origin()->node->class_ == &JIVE_BITSLICE_NODE);
+		assert(node->producer(0)->class_ == &JIVE_BITSLICE_NODE);
+		assert(node->producer(1)->class_ == &JIVE_BITSLICE_NODE);
 		
 		const jive::bitstring::slice_operation * attrs;
-		attrs = (const jive::bitstring::slice_operation *)
-			jive_node_get_attrs(node->inputs[0]->origin()->node);
+		attrs = (const jive::bitstring::slice_operation *) jive_node_get_attrs(node->producer(0));
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
-		attrs = (const jive::bitstring::slice_operation *)
-			jive_node_get_attrs(node->inputs[1]->origin()->node);
+		attrs = (const jive::bitstring::slice_operation *) jive_node_get_attrs(node->producer(1));
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
-		assert(node->inputs[0]->origin()->node->inputs[0]->origin() == x);
-		assert(node->inputs[1]->origin()->node->inputs[0]->origin() == y);
+		assert(node->producer(0)->inputs[0]->origin() == x);
+		assert(node->producer(1)->inputs[0]->origin() == y);
 	}
 	
 	{

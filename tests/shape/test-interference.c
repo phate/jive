@@ -46,8 +46,8 @@ static int test_main(void)
 	jive_cut * upper = jive_shaped_region_create_cut(r);
 	
 	jive_shaped_node * nn = jive_cut_append(lower, n);
-	jive_shaped_node * nx = jive_cut_append(upper, x->node);
-	jive_shaped_node * ny = jive_cut_append(upper, y->node);
+	jive_shaped_node * nx = jive_cut_append(upper, x->node());
+	jive_shaped_node * ny = jive_cut_append(upper, y->node());
 	
 	jive_shaped_variable * vx = jive_shaped_graph_map_variable(shaped_graph, x->ssavar->variable);
 	jive_shaped_variable * vy = jive_shaped_graph_map_variable(shaped_graph, y->ssavar->variable);

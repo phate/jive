@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -171,7 +172,7 @@ jive_shaped_graph_ssavar_assign_output(void * closure, jive_ssavar * ssavar, jiv
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node);
+	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node());
 	if (shaped_node)
 		jive_shaped_node_add_ssavar_after(shaped_node, shaped_ssavar, ssavar->variable, 1);
 }
@@ -181,7 +182,7 @@ jive_shaped_graph_ssavar_unassign_output(void * closure, jive_ssavar * ssavar, j
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node);
+	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node());
 	if (shaped_node)
 		jive_shaped_node_remove_ssavar_after(shaped_node, shaped_ssavar, ssavar->variable, 1);
 }

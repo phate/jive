@@ -183,7 +183,8 @@ public:
 
 	virtual void label(jive_buffer & buffer) const;
 
-	struct jive_node * node;
+	inline jive_node * node() const noexcept { return node_; }
+
 	size_t index;
 	
 	struct {
@@ -205,6 +206,8 @@ public:
 	} originating_ssavars;
 	
 	const struct jive_resource_class * required_rescls;
+private:
+	jive_node * node_;
 };
 
 JIVE_EXPORTED_INLINE bool
@@ -249,7 +252,7 @@ jive_output_destroy(jive_output * self);
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_output_node(const jive_output * output)
 {
-	return output->node;
+	return output->node();
 }
 
 /**	@}	*/
@@ -361,7 +364,7 @@ jive_raise_type_error(const jive_type * self, const jive_type * other,
 inline jive_node *
 jive_input::producer() const noexcept
 {
-	return origin()->node;
+	return origin_->node();
 }
 
 #endif

@@ -218,8 +218,8 @@ jive_binary_operation_normalized_create_new_(const jive_node_normal_form * self_
 		(cls->flags & jive_binary_operation_associative)) {
 		size_t count = 0, n;
 		for (n = 0; n < noperands_; n++) {
-			if (operands_[n]->node->class_ == &cls->base)
-				count += operands_[n]->node->noperands;
+			if (operands_[n]->node()->class_ == &cls->base)
+				count += operands_[n]->node()->noperands;
 			else
 				count ++;
 		}
@@ -227,10 +227,10 @@ jive_binary_operation_normalized_create_new_(const jive_node_normal_form * self_
 		operands = alloca(sizeof(operands[0]) * count);
 		count = 0;
 		for (n = 0; n < noperands_; n++) {
-			if (operands_[n]->node->class_ == &cls->base) {
+			if (operands_[n]->node()->class_ == &cls->base) {
 				size_t k;
-				for(k = 0; k < operands_[n]->node->noperands; k++)
-					operands[count++] = operands_[n]->node->inputs[k]->origin();
+				for(k = 0; k < operands_[n]->node()->noperands; k++)
+					operands[count++] = operands_[n]->node()->inputs[k]->origin();
 			} else operands[count++] = operands_[n];
 		}
 		noperands = count;
@@ -301,8 +301,8 @@ jive_binary_operation_normalized_create(
 	if (expand_associative) {
 		size_t count = 0, n;
 		for(n = 0; n<noperands; n++) {
-			if (operands_[n]->node->class_ == cls_)
-				count += operands_[n]->node->ninputs;
+			if (operands_[n]->node()->class_ == cls_)
+				count += operands_[n]->node()->ninputs;
 			else
 				count ++;
 		}
@@ -310,10 +310,10 @@ jive_binary_operation_normalized_create(
 		operands = alloca(sizeof(operands[0]) * count);
 		count = 0;
 		for(n = 0; n<noperands; n++) {
-			if (operands_[n]->node->class_ == cls_) {
+			if (operands_[n]->node()->class_ == cls_) {
 				size_t k;
-				for(k = 0; k<operands_[n]->node->ninputs; k++)
-					operands[count++] = operands_[n]->node->inputs[k]->origin();
+				for(k = 0; k<operands_[n]->node()->ninputs; k++)
+					operands[count++] = operands_[n]->node()->inputs[k]->origin();
 			} else operands[count++] = operands_[n];
 		}
 		noperands = count;
@@ -361,8 +361,8 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 	if (self->enable_flatten && (cls->flags & jive_binary_operation_associative)) {
 		size_t count = 0, n;
 		for (n = 0; n < node->noperands; n++) {
-			if (node->inputs[n]->origin()->node->class_ == &cls->base)
-				count += node->inputs[n]->origin()->node->noperands;
+			if (node->producer(n)->class_ == &cls->base)
+				count += node->producer(n)->noperands;
 			else
 				count ++;
 		}
@@ -370,10 +370,10 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 		operands = alloca(sizeof(operands[0]) * count);
 		count = 0;
 		for (n = 0; n < node->noperands; n++) {
-			if (node->inputs[n]->origin()->node->class_ == &cls->base) {
+			if (node->producer(n)->class_ == &cls->base) {
 				size_t k;
-				for(k = 0; k < node->inputs[n]->origin()->node->noperands; k++)
-					operands[count++] = node->inputs[n]->origin()->node->inputs[k]->origin();
+				for(k = 0; k < node->producer(n)->noperands; k++)
+					operands[count++] = node->producer(n)->inputs[k]->origin();
 			} else operands[count++] = node->inputs[n]->origin();
 		}
 		noperands = count;
@@ -448,7 +448,7 @@ jive_binary_operation_operands_are_normalized_(
 	if (self->enable_flatten && (cls->flags & jive_binary_operation_associative)) {
 		size_t n;
 		for (n = 0; n < noperands; n++) {
-			if (operands[n]->node->class_ == &cls->base)
+			if (operands[n]->node()->class_ == &cls->base)
 				return false;
 		}
 	}
@@ -576,8 +576,8 @@ jive_binary_operation_normalized_create_(
 	if (self->base.enable_mutable && self->enable_flatten && associative) {
 		size_t count = 0, n;
 		for (n = 0; n < noperands_; n++) {
-			if (operands_[n]->node->class_ == &cls->base)
-				count += operands_[n]->node->noperands;
+			if (operands_[n]->node()->class_ == &cls->base)
+				count += operands_[n]->node()->noperands;
 			else
 				count ++;
 		}
@@ -585,10 +585,10 @@ jive_binary_operation_normalized_create_(
 		operands = alloca(sizeof(operands[0]) * count);
 		count = 0;
 		for (n = 0; n < noperands_; n++) {
-			if (operands_[n]->node->class_ == &cls->base) {
+			if (operands_[n]->node()->class_ == &cls->base) {
 				size_t k;
-				for(k = 0; k < operands_[n]->node->noperands; k++)
-					operands[count++] = operands_[n]->node->inputs[k]->origin();
+				for(k = 0; k < operands_[n]->node()->noperands; k++)
+					operands[count++] = operands_[n]->node()->inputs[k]->origin();
 			} else operands[count++] = operands_[n];
 		}
 		noperands = count;

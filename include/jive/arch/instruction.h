@@ -84,7 +84,7 @@ jive_instruction_node_get_immediate(
 {
 	const jive_instruction_class * icls = node->operation().icls();
 	jive_input * input = node->inputs[index + icls->ninputs];
-	return (jive_immediate_node *) input->origin()->node;
+	return (jive_immediate_node *) input->producer();
 }
 
 #endif

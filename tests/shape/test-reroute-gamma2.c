@@ -112,7 +112,7 @@ static int test_main(void)
 		tmparray12,
 		tmparray13,
 		gamma);
-	jive_node * gamma_node = gamma[0]->node;
+	jive_node * gamma_node = gamma[0]->node();
 	const jive_type * tmparray14[] = {&type, &type, &type};
 	jive_output * tmparray15[] = {gamma[0], gamma[1], top->outputs[0]};
 	
@@ -126,10 +126,10 @@ static int test_main(void)
 	
 	shape(shaped_graph, bottom);
 	shape(shaped_graph, gamma_node);
-	shape(shaped_graph, gamma_node->inputs[0]->origin()->node);
+	shape(shaped_graph, gamma_node->producer(0));
 	shape(shaped_graph, l1);
 	shape(shaped_graph, l2);
-	shape(shaped_graph, gamma_node->inputs[1]->origin()->node);
+	shape(shaped_graph, gamma_node->producer(1));
 	shape(shaped_graph, r1);
 	jive_shaped_node * p = shape(shaped_graph, r2);
 	
@@ -144,17 +144,17 @@ static int test_main(void)
 	
 	jive_output * new_orig = bottom->inputs[2]->origin();
 	jive_gate * reroute_gate = new_orig->gate;
-	assert(new_orig->node == gamma_node && reroute_gate && reroute_gate->variable == var);
+	assert(new_orig->node() == gamma_node && reroute_gate && reroute_gate->variable == var);
 	
 	jive_ssavar * ssavar_below = new_orig->ssavar;
 	assert(ssavar_below != orig_ssavar);
 	assert(bottom->inputs[2]->ssavar == ssavar_below);
 	assert(ssavar_below->variable == var);
 	
-	jive_input * in_l = jive_node_get_gate_input(gamma_node->inputs[0]->origin()->node, reroute_gate);
+	jive_input * in_l = jive_node_get_gate_input(gamma_node->producer(0), reroute_gate);
 	jive_ssavar * ssavar_l = in_l->ssavar;
 	assert(ssavar_l->variable == var);
-	jive_input * in_r = jive_node_get_gate_input(gamma_node->inputs[1]->origin()->node, reroute_gate);
+	jive_input * in_r = jive_node_get_gate_input(gamma_node->producer(1), reroute_gate);
 	jive_ssavar * ssavar_r = in_r->ssavar;
 	assert(ssavar_r->variable == var);
 	assert(ssavar_r == ssavar_p);

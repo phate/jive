@@ -84,8 +84,8 @@ static jive_binop_reduction_path_t
 jive_bitequal_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
-	const jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>(op1->node);
-	const jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>(op2->node);
+	const jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>(op1->node());
+	const jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>(op2->node());
 
 	if (n1 && n2) {
 		JIVE_DEBUG_ASSERT(n1->operation().bits.size() == n2->operation().bits.size());
@@ -107,7 +107,7 @@ jive_bitequal_node_reduce_operand_pair_(
 	jive_binop_reduction_path_t path, const jive_node_class * cls,
 	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = op1->node->graph;
+	jive_graph * graph = op1->node()->graph;
 
 	switch (path) {
 		case 1:
@@ -122,7 +122,7 @@ jive_bitequal_node_reduce_operand_pair_(
 jive_output *
 jive_bitequal(jive_output * operand1, jive_output * operand2)
 {
-	jive_graph * graph = operand1->node->graph;
+	jive_graph * graph = operand1->node()->graph;
 	jive_output * tmparray2[] = {operand1, operand2};
 	jive::bitstring::equal_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_BITEQUAL_NODE_.base, graph, &op, 2,

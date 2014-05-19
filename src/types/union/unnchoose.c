@@ -156,12 +156,12 @@ jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_nod
 {
 	const jive::unn::choose_operation * attrs = (const jive::unn::choose_operation *) attrs_;
 
-	perform_check(operand->node->graph->context, operand, attrs->element());
+	perform_check(operand->node()->graph->context, operand, attrs->element());
 
-	if (jive_node_isinstance(operand->node, &JIVE_UNIFY_NODE))
+	if (jive_node_isinstance(operand->node(), &JIVE_UNIFY_NODE))
 		return jive_unop_reduction_inverse;
 
-	if (jive_node_isinstance(operand->node, &JIVE_LOAD_NODE))
+	if (jive_node_isinstance(operand->node(), &JIVE_LOAD_NODE))
 		return jive_choose_reduction_load;
 
 	return jive_unop_reduction_none;
@@ -172,10 +172,10 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin();
+		return operand->node()->inputs[0]->origin();
 
 	if (path == jive_choose_reduction_load) {
-		jive_node * load_node = operand->node;
+		jive_node * load_node = operand->node();
 		jive_output * address = load_node->inputs[0]->origin();
 
 		const jive_union_declaration * decl = ((const jive_union_type *)
@@ -206,6 +206,6 @@ jive_choose_create(size_t member, jive_output * operand)
 {
 	jive::unn::choose_operation op(member);
 
-	return jive_unary_operation_create_normalized(&JIVE_CHOOSE_NODE_, operand->node->graph,
+	return jive_unary_operation_create_normalized(&JIVE_CHOOSE_NODE_, operand->node()->graph,
 		&op, operand);
 }

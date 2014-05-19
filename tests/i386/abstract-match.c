@@ -42,7 +42,7 @@ static int test_main(void)
 	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
 	const jive_type * tmparray11[] = {&bits32};
-	jive_node * abstract_fn = jive_lambda_end(lambda, 1, tmparray11, &sum)->node;
+	jive_node * abstract_fn = jive_lambda_end(lambda, 1, tmparray11, &sum)->node();
 	
 	jive_node * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
 	jive_graph_export(graph, i386_fn->outputs[0]);

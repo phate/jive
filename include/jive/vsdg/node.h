@@ -533,11 +533,11 @@ jive_region_contains_node(const jive_region * self, const jive_node * node)
 JIVE_EXPORTED_INLINE jive_region *
 jive_region_innermost(size_t noperands, jive_output * const operands[])
 {
-	jive_region * region = operands[0]->node->region;
+	jive_region * region = operands[0]->node()->region;
 	size_t n;
 	for(n = 1; n < noperands; n++) {
-		if (operands[n]->node->region->depth > region->depth)
-			region = operands[n]->node->region;
+		if (operands[n]->node()->region->depth > region->depth)
+			region = operands[n]->node()->region;
 	}
 	
 	return region;

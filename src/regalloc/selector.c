@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -463,7 +463,7 @@ jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, con
 		if (!jive_variable_may_spill(ssavar->variable))
 			continue;
 		
-		if (ssavar->origin->node == disallow_origins)
+		if (ssavar->origin->node() == disallow_origins)
 			continue;
 		
 		const jive_resource_class * var_rescls = jive_variable_get_resource_class(ssavar->variable);
@@ -552,7 +552,7 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	bool first = true;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_node_cost * last_eval = jive_master_shaper_selector_map_node(self, input->origin()->node);
+		jive_node_cost * last_eval = jive_master_shaper_selector_map_node(self, input->producer());
 		
 		if (last_eval->force_tree_root)
 			continue;
@@ -617,7 +617,7 @@ compute_blocked_rescls_priority(jive_master_shaper_selector * self, jive_node * 
 	
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_node_cost * upper = jive_master_shaper_selector_map_node(self, input->origin()->node);
+		jive_node_cost * upper = jive_master_shaper_selector_map_node(self, input->producer());
 		
 		const jive_resource_class * input_rescls = jive_resource_class_relax(input->required_rescls);
 		
@@ -767,7 +767,7 @@ jive_master_shaper_selector_mark_shaped(jive_master_shaper_selector * self, jive
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_master_shaper_selector_try_add_frontier(self, input->origin()->node);
+		jive_master_shaper_selector_try_add_frontier(self, input->producer());
 	}
 }
 
@@ -789,14 +789,14 @@ static void
 shaped_region_ssavar_add(void * self_, jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar)
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
-	jive_master_shaper_selector_invalidate_node(self, shaped_ssavar->ssavar->origin->node);
+	jive_master_shaper_selector_invalidate_node(self, shaped_ssavar->ssavar->origin->node());
 }
 
 static void
 shaped_region_ssavar_remove(void * self_, jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar)
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
-	jive_master_shaper_selector_invalidate_node(self, shaped_ssavar->ssavar->origin->node);
+	jive_master_shaper_selector_invalidate_node(self, shaped_ssavar->ssavar->origin->node());
 }
 
 static void
@@ -807,9 +807,9 @@ node_create(void * self_, jive_node * node)
 	bool stacked = false;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		jive_master_shaper_selector_invalidate_node(self, input->origin()->node);
+		jive_master_shaper_selector_invalidate_node(self, input->producer());
 		
-		if (jive_master_shaper_selector_remove_frontier(self, input->origin()->node))
+		if (jive_master_shaper_selector_remove_frontier(self, input->producer()))
 			stacked = true;
 	}
 	
@@ -827,15 +827,15 @@ input_change(void * self_, jive_input * input, jive_output * old_origin, jive_ou
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
 	
-	jive_master_shaper_selector_try_add_frontier(self, old_origin->node);
+	jive_master_shaper_selector_try_add_frontier(self, old_origin->node());
 	
 	jive_node_cost * upper_node_cost, * lower_node_cost;
-	upper_node_cost = jive_master_shaper_selector_map_node_internal(self, new_origin->node);
-	lower_node_cost = jive_master_shaper_selector_map_node_internal(self, new_origin->node);
+	upper_node_cost = jive_master_shaper_selector_map_node_internal(self, new_origin->node());
+	lower_node_cost = jive_master_shaper_selector_map_node_internal(self, new_origin->node());
 	
 	if (lower_node_cost->state == jive_node_cost_state_ahead) {
 		if (upper_node_cost->state == jive_node_cost_state_queue)
-			jive_master_shaper_selector_remove_frontier(self, new_origin->node);
+			jive_master_shaper_selector_remove_frontier(self, new_origin->node());
 	}
 	
 	if (upper_node_cost->state == jive_node_cost_state_stack) {

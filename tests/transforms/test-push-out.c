@@ -33,25 +33,25 @@ static int test_main(void)
 
 	jive_output * sum = jive_bitsum(2, tmparray2);
 
-	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, tmparray11, &sum)->node;
+	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, tmparray11, &sum)->node();
 	
 	jive_node * apply = jive_apply_node_create(outer_function->region, inner_lambda->outputs[0],
 		1, outer_function->arguments);
 	
 	jive_node * outer_lambda = jive_lambda_end(outer_function, 1, tmparray11,
-		&apply->outputs[0])->node;
+		&apply->outputs[0])->node();
 	jive_graph_export(graph, outer_lambda->outputs[0]);
 	
 	jive_view(graph, stderr);
 
-	sum->node->inputs[1]->divert_origin(sum->node->inputs[0]->origin());
+	sum->node()->inputs[1]->divert_origin(sum->node()->inputs[0]->origin());
 
 	jive_view(graph, stderr);
 	
 	assert(jive_node_can_move_outward(inner_lambda));
 	jive_graph_push_outward(graph);
 	assert(inner_lambda->region == graph->root_region);
-	assert(inner_lambda->inputs[0]->origin()->node->region->parent == graph->root_region);
+	assert(inner_lambda->producer(0)->region->parent == graph->root_region);
 	
 	jive_view(graph, stderr);
 	

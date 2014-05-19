@@ -94,7 +94,7 @@ const jive_bitbinary_operation_class JIVE_BITUQUOTIENT_NODE_ = {
 jive_output *
 jive_bituquotient(jive_output * dividend, jive_output * divisor)
 {
-	jive_graph * graph = dividend->node->graph;
+	jive_graph * graph = dividend->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::uquotient_operation>(
 			&JIVE_BITUQUOTIENT_NODE_.base, dividend, divisor);

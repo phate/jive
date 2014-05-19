@@ -24,7 +24,7 @@
 static inline bool
 is_gpr_immediate(jive_output * arg)
 {
-	return jive_node_isinstance(arg->node, &JIVE_REGVALUE_NODE);
+	return jive_node_isinstance(arg->node(), &JIVE_REGVALUE_NODE);
 }
 
 static void
@@ -38,17 +38,17 @@ swap(jive_output ** arg1, jive_output ** arg2)
 static void
 regvalue_to_immediate(const jive_output * regvalue, jive_immediate * imm)
 {
-	jive_node * rvnode = regvalue->node;
+	jive_node * rvnode = regvalue->node();
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(rvnode, &JIVE_REGVALUE_NODE));
 	jive_output * value = rvnode->inputs[1]->origin();
 	
-	jive_bitconstant_node * bcnode = dynamic_cast<jive_bitconstant_node *>(value->node);
+	jive_bitconstant_node * bcnode = dynamic_cast<jive_bitconstant_node *>(value->node());
 	if (bcnode) {
 		jive_immediate_init(imm, jive_bitconstant_node_to_unsigned(bcnode), 0, 0, 0);
 		return;
 	}
 	
-	jive_label_to_bitstring_node * lbnode = jive_label_to_bitstring_node_cast(value->node);
+	jive_label_to_bitstring_node * lbnode = jive_label_to_bitstring_node_cast(value->node());
 	if (lbnode) {
 		jive_immediate_init(imm, 0, lbnode->operation().label(), 0, 0);
 		return;
@@ -119,7 +119,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 			NULL, imm);
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
-		jive_node * enter = sub->inputs[0]->origin()->node->region->top;
+		jive_node * enter = sub->producer(0)->region->top;
 		jive_control_type ctl;
 		jive_node_add_input(tmp, &ctl, enter->outputs[0]);
 		

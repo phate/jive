@@ -128,10 +128,10 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const
 		jive_output * o1 = n1->inputs[n]->origin();
 		jive_output * o2 = n2->inputs[n]->origin();
 		
-		jive_node_equiv_entry * entry = jive_equiv_state_lookup(self, o1->node);
-		if (entry->second && entry->second != o2->node)
+		jive_node_equiv_entry * entry = jive_equiv_state_lookup(self, o1->node());
+		if (entry->second && entry->second != o2->node())
 			return false;
-		entry->second = o2->node;
+		entry->second = o2->node();
 	}
 	
 	return true;

@@ -202,7 +202,7 @@ reloc_stack_access(jive_node * node)
 	size_t n;
 	for (n = 0; n < icls->nimmediates; n++) {
 		jive_input * imm_input = node->inputs[n + icls->ninputs];
-		jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->origin()->node);
+		jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->producer());
 		JIVE_DEBUG_ASSERT(immnode);
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
@@ -258,7 +258,7 @@ do_split(
 	
 	jive_ssavar * ssavar_interior = port_in->ssavar;
 	jive_output * value_interior = enter_split->split(enter_split, port_in);
-	jive_node * enter_split_node = value_interior->node;
+	jive_node * enter_split_node = value_interior->node();
 	
 	jive_ssavar_divert_origin(ssavar_interior, value_interior);
 	jive_ssavar * ssavar_enter = jive_ssavar_create(port_in, ssavar_interior->variable);
@@ -281,7 +281,7 @@ do_split(
 	
 	jive_output * value_leave = leave_split->split(leave_split, value_interior);
 	jive_ssavar * ssavar_leave = jive_ssavar_create(value_leave, ssavar_interior->variable);
-	jive_node * leave_split_node = value_leave->node;
+	jive_node * leave_split_node = value_leave->node();
 	for (n = 0; n < leave_split_node->ninputs; n++) {
 		jive_input * input = leave_split_node->inputs[n];
 		if (input->origin() == value_interior)

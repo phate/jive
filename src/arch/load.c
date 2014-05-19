@@ -22,13 +22,13 @@ store_reduce(jive_output * address, size_t nstates, jive_output * const states[]
 	if (nstates == 0)
 		return false;
 
-	jive_node * store = states[0]->node;
+	jive_node * store = states[0]->node();
 	if (!jive_node_isinstance(store, &JIVE_STORE_NODE))
 		return false;
 
 	size_t n;
 	for (n = 0; n < nstates; n++) {
-		if (states[n]->node != store)
+		if (states[n]->node() != store)
 			return false;
 	}
 
@@ -56,7 +56,7 @@ jive_load_node_normalize_node_(const jive_node_normal_form * self_, jive_node * 
 			states[n] = node->inputs[n+1]->origin();
 
 		if (store_reduce(node->inputs[0]->origin(), nstates, states)) {
-			jive_node * store = node->inputs[1]->origin()->node;
+			jive_node * store = node->producer(1);
 			jive_output_replace(node->outputs[0], store->inputs[1]->origin());
 			/* FIXME: not sure whether "destroy" is really appropriate? */
 			jive_node_destroy(node);
@@ -93,7 +93,7 @@ jive_load_node_operands_are_normalized_(const jive_node_normal_form * self_, siz
 	if (!self->base.enable_mutable)
 		return true;
 
-	jive_region * region = operands[0]->node->region;
+	jive_region * region = operands[0]->node()->region;
 	const jive_node_class * cls = self->base.node_class;
 
 	if (self->enable_reducible) {
@@ -123,7 +123,7 @@ jive_load_node_normalized_create_(const jive_load_node_normal_form * self,
 
 	if (self->base.enable_mutable && self->enable_reducible) {
 		if (store_reduce(address, nstates, states))
-			return states[0]->node->inputs[1]->origin();
+			return states[0]->node()->inputs[1]->origin();
 	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {
@@ -317,7 +317,7 @@ jive_load_by_address_create(jive_output * address,
 	size_t nstates, jive_output * const states[])
 {
 	const jive_load_node_normal_form * nf = (const jive_load_node_normal_form *)
-		jive_graph_get_nodeclass_form(address->node->region->graph, &JIVE_LOAD_NODE);
+		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_LOAD_NODE);
 	
 	jive_region * region = load_node_region_innermost(address, nstates, states);
 
@@ -347,7 +347,7 @@ jive_load_by_bitstring_create(jive_output * address, size_t nbits,
 	size_t nstates, jive_output * const states[])
 {
 	const jive_load_node_normal_form * nf = (const jive_load_node_normal_form *)
-		jive_graph_get_nodeclass_form(address->node->region->graph, &JIVE_LOAD_NODE);
+		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_LOAD_NODE);
 
 	jive_region * region = load_node_region_innermost(address, nstates, states);
 

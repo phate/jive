@@ -125,7 +125,7 @@ jive_unify_create(const jive_union_declaration * decl,
 {
 	jive::unn::unify_operation op(decl, option);
 
-	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE_, operand->node->graph,
+	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE_, operand->node()->graph,
 		&op, operand);
 }
 

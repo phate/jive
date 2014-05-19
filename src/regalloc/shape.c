@@ -237,13 +237,13 @@ can_move_below_cut(jive_region_shaper * self, jive_cut * cut, jive_node * new_no
 		for (n = 0; n < node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
 			if (dynamic_cast<jive_anchor_input*>(input)) {
-				if (!can_move_below_region(self, input->origin()->node->region, new_node))
+				if (!can_move_below_region(self, input->producer()->region, new_node))
 					return false;
 			}
 		}
 		
 		for (n = 0; n < node->ninputs; n++) {
-			if (node->inputs[n]->origin()->node == new_node)
+			if (node->producer(n) == new_node)
 				return false;
 		}
 		
@@ -381,7 +381,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		jive_control_output * ctl_output = (jive_control_output *) input->origin();
 		if (!ctl_output->active())
 			continue;
-		self->control_dominator = input->origin()->node;
+		self->control_dominator = input->producer();
 	}
 	
 	for (n = 0; n < new_node->ninputs; n++) {
@@ -512,7 +512,7 @@ do_split_begin(
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_splitnode_create(origin->node->region,
+		jive_node * node = jive_splitnode_create(origin->node()->region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		origin = node->outputs[0];
@@ -935,7 +935,7 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 			continue;
 		jive_region_shaper * subshaper = jive_region_shaper_create(
 			self,
-			input->origin()->node->region,
+			input->producer()->region,
 			self->master_selector);
 		subshapers[nsubshapers++] = subshaper;
 	}

@@ -317,7 +317,7 @@ static int test_main(void)
 	
 	jive_output * zero8 = jive_bitconstant(graph, 8, "00000000");
 	const char * tmparray0[] = {"out"};
-	verify_serialize_nodeexpr(zero8->node,
+	verify_serialize_nodeexpr(zero8->node(),
 		0, NULL, NULL, /* gates */
 		NULL, /* inputs */
 		tmparray0 /* outputs */,
@@ -327,17 +327,17 @@ static int test_main(void)
 		graph->root_region,
 		NULL, NULL, /* input names & origins */
 		tmparray1, /* output names */
-		zero8->node);
+		zero8->node());
 	
 	jive_output * one8 = jive_bitconstant(graph, 8, "10000000");
 	jive_output * two8 = jive_bitconstant(graph, 8, "01000000");
 	jive_output * tmparray2[] = {one8, two8};
 	jive_output * add8 = jive_bitsum(2, tmparray2);
-	assert(add8->node->class_ == &JIVE_BITSUM_NODE);
-	assert(add8->node != zero8->node);
+	assert(add8->node()->class_ == &JIVE_BITSUM_NODE);
+	assert(add8->node() != zero8->node());
 	const char * tmparray3[] = {"a", "b"};
 	const char * tmparray4[] = {"sum"};
-	verify_serialize_nodeexpr(add8->node,
+	verify_serialize_nodeexpr(add8->node(),
 		0, NULL, NULL, /* gates */
 		tmparray3, tmparray4,
 		"(a:root<> b:root<>;) bitsum<> (sum:root<>;)");
@@ -348,11 +348,11 @@ static int test_main(void)
 		graph->root_region,
 		tmparray5, tmparray6, /* input names & origins */
 		tmparray7, /* output names */
-		add8->node);
+		add8->node());
 	jive_output * tmparray8[] = {one8, two8};
 	
 	jive_output * cat16 = jive_bitconcat(2, tmparray8);
-	jive_node * cat16n = cat16->node;
+	jive_node * cat16n = cat16->node();
 	jive_node_gate_input(cat16n, bit8gate, zero8);
 	jive_node_gate_output(cat16n, stackgate);
 	const char * tmparray9[] = {"bit8gate", "stackgate"};

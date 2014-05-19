@@ -70,7 +70,7 @@ jive_fltless_node_create_(struct jive_region * region, const jive_node_attrs * a
 jive_output *
 jive_fltless(jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = op1->node->graph;
+	jive_graph * graph = op1->node()->graph;
 	jive_output * tmparray2[] = {op1, op2};
 	jive::flt::less_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_FLTLESS_NODE_.base, graph, &op, 2,

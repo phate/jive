@@ -92,8 +92,8 @@ static jive_binop_reduction_path_t
 jive_bitand_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
 {
-	if (jive_node_isinstance(op1->node, &JIVE_BITCONSTANT_NODE) &&
-		jive_node_isinstance(op2->node, &JIVE_BITCONSTANT_NODE))
+	if (jive_node_isinstance(op1->node(), &JIVE_BITCONSTANT_NODE) &&
+		jive_node_isinstance(op2->node(), &JIVE_BITCONSTANT_NODE))
 		return jive_binop_reduction_constants;
 
 	return jive_binop_reduction_none;
@@ -103,11 +103,11 @@ static jive_output *
 jive_bitand_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
 	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
 {
-	jive_graph * graph = (op1)->node->graph;
+	jive_graph * graph = (op1)->node()->graph;
 
 	if (path == jive_binop_reduction_constants) {
-		jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>((op1)->node);
-		jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>((op2)->node);
+		jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>((op1)->node());
+		jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>((op2)->node());
 
 		size_t nbits = n1->operation().bits.size();
 		char bits[nbits];

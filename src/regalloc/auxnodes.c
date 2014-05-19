@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -60,7 +61,7 @@ check_fp_sp_dependency(jive_node * node)
 	const jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 	if (!sub)
 		return;
-	jive_node * leave = sub->inputs[0]->origin()->node;
+	jive_node * leave = sub->producer(0);
 	jive_node * enter = leave->region->top;
 	
 	if (node == enter || node == leave)

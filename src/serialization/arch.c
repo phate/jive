@@ -348,7 +348,7 @@ jive_subroutine_deserialize(
 	if (noperands != 1)
 		return false;
 	
-	jive_node * leave = operands[0]->node;
+	jive_node * leave = operands[0]->node();
 	if (leave->region->bottom != leave)
 		return false;
 	jive_node * enter = leave->region->top;

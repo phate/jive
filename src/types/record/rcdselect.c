@@ -165,12 +165,12 @@ jive_select_can_reduce_operand_(const jive_node_class * cls, const jive_node_att
 {
 	const jive::rcd::select_operation * attrs = (const jive::rcd::select_operation *) attrs_;
 	
-	perform_check(operand->node->graph->context, operand, attrs->element);
+	perform_check(operand->node()->graph->context, operand, attrs->element);
 	
-	if (jive_node_isinstance(operand->node, &JIVE_GROUP_NODE))
+	if (jive_node_isinstance(operand->node(), &JIVE_GROUP_NODE))
 		return jive_unop_reduction_inverse;
 
-	if (jive_node_isinstance(operand->node, &JIVE_LOAD_NODE))
+	if (jive_node_isinstance(operand->node(), &JIVE_LOAD_NODE))
 		return jive_select_reduction_load;
 
 	return jive_unop_reduction_none;
@@ -183,10 +183,10 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 	const jive::rcd::select_operation * attrs = (const jive::rcd::select_operation *) attrs_;
 
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[attrs->element]->origin();
+		return operand->node()->inputs[attrs->element]->origin();
 
 	if (path == jive_select_reduction_load) {
-		jive_node * load_node = operand->node;
+		jive_node * load_node = operand->node();
 		jive_output * address = load_node->inputs[0]->origin();
 
 		size_t nbits = 0;
@@ -223,7 +223,7 @@ jive_select_create(size_t member, jive_output * operand)
 	jive::rcd::select_operation op;
 	op.element = member;
 
-	return jive_unary_operation_create_normalized(&JIVE_SELECT_NODE_, operand->node->graph,
+	return jive_unary_operation_create_normalized(&JIVE_SELECT_NODE_, operand->node()->graph,
 		&op, operand);
 }
 

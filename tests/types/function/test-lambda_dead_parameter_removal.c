@@ -48,14 +48,14 @@ test_simple_lambda(struct jive_graph * graph)
 
 	jive_view(graph, stderr);
 
-	jive_lambda_node_remove_dead_parameters(jive_lambda_node_cast(fct->node));
+	jive_lambda_node_remove_dead_parameters(jive_lambda_node_cast(fct->node()));
 	jive_graph_prune(graph);
 
 	jive_view(graph, stderr);
 
-	assert(bottom->inputs[1]->origin()->node == top);
+	assert(bottom->producer(1) == top);
 
-	jive_node * apply = bottom->inputs[0]->origin()->node;
+	jive_node * apply = bottom->producer(0);
 	assert(apply->ninputs == 2);
 
 }
@@ -106,7 +106,7 @@ test_recursive_lambda(struct jive_graph * graph)
 
 	jive_view(graph, stderr);
 
-	jive_lambda_node_remove_dead_parameters(jive_lambda_node_cast(fct->node));
+	jive_lambda_node_remove_dead_parameters(jive_lambda_node_cast(fct->node()));
 	jive_graph_prune(graph);
 
 	jive_view(graph, stderr);

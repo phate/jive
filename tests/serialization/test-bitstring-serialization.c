@@ -64,7 +64,7 @@ static int test_main(void)
 	jive_output * s = jive_bitnegate(q);
 	jive_output * t = jive_bitashr(r, s);
 	
-	jive_node * orig_node = t->node;
+	jive_node * orig_node = t->node();
 	
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv, ctx);

@@ -56,14 +56,14 @@ static int test_main(void)
 	jive_output * a3 = jive_address_to_bitstring_create(top->outputs[0], 32,
 		jive_output_get_type(top->outputs[0]));
 	
-	assert(jive_node_match_attrs(a2->node, jive_node_get_attrs(a3->node)));
-	assert(jive_node_match_attrs(b2->node, jive_node_get_attrs(b3->node)));
+	assert(jive_node_match_attrs(a2->node(), jive_node_get_attrs(a3->node())));
+	assert(jive_node_match_attrs(b2->node(), jive_node_get_attrs(b3->node())));
 
 	jive_output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64, &addrtype);
 	jive_output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64, &addrtype);
 
-	assert(!jive_node_match_attrs(a2->node, jive_node_get_attrs(a4->node)));
-	assert(!jive_node_match_attrs(b2->node, jive_node_get_attrs(b4->node)));
+	assert(!jive_node_match_attrs(a2->node(), jive_node_get_attrs(a4->node())));
+	assert(!jive_node_match_attrs(b2->node(), jive_node_get_attrs(b4->node())));
 	
 	jive_view(graph, stderr);
 

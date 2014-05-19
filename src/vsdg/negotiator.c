@@ -218,7 +218,7 @@ jive_negotiator_split(
 	const jive_type * operand_type, jive_output * operand, const jive_negotiator_option * input_option,
 	const jive_type * output_type, const jive_negotiator_option * output_option)
 {
-	jive_region * region = operand->node->region;
+	jive_region * region = operand->node()->region;
 	
 	/* all members are used "const", but since the structure also
 	represents the attributes of a live node, they cannot be qualified

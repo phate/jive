@@ -52,7 +52,7 @@ static int test_main(void)
 	
 	jive_output * e = jive_bitnot(d);
 	
-	jive_node * orig_node = e->node;
+	jive_node * orig_node = e->node();
 	
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv, ctx);

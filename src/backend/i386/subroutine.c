@@ -29,7 +29,7 @@ jive_i386_subroutine_create(jive_region * region,
 jive_node *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
 {
-	jive_region * src_region = lambda_node->inputs[0]->origin()->node->region;
+	jive_region * src_region = lambda_node->producer(0)->region;
 	jive_context * context = target_parent->graph->context;
 	
 	size_t nparameters = src_region->top->noutputs - 1;
@@ -259,7 +259,7 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive_output * value)
 	int64_t immediates[1] = {self->offset};
 	
 	return jive_instruction_node_create_simple(
-		value->node->region,
+		value->node()->region,
 		&jive_i386_instr_int_sub_immediate,
 		&value, immediates)->outputs[0];
 }
@@ -271,7 +271,7 @@ do_stackptr_add(const jive_value_split_factory * self_, jive_output * value)
 	int64_t immediates[1] = {self->offset};
 	
 	return jive_instruction_node_create_simple(
-		value->node->region,
+		value->node()->region,
 		&jive_i386_instr_int_add_immediate,
 		&value, immediates)->outputs[0];
 }

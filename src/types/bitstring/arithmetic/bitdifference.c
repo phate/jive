@@ -91,7 +91,7 @@ const jive_bitbinary_operation_class JIVE_BITDIFFERENCE_NODE_ = {
 jive_output *
 jive_bitdifference(jive_output * dividend, jive_output * divisor)
 {
-	jive_graph * graph = dividend->node->graph;
+	jive_graph * graph = dividend->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::difference_operation>(
 			&JIVE_BITDIFFERENCE_NODE_.base, dividend, divisor);

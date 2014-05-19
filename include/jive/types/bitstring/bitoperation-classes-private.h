@@ -20,19 +20,19 @@ unop_normalized_create(const jive_unary_operation_class * cls, jive_output * arg
 		dynamic_cast<const jive_bitstring_type*>(jive_output_get_type(argument));
 
 	Op op(*type);
-	return jive_unary_operation_create_normalized(cls, argument->node->graph,
-		&op, argument);
+	return jive_unary_operation_create_normalized(cls, argument->node()->graph, &op, argument);
 }
 
 template<typename Op>
 static inline jive_output *
-binop_normalized_create(const jive_binary_operation_class * cls, size_t narguments, jive_output * const * arguments)
+binop_normalized_create(const jive_binary_operation_class * cls, size_t narguments,
+	jive_output * const * arguments)
 {
 	JIVE_DEBUG_ASSERT(narguments != 0);
 	const jive_bitstring_type * type =
 		dynamic_cast<const jive_bitstring_type*>(jive_output_get_type(arguments[0]));
 
-	jive_graph * graph = arguments[0]->node->graph;
+	jive_graph * graph = arguments[0]->node()->graph;
 	Op op(*type, narguments);
 	return jive_binary_operation_create_normalized(cls, graph, &op,
 		narguments, arguments);
@@ -48,7 +48,7 @@ binop_normalized_create(
 	const jive_bitstring_type * type =
 		dynamic_cast<const jive_bitstring_type*>(jive_output_get_type(arg1));
 
-	jive_graph * graph = arg1->node->graph;
+	jive_graph * graph = arg1->node()->graph;
 	Op op(*type);
 	jive_output * arguments[] = {arg1, arg2};
 	return jive_binary_operation_create_normalized(cls, graph, &op,

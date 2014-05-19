@@ -43,10 +43,10 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(equal0->node, &JIVE_BITEQUAL_NODE));
-	assert(jive_node_isinstance(equal1->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(equal2->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(equal3->node, &JIVE_BITEQUAL_NODE));
+	assert(jive_node_isinstance(equal0->node(), &JIVE_BITEQUAL_NODE));
+	assert(jive_node_isinstance(equal1->node(), &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(equal2->node(), &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(equal3->node(), &JIVE_BITEQUAL_NODE));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

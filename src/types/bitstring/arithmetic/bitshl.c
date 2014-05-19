@@ -93,7 +93,7 @@ const jive_bitbinary_operation_class JIVE_BITSHL_NODE_ = {
 jive_output *
 jive_bitshl(jive_output * operand, jive_output * shift)
 {
-	jive_graph * graph = operand->node->graph;
+	jive_graph * graph = operand->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::shl_operation>(
 			&JIVE_BITSHL_NODE_.base, operand, shift);

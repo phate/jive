@@ -77,7 +77,7 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 jive_outputview *
 jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 {
-	jive_context * context = output->node->graph->context;
+	jive_context * context = output->node()->graph->context;
 	
 	jive_outputview * self = jive_context_malloc(context, sizeof(*self));
 	
@@ -121,8 +121,8 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 void
 jive_outputview_destroy(jive_outputview * self)
 {
-	jive_context_free(self->output->node->graph->context, self->label);
-	jive_context_free(self->output->node->graph->context, self);
+	jive_context_free(self->output->node()->graph->context, self->label);
+	jive_context_free(self->output->node()->graph->context, self);
 }
 
 void

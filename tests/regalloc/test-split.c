@@ -32,7 +32,7 @@ create_testgraph_split(jive_context * context)
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive_type * memtype = jive_output_get_type(memstate);
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node;
+	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg1");
@@ -110,7 +110,7 @@ create_testgraph_emerg_split(jive_context * context)
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive_type * memtype = jive_output_get_type(memstate);
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node;
+	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive_gate * arg3_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");

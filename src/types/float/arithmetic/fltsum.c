@@ -68,7 +68,7 @@ jive_fltsum_node_create_(jive_region * region, const jive_node_attrs * attrs,
 jive_output *
 jive_fltsum(struct jive_output * op1, struct jive_output * op2)
 {
-	jive_graph * graph = op1->node->graph;
+	jive_graph * graph = op1->node()->graph;
 	jive_output * tmparray2[] = {op1, op2};
 	jive::flt::sum_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_FLTSUM_NODE_.base, graph, &op, 2,

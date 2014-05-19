@@ -70,7 +70,7 @@ jive_fltequal_node_create_(struct jive_region * region, const jive_node_attrs * 
 jive_output *
 jive_fltequal(struct jive_output * op1, struct jive_output * op2)
 {
-	jive_graph * graph = op1->node->graph;
+	jive_graph * graph = op1->node()->graph;
 	jive_output * tmparray2[] = {op1, op2};
 	jive::flt::equal_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_FLTEQUAL_NODE_.base, graph, &op, 2,

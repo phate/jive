@@ -57,7 +57,7 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	assert(!jive_node_match_attrs(g0->node, jive_node_get_attrs(g1->node)));
+	assert(!jive_node_match_attrs(g0->node(), jive_node_get_attrs(g1->node())));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

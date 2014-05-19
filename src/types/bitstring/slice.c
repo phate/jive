@@ -138,11 +138,11 @@ jive_bitslice_can_reduce_operand_(const jive_node_class * cls, const jive_node_a
 	
 	if ((attrs->low() == 0) && (attrs->high() == operand->type().nbits()))
 		return jive_unop_reduction_idempotent;
-	if (operand_->node->class_ == &JIVE_BITSLICE_NODE)
+	if (operand_->node()->class_ == &JIVE_BITSLICE_NODE)
 		return jive_unop_reduction_narrow;
-	if (operand_->node->class_ == &JIVE_BITCONSTANT_NODE)
+	if (operand_->node()->class_ == &JIVE_BITCONSTANT_NODE)
 		return jive_unop_reduction_constant;
-	if (operand_->node->class_ == &JIVE_BITCONCAT_NODE)
+	if (operand_->node()->class_ == &JIVE_BITCONCAT_NODE)
 		return jive_unop_reduction_distribute;
 	
 	return jive_unop_reduction_none;
@@ -159,19 +159,19 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 		return operand_;
 	
 	if (path == jive_unop_reduction_narrow) {
-		const jive_bitslice_node * node = (const jive_bitslice_node *) operand->node;
+		const jive_bitslice_node * node = (const jive_bitslice_node *) operand->node();
 		return jive_bitslice(node->inputs[0]->origin(), attrs->low() + node->operation().low(),
 			attrs->high() + node->operation().low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
-		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->node;
+		const jive_bitconstant_node * node = (const jive_bitconstant_node *) operand->node();
 		return jive_bitconstant(node->graph, attrs->high() - attrs->low(),
 			&node->operation().bits[0] + attrs->low());
 	}
 	
 	if (path == jive_unop_reduction_distribute) {
-		jive_node * node = operand->node;
+		jive_node * node = operand->node();
 		jive_output * operands[node->ninputs];
 		
 		size_t noperands = 0, pos = 0, n;
@@ -199,6 +199,6 @@ jive_bitslice(jive_output * operand, size_t low, size_t high)
 {
 	jive::bitstring::slice_operation attrs(low, high);
 
-	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE_, operand->node->graph,
+	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE_, operand->node()->graph,
 		&attrs, operand);
 }

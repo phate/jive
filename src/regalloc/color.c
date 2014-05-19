@@ -215,7 +215,7 @@ split_top(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_res
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_splitnode_create(origin->node->region,
+		jive_node * node = jive_splitnode_create(origin->node()->region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		
@@ -245,7 +245,7 @@ split_bottom(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_
 		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
 		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
 		
-		jive_node * node = jive_splitnode_create(origin->node->region,
+		jive_node * node = jive_splitnode_create(origin->node()->region,
 			in_type, origin, in_rescls,
 			out_type, out_rescls);
 		jive_cut * cut = jive_cut_split(point->cut, point);
@@ -331,7 +331,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		name = find_allowed_name(context, shaped_variable);
 	}
 	
-	jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, origin->node);
+	jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, origin->node());
 	
 	const jive_resource_class_demotion * demotion;
 	demotion = select_split_path(shaped_graph, jive_variable_get_resource_class(variable), position, splits);
@@ -439,7 +439,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			size_t n;
 			for (n = 0; n < node->ninputs; n++) {
 				if (is_active_control_input(node->inputs[n])) {
-					node = node->inputs[n]->origin()->node;
+					node = node->producer(n);
 					break;
 				}
 			}
@@ -464,7 +464,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			}
 			
 			jive_node * xfer_node = jive_splitnode_create(
-				output->node->region,
+				output->node()->region,
 				type, output, rescls,
 				type, rescls);
 			
@@ -473,7 +473,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			jive_ssavar_divert_origin(output->ssavar, xfer_output);
 			
 			/* insert at appropriate place */
-			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node);
+			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, output->node());
 			jive_cut * cut = jive_cut_split(shaped_node->cut, jive_shaped_node_next_in_cut(shaped_node));
 			
 			jive_cut_append(cut, xfer_node);
@@ -570,7 +570,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	
 	while (gate->outputs.first) {
 		jive_output * output = gate->outputs.first;
-		jive_output * new_output = jive_node_gate_output(output->node, spill_gate);
+		jive_output * new_output = jive_node_gate_output(output->node(), spill_gate);
 		
 		JIVE_DEBUG_ASSERT(output->users.first == output->users.last);
 		
@@ -601,7 +601,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	while (gate->inputs.first) {
 		jive_input * input = gate->inputs.first;
 		jive_node * node = input->node;
-		jive_node * xfer_node = input->origin()->node;
+		jive_node * xfer_node = input->producer();
 		jive_output * origin = xfer_node->inputs[0]->origin();
 			
 		jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);

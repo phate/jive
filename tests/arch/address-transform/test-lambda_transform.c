@@ -40,11 +40,11 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_lambda_node_address_transform((const jive_lambda_node *)fct->node, 32);
+	jive_lambda_node_address_transform((const jive_lambda_node *)fct->node(), 32);
 
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->inputs[0]->origin()->node, &JIVE_BITSTRING_TO_ADDRESS_NODE));
+	assert(jive_node_isinstance(bottom->producer(0), &JIVE_BITSTRING_TO_ADDRESS_NODE));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

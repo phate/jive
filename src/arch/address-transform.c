@@ -208,9 +208,9 @@ jive_address_to_bitstring_node_can_reduce_operand_(const jive_node_class * cls,
 	const jive::address_to_bitstring_operation * attrs;
 	attrs = (const jive::address_to_bitstring_operation *) attrs_;
 
-	if (jive_node_isinstance(operand->node, &JIVE_BITSTRING_TO_ADDRESS_NODE)) {
+	if (jive_node_isinstance(operand->node(), &JIVE_BITSTRING_TO_ADDRESS_NODE)) {
 		const jive_bitstring_to_address_node * node;
-		node = (const jive_bitstring_to_address_node *) operand->node;
+		node = (const jive_bitstring_to_address_node *) operand->node();
 
 		if (node->operation().nbits() != attrs->nbits())
 			return jive_unop_reduction_none;
@@ -232,7 +232,7 @@ jive_address_to_bitstring_node_reduce_operand_(jive_unop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin();
+		return operand->node()->inputs[0]->origin();
 
 	if (path == jive_unop_reduction_idempotent)
 		return operand;
@@ -247,7 +247,7 @@ jive_address_to_bitstring_node_create(struct jive_region * region,
 	jive::address_to_bitstring_operation op(nbits, original_type);
 
 	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_, region->graph,
-		&op, address)->node;
+		&op, address)->node();
 }
 
 jive_output *
@@ -257,7 +257,7 @@ jive_address_to_bitstring_create(jive_output * address, size_t nbits,
 	jive::address_to_bitstring_operation op(nbits, original_type);
 
 	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_,
-		address->node->graph, &op, address);
+		address->node()->graph, &op, address);
 }
 
 
@@ -383,9 +383,9 @@ jive_bitstring_to_address_node_can_reduce_operand_(const jive_node_class * cls,
 	const jive::bitstring_to_address_operation * attrs;
 	attrs = (const jive::bitstring_to_address_operation *) attrs_;
 
-	if (jive_node_isinstance(operand->node, &JIVE_ADDRESS_TO_BITSTRING_NODE)) {
+	if (jive_node_isinstance(operand->node(), &JIVE_ADDRESS_TO_BITSTRING_NODE)) {
 		const jive_address_to_bitstring_node * node;
-		node = (const jive_address_to_bitstring_node *)operand->node;
+		node = (const jive_address_to_bitstring_node *)operand->node();
 
 		if (node->operation().nbits() != attrs->nbits())
 			return jive_unop_reduction_none;
@@ -407,7 +407,7 @@ jive_bitstring_to_address_node_reduce_operand_(jive_unop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin();
+		return operand->node()->inputs[0]->origin();
 
 	if (path == jive_unop_reduction_idempotent)
 		return operand;
@@ -422,7 +422,7 @@ jive_bitstring_to_address_node_create(struct jive_region * region,
 	jive::bitstring_to_address_operation op(nbits, original_type);
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_, region->graph,
-		&op, bitstring)->node;
+		&op, bitstring)->node();
 }
 
 jive_output *
@@ -432,7 +432,7 @@ jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits,
 	jive::bitstring_to_address_operation op(nbits, original_type);
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_,
-		bitstring->node->graph, &op, bitstring);
+		bitstring->node()->graph, &op, bitstring);
 }
 
 /* reductions */

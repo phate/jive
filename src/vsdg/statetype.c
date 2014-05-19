@@ -127,6 +127,6 @@ jive_state_merge(const jive_type * statetype, size_t nstates, jive_output * cons
 jive_node *
 jive_state_split(const jive_type * statetype, jive_output * state, size_t nstates)
 {
-	jive_region * region = state->node->region;
+	jive_region * region = state->node()->region;
 	return jive_statemux_node_create(region, statetype, 1, &state, nstates);
 }

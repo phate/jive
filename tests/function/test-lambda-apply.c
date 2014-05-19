@@ -57,7 +57,7 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 
-	jive_node * test_sum = interest->inputs[0]->origin()->node;
+	jive_node * test_sum = interest->producer(0);
 	assert(jive_node_isinstance(test_sum, &JIVE_BITSUM_NODE));
 	assert(test_sum->ninputs == 2);
 	assert(test_sum->inputs[0]->origin() == c0);

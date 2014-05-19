@@ -121,7 +121,7 @@ jive_memberof_can_reduce_operand_(const jive_node_class * cls, const jive_node_a
 	const jive::address::memberof_operation * attrs =
 		(const jive::address::memberof_operation *) attrs_;
 	
-	const jive_containerof_node * node = jive_containerof_node_cast(operand->node);
+	const jive_containerof_node * node = jive_containerof_node_cast(operand->node());
 	if (!node)
 		return jive_unop_reduction_none;
 	
@@ -137,7 +137,7 @@ jive_memberof_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_c
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin();
+		return operand->node()->inputs[0]->origin();
 	
 	return NULL;
 }
@@ -149,7 +149,7 @@ jive_memberof(jive_output * address,
 	jive::address::memberof_operation op(record_decl, index);
 
 	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE_,
-		address->node->graph, &op, address);
+		address->node()->graph, &op, address);
 }
 
 /* containerof */
@@ -253,7 +253,7 @@ jive_containerof_can_reduce_operand_(const jive_node_class * cls, const jive_nod
 	const jive::address::containerof_operation * attrs =
 		(const jive::address::containerof_operation *) attrs_;
 	
-	const jive_memberof_node * node = jive_memberof_node_cast(operand->node);
+	const jive_memberof_node * node = jive_memberof_node_cast(operand->node());
 	if (!node)
 		return jive_unop_reduction_none;
 	
@@ -269,7 +269,7 @@ jive_containerof_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 	const jive_node_attrs * attrs_, jive_output * operand)
 {
 	if (path == jive_unop_reduction_inverse)
-		return operand->node->inputs[0]->origin();
+		return operand->node()->inputs[0]->origin();
 	
 	return NULL;
 }
@@ -300,8 +300,7 @@ jive_containerof(jive_output * address,
 {
 	jive::address::containerof_operation op(record_decl, index);
 
-	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE_,
-		address->node->graph,
+	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE_, address->node()->graph,
 		&op, address);
 }
 
@@ -441,11 +440,11 @@ jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls,
 	const jive::address::arraysubscript_operation * attrs =
 		(const jive::address::arraysubscript_operation *) attrs_;
 	
-	jive_bitconstant_node * offset_constant = dynamic_cast<jive_bitconstant_node *>(operand2->node);
+	jive_bitconstant_node * offset_constant = dynamic_cast<jive_bitconstant_node *>(operand2->node());
 	if (offset_constant && jive_bitconstant_is_zero(offset_constant))
 		return jive_binop_reduction_rneutral;
 	
-	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node);
+	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node());
 	if (node && attrs->element_type() == node->operation().element_type() &&
 		*jive_output_get_type(operand2) == *jive_input_get_type(node->inputs[1]))
 		return jive_binop_reduction_lfold;
@@ -461,7 +460,7 @@ jive_arraysubscript_reduce_operand_pair_(
 	if (path == jive_binop_reduction_rneutral)
 		return operand1;
 
-	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node);
+	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node());
 	if (path == jive_binop_reduction_lfold) {
 		jive_output * operands[2] = {node->inputs[1]->origin(), operand2};
 		jive_output * sum = jive_bitsum(2, operands);
@@ -470,7 +469,7 @@ jive_arraysubscript_reduce_operand_pair_(
 		operands[1] = sum;
 		
 		return jive_binary_operation_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE_,
-			operand1->node->graph, attrs_, 2, operands);
+			operand1->node()->graph, attrs_, 2, operands);
 	}
 	
 	return NULL;
@@ -620,9 +619,9 @@ jive_arrayindex_node_create_(jive_region * region, const jive_node_attrs * attrs
 static const jive_output *
 get_array_base(const jive_output * addr, const jive_value_type * element_type)
 {
-	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
+	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node());
 	if (node && *element_type == node->operation().element_type())
-		return addr->node->inputs[0]->origin();
+		return addr->node()->inputs[0]->origin();
 	else return addr;
 }
 
@@ -631,14 +630,14 @@ get_array_index(jive_output * addr, const jive_output * base, const jive_value_t
 	const jive_bitstring_type * index_type)
 {
 	jive_output * index = NULL;
-	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node);
+	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node());
 	if (node && *element_type == node->operation().element_type()) {
 		/* FIXME: correct type! */
-		index = addr->node->inputs[1]->origin();
+		index = addr->node()->inputs[1]->origin();
 	} else {
 		char bits[index_type->nbits()];
 		memset(bits, '0', index_type->nbits());
-		index = jive_bitconstant(addr->node->graph, index_type->nbits(), bits);
+		index = jive_bitconstant(addr->node()->graph, index_type->nbits(), bits);
 	}
 	
 	return index;

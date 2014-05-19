@@ -184,7 +184,7 @@ jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self
 	
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	
-	jive_region * region = operands[0]->node->region;
+	jive_region * region = operands[0]->node()->region;
 	const jive_node_class * cls = self->base.node_class;
 
 	jive_unop_reduction_path_t reduction;

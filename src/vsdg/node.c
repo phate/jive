@@ -73,7 +73,7 @@ jive_uninitialized_node_add_input(jive_node * self, const jive_type * type,
 	jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count && !dynamic_cast<const jive_anchor_type*>(type)) {
-		jive_region * origin_region = initial_operand->node->region;
+		jive_region * origin_region = initial_operand->node()->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 	
@@ -117,8 +117,8 @@ jive_node_init_(
 	size_t n;
 	for(n=0; n<noperands; n++) {
 		jive_uninitialized_node_add_input(self, operand_types[n], operands[n]);
-		if (operands[n]->node->depth_from_root + 1 > self->depth_from_root)
-			 self->depth_from_root = operands[n]->node->depth_from_root + 1;
+		if (operands[n]->node()->depth_from_root + 1 > self->depth_from_root)
+			 self->depth_from_root = operands[n]->node()->depth_from_root + 1;
 	}
 	self->noperands = self->ninputs;
 	
@@ -224,7 +224,7 @@ jive_node_add_input_(jive_node * self, jive_input * input)
 bool
 jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 {
-	jive_region * origin_region = origin->node->region;
+	jive_region * origin_region = origin->node()->region;
 	jive_region * target_region = self->region;
 	if (dynamic_cast<const jive_anchor_output*>(origin))
 		origin_region = origin_region->parent;
@@ -240,7 +240,7 @@ jive_input *
 jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count && dynamic_cast<const jive_anchor_type*>(type)) {
-		jive_region * origin_region = initial_operand->node->region;
+		jive_region * origin_region = initial_operand->node()->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 
@@ -293,7 +293,7 @@ jive_input *
 jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count) {
-		jive_region * origin_region = initial_operand->node->region;
+		jive_region * origin_region = initial_operand->node()->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 
@@ -372,8 +372,8 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 {
 	size_t new_depth_from_root = 0, n;
 	for(n=0; n<self->ninputs; n++)
-		if (self->inputs[n]->origin()->node->depth_from_root + 1 > new_depth_from_root)
-			 new_depth_from_root = self->inputs[n]->origin()->node->depth_from_root + 1;
+		if (self->producer(n)->depth_from_root + 1 > new_depth_from_root)
+			 new_depth_from_root = self->producer(n)->depth_from_root + 1;
 	
 	size_t old_depth_from_root = self->depth_from_root;
 	if (old_depth_from_root == new_depth_from_root)
@@ -462,11 +462,11 @@ jive_node_depends_on_region(const jive_node * self, const jive_region * region)
 	for(n = 0; n < self->ninputs; n++) {
 		jive_input * input = self->inputs[n];
 		if (dynamic_cast<jive_anchor_input*>(input)) {
-			if (jive_region_depends_on_region(input->origin()->node->region, region)) {
+			if (jive_region_depends_on_region(input->producer()->region, region)) {
 				return true;
 			}
 		} else {
-			if (input->origin()->node->region == region) {
+			if (input->producer()->region == region) {
 				return true;
 			}
 		}
@@ -579,9 +579,9 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	for (n = 0; n < self->ninputs; n++) {
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
 		if (dynamic_cast<jive_anchor_input*>(self->inputs[n])) {
-			jive_region * subregion = self->inputs[n]->origin()->node->region;
+			jive_region * subregion = self->producer(n)->region;
 			jive_region_reparent(subregion, new_region);
-		} else if (self->inputs[n]->origin()->node->region != new_region) {
+		} else if (self->producer(n)->region != new_region) {
 			/* or add the node's input to the hull */
 			jive_region_hull_add_input(new_region, self->inputs[n]);
 		}

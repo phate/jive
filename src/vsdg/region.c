@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -158,7 +158,7 @@ jive_floating_region_settle(jive_floating_region floating_region)
 void
 jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
-	if (ssavar->origin->node->region->depth >= self->depth) return;
+	if (ssavar->origin->node()->region->depth >= self->depth) return;
 	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use;
 		use = jive_region_ssavar_hash_lookup(&self->used_ssavars, ssavar);
@@ -182,7 +182,7 @@ jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 void
 jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
-	if (ssavar->origin->node->region->depth >= self->depth) return;
+	if (ssavar->origin->node()->region->depth >= self->depth) return;
 	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use;
 		use = jive_region_ssavar_hash_lookup(&self->used_ssavars, ssavar);
@@ -359,7 +359,7 @@ jive_region_hull_entry_destroy(jive_region_hull_entry * entry)
 void
 jive_region_hull_add_input(jive_region * region, jive_input * input)
 {
-	jive_region * origin_region = input->origin()->node->region;
+	jive_region * origin_region = input->producer()->region;
 	while (region->depth > origin_region->depth) {
 		jive_region_hull_entry_create(region, input);
 		region = region->parent;
@@ -390,7 +390,7 @@ jive_region_verify_hull(struct jive_region * region)
 	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list) {
 		size_t i;
 		for (i = 0; i < node->ninputs; i++) {
-			if (node->inputs[i]->origin()->node->region->depth < region->depth) {
+			if (node->producer(i)->region->depth < region->depth) {
 				jive_region_hull_entry * entry;
 				JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
 					if (entry->input == node->inputs[i])
@@ -407,7 +407,7 @@ jive_region_verify_hull(struct jive_region * region)
 	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
 		jive_region_hull_entry * sub_entry;
 		JIVE_LIST_ITERATE(subregion->hull, sub_entry, region_hull_list) {
-			if (sub_entry->input->origin()->node->region->depth < region->depth) {
+			if (sub_entry->input->origin()->node()->region->depth < region->depth) {
 				jive_region_hull_entry * entry;
 				JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
 					if (entry->input == sub_entry->input)
@@ -422,7 +422,7 @@ jive_region_verify_hull(struct jive_region * region)
 	/* check region hull whether it contains entries that don't belong there */
 	jive_region_hull_entry * entry;
 	JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
-		if (entry->input->origin()->node->region->depth >= region->depth)
+		if (entry->input->origin()->node()->region->depth >= region->depth)
 			JIVE_DEBUG_ASSERT(0);
 	}
 }

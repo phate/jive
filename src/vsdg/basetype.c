@@ -54,14 +54,14 @@ static inline void
 jive_input_add_as_user(jive_input * self, jive_output * output)
 {
 	JIVE_LIST_PUSH_BACK(output->users, self, output_users_list);
-	jive_node_add_successor(output->node);
+	jive_node_add_successor(output->node());
 }
 
 static inline void
 jive_input_remove_as_user(jive_input * self, jive_output * output)
 {
 	JIVE_LIST_REMOVE(output->users, self, output_users_list);
-	jive_node_remove_successor(self->origin()->node);
+	jive_node_remove_successor(self->producer());
 }
 
 jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * origin)
@@ -170,13 +170,13 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 			"Type mismatch: Cannot divert edges of 'anchor' type");
 	}
 
-	JIVE_DEBUG_ASSERT(this->node->graph == new_origin->node->graph);
+	JIVE_DEBUG_ASSERT(this->node->graph == new_origin->node()->graph);
 
-	if (this->origin()->node->region != this->node->region)
+	if (this->producer()->region != this->node->region)
 		jive_region_hull_remove_input(this->node->region, this);
 
 	if (this->node->graph->floating_region_count)
-		jive_region_check_move_floating(this->node->region, new_origin->node->region);
+		jive_region_check_move_floating(this->node->region, new_origin->node()->region);
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node, new_origin));
 
@@ -186,12 +186,12 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 	this->origin_ = new_origin;
 	jive_input_add_as_user(this, new_origin);
 
-	if (new_origin->node->region != this->node->region)
+	if (new_origin->node()->region != this->node->region)
 		jive_region_hull_add_input(this->node->region, this);
 
 	jive_node_invalidate_depth_from_root(this->node);
 
-	jive_graph_mark_denormalized(new_origin->node->graph);
+	jive_graph_mark_denormalized(new_origin->node()->graph);
 
 	jive_graph_notify_input_change(this->node->graph, this, old_origin, new_origin);
 
@@ -283,8 +283,8 @@ jive_input_auto_merge_variable(jive_input * self)
 
 /* outputs */
 
-jive_output::jive_output(struct jive_node * node_, size_t index_)
-	: node(node_)
+jive_output::jive_output(jive_node * node, size_t index_)
+	: node_(node)
 	, index(index_)
 	, gate(nullptr)
 	, ssavar(nullptr)
@@ -306,19 +306,19 @@ jive_output::~jive_output() noexcept
 		JIVE_LIST_REMOVE(gate->outputs, this, gate_outputs_list);
 		
 		size_t n;
-		for (n = 0; n < node->noutputs; n++) {
-			jive_output * other = node->outputs[n];
+		for (n = 0; n < node_->noutputs; n++) {
+			jive_output * other = node_->outputs[n];
 			if (other == this || !other->gate)
 				continue;
-			jive_gate_interference_remove(node->graph, gate, other->gate);
+			jive_gate_interference_remove(node_->graph, gate, other->gate);
 		}
 	}
 	
-	node->noutputs--;
+	node_->noutputs--;
 	size_t n;
-	for (n = index; n < node->noutputs; n++) {
-		node->outputs[n] = node->outputs[n+1];
-		node->outputs[n]->index = n;
+	for (n = index; n < node_->noutputs; n++) {
+		node_->outputs[n] = node_->outputs[n+1];
+		node_->outputs[n]->index = n;
 	}
 	
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
@@ -348,7 +348,7 @@ jive_output_get_constraint(const jive_output * self)
 		}
 		return variable;
 	}
-	variable = jive_variable_create(self->node->graph);
+	variable = jive_variable_create(self->node()->graph);
 	jive_variable_set_resource_class(variable, self->required_rescls);
 	return variable;
 }
@@ -432,7 +432,7 @@ jive_output_replace(jive_output * self, jive_output * other)
 void
 jive_output_destroy(jive_output * self)
 {
-	if (self->node->region) jive_graph_notify_output_destroy(self->node->graph, self);
+	if (self->node()->region) jive_graph_notify_output_destroy(self->node()->graph, self);
 	
 	delete self;
 }
@@ -522,8 +522,8 @@ jive_gate_merge(jive_gate * self, jive_gate * other)
 	jive_output * output, * output_next;
 	JIVE_LIST_ITERATE_SAFE(other->outputs, output, output_next, gate_outputs_list) {
 		size_t n;
-		for(n = 0; n<output->node->noutputs; n++) {
-			jive_output * other_output = output->node->outputs[n];
+		for(n = 0; n < output->node()->noutputs; n++) {
+			jive_output * other_output = output->node()->outputs[n];
 			if (other_output == output) continue;
 			if (other_output->gate == 0) continue;
 			jive_gate_interference_remove(self->graph, other, other_output->gate);

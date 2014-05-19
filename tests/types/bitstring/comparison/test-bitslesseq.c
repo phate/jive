@@ -47,12 +47,12 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(slesseq0->node, &JIVE_BITSLESSEQ_NODE));
-	assert(jive_node_isinstance(slesseq1->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(slesseq2->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(slesseq3->node, &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(slesseq4->node, &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(slesseq5->node, &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(slesseq0->node(), &JIVE_BITSLESSEQ_NODE));
+	assert(jive_node_isinstance(slesseq1->node(), &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(slesseq2->node(), &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(slesseq3->node(), &JIVE_CONTROL_FALSE_NODE));
+	assert(jive_node_isinstance(slesseq4->node(), &JIVE_CONTROL_TRUE_NODE));
+	assert(jive_node_isinstance(slesseq5->node(), &JIVE_CONTROL_TRUE_NODE));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

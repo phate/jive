@@ -60,7 +60,7 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 static jive_node *
 jive_lambda_leave_node_create(jive_output * output)
 {
-	JIVE_DEBUG_ASSERT(output->node->region->bottom == NULL);
+	JIVE_DEBUG_ASSERT(output->node()->region->bottom == NULL);
 	
 	jive_node * node = jive::create_operation_node(jive::fct::lambda_leave_operation());
 	
@@ -69,10 +69,10 @@ jive_lambda_leave_node_create(jive_output * output)
 	const jive_type * ctl_ptr = &ctl;
 	jive_anchor_type anchor;
 	const jive_type * ancptr = &anchor;
-	jive_node_init_(node, output->node->region,
+	jive_node_init_(node, output->node()->region,
 		1, &ctl_ptr, &output,
 		1, &ancptr);
-	output->node->region->bottom = node;
+	output->node()->region->bottom = node;
 	
 	return node;
 }
@@ -209,7 +209,7 @@ jive_lambda_node_create_(struct jive_region * region, const jive_node_attrs * at
 	size_t noperands, struct jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands > 0);
-	return jive_lambda_node_create(operands[0]->node->region);
+	return jive_lambda_node_create(operands[0]->node()->region);
 }
 
 static bool
@@ -263,7 +263,7 @@ jive_lambda_is_self_recursive(const jive_lambda_node * self_)
 	JIVE_LIST_ITERATE(lambda_region->hull, entry, input_hull_list) {
 		if (!jive_node_isinstance(entry->input->node, &JIVE_APPLY_NODE))
 			continue;
-		if (!jive_node_isinstance(entry->input->origin()->node, &JIVE_PHI_ENTER_NODE))
+		if (!jive_node_isinstance(entry->input->producer(), &JIVE_PHI_ENTER_NODE))
 			continue;
 
 		if (entry->input->origin()->index == index)
@@ -343,12 +343,12 @@ jive_lambda_end(jive_lambda * self,
 void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
-	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->inputs[0]->origin()->node);
+	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->producer(0));
 	JIVE_DEBUG_ASSERT(lambda_node);
 	if (!lambda_node)
 		return;
 	
-	jive_region * function_region = lambda_node->inputs[0]->origin()->node->region;
+	jive_region * function_region = lambda_node->producer(0)->region;
 	jive_node * head = function_region->top;
 	jive_node * tail = function_region->bottom;
 	
@@ -379,7 +379,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 static bool
 lambda_parameter_is_unused(const struct jive_output * parameter)
 {
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node, &JIVE_LAMBDA_ENTER_NODE));
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node(), &JIVE_LAMBDA_ENTER_NODE));
 
 	return jive_output_has_no_user(parameter);
 }
@@ -387,9 +387,9 @@ lambda_parameter_is_unused(const struct jive_output * parameter)
 static bool
 lambda_parameter_is_passthrough(const struct jive_output * parameter)
 {
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node, &JIVE_LAMBDA_ENTER_NODE));
+	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node(), &JIVE_LAMBDA_ENTER_NODE));
 
-	jive_node * leave = parameter->node->region->bottom;
+	jive_node * leave = parameter->node()->region->bottom;
 	return jive_output_has_single_user(parameter) && (parameter->users.first->node == leave);
 }
 
@@ -398,7 +398,7 @@ lambda_result_is_passthrough(const struct jive_input * result)
 {
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(result->node, &JIVE_LAMBDA_LEAVE_NODE));
 
-	if (jive_node_isinstance(result->origin()->node, &JIVE_LAMBDA_ENTER_NODE))
+	if (jive_node_isinstance(result->producer(), &JIVE_LAMBDA_ENTER_NODE))
 		return lambda_parameter_is_passthrough(result->origin());
 
 	return false;
@@ -442,9 +442,9 @@ replace_all_apply_nodes(jive_output * fct,
 	size_t nalive_parameters, jive_output * alive_parameters[],
 	size_t nalive_results, jive_input * alive_results[])
 {
-	bool is_lambda = jive_node_isinstance(fct->node, &JIVE_LAMBDA_NODE);
-	bool is_phi_enter = jive_node_isinstance(fct->node, &JIVE_PHI_ENTER_NODE);
-	bool is_phi = jive_node_isinstance(fct->node, &JIVE_PHI_NODE);
+	bool is_lambda = jive_node_isinstance(fct->node(), &JIVE_LAMBDA_NODE);
+	bool is_phi_enter = jive_node_isinstance(fct->node(), &JIVE_PHI_ENTER_NODE);
+	bool is_phi = jive_node_isinstance(fct->node(), &JIVE_PHI_NODE);
 	JIVE_DEBUG_ASSERT(is_lambda || is_phi_enter || is_phi);
 
 	jive_input * user;

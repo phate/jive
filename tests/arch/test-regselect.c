@@ -54,8 +54,8 @@ static int test_main(void)
 	jive_regselector_process(&regselect);
 	jive_regselector_fini(&regselect);
 	
-	jive_node * n1 = sum1->node->inputs[0]->origin()->node;
-	jive_node * n2 = sum1->node->inputs[1]->origin()->node;
+	jive_node * n1 = sum1->node()->producer(0);
+	jive_node * n2 = sum1->node()->producer(1);
 	
 	jive_regvalue_node * rv = jive_regvalue_node_cast(n1);
 	if (!rv)
@@ -63,12 +63,12 @@ static int test_main(void)
 	assert(rv);
 	assert(rv->operation().regcls() == &jive_testarch_regcls_gpr);
 	
-	sum2 = res->node->inputs[1]->origin();
-	n1 = sum2->node->inputs[0]->origin()->node;
-	n2 = sum2->node->inputs[1]->origin()->node;
+	sum2 = res->node()->inputs[1]->origin();
+	n1 = sum2->node()->producer(0);
+	n2 = sum2->node()->producer(1);
 	assert(n1->class_ == &JIVE_REGVALUE_NODE);
 	assert(n2->class_ == &JIVE_BITNOT_NODE);
-	n2 = n2->inputs[0]->origin()->node;
+	n2 = n2->producer(0);
 	assert(n2->class_ == &JIVE_REGVALUE_NODE);
 	jive_output * o1 = n1->inputs[1]->origin();
 	jive_output * o2 = n2->inputs[1]->origin();

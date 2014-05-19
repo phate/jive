@@ -66,11 +66,11 @@ flatten_data_items(
 		const jive_record_declaration * decl = type->declaration();
 		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
 		
-		jive_group_node * node = jive_group_node_cast(data->node);
+		jive_group_node * node = jive_group_node_cast(data->node());
 		if (!node)
 			jive_context_fatal_error(ctx, "Type mismatch: can only serialize simple record compounds");
 			
-		jive_graph * graph = data->node->graph;
+		jive_graph * graph = data->node()->graph;
 		
 		nitems = layout->base.total_size;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
@@ -84,7 +84,7 @@ flatten_data_items(
 			size_t nsub_items;
 			jive_output ** sub_items;
 			
-			flatten_data_items(ctx, data->node->inputs[k]->origin(), &nsub_items, &sub_items,
+			flatten_data_items(ctx, data->node()->inputs[k]->origin(), &nsub_items, &sub_items,
 				layout_mapper);
 			
 			if (nsub_items + layout->element[k].offset > nitems)
@@ -103,11 +103,11 @@ flatten_data_items(
 		const jive_union_declaration * decl = type->declaration();
 		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
 		
-		jive_unify_node * node = jive_unify_node_cast(data->node);
+		jive_unify_node * node = jive_unify_node_cast(data->node());
 		if (!node)
 			jive_context_fatal_error(ctx, "Type mismatch: can only serialize simple union compounds");
 			
-		jive_graph * graph = data->node->graph;
+		jive_graph * graph = data->node()->graph;
 		
 		nitems = layout->base.total_size;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
@@ -120,7 +120,8 @@ flatten_data_items(
 		size_t nsub_items;
 		jive_output ** sub_items;
 		
-		flatten_data_items(ctx, data->node->inputs[0]->origin(), &nsub_items, &sub_items, layout_mapper);
+		flatten_data_items(ctx, data->node()->inputs[0]->origin(), &nsub_items, &sub_items,
+			layout_mapper);
 		
 		if (nsub_items > nitems)
 			jive_context_fatal_error(ctx, "Invalid union layout: element exceeds union");
@@ -154,7 +155,7 @@ squeeze_data_items(size_t nitems, jive_output ** items)
 jive_output *
 jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 {
-	jive_graph * graph = data->node->graph;
+	jive_graph * graph = data->node()->graph;
 	jive_context * context = graph->context;
 	jive_region * parent = graph->root_region;
 	
@@ -178,7 +179,7 @@ jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 jive_output *
 jive_rodataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 {
-	jive_graph * graph = data->node->graph;
+	jive_graph * graph = data->node()->graph;
 	jive_context * context = graph->context;
 	jive_region * parent = graph->root_region;
 
@@ -201,7 +202,7 @@ jive_rodataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 jive_output *
 jive_bssobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 {
-	jive_graph * graph = data->node->graph;
+	jive_graph * graph = data->node()->graph;
 	jive_context * context = graph->context;
 	jive_region * parent = graph->root_region;
 

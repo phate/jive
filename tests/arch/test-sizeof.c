@@ -54,11 +54,11 @@ static int test_main(void)
 	jive_output * s6 = jive_sizeof_create(graph->root_region, &record_t);
 	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t);
 
-	assert(jive_node_match_attrs(s1->node, jive_node_get_attrs(s2->node)));
+	assert(jive_node_match_attrs(s1->node(), jive_node_get_attrs(s2->node())));
 	const jive_type *  tmparray2[] = {&bits32, &bits32, &bits32, &bits32, &bits32, &bits32, &bits32,
 		&bits32};
 	jive_output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
-	assert(!jive_node_match_attrs(s0->node, jive_node_get_attrs(s3->node)));	
+	assert(!jive_node_match_attrs(s0->node(), jive_node_get_attrs(s3->node())));
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		8, tmparray2,
@@ -80,21 +80,21 @@ static int test_main(void)
 	jive_graph_prune(graph);
 
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[0]->origin()->node), 1));
+		bottom->producer(0)), 1));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[1]->origin()->node), 1));
+		bottom->producer(1)), 1));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[2]->origin()->node), 1));
+		bottom->producer(2)), 1));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[3]->origin()->node), 4));
+		bottom->producer(3)), 4));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[4]->origin()->node), 4));
+		bottom->producer(4)), 4));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[5]->origin()->node), 4));
+		bottom->producer(5)), 4));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[6]->origin()->node), 8));
+		bottom->producer(6)), 8));
 	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->inputs[7]->origin()->node), 4));
+		bottom->producer(7)), 4));
 	
 	jive_view(graph, stdout);
 

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -31,7 +32,7 @@ create_testgraph(jive_context * ctx)
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive_type * memtype = jive_output_get_type(memstate);
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node;
+	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive_region * region = subroutine.region;

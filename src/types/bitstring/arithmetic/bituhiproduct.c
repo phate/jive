@@ -100,7 +100,7 @@ const jive_bitbinary_operation_class JIVE_BITUHIPRODUCT_NODE_ = {
 jive_output *
 jive_bituhiproduct(jive_output * dividend, jive_output * divisor)
 {
-	jive_graph * graph = dividend->node->graph;
+	jive_graph * graph = dividend->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::uhiproduct_operation>(
 			&JIVE_BITUHIPRODUCT_NODE_.base, dividend, divisor);

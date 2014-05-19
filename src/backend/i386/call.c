@@ -27,16 +27,16 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
 	jive_output * address = node->inputs[0]->origin();
-	if (address->node->class_ == &JIVE_LABEL_TO_ADDRESS_NODE) {
-		jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node);
+	if (address->node()->class_ == &JIVE_LABEL_TO_ADDRESS_NODE) {
+		jive_label_to_address_node * label_node = jive_label_to_address_node_cast(address->node());
 		jive_immediate imm;
 		jive_immediate_init(&imm, 0, label_node->operation().label(), NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_call,
 			0, &imm);
-	} else if (address->node->class_ == &JIVE_LABEL_TO_BITSTRING_NODE) {
-		jive_label_to_bitstring_node * label_node = jive_label_to_bitstring_node_cast(address->node);
+	} else if (address->node()->class_ == &JIVE_LABEL_TO_BITSTRING_NODE) {
+		jive_label_to_bitstring_node * label_node = jive_label_to_bitstring_node_cast(address->node());
 		jive_immediate imm;
 		jive_immediate_init(&imm, 0, label_node->operation().label(), NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(

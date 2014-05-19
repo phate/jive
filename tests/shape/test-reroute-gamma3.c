@@ -111,7 +111,7 @@ static int test_main(void)
 		tmparray12,
 		tmparray13,
 		gamma);
-	jive_node * gamma_node = gamma[0]->node;
+	jive_node * gamma_node = gamma[0]->node();
 	const jive_type * tmparray14[] = {&type, &type, &type};
 	jive_output * tmparray15[] = {gamma[0], gamma[1]};
 	
@@ -125,10 +125,10 @@ static int test_main(void)
 	
 	shape(shaped_graph, bottom);
 	shape(shaped_graph, gamma_node);
-	shape(shaped_graph, gamma_node->inputs[0]->origin()->node);
+	shape(shaped_graph, gamma_node->producer(0));
 	shape(shaped_graph, l1);
 	shape(shaped_graph, l2);
-	shape(shaped_graph, gamma_node->inputs[1]->origin()->node);
+	shape(shaped_graph, gamma_node->producer(1));
 	shape(shaped_graph, r1);
 	jive_shaped_node * p = shape(shaped_graph, r2);
 	

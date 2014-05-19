@@ -118,7 +118,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	{
 		jive_input * input = self->node->inputs[n];
 		if (dynamic_cast<jive_anchor_input*>(input)) {
-			jive_region * region = input->origin()->node->region;
+			jive_region * region = input->producer()->region;
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 			jive_shaped_region_destroy_cuts(shaped_region);
 		}
@@ -217,7 +217,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 				jive_input * input = anchor_node->inputs[n];
 				if (dynamic_cast<jive_anchor_input*>(input)) {
 					jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph,
-						input->origin()->node->region);
+						input->producer()->region);
 					next = jive_shaped_region_first(sub);
 					if (next)
 						break;
@@ -241,7 +241,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 			jive_input * input = next->node->inputs[n];
 			if (dynamic_cast<jive_anchor_input*>(input)) {
 				jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph,
-					input->origin()->node->region);
+					input->producer()->region);
 				jive_shaped_node * tmp = jive_shaped_region_first(sub);
 				if (tmp) {
 					next = tmp;

@@ -276,8 +276,8 @@ jive_seq_graph_patch_jump_targets(
 	if (user->class_ == &JIVE_SUBROUTINE_LEAVE_NODE) {
 		return;
 	} else if (user->class_ == &JIVE_GAMMA_NODE) {
-		jive_region * primary_region = user->inputs[0]->origin()->node->region;
-		jive_region * secondary_region = user->inputs[1]->origin()->node->region;
+		jive_region * primary_region = user->producer(0)->region;
+		jive_region * secondary_region = user->producer(1)->region;
 		primary_tgt = jive_seq_graph_map_region(seq_graph, primary_region)->first_point;
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, secondary_region)->first_point;
 	} else {

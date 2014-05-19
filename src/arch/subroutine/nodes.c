@@ -147,15 +147,15 @@ jive_subroutine_node_create_(struct jive_region * region, const jive_node_attrs 
 	size_t noperands, struct jive_output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
-	JIVE_DEBUG_ASSERT(operands[0]->node->region->parent == region);
-	jive_region * subroutine_region = operands[0]->node->region;
+	JIVE_DEBUG_ASSERT(operands[0]->node()->region->parent == region);
+	jive_region * subroutine_region = operands[0]->node()->region;
 	
 	const jive::subroutine_operation * attrs = (const jive::subroutine_operation *) attrs_;
 	
 	jive_subroutine_deprecated * subroutine = attrs->subroutine();
 	subroutine = jive_subroutine_copy(subroutine, subroutine_region->top, subroutine_region->bottom);
 	
-	return jive_subroutine_node_create(operands[0]->node->region, subroutine);
+	return jive_subroutine_node_create(operands[0]->node()->region, subroutine);
 }
 
 jive_node *

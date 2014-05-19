@@ -34,7 +34,7 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	if (!jive_input_vector_size(users_below)) {
 		return ssavar;
 	}
-	jive_graph * graph = ssavar->origin->node->graph;
+	jive_graph * graph = ssavar->origin->node()->graph;
 	jive_output * origin = ssavar->origin;
 	jive_variable * variable = ssavar->variable;
 	jive_ssavar * ssavar_inside_region = ssavar;
@@ -44,14 +44,14 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_node);
 	jive_gate * gate = type->create_gate(graph, gate_name);
 	
-	jive_region * region1 = anchor_node->inputs[0]->origin()->node->region;
-	jive_region * region2 = anchor_node->inputs[1]->origin()->node->region;
+	jive_region * region1 = anchor_node->producer(0)->region;
+	jive_region * region2 = anchor_node->producer(1)->region;
 	jive_input_vector users1, users2;
 	jive_input_vector_init(&users1);
 	jive_input_vector_init(&users2);
-	jive_input * in1 = jive_node_gate_input(anchor_node->inputs[0]->origin()->node, gate,
+	jive_input * in1 = jive_node_gate_input(anchor_node->producer(0), gate,
 		ssavar->origin);
-	jive_input * in2 = jive_node_gate_input(anchor_node->inputs[1]->origin()->node, gate,
+	jive_input * in2 = jive_node_gate_input(anchor_node->producer(1), gate,
 		ssavar->origin);
 	jive_input_vector_push_back(&users1, graph->context, in1);
 	jive_input_vector_push_back(&users2, graph->context, in2);
@@ -134,7 +134,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	jive_node * anchor_node,
 	jive_region * interest_region)
 {
-	jive_graph * graph = ssavar->origin->node->graph;
+	jive_graph * graph = ssavar->origin->node()->graph;
 	jive_output * origin = ssavar->origin;
 	jive_variable * variable = ssavar->variable;
 	
@@ -143,7 +143,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_node);
 	jive_gate * gate = type->create_gate(graph, gate_name);
 	
-	jive_region * loop_region = anchor_node->inputs[0]->origin()->node->region;
+	jive_region * loop_region = anchor_node->producer(0)->region;
 	jive_node * loop_head = loop_region->top;
 	jive_node * loop_tail = loop_region->bottom;
 	
@@ -216,7 +216,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	jive_shaped_node * anchor_location,
 	jive_region * interest_region)
 {
-	jive_graph * graph = ssavar->origin->node->graph;
+	jive_graph * graph = ssavar->origin->node()->graph;
 	jive_context * context = graph->context;
 	jive_node * anchor_node = anchor_location->node;
 	
@@ -265,7 +265,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 static jive_ssavar *
 reroute_out_of_region(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar, jive_region * region)
 {
-	if (ssavar->origin->node->region != region)
+	if (ssavar->origin->node()->region != region)
 		ssavar = reroute_out_of_region(shaped_graph, ssavar, region->parent);
 	
 	if (!region->anchor)
@@ -283,7 +283,7 @@ jive_regalloc_reroute_at_point(jive_ssavar * ssavar, jive_shaped_node * shaped_n
 {
 	jive_shaped_graph * shaped_graph = shaped_node->shaped_graph;
 	jive_shaped_region * shaped_region = shaped_node->cut->shaped_region;
-	if (ssavar->origin->node->region != shaped_region->region)
+	if (ssavar->origin->node()->region != shaped_region->region)
 		return reroute_out_of_region(shaped_graph, ssavar, shaped_region->region);
 	else
 		return ssavar;

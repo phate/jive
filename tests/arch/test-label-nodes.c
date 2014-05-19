@@ -40,18 +40,18 @@ static int test_main(void)
 
 	const jive::address::label_to_address_operation * attrs0 =
 		(const jive::address::label_to_address_operation *)
-			jive_node_get_attrs(o0->node);
+			jive_node_get_attrs(o0->node());
 	const jive::address::label_to_address_operation * attrs1 =
 		(const jive::address::label_to_address_operation *)
-			jive_node_get_attrs(o1->node);
+			jive_node_get_attrs(o1->node());
 
 	assert(attrs0);
 	assert(attrs1);
 	assert(attrs0->label() == &foobar.base);
 	assert(attrs1->label() == &bla.base);
 	
-	assert(!jive_node_match_attrs(o0->node, attrs1));
-	assert(jive_node_match_attrs(o1->node, attrs1));
+	assert(!jive_node_match_attrs(o0->node(), attrs1));
+	assert(jive_node_match_attrs(o1->node(), attrs1));
 	
 	jive_output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
 	jive_output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
@@ -59,13 +59,13 @@ static int test_main(void)
 
 	const jive::address::label_to_address_operation * attrs2 =
 		(const jive::address::label_to_address_operation *)
-			jive_node_get_attrs(o2->node);
+			jive_node_get_attrs(o2->node());
 	const jive::address::label_to_address_operation * attrs3 =
 		(const jive::address::label_to_address_operation *)
-			jive_node_get_attrs(o3->node);
+			jive_node_get_attrs(o3->node());
 	const jive::address::label_to_address_operation * attrs4 =
 		(const jive::address::label_to_address_operation *)
-			jive_node_get_attrs(o4->node);
+			jive_node_get_attrs(o4->node());
 
 	assert(attrs2);
 	assert(attrs3);
@@ -74,9 +74,9 @@ static int test_main(void)
 	assert(attrs3->label() == &bla.base);
 	assert(attrs4->label() == &foobar.base);
 	
-	assert(!jive_node_match_attrs(o2->node, attrs4));
-	assert(!jive_node_match_attrs(o2->node, attrs3));
-	assert(jive_node_match_attrs(o2->node, attrs2));
+	assert(!jive_node_match_attrs(o2->node(), attrs4));
+	assert(!jive_node_match_attrs(o2->node(), attrs3));
+	assert(jive_node_match_attrs(o2->node(), attrs2));
 	
 	jive_address_type addr;
 	jive_bitstring_type bits32(32);
@@ -91,8 +91,8 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o0->node), 32);
-	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o1->node), 32);
+	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o0->node()), 32);
+	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o1->node()), 32);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stderr);

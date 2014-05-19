@@ -98,7 +98,7 @@ jive_bitsymbolicconstant_create(jive_graph * graph, size_t nbits, const char * n
 	attrs.name = name;
 
 	return jive_nullary_operation_create_normalized(&JIVE_BITSYMBOLICCONSTANT_NODE, graph,
-		&attrs)->node;
+		&attrs)->node();
 }
 
 jive_output *

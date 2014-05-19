@@ -39,7 +39,7 @@ static int test_main(void)
 	jive_gamma(top->outputs[2],
 		1, tmparray1,
 		&top->outputs[0], &top->outputs[1], &tmp);
-	jive_node * gamma = tmp->node;
+	jive_node * gamma = tmp->node();
 	const jive_type * tmparray2[] = {&type};
 	
 	jive_node * bottom = jive_test_node_create(r1,
@@ -58,10 +58,10 @@ static int test_main(void)
 	jive_node * copied_bottom = r2->bottom;
 	assert(copied_top && copied_top->ninputs == 0 && copied_top->noutputs == 3);
 	assert(copied_bottom && copied_bottom->ninputs == 1 && copied_bottom->noutputs == 0);
-	jive_node * copied_gamma = copied_bottom->inputs[0]->origin()->node;
+	jive_node * copied_gamma = copied_bottom->producer(0);
 	assert(copied_gamma->class_ == gamma->class_);
-	jive_node * alt1 = copied_gamma->inputs[0]->origin()->node;
-	jive_node * alt2 = copied_gamma->inputs[1]->origin()->node;
+	jive_node * alt1 = copied_gamma->producer(0);
+	jive_node * alt2 = copied_gamma->producer(1);
 	assert(alt1->region->parent == r2);
 	assert(alt2->region->parent == r2);
 	assert(alt1->class_ = &JIVE_GAMMA_TAIL_NODE);

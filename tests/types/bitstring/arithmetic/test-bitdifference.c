@@ -31,7 +31,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(diff->node, &JIVE_BITDIFFERENCE_NODE));
+	assert(jive_node_isinstance(diff->node(), &JIVE_BITDIFFERENCE_NODE));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

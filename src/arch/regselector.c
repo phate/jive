@@ -267,7 +267,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	
 	if (node->class_ == &JIVE_REGVALUE_NODE) {
 		const jive_register_class * regcls = ((jive_regvalue_node *) node)->operation().regcls();
-		jive_node * origin = node->inputs[1]->origin()->node;
+		jive_node * origin = node->producer(1);
 		JIVE_DEBUG_ASSERT(origin->region == root_region);
 		
 		if (jive_node_isinstance(origin, &JIVE_BITBINARY_NODE)) {
@@ -278,7 +278,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				jive_output * regvalue = jive_regvalue(ctl, regcls, operand);
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
-					self->base.class_->annotate_node(&self->base, regvalue->node);
+					self->base.class_->annotate_node(&self->base, regvalue->node());
 				operands[n] = regvalue;
 			}
 			
@@ -291,7 +291,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 			jive_output_replace(node->outputs[0], subst);
 			
 			if (!jive_negotiator_map_output(&self->base, subst))
-				self->base.class_->annotate_node(&self->base, subst->node);
+				self->base.class_->annotate_node(&self->base, subst->node());
 			jive_negotiator_fully_specialize(&self->base);
 		} else if (jive_node_isinstance(origin, &JIVE_BITUNARY_NODE)) {
 			jive_output * operands[origin->noperands];
@@ -301,7 +301,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				jive_output * regvalue = jive_regvalue(ctl, regcls, operand);
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
-					self->base.class_->annotate_node(&self->base, regvalue->node);
+					self->base.class_->annotate_node(&self->base, regvalue->node());
 				operands[n] = regvalue;
 			}
 			
@@ -314,7 +314,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 			jive_output_replace(node->outputs[0], subst);
 			
 			if (!jive_negotiator_map_output(&self->base, subst))
-				self->base.class_->annotate_node(&self->base, subst->node);
+				self->base.class_->annotate_node(&self->base, subst->node());
 			jive_negotiator_fully_specialize(&self->base);
 		}
 		return;
@@ -323,7 +323,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (input->origin()->node->region != root_region)
+		if (input->producer()->region != root_region)
 			continue;
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 		if (!port)
@@ -335,7 +335,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 		jive_output * regvalue = jive_regvalue(ctl, regcls, input->origin());
 		jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 		if (!reg_port) {
-			self->base.class_->annotate_node(&self->base, regvalue->node);
+			self->base.class_->annotate_node(&self->base, regvalue->node());
 			reg_port = jive_negotiator_map_output(&self->base, regvalue);
 		}
 		

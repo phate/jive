@@ -52,7 +52,7 @@ jive_phi_node_normal_form_operands_are_normalized_(const jive_node_normal_form *
 
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	jive_region * region = operands[0]->node->region;
+	jive_region * region = operands[0]->node()->region;
 	const jive_node_class * cls = self->base.node_class;
 
 	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))
