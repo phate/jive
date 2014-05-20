@@ -231,12 +231,6 @@ jive_input_auto_merge_variable(jive_input * self);
 void
 jive_input_destroy(jive_input * self);
 
-JIVE_EXPORTED_INLINE struct jive_node *
-jive_input_node(const jive_input * input)
-{
-	return input->node;
-}
-
 /**	@}	*/
 
 /**
