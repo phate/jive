@@ -170,6 +170,8 @@ public:
 
 	inline jive_node * node() const noexcept { return node_; }
 
+	inline bool no_user() const noexcept { return users.first == nullptr; }
+
 	size_t index;
 	
 	struct {
