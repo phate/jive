@@ -148,9 +148,6 @@ jive_input_auto_assign_variable(jive_input * self);
 struct jive_ssavar *
 jive_input_auto_merge_variable(jive_input * self);
 
-void
-jive_input_destroy(jive_input * self);
-
 /**	@}	*/
 
 /**
