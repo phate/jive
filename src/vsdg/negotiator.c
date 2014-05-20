@@ -767,7 +767,7 @@ jive_negotiator_maybe_split_edge(jive_negotiator * self, jive_output * origin, j
 	if (jive_negotiator_option_equals(self, origin_port->option, input_port->option))
 		return;
 	
-	const jive_type * type = jive_input_get_type(input);
+	const jive_type * type = &input->type();
 	jive_output * split_output = jive_negotiator_split(self,
 		type, input->origin(), origin_port->option,
 		type, input_port->option);

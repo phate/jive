@@ -179,7 +179,7 @@ jive_lambda_node_create(jive_region * function_region)
 	const jive_type * return_types[nreturns];
 	std::vector<jive_gate *> return_gates;
 	for (size_t n = 0; n < nreturns; n++) {
-		return_types[n] = jive_input_get_type(function_region->bottom->inputs[n+1]);
+		return_types[n] = &function_region->bottom->inputs[n+1]->type();
 		return_gates.push_back(function_region->bottom->inputs[n+1]->gate);
 	}
 	
@@ -523,7 +523,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 			continue;
 
 		alive_results[nalive_results] = result;
-		alive_result_types[nalive_results++] = jive_input_get_type(result);
+		alive_result_types[nalive_results++] = &result->type();
 	}
 
 	/* If the old lambda is embedded within a phi region, extend the phi region with the new lambda */

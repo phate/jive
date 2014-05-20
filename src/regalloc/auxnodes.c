@@ -32,8 +32,7 @@ replace_splitnode(jive_shaped_node * shaped_node, jive_node * node)
 	jive_xfer_description xfer = jive_instructionset_create_xfer(isa, node->region,
 		node->inputs[0]->origin(), node->inputs[0]->required_rescls, node->outputs[0]->required_rescls);
 	if (!xfer.input)
-		xfer.input = jive_node_add_input(xfer.node, jive_input_get_type(node->inputs[0]),
-			node->inputs[0]->origin());
+		xfer.input = jive_node_add_input(xfer.node, &node->inputs[0]->type(), node->inputs[0]->origin());
 	if (!xfer.output)
 		xfer.output = jive_node_add_output(xfer.node, jive_output_get_type(node->outputs[0]));
 	

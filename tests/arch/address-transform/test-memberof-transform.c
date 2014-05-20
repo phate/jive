@@ -88,7 +88,7 @@ jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
 	for(; node; node = jive_traverser_next(traverser)){
 		size_t i;
 		for(i = 0; i < node->ninputs; i++){
-			assert(!dynamic_cast<const jive_address_type*>(jive_input_get_type(node->inputs[i])));
+			assert(!dynamic_cast<const jive_address_type*>(&node->inputs[i]->type()));
 		}
 		for(i = 0; i < node->noutputs; i++){
 			assert(!dynamic_cast<const jive_address_type*>(jive_output_get_type(node->outputs[i])));

@@ -666,7 +666,7 @@ jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits)
 {
 	jive_input * fct = node->inputs[0];
 
-	const jive_type * fcttype = jive_input_get_type(fct);
+	const jive_type * fcttype = &fct->type();
 	if (!type_contains_address(fcttype))
 		return;
 
@@ -677,8 +677,7 @@ jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits)
 	jive_output * arguments[narguments];
 	for (n = 1; n < node->ninputs; n++) {
 		jive_input * argument = node->inputs[n];
-		arguments[n-1] = jive_address_to_bitstring_create(argument->origin(), nbits,
-			jive_input_get_type(argument));
+		arguments[n-1] = jive_address_to_bitstring_create(argument->origin(), nbits, &argument->type());
 	}
 	jive_output * function = jive_address_to_bitstring_create(fct->origin(), nbits, fcttype);
 

@@ -136,12 +136,6 @@ private:
 	jive_output * origin_;
 };
 
-JIVE_EXPORTED_INLINE const jive_type *
-jive_input_get_type(const jive_input * self)
-{
-	return &self->type();
-}
-
 struct jive_variable *
 jive_input_get_constraint(const jive_input * self);
 

@@ -119,7 +119,7 @@ jive_input::~jive_input() noexcept
 void
 jive_input::swap(jive_input * other) noexcept
 {
-	JIVE_DEBUG_ASSERT(*jive_input_get_type(this) == *jive_input_get_type(other));
+	JIVE_DEBUG_ASSERT(this->type() == other->type());
 	JIVE_DEBUG_ASSERT(this->node == other->node);
 
 	jive_ssavar * v1 = this->ssavar;
@@ -159,7 +159,7 @@ jive_input::divert_origin(jive_output * new_origin) noexcept
 void
 jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 {
-	const jive_type * input_type = jive_input_get_type(this);
+	const jive_type * input_type = &this->type();
 	const jive_type * operand_type = jive_output_get_type(new_origin);
 
 	if (*input_type != *operand_type) {

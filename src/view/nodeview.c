@@ -30,7 +30,7 @@ jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
 	jive_buffer_init(&type_label_buffer, context);
 	jive_buffer_init(&input_label_buffer, context);
 	input->label(input_label_buffer);
-	jive_input_get_type(input)->label(type_label_buffer);
+	input->type().label(type_label_buffer);
 	const char * input_label = jive_buffer_to_string(&input_label_buffer);
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	

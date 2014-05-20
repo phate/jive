@@ -97,7 +97,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 				retval = jive_address_to_bitstring_create(retval, 32, jive_output_get_type(retval));
 			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
 		} else {
-			jive_node_add_input(subroutine->leave, jive_input_get_type(original), retval);
+			jive_node_add_input(subroutine->leave, &original->type(), retval);
 		}
 	}
 	

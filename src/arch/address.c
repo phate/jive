@@ -446,7 +446,7 @@ jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls,
 	
 	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node());
 	if (node && attrs->element_type() == node->operation().element_type() &&
-		*jive_output_get_type(operand2) == *jive_input_get_type(node->inputs[1]))
+		*jive_output_get_type(operand2) == node->inputs[1]->type())
 		return jive_binop_reduction_lfold;
 	
 	return jive_binop_reduction_none;
