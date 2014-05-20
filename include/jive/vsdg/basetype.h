@@ -136,12 +136,6 @@ private:
 	jive_output * origin_;
 };
 
-JIVE_EXPORTED_INLINE void
-jive_input_get_label(const jive_input * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
 JIVE_EXPORTED_INLINE const jive_type *
 jive_input_get_type(const jive_input * self)
 {
