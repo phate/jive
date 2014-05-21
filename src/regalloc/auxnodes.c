@@ -34,7 +34,7 @@ replace_splitnode(jive_shaped_node * shaped_node, jive_node * node)
 	if (!xfer.input)
 		xfer.input = jive_node_add_input(xfer.node, &node->inputs[0]->type(), node->inputs[0]->origin());
 	if (!xfer.output)
-		xfer.output = jive_node_add_output(xfer.node, jive_output_get_type(node->outputs[0]));
+		xfer.output = jive_node_add_output(xfer.node, &node->outputs[0]->type());
 	
 	jive_input_auto_assign_variable(xfer.input);
 	jive_ssavar * outvar = node->outputs[0]->ssavar;

@@ -42,7 +42,7 @@ static int test_main(void)
 	jive_node * apply_node = jive_apply_node_create(graph->root_region,
 		lambda_expr, 2, tmparray2);
 	
-	assert(bits32 == *jive_output_get_type(apply_node->outputs[0]));
+	assert(bits32 == apply_node->outputs[0]->type());
 
 	const jive_type * tmparray12[] = {&bits32};
 	jive_node * interest = jive_test_node_create(graph->root_region,

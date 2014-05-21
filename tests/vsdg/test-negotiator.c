@@ -138,7 +138,7 @@ negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	node->class_ = &NEGTESTNODE;
 	const jive_type * operand_types[noperands];
 	for (size_t n = 0; n < noperands; ++n)
-		operand_types[n] = jive_output_get_type(operands[n]);
+		operand_types[n] = &operands[n]->type();
 	
 	negtestnode_init_(node, region,
 		noperands, operand_types, operands,

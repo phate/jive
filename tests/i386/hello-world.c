@@ -163,7 +163,7 @@ static int test_main(void)
 	
 	/* mark call as affecting global state */
 	jive_output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
-	const jive_type * memtype = jive_output_get_type(memstate);
+	const jive_type * memtype = &memstate->type();
 	jive_node_add_input(call_write, memtype, memstate);
 	jive_subroutine_simple_set_global_state(
 		i386_fn, jive_node_add_output(call_write, memtype));

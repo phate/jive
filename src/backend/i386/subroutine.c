@@ -73,12 +73,11 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		if (dynamic_cast<jive_value_output*>(original)) {
 			substitute = jive_subroutine_value_parameter(subroutine, nvalue_parameters ++);
 		} else {
-			substitute = jive_node_add_output(subroutine->enter, jive_output_get_type(original));
+			substitute = jive_node_add_output(subroutine->enter, &original->type());
 		}
 		
 		if(dynamic_cast<jive_address_output*>(original))
-			substitute = jive_bitstring_to_address_create(substitute, 32,
-				jive_output_get_type(original));
+			substitute = jive_bitstring_to_address_create(substitute, 32, &original->type());
 		jive_substitution_map_add_output(subst, original, substitute);
 	}
 	
@@ -94,7 +93,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		
 		if (dynamic_cast<jive_value_input*>(original)) {
 			if(dynamic_cast<jive_address_input*>(original))
-				retval = jive_address_to_bitstring_create(retval, 32, jive_output_get_type(retval));
+				retval = jive_address_to_bitstring_create(retval, 32, &retval->type());
 			jive_subroutine_value_return(subroutine, nvalue_returns ++, retval);
 		} else {
 			jive_node_add_input(subroutine->leave, &original->type(), retval);
@@ -317,7 +316,7 @@ jive_i386_subroutine_add_fp_dependency_(const jive_subroutine_deprecated * self_
 		if (input->origin() == frameptr)
 			return NULL;
 	}
-	return jive_node_add_input(node, jive_output_get_type(frameptr), frameptr);
+	return jive_node_add_input(node, &frameptr->type(), frameptr);
 }
 
 static jive_input *
@@ -332,5 +331,5 @@ jive_i386_subroutine_add_sp_dependency_(const jive_subroutine_deprecated * self_
 		if (input->origin() == stackptr)
 			return NULL;
 	}
-	return jive_node_add_input(node, jive_output_get_type(stackptr), stackptr);
+	return jive_node_add_input(node, &stackptr->type(), stackptr);
 }

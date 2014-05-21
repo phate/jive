@@ -40,7 +40,7 @@ struct jive_input *
 jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
 	jive_output * origin)
 {
-	const jive_type * operand_type = jive_output_get_type(origin);
+	const jive_type * operand_type = &origin->type();
 
 	if (*self != *operand_type)
 		jive_raise_type_error(self, operand_type, node->graph->context);
@@ -160,7 +160,7 @@ void
 jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 {
 	const jive_type * input_type = &this->type();
-	const jive_type * operand_type = jive_output_get_type(new_origin);
+	const jive_type * operand_type = &new_origin->type();
 
 	if (*input_type != *operand_type) {
 		jive_raise_type_error(input_type, operand_type, this->node->graph->context);

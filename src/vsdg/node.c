@@ -653,7 +653,7 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 			}
 			jive_node_gate_output(new_node, target_gate);
 		} else {
-			jive_output * output = jive_node_add_output(new_node, jive_output_get_type(self->outputs[n]));
+			jive_output * output = jive_node_add_output(new_node, &self->outputs[n]->type());
 			output->required_rescls = self->outputs[n]->required_rescls;
 		}
 	}

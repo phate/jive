@@ -267,8 +267,8 @@ verify_deserialize_nodeexpr(
 		const jive_serialization_outputsym * sym =
 			jive_serialization_symtab_name_to_output(&ctx.drv.symtab, output_names[n]);
 		assert(sym && sym->output == node->outputs[n]);
-		const jive_type * type = jive_output_get_type(node->outputs[n]);
-		const jive_type * expected_type = jive_output_get_type(expected_node->outputs[n]);
+		const jive_type * type = &node->outputs[n]->type();
+		const jive_type * expected_type = &expected_node->outputs[n]->type();
 		assert(*type == *expected_type);
 		assert(node->outputs[n]->required_rescls == expected_node->outputs[n]->required_rescls);
 		assert(node->outputs[n]->gate == expected_node->outputs[n]->gate);

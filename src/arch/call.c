@@ -119,7 +119,7 @@ jive_call_node_init_(jive_call_node * self,
 	operand_types[0] = address_type;
 	for (n = 0; n < narguments; n++) {
 		operands[n + 1] = arguments[n];
-		operand_types[n + 1] = jive_output_get_type(arguments[n]);
+		operand_types[n + 1] = &arguments[n]->type();
 	}
 	
 	jive_node_init_(self, region,

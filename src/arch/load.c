@@ -251,7 +251,7 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	node->class_ = &JIVE_LOAD_NODE;
 	const jive_type * operand_types[noperands];
 	for (size_t n = 0; n < noperands; ++n) {
-		operand_types[n] = jive_output_get_type(operands[n]);
+		operand_types[n] = &operands[n]->type();
 	}
 	const jive_type * result_types[1] = {&attrs->datatype()};
 
@@ -278,7 +278,7 @@ jive_load_node_init_(jive_load_node * self, jive_region * region,
 	/* FIXME: check the type of the states */
 	size_t n;
 	for (n = 0; n < nstates; n++) {
-		const jive_type * type = jive_output_get_type(states[n]);
+		const jive_type * type = &states[n]->type();
 		jive_node_add_input(self, type, states[n]);
 	}
 }

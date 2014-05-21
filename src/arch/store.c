@@ -96,8 +96,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 
 	const jive::store_operation * attrs = (const jive::store_operation *) attrs_;
 	if (dynamic_cast<jive_bitstring_output*>(address))
-		address = jive_bitstring_to_address_create(
-			address, attrs->nbits(), jive_output_get_type(address));
+		address = jive_bitstring_to_address_create(address, attrs->nbits(), &address->type());
 
 	size_t n;
 	jive_node * split_nodes[nstates];
@@ -406,7 +405,7 @@ jive_store_node_init_(jive_store_node * self, jive_region * region,
 	/* FIXME: check the type of the states */
 	size_t n;
 	for (n = 0; n < nstates; n++) {
-		const jive_type * type = jive_output_get_type(states[n]);
+		const jive_type * type = &states[n]->type();
 		jive_node_add_input(self, type, states[n]);
 		jive_node_add_output(self, type);
 	}

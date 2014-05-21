@@ -38,7 +38,7 @@ jive_fltoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 	jive_float_type flttype;
 	for (n = 0; n < noperands; n++) {
 		if (!dynamic_cast<const jive_float_output*>(operands[n]))
-			jive_raise_type_error(&flttype, jive_output_get_type(operands[n]), context);
+			jive_raise_type_error(&flttype, &operands[n]->type(), context);
 	}
 }
 

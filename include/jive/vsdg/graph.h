@@ -147,8 +147,7 @@ jive_graph_get_root_region(const jive_graph * self)
 JIVE_EXPORTED_INLINE void
 jive_graph_export(struct jive_graph * self, struct jive_output * operand)
 {
-	const jive_type * type = jive_output_get_type(operand);
-	jive_node_add_input(self->root_region->bottom, type, operand);
+	jive_node_add_input(self->root_region->bottom, &operand->type(), operand);
 }
 
 jive_graph *

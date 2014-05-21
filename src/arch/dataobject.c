@@ -45,7 +45,7 @@ flatten_data_items(
 {
 	size_t nitems = 0;
 	jive_output ** items = 0;
-	const jive_type * type_ = jive_output_get_type(data);
+	const jive_type * type_ = &data->type();
 	if (dynamic_cast<const jive_bitstring_type*>(type_)) {
 		const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
 		
@@ -284,7 +284,7 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 	const jive_type * item_types[nitems];
 	size_t n;
 	for (n = 0; n < nitems; n++)
-		item_types[n] = jive_output_get_type(items[n]);
+		item_types[n] = &items[n]->type();
 	
 	node->class_ = &JIVE_DATAITEMS_NODE;
 	jive_control_type control;

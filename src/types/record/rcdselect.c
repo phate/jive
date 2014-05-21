@@ -63,8 +63,7 @@ perform_check(jive_context * context, const jive_output * operand, size_t elemen
 {
 	if (!dynamic_cast<const jive_record_output*>(operand))
 		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
-	const jive_record_type * operand_type = (const jive_record_type *)
-		jive_output_get_type(operand);
+	const jive_record_type * operand_type = (const jive_record_type *) &operand->type();
 	
 	if (element >= operand_type->declaration()->nelements) {
 		char tmp[256];
@@ -82,10 +81,9 @@ jive_select_node_init_(jive_select_node * self, struct jive_region * region,
 	jive_context * context = region->graph->context;
 	perform_check(context, operand, element);
 	
-	const jive_record_type * operand_type = (const jive_record_type *)
-		jive_output_get_type(operand);
+	const jive_record_type * operand_type = (const jive_record_type *) &operand->type();
 	const jive_type * output_type = operand_type->declaration()->elements[element];
-	const jive_type *  tmparray0[] = {jive_output_get_type(operand)};
+	const jive_type *  tmparray0[] = {&operand->type()};
 	jive_node_init_(self, region,
 		1, tmparray0, &operand,
 		1, &output_type);
@@ -133,7 +131,7 @@ jive_select_node_check_operands_(const jive_node_class * cls, const jive_node_at
 	if (!output)
 		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
 
-	const jive_record_type * type = (const jive_record_type *)jive_output_get_type(operands[0]);
+	const jive_record_type * type = (const jive_record_type *)&operands[0]->type();
 	if (attrs->element >= type->declaration()->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp),
@@ -192,11 +190,11 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 		size_t nbits = 0;
 		if (dynamic_cast<jive_bitstring_output*>(address)) {
 			nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) address);
-			address = jive_bitstring_to_address_create(address, nbits, jive_output_get_type(address));
+			address = jive_bitstring_to_address_create(address, nbits, &address->type());
 		}
 		
 		const jive_record_declaration * decl = ((const jive_record_type *)
-			jive_output_get_type(load_node->outputs[0]))->declaration();
+			&load_node->outputs[0]->type())->declaration();
 
 		size_t n;
 		size_t nstates = load_node->ninputs-1;

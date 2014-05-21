@@ -71,8 +71,7 @@ static int test_main(void)
 	jive_node * store = jive_store_by_address_node_create(graph->root_region, arraysub,
 		&bits64, arrayindex, 1, &top->outputs[2]);
 
-	jive_output * o_addr = jive_address_to_bitstring_create(load, 64,
-		jive_output_get_type(load));
+	jive_output * o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
 	const jive_type * tmparray4[] = {&bits64, &mem};
 	jive_output * tmparray5[] = {o_addr, store->outputs[0]};
 	

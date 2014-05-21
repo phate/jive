@@ -34,7 +34,7 @@ static int test_main(void)
 	const jive_type * tmparray2[] = {&bits32, &bits32};
 	jive_function_type ftype(2, tmparray2, 1, tmparray2);
 
-	assert(ftype == *jive_output_get_type(fct));
+	assert(ftype == fct->type());
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

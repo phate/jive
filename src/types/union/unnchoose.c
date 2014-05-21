@@ -64,8 +64,7 @@ perform_check(jive_context * context, const jive_output * operand, size_t elemen
 		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
 	}
 	
-	const jive_union_type * operand_type = (const jive_union_type *)
-		jive_output_get_type(operand);
+	const jive_union_type * operand_type = (const jive_union_type *) &operand->type();
 
 	if (element >= operand_type->declaration()->nelements) {
 		char tmp[256];
@@ -84,10 +83,9 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 	jive_context * context = region->graph->context;
 	perform_check(context, operand, element);
 	
-	const jive_union_type * operand_type = (const jive_union_type *)
-		jive_output_get_type(operand);
+	const jive_union_type * operand_type = (const jive_union_type *) &operand->type();
 	const jive_type * output_type = operand_type->declaration()->elements[element];
-	const jive_type *  tmparray0[] = {jive_output_get_type(operand)};
+	const jive_type *  tmparray0[] = {&operand->type()};
 	jive_node_init_(self, region,
 		1, tmparray0, &operand,
 		1, &output_type);
@@ -124,7 +122,7 @@ jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_at
 	if (!output)
 		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
 
-	const jive_union_type * type = (const jive_union_type *)jive_output_get_type(operands[0]);
+	const jive_union_type * type = (const jive_union_type *) &operands[0]->type();
 	if (attrs->element() >= type->declaration()->nelements) {
 		char tmp[256];
 		snprintf(tmp, sizeof(tmp),
@@ -179,7 +177,7 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 		jive_output * address = load_node->inputs[0]->origin();
 
 		const jive_union_declaration * decl = ((const jive_union_type *)
-			jive_output_get_type(load_node->outputs[0]))->declaration();
+			&load_node->outputs[0]->type())->declaration();
 		const jive::unn::choose_operation * attrs = (const jive::unn::choose_operation *) attrs_;
 
 		size_t n;

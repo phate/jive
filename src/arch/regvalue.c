@@ -54,7 +54,7 @@ jive_regvalue_node_init_(
 	jive_output * value)
 {
 	jive_control_type ctl_type;
-	const jive_type * vtype = jive_output_get_type(value);
+	const jive_type * vtype = &value->type();
 	const jive_type * operand_types[] = {&ctl_type, vtype};
 	jive_output * operands[] = {ctl, value};
 	

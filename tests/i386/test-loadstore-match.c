@@ -79,7 +79,7 @@ prepare_graph(jive_context * ctx)
 		0, NULL);
 	
 	jive_output * memstate = jive_subroutine_simple_get_global_state(sub);
-	const jive_type * memtype = jive_output_get_type(memstate);
+	const jive_type * memtype = &memstate->type();
 	
 	jive_node * statesplit = jive_state_split(memtype, memstate, 2);
 	

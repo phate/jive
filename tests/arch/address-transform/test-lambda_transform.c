@@ -32,7 +32,7 @@ test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrptr, tmparray0);
 	jive_output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
-	const jive_type * fcttype = jive_output_get_type(fct);
+	const jive_type * fcttype = &fct->type();
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		1, &fcttype, &fct,
 		0, NULL);

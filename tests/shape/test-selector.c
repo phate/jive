@@ -165,8 +165,7 @@ static int test_main(void)
 	jive_node * s5 = create_computation_node(
 		graph, 2, tmparray12, 1);
 	
-	jive_node_add_input(graph->root_region->bottom, jive_output_get_type(s5->outputs[0]),
-		s5->outputs[0]);
+	jive_node_add_input(graph->root_region->bottom, &s5->outputs[0]->type(), s5->outputs[0]);
 	jive_node * bottom = graph->root_region->bottom;
 	
 	//jive_view(graph, stdout);

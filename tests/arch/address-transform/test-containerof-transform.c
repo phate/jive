@@ -52,14 +52,10 @@ static int test_main(void)
 	jive_output * container2 = jive_containerof(address2, &decl, 2);
 	jive_output * container3 = jive_containerof(address3, &decl, 3);
 
-	jive_output * offset0 = jive_address_to_bitstring_create(container0, 32,
-		jive_output_get_type(container0));
-	jive_output * offset1 = jive_address_to_bitstring_create(container1, 32,
-		jive_output_get_type(container1));
-	jive_output * offset2 = jive_address_to_bitstring_create(container2, 32,
-		jive_output_get_type(container2));
-	jive_output * offset3 = jive_address_to_bitstring_create(container3, 32,
-		jive_output_get_type(container3));
+	jive_output * offset0 = jive_address_to_bitstring_create(container0, 32, &container0->type());
+	jive_output * offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());
+	jive_output * offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
+	jive_output * offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
 	const jive_type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
 	jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
@@ -88,7 +84,7 @@ static int test_main(void)
 			assert(!dynamic_cast<const jive_address_type*>(&node->inputs[i]->type()));
 		}
 		for(i = 0; i < node->noutputs; i++){
-			assert(!dynamic_cast<const jive_address_type*>(jive_output_get_type(node->outputs[i])));
+			assert(!dynamic_cast<const jive_address_type*>(&node->outputs[i]->type()));
 		}
 	}
 	jive_traverser_destroy(traverser);

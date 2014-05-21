@@ -33,7 +33,7 @@ static int test_main(void)
 		jive_output * a = jive_bitslice(base_const1, 2, 6);
 		
 		assert(a->node()->class_ == &JIVE_BITCONSTANT_NODE);
-		const jive_bitstring_type * type = (const jive_bitstring_type *) jive_output_get_type(a);
+		const jive_bitstring_type * type = (const jive_bitstring_type *) &a->type();
 		assert(type->nbits()==4);
 		const jive::bitstring::constant_operation * attrs =
 			(const jive::bitstring::constant_operation *)jive_node_get_attrs(a->node());

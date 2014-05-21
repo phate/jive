@@ -200,12 +200,6 @@ private:
 	jive_node * node_;
 };
 
-JIVE_EXPORTED_INLINE const jive_type *
-jive_output_get_type(const jive_output * self)
-{
-	return &self->type();
-}
-
 struct jive_variable *
 jive_output_get_constraint(const jive_output * self);
 

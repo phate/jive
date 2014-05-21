@@ -168,8 +168,7 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 		}
 
 		if (nbits != jive_bitstring_output_nbits(output))
-			jive_raise_type_error(jive_output_get_type(operands[0]), jive_output_get_type(operands[n]),
-				context);
+			jive_raise_type_error(&operands[0]->type(), &operands[n]->type(), context);
 	}
 }
 

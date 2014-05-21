@@ -173,7 +173,7 @@ jive_lambda_node_create(jive_region * function_region)
 	const jive_type * argument_types[narguments];
 	std::vector<jive_gate *> argument_gates;
 	for (size_t n = 0; n < narguments; n++) {
-		argument_types[n] = jive_output_get_type(function_region->top->outputs[n+1]);
+		argument_types[n] = &function_region->top->outputs[n+1]->type();
 		argument_gates.push_back(function_region->top->outputs[n+1]->gate);
 	}
 	const jive_type * return_types[nreturns];
@@ -503,7 +503,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 			continue;
 
 		alive_parameters[nalive_parameters] = parameter;
-		alive_parameter_types[nalive_parameters] = jive_output_get_type(parameter);
+		alive_parameter_types[nalive_parameters] = &parameter->type();
 		alive_parameter_names[nalive_parameters++] = parameter->gate->name;
 	}
 

@@ -205,9 +205,8 @@ jive_negotiator_split_node_create_(struct jive_region * region, const jive_node_
 	
 	jive_negotiator_split_node * node = new jive_negotiator_split_node;
 	node->class_ = &JIVE_NEGOTIATOR_SPLIT_NODE;
-	jive_negotiator_split_node_init_(node, attrs->negotiator, region,
-		jive_output_get_type(operands[0]), attrs->input_option, operands[0],
-		attrs->output_type, attrs->output_option);
+	jive_negotiator_split_node_init_(node, attrs->negotiator, region, &operands[0]->type(),
+		attrs->input_option, operands[0], attrs->output_type, attrs->output_option);
 	
 	return node;
 }

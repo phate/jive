@@ -91,7 +91,7 @@ jive_memberof_node_check_operands_(const jive_node_class * cls, const jive_node_
 
 	jive_address_type addrtype;
 	if(!dynamic_cast<const jive_address_output*>(operands[0]))
-		jive_raise_type_error(&addrtype, jive_output_get_type(operands[0]), context);
+		jive_raise_type_error(&addrtype, &operands[0]->type(), context);
 }
 
 static jive_node *
@@ -223,7 +223,7 @@ jive_containerof_node_check_operands_(const jive_node_class * cls, const jive_no
 
 	jive_address_type addrtype;
 	if(!dynamic_cast<const jive_address_output*>(operands[0]))
-		jive_raise_type_error(&addrtype, jive_output_get_type(operands[0]), context);
+		jive_raise_type_error(&addrtype, &operands[0]->type(), context);
 }
 
 static jive_node *
@@ -401,7 +401,7 @@ jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive
 
 	jive_address_type addrtype;
 	if (!dynamic_cast<const jive_address_output*>(operands[0]))
-		jive_raise_type_error(&addrtype, jive_output_get_type(operands[0]), context);
+		jive_raise_type_error(&addrtype, &operands[0]->type(), context);
 }
 
 static jive_node *
@@ -421,7 +421,7 @@ jive_arraysubscript_node_create_(jive_region * region, const jive_node_attrs * a
 	jive_address_type address_type;
 	const jive_type * typeptr = &address_type;
 
-	const jive_type * index_type = jive_output_get_type(index);
+	const jive_type * index_type = &index->type();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive_bitstring_type*>(index_type));
 
 	const jive_type * operand_types[2] = {&address_type, index_type};
@@ -446,7 +446,7 @@ jive_arraysubscript_can_reduce_operand_pair_(const jive_node_class * cls,
 	
 	const jive_arraysubscript_node * node = jive_arraysubscript_node_cast(operand1->node());
 	if (node && attrs->element_type() == node->operation().element_type() &&
-		*jive_output_get_type(operand2) == node->inputs[1]->type())
+		operand2->type() == node->inputs[1]->type())
 		return jive_binop_reduction_lfold;
 	
 	return jive_binop_reduction_none;
@@ -590,7 +590,7 @@ jive_arrayindex_node_check_operands_(const jive_node_class * cls, const jive_nod
 	jive_address_type addrtype;
 	for (n = 0; n < noperands; n++) {
 		if(!dynamic_cast<const jive_address_output*>(operands[n]))
-			jive_raise_type_error(&addrtype, jive_output_get_type(operands[n]), context);
+			jive_raise_type_error(&addrtype, &operands[n]->type(), context);
 	}
 }
 

@@ -208,7 +208,7 @@ jive_theta_loopvar_enter(jive_theta self, struct jive_output * pre_value)
 	
 	size_t index = state->nloopvars;
 	
-	const jive_type * type = jive_output_get_type(pre_value);
+	const jive_type * type = &pre_value->type();
 	++ state->nloopvars;
 	state->loopvars = jive_context_realloc(context,
 		state->loopvars, sizeof(state->loopvars[0]) * state->nloopvars);
