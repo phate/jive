@@ -299,6 +299,8 @@ jive_output::~jive_output() noexcept
 {
 	JIVE_DEBUG_ASSERT(users.first == nullptr && users.last == nullptr);
 	
+	jive_graph_notify_output_destroy(node_->graph, this);
+
 	if (ssavar)
 		jive_ssavar_unassign_output(ssavar, this);
 		
@@ -427,14 +429,6 @@ jive_output_replace(jive_output * self, jive_output * other)
 		jive_input * input = self->users.first;
 		input->divert_origin(other);
 	}
-}
-
-void
-jive_output_destroy(jive_output * self)
-{
-	if (self->node()->region) jive_graph_notify_output_destroy(self->node()->graph, self);
-	
-	delete self;
 }
 
 /* gates */

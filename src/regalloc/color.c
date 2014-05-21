@@ -595,7 +595,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		}
 		
 		jive_output_auto_merge_variable(new_output);
-		jive_output_destroy(output);
+		delete output;
 	}
 	
 	while (gate->inputs.first) {

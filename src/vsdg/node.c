@@ -145,7 +145,8 @@ jive_node_fini_(jive_node * self)
 	
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	
-	while(self->noutputs) jive_output_destroy(self->outputs[self->noutputs - 1]);
+	while(self->noutputs)
+		delete self->outputs[self->noutputs-1];
 	
 	while (self->ninputs)
 		delete self->inputs[self->ninputs-1];

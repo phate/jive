@@ -60,7 +60,7 @@ static int test_main(void)
 	
 	assert(!jive_shaped_graph_map_variable(shaped_graph, v1));
 	
-	jive_output_destroy(o);
+	delete o;
 	
 	assert(!jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2), jive_shaped_graph_map_variable(shaped_graph, v3)));
 	
