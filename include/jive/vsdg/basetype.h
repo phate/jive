@@ -201,12 +201,6 @@ private:
 };
 
 JIVE_EXPORTED_INLINE bool
-jive_output_has_no_user(const struct jive_output * self)
-{
-	return self->users.first == NULL;
-}
-
-JIVE_EXPORTED_INLINE bool
 jive_output_has_single_user(const struct jive_output * self)
 {
 	return (self->users.first != NULL) && (self->users.first == self->users.last);

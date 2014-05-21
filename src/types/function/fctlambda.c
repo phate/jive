@@ -381,7 +381,7 @@ lambda_parameter_is_unused(const struct jive_output * parameter)
 {
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node(), &JIVE_LAMBDA_ENTER_NODE));
 
-	return jive_output_has_no_user(parameter);
+	return parameter->no_user();
 }
 
 static bool
