@@ -58,10 +58,10 @@ jive_control_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_control_type*>(&other) != nullptr;
 }
 
-std::unique_ptr<jive_type>
+jive_control_type *
 jive_control_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_control_type());
+	return new jive_control_type();
 }
 
 jive_input *

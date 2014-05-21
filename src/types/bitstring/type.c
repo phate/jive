@@ -71,10 +71,10 @@ jive_bitstring_type::operator==(const jive_type & _other) const noexcept
 	return other != nullptr && this->nbits() == other->nbits();
 }
 
-std::unique_ptr<jive_type>
+jive_bitstring_type *
 jive_bitstring_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_bitstring_type(this->nbits()));
+	return new jive_bitstring_type(this->nbits());
 }
 
 jive_input *

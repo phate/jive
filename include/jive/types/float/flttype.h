@@ -23,7 +23,7 @@ public:
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual std::unique_ptr<jive_type> copy() const override;
+	virtual jive_float_type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;

@@ -75,7 +75,7 @@ public:
 
 	inline bool operator!=(const jive_type & other) const noexcept { return !(*this == other); }
 
-	virtual std::unique_ptr<jive_type> copy() const = 0;
+	virtual jive_type * copy() const = 0;
 
 	/*
 		FIXME: change return type to std::unique_ptr<jive_input>

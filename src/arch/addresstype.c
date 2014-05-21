@@ -58,10 +58,10 @@ jive_address_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_address_type*>(&other) != nullptr;
 }
 
-std::unique_ptr<jive_type>
+jive_address_type *
 jive_address_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_address_type());
+	return new jive_address_type();
 }
 
 jive_input *

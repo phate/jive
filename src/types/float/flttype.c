@@ -33,10 +33,10 @@ jive_float_type::jive_float_type() noexcept
 	: jive_value_type(&JIVE_FLOAT_TYPE)
 {}
 
-std::unique_ptr<jive_type>
+jive_float_type *
 jive_float_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_float_type());
+	return new jive_float_type();
 }
 
 void

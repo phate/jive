@@ -61,10 +61,10 @@ jive_record_type::operator==(const jive_type & _other) const noexcept
 	return other != nullptr && this->declaration() == other->declaration();
 }
 
-std::unique_ptr<jive_type>
+jive_record_type *
 jive_record_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_record_type(this->declaration()));
+	return new jive_record_type(this->declaration());
 }
 
 jive_input *

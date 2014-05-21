@@ -41,7 +41,7 @@ public:
 
 	virtual bool operator==(const jive_type & type) const noexcept override;
 
-	virtual std::unique_ptr<jive_type> copy() const override;
+	virtual jive_reuse_type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -116,10 +116,10 @@ jive_reuse_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_reuse_type*>(&other) != nullptr;
 }
 
-std::unique_ptr<jive_type>
+jive_reuse_type *
 jive_reuse_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_reuse_type(this->name()));
+	return new jive_reuse_type(this->name());
 }
 
 jive_input *

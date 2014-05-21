@@ -60,10 +60,10 @@ jive_immediate_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_immediate_type*>(&other) != nullptr;
 }
 
-std::unique_ptr<jive_type>
+jive_immediate_type *
 jive_immediate_type::copy() const
 {
-	return std::unique_ptr<jive_type>(new jive_immediate_type());
+	return new jive_immediate_type();
 }
 
 jive_input *

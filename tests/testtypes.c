@@ -52,10 +52,10 @@ jive_test_value_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_test_value_type*>(&other) != nullptr;
 }
 
-std::unique_ptr<jive_type>
+jive_test_value_type *
 jive_test_value_type::copy() const
 {
-	return std::unique_ptr<jive_test_value_type>(new jive_test_value_type());
+	return new jive_test_value_type();
 }
 
 jive_input *
@@ -162,10 +162,10 @@ jive_test_state_type::operator==(const jive_type & other) const noexcept
 	return dynamic_cast<const jive_test_state_type*>(&other) != nullptr;
 }
 
-std::unique_ptr<jive_type>
+jive_test_state_type *
 jive_test_state_type::copy() const
 {
-	return std::unique_ptr<jive_test_state_type>(new jive_test_state_type());
+	return new jive_test_state_type();
 }
 
 jive_input *
