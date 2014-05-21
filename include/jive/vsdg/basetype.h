@@ -200,12 +200,6 @@ private:
 	jive_node * node_;
 };
 
-JIVE_EXPORTED_INLINE bool
-jive_output_has_single_user(const struct jive_output * self)
-{
-	return (self->users.first != NULL) && (self->users.first == self->users.last);
-}
-
 JIVE_EXPORTED_INLINE void
 jive_output_get_label(const jive_output * self, struct jive_buffer * buffer)
 {

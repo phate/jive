@@ -552,7 +552,7 @@ jive_region_get_anchor_node(const struct jive_region * self)
 		return NULL;
 
 	JIVE_DEBUG_ASSERT(self->bottom->noutputs == 1);
-	JIVE_DEBUG_ASSERT(jive_output_has_single_user(self->bottom->outputs[0]));
+	JIVE_DEBUG_ASSERT(self->bottom->outputs[0]->single_user());
 	return self->bottom->outputs[0]->users.first->node;
 }
 

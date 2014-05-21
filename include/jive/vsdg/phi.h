@@ -95,7 +95,7 @@ jive_phi_region_cast(struct jive_region * region)
 	if (region->bottom == NULL)
 		return NULL;
 
-	JIVE_DEBUG_ASSERT(jive_output_has_single_user(region->bottom->outputs[0]));
+	JIVE_DEBUG_ASSERT(region->bottom->outputs[0]->single_user());
 	if (jive_node_isinstance(region->bottom->outputs[0]->users.first->node, &JIVE_PHI_NODE))
 		return region;
 	else
@@ -110,7 +110,7 @@ jive_phi_region_const_cast(const struct jive_region * region)
 	if (region->bottom == NULL)
 		return NULL;
 
-	JIVE_DEBUG_ASSERT(jive_output_has_single_user(region->bottom->outputs[0]));
+	JIVE_DEBUG_ASSERT(region->bottom->outputs[0]->single_user());
 	if (jive_node_isinstance(region->bottom->outputs[0]->users.first->node, &JIVE_PHI_NODE))
 		return region;
 	else

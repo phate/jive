@@ -390,7 +390,7 @@ lambda_parameter_is_passthrough(const struct jive_output * parameter)
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(parameter->node(), &JIVE_LAMBDA_ENTER_NODE));
 
 	jive_node * leave = parameter->node()->region->bottom;
-	return jive_output_has_single_user(parameter) && (parameter->users.first->node == leave);
+	return parameter->single_user() && (parameter->users.first->node == leave);
 }
 
 static bool
