@@ -269,14 +269,6 @@ public:
 struct jive_variable *
 jive_gate_get_constraint(jive_gate * self);
 
-JIVE_EXPORTED_INLINE jive_output *
-jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index)
-{
-	jive_output * output = self->type().create_output(node, index);
-	output->required_rescls = self->required_rescls;
-	return output;
-}
-
 size_t
 jive_gate_interferes_with(const jive_gate * self, const jive_gate * other);
 

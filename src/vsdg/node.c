@@ -312,9 +312,7 @@ jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_o
 jive_output *
 jive_node_gate_output(jive_node * self, jive_gate * gate)
 {
-	jive_output * output = jive_gate_create_output(gate, self, self->noutputs);
-	output->gate = gate;
-	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
+	jive_output * output = gate->create_output(self, self->noutputs);
 	size_t n;
 	for(n=0; n<output->index; n++) {
 		jive_output * other = self->outputs[n];
