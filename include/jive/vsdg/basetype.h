@@ -234,7 +234,7 @@ public:
 
 	jive_input * create_input(jive_node * node, size_t index, jive_output * origin);
 
-	jive_output * create_output(jive_node * node, size_t index) const;
+	jive_output * create_output(jive_node * node, size_t index);
 	
 	struct jive_graph * graph;
 	struct {

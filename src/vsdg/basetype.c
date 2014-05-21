@@ -479,6 +479,16 @@ jive_gate::create_input(jive_node * node, size_t index, jive_output * origin)
 	return input;
 }
 
+jive_output *
+jive_gate::create_output(jive_node * node, size_t index)
+{
+	jive_output * output = type().create_output(node, index);
+	output->required_rescls = required_rescls;
+	output->gate = this;
+	JIVE_LIST_PUSH_BACK(this->outputs, output, gate_outputs_list);
+	return output;
+}
+
 jive_variable *
 jive_gate_get_constraint(jive_gate * self)
 {
