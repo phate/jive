@@ -204,7 +204,7 @@ void
 jive_input::label(jive_buffer & buffer) const
 {
 	if (gate) {
-		jive_gate_get_label(gate, &buffer);
+		gate->label(buffer);
 	} else {
 		char tmp[16];
 		snprintf(tmp, sizeof(tmp), "#%zd", index);
@@ -330,7 +330,7 @@ void
 jive_output::label(jive_buffer & buffer) const
 {
 	if (gate) {
-		jive_gate_get_label(gate, &buffer);
+		gate->label(buffer);
 	} else {
 		char tmp[16];
 		snprintf(tmp, sizeof(tmp), "#%zd", index);

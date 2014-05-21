@@ -262,12 +262,6 @@ public:
 	const struct jive_resource_class * required_rescls;
 };
 
-JIVE_EXPORTED_INLINE void
-jive_gate_get_label(const jive_gate * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
 JIVE_EXPORTED_INLINE const jive_type *
 jive_gate_get_type(const jive_gate * self)
 {
