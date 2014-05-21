@@ -215,12 +215,6 @@ jive_output_auto_merge_variable(jive_output * self);
 void
 jive_output_destroy(jive_output * self);
 
-JIVE_EXPORTED_INLINE struct jive_node *
-jive_output_node(const jive_output * output)
-{
-	return output->node();
-}
-
 /**	@}	*/
 
 /**
