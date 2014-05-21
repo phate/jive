@@ -469,6 +469,16 @@ jive_gate::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, name);
 }
 
+jive_input *
+jive_gate::create_input(jive_node * node, size_t index, jive_output * origin)
+{
+	jive_input * input = jive_type_create_input(&type(), node, index, origin);
+	input->required_rescls = required_rescls;
+	input->gate = this;
+	JIVE_LIST_PUSH_BACK(this->inputs, input, gate_inputs_list);
+	return input;
+}
+
 jive_variable *
 jive_gate_get_constraint(jive_gate * self)
 {

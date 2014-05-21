@@ -231,6 +231,10 @@ public:
 	virtual const jive_type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
+
+	jive_input * create_input(jive_node * node, size_t index, jive_output * origin);
+
+	jive_output * create_output(jive_node * node, size_t index) const;
 	
 	struct jive_graph * graph;
 	struct {
