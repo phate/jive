@@ -262,12 +262,6 @@ public:
 	const struct jive_resource_class * required_rescls;
 };
 
-JIVE_EXPORTED_INLINE const jive_type *
-jive_gate_get_type(const jive_gate * self)
-{
-	return &self->type();
-}
-
 struct jive_variable *
 jive_gate_get_constraint(jive_gate * self);
 
@@ -275,7 +269,7 @@ JIVE_EXPORTED_INLINE jive_input *
 jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand)
 {
-	jive_input * input = jive_type_create_input(jive_gate_get_type(self), node, index,
+	jive_input * input = jive_type_create_input(&self->type(), node, index,
 		initial_operand);
 	input->required_rescls = self->required_rescls;
 	return input;
@@ -284,7 +278,7 @@ jive_gate_create_input(const jive_gate * self, struct jive_node * node, size_t i
 JIVE_EXPORTED_INLINE jive_output *
 jive_gate_create_output(const jive_gate * self, struct jive_node * node, size_t index)
 {
-	jive_output * output = jive_gate_get_type(self)->create_output(node, index);
+	jive_output * output = self->type().create_output(node, index);
 	output->required_rescls = self->required_rescls;
 	return output;
 }

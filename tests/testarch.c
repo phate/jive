@@ -495,7 +495,7 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, si
 	jive_gate * gate = self->base.parameters[index];
 	jive_output * output = jive_node_gate_output(self->base.enter, gate);
 	if (index >= 2) {
-		const jive_type * in_type = jive_gate_get_type(gate);
+		const jive_type * in_type = &gate->type();
 		const jive_type * out_type =
 			jive_resource_class_get_type(&jive_testarch_regcls_gpr.base);
 		jive_node * node = jive_splitnode_create(self->base.enter->region,

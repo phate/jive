@@ -235,7 +235,7 @@ jive_serialize_gateexpr(jive_serialization_driver * self,
 {
 	jive_serialize_string(self, gate->name, strlen(gate->name), os);
 	jive_serialize_rescls(self, gate->required_rescls, os);
-	jive_serialize_type(self, jive_gate_get_type(gate), os);
+	jive_serialize_type(self, &gate->type(), os);
 }
 
 bool
