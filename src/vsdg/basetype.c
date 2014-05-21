@@ -490,12 +490,6 @@ jive_gate_interferes_with(const jive_gate * self, const jive_gate * other)
 }
 
 void
-jive_gate_destroy(jive_gate * self)
-{
-	delete self;
-}
-
-void
 jive_gate_merge(jive_gate * self, jive_gate * other)
 {
 	jive_input * input, * input_next;

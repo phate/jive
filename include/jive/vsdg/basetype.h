@@ -295,9 +295,6 @@ jive_gate_split(jive_gate * self);
 void
 jive_gate_auto_merge_variable(jive_gate * self);
 
-void
-jive_gate_destroy(jive_gate * self);
-
 /**	@}	*/
 
 /**	@}	*/

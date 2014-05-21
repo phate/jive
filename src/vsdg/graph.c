@@ -122,7 +122,8 @@ jive_graph_fini_(jive_graph * self)
 	
 	prune_regions_recursive(self->root_region);
 	
-	while(self->gates.first) jive_gate_destroy(self->gates.first);
+	while (self->gates.first)
+		delete self->gates.first;
 	
 	while(self->unused_variables.first) jive_variable_destroy(self->unused_variables.first);
 	
