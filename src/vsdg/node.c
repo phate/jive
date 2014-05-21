@@ -298,9 +298,7 @@ jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_o
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 
-	jive_input * input = jive_gate_create_input(gate, self, self->ninputs, initial_operand);
-	input->gate = gate;
-	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
+	jive_input * input = gate->create_input(self, self->ninputs, initial_operand);
 	size_t n;
 	for(n=0; n<input->index; n++) {
 		jive_input * other = self->inputs[n];
