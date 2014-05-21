@@ -172,6 +172,9 @@ public:
 
 	inline bool no_user() const noexcept { return users.first == nullptr; }
 
+	inline bool single_user() const noexcept
+		{ return (users.first != nullptr) && (users.first == users.last); }
+
 	size_t index;
 	
 	struct {
