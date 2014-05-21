@@ -88,7 +88,7 @@ jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
 	jive_buffer type_label_buffer, output_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
 	jive_buffer_init(&output_label_buffer, context);
-	jive_output_get_label(output, &output_label_buffer);
+	output->label(output_label_buffer);
 	jive_output_get_type(output)->label(type_label_buffer);
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	const char * output_label = jive_buffer_to_string(&output_label_buffer);

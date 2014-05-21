@@ -200,12 +200,6 @@ private:
 	jive_node * node_;
 };
 
-JIVE_EXPORTED_INLINE void
-jive_output_get_label(const jive_output * self, struct jive_buffer * buffer)
-{
-	self->label(*buffer);
-}
-
 JIVE_EXPORTED_INLINE const jive_type *
 jive_output_get_type(const jive_output * self)
 {
