@@ -136,6 +136,28 @@ jive_serialization_nodecls_deserialize_bitbinary2(
 			jive_serialization_nodecls_deserialize_bitbinary2<opcls>); \
 	} \
 
+template<typename Operation>
+static bool
+jive_serialization_nodecls_deserialize_bitunary(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	jive_region * region,
+	size_t noperands, jive_output * const operands[],
+	struct jive_token_istream * is,
+	jive_node ** node)
+{
+	Operation op(dynamic_cast<const jive_bitstring_type&>(operands[0]->type()));
+	*node = jive_node_create(self->cls, op, region, noperands, operands);
+	return *node != 0;
+}
+#define JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(nodecls, opcls, tag) \
+	static void __attribute__((constructor)) register_##nodecls(void)\
+	{ \
+		jive_serialization_nodecls_register(&nodecls, tag, \
+			jive_serialization_nodecls_serialize_default, \
+			jive_serialization_nodecls_deserialize_bitunary<opcls>); \
+	} \
+
 JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_BITSLICE_NODE, "bitslice",
 	jive_bitslice_serialize,
@@ -149,8 +171,10 @@ JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
 	JIVE_BITOR_NODE, jive::bitstring::or_operation, "bitor");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
 	JIVE_BITXOR_NODE, jive::bitstring::xor_operation, "bitxor");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITNOT_NODE, "bitnot");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITNEGATE_NODE, "bitnegate");
+JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(
+	JIVE_BITNOT_NODE, jive::bitstring::not_operation, "bitnot");
+JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(
+	JIVE_BITNEGATE_NODE, jive::bitstring::negate_operation, "bitnegate");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
 	JIVE_BITSHL_NODE, jive::bitstring::shl_operation, "bitshl");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(

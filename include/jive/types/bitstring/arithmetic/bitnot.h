@@ -16,6 +16,31 @@ namespace jive {
 namespace bitstring {
 
 class not_operation final : public jive::bits_unary_operation {
+public:
+	virtual
+	~not_operation() noexcept;
+
+	inline
+	not_operation(const jive_bitstring_type & type) noexcept
+		: bits_unary_operation(type)
+	{
+	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive_output * const arguments[]) const override;
+
+	virtual value_repr
+	reduce_constant(
+		const value_repr & arg) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
 }

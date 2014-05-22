@@ -17,6 +17,61 @@ namespace jive {
 
 bits_unary_operation::~bits_unary_operation() noexcept {}
 
+size_t
+bits_unary_operation::narguments() const noexcept
+{
+	return 1;
+}
+
+const jive_type &
+bits_unary_operation::argument_type(size_t index) const noexcept
+{
+	return type_;
+}
+
+size_t
+bits_unary_operation::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive_type &
+bits_unary_operation::result_type(size_t index) const noexcept
+{
+	return type_;
+}
+
+jive_binop_reduction_path_t
+bits_unary_operation::can_reduce_operand(
+	const jive_output * arg) const noexcept
+{
+	bool arg_is_constant =
+		dynamic_cast<const bitstring::constant_operation *>(&arg->node->operation());
+	
+	if (arg_is_constant) {
+		return jive_unop_reduction_constant;
+	}
+
+	return jive_unop_reduction_none;
+}
+
+jive_output *
+bits_unary_operation::reduce_operand(
+	jive_unop_reduction_path_t path,
+	jive_output * arg) const
+{
+	if (path == jive_unop_reduction_constant) {
+		jive_graph * graph = arg->node->graph;
+		const bitstring::constant_operation & c =
+			static_cast<const bitstring::constant_operation&>(arg->node->operation());
+		bitstring::value_repr result = reduce_constant(c.bits);
+		return jive_bitconstant(graph, result.size(), &result[0]);
+	}
+
+	return nullptr;
+}
+
+
 bits_binary_operation::~bits_binary_operation() noexcept {}
 
 size_t

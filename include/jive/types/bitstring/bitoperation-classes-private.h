@@ -14,6 +14,18 @@ namespace detail {
 
 template<typename Op>
 static inline jive_output *
+unop_normalized_create(const jive_unary_operation_class * cls, jive_output * argument)
+{
+	const jive_bitstring_type * type =
+		dynamic_cast<const jive_bitstring_type*>(jive_output_get_type(argument));
+
+	Op op(*type);
+	return jive_unary_operation_create_normalized(cls, argument->node->graph,
+		&op, argument);
+}
+
+template<typename Op>
+static inline jive_output *
 binop_normalized_create(const jive_binary_operation_class * cls, size_t narguments, jive_output * const * arguments)
 {
 	JIVE_DEBUG_ASSERT(narguments != 0);
@@ -41,6 +53,27 @@ binop_normalized_create(
 	jive_output * arguments[] = {arg1, arg2};
 	return jive_binary_operation_create_normalized(cls, graph, &op,
 		2, arguments);
+}
+
+template<typename Op>
+static inline jive_node *
+unop_create(
+	const Op & operation,
+	const jive_node_class * cls,
+	jive_region * region,
+	jive_output * argument)
+{
+	jive_node * node = jive::create_operation_node(operation);
+	node->class_ = cls;
+
+	const jive_type * types[1] = {&operation.type()};
+
+	jive_node_init_(
+		node, region,
+		1, types, &argument,
+		1, types);
+
+	return node;
 }
 
 template<typename Op>

@@ -13,9 +13,50 @@
 
 namespace jive {
 
+/* Represents a unary operation on a bitstring of a specific width,
+ * produces another bitstring of the same width. */
 class bits_unary_operation : public unary_operation {
 public:
+	inline
+	bits_unary_operation(const jive_bitstring_type & type) noexcept
+		: type_(type)
+	{
+	}
+
 	virtual ~bits_unary_operation() noexcept;
+
+	/* type signature methods */
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive_type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive_type &
+	result_type(size_t index) const noexcept override;
+
+	inline const jive_bitstring_type &
+	type() const noexcept { return type_; }
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive_output * arg) const noexcept override;
+
+	virtual jive_output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive_output * arg) const override;
+
+	virtual bitstring::value_repr
+	reduce_constant(
+		const bitstring::value_repr & arg) const = 0;
+
+private:
+	jive_bitstring_type type_;
 };
 
 /* Represents a binary operation (possibly normalized n-ary if associative)
