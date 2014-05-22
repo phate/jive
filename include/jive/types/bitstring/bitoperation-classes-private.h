@@ -6,6 +6,101 @@
 #ifndef JIVE_TYPES_BITSTRING_BITOPERATION_CLASSES_PRIVATE_H
 #define JIVE_TYPES_BITSTRING_BITOPERATION_CLASSES_PRIVATE_H
 
+#include <jive/vsdg/node-private.h>
+
+namespace jive {
+namespace bitstring {
+namespace detail {
+
+template<typename Op>
+static inline jive_output *
+binop_normalized_create(const jive_binary_operation_class * cls, size_t narguments, jive_output * const * arguments)
+{
+	JIVE_DEBUG_ASSERT(narguments != 0);
+	const jive_bitstring_type * type =
+		dynamic_cast<const jive_bitstring_type*>(jive_output_get_type(arguments[0]));
+
+	jive_graph * graph = arguments[0]->node->graph;
+	Op op(*type, narguments);
+	return jive_binary_operation_create_normalized(cls, graph, &op,
+		narguments, arguments);
+}
+
+template<typename Op>
+static inline jive_output *
+binop_normalized_create(
+	const jive_binary_operation_class * cls,
+	jive_output * arg1,
+	jive_output * arg2)
+{
+	const jive_bitstring_type * type =
+		dynamic_cast<const jive_bitstring_type*>(jive_output_get_type(arg1));
+
+	jive_graph * graph = arg1->node->graph;
+	Op op(*type);
+	jive_output * arguments[] = {arg1, arg2};
+	return jive_binary_operation_create_normalized(cls, graph, &op,
+		2, arguments);
+}
+
+template<typename Op>
+static inline jive_node *
+binop_create(
+	const Op & operation,
+	const jive_node_class * cls,
+	jive_region * region, 
+	size_t narguments,
+	jive_output * const * arguments)
+{
+	JIVE_DEBUG_ASSERT(narguments == operation.narguments());
+
+	jive_node * node = jive::create_operation_node(operation);
+	node->class_ = cls;
+
+	const jive_type * argument_types[narguments];
+	for(size_t n = 0; n < narguments; n++)
+		argument_types[n] = &operation.argument_type(n);
+
+	const jive_type * result_types[1] = {&operation.result_type(0)};
+	jive_node_init_(
+		node, region,
+		narguments, argument_types, arguments,
+		1, result_types);
+
+	return node;
+}
+
+template<typename Op>
+static inline jive_node *
+binop_create(
+	const Op & operation,
+	const jive_node_class * cls,
+	jive_region * region, 
+	jive_output * arg1,
+	jive_output * arg2)
+{
+	JIVE_DEBUG_ASSERT(2 == operation.narguments());
+
+	jive_node * node = jive::create_operation_node(operation);
+	node->class_ = cls;
+
+	jive_output * arguments[2] = {arg1, arg2};
+	const jive_type * argument_types[2];
+	for(size_t n = 0; n < 2; n++)
+		argument_types[n] = &operation.argument_type(n);
+
+	const jive_type * result_types[1] = {&operation.result_type(0)};
+	jive_node_init_(
+		node, region,
+		2, argument_types, arguments,
+		1, result_types);
+
+	return node;
+}
+
+}
+}
+}
 /* bitbinary operation class inhertiable members */
 
 void

@@ -15,7 +15,35 @@ extern const jive_bitbinary_operation_class JIVE_BITASHR_NODE_;
 namespace jive {
 namespace bitstring {
 
-class ashr_operation final : public jive::bits_binary_operation {
+class ashr_operation final : public bits_binary_operation {
+public:
+	virtual ~ashr_operation() noexcept;
+
+	inline ashr_operation(
+		const jive_bitstring_type & type) noexcept
+		: bits_binary_operation(type)
+	{
+	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive_output * const arguments[]) const override;
+
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
 }

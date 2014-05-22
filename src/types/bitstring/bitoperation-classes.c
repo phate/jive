@@ -4,8 +4,12 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/types/bitstring/bitoperation-classes.h>
+#include <stdexcept>
 
+#include <jive/types/bitstring/bitoperation-classes.h>
+#include <jive/types/bitstring/constant.h>
+
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 
@@ -14,6 +18,67 @@ namespace jive {
 bits_unary_operation::~bits_unary_operation() noexcept {}
 
 bits_binary_operation::~bits_binary_operation() noexcept {}
+
+size_t
+bits_binary_operation::narguments() const noexcept
+{
+	return arity_;
+}
+
+const jive_type &
+bits_binary_operation::argument_type(size_t index) const noexcept
+{
+	return type_;
+}
+
+size_t
+bits_binary_operation::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive_type &
+bits_binary_operation::result_type(size_t index) const noexcept
+{
+	return type_;
+}
+
+jive_binop_reduction_path_t
+bits_binary_operation::can_reduce_operand_pair(
+	const jive_output * arg1,
+	const jive_output * arg2) const noexcept
+{
+	bool arg1_is_constant =
+		dynamic_cast<const bitstring::constant_operation *>(&arg1->node->operation());
+	bool arg2_is_constant =
+		dynamic_cast<const bitstring::constant_operation *>(&arg2->node->operation());
+	
+	if (arg1_is_constant && arg2_is_constant) {
+		return jive_binop_reduction_constants;
+	}
+
+	return jive_binop_reduction_none;
+}
+
+jive_output *
+bits_binary_operation::reduce_operand_pair(
+	jive_binop_reduction_path_t path,
+	jive_output * arg1,
+	jive_output * arg2) const
+{
+	jive_graph * graph = arg1->node->graph;
+
+	if (path == jive_binop_reduction_constants) {
+		const bitstring::constant_operation & c1 =
+			static_cast<const bitstring::constant_operation&>(arg1->node->operation());
+		const bitstring::constant_operation & c2 =
+			static_cast<const bitstring::constant_operation&>(arg2->node->operation());
+		bitstring::value_repr result = reduce_constants(c1.bits, c2.bits);
+		return jive_bitconstant(graph, result.size(), &result[0]);
+	}
+
+	return nullptr;
+}
 
 bits_compare_operation::~bits_compare_operation() noexcept {}
 

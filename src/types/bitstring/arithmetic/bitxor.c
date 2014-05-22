@@ -11,17 +11,57 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-static jive_node *
-jive_bitxor_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+namespace jive {
+namespace bitstring {
 
-static jive_binop_reduction_path_t
-jive_bitxor_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
+xor_operation::~xor_operation() noexcept {}
 
-static jive_output *
-jive_bitxor_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
+bool
+xor_operation::operator==(const operation & other) const noexcept
+{
+	const xor_operation * o = dynamic_cast<const xor_operation *>(&other);
+	return o && o->type() == type();
+}
+
+jive_node *
+xor_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive_output * const arguments[]) const
+{
+	return detail::binop_create<xor_operation>(
+		*this,
+		&JIVE_BITXOR_NODE,
+		region,
+		narguments,
+		arguments);
+}
+
+value_repr
+xor_operation::reduce_constants(
+	const value_repr & arg1,
+	const value_repr & arg2) const
+{
+	size_t nbits = std::min(arg1.size(), arg2.size());
+	value_repr result(nbits, '0');
+	jive_bitstring_xor(&result[0], &arg1[0], &arg2[0], nbits);
+	return result;
+}
+
+jive_binary_operation_flags
+xor_operation::flags() const noexcept
+{
+	return jive_binary_operation_associative | jive_binary_operation_commutative;
+}
+
+std::string
+xor_operation::debug_string() const
+{
+	return "BITXOR";
+}
+
+}
+}
 
 const jive_bitbinary_operation_class JIVE_BITXOR_NODE_ = {
 	base : { /* jive_bitbinary_operation_class */
@@ -30,10 +70,10 @@ const jive_bitbinary_operation_class JIVE_BITXOR_NODE_ = {
 			name : "BITXOR",
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_bitbinary_operation_check_operands_, /* inherit */
-			create : jive_bitxor_create_, /* override */
+			get_label : nullptr,
+			match_attrs : nullptr,
+			check_operands : nullptr,
+			create : nullptr
 		},
 
 		flags : jive_binary_operation_associative | jive_binary_operation_commutative,
@@ -42,81 +82,16 @@ const jive_bitbinary_operation_class JIVE_BITXOR_NODE_ = {
 		distributive_over : NULL,
 		distributive_under : NULL,
 
-		can_reduce_operand_pair : jive_bitxor_node_can_reduce_operand_pair_, /* override */
-		reduce_operand_pair : jive_bitxor_node_reduce_operand_pair_ /* override */
+		can_reduce_operand_pair : nullptr,
+		reduce_operand_pair : nullptr,
 	},
 	type : jive_bitop_code_xor
 };
 
-static void
-jive_bitxor_node_init_(jive_node * self, jive_region * region,
-	size_t noperands, jive_output * const operands[])
-{
-	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operands[0]);
-	
-	size_t n;
-	const jive_type * operand_types[noperands];
-	jive_bitstring_type output_type(nbits);
-	for(n = 0; n < noperands; n++)
-		operand_types[n] = &output_type;
-
-	const jive_type * type_array[] = {&output_type};
-	jive_node_init_(self, region,
-		noperands, operand_types, operands,
-		1, type_array);
-}
-
-static jive_node *
-jive_bitxor_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands >= 2);
-
-	jive_node * node = jive::create_operation_node(jive::bitstring::xor_operation());
-	node->class_ = &JIVE_BITXOR_NODE;
-	jive_bitxor_node_init_(node, region, noperands, operands);
-
-	return node;
-}
-
-static jive_binop_reduction_path_t
-jive_bitxor_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
-{
-	if (jive_node_isinstance(op1->node, &JIVE_BITCONSTANT_NODE) &&
-		jive_node_isinstance(op2->node, &JIVE_BITCONSTANT_NODE))
-		return jive_binop_reduction_constants;
-
-	return jive_binop_reduction_none;
-}
-
-static jive_output *
-jive_bitxor_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
-	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
-{
-	jive_graph * graph = (op1)->node->graph;
-
-	if (path == jive_binop_reduction_constants) {
-		jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>((op1)->node);
-		jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>((op2)->node);
-
-		size_t nbits = n1->operation().bits.size();
-		char bits[nbits];
-		jive_bitstring_xor(bits, &n1->operation().bits[0], &n2->operation().bits[0], nbits);
-
-		return jive_bitconstant(graph, nbits, bits);
-	}
-
-	return NULL;
-}
-
 jive_output *
 jive_bitxor(size_t noperands, jive_output * const * operands)
 {
-	JIVE_DEBUG_ASSERT(noperands != 0);
-
-	jive_graph * graph = operands[0]->node->graph;
-	jive::bitstring::xor_operation op;
-	return jive_binary_operation_create_normalized(&JIVE_BITXOR_NODE_.base, graph,
-		&op, noperands, operands);
+	return jive::bitstring::detail::binop_normalized_create<
+		jive::bitstring::xor_operation>(
+			&JIVE_BITXOR_NODE_.base, noperands, operands);
 }
