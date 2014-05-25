@@ -138,7 +138,7 @@ jive_serialize_type(jive_serialization_driver * self,
 {
 	const jive_serialization_typecls * sercls;
 	sercls = jive_serialization_typecls_lookup_by_cls(
-		self->typecls_registry, type->class_);
+		self->typecls_registry, typeid(*type));
 	
 	jive_token_ostream_identifier(os, sercls->tag);
 	jive_serialize_char_token(self, '<', os);

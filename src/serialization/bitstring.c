@@ -241,6 +241,6 @@ jive_bitstring_type_deserialize(
 }
 
 JIVE_SERIALIZATION_TYPECLS_REGISTER(
-	JIVE_BITSTRING_TYPE, "bits",
+	jive_bitstring_type, "bits",
 	jive_bitstring_type_serialize,
 	jive_bitstring_type_deserialize);
