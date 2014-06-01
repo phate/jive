@@ -13,18 +13,62 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-static jive_node *
-jive_bituless_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[]);
+namespace jive {
+namespace bitstring {
 
-static jive_binop_reduction_path_t
-jive_bituless_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2);
+uless_operation::~uless_operation() noexcept {}
 
-static jive::output *
-jive_bituless_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
-	const jive_node_class * cls, const jive_node_attrs * attrs, jive::output * op1,
-	jive::output * op2);
+bool
+uless_operation::operator==(const operation & other) const noexcept
+{
+	const uless_operation * o = dynamic_cast<const uless_operation *>(&other);
+	return o && o->type() == type();
+}
+
+jive_node *
+uless_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	return detail::binop_create<uless_operation>(
+		*this,
+		&JIVE_BITULESS_NODE,
+		region,
+		arguments[0],
+		arguments[1]);
+}
+
+compare_result
+uless_operation::reduce_constants(
+	const value_repr & arg1,
+	const value_repr & arg2) const
+{
+	size_t nbits = std::min(arg1.size(), arg2.size());
+	char result = jive_bitstring_uless(
+		&arg1[0], &arg2[0], nbits);
+
+	switch (result) {
+		case '0': return compare_result::static_false;
+		case '1': return compare_result::static_true;
+		default: return compare_result::undecidable;
+	}
+}
+
+jive_binary_operation_flags
+uless_operation::flags() const noexcept
+{
+	return jive_binary_operation_none;
+}
+
+std::string
+uless_operation::debug_string() const
+{
+	return "BITULESS";
+}
+
+}
+}
 
 const jive_bitcomparison_operation_class JIVE_BITULESS_NODE_ = {
 	base : { /* jive_binary_operation_class */
@@ -33,10 +77,10 @@ const jive_bitcomparison_operation_class JIVE_BITULESS_NODE_ = {
 			name : "BITULESS",
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_bitcomparison_operation_check_operands_, /* inherit */
-			create : jive_bituless_create_, /* override */
+			get_label : nullptr,
+			match_attrs : nullptr,
+			check_operands : nullptr,
+			create : nullptr,
 		},
 		flags : jive_binary_operation_none,
 		single_apply_under : NULL,
@@ -44,110 +88,18 @@ const jive_bitcomparison_operation_class JIVE_BITULESS_NODE_ = {
 		distributive_over : NULL,
 		distributive_under : NULL,
 	
-		can_reduce_operand_pair : jive_bituless_node_can_reduce_operand_pair_, /* override */
-		reduce_operand_pair : jive_bituless_node_reduce_operand_pair_ /* override */
+		can_reduce_operand_pair : nullptr,
+		reduce_operand_pair : nullptr
 	},
 	type : jive_bitcmp_code_uless,
 	compare_constants : NULL
 };
 
-static void
-jive_bituless_node_init_(jive_node * self, jive_region * region,
-	jive::output * operand1, jive::output * operand2)
-{
-	size_t nbits = static_cast<jive::bits::output*>(operand1)->nbits();
-
-	jive::ctl::type ctype;
-	const jive::base::type * ctype_ptr = &ctype;
-	jive::bits::type btype(nbits);
-	const jive::base::type * tmparray0[] = {&btype, &btype};
-	jive::output * tmparray1[] = {operand1, operand2};
-	jive_node_init_(self, region,
-		2, tmparray0, tmparray1,
-		1, &ctype_ptr);
-}
-
-static jive_node *
-jive_bituless_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 2);
-
-	jive_node * node = jive::create_operation_node(jive::bitstring::uless_operation());
-	node->class_ = &JIVE_BITULESS_NODE;
-	jive_bituless_node_init_(node, region, operands[0], operands[1]);
-
-	return node;
-}
-
-static jive_binop_reduction_path_t
-jive_bituless_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2)
-{
-	const jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>(op1->node());
-	const jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>(op2->node());
-
-	/* constant < constant */
-	if (n1 && n2){
-		JIVE_DEBUG_ASSERT(n1->operation().bits.size() == n2->operation().bits.size());
-		char result = jive_bitstring_uless(
-			&n1->operation().bits[0], &n2->operation().bits[0], n1->operation().bits.size());
-
-		switch(result){
-			case '0': return 1;
-			case '1': return 2;
-			default: return jive_binop_reduction_none;
-		}
-	}
-
-	/* UINT_MAX < constant */
-	if (n1){
-		size_t nbits = n1->operation().bits.size();
-		char uint_max[nbits];
-		jive_bitstring_init_signed(uint_max, nbits, -1);
-	
-		if (jive_bitstring_equal(&n1->operation().bits[0],uint_max, nbits) == '1')
-			return 3;
-	}
-	
-	/* constant < UINT_MIN */
-	if (n2){
-		size_t nbits = n2->operation().bits.size();
-		char uint_min[nbits];
-		jive_bitstring_init_signed(uint_min, nbits, 0);
-
-		if (jive_bitstring_equal(&n2->operation().bits[0],uint_min, nbits) == '1')
-			return 4;
-	}
-
-	return jive_binop_reduction_none;
-}
-
-static jive::output *
-jive_bituless_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
-	const jive_node_class * cls, const jive_node_attrs * attrs, jive::output * op1,
-	jive::output * op2)
-{
-	jive_graph * graph = op1->node()->graph;
-
-	switch(path){
-		case 1:
-		case 3:
-		case 4:
-			return jive_control_false(graph);
-		case 2:
-			return jive_control_true(graph);
-		default:
-			return NULL;
-	}
-}
-
 jive::output *
 jive_bituless(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
-	jive::output * tmparray2[] = {operand1, operand2};
-	jive::bitstring::uless_operation op;
-	return jive_binary_operation_create_normalized(&JIVE_BITULESS_NODE_.base, graph, &op, 2,
-		tmparray2);
+	return jive::bitstring::detail::binop_normalized_create<
+		jive::bitstring::uless_operation>(
+			&JIVE_BITULESS_NODE_.base, operand1, operand2);
 }

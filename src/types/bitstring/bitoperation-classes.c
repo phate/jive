@@ -9,6 +9,7 @@
 #include <jive/types/bitstring/bitoperation-classes.h>
 #include <jive/types/bitstring/constant.h>
 
+#include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
@@ -136,6 +137,82 @@ bits_binary_operation::reduce_operand_pair(
 }
 
 bits_compare_operation::~bits_compare_operation() noexcept {}
+
+size_t
+bits_compare_operation::narguments() const noexcept
+{
+	return 2;
+}
+
+const jive::base::type &
+bits_compare_operation::argument_type(size_t index) const noexcept
+{
+	return type_;
+}
+
+size_t
+bits_compare_operation::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+bits_compare_operation::result_type(size_t index) const noexcept
+{
+	static const jive::ctl::type ctl;
+	return ctl;
+}
+
+jive_binop_reduction_path_t
+bits_compare_operation::can_reduce_operand_pair(
+	const jive::output * arg1,
+	const jive::output * arg2) const noexcept
+{
+	const bitstring::constant_operation * c1_op =
+		dynamic_cast<const bitstring::constant_operation *>(&arg1->node()->operation());
+	const bitstring::constant_operation * c2_op =
+		dynamic_cast<const bitstring::constant_operation *>(&arg2->node()->operation());
+
+	bitstring::value_repr arg1_repr;
+	if (c1_op) {
+		arg1_repr = c1_op->bits;
+	} else {
+		arg1_repr = bitstring::value_repr(type_.nbits(), 'D');
+	}
+
+	bitstring::value_repr arg2_repr;
+	if (c2_op) {
+		arg2_repr = c2_op->bits;
+	} else {
+		arg2_repr = bitstring::value_repr(type_.nbits(), 'D');
+	}
+
+	switch (reduce_constants(arg1_repr, arg2_repr)) {
+		case compare_result::static_false:
+			return 1;
+		case compare_result::static_true:
+			return 2;
+		case compare_result::undecidable:
+			return jive_binop_reduction_none;
+	}
+}
+
+jive::output *
+bits_compare_operation::reduce_operand_pair(
+	jive_binop_reduction_path_t path,
+	jive::output * arg1,
+	jive::output * arg2) const
+{
+	jive_graph * graph = arg1->node()->graph;
+	if (path == 1) {
+		return jive_control_false(graph);
+	}
+	if (path == 2) {
+		return jive_control_true(graph);
+	}
+
+	return nullptr;
+}
 
 }
 

@@ -107,9 +107,59 @@ private:
 	size_t arity_;
 };
 
+enum class compare_result {
+	undecidable,
+	static_true,
+	static_false
+};
+
 class bits_compare_operation : public binary_operation {
 public:
+	inline
+	bits_compare_operation(
+		const jive::bits::type & type) noexcept
+		: type_(type)
+	{
+	}
+
 	virtual ~bits_compare_operation() noexcept;
+
+	/* type signature methods */
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_binop_reduction_path_t
+	can_reduce_operand_pair(
+		const jive::output * arg1,
+		const jive::output * arg2) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand_pair(
+		jive_binop_reduction_path_t path,
+		jive::output * arg1,
+		jive::output * arg2) const override;
+
+	virtual compare_result
+	reduce_constants(
+		const bitstring::value_repr & arg1,
+		const bitstring::value_repr & arg2) const = 0;
+
+	inline const jive::bits::type &
+	type() const noexcept { return type_; }
+
+private:
+	jive::bits::type type_;
+	size_t arity_;
 };
 
 }
