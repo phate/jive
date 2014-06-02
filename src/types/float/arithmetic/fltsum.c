@@ -11,66 +11,46 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
-static jive_node *
-jive_fltsum_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[]);
+namespace jive {
+namespace flt {
+
+value_repr compute_sum(value_repr arg1, value_repr arg2)
+{
+	return arg1 + arg2;
+}
+
+const char fltsum_name[] = "FLTSUM";
+
+}
+}
 
 const jive_fltbinary_operation_class JIVE_FLTSUM_NODE_ = {
 	base : { /* jive_fltbinary_operation_class */
-		base : {	/* jive_node_class */
+		base : { /* jive_node_class */
 			parent : &JIVE_FLTBINARY_NODE,
 			name : "FLTSUM",
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_fltbinary_operation_check_operands_, /* inherit */
-			create : jive_fltsum_node_create_, /* override */
+			get_label : nullptr,
+			match_attrs : nullptr,
+			check_operands : nullptr,
+			create : nullptr,
 		},
-	
+
 		flags : jive_binary_operation_commutative,
 		single_apply_under : NULL,
 		multi_apply_under : NULL,
 		distributive_over : NULL,
 		distributive_under : NULL,
 
-		can_reduce_operand_pair : jive_binary_operation_can_reduce_operand_pair_, /* inherit */
-		reduce_operand_pair : jive_binary_operation_reduce_operand_pair_ /* inherit */
+		can_reduce_operand_pair : nullptr,
+		reduce_operand_pair : nullptr
 	},
 	type : jive_fltop_code_sum
 };
 
-static void
-jive_fltsum_node_init_(jive_node * self, jive_region * region,
-	struct jive::output * op1, jive::output * op2)
-{
-	jive::flt::type flttype;
-	const jive::base::type * tmparray0[] = {&flttype, &flttype};
-	jive::output *  tmparray1[] = {op1, op2};
-	jive_node_init_(self, region,
-		2, tmparray0, tmparray1,
-		1, tmparray0);
-}
-
-static jive_node *
-jive_fltsum_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 2);
-
-	jive_node * node = jive::create_operation_node(jive::flt::sum_operation());
-	node->class_ = &JIVE_FLTSUM_NODE;
-	jive_fltsum_node_init_(node, region, operands[0], operands[1]);
-
-	return node;
-}
-
 jive::output *
-jive_fltsum(jive::output * op1, jive::output * op2)
+jive_fltsum(jive::output * arg1, jive::output * arg2)
 {
-	jive_graph * graph = op1->node()->graph;
-	jive::output * tmparray2[] = {op1, op2};
-	jive::flt::sum_operation op;
-	return jive_binary_operation_create_normalized(&JIVE_FLTSUM_NODE_.base, graph, &op, 2,
-		tmparray2);
+	return jive::flt::sum_operation::normalized_create(arg1, arg2);
 }

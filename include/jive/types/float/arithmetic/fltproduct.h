@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -14,22 +15,19 @@ extern const jive_fltbinary_operation_class JIVE_FLTPRODUCT_NODE_;
 namespace jive {
 namespace flt {
 
-class product_operation final : public jive::flt_binary_operation {
-};
+value_repr compute_product(value_repr arg1, value_repr arg2);
+extern const char fltproduct_name[];
+
+typedef detail::make_binop<
+	compute_product,
+	&JIVE_FLTPRODUCT_NODE_,
+	fltproduct_name,
+	jive_binary_operation_commutative> product_operation;
 
 }
 }
 
 jive::output *
 jive_fltproduct(jive::output * operand1, jive::output * operand2);
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_fltproduct_node_cast(jive_node * node)
-{
-	if(jive_node_isinstance(node, &JIVE_FLTPRODUCT_NODE))
-		return node;
-	else
-		return NULL;
-}
 
 #endif
