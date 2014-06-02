@@ -1,19 +1,20 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/types/float/fltconstant.h>
 
-#include <jive/util/buffer.h>
-#include <jive/vsdg/node-private.h>
-#include <jive/types/float/fltoperation-classes-private.h>
-#include <jive/types/float/flttype.h>
-#include <jive/vsdg/graph.h>
-#include <jive/vsdg/operators/nullary.h>
-
 #include <stdio.h>
 #include <string.h>
+
+#include <jive/types/float/fltoperation-classes-private.h>
+#include <jive/types/float/flttype.h>
+#include <jive/util/buffer.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/operators/nullary.h>
 
 static void
 jive_fltconstant_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
@@ -84,7 +85,7 @@ jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs
 }
 
 jive::output *
-jive_fltconstant(struct jive_graph * graph, uint32_t value)
+jive_fltconstant(struct jive_graph * graph, jive::flt::value_repr value)
 {
 	jive::flt::constant_operation attrs(value);
 
