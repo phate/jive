@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -14,22 +15,19 @@ extern const jive_fltcomparison_operation_class JIVE_FLTLESS_NODE_;
 namespace jive {
 namespace flt {
 
-class less_operation final : public jive::flt_compare_operation {
-};
+bool compute_less(value_repr arg1, value_repr arg2);
+extern const char fltless_name[];
+
+typedef detail::make_cmpop<
+	compute_less,
+	&JIVE_FLTLESS_NODE_,
+	fltless_name,
+	jive_binary_operation_none> less_operation;
 
 }
 }
 
 jive::output *
 jive_fltless(jive::output * operand1, jive::output * operand2);
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_fltless_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_FLTLESS_NODE))
-		return node;
-	else
-		return NULL;
-}
 
 #endif
