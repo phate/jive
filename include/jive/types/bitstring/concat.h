@@ -17,7 +17,36 @@ extern const jive_binary_operation_class JIVE_BITCONCAT_NODE_;
 namespace jive {
 namespace bitstring {
 
-class concat_operation final : public jive::operation {
+class concat_operation final : public jive::binary_operation {
+public:
+	virtual ~concat_operation() noexcept;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	/* reduction methods */
+	virtual jive_binop_reduction_path_t
+	can_reduce_operand_pair(
+		const jive::output * arg1,
+		const jive::output * arg2) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand_pair(
+		jive_binop_reduction_path_t path,
+		jive::output * arg1,
+		jive::output * arg2) const override;
+
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
 }

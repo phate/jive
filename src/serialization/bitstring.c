@@ -166,7 +166,10 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	jive_bitslice_serialize,
 	jive_bitslice_deserialize);
 
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITCONCAT_NODE, "bitconcat");
+JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
+	JIVE_BITCONCAT_NODE,
+	jive::bitstring::concat_operation,
+	"bitconcat");
 
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
 	JIVE_BITAND_NODE, jive::bitstring::and_operation, "bitand");
