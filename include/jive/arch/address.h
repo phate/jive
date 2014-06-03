@@ -73,6 +73,8 @@ private:
 
 class arraysubscript_operation : public operation {
 public:
+	virtual ~arraysubscript_operation() noexcept;
+
 	arraysubscript_operation(const arraysubscript_operation & other);
 	arraysubscript_operation(arraysubscript_operation && other) noexcept;
 	arraysubscript_operation(const jive::value::type & element_type);
@@ -84,8 +86,10 @@ private:
 	std::unique_ptr<jive::value::type> element_type_;
 };
 
-class arrayindex_operation : public jive_node_attrs {
+class arrayindex_operation : public operation {
 public:
+	virtual ~arrayindex_operation() noexcept;
+
 	arrayindex_operation(const arrayindex_operation & other);
 	arrayindex_operation(arrayindex_operation && other) noexcept;
 	arrayindex_operation(
@@ -179,8 +183,7 @@ jive_containerof_node_cast(jive_node * node)
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
 
-extern const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_;
-#define JIVE_ARRAYSUBSCRIPT_NODE (JIVE_ARRAYSUBSCRIPT_NODE_.base)
+extern const jive_node_class JIVE_ARRAYSUBSCRIPT_NODE;
 
 typedef jive::operation_node<jive::address::arraysubscript_operation> jive_arraysubscript_node;
 
@@ -201,8 +204,7 @@ jive_arraysubscript_node_cast(jive_node * node)
 element of an array and the array element type, compute the
 difference of their indices */
 
-extern const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_;
-#define JIVE_ARRAYINDEX_NODE (JIVE_ARRAYINDEX_NODE_.base)
+extern const jive_node_class JIVE_ARRAYINDEX_NODE;
 
 typedef jive::operation_node<jive::address::arrayindex_operation> jive_arrayindex_node;
 
