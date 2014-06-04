@@ -13,6 +13,8 @@ class jive_value_type : public jive_type {
 public:
 	virtual ~jive_value_type() noexcept;
 
+	virtual jive_value_type * copy() const override = 0;
+
 protected:
 	inline constexpr jive_value_type() noexcept : jive_type() {};
 };
