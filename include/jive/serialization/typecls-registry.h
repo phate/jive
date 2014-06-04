@@ -76,8 +76,8 @@ jive_serialization_typecls_register(
 	jive_typecls_serialize_function_t serialize,
 	jive_typecls_deserialize_function_t deserialize);
 
-#define JIVE_SERIALIZATION_TYPECLS_REGISTER(typecls, tag, serialize, deserialize) \
-	static void __attribute__((constructor)) register_##typecls(void)\
+#define JIVE_SERIALIZATION_TYPECLS_REGISTER(typecls, name, tag, serialize, deserialize) \
+	static void __attribute__((constructor)) register_##name(void)\
 	{ \
 		jive_serialization_typecls_register(typeid(typecls), tag, serialize, deserialize); \
 	} \

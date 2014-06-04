@@ -45,6 +45,7 @@ jive_control_type_deserialize(
 	return true;
 }
 
-JIVE_SERIALIZATION_TYPECLS_REGISTER(jive_control_type, "control", jive_control_type_serialize, jive_control_type_deserialize);
+JIVE_SERIALIZATION_TYPECLS_REGISTER(jive_control_type, jive_control_type, "control",
+	jive_control_type_serialize, jive_control_type_deserialize);
 
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_resource_class, "root");
