@@ -16,6 +16,8 @@ class jive_state_type : public jive_type {
 public:
 	virtual ~jive_state_type() noexcept;
 
+	virtual jive_state_type * copy() const override = 0;
+
 protected:
 	inline constexpr jive_state_type() noexcept : jive_type() {};
 };
