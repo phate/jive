@@ -57,6 +57,9 @@ public:
 	inline bool active() const noexcept { return active_; }
 
 private:
+	/*
+		FIXME: this is an ugly hack, introduce a new type for that
+	*/
 	bool active_;
 	jive::ctl::type type_;
 };
