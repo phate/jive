@@ -57,7 +57,7 @@ jive_bitugreater_node_init_(jive_node * self, jive_region * region,
 {
 	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand1);
 
-	jive_control_type ctype;
+	jive::ctl::type ctype;
 	const jive_type * ctype_ptr = &ctype;
 	jive_bitstring_type btype(nbits);
 	const jive_type * tmparray0[] = {&btype, &btype};

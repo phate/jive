@@ -53,7 +53,7 @@ jive_regvalue_node_init_(
 	const jive_register_class * regcls,
 	jive_output * value)
 {
-	jive_control_type ctl_type;
+	jive::ctl::type ctl_type;
 	const jive_type * vtype = &value->type();
 	const jive_type * operand_types[] = {&ctl_type, vtype};
 	jive_output * operands[] = {ctl, value};

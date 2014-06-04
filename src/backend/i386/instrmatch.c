@@ -120,7 +120,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 		jive_node * enter = sub->producer(0)->region->top;
-		jive_control_type ctl;
+		jive::ctl::type ctl;
 		jive_node_add_input(tmp, &ctl, enter->outputs[0]);
 		
 		ext = tmp->outputs[0];
@@ -389,7 +389,7 @@ match_gpr_immediate(jive_node * node)
 	jive_node * instr = jive_instruction_node_create_extended(node->region,
 		&jive_i386_instr_int_load_imm,
 		NULL, imm);
-	jive_control_type ctl;
+	jive::ctl::type ctl;
 	jive_node_add_input(instr, &ctl, node->inputs[0]->origin());
 	
 	jive_output_replace(node->outputs[0], instr->outputs[0]);

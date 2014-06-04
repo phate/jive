@@ -66,7 +66,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	jive_test_value_type type;
-	jive_control_type control_type;
+	jive::ctl::type control_type;
 	const jive_type * tmparray0[] = {&type};
 	
 	jive_node * top = jive_test_node_create(graph->root_region,

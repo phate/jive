@@ -51,7 +51,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	jive_test_value_type type;
-	jive_control_type ctl;
+	jive::ctl::type ctl;
 	jive_anchor_type anchor_type;
 	const jive_type * tmparray0[] = {&type};
 	

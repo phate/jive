@@ -25,7 +25,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 	
 	jive_test_value_type type;
-	jive_control_type ctype;
+	jive::ctl::type ctype;
 	const jive_type * ctype_ptr = &ctype;
 	const jive_type * tmparray0[] = {&type};
 	

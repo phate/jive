@@ -41,11 +41,11 @@ jive_control_type_deserialize(
 	jive_token_istream * is,
 	jive_type ** type)
 {
-	*type = new jive_control_type();
+	*type = new jive::ctl::type();
 	return true;
 }
 
-JIVE_SERIALIZATION_TYPECLS_REGISTER(jive_control_type, jive_control_type, "control",
+JIVE_SERIALIZATION_TYPECLS_REGISTER(jive::ctl::type, jive_control_type, "control",
 	jive_control_type_serialize, jive_control_type_deserialize);
 
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_resource_class, "root");

@@ -44,7 +44,7 @@ jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	JIVE_DEBUG_ASSERT(noperands == 3);
 	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	jive_anchor_type anchor;
-	jive_control_type ctl;
+	jive::ctl::type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
 	const jive_type * tmparray0[] = {&anchor, &anchor, &ctl};
 	jive_node_init_(self, region,
@@ -110,7 +110,7 @@ jive_gamma_node_create(jive_region * region,
 {
 	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	jive_anchor_type anchor;
-	jive_control_type ctl;
+	jive::ctl::type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
 	const jive_type * tmparray1[] = {&anchor, &anchor, &ctl};
 	jive_output * tmparray2[] = {true_alternative, false_alternative, predicate};

@@ -27,7 +27,7 @@ jive_objdef_node_init_(
 	/* FIXME: this is horribly wrong, but we don't have another type right now for putting in here,
 						this entire node needs to be remodeled
 	*/
-	jive_control_type stype;
+	jive::ctl::type stype;
 	const jive_type * stype_ptr = &stype;
 	const jive_type * type = &obj->type();
 	jive_node_init_(self, region,

@@ -45,7 +45,7 @@ jive_instruction_node_init_(
 	size_t noutputs = icls->noutputs;
 	if (icls->flags & jive_instruction_jump)
 		noutputs ++;
-	jive_control_type ctl;
+	jive::ctl::type ctl;
 	jive_immediate_type imm;
 	
 	const jive_type * input_types[ninputs + nimmediates];

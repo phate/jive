@@ -73,7 +73,7 @@ static int test_main()
 	const jive_lambda_node * lambda_node2;
 	lambda_node2 = jive_lambda_node_const_cast(phi.region->bottom->producer(3));
 	assert(jive_lambda_is_self_recursive(lambda_node2));
-	assert(dynamic_cast<jive_control_input*>(phi.region->bottom->inputs[0]));
+	assert(dynamic_cast<jive::ctl::input*>(phi.region->bottom->inputs[0]));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

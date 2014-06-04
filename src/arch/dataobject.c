@@ -287,7 +287,7 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 		item_types[n] = &items[n]->type();
 	
 	node->class_ = &JIVE_DATAITEMS_NODE;
-	jive_control_type control;
+	jive::ctl::type control;
 	const jive_type * control_ptr = &control;
 	jive_node_init_(node, region,
 		nitems, item_types, items,
@@ -303,7 +303,7 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 	jive_datadef_node * node = new jive_datadef_node(jive::datadef_operation());
 	
 	node->class_ = &JIVE_DATADEF_NODE;
-	jive_control_type data_type;
+	jive::ctl::type data_type;
 	const jive_type * data_type_ptr = &data_type;
 	jive_anchor_type anchor;
 	const jive_type * ancptr = &anchor;

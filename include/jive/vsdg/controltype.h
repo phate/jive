@@ -9,17 +9,20 @@
 
 #include <jive/vsdg/statetype.h>
 
-class jive_control_type final : public jive_state_type {
-public:
-	virtual ~jive_control_type() noexcept;
+namespace jive {
+namespace ctl {
 
-	inline constexpr jive_control_type() noexcept : jive_state_type() {};
+class type final : public jive_state_type {
+public:
+	virtual ~type() noexcept;
+
+	inline constexpr type() noexcept : jive_state_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_control_type * copy() const override;
+	virtual jive::ctl::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -29,25 +32,25 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_control_input final : public jive_state_input {
+class input final : public jive_state_input {
 public:
-	virtual ~jive_control_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_control_input(struct jive_node * node, size_t index, jive_output * initial_operand);
+	input(struct jive_node * node, size_t index, jive_output * initial_operand);
 
-	virtual const jive_control_type & type() const noexcept { return type_; }
+	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
 private:
-	jive_control_type type_;
+	jive::ctl::type type_;
 };
 
-class jive_control_output final : public jive_state_output {
+class output final : public jive_state_output {
 public:
-	virtual ~jive_control_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_control_output(bool active, struct jive_node * node, size_t index);
+	output(bool active, struct jive_node * node, size_t index);
 
-	virtual const jive_control_type & type() const noexcept { return type_; }
+	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
 	inline void set_active(bool active) noexcept { active_ = active; }
 
@@ -55,19 +58,22 @@ public:
 
 private:
 	bool active_;
-	jive_control_type type_;
+	jive::ctl::type type_;
 };
 
-class jive_control_gate final : public jive_state_gate {
+class gate final : public jive_state_gate {
 public:
-	virtual ~jive_control_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_control_gate(jive_graph * graph, const char name[]);
+	gate(jive_graph * graph, const char name[]);
 
-	virtual const jive_control_type & type() const noexcept { return type_; }
+	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
 private:
-	jive_control_type type_;
+	jive::ctl::type type_;
 };
+
+}
+}
 
 #endif

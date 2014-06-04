@@ -121,12 +121,12 @@ jive_phi_enter_node_create(jive_region * region)
 	jive_node * node = jive::create_operation_node(jive_op_phi_enter());
 
 	node->class_ = &JIVE_PHI_ENTER_NODE;
-	jive_control_type ctltype;
+	jive::ctl::type ctltype;
 	const jive_type * ctltype_ptr = &ctltype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctltype_ptr);
-	((jive_control_output *)node->outputs[0])->set_active(false);
+	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
 	region->top = node;
 	
 	return node;
@@ -164,7 +164,7 @@ jive_phi_leave_node_create(jive_region * region)
 	node->class_ = &JIVE_PHI_LEAVE_NODE;
 	jive_anchor_type anctype;
 	const jive_type * ancptr = &anctype;
-	jive_control_type ctltype;
+	jive::ctl::type ctltype;
 	const jive_type *ctltype_ptr = &ctltype;
 	jive_node_init_(node, region,
 		1, &ctltype_ptr, &region->top->outputs[0],

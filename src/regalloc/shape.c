@@ -335,7 +335,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	bool force_proper_cut = false;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (dynamic_cast<jive_anchor_input*>(input) || dynamic_cast<jive_control_input*>(input))
+		if (dynamic_cast<jive_anchor_input*>(input) || dynamic_cast<jive::ctl::input*>(input))
 			force_proper_cut = true;
 	}
 	
@@ -358,7 +358,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		/* don't put node between a control dependency edge */
 		bool is_control = false;
 		for (n = 0; n < next_node->ninputs; n++)
-			if (dynamic_cast<jive_control_input*>(next_node->inputs[n])) is_control = true;
+			if (dynamic_cast<jive::ctl::input*>(next_node->inputs[n])) is_control = true;
 		if (conflict.type == jive_regalloc_conflict_none && !is_control)
 			allowed_cut = cut;
 	}
@@ -375,10 +375,10 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (!dynamic_cast<jive_control_input*>(input))
+		if (!dynamic_cast<jive::ctl::input*>(input))
 			continue;
 		
-		jive_control_output * ctl_output = (jive_control_output *) input->origin();
+		jive::ctl::output * ctl_output = static_cast<jive::ctl::output*>(input->origin());
 		if (!ctl_output->active())
 			continue;
 		self->control_dominator = input->producer();

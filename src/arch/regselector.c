@@ -261,7 +261,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	if (!top || top->noutputs < 1)
 		return;
 	jive_output * ctl = top->outputs[0];
-	if (!dynamic_cast<jive_control_output*>(ctl))
+	if (!dynamic_cast<jive::ctl::output*>(ctl))
 		return;
 	
 	if (node->class_ == &JIVE_REGVALUE_NODE) {

@@ -94,9 +94,8 @@ jive_seq_point_attach_symbol(
 static bool
 is_active_control(jive_input * input)
 {
-	if (!dynamic_cast<jive_control_input*>(input))
-		return false;
-	return ((jive_control_output *)input->origin())->active();
+	jive::ctl::output * output = dynamic_cast<jive::ctl::output*>(input->origin());
+	return output != nullptr ? output->active() : false;
 }
 
 static jive_seq_region *

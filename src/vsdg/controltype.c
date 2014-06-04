@@ -14,61 +14,73 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 
-jive_control_type::~jive_control_type() noexcept {}
+namespace jive {
+namespace ctl {
+
+/* type */
+
+type::~type() noexcept {}
 
 void
-jive_control_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "ctl");
 }
 
 bool
-jive_control_type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive_type & other) const noexcept
 {
-	return dynamic_cast<const jive_control_type*>(&other) != nullptr;
+	return dynamic_cast<const jive::ctl::type*>(&other) != nullptr;
 }
 
-jive_control_type *
-jive_control_type::copy() const
+jive::ctl::type *
+type::copy() const
 {
-	return new jive_control_type();
+	return new jive::ctl::type();
 }
 
 jive_input *
-jive_control_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_control_input(node, index, origin);
+	return new jive::ctl::input(node, index, origin);
 }
 
 jive_output *
-jive_control_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_control_output(true, node, index);
+	return new jive::ctl::output(true, node, index);
 }
 
 jive_gate *
-jive_control_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_control_gate(graph, name);
+	return new jive::ctl::gate(graph, name);
 }
 
-jive_control_input::~jive_control_input() noexcept {}
+/* input */
 
-jive_control_input::jive_control_input(struct jive_node * node, size_t index,
-	jive_output * initial_operand)
+input::~input() noexcept {}
+
+input::input(struct jive_node * node, size_t index, jive_output * initial_operand)
 	: jive_state_input(node, index, initial_operand)
 {}
 
-jive_control_output::~jive_control_output() noexcept {}
+/* output */
 
-jive_control_output::jive_control_output(bool active, struct jive_node * node,
-	size_t index)
+output::~output() noexcept {}
+
+output::output(bool active, struct jive_node * node, size_t index)
 	: jive_state_output(node, index)
 	, active_(active)
 {}
 
-jive_control_gate::~jive_control_gate() noexcept {}
+/* gate */
 
-jive_control_gate::jive_control_gate(jive_graph * graph, const char name[])
+gate::~gate() noexcept {}
+
+gate::gate(jive_graph * graph, const char name[])
 	: jive_state_gate(graph, name)
 {}
+
+}
+}
