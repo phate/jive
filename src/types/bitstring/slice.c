@@ -79,9 +79,9 @@ jive_bitslice_node_init_(
 	jive_region * region,
 	jive_output * origin)
 {
-	size_t nbits = ((jive_bitstring_output *)origin)->type().nbits();
-	jive_bitstring_type input_type(nbits);
-	jive_bitstring_type output_type(self->operation().high() - self->operation().low());
+	size_t nbits = static_cast<jive::bits::output*>(origin)->nbits();
+	jive::bits::type input_type(nbits);
+	jive::bits::type output_type(self->operation().high() - self->operation().low());
 	const jive_type * input_typeptr = &input_type;
 	const jive_type * output_typeptr = &output_type;
 	jive_node_init_(self, region,
@@ -134,7 +134,7 @@ jive_bitslice_can_reduce_operand_(const jive_node_class * cls, const jive_node_a
 	const jive_output * operand_)
 {
 	const jive::bitstring::slice_operation * attrs = (const jive::bitstring::slice_operation *) attrs_;
-	jive_bitstring_output * operand = (jive_bitstring_output *) operand_;
+	const jive::bits::output * operand = static_cast<const jive::bits::output*>(operand_);
 	
 	if ((attrs->low() == 0) && (attrs->high() == operand->type().nbits()))
 		return jive_unop_reduction_idempotent;
@@ -153,7 +153,7 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 	const jive_node_class * cls, const jive_node_attrs * attrs_, jive_output * operand_)
 {
 	const jive::bitstring::slice_operation * attrs = (const jive::bitstring::slice_operation *) attrs_;
-	jive_bitstring_output * operand = (jive_bitstring_output *) operand_;
+	const jive::bits::output * operand = static_cast<jive::bits::output*>(operand_);
 	
 	if (path == jive_unop_reduction_idempotent)
 		return operand_;
@@ -178,7 +178,7 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 		for (n=0; n<node->noperands; n++) {
 			jive_output * operand = node->inputs[n]->origin();
 			size_t base = pos;
-			size_t nbits = static_cast<jive_bitstring_output*>(operand)->nbits();
+			size_t nbits = static_cast<jive::bits::output*>(operand)->nbits();
 			pos = pos + nbits;
 			if (base < attrs->high() && pos > attrs->low()) {
 				size_t slice_low = (attrs->low() > base) ? (attrs->low() - base) : 0;

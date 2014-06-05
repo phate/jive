@@ -26,7 +26,7 @@ static int test_main(void)
 
 	jive_address_type addr;
 	const jive_type * addrptr = &addr;
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits32(32);
 	const char * tmparray0[] = {"arg"};
 	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrptr, tmparray0);
 

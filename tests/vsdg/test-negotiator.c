@@ -346,7 +346,7 @@ static int test_main(void)
 	
 	setlocale(LC_ALL, "");
 	
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits32(32);
 	test_option_t opt1 = 1;
 	test_option_t opt2 = 2;
 	test_option_t opt3 = 3;

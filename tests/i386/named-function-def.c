@@ -35,7 +35,7 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits32(32);
 	const jive_type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph,

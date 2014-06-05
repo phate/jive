@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -19,11 +19,9 @@ class squotient_operation final : public bits_binary_operation {
 public:
 	virtual ~squotient_operation() noexcept;
 
-	inline squotient_operation(
-		const jive_bitstring_type & type) noexcept
+	inline squotient_operation(const jive::bits::type & type) noexcept
 		: bits_binary_operation(type)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

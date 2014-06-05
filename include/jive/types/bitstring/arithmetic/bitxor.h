@@ -20,12 +20,9 @@ class xor_operation final : public bits_binary_operation {
 public:
 	virtual ~xor_operation() noexcept;
 
-	inline xor_operation(
-		const jive_bitstring_type & type,
-		size_t arity = 2) noexcept
+	inline xor_operation(const jive::bits::type & type, size_t arity = 2) noexcept
 		: bits_binary_operation(type, arity)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

@@ -188,8 +188,8 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 		jive_output * address = load_node->inputs[0]->origin();
 
 		size_t nbits = 0;
-		if (dynamic_cast<jive_bitstring_output*>(address)) {
-			nbits = static_cast<const jive_bitstring_output*>(address)->nbits();
+		if (dynamic_cast<jive::bits::output*>(address)) {
+			nbits = static_cast<const jive::bits::output*>(address)->nbits();
 			address = jive_bitstring_to_address_create(address, nbits, &address->type());
 		}
 		

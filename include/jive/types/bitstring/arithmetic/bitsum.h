@@ -19,12 +19,9 @@ class sum_operation final : public bits_binary_operation {
 public:
 	virtual ~sum_operation() noexcept;
 
-	inline sum_operation(
-		const jive_bitstring_type & type,
-		size_t arity = 2) noexcept
+	inline sum_operation(const jive::bits::type & type, size_t arity = 2) noexcept
 		: bits_binary_operation(type, arity)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

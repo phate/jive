@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -17,13 +17,9 @@ namespace jive {
  * produces another bitstring of the same width. */
 class bits_unary_operation : public unary_operation {
 public:
-	inline
-	bits_unary_operation(const jive_bitstring_type & type) noexcept
-		: type_(type)
-	{
-	}
-
 	virtual ~bits_unary_operation() noexcept;
+
+	inline bits_unary_operation(const jive::bits::type & type) noexcept : type_(type) {}
 
 	/* type signature methods */
 	virtual size_t
@@ -38,8 +34,7 @@ public:
 	virtual const jive_type &
 	result_type(size_t index) const noexcept override;
 
-	inline const jive_bitstring_type &
-	type() const noexcept { return type_; }
+	inline const jive::bits::type & type() const noexcept { return type_; }
 
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
@@ -56,7 +51,7 @@ public:
 		const bitstring::value_repr & arg) const = 0;
 
 private:
-	jive_bitstring_type type_;
+	jive::bits::type type_;
 };
 
 /* Represents a binary operation (possibly normalized n-ary if associative)
@@ -64,16 +59,12 @@ private:
  * same width. */
 class bits_binary_operation : public binary_operation {
 public:
-	inline
-	bits_binary_operation(
-		const jive_bitstring_type & type,
-		size_t arity = 2) noexcept
+	virtual ~bits_binary_operation() noexcept;
+
+	inline bits_binary_operation(const jive::bits::type & type, size_t arity = 2) noexcept
 		: type_(type)
 		, arity_(arity)
-	{
-	}
-
-	virtual ~bits_binary_operation() noexcept;
+	{}
 
 	/* type signature methods */
 	virtual size_t
@@ -106,14 +97,13 @@ public:
 		const bitstring::value_repr & arg2) const = 0;
 
 
-	inline const jive_bitstring_type &
-	type() const noexcept { return type_; }
+	inline const jive::bits::type & type() const noexcept { return type_; }
 
 	inline size_t
 	arity() const noexcept { return arity_; }
 
 private:
-	jive_bitstring_type type_;
+	jive::bits::type type_;
 	size_t arity_;
 };
 

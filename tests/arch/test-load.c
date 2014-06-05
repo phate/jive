@@ -28,7 +28,7 @@ static int test_main()
 
 	jive_memory_type memtype;
 	jive_address_type addrtype;
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits32(32);
 	const jive_type * tmparray0[] = {&addrtype, &addrtype, &memtype, &bits32};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,

@@ -25,9 +25,9 @@ static int test_main()
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	static const jive_bitstring_type bits8(8);
-	static const jive_bitstring_type bits16(16);
-	static const jive_bitstring_type bits32(32);
+	static const jive::bits::type bits8(8);
+	static const jive::bits::type bits16(16);
+	static const jive::bits::type bits32(32);
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive_record_declaration decl = {3, decl_elems};

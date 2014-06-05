@@ -19,11 +19,9 @@ class smod_operation final : public bits_binary_operation {
 public:
 	virtual ~smod_operation() noexcept;
 
-	inline smod_operation(
-		const jive_bitstring_type & type) noexcept
+	inline smod_operation(const jive::bits::type & type) noexcept
 		: bits_binary_operation(type)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

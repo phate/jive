@@ -19,11 +19,9 @@ class difference_operation final : public bits_binary_operation {
 public:
 	virtual ~difference_operation() noexcept;
 
-	inline difference_operation(
-		const jive_bitstring_type & type) noexcept
+	inline difference_operation(const jive::bits::type & type) noexcept
 		: bits_binary_operation(type)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

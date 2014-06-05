@@ -21,7 +21,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits32(32);
 	const char * tmparray0[] = {"arg"};
 	const jive_type * tmparray11[] = {&bits32};
 	jive_lambda * lambda = jive_lambda_begin(graph, 1, tmparray11, tmparray0);

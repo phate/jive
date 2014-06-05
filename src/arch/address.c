@@ -422,7 +422,7 @@ jive_arraysubscript_node_create_(jive_region * region, const jive_node_attrs * a
 	const jive_type * typeptr = &address_type;
 
 	const jive_type * index_type = &index->type();
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive_bitstring_type*>(index_type));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::type*>(index_type));
 
 	const jive_type * operand_types[2] = {&address_type, index_type};
 	
@@ -627,7 +627,7 @@ get_array_base(const jive_output * addr, const jive_value_type * element_type)
 
 static jive_output *
 get_array_index(jive_output * addr, const jive_output * base, const jive_value_type * element_type,
-	const jive_bitstring_type * index_type)
+	const jive::bits::type * index_type)
 {
 	jive_output * index = NULL;
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node());
@@ -684,7 +684,7 @@ jive_arrayindex_reduce_operand_pair_(jive_binop_reduction_path_t path, const jiv
 
 jive_output *
 jive_arrayindex(jive_output * addr1, jive_output * addr2,
-	const jive_value_type * element_type, const jive_bitstring_type * difference_type)
+	const jive_value_type * element_type, const jive::bits::type * difference_type)
 {
 	jive_output * tmparray2[] = {addr1, addr2};
 	jive_region * region = jive_region_innermost(2, tmparray2);
@@ -826,7 +826,7 @@ jive_label_to_bitstring_node_init_(
 	jive_label_to_bitstring_node * self,
 	jive_graph * graph, size_t nbits)
 {
-	jive_bitstring_type btype(nbits);
+	jive::bits::type btype(nbits);
 	const jive_type * typeptr = &btype;
 	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,

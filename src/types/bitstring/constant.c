@@ -58,7 +58,7 @@ jive_bitconstant_node_init_(
 		jive_context_fatal_error(region->graph->context,
 			"bitconstant: number of bits must be greater than zero.");
 
-	jive_bitstring_type type(nbits);
+	jive::bits::type type(nbits);
 	const jive_type * typeptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,

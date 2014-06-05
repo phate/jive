@@ -27,9 +27,9 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	jive_address_type addrtype;
-	jive_bitstring_type bits8(8);
-	jive_bitstring_type bits16(16);
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits8(8);
+	jive::bits::type bits16(16);
+	jive::bits::type bits32(32);
 	const jive_value_type * tmparray0[] = {&bits8, &bits16, &bits32, &bits32};
 	
 	jive_record_declaration decl = {

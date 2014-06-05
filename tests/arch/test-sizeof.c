@@ -29,10 +29,10 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_bitstring_type bits4(4);
-	jive_bitstring_type bits8(8);
-	jive_bitstring_type bits18(18);
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits4(4);
+	jive::bits::type bits8(8);
+	jive::bits::type bits18(18);
+	jive::bits::type bits32(32);
 	jive_address_type addr;
 	const jive_value_type *  tmparray0[] = {&bits4, &bits8, &bits18};
 

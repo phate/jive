@@ -20,11 +20,7 @@ public:
 	virtual
 	~not_operation() noexcept;
 
-	inline
-	not_operation(const jive_bitstring_type & type) noexcept
-		: bits_unary_operation(type)
-	{
-	}
+	inline not_operation(const jive::bits::type & type) noexcept : bits_unary_operation(type) {}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

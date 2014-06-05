@@ -44,7 +44,7 @@ static jive_record_declaration string_decl;
 static jive_output *
 make_string(jive_graph * graph, const char * txt)
 {
-	static const jive_bitstring_type bits8(8);
+	static const jive::bits::type bits8(8);
 	size_t len = strlen(txt), n;
 	
 	string_elements = malloc(sizeof(*string_elements) * len);

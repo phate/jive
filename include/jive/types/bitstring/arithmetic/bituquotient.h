@@ -19,11 +19,9 @@ class uquotient_operation final : public bits_binary_operation {
 public:
 	virtual ~uquotient_operation() noexcept;
 
-	inline uquotient_operation(
-		const jive_bitstring_type & type) noexcept
-		: bits_binary_operation(type)
-	{
-	}
+	inline uquotient_operation(const jive::bits::type & type) noexcept
+	: bits_binary_operation(type)
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

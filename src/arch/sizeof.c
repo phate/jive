@@ -70,7 +70,7 @@ jive_sizeof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	/* FIXME: either need a "universal" integer type,
 	or some way to specify the representation type for the
 	sizeof operator */
-	jive_bitstring_type btype(32);
+	jive::bits::type btype(32);
 	const jive_type * typeptr = &btype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
@@ -92,7 +92,7 @@ jive_sizeof_node_create(jive_region * region,
 	/* FIXME: either need a "universal" integer type,
 	or some way to specify the representation type for the
 	sizeof operator */
-	jive_bitstring_type btype(32);
+	jive::bits::type btype(32);
 	const jive_type * typeptr = &btype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,

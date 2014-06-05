@@ -19,11 +19,7 @@ class shr_operation final : public bits_binary_operation {
 public:
 	virtual ~shr_operation() noexcept;
 
-	inline shr_operation(
-		const jive_bitstring_type & type) noexcept
-		: bits_binary_operation(type)
-	{
-	}
+	inline shr_operation(const jive::bits::type & type) noexcept : bits_binary_operation(type) {}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

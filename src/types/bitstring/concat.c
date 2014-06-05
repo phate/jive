@@ -28,16 +28,16 @@ jive_bitstring_multiop_node_init_(
 	size_t nbits)
 {
 	const jive_type * operand_types[noperands];
-	jive_bitstring_type * operand_type_structs[noperands];
+	jive::bits::type * operand_type_structs[noperands];
 	size_t n;
 	
 	for(n=0; n<noperands; n++) {
-		size_t nbits = ((const jive_bitstring_type *)&operands[n]->type())->nbits();
-		operand_type_structs[n] = new jive_bitstring_type(nbits);
+		size_t nbits = static_cast<const jive::bits::output*>(operands[n])->nbits();
+		operand_type_structs[n] = new jive::bits::type(nbits);
 		operand_types[n] = operand_type_structs[n];
 	}
 	
-	jive_bitstring_type output_type(nbits);
+	jive::bits::type output_type(nbits);
 	const jive_type * type_array[] = {&output_type};
 	jive_node_init_(self, region,
 		noperands, operand_types, operands,
@@ -56,7 +56,7 @@ jive_bitconcat_node_init_(
 {
 	size_t nbits = 0, n;
 	for(n=0; n<noperands; n++)
-		nbits += ((const jive_bitstring_type *)&operands[n]->type())->nbits();
+		nbits += static_cast<const jive::bits::output*>(operands[n])->nbits();
 	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
 }
 
@@ -121,7 +121,7 @@ jive_bitconcat_node_check_operands_(const jive_node_class * cls, const jive_node
 
 	size_t n;
 	for (n = 0; n < noperands; n++) {
-		const jive_bitstring_output * output = dynamic_cast<const jive_bitstring_output*>(operands[n]);
+		const jive::bits::output * output = dynamic_cast<const jive::bits::output*>(operands[n]);
 		if (!output)
 			jive_context_fatal_error(context, "bitconcat node requires bitstring operands.");
 

@@ -8,13 +8,16 @@
 
 #include <jive/vsdg/valuetype.h>
 
+namespace jive {
+namespace bits {
+
 /* bitstring type */
 
-class jive_bitstring_type final : public jive_value_type {
+class type final : public jive_value_type {
 public:
-	virtual ~jive_bitstring_type() noexcept;
+	virtual ~type() noexcept;
 
-	jive_bitstring_type(size_t nbits) noexcept;
+	type(size_t nbits) noexcept;
 
 	inline size_t nbits() const noexcept { return nbits_; }
 
@@ -22,7 +25,7 @@ public:
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_bitstring_type * copy() const override;
+	virtual jive::bits::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -37,51 +40,53 @@ private:
 
 /* bitstring input */
 
-class jive_bitstring_input final : public jive_value_input {
+class input final : public jive_value_input {
 public:
-	virtual ~jive_bitstring_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_bitstring_input(size_t nbits, struct jive_node * node, size_t index,
-		jive_output * origin);
+	input(size_t nbits, struct jive_node * node, size_t index, jive_output * origin);
 
-	virtual const jive_bitstring_type & type() const noexcept { return type_; }
+	virtual const jive::bits::type & type() const noexcept { return type_; }
 
 	inline size_t nbits() const noexcept { return type_.nbits(); }
 	
 private:
-	jive_bitstring_type type_;
+	jive::bits::type type_;
 };
 
 /* bitstring output */
 
-class jive_bitstring_output final : public jive_value_output {
+class output final : public jive_value_output {
 public:
-	virtual ~jive_bitstring_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_bitstring_output(size_t nbits, struct jive_node * node, size_t index);
+	output(size_t nbits, struct jive_node * node, size_t index);
 
-	virtual const jive_bitstring_type & type() const noexcept { return type_; }
+	virtual const jive::bits::type & type() const noexcept { return type_; }
 
 	inline size_t nbits() const noexcept { return type_.nbits(); }
 
 private:
-	jive_bitstring_type type_;
+	jive::bits::type type_;
 };
 
 /* bitstring gate */
 
-class jive_bitstring_gate final : public jive_value_gate {
+class gate final : public jive_value_gate {
 public:
-	virtual ~jive_bitstring_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_bitstring_gate(size_t nbits, jive_graph * graph, const char name[]);
+	gate(size_t nbits, jive_graph * graph, const char name[]);
 
-	virtual const jive_bitstring_type & type() const noexcept { return type_; }
+	virtual const jive::bits::type & type() const noexcept { return type_; }
 
 	inline size_t nbits() const noexcept { return type_.nbits(); }	
 
 private:
-	jive_bitstring_type type_;
+	jive::bits::type type_;
 };
+
+}
+}
 
 #endif

@@ -46,8 +46,8 @@ flatten_data_items(
 	size_t nitems = 0;
 	jive_output ** items = 0;
 	const jive_type * type_ = &data->type();
-	if (dynamic_cast<const jive_bitstring_type*>(type_)) {
-		const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
+	if (dynamic_cast<const jive::bits::type*>(type_)) {
+		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
 		
 		if (type->nbits() < 8 || !is_powerof2(type->nbits()))
 			jive_context_fatal_error(

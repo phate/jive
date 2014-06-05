@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,7 +21,7 @@ public:
 	~negate_operation() noexcept;
 
 	inline
-	negate_operation(const jive_bitstring_type & type) noexcept
+	negate_operation(const jive::bits::type & type) noexcept
 		: bits_unary_operation(type)
 	{
 	}

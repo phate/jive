@@ -75,8 +75,8 @@ static const jive_resource_name * jive_testarch_regcls_cc_names [] = {
 #define STACK4 &jive_stackslot_class_4_4.base
 #define VIA (const jive_resource_class * const[])
 
-static const jive_bitstring_type bits16(16);
-static const jive_bitstring_type bits32(32);
+static const jive::bits::type bits16(16);
+static const jive::bits::type bits32(32);
 const jive_resource_class_demotion  tmparray0[] = {
 			{STACK4, VIA {CLS(gpr), STACK4, NULL}},
 			{NULL, NULL}

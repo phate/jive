@@ -55,11 +55,11 @@ static void
 jive_bitequal_node_init_(jive_node * self, jive_region * region,
 	jive_output * operand1, jive_output * operand2)
 {
-	size_t nbits = static_cast<jive_bitstring_output*>(operand1)->nbits();
+	size_t nbits = static_cast<jive::bits::output*>(operand1)->nbits();
 
 	jive::ctl::type ctype;
 	const jive_type * ctype_ptr = &ctype;
-	jive_bitstring_type btype(nbits);
+	jive::bits::type btype(nbits);
 	const jive_type * tmparray0[] = {&btype, &btype};
 	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,

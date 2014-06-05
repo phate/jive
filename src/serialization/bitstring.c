@@ -102,7 +102,7 @@ jive_serialization_nodecls_deserialize_bitbinary1(
 	struct jive_token_istream * is,
 	jive_node ** node)
 {
-	Operation op(dynamic_cast<const jive_bitstring_type&>(operands[0]->type()), noperands);
+	Operation op(dynamic_cast<const jive::bits::type&>(operands[0]->type()), noperands);
 	*node = jive_node_create(self->cls, op, region, noperands, operands);
 	return *node != 0;
 }
@@ -124,7 +124,7 @@ jive_serialization_nodecls_deserialize_bitbinary2(
 	struct jive_token_istream * is,
 	jive_node ** node)
 {
-	Operation op(dynamic_cast<const jive_bitstring_type&>(operands[0]->type()));
+	Operation op(dynamic_cast<const jive::bits::type&>(operands[0]->type()));
 	*node = jive_node_create(self->cls, op, region, noperands, operands);
 	return *node != 0;
 }
@@ -146,7 +146,7 @@ jive_serialization_nodecls_deserialize_bitunary(
 	struct jive_token_istream * is,
 	jive_node ** node)
 {
-	Operation op(dynamic_cast<const jive_bitstring_type&>(operands[0]->type()));
+	Operation op(dynamic_cast<const jive::bits::type&>(operands[0]->type()));
 	*node = jive_node_create(self->cls, op, region, noperands, operands);
 	return *node != 0;
 }
@@ -218,7 +218,7 @@ jive_bitstring_type_serialize(
 	const jive_type * type_,
 	jive_token_ostream * os)
 {
-	const jive_bitstring_type * type = (const jive_bitstring_type *) type_;
+	const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
 	jive_serialize_uint(driver, type->nbits(), os);
 }
 
@@ -235,11 +235,11 @@ jive_bitstring_type_deserialize(
 	
 	/* FIXME: check number of bits */
 	
-	*type = new jive_bitstring_type(nbits);
+	*type = new jive::bits::type(nbits);
 	return true;
 }
 
 JIVE_SERIALIZATION_TYPECLS_REGISTER(
-	jive_bitstring_type, jive_bitstring_type, "bits",
+	jive::bits::type, jive_bitstring_type, "bits",
 	jive_bitstring_type_serialize,
 	jive_bitstring_type_deserialize);

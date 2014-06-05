@@ -11,10 +11,12 @@
 #include <jive/types/union/unntype.h>
 
 const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const struct jive_value_type * type_)
+jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self,
+	const struct jive_value_type * type_)
 {
-	if (dynamic_cast<const jive_bitstring_type*>(type_)) {
-		return jive_memlayout_mapper_map_bitstring(self, ((const jive_bitstring_type *) type_)->nbits());
+	if (dynamic_cast<const jive::bits::type*>(type_)) {
+		return jive_memlayout_mapper_map_bitstring(self,
+			static_cast<const jive::bits::type*>(type_)->nbits());
 	} else if (dynamic_cast<const jive_address_type*>(type_)) {
 		return jive_memlayout_mapper_map_address(self);
 	} else if (dynamic_cast<const jive_record_type*>(type_)) {

@@ -33,9 +33,9 @@ jive_i386_classify_type_(const jive_type * type, const jive_resource_class * res
 		return (1 << jive_i386_classify_gpr);
 	else if (rescls == &jive_i386_regcls_flags.base)
 		return (1 << jive_i386_classify_flags);
-	
-	if (dynamic_cast<const jive_bitstring_type*>(type)) {
-		const jive_bitstring_type * btype = (const jive_bitstring_type *) type;
+
+	const jive::bits::type * btype = dynamic_cast<const jive::bits::type*>(type);
+	if (btype != nullptr) {
 		if (btype->nbits() == 32)
 			return (1 << jive_i386_classify_gpr);
 	}

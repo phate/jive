@@ -89,8 +89,8 @@ jive_call_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	for (size_t n = 0; n < nreturns; ++n) {
 		return_types[n] = &*attrs->return_types()[n];
 	}
-	if (dynamic_cast<jive_bitstring_output*>(operands[0])){
-		size_t nbits = static_cast<const jive_bitstring_output*>(operands[0])->nbits();
+	if (dynamic_cast<jive::bits::output*>(operands[0])){
+		size_t nbits = static_cast<const jive::bits::output*>(operands[0])->nbits();
 		return jive_call_by_bitstring_node_create(region, operands[0], nbits,
 			attrs->calling_convention(), noperands - 1, operands + 1,
 			nreturns, return_types);
@@ -190,7 +190,7 @@ jive_call_by_bitstring_node_create(jive_region * region,
 	jive_call_node * node = new jive_call_node(op);
 
 	node->class_ = &JIVE_CALL_NODE;
-	jive_bitstring_type address_type(nbits);
+	jive::bits::type address_type(nbits);
 	jive_call_node_init_(node, region, target_address, &address_type, calling_convention,
 		narguments, arguments, nreturns, return_types);
 

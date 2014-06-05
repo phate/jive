@@ -95,12 +95,12 @@ public:
 	inline const jive_value_type &
 	element_type() const noexcept { return *element_type_; }
 
-	inline const jive_bitstring_type &
+	inline const jive::bits::type &
 	difference_type() const noexcept { return difference_type_; }
 
 private:
 	std::unique_ptr<jive_value_type> element_type_;
-	jive_bitstring_type difference_type_;
+	jive::bits::type difference_type_;
 };
 
 class label_to_address_operation : public nullary_operation {
@@ -211,7 +211,7 @@ typedef jive::operation_node<jive::address::arrayindex_operation> jive_arrayinde
 jive_output *
 jive_arrayindex(struct jive_output * addr1, struct jive_output * addr2,
 	const struct jive_value_type * element_type,
-	const struct jive_bitstring_type * difference_type);
+	const struct jive::bits::type * difference_type);
 
 JIVE_EXPORTED_INLINE jive_arrayindex_node *
 jive_arrayindex_node_cast(jive_node * node)

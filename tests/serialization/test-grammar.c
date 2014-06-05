@@ -292,7 +292,7 @@ static int test_main(void)
 	verify_deserialize_rescls("stack_callslot<4,4,32>", jive_callslot_class_get(4, 4, 32));
 	verify_deserialize_rescls("stack_callslot<4,4,-32>", jive_callslot_class_get(4, 4, -32));
 	
-	jive_bitstring_type bits8(8);
+	jive::bits::type bits8(8);
 	verify_serialize_type(&bits8, "bits<8>");
 	verify_deserialize_type("bits<8>", &bits8);
 	

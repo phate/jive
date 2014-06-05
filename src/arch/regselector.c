@@ -135,8 +135,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 	} else if (jive_node_isinstance(node, &JIVE_BITBINARY_NODE)
 		|| (jive_node_isinstance(node, &JIVE_BITUNARY_NODE))) {
 		jive_regselector_option option;
-		const jive_bitstring_type * type;
-		type = (const jive_bitstring_type *) &node->outputs[0]->type();
+		const jive::bits::type * type = static_cast<const jive::bits::type*>(&node->outputs[0]->type());
 		
 		const jive_bitbinary_operation_class * cls;
 		cls = (const jive_bitbinary_operation_class *) node->class_;
@@ -147,7 +146,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		jive_negotiator_annotate_identity_node(&self->base, node, &option.base);
 	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
 		jive_regselector_option option;
-		const jive_bitstring_type * type = (const jive_bitstring_type *) &node->inputs[0]->type();
+		const jive::bits::type * type = static_cast<const jive::bits::type*>(&node->inputs[0]->type());
 		
 		const jive_bitcomparison_operation_class * cls;
 		cls = (const jive_bitcomparison_operation_class *) node->class_;

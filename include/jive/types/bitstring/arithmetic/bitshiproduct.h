@@ -19,11 +19,9 @@ class shiproduct_operation final : public bits_binary_operation {
 public:
 	virtual ~shiproduct_operation() noexcept;
 
-	inline shiproduct_operation(
-		const jive_bitstring_type & type) noexcept
+	inline shiproduct_operation(const jive::bits::type & type) noexcept
 		: bits_binary_operation(type)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

@@ -19,8 +19,8 @@ static int test_main(void)
 
 	jive_context* context = jive_context_create() ;
 
-	jive_bitstring_type btype0(8);
-	jive_bitstring_type btype1(8);
+	jive::bits::type btype0(8);
+	jive::bits::type btype1(8);
 	const jive_type*  tmparray0[] = { &btype0 };
 	const jive_type*  tmparray1[] = { &btype0 };
 

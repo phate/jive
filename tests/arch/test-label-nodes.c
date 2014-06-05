@@ -79,8 +79,8 @@ static int test_main(void)
 	assert(jive_node_match_attrs(o2->node(), attrs2));
 	
 	jive_address_type addr;
-	jive_bitstring_type bits32(32);
-	jive_bitstring_type bits16(16);
+	jive::bits::type bits32(32);
+	jive::bits::type bits16(16);
 	const jive_type * tmparray0[] = {&addr, &addr, &bits32, &bits32, &bits16};
 	jive_output * tmparray1[] = {o0, o1, o2, o3, o4};
 	jive_node * bottom = jive_test_node_create(graph->root_region,

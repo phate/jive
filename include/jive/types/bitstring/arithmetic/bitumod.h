@@ -19,11 +19,9 @@ class umod_operation final : public bits_binary_operation {
 public:
 	virtual ~umod_operation() noexcept;
 
-	inline umod_operation(
-		const jive_bitstring_type & type) noexcept
+	inline umod_operation(const jive::bits::type & type) noexcept
 		: bits_binary_operation(type)
-	{
-	}
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

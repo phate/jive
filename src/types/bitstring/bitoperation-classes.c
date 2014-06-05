@@ -146,7 +146,7 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 	if (noperands == 0)
 		return;
 
-	const jive_bitstring_output * output = dynamic_cast<const jive_bitstring_output*>(operands[0]);
+	const jive::bits::output * output = dynamic_cast<const jive::bits::output*>(operands[0]);
 	if (!output) {
 		char * error_msg = jive_context_strjoin(context, "Type mismatch: ", cls->name,
 			"node requires bitstring operands.");
@@ -160,7 +160,7 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 
 	size_t n;
 	for (n = 1; n < noperands; n++) {
-		output = dynamic_cast<const jive_bitstring_output*>(operands[n]);
+		output = dynamic_cast<const jive::bits::output*>(operands[n]);
 		if (!output) {
 			char * error_msg = jive_context_strjoin(context, "Type mismatch: ", cls->name,
 				"node requires bitstring operands.");

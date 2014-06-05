@@ -89,7 +89,7 @@ prepare_graph(jive_context * ctx)
 	jive_output * arg1 = jive_subroutine_simple_get_argument(sub, 0);
 	jive_output * arg2 = jive_subroutine_simple_get_argument(sub, 1);
 	
-	jive_bitstring_type bits32(32);
+	jive::bits::type bits32(32);
 	
 	jive_output * v1 = jive_load_by_bitstring_create(
 		arg1, 32, &bits32, 1, &state1);

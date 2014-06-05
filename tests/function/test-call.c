@@ -23,7 +23,7 @@ static int test_main(void)
 	jive_context* context = jive_context_create() ;
 	jive_graph* graph = jive_graph_create( context ) ; 
 
-	jive_bitstring_type btype(8);
+	jive::bits::type btype(8);
 	const jive_type*  tmparray0[] = { &btype };
 	const jive_type*  tmparray1[] = { &btype };
 	jive_function_type ftype(1, tmparray0, 1, tmparray1) ;

@@ -141,8 +141,8 @@ static const jive_resource_name * jive_i386_regcls_sse_xmm7_names [] = {
 #define STACK4 &jive_stackslot_class_4_4.base
 #define VIA (const jive_resource_class * const[])
 
-static const jive_bitstring_type bits16(16);
-static const jive_bitstring_type bits32(32);
+static const jive::bits::type bits16(16);
+static const jive::bits::type bits32(32);
 static const jive_float_type flt;
 const jive_resource_class_demotion  tmparray0[] = {
 			{CLS(gpr_eax), VIA {CLS(flags), CLS(gpr_eax), NULL}},
