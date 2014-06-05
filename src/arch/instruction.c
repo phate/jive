@@ -46,7 +46,7 @@ jive_instruction_node_init_(
 	if (icls->flags & jive_instruction_jump)
 		noutputs ++;
 	jive::ctl::type ctl;
-	jive_immediate_type imm;
+	jive::imm::type imm;
 	
 	const jive_type * input_types[ninputs + nimmediates];
 	jive_output * inputs[ninputs + nimmediates];

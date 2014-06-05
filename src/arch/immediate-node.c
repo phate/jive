@@ -50,7 +50,7 @@ jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_
 	const jive::immediate_operation * attrs = (const jive::immediate_operation *) attrs_;
 	
 	jive_immediate_node * self = new jive_immediate_node(*attrs);
-	jive_immediate_type immediate_type;
+	jive::imm::type immediate_type;
 	const jive_type* tmparray0[] = {&immediate_type};
 	jive_node_init_(self,
 		region,

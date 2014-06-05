@@ -13,67 +13,72 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 
-/* immediate_input */
+namespace jive {
+namespace imm {
 
-jive_immediate_input::~jive_immediate_input() noexcept {}
+/* input */
 
-jive_immediate_input::jive_immediate_input(struct jive_node * node, size_t index,
-	jive_output * origin)
+input::~input() noexcept {}
+
+input::input(struct jive_node * node, size_t index, jive_output * origin)
 	: jive_value_input(node, index, origin)
 {}
 
-/* immediate_output inheritable members */
+/* output */
 
-jive_immediate_output::~jive_immediate_output() noexcept {}
+output::~output() noexcept {}
 
-jive_immediate_output::jive_immediate_output(jive_node * node, size_t index)
+output::output(jive_node * node, size_t index)
 	: jive_value_output(node, index)
 {}
 
-/* immediate_gate inheritable members */
+/* gate */
 
-jive_immediate_gate::~jive_immediate_gate() noexcept {}
+gate::~gate() noexcept {}
 
-jive_immediate_gate::jive_immediate_gate(jive_graph * graph, const char name[])
+gate::gate(jive_graph * graph, const char name[])
 	: jive_value_gate(graph, name)
 {}
 
-/* immediate type */
+/* type */
 
-jive_immediate_type::~jive_immediate_type() noexcept {}
+type::~type() noexcept {}
 
 void
-jive_immediate_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "imm");
 }
 
 bool
-jive_immediate_type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive_type & other) const noexcept
 {
-	return dynamic_cast<const jive_immediate_type*>(&other) != nullptr;
+	return dynamic_cast<const jive::imm::type*>(&other) != nullptr;
 }
 
-jive_immediate_type *
-jive_immediate_type::copy() const
+jive::imm::type *
+type::copy() const
 {
-	return new jive_immediate_type();
+	return new jive::imm::type();
 }
 
 jive_input *
-jive_immediate_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_immediate_input(node, index, origin);
+	return new jive::imm::input(node, index, origin);
 }
 
 jive_output *
-jive_immediate_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_immediate_output(node, index);
+	return new jive::imm::output(node, index);
 }
 
 jive_gate *
-jive_immediate_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_immediate_gate(graph, name);
+	return new jive::imm::gate(graph, name);
+}
+
+}
 }

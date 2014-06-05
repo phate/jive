@@ -9,17 +9,20 @@
 
 #include <jive/vsdg/valuetype.h>
 
-class jive_immediate_type final : public jive_value_type {
-public:
-	virtual ~jive_immediate_type() noexcept;
+namespace jive {
+namespace imm {
 
-	inline constexpr jive_immediate_type() noexcept : jive_value_type() {};
+class type final : public jive_value_type {
+public:
+	virtual ~type() noexcept;
+
+	inline constexpr type() noexcept : jive_value_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_immediate_type * copy() const override;
+	virtual jive::imm::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -29,40 +32,43 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_immediate_input final : public jive_value_input {
+class input final : public jive_value_input {
 public:
-	virtual ~jive_immediate_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_immediate_input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive_output * origin);
 
-	virtual const jive_immediate_type & type() const noexcept { return type_; }
+	virtual const jive::imm::type & type() const noexcept { return type_; }
 
 private:
-	jive_immediate_type type_;
+	jive::imm::type type_;
 };
 
-class jive_immediate_output final : public jive_value_output {
+class output final : public jive_value_output {
 public:
-	virtual ~jive_immediate_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_immediate_output(jive_node * node, size_t index);
+	output(jive_node * node, size_t index);
 
-	virtual const jive_immediate_type & type() const noexcept { return type_; }
+	virtual const jive::imm::type & type() const noexcept { return type_; }
 
 private:
-	jive_immediate_type type_;
+	jive::imm::type type_;
 };
 
-class jive_immediate_gate final : public jive_value_gate {
+class gate final : public jive_value_gate {
 public:
-	virtual ~jive_immediate_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_immediate_gate(jive_graph * graph, const char name[]);
+	gate(jive_graph * graph, const char name[]);
 
-	virtual const jive_immediate_type & type() const noexcept { return type_; }
+	virtual const jive::imm::type & type() const noexcept { return type_; }
 
 private:
-	jive_immediate_type type_;
+	jive::imm::type type_;
 };
+
+}
+}
 
 #endif
