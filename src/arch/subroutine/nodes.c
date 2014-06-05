@@ -91,7 +91,7 @@ jive_subroutine_leave_node_create(jive_region * region, jive_output * control_tr
 	node->class_ = &JIVE_SUBROUTINE_LEAVE_NODE;
 	jive::ctl::type ctl;
 	const jive_type * ctl_ptr = &ctl;
-	jive_anchor_type anchor;
+	jive::achr::type anchor;
 	const jive_type * ancptr = &anchor;
 	jive_node_init_(node, region,
 		1, &ctl_ptr, &control_transfer,
@@ -184,7 +184,7 @@ jive_subroutine_node_create(
 	*/
 	jive_memory_type objstate_type;
 	const jive_type * typeptr = &objstate_type;
-	jive_anchor_type anchor;
+	jive::achr::type anchor;
 	const jive_type * ancptr = &anchor;
 	jive_node_init_(node, region,
 		1, &ancptr, &subroutine_region->bottom->outputs[0],

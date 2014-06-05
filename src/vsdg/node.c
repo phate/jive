@@ -72,7 +72,7 @@ static jive_input *
 jive_uninitialized_node_add_input(jive_node * self, const jive_type * type,
 	jive_output * initial_operand)
 {
-	if (self->graph->floating_region_count && !dynamic_cast<const jive_anchor_type*>(type)) {
+	if (self->graph->floating_region_count && !dynamic_cast<const jive::achr::type*>(type)) {
 		jive_region * origin_region = initial_operand->node()->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}
@@ -227,7 +227,7 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 {
 	jive_region * origin_region = origin->node()->region;
 	jive_region * target_region = self->region;
-	if (dynamic_cast<const jive_anchor_output*>(origin))
+	if (dynamic_cast<const jive::achr::output*>(origin))
 		origin_region = origin_region->parent;
 	while (target_region) {
 		if (target_region == origin_region)
@@ -240,7 +240,7 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 jive_input *
 jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
 {
-	if (self->graph->floating_region_count && dynamic_cast<const jive_anchor_type*>(type)) {
+	if (self->graph->floating_region_count && dynamic_cast<const jive::achr::type*>(type)) {
 		jive_region * origin_region = initial_operand->node()->region;
 		jive_region_check_move_floating(self->region, origin_region);
 	}
@@ -458,7 +458,7 @@ jive_node_depends_on_region(const jive_node * self, const jive_region * region)
 	size_t n;
 	for(n = 0; n < self->ninputs; n++) {
 		jive_input * input = self->inputs[n];
-		if (dynamic_cast<jive_anchor_input*>(input)) {
+		if (dynamic_cast<jive::achr::input*>(input)) {
 			if (jive_region_depends_on_region(input->producer()->region, region)) {
 				return true;
 			}
@@ -575,7 +575,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	of top nodes of new region */
 	for (n = 0; n < self->ninputs; n++) {
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
-		if (dynamic_cast<jive_anchor_input*>(self->inputs[n])) {
+		if (dynamic_cast<jive::achr::input*>(self->inputs[n])) {
 			jive_region * subregion = self->producer(n)->region;
 			jive_region_reparent(subregion, new_region);
 		} else if (self->producer(n)->region != new_region) {

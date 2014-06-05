@@ -9,17 +9,20 @@
 
 #include <jive/vsdg/basetype.h>
 
-class jive_anchor_type final : public jive_type {
-public:
-	virtual ~jive_anchor_type() noexcept;
+namespace jive {
+namespace achr {
 
-	inline constexpr jive_anchor_type() noexcept : jive_type() {};
+class type final : public jive_type {
+public:
+	virtual ~type() noexcept;
+
+	inline constexpr type() noexcept : jive_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_anchor_type * copy() const override;
+	virtual jive::achr::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -29,28 +32,31 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_anchor_input final : public jive_input {
+class input final : public jive_input {
 public:
-	virtual ~jive_anchor_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_anchor_input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive_output * origin);
 
-	virtual const jive_anchor_type & type() const noexcept { return type_; }
+	virtual const jive::achr::type & type() const noexcept { return type_; }
 
 private:
-	jive_anchor_type type_;
+	jive::achr::type type_;
 };
 
-class jive_anchor_output final : public jive_output {
+class output final : public jive_output {
 public:
-	virtual ~jive_anchor_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_anchor_output(struct jive_node * node, size_t index);
+	output(struct jive_node * node, size_t index);
 
-	virtual const jive_anchor_type & type() const noexcept { return type_; }
+	virtual const jive::achr::type & type() const noexcept { return type_; }
 
 private:
-	jive_anchor_type type_;
+	jive::achr::type type_;
 };
+
+}
+}
 
 #endif

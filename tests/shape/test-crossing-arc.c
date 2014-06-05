@@ -40,7 +40,7 @@ static int test_main(void)
 	jive_node * f = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &b->outputs[0], 1,
 		&vtype_ptr);
 
-	jive_anchor_type anchor_type;
+	jive::achr::type anchor_type;
 	jive_node_add_input(e, &anchor_type, jive_node_add_output(d, &anchor_type));
 	
 	jive_view(graph, stdout);

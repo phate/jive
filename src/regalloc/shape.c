@@ -236,7 +236,7 @@ can_move_below_cut(jive_region_shaper * self, jive_cut * cut, jive_node * new_no
 		size_t n;
 		for (n = 0; n < node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
-			if (dynamic_cast<jive_anchor_input*>(input)) {
+			if (dynamic_cast<jive::achr::input*>(input)) {
 				if (!can_move_below_region(self, input->producer()->region, new_node))
 					return false;
 			}
@@ -335,7 +335,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	bool force_proper_cut = false;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (dynamic_cast<jive_anchor_input*>(input) || dynamic_cast<jive::ctl::input*>(input))
+		if (dynamic_cast<jive::achr::input*>(input) || dynamic_cast<jive::ctl::input*>(input))
 			force_proper_cut = true;
 	}
 	
@@ -931,7 +931,7 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 	size_t n;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive_input * input = new_node->inputs[n];
-		if (!dynamic_cast<jive_anchor_input*>(input))
+		if (!dynamic_cast<jive::achr::input*>(input))
 			continue;
 		jive_region_shaper * subshaper = jive_region_shaper_create(
 			self,

@@ -323,10 +323,12 @@ jive_names_use_write(jive_names_use * self, const jive_resource_name * name, jiv
 /* add reuse edges to graph */
 
 static void
-jive_regalloc_reuse_record_region(jive_shaped_graph * shaped_graph, jive_region * region, jive_names_use * names_use);
+jive_regalloc_reuse_record_region(jive_shaped_graph * shaped_graph, jive_region * region,
+	jive_names_use * names_use);
 
 static void
-jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * node, jive_names_use * names_use)
+jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * node,
+	jive_names_use * names_use)
 {
 	jive_context * context = shaped_graph->context;
 	
@@ -337,7 +339,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive_input * input = node->inputs[n];
-		if (!dynamic_cast<jive_anchor_input*>(input))
+		if (!dynamic_cast<jive::achr::input*>(input))
 			continue;
 		
 		jive_names_use inner_names_use;

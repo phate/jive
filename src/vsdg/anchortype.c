@@ -13,40 +13,45 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
 
-jive_anchor_type::~jive_anchor_type() noexcept {}
+namespace jive {
+namespace achr {
+
+/* type */
+
+type::~type() noexcept {}
 
 void
-jive_anchor_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "X");
 }
 
 bool
-jive_anchor_type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive_type & other) const noexcept
 {
-	return dynamic_cast<const jive_anchor_type*>(&other) != nullptr;
+	return dynamic_cast<const jive::achr::type*>(&other) != nullptr;
 }
 
-jive_anchor_type *
-jive_anchor_type::copy() const
+jive::achr::type *
+type::copy() const
 {
-	return new jive_anchor_type();
+	return new jive::achr::type();
 }
 
 jive_input *
-jive_anchor_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_anchor_input(node, index, origin);
+	return new jive::achr::input(node, index, origin);
 }
 
 jive_output *
-jive_anchor_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_anchor_output(node, index);
+	return new jive::achr::output(node, index);
 }
 
 jive_gate *
-jive_anchor_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
 	/*
 		FIXME: this is an ugly solution
@@ -54,22 +59,28 @@ jive_anchor_type::create_gate(jive_graph * graph, const char * name) const
 	return nullptr;
 }
 
-jive_anchor_input::jive_anchor_input(struct jive_node * node, size_t index,
-	jive_output * origin)
+/* input */
+
+input::input(struct jive_node * node, size_t index, jive_output * origin)
 	: jive_input(node, index, origin)
 {
 	JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
 	origin->node()->region->anchor = this;
 }
 
-jive_anchor_input::~jive_anchor_input() noexcept
+input::~input() noexcept
 {
 	if (origin()->node()->region->anchor == this)
 		origin()->node()->region->anchor = nullptr;
 }
 
-jive_anchor_output::~jive_anchor_output() noexcept {}
+/* output */
 
-jive_anchor_output::jive_anchor_output(struct jive_node * node, size_t index)
+output::~output() noexcept {}
+
+output::output(struct jive_node * node, size_t index)
 	: jive_output(node, index)
 {}
+
+}
+}

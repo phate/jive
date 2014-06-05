@@ -165,7 +165,7 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 	if (*input_type != *operand_type) {
 		jive_raise_type_error(input_type, operand_type, this->node->graph->context);
 	}
-	if (dynamic_cast<const jive_anchor_type*>(input_type)) {
+	if (dynamic_cast<const jive::achr::type*>(input_type)) {
 		jive_context_fatal_error(this->node->graph->context,
 			"Type mismatch: Cannot divert edges of 'anchor' type");
 	}

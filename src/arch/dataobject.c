@@ -305,7 +305,7 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 	node->class_ = &JIVE_DATADEF_NODE;
 	jive::ctl::type data_type;
 	const jive_type * data_type_ptr = &data_type;
-	jive_anchor_type anchor;
+	jive::achr::type anchor;
 	const jive_type * ancptr = &anchor;
 	jive_node_init_(node, region,
 		1, &data_type_ptr, &data,
@@ -320,7 +320,7 @@ jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 {
 	jive_dataobj_node * node = new jive_dataobj_node(jive::dataobj_operation());
 	
-	jive_anchor_type anchor_type;
+	jive::achr::type anchor_type;
 	const jive_type * ancptr = &anchor_type;
 	/* FIXME: a data object should not have a memory type as output */
 	jive_memory_type objstate_type;

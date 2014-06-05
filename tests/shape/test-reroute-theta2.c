@@ -52,7 +52,7 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	jive::ctl::type ctl;
-	jive_anchor_type anchor_type;
+	jive::achr::type anchor_type;
 	const jive_type * tmparray0[] = {&type};
 	
 	jive_node * dummy = jive_test_node_create(graph->root_region,

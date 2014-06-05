@@ -179,7 +179,7 @@ sequentialize_region(
 		size_t n;
 		for(n = 0; n < node->ninputs; n++) {
 			jive_input * input = node->inputs[n];
-			if (dynamic_cast<jive_anchor_input*>(input)) {
+			if (dynamic_cast<jive::achr::input*>(input)) {
 				jive_seq_region * seq_subregion;
 				if (n == 0) {
 					seq_subregion = sequentialize_region(seq, current, region_trav,
