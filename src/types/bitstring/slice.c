@@ -178,7 +178,7 @@ jive_bitslice_reduce_operand_(jive_unop_reduction_path_t path,
 		for (n=0; n<node->noperands; n++) {
 			jive_output * operand = node->inputs[n]->origin();
 			size_t base = pos;
-			size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand);
+			size_t nbits = static_cast<jive_bitstring_output*>(operand)->nbits();
 			pos = pos + nbits;
 			if (base < attrs->high() && pos > attrs->low()) {
 				size_t slice_low = (attrs->low() > base) ? (attrs->low() - base) : 0;

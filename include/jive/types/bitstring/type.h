@@ -52,12 +52,6 @@ private:
 	jive_bitstring_type type_;
 };
 
-JIVE_EXPORTED_INLINE size_t
-jive_bitstring_input_nbits(const jive_bitstring_input * self)
-{
-	return self->nbits();
-}
-
 /* bitstring output */
 
 class jive_bitstring_output final : public jive_value_output {
@@ -74,12 +68,6 @@ private:
 	jive_bitstring_type type_;
 };
 
-JIVE_EXPORTED_INLINE size_t
-jive_bitstring_output_nbits(const jive_bitstring_output * self)
-{
-	return self->nbits();
-}
-
 /* bitstring gate */
 
 class jive_bitstring_gate final : public jive_value_gate {
@@ -95,11 +83,5 @@ public:
 private:
 	jive_bitstring_type type_;
 };
-
-JIVE_EXPORTED_INLINE size_t
-jive_bitstring_gate_nbits(const jive_bitstring_gate * self)
-{
-	return self->nbits();
-}
 
 #endif

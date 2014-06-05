@@ -190,7 +190,7 @@ jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 			return jive_load_by_address_create(address, decl->elements[attrs->element()],
 				nstates, states);
 		} else {
-			size_t nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) address);
+			size_t nbits = static_cast<const jive_bitstring_output*>(address)->nbits();
 			return jive_load_by_bitstring_create(address, nbits, decl->elements[attrs->element()],
 				nstates, states);
 		}

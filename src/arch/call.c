@@ -90,7 +90,7 @@ jive_call_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 		return_types[n] = &*attrs->return_types()[n];
 	}
 	if (dynamic_cast<jive_bitstring_output*>(operands[0])){
-		size_t nbits = jive_bitstring_output_nbits((const jive_bitstring_output *) operands[0]);
+		size_t nbits = static_cast<const jive_bitstring_output*>(operands[0])->nbits();
 		return jive_call_by_bitstring_node_create(region, operands[0], nbits,
 			attrs->calling_convention(), noperands - 1, operands + 1,
 			nreturns, return_types);

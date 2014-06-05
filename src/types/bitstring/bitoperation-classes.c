@@ -153,7 +153,7 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 		jive_context_fatal_error(context, error_msg);
 	}
 
-	size_t nbits = jive_bitstring_output_nbits(output);
+	size_t nbits = output->nbits();
 	if (nbits == 0)
 		jive_context_fatal_error(context,
 			"Type mismatch: length of bitstring must be greater than zero.");
@@ -167,7 +167,7 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 			jive_context_fatal_error(context, error_msg);
 		}
 
-		if (nbits != jive_bitstring_output_nbits(output))
+		if (nbits != output->nbits())
 			jive_raise_type_error(&operands[0]->type(), &operands[n]->type(), context);
 	}
 }

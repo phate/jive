@@ -125,8 +125,7 @@ jive_bitconcat_node_check_operands_(const jive_node_class * cls, const jive_node
 		if (!output)
 			jive_context_fatal_error(context, "bitconcat node requires bitstring operands.");
 
-		size_t nbits = jive_bitstring_output_nbits(output);
-		if (nbits == 0)
+		if (output->nbits() == 0)
 			jive_context_fatal_error(context,
 				"Type mismatch: length of bitstring must be greater than zero.");
 	}

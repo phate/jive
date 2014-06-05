@@ -55,7 +55,7 @@ static void
 jive_bituless_node_init_(jive_node * self, jive_region * region,
 	jive_output * operand1, jive_output * operand2)
 {
-	size_t nbits = jive_bitstring_output_nbits((jive_bitstring_output *)operand1);
+	size_t nbits = static_cast<jive_bitstring_output*>(operand1)->nbits();
 
 	jive::ctl::type ctype;
 	const jive_type * ctype_ptr = &ctype;

@@ -64,7 +64,7 @@ static int test_main(void)
 		jive_output * a = jive_bitconcat(2, list1);
 		jive_output * b = jive_bitslice(a, 0, 8);
 		
-		assert(jive_bitstring_output_nbits((jive_bitstring_output *) b) == 8);
+		assert(static_cast<jive_bitstring_output*>(b)->nbits() == 8);
 		
 		assert(b == base_x);
 	}
