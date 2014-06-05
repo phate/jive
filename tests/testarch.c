@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -363,7 +363,8 @@ const jive_instruction_class jive_testarch_instr_jumpz = {
 	mnemonic : "jumpz",
 	encode : 0,
 	write_asm : 0,
-	inregs : gpr_params, outregs : 0, flags : jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	inregs : gpr_params, outregs : 0,
+	flags : jive_instruction_jump | jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 0,
 	code : 0,
 	inverse_jump : &jive_testarch_instr_jumpnz
@@ -373,7 +374,8 @@ const jive_instruction_class jive_testarch_instr_jumpnz = {
 	mnemonic : "jumpnz",
 	encode : 0,
 	write_asm : 0,
-	inregs : gpr_params, outregs : 0, flags : jive_instruction_jump | jive_instruction_jump_conditional_invertible,
+	inregs : gpr_params, outregs : 0,
+	flags : jive_instruction_jump | jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 0,
 	code : 0,
 	inverse_jump : &jive_testarch_instr_jumpz
@@ -425,54 +427,90 @@ typedef enum jive_testarch_classify_regcls {
 	jive_testarch_classify_cc = 1
 } jive_testarch_classify_regcls;
 
-static jive_regselect_mask
-jive_testarch_classify_type_(const jive::base::type * type, const jive_resource_class * rescls)
+jive_testarch_reg_classifier::~jive_testarch_reg_classifier() noexcept
+{
+}
+
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_any() const
+{
+	return (1 << jive_testarch_classify_gpr) | (1 << jive_testarch_classify_cc);
+}
+
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_type(
+	const jive::base::type * type, const jive_resource_class * rescls) const
 {
 	rescls = jive_resource_class_relax(rescls);
 	
-	if (rescls == &jive_testarch_regcls_gpr.base)
+	if (rescls == &jive_testarch_regcls_gpr.base) {
 		return (1 << jive_testarch_classify_gpr);
-	else if (rescls == &jive_testarch_regcls_cc.base)
+	} else if (rescls == &jive_testarch_regcls_cc.base) {
 		return (1 << jive_testarch_classify_cc);
-	
-	return 0;
+	} else {
+		return 0;
+	}
 }
 
-static jive_regselect_mask
-jive_testarch_classify_fixed_arithmetic_(jive_bitop_code op, size_t nbits)
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_fixed_unary(const jive::bits_unary_operation & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
-static jive_regselect_mask
-jive_testarch_classify_fixed_compare_(jive_bitcmp_code op, size_t nbits)
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_fixed_binary(const jive::bits_binary_operation & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
-static jive_regselect_mask
-jive_testarch_classify_address_(void)
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_fixed_compare(const jive::bits_compare_operation & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
-static const jive_register_class * classes [] = {
-	[jive_testarch_classify_gpr] = &jive_testarch_regcls_gpr,
-	[jive_testarch_classify_cc] = &jive_testarch_regcls_cc,
-};
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_float_unary(const jive::flt_unary_operation & op) const
+{
+	throw std::logic_error("not implemented in unit test");
+}
 
-const jive_reg_classifier jive_testarch_reg_classifier = {
-	any : (1 << jive_testarch_classify_gpr) | (1 << jive_testarch_classify_cc),
-	classify_type : jive_testarch_classify_type_,
-	classify_fixed_arithmetic : jive_testarch_classify_fixed_arithmetic_,
-	classify_float_arithmetic : NULL,
-	classify_fixed_compare : jive_testarch_classify_fixed_compare_,
-	classify_float_compare : NULL,
-	classify_address : jive_testarch_classify_address_,
-	
-	nclasses : 2,
-	classes : classes,
-};
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_float_binary(const jive::flt_binary_operation & op) const
+{
+	throw std::logic_error("not implemented in unit test");
+}
+
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_float_compare(const jive::flt_compare_operation & op) const
+{
+	throw std::logic_error("not implemented in unit test");
+}
+
+jive_regselect_mask
+jive_testarch_reg_classifier::classify_address() const
+{
+	return (1 << jive_testarch_classify_gpr);
+}
+
+size_t
+jive_testarch_reg_classifier::nclasses() const noexcept
+{
+	return 2;
+}
+
+const jive_register_class * const *
+jive_testarch_reg_classifier::classes() const noexcept
+{
+	static const jive_register_class * classes [] = {
+		[jive_testarch_classify_gpr] = &jive_testarch_regcls_gpr,
+		[jive_testarch_classify_cc] = &jive_testarch_regcls_cc,
+	};
+	return classes;
+}
+
+static const jive_testarch_reg_classifier classifier;
 
 /* tie it all together */
 
@@ -483,7 +521,7 @@ const jive_instructionset_class testarch_isa_class = {
 const jive_instructionset testarch_isa = {
 	class_ : &testarch_isa_class,
 	jump_instruction_class : &jive_testarch_instr_jump,
-	reg_classifier : &jive_testarch_reg_classifier
+	reg_classifier : &classifier
 };
 
 /* subroutine support */
@@ -507,8 +545,8 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, si
 }
 
 static jive::input *
-jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index,
-	jive::output * value)
+jive_testarch_subroutine_value_return_(
+	jive_subroutine_deprecated * self_, size_t index, jive::output * value)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive::gate * gate = self->base.returns[index];

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -32,8 +32,9 @@
 static void *
 compile_graph(jive_graph * graph)
 {
+	jive_i386_reg_classifier classifier;
 	jive_regselector regselector;
-	jive_regselector_init(&regselector, graph, &jive_i386_reg_classifier);
+	jive_regselector_init(&regselector, graph, &classifier);
 	jive_regselector_process(&regselector);
 	jive_i386_match_instructions(graph, &regselector);
 	jive_regselector_fini(&regselector);
@@ -44,7 +45,8 @@ compile_graph(jive_graph * graph)
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, graph->context);
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(graph->context, NULL, 0);
+	jive_label_name_mapper * name_mapper =
+		jive_label_name_mapper_simple_create(graph->context, NULL, 0);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(buffer.data, buffer.size, 1, stderr);

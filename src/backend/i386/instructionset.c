@@ -1585,10 +1585,11 @@ static const jive_instructionset_class jive_i386_instructionset_class = {
 	create_xfer : jive_i386_create_xfer,
 };
 
+static const jive_i386_reg_classifier classifier;
 const struct jive_instructionset jive_i386_instructionset = {
 	class_ : &jive_i386_instructionset_class,
 	jump_instruction_class : &jive_i386_instr_jump,
-	reg_classifier : &jive_i386_reg_classifier
+	reg_classifier : &classifier
 };
 
 static const jive_instruction_class * const registered_instrs[] = {

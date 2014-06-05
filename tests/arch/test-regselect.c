@@ -49,8 +49,9 @@ static int test_main(void)
 	
 	jive_view(graph, stdout);
 	
+	jive_testarch_reg_classifier classifier;
 	jive_regselector regselect;
-	jive_regselector_init(&regselect, graph, &jive_testarch_reg_classifier);
+	jive_regselector_init(&regselect, graph, &classifier);
 	jive_regselector_process(&regselect);
 	jive_regselector_fini(&regselect);
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -17,15 +17,20 @@ typedef enum jive_i386_classify_regcls {
 	jive_i386_classify_sse = 3,
 } jive_i386_classify_regcls;
 
-static const jive_register_class * classes [] =  {
-	[jive_i386_classify_flags] = &jive_i386_regcls_flags,
-	[jive_i386_classify_gpr] = &jive_i386_regcls_gpr,
-	[jive_i386_classify_fp] = &jive_i386_regcls_fp,
-	[jive_i386_classify_sse] = &jive_i386_regcls_sse,
-};
+jive_i386_reg_classifier::~jive_i386_reg_classifier() noexcept
+{
+}
 
-static jive_regselect_mask
-jive_i386_classify_type_(const jive::base::type * type, const jive_resource_class * rescls)
+jive_regselect_mask
+jive_i386_reg_classifier::classify_any() const
+{
+	return (1 << jive_i386_classify_gpr) | (1 << jive_i386_classify_flags);
+}
+
+jive_regselect_mask
+jive_i386_reg_classifier::classify_type(
+	const jive::base::type * type,
+	const jive_resource_class * rescls) const
 {
 	rescls = jive_resource_class_relax(rescls);
 	
@@ -52,45 +57,65 @@ jive_i386_classify_type_(const jive::base::type * type, const jive_resource_clas
 	return 0;
 }
 
-static jive_regselect_mask
-jive_i386_classify_fixed_arithmetic_(jive_bitop_code op, size_t nbits)
+jive_regselect_mask
+jive_i386_reg_classifier::classify_fixed_unary(
+	const jive::bits_unary_operation & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
-static jive_regselect_mask
-jive_i386_classify_fixed_compare_(jive_bitcmp_code op, size_t nbits)
+jive_regselect_mask
+jive_i386_reg_classifier::classify_fixed_binary(
+	const jive::bits_binary_operation & op) const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
-static jive_regselect_mask
-jive_i386_classify_float_arithmetic_(jive_fltop_code op)
+jive_regselect_mask
+jive_i386_reg_classifier::classify_fixed_compare(const jive::bits_compare_operation & op) const
+{
+	return (1 << jive_i386_classify_gpr);
+}
+
+jive_regselect_mask
+jive_i386_reg_classifier::classify_float_unary(const jive::flt_unary_operation & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
-static jive_regselect_mask
-jive_i386_classify_float_compare_(jive_fltcmp_code op)
+jive_regselect_mask
+jive_i386_reg_classifier::classify_float_binary(const jive::flt_binary_operation & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
-static jive_regselect_mask
-jive_i386_classify_address_(void)
+jive_regselect_mask
+jive_i386_reg_classifier::classify_float_compare(const jive::flt_compare_operation & op) const
+{
+	return (1 << jive_i386_classify_sse);
+}
+
+jive_regselect_mask
+jive_i386_reg_classifier::classify_address() const
 {
 	return (1 << jive_i386_classify_gpr);
 }
 
-const jive_reg_classifier jive_i386_reg_classifier = {
-	any : (1 << jive_i386_classify_gpr) | (1 << jive_i386_classify_flags),
-	classify_type : jive_i386_classify_type_,
-	classify_fixed_arithmetic : jive_i386_classify_fixed_arithmetic_,
-	classify_float_arithmetic : jive_i386_classify_float_arithmetic_,
-	classify_fixed_compare : jive_i386_classify_fixed_compare_,
-	classify_float_compare : jive_i386_classify_float_compare_,
-	classify_address : jive_i386_classify_address_,
-	
-	nclasses : 5,
-	classes : classes,
-};
+size_t
+jive_i386_reg_classifier::nclasses() const noexcept
+{
+	return 4;
+}
+
+const jive_register_class * const *
+jive_i386_reg_classifier::classes() const noexcept
+{
+	static const jive_register_class * classes [] =  {
+		[jive_i386_classify_flags] = &jive_i386_regcls_flags,
+		[jive_i386_classify_gpr] = &jive_i386_regcls_gpr,
+		[jive_i386_classify_fp] = &jive_i386_regcls_fp,
+		[jive_i386_classify_sse] = &jive_i386_regcls_sse,
+	};
+
+	return classes;
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,24 +7,24 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
-#include <jive/util/buffer.h>
-#include <jive/vsdg/label.h>
-#include <jive/vsdg/objdef.h>
 #include <jive/arch/codegen.h>
 #include <jive/arch/label-mapper.h>
-#include <jive/types/function/fctlambda.h>
-#include <jive/backend/i386/instructionset.h>
-#include <jive/backend/i386/registerset.h>
-#include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/classifier.h>
 #include <jive/backend/i386/instrmatch.h>
+#include <jive/backend/i386/instructionset.h>
+#include <jive/backend/i386/machine.h>
+#include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
 #include <jive/types/bitstring/arithmetic.h>
+#include <jive/types/function/fctlambda.h>
+#include <jive/util/buffer.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
+#include <jive/vsdg/label.h>
+#include <jive/vsdg/objdef.h>
 
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
@@ -57,9 +57,10 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	
 	jive_view(graph, stdout);
-	
+
+	jive_i386_reg_classifier classifier;
 	jive_regselector regselector;
-	jive_regselector_init(&regselector, graph, &jive_i386_reg_classifier);
+	jive_regselector_init(&regselector, graph, &classifier);
 	jive_regselector_process(&regselector);
 	jive_i386_match_instructions(graph, &regselector);
 	jive_regselector_fini(&regselector);
