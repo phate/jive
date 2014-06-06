@@ -2,8 +2,8 @@
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
-#ifndef JIVE_SERIALIZATION_TYPEINFO_MAP_H
-#define JIVE_SERIALIZATION_TYPEINFO_MAP_H
+#ifndef JIVE_UTIL_TYPEINFO_MAP_H
+#define JIVE_UTIL_TYPEINFO_MAP_H
 
 /*
  * Auxiliary internal class template typeinfo_map<T>, to provide a mapping

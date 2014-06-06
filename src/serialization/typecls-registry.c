@@ -9,9 +9,8 @@
 
 #include <jive/util/buffer.h>
 #include <jive/util/hash.h>
+#include <jive/util/typeinfo-map.h>
 #include <jive/vsdg/basetype.h>
-
-#include "typeinfo-map.h"
 
 typedef struct jive_typecls_tag_bucket jive_typecls_tag_bucket;
 struct jive_typecls_tag_bucket {
