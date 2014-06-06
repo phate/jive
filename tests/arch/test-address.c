@@ -29,7 +29,10 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 	
 	jive::bits::type bits32(32);
-	const jive_value_type * tmparray0[] = {(jive_value_type *)&bits32, (jive_value_type *)&bits32};
+	const jive::value::type * tmparray0[] = {
+		(jive::value::type *)&bits32,
+		(jive::value::type *)&bits32
+	};
 	
 	jive::rcd::declaration rec = {
 		nelements : 2,

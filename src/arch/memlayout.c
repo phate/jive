@@ -11,8 +11,7 @@
 #include <jive/types/union/unntype.h>
 
 const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self,
-	const struct jive_value_type * type_)
+jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const jive::value::type * type_)
 {
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		return jive_memlayout_mapper_map_bitstring(self,

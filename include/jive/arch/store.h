@@ -68,7 +68,7 @@ namespace jive {
 class store_operation final : public operation {
 public:
 	inline
-	store_operation(size_t nbits, const jive_value_type * datatype)
+	store_operation(size_t nbits, const jive::value::type * datatype)
 		: nbits_(nbits)
 		, datatype_(datatype->copy())
 	{
@@ -85,10 +85,10 @@ public:
 	store_operation(store_operation && other) noexcept = default;
 
 	inline size_t nbits() const noexcept { return nbits_; }
-	inline const jive_value_type & datatype() const noexcept { return *datatype_; }
+	inline const jive::value::type & datatype() const noexcept { return *datatype_; }
 private:
 	size_t nbits_;
-	std::unique_ptr<jive_value_type> datatype_;
+	std::unique_ptr<jive::value::type> datatype_;
 };
 
 }
@@ -100,23 +100,23 @@ typedef jive::operation_node<jive::store_operation> jive_store_node;
 struct jive_node *
 jive_store_by_address_node_create(struct jive_region * region,
 	struct jive_output * address,
-	const struct jive_value_type * datatype, struct jive_output * value,
+	const jive::value::type * datatype, struct jive_output * value,
 	size_t nstates, struct jive_output * const states[]);
 
 void
 jive_store_by_address_create(struct jive_output * address,
-	const struct jive_value_type * datatype, struct jive_output * value,
+	const jive::value::type * datatype, struct jive_output * value,
 	size_t nstates, struct jive_output * const states[], jive_output * ostates[]);
 
 struct jive_node *
 jive_store_by_bitstring_node_create(struct jive_region * region,
 	struct jive_output * address, size_t nbits,
-	const struct jive_value_type * datatype, struct jive_output * value,
+	const jive::value::type * datatype, struct jive_output * value,
 	size_t nstates, struct jive_output * const states[]);
 
 void
 jive_store_by_bitstring_create(struct jive_output * address, size_t nbits,
-	const struct jive_value_type * datatype, struct jive_output * value,
+	const jive::value::type * datatype, struct jive_output * value,
 	size_t nstates, struct jive_output * const istates[], struct jive_output * ostates[]);
 
 JIVE_EXPORTED_INLINE jive_store_node *

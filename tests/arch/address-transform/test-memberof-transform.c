@@ -30,13 +30,13 @@ static int test_main(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	const jive_value_type *  tmparray0[] = {&bits8, &bits16, &bits32, &bits32};
+	const jive::value::type *  tmparray0[] = {&bits8, &bits16, &bits32, &bits32};
 	
 	jive::rcd::declaration decl = {
 		nelements : 4,
 		elements : tmparray0
 	};
-	const jive_value_type * tmparray1[] = {&bits8, &bits16, &bits32, &bits32};
+	const jive::value::type * tmparray1[] = {&bits8, &bits16, &bits32, &bits32};
 	
 	/*
 	jive_record_declaration * decl = jive_record_declaration_create(context, 4,

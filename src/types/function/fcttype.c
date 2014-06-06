@@ -22,7 +22,7 @@ type::~type() noexcept {}
 
 type::type(size_t narguments, const jive_type ** argument_types, size_t nreturns,
 	const jive_type ** return_types)
-	: jive_value_type()
+	: jive::value::type()
 {
 	size_t i;
 	for (i = 0; i < narguments; i++)
@@ -35,7 +35,7 @@ type::type(size_t narguments, const jive_type ** argument_types, size_t nreturns
 type::type(
 	const std::vector<std::unique_ptr<jive_type>> & argument_types,
 	const std::vector<std::unique_ptr<jive_type>> & return_types)
-	: jive_value_type()
+	: jive::value::type()
 {
 	for (size_t i = 0; i < argument_types.size(); i++)
 		argument_types_.push_back(std::unique_ptr<jive_type>(argument_types[i]->copy()));
@@ -45,7 +45,7 @@ type::type(
 }
 
 type::type(const jive::fct::type & rhs)
-	: jive_value_type()
+	: jive::value::type()
 {
 	size_t i;
 	for (i = 0; i < rhs.narguments(); i++)
@@ -56,7 +56,7 @@ type::type(const jive::fct::type & rhs)
 }
 
 type::type(jive::fct::type && other) noexcept
-	: jive_value_type()
+	: jive::value::type()
 	, return_types_(std::move(other.return_types_))
 	, argument_types_(std::move(other.argument_types_))
 {
@@ -123,13 +123,13 @@ type::create_gate(jive_graph * graph, const char * name) const
 input::input(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, struct jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_value_input(node, index, origin)
+	: jive::value::input(node, index, origin)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 input::input(const jive::fct::type & type, jive_node * node,
 	size_t index, jive_output * origin)
-	: jive_value_input(node, index, origin)
+	: jive::value::input(node, index, origin)
 	, type_(type)
 {}
 
@@ -139,12 +139,12 @@ input::~input() noexcept {}
 
 output::output(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, jive_node * node, size_t index)
-	: jive_value_output(node, index)
+	: jive::value::output(node, index)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 output::output(const jive::fct::type & type, jive_node * node, size_t index)
-	: jive_value_output(node, index)
+	: jive::value::output(node, index)
 	, type_(type)
 {}
 
@@ -154,12 +154,12 @@ output::~output() noexcept {}
 
 gate::gate(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, jive_graph * graph, const char name[])
-	: jive_value_gate(graph, name)
+	: jive::value::gate(graph, name)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 gate::gate(const jive::fct::type & type, jive_graph * graph, const char name[])
-	: jive_value_gate(graph, name)
+	: jive::value::gate(graph, name)
 	, type_(type)
 {}
 

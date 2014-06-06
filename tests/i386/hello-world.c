@@ -39,7 +39,7 @@
 #include <jive/vsdg/objdef.h>
 #include <jive/vsdg/splitnode.h>
 
-static const jive_value_type ** string_elements;
+static const jive::value::type ** string_elements;
 static jive::rcd::declaration string_decl;
 
 static jive_output *

@@ -265,7 +265,7 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 void
 jive_load_node_init_(jive_load_node * self, jive_region * region,
 	jive_output * address, const jive_type * address_type,
-	const jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	jive_context * context = region->graph->context;
@@ -299,7 +299,7 @@ load_node_region_innermost(jive_output * address, size_t nstates, jive_output * 
 jive_node *
 jive_load_by_address_node_create(jive_region * region,
 	jive_output * address,
-	const jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	jive_load_node * node = new jive_load_node(jive::load_operation(0, datatype));
@@ -313,7 +313,7 @@ jive_load_by_address_node_create(jive_region * region,
 
 jive_output *
 jive_load_by_address_create(jive_output * address,
-	const jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	const jive_load_node_normal_form * nf = (const jive_load_node_normal_form *)
@@ -329,7 +329,7 @@ jive_load_by_address_create(jive_output * address,
 jive_node *
 jive_load_by_bitstring_node_create(jive_region * region,
 	jive_output * address, size_t nbits,
-	const jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	jive_load_node * node = new jive_load_node(jive::load_operation(nbits, datatype));
@@ -343,7 +343,7 @@ jive_load_by_bitstring_node_create(jive_region * region,
 
 jive_output *
 jive_load_by_bitstring_create(jive_output * address, size_t nbits,
-	const jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	const jive_load_node_normal_form * nf = (const jive_load_node_normal_form *)

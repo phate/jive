@@ -75,13 +75,13 @@ class arraysubscript_operation : public operation {
 public:
 	arraysubscript_operation(const arraysubscript_operation & other);
 	arraysubscript_operation(arraysubscript_operation && other) noexcept;
-	arraysubscript_operation(const jive_value_type & element_type);
+	arraysubscript_operation(const jive::value::type & element_type);
 
-	inline const jive_value_type &
+	inline const jive::value::type &
 	element_type() const noexcept { return *element_type_; }
 
 private:
-	std::unique_ptr<jive_value_type> element_type_;
+	std::unique_ptr<jive::value::type> element_type_;
 };
 
 class arrayindex_operation : public jive_node_attrs {
@@ -89,17 +89,17 @@ public:
 	arrayindex_operation(const arrayindex_operation & other);
 	arrayindex_operation(arrayindex_operation && other) noexcept;
 	arrayindex_operation(
-		const jive_value_type & element_type,
+		const jive::value::type & element_type,
 		size_t nbits);
 
-	inline const jive_value_type &
+	inline const jive::value::type &
 	element_type() const noexcept { return *element_type_; }
 
 	inline const jive::bits::type &
 	difference_type() const noexcept { return difference_type_; }
 
 private:
-	std::unique_ptr<jive_value_type> element_type_;
+	std::unique_ptr<jive::value::type> element_type_;
 	jive::bits::type difference_type_;
 };
 
@@ -185,7 +185,7 @@ extern const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_;
 typedef jive::operation_node<jive::address::arraysubscript_operation> jive_arraysubscript_node;
 
 jive_output *
-jive_arraysubscript(struct jive_output * address, const struct jive_value_type * element_type,
+jive_arraysubscript(struct jive_output * address, const jive::value::type * element_type,
 	struct jive_output * index);
 
 JIVE_EXPORTED_INLINE jive_arraysubscript_node *
@@ -208,8 +208,8 @@ typedef jive::operation_node<jive::address::arrayindex_operation> jive_arrayinde
 
 jive_output *
 jive_arrayindex(struct jive_output * addr1, struct jive_output * addr2,
-	const struct jive_value_type * element_type,
-	const struct jive::bits::type * difference_type);
+	const jive::value::type * element_type,
+	const jive::bits::type * difference_type);
 
 JIVE_EXPORTED_INLINE jive_arrayindex_node *
 jive_arrayindex_node_cast(jive_node * node)

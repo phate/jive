@@ -27,7 +27,7 @@ static int test_main(void)
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
 
-	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
+	static const jive::value::type * decl_elems[] = {&bits8, &bits16, &bits32};
 	static const jive::rcd::declaration decl = {3, decl_elems};
 	static jive::rcd::type rcdtype(&decl);
 

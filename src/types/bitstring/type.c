@@ -20,7 +20,7 @@ namespace bits {
 type::~type() noexcept {}
 
 type::type(size_t nbits) noexcept
-	: jive_value_type()
+	: jive::value::type()
 	, nbits_(nbits)
 {}
 
@@ -66,7 +66,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 /* input */
 
 input::input(size_t nbits, struct jive_node * node, size_t index, jive_output * origin)
-	: jive_value_input(node, index, origin)
+	: jive::value::input(node, index, origin)
 	, type_(nbits)
 {}
 
@@ -75,7 +75,7 @@ input::~input() noexcept {}
 /* output */
 
 output::output(size_t nbits, struct jive_node * node, size_t index)
-	: jive_value_output(node, index)
+	: jive::value::output(node, index)
 	, type_(nbits)
 {}
 
@@ -84,7 +84,7 @@ output::~output() noexcept {}
 /* gate */
 
 gate::gate(size_t nbits, jive_graph * graph, const char name[])
-	: jive_value_gate(graph, name)
+	: jive::value::gate(graph, name)
 	, type_(nbits)
 {}
 

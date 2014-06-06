@@ -9,38 +9,44 @@
 
 #include <jive/vsdg/basetype.h>
 
-class jive_value_type : public jive_type {
-public:
-	virtual ~jive_value_type() noexcept;
+namespace jive {
+namespace value {
 
-	virtual jive_value_type * copy() const override = 0;
+class type : public jive_type {
+public:
+	virtual ~type() noexcept;
+
+	virtual jive::value::type * copy() const override = 0;
 
 protected:
-	inline constexpr jive_value_type() noexcept : jive_type() {};
+	inline constexpr type() noexcept : jive_type() {};
 };
 
-class jive_value_input : public jive_input {
+class input : public jive_input {
 public:
-	virtual ~jive_value_input() noexcept;
+	virtual ~input() noexcept;
 
 protected:
-	jive_value_input(struct jive_node * node, size_t index, jive_output * initial_operand);
+	input(struct jive_node * node, size_t index, jive_output * initial_operand);
 };
 
-class jive_value_output : public jive_output {
+class output : public jive_output {
 public:
-	virtual ~jive_value_output() noexcept;
+	virtual ~output() noexcept;
 
 protected:
-	jive_value_output(struct jive_node * node, size_t index);
+	output(struct jive_node * node, size_t index);
 };
 
-class jive_value_gate : public jive_gate {
+class gate : public jive_gate {
 public:
-	virtual ~jive_value_gate() noexcept;
+	virtual ~gate() noexcept;
 
 protected:
-	jive_value_gate(jive_graph * graph, const char name[]);
+	gate(jive_graph * graph, const char name[]);
 };
+
+}
+}
 
 #endif

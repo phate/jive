@@ -322,7 +322,7 @@ arraysubscript_operation::arraysubscript_operation(
 }
 
 arraysubscript_operation::arraysubscript_operation(
-	const jive_value_type& type)
+	const jive::value::type& type)
 	: element_type_(type.copy())
 {
 }
@@ -476,7 +476,7 @@ jive_arraysubscript_reduce_operand_pair_(
 }
 
 jive_output *
-jive_arraysubscript(jive_output * address, const jive_value_type * element_type,
+jive_arraysubscript(jive_output * address, const jive::value::type * element_type,
 	jive_output * index)
 {
 	jive_output * tmparray0[] = {address, index};
@@ -509,7 +509,7 @@ arrayindex_operation::arrayindex_operation(
 }
 
 arrayindex_operation::arrayindex_operation(
-	const jive_value_type & element_type,
+	const jive::value::type & element_type,
 	size_t nbits)
 	: element_type_(element_type.copy()),
 	difference_type_(nbits)
@@ -617,7 +617,7 @@ jive_arrayindex_node_create_(jive_region * region, const jive_node_attrs * attrs
 }
 
 static const jive_output *
-get_array_base(const jive_output * addr, const jive_value_type * element_type)
+get_array_base(const jive_output * addr, const jive::value::type * element_type)
 {
 	jive_arraysubscript_node * node = jive_arraysubscript_node_cast(addr->node());
 	if (node && *element_type == node->operation().element_type())
@@ -626,7 +626,7 @@ get_array_base(const jive_output * addr, const jive_value_type * element_type)
 }
 
 static jive_output *
-get_array_index(jive_output * addr, const jive_output * base, const jive_value_type * element_type,
+get_array_index(jive_output * addr, const jive_output * base, const jive::value::type * element_type,
 	const jive::bits::type * index_type)
 {
 	jive_output * index = NULL;
@@ -684,7 +684,7 @@ jive_arrayindex_reduce_operand_pair_(jive_binop_reduction_path_t path, const jiv
 
 jive_output *
 jive_arrayindex(jive_output * addr1, jive_output * addr2,
-	const jive_value_type * element_type, const jive::bits::type * difference_type)
+	const jive::value::type * element_type, const jive::bits::type * difference_type)
 {
 	jive_output * tmparray2[] = {addr1, addr2};
 	jive_region * region = jive_region_innermost(2, tmparray2);

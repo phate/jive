@@ -15,12 +15,12 @@ namespace rcd {
 
 struct declaration {
 	size_t nelements;
-	const jive_value_type ** elements;
+	const jive::value::type ** elements;
 };
 
 /* type */
 
-class type final : public jive_value_type {
+class type final : public jive::value::type {
 public:
 	virtual ~type() noexcept;
 
@@ -47,7 +47,7 @@ private:
 
 /* input */
 
-class input final : public jive_value_input {
+class input final : public jive::value::input {
 public:
 	virtual ~input() noexcept;
 
@@ -64,7 +64,7 @@ private:
 
 /* output */
 
-class output final : public jive_value_output {
+class output final : public jive::value::output {
 public:
 	virtual ~output() noexcept;
 
@@ -80,7 +80,7 @@ private:
 
 /* gate */
 
-class gate final : public jive_value_gate {
+class gate final : public jive::value::gate {
 public:
 	virtual ~gate() noexcept;
 

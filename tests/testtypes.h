@@ -11,11 +11,11 @@
 
 /* test value type */
 
-class jive_test_value_type final : public jive_value_type {
+class jive_test_value_type final : public jive::value::type {
 public:
 	virtual ~jive_test_value_type() noexcept;
 
-	inline constexpr jive_test_value_type() noexcept : jive_value_type() {};
+	inline constexpr jive_test_value_type() noexcept : jive::value::type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
@@ -31,7 +31,7 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_test_value_input final : public jive_value_input {
+class jive_test_value_input final : public jive::value::input {
 public:
 	virtual ~jive_test_value_input() noexcept;
 
@@ -43,7 +43,7 @@ private:
 	jive_test_value_type type_;
 };
 
-class jive_test_value_output final : public jive_value_output {
+class jive_test_value_output final : public jive::value::output {
 public:
 	virtual ~jive_test_value_output() noexcept;
 
@@ -55,7 +55,7 @@ private:
 	jive_test_value_type type_;
 };
 
-class jive_test_value_gate final : public jive_value_gate {
+class jive_test_value_gate final : public jive::value::gate {
 public:
 	virtual ~jive_test_value_gate() noexcept;
 

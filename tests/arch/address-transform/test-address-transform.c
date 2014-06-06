@@ -43,7 +43,7 @@ static int test_main(void)
 
 	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, &addr);
 	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, &addr);
-	const jive_value_type * tmparray1[] = {&addr, &addr};
+	const jive::value::type * tmparray1[] = {&addr, &addr};
 
 	jive::rcd::declaration decl = {2, tmparray1};
 

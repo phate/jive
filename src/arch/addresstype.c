@@ -60,7 +60,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 input::~input() noexcept {}
 
 input::input(struct jive_node * node, size_t index, jive_output * origin)
-	: jive_value_input(node, index, origin)
+	: jive::value::input(node, index, origin)
 {}
 
 /* output */
@@ -68,7 +68,7 @@ input::input(struct jive_node * node, size_t index, jive_output * origin)
 output::~output() noexcept {}
 
 output::output(jive_node * node, size_t index)
-	: jive_value_output(node, index)
+	: jive::value::output(node, index)
 {}
 
 /* gate */
@@ -76,7 +76,7 @@ output::output(jive_node * node, size_t index)
 gate::~gate() noexcept {}
 
 gate::gate(jive_graph * graph, const char name[])
-	: jive_value_gate(graph, name)
+	: jive::value::gate(graph, name)
 {}
 
 }

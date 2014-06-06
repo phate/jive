@@ -367,7 +367,7 @@ jive_store_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	if (!addro && !bitso)
 		jive_context_fatal_error(context, "Type mismatch: required address or bitstring type.");
 
-	if (!dynamic_cast<jive_value_output*>(operands[1]))
+	if (!dynamic_cast<jive::value::output*>(operands[1]))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	/* FIXME: check the type of the states */
@@ -392,7 +392,7 @@ jive_store_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 void
 jive_store_node_init_(jive_store_node * self, jive_region * region,
 	jive_output * address, const jive_type * address_type,
-	const jive_value_type * datatype, jive_output * value,
+	const jive::value::type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
 	const jive_type * operand_types[2] = {address_type, datatype};
@@ -428,7 +428,7 @@ store_node_region_innermost(jive_output * address, jive_output * value,
 
 jive_node *
 jive_store_by_address_node_create(jive_region * region, jive_output * address,
-	const jive_value_type * datatype, jive_output * value,
+	const jive::value::type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
 	jive_store_node * node = new jive_store_node(jive::store_operation(0, datatype));
@@ -442,7 +442,7 @@ jive_store_by_address_node_create(jive_region * region, jive_output * address,
 
 void
 jive_store_by_address_create(jive_output * address,
-	const jive_value_type * datatype, jive_output * value,
+	const jive::value::type * datatype, jive_output * value,
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
 	const jive_store_node_normal_form * nf = (const jive_store_node_normal_form *)
@@ -459,7 +459,7 @@ jive_store_by_address_create(jive_output * address,
 jive_node *
 jive_store_by_bitstring_node_create(jive_region * region,
 	jive_output * address, size_t nbits,
-	const jive_value_type * datatype, jive_output * value,
+	const jive::value::type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
 	jive_store_node * node = new jive_store_node(jive::store_operation(nbits, datatype));
@@ -473,7 +473,7 @@ jive_store_by_bitstring_node_create(jive_region * region,
 
 void
 jive_store_by_bitstring_create(jive_output * address, size_t nbits,
-	const jive_value_type * datatype, jive_output * value,
+	const jive::value::type * datatype, jive_output * value,
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
 	const jive_store_node_normal_form * nf = (const jive_store_node_normal_form *)

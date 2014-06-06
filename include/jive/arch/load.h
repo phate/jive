@@ -68,7 +68,7 @@ namespace jive {
 class load_operation final : public operation {
 public:
 	inline
-	load_operation(size_t nbits, const jive_value_type * datatype)
+	load_operation(size_t nbits, const jive::value::type * datatype)
 		: nbits_(nbits)
 		, datatype_(datatype->copy())
 	{
@@ -85,10 +85,10 @@ public:
 	load_operation(load_operation && other) noexcept = default;
 
 	inline size_t nbits() const noexcept { return nbits_; }
-	inline const jive_value_type & datatype() const noexcept { return *datatype_; }
+	inline const jive::value::type & datatype() const noexcept { return *datatype_; }
 private:
 	size_t nbits_;
-	std::unique_ptr<jive_value_type> datatype_;
+	std::unique_ptr<jive::value::type> datatype_;
 };
 
 }
@@ -100,23 +100,23 @@ typedef jive::operation_node<jive::load_operation> jive_load_node;
 struct jive_node *
 jive_load_by_address_node_create(struct jive_region * region,
 	struct jive_output * address,
-	const struct jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
 struct jive_output *
 jive_load_by_address_create(struct jive_output * address,
-	const struct jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
 struct jive_node *
 jive_load_by_bitstring_node_create(struct jive_region * region,
 	struct jive_output * address, size_t nbits,
-	const struct jive_value_type * datatype,
+	const jive::value::type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
 struct jive_output *
 jive_load_by_bitstring_create(struct jive_output * address,
-	size_t nbits, const struct jive_value_type * datatype,
+	size_t nbits, const jive::value::type * datatype,
 	size_t nstates, struct jive_output * const states[]);
 
 JIVE_EXPORTED_INLINE jive_load_node *

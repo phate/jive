@@ -19,7 +19,7 @@ namespace unn {
 type::~type() noexcept {}
 
 type::type(const jive::unn::declaration * decl) noexcept
-	: jive_value_type()
+	: jive::value::type()
 	, decl_(decl)
 {}
 
@@ -64,7 +64,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 input::input(const jive::unn::declaration * decl, struct jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_value_input(node, index, origin)
+	: jive::value::input(node, index, origin)
 	, type_(decl)
 {}
 
@@ -73,7 +73,7 @@ input::~input() noexcept {}
 /* output */
 
 output::output(const jive::unn::declaration * decl, jive_node * node, size_t index)
-	: jive_value_output(node, index)
+	: jive::value::output(node, index)
 	, type_(decl)
 {}
 
@@ -82,7 +82,7 @@ output::~output() noexcept {}
 /* gate */
 
 gate::gate(const jive::unn::declaration * decl, jive_graph * graph, const char name[])
-	: jive_value_gate(graph, name)
+	: jive::value::gate(graph, name)
 	, type_(decl)
 {}
 

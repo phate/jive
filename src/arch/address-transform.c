@@ -140,7 +140,7 @@ jive_address_to_bitstring_node_init_(
 	jive_context * context = region->graph->context;
 
 	const jive_type * addrtype = &address->type();
-	if (!dynamic_cast<const jive_value_type*>(addrtype))
+	if (!dynamic_cast<const jive::value::type*>(addrtype))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	JIVE_DEBUG_ASSERT(*addrtype == *original_type);
@@ -180,7 +180,7 @@ jive_address_to_bitstring_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	if (!dynamic_cast<jive_value_output*>(operands[0]))
+	if (!dynamic_cast<jive::value::output*>(operands[0]))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 }
 
@@ -320,7 +320,7 @@ jive_bitstring_to_address_node_init_(
 	jive_context * context = region->graph->context;
 
 	const jive_type * bittype = &bitstring->type();
-	if (!dynamic_cast<const jive_value_type*>(bittype))
+	if (!dynamic_cast<const jive::value::type*>(bittype))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 
 	jive_node_init_(self, region,
@@ -355,7 +355,7 @@ jive_bitstring_to_address_node_check_operands_(const jive_node_class * cls,
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
-	if (!dynamic_cast<jive_value_output*>(operands[0]))
+	if (!dynamic_cast<jive::value::output*>(operands[0]))
 		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
 }
 
@@ -455,7 +455,7 @@ jive_load_node_address_transform(jive_load_node * node, size_t nbits)
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::output*>(address)->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
-	const jive_value_type * datatype = &node->operation().datatype();
+	const jive::value::type * datatype = &node->operation().datatype();
 	if (output_is_address)
 		datatype = &bits;
 
@@ -492,7 +492,7 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::output*>(address)->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
-	const jive_value_type * datatype = &node->operation().datatype();
+	const jive::value::type * datatype = &node->operation().datatype();
 	jive_output * value = node_->inputs[1]->origin();
 	if(input1_is_address){
 		datatype = &bits;

@@ -12,29 +12,34 @@
 
 #include <jive/util/list.h>
 
-jive_value_type::~jive_value_type() noexcept {}
+namespace jive {
+namespace value {
+
+type::~type() noexcept {}
 
 /* value inputs */
 
-jive_value_input::~jive_value_input() noexcept {};
+input::~input() noexcept {};
 
-jive_value_input::jive_value_input(struct jive_node * node, size_t index,
-	jive_output * initial_operand)
+input::input(struct jive_node * node, size_t index, jive_output * initial_operand)
 	: jive_input(node, index, initial_operand)
 {}
 
 /* value outputs */
 
-jive_value_output::~jive_value_output() noexcept {}
+output::~output() noexcept {}
 
-jive_value_output::jive_value_output(struct jive_node * node, size_t index)
+output::output(struct jive_node * node, size_t index)
 	: jive_output(node, index)
 {}
 
 /* value gates */
 
-jive_value_gate::~jive_value_gate() noexcept {}
+gate::~gate() noexcept {}
 
-jive_value_gate::jive_value_gate(jive_graph * graph, const char name[])
+gate::gate(jive_graph * graph, const char name[])
 	: jive_gate(graph, name)
 {}
+
+}
+}

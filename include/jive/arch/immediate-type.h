@@ -12,11 +12,11 @@
 namespace jive {
 namespace imm {
 
-class type final : public jive_value_type {
+class type final : public jive::value::type {
 public:
 	virtual ~type() noexcept;
 
-	inline constexpr type() noexcept : jive_value_type() {};
+	inline constexpr type() noexcept : jive::value::type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
@@ -32,7 +32,7 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class input final : public jive_value_input {
+class input final : public jive::value::input {
 public:
 	virtual ~input() noexcept;
 
@@ -44,7 +44,7 @@ private:
 	jive::imm::type type_;
 };
 
-class output final : public jive_value_output {
+class output final : public jive::value::output {
 public:
 	virtual ~output() noexcept;
 
@@ -56,7 +56,7 @@ private:
 	jive::imm::type type_;
 };
 
-class gate final : public jive_value_gate {
+class gate final : public jive::value::gate {
 public:
 	virtual ~gate() noexcept;
 

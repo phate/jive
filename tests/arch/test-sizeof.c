@@ -34,12 +34,12 @@ static int test_main(void)
 	jive::bits::type bits18(18);
 	jive::bits::type bits32(32);
 	jive::addr::type addr;
-	const jive_value_type *  tmparray0[] = {&bits4, &bits8, &bits18};
+	const jive::value::type *  tmparray0[] = {&bits4, &bits8, &bits18};
 
 	jive::rcd::declaration r_decl = {3, tmparray0};
 	
 	jive::rcd::type record_t(&r_decl);
-	const jive_value_type *  tmparray1[] = {&bits4, &bits8, &bits18};
+	const jive::value::type *  tmparray1[] = {&bits4, &bits8, &bits18};
 
 	jive::unn::declaration u_decl = {3, tmparray1};
 

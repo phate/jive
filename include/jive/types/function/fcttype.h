@@ -16,7 +16,7 @@ namespace fct {
 
 /* function type */
 
-class type final : public jive_value_type {
+class type final : public jive::value::type {
 public:
 	virtual ~type() noexcept;
 
@@ -66,7 +66,7 @@ private:
 
 /* function input */
 
-class input final : public jive_value_input {
+class input final : public jive::value::input {
 public:
 	virtual ~input() noexcept;
 
@@ -93,7 +93,7 @@ private:
 
 /* function output */
 
-class output final : public jive_value_output {
+class output final : public jive::value::output {
 public:
 	virtual ~output() noexcept;
 
@@ -120,7 +120,7 @@ private:
 
 /* function gate */
 
-class gate final : public jive_value_gate {
+class gate final : public jive::value::gate {
 public:
 	virtual ~gate() noexcept;
 

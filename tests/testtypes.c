@@ -51,19 +51,19 @@ jive_test_value_input::~jive_test_value_input() noexcept {}
 
 jive_test_value_input::jive_test_value_input(jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_value_input(node, index, origin)
+	: jive::value::input(node, index, origin)
 {}
 
 jive_test_value_output::~jive_test_value_output() noexcept {}
 
 jive_test_value_output::jive_test_value_output(jive_node * node, size_t index)
-	: jive_value_output(node, index)
+	: jive::value::output(node, index)
 {}
 
 jive_test_value_gate::~jive_test_value_gate() noexcept {}
 
 jive_test_value_gate::jive_test_value_gate(jive_graph * graph, const char name[])
-	: jive_value_gate(graph, name)
+	: jive::value::gate(graph, name)
 {}
 
 /* test state type */

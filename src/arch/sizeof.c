@@ -80,8 +80,7 @@ jive_sizeof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 }
 
 jive_node *
-jive_sizeof_node_create(jive_region * region,
-	const jive_value_type * type)
+jive_sizeof_node_create(jive_region * region, const jive::value::type * type)
 {
 	;
 	jive_context * context = region->graph->context;
@@ -102,8 +101,7 @@ jive_sizeof_node_create(jive_region * region,
 }
 
 jive_output *
-jive_sizeof_create(jive_region * region,
-	const jive_value_type * type)
+jive_sizeof_create(jive_region * region, const jive::value::type * type)
 {
 	return jive_sizeof_node_create(region, type)->outputs[0];
 }

@@ -9,6 +9,18 @@
 #include <jive/common.h>
 #include <jive/vsdg/basetype.h>
 
+namespace jive {
+namespace rcd {
+	struct declaration;
+}
+namespace unn {
+	struct declaration;
+}
+namespace value {
+	class type;
+}
+}
+
 typedef struct jive_memlayout_mapper jive_memlayout_mapper;
 typedef struct jive_memlayout_mapper_class jive_memlayout_mapper_class;
 
@@ -18,16 +30,7 @@ typedef struct jive_record_memlayout jive_record_memlayout;
 typedef struct jive_record_memlayout_element jive_record_memlayout_element;
 
 typedef struct jive_union_memlayout jive_union_memlayout;
-typedef struct jive_value_type jive_union_memlayout_element;
-
-namespace jive {
-namespace rcd {
-	struct declaration;
-}
-namespace unn {
-	struct declaration;
-}
-}
+typedef jive::value::type jive_union_memlayout_element;
 
 struct jive_dataitem_memlayout {
 	size_t total_size;
@@ -99,7 +102,6 @@ jive_memlayout_mapper_map_address(jive_memlayout_mapper * self)
 }
 
 const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self,
-	const struct jive_value_type * type);
+jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const jive::value::type * type);
 
 #endif
