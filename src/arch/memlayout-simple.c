@@ -13,7 +13,8 @@
 JIVE_DEFINE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry,
 	const jive::rcd::declaration *, decl, hash_chain);
 
-JIVE_DEFINE_HASH_TYPE(jive_memlayout_union_hash, jive_memlayout_union_entry, const struct jive_union_declaration *, decl, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_memlayout_union_hash, jive_memlayout_union_entry,
+	const jive::unn::declaration *, decl, hash_chain);
 
 JIVE_DEFINE_RANGEMAP_TYPE(jive_memlayout_bitstring_map, jive_dataitem_memlayout *, NULL);
 
@@ -77,7 +78,8 @@ jive_memlayout_mapper_cached_map_record_(jive_memlayout_mapper_cached * self,
 }
 
 jive_union_memlayout *
-jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self, const struct jive_union_declaration * decl)
+jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self,
+	const jive::unn::declaration * decl)
 {
 	jive_memlayout_union_entry * entry = jive_memlayout_union_hash_lookup(&self->union_hash, decl);
 	if (entry)
@@ -117,7 +119,8 @@ jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
 }
 
 jive_union_memlayout *
-jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self, const struct jive_union_declaration * decl)
+jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self,
+	const jive::unn::declaration * decl)
 {
 	jive_memlayout_union_entry * entry;
 	entry = jive_context_malloc(self->context, sizeof(*entry));
@@ -167,7 +170,8 @@ jive_memlayout_mapper_simple_map_record_(jive_memlayout_mapper * self_,
 }
 
 static const struct jive_union_memlayout *
-jive_memlayout_mapper_simple_map_union_(jive_memlayout_mapper * self_, const struct jive_union_declaration * decl)
+jive_memlayout_mapper_simple_map_union_(jive_memlayout_mapper * self_,
+	const jive::unn::declaration * decl)
 {
 	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
 	jive_union_memlayout * layout = jive_memlayout_mapper_cached_map_union_(&self->base, decl);

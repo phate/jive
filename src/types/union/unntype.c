@@ -11,80 +11,82 @@
 
 #include <string.h>
 
-/*union_type inheritable members*/
+namespace jive {
+namespace unn {
 
-jive_union_type::~jive_union_type() noexcept {}
+/* type */
 
-jive_union_type::jive_union_type(const jive_union_declaration * decl) noexcept
+type::~type() noexcept {}
+
+type::type(const jive::unn::declaration * decl) noexcept
 	: jive_value_type()
 	, decl_(decl)
 {}
 
 void
-jive_union_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "unn");
 }
 
 bool
-jive_union_type::operator==(const jive_type & _other) const noexcept
+type::operator==(const jive_type & _other) const noexcept
 {
-	const jive_union_type * other = dynamic_cast<const jive_union_type*>(&_other);
+	const jive::unn::type * other = dynamic_cast<const jive::unn::type*>(&_other);
 	return other != nullptr && this->declaration() == other->declaration();
 }
 
-jive_union_type *
-jive_union_type::copy() const
+jive::unn::type *
+type::copy() const
 {
-	return new jive_union_type(this->declaration());
+	return new jive::unn::type(this->declaration());
 }
 
 jive_input *
-jive_union_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_union_input(declaration(), node, index, origin);
+	return new jive::unn::input(declaration(), node, index, origin);
 }
 
 jive_output *
-jive_union_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_union_output(this->declaration(), node, index);
+	return new jive::unn::output(this->declaration(), node, index);
 }
 
 jive_gate *
-jive_union_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_union_gate(this->declaration(), graph, name);
+	return new jive::unn::gate(this->declaration(), graph, name);
 }
 
-/* union_input inheritable members */
+/* input */
 
-jive_union_input::jive_union_input(const jive_union_declaration * decl, struct jive_node * node,
-	size_t index, jive_output * origin)
+input::input(const jive::unn::declaration * decl, struct jive_node * node, size_t index,
+	jive_output * origin)
 	: jive_value_input(node, index, origin)
 	, type_(decl)
 {}
 
-jive_union_input::~jive_union_input() noexcept
-{}
+input::~input() noexcept {}
 
-/* union_output inheritable members */
+/* output */
 
-jive_union_output::jive_union_output(const jive_union_declaration * decl, jive_node * node,
-	size_t index)
+output::output(const jive::unn::declaration * decl, jive_node * node, size_t index)
 	: jive_value_output(node, index)
 	, type_(decl)
 {}
 
-jive_union_output::~jive_union_output() noexcept
-{}
+output::~output() noexcept {}
 
-/* union_gate inheritable members */
+/* gate */
 
-jive_union_gate::jive_union_gate(const jive_union_declaration * decl, jive_graph * graph,
-	const char name[])
+gate::gate(const jive::unn::declaration * decl, jive_graph * graph, const char name[])
 	: jive_value_gate(graph, name)
 	, type_(decl)
 {}
 
-jive_union_gate::~jive_union_gate() noexcept {}
+gate::~gate() noexcept {}
+
+}
+}

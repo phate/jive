@@ -54,7 +54,7 @@ unify_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	size_t nstates, jive_output * const istates[], jive_output * ostates[])
 {
 	jive_unify_node * unify_node = jive_unify_node_cast(value->node());
-	const jive_union_declaration * decl = unify_node->operation().declaration();
+	const jive::unn::declaration * decl = unify_node->operation().declaration();
 
 	if (decl->nelements == 0) {
 		size_t n;

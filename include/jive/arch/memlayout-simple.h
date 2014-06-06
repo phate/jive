@@ -30,7 +30,7 @@ struct jive_memlayout_record_entry {
 };
 
 struct jive_memlayout_union_entry {
-	const struct jive_union_declaration * decl;
+	const jive::unn::declaration * decl;
 	jive_union_memlayout layout;
 	struct {
 		jive_memlayout_union_entry * prev, * next;
@@ -39,7 +39,8 @@ struct jive_memlayout_union_entry {
 
 JIVE_DECLARE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry,
 	const jive::rcd::declaration *, decl, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_memlayout_union_hash, jive_memlayout_union_entry, const struct jive_union_declaration *, decl, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_memlayout_union_hash, jive_memlayout_union_entry,
+	const jive::unn::declaration *, decl, hash_chain);
 JIVE_DECLARE_RANGEMAP_TYPE(jive_memlayout_bitstring_map, jive_dataitem_memlayout *, NULL);
 struct jive_memlayout_mapper_cached {
 	jive_memlayout_mapper base;
@@ -60,7 +61,8 @@ jive_memlayout_mapper_cached_map_record_(jive_memlayout_mapper_cached * self,
 	const jive::rcd::declaration * decl);
 
 struct jive_union_memlayout *
-jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self, const struct jive_union_declaration * decl);
+jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self,
+	const jive::unn::declaration * decl);
 
 struct jive_dataitem_memlayout **
 jive_memlayout_mapper_cached_map_bitstring_(jive_memlayout_mapper_cached * self, size_t nbits);
@@ -70,7 +72,8 @@ jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
 	const jive::rcd::declaration * decl);
 
 struct jive_union_memlayout *
-jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self, const struct jive_union_declaration * decl);
+jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self,
+	const jive::unn::declaration * decl);
 
 /* simplistic implementation, for simple use cases & testing */
 

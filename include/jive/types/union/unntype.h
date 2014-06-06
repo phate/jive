@@ -8,30 +8,31 @@
 
 #include <jive/vsdg/valuetype.h>
 
-/* union declaration */
+namespace jive {
+namespace unn {
 
-typedef struct jive_union_declaration jive_union_declaration;
+/* declaration */
 
-struct jive_union_declaration {
+struct declaration {
 	size_t nelements;
 	const jive_value_type ** elements;
 };
 
-/* union type */
+/* type */
 
-class jive_union_type final : public jive_value_type {
+class type final : public jive_value_type {
 public:
-	virtual ~jive_union_type() noexcept;
+	virtual ~type() noexcept;
 
-	jive_union_type(const jive_union_declaration * decl) noexcept;
+	type(const jive::unn::declaration * decl) noexcept;
 
-	inline const jive_union_declaration * declaration() const noexcept { return decl_; }
+	inline const jive::unn::declaration * declaration() const noexcept { return decl_; }
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_union_type * copy() const override;
+	virtual jive::unn::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -41,57 +42,59 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 
 private:
-	const jive_union_declaration * decl_;
+	const jive::unn::declaration * decl_;
 };
 
-/* union input */
+/* input */
 
-class jive_union_input final : public jive_value_input {
+class input final : public jive_value_input {
 public:
-	virtual ~jive_union_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_union_input(const jive_union_declaration * decl, struct jive_node * node, size_t index,
+	input(const jive::unn::declaration * decl, struct jive_node * node, size_t index,
 		jive_output * origin);
 
-	virtual const jive_union_type & type() const noexcept { return type_; }
+	virtual const jive::unn::type & type() const noexcept { return type_; }
 
-	inline const jive_union_declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
-	jive_union_type type_;
+	jive::unn::type type_;
 };
 
-/* union output */
+/* output */
 
-class jive_union_output final : public jive_value_output {
+class output final : public jive_value_output {
 public:
-	virtual ~jive_union_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_union_output(const jive_union_declaration * decl, jive_node * node, size_t index);
+	output(const jive::unn::declaration * decl, jive_node * node, size_t index);
 
-	virtual const jive_union_type & type() const noexcept { return type_; }
+	virtual const jive::unn::type & type() const noexcept { return type_; }
 
-	inline const jive_union_declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
-	jive_union_type type_;
+	jive::unn::type type_;
 };
 
-/* union gate */
+/* gate */
 
-class jive_union_gate final : public jive_value_gate {
+class gate final : public jive_value_gate {
 public:
-	virtual ~jive_union_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_union_gate(const jive_union_declaration * decl, jive_graph * graph,
-		const char name[]);
+	gate(const jive::unn::declaration * decl, jive_graph * graph, const char name[]);
 
-	virtual const jive_union_type & type() const noexcept { return type_; }
+	virtual const jive::unn::type & type() const noexcept { return type_; }
 
-	inline const jive_union_declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
-	jive_union_type type_;
+	jive::unn::type type_;
 };
+
+}
+}
 
 #endif

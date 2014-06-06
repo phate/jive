@@ -41,9 +41,9 @@ static int test_main(void)
 	jive::rcd::type record_t(&r_decl);
 	const jive_value_type *  tmparray1[] = {&bits4, &bits8, &bits18};
 
-	jive_union_declaration u_decl = {3, tmparray1};
+	jive::unn::declaration u_decl = {3, tmparray1};
 
-	jive_union_type union_t(&u_decl);
+	jive::unn::type union_t(&u_decl);
 
 	jive_output * s0 = jive_sizeof_create(graph->root_region, &bits4);
 	jive_output * s1 = jive_sizeof_create(graph->root_region, &bits8);

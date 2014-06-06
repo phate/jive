@@ -23,9 +23,11 @@ typedef struct jive_value_type jive_union_memlayout_element;
 namespace jive {
 namespace rcd {
 	struct declaration;
-}}
-
-struct jive_union_declaration;
+}
+namespace unn {
+	struct declaration;
+}
+}
 
 struct jive_dataitem_memlayout {
 	size_t total_size;
@@ -35,7 +37,7 @@ struct jive_dataitem_memlayout {
 
 struct jive_union_memlayout {
 	jive_dataitem_memlayout base;
-	const struct jive_union_declaration * decl;
+	const struct jive::unn::declaration * decl;
 };
 
 struct jive_record_memlayout_element {
@@ -59,7 +61,7 @@ struct jive_memlayout_mapper_class {
 	(*map_record)(jive_memlayout_mapper * self, const jive::rcd::declaration * decl);
 	
 	const jive_union_memlayout *
-	(*map_union)(jive_memlayout_mapper * self, const struct jive_union_declaration * decl);
+	(*map_union)(jive_memlayout_mapper * self, const struct jive::unn::declaration * decl);
 	
 	const jive_dataitem_memlayout *
 	(*map_bitstring)(jive_memlayout_mapper * self, size_t nbits);
@@ -79,7 +81,7 @@ jive_memlayout_mapper_map_record(jive_memlayout_mapper * self, const jive::rcd::
 }
 
 JIVE_EXPORTED_INLINE const jive_union_memlayout *
-jive_memlayout_mapper_map_union(jive_memlayout_mapper * self, const struct jive_union_declaration * decl)
+jive_memlayout_mapper_map_union(jive_memlayout_mapper * self, const jive::unn::declaration * decl)
 {
 	return self->class_->map_union(self, decl);
 }
@@ -97,6 +99,7 @@ jive_memlayout_mapper_map_address(jive_memlayout_mapper * self)
 }
 
 const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const struct jive_value_type * type);
+jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self,
+	const struct jive_value_type * type);
 
 #endif

@@ -18,7 +18,7 @@
 
 static void
 jive_unify_node_init_(jive_unify_node * self,
-	struct jive_region * region, const jive_union_declaration * decl,
+	struct jive_region * region, const jive::unn::declaration * decl,
 	size_t option, jive_output * const operand);
 
 static jive_node *
@@ -102,7 +102,7 @@ jive_unify_node_create_(struct jive_region * region, const jive_node_attrs * att
 
 static void
 jive_unify_node_init_(jive_unify_node * self,
-	struct jive_region * region, const jive_union_declaration * decl,
+	struct jive_region * region, const jive::unn::declaration * decl,
 	size_t option, jive_output * const operand)
 {
 	if (option >= decl->nelements) {
@@ -112,7 +112,7 @@ jive_unify_node_init_(jive_unify_node * self,
 	
 	const jive_type * arg_type = decl->elements[option];
 	
-	jive_union_type type(decl);
+	jive::unn::type type(decl);
 	const jive_type * type_ptr = &type;
 	jive_node_init_(self, region,
 		1, &arg_type, &operand,
@@ -120,8 +120,7 @@ jive_unify_node_init_(jive_unify_node * self,
 }
 
 jive_output *
-jive_unify_create(const jive_union_declaration * decl,
-	size_t option, jive_output * const operand)
+jive_unify_create(const jive::unn::declaration * decl, size_t option, jive_output * const operand)
 {
 	jive::unn::unify_operation op(decl, option);
 
@@ -151,9 +150,9 @@ const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
 
 static void
 jive_empty_unify_node_init_(jive_empty_unify_node * self,
-	struct jive_region * region, const jive_union_declaration * decl)
+	struct jive_region * region, const jive::unn::declaration * decl)
 {
-	jive_union_type type(decl);
+	jive::unn::type type(decl);
 	const jive_type * type_ptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
@@ -186,7 +185,7 @@ jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs
 }
 
 jive_output *
-jive_empty_unify_create(struct jive_graph * graph, const jive_union_declaration * decl)
+jive_empty_unify_create(struct jive_graph * graph, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_operation op(decl);
 

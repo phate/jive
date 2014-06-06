@@ -98,9 +98,9 @@ flatten_data_items(
 			
 			jive_context_free(ctx, sub_items);
 		}
-	} else if (dynamic_cast<const jive_union_type*>(type_)) {
-		const jive_union_type * type = (const jive_union_type *) type_;
-		const jive_union_declaration * decl = type->declaration();
+	} else if (dynamic_cast<const jive::unn::type*>(type_)) {
+		const jive::unn::type * type = static_cast<const jive::unn::type*>(type_);
+		const jive::unn::declaration * decl = type->declaration();
 		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
 		
 		jive_unify_node * node = jive_unify_node_cast(data->node());

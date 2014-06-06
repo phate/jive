@@ -28,11 +28,11 @@ static int test_main(void)
 	static const jive::bits::type bits32(32);
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
-	static const jive_union_declaration decl = {3, decl_elems};
-	static jive_union_type unntype(&decl);
+	static const jive::unn::declaration decl = {3, decl_elems};
+	static jive::unn::type unntype(&decl);
 
-	static const jive_union_declaration decl_empty = {0, NULL};
-	static jive_union_type unntype_empty(&decl_empty);
+	static const jive::unn::declaration decl_empty = {0, NULL};
+	static jive::unn::type unntype_empty(&decl_empty);
 	const jive_type * tmparray0[] = {&bits8};
 	
 	jive_node * top = jive_test_node_create(graph->root_region,

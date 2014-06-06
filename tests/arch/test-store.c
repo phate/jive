@@ -35,11 +35,11 @@ static int test_main(void)
 	static const jive::rcd::declaration rcddecl = {3, decl_elems};
 	static jive::rcd::type rcdtype(&rcddecl);
 	
-	static const jive_union_declaration unndecl = {3, decl_elems};
-	static jive_union_type unntype(&unndecl);
+	static const jive::unn::declaration unndecl = {3, decl_elems};
+	static jive::unn::type unntype(&unndecl);
 
-	static const jive_union_declaration empty_unndecl = {0, NULL};
-	static jive_union_type empty_unntype(&empty_unndecl);
+	static const jive::unn::declaration empty_unndecl = {0, NULL};
+	static jive::unn::type empty_unntype(&empty_unndecl);
 
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
