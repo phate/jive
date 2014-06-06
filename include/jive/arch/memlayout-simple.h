@@ -22,7 +22,7 @@ typedef struct jive_memlayout_union_hash jive_memlayout_union_hash;
 typedef struct jive_memlayout_bitstring_map jive_memlayout_bitstring_map;
 
 struct jive_memlayout_record_entry {
-	const struct jive_record_declaration * decl;
+	const jive::rcd::declaration * decl;
 	jive_record_memlayout layout;
 	struct {
 		jive_memlayout_record_entry * prev, * next;
@@ -37,7 +37,8 @@ struct jive_memlayout_union_entry {
 	} hash_chain;
 };
 
-JIVE_DECLARE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry, const struct jive_record_declaration *, decl, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry,
+	const jive::rcd::declaration *, decl, hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_memlayout_union_hash, jive_memlayout_union_entry, const struct jive_union_declaration *, decl, hash_chain);
 JIVE_DECLARE_RANGEMAP_TYPE(jive_memlayout_bitstring_map, jive_dataitem_memlayout *, NULL);
 struct jive_memlayout_mapper_cached {
@@ -55,7 +56,8 @@ void
 jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self);
 
 struct jive_record_memlayout *
-jive_memlayout_mapper_cached_map_record_(jive_memlayout_mapper_cached * self, const struct jive_record_declaration * decl);
+jive_memlayout_mapper_cached_map_record_(jive_memlayout_mapper_cached * self,
+	const jive::rcd::declaration * decl);
 
 struct jive_union_memlayout *
 jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self, const struct jive_union_declaration * decl);
@@ -64,7 +66,8 @@ struct jive_dataitem_memlayout **
 jive_memlayout_mapper_cached_map_bitstring_(jive_memlayout_mapper_cached * self, size_t nbits);
 
 struct jive_record_memlayout *
-jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self, const struct jive_record_declaration * decl);
+jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
+	const jive::rcd::declaration * decl);
 
 struct jive_union_memlayout *
 jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self, const struct jive_union_declaration * decl);

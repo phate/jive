@@ -19,8 +19,8 @@ jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self,
 			static_cast<const jive::bits::type*>(type_)->nbits());
 	} else if (dynamic_cast<const jive::addr::type*>(type_)) {
 		return jive_memlayout_mapper_map_address(self);
-	} else if (dynamic_cast<const jive_record_type*>(type_)) {
-		const jive_record_type * type = (const jive_record_type *) type_;
+	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
+		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
 		return &jive_memlayout_mapper_map_record(self, type->declaration())->base;
 	} else if (dynamic_cast<const jive_union_type*>(type_)) {
 		const jive_union_type * type = (const jive_union_type *) type_;

@@ -18,15 +18,15 @@ namespace rcd {
 class group_operation final : public jive::operation {
 public:
 	inline constexpr
-	group_operation(const jive_record_declaration * declaration) noexcept
+	group_operation(const jive::rcd::declaration * declaration) noexcept
 		: declaration_(declaration)
 	{}
 
-	inline const jive_record_declaration *
+	inline const jive::rcd::declaration *
 	declaration() const noexcept { return declaration_; }
 
 private:
-	const jive_record_declaration * declaration_;
+	const jive::rcd::declaration * declaration_;
 };
 
 }
@@ -35,11 +35,11 @@ private:
 typedef jive::operation_node<jive::rcd::group_operation> jive_group_node;
 
 jive_output *
-jive_group_create(const jive_record_declaration * decl,
+jive_group_create(const jive::rcd::declaration * decl,
 	size_t narguments, jive_output * const * arguments);
 
 jive_output *
-jive_empty_group_create(struct jive_graph * graph, const jive_record_declaration * decl);
+jive_empty_group_create(struct jive_graph * graph, const jive::rcd::declaration * decl);
 
 JIVE_EXPORTED_INLINE jive_group_node *
 jive_group_node_cast(jive_node * node)

@@ -8,30 +8,31 @@
 
 #include <jive/vsdg/valuetype.h>
 
-/* record declaration */
+namespace jive {
+namespace rcd {
 
-typedef struct jive_record_declaration jive_record_declaration;
+/* declaration */
 
-struct jive_record_declaration {
+struct declaration {
 	size_t nelements;
 	const jive_value_type ** elements;
 };
 
-/* record type */
+/* type */
 
-class jive_record_type final : public jive_value_type {
+class type final : public jive_value_type {
 public:
-	virtual ~jive_record_type() noexcept;
+	virtual ~type() noexcept;
 
-	jive_record_type(const jive_record_declaration * decl) noexcept;
+	type(const jive::rcd::declaration * decl) noexcept;
 
-	inline const jive_record_declaration * declaration() const noexcept { return decl_; }
+	inline const jive::rcd::declaration * declaration() const noexcept { return decl_; }
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & type) const noexcept override;
 
-	virtual jive_record_type * copy() const override;
+	virtual jive::rcd::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -41,58 +42,59 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 
 private:
-	const jive_record_declaration * decl_;
+	const jive::rcd::declaration * decl_;
 };
 
-/* record input */
+/* input */
 
-class jive_record_input final : public jive_value_input {
+class input final : public jive_value_input {
 public:
-	virtual ~jive_record_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_record_input(const jive_record_declaration * decl, struct jive_node * node, size_t index,
+	input(const jive::rcd::declaration * decl, struct jive_node * node, size_t index,
 		jive_output * origin);
 
-	virtual const jive_record_type & type() const noexcept { return type_; }
+	virtual const jive::rcd::type & type() const noexcept { return type_; }
 
-	inline const jive_record_declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::rcd::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
-	jive_record_type type_;
+	jive::rcd::type type_;
 };
 
-/* record output */
+/* output */
 
-class jive_record_output final : public jive_value_output {
+class output final : public jive_value_output {
 public:
-	virtual ~jive_record_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_record_output(const jive_record_declaration * decl, struct jive_node * nodex,
-		size_t index);
+	output(const jive::rcd::declaration * decl, struct jive_node * nodex, size_t index);
 
-	virtual const jive_record_type & type() const noexcept { return type_; }
+	virtual const jive::rcd::type & type() const noexcept { return type_; }
 
-	inline const jive_record_declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::rcd::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
-	jive_record_type type_;
+	jive::rcd::type type_;
 };
 
-/* record gate */
+/* gate */
 
-class jive_record_gate final : public jive_value_gate {
+class gate final : public jive_value_gate {
 public:
-	virtual ~jive_record_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_record_gate(const jive_record_declaration * decl, jive_graph * graph,
-		const char name[]);
+	gate(const jive::rcd::declaration * decl, jive_graph * graph, const char name[]);
 
-	virtual const jive_record_type & type() const noexcept { return type_; }
+	virtual const jive::rcd::type & type() const noexcept { return type_; }
 
-	inline const jive_record_declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::rcd::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
-	jive_record_type type_;
+	jive::rcd::type type_;
 };
+
+}
+}
 
 #endif

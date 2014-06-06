@@ -14,7 +14,7 @@
 
 static void
 jive_group_node_init_(jive_group_node * self,
-	struct jive_region * region, const jive_record_declaration * decl,
+	struct jive_region * region, const jive::rcd::declaration * decl,
 	size_t narguments, jive_output * const arguments[]);
 
 static jive_node *
@@ -96,7 +96,7 @@ jive_group_node_create_(struct jive_region * region, const jive_node_attrs * att
 
 static void
 jive_group_node_init_(jive_group_node * self,
-	struct jive_region * region, const jive_record_declaration * decl,
+	struct jive_region * region, const jive::rcd::declaration * decl,
 	size_t narguments, jive_output * const arguments[])
 {
 	if (decl->nelements != narguments) {
@@ -110,7 +110,7 @@ jive_group_node_init_(jive_group_node * self,
 		arg_types[n] = decl->elements[n];
 	}
 
-	jive_record_type type(decl);
+	jive::rcd::type type(decl);
 	const jive_type * rtype = &type ;
 
 	jive_node_init_(self, region,
@@ -119,7 +119,7 @@ jive_group_node_init_(jive_group_node * self,
 }
 
 jive_output *
-jive_group_create(const jive_record_declaration * decl,
+jive_group_create(const jive::rcd::declaration * decl,
 	size_t narguments, jive_output * const * arguments)
 {
 	jive::rcd::group_operation op(decl);
@@ -130,7 +130,7 @@ jive_group_create(const jive_record_declaration * decl,
 }
 
 jive_output *
-jive_empty_group_create(struct jive_graph * graph, const jive_record_declaration * decl)
+jive_empty_group_create(struct jive_graph * graph, const jive::rcd::declaration * decl)
 {
 	jive::rcd::group_operation op(decl);
 	jive_output * result;

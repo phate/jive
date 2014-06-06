@@ -85,7 +85,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 	}
 
 	jive_group_node * group_node = jive_group_node_cast(value->node());
-	const jive_record_declaration * decl = group_node->operation().declaration();
+	const jive::rcd::declaration * decl = group_node->operation().declaration();
 
 	if (decl->nelements == 0) {
 		size_t n;

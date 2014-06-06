@@ -575,7 +575,7 @@ jive_memberof_node_address_transform(jive_memberof_node * node, jive_memlayout_m
 	const jive_node * node_ = node;
 
 	size_t index = node->operation().index();
-	const jive_record_declaration * decl = node->operation().record_decl();
+	const jive::rcd::declaration * decl = node->operation().record_decl();
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements);
 	size_t elem_offset = jive_memlayout_mapper_map_record(mapper, decl)->element[index].offset;
@@ -599,7 +599,7 @@ jive_containerof_node_address_transform(
 	const jive_node * node_ = node;
 
 	size_t index = node->operation().index();
-	const jive_record_declaration * decl = node->operation().record_decl();
+	const jive::rcd::declaration * decl = node->operation().record_decl();
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements);
 	size_t elem_offset = jive_memlayout_mapper_map_record(mapper, decl)->element[index].offset;

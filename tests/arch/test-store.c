@@ -32,8 +32,8 @@ static int test_main(void)
 	static const jive::bits::type bits32(32);
 
 	static const jive_value_type * decl_elems[] = {&bits8, &bits16, &bits32};
-	static const jive_record_declaration rcddecl = {3, decl_elems};
-	static jive_record_type rcdtype(&rcddecl);
+	static const jive::rcd::declaration rcddecl = {3, decl_elems};
+	static jive::rcd::type rcdtype(&rcddecl);
 	
 	static const jive_union_declaration unndecl = {3, decl_elems};
 	static jive_union_type unntype(&unndecl);

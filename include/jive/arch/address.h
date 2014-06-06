@@ -31,21 +31,21 @@ class memberof_operation : public unary_operation {
 public:
 	inline constexpr
 	memberof_operation(
-		const jive_record_declaration * record_decl,
+		const jive::rcd::declaration * record_decl,
 		size_t index)
 		: record_decl_(record_decl),
 		index_(index)
 	{
 	}
 
-	inline const jive_record_declaration *
+	inline const jive::rcd::declaration *
 	record_decl() const noexcept { return record_decl_; }
 
 	inline size_t
 	index() const noexcept { return index_; }
 
 private:
-	const jive_record_declaration * record_decl_;
+	const jive::rcd::declaration * record_decl_;
 	size_t index_;
 };
 
@@ -53,21 +53,21 @@ class containerof_operation : public unary_operation {
 public:
 	inline constexpr
 	containerof_operation(
-		const jive_record_declaration * record_decl,
+		const jive::rcd::declaration * record_decl,
 		size_t index)
 		: record_decl_(record_decl),
 		index_(index)
 	{
 	}
 
-	inline const jive_record_declaration *
+	inline const jive::rcd::declaration *
 	record_decl() const noexcept { return record_decl_; }
 
 	inline size_t
 	index() const noexcept { return index_; }
 
 private:
-	const jive_record_declaration * record_decl_;
+	const jive::rcd::declaration * record_decl_;
 	size_t index_;
 };
 
@@ -145,8 +145,7 @@ private:
 typedef jive::operation_node<jive::address::memberof_operation> jive_memberof_node;
 
 jive_output *
-jive_memberof(jive_output * address,
-	const jive_record_declaration * record_decl, size_t index);
+jive_memberof(jive_output * address, const jive::rcd::declaration * record_decl, size_t index);
 
 JIVE_EXPORTED_INLINE jive_memberof_node *
 jive_memberof_node_cast(jive_node * node)
@@ -166,8 +165,7 @@ extern const jive_unary_operation_class JIVE_CONTAINEROF_NODE_;
 typedef jive::operation_node<jive::address::containerof_operation> jive_containerof_node;
 
 jive_output *
-jive_containerof(jive_output * address,
-	const jive_record_declaration * record_decl, size_t index);
+jive_containerof(jive_output * address, const jive::rcd::declaration * record_decl, size_t index);
 
 JIVE_EXPORTED_INLINE jive_containerof_node *
 jive_containerof_node_cast(jive_node * node)

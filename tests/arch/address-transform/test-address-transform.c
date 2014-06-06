@@ -45,8 +45,7 @@ static int test_main(void)
 	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, &addr);
 	const jive_value_type * tmparray1[] = {&addr, &addr};
 
-	jive_record_declaration decl = {2,
-		tmparray1};	
+	jive::rcd::declaration decl = {2, tmparray1};
 
 	jive_output * memberof = jive_memberof(address0, &decl, 0);
 	jive_output * containerof = jive_containerof(address1, &decl, 1);

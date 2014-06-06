@@ -31,7 +31,7 @@ static int test_main(void)
 	jive::bits::type bits32(32);
 	const jive_value_type * tmparray0[] = {(jive_value_type *)&bits32, (jive_value_type *)&bits32};
 	
-	jive_record_declaration rec = {
+	jive::rcd::declaration rec = {
 		nelements : 2,
 		elements : tmparray0
 	};

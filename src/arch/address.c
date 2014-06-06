@@ -144,7 +144,7 @@ jive_memberof_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_c
 
 jive_output *
 jive_memberof(jive_output * address,
-	const jive_record_declaration * record_decl, size_t index)
+	const jive::rcd::declaration * record_decl, size_t index)
 {
 	jive::address::memberof_operation op(record_decl, index);
 
@@ -277,7 +277,7 @@ jive_containerof_reduce_operand_(jive_unop_reduction_path_t path, const jive_nod
 jive_node *
 jive_containerof_node_create(jive_region * region,
 	jive_output * address,
-	const jive_record_declaration * record_decl, size_t index)
+	const jive::rcd::declaration * record_decl, size_t index)
 {
 	jive::address::containerof_operation op(record_decl, index);
 	jive_containerof_node * node = new jive_containerof_node(op);
@@ -296,7 +296,7 @@ jive_containerof_node_create(jive_region * region,
 
 jive_output *
 jive_containerof(jive_output * address,
-	const jive_record_declaration * record_decl, size_t index)
+	const jive::rcd::declaration * record_decl, size_t index)
 {
 	jive::address::containerof_operation op(record_decl, index);
 

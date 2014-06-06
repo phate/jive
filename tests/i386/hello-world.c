@@ -40,7 +40,7 @@
 #include <jive/vsdg/splitnode.h>
 
 static const jive_value_type ** string_elements;
-static jive_record_declaration string_decl;
+static jive::rcd::declaration string_decl;
 
 static jive_output *
 make_string(jive_graph * graph, const char * txt)

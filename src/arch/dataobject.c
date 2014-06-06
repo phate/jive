@@ -61,9 +61,9 @@ flatten_data_items(
 		for (n = 0; n < nitems; n++)
 			items[n] = NULL;
 		items[0] = data;
-	} else if (dynamic_cast<const jive_record_type*>(type_)) {
-		const jive_record_type * type = (const jive_record_type *) type_;
-		const jive_record_declaration * decl = type->declaration();
+	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
+		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
+		const jive::rcd::declaration * decl = type->declaration();
 		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
 		
 		jive_group_node * node = jive_group_node_cast(data->node());

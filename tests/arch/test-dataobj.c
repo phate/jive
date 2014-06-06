@@ -99,7 +99,7 @@ make_record1(jive_graph * graph)
 	static const jive::bits::type bits8(8);
 	
 	static const jive_value_type * elements1[] = {&bits32, &bits16, &bits8};
-	static const jive_record_declaration decl = {
+	static const jive::rcd::declaration decl = {
 		nelements : 3,
 		elements : elements1
 	};
@@ -119,14 +119,14 @@ make_record2(jive_graph * graph)
 	static const jive::bits::type bits16(16);
 	
 	static const jive_value_type * elements1[] = {&bits16, &bits16};
-	static const jive_record_declaration decl1 = {
+	static const jive::rcd::declaration decl1 = {
 		nelements : 2,
 		elements : elements1
 	};
-	static jive_record_type rec1(&decl1);
+	static jive::rcd::type rec1(&decl1);
 	
 	static const jive_value_type * elements2[] = {&rec1, &bits32};
-	static const jive_record_declaration decl2 = {
+	static const jive::rcd::declaration decl2 = {
 		nelements : 2,
 		elements : elements2
 	};

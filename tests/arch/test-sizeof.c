@@ -36,9 +36,9 @@ static int test_main(void)
 	jive::addr::type addr;
 	const jive_value_type *  tmparray0[] = {&bits4, &bits8, &bits18};
 
-	jive_record_declaration r_decl = {3, tmparray0};
+	jive::rcd::declaration r_decl = {3, tmparray0};
 	
-	jive_record_type record_t(&r_decl);
+	jive::rcd::type record_t(&r_decl);
 	const jive_value_type *  tmparray1[] = {&bits4, &bits8, &bits18};
 
 	jive_union_declaration u_decl = {3, tmparray1};
