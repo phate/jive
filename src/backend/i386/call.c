@@ -72,14 +72,14 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		jive_output * value = node->inputs[n + 1]->origin();
 		
 		const jive_resource_class * value_cls = value->required_rescls;
-		const jive_type * value_type = &value->type();
+		const jive::base::type * value_type = &value->type();
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
 			value_cls = &jive_i386_regcls_gpr.base;
 		}
 		
 		const jive_resource_class * slot_cls = jive_callslot_class_get(4, 4, offset);
-		const jive_type * slot_type = jive_resource_class_get_type(slot_cls);
+		const jive::base::type * slot_type = jive_resource_class_get_type(slot_cls);
 		
 		offset += 4;
 		

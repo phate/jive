@@ -33,7 +33,7 @@ type::label(jive_buffer & buffer) const
 }
 
 bool
-type::operator==(const jive_type & _other) const noexcept
+type::operator==(const jive::base::type & _other) const noexcept
 {
 	const jive::bits::type * other = dynamic_cast<const jive::bits::type*>(&_other);
 	return other != nullptr && this->nbits() == other->nbits();

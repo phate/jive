@@ -37,7 +37,7 @@ jive_resource_class_intersection(const jive_resource_class * self, const jive_re
 jive_gate *
 jive_resource_class_create_gate(const jive_resource_class * self, jive_graph * graph, const char * name)
 {
-	const jive_type * type = jive_resource_class_get_type(self);
+	const jive::base::type * type = jive_resource_class_get_type(self);
 	jive_gate * gate = type->create_gate(graph, name);
 	gate->required_rescls = self;
 	return gate;

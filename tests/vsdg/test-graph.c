@@ -26,14 +26,14 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	
 	jive_test_value_type type;
-	const jive_type * tmparray0[] = {&type};
+	const jive::base::type * tmparray0[] = {&type};
 	
 	jive_node * n1 = jive_test_node_create(region,
 		0, NULL, NULL,
 		1, tmparray0);
 	assert(n1);
 	assert(n1->depth_from_root == 0);
-	const jive_type * tmparray1[] = {&type};
+	const jive::base::type * tmparray1[] = {&type};
 	
 	jive_node * n2 = jive_test_node_create(region,
 		1, tmparray1, &n1->outputs[0],

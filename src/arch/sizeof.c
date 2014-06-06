@@ -71,7 +71,7 @@ jive_sizeof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	or some way to specify the representation type for the
 	sizeof operator */
 	jive::bits::type btype(32);
-	const jive_type * typeptr = &btype;
+	const jive::base::type * typeptr = &btype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &typeptr);
@@ -92,7 +92,7 @@ jive_sizeof_node_create(jive_region * region, const jive::value::type * type)
 	or some way to specify the representation type for the
 	sizeof operator */
 	jive::bits::type btype(32);
-	const jive_type * typeptr = &btype;
+	const jive::base::type * typeptr = &btype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &typeptr);

@@ -28,8 +28,8 @@ jive_objdef_node_init_(
 						this entire node needs to be remodeled
 	*/
 	jive::ctl::type stype;
-	const jive_type * stype_ptr = &stype;
-	const jive_type * type = &obj->type();
+	const jive::base::type * stype_ptr = &stype;
+	const jive::base::type * type = &obj->type();
 	jive_node_init_(self, region,
 		1, &type, &obj,
 		1, &stype_ptr);

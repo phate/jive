@@ -34,7 +34,7 @@ static int test_main()
 	static jive::rcd::type rcdtype(&decl);
 
 	jive::addr::type addrtype;
-	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype};
+	const jive::base::type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
@@ -48,7 +48,7 @@ static int test_main()
 	jive_output * s1 = jive_select_create(1, g0);
 	jive_output * s2 = jive_select_create(2, top->outputs[4]);
 	jive_output * s3 = jive_select_create(0, load);
-	const jive_type * tmparray2[] = {&bits16, &bits16, &bits32, &bits8};
+	const jive::base::type * tmparray2[] = {&bits16, &bits16, &bits32, &bits8};
 	jive_output * tmparray3[] = {s0, s1, s2, s3};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,

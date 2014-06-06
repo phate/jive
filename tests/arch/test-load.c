@@ -29,7 +29,7 @@ static int test_main()
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
 	jive::bits::type bits32(32);
-	const jive_type * tmparray0[] = {&addrtype, &addrtype, &memtype, &bits32};
+	const jive::base::type * tmparray0[] = {&addrtype, &addrtype, &memtype, &bits32};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		4, tmparray0);
@@ -41,7 +41,7 @@ static int test_main()
 		&state);
 	jive_output * load1 = jive_load_by_address_create(top->outputs[1], &bits32, 1, &state);
 	assert(load1 == top->outputs[3]);
-	const jive_type * tmparray1[] = {&bits32, &bits32};
+	const jive::base::type * tmparray1[] = {&bits32, &bits32};
 	jive_output * tmparray2[] = {load0, load1};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,

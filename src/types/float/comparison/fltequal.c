@@ -45,9 +45,9 @@ jive_fltequal_node_init_(jive_node * self, jive_region * region,
 	jive_output * op1, jive_output * op2)
 {
 	jive::ctl::type ctype;
-	const jive_type * ctype_ptr = &ctype;
+	const jive::base::type * ctype_ptr = &ctype;
 	jive::flt::type flttype;
-	const jive_type * tmparray0[] = {&flttype, &flttype};
+	const jive::base::type * tmparray0[] = {&flttype, &flttype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,

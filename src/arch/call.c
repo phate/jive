@@ -18,10 +18,10 @@ call_operation::~call_operation() noexcept {}
 
 call_operation::call_operation(
 	const jive_calling_convention * calling_convention,
-	const std::vector<std::unique_ptr<jive_type>> & return_types)
+	const std::vector<std::unique_ptr<jive::base::type>> & return_types)
 	: calling_convention_(calling_convention)
 {
-	for (const std::unique_ptr<jive_type> & type : return_types) {
+	for (const std::unique_ptr<jive::base::type> & type : return_types) {
 		return_types_.emplace_back(type->copy());
 	}
 }
@@ -85,7 +85,7 @@ jive_call_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	const jive::call_operation * attrs = (const jive::call_operation *) attrs_;
 
 	size_t nreturns = attrs->return_types().size();
-	const jive_type * return_types[nreturns];
+	const jive::base::type * return_types[nreturns];
 	for (size_t n = 0; n < nreturns; ++n) {
 		return_types[n] = &*attrs->return_types()[n];
 	}
@@ -104,15 +104,15 @@ jive_call_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 void
 jive_call_node_init_(jive_call_node * self,
 	jive_region * region,
-	jive_output * target_address, const jive_type * address_type,
+	jive_output * target_address, const jive::base::type * address_type,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, jive_output * const arguments[],
-	size_t nreturns, const jive_type * const return_types[])
+	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive_context * context = region->graph->context;
 
 	jive_output * operands[narguments + 1];
-	const jive_type * operand_types[narguments + 1];
+	const jive::base::type * operand_types[narguments + 1];
 
 	size_t n;
 	operands[0] = target_address;
@@ -145,9 +145,9 @@ jive_node *
 jive_call_by_address_node_create(jive_region * region,
 	jive_output * target_address, const jive_calling_convention * calling_convention,
 	size_t narguments, jive_output * const arguments[],
-	size_t nreturns, const jive_type * const return_types[])
+	size_t nreturns, const jive::base::type * const return_types[])
 {
-	std::vector<std::unique_ptr<jive_type>> return_types_tmp;
+	std::vector<std::unique_ptr<jive::base::type>> return_types_tmp;
 	for (size_t n = 0; n < nreturns; ++n) {
 		return_types_tmp.emplace_back(return_types[n]->copy());
 	}
@@ -167,7 +167,7 @@ jive_output * const *
 jive_call_by_address_create(jive_output * target_address,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, jive_output * const arguments[],
-	size_t nreturns, const jive_type * const return_types[])
+	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive_region * region = call_node_region_innermost(target_address, narguments, arguments);
 
@@ -180,9 +180,9 @@ jive_call_by_bitstring_node_create(jive_region * region,
 	jive_output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, jive_output * const arguments[],
-	size_t nreturns, const jive_type * const return_types[])
+	size_t nreturns, const jive::base::type * const return_types[])
 {
-	std::vector<std::unique_ptr<jive_type>> return_types_tmp;
+	std::vector<std::unique_ptr<jive::base::type>> return_types_tmp;
 	for (size_t n = 0; n < nreturns; ++n) {
 		return_types_tmp.emplace_back(return_types[n]->copy());
 	}
@@ -201,7 +201,7 @@ jive_output * const *
 jive_call_by_bitstring_create(jive_output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, jive_output * const arguments[],
-	size_t nreturns, const jive_type * const return_types[])
+	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive_region * region = call_node_region_innermost(target_address, narguments, arguments);
 

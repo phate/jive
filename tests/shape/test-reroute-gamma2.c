@@ -67,44 +67,44 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	jive::ctl::type control_type;
-	const jive_type * tmparray0[] = {&type};
+	const jive::base::type * tmparray0[] = {&type};
 	
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
-	const jive_type * tmparray1[] = {&type};
-	const jive_type * tmparray2[] = {&control_type};
+	const jive::base::type * tmparray1[] = {&type};
+	const jive::base::type * tmparray2[] = {&control_type};
 	
 	jive_node * pred = jive_test_node_create(graph->root_region,
 		1, tmparray1, top->outputs,
 		1, tmparray2);
-	const jive_type * tmparray3[] = {&type};
-	const jive_type * tmparray4[] = {&type};
+	const jive::base::type * tmparray3[] = {&type};
+	const jive::base::type * tmparray4[] = {&type};
 	
 	jive_node * l1 = jive_test_node_create(graph->root_region,
 		1, tmparray3, top->outputs,
 		1, tmparray4);
-	const jive_type * tmparray5[] = {&type};
-	const jive_type * tmparray6[] = {&type};
+	const jive::base::type * tmparray5[] = {&type};
+	const jive::base::type * tmparray6[] = {&type};
 	
 	jive_node * l2 = jive_test_node_create(graph->root_region,
 		1, tmparray5, top->outputs,
 		1, tmparray6);
-	const jive_type * tmparray7[] = {&type};
-	const jive_type * tmparray8[] = {&type};
+	const jive::base::type * tmparray7[] = {&type};
+	const jive::base::type * tmparray8[] = {&type};
 	
 	jive_node * r1 = jive_test_node_create(graph->root_region,
 		1, tmparray7, top->outputs,
 		1, tmparray8);
-	const jive_type * tmparray9[] = {&type};
-	const jive_type * tmparray10[] = {&type};
+	const jive::base::type * tmparray9[] = {&type};
+	const jive::base::type * tmparray10[] = {&type};
 	
 	jive_node * r2 = jive_test_node_create(graph->root_region,
 		1, tmparray9, top->outputs,
 		1, tmparray10);
 	
 	jive_output * gamma[2];
-	const jive_type * tmparray11[] = {&type, &type};
+	const jive::base::type * tmparray11[] = {&type, &type};
 	jive_output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
 	jive_output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
 	jive_gamma(pred->outputs[0],
@@ -113,7 +113,7 @@ static int test_main(void)
 		tmparray13,
 		gamma);
 	jive_node * gamma_node = gamma[0]->node();
-	const jive_type * tmparray14[] = {&type, &type, &type};
+	const jive::base::type * tmparray14[] = {&type, &type, &type};
 	jive_output * tmparray15[] = {gamma[0], gamma[1], top->outputs[0]};
 	
 	jive_node * bottom = jive_test_node_create(graph->root_region,

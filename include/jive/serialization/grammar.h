@@ -113,11 +113,11 @@ jive_deserialize_int(jive_serialization_driver * self,
 
 void
 jive_serialize_type(jive_serialization_driver * self,
-	const jive_type * type, jive_token_ostream * os);
+	const jive::base::type * type, jive_token_ostream * os);
 
 bool
 jive_deserialize_type(jive_serialization_driver * self,
-	jive_token_istream * is, jive_type ** type);
+	jive_token_istream * is, jive::base::type ** type);
 
 /* rescls := resclsid '<' [class-specific-attrs] '>' */
 

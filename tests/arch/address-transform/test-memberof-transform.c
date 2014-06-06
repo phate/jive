@@ -43,7 +43,7 @@ static int test_main(void)
 		tmparray1);	
 	*/
 
-	const jive_type * tmparray10[] = {&bits32};
+	const jive::base::type * tmparray10[] = {&bits32};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray10);
@@ -59,10 +59,10 @@ static int test_main(void)
 	jive_output * offset1 = jive_address_to_bitstring_create(member1, 32, &member1->type());
 	jive_output * offset2 = jive_address_to_bitstring_create(member2, 32, &member2->type());
 	jive_output * offset3 = jive_address_to_bitstring_create(member3, 32, &member3->type());
-	const jive_type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
+	const jive::base::type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
 	jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
-	const jive_type * tmparray11[] = {&bits8};
+	const jive::base::type * tmparray11[] = {&bits8};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		4, tmparray2,
 		tmparray3,

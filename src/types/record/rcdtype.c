@@ -30,7 +30,7 @@ type::label(jive_buffer & buffer) const
 }
 
 bool
-type::operator==(const jive_type & _other) const noexcept
+type::operator==(const jive::base::type & _other) const noexcept
 {
 	const jive::rcd::type * other = dynamic_cast<const jive::rcd::type*>(&_other);
 	return other != nullptr && this->declaration() == other->declaration();

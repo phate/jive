@@ -186,7 +186,7 @@ generate_bin_cmp_function(jive_context * ctx, bin_op_factory_t factory)
 	
 	jive::bits::type bits32(32);
 	jive_output * result;
-	const jive_type * tmparray4[] = {&bits32};
+	const jive::base::type * tmparray4[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray4,
 		&one, &zero, &result);
@@ -210,7 +210,7 @@ generate_bin_cmp_function_curryleft(jive_context * ctx, bin_op_factory_t factory
 	
 	jive::bits::type bits32(32);
 	jive_output * result;
-	const jive_type * tmparray5[] = {&bits32};
+	const jive::base::type * tmparray5[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray5,
 		&one, &zero, &result);
@@ -233,7 +233,7 @@ generate_bin_cmp_function_curryright(jive_context * ctx, bin_op_factory_t factor
 	
 	jive::bits::type bits32(32);
 	jive_output * result;
-	const jive_type * tmparray6[] = {&bits32};
+	const jive::base::type * tmparray6[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray6,
 		&one, &zero, &result);

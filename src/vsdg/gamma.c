@@ -27,7 +27,7 @@ jive_gamma_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 	
 	jive_node * self = jive::create_operation_node(jive_op_gamma_tail());
 	jive::achr::type anchor;
-	const jive_type *typeptr = &anchor;
+	const jive::base::type *typeptr = &anchor;
 	self->class_ = &JIVE_GAMMA_TAIL_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
@@ -46,7 +46,7 @@ jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	jive::achr::type anchor;
 	jive::ctl::type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
-	const jive_type * tmparray0[] = {&anchor, &anchor, &ctl};
+	const jive::base::type * tmparray0[] = {&anchor, &anchor, &ctl};
 	jive_node_init_(self, region,
 		3, tmparray0, operands,
 		0, NULL);
@@ -92,7 +92,7 @@ jive_gamma_tail_node_create(jive_region * region)
 {
 	jive_node * self = jive::create_operation_node(jive_op_gamma_tail());
 	jive::achr::type anchor;
-	const jive_type * typeptr = &anchor;
+	const jive::base::type * typeptr = &anchor;
 	self->class_ = &JIVE_GAMMA_TAIL_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
@@ -112,7 +112,7 @@ jive_gamma_node_create(jive_region * region,
 	jive::achr::type anchor;
 	jive::ctl::type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
-	const jive_type * tmparray1[] = {&anchor, &anchor, &ctl};
+	const jive::base::type * tmparray1[] = {&anchor, &anchor, &ctl};
 	jive_output * tmparray2[] = {true_alternative, false_alternative, predicate};
 	jive_node_init_(self, region,
 		3, tmparray1, tmparray2,
@@ -125,7 +125,7 @@ static jive_node *
 jive_gamma_create(
 	jive_region * region,
 	jive_output * predicate,
-	size_t nvalues, const jive_type * const types[],
+	size_t nvalues, const jive::base::type * const types[],
 	jive_output * const true_values[],
 	jive_output * const false_values[])
 {
@@ -149,7 +149,7 @@ jive_gamma_create(
 
 void
 jive_gamma(struct jive_output * predicate,
-	size_t nvalues, const struct jive_type * const types[],
+	size_t nvalues, const struct jive::base::type * const types[],
 	struct jive_output * const true_values[],
 	struct jive_output * const false_values[],
 	struct jive_output * results[])

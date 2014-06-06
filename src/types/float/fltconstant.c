@@ -75,7 +75,7 @@ jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs
 	jive_fltconstant_node * node = new jive_fltconstant_node(*attrs);
 	node->class_ = &JIVE_FLTCONSTANT_NODE;
 	jive::flt::type flttype;
-	const jive_type * tmparray0[] = {&flttype};
+	const jive::base::type * tmparray0[] = {&flttype};
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, tmparray0);

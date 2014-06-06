@@ -22,8 +22,8 @@ public:
 	~test_operation() noexcept;
 
 	test_operation(
-		size_t noperands, const jive_type * const operand_types[],
-		size_t nresults, const jive_type * const result_types[]);
+		size_t noperands, const jive::base::type * const operand_types[],
+		size_t nresults, const jive::base::type * const result_types[]);
 
 	test_operation(const test_operation & other);
 
@@ -33,29 +33,29 @@ public:
 	inline
 	test_operation(test_operation && other) noexcept = default;
 	
-	inline const std::vector<std::unique_ptr<jive_type>> &
+	inline const std::vector<std::unique_ptr<jive::base::type>> &
 	operand_types() const noexcept { return operand_types_; }
 
-	inline const std::vector<std::unique_ptr<jive_type>> &
+	inline const std::vector<std::unique_ptr<jive::base::type>> &
 	result_types() const noexcept { return result_types_; }
 
 private:
-	std::vector<std::unique_ptr<jive_type>> operand_types_;
-	std::vector<std::unique_ptr<jive_type>> result_types_;
+	std::vector<std::unique_ptr<jive::base::type>> operand_types_;
+	std::vector<std::unique_ptr<jive::base::type>> result_types_;
 };
 
 typedef jive::operation_node<test_operation> jive_test_node;
 
 jive_node *
 jive_test_node_create(struct jive_region * region,
-	size_t noperands, const struct jive_type * const operand_types[],
+	size_t noperands, const jive::base::type * const operand_types[],
 	struct jive_output * const operands[], size_t nresults,
-	const struct jive_type * const result_types[]);
+	const jive::base::type * const result_types[]);
 
 void
 jive_test_node_create_normalized(struct jive_graph * graph, size_t noperands,
-	const struct jive_type * const operand_types[], struct jive_output * const operands[],
-	size_t nresults, const struct jive_type * const result_types[], jive_output * results[]);
+	const jive::base::type * const operand_types[], struct jive_output * const operands[],
+	size_t nresults, const jive::base::type * const result_types[], jive_output * results[]);
 
 JIVE_EXPORTED_INLINE const jive_test_node *
 jive_test_node_const_cast(const jive_node * self)

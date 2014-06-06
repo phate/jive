@@ -42,7 +42,7 @@ static int test_main(void)
 	jive_output * b = jive_bitconstant(gr1, 8, "10101010");
 	jive_output * true_out = jive_control_true(gr1);
 	jive_output * c;
-	const jive_type* tmparray0[] = {&a->type()};
+	const jive::base::type* tmparray0[] = {&a->type()};
 	jive_gamma(true_out, 1, tmparray0, &a, &b, &c);
 	
 	jive_theta theta = jive_theta_begin(gr1);

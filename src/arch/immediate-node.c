@@ -51,7 +51,7 @@ jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_
 	
 	jive_immediate_node * self = new jive_immediate_node(*attrs);
 	jive::imm::type immediate_type;
-	const jive_type* tmparray0[] = {&immediate_type};
+	const jive::base::type* tmparray0[] = {&immediate_type};
 	jive_node_init_(self,
 		region,
 		0, 0, 0,

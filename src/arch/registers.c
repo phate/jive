@@ -8,7 +8,7 @@
 
 #include <jive/vsdg/basetype.h>
 
-const struct jive_type *
+const struct jive::base::type *
 jive_register_class_get_type(const jive_register_class * self)
 {
 	return jive_resource_class_get_type(&self->base);

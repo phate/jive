@@ -19,10 +19,10 @@ jive_node_init_(
 	jive_node * self,
 	struct jive_region * region,
 	size_t noperands,
-	const struct jive_type * const operand_types[],
+	const jive::base::type * const operand_types[],
 	struct jive_output * const operands[],
 	size_t noutputs,
-	const struct jive_type * const output_types[]);
+	const jive::base::type * const output_types[]);
 
 void
 jive_node_fini_(jive_node * self);

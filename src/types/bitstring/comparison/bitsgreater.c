@@ -58,9 +58,9 @@ jive_bitsgreater_node_init_(jive_node * self, jive_region * region,
 	size_t nbits = static_cast<jive::bits::output*>(operand1)->nbits();
 
 	jive::ctl::type ctype;
-	const jive_type * ctype_ptr = &ctype;
+	const jive::base::type * ctype_ptr = &ctype;
 	jive::bits::type btype(nbits);
-	const jive_type * tmparray0[] = {&btype, &btype};
+	const jive::base::type * tmparray0[] = {&btype, &btype};
 	jive_output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,

@@ -210,8 +210,8 @@ split_top(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_res
 	size_t n;
 	for (n = 1; demotion->path[n]; n++) {
 		const jive_resource_class * out_rescls = demotion->path[n];
-		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
-		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
+		const jive::base::type * in_type = jive_resource_class_get_type(in_rescls);
+		const jive::base::type * out_type = jive_resource_class_get_type(out_rescls);
 		
 		jive_node * node = jive_splitnode_create(origin->node()->region,
 			in_type, origin, in_rescls,
@@ -240,8 +240,8 @@ split_bottom(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_
 	while (n != 0) {
 		n--;
 		const jive_resource_class * out_rescls = demotion->path[n];
-		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
-		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
+		const jive::base::type * in_type = jive_resource_class_get_type(in_rescls);
+		const jive::base::type * out_type = jive_resource_class_get_type(out_rescls);
 		
 		jive_node * node = jive_splitnode_create(origin->node()->region,
 			in_type, origin, in_rescls,
@@ -404,7 +404,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 		return shaped_variable;
 	
 	const jive_resource_class * rescls = jive_variable_get_resource_class(variable);
-	const jive_type * type = jive_resource_class_get_type(rescls);
+	const jive::base::type * type = jive_resource_class_get_type(rescls);
 	
 	/* insert splitting nodes before and after gates */
 	jive_gate * gate;

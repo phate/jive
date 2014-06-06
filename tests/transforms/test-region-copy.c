@@ -27,7 +27,7 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	jive::ctl::type control_type;
-	const jive_type * tmparray0[] = {&type, &type, &control_type};
+	const jive::base::type * tmparray0[] = {&type, &type, &control_type};
 	
 	jive_node * top = jive_test_node_create(r1,
 		0, NULL, NULL,
@@ -35,12 +35,12 @@ static int test_main(void)
 	r1->top = top;
 	
 	jive_output * tmp;
-	const jive_type * tmparray1[] = {&type};
+	const jive::base::type * tmparray1[] = {&type};
 	jive_gamma(top->outputs[2],
 		1, tmparray1,
 		&top->outputs[0], &top->outputs[1], &tmp);
 	jive_node * gamma = tmp->node();
-	const jive_type * tmparray2[] = {&type};
+	const jive::base::type * tmparray2[] = {&type};
 	
 	jive_node * bottom = jive_test_node_create(r1,
 		1, tmparray2, &gamma->outputs[0],

@@ -46,7 +46,7 @@ jive_uninitialized_node_add_output_(jive_node * self, jive_output * output)
 }
 
 static jive_output *
-jive_uninitialized_node_add_output(jive_node * self, const jive_type * type)
+jive_uninitialized_node_add_output(jive_node * self, const jive::base::type * type)
 {
 	jive_output * output = type->create_output(self, self->noutputs);
 	jive_uninitialized_node_add_output_(self, output);
@@ -69,7 +69,7 @@ jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
 }
 
 static jive_input *
-jive_uninitialized_node_add_input(jive_node * self, const jive_type * type,
+jive_uninitialized_node_add_input(jive_node * self, const jive::base::type * type,
 	jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count && !dynamic_cast<const jive::achr::type*>(type)) {
@@ -93,10 +93,10 @@ jive_node_init_(
 	jive_node * self,
 	struct jive_region * region,
 	size_t noperands,
-	const struct jive_type * const operand_types[],
+	const struct jive::base::type * const operand_types[],
 	struct jive_output * const operands[],
 	size_t noutputs,
-	const struct jive_type * const output_types[])
+	const struct jive::base::type * const output_types[])
 {
 	self->graph = region->graph;
 	self->depth_from_root = 0;
@@ -238,7 +238,7 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 }
 
 jive_input *
-jive_node_add_input(jive_node * self, const jive_type * type, jive_output * initial_operand)
+jive_node_add_input(jive_node * self, const jive::base::type * type, jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count && dynamic_cast<const jive::achr::type*>(type)) {
 		jive_region * origin_region = initial_operand->node()->region;
@@ -265,7 +265,7 @@ jive_node_add_output_(jive_node * self, jive_output * output)
 }
 
 jive_output *
-jive_node_add_output(jive_node * self, const jive_type * type)
+jive_node_add_output(jive_node * self, const jive::base::type * type)
 {
 	jive_output * output = type->create_output(self, self->noutputs);
 	jive_node_add_output_(self, output);

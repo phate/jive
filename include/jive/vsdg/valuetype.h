@@ -12,14 +12,14 @@
 namespace jive {
 namespace value {
 
-class type : public jive_type {
+class type : public jive::base::type {
 public:
 	virtual ~type() noexcept;
 
 	virtual jive::value::type * copy() const override = 0;
 
 protected:
-	inline constexpr type() noexcept : jive_type() {};
+	inline constexpr type() noexcept : jive::base::type() {};
 };
 
 class input : public jive_input {

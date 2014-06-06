@@ -48,9 +48,9 @@ jive_instruction_node_init_(
 	jive::ctl::type ctl;
 	jive::imm::type imm;
 	
-	const jive_type * input_types[ninputs + nimmediates];
+	const jive::base::type * input_types[ninputs + nimmediates];
 	jive_output * inputs[ninputs + nimmediates];
-	const jive_type * output_types[noutputs];
+	const jive::base::type * output_types[noutputs];
 	
 	size_t n;
 	for (n = 0; n < icls->ninputs; ++n) {

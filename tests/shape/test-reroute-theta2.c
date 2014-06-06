@@ -53,15 +53,15 @@ static int test_main(void)
 	jive_test_value_type type;
 	jive::ctl::type ctl;
 	jive::achr::type anchor_type;
-	const jive_type * tmparray0[] = {&type};
+	const jive::base::type * tmparray0[] = {&type};
 	
 	jive_node * dummy = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
 	
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
-	const jive_type * tmparray1[] = {&type};
-	const jive_type * tmparray2[] = {&type, &type};
+	const jive::base::type * tmparray1[] = {&type};
+	const jive::base::type * tmparray2[] = {&type, &type};
 	
 	jive_node * top = jive_test_node_create(r1,
 		1, tmparray1, dummy->outputs,
@@ -71,9 +71,9 @@ static int test_main(void)
 	jive_region * loop_region = theta.region;
 	
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, top->outputs[0]);
-	const jive_type * tmparray3[] = {&type, &type};
+	const jive::base::type * tmparray3[] = {&type, &type};
 	jive_output * tmparray4[] = {loopvar1.value, top->outputs[1]};
-	const jive_type * tmparray5[] = {&ctl, &type};
+	const jive::base::type * tmparray5[] = {&ctl, &type};
 	
 	jive_node * theta_op = jive_test_node_create(loop_region,
 		2, tmparray3, tmparray4,
@@ -84,14 +84,14 @@ static int test_main(void)
 		1, &loopvar1);
 	jive_node * theta_head = loop_region->top;
 	jive_node * theta_tail = loop_region->bottom;
-	const jive_type * tmparray6[] = {&type, &type};
+	const jive::base::type * tmparray6[] = {&type, &type};
 	jive_output * tmparray7[] = {loopvar1.value, top->outputs[1]};
-	const jive_type * tmparray8[] = {&anchor_type};
+	const jive::base::type * tmparray8[] = {&anchor_type};
 	
 	jive_node * bottom = jive_test_node_create(r1,
 		2, tmparray6, tmparray7,
 		1, tmparray8);
-	const jive_type * tmparray9[] = {&anchor_type};
+	const jive::base::type * tmparray9[] = {&anchor_type};
 	
 	jive_node * subroutine_anchor = jive_test_node_create(graph->root_region,
 		1, tmparray9, bottom->outputs,

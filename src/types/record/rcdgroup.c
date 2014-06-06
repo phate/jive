@@ -69,7 +69,7 @@ jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_att
 
 	size_t n;
 	for (n = 0; n < noperands; n++) {
-		const jive_type * type = attrs->declaration()->elements[n];
+		const jive::base::type * type = attrs->declaration()->elements[n];
 		if (*type != operands[n]->type())
 			jive_raise_type_error(type, &operands[n]->type(), context);
 	}
@@ -105,13 +105,13 @@ jive_group_node_init_(jive_group_node * self,
 	}
 
 	size_t n;
-	const jive_type * arg_types[narguments];
+	const jive::base::type * arg_types[narguments];
 	for(n = 0; n < narguments; n++) {
 		arg_types[n] = decl->elements[n];
 	}
 
 	jive::rcd::type type(decl);
-	const jive_type * rtype = &type ;
+	const jive::base::type * rtype = &type ;
 
 	jive_node_init_(self, region,
 		narguments, arg_types, arguments,

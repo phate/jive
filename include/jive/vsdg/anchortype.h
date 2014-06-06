@@ -12,15 +12,15 @@
 namespace jive {
 namespace achr {
 
-class type final : public jive_type {
+class type final : public jive::base::type {
 public:
 	virtual ~type() noexcept;
 
-	inline constexpr type() noexcept : jive_type() {};
+	inline constexpr type() noexcept : jive::base::type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
-	virtual bool operator==(const jive_type & other) const noexcept override;
+	virtual bool operator==(const jive::base::type & other) const noexcept override;
 
 	virtual jive::achr::type * copy() const override;
 

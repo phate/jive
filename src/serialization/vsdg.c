@@ -28,7 +28,7 @@ static void
 jive_control_type_serialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
-	const jive_type * type,
+	const jive::base::type * type,
 	jive_token_ostream * os)
 {
 	/* no attributes */
@@ -39,7 +39,7 @@ jive_control_type_deserialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
 	jive_token_istream * is,
-	jive_type ** type)
+	jive::base::type ** type)
 {
 	*type = new jive::ctl::type();
 	return true;

@@ -32,7 +32,7 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	jive_test_state_type type;
 	jive_test_value_type value_type;
-	const jive_type * tmparray0[] = {&type};
+	const jive::base::type * tmparray0[] = {&type};
 	
 	jive_node * n1 = jive_test_node_create(region,
 		0, NULL, NULL,
@@ -43,7 +43,7 @@ static int test_main(void)
 	jmp_buf buffer;
 	if (setjmp(buffer) == 0) {
 		jive_set_fatal_error_handler(ctx, jump, &buffer);
-		const jive_type * tmparray1[] = {&value_type};
+		const jive::base::type * tmparray1[] = {&value_type};
 		jive_output * tmparray2[] = {n1->outputs[0]};
 		jive_test_node_create(region,
 			1, tmparray1, tmparray2,

@@ -14,7 +14,10 @@
 struct jive_graph;
 struct jive_output;
 struct jive_region;
-struct jive_type;
+
+namespace jive {
+	class type;
+}
 
 extern const jive_node_class JIVE_GAMMA_TAIL_NODE;
 extern const jive_node_class JIVE_GAMMA_NODE;
@@ -27,7 +30,7 @@ class jive_op_gamma final : public jive::operation {
 
 void
 jive_gamma(struct jive_output * predicate,
-	size_t nvalues, const struct jive_type * const types[],
+	size_t nvalues, const struct jive::base::type * const types[],
 	struct jive_output * const true_values[],
 	struct jive_output * const false_values[],
 	struct jive_output * results[]);

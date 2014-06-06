@@ -20,7 +20,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 
 	jive::bits::type bits32(32);
-	const jive_type * tmparray0[] = {&bits32, &bits32};
+	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph,
 		2, tmparray0, tmparray1);
@@ -31,7 +31,7 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 	
-	const jive_type * tmparray2[] = {&bits32, &bits32};
+	const jive::base::type * tmparray2[] = {&bits32, &bits32};
 	jive::fct::type ftype(2, tmparray2, 1, tmparray2);
 
 	assert(ftype == fct->type());

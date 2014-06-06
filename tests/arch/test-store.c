@@ -43,7 +43,7 @@ static int test_main(void)
 
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
-	const jive_type * tmparray0[] = {&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype};
+	const jive::base::type * tmparray0[] = {&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
@@ -75,7 +75,7 @@ static int test_main(void)
 	unify = jive_empty_unify_create(graph, &empty_unndecl);
 	jive_store_by_address_create(top->outputs[0], &empty_unntype, unify,
 		1, &top->outputs[1], &state4);
-	const jive_type * tmparray3[] = {&memtype, &memtype, &memtype, &memtype, &memtype, &memtype};
+	const jive::base::type * tmparray3[] = {&memtype, &memtype, &memtype, &memtype, &memtype, &memtype};
 	jive_output * tmparray4[] = {state0, state1[0], state1[1], state2, state3, state4};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,

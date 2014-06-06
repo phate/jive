@@ -16,10 +16,17 @@
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/variable.h>
 
-jive_type::~jive_type() noexcept {}
+namespace jive {
+namespace base {
+
+type::~type() noexcept {}
+
+}
+}
 
 void
-jive_raise_type_error(const jive_type * self, const jive_type * other, jive_context * context)
+jive_raise_type_error(const jive::base::type * self, const jive::base::type * other,
+	jive_context * context)
 {
 	jive_buffer input_type_buffer, operand_type_buffer;
 	jive_buffer_init(&input_type_buffer, context);
@@ -37,10 +44,10 @@ jive_raise_type_error(const jive_type * self, const jive_type * other, jive_cont
 }
 
 struct jive_input *
-jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
+jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
 	jive_output * origin)
 {
-	const jive_type * operand_type = &origin->type();
+	const jive::base::type * operand_type = &origin->type();
 
 	if (*self != *operand_type)
 		jive_raise_type_error(self, operand_type, node->graph->context);
@@ -159,8 +166,8 @@ jive_input::divert_origin(jive_output * new_origin) noexcept
 void
 jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 {
-	const jive_type * input_type = &this->type();
-	const jive_type * operand_type = &new_origin->type();
+	const jive::base::type * input_type = &this->type();
+	const jive::base::type * operand_type = &new_origin->type();
 
 	if (*input_type != *operand_type) {
 		jive_raise_type_error(input_type, operand_type, this->node->graph->context);

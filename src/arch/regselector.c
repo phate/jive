@@ -160,7 +160,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = jive_reg_classifier_classify_address(self->classifier);
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs, 0, NULL, &option.base);
 		
-		const jive_type * type = &node->outputs[0]->type();
+		const jive::base::type * type = &node->outputs[0]->type();
 		const jive_resource_class * rescls = node->outputs[0]->required_rescls;
 		option.mask = jive_reg_classifier_classify_type(self->classifier, type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 0, NULL, 1, node->outputs, &option.base);
@@ -170,7 +170,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = jive_reg_classifier_classify_address(self->classifier);
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs, 0, NULL, &option.base);
 		
-		const jive_type * type = &node->inputs[1]->type();
+		const jive::base::type * type = &node->inputs[1]->type();
 		const jive_resource_class * rescls = node->inputs[1]->required_rescls;
 		option.mask = jive_reg_classifier_classify_type(self->classifier, type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs + 1, 0, NULL, &option.base);

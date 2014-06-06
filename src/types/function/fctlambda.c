@@ -27,7 +27,7 @@ jive_lambda_enter_node_create(jive_region * region)
 	
 	node->class_ = &JIVE_LAMBDA_ENTER_NODE;
 	jive::ctl::type ctl;
-	const jive_type * ctl_ptr = &ctl;
+	const jive::base::type * ctl_ptr = &ctl;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctl_ptr);
@@ -66,9 +66,9 @@ jive_lambda_leave_node_create(jive_output * output)
 	
 	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
 	jive::ctl::type ctl;
-	const jive_type * ctl_ptr = &ctl;
+	const jive::base::type * ctl_ptr = &ctl;
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	jive_node_init_(node, output->node()->region,
 		1, &ctl_ptr, &output,
 		1, &ancptr);
@@ -155,8 +155,8 @@ jive_lambda_node_init_(
 	jive_context * context = function_region->graph->context;
 	
 	jive::achr::type anchor_type;
-	const jive_type * ancptr = &anchor_type;	
-	const jive_type * function_type = &self->operation().function_type();
+	const jive::base::type * ancptr = &anchor_type;
+	const jive::base::type * function_type = &self->operation().function_type();
 	jive_node_init_(self, region,
 		1, &ancptr, &function_region->bottom->outputs[0],
 		1, &function_type);
@@ -170,13 +170,13 @@ jive_lambda_node_create(jive_region * function_region)
 	size_t narguments = function_region->top->noutputs - 1;
 	size_t nreturns = function_region->bottom->ninputs - 1;
 	
-	const jive_type * argument_types[narguments];
+	const jive::base::type * argument_types[narguments];
 	std::vector<jive_gate *> argument_gates;
 	for (size_t n = 0; n < narguments; n++) {
 		argument_types[n] = &function_region->top->outputs[n+1]->type();
 		argument_gates.push_back(function_region->top->outputs[n+1]->gate);
 	}
-	const jive_type * return_types[nreturns];
+	const jive::base::type * return_types[nreturns];
 	std::vector<jive_gate *> return_gates;
 	for (size_t n = 0; n < nreturns; n++) {
 		return_types[n] = &function_region->bottom->inputs[n+1]->type();
@@ -282,7 +282,7 @@ struct jive_lambda_build_state {
 
 struct jive_lambda *
 jive_lambda_begin(struct jive_graph * graph,
-	size_t narguments, const jive_type * const argument_types[], const char * const argument_names[])
+	size_t narguments, const jive::base::type * const argument_types[], const char * const argument_names[])
 {
 	jive_context * context = graph->context;
 
@@ -309,7 +309,7 @@ jive_lambda_begin(struct jive_graph * graph,
 
 jive_output *
 jive_lambda_end(jive_lambda * self,
-	size_t nresults, const jive_type * const result_types[], jive_output * const results[])
+	size_t nresults, const jive::base::type * const result_types[], jive_output * const results[])
 {
 	jive_lambda_build_state * state = self->internal_state;
 	jive_region * region = self->region;
@@ -492,7 +492,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	size_t nalive_parameters = 0;
 	size_t nparameters = enter->noutputs-1;
 	jive_output * alive_parameters[nparameters];
-	const jive_type * alive_parameter_types[nparameters];
+	const jive::base::type * alive_parameter_types[nparameters];
 	const char * alive_parameter_names[nparameters];
 	for (n = 1; n < enter->noutputs; n++) {
 		jive_output * parameter = enter->outputs[n];
@@ -515,7 +515,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	size_t nalive_results = 0;
 	size_t nresults = leave->ninputs-1;
 	jive_input * alive_results[nresults];
-	const jive_type * alive_result_types[nresults];
+	const jive::base::type * alive_result_types[nresults];
 	for (n = 1; n < leave->ninputs; n++) {
 		jive_input * result = leave->inputs[n];
 
@@ -535,7 +535,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 
 		jive::fct::type fcttype(nalive_parameters, alive_parameter_types, nalive_results,
 			alive_result_types);
-		const jive_type * tmparray0[] = {&fcttype};
+		const jive::base::type * tmparray0[] = {&fcttype};
 		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);
 		embedded_in_phi = true;
 	}

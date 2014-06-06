@@ -25,7 +25,7 @@ static const jive_register_class * classes [] =  {
 };
 
 static jive_regselect_mask
-jive_i386_classify_type_(const jive_type * type, const jive_resource_class * rescls)
+jive_i386_classify_type_(const jive::base::type * type, const jive_resource_class * rescls)
 {
 	rescls = jive_resource_class_relax(rescls);
 	

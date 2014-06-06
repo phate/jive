@@ -61,7 +61,7 @@ jive_fltsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 	jive_fltsymbolicconstant_node * node = new jive_fltsymbolicconstant_node(*attrs);
 	node->class_ = &JIVE_FLTSYMBOLICCONSTANT_NODE;
 	jive::flt::type type;
-	const jive_type * typeptr = &type;
+	const jive::base::type * typeptr = &type;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &typeptr);

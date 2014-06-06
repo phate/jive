@@ -22,7 +22,7 @@ jive_control_false_create(jive_region * region)
 	jive_node * self = jive::create_operation_node(
 		jive_op_control_constant(false));
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	self->class_ = &JIVE_CONTROL_FALSE_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
@@ -37,7 +37,7 @@ jive_control_true_create(jive_region * region)
 	jive_node * self = jive::create_operation_node(
 		jive_op_control_constant(true));
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	self->class_ = &JIVE_CONTROL_TRUE_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,

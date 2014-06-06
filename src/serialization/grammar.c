@@ -134,7 +134,7 @@ jive_deserialize_int(jive_serialization_driver * self,
 
 void
 jive_serialize_type(jive_serialization_driver * self,
-	const jive_type * type, jive_token_ostream * os)
+	const jive::base::type * type, jive_token_ostream * os)
 {
 	const jive_serialization_typecls * sercls;
 	sercls = jive_serialization_typecls_lookup_by_cls(
@@ -149,7 +149,7 @@ jive_serialize_type(jive_serialization_driver * self,
 
 bool
 jive_deserialize_type(jive_serialization_driver * self,
-	jive_token_istream * is, jive_type ** type)
+	jive_token_istream * is, jive::base::type ** type)
 {
 	const jive_serialization_typecls * sercls = 0;
 	const jive_token * token;
@@ -245,7 +245,7 @@ jive_deserialize_gateexpr(jive_serialization_driver * self,
 	char * name;
 	size_t name_len;
 	const jive_resource_class * rescls;
-	jive_type * type;
+	jive::base::type * type;
 	
 	if (!jive_deserialize_string(self, is, &name, &name_len))
 		return false;
@@ -571,7 +571,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 				ports.ports[n].origin);
 		} else {
 			const jive_resource_class * rescls = ports.ports[n].required_rescls;
-			const jive_type * type = jive_resource_class_get_type(rescls);
+			const jive::base::type * type = jive_resource_class_get_type(rescls);
 			jive_input * input = jive_node_add_input(*node, type, ports.ports[n].origin);
 			input->required_rescls = rescls;
 		}

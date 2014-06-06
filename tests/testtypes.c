@@ -18,7 +18,7 @@ jive_test_value_type::label(jive_buffer & buffer) const
 }
 
 bool
-jive_test_value_type::operator==(const jive_type & other) const noexcept
+jive_test_value_type::operator==(const jive::base::type & other) const noexcept
 {
 	return dynamic_cast<const jive_test_value_type*>(&other) != nullptr;
 }
@@ -77,7 +77,7 @@ jive_test_state_type::label(jive_buffer & buffer) const
 }
 
 bool
-jive_test_state_type::operator==(const jive_type & other) const noexcept
+jive_test_state_type::operator==(const jive::base::type & other) const noexcept
 {
 	return dynamic_cast<const jive_test_state_type*>(&other) != nullptr;
 }

@@ -27,17 +27,17 @@ static int test_main(void)
 
 	jive::addr::type addr;
 	jive::bits::type bits16(16);
-	const jive_type * tmparray0[] = {&addr, &bits16, &addr};
+	const jive::base::type * tmparray0[] = {&addr, &bits16, &addr};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
-	const jive_type * tmparray1[] = {&bits16, &addr, &addr};
+	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		top->outputs[0], NULL,
 		2, top->outputs + 1,
 		3, tmparray1);
-	const jive_type * tmparray2[] = {&bits16, &addr, &addr};
+	const jive::base::type * tmparray2[] = {&bits16, &addr, &addr};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		3, tmparray2, call->outputs,

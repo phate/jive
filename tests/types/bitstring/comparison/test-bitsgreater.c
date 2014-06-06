@@ -24,7 +24,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	jive::bits::type bits32(32);
-	const jive_type * tmparray0[] = {&bits32, &bits32};
+	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 
 	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
 	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");

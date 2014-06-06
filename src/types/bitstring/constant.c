@@ -59,7 +59,7 @@ jive_bitconstant_node_init_(
 			"bitconstant: number of bits must be greater than zero.");
 
 	jive::bits::type type(nbits);
-	const jive_type * typeptr = &type;
+	const jive::base::type * typeptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &typeptr);

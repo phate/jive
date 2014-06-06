@@ -426,7 +426,7 @@ typedef enum jive_testarch_classify_regcls {
 } jive_testarch_classify_regcls;
 
 static jive_regselect_mask
-jive_testarch_classify_type_(const jive_type * type, const jive_resource_class * rescls)
+jive_testarch_classify_type_(const jive::base::type * type, const jive_resource_class * rescls)
 {
 	rescls = jive_resource_class_relax(rescls);
 	
@@ -495,8 +495,8 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, si
 	jive_gate * gate = self->base.parameters[index];
 	jive_output * output = jive_node_gate_output(self->base.enter, gate);
 	if (index >= 2) {
-		const jive_type * in_type = &gate->type();
-		const jive_type * out_type =
+		const jive::base::type * in_type = &gate->type();
+		const jive::base::type * out_type =
 			jive_resource_class_get_type(&jive_testarch_regcls_gpr.base);
 		jive_node * node = jive_splitnode_create(self->base.enter->region,
 			in_type, output, gate->required_rescls,

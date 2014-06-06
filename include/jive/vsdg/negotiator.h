@@ -41,7 +41,7 @@ class negotiator_split_operation final : public unary_operation {
 public:
 	jive_negotiator * negotiator;
 	jive_negotiator_option * input_option;
-	jive_type * output_type;
+	jive::base::type * output_type;
 	jive_negotiator_option * output_option;
 };
 

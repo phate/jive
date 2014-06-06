@@ -28,27 +28,30 @@ struct jive_resource_class;
 struct jive_ssavar;
 struct jive_variable;
 
+namespace jive {
+namespace base {
+
 /**
         \defgroup jive_type Types
         Types
         @{
 */
 
-class jive_type {
+class type {
 public:
-	virtual ~jive_type() noexcept;
+	virtual ~type() noexcept;
 
 protected:
-	inline constexpr jive_type() noexcept {};
+	inline constexpr type() noexcept {};
 
 public:
 	virtual void label(jive_buffer & buffer) const = 0;
 
-	virtual bool operator==(const jive_type & other) const noexcept = 0;
+	virtual bool operator==(const jive::base::type & other) const noexcept = 0;
 
-	inline bool operator!=(const jive_type & other) const noexcept { return !(*this == other); }
+	inline bool operator!=(const jive::base::type & other) const noexcept { return !(*this == other); }
 
-	virtual jive_type * copy() const = 0;
+	virtual jive::base::type * copy() const = 0;
 
 	/*
 		FIXME: change return type to std::unique_ptr<jive_input>
@@ -66,8 +69,11 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const = 0;
 };
 
+}
+}	//jive namespace
+
 struct jive_input *
-jive_type_create_input(const jive_type * self, struct jive_node * node, size_t index,
+jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand);
 
 /**
@@ -84,7 +90,7 @@ protected:
 	jive_input(struct jive_node * node, size_t index, jive_output * origin);
 
 public:
-	virtual const jive_type & type() const noexcept = 0;
+	virtual const jive::base::type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
 
@@ -164,7 +170,7 @@ protected:
 	jive_output(struct jive_node * node, size_t index);
 
 public:
-	virtual const jive_type & type() const noexcept = 0;
+	virtual const jive::base::type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
 
@@ -228,7 +234,7 @@ protected:
 	jive_gate(struct jive_graph * graph, const char name[]);
 
 public:
-	virtual const jive_type & type() const noexcept = 0;
+	virtual const jive::base::type & type() const noexcept = 0;
 
 	virtual void label(jive_buffer & buffer) const;
 
@@ -286,7 +292,7 @@ jive_gate_auto_merge_variable(jive_gate * self);
 /**	@}	*/
 
 void
-jive_raise_type_error(const jive_type * self, const jive_type * other,
+jive_raise_type_error(const jive::base::type * self, const jive::base::type * other,
 	struct jive_context * context);
 
 inline jive_node *

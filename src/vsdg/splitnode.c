@@ -17,10 +17,10 @@ static void
 jive_splitnode_init_(
 	jive_splitnode * self,
 	jive_region * region,
-	const jive_type * in_type,
+	const jive::base::type * in_type,
 	jive_output * in_origin,
 	const struct jive_resource_class * in_class,
-	const jive_type * out_type,
+	const jive::base::type * out_type,
 	const struct jive_resource_class * out_class)
 {
 	self->class_ = &JIVE_SPLITNODE;
@@ -74,10 +74,10 @@ const jive_node_class JIVE_SPLITNODE = {
 
 jive_node *
 jive_splitnode_create(jive_region * region,
-	const jive_type * in_type,
+	const jive::base::type * in_type,
 	jive_output * in_origin,
 	const struct jive_resource_class * in_class,
-	const jive_type * out_type,
+	const jive::base::type * out_type,
 	const struct jive_resource_class * out_class)
 {
 	jive_graph * graph = region->graph;

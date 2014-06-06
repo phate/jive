@@ -249,11 +249,11 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	jive_load_node * node = new jive_load_node(*attrs);
 
 	node->class_ = &JIVE_LOAD_NODE;
-	const jive_type * operand_types[noperands];
+	const jive::base::type * operand_types[noperands];
 	for (size_t n = 0; n < noperands; ++n) {
 		operand_types[n] = &operands[n]->type();
 	}
-	const jive_type * result_types[1] = {&attrs->datatype()};
+	const jive::base::type * result_types[1] = {&attrs->datatype()};
 
 	jive_node_init_(node, region,
 		noperands, operand_types, operands,
@@ -264,12 +264,12 @@ jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 
 void
 jive_load_node_init_(jive_load_node * self, jive_region * region,
-	jive_output * address, const jive_type * address_type,
+	jive_output * address, const jive::base::type * address_type,
 	const jive::value::type * datatype,
 	size_t nstates, jive_output * const states[])
 {
 	jive_context * context = region->graph->context;
-	const jive_type *  tmparray0[] = {datatype};
+	const jive::base::type *  tmparray0[] = {datatype};
 
 	jive_node_init_(self, region,
 		1, &address_type, &address,
@@ -278,7 +278,7 @@ jive_load_node_init_(jive_load_node * self, jive_region * region,
 	/* FIXME: check the type of the states */
 	size_t n;
 	for (n = 0; n < nstates; n++) {
-		const jive_type * type = &states[n]->type();
+		const jive::base::type * type = &states[n]->type();
 		jive_node_add_input(self, type, states[n]);
 	}
 }

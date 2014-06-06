@@ -40,7 +40,7 @@ static int test_main(void)
 	};
 	
 	jive::addr::type addrtype;
-	const jive_type * tmparray1[] = {&addrtype, &addrtype};
+	const jive::base::type * tmparray1[] = {&addrtype, &addrtype};
 	
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
@@ -89,10 +89,10 @@ static int test_main(void)
 	jive_output * arraysub = jive_arraysubscript(top->outputs[0],
 		&bits32, one);
 
-	const jive_type * tmparray2[] = {&addrtype, &addrtype, &bits32};
+	const jive::base::type * tmparray2[] = {&addrtype, &addrtype, &bits32};
 	jive_output * tmparray3[] = {memberof, arraysub, diff2};
 
-	const jive_type * typeptr = &addrtype;
+	const jive::base::type * typeptr = &addrtype;
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		3, tmparray2,

@@ -61,7 +61,7 @@ jive_apply_node_init_(
 	}
 
 	jive_output * args[narguments+1];
-	const jive_type * argument_types[narguments+1];
+	const jive::base::type * argument_types[narguments+1];
 	args[0] = function;
 	argument_types[0] = &fct->type();
  
@@ -71,7 +71,7 @@ jive_apply_node_init_(
 		args[i+1] = arguments[i];
 	}
 	
-	const jive_type * return_types[fct->nreturns()];
+	const jive::base::type * return_types[fct->nreturns()];
 	for (i = 0; i < fct->nreturns(); i++)
 		return_types[i] = fct->return_type(i);
 

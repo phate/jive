@@ -45,7 +45,7 @@ flatten_data_items(
 {
 	size_t nitems = 0;
 	jive_output ** items = 0;
-	const jive_type * type_ = &data->type();
+	const jive::base::type * type_ = &data->type();
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
 		
@@ -281,14 +281,14 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 {
 	jive_datadef_node * node = new jive_datadef_node(jive::datadef_operation());
 	
-	const jive_type * item_types[nitems];
+	const jive::base::type * item_types[nitems];
 	size_t n;
 	for (n = 0; n < nitems; n++)
 		item_types[n] = &items[n]->type();
 	
 	node->class_ = &JIVE_DATAITEMS_NODE;
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	jive_node_init_(node, region,
 		nitems, item_types, items,
 		1, &control_ptr);
@@ -304,9 +304,9 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 	
 	node->class_ = &JIVE_DATADEF_NODE;
 	jive::ctl::type data_type;
-	const jive_type * data_type_ptr = &data_type;
+	const jive::base::type * data_type_ptr = &data_type;
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	jive_node_init_(node, region,
 		1, &data_type_ptr, &data,
 		1, &ancptr);
@@ -321,10 +321,10 @@ jive_dataobj_node_create(jive_region * region, jive_output * anchor)
 	jive_dataobj_node * node = new jive_dataobj_node(jive::dataobj_operation());
 	
 	jive::achr::type anchor_type;
-	const jive_type * ancptr = &anchor_type;
+	const jive::base::type * ancptr = &anchor_type;
 	/* FIXME: a data object should not have a memory type as output */
 	jive::mem::type objstate_type;
-	const jive_type * typeptr = &objstate_type;
+	const jive::base::type * typeptr = &objstate_type;
 	node->class_ = &JIVE_DATAOBJ_NODE;
 	jive_node_init_(node, region,
 		1, &ancptr, &anchor,

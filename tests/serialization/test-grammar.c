@@ -109,7 +109,7 @@ deserialize_ctx_fini(deserialize_ctx * self)
 }
 
 static void
-verify_serialize_type(const jive_type * type, const char * expect_repr)
+verify_serialize_type(const jive::base::type * type, const char * expect_repr)
 {
 	serialize_ctx ctx;
 	serialize_ctx_init(&ctx);
@@ -123,12 +123,12 @@ verify_serialize_type(const jive_type * type, const char * expect_repr)
 }
 
 static void
-verify_deserialize_type(const char * repr, const jive_type * expect_type)
+verify_deserialize_type(const char * repr, const jive::base::type * expect_type)
 {
 	deserialize_ctx ctx;
 	deserialize_ctx_init(&ctx, repr);
 	
-	jive_type * type;
+	jive::base::type * type;
 	assert(jive_deserialize_type(&ctx.drv, ctx.is, &type));
 	assert(*type == *expect_type);
 	delete type;
@@ -267,8 +267,8 @@ verify_deserialize_nodeexpr(
 		const jive_serialization_outputsym * sym =
 			jive_serialization_symtab_name_to_output(&ctx.drv.symtab, output_names[n]);
 		assert(sym && sym->output == node->outputs[n]);
-		const jive_type * type = &node->outputs[n]->type();
-		const jive_type * expected_type = &expected_node->outputs[n]->type();
+		const jive::base::type * type = &node->outputs[n]->type();
+		const jive::base::type * expected_type = &expected_node->outputs[n]->type();
 		assert(*type == *expected_type);
 		assert(node->outputs[n]->required_rescls == expected_node->outputs[n]->required_rescls);
 		assert(node->outputs[n]->gate == expected_node->outputs[n]->gate);

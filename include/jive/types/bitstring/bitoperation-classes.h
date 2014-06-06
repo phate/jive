@@ -25,13 +25,13 @@ public:
 	virtual size_t
 	narguments() const noexcept override;
 
-	virtual const jive_type &
+	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
 	virtual size_t
 	nresults() const noexcept override;
 
-	virtual const jive_type &
+	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
 	inline const jive::bits::type & type() const noexcept { return type_; }
@@ -70,13 +70,13 @@ public:
 	virtual size_t
 	narguments() const noexcept override;
 
-	virtual const jive_type &
+	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept override;
 
 	virtual size_t
 	nresults() const noexcept override;
 
-	virtual const jive_type &
+	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
 
 	/* reduction methods */

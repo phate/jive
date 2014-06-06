@@ -215,7 +215,7 @@ static void
 jive_bitstring_type_serialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
-	const jive_type * type_,
+	const jive::base::type * type_,
 	jive_token_ostream * os)
 {
 	const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
@@ -227,7 +227,7 @@ jive_bitstring_type_deserialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
 	jive_token_istream * is,
-	jive_type ** type)
+	jive::base::type ** type)
 {
 	uint64_t nbits;
 	if (!jive_deserialize_uint(driver, is, &nbits))

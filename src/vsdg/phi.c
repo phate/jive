@@ -122,7 +122,7 @@ jive_phi_enter_node_create(jive_region * region)
 
 	node->class_ = &JIVE_PHI_ENTER_NODE;
 	jive::ctl::type ctltype;
-	const jive_type * ctltype_ptr = &ctltype;
+	const jive::base::type * ctltype_ptr = &ctltype;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctltype_ptr);
@@ -163,9 +163,9 @@ jive_phi_leave_node_create(jive_region * region)
 
 	node->class_ = &JIVE_PHI_LEAVE_NODE;
 	jive::achr::type anctype;
-	const jive_type * ancptr = &anctype;
+	const jive::base::type * ancptr = &anctype;
 	jive::ctl::type ctltype;
-	const jive_type *ctltype_ptr = &ctltype;
+	const jive::base::type *ctltype_ptr = &ctltype;
 	jive_node_init_(node, region,
 		1, &ctltype_ptr, &region->top->outputs[0],
 		1, &ancptr);
@@ -236,7 +236,7 @@ jive_phi_node_create_(struct jive_region * region, const jive_node_attrs * attrs
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	jive_node * self = jive::create_operation_node(jive_op_phi());
 	jive::achr::type anchor;
-	const jive_type *anchorptr = &anchor;
+	const jive::base::type *anchorptr = &anchor;
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, region,
 		1, &anchorptr, operands,
@@ -251,7 +251,7 @@ jive_phi_node_create(jive_region * phi_region,
 {
 	jive_phi_node * self = new jive_phi_node(jive_op_phi());
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	self->class_ = &JIVE_PHI_NODE;
 	jive_node_init_(self, phi_region,
 		1, &ancptr, &phi_body,
@@ -288,7 +288,7 @@ jive_phi_begin(jive_graph * graph)
 }
 
 jive_phi_fixvar
-jive_phi_fixvar_enter(jive_phi self, const struct jive_type * type)
+jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 {
 	jive_phi_build_state * state = self.internal_state;
 	jive_node * enter = self.region->top;
@@ -368,7 +368,7 @@ jive_phi_end(jive_phi self,
 
 struct jive_phi_extension *
 jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
-	const jive_type * fixvar_types[])
+	const jive::base::type * fixvar_types[])
 {
 	jive_graph * graph = phi_node->region->graph;
 	jive_context * context = graph->context;

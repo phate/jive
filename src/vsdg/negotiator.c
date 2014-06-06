@@ -86,11 +86,11 @@ jive_negotiator_split_node_init_(
 	jive_negotiator * negotiator,
 	jive_region * region,
 	
-	const jive_type * input_type,
+	const jive::base::type * input_type,
 	jive_negotiator_option * input_option,
 	jive_output * operand,
 	
-	const jive_type * output_type,
+	const jive::base::type * output_type,
 	jive_negotiator_option * output_option);
 
 static void
@@ -120,11 +120,11 @@ jive_negotiator_split_node_init_(
 	jive_negotiator * negotiator,
 	jive_region * region,
 	
-	const jive_type * input_type,
+	const jive::base::type * input_type,
 	jive_negotiator_option * input_option,
 	jive_output * operand,
 	
-	const jive_type * output_type,
+	const jive::base::type * output_type,
 	jive_negotiator_option * output_option)
 {
 	jive_node_init_(self, region,
@@ -214,8 +214,8 @@ jive_negotiator_split_node_create_(struct jive_region * region, const jive_node_
 static jive_output *
 jive_negotiator_split(
 	jive_negotiator * negotiator,
-	const jive_type * operand_type, jive_output * operand, const jive_negotiator_option * input_option,
-	const jive_type * output_type, const jive_negotiator_option * output_option)
+	const jive::base::type * operand_type, jive_output * operand, const jive_negotiator_option * input_option,
+	const jive::base::type * output_type, const jive_negotiator_option * output_option)
 {
 	jive_region * region = operand->node()->region;
 	
@@ -766,7 +766,7 @@ jive_negotiator_maybe_split_edge(jive_negotiator * self, jive_output * origin, j
 	if (jive_negotiator_option_equals(self, origin_port->option, input_port->option))
 		return;
 	
-	const jive_type * type = &input->type();
+	const jive::base::type * type = &input->type();
 	jive_output * split_output = jive_negotiator_split(self,
 		type, input->origin(), origin_port->option,
 		type, input_port->option);

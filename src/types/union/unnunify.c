@@ -82,7 +82,7 @@ jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_att
 	if (attrs->option() >= attrs->declaration()->nelements)
 		jive_context_fatal_error(context, "Type mismatch: invalid option for union type");
 
-	const jive_type * type = attrs->declaration()->elements[attrs->option()];
+	const jive::base::type * type = attrs->declaration()->elements[attrs->option()];
 	if (*type != operands[0]->type())
 		jive_raise_type_error(type, &operands[0]->type(), context);
 }
@@ -110,10 +110,10 @@ jive_unify_node_init_(jive_unify_node * self,
 			"Type mismatch: invalid option for union type");
 	}
 	
-	const jive_type * arg_type = decl->elements[option];
+	const jive::base::type * arg_type = decl->elements[option];
 	
 	jive::unn::type type(decl);
-	const jive_type * type_ptr = &type;
+	const jive::base::type * type_ptr = &type;
 	jive_node_init_(self, region,
 		1, &arg_type, &operand,
 		1, &type_ptr);
@@ -153,7 +153,7 @@ jive_empty_unify_node_init_(jive_empty_unify_node * self,
 	struct jive_region * region, const jive::unn::declaration * decl)
 {
 	jive::unn::type type(decl);
-	const jive_type * type_ptr = &type;
+	const jive::base::type * type_ptr = &type;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
 		1, &type_ptr);

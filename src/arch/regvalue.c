@@ -54,8 +54,8 @@ jive_regvalue_node_init_(
 	jive_output * value)
 {
 	jive::ctl::type ctl_type;
-	const jive_type * vtype = &value->type();
-	const jive_type * operand_types[] = {&ctl_type, vtype};
+	const jive::base::type * vtype = &value->type();
+	const jive::base::type * operand_types[] = {&ctl_type, vtype};
 	jive_output * operands[] = {ctl, value};
 	
 	jive_node_init_(self, region,

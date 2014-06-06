@@ -15,11 +15,11 @@
 static int test_main(void)
 {
 	jive_test_value_type value_type;
-	const jive_type * value_type_ptr = &value_type;
+	const jive::base::type * value_type_ptr = &value_type;
 	jive::fct::type t1(1, &value_type_ptr, 1, &value_type_ptr);
 
-	const jive_type * tmparray2[] = {&t1};
-	const jive_type * tmparray3[] = {&t1};
+	const jive::base::type * tmparray2[] = {&t1};
+	const jive::base::type * tmparray3[] = {&t1};
 	jive::fct::type t2(1, tmparray2, 1, tmparray3);
 	
 	return 0;

@@ -21,7 +21,7 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
-	virtual bool operator==(const jive_type & other) const noexcept override;
+	virtual bool operator==(const jive::base::type & other) const noexcept override;
 
 	virtual jive::flt::type * copy() const override;
 

@@ -12,10 +12,13 @@ class jive_input;
 class jive_node;
 class jive_output;
 class jive_region;
-class jive_type;
 class jive_node_normal_form;
 
 namespace jive {
+
+namespace base {
+	class type;
+}
 
 class operation {
 public:
@@ -27,13 +30,13 @@ public:
 	virtual size_t
 	narguments() const noexcept;
 
-	virtual const jive_type &
+	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept;
 
 	virtual size_t
 	nresults() const noexcept;
 
-	virtual const jive_type &
+	virtual const jive::base::type &
 	result_type(size_t index) const noexcept;
 
 	virtual jive_node *

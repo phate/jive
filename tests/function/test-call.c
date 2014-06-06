@@ -24,8 +24,8 @@ static int test_main(void)
 	jive_graph* graph = jive_graph_create( context ) ; 
 
 	jive::bits::type btype(8);
-	const jive_type*  tmparray0[] = { &btype };
-	const jive_type*  tmparray1[] = { &btype };
+	const jive::base::type*  tmparray0[] = { &btype };
+	const jive::base::type*  tmparray1[] = { &btype };
 	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
 	jive_output* constant = jive_bitconstant( graph, 8, "00001111" ) ;

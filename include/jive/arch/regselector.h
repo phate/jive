@@ -19,7 +19,12 @@ struct jive_graph;
 struct jive_input;
 struct jive_output;
 struct jive_resource_class;
-struct jive_type;
+
+namespace jive {
+namespace base {
+	class type;
+}
+}
 
 typedef int jive_regselect_index;
 typedef uint32_t jive_regselect_mask;
@@ -28,7 +33,7 @@ typedef struct jive_reg_classifier jive_reg_classifier;
 
 struct jive_reg_classifier {
 	jive_regselect_mask any;
-	jive_regselect_mask (*classify_type)(const struct jive_type * type,
+	jive_regselect_mask (*classify_type)(const struct jive::base::type * type,
 		const struct jive_resource_class * rescls);
 	jive_regselect_mask (*classify_fixed_arithmetic)(jive_bitop_code op, size_t nbits);
 	jive_regselect_mask (*classify_float_arithmetic)(jive_fltop_code op);
@@ -42,7 +47,7 @@ struct jive_reg_classifier {
 
 JIVE_EXPORTED_INLINE jive_regselect_mask
 jive_reg_classifier_classify_type(const jive_reg_classifier * self,
-	const struct jive_type * type, const struct jive_resource_class * rescls)
+	const struct jive::base::type * type, const struct jive_resource_class * rescls)
 {
 	return self->classify_type(type, rescls);
 }

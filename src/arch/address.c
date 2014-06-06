@@ -105,7 +105,7 @@ jive_memberof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 	node->class_ = &JIVE_MEMBEROF_NODE;
 
 	jive::addr::type address_type;
-	const jive_type * typeptr = &address_type;
+	const jive::base::type * typeptr = &address_type;
 
 	jive_node_init_(node, region,
 		1, &typeptr, operands,
@@ -236,7 +236,7 @@ jive_containerof_node_create_(jive_region * region, const jive_node_attrs * attr
 	jive_node * node = new jive_containerof_node(*attrs);
 	
 	jive::addr::type address_type;
-	const jive_type * typeptr = &address_type;
+	const jive::base::type * typeptr = &address_type;
 
 	node->class_ = &JIVE_CONTAINEROF_NODE;
 	jive_node_init_(node, region,
@@ -285,7 +285,7 @@ jive_containerof_node_create(jive_region * region,
 	node->class_ = &JIVE_CONTAINEROF_NODE;
 	
 	jive::addr::type address_type;
-	const jive_type * addrptr = &address_type;
+	const jive::base::type * addrptr = &address_type;
 	
 	jive_node_init_(node, region,
 		1, &addrptr, &address,
@@ -419,12 +419,12 @@ jive_arraysubscript_node_create_(jive_region * region, const jive_node_attrs * a
 	node->class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
 
 	jive::addr::type address_type;
-	const jive_type * typeptr = &address_type;
+	const jive::base::type * typeptr = &address_type;
 
-	const jive_type * index_type = &index->type();
+	const jive::base::type * index_type = &index->type();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::type*>(index_type));
 
-	const jive_type * operand_types[2] = {&address_type, index_type};
+	const jive::base::type * operand_types[2] = {&address_type, index_type};
 	
 	jive_node_init_(node, region,
 		2, operand_types, operands,
@@ -606,8 +606,8 @@ jive_arrayindex_node_create_(jive_region * region, const jive_node_attrs * attrs
 
 	jive::addr::type address_type;
 
-	const jive_type * operand_types[2] = {&address_type, &address_type};
-	const jive_type * output_types[1] = {&attrs->difference_type()};
+	const jive::base::type * operand_types[2] = {&address_type, &address_type};
+	const jive::base::type * output_types[1] = {&attrs->difference_type()};
 	
 	jive_node_init_(node, region,
 		2, operand_types, operands,
@@ -728,7 +728,7 @@ jive_label_to_address_node_init_(
 	jive_graph * graph)
 {
 	jive::addr::type addrtype;
-	const jive_type * addrptr = &addrtype;
+	const jive::base::type * addrptr = &addrtype;
 	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,
 		1, &addrptr);
@@ -827,7 +827,7 @@ jive_label_to_bitstring_node_init_(
 	jive_graph * graph, size_t nbits)
 {
 	jive::bits::type btype(nbits);
-	const jive_type * typeptr = &btype;
+	const jive::base::type * typeptr = &btype;
 	jive_node_init_(self, graph->root_region,
 		0, NULL, NULL,
 		1, &typeptr);

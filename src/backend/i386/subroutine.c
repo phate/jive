@@ -141,8 +141,8 @@ jive_i386_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t
 	jive_gate * gate = self->base.parameters[index];
 	jive_output * output = jive_node_gate_output(self->base.enter, gate);
 	
-	const jive_type * in_type = &gate->type();
-	const jive_type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
+	const jive::base::type * in_type = &gate->type();
+	const jive::base::type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
 	jive_node * node = jive_splitnode_create(self->base.enter->region,
 		in_type, output, gate->required_rescls,
 		out_type, &jive_i386_regcls_gpr.base);
@@ -216,7 +216,7 @@ jive_i386_subroutine_create(jive_region * region,
 	
 	/* add dependency on return address on stack */
 	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
-	const jive_type * memory_state_type = jive_resource_class_get_type(stackslot_cls);
+	const jive::base::type * memory_state_type = jive_resource_class_get_type(stackslot_cls);
 	jive_output * retaddr_def = jive_node_add_output(self->base.enter, memory_state_type);
 	retaddr_def->required_rescls = stackslot_cls;
 	jive_input * retaddr_use = jive_node_add_input(ret_instr, memory_state_type, retaddr_def);

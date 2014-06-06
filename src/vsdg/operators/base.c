@@ -28,7 +28,7 @@ operation::narguments() const noexcept
 	throw std::logic_error("abstract base class");
 }
 
-const jive_type &
+const jive::base::type &
 operation::argument_type(size_t index) const noexcept
 {
 	throw std::logic_error("abstract base class");
@@ -40,7 +40,7 @@ operation::nresults() const noexcept
 	throw std::logic_error("abstract base class");
 }
 
-const jive_type &
+const jive::base::type &
 operation::result_type(size_t index) const noexcept
 {
 	throw std::logic_error("abstract base class");

@@ -23,7 +23,7 @@ bits_unary_operation::narguments() const noexcept
 	return 1;
 }
 
-const jive_type &
+const jive::base::type &
 bits_unary_operation::argument_type(size_t index) const noexcept
 {
 	return type_;
@@ -35,7 +35,7 @@ bits_unary_operation::nresults() const noexcept
 	return 1;
 }
 
-const jive_type &
+const jive::base::type &
 bits_unary_operation::result_type(size_t index) const noexcept
 {
 	return type_;
@@ -80,7 +80,7 @@ bits_binary_operation::narguments() const noexcept
 	return arity_;
 }
 
-const jive_type &
+const jive::base::type &
 bits_binary_operation::argument_type(size_t index) const noexcept
 {
 	return type_;
@@ -92,7 +92,7 @@ bits_binary_operation::nresults() const noexcept
 	return 1;
 }
 
-const jive_type &
+const jive::base::type &
 bits_binary_operation::result_type(size_t index) const noexcept
 {
 	return type_;

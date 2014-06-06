@@ -26,7 +26,7 @@ pre_op_transfer(
 	const jive_resource_class * resource_class =
 		jive_variable_get_resource_class(origin->ssavar->variable);
 	resource_class = jive_resource_class_relax(resource_class);
-	const jive_type * type = jive_resource_class_get_type(resource_class);
+	const jive::base::type * type = jive_resource_class_get_type(resource_class);
 	
 	jive_node * xfer_node = jive_splitnode_create(
 		node->region,
@@ -61,7 +61,7 @@ post_op_transfer(
 	const jive_resource_class * resource_class =
 		jive_variable_get_resource_class(origin->ssavar->variable);
 	resource_class = jive_resource_class_relax(resource_class);
-	const jive_type * type = jive_resource_class_get_type(resource_class);
+	const jive::base::type * type = jive_resource_class_get_type(resource_class);
 	
 	jive_node * xfer_node = jive_splitnode_create(node->region,
 		type, origin, resource_class,

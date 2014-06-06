@@ -35,7 +35,7 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
-	virtual bool operator==(const jive_type & type) const noexcept override;
+	virtual bool operator==(const jive::base::type & type) const noexcept override;
 
 	virtual jive::reuse::type * copy() const override;
 
@@ -107,7 +107,7 @@ type::label(jive_buffer & buffer) const
 }
 
 bool
-type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive::base::type & other) const noexcept
 {
 	return dynamic_cast<const jive::reuse::type*>(&other) != nullptr;
 }

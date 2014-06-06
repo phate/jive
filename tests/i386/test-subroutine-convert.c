@@ -25,7 +25,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	jive::addr::type addr;
-	const jive_type * addrptr = &addr;
+	const jive::base::type * addrptr = &addr;
 	jive::bits::type bits32(32);
 	const char * tmparray0[] = {"arg"};
 	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrptr, tmparray0);

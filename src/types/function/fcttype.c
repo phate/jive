@@ -20,28 +20,28 @@ namespace fct {
 
 type::~type() noexcept {}
 
-type::type(size_t narguments, const jive_type ** argument_types, size_t nreturns,
-	const jive_type ** return_types)
+type::type(size_t narguments, const jive::base::type ** argument_types, size_t nreturns,
+	const jive::base::type ** return_types)
 	: jive::value::type()
 {
 	size_t i;
 	for (i = 0; i < narguments; i++)
-		argument_types_.push_back(std::unique_ptr<jive_type>(argument_types[i]->copy()));
+		argument_types_.push_back(std::unique_ptr<jive::base::type>(argument_types[i]->copy()));
 
 	for (i = 0; i < nreturns; i++)
-		return_types_.push_back(std::unique_ptr<jive_type>(return_types[i]->copy()));
+		return_types_.push_back(std::unique_ptr<jive::base::type>(return_types[i]->copy()));
 }
 
 type::type(
-	const std::vector<std::unique_ptr<jive_type>> & argument_types,
-	const std::vector<std::unique_ptr<jive_type>> & return_types)
+	const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
+	const std::vector<std::unique_ptr<jive::base::type>> & return_types)
 	: jive::value::type()
 {
 	for (size_t i = 0; i < argument_types.size(); i++)
-		argument_types_.push_back(std::unique_ptr<jive_type>(argument_types[i]->copy()));
+		argument_types_.push_back(std::unique_ptr<jive::base::type>(argument_types[i]->copy()));
 
 	for (size_t i = 0; i < return_types.size(); i++)
-		return_types_.push_back(std::unique_ptr<jive_type>(return_types[i]->copy()));
+		return_types_.push_back(std::unique_ptr<jive::base::type>(return_types[i]->copy()));
 }
 
 type::type(const jive::fct::type & rhs)
@@ -49,10 +49,10 @@ type::type(const jive::fct::type & rhs)
 {
 	size_t i;
 	for (i = 0; i < rhs.narguments(); i++)
-		argument_types_.push_back(std::unique_ptr<jive_type>(rhs.argument_type(i)->copy()));
+		argument_types_.push_back(std::unique_ptr<jive::base::type>(rhs.argument_type(i)->copy()));
 
 	for (i = 0; i < rhs.nreturns(); i++)
-		return_types_.push_back(std::unique_ptr<jive_type>(rhs.return_type(i)->copy()));
+		return_types_.push_back(std::unique_ptr<jive::base::type>(rhs.return_type(i)->copy()));
 }
 
 type::type(jive::fct::type && other) noexcept
@@ -69,7 +69,7 @@ type::label(jive_buffer & buffer) const
 }
 
 bool
-type::operator==(const jive_type & _other) const noexcept
+type::operator==(const jive::base::type & _other) const noexcept
 {
 	const jive::fct::type * other = dynamic_cast<const jive::fct::type*>(&_other);
 	if (other == nullptr)
@@ -120,8 +120,8 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 /* input */
 
-input::input(size_t narguments, const jive_type ** argument_types,
-	size_t nreturns, const jive_type ** return_types, struct jive_node * node, size_t index,
+input::input(size_t narguments, const jive::base::type ** argument_types,
+	size_t nreturns, const jive::base::type ** return_types, struct jive_node * node, size_t index,
 	jive_output * origin)
 	: jive::value::input(node, index, origin)
 	, type_(narguments, argument_types, nreturns, return_types)
@@ -137,8 +137,8 @@ input::~input() noexcept {}
 
 /* output */
 
-output::output(size_t narguments, const jive_type ** argument_types,
-	size_t nreturns, const jive_type ** return_types, jive_node * node, size_t index)
+output::output(size_t narguments, const jive::base::type ** argument_types,
+	size_t nreturns, const jive::base::type ** return_types, jive_node * node, size_t index)
 	: jive::value::output(node, index)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
@@ -152,8 +152,8 @@ output::~output() noexcept {}
 
 /* gate */
 
-gate::gate(size_t narguments, const jive_type ** argument_types,
-	size_t nreturns, const jive_type ** return_types, jive_graph * graph, const char name[])
+gate::gate(size_t narguments, const jive::base::type ** argument_types,
+	size_t nreturns, const jive::base::type ** return_types, jive_graph * graph, const char name[])
 	: jive::value::gate(graph, name)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}

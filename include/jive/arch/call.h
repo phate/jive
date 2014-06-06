@@ -14,7 +14,10 @@
 #include <jive/vsdg/node.h>
 
 struct jive_context;
-struct jive_type;
+
+namespace jive {
+	class type;
+}
 
 /* FIXME: opaque type for now -- to be filled in later */
 struct jive_calling_convention;
@@ -27,12 +30,12 @@ public:
 
 	call_operation(
 		const jive_calling_convention * calling_convention,
-		const std::vector<std::unique_ptr<jive_type>> & return_types);
+		const std::vector<std::unique_ptr<jive::base::type>> & return_types);
 
 	inline
 	call_operation(
 		const jive_calling_convention * calling_convention,
-		std::vector<std::unique_ptr<jive_type>> && return_types) noexcept
+		std::vector<std::unique_ptr<jive::base::type>> && return_types) noexcept
 		: calling_convention_(calling_convention)
 		, return_types_(std::move(return_types))
 	{
@@ -45,11 +48,11 @@ public:
 	inline const jive_calling_convention *
 	calling_convention() const noexcept { return calling_convention_; }
 
-	inline const std::vector<std::unique_ptr<jive_type>> &
+	inline const std::vector<std::unique_ptr<jive::base::type>> &
 	return_types() const noexcept { return return_types_; }
 private:
 	const jive_calling_convention * calling_convention_;
-	std::vector<std::unique_ptr<jive_type>> return_types_;
+	std::vector<std::unique_ptr<jive::base::type>> return_types_;
 };
 
 }
@@ -62,26 +65,26 @@ struct jive_node *
 jive_call_by_address_node_create(struct jive_region * region,
 	struct jive_output * target_address, const jive_calling_convention * calling_convention,
 	size_t narguments, struct jive_output * const arguments[],
-	size_t nreturns, const struct jive_type * const return_types[]);
+	size_t nreturns, const jive::base::type * const return_types[]);
 
 struct jive_output * const *
 jive_call_by_address_create(struct jive_output * target_address,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, struct jive_output * const arguments[],
-	size_t nreturns, const struct jive_type * const return_types[]);
+	size_t nreturns, const jive::base::type * const return_types[]);
 
 struct jive_node *
 jive_call_by_bitstring_node_create(struct jive_region * region,
 	struct jive_output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, struct jive_output * const arguments[],
-	size_t nreturns, const struct jive_type * const return_types[]);
+	size_t nreturns, const jive::base::type * const return_types[]);
 
 struct jive_output * const *
 jive_call_by_bitstring_create(struct jive_output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
 	size_t narguments, struct jive_output * const arguments[],
-	size_t nreturns, const struct jive_type * const return_types[]);
+	size_t nreturns, const jive::base::type * const return_types[]);
 
 JIVE_EXPORTED_INLINE jive_call_node *
 jive_call_node_cast(jive_node * node)

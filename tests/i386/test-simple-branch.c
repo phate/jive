@@ -50,10 +50,10 @@ static int test_main(void)
 		fn_region, &jive_i386_instr_int_jump_sgreatereq,
 		tmparray3, tmparray4);
 	
-	const jive_type * bits32 = &p1->type();
+	const jive::base::type * bits32 = &p1->type();
 	
 	jive_output * max;
-	const jive_type * tmparray5[] = {bits32};
+	const jive::base::type * tmparray5[] = {bits32};
 	jive_output * tmparray6[] = {p2};
 	jive_output * tmparray7[] = {p1};
 	jive_gamma(bge->outputs[0], 1,

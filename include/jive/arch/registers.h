@@ -9,7 +9,12 @@
 #include <jive/vsdg/resource.h>
 
 struct jive_graph;
-struct jive_type;
+
+namespace jive {
+namespace base {
+	class type;
+}
+}
 
 typedef struct jive_register_class jive_register_class;
 typedef struct jive_register_name jive_register_name;
@@ -30,7 +35,7 @@ struct jive_register_class {
 	size_t loadstore_width;
 };
 
-const struct jive_type *
+const struct jive::base::type *
 jive_register_class_get_type(const jive_register_class * self);
 
 struct jive_gate *

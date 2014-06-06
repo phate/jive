@@ -24,7 +24,7 @@ jive_theta_head_node_create_(jive_region * region, const jive_node_attrs * attrs
 {
 	jive_node * self = jive::create_operation_node(jive_op_theta_head());
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
@@ -41,9 +41,9 @@ jive_theta_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	jive_node * self = jive::create_operation_node(jive_op_theta_tail());
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_TAIL_NODE;
 	jive_node_init_(self, region,
 		1, &control_ptr, operands,
@@ -60,7 +60,7 @@ jive_theta_node_create_(jive_region * region, const jive_node_attrs * attrs,
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	jive_node * self = jive::create_operation_node(jive_op_theta());
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	self->class_ = &JIVE_THETA_NODE;
 	jive_node_init_(self, region,
 		1, &ancptr, operands,
@@ -107,7 +107,7 @@ jive_theta_head_node_create(jive_region * region)
 {
 	jive_node * self = jive::create_operation_node(jive_op_theta_head());
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_HEAD_NODE;
 	jive_node_init_(self, region,
 		0, NULL, NULL,
@@ -122,9 +122,9 @@ jive_theta_tail_node_create(jive_region * region, jive_output * predicate)
 {
 	jive_node * self = jive::create_operation_node(jive_op_theta_tail());
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	jive::ctl::type control;
-	const jive_type * control_ptr = &control;
+	const jive::base::type * control_ptr = &control;
 	self->class_ = &JIVE_THETA_TAIL_NODE;
 	jive_node_init_(self, region,
 		1, &control_ptr, &predicate,
@@ -140,7 +140,7 @@ jive_theta_node_create(jive_region * region,
 {
 	jive_node * self = jive::create_operation_node(jive_op_theta());
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	self->class_ = &JIVE_THETA_NODE;
 	jive_node_init_(self, region,
 		1, &ancptr, &loop_body,
@@ -152,7 +152,7 @@ jive_theta_node_create(jive_region * region,
 jive_node *
 jive_theta_create(
 	jive_region * region,
-	size_t nvalues, const jive_type * const * types, jive_output * const * values)
+	size_t nvalues, const jive::base::type * const * types, jive_output * const * values)
 {
 	jive_region * loop_region = jive_region_create_subregion(region);
 	jive_node * head = jive_theta_head_node_create(loop_region);
@@ -208,7 +208,7 @@ jive_theta_loopvar_enter(jive_theta self, struct jive_output * pre_value)
 	
 	size_t index = state->nloopvars;
 	
-	const jive_type * type = &pre_value->type();
+	const jive::base::type * type = &pre_value->type();
 	++ state->nloopvars;
 	state->loopvars = jive_context_realloc(context,
 		state->loopvars, sizeof(state->loopvars[0]) * state->nloopvars);

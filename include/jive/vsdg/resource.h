@@ -14,7 +14,12 @@
 
 struct jive_context;
 struct jive_graph;
-struct jive_type;
+
+namespace jive {
+namespace base {
+	class type;
+}
+}
 
 typedef struct jive_resource_class_class jive_resource_class_class;
 typedef struct jive_resource_class jive_resource_class;
@@ -60,7 +65,7 @@ struct jive_resource_class {
 	const jive_resource_class_demotion * demotions;
 	
 	/** \brief Port and gate type corresponding to this resource */
-	const struct jive_type * type;
+	const jive::base::type * type;
 };
 
 struct jive_resource_class_class {
@@ -111,7 +116,7 @@ jive_resource_class_get_resource_names(const jive_resource_class * self,
 	*names = self->names;
 }
 
-JIVE_EXPORTED_INLINE const struct jive_type *
+JIVE_EXPORTED_INLINE const jive::base::type *
 jive_resource_class_get_type(const jive_resource_class * self)
 {
 	return self->type;

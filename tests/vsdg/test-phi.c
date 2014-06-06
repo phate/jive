@@ -28,7 +28,7 @@ static int test_main()
 
 	jive_test_value_type vtype;
 	jive::fct::type f0type(0, NULL, 0, NULL);
-	const jive_type * tmparray0[] = {&vtype};
+	const jive::base::type * tmparray0[] = {&vtype};
 	jive::fct::type f1type(0, NULL, 0, NULL);
 	jive::fct::type f2type(1, tmparray0, 1, tmparray0);
 
@@ -58,7 +58,7 @@ static int test_main()
 	jive_phi_end(phi, 3, fns);
 
 	jive_output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
-	const jive_type * tmparray2[] = {&f0type, &f1type, &f2type};
+	const jive::base::type * tmparray2[] = {&f0type, &f1type, &f2type};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		3, tmparray2, results,

@@ -30,7 +30,7 @@ create_testgraph_postop_xfer(jive_context * context)
 		0, NULL
 	);
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
-	const jive_type * memtype = &memstate->type();
+	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
@@ -64,7 +64,7 @@ create_testgraph_preop_xfer(jive_context * context)
 		0, NULL
 	);
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
-	const jive_type * memtype = &memstate->type();
+	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
@@ -101,7 +101,7 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 		0, NULL
 	);
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
-	const jive_type * memtype = &memstate->type();
+	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
@@ -139,7 +139,7 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 		0, NULL
 	);
 	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
-	const jive_type * memtype = &memstate->type();
+	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);

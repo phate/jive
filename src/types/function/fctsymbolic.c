@@ -70,7 +70,7 @@ jive_symbolicfunction_node_init_(
 	const char * fctname,
 	const jive::fct::type * type)
 {
-	const jive_type * rtype = type;
+	const jive::base::type * rtype = type;
 	jive_node_init_(node, graph->root_region,
 		0, NULL, NULL,
 		1, &rtype);

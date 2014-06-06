@@ -28,7 +28,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 
 	jive_test_value_type vtype;
-	const jive_type * vtype_ptr = &vtype;
+	const jive::base::type * vtype_ptr = &vtype;
 	jive_node * a = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype_ptr);
 	jive_node * b = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype_ptr);
 	jive_node * c = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &a->outputs[0], 1,

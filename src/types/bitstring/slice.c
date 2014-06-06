@@ -82,8 +82,8 @@ jive_bitslice_node_init_(
 	size_t nbits = static_cast<jive::bits::output*>(origin)->nbits();
 	jive::bits::type input_type(nbits);
 	jive::bits::type output_type(self->operation().high() - self->operation().low());
-	const jive_type * input_typeptr = &input_type;
-	const jive_type * output_typeptr = &output_type;
+	const jive::base::type * input_typeptr = &input_type;
+	const jive::base::type * output_typeptr = &output_type;
 	jive_node_init_(self, region,
 		1, &input_typeptr, &origin,
 		1, &output_typeptr);

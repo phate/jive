@@ -15,14 +15,14 @@
 namespace jive {
 namespace state {
 
-class type : public jive_type {
+class type : public jive::base::type {
 public:
 	virtual ~type() noexcept;
 
 	virtual jive::state::type * copy() const override = 0;
 
 protected:
-	inline constexpr type() noexcept : jive_type() {};
+	inline constexpr type() noexcept : jive::base::type() {};
 };
 
 class input : public jive_input {
@@ -57,7 +57,7 @@ class statemux_operation final : public operation {
 public:
 	inline statemux_operation(
 		size_t noutputs,
-		const jive_type & type)
+		const jive::base::type & type)
 		: noutputs_(noutputs)
 		, type_(type.copy())
 	{
@@ -74,10 +74,10 @@ public:
 		statemux_operation && other) noexcept = default;
 
 	inline size_t noutputs() const noexcept { return noutputs_; }
-	inline const jive_type & type() const noexcept { return *type_; }
+	inline const jive::base::type & type() const noexcept { return *type_; }
 private:
 	size_t noutputs_;
-	std::unique_ptr<jive_type> type_;
+	std::unique_ptr<jive::base::type> type_;
 };
 
 }
@@ -86,14 +86,14 @@ typedef jive::operation_node<jive::statemux_operation> jive_statemux_node;
 
 jive_node *
 jive_statemux_node_create(struct jive_region * region,
-	const jive_type * statetype,
+	const jive::base::type * statetype,
 	size_t noperands, jive_output * const operands[],
 	size_t noutputs);
 
 jive_output *
-jive_state_merge(const jive_type * statetype, size_t nstates, jive_output * const states[]);
+jive_state_merge(const jive::base::type * statetype, size_t nstates, jive_output * const states[]);
 
 jive_node *
-jive_state_split(const jive_type * statetype, jive_output * state, size_t nstates);
+jive_state_split(const jive::base::type * statetype, jive_output * state, size_t nstates);
 
 #endif

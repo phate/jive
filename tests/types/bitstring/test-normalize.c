@@ -23,7 +23,7 @@ static int test_main(void)
 
 	jive::bits::type bits32(32);
 	const char * tmparray0[] = {"arg"};
-	const jive_type * tmparray11[] = {&bits32};
+	const jive::base::type * tmparray11[] = {&bits32};
 	jive_lambda * lambda = jive_lambda_begin(graph, 1, tmparray11, tmparray0);
 
 	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);

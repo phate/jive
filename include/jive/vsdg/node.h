@@ -19,6 +19,12 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/tracker.h>
 
+namespace jive {
+namespace base {
+	class type;
+}
+}
+
 typedef struct jive_node jive_node;
 typedef struct jive_node_class jive_node_class;
 
@@ -32,7 +38,6 @@ struct jive_gate;
 struct jive_input;
 struct jive_output;
 struct jive_region;
-struct jive_type;
 enum jive_traversal_nodestate;
 struct jive_resource_class_count;
 struct jive_substitution_map;
@@ -269,10 +274,10 @@ jive_node_valid_edge(const jive_node * self, const struct jive_output * origin);
 
 struct jive_input *
 jive_node_add_input(
-	jive_node * self, const struct jive_type * type, struct jive_output * initial_operand);
+	jive_node * self, const jive::base::type * type, struct jive_output * initial_operand);
 
 struct jive_output *
-jive_node_add_output(jive_node * self, const struct jive_type * type);
+jive_node_add_output(jive_node * self, const jive::base::type * type);
 
 struct jive_output *
 jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);

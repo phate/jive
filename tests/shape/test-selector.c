@@ -71,8 +71,8 @@ create_computation_node(jive_graph * graph,
 	size_t noutputs)
 {
 	jive_test_value_type type;
-	const jive_type * input_types[noperands];
-	const jive_type * output_types[noperands];
+	const jive::base::type * input_types[noperands];
+	const jive::base::type * output_types[noperands];
 	
 	size_t n;
 	for (n = 0; n < noperands; n++)
@@ -98,7 +98,7 @@ create_spill_node(jive_graph * graph,
 	jive_output * operand)
 {
 	jive_test_value_type type;
-	const jive_type * type_ptr = &type;
+	const jive::base::type * type_ptr = &type;
 	jive_node * node = jive_test_node_create(graph->root_region,
 		1, &type_ptr, &operand,
 		1, &type_ptr);
@@ -114,7 +114,7 @@ create_restore_node(jive_graph * graph,
 	jive_output * operand)
 {
 	jive_test_value_type type;
-	const jive_type * type_ptr = &type;
+	const jive::base::type * type_ptr = &type;
 	jive_node * node = jive_test_node_create(graph->root_region,
 		1, &type_ptr, &operand,
 		1, &type_ptr);

@@ -30,7 +30,7 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
-	virtual bool operator==(const jive_type & type) const noexcept override;
+	virtual bool operator==(const jive::base::type & type) const noexcept override;
 
 	virtual jive::rcd::type * copy() const override;
 

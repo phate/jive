@@ -84,8 +84,8 @@ jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
 	perform_check(context, operand, element);
 	
 	const jive::unn::type * operand_type = static_cast<const jive::unn::type*>(&operand->type());
-	const jive_type * output_type = operand_type->declaration()->elements[element];
-	const jive_type *  tmparray0[] = {&operand->type()};
+	const jive::base::type * output_type = operand_type->declaration()->elements[element];
+	const jive::base::type *  tmparray0[] = {&operand->type()};
 	jive_node_init_(self, region,
 		1, tmparray0, &operand,
 		1, &output_type);

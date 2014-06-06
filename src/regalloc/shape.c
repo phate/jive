@@ -509,8 +509,8 @@ do_split_begin(
 	size_t n;
 	for (n = 1; demotion->path[n]; n++) {
 		const jive_resource_class * out_rescls = demotion->path[n];
-		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
-		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
+		const jive::base::type * in_type = jive_resource_class_get_type(in_rescls);
+		const jive::base::type * out_type = jive_resource_class_get_type(out_rescls);
 		
 		jive_node * node = jive_splitnode_create(origin->node()->region,
 			in_type, origin, in_rescls,
@@ -539,8 +539,8 @@ do_split_end(
 	while (n != 0) {
 		n--;
 		const jive_resource_class * out_rescls = demotion->path[n];
-		const jive_type * in_type = jive_resource_class_get_type(in_rescls);
-		const jive_type * out_type = jive_resource_class_get_type(out_rescls);
+		const jive::base::type * in_type = jive_resource_class_get_type(in_rescls);
+		const jive::base::type * out_type = jive_resource_class_get_type(out_rescls);
 		
 		jive_node * node = jive_splitnode_create(region,
 			in_type, origin, in_rescls,
@@ -630,7 +630,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 				jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
 			const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_constraint);
 			new_rescls = jive_resource_class_relax(new_rescls);
-			const jive_type * type = &output->type();
+			const jive::base::type * type = &output->type();
 			
 			jive_node * split_node = jive_splitnode_create(self->region,
 				type, output, new_rescls,
@@ -686,7 +686,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 				jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
 			const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_constraint);
 			new_rescls = jive_resource_class_relax(new_rescls);
-			const jive_type * type = &output->type();
+			const jive::base::type * type = &output->type();
 			
 			jive_node * split_node = jive_splitnode_create(self->region,
 				type, output, new_rescls,
@@ -851,7 +851,7 @@ merge_single_ssavar_from_subregion(
 		time as this variable -- need to split in subregion */
 		
 		jive_output * output = ssavar->origin;
-		const jive_type * type = &output->type();
+		const jive::base::type * type = &output->type();
 		
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
 		rescls = jive_resource_class_relax(rescls);

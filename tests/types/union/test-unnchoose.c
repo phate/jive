@@ -34,7 +34,7 @@ static int test_main(void)
 	static jive::unn::type unntype(&decl);
 
 	jive::addr::type addrtype;
-	const jive_type * tmparray0[] = {&bits8, &unntype, &unntype, &addrtype};
+	const jive::base::type * tmparray0[] = {&bits8, &unntype, &unntype, &addrtype};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		4, tmparray0);
@@ -46,7 +46,7 @@ static int test_main(void)
 	jive_output * c1 = jive_choose_create(0, u0);
 	jive_output * c2 = jive_choose_create(1, top->outputs[2]);
 	jive_output * c3 = jive_choose_create(0, load);
-	const jive_type * tmparray1[] = {&bits16, &bits8, &bits16, &bits8};
+	const jive::base::type * tmparray1[] = {&bits16, &bits8, &bits16, &bits8};
 	jive_output * tmparray2[] = {c0, c1, c2, c3};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,

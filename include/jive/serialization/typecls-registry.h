@@ -13,9 +13,13 @@
 
 #include <jive/common.h>
 
+namespace jive {
+namespace base {
+	class type;
+}
+}
+
 struct jive_context;
-struct jive_type;
-struct jive_type_class;
 struct jive_serialization_driver;
 struct jive_token_ostream;
 struct jive_token_istream;
@@ -25,14 +29,14 @@ typedef struct jive_serialization_typecls jive_serialization_typecls;
 typedef void (*jive_typecls_serialize_function_t)(
 	const jive_serialization_typecls * self,
 	struct jive_serialization_driver * driver,
-	const struct jive_type * type,
+	const jive::base::type * type,
 	struct jive_token_ostream * os);
 
 typedef bool (*jive_typecls_deserialize_function_t)(
 	const jive_serialization_typecls * self,
 	struct jive_serialization_driver * driver,
 	struct jive_token_istream * is,
-	struct jive_type ** type);
+	struct jive::base::type ** type);
 
 struct jive_serialization_typecls {
 	const char * tag;

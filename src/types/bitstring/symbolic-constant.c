@@ -83,7 +83,7 @@ jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 	jive_bitsymbolicconstant_node * node = new jive_bitsymbolicconstant_node(*attrs);
 	node->class_ = &JIVE_BITSYMBOLICCONSTANT_NODE;
 	jive::bits::type type(attrs->nbits);
-	const jive_type * typeptr = &type;
+	const jive::base::type * typeptr = &type;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &typeptr);

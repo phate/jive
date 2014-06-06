@@ -147,7 +147,7 @@ static void
 jive_memory_type_serialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
-	const jive_type * type,
+	const jive::base::type * type,
 	jive_token_ostream * os)
 {
 	/* no attributes */
@@ -158,7 +158,7 @@ jive_memory_type_deserialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
 	jive_token_istream * is,
-	jive_type ** type)
+	jive::base::type ** type)
 {
 	*type = new jive::mem::type();
 	return true;

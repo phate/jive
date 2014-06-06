@@ -55,8 +55,8 @@ static int test_main(void)
 	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t);
 
 	assert(jive_node_match_attrs(s1->node(), jive_node_get_attrs(s2->node())));
-	const jive_type *  tmparray2[] = {&bits32, &bits32, &bits32, &bits32, &bits32, &bits32, &bits32,
-		&bits32};
+	const jive::base::type *  tmparray2[] = {&bits32, &bits32, &bits32, &bits32, &bits32, &bits32,
+		&bits32, &bits32};
 	jive_output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
 	assert(!jive_node_match_attrs(s0->node(), jive_node_get_attrs(s3->node())));
 

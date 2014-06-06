@@ -139,14 +139,14 @@ struct jive_lambda {
 	\brief Begin constructing a lambda region
 */
 struct jive_lambda *
-jive_lambda_begin(struct jive_graph * graph,
-	size_t narguments, const jive_type * const argument_types[], const char * const argument_names[]);
+jive_lambda_begin(struct jive_graph * graph, size_t narguments,
+	const jive::base::type * const argument_types[], const char * const argument_names[]);
 
 /**
 	\brief End constructing a lambda region
 */
 struct jive_output *
-jive_lambda_end(struct jive_lambda * lambda,
-	size_t nresults, const jive_type * const result_types[], struct jive_output * const results[]);
+jive_lambda_end(struct jive_lambda * lambda, size_t nresults,
+	const jive::base::type * const result_types[], struct jive_output * const results[]);
 
 #endif

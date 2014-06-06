@@ -391,11 +391,11 @@ jive_store_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 
 void
 jive_store_node_init_(jive_store_node * self, jive_region * region,
-	jive_output * address, const jive_type * address_type,
+	jive_output * address, const jive::base::type * address_type,
 	const jive::value::type * datatype, jive_output * value,
 	size_t nstates, jive_output * const states[])
 {
-	const jive_type * operand_types[2] = {address_type, datatype};
+	const jive::base::type * operand_types[2] = {address_type, datatype};
 	jive_output * operands[2] = {address, value};
 
 	jive_node_init_(self, region,
@@ -405,7 +405,7 @@ jive_store_node_init_(jive_store_node * self, jive_region * region,
 	/* FIXME: check the type of the states */
 	size_t n;
 	for (n = 0; n < nstates; n++) {
-		const jive_type * type = &states[n]->type();
+		const jive::base::type * type = &states[n]->type();
 		jive_node_add_input(self, type, states[n]);
 		jive_node_add_output(self, type);
 	}

@@ -48,7 +48,7 @@ jive_subroutine_enter_node_create(jive_region * region)
 	
 	node->class_ = &JIVE_SUBROUTINE_ENTER_NODE;
 	jive::ctl::type ctl;
-	const jive_type * ctl_ptr = &ctl;
+	const jive::base::type * ctl_ptr = &ctl;
 	jive_node_init_(node, region,
 		0, NULL, NULL,
 		1, &ctl_ptr);
@@ -90,9 +90,9 @@ jive_subroutine_leave_node_create(jive_region * region, jive_output * control_tr
 	
 	node->class_ = &JIVE_SUBROUTINE_LEAVE_NODE;
 	jive::ctl::type ctl;
-	const jive_type * ctl_ptr = &ctl;
+	const jive::base::type * ctl_ptr = &ctl;
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	jive_node_init_(node, region,
 		1, &ctl_ptr, &control_transfer,
 		1, &ancptr);
@@ -183,9 +183,9 @@ jive_subroutine_node_create(
 						we have right now
 	*/
 	jive::mem::type objstate_type;
-	const jive_type * typeptr = &objstate_type;
+	const jive::base::type * typeptr = &objstate_type;
 	jive::achr::type anchor;
-	const jive_type * ancptr = &anchor;
+	const jive::base::type * ancptr = &anchor;
 	jive_node_init_(node, region,
 		1, &ancptr, &subroutine_region->bottom->outputs[0],
 		1, &typeptr);

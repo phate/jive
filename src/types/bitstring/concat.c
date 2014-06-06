@@ -27,7 +27,7 @@ jive_bitstring_multiop_node_init_(
 	struct jive_output * const operands[],
 	size_t nbits)
 {
-	const jive_type * operand_types[noperands];
+	const jive::base::type * operand_types[noperands];
 	jive::bits::type * operand_type_structs[noperands];
 	size_t n;
 	
@@ -38,7 +38,7 @@ jive_bitstring_multiop_node_init_(
 	}
 	
 	jive::bits::type output_type(nbits);
-	const jive_type * type_array[] = {&output_type};
+	const jive::base::type * type_array[] = {&output_type};
 	jive_node_init_(self, region,
 		noperands, operand_types, operands,
 		1, type_array);

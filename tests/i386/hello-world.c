@@ -133,7 +133,7 @@ static int test_main(void)
 	jive_node_add_input(load_fd, &state_type, state);
 	
 	const jive_resource_class * gpr = &jive_i386_regcls_gpr.base;
-	const jive_type * gpr_type = jive_resource_class_get_type(gpr);
+	const jive::base::type * gpr_type = jive_resource_class_get_type(gpr);
 	jive::mem::type memory_type;
 	
 	jive_node * arg1 = jive_splitnode_create(
@@ -163,7 +163,7 @@ static int test_main(void)
 	
 	/* mark call as affecting global state */
 	jive_output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
-	const jive_type * memtype = &memstate->type();
+	const jive::base::type * memtype = &memstate->type();
 	jive_node_add_input(call_write, memtype, memstate);
 	jive_subroutine_simple_set_global_state(
 		i386_fn, jive_node_add_output(call_write, memtype));

@@ -148,7 +148,7 @@ jive_phi_begin(struct jive_graph * graph);
 	\brief Add a fixpoint variable of given type
 */
 jive_phi_fixvar
-jive_phi_fixvar_enter(jive_phi self, const struct jive_type * type);
+jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type);
 
 /**
 	\brief Set fixpoint value of variable
@@ -179,7 +179,7 @@ struct jive_phi_extension {
 */
 struct jive_phi_extension *
 jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
-	const jive_type * fixvar_types[]);
+	const jive::base::type * fixvar_types[]);
 
 /**
 	\brief End extending a phi construct

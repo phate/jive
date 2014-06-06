@@ -28,7 +28,7 @@ type::label(jive_buffer & buffer) const
 }
 
 bool
-type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive::base::type & other) const noexcept
 {
 	return dynamic_cast<const jive::ctl::type*>(&other) != nullptr;
 }

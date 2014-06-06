@@ -45,9 +45,9 @@ jive_fltgreater_node_init_(struct jive_node * self, struct jive_region * region,
 	struct jive_output * op1, struct jive_output * op2)
 {
 	jive::ctl::type ctype;
-	const jive_type * ctype_ptr = &ctype;
+	const jive::base::type * ctype_ptr = &ctype;
 	jive::flt::type flttype;
-	const jive_type * tmparray0[] = {&flttype, &flttype};
+	const jive::base::type * tmparray0[] = {&flttype, &flttype};
 	jive_output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
