@@ -231,7 +231,7 @@ jive_load_node_check_operands_(const jive_node_class * cls, const jive_node_attr
 {
 	JIVE_DEBUG_ASSERT(noperands > 0);
 
-	const jive_address_output * addro = dynamic_cast<const jive_address_output*>(operands[0]);
+	const jive::addr::output * addro = dynamic_cast<const jive::addr::output*>(operands[0]);
 	const jive::bits::output * bitso = dynamic_cast<const jive::bits::output*>(operands[0]);
 
 	if (!addro && !bitso)
@@ -305,7 +305,7 @@ jive_load_by_address_node_create(jive_region * region,
 	jive_load_node * node = new jive_load_node(jive::load_operation(0, datatype));
 	
 	node->class_ = &JIVE_LOAD_NODE;
-	jive_address_type address_type;
+	jive::addr::type address_type;
 	jive_load_node_init_(node, region, address, &address_type, datatype, nstates, states);
 	
 	return node;

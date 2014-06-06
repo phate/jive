@@ -36,7 +36,7 @@ static int test_main(void)
 		elements : tmparray0
 	};
 	
-	jive_address_type addrtype;
+	jive::addr::type addrtype;
 	const jive_type * tmparray1[] = {&addrtype, &addrtype};
 	
 	jive_node * top = jive_test_node_create(graph->root_region,

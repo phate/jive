@@ -78,7 +78,7 @@ static int test_main(void)
 	assert(!jive_node_match_attrs(o2->node(), attrs3));
 	assert(jive_node_match_attrs(o2->node(), attrs2));
 	
-	jive_address_type addr;
+	jive::addr::type addr;
 	jive::bits::type bits32(32);
 	jive::bits::type bits16(16);
 	const jive_type * tmparray0[] = {&addr, &addr, &bits32, &bits32, &bits16};

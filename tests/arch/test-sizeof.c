@@ -33,7 +33,7 @@ static int test_main(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits18(18);
 	jive::bits::type bits32(32);
-	jive_address_type addr;
+	jive::addr::type addr;
 	const jive_value_type *  tmparray0[] = {&bits4, &bits8, &bits18};
 
 	jive_record_declaration r_decl = {3, tmparray0};

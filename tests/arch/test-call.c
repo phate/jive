@@ -25,7 +25,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_address_type addr;
+	jive::addr::type addr;
 	jive::bits::type bits16(16);
 	const jive_type * tmparray0[] = {&addr, &bits16, &addr};
 	jive_node * top = jive_test_node_create(graph->root_region,

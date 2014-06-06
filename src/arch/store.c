@@ -361,7 +361,7 @@ jive_store_node_check_operands_(const jive_node_class * cls, const jive_node_att
 {
 	JIVE_DEBUG_ASSERT(noperands > 1);
 
-	const jive_address_output * addro = dynamic_cast<const jive_address_output*>(operands[0]);
+	const jive::addr::output * addro = dynamic_cast<const jive::addr::output*>(operands[0]);
 	const jive::bits::output * bitso = dynamic_cast<const jive::bits::output*>(operands[0]);
 
 	if (!addro && !bitso)
@@ -434,7 +434,7 @@ jive_store_by_address_node_create(jive_region * region, jive_output * address,
 	jive_store_node * node = new jive_store_node(jive::store_operation(0, datatype));
 
 	node->class_ = &JIVE_STORE_NODE;
-	jive_address_type address_type;
+	jive::addr::type address_type;
 	jive_store_node_init_(node, region, address, &address_type, datatype, value, nstates, states);
 
 	return node;

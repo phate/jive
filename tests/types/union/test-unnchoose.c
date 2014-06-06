@@ -33,7 +33,7 @@ static int test_main(void)
 	static const jive_union_declaration decl = {3, decl_elems};
 	static jive_union_type unntype(&decl);
 
-	jive_address_type addrtype;
+	jive::addr::type addrtype;
 	const jive_type * tmparray0[] = {&bits8, &unntype, &unntype, &addrtype};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,

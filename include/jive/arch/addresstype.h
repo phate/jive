@@ -8,19 +8,22 @@
 
 #include <jive/vsdg/valuetype.h>
 
+namespace jive {
+namespace addr {
+
 /* address type */
 
-class jive_address_type final : public jive_value_type {
+class type final : public jive_value_type {
 public:
-	virtual ~jive_address_type() noexcept;
+	virtual ~type() noexcept;
 
-	inline constexpr jive_address_type() noexcept : jive_value_type() {};
+	inline constexpr type() noexcept : jive_value_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_address_type * copy() const override;
+	virtual jive::addr::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -32,44 +35,47 @@ public:
 
 /* address input */
 
-class jive_address_input final : public jive_value_input {
+class input final : public jive_value_input {
 public:
-	virtual ~jive_address_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_address_input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive_output * origin);
 
-	virtual const jive_address_type & type() const noexcept { return type_; }
+	virtual const jive::addr::type & type() const noexcept { return type_; }
 
 private:
-	jive_address_type type_;
+	jive::addr::type type_;
 };
 
 /* address output */
 
-class jive_address_output final : public jive_value_output {
+class output final : public jive_value_output {
 public:
-	virtual ~jive_address_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_address_output(jive_node * node, size_t index);
+	output(jive_node * node, size_t index);
 
-	virtual const jive_address_type & type() const noexcept { return type_; }
+	virtual const jive::addr::type & type() const noexcept { return type_; }
 
 private:
-	jive_address_type type_;
+	jive::addr::type type_;
 };
 
 /* address gate */
 
-class jive_address_gate final : public jive_value_gate {
+class gate final : public jive_value_gate {
 public:
-	virtual ~jive_address_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_address_gate(jive_graph * graph, const char name[]);
+	gate(jive_graph * graph, const char name[]);
 
-	virtual const jive_address_type & type() const noexcept { return type_; }
+	virtual const jive::addr::type & type() const noexcept { return type_; }
 
 private:
-	jive_address_type type_;
+	jive::addr::type type_;
 };
+
+}
+}
 
 #endif

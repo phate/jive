@@ -12,67 +12,72 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
-/* address_type inheritable members */
+namespace jive {
+namespace addr {
 
-jive_address_type::~jive_address_type() noexcept {}
+/* type */
+
+type::~type() noexcept {}
 
 void
-jive_address_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "addr");
 }
 
 bool
-jive_address_type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive_type & other) const noexcept
 {
-	return dynamic_cast<const jive_address_type*>(&other) != nullptr;
+	return dynamic_cast<const jive::addr::type*>(&other) != nullptr;
 }
 
-jive_address_type *
-jive_address_type::copy() const
+jive::addr::type *
+type::copy() const
 {
-	return new jive_address_type();
+	return new jive::addr::type();
 }
 
 jive_input *
-jive_address_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_address_input(node, index, origin);
+	return new jive::addr::input(node, index, origin);
 }
 
 jive_output *
-jive_address_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_address_output(node, index);
+	return new jive::addr::output(node, index);
 }
 
 jive_gate *
-jive_address_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_address_gate(graph, name);
+	return new jive::addr::gate(graph, name);
 }
 
-/* address_input inheritable members */
+/* input */
 
-jive_address_input::~jive_address_input() noexcept {}
+input::~input() noexcept {}
 
-jive_address_input::jive_address_input(struct jive_node * node, size_t index,
-	jive_output * origin)
+input::input(struct jive_node * node, size_t index, jive_output * origin)
 	: jive_value_input(node, index, origin)
 {}
 
-/* address_output inheritable members */
+/* output */
 
-jive_address_output::~jive_address_output() noexcept {}
+output::~output() noexcept {}
 
-jive_address_output::jive_address_output(jive_node * node, size_t index)
+output::output(jive_node * node, size_t index)
 	: jive_value_output(node, index)
 {}
 
-/*address_gate inheritable members */
+/* gate */
 
-jive_address_gate::~jive_address_gate() noexcept {}
+gate::~gate() noexcept {}
 
-jive_address_gate::jive_address_gate(jive_graph * graph, const char name[])
+gate::gate(jive_graph * graph, const char name[])
 	: jive_value_gate(graph, name)
 {}
+
+}
+}

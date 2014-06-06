@@ -27,7 +27,7 @@
 static bool
 type_contains_address(const jive_type * type)
 {
-	if (dynamic_cast<const jive_address_type*>(type))
+	if (dynamic_cast<const jive::addr::type*>(type))
 		return true;
 
 	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
@@ -47,7 +47,7 @@ type_contains_address(const jive_type * type)
 static jive_type *
 convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_context * context)
 {
-	if (dynamic_cast<const jive_address_type*>(type)) {
+	if (dynamic_cast<const jive::addr::type*>(type)) {
 		jive::bits::type bittype(nbits);
 		return bittype.copy();
 	}
@@ -442,8 +442,8 @@ jive_load_node_address_transform(jive_load_node * node, size_t nbits)
 {
 	const jive_node * node_ = node;
 
-	bool input_is_address = dynamic_cast<jive_address_input*>(node_->inputs[0]);
-	bool output_is_address = dynamic_cast<jive_address_output*>(node_->outputs[0]);
+	bool input_is_address = dynamic_cast<jive::addr::input*>(node_->inputs[0]);
+	bool output_is_address = dynamic_cast<jive::addr::output*>(node_->outputs[0]);
 
 	if (!input_is_address && !output_is_address)
 		return;
@@ -479,8 +479,8 @@ jive_store_node_address_transform(jive_store_node * node, size_t nbits)
 {
 	const jive_node * node_ = node;
 
-	bool input0_is_address = dynamic_cast<jive_address_input*>(node_->inputs[0]);
-	bool input1_is_address = dynamic_cast<jive_address_input*>(node_->inputs[1]);
+	bool input0_is_address = dynamic_cast<jive::addr::input*>(node_->inputs[0]);
+	bool input1_is_address = dynamic_cast<jive::addr::input*>(node_->inputs[1]);
 
 	if (!input0_is_address && !input1_is_address)
 		return;
@@ -534,7 +534,7 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 	bool transform = false;
 	jive_output * operands[node_->ninputs];
 	for (i = 0; i < node_->ninputs; i++){
-		if(dynamic_cast<jive_address_input*>(node_->inputs[i])){
+		if(dynamic_cast<jive::addr::input*>(node_->inputs[i])){
 			operands[i] = jive_address_to_bitstring_create(node_->inputs[i]->origin(), nbits,
 				&node->inputs[i]->origin()->type());
 			transform = true;
@@ -546,7 +546,7 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 	const jive_type * return_types[node_->noutputs];
 	jive::bits::type address_type(nbits);
 	for (i = 0; i < node_->noutputs; i++){
-		if (dynamic_cast<jive_address_output*>(node_->outputs[i])){
+		if (dynamic_cast<jive::addr::output*>(node_->outputs[i])){
 			return_types[i] = &address_type;
 			transform = true;
 		} else {
@@ -563,7 +563,7 @@ jive_call_node_address_transform(jive_call_node * node, size_t nbits)
 
 	for (i = 0; i < node_->noutputs; i++){
 		jive_output * output = call->outputs[i];
-		if(dynamic_cast<jive_address_output*>(node_->outputs[i]))
+		if(dynamic_cast<jive::addr::output*>(node_->outputs[i]))
 			output = jive_bitstring_to_address_create(call->outputs[i], nbits, &node->outputs[i]->type());
 		jive_output_replace(node_->outputs[i], output);
 	}

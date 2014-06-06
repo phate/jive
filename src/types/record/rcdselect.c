@@ -203,7 +203,7 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 			states[n] = load_node->inputs[n+1]->origin();
 
 		jive_output * element_address = jive_memberof(address, decl, attrs->element);
-		if (dynamic_cast<jive_address_output*>(address)) {
+		if (dynamic_cast<jive::addr::output*>(address)) {
 			return jive_load_by_address_create(element_address, decl->elements[attrs->element],
 				nstates, states);
 		} else {

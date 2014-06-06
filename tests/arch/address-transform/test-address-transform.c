@@ -33,7 +33,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_address_type addr;
+	jive::addr::type addr;
 	jive::mem::type mem;
 	jive::bits::type bits64(64);
 	const jive_type * tmparray0[] = {&bits64, &bits64, &mem};

@@ -26,7 +26,7 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_address_type addrtype;
+	jive::addr::type addrtype;
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
@@ -84,10 +84,10 @@ static int test_main(void)
 	for(; node; node = jive_traverser_next(traverser)){
 		size_t i;
 		for(i = 0; i < node->ninputs; i++){
-			assert(!dynamic_cast<const jive_address_type*>(&node->inputs[i]->type()));
+			assert(!dynamic_cast<const jive::addr::type*>(&node->inputs[i]->type()));
 		}
 		for(i = 0; i < node->noutputs; i++){
-			assert(!dynamic_cast<const jive_address_type*>(&node->outputs[i]->type()));
+			assert(!dynamic_cast<const jive::addr::type*>(&node->outputs[i]->type()));
 		}
 	}
 	jive_traverser_destroy(traverser);

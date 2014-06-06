@@ -17,7 +17,7 @@ jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self,
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		return jive_memlayout_mapper_map_bitstring(self,
 			static_cast<const jive::bits::type*>(type_)->nbits());
-	} else if (dynamic_cast<const jive_address_type*>(type_)) {
+	} else if (dynamic_cast<const jive::addr::type*>(type_)) {
 		return jive_memlayout_mapper_map_address(self);
 	} else if (dynamic_cast<const jive_record_type*>(type_)) {
 		const jive_record_type * type = (const jive_record_type *) type_;

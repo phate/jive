@@ -33,7 +33,7 @@ static int test_main()
 	static const jive_record_declaration decl = {3, decl_elems};
 	static jive_record_type rcdtype(&decl);
 
-	jive_address_type addrtype;
+	jive::addr::type addrtype;
 	const jive_type * tmparray0[] = {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,

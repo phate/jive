@@ -25,7 +25,7 @@ test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_address_type addrtype;
+	jive::addr::type addrtype;
 	const jive_type * addrptr = &addrtype;
 	const char * tmparray0[] = {"x"};
 
