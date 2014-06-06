@@ -22,11 +22,14 @@
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/variable.h>
 
-class jive_reuse_type final : public jive_state_type {
-public:
-	virtual ~jive_reuse_type() noexcept {};
+namespace jive {
+namespace reuse {
 
-	jive_reuse_type(const jive_resource_name * name) noexcept;
+class type final : public jive_state_type {
+public:
+	virtual ~type() noexcept {};
+
+	type(const jive_resource_name * name) noexcept;
 
 	inline const jive_resource_name * name() const noexcept { return name_; }
 
@@ -34,7 +37,7 @@ public:
 
 	virtual bool operator==(const jive_type & type) const noexcept override;
 
-	virtual jive_reuse_type * copy() const override;
+	virtual jive::reuse::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -47,56 +50,56 @@ private:
 	const jive_resource_name * name_;
 };
 
-class jive_reuse_input final : public jive_state_input {
+class input final : public jive_state_input {
 public:
-	virtual ~jive_reuse_input() noexcept;
+	virtual ~input() noexcept {};
 
-	jive_reuse_input(const jive_resource_name * name, struct jive_node * node, size_t index,
+	input(const jive_resource_name * name, struct jive_node * node, size_t index,
 		jive_output * origin);
 
-	virtual const jive_reuse_type & type() const noexcept { return type_; }
+	virtual const jive::reuse::type & type() const noexcept { return type_; }
 
 	inline const jive_resource_name * name() const noexcept { return type_.name(); }
 
 private:
-	jive_reuse_type type_;
+	jive::reuse::type type_;
 };
 
-class jive_reuse_output final : public jive_state_output {
+class output final : public jive_state_output {
 public:
-	virtual ~jive_reuse_output() noexcept;
+	virtual ~output() noexcept {};
 
-	jive_reuse_output(const jive_resource_name * name, jive_node * node, size_t index);
+	output(const jive_resource_name * name, jive_node * node, size_t index);
 
-	virtual const jive_reuse_type & type() const noexcept { return type_; }
+	virtual const jive::reuse::type & type() const noexcept { return type_; }
 
 	inline const jive_resource_name * name() const noexcept { return type_.name(); }
 
 private:
-	jive_reuse_type type_;
+	jive::reuse::type type_;
 };
 
-class jive_reuse_gate final : public jive_state_gate {
+class gate final : public jive_state_gate {
 public:
-	virtual ~jive_reuse_gate() noexcept;
+	virtual ~gate() noexcept {};
 
-	jive_reuse_gate(const jive_resource_name * name_, jive_graph * graph, const char name[]);
+	gate(const jive_resource_name * name_, jive_graph * graph, const char name[]);
 
-	virtual const jive_reuse_type & type() const noexcept { return type_; }
+	virtual const jive::reuse::type & type() const noexcept { return type_; }
 
 	inline const jive_resource_name * name() const noexcept { return type_.name(); }
 
 private:
-	jive_reuse_type type_;
+	jive::reuse::type type_;
 };
 
-jive_reuse_type::jive_reuse_type(const jive_resource_name * name) noexcept
+type::type(const jive_resource_name * name) noexcept
 	: jive_state_type()
 	, name_(name)
 {}
 
 void
-jive_reuse_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "reuse %s", name()->name);
@@ -104,57 +107,53 @@ jive_reuse_type::label(jive_buffer & buffer) const
 }
 
 bool
-jive_reuse_type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive_type & other) const noexcept
 {
-	return dynamic_cast<const jive_reuse_type*>(&other) != nullptr;
+	return dynamic_cast<const jive::reuse::type*>(&other) != nullptr;
 }
 
-jive_reuse_type *
-jive_reuse_type::copy() const
+jive::reuse::type *
+type::copy() const
 {
-	return new jive_reuse_type(this->name());
+	return new jive::reuse::type(this->name());
 }
 
 jive_input *
-jive_reuse_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_reuse_input(name(), node, index, origin);
+	return new jive::reuse::input(name(), node, index, origin);
 }
 
 jive_output *
-jive_reuse_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_reuse_output(name(), node, index);
+	return new jive::reuse::output(name(), node, index);
 }
 
 jive_gate *
-jive_reuse_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_reuse_gate(this->name(), graph, name);
+	return new jive::reuse::gate(this->name(), graph, name);
 }
 
-jive_reuse_input::jive_reuse_input(const jive_resource_name * name, struct jive_node * node,
-	size_t index, jive_output * origin)
+input::input(const jive_resource_name * name, struct jive_node * node, size_t index,
+	jive_output * origin)
 	: jive_state_input(node, index, origin)
 	, type_(name)
 {}
 
-jive_reuse_input::~jive_reuse_input() noexcept {}
-
-jive_reuse_output::jive_reuse_output(const jive_resource_name * name, jive_node * node, size_t index)
+output::output(const jive_resource_name * name, jive_node * node, size_t index)
 	: jive_state_output(node, index)
 	, type_(name)
 {}
 
-jive_reuse_output::~jive_reuse_output() noexcept {}
-
-jive_reuse_gate::jive_reuse_gate(const jive_resource_name * name, jive_graph * graph,
-	const char name_[])
+gate::gate(const jive_resource_name * name, jive_graph * graph, const char name_[])
 	: jive_state_gate(graph, name_)
 	, type_(name)
 {}
 
-jive_reuse_gate::~jive_reuse_gate() noexcept {}
+}
+}
 
 /* structures for tracking current active set and users */
 
@@ -283,7 +282,7 @@ jive_names_use_clobber(jive_names_use * self, const jive_resource_name * name, j
 {
 	jive_used_name * used_name = jive_names_use_lookup(self, name);
 	
-	jive_reuse_type type(name);
+	jive::reuse::type type(name);
 	size_t n;
 	for (n = 0; n < used_name->read.nitems; n++) {
 		jive_node * before = used_name->read.items[n];
@@ -301,7 +300,7 @@ jive_names_use_write(jive_names_use * self, const jive_resource_name * name, jiv
 {
 	jive_used_name * used_name = jive_names_use_lookup(self, name);
 	
-	jive_reuse_type type(name);
+	jive::reuse::type type(name);
 	
 	size_t n;
 	for (n = 0; n < used_name->read.nitems; n++) {
