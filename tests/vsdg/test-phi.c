@@ -27,10 +27,10 @@ static int test_main()
 	jive_graph * graph = jive_graph_create(context);
 
 	jive_test_value_type vtype;
-	jive_function_type f0type(0, NULL, 0, NULL);
+	jive::fct::type f0type(0, NULL, 0, NULL);
 	const jive_type * tmparray0[] = {&vtype};
-	jive_function_type f1type(0, NULL, 0, NULL);
-	jive_function_type f2type(1, tmparray0, 1, tmparray0);
+	jive::fct::type f1type(0, NULL, 0, NULL);
+	jive::fct::type f2type(1, tmparray0, 1, tmparray0);
 
 	jive_phi phi = jive_phi_begin(graph);
 	jive_phi_fixvar fns[3];

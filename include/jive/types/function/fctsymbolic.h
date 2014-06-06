@@ -21,17 +21,17 @@ public:
 
 	symfunction_operation(
 		const std::string & name,
-		const jive_function_type & type);
+		const jive::fct::type & type);
 
 	symfunction_operation(
 		const std::string && name,
-		const jive_function_type && type) noexcept;
+		const jive::fct::type && type) noexcept;
 
 	inline const std::string& name() const noexcept { return name_; }
-	inline const jive_function_type& type() const noexcept { return type_; }
+	inline const jive::fct::type& type() const noexcept { return type_; }
 private:
 	std::string name_;
-	jive_function_type type_;
+	jive::fct::type type_;
 };
 
 }
@@ -43,11 +43,11 @@ extern const jive_node_class JIVE_SYMBOLICFUNCTION_NODE;
 
 jive_node *
 jive_symbolicfunction_node_create(
-	struct jive_graph * graph, const char * name, const jive_function_type * type);
+	struct jive_graph * graph, const char * name, const jive::fct::type * type);
 
 jive_output *
 jive_symbolicfunction_create(
-	struct jive_graph * graph, const char * name, const jive_function_type * type);
+	struct jive_graph * graph, const char * name, const jive::fct::type * type);
 
 JIVE_EXPORTED_INLINE jive_symbolicfunction_node *
 jive_symbolicfunction_node_cast(jive_node * node)

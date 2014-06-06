@@ -11,21 +11,24 @@
 #include <memory>
 #include <vector>
 
+namespace jive {
+namespace fct {
+
 /* function type */
 
-class jive_function_type final : public jive_value_type {
+class type final : public jive_value_type {
 public:
-	virtual ~jive_function_type() noexcept;
+	virtual ~type() noexcept;
 
-	jive_function_type(size_t narguments, const jive_type ** argument_types,
-		size_t nreturns, const jive_type ** return_types);
+	type(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+		const jive_type ** return_types);
 
-	jive_function_type(const std::vector<std::unique_ptr<jive_type>> & argument_types,
+	type(const std::vector<std::unique_ptr<jive_type>> & argument_types,
 		const std::vector<std::unique_ptr<jive_type>> & return_types);
 
-	jive_function_type(const jive_function_type & rhs);
+	type(const jive::fct::type & rhs);
 
-	jive_function_type(jive_function_type && other) noexcept;
+	type(jive::fct::type && other) noexcept;
 
 	inline size_t nreturns() const noexcept { return return_types_.size(); }
 
@@ -47,7 +50,7 @@ public:
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_function_type * copy() const override;
+	virtual jive::fct::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -63,17 +66,16 @@ private:
 
 /* function input */
 
-class jive_function_input final : public jive_value_input {
+class input final : public jive_value_input {
 public:
-	virtual ~jive_function_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_function_input(const jive_function_type & type, jive_node * node, size_t index,
-		jive_output * origin);
+	input(const jive::fct::type & type, jive_node * node, size_t index, jive_output * origin);
 
-	jive_function_input(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+	input(size_t narguments, const jive_type ** argument_types, size_t nreturns,
 		const jive_type ** return_types, struct jive_node * node, size_t index, jive_output * origin);
 
-	virtual const jive_function_type & type() const noexcept { return type_; }
+	virtual const jive::fct::type & type() const noexcept { return type_; }
 
 	inline size_t narguments() const noexcept { return type_.narguments(); }
 
@@ -86,21 +88,21 @@ public:
 		{ return type_.return_type(index); }
 
 private:
-	jive_function_type type_;
+	jive::fct::type type_;
 };
 
 /* function output */
 
-class jive_function_output final : public jive_value_output {
+class output final : public jive_value_output {
 public:
-	virtual ~jive_function_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_function_output(const jive_function_type & type, jive_node * node, size_t index);
+	output(const jive::fct::type & type, jive_node * node, size_t index);
 
-	jive_function_output(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+	output(size_t narguments, const jive_type ** argument_types, size_t nreturns,
 		const jive_type ** return_types, jive_node * node, size_t index);
 
-	virtual const jive_function_type & type() const noexcept { return type_; }
+	virtual const jive::fct::type & type() const noexcept { return type_; }
 
 	inline size_t narguments() const noexcept { return type_.narguments(); }
 
@@ -113,21 +115,21 @@ public:
 		{ return type_.return_type(index); }
 
 private:
-	jive_function_type type_;
+	jive::fct::type type_;
 };
 
 /* function gate */
 
-class jive_function_gate final : public jive_value_gate {
+class gate final : public jive_value_gate {
 public:
-	virtual ~jive_function_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_function_gate(const jive_function_type & type, jive_graph * graph, const char name[]);
+	gate(const jive::fct::type & type, jive_graph * graph, const char name[]);
 
-	jive_function_gate(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+	gate(size_t narguments, const jive_type ** argument_types, size_t nreturns,
 		const jive_type ** return_types, jive_graph * graph, const char name[]);
 
-	virtual const jive_function_type & type() const noexcept { return type_; }
+	virtual const jive::fct::type & type() const noexcept { return type_; }
 
 	inline size_t narguments() const noexcept { return type_.narguments(); }
 
@@ -140,7 +142,10 @@ public:
 		{ return type_.return_type(index); }
 
 private:
-	jive_function_type type_;
+	jive::fct::type type_;
 };
+
+}
+}
 
 #endif

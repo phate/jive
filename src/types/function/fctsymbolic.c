@@ -22,7 +22,7 @@ symfunction_operation::~symfunction_operation() noexcept {}
 
 symfunction_operation::symfunction_operation(
 	const std::string & name,
-	const jive_function_type & type)
+	const jive::fct::type & type)
 	: name_(name)
 	, type_(type)
 {
@@ -30,7 +30,7 @@ symfunction_operation::symfunction_operation(
 
 symfunction_operation::symfunction_operation(
 	const std::string && name,
-	const jive_function_type && type) noexcept
+	const jive::fct::type && type) noexcept
 	: name_(std::move(name))
 	, type_(std::move(type))
 {
@@ -68,7 +68,7 @@ jive_symbolicfunction_node_init_(
 	jive_symbolicfunction_node * node,
 	jive_graph * graph,
 	const char * fctname,
-	const jive_function_type * type)
+	const jive::fct::type * type)
 {
 	const jive_type * rtype = type;
 	jive_node_init_(node, graph->root_region,
@@ -117,7 +117,7 @@ jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_
 
 jive_node *
 jive_symbolicfunction_node_create(
-	struct jive_graph * graph, const char * name, const jive_function_type * type)
+	struct jive_graph * graph, const char * name, const jive::fct::type * type)
 {
 	jive_symbolicfunction_node * node = new jive_symbolicfunction_node(
 		jive::fct::symfunction_operation(name, *type));
@@ -128,7 +128,7 @@ jive_symbolicfunction_node_create(
 
 jive_output *
 jive_symbolicfunction_create(
-	struct jive_graph * graph, const char * name, const jive_function_type * type)
+	struct jive_graph * graph, const char * name, const jive::fct::type * type)
 {
 	return jive_symbolicfunction_node_create(graph, name, type)->outputs[0];
 }

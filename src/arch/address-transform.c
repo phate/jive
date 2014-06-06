@@ -30,7 +30,7 @@ type_contains_address(const jive_type * type)
 	if (dynamic_cast<const jive::addr::type*>(type))
 		return true;
 
-	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
+	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
 	if (fcttype != NULL) {
 		size_t n;
 		for (n = 0; n < fcttype->narguments(); n++)
@@ -52,7 +52,7 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 		return bittype.copy();
 	}
 
-	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
+	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
 	if (fcttype != NULL) {
 
 		size_t n;
@@ -67,7 +67,7 @@ convert_address_to_bitstring_type(const jive_type * type, size_t nbits, jive_con
 		for (n = 0; n < nresults; n++)
 			result_types[n] = convert_address_to_bitstring_type(fcttype->return_type(n), nbits, context);
 
-		jive_function_type return_type(narguments, argument_types, nresults, result_types);
+		jive::fct::type return_type(narguments, argument_types, nresults, result_types);
 
 		jive_type * new_fcttype = return_type.copy();
 
@@ -707,9 +707,9 @@ jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
 	jive_node * leave = jive_lambda_node_get_leave_node(node);
 	jive_region * region = jive_lambda_node_get_region(node);
 
-	const jive_function_type * fcttype = dynamic_cast<const jive_function_type*>(type);
-	jive_function_type * new_fcttype = (jive_function_type *) convert_address_to_bitstring_type(
-		fcttype, nbits, context);
+	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
+	jive::fct::type * new_fcttype = static_cast<jive::fct::type*>(convert_address_to_bitstring_type(
+		fcttype, nbits, context));
 
 	size_t n;
 	size_t nparameters = fcttype->narguments();

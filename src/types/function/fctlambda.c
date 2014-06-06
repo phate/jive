@@ -124,7 +124,7 @@ lambda_operation::lambda_operation(
 }
 
 lambda_operation::lambda_operation(
-	const jive_function_type & function_type,
+	const jive::fct::type & function_type,
 	const std::vector<jive_gate *> & argument_gates,
 	const std::vector<jive_gate *> & return_gates)
 	: function_type_(function_type)
@@ -134,7 +134,7 @@ lambda_operation::lambda_operation(
 }
 
 lambda_operation::lambda_operation(
-	jive_function_type && function_type,
+	jive::fct::type && function_type,
 	std::vector<jive_gate *> && argument_gates,
 	std::vector<jive_gate *> && return_gates) noexcept
 	: function_type_(std::move(function_type))
@@ -183,7 +183,7 @@ jive_lambda_node_create(jive_region * function_region)
 		return_gates.push_back(function_region->bottom->inputs[n+1]->gate);
 	}
 	
-	jive_function_type function_type(
+	jive::fct::type function_type(
 		narguments, argument_types,
 		nreturns, return_types);
 	
@@ -533,7 +533,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
 		phi_node = jive_phi_node_cast(jive_region_get_anchor(lambda_region->parent));
 
-		jive_function_type fcttype(nalive_parameters, alive_parameter_types, nalive_results,
+		jive::fct::type fcttype(nalive_parameters, alive_parameter_types, nalive_results,
 			alive_result_types);
 		const jive_type * tmparray0[] = {&fcttype};
 		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);

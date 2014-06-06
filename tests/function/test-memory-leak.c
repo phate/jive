@@ -9,25 +9,18 @@
 
 #include <assert.h>
 
-#include <jive/context.h>
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/valuetype.h>
 
 static int test_main(void)
 {
-	jive_context * context = jive_context_create();
-	
 	jive_test_value_type value_type;
 	const jive_type * value_type_ptr = &value_type;
-	jive_function_type t1(1, &value_type_ptr, 1, &value_type_ptr);
+	jive::fct::type t1(1, &value_type_ptr, 1, &value_type_ptr);
 
 	const jive_type * tmparray2[] = {&t1};
 	const jive_type * tmparray3[] = {&t1};
-	jive_function_type t2(1, tmparray2, 1, tmparray3);
-	
-	assert(jive_context_is_empty(context));
-	
-	jive_context_destroy(context);
+	jive::fct::type t2(1, tmparray2, 1, tmparray3);
 	
 	return 0;
 }

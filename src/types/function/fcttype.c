@@ -13,12 +13,15 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
-/* function_type inheritable members */
+namespace jive {
+namespace fct {
 
-jive_function_type::~jive_function_type() noexcept {}
+/* type */
 
-jive_function_type::jive_function_type(size_t narguments, const jive_type ** argument_types,
-	size_t nreturns, const jive_type ** return_types)
+type::~type() noexcept {}
+
+type::type(size_t narguments, const jive_type ** argument_types, size_t nreturns,
+	const jive_type ** return_types)
 	: jive_value_type()
 {
 	size_t i;
@@ -29,7 +32,7 @@ jive_function_type::jive_function_type(size_t narguments, const jive_type ** arg
 		return_types_.push_back(std::unique_ptr<jive_type>(return_types[i]->copy()));
 }
 
-jive_function_type::jive_function_type(
+type::type(
 	const std::vector<std::unique_ptr<jive_type>> & argument_types,
 	const std::vector<std::unique_ptr<jive_type>> & return_types)
 	: jive_value_type()
@@ -41,7 +44,7 @@ jive_function_type::jive_function_type(
 		return_types_.push_back(std::unique_ptr<jive_type>(return_types[i]->copy()));
 }
 
-jive_function_type::jive_function_type(const jive_function_type & rhs)
+type::type(const jive::fct::type & rhs)
 	: jive_value_type()
 {
 	size_t i;
@@ -52,7 +55,7 @@ jive_function_type::jive_function_type(const jive_function_type & rhs)
 		return_types_.push_back(std::unique_ptr<jive_type>(rhs.return_type(i)->copy()));
 }
 
-jive_function_type::jive_function_type(jive_function_type && other) noexcept
+type::type(jive::fct::type && other) noexcept
 	: jive_value_type()
 	, return_types_(std::move(other.return_types_))
 	, argument_types_(std::move(other.argument_types_))
@@ -60,15 +63,15 @@ jive_function_type::jive_function_type(jive_function_type && other) noexcept
 }
 
 void
-jive_function_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "fct");
 }
 
 bool
-jive_function_type::operator==(const jive_type & _other) const noexcept
+type::operator==(const jive_type & _other) const noexcept
 {
-	const jive_function_type * other = dynamic_cast<const jive_function_type*>(&_other);
+	const jive::fct::type * other = dynamic_cast<const jive::fct::type*>(&_other);
 	if (other == nullptr)
 		return false;
 
@@ -91,75 +94,76 @@ jive_function_type::operator==(const jive_type & _other) const noexcept
 	return true;
 }
 
-jive_function_type *
-jive_function_type::copy() const
+jive::fct::type *
+type::copy() const
 {
- return new jive_function_type(argument_types_, return_types_);
+ return new jive::fct::type(argument_types_, return_types_);
 }
 
 jive_input *
-jive_function_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_function_input(*this, node, index, origin);
+	return new jive::fct::input(*this, node, index, origin);
 }
 
 jive_output *
-jive_function_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_function_output(*this, node, index);
+	return new jive::fct::output(*this, node, index);
 }
 
 jive_gate *
-jive_function_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_function_gate(*this, graph, name);
+	return new jive::fct::gate(*this, graph, name);
 }
 
-/* function_input inheritable members */
+/* input */
 
-jive_function_input::jive_function_input(size_t narguments, const jive_type ** argument_types,
+input::input(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, struct jive_node * node, size_t index,
 	jive_output * origin)
 	: jive_value_input(node, index, origin)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
-jive_function_input::jive_function_input(const jive_function_type & type, jive_node * node,
+input::input(const jive::fct::type & type, jive_node * node,
 	size_t index, jive_output * origin)
 	: jive_value_input(node, index, origin)
 	, type_(type)
 {}
 
-jive_function_input::~jive_function_input() noexcept {}
+input::~input() noexcept {}
 
-/* function_output inheritable members */
+/* output */
 
-jive_function_output::jive_function_output(size_t narguments, const jive_type ** argument_types,
+output::output(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, jive_node * node, size_t index)
 	: jive_value_output(node, index)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
-jive_function_output::jive_function_output(const jive_function_type & type, jive_node * node,
-	size_t index)
+output::output(const jive::fct::type & type, jive_node * node, size_t index)
 	: jive_value_output(node, index)
 	, type_(type)
 {}
 
-jive_function_output::~jive_function_output() noexcept {}
+output::~output() noexcept {}
 
-/* function_gate inheritable members */
+/* gate */
 
-jive_function_gate::jive_function_gate(size_t narguments, const jive_type ** argument_types,
+gate::gate(size_t narguments, const jive_type ** argument_types,
 	size_t nreturns, const jive_type ** return_types, jive_graph * graph, const char name[])
 	: jive_value_gate(graph, name)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
-jive_function_gate::jive_function_gate(const jive_function_type & type, jive_graph * graph,
-	const char name[])
+gate::gate(const jive::fct::type & type, jive_graph * graph, const char name[])
 	: jive_value_gate(graph, name)
 	, type_(type)
 {}
 
-jive_function_gate::~jive_function_gate() noexcept {}
+gate::~gate() noexcept {}
+
+}
+}

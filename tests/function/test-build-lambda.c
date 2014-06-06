@@ -32,7 +32,7 @@ static int test_main(void)
 	jive_view(graph, stderr);
 	
 	const jive_type * tmparray2[] = {&bits32, &bits32};
-	jive_function_type ftype(2, tmparray2, 1, tmparray2);
+	jive::fct::type ftype(2, tmparray2, 1, tmparray2);
 
 	assert(ftype == fct->type());
 	

@@ -26,7 +26,7 @@ static int test_main(void)
 	jive::bits::type btype(8);
 	const jive_type*  tmparray0[] = { &btype };
 	const jive_type*  tmparray1[] = { &btype };
-	jive_function_type ftype(1, tmparray0, 1, tmparray1) ;
+	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
 	jive_output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
 	jive_output* func = jive_symbolicfunction_create( graph, "sin", &ftype ) ;

@@ -27,16 +27,16 @@ public:
 		lambda_operation && other);
 
 	lambda_operation(
-		const jive_function_type & function_type,
+		const jive::fct::type & function_type,
 		const std::vector<jive_gate *> & argument_gates,
 		const std::vector<jive_gate *> & return_gates);
 
 	lambda_operation(
-		jive_function_type && function_type,
+		jive::fct::type && function_type,
 		std::vector<jive_gate *> && argument_gates,
 		std::vector<jive_gate *> && return_gates) noexcept;
 
-	inline const jive_function_type &
+	inline const jive::fct::type &
 	function_type() const noexcept
 	{
 		return function_type_;
@@ -55,7 +55,7 @@ public:
 	}
 
 private:
-	jive_function_type function_type_;
+	jive::fct::type function_type_;
 	std::vector<jive_gate *> argument_gates_;
 	std::vector<jive_gate *> return_gates_;
 };

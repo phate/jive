@@ -47,12 +47,12 @@ jive_apply_node_init_(
 	size_t narguments,
 	jive_output * const arguments[])
 {
-	if (!dynamic_cast<const jive_function_output*>(function)) {
+	if (!dynamic_cast<const jive::fct::output*>(function)) {
 		jive_context_fatal_error(
 			region->graph->context,
 			 "Type mismatch: need 'function' type as input to 'apply' node");
 	}
-	jive_function_output * fct = (jive_function_output *) function;
+	jive::fct::output * fct = static_cast<const jive::fct::output*>(function);
 
 	if (fct->narguments() != narguments) {
 		jive_context_fatal_error(

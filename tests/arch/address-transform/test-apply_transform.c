@@ -28,7 +28,7 @@ test_main(void)
 
 	jive::addr::type addrtype;
 	const jive_type * addrptr = &addrtype;
-	jive_function_type fcttype(1, &addrptr, 1, &addrptr);
+	jive::fct::type fcttype(1, &addrptr, 1, &addrptr);
 	const jive_type * tmparray0[] = {&fcttype, &addrtype};
 
 	jive_node * top = jive_test_node_create(graph->root_region,
