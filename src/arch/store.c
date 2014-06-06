@@ -100,7 +100,7 @@ group_reduce(const jive_store_node_normal_form * self, struct jive_region * regi
 
 	size_t n;
 	jive_node * split_nodes[nstates];
-	jive_memory_type memtype;
+	jive::mem::type memtype;
 	for (n = 0; n < nstates; n++)
 		split_nodes[n] = jive_state_split(&memtype, istates[n], decl->nelements);
 

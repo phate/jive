@@ -160,7 +160,7 @@ jive_memory_type_deserialize(
 	jive_token_istream * is,
 	jive_type ** type)
 {
-	*type = new jive_memory_type();
+	*type = new jive::mem::type();
 	return true;
 }
 
@@ -460,7 +460,7 @@ JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_FRAMESLOT_RESOURCE, "stack_fr
 JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_CALLSLOT_RESOURCE, "stack_callslot",
 	jive_serialization_callslot_serialize,
 	jive_serialization_callslot_deserialize);
-JIVE_SERIALIZATION_TYPECLS_REGISTER(jive_memory_type, jive_memory_type, "memory",
+JIVE_SERIALIZATION_TYPECLS_REGISTER(jive::mem::type, jive_memory_type, "memory",
 	jive_memory_type_serialize,
 	jive_memory_type_deserialize);
 JIVE_SERIALIZATION_NODECLS_REGISTER(

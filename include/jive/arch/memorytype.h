@@ -9,17 +9,20 @@
 
 #include <jive/vsdg/statetype.h>
 
-class jive_memory_type final : public jive_state_type {
-public:
-	virtual ~jive_memory_type() noexcept;
+namespace jive {
+namespace mem {
 
-	inline constexpr jive_memory_type() noexcept : jive_state_type() {};
+class type final : public jive_state_type {
+public:
+	virtual ~type() noexcept;
+
+	inline constexpr type() noexcept : jive_state_type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
 	virtual bool operator==(const jive_type & other) const noexcept override;
 
-	virtual jive_memory_type * copy() const override;
+	virtual jive::mem::type * copy() const override;
 
 	virtual jive_input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
@@ -29,40 +32,43 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_memory_input final : public jive_state_input {
+class input final : public jive_state_input {
 public:
-	virtual ~jive_memory_input() noexcept;
+	virtual ~input() noexcept;
 
-	jive_memory_input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive_output * origin);
 
-	virtual const jive_memory_type & type() const noexcept { return type_; }
+	virtual const jive::mem::type & type() const noexcept { return type_; }
 
 private:
-	jive_memory_type type_;
+	jive::mem::type type_;
 };
 
-class jive_memory_output final : public jive_state_output {
+class output final : public jive_state_output {
 public:
-	virtual ~jive_memory_output() noexcept;
+	virtual ~output() noexcept;
 
-	jive_memory_output(jive_node * node, size_t index);
+	output(jive_node * node, size_t index);
 
-	virtual const jive_memory_type & type() const noexcept { return type_; }
+	virtual const jive::mem::type & type() const noexcept { return type_; }
 
 private:
-	jive_memory_type type_;
+	jive::mem::type type_;
 };
 
-class jive_memory_gate final : public jive_state_gate {
+class gate final : public jive_state_gate {
 public:
-	virtual ~jive_memory_gate() noexcept;
+	virtual ~gate() noexcept;
 
-	jive_memory_gate(jive_graph * graph, const char name[]);
+	gate(jive_graph * graph, const char name[]);
 
-	virtual const jive_memory_type & type() const noexcept { return type_; }
+	virtual const jive::mem::type & type() const noexcept { return type_; }
 
 private:
-	jive_memory_type type_;
+	jive::mem::type type_;
 };
+
+}
+}
 
 #endif

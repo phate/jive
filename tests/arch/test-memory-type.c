@@ -25,7 +25,7 @@ static int test_main(void)
 	jive_node * node0 = jive_test_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
 	jive_node * node1 = jive_test_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
 
-	jive_memory_type memtype;
+	jive::mem::type memtype;
 	jive_gate * arg_gate = memtype.create_gate(graph, "arg");
 	jive_gate * ret_gate = memtype.create_gate(graph, "ret");
 

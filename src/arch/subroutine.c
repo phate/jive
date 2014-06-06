@@ -141,7 +141,7 @@ jive_subroutine_create_passthrough_memorystate(
 	jive_subroutine_deprecated * subroutine,
 	const char * name)
 {
-	jive_memory_type memory_type;
+	jive::mem::type memory_type;
 	
 	jive_subroutine_passthrough passthrough;
 	passthrough.gate = memory_type.create_gate(subroutine->subroutine_node->region->graph, name);

@@ -34,7 +34,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(context);
 
 	jive_address_type addr;
-	jive_memory_type mem;
+	jive::mem::type mem;
 	jive::bits::type bits64(64);
 	const jive_type * tmparray0[] = {&bits64, &bits64, &mem};
 	jive_node * top = jive_test_node_create(graph->root_region,

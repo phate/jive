@@ -41,7 +41,7 @@ static int test_main(void)
 	static const jive_union_declaration empty_unndecl = {0, NULL};
 	static jive_union_type empty_unntype(&empty_unndecl);
 
-	jive_memory_type memtype;
+	jive::mem::type memtype;
 	jive_address_type addrtype;
 	const jive_type * tmparray0[] = {&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype};
 	jive_node * top = jive_test_node_create(graph->root_region,

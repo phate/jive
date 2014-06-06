@@ -182,7 +182,7 @@ jive_subroutine_node_create(
 		FIXME: a subroutine node should not have a memory type as output, put it is the only type
 						we have right now
 	*/
-	jive_memory_type objstate_type;
+	jive::mem::type objstate_type;
 	const jive_type * typeptr = &objstate_type;
 	jive::achr::type anchor;
 	const jive_type * ancptr = &anchor;

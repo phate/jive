@@ -134,7 +134,7 @@ static int test_main(void)
 	
 	const jive_resource_class * gpr = &jive_i386_regcls_gpr.base;
 	const jive_type * gpr_type = jive_resource_class_get_type(gpr);
-	jive_memory_type memory_type;
+	jive::mem::type memory_type;
 	
 	jive_node * arg1 = jive_splitnode_create(
 		fn_region,
