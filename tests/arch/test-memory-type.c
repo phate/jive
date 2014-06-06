@@ -32,10 +32,10 @@ static int test_main(void)
 	jive_output * arg = jive_node_gate_output(node0, arg_gate);
 	jive_input * ret = jive_node_gate_input(node1, ret_gate, arg);
 
-	assert(dynamic_cast<jive_state_output*>(arg));
-	assert(dynamic_cast<jive_state_input*>(ret));
-	assert(dynamic_cast<jive_state_gate*>(arg_gate));
-	assert(dynamic_cast<jive_state_type*>(&memtype) != nullptr);
+	assert(dynamic_cast<jive::state::output*>(arg));
+	assert(dynamic_cast<jive::state::input*>(ret));
+	assert(dynamic_cast<jive::state::gate*>(arg_gate));
+	assert(dynamic_cast<jive::state::type*>(&memtype) != nullptr);
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

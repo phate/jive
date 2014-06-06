@@ -12,43 +12,46 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
 
-class jive_state_type : public jive_type {
-public:
-	virtual ~jive_state_type() noexcept;
+namespace jive {
+namespace state {
 
-	virtual jive_state_type * copy() const override = 0;
+class type : public jive_type {
+public:
+	virtual ~type() noexcept;
+
+	virtual jive::state::type * copy() const override = 0;
 
 protected:
-	inline constexpr jive_state_type() noexcept : jive_type() {};
+	inline constexpr type() noexcept : jive_type() {};
 };
 
-class jive_state_input : public jive_input {
+class input : public jive_input {
 public:
-	virtual ~jive_state_input() noexcept;
+	virtual ~input() noexcept;
 
 protected:
-	jive_state_input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive_output * origin);
 };
 
-class jive_state_output : public jive_output {
+class output : public jive_output {
 public:
-	virtual ~jive_state_output() noexcept;
+	virtual ~output() noexcept;
 
 protected:
-	jive_state_output(struct jive_node * node, size_t index);
+	output(struct jive_node * node, size_t index);
 };
 
-class jive_state_gate : public jive_gate {
+class gate : public jive_gate {
 public:
-	virtual ~jive_state_gate() noexcept;
+	virtual ~gate() noexcept;
 
 protected:
-	jive_state_gate(jive_graph * graph, const char name[]);
+	gate(jive_graph * graph, const char name[]);
 };
+
+}
 
 /* state multiplexing support */
-
-namespace jive {
 
 class statemux_operation final : public operation {
 public:

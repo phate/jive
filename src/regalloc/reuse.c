@@ -25,7 +25,7 @@
 namespace jive {
 namespace reuse {
 
-class type final : public jive_state_type {
+class type final : public jive::state::type {
 public:
 	virtual ~type() noexcept {};
 
@@ -50,7 +50,7 @@ private:
 	const jive_resource_name * name_;
 };
 
-class input final : public jive_state_input {
+class input final : public jive::state::input {
 public:
 	virtual ~input() noexcept {};
 
@@ -65,7 +65,7 @@ private:
 	jive::reuse::type type_;
 };
 
-class output final : public jive_state_output {
+class output final : public jive::state::output {
 public:
 	virtual ~output() noexcept {};
 
@@ -79,7 +79,7 @@ private:
 	jive::reuse::type type_;
 };
 
-class gate final : public jive_state_gate {
+class gate final : public jive::state::gate {
 public:
 	virtual ~gate() noexcept {};
 
@@ -94,7 +94,7 @@ private:
 };
 
 type::type(const jive_resource_name * name) noexcept
-	: jive_state_type()
+	: jive::state::type()
 	, name_(name)
 {}
 
@@ -138,17 +138,17 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 input::input(const jive_resource_name * name, struct jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_state_input(node, index, origin)
+	: jive::state::input(node, index, origin)
 	, type_(name)
 {}
 
 output::output(const jive_resource_name * name, jive_node * node, size_t index)
-	: jive_state_output(node, index)
+	: jive::state::output(node, index)
 	, type_(name)
 {}
 
 gate::gate(const jive_resource_name * name, jive_graph * graph, const char name_[])
-	: jive_state_gate(graph, name_)
+	: jive::state::gate(graph, name_)
 	, type_(name)
 {}
 

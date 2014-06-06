@@ -21,7 +21,7 @@ namespace mem {
 input::~input() noexcept {}
 
 input::input(struct jive_node * node, size_t index, jive_output * origin)
-	: jive_state_input(node, index, origin)
+	: jive::state::input(node, index, origin)
 {}
 
 /* output */
@@ -29,7 +29,7 @@ input::input(struct jive_node * node, size_t index, jive_output * origin)
 output::~output() noexcept {}
 
 output::output(jive_node * node, size_t index)
-	: jive_state_output(node, index)
+	: jive::state::output(node, index)
 {}
 
 /* gate */
@@ -37,7 +37,7 @@ output::output(jive_node * node, size_t index)
 gate::~gate() noexcept {}
 
 gate::gate(jive_graph * graph, const char name[])
-	: jive_state_gate(graph, name)
+	: jive::state::gate(graph, name)
 {}
 
 type::~type() noexcept {}

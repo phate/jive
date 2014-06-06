@@ -12,28 +12,32 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 
-jive_state_type::~jive_state_type() noexcept {}
+namespace jive {
+namespace state {
 
-jive_state_input::~jive_state_input() noexcept {}
+type::~type() noexcept {}
 
-jive_state_input::jive_state_input(struct jive_node * node, size_t index,
+input::~input() noexcept {}
+
+input::input(struct jive_node * node, size_t index,
 	jive_output * origin)
 	: jive_input(node, index, origin)
 {}
 
-jive_state_output::~jive_state_output() noexcept {}
+output::~output() noexcept {}
 
-jive_state_output::jive_state_output(struct jive_node * node, size_t index)
+output::output(struct jive_node * node, size_t index)
 	: jive_output(node, index)
 {}
 
-jive_state_gate::~jive_state_gate() noexcept {}
+gate::~gate() noexcept {}
 
-jive_state_gate::jive_state_gate(jive_graph * graph, const char name[])
+gate::gate(jive_graph * graph, const char name[])
 	: jive_gate(graph, name)
 {}
 
-
+}
+}
 
 
 
@@ -95,7 +99,7 @@ jive_statemux_node_create(jive_region * region,
 	size_t noperands, jive_output * const operands[],
 	size_t noutputs)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive_state_type*>(statetype));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::state::type*>(statetype));
 	jive_context * context = region->graph->context;
 	jive_statemux_node * node = new jive_statemux_node(
 		jive::statemux_operation(noutputs, *statetype));

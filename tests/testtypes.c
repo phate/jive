@@ -110,17 +110,17 @@ jive_test_state_input::~jive_test_state_input() noexcept {}
 
 jive_test_state_input::jive_test_state_input(jive_node * node, size_t index,
 	jive_output * origin)
-	: jive_state_input(node, index, origin)
+	: jive::state::input(node, index, origin)
 {}
 
 jive_test_state_output::~jive_test_state_output() noexcept {}
 
 jive_test_state_output::jive_test_state_output(jive_node * node, size_t index)
-	: jive_state_output(node, index)
+	: jive::state::output(node, index)
 {}
 
 jive_test_state_gate::~jive_test_state_gate() noexcept {}
 
 jive_test_state_gate::jive_test_state_gate(jive_graph * graph, const char name[])
-	: jive_state_gate(graph, name)
+	: jive::state::gate(graph, name)
 {}

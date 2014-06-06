@@ -69,11 +69,11 @@ private:
 
 /* test state type */
 
-class jive_test_state_type final : public jive_state_type {
+class jive_test_state_type final : public jive::state::type {
 public:
 	virtual ~jive_test_state_type() noexcept;
 
-	inline constexpr jive_test_state_type() noexcept : jive_state_type() {};
+	inline constexpr jive_test_state_type() noexcept : jive::state::type() {};
 
 	virtual void label(jive_buffer & buffer) const override;
 
@@ -89,7 +89,7 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_test_state_input final : public jive_state_input {
+class jive_test_state_input final : public jive::state::input {
 public:
 	virtual ~jive_test_state_input() noexcept;
 
@@ -101,7 +101,7 @@ private:
 	jive_test_state_type type_;
 };
 
-class jive_test_state_output final : public jive_state_output {
+class jive_test_state_output final : public jive::state::output {
 public:
 	virtual ~jive_test_state_output() noexcept;
 
@@ -113,7 +113,7 @@ private:
 	jive_test_state_type type_;
 };
 
-class jive_test_state_gate final : public jive_state_gate {
+class jive_test_state_gate final : public jive::state::gate {
 public:
 	virtual ~jive_test_state_gate() noexcept;
 
