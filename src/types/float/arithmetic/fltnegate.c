@@ -41,7 +41,7 @@ static void
 jive_fltnegate_node_init_(struct jive_node * self, struct jive_region * region,
 	struct jive_output * operand)
 {
-	jive_float_type flttype;
+	jive::flt::type flttype;
 	const jive_type * flttype_ptr = &flttype;
 	jive_node_init_(self, region,
 		1, &flttype_ptr, &operand,

@@ -40,7 +40,7 @@ jive_i386_classify_type_(const jive_type * type, const jive_resource_class * res
 			return (1 << jive_i386_classify_gpr);
 	}
 
-	if (dynamic_cast<const jive_float_type*>(type)) {
+	if (dynamic_cast<const jive::flt::type*>(type)) {
 		return (1 << jive_i386_classify_sse);
 	}
 	

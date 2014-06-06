@@ -10,67 +10,72 @@
 
 #include <string.h>
 
-/* float_type inheritable members */
+namespace jive {
+namespace flt {
 
-jive_float_type::~jive_float_type() noexcept {}
+/* float */
 
-jive_float_type *
-jive_float_type::copy() const
+type::~type() noexcept {}
+
+jive::flt::type *
+type::copy() const
 {
-	return new jive_float_type();
+	return new jive::flt::type();
 }
 
 void
-jive_float_type::label(jive_buffer & buffer) const
+type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "flt");
 }
 
 bool
-jive_float_type::operator==(const jive_type & other) const noexcept
+type::operator==(const jive_type & other) const noexcept
 {
-	return dynamic_cast<const jive_float_type*>(&other) != nullptr;
+	return dynamic_cast<const jive::flt::type*>(&other) != nullptr;
 }
 
 jive_input *
-jive_float_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
-	return new jive_float_input(node, index, origin);
+	return new jive::flt::input(node, index, origin);
 }
 
 jive_output *
-jive_float_type::create_output(jive_node * node, size_t index) const
+type::create_output(jive_node * node, size_t index) const
 {
-	return new jive_float_output(node, index);
+	return new jive::flt::output(node, index);
 }
 
 jive_gate *
-jive_float_type::create_gate(jive_graph * graph, const char * name) const
+type::create_gate(jive_graph * graph, const char * name) const
 {
-	return new jive_float_gate(graph, name);
+	return new jive::flt::gate(graph, name);
 }
 
-/* float_input inheritable members */
+/* input */
 
-jive_float_input::~jive_float_input() noexcept {}
+input::~input() noexcept {}
 
-jive_float_input::jive_float_input(struct jive_node * node, size_t index,
-	jive_output * origin)
+input::input(struct jive_node * node, size_t index, jive_output * origin)
 	: jive_value_input(node, index, origin)
 {}
 
-/* float_output inheritable members */
+/* output */
 
-jive_float_output::~jive_float_output() noexcept {}
+output::~output() noexcept {}
 
-jive_float_output::jive_float_output(struct jive_node * node, size_t index)
+output::output(struct jive_node * node, size_t index)
 	: jive_value_output(node, index)
 {}
 
-/* float_gate inheritable members */
+/* gate */
 
-jive_float_gate::~jive_float_gate() noexcept {}
+gate::~gate() noexcept {}
 
-jive_float_gate::jive_float_gate(jive_graph * graph, const char name[])
+gate::gate(jive_graph * graph, const char name[])
 	: jive_value_gate(graph, name)
 {}
+
+}
+}
