@@ -17,6 +17,7 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/bitstring.h>
+#include <jive/util/typeinfo-map.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/traverser.h>
@@ -150,83 +151,131 @@ convert_complex_bitbinary(jive_node * node,
 	jive_output_replace(node->outputs[0], instr->outputs[result_index]);
 }
 
+static const jive::detail::typeinfo_map<
+	std::function<void(jive_node*)>
+> bitbinary_map = {
+	{
+		&typeid(jive::bitstring::and_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_and,
+			&jive_i386_instr_int_and_immediate)
+	},
+	{
+		&typeid(jive::bitstring::or_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_or,
+			&jive_i386_instr_int_or_immediate)
+	},
+	{
+		&typeid(jive::bitstring::xor_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_xor,
+			&jive_i386_instr_int_xor_immediate)
+	},
+	{
+		&typeid(jive::bitstring::sum_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_add,
+			&jive_i386_instr_int_add_immediate)
+	},
+	{
+		&typeid(jive::bitstring::difference_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_sub,
+			&jive_i386_instr_int_sub_immediate)
+	},
+	{
+		&typeid(jive::bitstring::product_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_mul,
+			&jive_i386_instr_int_mul_immediate)
+	},
+	{
+		&typeid(jive::bitstring::xor_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_xor,
+			&jive_i386_instr_int_xor_immediate)
+	},
+	{
+		&typeid(jive::bitstring::shr_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_shr,
+			&jive_i386_instr_int_shr_immediate)
+	},
+	{
+		&typeid(jive::bitstring::ashr_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_ashr,
+			&jive_i386_instr_int_ashr_immediate)
+	},
+	{
+		&typeid(jive::bitstring::shl_operation),
+		std::bind(convert_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_shl,
+			&jive_i386_instr_int_shl_immediate)
+	},
+	{
+		&typeid(jive::bitstring::uhiproduct_operation),
+		std::bind(convert_complex_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_mul_expand_unsigned,
+			0)
+	},
+	{
+		&typeid(jive::bitstring::shiproduct_operation),
+		std::bind(convert_complex_bitbinary,
+			std::placeholders::_1,
+			&jive_i386_instr_int_mul_expand_signed,
+			0)
+	},
+	{
+		&typeid(jive::bitstring::uquotient_operation),
+		std::bind(convert_divmod,
+			std::placeholders::_1,
+			false,
+			1)
+	},
+	{
+		&typeid(jive::bitstring::squotient_operation),
+		std::bind(convert_divmod,
+			std::placeholders::_1,
+			true,
+			1)
+	},
+	{
+		&typeid(jive::bitstring::umod_operation),
+		std::bind(convert_divmod,
+			std::placeholders::_1,
+			false,
+			0)
+	},
+	{
+		&typeid(jive::bitstring::smod_operation),
+		std::bind(convert_divmod,
+			std::placeholders::_1,
+			true,
+			0)
+	}
+};
+
 static void
 match_gpr_bitbinary(jive_node * node)
 {
-	const jive_bitbinary_operation_class * cls =
-		(const jive_bitbinary_operation_class *) node->class_;
-	switch (cls->type) {
-		case jive_bitop_code_and:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_and,
-				&jive_i386_instr_int_and_immediate);
-			return;
-		case jive_bitop_code_or:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_or,
-				&jive_i386_instr_int_or_immediate);
-			return;
-		case jive_bitop_code_xor:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_xor,
-				&jive_i386_instr_int_xor_immediate);
-			return;
-		case jive_bitop_code_sum:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_add,
-				&jive_i386_instr_int_add_immediate);
-			return;
-		case jive_bitop_code_difference:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_sub,
-				&jive_i386_instr_int_sub_immediate);
-			return;
-		case jive_bitop_code_product:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_mul,
-				&jive_i386_instr_int_mul_immediate);
-			return;
-		case jive_bitop_code_uhiproduct:
-			convert_complex_bitbinary(node,
-				&jive_i386_instr_int_mul_expand_unsigned,
-				0);
-			break;
-		case jive_bitop_code_shiproduct:
-			convert_complex_bitbinary(node,
-				&jive_i386_instr_int_mul_expand_signed,
-				0);
-			break;
-		case jive_bitop_code_uquotient:
-			convert_divmod(node, false, 1);
-			break;
-		case jive_bitop_code_squotient:
-			convert_divmod(node, true, 1);
-			break;
-		case jive_bitop_code_umod:
-			convert_divmod(node, false, 0);
-			break;
-		case jive_bitop_code_smod:
-			convert_divmod(node, true, 0);
-			break;
-		case jive_bitop_code_shl:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_shl,
-				&jive_i386_instr_int_shl_immediate);
-			return;
-		case jive_bitop_code_shr:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_shr,
-				&jive_i386_instr_int_shr_immediate);
-			return;
-		case jive_bitop_code_ashr:
-			convert_bitbinary(node,
-				&jive_i386_instr_int_ashr,
-				&jive_i386_instr_int_ashr_immediate);
-			return;
-		case jive_bitop_code_negate:
-		case jive_bitop_code_not:
-		case jive_bitop_code_invalid:
-			JIVE_DEBUG_ASSERT(false);
+	auto i = bitbinary_map.find(&typeid(node->operation()));
+	if (i != bitbinary_map.end()) {
+		i->second(node);
+	} else {
+		throw std::logic_error("Unknown operator");
 	}
 }
 
@@ -277,105 +326,123 @@ convert_bitcmp(
 	jive_output_replace(node->outputs[0], jump_instr->outputs[0]);
 }
 
+static const jive::detail::typeinfo_map<
+	std::pair<
+		const jive_instruction_class *,
+		const jive_instruction_class *
+	>
+> bitcompare_map = {
+	{
+		&typeid(jive::bitstring::equal_operation),
+		{
+			&jive_i386_instr_int_jump_equal,
+			&jive_i386_instr_int_jump_equal
+		}
+	},
+	{
+		&typeid(jive::bitstring::notequal_operation),
+		{
+			&jive_i386_instr_int_jump_notequal,
+			&jive_i386_instr_int_jump_notequal
+		}
+	},
+	{
+		&typeid(jive::bitstring::sless_operation),
+		{
+			&jive_i386_instr_int_jump_sless,
+			&jive_i386_instr_int_jump_sgreater
+		}
+	},
+	{
+		&typeid(jive::bitstring::slesseq_operation),
+		{
+			&jive_i386_instr_int_jump_slesseq,
+			&jive_i386_instr_int_jump_sgreatereq
+		}
+	},
+	{
+		&typeid(jive::bitstring::sgreater_operation),
+		{
+			&jive_i386_instr_int_jump_sgreater,
+			&jive_i386_instr_int_jump_sless
+		}
+	},
+	{
+		&typeid(jive::bitstring::sgreatereq_operation),
+		{
+			&jive_i386_instr_int_jump_sgreatereq,
+			&jive_i386_instr_int_jump_slesseq
+		}
+	},
+	{
+		&typeid(jive::bitstring::uless_operation),
+		{
+			&jive_i386_instr_int_jump_uless,
+			&jive_i386_instr_int_jump_ugreater
+		}
+	},
+	{
+		&typeid(jive::bitstring::ulesseq_operation),
+		{
+			&jive_i386_instr_int_jump_ulesseq,
+			&jive_i386_instr_int_jump_ugreatereq
+		}
+	},
+	{
+		&typeid(jive::bitstring::ugreater_operation),
+		{
+			&jive_i386_instr_int_jump_ugreater,
+			&jive_i386_instr_int_jump_uless
+		}
+	},
+	{
+		&typeid(jive::bitstring::ugreatereq_operation),
+		{
+			&jive_i386_instr_int_jump_ugreatereq,
+			&jive_i386_instr_int_jump_ulesseq
+		}
+	}
+};
+
 static void
 match_gpr_bitcmp(jive_node * node)
 {
-	const jive_bitcomparison_operation_class * cls =
-		(const jive_bitcomparison_operation_class *) node->class_;
-	switch (cls->type) {
-		case jive_bitcmp_code_equal:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_equal,
-				&jive_i386_instr_int_jump_equal);
-			break;
-		case jive_bitcmp_code_notequal:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_notequal,
-				&jive_i386_instr_int_jump_notequal);
-			break;
-		case jive_bitcmp_code_sless:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_sless,
-				&jive_i386_instr_int_jump_sgreater);
-			break;
-		case jive_bitcmp_code_uless:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_uless,
-				&jive_i386_instr_int_jump_ugreater);
-			break;
-		case jive_bitcmp_code_slesseq:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_slesseq,
-				&jive_i386_instr_int_jump_sgreatereq);
-			break;
-		case jive_bitcmp_code_ulesseq:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_ulesseq,
-				&jive_i386_instr_int_jump_ugreatereq);
-			break;
-		case jive_bitcmp_code_sgreater:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_sgreater,
-				&jive_i386_instr_int_jump_sless);
-			break;
-		case jive_bitcmp_code_ugreater:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_ugreater,
-				&jive_i386_instr_int_jump_uless);
-			break;
-		case jive_bitcmp_code_sgreatereq:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_sgreatereq,
-				&jive_i386_instr_int_jump_slesseq);
-			break;
-		case jive_bitcmp_code_ugreatereq:
-			convert_bitcmp(node,
-				&jive_i386_instr_int_jump_ugreatereq,
-				&jive_i386_instr_int_jump_ulesseq);
-			break;
-		case jive_bitcmp_code_invalid:
-			JIVE_DEBUG_ASSERT(false);
+	auto i = bitcompare_map.find(&typeid(node->operation()));
+	if (i != bitcompare_map.end()) {
+		convert_bitcmp(node, i->second.first, i->second.second);
+	} else {
+		throw std::logic_error("Unknown operator");
 	}
 }
+
+static const jive::detail::typeinfo_map<
+	const jive_instruction_class *
+> bitunary_map = {
+	{
+		&typeid(jive::bitstring::negate_operation),
+		&jive_i386_instr_int_neg
+	},
+	{
+		&typeid(jive::bitstring::not_operation),
+		&jive_i386_instr_int_not
+	}
+};
 
 static void
 match_gpr_bitunary(jive_node * node)
 {
-	const jive_bitunary_operation_class * cls =
-		(const jive_bitunary_operation_class *) node->class_;
-	const jive_instruction_class * icls = 0;
-	switch (cls->type) {
-		case jive_bitop_code_and:
-		case jive_bitop_code_or:
-		case jive_bitop_code_xor:
-		case jive_bitop_code_sum:
-		case jive_bitop_code_difference:
-		case jive_bitop_code_product:
-		case jive_bitop_code_uhiproduct:
-		case jive_bitop_code_shiproduct:
-		case jive_bitop_code_uquotient:
-		case jive_bitop_code_squotient:
-		case jive_bitop_code_umod:
-		case jive_bitop_code_smod:
-		case jive_bitop_code_shl:
-		case jive_bitop_code_shr:
-		case jive_bitop_code_ashr:
-			JIVE_DEBUG_ASSERT(false);
-		case jive_bitop_code_negate:
-			icls = &jive_i386_instr_int_neg;
-			break;
-		case jive_bitop_code_not:
-			icls = &jive_i386_instr_int_not;
-			break;
-		case jive_bitop_code_invalid:
-			JIVE_DEBUG_ASSERT(false);
+	auto i = bitunary_map.find(&typeid(node->operation()));
+	if (i != bitunary_map.end()) {
+		const jive_instruction_class * icls = i->second;
+		jive::output * tmparray8[] = {node->inputs[0]->origin()};
+		jive_node * instr = jive_instruction_node_create(node->region,
+			icls,
+			tmparray8, NULL);
+		
+		jive_output_replace(node->outputs[0], instr->outputs[0]);
+	} else {
+		throw std::logic_error("Unknown operator");
 	}
-	jive::output * tmparray8[] = {node->inputs[0]->origin()};
-	jive_node * instr = jive_instruction_node_create(node->region,
-		icls,
-		tmparray8, NULL);
-	
-	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }
 
 static void
@@ -500,42 +567,42 @@ match_gpr_store(jive_node * node)
 static void
 match_single(jive_node * node, const jive_regselector * regselector)
 {
-	if (jive_node_isinstance(node, &JIVE_BITBINARY_NODE)) {
+	if (dynamic_cast<const jive::bits_binary_operation *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_bitbinary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (jive_node_isinstance(node, &JIVE_BITUNARY_NODE)) {
+	} else if (dynamic_cast<const jive::bits_unary_operation *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_bitunary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (jive_node_isinstance(node, &JIVE_BITCOMPARISON_NODE)) {
+	} else if (dynamic_cast<const jive::bits_compare_operation *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[0]);
 		if (true || (regcls == &jive_i386_regcls_gpr)) {
 			match_gpr_bitcmp(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (jive_node_isinstance(node, &JIVE_REGVALUE_NODE)) {
+	} else if (dynamic_cast<const jive::regvalue_operation *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_immediate(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (jive_node_isinstance(node, &JIVE_LOAD_NODE)) {
+	} else if (dynamic_cast<const jive::load_operation *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_load(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (jive_node_isinstance(node, &JIVE_STORE_NODE)) {
+	} else if (dynamic_cast<const jive::store_operation *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[1]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_store(node);
