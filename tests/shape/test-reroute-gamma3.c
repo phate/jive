@@ -39,7 +39,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 	}
 	for (n = 0; n < node->ninputs; n++) {
 		jive_ssavar * ssavar = 0;
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(node->inputs[n]->origin()->users, user, output_users_list) {
 			if (user->ssavar && jive_region_contains_node(user->node->region, node)) {
 				ssavar = user->ssavar;

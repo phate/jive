@@ -350,7 +350,7 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 	
 	jive_gate * gate;
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
-		jive_input * input;
+		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
 			jive_node_get_use_count_input(input->node, &use_count, context);
 			const jive_resource_class * overflow;
@@ -432,7 +432,8 @@ jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 }
 
 void
-jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive_input * input, jive_output * output)
+jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input * input,
+	jive_output * output)
 {
 	jive_variable * variable = self->ssavar->variable;
 	
@@ -459,7 +460,8 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive_input * 
 }
 
 void
-jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive_input * input, jive_output * output)
+jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input * input,
+	jive_output * output)
 {
 	jive_variable * variable = self->ssavar->variable;
 	
@@ -544,7 +546,7 @@ jive_shaped_ssavar_xpoints_register_arcs(jive_shaped_ssavar * self)
 {
 	jive_ssavar * ssavar = self->ssavar;
 	jive_variable * variable = ssavar->variable;
-	jive_input * input;
+	jive::input * input;
 	JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 		jive_shaped_ssavar_xpoints_register_arc(self, input, input->origin());
 	}
@@ -567,7 +569,7 @@ jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self)
 {
 	jive_ssavar * ssavar = self->ssavar;
 	jive_variable * variable = ssavar->variable;
-	jive_input * input;
+	jive::input * input;
 	JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 		jive_shaped_ssavar_xpoints_unregister_arc(self, input, input->origin());
 	}
@@ -635,7 +637,7 @@ jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive_output *
 		new_origin->node());
 	
 	jive_variable * variable = self->ssavar->variable;
-	jive_input * input;
+	jive::input * input;
 	struct jive_ssavar_region_hash_iterator i;
 	
 	if (old_origin_shaped_node && self->ssavar->assigned_output)

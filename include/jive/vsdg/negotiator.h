@@ -15,7 +15,6 @@
 struct jive_context;
 struct jive_graph;
 struct jive_node;
-struct jive_input;
 struct jive_output;
 struct jive_gate;
 struct jive_region;
@@ -93,7 +92,7 @@ struct jive_negotiator_port {
 		jive_negotiator_port * next;
 	} hash_chain;
 	union {
-		struct jive_input * input;
+		jive::input * input;
 		struct jive_output * output;
 	} hash_key;
 	
@@ -161,7 +160,8 @@ jive_negotiator_identity_constraint_create(jive_negotiator * self);
 
 JIVE_DECLARE_HASH_TYPE(jive_negotiator_node_hash, jive_negotiator_constraint, struct jive_node *, hash_key.node, hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, struct jive_gate *, hash_key.gate, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, struct jive_input *, hash_key.input, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive::input *,
+	hash_key.input, hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_negotiator_output_hash, jive_negotiator_port, struct jive_output *, hash_key.output, hash_chain);
 
 typedef struct jive_negotiator_node_hash jive_negotiator_node_hash;
@@ -293,7 +293,7 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self);
 
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity(jive_negotiator * self,
-	size_t ninputs, struct jive_input * const inputs[],
+	size_t ninputs, jive::input * const inputs[],
 	size_t noutputs, struct jive_output * const outputs[],
 	const jive_negotiator_option * option);
 
@@ -307,14 +307,15 @@ jive_negotiator_port *
 jive_negotiator_map_output(const jive_negotiator * self, struct jive_output * output);
 
 jive_negotiator_port *
-jive_negotiator_map_input(const jive_negotiator * self, struct jive_input * input);
+jive_negotiator_map_input(const jive_negotiator * self, jive::input * input);
 
 /* protected functions that allow to manipulate negotiator state */
 void
 jive_negotiator_port_destroy(jive_negotiator_port * self);
 
 jive_negotiator_port *
-jive_negotiator_annotate_simple_input(jive_negotiator * self, struct jive_input * input, const jive_negotiator_option * option);
+jive_negotiator_annotate_simple_input(jive_negotiator * self, jive::input * input,
+	const jive_negotiator_option * option);
 
 jive_negotiator_port *
 jive_negotiator_annotate_simple_output(jive_negotiator * self, struct jive_output * output, const jive_negotiator_option * option);

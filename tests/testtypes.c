@@ -29,7 +29,7 @@ jive_test_value_type::copy() const
 	return new jive_test_value_type();
 }
 
-jive_input *
+jive::input *
 jive_test_value_type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive_test_value_input(node, index, origin);
@@ -88,7 +88,7 @@ jive_test_state_type::copy() const
 	return new jive_test_state_type();
 }
 
-jive_input *
+jive::input *
 jive_test_state_type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive_test_state_input(node, index, origin);

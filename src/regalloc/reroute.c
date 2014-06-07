@@ -20,8 +20,8 @@
 #include <jive/vsdg/variable.h>
 
 typedef struct jive_input_vector jive_input_vector;
-JIVE_DECLARE_VECTOR_TYPE(jive_input_vector, jive_input *)
-JIVE_DEFINE_VECTOR_TYPE(jive_input_vector, jive_input *)
+JIVE_DECLARE_VECTOR_TYPE(jive_input_vector, jive::input *)
+JIVE_DEFINE_VECTOR_TYPE(jive_input_vector, jive::input *)
 
 static jive_ssavar *
 reroute_gamma(jive_shaped_graph * shaped_graph,
@@ -49,15 +49,15 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	jive_input_vector users1, users2;
 	jive_input_vector_init(&users1);
 	jive_input_vector_init(&users2);
-	jive_input * in1 = jive_node_gate_input(anchor_node->producer(0), gate,
+	jive::input * in1 = jive_node_gate_input(anchor_node->producer(0), gate,
 		ssavar->origin);
-	jive_input * in2 = jive_node_gate_input(anchor_node->producer(1), gate,
+	jive::input * in2 = jive_node_gate_input(anchor_node->producer(1), gate,
 		ssavar->origin);
 	jive_input_vector_push_back(&users1, graph->context, in1);
 	jive_input_vector_push_back(&users2, graph->context, in2);
 	jive_output * out = jive_node_gate_output(anchor_node, gate);
 	
-	jive_input * user, * next;
+	jive::input * user, * next;
 	JIVE_LIST_ITERATE_SAFE(ssavar->assigned_inputs, user, next, ssavar_input_list) {
 		if (jive_region_contains_node(region1, user->node)) {
 			jive_ssavar_unassign_input(ssavar, user);
@@ -92,16 +92,16 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	size_t n;
 	jive_ssavar_assign_output(ssavar_below, out);
 	for (n = 0; n < jive_input_vector_size(users_below); ++n) {
-		jive_input * input = jive_input_vector_item(users_below, n);
+		jive::input * input = jive_input_vector_item(users_below, n);
 		input->divert_origin(out);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
 	for (n = 0; n < jive_input_vector_size(&users1); ++n) {
-		jive_input * input = jive_input_vector_item(&users1, n);
+		jive::input * input = jive_input_vector_item(&users1, n);
 		jive_ssavar_assign_input(ssavar1, input);
 	}
 	for (n = 0; n < jive_input_vector_size(&users2); ++n) {
-		jive_input * input = jive_input_vector_item(&users2, n);
+		jive::input * input = jive_input_vector_item(&users2, n);
 		jive_ssavar_assign_input(ssavar2, input);
 	}
 	
@@ -149,7 +149,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	
 	jive_input_vector loop_users;
 	jive_input_vector_init(&loop_users);
-	jive_input * user, * next;
+	jive::input * user, * next;
 	JIVE_LIST_ITERATE(origin->users, user, output_users_list) {
 		if (jive_region_contains_node(loop_region, user->node)) {
 			if (user->ssavar == ssavar) {
@@ -159,7 +159,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 		}
 	}
 	
-	jive_input * into_loop = jive_node_gate_input(loop_head, gate, ssavar->origin);
+	jive::input * into_loop = jive_node_gate_input(loop_head, gate, ssavar->origin);
 	jive_output * def_inside = jive_node_gate_output(loop_head, gate);
 	jive_input_vector_push_back(&loop_users, graph->context,
 		jive_node_gate_input(loop_tail, gate, def_inside));
@@ -186,7 +186,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	assigned previously */
 	size_t n;
 	for (n = 0; n < jive_input_vector_size(&loop_users); ++n) {
-		jive_input * input = jive_input_vector_item(&loop_users, n);
+		jive::input * input = jive_input_vector_item(&loop_users, n);
 		jive_ssavar_assign_input(ssavar_inside, input);
 	}
 	jive_input_vector_fini(&loop_users, graph->context);
@@ -198,7 +198,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	jive_ssavar * ssavar_below = jive_ssavar_create(def_outside, variable);
 	jive_ssavar_assign_output(ssavar_below, def_outside);
 	for (n = 0; n < jive_input_vector_size(users_below); ++n) {
-		jive_input * input = jive_input_vector_item(users_below, n);
+		jive::input * input = jive_input_vector_item(users_below, n);
 		input->divert_origin(def_outside);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
@@ -240,7 +240,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 		jive_node * node = loc->node;
 		size_t n;
 		for(n = 0; n < node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
+			jive::input * input = node->inputs[n];
 			if (input->ssavar == ssavar) {
 				jive_ssavar_unassign_input(ssavar, input);
 				jive_input_vector_push_back(&users_below, context, input);

@@ -43,7 +43,7 @@ jive_raise_type_error(const jive::base::type * self, const jive::base::type * ot
 	jive_context_fatal_error(context, error_message);
 }
 
-struct jive_input *
+jive::input *
 jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
 	jive_output * origin)
 {
@@ -58,20 +58,22 @@ jive_type_create_input(const jive::base::type * self, struct jive_node * node, s
 /* inputs */
 
 static inline void
-jive_input_add_as_user(jive_input * self, jive_output * output)
+jive_input_add_as_user(jive::input * self, jive_output * output)
 {
 	JIVE_LIST_PUSH_BACK(output->users, self, output_users_list);
 	jive_node_add_successor(output->node());
 }
 
 static inline void
-jive_input_remove_as_user(jive_input * self, jive_output * output)
+jive_input_remove_as_user(jive::input * self, jive_output * output)
 {
 	JIVE_LIST_REMOVE(output->users, self, output_users_list);
 	jive_node_remove_successor(self->producer());
 }
 
-jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * origin)
+namespace jive {
+
+input::input(struct jive_node * node_, size_t index_, jive_output * origin)
 	: node(node_)
 	, index(index_)
 	, origin_(origin)
@@ -88,7 +90,7 @@ jive_input::jive_input(struct jive_node * node_, size_t index_, jive_output * or
 	jive_region_hull_add_input(node->region, this);
 }
 
-jive_input::~jive_input() noexcept
+input::~input() noexcept
 {
 	if (ssavar) {
 		jive_ssavar_unassign_input(ssavar, this);
@@ -102,7 +104,7 @@ jive_input::~jive_input() noexcept
 
 		size_t n;
 		for (n = 0; n < node->ninputs; n++) {
-			jive_input * other = node->inputs[n];
+			jive::input * other = node->inputs[n];
 			if (other == this || !other->gate)
 				continue;
 			jive_gate_interference_remove(node->graph, gate, other->gate);
@@ -124,7 +126,7 @@ jive_input::~jive_input() noexcept
 }
 
 void
-jive_input::swap(jive_input * other) noexcept
+input::swap(jive::input * other) noexcept
 {
 	JIVE_DEBUG_ASSERT(this->type() == other->type());
 	JIVE_DEBUG_ASSERT(this->node == other->node);
@@ -157,14 +159,14 @@ jive_input::swap(jive_input * other) noexcept
 }
 
 void
-jive_input::divert_origin(jive_output * new_origin) noexcept
+input::divert_origin(jive_output * new_origin) noexcept
 {
 	JIVE_DEBUG_ASSERT(!this->ssavar);
 	internal_divert_origin(new_origin);
 }
 
 void
-jive_input::internal_divert_origin(jive_output * new_origin) noexcept
+input::internal_divert_origin(jive_output * new_origin) noexcept
 {
 	const jive::base::type * input_type = &this->type();
 	const jive::base::type * operand_type = &new_origin->type();
@@ -208,7 +210,7 @@ jive_input::internal_divert_origin(jive_output * new_origin) noexcept
 }
 
 void
-jive_input::label(jive_buffer & buffer) const
+input::label(jive_buffer & buffer) const
 {
 	if (gate) {
 		gate->label(buffer);
@@ -219,8 +221,10 @@ jive_input::label(jive_buffer & buffer) const
 	}
 }
 
+}	//jive namespace
+
 jive_variable *
-jive_input_get_constraint(const jive_input * self)
+jive_input_get_constraint(const jive::input * self)
 {
 	jive_variable * variable;
 	if (self->gate) {
@@ -237,13 +241,13 @@ jive_input_get_constraint(const jive_input * self)
 }
 
 void
-jive_input_unassign_ssavar(jive_input * self)
+jive_input_unassign_ssavar(jive::input * self)
 {
 	if (self->ssavar) jive_ssavar_unassign_input(self->ssavar, self);
 }
 
 jive_ssavar *
-jive_input_auto_assign_variable(jive_input * self)
+jive_input_auto_assign_variable(jive::input * self)
 {
 	if (self->ssavar)
 		return self->ssavar;
@@ -261,7 +265,7 @@ jive_input_auto_assign_variable(jive_input * self)
 }
 
 jive_ssavar *
-jive_input_auto_merge_variable(jive_input * self)
+jive_input_auto_merge_variable(jive::input * self)
 {
 	if (self->ssavar)
 		return self->ssavar;
@@ -271,7 +275,7 @@ jive_input_auto_merge_variable(jive_input * self)
 	if (self->origin()->ssavar) {
 		ssavar = self->origin()->ssavar;
 	} else {
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(self->origin()->users, user, output_users_list) {
 			if (user->ssavar) {
 				ssavar = user->ssavar;
@@ -373,7 +377,7 @@ jive_output_auto_assign_variable(jive_output * self)
 {
 	if (self->ssavar == 0) {
 		jive_ssavar * ssavar = 0;
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(self->users, user, output_users_list) {
 			if (!user->ssavar) continue;
 			if (ssavar) {
@@ -401,7 +405,7 @@ jive_output_auto_merge_variable(jive_output * self)
 	if (!self->ssavar) {
 		jive_variable * variable = jive_output_get_constraint(self);
 		jive_ssavar * ssavar = NULL;
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(self->users, user, output_users_list) {
 			if (user->ssavar) {
 				jive_variable_merge(user->ssavar->variable, variable);
@@ -414,7 +418,7 @@ jive_output_auto_merge_variable(jive_output * self)
 		jive_ssavar_assign_output(ssavar, self);
 	}
 	
-	jive_input * user;
+	jive::input * user;
 	JIVE_LIST_ITERATE(self->users, user, output_users_list) {
 		if (!user->ssavar) {
 			jive_variable_merge(self->ssavar->variable, jive_input_get_constraint(user));
@@ -433,7 +437,7 @@ void
 jive_output_replace(jive_output * self, jive_output * other)
 {
 	while(self->users.first) {
-		jive_input * input = self->users.first;
+		jive::input * input = self->users.first;
 		input->divert_origin(other);
 	}
 }
@@ -476,10 +480,10 @@ jive_gate::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, name);
 }
 
-jive_input *
+jive::input *
 jive_gate::create_input(jive_node * node, size_t index, jive_output * origin)
 {
-	jive_input * input = jive_type_create_input(&type(), node, index, origin);
+	jive::input * input = jive_type_create_input(&type(), node, index, origin);
 	input->required_rescls = required_rescls;
 	input->gate = this;
 	JIVE_LIST_PUSH_BACK(this->inputs, input, gate_inputs_list);
@@ -519,11 +523,11 @@ jive_gate_interferes_with(const jive_gate * self, const jive_gate * other)
 void
 jive_gate_merge(jive_gate * self, jive_gate * other)
 {
-	jive_input * input, * input_next;
+	jive::input * input, * input_next;
 	JIVE_LIST_ITERATE_SAFE(other->inputs, input, input_next, gate_inputs_list) {
 		size_t n;
 		for(n = 0; n<input->node->ninputs; n++) {
-			jive_input * other_input = input->node->inputs[n];
+			jive::input * other_input = input->node->inputs[n];
 			if (other_input == input) continue;
 			if (other_input->gate == 0) continue;
 			jive_gate_interference_remove(self->graph, other, other_input->gate);

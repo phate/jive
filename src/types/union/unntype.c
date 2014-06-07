@@ -42,7 +42,7 @@ type::copy() const
 	return new jive::unn::type(this->declaration());
 }
 
-jive_input *
+jive::input *
 type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive::unn::input(declaration(), node, index, origin);

@@ -152,7 +152,7 @@ jive_shaped_graph_node_destroy(void * closure, jive_node * node)
 }
 
 static void
-jive_shaped_graph_ssavar_assign_input(void * closure, jive_ssavar * ssavar, jive_input * input)
+jive_shaped_graph_ssavar_assign_input(void * closure, jive_ssavar * ssavar, jive::input * input)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
@@ -160,7 +160,7 @@ jive_shaped_graph_ssavar_assign_input(void * closure, jive_ssavar * ssavar, jive
 }
 
 static void
-jive_shaped_graph_ssavar_unassign_input(void * closure, jive_ssavar * ssavar, jive_input * input)
+jive_shaped_graph_ssavar_unassign_input(void * closure, jive_ssavar * ssavar, jive::input * input)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);

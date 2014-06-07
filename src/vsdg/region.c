@@ -333,7 +333,7 @@ jive_region_check_move_floating(jive_region * self, jive_region * edge_origin)
 }
 
 static jive_region_hull_entry *
-jive_region_hull_entry_create(jive_region * region, jive_input * input)
+jive_region_hull_entry_create(jive_region * region, jive::input * input)
 {
 	jive_context * context = input->node->region->graph->context;
 
@@ -357,7 +357,7 @@ jive_region_hull_entry_destroy(jive_region_hull_entry * entry)
 }
 
 void
-jive_region_hull_add_input(jive_region * region, jive_input * input)
+jive_region_hull_add_input(jive_region * region, jive::input * input)
 {
 	jive_region * origin_region = input->producer()->region;
 	while (region->depth > origin_region->depth) {
@@ -367,7 +367,7 @@ jive_region_hull_add_input(jive_region * region, jive_input * input)
 }
 
 void
-jive_region_hull_remove_input(struct jive_region * region, struct jive_input * input)
+jive_region_hull_remove_input(struct jive_region * region, jive::input * input)
 {
 	jive_region_hull_entry * entry, * next_entry;
 	JIVE_LIST_ITERATE_SAFE(input->hull, entry, next_entry, input_hull_list) {

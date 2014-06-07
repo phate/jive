@@ -54,7 +54,7 @@ jive_uninitialized_node_add_output(jive_node * self, const jive::base::type * ty
 }
 
 static void
-jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
+jive_uninitialized_node_add_input_(jive_node * self, jive::input * input)
 {
 	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	
@@ -63,12 +63,12 @@ jive_uninitialized_node_add_input_(jive_node * self, jive_input * input)
 
 	self->ninputs ++;
 	self->inputs = jive_context_realloc(self->graph->context, self->inputs,
-		sizeof(jive_input *) * self->ninputs);
+		sizeof(jive::input *) * self->ninputs);
 	self->inputs[input->index] = input;
 
 }
 
-static jive_input *
+static jive::input *
 jive_uninitialized_node_add_input(jive_node * self, const jive::base::type * type,
 	jive_output * initial_operand)
 {
@@ -77,7 +77,7 @@ jive_uninitialized_node_add_input(jive_node * self, const jive::base::type * typ
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 	
-	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	jive::input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
 	jive_uninitialized_node_add_input_(self, input);
 
 #ifdef JIVE_DEBUG
@@ -213,7 +213,7 @@ jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal
 }
 
 static void
-jive_node_add_input_(jive_node * self, jive_input * input)
+jive_node_add_input_(jive_node * self, jive::input * input)
 {
 	jive_uninitialized_node_add_input_(self, input);
 
@@ -237,7 +237,7 @@ jive_node_valid_edge(const jive_node * self, const jive_output * origin)
 	return false;
 }
 
-jive_input *
+jive::input *
 jive_node_add_input(jive_node * self, const jive::base::type * type, jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count && dynamic_cast<const jive::achr::type*>(type)) {
@@ -245,7 +245,7 @@ jive_node_add_input(jive_node * self, const jive::base::type * type, jive_output
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 
-	jive_input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	jive::input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
 	jive_node_add_input_(self, input);
 
 #ifdef JIVE_DEBUG
@@ -280,17 +280,17 @@ jive_node_add_constrained_output(jive_node * self, const jive_resource_class * r
 	return output;
 }
 
-jive_input *
+jive::input *
 jive_node_add_constrained_input(jive_node * self, const jive_resource_class * rescls,
 	jive_output * initial_operand)
 {
-	jive_input * input = jive_node_add_input(self, jive_resource_class_get_type(rescls),
+	jive::input * input = jive_node_add_input(self, jive_resource_class_get_type(rescls),
 		initial_operand);
 	input->required_rescls = rescls;
 	return input;
 }
 
-jive_input *
+jive::input *
 jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_operand)
 {
 	if (self->graph->floating_region_count) {
@@ -298,10 +298,10 @@ jive_node_gate_input(jive_node * self, jive_gate * gate, jive_output * initial_o
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 
-	jive_input * input = gate->create_input(self, self->ninputs, initial_operand);
+	jive::input * input = gate->create_input(self, self->ninputs, initial_operand);
 	size_t n;
 	for(n=0; n<input->index; n++) {
-		jive_input * other = self->inputs[n];
+		jive::input * other = self->inputs[n];
 		if (!other->gate) continue;
 		jive_gate_interference_add(self->graph, gate, other->gate);
 	}
@@ -323,10 +323,10 @@ jive_node_gate_output(jive_node * self, jive_gate * gate)
 	return output;
 }
 
-struct jive_input *
+struct jive::input *
 jive_node_input(const struct jive_node * self, size_t index)
 {
-	jive_input * input = NULL;
+	jive::input * input = NULL;
 	if (index < self->ninputs)
 		input = self->inputs[index];
 	else
@@ -380,7 +380,7 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 	jive_node_depth_notifier_slot_call(&self->graph->on_node_depth_change, self, old_depth_from_root);
 	
 	for(n=0; n<self->noutputs; n++) {
-		jive_input * user = self->outputs[n]->users.first;
+		jive::input * user = self->outputs[n]->users.first;
 		while(user) {
 			jive_node_invalidate_depth_from_root(user->node);
 			user = user->output_users_list.next;
@@ -406,7 +406,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 	
 	size_t n;
 	for(n = 0; n<self->ninputs; n++) {
-		jive_input * input = self->inputs[n];
+		jive::input * input = self->inputs[n];
 		
 		/* filter out multiple inputs using the same value
 		FIXME: this assumes that all inputs have the same resource
@@ -457,7 +457,7 @@ jive_node_depends_on_region(const jive_node * self, const jive_region * region)
 {
 	size_t n;
 	for(n = 0; n < self->ninputs; n++) {
-		jive_input * input = self->inputs[n];
+		jive::input * input = self->inputs[n];
 		if (dynamic_cast<jive::achr::input*>(input)) {
 			if (jive_region_depends_on_region(input->producer()->region, region)) {
 				return true;
@@ -503,7 +503,7 @@ jive_node_next_inner_region(const jive_node * self)
 	size_t n;
 	for (n = 0; n < self->noutputs; n++) {
 		jive_output * output = self->outputs[n];
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_region * region = user->node->region;
 			/* cannot pull anywhere if dependence in same region */
@@ -560,7 +560,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 		
 	/* remove all node output users in new region from the hulls */
 	for (n = 0; n < self->noutputs; n++) {
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(self->outputs[n]->users, user, output_users_list)
 			jive_region_hull_remove_input(user->node->region, user);
 	}
@@ -590,7 +590,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 
 	/* add all output users to the hulls */
 	for (n = 0; n < self->noutputs; n++) {
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(self->outputs[n]->users, user, output_users_list) {
 			if (self->region != user->node->region)
 				jive_region_hull_add_input(user->node->region, user);
@@ -634,7 +634,7 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 			}
 			jive_node_gate_input(new_node, target_gate, origin);
 		} else {
-			jive_input * input = jive_node_add_input(new_node, &self->inputs[n]->type(), origin);
+			jive::input * input = jive_node_add_input(new_node, &self->inputs[n]->type(), origin);
 			input->required_rescls = self->inputs[n]->required_rescls;
 		}
 	}
@@ -692,7 +692,7 @@ jive_node_cse(
 	size_t noperands, jive_output * const operands[])
 {
 	if (noperands) {
-		jive_input * input;
+		jive::input * input;
 		JIVE_LIST_ITERATE(operands[0]->users, input, output_users_list) {
 			jive_node * node = input->node;
 			if (jive_node_cse_test(node, cls, attrs, noperands, operands))

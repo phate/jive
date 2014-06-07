@@ -34,7 +34,7 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 	}
 	
 	for(n=0; n<node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		jive_inputview * inputview = nodeview->inputs[n];
 		jive_inputview_map_insert(&self->inputmap, inputview);
 		jive_graphview_add_node_recursive(self, input->producer());

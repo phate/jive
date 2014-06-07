@@ -98,19 +98,20 @@ jive_graph_notify_node_destroy(jive_graph * graph, jive_node * node)
 }
 
 static inline void
-jive_graph_notify_input_create(jive_graph * graph, jive_input * input)
+jive_graph_notify_input_create(jive_graph * graph, jive::input * input)
 {
 	jive_input_notifier_slot_call(&graph->on_input_create, input);
 }
 
 static inline void
-jive_graph_notify_input_change(jive_graph * graph, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+jive_graph_notify_input_change(jive_graph * graph, jive::input * input, jive_output * old_origin,
+	jive_output * new_origin)
 {
 	jive_input_change_notifier_slot_call(&graph->on_input_change, input, old_origin, new_origin);
 }
 
 static inline void
-jive_graph_notify_input_destroy(jive_graph * graph, jive_input * input)
+jive_graph_notify_input_destroy(jive_graph * graph, jive::input * input)
 {
 	jive_input_notifier_slot_call(&graph->on_input_destroy, input);
 }
@@ -176,13 +177,15 @@ jive_graph_notify_ssavar_destroy(jive_graph * graph, struct jive_ssavar * ssavar
 }
 
 static inline void
-jive_graph_notify_ssavar_assign_input(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_input * input)
+jive_graph_notify_ssavar_assign_input(jive_graph * graph, struct jive_ssavar * ssavar,
+	jive::input * input)
 {
 	jive_ssavar_input_notifier_slot_call(&graph->on_ssavar_assign_input, ssavar, input);
 }
 
 static inline void
-jive_graph_notify_ssavar_unassign_input(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_input * input)
+jive_graph_notify_ssavar_unassign_input(jive_graph * graph, struct jive_ssavar * ssavar,
+	jive::input * input)
 {
 	jive_ssavar_input_notifier_slot_call(&graph->on_ssavar_unassign_input, ssavar, input);
 }

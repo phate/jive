@@ -22,7 +22,7 @@ protected:
 	inline constexpr type() noexcept : jive::base::type() {};
 };
 
-class input : public jive_input {
+class input : public jive::input {
 public:
 	virtual ~input() noexcept;
 

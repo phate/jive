@@ -22,7 +22,8 @@ jive_negotiator_connection_destroy(jive_negotiator_connection * self);
 
 JIVE_DEFINE_HASH_TYPE(jive_negotiator_node_hash, jive_negotiator_constraint, jive_node *, hash_key.node, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, jive_gate *, hash_key.gate, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive_input *, hash_key.input, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive::input *,
+	hash_key.input, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_negotiator_output_hash, jive_negotiator_port, jive_output *, hash_key.output, hash_chain);
 
 /* options */
@@ -572,7 +573,7 @@ jive_negotiator_fully_specialize(jive_negotiator * self)
 }
 
 jive_negotiator_port *
-jive_negotiator_map_input(const jive_negotiator * self, jive_input * input)
+jive_negotiator_map_input(const jive_negotiator * self, jive::input * input)
 {
 	return jive_negotiator_input_hash_lookup(&self->input_map, input);
 }
@@ -590,7 +591,7 @@ jive_negotiator_map_gate(const jive_negotiator * self, jive_gate * gate)
 }
 	
 jive_negotiator_connection *
-jive_negotiator_create_input_connection(jive_negotiator * self, jive_input * input)
+jive_negotiator_create_input_connection(jive_negotiator * self, jive::input * input)
 {
 	jive_negotiator_port * output_port = jive_negotiator_map_output(self, input->origin());
 	jive_negotiator_connection * connection;
@@ -605,7 +606,7 @@ jive_negotiator_connection *
 jive_negotiator_create_output_connection(jive_negotiator * self, jive_output * output)
 {
 	jive_negotiator_connection * connection = 0;
-	jive_input * user;
+	jive::input * user;
 	JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 		jive_negotiator_port * port = jive_negotiator_map_input(self, user);
 		if (connection && port)
@@ -632,14 +633,14 @@ jive_negotiator_annotate_gate(jive_negotiator * self, jive_gate * gate)
 
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity(jive_negotiator * self,
-	size_t ninputs, jive_input * const inputs[],
+	size_t ninputs, jive::input * const inputs[],
 	size_t noutputs, jive_output * const outputs[],
 	const jive_negotiator_option * option)
 {
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
 	size_t n;
 	for(n = 0; n < ninputs; n++) {
-		jive_input * input = inputs[n];
+		jive::input * input = inputs[n];
 		jive_negotiator_connection * connection = jive_negotiator_create_input_connection(self, input);
 		jive_negotiator_port * port = jive_negotiator_port_create(constraint, connection, option);
 		port->hash_key.input = input;
@@ -678,7 +679,8 @@ jive_negotiator_annotate_identity_node(jive_negotiator * self, jive_node * node,
 }
 
 jive_negotiator_port *
-jive_negotiator_annotate_simple_input(jive_negotiator * self, jive_input * input, const jive_negotiator_option * option)
+jive_negotiator_annotate_simple_input(jive_negotiator * self, jive::input * input,
+	const jive_negotiator_option * option)
 {
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
 	jive_negotiator_connection * connection = jive_negotiator_create_input_connection(self, input);
@@ -708,7 +710,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 {
 	size_t n;
 	for(n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (!input->gate) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, input->gate))
 			continue;
@@ -753,7 +755,7 @@ jive_negotiator_process_region_(jive_negotiator * self, jive_region * region)
 }
 
 static void
-jive_negotiator_maybe_split_edge(jive_negotiator * self, jive_output * origin, jive_input * input)
+jive_negotiator_maybe_split_edge(jive_negotiator * self, jive_output * origin, jive::input * input)
 {
 	jive_negotiator_port * origin_port = jive_negotiator_map_output(self, origin);
 	if (!origin_port)
@@ -805,7 +807,7 @@ jive_negotiator_insert_split_nodes(jive_negotiator * self)
 	for (; node; node = jive_traverser_next(trav)) {
 		size_t n;
 		for (n = 0; n < node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
+			jive::input * input = node->inputs[n];
 			jive_negotiator_maybe_split_edge(self, input->origin(), input);
 		}
 	}

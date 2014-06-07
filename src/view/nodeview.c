@@ -16,7 +16,7 @@
 #include <jive/util/list.h>
 
 jive_inputview *
-jive_inputview_create(jive_nodeview * nodeview, jive_input * input)
+jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 {
 	jive_context * context = input->node->graph->context;
 	
@@ -240,7 +240,7 @@ jive_nodeview_layout(jive_nodeview * self, struct jive_reservationtracker * rese
 	
 	for(n=0; n<self->node->noutputs; n++) {
 		jive_outputview * outputview = self->outputs[n];
-		jive_input * user = self->node->outputs[n]->users.first;
+		jive::input * user = self->node->outputs[n]->users.first;
 		JIVE_LIST_ITERATE(self->node->outputs[n]->users, user, output_users_list) {
 			jive_inputview * inputview = jive_inputview_map_lookup(&graphview->inputmap, user);
 			if (!inputview->nodeview->placed) continue;
@@ -267,7 +267,7 @@ jive_nodeview_layout(jive_nodeview * self, struct jive_reservationtracker * rese
 	size_t nrects = 1;
 	for(n=0; n<self->node->noutputs; n++) {
 		jive_outputview * outputview = self->outputs[n];
-		jive_input * user = outputview->output->users.first;
+		jive::input * user = outputview->output->users.first;
 		if (!user) continue;
 		size_t end_row = y;
 		while(user) {

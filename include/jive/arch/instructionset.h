@@ -8,7 +8,10 @@
 
 #include <jive/common.h>
 
-struct jive_input;
+namespace jive {
+	class input;
+}
+
 struct jive_instruction_class;
 struct jive_node;
 struct jive_output;
@@ -21,7 +24,7 @@ typedef struct jive_instructionset jive_instructionset;
 typedef struct jive_xfer_description jive_xfer_description;
 
 struct jive_xfer_description {
-	struct jive_input * input;
+	jive::input * input;
 	struct jive_node * node;
 	struct jive_output * output;
 };

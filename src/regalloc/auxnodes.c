@@ -71,7 +71,7 @@ check_fp_sp_dependency(jive_node * node)
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
 		if (name && jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_CALLSLOT_RESOURCE))
 			need_sp_dependency = true;
@@ -88,12 +88,12 @@ check_fp_sp_dependency(jive_node * node)
 	}
 	
 	if (need_fp_dependency) {
-		jive_input * input = jive_subroutine_node_add_fp_dependency(sub, node);
+		jive::input * input = jive_subroutine_node_add_fp_dependency(sub, node);
 		if (input)
 			jive_input_auto_merge_variable(input);
 	}
 	if (need_sp_dependency) {
-		jive_input * input = jive_subroutine_node_add_sp_dependency(sub, node);
+		jive::input * input = jive_subroutine_node_add_sp_dependency(sub, node);
 		if (input)
 			jive_input_auto_merge_variable(input);
 	}

@@ -16,7 +16,6 @@
 #include <jive/vsdg/negotiator.h>
 
 struct jive_graph;
-struct jive_input;
 struct jive_output;
 struct jive_resource_class;
 
@@ -24,6 +23,7 @@ namespace jive {
 namespace base {
 	class type;
 }
+	class input;
 }
 
 typedef int jive_regselect_index;
@@ -104,7 +104,7 @@ const jive_register_class *
 jive_regselector_map_output(const jive_regselector * self, struct jive_output * output);
 
 const jive_register_class *
-jive_regselector_map_input(const jive_regselector * self, struct jive_input * input);
+jive_regselector_map_input(const jive_regselector * self, jive::input * input);
 
 void
 jive_regselector_fini(jive_regselector * self);

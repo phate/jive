@@ -75,8 +75,9 @@ jive_##name##_notifier_slot_call(const jive_##name##_notifier_slot * self, param
 
 MAKE_NOTIFIER(node, NODE, struct jive_node * node, node)
 MAKE_NOTIFIER(node_depth, NODE_DEPTH, WRAP(struct jive_node * node, size_t old_depth), WRAP(node, old_depth))
-MAKE_NOTIFIER(input, INPUT, struct jive_input * input, input)
-MAKE_NOTIFIER(input_change, INPUT_CHANGE, WRAP(struct jive_input * input, struct jive_output * old_origin, struct jive_output * new_origin), WRAP(input, old_origin, new_origin))
+MAKE_NOTIFIER(input, INPUT, jive::input * input, input)
+MAKE_NOTIFIER(input_change, INPUT_CHANGE, WRAP(jive::input * input, struct jive_output * old_origin,
+	struct jive_output * new_origin), WRAP(input, old_origin, new_origin))
 MAKE_NOTIFIER(output, OUTPUT, struct jive_output * output, output)
 
 MAKE_NOTIFIER(region, REGION, struct jive_region * region, region)
@@ -91,6 +92,7 @@ MAKE_NOTIFIER(ssavar, SSAVAR, struct jive_ssavar * ssavar, ssavar)
 MAKE_NOTIFIER(ssavar_variable, SSAVAR_VARIABLE, WRAP(struct jive_ssavar * ssavar, struct jive_variable * old_var, struct jive_variable * new_var), WRAP(ssavar, old_var, new_var))
 MAKE_NOTIFIER(ssavar_divert, SSAVAR_DIVERT, WRAP(struct jive_ssavar * ssavar, struct jive_output * old_origin, struct jive_output * new_origin), WRAP(ssavar, old_origin, new_origin))
 MAKE_NOTIFIER(ssavar_output, SSAVAR_OUTPUT, WRAP(struct jive_ssavar * ssavar, struct jive_output * output), WRAP(ssavar, output))
-MAKE_NOTIFIER(ssavar_input, SSAVAR_INPUT, WRAP(struct jive_ssavar * ssavar, struct jive_input * input), WRAP(ssavar, input))
+MAKE_NOTIFIER(ssavar_input, SSAVAR_INPUT, WRAP(struct jive_ssavar * ssavar, jive::input * input),
+	WRAP(ssavar, input))
 
 MAKE_NOTIFIER(gate, GATE, WRAP(struct jive_gate * first, struct jive_gate * second), WRAP(first, second))

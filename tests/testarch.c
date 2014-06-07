@@ -506,7 +506,7 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, si
 	return output;
 }
 
-static jive_input *
+static jive::input *
 jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index, jive_output * value)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;

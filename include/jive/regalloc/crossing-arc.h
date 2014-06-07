@@ -129,7 +129,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		
 		size_t n;
 		for(n = 0; n<node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
+			jive::input * input = node->inputs[n];
 			if (dynamic_cast<jive::achr::input*>(input)) {
 				self->current_region_ = input->producer()->region;
 				self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
@@ -156,9 +156,9 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		/* trace through neighbour regions or next node in parent region */
 		size_t n = self->current_region_->anchor->index + 1;
 		jive_node * anchor_node = self->current_region_->anchor->node;
-		jive_input * anchor = 0;
+		jive::input * anchor = 0;
 		while(n < anchor_node->ninputs) {
-			jive_input * input = anchor_node->inputs[n];
+			jive::input * input = anchor_node->inputs[n];
 			if (dynamic_cast<jive::achr::input*>(input)) {
 				anchor = input;
 				break;

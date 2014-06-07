@@ -42,7 +42,7 @@ type::copy() const
 	return new jive::rcd::type(this->declaration());
 }
 
-jive_input *
+jive::input *
 type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive::rcd::input(this->declaration(), node, index, origin);

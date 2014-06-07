@@ -107,14 +107,14 @@ jive_ssavar_assert_consistent(const jive_ssavar * self)
 	if (!origin)
 		return;
 	
-	jive_input * input;
+	jive::input * input;
 	JIVE_LIST_ITERATE(origin->users, input, output_users_list) {
 		JIVE_DEBUG_ASSERT(input->ssavar == origin->ssavar);
 	}
 }
 
 void
-jive_ssavar_assign_input(jive_ssavar * self, jive_input * input)
+jive_ssavar_assign_input(jive_ssavar * self, jive::input * input)
 {
 	JIVE_DEBUG_ASSERT(input->origin() == self->origin && input->ssavar == 0);
 	
@@ -131,7 +131,7 @@ jive_ssavar_assign_input(jive_ssavar * self, jive_input * input)
 }
 
 void
-jive_ssavar_unassign_input(jive_ssavar * self, jive_input * input)
+jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input)
 {
 	JIVE_DEBUG_ASSERT(input->ssavar == self);
 	
@@ -177,8 +177,8 @@ jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 	
 	jive_output * assigned_output = other->assigned_output;
 	struct {
-		jive_input * first;
-		jive_input * last;
+		jive::input * first;
+		jive::input * last;
 	} assigned_inputs = {0, 0};
 	
 	/* undo all assignments, then redo assignments: there must never
@@ -187,7 +187,7 @@ jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 	if (assigned_output)
 		jive_ssavar_unassign_output(other, assigned_output);
 	while (other->assigned_inputs.first) {
-		jive_input * input = other->assigned_inputs.first;
+		jive::input * input = other->assigned_inputs.first;
 		jive_ssavar_unassign_input(other, input);
 		JIVE_LIST_PUSH_BACK(assigned_inputs, input, ssavar_input_list);
 	}
@@ -195,7 +195,7 @@ jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 	if (assigned_output)
 		jive_ssavar_assign_output(self, assigned_output);
 	while (assigned_inputs.first) {
-		jive_input * input = assigned_inputs.first;
+		jive::input * input = assigned_inputs.first;
 		JIVE_LIST_REMOVE(assigned_inputs, input, ssavar_input_list);
 		jive_ssavar_assign_input(self, input);
 	}
@@ -215,7 +215,7 @@ jive_ssavar_divert_origin(jive_ssavar * self, jive_output * new_origin)
 		self->assigned_output->ssavar = self;
 	}
 	
-	jive_input * input;
+	jive::input * input;
 	JIVE_LIST_ITERATE(self->assigned_inputs, input, ssavar_input_list) {
 		input->internal_divert_origin(new_origin);
 	}
@@ -380,7 +380,7 @@ jive_variable_recompute_rescls(jive_variable * self)
 	const jive_resource_class * rescls = &jive_root_resource_class;
 	jive_ssavar * ssavar;
 	JIVE_LIST_ITERATE(self->ssavars, ssavar, variable_ssavar_list) {
-		jive_input * input;
+		jive::input * input;
 		JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 			rescls = jive_resource_class_intersection(rescls, input->required_rescls);
 		}

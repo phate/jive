@@ -165,7 +165,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 	
 	size_t n;
 	for(n = 0; n < lower->node->ninputs; n++) {
-		jive_input * input = lower->node->inputs[n];
+		jive::input * input = lower->node->inputs[n];
 		if (!dynamic_cast<jive::achr::input*>(input)) continue;
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph,
 			input->producer()->region);
@@ -200,7 +200,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		JIVE_LIST_ITERATE(output->originating_ssavars, ssavar, originating_ssavar_list) {
 			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
 			
-			jive_input * input;
+			jive::input * input;
 			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 				jive_shaped_ssavar_xpoints_unregister_arc(shaped_ssavar, input, output);
 			}
@@ -232,7 +232,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	}
 	
 	for(n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (!dynamic_cast<jive::achr::input*>(input))
 			continue;
 		struct jive_nodevar_xpoint_hash_byssavar_iterator i;
@@ -252,7 +252,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		JIVE_LIST_ITERATE(output->originating_ssavars, ssavar, originating_ssavar_list) {
 			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
 			
-			jive_input * input;
+			jive::input * input;
 			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 				jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, output);
 			}
@@ -269,7 +269,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	
 	/* add crossings for ssavars used here */
 	for(n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (!input->ssavar) continue;
 		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, input->ssavar);
 		jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, input->origin());

@@ -30,7 +30,7 @@ static int test_main(void)
 	jive_gate * ret_gate = memtype.create_gate(graph, "ret");
 
 	jive_output * arg = jive_node_gate_output(node0, arg_gate);
-	jive_input * ret = jive_node_gate_input(node1, ret_gate, arg);
+	jive::input * ret = jive_node_gate_input(node1, ret_gate, arg);
 
 	assert(dynamic_cast<jive::state::output*>(arg));
 	assert(dynamic_cast<jive::state::input*>(ret));

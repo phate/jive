@@ -78,7 +78,7 @@ typedef struct jive_subroutine_passthrough jive_subroutine_passthrough;
 struct jive_subroutine_passthrough {
 	jive_gate * gate;
 	jive_output * output;
-	jive_input * input;
+	jive::input * input;
 };
 
 typedef struct jive_subroutine_late_transforms jive_subroutine_late_transforms;
@@ -90,7 +90,7 @@ struct jive_value_split_factory {
 
 struct jive_subroutine_late_transforms {
 	void (*value_split)(const jive_subroutine_late_transforms * self,
-		jive_output * value_in, jive_input * value_out,
+		jive_output * value_in, jive::input * value_out,
 		const jive_value_split_factory * enter_split, const jive_value_split_factory * leave_split);
 };
 
@@ -134,15 +134,15 @@ struct jive_subroutine_deprecated {
 struct jive_subroutine_class {
 	void (*fini)(jive_subroutine_deprecated * self);
 	jive_output * (*value_parameter)(jive_subroutine_deprecated * self, size_t index);
-	jive_input * (*value_return)(jive_subroutine_deprecated * self, size_t index, jive_output * value);
+	jive::input * (*value_return)(jive_subroutine_deprecated * self, size_t index, jive_output * value);
 };
 
 struct jive_subroutine_abi_class {
 	void (*prepare_stackframe)(
 		jive_subroutine_deprecated * self,
 		const jive_subroutine_late_transforms * xfrm);
-	jive_input *(*add_fp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
-	jive_input *(*add_sp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
+	jive::input *(*add_fp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
+	jive::input *(*add_sp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
 	const struct jive_instructionset * instructionset;
 };
 
@@ -155,7 +155,7 @@ jive_subroutine_value_parameter(jive_subroutine_deprecated * self, size_t index)
 	return self->class_->value_parameter(self, index);
 }
 
-JIVE_EXPORTED_INLINE jive_input *
+JIVE_EXPORTED_INLINE jive::input *
 jive_subroutine_value_return(jive_subroutine_deprecated * self, size_t index, jive_output * value)
 {
 	return self->class_->value_return(self, index, value);
@@ -166,12 +166,12 @@ jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_node * self,
 	const jive_subroutine_late_transforms * xfrm);
 
-jive_input *
+jive::input *
 jive_subroutine_node_add_fp_dependency(
 	const jive_subroutine_node * self,
 	jive_node * node);
 
-jive_input *
+jive::input *
 jive_subroutine_node_add_sp_dependency(
 	const jive_subroutine_node * self,
 	jive_node * node);

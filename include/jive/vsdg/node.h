@@ -23,6 +23,7 @@ namespace jive {
 namespace base {
 	class type;
 }
+	class input;
 }
 
 typedef struct jive_node jive_node;
@@ -35,7 +36,6 @@ typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 typedef jive::operation jive_node_attrs;
 
 struct jive_gate;
-struct jive_input;
 struct jive_output;
 struct jive_region;
 enum jive_traversal_nodestate;
@@ -67,7 +67,7 @@ public:
 	size_t noperands;
 	size_t noutputs;
 	
-	struct jive_input ** inputs;
+	struct jive::input ** inputs;
 	struct jive_output ** outputs;
 	
 	struct {
@@ -272,7 +272,7 @@ jive_node_copy_substitute(
 bool
 jive_node_valid_edge(const jive_node * self, const struct jive_output * origin);
 
-struct jive_input *
+jive::input *
 jive_node_add_input(
 	jive_node * self, const jive::base::type * type, struct jive_output * initial_operand);
 
@@ -282,15 +282,15 @@ jive_node_add_output(jive_node * self, const jive::base::type * type);
 struct jive_output *
 jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);
 
-struct jive_input *
+jive::input *
 jive_node_add_constrained_input(
 	jive_node * self, const struct jive_resource_class * rescls, struct jive_output * initial_operand);
 
-struct jive_input *
+jive::input *
 jive_node_gate_input(
 	jive_node * self, struct jive_gate * gate, struct jive_output * initial_operand);
 
-JIVE_EXPORTED_INLINE struct jive_input *
+JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
 {
 	size_t n;
@@ -311,7 +311,7 @@ jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
 struct jive_output *
 jive_node_gate_output(jive_node * self, struct jive_gate * gate);
 
-struct jive_input *
+jive::input *
 jive_node_input(const struct jive_node * self, size_t index);
 
 struct jive_output *

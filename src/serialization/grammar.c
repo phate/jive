@@ -572,7 +572,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		} else {
 			const jive_resource_class * rescls = ports.ports[n].required_rescls;
 			const jive::base::type * type = jive_resource_class_get_type(rescls);
-			jive_input * input = jive_node_add_input(*node, type, ports.ports[n].origin);
+			jive::input * input = jive_node_add_input(*node, type, ports.ports[n].origin);
 			input->required_rescls = rescls;
 		}
 	}
@@ -885,7 +885,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 
 			size_t j;
 			for (j = 0; j < node->ninputs; ++j) {
-				jive_input * input = node->inputs[j];
+				jive::input * input = node->inputs[j];
 				if (dynamic_cast<jive::achr::input*>(input))
 					jive_serialize_regiondef(self, namegen, input->origin()->node()->region, os);
 			}

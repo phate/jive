@@ -33,7 +33,7 @@ pre_op_transfer(
 		type, origin, resource_class,
 		type, resource_class);
 	
-	jive_input * xfer_input = xfer_node->inputs[0];
+	jive::input * xfer_input = xfer_node->inputs[0];
 	jive_output * xfer_output = xfer_node->outputs[0];
 	
 	jive_input_auto_assign_variable(xfer_input);

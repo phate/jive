@@ -38,7 +38,7 @@ type::copy() const
 	return new jive::achr::type();
 }
 
-jive_input *
+jive::input *
 type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive::achr::input(node, index, origin);
@@ -62,7 +62,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 /* input */
 
 input::input(struct jive_node * node, size_t index, jive_output * origin)
-	: jive_input(node, index, origin)
+	: jive::input(node, index, origin)
 {
 	JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
 	origin->node()->region->anchor = this;

@@ -17,7 +17,7 @@
 #include <jive/vsdg/splitnode.h>
 
 static inline bool
-is_active_control_input(jive_input * input)
+is_active_control_input(jive::input * input)
 {
 	jive::ctl::output * output = dynamic_cast<jive::ctl::output*>(input->origin());
 	return output != nullptr ? output->active() : false;
@@ -105,7 +105,7 @@ struct regalloc_split_region {
 	jive_shaped_node * splitting_point;
 	struct {
 		size_t nitems, space;
-		jive_input ** items;
+		jive::input ** items;
 	} users;
 	
 	struct {
@@ -137,7 +137,7 @@ regalloc_split_region_destroy(regalloc_split_region * self)
 }
 
 static void
-regalloc_split_region_add_user(regalloc_split_region * self, jive_input * user)
+regalloc_split_region_add_user(regalloc_split_region * self, jive::input * user)
 {
 	if (self->users.nitems == self->users.space) {
 		jive_context * context = self->region->graph->context;
@@ -278,9 +278,9 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 	const jive_resource_name * name = 0;
 	
 	while (!name) {
-		jive_input * last_user = 0;
+		jive::input * last_user = 0;
 		jive_shaped_node * last_user_loc = 0;
-		jive_input * input;
+		jive::input * input;
 		JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 			JIVE_DEBUG_ASSERT(input->ssavar == ssavar);
 			jive_shaped_node * loc = jive_shaped_graph_map_node(shaped_graph, input->node);
@@ -344,7 +344,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		
 		size_t n;
 		for (n = 0; n < split->users.nitems; n++) {
-			jive_input * user = split->users.items[n];
+			jive::input * user = split->users.items[n];
 			user->divert_origin(restored_value);
 		}
 		
@@ -389,7 +389,7 @@ merge_gate_ports(jive_gate * gate)
 	JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list)
 		jive_output_auto_merge_variable(output);
 	
-	jive_input * input;
+	jive::input * input;
 	JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list)
 		jive_output_auto_merge_variable(input->origin());
 }
@@ -409,7 +409,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	/* insert splitting nodes before and after gates */
 	jive_gate * gate;
 	JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
-		jive_input * input;
+		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
 			jive_output * origin = input->origin();
 				
@@ -424,7 +424,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 				type, origin, rescls,
 				type, rescls);
 			
-			jive_input * xfer_input = xfer_node->inputs[0];
+			jive::input * xfer_input = xfer_node->inputs[0];
 			jive_output * xfer_output = xfer_node->outputs[0];
 			
 			jive_input_auto_assign_variable(xfer_input);
@@ -453,7 +453,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
 			/* don't issue xfer instruction between "tied" gates */
 			bool other_user = false;
-			jive_input * user;
+			jive::input * user;
 			JIVE_LIST_ITERATE(output->users, user, output_users_list)
 				other_user = other_user || (user->gate != gate);
 			if (!other_user) {
@@ -572,7 +572,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		
 		JIVE_DEBUG_ASSERT(output->users.first == output->users.last);
 		
-		jive_input * user = output->users.first;
+		jive::input * user = output->users.first;
 		
 		if (user->gate == gate) {
 			/* tied gates, just pass through spilled value */
@@ -597,7 +597,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	}
 	
 	while (gate->inputs.first) {
-		jive_input * input = gate->inputs.first;
+		jive::input * input = gate->inputs.first;
 		jive_node * node = input->node;
 		jive_node * xfer_node = input->producer();
 		jive_output * origin = xfer_node->inputs[0]->origin();
@@ -612,7 +612,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		position = jive_shaped_node_prev_in_region(position);
 		jive_output * spill_output = split_top(shaped_graph, origin, demotion, position);
 		
-		jive_input * spill_input = jive_node_gate_input(node, spill_gate, spill_output);
+		jive::input * spill_input = jive_node_gate_input(node, spill_gate, spill_output);
 		jive_input_auto_merge_variable(spill_input);
 	}
 	

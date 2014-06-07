@@ -235,7 +235,7 @@ can_move_below_cut(jive_region_shaper * self, jive_cut * cut, jive_node * new_no
 		jive_node * node = shaped_node->node;
 		size_t n;
 		for (n = 0; n < node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
+			jive::input * input = node->inputs[n];
 			if (dynamic_cast<jive::achr::input*>(input)) {
 				if (!can_move_below_region(self, input->producer()->region, new_node))
 					return false;
@@ -334,7 +334,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	then it must go into a cut of its own */
 	bool force_proper_cut = false;
 	for (n = 0; n < new_node->ninputs; n++) {
-		jive_input * input = new_node->inputs[n];
+		jive::input * input = new_node->inputs[n];
 		if (dynamic_cast<jive::achr::input*>(input) || dynamic_cast<jive::ctl::input*>(input))
 			force_proper_cut = true;
 	}
@@ -374,7 +374,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		self->control_dominator = 0;
 	
 	for (n = 0; n < new_node->ninputs; n++) {
-		jive_input * input = new_node->inputs[n];
+		jive::input * input = new_node->inputs[n];
 		if (!dynamic_cast<jive::ctl::input*>(input))
 			continue;
 		
@@ -433,7 +433,7 @@ check_ssavar_replacement_conflict(
 static bool
 gate_is_unbound(const jive_gate * gate)
 {
-	jive_input * input;
+	jive::input * input;
 	JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list)
 		if (input->ssavar) return false;
 	jive_output * output;
@@ -447,7 +447,7 @@ jive_region_shaper_undo_setup_node(jive_region_shaper * self, jive_node * node)
 {
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		jive_ssavar * ssavar = input->ssavar;
 		if (ssavar) {
 			jive_variable * variable = ssavar->variable;
@@ -664,7 +664,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 	}
 	
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		JIVE_DEBUG_ASSERT(!input->ssavar);
 		jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(active, input->origin());
 		jive_variable * new_constraint = jive_input_get_constraint(input);
@@ -930,7 +930,7 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 	
 	size_t n;
 	for (n = 0; n < new_node->ninputs; n++) {
-		jive_input * input = new_node->inputs[n];
+		jive::input * input = new_node->inputs[n];
 		if (!dynamic_cast<jive::achr::input*>(input))
 			continue;
 		jive_region_shaper * subshaper = jive_region_shaper_create(

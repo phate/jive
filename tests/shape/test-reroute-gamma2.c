@@ -40,7 +40,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 	}
 	for (n = 0; n < node->ninputs; n++) {
 		jive_ssavar * ssavar = 0;
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(node->inputs[n]->origin()->users, user, output_users_list) {
 			if (user->ssavar && jive_region_contains_node(user->node->region, node)) {
 				ssavar = user->ssavar;
@@ -151,10 +151,10 @@ static int test_main(void)
 	assert(bottom->inputs[2]->ssavar == ssavar_below);
 	assert(ssavar_below->variable == var);
 	
-	jive_input * in_l = jive_node_get_gate_input(gamma_node->producer(0), reroute_gate);
+	jive::input * in_l = jive_node_get_gate_input(gamma_node->producer(0), reroute_gate);
 	jive_ssavar * ssavar_l = in_l->ssavar;
 	assert(ssavar_l->variable == var);
-	jive_input * in_r = jive_node_get_gate_input(gamma_node->producer(1), reroute_gate);
+	jive::input * in_r = jive_node_get_gate_input(gamma_node->producer(1), reroute_gate);
 	jive_ssavar * ssavar_r = in_r->ssavar;
 	assert(ssavar_r->variable == var);
 	assert(ssavar_r == ssavar_p);

@@ -62,7 +62,7 @@ type::copy() const
 	return new jive::imm::type();
 }
 
-jive_input *
+jive::input *
 type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive::imm::input(node, index, origin);

@@ -12,6 +12,10 @@
 #include <jive/common.h>
 #include <jive/vsdg/region-ssavar-use.h>
 
+namespace jive {
+	class input;
+}
+
 /**
         \defgroup jive_variable Variables
         Variables
@@ -33,8 +37,8 @@ struct jive_ssavar {
 	struct jive_output * origin;
 	
 	struct {
-		struct jive_input * first;
-		struct jive_input * last;
+		jive::input * first;
+		jive::input * last;
 	} assigned_inputs;
 	
 	struct jive_output * assigned_output;
@@ -51,10 +55,10 @@ jive_ssavar *
 jive_ssavar_create(struct jive_output * origin, jive_variable * variable);
 
 void
-jive_ssavar_assign_input(jive_ssavar * self, struct jive_input * input);
+jive_ssavar_assign_input(jive_ssavar * self, jive::input * input);
 
 void
-jive_ssavar_unassign_input(jive_ssavar * self, struct jive_input * input);
+jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input);
 
 void
 jive_ssavar_assign_output(jive_ssavar * self, struct jive_output * output);

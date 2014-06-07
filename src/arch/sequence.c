@@ -92,7 +92,7 @@ jive_seq_point_attach_symbol(
 }
 
 static bool
-is_active_control(jive_input * input)
+is_active_control(jive::input * input)
 {
 	jive::ctl::output * output = dynamic_cast<jive::ctl::output*>(input->origin());
 	return output != nullptr ? output->active() : false;
@@ -143,7 +143,7 @@ sequentialize_region(
 				seq_region, node->ninputs, node);
 			size_t n;
 			for (n = 0; n < node->ninputs; ++n) {
-				jive_input * input = node->inputs[n];
+				jive::input * input = node->inputs[n];
 				jive_bitconstant_node * cnode = dynamic_cast<jive_bitconstant_node *>(input->producer());
 				jive_seq_dataitem * item = &data->items[n];
 				if (cnode) {
@@ -178,7 +178,7 @@ sequentialize_region(
 		
 		size_t n;
 		for(n = 0; n < node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
+			jive::input * input = node->inputs[n];
 			if (dynamic_cast<jive::achr::input*>(input)) {
 				jive_seq_region * seq_subregion;
 				if (n == 0) {
@@ -204,9 +204,9 @@ sequentialize_region(
 		
 		before = current;
 		
-		jive_input * control_input = 0;
+		jive::input * control_input = 0;
 		for(n = 0; n < node->ninputs; n++) {
-			jive_input * input = node->inputs[n];
+			jive::input * input = node->inputs[n];
 			if (is_active_control(input)) {
 				control_input = input;
 				break;

@@ -259,7 +259,7 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 		
 		size_t n;
 		for (n = 0; n < node_->ninputs; n++) {
-			jive_input * input = node_->inputs[n];
+			jive::input * input = node_->inputs[n];
 			test_negotiator_option option;
 			option.mask = node->operation().input_options()[n];
 			jive_negotiator_annotate_simple_input(self, input, &option.base);
@@ -322,7 +322,7 @@ expect_options(
 	jive_negotiator * nego,
 	jive_output * o,
 	test_option_t o_o,
-	jive_input * i,
+	jive::input * i,
 	test_option_t o_i)
 {
 	jive_negotiator_port * p_o = jive_negotiator_map_output(nego, o);

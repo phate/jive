@@ -24,7 +24,7 @@ public:
 
 	virtual jive::achr::type * copy() const override;
 
-	virtual jive_input * create_input(jive_node * node, size_t index,
+	virtual jive::input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
 
 	virtual jive_output * create_output(jive_node * node, size_t index) const override;
@@ -32,7 +32,7 @@ public:
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class input final : public jive_input {
+class input final : public jive::input {
 public:
 	virtual ~input() noexcept;
 

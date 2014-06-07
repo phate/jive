@@ -22,7 +22,7 @@ type::~type() noexcept {}
 input::~input() noexcept {};
 
 input::input(struct jive_node * node, size_t index, jive_output * initial_operand)
-	: jive_input(node, index, initial_operand)
+	: jive::input(node, index, initial_operand)
 {}
 
 /* value outputs */

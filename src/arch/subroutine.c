@@ -27,14 +27,14 @@ jive_subroutine_node_prepare_stackframe(
 		self->operation().subroutine(), xfrm);
 }
 
-jive_input *
+jive::input *
 jive_subroutine_node_add_fp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
 	return self->operation().subroutine()->abi_class->add_fp_dependency(
 		self->operation().subroutine(), node);
 }
 
-jive_input *
+jive::input *
 jive_subroutine_node_add_sp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
 	return self->operation().subroutine()->abi_class->add_sp_dependency(

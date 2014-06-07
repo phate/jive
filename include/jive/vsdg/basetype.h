@@ -14,8 +14,11 @@
 #include <jive/common.h>
 #include <jive/vsdg/gate-interference.h>
 
+namespace jive {
+	class input;
+}
+
 class jive_gate;
-class jive_input;
 class jive_output;
 
 struct jive_buffer;
@@ -24,6 +27,7 @@ struct jive_graph;
 struct jive_node;
 struct jive_regcls;
 struct jive_region;
+struct jive_region_hull_entry;
 struct jive_resource_class;
 struct jive_ssavar;
 struct jive_variable;
@@ -54,9 +58,9 @@ public:
 	virtual jive::base::type * copy() const = 0;
 
 	/*
-		FIXME: change return type to std::unique_ptr<jive_input>
+		FIXME: change return type to std::unique_ptr<jive::input>
 	*/
-	virtual jive_input * create_input(jive_node * node, size_t index, jive_output * origin) const = 0;
+	virtual jive::input * create_input(jive_node * node, size_t index, jive_output * origin) const = 0;
 
 	/*
 		FIXME: change return type to std::unique_ptr<jive_output>
@@ -72,22 +76,24 @@ public:
 }
 }	//jive namespace
 
-struct jive_input *
+jive::input *
 jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
 	jive_output * initial_operand);
 
+namespace jive {
+
 /**
-        \defgroup jive_input Inputs
+        \defgroup jive::input Inputs
         Inputs
         @{
 */
 
-class jive_input {
+class input {
 public:
-	virtual ~jive_input() noexcept;
+	virtual ~input() noexcept;
 
 protected:
-	jive_input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive_output * origin);
 
 public:
 	virtual const jive::base::type & type() const noexcept = 0;
@@ -105,7 +111,7 @@ public:
 		FIXME: This function is only used two times in src/regalloc/fixup.c. See whether we can
 		actually remove it and add a replacement in the register allocator.
 	*/
-	void swap(jive_input * other) noexcept;
+	void swap(input * other) noexcept;
 
 	inline jive_output * origin() const noexcept { return origin_; }
 
@@ -115,20 +121,20 @@ public:
 	size_t index;
 
 	struct {
-		jive_input * prev;
-		jive_input * next;
+		input * prev;
+		input * next;
 	} output_users_list;
 	
 	jive_gate * gate;
 	struct {
-		jive_input * prev;
-		jive_input * next;
+		input * prev;
+		input * next;
 	} gate_inputs_list;
 	
 	struct jive_ssavar * ssavar;
 	struct {
-		jive_input * prev;
-		jive_input * next;
+		input * prev;
+		input * next;
 	} ssavar_input_list;
 
 	struct {
@@ -142,17 +148,19 @@ private:
 	jive_output * origin_;
 };
 
+}	//jive namespace
+
 struct jive_variable *
-jive_input_get_constraint(const jive_input * self);
+jive_input_get_constraint(const jive::input * self);
 
 void
-jive_input_unassign_ssavar(jive_input * self);
+jive_input_unassign_ssavar(jive::input * self);
 
 struct jive_ssavar *
-jive_input_auto_assign_variable(jive_input * self);
+jive_input_auto_assign_variable(jive::input * self);
 
 struct jive_ssavar *
-jive_input_auto_merge_variable(jive_input * self);
+jive_input_auto_merge_variable(jive::input * self);
 
 /**	@}	*/
 
@@ -184,8 +192,8 @@ public:
 	size_t index;
 	
 	struct {
-		jive_input * first;
-		jive_input * last;
+		jive::input * first;
+		jive::input * last;
 	} users;
 	
 	jive_gate * gate;
@@ -238,7 +246,7 @@ public:
 
 	virtual void label(jive_buffer & buffer) const;
 
-	jive_input * create_input(jive_node * node, size_t index, jive_output * origin);
+	jive::input * create_input(jive_node * node, size_t index, jive_output * origin);
 
 	jive_output * create_output(jive_node * node, size_t index);
 	
@@ -251,8 +259,8 @@ public:
 	char * name;
 	
 	struct {
-		jive_input * first;
-		jive_input * last;
+		jive::input * first;
+		jive::input * last;
 	} inputs;
 	
 	struct {
@@ -296,7 +304,7 @@ jive_raise_type_error(const jive::base::type * self, const jive::base::type * ot
 	struct jive_context * context);
 
 inline jive_node *
-jive_input::producer() const noexcept
+jive::input::producer() const noexcept
 {
 	return origin_->node();
 }

@@ -49,7 +49,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
 	size_t n;
 	for(n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		jive_ssavar * ssavar = jive_input_auto_merge_variable(input);
 		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
 		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, node->region->depth);

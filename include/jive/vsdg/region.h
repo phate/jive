@@ -14,12 +14,15 @@
 #include <jive/vsdg/region-ssavar-use.h>
 #include <jive/vsdg/section.h>
 
+namespace jive {
+	class input;
+}
+
 typedef struct jive_floating_region jive_floating_region;
 typedef struct jive_region jive_region;
 
 struct jive_cut;
 struct jive_graph;
-struct jive_input;
 struct jive_node;
 struct jive_stackframe;
 struct jive_substitution_map;
@@ -55,7 +58,7 @@ struct jive_region_hull_entry {
 	} input_hull_list;
 
 	/* the input that the entry represents */
-	struct jive_input * input;
+	jive::input * input;
 
 	/* the region where entry lives */
 	struct jive_region * region;
@@ -97,7 +100,7 @@ struct jive_region {
 	
 	jive_region_ssavar_hash used_ssavars;
 	
-	struct jive_input * anchor;
+	struct jive::input * anchor;
 };
 
 /**
@@ -234,7 +237,7 @@ void
 jive_floating_region_settle(jive_floating_region region);
 
 void
-jive_region_hull_add_input(struct jive_region * region, struct jive_input * input);
+jive_region_hull_add_input(struct jive_region * region, jive::input * input);
 
 JIVE_EXPORTED_INLINE void
 jive_region_hull_add_hull_to_parents(struct jive_region * region)
@@ -245,7 +248,7 @@ jive_region_hull_add_hull_to_parents(struct jive_region * region)
 }
 
 void
-jive_region_hull_remove_input(struct jive_region * region, struct jive_input * input);
+jive_region_hull_remove_input(struct jive_region * region, jive::input * input);
 
 JIVE_EXPORTED_INLINE void
 jive_region_hull_remove_hull_from_parents(struct jive_region * region)

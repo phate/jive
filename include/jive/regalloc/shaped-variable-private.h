@@ -17,7 +17,6 @@
 #include <jive/vsdg/variable.h>
 
 struct jive_gate;
-struct jive_input;
 struct jive_output;
 struct jive_resource_class;
 
@@ -232,10 +231,12 @@ void
 jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname);
 
 void
-jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, struct jive_input * input, struct jive_output * output);
+jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input * input,
+	struct jive_output * output);
 
 void
-jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, struct jive_input * input, struct jive_output * output);
+jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input * input,
+	struct jive_output * output);
 
 void
 jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, struct jive_output * output, struct jive_region * region);

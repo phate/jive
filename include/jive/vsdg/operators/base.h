@@ -8,7 +8,6 @@
 
 #include <string>
 
-class jive_input;
 class jive_node;
 class jive_output;
 class jive_region;

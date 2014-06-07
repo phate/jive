@@ -39,7 +39,7 @@ public:
 
 	virtual jive::reuse::type * copy() const override;
 
-	virtual jive_input * create_input(jive_node * node, size_t index,
+	virtual jive::input * create_input(jive_node * node, size_t index,
 		jive_output * origin) const override;
 
 	virtual jive_output * create_output(jive_node * node, size_t index) const override;
@@ -118,7 +118,7 @@ type::copy() const
 	return new jive::reuse::type(this->name());
 }
 
-jive_input *
+jive::input *
 type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive::reuse::input(name(), node, index, origin);
@@ -337,7 +337,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (!dynamic_cast<jive::achr::input*>(input))
 			continue;
 		

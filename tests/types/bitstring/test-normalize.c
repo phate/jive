@@ -44,7 +44,7 @@ static int test_main(void)
 	assert(sum1->node()->noperands == 2);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node();
-	jive_input * retval = lambda_node->producer(0)->inputs[1];
+	jive::input * retval = lambda_node->producer(0)->inputs[1];
 	jive_output * arg = lambda_node->producer(0)->producer(0)->outputs[1];
 	jive_graph_export(graph, lambda_node->outputs[0]);
 	

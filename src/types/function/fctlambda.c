@@ -247,7 +247,7 @@ jive_lambda_is_self_recursive(const jive_lambda_node * self_)
 		return false;
 
 	/* find index of lambda output in the phi leave node */
-	jive_input * user;
+	jive::input * user;
 	size_t index = self->region->top->noutputs;
 	JIVE_LIST_ITERATE(self->outputs[0]->users, user, output_users_list) {
 		if (jive_node_isinstance(user->node, &JIVE_PHI_LEAVE_NODE)) {
@@ -365,7 +365,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	
 	for(size_t n = 0; n < lambda_node->operation().function_type().nreturns(); n++) {
 		jive_gate * gate = lambda_node->operation().return_gates()[n];
-		jive_input * input = jive_node_get_gate_input(tail, gate);
+		jive::input * input = jive_node_get_gate_input(tail, gate);
 		jive_output * substituted = jive_substitution_map_lookup_output(substitution, input->origin());
 		jive_output * output = apply_node->outputs[n];
 		jive_output_replace(output, substituted);
@@ -394,7 +394,7 @@ lambda_parameter_is_passthrough(const struct jive_output * parameter)
 }
 
 static bool
-lambda_result_is_passthrough(const struct jive_input * result)
+lambda_result_is_passthrough(const jive::input * result)
 {
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(result->node, &JIVE_LAMBDA_LEAVE_NODE));
 
@@ -408,7 +408,7 @@ static void
 replace_apply_node(const jive_apply_node * apply_,
 	jive_output * new_fct, const jive_lambda_node * old_lambda,
 	size_t nalive_parameters, jive_output * alive_parameters[],
-	size_t nalive_results, jive_input * alive_results[])
+	size_t nalive_results, jive::input * alive_results[])
 {
 	const struct jive_node * apply = apply_;
 	const jive_node * old_leave = jive_lambda_node_get_leave_node(old_lambda);
@@ -427,7 +427,7 @@ replace_apply_node(const jive_apply_node * apply_,
 	/* replace outputs from old apply node through the outputs from the new one */
 	size_t nalive_apply_results = 0;
 	for (n = 1; n < old_leave->ninputs; n++) {
-		jive_input * result = old_leave->inputs[n];
+		jive::input * result = old_leave->inputs[n];
 		if (result == alive_results[nalive_apply_results])
 			jive_output_replace(apply->outputs[n-1], new_apply_results[nalive_apply_results++]);
 		else
@@ -440,14 +440,14 @@ static void
 replace_all_apply_nodes(jive_output * fct,
 	jive_output * new_fct, const jive_lambda_node * old_lambda,
 	size_t nalive_parameters, jive_output * alive_parameters[],
-	size_t nalive_results, jive_input * alive_results[])
+	size_t nalive_results, jive::input * alive_results[])
 {
 	bool is_lambda = jive_node_isinstance(fct->node(), &JIVE_LAMBDA_NODE);
 	bool is_phi_enter = jive_node_isinstance(fct->node(), &JIVE_PHI_ENTER_NODE);
 	bool is_phi = jive_node_isinstance(fct->node(), &JIVE_PHI_NODE);
 	JIVE_DEBUG_ASSERT(is_lambda || is_phi_enter || is_phi);
 
-	jive_input * user;
+	jive::input * user;
 	JIVE_LIST_ITERATE(fct->users, user, output_users_list) {
 		const jive_apply_node * apply = jive_apply_node_const_cast(user->node);
 		if (apply != NULL)
@@ -514,10 +514,10 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	/* collect liveness information about results */
 	size_t nalive_results = 0;
 	size_t nresults = leave->ninputs-1;
-	jive_input * alive_results[nresults];
+	jive::input * alive_results[nresults];
 	const jive::base::type * alive_result_types[nresults];
 	for (n = 1; n < leave->ninputs; n++) {
-		jive_input * result = leave->inputs[n];
+		jive::input * result = leave->inputs[n];
 
 		if (lambda_result_is_passthrough(result))
 			continue;

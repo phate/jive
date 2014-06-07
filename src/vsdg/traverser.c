@@ -72,7 +72,7 @@ jive_topdown_traverser_predecessors_visited(jive_full_traverser * self, jive_nod
 {
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (jive_traversal_tracker_get_nodestate(&self->tracker, input->producer())
 			!= jive_traversal_nodestate_behind)
 			return false;
@@ -99,7 +99,7 @@ jive_topdown_traverser_next(jive_traverser * self_)
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
 		jive_output * output = node->outputs[n];
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_topdown_traverser_check_node(self, user->node);
 		}
@@ -119,7 +119,8 @@ jive_topdown_traverser_node_create(void * closure, jive_node * node)
 }
 
 static void
-jive_topdown_traverser_input_change(void * closure, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+jive_topdown_traverser_input_change(void * closure, jive::input * input, jive_output * old_origin,
+	jive_output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
@@ -191,7 +192,7 @@ jive_bottomup_traverser_next(jive_traverser * self_)
 	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_behind);
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		jive_bottomup_traverser_check_node(self, input->producer());
 	}
 	return node;
@@ -217,13 +218,14 @@ jive_bottomup_traverser_node_destroy(void * closure, jive_node * node)
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		jive_bottomup_traverser_check_node(self, input->producer());
 	}
 }
 
 static void
-jive_bottomup_traverser_input_change(void * closure, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+jive_bottomup_traverser_input_change(void * closure, jive::input * input, jive_output * old_origin,
+	jive_output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
@@ -304,13 +306,14 @@ jive_upward_cone_traverser_node_destroy(void * closure, jive_node * node)
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		jive_bottomup_traverser_check_node(self, input->producer());
 	}
 }
 
 static void
-jive_upward_cone_traverser_input_change(void * closure, jive_input * input, jive_output * old_origin, jive_output * new_origin)
+jive_upward_cone_traverser_input_change(void * closure, jive::input * input, jive_output * old_origin,
+	jive_output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
@@ -329,7 +332,7 @@ jive_upward_cone_traverser_input_change(void * closure, jive_input * input, jive
 		size_t n;
 		for (n = 0; n < old_origin->node()->noutputs; n++) {
 			jive_output * output = old_origin->node()->outputs[n];
-			jive_input * user;
+			jive::input * user;
 			JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 				if (user == input)
 					continue;
@@ -470,7 +473,7 @@ jive_bottomup_region_traverser_check_above(jive_bottomup_region_traverser * self
 {
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		
 		jive_node * above = input->producer();
 		jive_tracker_nodestate * nodestate = jive_bottomup_region_traverser_map_node(self, above);

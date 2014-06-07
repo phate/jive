@@ -103,7 +103,7 @@ get_node_frameslot(jive_node * node)
 {
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (!input->ssavar)
 			continue;
 		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
@@ -124,7 +124,7 @@ get_node_callslot(jive_node * node)
 {
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive_input * input = node->inputs[n];
+		jive::input * input = node->inputs[n];
 		if (!input->ssavar)
 			continue;
 		const jive_resource_name * name = jive_variable_get_resource_name(input->ssavar->variable);
@@ -201,7 +201,7 @@ reloc_stack_access(jive_node * node)
 	const jive_instruction_class * icls = inode->operation().icls();
 	size_t n;
 	for (n = 0; n < icls->nimmediates; n++) {
-		jive_input * imm_input = node->inputs[n + icls->ninputs];
+		jive::input * imm_input = node->inputs[n + icls->ninputs];
 		jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->producer());
 		JIVE_DEBUG_ASSERT(immnode);
 		
@@ -247,7 +247,7 @@ typedef struct jive_regalloc_stackframe_transforms {
 static void
 do_split(
 	const jive_subroutine_late_transforms * self_,
-	jive_output * port_in, jive_input * port_out,
+	jive_output * port_in, jive::input * port_out,
 	const jive_value_split_factory * enter_split,
 	const jive_value_split_factory * leave_split)
 {
@@ -264,7 +264,7 @@ do_split(
 	jive_ssavar * ssavar_enter = jive_ssavar_create(port_in, ssavar_interior->variable);
 	jive_ssavar_assign_output(ssavar_enter, port_in);
 	for (n = 0; n < enter_split_node->ninputs; n++) {
-		jive_input * input = enter_split_node->inputs[n];
+		jive::input * input = enter_split_node->inputs[n];
 		if (input->origin() == port_in)
 			jive_ssavar_assign_input(ssavar_enter, input);
 		else
@@ -283,7 +283,7 @@ do_split(
 	jive_ssavar * ssavar_leave = jive_ssavar_create(value_leave, ssavar_interior->variable);
 	jive_node * leave_split_node = value_leave->node();
 	for (n = 0; n < leave_split_node->ninputs; n++) {
-		jive_input * input = leave_split_node->inputs[n];
+		jive::input * input = leave_split_node->inputs[n];
 		if (input->origin() == value_interior)
 			jive_ssavar_assign_input(ssavar_interior, input);
 		else

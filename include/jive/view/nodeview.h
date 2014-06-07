@@ -18,7 +18,7 @@ struct jive_graphview;
 struct jive_reservationtracker;
 
 struct jive_inputview {
-	jive_input * input;
+	jive::input * input;
 	jive_nodeview * nodeview;
 	int x, y, width, height;
 	char * label;
@@ -31,7 +31,7 @@ struct jive_inputview {
 };
 
 jive_inputview *
-jive_inputview_create(jive_nodeview * nodeview, jive_input * input);
+jive_inputview_create(jive_nodeview * nodeview, jive::input * input);
 
 void
 jive_inputview_destroy(jive_inputview * self);

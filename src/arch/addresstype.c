@@ -37,7 +37,7 @@ type::copy() const
 	return new jive::addr::type();
 }
 
-jive_input *
+jive::input *
 type::create_input(jive_node * node, size_t index, jive_output * origin) const
 {
 	return new jive::addr::input(node, index, origin);

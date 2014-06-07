@@ -26,8 +26,8 @@ static inline int ptr_hash(void * n) {return (intptr_t)n;}
 JIVE_DECLARE_HASH_TYPE(jive_nodeview_map, jive_nodeview, jive_node *, node, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_nodeview_map, jive_nodeview, jive_node *, node, hash_chain);
 
-JIVE_DECLARE_HASH_TYPE(jive_inputview_map, jive_inputview, jive_input *, input, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_inputview_map, jive_inputview, jive_input *, input, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_inputview_map, jive_inputview, jive::input *, input, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_inputview_map, jive_inputview, jive::input *, input, hash_chain);
 
 JIVE_DECLARE_HASH_TYPE(jive_outputview_map, jive_outputview, jive_output *, output, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_outputview_map, jive_outputview, jive_output *, output, hash_chain);

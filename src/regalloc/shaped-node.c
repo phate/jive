@@ -116,7 +116,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	size_t n;
 	for(n = 0; n < self->node->ninputs; n++)
 	{
-		jive_input * input = self->node->inputs[n];
+		jive::input * input = self->node->inputs[n];
 		if (dynamic_cast<jive::achr::input*>(input)) {
 			jive_region * region = input->producer()->region;
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
@@ -129,7 +129,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	
 	/* set aside crossings of vars beginning or ending here */
 	for(n = 0; n < self->node->ninputs; n++) {
-		jive_input * input = self->node->inputs[n];
+		jive::input * input = self->node->inputs[n];
 		jive_ssavar * ssavar = input->ssavar;
 		if (!ssavar) continue;
 		jive_shaped_ssavar_xpoints_unregister_arc(
@@ -137,7 +137,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	}
 	for(n = 0; n < self->node->noutputs; n++) {
 		jive_output * output = self->node->outputs[n];
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_ssavar * ssavar = user->ssavar;
 			if (!ssavar) continue;
@@ -166,7 +166,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	/* reinstate crossings for those arcs that have this node as origin */
 	for(n = 0; n < self->node->noutputs; n++) {
 		jive_output * output = self->node->outputs[n];
-		jive_input * user;
+		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_ssavar * ssavar = user->ssavar;
 			if (!ssavar) continue;
@@ -214,7 +214,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 			jive_node * anchor_node = shaped_region->region->anchor->node;
 			size_t n = shaped_region->region->anchor->index + 1;
 			while (n < anchor_node->ninputs) {
-				jive_input * input = anchor_node->inputs[n];
+				jive::input * input = anchor_node->inputs[n];
 				if (dynamic_cast<jive::achr::input*>(input)) {
 					jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph,
 						input->producer()->region);
@@ -238,7 +238,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 	if (next && enter_subregions) {
 		size_t n = 0;
 		while (n < next->node->ninputs) {
-			jive_input * input = next->node->inputs[n];
+			jive::input * input = next->node->inputs[n];
 			if (dynamic_cast<jive::achr::input*>(input)) {
 				jive_shaped_region * sub = jive_shaped_graph_map_region(self->shaped_graph,
 					input->producer()->region);
