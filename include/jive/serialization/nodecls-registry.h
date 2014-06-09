@@ -96,6 +96,21 @@ jive_serialization_nodecls_deserialize_default(
 	struct jive_token_istream * is,
 	struct jive_node ** node);
 
+template<typename Op>
+bool
+jive_serialization_opnode_deserialize_default(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	struct jive_region * region,
+	size_t noperands, struct jive::output * const operands[],
+	struct jive_token_istream * is,
+	struct jive_node ** node)
+{
+	Op op;
+	*node = op.create_node(region, noperands, operands);
+	return *node != 0;
+}
+
 #define JIVE_SERIALIZATION_NODECLS_REGISTER(nodecls, tag, serialize, deserialize) \
 	static void __attribute__((constructor)) register_##nodecls(void)\
 	{ \
@@ -108,6 +123,14 @@ jive_serialization_nodecls_deserialize_default(
 		jive_serialization_nodecls_register(&nodecls, tag, \
 			jive_serialization_nodecls_serialize_default, \
 			jive_serialization_nodecls_deserialize_default); \
+	} \
+
+#define JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(nodecls, opcls, tag) \
+	static void __attribute__((constructor)) register_##nodecls(void)\
+	{ \
+		jive_serialization_nodecls_register(&nodecls, tag, \
+			jive_serialization_nodecls_serialize_default, \
+			jive_serialization_opnode_deserialize_default<opcls>); \
 	} \
 
 #endif
