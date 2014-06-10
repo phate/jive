@@ -308,8 +308,8 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 		single_apply_over : NULL,
 		multi_apply_over : NULL,
 		
-		can_reduce_operand : jive_unary_operation_can_reduce_operand_ /* inherit */,
-		reduce_operand : jive_unary_operation_reduce_operand_ /* inherit */
+		can_reduce_operand : nullptr,
+		reduce_operand : nullptr
 	},
 	type : jive_bitop_code_invalid
 };

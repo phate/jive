@@ -104,25 +104,11 @@ jive_unary_operation_get_default_normal_form_(
 	jive_node_normal_form * parent,
 	struct jive_graph * graph);
 
-jive_unop_reduction_path_t
-jive_unary_operation_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs,
-	const jive::output * operand);
-
-jive::output *
-jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive::output * operand);
-
 /* normal form class */
 
 struct jive_unary_operation_normal_form_class {
 	jive_node_normal_form_class base;
 	void (*set_reducible)(jive_unary_operation_normal_form * self, bool enable);
-	jive::output * (*normalized_create)(
-		const jive_unary_operation_normal_form * self,
-		struct jive_region * region,
-		const jive_node_attrs * attrs,
-		jive::output * operand);
 };
 
 extern const jive_unary_operation_normal_form_class JIVE_UNARY_OPERATION_NORMAL_FORM_;
@@ -143,50 +129,6 @@ jive_unary_operation_normal_form_cast(jive_node_normal_form * self)
 		cls = cls->parent;
 	}
 	return 0;
-}
-
-JIVE_EXPORTED_INLINE jive::output *
-jive_unary_operation_normalized_create(
-	const jive_unary_operation_normal_form * self,
-	struct jive_region * region,
-	const jive_node_attrs * attrs,
-	jive::output * operand)
-{
-	const jive_unary_operation_normal_form_class * cls;
-	cls = (const jive_unary_operation_normal_form_class *) self->base.class_;
-	
-	return cls->normalized_create(self, region, attrs, operand);
-}
-
-JIVE_EXPORTED_INLINE jive_unop_reduction_path_t
-jive_unary_operation_can_reduce_operand(const jive_unary_operation_normal_form * self,
-	const jive_node_attrs * attrs, const jive::output * operand)
-{
-	const jive_unary_operation_class * cls =
-		(const jive_unary_operation_class *)self->base.node_class;
-	if (cls->can_reduce_operand) {
-		return cls->can_reduce_operand(self->base.node_class, attrs, operand);
-	} else {
-		const jive::unary_operation & op =
-			static_cast<const jive::unary_operation &>(*attrs);
-		return op.can_reduce_operand(operand);
-	}
-}
-
-JIVE_EXPORTED_INLINE jive::output *
-jive_unary_operation_reduce_operand(jive_unop_reduction_path_t path,
-	const jive_unary_operation_normal_form * self, const jive_node_attrs * attrs,
-	jive::output * operand)
-{
-	const jive_unary_operation_class * cls =
-		(const jive_unary_operation_class *)self->base.node_class;
-	if (cls->reduce_operand) {
-		return cls->reduce_operand(path, self->base.node_class, attrs, operand);
-	} else {
-		const jive::unary_operation & op =
-			static_cast<const jive::unary_operation &>(*attrs);
-		return op.reduce_operand(path, operand);
-	}
 }
 
 JIVE_EXPORTED_INLINE void
