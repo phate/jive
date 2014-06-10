@@ -22,28 +22,20 @@
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 
-const jive_unary_operation_class JIVE_BITSLICE_NODE_ = {
-	base : { /* jive_node_class */
-		/* note that parent is JIVE_UNARY_OPERATION, not
-		JIVE_BITUNARY_OPERATION: the latter one is assumed
-		to represent "width-preserving" bit operations (i.e.
-		number of bits per operand/output matches), while
-		the slice operator violates this assumption */
-		parent : &JIVE_UNARY_OPERATION,
-		name : "BITSLICE",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr,
-	},
-	
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-	
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_BITSLICE_NODE = {
+	/* note that parent is JIVE_UNARY_OPERATION, not
+	JIVE_BITUNARY_OPERATION: the latter one is assumed
+	to represent "width-preserving" bit operations (i.e.
+	number of bits per operand/output matches), while
+	the slice operator violates this assumption */
+	parent : &JIVE_UNARY_OPERATION,
+	name : "BITSLICE",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 namespace jive {
@@ -179,6 +171,6 @@ jive_bitslice(jive::output * argument, size_t low, size_t high)
 		dynamic_cast<const jive::bits::type &>(argument->type());
 	jive::bitstring::slice_operation op(type, low, high);
 
-	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE_, argument->node()->graph,
+	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE, argument->node()->graph,
 		&op, argument);
 }

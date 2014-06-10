@@ -251,100 +251,39 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 
 /* bitbinary operation class */
 
-void
-jive_bitbinary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-	jive_bitoperation_check_operands_(cls, attrs, noperands, operands, context);
-}
-
-const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
-	base : { /* jive_binary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_BINARY_OPERATION,
-			name : "BITBINARY",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_bitbinary_operation_check_operands_, /* override */
-			create : nullptr,
-		},
-		
-		flags : jive_binary_operation_none,
-		single_apply_under : NULL,
-		multi_apply_under : NULL,
-		distributive_over : NULL,
-		distributive_under : NULL,
-		
-		can_reduce_operand_pair : nullptr,
-		reduce_operand_pair : nullptr
-	},
-	type : jive_bitop_code_invalid
+const jive_node_class JIVE_BITBINARY_NODE = {
+	parent : &JIVE_BINARY_OPERATION,
+	name : "BITBINARY",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 /* bitunary operation class */
 
-void
-jive_bitunary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-	jive_bitoperation_check_operands_(cls, attrs, noperands, operands, context);
-}
-
-const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
-	base : { /* jive_unary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_UNARY_OPERATION,
-			name : "BITUNARY",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_bitunary_operation_check_operands_, /* override */
-			create : nullptr,
-		},
-		
-		single_apply_over : NULL,
-		multi_apply_over : NULL,
-		
-		can_reduce_operand : nullptr,
-		reduce_operand : nullptr
-	},
-	type : jive_bitop_code_invalid
+const jive_node_class JIVE_BITUNARY_NODE = {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "BITUNARY",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 /* bitcomparison operation class */
 
-void
-jive_bitcomparison_operation_check_operands_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
-	jive_context * context)
-{
-	jive_bitoperation_check_operands_(cls, attrs, noperands, operands, context);
-}
-
-const jive_bitcomparison_operation_class JIVE_BITCOMPARISON_NODE_ = {
-	base : { /* jive_binary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_BINARY_OPERATION,
-			name : "BITCOMPARISON",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_bitcomparison_operation_check_operands_, /* override */
-			create : nullptr,
-		},
-		
-		flags : jive_binary_operation_none,
-		single_apply_under : NULL,
-		multi_apply_under : NULL,
-		distributive_over : NULL,
-		distributive_under : NULL,
-		
-		can_reduce_operand_pair : nullptr,
-		reduce_operand_pair : nullptr
-	},
-	type : jive_bitcmp_code_invalid
+const jive_node_class JIVE_BITCOMPARISON_NODE = {
+	parent : &JIVE_BINARY_OPERATION,
+	name : "BITCOMPARISON",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };

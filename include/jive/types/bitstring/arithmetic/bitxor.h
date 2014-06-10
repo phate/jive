@@ -10,8 +10,7 @@
 #include <jive/types/bitstring/bitoperation-classes.h>
 #include <jive/types/bitstring/type.h>
 
-extern const jive_bitbinary_operation_class JIVE_BITXOR_NODE_;
-#define JIVE_BITXOR_NODE (JIVE_BITXOR_NODE_.base.base)
+extern const jive_node_class JIVE_BITXOR_NODE;
 
 namespace jive {
 namespace bitstring {

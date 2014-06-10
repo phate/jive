@@ -70,29 +70,15 @@ notequal_operation::debug_string() const
 }
 }
 
-const jive_bitcomparison_operation_class JIVE_BITNOTEQUAL_NODE_ = {
-	base : { /* jive_binary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_BITCOMPARISON_NODE,
-			name : "BITNOTEQUAL",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : nullptr,
-			match_attrs : nullptr,
-			check_operands : nullptr,
-			create : nullptr,
-		},
-		flags : jive_binary_operation_commutative,
-		single_apply_under : NULL,
-		multi_apply_under : NULL,
-		distributive_over : NULL,
-		distributive_under : NULL,
-	
-		can_reduce_operand_pair : nullptr,
-		reduce_operand_pair : nullptr
-	},
-	type : jive_bitcmp_code_notequal,
-	compare_constants : NULL
+const jive_node_class JIVE_BITNOTEQUAL_NODE = {
+	parent : &JIVE_BITCOMPARISON_NODE,
+	name : "BITNOTEQUAL",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *
@@ -101,5 +87,5 @@ jive_bitnotequal(jive::output * operand1, jive::output * operand2)
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::notequal_operation>(
-			&JIVE_BITNOTEQUAL_NODE_.base, operand1, operand2);
+			&JIVE_BITNOTEQUAL_NODE, operand1, operand2);
 }

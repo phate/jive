@@ -11,8 +11,7 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 
-extern const jive_binary_operation_class JIVE_BITCONCAT_NODE_;
-#define JIVE_BITCONCAT_NODE (JIVE_BITCONCAT_NODE_.base)
+extern const jive_node_class JIVE_BITCONCAT_NODE;
 
 namespace jive {
 namespace bitstring {

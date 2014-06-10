@@ -9,8 +9,7 @@
 
 #include <jive/types/bitstring/bitoperation-classes.h>
 
-extern const jive_bitcomparison_operation_class JIVE_BITSGREATEREQ_NODE_;
-#define JIVE_BITSGREATEREQ_NODE (JIVE_BITSGREATEREQ_NODE_.base.base)
+extern const jive_node_class JIVE_BITSGREATEREQ_NODE;
 
 namespace jive {
 namespace bitstring {

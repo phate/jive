@@ -70,29 +70,15 @@ slesseq_operation::debug_string() const
 }
 }
 
-const jive_bitcomparison_operation_class JIVE_BITSLESSEQ_NODE_ = {
-	base : { /* jive_binary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_BITCOMPARISON_NODE,
-			name : "BITSLESSEQ",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : nullptr,
-			match_attrs : nullptr,
-			check_operands : nullptr,
-			create : nullptr,
-		},
-		flags : jive_binary_operation_none,
-		single_apply_under : NULL,
-		multi_apply_under : NULL,
-		distributive_over : NULL,
-		distributive_under : NULL,
-	
-		can_reduce_operand_pair : nullptr,
-		reduce_operand_pair : nullptr
-	},
-	type : jive_bitcmp_code_slesseq,
-	compare_constants : NULL
+const jive_node_class JIVE_BITSLESSEQ_NODE = {
+	parent : &JIVE_BITCOMPARISON_NODE,
+	name : "BITSLESSEQ",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *
@@ -101,5 +87,5 @@ jive_bitslesseq(jive::output * operand1, jive::output * operand2)
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::slesseq_operation>(
-			&JIVE_BITSLESSEQ_NODE_.base, operand1, operand2);
+			&JIVE_BITSLESSEQ_NODE, operand1, operand2);
 }

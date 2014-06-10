@@ -11,8 +11,7 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 
-extern const jive_unary_operation_class JIVE_BITSLICE_NODE_;
-#define JIVE_BITSLICE_NODE (JIVE_BITSLICE_NODE_.base)
+extern const jive_node_class JIVE_BITSLICE_NODE;
 
 namespace jive {
 namespace bitstring {

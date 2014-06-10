@@ -9,8 +9,7 @@
 
 #include <jive/types/bitstring/bitoperation-classes.h>
 
-extern const jive_bitbinary_operation_class JIVE_BITSMOD_NODE_;
-#define JIVE_BITSMOD_NODE (JIVE_BITSMOD_NODE_.base.base)
+extern const jive_node_class JIVE_BITSMOD_NODE;
 
 namespace jive {
 namespace bitstring {

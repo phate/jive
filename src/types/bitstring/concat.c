@@ -60,31 +60,20 @@ jive_bitconcat_node_init_(
 	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
 }
 
-const jive_binary_operation_class JIVE_BITCONCAT_NODE_ = {
-	base : { /* jive_node_class */
-		/* note that parent is JIVE_BINARY_OPERATION, not
-		JIVE_BITBINARY_OPERATION: the latter one is assumed
-		to represent "width-preserving" bit operations (i.e.
-		number of bits per operand/output matches), while
-		the concat operator violates this assumption */
-		parent : &JIVE_BINARY_OPERATION,
-		name : "BITCONCAT",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr,
-	},
-	
-	flags : jive_binary_operation_associative,
-	single_apply_under : NULL,
-	multi_apply_under : NULL,
-	distributive_over : NULL,
-	distributive_under : NULL,
-	
-	can_reduce_operand_pair : nullptr,
-	reduce_operand_pair : nullptr,
+const jive_node_class JIVE_BITCONCAT_NODE = {
+	/* note that parent is JIVE_BINARY_OPERATION, not
+	JIVE_BITBINARY_OPERATION: the latter one is assumed
+	to represent "width-preserving" bit operations (i.e.
+	number of bits per operand/output matches), while
+	the concat operator violates this assumption */
+	parent : &JIVE_BINARY_OPERATION,
+	name : "BITCONCAT",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *
@@ -94,7 +83,7 @@ jive_bitconcat(size_t noperands, struct jive::output * const * operands)
 
 	jive_graph * graph = operands[0]->node()->graph;
 	jive::bitstring::concat_operation op;
-	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE_, graph,
+	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE, graph,
 		&op, noperands, operands);
 }
 

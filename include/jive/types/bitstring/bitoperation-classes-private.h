@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -12,9 +13,9 @@ namespace jive {
 namespace bitstring {
 namespace detail {
 
-template<typename Op>
+template<typename Op, typename Cls>
 static inline jive::output *
-unop_normalized_create(const jive_unary_operation_class * cls, jive::output * argument)
+unop_normalized_create(const Cls * cls, jive::output * argument)
 {
 	const jive::bits::type * type = dynamic_cast<const jive::bits::type*>(&argument->type());
 
@@ -22,9 +23,11 @@ unop_normalized_create(const jive_unary_operation_class * cls, jive::output * ar
 	return jive_unary_operation_create_normalized(cls, argument->node()->graph, &op, argument);
 }
 
-template<typename Op>
+template<typename Op, typename Cls>
 static inline jive::output *
-binop_normalized_create(const jive_binary_operation_class * cls, size_t narguments,
+binop_normalized_create(
+	const Cls * cls,
+	size_t narguments,
 	jive::output * const * arguments)
 {
 	JIVE_DEBUG_ASSERT(narguments != 0);
@@ -36,10 +39,10 @@ binop_normalized_create(const jive_binary_operation_class * cls, size_t nargumen
 		narguments, arguments);
 }
 
-template<typename Op>
+template<typename Op, typename Cls>
 static inline jive::output *
 binop_normalized_create(
-	const jive_binary_operation_class * cls,
+	const Cls * cls,
 	jive::output * arg1,
 	jive::output * arg2)
 {
@@ -78,7 +81,7 @@ static inline jive_node *
 binop_create(
 	const Op & operation,
 	const jive_node_class * cls,
-	jive_region * region, 
+	jive_region * region,
 	size_t narguments,
 	jive::output * const * arguments)
 {
@@ -105,7 +108,7 @@ static inline jive_node *
 binop_create(
 	const Op & operation,
 	const jive_node_class * cls,
-	jive_region * region, 
+	jive_region * region,
 	jive::output * arg1,
 	jive::output * arg2)
 {
@@ -131,17 +134,6 @@ binop_create(
 }
 }
 }
-/* bitbinary operation class inhertiable members */
-
-void
-jive_bitbinary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
-
-/* bitunary operation class inheritable members */
-
-void
-jive_bitunary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
 
 /* bitcomparison operation class inhertiable members */
 

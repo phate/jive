@@ -54,26 +54,15 @@ not_operation::debug_string() const
 }
 }
 
-const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
-	base : { /* jive_unary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_BITUNARY_NODE,
-			name : "BITNOT",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-			get_label : nullptr,
-			match_attrs : nullptr,
-			check_operands : nullptr,
-			create : nullptr,
-		},
-		
-		single_apply_over : NULL,
-		multi_apply_over : NULL,
-		
-		can_reduce_operand : nullptr,
-		reduce_operand : nullptr,
-	},
-	type : jive_bitop_code_not
+const jive_node_class JIVE_BITNOT_NODE = {
+	parent : &JIVE_BITUNARY_NODE,
+	name : "BITNOT",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 jive::output *
@@ -81,5 +70,5 @@ jive_bitnot(jive::output * arg)
 {
 	return jive::bitstring::detail::unop_normalized_create<
 		jive::bitstring::not_operation>(
-			&JIVE_BITNOT_NODE_.base, arg);
+			&JIVE_BITNOT_NODE, arg);
 }
