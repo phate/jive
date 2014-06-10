@@ -46,7 +46,7 @@ public:
 	flags() const noexcept;
 
 	inline bool
-	is_accociative() const noexcept
+	is_associative() const noexcept
 	{
 		return flags() & jive_binary_operation_associative;
 	}
