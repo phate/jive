@@ -250,8 +250,8 @@ const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 		distributive_over : NULL,
 		distributive_under : NULL,
 
-		can_reduce_operand_pair : jive_binary_operation_can_reduce_operand_pair_, /* inherit */
-		reduce_operand_pair : jive_binary_operation_reduce_operand_pair_ /* inherit */
+		can_reduce_operand_pair : nullptr,
+		reduce_operand_pair : nullptr
 	},
 	type : jive_fltop_code_invalid
 };
@@ -316,8 +316,8 @@ const jive_fltcomparison_operation_class JIVE_FLTCOMPARISON_NODE_ = {
 		distributive_over : NULL,
 		distributive_under : NULL,
 
-		can_reduce_operand_pair : jive_binary_operation_can_reduce_operand_pair_, /* inherit */
-		reduce_operand_pair : jive_binary_operation_reduce_operand_pair_ /* inherit */
+		can_reduce_operand_pair : nullptr,
+		reduce_operand_pair : nullptr
 	},
 	type : jive_fltcmp_code_invalid
 };
