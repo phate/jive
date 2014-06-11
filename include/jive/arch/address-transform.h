@@ -21,11 +21,13 @@ namespace jive {
 
 class address_to_bitstring_operation final : public unary_operation {
 public:
+	virtual ~address_to_bitstring_operation() noexcept;
+
 	inline
 	address_to_bitstring_operation(
 		size_t nbits,
 		const jive::base::type * original_type)
-		: nbits_(nbits)
+		: result_type_(nbits)
 		, original_type_(original_type->copy())
 	{
 	}
@@ -37,26 +39,57 @@ public:
 	inline
 	address_to_bitstring_operation(
 		const address_to_bitstring_operation & other)
-		: nbits_(other.nbits_)
+		: result_type_(other.result_type_)
 		, original_type_(other.original_type_->copy())
 	{
 	}
 
-	inline size_t nbits() const noexcept { return nbits_; }
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
+
+	inline size_t nbits() const noexcept { return result_type_.nbits(); }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
 
 private:
-	size_t nbits_;
+	jive::bits::type result_type_;
 	std::unique_ptr<jive::base::type> original_type_;
 };
 
 class bitstring_to_address_operation final : public unary_operation {
 public:
+	virtual ~bitstring_to_address_operation() noexcept;
+
 	inline
 	bitstring_to_address_operation(
 		size_t nbits,
 		const jive::base::type * original_type)
-		: nbits_(nbits)
+		: argument_type_(nbits)
 		, original_type_(original_type->copy())
 	{
 	}
@@ -68,16 +101,45 @@ public:
 	inline
 	bitstring_to_address_operation(
 		const bitstring_to_address_operation & other)
-		: nbits_(other.nbits_)
+		: argument_type_(other.argument_type_)
 		, original_type_(other.original_type_->copy())
 	{
 	}
 
-	inline size_t nbits() const noexcept { return nbits_; }
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
+
+	inline size_t nbits() const noexcept { return argument_type_.nbits(); }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
 
 private:
-	size_t nbits_;
+	jive::bits::type argument_type_;
 	std::unique_ptr<jive::base::type> original_type_;
 };
 
@@ -96,10 +158,6 @@ struct jive_memlayout_mapper;
 extern const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_;
 #define JIVE_ADDRESS_TO_BITSTRING_NODE (JIVE_ADDRESS_TO_BITSTRING_NODE_.base)
 
-jive_node *
-jive_address_to_bitstring_node_create(struct jive_region * region,
-	jive::output * address, size_t nbits, const jive::base::type * original_type);
-
 jive::output *
 jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type);
@@ -117,10 +175,6 @@ jive_address_to_bitstring_node_cast(jive_node * node)
 
 extern const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_;
 #define JIVE_BITSTRING_TO_ADDRESS_NODE (JIVE_BITSTRING_TO_ADDRESS_NODE_.base)
-
-jive_node *
-jive_bitstring_to_address_node_create(struct jive_region * region,
-	jive::output * bitstring, size_t nbits, const jive::base::type * original_type);
 
 jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,

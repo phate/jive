@@ -29,6 +29,8 @@ namespace address {
 
 class memberof_operation : public unary_operation {
 public:
+	virtual ~memberof_operation() noexcept;
+
 	inline constexpr
 	memberof_operation(
 		const jive::rcd::declaration * record_decl,
@@ -37,6 +39,35 @@ public:
 		index_(index)
 	{
 	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
 
 	inline const jive::rcd::declaration *
 	record_decl() const noexcept { return record_decl_; }
@@ -51,6 +82,8 @@ private:
 
 class containerof_operation : public unary_operation {
 public:
+	virtual ~containerof_operation() noexcept;
+
 	inline constexpr
 	containerof_operation(
 		const jive::rcd::declaration * record_decl,
@@ -59,6 +92,35 @@ public:
 		index_(index)
 	{
 	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
 
 	inline const jive::rcd::declaration *
 	record_decl() const noexcept { return record_decl_; }

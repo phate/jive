@@ -39,7 +39,7 @@ static int test_main(void)
 	const jive::value::type * tmparray1[] = {&bits8, &bits16, &bits32, &bits32};
 	
 	/*
-	jive_record_declaration * decl = jive_record_declaration_create(context, 4,
+	jive::rcd::declaration * decl = jive_record_declaration_create(context, 4,
 		tmparray1);	
 	*/
 
