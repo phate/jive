@@ -62,6 +62,9 @@ public:
 	inline const jive_resource_name * name() const noexcept { return type_.name(); }
 
 private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
+
 	jive::reuse::type type_;
 };
 
@@ -76,6 +79,9 @@ public:
 	inline const jive_resource_name * name() const noexcept { return type_.name(); }
 
 private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
+
 	jive::reuse::type type_;
 };
 
@@ -90,6 +96,9 @@ public:
 	inline const jive_resource_name * name() const noexcept { return type_.name(); }
 
 private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
+
 	jive::reuse::type type_;
 };
 

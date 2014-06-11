@@ -40,6 +40,9 @@ public:
 	virtual const jive_test_value_type & type() const noexcept { return type_; }
 
 private:
+	jive_test_value_input(const jive_test_value_input & rhs) = delete;
+	jive_test_value_input& operator=(const jive_test_value_input & rhs) = delete;
+
 	jive_test_value_type type_;
 };
 
@@ -52,6 +55,9 @@ public:
 	virtual const jive_test_value_type & type() const noexcept { return type_; }
 
 private:
+	jive_test_value_output(const jive_test_value_output & rhs) = delete;
+	jive_test_value_output& operator=(const jive_test_value_output & rhs) = delete;
+
 	jive_test_value_type type_;
 };
 
@@ -64,6 +70,9 @@ public:
 	virtual const jive_test_value_type & type() const noexcept { return type_; }
 
 private:
+	jive_test_value_gate(const jive_test_value_gate & rhs) = delete;
+	jive_test_value_gate& operator=(const jive_test_value_gate & rhs) = delete;
+
 	jive_test_value_type type_;
 };
 
@@ -98,6 +107,9 @@ public:
 	virtual const jive_test_state_type & type() const noexcept { return type_; }
 
 private:
+	jive_test_state_input(const jive_test_state_input & rhs) = delete;
+	jive_test_state_input& operator=(const jive_test_state_input & rhs) = delete;
+
 	jive_test_state_type type_;
 };
 
@@ -110,6 +122,9 @@ public:
 	virtual const jive_test_state_type & type() const noexcept { return type_; }
 
 private:
+	jive_test_state_output(const jive_test_state_output & rhs) = delete;
+	jive_test_state_output& operator=(const jive_test_state_output & rhs) = delete;
+
 	jive_test_state_type type_;
 };
 
@@ -122,6 +137,9 @@ public:
 	virtual const jive_test_state_type & type() const noexcept { return type_; }
 
 private:
+	jive_test_state_gate(const jive_test_state_gate & rhs) = delete;
+	jive_test_state_gate& operator=(const jive_test_state_gate & rhs) = delete;
+
 	jive_test_state_type type_;
 };
 

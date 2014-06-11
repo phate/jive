@@ -89,6 +89,9 @@ public:
 		{ return type_.return_type(index); }
 
 private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
+
 	jive::fct::type type_;
 };
 
@@ -116,6 +119,9 @@ public:
 		{ return type_.return_type(index); }
 
 private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
+
 	jive::fct::type type_;
 };
 
@@ -143,6 +149,9 @@ public:
 		{ return type_.return_type(index); }
 
 private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
+
 	jive::fct::type type_;
 };
 

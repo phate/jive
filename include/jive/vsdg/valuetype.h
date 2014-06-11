@@ -28,6 +28,10 @@ public:
 
 protected:
 	input(struct jive_node * node, size_t index, jive::output * origin);
+
+private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
 };
 
 class output : public jive::output {
@@ -36,6 +40,10 @@ public:
 
 protected:
 	output(struct jive_node * node, size_t index);
+
+private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
 };
 
 class gate : public jive::gate {
@@ -44,6 +52,10 @@ public:
 
 protected:
 	gate(jive_graph * graph, const char name[]);
+
+private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
 };
 
 }

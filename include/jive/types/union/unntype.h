@@ -59,6 +59,9 @@ public:
 	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
+
 	jive::unn::type type_;
 };
 
@@ -75,6 +78,9 @@ public:
 	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
+
 	jive::unn::type type_;
 };
 
@@ -91,6 +97,9 @@ public:
 	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
 
 private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
+
 	jive::unn::type type_;
 };
 

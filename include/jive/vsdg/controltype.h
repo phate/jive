@@ -41,6 +41,9 @@ public:
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
 private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
+
 	jive::ctl::type type_;
 };
 
@@ -57,6 +60,9 @@ public:
 	inline bool active() const noexcept { return active_; }
 
 private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
+
 	/*
 		FIXME: this is an ugly hack, introduce a new type for that
 	*/
@@ -73,6 +79,9 @@ public:
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
 private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
+
 	jive::ctl::type type_;
 };
 

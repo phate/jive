@@ -44,6 +44,9 @@ public:
 	virtual const jive::flt::type & type() const noexcept { return type_; }
 
 private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
+
 	jive::flt::type type_;
 };
 
@@ -58,6 +61,9 @@ public:
 	virtual const jive::flt::type & type() const noexcept { return type_; }
 
 private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
+
 	jive::flt::type type_;
 };
 
@@ -72,6 +78,9 @@ public:
 	virtual const jive::flt::type & type() const noexcept { return type_; }
 
 private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
+
 	jive::flt::type type_;
 };
 

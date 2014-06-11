@@ -51,6 +51,9 @@ public:
 	inline size_t nbits() const noexcept { return type_.nbits(); }
 	
 private:
+	input(const input & rhs) = delete;
+	input& operator=(const input & rhs) = delete;
+
 	jive::bits::type type_;
 };
 
@@ -67,6 +70,9 @@ public:
 	inline size_t nbits() const noexcept { return type_.nbits(); }
 
 private:
+	output(const output & rhs) = delete;
+	output& operator=(const output & rhs) = delete;
+
 	jive::bits::type type_;
 };
 
@@ -83,6 +89,9 @@ public:
 	inline size_t nbits() const noexcept { return type_.nbits(); }	
 
 private:
+	gate(const gate & rhs) = delete;
+	gate& operator=(const gate & rhs) = delete;
+
 	jive::bits::type type_;
 };
 
