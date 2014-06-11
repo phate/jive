@@ -118,6 +118,21 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return new jive::fct::gate(*this, graph, name);
 }
 
+jive::fct::type&
+type::operator=(const jive::fct::type & rhs)
+{
+	return_types_.clear();
+	argument_types_.clear();
+
+	for (size_t i = 0; i < rhs.narguments(); i++)
+		argument_types_.push_back(std::unique_ptr<base::type>(rhs.argument_type(i)->copy()));
+
+	for (size_t i = 0; i < rhs.nreturns(); i++)
+		return_types_.push_back(std::unique_ptr<base::type>(rhs.return_type(i)->copy()));
+
+	return *this;
+}
+
 /* input */
 
 input::input(size_t narguments, const jive::base::type ** argument_types,

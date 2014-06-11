@@ -59,6 +59,8 @@ public:
 
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 
+	jive::fct::type& operator=(const jive::fct::type & rhs);
+
 private:
 	std::vector<std::unique_ptr<jive::base::type>> return_types_;
 	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
