@@ -42,7 +42,7 @@
 static const jive::value::type ** string_elements;
 static jive::rcd::declaration string_decl;
 
-static jive_output *
+static jive::output *
 make_string(jive_graph * graph, const char * txt)
 {
 	static const jive::bits::type bits8(8);
@@ -56,7 +56,7 @@ make_string(jive_graph * graph, const char * txt)
 	string_decl.nelements = len;
 	string_decl.elements = string_elements;
 	
-	jive_output * chars[len];
+	jive::output * chars[len];
 	for (n = 0; n < len; n++) {
 		size_t k;
 		char bits[8];
@@ -65,11 +65,11 @@ make_string(jive_graph * graph, const char * txt)
 		chars[n] = jive_bitconstant(graph, 8, bits);
 	}
 	
-	jive_output * tmp = jive_group_create(&string_decl, len, chars);
+	jive::output * tmp = jive_group_create(&string_decl, len, chars);
 	
 	jive_memlayout_mapper_simple layout_mapper;
 	jive_memlayout_mapper_simple_init(&layout_mapper, graph->context, 32);
-	jive_output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
+	jive::output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
 	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
 	return dataobj;
@@ -110,7 +110,7 @@ static int test_main(void)
 	
 	jive_test_state_type state_type;
 	
-	jive_output * state = jive_node_add_output(enter, &state_type);
+	jive::output * state = jive_node_add_output(enter, &state_type);
 	
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
@@ -162,7 +162,7 @@ static int test_main(void)
 		= jive_callslot_class_get(4, 4, 8);
 	
 	/* mark call as affecting global state */
-	jive_output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node_add_input(call_write, memtype, memstate);
 	jive_subroutine_simple_set_global_state(

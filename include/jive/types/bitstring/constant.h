@@ -39,16 +39,16 @@ typedef jive::operation_node<jive::bitstring::constant_operation> jive_bitconsta
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive_output *
+jive::output *
 jive_bitconstant(struct jive_graph * graph, size_t nbits, const char bits[]);
 
-jive_output *
+jive::output *
 jive_bitconstant_unsigned(struct jive_graph * graph, size_t nbits, uint64_t value);
 
-jive_output *
+jive::output *
 jive_bitconstant_signed(struct jive_graph * graph, size_t nbits, int64_t value);
 
-JIVE_EXPORTED_INLINE struct jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_bitconstant_undefined(struct jive_graph * graph, size_t nbits)
 {
 	size_t i;
@@ -59,7 +59,7 @@ jive_bitconstant_undefined(struct jive_graph * graph, size_t nbits)
 	return jive_bitconstant(graph, nbits, bits);
 }
 
-JIVE_EXPORTED_INLINE struct jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_bitconstant_defined(struct jive_graph * graph, size_t nbits)
 {
 	size_t i;

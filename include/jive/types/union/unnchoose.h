@@ -32,8 +32,8 @@ private:
 
 typedef jive::operation_node<jive::unn::choose_operation> jive_choose_node;
 
-jive_output *
-jive_choose_create(size_t element, jive_output * operand);
+jive::output *
+jive_choose_create(size_t element, jive::output * operand);
 
 JIVE_EXPORTED_INLINE jive_choose_node *
 jive_choose_node_cast(jive_node * node)

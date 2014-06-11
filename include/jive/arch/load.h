@@ -20,9 +20,9 @@ struct jive_load_node_normal_form_class;
 struct jive_load_node_normal_form_class {
 	jive_node_normal_form_class base;
 	void (*set_reducible)(jive_load_node_normal_form * self, bool enable);
-	jive_output * (*normalized_create)(const jive_load_node_normal_form * self,
-		struct jive_region * region, const jive_node_attrs * attrs, jive_output * address,
-		size_t nstates, jive_output * const states[]);
+	jive::output * (*normalized_create)(const jive_load_node_normal_form * self,
+		struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
+		size_t nstates, jive::output * const states[]);
 };
 
 extern const jive_load_node_normal_form_class JIVE_LOAD_NODE_NORMAL_FORM_;
@@ -42,10 +42,10 @@ jive_load_node_normal_form_cast(jive_node_normal_form * self)
 		return NULL;
 }
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_load_node_normalized_create(const jive_load_node_normal_form * self,
-	struct jive_region * region, const jive_node_attrs * attrs, jive_output * address,
-	size_t nstates, jive_output * const states[])
+	struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
+	size_t nstates, jive::output * const states[])
 {
 	const jive_load_node_normal_form_class * cls;
 	cls = (const jive_load_node_normal_form_class *) self->base.class_;
@@ -99,25 +99,25 @@ typedef jive::operation_node<jive::load_operation> jive_load_node;
 
 struct jive_node *
 jive_load_by_address_node_create(struct jive_region * region,
-	struct jive_output * address,
+	jive::output * address,
 	const jive::value::type * datatype,
-	size_t nstates, struct jive_output * const states[]);
+	size_t nstates, jive::output * const states[]);
 
-struct jive_output *
-jive_load_by_address_create(struct jive_output * address,
+jive::output *
+jive_load_by_address_create(jive::output * address,
 	const jive::value::type * datatype,
-	size_t nstates, struct jive_output * const states[]);
+	size_t nstates, jive::output * const states[]);
 
 struct jive_node *
 jive_load_by_bitstring_node_create(struct jive_region * region,
-	struct jive_output * address, size_t nbits,
+	jive::output * address, size_t nbits,
 	const jive::value::type * datatype,
-	size_t nstates, struct jive_output * const states[]);
+	size_t nstates, jive::output * const states[]);
 
-struct jive_output *
-jive_load_by_bitstring_create(struct jive_output * address,
+jive::output *
+jive_load_by_bitstring_create(jive::output * address,
 	size_t nbits, const jive::value::type * datatype,
-	size_t nstates, struct jive_output * const states[]);
+	size_t nstates, jive::output * const states[]);
 
 JIVE_EXPORTED_INLINE jive_load_node *
 jive_load_node_cast(jive_node * node)

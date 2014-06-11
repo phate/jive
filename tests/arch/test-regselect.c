@@ -33,16 +33,16 @@ static int test_main(void)
 		4, tmparray0,
 		1, tmparray1);
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	
-	jive_output * lit = jive_bitconstant_unsigned(graph, 32, 42);
-	jive_output * sym = jive_bitsymbolicconstant(graph, 32, "symbol");
-	jive_output * bitnot = jive_bitnot(sym);
-	jive_output* tmparray2[] = {arg1, lit};
-	jive_output * sum1 = jive_bitsum(2, tmparray2);
-	jive_output* tmparray3[] = {lit, bitnot};
-	jive_output * sum2 = jive_bitsum(2, tmparray3);
-	jive_output * res = jive_bituquotient(sum1, sum2);
+	jive::output * lit = jive_bitconstant_unsigned(graph, 32, 42);
+	jive::output * sym = jive_bitsymbolicconstant(graph, 32, "symbol");
+	jive::output * bitnot = jive_bitnot(sym);
+	jive::output* tmparray2[] = {arg1, lit};
+	jive::output * sum1 = jive_bitsum(2, tmparray2);
+	jive::output* tmparray3[] = {lit, bitnot};
+	jive::output * sum2 = jive_bitsum(2, tmparray3);
+	jive::output * res = jive_bituquotient(sum1, sum2);
 	jive_subroutine_simple_set_result(subroutine, 0, res);
 	
 	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
@@ -70,8 +70,8 @@ static int test_main(void)
 	assert(n2->class_ == &JIVE_BITNOT_NODE);
 	n2 = n2->producer(0);
 	assert(n2->class_ == &JIVE_REGVALUE_NODE);
-	jive_output * o1 = n1->inputs[1]->origin();
-	jive_output * o2 = n2->inputs[1]->origin();
+	jive::output * o1 = n1->inputs[1]->origin();
+	jive::output * o2 = n2->inputs[1]->origin();
 	assert(o1 == lit);
 	assert(o2 == sym);
 	

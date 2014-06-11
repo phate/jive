@@ -27,7 +27,7 @@ jive_node *
 or_operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	return detail::binop_create<or_operation>(
 		*this,
@@ -88,8 +88,8 @@ const jive_bitbinary_operation_class JIVE_BITOR_NODE_ = {
 	type : jive_bitop_code_or
 };
 
-jive_output *
-jive_bitor(size_t noperands, jive_output * const * operands)
+jive::output *
+jive_bitor(size_t noperands, jive::output * const * operands)
 {
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::or_operation>(

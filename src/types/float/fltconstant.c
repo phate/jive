@@ -26,7 +26,7 @@ jive_fltconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs
 
 static jive_node *
 jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_FLTCONSTANT_NODE = {
 	parent : &JIVE_NULLARY_OPERATION,
@@ -68,7 +68,7 @@ jive_fltconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs
 
 static jive_node *
 jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::flt::constant_operation * attrs = (const jive::flt::constant_operation *) attrs_;
 
@@ -83,7 +83,7 @@ jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs
 	return node;
 }
 
-jive_output *
+jive::output *
 jive_fltconstant(struct jive_graph * graph, uint32_t value)
 {
 	jive::flt::constant_operation attrs(value);

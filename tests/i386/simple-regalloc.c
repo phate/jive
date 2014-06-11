@@ -34,9 +34,9 @@ static int test_main(void)
 		2, tmparray0,
 		1, tmparray1);
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive_output * tmparray2[] = {arg1, arg2};
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * tmparray2[] = {arg1, arg2};
 	
 	jive_node * add = jive_instruction_node_create(
 		subroutine.region,

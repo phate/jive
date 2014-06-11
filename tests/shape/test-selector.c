@@ -56,7 +56,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 	}
 	
 	for(n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive_output_auto_merge_variable(output);
 	}
 	
@@ -67,7 +67,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 
 static jive_node *
 create_computation_node(jive_graph * graph,
-	size_t noperands, jive_output ** operands,
+	size_t noperands, jive::output ** operands,
 	size_t noutputs)
 {
 	jive_test_value_type type;
@@ -95,7 +95,7 @@ create_computation_node(jive_graph * graph,
 
 static jive_node *
 create_spill_node(jive_graph * graph,
-	jive_output * operand)
+	jive::output * operand)
 {
 	jive_test_value_type type;
 	const jive::base::type * type_ptr = &type;
@@ -111,7 +111,7 @@ create_spill_node(jive_graph * graph,
 
 static jive_node *
 create_restore_node(jive_graph * graph,
-	jive_output * operand)
+	jive::output * operand)
 {
 	jive_test_value_type type;
 	const jive::base::type * type_ptr = &type;
@@ -132,36 +132,36 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	jive_node * n1 = create_computation_node(graph, 0, NULL, 2);
-	jive_output * tmparray0[] = {n1->outputs[0]};
+	jive::output * tmparray0[] = {n1->outputs[0]};
 	jive_node * l1 = create_computation_node(graph, 1, tmparray0, 1);
-	jive_output * tmparray1[] = {n1->outputs[1]};
+	jive::output * tmparray1[] = {n1->outputs[1]};
 	jive_node * l2 = create_computation_node(graph, 1, tmparray1, 1);
-	jive_output * tmparray2[] = {l1->outputs[0]};
+	jive::output * tmparray2[] = {l1->outputs[0]};
 	jive_node * a = create_computation_node(graph, 1, tmparray2, 1);
-	jive_output * tmparray3[] = {l1->outputs[0]};
+	jive::output * tmparray3[] = {l1->outputs[0]};
 	jive_node * b = create_computation_node(graph, 1, tmparray3, 1);
-	jive_output * tmparray4[] = {l1->outputs[0]};
+	jive::output * tmparray4[] = {l1->outputs[0]};
 	jive_node * c = create_computation_node(graph, 1, tmparray4, 1);
-	jive_output * tmparray5[] = {l1->outputs[0]};
+	jive::output * tmparray5[] = {l1->outputs[0]};
 	jive_node * d = create_computation_node(graph, 1, tmparray5, 1);
-	jive_output * tmparray6[] = {l1->outputs[0]};
+	jive::output * tmparray6[] = {l1->outputs[0]};
 	jive_node * e = create_computation_node(graph, 1, tmparray6, 1);
-	jive_output * tmparray7[] = {l2->outputs[0]};
+	jive::output * tmparray7[] = {l2->outputs[0]};
 	jive_node * f = create_computation_node(graph, 1, tmparray7, 1);
-	jive_output * tmparray8[] = {a->outputs[0], b->outputs[0]};
+	jive::output * tmparray8[] = {a->outputs[0], b->outputs[0]};
 	
 	jive_node * s1 = create_computation_node(
 		graph, 2, tmparray8, 1);
-	jive_output * tmparray9[] = {c->outputs[0], s1->outputs[0]};
+	jive::output * tmparray9[] = {c->outputs[0], s1->outputs[0]};
 	jive_node * s2 = create_computation_node(
 		graph, 2, tmparray9, 1);
-	jive_output * tmparray10[] = {s2->outputs[0], d->outputs[0]};
+	jive::output * tmparray10[] = {s2->outputs[0], d->outputs[0]};
 	jive_node * s3 = create_computation_node(
 		graph, 2, tmparray10, 1);
-	jive_output * tmparray11[] = {e->outputs[0], s3->outputs[0]};
+	jive::output * tmparray11[] = {e->outputs[0], s3->outputs[0]};
 	jive_node * s4 = create_computation_node(
 		graph, 2, tmparray11, 1);
-	jive_output * tmparray12[] = {s4->outputs[0], f->outputs[0]};
+	jive::output * tmparray12[] = {s4->outputs[0], f->outputs[0]};
 	jive_node * s5 = create_computation_node(
 		graph, 2, tmparray12, 1);
 	

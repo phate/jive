@@ -34,7 +34,7 @@ static int test_main(void)
 		3, tmparray0);
 	r1->top = top;
 	
-	jive_output * tmp;
+	jive::output * tmp;
 	const jive::base::type * tmparray1[] = {&type};
 	jive_gamma(top->outputs[2],
 		1, tmparray1,

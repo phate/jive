@@ -16,8 +16,11 @@
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_gate;
-struct jive_output;
 struct jive_resource_class;
 
 struct jive_variable_interference_part {
@@ -232,17 +235,19 @@ jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const str
 
 void
 jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input * input,
-	struct jive_output * output);
+	jive::output * output);
 
 void
 jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input * input,
-	struct jive_output * output);
+	jive::output * output);
 
 void
-jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, struct jive_output * output, struct jive_region * region);
+jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive::output * output,
+	struct jive_region * region);
 
 void
-jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, struct jive_output * output, struct jive_region * region);
+jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, jive::output * output,
+	struct jive_region * region);
 
 void
 jive_shaped_ssavar_xpoints_register_arcs(jive_shaped_ssavar * self);
@@ -254,7 +259,8 @@ void
 jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable);
 
 void
-jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, struct jive_output * old_origin, struct jive_output * new_origin);
+jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive::output * old_origin,
+	jive::output * new_origin);
 
 void
 jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);

@@ -28,12 +28,12 @@ static int test_main(void)
 	const jive::base::type*  tmparray1[] = { &btype };
 	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
-	jive_output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
-	jive_output* func = jive_symbolicfunction_create( graph, "sin", &ftype ) ;
-	jive_output*  tmparray2[] = { constant };
+	jive::output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
+	jive::output* func = jive_symbolicfunction_create( graph, "sin", &ftype ) ;
+	jive::output*  tmparray2[] = { constant };
 	jive_node* apply = jive_apply_node_create( graph->root_region, func, 1, tmparray2 ) ;
 	assert(apply->noutputs == 1);
-	jive_output* ret = apply->outputs[0];
+	jive::output* ret = apply->outputs[0];
 
 	assert(ret->type() == btype);
 

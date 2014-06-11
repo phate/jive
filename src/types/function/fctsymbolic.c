@@ -50,7 +50,7 @@ jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_
 
 static jive_node *
 jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
 	parent : &JIVE_NODE,
@@ -92,7 +92,7 @@ jive_symbolicfunction_node_get_label_(const jive_node * self_, struct jive_buffe
 
 static jive_node *
 jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::fct::symfunction_operation * attrs = (const jive::fct::symfunction_operation *) attrs_;
 
@@ -126,7 +126,7 @@ jive_symbolicfunction_node_create(
 	return node;
 }
 
-jive_output *
+jive::output *
 jive_symbolicfunction_create(
 	struct jive_graph * graph, const char * name, const jive::fct::type * type)
 {

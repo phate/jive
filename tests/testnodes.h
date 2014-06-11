@@ -49,13 +49,13 @@ typedef jive::operation_node<test_operation> jive_test_node;
 jive_node *
 jive_test_node_create(struct jive_region * region,
 	size_t noperands, const jive::base::type * const operand_types[],
-	struct jive_output * const operands[], size_t nresults,
+	jive::output * const operands[], size_t nresults,
 	const jive::base::type * const result_types[]);
 
 void
 jive_test_node_create_normalized(struct jive_graph * graph, size_t noperands,
-	const jive::base::type * const operand_types[], struct jive_output * const operands[],
-	size_t nresults, const jive::base::type * const result_types[], jive_output * results[]);
+	const jive::base::type * const operand_types[], jive::output * const operands[],
+	size_t nresults, const jive::base::type * const result_types[], jive::output * results[]);
 
 JIVE_EXPORTED_INLINE const jive_test_node *
 jive_test_node_const_cast(const jive_node * self)

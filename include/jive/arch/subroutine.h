@@ -12,8 +12,11 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_instructionset;
-struct jive_output;
 struct jive_region;
 
 typedef struct jive_subroutine jive_subroutine;
@@ -39,7 +42,7 @@ jive_subroutine_end(jive_subroutine self);
 /**
 	\brief Get argument value
 */
-struct jive_output *
+jive::output *
 jive_subroutine_simple_get_argument(
 	jive_subroutine self,
 	size_t index);
@@ -48,13 +51,13 @@ void
 jive_subroutine_simple_set_result(
 	jive_subroutine self,
 	size_t index,
-	struct jive_output * value);
+	jive::output * value);
 
-struct jive_output *
+jive::output *
 jive_subroutine_simple_get_global_state(const jive_subroutine self);
 
 void
-jive_subroutine_simple_set_global_state(jive_subroutine self, struct jive_output * state);
+jive_subroutine_simple_set_global_state(jive_subroutine self, jive::output * state);
 
 typedef struct jive_subroutine_deprecated jive_subroutine_deprecated;
 
@@ -77,7 +80,7 @@ typedef struct jive_subroutine_passthrough jive_subroutine_passthrough;
 
 struct jive_subroutine_passthrough {
 	jive_gate * gate;
-	jive_output * output;
+	jive::output * output;
 	jive::input * input;
 };
 
@@ -85,12 +88,12 @@ typedef struct jive_subroutine_late_transforms jive_subroutine_late_transforms;
 typedef struct jive_value_split_factory jive_value_split_factory;
 
 struct jive_value_split_factory {
-	jive_output * (*split)(const jive_value_split_factory * self, jive_output * value);
+	jive::output * (*split)(const jive_value_split_factory * self, jive::output * value);
 };
 
 struct jive_subroutine_late_transforms {
 	void (*value_split)(const jive_subroutine_late_transforms * self,
-		jive_output * value_in, jive::input * value_out,
+		jive::output * value_in, jive::input * value_out,
 		const jive_value_split_factory * enter_split, const jive_value_split_factory * leave_split);
 };
 
@@ -133,8 +136,9 @@ struct jive_subroutine_deprecated {
 
 struct jive_subroutine_class {
 	void (*fini)(jive_subroutine_deprecated * self);
-	jive_output * (*value_parameter)(jive_subroutine_deprecated * self, size_t index);
-	jive::input * (*value_return)(jive_subroutine_deprecated * self, size_t index, jive_output * value);
+	jive::output * (*value_parameter)(jive_subroutine_deprecated * self, size_t index);
+	jive::input * (*value_return)(jive_subroutine_deprecated * self, size_t index,
+		jive::output * value);
 };
 
 struct jive_subroutine_abi_class {
@@ -149,14 +153,14 @@ struct jive_subroutine_abi_class {
 void
 jive_subroutine_destroy(jive_subroutine_deprecated * self);
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_subroutine_value_parameter(jive_subroutine_deprecated * self, size_t index)
 {
 	return self->class_->value_parameter(self, index);
 }
 
 JIVE_EXPORTED_INLINE jive::input *
-jive_subroutine_value_return(jive_subroutine_deprecated * self, size_t index, jive_output * value)
+jive_subroutine_value_return(jive_subroutine_deprecated * self, size_t index, jive::output * value)
 {
 	return self->class_->value_return(self, index, value);
 }
@@ -182,10 +186,10 @@ jive_region_get_subroutine_node(const jive_region * region);
 const struct jive_instructionset *
 jive_region_get_instructionset(const jive_region * region);
 
-jive_output *
+jive::output *
 jive_subroutine_node_get_sp(const jive_subroutine_node * self);
 
-jive_output *
+jive::output *
 jive_subroutine_node_get_fp(const jive_subroutine_node * self);
 
 jive_subroutine_stackframe_info *

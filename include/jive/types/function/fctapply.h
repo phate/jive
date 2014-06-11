@@ -23,12 +23,12 @@ typedef jive::operation_node<jive::fct::apply_operation> jive_apply_node;
 extern const jive_node_class JIVE_APPLY_NODE;
 
 jive_node *
-jive_apply_node_create(jive_region * region, jive_output * function,
-	size_t narguments, jive_output * const arguments[]);
+jive_apply_node_create(jive_region * region, jive::output * function,
+	size_t narguments, jive::output * const arguments[]);
 
 void
-jive_apply_create(jive_output * function, size_t narguments, jive_output * const arguments[],
-	jive_output * results[]);
+jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[],
+	jive::output * results[]);
 
 JIVE_EXPORTED_INLINE jive_apply_node *
 jive_apply_node_cast(jive_node * node)

@@ -102,10 +102,10 @@ static int test_main(void)
 		1, tmparray9, top->outputs,
 		1, tmparray10);
 	
-	jive_output * gamma[2];
+	jive::output * gamma[2];
 	const jive::base::type * tmparray11[] = {&type, &type};
-	jive_output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
-	jive_output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
+	jive::output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
+	jive::output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
 	jive_gamma(pred->outputs[0],
 		2, tmparray11,
 		tmparray12,
@@ -113,7 +113,7 @@ static int test_main(void)
 		gamma);
 	jive_node * gamma_node = gamma[0]->node();
 	const jive::base::type * tmparray14[] = {&type, &type, &type};
-	jive_output * tmparray15[] = {gamma[0], gamma[1]};
+	jive::output * tmparray15[] = {gamma[0], gamma[1]};
 	
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray14, tmparray15,

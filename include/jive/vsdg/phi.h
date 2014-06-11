@@ -22,7 +22,7 @@ extern const jive_phi_node_normal_form_class JIVE_PHI_NODE_NORMAL_FORM_;
 struct jive_phi_node_normal_form_class {
 	jive_anchor_node_normal_form_class base;
 	void (*normalized_create)(const jive_phi_node_normal_form * self,
-		jive_region * phi_region, jive_output * results[]);
+		jive_region * phi_region, jive::output * results[]);
 };
 
 JIVE_EXPORTED_INLINE jive_phi_node_normal_form *
@@ -134,7 +134,7 @@ struct jive_phi {
 	\brief Represent information about a phi fixpoint value
 */
 struct jive_phi_fixvar {
-	struct jive_output * value;
+	jive::output * value;
 	struct jive_gate * gate;
 };
 
@@ -154,8 +154,7 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type);
 	\brief Set fixpoint value of variable
 */
 void
-jive_phi_fixvar_leave(jive_phi self, jive_gate * var,
-	struct jive_output * post_value);
+jive_phi_fixvar_leave(jive_phi self, jive_gate * var, jive::output * post_value);
 
 /**
 	\brief End constructing a phi region
@@ -171,7 +170,7 @@ typedef struct jive_phi_extension jive_phi_extension;
 struct jive_phi_extension {
 	jive_phi_node * phi_node;
 	size_t nfixvars;
-	struct jive_output ** fixvars;
+	jive::output ** fixvars;
 };
 
 /**
@@ -184,7 +183,7 @@ jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
 /**
 	\brief End extending a phi construct
 */
-struct jive_output **
+jive::output **
 jive_phi_end_extension(struct jive_phi_extension * self);
 
 #endif

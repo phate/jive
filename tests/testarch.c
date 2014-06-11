@@ -380,7 +380,7 @@ const jive_instruction_class jive_testarch_instr_jumpnz = {
 };
 
 static jive_xfer_description
-create_xfer(jive_region * region, jive_output * origin,
+create_xfer(jive_region * region, jive::output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
 	jive_xfer_description xfer;
@@ -389,7 +389,7 @@ create_xfer(jive_region * region, jive_output * origin,
 	const jive_resource_class * out_relaxed = jive_resource_class_relax(out_class);
 	
 	if (in_relaxed == CLS(gpr) && out_relaxed == CLS(gpr)) {
-		jive_output * tmparray8[] = {origin};
+		jive::output * tmparray8[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive_testarch_instr_move_gpr,
@@ -397,7 +397,7 @@ create_xfer(jive_region * region, jive_output * origin,
 		xfer.input = xfer.node->inputs[0];
 		xfer.output = xfer.node->outputs[0];
 	} else if (in_relaxed == CLS(gpr)) {
-		jive_output * tmparray9[] = {origin};
+		jive::output * tmparray9[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive_testarch_instr_spill_gpr,
@@ -488,12 +488,12 @@ const jive_instructionset testarch_isa = {
 
 /* subroutine support */
 
-static jive_output *
+static jive::output *
 jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t index)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive_gate * gate = self->base.parameters[index];
-	jive_output * output = jive_node_gate_output(self->base.enter, gate);
+	jive::output * output = jive_node_gate_output(self->base.enter, gate);
 	if (index >= 2) {
 		const jive::base::type * in_type = &gate->type();
 		const jive::base::type * out_type =
@@ -507,7 +507,8 @@ jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, si
 }
 
 static jive::input *
-jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index, jive_output * value)
+jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index,
+	jive::output * value)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
 	jive_gate * gate = self->base.returns[index];

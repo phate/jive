@@ -22,22 +22,22 @@ jive_select_node_get_label_(const jive_node * self, struct jive_buffer * buffer)
 
 static jive_node *
 jive_select_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 static bool
 jive_select_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
 static void
 jive_select_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context);
+	size_t noperands, jive::output * const operands[], jive_context * context);
 
 static jive_unop_reduction_path_t
 jive_select_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	const jive_output * operand);
+	const jive::output * operand);
 
-static jive_output *
+static jive::output *
 jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * operand);
+	const jive_node_attrs * attrs, jive::output * operand);
 
 const jive_unary_operation_class JIVE_SELECT_NODE_ = {
 	base : { /* jive_node_class */
@@ -59,7 +59,7 @@ const jive_unary_operation_class JIVE_SELECT_NODE_ = {
 };
 
 static void
-perform_check(jive_context * context, const jive_output * operand, size_t element)
+perform_check(jive_context * context, const jive::output * operand, size_t element)
 {
 	if (!dynamic_cast<const jive::rcd::output*>(operand))
 		jive_context_fatal_error(context, "Type mismatch: need 'record' type as input to 'select' node");
@@ -76,7 +76,7 @@ perform_check(jive_context * context, const jive_output * operand, size_t elemen
 
 static void
 jive_select_node_init_(jive_select_node * self, struct jive_region * region,
-	size_t element, jive_output * operand)
+	size_t element, jive::output * operand)
 {
 	jive_context * context = region->graph->context;
 	perform_check(context, operand, element);
@@ -121,7 +121,7 @@ jive_select_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 
 static void
 jive_select_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
@@ -143,7 +143,7 @@ jive_select_node_check_operands_(const jive_node_class * cls, const jive_node_at
 
 static jive_node *
 jive_select_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, struct jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
@@ -159,7 +159,7 @@ static const jive_unop_reduction_path_t jive_select_reduction_load = 128;
 
 static jive_unop_reduction_path_t
 jive_select_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	const jive_output * operand)
+	const jive::output * operand)
 {
 	const jive::rcd::select_operation * attrs = (const jive::rcd::select_operation *) attrs_;
 	
@@ -174,9 +174,9 @@ jive_select_can_reduce_operand_(const jive_node_class * cls, const jive_node_att
 	return jive_unop_reduction_none;
 }
 
-static jive_output *
+static jive::output *
 jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs_, jive_output * operand)
+	const jive_node_attrs * attrs_, jive::output * operand)
 {
 	const jive::rcd::select_operation * attrs = (const jive::rcd::select_operation *) attrs_;
 
@@ -185,7 +185,7 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 
 	if (path == jive_select_reduction_load) {
 		jive_node * load_node = operand->node();
-		jive_output * address = load_node->inputs[0]->origin();
+		jive::output * address = load_node->inputs[0]->origin();
 
 		size_t nbits = 0;
 		if (dynamic_cast<jive::bits::output*>(address)) {
@@ -198,11 +198,11 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 
 		size_t n;
 		size_t nstates = load_node->ninputs-1;
-		jive_output * states[nstates];
+		jive::output * states[nstates];
 		for(n = 0; n < nstates; n++)
 			states[n] = load_node->inputs[n+1]->origin();
 
-		jive_output * element_address = jive_memberof(address, decl, attrs->element);
+		jive::output * element_address = jive_memberof(address, decl, attrs->element);
 		if (dynamic_cast<jive::addr::output*>(address)) {
 			return jive_load_by_address_create(element_address, decl->elements[attrs->element],
 				nstates, states);
@@ -215,8 +215,8 @@ jive_select_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_cla
 	return NULL;
 }
 
-jive_output *
-jive_select_create(size_t member, jive_output * operand)
+jive::output *
+jive_select_create(size_t member, jive::output * operand)
 {
 	jive::rcd::select_operation op;
 	op.element = member;

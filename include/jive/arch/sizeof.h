@@ -51,7 +51,7 @@ extern const jive_node_class JIVE_SIZEOF_NODE;
 struct jive_node *
 jive_sizeof_node_create(struct jive_region * region, const jive::value::type * type);
 
-struct jive_output *
+jive::output *
 jive_sizeof_create(struct jive_region * region, const jive::value::type * type);
 
 JIVE_EXPORTED_INLINE jive_sizeof_node *

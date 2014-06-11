@@ -183,7 +183,7 @@ jive_instruction_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	const jive_token * token = jive_token_istream_current(is);
@@ -227,7 +227,7 @@ jive_label_to_bitstring_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	const jive_label * label;
@@ -264,7 +264,7 @@ jive_label_to_address_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	const jive_label * label;
@@ -341,7 +341,7 @@ jive_subroutine_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	*node = 0;
@@ -434,7 +434,7 @@ jive_immediate_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	jive_immediate imm;

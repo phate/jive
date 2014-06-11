@@ -436,7 +436,7 @@ gate_is_unbound(const jive_gate * gate)
 	jive::input * input;
 	JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list)
 		if (input->ssavar) return false;
-	jive_output * output;
+	jive::output * output;
 	JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list)
 		if (output->ssavar) return false;
 	return true;
@@ -459,7 +459,7 @@ jive_region_shaper_undo_setup_node(jive_region_shaper * self, jive_node * node)
 		}
 	}
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive_ssavar * ssavar = output->ssavar;
 		if (ssavar) {
 			jive_variable * variable = ssavar->variable;
@@ -493,7 +493,7 @@ select_spill(
 	}
 }
 
-static jive_output *
+static jive::output *
 do_split_begin(
 	jive_region_shaper * self,
 	jive_ssavar * ssavar,
@@ -503,7 +503,7 @@ do_split_begin(
 		FIXME: reroute
 		ssavar = reroute.reroute_at_point(ssavar, self.shaped_region.begin())
 	*/
-	jive_output * origin = ssavar->origin;
+	jive::output * origin = ssavar->origin;
 	
 	const jive_resource_class * in_rescls = demotion->path[0];
 	size_t n;
@@ -527,9 +527,9 @@ do_split_end(
 	jive_region_shaper * self,
 	jive_ssavar * ssavar,
 	const jive_resource_class_demotion * demotion,
-	jive_output * split_origin)
+	jive::output * split_origin)
 {
-	jive_output * origin = split_origin;
+	jive::output * origin = split_origin;
 	size_t n = 0;
 	while(demotion->path[n+1]) n++;
 	
@@ -585,7 +585,7 @@ resolve_conflict_spill(
 	
 	const jive_resource_class_demotion * demotion = select_split_path(self, to_spill, rescls);
 	
-	jive_output * split_origin = do_split_begin(self, to_spill, demotion);
+	jive::output * split_origin = do_split_begin(self, to_spill, demotion);
 	do_split_end(self, to_spill, demotion, split_origin);
 }
 
@@ -598,7 +598,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 	size_t n;
 	
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		
 		JIVE_DEBUG_ASSERT(!output->ssavar);
 		jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(active, output);
@@ -658,7 +658,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 	}
 	
 	for (n = 0; n < node->noutputs ; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive_mutable_varcut_ssavar_remove_full(
 			active, jive_shaped_graph_map_ssavar(self->shaped_graph, output->ssavar));
 	}
@@ -681,7 +681,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			jive_region_shaper_undo_setup_node(self, node);
 			
 			/* FIXME: reroute is missing here!!! */
-			jive_output * output = shaped_ssavar->ssavar->origin;
+			jive::output * output = shaped_ssavar->ssavar->origin;
 			const jive_resource_class * current_rescls =
 				jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
 			const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_constraint);
@@ -817,7 +817,7 @@ split_merge_subregion(
 	}
 	JIVE_DEBUG_ASSERT(demotion->target);
 	
-	jive_output * split_origin = do_split_begin(self, ssavar, demotion);
+	jive::output * split_origin = do_split_begin(self, ssavar, demotion);
 	do_split_end(subregion, ssavar, demotion, split_origin);
 	flush_pending(subregion);
 }
@@ -850,7 +850,7 @@ merge_single_ssavar_from_subregion(
 		/* some other variable in parent cannot be active at the same
 		time as this variable -- need to split in subregion */
 		
-		jive_output * output = ssavar->origin;
+		jive::output * output = ssavar->origin;
 		const jive::base::type * type = &output->type();
 		
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);

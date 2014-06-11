@@ -15,16 +15,16 @@
 
 static jive_node *
 jive_bitugreater_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, struct jive::output * const operands[]);
 
 static jive_binop_reduction_path_t
 jive_bitugreater_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
+	const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2);
 
-static jive_output *
+static jive::output *
 jive_bitugreater_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
-	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1,
-	jive_output * op2);
+	const jive_node_class * cls, const jive_node_attrs * attrs, jive::output * op1,
+	jive::output * op2);
 
 const jive_bitcomparison_operation_class JIVE_BITUGREATER_NODE_ = {
 	base : { /* jive_binary_operation_class */
@@ -53,7 +53,7 @@ const jive_bitcomparison_operation_class JIVE_BITUGREATER_NODE_ = {
 
 static void
 jive_bitugreater_node_init_(jive_node * self, jive_region * region,
-	jive_output * operand1, jive_output * operand2)
+	jive::output * operand1, jive::output * operand2)
 {
 	size_t nbits = static_cast<jive::bits::output*>(operand1)->nbits();
 
@@ -61,7 +61,7 @@ jive_bitugreater_node_init_(jive_node * self, jive_region * region,
 	const jive::base::type * ctype_ptr = &ctype;
 	jive::bits::type btype(nbits);
 	const jive::base::type * tmparray0[] = {&btype, &btype};
-	jive_output * tmparray1[] = {operand1, operand2};
+	jive::output * tmparray1[] = {operand1, operand2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
 		1, &ctype_ptr);
@@ -69,7 +69,7 @@ jive_bitugreater_node_init_(jive_node * self, jive_region * region,
 
 static jive_node *
 jive_bitugreater_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, struct jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
@@ -82,7 +82,7 @@ jive_bitugreater_create_(struct jive_region * region, const jive_node_attrs * at
 
 static jive_binop_reduction_path_t
 jive_bitugreater_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
+	const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2)
 {
 	const jive_bitconstant_node * n1 = dynamic_cast<jive_bitconstant_node *>(op1->node());
 	const jive_bitconstant_node * n2 = dynamic_cast<jive_bitconstant_node *>(op2->node());
@@ -123,10 +123,10 @@ jive_bitugreater_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	return 0;
 }
 
-static jive_output *
+static jive::output *
 jive_bitugreater_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
-	const jive_node_class * cls, const jive_node_attrs * attrs, jive_output * op1,
-	jive_output * op2)
+	const jive_node_class * cls, const jive_node_attrs * attrs, jive::output * op1,
+	jive::output * op2)
 {
 	jive_graph * graph = op1->node()->graph;
 
@@ -142,11 +142,11 @@ jive_bitugreater_node_reduce_operand_pair_(jive_binop_reduction_path_t path,
 	}
 }
 
-jive_output *
-jive_bitugreater(jive_output * operand1, jive_output * operand2)
+jive::output *
+jive_bitugreater(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
-	jive_output * tmparray2[] = {operand1, operand2};
+	jive::output * tmparray2[] = {operand1, operand2};
 	jive::bitstring::ugreater_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_BITUGREATER_NODE_.base, graph, &op, 2,
 		tmparray2);

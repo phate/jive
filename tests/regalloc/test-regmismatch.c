@@ -30,7 +30,7 @@ create_testgraph_mismatch1(jive_context * context)
 		1, tmparray1
 	);
 	
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	jive_subroutine_simple_set_result(subroutine, 0, arg2);
 	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 
@@ -49,8 +49,8 @@ create_testgraph_mismatch2(jive_context * context)
 		2, tmparray3
 	);
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	jive_subroutine_simple_set_result(subroutine, 0, arg2);
 	jive_subroutine_simple_set_result(subroutine, 1, arg1);
 	
@@ -67,16 +67,16 @@ create_testgraph_mismatch3(jive_context * context)
 		0, NULL,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_output * arg1 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"));
+	jive::output * arg1 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"));
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"), arg1);
 	
-	jive_output * arg2 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
+	jive::output * arg2 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	jive_node * node = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_setr1,
@@ -97,16 +97,16 @@ create_testgraph_mismatch4(jive_context * context)
 		0, NULL,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_output * arg1 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
+	jive::output * arg1 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), arg1);
 	
-	jive_output * arg2 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
+	jive::output * arg2 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	jive_node * node = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_setr1,
@@ -126,27 +126,27 @@ create_testgraph_mismatch5(jive_context * context)
 		0, NULL,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_output * arg1 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
+	jive::output * arg1 = jive_node_gate_output(enter_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "reg"));
 	
 	jive_node * tmp1 = jive_instruction_node_create(
 		subroutine.region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	jive_node_gate_input(tmp1, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), arg1);
-	jive_output * out1 = jive_node_gate_output(tmp1, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "regs"));
+	jive::output * out1 = jive_node_gate_output(tmp1, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "regs"));
 	
 	jive_node * tmp2 = jive_instruction_node_create(
 		subroutine.region,
 		&JIVE_PSEUDO_NOP,
 		NULL, NULL);
 	jive_node_gate_input(tmp2, jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2"), arg1);
-	jive_output * out2 = jive_node_gate_output(tmp2, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "regs"));
+	jive::output * out2 = jive_node_gate_output(tmp2, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "regs"));
 	
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval1"), out1);
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval2"), out2);
@@ -164,7 +164,7 @@ create_testgraph_mismatch6(jive_context * context)
 		0, NULL,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();

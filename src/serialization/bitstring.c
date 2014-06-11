@@ -28,7 +28,7 @@ jive_bitconstant_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	const jive_token * token = jive_token_istream_current(is);
@@ -72,7 +72,7 @@ jive_bitslice_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region, size_t noperands,
-	jive_output * const operands[], jive_token_istream * is,
+	jive::output * const operands[], jive_token_istream * is,
 	jive_node ** node)
 {
 	uint64_t low, high;
@@ -98,7 +98,7 @@ jive_serialization_nodecls_deserialize_bitbinary1(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	struct jive_token_istream * is,
 	jive_node ** node)
 {
@@ -120,7 +120,7 @@ jive_serialization_nodecls_deserialize_bitbinary2(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	struct jive_token_istream * is,
 	jive_node ** node)
 {
@@ -142,7 +142,7 @@ jive_serialization_nodecls_deserialize_bitunary(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	struct jive_token_istream * is,
 	jive_node ** node)
 {

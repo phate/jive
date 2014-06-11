@@ -34,15 +34,15 @@ static int test_main()
 		0, NULL, NULL,
 		4, tmparray0);
 
-	jive_output * load0 = jive_load_by_address_create(top->outputs[0], &bits32, 1, &top->outputs[2]);
+	jive::output * load0 = jive_load_by_address_create(top->outputs[0], &bits32, 1, &top->outputs[2]);
 
-	jive_output * state;
+	jive::output * state;
 	jive_store_by_address_create(top->outputs[1], &bits32, top->outputs[3], 1, &top->outputs[2],
 		&state);
-	jive_output * load1 = jive_load_by_address_create(top->outputs[1], &bits32, 1, &state);
+	jive::output * load1 = jive_load_by_address_create(top->outputs[1], &bits32, 1, &state);
 	assert(load1 == top->outputs[3]);
 	const jive::base::type * tmparray1[] = {&bits32, &bits32};
-	jive_output * tmparray2[] = {load0, load1};
+	jive::output * tmparray2[] = {load0, load1};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray1, tmparray2,

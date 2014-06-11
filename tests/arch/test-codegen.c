@@ -26,9 +26,9 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * c8 = jive_bitconstant_unsigned(graph, 8, 8);
-	jive_output * c16 = jive_bitconstant_unsigned(graph, 16, 16);
-	jive_output * c32 = jive_bitconstant_unsigned(graph, 32, 32);
+	jive::output * c8 = jive_bitconstant_unsigned(graph, 8, 8);
+	jive::output * c16 = jive_bitconstant_unsigned(graph, 16, 16);
+	jive::output * c32 = jive_bitconstant_unsigned(graph, 32, 32);
 
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, context, 32);

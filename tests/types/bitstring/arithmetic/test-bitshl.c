@@ -21,16 +21,16 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 
-	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 16);
-	jive_output * c1 = jive_bitconstant_unsigned(graph, 32, 2);
-	jive_output * c2 = jive_bitconstant_unsigned(graph, 32, 32);
+	jive::output * c0 = jive_bitconstant_unsigned(graph, 32, 16);
+	jive::output * c1 = jive_bitconstant_unsigned(graph, 32, 2);
+	jive::output * c2 = jive_bitconstant_unsigned(graph, 32, 32);
 
-	jive_output * shl0 = jive_bitshl(s0, s1);
-	jive_output * shl1 = jive_bitshl(c0, c1);
-	jive_output * shl2 = jive_bitshl(c0, c2);
+	jive::output * shl0 = jive_bitshl(s0, s1);
+	jive::output * shl1 = jive_bitshl(c0, c1);
+	jive::output * shl2 = jive_bitshl(c0, c2);
 
 	jive_graph_export(graph, shl0);
 	jive_graph_export(graph, shl1);

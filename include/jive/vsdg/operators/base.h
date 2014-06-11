@@ -9,7 +9,6 @@
 #include <string>
 
 class jive_node;
-class jive_output;
 class jive_region;
 class jive_node_normal_form;
 
@@ -18,6 +17,7 @@ namespace jive {
 namespace base {
 	class type;
 }
+class output;
 
 class operation {
 public:
@@ -42,7 +42,7 @@ public:
 	create_node(
 		jive_region * region,
 		size_t narguments,
-		jive_output * const arguments[]) const;
+		jive::output * const arguments[]) const;
 
 	virtual std::string
 	debug_string() const;

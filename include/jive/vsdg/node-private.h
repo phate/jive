@@ -20,7 +20,7 @@ jive_node_init_(
 	struct jive_region * region,
 	size_t noperands,
 	const jive::base::type * const operand_types[],
-	struct jive_output * const operands[],
+	jive::output * const operands[],
 	size_t noutputs,
 	const jive::base::type * const output_types[]);
 
@@ -35,11 +35,11 @@ jive_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 
 void
 jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context);
+	size_t noperands, jive::output * const operands[], jive_context * context);
 
 jive_node *
 jive_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 bool
 jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other);
@@ -92,13 +92,13 @@ jive_node_normal_form_normalize_node_(const jive_node_normal_form * self, jive_n
 
 bool
 jive_node_normal_form_operands_are_normalized_(const jive_node_normal_form * self,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	const jive_node_attrs * attrs);
 
 void
 jive_node_normal_form_normalized_create_(const jive_node_normal_form * self,
 	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
-	jive_output * const operands[], jive_output * result[]);
+	jive::output * const operands[], jive::output * result[]);
 
 void
 jive_node_normal_form_set_mutable_(jive_node_normal_form * self, bool enable);

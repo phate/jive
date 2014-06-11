@@ -48,19 +48,19 @@ static int test_main(void)
 		0, NULL, NULL,
 		1, tmparray10);
 
-	jive_output * address = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
+	jive::output * address = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
 
-	jive_output * member0 = jive_memberof(address, &decl, 0);
-	jive_output * member1 = jive_memberof(address, &decl, 1);
-	jive_output * member2 = jive_memberof(address, &decl, 2);
-	jive_output * member3 = jive_memberof(address, &decl, 3);
+	jive::output * member0 = jive_memberof(address, &decl, 0);
+	jive::output * member1 = jive_memberof(address, &decl, 1);
+	jive::output * member2 = jive_memberof(address, &decl, 2);
+	jive::output * member3 = jive_memberof(address, &decl, 3);
 
-	jive_output * offset0 = jive_address_to_bitstring_create(member0, 32, &member0->type());
-	jive_output * offset1 = jive_address_to_bitstring_create(member1, 32, &member1->type());
-	jive_output * offset2 = jive_address_to_bitstring_create(member2, 32, &member2->type());
-	jive_output * offset3 = jive_address_to_bitstring_create(member3, 32, &member3->type());
+	jive::output * offset0 = jive_address_to_bitstring_create(member0, 32, &member0->type());
+	jive::output * offset1 = jive_address_to_bitstring_create(member1, 32, &member1->type());
+	jive::output * offset2 = jive_address_to_bitstring_create(member2, 32, &member2->type());
+	jive::output * offset3 = jive_address_to_bitstring_create(member3, 32, &member3->type());
 	const jive::base::type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
-	jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
+	jive::output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
 	const jive::base::type * tmparray11[] = {&bits8};
 	jive_node * bottom = jive_test_node_create(graph->root_region,

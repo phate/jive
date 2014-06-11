@@ -13,11 +13,14 @@
 #include <jive/util/dict.h>
 #include <jive/util/hash.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_context;
 struct jive_gate;
 struct jive_label;
 struct jive_node;
-struct jive_output;
 
 typedef struct jive_serialization_gatesym jive_serialization_gatesym;
 typedef struct jive_serialization_gatesym_hash jive_serialization_gatesym_hash;
@@ -79,7 +82,7 @@ JIVE_DECLARE_HASH_TYPE(jive_serialization_nodesym_hash, jive_serialization_nodes
 JIVE_DECLARE_DICT_TYPE(jive_serialization_nodesym_dict, jive_serialization_nodesym, name, name_hash_chain);
 
 struct jive_serialization_outputsym {
-	struct jive_output * output;
+	jive::output * output;
 	char * name;
 	struct {
 		jive_serialization_outputsym * prev;
@@ -90,7 +93,8 @@ struct jive_serialization_outputsym {
 		jive_serialization_outputsym * next;
 	} name_hash_chain;
 };
-JIVE_DECLARE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym, struct jive_output *, output, output_hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym,
+	jive::output *, output, output_hash_chain);
 JIVE_DECLARE_DICT_TYPE(jive_serialization_outputsym_dict, jive_serialization_outputsym, name, name_hash_chain);
 
 struct jive_serialization_symtab {
@@ -193,7 +197,7 @@ jive_serialization_symtab_name_to_node(
 void
 jive_serialization_symtab_insert_outputsym(
 	jive_serialization_symtab * self,
-	struct jive_output * output,
+	jive::output * output,
 	char * name);
 
 void
@@ -204,7 +208,7 @@ jive_serialization_symtab_remove_outputsym(
 const jive_serialization_outputsym *
 jive_serialization_symtab_output_to_name(
 	jive_serialization_symtab * self,
-	const struct jive_output * output);
+	const jive::output * output);
 
 const jive_serialization_outputsym *
 jive_serialization_symtab_name_to_output(

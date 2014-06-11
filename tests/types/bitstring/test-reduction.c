@@ -16,7 +16,7 @@
 #include <jive/vsdg.h>
 
 static void
-assert_constant(jive_output * bitstr, size_t nbits, const char bits[])
+assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
 {
 	jive_bitconstant_node * node = dynamic_cast<jive_bitconstant_node *>(bitstr->node());
 	assert(node);
@@ -33,10 +33,10 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create(context);
 	
-	jive_output * a = jive_bitconstant(graph, 4, "1100");
-	jive_output * b = jive_bitconstant(graph, 4, "1010");
+	jive::output * a = jive_bitconstant(graph, 4, "1100");
+	jive::output * b = jive_bitconstant(graph, 4, "1010");
 	
-	jive_output * ops[] = {a, b};
+	jive::output * ops[] = {a, b};
 	
 	assert_constant(jive_bitand(2, ops), 4, "1000");
 	assert_constant(jive_bitor(2, ops), 4, "1110");
@@ -49,14 +49,14 @@ static int test_main(void)
 	
 	jive_graph_prune(graph);
 	
-	jive_output * x = jive_bitsymbolicconstant(graph, 16, "x");
-	jive_output * y = jive_bitsymbolicconstant(graph, 16, "y");
+	jive::output * x = jive_bitsymbolicconstant(graph, 16, "x");
+	jive::output * y = jive_bitsymbolicconstant(graph, 16, "y");
 	
 	{
-		jive_output *  tmparray0[] = {x, y};
-		jive_output * concat = jive_bitconcat(2, tmparray0);
-		jive_output * slice = jive_bitslice(concat, 8, 24);
-		jive_node * node = ((jive_output *) slice)->node();
+		jive::output *  tmparray0[] = {x, y};
+		jive::output * concat = jive_bitconcat(2, tmparray0);
+		jive::output * slice = jive_bitslice(concat, 8, 24);
+		jive_node * node = ((jive::output *) slice)->node();
 		assert(node->class_ == &JIVE_BITCONCAT_NODE);
 		assert(node->ninputs == 2);
 		assert(node->producer(0)->class_ == &JIVE_BITSLICE_NODE);
@@ -73,10 +73,10 @@ static int test_main(void)
 	}
 	
 	{
-		jive_output * slice1 = jive_bitslice(x, 0, 8);
-		jive_output * slice2 = jive_bitslice(x, 8, 16);
-		jive_output * tmparray1[] = {slice1, slice2};
-		jive_output * concat = jive_bitconcat(2, tmparray1);
+		jive::output * slice1 = jive_bitslice(x, 0, 8);
+		jive::output * slice2 = jive_bitslice(x, 8, 16);
+		jive::output * tmparray1[] = {slice1, slice2};
+		jive::output * concat = jive_bitconcat(2, tmparray1);
 		assert(concat == x);
 	}
 	

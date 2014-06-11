@@ -37,8 +37,8 @@ jive_instruction_node_init_(
 	jive_instruction_node * self,
 	jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * const operands[],
-	jive_output * const immediates[])
+	jive::output * const operands[],
+	jive::output * const immediates[])
 {
 	size_t ninputs = icls->ninputs;
 	size_t nimmediates = icls->nimmediates;
@@ -49,7 +49,7 @@ jive_instruction_node_init_(
 	jive::imm::type imm;
 	
 	const jive::base::type * input_types[ninputs + nimmediates];
-	jive_output * inputs[ninputs + nimmediates];
+	jive::output * inputs[ninputs + nimmediates];
 	const jive::base::type * output_types[noutputs];
 	
 	size_t n;
@@ -97,7 +97,7 @@ jive_instruction_node_match_attrs_(const jive_node * self, const jive_node_attrs
 
 jive_node *
 jive_instruction_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::instruction_operation * attrs = (const jive::instruction_operation *) attrs_;
 	
@@ -114,7 +114,7 @@ jive_node *
 jive_instruction_node_create_simple(
 	jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * const * operands,
+	jive::output * const * operands,
 	const int64_t * immediates)
 {
 	jive_immediate imm[icls->nimmediates];
@@ -128,10 +128,10 @@ jive_node *
 jive_instruction_node_create_extended(
 	jive_region * region,
 	const jive_instruction_class * icls,
-	jive_output * const * operands,
+	jive::output * const * operands,
 	const jive_immediate immediates[])
 {
-	jive_output * immvalues[icls->nimmediates];
+	jive::output * immvalues[icls->nimmediates];
 	size_t n;
 	for (n = 0; n < icls->nimmediates; ++n) {
 		immvalues[n] = jive_immediate_create(region->graph, &immediates[n]);

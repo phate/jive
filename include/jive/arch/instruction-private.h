@@ -16,7 +16,7 @@ jive_instruction_node_get_label_(const jive_node * self, struct jive_buffer * bu
 
 jive_node *
 jive_instruction_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 bool
 jive_instruction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);

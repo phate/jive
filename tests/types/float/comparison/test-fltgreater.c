@@ -21,9 +21,9 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive_output * s1 = jive_fltsymbolicconstant(graph, "s1");
-	jive_output * greater = jive_fltgreater(s0, s1);
+	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * greater = jive_fltgreater(s0, s1);
 
 	jive_graph_export(graph, greater);
 

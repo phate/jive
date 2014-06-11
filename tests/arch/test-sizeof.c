@@ -45,19 +45,19 @@ static int test_main(void)
 
 	jive::unn::type union_t(&u_decl);
 
-	jive_output * s0 = jive_sizeof_create(graph->root_region, &bits4);
-	jive_output * s1 = jive_sizeof_create(graph->root_region, &bits8);
-	jive_output * s2 = jive_sizeof_create(graph->root_region, &bits8);
-	jive_output * s3 = jive_sizeof_create(graph->root_region, &bits18);
-	jive_output * s4 = jive_sizeof_create(graph->root_region, &bits32);
-	jive_output * s5 = jive_sizeof_create(graph->root_region, &addr);
-	jive_output * s6 = jive_sizeof_create(graph->root_region, &record_t);
-	jive_output * s7 = jive_sizeof_create(graph->root_region, &union_t);
+	jive::output * s0 = jive_sizeof_create(graph->root_region, &bits4);
+	jive::output * s1 = jive_sizeof_create(graph->root_region, &bits8);
+	jive::output * s2 = jive_sizeof_create(graph->root_region, &bits8);
+	jive::output * s3 = jive_sizeof_create(graph->root_region, &bits18);
+	jive::output * s4 = jive_sizeof_create(graph->root_region, &bits32);
+	jive::output * s5 = jive_sizeof_create(graph->root_region, &addr);
+	jive::output * s6 = jive_sizeof_create(graph->root_region, &record_t);
+	jive::output * s7 = jive_sizeof_create(graph->root_region, &union_t);
 
 	assert(jive_node_match_attrs(s1->node(), jive_node_get_attrs(s2->node())));
 	const jive::base::type *  tmparray2[] = {&bits32, &bits32, &bits32, &bits32, &bits32, &bits32,
 		&bits32, &bits32};
-	jive_output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
+	jive::output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
 	assert(!jive_node_match_attrs(s0->node(), jive_node_get_attrs(s3->node())));
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,

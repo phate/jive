@@ -30,14 +30,14 @@ static int test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph,
 		2, tmparray0, tmparray1);
 
-	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
+	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
 	const jive::base::type * tmparray11[] = {&bits32};
-	jive_output * lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);
+	jive::output * lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);
 	
-	jive_output * c0 = jive_bitconstant(graph, 32, "01010100000000000000000000000000");
-	jive_output * c1 = jive_bitconstant(graph, 32, "10010010000000000000000000000000");
-	jive_output * tmparray2[] = {c0, c1};
+	jive::output * c0 = jive_bitconstant(graph, 32, "01010100000000000000000000000000");
+	jive::output * c1 = jive_bitconstant(graph, 32, "10010010000000000000000000000000");
+	jive::output * tmparray2[] = {c0, c1};
 	
 	jive_node * apply_node = jive_apply_node_create(graph->root_region,
 		lambda_expr, 2, tmparray2);

@@ -29,8 +29,8 @@ JIVE_DEFINE_HASH_TYPE(jive_nodeview_map, jive_nodeview, jive_node *, node, hash_
 JIVE_DECLARE_HASH_TYPE(jive_inputview_map, jive_inputview, jive::input *, input, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_inputview_map, jive_inputview, jive::input *, input, hash_chain);
 
-JIVE_DECLARE_HASH_TYPE(jive_outputview_map, jive_outputview, jive_output *, output, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_outputview_map, jive_outputview, jive_output *, output, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_outputview_map, jive_outputview, jive::output *, output, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_outputview_map, jive_outputview, jive::output *, output, hash_chain);
 
 struct jive_graphview {
 	struct jive_graph * graph;

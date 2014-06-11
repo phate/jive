@@ -21,7 +21,7 @@ type::~type() noexcept {}
 
 input::~input() noexcept {};
 
-input::input(struct jive_node * node, size_t index, jive_output * initial_operand)
+input::input(struct jive_node * node, size_t index, jive::output * initial_operand)
 	: jive::input(node, index, initial_operand)
 {}
 
@@ -30,7 +30,7 @@ input::input(struct jive_node * node, size_t index, jive_output * initial_operan
 output::~output() noexcept {}
 
 output::output(struct jive_node * node, size_t index)
-	: jive_output(node, index)
+	: jive::output(node, index)
 {}
 
 /* value gates */

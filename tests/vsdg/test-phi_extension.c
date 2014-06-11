@@ -33,7 +33,7 @@ test_main()
 	const jive::base::type * tmparray0[] = {&vtype, &vtype};
 	jive_phi_extension * phi_ext = jive_phi_begin_extension(phi_node,
 		2, tmparray0);
-	jive_output ** results = jive_phi_end_extension(phi_ext);
+	jive::output ** results = jive_phi_end_extension(phi_ext);
 
 	jive_view(graph, stderr);
 

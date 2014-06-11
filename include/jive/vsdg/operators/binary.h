@@ -33,14 +33,14 @@ public:
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive_output * op1,
-		const jive_output * op2) const noexcept;
+		const jive::output * op1,
+		const jive::output * op2) const noexcept;
 
-	virtual jive_output *
+	virtual jive::output *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive_output * op1,
-		jive_output * op2) const;
+		jive::output * op1,
+		jive::output * op2) const;
 
 	virtual jive_binary_operation_flags
 	flags() const noexcept;
@@ -96,21 +96,22 @@ struct jive_binary_operation_class {
 	const jive_binary_operation_class * const * distributive_under;
 	
 	jive_binop_reduction_path_t (*can_reduce_operand_pair)(const jive_node_class * cls,
-		const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
+		const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2);
 	
-	jive_output * (*reduce_operand_pair)(jive_binop_reduction_path_t path, const jive_node_class * cls,
-		const jive_node_attrs * attrs, jive_output * op1, jive_output * op2);
+	jive::output * (*reduce_operand_pair)(jive_binop_reduction_path_t path,
+		const jive_node_class * cls, const jive_node_attrs * attrs,
+		jive::output * op1, jive::output * op2);
 };
 
 extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;
 #define JIVE_BINARY_OPERATION (JIVE_BINARY_OPERATION_.base)
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_binary_operation_create_normalized(const jive_binary_operation_class * class_,
 	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
-	jive_output * const operands[])
+	jive::output * const operands[])
 {
-	jive_output * result;
+	jive::output * result;
 	jive_node_create_normalized(&class_->base, graph, attrs, noperands, operands, &result);
 	return result;
 }
@@ -125,15 +126,15 @@ jive_binary_operation_get_default_normal_form_(
 
 jive_binop_reduction_path_t
 jive_binary_operation_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2);
+	const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2);
 
-jive_output *
+jive::output *
 jive_binary_operation_reduce_operand_pair_(
 	jive_binop_reduction_path_t path,
 	const jive_node_class * cls,
 	const jive_node_attrs * attrs,
-	jive_output * op1,
-	jive_output * op2);
+	jive::output * op1,
+	jive::output * op2);
 
 /* normal form class */
 
@@ -144,12 +145,12 @@ struct jive_binary_operation_normal_form_class {
 	void (*set_reorder)(jive_binary_operation_normal_form * self, bool enable);
 	void (*set_distribute)(jive_binary_operation_normal_form * self, bool enable);
 	void (*set_factorize)(jive_binary_operation_normal_form * self, bool enable);
-	jive_output * (*normalized_create)(
+	jive::output * (*normalized_create)(
 		const jive_binary_operation_normal_form * self,
 		struct jive_region * region,
 		const jive_node_attrs * attrs,
 		size_t noperands,
-		jive_output * const operands[]);
+		jive::output * const operands[]);
 };
 
 extern const jive_binary_operation_normal_form_class JIVE_BINARY_OPERATION_NORMAL_FORM_;
@@ -176,19 +177,19 @@ jive_binary_operation_normal_form_cast(jive_node_normal_form * self)
 	return 0;
 }
 
-jive_output *
+jive::output *
 jive_binary_operation_normalized_create(
 	const jive_node_class * cls,
 	struct jive_region * region,
 	const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_binary_operation_normalized_create_new(
 	const jive_binary_operation_normal_form * self,
 	struct jive_region * region,
 	const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive_binary_operation_normal_form_class * cls;
 	cls = (const jive_binary_operation_normal_form_class *) self->base.class_;
@@ -199,7 +200,7 @@ jive_binary_operation_normalized_create_new(
 
 JIVE_EXPORTED_INLINE jive_binop_reduction_path_t
 jive_binary_operation_can_reduce_operand_pair(const jive_binary_operation_normal_form * self,
-	const jive_node_attrs * attrs, const jive_output * arg1, const jive_output * arg2)
+	const jive_node_attrs * attrs, const jive::output * arg1, const jive::output * arg2)
 {
 	const jive_binary_operation_class * cls =
 		(const jive_binary_operation_class *)self->base.node_class;
@@ -212,10 +213,10 @@ jive_binary_operation_can_reduce_operand_pair(const jive_binary_operation_normal
 	}
 }
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_binary_operation_reduce_operand_pair(jive_binop_reduction_path_t path,
-	const jive_binary_operation_normal_form * self, const jive_node_attrs * attrs, jive_output * arg1,
-	jive_output * arg2)
+	const jive_binary_operation_normal_form * self, const jive_node_attrs * attrs, jive::output * arg1,
+	jive::output * arg2)
 {
 	const jive_binary_operation_class * cls =
 		(const jive_binary_operation_class *)self->base.node_class;
@@ -277,7 +278,7 @@ bool
 jive_binary_operation_operands_are_normalized_(
 	const jive_node_normal_form * self,
 	size_t noperands,
-	jive_output * const operands[],
+	jive::output * const operands[],
 	const jive_node_attrs * attrs);
 
 void
@@ -295,10 +296,10 @@ jive_binary_operation_set_distribute_(jive_binary_operation_normal_form * self, 
 void
 jive_binary_operation_set_factorize_(jive_binary_operation_normal_form * self, bool enable);
 
-jive_output *
+jive::output *
 jive_binary_operation_normalized_create_(
 	const jive_binary_operation_normal_form * self,
 	struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 #endif

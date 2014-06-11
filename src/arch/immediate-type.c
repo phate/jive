@@ -20,7 +20,7 @@ namespace imm {
 
 input::~input() noexcept {}
 
-input::input(struct jive_node * node, size_t index, jive_output * origin)
+input::input(struct jive_node * node, size_t index, jive::output * origin)
 	: jive::value::input(node, index, origin)
 {}
 
@@ -63,12 +63,12 @@ type::copy() const
 }
 
 jive::input *
-type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive::output * origin) const
 {
 	return new jive::imm::input(node, index, origin);
 }
 
-jive_output *
+jive::output *
 type::create_output(jive_node * node, size_t index) const
 {
 	return new jive::imm::output(node, index);

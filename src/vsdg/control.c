@@ -46,13 +46,13 @@ jive_control_true_create(jive_region * region)
 	return self;
 }
 
-jive_output *
+jive::output *
 jive_control_false(jive_graph * graph)
 {
 	return jive_control_false_create(graph->root_region)->outputs[0];
 }
 
-jive_output *
+jive::output *
 jive_control_true(jive_graph * graph)
 {
 	return jive_control_true_create(graph->root_region)->outputs[0];
@@ -60,7 +60,7 @@ jive_control_true(jive_graph * graph)
 
 static jive_node *
 jive_control_false_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 	
@@ -69,7 +69,7 @@ jive_control_false_node_create_(jive_region * region, const jive_node_attrs * at
 
 static jive_node *
 jive_control_true_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 	

@@ -27,7 +27,7 @@ jive_node *
 not_operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	return detail::unop_create<not_operation>(
 		*this,
@@ -76,8 +76,8 @@ const jive_bitunary_operation_class JIVE_BITNOT_NODE_ = {
 	type : jive_bitop_code_not
 };
 
-jive_output *
-jive_bitnot(jive_output * arg)
+jive::output *
+jive_bitnot(jive::output * arg)
 {
 	return jive::bitstring::detail::unop_normalized_create<
 		jive::bitstring::not_operation>(

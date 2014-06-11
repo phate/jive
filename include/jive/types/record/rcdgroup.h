@@ -34,11 +34,11 @@ private:
 
 typedef jive::operation_node<jive::rcd::group_operation> jive_group_node;
 
-jive_output *
+jive::output *
 jive_group_create(const jive::rcd::declaration * decl,
-	size_t narguments, jive_output * const * arguments);
+	size_t narguments, jive::output * const * arguments);
 
-jive_output *
+jive::output *
 jive_empty_group_create(struct jive_graph * graph, const jive::rcd::declaration * decl);
 
 JIVE_EXPORTED_INLINE jive_group_node *

@@ -23,7 +23,7 @@ class concat_operation final : public jive::operation {
 }
 }
 
-jive_output *
-jive_bitconcat(size_t noperands, struct jive_output * const * operands);
+jive::output *
+jive_bitconcat(size_t noperands, jive::output * const * operands);
 
 #endif

@@ -50,7 +50,7 @@ jive_node *
 operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	throw std::logic_error("abstract base class");
 }

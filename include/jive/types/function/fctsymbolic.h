@@ -45,7 +45,7 @@ jive_node *
 jive_symbolicfunction_node_create(
 	struct jive_graph * graph, const char * name, const jive::fct::type * type);
 
-jive_output *
+jive::output *
 jive_symbolicfunction_create(
 	struct jive_graph * graph, const char * name, const jive::fct::type * type);
 

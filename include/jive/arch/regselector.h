@@ -15,8 +15,11 @@
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/vsdg/negotiator.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_graph;
-struct jive_output;
 struct jive_resource_class;
 
 namespace jive {
@@ -101,7 +104,7 @@ void
 jive_regselector_process(jive_regselector * self);
 
 const jive_register_class *
-jive_regselector_map_output(const jive_regselector * self, struct jive_output * output);
+jive_regselector_map_output(const jive_regselector * self, jive::output * output);
 
 const jive_register_class *
 jive_regselector_map_input(const jive_regselector * self, jive::input * input);

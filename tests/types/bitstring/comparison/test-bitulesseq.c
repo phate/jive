@@ -23,19 +23,19 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
-	jive_output * c0 = jive_bitconstant_signed(graph, 32, 4);
-	jive_output * c1 = jive_bitconstant_signed(graph, 32, 5);
-	jive_output * c2 = jive_bitconstant_signed(graph, 32, (0xffffffffUL));
-	jive_output * c3 = jive_bitconstant_signed(graph, 32, 0);
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph, 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph, 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph, 32, (0xffffffffUL));
+	jive::output * c3 = jive_bitconstant_signed(graph, 32, 0);
 
-	jive_output * ulesseq0 = jive_bitulesseq(s0, s1);
-	jive_output * ulesseq1 = jive_bitulesseq(c0, c1);
-	jive_output * ulesseq2 = jive_bitulesseq(c0, c0);
-	jive_output * ulesseq3 = jive_bitulesseq(c1, c0);
-	jive_output * ulesseq4 = jive_bitulesseq(s0, c2);
-	jive_output * ulesseq5 = jive_bitulesseq(c3, s1);
+	jive::output * ulesseq0 = jive_bitulesseq(s0, s1);
+	jive::output * ulesseq1 = jive_bitulesseq(c0, c1);
+	jive::output * ulesseq2 = jive_bitulesseq(c0, c0);
+	jive::output * ulesseq3 = jive_bitulesseq(c1, c0);
+	jive::output * ulesseq4 = jive_bitulesseq(s0, c2);
+	jive::output * ulesseq5 = jive_bitulesseq(c3, s1);
 
 	jive_graph_export(graph, ulesseq0);
 	jive_graph_export(graph, ulesseq1);

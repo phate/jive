@@ -43,7 +43,7 @@ bits_unary_operation::result_type(size_t index) const noexcept
 
 jive_binop_reduction_path_t
 bits_unary_operation::can_reduce_operand(
-	const jive_output * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	bool arg_is_constant =
 		dynamic_cast<const bitstring::constant_operation *>(&arg->node()->operation());
@@ -55,10 +55,10 @@ bits_unary_operation::can_reduce_operand(
 	return jive_unop_reduction_none;
 }
 
-jive_output *
+jive::output *
 bits_unary_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive_output * arg) const
+	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
 		jive_graph * graph = arg->node()->graph;
@@ -100,8 +100,8 @@ bits_binary_operation::result_type(size_t index) const noexcept
 
 jive_binop_reduction_path_t
 bits_binary_operation::can_reduce_operand_pair(
-	const jive_output * arg1,
-	const jive_output * arg2) const noexcept
+	const jive::output * arg1,
+	const jive::output * arg2) const noexcept
 {
 	bool arg1_is_constant =
 		dynamic_cast<const bitstring::constant_operation *>(&arg1->node()->operation());
@@ -115,11 +115,11 @@ bits_binary_operation::can_reduce_operand_pair(
 	return jive_binop_reduction_none;
 }
 
-jive_output *
+jive::output *
 bits_binary_operation::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
-	jive_output * arg1,
-	jive_output * arg2) const
+	jive::output * arg1,
+	jive::output * arg2) const
 {
 	jive_graph * graph = arg1->node()->graph;
 
@@ -141,7 +141,7 @@ bits_compare_operation::~bits_compare_operation() noexcept {}
 
 static void
 jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	if (noperands == 0)
 		return;
@@ -176,7 +176,7 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 
 void
 jive_bitbinary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	jive_bitoperation_check_operands_(cls, attrs, noperands, operands, context);
 }
@@ -210,7 +210,7 @@ const jive_bitbinary_operation_class JIVE_BITBINARY_NODE_ = {
 
 void
 jive_bitunary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	jive_bitoperation_check_operands_(cls, attrs, noperands, operands, context);
 }
@@ -241,7 +241,7 @@ const jive_bitunary_operation_class JIVE_BITUNARY_NODE_ = {
 
 void
 jive_bitcomparison_operation_check_operands_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
 	jive_context * context)
 {
 	jive_bitoperation_check_operands_(cls, attrs, noperands, operands, context);

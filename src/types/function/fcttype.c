@@ -101,12 +101,12 @@ type::copy() const
 }
 
 jive::input *
-type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive::output * origin) const
 {
 	return new jive::fct::input(*this, node, index, origin);
 }
 
-jive_output *
+jive::output *
 type::create_output(jive_node * node, size_t index) const
 {
 	return new jive::fct::output(*this, node, index);
@@ -122,13 +122,13 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 input::input(size_t narguments, const jive::base::type ** argument_types,
 	size_t nreturns, const jive::base::type ** return_types, struct jive_node * node, size_t index,
-	jive_output * origin)
+	jive::output * origin)
 	: jive::value::input(node, index, origin)
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 input::input(const jive::fct::type & type, jive_node * node,
-	size_t index, jive_output * origin)
+	size_t index, jive::output * origin)
 	: jive::value::input(node, index, origin)
 	, type_(type)
 {}

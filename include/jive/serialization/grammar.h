@@ -12,16 +12,18 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/resource.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_graph;
 struct jive_immediate;
-struct jive_input;
 struct jive_node;
-struct jive_output;
 struct jive_region;
 
 typedef struct jive_portinfo jive_portinfo;
 struct jive_portinfo {
-	struct jive_output * origin;
+	jive::output * origin;
 	const jive_resource_class * required_rescls;
 	jive_gate * gate;
 };
@@ -51,7 +53,7 @@ struct jive_serialization_namegen {
 	void (*name_output)(
 		jive_serialization_namegen * self,
 		jive_serialization_symtab * symtab,
-		struct jive_output * output);
+		jive::output * output);
 };
 
 JIVE_EXPORTED_INLINE void

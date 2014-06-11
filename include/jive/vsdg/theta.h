@@ -13,10 +13,8 @@
 struct jive_gate;
 struct jive_graph;
 struct jive_node;
-struct jive_output;
 struct jive_region;
 struct jive_theta_build_state;
-struct jive_type;
 
 extern const jive_node_class JIVE_THETA_HEAD_NODE;
 extern const jive_node_class JIVE_THETA_TAIL_NODE;
@@ -46,7 +44,7 @@ struct jive_theta {
 	\brief Represent information about a loop-variant value
 */
 struct jive_theta_loopvar {
-	struct jive_output * value;
+	jive::output * value;
 	struct jive_gate * gate;
 };
 
@@ -60,20 +58,20 @@ jive_theta_begin(struct jive_graph * graph);
 	\brief Add a loop-variant variable with a pre-loop value
 */
 jive_theta_loopvar
-jive_theta_loopvar_enter(jive_theta self, struct jive_output * pre_value);
+jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value);
 
 /**
 	\brief Set post-iteration value of a loop-variant variable
 */
 void
 jive_theta_loopvar_leave(jive_theta self, jive_gate * var,
-	struct jive_output * post_value);
+	jive::output * post_value);
 
 /**
 	\brief End constructing a loop region, specify repetition predicate
 */
 struct jive_node *
-jive_theta_end(jive_theta self, struct jive_output * predicate,
+jive_theta_end(jive_theta self, jive::output * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values);
 
 #endif

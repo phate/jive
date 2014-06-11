@@ -21,7 +21,7 @@ pre_op_transfer(
 	jive_node * node,
 	const jive_resource_name * new_cpureg)
 {
-	jive_output * origin = node->inputs[0]->origin();
+	jive::output * origin = node->inputs[0]->origin();
 	
 	const jive_resource_class * resource_class =
 		jive_variable_get_resource_class(origin->ssavar->variable);
@@ -34,7 +34,7 @@ pre_op_transfer(
 		type, resource_class);
 	
 	jive::input * xfer_input = xfer_node->inputs[0];
-	jive_output * xfer_output = xfer_node->outputs[0];
+	jive::output * xfer_output = xfer_node->outputs[0];
 	
 	jive_input_auto_assign_variable(xfer_input);
 	jive_input_unassign_ssavar(node->inputs[0]);
@@ -56,7 +56,7 @@ post_op_transfer(
 	jive_node * node,
 	const jive_resource_name * new_cpureg)
 {
-	jive_output * origin = node->outputs[0];
+	jive::output * origin = node->outputs[0];
 	
 	const jive_resource_class * resource_class =
 		jive_variable_get_resource_class(origin->ssavar->variable);
@@ -67,7 +67,7 @@ post_op_transfer(
 		type, origin, resource_class,
 		type, resource_class);
 	
-	jive_output * xfer_output = xfer_node->outputs[0];
+	jive::output * xfer_output = xfer_node->outputs[0];
 	
 	jive_ssavar * moved_var = origin->ssavar;
 	

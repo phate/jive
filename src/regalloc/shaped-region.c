@@ -194,7 +194,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	
 	/* set aside crossings for ssavars originating here */
 	for(n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive_ssavar * ssavar;
 		
 		JIVE_LIST_ITERATE(output->originating_ssavars, ssavar, originating_ssavar_list) {
@@ -246,7 +246,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	
 	/* reinstate crossings for ssavars originating here */
 	for(n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive_ssavar * ssavar;
 		
 		JIVE_LIST_ITERATE(output->originating_ssavars, ssavar, originating_ssavar_list) {

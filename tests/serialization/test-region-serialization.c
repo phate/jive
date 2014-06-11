@@ -38,19 +38,19 @@ static int test_main(void)
 		jive_graph_get_nodeclass_form(gr1, &JIVE_NODE),
 		false);
 	
-	jive_output * a = jive_bitconstant(gr1, 8, "01010101");
-	jive_output * b = jive_bitconstant(gr1, 8, "10101010");
-	jive_output * true_out = jive_control_true(gr1);
-	jive_output * c;
+	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
+	jive::output * b = jive_bitconstant(gr1, 8, "10101010");
+	jive::output * true_out = jive_control_true(gr1);
+	jive::output * c;
 	const jive::base::type* tmparray0[] = {&a->type()};
 	jive_gamma(true_out, 1, tmparray0, &a, &b, &c);
 	
 	jive_theta theta = jive_theta_begin(gr1);
 	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);
 	jive_theta_end(theta, theta.region->top->outputs[0], 1, &loopvar);
-	jive_output * d = loopvar.value;
+	jive::output * d = loopvar.value;
 	
-	jive_output * e = jive_bitnot(d);
+	jive::output * e = jive_bitnot(d);
 	
 	jive_node * orig_node = e->node();
 	

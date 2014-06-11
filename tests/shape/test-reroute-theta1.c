@@ -72,7 +72,7 @@ static int test_main(void)
 	
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, top->outputs[0]);
 	const jive::base::type * tmparray3[] = {&type, &type};
-	jive_output * tmparray4[] = {loopvar1.value, top->outputs[1]};
+	jive::output * tmparray4[] = {loopvar1.value, top->outputs[1]};
 	const jive::base::type * tmparray5[] = {&ctl, &type};
 	
 	jive_node * theta_op = jive_test_node_create(loop_region,
@@ -85,7 +85,7 @@ static int test_main(void)
 	jive_node * theta_head = loop_region->top;
 	jive_node * theta_tail = loop_region->bottom;
 	const jive::base::type * tmparray6[] = {&type, &type};
-	jive_output * tmparray7[] = {theta_node->outputs[0], top->outputs[1]};
+	jive::output * tmparray7[] = {theta_node->outputs[0], top->outputs[1]};
 	const jive::base::type * tmparray8[] = {&anchor_type};
 	
 	jive_node * bottom = jive_test_node_create(r1,

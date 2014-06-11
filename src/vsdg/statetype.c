@@ -19,15 +19,14 @@ type::~type() noexcept {}
 
 input::~input() noexcept {}
 
-input::input(struct jive_node * node, size_t index,
-	jive_output * origin)
+input::input(struct jive_node * node, size_t index, jive::output * origin)
 	: jive::input(node, index, origin)
 {}
 
 output::~output() noexcept {}
 
 output::output(struct jive_node * node, size_t index)
-	: jive_output(node, index)
+	: jive::output(node, index)
 {}
 
 gate::~gate() noexcept {}
@@ -58,7 +57,7 @@ jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs *
 
 static jive_node *
 jive_statemux_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_STATEMUX_NODE = {
 	parent : &JIVE_NODE,
@@ -87,7 +86,7 @@ jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs *
 
 static jive_node *
 jive_statemux_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::statemux_operation * attrs = (const jive::statemux_operation *) attrs_;
 	return jive_statemux_node_create(region, &attrs->type(), noperands, operands, attrs->noutputs());
@@ -96,7 +95,7 @@ jive_statemux_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 jive_node *
 jive_statemux_node_create(jive_region * region,
 	const jive::base::type * statetype,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	size_t noutputs)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::state::type*>(statetype));
@@ -121,15 +120,15 @@ jive_statemux_node_create(jive_region * region,
 	return node;
 }
 
-jive_output *
-jive_state_merge(const jive::base::type * statetype, size_t nstates, jive_output * const states[])
+jive::output *
+jive_state_merge(const jive::base::type * statetype, size_t nstates, jive::output * const states[])
 {
 	jive_region * region = jive_region_innermost(nstates, states);
 	return jive_statemux_node_create(region, statetype, nstates, states, 1)->outputs[0];
 }
 
 jive_node *
-jive_state_split(const jive::base::type * statetype, jive_output * state, size_t nstates)
+jive_state_split(const jive::base::type * statetype, jive::output * state, size_t nstates)
 {
 	jive_region * region = state->node()->region;
 	return jive_statemux_node_create(region, statetype, 1, &state, nstates);

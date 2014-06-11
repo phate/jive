@@ -21,14 +21,14 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 
-	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
+	jive::output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 
-	jive_output * neg0 = jive_bitnegate(s0);
-	jive_output * neg1 = jive_bitnegate(c0);
-	jive_output * neg2 = jive_bitnegate(neg1);
+	jive::output * neg0 = jive_bitnegate(s0);
+	jive::output * neg1 = jive_bitnegate(c0);
+	jive::output * neg2 = jive_bitnegate(neg1);
 
 	jive_graph_export(graph, neg0);
 	jive_graph_export(graph, neg1);

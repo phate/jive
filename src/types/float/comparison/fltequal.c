@@ -14,7 +14,7 @@
 
 static jive_node *
 jive_fltequal_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_fltcomparison_operation_class JIVE_FLTEQUAL_NODE_ = {
 	base : {	/* jive_binary_operation_class */
@@ -42,13 +42,13 @@ const jive_fltcomparison_operation_class JIVE_FLTEQUAL_NODE_ = {
 
 static void
 jive_fltequal_node_init_(jive_node * self, jive_region * region,
-	jive_output * op1, jive_output * op2)
+	jive::output * op1, jive::output * op2)
 {
 	jive::ctl::type ctype;
 	const jive::base::type * ctype_ptr = &ctype;
 	jive::flt::type flttype;
 	const jive::base::type * tmparray0[] = {&flttype, &flttype};
-	jive_output * tmparray1[] = {op1, op2};
+	jive::output * tmparray1[] = {op1, op2};
 	jive_node_init_(self, region,
 		2, tmparray0, tmparray1,
 		1, &ctype_ptr);
@@ -56,7 +56,7 @@ jive_fltequal_node_init_(jive_node * self, jive_region * region,
 
 static jive_node *
 jive_fltequal_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
@@ -67,11 +67,11 @@ jive_fltequal_node_create_(struct jive_region * region, const jive_node_attrs * 
 	return node;
 }
 
-jive_output *
-jive_fltequal(struct jive_output * op1, struct jive_output * op2)
+jive::output *
+jive_fltequal(jive::output * op1, jive::output * op2)
 {
 	jive_graph * graph = op1->node()->graph;
-	jive_output * tmparray2[] = {op1, op2};
+	jive::output * tmparray2[] = {op1, op2};
 	jive::flt::equal_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_FLTEQUAL_NODE_.base, graph, &op, 2,
 		tmparray2);

@@ -28,10 +28,10 @@ static int test_main(void)
 	const char * tmparray1[] = {"arg1"};
 	
 	jive_lambda * inner_function = jive_lambda_begin(graph, 1, tmparray11, tmparray1);
-	jive_output * tmparray2[] = {inner_function->arguments[0],
+	jive::output * tmparray2[] = {inner_function->arguments[0],
 		outer_function->arguments[0]};
 
-	jive_output * sum = jive_bitsum(2, tmparray2);
+	jive::output * sum = jive_bitsum(2, tmparray2);
 
 	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, tmparray11, &sum)->node();
 	

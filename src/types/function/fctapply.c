@@ -13,12 +13,12 @@
 #include <string.h>
 
 static void
-jive_apply_node_init_(jive_apply_node * self, struct jive_region * region, jive_output * function,
-	size_t narguments, jive_output * const arguments[]);
+jive_apply_node_init_(jive_apply_node * self, struct jive_region * region, jive::output * function,
+	size_t narguments, jive::output * const arguments[]);
 
 static jive_node *
 jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_APPLY_NODE = {
 	parent : &JIVE_NODE,
@@ -33,7 +33,7 @@ const jive_node_class JIVE_APPLY_NODE = {
 
 static jive_node *
 jive_apply_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands > 0);
 	return jive_apply_node_create(region, operands[0], noperands - 1, &operands[1]);
@@ -43,9 +43,9 @@ static void
 jive_apply_node_init_(
 	jive_apply_node * self,
 	struct jive_region * region,
-	jive_output * function,
+	jive::output * function,
 	size_t narguments,
-	jive_output * const arguments[])
+	jive::output * const arguments[])
 {
 	if (!dynamic_cast<const jive::fct::output*>(function)) {
 		jive_context_fatal_error(
@@ -60,7 +60,7 @@ jive_apply_node_init_(
 			"Type mismatch: number of parameters to function does not match signature");
 	}
 
-	jive_output * args[narguments+1];
+	jive::output * args[narguments+1];
 	const jive::base::type * argument_types[narguments+1];
 	args[0] = function;
 	argument_types[0] = &fct->type();
@@ -81,8 +81,8 @@ jive_apply_node_init_(
 }
 
 jive_node *
-jive_apply_node_create(struct jive_region * region, jive_output * function,
-	size_t narguments, jive_output * const arguments[])
+jive_apply_node_create(struct jive_region * region, jive::output * function,
+	size_t narguments, jive::output * const arguments[])
 {
 	jive::fct::apply_operation op;
 	jive_apply_node * node = new jive_apply_node(op);
@@ -94,12 +94,12 @@ jive_apply_node_create(struct jive_region * region, jive_output * function,
 }
 
 void
-jive_apply_create(jive_output * function, size_t narguments, jive_output * const arguments[],
-	jive_output * results[])
+jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[],
+	jive::output * results[])
 {
 	size_t n;
 	size_t noperands = narguments + 1;
-	jive_output * operands[noperands];
+	jive::output * operands[noperands];
 	for (n = 0; n < narguments; n++)
 		operands[n] = arguments[n];
 	operands[n] = function;

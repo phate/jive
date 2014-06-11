@@ -45,7 +45,7 @@ jive_immediate_node_match_attrs_(const jive_node * self, const jive_node_attrs *
 
 static jive_node *
 jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::immediate_operation * attrs = (const jive::immediate_operation *) attrs_;
 	
@@ -72,7 +72,7 @@ const jive_node_class JIVE_IMMEDIATE_NODE = {
 	create : jive_immediate_node_create_, /* override */
 };
 
-jive_output *
+jive::output *
 jive_immediate_create(
 	jive_graph * graph,
 	const jive_immediate * immediate_value)

@@ -14,6 +14,7 @@
 
 namespace jive {
 	class input;
+	class output;
 }
 
 /**
@@ -34,14 +35,14 @@ struct jive_ssavar {
 		jive_ssavar * next;
 	} variable_ssavar_list;
 	
-	struct jive_output * origin;
+	jive::output * origin;
 	
 	struct {
 		jive::input * first;
 		jive::input * last;
 	} assigned_inputs;
 	
-	struct jive_output * assigned_output;
+	jive::output * assigned_output;
 	
 	struct {
 		jive_ssavar * prev;
@@ -52,7 +53,7 @@ struct jive_ssavar {
 };
 
 jive_ssavar *
-jive_ssavar_create(struct jive_output * origin, jive_variable * variable);
+jive_ssavar_create(jive::output * origin, jive_variable * variable);
 
 void
 jive_ssavar_assign_input(jive_ssavar * self, jive::input * input);
@@ -61,16 +62,16 @@ void
 jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input);
 
 void
-jive_ssavar_assign_output(jive_ssavar * self, struct jive_output * output);
+jive_ssavar_assign_output(jive_ssavar * self, jive::output * output);
 
 void
-jive_ssavar_unassign_output(jive_ssavar * self, struct jive_output * output);
+jive_ssavar_unassign_output(jive_ssavar * self, jive::output * output);
 
 void
 jive_ssavar_merge(jive_ssavar * self, struct jive_ssavar * other);
 
 void
-jive_ssavar_divert_origin(jive_ssavar * self, struct jive_output * new_origin);
+jive_ssavar_divert_origin(jive_ssavar * self, jive::output * new_origin);
 
 void
 jive_ssavar_split(jive_ssavar * self);

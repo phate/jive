@@ -360,7 +360,7 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 				return overflow;
 			}
 		}
-		jive_output * output;
+		jive::output * output;
 		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
 			jive_node_get_use_count_output(output->node(), &use_count, context);
 			const jive_resource_class * overflow;
@@ -433,7 +433,7 @@ jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 
 void
 jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input * input,
-	jive_output * output)
+	jive::output * output)
 {
 	jive_variable * variable = self->ssavar->variable;
 	
@@ -461,7 +461,7 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input *
 
 void
 jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input * input,
-	jive_output * output)
+	jive::output * output)
 {
 	jive_variable * variable = self->ssavar->variable;
 	
@@ -488,7 +488,8 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input
 }
 
 void
-jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive_output * output, jive_region * region)
+jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive::output * output,
+	jive_region * region)
 {
 	jive_variable * variable = self->ssavar->variable;
 		
@@ -515,7 +516,8 @@ jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive_o
 }
 
 void
-jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, jive_output * output, jive_region * region)
+jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, jive::output * output,
+	jive_region * region)
 {
 	jive_variable * variable = self->ssavar->variable;
 		
@@ -629,7 +631,8 @@ jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_varia
 }
 
 void
-jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive_output * old_origin, jive_output * new_origin)
+jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_shaped_node * old_origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
 		old_origin->node());

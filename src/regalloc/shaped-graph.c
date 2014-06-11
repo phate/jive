@@ -168,7 +168,7 @@ jive_shaped_graph_ssavar_unassign_input(void * closure, jive_ssavar * ssavar, ji
 }
 
 static void
-jive_shaped_graph_ssavar_assign_output(void * closure, jive_ssavar * ssavar, jive_output * output)
+jive_shaped_graph_ssavar_assign_output(void * closure, jive_ssavar * ssavar, jive::output * output)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
@@ -178,7 +178,7 @@ jive_shaped_graph_ssavar_assign_output(void * closure, jive_ssavar * ssavar, jiv
 }
 
 static void
-jive_shaped_graph_ssavar_unassign_output(void * closure, jive_ssavar * ssavar, jive_output * output)
+jive_shaped_graph_ssavar_unassign_output(void * closure, jive_ssavar * ssavar, jive::output * output)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
@@ -196,7 +196,8 @@ jive_shaped_graph_ssavar_variable_change(void * closure, jive_ssavar * ssavar, j
 }
 
 static void
-jive_shaped_graph_ssavar_divert(void * closure, jive_ssavar * ssavar, jive_output * old_origin, jive_output * new_origin)
+jive_shaped_graph_ssavar_divert(void * closure, jive_ssavar * ssavar, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_shaped_graph * shaped_graph = (jive_shaped_graph *) closure;
 	jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);

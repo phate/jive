@@ -102,10 +102,10 @@ static int test_main(void)
 		1, tmparray9, top->outputs,
 		1, tmparray10);
 	
-	jive_output * gamma[2];
+	jive::output * gamma[2];
 	const jive::base::type * tmparray11[] = {&type, &type};
-	jive_output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
-	jive_output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
+	jive::output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
+	jive::output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
 	jive_gamma(pred->outputs[0],
 		2, tmparray11,
 		tmparray12,
@@ -113,7 +113,7 @@ static int test_main(void)
 		gamma);
 	jive_node * gamma_node = gamma[0]->node();
 	const jive::base::type * tmparray14[] = {&type, &type, &type};
-	jive_output * tmparray15[] = {gamma[0], gamma[1], top->outputs[0]};
+	jive::output * tmparray15[] = {gamma[0], gamma[1], top->outputs[0]};
 	
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		3, tmparray14, tmparray15,
@@ -146,7 +146,7 @@ static int test_main(void)
 	jive_ssavar * ssavar_p = jive_regalloc_reroute_at_point(orig_ssavar, p);
 	assert(ssavar_p == orig_ssavar);
 	
-	jive_output * new_orig = bottom->inputs[2]->origin();
+	jive::output * new_orig = bottom->inputs[2]->origin();
 	jive_gate * reroute_gate = new_orig->gate;
 	assert(reroute_gate->variable == var);
 	assert(new_orig->node() == gamma_node && reroute_gate);

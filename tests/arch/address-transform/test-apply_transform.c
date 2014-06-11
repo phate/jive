@@ -34,7 +34,7 @@ test_main(void)
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL, 2, tmparray0);
 
-	jive_output * results[1];
+	jive::output * results[1];
 	jive_apply_create(top->outputs[0], 1, &top->outputs[1], results);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,

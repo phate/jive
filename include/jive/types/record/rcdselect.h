@@ -25,8 +25,8 @@ extern const jive_unary_operation_class JIVE_SELECT_NODE_;
 
 typedef jive::operation_node<jive::rcd::select_operation> jive_select_node;
 
-jive_output *
-jive_select_create(size_t element, jive_output * operand);
+jive::output *
+jive_select_create(size_t element, jive::output * operand);
 
 JIVE_EXPORTED_INLINE jive_select_node *
 jive_select_node_cast(jive_node * node)

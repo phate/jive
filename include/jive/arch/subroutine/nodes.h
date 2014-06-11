@@ -75,7 +75,7 @@ jive_node *
 jive_subroutine_enter_node_create(jive_region * region);
 
 jive_node *
-jive_subroutine_leave_node_create(jive_region * region, jive_output * control_transfer);
+jive_subroutine_leave_node_create(jive_region * region, jive::output * control_transfer);
 
 jive_node *
 jive_subroutine_node_create(

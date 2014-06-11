@@ -65,13 +65,13 @@ jive_region_get_instructionset(const jive_region * region)
 		return NULL;
 }
 
-jive_output *
+jive::output *
 jive_subroutine_node_get_sp(const jive_subroutine_node * self)
 {
 	return self->operation().subroutine()->passthroughs[1].output;
 }
 
-jive_output *
+jive::output *
 jive_subroutine_node_get_fp(const jive_subroutine_node * self)
 {
 	/* FIXME: this is only correct if we are compiling "omit-framepointer",
@@ -328,7 +328,7 @@ jive_subroutine_end(jive_subroutine self)
 	return self.old_subroutine_struct->subroutine_node;
 }
 
-jive_output *
+jive::output *
 jive_subroutine_simple_get_argument(
 	jive_subroutine self,
 	size_t index)
@@ -340,19 +340,19 @@ void
 jive_subroutine_simple_set_result(
 	jive_subroutine self,
 	size_t index,
-	jive_output * value)
+	jive::output * value)
 {
 	jive_subroutine_value_return(self.old_subroutine_struct, index, value);
 }
 
-jive_output *
+jive::output *
 jive_subroutine_simple_get_global_state(const jive_subroutine self)
 {
 	return self.old_subroutine_struct->passthroughs[0].input->origin();
 }
 
 void
-jive_subroutine_simple_set_global_state(jive_subroutine self, struct jive_output * state)
+jive_subroutine_simple_set_global_state(jive_subroutine self, jive::output * state)
 {
 	self.old_subroutine_struct->passthroughs[0].input->divert_origin(state);
 }

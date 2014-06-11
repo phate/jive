@@ -61,14 +61,14 @@ void test_order_enforcement_traversal(jive_context * ctx)
 		0, NULL, NULL,
 		2, tmparray0);
 	const jive::base::type * tmparray1[] = {&type};
-	jive_output * tmparray2[] = {n1->outputs[0]};
+	jive::output * tmparray2[] = {n1->outputs[0]};
 	const jive::base::type * tmparray3[] = {&type};
 	
 	jive_node * n2 = jive_test_node_create(graph->root_region,
 		1, tmparray1, tmparray2,
 		1, tmparray3);
 	const jive::base::type * tmparray4[] = {&type, &type};
-	jive_output * tmparray5[] = {n2->outputs[0], n1->outputs[1]};
+	jive::output * tmparray5[] = {n2->outputs[0], n1->outputs[1]};
 	const jive::base::type * tmparray6[] = {&type};
 	
 	jive_node * n3 = jive_test_node_create(graph->root_region,

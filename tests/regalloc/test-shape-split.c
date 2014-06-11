@@ -29,7 +29,7 @@ create_testgraph(jive_context * ctx)
 		1, tmparray1
 	);
 
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
@@ -43,24 +43,24 @@ create_testgraph(jive_context * ctx)
 	jive_gate * callee_saved_r3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "saved_r0");
 	jive_node_gate_input(leave_mux, callee_saved_r3, jive_node_gate_output(enter_mux, callee_saved_r3));
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * tmparray2[] = {arg1};
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * tmparray2[] = {arg1};
 	int64_t  tmparray3[] = {0};
 	
-	jive_output * v1 = jive_instruction_node_create(
+	jive::output * v1 = jive_instruction_node_create(
 		region,
 		&jive_testarch_instr_load_disp,
 		tmparray2, tmparray3)->outputs[0];
-	jive_output * tmparray4[] = {arg1};
+	jive::output * tmparray4[] = {arg1};
 	int64_t  tmparray5[] = {4};
 	
-	jive_output * v2 = jive_instruction_node_create(
+	jive::output * v2 = jive_instruction_node_create(
 		region,
 		&jive_testarch_instr_load_disp,
 		tmparray4, tmparray5)->outputs[0];
-jive_output * tmparray6[] = {v1, v2};
+jive::output * tmparray6[] = {v1, v2};
 
-	jive_output * sum = jive_instruction_node_create(
+	jive::output * sum = jive_instruction_node_create(
 		region,
 		&jive_testarch_instr_add,
 		tmparray6, 0)->outputs[0];

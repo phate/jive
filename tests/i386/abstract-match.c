@@ -39,7 +39,7 @@ static int test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph,
 		2, tmparray0, tmparray1);
 
-	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
+	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
 	const jive::base::type * tmparray11[] = {&bits32};
 	jive_node * abstract_fn = jive_lambda_end(lambda, 1, tmparray11, &sum)->node();

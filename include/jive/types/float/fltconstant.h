@@ -31,10 +31,10 @@ private:
 
 typedef jive::operation_node<jive::flt::constant_operation> jive_fltconstant_node;
 
-jive_output *
+jive::output *
 jive_fltconstant(struct jive_graph * graph, uint32_t value);
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_fltconstant_float(struct jive_graph * graph, float value)
 {
 	union u {

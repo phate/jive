@@ -51,7 +51,7 @@ jive_bitsymbolicconstant_create(struct jive_graph * graph, size_t nbits, const c
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive_output *
+jive::output *
 jive_bitsymbolicconstant(struct jive_graph * graph, size_t nbits, const char * name);
 
 #endif

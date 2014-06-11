@@ -24,9 +24,9 @@ public:
 	virtual jive_test_value_type * copy() const override;
 
 	virtual jive::input * create_input(jive_node * node, size_t index,
-		jive_output * origin) const override;
+		jive::output * origin) const override;
 
-	virtual jive_output * create_output(jive_node * node, size_t index) const override;
+	virtual jive::output * create_output(jive_node * node, size_t index) const override;
 
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
@@ -35,7 +35,7 @@ class jive_test_value_input final : public jive::value::input {
 public:
 	virtual ~jive_test_value_input() noexcept;
 
-	jive_test_value_input(jive_node * node, size_t index, jive_output * output);
+	jive_test_value_input(jive_node * node, size_t index, jive::output * output);
 
 	virtual const jive_test_value_type & type() const noexcept { return type_; }
 
@@ -82,9 +82,9 @@ public:
 	virtual jive_test_state_type * copy() const override;
 
 	virtual jive::input * create_input(jive_node * node, size_t index,
-		jive_output * origin) const override;
+		jive::output * origin) const override;
 
-	virtual jive_output * create_output(jive_node * node, size_t index) const override;
+	virtual jive::output * create_output(jive_node * node, size_t index) const override;
 
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 };
@@ -93,7 +93,7 @@ class jive_test_state_input final : public jive::state::input {
 public:
 	virtual ~jive_test_state_input() noexcept;
 
-	jive_test_state_input(jive_node * node, size_t index, jive_output * origin);
+	jive_test_state_input(jive_node * node, size_t index, jive::output * origin);
 
 	virtual const jive_test_state_type & type() const noexcept { return type_; }
 

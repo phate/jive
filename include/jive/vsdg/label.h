@@ -13,11 +13,14 @@
 #include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_context;
 struct jive_graph;
 struct jive_linker_symbol;
 struct jive_node;
-struct jive_output;
 struct jive_region;
 
 typedef uint64_t jive_offset;

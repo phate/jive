@@ -26,12 +26,12 @@ public:
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive_output * arg) const noexcept;
+		const jive::output * arg) const noexcept;
 
-	virtual jive_output *
+	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive_output * arg) const;
+		jive::output * arg) const;
 };
 
 }
@@ -64,21 +64,21 @@ struct jive_unary_operation_class {
 	
 	/* class method */
 	jive_unop_reduction_path_t (*can_reduce_operand)(const jive_node_class * cls,
-		const jive_node_attrs * attrs, const jive_output * operand);
+		const jive_node_attrs * attrs, const jive::output * operand);
 	
 	/* class method */
-	jive_output * (*reduce_operand)(jive_unop_reduction_path_t path, const jive_node_class * cls,
-		const jive_node_attrs * attrs, jive_output * operand);
+	jive::output * (*reduce_operand)(jive_unop_reduction_path_t path, const jive_node_class * cls,
+		const jive_node_attrs * attrs, jive::output * operand);
 };
 
 extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
 #define JIVE_UNARY_OPERATION (JIVE_UNARY_OPERATION_.base)
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_unary_operation_create_normalized(const jive_unary_operation_class * class_,
-	struct jive_graph * graph, const jive_node_attrs * attrs, jive_output * operand)
+	struct jive_graph * graph, const jive_node_attrs * attrs, jive::output * operand)
 {
-	jive_output * result;
+	jive::output * result;
 	jive_node_create_normalized(&class_->base, graph, attrs, 1, &operand, &result);
 	return result;
 }
@@ -94,22 +94,22 @@ jive_unary_operation_get_default_normal_form_(
 jive_unop_reduction_path_t
 jive_unary_operation_can_reduce_operand_(const jive_node_class * cls,
 	const jive_node_attrs * attrs,
-	const jive_output * operand);
+	const jive::output * operand);
 
-jive_output *
+jive::output *
 jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * operand);
+	const jive_node_attrs * attrs, jive::output * operand);
 
 /* normal form class */
 
 struct jive_unary_operation_normal_form_class {
 	jive_node_normal_form_class base;
 	void (*set_reducible)(jive_unary_operation_normal_form * self, bool enable);
-	jive_output * (*normalized_create)(
+	jive::output * (*normalized_create)(
 		const jive_unary_operation_normal_form * self,
 		struct jive_region * region,
 		const jive_node_attrs * attrs,
-		jive_output * operand);
+		jive::output * operand);
 };
 
 extern const jive_unary_operation_normal_form_class JIVE_UNARY_OPERATION_NORMAL_FORM_;
@@ -132,12 +132,12 @@ jive_unary_operation_normal_form_cast(jive_node_normal_form * self)
 	return 0;
 }
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_unary_operation_normalized_create(
 	const jive_unary_operation_normal_form * self,
 	struct jive_region * region,
 	const jive_node_attrs * attrs,
-	jive_output * operand)
+	jive::output * operand)
 {
 	const jive_unary_operation_normal_form_class * cls;
 	cls = (const jive_unary_operation_normal_form_class *) self->base.class_;
@@ -147,7 +147,7 @@ jive_unary_operation_normalized_create(
 
 JIVE_EXPORTED_INLINE jive_unop_reduction_path_t
 jive_unary_operation_can_reduce_operand(const jive_unary_operation_normal_form * self,
-	const jive_node_attrs * attrs, const jive_output * operand)
+	const jive_node_attrs * attrs, const jive::output * operand)
 {
 	const jive_unary_operation_class * cls =
 		(const jive_unary_operation_class *)self->base.node_class;
@@ -160,10 +160,10 @@ jive_unary_operation_can_reduce_operand(const jive_unary_operation_normal_form *
 	}
 }
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_unary_operation_reduce_operand(jive_unop_reduction_path_t path,
 	const jive_unary_operation_normal_form * self, const jive_node_attrs * attrs,
-	jive_output * operand)
+	jive::output * operand)
 {
 	const jive_unary_operation_class * cls =
 		(const jive_unary_operation_class *)self->base.node_class;
@@ -193,15 +193,15 @@ bool
 jive_unary_operation_operands_are_normalized_(
 	const jive_node_normal_form * self,
 	size_t noperands,
-	jive_output * const operands[],
+	jive::output * const operands[],
 	const jive_node_attrs * attrs);
 
-jive_output *
+jive::output *
 jive_unary_operation_normalized_create_(
 	const jive_unary_operation_normal_form * self,
 	jive_region * region,
 	const jive_node_attrs * attrs,
-	jive_output * operand);
+	jive::output * operand);
 
 void
 jive_unary_operation_set_reducible_(jive_unary_operation_normal_form * self_, bool enable);

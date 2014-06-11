@@ -78,30 +78,30 @@ prepare_graph(jive_context * ctx)
 		2, tmparray0,
 		0, NULL);
 	
-	jive_output * memstate = jive_subroutine_simple_get_global_state(sub);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(sub);
 	const jive::base::type * memtype = &memstate->type();
 	
 	jive_node * statesplit = jive_state_split(memtype, memstate, 2);
 	
-	jive_output * state1 = statesplit->outputs[0];
-	jive_output * state2 = statesplit->outputs[0];
+	jive::output * state1 = statesplit->outputs[0];
+	jive::output * state2 = statesplit->outputs[0];
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(sub, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(sub, 1);
+	jive::output * arg1 = jive_subroutine_simple_get_argument(sub, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(sub, 1);
 	
 	jive::bits::type bits32(32);
 	
-	jive_output * v1 = jive_load_by_bitstring_create(
+	jive::output * v1 = jive_load_by_bitstring_create(
 		arg1, 32, &bits32, 1, &state1);
 	
-	jive_output * v2 = jive_load_by_bitstring_create(
+	jive::output * v2 = jive_load_by_bitstring_create(
 		arg2, 32, &bits32, 1, &state2);
-	jive_output * tmparray1[] = {v1, v2};
+	jive::output * tmparray1[] = {v1, v2};
 	
-	jive_output * sum = jive_bitsum(2, tmparray1);
-	jive_output * diff = jive_bitdifference(v1, v2);
+	jive::output * sum = jive_bitsum(2, tmparray1);
+	jive::output * diff = jive_bitdifference(v1, v2);
 
-	jive_output * state_;
+	jive::output * state_;
 	jive_store_by_bitstring_create(
 		arg1, 32, &bits32, sum,
 		1, &state1, &state_);
@@ -111,7 +111,7 @@ prepare_graph(jive_context * ctx)
 		arg2, 32, &bits32, diff,
 		1, &state2, &state_);
 	state2 = state_;
-	jive_output* tmparray2[] = {state1, state2};
+	jive::output* tmparray2[] = {state1, state2};
 	
 	memstate = jive_state_merge(memtype, 2, tmparray2);
 	jive_subroutine_simple_set_global_state(sub, memstate);

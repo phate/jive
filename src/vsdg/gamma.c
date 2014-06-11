@@ -21,7 +21,7 @@
 
 static jive_node *
 jive_gamma_tail_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 	
@@ -39,7 +39,7 @@ jive_gamma_tail_node_create_(jive_region * region, const jive_node_attrs * attrs
 
 static jive_node *
 jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 3);
 	jive_node * self = jive::create_operation_node(jive_op_gamma());
@@ -104,16 +104,16 @@ jive_gamma_tail_node_create(jive_region * region)
 
 static jive_node *
 jive_gamma_node_create(jive_region * region,
-	jive_output * predicate,
-	jive_output * true_alternative,
-	jive_output * false_alternative)
+	jive::output * predicate,
+	jive::output * true_alternative,
+	jive::output * false_alternative)
 {
 	jive_node * self = jive::create_operation_node(jive_op_gamma());
 	jive::achr::type anchor;
 	jive::ctl::type ctl;
 	self->class_ = &JIVE_GAMMA_NODE;
 	const jive::base::type * tmparray1[] = {&anchor, &anchor, &ctl};
-	jive_output * tmparray2[] = {true_alternative, false_alternative, predicate};
+	jive::output * tmparray2[] = {true_alternative, false_alternative, predicate};
 	jive_node_init_(self, region,
 		3, tmparray1, tmparray2,
 		0, NULL);
@@ -124,10 +124,10 @@ jive_gamma_node_create(jive_region * region,
 static jive_node *
 jive_gamma_create(
 	jive_region * region,
-	jive_output * predicate,
+	jive::output * predicate,
 	size_t nvalues, const jive::base::type * const types[],
-	jive_output * const true_values[],
-	jive_output * const false_values[])
+	jive::output * const true_values[],
+	jive::output * const false_values[])
 {
 	jive_region * false_region = jive_region_create_subregion(region);
 	jive_region * true_region = jive_region_create_subregion(region);
@@ -148,11 +148,11 @@ jive_gamma_create(
 }
 
 void
-jive_gamma(struct jive_output * predicate,
+jive_gamma(jive::output * predicate,
 	size_t nvalues, const struct jive::base::type * const types[],
-	struct jive_output * const true_values[],
-	struct jive_output * const false_values[],
-	struct jive_output * results[])
+	jive::output * const true_values[],
+	jive::output * const false_values[],
+	jive::output * results[])
 {
 	size_t n;
 	
@@ -173,7 +173,7 @@ jive_gamma(struct jive_output * predicate,
 		}
 	}
 	
-	jive_output * tmp[nvalues * 2 + 1];
+	jive::output * tmp[nvalues * 2 + 1];
 	tmp[0] = predicate;
 	for (n = 0; n < nvalues; n++)
 		tmp[n + 1] = false_values[n];
@@ -322,7 +322,7 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 	JIVE_DEBUG_ASSERT(node->noperands == 3);
 	
 	if (self->enable_predicate_reduction) {
-		jive_output * pred = node->inputs[2]->origin();
+		jive::output * pred = node->inputs[2]->origin();
 		jive_node * branch = 0;
 		if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_TRUE_NODE))
 			branch = node->producer(0);
@@ -360,7 +360,7 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 
 bool
 jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * self_,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	const jive_node_attrs * attrs)
 {
 	const jive_gamma_normal_form * self = (const jive_gamma_normal_form *) self_;
@@ -371,7 +371,7 @@ jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * se
 	JIVE_DEBUG_ASSERT(noperands == 3);
 	
 	if (self->enable_predicate_reduction) {
-		jive_output * pred = operands[2];
+		jive::output * pred = operands[2];
 		if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_TRUE_NODE))
 			return false;
 		if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_FALSE_NODE))

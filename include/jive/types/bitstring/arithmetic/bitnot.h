@@ -29,7 +29,7 @@ public:
 	create_node(
 		jive_region * region,
 		size_t narguments,
-		jive_output * const arguments[]) const override;
+		jive::output * const arguments[]) const override;
 
 	virtual value_repr
 	reduce_constant(
@@ -49,7 +49,7 @@ public:
 	
 	Convenience function to create negation of value.
 */
-jive_output *
-jive_bitnot(jive_output * operand);
+jive::output *
+jive_bitnot(jive::output * operand);
 
 #endif

@@ -263,7 +263,7 @@ jive_seq_graph_patch_jump_targets(
 {
 	size_t index = inode->operation().icls()->noutputs;
 	JIVE_DEBUG_ASSERT(inode->noutputs);
-	jive_output * ctl_out = inode->outputs[index];
+	jive::output * ctl_out = inode->outputs[index];
 	JIVE_DEBUG_ASSERT(dynamic_cast<jive::ctl::output*>(ctl_out));
 	
 	JIVE_DEBUG_ASSERT(ctl_out->users.first == ctl_out->users.last);

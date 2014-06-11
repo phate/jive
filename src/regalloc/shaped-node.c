@@ -136,7 +136,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 			jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar), input, input->origin());
 	}
 	for(n = 0; n < self->node->noutputs; n++) {
-		jive_output * output = self->node->outputs[n];
+		jive::output * output = self->node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_ssavar * ssavar = user->ssavar;
@@ -165,7 +165,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	
 	/* reinstate crossings for those arcs that have this node as origin */
 	for(n = 0; n < self->node->noutputs; n++) {
-		jive_output * output = self->node->outputs[n];
+		jive::output * output = self->node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_ssavar * ssavar = user->ssavar;

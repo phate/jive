@@ -63,27 +63,27 @@ typedef jive::operation_node<jive::call_operation> jive_call_node;
 
 struct jive_node *
 jive_call_by_address_node_create(struct jive_region * region,
-	struct jive_output * target_address, const jive_calling_convention * calling_convention,
-	size_t narguments, struct jive_output * const arguments[],
+	jive::output * target_address, const jive_calling_convention * calling_convention,
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[]);
 
-struct jive_output * const *
-jive_call_by_address_create(struct jive_output * target_address,
+jive::output * const *
+jive_call_by_address_create(jive::output * target_address,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, struct jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[]);
 
 struct jive_node *
 jive_call_by_bitstring_node_create(struct jive_region * region,
-	struct jive_output * target_address, size_t nbits,
+	jive::output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, struct jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[]);
 
-struct jive_output * const *
-jive_call_by_bitstring_create(struct jive_output * target_address, size_t nbits,
+jive::output * const *
+jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, struct jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[]);
 
 JIVE_EXPORTED_INLINE jive_call_node *

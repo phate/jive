@@ -61,9 +61,9 @@ private:
 
 typedef jive::operation_node<jive::unn::unify_operation> jive_unify_node;
 typedef jive::operation_node<jive::unn::empty_unify_operation> jive_empty_unify_node;
-jive_output *
+jive::output *
 jive_unify_create(const struct jive::unn::declaration * decl,
-	size_t option, jive_output * const operand);
+	size_t option, jive::output * const operand);
 
 JIVE_EXPORTED_INLINE jive_unify_node *
 jive_unify_node_cast(jive_node * node)
@@ -78,7 +78,7 @@ jive_unify_node_cast(jive_node * node)
 
 extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
 
-jive_output *
+jive::output *
 jive_empty_unify_create(struct jive_graph * graph, const struct jive::unn::declaration * decl);
 
 JIVE_EXPORTED_INLINE jive_empty_unify_node *

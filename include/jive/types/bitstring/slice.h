@@ -50,7 +50,7 @@ typedef jive::operation_node<jive::bitstring::slice_operation> jive_bitslice_nod
 	Convenience function that either creates a new slice or
 	returns the output handle of an existing slice.
 */
-jive_output *
-jive_bitslice(jive_output * operand, size_t low, size_t high);
+jive::output *
+jive_bitslice(jive::output * operand, size_t low, size_t high);
 
 #endif

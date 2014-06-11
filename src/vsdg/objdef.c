@@ -22,7 +22,7 @@ static void
 jive_objdef_node_init_(
 	jive_objdef_node * self,
 	jive_region * region,
-	jive_output * obj)
+	jive::output * obj)
 {
 	/* FIXME: this is horribly wrong, but we don't have another type right now for putting in here,
 						this entire node needs to be remodeled
@@ -61,7 +61,7 @@ jive_objdef_node_match_attrs_(const jive_node * self, const jive_node_attrs * at
 
 static jive_node *
 jive_objdef_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::objdef_operation * attrs = (const jive::objdef_operation *) attrs_;
 	
@@ -85,7 +85,7 @@ const jive_node_class JIVE_OBJDEF_NODE = {
 
 jive_node *
 jive_objdef_node_create(
-	jive_output * output,
+	jive::output * output,
 	const char * name,
 	const struct jive_linker_symbol * symbol)
 {

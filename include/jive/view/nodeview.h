@@ -46,7 +46,7 @@ jive_inputview_get_edge_offset(const jive_inputview * self)
 }
 
 struct jive_outputview {
-	jive_output * output;
+	jive::output * output;
 	jive_nodeview * nodeview;
 	short x, y;
 	unsigned short width, height;
@@ -61,7 +61,7 @@ struct jive_outputview {
 };
 
 jive_outputview *
-jive_outputview_create(jive_nodeview * nodeview, jive_output * output);
+jive_outputview_create(jive_nodeview * nodeview, jive::output * output);
 
 void
 jive_outputview_destroy(jive_outputview * self);

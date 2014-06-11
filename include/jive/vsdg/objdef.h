@@ -13,9 +13,10 @@
 
 struct jive_label;
 struct jive_linker_symbol;
-struct jive_output;
 
 namespace jive {
+
+class output;
 
 class objdef_operation final : public operation {
 public:
@@ -42,7 +43,7 @@ typedef jive::operation_node<jive::objdef_operation> jive_objdef_node;
 
 struct jive_node *
 jive_objdef_node_create(
-	struct jive_output * output,
+	jive::output * output,
 	const char * name,
 	const struct jive_linker_symbol * symbol);
 

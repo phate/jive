@@ -16,15 +16,15 @@ unary_operation::~unary_operation() noexcept {}
 
 jive_unop_reduction_path_t
 unary_operation::can_reduce_operand(
-	const jive_output * arg) const noexcept
+	const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive_output *
+jive::output *
 unary_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive_output * arg) const
+	jive::output * arg) const
 {
 	return nullptr;
 }
@@ -79,14 +79,14 @@ jive_unary_operation_get_default_normal_form_(
 
 jive_unop_reduction_path_t
 jive_unary_operation_can_reduce_operand_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * operand)
+	const jive_node_attrs * attrs, const jive::output * operand)
 {
 	return jive_unop_reduction_none;
 }
 
-jive_output *
+jive::output *
 jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * operand)
+	const jive_node_attrs * attrs, jive::output * operand)
 {
 	return NULL;
 }
@@ -97,8 +97,8 @@ jive_unary_operation_reduce_operand_(jive_unop_reduction_path_t path, const jive
 	interface has been removed. */
 void
 jive_unary_operation_normalized_create_new_(const jive_node_normal_form * self_, jive_graph * graph,
-	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
-	jive_output * results[])
+	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
+	jive::output * results[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
@@ -145,10 +145,10 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	
 	const jive_node_attrs * attrs = jive_node_get_attrs(node);
 	
-	jive_output * output = node->outputs[0];
+	jive::output * output = node->outputs[0];
 	
 	if (self->enable_reducible) {
-		jive_output * tmp = node->inputs[0]->origin();
+		jive::output * tmp = node->inputs[0]->origin();
 		jive_unop_reduction_path_t reduction = jive_unary_operation_can_reduce_operand(self, attrs, tmp);
 		if (reduction != jive_unop_reduction_none) {
 			tmp = jive_unary_operation_reduce_operand(reduction, self, attrs, tmp);
@@ -160,7 +160,7 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	}
 	
 	if (self->base.enable_cse) {
-		jive_output * operands[] = { node->inputs[0]->origin() };
+		jive::output * operands[] = { node->inputs[0]->origin() };
 		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1, operands);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
@@ -176,7 +176,7 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 
 bool
 jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self_, size_t noperands,
-	jive_output * const operands[], const jive_node_attrs * attrs)
+	jive::output * const operands[], const jive_node_attrs * attrs)
 {
 	const jive_unary_operation_normal_form * self = (const jive_unary_operation_normal_form *) self_;
 	if (!self->base.enable_mutable)
@@ -203,9 +203,9 @@ jive_unary_operation_operands_are_normalized_(const jive_node_normal_form * self
 	return true;
 }
 
-jive_output *
+jive::output *
 jive_unary_operation_normalized_create_(const jive_unary_operation_normal_form * self,
-	struct jive_region * region, const jive_node_attrs * attrs, jive_output * operand)
+	struct jive_region * region, const jive_node_attrs * attrs, jive::output * operand)
 {
 	const jive_unary_operation_class * cls =
 		(const jive_unary_operation_class *) self->base.node_class;

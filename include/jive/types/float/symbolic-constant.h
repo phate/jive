@@ -34,7 +34,7 @@ typedef jive::operation_node<jive::flt::symbolicconstant_operation>
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive_output *
+jive::output *
 jive_fltsymbolicconstant(struct jive_graph * graph, const char * name);
 
 #endif

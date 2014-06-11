@@ -29,7 +29,7 @@ create_testgraph_postop_xfer(jive_context * context)
 		2, tmparray0,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
@@ -38,10 +38,10 @@ create_testgraph_postop_xfer(jive_context * context)
 	jive_gate * retval_gate = jive_register_class_create_gate(
 		&jive_testarch_regcls_r3, graph, "retval");
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive_output * tmparray1[] = {arg1, arg2};
-	jive_output * retval = jive_instruction_node_create(
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * tmparray1[] = {arg1, arg2};
+	jive::output * retval = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_sub_gpr,
 		tmparray1, NULL)->outputs[0];
@@ -63,7 +63,7 @@ create_testgraph_preop_xfer(jive_context * context)
 		2, tmparray2,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
@@ -74,10 +74,10 @@ create_testgraph_preop_xfer(jive_context * context)
 	jive_gate * retval2_gate = jive_register_class_create_gate(
 		&jive_testarch_regcls_r1, graph, "retval2");
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive_output * tmparray3[] = {arg1, arg2};
-	jive_output * retval = jive_instruction_node_create(
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * tmparray3[] = {arg1, arg2};
+	jive::output * retval = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_sub_gpr,
 		tmparray3, NULL)->outputs[0];
@@ -100,7 +100,7 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 		2, tmparray4,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
@@ -111,10 +111,10 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 	jive_gate * retval2_gate = jive_register_class_create_gate(
 		&jive_testarch_regcls_r1, graph, "retval2");
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive_output * tmparray5[] = {arg1, arg2};
-	jive_output * retval = jive_instruction_node_create(
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * tmparray5[] = {arg1, arg2};
+	jive::output * retval = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_sub_gpr,
 		tmparray5, NULL)->outputs[0];
@@ -138,7 +138,7 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 		2, tmparray6,
 		0, NULL
 	);
-	jive_output * memstate = jive_subroutine_simple_get_global_state(subroutine);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
@@ -151,10 +151,10 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 	jive_gate * retval2_gate = jive_register_class_create_gate(
 		&jive_testarch_regcls_r1, graph, "retval2");
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive_output * tmparray7[] = {arg1, arg2};
-	jive_output * retval = jive_instruction_node_create(
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * tmparray7[] = {arg1, arg2};
+	jive::output * retval = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_sub_gpr,
 		tmparray7, NULL)->outputs[0];

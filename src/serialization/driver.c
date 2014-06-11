@@ -98,7 +98,7 @@ static void
 simple_name_output(
 	jive_serialization_namegen * self_,
 	jive_serialization_symtab * symtab,
-	jive_output * output)
+	jive::output * output)
 {
 	if (jive_serialization_symtab_output_to_name(symtab, output) != 0)
 		return;

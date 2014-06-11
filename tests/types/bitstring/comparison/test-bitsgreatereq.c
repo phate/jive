@@ -23,19 +23,19 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
-	jive_output * c0 = jive_bitconstant_signed(graph, 32, 4);
-	jive_output * c1 = jive_bitconstant_signed(graph, 32, 5);
-	jive_output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
-	jive_output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph, 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph, 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
 
-	jive_output * sgreatereq0 = jive_bitsgreatereq(s0, s1);
-	jive_output * sgreatereq1 = jive_bitsgreatereq(c0, c1);
-	jive_output * sgreatereq2 = jive_bitsgreatereq(c1, c0);
-	jive_output * sgreatereq3 = jive_bitsgreatereq(c0, c0);
-	jive_output * sgreatereq4 = jive_bitsgreatereq(c2, s0);
-	jive_output * sgreatereq5 = jive_bitsgreatereq(s1, c3);
+	jive::output * sgreatereq0 = jive_bitsgreatereq(s0, s1);
+	jive::output * sgreatereq1 = jive_bitsgreatereq(c0, c1);
+	jive::output * sgreatereq2 = jive_bitsgreatereq(c1, c0);
+	jive::output * sgreatereq3 = jive_bitsgreatereq(c0, c0);
+	jive::output * sgreatereq4 = jive_bitsgreatereq(c2, s0);
+	jive::output * sgreatereq5 = jive_bitsgreatereq(s1, c3);
 
 	jive_graph_export(graph, sgreatereq0);
 	jive_graph_export(graph, sgreatereq1);

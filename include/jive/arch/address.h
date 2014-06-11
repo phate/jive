@@ -144,8 +144,8 @@ private:
 
 typedef jive::operation_node<jive::address::memberof_operation> jive_memberof_node;
 
-jive_output *
-jive_memberof(jive_output * address, const jive::rcd::declaration * record_decl, size_t index);
+jive::output *
+jive_memberof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
 
 JIVE_EXPORTED_INLINE jive_memberof_node *
 jive_memberof_node_cast(jive_node * node)
@@ -164,8 +164,8 @@ extern const jive_unary_operation_class JIVE_CONTAINEROF_NODE_;
 
 typedef jive::operation_node<jive::address::containerof_operation> jive_containerof_node;
 
-jive_output *
-jive_containerof(jive_output * address, const jive::rcd::declaration * record_decl, size_t index);
+jive::output *
+jive_containerof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
 
 JIVE_EXPORTED_INLINE jive_containerof_node *
 jive_containerof_node_cast(jive_node * node)
@@ -184,9 +184,9 @@ extern const jive_binary_operation_class JIVE_ARRAYSUBSCRIPT_NODE_;
 
 typedef jive::operation_node<jive::address::arraysubscript_operation> jive_arraysubscript_node;
 
-jive_output *
-jive_arraysubscript(struct jive_output * address, const jive::value::type * element_type,
-	struct jive_output * index);
+jive::output *
+jive_arraysubscript(jive::output * address, const jive::value::type * element_type,
+	jive::output * index);
 
 JIVE_EXPORTED_INLINE jive_arraysubscript_node *
 jive_arraysubscript_node_cast(jive_node * node)
@@ -206,8 +206,8 @@ extern const jive_binary_operation_class JIVE_ARRAYINDEX_NODE_;
 
 typedef jive::operation_node<jive::address::arrayindex_operation> jive_arrayindex_node;
 
-jive_output *
-jive_arrayindex(struct jive_output * addr1, struct jive_output * addr2,
+jive::output *
+jive_arrayindex(jive::output * addr1, jive::output * addr2,
 	const jive::value::type * element_type,
 	const jive::bits::type * difference_type);
 
@@ -226,7 +226,7 @@ extern const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE;
 
 typedef jive::operation_node<jive::address::label_to_address_operation> jive_label_to_address_node;
 
-jive_output *
+jive::output *
 jive_label_to_address_create(struct jive_graph * graph, const struct jive_label * label);
 
 JIVE_EXPORTED_INLINE jive_label_to_address_node *
@@ -245,7 +245,7 @@ extern const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE;
 typedef jive::operation_node<jive::address::label_to_bitstring_operation>
 	jive_label_to_bitstring_node;
 
-jive_output *
+jive::output *
 jive_label_to_bitstring_create(
 	struct jive_graph * graph, const struct jive_label * label, size_t nbits);
 

@@ -39,15 +39,15 @@ static int test_main(void)
 		0, NULL, NULL,
 		4, tmparray0);
 
-	jive_output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
-	jive_output * load = jive_load_by_address_create(top->outputs[3], &unntype, 0, NULL);
+	jive::output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
+	jive::output * load = jive_load_by_address_create(top->outputs[3], &unntype, 0, NULL);
 
-	jive_output * c0 = jive_choose_create(1, top->outputs[1]);
-	jive_output * c1 = jive_choose_create(0, u0);
-	jive_output * c2 = jive_choose_create(1, top->outputs[2]);
-	jive_output * c3 = jive_choose_create(0, load);
+	jive::output * c0 = jive_choose_create(1, top->outputs[1]);
+	jive::output * c1 = jive_choose_create(0, u0);
+	jive::output * c2 = jive_choose_create(1, top->outputs[2]);
+	jive::output * c3 = jive_choose_create(0, load);
 	const jive::base::type * tmparray1[] = {&bits16, &bits8, &bits16, &bits8};
-	jive_output * tmparray2[] = {c0, c1, c2, c3};
+	jive::output * tmparray2[] = {c0, c1, c2, c3};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		4, tmparray1, tmparray2,

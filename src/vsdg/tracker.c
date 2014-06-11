@@ -193,7 +193,7 @@ jive_computation_tracker_invalidate_below(jive_computation_tracker * self, jive_
 {
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_computation_tracker_invalidate(self, user->node);

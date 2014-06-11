@@ -35,7 +35,7 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 		return ssavar;
 	}
 	jive_graph * graph = ssavar->origin->node()->graph;
-	jive_output * origin = ssavar->origin;
+	jive::output * origin = ssavar->origin;
 	jive_variable * variable = ssavar->variable;
 	jive_ssavar * ssavar_inside_region = ssavar;
 	
@@ -55,7 +55,7 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 		ssavar->origin);
 	jive_input_vector_push_back(&users1, graph->context, in1);
 	jive_input_vector_push_back(&users2, graph->context, in2);
-	jive_output * out = jive_node_gate_output(anchor_node, gate);
+	jive::output * out = jive_node_gate_output(anchor_node, gate);
 	
 	jive::input * user, * next;
 	JIVE_LIST_ITERATE_SAFE(ssavar->assigned_inputs, user, next, ssavar_input_list) {
@@ -135,7 +135,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	jive_region * interest_region)
 {
 	jive_graph * graph = ssavar->origin->node()->graph;
-	jive_output * origin = ssavar->origin;
+	jive::output * origin = ssavar->origin;
 	jive_variable * variable = ssavar->variable;
 	
 	const jive::base::type * type = &ssavar->origin->type();
@@ -160,10 +160,10 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	}
 	
 	jive::input * into_loop = jive_node_gate_input(loop_head, gate, ssavar->origin);
-	jive_output * def_inside = jive_node_gate_output(loop_head, gate);
+	jive::output * def_inside = jive_node_gate_output(loop_head, gate);
 	jive_input_vector_push_back(&loop_users, graph->context,
 		jive_node_gate_input(loop_tail, gate, def_inside));
-	jive_output * def_outside = jive_node_gate_output(anchor_node, gate);
+	jive::output * def_outside = jive_node_gate_output(anchor_node, gate);
 	
 	/* everything has been cleared, now redo assignment */
 	

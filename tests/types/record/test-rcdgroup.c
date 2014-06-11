@@ -38,14 +38,14 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		3, tmparray0);
-	jive_output * tmparray1[] = {top->outputs[0],
+	jive::output * tmparray1[] = {top->outputs[0],
 		top->outputs[1], top->outputs[2]};
 
-	jive_output * g0 = jive_group_create(&decl, 3, tmparray1);
-	jive_output * g1 = jive_empty_group_create(graph, &decl_empty);
+	jive::output * g0 = jive_group_create(&decl, 3, tmparray1);
+	jive::output * g1 = jive_empty_group_create(graph, &decl_empty);
 
 	const jive::base::type * tmparray2[] = {&rcdtype, &rcdtype_empty};
-	jive_output * tmparray3[] = {g0, g1};
+	jive::output * tmparray3[] = {g0, g1};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray2,
 			tmparray3,

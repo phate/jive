@@ -30,7 +30,7 @@ public:
 	create_node(
 		jive_region * region,
 		size_t narguments,
-		jive_output * const arguments[]) const override;
+		jive::output * const arguments[]) const override;
 
 	virtual jive_binary_operation_flags
 	flags() const noexcept override;
@@ -47,7 +47,7 @@ public:
 }
 }
 
-jive_output *
-jive_bitsmod(jive_output * operand1, jive_output * operand2);
+jive::output *
+jive_bitsmod(jive::output * operand1, jive::output * operand2);
 
 #endif

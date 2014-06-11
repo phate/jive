@@ -27,7 +27,7 @@ jive_node *
 shiproduct_operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	return detail::binop_create<shiproduct_operation>(
 		*this,
@@ -97,8 +97,8 @@ const jive_bitbinary_operation_class JIVE_BITSHIPRODUCT_NODE_ = {
 	type : jive_bitop_code_shiproduct
 };
 
-jive_output *
-jive_bitshiproduct(jive_output * dividend, jive_output * divisor)
+jive::output *
+jive_bitshiproduct(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<

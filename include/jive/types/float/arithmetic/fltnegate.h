@@ -20,8 +20,8 @@ class negate_operation final : public jive::flt_unary_operation {
 }
 }
 
-jive_output *
-jive_fltnegate(struct jive_output * operand);
+jive::output *
+jive_fltnegate(jive::output * operand);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_fltnegate_node_cast(jive_node * node)

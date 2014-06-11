@@ -8,8 +8,8 @@
 #include <jive/vsdg/substitution.h>
 
 struct jive_output_substitution {
-	const struct jive_output * original;
-	struct jive_output * substitute;
+	const jive::output * original;
+	jive::output * substitute;
 	
 	struct {
 		jive_output_substitution * prev;
@@ -37,7 +37,8 @@ struct jive_gate_substitution {
 	} hash_chain;
 };
 
-JIVE_DEFINE_HASH_TYPE(jive_output_substitution_hash, jive_output_substitution, const struct jive_output *, original, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_output_substitution_hash, jive_output_substitution,
+	const jive::output *, original, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_region_substitution_hash, jive_region_substitution, const struct jive_region *, original, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_gate_substitution_hash, jive_gate_substitution, const struct jive_gate *, original, hash_chain);
 
@@ -52,7 +53,8 @@ jive_substitution_map_create(struct jive_context * context)
 }
 
 void
-jive_substitution_map_add_output(jive_substitution_map * self, const struct jive_output * original, struct jive_output * substitute)
+jive_substitution_map_add_output(jive_substitution_map * self, const jive::output * original,
+	jive::output * substitute)
 {
 	jive_output_substitution * subst = jive_output_substitution_hash_lookup(&self->output_hash, original);
 	if (!subst) {
@@ -65,8 +67,9 @@ jive_substitution_map_add_output(jive_substitution_map * self, const struct jive
 	}
 }
 
-struct jive_output *
-jive_substitution_map_lookup_output(const jive_substitution_map * self, const struct jive_output * original)
+jive::output *
+jive_substitution_map_lookup_output(const jive_substitution_map * self,
+	const jive::output * original)
 {
 	jive_output_substitution * subst = jive_output_substitution_hash_lookup(&self->output_hash, original);
 	if (!subst)

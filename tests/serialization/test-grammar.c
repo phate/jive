@@ -235,7 +235,7 @@ verify_deserialize_nodeexpr(
 	const char * repr,
 	jive_region * region,
 	const char * const input_names[],
-	jive_output * const input_origins[],
+	jive::output * const input_origins[],
 	const char * const output_names[],
 	jive_node * expected_node)
 {
@@ -315,7 +315,7 @@ static int test_main(void)
 	jive_node_normal_form_set_mutable(
 		jive_graph_get_nodeclass_form(graph, &JIVE_NODE), false);
 	
-	jive_output * zero8 = jive_bitconstant(graph, 8, "00000000");
+	jive::output * zero8 = jive_bitconstant(graph, 8, "00000000");
 	const char * tmparray0[] = {"out"};
 	verify_serialize_nodeexpr(zero8->node(),
 		0, NULL, NULL, /* gates */
@@ -329,10 +329,10 @@ static int test_main(void)
 		tmparray1, /* output names */
 		zero8->node());
 	
-	jive_output * one8 = jive_bitconstant(graph, 8, "10000000");
-	jive_output * two8 = jive_bitconstant(graph, 8, "01000000");
-	jive_output * tmparray2[] = {one8, two8};
-	jive_output * add8 = jive_bitsum(2, tmparray2);
+	jive::output * one8 = jive_bitconstant(graph, 8, "10000000");
+	jive::output * two8 = jive_bitconstant(graph, 8, "01000000");
+	jive::output * tmparray2[] = {one8, two8};
+	jive::output * add8 = jive_bitsum(2, tmparray2);
 	assert(add8->node()->class_ == &JIVE_BITSUM_NODE);
 	assert(add8->node() != zero8->node());
 	const char * tmparray3[] = {"a", "b"};
@@ -342,16 +342,16 @@ static int test_main(void)
 		tmparray3, tmparray4,
 		"(a:root<> b:root<>;) bitsum<> (sum:root<>;)");
 	const char * tmparray5[] = {"a", "b"};
-	jive_output * tmparray6[] = {one8, two8};
+	jive::output * tmparray6[] = {one8, two8};
 	const char * tmparray7[] = {"sum"};
 	verify_deserialize_nodeexpr("(a:root<> b:root<>;) bitsum<> (sum:root<>;)",
 		graph->root_region,
 		tmparray5, tmparray6, /* input names & origins */
 		tmparray7, /* output names */
 		add8->node());
-	jive_output * tmparray8[] = {one8, two8};
+	jive::output * tmparray8[] = {one8, two8};
 	
-	jive_output * cat16 = jive_bitconcat(2, tmparray8);
+	jive::output * cat16 = jive_bitconcat(2, tmparray8);
 	jive_node * cat16n = cat16->node();
 	jive_node_gate_input(cat16n, bit8gate, zero8);
 	jive_node_gate_output(cat16n, stackgate);

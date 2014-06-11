@@ -46,16 +46,16 @@ static int test_main(void)
 		0, NULL, NULL,
 		2, tmparray1);
 	
-	jive_output * memb1 = jive_memberof(top->outputs[0], &rec, 0);
-	jive_output * memb2 = jive_memberof(top->outputs[0], &rec, 1);
+	jive::output * memb1 = jive_memberof(top->outputs[0], &rec, 0);
+	jive::output * memb2 = jive_memberof(top->outputs[0], &rec, 1);
 	
-	jive_output * cont1 = jive_containerof(memb1, &rec, 0);
-	jive_output * cont2 = jive_containerof(memb2, &rec, 0);
+	jive::output * cont1 = jive_containerof(memb1, &rec, 0);
+	jive::output * cont2 = jive_containerof(memb2, &rec, 0);
 	
-	jive_output * cont3 = jive_containerof(top->outputs[1], &rec, 0);
+	jive::output * cont3 = jive_containerof(top->outputs[1], &rec, 0);
 	
-	jive_output * memb3 = jive_memberof(cont3, &rec, 0);
-	jive_output * memb4 = jive_memberof(cont3, &rec, 1);
+	jive::output * memb3 = jive_memberof(cont3, &rec, 0);
+	jive::output * memb4 = jive_memberof(cont3, &rec, 1);
 	
 	jive_view(graph, stdout);
 	
@@ -65,32 +65,32 @@ static int test_main(void)
 	assert(memb4 != top->outputs[1]);
 	assert(memb3 == top->outputs[1]);
 	
-	jive_output * zero = jive_bitconstant(graph, 32, "00000000000000000000000000000000");
-	jive_output * one = jive_bitconstant(graph, 32, "10000000000000000000000000000000");
-	jive_output * minus_one = jive_bitconstant(graph, 32, "11111111111111111111111111111111");
+	jive::output * zero = jive_bitconstant(graph, 32, "00000000000000000000000000000000");
+	jive::output * one = jive_bitconstant(graph, 32, "10000000000000000000000000000000");
+	jive::output * minus_one = jive_bitconstant(graph, 32, "11111111111111111111111111111111");
 	
-	jive_output * a0 = jive_arraysubscript(top->outputs[0], &bits32, zero);
+	jive::output * a0 = jive_arraysubscript(top->outputs[0], &bits32, zero);
 	assert(a0 == top->outputs[0]);
-	jive_output * a1 = jive_arraysubscript(top->outputs[0], &bits32, one);
+	jive::output * a1 = jive_arraysubscript(top->outputs[0], &bits32, one);
 	assert(a1 != top->outputs[0]);
-	jive_output * tmp = jive_arraysubscript(a1, &bits32, minus_one);
+	jive::output * tmp = jive_arraysubscript(a1, &bits32, minus_one);
 	jive_view(graph, stdout);
 	assert(tmp == a0);
 	
-	jive_output * diff = jive_arrayindex(a1, a0, &bits32, &bits32);
+	jive::output * diff = jive_arrayindex(a1, a0, &bits32, &bits32);
 	assert(diff == one);
 	
-	jive_output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1], &bits32, &bits32);
+	jive::output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1], &bits32, &bits32);
 
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, context, 32);
 
-	jive_output * memberof = jive_memberof(cont3, &rec, 1);
-	jive_output * arraysub = jive_arraysubscript(top->outputs[0],
+	jive::output * memberof = jive_memberof(cont3, &rec, 1);
+	jive::output * arraysub = jive_arraysubscript(top->outputs[0],
 		&bits32, one);
 
 	const jive::base::type * tmparray2[] = {&addrtype, &addrtype, &bits32};
-	jive_output * tmparray3[] = {memberof, arraysub, diff2};
+	jive::output * tmparray3[] = {memberof, arraysub, diff2};
 
 	const jive::base::type * typeptr = &addrtype;
 

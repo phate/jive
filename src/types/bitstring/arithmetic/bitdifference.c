@@ -27,7 +27,7 @@ jive_node *
 difference_operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	return detail::binop_create<difference_operation>(
 		*this,
@@ -88,8 +88,8 @@ const jive_bitbinary_operation_class JIVE_BITDIFFERENCE_NODE_ = {
 	type : jive_bitop_code_difference
 };
 
-jive_output *
-jive_bitdifference(jive_output * dividend, jive_output * divisor)
+jive::output *
+jive_bitdifference(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<

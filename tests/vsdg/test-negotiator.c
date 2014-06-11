@@ -81,7 +81,7 @@ negtestnode_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
 
 static jive_node *
 negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, struct jive::output * const operands[]);
 
 const jive_node_class NEGTESTNODE = {
 	parent : &JIVE_NODE,
@@ -101,7 +101,7 @@ negtestnode_init_(
 	
 	size_t noperands,
 	const jive::base::type * const operand_types[],
-	jive_output * const operands[],
+	jive::output * const operands[],
 	
 	size_t noutputs,
 	const std::vector<std::unique_ptr<jive::base::type>> & output_types)
@@ -130,7 +130,7 @@ negtestnode_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 
 static jive_node *
 negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, struct jive::output * const operands[])
 {
 	const negtest_operation * attrs = (const negtest_operation *) attrs_;
 	
@@ -154,7 +154,7 @@ jive_negtestnode_create(
 	size_t noperands,
 	const test_option_t input_options[],
 	const jive::base::type * const operand_types[],
-	jive_output * const operands[],
+	jive::output * const operands[],
 	
 	size_t noutputs,
 	const test_option_t output_options[],
@@ -265,7 +265,7 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 			jive_negotiator_annotate_simple_input(self, input, &option.base);
 		}
 		for (n = 0; n < node_->noutputs; n++) {
-			jive_output * output = node_->outputs[n];
+			jive::output * output = node_->outputs[n];
 			test_negotiator_option option;
 			option.mask = node->operation().output_options()[n];
 			jive_negotiator_annotate_simple_output(self, output, &option.base);
@@ -320,7 +320,7 @@ typedef jive_negotiator test_negotiator;
 static void
 expect_options(
 	jive_negotiator * nego,
-	jive_output * o,
+	jive::output * o,
 	test_option_t o_o,
 	jive::input * i,
 	test_option_t o_i)

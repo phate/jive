@@ -32,17 +32,17 @@ static int test_main(void)
 		4, tmparray0,
 		1, tmparray1);
 	
-	jive_output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive_output * arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
-	jive_output * tmparray2[] = {arg1, arg2};
+	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
+	jive::output * tmparray2[] = {arg1, arg2};
 	
-	jive_output * s1 = jive_instruction_node_create(
+	jive::output * s1 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
 		tmparray2, NULL)->outputs[0];
-	jive_output * tmparray3[] = {s1, arg3};
-	jive_output * s2 = jive_instruction_node_create(
+	jive::output * tmparray3[] = {s1, arg3};
+	jive::output * s2 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
 		tmparray3, NULL)->outputs[0];

@@ -75,7 +75,7 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 }
 
 jive_outputview *
-jive_outputview_create(jive_nodeview * nodeview, jive_output * output)
+jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 {
 	jive_context * context = output->node()->graph->context;
 	
@@ -230,7 +230,7 @@ jive_nodeview_layout(jive_nodeview * self, struct jive_reservationtracker * rese
 	size_t n;
 	for(n=0; n<self->node->ninputs; n++) {
 		jive_inputview * inputview = self->inputs[n];
-		jive_output * origin = self->node->inputs[n]->origin();
+		jive::output * origin = self->node->inputs[n]->origin();
 		jive_outputview * outputview = jive_outputview_map_lookup(&graphview->outputmap, origin);
 		if (!outputview->nodeview->placed) continue;
 		

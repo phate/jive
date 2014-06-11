@@ -38,7 +38,7 @@ test_operation::test_operation(const test_operation & other)
 
 static void
 jive_test_node_init_(jive_test_node * self, jive_region * region,
-	size_t noperands, const jive::base::type * const operand_types[], jive_output * const operands[],
+	size_t noperands, const jive::base::type * const operand_types[], jive::output * const operands[],
 	size_t nresults, const jive::base::type * const result_types[])
 {
 	jive_context * context = region->graph->context;
@@ -79,7 +79,7 @@ jive_test_node_match_attrs_(const jive_node * self, const jive_node_attrs * attr
 
 static void
 jive_test_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 
 	const test_operation * attrs = (const test_operation *)attrs_;
@@ -97,7 +97,7 @@ jive_test_node_check_operands_(const jive_node_class * cls, const jive_node_attr
 
 static jive_node *
 jive_test_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const test_operation * attrs = (const test_operation *)attrs_;
 	JIVE_DEBUG_ASSERT(noperands == attrs->operand_types().size());
@@ -132,7 +132,7 @@ const jive_node_class JIVE_TEST_NODE = {
 
 jive_node *
 jive_test_node_create(struct jive_region * region,
-	size_t noperands, const jive::base::type * const operand_types[], jive_output * const operands[],
+	size_t noperands, const jive::base::type * const operand_types[], jive::output * const operands[],
 	size_t nresults, const jive::base::type * const result_types[])
 {
 	test_operation op(noperands, operand_types, nresults, result_types);
@@ -152,8 +152,8 @@ jive_test_node_create(struct jive_region * region,
 
 void
 jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
-	const jive::base::type * const operand_types[], jive_output * const operands[], size_t nresults,
-	const jive::base::type * const result_types[], jive_output * results[])
+	const jive::base::type * const operand_types[], jive::output * const operands[], size_t nresults,
+	const jive::base::type * const result_types[], jive::output * results[])
 {
 	test_operation op(noperands, operand_types, nresults, result_types);
 

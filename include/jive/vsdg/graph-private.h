@@ -104,8 +104,8 @@ jive_graph_notify_input_create(jive_graph * graph, jive::input * input)
 }
 
 static inline void
-jive_graph_notify_input_change(jive_graph * graph, jive::input * input, jive_output * old_origin,
-	jive_output * new_origin)
+jive_graph_notify_input_change(jive_graph * graph, jive::input * input, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_input_change_notifier_slot_call(&graph->on_input_change, input, old_origin, new_origin);
 }
@@ -117,13 +117,13 @@ jive_graph_notify_input_destroy(jive_graph * graph, jive::input * input)
 }
 
 static inline void
-jive_graph_notify_output_create(jive_graph * graph, jive_output * output)
+jive_graph_notify_output_create(jive_graph * graph, jive::output * output)
 {
 	jive_output_notifier_slot_call(&graph->on_output_create, output);
 }
 
 static inline void
-jive_graph_notify_output_destroy(jive_graph * graph, jive_output * output)
+jive_graph_notify_output_destroy(jive_graph * graph, jive::output * output)
 {
 	jive_output_notifier_slot_call(&graph->on_output_destroy, output);
 }
@@ -191,27 +191,33 @@ jive_graph_notify_ssavar_unassign_input(jive_graph * graph, struct jive_ssavar *
 }
 
 static inline void
-jive_graph_notify_ssavar_assign_output(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_output * output)
+jive_graph_notify_ssavar_assign_output(jive_graph * graph, struct jive_ssavar * ssavar,
+	jive::output * output)
 {
 	jive_ssavar_output_notifier_slot_call(&graph->on_ssavar_assign_output, ssavar, output);
 }
 
 static inline void
-jive_graph_notify_ssavar_unassign_output(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_output * output)
+jive_graph_notify_ssavar_unassign_output(jive_graph * graph, struct jive_ssavar * ssavar,
+	jive::output * output)
 {
 	jive_ssavar_output_notifier_slot_call(&graph->on_ssavar_unassign_output, ssavar, output);
 }
 
 static inline void
-jive_graph_notify_ssavar_divert_origin(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_output * old_origin, struct jive_output * new_origin)
+jive_graph_notify_ssavar_divert_origin(jive_graph * graph, struct jive_ssavar * ssavar,
+	jive::output * old_origin, jive::output * new_origin)
 {
-	jive_ssavar_divert_notifier_slot_call(&graph->on_ssavar_divert_origin, ssavar, old_origin, new_origin);
+	jive_ssavar_divert_notifier_slot_call(&graph->on_ssavar_divert_origin, ssavar, old_origin,
+		new_origin);
 }
 
 static inline void
-jive_graph_notify_ssavar_variable_change(jive_graph * graph, struct jive_ssavar * ssavar, struct jive_variable * old_variable, struct jive_variable * new_variable)
+jive_graph_notify_ssavar_variable_change(jive_graph * graph, struct jive_ssavar * ssavar,
+	struct jive_variable * old_variable, struct jive_variable * new_variable)
 {
-	jive_ssavar_variable_notifier_slot_call(&graph->on_ssavar_variable_change, ssavar, old_variable, new_variable);
+	jive_ssavar_variable_notifier_slot_call(&graph->on_ssavar_variable_change, ssavar, old_variable,
+		new_variable);
 }
 
 static inline void

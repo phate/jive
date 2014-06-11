@@ -27,10 +27,10 @@ public:
 	virtual ~input() noexcept;
 
 protected:
-	input(struct jive_node * node, size_t index, jive_output * initial_operand);
+	input(struct jive_node * node, size_t index, jive::output * origin);
 };
 
-class output : public jive_output {
+class output : public jive::output {
 public:
 	virtual ~output() noexcept;
 

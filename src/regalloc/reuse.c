@@ -40,9 +40,9 @@ public:
 	virtual jive::reuse::type * copy() const override;
 
 	virtual jive::input * create_input(jive_node * node, size_t index,
-		jive_output * origin) const override;
+		jive::output * origin) const override;
 
-	virtual jive_output * create_output(jive_node * node, size_t index) const override;
+	virtual jive::output * create_output(jive_node * node, size_t index) const override;
 
 	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const override;
 
@@ -55,7 +55,7 @@ public:
 	virtual ~input() noexcept {};
 
 	input(const jive_resource_name * name, struct jive_node * node, size_t index,
-		jive_output * origin);
+		jive::output * origin);
 
 	virtual const jive::reuse::type & type() const noexcept { return type_; }
 
@@ -119,12 +119,12 @@ type::copy() const
 }
 
 jive::input *
-type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive::output * origin) const
 {
 	return new jive::reuse::input(name(), node, index, origin);
 }
 
-jive_output *
+jive::output *
 type::create_output(jive_node * node, size_t index) const
 {
 	return new jive::reuse::output(name(), node, index);
@@ -137,7 +137,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 }
 
 input::input(const jive_resource_name * name, struct jive_node * node, size_t index,
-	jive_output * origin)
+	jive::output * origin)
 	: jive::state::input(node, index, origin)
 	, type_(name)
 {}
@@ -377,7 +377,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 	}
 	
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive_ssavar * ssavar = output->ssavar;
 		if (!ssavar)
 			continue;

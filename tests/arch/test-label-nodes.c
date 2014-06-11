@@ -35,8 +35,8 @@ static int test_main(void)
 	jive_label_external_init(&foobar, context, "foobar", &foobar_symbol);
 	jive_label_external_init(&bla, context, "bla", &bla_symbol);
 
-	jive_output * o0 = jive_label_to_address_create(graph, &foobar.base);
-	jive_output * o1 = jive_label_to_address_create(graph, &bla.base);
+	jive::output * o0 = jive_label_to_address_create(graph, &foobar.base);
+	jive::output * o1 = jive_label_to_address_create(graph, &bla.base);
 
 	const jive::address::label_to_address_operation * attrs0 =
 		(const jive::address::label_to_address_operation *)
@@ -53,9 +53,9 @@ static int test_main(void)
 	assert(!jive_node_match_attrs(o0->node(), attrs1));
 	assert(jive_node_match_attrs(o1->node(), attrs1));
 	
-	jive_output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
-	jive_output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
-	jive_output * o4 = jive_label_to_bitstring_create(graph, &foobar.base, 16);
+	jive::output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
+	jive::output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
+	jive::output * o4 = jive_label_to_bitstring_create(graph, &foobar.base, 16);
 
 	const jive::address::label_to_address_operation * attrs2 =
 		(const jive::address::label_to_address_operation *)
@@ -82,7 +82,7 @@ static int test_main(void)
 	jive::bits::type bits32(32);
 	jive::bits::type bits16(16);
 	const jive::base::type * tmparray0[] = {&addr, &addr, &bits32, &bits32, &bits16};
-	jive_output * tmparray1[] = {o0, o1, o2, o3, o4};
+	jive::output * tmparray1[] = {o0, o1, o2, o3, o4};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		5, tmparray0,
 		tmparray1,

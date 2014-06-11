@@ -29,7 +29,7 @@ jive_bitsymbolicconstant_node_match_attrs_(const jive_node * self, const jive_no
 
 static jive_node *
 jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, struct jive::output * const operands[]);
 
 const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE = {
 	parent : &JIVE_NULLARY_OPERATION,
@@ -76,7 +76,7 @@ jive_bitsymbolicconstant_node_match_attrs_(const jive_node * self, const jive_no
 
 static jive_node *
 jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, struct jive::output * const operands[])
 {
 	const jive::bitstring::symbolicconstant_operation * attrs =
 		(const jive::bitstring::symbolicconstant_operation *) attrs_;
@@ -101,7 +101,7 @@ jive_bitsymbolicconstant_create(jive_graph * graph, size_t nbits, const char * n
 		&attrs)->node();
 }
 
-jive_output *
+jive::output *
 jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
 {
 	jive::bitstring::symbolicconstant_operation attrs;

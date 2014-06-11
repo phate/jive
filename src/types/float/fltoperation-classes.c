@@ -29,7 +29,7 @@ flt_compare_operation::~flt_compare_operation() noexcept
 
 static void
 jive_fltoperation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	if (noperands == 0)
 		return;
@@ -46,7 +46,7 @@ jive_fltoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 
 void
 jive_fltbinary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	jive_fltoperation_check_operands_(cls, attrs, noperands, operands, context);
 }
@@ -80,7 +80,7 @@ const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_ = {
 
 void
 jive_fltunary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	jive_fltoperation_check_operands_(cls, attrs, noperands, operands, context);
 }
@@ -111,7 +111,7 @@ const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 
 void
 jive_fltcomparison_operation_check_operands_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, size_t noperands, jive_output * const operands[],
+	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
 	jive_context * context)
 {
 	jive_fltoperation_check_operands_(cls, attrs, noperands, operands, context);

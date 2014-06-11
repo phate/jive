@@ -38,7 +38,7 @@ static int test_main(void)
 	
 	jive_node_gate_output(node, g1);
 	jive_node_gate_output(node, g2);
-	jive_output * o = jive_node_gate_output(node, g3);
+	jive::output * o = jive_node_gate_output(node, g3);
 	
 	jive_variable * v1 = jive_variable_create(graph);
 	jive_variable * v2 = jive_variable_create(graph);

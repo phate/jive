@@ -340,7 +340,7 @@ jive_master_shaper_selector_map_node_internal(jive_master_shaper_selector * self
 }
 
 static bool
-assumed_active(jive_master_shaper_selector * self, jive_output * output, jive_region * region)
+assumed_active(jive_master_shaper_selector * self, jive::output * output, jive_region * region)
 {
 	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 	return jive_region_varcut_output_is_active(&shaped_region->active_top, output);
@@ -423,7 +423,7 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 	for (k = 0; k < nsorted_nodes; k++) {
 		jive_node * node = sorted_nodes[k]->node;
 		for (n = 0; n < node->noutputs; n++) {
-			jive_output * output = node->outputs[n];
+			jive::output * output = node->outputs[n];
 			jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(&self->shaped_region->active_top.base, output);
 			if (!shaped_ssavar)
 				continue;
@@ -490,7 +490,7 @@ maybe_inner_node(jive_master_shaper_selector * self, jive_node * node)
 	bool other_region = false;
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		
 		size_t output_user_count = 0;
 		bool other_region = false;
@@ -608,7 +608,7 @@ compute_blocked_rescls_priority(jive_master_shaper_selector * self, jive_node * 
 	
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		if (assumed_active(self, output, region)) {
 			const jive_resource_class * rescls = jive_resource_class_relax(output->required_rescls);
 			blocked_rescls_priority = jive_rescls_priority_min(blocked_rescls_priority, rescls->priority);
@@ -696,7 +696,7 @@ jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * 
 {
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_node_cost * node_cost = jive_master_shaper_selector_map_node_internal(self, user->node);
@@ -823,7 +823,7 @@ node_create(void * self_, jive_node * node)
 }
 
 static void
-input_change(void * self_, jive::input * input, jive_output * old_origin, jive_output * new_origin)
+input_change(void * self_, jive::input * input, jive::output * old_origin, jive::output * new_origin)
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
 	

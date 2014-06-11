@@ -37,32 +37,32 @@ static int test_main(void)
 		jive_graph_get_nodeclass_form(gr1, &JIVE_NODE),
 		false);
 	
-	jive_output * a = jive_bitconstant(gr1, 8, "01010101");
-	jive_output * b = jive_bitslice(a, 2, 6);
-	jive_output * tmparray0[] = {b, b};
-	jive_output * c = jive_bitconcat(2, tmparray0);
-	jive_output * tmparray1[] = {a, c};
-	jive_output * d = jive_bitsum(2, tmparray1);
-	jive_output * e = jive_bitdifference(a, c);
-	jive_output * tmparray2[] = {d, e};
-	jive_output * f = jive_bitand(2, tmparray2);
-	jive_output * tmparray3[] = {d, e};
-	jive_output * g = jive_bitor(2, tmparray3);
-	jive_output * tmparray4[] = {f, g};
-	jive_output * h = jive_bitxor(2, tmparray4);
-	jive_output * tmparray5[] = {f, g};
-	jive_output * i = jive_bitmultiply(2, tmparray5);
-	jive_output * j = jive_bituhiproduct(h, i);
-	jive_output * k = jive_bitshiproduct(h, i);
-	jive_output * l = jive_bituquotient(j, k);
-	jive_output * m = jive_bitsquotient(j, k);
-	jive_output * n = jive_bitumod(l, m);
-	jive_output * o = jive_bitsmod(l, m);
-	jive_output * p = jive_bitshl(n, o);
-	jive_output * q = jive_bitshr(n, o);
-	jive_output * r = jive_bitnot(p);
-	jive_output * s = jive_bitnegate(q);
-	jive_output * t = jive_bitashr(r, s);
+	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
+	jive::output * b = jive_bitslice(a, 2, 6);
+	jive::output * tmparray0[] = {b, b};
+	jive::output * c = jive_bitconcat(2, tmparray0);
+	jive::output * tmparray1[] = {a, c};
+	jive::output * d = jive_bitsum(2, tmparray1);
+	jive::output * e = jive_bitdifference(a, c);
+	jive::output * tmparray2[] = {d, e};
+	jive::output * f = jive_bitand(2, tmparray2);
+	jive::output * tmparray3[] = {d, e};
+	jive::output * g = jive_bitor(2, tmparray3);
+	jive::output * tmparray4[] = {f, g};
+	jive::output * h = jive_bitxor(2, tmparray4);
+	jive::output * tmparray5[] = {f, g};
+	jive::output * i = jive_bitmultiply(2, tmparray5);
+	jive::output * j = jive_bituhiproduct(h, i);
+	jive::output * k = jive_bitshiproduct(h, i);
+	jive::output * l = jive_bituquotient(j, k);
+	jive::output * m = jive_bitsquotient(j, k);
+	jive::output * n = jive_bitumod(l, m);
+	jive::output * o = jive_bitsmod(l, m);
+	jive::output * p = jive_bitshl(n, o);
+	jive::output * q = jive_bitshr(n, o);
+	jive::output * r = jive_bitnot(p);
+	jive::output * s = jive_bitnegate(q);
+	jive::output * t = jive_bitashr(r, s);
 	
 	jive_node * orig_node = t->node();
 	

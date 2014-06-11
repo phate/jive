@@ -35,14 +35,14 @@ typedef jive::operation_node<jive::dataitems_operation> jive_dataitems_node;
 typedef jive::operation_node<jive::datadef_operation> jive_datadef_node;
 typedef jive::operation_node<jive::dataobj_operation> jive_dataobj_node;
 
-jive_output *
-jive_dataobj(jive_output * data, struct jive_memlayout_mapper * mapper);
+jive::output *
+jive_dataobj(jive::output * data, struct jive_memlayout_mapper * mapper);
 
-jive_output *
-jive_rodataobj(jive_output * data, struct jive_memlayout_mapper * mapper);
+jive::output *
+jive_rodataobj(jive::output * data, struct jive_memlayout_mapper * mapper);
 
-jive_output *
-jive_bssobj(jive_output * data, struct jive_memlayout_mapper * mapper);
+jive::output *
+jive_bssobj(jive::output * data, struct jive_memlayout_mapper * mapper);
 
 JIVE_EXPORTED_INLINE jive_dataitems_node *
 jive_dataitems_node_cast(jive_node * node)

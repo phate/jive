@@ -25,9 +25,9 @@ static int test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph,
 		2, tmparray0, tmparray1);
 
-	jive_output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
+	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
-	jive_output * fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
+	jive::output * fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
 	
 	jive_view(graph, stderr);
 	

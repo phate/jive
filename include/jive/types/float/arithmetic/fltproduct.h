@@ -20,8 +20,8 @@ class product_operation final : public jive::flt_binary_operation {
 }
 }
 
-jive_output *
-jive_fltproduct(struct jive_output * operand1, struct jive_output * operand2);
+jive::output *
+jive_fltproduct(jive::output * operand1, jive::output * operand2);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_fltproduct_node_cast(jive_node * node)

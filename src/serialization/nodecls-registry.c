@@ -261,7 +261,7 @@ jive_serialization_nodecls_deserialize_default(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	jive_region * region,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	struct jive_token_istream * is,
 	jive_node ** node)
 {

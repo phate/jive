@@ -22,7 +22,7 @@ jive_fltsymbolicconstant_node_match_attrs_(const jive_node * self, const jive_no
 
 static jive_node *
 jive_fltsymbolicconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_FLTSYMBOLICCONSTANT_NODE = {
 	parent : &JIVE_NULLARY_OPERATION,
@@ -54,7 +54,7 @@ jive_fltsymbolicconstant_node_match_attrs_(const jive_node * self, const jive_no
 
 static jive_node *
 jive_fltsymbolicconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::flt::symbolicconstant_operation * attrs =
 		(const jive::flt::symbolicconstant_operation *) attrs_;
@@ -68,7 +68,7 @@ jive_fltsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 	return node;
 }
 
-jive_output *
+jive::output *
 jive_fltsymbolicconstant(jive_graph * graph, const char * name)
 {
 	jive::flt::symbolicconstant_operation attrs;

@@ -20,7 +20,7 @@
 
 static jive_node *
 jive_sizeof_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 static bool
 jive_sizeof_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
@@ -58,7 +58,7 @@ jive_sizeof_node_match_attrs_(const jive_node * self, const jive_node_attrs * se
 
 static jive_node *
 jive_sizeof_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::sizeof_operation * attrs = (const jive::sizeof_operation *)attrs_;
 	
@@ -100,7 +100,7 @@ jive_sizeof_node_create(jive_region * region, const jive::value::type * type)
 	return node;
 }
 
-jive_output *
+jive::output *
 jive_sizeof_create(jive_region * region, const jive::value::type * type)
 {
 	return jive_sizeof_node_create(region, type)->outputs[0];
@@ -114,6 +114,6 @@ jive_sizeof_node_reduce(const jive_sizeof_node * node, jive_memlayout_mapper * m
 	const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_value_type(mapper,
 		&node->operation().type());
 	
-	jive_output * new_node = jive_bitconstant_unsigned(node->graph, 32, layout->total_size);
+	jive::output * new_node = jive_bitconstant_unsigned(node->graph, 32, layout->total_size);
 	jive_output_replace(node->outputs[0], new_node);
 }

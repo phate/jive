@@ -16,10 +16,10 @@
 
 namespace jive {
 	class input;
+	class output;
 }
 
 class jive_gate;
-class jive_output;
 
 struct jive_buffer;
 struct jive_cpureg;
@@ -60,12 +60,13 @@ public:
 	/*
 		FIXME: change return type to std::unique_ptr<jive::input>
 	*/
-	virtual jive::input * create_input(jive_node * node, size_t index, jive_output * origin) const = 0;
+	virtual jive::input * create_input(jive_node * node, size_t index,
+		jive::output * origin) const = 0;
 
 	/*
-		FIXME: change return type to std::unique_ptr<jive_output>
+		FIXME: change return type to std::unique_ptr<jive::output>
 	*/
-	virtual jive_output * create_output(jive_node * node, size_t index) const = 0;
+	virtual jive::output * create_output(jive_node * node, size_t index) const = 0;
 
 	/*
 		FIXME: change return type to std::unique_ptr<jive_gate>
@@ -78,7 +79,7 @@ public:
 
 jive::input *
 jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
-	jive_output * initial_operand);
+	jive::output * origin);
 
 namespace jive {
 
@@ -93,7 +94,7 @@ public:
 	virtual ~input() noexcept;
 
 protected:
-	input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive::output * origin);
 
 public:
 	virtual const jive::base::type & type() const noexcept = 0;
@@ -103,9 +104,9 @@ public:
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
 	*/
-	void internal_divert_origin(jive_output * new_origin) noexcept;
+	void internal_divert_origin(jive::output * new_origin) noexcept;
 
-	void divert_origin(jive_output * new_origin) noexcept;
+	void divert_origin(jive::output * new_origin) noexcept;
 	
 	/*
 		FIXME: This function is only used two times in src/regalloc/fixup.c. See whether we can
@@ -113,7 +114,7 @@ public:
 	*/
 	void swap(input * other) noexcept;
 
-	inline jive_output * origin() const noexcept { return origin_; }
+	inline jive::output * origin() const noexcept { return origin_; }
 
 	inline jive_node * producer() const noexcept;
 
@@ -145,7 +146,7 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
-	jive_output * origin_;
+	jive::output * origin_;
 };
 
 }	//jive namespace
@@ -162,20 +163,22 @@ jive_input_auto_assign_variable(jive::input * self);
 struct jive_ssavar *
 jive_input_auto_merge_variable(jive::input * self);
 
+namespace jive {
+
 /**	@}	*/
 
 /**
-        \defgroup jive_output Outputs
+        \defgroup jive::output Outputs
         Outputs
         @{
 */
 
-class jive_output {
+class output {
 public:
-	virtual ~jive_output() noexcept;
+	virtual ~output() noexcept;
 
 protected:
-	jive_output(struct jive_node * node, size_t index);
+	output(struct jive_node * node, size_t index);
 
 public:
 	virtual const jive::base::type & type() const noexcept = 0;
@@ -198,8 +201,8 @@ public:
 	
 	jive_gate * gate;
 	struct {
-		jive_output * prev;
-		jive_output * next;
+		jive::output * prev;
+		jive::output * next;
 	} gate_outputs_list;
 	
 	struct jive_ssavar * ssavar;
@@ -214,17 +217,19 @@ private:
 	jive_node * node_;
 };
 
+}	//jive namespace
+
 struct jive_variable *
-jive_output_get_constraint(const jive_output * self);
+jive_output_get_constraint(const jive::output * self);
 
 void
-jive_output_replace(jive_output * self, jive_output * other);
+jive_output_replace(jive::output * self, jive::output * other);
 
 struct jive_ssavar *
-jive_output_auto_assign_variable(jive_output * self);
+jive_output_auto_assign_variable(jive::output * self);
 
 struct jive_ssavar *
-jive_output_auto_merge_variable(jive_output * self);
+jive_output_auto_merge_variable(jive::output * self);
 
 /**	@}	*/
 
@@ -246,9 +251,9 @@ public:
 
 	virtual void label(jive_buffer & buffer) const;
 
-	jive::input * create_input(jive_node * node, size_t index, jive_output * origin);
+	jive::input * create_input(jive_node * node, size_t index, jive::output * origin);
 
-	jive_output * create_output(jive_node * node, size_t index);
+	jive::output * create_output(jive_node * node, size_t index);
 	
 	struct jive_graph * graph;
 	struct {
@@ -264,8 +269,8 @@ public:
 	} inputs;
 	
 	struct {
-		jive_output * first;
-		jive_output * last;
+		jive::output * first;
+		jive::output * last;
 	} outputs;
 	
 	bool may_spill;

@@ -13,7 +13,7 @@
 
 static jive_node *
 jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, struct jive::output * const operands[]);
 
 const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
 	base : { /* jive_unary_opeartion_class */
@@ -39,7 +39,7 @@ const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
 
 static void
 jive_fltnegate_node_init_(struct jive_node * self, struct jive_region * region,
-	struct jive_output * operand)
+	jive::output * operand)
 {
 	jive::flt::type flttype;
 	const jive::base::type * flttype_ptr = &flttype;
@@ -50,7 +50,7 @@ jive_fltnegate_node_init_(struct jive_node * self, struct jive_region * region,
 
 static jive_node *
 jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
@@ -60,8 +60,8 @@ jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs *
 	return node;
 }
 
-jive_output *
-jive_fltnegate(struct jive_output * operand)
+jive::output *
+jive_fltnegate(jive::output * operand)
 {
 	jive::flt::negate_operation op;
 	return jive_unary_operation_create_normalized(&JIVE_FLTNEGATE_NODE_.base, operand->node()->graph,

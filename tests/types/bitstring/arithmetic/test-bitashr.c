@@ -21,19 +21,19 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 
-	jive_output * c0 = jive_bitconstant_unsigned(graph, 32, 16);
-	jive_output * c1 = jive_bitconstant_signed(graph, 32, -16);
-	jive_output * c2 = jive_bitconstant_unsigned(graph, 32, 2);
-	jive_output * c3 = jive_bitconstant_unsigned(graph, 32, 32);
+	jive::output * c0 = jive_bitconstant_unsigned(graph, 32, 16);
+	jive::output * c1 = jive_bitconstant_signed(graph, 32, -16);
+	jive::output * c2 = jive_bitconstant_unsigned(graph, 32, 2);
+	jive::output * c3 = jive_bitconstant_unsigned(graph, 32, 32);
 
-	jive_output * ashr0 = jive_bitashr(s0, s1);
-	jive_output * ashr1 = jive_bitashr(c0, c2);
-	jive_output * ashr2 = jive_bitashr(c0, c3);
-	jive_output * ashr3 = jive_bitashr(c1, c2);
-	jive_output * ashr4 = jive_bitashr(c1, c3);
+	jive::output * ashr0 = jive_bitashr(s0, s1);
+	jive::output * ashr1 = jive_bitashr(c0, c2);
+	jive::output * ashr2 = jive_bitashr(c0, c3);
+	jive::output * ashr3 = jive_bitashr(c1, c2);
+	jive::output * ashr4 = jive_bitashr(c1, c3);
 
 	jive_graph_export(graph, ashr0);
 	jive_graph_export(graph, ashr1);

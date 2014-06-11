@@ -27,7 +27,7 @@ jive_node *
 shl_operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	return detail::binop_create<shl_operation>(
 		*this,
@@ -90,8 +90,8 @@ const jive_bitbinary_operation_class JIVE_BITSHL_NODE_ = {
 	type : jive_bitop_code_shl
 };
 
-jive_output *
-jive_bitshl(jive_output * operand, jive_output * shift)
+jive::output *
+jive_bitshl(jive::output * operand, jive::output * shift)
 {
 	jive_graph * graph = operand->node()->graph;
 	return jive::bitstring::detail::binop_normalized_create<

@@ -11,11 +11,11 @@
 
 namespace jive {
 	class input;
+	class output;
 }
 
 struct jive_region;
 struct jive_node;
-struct jive_output;
 struct jive_gate;
 struct jive_variable;
 struct jive_ssavar;
@@ -133,7 +133,7 @@ jive_input_notifier_slot_call(const jive_input_notifier_slot * self, jive::input
 /* input_change notifiers */
 
 typedef void (*jive_input_change_notifier_function)(void * closure, jive::input * input,
-	struct jive_output * old_origin, struct jive_output * new_origin);
+	jive::output * old_origin, jive::output * new_origin);
 typedef struct jive_input_change_notifier jive_input_change_notifier;
 typedef struct jive_input_change_notifier_slot jive_input_change_notifier_slot;
 
@@ -160,11 +160,11 @@ jive_input_change_notifier_slot_connect(jive_input_change_notifier_slot * self, 
 
 void
 jive_input_change_notifier_slot_call(const jive_input_change_notifier_slot * self,
-	jive::input * input, struct jive_output * old_origin, struct jive_output * new_origin);
+	jive::input * input, jive::output * old_origin, jive::output * new_origin);
 
 /* output notifiers */
 
-typedef void (*jive_output_notifier_function)(void * closure, struct jive_output * output);
+typedef void (*jive_output_notifier_function)(void * closure, jive::output * output);
 typedef struct jive_output_notifier jive_output_notifier;
 typedef struct jive_output_notifier_slot jive_output_notifier_slot;
 
@@ -190,7 +190,7 @@ jive_notifier *
 jive_output_notifier_slot_connect(jive_output_notifier_slot * self, jive_output_notifier_function function, void * closure);
 
 void
-jive_output_notifier_slot_call(const jive_output_notifier_slot * self, struct jive_output * output);
+jive_output_notifier_slot_call(const jive_output_notifier_slot * self, jive::output * output);
 
 /* variable notifiers */
 
@@ -286,7 +286,8 @@ jive_ssavar_input_notifier_slot_call(const jive_ssavar_input_notifier_slot * sel
 
 /* ssavar/output notifiers */
 
-typedef void (*jive_ssavar_output_notifier_function)(void * closure, struct jive_ssavar * ssavar, struct jive_output * output);
+typedef void (*jive_ssavar_output_notifier_function)(void * closure, struct jive_ssavar * ssavar,
+	jive::output * output);
 typedef struct jive_ssavar_output_notifier jive_ssavar_output_notifier;
 typedef struct jive_ssavar_output_notifier_slot jive_ssavar_output_notifier_slot;
 
@@ -312,11 +313,13 @@ jive_notifier *
 jive_ssavar_output_notifier_slot_connect(jive_ssavar_output_notifier_slot * self, jive_ssavar_output_notifier_function function, void * closure);
 
 void
-jive_ssavar_output_notifier_slot_call(const jive_ssavar_output_notifier_slot * self, struct jive_ssavar * ssavar, struct jive_output * ssavar_output);
+jive_ssavar_output_notifier_slot_call(const jive_ssavar_output_notifier_slot * self,
+	struct jive_ssavar * ssavar, jive::output * ssavar_output);
 
 /* ssavar divert notifiers */
 
-typedef void (*jive_ssavar_divert_notifier_function)(void * closure, struct jive_ssavar * ssavar, struct jive_output * old_origin, struct jive_output * new_origin);
+typedef void (*jive_ssavar_divert_notifier_function)(void * closure, struct jive_ssavar * ssavar,
+	jive::output * old_origin, jive::output * new_origin);
 typedef struct jive_ssavar_divert_notifier jive_ssavar_divert_notifier;
 typedef struct jive_ssavar_divert_notifier_slot jive_ssavar_divert_notifier_slot;
 
@@ -342,7 +345,8 @@ jive_notifier *
 jive_ssavar_divert_notifier_slot_connect(jive_ssavar_divert_notifier_slot * self, jive_ssavar_divert_notifier_function function, void * closure);
 
 void
-jive_ssavar_divert_notifier_slot_call(const jive_ssavar_divert_notifier_slot * self, struct jive_ssavar * ssavar, struct jive_output * old_origin, struct jive_output * new_origin);
+jive_ssavar_divert_notifier_slot_call(const jive_ssavar_divert_notifier_slot * self,
+	struct jive_ssavar * ssavar, jive::output * old_origin, jive::output * new_origin);
 
 /* ssavar/variable notifiers */
 

@@ -22,10 +22,10 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
 
-	jive_output * shiproduct = jive_bitshiproduct(s0, s1);
+	jive::output * shiproduct = jive_bitshiproduct(s0, s1);
 
 	jive_graph_export(graph, shiproduct);
 

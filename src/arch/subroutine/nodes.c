@@ -18,7 +18,7 @@ jive_subroutine_copy(const jive_subroutine_deprecated * self,
 
 static jive_node *
 jive_subroutine_enter_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
 	parent : &JIVE_NODE,
@@ -33,7 +33,7 @@ const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
 
 static jive_node *
 jive_subroutine_enter_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 	return jive_subroutine_enter_node_create(region);
@@ -60,7 +60,7 @@ jive_subroutine_enter_node_create(jive_region * region)
 
 static jive_node *
 jive_subroutine_leave_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
 	parent : &JIVE_NODE,
@@ -75,14 +75,14 @@ const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
 
 static jive_node *
 jive_subroutine_leave_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	return jive_subroutine_leave_node_create(region, operands[0]);
 }
 
 jive_node *
-jive_subroutine_leave_node_create(jive_region * region, jive_output * control_transfer)
+jive_subroutine_leave_node_create(jive_region * region, jive::output * control_transfer)
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 	jive_subroutine_leave_node * node = new jive_subroutine_leave_node(
@@ -109,7 +109,7 @@ jive_subroutine_node_match_attrs_(const jive_node * self_, const jive_node_attrs
 
 static jive_node *
 jive_subroutine_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_SUBROUTINE_NODE = {
 	parent : &JIVE_NODE,
@@ -144,7 +144,7 @@ jive_subroutine_node_match_attrs_(const jive_node * self_, const jive_node_attrs
 
 static jive_node *
 jive_subroutine_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 	JIVE_DEBUG_ASSERT(operands[0]->node()->region->parent == region);

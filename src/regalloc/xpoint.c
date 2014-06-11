@@ -67,7 +67,7 @@ jive_varcut_fini(jive_varcut * self)
 }
 
 jive_shaped_ssavar *
-jive_varcut_map_output(const jive_varcut * self, jive_output * output)
+jive_varcut_map_output(const jive_varcut * self, jive::output * output)
 {
 	jive_cutvar_xpoint * xpoint = jive_cutvar_xpoint_hash_byorigin_lookup(&self->origin_map, output);
 	if (xpoint)
@@ -193,7 +193,8 @@ jive_mutable_varcut_ssavar_remove_full(jive_mutable_varcut * self, jive_shaped_s
 }
 
 void
-jive_mutable_varcut_ssavar_divert_origin(jive_mutable_varcut * self, jive_shaped_ssavar * shaped_ssavar, jive_output * origin)
+jive_mutable_varcut_ssavar_divert_origin(jive_mutable_varcut * self,
+	jive_shaped_ssavar * shaped_ssavar, jive::output * origin)
 {
 	jive_cutvar_xpoint * xpoint = jive_cutvar_xpoint_hash_byssavar_lookup(&self->ssavar_map, shaped_ssavar);
 	
@@ -318,7 +319,8 @@ jive_region_varcut_ssavar_remove(jive_region_varcut * self, jive_shaped_ssavar *
 }
 
 void
-jive_region_varcut_ssavar_divert_origin(jive_region_varcut * self, jive_shaped_ssavar * shaped_ssavar, jive_output * origin)
+jive_region_varcut_ssavar_divert_origin(jive_region_varcut * self,
+	jive_shaped_ssavar * shaped_ssavar, jive::output * origin)
 {
 	jive_mutable_varcut_ssavar_divert_origin(&self->base, shaped_ssavar, origin);
 }

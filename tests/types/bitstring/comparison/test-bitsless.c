@@ -23,18 +23,18 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
-	jive_output * c0 = jive_bitconstant_signed(graph, 32, 4);
-	jive_output * c1 = jive_bitconstant_signed(graph, 32, 5);
-	jive_output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
-	jive_output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph, 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph, 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
 
-	jive_output * sless0 = jive_bitsless(s0, s1);
-	jive_output * sless1 = jive_bitsless(c0, c1);
-	jive_output * sless2 = jive_bitsless(c1, c0);
-	jive_output * sless3 = jive_bitsless(c2, s0);
-	jive_output * sless4 = jive_bitsless(s1, c3);
+	jive::output * sless0 = jive_bitsless(s0, s1);
+	jive::output * sless1 = jive_bitsless(c0, c1);
+	jive::output * sless2 = jive_bitsless(c1, c0);
+	jive::output * sless3 = jive_bitsless(c2, s0);
+	jive::output * sless4 = jive_bitsless(s1, c3);
 
 	jive_graph_export(graph, sless0);
 	jive_graph_export(graph, sless1);

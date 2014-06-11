@@ -20,8 +20,8 @@ static int test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * c0 = jive_bitconstant(graph, 4, "1100");
-	jive_output * c1 = jive_bitconstant(graph, 4, "0001");
+	jive::output * c0 = jive_bitconstant(graph, 4, "1100");
+	jive::output * c1 = jive_bitconstant(graph, 4, "0001");
 
 	jive_bitdifference(c0, c1);
 	jive_bitshiproduct(c0, c1);

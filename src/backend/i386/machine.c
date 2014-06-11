@@ -16,8 +16,8 @@
 
 static void
 get_slot_memory_reference(const jive_resource_class * rescls,
-	jive_immediate * displacement, jive_output ** base,
-	jive_output * sp, jive_output * fp)
+	jive_immediate * displacement, jive::output ** base,
+	jive::output * sp, jive::output * fp)
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
 		jive_immediate_init(displacement, 0, &jive_label_spoffset, NULL, NULL);
@@ -29,22 +29,22 @@ get_slot_memory_reference(const jive_resource_class * rescls,
 }
 
 jive_xfer_description
-jive_i386_create_xfer(jive_region * region, jive_output * origin,
+jive_i386_create_xfer(jive_region * region, jive::output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
 	jive_xfer_description xfer;
 	
 	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
 	
-	jive_output * sp = jive_subroutine_node_get_sp(sub);
-	jive_output * fp = jive_subroutine_node_get_fp(sub);
+	jive::output * sp = jive_subroutine_node_get_sp(sub);
+	jive::output * fp = jive_subroutine_node_get_fp(sub);
 	
 	bool in_mem = !jive_resource_class_isinstance(in_class, &JIVE_REGISTER_RESOURCE);
 	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
 	
 	if (in_mem) {
 		jive_immediate displacement;
-		jive_output * base;
+		jive::output * base;
 		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
@@ -56,9 +56,9 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 		xfer.output = xfer.node->outputs[0];
 	} else if (out_mem) {
 		jive_immediate displacement;
-		jive_output * base;
+		jive::output * base;
 		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
-		jive_output * tmparray0[] = {base, origin};
+		jive::output * tmparray0[] = {base, origin};
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_int_store32_disp,
@@ -68,7 +68,7 @@ jive_i386_create_xfer(jive_region * region, jive_output * origin,
 		xfer.output = jive_node_add_output(xfer.node, jive_resource_class_get_type(out_class));
 		xfer.output->required_rescls = out_class;
 	} else {
-		jive_output * tmparray1[] = {origin};
+		jive::output * tmparray1[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive_i386_instr_int_transfer,

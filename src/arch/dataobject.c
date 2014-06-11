@@ -21,13 +21,13 @@
 #include <jive/vsdg/statetype.h>
 
 jive_node *
-jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * const items[]);
+jive_dataitems_node_create(jive_region * region, size_t nitems, jive::output * const items[]);
 
 jive_node *
-jive_datadef_node_create(jive_region * region, jive_output * data);
+jive_datadef_node_create(jive_region * region, jive::output * data);
 
 jive_node *
-jive_dataobj_node_create(jive_region * region, jive_output * anchor);
+jive_dataobj_node_create(jive_region * region, jive::output * anchor);
 
 static inline bool
 is_powerof2(size_t v)
@@ -38,13 +38,13 @@ is_powerof2(size_t v)
 static void
 flatten_data_items(
 	jive_context * ctx,
-	jive_output * data,
+	jive::output * data,
 	size_t * ret_nitems,
-	jive_output *** ret_items,
+	jive::output *** ret_items,
 	jive_memlayout_mapper * layout_mapper)
 {
 	size_t nitems = 0;
-	jive_output ** items = 0;
+	jive::output ** items = 0;
 	const jive::base::type * type_ = &data->type();
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
@@ -75,14 +75,14 @@ flatten_data_items(
 		nitems = layout->base.total_size;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
 		
-		jive_output * zero_pad = jive_bitconstant(graph, 8, "00000000");
+		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
 		size_t n, k;
 		for (n = 0; n < nitems; n++)
 			items[n] = zero_pad;
 			
 		for (k = 0; k < decl->nelements; k++) {
 			size_t nsub_items;
-			jive_output ** sub_items;
+			jive::output ** sub_items;
 			
 			flatten_data_items(ctx, data->node()->inputs[k]->origin(), &nsub_items, &sub_items,
 				layout_mapper);
@@ -112,13 +112,13 @@ flatten_data_items(
 		nitems = layout->base.total_size;
 		items = jive_context_malloc(ctx, sizeof(*items) * nitems);
 		
-		jive_output * zero_pad = jive_bitconstant(graph, 8, "00000000");
+		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
 		size_t n;
 		for (n = 0; n < nitems; n++)
 			items[n] = zero_pad;
 			
 		size_t nsub_items;
-		jive_output ** sub_items;
+		jive::output ** sub_items;
 		
 		flatten_data_items(ctx, data->node()->inputs[0]->origin(), &nsub_items, &sub_items,
 			layout_mapper);
@@ -142,7 +142,7 @@ flatten_data_items(
 }
 
 static size_t
-squeeze_data_items(size_t nitems, jive_output ** items)
+squeeze_data_items(size_t nitems, jive::output ** items)
 {
 	size_t n, k = 0;
 	for (n = 0; n < nitems; n++) {
@@ -152,8 +152,8 @@ squeeze_data_items(size_t nitems, jive_output ** items)
 	return k;
 }
 
-jive_output *
-jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
+jive::output *
+jive_dataobj(jive::output * data, jive_memlayout_mapper * layout_mapper)
 {
 	jive_graph * graph = data->node()->graph;
 	jive_context * context = graph->context;
@@ -163,7 +163,7 @@ jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 	region->attrs.section = jive_region_section_data;
 	
 	size_t ndata_items;
-	jive_output ** data_items;
+	jive::output ** data_items;
 	flatten_data_items(context, data, &ndata_items, &data_items, layout_mapper);
 	ndata_items = squeeze_data_items(ndata_items, data_items);
 	jive_node * items = jive_dataitems_node_create(region, ndata_items, data_items);
@@ -176,8 +176,8 @@ jive_dataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 	return dataobj->outputs[0];
 }
 
-jive_output *
-jive_rodataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
+jive::output *
+jive_rodataobj(jive::output * data, jive_memlayout_mapper * layout_mapper)
 {
 	jive_graph * graph = data->node()->graph;
 	jive_context * context = graph->context;
@@ -187,7 +187,7 @@ jive_rodataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 	region->attrs.section = jive_region_section_rodata;
 
 	size_t ndata_items;
-	jive_output ** data_items;
+	jive::output ** data_items;
 	flatten_data_items(context, data, &ndata_items, &data_items, layout_mapper);
 	ndata_items = squeeze_data_items(ndata_items, data_items);
 	jive_node * items = jive_dataitems_node_create(region, ndata_items, data_items);
@@ -199,8 +199,8 @@ jive_rodataobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 	return dataobj->outputs[0];
 }
 
-jive_output *
-jive_bssobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
+jive::output *
+jive_bssobj(jive::output * data, jive_memlayout_mapper * layout_mapper)
 {
 	jive_graph * graph = data->node()->graph;
 	jive_context * context = graph->context;
@@ -210,7 +210,7 @@ jive_bssobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 	region->attrs.section = jive_region_section_bss;
 
 	size_t ndata_items;
-	jive_output ** data_items;
+	jive::output ** data_items;
 	flatten_data_items(context, data, &ndata_items, &data_items, layout_mapper);
 	ndata_items = squeeze_data_items(ndata_items, data_items);
 	jive_node * items = jive_dataitems_node_create(region, ndata_items, data_items);
@@ -224,7 +224,7 @@ jive_bssobj(jive_output * data, jive_memlayout_mapper * layout_mapper)
 
 static jive_node *
 jive_dataitems_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	return jive_dataitems_node_create(region, noperands, operands);
 }
@@ -242,7 +242,7 @@ const jive_node_class JIVE_DATAITEMS_NODE = {
 
 static jive_node *
 jive_datadef_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	return jive_datadef_node_create(region, operands[0]);
 }
@@ -260,7 +260,7 @@ const jive_node_class JIVE_DATADEF_NODE = {
 
 static jive_node *
 jive_dataobj_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	return jive_dataobj_node_create(region, operands[0]);
 }
@@ -277,7 +277,7 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 };
 
 jive_node *
-jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * const items[])
+jive_dataitems_node_create(jive_region * region, size_t nitems, jive::output * const items[])
 {
 	jive_datadef_node * node = new jive_datadef_node(jive::datadef_operation());
 	
@@ -298,7 +298,7 @@ jive_dataitems_node_create(jive_region * region, size_t nitems, jive_output * co
 }
 
 jive_node *
-jive_datadef_node_create(jive_region * region, jive_output * data)
+jive_datadef_node_create(jive_region * region, jive::output * data)
 {
 	jive_datadef_node * node = new jive_datadef_node(jive::datadef_operation());
 	
@@ -316,7 +316,7 @@ jive_datadef_node_create(jive_region * region, jive_output * data)
 }
 
 jive_node *
-jive_dataobj_node_create(jive_region * region, jive_output * anchor)
+jive_dataobj_node_create(jive_region * region, jive::output * anchor)
 {
 	jive_dataobj_node * node = new jive_dataobj_node(jive::dataobj_operation());
 	

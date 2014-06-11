@@ -26,18 +26,18 @@ static int test_main(void)
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 
-	jive_output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive_output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
-	jive_output * c0 = jive_bitconstant_signed(graph, 32, 4);
-	jive_output * c1 = jive_bitconstant_signed(graph, 32, 5);
-	jive_output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
-	jive_output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph, 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph, 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph, 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph, 32, (-0x7fffffffL-1));
 
-	jive_output * sgreater0 = jive_bitsgreater(s0, s1);
-	jive_output * sgreater1 = jive_bitsgreater(c0, c1);
-	jive_output * sgreater2 = jive_bitsgreater(c1, c0);
-	jive_output * sgreater3 = jive_bitsgreater(s0, c2);
-	jive_output * sgreater4 = jive_bitsgreater(c3, s1);
+	jive::output * sgreater0 = jive_bitsgreater(s0, s1);
+	jive::output * sgreater1 = jive_bitsgreater(c0, c1);
+	jive::output * sgreater2 = jive_bitsgreater(c1, c0);
+	jive::output * sgreater3 = jive_bitsgreater(s0, c2);
+	jive::output * sgreater4 = jive_bitsgreater(c3, s1);
 
 	jive_graph_export(graph, sgreater0);
 	jive_graph_export(graph, sgreater1);

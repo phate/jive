@@ -67,21 +67,21 @@ compile_graph(jive_graph * graph)
 }
 
 typedef uint32_t(*un_function_t)(uint32_t);
-typedef jive_output * (un_op_factory_t)(jive_output *);
+typedef jive::output * (un_op_factory_t)(jive::output *);
 
 typedef uint32_t(*bin_function_t)(uint32_t, uint32_t);
-typedef jive_output * (bin_op_factory_t)(jive_output *, jive_output *);
+typedef jive::output * (bin_op_factory_t)(jive::output *, jive::output *);
 
 typedef struct {
 	jive_graph * graph;
-	jive_output * arg;
+	jive::output * arg;
 	jive_subroutine sub;
 } un_graph;
 
 typedef struct {
 	jive_graph * graph;
-	jive_output * arg1;
-	jive_output * arg2;
+	jive::output * arg1;
+	jive::output * arg2;
 	jive_subroutine sub;
 } bin_graph;
 
@@ -107,7 +107,7 @@ static un_function_t
 generate_un_function(jive_context * ctx, un_op_factory_t factory)
 {
 	un_graph u = prepare_un_graph(ctx);
-	jive_output * result = factory(u.arg);
+	jive::output * result = factory(u.arg);
 	jive_subroutine_simple_set_result(u.sub, 0, result);
 	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
@@ -139,7 +139,7 @@ static bin_function_t
 generate_bin_function(jive_context * ctx, bin_op_factory_t factory)
 {
 	bin_graph b = prepare_bin_graph(ctx);
-	jive_output * result = factory(b.arg1, b.arg2);
+	jive::output * result = factory(b.arg1, b.arg2);
 	jive_subroutine_simple_set_result(b.sub, 0, result);
 	jive_graph_export(b.graph, jive_subroutine_end(b.sub)->outputs[0]);
 	bin_function_t function = (bin_function_t) compile_graph(b.graph);
@@ -152,8 +152,8 @@ static un_function_t
 generate_bin_function_curryleft(jive_context * ctx, bin_op_factory_t factory, uint32_t op1)
 {
 	un_graph u = prepare_un_graph(ctx);
-	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op1);
-	jive_output * result = factory(c, u.arg);
+	jive::output * c = jive_bitconstant_unsigned(u.graph, 32, op1);
+	jive::output * result = factory(c, u.arg);
 	jive_subroutine_simple_set_result(u.sub, 0, result);
 	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
@@ -166,8 +166,8 @@ static un_function_t
 generate_bin_function_curryright(jive_context * ctx, bin_op_factory_t factory, uint32_t op2)
 {
 	un_graph u = prepare_un_graph(ctx);
-	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
-	jive_output * result = factory(u.arg, c);
+	jive::output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
+	jive::output * result = factory(u.arg, c);
 	jive_subroutine_simple_set_result(u.sub, 0, result);
 	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
@@ -180,12 +180,12 @@ static bin_function_t
 generate_bin_cmp_function(jive_context * ctx, bin_op_factory_t factory)
 {
 	bin_graph b = prepare_bin_graph(ctx);
-	jive_output * pred = factory(b.arg1, b.arg2);
-	jive_output * zero = jive_bitconstant_unsigned(b.graph, 32, 0);
-	jive_output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
+	jive::output * pred = factory(b.arg1, b.arg2);
+	jive::output * zero = jive_bitconstant_unsigned(b.graph, 32, 0);
+	jive::output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
 	
 	jive::bits::type bits32(32);
-	jive_output * result;
+	jive::output * result;
 	const jive::base::type * tmparray4[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray4,
@@ -203,13 +203,13 @@ static un_function_t
 generate_bin_cmp_function_curryleft(jive_context * ctx, bin_op_factory_t factory, uint32_t op1)
 {
 	un_graph u = prepare_un_graph(ctx);
-	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op1);
-	jive_output * pred = factory(c, u.arg);
-	jive_output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
-	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
+	jive::output * c = jive_bitconstant_unsigned(u.graph, 32, op1);
+	jive::output * pred = factory(c, u.arg);
+	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
+	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
 	jive::bits::type bits32(32);
-	jive_output * result;
+	jive::output * result;
 	const jive::base::type * tmparray5[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray5,
@@ -226,13 +226,13 @@ static un_function_t
 generate_bin_cmp_function_curryright(jive_context * ctx, bin_op_factory_t factory, uint32_t op2)
 {
 	un_graph u = prepare_un_graph(ctx);
-	jive_output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
-	jive_output * pred = factory(u.arg, c);
-	jive_output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
-	jive_output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
+	jive::output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
+	jive::output * pred = factory(u.arg, c);
+	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
+	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
 	jive::bits::type bits32(32);
-	jive_output * result;
+	jive::output * result;
 	const jive::base::type * tmparray6[] = {&bits32};
 	jive_gamma(pred,
 		1, tmparray6,
@@ -457,38 +457,38 @@ ref_sge(uint32_t a, uint32_t b) { return (int32_t)a >= (int32_t)b; }
 static uint32_t
 ref_uge(uint32_t a, uint32_t b) { return a >= b; }
 
-static jive_output *
-wrap_bitand(jive_output * a, jive_output * b)
+static jive::output *
+wrap_bitand(jive::output * a, jive::output * b)
 {
-	jive_output * tmparray7[] = {a, b};
+	jive::output * tmparray7[] = {a, b};
 	return jive_bitand(2, tmparray7);
 }
 
-static jive_output *
-wrap_bitor(jive_output * a, jive_output * b)
+static jive::output *
+wrap_bitor(jive::output * a, jive::output * b)
 {
-	jive_output * tmparray8[] = {a, b};
+	jive::output * tmparray8[] = {a, b};
 	return jive_bitor(2, tmparray8);
 }
 
-static jive_output *
-wrap_bitxor(jive_output * a, jive_output * b)
+static jive::output *
+wrap_bitxor(jive::output * a, jive::output * b)
 {
-	jive_output * tmparray9[] = {a, b};
+	jive::output * tmparray9[] = {a, b};
 	return jive_bitxor(2, tmparray9);
 }
 
-static jive_output *
-wrap_bitsum(jive_output * a, jive_output * b)
+static jive::output *
+wrap_bitsum(jive::output * a, jive::output * b)
 {
-	jive_output * tmparray10[] = {a, b};
+	jive::output * tmparray10[] = {a, b};
 	return jive_bitsum(2, tmparray10);
 }
 
-static jive_output *
-wrap_bitmultiply(jive_output * a, jive_output * b)
+static jive::output *
+wrap_bitmultiply(jive::output * a, jive::output * b)
 {
-	jive_output * tmparray11[] = {a, b};
+	jive::output * tmparray11[] = {a, b};
 	return jive_bitmultiply(2, tmparray11);
 }
 

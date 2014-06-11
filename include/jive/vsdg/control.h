@@ -16,13 +16,13 @@ struct jive_region;
 struct jive_node *
 jive_control_false_create(struct jive_region * region);
 
-struct jive_output *
+jive::output *
 jive_control_false(struct jive_graph * graph);
 
 struct jive_node *
 jive_control_true_create(struct jive_region * region);
 
-struct jive_output *
+jive::output *
 jive_control_true(struct jive_graph * graph);
 
 extern const jive_node_class JIVE_CONTROL_FALSE_NODE;

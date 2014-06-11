@@ -203,8 +203,9 @@ select_split_path(jive_shaped_graph * shaped_graph, const jive_resource_class * 
 	return 0;
 }
 
-static jive_output *
-split_top(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_resource_class_demotion * demotion, jive_shaped_node * point)
+static jive::output *
+split_top(jive_shaped_graph * shaped_graph, jive::output * origin,
+	const jive_resource_class_demotion * demotion, jive_shaped_node * point)
 {
 	const jive_resource_class * in_rescls = demotion->path[0];
 	size_t n;
@@ -230,8 +231,9 @@ split_top(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_res
 	return origin;
 }
 
-static jive_output *
-split_bottom(jive_shaped_graph * shaped_graph, jive_output * origin, const jive_resource_class_demotion * demotion, jive_shaped_node * point)
+static jive::output *
+split_bottom(jive_shaped_graph * shaped_graph, jive::output * origin,
+	const jive_resource_class_demotion * demotion, jive_shaped_node * point)
 {
 	size_t n = 0;
 	while(demotion->path[n+1]) n++;
@@ -271,7 +273,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 	JIVE_DEBUG_ASSERT(variable->ssavars.first == variable->ssavars.last);
 	JIVE_DEBUG_ASSERT(ssavar != 0);
 	
-	jive_output * origin = ssavar->assigned_output;
+	jive::output * origin = ssavar->assigned_output;
 	
 	split_list splits = {0, 0};
 	
@@ -334,13 +336,13 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 	const jive_resource_class_demotion * demotion;
 	demotion = select_split_path(shaped_graph, jive_variable_get_resource_class(variable), position, splits);
 	
-	jive_output * spilled_value;
+	jive::output * spilled_value;
 	spilled_value = split_top(shaped_graph, origin, demotion, position);
 	
 	while (splits.first) {
 		regalloc_split_region * split = splits.first;
 		
-		jive_output * restored_value = split_bottom(shaped_graph, spilled_value, demotion, split->splitting_point);
+		jive::output * restored_value = split_bottom(shaped_graph, spilled_value, demotion, split->splitting_point);
 		
 		size_t n;
 		for (n = 0; n < split->users.nitems; n++) {
@@ -385,7 +387,7 @@ ssavar_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped
 static void
 merge_gate_ports(jive_gate * gate)
 {
-	jive_output * output;
+	jive::output * output;
 	JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list)
 		jive_output_auto_merge_variable(output);
 	
@@ -411,7 +413,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
-			jive_output * origin = input->origin();
+			jive::output * origin = input->origin();
 				
 			/* don't issue xfer instruction between "tied" gates */
 			if (origin->gate == gate) {
@@ -425,7 +427,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 				type, rescls);
 			
 			jive::input * xfer_input = xfer_node->inputs[0];
-			jive_output * xfer_output = xfer_node->outputs[0];
+			jive::output * xfer_output = xfer_node->outputs[0];
 			
 			jive_input_auto_assign_variable(xfer_input);
 			jive_input_unassign_ssavar(input);
@@ -449,7 +451,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			jive_cut_append(cut, xfer_node);
 		}
 		
-		jive_output * output;
+		jive::output * output;
 		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
 			/* don't issue xfer instruction between "tied" gates */
 			bool other_user = false;
@@ -466,7 +468,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 				type, output, rescls,
 				type, rescls);
 			
-			jive_output * xfer_output = xfer_node->outputs[0];
+			jive::output * xfer_output = xfer_node->outputs[0];
 			
 			jive_ssavar_divert_origin(output->ssavar, xfer_output);
 			
@@ -567,8 +569,8 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	jive_gate * spill_gate = jive_resource_class_create_gate(demotion->target, graph, "spilled");
 	
 	while (gate->outputs.first) {
-		jive_output * output = gate->outputs.first;
-		jive_output * new_output = jive_node_gate_output(output->node(), spill_gate);
+		jive::output * output = gate->outputs.first;
+		jive::output * new_output = jive_node_gate_output(output->node(), spill_gate);
 		
 		JIVE_DEBUG_ASSERT(output->users.first == output->users.last);
 		
@@ -585,7 +587,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 			jive_shaped_node * position = jive_shaped_node_next_in_region(p);
 			jive_shaped_node_destroy(p);
 			
-			jive_output * restored_output = split_bottom(shaped_graph, new_output, demotion, position);
+			jive::output * restored_output = split_bottom(shaped_graph, new_output, demotion, position);
 			jive_ssavar_unassign_output(restored_output->ssavar, restored_output);
 			
 			jive_ssavar_divert_origin(xfer_node->outputs[0]->ssavar, restored_output);
@@ -600,7 +602,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		jive::input * input = gate->inputs.first;
 		jive_node * node = input->node;
 		jive_node * xfer_node = input->producer();
-		jive_output * origin = xfer_node->inputs[0]->origin();
+		jive::output * origin = xfer_node->inputs[0]->origin();
 			
 		jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
 		jive_shaped_node_destroy(p);
@@ -610,7 +612,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		
 		jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, node);
 		position = jive_shaped_node_prev_in_region(position);
-		jive_output * spill_output = split_top(shaped_graph, origin, demotion, position);
+		jive::output * spill_output = split_top(shaped_graph, origin, demotion, position);
 		
 		jive::input * spill_input = jive_node_gate_input(node, spill_gate, spill_output);
 		jive_input_auto_merge_variable(spill_input);

@@ -20,8 +20,8 @@ class notequal_operation final : public jive::flt_compare_operation {
 }
 }
 
-jive_output *
-jive_fltnotequal(struct jive_output * operand1, struct jive_output * operand2);
+jive::output *
+jive_fltnotequal(jive::output * operand1, jive::output * operand2);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_fltnotequal_node_cast(jive_node * node)

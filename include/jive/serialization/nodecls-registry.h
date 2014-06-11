@@ -12,7 +12,10 @@
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
 
-struct jive_output;
+namespace jive {
+	class output;
+}
+
 struct jive_region;
 struct jive_serialization_driver;
 struct jive_token_ostream;
@@ -30,7 +33,7 @@ typedef bool (*jive_nodecls_deserialize_function_t)(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	struct jive_region * region,
-	size_t noperands, struct jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	struct jive_token_istream * is,
 	struct jive_node ** node);
 
@@ -89,7 +92,7 @@ jive_serialization_nodecls_deserialize_default(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
 	struct jive_region * region,
-	size_t noperands, struct jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	struct jive_token_istream * is,
 	struct jive_node ** node);
 

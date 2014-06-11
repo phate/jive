@@ -44,7 +44,7 @@ extern const jive_node_class JIVE_SPLITNODE;
 jive_node *
 jive_splitnode_create(struct jive_region * region,
 	const jive::base::type * in_type,
-	struct jive_output * in_origin,
+	jive::output * in_origin,
 	const struct jive_resource_class * in_class,
 	const jive::base::type * out_type,
 	const struct jive_resource_class * out_class);

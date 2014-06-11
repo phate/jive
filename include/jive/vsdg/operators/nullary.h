@@ -13,6 +13,8 @@
 
 namespace jive {
 
+class output;
+
 /**
 	\brief Nullary operator (operator taking no formal arguments)
 */
@@ -23,7 +25,6 @@ public:
 
 }
 
-struct jive_output;
 struct jive_region;
 
 typedef struct jive_node_class jive_nullary_operation_class;
@@ -34,11 +35,11 @@ typedef struct jive_nullary_operation_normal_form jive_nullary_operation_normal_
 
 extern const jive_node_class JIVE_NULLARY_OPERATION;
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_nullary_operation_create_normalized(const jive_nullary_operation_class * cls,
 	struct jive_graph * graph, const jive_node_attrs * attrs)
 {
-	jive_output * result;
+	jive::output * result;
 	jive_node_create_normalized(cls, graph, attrs, 0, NULL, &result);
 	return result;
 }
@@ -52,7 +53,8 @@ jive_nullary_operation_get_default_normal_form_(const jive_node_class * cls, jiv
 
 struct jive_nullary_operation_normal_form_class {
 	jive_node_normal_form_class base;
-	jive_output * (*normalized_create)(const jive_nullary_operation_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs);
+	jive::output * (*normalized_create)(const jive_nullary_operation_normal_form * self,
+		struct jive_region * region, const jive_node_attrs * attrs);
 };
 
 extern const jive_nullary_operation_normal_form_class JIVE_NULLARY_OPERATION_NORMAL_FORM_;
@@ -62,7 +64,7 @@ struct jive_nullary_operation_normal_form {
 	jive_node_normal_form base;
 };
 
-JIVE_EXPORTED_INLINE jive_output *
+JIVE_EXPORTED_INLINE jive::output *
 jive_nullary_operation_normalized_create(
 	const jive_nullary_operation_normal_form * self,
 	struct jive_region * region,
@@ -79,7 +81,7 @@ jive_nullary_operation_normalized_create(
 bool
 jive_nullary_operation_normalize_node_(const jive_node_normal_form * self, jive_node * node);
 
-jive_output *
+jive::output *
 jive_nullary_operation_normalized_create_(const jive_nullary_operation_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs);
 
 #endif

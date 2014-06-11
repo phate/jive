@@ -42,7 +42,7 @@ static int test_main(void)
 
 	jive_floating_region floating = jive_floating_region_create(graph);
 	const jive::base::type * tmparray0[] = {&vtype};
-	jive_output * tmparray1[] = {node0->outputs[0]};
+	jive::output * tmparray1[] = {node0->outputs[0]};
 	jive_node * fnode0 = jive_test_node_create(floating.region,
 		1, tmparray0,
 			tmparray1,
@@ -51,7 +51,7 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	assert(floating.region->parent == graph->root_region);
 	const jive::base::type * tmparray2[] = {&vtype, &vtype, &vtype};
-	jive_output * tmparray3[] = {node0->outputs[0], node1->outputs[0], fnode0->outputs[0]};
+	jive::output * tmparray3[] = {node0->outputs[0], node1->outputs[0], fnode0->outputs[0]};
 
 	jive_node * fnode1 = jive_test_node_create(floating.region,
 		3, tmparray2,
@@ -61,7 +61,7 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	assert(floating.region->parent == region1);
 	const jive::base::type * tmparray4[] = {&vtype, &vtype, &vtype, &vtype, &vtype};
-	jive_output * tmparray5[] = {node0->outputs[0], node1->outputs[0], node2->outputs[0],
+	jive::output * tmparray5[] = {node0->outputs[0], node1->outputs[0], node2->outputs[0],
 			fnode0->outputs[0], fnode1->outputs[0]};
 
 	jive_node * fnode2 = jive_test_node_create(floating.region,

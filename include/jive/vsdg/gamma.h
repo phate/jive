@@ -12,10 +12,10 @@
 #include <jive/vsdg/graph.h>
 
 struct jive_graph;
-struct jive_output;
 struct jive_region;
 
 namespace jive {
+	class output;
 	class type;
 }
 
@@ -29,11 +29,11 @@ class jive_op_gamma final : public jive::operation {
 };
 
 void
-jive_gamma(struct jive_output * predicate,
+jive_gamma(jive::output * predicate,
 	size_t nvalues, const struct jive::base::type * const types[],
-	struct jive_output * const true_values[],
-	struct jive_output * const false_values[],
-	struct jive_output * results[]);
+	jive::output * const true_values[],
+	jive::output * const false_values[],
+	jive::output * results[]);
 
 /* normal form */
 
@@ -87,7 +87,7 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self, jive_
 
 bool
 jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * self,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	const jive_node_attrs * attrs);
 
 void

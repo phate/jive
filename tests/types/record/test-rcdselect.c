@@ -38,18 +38,18 @@ static int test_main()
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		6, tmparray0);
-	jive_output * tmparray1[] = {top->outputs[0],
+	jive::output * tmparray1[] = {top->outputs[0],
 		top->outputs[1], top->outputs[2]};
 
-	jive_output * g0 = jive_group_create(&decl, 3, tmparray1);
-	jive_output * load = jive_load_by_address_create(top->outputs[5], &rcdtype, 0, NULL);
+	jive::output * g0 = jive_group_create(&decl, 3, tmparray1);
+	jive::output * load = jive_load_by_address_create(top->outputs[5], &rcdtype, 0, NULL);
 
-	jive_output * s0 = jive_select_create(1, top->outputs[3]);
-	jive_output * s1 = jive_select_create(1, g0);
-	jive_output * s2 = jive_select_create(2, top->outputs[4]);
-	jive_output * s3 = jive_select_create(0, load);
+	jive::output * s0 = jive_select_create(1, top->outputs[3]);
+	jive::output * s1 = jive_select_create(1, g0);
+	jive::output * s2 = jive_select_create(2, top->outputs[4]);
+	jive::output * s3 = jive_select_create(0, load);
 	const jive::base::type * tmparray2[] = {&bits16, &bits16, &bits32, &bits8};
-	jive_output * tmparray3[] = {s0, s1, s2, s3};
+	jive::output * tmparray3[] = {s0, s1, s2, s3};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		4, tmparray2, tmparray3,

@@ -36,12 +36,12 @@ type::operator==(const jive::base::type & other) const noexcept
 }
 
 jive::input *
-type::create_input(jive_node * node, size_t index, jive_output * origin) const
+type::create_input(jive_node * node, size_t index, jive::output * origin) const
 {
 	return new jive::flt::input(node, index, origin);
 }
 
-jive_output *
+jive::output *
 type::create_output(jive_node * node, size_t index) const
 {
 	return new jive::flt::output(node, index);
@@ -57,7 +57,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 input::~input() noexcept {}
 
-input::input(struct jive_node * node, size_t index, jive_output * origin)
+input::input(struct jive_node * node, size_t index, jive::output * origin)
 	: jive::value::input(node, index, origin)
 {}
 

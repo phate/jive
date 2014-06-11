@@ -34,16 +34,16 @@ static int test_main(void)
 		2, tmparray0,
 		1, tmparray1);
 	
-	jive_output * p1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive_output * p2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	jive::output * p1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	jive::output * p2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	
 	jive_region * fn_region = subroutine.region;
-	jive_output * tmparray2[] = {p1, p2};
+	jive::output * tmparray2[] = {p1, p2};
 	
 	jive_node * cmp = jive_instruction_node_create(
 		fn_region, &jive_i386_instr_int_cmp,
 		tmparray2, NULL);
-	jive_output * tmparray3[] = {cmp->outputs[0]};
+	jive::output * tmparray3[] = {cmp->outputs[0]};
 	int64_t tmparray4[] = {0};
 	
 	jive_node * bge = jive_instruction_node_create(
@@ -52,10 +52,10 @@ static int test_main(void)
 	
 	const jive::base::type * bits32 = &p1->type();
 	
-	jive_output * max;
+	jive::output * max;
 	const jive::base::type * tmparray5[] = {bits32};
-	jive_output * tmparray6[] = {p2};
-	jive_output * tmparray7[] = {p1};
+	jive::output * tmparray6[] = {p2};
+	jive::output * tmparray7[] = {p1};
 	jive_gamma(bge->outputs[0], 1,
 		tmparray5,
 		tmparray6, tmparray7, &max);

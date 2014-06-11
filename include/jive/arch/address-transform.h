@@ -98,10 +98,10 @@ extern const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_;
 
 jive_node *
 jive_address_to_bitstring_node_create(struct jive_region * region,
-	jive_output * address, size_t nbits, const jive::base::type * original_type);
+	jive::output * address, size_t nbits, const jive::base::type * original_type);
 
-jive_output *
-jive_address_to_bitstring_create(jive_output * address, size_t nbits,
+jive::output *
+jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type);
 
 JIVE_EXPORTED_INLINE jive_address_to_bitstring_node *
@@ -120,10 +120,10 @@ extern const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_;
 
 jive_node *
 jive_bitstring_to_address_node_create(struct jive_region * region,
-	jive_output * bitstring, size_t nbits, const jive::base::type * original_type);
+	jive::output * bitstring, size_t nbits, const jive::base::type * original_type);
 
-jive_output *
-jive_bitstring_to_address_create(jive_output * bitstring, size_t nbits,
+jive::output *
+jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 	const jive::base::type * original_type);
 
 JIVE_EXPORTED_INLINE jive_bitstring_to_address_node *

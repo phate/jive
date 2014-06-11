@@ -20,8 +20,8 @@ class lesseq_operation final : public jive::flt_compare_operation {
 }
 }
 
-struct jive_output *
-jive_fltlesseq(struct jive_output * operand1, struct jive_output * operand2);
+jive::output *
+jive_fltlesseq(jive::output * operand1, jive::output * operand2);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_fltlesseq_node_cast(jive_node * node)

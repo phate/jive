@@ -41,7 +41,7 @@
 static const jive::value::type ** string_elements;
 static jive::rcd::declaration string_decl;
 
-static jive_output *
+static jive::output *
 make_string(jive_graph * graph, const char * txt)
 {
 	static const jive::bits::type bits8(8);
@@ -55,7 +55,7 @@ make_string(jive_graph * graph, const char * txt)
 	string_decl.nelements = len;
 	string_decl.elements = string_elements;
 	
-	jive_output * chars[len];
+	jive::output * chars[len];
 	for (n = 0; n < len; n++) {
 		size_t k;
 		char bits[8];
@@ -64,11 +64,11 @@ make_string(jive_graph * graph, const char * txt)
 		chars[n] = jive_bitconstant(graph, 8, bits);
 	}
 	
-	jive_output * tmp = jive_group_create(&string_decl, len, chars);
+	jive::output * tmp = jive_group_create(&string_decl, len, chars);
 	
 	jive_memlayout_mapper_simple layout_mapper;
 	jive_memlayout_mapper_simple_init(&layout_mapper, graph->context, 32);
-	jive_output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
+	jive::output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
 	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
 	return dataobj;
@@ -107,7 +107,7 @@ static int test_main(void)
 	jive_immediate imm;
 	
 	jive_test_state_type control_type;
-	jive_output * control = jive_node_add_output(enter, &control_type);
+	jive::output * control = jive_node_add_output(enter, &control_type);
 	
 	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
@@ -130,15 +130,15 @@ static int test_main(void)
 		0, &imm);
 	jive_node_add_input(load_fd, &control_type, control);
 	
-	jive_output * write_fn_address = jive_label_to_address_create(graph, &write_label.base);
-	jive_output * tmparray0[] = {load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]};
+	jive::output * write_fn_address = jive_label_to_address_create(graph, &write_label.base);
+	jive::output * tmparray0[] = {load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]};
 	jive_node * call_write = jive_call_by_address_node_create(
 		fn_region, write_fn_address, NULL,
 		3, tmparray0,
 		0, NULL);
 	
 	/* mark call as affecting global state */
-	jive_output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
+	jive::output * memstate = jive_subroutine_simple_get_global_state(i386_fn);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node_add_input(call_write, memtype, memstate);
 	jive_subroutine_simple_set_global_state(

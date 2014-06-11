@@ -21,7 +21,7 @@ class ulesseq_operation final : public jive::bits_compare_operation {
 }
 }
 
-jive_output *
-jive_bitulesseq(struct jive_output * operand1, struct jive_output * operand2);
+jive::output *
+jive_bitulesseq(jive::output * operand1, jive::output * operand2);
 
 #endif

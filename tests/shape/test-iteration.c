@@ -82,7 +82,7 @@ static int test_main(void)
 		1, tmparray5, n2->outputs,
 		1, tmparray6);
 	const jive::base::type * tmparray7[] = {&anchor_type, &anchor_type};
-	jive_output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
+	jive::output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
 	const jive::base::type * tmparray9[] = {&type};
 	
 	jive_node * n5 = jive_test_node_create(r1,

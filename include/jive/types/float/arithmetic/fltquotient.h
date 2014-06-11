@@ -20,8 +20,8 @@ class quotient_operation final : public jive::flt_binary_operation {
 }
 }
 
-jive_output *
-jive_fltquotient(struct jive_output * operand1, struct jive_output * operand2);
+jive::output *
+jive_fltquotient(jive::output * operand1, jive::output * operand2);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_fltquotient_node_cast(jive_node * node)

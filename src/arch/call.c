@@ -41,7 +41,7 @@ jive_call_node_match_attrs_(const jive_node * self_, const jive_node_attrs * att
 
 static jive_node *
 jive_call_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_CALL_NODE = {
 	parent : &JIVE_NODE,
@@ -80,7 +80,7 @@ jive_call_node_match_attrs_(const jive_node * self_, const jive_node_attrs * att
 
 static jive_node *
 jive_call_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::call_operation * attrs = (const jive::call_operation *) attrs_;
 
@@ -104,14 +104,14 @@ jive_call_node_create_(jive_region * region, const jive_node_attrs * attrs_,
 void
 jive_call_node_init_(jive_call_node * self,
 	jive_region * region,
-	jive_output * target_address, const jive::base::type * address_type,
+	jive::output * target_address, const jive::base::type * address_type,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive_context * context = region->graph->context;
 
-	jive_output * operands[narguments + 1];
+	jive::output * operands[narguments + 1];
 	const jive::base::type * operand_types[narguments + 1];
 
 	size_t n;
@@ -128,11 +128,11 @@ jive_call_node_init_(jive_call_node * self,
 }
 
 static inline jive_region *
-call_node_region_innermost(jive_output * target_address, size_t narguments,
-	jive_output * const arguments[])
+call_node_region_innermost(jive::output * target_address, size_t narguments,
+	jive::output * const arguments[])
 {
 	size_t i;
-	jive_output * tmp[narguments+1];
+	jive::output * tmp[narguments+1];
 	for(i = 0; i < narguments; i++){
 		tmp[i] = arguments[i];
 	}
@@ -143,8 +143,8 @@ call_node_region_innermost(jive_output * target_address, size_t narguments,
 
 jive_node *
 jive_call_by_address_node_create(jive_region * region,
-	jive_output * target_address, const jive_calling_convention * calling_convention,
-	size_t narguments, jive_output * const arguments[],
+	jive::output * target_address, const jive_calling_convention * calling_convention,
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	std::vector<std::unique_ptr<jive::base::type>> return_types_tmp;
@@ -163,10 +163,10 @@ jive_call_by_address_node_create(jive_region * region,
 	return node;
 }
 
-jive_output * const *
-jive_call_by_address_create(jive_output * target_address,
+jive::output * const *
+jive_call_by_address_create(jive::output * target_address,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive_region * region = call_node_region_innermost(target_address, narguments, arguments);
@@ -177,9 +177,9 @@ jive_call_by_address_create(jive_output * target_address,
 
 jive_node *
 jive_call_by_bitstring_node_create(jive_region * region,
-	jive_output * target_address, size_t nbits,
+	jive::output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	std::vector<std::unique_ptr<jive::base::type>> return_types_tmp;
@@ -197,10 +197,10 @@ jive_call_by_bitstring_node_create(jive_region * region,
 	return node;
 }
 
-jive_output * const *
-jive_call_by_bitstring_create(jive_output * target_address, size_t nbits,
+jive::output * const *
+jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive_output * const arguments[],
+	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive_region * region = call_node_region_innermost(target_address, narguments, arguments);

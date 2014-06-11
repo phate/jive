@@ -10,6 +10,10 @@
 
 #include <jive/vsdg/resource.h>
 
+namespace jive {
+	class output;
+}
+
 typedef struct jive_nodevar_xpoint jive_nodevar_xpoint;
 typedef struct jive_cutvar_xpoint jive_cutvar_xpoint;
 typedef struct jive_regvar_xpoint jive_regvar_xpoint;
@@ -45,7 +49,7 @@ typedef struct jive_nodevar_xpoint_hash_byssavar jive_nodevar_xpoint_hash_byssav
 
 struct jive_cutvar_xpoint {
 	struct jive_shaped_ssavar * shaped_ssavar;
-	struct jive_output * origin;
+	jive::output * origin;
 	struct jive_variable * variable;
 	const struct jive_resource_class * rescls;
 	
@@ -73,7 +77,8 @@ struct jive_cutvar_xpoint {
 };
 
 JIVE_DECLARE_HASH_TYPE(jive_cutvar_xpoint_hash_byssavar, jive_cutvar_xpoint, struct jive_shaped_ssavar *, shaped_ssavar, ssavar_hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_cutvar_xpoint_hash_byorigin, jive_cutvar_xpoint, struct jive_output *, origin, origin_hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_cutvar_xpoint_hash_byorigin, jive_cutvar_xpoint, jive::output *, origin,
+	origin_hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_cutvar_xpoint_hash_byvariable, jive_cutvar_xpoint, struct jive_variable *, variable, variable_hash_chain);
 
 typedef struct jive_regvar_xpoint_hash_byregion jive_regvar_xpoint_hash_byregion;

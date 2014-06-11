@@ -43,8 +43,8 @@ typedef jive::operation_node<jive::regvalue_operation> jive_regvalue_node;
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive_output *
-jive_regvalue(jive_output * ctl, const jive_register_class * regcls, jive_output * value);
+jive::output *
+jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value);
 
 JIVE_EXPORTED_INLINE jive_regvalue_node *
 jive_regvalue_node_cast(jive_node * node)

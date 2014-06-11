@@ -44,7 +44,7 @@ static int test_main(void)
 	if (setjmp(buffer) == 0) {
 		jive_set_fatal_error_handler(ctx, jump, &buffer);
 		const jive::base::type * tmparray1[] = {&value_type};
-		jive_output * tmparray2[] = {n1->outputs[0]};
+		jive::output * tmparray2[] = {n1->outputs[0]};
 		jive_test_node_create(region,
 			1, tmparray1, tmparray2,
 			0, 0);

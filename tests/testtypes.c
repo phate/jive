@@ -30,12 +30,12 @@ jive_test_value_type::copy() const
 }
 
 jive::input *
-jive_test_value_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+jive_test_value_type::create_input(jive_node * node, size_t index, jive::output * origin) const
 {
 	return new jive_test_value_input(node, index, origin);
 }
 
-jive_output *
+jive::output *
 jive_test_value_type::create_output(jive_node * node, size_t index) const
 {
 	return new jive_test_value_output(node, index);
@@ -50,7 +50,7 @@ jive_test_value_type::create_gate(jive_graph * graph, const char * name) const
 jive_test_value_input::~jive_test_value_input() noexcept {}
 
 jive_test_value_input::jive_test_value_input(jive_node * node, size_t index,
-	jive_output * origin)
+	jive::output * origin)
 	: jive::value::input(node, index, origin)
 {}
 
@@ -89,12 +89,12 @@ jive_test_state_type::copy() const
 }
 
 jive::input *
-jive_test_state_type::create_input(jive_node * node, size_t index, jive_output * origin) const
+jive_test_state_type::create_input(jive_node * node, size_t index, jive::output * origin) const
 {
 	return new jive_test_state_input(node, index, origin);
 }
 
-jive_output *
+jive::output *
 jive_test_state_type::create_output(jive_node * node, size_t index) const
 {
 	return new jive_test_state_output(node, index);
@@ -109,7 +109,7 @@ jive_test_state_type::create_gate(jive_graph * graph, const char * name) const
 jive_test_state_input::~jive_test_state_input() noexcept {}
 
 jive_test_state_input::jive_test_state_input(jive_node * node, size_t index,
-	jive_output * origin)
+	jive::output * origin)
 	: jive::state::input(node, index, origin)
 {}
 

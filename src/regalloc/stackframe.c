@@ -111,7 +111,7 @@ get_node_frameslot(jive_node * node)
 			return (const jive_stackslot *) name;
 	}
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		const jive_resource_name * name = jive_variable_get_resource_name(output->ssavar->variable);
 		if (jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_FRAMESLOT_RESOURCE))
 			return (const jive_stackslot *) name;
@@ -132,7 +132,7 @@ get_node_callslot(jive_node * node)
 			return (const jive_callslot *) name;
 	}
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		const jive_resource_name * name = jive_variable_get_resource_name(output->ssavar->variable);
 		if (jive_resource_class_isinstance(name->resource_class, &JIVE_STACK_CALLSLOT_RESOURCE))
 			return (const jive_callslot *) name;
@@ -170,7 +170,7 @@ layout_stackslots(jive_shaped_graph * shaped_graph, jive_graph * graph)
 		jive_subroutine_stackframe_info * frame = jive_subroutine_node_get_stackframe_info(sub);
 		size_t n;
 		for (n = 0; n < node->noutputs; n++) {
-			jive_output * output = node->outputs[n];
+			jive::output * output = node->outputs[n];
 			if (!output->ssavar)
 				continue;
 			jive_variable * variable = output->ssavar->variable;
@@ -231,7 +231,7 @@ reloc_stack_access(jive_node * node)
 			imm.sub_label = 0;
 		}
 		if (!jive_immediate_equals(&imm, &immnode->operation().value())) {
-			jive_output * new_immval = jive_immediate_create(node->region->graph, &imm);
+			jive::output * new_immval = jive_immediate_create(node->region->graph, &imm);
 			imm_input->divert_origin(new_immval);
 		}
 	}
@@ -247,7 +247,7 @@ typedef struct jive_regalloc_stackframe_transforms {
 static void
 do_split(
 	const jive_subroutine_late_transforms * self_,
-	jive_output * port_in, jive::input * port_out,
+	jive::output * port_in, jive::input * port_out,
 	const jive_value_split_factory * enter_split,
 	const jive_value_split_factory * leave_split)
 {
@@ -257,7 +257,7 @@ do_split(
 	size_t n;
 	
 	jive_ssavar * ssavar_interior = port_in->ssavar;
-	jive_output * value_interior = enter_split->split(enter_split, port_in);
+	jive::output * value_interior = enter_split->split(enter_split, port_in);
 	jive_node * enter_split_node = value_interior->node();
 	
 	jive_ssavar_divert_origin(ssavar_interior, value_interior);
@@ -271,7 +271,7 @@ do_split(
 			jive_input_auto_merge_variable(input);
 	}
 	for (n = 0; n < enter_split_node->noutputs; n++) {
-		jive_output * output = enter_split_node->outputs[n];
+		jive::output * output = enter_split_node->outputs[n];
 		if (output != value_interior)
 			jive_output_auto_merge_variable(output);
 	}
@@ -279,7 +279,7 @@ do_split(
 	/* FIXME: in case of "dominated" gates, may have to create multiple
 	"leave_split" nodes */
 	
-	jive_output * value_leave = leave_split->split(leave_split, value_interior);
+	jive::output * value_leave = leave_split->split(leave_split, value_interior);
 	jive_ssavar * ssavar_leave = jive_ssavar_create(value_leave, ssavar_interior->variable);
 	jive_node * leave_split_node = value_leave->node();
 	for (n = 0; n < leave_split_node->ninputs; n++) {
@@ -290,7 +290,7 @@ do_split(
 			jive_input_auto_merge_variable(input);
 	}
 	for (n = 0; n < leave_split_node->noutputs; n++) {
-		jive_output * output = leave_split_node->outputs[n];
+		jive::output * output = leave_split_node->outputs[n];
 		if (output == value_leave)
 			jive_ssavar_assign_output(ssavar_leave, output);
 		else

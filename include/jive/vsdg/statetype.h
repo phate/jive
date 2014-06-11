@@ -30,10 +30,10 @@ public:
 	virtual ~input() noexcept;
 
 protected:
-	input(struct jive_node * node, size_t index, jive_output * origin);
+	input(struct jive_node * node, size_t index, jive::output * origin);
 };
 
-class output : public jive_output {
+class output : public jive::output {
 public:
 	virtual ~output() noexcept;
 
@@ -87,13 +87,13 @@ typedef jive::operation_node<jive::statemux_operation> jive_statemux_node;
 jive_node *
 jive_statemux_node_create(struct jive_region * region,
 	const jive::base::type * statetype,
-	size_t noperands, jive_output * const operands[],
+	size_t noperands, jive::output * const operands[],
 	size_t noutputs);
 
-jive_output *
-jive_state_merge(const jive::base::type * statetype, size_t nstates, jive_output * const states[]);
+jive::output *
+jive_state_merge(const jive::base::type * statetype, size_t nstates, jive::output * const states[]);
 
 jive_node *
-jive_state_split(const jive::base::type * statetype, jive_output * state, size_t nstates);
+jive_state_split(const jive::base::type * statetype, jive::output * state, size_t nstates);
 
 #endif

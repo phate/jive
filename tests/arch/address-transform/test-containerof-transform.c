@@ -42,22 +42,22 @@ static int test_main(void)
 		0, NULL, NULL,
 		4, tmparray1);
 
-	jive_output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
-	jive_output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
-	jive_output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32, &addrtype);
-	jive_output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32, &addrtype);
+	jive::output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
+	jive::output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
+	jive::output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32, &addrtype);
+	jive::output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32, &addrtype);
 	
-	jive_output * container0 = jive_containerof(address0, &decl, 0);
-	jive_output * container1 = jive_containerof(address1, &decl, 1);
-	jive_output * container2 = jive_containerof(address2, &decl, 2);
-	jive_output * container3 = jive_containerof(address3, &decl, 3);
+	jive::output * container0 = jive_containerof(address0, &decl, 0);
+	jive::output * container1 = jive_containerof(address1, &decl, 1);
+	jive::output * container2 = jive_containerof(address2, &decl, 2);
+	jive::output * container3 = jive_containerof(address3, &decl, 3);
 
-	jive_output * offset0 = jive_address_to_bitstring_create(container0, 32, &container0->type());
-	jive_output * offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());
-	jive_output * offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
-	jive_output * offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
+	jive::output * offset0 = jive_address_to_bitstring_create(container0, 32, &container0->type());
+	jive::output * offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());
+	jive::output * offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
+	jive::output * offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
 	const jive::base::type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
-	jive_output * tmparray3[] = {offset0, offset1, offset2, offset3};
+	jive::output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
 	const jive::base::type * tmparray11[] = {&bits8};
 	jive_node * bottom = jive_test_node_create(graph->root_region,

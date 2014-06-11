@@ -42,7 +42,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	
 	size_t n;
 	for (n = 0; n < nparameters; n++) {
-		jive_output * param = src_region->top->outputs[n + 1];
+		jive::output * param = src_region->top->outputs[n + 1];
 		if (dynamic_cast<jive::value::output*>(param)) {
 			value_parameters[nvalue_parameters ++] = jive_argument_long; /* FIXME: pick correct type */
 		} else {
@@ -67,9 +67,9 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	/* map all parameters */
 	nvalue_parameters = 0;
 	for (n = 1; n < src_region->top->noutputs; n++) {
-		jive_output * original = src_region->top->outputs[n];
+		jive::output * original = src_region->top->outputs[n];
 		
-		jive_output * substitute;
+		jive::output * substitute;
 		if (dynamic_cast<jive::value::output*>(original)) {
 			substitute = jive_subroutine_value_parameter(subroutine, nvalue_parameters ++);
 		} else {
@@ -88,7 +88,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom->ninputs; n++) {
 		jive::input * original = src_region->bottom->inputs[n];
-		jive_output * retval = jive_substitution_map_lookup_output(
+		jive::output * retval = jive_substitution_map_lookup_output(
 			subst, src_region->bottom->inputs[n]->origin());
 		
 		if (dynamic_cast<jive::value::input*>(original)) {
@@ -105,11 +105,12 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	return subroutine->subroutine_node;
 }
 
-static jive_output *
+static jive::output *
 jive_i386_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t index);
 
 static jive::input *
-jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index, jive_output * value);
+jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index,
+	jive::output * value);
 
 static void
 jive_i386_subroutine_prepare_stackframe_(
@@ -134,12 +135,12 @@ const jive_subroutine_abi_class JIVE_I386_SUBROUTINE_ABI = {
 	instructionset : &jive_i386_instructionset
 };
 
-static jive_output *
+static jive::output *
 jive_i386_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t index)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
 	jive_gate * gate = self->base.parameters[index];
-	jive_output * output = jive_node_gate_output(self->base.enter, gate);
+	jive::output * output = jive_node_gate_output(self->base.enter, gate);
 	
 	const jive::base::type * in_type = &gate->type();
 	const jive::base::type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
@@ -152,7 +153,8 @@ jive_i386_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t
 }
 
 static jive::input *
-jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index, jive_output * value)
+jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t index,
+	jive::output * value)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
 	jive_gate * gate = self->base.returns[index];
@@ -217,7 +219,7 @@ jive_i386_subroutine_create(jive_region * region,
 	/* add dependency on return address on stack */
 	const jive_resource_class * stackslot_cls = jive_fixed_stackslot_class_get(4, 4, 0);
 	const jive::base::type * memory_state_type = jive_resource_class_get_type(stackslot_cls);
-	jive_output * retaddr_def = jive_node_add_output(self->base.enter, memory_state_type);
+	jive::output * retaddr_def = jive_node_add_output(self->base.enter, memory_state_type);
 	retaddr_def->required_rescls = stackslot_cls;
 	jive::input * retaddr_use = jive_node_add_input(ret_instr, memory_state_type, retaddr_def);
 	retaddr_use->required_rescls = stackslot_cls;
@@ -251,8 +253,8 @@ typedef struct jive_i386_stackptr_split_factory {
 	int offset;
 } jive_i386_stackptr_split_factory;
 
-static jive_output *
-do_stackptr_sub(const jive_value_split_factory * self_, jive_output * value)
+static jive::output *
+do_stackptr_sub(const jive_value_split_factory * self_, jive::output * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
@@ -263,8 +265,8 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive_output * value)
 		&value, immediates)->outputs[0];
 }
 
-static jive_output *
-do_stackptr_add(const jive_value_split_factory * self_, jive_output * value)
+static jive::output *
+do_stackptr_add(const jive_value_split_factory * self_, jive::output * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
@@ -308,7 +310,7 @@ static jive::input *
 jive_i386_subroutine_add_fp_dependency_(const jive_subroutine_deprecated * self_, jive_node * node)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
-	jive_output * frameptr = self->base.passthroughs[1].output;
+	jive::output * frameptr = self->base.passthroughs[1].output;
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
@@ -323,7 +325,7 @@ static jive::input *
 jive_i386_subroutine_add_sp_dependency_(const jive_subroutine_deprecated * self_, jive_node * node)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
-	jive_output * stackptr = self->base.passthroughs[1].output;
+	jive::output * stackptr = self->base.passthroughs[1].output;
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {

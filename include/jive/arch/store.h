@@ -21,8 +21,8 @@ struct jive_store_node_normal_form_class {
 	jive_node_normal_form_class base;
 	void (*set_reducible)(jive_store_node_normal_form * self, bool enable);
 	void (*normalized_create)(const jive_store_node_normal_form * self,
-		struct jive_region * region, const jive_node_attrs * attrs, jive_output * address,
-		jive_output * value, size_t nstates, jive_output * const istates[], jive_output * ostates[]);
+		struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
+		jive::output * value, size_t nstates, jive::output * const istates[], jive::output * ostates[]);
 };
 
 extern const jive_store_node_normal_form_class JIVE_STORE_NODE_NORMAL_FORM_;
@@ -44,8 +44,8 @@ jive_store_node_normal_form_cast(jive_node_normal_form * self)
 
 JIVE_EXPORTED_INLINE void
 jive_store_node_normalized_create(const jive_store_node_normal_form * self,
-	struct jive_region * region, const jive_node_attrs * attrs, jive_output * address,
-	jive_output * value, size_t nstates, jive_output * const istates[], jive_output * ostates[])
+	struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
+	jive::output * value, size_t nstates, jive::output * const istates[], jive::output * ostates[])
 {
 	const jive_store_node_normal_form_class * cls;
 	cls = (const jive_store_node_normal_form_class *) self->base.class_;
@@ -99,25 +99,25 @@ typedef jive::operation_node<jive::store_operation> jive_store_node;
 
 struct jive_node *
 jive_store_by_address_node_create(struct jive_region * region,
-	struct jive_output * address,
-	const jive::value::type * datatype, struct jive_output * value,
-	size_t nstates, struct jive_output * const states[]);
+	jive::output * address,
+	const jive::value::type * datatype, jive::output * value,
+	size_t nstates, jive::output * const states[]);
 
 void
-jive_store_by_address_create(struct jive_output * address,
-	const jive::value::type * datatype, struct jive_output * value,
-	size_t nstates, struct jive_output * const states[], jive_output * ostates[]);
+jive_store_by_address_create(jive::output * address,
+	const jive::value::type * datatype, jive::output * value,
+	size_t nstates, jive::output * const states[], jive::output * ostates[]);
 
 struct jive_node *
 jive_store_by_bitstring_node_create(struct jive_region * region,
-	struct jive_output * address, size_t nbits,
-	const jive::value::type * datatype, struct jive_output * value,
-	size_t nstates, struct jive_output * const states[]);
+	jive::output * address, size_t nbits,
+	const jive::value::type * datatype, jive::output * value,
+	size_t nstates, jive::output * const states[]);
 
 void
-jive_store_by_bitstring_create(struct jive_output * address, size_t nbits,
-	const jive::value::type * datatype, struct jive_output * value,
-	size_t nstates, struct jive_output * const istates[], struct jive_output * ostates[]);
+jive_store_by_bitstring_create(jive::output * address, size_t nbits,
+	const jive::value::type * datatype, jive::output * value,
+	size_t nstates, jive::output * const istates[], jive::output * ostates[]);
 
 JIVE_EXPORTED_INLINE jive_store_node *
 jive_store_node_cast(jive_node * node)

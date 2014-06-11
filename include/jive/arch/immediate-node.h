@@ -36,7 +36,7 @@ typedef jive::operation_node<jive::immediate_operation> jive_immediate_node;
 
 extern const jive_node_class JIVE_IMMEDIATE_NODE;
 
-jive_output *
+jive::output *
 jive_immediate_create(
 	struct jive_graph * graph,
 	const jive_immediate * immediate_value);

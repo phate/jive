@@ -102,10 +102,10 @@ static int test_main(void)
 		1, tmparray9, top->outputs,
 		1, tmparray10);
 	
-	jive_output * gamma[2];
+	jive::output * gamma[2];
 	const jive::base::type * tmparray11[] = {&type, &type};
-	jive_output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
-	jive_output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
+	jive::output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
+	jive::output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
 	jive_gamma(pred->outputs[0],
 		2, tmparray11,
 		tmparray12,

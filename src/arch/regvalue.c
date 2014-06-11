@@ -20,9 +20,9 @@ static void
 jive_regvalue_node_init_(
 	jive_regvalue_node * self,
 	jive_region * region,
-	jive_output * ctl,
+	jive::output * ctl,
 	const jive_register_class * regcls,
-	jive_output * value);
+	jive::output * value);
 
 static void
 jive_regvalue_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
@@ -32,7 +32,7 @@ jive_regvalue_node_match_attrs_(const jive_node * self, const jive_node_attrs * 
 
 static jive_node *
 jive_regvalue_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_REGVALUE_NODE = {
 	parent : &JIVE_NODE,
@@ -49,14 +49,14 @@ static void
 jive_regvalue_node_init_(
 	jive_regvalue_node * self,
 	jive_region * region,
-	jive_output * ctl,
+	jive::output * ctl,
 	const jive_register_class * regcls,
-	jive_output * value)
+	jive::output * value)
 {
 	jive::ctl::type ctl_type;
 	const jive::base::type * vtype = &value->type();
 	const jive::base::type * operand_types[] = {&ctl_type, vtype};
-	jive_output * operands[] = {ctl, value};
+	jive::output * operands[] = {ctl, value};
 	
 	jive_node_init_(self, region,
 		2, operand_types, operands,
@@ -82,7 +82,7 @@ jive_regvalue_node_match_attrs_(const jive_node * self, const jive_node_attrs * 
 
 static jive_node *
 jive_regvalue_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::regvalue_operation * attrs = (const jive::regvalue_operation *) attrs_;
 	
@@ -93,12 +93,12 @@ jive_regvalue_node_create_(struct jive_region * region, const jive_node_attrs * 
 	return node;
 }
 
-jive_output *
-jive_regvalue(jive_output * ctl, const jive_register_class * regcls, jive_output * value)
+jive::output *
+jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value)
 {
 	jive::regvalue_operation op(regcls);
 	
-	jive_output * operands[] = {ctl, value};
+	jive::output * operands[] = {ctl, value};
 	jive_region * region = jive_region_innermost(2, operands);
 	
 	const jive_node_normal_form * nf =

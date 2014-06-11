@@ -27,7 +27,7 @@ jive_node *
 and_operation::create_node(
 	jive_region * region,
 	size_t narguments,
-	jive_output * const arguments[]) const
+	jive::output * const arguments[]) const
 {
 	return detail::binop_create<and_operation>(
 		*this,
@@ -90,7 +90,7 @@ const jive_bitbinary_operation_class JIVE_BITAND_NODE_ = {
 
 static jive_binop_reduction_path_t
 jive_bitand_node_can_reduce_operand_pair_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, const jive_output * op1, const jive_output * op2)
+	const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2)
 {
 	if (jive_node_isinstance(op1->node(), &JIVE_BITCONSTANT_NODE) &&
 		jive_node_isinstance(op2->node(), &JIVE_BITCONSTANT_NODE))
@@ -99,9 +99,9 @@ jive_bitand_node_can_reduce_operand_pair_(const jive_node_class * cls,
 	return jive_binop_reduction_none;
 }
 
-static jive_output *
+static jive::output *
 jive_bitand_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive_output * op1, jive_output * op2)
+	const jive_node_attrs * attrs, jive::output * op1, jive::output * op2)
 {
 	jive_graph * graph = (op1)->node()->graph;
 
@@ -119,8 +119,8 @@ jive_bitand_node_reduce_operand_pair_(jive_binop_reduction_path_t path, const ji
 	return NULL;
 }
 
-jive_output *
-jive_bitand(size_t noperands, jive_output * const * operands)
+jive::output *
+jive_bitand(size_t noperands, jive::output * const * operands)
 {
 	return jive::bitstring::detail::binop_normalized_create<
 		jive::bitstring::and_operation>(

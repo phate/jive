@@ -131,7 +131,7 @@ typedef struct jive_lambda jive_lambda;
 struct jive_lambda {
 	struct jive_region * region;
 	size_t narguments;
-	struct jive_output ** arguments;
+	jive::output ** arguments;
 	struct jive_lambda_build_state * internal_state;
 };
 
@@ -145,8 +145,8 @@ jive_lambda_begin(struct jive_graph * graph, size_t narguments,
 /**
 	\brief End constructing a lambda region
 */
-struct jive_output *
+jive::output *
 jive_lambda_end(struct jive_lambda * lambda, size_t nresults,
-	const jive::base::type * const result_types[], struct jive_output * const results[]);
+	const jive::base::type * const result_types[], struct jive::output * const results[]);
 
 #endif

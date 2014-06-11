@@ -58,7 +58,7 @@ static int test_main(void)
 		1, tmparray3, &n2->outputs[0],
 		1, tmparray4);
 	const jive::base::type * tmparray5[] = {&type, &type};
-	jive_output * tmparray6[] = {n2->outputs[0], n3->outputs[0]};
+	jive::output * tmparray6[] = {n2->outputs[0], n3->outputs[0]};
 	
 	jive_node * bottom = jive_test_node_create(region,
 		2, tmparray5, tmparray6,

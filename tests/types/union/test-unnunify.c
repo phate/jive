@@ -39,11 +39,11 @@ static int test_main(void)
 		0, NULL, NULL,
 		1, tmparray0);
 
-	jive_output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
-	jive_output * u1 = jive_empty_unify_create(graph, &decl_empty);
+	jive::output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
+	jive::output * u1 = jive_empty_unify_create(graph, &decl_empty);
 
 	const jive::base::type * tmparray1[] = {&unntype, &unntype_empty};
-	jive_output * tmparray2[] = {u0, u1};
+	jive::output * tmparray2[] = {u0, u1};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		2, tmparray1,
 			tmparray2,

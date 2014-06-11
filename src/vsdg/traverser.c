@@ -98,7 +98,7 @@ jive_topdown_traverser_next(jive_traverser * self_)
 	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_behind);
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
-		jive_output * output = node->outputs[n];
+		jive::output * output = node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			jive_topdown_traverser_check_node(self, user->node);
@@ -119,8 +119,8 @@ jive_topdown_traverser_node_create(void * closure, jive_node * node)
 }
 
 static void
-jive_topdown_traverser_input_change(void * closure, jive::input * input, jive_output * old_origin,
-	jive_output * new_origin)
+jive_topdown_traverser_input_change(void * closure, jive::input * input, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
@@ -224,8 +224,8 @@ jive_bottomup_traverser_node_destroy(void * closure, jive_node * node)
 }
 
 static void
-jive_bottomup_traverser_input_change(void * closure, jive::input * input, jive_output * old_origin,
-	jive_output * new_origin)
+jive_bottomup_traverser_input_change(void * closure, jive::input * input, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
@@ -312,8 +312,8 @@ jive_upward_cone_traverser_node_destroy(void * closure, jive_node * node)
 }
 
 static void
-jive_upward_cone_traverser_input_change(void * closure, jive::input * input, jive_output * old_origin,
-	jive_output * new_origin)
+jive_upward_cone_traverser_input_change(void * closure, jive::input * input, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
@@ -331,7 +331,7 @@ jive_upward_cone_traverser_input_change(void * closure, jive::input * input, jiv
 	if (state == jive_traversal_nodestate_frontier) {
 		size_t n;
 		for (n = 0; n < old_origin->node()->noutputs; n++) {
-			jive_output * output = old_origin->node()->outputs[n];
+			jive::output * output = old_origin->node()->outputs[n];
 			jive::input * user;
 			JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 				if (user == input)

@@ -363,7 +363,7 @@ void
 jive_serialize_portinfo(jive_serialization_driver * self,
 	jive_portinfo * input, jive_token_ostream * os)
 {
-	jive_output * origin = input->origin;
+	jive::output * origin = input->origin;
 	const jive_serialization_outputsym * sym =
 		jive_serialization_symtab_output_to_name(&self->symtab, origin);
 	const char * output_ident = sym ? sym->name : "%unnamed_output%";
@@ -547,8 +547,8 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		return false;
 	}
 	
-	jive_output ** origins = jive_context_malloc(self->context,
-		sizeof(jive_output *) * ports.nnormal);
+	jive::output ** origins = jive_context_malloc(self->context,
+		sizeof(jive::output *) * ports.nnormal);
 	for (n = 0; n < ports.nnormal; ++n)
 		origins[n] = ports.ports[n].origin;
 	
@@ -648,7 +648,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 			}
 		}
 		
-		jive_output * output;
+		jive::output * output;
 		if (gate)
 			output = jive_node_gate_output(*node, gate);
 		else

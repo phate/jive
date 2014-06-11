@@ -11,7 +11,8 @@ JIVE_DEFINE_HASH_TYPE(jive_serialization_labelsym_hash, jive_serialization_label
 JIVE_DEFINE_DICT_TYPE(jive_serialization_labelsym_dict, jive_serialization_labelsym, name, name_hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_serialization_nodesym_hash, jive_serialization_nodesym, const struct jive_node *, node, node_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_nodesym_dict, jive_serialization_nodesym, name, name_hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym, const struct jive_output *, output, output_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym,
+	const jive::output *, output, output_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_outputsym_dict, jive_serialization_outputsym, name, name_hash_chain);
 
 void
@@ -199,7 +200,7 @@ jive_serialization_symtab_name_to_node(
 void
 jive_serialization_symtab_insert_outputsym(
 	jive_serialization_symtab * self,
-	struct jive_output * output,
+	jive::output * output,
 	char * name)
 {
 	jive_serialization_outputsym * sym;
@@ -224,7 +225,7 @@ jive_serialization_symtab_remove_outputsym(
 const jive_serialization_outputsym *
 jive_serialization_symtab_output_to_name(
 	jive_serialization_symtab * self,
-	const struct jive_output * output)
+	const jive::output * output)
 {
 	return jive_serialization_outputsym_hash_lookup(&self->output_to_name, output);
 }

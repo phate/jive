@@ -21,7 +21,7 @@ class ugreater_operation final : public jive::bits_compare_operation {
 }
 }
 
-jive_output *
-jive_bitugreater(struct jive_output * operand1, struct jive_output * operand2);
+jive::output *
+jive_bitugreater(jive::output * operand1, jive::output * operand2);
 
 #endif

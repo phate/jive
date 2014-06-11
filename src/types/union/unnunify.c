@@ -19,11 +19,11 @@
 static void
 jive_unify_node_init_(jive_unify_node * self,
 	struct jive_region * region, const jive::unn::declaration * decl,
-	size_t option, jive_output * const operand);
+	size_t option, jive::output * const operand);
 
 static jive_node *
 jive_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 static void
 jive_unify_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
@@ -33,7 +33,7 @@ jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 
 static void
 jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[], jive_context * context);
+	size_t noperands, jive::output * const operands[], jive_context * context);
 
 const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
 	base : { /* jive_node_class */
@@ -73,7 +73,7 @@ jive_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * sec
 
 static void
 jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[], jive_context * context)
+	size_t noperands, jive::output * const operands[], jive_context * context)
 {
 	JIVE_DEBUG_ASSERT(noperands == 1);
 
@@ -89,7 +89,7 @@ jive_unify_node_check_operands_(const jive_node_class * cls, const jive_node_att
 
 static jive_node *
 jive_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	const jive::unn::unify_operation * attrs = (const jive::unn::unify_operation *)attrs_ ;
 
@@ -103,7 +103,7 @@ jive_unify_node_create_(struct jive_region * region, const jive_node_attrs * att
 static void
 jive_unify_node_init_(jive_unify_node * self,
 	struct jive_region * region, const jive::unn::declaration * decl,
-	size_t option, jive_output * const operand)
+	size_t option, jive::output * const operand)
 {
 	if (option >= decl->nelements) {
 		jive_context_fatal_error(region->graph->context,
@@ -119,8 +119,8 @@ jive_unify_node_init_(jive_unify_node * self,
 		1, &type_ptr);
 }
 
-jive_output *
-jive_unify_create(const jive::unn::declaration * decl, size_t option, jive_output * const operand)
+jive::output *
+jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::output * const operand)
 {
 	jive::unn::unify_operation op(decl, option);
 
@@ -132,7 +132,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive_outpu
 
 static jive_node *
 jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive_output * const operands[]);
+	size_t noperands, jive::output * const operands[]);
 
 static bool
 jive_empty_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
@@ -172,7 +172,7 @@ jive_empty_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs
 
 static jive_node *
 jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(noperands == 0);
 	const jive::unn::empty_unify_operation * attrs = (const jive::unn::empty_unify_operation *) attrs_;
@@ -184,7 +184,7 @@ jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs
 	return node;
 }
 
-jive_output *
+jive::output *
 jive_empty_unify_create(struct jive_graph * graph, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_operation op(decl);

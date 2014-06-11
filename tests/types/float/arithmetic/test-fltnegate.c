@@ -22,8 +22,8 @@ test_main(void)
 	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create(context);
 
-	jive_output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive_output * neg = jive_fltnegate(s0);
+	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
+	jive::output * neg = jive_fltnegate(s0);
 
 	jive_graph_export(graph, neg);
 
