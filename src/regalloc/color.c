@@ -385,7 +385,7 @@ ssavar_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped
 }
 
 static void
-merge_gate_ports(jive_gate * gate)
+merge_gate_ports(jive::gate * gate)
 {
 	jive::output * output;
 	JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list)
@@ -409,7 +409,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	const jive::base::type * type = jive_resource_class_get_type(rescls);
 	
 	/* insert splitting nodes before and after gates */
-	jive_gate * gate;
+	jive::gate * gate;
 	JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
@@ -489,7 +489,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	
 	/* now split gates */
 	while (variable->gates.first != variable->gates.last) {
-		jive_gate * gate = variable->gates.first;
+		jive::gate * gate = variable->gates.first;
 		jive_gate_split(gate);
 		merge_gate_ports(gate);
 	}
@@ -510,7 +510,8 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 }
 
 static const jive_resource_class_demotion *
-pick_gate_evict_rescls(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable, jive_gate * gate)
+pick_gate_evict_rescls(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable,
+	jive::gate * gate)
 {
 	jive_context * context = shaped_graph->graph->context;
 	
@@ -560,13 +561,13 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	
 	JIVE_DEBUG_ASSERT(variable->gates.first == variable->gates.last);
 	
-	jive_gate * gate = variable->gates.first;
+	jive::gate * gate = variable->gates.first;
 	
 	const jive_resource_class_demotion * demotion;
 	demotion = pick_gate_evict_rescls(shaped_graph, shaped_variable, gate);
 	
 	/* FIXME: compose gate name: "spilled_" + gate->name */
-	jive_gate * spill_gate = jive_resource_class_create_gate(demotion->target, graph, "spilled");
+	jive::gate * spill_gate = jive_resource_class_create_gate(demotion->target, graph, "spilled");
 	
 	while (gate->outputs.first) {
 		jive::output * output = gate->outputs.first;

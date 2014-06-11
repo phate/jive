@@ -41,7 +41,7 @@ jive_test_value_type::create_output(jive_node * node, size_t index) const
 	return new jive_test_value_output(node, index);
 }
 
-jive_gate *
+jive::gate *
 jive_test_value_type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive_test_value_gate(graph, name);
@@ -100,7 +100,7 @@ jive_test_state_type::create_output(jive_node * node, size_t index) const
 	return new jive_test_state_output(node, index);
 }
 
-jive_gate *
+jive::gate *
 jive_test_state_type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive_test_state_gate(graph, name);

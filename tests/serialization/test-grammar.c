@@ -164,7 +164,7 @@ verify_deserialize_rescls(const char * repr, const jive_resource_class * expect_
 }
 
 static void
-verify_serialize_gateexpr(jive_gate * gate, const char * expect_repr)
+verify_serialize_gateexpr(jive::gate * gate, const char * expect_repr)
 {
 	serialize_ctx ctx;
 	serialize_ctx_init(&ctx);
@@ -178,14 +178,14 @@ verify_serialize_gateexpr(jive_gate * gate, const char * expect_repr)
 }
 
 static void
-verify_deserialize_gateexpr(const char * repr, jive_gate * expect_gate)
+verify_deserialize_gateexpr(const char * repr, jive::gate * expect_gate)
 {
 	deserialize_ctx ctx;
 	deserialize_ctx_init(&ctx, repr);
 	
 	jive_graph * g = jive_graph_create(ctx.ctx);
 	
-	jive_gate * gate;
+	jive::gate * gate;
 	assert(jive_deserialize_gateexpr(&ctx.drv, ctx.is, g, &gate));
 	assert(strcmp(gate->name, expect_gate->name) == 0);
 	assert(gate->type() == expect_gate->type());
@@ -200,7 +200,7 @@ static void
 verify_serialize_nodeexpr(jive_node * node,
 	size_t ngates,
 	const char * const gate_names[],
-	jive_gate * const gates[],
+	jive::gate * const gates[],
 	const char * const * input_names,
 	const char * const * output_names,
 	const char * expect_repr)
@@ -303,11 +303,12 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create(ctx);
 	
-	jive_gate * bit8gate = bits8.create_gate(graph, "bit8gate");
+	jive::gate * bit8gate = bits8.create_gate(graph, "bit8gate");
 	verify_serialize_gateexpr(bit8gate, "\"bit8gate\" root<> bits<8>");
 	verify_deserialize_gateexpr("\"bit8gate\" root<> bits<8>", bit8gate);
 	
-	jive_gate * stackgate = jive_resource_class_create_gate(jive_stackslot_size_class_get(4, 4), graph, "stackgate");
+	jive::gate * stackgate = jive_resource_class_create_gate(jive_stackslot_size_class_get(4, 4),
+		graph, "stackgate");
 	verify_serialize_gateexpr(stackgate, "\"stackgate\" stackslot<4,4> memory<>");
 	verify_deserialize_gateexpr("\"stackgate\" stackslot<4,4> memory<>", stackgate);
 	
@@ -356,7 +357,7 @@ static int test_main(void)
 	jive_node_gate_input(cat16n, bit8gate, zero8);
 	jive_node_gate_output(cat16n, stackgate);
 	const char * tmparray9[] = {"bit8gate", "stackgate"};
-	jive_gate* tmparray10[] = {bit8gate, stackgate};
+	jive::gate* tmparray10[] = {bit8gate, stackgate};
 	const char * tmparray11[] = {"a", "b", "c"};
 	const char * tmparray12[] = {"out", "r"};
 	verify_serialize_nodeexpr(cat16n,

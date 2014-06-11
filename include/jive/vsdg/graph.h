@@ -21,6 +21,8 @@
 
 namespace jive {
 
+class gate;
+
 class graph_tail_operation final : public operation {
 };
 
@@ -56,7 +58,6 @@ typedef struct jive_tracker_depth_state jive_tracker_depth_state;
 typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
 typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 
-struct jive_gate;
 struct jive_node;
 struct jive_node_class;
 struct jive_node_normal_form;
@@ -80,8 +81,8 @@ struct jive_graph {
 	struct jive_region * root_region;
 	
 	struct {
-		struct jive_gate * first;
-		struct jive_gate * last;
+		jive::gate * first;
+		jive::gate * last;
 	} gates;
 	
 	struct {

@@ -15,11 +15,10 @@
 #include <jive/vsdg/gate-interference.h>
 
 namespace jive {
+	class gate;
 	class input;
 	class output;
 }
-
-class jive_gate;
 
 struct jive_buffer;
 struct jive_cpureg;
@@ -69,9 +68,9 @@ public:
 	virtual jive::output * create_output(jive_node * node, size_t index) const = 0;
 
 	/*
-		FIXME: change return type to std::unique_ptr<jive_gate>
+		FIXME: change return type to std::unique_ptr<jive::gate>
 	*/
-	virtual jive_gate * create_gate(jive_graph * graph, const char * name) const = 0;
+	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const = 0;
 };
 
 }
@@ -126,7 +125,7 @@ public:
 		input * next;
 	} output_users_list;
 	
-	jive_gate * gate;
+	jive::gate * gate;
 	struct {
 		input * prev;
 		input * next;
@@ -199,7 +198,7 @@ public:
 		jive::input * last;
 	} users;
 	
-	jive_gate * gate;
+	jive::gate * gate;
 	struct {
 		jive::output * prev;
 		jive::output * next;
@@ -231,20 +230,22 @@ jive_output_auto_assign_variable(jive::output * self);
 struct jive_ssavar *
 jive_output_auto_merge_variable(jive::output * self);
 
+namespace jive {
+
 /**	@}	*/
 
 /**
-        \defgroup jive_gate Gates
+        \defgroup jive::gate Gates
         Gates
         @{
 */
 
-class jive_gate {
+class gate {
 public:
-	virtual ~jive_gate() noexcept;
+	virtual ~gate() noexcept;
 
 protected:
-	jive_gate(struct jive_graph * graph, const char name[]);
+	gate(struct jive_graph * graph, const char name[]);
 
 public:
 	virtual const jive::base::type & type() const noexcept = 0;
@@ -257,8 +258,8 @@ public:
 	
 	struct jive_graph * graph;
 	struct {
-		jive_gate * prev;
-		jive_gate * next;
+		jive::gate * prev;
+		jive::gate * next;
 	} graph_gate_list;
 	
 	char * name;
@@ -278,27 +279,29 @@ public:
 	
 	struct jive_variable * variable;
 	struct {
-		jive_gate * prev;
-		jive_gate * next;
+		jive::gate * prev;
+		jive::gate * next;
 	} variable_gate_list;
 	
 	const struct jive_resource_class * required_rescls;
 };
 
+}	//jive namespace
+
 struct jive_variable *
-jive_gate_get_constraint(jive_gate * self);
+jive_gate_get_constraint(jive::gate * self);
 
 size_t
-jive_gate_interferes_with(const jive_gate * self, const jive_gate * other);
+jive_gate_interferes_with(const jive::gate * self, const jive::gate * other);
 
 void
-jive_gate_merge(jive_gate * self, jive_gate * other);
+jive_gate_merge(jive::gate * self, jive::gate * other);
 
 void
-jive_gate_split(jive_gate * self);
+jive_gate_split(jive::gate * self);
 
 void
-jive_gate_auto_merge_variable(jive_gate * self);
+jive_gate_auto_merge_variable(jive::gate * self);
 
 /**	@}	*/
 

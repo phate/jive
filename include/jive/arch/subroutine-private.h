@@ -38,9 +38,9 @@ jive_subroutine_create_passthrough_memorystate(
 	jive_subroutine_deprecated * subroutine,
 	const char * name);
 
-jive_gate *
+jive::gate *
 jive_subroutine_match_gate(
-	jive_gate * gate,
+	jive::gate * gate,
 	jive_node * old_node,
 	jive_node * new_node);
 
@@ -52,8 +52,8 @@ jive_subroutine_copy(
 jive_subroutine_deprecated *
 jive_subroutine_create_takeover(
 	jive_context * context, const jive_subroutine_class * class_,
-	size_t nparameters, jive_gate * const parameters[],
-	size_t nreturns, jive_gate * const returns[],
+	size_t nparameters, jive::gate * const parameters[],
+	size_t nreturns, jive::gate * const returns[],
 	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[]);
 
 void

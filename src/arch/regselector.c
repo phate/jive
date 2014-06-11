@@ -206,7 +206,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 
 static bool
 jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negotiator_option * dst,
-	const jive_gate * gate)
+	const jive::gate * gate)
 {
 	if (!dynamic_cast<const jive::value::gate*>(gate))
 		return false;

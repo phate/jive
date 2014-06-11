@@ -21,7 +21,8 @@ void
 jive_negotiator_connection_destroy(jive_negotiator_connection * self);
 
 JIVE_DEFINE_HASH_TYPE(jive_negotiator_node_hash, jive_negotiator_constraint, jive_node *, hash_key.node, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, jive_gate *, hash_key.gate, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, jive::gate *,
+	hash_key.gate, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive::input *,
 	hash_key.input, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_negotiator_output_hash, jive_negotiator_port, jive::output *,
@@ -585,7 +586,7 @@ jive_negotiator_map_output(const jive_negotiator * self, jive::output * output)
 }
 	
 jive_negotiator_constraint *
-jive_negotiator_map_gate(const jive_negotiator * self, jive_gate * gate)
+jive_negotiator_map_gate(const jive_negotiator * self, jive::gate * gate)
 {
 	return jive_negotiator_gate_hash_lookup(&self->gate_map, gate);
 }
@@ -620,7 +621,7 @@ jive_negotiator_create_output_connection(jive_negotiator * self, jive::output * 
 }
 
 jive_negotiator_constraint *
-jive_negotiator_annotate_gate(jive_negotiator * self, jive_gate * gate)
+jive_negotiator_annotate_gate(jive_negotiator * self, jive::gate * gate)
 {
 	jive_negotiator_constraint * constraint = jive_negotiator_map_gate(self, gate);
 	if (!constraint) {
@@ -741,7 +742,8 @@ jive_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node)
 }
 
 bool
-jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiator_option * dst, const jive_gate * gate)
+jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiator_option * dst,
+	const jive::gate * gate)
 {
 	return false;
 }

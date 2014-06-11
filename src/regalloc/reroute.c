@@ -42,7 +42,7 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	const jive::base::type * type = &ssavar->origin->type();
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_node);
-	jive_gate * gate = type->create_gate(graph, gate_name);
+	jive::gate * gate = type->create_gate(graph, gate_name);
 	
 	jive_region * region1 = anchor_node->producer(0)->region;
 	jive_region * region2 = anchor_node->producer(1)->region;
@@ -141,7 +141,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	const jive::base::type * type = &ssavar->origin->type();
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "route_%p_%p", ssavar, anchor_node);
-	jive_gate * gate = type->create_gate(graph, gate_name);
+	jive::gate * gate = type->create_gate(graph, gate_name);
 	
 	jive_region * loop_region = anchor_node->producer(0)->region;
 	jive_node * loop_head = loop_region->top;

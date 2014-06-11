@@ -23,6 +23,7 @@ namespace jive {
 namespace base {
 	class type;
 }
+	class gate;
 	class input;
 	class output;
 }
@@ -36,7 +37,6 @@ typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
 typedef jive::operation jive_node_attrs;
 
-struct jive_gate;
 struct jive_region;
 enum jive_traversal_nodestate;
 struct jive_resource_class_count;
@@ -286,11 +286,10 @@ jive_node_add_constrained_input(
 	jive_node * self, const struct jive_resource_class * rescls, jive::output * initial_operand);
 
 jive::input *
-jive_node_gate_input(
-	jive_node * self, struct jive_gate * gate, jive::output * initial_operand);
+jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand);
 
 JIVE_EXPORTED_INLINE jive::input *
-jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
+jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 {
 	size_t n;
 	for(n = 0; n < self->ninputs; n++)
@@ -299,7 +298,7 @@ jive_node_get_gate_input(const jive_node * self, const struct jive_gate * gate)
 }
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
+jive_node_get_gate_output(const jive_node * self, const jive::gate * gate)
 {
 	size_t n;
 	for(n = 0; n < self->noutputs; n++)
@@ -308,7 +307,7 @@ jive_node_get_gate_output(const jive_node * self, const struct jive_gate * gate)
 }
 
 jive::output *
-jive_node_gate_output(jive_node * self, struct jive_gate * gate);
+jive_node_gate_output(jive_node * self, jive::gate * gate);
 
 jive::input *
 jive_node_input(const struct jive_node * self, size_t index);

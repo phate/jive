@@ -153,8 +153,8 @@ jive_subroutine_create_passthrough_memorystate(
 }
 	
 
-jive_gate *
-jive_subroutine_match_gate(jive_gate * gate, jive_node * old_node, jive_node * new_node)
+jive::gate *
+jive_subroutine_match_gate(jive::gate * gate, jive_node * old_node, jive_node * new_node)
 {
 	size_t n;
 	
@@ -192,8 +192,8 @@ jive_subroutine_copy(const jive_subroutine_deprecated * self,
 	size_t n;
 	
 	for (n = 0; n < self->nparameters; n++) {
-		jive_gate * old_gate = self->parameters[n];
-		jive_gate * new_gate = NULL;
+		jive::gate * old_gate = self->parameters[n];
+		jive::gate * new_gate = NULL;
 		
 		if (!new_gate)
 			new_gate = jive_subroutine_match_gate(old_gate, self->enter, new_enter_node);
@@ -206,8 +206,8 @@ jive_subroutine_copy(const jive_subroutine_deprecated * self,
 	}
 	
 	for (n = 0; n < self->nreturns; n++) {
-		jive_gate * old_gate = self->returns[n];
-		jive_gate * new_gate = NULL;
+		jive::gate * old_gate = self->returns[n];
+		jive::gate * new_gate = NULL;
 		
 		if (!new_gate)
 			new_gate = jive_subroutine_match_gate(old_gate, self->enter, new_enter_node);
@@ -231,8 +231,8 @@ jive_subroutine_copy(const jive_subroutine_deprecated * self,
 jive_subroutine_deprecated *
 jive_subroutine_create_takeover(
 	jive_context * context, const jive_subroutine_class * class_,
-	size_t nparameters, jive_gate * const parameters[],
-	size_t nreturns, jive_gate * const returns[],
+	size_t nparameters, jive::gate * const parameters[],
+	size_t nreturns, jive::gate * const returns[],
 	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[])
 {
 	/* FIXME: set parameter/return_types properly, add support in deserialization */

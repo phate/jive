@@ -65,7 +65,8 @@ create_testgraph(jive_context * context)
 	
 	jive_theta_end(theta, ctl, 1, &loopvar1);
 	jive::output * retval = loopvar1.value;
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "retval");
+	jive::gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph,
+		"retval");
 	jive_node_gate_input(leave_mux, retval_gate, retval);
 	
 	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);

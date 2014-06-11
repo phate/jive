@@ -35,10 +35,10 @@ create_testgraph_split(jive_context * context)
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg1");
-	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
+	jive::gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg1");
+	jive::gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
 	
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval");
+	jive::gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval");
 	
 	jive::output * arg1 = jive_node_gate_output(enter_mux, arg1_gate);
 	jive::output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
@@ -113,11 +113,11 @@ create_testgraph_emerg_split(jive_context * context)
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_gate * arg3_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
+	jive::gate * arg3_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
 	jive::output * arg3 = jive_node_gate_output(enter_mux, arg3_gate);
 	jive_node_gate_input(leave_mux, arg3_gate, arg3);
 	
-	jive_gate * cls2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2");
+	jive::gate * cls2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2");
 	jive::output * arg1 = jive_node_gate_output(enter_mux, cls2_gate);
 	jive::output * tmparray4[] = {arg1};
 	jive_node * op3 = jive_instruction_node_create(
@@ -126,7 +126,7 @@ create_testgraph_emerg_split(jive_context * context)
 		tmparray4, NULL);
 	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), op3->outputs[0]);
 	
-	jive_gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "1or2");
+	jive::gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "1or2");
 	jive::output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
 	jive::output * tmparray5[] = {arg2};
 	jive_node * op1 = jive_instruction_node_create(

@@ -231,7 +231,7 @@ jive_deserialize_rescls(jive_serialization_driver * self,
 
 void
 jive_serialize_gateexpr(jive_serialization_driver * self,
-	jive_gate * gate, jive_token_ostream * os)
+	jive::gate * gate, jive_token_ostream * os)
 {
 	jive_serialize_string(self, gate->name, strlen(gate->name), os);
 	jive_serialize_rescls(self, gate->required_rescls, os);
@@ -240,7 +240,7 @@ jive_serialize_gateexpr(jive_serialization_driver * self,
 
 bool
 jive_deserialize_gateexpr(jive_serialization_driver * self,
-	jive_token_istream * is, jive_graph * graph, jive_gate ** gate)
+	jive_token_istream * is, jive_graph * graph, jive::gate ** gate)
 {
 	char * name;
 	size_t name_len;
@@ -268,7 +268,7 @@ jive_deserialize_gateexpr(jive_serialization_driver * self,
 
 void
 jive_serialize_defined_gate(jive_serialization_driver * self,
-	jive_gate * gate, jive_token_ostream * os)
+	jive::gate * gate, jive_token_ostream * os)
 {
 	const jive_serialization_gatesym * sym =
 		jive_serialization_symtab_gate_to_name(&self->symtab, gate);
@@ -278,7 +278,7 @@ jive_serialize_defined_gate(jive_serialization_driver * self,
 
 bool
 jive_deserialize_defined_gate(jive_serialization_driver * self,
-	jive_token_istream * is, jive_gate ** gate)
+	jive_token_istream * is, jive::gate ** gate)
 {
 	const jive_token * token = jive_token_istream_current(is);
 	if (token->type != jive_token_identifier) {
@@ -639,7 +639,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 			return false;
 		}
 		
-		jive_gate * gate = 0;
+		jive::gate * gate = 0;
 		if (jive_token_istream_current(is)->type == jive_token_colon) {
 			jive_token_istream_advance(is);
 			if (!jive_deserialize_defined_gate(self, is, &gate)) {
@@ -775,7 +775,7 @@ jive_serialize_nodedef(jive_serialization_driver * self,
 void
 jive_serialize_gatedef(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
-	struct jive_gate * gate, jive_token_ostream * os)
+	jive::gate * gate, jive_token_ostream * os)
 {
 	namegen->name_gate(namegen, &self->symtab, gate);
 	jive_serialize_defined_gate(self, gate, os);
@@ -948,7 +948,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 			switch (token->type) {
 				case jive_token_gate: {
 					jive_token_istream_advance(is);
-					jive_gate * gate;
+					jive::gate * gate;
 					if (!jive_deserialize_gateexpr(self, is, region->graph, &gate)) {
 						jive_serialization_symtab_strfree(&self->symtab, name);
 						return false;

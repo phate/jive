@@ -147,7 +147,7 @@ static int test_main(void)
 	assert(ssavar_p == orig_ssavar);
 	
 	jive::output * new_orig = bottom->inputs[2]->origin();
-	jive_gate * reroute_gate = new_orig->gate;
+	jive::gate * reroute_gate = new_orig->gate;
 	assert(reroute_gate->variable == var);
 	assert(new_orig->node() == gamma_node && reroute_gate);
 	

@@ -38,7 +38,7 @@ protected:
 	output(struct jive_node * node, size_t index);
 };
 
-class gate : public jive_gate {
+class gate : public jive::gate {
 public:
 	virtual ~gate() noexcept;
 

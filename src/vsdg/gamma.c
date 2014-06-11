@@ -139,7 +139,7 @@ jive_gamma_create(
 	for (n = 0; n < nvalues; n++) {
 		char name[80];
 		snprintf(name, sizeof(name), "gamma_%p_%zd", gamma, n);
-		jive_gate * gate = types[n]->create_gate(region->graph, name);
+		jive::gate * gate = types[n]->create_gate(region->graph, name);
 		jive_node_gate_input(true_alt, gate, true_values[n]);
 		jive_node_gate_input(false_alt, gate, false_values[n]);
 		jive_node_gate_output(gamma, gate);

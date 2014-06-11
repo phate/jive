@@ -28,8 +28,8 @@ struct jive_region_substitution {
 };
 
 struct jive_gate_substitution {
-	const struct jive_gate * original;
-	struct jive_gate * substitute;
+	const jive::gate * original;
+	jive::gate * substitute;
 	
 	struct {
 		jive_gate_substitution * prev;
@@ -40,7 +40,8 @@ struct jive_gate_substitution {
 JIVE_DEFINE_HASH_TYPE(jive_output_substitution_hash, jive_output_substitution,
 	const jive::output *, original, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_region_substitution_hash, jive_region_substitution, const struct jive_region *, original, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_gate_substitution_hash, jive_gate_substitution, const struct jive_gate *, original, hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_gate_substitution_hash, jive_gate_substitution, const jive::gate *,
+	original, hash_chain);
 
 jive_substitution_map *
 jive_substitution_map_create(struct jive_context * context)
@@ -103,7 +104,8 @@ jive_substitution_map_lookup_region(const jive_substitution_map * self, const st
 }
 
 void
-jive_substitution_map_add_gate(jive_substitution_map * self, const struct jive_gate * original, struct jive_gate * substitute)
+jive_substitution_map_add_gate(jive_substitution_map * self, const jive::gate * original,
+	jive::gate * substitute)
 {
 	jive_gate_substitution * subst = jive_gate_substitution_hash_lookup(&self->gate_hash, original);
 	if (!subst) {
@@ -116,8 +118,8 @@ jive_substitution_map_add_gate(jive_substitution_map * self, const struct jive_g
 	}
 }
 
-struct jive_gate *
-jive_substitution_map_lookup_gate(const jive_substitution_map * self, const struct jive_gate * original)
+jive::gate *
+jive_substitution_map_lookup_gate(const jive_substitution_map * self, const jive::gate * original)
 {
 	jive_gate_substitution * subst = jive_gate_substitution_hash_lookup(&self->gate_hash, original);
 	if (!subst)

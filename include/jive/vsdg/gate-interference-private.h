@@ -15,7 +15,7 @@
 #include <jive/vsdg/notifiers.h>
 
 struct jive_gate_interference_part {
-	jive_gate * gate;
+	jive::gate * gate;
 	struct {
 		jive_gate_interference_part * prev;
 		jive_gate_interference_part * next;
@@ -29,16 +29,17 @@ struct jive_gate_interference {
 	size_t count;
 };
 
-JIVE_DEFINE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, const struct jive_gate *, gate, chain);
+JIVE_DEFINE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, const jive::gate *,
+	gate, chain);
 
 jive_gate_interference *
-jive_gate_interference_create(struct jive_gate * first, struct jive_gate * second);
+jive_gate_interference_create(jive::gate * first, jive::gate * second);
 
 void
 jive_gate_interference_destroy(jive_gate_interference * self);
 
 static inline void
-jive_gate_interference_add(jive_graph * graph, jive_gate * first, jive_gate * second)
+jive_gate_interference_add(jive_graph * graph, jive::gate * first, jive::gate * second)
 {
 	jive_gate_interference * i;
 	jive_gate_interference_part * part = jive_gate_interference_hash_lookup(&first->interference, second);
@@ -53,7 +54,7 @@ jive_gate_interference_add(jive_graph * graph, jive_gate * first, jive_gate * se
 }
 
 static inline void
-jive_gate_interference_remove(jive_graph * graph, jive_gate * first, jive_gate * second)
+jive_gate_interference_remove(jive_graph * graph, jive::gate * first, jive::gate * second)
 {
 	jive_gate_interference * i;
 	jive_gate_interference_part * part = jive_gate_interference_hash_lookup(&first->interference, second);

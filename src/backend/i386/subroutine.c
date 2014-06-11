@@ -139,7 +139,7 @@ static jive::output *
 jive_i386_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t index)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
-	jive_gate * gate = self->base.parameters[index];
+	jive::gate * gate = self->base.parameters[index];
 	jive::output * output = jive_node_gate_output(self->base.enter, gate);
 	
 	const jive::base::type * in_type = &gate->type();
@@ -157,7 +157,7 @@ jive_i386_subroutine_value_return_(jive_subroutine_deprecated * self_, size_t in
 	jive::output * value)
 {
 	jive_i386_subroutine * self = (jive_i386_subroutine *) self_;
-	jive_gate * gate = self->base.returns[index];
+	jive::gate * gate = self->base.returns[index];
 	return jive_node_gate_input(self->base.leave, gate, value);
 }
 

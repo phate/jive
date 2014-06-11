@@ -448,7 +448,9 @@ jive_output_replace(jive::output * self, jive::output * other)
 
 /* gates */
 
-jive_gate::jive_gate(jive_graph * graph, const char name_[])
+namespace jive {
+
+gate::gate(jive_graph * graph, const char name_[])
 	: graph (graph)
 {
 	name = jive_context_strdup(graph->context, name_);
@@ -464,7 +466,7 @@ jive_gate::jive_gate(jive_graph * graph, const char name_[])
 	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
 }
 
-jive_gate::~jive_gate() noexcept
+gate::~gate() noexcept
 {
 	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
 	JIVE_DEBUG_ASSERT(outputs.first == nullptr && outputs.last == nullptr);
@@ -479,13 +481,13 @@ jive_gate::~jive_gate() noexcept
 }
 
 void
-jive_gate::label(jive_buffer & buffer) const
+gate::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, name);
 }
 
 jive::input *
-jive_gate::create_input(jive_node * node, size_t index, jive::output * origin)
+gate::create_input(jive_node * node, size_t index, jive::output * origin)
 {
 	jive::input * input = jive_type_create_input(&type(), node, index, origin);
 	input->required_rescls = required_rescls;
@@ -495,7 +497,7 @@ jive_gate::create_input(jive_node * node, size_t index, jive::output * origin)
 }
 
 jive::output *
-jive_gate::create_output(jive_node * node, size_t index)
+gate::create_output(jive_node * node, size_t index)
 {
 	jive::output * output = type().create_output(node, index);
 	output->required_rescls = required_rescls;
@@ -504,8 +506,10 @@ jive_gate::create_output(jive_node * node, size_t index)
 	return output;
 }
 
+}	//jive namespace
+
 jive_variable *
-jive_gate_get_constraint(jive_gate * self)
+jive_gate_get_constraint(jive::gate * self)
 {
 	if (self->variable) return self->variable;
 	
@@ -516,7 +520,7 @@ jive_gate_get_constraint(jive_gate * self)
 }
 
 size_t
-jive_gate_interferes_with(const jive_gate * self, const jive_gate * other)
+jive_gate_interferes_with(const jive::gate * self, const jive::gate * other)
 {
 	jive_gate_interference_part * part;
 	part = jive_gate_interference_hash_lookup(&self->interference, other);
@@ -525,7 +529,7 @@ jive_gate_interferes_with(const jive_gate * self, const jive_gate * other)
 }
 
 void
-jive_gate_merge(jive_gate * self, jive_gate * other)
+jive_gate_merge(jive::gate * self, jive::gate * other)
 {
 	jive::input * input, * input_next;
 	JIVE_LIST_ITERATE_SAFE(other->inputs, input, input_next, gate_inputs_list) {
@@ -567,7 +571,7 @@ jive_gate_merge(jive_gate * self, jive_gate * other)
 }
 
 void
-jive_gate_split(jive_gate * self)
+jive_gate_split(jive::gate * self)
 {
 	/* split off this gate from others assigned to the same variable */
 	jive_variable * new_variable = jive_variable_create(self->variable->graph);

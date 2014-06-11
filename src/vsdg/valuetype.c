@@ -38,7 +38,7 @@ output::output(struct jive_node * node, size_t index)
 gate::~gate() noexcept {}
 
 gate::gate(jive_graph * graph, const char name[])
-	: jive_gate(graph, name)
+	: jive::gate(graph, name)
 {}
 
 }

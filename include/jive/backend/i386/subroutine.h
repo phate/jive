@@ -25,8 +25,8 @@ jive_i386_subroutine_convert(struct jive_region * target_parent, struct jive_nod
 jive_subroutine_deprecated *
 jive_i386_subroutine_create_takeover(
 	jive_context * context,
-	size_t nparameters, jive_gate * const parameters[],
-	size_t nreturns, jive_gate * const returns[],
+	size_t nparameters, jive::gate * const parameters[],
+	size_t nreturns, jive::gate * const returns[],
 	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[]);
 
 struct jive_i386_subroutine {

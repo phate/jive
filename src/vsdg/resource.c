@@ -34,11 +34,11 @@ jive_resource_class_intersection(const jive_resource_class * self, const jive_re
 	else return 0;
 }
 
-jive_gate *
+jive::gate *
 jive_resource_class_create_gate(const jive_resource_class * self, jive_graph * graph, const char * name)
 {
 	const jive::base::type * type = jive_resource_class_get_type(self);
-	jive_gate * gate = type->create_gate(graph, name);
+	jive::gate * gate = type->create_gate(graph, name);
 	gate->required_rescls = self;
 	return gate;
 }

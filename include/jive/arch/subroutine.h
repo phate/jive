@@ -79,7 +79,7 @@ enum jive_argument_type {
 typedef struct jive_subroutine_passthrough jive_subroutine_passthrough;
 
 struct jive_subroutine_passthrough {
-	jive_gate * gate;
+	jive::gate * gate;
 	jive::output * output;
 	jive::input * input;
 };
@@ -122,11 +122,11 @@ struct jive_subroutine_deprecated {
 	
 	size_t nparameters;
 	jive_argument_type * parameter_types;
-	jive_gate ** parameters;
+	jive::gate ** parameters;
 	
 	size_t nreturns;
 	jive_argument_type * return_types;
-	jive_gate ** returns;
+	jive::gate ** returns;
 	
 	size_t npassthroughs;
 	jive_subroutine_passthrough * passthroughs;

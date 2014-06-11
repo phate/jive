@@ -32,9 +32,9 @@ create_testgraph_gatesplit(jive_context * context)
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_gate * var1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "var1");
-	jive_gate * var2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "var2");
-	jive_gate * var3_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "var3");
+	jive::gate * var1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "var1");
+	jive::gate * var2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "var2");
+	jive::gate * var3_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "var3");
 	
 	jive_node *n1 = jive_instruction_node_create(
 		subroutine.region,
@@ -49,9 +49,9 @@ create_testgraph_gatesplit(jive_context * context)
 	jive_node_gate_input(n2, var3_gate, jive_node_gate_output(n1, var2_gate));
 	jive_node_gate_input(leave_mux, var1_gate, jive_node_gate_output(n2, var3_gate));
 	
-	jive_gate * var_cls1 = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1");
-	jive_gate * var_cls2 = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2");
-	jive_gate * var_cls3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "cls3");
+	jive::gate * var_cls1 = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1");
+	jive::gate * var_cls2 = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "cls2");
+	jive::gate * var_cls3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "cls3");
 	
 	jive_node_gate_output(enter_mux, var_cls1);
 	jive_node_gate_output(n1, var_cls2);

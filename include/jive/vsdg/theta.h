@@ -10,7 +10,10 @@
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node.h>
 
-struct jive_gate;
+namespace jive {
+	class gate;
+}
+
 struct jive_graph;
 struct jive_node;
 struct jive_region;
@@ -45,7 +48,7 @@ struct jive_theta {
 */
 struct jive_theta_loopvar {
 	jive::output * value;
-	struct jive_gate * gate;
+	jive::gate * gate;
 };
 
 /**
@@ -64,7 +67,7 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value);
 	\brief Set post-iteration value of a loop-variant variable
 */
 void
-jive_theta_loopvar_leave(jive_theta self, jive_gate * var,
+jive_theta_loopvar_leave(jive_theta self, jive::gate * var,
 	jive::output * post_value);
 
 /**

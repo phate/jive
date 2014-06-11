@@ -141,13 +141,15 @@ jive_graph_notify_variable_destroy(jive_graph * graph, struct jive_variable * va
 }
 
 static inline void
-jive_graph_notify_variable_assign_gate(jive_graph * graph, struct jive_variable * variable, struct jive_gate * gate)
+jive_graph_notify_variable_assign_gate(jive_graph * graph, struct jive_variable * variable,
+	jive::gate * gate)
 {
 	jive_variable_gate_notifier_slot_call(&graph->on_variable_assign_gate, variable, gate);
 }
 
 static inline void
-jive_graph_notify_variable_unassign_gate(jive_graph * graph, struct jive_variable * variable, struct jive_gate * gate)
+jive_graph_notify_variable_unassign_gate(jive_graph * graph, struct jive_variable * variable,
+	jive::gate * gate)
 {
 	jive_variable_gate_notifier_slot_call(&graph->on_variable_unassign_gate, variable, gate);
 }

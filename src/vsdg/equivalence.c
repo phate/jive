@@ -32,8 +32,8 @@ JIVE_DEFINE_HASH_TYPE(jive_node_equiv_mapping, jive_node_equiv_entry, const jive
 
 typedef struct jive_gate_equiv_entry jive_gate_equiv_entry;
 struct jive_gate_equiv_entry {
-	const jive_gate * first;
-	const jive_gate * second;
+	const jive::gate * first;
+	const jive::gate * second;
 	bool pending;
 	struct {
 		jive_gate_equiv_entry * prev;
@@ -47,8 +47,10 @@ struct jive_gate_equiv_entry {
 
 typedef struct jive_gate_equiv_mapping jive_gate_equiv_mapping;
 
-JIVE_DECLARE_HASH_TYPE(jive_gate_equiv_mapping, jive_gate_equiv_entry, const jive_gate *, first, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_gate_equiv_mapping, jive_gate_equiv_entry, const jive_gate *, first, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_gate_equiv_mapping, jive_gate_equiv_entry, const jive::gate *, first,
+	hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_gate_equiv_mapping, jive_gate_equiv_entry, const jive::gate *, first,
+	hash_chain);
 
 typedef struct jive_equiv_state jive_equiv_state;
 struct jive_equiv_state {

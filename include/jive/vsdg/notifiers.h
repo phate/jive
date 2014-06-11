@@ -10,13 +10,13 @@
 #include <jive/context.h>
 
 namespace jive {
+	class gate;
 	class input;
 	class output;
 }
 
 struct jive_region;
 struct jive_node;
-struct jive_gate;
 struct jive_variable;
 struct jive_ssavar;
 struct jive_resource_class;
@@ -380,7 +380,8 @@ jive_ssavar_variable_notifier_slot_call(const jive_ssavar_variable_notifier_slot
 
 /* variable/gate notifiers */
 
-typedef void (*jive_variable_gate_notifier_function)(void * closure, struct jive_variable * variable, struct jive_gate * gate);
+typedef void (*jive_variable_gate_notifier_function)(void * closure, struct jive_variable * variable,
+	jive::gate * gate);
 typedef struct jive_variable_gate_notifier jive_variable_gate_notifier;
 typedef struct jive_variable_gate_notifier_slot jive_variable_gate_notifier_slot;
 
@@ -406,7 +407,8 @@ jive_notifier *
 jive_variable_gate_notifier_slot_connect(jive_variable_gate_notifier_slot * self, jive_variable_gate_notifier_function function, void * closure);
 
 void
-jive_variable_gate_notifier_slot_call(const jive_variable_gate_notifier_slot * self, struct jive_variable * variable, struct jive_gate * variable_gate);
+jive_variable_gate_notifier_slot_call(const jive_variable_gate_notifier_slot * self,
+	struct jive_variable * variable, jive::gate * variable_gate);
 
 /* variable/resource_class notifiers */
 
@@ -530,7 +532,7 @@ jive_region_ssavar_notifier_slot_call(const jive_region_ssavar_notifier_slot * s
 
 /* gate/gate notifiers */
 
-typedef void (*jive_gate_notifier_function)(void * closure, struct jive_gate * first, struct jive_gate * second);
+typedef void (*jive_gate_notifier_function)(void * closure, jive::gate * first, jive::gate * second);
 typedef struct jive_gate_notifier jive_gate_notifier;
 typedef struct jive_gate_notifier_slot jive_gate_notifier_slot;
 
@@ -556,6 +558,7 @@ jive_notifier *
 jive_gate_notifier_slot_connect(jive_gate_notifier_slot * self, jive_gate_notifier_function function, void * closure);
 
 void
-jive_gate_notifier_slot_call(const jive_gate_notifier_slot * self, struct jive_gate * first, struct jive_gate * second);
+jive_gate_notifier_slot_call(const jive_gate_notifier_slot * self, jive::gate * first,
+	jive::gate * second);
 
 #endif

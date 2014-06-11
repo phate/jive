@@ -13,13 +13,13 @@
 #include <jive/vsdg/operators/unary.h>
 
 namespace jive {
+	class gate;
 	class output;
 }
 
 struct jive_context;
 struct jive_graph;
 struct jive_node;
-struct jive_gate;
 struct jive_region;
 
 typedef struct jive_negotiator jive_negotiator;
@@ -149,7 +149,7 @@ struct jive_negotiator_constraint {
 	} hash_chain;
 	union {
 		struct jive_node * node;
-		struct jive_gate * gate;
+		jive::gate * gate;
 	} hash_key;
 };
 
@@ -162,7 +162,8 @@ jive_negotiator_constraint *
 jive_negotiator_identity_constraint_create(jive_negotiator * self);
 
 JIVE_DECLARE_HASH_TYPE(jive_negotiator_node_hash, jive_negotiator_constraint, struct jive_node *, hash_key.node, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, struct jive_gate *, hash_key.gate, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, jive::gate *,
+	hash_key.gate, hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive::input *,
 	hash_key.input, hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_negotiator_output_hash, jive_negotiator_port, jive::output *,
@@ -193,7 +194,8 @@ struct jive_negotiator_class {
 	bool (*option_assign)(const jive_negotiator * self, jive_negotiator_option * dst, const jive_negotiator_option * src);
 	
 	/* store suitable default options for this type/resource class pair */
-	bool (*option_gate_default)(const jive_negotiator * self, jive_negotiator_option * dst, const struct jive_gate * gate);
+	bool (*option_gate_default)(const jive_negotiator * self, jive_negotiator_option * dst,
+		const jive::gate * gate);
 	
 	/* annotate non-gate ports of node */
 	void (*annotate_node_proper)(jive_negotiator * self, struct jive_node * node);
@@ -275,7 +277,8 @@ jive_negotiator_annotate_node_proper_(jive_negotiator * self, struct jive_node *
 
 /* inheritable default gate annotator */
 bool
-jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiator_option * dst, const struct jive_gate * gate);
+jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiator_option * dst,
+	const jive::gate * gate);
 
 void
 jive_negotiator_process_region_(jive_negotiator * self, struct jive_region * region);

@@ -277,7 +277,7 @@ static bool
 test_negotiator_option_gate_default_(
 	const jive_negotiator * self_,
 	jive_negotiator_option * dst,
-	const jive_gate * gate)
+	const jive::gate * gate)
 {
 	test_negotiator_option * option = (test_negotiator_option *) dst;
 	option->mask = 1;

@@ -86,7 +86,8 @@ MAKE_NOTIFIER(region_ssavar, REGION_SSAVAR, WRAP(struct jive_region * region, st
 MAKE_NOTIFIER(variable, VARIABLE, struct jive_variable * variable, variable)
 MAKE_NOTIFIER(variable_resource_class, VARIABLE_RESOURCE_CLASS, WRAP(struct jive_variable * variable, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls), WRAP(variable, old_rescls, new_rescls))
 MAKE_NOTIFIER(variable_resource_name, VARIABLE_RESOURCE_NAME, WRAP(struct jive_variable * variable, const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname), WRAP(variable, old_resname, new_resname))
-MAKE_NOTIFIER(variable_gate, VARIABLE_GATE, WRAP(struct jive_variable * variable, struct jive_gate * gate), WRAP(variable, gate))
+MAKE_NOTIFIER(variable_gate, VARIABLE_GATE, WRAP(struct jive_variable * variable, jive::gate * gate),
+	WRAP(variable, gate))
 
 MAKE_NOTIFIER(ssavar, SSAVAR, struct jive_ssavar * ssavar, ssavar)
 MAKE_NOTIFIER(ssavar_variable, SSAVAR_VARIABLE, WRAP(struct jive_ssavar * ssavar, struct jive_variable * old_var, struct jive_variable * new_var), WRAP(ssavar, old_var, new_var))
@@ -97,4 +98,4 @@ MAKE_NOTIFIER(ssavar_output, SSAVAR_OUTPUT, WRAP(struct jive_ssavar * ssavar,
 MAKE_NOTIFIER(ssavar_input, SSAVAR_INPUT, WRAP(struct jive_ssavar * ssavar, jive::input * input),
 	WRAP(ssavar, input))
 
-MAKE_NOTIFIER(gate, GATE, WRAP(struct jive_gate * first, struct jive_gate * second), WRAP(first, second))
+MAKE_NOTIFIER(gate, GATE, WRAP(jive::gate * first, jive::gate * second), WRAP(first, second))

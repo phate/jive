@@ -37,11 +37,15 @@ create_testgraph(jive_context * ctx)
 	
 	jive_region * region = subroutine.region;
 	
-	jive_gate * callee_saved_r2 = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "saved_r2");
-	jive_node_gate_input(leave_mux, callee_saved_r2, jive_node_gate_output(enter_mux, callee_saved_r2));
+	jive::gate * callee_saved_r2 = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph,
+		"saved_r2");
+	jive_node_gate_input(leave_mux, callee_saved_r2, jive_node_gate_output(enter_mux,
+		callee_saved_r2));
 	
-	jive_gate * callee_saved_r3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "saved_r0");
-	jive_node_gate_input(leave_mux, callee_saved_r3, jive_node_gate_output(enter_mux, callee_saved_r3));
+	jive::gate * callee_saved_r3 = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph,
+		"saved_r0");
+	jive_node_gate_input(leave_mux, callee_saved_r3, jive_node_gate_output(enter_mux,
+		callee_saved_r3));
 	
 	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	jive::output * tmparray2[] = {arg1};

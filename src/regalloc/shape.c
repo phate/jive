@@ -431,7 +431,7 @@ check_ssavar_replacement_conflict(
 }
 
 static bool
-gate_is_unbound(const jive_gate * gate)
+gate_is_unbound(const jive::gate * gate)
 {
 	jive::input * input;
 	JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list)
@@ -452,7 +452,7 @@ jive_region_shaper_undo_setup_node(jive_region_shaper * self, jive_node * node)
 		if (ssavar) {
 			jive_variable * variable = ssavar->variable;
 			jive_ssavar_unassign_input(ssavar, input);
-			jive_gate * gate = input->gate;
+			jive::gate * gate = input->gate;
 			if (gate && gate_is_unbound(gate))
 				jive_gate_split(gate);
 			jive_variable_recompute_rescls(variable);
@@ -464,7 +464,7 @@ jive_region_shaper_undo_setup_node(jive_region_shaper * self, jive_node * node)
 		if (ssavar) {
 			jive_variable * variable = ssavar->variable;
 			jive_ssavar_unassign_output(ssavar, output);
-			jive_gate * gate = output->gate;
+			jive::gate * gate = output->gate;
 			if (gate && gate_is_unbound(gate))
 				jive_gate_split(gate);
 			jive_variable_recompute_rescls(variable);

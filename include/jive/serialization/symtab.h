@@ -14,11 +14,11 @@
 #include <jive/util/hash.h>
 
 namespace jive {
+	class gate;
 	class output;
 }
 
 struct jive_context;
-struct jive_gate;
 struct jive_label;
 struct jive_node;
 
@@ -37,7 +37,7 @@ typedef struct jive_serialization_outputsym_dict jive_serialization_outputsym_di
 typedef struct jive_serialization_symtab jive_serialization_symtab;
 
 struct jive_serialization_gatesym {
-	struct jive_gate * gate;
+	jive::gate * gate;
 	char * name;
 	struct {
 		jive_serialization_gatesym * prev;
@@ -48,7 +48,8 @@ struct jive_serialization_gatesym {
 		jive_serialization_gatesym * next;
 	} name_hash_chain;
 };
-JIVE_DECLARE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, struct jive_gate *, gate, gate_hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, jive::gate *,
+	gate, gate_hash_chain);
 JIVE_DECLARE_DICT_TYPE(jive_serialization_gatesym_dict, jive_serialization_gatesym, name, name_hash_chain);
 
 struct jive_serialization_labelsym {
@@ -134,7 +135,7 @@ jive_serialization_symtab_strfree(
 void
 jive_serialization_symtab_insert_gatesym(
 	jive_serialization_symtab * self,
-	struct jive_gate * gate,
+	jive::gate * gate,
 	char * name);
 
 void
@@ -145,7 +146,7 @@ jive_serialization_symtab_remove_gatesym(
 const jive_serialization_gatesym *
 jive_serialization_symtab_gate_to_name(
 	jive_serialization_symtab * self,
-	const struct jive_gate * gate);
+	const jive::gate * gate);
 
 const jive_serialization_gatesym *
 jive_serialization_symtab_name_to_gate(

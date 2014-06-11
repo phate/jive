@@ -28,13 +28,13 @@ public:
 
 	lambda_operation(
 		const jive::fct::type & function_type,
-		const std::vector<jive_gate *> & argument_gates,
-		const std::vector<jive_gate *> & return_gates);
+		const std::vector<jive::gate *> & argument_gates,
+		const std::vector<jive::gate *> & return_gates);
 
 	lambda_operation(
 		jive::fct::type && function_type,
-		std::vector<jive_gate *> && argument_gates,
-		std::vector<jive_gate *> && return_gates) noexcept;
+		std::vector<jive::gate *> && argument_gates,
+		std::vector<jive::gate *> && return_gates) noexcept;
 
 	inline const jive::fct::type &
 	function_type() const noexcept
@@ -42,13 +42,13 @@ public:
 		return function_type_;
 	}
 
-	inline const std::vector<jive_gate *>
+	inline const std::vector<jive::gate *>
 	argument_gates() const noexcept
 	{
 		return argument_gates_;
 	}
 
-	inline const std::vector<jive_gate *>
+	inline const std::vector<jive::gate *>
 	return_gates() const noexcept
 	{
 		return return_gates_;
@@ -56,8 +56,8 @@ public:
 
 private:
 	jive::fct::type function_type_;
-	std::vector<jive_gate *> argument_gates_;
-	std::vector<jive_gate *> return_gates_;
+	std::vector<jive::gate *> argument_gates_;
+	std::vector<jive::gate *> return_gates_;
 };
 
 class lambda_enter_operation final : public jive::operation {

@@ -17,10 +17,10 @@
 #include <jive/vsdg/variable.h>
 
 namespace jive {
+	class gate;
 	class output;
 }
 
-struct jive_gate;
 struct jive_resource_class;
 
 struct jive_variable_interference_part {
@@ -219,13 +219,13 @@ jive_variable_interference_remove(jive_shaped_variable * first, jive_shaped_vari
 }
 
 void
-jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, struct jive_gate * gate);
+jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, jive::gate * gate);
 
 void
-jive_shaped_variable_assign_gate(jive_shaped_variable * self, struct jive_gate * gate);
+jive_shaped_variable_assign_gate(jive_shaped_variable * self, jive::gate * gate);
 
 void
-jive_shaped_variable_unassign_gate(jive_shaped_variable * self, struct jive_gate * gate);
+jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive::gate * gate);
 
 void
 jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);

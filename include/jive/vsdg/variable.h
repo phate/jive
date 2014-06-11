@@ -13,6 +13,7 @@
 #include <jive/vsdg/region-ssavar-use.h>
 
 namespace jive {
+	class gate;
 	class input;
 	class output;
 }
@@ -110,8 +111,8 @@ struct jive_variable {
 	} unused_ssavars;
 	
 	struct {
-		struct jive_gate * first;
-		struct jive_gate * last;
+		jive::gate * first;
+		jive::gate * last;
 	} gates;
 	
 	const struct jive_resource_class * rescls;
@@ -122,10 +123,10 @@ jive_variable *
 jive_variable_create(struct jive_graph * graph);
 
 void
-jive_variable_assign_gate(jive_variable * self, struct jive_gate * gate);
+jive_variable_assign_gate(jive_variable * self, jive::gate * gate);
 
 void
-jive_variable_unassign_gate(jive_variable * self, struct jive_gate * gate);
+jive_variable_unassign_gate(jive_variable * self, jive::gate * gate);
 
 void
 jive_variable_merge(jive_variable * self, jive_variable * other);

@@ -291,7 +291,7 @@ jive_node_add_constrained_input(jive_node * self, const jive_resource_class * re
 }
 
 jive::input *
-jive_node_gate_input(jive_node * self, jive_gate * gate, jive::output * initial_operand)
+jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {
 	if (self->graph->floating_region_count) {
 		jive_region * origin_region = initial_operand->node()->region;
@@ -310,7 +310,7 @@ jive_node_gate_input(jive_node * self, jive_gate * gate, jive::output * initial_
 }
 
 jive::output *
-jive_node_gate_output(jive_node * self, jive_gate * gate)
+jive_node_gate_output(jive_node * self, jive::gate * gate)
 {
 	jive::output * output = gate->create_output(self, self->noutputs);
 	size_t n;
@@ -625,8 +625,8 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 		if (tmp) origin = tmp;
 		
 		if (self->inputs[n]->gate) {
-			jive_gate * gate = self->inputs[n]->gate;
-			jive_gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
+			jive::gate * gate = self->inputs[n]->gate;
+			jive::gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
 			if (!target_gate) {
 				target_gate = gate->type().create_gate(target->graph, gate->name);
 				target_gate->required_rescls = gate->required_rescls;
@@ -641,8 +641,8 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 	
 	for(n = new_node->noutputs; n < self->noutputs; n++) {
 		if (self->outputs[n]->gate) {
-			jive_gate * gate = self->outputs[n]->gate;
-			jive_gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
+			jive::gate * gate = self->outputs[n]->gate;
+			jive::gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
 			if (!target_gate) {
 				target_gate = gate->type().create_gate(target->graph, gate->name);
 				target_gate->required_rescls = gate->required_rescls;

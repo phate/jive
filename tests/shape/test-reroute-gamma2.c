@@ -143,7 +143,7 @@ static int test_main(void)
 	jive_ssavar * ssavar_p = jive_regalloc_reroute_at_point(orig_ssavar, p);
 	
 	jive::output * new_orig = bottom->inputs[2]->origin();
-	jive_gate * reroute_gate = new_orig->gate;
+	jive::gate * reroute_gate = new_orig->gate;
 	assert(new_orig->node() == gamma_node && reroute_gate && reroute_gate->variable == var);
 	
 	jive_ssavar * ssavar_below = new_orig->ssavar;

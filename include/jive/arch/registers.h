@@ -38,7 +38,7 @@ struct jive_register_class {
 const struct jive::base::type *
 jive_register_class_get_type(const jive_register_class * self);
 
-struct jive_gate *
+jive::gate *
 jive_register_class_create_gate(
 	const jive_register_class * self, struct jive_graph * graph, const char * name);
 

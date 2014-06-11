@@ -5,7 +5,8 @@
 
 #include <jive/serialization/symtab.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, const struct jive_gate *, gate, gate_hash_chain);
+JIVE_DEFINE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym,
+	const jive::gate *, gate, gate_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_gatesym_dict, jive_serialization_gatesym, name, name_hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_serialization_labelsym_hash, jive_serialization_labelsym, const struct jive_label *, label, label_hash_chain);
 JIVE_DEFINE_DICT_TYPE(jive_serialization_labelsym_dict, jive_serialization_labelsym, name, name_hash_chain);
@@ -77,7 +78,7 @@ jive_serialization_symtab_fini(jive_serialization_symtab * self)
 void
 jive_serialization_symtab_insert_gatesym(
 	jive_serialization_symtab * self,
-	struct jive_gate * gate,
+	jive::gate * gate,
 	char * name)
 {
 	jive_serialization_gatesym * sym;
@@ -102,7 +103,7 @@ jive_serialization_symtab_remove_gatesym(
 const jive_serialization_gatesym *
 jive_serialization_symtab_gate_to_name(
 	jive_serialization_symtab * self,
-	const struct jive_gate * gate)
+	const jive::gate * gate)
 {
 	return jive_serialization_gatesym_hash_lookup(&self->gate_to_name, gate);
 }

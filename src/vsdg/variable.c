@@ -294,7 +294,7 @@ jive_variable_destroy(jive_variable * self)
 }
 
 void
-jive_variable_assign_gate(jive_variable * self, struct jive_gate * gate)
+jive_variable_assign_gate(jive_variable * self, jive::gate * gate)
 {
 	JIVE_DEBUG_ASSERT(gate->variable == 0);
 	jive_variable_inc_use_count(self);
@@ -304,7 +304,7 @@ jive_variable_assign_gate(jive_variable * self, struct jive_gate * gate)
 }
 
 void
-jive_variable_unassign_gate(jive_variable * self, struct jive_gate * gate)
+jive_variable_unassign_gate(jive_variable * self, jive::gate * gate)
 {
 	JIVE_DEBUG_ASSERT(gate->variable == self);
 	jive_graph_notify_variable_unassign_gate(self->graph, self, gate);
@@ -333,7 +333,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 		jive_variable_set_resource_name(other, self->resname);
 	
 	while (other->gates.first) {
-		jive_gate * gate = other->gates.first;
+		jive::gate * gate = other->gates.first;
 		jive_variable_unassign_gate(other, gate);
 		jive_variable_assign_gate(self, gate);
 	}
@@ -387,7 +387,7 @@ jive_variable_recompute_rescls(jive_variable * self)
 		if (ssavar->assigned_output)
 			rescls = jive_resource_class_intersection(rescls, ssavar->assigned_output->required_rescls);
 	}
-	jive_gate * gate;
+	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->gates, gate, variable_gate_list) {
 		rescls = jive_resource_class_intersection(rescls, gate->required_rescls);
 	}
@@ -412,7 +412,7 @@ jive_variable_set_resource_name(jive_variable * self, const jive_resource_name *
 bool
 jive_variable_may_spill(const jive_variable * self)
 {
-	jive_gate * gate;
+	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->gates, gate, variable_gate_list) {
 		if (!gate->may_spill)
 			return false;

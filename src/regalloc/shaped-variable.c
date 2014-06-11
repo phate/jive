@@ -111,13 +111,13 @@ jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * se
 }
 
 void
-jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, jive_gate * gate)
+jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, jive::gate * gate)
 {
 	/* during initial build of shaped_graph, other_shape might be NULL */
 	
 	struct jive_gate_interference_hash_iterator i;
 	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
-		jive_gate * other_gate = i.entry->gate;
+		jive::gate * other_gate = i.entry->gate;
 		jive_variable * other = other_gate->variable;
 		if (!other) continue;
 		jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
@@ -127,11 +127,11 @@ jive_shaped_variable_initial_assign_gate(jive_shaped_variable * self, jive_gate 
 }
 
 void
-jive_shaped_variable_assign_gate(jive_shaped_variable * self, jive_gate * gate)
+jive_shaped_variable_assign_gate(jive_shaped_variable * self, jive::gate * gate)
 {
 	struct jive_gate_interference_hash_iterator i;
 	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
-		jive_gate * other_gate = i.entry->gate;
+		jive::gate * other_gate = i.entry->gate;
 		jive_variable * other = other_gate->variable;
 		if (!other) continue;
 		jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
@@ -140,11 +140,11 @@ jive_shaped_variable_assign_gate(jive_shaped_variable * self, jive_gate * gate)
 }
 
 void
-jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive_gate * gate)
+jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive::gate * gate)
 {
 	struct jive_gate_interference_hash_iterator i;
 	JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
-		jive_gate * other_gate = i.entry->gate;
+		jive::gate * other_gate = i.entry->gate;
 		jive_variable * other = other_gate->variable;
 		if (!other) continue;
 		jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
@@ -214,11 +214,11 @@ jive_shaped_variable_get_cross_count(const jive_shaped_variable * self, jive_res
 void
 jive_shaped_variable_destroy(jive_shaped_variable * self)
 {
-	jive_gate * gate;
+	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
 		struct jive_gate_interference_hash_iterator i;
 		JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
-			jive_gate * other_gate = i.entry->gate;
+			jive::gate * other_gate = i.entry->gate;
 			jive_variable * other = other_gate->variable;
 			if (!other) continue;
 			jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
@@ -348,7 +348,7 @@ jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * se
 	jive_resource_class_count use_count;
 	jive_resource_class_count_init(&use_count, self->shaped_graph->context);
 	
-	jive_gate * gate;
+	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {

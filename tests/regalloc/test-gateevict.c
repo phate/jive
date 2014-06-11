@@ -32,8 +32,9 @@ create_testgraph_gateevict(jive_context * context)
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
-	jive_gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "arg1");
-	jive_gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "arg1");
+	jive::gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "arg1");
+	jive::gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph,
+		"arg1");
 	
 	jive::output * arg1 = jive_node_gate_output(enter_mux, arg1_gate);
 	jive::output * tmparray0[] = {arg1};
@@ -43,10 +44,11 @@ create_testgraph_gateevict(jive_context * context)
 		&jive_testarch_instr_move_gpr,
 		tmparray0, NULL)->outputs[0];
 	
-	jive_gate * passthrough = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "passthrough");
-	jive_gate * r1g = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "r1");
-	jive_gate * r2g = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "r2");
-	jive_gate * r3g = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "r3");
+	jive::gate * passthrough = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph,
+		"passthrough");
+	jive::gate * r1g = jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "r1");
+	jive::gate * r2g = jive_register_class_create_gate(&jive_testarch_regcls_r2, graph, "r2");
+	jive::gate * r3g = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "r3");
 	
 	jive_node * nop1 = jive_instruction_node_create(
 		subroutine.region,

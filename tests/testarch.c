@@ -492,7 +492,7 @@ static jive::output *
 jive_testarch_subroutine_value_parameter_(jive_subroutine_deprecated * self_, size_t index)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
-	jive_gate * gate = self->base.parameters[index];
+	jive::gate * gate = self->base.parameters[index];
 	jive::output * output = jive_node_gate_output(self->base.enter, gate);
 	if (index >= 2) {
 		const jive::base::type * in_type = &gate->type();
@@ -511,7 +511,7 @@ jive_testarch_subroutine_value_return_(jive_subroutine_deprecated * self_, size_
 	jive::output * value)
 {
 	jive_testarch_subroutine * self = (jive_testarch_subroutine *) self_;
-	jive_gate * gate = self->base.returns[index];
+	jive::gate * gate = self->base.returns[index];
 	return jive_node_gate_input(self->base.leave, gate, value);
 }
 

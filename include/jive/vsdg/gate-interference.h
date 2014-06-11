@@ -12,6 +12,7 @@ typedef struct jive_gate_interference jive_gate_interference;
 typedef struct jive_gate_interference_hash jive_gate_interference_hash;
 typedef struct jive_gate_interference_part jive_gate_interference_part;
 
-JIVE_DECLARE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, struct jive_gate *, gate, chain);
+JIVE_DECLARE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, jive::gate *, gate,
+	chain);
 
 #endif

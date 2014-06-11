@@ -9,7 +9,7 @@
 #include <jive/util/list.h>
 
 jive_gate_interference *
-jive_gate_interference_create(jive_gate * first, jive_gate * second)
+jive_gate_interference_create(jive::gate * first, jive::gate * second)
 {
 	jive_gate_interference * i = jive_context_malloc(first->graph->context, sizeof(*i));
 	i->first.gate = first;

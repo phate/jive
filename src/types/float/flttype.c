@@ -47,7 +47,7 @@ type::create_output(jive_node * node, size_t index) const
 	return new jive::flt::output(node, index);
 }
 
-jive_gate *
+jive::gate *
 type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive::flt::gate(graph, name);

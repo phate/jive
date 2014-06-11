@@ -9,13 +9,13 @@
 #include <jive/util/hash.h>
 
 namespace jive {
+	class gate;
 	class output;
 }
 
 struct jive_context;
 struct jive_graph;
 struct jive_region;
-struct jive_gate;
 
 typedef struct jive_substitution_map jive_substitution_map;
 typedef struct jive_output_substitution jive_output_substitution;
@@ -28,7 +28,8 @@ typedef struct jive_gate_substitution_hash jive_gate_substitution_hash;
 JIVE_DECLARE_HASH_TYPE(jive_output_substitution_hash, jive_output_substitution, const jive::output *,
 	original, hash_chain);
 JIVE_DECLARE_HASH_TYPE(jive_region_substitution_hash, jive_region_substitution, const struct jive_region *, original, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_gate_substitution_hash, jive_gate_substitution, const struct jive_gate *, original, hash_chain);
+JIVE_DECLARE_HASH_TYPE(jive_gate_substitution_hash, jive_gate_substitution, const jive::gate *,
+	original, hash_chain);
 
 struct jive_substitution_map {
 	jive_output_substitution_hash output_hash;
@@ -54,10 +55,11 @@ struct jive_region *
 jive_substitution_map_lookup_region(const jive_substitution_map * self, const struct jive_region * original);
 
 void
-jive_substitution_map_add_gate(jive_substitution_map * self, const struct jive_gate * original, struct jive_gate * substitute);
+jive_substitution_map_add_gate(jive_substitution_map * self, const jive::gate * original,
+	jive::gate * substitute);
 
-struct jive_gate *
-jive_substitution_map_lookup_gate(const jive_substitution_map * self, const struct jive_gate * original);
+jive::gate *
+jive_substitution_map_lookup_gate(const jive_substitution_map * self, const jive::gate * original);
 
 void
 jive_substitution_map_destroy(jive_substitution_map * self);

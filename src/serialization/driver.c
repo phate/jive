@@ -53,7 +53,7 @@ static void
 simple_name_gate(
 	jive_serialization_namegen * self_,
 	jive_serialization_symtab * symtab,
-	jive_gate * gate)
+	jive::gate * gate)
 {
 	if (jive_serialization_symtab_gate_to_name(symtab, gate) != 0)
 		return;
@@ -138,7 +138,7 @@ jive_serialize_graph(
 	jive_serialization_simple_namegen namegen;
 	jive_serialization_simple_namegen_init(&namegen);
 	
-	jive_gate * gate;
+	jive::gate * gate;
 	JIVE_LIST_ITERATE(graph->gates, gate, graph_gate_list) {
 		jive_serialize_gatedef(self, &namegen.base, gate, os);
 		jive_serialize_char_token(self, ';', os);

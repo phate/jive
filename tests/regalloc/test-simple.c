@@ -30,7 +30,7 @@ create_testgraph(jive_context * ctx)
 		&jive_testarch_instr_nop,
 		0, 0);
 	
-	jive_gate * stackptr_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "stackptr");
+	jive::gate * stackptr_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "stackptr");
 	stackptr_gate->may_spill = false;
 	
 	jive::output * stackptr = jive_node_gate_output(enter, stackptr_gate);

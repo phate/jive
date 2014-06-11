@@ -54,7 +54,7 @@ type::create_output(jive_node * node, size_t index) const
 	return new jive::unn::output(this->declaration(), node, index);
 }
 
-jive_gate *
+jive::gate *
 type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive::unn::gate(this->declaration(), graph, name);

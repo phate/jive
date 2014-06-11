@@ -122,7 +122,7 @@ static int test_main(void)
 	assert(theta_tail->ninputs == 3);
 	assert(theta_node->noutputs == 2);
 	
-	jive_gate * gate = theta_head->inputs[1]->gate;
+	jive::gate * gate = theta_head->inputs[1]->gate;
 	assert(gate);
 	assert(theta_head->inputs[1]->gate == gate && theta_head->outputs[2]->gate == gate);
 	assert(theta_tail->inputs[2]->gate == gate);

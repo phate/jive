@@ -297,17 +297,17 @@ jive_subroutine_serialize(
 	
 	size_t n;
 	for (n = 0; n < subroutine->nparameters; ++n) {
-		jive_gate * gate = subroutine->parameters[n];
+		jive::gate * gate = subroutine->parameters[n];
 		jive_serialize_defined_gate(driver, gate, os);
 	}
 	jive_serialize_char_token(driver, ';', os);
 	for (n = 0; n < subroutine->nreturns; ++n) {
-		jive_gate * gate = subroutine->returns[n];
+		jive::gate * gate = subroutine->returns[n];
 		jive_serialize_defined_gate(driver, gate, os);
 	}
 	jive_serialize_char_token(driver, ';', os);
 	for (n = 0; n < subroutine->npassthroughs; ++n) {
-		jive_gate * gate = subroutine->passthroughs[n].gate;
+		jive::gate * gate = subroutine->passthroughs[n].gate;
 		jive_serialize_defined_gate(driver, gate, os);
 	}
 	jive_serialize_char_token(driver, ';', os);
@@ -316,19 +316,19 @@ jive_subroutine_serialize(
 static bool
 jive_deserialize_gatelist(jive_serialization_driver * self,
 	jive_token_istream * is,
-	size_t * ngates, jive_gate *** gates)
+	size_t * ngates, jive::gate *** gates)
 {
 	*ngates = 0;
 	*gates = 0;
 	const jive_token * token = jive_token_istream_current(is);
 	while (token->type == jive_token_identifier) {
-		jive_gate * gate;
+		jive::gate * gate;
 		if (!jive_deserialize_defined_gate(self, is, &gate)) {
 			jive_context_free(self->context, *gates);
 			return false;
 		}
 		*gates = jive_context_realloc(self->context, *gates,
-			(1 + *ngates) * sizeof(jive_gate *));
+			(1 + *ngates) * sizeof(jive::gate *));
 		(*gates)[*ngates] = gate;
 		(*ngates) ++;
 	}
@@ -363,14 +363,14 @@ jive_subroutine_deserialize(
 	jive_token_istream_advance(is);
 	
 	size_t nparameters;
-	jive_gate ** parameters;
+	jive::gate ** parameters;
 	if (!jive_deserialize_gatelist(driver, is, &nparameters, &parameters))
 		return false;
 	if (!jive_deserialize_char_token(driver, is, ';'))
 		return false;
 	
 	size_t nreturns;
-	jive_gate ** returns;
+	jive::gate ** returns;
 	if (!jive_deserialize_gatelist(driver, is, &nreturns, &returns)) {
 		jive_context_free(driver->context, parameters);
 		return false;
@@ -381,7 +381,7 @@ jive_subroutine_deserialize(
 	}
 	
 	size_t npassthroughs;
-	jive_gate ** passthrough_gates;
+	jive::gate ** passthrough_gates;
 	if (!jive_deserialize_gatelist(driver, is, &npassthroughs, &passthrough_gates)) {
 		jive_context_free(driver->context, returns);
 		jive_context_free(driver->context, parameters);
@@ -398,7 +398,7 @@ jive_subroutine_deserialize(
 	
 	size_t n;
 	for (n = 0; n < npassthroughs; ++n) {
-		jive_gate * gate = passthrough_gates[n];
+		jive::gate * gate = passthrough_gates[n];
 		passthroughs[n].gate = gate;
 		passthroughs[n].output = jive_node_get_gate_output(enter, gate);
 		passthroughs[n].input = jive_node_get_gate_input(leave, gate);
