@@ -17,7 +17,10 @@ class type final : public jive::value::type {
 public:
 	virtual ~type() noexcept;
 
-	type(size_t nbits) noexcept;
+	inline constexpr type(size_t nbits) noexcept
+		: nbits_(nbits)
+	{
+	}
 
 	inline size_t nbits() const noexcept { return nbits_; }
 

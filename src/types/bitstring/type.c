@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -18,11 +19,6 @@ namespace bits {
 /* type */
 
 type::~type() noexcept {}
-
-type::type(size_t nbits) noexcept
-	: jive::value::type()
-	, nbits_(nbits)
-{}
 
 void
 type::label(jive_buffer & buffer) const
