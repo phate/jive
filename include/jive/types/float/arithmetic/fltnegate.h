@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -14,22 +15,19 @@ extern const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_;
 namespace jive {
 namespace flt {
 
-class negate_operation final : public jive::flt_unary_operation {
-};
+value_repr compute_negation(value_repr arg);
+extern const char fltnegate_name[];
+
+typedef detail::make_unop<
+	compute_negation,
+	&JIVE_FLTNEGATE_NODE_,
+	fltnegate_name> negate_operation;
+
 
 }
 }
 
 jive::output *
-jive_fltnegate(jive::output * operand);
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_fltnegate_node_cast(jive_node * node)
-{
-	if(jive_node_isinstance(node, &JIVE_FLTNEGATE_NODE))
-		return node;
-	else
-		return NULL;
-}
+jive_fltnegate(jive::output * arg);
 
 #endif

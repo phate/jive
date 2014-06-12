@@ -18,6 +18,50 @@ flt_unary_operation::~flt_unary_operation() noexcept
 {
 }
 
+const jive::base::type &
+flt_unary_operation::argument_type(size_t index) const noexcept
+{
+	static const jive::flt::type type;
+	return type;
+}
+
+const jive::base::type &
+flt_unary_operation::result_type(size_t index) const noexcept
+{
+	static const jive::flt::type type;
+	return type;
+}
+
+jive_unop_reduction_path_t
+flt_unary_operation::can_reduce_operand(
+	const jive::output * arg) const noexcept
+{
+	bool arg_is_constant =
+		dynamic_cast<const flt::constant_operation *>(&arg->node()->operation());
+	
+	if (arg_is_constant) {
+		return jive_unop_reduction_constant;
+	}
+
+	return jive_unop_reduction_none;
+}
+
+jive::output *
+flt_unary_operation::reduce_operand(
+	jive_unop_reduction_path_t path,
+	jive::output * arg) const
+{
+	if (path == jive_unop_reduction_constant) {
+		jive_graph * graph = arg->node()->graph;
+		const flt::constant_operation & c =
+			static_cast<const flt::constant_operation&>(arg->node()->operation());
+		flt::value_repr result = reduce_constant(c.value());
+		return jive_fltconstant(graph, result);
+	}
+
+	return nullptr;
+}
+
 flt_binary_operation::~flt_binary_operation() noexcept
 {
 }
@@ -237,8 +281,8 @@ const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_ = {
 		single_apply_over : NULL,
 		multi_apply_over : NULL,
 
-		can_reduce_operand : jive_unary_operation_can_reduce_operand_, /* inherit */
-		reduce_operand : jive_unary_operation_reduce_operand_ /* inherit */
+		can_reduce_operand : nullptr,
+		reduce_operand : nullptr,
 	},
 	type : jive_fltop_code_invalid
 };

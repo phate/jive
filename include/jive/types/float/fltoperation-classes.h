@@ -64,6 +64,27 @@ namespace jive {
 class flt_unary_operation : public unary_operation {
 public:
 	virtual ~flt_unary_operation() noexcept;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
+
+	virtual flt::value_repr
+	reduce_constant(
+		const flt::value_repr & arg) const = 0;
 };
 
 /* Represents a binary operation on a float. */
@@ -140,6 +161,69 @@ public:
 
 namespace flt {
 namespace detail {
+
+template<
+	value_repr eval_function(value_repr),
+	const jive_fltunary_operation_class * cls,
+	const char * name>
+class make_unop final : public flt_unary_operation {
+public:
+	virtual ~make_unop() noexcept {}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override
+	{
+		const make_unop * o = dynamic_cast<const make_unop *>(&other);
+		return o != nullptr;
+	}
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override
+	{
+		jive_node * node = jive::create_operation_node(*this);
+		node->class_ = &cls->base.base;
+
+		const jive::base::type * argument_types[2] = {
+			&argument_type(0),
+		};
+		const jive::base::type * result_types[1] = {
+			&result_type(0)
+		};
+
+		jive_node_init_(
+			node, region,
+			1, argument_types, arguments,
+			1, result_types);
+
+		return node;
+	}
+
+	static jive::output *
+	normalized_create(jive::output * arg)
+	{
+		jive_graph * graph = arg->node()->graph;
+		make_unop op;
+		return jive_unary_operation_create_normalized(
+			&cls->base, graph, &op, arg);
+	}
+
+	virtual flt::value_repr
+	reduce_constant(
+		const flt::value_repr & arg) const override
+	{
+		return eval_function(arg);
+	}
+
+	virtual std::string
+	debug_string() const override
+	{
+		return name;
+	}
+};
+
 template<
 	value_repr eval_function(value_repr, value_repr),
 	const jive_fltbinary_operation_class * cls,

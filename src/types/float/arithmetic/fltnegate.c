@@ -11,9 +11,18 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
-static jive_node *
-jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[]);
+namespace jive {
+namespace flt {
+
+value_repr compute_negation(value_repr arg)
+{
+	return -arg;
+}
+
+const char fltnegate_name[] = "FLTNEGATE";
+
+}
+}
 
 const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
 	base : { /* jive_unary_opeartion_class */
@@ -22,48 +31,23 @@ const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
 			name : "FLTNEGATE",
 			fini : jive_node_fini_, /* inherit */
 			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-			get_label : jive_node_get_label_, /* inherit */
-			match_attrs : jive_node_match_attrs_, /* inherit */
-			check_operands : jive_fltbinary_operation_check_operands_, /* inherit */
-			create : jive_fltnegate_node_create_, /* overrride */
+			get_label : nullptr,
+			match_attrs : nullptr,
+			check_operands : nullptr,
+			create : nullptr,
 		},
 		
 		single_apply_over : NULL,
 		multi_apply_over : NULL,
 
-		can_reduce_operand : jive_unary_operation_can_reduce_operand_, /* inherit */
-		reduce_operand : jive_unary_operation_reduce_operand_ /* inherit */
+		can_reduce_operand : nullptr,
+		reduce_operand : nullptr
 	},
 	type : jive_fltop_code_negate
 };
 
-static void
-jive_fltnegate_node_init_(struct jive_node * self, struct jive_region * region,
-	jive::output * operand)
-{
-	jive::flt::type flttype;
-	const jive::base::type * flttype_ptr = &flttype;
-	jive_node_init_(self, region,
-		1, &flttype_ptr, &operand,
-		1, &flttype_ptr);
-}
-
-static jive_node *
-jive_fltnegate_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 1);
-
-	jive_node * node = jive::create_operation_node(jive::flt::negate_operation());
-	node->class_ = &JIVE_FLTNEGATE_NODE;
-	jive_fltnegate_node_init_(node, region, operands[0]);
-	return node;
-}
-
 jive::output *
-jive_fltnegate(jive::output * operand)
+jive_fltnegate(jive::output * arg)
 {
-	jive::flt::negate_operation op;
-	return jive_unary_operation_create_normalized(&JIVE_FLTNEGATE_NODE_.base, operand->node()->graph,
-		&op, operand);
+	return jive::flt::negate_operation::normalized_create(arg);
 }
