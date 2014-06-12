@@ -17,22 +17,60 @@ extern const jive_unary_operation_class JIVE_BITSLICE_NODE_;
 namespace jive {
 namespace bitstring {
 
-class slice_operation : public jive_node_attrs {
+class slice_operation : public jive::unary_operation {
 public:
 	inline constexpr
-	slice_operation(size_t low, size_t high) noexcept
-		: low_(low), high_(high)
+	slice_operation(
+		const jive::bits::type & argument_type,
+		size_t low, size_t high) noexcept
+		: argument_type_(argument_type)
+		, result_type_(high - low)
+		, low_(low)
 	{
 	}
-	
+
+	virtual
+	~slice_operation() noexcept;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
+
 	inline size_t
 	low() const noexcept { return low_; }
-	
+
 	inline size_t
-	high() const noexcept { return high_; }
+	high() const noexcept { return low_ + result_type_.nbits(); }
+
 private:
+	jive::bits::type argument_type_;
+	jive::bits::type result_type_;
 	size_t low_;
-	size_t high_;
 };
 
 }

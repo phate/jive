@@ -71,8 +71,10 @@ static bool
 jive_bitslice_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
-	jive_region * region, size_t noperands,
-	jive::output * const operands[], jive_token_istream * is,
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[],
+	jive_token_istream * is,
 	jive_node ** node)
 {
 	uint64_t low, high;
@@ -84,10 +86,11 @@ jive_bitslice_deserialize(
 		return false;
 	/* FIXME: check low < high, high < nbits */
 
-	jive::bitstring::slice_operation attrs(low, high);
-	
-	*node = JIVE_BITSLICE_NODE.create(region, &attrs,
-		noperands, operands);
+	const jive::bits::type & argument_type =
+		dynamic_cast<const jive::bits::type &>(arguments[0]->type());
+	jive::bitstring::slice_operation op(argument_type, low, high);
+
+	*node = op.create_node(region, narguments, arguments);
 	
 	return true;
 }
