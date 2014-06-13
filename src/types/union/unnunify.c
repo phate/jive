@@ -86,23 +86,15 @@ unify_operation::reduce_operand(
 }
 }
 
-const jive_unary_operation_class JIVE_UNIFY_NODE_ = {
-	base : { /* jive_node_class */
-		parent : &JIVE_UNARY_OPERATION,
-		name : "UNIFY",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr
-	},
-
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_UNIFY_NODE = {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "UNIFY",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *
@@ -111,7 +103,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::outp
 	const jive::unn::type  unn_type(decl);
 	jive::unn::unify_operation op(unn_type, option);
 
-	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE_, argument->node()->graph,
+	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE, argument->node()->graph,
 		&op, argument);
 }
 

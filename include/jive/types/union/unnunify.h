@@ -13,8 +13,7 @@
 
 /* unify node */
 
-extern const jive_unary_operation_class JIVE_UNIFY_NODE_;
-#define JIVE_UNIFY_NODE (JIVE_UNIFY_NODE_.base)
+extern const jive_node_class JIVE_UNIFY_NODE;
 
 namespace jive {
 namespace unn {

@@ -133,23 +133,15 @@ select_operation::reduce_operand(
 }
 }
 
-const jive_unary_operation_class JIVE_SELECT_NODE_ = {
-	base : { /* jive_node_class */
-		parent : &JIVE_UNARY_OPERATION,
-		name : "SELECT",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr
-	},
-
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-	
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_SELECT_NODE = {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "SELECT",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 
@@ -161,6 +153,6 @@ jive_select_create(size_t member, jive::output * argument)
 	jive::rcd::select_operation op(rcd_type, member);
 
 	return jive_unary_operation_create_normalized(
-		&JIVE_SELECT_NODE_, argument->node()->graph, &op, argument);
+		&JIVE_SELECT_NODE, argument->node()->graph, &op, argument);
 }
 

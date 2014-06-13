@@ -72,8 +72,7 @@ private:
 }
 }
 
-extern const jive_unary_operation_class JIVE_SELECT_NODE_;
-#define JIVE_SELECT_NODE (JIVE_SELECT_NODE_.base)
+extern const jive_node_class JIVE_SELECT_NODE;
 
 typedef jive::operation_node<jive::rcd::select_operation> jive_select_node;
 

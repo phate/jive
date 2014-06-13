@@ -10,8 +10,7 @@
 #include <jive/types/union/unntype.h>
 #include <jive/vsdg/operators/unary.h>
 
-extern const jive_unary_operation_class JIVE_CHOOSE_NODE_;
-#define JIVE_CHOOSE_NODE (JIVE_CHOOSE_NODE_.base)
+extern const jive_node_class JIVE_CHOOSE_NODE;
 
 namespace jive {
 namespace unn {
