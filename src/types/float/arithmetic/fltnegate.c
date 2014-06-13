@@ -24,26 +24,15 @@ const char fltnegate_name[] = "FLTNEGATE";
 }
 }
 
-const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_ = {
-	base : { /* jive_unary_opeartion_class */
-		base : {	/* jive_node_class */
-			parent : &JIVE_FLTUNARY_NODE,
-			name : "FLTNEGATE",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-			get_label : nullptr,
-			match_attrs : nullptr,
-			check_operands : nullptr,
-			create : nullptr,
-		},
-		
-		single_apply_over : NULL,
-		multi_apply_over : NULL,
-
-		can_reduce_operand : nullptr,
-		reduce_operand : nullptr
-	},
-	type : jive_fltop_code_negate
+const jive_node_class JIVE_FLTNEGATE_NODE = {
+	parent : &JIVE_FLTUNARY_NODE,
+	name : "FLTNEGATE",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *

@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltbinary_operation_class JIVE_FLTPRODUCT_NODE_;
-#define JIVE_FLTPRODUCT_NODE (JIVE_FLTPRODUCT_NODE_.base.base)
+extern const jive_node_class JIVE_FLTPRODUCT_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltproduct_name[];
 
 typedef detail::make_binop<
 	compute_product,
-	&JIVE_FLTPRODUCT_NODE_,
+	&JIVE_FLTPRODUCT_NODE,
 	fltproduct_name,
 	jive_binary_operation_commutative> product_operation;
 

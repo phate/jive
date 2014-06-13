@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltcomparison_operation_class JIVE_FLTEQUAL_NODE_;
-#define JIVE_FLTEQUAL_NODE (JIVE_FLTEQUAL_NODE_.base.base)
+extern const jive_node_class JIVE_FLTEQUAL_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltequal_name[];
 
 typedef detail::make_cmpop<
 	compute_equal,
-	&JIVE_FLTEQUAL_NODE_,
+	&JIVE_FLTEQUAL_NODE,
 	fltequal_name,
 	jive_binary_operation_commutative> equal_operation;
 

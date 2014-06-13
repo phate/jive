@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltbinary_operation_class JIVE_FLTSUM_NODE_;
-#define JIVE_FLTSUM_NODE (JIVE_FLTSUM_NODE_.base.base)
+extern const jive_node_class JIVE_FLTSUM_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltsum_name[];
 
 typedef detail::make_binop<
 	compute_sum,
-	&JIVE_FLTSUM_NODE_,
+	&JIVE_FLTSUM_NODE,
 	fltsum_name,
 	jive_binary_operation_commutative> sum_operation;
 

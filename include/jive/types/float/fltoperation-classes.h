@@ -11,52 +11,11 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 
-typedef struct jive_fltbinary_operation_class jive_fltbinary_operation_class;
-typedef struct jive_fltcomparison_operation_class jive_fltcomparison_operation_class;
-typedef struct jive_fltunary_operation_class jive_fltunary_operation_class;
+extern const jive_node_class JIVE_FLTBINARY_NODE;
 
-typedef enum jive_fltop_code {
-	jive_fltop_code_invalid = 0,
-	jive_fltop_code_sum = 1,
-	jive_fltop_code_difference = 2,
-	jive_fltop_code_product = 3,
-	jive_fltop_code_quotient = 4,
-	jive_fltop_code_negate = 5
-} jive_fltop_code;
+extern const jive_node_class JIVE_FLTUNARY_NODE;
 
-typedef enum jive_fltcmp_code {
-	jive_fltcmp_code_invalid = 0,
-	jive_fltcmp_code_less = 1,
-	jive_fltcmp_code_lesseq = 2,
-	jive_fltcmp_code_equal = 3,
-	jive_fltcmp_code_notequal = 4,
-	jive_fltcmp_code_greatereq = 5,
-	jive_fltcmp_code_greater = 6
-} jive_fltcmp_code;
-
-struct jive_fltbinary_operation_class {
-	jive_binary_operation_class base;
-	jive_fltop_code type;
-};
-
-struct jive_fltunary_operation_class {
-	jive_unary_operation_class base;
-	jive_fltop_code type;
-};
-
-struct jive_fltcomparison_operation_class {
-	jive_binary_operation_class base;
-	jive_fltcmp_code type;
-};
-
-extern const jive_fltbinary_operation_class JIVE_FLTBINARY_NODE_;
-#define JIVE_FLTBINARY_NODE (JIVE_FLTBINARY_NODE_.base.base)
-
-extern const jive_fltunary_operation_class JIVE_FLTUNARY_NODE_;
-#define JIVE_FLTUNARY_NODE (JIVE_FLTUNARY_NODE_.base.base)
-
-extern const jive_fltcomparison_operation_class JIVE_FLTCOMPARISON_NODE_;
-#define JIVE_FLTCOMPARISON_NODE (JIVE_FLTCOMPARISON_NODE_.base.base)
+extern const jive_node_class JIVE_FLTCOMPARISON_NODE;
 
 namespace jive {
 
@@ -164,7 +123,7 @@ namespace detail {
 
 template<
 	value_repr eval_function(value_repr),
-	const jive_fltunary_operation_class * cls,
+	const jive_node_class * cls,
 	const char * name>
 class make_unop final : public flt_unary_operation {
 public:
@@ -184,7 +143,7 @@ public:
 		jive::output * const arguments[]) const override
 	{
 		jive_node * node = jive::create_operation_node(*this);
-		node->class_ = &cls->base.base;
+		node->class_ = cls;
 
 		const jive::base::type * argument_types[2] = {
 			&argument_type(0),
@@ -207,7 +166,7 @@ public:
 		jive_graph * graph = arg->node()->graph;
 		make_unop op;
 		return jive_unary_operation_create_normalized(
-			&cls->base, graph, &op, arg);
+			cls, graph, &op, arg);
 	}
 
 	virtual flt::value_repr
@@ -226,7 +185,7 @@ public:
 
 template<
 	value_repr eval_function(value_repr, value_repr),
-	const jive_fltbinary_operation_class * cls,
+	const jive_node_class * cls,
 	const char * name,
 	jive_binary_operation_flags op_flags>
 class make_binop final : public flt_binary_operation {
@@ -247,7 +206,7 @@ public:
 		jive::output * const arguments[]) const override
 	{
 		jive_node * node = jive::create_operation_node(*this);
-		node->class_ = &cls->base.base;
+		node->class_ = cls;
 
 		const jive::base::type * argument_types[2] = {
 			&argument_type(0),
@@ -272,7 +231,7 @@ public:
 		make_binop op;
 		jive::output * arguments[] = {arg1, arg2};
 		return jive_binary_operation_create_normalized(
-			&cls->base, graph, &op,
+			cls, graph, &op,
 			2, arguments);
 	}
 
@@ -299,7 +258,7 @@ public:
 
 template<
 	bool eval_function(value_repr, value_repr),
-	const jive_fltcomparison_operation_class * cls,
+	const jive_node_class * cls,
 	const char * name,
 	jive_binary_operation_flags op_flags>
 class make_cmpop final : public flt_compare_operation {
@@ -320,7 +279,7 @@ public:
 		jive::output * const arguments[]) const override
 	{
 		jive_node * node = jive::create_operation_node(*this);
-		node->class_ = &cls->base.base;
+		node->class_ = cls;
 
 		const jive::base::type * argument_types[2] = {
 			&argument_type(0),
@@ -345,7 +304,7 @@ public:
 		make_cmpop op;
 		jive::output * arguments[] = {arg1, arg2};
 		return jive_binary_operation_create_normalized(
-			&cls->base, graph, &op,
+			cls, graph, &op,
 			2, arguments);
 	}
 

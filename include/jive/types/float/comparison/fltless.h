@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltcomparison_operation_class JIVE_FLTLESS_NODE_;
-#define JIVE_FLTLESS_NODE (JIVE_FLTLESS_NODE_.base.base)
+extern const jive_node_class JIVE_FLTLESS_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltless_name[];
 
 typedef detail::make_cmpop<
 	compute_less,
-	&JIVE_FLTLESS_NODE_,
+	&JIVE_FLTLESS_NODE,
 	fltless_name,
 	jive_binary_operation_none> less_operation;
 

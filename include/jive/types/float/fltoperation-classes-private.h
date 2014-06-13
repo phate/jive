@@ -8,18 +8,6 @@
 
 #include <jive/vsdg/node.h>
 
-/* fltbinary operation class inhertiable members */
-
-void
-jive_fltbinary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
-
-/* fltunary operation class inheritable members */
-
-void
-jive_fltunary_operation_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
-
 /* fltcomparison operation class inhertiable members */
 
 void

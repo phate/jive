@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltcomparison_operation_class JIVE_FLTGREATER_NODE_;
-#define JIVE_FLTGREATER_NODE (JIVE_FLTGREATER_NODE_.base.base)
+extern const jive_node_class JIVE_FLTGREATER_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltgreater_name[];
 
 typedef detail::make_cmpop<
 	compute_greater,
-	&JIVE_FLTGREATER_NODE_,
+	&JIVE_FLTGREATER_NODE,
 	fltgreater_name,
 	jive_binary_operation_none> greater_operation;
 

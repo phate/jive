@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltunary_operation_class JIVE_FLTNEGATE_NODE_;
-#define JIVE_FLTNEGATE_NODE (JIVE_FLTNEGATE_NODE_.base.base)
+extern const jive_node_class JIVE_FLTNEGATE_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltnegate_name[];
 
 typedef detail::make_unop<
 	compute_negation,
-	&JIVE_FLTNEGATE_NODE_,
+	&JIVE_FLTNEGATE_NODE,
 	fltnegate_name> negate_operation;
 
 

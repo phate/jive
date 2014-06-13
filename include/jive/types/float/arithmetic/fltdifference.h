@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltbinary_operation_class JIVE_FLTDIFFERENCE_NODE_;
-#define JIVE_FLTDIFFERENCE_NODE (JIVE_FLTDIFFERENCE_NODE_.base.base)
+extern const jive_node_class JIVE_FLTDIFFERENCE_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltdifference_name[];
 
 typedef detail::make_binop<
 	compute_difference,
-	&JIVE_FLTDIFFERENCE_NODE_,
+	&JIVE_FLTDIFFERENCE_NODE,
 	fltdifference_name,
 	jive_binary_operation_none> difference_operation;
 

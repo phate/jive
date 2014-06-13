@@ -9,8 +9,7 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_fltbinary_operation_class JIVE_FLTQUOTIENT_NODE_;
-#define JIVE_FLTQUOTIENT_NODE (JIVE_FLTQUOTIENT_NODE_.base.base)
+extern const jive_node_class JIVE_FLTQUOTIENT_NODE;
 
 namespace jive {
 namespace flt {
@@ -20,7 +19,7 @@ extern const char fltquotient_name[];
 
 typedef detail::make_binop<
 	compute_quotient,
-	&JIVE_FLTQUOTIENT_NODE_,
+	&JIVE_FLTQUOTIENT_NODE,
 	fltquotient_name,
 	jive_binary_operation_none> quotient_operation;
 

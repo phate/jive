@@ -25,28 +25,15 @@ const char fltequal_name[] = "FLTEQUAL";
 }
 }
 
-const jive_fltcomparison_operation_class JIVE_FLTEQUAL_NODE_ = {
-	base : { /* jive_binary_operation_class */
-		base : { /* jive_node_class */
-			parent : &JIVE_FLTCOMPARISON_NODE,
-			name : "FLTEQUAL",
-			fini : jive_node_fini_, /* inherit */
-			get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
-			get_label : nullptr,
-			match_attrs : nullptr,
-			check_operands : nullptr,
-			create : nullptr,
-		},
-		flags : jive_binary_operation_commutative,
-		single_apply_under : NULL,
-		multi_apply_under : NULL,
-		distributive_over : NULL,
-		distributive_under : NULL,
-
-		can_reduce_operand_pair : nullptr,
-		reduce_operand_pair : nullptr,
-	},
-	type : jive_fltcmp_code_equal
+const jive_node_class JIVE_FLTEQUAL_NODE = {
+	parent : &JIVE_FLTCOMPARISON_NODE,
+	name : "FLTEQUAL",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *
