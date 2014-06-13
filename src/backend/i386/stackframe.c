@@ -15,8 +15,8 @@ static inline void
 jive_i386_stackframe_init_(
 	jive_i386_stackframe * self,
 	jive_region * region,
-	jive_output * stackptr_on_entry,
-	jive_input * stackptr_on_exit)
+	jive::output * stackptr_on_entry,
+	jive::input * stackptr_on_exit)
 {
 	jive_stackframe_init_(&self->base, region, stackptr_on_entry);
 	self->stackptr_on_entry = stackptr_on_entry;
@@ -45,14 +45,14 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 	JIVE_LIST_ITERATE(self->base.vars, var, stackframe_vars_list) {
 		jive_stackslot * slot = var->slot;
 		
-		jive_input * input;
+		jive::input * input;
 		JIVE_LIST_ITERATE(var->base.inputs, input, resource_input_list) {
 			jive_instruction_node * node = (jive_instruction_node *) input->node;
 			if (node->operation().icls() == &jive_i386_instr_int_load32_disp)
 				node->attrs.immediates[0] = slot->offset + stack_size;
 		}
 		
-		jive_output * output;
+		jive::output * output;
 		JIVE_LIST_ITERATE(var->base.outputs, output, resource_output_list) {
 			jive_instruction_node * node = (jive_instruction_node *) output->node;
 			if (node->operation().icls() == &jive_i386_instr_int_store32_disp)
@@ -66,7 +66,7 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 	
 	jive_region * region = self->region;
 	
-	jive_output * orig_stackptr = self->base.stackptr;
+	jive::output * orig_stackptr = self->base.stackptr;
 	jive_resource * stackptr_reg = orig_stackptr->resource;
 	
 	jive_node * stack_sub = (jive_node *) jive_instruction_node_create(
@@ -80,9 +80,9 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 		jive_output_get_constraint(stack_sub->outputs[1]),
 		stack_sub->outputs[1]);
 	
-	jive_output * stackptr = stack_sub->outputs[0];
+	jive::output * stackptr = stack_sub->outputs[0];
 	
-	jive_input * user, * next_user;
+	jive::input * user, * next_user;
 	JIVE_LIST_ITERATE_SAFE(orig_stackptr->users, user, next_user, output_users_list) {
 		if (user->node != stack_sub) jive_input_divert_origin(user, stackptr);
 		JIVE_DEBUG_ASSERT(user->resource);
@@ -99,7 +99,7 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 		jive_output_get_constraint(stack_add->outputs[1]),
 		stack_add->outputs[1]);
 	
-	jive_output * restored_stackptr = stack_add->outputs[0];
+	jive::output * restored_stackptr = stack_add->outputs[0];
 	
 	jive_input_divert_origin(self->stackptr_on_exit, restored_stackptr);
 	
@@ -118,8 +118,8 @@ const jive_stackframe_class JIVE_I386_STACKFRAME_CLASS = {
 jive_stackframe *
 jive_i386_stackframe_create(
 	jive_region * region,
-	jive_output * stackptr_on_entry,
-	jive_input * stackptr_on_exit)
+	jive::output * stackptr_on_entry,
+	jive::input * stackptr_on_exit)
 {
 	jive_i386_stackframe * stackframe =
 		jive_context_malloc(region->graph->context, sizeof(*stackframe));

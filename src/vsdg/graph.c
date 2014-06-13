@@ -20,7 +20,7 @@
 
 static jive_node *
 jive_graph_tail_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive_output * const operands[])
+	size_t noperands, jive::output * const operands[])
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 

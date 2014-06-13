@@ -11,10 +11,13 @@
 
 #include <jive/common.h>
 
+namespace jive {
+	class output;
+}
+
 struct jive_register_class;
 struct jive_resource_class;
 struct jive_resource_class_class;
-struct jive_output;
 struct jive_region;
 struct jive_serialization_driver;
 struct jive_token_ostream;
