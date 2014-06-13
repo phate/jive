@@ -88,23 +88,15 @@ static void
 jive_address_to_bitstring_node_init_(jive_address_to_bitstring_node * self, jive_region * region,
 	jive::output * address, size_t nbits, jive::base::type * original_type);
 
-const jive_unary_operation_class JIVE_ADDRESS_TO_BITSTRING_NODE_ = {
-	base : { /* jive_node_class */
-		parent : &JIVE_UNARY_OPERATION,
-		name : "ADDRESS_TO_BITSTRING",
-		fini : jive_node_fini_, /* override */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr
-	},
-
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-	
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_ADDRESS_TO_BITSTRING_NODE = {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "ADDRESS_TO_BITSTRING",
+	fini : jive_node_fini_, /* override */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 static void
@@ -136,7 +128,7 @@ jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 {
 	jive::address_to_bitstring_operation op(nbits, original_type);
 
-	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE_,
+	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE,
 		address->node()->graph, &op, address);
 }
 
@@ -146,23 +138,15 @@ static void
 jive_bitstring_to_address_node_init_(jive_bitstring_to_address_node * self, jive_region * region,
 	jive::output * bitstring, size_t nbits, jive::base::type * original_type);
 
-const jive_unary_operation_class JIVE_BITSTRING_TO_ADDRESS_NODE_ = {
-	base : { /* jive_node_class */
-		parent : &JIVE_UNARY_OPERATION,
-		name : "BITSTRING_TO_ADDRESS",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr
-	},
-
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_BITSTRING_TO_ADDRESS_NODE= {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "BITSTRING_TO_ADDRESS",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 static void
@@ -190,7 +174,7 @@ jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 {
 	jive::bitstring_to_address_operation op(nbits, original_type);
 
-	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE_,
+	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE,
 		bitstring->node()->graph, &op, bitstring);
 }
 

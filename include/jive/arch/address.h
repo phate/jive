@@ -21,8 +21,7 @@ struct jive_label;
 /* "memberof" operator: given an address that is the start of a record
 in memory, compute address of specified member of record */
 
-extern const jive_unary_operation_class JIVE_MEMBEROF_NODE_;
-#define JIVE_MEMBEROF_NODE (JIVE_MEMBEROF_NODE_.base)
+extern const jive_node_class JIVE_MEMBEROF_NODE;
 
 namespace jive {
 namespace address {
@@ -225,8 +224,7 @@ jive_memberof_node_cast(jive_node * node)
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
-extern const jive_unary_operation_class JIVE_CONTAINEROF_NODE_;
-#define JIVE_CONTAINEROF_NODE (JIVE_CONTAINEROF_NODE_.base)
+extern const jive_node_class JIVE_CONTAINEROF_NODE;
 
 typedef jive::operation_node<jive::address::containerof_operation> jive_containerof_node;
 

@@ -110,23 +110,15 @@ memberof_operation::reduce_operand(
 }
 }
 
-const jive_unary_operation_class JIVE_MEMBEROF_NODE_ = {
-	base : {
-		parent : &JIVE_UNARY_OPERATION,
-		name : "MEMBEROF",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr,
-	},
-	
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-	
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_MEMBEROF_NODE = {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "MEMBEROF",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 
@@ -136,7 +128,7 @@ jive_memberof(jive::output * address,
 {
 	jive::address::memberof_operation op(record_decl, index);
 
-	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE_,
+	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE,
 		address->node()->graph, &op, address);
 }
 
@@ -229,25 +221,16 @@ containerof_operation::reduce_operand(
 }
 }
 
-const jive_unary_operation_class JIVE_CONTAINEROF_NODE_ = {
-	base : {
-		parent : &JIVE_UNARY_OPERATION,
-		name : "CONTAINEROF",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : nullptr,
-		match_attrs : nullptr,
-		check_operands : nullptr,
-		create : nullptr,
-	},
-	
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-	
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_CONTAINEROF_NODE = {
+	parent : &JIVE_UNARY_OPERATION,
+	name : "CONTAINEROF",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
-
 
 jive::output *
 jive_containerof(jive::output * address,
@@ -255,7 +238,7 @@ jive_containerof(jive::output * address,
 {
 	jive::address::containerof_operation op(record_decl, index);
 
-	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE_, address->node()->graph,
+	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE, address->node()->graph,
 		&op, address);
 }
 
