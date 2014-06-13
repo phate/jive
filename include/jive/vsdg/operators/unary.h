@@ -24,6 +24,12 @@ class unary_operation : public operation {
 public:
 	virtual ~unary_operation() noexcept;
 
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
 		const jive::output * arg) const noexcept;

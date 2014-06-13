@@ -29,6 +29,18 @@ unary_operation::reduce_operand(
 	return nullptr;
 }
 
+size_t
+unary_operation::narguments() const noexcept
+{
+	return 1;
+}
+
+size_t
+unary_operation::nresults() const noexcept
+{
+	return 1;
+}
+
 }
 
 /* node class */
