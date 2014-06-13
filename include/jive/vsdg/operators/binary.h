@@ -107,13 +107,21 @@ extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;
 #define JIVE_BINARY_OPERATION (JIVE_BINARY_OPERATION_.base)
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_binary_operation_create_normalized(const jive_binary_operation_class * class_,
+jive_binary_operation_create_normalized(const jive_node_class * class_,
 	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
 	jive::output * const operands[])
 {
 	jive::output * result;
-	jive_node_create_normalized(&class_->base, graph, attrs, noperands, operands, &result);
+	jive_node_create_normalized(class_, graph, attrs, noperands, operands, &result);
 	return result;
+}
+
+JIVE_EXPORTED_INLINE jive::output *
+jive_binary_operation_create_normalized(const jive_binary_operation_class * class_,
+	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
+	jive::output * const operands[])
+{
+	return jive_binary_operation_create_normalized(&class_->base, graph, attrs, noperands, operands);
 }
 
 /* node class inheritable methods */
