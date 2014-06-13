@@ -16,27 +16,115 @@
 #include <stdio.h>
 #include <string.h>
 
-static void
-jive_choose_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
+static constexpr jive_unop_reduction_path_t jive_choose_reduction_load = 128;
 
-static jive_node *
-jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[]);
+namespace jive {
+namespace unn {
 
-static bool
-jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
+choose_operation::~choose_operation() noexcept
+{
+}
 
-static void
-jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
+bool
+choose_operation::operator==(const operation & other) const noexcept
+{
+	const choose_operation * op =
+		dynamic_cast<const choose_operation *>(&other);
+	return op && type_ == op->type_ && element_ == op->element_;
+}
 
-static jive_unop_reduction_path_t
-jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	const jive::output * operand);
+jive_node *
+choose_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	jive_choose_node * node = new jive_choose_node(*this);
+	node->class_ = &JIVE_CHOOSE_NODE;
 
-static jive::output *
-jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs, jive::output * output);
+	const jive::base::type * argtypes[1] = { &argument_type(0) };
+	const jive::base::type * restypes[1] = { &result_type(0) };
+
+	jive_node_init_(node, region,
+		1, argtypes, arguments,
+		1, restypes);
+
+	return node;
+}
+
+std::string
+choose_operation::debug_string() const
+{
+	char tmp[32];
+	snprintf(tmp, sizeof(tmp), "CHOOSE(%zd)", element());
+	return tmp;
+}
+
+const jive::base::type &
+choose_operation::argument_type(size_t index) const noexcept
+{
+	return type_;
+}
+
+const jive::base::type &
+choose_operation::result_type(size_t index) const noexcept
+{
+	return *type_.declaration()->elements[element()];
+}
+
+jive_unop_reduction_path_t
+choose_operation::can_reduce_operand(
+	const jive::output * arg) const noexcept
+{
+	if (dynamic_cast<const unify_operation *>(&arg->node()->operation())) {
+		return jive_unop_reduction_inverse;
+	}
+
+	if (dynamic_cast<const load_operation *>(&arg->node()->operation())) {
+		return jive_choose_reduction_load;
+	}
+
+	return jive_unop_reduction_none;
+}
+
+jive::output *
+choose_operation::reduce_operand(
+	jive_unop_reduction_path_t path,
+	jive::output * arg) const
+{
+	if (path == jive_unop_reduction_inverse) {
+		return arg->node()->inputs[0]->origin();
+	}
+
+	if (path == jive_choose_reduction_load) {
+		const load_operation & op =
+			static_cast<const load_operation &>(arg->node()->operation());
+		jive::output * address = arg->node()->inputs[0]->origin();
+
+		const jive::unn::declaration * decl = static_cast<const jive::unn::output*>(
+			arg->node()->outputs[0])->declaration();
+
+		size_t nstates = arg->node()->ninputs-1;
+		jive::output * states[nstates];
+		for (size_t n = 0; n < nstates; n++) {
+			states[n] = arg->node()->inputs[n+1]->origin();
+		}
+	
+		if (dynamic_cast<jive::addr::output*>(address)) {
+			return jive_load_by_address_create(address, decl->elements[element()],
+				nstates, states);
+		} else {
+			size_t nbits = static_cast<const jive::bits::output*>(address)->nbits();
+			return jive_load_by_bitstring_create(address, nbits, decl->elements[element()],
+				nstates, states);
+		}
+	}
+
+	return nullptr;
+}
+
+}
+}
 
 const jive_unary_operation_class JIVE_CHOOSE_NODE_ = {
 	base : { /* jive_node_class */
@@ -44,166 +132,26 @@ const jive_unary_operation_class JIVE_CHOOSE_NODE_ = {
 		name : "CHOOSE",
 		fini : jive_node_fini_, /* inherit */
 		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
-		get_label : jive_choose_node_get_label_, /* override */
-		match_attrs : jive_choose_node_match_attrs_, /* overrride */
-		check_operands : jive_choose_node_check_operands_, /* override */
-		create : jive_choose_node_create_, /* override */
+		get_label : nullptr,
+		match_attrs : nullptr,
+		check_operands : nullptr,
+		create : nullptr,
 	},
 
 	single_apply_over : NULL,
 	multi_apply_over : NULL,
 	
-	can_reduce_operand : jive_choose_node_can_reduce_operand_, /* override */
-	reduce_operand : jive_choose_node_reduce_operand_ /* override */
+	can_reduce_operand : nullptr,
+	reduce_operand : nullptr
 };
 
-static inline void
-perform_check(jive_context * context, const jive::output * operand, size_t element)
-{
-	if (!dynamic_cast<const jive::unn::output*>(operand)) {
-		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
-	}
-	
-	const jive::unn::type * operand_type = static_cast<const jive::unn::type*>(&operand->type());
-
-	if (element >= operand_type->declaration()->nelements) {
-		char tmp[256];
-		snprintf(tmp, sizeof(tmp),
-			 "Type mismatch: attempted to select element #%zd from union of %zd elements",
-			element, operand_type->declaration()->nelements);
-		jive_context_fatal_error(context, jive_context_strdup(context, tmp));
-	}
-
-}
-
-static void
-jive_choose_node_init_(jive_choose_node * self, struct jive_region * region,
-	size_t element, jive::output * operand)
-{
-	jive_context * context = region->graph->context;
-	perform_check(context, operand, element);
-	
-	const jive::unn::type * operand_type = static_cast<const jive::unn::type*>(&operand->type());
-	const jive::base::type * output_type = operand_type->declaration()->elements[element];
-	const jive::base::type *  tmparray0[] = {&operand->type()};
-	jive_node_init_(self, region,
-		1, tmparray0, &operand,
-		1, &output_type);
-}
-
-static void
-jive_choose_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_choose_node * self = (const jive_choose_node *) self_;
-
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "CHOOSE(%zd)", self->operation().element());
-	jive_buffer_putstr(buffer, tmp);
-}
-
-static bool
-jive_choose_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::unn::choose_operation * first = &((const jive_choose_node *)self)->operation();
-	const jive::unn::choose_operation * second = (const jive::unn::choose_operation *) attrs;
-
-	return first->element() == second->element();
-}
-
-static void
-jive_choose_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-	JIVE_DEBUG_ASSERT(noperands == 1);
-
-	const jive::unn::choose_operation * attrs = (const jive::unn::choose_operation *)attrs_;
-
-	const jive::unn::output * output = dynamic_cast<const jive::unn::output*>(operands[0]);
-	if (!output)
-		jive_context_fatal_error(context, "Type mismatch: need 'union' type as input to 'choose' node");
-
-	const jive::unn::type * type = static_cast<const jive::unn::type*>(&operands[0]->type());
-	if (attrs->element() >= type->declaration()->nelements) {
-		char tmp[256];
-		snprintf(tmp, sizeof(tmp),
-			"Type mismatch: attempted to select element #%zd from union of %zd elements", attrs->element(),
-			type->declaration()->nelements);
-		jive_context_fatal_error(context, tmp);
-	}
-}
-
-static jive_node *
-jive_choose_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 1);
-
-	const jive::unn::choose_operation * attrs = (const jive::unn::choose_operation *) attrs_;
-	jive_choose_node * node = new jive_choose_node(*attrs);
-	node->class_ = &JIVE_CHOOSE_NODE;
-	jive_choose_node_init_(node, region, attrs->element(), operands[0]);
-
-	return node;
-}
-
-static const jive_unop_reduction_path_t jive_choose_reduction_load = 128;
-
-static jive_unop_reduction_path_t
-jive_choose_node_can_reduce_operand_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	const jive::output * operand)
-{
-	const jive::unn::choose_operation * attrs = (const jive::unn::choose_operation *) attrs_;
-
-	perform_check(operand->node()->graph->context, operand, attrs->element());
-
-	if (jive_node_isinstance(operand->node(), &JIVE_UNIFY_NODE))
-		return jive_unop_reduction_inverse;
-
-	if (jive_node_isinstance(operand->node(), &JIVE_LOAD_NODE))
-		return jive_choose_reduction_load;
-
-	return jive_unop_reduction_none;
-}
-
-static jive::output *
-jive_choose_node_reduce_operand_(jive_unop_reduction_path_t path, const jive_node_class * cls,
-	const jive_node_attrs * attrs_, jive::output * operand)
-{
-	if (path == jive_unop_reduction_inverse)
-		return operand->node()->inputs[0]->origin();
-
-	if (path == jive_choose_reduction_load) {
-		jive_node * load_node = operand->node();
-		jive::output * address = load_node->inputs[0]->origin();
-
-		const jive::unn::declaration * decl = static_cast<const jive::unn::output*>(
-			load_node->outputs[0])->declaration();
-		const jive::unn::choose_operation * attrs = (const jive::unn::choose_operation *) attrs_;
-
-		size_t n;
-		size_t nstates = load_node->ninputs-1;
-		jive::output * states[nstates];
-		for (n = 0; n < nstates; n++)
-			states[n] = load_node->inputs[n+1]->origin();
-	
-		if (dynamic_cast<jive::addr::output*>(address)) {
-			return jive_load_by_address_create(address, decl->elements[attrs->element()],
-				nstates, states);
-		} else {
-			size_t nbits = static_cast<const jive::bits::output*>(address)->nbits();
-			return jive_load_by_bitstring_create(address, nbits, decl->elements[attrs->element()],
-				nstates, states);
-		}
-	}
-
-	return NULL;
-}
-
 jive::output *
-jive_choose_create(size_t member, jive::output * operand)
+jive_choose_create(size_t member, jive::output * argument)
 {
-	jive::unn::choose_operation op(member);
+	const jive::unn::type & unn_type =
+		dynamic_cast<const jive::unn::type &>(argument->type());
+	jive::unn::choose_operation op(unn_type, member);
 
-	return jive_unary_operation_create_normalized(&JIVE_CHOOSE_NODE_, operand->node()->graph,
-		&op, operand);
+	return jive_unary_operation_create_normalized(
+		&JIVE_CHOOSE_NODE_, argument->node()->graph, &op, argument);
 }

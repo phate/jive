@@ -7,6 +7,7 @@
 #ifndef JIVE_TYPES_UNION_UNNUNIFY_H
 #define JIVE_TYPES_UNION_UNNUNIFY_H
 
+#include <jive/types/union/unntype.h>
 #include <jive/vsdg/operators/nullary.h>
 #include <jive/vsdg/operators/unary.h>
 
@@ -20,24 +21,63 @@ namespace unn {
 
 struct declaration;
 
-class unify_operation final : public unary_operation {
+class unify_operation final : public jive::unary_operation {
 public:
-	inline constexpr
+	inline
 	unify_operation(
-		const jive::unn::declaration * declaration,
-		 size_t option) noexcept
-		 : declaration_(declaration)
-		 , option_(option)
-	{}
+		const jive::unn::type & type,
+		size_t option) noexcept
+		: type_(type)
+		, option_(option)
+	{
+	}
+
+	inline
+	unify_operation(const unify_operation & other) noexcept = default;
+
+	inline
+	unify_operation(unify_operation && other) noexcept = default;
+
+	virtual
+	~unify_operation() noexcept;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
 
 	inline size_t
 	option() const noexcept { return option_; }
-
+	
 	inline const jive::unn::declaration *
-	declaration() const noexcept { return declaration_; }
+	declaration() const noexcept { return type_.declaration(); }
 
 private:
-	const jive::unn::declaration * declaration_;
+	type type_;
 	size_t option_;
 };
 

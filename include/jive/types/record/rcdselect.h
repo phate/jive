@@ -14,7 +14,59 @@ namespace rcd {
 
 class select_operation final : public jive::unary_operation {
 public:
-	size_t element;
+	inline
+	select_operation(
+		const jive::rcd::type & type,
+		size_t element) noexcept
+		: type_(type)
+		, element_(element)
+	{
+	}
+
+	inline
+	select_operation(const select_operation & other) noexcept = default;
+
+	inline
+	select_operation(select_operation && other) noexcept = default;
+
+	virtual
+	~select_operation() noexcept;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	/* type signature methods */
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	/* reduction methods */
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
+
+	inline size_t
+	element() const noexcept { return element_; }
+
+private:
+	type type_;
+	size_t element_;
 };
 
 }
@@ -26,15 +78,6 @@ extern const jive_unary_operation_class JIVE_SELECT_NODE_;
 typedef jive::operation_node<jive::rcd::select_operation> jive_select_node;
 
 jive::output *
-jive_select_create(size_t element, jive::output * operand);
-
-JIVE_EXPORTED_INLINE jive_select_node *
-jive_select_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_SELECT_NODE))
-		return (jive_select_node *) node;
-	else
-		return 0;
-}
+jive_select_create(size_t element, jive::output * argument);
 
 #endif
