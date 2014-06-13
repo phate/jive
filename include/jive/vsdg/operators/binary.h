@@ -62,8 +62,6 @@ public:
 
 struct jive_region;
 
-typedef struct jive_binary_operation_class jive_binary_operation_class;
-
 typedef struct jive_binary_operation_normal_form jive_binary_operation_normal_form;
 typedef struct jive_binary_operation_normal_form_class jive_binary_operation_normal_form_class;
 
@@ -85,26 +83,7 @@ static const jive_binop_reduction_path_t jive_binop_reduction_factor = 7;
 
 /* node class */
 
-struct jive_binary_operation_class {
-	jive_node_class base;
-	
-	/* algebraic properties */
-	jive_binary_operation_flags flags;
-	const struct jive_unary_operation_class * const * single_apply_under;
-	const struct jive_unary_operation_class * const * multi_apply_under;
-	const jive_binary_operation_class * const * distributive_over;
-	const jive_binary_operation_class * const * distributive_under;
-	
-	jive_binop_reduction_path_t (*can_reduce_operand_pair)(const jive_node_class * cls,
-		const jive_node_attrs * attrs, const jive::output * op1, const jive::output * op2);
-	
-	jive::output * (*reduce_operand_pair)(jive_binop_reduction_path_t path,
-		const jive_node_class * cls, const jive_node_attrs * attrs,
-		jive::output * op1, jive::output * op2);
-};
-
-extern const jive_binary_operation_class JIVE_BINARY_OPERATION_;
-#define JIVE_BINARY_OPERATION (JIVE_BINARY_OPERATION_.base)
+extern const jive_node_class JIVE_BINARY_OPERATION;
 
 JIVE_EXPORTED_INLINE jive::output *
 jive_binary_operation_create_normalized(const jive_node_class * class_,
@@ -114,14 +93,6 @@ jive_binary_operation_create_normalized(const jive_node_class * class_,
 	jive::output * result;
 	jive_node_create_normalized(class_, graph, attrs, noperands, operands, &result);
 	return result;
-}
-
-JIVE_EXPORTED_INLINE jive::output *
-jive_binary_operation_create_normalized(const jive_binary_operation_class * class_,
-	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
-	jive::output * const operands[])
-{
-	return jive_binary_operation_create_normalized(&class_->base, graph, attrs, noperands, operands);
 }
 
 /* node class inheritable methods */

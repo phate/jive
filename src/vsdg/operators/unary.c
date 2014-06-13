@@ -45,23 +45,15 @@ unary_operation::nresults() const noexcept
 
 /* node class */
 
-const jive_unary_operation_class JIVE_UNARY_OPERATION_ = {
-	base : { /* jive_node_class */
-		parent : &JIVE_NODE,
-		.name ="UNARY",
-		fini : jive_node_fini_, /* inherit */
-		get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* override */
-		get_label : jive_node_get_label_, /* inherit */
-		match_attrs : jive_node_match_attrs_, /* inherit */
-		check_operands : NULL,
-		create : nullptr,
-	},
-	
-	single_apply_over : NULL,
-	multi_apply_over : NULL,
-	
-	can_reduce_operand : nullptr,
-	reduce_operand : nullptr
+const jive_node_class JIVE_UNARY_OPERATION = {
+	parent : &JIVE_NODE,
+	.name ="UNARY",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 /* node class inheritable methods */

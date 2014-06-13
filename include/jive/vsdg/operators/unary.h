@@ -42,8 +42,6 @@ public:
 
 }
 
-typedef struct jive_unary_operation_class jive_unary_operation_class;
-
 typedef struct jive_unary_operation_normal_form jive_unary_operation_normal_form;
 typedef struct jive_unary_operation_normal_form_class jive_unary_operation_normal_form_class;
 
@@ -61,24 +59,7 @@ static const jive_unop_reduction_path_t jive_unop_reduction_distribute = 6;
 
 /* node class */
 
-struct jive_unary_operation_class {
-	jive_node_class base;
-	
-	/* algebraic properties */
-	const struct jive_binary_operation_class * const * single_apply_over;
-	const struct jive_binary_operation_class * const * multi_apply_over;
-	
-	/* class method */
-	jive_unop_reduction_path_t (*can_reduce_operand)(const jive_node_class * cls,
-		const jive_node_attrs * attrs, const jive::output * operand);
-	
-	/* class method */
-	jive::output * (*reduce_operand)(jive_unop_reduction_path_t path, const jive_node_class * cls,
-		const jive_node_attrs * attrs, jive::output * operand);
-};
-
-extern const jive_unary_operation_class JIVE_UNARY_OPERATION_;
-#define JIVE_UNARY_OPERATION (JIVE_UNARY_OPERATION_.base)
+extern const jive_node_class JIVE_UNARY_OPERATION;
 
 JIVE_EXPORTED_INLINE jive::output *
 jive_unary_operation_create_normalized(const jive_node_class * class_,
@@ -87,13 +68,6 @@ jive_unary_operation_create_normalized(const jive_node_class * class_,
 	jive::output * result;
 	jive_node_create_normalized(class_, graph, attrs, 1, &operand, &result);
 	return result;
-}
-
-JIVE_EXPORTED_INLINE jive::output *
-jive_unary_operation_create_normalized(const jive_unary_operation_class * class_,
-	struct jive_graph * graph, const jive_node_attrs * attrs, jive::output * operand)
-{
-	return jive_unary_operation_create_normalized(&class_->base, graph, attrs, operand);
 }
 
 /* node class inheritable methods */
