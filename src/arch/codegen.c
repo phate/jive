@@ -291,7 +291,9 @@ jive_seq_graph_patch_jump_targets(
 		if (primary_tgt == seq_instr->base.seqpoint_list.next) {
 			primary_tgt = secondary_tgt;
 			secondary_tgt = 0;
-			seq_instr->flags |= jive_instruction_encoding_flags_jump_conditional_invert;
+			seq_instr->flags =
+				seq_instr->flags |
+				jive_instruction_encoding_flags_jump_conditional_invert;
 		}
 	}
 	

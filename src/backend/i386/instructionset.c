@@ -83,7 +83,7 @@ jive_i386_check_long_form(
 	if ( (*flags & jive_instruction_encoding_flags_option0) != 0) {
 		need_long_form = true;
 	} else if (need_long_form) {
-		*flags |= jive_instruction_encoding_flags_option0;
+		*flags = *flags | jive_instruction_encoding_flags_option0;
 	}
 	
 	return need_long_form;

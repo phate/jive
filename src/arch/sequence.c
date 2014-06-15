@@ -166,7 +166,7 @@ sequentialize_region(
 					}
 					item->value = jive_bitconstant_node_to_unsigned(cnode);
 				} else {
-					item->format = 0;
+					item->format = jive_seq_dataitem_fmt_none;
 				}
 			}
 			current = &data->base;

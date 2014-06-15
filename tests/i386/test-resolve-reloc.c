@@ -24,8 +24,8 @@ write_msg(const char * s)
 	vrfy = s;
 }
 
-const jive_linker_symbol msg_symbol;
-const jive_linker_symbol write_msg_symbol;
+const jive_linker_symbol msg_symbol = {};
+const jive_linker_symbol write_msg_symbol = {};
 
 static bool sym_resolve(const jive_linker_symbol_resolver * self,
 	const jive_linker_symbol * symbol,

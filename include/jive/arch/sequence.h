@@ -252,7 +252,7 @@ jive_seq_instruction_cast(jive_seq_point * self)
 
 extern const jive_seq_point_class JIVE_SEQ_DATA;
 
-typedef enum jive_seq_dataitem_fmt {
+enum jive_seq_dataitem_fmt {
 	jive_seq_dataitem_fmt_none = 0,
 	jive_seq_dataitem_fmt_8 = 1,
 	jive_seq_dataitem_fmt_le16 = 2,
@@ -261,7 +261,7 @@ typedef enum jive_seq_dataitem_fmt {
 	jive_seq_dataitem_fmt_be32 = 5,
 	jive_seq_dataitem_fmt_le64 = 6,
 	jive_seq_dataitem_fmt_be64 = 7
-} jive_seq_dataitem_fmt;
+};
 
 struct jive_seq_dataitem {
 	uint64_t value;

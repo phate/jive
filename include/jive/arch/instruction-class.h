@@ -86,7 +86,7 @@ struct jive_asmgen_imm {
 
 /* instruction representation */
 
-typedef enum {
+enum jive_instruction_flags {
 	jive_instruction_flags_none = 0,
 	/* instruction reuses first input register as output */
 	jive_instruction_write_input = 1,
@@ -98,9 +98,23 @@ typedef enum {
 	jive_instruction_jump_relative = (1<<13),
 	/* instruction is a conditional jump and there is a matching "inverse" instruction */
 	jive_instruction_jump_conditional_invertible = (1<<14)
-} jive_instruction_flags;
+};
 
-typedef enum {
+static inline constexpr jive_instruction_flags
+operator|(jive_instruction_flags a, jive_instruction_flags b)
+{
+	return static_cast<jive_instruction_flags>(
+		static_cast<int>(a) | static_cast<int>(b));
+}
+
+static inline constexpr jive_instruction_flags
+operator&(jive_instruction_flags a, jive_instruction_flags b)
+{
+	return static_cast<jive_instruction_flags>(
+		static_cast<int>(a) & static_cast<int>(b));
+}
+
+enum jive_instruction_encoding_flags {
 	jive_instruction_encoding_flags_none = 0,
 	/* instruction is a conditional branch, and its decision logic
 	is to be inverted during codegen */
@@ -121,7 +135,21 @@ typedef enum {
 	jive_instruction_encoding_flags_option5 = (1<<21),
 	jive_instruction_encoding_flags_option6 = (1<<22),
 	jive_instruction_encoding_flags_option7 = (1<<23),
-} jive_instruction_encoding_flags;
+} ;
+
+static inline constexpr jive_instruction_encoding_flags
+operator|(jive_instruction_encoding_flags a, jive_instruction_encoding_flags b)
+{
+	return static_cast<jive_instruction_encoding_flags>(
+		static_cast<int>(a) | static_cast<int>(b));
+}
+
+static inline constexpr jive_instruction_encoding_flags
+operator&(jive_instruction_encoding_flags a, jive_instruction_encoding_flags b)
+{
+	return static_cast<jive_instruction_encoding_flags>(
+		static_cast<int>(a) & static_cast<int>(b));
+}
 
 struct jive_instruction_class {
 	/** \brief Descriptive name of instruction */

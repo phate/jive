@@ -19,6 +19,20 @@ enum jive_binary_operation_flags {
 	jive_binary_operation_commutative = 2
 };
 
+static inline constexpr jive_binary_operation_flags
+operator|(jive_binary_operation_flags a, jive_binary_operation_flags b)
+{
+	return static_cast<jive_binary_operation_flags>(
+		static_cast<int>(a) | static_cast<int>(b));
+}
+
+static inline constexpr jive_binary_operation_flags
+operator&(jive_binary_operation_flags a, jive_binary_operation_flags b)
+{
+	return static_cast<jive_binary_operation_flags>(
+		static_cast<int>(a) & static_cast<int>(b));
+}
+
 namespace jive {
 
 /**
