@@ -45,7 +45,7 @@ valgrind-check: tests/test-runner
 	rm -rf check.log
 	@UNEXPECTED_FAILED_TESTS="" ; \
 	for TEST in $(EXPECT_PASS_TESTS); do \
-		$(TESTLOG) -n "$$TEST: " ; if valgrind --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$UNEXPECTED_FAILED_TESTS $$TEST" ; fi ; \
+		$(TESTLOG) -n "$$TEST: " ; if valgrind --leak-check=full --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$UNEXPECTED_FAILED_TESTS $$TEST" ; fi ; \
 	done ; \
 	if [ "x$$UNEXPECTED_FAILED_TESTS" != x ] ; then echo "Failed tests:$$UNEXPECTED_FAILED_TESTS" ; else echo "All tests passed" ; fi ; \
 	if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
