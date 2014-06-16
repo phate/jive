@@ -34,7 +34,7 @@ jive_shaped_region *
 jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_region * region)
 {
 	jive_context * context = shaped_graph->context;
-	jive_shaped_region * self = jive_context_malloc(context, sizeof(*self));
+	jive_shaped_region * self = new jive_shaped_region;
 	
 	self->shaped_graph = shaped_graph;
 	self->region = region;
@@ -85,7 +85,7 @@ jive_shaped_region_destroy(jive_shaped_region * self)
 	jive_shaped_region_destroy_cuts(self);
 	jive_region_varcut_fini(&self->active_top);
 	jive_shaped_region_hash_remove(&self->shaped_graph->region_map, self);
-	jive_context_free(self->shaped_graph->context, self);
+	delete self;
 }
 
 void

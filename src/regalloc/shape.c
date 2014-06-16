@@ -70,7 +70,7 @@ jive_region_shaper_create(
 	jive_master_shaper_selector * master_selector)
 {
 	jive_context * context = region->graph->context;
-	jive_region_shaper * self = jive_context_malloc(context, sizeof(*self));
+	jive_region_shaper * self = new jive_region_shaper;
 	
 	self->context = context;
 	self->parent = parent;
@@ -89,7 +89,7 @@ void
 jive_region_shaper_destroy(jive_region_shaper * self)
 {
 	jive_varcut_fini(&self->active);
-	jive_context_free(self->context, self);
+	delete self;
 }
 
 static jive_regalloc_conflict

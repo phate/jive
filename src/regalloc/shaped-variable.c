@@ -4,23 +4,30 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/regalloc/shaped-variable.h>
 #include <jive/regalloc/shaped-variable-private.h>
+#include <jive/regalloc/shaped-variable.h>
 
 #include <jive/common.h>
 #include <jive/context.h>
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/xpoint-private.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-region-private.h>
+#include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/region-ssavar-use-private.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
+JIVE_DEFINE_HASH_TYPE(
+	jive_shaped_variable_hash,
+	jive_shaped_variable,
+	jive_variable *,
+	variable,
+	hash_chain);
 
 jive_shaped_variable *
-jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive_variable * variable)
+jive_shaped_variable_create(
+	jive_shaped_graph * shaped_graph,
+	jive_variable * variable)
 {
 	jive_context * context = shaped_graph->context;
 	jive_shaped_variable * self = jive_context_malloc(context, sizeof(*self));
@@ -40,7 +47,10 @@ jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive
 }
 
 void
-jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+jive_shaped_variable_resource_class_change(
+	jive_shaped_variable * self,
+	const jive_resource_class * old_rescls,
+	const jive_resource_class * new_rescls)
 {
 	jive_shaped_graph * shaped_graph = self->shaped_graph;
 	jive_ssavar * ssavar;
@@ -66,7 +76,9 @@ jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const st
 }
 
 void
-jive_shaped_variable_deny_name(jive_shaped_variable * self, const struct jive_resource_name * resname)
+jive_shaped_variable_deny_name(
+	jive_shaped_variable * self,
+	const jive_resource_name * resname)
 {
 	if (!jive_allowed_resource_names_contains(&self->allowed_names, resname))
 		return;
@@ -79,9 +91,15 @@ jive_shaped_variable_deny_name(jive_shaped_variable * self, const struct jive_re
 }
 
 void
-jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname)
+jive_shaped_variable_resource_name_change(
+	jive_shaped_variable * self,
+	const jive_resource_name * old_resname,
+	const jive_resource_name * new_resname)
 {
-	JIVE_DEBUG_ASSERT(old_resname == new_resname || self->variable->rescls->limit == 0 || jive_shaped_variable_allowed_resource_name(self, new_resname));
+	JIVE_DEBUG_ASSERT(
+		old_resname == new_resname ||
+		self->variable->rescls->limit == 0 ||
+		jive_shaped_variable_allowed_resource_name(self, new_resname));
 	
 	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
 		self, self->variable->rescls, old_resname);
@@ -98,9 +116,12 @@ jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const str
 }
 
 bool
-jive_shaped_variable_allowed_resource_name(const jive_shaped_variable * self, const struct jive_resource_name * name)
+jive_shaped_variable_allowed_resource_name(
+	const jive_shaped_variable * self,
+	const jive_resource_name * name)
 {
-	jive_allowed_resource_name * allowed = jive_allowed_resource_names_hash_lookup(&self->allowed_names, name);
+	jive_allowed_resource_name * allowed =
+		jive_allowed_resource_names_hash_lookup(&self->allowed_names, name);
 	return !!allowed;
 }
 
@@ -153,7 +174,9 @@ jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive::gate * gat
 }
 
 size_t
-jive_shaped_variable_is_active_before(const jive_shaped_variable * self, const jive_shaped_node * shaped_node)
+jive_shaped_variable_is_active_before(
+	const jive_shaped_variable * self,
+	const jive_shaped_node * shaped_node)
 {
 	size_t count = 0;
 	jive_ssavar * ssavar;
@@ -166,7 +189,9 @@ jive_shaped_variable_is_active_before(const jive_shaped_variable * self, const j
 }
 
 size_t
-jive_shaped_variable_is_crossing(const jive_shaped_variable * self, const jive_shaped_node * shaped_node)
+jive_shaped_variable_is_crossing(
+	const jive_shaped_variable * self,
+	const jive_shaped_node * shaped_node)
 {
 	size_t count = 0;
 	jive_ssavar * ssavar;
@@ -179,7 +204,9 @@ jive_shaped_variable_is_crossing(const jive_shaped_variable * self, const jive_s
 }
 
 size_t
-jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const jive_shaped_node * shaped_node)
+jive_shaped_variable_is_active_after(
+	const jive_shaped_variable * self,
+	const jive_shaped_node * shaped_node)
 {
 	size_t count = 0;
 	jive_ssavar * ssavar;
@@ -192,7 +219,9 @@ jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const ji
 }
 
 void
-jive_shaped_variable_get_cross_count(const jive_shaped_variable * self, jive_resource_class_count * counts)
+jive_shaped_variable_get_cross_count(
+	const jive_shaped_variable * self,
+	jive_resource_class_count * counts)
 {
 	jive_resource_class_count_clear(counts);
 	
@@ -264,13 +293,17 @@ jive_variable_interference_destroy(jive_variable_interference * self)
 }
 
 
-JIVE_DEFINE_HASH_TYPE(jive_shaped_ssavar_hash, jive_shaped_ssavar, struct jive_ssavar *, ssavar, hash_chain);
+JIVE_DEFINE_HASH_TYPE(
+	jive_shaped_ssavar_hash,
+	jive_shaped_ssavar,
+	jive_ssavar *, ssavar,
+	hash_chain);
 
 jive_shaped_ssavar *
-jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_ssavar * ssavar)
+jive_shaped_ssavar_create(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar)
 {
 	jive_context * context = shaped_graph->context;
-	jive_shaped_ssavar * self = jive_context_malloc(context, sizeof(*self));
+	jive_shaped_ssavar * self = new jive_shaped_ssavar;
 	
 	self->shaped_graph = shaped_graph;
 	self->ssavar = ssavar;
@@ -285,9 +318,12 @@ jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_s
 }
 
 size_t
-jive_shaped_variable_interferes_with(const jive_shaped_variable * self, const jive_shaped_variable * other)
+jive_shaped_variable_interferes_with(
+	const jive_shaped_variable * self,
+	const jive_shaped_variable * other)
 {
-	jive_variable_interference_part * part = jive_variable_interference_hash_lookup(&self->interference, other);
+	jive_variable_interference_part * part =
+		jive_variable_interference_hash_lookup(&self->interference, other);
 	if (part)
 		return part->whole->count;
 	else
@@ -328,7 +364,9 @@ jive_shaped_variable_can_merge(const jive_shaped_variable * self, const jive_var
 }
 
 const jive_resource_class *
-jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * self, const jive_resource_class * new_rescls)
+jive_shaped_variable_check_change_resource_class(
+	const jive_shaped_variable * self,
+	const jive_resource_class * new_rescls)
 {
 	const jive_resource_class * old_rescls = self->variable->rescls;
 	if (old_rescls == new_rescls)
@@ -397,25 +435,34 @@ jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_ssavar * self, size_t d
 }
 
 size_t
-jive_shaped_ssavar_is_active_before(const jive_shaped_ssavar * self, const jive_shaped_node * shaped_node)
+jive_shaped_ssavar_is_active_before(
+	const jive_shaped_ssavar * self,
+	const jive_shaped_node * shaped_node)
 {
-	jive_nodevar_xpoint * xpoint = jive_nodevar_xpoint_hash_bynode_lookup(&self->node_xpoints, shaped_node);
+	jive_nodevar_xpoint * xpoint =
+		jive_nodevar_xpoint_hash_bynode_lookup(&self->node_xpoints, shaped_node);
 	if (!xpoint) return 0;
 	else return xpoint->before_count;
 }
 
 size_t
-jive_shaped_ssavar_is_crossing(const jive_shaped_ssavar * self, const jive_shaped_node * shaped_node)
+jive_shaped_ssavar_is_crossing(
+	const jive_shaped_ssavar * self,
+	const jive_shaped_node * shaped_node)
 {
-	jive_nodevar_xpoint * xpoint = jive_nodevar_xpoint_hash_bynode_lookup(&self->node_xpoints, shaped_node);
+	jive_nodevar_xpoint * xpoint =
+		jive_nodevar_xpoint_hash_bynode_lookup(&self->node_xpoints, shaped_node);
 	if (!xpoint) return 0;
 	else return xpoint->cross_count;
 }
 
 size_t
-jive_shaped_ssavar_is_active_after(const jive_shaped_ssavar * self, const jive_shaped_node * shaped_node)
+jive_shaped_ssavar_is_active_after(
+	const jive_shaped_ssavar * self,
+	const jive_shaped_node * shaped_node)
 {
-	jive_nodevar_xpoint * xpoint = jive_nodevar_xpoint_hash_bynode_lookup(&self->node_xpoints, shaped_node);
+	jive_nodevar_xpoint * xpoint =
+		jive_nodevar_xpoint_hash_bynode_lookup(&self->node_xpoints, shaped_node);
 	if (!xpoint) return 0;
 	else return xpoint->after_count;
 }
@@ -428,7 +475,7 @@ jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
 	jive_nodevar_xpoint_hash_bynode_fini(&self->node_xpoints);
 	jive_regvar_xpoint_hash_byregion_fini(&self->region_xpoints);
 	jive_shaped_ssavar_hash_remove(&self->shaped_graph->ssavar_map, self);
-	jive_context_free(self->shaped_graph->context, self);
+	delete self;
 }
 
 void
@@ -452,11 +499,15 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input *
 		jive_crossing_arc_iterator_next(&i);
 	}
 	
-	if (input_shaped_node && (origin_shaped_node || self->boundary_region_depth <= input_shaped_node->node->region->depth))
+	if (input_shaped_node &&
+			(origin_shaped_node ||
+			self->boundary_region_depth <= input_shaped_node->node->region->depth)) {
 		jive_shaped_node_add_ssavar_before(input_shaped_node, self, variable, 1);
+	}
 	
-	if (origin_shaped_node && input_shaped_node)
+	if (origin_shaped_node && input_shaped_node) {
 		jive_shaped_node_add_ssavar_after(origin_shaped_node, self, variable, 1);
+	}
 }
 
 void
@@ -465,9 +516,10 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input
 {
 	jive_variable * variable = self->ssavar->variable;
 	
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
-		output->node());
-	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, input->node);
+	jive_shaped_node * origin_shaped_node =
+		jive_shaped_graph_map_node(self->shaped_graph, output->node());
+	jive_shaped_node * input_shaped_node =
+		jive_shaped_graph_map_node(self->shaped_graph, input->node);
 	
 	jive_crossing_arc_iterator i;
 	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
@@ -480,22 +532,29 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input
 		jive_crossing_arc_iterator_next(&i);
 	}
 	
-	if (input_shaped_node && (origin_shaped_node || self->boundary_region_depth <= input_shaped_node->node->region->depth))
+	if (input_shaped_node &&
+			(origin_shaped_node ||
+			self->boundary_region_depth <= input_shaped_node->node->region->depth)) {
 		jive_shaped_node_remove_ssavar_before(input_shaped_node, self, variable, 1);
+	}
 	
-	if (origin_shaped_node && input_shaped_node)
+	if (origin_shaped_node && input_shaped_node) {
 		jive_shaped_node_remove_ssavar_after(origin_shaped_node, self, variable, 1);
+	}
 }
 
 void
-jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive::output * output,
+jive_shaped_ssavar_xpoints_register_region_arc(
+	jive_shaped_ssavar * self,
+	jive::output * output,
 	jive_region * region)
 {
 	jive_variable * variable = self->ssavar->variable;
 		
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
-		output->node());
-	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
+	jive_shaped_node * origin_shaped_node =
+		jive_shaped_graph_map_node(self->shaped_graph, output->node());
+	jive_shaped_node * input_shaped_node =
+		jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
 	
 	jive_crossing_arc_iterator i;
 	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
@@ -516,14 +575,17 @@ jive_shaped_ssavar_xpoints_register_region_arc(jive_shaped_ssavar * self, jive::
 }
 
 void
-jive_shaped_ssavar_xpoints_unregister_region_arc(jive_shaped_ssavar * self, jive::output * output,
+jive_shaped_ssavar_xpoints_unregister_region_arc(
+	jive_shaped_ssavar * self,
+	jive::output * output,
 	jive_region * region)
 {
 	jive_variable * variable = self->ssavar->variable;
 		
-	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
-		output->node());
-	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
+	jive_shaped_node * origin_shaped_node =
+		jive_shaped_graph_map_node(self->shaped_graph, output->node());
+	jive_shaped_node * input_shaped_node =
+		jive_shaped_graph_map_node(self->shaped_graph, jive_region_get_bottom_node(region));
 	
 	jive_crossing_arc_iterator i;
 	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
@@ -590,11 +652,16 @@ jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self)
 }
 
 void
-jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable)
+jive_shaped_ssavar_xpoints_variable_change(
+	jive_shaped_ssavar * self,
+	jive_variable * old_variable,
+	jive_variable * new_variable)
 {
 	jive_shaped_graph * shaped_graph = self->shaped_graph;
-	jive_shaped_variable * old_shaped_var = jive_shaped_graph_map_variable(self->shaped_graph, old_variable);
-	jive_shaped_variable * new_shaped_var = jive_shaped_graph_map_variable(self->shaped_graph, new_variable);
+	jive_shaped_variable * old_shaped_var =
+		jive_shaped_graph_map_variable(self->shaped_graph, old_variable);
+	jive_shaped_variable * new_shaped_var =
+		jive_shaped_graph_map_variable(self->shaped_graph, new_variable);
 	const jive_resource_class * old_rescls = jive_variable_get_resource_class(old_variable);
 	const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_variable);
 	
@@ -609,7 +676,9 @@ jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_varia
 			jive_nodevar_xpoint * other_xpoint = j.entry;
 			if (other_xpoint == xpoint) continue;
 			jive_shaped_variable * other_shaped_var;
-			other_shaped_var = jive_shaped_graph_map_variable(shaped_graph, other_xpoint->shaped_ssavar->ssavar->variable);
+			other_shaped_var = jive_shaped_graph_map_variable(
+				shaped_graph,
+				other_xpoint->shaped_ssavar->ssavar->variable);
 			
 			if (xpoint->before_count && other_xpoint->before_count) {
 				jive_variable_interference_remove(old_shaped_var, other_shaped_var);
@@ -665,21 +734,35 @@ jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive::output 
 }
 
 void
-jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+jive_shaped_ssavar_xpoints_change_resource_class(
+	jive_shaped_ssavar * self,
+	const jive_resource_class * old_rescls,
+	const jive_resource_class * new_rescls)
 {
 	struct jive_nodevar_xpoint_hash_bynode_iterator i;
 	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_bynode, self->node_xpoints, i) {
 		jive_nodevar_xpoint * xpoint = i.entry;
 		jive_shaped_node * shaped_node = xpoint->shaped_node;
-		if (xpoint->before_count)
-			jive_resource_class_count_change(&shaped_node->use_count_before, old_rescls, new_rescls);
-		if (xpoint->after_count)
-			jive_resource_class_count_change(&shaped_node->use_count_after, old_rescls, new_rescls);
+		if (xpoint->before_count) {
+			jive_resource_class_count_change(
+				&shaped_node->use_count_before,
+				old_rescls,
+				new_rescls);
+		}
+		if (xpoint->after_count) {
+			jive_resource_class_count_change(
+				&shaped_node->use_count_after,
+				old_rescls,
+				new_rescls);
+		}
 	}
 }
 
 const jive_resource_class *
-jive_shaped_ssavar_check_change_resource_class(const jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+jive_shaped_ssavar_check_change_resource_class(
+	const jive_shaped_ssavar * self,
+	const jive_resource_class * old_rescls,
+	const jive_resource_class * new_rescls)
 {
 	const jive_resource_class * overflow;
 	struct jive_nodevar_xpoint_hash_bynode_iterator i;
@@ -687,12 +770,18 @@ jive_shaped_ssavar_check_change_resource_class(const jive_shaped_ssavar * self, 
 		jive_nodevar_xpoint * xpoint = i.entry;
 		jive_shaped_node * shaped_node = xpoint->shaped_node;
 		if (xpoint->before_count) {
-			overflow = jive_resource_class_count_check_change(&shaped_node->use_count_before, old_rescls, new_rescls);
+			overflow = jive_resource_class_count_check_change(
+				&shaped_node->use_count_before,
+				old_rescls,
+				new_rescls);
 			if (overflow)
 				return overflow;
 		}
 		if (xpoint->after_count) {
-			overflow = jive_resource_class_count_check_change(&shaped_node->use_count_after, old_rescls, new_rescls);
+			overflow = jive_resource_class_count_check_change(
+				&shaped_node->use_count_after,
+				old_rescls,
+				new_rescls);
 			if (overflow)
 				return overflow;
 		}
