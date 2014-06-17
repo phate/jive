@@ -3,6 +3,7 @@ TESTS += \
 	util/test-double \
 	util/test-float \
 	util/test-hash \
+	util/test-intrusive-hash \
 	util/test-math \
 	util/test-metacontainers \
 	util/test-rangemap \
