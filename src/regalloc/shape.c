@@ -397,10 +397,11 @@ check_ssavar_replacement_conflict(
 	jive_shaped_ssavar * shaped_ssavar,
 	jive_variable * new_var)
 {
-	jive_cutvar_xpoint * original, * other;
-	
-	original = jive_cutvar_xpoint_hash_byssavar_lookup(&ssavar_set->ssavar_map, shaped_ssavar);
-	other = jive_cutvar_xpoint_hash_byvariable_lookup(&ssavar_set->variable_map, new_var);
+	const jive_cutvar_xpoint * original =
+		ssavar_set->ssavar_map.find(shaped_ssavar).ptr();
+	auto i = ssavar_set->variable_map.find(new_var);
+	const jive_cutvar_xpoint * other =
+		(i != ssavar_set->variable_map.end()) ? i.ptr() : nullptr;
 	
 	if (other && (original != other)) {
 		jive_regalloc_conflict conflict;

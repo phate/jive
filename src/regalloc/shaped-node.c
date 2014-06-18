@@ -36,7 +36,6 @@ jive_shaped_node_create(jive_cut * cut, jive_node * node)
 	
 	self->cut = cut;
 	
-	jive_nodevar_xpoint_hash_byssavar_init(&self->ssavar_xpoints, context);
 	jive_resource_class_count_init(&self->use_count_before, context);
 	jive_resource_class_count_init(&self->use_count_after, context);
 	
@@ -75,11 +74,9 @@ void
 jive_shaped_node_get_active_before(const jive_shaped_node * self, jive_mutable_varcut * cut)
 {
 	jive_mutable_varcut_clear(cut);
-	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, self->ssavar_xpoints, i) {
-		jive_nodevar_xpoint * xpoint = i.entry;
-		if (xpoint->before_count) {
-			jive_mutable_varcut_ssavar_add(cut, xpoint->shaped_ssavar, xpoint->before_count);
+	for (const jive_nodevar_xpoint & xpoint : self->ssavar_xpoints) {
+		if (xpoint.before_count) {
+			jive_mutable_varcut_ssavar_add(cut, xpoint.shaped_ssavar, xpoint.before_count);
 		}
 	}
 }
@@ -88,11 +85,9 @@ void
 jive_shaped_node_get_active_after(const jive_shaped_node * self, jive_mutable_varcut * cut)
 {
 	jive_mutable_varcut_clear(cut);
-	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, self->ssavar_xpoints, i) {
-		jive_nodevar_xpoint * xpoint = i.entry;
-		if (xpoint->after_count) {
-			jive_mutable_varcut_ssavar_add(cut, xpoint->shaped_ssavar, xpoint->after_count);
+	for (const jive_nodevar_xpoint & xpoint : self->ssavar_xpoints) {
+		if (xpoint.after_count) {
+			jive_mutable_varcut_ssavar_add(cut, xpoint.shaped_ssavar, xpoint.after_count);
 		}
 	}
 }
@@ -100,12 +95,10 @@ jive_shaped_node_get_active_after(const jive_shaped_node * self, jive_mutable_va
 static void
 jive_shaped_node_remove_all_crossed(jive_shaped_node * self)
 {
-	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-	i = jive_nodevar_xpoint_hash_byssavar_begin(&self->ssavar_xpoints);
-	while(i.entry) {
-		jive_nodevar_xpoint * xpoint = i.entry;
-		jive_nodevar_xpoint_hash_byssavar_iterator_next(&i);
-		
+	auto i = self->ssavar_xpoints.begin();
+	while (i != self->ssavar_xpoints.end()) {
+		jive_nodevar_xpoint * xpoint = i.ptr();
+		++i;
 		jive_shaped_node_remove_ssavar_crossed(
 			self,
 			xpoint->shaped_ssavar,
@@ -193,8 +186,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 		}
 	}
 	
-	JIVE_DEBUG_ASSERT(self->ssavar_xpoints.nitems == 0);
-	jive_nodevar_xpoint_hash_byssavar_fini(&self->ssavar_xpoints);
+	JIVE_DEBUG_ASSERT(self->ssavar_xpoints.size() == 0);
 	jive_resource_class_count_fini(&self->use_count_before);
 	jive_resource_class_count_fini(&self->use_count_after);
 	

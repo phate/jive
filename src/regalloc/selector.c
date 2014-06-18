@@ -452,7 +452,7 @@ jive_ssavar *
 jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const jive_resource_class * rescls,
 	jive_node * disallow_origins)
 {
-	size_t nsorted_ssavars = self->shaped_region->active_top.base.ssavar_map.nitems;
+	size_t nsorted_ssavars = self->shaped_region->active_top.base.ssavar_map.size();
 	jive_ssavar * sorted_ssavars[nsorted_ssavars];
 	sort_ssavars(self, sorted_ssavars);
 	

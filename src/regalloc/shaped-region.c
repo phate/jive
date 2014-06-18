@@ -13,8 +13,8 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/region.h>
 #include <jive/vsdg/region-ssavar-use-private.h>
+#include <jive/vsdg/region.h>
 
 static jive_cut *
 jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive_cut * before)
@@ -28,10 +28,15 @@ jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive
 	return self;
 }
 
-JIVE_DEFINE_HASH_TYPE(jive_shaped_region_hash, jive_shaped_region, struct jive_region *, region, hash_chain);
+JIVE_DEFINE_HASH_TYPE(
+	jive_shaped_region_hash,
+	jive_shaped_region,
+	jive_region *,
+	region,
+	hash_chain);
 
 jive_shaped_region *
-jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_region * region)
+jive_shaped_region_create(jive_shaped_graph * shaped_graph, jive_region * region)
 {
 	jive_context * context = shaped_graph->context;
 	jive_shaped_region * self = new jive_shaped_region;
@@ -110,7 +115,10 @@ jive_cut_create_above(jive_cut * self)
 jive_cut *
 jive_cut_create_below(jive_cut * self)
 {
-	return jive_cut_create(self->shaped_region->shaped_graph->context, self->shaped_region, self->region_cut_list.next);
+	return jive_cut_create(
+		self->shaped_region->shaped_graph->context,
+		self->shaped_region,
+		self->region_cut_list.next);
 }
 
 jive_cut *
@@ -146,20 +154,18 @@ static void
 add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_node * shaped_node,
 	jive_shaped_node * lower)
 {
-	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, lower->ssavar_xpoints, i) {
-		jive_nodevar_xpoint * xpoint = i.entry;
-		if (!xpoint->before_count) continue;
-		jive_ssavar * ssavar = xpoint->shaped_ssavar->ssavar;
+	for (const jive_nodevar_xpoint & xpoint : lower->ssavar_xpoints) {
+		if (!xpoint.before_count) continue;
+		jive_ssavar * ssavar = xpoint.shaped_ssavar->ssavar;
 		if (ssavar->origin->node() == shaped_node->node) {
-			jive_shaped_node_add_ssavar_after(shaped_node, xpoint->shaped_ssavar, ssavar->variable,
-				xpoint->before_count);
+			jive_shaped_node_add_ssavar_after(shaped_node, xpoint.shaped_ssavar, ssavar->variable,
+				xpoint.before_count);
 		} else {
 			if (dynamic_cast<jive::achr::output*>(ssavar->origin)) continue;
-			if (xpoint->shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth &&
+			if (xpoint.shaped_ssavar->boundary_region_depth > shaped_node->node->region->depth &&
 				!jive_shaped_graph_map_node(shaped_graph, ssavar->origin->node())) continue;
-			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar, ssavar->variable,
-				xpoint->before_count);
+			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint.shaped_ssavar, ssavar->variable,
+				xpoint.before_count);
 		}
 	}
 	
@@ -176,16 +182,15 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 			jive_shaped_region_first(shaped_region));
 		/* variables passed through both the anchor node and the
 		region would be counted twice, so remove the duplicates */
-		JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, lower->ssavar_xpoints, i) {
-			jive_nodevar_xpoint * xpoint = i.entry;
-			if (!xpoint->cross_count) continue;
-			jive_shaped_node_remove_ssavar_crossed(shaped_node, xpoint->shaped_ssavar,
-				xpoint->shaped_ssavar->ssavar->variable, xpoint->cross_count);
+		for (const jive_nodevar_xpoint & xpoint : lower->ssavar_xpoints) {
+			if (!xpoint.cross_count) continue;
+			jive_shaped_node_remove_ssavar_crossed(shaped_node, xpoint.shaped_ssavar,
+				xpoint.shaped_ssavar->ssavar->variable, xpoint.cross_count);
 		}
 	}
 }
 
-struct jive_shaped_node *
+jive_shaped_node *
 jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 {
 	jive_shaped_graph * shaped_graph = self->shaped_region->shaped_graph;
@@ -204,7 +209,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 				jive_shaped_ssavar_xpoints_unregister_arc(shaped_ssavar, input, output);
 			}
-			struct jive_ssavar_region_hash_iterator i;
+			jive_ssavar_region_hash_iterator i;
 			JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
 				jive_region * region = i.entry->region;
 				jive_shaped_ssavar_xpoints_unregister_region_arc(shaped_ssavar, output, region);
@@ -223,11 +228,9 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		add_crossings_from_lower_location(shaped_graph, shaped_node, next);
 	} else if (node->region->anchor) {
 		next = jive_shaped_graph_map_node(shaped_graph, node->region->anchor->node);
-		struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-		JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, next->ssavar_xpoints, i) {
-			jive_nodevar_xpoint * xpoint = i.entry;
-			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint->shaped_ssavar,
-				xpoint->shaped_ssavar->ssavar->variable, xpoint->cross_count);
+		for (const jive_nodevar_xpoint & xpoint : next->ssavar_xpoints) {
+			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint.shaped_ssavar,
+				xpoint.shaped_ssavar->ssavar->variable, xpoint.cross_count);
 		}
 	}
 	
@@ -235,12 +238,10 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 		jive::input * input = node->inputs[n];
 		if (!dynamic_cast<jive::achr::input*>(input))
 			continue;
-		struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-		JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, shaped_node->ssavar_xpoints, i) {
-			jive_nodevar_xpoint * xpoint = i.entry;
+		for (const jive_nodevar_xpoint & xpoint : shaped_node->ssavar_xpoints) {
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph,
 				input->producer()->region);
-			jive_shaped_region_add_active_top(shaped_region, xpoint->shaped_ssavar, xpoint->cross_count);
+			jive_shaped_region_add_active_top(shaped_region, xpoint.shaped_ssavar, xpoint.cross_count);
 		}
 	}
 	
@@ -256,7 +257,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 				jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, output);
 			}
-			struct jive_ssavar_region_hash_iterator i;
+			jive_ssavar_region_hash_iterator i;
 			JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
 				jive_region * region = i.entry->region;
 				jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, output, region);
@@ -278,7 +279,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	/* if this is the bottom node of a loop region, need to register
 	crossings on behalf of this region */
 	if (node == jive_region_get_bottom_node(node->region)) {
-		struct jive_region_ssavar_hash_iterator i;
+		jive_region_ssavar_hash_iterator i;
 		JIVE_HASH_ITERATE(jive_region_ssavar_hash, node->region->used_ssavars, i) {
 			jive_ssavar * ssavar = i.entry->ssavar;
 			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);

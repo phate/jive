@@ -16,7 +16,12 @@ jive_shaped_variable_dump(const jive_shaped_variable * self)
 	struct jive_variable_interference_hash_iterator i;
 	JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
 		jive_shaped_variable * other = i.entry->shaped_variable;
-		fprintf(stderr, "(%p; %p:%zd) ", other->variable, other->variable->ssavars.first->origin->node, other->variable->ssavars.first->origin->index);
+		fprintf(
+			stderr,
+			"(%p; %p:%zd) ",
+			other->variable,
+			other->variable->ssavars.first->origin->node,
+			other->variable->ssavars.first->origin->index);
 	}
 	fprintf(stderr, " use_count=%zd\n", self->variable->use_count);
 }
@@ -25,22 +30,30 @@ jive_shaped_variable_dump(const jive_shaped_variable * self)
 void
 jive_shaped_node_dump(const jive_shaped_node * shaped_node)
 {
-	struct jive_nodevar_xpoint_hash_byssavar_iterator i;
-	
-	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, shaped_node->ssavar_xpoints, i) {
-		jive_nodevar_xpoint * xpoint = i.entry;
-		if (!xpoint->before_count)
+	for (const jive_nodevar_xpoint & xpoint : shaped_node->ssavar_xpoints) {
+		if (!xpoint.before_count)
 			continue;
-		jive_ssavar * ssavar = xpoint->shaped_ssavar->ssavar;
-		fprintf(stderr, "(%p,%p,%p:%zd) ", ssavar, ssavar->variable, ssavar->origin->node, ssavar->origin->index);
+		jive_ssavar * ssavar = xpoint.shaped_ssavar->ssavar;
+		fprintf(
+			stderr,
+			"(%p,%p,%p:%zd) ",
+			ssavar,
+			ssavar->variable,
+			ssavar->origin->node,
+			ssavar->origin->index);
 	}
 	fprintf(stderr, "\nNODE %p\n", shaped_node->node);
-	JIVE_HASH_ITERATE(jive_nodevar_xpoint_hash_byssavar, shaped_node->ssavar_xpoints, i) {
-		jive_nodevar_xpoint * xpoint = i.entry;
-		if (!xpoint->after_count)
+	for (const jive_nodevar_xpoint & xpoint : shaped_node->ssavar_xpoints) {
+		if (!xpoint.after_count)
 			continue;
-		jive_ssavar * ssavar = xpoint->shaped_ssavar->ssavar;
-		fprintf(stderr, "(%p,%p,%p:%zd) ", ssavar, ssavar->variable, ssavar->origin->node, ssavar->origin->index);
+		jive_ssavar * ssavar = xpoint.shaped_ssavar->ssavar;
+		fprintf(
+			stderr,
+			"(%p,%p,%p:%zd) ",
+			ssavar,
+			ssavar->variable,
+			ssavar->origin->node,
+			ssavar->origin->index);
 	}
 	fprintf(stderr, "\n");
 }
