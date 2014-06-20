@@ -84,7 +84,7 @@ static int test_main(void)
 	
 	assert(shaped_graph->var_assignment_tracker.trivial.first == jive_shaped_graph_map_variable(shaped_graph, r2) || shaped_graph->var_assignment_tracker.trivial.last == jive_shaped_graph_map_variable(shaped_graph, r2));
 	assert(shaped_graph->var_assignment_tracker.trivial.first == jive_shaped_graph_map_variable(shaped_graph, r3) || shaped_graph->var_assignment_tracker.trivial.last == jive_shaped_graph_map_variable(shaped_graph, r3));
-	assert(shaped_graph->var_assignment_tracker.pressured_max == 1);
+	assert(shaped_graph->var_assignment_tracker.pressured.size() == 1);
 	assert(shaped_graph->var_assignment_tracker.pressured[0].first == jive_shaped_graph_map_variable(shaped_graph, r1));
 	
 	jive_variable_set_resource_name(r1, &jive_testarch_reg_r0.base);

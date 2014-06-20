@@ -26,9 +26,9 @@ is_active_control_input(jive::input * input)
 static jive_shaped_variable *
 find_next_uncolored(const jive_var_assignment_tracker * tracker)
 {
-	if (tracker->pressured_max) {
-		JIVE_DEBUG_ASSERT(tracker->pressured[tracker->pressured_max - 1].first);
-		return tracker->pressured[tracker->pressured_max - 1].first;
+	if (!tracker->pressured.empty()) {
+		JIVE_DEBUG_ASSERT(tracker->pressured.rbegin()->first);
+		return tracker->pressured.rbegin()->first;
 	} else if (tracker->trivial.first) {
 		return tracker->trivial.first;
 	} else return NULL;

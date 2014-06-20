@@ -8,6 +8,8 @@
 
 #include <stddef.h>
 
+#include <vector>
+
 typedef struct jive_var_assignment_tracker jive_var_assignment_tracker;
 typedef struct jive_pressured_var_list jive_pressured_var_list;
 
@@ -30,9 +32,7 @@ struct jive_var_assignment_tracker {
 		struct jive_shaped_variable * first;
 		struct jive_shaped_variable * last;
 	} trivial;
-	jive_pressured_var_list * pressured;
-	
-	size_t pressured_max, pressured_space;
+	std::vector<jive_pressured_var_list> pressured;
 };
 
 #endif

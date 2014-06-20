@@ -19,17 +19,14 @@ jive_var_assignment_tracker_init(jive_var_assignment_tracker * self, jive_contex
 	self->context = context;
 	self->assigned.first = self->assigned.last = 0;
 	self->trivial.first = self->trivial.last = 0;
-	self->pressured = 0;
-	self->pressured_max = self->pressured_space = 0;
 }
 
 static inline void
 jive_var_assignment_tracker_fini(jive_var_assignment_tracker * self)
 {
-	JIVE_DEBUG_ASSERT(self->pressured_max == 0);
+	JIVE_DEBUG_ASSERT(self->pressured.empty());
 	JIVE_DEBUG_ASSERT(self->assigned.first == 0);
 	JIVE_DEBUG_ASSERT(self->trivial.first == 0);
-	jive_context_free(self->context, self->pressured);
 }
 
 static inline void
@@ -42,17 +39,10 @@ jive_var_assignment_tracker_add_tracked(jive_var_assignment_tracker * self, jive
 		JIVE_LIST_PUSH_BACK(self->trivial, shaped_variable, assignment_variable_list);
 	} else {
 		size_t index = shaped_variable->squeeze - shaped_variable->allowed_names.nitems;
-		if (index >= self->pressured_space) {
-			self->pressured = jive_context_realloc(self->context, self->pressured, sizeof(self->pressured[0]) * (index + 1));
-			size_t n;
-			for(n = self->pressured_space; n < index + 1; n++) {
-				self->pressured[n].first = self->pressured[n].last = 0;
-			}
-			self->pressured_space = index + 1;
+		if (index >= self->pressured.size()) {
+			self->pressured.resize(index + 1, {nullptr, nullptr});
 		}
 		JIVE_LIST_PUSH_BACK(self->pressured[index], shaped_variable, assignment_variable_list);
-		if (index + 1 > self->pressured_max)
-			self->pressured_max = index + 1;
 	}
 }
 
@@ -67,9 +57,11 @@ jive_var_assignment_tracker_remove_tracked(jive_var_assignment_tracker * self, j
 	} else {
 		size_t index = shaped_variable->squeeze - shaped_variable->allowed_names.nitems;
 		JIVE_LIST_REMOVE(self->pressured[index], shaped_variable, assignment_variable_list);
-		while(self->pressured_max) {
-			if (self->pressured[self->pressured_max - 1].first) break;
-			self->pressured_max --;
+		while (!self->pressured.empty()) {
+			if (self->pressured.rbegin()->first) {
+				break;
+			}
+			self->pressured.resize(self->pressured.size() -1);
 		}
 	}
 }

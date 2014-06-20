@@ -217,7 +217,7 @@ jive_shaped_graph *
 jive_shaped_graph_create(jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_shaped_graph * self = jive_context_malloc(context, sizeof(*self));
+	jive_shaped_graph * self = new jive_shaped_graph;
 	
 	self->graph = graph;
 	self->context = context;
@@ -332,7 +332,7 @@ jive_shaped_graph_destroy(jive_shaped_graph * self)
 	jive_shaped_region_ssavar_notifier_slot_fini(&self->on_shaped_region_ssavar_add);
 	jive_shaped_region_ssavar_notifier_slot_fini(&self->on_shaped_region_ssavar_remove);
 	
-	jive_context_free(context, self);
+	delete self;
 }
 
 jive_shaped_region *
