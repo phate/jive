@@ -49,7 +49,7 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 	const jive_resource_class * rescls = jive_variable_get_resource_class(variable);
 	
 	const jive_resource_name * best_name = 0;
-	size_t best_pressure = candidate->interference.nitems + 1;
+	size_t best_pressure = candidate->interference.size() + 1;
 	
 	for (const jive_resource_name * name : candidate->allowed_names) {
 		size_t pressure = 0;
@@ -59,9 +59,8 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 		if (overflow)
 			continue;
 		
-		struct jive_variable_interference_hash_iterator j;
-		JIVE_HASH_ITERATE(jive_variable_interference_hash, candidate->interference, j) {
-			jive_shaped_variable * other = j.entry->shaped_variable;
+		for (const jive_variable_interference_part & part : candidate->interference) {
+			jive_shaped_variable * other = part.shaped_variable;
 			
 			/* other is colored already or trivially colorable, therefore ignore */
 			if (jive_variable_get_resource_name(other->variable) || other->allowed_names.size() > other->squeeze)

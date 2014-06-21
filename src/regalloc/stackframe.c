@@ -64,9 +64,8 @@ layout_stackslot(
 	
 	jive_shaped_variable * shaped_variable = jive_shaped_graph_map_variable(shaped_graph, variable);
 	
-	struct jive_variable_interference_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_variable_interference_hash, shaped_variable->interference, i) {
-		jive_shaped_variable * other_var = i.entry->shaped_variable;
+	for (const jive_variable_interference_part & part : shaped_variable->interference) {
+		jive_shaped_variable * other_var = part.shaped_variable;
 		
 		const jive_stackslot * other_slot = get_req_stackslot(other_var->variable);
 		if (!other_slot)

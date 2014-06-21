@@ -36,7 +36,6 @@ jive_shaped_variable_create(
 	self->variable = variable;
 	
 	jive_shaped_variable_hash_insert(&shaped_graph->variable_map, self);
-	jive_variable_interference_hash_init(&self->interference, context);
 	
 	jive_shaped_variable_internal_recompute_allowed_names(self);
 	
@@ -60,9 +59,8 @@ jive_shaped_variable_resource_class_change(
 	}
 	
 	if (!self->variable->resname) {
-		struct jive_variable_interference_hash_iterator i;
-		JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
-			jive_shaped_variable * other = i.entry->shaped_variable;
+		for (const jive_variable_interference_part & part : self->interference) {
+			jive_shaped_variable * other = part.shaped_variable;
 			jive_shaped_variable_sub_squeeze(other, old_rescls);
 			jive_shaped_variable_add_squeeze(other, new_rescls);
 		}
@@ -106,10 +104,9 @@ jive_shaped_variable_resource_name_change(
 	jive_shaped_variable_internal_recompute_allowed_names(self);
 	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
 		self, self->variable->rescls, new_resname);
-		
-	struct jive_variable_interference_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
-		jive_shaped_variable * other = i.entry->shaped_variable;
+	
+	for (const jive_variable_interference_part & part : self->interference) {
+		jive_shaped_variable * other = part.shaped_variable;
 		jive_shaped_variable_deny_name(other, new_resname);
 		jive_shaped_variable_sub_squeeze(other, new_resname->resource_class);
 	}
@@ -253,8 +250,7 @@ jive_shaped_variable_destroy(jive_shaped_variable * self)
 	}
 	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
 		self, self->variable->rescls, self->variable->resname);
-	JIVE_DEBUG_ASSERT(self->interference.nitems == 0);
-	jive_variable_interference_hash_fini(&self->interference);
+	JIVE_DEBUG_ASSERT(self->interference.empty());
 	jive_shaped_variable_hash_remove(&self->shaped_graph->variable_map, self);
 	
 	delete self;
@@ -266,15 +262,15 @@ jive_variable_interference_create(jive_shaped_variable * first, jive_shaped_vari
 	/* a variable may not interfere with itself */
 	JIVE_DEBUG_ASSERT(first != second);
 	
-	jive_variable_interference * i = jive_context_malloc(first->shaped_graph->context, sizeof(*i));
+	jive_variable_interference * i = new jive_variable_interference;
 	i->first.shaped_variable = first;
 	i->first.whole = i;
 	i->second.shaped_variable = second;
 	i->second.whole = i;
 	i->count = 0;
 	
-	jive_variable_interference_hash_insert(&first->interference, &i->second);
-	jive_variable_interference_hash_insert(&second->interference, &i->first);
+	first->interference.insert(&i->second);
+	second->interference.insert(&i->first);
 	
 	return i;
 }
@@ -282,9 +278,9 @@ jive_variable_interference_create(jive_shaped_variable * first, jive_shaped_vari
 void
 jive_variable_interference_destroy(jive_variable_interference * self)
 {
-	jive_variable_interference_hash_remove(&self->first.shaped_variable->interference, &self->second);
-	jive_variable_interference_hash_remove(&self->second.shaped_variable->interference, &self->first);
-	jive_context_free(self->first.shaped_variable->shaped_graph->context, self);
+	self->first.shaped_variable->interference.erase(&self->second);
+	self->second.shaped_variable->interference.erase(&self->first);
+	delete self;
 }
 
 
@@ -314,12 +310,12 @@ jive_shaped_variable_interferes_with(
 	const jive_shaped_variable * self,
 	const jive_shaped_variable * other)
 {
-	jive_variable_interference_part * part =
-		jive_variable_interference_hash_lookup(&self->interference, other);
-	if (part)
-		return part->whole->count;
-	else
+	auto i = self->interference.find(other);
+	if (i != self->interference.end()) {
+		return i->whole->count;
+	} else {
 		return 0;
+	}
 }
 
 bool
@@ -330,7 +326,7 @@ jive_shaped_variable_can_merge(const jive_shaped_variable * self, const jive_var
 	
 	jive_shaped_variable * other_shape;
 	other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
-	if (other_shape && jive_variable_interference_hash_lookup(&self->interference, other_shape))
+	if (other_shape && jive_shaped_variable_interferes_with(self, other_shape))
 		return false;
 	
 	const jive_resource_class * new_rescls;

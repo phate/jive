@@ -15,13 +15,33 @@
 #include <jive/regalloc/xpoint.h>
 #include <jive/util/hash.h>
 
-typedef struct jive_variable_interference jive_variable_interference;
-typedef struct jive_variable_interference_part jive_variable_interference_part;
-typedef struct jive_variable_interference_hash jive_variable_interference_hash;
+struct jive_variable_interference;
 
-JIVE_DECLARE_HASH_TYPE(jive_variable_interference_hash, struct jive_variable_interference_part, struct jive_variable *, variable, chain);
+struct jive_variable_interference_part {
+	jive_shaped_variable * shaped_variable;
+	jive_variable_interference * whole;
+private:
+	jive::detail::intrusive_hash_anchor<jive_variable_interference_part> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		jive_shaped_variable *,
+		jive_variable_interference_part,
+		&jive_variable_interference_part::shaped_variable,
+		&jive_variable_interference_part::hash_chain
+	> hash_chain_accessor;
+};
 
-typedef struct jive_shaped_variable jive_shaped_variable;
+struct jive_variable_interference {
+	jive_variable_interference_part first;
+	jive_variable_interference_part second;
+	size_t count;
+};
+
+typedef jive::detail::intrusive_hash<
+	const jive_shaped_variable *,
+	jive_variable_interference_part,
+	jive_variable_interference_part::hash_chain_accessor
+> jive_variable_interference_hash;
 
 struct jive_shaped_graph;
 struct jive_variable;

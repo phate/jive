@@ -13,9 +13,8 @@ void
 jive_shaped_variable_dump(const jive_shaped_variable * self)
 {
 	fprintf(stderr, "var %p: ", self->variable);
-	struct jive_variable_interference_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
-		jive_shaped_variable * other = i.entry->shaped_variable;
+	for (const jive_variable_interference_part & part : self->interference) {
+		jive_shaped_variable * other = part.shaped_variable;
 		fprintf(
 			stderr,
 			"(%p; %p:%zd) ",
