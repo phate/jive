@@ -51,9 +51,7 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 	const jive_resource_name * best_name = 0;
 	size_t best_pressure = candidate->interference.nitems + 1;
 	
-	struct jive_allowed_resource_names_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_allowed_resource_names_hash, candidate->allowed_names, i) {
-		const jive_resource_name * name = i.entry->name;
+	for (const jive_resource_name * name : candidate->allowed_names) {
 		size_t pressure = 0;
 		
 		const jive_resource_class * overflow;
@@ -66,10 +64,10 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 			jive_shaped_variable * other = j.entry->shaped_variable;
 			
 			/* other is colored already or trivially colorable, therefore ignore */
-			if (jive_variable_get_resource_name(other->variable) || other->allowed_names.nitems > other->squeeze)
+			if (jive_variable_get_resource_name(other->variable) || other->allowed_names.size() > other->squeeze)
 				continue;
 			
-			if (jive_allowed_resource_names_contains(&other->allowed_names, name)) {
+			if (other->allowed_names.find(name) != other->allowed_names.end()) {
 				/* choosing this register would reduce the number
 				of choices for another variable */
 				pressure  = pressure + 1;
@@ -521,25 +519,21 @@ pick_gate_evict_rescls(jive_shaped_graph * shaped_graph, jive_shaped_variable * 
 		if (!demotion->target->limit)
 			return demotion;
 		
-		jive_allowed_resource_names_hash allowed_names;
-		jive_allowed_resource_names_hash_init(&allowed_names, context);
+		std::unordered_set<const jive_resource_name *> allowed_names;
 		
 		size_t n;
 		for (n = 0; n < rescls->limit; n++)
-			jive_allowed_resource_names_add(&allowed_names, rescls->names[n]);
+			allowed_names.insert(rescls->names[n]);
 		
 		struct jive_gate_interference_hash_iterator i;
 		JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
 			jive_variable * other_var = i.entry->gate->variable;
 			if (!other_var)
 				continue;
-			jive_allowed_resource_names_remove(&allowed_names, jive_variable_get_resource_name(other_var));
+			allowed_names.erase(jive_variable_get_resource_name(other_var));
 		}
 		
-		bool allows_name = !!allowed_names.nitems;
-		
-		jive_allowed_resource_names_clear(&allowed_names);
-		jive_allowed_resource_names_hash_fini(&allowed_names);
+		bool allows_name = !allowed_names.empty();
 		
 		if (allows_name)
 			return demotion;

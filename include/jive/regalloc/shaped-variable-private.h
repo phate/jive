@@ -46,79 +46,27 @@ jive_variable_interference_create(jive_shaped_variable * first, jive_shaped_vari
 void
 jive_variable_interference_destroy(jive_variable_interference * self);
 
-typedef struct jive_allowed_resource_name jive_allowed_resource_name;
-struct jive_allowed_resource_name {
-	const struct jive_resource_name * name;
-	struct {
-		jive_allowed_resource_name* prev;
-		jive_allowed_resource_name* next;
-	} chain;
-};
-JIVE_DEFINE_HASH_TYPE(jive_allowed_resource_names_hash, jive_allowed_resource_name, const struct jive_resource_name *, name, chain);
-
-static inline void
-jive_allowed_resource_names_add(jive_allowed_resource_names_hash * hash, const jive_resource_name * resource_name)
-{
-	jive_allowed_resource_name * allowed = jive_context_malloc(hash->context, sizeof(*allowed));
-	allowed->name = resource_name;
-	jive_allowed_resource_names_hash_insert(hash, allowed);
-}
-
-static inline void
-jive_allowed_resource_name_destroy(jive_allowed_resource_names_hash * hash, jive_allowed_resource_name * allowed)
-{
-	jive_allowed_resource_names_hash_remove(hash, allowed);
-	jive_context_free(hash->context, allowed);
-}
-
-static inline void
-jive_allowed_resource_names_remove(jive_allowed_resource_names_hash * hash, const struct jive_resource_name * resource_name)
-{
-	jive_allowed_resource_name * allowed = jive_allowed_resource_names_hash_lookup(hash, resource_name);
-	if (!allowed) return;
-	jive_allowed_resource_name_destroy(hash, allowed);
-}
-
-static inline bool
-jive_allowed_resource_names_contains(jive_allowed_resource_names_hash * hash, const struct jive_resource_name * resource_name)
-{
-	jive_allowed_resource_name * allowed = jive_allowed_resource_names_hash_lookup(hash, resource_name);
-	return (bool) allowed;
-}
-
-static inline void
-jive_allowed_resource_names_clear(jive_allowed_resource_names_hash * hash)
-{
-	struct jive_allowed_resource_names_hash_iterator i;
-	i = jive_allowed_resource_names_hash_begin(hash);
-	while(i.entry) {
-		jive_allowed_resource_name * allowed = i.entry;
-		jive_allowed_resource_names_hash_iterator_next(&i);
-		jive_allowed_resource_name_destroy(hash, allowed);
-	}
-}
-
 static inline void
 jive_shaped_variable_internal_recompute_allowed_names(jive_shaped_variable * self)
 {
 	self->squeeze = 0;
-	jive_allowed_resource_names_clear(&self->allowed_names);
+	self->allowed_names.clear();
 	
 	if (self->variable->resname) {
-		jive_allowed_resource_names_add(&self->allowed_names, self->variable->resname);
+		self->allowed_names.insert(self->variable->resname);
 	} else if (self->variable->rescls->limit) {
 		size_t nnames;
 		const jive_resource_name * const * names;
 		jive_resource_class_get_resource_names(self->variable->rescls, &nnames, &names);
 		size_t n;
 		for(n = 0; n < nnames; n++)
-			jive_allowed_resource_names_add(&self->allowed_names, names[n]);
+			self->allowed_names.insert(names[n]);
 		
 		struct jive_variable_interference_hash_iterator i;
 		JIVE_HASH_ITERATE(jive_variable_interference_hash, self->interference, i) {
 			jive_shaped_variable * other = i.entry->shaped_variable;
 			if (other->variable->resname) {
-				jive_allowed_resource_names_remove(&self->allowed_names, other->variable->resname);
+				self->allowed_names.erase(other->variable->resname);
 			} else if (other->variable->rescls->limit) {
 				const jive_resource_class * rescls;
 				rescls = jive_resource_class_intersection(self->variable->rescls, other->variable->rescls);

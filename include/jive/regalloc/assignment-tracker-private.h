@@ -35,10 +35,10 @@ jive_var_assignment_tracker_add_tracked(jive_var_assignment_tracker * self, jive
 {
 	if (resname || rescls->limit == 0) {
 		JIVE_LIST_PUSH_BACK(self->assigned, shaped_variable, assignment_variable_list);
-	} else if (shaped_variable->allowed_names.nitems > shaped_variable->squeeze) {
+	} else if (shaped_variable->allowed_names.size() > shaped_variable->squeeze) {
 		JIVE_LIST_PUSH_BACK(self->trivial, shaped_variable, assignment_variable_list);
 	} else {
-		size_t index = shaped_variable->squeeze - shaped_variable->allowed_names.nitems;
+		size_t index = shaped_variable->squeeze - shaped_variable->allowed_names.size();
 		if (index >= self->pressured.size()) {
 			self->pressured.resize(index + 1, {nullptr, nullptr});
 		}
@@ -52,10 +52,10 @@ jive_var_assignment_tracker_remove_tracked(jive_var_assignment_tracker * self, j
 {
 	if (resname || rescls->limit == 0) {
 		JIVE_LIST_REMOVE(self->assigned, shaped_variable, assignment_variable_list);
-	} else if (shaped_variable->allowed_names.nitems > shaped_variable->squeeze) {
+	} else if (shaped_variable->allowed_names.size() > shaped_variable->squeeze) {
 		JIVE_LIST_REMOVE(self->trivial, shaped_variable, assignment_variable_list);
 	} else {
-		size_t index = shaped_variable->squeeze - shaped_variable->allowed_names.nitems;
+		size_t index = shaped_variable->squeeze - shaped_variable->allowed_names.size();
 		JIVE_LIST_REMOVE(self->pressured[index], shaped_variable, assignment_variable_list);
 		while (!self->pressured.empty()) {
 			if (self->pressured.rbegin()->first) {

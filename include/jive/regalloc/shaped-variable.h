@@ -8,6 +8,8 @@
 
 #include <stdbool.h>
 
+#include <unordered_set>
+
 #include <jive/common.h>
 
 #include <jive/regalloc/xpoint.h>
@@ -26,9 +28,6 @@ struct jive_variable;
 
 struct jive_resource_name;
 
-JIVE_DECLARE_HASH_TYPE(jive_allowed_resource_names_hash, struct jive_allowed_resource_name, const struct jive_resource_name *, name, chain);
-typedef struct jive_allowed_resource_names_hash jive_allowed_resource_names_hash;
-
 struct jive_shaped_variable {
 	struct jive_shaped_graph * shaped_graph;
 	
@@ -45,7 +44,7 @@ struct jive_shaped_variable {
 	} assignment_variable_list;
 	
 	jive_variable_interference_hash interference;
-	jive_allowed_resource_names_hash allowed_names;
+	std::unordered_set<const jive_resource_name *> allowed_names;
 	size_t squeeze;
 };
 

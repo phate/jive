@@ -30,7 +30,7 @@ jive_shaped_variable_create(
 	jive_variable * variable)
 {
 	jive_context * context = shaped_graph->context;
-	jive_shaped_variable * self = jive_context_malloc(context, sizeof(*self));
+	jive_shaped_variable * self = new jive_shaped_variable;
 	
 	self->shaped_graph = shaped_graph;
 	self->variable = variable;
@@ -38,7 +38,6 @@ jive_shaped_variable_create(
 	jive_shaped_variable_hash_insert(&shaped_graph->variable_map, self);
 	jive_variable_interference_hash_init(&self->interference, context);
 	
-	jive_allowed_resource_names_hash_init(&self->allowed_names, context);
 	jive_shaped_variable_internal_recompute_allowed_names(self);
 	
 	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
@@ -80,12 +79,13 @@ jive_shaped_variable_deny_name(
 	jive_shaped_variable * self,
 	const jive_resource_name * resname)
 {
-	if (!jive_allowed_resource_names_contains(&self->allowed_names, resname))
+	auto i = self->allowed_names.find(resname);
+	if (i == self->allowed_names.end())
 		return;
 		
 	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
 		self, self->variable->rescls, self->variable->resname);
-	jive_allowed_resource_names_remove(&self->allowed_names, resname);
+	self->allowed_names.erase(i);
 	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
 		self, self->variable->rescls, self->variable->resname);
 }
@@ -120,15 +120,13 @@ jive_shaped_variable_allowed_resource_name(
 	const jive_shaped_variable * self,
 	const jive_resource_name * name)
 {
-	jive_allowed_resource_name * allowed =
-		jive_allowed_resource_names_hash_lookup(&self->allowed_names, name);
-	return !!allowed;
+	return self->allowed_names.find(name) != self->allowed_names.end();
 }
 
 size_t
 jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * self)
 {
-	return self->allowed_names.nitems;
+	return self->allowed_names.size();
 }
 
 void
@@ -257,10 +255,9 @@ jive_shaped_variable_destroy(jive_shaped_variable * self)
 		self, self->variable->rescls, self->variable->resname);
 	JIVE_DEBUG_ASSERT(self->interference.nitems == 0);
 	jive_variable_interference_hash_fini(&self->interference);
-	jive_allowed_resource_names_clear(&self->allowed_names);
-	jive_allowed_resource_names_hash_fini(&self->allowed_names);
 	jive_shaped_variable_hash_remove(&self->shaped_graph->variable_map, self);
-	jive_context_free(self->shaped_graph->context, self);
+	
+	delete self;
 }
 
 jive_variable_interference *
