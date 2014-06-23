@@ -6,6 +6,8 @@
 #ifndef JIVE_SERIALIZATION_GRAMMAR_H
 #define JIVE_SERIALIZATION_GRAMMAR_H
 
+#include <vector>
+
 #include <jive/context.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
@@ -28,12 +30,11 @@ struct jive_portinfo {
 	jive::gate * gate;
 };
 
-typedef struct jive_portsinfo jive_portsinfo;
 struct jive_portsinfo {
+	inline jive_portsinfo() : nnormal(0) {}
+
+	std::vector<jive_portinfo> ports;
 	size_t nnormal;
-	size_t ntotal;
-	jive_portinfo * ports;
-	jive_context * context;
 };
 
 typedef struct jive_serialization_namegen jive_serialization_namegen;
@@ -55,27 +56,6 @@ struct jive_serialization_namegen {
 		jive_serialization_symtab * symtab,
 		jive::output * output);
 };
-
-JIVE_EXPORTED_INLINE void
-jive_portsinfo_init(jive_portsinfo * self, jive_context * ctx)
-{
-	self->nnormal = self->ntotal = 0;
-	self->ports = 0;
-	self->context = ctx;
-}
-JIVE_EXPORTED_INLINE void
-jive_portsinfo_fini(jive_portsinfo * self)
-{
-	jive_context_free(self->context, self->ports);
-}
-JIVE_EXPORTED_INLINE jive_portinfo *
-jive_portsinfo_append(jive_portsinfo * self)
-{
-	self->ports = jive_context_realloc(self->context, self->ports,
-		sizeof(self->ports[0]) * (self->ntotal + 1));
-	self->ntotal ++;
-	return &self->ports[self->ntotal - 1];
-}
 
 void
 jive_serialize_char_token(jive_serialization_driver * self,

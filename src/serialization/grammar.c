@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -422,16 +422,16 @@ void
 jive_serialize_portsinfo(jive_serialization_driver * self,
 	jive_portsinfo * ports, jive_token_ostream * os)
 {
-	size_t n;
+	JIVE_DEBUG_ASSERT(ports->nnormal <= ports->ports.size());
 	
 	jive_serialize_char_token(self, '(', os);
 	
-	for (n = 0; n < ports->nnormal; ++n)
+	for (size_t n = 0; n < ports->nnormal; ++n)
 		jive_serialize_portinfo(self, &ports->ports[n], os);
 	
 	jive_serialize_char_token(self, ';', os);
 	
-	for (n = ports->nnormal; n < ports->ntotal; ++n)
+	for (size_t n = ports->nnormal; n < ports->ports.size(); ++n)
 		jive_serialize_portinfo(self, &ports->ports[n], os);
 	
 	jive_serialize_char_token(self, ')', os);
@@ -441,17 +441,15 @@ bool
 jive_deserialize_portsinfo(jive_serialization_driver * self,
 	jive_token_istream * is, jive_portsinfo * ports)
 {
-	jive_portsinfo_init(ports, self->context);
-	
 	if (!jive_deserialize_char_token(self, is, '('))
 		return false;
 	
 	while (jive_token_istream_current(is)->type == jive_token_identifier) {
-		jive_portinfo * port = jive_portsinfo_append(ports);
-		if (!jive_deserialize_portinfo(self, is, port)) {
-			jive_portsinfo_fini(ports);
+		jive_portinfo port;
+		if (!jive_deserialize_portinfo(self, is, &port)) {
 			return false;
 		}
+		ports->ports.push_back(port);
 		ports->nnormal ++;
 	}
 	
@@ -459,11 +457,11 @@ jive_deserialize_portsinfo(jive_serialization_driver * self,
 		return false;
 	
 	while (jive_token_istream_current(is)->type == jive_token_identifier) {
-		jive_portinfo * port = jive_portsinfo_append(ports);
-		if (!jive_deserialize_portinfo(self, is, port)) {
-			jive_portsinfo_fini(ports);
+		jive_portinfo port;
+		if (!jive_deserialize_portinfo(self, is, &port)) {
 			return false;
 		}
+		ports->ports.push_back(port);
 	}
 	
 	if (!jive_deserialize_char_token(self, is, ')'))
@@ -477,19 +475,18 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 	jive_node * node, jive_token_ostream * os)
 {
 	size_t n;
-	jive_portsinfo ports;
+	jive_portsinfo inports;
 	
 	/* inputs */
-	jive_portsinfo_init(&ports, self->context);
 	for (n = 0; n < node->ninputs; ++n) {
-		jive_portinfo * port = jive_portsinfo_append(&ports);
-		port->origin = node->inputs[n]->origin();
-		port->required_rescls = node->inputs[n]->required_rescls;
-		port->gate = node->inputs[n]->gate;
+		jive_portinfo port;
+		port.origin = node->inputs[n]->origin();
+		port.required_rescls = node->inputs[n]->required_rescls;
+		port.gate = node->inputs[n]->gate;
+		inports.ports.push_back(port);
 	}
-	ports.nnormal = node->noperands;
-	jive_serialize_portsinfo(self, &ports, os);
-	jive_portsinfo_fini(&ports);
+	inports.nnormal = node->noperands;
+	jive_serialize_portsinfo(self, &inports, os);
 	
 	/* attributes */
 	const jive_serialization_nodecls * sercls;
@@ -501,19 +498,19 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 	jive_serialize_char_token(self, '>', os);
 	
 	/* outputs */
-	jive_portsinfo_init(&ports, self->context);
+	jive_portsinfo outports;
 	size_t nnormal = node->noutputs;
 	for (n = 0; n < node->noutputs; ++n) {
-		jive_portinfo * port = jive_portsinfo_append(&ports);
-		port->origin = node->outputs[n];
-		port->required_rescls = node->outputs[n]->required_rescls;
-		port->gate = node->outputs[n]->gate;
-		if (port->gate && n < nnormal)
+		jive_portinfo port;
+		port.origin = node->outputs[n];
+		port.required_rescls = node->outputs[n]->required_rescls;
+		port.gate = node->outputs[n]->gate;
+		if (port.gate && n < nnormal)
 			nnormal = n;
+		outports.ports.push_back(port);
 	}
-	ports.nnormal = nnormal;
-	jive_serialize_portsinfo(self, &ports, os);
-	jive_portsinfo_fini(&ports);
+	outports.nnormal = nnormal;
+	jive_serialize_portsinfo(self, &outports, os);
 }
 
 bool
@@ -536,14 +533,12 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	}
 	if (!sercls) {
 		self->error(self, "Expected node class identifier");
-		jive_portsinfo_fini(&ports);
 		return false;
 	}
 	jive_token_istream_advance(is);
 	
 	/* parse attributes & instantiate node */
 	if (!jive_deserialize_char_token(self, is, '<')) {
-		jive_portsinfo_fini(&ports);
 		return false;
 	}
 	
@@ -555,7 +550,6 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	if (!sercls->deserialize(sercls, self, region,
 		ports.nnormal, origins, is, node)) {
 		jive_context_free(self->context, origins);
-		jive_portsinfo_fini(&ports);
 		return false;
 	}
 	jive_graph_mark_denormalized(region->graph);
@@ -565,7 +559,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		return false;
 	
 	/* add ports & resource class requirements */
-	for (n = ports.nnormal; n < ports.ntotal; ++n) {
+	for (n = ports.nnormal; n < ports.ports.size(); ++n) {
 		if (ports.ports[n].gate) {
 			jive_node_gate_input(*node, ports.ports[n].gate,
 				ports.ports[n].origin);
@@ -576,11 +570,9 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 			input->required_rescls = rescls;
 		}
 	}
-	for (n = 0; n < ports.ntotal; ++n) {
+	for (n = 0; n < ports.ports.size(); ++n) {
 		(*node)->inputs[n]->required_rescls = ports.ports[n].required_rescls;
 	}
-	
-	jive_portsinfo_fini(&ports);
 	
 	/* outputs */
 	if (!jive_deserialize_char_token(self, is, '('))
