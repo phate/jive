@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -172,83 +172,86 @@ jive_negtestnode_create(
 
 typedef struct test_negotiator_option test_negotiator_option;
 
-struct test_negotiator_option {
-	jive_negotiator_option base;
+class test_negotiator_option final : public jive_negotiator_option {
+public:
+	virtual
+	~test_negotiator_option() noexcept {}
+
+	inline constexpr
+	test_negotiator_option(test_option_t init_mask) noexcept
+		: mask(init_mask)
+	{
+	}
+
+	inline constexpr
+	test_negotiator_option() noexcept : mask(0) {}
+
+	/* test two options for equality */
+	virtual bool
+	operator==(const jive_negotiator_option & generic_other) const noexcept override
+	{
+		const test_negotiator_option & other =
+			static_cast<const test_negotiator_option &>(generic_other);
+		return mask == other.mask;
+	}
+
+	/* specialize option, return true if changed */
+	virtual bool
+	specialize() noexcept override
+	{
+		/* if this is a power of two already, nothing to do */
+		if ( (mask & (mask - 1)) == 0 )
+			return false;
+
+		uint32_t x = 0x80000000;
+		while ( !(x & mask) )
+			x >>= 1;
+		mask = x;
+		return true;
+	}
+
+	virtual bool
+	intersect(const jive_negotiator_option & generic_other) noexcept override
+	{
+		const test_negotiator_option & other =
+			static_cast<const test_negotiator_option &>(generic_other);
+
+		uint32_t tmp = other.mask & mask;
+		if (tmp == 0) {
+			return false;
+		} else {
+			mask = tmp;
+			return true;
+		}
+	}
+
+	virtual bool
+	assign(const jive_negotiator_option & generic_other) noexcept override
+	{
+		const test_negotiator_option & other =
+			static_cast<const test_negotiator_option &>(generic_other);
+		if (mask == other.mask) {
+			return false;
+		} else {
+			mask = other.mask;
+			return true;
+		}
+	}
+
+	virtual test_negotiator_option *
+	copy() const
+	{
+		return new test_negotiator_option(mask);
+	}
+
 	test_option_t mask;
 };
-
-static void
-test_negotiator_option_fini_(const jive_negotiator * self, jive_negotiator_option * option)
-{
-}
 
 static jive_negotiator_option *
 test_negotiator_option_create_(const jive_negotiator * self)
 {
-	test_negotiator_option * option = jive_context_malloc(self->context, sizeof(*option));
-	option->mask = 0;
-	return &option->base;
-}
-
-static bool
-test_negotiator_option_equals_(
-	const jive_negotiator * self,
-	const jive_negotiator_option * o1_,
-	const jive_negotiator_option * o2_)
-{
-	const test_negotiator_option * o1 = (const test_negotiator_option *) o1_;
-	const test_negotiator_option * o2 = (const test_negotiator_option *) o2_;
-	return o1->mask == o2->mask;
-}
-
-static bool
-test_negotiator_option_specialize_(
-	const jive_negotiator * self,
-	jive_negotiator_option * option_)
-{
-	test_negotiator_option * option = (test_negotiator_option *) option_;
-	
-	JIVE_DEBUG_ASSERT(option->mask < 65535);
-	/* if this is a power of two already, nothing to do */
-	if ( (option->mask & (option->mask -1)) == 0 )
-		return false;
-	
-	uint32_t x = 0x80000000;
-	while ( !(x & option->mask) )
-		x >>= 1;
-	option->mask = x;
-	return true;
-}
-
-static bool
-test_negotiator_option_intersect_(
-	const jive_negotiator * self,
-	jive_negotiator_option * dst_,
-	const jive_negotiator_option * src_)
-{
-	test_negotiator_option * dst = (test_negotiator_option *) dst_;
-	const test_negotiator_option * src = (const test_negotiator_option *) src_;
-	
-	uint32_t tmp = dst->mask & src->mask;
-	if (tmp == 0)
-		return false;
-	dst->mask = tmp;
-	return true;
-}
-
-static bool
-test_negotiator_option_assign_(
-	const jive_negotiator * self,
-	jive_negotiator_option * dst_,
-	const jive_negotiator_option * src_)
-{
-	test_negotiator_option * dst = (test_negotiator_option *) dst_;
-	const test_negotiator_option * src = (const test_negotiator_option *) src_;
-	
-	if (src->mask == dst->mask)
-		return false;
-	dst->mask = src->mask;
-	return true;
+	test_negotiator_option * option = new test_negotiator_option(0);
+	return option;
 }
 
 static void
@@ -260,15 +263,13 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 		size_t n;
 		for (n = 0; n < node_->ninputs; n++) {
 			jive::input * input = node_->inputs[n];
-			test_negotiator_option option;
-			option.mask = node->operation().input_options()[n];
-			jive_negotiator_annotate_simple_input(self, input, &option.base);
+			test_negotiator_option option(node->operation().input_options()[n]);
+			jive_negotiator_annotate_simple_input(self, input, &option);
 		}
 		for (n = 0; n < node_->noutputs; n++) {
 			jive::output * output = node_->outputs[n];
-			test_negotiator_option option;
-			option.mask = node->operation().output_options()[n];
-			jive_negotiator_annotate_simple_output(self, output, &option.base);
+			test_negotiator_option option(node->operation().output_options()[n]);
+			jive_negotiator_annotate_simple_output(self, output, &option);
 		}
 	}
 }
@@ -285,12 +286,7 @@ test_negotiator_option_gate_default_(
 }
 
 static const jive_negotiator_class TEST_NEGOTIATOR_CLASS = {
-	option_fini : test_negotiator_option_fini_,
 	option_create : test_negotiator_option_create_,
-	option_equals : test_negotiator_option_equals_,
-	option_specialize : test_negotiator_option_specialize_,
-	option_intersect : test_negotiator_option_intersect_,
-	option_assign : test_negotiator_option_assign_,
 	option_gate_default : test_negotiator_option_gate_default_,
 	annotate_node_proper : test_negotiator_annotate_node_proper_,
 	annotate_node : jive_negotiator_annotate_node_,
