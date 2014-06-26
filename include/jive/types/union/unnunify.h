@@ -20,7 +20,7 @@ namespace unn {
 
 struct declaration;
 
-class unify_operation final : public jive::unary_operation {
+class unify_operation final : public base::unary_op {
 public:
 	inline
 	unify_operation(

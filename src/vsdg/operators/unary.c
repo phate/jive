@@ -11,18 +11,19 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
+namespace base {
 
-unary_operation::~unary_operation() noexcept {}
+unary_op::~unary_op() noexcept {}
 
 jive_unop_reduction_path_t
-unary_operation::can_reduce_operand(
+unary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
 jive::output *
-unary_operation::reduce_operand(
+unary_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -30,17 +31,18 @@ unary_operation::reduce_operand(
 }
 
 size_t
-unary_operation::narguments() const noexcept
+unary_op::narguments() const noexcept
 {
 	return 1;
 }
 
 size_t
-unary_operation::nresults() const noexcept
+unary_op::nresults() const noexcept
 {
 	return 1;
 }
 
+}
 }
 
 /* node class */
@@ -97,8 +99,8 @@ jive_unary_operation_normalized_create_new_(
 
 	const jive_unary_operation_normal_form * self = (const jive_unary_operation_normal_form *) self_;
 
-	const jive::unary_operation & op =
-		static_cast<const jive::unary_operation &>(*gen_op);
+	const jive::base::unary_op & op =
+		static_cast<const jive::base::unary_op &>(*gen_op);
 
 	if (self->base.enable_mutable && self->enable_reducible) {
 		jive_unop_reduction_path_t reduction;
@@ -138,8 +140,8 @@ jive_unary_operation_normalize_node_(const jive_node_normal_form * self_, jive_n
 	if (!self->base.enable_mutable)
 		return true;
 	
-	const jive::unary_operation & op =
-		static_cast<const jive::unary_operation &>(node->operation());
+	const jive::base::unary_op & op =
+		static_cast<const jive::base::unary_op &>(node->operation());
 	
 	jive::output * output = node->outputs[0];
 	
@@ -181,8 +183,8 @@ jive_unary_operation_operands_are_normalized_(
 	if (!self->base.enable_mutable)
 		return true;
 	
-	const jive::unary_operation & op =
-		static_cast<const jive::unary_operation &>(*gen_op);
+	const jive::base::unary_op & op =
+		static_cast<const jive::base::unary_op &>(*gen_op);
 	
 	JIVE_DEBUG_ASSERT(narguments == 1);
 	

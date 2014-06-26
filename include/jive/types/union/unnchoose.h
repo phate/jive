@@ -15,7 +15,7 @@ extern const jive_node_class JIVE_CHOOSE_NODE;
 namespace jive {
 namespace unn {
 
-class choose_operation final : public jive::unary_operation {
+class choose_operation final : public base::unary_op {
 public:
 	inline
 	choose_operation(

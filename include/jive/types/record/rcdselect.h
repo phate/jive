@@ -12,7 +12,7 @@
 namespace jive {
 namespace rcd {
 
-class select_operation final : public jive::unary_operation {
+class select_operation final : public base::unary_op {
 public:
 	inline
 	select_operation(

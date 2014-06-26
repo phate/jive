@@ -17,7 +17,7 @@ struct jive_resource_class;
 
 namespace jive {
 
-class split_operation final : public unary_operation {
+class split_operation final : public base::unary_op {
 public:
 	constexpr split_operation(
 		const jive_resource_class * in_class,

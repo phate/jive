@@ -26,7 +26,7 @@ extern const jive_node_class JIVE_MEMBEROF_NODE;
 namespace jive {
 namespace address {
 
-class memberof_operation : public unary_operation {
+class memberof_operation : public base::unary_op {
 public:
 	virtual ~memberof_operation() noexcept;
 
@@ -79,7 +79,7 @@ private:
 	size_t index_;
 };
 
-class containerof_operation : public unary_operation {
+class containerof_operation : public base::unary_op {
 public:
 	virtual ~containerof_operation() noexcept;
 

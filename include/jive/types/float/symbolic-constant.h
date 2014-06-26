@@ -15,7 +15,7 @@
 namespace jive {
 namespace flt {
 
-struct symbolicconstant_operation : public unary_operation {
+struct symbolicconstant_operation : public base::unary_op {
 	std::string name;
 };
 

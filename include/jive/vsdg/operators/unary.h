@@ -14,15 +14,16 @@
 typedef size_t jive_unop_reduction_path_t;
 
 namespace jive {
+namespace base {
 
 /**
 	\brief Unary operator
 	
 	Operator taking a single argument.
 */
-class unary_operation : public operation {
+class unary_op : public operation {
 public:
-	virtual ~unary_operation() noexcept;
+	virtual ~unary_op() noexcept;
 
 	virtual size_t
 	narguments() const noexcept override;
@@ -41,7 +42,8 @@ public:
 };
 
 }
-
+}
+// 
 typedef struct jive_unary_operation_normal_form jive_unary_operation_normal_form;
 typedef struct jive_unary_operation_normal_form_class jive_unary_operation_normal_form_class;
 

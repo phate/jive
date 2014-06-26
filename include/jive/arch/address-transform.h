@@ -19,7 +19,7 @@
 
 namespace jive {
 
-class address_to_bitstring_operation final : public unary_operation {
+class address_to_bitstring_operation final : public base::unary_op {
 public:
 	virtual ~address_to_bitstring_operation() noexcept;
 
@@ -81,7 +81,7 @@ private:
 	std::unique_ptr<jive::base::type> original_type_;
 };
 
-class bitstring_to_address_operation final : public unary_operation {
+class bitstring_to_address_operation final : public base::unary_op {
 public:
 	virtual ~bitstring_to_address_operation() noexcept;
 

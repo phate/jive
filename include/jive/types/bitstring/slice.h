@@ -16,7 +16,7 @@ extern const jive_node_class JIVE_BITSLICE_NODE;
 namespace jive {
 namespace bitstring {
 
-class slice_operation : public jive::unary_operation {
+class slice_operation : public base::unary_op {
 public:
 	inline constexpr
 	slice_operation(

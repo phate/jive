@@ -20,7 +20,7 @@ extern const jive_node_class JIVE_FLTCOMPARISON_NODE;
 namespace jive {
 
 /* Represents a unary operation on a float. */
-class flt_unary_operation : public unary_operation {
+class flt_unary_operation : public base::unary_op {
 public:
 	virtual ~flt_unary_operation() noexcept;
 
