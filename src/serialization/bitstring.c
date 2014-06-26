@@ -18,8 +18,8 @@ jive_bitconstant_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive::bitstring::constant_operation * attrs =
-		(const jive::bitstring::constant_operation *) attrs_;
+	const jive::bits::constant_operation * attrs =
+		(const jive::bits::constant_operation *) attrs_;
 	jive_token_ostream_string(os, &attrs->bits[0], attrs->bits.size());
 }
 
@@ -36,7 +36,7 @@ jive_bitconstant_deserialize(
 		driver->error(driver, "Expected string");
 		return false;
 	}
-	jive::bitstring::constant_operation attrs;
+	jive::bits::constant_operation attrs;
 	
 	char * bits = token->v.string.str;
 	size_t nbits = token->v.string.len;
@@ -61,7 +61,7 @@ jive_bitslice_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive::bitstring::slice_operation * attrs = (const jive::bitstring::slice_operation *) attrs_;
+	const jive::bits::slice_operation * attrs = (const jive::bits::slice_operation *) attrs_;
 	jive_token_ostream_integral(os, attrs->low());
 	jive_token_ostream_char(os, ',');
 	jive_token_ostream_integral(os, attrs->high());
@@ -88,7 +88,7 @@ jive_bitslice_deserialize(
 
 	const jive::bits::type & argument_type =
 		dynamic_cast<const jive::bits::type &>(arguments[0]->type());
-	jive::bitstring::slice_operation op(argument_type, low, high);
+	jive::bits::slice_operation op(argument_type, low, high);
 
 	*node = op.create_node(region, narguments, arguments);
 	
@@ -168,43 +168,43 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 
 JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
 	JIVE_BITCONCAT_NODE,
-	jive::bitstring::concat_operation,
+	jive::bits::concat_operation,
 	"bitconcat");
 
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITAND_NODE, jive::bitstring::and_operation, "bitand");
+	JIVE_BITAND_NODE, jive::bits::and_operation, "bitand");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITOR_NODE, jive::bitstring::or_operation, "bitor");
+	JIVE_BITOR_NODE, jive::bits::or_operation, "bitor");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITXOR_NODE, jive::bitstring::xor_operation, "bitxor");
+	JIVE_BITXOR_NODE, jive::bits::xor_operation, "bitxor");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(
-	JIVE_BITNOT_NODE, jive::bitstring::not_operation, "bitnot");
+	JIVE_BITNOT_NODE, jive::bits::not_operation, "bitnot");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(
-	JIVE_BITNEGATE_NODE, jive::bitstring::negate_operation, "bitnegate");
+	JIVE_BITNEGATE_NODE, jive::bits::negate_operation, "bitnegate");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSHL_NODE, jive::bitstring::shl_operation, "bitshl");
+	JIVE_BITSHL_NODE, jive::bits::shl_operation, "bitshl");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSHR_NODE, jive::bitstring::shr_operation, "bitshr");
+	JIVE_BITSHR_NODE, jive::bits::shr_operation, "bitshr");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITASHR_NODE, jive::bitstring::ashr_operation, "bitashr");
+	JIVE_BITASHR_NODE, jive::bits::ashr_operation, "bitashr");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITSUM_NODE, jive::bitstring::sum_operation, "bitsum");
+	JIVE_BITSUM_NODE, jive::bits::sum_operation, "bitsum");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITDIFFERENCE_NODE, jive::bitstring::difference_operation, "bitdifference");
+	JIVE_BITDIFFERENCE_NODE, jive::bits::difference_operation, "bitdifference");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITPRODUCT_NODE, jive::bitstring::product_operation, "bitproduct");
+	JIVE_BITPRODUCT_NODE, jive::bits::product_operation, "bitproduct");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSHIPRODUCT_NODE, jive::bitstring::shiproduct_operation, "bitshiproduct");
+	JIVE_BITSHIPRODUCT_NODE, jive::bits::shiproduct_operation, "bitshiproduct");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITUHIPRODUCT_NODE, jive::bitstring::uhiproduct_operation, "bituhiproduct");
+	JIVE_BITUHIPRODUCT_NODE, jive::bits::uhiproduct_operation, "bituhiproduct");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSQUOTIENT_NODE, jive::bitstring::squotient_operation, "bitsquotient");
+	JIVE_BITSQUOTIENT_NODE, jive::bits::squotient_operation, "bitsquotient");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITUQUOTIENT_NODE, jive::bitstring::uquotient_operation, "bituquotient");
+	JIVE_BITUQUOTIENT_NODE, jive::bits::uquotient_operation, "bituquotient");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSMOD_NODE, jive::bitstring::smod_operation, "bitsmod");
+	JIVE_BITSMOD_NODE, jive::bits::smod_operation, "bitsmod");
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITUMOD_NODE, jive::bitstring::umod_operation, "bitumod");
+	JIVE_BITUMOD_NODE, jive::bits::umod_operation, "bitumod");
 
 JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITEQUAL_NODE, "bitequal");
 JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITNOTEQUAL_NODE, "bitnotequal");

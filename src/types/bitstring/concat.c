@@ -82,13 +82,13 @@ jive_bitconcat(size_t noperands, struct jive::output * const * operands)
 	JIVE_DEBUG_ASSERT(noperands != 0);
 
 	jive_graph * graph = operands[0]->node()->graph;
-	jive::bitstring::concat_operation op;
+	jive::bits::concat_operation op;
 	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE, graph,
 		&op, noperands, operands);
 }
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 concat_operation::~concat_operation() noexcept
 {
@@ -109,7 +109,7 @@ concat_operation::create_node(
 {
 	JIVE_DEBUG_ASSERT(narguments >= 2);
 
-	jive_node * node = jive::create_operation_node(jive::bitstring::concat_operation());
+	jive_node * node = jive::create_operation_node(jive::bits::concat_operation());
 	node->class_ = &JIVE_BITCONCAT_NODE;
 	jive_bitconcat_node_init_(node, region, narguments, arguments);
 	return node;

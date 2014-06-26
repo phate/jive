@@ -12,7 +12,7 @@
 extern const jive_node_class JIVE_BITSGREATEREQ_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class sgreatereq_operation final : public jive::bits_compare_operation {
 public:
@@ -38,8 +38,8 @@ public:
 
 	virtual compare_result
 	reduce_constants(
-		const bitstring::value_repr & arg1,
-		const bitstring::value_repr & arg2) const override;
+		const bits::value_repr & arg1,
+		const bits::value_repr & arg2) const override;
 
 	virtual std::string
 	debug_string() const override;

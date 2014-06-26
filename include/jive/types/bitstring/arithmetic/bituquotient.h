@@ -12,7 +12,7 @@
 extern const jive_node_class JIVE_BITUQUOTIENT_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class uquotient_operation final : public bits_binary_operation {
 public:

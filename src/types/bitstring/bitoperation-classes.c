@@ -47,7 +47,7 @@ bits_unary_operation::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
 	bool arg_is_constant =
-		dynamic_cast<const bitstring::constant_operation *>(&arg->node()->operation());
+		dynamic_cast<const bits::constant_operation *>(&arg->node()->operation());
 	
 	if (arg_is_constant) {
 		return jive_unop_reduction_constant;
@@ -63,9 +63,9 @@ bits_unary_operation::reduce_operand(
 {
 	if (path == jive_unop_reduction_constant) {
 		jive_graph * graph = arg->node()->graph;
-		const bitstring::constant_operation & c =
-			static_cast<const bitstring::constant_operation&>(arg->node()->operation());
-		bitstring::value_repr result = reduce_constant(c.bits);
+		const bits::constant_operation & c =
+			static_cast<const bits::constant_operation&>(arg->node()->operation());
+		bits::value_repr result = reduce_constant(c.bits);
 		return jive_bitconstant(graph, result.size(), &result[0]);
 	}
 
@@ -105,9 +105,9 @@ bits_binary_operation::can_reduce_operand_pair(
 	const jive::output * arg2) const noexcept
 {
 	bool arg1_is_constant =
-		dynamic_cast<const bitstring::constant_operation *>(&arg1->node()->operation());
+		dynamic_cast<const bits::constant_operation *>(&arg1->node()->operation());
 	bool arg2_is_constant =
-		dynamic_cast<const bitstring::constant_operation *>(&arg2->node()->operation());
+		dynamic_cast<const bits::constant_operation *>(&arg2->node()->operation());
 	
 	if (arg1_is_constant && arg2_is_constant) {
 		return jive_binop_reduction_constants;
@@ -125,11 +125,11 @@ bits_binary_operation::reduce_operand_pair(
 	jive_graph * graph = arg1->node()->graph;
 
 	if (path == jive_binop_reduction_constants) {
-		const bitstring::constant_operation & c1 =
-			static_cast<const bitstring::constant_operation&>(arg1->node()->operation());
-		const bitstring::constant_operation & c2 =
-			static_cast<const bitstring::constant_operation&>(arg2->node()->operation());
-		bitstring::value_repr result = reduce_constants(c1.bits, c2.bits);
+		const bits::constant_operation & c1 =
+			static_cast<const bits::constant_operation&>(arg1->node()->operation());
+		const bits::constant_operation & c2 =
+			static_cast<const bits::constant_operation&>(arg2->node()->operation());
+		bits::value_repr result = reduce_constants(c1.bits, c2.bits);
 		return jive_bitconstant(graph, result.size(), &result[0]);
 	}
 
@@ -168,23 +168,23 @@ bits_compare_operation::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
-	const bitstring::constant_operation * c1_op =
-		dynamic_cast<const bitstring::constant_operation *>(&arg1->node()->operation());
-	const bitstring::constant_operation * c2_op =
-		dynamic_cast<const bitstring::constant_operation *>(&arg2->node()->operation());
+	const bits::constant_operation * c1_op =
+		dynamic_cast<const bits::constant_operation *>(&arg1->node()->operation());
+	const bits::constant_operation * c2_op =
+		dynamic_cast<const bits::constant_operation *>(&arg2->node()->operation());
 
-	bitstring::value_repr arg1_repr;
+	bits::value_repr arg1_repr;
 	if (c1_op) {
 		arg1_repr = c1_op->bits;
 	} else {
-		arg1_repr = bitstring::value_repr(type_.nbits(), 'D');
+		arg1_repr = bits::value_repr(type_.nbits(), 'D');
 	}
 
-	bitstring::value_repr arg2_repr;
+	bits::value_repr arg2_repr;
 	if (c2_op) {
 		arg2_repr = c2_op->bits;
 	} else {
-		arg2_repr = bitstring::value_repr(type_.nbits(), 'D');
+		arg2_repr = bits::value_repr(type_.nbits(), 'D');
 	}
 
 	switch (reduce_constants(arg1_repr, arg2_repr)) {

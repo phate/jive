@@ -66,10 +66,10 @@ jive_bitsymbolicconstant_node_get_attrs_(const jive_node * self_)
 static bool
 jive_bitsymbolicconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
 {
-	const jive::bitstring::symbolicconstant_operation * first =
+	const jive::bits::symbolicconstant_operation * first =
 		&((const jive_bitsymbolicconstant_node *)self)->operation();
-	const jive::bitstring::symbolicconstant_operation * second =
-		(const jive::bitstring::symbolicconstant_operation *) attrs;
+	const jive::bits::symbolicconstant_operation * second =
+		(const jive::bits::symbolicconstant_operation *) attrs;
 	if (first->nbits != second->nbits) return false;
 	return first->name == second->name;
 }
@@ -78,8 +78,8 @@ static jive_node *
 jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
 	size_t noperands, struct jive::output * const operands[])
 {
-	const jive::bitstring::symbolicconstant_operation * attrs =
-		(const jive::bitstring::symbolicconstant_operation *) attrs_;
+	const jive::bits::symbolicconstant_operation * attrs =
+		(const jive::bits::symbolicconstant_operation *) attrs_;
 	jive_bitsymbolicconstant_node * node = new jive_bitsymbolicconstant_node(*attrs);
 	node->class_ = &JIVE_BITSYMBOLICCONSTANT_NODE;
 	jive::bits::type type(attrs->nbits);
@@ -93,7 +93,7 @@ jive_bitsymbolicconstant_node_create_(struct jive_region * region, const jive_no
 jive_node *
 jive_bitsymbolicconstant_create(jive_graph * graph, size_t nbits, const char * name)
 {
-	jive::bitstring::symbolicconstant_operation attrs;
+	jive::bits::symbolicconstant_operation attrs;
 	attrs.nbits = nbits;
 	attrs.name = name;
 
@@ -104,7 +104,7 @@ jive_bitsymbolicconstant_create(jive_graph * graph, size_t nbits, const char * n
 jive::output *
 jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
 {
-	jive::bitstring::symbolicconstant_operation attrs;
+	jive::bits::symbolicconstant_operation attrs;
 	attrs.nbits = nbits;
 	attrs.name = name;
 

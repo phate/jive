@@ -12,7 +12,7 @@
 extern const jive_node_class JIVE_BITNOT_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class not_operation final : public jive::bits_unary_operation {
 public:

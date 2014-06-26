@@ -155,112 +155,112 @@ static const jive::detail::typeinfo_map<
 	std::function<void(jive_node*)>
 > bitbinary_map = {
 	{
-		&typeid(jive::bitstring::and_operation),
+		&typeid(jive::bits::and_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_and,
 			&jive_i386_instr_int_and_immediate)
 	},
 	{
-		&typeid(jive::bitstring::or_operation),
+		&typeid(jive::bits::or_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_or,
 			&jive_i386_instr_int_or_immediate)
 	},
 	{
-		&typeid(jive::bitstring::xor_operation),
+		&typeid(jive::bits::xor_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_xor,
 			&jive_i386_instr_int_xor_immediate)
 	},
 	{
-		&typeid(jive::bitstring::sum_operation),
+		&typeid(jive::bits::sum_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_add,
 			&jive_i386_instr_int_add_immediate)
 	},
 	{
-		&typeid(jive::bitstring::difference_operation),
+		&typeid(jive::bits::difference_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_sub,
 			&jive_i386_instr_int_sub_immediate)
 	},
 	{
-		&typeid(jive::bitstring::product_operation),
+		&typeid(jive::bits::product_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_mul,
 			&jive_i386_instr_int_mul_immediate)
 	},
 	{
-		&typeid(jive::bitstring::xor_operation),
+		&typeid(jive::bits::xor_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_xor,
 			&jive_i386_instr_int_xor_immediate)
 	},
 	{
-		&typeid(jive::bitstring::shr_operation),
+		&typeid(jive::bits::shr_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_shr,
 			&jive_i386_instr_int_shr_immediate)
 	},
 	{
-		&typeid(jive::bitstring::ashr_operation),
+		&typeid(jive::bits::ashr_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_ashr,
 			&jive_i386_instr_int_ashr_immediate)
 	},
 	{
-		&typeid(jive::bitstring::shl_operation),
+		&typeid(jive::bits::shl_operation),
 		std::bind(convert_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_shl,
 			&jive_i386_instr_int_shl_immediate)
 	},
 	{
-		&typeid(jive::bitstring::uhiproduct_operation),
+		&typeid(jive::bits::uhiproduct_operation),
 		std::bind(convert_complex_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_mul_expand_unsigned,
 			0)
 	},
 	{
-		&typeid(jive::bitstring::shiproduct_operation),
+		&typeid(jive::bits::shiproduct_operation),
 		std::bind(convert_complex_bitbinary,
 			std::placeholders::_1,
 			&jive_i386_instr_int_mul_expand_signed,
 			0)
 	},
 	{
-		&typeid(jive::bitstring::uquotient_operation),
+		&typeid(jive::bits::uquotient_operation),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			false,
 			1)
 	},
 	{
-		&typeid(jive::bitstring::squotient_operation),
+		&typeid(jive::bits::squotient_operation),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			true,
 			1)
 	},
 	{
-		&typeid(jive::bitstring::umod_operation),
+		&typeid(jive::bits::umod_operation),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			false,
 			0)
 	},
 	{
-		&typeid(jive::bitstring::smod_operation),
+		&typeid(jive::bits::smod_operation),
 		std::bind(convert_divmod,
 			std::placeholders::_1,
 			true,
@@ -333,70 +333,70 @@ static const jive::detail::typeinfo_map<
 	>
 > bitcompare_map = {
 	{
-		&typeid(jive::bitstring::equal_operation),
+		&typeid(jive::bits::equal_operation),
 		{
 			&jive_i386_instr_int_jump_equal,
 			&jive_i386_instr_int_jump_equal
 		}
 	},
 	{
-		&typeid(jive::bitstring::notequal_operation),
+		&typeid(jive::bits::notequal_operation),
 		{
 			&jive_i386_instr_int_jump_notequal,
 			&jive_i386_instr_int_jump_notequal
 		}
 	},
 	{
-		&typeid(jive::bitstring::sless_operation),
+		&typeid(jive::bits::sless_operation),
 		{
 			&jive_i386_instr_int_jump_sless,
 			&jive_i386_instr_int_jump_sgreater
 		}
 	},
 	{
-		&typeid(jive::bitstring::slesseq_operation),
+		&typeid(jive::bits::slesseq_operation),
 		{
 			&jive_i386_instr_int_jump_slesseq,
 			&jive_i386_instr_int_jump_sgreatereq
 		}
 	},
 	{
-		&typeid(jive::bitstring::sgreater_operation),
+		&typeid(jive::bits::sgreater_operation),
 		{
 			&jive_i386_instr_int_jump_sgreater,
 			&jive_i386_instr_int_jump_sless
 		}
 	},
 	{
-		&typeid(jive::bitstring::sgreatereq_operation),
+		&typeid(jive::bits::sgreatereq_operation),
 		{
 			&jive_i386_instr_int_jump_sgreatereq,
 			&jive_i386_instr_int_jump_slesseq
 		}
 	},
 	{
-		&typeid(jive::bitstring::uless_operation),
+		&typeid(jive::bits::uless_operation),
 		{
 			&jive_i386_instr_int_jump_uless,
 			&jive_i386_instr_int_jump_ugreater
 		}
 	},
 	{
-		&typeid(jive::bitstring::ulesseq_operation),
+		&typeid(jive::bits::ulesseq_operation),
 		{
 			&jive_i386_instr_int_jump_ulesseq,
 			&jive_i386_instr_int_jump_ugreatereq
 		}
 	},
 	{
-		&typeid(jive::bitstring::ugreater_operation),
+		&typeid(jive::bits::ugreater_operation),
 		{
 			&jive_i386_instr_int_jump_ugreater,
 			&jive_i386_instr_int_jump_uless
 		}
 	},
 	{
-		&typeid(jive::bitstring::ugreatereq_operation),
+		&typeid(jive::bits::ugreatereq_operation),
 		{
 			&jive_i386_instr_int_jump_ugreatereq,
 			&jive_i386_instr_int_jump_ulesseq
@@ -419,11 +419,11 @@ static const jive::detail::typeinfo_map<
 	const jive_instruction_class *
 > bitunary_map = {
 	{
-		&typeid(jive::bitstring::negate_operation),
+		&typeid(jive::bits::negate_operation),
 		&jive_i386_instr_int_neg
 	},
 	{
-		&typeid(jive::bitstring::not_operation),
+		&typeid(jive::bits::not_operation),
 		&jive_i386_instr_int_not
 	}
 };

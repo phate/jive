@@ -12,7 +12,7 @@
 extern const jive_node_class JIVE_BITSUM_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class sum_operation final : public bits_binary_operation {
 public:

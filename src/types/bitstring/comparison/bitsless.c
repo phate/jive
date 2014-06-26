@@ -14,7 +14,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 sless_operation::~sless_operation() noexcept {}
 
@@ -85,7 +85,7 @@ jive::output *
 jive_bitsless(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::sless_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::sless_operation>(
 			&JIVE_BITSLESS_NODE, operand1, operand2);
 }

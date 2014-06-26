@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 not_operation::~not_operation() noexcept {}
 
@@ -68,7 +68,7 @@ const jive_node_class JIVE_BITNOT_NODE = {
 jive::output *
 jive_bitnot(jive::output * arg)
 {
-	return jive::bitstring::detail::unop_normalized_create<
-		jive::bitstring::not_operation>(
+	return jive::bits::detail::unop_normalized_create<
+		jive::bits::not_operation>(
 			&JIVE_BITNOT_NODE, arg);
 }

@@ -39,7 +39,7 @@ const jive_node_class JIVE_BITSLICE_NODE = {
 };
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 slice_operation::~slice_operation() noexcept
 {
@@ -169,7 +169,7 @@ jive_bitslice(jive::output * argument, size_t low, size_t high)
 {
 	const jive::bits::type & type =
 		dynamic_cast<const jive::bits::type &>(argument->type());
-	jive::bitstring::slice_operation op(type, low, high);
+	jive::bits::slice_operation op(type, low, high);
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE, argument->node()->graph,
 		&op, argument);

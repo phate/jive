@@ -12,7 +12,7 @@
 extern const jive_node_class JIVE_BITUMOD_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class umod_operation final : public bits_binary_operation {
 public:

@@ -13,7 +13,7 @@
 extern const jive_node_class JIVE_BITAND_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class and_operation final : public bits_binary_operation {
 public:

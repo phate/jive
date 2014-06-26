@@ -14,7 +14,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 sgreater_operation::~sgreater_operation() noexcept {}
 
@@ -85,7 +85,7 @@ jive::output *
 jive_bitsgreater(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::sgreater_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::sgreater_operation>(
 			&JIVE_BITSGREATER_NODE, operand1, operand2);
 }

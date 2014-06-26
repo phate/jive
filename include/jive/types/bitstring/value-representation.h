@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 // Value representation used for compile-time evaluation of bitstring
 // expressions.

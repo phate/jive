@@ -62,10 +62,10 @@ static int test_main(void)
 		assert(node->producer(0)->class_ == &JIVE_BITSLICE_NODE);
 		assert(node->producer(1)->class_ == &JIVE_BITSLICE_NODE);
 		
-		const jive::bitstring::slice_operation * attrs;
-		attrs = (const jive::bitstring::slice_operation *) jive_node_get_attrs(node->producer(0));
+		const jive::bits::slice_operation * attrs;
+		attrs = (const jive::bits::slice_operation *) jive_node_get_attrs(node->producer(0));
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
-		attrs = (const jive::bitstring::slice_operation *) jive_node_get_attrs(node->producer(1));
+		attrs = (const jive::bits::slice_operation *) jive_node_get_attrs(node->producer(1));
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
 		assert(node->producer(0)->inputs[0]->origin() == x);

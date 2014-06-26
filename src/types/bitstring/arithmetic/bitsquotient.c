@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 squotient_operation::~squotient_operation() noexcept {}
 
@@ -81,7 +81,7 @@ jive::output *
 jive_bitsquotient(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::squotient_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::squotient_operation>(
 			&JIVE_BITSQUOTIENT_NODE, dividend, divisor);
 }

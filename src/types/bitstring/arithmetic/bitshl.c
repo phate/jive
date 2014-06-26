@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 shl_operation::~shl_operation() noexcept {}
 
@@ -80,7 +80,7 @@ jive::output *
 jive_bitshl(jive::output * operand, jive::output * shift)
 {
 	jive_graph * graph = operand->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::shl_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::shl_operation>(
 			&JIVE_BITSHL_NODE, operand, shift);
 }

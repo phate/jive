@@ -14,7 +14,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 ulesseq_operation::~ulesseq_operation() noexcept {}
 
@@ -85,7 +85,7 @@ jive::output *
 jive_bitulesseq(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::ulesseq_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::ulesseq_operation>(
 			&JIVE_BITULESSEQ_NODE, operand1, operand2);
 }

@@ -14,7 +14,7 @@
 extern const jive_node_class JIVE_BITSLICE_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 class slice_operation : public base::unary_op {
 public:
@@ -75,7 +75,7 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::bitstring::slice_operation> jive_bitslice_node;
+typedef jive::operation_node<jive::bits::slice_operation> jive_bitslice_node;
 
 /**
 	\brief Create bitslice

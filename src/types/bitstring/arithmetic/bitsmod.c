@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 smod_operation::~smod_operation() noexcept {}
 
@@ -81,7 +81,7 @@ jive::output *
 jive_bitsmod(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::smod_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::smod_operation>(
 			&JIVE_BITSMOD_NODE, dividend, divisor);
 }

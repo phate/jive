@@ -10,7 +10,7 @@
 #include <jive/vsdg/node-private.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 namespace detail {
 
 template<typename Op, typename Cls>

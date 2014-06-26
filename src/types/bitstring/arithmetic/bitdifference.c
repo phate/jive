@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 difference_operation::~difference_operation() noexcept {}
 
@@ -78,7 +78,7 @@ jive::output *
 jive_bitdifference(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::difference_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::difference_operation>(
 			&JIVE_BITDIFFERENCE_NODE, dividend, divisor);
 }

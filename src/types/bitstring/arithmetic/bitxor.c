@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 xor_operation::~xor_operation() noexcept {}
 
@@ -77,7 +77,7 @@ const jive_node_class JIVE_BITXOR_NODE = {
 jive::output *
 jive_bitxor(size_t noperands, jive::output * const * operands)
 {
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::xor_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::xor_operation>(
 			&JIVE_BITXOR_NODE, noperands, operands);
 }

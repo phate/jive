@@ -46,9 +46,9 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	virtual bitstring::value_repr
+	virtual bits::value_repr
 	reduce_constant(
-		const bitstring::value_repr & arg) const = 0;
+		const bits::value_repr & arg) const = 0;
 
 private:
 	jive::bits::type type_;
@@ -91,10 +91,10 @@ public:
 		jive::output * arg1,
 		jive::output * arg2) const override;
 
-	virtual bitstring::value_repr
+	virtual bits::value_repr
 	reduce_constants(
-		const bitstring::value_repr & arg1,
-		const bitstring::value_repr & arg2) const = 0;
+		const bits::value_repr & arg1,
+		const bits::value_repr & arg2) const = 0;
 
 
 	inline const jive::bits::type & type() const noexcept { return type_; }
@@ -151,8 +151,8 @@ public:
 
 	virtual compare_result
 	reduce_constants(
-		const bitstring::value_repr & arg1,
-		const bitstring::value_repr & arg2) const = 0;
+		const bits::value_repr & arg1,
+		const bits::value_repr & arg2) const = 0;
 
 	inline const jive::bits::type &
 	type() const noexcept { return type_; }

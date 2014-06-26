@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 sum_operation::~sum_operation() noexcept {}
 
@@ -77,7 +77,7 @@ const jive_node_class JIVE_BITSUM_NODE = {
 jive::output *
 jive_bitsum(size_t noperands, jive::output * const * operands)
 {
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::sum_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::sum_operation>(
 			&JIVE_BITSUM_NODE, noperands, operands);
 }

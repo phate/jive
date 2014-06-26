@@ -16,7 +16,7 @@
 extern const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE;
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 struct symbolicconstant_operation : public base::unary_op {
 	size_t nbits;
@@ -26,7 +26,7 @@ struct symbolicconstant_operation : public base::unary_op {
 }
 }
 
-typedef jive::operation_node<jive::bitstring::symbolicconstant_operation>
+typedef jive::operation_node<jive::bits::symbolicconstant_operation>
 	jive_bitsymbolicconstant_node;
 
 /**

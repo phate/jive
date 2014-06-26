@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 product_operation::~product_operation() noexcept {}
 
@@ -80,7 +80,7 @@ const jive_node_class JIVE_BITPRODUCT_NODE = {
 jive::output *
 jive_bitmultiply(size_t noperands, jive::output * const * operands)
 {
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::product_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::product_operation>(
 			&JIVE_BITPRODUCT_NODE, noperands, operands);
 }

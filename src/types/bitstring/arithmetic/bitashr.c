@@ -12,7 +12,7 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
-namespace bitstring {
+namespace bits {
 
 ashr_operation::~ashr_operation() noexcept {}
 
@@ -80,7 +80,7 @@ jive::output *
 jive_bitashr(jive::output * operand, jive::output * shift)
 {
 	jive_graph * graph = operand->node()->graph;
-	return jive::bitstring::detail::binop_normalized_create<
-		jive::bitstring::ashr_operation>(
+	return jive::bits::detail::binop_normalized_create<
+		jive::bits::ashr_operation>(
 			&JIVE_BITASHR_NODE, operand, shift);
 }
