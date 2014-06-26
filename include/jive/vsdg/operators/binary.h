@@ -34,6 +34,7 @@ operator&(jive_binary_operation_flags a, jive_binary_operation_flags b)
 }
 
 namespace jive {
+namespace base {
 
 /**
 	\brief Binary operator
@@ -41,9 +42,9 @@ namespace jive {
 	Operator taking two arguments (with well-defined reduction for more
 	operands if operator is associative).
 */
-class binary_operation : public operation {
+class binary_op : public operation {
 public:
-	virtual ~binary_operation() noexcept;
+	virtual ~binary_op() noexcept;
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
@@ -72,6 +73,7 @@ public:
 	}
 };
 
+}
 }
 
 struct jive_region;

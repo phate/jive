@@ -11,11 +11,12 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
+namespace base {
 
-binary_operation::~binary_operation() noexcept {}
+binary_op::~binary_op() noexcept {}
 
 jive_binop_reduction_path_t
-binary_operation::can_reduce_operand_pair(
+binary_op::can_reduce_operand_pair(
 	const jive::output * op1,
 	const jive::output * op2) const noexcept
 {
@@ -23,7 +24,7 @@ binary_operation::can_reduce_operand_pair(
 }
 
 jive::output *
-binary_operation::reduce_operand_pair(
+binary_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
 	jive::output * op1,
 	jive::output * op2) const
@@ -32,11 +33,12 @@ binary_operation::reduce_operand_pair(
 }
 
 jive_binary_operation_flags
-binary_operation::flags() const noexcept
+binary_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
+}
 }
 
 static inline size_t
@@ -46,7 +48,7 @@ reduce_operands(
 	size_t noperands,
 	jive::output * operands[])
 {
-	const jive::binary_operation & op = *static_cast<const jive::binary_operation *>(base_op);
+	const jive::base::binary_op & op = *static_cast<const jive::base::binary_op *>(base_op);
 	
 	size_t n = 0;
 	/* pair-wise reduce */
@@ -145,8 +147,8 @@ jive_binary_operation_normalized_create_new_(const jive_node_normal_form * self_
 	jive_graph * graph, const jive::operation * base_op,
 	size_t noperands_, jive::output * const operands_[], jive::output * results[])
 {
-	const jive::binary_operation& op =
-		*static_cast<const jive::binary_operation *>(base_op);
+	const jive::base::binary_op& op =
+		*static_cast<const jive::base::binary_op *>(base_op);
 	const jive_binary_operation_normal_form * self = (const jive_binary_operation_normal_form *)self_;
 
 	jive::output ** operands = NULL;
@@ -225,7 +227,7 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 		return true;
 	
 	const jive::operation & base_op = node->operation();
-	const jive::binary_operation & op = *static_cast<const jive::binary_operation *>(&base_op);
+	const jive::base::binary_op & op = *static_cast<const jive::base::binary_op *>(&base_op);
 	
 	jive::output ** operands = NULL;
 	size_t noperands = 0;
@@ -310,7 +312,7 @@ jive_binary_operation_operands_are_normalized_(
 	jive::output * const operands[],
 	const jive::operation * base_op)
 {
-	const jive::binary_operation& op = *static_cast<const jive::binary_operation*>(base_op);
+	const jive::base::binary_op& op = *static_cast<const jive::base::binary_op*>(base_op);
 	const jive_binary_operation_normal_form * self = (const jive_binary_operation_normal_form *) self_;
 	if (!self->base.enable_mutable)
 		return true;

@@ -57,7 +57,7 @@ private:
 /* Represents a binary operation (possibly normalized n-ary if associative)
  * on a bitstring of a specific width, produces another bitstring of the
  * same width. */
-class bits_binary_operation : public binary_operation {
+class bits_binary_operation : public base::binary_op {
 public:
 	virtual ~bits_binary_operation() noexcept;
 
@@ -113,7 +113,7 @@ enum class compare_result {
 	static_false
 };
 
-class bits_compare_operation : public binary_operation {
+class bits_compare_operation : public base::binary_op {
 public:
 	inline
 	bits_compare_operation(

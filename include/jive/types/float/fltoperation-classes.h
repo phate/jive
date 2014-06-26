@@ -47,7 +47,7 @@ public:
 };
 
 /* Represents a binary operation on a float. */
-class flt_binary_operation : public binary_operation {
+class flt_binary_operation : public base::binary_op {
 public:
 	virtual ~flt_binary_operation() noexcept;
 
@@ -83,7 +83,7 @@ public:
 };
 
 /* Represents a comparison operation on a float. */
-class flt_compare_operation : public binary_operation {
+class flt_compare_operation : public base::binary_op {
 public:
 	virtual ~flt_compare_operation() noexcept;
 
