@@ -15,12 +15,12 @@ extern const jive_node_class JIVE_BITXOR_NODE;
 namespace jive {
 namespace bits {
 
-class xor_operation final : public bits_binary_operation {
+class xor_operation final : public binary_op {
 public:
 	virtual ~xor_operation() noexcept;
 
 	inline xor_operation(const jive::bits::type & type, size_t arity = 2) noexcept
-		: bits_binary_operation(type, arity)
+		: binary_op(type, arity)
 	{}
 
 	virtual bool

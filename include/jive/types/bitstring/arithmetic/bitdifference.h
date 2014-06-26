@@ -14,12 +14,12 @@ extern const jive_node_class JIVE_BITDIFFERENCE_NODE;
 namespace jive {
 namespace bits {
 
-class difference_operation final : public bits_binary_operation {
+class difference_operation final : public binary_op {
 public:
 	virtual ~difference_operation() noexcept;
 
 	inline difference_operation(const jive::bits::type & type) noexcept
-		: bits_binary_operation(type)
+		: binary_op(type)
 	{}
 
 	virtual bool

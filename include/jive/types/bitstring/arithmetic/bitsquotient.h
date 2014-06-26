@@ -14,12 +14,12 @@ extern const jive_node_class JIVE_BITSQUOTIENT_NODE;
 namespace jive {
 namespace bits {
 
-class squotient_operation final : public bits_binary_operation {
+class squotient_operation final : public binary_op {
 public:
 	virtual ~squotient_operation() noexcept;
 
 	inline squotient_operation(const jive::bits::type & type) noexcept
-		: bits_binary_operation(type)
+		: binary_op(type)
 	{}
 
 	virtual bool

@@ -15,35 +15,36 @@
 #include <jive/vsdg/operators.h>
 
 namespace jive {
+namespace bits {
 
-bits_unary_operation::~bits_unary_operation() noexcept {}
+unary_op::~unary_op() noexcept {}
 
 size_t
-bits_unary_operation::narguments() const noexcept
+unary_op::narguments() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-bits_unary_operation::argument_type(size_t index) const noexcept
+unary_op::argument_type(size_t index) const noexcept
 {
 	return type_;
 }
 
 size_t
-bits_unary_operation::nresults() const noexcept
+unary_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-bits_unary_operation::result_type(size_t index) const noexcept
+unary_op::result_type(size_t index) const noexcept
 {
 	return type_;
 }
 
 jive_binop_reduction_path_t
-bits_unary_operation::can_reduce_operand(
+unary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
 	bool arg_is_constant =
@@ -57,7 +58,7 @@ bits_unary_operation::can_reduce_operand(
 }
 
 jive::output *
-bits_unary_operation::reduce_operand(
+unary_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -65,7 +66,7 @@ bits_unary_operation::reduce_operand(
 		jive_graph * graph = arg->node()->graph;
 		const bits::constant_operation & c =
 			static_cast<const bits::constant_operation&>(arg->node()->operation());
-		bits::value_repr result = reduce_constant(c.bits);
+		value_repr result = reduce_constant(c.bits);
 		return jive_bitconstant(graph, result.size(), &result[0]);
 	}
 
@@ -73,34 +74,34 @@ bits_unary_operation::reduce_operand(
 }
 
 
-bits_binary_operation::~bits_binary_operation() noexcept {}
+binary_op::~binary_op() noexcept {}
 
 size_t
-bits_binary_operation::narguments() const noexcept
+binary_op::narguments() const noexcept
 {
 	return arity_;
 }
 
 const jive::base::type &
-bits_binary_operation::argument_type(size_t index) const noexcept
+binary_op::argument_type(size_t index) const noexcept
 {
 	return type_;
 }
 
 size_t
-bits_binary_operation::nresults() const noexcept
+binary_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-bits_binary_operation::result_type(size_t index) const noexcept
+binary_op::result_type(size_t index) const noexcept
 {
 	return type_;
 }
 
 jive_binop_reduction_path_t
-bits_binary_operation::can_reduce_operand_pair(
+binary_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
@@ -117,7 +118,7 @@ bits_binary_operation::can_reduce_operand_pair(
 }
 
 jive::output *
-bits_binary_operation::reduce_operand_pair(
+binary_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
 	jive::output * arg1,
 	jive::output * arg2) const
@@ -129,42 +130,42 @@ bits_binary_operation::reduce_operand_pair(
 			static_cast<const bits::constant_operation&>(arg1->node()->operation());
 		const bits::constant_operation & c2 =
 			static_cast<const bits::constant_operation&>(arg2->node()->operation());
-		bits::value_repr result = reduce_constants(c1.bits, c2.bits);
+		value_repr result = reduce_constants(c1.bits, c2.bits);
 		return jive_bitconstant(graph, result.size(), &result[0]);
 	}
 
 	return nullptr;
 }
 
-bits_compare_operation::~bits_compare_operation() noexcept {}
+compare_op::~compare_op() noexcept {}
 
 size_t
-bits_compare_operation::narguments() const noexcept
+compare_op::narguments() const noexcept
 {
 	return 2;
 }
 
 const jive::base::type &
-bits_compare_operation::argument_type(size_t index) const noexcept
+compare_op::argument_type(size_t index) const noexcept
 {
 	return type_;
 }
 
 size_t
-bits_compare_operation::nresults() const noexcept
+compare_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-bits_compare_operation::result_type(size_t index) const noexcept
+compare_op::result_type(size_t index) const noexcept
 {
 	static const jive::ctl::type ctl;
 	return ctl;
 }
 
 jive_binop_reduction_path_t
-bits_compare_operation::can_reduce_operand_pair(
+compare_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
@@ -173,18 +174,18 @@ bits_compare_operation::can_reduce_operand_pair(
 	const bits::constant_operation * c2_op =
 		dynamic_cast<const bits::constant_operation *>(&arg2->node()->operation());
 
-	bits::value_repr arg1_repr;
+	value_repr arg1_repr;
 	if (c1_op) {
 		arg1_repr = c1_op->bits;
 	} else {
-		arg1_repr = bits::value_repr(type_.nbits(), 'D');
+		arg1_repr = value_repr(type_.nbits(), 'D');
 	}
 
-	bits::value_repr arg2_repr;
+	value_repr arg2_repr;
 	if (c2_op) {
 		arg2_repr = c2_op->bits;
 	} else {
-		arg2_repr = bits::value_repr(type_.nbits(), 'D');
+		arg2_repr = value_repr(type_.nbits(), 'D');
 	}
 
 	switch (reduce_constants(arg1_repr, arg2_repr)) {
@@ -198,7 +199,7 @@ bits_compare_operation::can_reduce_operand_pair(
 }
 
 jive::output *
-bits_compare_operation::reduce_operand_pair(
+compare_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
 	jive::output * arg1,
 	jive::output * arg2) const
@@ -214,6 +215,7 @@ bits_compare_operation::reduce_operand_pair(
 	return nullptr;
 }
 
+}
 }
 
 static void

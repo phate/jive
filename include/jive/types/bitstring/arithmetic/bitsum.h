@@ -14,12 +14,12 @@ extern const jive_node_class JIVE_BITSUM_NODE;
 namespace jive {
 namespace bits {
 
-class sum_operation final : public bits_binary_operation {
+class sum_operation final : public binary_op {
 public:
 	virtual ~sum_operation() noexcept;
 
 	inline sum_operation(const jive::bits::type & type, size_t arity = 2) noexcept
-		: bits_binary_operation(type, arity)
+		: binary_op(type, arity)
 	{}
 
 	virtual bool

@@ -567,21 +567,21 @@ match_gpr_store(jive_node * node)
 static void
 match_single(jive_node * node, const jive_regselector * regselector)
 {
-	if (dynamic_cast<const jive::bits_binary_operation *>(&node->operation())) {
+	if (dynamic_cast<const jive::bits::binary_op *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_bitbinary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::bits_unary_operation *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::bits::unary_op *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_bitunary(node);
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::bits_compare_operation *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::bits::compare_op *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[0]);
 		if (true || (regcls == &jive_i386_regcls_gpr)) {
 			match_gpr_bitcmp(node);

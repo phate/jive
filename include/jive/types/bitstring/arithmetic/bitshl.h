@@ -14,12 +14,12 @@ extern const jive_node_class JIVE_BITSHL_NODE;
 namespace jive {
 namespace bits {
 
-class shl_operation final : public bits_binary_operation {
+class shl_operation final : public binary_op {
 public:
 	virtual ~shl_operation() noexcept;
 
 	inline shl_operation(const jive::bits::type & type) noexcept
-		: bits_binary_operation(type)
+		: binary_op(type)
 	{}
 
 	virtual bool

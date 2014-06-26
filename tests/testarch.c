@@ -453,19 +453,19 @@ jive_testarch_reg_classifier::classify_type(
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_fixed_unary(const jive::bits_unary_operation & op) const
+jive_testarch_reg_classifier::classify_fixed_unary(const jive::bits::unary_op & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_fixed_binary(const jive::bits_binary_operation & op) const
+jive_testarch_reg_classifier::classify_fixed_binary(const jive::bits::binary_op & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_fixed_compare(const jive::bits_compare_operation & op) const
+jive_testarch_reg_classifier::classify_fixed_compare(const jive::bits::compare_op & op) const
 {
 	return (1 << jive_testarch_classify_gpr);
 }

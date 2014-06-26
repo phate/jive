@@ -14,12 +14,12 @@ extern const jive_node_class JIVE_BITOR_NODE;
 namespace jive {
 namespace bits {
 
-class or_operation final : public bits_binary_operation {
+class or_operation final : public binary_op {
 public:
 	virtual ~or_operation() noexcept;
 
 	inline or_operation(const jive::bits::type & type, size_t arity = 2) noexcept
-		: bits_binary_operation(type, arity)
+		: binary_op(type, arity)
 	{}
 
 	virtual bool

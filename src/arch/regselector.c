@@ -139,13 +139,13 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 	} else if (auto op = dynamic_cast<const jive::flt_compare_operation *>(gen_op)) {
 		option.mask = self->classifier->classify_float_compare(*op);
 		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option);
-	} else if (auto op = dynamic_cast<const jive::bits_unary_operation *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::bits::unary_op *>(gen_op)) {
 		option.mask = self->classifier->classify_fixed_unary(*op);
 		jive_negotiator_annotate_identity_node(&self->base, node, &option);
-	} else if (auto op = dynamic_cast<const jive::bits_binary_operation *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::bits::binary_op *>(gen_op)) {
 		option.mask = self->classifier->classify_fixed_binary(*op);
 		jive_negotiator_annotate_identity_node(&self->base, node, &option);
-	} else if (auto op = dynamic_cast<const jive::bits_compare_operation *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::bits::compare_op *>(gen_op)) {
 		option.mask = self->classifier->classify_fixed_compare(*op);
 		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option);
 	} else if (auto op = dynamic_cast<const jive::load_operation *>(gen_op)) {

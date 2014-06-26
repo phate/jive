@@ -12,14 +12,15 @@
 #include <jive/vsdg/operators.h>
 
 namespace jive {
+namespace bits {
 
 /* Represents a unary operation on a bitstring of a specific width,
  * produces another bitstring of the same width. */
-class bits_unary_operation : public base::unary_op {
+class unary_op : public base::unary_op {
 public:
-	virtual ~bits_unary_operation() noexcept;
+	virtual ~unary_op() noexcept;
 
-	inline bits_unary_operation(const jive::bits::type & type) noexcept : type_(type) {}
+	inline unary_op(const jive::bits::type & type) noexcept : type_(type) {}
 
 	/* type signature methods */
 	virtual size_t
@@ -46,9 +47,9 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	virtual bits::value_repr
+	virtual value_repr
 	reduce_constant(
-		const bits::value_repr & arg) const = 0;
+		const value_repr & arg) const = 0;
 
 private:
 	jive::bits::type type_;
@@ -57,11 +58,11 @@ private:
 /* Represents a binary operation (possibly normalized n-ary if associative)
  * on a bitstring of a specific width, produces another bitstring of the
  * same width. */
-class bits_binary_operation : public base::binary_op {
+class binary_op : public base::binary_op {
 public:
-	virtual ~bits_binary_operation() noexcept;
+	virtual ~binary_op() noexcept;
 
-	inline bits_binary_operation(const jive::bits::type & type, size_t arity = 2) noexcept
+	inline binary_op(const jive::bits::type & type, size_t arity = 2) noexcept
 		: type_(type)
 		, arity_(arity)
 	{}
@@ -91,10 +92,10 @@ public:
 		jive::output * arg1,
 		jive::output * arg2) const override;
 
-	virtual bits::value_repr
+	virtual value_repr
 	reduce_constants(
-		const bits::value_repr & arg1,
-		const bits::value_repr & arg2) const = 0;
+		const value_repr & arg1,
+		const value_repr & arg2) const = 0;
 
 
 	inline const jive::bits::type & type() const noexcept { return type_; }
@@ -113,16 +114,16 @@ enum class compare_result {
 	static_false
 };
 
-class bits_compare_operation : public base::binary_op {
+class compare_op : public base::binary_op {
 public:
 	inline
-	bits_compare_operation(
+	compare_op(
 		const jive::bits::type & type) noexcept
 		: type_(type)
 	{
 	}
 
-	virtual ~bits_compare_operation() noexcept;
+	virtual ~compare_op() noexcept;
 
 	/* type signature methods */
 	virtual size_t
@@ -151,8 +152,8 @@ public:
 
 	virtual compare_result
 	reduce_constants(
-		const bits::value_repr & arg1,
-		const bits::value_repr & arg2) const = 0;
+		const value_repr & arg1,
+		const value_repr & arg2) const = 0;
 
 	inline const jive::bits::type &
 	type() const noexcept { return type_; }
@@ -162,6 +163,7 @@ private:
 	size_t arity_;
 };
 
+}
 }
 
 extern const jive_node_class JIVE_BITBINARY_NODE;

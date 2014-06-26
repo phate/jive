@@ -14,13 +14,13 @@ extern const jive_node_class JIVE_BITSGREATER_NODE;
 namespace jive {
 namespace bits {
 
-class sgreater_operation final : public jive::bits_compare_operation {
+class sgreater_operation final : public compare_op {
 public:
 	virtual ~sgreater_operation() noexcept;
 
 	inline sgreater_operation(
 		const jive::bits::type & type) noexcept
-		: bits_compare_operation(type)
+		: compare_op(type)
 	{
 	}
 
@@ -38,8 +38,8 @@ public:
 
 	virtual compare_result
 	reduce_constants(
-		const bits::value_repr & arg1,
-		const bits::value_repr & arg2) const override;
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
 
 	virtual std::string
 	debug_string() const override;
