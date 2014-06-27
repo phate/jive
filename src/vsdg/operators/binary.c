@@ -15,23 +15,6 @@ namespace base {
 
 binary_op::~binary_op() noexcept {}
 
-jive_binop_reduction_path_t
-binary_op::can_reduce_operand_pair(
-	const jive::output * op1,
-	const jive::output * op2) const noexcept
-{
-	return jive_binop_reduction_none;
-}
-
-jive::output *
-binary_op::reduce_operand_pair(
-	jive_binop_reduction_path_t path,
-	jive::output * op1,
-	jive::output * op2) const
-{
-	return nullptr;
-}
-
 jive_binary_operation_flags
 binary_op::flags() const noexcept
 {
@@ -43,13 +26,10 @@ binary_op::flags() const noexcept
 
 static inline size_t
 reduce_operands(
-	const jive_node_class * cls_,
-	const jive::operation * base_op,
+	const jive::base::binary_op & op,
 	size_t noperands,
 	jive::output * operands[])
 {
-	const jive::base::binary_op & op = *static_cast<const jive::base::binary_op *>(base_op);
-	
 	size_t n = 0;
 	/* pair-wise reduce */
 	if (op.is_commutative()) {
@@ -183,7 +163,7 @@ jive_binary_operation_normalized_create_new_(const jive_node_normal_form * self_
 	}
 
 	if (self->base.enable_mutable && self->enable_reducible) {
-		noperands = reduce_operands(self_->node_class, &op, noperands, operands);
+		noperands = reduce_operands(op, noperands, operands);
 
 		if (noperands == 1){
 			results[0] = operands[0];
@@ -261,7 +241,7 @@ jive_binary_operation_normalize_node_(const jive_node_normal_form * self_, jive_
 	}
 	
 	if (self->enable_reducible) {
-		noperands = reduce_operands(self_->node_class, &op, noperands, operands);
+		noperands = reduce_operands(op, noperands, operands);
 		
 		if (noperands == 1) {
 			jive_output_replace(node->outputs[0], operands[0]);
@@ -332,7 +312,7 @@ jive_binary_operation_operands_are_normalized_(
 		for (n = 0; n < noperands; n++)
 			tmp_operands[n] = operands[n];
 		
-		size_t new_noperands = reduce_operands(self_->node_class, &op, noperands, tmp_operands);
+		size_t new_noperands = reduce_operands(op, noperands, tmp_operands);
 		
 		if (new_noperands != noperands)
 			return false;
