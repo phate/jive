@@ -14,13 +14,13 @@ extern const jive_node_class JIVE_BITNEGATE_NODE;
 namespace jive {
 namespace bits {
 
-class negate_operation final : public unary_op {
+class neg_op final : public unary_op {
 public:
 	virtual
-	~negate_operation() noexcept;
+	~neg_op() noexcept;
 
 	inline
-	negate_operation(const jive::bits::type & type) noexcept
+	neg_op(const jive::bits::type & type) noexcept
 		: unary_op(type)
 	{
 	}

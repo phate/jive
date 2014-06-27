@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-negate_operation::~negate_operation() noexcept {}
+neg_op::~neg_op() noexcept {}
 
 bool
-negate_operation::operator==(const operation & other) const noexcept
+neg_op::operator==(const operation & other) const noexcept
 {
-	const negate_operation * o = dynamic_cast<const negate_operation *>(&other);
+	const neg_op * o = dynamic_cast<const neg_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-negate_operation::create_node(
+neg_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::unop_create<negate_operation>(
+	return detail::unop_create<neg_op>(
 		*this,
 		&JIVE_BITNEGATE_NODE,
 		region,
@@ -37,7 +37,7 @@ negate_operation::create_node(
 }
 
 value_repr
-negate_operation::reduce_constant(
+neg_op::reduce_constant(
 	const value_repr & arg) const
 {
 	value_repr result(arg);
@@ -46,7 +46,7 @@ negate_operation::reduce_constant(
 }
 
 std::string
-negate_operation::debug_string() const
+neg_op::debug_string() const
 {
 	return "BITNEGATE";
 }
@@ -69,6 +69,6 @@ jive::output *
 jive_bitnegate(jive::output * arg)
 {
 	return jive::bits::detail::unop_normalized_create<
-		jive::bits::negate_operation>(
+		jive::bits::neg_op>(
 			&JIVE_BITNEGATE_NODE, arg);
 }

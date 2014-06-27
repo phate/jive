@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-ashr_operation::~ashr_operation() noexcept {}
+ashr_op::~ashr_op() noexcept {}
 
 bool
-ashr_operation::operator==(const operation & other) const noexcept
+ashr_op::operator==(const operation & other) const noexcept
 {
-	const ashr_operation * o = dynamic_cast<const ashr_operation *>(&other);
+	const ashr_op * o = dynamic_cast<const ashr_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-ashr_operation::create_node(
+ashr_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<ashr_operation>(
+	return detail::binop_create<ashr_op>(
 		*this,
 		&JIVE_BITASHR_NODE,
 		region,
@@ -38,7 +38,7 @@ ashr_operation::create_node(
 }
 
 value_repr
-ashr_operation::reduce_constants(
+ashr_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -51,13 +51,13 @@ ashr_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-ashr_operation::flags() const noexcept
+ashr_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-ashr_operation::debug_string() const
+ashr_op::debug_string() const
 {
 	return "BITASHR";
 }
@@ -81,6 +81,6 @@ jive_bitashr(jive::output * operand, jive::output * shift)
 {
 	jive_graph * graph = operand->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::ashr_operation>(
+		jive::bits::ashr_op>(
 			&JIVE_BITASHR_NODE, operand, shift);
 }

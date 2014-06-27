@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-xor_operation::~xor_operation() noexcept {}
+xor_op::~xor_op() noexcept {}
 
 bool
-xor_operation::operator==(const operation & other) const noexcept
+xor_op::operator==(const operation & other) const noexcept
 {
-	const xor_operation * o = dynamic_cast<const xor_operation *>(&other);
+	const xor_op * o = dynamic_cast<const xor_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-xor_operation::create_node(
+xor_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<xor_operation>(
+	return detail::binop_create<xor_op>(
 		*this,
 		&JIVE_BITXOR_NODE,
 		region,
@@ -38,7 +38,7 @@ xor_operation::create_node(
 }
 
 value_repr
-xor_operation::reduce_constants(
+xor_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -49,13 +49,13 @@ xor_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-xor_operation::flags() const noexcept
+xor_op::flags() const noexcept
 {
 	return jive_binary_operation_associative | jive_binary_operation_commutative;
 }
 
 std::string
-xor_operation::debug_string() const
+xor_op::debug_string() const
 {
 	return "BITXOR";
 }
@@ -78,6 +78,6 @@ jive::output *
 jive_bitxor(size_t noperands, jive::output * const * operands)
 {
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::xor_operation>(
+		jive::bits::xor_op>(
 			&JIVE_BITXOR_NODE, noperands, operands);
 }

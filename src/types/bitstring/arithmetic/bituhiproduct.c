@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-uhiproduct_operation::~uhiproduct_operation() noexcept {}
+umulh_op::~umulh_op() noexcept {}
 
 bool
-uhiproduct_operation::operator==(const operation & other) const noexcept
+umulh_op::operator==(const operation & other) const noexcept
 {
-	const uhiproduct_operation * o = dynamic_cast<const uhiproduct_operation *>(&other);
+	const umulh_op * o = dynamic_cast<const umulh_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-uhiproduct_operation::create_node(
+umulh_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<uhiproduct_operation>(
+	return detail::binop_create<umulh_op>(
 		*this,
 		&JIVE_BITUHIPRODUCT_NODE,
 		region,
@@ -38,7 +38,7 @@ uhiproduct_operation::create_node(
 }
 
 value_repr
-uhiproduct_operation::reduce_constants(
+umulh_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -58,13 +58,13 @@ uhiproduct_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-uhiproduct_operation::flags() const noexcept
+umulh_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-uhiproduct_operation::debug_string() const
+umulh_op::debug_string() const
 {
 	return "BITUHIPRODUCT";
 }
@@ -88,6 +88,6 @@ jive_bituhiproduct(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::uhiproduct_operation>(
+		jive::bits::umulh_op>(
 			&JIVE_BITUHIPRODUCT_NODE, dividend, divisor);
 }

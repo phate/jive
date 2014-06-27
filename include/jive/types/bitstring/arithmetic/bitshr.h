@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITSHR_NODE;
 namespace jive {
 namespace bits {
 
-class shr_operation final : public binary_op {
+class shr_op final : public binary_op {
 public:
-	virtual ~shr_operation() noexcept;
+	virtual ~shr_op() noexcept;
 
-	inline shr_operation(const jive::bits::type & type) noexcept : binary_op(type) {}
+	inline shr_op(const jive::bits::type & type) noexcept : binary_op(type) {}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

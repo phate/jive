@@ -14,12 +14,12 @@ extern const jive_node_class JIVE_BITNOT_NODE;
 namespace jive {
 namespace bits {
 
-class not_operation final : public unary_op {
+class not_op final : public unary_op {
 public:
 	virtual
-	~not_operation() noexcept;
+	~not_op() noexcept;
 
-	inline not_operation(const jive::bits::type & type) noexcept : unary_op(type) {}
+	inline not_op(const jive::bits::type & type) noexcept : unary_op(type) {}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

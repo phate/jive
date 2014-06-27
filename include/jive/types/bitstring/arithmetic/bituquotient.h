@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITUQUOTIENT_NODE;
 namespace jive {
 namespace bits {
 
-class uquotient_operation final : public binary_op {
+class udiv_op final : public binary_op {
 public:
-	virtual ~uquotient_operation() noexcept;
+	virtual ~udiv_op() noexcept;
 
-	inline uquotient_operation(const jive::bits::type & type) noexcept
+	inline udiv_op(const jive::bits::type & type) noexcept
 	: binary_op(type)
 	{}
 

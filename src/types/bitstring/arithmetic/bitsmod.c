@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-smod_operation::~smod_operation() noexcept {}
+smod_op::~smod_op() noexcept {}
 
 bool
-smod_operation::operator==(const operation & other) const noexcept
+smod_op::operator==(const operation & other) const noexcept
 {
-	const smod_operation * o = dynamic_cast<const smod_operation *>(&other);
+	const smod_op * o = dynamic_cast<const smod_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-smod_operation::create_node(
+smod_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<smod_operation>(
+	return detail::binop_create<smod_op>(
 		*this,
 		&JIVE_BITSMOD_NODE,
 		region,
@@ -38,7 +38,7 @@ smod_operation::create_node(
 }
 
 value_repr
-smod_operation::reduce_constants(
+smod_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -52,13 +52,13 @@ smod_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-smod_operation::flags() const noexcept
+smod_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-smod_operation::debug_string() const
+smod_op::debug_string() const
 {
 	return "BITSMOD";
 }
@@ -82,6 +82,6 @@ jive_bitsmod(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::smod_operation>(
+		jive::bits::smod_op>(
 			&JIVE_BITSMOD_NODE, dividend, divisor);
 }

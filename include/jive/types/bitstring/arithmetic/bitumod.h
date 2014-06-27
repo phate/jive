@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITUMOD_NODE;
 namespace jive {
 namespace bits {
 
-class umod_operation final : public binary_op {
+class umod_op final : public binary_op {
 public:
-	virtual ~umod_operation() noexcept;
+	virtual ~umod_op() noexcept;
 
-	inline umod_operation(const jive::bits::type & type) noexcept
+	inline umod_op(const jive::bits::type & type) noexcept
 		: binary_op(type)
 	{}
 

@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITUHIPRODUCT_NODE;
 namespace jive {
 namespace bits {
 
-class uhiproduct_operation final : public binary_op {
+class umulh_op final : public binary_op {
 public:
-	virtual ~uhiproduct_operation() noexcept;
+	virtual ~umulh_op() noexcept;
 
-	inline uhiproduct_operation(const jive::bits::type & type) noexcept
+	inline umulh_op(const jive::bits::type & type) noexcept
 		: binary_op(type)
 	{}
 

@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-shiproduct_operation::~shiproduct_operation() noexcept {}
+smulh_op::~smulh_op() noexcept {}
 
 bool
-shiproduct_operation::operator==(const operation & other) const noexcept
+smulh_op::operator==(const operation & other) const noexcept
 {
-	const shiproduct_operation * o = dynamic_cast<const shiproduct_operation *>(&other);
+	const smulh_op * o = dynamic_cast<const smulh_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-shiproduct_operation::create_node(
+smulh_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<shiproduct_operation>(
+	return detail::binop_create<smulh_op>(
 		*this,
 		&JIVE_BITSHIPRODUCT_NODE,
 		region,
@@ -38,7 +38,7 @@ shiproduct_operation::create_node(
 }
 
 value_repr
-shiproduct_operation::reduce_constants(
+smulh_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -58,13 +58,13 @@ shiproduct_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-shiproduct_operation::flags() const noexcept
+smulh_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-shiproduct_operation::debug_string() const
+smulh_op::debug_string() const
 {
 	return "BITSHIPRODUCT";
 }
@@ -88,6 +88,6 @@ jive_bitshiproduct(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::shiproduct_operation>(
+		jive::bits::smulh_op>(
 			&JIVE_BITSHIPRODUCT_NODE, dividend, divisor);
 }

@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-not_operation::~not_operation() noexcept {}
+not_op::~not_op() noexcept {}
 
 bool
-not_operation::operator==(const operation & other) const noexcept
+not_op::operator==(const operation & other) const noexcept
 {
-	const not_operation * o = dynamic_cast<const not_operation *>(&other);
+	const not_op * o = dynamic_cast<const not_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-not_operation::create_node(
+not_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::unop_create<not_operation>(
+	return detail::unop_create<not_op>(
 		*this,
 		&JIVE_BITNOT_NODE,
 		region,
@@ -37,7 +37,7 @@ not_operation::create_node(
 }
 
 value_repr
-not_operation::reduce_constant(
+not_op::reduce_constant(
 	const value_repr & arg) const
 {
 	value_repr result(arg);
@@ -46,7 +46,7 @@ not_operation::reduce_constant(
 }
 
 std::string
-not_operation::debug_string() const
+not_op::debug_string() const
 {
 	return "BITNOT";
 }
@@ -69,6 +69,6 @@ jive::output *
 jive_bitnot(jive::output * arg)
 {
 	return jive::bits::detail::unop_normalized_create<
-		jive::bits::not_operation>(
+		jive::bits::not_op>(
 			&JIVE_BITNOT_NODE, arg);
 }

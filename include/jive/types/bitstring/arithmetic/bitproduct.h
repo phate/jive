@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITPRODUCT_NODE;
 namespace jive {
 namespace bits {
 
-class product_operation final : public binary_op {
+class mul_op final : public binary_op {
 public:
-	virtual ~product_operation() noexcept;
+	virtual ~mul_op() noexcept;
 
-	inline product_operation(const jive::bits::type & type, size_t arity = 2) noexcept
+	inline mul_op(const jive::bits::type & type, size_t arity = 2) noexcept
 		: binary_op(type, arity)
 	{}
 

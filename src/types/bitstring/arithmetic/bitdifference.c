@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-difference_operation::~difference_operation() noexcept {}
+sub_op::~sub_op() noexcept {}
 
 bool
-difference_operation::operator==(const operation & other) const noexcept
+sub_op::operator==(const operation & other) const noexcept
 {
-	const difference_operation * o = dynamic_cast<const difference_operation *>(&other);
+	const sub_op * o = dynamic_cast<const sub_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-difference_operation::create_node(
+sub_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<difference_operation>(
+	return detail::binop_create<sub_op>(
 		*this,
 		&JIVE_BITDIFFERENCE_NODE,
 		region,
@@ -38,7 +38,7 @@ difference_operation::create_node(
 }
 
 value_repr
-difference_operation::reduce_constants(
+sub_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -49,13 +49,13 @@ difference_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-difference_operation::flags() const noexcept
+sub_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-difference_operation::debug_string() const
+sub_op::debug_string() const
 {
 	return "BITDIFFERENCE";
 }
@@ -79,6 +79,6 @@ jive_bitdifference(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::difference_operation>(
+		jive::bits::sub_op>(
 			&JIVE_BITDIFFERENCE_NODE, dividend, divisor);
 }

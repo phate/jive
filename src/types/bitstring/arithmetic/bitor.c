@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-or_operation::~or_operation() noexcept {}
+or_op::~or_op() noexcept {}
 
 bool
-or_operation::operator==(const operation & other) const noexcept
+or_op::operator==(const operation & other) const noexcept
 {
-	const or_operation * o = dynamic_cast<const or_operation *>(&other);
+	const or_op * o = dynamic_cast<const or_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-or_operation::create_node(
+or_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<or_operation>(
+	return detail::binop_create<or_op>(
 		*this,
 		&JIVE_BITOR_NODE,
 		region,
@@ -38,7 +38,7 @@ or_operation::create_node(
 }
 
 value_repr
-or_operation::reduce_constants(
+or_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -49,13 +49,13 @@ or_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-or_operation::flags() const noexcept
+or_op::flags() const noexcept
 {
 	return jive_binary_operation_associative | jive_binary_operation_commutative;
 }
 
 std::string
-or_operation::debug_string() const
+or_op::debug_string() const
 {
 	return "BITOR";
 }
@@ -78,6 +78,6 @@ jive::output *
 jive_bitor(size_t noperands, jive::output * const * operands)
 {
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::or_operation>(
+		jive::bits::or_op>(
 			&JIVE_BITOR_NODE, noperands, operands);
 }

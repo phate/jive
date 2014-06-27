@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-squotient_operation::~squotient_operation() noexcept {}
+sdiv_op::~sdiv_op() noexcept {}
 
 bool
-squotient_operation::operator==(const operation & other) const noexcept
+sdiv_op::operator==(const operation & other) const noexcept
 {
-	const squotient_operation * o = dynamic_cast<const squotient_operation *>(&other);
+	const sdiv_op * o = dynamic_cast<const sdiv_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-squotient_operation::create_node(
+sdiv_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<squotient_operation>(
+	return detail::binop_create<sdiv_op>(
 		*this,
 		&JIVE_BITSQUOTIENT_NODE,
 		region,
@@ -38,7 +38,7 @@ squotient_operation::create_node(
 }
 
 value_repr
-squotient_operation::reduce_constants(
+sdiv_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -52,13 +52,13 @@ squotient_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-squotient_operation::flags() const noexcept
+sdiv_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-squotient_operation::debug_string() const
+sdiv_op::debug_string() const
 {
 	return "BITSQUOTIENT";
 }
@@ -82,6 +82,6 @@ jive_bitsquotient(jive::output * dividend, jive::output * divisor)
 {
 	jive_graph * graph = dividend->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::squotient_operation>(
+		jive::bits::sdiv_op>(
 			&JIVE_BITSQUOTIENT_NODE, dividend, divisor);
 }

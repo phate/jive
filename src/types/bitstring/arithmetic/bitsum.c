@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-sum_operation::~sum_operation() noexcept {}
+add_op::~add_op() noexcept {}
 
 bool
-sum_operation::operator==(const operation & other) const noexcept
+add_op::operator==(const operation & other) const noexcept
 {
-	const sum_operation * o = dynamic_cast<const sum_operation *>(&other);
+	const add_op * o = dynamic_cast<const add_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-sum_operation::create_node(
+add_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<sum_operation>(
+	return detail::binop_create<add_op>(
 		*this,
 		&JIVE_BITSUM_NODE,
 		region,
@@ -38,7 +38,7 @@ sum_operation::create_node(
 }
 
 value_repr
-sum_operation::reduce_constants(
+add_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -49,13 +49,13 @@ sum_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-sum_operation::flags() const noexcept
+add_op::flags() const noexcept
 {
 	return jive_binary_operation_associative | jive_binary_operation_commutative;
 }
 
 std::string
-sum_operation::debug_string() const
+add_op::debug_string() const
 {
 	return "BITSUM";
 }
@@ -78,6 +78,6 @@ jive::output *
 jive_bitsum(size_t noperands, jive::output * const * operands)
 {
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::sum_operation>(
+		jive::bits::add_op>(
 			&JIVE_BITSUM_NODE, noperands, operands);
 }

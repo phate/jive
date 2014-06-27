@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-and_operation::~and_operation() noexcept {}
+and_op::~and_op() noexcept {}
 
 bool
-and_operation::operator==(const operation & other) const noexcept
+and_op::operator==(const operation & other) const noexcept
 {
-	const and_operation * o = dynamic_cast<const and_operation *>(&other);
+	const and_op * o = dynamic_cast<const and_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-and_operation::create_node(
+and_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<and_operation>(
+	return detail::binop_create<and_op>(
 		*this,
 		&JIVE_BITAND_NODE,
 		region,
@@ -38,7 +38,7 @@ and_operation::create_node(
 }
 
 value_repr
-and_operation::reduce_constants(
+and_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -49,13 +49,13 @@ and_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-and_operation::flags() const noexcept
+and_op::flags() const noexcept
 {
 	return jive_binary_operation_associative | jive_binary_operation_commutative;
 }
 
 std::string
-and_operation::debug_string() const
+and_op::debug_string() const
 {
 	return "BITAND";
 }
@@ -78,6 +78,6 @@ jive::output *
 jive_bitand(size_t noperands, jive::output * const * operands)
 {
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::and_operation>(
+		jive::bits::and_op>(
 			&JIVE_BITAND_NODE, noperands, operands);
 }

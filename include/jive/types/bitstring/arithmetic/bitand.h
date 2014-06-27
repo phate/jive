@@ -15,11 +15,11 @@ extern const jive_node_class JIVE_BITAND_NODE;
 namespace jive {
 namespace bits {
 
-class and_operation final : public binary_op {
+class and_op final : public binary_op {
 public:
-	virtual ~and_operation() noexcept;
+	virtual ~and_op() noexcept;
 
-	inline and_operation(const jive::bits::type & type, size_t arity = 2) noexcept
+	inline and_op(const jive::bits::type & type, size_t arity = 2) noexcept
 		: binary_op(type, arity)
 	{}
 

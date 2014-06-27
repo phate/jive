@@ -14,22 +14,22 @@
 namespace jive {
 namespace bits {
 
-product_operation::~product_operation() noexcept {}
+mul_op::~mul_op() noexcept {}
 
 bool
-product_operation::operator==(const operation & other) const noexcept
+mul_op::operator==(const operation & other) const noexcept
 {
-	const product_operation * o = dynamic_cast<const product_operation *>(&other);
+	const mul_op * o = dynamic_cast<const mul_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-product_operation::create_node(
+mul_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<product_operation>(
+	return detail::binop_create<mul_op>(
 		*this,
 		&JIVE_BITPRODUCT_NODE,
 		region,
@@ -38,7 +38,7 @@ product_operation::create_node(
 }
 
 value_repr
-product_operation::reduce_constants(
+mul_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -52,13 +52,13 @@ product_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-product_operation::flags() const noexcept
+mul_op::flags() const noexcept
 {
 	return jive_binary_operation_associative | jive_binary_operation_commutative;
 }
 
 std::string
-product_operation::debug_string() const
+mul_op::debug_string() const
 {
 	return "BITPRODUCT";
 }
@@ -81,6 +81,6 @@ jive::output *
 jive_bitmultiply(size_t noperands, jive::output * const * operands)
 {
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::product_operation>(
+		jive::bits::mul_op>(
 			&JIVE_BITPRODUCT_NODE, noperands, operands);
 }
