@@ -16,22 +16,22 @@
 namespace jive {
 namespace bits {
 
-equal_operation::~equal_operation() noexcept {}
+eq_op::~eq_op() noexcept {}
 
 bool
-equal_operation::operator==(const operation & other) const noexcept
+eq_op::operator==(const operation & other) const noexcept
 {
-	const equal_operation * o = dynamic_cast<const equal_operation *>(&other);
+	const eq_op * o = dynamic_cast<const eq_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-equal_operation::create_node(
+eq_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<equal_operation>(
+	return detail::binop_create<eq_op>(
 		*this,
 		&JIVE_BITEQUAL_NODE,
 		region,
@@ -40,7 +40,7 @@ equal_operation::create_node(
 }
 
 compare_result
-equal_operation::reduce_constants(
+eq_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -56,13 +56,13 @@ equal_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-equal_operation::flags() const noexcept
+eq_op::flags() const noexcept
 {
 	return jive_binary_operation_commutative;
 }
 
 std::string
-equal_operation::debug_string() const
+eq_op::debug_string() const
 {
 	return "BITEQUAL";
 }
@@ -86,6 +86,6 @@ jive_bitequal(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::equal_operation>(
+		jive::bits::eq_op>(
 			&JIVE_BITEQUAL_NODE, operand1, operand2);
 }

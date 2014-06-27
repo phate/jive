@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITSLESS_NODE;
 namespace jive {
 namespace bits {
 
-class sless_operation final : public compare_op {
+class slt_op final : public compare_op {
 public:
-	virtual ~sless_operation() noexcept;
+	virtual ~slt_op() noexcept;
 
-	inline sless_operation(
+	inline slt_op(
 		const jive::bits::type & type) noexcept
 		: compare_op(type)
 	{

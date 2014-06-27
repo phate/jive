@@ -16,22 +16,22 @@
 namespace jive {
 namespace bits {
 
-ulesseq_operation::~ulesseq_operation() noexcept {}
+ule_op::~ule_op() noexcept {}
 
 bool
-ulesseq_operation::operator==(const operation & other) const noexcept
+ule_op::operator==(const operation & other) const noexcept
 {
-	const ulesseq_operation * o = dynamic_cast<const ulesseq_operation *>(&other);
+	const ule_op * o = dynamic_cast<const ule_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-ulesseq_operation::create_node(
+ule_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<ulesseq_operation>(
+	return detail::binop_create<ule_op>(
 		*this,
 		&JIVE_BITULESSEQ_NODE,
 		region,
@@ -40,7 +40,7 @@ ulesseq_operation::create_node(
 }
 
 compare_result
-ulesseq_operation::reduce_constants(
+ule_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -56,13 +56,13 @@ ulesseq_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-ulesseq_operation::flags() const noexcept
+ule_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-ulesseq_operation::debug_string() const
+ule_op::debug_string() const
 {
 	return "BITULESSEQ";
 }
@@ -86,6 +86,6 @@ jive_bitulesseq(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::ulesseq_operation>(
+		jive::bits::ule_op>(
 			&JIVE_BITULESSEQ_NODE, operand1, operand2);
 }

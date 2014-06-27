@@ -333,70 +333,70 @@ static const jive::detail::typeinfo_map<
 	>
 > bitcompare_map = {
 	{
-		&typeid(jive::bits::equal_operation),
+		&typeid(jive::bits::eq_op),
 		{
 			&jive_i386_instr_int_jump_equal,
 			&jive_i386_instr_int_jump_equal
 		}
 	},
 	{
-		&typeid(jive::bits::notequal_operation),
+		&typeid(jive::bits::ne_op),
 		{
 			&jive_i386_instr_int_jump_notequal,
 			&jive_i386_instr_int_jump_notequal
 		}
 	},
 	{
-		&typeid(jive::bits::sless_operation),
+		&typeid(jive::bits::slt_op),
 		{
 			&jive_i386_instr_int_jump_sless,
 			&jive_i386_instr_int_jump_sgreater
 		}
 	},
 	{
-		&typeid(jive::bits::slesseq_operation),
+		&typeid(jive::bits::sle_op),
 		{
 			&jive_i386_instr_int_jump_slesseq,
 			&jive_i386_instr_int_jump_sgreatereq
 		}
 	},
 	{
-		&typeid(jive::bits::sgreater_operation),
+		&typeid(jive::bits::sgt_op),
 		{
 			&jive_i386_instr_int_jump_sgreater,
 			&jive_i386_instr_int_jump_sless
 		}
 	},
 	{
-		&typeid(jive::bits::sgreatereq_operation),
+		&typeid(jive::bits::sge_op),
 		{
 			&jive_i386_instr_int_jump_sgreatereq,
 			&jive_i386_instr_int_jump_slesseq
 		}
 	},
 	{
-		&typeid(jive::bits::uless_operation),
+		&typeid(jive::bits::ult_op),
 		{
 			&jive_i386_instr_int_jump_uless,
 			&jive_i386_instr_int_jump_ugreater
 		}
 	},
 	{
-		&typeid(jive::bits::ulesseq_operation),
+		&typeid(jive::bits::ule_op),
 		{
 			&jive_i386_instr_int_jump_ulesseq,
 			&jive_i386_instr_int_jump_ugreatereq
 		}
 	},
 	{
-		&typeid(jive::bits::ugreater_operation),
+		&typeid(jive::bits::ugt_op),
 		{
 			&jive_i386_instr_int_jump_ugreater,
 			&jive_i386_instr_int_jump_uless
 		}
 	},
 	{
-		&typeid(jive::bits::ugreatereq_operation),
+		&typeid(jive::bits::uge_op),
 		{
 			&jive_i386_instr_int_jump_ugreatereq,
 			&jive_i386_instr_int_jump_ulesseq

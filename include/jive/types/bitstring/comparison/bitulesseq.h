@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITULESSEQ_NODE;
 namespace jive {
 namespace bits {
 
-class ulesseq_operation final : public compare_op {
+class ule_op final : public compare_op {
 public:
-	virtual ~ulesseq_operation() noexcept;
+	virtual ~ule_op() noexcept;
 
-	inline ulesseq_operation(
+	inline ule_op(
 		const jive::bits::type & type) noexcept
 		: compare_op(type)
 	{

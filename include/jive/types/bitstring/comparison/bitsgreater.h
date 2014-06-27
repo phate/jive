@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITSGREATER_NODE;
 namespace jive {
 namespace bits {
 
-class sgreater_operation final : public compare_op {
+class sgt_op final : public compare_op {
 public:
-	virtual ~sgreater_operation() noexcept;
+	virtual ~sgt_op() noexcept;
 
-	inline sgreater_operation(
+	inline sgt_op(
 		const jive::bits::type & type) noexcept
 		: compare_op(type)
 	{

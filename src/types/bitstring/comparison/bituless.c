@@ -16,22 +16,22 @@
 namespace jive {
 namespace bits {
 
-uless_operation::~uless_operation() noexcept {}
+ult_op::~ult_op() noexcept {}
 
 bool
-uless_operation::operator==(const operation & other) const noexcept
+ult_op::operator==(const operation & other) const noexcept
 {
-	const uless_operation * o = dynamic_cast<const uless_operation *>(&other);
+	const ult_op * o = dynamic_cast<const ult_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-uless_operation::create_node(
+ult_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<uless_operation>(
+	return detail::binop_create<ult_op>(
 		*this,
 		&JIVE_BITULESS_NODE,
 		region,
@@ -40,7 +40,7 @@ uless_operation::create_node(
 }
 
 compare_result
-uless_operation::reduce_constants(
+ult_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -56,13 +56,13 @@ uless_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-uless_operation::flags() const noexcept
+ult_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-uless_operation::debug_string() const
+ult_op::debug_string() const
 {
 	return "BITULESS";
 }
@@ -86,6 +86,6 @@ jive_bituless(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::uless_operation>(
+		jive::bits::ult_op>(
 			&JIVE_BITULESS_NODE, operand1, operand2);
 }

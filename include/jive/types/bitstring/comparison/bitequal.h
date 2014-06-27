@@ -14,11 +14,11 @@ extern const jive_node_class JIVE_BITEQUAL_NODE;
 namespace jive {
 namespace bits {
 
-class equal_operation final : public compare_op {
+class eq_op final : public compare_op {
 public:
-	virtual ~equal_operation() noexcept;
+	virtual ~eq_op() noexcept;
 
-	inline equal_operation(
+	inline eq_op(
 		const jive::bits::type & type) noexcept
 		: compare_op(type)
 	{

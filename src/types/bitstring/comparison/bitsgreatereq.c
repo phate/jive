@@ -16,22 +16,22 @@
 namespace jive {
 namespace bits {
 
-sgreatereq_operation::~sgreatereq_operation() noexcept {}
+sge_op::~sge_op() noexcept {}
 
 bool
-sgreatereq_operation::operator==(const operation & other) const noexcept
+sge_op::operator==(const operation & other) const noexcept
 {
-	const sgreatereq_operation * o = dynamic_cast<const sgreatereq_operation *>(&other);
+	const sge_op * o = dynamic_cast<const sge_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-sgreatereq_operation::create_node(
+sge_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<sgreatereq_operation>(
+	return detail::binop_create<sge_op>(
 		*this,
 		&JIVE_BITSGREATEREQ_NODE,
 		region,
@@ -40,7 +40,7 @@ sgreatereq_operation::create_node(
 }
 
 compare_result
-sgreatereq_operation::reduce_constants(
+sge_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -56,13 +56,13 @@ sgreatereq_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-sgreatereq_operation::flags() const noexcept
+sge_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-sgreatereq_operation::debug_string() const
+sge_op::debug_string() const
 {
 	return "BITSGREATEREQ";
 }
@@ -86,6 +86,6 @@ jive_bitsgreatereq(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::sgreatereq_operation>(
+		jive::bits::sge_op>(
 			&JIVE_BITSGREATEREQ_NODE, operand1, operand2);
 }

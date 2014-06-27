@@ -16,22 +16,22 @@
 namespace jive {
 namespace bits {
 
-sgreater_operation::~sgreater_operation() noexcept {}
+sgt_op::~sgt_op() noexcept {}
 
 bool
-sgreater_operation::operator==(const operation & other) const noexcept
+sgt_op::operator==(const operation & other) const noexcept
 {
-	const sgreater_operation * o = dynamic_cast<const sgreater_operation *>(&other);
+	const sgt_op * o = dynamic_cast<const sgt_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-sgreater_operation::create_node(
+sgt_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<sgreater_operation>(
+	return detail::binop_create<sgt_op>(
 		*this,
 		&JIVE_BITSGREATER_NODE,
 		region,
@@ -40,7 +40,7 @@ sgreater_operation::create_node(
 }
 
 compare_result
-sgreater_operation::reduce_constants(
+sgt_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -56,13 +56,13 @@ sgreater_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-sgreater_operation::flags() const noexcept
+sgt_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-sgreater_operation::debug_string() const
+sgt_op::debug_string() const
 {
 	return "BITSGREATER";
 }
@@ -86,6 +86,6 @@ jive_bitsgreater(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::sgreater_operation>(
+		jive::bits::sgt_op>(
 			&JIVE_BITSGREATER_NODE, operand1, operand2);
 }

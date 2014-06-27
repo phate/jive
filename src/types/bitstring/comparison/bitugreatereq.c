@@ -16,22 +16,22 @@
 namespace jive {
 namespace bits {
 
-ugreatereq_operation::~ugreatereq_operation() noexcept {}
+uge_op::~uge_op() noexcept {}
 
 bool
-ugreatereq_operation::operator==(const operation & other) const noexcept
+uge_op::operator==(const operation & other) const noexcept
 {
-	const ugreatereq_operation * o = dynamic_cast<const ugreatereq_operation *>(&other);
+	const uge_op * o = dynamic_cast<const uge_op *>(&other);
 	return o && o->type() == type();
 }
 
 jive_node *
-ugreatereq_operation::create_node(
+uge_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<ugreatereq_operation>(
+	return detail::binop_create<uge_op>(
 		*this,
 		&JIVE_BITUGREATEREQ_NODE,
 		region,
@@ -40,7 +40,7 @@ ugreatereq_operation::create_node(
 }
 
 compare_result
-ugreatereq_operation::reduce_constants(
+uge_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
@@ -56,13 +56,13 @@ ugreatereq_operation::reduce_constants(
 }
 
 jive_binary_operation_flags
-ugreatereq_operation::flags() const noexcept
+uge_op::flags() const noexcept
 {
 	return jive_binary_operation_none;
 }
 
 std::string
-ugreatereq_operation::debug_string() const
+uge_op::debug_string() const
 {
 	return "BITUGREATEREQ";
 }
@@ -86,6 +86,6 @@ jive_bitugreatereq(jive::output * operand1, jive::output * operand2)
 {
 	jive_graph * graph = operand1->node()->graph;
 	return jive::bits::detail::binop_normalized_create<
-		jive::bits::ugreatereq_operation>(
+		jive::bits::uge_op>(
 			&JIVE_BITUGREATEREQ_NODE, operand1, operand2);
 }
