@@ -42,6 +42,10 @@ static int test_main(void)
 	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	jive::output * tmparray2[] = {arg1, arg2};
 	
+	assert(arg1);
+	assert(&arg1->type());
+	assert(arg2);
+	assert(&arg2->type());
 	jive::output * sum = jive_bitsum(2, tmparray2);
 	
 	jive_subroutine_simple_set_result(subroutine, 0, sum);

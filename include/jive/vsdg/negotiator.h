@@ -116,6 +116,15 @@ public:
 	virtual std::string
 	debug_string() const override;
 
+	virtual jive_unop_reduction_path_t
+	can_reduce_operand(
+		const jive::output * arg) const noexcept override;
+
+	virtual jive::output *
+	reduce_operand(
+		jive_unop_reduction_path_t path,
+		jive::output * arg) const override;
+
 	inline jive_negotiator *
 	negotiator() const noexcept { return negotiator_; }
 

@@ -107,6 +107,21 @@ negotiator_split_operation::debug_string() const
 	return "NEGOTIATOR_SPLIT";
 }
 
+jive_unop_reduction_path_t
+negotiator_split_operation::can_reduce_operand(
+	const jive::output * arg) const noexcept
+{
+	return jive_unop_reduction_none;
+}
+
+jive::output *
+negotiator_split_operation::reduce_operand(
+	jive_unop_reduction_path_t path,
+	jive::output * arg) const
+{
+	return nullptr;
+}
+
 /* split node */
 
 negotiator_split_node::~negotiator_split_node() noexcept

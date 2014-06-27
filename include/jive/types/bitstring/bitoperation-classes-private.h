@@ -31,10 +31,11 @@ binop_normalized_create(
 	jive::output * const * arguments)
 {
 	JIVE_DEBUG_ASSERT(narguments != 0);
-	const jive::bits::type * type = dynamic_cast<const jive::bits::type*>(&arguments[0]->type());
+	const jive::bits::type & type =
+		dynamic_cast<const jive::bits::type &>(arguments[0]->type());
 
 	jive_graph * graph = arguments[0]->node()->graph;
-	Op op(*type, narguments);
+	Op op(type, narguments);
 	return jive_binary_operation_create_normalized(cls, graph, &op,
 		narguments, arguments);
 }

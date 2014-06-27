@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -7,58 +7,83 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/valuetype.h>
-#include <jive/vsdg/node-private.h>
 
 #include <string.h>
 
-static void
-jive_splitnode_init_(
-	jive_splitnode * self,
-	jive_region * region,
-	const jive::base::type * in_type,
-	jive::output * in_origin,
-	const struct jive_resource_class * in_class,
-	const jive::base::type * out_type,
-	const struct jive_resource_class * out_class)
+namespace jive {
+
+split_operation::~split_operation() noexcept
 {
-	self->class_ = &JIVE_SPLITNODE;
-	jive_node_init_(self, region,
-		1, &in_type, &in_origin,
-		1, &out_type);
-	
-	self->inputs[0]->required_rescls = in_class;
-	self->outputs[0]->required_rescls = out_class;
 }
 
-static jive_node *
-jive_splitnode_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
+bool
+split_operation::operator==(const operation & gen_other) const noexcept
 {
-	JIVE_DEBUG_ASSERT(noperands == 1);
-	const jive::split_operation * attrs = (const jive::split_operation *) attrs_;
-	jive_node * node = jive_splitnode_create(region,
-		jive_resource_class_get_type(attrs->in_class()),
-		operands[0],
-		attrs->in_class(),
-		jive_resource_class_get_type(attrs->out_class()),
-		attrs->out_class());
+	/* treat this operation a bit specially: state that any two
+	 * splits are not the same to unconditionally make them exempt
+	 * from CSE */
+	return false;
+}
+
+jive_node *
+split_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	JIVE_DEBUG_ASSERT(narguments== 1);
 	
-	node->inputs[0]->required_rescls = attrs->in_class();
-	node->outputs[0]->required_rescls = attrs->out_class();
+	jive_splitnode * node = new jive_splitnode(*this);
+	const jive::base::type * in_type = &argument_type(0);
+	const jive::base::type * out_type = &result_type(0);
+	node->class_ = &JIVE_SPLITNODE;
+	jive_node_init_(node, region,
+		1, &in_type, arguments,
+		1, &out_type);
+	node->inputs[0]->required_rescls = in_class();
+	node->outputs[0]->required_rescls = out_class();
 	
 	return node;
 }
 
-static bool
-jive_splitnode_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
+std::string
+split_operation::debug_string() const
 {
-	const jive_splitnode * self = (const jive_splitnode *) self_;
-	const jive::split_operation * attrs = (const jive::split_operation *) attrs_;
-	return
-		self->operation().in_class() == attrs->in_class() &&
-		self->operation().out_class() == attrs->out_class();
+	return "SPLIT";
+}
+
+/* type signature methods */
+const jive::base::type &
+split_operation::argument_type(size_t index) const noexcept
+{
+	return *in_class_->type;
+}
+
+const jive::base::type &
+split_operation::result_type(size_t index) const noexcept
+{
+	return *out_class_->type;
+}
+
+/* reduction methods */
+jive_unop_reduction_path_t
+split_operation::can_reduce_operand(
+	const jive::output * arg) const noexcept
+{
+	return jive_unop_reduction_none;
+}
+
+jive::output *
+split_operation::reduce_operand(
+	jive_unop_reduction_path_t path,
+	jive::output * arg) const
+{
+	return nullptr;
+}
+
 }
 
 const jive_node_class JIVE_SPLITNODE = {
@@ -66,10 +91,10 @@ const jive_node_class JIVE_SPLITNODE = {
 	name : "SPLIT",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_splitnode_match_attrs_, /* override */
-	check_operands : NULL,
-	create : jive_splitnode_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive_node *
@@ -80,21 +105,12 @@ jive_splitnode_create(jive_region * region,
 	const jive::base::type * out_type,
 	const struct jive_resource_class * out_class)
 {
-	jive_graph * graph = region->graph;
+	jive::split_operation op(in_class, out_class);
 	
-	bool input_is_value = dynamic_cast<jive::value::output*>(in_origin);
-	bool output_is_value = dynamic_cast<const jive::value::type*>(out_type) != nullptr;
-	
-	if (!input_is_value && !output_is_value)
-		jive_context_fatal_error(graph->context, "States may not be split by a splitnode");
-	
-	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph , &JIVE_SPLITNODE);
-	
-	jive_splitnode * self = new jive_splitnode(jive::split_operation(in_class, out_class));
-	jive_splitnode_init_(self, region, in_type, in_origin, in_class, out_type, out_class);
-	
+	jive_node_normal_form * nf =
+		jive_graph_get_nodeclass_form(region->graph , &JIVE_SPLITNODE);
 	if (nf->enable_mutable && nf->enable_cse)
-		jive_graph_mark_denormalized(graph);
-	
-	return self;
+		jive_graph_mark_denormalized(region->graph);
+
+	return op.create_node(region, 1, &in_origin);
 }
