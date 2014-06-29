@@ -16,9 +16,9 @@ extern const jive_node_class JIVE_BITCONCAT_NODE;
 namespace jive {
 namespace bits {
 
-class concat_operation final : public jive::base::binary_op {
+class concat_op final : public jive::base::binary_op {
 public:
-	virtual ~concat_operation() noexcept;
+	virtual ~concat_op() noexcept;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;

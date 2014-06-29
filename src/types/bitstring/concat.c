@@ -82,7 +82,7 @@ jive_bitconcat(size_t noperands, struct jive::output * const * operands)
 	JIVE_DEBUG_ASSERT(noperands != 0);
 
 	jive_graph * graph = operands[0]->node()->graph;
-	jive::bits::concat_operation op;
+	jive::bits::concat_op op;
 	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE, graph,
 		&op, noperands, operands);
 }
@@ -90,26 +90,26 @@ jive_bitconcat(size_t noperands, struct jive::output * const * operands)
 namespace jive {
 namespace bits {
 
-concat_operation::~concat_operation() noexcept
+concat_op::~concat_op() noexcept
 {
 }
 
 bool
-concat_operation::operator==(const operation & other) const noexcept
+concat_op::operator==(const operation & other) const noexcept
 {
-	const concat_operation * o = dynamic_cast<const concat_operation *>(&other);
+	const concat_op * o = dynamic_cast<const concat_op *>(&other);
 	return o != nullptr;
 }
 
 jive_node *
-concat_operation::create_node(
+concat_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
 	JIVE_DEBUG_ASSERT(narguments >= 2);
 
-	jive_node * node = jive::create_operation_node(jive::bits::concat_operation());
+	jive_node * node = jive::create_operation_node(jive::bits::concat_op());
 	node->class_ = &JIVE_BITCONCAT_NODE;
 	jive_bitconcat_node_init_(node, region, narguments, arguments);
 	return node;
@@ -117,7 +117,7 @@ concat_operation::create_node(
 
 
 jive_binop_reduction_path_t
-concat_operation::can_reduce_operand_pair(
+concat_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
@@ -130,9 +130,9 @@ concat_operation::can_reduce_operand_pair(
 		return jive_binop_reduction_constants;
 	}
 
-	const slice_operation * arg1_slice = dynamic_cast<const slice_operation *>(
+	const slice_op * arg1_slice = dynamic_cast<const slice_op *>(
 		&arg1->node()->operation());
-	const slice_operation * arg2_slice = dynamic_cast<const slice_operation *>(
+	const slice_op * arg2_slice = dynamic_cast<const slice_op *>(
 		&arg2->node()->operation());
 
 	if (arg1_slice && arg2_slice){
@@ -150,7 +150,7 @@ concat_operation::can_reduce_operand_pair(
 }
 
 jive::output *
-concat_operation::reduce_operand_pair(
+concat_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
 	jive::output * arg1,
 	jive::output * arg2) const
@@ -172,9 +172,9 @@ concat_operation::reduce_operand_pair(
 	}
 
 	if (path == jive_binop_reduction_merge) {
-		const slice_operation * arg1_slice = static_cast<const slice_operation *>(
+		const slice_op * arg1_slice = static_cast<const slice_op *>(
 			&arg1->node()->operation());
-		const slice_operation * arg2_slice = static_cast<const slice_operation *>(
+		const slice_op * arg2_slice = static_cast<const slice_op *>(
 			&arg2->node()->operation());
 
 		jive::output * origin1 = arg1->node()->inputs[0]->origin();
@@ -188,13 +188,13 @@ concat_operation::reduce_operand_pair(
 }
 
 jive_binary_operation_flags
-concat_operation::flags() const noexcept
+concat_op::flags() const noexcept
 {
 	return jive_binary_operation_associative;
 }
 
 std::string
-concat_operation::debug_string() const
+concat_op::debug_string() const
 {
 	return "BITCONCAT";
 }

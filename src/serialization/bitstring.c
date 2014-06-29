@@ -61,7 +61,7 @@ jive_bitslice_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive::bits::slice_operation * attrs = (const jive::bits::slice_operation *) attrs_;
+	const jive::bits::slice_op * attrs = (const jive::bits::slice_op *) attrs_;
 	jive_token_ostream_integral(os, attrs->low());
 	jive_token_ostream_char(os, ',');
 	jive_token_ostream_integral(os, attrs->high());
@@ -88,7 +88,7 @@ jive_bitslice_deserialize(
 
 	const jive::bits::type & argument_type =
 		dynamic_cast<const jive::bits::type &>(arguments[0]->type());
-	jive::bits::slice_operation op(argument_type, low, high);
+	jive::bits::slice_op op(argument_type, low, high);
 
 	*node = op.create_node(region, narguments, arguments);
 	
@@ -168,7 +168,7 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 
 JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
 	JIVE_BITCONCAT_NODE,
-	jive::bits::concat_operation,
+	jive::bits::concat_op,
 	"bitconcat");
 
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(

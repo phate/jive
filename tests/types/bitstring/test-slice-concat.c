@@ -46,8 +46,8 @@ static int test_main(void)
 		jive::output * b = jive_bitslice(a, 1, 3);
 	
 		assert(b->node()->class_ == &JIVE_BITSLICE_NODE);
-		const jive::bits::slice_operation * attrs =
-			(const jive::bits::slice_operation *)jive_node_get_attrs(b->node());
+		const jive::bits::slice_op * attrs =
+			(const jive::bits::slice_op *)jive_node_get_attrs(b->node());
 		assert(attrs->low() == 3 && attrs->high() == 5);
 	}
 	

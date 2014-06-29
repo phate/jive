@@ -41,19 +41,19 @@ const jive_node_class JIVE_BITSLICE_NODE = {
 namespace jive {
 namespace bits {
 
-slice_operation::~slice_operation() noexcept
+slice_op::~slice_op() noexcept
 {
 }
 
 bool
-slice_operation::operator==(const operation & other) const noexcept
+slice_op::operator==(const operation & other) const noexcept
 {
-	const slice_operation * op = dynamic_cast<const slice_operation *>(&other);
+	const slice_op * op = dynamic_cast<const slice_op *>(&other);
 	return op && op->argument_type_ == argument_type_ && op->low() == low() && op->high() == high();
 }
 
 jive_node *
-slice_operation::create_node(
+slice_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
@@ -73,7 +73,7 @@ slice_operation::create_node(
 }
 
 std::string
-slice_operation::debug_string() const
+slice_op::debug_string() const
 {
 	char tmp[32];
 	snprintf(tmp, sizeof(tmp), "SLICE[%zd:%zd)", low(), high());
@@ -81,19 +81,19 @@ slice_operation::debug_string() const
 }
 
 const jive::base::type &
-slice_operation::argument_type(size_t index) const noexcept
+slice_op::argument_type(size_t index) const noexcept
 {
 	return argument_type_;
 }
 
 const jive::base::type &
-slice_operation::result_type(size_t index) const noexcept
+slice_op::result_type(size_t index) const noexcept
 {
 	return result_type_;
 }
 
 jive_unop_reduction_path_t
-slice_operation::can_reduce_operand(const jive::output * arg) const noexcept
+slice_op::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	const jive::bits::type & arg_type =
 		static_cast<const jive::bits::type &>(arg->type());
@@ -102,13 +102,13 @@ slice_operation::can_reduce_operand(const jive::output * arg) const noexcept
 	if ((low() == 0) && (high() == arg_type.nbits())) {
 		return jive_unop_reduction_idempotent;
 	}
-	if (dynamic_cast<const slice_operation *>(op)) {
+	if (dynamic_cast<const slice_op *>(op)) {
 		return jive_unop_reduction_narrow;
 	}
 	if (dynamic_cast<const constant_operation *>(op)) {
 		return jive_unop_reduction_constant;
 	}
-	if (dynamic_cast<const concat_operation *>(op)) {
+	if (dynamic_cast<const concat_op *>(op)) {
 		return jive_unop_reduction_distribute;
 	}
 	
@@ -116,7 +116,7 @@ slice_operation::can_reduce_operand(const jive::output * arg) const noexcept
 }
 
 jive::output *
-slice_operation::reduce_operand(
+slice_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -127,7 +127,7 @@ slice_operation::reduce_operand(
 	}
 	
 	if (path == jive_unop_reduction_narrow) {
-		auto op = static_cast<const slice_operation *>(gen_op);
+		auto op = static_cast<const slice_op *>(gen_op);
 		return jive_bitslice(arg->node()->inputs[0]->origin(), low() + op->low(), high() + op->low());
 	}
 	
@@ -169,7 +169,7 @@ jive_bitslice(jive::output * argument, size_t low, size_t high)
 {
 	const jive::bits::type & type =
 		dynamic_cast<const jive::bits::type &>(argument->type());
-	jive::bits::slice_operation op(type, low, high);
+	jive::bits::slice_op op(type, low, high);
 
 	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE, argument->node()->graph,
 		&op, argument);

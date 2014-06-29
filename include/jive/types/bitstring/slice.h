@@ -16,10 +16,10 @@ extern const jive_node_class JIVE_BITSLICE_NODE;
 namespace jive {
 namespace bits {
 
-class slice_operation : public base::unary_op {
+class slice_op : public base::unary_op {
 public:
 	inline constexpr
-	slice_operation(
+	slice_op(
 		const jive::bits::type & argument_type,
 		size_t low, size_t high) noexcept
 		: argument_type_(argument_type)
@@ -29,7 +29,7 @@ public:
 	}
 
 	virtual
-	~slice_operation() noexcept;
+	~slice_op() noexcept;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -75,7 +75,7 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::bits::slice_operation> jive_bitslice_node;
+typedef jive::operation_node<jive::bits::slice_op> jive_bitslice_node;
 
 /**
 	\brief Create bitslice
