@@ -18,9 +18,9 @@ jive_bitconstant_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive::bits::constant_operation * attrs =
-		(const jive::bits::constant_operation *) attrs_;
-	jive_token_ostream_string(os, &attrs->bits[0], attrs->bits.size());
+	const jive::bits::constant_op * attrs =
+		(const jive::bits::constant_op *) attrs_;
+	jive_token_ostream_string(os, &attrs->value()[0], attrs->value().size());
 }
 
 static bool
@@ -36,17 +36,15 @@ jive_bitconstant_deserialize(
 		driver->error(driver, "Expected string");
 		return false;
 	}
-	jive::bits::constant_operation attrs;
 	
-	char * bits = token->v.string.str;
+	const char * bits = token->v.string.str;
 	size_t nbits = token->v.string.len;
-	attrs.bits = std::vector<char>(bits, bits + nbits);
-	
-	*node = JIVE_BITCONSTANT_NODE.create(region, &attrs,
-		noperands, operands);
-	
+
+	jive::bits::constant_op op(jive::bits::value_repr(bits, bits + nbits));
+	*node = op.create_node(region, noperands, operands);
+
 	jive_token_istream_advance(is);
-	
+
 	return true;
 }
 

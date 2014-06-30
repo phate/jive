@@ -105,7 +105,7 @@ slice_op::can_reduce_operand(const jive::output * arg) const noexcept
 	if (dynamic_cast<const slice_op *>(op)) {
 		return jive_unop_reduction_narrow;
 	}
-	if (dynamic_cast<const constant_operation *>(op)) {
+	if (dynamic_cast<const constant_op *>(op)) {
 		return jive_unop_reduction_constant;
 	}
 	if (dynamic_cast<const concat_op *>(op)) {
@@ -120,20 +120,20 @@ slice_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
-	const jive::operation * gen_op = &arg->node()->operation();
+	const jive::operation & gen_op = arg->node()->operation();
 	
 	if (path == jive_unop_reduction_idempotent) {
 		return arg;
 	}
 	
 	if (path == jive_unop_reduction_narrow) {
-		auto op = static_cast<const slice_op *>(gen_op);
-		return jive_bitslice(arg->node()->inputs[0]->origin(), low() + op->low(), high() + op->low());
+		auto op = static_cast<const slice_op &>(gen_op);
+		return jive_bitslice(arg->node()->inputs[0]->origin(), low() + op.low(), high() + op.low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
-		auto op = static_cast<const constant_operation *>(gen_op);
-		return jive_bitconstant(arg->node()->graph, high() - low(), &op->bits[0] + low());
+		auto op = static_cast<const constant_op &>(gen_op);
+		return jive_bitconstant(arg->node()->graph, high() - low(), &op.value()[0] + low());
 	}
 	
 	if (path == jive_unop_reduction_distribute) {

@@ -18,11 +18,10 @@
 static void
 assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
 {
-	jive_bitconstant_node * node = dynamic_cast<jive_bitconstant_node *>(bitstr->node());
-	assert(node);
+	const jive::bits::constant_op & op =
+		dynamic_cast<const jive::bits::constant_op &>(bitstr->node()->operation());
 	
-	assert(node->operation().bits.size() == nbits);
-	assert(strncmp(&node->operation().bits[0], bits, nbits) == 0);
+	assert(op.value() == jive::bits::value_repr(bits, bits + nbits));
 }
 
 static int test_main(void)

@@ -147,7 +147,7 @@ sequentialize_region(
 				jive_bitconstant_node * cnode = dynamic_cast<jive_bitconstant_node *>(input->producer());
 				jive_seq_dataitem * item = &data->items[n];
 				if (cnode) {
-					switch (cnode->operation().bits.size()) {
+					switch (cnode->operation().value().size()) {
 						case 8:
 							item->format = jive_seq_dataitem_fmt_8;
 							break;
