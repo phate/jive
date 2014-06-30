@@ -168,7 +168,7 @@ private:
 	jive::bits::type difference_type_;
 };
 
-class label_to_address_operation : public nullary_operation {
+class label_to_address_operation : public base::nullary_op {
 public:
 	inline constexpr
 	label_to_address_operation(const jive_label * label) noexcept
@@ -183,7 +183,7 @@ private:
 	const struct jive_label * label_;
 };
 
-class label_to_bitstring_operation : public nullary_operation {
+class label_to_bitstring_operation : public base::nullary_op {
 public:
 	inline constexpr
 	label_to_bitstring_operation(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -15,21 +15,34 @@ namespace jive {
 
 class output;
 
+namespace base {
+
 /**
 	\brief Nullary operator (operator taking no formal arguments)
 */
-class nullary_operation : public operation {
+class nullary_op : public operation {
 public:
-	virtual ~nullary_operation() noexcept;
+	virtual
+	~nullary_op() noexcept;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
 };
 
+}
 }
 
 struct jive_region;
 
-typedef struct jive_node_class jive_nullary_operation_class;
-typedef struct jive_nullary_operation_normal_form_class jive_nullary_operation_normal_form_class;
-typedef struct jive_nullary_operation_normal_form jive_nullary_operation_normal_form;
+struct jive_nullary_operation_normal_form;
+
+typedef jive_node_class jive_nullary_operation_class;
 
 /* node class */
 
@@ -47,7 +60,10 @@ jive_nullary_operation_create_normalized(const jive_nullary_operation_class * cl
 /* node class inheritable methods */
 
 jive_node_normal_form *
-jive_nullary_operation_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, struct jive_graph * graph);
+jive_nullary_operation_get_default_normal_form_(
+	const jive_node_class * cls,
+	jive_node_normal_form * parent,
+	struct jive_graph * graph);
 
 /* normal form class */
 
@@ -82,6 +98,9 @@ bool
 jive_nullary_operation_normalize_node_(const jive_node_normal_form * self, jive_node * node);
 
 jive::output *
-jive_nullary_operation_normalized_create_(const jive_nullary_operation_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs);
+jive_nullary_operation_normalized_create_(
+	const jive_nullary_operation_normal_form * self,
+	jive_region * region,
+	const jive_node_attrs * attrs);
 
 #endif

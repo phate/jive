@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,9 +10,29 @@
 #include <jive/vsdg/region.h>
 
 namespace jive {
+namespace base {
 
-nullary_operation::~nullary_operation() noexcept {}
+nullary_op::~nullary_op() noexcept {}
 
+size_t
+nullary_op::narguments() const noexcept
+{
+	return 0;
+}
+
+size_t
+nullary_op::nresults() const noexcept
+{
+	return 0;
+}
+
+const type &
+nullary_op::argument_type(size_t index) const noexcept
+{
+	throw std::logic_error("No arguments to nullary operation");
+}
+
+}
 }
 
 /* node class */
@@ -31,7 +51,10 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 /* node class inheritable methods */
 
 jive_node_normal_form *
-jive_nullary_operation_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, jive_graph * graph)
+jive_nullary_operation_get_default_normal_form_(
+	const jive_node_class * cls,
+	jive_node_normal_form * parent,
+	jive_graph * graph)
 {
 	jive_context * context = graph->context;
 	jive_nullary_operation_normal_form * nf = jive_context_malloc(context, sizeof(*nf));
@@ -82,7 +105,10 @@ jive_nullary_operation_normalize_node_(const jive_node_normal_form * self, jive_
 }
 
 jive::output *
-jive_nullary_operation_normalized_create_(const jive_nullary_operation_normal_form * self, struct jive_region * region, const jive_node_attrs * attrs)
+jive_nullary_operation_normalized_create_(
+	const jive_nullary_operation_normal_form * self,
+	jive_region * region,
+	const jive_node_attrs * attrs)
 {
 	jive_node * node = jive_node_cse_create(&self->base, region, attrs, 0, 0);
 	return node->outputs[0];

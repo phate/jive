@@ -21,7 +21,7 @@
 
 namespace jive {
 
-class instruction_operation final : public nullary_operation {
+class instruction_operation final : public base::nullary_op {
 public:
 	explicit inline constexpr
 	instruction_operation(const jive_instruction_class * icls) noexcept

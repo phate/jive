@@ -20,7 +20,7 @@ extern const jive_node_class JIVE_BITCONSTANT_NODE;
 namespace jive {
 namespace bitstring {
 
-struct constant_operation final : public nullary_operation {
+struct constant_operation final : public base::nullary_op {
 	std::vector<char> bits;
 };
 

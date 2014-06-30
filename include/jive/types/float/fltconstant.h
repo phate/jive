@@ -16,7 +16,7 @@ extern const jive_node_class JIVE_FLTCONSTANT_NODE;
 namespace jive {
 namespace flt {
 
-class constant_operation final : public jive::nullary_operation {
+class constant_operation final : public jive::base::nullary_op {
 public:
 	inline constexpr constant_operation(value_repr value) noexcept
 		: value_(value) {}

@@ -80,7 +80,7 @@ private:
 	size_t option_;
 };
 
-class empty_unify_operation final : public nullary_operation {
+class empty_unify_operation final : public base::nullary_op {
 public:
 	inline constexpr
 	empty_unify_operation(
