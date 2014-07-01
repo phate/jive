@@ -54,10 +54,10 @@ jive_call_code_get_label_(const struct jive_three_address_code * self_, struct j
 
 	size_t n;
 	char tmp[32];
-	for (n = 0; n < self_->noperands; n++) {
+	for (n = 0; n < self_->operands.size(); n++) {
 		snprintf(tmp, sizeof(tmp), "%p", self_->operands[n]);
 		jive_buffer_putstr(buffer, tmp);
-		if (n != self_->noperands-1)
+		if (n != self_->operands.size()-1)
 			jive_buffer_putstr(buffer, ", ");
 	}
 

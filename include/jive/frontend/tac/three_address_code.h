@@ -9,6 +9,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <vector>
+
 struct jive_buffer;
 
 /* three address code class */
@@ -26,8 +28,7 @@ struct jive_three_address_code {
 
 	struct jive_basic_block * basic_block;
 
-	size_t noperands;
-	struct jive_three_address_code ** operands;
+	std::vector<jive_three_address_code*> operands;
 
 	struct {
 		struct jive_three_address_code * prev;

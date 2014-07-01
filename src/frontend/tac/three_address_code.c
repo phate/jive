@@ -30,12 +30,8 @@ jive_three_address_code_init_(struct jive_three_address_code * self,
 	self->basic_block_three_address_codes_list.prev = NULL;
 	self->basic_block_three_address_codes_list.next = NULL;
 
-	size_t i;
-	self->noperands = noperands;
-	self->operands = jive_context_malloc(basic_block->base.cfg->context,
-		sizeof(jive_three_address_code *) * self->noperands);
-	for (i = 0; i < noperands; i++)
-		self->operands[i] = operands[i];
+	for (size_t i = 0; i < noperands; i++)
+		self->operands.push_back(operands[i]);
 
 	JIVE_LIST_PUSH_BACK(basic_block->three_address_codes, self, basic_block_three_address_codes_list);
 }
@@ -45,9 +41,6 @@ jive_three_address_code_fini_(struct jive_three_address_code * self)
 {
 	JIVE_LIST_REMOVE(self->basic_block->three_address_codes, self,
 		basic_block_three_address_codes_list);
-	jive_context_free(self->basic_block->base.cfg->context, self->operands);
-
-	self->noperands = 0;
 
 	self->basic_block_three_address_codes_list.prev = 0;
 	self->basic_block_three_address_codes_list.next = 0;
