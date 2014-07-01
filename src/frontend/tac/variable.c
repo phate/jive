@@ -37,17 +37,16 @@ const struct jive_three_address_code_class JIVE_VARIABLE_CODE = {
 
 static void
 jive_variable_code_init_(struct jive_variable_code * self,
-	struct jive_basic_block * basic_block, const char * name)
+	struct jive_basic_block * basic_block, std::string & name)
 {
 	jive_three_address_code_init_(&self->base, basic_block, 0, NULL);
-	self->attrs.name = jive_context_strdup(basic_block->base.cfg->context, name);
+	self->attrs.name = name;
 }
 
 static void
 jive_variable_code_fini_(struct jive_three_address_code * self_)
 {
 	struct jive_variable_code * self = (struct jive_variable_code *)self_;
-	jive_context_free(self_->basic_block->base.cfg->context, self->attrs.name);
 	jive_three_address_code_fini_(self_);
 }
 
@@ -56,7 +55,7 @@ jive_variable_code_get_label_(const struct jive_three_address_code * self_,
 	struct jive_buffer * buffer)
 {
 	struct jive_variable_code * self = (struct jive_variable_code *)self_;
-	jive_buffer_putstr(buffer, self->attrs.name);
+	jive_buffer_putstr(buffer, self->attrs.name.c_str());
 }
 
 static const struct jive_three_address_code_attrs *
