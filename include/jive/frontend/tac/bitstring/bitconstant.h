@@ -8,6 +8,8 @@
 
 #include <jive/frontend/tac/three_address_code.h>
 
+#include <vector>
+
 extern const jive_three_address_code_class JIVE_BITCONSTANT_CODE;
 
 typedef struct jive_bitconstant_code jive_bitconstant_code;
@@ -15,8 +17,7 @@ typedef struct jive_bitconstant_code_attrs jive_bitconstant_code_attrs;
 
 struct jive_bitconstant_code_attrs {
 	jive_three_address_code_attrs base;
-	size_t nbits;
-	char * bits;	/* [LSB, ..., MSB] */
+	std::vector<char> bits; /* [LSB, ..., MSB] */
 };
 
 struct jive_bitconstant_code {

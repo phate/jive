@@ -38,26 +38,17 @@ const struct jive_three_address_code_class JIVE_BITCONSTANT_CODE = {
 };
 
 static void
-jive_bitconstant_code_init_(struct jive_bitconstant_code * self, struct jive_basic_block * basic_block,
-	size_t nbits, const char * bits)
+jive_bitconstant_code_init_(struct jive_bitconstant_code * self,
+	struct jive_basic_block * basic_block, std::vector<char> bits)
 {
-	jive_context * context = basic_block->base.cfg->clg_node->clg->context;
-
 	jive_three_address_code_init_(&self->base, basic_block, 0, NULL);
-	self->attrs.bits = jive_context_malloc(context, nbits);
-
-	size_t i;
-	for (i = 0; i < nbits; i++)
-		self->attrs.bits[nbits-i-1] = bits[nbits-i-1];
-	self->attrs.nbits = nbits;
+	self->attrs.bits = bits;
 }
 
 static void
 jive_bitconstant_code_fini_(struct jive_three_address_code * self_)
 {
 	struct jive_bitconstant_code * self = (struct jive_bitconstant_code *)self_;
-	jive_context * context = self_->basic_block->base.cfg->clg_node->clg->context;
-	jive_context_free(context, self->attrs.bits);
 	jive_three_address_code_fini_(self_);
 }
 
@@ -68,7 +59,7 @@ jive_bitconstant_code_get_label_(const struct jive_three_address_code * self_,
 	struct jive_bitconstant_code * self = (struct jive_bitconstant_code *)self_;
 
 	size_t i;
-	for (i = 0; i < self->attrs.nbits; i++)
+	for (i = 0; i < self->attrs.bits.size(); i++)
 		jive_buffer_putbyte(buffer, self->attrs.bits[i]);
 }
 
@@ -88,7 +79,7 @@ jive_bitconstant_code_create_(struct jive_basic_block * basic_block,
 
 	jive_bitconstant_code * bitconstant = new jive_bitconstant_code;
 	bitconstant->base.class_ = &JIVE_BITCONSTANT_CODE;
-	jive_bitconstant_code_init_(bitconstant, basic_block, attrs->nbits, attrs->bits);
+	jive_bitconstant_code_init_(bitconstant, basic_block, attrs->bits);
 	return &bitconstant->base;
 }
 
@@ -96,8 +87,10 @@ jive_three_address_code *
 jive_bitconstant_code_create(struct jive_basic_block * basic_block, size_t nbits, const char * bits)
 {
 	jive_bitconstant_code_attrs attrs;
-	attrs.nbits = nbits;
-	attrs.bits = (char *)bits;
+
+	attrs.bits.resize(nbits);
+	for (size_t i = 0; i < nbits; i++)
+		attrs.bits[nbits-i-1] = bits[nbits-i-1];
 
 	return jive_bitconstant_code_create_(basic_block, &attrs.base, 0, NULL);
 }
