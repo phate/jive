@@ -12,7 +12,6 @@
 
 extern const jive_three_address_code_class JIVE_BITCONSTANT_CODE;
 
-typedef struct jive_bitconstant_code jive_bitconstant_code;
 typedef struct jive_bitconstant_code_attrs jive_bitconstant_code_attrs;
 
 struct jive_bitconstant_code_attrs {
@@ -20,8 +19,8 @@ struct jive_bitconstant_code_attrs {
 	std::vector<char> bits; /* [LSB, ..., MSB] */
 };
 
-struct jive_bitconstant_code {
-	jive_three_address_code base;
+class jive_bitconstant_code final : public jive_three_address_code {
+public:
 	jive_bitconstant_code_attrs attrs;
 };
 

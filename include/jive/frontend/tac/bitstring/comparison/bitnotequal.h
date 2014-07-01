@@ -10,7 +10,8 @@
 
 extern const jive_three_address_code_class JIVE_BITNOTEQUAL_CODE;
 
-typedef struct jive_three_address_code jive_bitnotequal_code;
+class jive_bitnotequal_code final : public jive_three_address_code {
+};
 
 static inline jive_bitnotequal_code *
 jive_bitnotequal_code_cast(struct jive_three_address_code * tac)

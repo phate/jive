@@ -11,10 +11,7 @@
 
 extern const jive_three_address_code_class JIVE_ASSIGNMENT_CODE;
 
-typedef struct jive_assignment_code jive_assignment_code;
-
-struct jive_assignment_code {
-	jive_three_address_code base;
+class jive_assignment_code final : public jive_three_address_code {
 };
 
 static inline jive_assignment_code *
@@ -42,13 +39,13 @@ jive_assignment_code_create(struct jive_basic_block * basic_block,
 static inline struct jive_variable_code *
 jive_assignment_code_get_variable(const struct jive_assignment_code * self)
 {
-	return jive_variable_code_cast(self->base.operands[0]);
+	return jive_variable_code_cast(self->operands[0]);
 }
 
 static inline struct jive_three_address_code *
 jive_assignment_code_get_rhs(const struct jive_assignment_code * self)
 {
-	return self->base.operands[1];
+	return self->operands[1];
 }
 
 #endif

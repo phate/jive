@@ -41,7 +41,7 @@ static void
 jive_bitconstant_code_init_(struct jive_bitconstant_code * self,
 	struct jive_basic_block * basic_block, std::vector<char> bits)
 {
-	jive_three_address_code_init_(&self->base, basic_block, 0, NULL);
+	jive_three_address_code_init_(self, basic_block, 0, NULL);
 	self->attrs.bits = bits;
 }
 
@@ -78,9 +78,9 @@ jive_bitconstant_code_create_(struct jive_basic_block * basic_block,
 	jive_bitconstant_code_attrs * attrs = (jive_bitconstant_code_attrs *)attrs_;
 
 	jive_bitconstant_code * bitconstant = new jive_bitconstant_code;
-	bitconstant->base.class_ = &JIVE_BITCONSTANT_CODE;
+	bitconstant->class_ = &JIVE_BITCONSTANT_CODE;
 	jive_bitconstant_code_init_(bitconstant, basic_block, attrs->bits);
-	return &bitconstant->base;
+	return bitconstant;
 }
 
 jive_three_address_code *

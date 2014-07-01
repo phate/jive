@@ -38,8 +38,7 @@ jive_bitsum_code_init_(jive_bitsum_code * self, struct jive_basic_block * basic_
 	struct jive_three_address_code * summand1, struct jive_three_address_code * summand2)
 {
 	jive_three_address_code * tmparray0[] = {summand1, summand2};
-	jive_three_address_code_init_(&self->base, basic_block,
-	2, tmparray0);
+	jive_three_address_code_init_(self, basic_block, 2, tmparray0);
 }
 
 static void
@@ -58,9 +57,9 @@ jive_bitsum_code_create_(struct jive_basic_block * basic_block,
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	jive_bitsum_code * sum = new jive_bitsum_code;
-	sum->base.class_ = &JIVE_BITSUM_CODE;
+	sum->class_ = &JIVE_BITSUM_CODE;
 	jive_bitsum_code_init_(sum, basic_block, operands[0], operands[1]);
-	return &sum->base;
+	return sum;
 }
 
 jive_three_address_code *

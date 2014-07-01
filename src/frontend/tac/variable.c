@@ -39,7 +39,7 @@ static void
 jive_variable_code_init_(struct jive_variable_code * self,
 	struct jive_basic_block * basic_block, std::string & name)
 {
-	jive_three_address_code_init_(&self->base, basic_block, 0, NULL);
+	jive_three_address_code_init_(self, basic_block, 0, NULL);
 	self->attrs.name = name;
 }
 
@@ -73,9 +73,9 @@ jive_variable_code_create_(struct jive_basic_block * basic_block,
 	jive_variable_code_attrs * attrs = (jive_variable_code_attrs *)attrs_;
 
 	jive_variable_code * variable = new jive_variable_code;
-	variable->base.class_ = &JIVE_VARIABLE_CODE;
+	variable->class_ = &JIVE_VARIABLE_CODE;
 	jive_variable_code_init_(variable, basic_block, attrs->name);
-	return &variable->base;
+	return variable;
 }
 
 jive_three_address_code *

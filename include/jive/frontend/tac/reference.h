@@ -12,10 +12,7 @@ struct jive_variable_code;
 
 extern const jive_three_address_code_class JIVE_REFERENCE_CODE;
 
-typedef struct jive_reference_code jive_reference_code;
-
-struct jive_reference_code {
-	jive_three_address_code base;
+class jive_reference_code final : public jive_three_address_code {
 };
 
 static inline jive_reference_code *
@@ -43,14 +40,14 @@ jive_reference_code_create(struct jive_basic_block * basic_block,
 static inline struct jive_three_address_code *
 jive_reference_code_get_reference(const struct jive_reference_code * self)
 {
-	return self->base.operands[0];
+	return self->operands[0];
 }
 
 static inline void
 jive_reference_code_set_reference(struct jive_reference_code * self,
 	struct jive_three_address_code * tac)
 {
-	self->base.operands[0] = tac;
+	self->operands[0] = tac;
 }
 
 #endif

@@ -10,7 +10,6 @@
 
 extern const jive_three_address_code_class JIVE_CALL_CODE;
 
-typedef struct jive_call_code jive_call_code;
 typedef struct jive_call_code_attrs jive_call_code_attrs;
 
 struct jive_call_code_attrs {
@@ -18,8 +17,8 @@ struct jive_call_code_attrs {
 	struct jive_clg_node * callee;
 };
 
-struct jive_call_code {
-	jive_three_address_code base;
+class jive_call_code final : public jive_three_address_code {
+public:
 	jive_call_code_attrs attrs;
 };
 

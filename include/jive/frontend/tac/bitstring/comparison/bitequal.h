@@ -10,10 +10,7 @@
 
 extern const jive_three_address_code_class JIVE_BITEQUAL_CODE;
 
-typedef struct jive_bitequal_code jive_bitequal_code;
-
-struct jive_bitequal_code {
-	jive_three_address_code base;
+class jive_bitequal_code final : public jive_three_address_code {
 };
 
 static inline jive_bitequal_code *

@@ -38,7 +38,7 @@ jive_call_code_init_(jive_call_code * self, struct jive_basic_block * basic_bloc
 	struct jive_clg_node * callee,
 	size_t narguments, struct jive_three_address_code * const arguments[])
 {
-	jive_three_address_code_init_(&self->base, basic_block, narguments, arguments);
+	jive_three_address_code_init_(self, basic_block, narguments, arguments);
 	self->attrs.callee = callee;
 	jive_clg_node_add_call(basic_block->base.cfg->clg_node, callee);
 }
@@ -79,9 +79,9 @@ jive_call_code_create_(struct jive_basic_block * basic_block,
 	const jive_call_code_attrs * attrs = (const jive_call_code_attrs *) attrs_;
 
 	jive_call_code * call = new jive_call_code;
-	call->base.class_ = &JIVE_CALL_CODE;
+	call->class_ = &JIVE_CALL_CODE;
 	jive_call_code_init_(call, basic_block, attrs->callee, noperands, operands);
-	return &call->base;
+	return call;
 }
 
 jive_three_address_code *

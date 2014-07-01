@@ -33,9 +33,8 @@ static void
 jive_assignment_code_init_(jive_assignment_code * self, struct jive_basic_block * basic_block,
 	struct jive_variable_code * variable, struct jive_three_address_code * tac)
 {
-	jive_three_address_code * tmparray0[] = {&variable->base, tac};
-	jive_three_address_code_init_(&self->base, basic_block,
-		2, tmparray0);
+	jive_three_address_code * tmparray0[] = {variable, tac};
+	jive_three_address_code_init_(self, basic_block, 2, tmparray0);
 }
 
 static void
@@ -56,16 +55,16 @@ jive_assignment_code_create_(struct jive_basic_block * basic_block,
 	size_t noperands, struct jive_three_address_code * const operands[])
 {
 	jive_assignment_code * ass = new jive_assignment_code;
-	ass->base.class_ = &JIVE_ASSIGNMENT_CODE;
+	ass->class_ = &JIVE_ASSIGNMENT_CODE;
 	jive_assignment_code_init_(ass, basic_block, jive_variable_code_cast(operands[0]), operands[1]);
-	return &ass->base;
+	return ass;
 }
 
 jive_three_address_code *
 jive_assignment_code_create(struct jive_basic_block * basic_block, jive_variable_code * variable,
 	jive_three_address_code * tac)
 {
-	jive_three_address_code * tmparray1[] = {&variable->base, tac};
+	jive_three_address_code * tmparray1[] = {variable, tac};
 	return jive_assignment_code_create_(basic_block, NULL,
 		2, tmparray1);
 }

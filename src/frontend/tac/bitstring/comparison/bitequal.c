@@ -38,8 +38,7 @@ jive_bitequal_code_init_(jive_bitequal_code * self, struct jive_basic_block * ba
 	struct jive_three_address_code * op1, struct jive_three_address_code * op2)
 {
 	jive_three_address_code * tmparray0[] = {op1, op2};
-	jive_three_address_code_init_(&self->base, basic_block,
-	2, tmparray0);
+	jive_three_address_code_init_(self, basic_block, 2, tmparray0);
 }
 
 static void
@@ -59,9 +58,9 @@ jive_bitequal_code_create_(struct jive_basic_block * basic_block,
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
 	jive_bitequal_code * equal = new jive_bitequal_code;
-	equal->base.class_ = &JIVE_BITEQUAL_CODE;
+	equal->class_ = &JIVE_BITEQUAL_CODE;
 	jive_bitequal_code_init_(equal, basic_block, operands[0], operands[1]);
-	return &equal->base;
+	return equal;
 }
 
 jive_three_address_code *

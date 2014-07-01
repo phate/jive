@@ -12,7 +12,6 @@
 
 extern const jive_three_address_code_class JIVE_VARIABLE_CODE;
 
-typedef struct jive_variable_code jive_variable_code;
 typedef struct jive_variable_code_attrs jive_variable_code_attrs;
 
 struct jive_variable_code_attrs {
@@ -20,8 +19,8 @@ struct jive_variable_code_attrs {
 	std::string name;
 };
 
-struct jive_variable_code {
-	jive_three_address_code base;
+class jive_variable_code final : public jive_three_address_code {
+public:
 	jive_variable_code_attrs attrs;
 };
 

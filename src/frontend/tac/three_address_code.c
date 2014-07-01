@@ -22,9 +22,9 @@ const struct jive_three_address_code_class JIVE_THREE_ADDRESS_CODE = {
 };
 
 void
-jive_three_address_code_init_(struct jive_three_address_code * self,
+jive_three_address_code_init_(jive_three_address_code * self,
 	struct jive_basic_block * basic_block,
-	size_t noperands, struct jive_three_address_code * const operands[])
+	size_t noperands, jive_three_address_code * const operands[])
 {
 	self->basic_block = basic_block;
 	self->basic_block_three_address_codes_list.prev = NULL;
@@ -37,7 +37,7 @@ jive_three_address_code_init_(struct jive_three_address_code * self,
 }
 
 void
-jive_three_address_code_fini_(struct jive_three_address_code * self)
+jive_three_address_code_fini_(jive_three_address_code * self)
 {
 	JIVE_LIST_REMOVE(self->basic_block->three_address_codes, self,
 		basic_block_three_address_codes_list);
@@ -58,10 +58,10 @@ jive_three_address_code_get_attrs_(const jive_three_address_code * self)
 	return 0;
 }
 
-struct jive_three_address_code *
+jive_three_address_code *
 jive_three_address_code_create_(struct jive_basic_block * basic_block,
 	const jive_three_address_code_attrs * attrs,
-	size_t noperands, struct jive_three_address_code * const operands[])
+	size_t noperands, jive_three_address_code * const operands[])
 {
 	jive_three_address_code * three_address_code = new jive_three_address_code;
 	three_address_code->class_ = &JIVE_THREE_ADDRESS_CODE;
@@ -71,7 +71,7 @@ jive_three_address_code_create_(struct jive_basic_block * basic_block,
 }
 
 void
-jive_three_address_code_destroy(struct jive_three_address_code * self)
+jive_three_address_code_destroy(jive_three_address_code * self)
 {
 	self->class_->fini(self);
 	delete self;
