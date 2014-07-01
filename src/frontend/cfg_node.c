@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/common.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
@@ -75,8 +74,7 @@ jive_cfg_node_get_label_(const jive_cfg_node * self, struct jive_buffer * buffer
 struct jive_cfg_node *
 jive_cfg_node_create_(struct jive_cfg * cfg)
 {
-	jive_cfg_node * node = jive_context_malloc(cfg->context, sizeof(*node));
-
+	jive_cfg_node * node = new jive_cfg_node;
 	node->class_ = &JIVE_CFG_NODE;
 	jive_cfg_node_init_(node, cfg);
 
@@ -163,5 +161,5 @@ jive_cfg_node_destroy(struct jive_cfg_node * self)
 	JIVE_ASSERT(self->nottaken_predecessors.first == NULL);
 
 	self->class_->fini(self);
-	jive_context_free(self->cfg->context, self);
+	delete self;
 }

@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
 #include <jive/frontend/basic_block.h>
@@ -73,7 +72,7 @@ jive_basic_block_init_(struct jive_basic_block * self, struct jive_cfg * cfg)
 struct jive_cfg_node *
 jive_basic_block_create_(struct jive_cfg * cfg)
 {
-	struct jive_basic_block * node = jive_context_malloc(cfg->clg_node->clg->context, sizeof(*node));
+	struct jive_basic_block * node = new jive_basic_block;
 	node->base.class_ = &JIVE_BASIC_BLOCK;
 	jive_basic_block_init_(node, cfg);
 	return &node->base;
