@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/bitstring/bitconstant.h>
@@ -86,9 +85,8 @@ jive_bitconstant_code_create_(struct jive_basic_block * basic_block,
 	size_t noperands, struct jive_three_address_code * const operands[])
 {
 	jive_bitconstant_code_attrs * attrs = (jive_bitconstant_code_attrs *)attrs_;
-	jive_context * context = basic_block->base.cfg->clg_node->clg->context;
 
-	jive_bitconstant_code * bitconstant = jive_context_malloc(context, sizeof(*bitconstant));
+	jive_bitconstant_code * bitconstant = new jive_bitconstant_code;
 	bitconstant->base.class_ = &JIVE_BITCONSTANT_CODE;
 	jive_bitconstant_code_init_(bitconstant, basic_block, attrs->nbits, attrs->bits);
 	return &bitconstant->base;

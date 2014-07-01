@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/reference.h>
@@ -59,7 +58,7 @@ jive_reference_code_create_(struct jive_basic_block * basic_block,
 	const jive_three_address_code_attrs * attrs,
 	size_t noperands, struct jive_three_address_code * const operands[])
 {
-	jive_reference_code * ref = jive_context_malloc(basic_block->base.cfg->context, sizeof(*ref));
+	jive_reference_code * ref = new jive_reference_code;
 	ref->base.class_ = &JIVE_REFERENCE_CODE;
 	jive_reference_code_init_(ref, basic_block, jive_variable_code_cast(operands[0]));
 	return &ref->base;

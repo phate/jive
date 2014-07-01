@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/variable.h>
@@ -74,8 +73,7 @@ jive_variable_code_create_(struct jive_basic_block * basic_block,
 {
 	jive_variable_code_attrs * attrs = (jive_variable_code_attrs *)attrs_;
 
-	jive_variable_code * variable = jive_context_malloc(basic_block->base.cfg->context,
-		sizeof(*variable));
+	jive_variable_code * variable = new jive_variable_code;
 	variable->base.class_ = &JIVE_VARIABLE_CODE;
 	jive_variable_code_init_(variable, basic_block, attrs->name);
 	return &variable->base;

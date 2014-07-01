@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/assignment.h>
@@ -56,7 +55,7 @@ jive_assignment_code_create_(struct jive_basic_block * basic_block,
 	const jive_three_address_code_attrs * attrs,
 	size_t noperands, struct jive_three_address_code * const operands[])
 {
-	jive_assignment_code * ass = jive_context_malloc(basic_block->base.cfg->context, sizeof(*ass));
+	jive_assignment_code * ass = new jive_assignment_code;
 	ass->base.class_ = &JIVE_ASSIGNMENT_CODE;
 	jive_assignment_code_init_(ass, basic_block, jive_variable_code_cast(operands[0]), operands[1]);
 	return &ass->base;

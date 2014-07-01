@@ -77,9 +77,8 @@ jive_call_code_create_(struct jive_basic_block * basic_block,
 	size_t noperands, struct jive_three_address_code * const operands[])
 {
 	const jive_call_code_attrs * attrs = (const jive_call_code_attrs *) attrs_;
-	jive_context * context = basic_block->base.cfg->clg_node->clg->context;
 
-	jive_call_code * call = jive_context_malloc(context, sizeof(*call));
+	jive_call_code * call = new jive_call_code;
 	call->base.class_ = &JIVE_CALL_CODE;
 	jive_call_code_init_(call, basic_block, attrs->callee, noperands, operands);
 	return &call->base;

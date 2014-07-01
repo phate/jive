@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/three_address_code-private.h>
@@ -71,8 +70,7 @@ jive_three_address_code_create_(struct jive_basic_block * basic_block,
 	const jive_three_address_code_attrs * attrs,
 	size_t noperands, struct jive_three_address_code * const operands[])
 {
-	jive_three_address_code * three_address_code = jive_context_malloc(basic_block->base.cfg->context,
-		sizeof(*three_address_code));
+	jive_three_address_code * three_address_code = new jive_three_address_code;
 	three_address_code->class_ = &JIVE_THREE_ADDRESS_CODE;
 	jive_three_address_code_init_(three_address_code, basic_block, noperands, operands);
 
@@ -83,5 +81,5 @@ void
 jive_three_address_code_destroy(struct jive_three_address_code * self)
 {
 	self->class_->fini(self);
-	jive_context_free(self->basic_block->base.cfg->context, self);
+	delete self;
 }

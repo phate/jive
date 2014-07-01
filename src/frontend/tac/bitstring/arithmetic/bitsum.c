@@ -4,7 +4,6 @@
  */
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/bitstring/arithmetic/bitsum.h>
@@ -58,8 +57,7 @@ jive_bitsum_code_create_(struct jive_basic_block * basic_block,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_context * context = basic_block->base.cfg->clg_node->clg->context;
-	jive_bitsum_code * sum = jive_context_malloc(context, sizeof(*sum));
+	jive_bitsum_code * sum = new jive_bitsum_code;
 	sum->base.class_ = &JIVE_BITSUM_CODE;
 	jive_bitsum_code_init_(sum, basic_block, operands[0], operands[1]);
 	return &sum->base;

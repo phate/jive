@@ -4,7 +4,6 @@
  */
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/tac/bitstring/comparison/bitnotequal.h>
@@ -59,8 +58,7 @@ jive_bitnotequal_code_create_(struct jive_basic_block * basic_block,
 {
 	JIVE_DEBUG_ASSERT(noperands == 2);
 
-	jive_context * context = basic_block->base.cfg->clg_node->clg->context;	
-	jive_bitnotequal_code * notequal = jive_context_malloc(context, sizeof(*notequal));
+	jive_bitnotequal_code * notequal = new jive_bitnotequal_code;
 	notequal->class_ = &JIVE_BITNOTEQUAL_CODE;
 	jive_bitnotequal_code_init_(notequal, basic_block, operands[0], operands[1]);
 	return notequal;
