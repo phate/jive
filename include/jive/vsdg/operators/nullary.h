@@ -8,6 +8,7 @@
 #define JIVE_VSDG_OPERATORS_NULLARY_H
 
 #include <jive/common.h>
+#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/base.h>
 
@@ -33,6 +34,183 @@ public:
 
 	virtual size_t
 	nresults() const noexcept override;
+};
+
+template<typename Type, typename ValueRepr>
+struct default_type_of_value {
+	Type operator()(const ValueRepr &) const noexcept
+	{
+		return Type();
+	}
+};
+
+/* Template to represent a domain-specific constant. Instances are fully
+ * characterised by the value they contain.
+ *
+ * Template argument requirements:
+ * - Class: the node class
+ * - Type: type class of the constants represented
+ * - ValueRepr: representation of values
+ * - FormatValue: functional that takes a ValueRepr instance and returns
+ *   as std::string a human-readable representation of the value
+ * - TypeOfValue: functional that takes a ValueRepr instance and returns
+ *   the Type instances corresponding to this value (in case the type
+ *   class is polymorphic) */
+template<
+	const jive_node_class * Class,
+	typename Type,
+	typename ValueRepr,
+	typename FormatValue,
+	typename TypeOfValue
+>
+class domain_const_op final : public nullary_op {
+public:
+	typedef ValueRepr value_repr;
+
+	virtual
+	~domain_const_op() noexcept
+	{
+	}
+
+	inline
+	domain_const_op(const value_repr & value)
+		: value_(value)
+		, type_(TypeOfValue()(value_))
+	{
+	}
+
+	inline
+	domain_const_op(value_repr && value) noexcept
+		: value_(std::move(value))
+		, type_(TypeOfValue()(value_))
+	{
+	}
+
+	inline
+	domain_const_op(const domain_const_op & other) = default;
+
+	inline
+	domain_const_op(domain_const_op && other) = default;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override
+	{
+		const domain_const_op * op =
+			dynamic_cast<const domain_const_op *>(&other);
+		return op && op->type_ == type_ && op->value_ == value_;
+	}
+
+	virtual std::string
+	debug_string() const override
+	{
+		return FormatValue()(value_);
+	}
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override
+	{
+		operation_node<domain_const_op> * node =
+			jive::create_operation_node(*this);
+		node->class_ = Class;
+		const base::type * result_types[1] = { &result_type(0) };
+		jive_node_init_(node, region,
+			0, nullptr, nullptr,
+			1, result_types);
+		return node;
+	}
+
+	virtual const type &
+	result_type(size_t index) const noexcept override
+	{
+		return type_;
+	}
+
+	inline const value_repr &
+	value() const noexcept
+	{
+		return value_;
+	}
+
+private:
+	value_repr value_;
+	Type type_;
+};
+
+/* Template to allow definition of domain-specific "symbolic constants":
+ * These are operators yielding a specific but unknown value of the
+ * respective type. Useful mainly for testing purposes as it represents
+ * sub-expressions which cannot be transformed any further. */
+template<const jive_node_class * Class, typename Type>
+class domain_symbol_op final : public nullary_op {
+public:
+	virtual
+	~domain_symbol_op() noexcept
+	{
+	}
+
+	inline
+	domain_symbol_op(
+		std::string && name,
+		Type && type) noexcept
+		: name_(std::move(name))
+		, type_(std::move(type))
+	{
+	}
+
+	inline
+	domain_symbol_op(const domain_symbol_op & other) = default;
+
+	inline
+	domain_symbol_op(domain_symbol_op && other) = default;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override
+	{
+		const domain_symbol_op * op =
+			dynamic_cast<const domain_symbol_op *>(&other);
+		return op && op->type_ == type_ && op->name_ == name_;
+	}
+
+	virtual std::string
+	debug_string() const override
+	{
+		return name_;
+	}
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override
+	{
+		operation_node<domain_symbol_op> * node =
+			jive::create_operation_node(*this);
+		node->class_ = Class;
+		const base::type * result_types[1] = { &result_type(0) };
+		jive_node_init_(node, region,
+			0, nullptr, nullptr,
+			1, result_types);
+		return node;
+	}
+
+	virtual const type &
+	result_type(size_t index) const noexcept override
+	{
+		return type_;
+	}
+
+	inline const std::string &
+	name() const noexcept
+	{
+		return name_;
+	}
+
+private:
+	std::string name_;
+	Type type_;
 };
 
 }
