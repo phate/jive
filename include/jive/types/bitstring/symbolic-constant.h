@@ -16,30 +16,16 @@
 extern const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE;
 
 namespace jive {
+namespace base {
+// declare explicit instantiation
+extern template class domain_symbol_op<&JIVE_BITSYMBOLICCONSTANT_NODE, jive::bits::type>;
+}
+
 namespace bits {
-
-struct symbolicconstant_operation : public base::unary_op {
-	size_t nbits;
-	std::string name;
-};
-
+typedef base::domain_symbol_op<&JIVE_BITSYMBOLICCONSTANT_NODE, jive::bits::type>
+	symbol_op;
 }
 }
-
-typedef jive::operation_node<jive::bits::symbolicconstant_operation>
-	jive_bitsymbolicconstant_node;
-
-/**
-	\brief Create symbolic constant
-	\param graph Graph to create constant in
-	\param nbits Number of bits
-	\param name Symbol name
-	\returns Bitstring value representing constant
-	
-	Create new bitconstant node.
-*/
-jive_node *
-jive_bitsymbolicconstant_create(struct jive_graph * graph, size_t nbits, const char * name);
 
 /**
 	\brief Create symbolic constant
@@ -52,6 +38,6 @@ jive_bitsymbolicconstant_create(struct jive_graph * graph, size_t nbits, const c
 	returns the output handle of an existing constant.
 */
 jive::output *
-jive_bitsymbolicconstant(struct jive_graph * graph, size_t nbits, const char * name);
+jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name);
 
 #endif
