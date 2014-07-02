@@ -55,7 +55,7 @@ jive_basic_block_get_label_(const struct jive_cfg_node * self_, struct jive_buff
 	JIVE_LIST_ITERATE(self->three_address_codes, tac, basic_block_three_address_codes_list) {
 		snprintf(tmp, sizeof(tmp), "%p : ", tac);
 		jive_buffer_putstr(buffer, tmp);
-		jive_three_address_code_get_label(tac, buffer);
+		jive_buffer_putstr(buffer, tac->debug_string().c_str());
 		jive_buffer_putstr(buffer, "\\n");
 	}
 }

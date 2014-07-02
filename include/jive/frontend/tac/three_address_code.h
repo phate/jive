@@ -49,18 +49,9 @@ struct jive_three_address_code_class {
 
 	void (*fini)(jive_three_address_code * self);
 
-	void (*get_label)(const jive_three_address_code * self, struct jive_buffer * buffer);
-
 	const struct jive_three_address_code_attrs *
 		(*get_attrs)(const jive_three_address_code * self);
 };
-
-JIVE_EXPORTED_INLINE void
-jive_three_address_code_get_label(const jive_three_address_code * self,
-	struct jive_buffer * buffer)
-{
-	self->class_->get_label(self, buffer);
-}
 
 JIVE_EXPORTED_INLINE const struct jive_three_address_code_attrs *
 jive_three_address_code_get_attrs(const jive_three_address_code * self)

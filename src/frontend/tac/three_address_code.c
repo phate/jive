@@ -21,7 +21,6 @@ const struct jive_three_address_code_class JIVE_THREE_ADDRESS_CODE = {
 	parent : 0,
 	name : "THREE_ADDRESS_CODE",
 	fini : nullptr,
-	get_label : jive_three_address_code_get_label_,
 	get_attrs : jive_three_address_code_get_attrs_,
 };
 
@@ -38,12 +37,6 @@ jive_three_address_code_init_(jive_three_address_code * self,
 		self->operands.push_back(operands[i]);
 
 	JIVE_LIST_PUSH_BACK(basic_block->three_address_codes, self, basic_block_three_address_codes_list);
-}
-
-void
-jive_three_address_code_get_label_(const jive_three_address_code * self, struct jive_buffer * buffer)
-{
-	jive_buffer_putstr(buffer, self->class_->name);
 }
 
 const jive_three_address_code_attrs *

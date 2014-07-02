@@ -25,15 +25,10 @@ jive_assignment_code::debug_string() const
 	return label;
 }
 
-static void
-jive_assignment_code_get_label_(const struct jive_three_address_code * self,
-	struct jive_buffer * buffer);
-
 const struct jive_three_address_code_class JIVE_ASSIGNMENT_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "ASSIGNMENT",
 	fini : nullptr, /* inherit */
-	get_label : jive_assignment_code_get_label_, /* override */
 	get_attrs : jive_three_address_code_get_attrs_, /* inherit */
 };
 
@@ -43,18 +38,6 @@ jive_assignment_code_init_(jive_assignment_code * self, struct jive_basic_block 
 {
 	jive_three_address_code * tmparray0[] = {variable, tac};
 	jive_three_address_code_init_(self, basic_block, 2, tmparray0);
-}
-
-static void
-jive_assignment_code_get_label_(const struct jive_three_address_code * self,
-	struct jive_buffer * buffer)
-{
-	jive_three_address_code_get_label(self->operands[0], buffer);
-	jive_buffer_putstr(buffer, " := ");
-
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "%p", self->operands[1]);
-	jive_buffer_putstr(buffer, tmp);
 }
 
 jive_three_address_code *

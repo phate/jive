@@ -20,10 +20,6 @@ jive_variable_code::debug_string() const
 	return attrs.name;
 }
 
-static void
-jive_variable_code_get_label_(const struct jive_three_address_code * self,
-	struct jive_buffer * buffer);
-
 static const struct jive_three_address_code_attrs *
 jive_variable_code_get_attrs_(const struct jive_three_address_code * self);
 
@@ -31,7 +27,6 @@ const struct jive_three_address_code_class JIVE_VARIABLE_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "VARIABLE",
 	fini : nullptr, /* override */
-	get_label : jive_variable_code_get_label_, /* override */
 	get_attrs : jive_variable_code_get_attrs_, /* override */
 };
 
@@ -41,14 +36,6 @@ jive_variable_code_init_(struct jive_variable_code * self,
 {
 	jive_three_address_code_init_(self, basic_block, 0, NULL);
 	self->attrs.name = name;
-}
-
-static void
-jive_variable_code_get_label_(const struct jive_three_address_code * self_,
-	struct jive_buffer * buffer)
-{
-	struct jive_variable_code * self = (struct jive_variable_code *)self_;
-	jive_buffer_putstr(buffer, self->attrs.name.c_str());
 }
 
 static const struct jive_three_address_code_attrs *

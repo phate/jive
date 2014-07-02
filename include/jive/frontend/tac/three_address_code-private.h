@@ -16,10 +16,6 @@ jive_three_address_code_init_(jive_three_address_code * self,
 	struct jive_basic_block * basic_block,
 	size_t noperands, jive_three_address_code * const operands[]);
 
-void
-jive_three_address_code_get_label_(const jive_three_address_code * self,
-	struct jive_buffer * buffer);
-
 const struct jive_three_address_code_attrs *
 jive_three_address_code_get_attrs_(const jive_three_address_code * self);
 
