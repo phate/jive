@@ -12,6 +12,9 @@ class jive_call_code final : public jive_three_address_code {
 public:
 	virtual ~jive_call_code() noexcept;
 
+	jive_call_code(struct jive_basic_block * basic_block, struct jive_clg_node * callee,
+		std::vector<jive_three_address_code *> & arguments);
+
 	virtual std::string debug_string() const override;
 
 	struct jive_clg_node * callee;
@@ -19,6 +22,6 @@ public:
 
 struct jive_three_address_code *
 jive_call_code_create(struct jive_basic_block * basic_block, struct jive_clg_node * callee,
-	size_t narguments, struct jive_three_address_code * const arguments[]);
+	size_t narguments, jive_three_address_code * const arguments[]);
 
 #endif

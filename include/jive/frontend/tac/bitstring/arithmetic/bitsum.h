@@ -12,11 +12,14 @@ class jive_bitsum_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitsum_code() noexcept;
 
+	jive_bitsum_code(struct jive_basic_block * basic_block, jive_three_address_code * summand1,
+		jive_three_address_code * summand2);
+
 	virtual std::string debug_string() const override;
 };
 
 struct jive_three_address_code *
 jive_bitsum_code_create(struct jive_basic_block * basic_block,
-	struct jive_three_address_code * summand1, struct jive_three_address_code * summand2);
+	jive_three_address_code * summand1, jive_three_address_code * summand2);
 
 #endif

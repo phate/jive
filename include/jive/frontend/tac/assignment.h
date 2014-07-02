@@ -13,6 +13,9 @@ class jive_assignment_code final : public jive_three_address_code {
 public:
 	virtual ~jive_assignment_code() noexcept;
 
+	jive_assignment_code(struct jive_basic_block * basic_block, struct jive_variable_code * variable,
+		jive_three_address_code * tac);
+
 	virtual std::string debug_string() const override;
 };
 

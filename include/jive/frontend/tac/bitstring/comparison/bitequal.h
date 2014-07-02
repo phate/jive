@@ -12,11 +12,14 @@ class jive_bitequal_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitequal_code() noexcept;
 
+	jive_bitequal_code(struct jive_basic_block * basic_block, jive_three_address_code * op1,
+		jive_three_address_code * op2);
+
 	virtual std::string debug_string() const override;
 };
 
 struct jive_three_address_code *
 jive_bitequal_code_create(struct jive_basic_block * basic_block,
-	struct jive_three_address_code * op1, struct jive_three_address_code * op2);
+	jive_three_address_code * op1, jive_three_address_code * op2);
 
 #endif

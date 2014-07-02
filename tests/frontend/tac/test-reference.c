@@ -10,7 +10,6 @@
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/tac/variable.h>
 #include <jive/frontend/tac/reference.h>
-#include <jive/frontend/tac/three_address_code-private.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
 

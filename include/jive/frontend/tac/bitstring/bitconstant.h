@@ -14,6 +14,8 @@ class jive_bitconstant_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitconstant_code() noexcept;
 
+	jive_bitconstant_code(struct jive_basic_block * basic_block, size_t nbits, const char * bits);
+
 	virtual std::string debug_string() const override;
 
 	std::vector<char> bits; /* [LSB, ..., MSB] */

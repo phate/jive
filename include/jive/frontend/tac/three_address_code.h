@@ -16,6 +16,14 @@ class jive_three_address_code {
 public:
 	virtual ~jive_three_address_code() noexcept;
 
+protected:
+	jive_three_address_code(struct jive_basic_block * basic_block,
+		std::initializer_list<jive_three_address_code*> operands);
+
+	jive_three_address_code(struct jive_basic_block * basic_block,
+		std::vector<jive_three_address_code*> & operands);
+
+public:
 	virtual std::string debug_string() const = 0;
 
 	struct jive_basic_block * basic_block;

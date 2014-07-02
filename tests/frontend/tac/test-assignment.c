@@ -12,7 +12,6 @@
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/tac/variable.h>
 #include <jive/frontend/tac/assignment.h>
-#include <jive/frontend/tac/three_address_code-private.h>
 
 static int test_main(void)
 {

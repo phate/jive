@@ -14,6 +14,8 @@ class jive_variable_code final : public jive_three_address_code {
 public:
 	virtual ~jive_variable_code() noexcept;
 
+	jive_variable_code(struct jive_basic_block * basic_block, const char * name);
+
 	virtual std::string debug_string() const override;
 
 	std::string name;
