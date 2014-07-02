@@ -37,7 +37,7 @@ jive_basic_block_fini_(struct jive_cfg_node * self_)
 	struct jive_basic_block * self = (struct jive_basic_block *)self_;
 
 	while (self->three_address_codes.first)
-		jive_three_address_code_destroy(self->three_address_codes.first);
+		delete self->three_address_codes.first;
 
 	jive_cfg_node_fini_(self_);
 }

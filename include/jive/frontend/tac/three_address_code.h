@@ -28,7 +28,4 @@ public:
 	} basic_block_three_address_codes_list;
 };
 
-void
-jive_three_address_code_destroy(jive_three_address_code * self);
-
 #endif

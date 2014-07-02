@@ -31,9 +31,3 @@ jive_three_address_code_init_(jive_three_address_code * self,
 
 	JIVE_LIST_PUSH_BACK(basic_block->three_address_codes, self, basic_block_three_address_codes_list);
 }
-
-void
-jive_three_address_code_destroy(jive_three_address_code * self)
-{
-	delete self;
-}
