@@ -15,6 +15,8 @@
 #include <string.h>
 #include <stdio.h>
 
+jive_bitnotequal_code::~jive_bitnotequal_code() noexcept {}
+
 static void
 jive_bitnotequal_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);
@@ -27,7 +29,7 @@ jive_bitnotequal_code_create_(struct jive_basic_block * basic_block,
 const struct jive_three_address_code_class JIVE_BITNOTEQUAL_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "BITNOTEQUAL",
-	fini : jive_three_address_code_fini_, /* inherit */
+	fini : nullptr, /* inherit */
 	get_label : jive_bitnotequal_code_get_label_, /* override */
 	get_attrs : jive_three_address_code_get_attrs_, /* inherit */
 	create : jive_bitnotequal_code_create_ /* override */

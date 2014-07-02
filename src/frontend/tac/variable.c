@@ -11,8 +11,8 @@
 
 #include <string.h>
 
-static void
-jive_variable_code_fini_(struct jive_three_address_code * self);
+
+jive_variable_code::~jive_variable_code() noexcept {}
 
 static void
 jive_variable_code_get_label_(const struct jive_three_address_code * self,
@@ -29,7 +29,7 @@ jive_variable_code_create_(struct jive_basic_block * basic_block,
 const struct jive_three_address_code_class JIVE_VARIABLE_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "VARIABLE",
-	fini : jive_variable_code_fini_, /* override */
+	fini : nullptr, /* override */
 	get_label : jive_variable_code_get_label_, /* override */
 	get_attrs : jive_variable_code_get_attrs_, /* override */
 	create : jive_variable_code_create_ /* override */
@@ -41,13 +41,6 @@ jive_variable_code_init_(struct jive_variable_code * self,
 {
 	jive_three_address_code_init_(self, basic_block, 0, NULL);
 	self->attrs.name = name;
-}
-
-static void
-jive_variable_code_fini_(struct jive_three_address_code * self_)
-{
-	struct jive_variable_code * self = (struct jive_variable_code *)self_;
-	jive_three_address_code_fini_(self_);
 }
 
 static void

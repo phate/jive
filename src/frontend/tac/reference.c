@@ -12,6 +12,8 @@
 
 #include <stdio.h>
 
+jive_reference_code::~jive_reference_code() noexcept {}
+
 static void
 jive_reference_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);
@@ -24,7 +26,7 @@ jive_reference_code_create_(struct jive_basic_block * basic_block,
 const struct jive_three_address_code_class JIVE_REFERENCE_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "REFERENCE",
-	fini : jive_three_address_code_fini_, /* inherit */
+	fini : nullptr, /* inherit */
 	get_label : jive_reference_code_get_label_, /* override */
 	get_attrs : jive_three_address_code_get_attrs_, /* inherit */
 	create : jive_reference_code_create_ /* override */

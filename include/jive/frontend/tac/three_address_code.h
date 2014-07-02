@@ -24,6 +24,8 @@ struct jive_three_address_code_attrs {
 
 class jive_three_address_code {
 public:
+	virtual ~jive_three_address_code() noexcept;
+
 	const struct jive_three_address_code_class * class_;
 
 	struct jive_basic_block * basic_block;

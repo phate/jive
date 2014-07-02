@@ -13,8 +13,7 @@
 
 #include <string.h>
 
-static void
-jive_bitconstant_code_fini_(struct jive_three_address_code * self);
+jive_bitconstant_code::~jive_bitconstant_code() noexcept {}
 
 static void
 jive_bitconstant_code_get_label_(const struct jive_three_address_code * self,
@@ -31,7 +30,7 @@ jive_bitconstant_code_create_(struct jive_basic_block * basic_block,
 const struct jive_three_address_code_class JIVE_BITCONSTANT_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "BITCONSTANT",
-	fini : jive_bitconstant_code_fini_, /* override */
+	fini : nullptr, /* override */
 	get_label : jive_bitconstant_code_get_label_, /* override */
 	get_attrs : jive_bitconstant_code_get_attrs_, /* override */
 	create : jive_bitconstant_code_create_ /* override */
@@ -43,13 +42,6 @@ jive_bitconstant_code_init_(struct jive_bitconstant_code * self,
 {
 	jive_three_address_code_init_(self, basic_block, 0, NULL);
 	self->attrs.bits = bits;
-}
-
-static void
-jive_bitconstant_code_fini_(struct jive_three_address_code * self_)
-{
-	struct jive_bitconstant_code * self = (struct jive_bitconstant_code *)self_;
-	jive_three_address_code_fini_(self_);
 }
 
 static void

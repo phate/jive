@@ -21,6 +21,8 @@ struct jive_bitconstant_code_attrs {
 
 class jive_bitconstant_code final : public jive_three_address_code {
 public:
+	virtual ~jive_bitconstant_code() noexcept;
+
 	jive_bitconstant_code_attrs attrs;
 };
 

@@ -11,6 +11,8 @@
 extern const jive_three_address_code_class JIVE_BITSUM_CODE;
 
 class jive_bitsum_code final : public jive_three_address_code {
+public:
+	virtual ~jive_bitsum_code() noexcept;
 };
 
 static inline jive_bitsum_code *

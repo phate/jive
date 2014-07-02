@@ -19,6 +19,8 @@ struct jive_call_code_attrs {
 
 class jive_call_code final : public jive_three_address_code {
 public:
+	virtual ~jive_call_code() noexcept;
+
 	jive_call_code_attrs attrs;
 };
 

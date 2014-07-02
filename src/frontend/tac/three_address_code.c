@@ -12,10 +12,15 @@
 
 #include <string.h>
 
+jive_three_address_code::~jive_three_address_code() noexcept
+{
+	JIVE_LIST_REMOVE(basic_block->three_address_codes, this, basic_block_three_address_codes_list);
+}
+
 const struct jive_three_address_code_class JIVE_THREE_ADDRESS_CODE = {
 	parent : 0,
 	name : "THREE_ADDRESS_CODE",
-	fini : jive_three_address_code_fini_,
+	fini : nullptr,
 	get_label : jive_three_address_code_get_label_,
 	get_attrs : jive_three_address_code_get_attrs_,
 	create : jive_three_address_code_create_
@@ -34,16 +39,6 @@ jive_three_address_code_init_(jive_three_address_code * self,
 		self->operands.push_back(operands[i]);
 
 	JIVE_LIST_PUSH_BACK(basic_block->three_address_codes, self, basic_block_three_address_codes_list);
-}
-
-void
-jive_three_address_code_fini_(jive_three_address_code * self)
-{
-	JIVE_LIST_REMOVE(self->basic_block->three_address_codes, self,
-		basic_block_three_address_codes_list);
-
-	self->basic_block_three_address_codes_list.prev = 0;
-	self->basic_block_three_address_codes_list.next = 0;
 }
 
 void
@@ -73,6 +68,5 @@ jive_three_address_code_create_(struct jive_basic_block * basic_block,
 void
 jive_three_address_code_destroy(jive_three_address_code * self)
 {
-	self->class_->fini(self);
 	delete self;
 }
