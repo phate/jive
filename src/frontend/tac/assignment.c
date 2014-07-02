@@ -13,6 +13,18 @@
 
 jive_assignment_code::~jive_assignment_code() noexcept {}
 
+std::string
+jive_assignment_code::debug_string() const
+{
+	std::string label = operands[0]->debug_string();
+	label.append(" := ");
+
+	char tmp[32];
+	snprintf(tmp, sizeof(tmp), "%p", operands[1]);
+	label.append(tmp);
+	return label;
+}
+
 static void
 jive_assignment_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);

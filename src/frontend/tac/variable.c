@@ -14,6 +14,12 @@
 
 jive_variable_code::~jive_variable_code() noexcept {}
 
+std::string
+jive_variable_code::debug_string() const
+{
+	return attrs.name;
+}
+
 static void
 jive_variable_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);

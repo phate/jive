@@ -21,6 +21,8 @@ class jive_call_code final : public jive_three_address_code {
 public:
 	virtual ~jive_call_code() noexcept;
 
+	virtual std::string debug_string() const override;
+
 	jive_call_code_attrs attrs;
 };
 

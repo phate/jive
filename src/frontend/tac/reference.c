@@ -14,6 +14,20 @@
 
 jive_reference_code::~jive_reference_code() noexcept {}
 
+std::string
+jive_reference_code::debug_string() const
+{
+	std::string label("ref ");
+	if (dynamic_cast<jive_variable_code*>(operands[0]) != NULL)
+		label.append(operands[0]->debug_string());
+	else {
+		char tmp[32];
+		snprintf(tmp, sizeof(tmp), "%p", operands[0]);
+		label.append(tmp);
+	}
+	return label;
+}
+
 static void
 jive_reference_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);

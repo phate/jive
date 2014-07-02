@@ -23,6 +23,8 @@ class jive_bitconstant_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitconstant_code() noexcept;
 
+	virtual std::string debug_string() const override;
+
 	jive_bitconstant_code_attrs attrs;
 };
 

@@ -15,6 +15,26 @@
 
 jive_call_code::~jive_call_code() noexcept {}
 
+std::string
+jive_call_code::debug_string() const
+{
+	std::string label("call ");
+	label.append(attrs.callee->name);
+	label.append("(");
+
+	size_t n;
+	char tmp[32];
+	for (n = 0; n < operands.size(); n++) {
+		snprintf(tmp, sizeof(tmp), "%p", operands[n]);
+		label.append(tmp);
+		if (n != operands.size()-1)
+			label.append(", ");
+	}
+
+	label.append("9");
+	return label;
+}
+
 static void
 jive_call_code_get_label_(const struct jive_three_address_code * self, struct jive_buffer * buffer);
 

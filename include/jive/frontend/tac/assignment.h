@@ -14,6 +14,8 @@ extern const jive_three_address_code_class JIVE_ASSIGNMENT_CODE;
 class jive_assignment_code final : public jive_three_address_code {
 public:
 	virtual ~jive_assignment_code() noexcept;
+
+	virtual std::string debug_string() const override;
 };
 
 struct jive_three_address_code *

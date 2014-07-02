@@ -15,6 +15,16 @@
 
 jive_bitconstant_code::~jive_bitconstant_code() noexcept {}
 
+std::string
+jive_bitconstant_code::debug_string() const
+{
+	std::string label;
+	for (size_t i = 0; i < attrs.bits.size(); i++)
+		label.append(&attrs.bits[i]);
+
+	return label;
+}
+
 static void
 jive_bitconstant_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);

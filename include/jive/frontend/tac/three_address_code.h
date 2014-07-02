@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <string>
 #include <vector>
 
 struct jive_buffer;
@@ -25,6 +26,8 @@ struct jive_three_address_code_attrs {
 class jive_three_address_code {
 public:
 	virtual ~jive_three_address_code() noexcept;
+
+	virtual std::string debug_string() const = 0;
 
 	const struct jive_three_address_code_class * class_;
 

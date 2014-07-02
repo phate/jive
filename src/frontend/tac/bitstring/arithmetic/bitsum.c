@@ -17,6 +17,14 @@
 
 jive_bitsum_code::~jive_bitsum_code() noexcept {}
 
+std::string
+jive_bitsum_code::debug_string() const
+{
+	char tmp[64];
+	snprintf(tmp, sizeof(tmp), "%p + %p", operands[0], operands[1]);
+	return std::string(tmp);
+}
+
 static void
 jive_bitsum_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);
