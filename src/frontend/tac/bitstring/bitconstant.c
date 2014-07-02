@@ -25,14 +25,10 @@ jive_bitconstant_code::debug_string() const
 	return label;
 }
 
-static const struct jive_three_address_code_attrs *
-jive_bitconstant_code_get_attrs_(const struct jive_three_address_code * self);
-
 const struct jive_three_address_code_class JIVE_BITCONSTANT_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "BITCONSTANT",
 	fini : nullptr, /* override */
-	get_attrs : jive_bitconstant_code_get_attrs_, /* override */
 };
 
 static void
@@ -43,13 +39,6 @@ jive_bitconstant_code_init_(struct jive_bitconstant_code * self,
 	self->attrs.bits.resize(nbits);
 	for (size_t i = 0; i < nbits; i++)
 		self->attrs.bits[nbits-i-1] = bits[nbits-i-1];
-}
-
-static const struct jive_three_address_code_attrs *
-jive_bitconstant_code_get_attrs_(const struct jive_three_address_code * self_)
-{
-	struct jive_bitconstant_code * self = (struct jive_bitconstant_code *)self_;
-	return &self->attrs.base;
 }
 
 jive_three_address_code *

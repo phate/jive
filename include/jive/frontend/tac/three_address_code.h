@@ -48,16 +48,7 @@ struct jive_three_address_code_class {
 	const char * name;
 
 	void (*fini)(jive_three_address_code * self);
-
-	const struct jive_three_address_code_attrs *
-		(*get_attrs)(const jive_three_address_code * self);
 };
-
-JIVE_EXPORTED_INLINE const struct jive_three_address_code_attrs *
-jive_three_address_code_get_attrs(const jive_three_address_code * self)
-{
-	return self->class_->get_attrs(self);
-}
 
 void
 jive_three_address_code_destroy(jive_three_address_code * self);

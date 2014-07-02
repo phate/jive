@@ -35,14 +35,10 @@ jive_call_code::debug_string() const
 	return label;
 }
 
-static const struct jive_three_address_code_attrs *
-jive_call_code_get_attrs_(const struct jive_three_address_code * self);
-
 const struct jive_three_address_code_class JIVE_CALL_CODE = {
 	parent : &JIVE_CALL_CODE,
 	name : "CALL",
 	fini : nullptr, /* inherit */
-	get_attrs : jive_call_code_get_attrs_, /* override */
 };
 
 static void
@@ -53,13 +49,6 @@ jive_call_code_init_(jive_call_code * self, struct jive_basic_block * basic_bloc
 	jive_three_address_code_init_(self, basic_block, narguments, arguments);
 	self->attrs.callee = callee;
 	jive_clg_node_add_call(basic_block->base.cfg->clg_node, callee);
-}
-
-static const struct jive_three_address_code_attrs *
-jive_call_code_get_attrs_(const struct jive_three_address_code * self_)
-{
-	const struct jive_call_code_attrs * self = (const struct jive_call_code_attrs *) self_;
-	return &self->base;
 }
 
 jive_three_address_code *

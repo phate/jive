@@ -32,7 +32,6 @@ const struct jive_three_address_code_class JIVE_REFERENCE_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "REFERENCE",
 	fini : nullptr, /* inherit */
-	get_attrs : jive_three_address_code_get_attrs_, /* inherit */
 };
 
 static void
