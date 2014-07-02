@@ -25,12 +25,6 @@ jive_bitnotequal_code::debug_string() const
 	return std::string(tmp);
 }
 
-const struct jive_three_address_code_class JIVE_BITNOTEQUAL_CODE = {
-	parent : &JIVE_THREE_ADDRESS_CODE,
-	name : "BITNOTEQUAL",
-	fini : nullptr, /* inherit */
-};
-
 static void
 jive_bitnotequal_code_init_(jive_bitnotequal_code * self, struct jive_basic_block * basic_block,
 	struct jive_three_address_code * op1, struct jive_three_address_code * op2)
@@ -45,7 +39,6 @@ jive_bitnotequal_code_create(struct jive_basic_block * basic_block, jive_three_a
 	jive_three_address_code * op2)
 {
 	jive_bitnotequal_code * notequal = new jive_bitnotequal_code;
-	notequal->class_ = &JIVE_BITNOTEQUAL_CODE;
 	jive_bitnotequal_code_init_(notequal, basic_block, op1, op2);
 	return notequal;
 }

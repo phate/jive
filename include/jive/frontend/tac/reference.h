@@ -8,8 +8,6 @@
 
 #include <jive/frontend/tac/three_address_code.h>
 
-extern const jive_three_address_code_class JIVE_REFERENCE_CODE;
-
 class jive_reference_code final : public jive_three_address_code {
 public:
 	virtual ~jive_reference_code() noexcept;

@@ -10,8 +10,6 @@
 
 #include <vector>
 
-extern const jive_three_address_code_class JIVE_BITCONSTANT_CODE;
-
 class jive_bitconstant_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitconstant_code() noexcept;

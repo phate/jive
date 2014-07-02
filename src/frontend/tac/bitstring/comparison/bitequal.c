@@ -25,12 +25,6 @@ jive_bitequal_code::debug_string() const
 	return std::string(tmp);
 }
 
-const struct jive_three_address_code_class JIVE_BITEQUAL_CODE = {
-	parent : &JIVE_THREE_ADDRESS_CODE,
-	name : "BITEQUAL",
-	fini : nullptr, /* inherit */
-};
-
 static void
 jive_bitequal_code_init_(jive_bitequal_code * self, struct jive_basic_block * basic_block,
 	struct jive_three_address_code * op1, struct jive_three_address_code * op2)
@@ -44,7 +38,6 @@ jive_bitequal_code_create(struct jive_basic_block * basic_block, jive_three_addr
 	jive_three_address_code * op2)
 {
 	jive_bitequal_code * equal = new jive_bitequal_code;
-	equal->class_ = &JIVE_BITEQUAL_CODE;
 	jive_bitequal_code_init_(equal, basic_block, op1, op2);
 	return equal;
 }

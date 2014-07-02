@@ -8,8 +8,6 @@
 
 #include <jive/frontend/tac/three_address_code.h>
 
-extern const jive_three_address_code_class JIVE_BITEQUAL_CODE;
-
 class jive_bitequal_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitequal_code() noexcept;

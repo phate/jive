@@ -12,18 +12,11 @@
 #include <string>
 #include <vector>
 
-
-/* three address code class */
-
-typedef struct jive_three_address_code_class jive_three_address_code_class;
-
 class jive_three_address_code {
 public:
 	virtual ~jive_three_address_code() noexcept;
 
 	virtual std::string debug_string() const = 0;
-
-	const struct jive_three_address_code_class * class_;
 
 	struct jive_basic_block * basic_block;
 
@@ -33,15 +26,6 @@ public:
 		jive_three_address_code * prev;
 		jive_three_address_code * next;
 	} basic_block_three_address_codes_list;
-};
-
-extern const jive_three_address_code_class JIVE_THREE_ADDRESS_CODE;
-
-struct jive_three_address_code_class {
-	const struct jive_three_address_code_class * parent;
-	const char * name;
-
-	void (*fini)(jive_three_address_code * self);
 };
 
 void

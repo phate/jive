@@ -17,12 +17,6 @@ jive_three_address_code::~jive_three_address_code() noexcept
 	JIVE_LIST_REMOVE(basic_block->three_address_codes, this, basic_block_three_address_codes_list);
 }
 
-const struct jive_three_address_code_class JIVE_THREE_ADDRESS_CODE = {
-	parent : 0,
-	name : "THREE_ADDRESS_CODE",
-	fini : nullptr,
-};
-
 void
 jive_three_address_code_init_(jive_three_address_code * self,
 	struct jive_basic_block * basic_block,

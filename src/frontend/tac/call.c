@@ -35,12 +35,6 @@ jive_call_code::debug_string() const
 	return label;
 }
 
-const struct jive_three_address_code_class JIVE_CALL_CODE = {
-	parent : &JIVE_CALL_CODE,
-	name : "CALL",
-	fini : nullptr, /* inherit */
-};
-
 static void
 jive_call_code_init_(jive_call_code * self, struct jive_basic_block * basic_block,
 	struct jive_clg_node * callee,
@@ -56,7 +50,6 @@ jive_call_code_create(struct jive_basic_block * basic_block, jive_clg_node * cal
 	size_t narguments, struct jive_three_address_code * const arguments[])
 {
 	jive_call_code * call = new jive_call_code;
-	call->class_ = &JIVE_CALL_CODE;
 	jive_call_code_init_(call, basic_block, callee, narguments, arguments);
 	return call;
 }

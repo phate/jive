@@ -25,12 +25,6 @@ jive_bitsum_code::debug_string() const
 	return std::string(tmp);
 }
 
-const struct jive_three_address_code_class JIVE_BITSUM_CODE = {
-	parent : &JIVE_THREE_ADDRESS_CODE,
-	name : "BITSUM",
-	fini : nullptr, /* inherit */
-};
-
 static void
 jive_bitsum_code_init_(jive_bitsum_code * self, struct jive_basic_block * basic_block,
 	struct jive_three_address_code * summand1, struct jive_three_address_code * summand2)
@@ -44,7 +38,6 @@ jive_bitsum_code_create(struct jive_basic_block * basic_block, jive_three_addres
 	jive_three_address_code * summand2)
 {
 	jive_bitsum_code * sum = new jive_bitsum_code;
-	sum->class_ = &JIVE_BITSUM_CODE;
 	jive_bitsum_code_init_(sum, basic_block, summand1, summand2);
 	return sum;
 }

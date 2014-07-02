@@ -10,8 +10,6 @@
 
 #include <string>
 
-extern const jive_three_address_code_class JIVE_VARIABLE_CODE;
-
 class jive_variable_code final : public jive_three_address_code {
 public:
 	virtual ~jive_variable_code() noexcept;
