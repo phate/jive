@@ -69,19 +69,6 @@ jive_three_address_code_get_attrs(const jive_three_address_code * self)
 	return self->class_->get_attrs(self);
 }
 
-JIVE_EXPORTED_INLINE bool
-jive_three_address_code_isinstance(const jive_three_address_code * self,
-	const struct jive_three_address_code_class * class_)
-{
-	const struct jive_three_address_code_class * c = self->class_;
-	while(c) {
-		if (c == class_)
-			return true;
-		c = c->parent;
-	}
-	return false;
-}
-
 void
 jive_three_address_code_destroy(jive_three_address_code * self);
 

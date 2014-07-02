@@ -26,24 +26,6 @@ public:
 	jive_bitconstant_code_attrs attrs;
 };
 
-static inline struct jive_bitconstant_code *
-jive_bitconstant_code_cast(const struct jive_three_address_code * tac)
-{
-	if (jive_three_address_code_isinstance(tac, &JIVE_BITCONSTANT_CODE))
-		return (jive_bitconstant_code *) tac;
-	else
-		return 0;
-}
-
-static inline const struct jive_bitconstant_code *
-jive_bitconstant_code_const_cast(const struct jive_three_address_code * tac)
-{
-	if (jive_three_address_code_isinstance(tac, &JIVE_BITCONSTANT_CODE))
-		return (const jive_bitconstant_code *) tac;
-	else
-		return 0;
-}
-
 struct jive_three_address_code *
 jive_bitconstant_code_create(struct jive_basic_block * basic_block, size_t nbits, const char * bits);
 

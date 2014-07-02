@@ -24,7 +24,7 @@ static int test_main(void)
 	jive_basic_block * basic_block = jive_basic_block_cast(jive_basic_block_create(clg_node->cfg));
 
 	jive_variable_code * variable;
-	variable = jive_variable_code_cast(jive_variable_code_create(basic_block, "foobar"));
+	variable = static_cast<jive_variable_code*>(jive_variable_code_create(basic_block, "foobar"));
 
 	jive_reference_code_create(basic_block, variable);
 

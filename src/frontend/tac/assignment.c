@@ -58,7 +58,8 @@ jive_assignment_code_create_(struct jive_basic_block * basic_block,
 {
 	jive_assignment_code * ass = new jive_assignment_code;
 	ass->class_ = &JIVE_ASSIGNMENT_CODE;
-	jive_assignment_code_init_(ass, basic_block, jive_variable_code_cast(operands[0]), operands[1]);
+	jive_assignment_code_init_(ass, basic_block, dynamic_cast<jive_variable_code*>(operands[0]),
+		operands[1]);
 	return ass;
 }
 

@@ -15,24 +15,6 @@ public:
 	virtual ~jive_bitsum_code() noexcept;
 };
 
-static inline jive_bitsum_code *
-jive_bitsum_code_cast(struct jive_three_address_code * tac)
-{
-	if (jive_three_address_code_isinstance(tac, &JIVE_BITSUM_CODE))
-		return (jive_bitsum_code *) tac;
-	else
-		return 0;
-}
-
-static inline const jive_bitsum_code *
-jive_bitsum_code_const_cast(const struct jive_three_address_code * tac)
-{
-	if (jive_three_address_code_isinstance(tac, &JIVE_BITSUM_CODE))
-		return (const jive_bitsum_code *) tac;
-	else
-		return 0;
-}
-
 struct jive_three_address_code *
 jive_bitsum_code_create(struct jive_basic_block * basic_block,
 	struct jive_three_address_code * summand1, struct jive_three_address_code * summand2);

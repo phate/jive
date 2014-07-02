@@ -45,7 +45,7 @@ jive_reference_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer)
 {
 	jive_buffer_putstr(buffer, "ref ");
-	if (jive_variable_code_cast(self->operands[0]) != NULL)
+	if (dynamic_cast<jive_variable_code*>(self->operands[0]) != NULL)
 		jive_three_address_code_get_label(self->operands[0], buffer);
 	else {
 		char tmp[32];
@@ -61,7 +61,7 @@ jive_reference_code_create_(struct jive_basic_block * basic_block,
 {
 	jive_reference_code * ref = new jive_reference_code;
 	ref->class_ = &JIVE_REFERENCE_CODE;
-	jive_reference_code_init_(ref, basic_block, jive_variable_code_cast(operands[0]));
+	jive_reference_code_init_(ref, basic_block, dynamic_cast<jive_variable_code*>(operands[0]));
 	return ref;
 }
 
