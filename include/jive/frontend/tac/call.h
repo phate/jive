@@ -10,20 +10,13 @@
 
 extern const jive_three_address_code_class JIVE_CALL_CODE;
 
-typedef struct jive_call_code_attrs jive_call_code_attrs;
-
-struct jive_call_code_attrs {
-	jive_three_address_code_attrs base;
-	struct jive_clg_node * callee;
-};
-
 class jive_call_code final : public jive_three_address_code {
 public:
 	virtual ~jive_call_code() noexcept;
 
 	virtual std::string debug_string() const override;
 
-	jive_call_code_attrs attrs;
+	struct jive_clg_node * callee;
 };
 
 struct jive_three_address_code *

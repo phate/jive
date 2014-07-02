@@ -19,7 +19,7 @@ std::string
 jive_call_code::debug_string() const
 {
 	std::string label("call ");
-	label.append(attrs.callee->name);
+	label.append(callee->name);
 	label.append("(");
 
 	size_t n;
@@ -47,7 +47,7 @@ jive_call_code_init_(jive_call_code * self, struct jive_basic_block * basic_bloc
 	size_t narguments, struct jive_three_address_code * const arguments[])
 {
 	jive_three_address_code_init_(self, basic_block, narguments, arguments);
-	self->attrs.callee = callee;
+	self->callee = callee;
 	jive_clg_node_add_call(basic_block->base.cfg->clg_node, callee);
 }
 

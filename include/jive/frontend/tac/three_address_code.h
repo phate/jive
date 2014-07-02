@@ -12,16 +12,10 @@
 #include <string>
 #include <vector>
 
-struct jive_buffer;
 
 /* three address code class */
 
-typedef struct jive_three_address_code_attrs jive_three_address_code_attrs;
 typedef struct jive_three_address_code_class jive_three_address_code_class;
-
-struct jive_three_address_code_attrs {
-	/* empty, need override */
-};
 
 class jive_three_address_code {
 public:

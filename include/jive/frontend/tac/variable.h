@@ -12,20 +12,13 @@
 
 extern const jive_three_address_code_class JIVE_VARIABLE_CODE;
 
-typedef struct jive_variable_code_attrs jive_variable_code_attrs;
-
-struct jive_variable_code_attrs {
-	jive_three_address_code_attrs base;
-	std::string name;
-};
-
 class jive_variable_code final : public jive_three_address_code {
 public:
 	virtual ~jive_variable_code() noexcept;
 
 	virtual std::string debug_string() const override;
 
-	jive_variable_code_attrs attrs;
+	std::string name;
 };
 
 struct jive_three_address_code *

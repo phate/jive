@@ -12,20 +12,13 @@
 
 extern const jive_three_address_code_class JIVE_BITCONSTANT_CODE;
 
-typedef struct jive_bitconstant_code_attrs jive_bitconstant_code_attrs;
-
-struct jive_bitconstant_code_attrs {
-	jive_three_address_code_attrs base;
-	std::vector<char> bits; /* [LSB, ..., MSB] */
-};
-
 class jive_bitconstant_code final : public jive_three_address_code {
 public:
 	virtual ~jive_bitconstant_code() noexcept;
 
 	virtual std::string debug_string() const override;
 
-	jive_bitconstant_code_attrs attrs;
+	std::vector<char> bits; /* [LSB, ..., MSB] */
 };
 
 struct jive_three_address_code *
