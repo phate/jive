@@ -33,17 +33,17 @@ public:
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::output * arg) const noexcept;
+		const jive::output * arg) const noexcept = 0;
 
 	virtual jive::output *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::output * arg) const;
+		jive::output * arg) const = 0;
 };
 
 }
 }
-// 
+
 typedef struct jive_unary_operation_normal_form jive_unary_operation_normal_form;
 typedef struct jive_unary_operation_normal_form_class jive_unary_operation_normal_form_class;
 

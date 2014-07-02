@@ -15,21 +15,6 @@ namespace base {
 
 unary_op::~unary_op() noexcept {}
 
-jive_unop_reduction_path_t
-unary_op::can_reduce_operand(
-	const jive::output * arg) const noexcept
-{
-	return jive_unop_reduction_none;
-}
-
-jive::output *
-unary_op::reduce_operand(
-	jive_unop_reduction_path_t path,
-	jive::output * arg) const
-{
-	return nullptr;
-}
-
 size_t
 unary_op::narguments() const noexcept
 {
