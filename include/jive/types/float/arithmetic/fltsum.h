@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTSUM_NODE;
 namespace jive {
 namespace flt {
 
-value_repr compute_sum(value_repr arg1, value_repr arg2);
 extern const char fltsum_name[];
 
 typedef detail::make_binop<
-	compute_sum,
+	std::plus<value_repr>,
 	&JIVE_FLTSUM_NODE,
 	fltsum_name,
-	jive_binary_operation_commutative> sum_operation;
+	jive_binary_operation_commutative> add_op;
 
 }
 }

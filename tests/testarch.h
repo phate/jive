@@ -84,13 +84,13 @@ public:
 	classify_fixed_compare(const jive::bits::compare_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_float_unary(const jive::flt_unary_operation & op) const override;
+	classify_float_unary(const jive::flt::unary_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_float_binary(const jive::flt_binary_operation & op) const override;
+	classify_float_binary(const jive::flt::binary_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_float_compare(const jive::flt_compare_operation & op) const override;
+	classify_float_compare(const jive::flt::compare_op & op) const override;
 
 	virtual jive_regselect_mask
 	classify_address() const override;

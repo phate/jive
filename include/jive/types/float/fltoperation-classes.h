@@ -18,11 +18,12 @@ extern const jive_node_class JIVE_FLTUNARY_NODE;
 extern const jive_node_class JIVE_FLTCOMPARISON_NODE;
 
 namespace jive {
+namespace flt {
 
 /* Represents a unary operation on a float. */
-class flt_unary_operation : public base::unary_op {
+class unary_op : public base::unary_op {
 public:
-	virtual ~flt_unary_operation() noexcept;
+	virtual ~unary_op() noexcept;
 
 	/* type signature methods */
 	virtual const jive::base::type &
@@ -47,9 +48,9 @@ public:
 };
 
 /* Represents a binary operation on a float. */
-class flt_binary_operation : public base::binary_op {
+class binary_op : public base::binary_op {
 public:
-	virtual ~flt_binary_operation() noexcept;
+	virtual ~binary_op() noexcept;
 
 	/* type signature methods */
 	virtual size_t
@@ -83,9 +84,9 @@ public:
 };
 
 /* Represents a comparison operation on a float. */
-class flt_compare_operation : public base::binary_op {
+class compare_op : public base::binary_op {
 public:
-	virtual ~flt_compare_operation() noexcept;
+	virtual ~compare_op() noexcept;
 
 	/* type signature methods */
 	virtual size_t
@@ -118,14 +119,13 @@ public:
 		const flt::value_repr & arg2) const = 0;
 };
 
-namespace flt {
 namespace detail {
 
 template<
-	value_repr eval_function(value_repr),
+	typename evaluator_functional,
 	const jive_node_class * cls,
 	const char * name>
-class make_unop final : public flt_unary_operation {
+class make_unop final : public unary_op {
 public:
 	virtual ~make_unop() noexcept {}
 
@@ -169,11 +169,10 @@ public:
 			cls, graph, &op, arg);
 	}
 
-	virtual flt::value_repr
-	reduce_constant(
-		const flt::value_repr & arg) const override
+	virtual value_repr
+	reduce_constant(const value_repr & arg) const override
 	{
-		return eval_function(arg);
+		return evaluator_(arg);
 	}
 
 	virtual std::string
@@ -181,14 +180,17 @@ public:
 	{
 		return name;
 	}
+
+private:
+	evaluator_functional evaluator_;
 };
 
 template<
-	value_repr eval_function(value_repr, value_repr),
+	typename evaluator_functional,
 	const jive_node_class * cls,
 	const char * name,
 	jive_binary_operation_flags op_flags>
-class make_binop final : public flt_binary_operation {
+class make_binop final : public binary_op {
 public:
 	virtual ~make_binop() noexcept {}
 
@@ -246,7 +248,7 @@ public:
 		const value_repr & arg1,
 		const value_repr & arg2) const override
 	{
-		return eval_function(arg1, arg2);
+		return evaluator_(arg1, arg2);
 	}
 
 	virtual std::string
@@ -254,14 +256,17 @@ public:
 	{
 		return name;
 	}
+
+private:
+	evaluator_functional evaluator_;
 };
 
 template<
-	bool eval_function(value_repr, value_repr),
+	typename evaluator_functional,
 	const jive_node_class * cls,
 	const char * name,
 	jive_binary_operation_flags op_flags>
-class make_cmpop final : public flt_compare_operation {
+class make_cmpop final : public compare_op {
 public:
 	virtual ~make_cmpop() noexcept {}
 
@@ -319,7 +324,7 @@ public:
 		const value_repr & arg1,
 		const value_repr & arg2) const override
 	{
-		return eval_function(arg1, arg2);
+		return evaluator_(arg1, arg2);
 	}
 
 	virtual std::string
@@ -327,11 +332,13 @@ public:
 	{
 		return name;
 	}
+
+private:
+	evaluator_functional evaluator_;
 };
 
 }
 }
-
 }
 
 #endif

@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTLESS_NODE;
 namespace jive {
 namespace flt {
 
-bool compute_less(value_repr arg1, value_repr arg2);
 extern const char fltless_name[];
 
 typedef detail::make_cmpop<
-	compute_less,
+	std::less<value_repr>,
 	&JIVE_FLTLESS_NODE,
 	fltless_name,
-	jive_binary_operation_none> less_operation;
+	jive_binary_operation_none> lt_op;
 
 }
 }

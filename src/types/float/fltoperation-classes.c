@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/float/fltconstant.h>
-#include <jive/types/float/fltoperation-classes-private.h>
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/flttype.h>
 
@@ -13,31 +12,32 @@
 #include <jive/vsdg/node-private.h>
 
 namespace jive {
+namespace flt {
 
-flt_unary_operation::~flt_unary_operation() noexcept
+static const type type_instance;
+
+unary_op::~unary_op() noexcept
 {
 }
 
 const jive::base::type &
-flt_unary_operation::argument_type(size_t index) const noexcept
+unary_op::argument_type(size_t index) const noexcept
 {
-	static const jive::flt::type type;
-	return type;
+	return type_instance;
 }
 
 const jive::base::type &
-flt_unary_operation::result_type(size_t index) const noexcept
+unary_op::result_type(size_t index) const noexcept
 {
-	static const jive::flt::type type;
-	return type;
+	return type_instance;
 }
 
 jive_unop_reduction_path_t
-flt_unary_operation::can_reduce_operand(
+unary_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
 	bool arg_is_constant =
-		dynamic_cast<const flt::constant_operation *>(&arg->node()->operation());
+		dynamic_cast<const constant_op *>(&arg->node()->operation());
 	
 	if (arg_is_constant) {
 		return jive_unop_reduction_constant;
@@ -47,61 +47,59 @@ flt_unary_operation::can_reduce_operand(
 }
 
 jive::output *
-flt_unary_operation::reduce_operand(
+unary_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
 		jive_graph * graph = arg->node()->graph;
-		const flt::constant_operation & c =
-			static_cast<const flt::constant_operation&>(arg->node()->operation());
-		flt::value_repr result = reduce_constant(c.value());
+		const constant_op & c =
+			static_cast<const constant_op&>(arg->node()->operation());
+		value_repr result = reduce_constant(c.value());
 		return jive_fltconstant(graph, result);
 	}
 
 	return nullptr;
 }
 
-flt_binary_operation::~flt_binary_operation() noexcept
+binary_op::~binary_op() noexcept
 {
 }
 
 size_t
-flt_binary_operation::narguments() const noexcept
+binary_op::narguments() const noexcept
 {
 	return 2;
 }
 
 const jive::base::type &
-flt_binary_operation::argument_type(size_t index) const noexcept
+binary_op::argument_type(size_t index) const noexcept
 {
-	static const jive::flt::type flt;
-	return flt;
+	return type_instance;
 }
 
 size_t
-flt_binary_operation::nresults() const noexcept
+binary_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-flt_binary_operation::result_type(size_t index) const noexcept
+binary_op::result_type(size_t index) const noexcept
 {
-	static const jive::flt::type flt;
-	return flt;
+	return type_instance;
 }
 
 /* reduction methods */
 jive_binop_reduction_path_t
-flt_binary_operation::can_reduce_operand_pair(
+binary_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
 	bool arg1_is_constant =
-		dynamic_cast<const flt::constant_operation *>(&arg1->node()->operation());
+		dynamic_cast<const constant_op *>(&arg1->node()->operation());
 	bool arg2_is_constant =
-		dynamic_cast<const flt::constant_operation *>(&arg2->node()->operation());
+		dynamic_cast<const constant_op *>(&arg2->node()->operation());
 	
 	if (arg1_is_constant && arg2_is_constant) {
 		return jive_binop_reduction_constants;
@@ -111,7 +109,7 @@ flt_binary_operation::can_reduce_operand_pair(
 }
 
 jive::output *
-flt_binary_operation::reduce_operand_pair(
+binary_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
 	jive::output * arg1,
 	jive::output * arg2) const
@@ -119,56 +117,55 @@ flt_binary_operation::reduce_operand_pair(
 	jive_graph * graph = arg1->node()->graph;
 
 	if (path == jive_binop_reduction_constants) {
-		const flt::constant_operation & c1 =
-			static_cast<const flt::constant_operation&>(arg1->node()->operation());
-		const flt::constant_operation & c2 =
-			static_cast<const flt::constant_operation&>(arg2->node()->operation());
-		flt::value_repr result = reduce_constants(c1.value(), c2.value());
+		const constant_op & c1 =
+			static_cast<const constant_op&>(arg1->node()->operation());
+		const constant_op & c2 =
+			static_cast<const constant_op&>(arg2->node()->operation());
+		value_repr result = reduce_constants(c1.value(), c2.value());
 		return jive_fltconstant(graph, result);
 	}
 
 	return nullptr;
 }
 
-flt_compare_operation::~flt_compare_operation() noexcept
+compare_op::~compare_op() noexcept
 {
 }
 
 size_t
-flt_compare_operation::narguments() const noexcept
+compare_op::narguments() const noexcept
 {
 	return 2;
 }
 
 const jive::base::type &
-flt_compare_operation::argument_type(size_t index) const noexcept
+compare_op::argument_type(size_t index) const noexcept
 {
-	static const jive::flt::type flt;
-	return flt;
+	return type_instance;
 }
 
 size_t
-flt_compare_operation::nresults() const noexcept
+compare_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-flt_compare_operation::result_type(size_t index) const noexcept
+compare_op::result_type(size_t index) const noexcept
 {
 	static const jive::ctl::type ctl;
 	return ctl;
 }
 
 jive_binop_reduction_path_t
-flt_compare_operation::can_reduce_operand_pair(
+compare_op::can_reduce_operand_pair(
 	const jive::output * arg1,
 	const jive::output * arg2) const noexcept
 {
 	bool arg1_is_constant =
-		dynamic_cast<const flt::constant_operation *>(&arg1->node()->operation());
+		dynamic_cast<const constant_op *>(&arg1->node()->operation());
 	bool arg2_is_constant =
-		dynamic_cast<const flt::constant_operation *>(&arg2->node()->operation());
+		dynamic_cast<const constant_op *>(&arg2->node()->operation());
 	
 	if (arg1_is_constant && arg2_is_constant) {
 		return jive_binop_reduction_constants;
@@ -178,7 +175,7 @@ flt_compare_operation::can_reduce_operand_pair(
 }
 
 jive::output *
-flt_compare_operation::reduce_operand_pair(
+compare_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
 	jive::output * arg1,
 	jive::output * arg2) const
@@ -186,10 +183,10 @@ flt_compare_operation::reduce_operand_pair(
 	jive_graph * graph = arg1->node()->graph;
 
 	if (path == jive_binop_reduction_constants) {
-		const flt::constant_operation & c1 =
-			static_cast<const flt::constant_operation&>(arg1->node()->operation());
-		const flt::constant_operation & c2 =
-			static_cast<const flt::constant_operation&>(arg2->node()->operation());
+		const constant_op & c1 =
+			static_cast<const constant_op&>(arg1->node()->operation());
+		const constant_op & c2 =
+			static_cast<const constant_op&>(arg2->node()->operation());
 		bool result = reduce_constants(c1.value(), c2.value());
 		if (result) {
 			return jive_control_true(graph);
@@ -201,6 +198,7 @@ flt_compare_operation::reduce_operand_pair(
 	return nullptr;
 }
 
+}
 }
 
 const jive_node_class JIVE_FLTBINARY_NODE = {

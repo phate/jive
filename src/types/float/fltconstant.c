@@ -9,85 +9,37 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <jive/types/float/fltoperation-classes-private.h>
+#include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/flttype.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/nullary.h>
 
-static void
-jive_fltconstant_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
-
-static const jive_node_attrs *
-jive_fltconstant_node_get_attrs_(const jive_node * self);
-
-static bool
-jive_fltconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
-
-static jive_node *
-jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[]);
+namespace jive {
+namespace base {
+// explicit instantiation
+template class domain_const_op<
+	&JIVE_FLTCONSTANT_NODE, flt::type, flt::value_repr, flt::format_value, flt::type_of_value
+>;
+}
+}
 
 const jive_node_class JIVE_FLTCONSTANT_NODE = {
 	parent : &JIVE_NULLARY_OPERATION,
 	name : "FLTCONSTANT",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
-	get_label : jive_fltconstant_node_get_label_, /* override */
-	match_attrs : jive_fltconstant_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_fltconstant_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
-static void
-jive_fltconstant_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_fltconstant_node * self = (const jive_fltconstant_node *) self_;
-
-	union u {
-		uint32_t i;
-		float f;
-	};
-
-	union u c;
-	c.i = self->operation().value();
-
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%f", c.f);
-	jive_buffer_putstr(buffer, tmp);
-}
-
-static bool
-jive_fltconstant_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::flt::constant_operation * first = &((const jive_fltconstant_node *) self)->operation();
-	const jive::flt::constant_operation * second = (const jive::flt::constant_operation *) attrs;
-
-	return first->value() == second->value();
-}
-
-static jive_node *
-jive_fltconstant_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::flt::constant_operation * attrs = (const jive::flt::constant_operation *) attrs_;
-
-	jive_fltconstant_node * node = new jive_fltconstant_node(*attrs);
-	node->class_ = &JIVE_FLTCONSTANT_NODE;
-	jive::flt::type flttype;
-	const jive::base::type * tmparray0[] = {&flttype};
-	jive_node_init_(node, region,
-		0, NULL, NULL,
-		1, tmparray0);
-
-	return node;
-}
-
 jive::output *
-jive_fltconstant(struct jive_graph * graph, jive::flt::value_repr value)
+jive_fltconstant(jive_graph * graph, jive::flt::value_repr value)
 {
-	jive::flt::constant_operation attrs(value);
+	jive::flt::constant_op op(value);
 
-	return jive_nullary_operation_create_normalized(&JIVE_FLTCONSTANT_NODE, graph, &attrs);
+	return jive_nullary_operation_create_normalized(&JIVE_FLTCONSTANT_NODE, graph, &op);
 }

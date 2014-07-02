@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -28,13 +28,13 @@ public:
 	classify_fixed_compare(const jive::bits::compare_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_float_unary(const jive::flt_unary_operation & op) const override;
+	classify_float_unary(const jive::flt::unary_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_float_binary(const jive::flt_binary_operation & op) const override;
+	classify_float_binary(const jive::flt::binary_op & op) const override;
 
 	virtual jive_regselect_mask
-	classify_float_compare(const jive::flt_compare_operation & op) const override;
+	classify_float_compare(const jive::flt::compare_op & op) const override;
 
 	virtual jive_regselect_mask
 	classify_address() const override;

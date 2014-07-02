@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/float/arithmetic/fltdifference.h>
-#include <jive/types/float/fltoperation-classes-private.h>
 
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/graph.h>
@@ -13,11 +12,6 @@
 
 namespace jive {
 namespace flt {
-
-value_repr compute_difference(value_repr arg1, value_repr arg2)
-{
-	return arg1 - arg2;
-}
 
 const char fltdifference_name[] = "FLTDIFFERENCE";
 
@@ -38,5 +32,5 @@ const jive_node_class JIVE_FLTDIFFERENCE_NODE = {
 jive::output *
 jive_fltdifference(jive::output * arg1, jive::output * arg2)
 {
-	return jive::flt::difference_operation::normalized_create(arg1, arg2);
+	return jive::flt::sub_op::normalized_create(arg1, arg2);
 }

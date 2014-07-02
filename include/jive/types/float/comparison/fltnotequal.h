@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTNOTEQUAL_NODE;
 namespace jive {
 namespace flt {
 
-bool compute_notequal(value_repr arg1, value_repr arg2);
 extern const char fltnotequal_name[];
 
 typedef detail::make_cmpop<
-	compute_notequal,
+	std::not_equal_to<value_repr>,
 	&JIVE_FLTNOTEQUAL_NODE,
 	fltnotequal_name,
-	jive_binary_operation_commutative> notequal_operation;
+	jive_binary_operation_commutative> ne_op;
 
 }
 }

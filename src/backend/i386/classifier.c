@@ -78,19 +78,19 @@ jive_i386_reg_classifier::classify_fixed_compare(const jive::bits::compare_op & 
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_float_unary(const jive::flt_unary_operation & op) const
+jive_i386_reg_classifier::classify_float_unary(const jive::flt::unary_op & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_float_binary(const jive::flt_binary_operation & op) const
+jive_i386_reg_classifier::classify_float_binary(const jive::flt::binary_op & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }
 
 jive_regselect_mask
-jive_i386_reg_classifier::classify_float_compare(const jive::flt_compare_operation & op) const
+jive_i386_reg_classifier::classify_float_compare(const jive::flt::compare_op & op) const
 {
 	return (1 << jive_i386_classify_sse);
 }

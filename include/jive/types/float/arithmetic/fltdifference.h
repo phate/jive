@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTDIFFERENCE_NODE;
 namespace jive {
 namespace flt {
 
-value_repr compute_difference(value_repr arg1, value_repr arg2);
 extern const char fltdifference_name[];
 
 typedef detail::make_binop<
-	compute_difference,
+	std::minus<value_repr>,
 	&JIVE_FLTDIFFERENCE_NODE,
 	fltdifference_name,
-	jive_binary_operation_none> difference_operation;
+	jive_binary_operation_none> sub_op;
 
 }
 }

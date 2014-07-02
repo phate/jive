@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/float/comparison/fltgreater.h>
-#include <jive/types/float/fltoperation-classes-private.h>
 
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/controltype.h>
@@ -14,11 +13,6 @@
 
 namespace jive {
 namespace flt {
-
-bool compute_greater(value_repr arg1, value_repr arg2)
-{
-	return arg1 > arg2;
-}
 
 const char fltgreater_name[] = "FLTGREATER";
 
@@ -39,5 +33,5 @@ const jive_node_class JIVE_FLTGREATER_NODE = {
 jive::output *
 jive_fltgreater(jive::output * arg1, jive::output * arg2)
 {
-	return jive::flt::greater_operation::normalized_create(arg1, arg2);
+	return jive::flt::gt_op::normalized_create(arg1, arg2);
 }

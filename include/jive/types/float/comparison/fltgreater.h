@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTGREATER_NODE;
 namespace jive {
 namespace flt {
 
-bool compute_greater(value_repr arg1, value_repr arg2);
 extern const char fltgreater_name[];
 
 typedef detail::make_cmpop<
-	compute_greater,
+	std::greater<value_repr>,
 	&JIVE_FLTGREATER_NODE,
 	fltgreater_name,
-	jive_binary_operation_none> greater_operation;
+	jive_binary_operation_none> gt_op;
 
 }
 }

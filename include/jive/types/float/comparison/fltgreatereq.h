@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTGREATEREQ_NODE;
 namespace jive {
 namespace flt {
 
-bool compute_greatereq(value_repr arg1, value_repr arg2);
 extern const char fltgreatereq_name[];
 
 typedef detail::make_cmpop<
-	compute_greatereq,
+	std::greater_equal<value_repr>,
 	&JIVE_FLTGREATEREQ_NODE,
 	fltgreatereq_name,
-	jive_binary_operation_none> greatereq_operation;
+	jive_binary_operation_none> ge_op;
 
 }
 }

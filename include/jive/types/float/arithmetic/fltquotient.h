@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTQUOTIENT_NODE;
 namespace jive {
 namespace flt {
 
-value_repr compute_quotient(value_repr arg1, value_repr arg2);
 extern const char fltquotient_name[];
 
 typedef detail::make_binop<
-	compute_quotient,
+	std::divides<value_repr>,
 	&JIVE_FLTQUOTIENT_NODE,
 	fltquotient_name,
-	jive_binary_operation_none> quotient_operation;
+	jive_binary_operation_none> div_op;
 
 }
 }

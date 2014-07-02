@@ -471,19 +471,19 @@ jive_testarch_reg_classifier::classify_fixed_compare(const jive::bits::compare_o
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_float_unary(const jive::flt_unary_operation & op) const
+jive_testarch_reg_classifier::classify_float_unary(const jive::flt::unary_op & op) const
 {
 	throw std::logic_error("not implemented in unit test");
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_float_binary(const jive::flt_binary_operation & op) const
+jive_testarch_reg_classifier::classify_float_binary(const jive::flt::binary_op & op) const
 {
 	throw std::logic_error("not implemented in unit test");
 }
 
 jive_regselect_mask
-jive_testarch_reg_classifier::classify_float_compare(const jive::flt_compare_operation & op) const
+jive_testarch_reg_classifier::classify_float_compare(const jive::flt::compare_op & op) const
 {
 	throw std::logic_error("not implemented in unit test");
 }

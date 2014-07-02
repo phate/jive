@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTPRODUCT_NODE;
 namespace jive {
 namespace flt {
 
-value_repr compute_product(value_repr arg1, value_repr arg2);
 extern const char fltproduct_name[];
 
 typedef detail::make_binop<
-	compute_product,
+	std::multiplies<value_repr>,
 	&JIVE_FLTPRODUCT_NODE,
 	fltproduct_name,
-	jive_binary_operation_commutative> product_operation;
+	jive_binary_operation_commutative> mul_op;
 
 }
 }

@@ -14,13 +14,16 @@ extern const jive_node_class JIVE_FLTNEGATE_NODE;
 namespace jive {
 namespace flt {
 
-value_repr compute_negation(value_repr arg);
+struct compute_negation {
+	inline value_repr operator()(value_repr v) const noexcept { return -v; }
+};
+
 extern const char fltnegate_name[];
 
 typedef detail::make_unop<
 	compute_negation,
 	&JIVE_FLTNEGATE_NODE,
-	fltnegate_name> negate_operation;
+	fltnegate_name> neg_op;
 
 
 }

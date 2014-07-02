@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/float/arithmetic/fltproduct.h>
-#include <jive/types/float/fltoperation-classes-private.h>
 
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/graph.h>
@@ -13,11 +12,6 @@
 
 namespace jive {
 namespace flt {
-
-value_repr compute_product(value_repr arg1, value_repr arg2)
-{
-	return arg1 * arg2;
-}
 
 const char fltproduct_name[] = "FLTPRODUCT";
 
@@ -38,5 +32,5 @@ const jive_node_class JIVE_FLTPRODUCT_NODE = {
 jive::output *
 jive_fltproduct(jive::output * arg1, jive::output * arg2)
 {
-	return jive::flt::product_operation::normalized_create(arg1, arg2);
+	return jive::flt::mul_op::normalized_create(arg1, arg2);
 }

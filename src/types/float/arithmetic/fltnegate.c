@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/float/arithmetic/fltnegate.h>
-#include <jive/types/float/fltoperation-classes-private.h>
 
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/graph.h>
@@ -13,11 +12,6 @@
 
 namespace jive {
 namespace flt {
-
-value_repr compute_negation(value_repr arg)
-{
-	return -arg;
-}
 
 const char fltnegate_name[] = "FLTNEGATE";
 
@@ -38,5 +32,5 @@ const jive_node_class JIVE_FLTNEGATE_NODE = {
 jive::output *
 jive_fltnegate(jive::output * arg)
 {
-	return jive::flt::negate_operation::normalized_create(arg);
+	return jive::flt::neg_op::normalized_create(arg);
 }

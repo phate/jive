@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTLESSEQ_NODE;
 namespace jive {
 namespace flt {
 
-bool compute_lesseq(value_repr arg1, value_repr arg2);
 extern const char fltlesseq_name[];
 
 typedef detail::make_cmpop<
-	compute_lesseq,
+	std::less_equal<value_repr>,
 	&JIVE_FLTLESSEQ_NODE,
 	fltlesseq_name,
-	jive_binary_operation_none> lesseq_operation;
+	jive_binary_operation_none> le_op;
 
 }
 }

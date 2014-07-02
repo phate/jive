@@ -14,14 +14,13 @@ extern const jive_node_class JIVE_FLTEQUAL_NODE;
 namespace jive {
 namespace flt {
 
-bool compute_equal(value_repr arg1, value_repr arg2);
 extern const char fltequal_name[];
 
 typedef detail::make_cmpop<
-	compute_equal,
+	std::equal_to<value_repr>,
 	&JIVE_FLTEQUAL_NODE,
 	fltequal_name,
-	jive_binary_operation_commutative> equal_operation;
+	jive_binary_operation_commutative> eq_op;
 
 }
 }

@@ -12,17 +12,21 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 
+extern const jive_node_class JIVE_FLTSYMBOLICCONSTANT_NODE;
+
 namespace jive {
+namespace base {
+// declare explicit instantiation
+extern template class domain_symbol_op<&JIVE_FLTSYMBOLICCONSTANT_NODE, jive::flt::type>;
+}
+
 namespace flt {
-
-struct symbolicconstant_operation : public base::unary_op {
-	std::string name;
-};
-
+typedef base::domain_symbol_op<&JIVE_FLTSYMBOLICCONSTANT_NODE, jive::flt::type>
+	symbol_op;
 }
 }
 
-typedef jive::operation_node<jive::flt::symbolicconstant_operation>
+typedef jive::operation_node<jive::flt::symbol_op>
 	jive_fltsymbolicconstant_node;
 
 /**
@@ -35,6 +39,6 @@ typedef jive::operation_node<jive::flt::symbolicconstant_operation>
 	returns the output handle of an existing constant.
 */
 jive::output *
-jive_fltsymbolicconstant(struct jive_graph * graph, const char * name);
+jive_fltsymbolicconstant(jive_graph * graph, const char * name);
 
 #endif
