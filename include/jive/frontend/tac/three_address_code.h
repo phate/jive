@@ -50,10 +50,6 @@ struct jive_three_address_code_class {
 
 	const struct jive_three_address_code_attrs *
 		(*get_attrs)(const jive_three_address_code * self);
-
-	jive_three_address_code * (*create)(struct jive_basic_block * basic_block,
-		const struct jive_three_address_code_attrs * attrs,
-		size_t noperands, jive_three_address_code * const operands[]);
 };
 
 JIVE_EXPORTED_INLINE void

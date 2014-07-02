@@ -25,7 +25,7 @@ static int test_main(void)
 
 	jive_variable_code * variable;
 	variable = static_cast<jive_variable_code*>(jive_variable_code_create(basic_block, "foobar"));
-	jive_three_address_code * tac = jive_three_address_code_create_(basic_block, NULL, 0, NULL);
+	jive_three_address_code * tac = jive_variable_code_create(basic_block, "blub");
 
 	jive_assignment_code_create(basic_block, variable, tac);
 

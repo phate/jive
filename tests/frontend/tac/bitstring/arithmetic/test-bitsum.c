@@ -9,7 +9,7 @@
 #include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/tac/bitstring/arithmetic/bitsum.h>
-#include <jive/frontend/tac/three_address_code-private.h>
+#include <jive/frontend/tac/variable.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
 
@@ -22,8 +22,8 @@ static int test_main(void)
 
 	jive_basic_block * basic_block = jive_basic_block_cast(jive_basic_block_create(clg_node->cfg));
 
-	jive_three_address_code * tac1 = jive_three_address_code_create_(basic_block, NULL, 0, NULL);
-	jive_three_address_code * tac2 = jive_three_address_code_create_(basic_block, NULL, 0, NULL);
+	jive_three_address_code * tac1 = jive_variable_code_create(basic_block, "blub");
+	jive_three_address_code * tac2 = jive_variable_code_create(basic_block, "foobar");
 
 	jive_bitsum_code_create(basic_block, tac1, tac2);
 

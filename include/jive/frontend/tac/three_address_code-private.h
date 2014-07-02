@@ -23,9 +23,4 @@ jive_three_address_code_get_label_(const jive_three_address_code * self,
 const struct jive_three_address_code_attrs *
 jive_three_address_code_get_attrs_(const jive_three_address_code * self);
 
-jive_three_address_code *
-jive_three_address_code_create_(struct jive_basic_block * basic_block,
-	const struct jive_three_address_code_attrs * attrs,
-	size_t noperands, jive_three_address_code * const operands[]);
-
 #endif

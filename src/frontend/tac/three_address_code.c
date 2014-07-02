@@ -23,7 +23,6 @@ const struct jive_three_address_code_class JIVE_THREE_ADDRESS_CODE = {
 	fini : nullptr,
 	get_label : jive_three_address_code_get_label_,
 	get_attrs : jive_three_address_code_get_attrs_,
-	create : jive_three_address_code_create_
 };
 
 void
@@ -51,18 +50,6 @@ const jive_three_address_code_attrs *
 jive_three_address_code_get_attrs_(const jive_three_address_code * self)
 {
 	return 0;
-}
-
-jive_three_address_code *
-jive_three_address_code_create_(struct jive_basic_block * basic_block,
-	const jive_three_address_code_attrs * attrs,
-	size_t noperands, jive_three_address_code * const operands[])
-{
-	jive_three_address_code * three_address_code = new jive_three_address_code;
-	three_address_code->class_ = &JIVE_THREE_ADDRESS_CODE;
-	jive_three_address_code_init_(three_address_code, basic_block, noperands, operands);
-
-	return three_address_code;
 }
 
 void

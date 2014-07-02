@@ -18,18 +18,12 @@ static void
 jive_reference_code_get_label_(const struct jive_three_address_code * self,
 	struct jive_buffer * buffer);
 
-static struct jive_three_address_code *
-jive_reference_code_create_(struct jive_basic_block * basic_block,
-	const struct jive_three_address_code_attrs * attrs,
-	size_t noperands, struct jive_three_address_code * const operands[]);
-
 const struct jive_three_address_code_class JIVE_REFERENCE_CODE = {
 	parent : &JIVE_THREE_ADDRESS_CODE,
 	name : "REFERENCE",
 	fini : nullptr, /* inherit */
 	get_label : jive_reference_code_get_label_, /* override */
 	get_attrs : jive_three_address_code_get_attrs_, /* inherit */
-	create : jive_reference_code_create_ /* override */
 };
 
 static void
@@ -54,21 +48,11 @@ jive_reference_code_get_label_(const struct jive_three_address_code * self,
 	}
 }
 
-static jive_three_address_code *
-jive_reference_code_create_(struct jive_basic_block * basic_block,
-	const jive_three_address_code_attrs * attrs,
-	size_t noperands, struct jive_three_address_code * const operands[])
-{
-	jive_reference_code * ref = new jive_reference_code;
-	ref->class_ = &JIVE_REFERENCE_CODE;
-	jive_reference_code_init_(ref, basic_block, dynamic_cast<jive_variable_code*>(operands[0]));
-	return ref;
-}
-
 jive_three_address_code *
 jive_reference_code_create(struct jive_basic_block * basic_block, jive_variable_code * variable)
 {
-	jive_three_address_code * tmparray1[] = {variable};
-	return jive_reference_code_create_(basic_block, NULL,
-		1, tmparray1);
+	jive_reference_code * ref = new jive_reference_code;
+	ref->class_ = &JIVE_REFERENCE_CODE;
+	jive_reference_code_init_(ref, basic_block, variable);
+	return ref;
 }

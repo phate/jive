@@ -21,18 +21,12 @@ jive_call_code_get_label_(const struct jive_three_address_code * self, struct ji
 static const struct jive_three_address_code_attrs *
 jive_call_code_get_attrs_(const struct jive_three_address_code * self);
 
-static struct jive_three_address_code *
-jive_call_code_create_(struct jive_basic_block * basic_block,
-	const struct jive_three_address_code_attrs * attrs,
-	size_t noperands, struct jive_three_address_code * const operands[]);
-
 const struct jive_three_address_code_class JIVE_CALL_CODE = {
 	parent : &JIVE_CALL_CODE,
 	name : "CALL",
 	fini : nullptr, /* inherit */
 	get_label : jive_call_code_get_label_, /* override */
 	get_attrs : jive_call_code_get_attrs_, /* override */
-	create : jive_call_code_create_ /* override */
 };
 
 static void
@@ -73,25 +67,12 @@ jive_call_code_get_attrs_(const struct jive_three_address_code * self_)
 	return &self->base;
 }
 
-static jive_three_address_code *
-jive_call_code_create_(struct jive_basic_block * basic_block,
-	const jive_three_address_code_attrs * attrs_,
-	size_t noperands, struct jive_three_address_code * const operands[])
-{
-	const jive_call_code_attrs * attrs = (const jive_call_code_attrs *) attrs_;
-
-	jive_call_code * call = new jive_call_code;
-	call->class_ = &JIVE_CALL_CODE;
-	jive_call_code_init_(call, basic_block, attrs->callee, noperands, operands);
-	return call;
-}
-
 jive_three_address_code *
 jive_call_code_create(struct jive_basic_block * basic_block, jive_clg_node * callee,
 	size_t narguments, struct jive_three_address_code * const arguments[])
 {
-	jive_call_code_attrs attrs;
-	attrs.callee = callee;
-
-	return jive_call_code_create_(basic_block, &attrs.base, narguments, arguments);
+	jive_call_code * call = new jive_call_code;
+	call->class_ = &JIVE_CALL_CODE;
+	jive_call_code_init_(call, basic_block, callee, narguments, arguments);
+	return call;
 }
