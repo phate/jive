@@ -28,18 +28,10 @@ jive_cfg_enter_node::debug_string() const
 	return std::string("ENTER");
 }
 
-const struct jive_cfg_node_class JIVE_CFG_ENTER_NODE = {
-	parent : &JIVE_CFG_NODE,
-	name : "ENTER",
-	fini : nullptr, /* inherit */
-	get_label : jive_cfg_node_get_label_, /* inherit */
-};
-
 static struct jive_cfg_node *
 jive_cfg_enter_node_create(struct jive_cfg * cfg)
 {
 	jive_cfg_node * node = new jive_cfg_enter_node;
-	node->class_ = &JIVE_CFG_ENTER_NODE;
 	jive_cfg_node_init_(node, cfg);
 	return node;
 }
@@ -54,18 +46,10 @@ jive_cfg_exit_node::debug_string() const
 	return std::string("EXIT");
 }
 
-const jive_cfg_node_class JIVE_CFG_EXIT_NODE = {
-	parent : &JIVE_CFG_NODE,
-	name : "EXIT",
-	fini : nullptr, /* inherit */
-	get_label : jive_cfg_node_get_label_, /* inherit */
-};
-
 static struct jive_cfg_node *
 jive_cfg_exit_node_create(struct jive_cfg * cfg)
 {
 	jive_cfg_node * node = new jive_cfg_exit_node;
-	node->class_ = &JIVE_CFG_EXIT_NODE;
 	jive_cfg_node_init_(node, cfg);
 	return node;
 }
@@ -136,7 +120,7 @@ jive_cfg_convert_dot(const struct jive_cfg * self, struct jive_buffer * buffer)
 		snprintf(tmp, sizeof(tmp), "%zu", (size_t)node);
 		jive_buffer_putstr(buffer, tmp);
 		jive_buffer_putstr(buffer, "[shape = box, label = \"");
-		jive_cfg_node_get_label(node, buffer);
+		jive_buffer_putstr(buffer, node->debug_string().c_str());
 		jive_buffer_putstr(buffer, "\"];\n");
 
 		if (node->taken_successor) {

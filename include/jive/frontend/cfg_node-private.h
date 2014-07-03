@@ -9,7 +9,4 @@
 void
 jive_cfg_node_init_(struct jive_cfg_node * self, struct jive_cfg * cfg);
 
-void
-jive_cfg_node_get_label_(const jive_cfg_node * self, struct jive_buffer * buffer);
-
 #endif

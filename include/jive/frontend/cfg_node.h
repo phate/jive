@@ -13,17 +13,11 @@
 
 #include <string>
 
-struct jive_buffer;
-
-typedef struct jive_cfg_node_class jive_cfg_node_class;
-
 class jive_cfg_node {
 public:
 	virtual ~jive_cfg_node() noexcept;
 
 	virtual std::string debug_string() const = 0;
-
-	const struct jive_cfg_node_class * class_;
 
 	struct jive_cfg * cfg;
 
@@ -55,23 +49,6 @@ public:
 		struct jive_cfg_node * next;
 	} cfg_node_list;
 };
-
-extern const jive_cfg_node_class JIVE_CFG_NODE;
-
-struct jive_cfg_node_class {
-	const struct jive_cfg_node_class * parent;
-	const char * name;
-
-	void (*fini)(jive_cfg_node * self);
-
-	void (*get_label)(const jive_cfg_node * self, struct jive_buffer * buffer);
-};
-
-static inline void
-jive_cfg_node_get_label(const jive_cfg_node * self, struct jive_buffer * buffer)
-{
-	self->class_->get_label(self, buffer);
-}
 
 void
 jive_cfg_node_connect_taken_successor(struct jive_cfg_node * self,

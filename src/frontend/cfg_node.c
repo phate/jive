@@ -8,8 +8,6 @@
 #include <jive/frontend/clg_node.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
-#include <jive/frontend/cfg_node-private.h>
-#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 
 #include <string.h>
@@ -18,13 +16,6 @@ jive_cfg_node::~jive_cfg_node() noexcept
 {
 	JIVE_LIST_REMOVE(cfg->nodes, this, cfg_node_list);
 }
-
-const struct jive_cfg_node_class JIVE_CFG_NODE = {
-	parent : 0,
-	name : "CFG_NODE",
-	fini : nullptr,
-	get_label : jive_cfg_node_get_label_,
-};
 
 void
 jive_cfg_node_init_(struct jive_cfg_node * self, struct jive_cfg * cfg)
@@ -48,12 +39,6 @@ jive_cfg_node_init_(struct jive_cfg_node * self, struct jive_cfg * cfg)
 	self->cfg_node_list.next = 0;
 
 	JIVE_LIST_PUSH_BACK(cfg->nodes, self, cfg_node_list);
-}
-
-void
-jive_cfg_node_get_label_(const jive_cfg_node * self, struct jive_buffer * buffer)
-{
-	jive_buffer_putstr(buffer, self->class_->name);
 }
 
 void

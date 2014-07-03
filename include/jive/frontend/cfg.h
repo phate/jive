@@ -11,10 +11,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-struct jive_buffer;
-
 /* cfg enter node */
-extern const jive_cfg_node_class JIVE_CFG_ENTER_NODE;
 
 class jive_cfg_enter_node final : public jive_cfg_node {
 public:
@@ -24,8 +21,6 @@ public:
 };
 
 /* cfg exit node */
-
-extern const jive_cfg_node_class JIVE_CFG_EXIT_NODE;
 
 class jive_cfg_exit_node final : public jive_cfg_node {
 public:
