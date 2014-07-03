@@ -14,9 +14,6 @@ void
 jive_basic_block_init_(struct jive_basic_block * self, struct jive_cfg * cfg);
 
 void
-jive_basic_block_fini_(struct jive_cfg_node * self);
-
-void
 jive_cfg_node_get_label_(const struct jive_cfg_node * self, struct jive_buffer * buffer);
 
 struct jive_cfg_node *

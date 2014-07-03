@@ -12,6 +12,7 @@ extern const jive_cfg_node_class JIVE_BASIC_BLOCK;
 
 class jive_basic_block final : public jive_cfg_node {
 public:
+	virtual ~jive_basic_block();
 
 	struct {
 		struct jive_three_address_code * first;

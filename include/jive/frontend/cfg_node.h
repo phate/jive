@@ -17,6 +17,8 @@ typedef struct jive_cfg_node_class jive_cfg_node_class;
 
 class jive_cfg_node {
 public:
+	virtual ~jive_cfg_node() noexcept;
+
 	const struct jive_cfg_node_class * class_;
 
 	struct jive_cfg * cfg;

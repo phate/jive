@@ -14,8 +14,11 @@
 
 #include <stdio.h>
 
-void
-jive_basic_block_fini_(struct jive_cfg_node * self);
+jive_basic_block::~jive_basic_block()
+{
+	while (three_address_codes.first)
+		delete three_address_codes.first;
+}
 
 void
 jive_basic_block_get_label_(const struct jive_cfg_node * self, struct jive_buffer * buffer);
@@ -26,21 +29,10 @@ jive_basic_block_create_(struct jive_cfg * cfg);
 const jive_cfg_node_class JIVE_BASIC_BLOCK = {
 	parent : &JIVE_CFG_NODE,
 	name : "BASIC BLOCK",
-	fini : jive_basic_block_fini_, /* override */
+	fini : nullptr, /* override */
 	get_label : jive_basic_block_get_label_, /* override */
 	create : jive_basic_block_create_ /* override */
 };
-
-void
-jive_basic_block_fini_(struct jive_cfg_node * self_)
-{
-	struct jive_basic_block * self = (struct jive_basic_block *)self_;
-
-	while (self->three_address_codes.first)
-		delete self->three_address_codes.first;
-
-	jive_cfg_node_fini_(self_);
-}
 
 void
 jive_basic_block_get_label_(const struct jive_cfg_node * self_, struct jive_buffer * buffer)

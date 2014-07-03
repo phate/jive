@@ -20,13 +20,15 @@
 
 /* cfg enter node */
 
+jive_cfg_enter_node::~jive_cfg_enter_node() noexcept {}
+
 static struct jive_cfg_node *
 jive_cfg_enter_node_create_(struct jive_cfg * cfg);
 
 const struct jive_cfg_node_class JIVE_CFG_ENTER_NODE = {
 	parent : &JIVE_CFG_NODE,
 	name : "ENTER",
-	fini : jive_cfg_node_fini_, /* inherit */
+	fini : nullptr, /* inherit */
 	get_label : jive_cfg_node_get_label_, /* inherit */
 	create : jive_cfg_enter_node_create_ /* override */
 };
@@ -42,13 +44,15 @@ jive_cfg_enter_node_create_(struct jive_cfg * cfg)
 
 /* cfg exit node */
 
+jive_cfg_exit_node::~jive_cfg_exit_node() noexcept {}
+
 static struct jive_cfg_node *
 jive_cfg_exit_node_create_(struct jive_cfg * cfg);
 
 const jive_cfg_node_class JIVE_CFG_EXIT_NODE = {
 	parent : &JIVE_CFG_NODE,
 	name : "EXIT",
-	fini : jive_cfg_node_fini_, /* inherit */
+	fini : nullptr, /* inherit */
 	get_label : jive_cfg_node_get_label_, /* inherit */
 	create : jive_cfg_exit_node_create_ /* override */
 };

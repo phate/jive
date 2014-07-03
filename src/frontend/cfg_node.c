@@ -14,10 +14,15 @@
 
 #include <string.h>
 
+jive_cfg_node::~jive_cfg_node() noexcept
+{
+	JIVE_LIST_REMOVE(cfg->nodes, this, cfg_node_list);
+}
+
 const struct jive_cfg_node_class JIVE_CFG_NODE = {
 	parent : 0,
 	name : "CFG_NODE",
-	fini : jive_cfg_node_fini_,
+	fini : nullptr,
 	get_label : jive_cfg_node_get_label_,
 	create : jive_cfg_node_create_
 };
@@ -44,25 +49,6 @@ jive_cfg_node_init_(struct jive_cfg_node * self, struct jive_cfg * cfg)
 	self->cfg_node_list.next = 0;
 
 	JIVE_LIST_PUSH_BACK(cfg->nodes, self, cfg_node_list);
-}
-
-void
-jive_cfg_node_fini_(struct jive_cfg_node * self)
-{
-	JIVE_LIST_REMOVE(self->cfg->nodes, self, cfg_node_list);
-
-	self->taken_predecessors.first = 0;
-	self->taken_predecessors.last = 0;
-	self->taken_predecessors_list.prev = 0;
-	self->taken_predecessors_list.next = 0;
-
-	self->nottaken_predecessors.first = 0;
-	self->nottaken_predecessors.last = 0;
-	self->nottaken_predecessors_list.prev = 0;
-	self->nottaken_predecessors_list.next = 0;
-
-	self->taken_successor = 0;
-	self->nottaken_successor = 0;
 }
 
 void
@@ -155,11 +141,5 @@ jive_cfg_node_divert_nottaken_predecessors(struct jive_cfg_node * self, struct j
 void
 jive_cfg_node_destroy(struct jive_cfg_node * self)
 {
-	JIVE_ASSERT(self->taken_successor == NULL);
-	JIVE_ASSERT(self->taken_predecessors.first == NULL);
-	JIVE_ASSERT(self->nottaken_successor == NULL);
-	JIVE_ASSERT(self->nottaken_predecessors.first == NULL);
-
-	self->class_->fini(self);
 	delete self;
 }

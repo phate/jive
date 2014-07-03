@@ -17,6 +17,8 @@ struct jive_buffer;
 extern const jive_cfg_node_class JIVE_CFG_ENTER_NODE;
 
 class jive_cfg_enter_node final : public jive_cfg_node {
+public:
+	virtual ~jive_cfg_enter_node() noexcept;
 };
 
 JIVE_EXPORTED_INLINE const jive_cfg_enter_node *
@@ -42,6 +44,8 @@ jive_cfg_enter_node_cast(jive_cfg_node * self)
 extern const jive_cfg_node_class JIVE_CFG_EXIT_NODE;
 
 class jive_cfg_exit_node final : public jive_cfg_node {
+public:
+	virtual ~jive_cfg_exit_node() noexcept;
 };
 
 JIVE_EXPORTED_INLINE const jive_cfg_exit_node *
