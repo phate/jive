@@ -23,7 +23,7 @@ protected:
 public:
 	virtual std::string debug_string() const = 0;
 
-	struct jive_cfg * cfg;
+	inline struct jive_cfg * cfg() const noexcept { return cfg_; }
 
 	struct {
 		struct jive_cfg_node * first;
@@ -52,6 +52,9 @@ public:
 		struct jive_cfg_node * prev;
 		struct jive_cfg_node * next;
 	} cfg_node_list;
+
+private:
+	struct jive_cfg * cfg_;
 };
 
 void

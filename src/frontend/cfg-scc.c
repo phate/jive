@@ -96,8 +96,8 @@ static size_t index = 0;
 static void
 strongconnect(struct jive_cfg_node * node, struct jive_cfg_scc_set * scc_set)
 {
-	cfg_node_item * item = cfg_node_item_create(node->cfg->context, node, index, index);
-	cfg_node_item_vector_push_back(&item_vector, node->cfg->context, item);
+	cfg_node_item * item = cfg_node_item_create(node->cfg()->context, node, index, index);
+	cfg_node_item_vector_push_back(&item_vector, node->cfg()->context, item);
 	index_map_insert(&map, item);
 	cfg_node_stack_push(&node_stack, node);
 	index++;
