@@ -78,18 +78,6 @@ jive_basic_block_create_(struct jive_cfg * cfg)
 	return &node->base;
 }
 
-void
-jive_basic_block_transfer_tacs(struct jive_basic_block * self, struct jive_basic_block * other)
-{
-	jive_three_address_code * tac, * next;
-	JIVE_LIST_ITERATE_SAFE(self->three_address_codes, tac, next,
-		basic_block_three_address_codes_list) {
-		JIVE_LIST_REMOVE(self->three_address_codes, tac, basic_block_three_address_codes_list);
-		tac->basic_block = other;
-		JIVE_LIST_PUSH_BACK(other->three_address_codes, tac, basic_block_three_address_codes_list);
-	}
-}
-
 struct jive_cfg_node *
 jive_basic_block_create(struct jive_cfg * cfg)
 {

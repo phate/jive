@@ -33,7 +33,4 @@ jive_basic_block_cast(const struct jive_cfg_node * node)
 struct jive_cfg_node *
 jive_basic_block_create(struct jive_cfg * cfg);
 
-void
-jive_basic_block_transfer_tacs(struct jive_basic_block * self, struct jive_basic_block * other);
-
 #endif
