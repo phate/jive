@@ -24,7 +24,6 @@ const struct jive_cfg_node_class JIVE_CFG_NODE = {
 	name : "CFG_NODE",
 	fini : nullptr,
 	get_label : jive_cfg_node_get_label_,
-	create : jive_cfg_node_create_
 };
 
 void
@@ -55,16 +54,6 @@ void
 jive_cfg_node_get_label_(const jive_cfg_node * self, struct jive_buffer * buffer)
 {
 	jive_buffer_putstr(buffer, self->class_->name);
-}
-
-struct jive_cfg_node *
-jive_cfg_node_create_(struct jive_cfg * cfg)
-{
-	jive_cfg_node * node = new jive_cfg_node;
-	node->class_ = &JIVE_CFG_NODE;
-	jive_cfg_node_init_(node, cfg);
-
-	return node;
 }
 
 void

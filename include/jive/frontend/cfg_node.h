@@ -61,8 +61,6 @@ struct jive_cfg_node_class {
 	void (*fini)(jive_cfg_node * self);
 
 	void (*get_label)(const jive_cfg_node * self, struct jive_buffer * buffer);
-
-	jive_cfg_node * (*create)(struct jive_cfg * cfg);
 };
 
 static inline void

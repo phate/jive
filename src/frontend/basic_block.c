@@ -23,15 +23,11 @@ jive_basic_block::~jive_basic_block()
 void
 jive_basic_block_get_label_(const struct jive_cfg_node * self, struct jive_buffer * buffer);
 
-struct jive_cfg_node *
-jive_basic_block_create_(struct jive_cfg * cfg);
-
 const jive_cfg_node_class JIVE_BASIC_BLOCK = {
 	parent : &JIVE_CFG_NODE,
 	name : "BASIC BLOCK",
 	fini : nullptr, /* override */
 	get_label : jive_basic_block_get_label_, /* override */
-	create : jive_basic_block_create_ /* override */
 };
 
 void
@@ -62,16 +58,10 @@ jive_basic_block_init_(struct jive_basic_block * self, struct jive_cfg * cfg)
 }
 
 struct jive_cfg_node *
-jive_basic_block_create_(struct jive_cfg * cfg)
+jive_basic_block_create(struct jive_cfg * cfg)
 {
-	struct jive_basic_block * node = new jive_basic_block;
+	jive_basic_block * node = new jive_basic_block;
 	node->class_ = &JIVE_BASIC_BLOCK;
 	jive_basic_block_init_(node, cfg);
 	return node;
-}
-
-struct jive_cfg_node *
-jive_basic_block_create(struct jive_cfg * cfg)
-{
-	return jive_basic_block_create_(cfg);
 }

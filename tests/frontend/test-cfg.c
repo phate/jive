@@ -20,10 +20,6 @@ static int test_main(void)
 	jive_clg_node * clg_node = jive_clg_node_create(clg, "foobar");
 	clg_node->cfg = jive_cfg_create(clg_node);
 
-	jive_cfg_node * node = jive_cfg_node_create_(clg_node->cfg);
-	jive_cfg_node_divert_nottaken_successor(clg_node->cfg->enter, node);
-	jive_cfg_node_connect_nottaken_successor(node, clg_node->cfg->exit);
-
 //	jive_cfg_view(cfg);
 
 	jive_clg_destroy(clg);
