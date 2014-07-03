@@ -17,6 +17,8 @@ class jive_cfg_enter_node final : public jive_cfg_node {
 public:
 	virtual ~jive_cfg_enter_node() noexcept;
 
+	jive_cfg_enter_node(struct jive_cfg * cfg) noexcept;
+
 	virtual std::string debug_string() const override;
 };
 
@@ -25,6 +27,8 @@ public:
 class jive_cfg_exit_node final : public jive_cfg_node {
 public:
 	virtual ~jive_cfg_exit_node() noexcept;
+
+	jive_cfg_exit_node(struct jive_cfg * cfg) noexcept;
 
 	virtual std::string debug_string() const override;
 };

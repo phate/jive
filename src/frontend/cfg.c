@@ -10,7 +10,6 @@
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
-#include <jive/frontend/cfg_node-private.h>
 #include <jive/frontend/tac/three_address_code.h>
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
@@ -22,6 +21,10 @@
 
 jive_cfg_enter_node::~jive_cfg_enter_node() noexcept {}
 
+jive_cfg_enter_node::jive_cfg_enter_node(struct jive_cfg * cfg) noexcept
+	: jive_cfg_node(cfg)
+{}
+
 std::string
 jive_cfg_enter_node::debug_string() const
 {
@@ -31,14 +34,16 @@ jive_cfg_enter_node::debug_string() const
 static struct jive_cfg_node *
 jive_cfg_enter_node_create(struct jive_cfg * cfg)
 {
-	jive_cfg_node * node = new jive_cfg_enter_node;
-	jive_cfg_node_init_(node, cfg);
-	return node;
+	return new jive_cfg_enter_node(cfg);
 }
 
 /* cfg exit node */
 
 jive_cfg_exit_node::~jive_cfg_exit_node() noexcept {}
+
+jive_cfg_exit_node::jive_cfg_exit_node(struct jive_cfg * cfg) noexcept
+	: jive_cfg_node(cfg)
+{}
 
 std::string
 jive_cfg_exit_node::debug_string() const
@@ -49,9 +54,7 @@ jive_cfg_exit_node::debug_string() const
 static struct jive_cfg_node *
 jive_cfg_exit_node_create(struct jive_cfg * cfg)
 {
-	jive_cfg_node * node = new jive_cfg_exit_node;
-	jive_cfg_node_init_(node, cfg);
-	return node;
+	return new jive_cfg_exit_node(cfg);
 }
 
 /* cfg */

@@ -17,28 +17,25 @@ jive_cfg_node::~jive_cfg_node() noexcept
 	JIVE_LIST_REMOVE(cfg->nodes, this, cfg_node_list);
 }
 
-void
-jive_cfg_node_init_(struct jive_cfg_node * self, struct jive_cfg * cfg)
+jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg_) noexcept
+	: cfg(cfg_)
+	, taken_successor(nullptr)
+	, nottaken_successor(nullptr)
 {
-	self->cfg = cfg;
+	taken_predecessors.first = 0;
+	taken_predecessors.last = 0;
+	taken_predecessors_list.prev = 0;
+	taken_predecessors_list.next = 0;
 
-	self->taken_predecessors.first = 0;
-	self->taken_predecessors.last = 0;
-	self->taken_predecessors_list.prev = 0;
-	self->taken_predecessors_list.next = 0;
+	nottaken_predecessors.first = 0;
+	nottaken_predecessors.last = 0;
+	nottaken_predecessors_list.prev = 0;
+	nottaken_predecessors_list.next = 0;
 
-	self->nottaken_predecessors.first = 0;
-	self->nottaken_predecessors.last = 0;
-	self->nottaken_predecessors_list.prev = 0;
-	self->nottaken_predecessors_list.next = 0;
+	cfg_node_list.prev = 0;
+	cfg_node_list.next = 0;
 
-	self->taken_successor = 0;
-	self->nottaken_successor = 0;
-
-	self->cfg_node_list.prev = 0;
-	self->cfg_node_list.next = 0;
-
-	JIVE_LIST_PUSH_BACK(cfg->nodes, self, cfg_node_list);
+	JIVE_LIST_PUSH_BACK(cfg->nodes, this, cfg_node_list);
 }
 
 void

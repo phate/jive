@@ -12,6 +12,8 @@ class jive_basic_block final : public jive_cfg_node {
 public:
 	virtual ~jive_basic_block();
 
+	jive_basic_block(struct jive_cfg * cfg) noexcept;
+
 	virtual std::string debug_string() const override;
 
 	struct {

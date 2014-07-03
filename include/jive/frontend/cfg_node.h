@@ -17,6 +17,10 @@ class jive_cfg_node {
 public:
 	virtual ~jive_cfg_node() noexcept;
 
+protected:
+	jive_cfg_node(struct jive_cfg * cfg) noexcept;
+
+public:
 	virtual std::string debug_string() const = 0;
 
 	struct jive_cfg * cfg;

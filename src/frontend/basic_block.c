@@ -7,7 +7,6 @@
 #include <jive/frontend/clg_node.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
-#include <jive/frontend/cfg_node-private.h>
 #include <jive/frontend/tac/three_address_code.h>
 #include <jive/util/list.h>
 
@@ -17,6 +16,13 @@ jive_basic_block::~jive_basic_block()
 {
 	while (three_address_codes.first)
 		delete three_address_codes.first;
+}
+
+jive_basic_block::jive_basic_block(struct jive_cfg * cfg) noexcept
+	: jive_cfg_node(cfg)
+{
+	three_address_codes.first = 0;
+	three_address_codes.last = 0;
 }
 
 std::string
@@ -39,19 +45,8 @@ jive_basic_block::debug_string() const
 	return label;
 }
 
-void
-jive_basic_block_init_(struct jive_basic_block * self, struct jive_cfg * cfg)
-{
-	jive_cfg_node_init_(self, cfg);
-
-	self->three_address_codes.first = 0;
-	self->three_address_codes.last = 0;
-}
-
 struct jive_cfg_node *
 jive_basic_block_create(struct jive_cfg * cfg)
 {
-	jive_basic_block * node = new jive_basic_block;
-	jive_basic_block_init_(node, cfg);
-	return node;
+	return new jive_basic_block(cfg);
 }
