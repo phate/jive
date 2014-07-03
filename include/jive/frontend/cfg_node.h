@@ -13,10 +13,10 @@
 
 struct jive_buffer;
 
-typedef struct jive_cfg_node jive_cfg_node;
 typedef struct jive_cfg_node_class jive_cfg_node_class;
 
-struct jive_cfg_node {
+class jive_cfg_node {
+public:
 	const struct jive_cfg_node_class * class_;
 
 	struct jive_cfg * cfg;

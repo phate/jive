@@ -16,10 +16,7 @@ struct jive_buffer;
 /* cfg enter node */
 extern const jive_cfg_node_class JIVE_CFG_ENTER_NODE;
 
-typedef struct jive_cfg_enter_node jive_cfg_enter_node;
-
-struct jive_cfg_enter_node {
-	jive_cfg_node base;
+class jive_cfg_enter_node final : public jive_cfg_node {
 };
 
 JIVE_EXPORTED_INLINE const jive_cfg_enter_node *
@@ -44,10 +41,7 @@ jive_cfg_enter_node_cast(jive_cfg_node * self)
 
 extern const jive_cfg_node_class JIVE_CFG_EXIT_NODE;
 
-typedef struct jive_cfg_exit_node jive_cfg_exit_node;
-
-struct jive_cfg_exit_node {
-	jive_cfg_node base;
+class jive_cfg_exit_node final : public jive_cfg_node {
 };
 
 JIVE_EXPORTED_INLINE const jive_cfg_exit_node *

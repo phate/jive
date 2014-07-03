@@ -63,7 +63,7 @@ jive_basic_block_get_label_(const struct jive_cfg_node * self_, struct jive_buff
 void
 jive_basic_block_init_(struct jive_basic_block * self, struct jive_cfg * cfg)
 {
-	jive_cfg_node_init_(&self->base, cfg);
+	jive_cfg_node_init_(self, cfg);
 
 	self->three_address_codes.first = 0;
 	self->three_address_codes.last = 0;
@@ -73,9 +73,9 @@ struct jive_cfg_node *
 jive_basic_block_create_(struct jive_cfg * cfg)
 {
 	struct jive_basic_block * node = new jive_basic_block;
-	node->base.class_ = &JIVE_BASIC_BLOCK;
+	node->class_ = &JIVE_BASIC_BLOCK;
 	jive_basic_block_init_(node, cfg);
-	return &node->base;
+	return node;
 }
 
 struct jive_cfg_node *

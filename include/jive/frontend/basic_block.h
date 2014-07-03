@@ -10,10 +10,8 @@
 
 extern const jive_cfg_node_class JIVE_BASIC_BLOCK;
 
-typedef struct jive_basic_block jive_basic_block;
-
-struct jive_basic_block {
-	jive_cfg_node base;
+class jive_basic_block final : public jive_cfg_node {
+public:
 
 	struct {
 		struct jive_three_address_code * first;

@@ -34,7 +34,7 @@ const struct jive_cfg_node_class JIVE_CFG_ENTER_NODE = {
 static struct jive_cfg_node *
 jive_cfg_enter_node_create_(struct jive_cfg * cfg)
 {
-	jive_cfg_node * node = new jive_cfg_node;
+	jive_cfg_node * node = new jive_cfg_enter_node;
 	node->class_ = &JIVE_CFG_ENTER_NODE;
 	jive_cfg_node_init_(node, cfg);
 	return node;
@@ -56,7 +56,7 @@ const jive_cfg_node_class JIVE_CFG_EXIT_NODE = {
 static struct jive_cfg_node *
 jive_cfg_exit_node_create_(struct jive_cfg * cfg)
 {
-	jive_cfg_node * node = new jive_cfg_node;
+	jive_cfg_node * node = new jive_cfg_exit_node;
 	node->class_ = &JIVE_CFG_EXIT_NODE;
 	jive_cfg_node_init_(node, cfg);
 	return node;
