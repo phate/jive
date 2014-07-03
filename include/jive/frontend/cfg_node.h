@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <string>
+
 struct jive_buffer;
 
 typedef struct jive_cfg_node_class jive_cfg_node_class;
@@ -18,6 +20,8 @@ typedef struct jive_cfg_node_class jive_cfg_node_class;
 class jive_cfg_node {
 public:
 	virtual ~jive_cfg_node() noexcept;
+
+	virtual std::string debug_string() const = 0;
 
 	const struct jive_cfg_node_class * class_;
 

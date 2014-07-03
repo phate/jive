@@ -14,6 +14,8 @@ class jive_basic_block final : public jive_cfg_node {
 public:
 	virtual ~jive_basic_block();
 
+	virtual std::string debug_string() const override;
+
 	struct {
 		struct jive_three_address_code * first;
 		struct jive_three_address_code * last;

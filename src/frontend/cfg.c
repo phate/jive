@@ -22,6 +22,12 @@
 
 jive_cfg_enter_node::~jive_cfg_enter_node() noexcept {}
 
+std::string
+jive_cfg_enter_node::debug_string() const
+{
+	return std::string("ENTER");
+}
+
 const struct jive_cfg_node_class JIVE_CFG_ENTER_NODE = {
 	parent : &JIVE_CFG_NODE,
 	name : "ENTER",
@@ -41,6 +47,12 @@ jive_cfg_enter_node_create(struct jive_cfg * cfg)
 /* cfg exit node */
 
 jive_cfg_exit_node::~jive_cfg_exit_node() noexcept {}
+
+std::string
+jive_cfg_exit_node::debug_string() const
+{
+	return std::string("EXIT");
+}
 
 const jive_cfg_node_class JIVE_CFG_EXIT_NODE = {
 	parent : &JIVE_CFG_NODE,
