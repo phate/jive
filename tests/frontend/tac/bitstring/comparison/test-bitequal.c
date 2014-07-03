@@ -21,7 +21,8 @@ test_main(void)
 	jive_clg_node * clg_node = jive_clg_node_create(clg, "foobar");
 	clg_node->cfg = jive_cfg_create(clg_node);
 
-	jive_basic_block * basic_block = jive_basic_block_cast(jive_basic_block_create(clg_node->cfg));
+	jive_basic_block * basic_block;
+	basic_block = static_cast<jive_basic_block*>(jive_basic_block_create(clg_node->cfg));
 
 	jive_three_address_code * tac1 = jive_variable_code_create(basic_block, "foobar");
 	jive_three_address_code * tac2 = jive_variable_code_create(basic_block, "blub");

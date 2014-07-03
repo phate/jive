@@ -177,7 +177,7 @@ jive_cfg_validate(const struct jive_cfg * self)
 {
 	jive_cfg_node * node;
 	JIVE_LIST_ITERATE(self->nodes, node, cfg_node_list) {
-		if (jive_cfg_node_isinstance(node, &JIVE_CFG_ENTER_NODE)) {
+		if (dynamic_cast<jive_cfg_enter_node*>(node)) {
 			JIVE_ASSERT(node->taken_predecessors.first == NULL);
 			JIVE_ASSERT(node->taken_predecessors.last == NULL);
 			JIVE_ASSERT(node->nottaken_predecessors.first == NULL);
@@ -195,7 +195,7 @@ jive_cfg_validate(const struct jive_cfg * self)
 			continue;
 		}
 
-		if (jive_cfg_node_isinstance(node, &JIVE_CFG_EXIT_NODE)) {
+		if (dynamic_cast<jive_cfg_exit_node*>(node)) {
 			JIVE_ASSERT(node->taken_successor == NULL);
 			JIVE_ASSERT(node->nottaken_successor == NULL);
 		}
@@ -209,7 +209,7 @@ jive_cfg_validate(const struct jive_cfg * self)
 		JIVE_LIST_ITERATE(node->nottaken_predecessors, predecessor, nottaken_predecessors_list)
 			JIVE_ASSERT(predecessor->nottaken_successor == node);
 
-		if (jive_cfg_node_isinstance(node, &JIVE_CFG_EXIT_NODE))
+		if (dynamic_cast<jive_cfg_exit_node*>(node))
 			continue;
 
 		JIVE_ASSERT(node->nottaken_successor != NULL);

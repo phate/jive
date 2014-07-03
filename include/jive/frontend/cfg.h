@@ -21,24 +21,6 @@ public:
 	virtual ~jive_cfg_enter_node() noexcept;
 };
 
-JIVE_EXPORTED_INLINE const jive_cfg_enter_node *
-jive_cfg_enter_node_const_cast(const jive_cfg_node * self)
-{
-	if (jive_cfg_node_isinstance(self, &JIVE_CFG_ENTER_NODE))
-		return (const jive_cfg_enter_node *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_cfg_enter_node *
-jive_cfg_enter_node_cast(jive_cfg_node * self)
-{
-	if (jive_cfg_node_isinstance(self, &JIVE_CFG_ENTER_NODE))
-		return (jive_cfg_enter_node *)self;
-	else
-		return NULL;
-}
-
 /* cfg exit node */
 
 extern const jive_cfg_node_class JIVE_CFG_EXIT_NODE;
@@ -47,24 +29,6 @@ class jive_cfg_exit_node final : public jive_cfg_node {
 public:
 	virtual ~jive_cfg_exit_node() noexcept;
 };
-
-JIVE_EXPORTED_INLINE const jive_cfg_exit_node *
-jive_cfg_exit_node_const_cast(const jive_cfg_node * self)
-{
-	if (jive_cfg_node_isinstance(self, &JIVE_CFG_EXIT_NODE))
-		return (const jive_cfg_exit_node *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_cfg_exit_node *
-jive_cfg_exit_node_cast(jive_cfg_node * self)
-{
-	if (jive_cfg_node_isinstance(self, &JIVE_CFG_EXIT_NODE))
-		return (jive_cfg_exit_node *)self;
-	else
-		return NULL;
-}
 
 /* cfg */
 

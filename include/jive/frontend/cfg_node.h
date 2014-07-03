@@ -65,18 +65,6 @@ struct jive_cfg_node_class {
 	jive_cfg_node * (*create)(struct jive_cfg * cfg);
 };
 
-static inline bool
-jive_cfg_node_isinstance(const jive_cfg_node * self, const jive_cfg_node_class * class_)
-{
-	const jive_cfg_node_class * c = self->class_;
-	while (c) {
-		if (c == class_)
-			return true;
-		c = c->parent;
-	}
-	return false;
-}
-
 static inline void
 jive_cfg_node_get_label(const jive_cfg_node * self, struct jive_buffer * buffer)
 {

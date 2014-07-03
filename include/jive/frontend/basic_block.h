@@ -20,15 +20,6 @@ public:
 	} three_address_codes;
 };
 
-static inline struct jive_basic_block *
-jive_basic_block_cast(const struct jive_cfg_node * node)
-{
-	if (jive_cfg_node_isinstance(node, &JIVE_BASIC_BLOCK))
-		return (struct jive_basic_block *) node;
-	else
-		return 0;
-}
-
 struct jive_cfg_node *
 jive_basic_block_create(struct jive_cfg * cfg);
 
