@@ -138,13 +138,43 @@ public:
 
 	arraysubscript_operation(const arraysubscript_operation & other);
 	arraysubscript_operation(arraysubscript_operation && other) noexcept;
-	arraysubscript_operation(const jive::value::type & element_type);
+	arraysubscript_operation(
+		const jive::value::type & element_type,
+		const jive::bits::type & index_type);
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 
 	inline const jive::value::type &
 	element_type() const noexcept { return *element_type_; }
 
+	inline const jive::bits::type &
+	index_type() const noexcept { return index_type_; }
+
 private:
 	std::unique_ptr<jive::value::type> element_type_;
+	jive::bits::type index_type_;
 };
 
 class arrayindex_operation : public operation {
@@ -155,26 +185,77 @@ public:
 	arrayindex_operation(arrayindex_operation && other) noexcept;
 	arrayindex_operation(
 		const jive::value::type & element_type,
-		size_t nbits);
+		const jive::bits::type & index_type);
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 
 	inline const jive::value::type &
 	element_type() const noexcept { return *element_type_; }
 
 	inline const jive::bits::type &
-	difference_type() const noexcept { return difference_type_; }
+	index_type() const noexcept { return index_type_; }
 
 private:
 	std::unique_ptr<jive::value::type> element_type_;
-	jive::bits::type difference_type_;
+	jive::bits::type index_type_;
 };
 
 class label_to_address_operation : public base::nullary_op {
 public:
+	virtual
+	~label_to_address_operation() noexcept;
+
 	inline constexpr
 	label_to_address_operation(const jive_label * label) noexcept
 		: label_(label)
 	{
 	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 
 	const jive_label *
 	label() const noexcept { return label_; }
@@ -185,23 +266,51 @@ private:
 
 class label_to_bitstring_operation : public base::nullary_op {
 public:
+	virtual
+	~label_to_bitstring_operation() noexcept;
+
 	inline constexpr
 	label_to_bitstring_operation(
 		const jive_label * label,
 		size_t nbits) noexcept
-		: label_(label), nbits_(nbits)
+		: label_(label)
+		, result_type_(nbits)
 	{
 	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 
 	const jive_label *
 	label() const noexcept { return label_; }
 
 	size_t
-	nbits() const noexcept { return nbits_; }
+	nbits() const noexcept { return result_type_.nbits(); }
 
 private:
 	const jive_label * label_;
-	size_t nbits_;
+	jive::bits::type result_type_;
 };
 
 }

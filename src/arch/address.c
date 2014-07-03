@@ -247,122 +247,133 @@ jive_containerof(jive::output * address,
 namespace jive {
 namespace address {
 
+arraysubscript_operation::~arraysubscript_operation()
+{
+}
+
 arraysubscript_operation::arraysubscript_operation(
 	const arraysubscript_operation & other)
 	: element_type_(other.element_type_->copy())
+	, index_type_(other.index_type())
 {
 }
 
 arraysubscript_operation::arraysubscript_operation(
 	arraysubscript_operation && other) noexcept
 	: element_type_(std::move(other.element_type_))
+	, index_type_(other.index_type())
 {
 }
 
 arraysubscript_operation::arraysubscript_operation(
-	const jive::value::type& type)
+	const jive::value::type& type,
+	const jive::bits::type& index_type)
 	: element_type_(type.copy())
+	, index_type_(index_type)
 {
 }
 
-}
-}
-
-static void
-jive_arraysubscript_node_fini_(jive_node * self_);
-
-static jive_node *
-jive_arraysubscript_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[]);
-
-static bool
-jive_arraysubscript_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
-
-static void
-jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
-
-const jive_node_class JIVE_ARRAYSUBSCRIPT_NODE = {
-	parent : &JIVE_NODE,
-	name : "ARRAYSUBSCRIPT",
-	fini : jive_arraysubscript_node_fini_, /* override */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_arraysubscript_node_match_attrs_, /* override */
-	check_operands : jive_arraysubscript_node_check_operands_, /* override */
-	create : jive_arraysubscript_node_create_, /* override */
-};
-
-static void
-jive_arraysubscript_node_fini_(jive_node * self_)
+bool
+arraysubscript_operation::operator==(const operation & other) const noexcept
 {
-	jive_arraysubscript_node * self = (jive_arraysubscript_node *) self_;
-	jive_node_fini_(self);
+	const arraysubscript_operation * op =
+		dynamic_cast<const arraysubscript_operation *>(&other);
+	return op && op->element_type() == element_type() && op->index_type() == index_type();
 }
 
-static bool
-jive_arraysubscript_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
+size_t
+arraysubscript_operation::narguments() const noexcept
 {
-	const jive_arraysubscript_node * self = (const jive_arraysubscript_node *) self_;
-	const jive::address::arraysubscript_operation * attrs =
-		(const jive::address::arraysubscript_operation *) attrs_;
-	
-	return self->operation().element_type() == attrs->element_type();
+	return 2;
 }
 
-static void
-jive_arraysubscript_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context)
+const jive::base::type &
+arraysubscript_operation::argument_type(size_t index) const noexcept
 {
-	JIVE_DEBUG_ASSERT(noperands == 2);
-
-	jive::addr::type addrtype;
-	if (!dynamic_cast<const jive::addr::output*>(operands[0]))
-		jive_raise_type_error(&addrtype, &operands[0]->type(), context);
+	if (index == 0) {
+		return jive::addr::type::singleton();
+	} else {
+		return index_type_;
+	}
 }
 
-static jive_node *
-jive_arraysubscript_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
+size_t
+arraysubscript_operation::nresults() const noexcept
 {
-	JIVE_DEBUG_ASSERT(noperands == 2);
-	jive::output * address = operands[0];
-	jive::output * index = operands[1];
+	return 1;
+}
 
-	const jive::address::arraysubscript_operation * attrs =
-		(const jive::address::arraysubscript_operation *) attrs_;
+const jive::base::type &
+arraysubscript_operation::result_type(size_t index) const noexcept
+{
+	return jive::addr::type::singleton();
+}
 
-	jive_node * node = new jive_arraysubscript_node(*attrs);
+jive_node *
+arraysubscript_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	JIVE_DEBUG_ASSERT(narguments == 2);
+
+	jive_node * node = new jive_arraysubscript_node(*this);
 	node->class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
 
-	jive::addr::type address_type;
-	const jive::base::type * typeptr = &address_type;
-
-	const jive::base::type * index_type = &index->type();
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::bits::type*>(index_type));
-
-	const jive::base::type * operand_types[2] = {&address_type, index_type};
+	const jive::base::type * argument_types[2] = {
+		&argument_type(0),
+		&argument_type(1)
+	};
+	const jive::base::type * result_types[1] = {
+		&result_type(0)
+	};
 	
 	jive_node_init_(node, region,
-		2, operand_types, operands,
-		1, &typeptr);
+		2, argument_types, arguments,
+		1, result_types);
 	
 	return node;
 }
 
+std::string
+arraysubscript_operation::debug_string() const
+{
+	return "ARRAYSUBSCRIPT";
+}
+
+}
+}
+
+const jive_node_class JIVE_ARRAYSUBSCRIPT_NODE = {
+	parent : &JIVE_NODE,
+	name : "ARRAYSUBSCRIPT",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
+};
+
+
 jive::output *
-jive_arraysubscript(jive::output * address, const jive::value::type * element_type,
+jive_arraysubscript(
+	jive::output * address,
+	const jive::value::type * element_type,
 	jive::output * index)
 {
-	jive::output * tmparray0[] = {address, index};
-	jive_region * region = jive_region_innermost(2, tmparray0);
+	jive::address::arraysubscript_operation op(
+		*element_type,
+		dynamic_cast<const jive::bits::type &>(index->type()));
 
-	jive::address::arraysubscript_operation attrs(*element_type);
 
-	jive::output * operands[2] = {address, index};
+	jive::output * arguments[2] = {address, index};
+	jive_region * region = jive_region_innermost(2, arguments);
+
 	jive::output * result;
+
 	jive_node_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE, region->graph,
-		&attrs, 2, operands, &result);
+		&op, 2, arguments, &result);
 	return result;
 }
 
@@ -371,220 +382,210 @@ jive_arraysubscript(jive::output * address, const jive::value::type * element_ty
 namespace jive {
 namespace address {
 
+arrayindex_operation::~arrayindex_operation() noexcept
+{
+}
+
 arrayindex_operation::arrayindex_operation(
 	const arrayindex_operation & other)
 	: element_type_(other.element_type().copy()),
-	difference_type_(other.difference_type())
+	index_type_(other.index_type())
 {
 }
 
 arrayindex_operation::arrayindex_operation(
 	arrayindex_operation && other) noexcept
 	: element_type_(std::move(other.element_type_)),
-	difference_type_(std::move(other.difference_type_))
+	index_type_(other.index_type())
 {
 }
 
 arrayindex_operation::arrayindex_operation(
 	const jive::value::type & element_type,
-	size_t nbits)
-	: element_type_(element_type.copy()),
-	difference_type_(nbits)
+	const jive::bits::type & index_type)
+	: element_type_(element_type.copy())
+	, index_type_(index_type)
 {
 }
 
-}
-}
-
-static void
-jive_arrayindex_node_fini_(jive_node * self_);
-
-static jive_node *
-jive_arrayindex_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[]);
-
-static bool
-jive_arrayindex_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
-
-static void
-jive_arrayindex_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
-
-const jive_node_class JIVE_ARRAYINDEX_NODE = {
-	parent : &JIVE_NODE,
-	name : "ARRAYINDEX",
-	fini : jive_arrayindex_node_fini_, /* override */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_arrayindex_node_match_attrs_, /* override */
-	check_operands : jive_arrayindex_node_check_operands_, /* inherit */
-	create : jive_arrayindex_node_create_, /* override */
-};
-
-static void
-jive_arrayindex_node_fini_(jive_node * self_)
+bool
+arrayindex_operation::operator==(const operation & other) const noexcept
 {
-	jive_arrayindex_node * self = (jive_arrayindex_node *) self_;
-	jive_node_fini_(self);
+	const arrayindex_operation * op =
+		dynamic_cast<const arrayindex_operation *>(&other);
+	return op && op->element_type() == element_type() && op->index_type() == index_type();
 }
 
-static bool
-jive_arrayindex_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
+size_t
+arrayindex_operation::narguments() const noexcept
 {
-	const jive_arrayindex_node * self = (const jive_arrayindex_node *) self_;
-	const jive::address::arrayindex_operation * attrs =
-		(const jive::address::arrayindex_operation *) attrs_;
-	
-	return self->operation().element_type() == attrs->element_type();
+	return 2;
 }
 
-static void
-jive_arrayindex_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[], jive_context * context)
+const jive::base::type &
+arrayindex_operation::argument_type(size_t index) const noexcept
 {
-	JIVE_DEBUG_ASSERT(noperands == 2);
-
-	size_t n;
-	jive::addr::type addrtype;
-	for (n = 0; n < noperands; n++) {
-		if(!dynamic_cast<const jive::addr::output*>(operands[n]))
-			jive_raise_type_error(&addrtype, &operands[n]->type(), context);
-	}
+	return jive::addr::type::singleton();
 }
 
-static jive_node *
-jive_arrayindex_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
+size_t
+arrayindex_operation::nresults() const noexcept
 {
-	JIVE_DEBUG_ASSERT(noperands == 2);
-	const jive::address::arrayindex_operation * attrs =
-		(const jive::address::arrayindex_operation *) attrs_;
-	jive_node * node = new jive_arrayindex_node(*attrs);
+	return 1;
+}
+
+const jive::base::type &
+arrayindex_operation::result_type(size_t index) const noexcept
+{
+	return index_type_;
+}
+
+jive_node *
+arrayindex_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	JIVE_DEBUG_ASSERT(narguments == 2);
+
+	jive_node * node = new jive_arrayindex_node(*this);
 	node->class_ = &JIVE_ARRAYINDEX_NODE;
 
-	jive::addr::type address_type;
-
-	const jive::base::type * operand_types[2] = {&address_type, &address_type};
-	const jive::base::type * output_types[1] = {&attrs->difference_type()};
+	const jive::base::type * argument_types[2] = {
+		&argument_type(0),
+		&argument_type(1)
+	};
+	const jive::base::type * result_types[1] = {
+		&result_type(0)
+	};
 	
 	jive_node_init_(node, region,
-		2, operand_types, operands,
-		1, output_types);
+		2, argument_types, arguments,
+		1, result_types);
 	
 	return node;
 }
 
+std::string
+arrayindex_operation::debug_string() const
+{
+	return "ARRAYINDEX";
+}
+
+}
+}
+
+const jive_node_class JIVE_ARRAYINDEX_NODE = {
+	parent : &JIVE_NODE,
+	name : "ARRAYINDEX",
+	fini : jive_node_fini_, /* override */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
+};
 
 jive::output *
-jive_arrayindex(jive::output * addr1, jive::output * addr2,
-	const jive::value::type * element_type, const jive::bits::type * difference_type)
+jive_arrayindex(
+	jive::output * addr1, jive::output * addr2,
+	const jive::value::type * element_type,
+	const jive::bits::type * difference_type)
 {
-	jive::output * tmparray2[] = {addr1, addr2};
-	jive_region * region = jive_region_innermost(2, tmparray2);
+	jive::output * arguments[] = {addr1, addr2};
+	jive_region * region = jive_region_innermost(2, arguments);
 	
 	jive::address::arrayindex_operation attrs(*element_type, difference_type->nbits());
 	
-	jive::output * operands[2] = {addr1, addr2};
 	jive::output * result;
 	jive_node_create_normalized(&JIVE_ARRAYINDEX_NODE, region->graph,
-		&attrs, 2, operands, &result);
+		&attrs, 2, arguments, &result);
 	return result;
 }
 
 /* label_to_address node */
 
-static void
-jive_label_to_address_node_fini_(jive_node * self);
+namespace jive {
+namespace address {
 
-static void
-jive_label_to_address_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
+label_to_address_operation::~label_to_address_operation() noexcept
+{
+}
 
-static bool
-jive_label_to_address_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
+bool
+label_to_address_operation::operator==(const operation & other) const noexcept
+{
+	const label_to_address_operation * op =
+		dynamic_cast<const label_to_address_operation *>(&other);
+	return op && op->label() == label();
+}
 
-static jive_node *
-jive_label_to_address_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[]);
+size_t
+label_to_address_operation::narguments() const noexcept
+{
+	return 0;
+}
+
+const jive::base::type &
+label_to_address_operation::argument_type(size_t index) const noexcept
+{
+	throw std::logic_error("no arguments");
+}
+
+size_t
+label_to_address_operation::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+label_to_address_operation::result_type(size_t index) const noexcept
+{
+	return jive::addr::type::singleton();
+}
+
+jive_node *
+label_to_address_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	jive_label_to_address_node * node = new jive_label_to_address_node(*this);
+	node->class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
+
+	const jive::base::type * result_types[1] = {&result_type(0)};
+	jive_node_init_(node, region,
+		0, nullptr, nullptr,
+		1, result_types);
+
+	return node;
+}
+
+std::string
+label_to_address_operation::debug_string() const
+{
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
+	return tmp;
+}
+
+}
+}
 
 const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE = {
 	parent : &JIVE_NODE,
 	name : "LABEL_TO_ADDRESS_NODE",
-	fini : jive_label_to_address_node_fini_, /* override */
+	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_label_to_address_node_get_label_, /* override */
-	match_attrs : jive_label_to_address_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_label_to_address_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
-static void
-jive_label_to_address_node_init_(
-	jive_label_to_address_node * self,
-	jive_graph * graph)
-{
-	jive::addr::type addrtype;
-	const jive::base::type * addrptr = &addrtype;
-	jive_node_init_(self, graph->root_region,
-		0, NULL, NULL,
-		1, &addrptr);
-}
-
-static void
-jive_label_to_address_node_fini_(jive_node * self_)
-{
-	jive_label_to_address_node * self = (jive_label_to_address_node *) self_;
-	
-	jive_node_fini_(self);
-}
-
-static void
-jive_label_to_address_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_label_to_address_node * self = (const jive_label_to_address_node *) self_;
-	
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "addrof:label%p", self->operation().label());
-	jive_buffer_putstr(buffer, tmp);
-}
-
-static jive_node *
-jive_label_to_address_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::address::label_to_address_operation * attrs =
-		(const jive::address::label_to_address_operation *)attrs_;
-	
-	jive_label_to_address_node * node = new jive_label_to_address_node(*attrs);
-	node->class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
-	jive_label_to_address_node_init_(node, region->graph);
-
-	return node;
-}
-
-static bool
-jive_label_to_address_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::address::label_to_address_operation * first =
-		&((const jive_label_to_address_node *)self)->operation();
-	const jive::address::label_to_address_operation * second =
-		(const jive::address::label_to_address_operation *) attrs;
-	
-	return first->label() == second->label();
-}
-
-jive_node *
-jive_label_to_address_node_create(struct jive_graph * graph, const jive_label * label)
-{
-	jive::address::label_to_address_operation op(label);
-	jive_label_to_address_node * node = new jive_label_to_address_node(op);
-	node->class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
-	jive_label_to_address_node_init_(node, graph);
-
-	return node;
-}
 
 jive::output *
-jive_label_to_address_create(struct jive_graph * graph, const jive_label * label)
+jive_label_to_address_create(jive_graph * graph, const jive_label * label)
 {
 	jive::address::label_to_address_operation op(label);
 	return jive_nullary_operation_create_normalized(&JIVE_LABEL_TO_ADDRESS_NODE, graph, &op);
@@ -592,102 +593,88 @@ jive_label_to_address_create(struct jive_graph * graph, const jive_label * label
 
 /* label_to_bitstring_node */
 
-static void
-jive_label_to_bitstring_node_fini_(jive_node * self);
+namespace jive {
+namespace address {
 
-static void
-jive_label_to_bitstring_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
-
-static bool
-jive_label_to_bitstring_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
-
-static jive_node *
-jive_label_to_bitstring_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[]);
-
-const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
-	parent : &JIVE_NODE,
-	name : "LABEL_TO_BITSTRING_NODE",
-	fini : jive_label_to_bitstring_node_fini_, /* override */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_label_to_bitstring_node_get_label_, /* override */
-	match_attrs : jive_label_to_bitstring_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_label_to_bitstring_node_create_, /* override */
-};
-
-static void
-jive_label_to_bitstring_node_init_(
-	jive_label_to_bitstring_node * self,
-	jive_graph * graph, size_t nbits)
+label_to_bitstring_operation::~label_to_bitstring_operation() noexcept
 {
-	jive::bits::type btype(nbits);
-	const jive::base::type * typeptr = &btype;
-	jive_node_init_(self, graph->root_region,
-		0, NULL, NULL,
-		1, &typeptr);
 }
 
-static void
-jive_label_to_bitstring_node_fini_(jive_node * self_)
+bool
+label_to_bitstring_operation::operator==(const operation & other) const noexcept
 {
-	jive_label_to_bitstring_node * self = (jive_label_to_bitstring_node *) self_;
-
-	jive_node_fini_(self);
+	const label_to_bitstring_operation * op =
+		dynamic_cast<const label_to_bitstring_operation *>(&other);
+	return op && op->label() == label() && op->nbits() == nbits();
 }
 
-static void
-jive_label_to_bitstring_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
+size_t
+label_to_bitstring_operation::narguments() const noexcept
 {
-	const jive_label_to_bitstring_node * self = (const jive_label_to_bitstring_node *) self_;
-	
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "addrof:label%p", self->operation().label());
-	jive_buffer_putstr(buffer, tmp);
+	return 0;
 }
 
-static jive_node *
-jive_label_to_bitstring_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
+const jive::base::type &
+label_to_bitstring_operation::argument_type(size_t index) const noexcept
 {
-	const jive::address::label_to_bitstring_operation * attrs =
-		(const jive::address::label_to_bitstring_operation *) attrs_;
+	throw std::logic_error("no arguments");
+}
 
-	jive_label_to_bitstring_node * node = new jive_label_to_bitstring_node(*attrs);
+size_t
+label_to_bitstring_operation::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+label_to_bitstring_operation::result_type(size_t index) const noexcept
+{
+	return result_type_;
+}
+
+jive_node *
+label_to_bitstring_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	jive_label_to_bitstring_node * node = new jive_label_to_bitstring_node(*this);
 	node->class_ = &JIVE_LABEL_TO_BITSTRING_NODE;
-	jive_label_to_bitstring_node_init_(node, region->graph, attrs->nbits());
+
+	const jive::base::type * result_types[1] = {&result_type(0)};
+	jive_node_init_(node, region,
+		0, nullptr, nullptr,
+		1, result_types);
 
 	return node;
 }
 
-static bool
-jive_label_to_bitstring_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
+std::string
+label_to_bitstring_operation::debug_string() const
 {
-	const jive::address::label_to_bitstring_operation * first =
-		&((const jive_label_to_bitstring_node *)self)->operation();
-	const jive::address::label_to_bitstring_operation * second =
-		(const jive::address::label_to_bitstring_operation *) attrs;
-
-	return (first->label() == second->label()) && (first->nbits() == second->nbits());
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
+	return tmp;
 }
 
+}
+}
+
+const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
+	parent : &JIVE_NODE,
+	name : "LABEL_TO_BITSTRING_NODE",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
+};
+
+
 jive::output *
-jive_label_to_bitstring_create(struct jive_graph * graph, const jive_label * label, size_t nbits)
+jive_label_to_bitstring_create(jive_graph * graph, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_operation op(label, nbits);
 	return jive_nullary_operation_create_normalized(&JIVE_LABEL_TO_BITSTRING_NODE, graph, &op);
-}
-
-namespace jive {
-namespace address {
-
-arraysubscript_operation::~arraysubscript_operation() noexcept
-{
-}
-
-arrayindex_operation::~arrayindex_operation() noexcept
-{
-}
-
-}
 }
