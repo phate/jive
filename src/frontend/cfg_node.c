@@ -39,74 +39,122 @@ jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg) noexcept
 }
 
 void
+jive_cfg_node::remove_taken_successor() noexcept
+{
+	if (taken_successor == nullptr)
+		return;
+
+	JIVE_LIST_REMOVE(taken_successor->taken_predecessors, this, taken_predecessors_list);
+	taken_successor = nullptr;
+}
+
+void
+jive_cfg_node::remove_nottaken_successor() noexcept
+{
+	if (nottaken_successor == nullptr)
+		return;
+
+	JIVE_LIST_REMOVE(nottaken_successor->nottaken_predecessors, this, nottaken_predecessors_list);
+	nottaken_successor = nullptr;
+}
+
+void
+jive_cfg_node::remove_taken_predecessors() noexcept
+{
+	jive_cfg_node * pred, * next;
+	JIVE_LIST_ITERATE_SAFE(taken_predecessors, pred, next, taken_predecessors_list)
+		pred->remove_taken_successor();
+}
+
+void
+jive_cfg_node::remove_nottaken_predecessors() noexcept
+{
+	jive_cfg_node * pred, * next;
+	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
+		pred->remove_nottaken_successor();
+}
+
+void
+jive_cfg_node::add_taken_successor(jive_cfg_node * successor) noexcept
+{
+	JIVE_ASSERT(taken_successor == nullptr);
+
+	JIVE_LIST_PUSH_BACK(successor->taken_predecessors, this, taken_predecessors_list);
+	taken_successor = successor;
+}
+
+void
+jive_cfg_node::add_nottaken_successor(jive_cfg_node * successor) noexcept
+{
+	JIVE_ASSERT(nottaken_successor == nullptr);
+
+	JIVE_LIST_PUSH_BACK(successor->nottaken_predecessors, this, nottaken_predecessors_list);
+	nottaken_successor = successor;
+
+}
+
+void
+jive_cfg_node::divert_taken_predecessors(jive_cfg_node * node) noexcept
+{
+	jive_cfg_node * pred, * next;
+	JIVE_LIST_ITERATE_SAFE(taken_predecessors, pred, next, taken_predecessors_list)
+		pred->divert_taken_successor(node);
+}
+
+void
+jive_cfg_node::divert_nottaken_predecessors(jive_cfg_node * node) noexcept
+{
+	jive_cfg_node * pred, * next;
+	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
+		pred->divert_nottaken_successor(node);
+}
+
+void
 jive_cfg_node_connect_taken_successor(struct jive_cfg_node * self, struct jive_cfg_node * successor)
 {
-	JIVE_ASSERT(self->taken_successor == NULL);
-
-	JIVE_LIST_PUSH_BACK(successor->taken_predecessors, self, taken_predecessors_list);
-	self->taken_successor = successor;
+	self->add_taken_successor(successor);
 }
 
 void
 jive_cfg_node_connect_nottaken_successor(struct jive_cfg_node * self, struct jive_cfg_node * successor)
 {
-	JIVE_ASSERT(self->nottaken_successor == NULL);
-
-	JIVE_LIST_PUSH_BACK(successor->nottaken_predecessors, self, nottaken_predecessors_list);
-	self->nottaken_successor = successor;
+	self->add_nottaken_successor(successor);
 }
 
 void
 jive_cfg_node_disconnect_taken_successor(struct jive_cfg_node * self)
 {
-	if (self->taken_successor == NULL)
-		return;
-
-	JIVE_LIST_REMOVE(self->taken_successor->taken_predecessors, self, taken_predecessors_list);
-	self->taken_successor = NULL;
+	self->remove_taken_successor();
 }
 
 void
 jive_cfg_node_disconnect_nottaken_successor(struct jive_cfg_node * self)
 {
-	if (self->nottaken_successor == NULL)
-		return;
-
-	JIVE_LIST_REMOVE(self->nottaken_successor->nottaken_predecessors, self,
-		nottaken_predecessors_list);
-	self->nottaken_successor = NULL;
+	self->remove_nottaken_successor();
 }
 
 void
 jive_cfg_node_disconnect_taken_predecessors(struct jive_cfg_node * self)
 {
-	jive_cfg_node * pred, * next;
-	JIVE_LIST_ITERATE_SAFE(self->taken_predecessors, pred, next, taken_predecessors_list)
-		jive_cfg_node_disconnect_taken_successor(pred);
+	self->remove_taken_predecessors();
 }
 
 void
 jive_cfg_node_disconnect_nottaken_predecessors(struct jive_cfg_node * self)
 {
-	jive_cfg_node * pred, * next;
-	JIVE_LIST_ITERATE_SAFE(self->nottaken_predecessors, pred, next, nottaken_predecessors_list)
-		jive_cfg_node_disconnect_nottaken_successor(pred);
+	self->remove_nottaken_predecessors();
 }
 
 void
 jive_cfg_node_divert_taken_predecessors(struct jive_cfg_node * self, struct jive_cfg_node * node)
 {
-	jive_cfg_node * pred, * next;
-	JIVE_LIST_ITERATE_SAFE(self->taken_predecessors, pred, next, taken_predecessors_list)
-		jive_cfg_node_divert_taken_successor(pred, node);
+	self->divert_taken_predecessors(node);
 }
 
 void
 jive_cfg_node_divert_nottaken_predecessors(struct jive_cfg_node * self, struct jive_cfg_node * node)
 {
-	jive_cfg_node * pred, * next;
-	JIVE_LIST_ITERATE_SAFE(self->nottaken_predecessors, pred, next, nottaken_predecessors_list)
-		jive_cfg_node_divert_nottaken_successor(pred, node);
+	self->divert_nottaken_predecessors(node);
 }
 
 void
