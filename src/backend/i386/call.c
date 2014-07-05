@@ -92,9 +92,9 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		input->required_rescls = slot_cls;
 	}
 	
-	JIVE_DEBUG_ASSERT(node->operation().return_types().size() <= 1);
+	JIVE_DEBUG_ASSERT(node->operation().result_types().size() <= 1);
 	
-	if (node->operation().return_types().size() == 1) {
+	if (node->operation().result_types().size() == 1) {
 		/* FIXME: assumes  int32 */
 		jive_output_replace(node->outputs[0], clobber_eax);
 	}
@@ -109,7 +109,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 			new_input->required_rescls = orig_input->required_rescls;
 		}
 	}
-	for (n = node->operation().return_types().size(); n < node->noutputs; n++) {
+	for (n = node->operation().result_types().size(); n < node->noutputs; n++) {
 		jive::output * orig_output = node->outputs[n];
 		jive::output * new_output;
 		if (orig_output->gate) {
