@@ -63,7 +63,6 @@ static void
 jive_cfg_init_(struct jive_cfg * self, struct jive_clg_node * clg_node)
 {
 	self->clg_node = clg_node;
-	self->context = clg_node->clg->context;
 	self->nodes.first = 0;
 	self->nodes.last = 0;
 
@@ -87,7 +86,7 @@ jive_cfg_fini_(struct jive_cfg * self)
 struct jive_cfg *
 jive_cfg_create(struct jive_clg_node * clg_node)
 {
-	jive_cfg * cfg = jive_context_malloc(clg_node->clg->context, sizeof(*cfg));
+	jive_cfg * cfg = new jive_cfg;
 	jive_cfg_init_(cfg, clg_node);
 	return cfg;
 }
@@ -159,7 +158,7 @@ void
 jive_cfg_destroy(struct jive_cfg * self)
 {
 	jive_cfg_fini_(self);
-	jive_context_free(self->clg_node->clg->context, self);
+	delete self;
 }
 
 void

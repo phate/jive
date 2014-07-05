@@ -6,6 +6,8 @@
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
 #include <jive/frontend/cfg-scc.h>
+#include <jive/frontend/clg.h>
+#include <jive/frontend/clg_node.h>
 #include <jive/util/hash.h>
 #include <jive/util/math.h>
 #include <jive/util/stack.h>
@@ -96,8 +98,9 @@ static size_t index = 0;
 static void
 strongconnect(struct jive_cfg_node * node, struct jive_cfg_scc_set * scc_set)
 {
-	cfg_node_item * item = cfg_node_item_create(node->cfg()->context, node, index, index);
-	cfg_node_item_vector_push_back(&item_vector, node->cfg()->context, item);
+	jive_context * context = node->cfg()->clg_node->clg->context;
+	cfg_node_item * item = cfg_node_item_create(context, node, index, index);
+	cfg_node_item_vector_push_back(&item_vector, context, item);
 	index_map_insert(&map, item);
 	cfg_node_stack_push(&node_stack, node);
 	index++;
@@ -140,8 +143,8 @@ jive_cfg_find_sccs(struct jive_cfg * cfg, struct jive_cfg_scc_set * scc_set)
 
 	/* initialization */
 	cfg_node_item_vector_init(&item_vector);
-	index_map_init(&map, cfg->context);
-	cfg_node_stack_init(&node_stack, cfg->context);
+	index_map_init(&map, context);
+	cfg_node_stack_init(&node_stack, context);
 
 	/* find strongly connected components */
 	jive_cfg_node * cfg_node;
@@ -153,8 +156,8 @@ jive_cfg_find_sccs(struct jive_cfg * cfg, struct jive_cfg_scc_set * scc_set)
 	/* finalization */
 	size_t n;
 	for (n = 0; n < cfg_node_item_vector_size(&item_vector); n++)
-		jive_context_free(cfg->context, cfg_node_item_vector_item(&item_vector, n));
-	cfg_node_item_vector_fini(&item_vector, cfg->context);
+		jive_context_free(context, cfg_node_item_vector_item(&item_vector, n));
+	cfg_node_item_vector_fini(&item_vector, context);
 	index_map_fini(&map);
 	cfg_node_stack_fini(&node_stack);
 }

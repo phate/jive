@@ -39,7 +39,6 @@ typedef struct jive_cfg jive_cfg;
 
 struct jive_cfg {
 	struct jive_clg_node * clg_node;
-	struct jive_context * context;
 
 	struct jive_cfg_node * enter;
 	struct jive_cfg_node * exit;
