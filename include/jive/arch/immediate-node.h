@@ -40,6 +40,7 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
 	inline const jive_immediate & value() const noexcept { return value_; }
 
 private:

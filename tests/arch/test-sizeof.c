@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,16 +9,16 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/view.h>
-#include <jive/types/bitstring.h>
 #include <jive/arch/addresstype.h>
+#include <jive/arch/memlayout-simple.h>
+#include <jive/arch/sizeof.h>
+#include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
-#include <jive/arch/sizeof.h>
+#include <jive/view.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/arch/memlayout-simple.h>
 
 #include "testnodes.h"
 
@@ -69,12 +69,13 @@ static int test_main(void)
 	jive_view(graph, stdout);
 
 	jive_memlayout_mapper_simple layout_mapper;
-	jive_memlayout_mapper_simple_init(&layout_mapper, context, 32);	
+	jive_memlayout_mapper_simple_init(&layout_mapper, context, 32);
 	jive_traverser * traverser = jive_topdown_traverser_create(graph);
 	jive_node * node;
 	for (node = jive_traverser_next(traverser); node; node = jive_traverser_next(traverser)) {
-		if (jive_node_isinstance(node, &JIVE_SIZEOF_NODE))
-			jive_sizeof_node_reduce(jive_sizeof_node_cast(node), &layout_mapper.base.base);				
+		jive_sizeof_node * sizeof_node = dynamic_cast<jive_sizeof_node *>(node);
+		if (sizeof_node)
+			jive_sizeof_node_reduce(sizeof_node, &layout_mapper.base.base);
 	}
 	jive_traverser_destroy(traverser);
 	jive_graph_prune(graph);
@@ -104,7 +105,7 @@ static int test_main(void)
 	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);
 
-	return 0;	
+	return 0;
 }
 
 JIVE_UNIT_TEST_REGISTER("arch/test-sizeof", test_main);
