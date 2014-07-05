@@ -21,44 +21,48 @@
 
 namespace jive {
 
-immediate_operation::~immediate_operation() noexcept {}
+immediate_op::~immediate_op() noexcept {}
 
+bool
+immediate_op::operator==(const operation & other) const noexcept
+{
+	const immediate_op * op =
+		dynamic_cast<const immediate_op *>(&other);
+	return op && jive_immediate_equals(&op->value(), &value());
 }
 
-static void
-jive_immediate_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
+const jive::base::type &
+immediate_op::result_type(size_t index) const noexcept
 {
-	const jive_immediate_node * self = (const jive_immediate_node *) self_;
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%" "lld", self->operation().value().offset);
-	jive_buffer_putstr(buffer, tmp);
+	static const jive::imm::type type;
+	return type;
 }
 
-static bool
-jive_immediate_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
+jive_node *
+immediate_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
 {
-	const jive::immediate_operation * first = &((const jive_immediate_node *) self)->operation();
-	const jive::immediate_operation * second = (const jive::immediate_operation *) attrs;
-	
-	return jive_immediate_equals(&first->value(), &second->value());
-}
-
-static jive_node *
-jive_immediate_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::immediate_operation * attrs = (const jive::immediate_operation *) attrs_;
-	
-	jive_immediate_node * self = new jive_immediate_node(*attrs);
-	jive::imm::type immediate_type;
-	const jive::base::type* tmparray0[] = {&immediate_type};
-	jive_node_init_(self,
+	jive_immediate_node * node = new jive_immediate_node(*this);
+	node->class_ = &JIVE_IMMEDIATE_NODE;
+	const jive::base::type* restypes[] = {&result_type(0)};
+	jive_node_init_(node,
 		region,
-		0, 0, 0,
-		1, tmparray0);
-	self->class_ = &JIVE_IMMEDIATE_NODE;
+		0, nullptr, nullptr,
+		1, restypes);
 	
-	return self;
+	return node;
+}
+
+std::string
+immediate_op::debug_string() const
+{
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "%" "lld", value().offset);
+	return tmp;
+}
+
 }
 
 const jive_node_class JIVE_IMMEDIATE_NODE = {
@@ -66,10 +70,10 @@ const jive_node_class JIVE_IMMEDIATE_NODE = {
 	name : "IMMEDIATE",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
-	get_label : jive_immediate_node_get_label_, /* override */
-	match_attrs : jive_immediate_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_immediate_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 jive::output *
@@ -77,7 +81,8 @@ jive_immediate_create(
 	jive_graph * graph,
 	const jive_immediate * immediate_value)
 {
-	jive::immediate_operation op(*immediate_value);
+	jive::immediate_op op(*immediate_value);
 
-	return jive_nullary_operation_create_normalized(&JIVE_IMMEDIATE_NODE, graph, &op);
+	return jive_nullary_operation_create_normalized(
+		&JIVE_IMMEDIATE_NODE, graph, &op);
 }
