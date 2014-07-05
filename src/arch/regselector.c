@@ -126,7 +126,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 	const jive::operation * gen_op = &node->operation();
 	
 	jive_regselector_option option;
-	if (auto op = dynamic_cast<const jive::regvalue_operation *>(gen_op)) {
+	if (auto op = dynamic_cast<const jive::regvalue_op *>(gen_op)) {
 		const jive_register_class * regcls = op->regcls();
 		option.mask = jive_regselector_classify_regcls(self, regcls);
 		jive_negotiator_annotate_simple_output(&self->base, node->outputs[0], &option);

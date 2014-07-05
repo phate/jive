@@ -15,94 +15,102 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
+namespace jive {
 
-static void
-jive_regvalue_node_init_(
-	jive_regvalue_node * self,
+regvalue_op::~regvalue_op() noexcept
+{
+}
+
+bool
+regvalue_op::operator==(const operation & other) const noexcept
+{
+	const regvalue_op * op =
+		dynamic_cast<const regvalue_op *>(&other);
+	return op && op->regcls() == regcls();
+}
+
+size_t
+regvalue_op::narguments() const noexcept
+{
+	return 2;
+}
+
+const jive::base::type &
+regvalue_op::argument_type(size_t index) const noexcept
+{
+	static const jive::ctl::type ctl;
+	if (index == 0) {
+		return ctl;
+	} else {
+		return *regcls()->base.type;
+	}
+}
+
+size_t
+regvalue_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+regvalue_op::result_type(size_t index) const noexcept
+{
+	return *regcls()->base.type;
+}
+
+jive_node *
+regvalue_op::create_node(
 	jive_region * region,
-	jive::output * ctl,
-	const jive_register_class * regcls,
-	jive::output * value);
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	jive_regvalue_node * node = new jive_regvalue_node(*this);
+	node->class_ = &JIVE_REGVALUE_NODE;
 
-static void
-jive_regvalue_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
+	const jive::base::type * argument_types[2] = {
+		&argument_type(0),
+		&argument_type(1)
+	};
+	const jive::base::type * result_types[1] = {
+		&result_type(0)
+	};
 
-static bool
-jive_regvalue_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
+	jive_node_init_(node, region,
+		2, argument_types, arguments,
+		1, result_types);
 
-static jive_node *
-jive_regvalue_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[]);
+	return node;
+}
+
+std::string
+regvalue_op::debug_string() const
+{
+	return regcls()->base.name;
+}
+
+}
 
 const jive_node_class JIVE_REGVALUE_NODE = {
 	parent : &JIVE_NODE,
 	name : "REGVALUE_NODE",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_regvalue_node_get_label_, /* override */
-	match_attrs : jive_regvalue_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_regvalue_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static void
-jive_regvalue_node_init_(
-	jive_regvalue_node * self,
-	jive_region * region,
-	jive::output * ctl,
-	const jive_register_class * regcls,
-	jive::output * value)
-{
-	jive::ctl::type ctl_type;
-	const jive::base::type * vtype = &value->type();
-	const jive::base::type * operand_types[] = {&ctl_type, vtype};
-	jive::output * operands[] = {ctl, value};
-	
-	jive_node_init_(self, region,
-		2, operand_types, operands,
-		1, &vtype);
-	
-	self->outputs[0]->required_rescls = &regcls->base;
-}
-
-static void
-jive_regvalue_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_regvalue_node * self = (const jive_regvalue_node *) self_;
-	jive_buffer_putstr(buffer, self->operation().regcls()->base.name);
-}
-
-static bool
-jive_regvalue_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::regvalue_operation * first = &((const jive_regvalue_node *) self)->operation();
-	const jive::regvalue_operation * second = (const jive::regvalue_operation *) attrs;
-	return (first->regcls() == second->regcls());
-}
-
-static jive_node *
-jive_regvalue_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::regvalue_operation * attrs = (const jive::regvalue_operation *) attrs_;
-	
-	jive_regvalue_node * node = new jive_regvalue_node(*attrs);
-	node->class_ = &JIVE_REGVALUE_NODE;
-	jive_regvalue_node_init_(node, region, operands[0], attrs->regcls(), operands[1]);
-	
-	return node;
-}
 
 jive::output *
 jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value)
 {
-	jive::regvalue_operation op(regcls);
+	jive::regvalue_op op(regcls);
 	
-	jive::output * operands[] = {ctl, value};
-	jive_region * region = jive_region_innermost(2, operands);
+	jive::output * arguments[] = {ctl, value};
+	jive_region * region = jive_region_innermost(2, arguments);
 	
 	const jive_node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &JIVE_REGVALUE_NODE);
-	jive_node * node = jive_node_cse_create(nf, region, &op, 2, operands);
+	jive_node * node = jive_node_cse_create(nf, region, &op, 2, arguments);
 	return node->outputs[0];
 }
