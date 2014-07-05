@@ -89,64 +89,6 @@ private:
 };
 
 void
-jive_cfg_node_connect_taken_successor(struct jive_cfg_node * self,
-	struct jive_cfg_node * successor);
-
-void
-jive_cfg_node_connect_nottaken_successor(struct jive_cfg_node * self,
-	struct jive_cfg_node * successor);
-
-void
-jive_cfg_node_disconnect_taken_successor(struct jive_cfg_node * self);
-
-void
-jive_cfg_node_disconnect_nottaken_successor(struct jive_cfg_node * self);
-
-JIVE_EXPORTED_INLINE void
-jive_cfg_node_disconnect_successors(struct jive_cfg_node * self)
-{
-	self->remove_successors();
-}
-
-JIVE_EXPORTED_INLINE void
-jive_cfg_node_divert_taken_successor(struct jive_cfg_node * self, struct jive_cfg_node * successor)
-{
-	self->divert_taken_successor(successor);
-}
-
-JIVE_EXPORTED_INLINE void
-jive_cfg_node_divert_nottaken_successor(struct jive_cfg_node * self,
-	struct jive_cfg_node * successor)
-{
-	self->divert_nottaken_successor(successor);
-}
-
-void
-jive_cfg_node_disconnect_taken_predecessors(struct jive_cfg_node * self);
-
-void
-jive_cfg_node_disconnect_nottaken_predecessors(struct jive_cfg_node * self);
-
-JIVE_EXPORTED_INLINE void
-jive_cfg_node_disconnect_predecessors(struct jive_cfg_node * self)
-{
-	self->remove_predecessors();
-}
-
-void
-jive_cfg_node_divert_taken_predecessors(struct jive_cfg_node * self, struct jive_cfg_node * node);
-
-void
-jive_cfg_node_divert_nottaken_predecessors(struct jive_cfg_node * self,
-	struct jive_cfg_node * node);
-
-JIVE_EXPORTED_INLINE void
-jive_cfg_node_divert_predecessors(struct jive_cfg_node * self, struct jive_cfg_node * node)
-{
-	self->divert_predecessors(node);
-}
-
-void
 jive_cfg_node_destroy(struct jive_cfg_node * self);
 
 #endif

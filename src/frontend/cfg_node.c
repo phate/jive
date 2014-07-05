@@ -110,54 +110,6 @@ jive_cfg_node::divert_nottaken_predecessors(jive_cfg_node * node) noexcept
 }
 
 void
-jive_cfg_node_connect_taken_successor(struct jive_cfg_node * self, struct jive_cfg_node * successor)
-{
-	self->add_taken_successor(successor);
-}
-
-void
-jive_cfg_node_connect_nottaken_successor(struct jive_cfg_node * self, struct jive_cfg_node * successor)
-{
-	self->add_nottaken_successor(successor);
-}
-
-void
-jive_cfg_node_disconnect_taken_successor(struct jive_cfg_node * self)
-{
-	self->remove_taken_successor();
-}
-
-void
-jive_cfg_node_disconnect_nottaken_successor(struct jive_cfg_node * self)
-{
-	self->remove_nottaken_successor();
-}
-
-void
-jive_cfg_node_disconnect_taken_predecessors(struct jive_cfg_node * self)
-{
-	self->remove_taken_predecessors();
-}
-
-void
-jive_cfg_node_disconnect_nottaken_predecessors(struct jive_cfg_node * self)
-{
-	self->remove_nottaken_predecessors();
-}
-
-void
-jive_cfg_node_divert_taken_predecessors(struct jive_cfg_node * self, struct jive_cfg_node * node)
-{
-	self->divert_taken_predecessors(node);
-}
-
-void
-jive_cfg_node_divert_nottaken_predecessors(struct jive_cfg_node * self, struct jive_cfg_node * node)
-{
-	self->divert_nottaken_predecessors(node);
-}
-
-void
 jive_cfg_node_destroy(struct jive_cfg_node * self)
 {
 	delete self;

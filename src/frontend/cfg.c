@@ -69,7 +69,7 @@ jive_cfg_init_(struct jive_cfg * self, struct jive_clg_node * clg_node)
 
 	self->enter = jive_cfg_enter_node_create(self);
 	self->exit = jive_cfg_exit_node_create(self);
-	jive_cfg_node_connect_nottaken_successor(self->enter, self->exit);
+	self->enter->add_nottaken_successor(self->exit);
 
 	clg_node->cfg = self;
 }
@@ -78,9 +78,8 @@ static void
 jive_cfg_fini_(struct jive_cfg * self)
 {
 	while (self->nodes.first) {
-		jive_cfg_node_disconnect_predecessors(self->nodes.first);
-		jive_cfg_node_disconnect_taken_successor(self->nodes.first);
-		jive_cfg_node_disconnect_nottaken_successor(self->nodes.first);
+		self->nodes.first->remove_predecessors();
+		self->nodes.first->remove_successors();
 		jive_cfg_node_destroy(self->nodes.first);
 	}
 }
