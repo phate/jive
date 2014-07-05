@@ -1,10 +1,11 @@
 /*
+ * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/anchor-private.h>
+#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
@@ -15,9 +16,9 @@ const jive_node_class JIVE_ANCHOR_NODE = {
 	name : "ANCHOR",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_anchor_node_get_default_normal_form_, /* override */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_node_match_attrs_, /* inherit */
-	check_operands : jive_node_check_operands_, /* inherrit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
 	create : nullptr,
 };
 
@@ -72,9 +73,9 @@ jive_anchor_node_normal_form_set_reducible_(jive_anchor_node_normal_form * self,
 
 	jive_node_normal_form * child;
 	JIVE_LIST_ITERATE(self->base.subclasses, child, normal_form_subclass_list)
-		jive_anchor_node_normal_form_set_reducible_((jive_anchor_node_normal_form *)child, enable); 
+		jive_anchor_node_normal_form_set_reducible_((jive_anchor_node_normal_form *)child, enable);
 	
 	self->enable_reducible = enable;
 	if (self->base.enable_mutable && self->enable_reducible)
-		jive_graph_mark_denormalized(self->base.graph);	
+		jive_graph_mark_denormalized(self->base.graph);
 }

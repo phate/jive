@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -28,9 +28,9 @@ const jive_node_class JIVE_NODE = {
 	name : "NODE",
 	fini : jive_node_fini_,
 	get_default_normal_form : jive_node_get_default_normal_form_,
-	get_label : jive_node_get_label_,
-	match_attrs : jive_node_match_attrs_,
-	check_operands : jive_node_check_operands_,
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
 	create : nullptr,
 };
 

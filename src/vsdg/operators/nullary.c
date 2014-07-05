@@ -42,10 +42,10 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 	name : "NULLARY",
 	fini : jive_node_fini_,
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_,
-	get_label : jive_node_get_label_,
-	match_attrs : jive_node_match_attrs_,
-	check_operands : NULL,
-	create : nullptr,
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 /* node class inheritable methods */

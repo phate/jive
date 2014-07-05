@@ -6,6 +6,8 @@
 #ifndef JIVE_VSDG_ANCHOR_PRIVATE_H
 #define JIVE_VSDG_ANCHOR_PRIVATE_H
 
+#include <jive/vsdg/anchor.h>
+
 /* inheritable anchor node member functions */
 
 struct jive_node_normal_form *
