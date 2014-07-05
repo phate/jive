@@ -12,117 +12,94 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
-static void
-jive_group_node_init_(jive_group_node * self,
-	struct jive_region * region, const jive::rcd::declaration * decl,
-	size_t narguments, jive::output * const arguments[]);
+namespace jive {
+namespace rcd {
 
-static jive_node *
-jive_group_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[]);
+group_op::~group_op() noexcept
+{
+}
 
-static void
-jive_group_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
+bool
+group_op::operator==(const operation & other) const noexcept
+{
+	const group_op * op =
+		dynamic_cast<const group_op *>(&other);
+	return op && op->declaration() == declaration();
+}
 
-static bool
-jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
+size_t
+group_op::narguments() const noexcept
+{
+	return declaration()->nelements;
+}
 
-static void
-jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
+const jive::base::type &
+group_op::argument_type(size_t index) const noexcept
+{
+	return *declaration()->elements[index];
+}
+
+size_t
+group_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+group_op::result_type(size_t index) const noexcept
+{
+	return result_type_;
+}
+
+jive_node *
+group_op::create_node(
+	jive_region * region,
+	size_t narguments_given,
+	jive::output * const arguments[]) const
+{
+	const jive::base::type * argument_types[narguments()];
+	for (size_t n = 0; n < narguments(); ++n) {
+		argument_types[n] = &argument_type(n);
+	}
+
+	const jive::base::type * result_types[1] = {&result_type(0)};
+
+	jive_group_node * node = new jive_group_node(*this);
+	node->class_ = &JIVE_GROUP_NODE;
+
+	jive_node_init_(
+		node, region,
+		narguments(), argument_types, arguments,
+		1, result_types);
+
+	return node;
+}
+
+std::string
+group_op::debug_string() const
+{
+	return "GROUP";
+}
+
+}
+}
 
 const jive_node_class JIVE_GROUP_NODE = {
 	parent : &JIVE_NODE,
 	name : "GROUP",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_group_node_get_label_, /* override */
-	match_attrs : jive_group_node_match_attrs_, /* override */
-	check_operands : jive_group_node_check_operands_, /* override */
-	create : jive_group_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static void
-jive_group_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	jive_buffer_putstr(buffer, "GROUP");
-}
-
-static bool
-jive_group_node_match_attrs_(const jive_node * self, const jive_node_attrs * second_)
-{
-	const jive::rcd::group_operation * first =
-		(const jive::rcd::group_operation *)jive_node_get_attrs(self);
-	const jive::rcd::group_operation * second = (const jive::rcd::group_operation *)second_;
-	
-	return first->declaration() == second->declaration();
-}
-
-static void
-jive_group_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-	const jive::rcd::group_operation * attrs = (const jive::rcd::group_operation *)attrs_;
-	if (attrs->declaration()->nelements != noperands)
-		jive_context_fatal_error(context,
-			"Type mismatch: number of parameters to group does not match record declaration");
-
-	size_t n;
-	for (n = 0; n < noperands; n++) {
-		const jive::base::type * type = attrs->declaration()->elements[n];
-		if (*type != operands[n]->type())
-			jive_raise_type_error(type, &operands[n]->type(), context);
-	}
-}
-
-static jive_node *
-jive_group_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::rcd::group_operation * attrs = (const jive::rcd::group_operation *)attrs_ ;
-
-	jive_group_node * node = new jive_group_node(*attrs);
-
-	if (attrs->declaration()->nelements != noperands) {
-		jive_context_fatal_error(region->graph->context,
-			"Type mismatch: number of parameters to group does not match record declaration");
-	}
-
-	node->class_ = &JIVE_GROUP_NODE;
-	jive_group_node_init_(node, region, attrs->declaration(), noperands, operands);
-
-	return node;
-}
-
-static void
-jive_group_node_init_(jive_group_node * self,
-	struct jive_region * region, const jive::rcd::declaration * decl,
-	size_t narguments, jive::output * const arguments[])
-{
-	if (decl->nelements != narguments) {
-		jive_context_fatal_error(region->graph->context,
-			"Type mismatch: number of parameters to group does not match record declaration");
-	}
-
-	size_t n;
-	const jive::base::type * arg_types[narguments];
-	for(n = 0; n < narguments; n++) {
-		arg_types[n] = decl->elements[n];
-	}
-
-	jive::rcd::type type(decl);
-	const jive::base::type * rtype = &type ;
-
-	jive_node_init_(self, region,
-		narguments, arg_types, arguments,
-		1, &rtype);
-}
 
 jive::output *
 jive_group_create(const jive::rcd::declaration * decl,
 	size_t narguments, jive::output * const * arguments)
 {
-	jive::rcd::group_operation op(decl);
+	jive::rcd::group_op op(decl);
 	jive::output * result;
 	jive_graph * graph = arguments[0]->node()->region->graph;
 	jive_node_create_normalized(&JIVE_GROUP_NODE, graph, &op, narguments, arguments, &result);
@@ -130,9 +107,9 @@ jive_group_create(const jive::rcd::declaration * decl,
 }
 
 jive::output *
-jive_empty_group_create(struct jive_graph * graph, const jive::rcd::declaration * decl)
+jive_empty_group_create(jive_graph * graph, const jive::rcd::declaration * decl)
 {
-	jive::rcd::group_operation op(decl);
+	jive::rcd::group_op op(decl);
 	jive::output * result;
 	jive_node_create_normalized(&JIVE_GROUP_NODE, graph, &op, 0, nullptr, &result);
 	return result;
