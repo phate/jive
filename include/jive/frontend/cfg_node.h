@@ -56,6 +56,9 @@ public:
 		divert_nottaken_predecessors(node);
 	}
 
+	inline jive_cfg_node * taken_successor() const noexcept { return taken_successor_; }
+	inline jive_cfg_node * nottaken_successor() const noexcept { return nottaken_successor_; }
+
 	struct {
 		struct jive_cfg_node * first;
 		struct jive_cfg_node * last;
@@ -76,15 +79,14 @@ public:
 		struct jive_cfg_node * next;
 	}	nottaken_predecessors_list;
 
-	struct jive_cfg_node * taken_successor;
-	struct jive_cfg_node * nottaken_successor;
-
 	struct {
 		struct jive_cfg_node * prev;
 		struct jive_cfg_node * next;
 	} cfg_node_list;
 
 private:
+	jive_cfg_node * taken_successor_;
+	jive_cfg_node * nottaken_successor_;
 	struct jive_cfg * cfg_;
 };
 

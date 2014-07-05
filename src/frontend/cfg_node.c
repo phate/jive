@@ -19,8 +19,8 @@ jive_cfg_node::~jive_cfg_node() noexcept
 
 jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg) noexcept
 	: cfg_(cfg)
-	, taken_successor(nullptr)
-	, nottaken_successor(nullptr)
+	, taken_successor_(nullptr)
+	, nottaken_successor_(nullptr)
 {
 	taken_predecessors.first = 0;
 	taken_predecessors.last = 0;
@@ -41,21 +41,21 @@ jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg) noexcept
 void
 jive_cfg_node::remove_taken_successor() noexcept
 {
-	if (taken_successor == nullptr)
+	if (taken_successor_ == nullptr)
 		return;
 
-	JIVE_LIST_REMOVE(taken_successor->taken_predecessors, this, taken_predecessors_list);
-	taken_successor = nullptr;
+	JIVE_LIST_REMOVE(taken_successor_->taken_predecessors, this, taken_predecessors_list);
+	taken_successor_ = nullptr;
 }
 
 void
 jive_cfg_node::remove_nottaken_successor() noexcept
 {
-	if (nottaken_successor == nullptr)
+	if (nottaken_successor_ == nullptr)
 		return;
 
-	JIVE_LIST_REMOVE(nottaken_successor->nottaken_predecessors, this, nottaken_predecessors_list);
-	nottaken_successor = nullptr;
+	JIVE_LIST_REMOVE(nottaken_successor_->nottaken_predecessors, this, nottaken_predecessors_list);
+	nottaken_successor_ = nullptr;
 }
 
 void
@@ -77,19 +77,19 @@ jive_cfg_node::remove_nottaken_predecessors() noexcept
 void
 jive_cfg_node::add_taken_successor(jive_cfg_node * successor) noexcept
 {
-	JIVE_ASSERT(taken_successor == nullptr);
+	JIVE_ASSERT(taken_successor_ == nullptr);
 
 	JIVE_LIST_PUSH_BACK(successor->taken_predecessors, this, taken_predecessors_list);
-	taken_successor = successor;
+	taken_successor_ = successor;
 }
 
 void
 jive_cfg_node::add_nottaken_successor(jive_cfg_node * successor) noexcept
 {
-	JIVE_ASSERT(nottaken_successor == nullptr);
+	JIVE_ASSERT(nottaken_successor_ == nullptr);
 
 	JIVE_LIST_PUSH_BACK(successor->nottaken_predecessors, this, nottaken_predecessors_list);
-	nottaken_successor = successor;
+	nottaken_successor_ = successor;
 
 }
 

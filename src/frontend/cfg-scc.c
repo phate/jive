@@ -102,7 +102,7 @@ strongconnect(struct jive_cfg_node * node, struct jive_cfg_scc_set * scc_set)
 	cfg_node_stack_push(&node_stack, node);
 	index++;
 
-	jive_cfg_node * successor = node->taken_successor;
+	jive_cfg_node * successor = node->taken_successor();
 	if (successor != NULL) {
 		if (index_map_lookup(&map, successor) == NULL) {
 			strongconnect(successor, scc_set);
@@ -111,7 +111,7 @@ strongconnect(struct jive_cfg_node * node, struct jive_cfg_scc_set * scc_set)
 			item->lowlink = jive_min_unsigned(item->lowlink, index_map_lookup(&map, successor)->index);
 	}
 
-	successor = node->nottaken_successor;
+	successor = node->nottaken_successor();
 	if (successor != NULL) {
 		if (index_map_lookup(&map, successor) == NULL) {
 			strongconnect(successor, scc_set);

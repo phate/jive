@@ -125,15 +125,15 @@ jive_cfg_convert_dot(const struct jive_cfg * self, struct jive_buffer * buffer)
 		jive_buffer_putstr(buffer, node->debug_string().c_str());
 		jive_buffer_putstr(buffer, "\"];\n");
 
-		if (node->taken_successor) {
+		if (node->taken_successor()) {
 			snprintf(tmp, sizeof(tmp), "%zu -> %zu[label = \"t\"];\n", (size_t)node,
-				(size_t)node->taken_successor);
+				(size_t)node->taken_successor());
 			jive_buffer_putstr(buffer, tmp);
 		}
 
-		if (node->nottaken_successor) {
+		if (node->nottaken_successor()) {
 			snprintf(tmp, sizeof(tmp), "%zu -> %zu[label = \"nt\"];\n", (size_t)node,
-				(size_t)node->nottaken_successor);
+				(size_t)node->nottaken_successor());
 			jive_buffer_putstr(buffer, tmp);
 		}
 	}
@@ -172,11 +172,11 @@ jive_cfg_validate(const struct jive_cfg * self)
 			JIVE_ASSERT(node->taken_predecessors.last == NULL);
 			JIVE_ASSERT(node->nottaken_predecessors.first == NULL);
 			JIVE_ASSERT(node->nottaken_predecessors.last == NULL);
-			JIVE_ASSERT(node->taken_successor == NULL);
-			JIVE_ASSERT(node->nottaken_successor != NULL);
+			JIVE_ASSERT(node->taken_successor() == nullptr);
+			JIVE_ASSERT(node->nottaken_successor() != nullptr);
 
 			jive_cfg_node * predecessor;
-			jive_cfg_node * successor = node->nottaken_successor;
+			jive_cfg_node * successor = node->nottaken_successor();
 			JIVE_LIST_ITERATE(successor->nottaken_predecessors, predecessor, nottaken_predecessors_list) {
 				if (predecessor == node)
 					break;
@@ -186,37 +186,37 @@ jive_cfg_validate(const struct jive_cfg * self)
 		}
 
 		if (dynamic_cast<jive_cfg_exit_node*>(node)) {
-			JIVE_ASSERT(node->taken_successor == NULL);
-			JIVE_ASSERT(node->nottaken_successor == NULL);
+			JIVE_ASSERT(node->taken_successor() == NULL);
+			JIVE_ASSERT(node->nottaken_successor() == NULL);
 		}
 
 		/* check whether all taken predecessors are really taken successors */
 		jive_cfg_node * predecessor;
 		JIVE_LIST_ITERATE(node->taken_predecessors, predecessor, taken_predecessors_list)
-			JIVE_ASSERT(predecessor->taken_successor == node);
+			JIVE_ASSERT(predecessor->taken_successor() == node);
 
 		/* check whether all nottaken predecessors are really nottaken successors */
 		JIVE_LIST_ITERATE(node->nottaken_predecessors, predecessor, nottaken_predecessors_list)
-			JIVE_ASSERT(predecessor->nottaken_successor == node);
+			JIVE_ASSERT(predecessor->nottaken_successor() == node);
 
 		if (dynamic_cast<jive_cfg_exit_node*>(node))
 			continue;
 
-		JIVE_ASSERT(node->nottaken_successor != NULL);
+		JIVE_ASSERT(node->nottaken_successor() != NULL);
 
 		/* check whether nottaken successor is in the nottaken predecessor list */
-		jive_cfg_node * successor = node->nottaken_successor;
+		jive_cfg_node * successor = node->nottaken_successor();
 		JIVE_LIST_ITERATE(successor->nottaken_predecessors, predecessor, nottaken_predecessors_list) {
 			if (predecessor == node)
 				break;
 		}
 		JIVE_ASSERT(predecessor != NULL);
 
-		if (node->taken_successor == NULL)
+		if (node->taken_successor() == NULL)
 			continue;
 
 		/* check whether taken successor is in the taken predecessor list */
-		successor = node->taken_successor;
+		successor = node->taken_successor();
 		JIVE_LIST_ITERATE(successor->taken_predecessors, predecessor, taken_predecessors_list) {
 			if (predecessor == node)
 				break;
