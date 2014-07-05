@@ -35,9 +35,8 @@ public:
 
 /* cfg */
 
-typedef struct jive_cfg jive_cfg;
-
-struct jive_cfg {
+class jive_cfg final {
+public:
 	struct jive_clg_node * clg_node;
 
 	struct jive_cfg_node * enter;

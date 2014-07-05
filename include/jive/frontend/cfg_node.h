@@ -87,7 +87,7 @@ public:
 private:
 	jive_cfg_node * taken_successor_;
 	jive_cfg_node * nottaken_successor_;
-	struct jive_cfg * cfg_;
+	jive_cfg * cfg_;
 };
 
 #endif
