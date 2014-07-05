@@ -108,9 +108,3 @@ jive_cfg_node::divert_nottaken_predecessors(jive_cfg_node * node) noexcept
 	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
 		pred->divert_nottaken_successor(node);
 }
-
-void
-jive_cfg_node_destroy(struct jive_cfg_node * self)
-{
-	delete self;
-}

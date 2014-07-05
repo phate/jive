@@ -88,7 +88,4 @@ private:
 	struct jive_cfg * cfg_;
 };
 
-void
-jive_cfg_node_destroy(struct jive_cfg_node * self);
-
 #endif

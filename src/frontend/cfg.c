@@ -80,7 +80,7 @@ jive_cfg_fini_(struct jive_cfg * self)
 	while (self->nodes.first) {
 		self->nodes.first->remove_predecessors();
 		self->nodes.first->remove_successors();
-		jive_cfg_node_destroy(self->nodes.first);
+		delete self->nodes.first;
 	}
 }
 
