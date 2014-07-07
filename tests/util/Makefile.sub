@@ -9,4 +9,3 @@ TESTS += \
 	util/test-rangemap \
 	util/test-set \
 	util/test-sort \
-	util/test-stack \
