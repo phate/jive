@@ -26,14 +26,14 @@ static jive_basic_block * bb8;
 static void
 setup_cfg(jive_cfg * cfg)
 {
-	bb1 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb2 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb3 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb4 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb5 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb6 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb7 = jive_basic_block_cast(jive_basic_block_create(cfg));
-	bb8 = jive_basic_block_cast(jive_basic_block_create(cfg));
+	bb1 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb2 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb3 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb4 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb5 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb6 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb7 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
+	bb8 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
 
 	jive_variable_code_create(bb1, "1");
 	jive_variable_code_create(bb2, "2");
@@ -45,26 +45,26 @@ setup_cfg(jive_cfg * cfg)
 	jive_variable_code_create(bb8, "8");
 
 	/* first scc */
-	jive_cfg_node_divert_predecessors(cfg->exit, &bb1->base);
-	jive_cfg_node_connect_nottaken_successor(&bb1->base, &bb2->base);
-	jive_cfg_node_connect_nottaken_successor(&bb2->base, &bb3->base);
-	jive_cfg_node_connect_nottaken_successor(&bb3->base, &bb1->base);
+	cfg->exit->divert_predecessors(bb1);
+	bb1->add_nottaken_successor(bb2);
+	bb2->add_nottaken_successor(bb3);
+	bb3->add_nottaken_successor(bb1);
 
 	/* second scc */
-	jive_cfg_node_connect_nottaken_successor(&bb4->base, &bb2->base);
-	jive_cfg_node_connect_taken_successor(&bb4->base, &bb6->base);
-	jive_cfg_node_connect_nottaken_successor(&bb6->base, &bb4->base);
-	jive_cfg_node_connect_taken_successor(&bb6->base, &bb5->base);
+	bb4->add_nottaken_successor(bb2);
+	bb4->add_taken_successor(bb6);
+	bb6->add_nottaken_successor(bb4);
+	bb6->add_taken_successor(bb5);
 
 	/* third scc */
-	jive_cfg_node_connect_nottaken_successor(&bb5->base, &bb3->base);
-	jive_cfg_node_connect_taken_successor(&bb5->base, &bb7->base);
-	jive_cfg_node_connect_nottaken_successor(&bb7->base, &bb5->base);
-	jive_cfg_node_connect_taken_successor(&bb7->base, &bb8->base);
+	bb5->add_nottaken_successor(bb3);
+	bb5->add_taken_successor(bb7);
+	bb7->add_nottaken_successor(bb5);
+	bb7->add_taken_successor(bb8);
 
 	/* fourth scc */
-	jive_cfg_node_connect_taken_successor(&bb8->base, &bb8->base);
-	jive_cfg_node_connect_nottaken_successor(&bb8->base, cfg->exit);
+	bb8->add_taken_successor(bb8);
+	bb8->add_nottaken_successor(cfg->exit);
 }
 
 static void
@@ -76,18 +76,18 @@ check_sccs(jive_cfg_scc_set * scc_set)
 	struct jive_cfg_scc_set_iterator i;
 	JIVE_SET_ITERATE(jive_cfg_scc_set, *scc_set, i) {
 		if (jive_cfg_scc_size(i.entry->item) == 3) {
-			assert(jive_cfg_scc_contains(i.entry->item, &bb1->base));
-			assert(jive_cfg_scc_contains(i.entry->item, &bb2->base));
-			assert(jive_cfg_scc_contains(i.entry->item, &bb3->base));
+			assert(jive_cfg_scc_contains(i.entry->item, bb1));
+			assert(jive_cfg_scc_contains(i.entry->item, bb2));
+			assert(jive_cfg_scc_contains(i.entry->item, bb3));
 		}
 
 		if (jive_cfg_scc_size(i.entry->item) == 2) {
-			bool contained = jive_cfg_scc_contains(i.entry->item, &bb4->base);
+			bool contained = jive_cfg_scc_contains(i.entry->item, bb4);
 			if (contained)
-				assert(jive_cfg_scc_contains(i.entry->item, &bb6->base));
+				assert(jive_cfg_scc_contains(i.entry->item, bb6));
 			else {
-				assert(jive_cfg_scc_contains(i.entry->item, &bb5->base));
-				assert(jive_cfg_scc_contains(i.entry->item, &bb7->base));
+				assert(jive_cfg_scc_contains(i.entry->item, bb5));
+				assert(jive_cfg_scc_contains(i.entry->item, bb7));
 			}
 		}
 	}
