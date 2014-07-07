@@ -44,12 +44,7 @@ public:
 		add_nottaken_successor(successor);
 	}
 
-	void divert_taken_predecessors(jive_cfg_node * node) noexcept;
-	void divert_nottaken_predecessors(jive_cfg_node * node) noexcept;
-	inline void divert_predecessors(jive_cfg_node * node) noexcept {
-		divert_taken_predecessors(node);
-		divert_nottaken_predecessors(node);
-	}
+	void divert_predecessors(jive_cfg_node * node) noexcept;
 
 	inline jive_cfg_node * taken_successor() const noexcept { return taken_successor_; }
 	inline jive_cfg_node * nottaken_successor() const noexcept { return nottaken_successor_; }

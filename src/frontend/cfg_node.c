@@ -89,17 +89,12 @@ jive_cfg_node::add_nottaken_successor(jive_cfg_node * successor) noexcept
 }
 
 void
-jive_cfg_node::divert_taken_predecessors(jive_cfg_node * node) noexcept
+jive_cfg_node::divert_predecessors(jive_cfg_node * node) noexcept
 {
 	jive_cfg_node * pred, * next;
 	JIVE_LIST_ITERATE_SAFE(taken_predecessors, pred, next, taken_predecessors_list)
 		pred->divert_taken_successor(node);
-}
 
-void
-jive_cfg_node::divert_nottaken_predecessors(jive_cfg_node * node) noexcept
-{
-	jive_cfg_node * pred, * next;
 	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
 		pred->divert_nottaken_successor(node);
 }
