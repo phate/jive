@@ -11,16 +11,47 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <memory>
 #include <string>
 #include <vector>
 
+class jive_cfg_node;
+
+namespace jive {
+namespace frontend {
+
+class cfg_edge final {
+public:
+	~cfg_edge() noexcept {};
+
+	cfg_edge(jive_cfg_node * source, jive_cfg_node * sink, size_t index) noexcept;
+
+	void divert(jive_cfg_node * new_sink, size_t new_index) noexcept;
+
+	inline jive_cfg_node * source() const noexcept { return source_; }
+	inline jive_cfg_node * sink() const noexcept { return sink_; }
+	inline size_t index() const noexcept { return index_; }
+
+	bool operator==(const cfg_edge & rhs) const noexcept;
+	inline bool operator!=(const cfg_edge & rhs) const noexcept { return !(*this == rhs); }
+
+private:
+	jive_cfg_node * source_;
+	jive_cfg_node * sink_;
+	size_t index_;
+};
+
+}
+}
+
+class jive_cfg;
 
 class jive_cfg_node {
 public:
 	virtual ~jive_cfg_node();
 
 protected:
-	jive_cfg_node(struct jive_cfg * cfg);
+	jive_cfg_node(jive_cfg * cfg);
 
 public:
 	virtual std::string debug_string() const = 0;
@@ -48,10 +79,14 @@ public:
 
 	void divert_predecessors(jive_cfg_node * node);
 
-	inline jive_cfg_node * taken_successor() const noexcept { return taken_successor_; }
-	inline jive_cfg_node * nottaken_successor() const noexcept { return nottaken_successor_; }
+	inline jive::frontend::cfg_edge * taken_edge() const noexcept { return taken_edge_.get(); }
+	inline jive::frontend::cfg_edge * nottaken_edge() const noexcept { return nottaken_edge_.get(); }
+	jive_cfg_node * taken_successor() const noexcept;
+	jive_cfg_node * nottaken_successor() const noexcept;
 
-	inline std::vector<jive_cfg_node*> predecessors() const noexcept { return predecessors_; }
+	inline size_t npredecessors() const noexcept { return predecessors_.size(); }
+	inline std::vector<jive::frontend::cfg_edge *> predecessors() const noexcept {
+		return predecessors_; }
 
 	struct {
 		struct jive_cfg_node * prev;
@@ -59,9 +94,9 @@ public:
 	} cfg_node_list;
 
 private:
-	jive_cfg_node * taken_successor_;
-	jive_cfg_node * nottaken_successor_;
-	std::vector<jive_cfg_node*> predecessors_;
+	std::unique_ptr<jive::frontend::cfg_edge> taken_edge_;
+	std::unique_ptr<jive::frontend::cfg_edge> nottaken_edge_;
+	std::vector<jive::frontend::cfg_edge *> predecessors_;
 	jive_cfg * cfg_;
 };
 

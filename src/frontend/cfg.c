@@ -185,9 +185,9 @@ jive_cfg_validate(const struct jive_cfg * self)
 		/* check whether successors are in the predecessor list */
 		size_t n;
 		jive_cfg_node * successor = node->nottaken_successor();
-		std::vector<jive_cfg_node*> predecessors = successor->predecessors();
+		std::vector<jive::frontend::cfg_edge*> predecessors = successor->predecessors();
 		for (n = 0; n < predecessors.size(); n++) {
-			if (predecessors[n] == node)
+			if (predecessors[n]->source() == node)
 			 break;
 		}
 		JIVE_ASSERT(n != predecessors.size());
@@ -198,7 +198,7 @@ jive_cfg_validate(const struct jive_cfg * self)
 		successor = node->taken_successor();
 		predecessors = successor->predecessors();
 		for (n = 0; n != predecessors.size(); n++) {
-			if (predecessors[n] == node)
+			if (predecessors[n]->source() == node)
 			 break;
 		}
 		JIVE_ASSERT(n != predecessors.size());

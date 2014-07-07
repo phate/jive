@@ -14,15 +14,38 @@
 
 #include <algorithm>
 
+namespace jive {
+namespace frontend {
+
+cfg_edge::cfg_edge(jive_cfg_node * source, jive_cfg_node * sink, size_t index) noexcept
+	: source_(source)
+	, sink_(sink)
+	, index_(index)
+{}
+
+void
+cfg_edge::divert(jive_cfg_node * new_sink, size_t new_index) noexcept
+{
+	sink_ = new_sink;
+	index_ = new_index;
+}
+
+bool
+cfg_edge::operator==(const cfg_edge & rhs) const noexcept
+{
+	return source_ == rhs.source_ && sink_ == rhs.sink_ && index_ == rhs.index_;
+}
+
+}
+}
+
 jive_cfg_node::~jive_cfg_node()
 {
 	JIVE_LIST_REMOVE(cfg_->nodes, this, cfg_node_list);
 }
 
-jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg)
+jive_cfg_node::jive_cfg_node(jive_cfg * cfg)
 	: cfg_(cfg)
-	, taken_successor_(nullptr)
-	, nottaken_successor_(nullptr)
 {
 	cfg_node_list.prev = 0;
 	cfg_node_list.next = 0;
@@ -33,33 +56,43 @@ jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg)
 void
 jive_cfg_node::remove_taken_successor()
 {
-	if (taken_successor_ == nullptr)
+	if (taken_edge_ == nullptr)
 		return;
 
-	taken_successor_->predecessors_.erase(std::remove(taken_successor_->predecessors_.begin(),
-		taken_successor_->predecessors_.end(), this), taken_successor_->predecessors_.end());
-	taken_successor_ = nullptr;
+	size_t index = taken_edge_->index();
+	for (size_t n = index+1; n < taken_successor()->npredecessors(); n++) {
+		jive::frontend::cfg_edge * edge = taken_successor()->predecessors_[n];
+		edge->divert(edge->sink(), edge->index()-1);
+	}
+
+	taken_successor()->predecessors_.erase(taken_successor()->predecessors_.begin()+index);
+	taken_edge_.reset();
 }
 
 void
 jive_cfg_node::remove_nottaken_successor()
 {
-	if (nottaken_successor_ == nullptr)
+	if (nottaken_edge_ == nullptr)
 		return;
 
-	nottaken_successor_->predecessors_.erase(std::remove(nottaken_successor_->predecessors_.begin(),
-		nottaken_successor_->predecessors_.end(), this), nottaken_successor_->predecessors_.end());
-	nottaken_successor_ = nullptr;
+	size_t index = nottaken_edge_->index();
+	for (size_t n = index+1; n < nottaken_successor()->npredecessors(); n++) {
+		jive::frontend::cfg_edge * edge = nottaken_successor()->predecessors_[n];
+		edge->divert(edge->sink(), edge->index()-1);
+	}
+
+	nottaken_successor()->predecessors_.erase(nottaken_successor()->predecessors_.begin()+index);
+	nottaken_edge_.reset();
 }
 
 void
 jive_cfg_node::remove_predecessors()
 {
-	for (auto pred : predecessors_) {
-		if (pred->taken_successor_ == this)
-			pred->taken_successor_ == nullptr;
-		if (pred->nottaken_successor_ == this)
-			pred->nottaken_successor_ == nullptr;
+	for (auto edge : predecessors_) {
+		if (edge->source()->taken_edge_.get() == edge)
+			edge->source()->taken_edge_.reset();
+		else if (edge->source()->nottaken_edge_.get() == edge)
+			edge->source()->nottaken_edge_.reset();
 	}
 	predecessors_.clear();
 }
@@ -67,29 +100,42 @@ jive_cfg_node::remove_predecessors()
 void
 jive_cfg_node::add_taken_successor(jive_cfg_node * successor)
 {
-	JIVE_ASSERT(taken_successor_ == nullptr);
+	JIVE_ASSERT(taken_edge_ == nullptr);
 
-	successor->predecessors_.push_back(this);
-	taken_successor_ = successor;
+	taken_edge_ = std::unique_ptr<jive::frontend::cfg_edge>(
+		new jive::frontend::cfg_edge(this, successor, successor->npredecessors()));
+	successor->predecessors_.push_back(taken_edge_.get());
 }
 
 void
 jive_cfg_node::add_nottaken_successor(jive_cfg_node * successor)
 {
-	JIVE_ASSERT(nottaken_successor_ == nullptr);
+	JIVE_ASSERT(nottaken_edge_ == nullptr);
 
-	successor->predecessors_.push_back(this);
-	nottaken_successor_ = successor;
-
+	nottaken_edge_ = std::unique_ptr<jive::frontend::cfg_edge>(
+		new jive::frontend::cfg_edge(this, successor, successor->npredecessors()));
+	successor->predecessors_.push_back(nottaken_edge_.get());
 }
 
 void
 jive_cfg_node::divert_predecessors(jive_cfg_node * node)
 {
-	for (auto pred : predecessors_) {
-		if (pred->taken_successor_ == this)
-			pred->divert_taken_successor(node);
-		if (pred->nottaken_successor_ == this)
-			pred->divert_nottaken_successor(node);
+	for (size_t n = 0; n < npredecessors(); n++) {
+		JIVE_DEBUG_ASSERT(predecessors_[n]->sink() == this);
+		predecessors_[n]->divert(node, node->npredecessors());
+		node->predecessors_.push_back(predecessors_[n]);
 	}
+	predecessors_.clear();
+}
+
+jive_cfg_node *
+jive_cfg_node::taken_successor() const noexcept
+{
+	return taken_edge_ == nullptr ? nullptr : taken_edge_->sink();
+}
+
+jive_cfg_node *
+jive_cfg_node::nottaken_successor() const noexcept
+{
+	return nottaken_edge_ == nullptr ? nullptr : nottaken_edge_->sink();
 }
