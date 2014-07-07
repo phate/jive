@@ -12,26 +12,18 @@
 
 #include <string.h>
 
-jive_cfg_node::~jive_cfg_node() noexcept
+#include <algorithm>
+
+jive_cfg_node::~jive_cfg_node()
 {
 	JIVE_LIST_REMOVE(cfg_->nodes, this, cfg_node_list);
 }
 
-jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg) noexcept
+jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg)
 	: cfg_(cfg)
 	, taken_successor_(nullptr)
 	, nottaken_successor_(nullptr)
 {
-	taken_predecessors.first = 0;
-	taken_predecessors.last = 0;
-	taken_predecessors_list.prev = 0;
-	taken_predecessors_list.next = 0;
-
-	nottaken_predecessors.first = 0;
-	nottaken_predecessors.last = 0;
-	nottaken_predecessors_list.prev = 0;
-	nottaken_predecessors_list.next = 0;
-
 	cfg_node_list.prev = 0;
 	cfg_node_list.next = 0;
 
@@ -39,62 +31,65 @@ jive_cfg_node::jive_cfg_node(struct jive_cfg * cfg) noexcept
 }
 
 void
-jive_cfg_node::remove_taken_successor() noexcept
+jive_cfg_node::remove_taken_successor()
 {
 	if (taken_successor_ == nullptr)
 		return;
 
-	JIVE_LIST_REMOVE(taken_successor_->taken_predecessors, this, taken_predecessors_list);
+	taken_successor_->predecessors_.erase(std::remove(taken_successor_->predecessors_.begin(),
+		taken_successor_->predecessors_.end(), this), taken_successor_->predecessors_.end());
 	taken_successor_ = nullptr;
 }
 
 void
-jive_cfg_node::remove_nottaken_successor() noexcept
+jive_cfg_node::remove_nottaken_successor()
 {
 	if (nottaken_successor_ == nullptr)
 		return;
 
-	JIVE_LIST_REMOVE(nottaken_successor_->nottaken_predecessors, this, nottaken_predecessors_list);
+	nottaken_successor_->predecessors_.erase(std::remove(nottaken_successor_->predecessors_.begin(),
+		nottaken_successor_->predecessors_.end(), this), nottaken_successor_->predecessors_.end());
 	nottaken_successor_ = nullptr;
 }
 
 void
-jive_cfg_node::remove_predecessors() noexcept
+jive_cfg_node::remove_predecessors()
 {
-	jive_cfg_node * pred, * next;
-	JIVE_LIST_ITERATE_SAFE(taken_predecessors, pred, next, taken_predecessors_list)
-		pred->remove_taken_successor();
-
-	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
-		pred->remove_nottaken_successor();
+	for (auto pred : predecessors_) {
+		if (pred->taken_successor_ == this)
+			pred->taken_successor_ == nullptr;
+		if (pred->nottaken_successor_ == this)
+			pred->nottaken_successor_ == nullptr;
+	}
+	predecessors_.clear();
 }
 
 void
-jive_cfg_node::add_taken_successor(jive_cfg_node * successor) noexcept
+jive_cfg_node::add_taken_successor(jive_cfg_node * successor)
 {
 	JIVE_ASSERT(taken_successor_ == nullptr);
 
-	JIVE_LIST_PUSH_BACK(successor->taken_predecessors, this, taken_predecessors_list);
+	successor->predecessors_.push_back(this);
 	taken_successor_ = successor;
 }
 
 void
-jive_cfg_node::add_nottaken_successor(jive_cfg_node * successor) noexcept
+jive_cfg_node::add_nottaken_successor(jive_cfg_node * successor)
 {
 	JIVE_ASSERT(nottaken_successor_ == nullptr);
 
-	JIVE_LIST_PUSH_BACK(successor->nottaken_predecessors, this, nottaken_predecessors_list);
+	successor->predecessors_.push_back(this);
 	nottaken_successor_ = successor;
 
 }
 
 void
-jive_cfg_node::divert_predecessors(jive_cfg_node * node) noexcept
+jive_cfg_node::divert_predecessors(jive_cfg_node * node)
 {
-	jive_cfg_node * pred, * next;
-	JIVE_LIST_ITERATE_SAFE(taken_predecessors, pred, next, taken_predecessors_list)
-		pred->divert_taken_successor(node);
-
-	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
-		pred->divert_nottaken_successor(node);
+	for (auto pred : predecessors_) {
+		if (pred->taken_successor_ == this)
+			pred->divert_taken_successor(node);
+		if (pred->nottaken_successor_ == this)
+			pred->divert_nottaken_successor(node);
+	}
 }

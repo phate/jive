@@ -167,21 +167,9 @@ jive_cfg_validate(const struct jive_cfg * self)
 	jive_cfg_node * node;
 	JIVE_LIST_ITERATE(self->nodes, node, cfg_node_list) {
 		if (dynamic_cast<jive_cfg_enter_node*>(node)) {
-			JIVE_ASSERT(node->taken_predecessors.first == NULL);
-			JIVE_ASSERT(node->taken_predecessors.last == NULL);
-			JIVE_ASSERT(node->nottaken_predecessors.first == NULL);
-			JIVE_ASSERT(node->nottaken_predecessors.last == NULL);
+			JIVE_ASSERT(node->predecessors().size() == 0);
 			JIVE_ASSERT(node->taken_successor() == nullptr);
 			JIVE_ASSERT(node->nottaken_successor() != nullptr);
-
-			jive_cfg_node * predecessor;
-			jive_cfg_node * successor = node->nottaken_successor();
-			JIVE_LIST_ITERATE(successor->nottaken_predecessors, predecessor, nottaken_predecessors_list) {
-				if (predecessor == node)
-					break;
-			}
-			JIVE_ASSERT(predecessor != NULL);
-			continue;
 		}
 
 		if (dynamic_cast<jive_cfg_exit_node*>(node)) {
@@ -189,37 +177,30 @@ jive_cfg_validate(const struct jive_cfg * self)
 			JIVE_ASSERT(node->nottaken_successor() == NULL);
 		}
 
-		/* check whether all taken predecessors are really taken successors */
-		jive_cfg_node * predecessor;
-		JIVE_LIST_ITERATE(node->taken_predecessors, predecessor, taken_predecessors_list)
-			JIVE_ASSERT(predecessor->taken_successor() == node);
-
-		/* check whether all nottaken predecessors are really nottaken successors */
-		JIVE_LIST_ITERATE(node->nottaken_predecessors, predecessor, nottaken_predecessors_list)
-			JIVE_ASSERT(predecessor->nottaken_successor() == node);
-
 		if (dynamic_cast<jive_cfg_exit_node*>(node))
 			continue;
 
 		JIVE_ASSERT(node->nottaken_successor() != NULL);
 
-		/* check whether nottaken successor is in the nottaken predecessor list */
+		/* check whether successors are in the predecessor list */
+		size_t n;
 		jive_cfg_node * successor = node->nottaken_successor();
-		JIVE_LIST_ITERATE(successor->nottaken_predecessors, predecessor, nottaken_predecessors_list) {
-			if (predecessor == node)
-				break;
+		std::vector<jive_cfg_node*> predecessors = successor->predecessors();
+		for (n = 0; n < predecessors.size(); n++) {
+			if (predecessors[n] == node)
+			 break;
 		}
-		JIVE_ASSERT(predecessor != NULL);
+		JIVE_ASSERT(n != predecessors.size());
 
 		if (node->taken_successor() == NULL)
 			continue;
 
-		/* check whether taken successor is in the taken predecessor list */
 		successor = node->taken_successor();
-		JIVE_LIST_ITERATE(successor->taken_predecessors, predecessor, taken_predecessors_list) {
-			if (predecessor == node)
-				break;
+		predecessors = successor->predecessors();
+		for (n = 0; n != predecessors.size(); n++) {
+			if (predecessors[n] == node)
+			 break;
 		}
-		JIVE_ASSERT(predecessor != NULL);
+		JIVE_ASSERT(n != predecessors.size());
 	}
 }
