@@ -6,158 +6,84 @@
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
 #include <jive/frontend/cfg-scc.h>
-#include <jive/frontend/clg.h>
-#include <jive/frontend/clg_node.h>
-#include <jive/util/hash.h>
-#include <jive/util/math.h>
-#include <jive/util/stack.h>
-#include <jive/util/vector.h>
+#include <jive/util/list.h>
 
-typedef struct cfg_node_item cfg_node_item;
-struct cfg_node_item {
-	jive_cfg_node * cfg_node;
+#include <algorithm>
+#include <unordered_map>
+
+class index_item {
+public:
+	index_item(size_t index_, size_t lowlink_) noexcept : index(index_), lowlink(lowlink_) {}
+
 	size_t index;
 	size_t lowlink;
-	struct {
-		struct cfg_node_item * prev;
-		struct cfg_node_item * next;
-	} hash_chain;
 };
-
-static inline cfg_node_item *
-cfg_node_item_create(struct jive_context * context, struct jive_cfg_node * cfg_node, size_t index,
-	size_t lowlink)
-{
-	cfg_node_item * item = jive_context_malloc(context, sizeof(*item));
-	item->cfg_node = cfg_node;
-	item->index = index;
-	item->lowlink = lowlink;
-
-	return item;
-}
-
-JIVE_DECLARE_HASH_TYPE(index_map, cfg_node_item, jive_cfg_node *, cfg_node, hash_chain);
-JIVE_DEFINE_HASH_TYPE(index_map, cfg_node_item, jive_cfg_node *, cfg_node, hash_chain);
-
-JIVE_DECLARE_VECTOR_TYPE(cfg_node_item_vector, cfg_node_item *);
-JIVE_DEFINE_VECTOR_TYPE(cfg_node_item_vector, cfg_node_item *);
-
-JIVE_DECLARE_STACK_TYPE(cfg_node_stack, jive_cfg_node *);
-JIVE_DEFINE_STACK_TYPE(cfg_node_stack, jive_cfg_node *);
-
-
-static jive_cfg_scc *
-jive_cfg_scc_create(struct jive_context * context)
-{
-	jive_cfg_scc * scc = jive_context_malloc(context, sizeof(*scc));
-	jive_cfg_scc_init(scc, context);
-	return scc;
-}
-
-static void
-jive_cfg_scc_destroy(struct jive_cfg_scc * scc)
-{
-	jive_context * context = scc->context;
-	jive_cfg_scc_fini(scc);
-	jive_context_free(context, scc);
-}
-
-struct jive_cfg_scc_set *
-jive_cfg_scc_set_create(struct jive_context * context)
-{
-	jive_cfg_scc_set * set = jive_context_malloc(context, sizeof(*set));
-	jive_cfg_scc_set_init(set, context);
-	return set;
-}
-
-static void
-jive_cfg_scc_set_fini_(struct jive_cfg_scc_set * self)
-{
-	struct jive_cfg_scc_set_iterator i;
-	JIVE_SET_ITERATE(jive_cfg_scc_set, *self, i)
-		jive_cfg_scc_destroy(i.entry->item);
-
-	jive_cfg_scc_set_fini(self);
-}
-
-void
-jive_cfg_scc_set_destroy(struct jive_cfg_scc_set * self)
-{
-	jive_context * context = self->context;
-	jive_cfg_scc_set_fini_(self);
-	jive_context_free(context, self);
-}
 
 /* Tarjan's SCC algorithm */
 
-static struct cfg_node_item_vector item_vector;
-static struct index_map map;
-static struct cfg_node_stack node_stack;
-static size_t index = 0;
-
 static void
-strongconnect(struct jive_cfg_node * node, struct jive_cfg_scc_set * scc_set)
+strongconnect(
+	jive_cfg_node * node,
+	std::unordered_map<jive_cfg_node*, std::unique_ptr<index_item>> & map,
+	std::vector<jive_cfg_node*> & node_stack,
+	size_t index,
+	std::vector<std::unordered_set<jive_cfg_node*>> & sccs)
 {
-	jive_context * context = node->cfg()->clg_node->clg->context;
-	cfg_node_item * item = cfg_node_item_create(context, node, index, index);
-	cfg_node_item_vector_push_back(&item_vector, context, item);
-	index_map_insert(&map, item);
-	cfg_node_stack_push(&node_stack, node);
+	map.emplace(node, std::unique_ptr<index_item>(new index_item(index, index)));
+	node_stack.push_back(node);
 	index++;
 
 	jive_cfg_node * successor = node->taken_successor();
-	if (successor != NULL) {
-		if (index_map_lookup(&map, successor) == NULL) {
-			strongconnect(successor, scc_set);
-			item->lowlink = jive_min_unsigned(item->lowlink, index_map_lookup(&map, successor)->lowlink);
-		} else if (cfg_node_stack_contains(&node_stack, successor))
-			item->lowlink = jive_min_unsigned(item->lowlink, index_map_lookup(&map, successor)->index);
+	if (successor != nullptr) {
+		if (map.find(successor) == map.end()) {
+			/* taken successor has not been visited yet; recurse on it */
+			strongconnect(successor, map, node_stack, index, sccs);
+			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->lowlink);
+		} else if (std::find(node_stack.begin(), node_stack.end(), successor) != node_stack.end()) {
+			/* taken successor is in stack and hence in the current SCC */
+			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->index);
+		}
 	}
 
 	successor = node->nottaken_successor();
-	if (successor != NULL) {
-		if (index_map_lookup(&map, successor) == NULL) {
-			strongconnect(successor, scc_set);
-			item->lowlink = jive_min_unsigned(item->lowlink, index_map_lookup(&map, successor)->lowlink);
-		} else if (cfg_node_stack_contains(&node_stack, successor))
-			item->lowlink = jive_min_unsigned(item->lowlink, index_map_lookup(&map, successor)->index);
+	if (successor != nullptr) {
+		if (map.find(successor) == map.end()) {
+			/* nottaken successor has not been visited yet; recurse on it */
+			strongconnect(successor, map, node_stack, index, sccs);
+			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->lowlink);
+		} else if (std::find(node_stack.begin(), node_stack.end(), successor) != node_stack.end()) {
+			/* nottaken successor is in stack and hence in the current SCC */
+			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->index);
+		}
 	}
 
-	if (item->lowlink == item->index) {
-		jive_cfg_scc * scc = jive_cfg_scc_create(scc_set->context);
+	if (map[node]->lowlink == map[node]->index) {
+		std::unordered_set<jive_cfg_node*> scc;
 		jive_cfg_node * w;
 		do {
-			w = cfg_node_stack_poptop(&node_stack);
-			jive_cfg_scc_insert(scc, w);
+			w = node_stack.back();
+			node_stack.pop_back();
+			scc.insert(w);
 		} while (w != node);
-		jive_cfg_scc_set_insert(scc_set, scc);
+		sccs.push_back(scc);
 	}
 }
 
-void
-jive_cfg_find_sccs(struct jive_cfg * cfg, struct jive_cfg_scc_set * scc_set)
+std::vector<std::unordered_set<jive_cfg_node*>>
+jive_cfg_find_sccs(jive_cfg * cfg)
 {
-	jive_context * context = scc_set->context;
-	jive_cfg_scc_set_fini_(scc_set);
-	jive_cfg_scc_set_init(scc_set, context);
+	std::vector<std::unordered_set<jive_cfg_node*>> sccs;
 
-	/* initialization */
-	cfg_node_item_vector_init(&item_vector);
-	index_map_init(&map, context);
-	cfg_node_stack_init(&node_stack, context);
+	std::unordered_map<jive_cfg_node*, std::unique_ptr<index_item>> map;
+	std::vector<jive_cfg_node*> node_stack;
+	size_t index = 0;
 
 	/* find strongly connected components */
 	jive_cfg_node * cfg_node;
 	JIVE_LIST_ITERATE(cfg->nodes, cfg_node, cfg_node_list) {
-		if (index_map_lookup(&map, cfg_node) == NULL)
-			strongconnect(cfg_node, scc_set);
+		if (map.find(cfg_node) == map.end())
+			strongconnect(cfg_node, map, node_stack, index, sccs);
 	}
 
-	/* finalization */
-	size_t n;
-	for (n = 0; n < cfg_node_item_vector_size(&item_vector); n++)
-		jive_context_free(context, cfg_node_item_vector_item(&item_vector, n));
-	cfg_node_item_vector_fini(&item_vector, context);
-	index_map_fini(&map);
-	cfg_node_stack_fini(&node_stack);
+	return sccs;
 }

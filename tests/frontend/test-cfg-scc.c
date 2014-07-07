@@ -5,6 +5,7 @@
 
 #include "test-registry.h"
 
+#include <jive/context.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg-scc.h>
@@ -68,26 +69,24 @@ setup_cfg(jive_cfg * cfg)
 }
 
 static void
-check_sccs(jive_cfg_scc_set * scc_set)
+check_sccs(std::vector<std::unordered_set<jive_cfg_node*>> & sccs)
 {
 	/* we have 6 sccs, since enter and exit form their own scc */
-	assert(jive_cfg_scc_set_size(scc_set) == 6);
+	assert(sccs.size() == 6);
 
-	struct jive_cfg_scc_set_iterator i;
-	JIVE_SET_ITERATE(jive_cfg_scc_set, *scc_set, i) {
-		if (jive_cfg_scc_size(i.entry->item) == 3) {
-			assert(jive_cfg_scc_contains(i.entry->item, bb1));
-			assert(jive_cfg_scc_contains(i.entry->item, bb2));
-			assert(jive_cfg_scc_contains(i.entry->item, bb3));
+	for (auto scc : sccs) {
+		if (scc.size() == 3) {
+			assert(scc.find(bb1) != scc.end());
+			assert(scc.find(bb2) != scc.end());
+			assert(scc.find(bb3) != scc.end());
 		}
 
-		if (jive_cfg_scc_size(i.entry->item) == 2) {
-			bool contained = jive_cfg_scc_contains(i.entry->item, bb4);
-			if (contained)
-				assert(jive_cfg_scc_contains(i.entry->item, bb6));
-			else {
-				assert(jive_cfg_scc_contains(i.entry->item, bb5));
-				assert(jive_cfg_scc_contains(i.entry->item, bb7));
+		if (scc.size() == 2) {
+			if (scc.find(bb4) != scc.end()) {
+				assert(scc.find(bb6) != scc.end());
+			} else {
+				assert(scc.find(bb5) != scc.end());
+				assert(scc.find(bb7) != scc.end());
 			}
 		}
 	}
@@ -105,11 +104,9 @@ test_main(void)
 
 //	jive_cfg_view(clg_node->cfg);
 
-	jive_cfg_scc_set * scc_set = jive_cfg_scc_set_create(context);
-	jive_cfg_find_sccs(clg_node->cfg, scc_set);
-	check_sccs(scc_set);
+	std::vector<std::unordered_set<jive_cfg_node*>> sccs = jive_cfg_find_sccs(clg_node->cfg);
+	check_sccs(sccs);
 
-	jive_cfg_scc_set_destroy(scc_set);
 	jive_clg_destroy(clg);
 	jive_context_assert_clean(context);
 	jive_context_destroy(context);
