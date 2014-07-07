@@ -59,17 +59,12 @@ jive_cfg_node::remove_nottaken_successor() noexcept
 }
 
 void
-jive_cfg_node::remove_taken_predecessors() noexcept
+jive_cfg_node::remove_predecessors() noexcept
 {
 	jive_cfg_node * pred, * next;
 	JIVE_LIST_ITERATE_SAFE(taken_predecessors, pred, next, taken_predecessors_list)
 		pred->remove_taken_successor();
-}
 
-void
-jive_cfg_node::remove_nottaken_predecessors() noexcept
-{
-	jive_cfg_node * pred, * next;
 	JIVE_LIST_ITERATE_SAFE(nottaken_predecessors, pred, next, nottaken_predecessors_list)
 		pred->remove_nottaken_successor();
 }

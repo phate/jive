@@ -32,12 +32,7 @@ public:
 	void remove_nottaken_successor() noexcept;
 	inline void remove_successors() noexcept { remove_taken_successor(); remove_nottaken_successor(); }
 
-	void remove_taken_predecessors() noexcept;
-	void remove_nottaken_predecessors() noexcept;
-	inline void remove_predecessors() noexcept {
-		remove_taken_predecessors();
-		remove_nottaken_predecessors();
-	}
+	void remove_predecessors() noexcept;
 
 	inline void divert_taken_successor(jive_cfg_node * successor) noexcept {
 		remove_taken_successor();
