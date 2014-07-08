@@ -24,6 +24,73 @@ jive_node_init_(
 	size_t noutputs,
 	const jive::base::type * const output_types[]);
 
+template<
+	typename Operation,
+	typename ArgumentList
+>
+jive_node *
+jive_opnode_create(
+	const Operation & op,
+	const jive_node_class * cls,
+	jive_region * region,
+	ArgumentList arguments)
+{
+	JIVE_DEBUG_ASSERT(arguments.size() == op.narguments());
+	const jive::base::type * argument_types[op.narguments()];
+	jive::output * argument_values[op.narguments()];
+	typename ArgumentList::const_iterator i = arguments.begin();
+	for (size_t n = 0; n < op.narguments(); ++n) {
+		argument_types[n] = &op.argument_type(n);
+		argument_values[n] = *i;
+		++i;
+	}
+	
+	const jive::base::type * result_types[op.nresults()];
+	for (size_t n = 0; n < op.nresults(); ++n) {
+		result_types[n] = &op.result_type(n);
+	}
+	jive_node * node = jive::create_operation_node(op);
+	node->class_ = cls;
+	jive_node_init_(node, region,
+		op.narguments(), argument_types, argument_values,
+		op.nresults(), result_types);
+	return node;
+}
+
+template<
+	typename Operation,
+	typename ArgumentIterator
+>
+jive_node *
+jive_opnode_create(
+	const Operation & op,
+	const jive_node_class * cls,
+	jive_region * region,
+	ArgumentIterator begin,
+	ArgumentIterator end)
+{
+	const jive::base::type * argument_types[op.narguments()];
+	jive::output * argument_values[op.narguments()];
+	for (size_t n = 0; n < op.narguments(); ++n) {
+		argument_types[n] = &op.argument_type(n);
+		JIVE_DEBUG_ASSERT(begin != end);
+		argument_values[n] = *begin;
+		++begin;
+	}
+	JIVE_DEBUG_ASSERT(begin == end);
+	
+	const jive::base::type * result_types[op.nresults()];
+	for (size_t n = 0; n < op.nresults(); ++n) {
+		result_types[n] = &op.result_type(n);
+	}
+	jive_node * node = jive::create_operation_node(op);
+	node->class_ = cls;
+	jive_node_init_(node, region,
+		op.narguments(), argument_types, argument_values,
+		op.nresults(), result_types);
+	return node;
+}
+
 void
 jive_node_fini_(jive_node * self);
 
