@@ -8,20 +8,28 @@
 
 #include <jive/frontend/tac/three_address_code.h>
 
-class jive_call_code final : public jive_three_address_code {
-public:
-	virtual ~jive_call_code() noexcept;
+class jive_basic_block;
 
-	jive_call_code(struct jive_basic_block * basic_block, struct jive_clg_node * callee,
-		std::vector<jive_three_address_code *> & arguments);
+namespace jive {
+namespace frontend {
+
+class call_code final : public three_address_code {
+public:
+	virtual ~call_code() noexcept;
+
+	call_code(jive_basic_block * basic_block, struct jive_clg_node * callee,
+		std::vector<three_address_code *> & arguments);
 
 	virtual std::string debug_string() const override;
 
 	struct jive_clg_node * callee;
 };
 
-struct jive_three_address_code *
-jive_call_code_create(struct jive_basic_block * basic_block, struct jive_clg_node * callee,
-	size_t narguments, jive_three_address_code * const arguments[]);
+}
+}
+
+jive::frontend::three_address_code *
+jive_call_code_create(jive_basic_block * basic_block, struct jive_clg_node * callee,
+	size_t narguments, jive::frontend::three_address_code * const arguments[]);
 
 #endif

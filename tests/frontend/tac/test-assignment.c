@@ -23,9 +23,10 @@ static int test_main(void)
 	jive_basic_block * basic_block;
 	basic_block = static_cast<jive_basic_block*>(jive_basic_block_create(clg_node->cfg));
 
-	jive_variable_code * variable;
-	variable = static_cast<jive_variable_code*>(jive_variable_code_create(basic_block, "foobar"));
-	jive_three_address_code * tac = jive_variable_code_create(basic_block, "blub");
+	jive::frontend::variable_code * variable;
+	variable = static_cast<jive::frontend::variable_code*>(
+		jive_variable_code_create(basic_block, "foobar"));
+	jive::frontend::three_address_code * tac = jive_variable_code_create(basic_block, "blub");
 
 	jive_assignment_code_create(basic_block, variable, tac);
 

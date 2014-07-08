@@ -8,15 +8,16 @@
 #include <jive/frontend/tac/bitstring/bitconstant.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
-#include <jive/util/buffer.h>
 
 #include <string.h>
 
-jive_bitconstant_code::~jive_bitconstant_code() noexcept {}
+namespace jive {
+namespace frontend {
 
-jive_bitconstant_code::jive_bitconstant_code(struct jive_basic_block * basic_block, size_t nbits,
-	const char * bits_)
-	: jive_three_address_code(basic_block, {})
+bitconstant_code::~bitconstant_code() noexcept {}
+
+bitconstant_code::bitconstant_code(jive_basic_block * basic_block, size_t nbits, const char * bits_)
+	: three_address_code(basic_block, {})
 {
 	bits.resize(nbits);
 	for (size_t i = 0; i < nbits; i++)
@@ -24,7 +25,7 @@ jive_bitconstant_code::jive_bitconstant_code(struct jive_basic_block * basic_blo
 }
 
 std::string
-jive_bitconstant_code::debug_string() const
+bitconstant_code::debug_string() const
 {
 	std::string label;
 	for (size_t i = 0; i < bits.size(); i++)
@@ -33,8 +34,11 @@ jive_bitconstant_code::debug_string() const
 	return label;
 }
 
-jive_three_address_code *
-jive_bitconstant_code_create(struct jive_basic_block * basic_block, size_t nbits, const char * bits)
+}
+}
+
+jive::frontend::three_address_code *
+jive_bitconstant_code_create(jive_basic_block * basic_block, size_t nbits, const char * bits)
 {
-	return new jive_bitconstant_code(basic_block, nbits, bits);
+	return new jive::frontend::bitconstant_code(basic_block, nbits, bits);
 }

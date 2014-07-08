@@ -9,29 +9,34 @@
 #include <jive/frontend/tac/bitstring/arithmetic/bitsum.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
-#include <jive/util/buffer.h>
 
 #include <string.h>
 #include <stdio.h>
 
-jive_bitsum_code::~jive_bitsum_code() noexcept {}
+namespace jive {
+namespace frontend {
 
-jive_bitsum_code::jive_bitsum_code(struct jive_basic_block * basic_block,
-	jive_three_address_code * summand1, jive_three_address_code * summand2)
-	: jive_three_address_code(basic_block, {summand1, summand2})
+bitsum_code::~bitsum_code() noexcept {}
+
+bitsum_code::bitsum_code(jive_basic_block * basic_block,
+	three_address_code * summand1, three_address_code * summand2)
+	: three_address_code(basic_block, {summand1, summand2})
 {}
 
 std::string
-jive_bitsum_code::debug_string() const
+bitsum_code::debug_string() const
 {
 	char tmp[64];
 	snprintf(tmp, sizeof(tmp), "%p + %p", operands[0], operands[1]);
 	return std::string(tmp);
 }
 
-jive_three_address_code *
-jive_bitsum_code_create(struct jive_basic_block * basic_block, jive_three_address_code * summand1,
-	jive_three_address_code * summand2)
+}
+}
+
+jive::frontend::three_address_code *
+jive_bitsum_code_create(jive_basic_block * basic_block,
+	jive::frontend::three_address_code * summand1, jive::frontend::three_address_code * summand2)
 {
-	return new jive_bitsum_code(basic_block, summand1, summand2);
+	return new jive::frontend::bitsum_code(basic_block, summand1, summand2);
 }

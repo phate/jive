@@ -10,18 +10,27 @@
 
 #include <vector>
 
-class jive_bitconstant_code final : public jive_three_address_code {
-public:
-	virtual ~jive_bitconstant_code() noexcept;
+class jive_basic_block;
 
-	jive_bitconstant_code(struct jive_basic_block * basic_block, size_t nbits, const char * bits);
+namespace jive {
+namespace frontend {
+
+class bitconstant_code final : public three_address_code {
+public:
+	virtual ~bitconstant_code() noexcept;
+
+	bitconstant_code(jive_basic_block * basic_block, size_t nbits, const char * bits);
 
 	virtual std::string debug_string() const override;
 
 	std::vector<char> bits; /* [LSB, ..., MSB] */
 };
 
-struct jive_three_address_code *
-jive_bitconstant_code_create(struct jive_basic_block * basic_block, size_t nbits, const char * bits);
+}
+}
+
+jive::frontend::three_address_code *
+jive_bitconstant_code_create(jive_basic_block * basic_block, size_t nbits,
+	const char * bits);
 
 #endif

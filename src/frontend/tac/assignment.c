@@ -9,15 +9,18 @@
 
 #include <stdio.h>
 
-jive_assignment_code::~jive_assignment_code() noexcept {}
+namespace jive {
+namespace frontend {
 
-jive_assignment_code::jive_assignment_code(struct jive_basic_block * basic_block,
-	struct jive_variable_code * variable, jive_three_address_code * tac)
-	: jive_three_address_code(basic_block, {variable, tac})
+assignment_code::~assignment_code() noexcept {}
+
+assignment_code::assignment_code(jive_basic_block * basic_block,
+	variable_code * variable, three_address_code * tac)
+	: three_address_code(basic_block, {variable, tac})
 {}
 
 std::string
-jive_assignment_code::debug_string() const
+assignment_code::debug_string() const
 {
 	std::string label = operands[0]->debug_string();
 	label.append(" := ");
@@ -28,9 +31,12 @@ jive_assignment_code::debug_string() const
 	return label;
 }
 
-jive_three_address_code *
-jive_assignment_code_create(struct jive_basic_block * basic_block, jive_variable_code * variable,
-	jive_three_address_code * tac)
+}
+}
+
+jive::frontend::three_address_code *
+jive_assignment_code_create(jive_basic_block * basic_block, jive::frontend::variable_code * variable,
+	jive::frontend::three_address_code * tac)
 {
-	return new jive_assignment_code(basic_block, variable, tac);
+	return new jive::frontend::assignment_code(basic_block, variable, tac);
 }

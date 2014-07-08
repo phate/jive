@@ -34,7 +34,7 @@ jive_basic_block::debug_string() const
 	snprintf(tmp, sizeof(tmp), "%p\\n", this);
 	label.append(tmp);
 
-	jive_three_address_code * tac;
+	jive::frontend::three_address_code * tac;
 	JIVE_LIST_ITERATE(three_address_codes, tac, basic_block_three_address_codes_list) {
 		snprintf(tmp, sizeof(tmp), "%p : ", tac);
 		label.append(tmp);

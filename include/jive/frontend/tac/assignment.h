@@ -9,28 +9,36 @@
 #include <jive/frontend/tac/three_address_code.h>
 #include <jive/frontend/tac/variable.h>
 
-class jive_assignment_code final : public jive_three_address_code {
-public:
-	virtual ~jive_assignment_code() noexcept;
+class jive_basic_block;
 
-	jive_assignment_code(struct jive_basic_block * basic_block, struct jive_variable_code * variable,
-		jive_three_address_code * tac);
+namespace jive {
+namespace frontend {
+
+class assignment_code final : public three_address_code {
+public:
+	virtual ~assignment_code() noexcept;
+
+	assignment_code(jive_basic_block * basic_block, variable_code * variable,
+		three_address_code * tac);
 
 	virtual std::string debug_string() const override;
 };
 
-struct jive_three_address_code *
-jive_assignment_code_create(struct jive_basic_block * basic_block,
-	struct jive_variable_code * variable, jive_three_address_code * tac);
-
-static inline struct jive_variable_code *
-jive_assignment_code_get_variable(const struct jive_assignment_code * self)
-{
-	return static_cast<jive_variable_code*>(self->operands[0]);
+}
 }
 
-static inline struct jive_three_address_code *
-jive_assignment_code_get_rhs(const struct jive_assignment_code * self)
+jive::frontend::three_address_code *
+jive_assignment_code_create(jive_basic_block * basic_block,
+	jive::frontend::variable_code * variable, jive::frontend::three_address_code * tac);
+
+static inline jive::frontend::variable_code *
+jive_assignment_code_get_variable(const jive::frontend::assignment_code * self)
+{
+	return static_cast<jive::frontend::variable_code*>(self->operands[0]);
+}
+
+static inline jive::frontend::three_address_code *
+jive_assignment_code_get_rhs(const jive::frontend::assignment_code * self)
 {
 	return self->operands[1];
 }

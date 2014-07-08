@@ -10,18 +10,26 @@
 
 #include <string>
 
-class jive_variable_code final : public jive_three_address_code {
-public:
-	virtual ~jive_variable_code() noexcept;
+class jive_basic_block;
 
-	jive_variable_code(struct jive_basic_block * basic_block, const char * name);
+namespace jive {
+namespace frontend {
+
+class variable_code final : public three_address_code {
+public:
+	virtual ~variable_code() noexcept;
+
+	variable_code(jive_basic_block * basic_block, const char * name);
 
 	virtual std::string debug_string() const override;
 
 	std::string name;
 };
 
-struct jive_three_address_code *
-jive_variable_code_create(struct jive_basic_block * basic_block, const char * name);
+}
+}
+
+jive::frontend::three_address_code *
+jive_variable_code_create(jive_basic_block * basic_block, const char * name);
 
 #endif

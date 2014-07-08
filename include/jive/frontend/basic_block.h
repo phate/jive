@@ -8,6 +8,12 @@
 
 #include <jive/frontend/cfg_node.h>
 
+namespace jive {
+namespace frontend {
+	class three_address_code;
+}
+}
+
 class jive_basic_block final : public jive_cfg_node {
 public:
 	virtual ~jive_basic_block();
@@ -17,8 +23,8 @@ public:
 	virtual std::string debug_string() const override;
 
 	struct {
-		struct jive_three_address_code * first;
-		struct jive_three_address_code * last;
+		jive::frontend::three_address_code * first;
+		jive::frontend::three_address_code * last;
 	} three_address_codes;
 };
 

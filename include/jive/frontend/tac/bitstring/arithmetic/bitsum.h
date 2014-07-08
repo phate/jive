@@ -8,18 +8,26 @@
 
 #include <jive/frontend/tac/three_address_code.h>
 
-class jive_bitsum_code final : public jive_three_address_code {
-public:
-	virtual ~jive_bitsum_code() noexcept;
+class jive_basic_block;
 
-	jive_bitsum_code(struct jive_basic_block * basic_block, jive_three_address_code * summand1,
-		jive_three_address_code * summand2);
+namespace jive {
+namespace frontend {
+
+class bitsum_code final : public three_address_code {
+public:
+	virtual ~bitsum_code() noexcept;
+
+	bitsum_code(jive_basic_block * basic_block, jive::frontend::three_address_code * summand1,
+		jive::frontend::three_address_code * summand2);
 
 	virtual std::string debug_string() const override;
 };
 
-struct jive_three_address_code *
-jive_bitsum_code_create(struct jive_basic_block * basic_block,
-	jive_three_address_code * summand1, jive_three_address_code * summand2);
+}
+}
+
+jive::frontend::three_address_code *
+jive_bitsum_code_create(jive_basic_block * basic_block,
+	jive::frontend::three_address_code * summand1, jive::frontend::three_address_code * summand2);
 
 #endif

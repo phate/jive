@@ -11,16 +11,19 @@
 
 #include <stdio.h>
 
-jive_call_code::~jive_call_code() noexcept {}
+namespace jive {
+namespace frontend {
 
-jive_call_code::jive_call_code(struct jive_basic_block * basic_block, struct jive_clg_node * callee_,
-	std::vector<jive_three_address_code*> & arguments)
-	: jive_three_address_code(basic_block, arguments)
+call_code::~call_code() noexcept {}
+
+call_code::call_code(jive_basic_block * basic_block, struct jive_clg_node * callee_,
+	std::vector<three_address_code*> & arguments)
+	: three_address_code(basic_block, arguments)
 	, callee(callee_)
 {}
 
 std::string
-jive_call_code::debug_string() const
+call_code::debug_string() const
 {
 	std::string label("call ");
 	label.append(callee->name);
@@ -39,10 +42,13 @@ jive_call_code::debug_string() const
 	return label;
 }
 
-jive_three_address_code *
-jive_call_code_create(struct jive_basic_block * basic_block, jive_clg_node * callee,
-	size_t narguments, struct jive_three_address_code * const arguments[])
+}
+}
+
+jive::frontend::three_address_code *
+jive_call_code_create(jive_basic_block * basic_block, jive_clg_node * callee,
+	size_t narguments, jive::frontend::three_address_code * const arguments[])
 {
-	std::vector<jive_three_address_code*> args(arguments, arguments+narguments);
-	return new jive_call_code(basic_block, callee, args);
+	std::vector<jive::frontend::three_address_code*> args(arguments, arguments+narguments);
+	return new jive::frontend::call_code(basic_block, callee, args);
 }
