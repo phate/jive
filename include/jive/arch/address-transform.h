@@ -190,7 +190,9 @@ jive_bitstring_to_address_node_cast(jive_node * node)
 /* reductions */
 
 void
-jive_load_node_address_transform(jive_load_node * node,
+jive_load_node_address_transform(
+	jive_load_node * node,
+	const jive::load_op & op,
 	size_t nbits);
 
 void

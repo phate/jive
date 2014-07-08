@@ -595,7 +595,7 @@ match_single(jive_node * node, const jive_regselector * regselector)
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::load_operation *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::load_op *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_output(regselector, node->outputs[0]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_load(node);

@@ -14,6 +14,74 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/valuetype.h>
 
+namespace jive {
+
+load_op::~load_op() noexcept
+{
+}
+
+bool
+load_op::operator==(const operation & other) const noexcept
+{
+	const load_op * op =
+		dynamic_cast<const load_op *>(&other);
+	return (
+		op &&
+		op->address_type() == address_type() &&
+		op->data_type() == data_type() &&
+		detail::ptr_container_equals(op->state_types(), state_types())
+	);
+}
+
+size_t
+load_op::narguments() const noexcept
+{
+	return 1 + state_types().size();
+}
+
+const jive::base::type &
+load_op::argument_type(size_t index) const noexcept
+{
+	if (index == 0) {
+		return address_type();
+	} else {
+		return *state_types()[index - 1];
+	}
+}
+
+size_t
+load_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+load_op::result_type(size_t index) const noexcept
+{
+	return data_type();
+}
+
+jive_node *
+load_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	return jive_opnode_create(
+		*this,
+		&JIVE_LOAD_NODE,
+		region,
+		arguments, arguments + narguments);
+}
+
+std::string
+load_op::debug_string() const
+{
+	return "LOAD";
+}
+
+}
+
 /* load_node_normal_form */
 
 static inline bool
@@ -109,7 +177,7 @@ jive_load_node_operands_are_normalized_(const jive_node_normal_form * self_, siz
 
 static jive::output *
 jive_load_node_normalized_create_(const jive_load_node_normal_form * self,
-	struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
+	struct jive_region * region, const jive::operation * op, jive::output * address,
 	size_t nstates, jive::output * const states[])
 {
 	size_t n;
@@ -127,12 +195,12 @@ jive_load_node_normalized_create_(const jive_load_node_normal_form * self,
 	}
 
 	if (self->base.enable_mutable && self->base.enable_cse) {
-		jive_node * node = jive_node_cse(region, cls, attrs, noperands, operands);
+		jive_node * node = jive_node_cse(region, cls, op, noperands, operands);
 		if (node)
 			return node->outputs[0];
 	}
 
-	return cls->create(region, attrs, nstates+1, operands)->outputs[0];
+	return op->create_node(region, nstates+1, operands)->outputs[0];
 }
 
 static void
@@ -167,40 +235,20 @@ const jive_load_node_normal_form_class JIVE_LOAD_NODE_NORMAL_FORM_ = {
 
 /* load node */
 
-static void
-jive_load_node_fini_(jive_node * self_);
-
 static jive_node_normal_form *
 jive_load_node_get_default_normal_form_(const jive_node_class * cls,
 	jive_node_normal_form * parent_, struct jive_graph * graph);
 
-static bool
-jive_load_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
-
-static void
-jive_load_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context);
-
-static jive_node *
-jive_load_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[]);
-
 const jive_node_class JIVE_LOAD_NODE = {
 	parent : &JIVE_NODE,
 	name : "LOAD",
-	fini : jive_load_node_fini_, /* override */
+	fini : jive_node_fini_,
 	get_default_normal_form : jive_load_node_get_default_normal_form_, /* override */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_load_node_match_attrs_, /* override */
-	check_operands : jive_load_node_check_operands_, /* override */
-	create : jive_load_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static void
-jive_load_node_fini_(jive_node * self_)
-{
-	jive_node_fini_(self_);
-}
 
 static jive_node_normal_form *
 jive_load_node_get_default_normal_form_(const jive_node_class * cls,
@@ -216,71 +264,34 @@ jive_load_node_get_default_normal_form_(const jive_node_class * cls,
 	return &nf->base;
 }
 
-static bool
-jive_load_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
-{
-	const jive_load_node * self = (const jive_load_node *) self_;
-	const jive::load_operation * attrs = (const jive::load_operation *) attrs_;
-	bool dtype = self->operation().datatype() == attrs->datatype();
-	return (dtype && (self->operation().nbits() == attrs->nbits()));
-}
+namespace {
 
-static void
-jive_load_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-	JIVE_DEBUG_ASSERT(noperands > 0);
+template<typename T>
+class ptr_array {
+public:
+	typedef const T value_type;
+	typedef const T * iterator;
 
-	const jive::addr::output * addro = dynamic_cast<const jive::addr::output*>(operands[0]);
-	const jive::bits::output * bitso = dynamic_cast<const jive::bits::output*>(operands[0]);
-
-	if (!addro && !bitso)
-		jive_context_fatal_error(context, "Type mismatch: required address or bitstring type.");
-
-	/* FIXME: check states */
-}
-
-static jive_node *
-jive_load_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::load_operation * attrs = (const jive::load_operation *) attrs_;
-
-	jive_load_node * node = new jive_load_node(*attrs);
-
-	node->class_ = &JIVE_LOAD_NODE;
-	const jive::base::type * operand_types[noperands];
-	for (size_t n = 0; n < noperands; ++n) {
-		operand_types[n] = &operands[n]->type();
+	inline ptr_array(const T * begin, const T * end) noexcept
+		: begin_(begin), end_(end)
+	{
 	}
-	const jive::base::type * result_types[1] = {&attrs->datatype()};
 
-	jive_node_init_(node, region,
-		noperands, operand_types, operands,
-		1, result_types);
+	inline iterator begin() const { return begin_; }
+	inline iterator end() const { return end_; }
 
-	return node;
+private:
+	const T * begin_;
+	const T * end_;
+};
+
+template<typename T>
+inline ptr_array<T>
+make_ptr_array(const T * begin, const T * end)
+{
+	return ptr_array<T>(begin, end);
 }
 
-void
-jive_load_node_init_(jive_load_node * self, jive_region * region,
-	jive::output * address, const jive::base::type * address_type,
-	const jive::value::type * datatype,
-	size_t nstates, jive::output * const states[])
-{
-	jive_context * context = region->graph->context;
-	const jive::base::type *  tmparray0[] = {datatype};
-
-	jive_node_init_(self, region,
-		1, &address_type, &address,
-		1, tmparray0);
-
-	/* FIXME: check the type of the states */
-	size_t n;
-	for (n = 0; n < nstates; n++) {
-		const jive::base::type * type = &states[n]->type();
-		jive_node_add_input(self, type, states[n]);
-	}
 }
 
 static inline jive_region *
@@ -296,21 +307,6 @@ load_node_region_innermost(jive::output * address, size_t nstates, jive::output 
 	return jive_region_innermost(nstates+1, outputs);
 }
 
-jive_node *
-jive_load_by_address_node_create(jive_region * region,
-	jive::output * address,
-	const jive::value::type * datatype,
-	size_t nstates, jive::output * const states[])
-{
-	jive_load_node * node = new jive_load_node(jive::load_operation(0, datatype));
-	
-	node->class_ = &JIVE_LOAD_NODE;
-	jive::addr::type address_type;
-	jive_load_node_init_(node, region, address, &address_type, datatype, nstates, states);
-	
-	return node;
-}
-
 jive::output *
 jive_load_by_address_create(jive::output * address,
 	const jive::value::type * datatype,
@@ -321,24 +317,15 @@ jive_load_by_address_create(jive::output * address,
 	
 	jive_region * region = load_node_region_innermost(address, nstates, states);
 
-	jive::load_operation op(0, datatype);
+	std::vector<std::unique_ptr<jive::state::type>> state_types;
+	for (size_t n = 0; n < nstates; ++n) {
+		state_types.emplace_back(
+			dynamic_cast<const jive::state::type &>(states[n]->type()).copy());
+	}
+
+	jive::load_op op(jive::addr::type(), state_types, *datatype);
 
 	return jive_load_node_normalized_create(nf, region, &op, address, nstates, states);
-}
-
-jive_node *
-jive_load_by_bitstring_node_create(jive_region * region,
-	jive::output * address, size_t nbits,
-	const jive::value::type * datatype,
-	size_t nstates, jive::output * const states[])
-{
-	jive_load_node * node = new jive_load_node(jive::load_operation(nbits, datatype));
-
-	node->class_ = &JIVE_LOAD_NODE;
-	jive::bits::type address_type(nbits);
-	jive_load_node_init_(node, region, address, &address_type, datatype, nstates, states);
-
-	return node;
 }
 
 jive::output *
@@ -348,10 +335,16 @@ jive_load_by_bitstring_create(jive::output * address, size_t nbits,
 {
 	const jive_load_node_normal_form * nf = (const jive_load_node_normal_form *)
 		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_LOAD_NODE);
-
+	
 	jive_region * region = load_node_region_innermost(address, nstates, states);
 
-	jive::load_operation op(nbits, datatype);
+	std::vector<std::unique_ptr<jive::state::type>> state_types;
+	for (size_t n = 0; n < nstates; ++n) {
+		state_types.emplace_back(
+			dynamic_cast<const jive::state::type &>(states[n]->type()).copy());
+	}
+
+	jive::load_op op(jive::bits::type(nbits), state_types, *datatype);
 
 	return jive_load_node_normalized_create(nf, region, &op, address, nstates, states);
 }

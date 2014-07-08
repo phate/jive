@@ -148,7 +148,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 	} else if (auto op = dynamic_cast<const jive::bits::compare_op *>(gen_op)) {
 		option.mask = self->classifier->classify_fixed_compare(*op);
 		jive_negotiator_annotate_identity(&self->base, 2, node->inputs, 0, node->outputs, &option);
-	} else if (auto op = dynamic_cast<const jive::load_operation *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::load_op *>(gen_op)) {
 		option.mask = self->classifier->classify_address();
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs, 0, NULL, &option);
 		

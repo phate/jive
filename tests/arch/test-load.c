@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,13 +9,13 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/arch/addresstype.h>
+#include <jive/arch/load.h>
+#include <jive/arch/memorytype.h>
+#include <jive/arch/store.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/arch/load.h>
-#include <jive/arch/store.h>
-#include <jive/arch/memorytype.h>
-#include <jive/arch/addresstype.h>
-#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
