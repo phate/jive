@@ -602,7 +602,7 @@ match_single(jive_node * node, const jive_regselector * regselector)
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::store_operation *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::store_op *>(&node->operation())) {
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[1]);
 		if (regcls == &jive_i386_regcls_gpr) {
 			match_gpr_store(node);

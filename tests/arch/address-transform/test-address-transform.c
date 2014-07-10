@@ -1,28 +1,28 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/types/bitstring.h>
-#include <jive/view.h>
-#include <jive/vsdg.h>
-#include <jive/arch/addresstype.h>
-#include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
+#include <jive/arch/address.h>
+#include <jive/arch/addresstype.h>
 #include <jive/arch/call.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/load.h>
-#include <jive/arch/store.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/memorytype.h>
-#include <jive/vsdg/node-private.h>
+#include <jive/arch/store.h>
+#include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/label.h>
+#include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
 
@@ -67,8 +67,8 @@ static int test_main(void)
 	jive::output * arrayindex = jive_arrayindex(call->outputs[0], call->outputs[1], &addr, &bits64);
 	
 	jive::output * load = jive_load_by_address_create(arraysub, &addr, 1, &top->outputs[2]);
-	jive_node * store = jive_store_by_address_node_create(graph->root_region, arraysub,
-		&bits64, arrayindex, 1, &top->outputs[2]);
+	jive_node * store = jive_store_by_address_create(arraysub,
+		&bits64, arrayindex, 1, &top->outputs[2])[0]->node();
 
 	jive::output * o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
 	const jive::base::type * tmparray4[] = {&bits64, &mem};

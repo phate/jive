@@ -156,7 +156,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_resource_class * rescls = node->outputs[0]->required_rescls;
 		option.mask = self->classifier->classify_type(type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 0, NULL, 1, node->outputs, &option);
-	} else if (auto op = dynamic_cast<const jive::store_operation *>(gen_op)) {
+	} else if (auto op = dynamic_cast<const jive::store_op *>(gen_op)) {
 		option.mask = self->classifier->classify_address();
 		jive_negotiator_annotate_identity(&self->base, 1, node->inputs, 0, NULL, &option);
 		

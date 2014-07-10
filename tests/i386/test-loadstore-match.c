@@ -103,16 +103,14 @@ prepare_graph(jive_context * ctx)
 	jive::output * sum = jive_bitsum(2, tmparray1);
 	jive::output * diff = jive_bitdifference(v1, v2);
 
-	jive::output * state_;
-	jive_store_by_bitstring_create(
+	std::vector<jive::output *> states;
+	state1 = jive_store_by_bitstring_create(
 		arg1, 32, &bits32, sum,
-		1, &state1, &state_);
-	state1 = state_;
+		1, &state1)[0];
 	
-	jive_store_by_bitstring_create(
+	state2 = jive_store_by_bitstring_create(
 		arg2, 32, &bits32, diff,
-		1, &state2, &state_);
-	state2 = state_;
+		1, &state2)[0];
 	jive::output* tmparray2[] = {state1, state2};
 	
 	memstate = jive_state_merge(memtype, 2, tmparray2);

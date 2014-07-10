@@ -1,12 +1,13 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memorytype.h>
@@ -43,44 +44,45 @@ static int test_main(void)
 
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
-	const jive::base::type * tmparray0[] = {&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype};
+	const jive::base::type * tmparray0[] = {
+		&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype
+	};
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
-		6, tmparray0);
+		7, tmparray0);
 
-	jive::output * state0;
-	jive_store_by_address_create(top->outputs[0], &bits32, top->outputs[4],
-		1, &top->outputs[1], &state0);
+	std::vector<jive::output *> states0 = jive_store_by_address_create(
+		top->outputs[0], &bits32, top->outputs[4], 1, &top->outputs[1]);
 
-	jive::output * state1[2];
 	jive::output * tmparray1[] = {top->outputs[2],
 		top->outputs[3], top->outputs[4]};
 	jive::output * group = jive_group_create(&rcddecl, 3, tmparray1);
 	jive::output * tmparray2[] = {top->outputs[1], top->outputs[5]};
-	jive_store_by_address_create(top->outputs[0], &rcdtype, group,
-		2, tmparray2, state1);
+	std::vector<jive::output *> states1 = jive_store_by_address_create(
+		top->outputs[0], &rcdtype, group, 2, tmparray2);
 
-	jive::output * state2;
 	jive::output * unify = jive_unify_create(&unndecl, 2, top->outputs[4]);
-	jive_store_by_address_create(top->outputs[0], &unntype, unify,
-		1, &top->outputs[1], &state2);
+	std::vector<jive::output *> states2 = jive_store_by_address_create(
+		top->outputs[0], &unntype, unify, 1, &top->outputs[1]);
 
-	jive::output * state3;
-	jive_store_by_address_create(top->outputs[0], &bits32, top->outputs[4],
-		1, &top->outputs[1], &state3);
-	jive_store_by_address_create(top->outputs[0], &bits32, top->outputs[4],
-		1, &state3, &state3);
+	std::vector<jive::output *> states3 = jive_store_by_address_create(
+		top->outputs[6], &bits32, top->outputs[4], 1, &top->outputs[1]);
+	std::vector<jive::output *> states4 = jive_store_by_address_create(
+		top->outputs[0], &bits32, top->outputs[4], 1, &states3[0]);
 
-	jive::output * state4;
 	unify = jive_empty_unify_create(graph, &empty_unndecl);
-	jive_store_by_address_create(top->outputs[0], &empty_unntype, unify,
-		1, &top->outputs[1], &state4);
-	const jive::base::type * tmparray3[] = {&memtype, &memtype, &memtype, &memtype, &memtype, &memtype};
-	jive::output * tmparray4[] = {state0, state1[0], state1[1], state2, state3, state4};
+	std::vector<jive::output *> states5 = jive_store_by_address_create(
+		top->outputs[0], &empty_unntype, unify, 1, &top->outputs[1]);
+	const jive::base::type * tmparray3[] = {
+		&memtype, &memtype, &memtype, &memtype, &memtype, &memtype
+	};
+	jive::output * tmparray4[] = {
+		states0[0], states1[0], states1[1], states2[0], states4[0], states5[0]
+	};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		6, tmparray3,
-			tmparray4,
+		tmparray4,
 		1, tmparray3);
 	jive_graph_export(graph, bottom->outputs[0]);
 
@@ -89,8 +91,7 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	assert(state2->node()->producer(1) == top);
-	assert(state3->node()->producer(2) == top);
+	assert(states3[0]->node()->producer(2) == top);
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

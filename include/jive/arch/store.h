@@ -9,7 +9,9 @@
 
 #include <memory>
 
+#include <jive/util/ptr-collection.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/statetype.h>
 #include <jive/vsdg/valuetype.h>
 
 /* store normal form */
@@ -43,17 +45,6 @@ jive_store_node_normal_form_cast(jive_node_normal_form * self)
 }
 
 JIVE_EXPORTED_INLINE void
-jive_store_node_normalized_create(const jive_store_node_normal_form * self,
-	struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
-	jive::output * value, size_t nstates, jive::output * const istates[], jive::output * ostates[])
-{
-	const jive_store_node_normal_form_class * cls;
-	cls = (const jive_store_node_normal_form_class *) self->base.class_;
-
-	return cls->normalized_create(self, region, attrs, address, value, nstates, istates, ostates);
-}
-
-JIVE_EXPORTED_INLINE void
 jive_store_node_set_reducible(jive_store_node_normal_form * self, bool reducible)
 {
 	const jive_store_node_normal_form_class * cls;
@@ -65,67 +56,87 @@ jive_store_node_set_reducible(jive_store_node_normal_form * self, bool reducible
 
 namespace jive {
 
-class store_operation final : public operation {
+class store_op final : public operation {
 public:
+	virtual
+	~store_op() noexcept;
+
+	template<typename Types>
 	inline
-	store_operation(size_t nbits, const jive::value::type * datatype)
-		: nbits_(nbits)
-		, datatype_(datatype->copy())
+	store_op(
+		const jive::value::type & address_type,
+		const Types & state_types,
+		const jive::value::type & data_type)
+		: address_type_(address_type.copy())
+		, state_types_(detail::unique_ptr_vector_copy(state_types))
+		, data_type_(data_type.copy())
 	{
 	}
 
 	inline
-	store_operation(const store_operation & other)
-		: nbits_(other.nbits())
-		, datatype_(other.datatype().copy())
+	store_op(const store_op & other)
+		: address_type_(other.address_type_->copy())
+		, state_types_(detail::unique_ptr_vector_copy(other.state_types_))
+		, data_type_(other.data_type_->copy())
 	{
 	}
 
 	inline
-	store_operation(store_operation && other) noexcept = default;
+	store_op(store_op && other) noexcept = default;
 
-	inline size_t nbits() const noexcept { return nbits_; }
-	inline const jive::value::type & datatype() const noexcept { return *datatype_; }
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	inline const jive::value::type &
+	address_type() const noexcept { return *address_type_; }
+
+	inline const std::vector<std::unique_ptr<jive::state::type>> &
+	state_types() const noexcept { return state_types_; }
+
+	inline const jive::value::type &
+	data_type() const noexcept { return *data_type_; }
+
 private:
-	size_t nbits_;
-	std::unique_ptr<jive::value::type> datatype_;
+	std::unique_ptr<jive::value::type> address_type_;
+	std::vector<std::unique_ptr<jive::state::type>> state_types_;
+	std::unique_ptr<jive::value::type> data_type_;
 };
 
 }
 
 extern const jive_node_class JIVE_STORE_NODE;
 
-typedef jive::operation_node<jive::store_operation> jive_store_node;
+typedef jive::operation_node<jive::store_op> jive_store_node;
 
-struct jive_node *
-jive_store_by_address_node_create(struct jive_region * region,
-	jive::output * address,
-	const jive::value::type * datatype, jive::output * value,
-	size_t nstates, jive::output * const states[]);
-
-void
+std::vector<jive::output *>
 jive_store_by_address_create(jive::output * address,
 	const jive::value::type * datatype, jive::output * value,
-	size_t nstates, jive::output * const states[], jive::output * ostates[]);
-
-struct jive_node *
-jive_store_by_bitstring_node_create(struct jive_region * region,
-	jive::output * address, size_t nbits,
-	const jive::value::type * datatype, jive::output * value,
 	size_t nstates, jive::output * const states[]);
 
-void
+std::vector<jive::output *>
 jive_store_by_bitstring_create(jive::output * address, size_t nbits,
 	const jive::value::type * datatype, jive::output * value,
-	size_t nstates, jive::output * const istates[], jive::output * ostates[]);
-
-JIVE_EXPORTED_INLINE jive_store_node *
-jive_store_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_STORE_NODE))
-		return (jive_store_node *) node;
-	else
-		return NULL;
-}
+	size_t nstates, jive::output * const istates[]);
 
 #endif

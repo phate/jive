@@ -37,10 +37,9 @@ static int test_main()
 
 	jive::output * load0 = jive_load_by_address_create(top->outputs[0], &bits32, 1, &top->outputs[2]);
 
-	jive::output * state;
-	jive_store_by_address_create(top->outputs[1], &bits32, top->outputs[3], 1, &top->outputs[2],
-		&state);
-	jive::output * load1 = jive_load_by_address_create(top->outputs[1], &bits32, 1, &state);
+	std::vector<jive::output *> states = jive_store_by_address_create(
+		top->outputs[1], &bits32, top->outputs[3], 1, &top->outputs[2]);
+	jive::output * load1 = jive_load_by_address_create(top->outputs[1], &bits32, 1, &states[0]);
 	assert(load1 == top->outputs[3]);
 	const jive::base::type * tmparray1[] = {&bits32, &bits32};
 	jive::output * tmparray2[] = {load0, load1};

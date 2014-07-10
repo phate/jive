@@ -196,7 +196,9 @@ jive_load_node_address_transform(
 	size_t nbits);
 
 void
-jive_store_node_address_transform(jive_store_node * node,
+jive_store_node_address_transform(
+	jive_node * node,
+	const jive::store_op & op,
 	size_t nbits);
 
 void
