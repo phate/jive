@@ -23,7 +23,7 @@ nullary_op::narguments() const noexcept
 size_t
 nullary_op::nresults() const noexcept
 {
-	return 0;
+	return 1;
 }
 
 const type &
