@@ -14,16 +14,17 @@
 /* unify node */
 
 extern const jive_node_class JIVE_UNIFY_NODE;
+extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
 
 namespace jive {
 namespace unn {
 
 struct declaration;
 
-class unify_operation final : public base::unary_op {
+class unify_op final : public base::unary_op {
 public:
 	inline
-	unify_operation(
+	unify_op(
 		const jive::unn::type & type,
 		size_t option) noexcept
 		: type_(type)
@@ -32,13 +33,13 @@ public:
 	}
 
 	inline
-	unify_operation(const unify_operation & other) noexcept = default;
+	unify_op(const unify_op & other) noexcept = default;
 
 	inline
-	unify_operation(unify_operation && other) noexcept = default;
+	unify_op(unify_op && other) noexcept = default;
 
 	virtual
-	~unify_operation() noexcept;
+	~unify_op() noexcept;
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -80,53 +81,58 @@ private:
 	size_t option_;
 };
 
-class empty_unify_operation final : public base::nullary_op {
+class empty_unify_op final : public base::nullary_op {
 public:
+	virtual
+	~empty_unify_op() noexcept;
+
 	inline constexpr
-	empty_unify_operation(
+	empty_unify_op(
 		const jive::unn::declaration * declaration) noexcept
-		 : declaration_(declaration)
+		 : type_(declaration)
 	{}
 
 	inline const jive::unn::declaration *
-	declaration() const noexcept { return declaration_; }
+	declaration() const noexcept { return type_.declaration(); }
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
 
 private:
-	const jive::unn::declaration * declaration_;
+	type type_;
 };
 
 }
 }
 
-typedef jive::operation_node<jive::unn::unify_operation> jive_unify_node;
-typedef jive::operation_node<jive::unn::empty_unify_operation> jive_empty_unify_node;
-jive::output *
-jive_unify_create(const struct jive::unn::declaration * decl,
-	size_t option, jive::output * const operand);
+typedef jive::operation_node<jive::unn::unify_op> jive_unify_node;
+typedef jive::operation_node<jive::unn::empty_unify_op> jive_empty_unify_node;
 
-JIVE_EXPORTED_INLINE jive_unify_node *
-jive_unify_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_UNIFY_NODE))
-		return (jive_unify_node *) node;
-	else
-		return NULL;
-}
+jive::output *
+jive_unify_create(
+	const jive::unn::declaration * decl,
+	size_t option,
+	jive::output * const operand);
 
 /* empty unify node */
 
 extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
 
 jive::output *
-jive_empty_unify_create(struct jive_graph * graph, const struct jive::unn::declaration * decl);
-
-JIVE_EXPORTED_INLINE jive_empty_unify_node *
-jive_empty_unify_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_EMPTY_UNIFY_NODE))
-		return (jive_empty_unify_node *) node;
-	else
-		return NULL;
-}
+jive_empty_unify_create(
+	jive_graph * graph,
+	const jive::unn::declaration * decl);
 
 #endif

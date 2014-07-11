@@ -103,10 +103,10 @@ flatten_data_items(
 		const jive::unn::declaration * decl = type->declaration();
 		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
 		
-		jive_unify_node * node = jive_unify_node_cast(data->node());
-		if (!node)
+		if (!dynamic_cast<const jive::unn::unify_op *>(&data->node()->operation())) {
 			jive_context_fatal_error(ctx, "Type mismatch: can only serialize simple union compounds");
-			
+		}
+		
 		jive_graph * graph = data->node()->graph;
 		
 		nitems = layout->base.total_size;

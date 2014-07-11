@@ -24,7 +24,11 @@ class type final : public jive::value::type {
 public:
 	virtual ~type() noexcept;
 
-	type(const jive::unn::declaration * decl) noexcept;
+	inline constexpr
+	type(const jive::unn::declaration * decl) noexcept
+		: decl_(decl)
+	{
+	}
 
 	inline const jive::unn::declaration * declaration() const noexcept { return decl_; }
 

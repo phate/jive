@@ -76,7 +76,7 @@ jive_unop_reduction_path_t
 choose_operation::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	if (dynamic_cast<const unify_operation *>(&arg->node()->operation())) {
+	if (dynamic_cast<const unify_op *>(&arg->node()->operation())) {
 		return jive_unop_reduction_inverse;
 	}
 

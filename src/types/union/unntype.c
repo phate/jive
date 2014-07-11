@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -17,11 +18,6 @@ namespace unn {
 /* type */
 
 type::~type() noexcept {}
-
-type::type(const jive::unn::declaration * decl) noexcept
-	: jive::value::type()
-	, decl_(decl)
-{}
 
 void
 type::label(jive_buffer & buffer) const

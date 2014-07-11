@@ -17,20 +17,20 @@
 namespace jive {
 namespace unn {
 
-unify_operation::~unify_operation() noexcept
+unify_op::~unify_op() noexcept
 {
 }
 
 bool
-unify_operation::operator==(const operation & other) const noexcept
+unify_op::operator==(const operation & other) const noexcept
 {
-	const unify_operation * op =
-		dynamic_cast<const unify_operation *>(&other);
+	const unify_op * op =
+		dynamic_cast<const unify_op *>(&other);
 	return op && type_ == op->type_ && option_ == op->option_;
 }
 
 jive_node *
-unify_operation::create_node(
+unify_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
@@ -49,7 +49,7 @@ unify_operation::create_node(
 }
 
 std::string
-unify_operation::debug_string() const
+unify_op::debug_string() const
 {
 	char tmp[32];
 	snprintf(tmp, sizeof(tmp), "UNIFY(%zd)", option());
@@ -57,30 +57,68 @@ unify_operation::debug_string() const
 }
 
 const jive::base::type &
-unify_operation::argument_type(size_t index) const noexcept
+unify_op::argument_type(size_t index) const noexcept
 {
 	return *type_.declaration()->elements[option()];
 }
 
 const jive::base::type &
-unify_operation::result_type(size_t index) const noexcept
+unify_op::result_type(size_t index) const noexcept
 {
 	return type_;
 }
 
 jive_unop_reduction_path_t
-unify_operation::can_reduce_operand(
+unify_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
 jive::output *
-unify_operation::reduce_operand(
+unify_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
 	return nullptr;
+}
+
+
+empty_unify_op::~empty_unify_op() noexcept
+{
+}
+
+bool
+empty_unify_op::operator==(const operation & other) const noexcept
+{
+	const empty_unify_op * op =
+		dynamic_cast<const empty_unify_op *>(&other);
+	return op && op->declaration() == declaration();
+}
+
+jive_node *
+empty_unify_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	return jive_opnode_create(
+		*this,
+		&JIVE_EMPTY_UNIFY_NODE,
+		region,
+		std::initializer_list<jive::output *>{});
+}
+
+std::string
+empty_unify_op::debug_string() const
+{
+	return "UNIFY";
+}
+
+const jive::base::type &
+empty_unify_op::result_type(size_t index) const noexcept
+{
+	return type_;
 }
 
 }
@@ -101,7 +139,7 @@ jive::output *
 jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::output * const argument)
 {
 	const jive::unn::type  unn_type(decl);
-	jive::unn::unify_operation op(unn_type, option);
+	jive::unn::unify_op op(unn_type, option);
 
 	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE, argument->node()->graph,
 		&op, argument);
@@ -109,64 +147,21 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::outp
 
 /* empty unify node */
 
-static jive_node *
-jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[]);
-
-static bool
-jive_empty_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * second);
-
 const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
 	parent : &JIVE_NULLARY_OPERATION,
 	name : "UNIFY",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_empty_unify_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_empty_unify_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static void
-jive_empty_unify_node_init_(jive_empty_unify_node * self,
-	struct jive_region * region, const jive::unn::declaration * decl)
-{
-	jive::unn::type type(decl);
-	const jive::base::type * type_ptr = &type;
-	jive_node_init_(self, region,
-		0, NULL, NULL,
-		1, &type_ptr);
-}
-
-static bool
-jive_empty_unify_node_match_attrs_(const jive_node * self, const jive_node_attrs * second_)
-{
-	const jive::unn::empty_unify_operation * first =
-		&((const jive_empty_unify_node *) self)->operation();
-	const jive::unn::empty_unify_operation * second =
-		(const jive::unn::empty_unify_operation *) second_;
-	
-	return (first->declaration() == second->declaration());
-}
-
-static jive_node *
-jive_empty_unify_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 0);
-	const jive::unn::empty_unify_operation * attrs = (const jive::unn::empty_unify_operation *) attrs_;
-	
-	jive_empty_unify_node * node = new jive_empty_unify_node(*attrs);
-	node->class_ = &JIVE_EMPTY_UNIFY_NODE;
-	jive_empty_unify_node_init_(node, region, attrs->declaration());
-	
-	return node;
-}
 
 jive::output *
 jive_empty_unify_create(struct jive_graph * graph, const jive::unn::declaration * decl)
 {
-	jive::unn::empty_unify_operation op(decl);
+	jive::unn::empty_unify_op op(decl);
 
 	return jive_nullary_operation_create_normalized(&JIVE_EMPTY_UNIFY_NODE, graph, &op);
 }
