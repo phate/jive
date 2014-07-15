@@ -127,7 +127,8 @@ static int test_main(void)
 	}
 	
 	//jive_graph_view(graph);
-	
+
+	jive_graph_destroy(graph);
 	jive_context_destroy(ctx);
 	
 	return 0;
