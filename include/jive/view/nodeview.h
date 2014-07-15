@@ -10,6 +10,8 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/util/textcanvas.h>
 
+#include <vector>
+
 typedef struct jive_inputview jive_inputview;
 typedef struct jive_outputview jive_outputview;
 typedef struct jive_nodeview jive_nodeview;
@@ -79,8 +81,8 @@ struct jive_nodeview {
 	jive_node * node;
 	struct jive_graphview * graphview;
 	unsigned int column, row;
-	jive_inputview ** inputs;
-	jive_outputview ** outputs;
+	std::vector<jive_inputview*> inputs;
+	std::vector<jive_outputview*> outputs;
 	bool placed;
 	char * node_label;
 	int x, width, height;

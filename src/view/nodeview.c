@@ -144,13 +144,12 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	self->regionview_nodes_list.prev = 0;
 	self->regionview_nodes_list.next = 0;
 	
-	size_t n;
-	self->inputs = jive_context_malloc(context, sizeof(*self->inputs) * node->ninputs);
-	for(n=0; n<node->ninputs; n++)
+	self->inputs.resize(node->ninputs);
+	for (size_t n = 0; n < node->ninputs; n++)
 		self->inputs[n] = jive_inputview_create(self, node->inputs[n]);
 	
-	self->outputs = jive_context_malloc(context, sizeof(*self->outputs) * node->noutputs);
-	for(n=0; n<node->noutputs; n++)
+	self->outputs.resize(node->noutputs);
+	for (size_t n = 0; n < node->noutputs; n++)
 		self->outputs[n] = jive_outputview_create(self, node->outputs[n]);
 	
 	self->placed = false;
@@ -171,7 +170,7 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	int internal_width = strlen(self->node_label);
 
 	cur_x = 1;
-	for(n=0; n<self->node->ninputs; n++) {
+	for (size_t n = 0; n < self->node->ninputs; n++) {
 		self->inputs[n]->x = cur_x;
 		cur_x += self->inputs[n]->width + 1;
 		input_width += self->inputs[n]->width + 1;
@@ -179,7 +178,7 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	if (input_width > internal_width) internal_width = input_width;
 	
 	cur_x = 1;
-	for(n=0; n<self->node->noutputs; n++) {
+	for (size_t n = 0; n < self->node->noutputs; n++) {
 		self->outputs[n]->x = cur_x;
 		cur_x += self->outputs[n]->width + 1;
 		output_width += self->outputs[n]->width + 1;
@@ -197,10 +196,8 @@ jive_nodeview_fini(jive_nodeview * self)
 	size_t n;
 	for(n=0; n<self->node->ninputs; n++)
 		jive_inputview_destroy(self->inputs[n]);
-	jive_context_free(context, self->inputs);
 	for(n=0; n<self->node->noutputs; n++)
 		jive_outputview_destroy(self->outputs[n]);
-	jive_context_free(context, self->outputs);
 	jive_context_free(context, self->node_label);
 }
 
