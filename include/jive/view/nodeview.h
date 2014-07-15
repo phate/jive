@@ -10,6 +10,7 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/util/textcanvas.h>
 
+#include <string>
 #include <vector>
 
 typedef struct jive_inputview jive_inputview;
@@ -23,7 +24,7 @@ struct jive_inputview {
 	jive::input * input;
 	jive_nodeview * nodeview;
 	int x, y, width, height;
-	char * label;
+	std::string label;
 	int edge_bend_y;
 	
 	struct {
@@ -52,7 +53,7 @@ struct jive_outputview {
 	jive_nodeview * nodeview;
 	short x, y;
 	unsigned short width, height;
-	char * label;
+	std::string label;
 	
 	short edge_begin_x, edge_begin_y;
 	
@@ -84,7 +85,7 @@ struct jive_nodeview {
 	std::vector<jive_inputview*> inputs;
 	std::vector<jive_outputview*> outputs;
 	bool placed;
-	char * node_label;
+	std::string node_label;
 	int x, width, height;
 	
 	struct {

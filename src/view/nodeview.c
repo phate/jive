@@ -24,7 +24,6 @@ jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 	
 	self->nodeview = nodeview;
 	self->input = input;
-	self->label = 0;
 	
 	jive_buffer type_label_buffer, input_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
@@ -33,19 +32,25 @@ jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 	input->type().label(type_label_buffer);
 	const char * input_label = jive_buffer_to_string(&input_label_buffer);
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
+
+	self->label = std::string(input_label);
+	self->label.append(":");
+	self->label.append(type_label);
 	
 	jive_ssavar * ssavar = input->ssavar;
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
-		if (resname)
-			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":*", resname->name, NULL);
-		else
-			self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", rescls->name, NULL);
+		if (resname) {
+			self->label.append(":*");
+			self->label.append(resname->name);
+		} else {
+			self->label.append(":");
+			self->label.append(rescls->name);
+		}
 	} else if (input->required_rescls != &jive_root_resource_class) {
-		self->label = jive_context_strjoin(context, input_label, ":", type_label, ":", input->required_rescls->name, NULL);
-	} else {
-		self->label = jive_context_strjoin(context, input_label, ":", type_label, NULL);
+		self->label.append(":");
+		self->label.append(input->required_rescls->name);
 	}
 	
 	jive_buffer_fini(&input_label_buffer);
@@ -53,7 +58,7 @@ jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 	
 	self->x = 0;
 	self->y = 0;
-	self->width = strlen(self->label) + 2;
+	self->width = self->label.size()+2;
 	self->height = 1;
 	
 	self->edge_bend_y = 0;
@@ -64,14 +69,13 @@ jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 void
 jive_inputview_destroy(jive_inputview * self)
 {
-	jive_context_free(self->input->node->graph->context, self->label);
 	delete self;
 }
 
 void
 jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 {
-	jive_textcanvas_put_ascii(dst, x+1, y, self->label);
+	jive_textcanvas_put_ascii(dst, x+1, y, self->label.c_str());
 }
 
 jive_outputview *
@@ -83,7 +87,6 @@ jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 	
 	self->nodeview = nodeview;
 	self->output = output;
-	self->label = 0;
 	
 	jive_buffer type_label_buffer, output_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
@@ -93,26 +96,32 @@ jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	const char * output_label = jive_buffer_to_string(&output_label_buffer);
 
+	self->label = std::string(output_label);
+	self->label.append(":");
+	self->label.append(type_label);
+
 	jive_ssavar * ssavar = output->ssavar;
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
-		if (resname)
-			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":*", resname->name, NULL);
-		else
-			self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", rescls->name, NULL);
+		if (resname) {
+			self->label.append(":*");
+			self->label.append(resname->name);
+		} else {
+			self->label.append(":");
+			self->label.append(rescls->name);
+		}
 	} else if (output->required_rescls != &jive_root_resource_class) {
-		self->label = jive_context_strjoin(context, output_label, ":", type_label, ":", output->required_rescls->name, NULL);
-	} else {
-		self->label = jive_context_strjoin(context, output_label, ":", type_label, NULL);
+		self->label.append(":");
+		self->label.append(output->required_rescls->name);
 	}
-	
+
 	jive_buffer_fini(&output_label_buffer);
 	jive_buffer_fini(&type_label_buffer);
 	
 	self->x = 0;
 	self->y = 0;
-	self->width = strlen(self->label) + 2;
+	self->width = self->label.size()+2;
 	self->height = 1;
 	
 	return self;
@@ -121,14 +130,13 @@ jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 void
 jive_outputview_destroy(jive_outputview * self)
 {
-	jive_context_free(self->output->node()->graph->context, self->label);
 	delete self;
 }
 
 void
 jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y)
 {
-	jive_textcanvas_put_ascii(dst, x+1, y, self->label);
+	jive_textcanvas_put_ascii(dst, x+1, y, self->label.c_str());
 }
 
 static void
@@ -160,14 +168,15 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	jive_buffer node_label_buffer;
 	jive_buffer_init(&node_label_buffer, context);
 	jive_node_get_label(node, &node_label_buffer);
-	self->node_label = jive_context_strjoin(context,
-		jive_buffer_to_string(&node_label_buffer), ":", nodeid, NULL);
+	self->node_label = std::string(jive_buffer_to_string(&node_label_buffer));
+	self->node_label.append(":");
+	self->node_label.append(nodeid);
 	jive_buffer_fini(&node_label_buffer);
 	
 	int input_width = -3, output_width = -3;
 	int cur_x;
 	
-	int internal_width = strlen(self->node_label);
+	int internal_width = self->node_label.size();
 
 	cur_x = 1;
 	for (size_t n = 0; n < self->node->ninputs; n++) {
@@ -192,13 +201,11 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 static void
 jive_nodeview_fini(jive_nodeview * self)
 {
-	jive_context * context = self->node->graph->context;
 	size_t n;
 	for(n=0; n<self->node->ninputs; n++)
 		jive_inputview_destroy(self->inputs[n]);
 	for(n=0; n<self->node->noutputs; n++)
 		jive_outputview_destroy(self->outputs[n]);
-	jive_context_free(context, self->node_label);
 }
 
 jive_nodeview *
@@ -317,7 +324,7 @@ jive_nodeview_draw(jive_nodeview * self, jive_textcanvas * dst)
 		jive_textcanvas_vline(dst, x + self->outputs[n]->x - 1, y+4, y+6, false, false);
 	}
 	
-	jive_textcanvas_put_ascii(dst, x+2, y+3, self->node_label);
+	jive_textcanvas_put_ascii(dst, x+2, y+3, self->node_label.c_str());
 }
 
 int
