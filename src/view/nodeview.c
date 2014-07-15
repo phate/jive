@@ -20,7 +20,7 @@ jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 {
 	jive_context * context = input->node->graph->context;
 	
-	jive_inputview * self = jive_context_malloc(context, sizeof(*self));
+	jive_inputview * self = new jive_inputview;
 	
 	self->nodeview = nodeview;
 	self->input = input;
@@ -65,7 +65,7 @@ void
 jive_inputview_destroy(jive_inputview * self)
 {
 	jive_context_free(self->input->node->graph->context, self->label);
-	jive_context_free(self->input->node->graph->context, self);
+	delete self;
 }
 
 void
@@ -79,7 +79,7 @@ jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 {
 	jive_context * context = output->node()->graph->context;
 	
-	jive_outputview * self = jive_context_malloc(context, sizeof(*self));
+	jive_outputview * self = new jive_outputview;
 	
 	self->nodeview = nodeview;
 	self->output = output;
@@ -122,7 +122,7 @@ void
 jive_outputview_destroy(jive_outputview * self)
 {
 	jive_context_free(self->output->node()->graph->context, self->label);
-	jive_context_free(self->output->node()->graph->context, self);
+	delete self;
 }
 
 void
@@ -207,7 +207,7 @@ jive_nodeview_fini(jive_nodeview * self)
 jive_nodeview *
 jive_nodeview_create(struct jive_graphview * graphview, jive_node * node)
 {
-	jive_nodeview * nodeview = jive_context_malloc(node->graph->context, sizeof(*nodeview));
+	jive_nodeview * nodeview = new jive_nodeview;
 	jive_nodeview_init(nodeview, graphview, node);
 	return nodeview;
 }
@@ -216,7 +216,7 @@ void
 jive_nodeview_destroy(jive_nodeview * self)
 {
 	jive_nodeview_fini(self);
-	jive_context_free(self->node->graph->context, self);
+	delete self;
 }
 
 void

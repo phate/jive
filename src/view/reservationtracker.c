@@ -8,9 +8,8 @@
 #include <jive/view/reservationtracker.h>
 
 void
-jive_reservationtracker_init(jive_reservationtracker * self, jive_context * context)
+jive_reservationtracker_init(jive_reservationtracker * self)
 {
-	self->context = context;
 	self->min_x = 0;
 	self->max_x = 0;
 	self->min_y = 32767;
@@ -23,7 +22,7 @@ jive_reservationtracker_init(jive_reservationtracker * self, jive_context * cont
 void
 jive_reservationtracker_fini(jive_reservationtracker * self)
 {
-	jive_context_free(self->context, self->cells);
+	delete[] self->cells;
 }
 
 static void
@@ -43,7 +42,7 @@ ensure_size(
 	if (!need_resize) return;
 	
 	if (new_max_x > new_min_x && new_max_y > new_min_y) {
-		uint8_t * cells = jive_context_malloc(self->context, (new_max_x - new_min_x) * (new_max_y - new_min_y));
+		uint8_t * cells = new uint8_t[(new_max_x - new_min_x) * (new_max_y - new_min_y)];
 		memset(cells, 0, (new_max_x - new_min_x) * (new_max_y - new_min_y));
 		unsigned int stride = new_max_x - new_min_x;
 		int y;
@@ -51,7 +50,7 @@ ensure_size(
 		for(y=self->min_y; y<self->max_y; y++) {
 			memcpy(cells + stride * (y-new_min_y) + (self->min_x - new_min_x), self->cells + self->stride * (y-self->min_y), self->stride);
 		}
-		jive_context_free(self->context, self->cells);
+		delete[] self->cells;
 		self->cells = cells;
 		self->stride = stride;
 	}

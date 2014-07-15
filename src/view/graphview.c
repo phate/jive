@@ -73,7 +73,7 @@ jive_graphview_fini(jive_graphview * self)
 jive_graphview *
 jive_graphview_create(jive_graph * graph)
 {
-	jive_graphview * graphview = jive_context_malloc(graph->context, sizeof(*graphview));
+	jive_graphview * graphview = new jive_graphview;
 	jive_graphview_init(graphview, graph);
 	return graphview;
 }
@@ -82,7 +82,7 @@ void
 jive_graphview_destroy(jive_graphview * self)
 {
 	jive_graphview_fini(self);
-	jive_context_free(self->graph->context, self);
+	delete self;
 }
 
 jive_graphview_row *
@@ -102,7 +102,7 @@ void
 jive_graphview_layout(jive_graphview * self)
 {
 	jive_reservationtracker reservation;
-	jive_reservationtracker_init(&reservation, self->graph->context);
+	jive_reservationtracker_init(&reservation);
 	
 	/* compute sizes of regions and nodes */
 	jive_regionview * regionview = jive_regionview_create(self, self->graph->root_region);

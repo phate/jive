@@ -7,14 +7,12 @@
 #define JIVE_VIEW_RESERVATIONTRACKER_H
 
 #include <stdint.h>
-#include <jive/context.h>
+#include <stdlib.h>
 
 typedef struct jive_reservationtracker jive_reservationtracker;
 typedef struct jive_reservationrect jive_reservationrect;
 
 struct jive_reservationtracker {
-	jive_context * context;
-	
 	int min_x, max_x, min_y, max_y;
 	
 	uint8_t * cells;
@@ -26,7 +24,7 @@ struct jive_reservationrect {
 };
 
 void
-jive_reservationtracker_init(jive_reservationtracker * self, jive_context * context);
+jive_reservationtracker_init(jive_reservationtracker * self);
 
 void
 jive_reservationtracker_fini(jive_reservationtracker * self);
