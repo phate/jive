@@ -50,8 +50,6 @@ jive_graphview_init(jive_graphview * self, jive_graph * graph)
 	jive_outputview_map_init(&self->outputmap, graph->context);
 	self->width = 0;
 	self->height = 0;
-	self->nrows = 0;
-	self->rows = 0;
 	self->root_region = 0;
 	
 	jive_node * node;
@@ -63,7 +61,6 @@ static void
 jive_graphview_fini(jive_graphview * self)
 {
 	jive_textcanvas_fini(&self->canvas);
-	jive_context_free(self->graph->context, self->rows);
 	jive_regionview_destroy(self->root_region);
 	jive_nodeview_map_fini(&self->nodemap);
 	jive_inputview_map_fini(&self->inputmap);
@@ -88,12 +85,11 @@ jive_graphview_destroy(jive_graphview * self)
 jive_graphview_row *
 jive_graphview_get_row(jive_graphview * self, size_t index)
 {
-	if (index >= self->nrows) {
-		self->rows = jive_context_realloc(self->graph->context, self->rows,
-			sizeof(*self->rows) * (index + 1));
-		size_t n;
-		for(n = self->nrows; n<=index; n++) jive_graphview_row_init(&self->rows[n]);
-		self->nrows = index + 1;
+	if (index >= self->rows.size()) {
+		size_t n = self->rows.size();
+		self->rows.resize(index+1);
+		for (; n <= index; n++)
+			jive_graphview_row_init(&self->rows[n]);
 	}
 	return &self->rows[index];
 }
@@ -114,8 +110,7 @@ jive_graphview_layout(jive_graphview * self)
 	
 	/* compute sizes of rows and vertical positions, as
 	well as total size of graph */
-	size_t n;
-	for(n=0; n<self->nrows; n++) {
+	for (size_t n = 0; n < self->rows.size(); n++) {
 		jive_graphview_row * row = &self->rows[n];
 		row->x = 0;
 		row->y = self->height + row->pad_above;

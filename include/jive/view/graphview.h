@@ -13,6 +13,8 @@
 #include <jive/vsdg.h>
 #include <jive/util/textcanvas.h>
 
+#include <vector>
+
 typedef struct jive_graphview jive_graphview;
 typedef struct jive_graphview_row jive_graphview_row;
 
@@ -39,8 +41,7 @@ struct jive_graphview {
 	struct jive_outputview_map outputmap; 
 	int width, height;
 	
-	size_t nrows;
-	jive_graphview_row * rows;
+	std::vector<jive_graphview_row> rows;
 	
 	struct jive_regionview * root_region;
 	
