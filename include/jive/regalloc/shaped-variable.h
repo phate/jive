@@ -15,6 +15,7 @@
 #include <jive/regalloc/xpoint.h>
 #include <jive/util/hash.h>
 
+struct jive_shaped_variable;
 struct jive_variable_interference;
 
 struct jive_variable_interference_part {
