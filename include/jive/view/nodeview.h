@@ -35,12 +35,6 @@ public:
 	} hash_chain;
 };
 
-jive_inputview *
-jive_inputview_create(jive_nodeview * nodeview, jive::input * input);
-
-void
-jive_inputview_destroy(jive_inputview * self);
-
 void
 jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y);
 
@@ -69,12 +63,6 @@ public:
 		jive_outputview * next;
 	} hash_chain;
 };
-
-jive_outputview *
-jive_outputview_create(jive_nodeview * nodeview, jive::output * output);
-
-void
-jive_outputview_destroy(jive_outputview * self);
 
 void
 jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y);
@@ -110,12 +98,6 @@ public:
 		jive_nodeview * next;
 	} hash_chain;
 };
-
-jive_nodeview *
-jive_nodeview_create(jive_graphview * graphview, jive_node * node);
-
-void
-jive_nodeview_destroy(jive_nodeview * self);
 
 void
 jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation);

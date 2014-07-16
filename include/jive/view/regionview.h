@@ -41,12 +41,6 @@ public:
 	} nodes;
 };
 
-jive_regionview *
-jive_regionview_create(jive_graphview * graphview, struct jive_region * region);
-
-void
-jive_regionview_destroy(jive_regionview * self);
-
 void
 jive_regionview_move_horizontal(jive_regionview * self, int offset);
 

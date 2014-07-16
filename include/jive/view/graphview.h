@@ -57,12 +57,6 @@ public:
 	jive_textcanvas canvas;
 };
 
-jive_graphview *
-jive_graphview_create(jive_graph * graph);
-
-void
-jive_graphview_destroy(jive_graphview * self);
-
 jive_graphview_row *
 jive_graphview_get_row(jive_graphview * self, size_t index);
 

@@ -25,7 +25,7 @@ jive_graphview_row::jive_graphview_row() noexcept
 jive_graphview::~jive_graphview() noexcept
 {
 	jive_textcanvas_fini(&canvas);
-	jive_regionview_destroy(root_region);
+	delete root_region;
 	jive_nodeview_map_fini(&nodemap);
 	jive_inputview_map_fini(&inputmap);
 	jive_outputview_map_fini(&outputmap);
@@ -37,7 +37,7 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 	if (jive_nodeview_map_lookup(&self->nodemap, node))
 		return;
 	
-	jive_nodeview * nodeview = jive_nodeview_create(self, node);
+	jive_nodeview * nodeview = new jive_nodeview(self, node);
 	jive_nodeview_map_insert(&self->nodemap, nodeview);
 	size_t n;
 	for (size_t n = 0; n < node->noutputs; n++) {
@@ -68,18 +68,6 @@ jive_graphview::jive_graphview(jive_graph * graph_)
 		jive_graphview_add_node_recursive(this, node);
 }
 
-jive_graphview *
-jive_graphview_create(jive_graph * graph)
-{
-	return new jive_graphview(graph);
-}
-
-void
-jive_graphview_destroy(jive_graphview * self)
-{
-	delete self;
-}
-
 jive_graphview_row *
 jive_graphview_get_row(jive_graphview * self, size_t index)
 {
@@ -95,7 +83,7 @@ jive_graphview_layout(jive_graphview * self)
 	jive_reservationtracker reservation;
 	
 	/* compute sizes of regions and nodes */
-	jive_regionview * regionview = jive_regionview_create(self, self->graph->root_region);
+	jive_regionview * regionview = new jive_regionview(self, self->graph->root_region);
 	jive_regionview_layout(regionview, &reservation);
 	self->root_region = regionview;
 	

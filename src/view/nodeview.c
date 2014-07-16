@@ -54,18 +54,6 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 	width = label.size()+2;
 }
 
-jive_inputview *
-jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
-{
-	return new jive_inputview(nodeview, input);
-}
-
-void
-jive_inputview_destroy(jive_inputview * self)
-{
-	delete self;
-}
-
 void
 jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 {
@@ -112,18 +100,6 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 	width = label.size()+2;
 }
 
-jive_outputview *
-jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
-{
-	return new jive_outputview(nodeview, output);
-}
-
-void
-jive_outputview_destroy(jive_outputview * self)
-{
-	delete self;
-}
-
 void
 jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y)
 {
@@ -135,9 +111,9 @@ jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y
 jive_nodeview::~jive_nodeview()
 {
 	for (size_t n = 0; n < node->ninputs; n++)
-		jive_inputview_destroy(inputs[n]);
+		delete inputs[n];
 	for (size_t n = 0; n < node->noutputs; n++)
-		jive_outputview_destroy(outputs[n]);
+		delete outputs[n];
 }
 
 jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
@@ -156,11 +132,11 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	
 	inputs.resize(node->ninputs);
 	for (size_t n = 0; n < node->ninputs; n++)
-		inputs[n] = jive_inputview_create(this, node->inputs[n]);
+		inputs[n] = new jive_inputview(this, node->inputs[n]);
 	
 	outputs.resize(node->noutputs);
 	for (size_t n = 0; n < node->noutputs; n++)
-		outputs[n] = jive_outputview_create(this, node->outputs[n]);
+		outputs[n] = new jive_outputview(this, node->outputs[n]);
 	
 	char nodeid[32];
 	snprintf(nodeid, sizeof(nodeid), "%zx", (size_t) node);
@@ -193,18 +169,6 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	if (output_width > internal_width) internal_width = output_width;
 	
 	width = internal_width + 4;
-}
-
-jive_nodeview *
-jive_nodeview_create(jive_graphview * graphview, jive_node * node)
-{
-	return new jive_nodeview(graphview, node);
-}
-
-void
-jive_nodeview_destroy(jive_nodeview * self)
-{
-	delete self;
 }
 
 void

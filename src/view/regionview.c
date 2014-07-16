@@ -17,14 +17,14 @@ jive_regionview::~jive_regionview() noexcept
 	jive_nodeview * nodeview = nodes.first;
 	while (nodeview) {
 		jive_nodeview * tmp = nodeview->regionview_nodes_list.next;
-		jive_nodeview_destroy(nodeview);
+		delete nodeview;
 		nodeview = tmp;
 	}
 
 	jive_regionview * sub = subregions.first;
 	while (sub) {
 		jive_regionview * tmp = sub->regionview_subregions_list.next;
-		jive_regionview_destroy(sub);
+		delete sub;
 		sub = tmp;
 	}
 }
@@ -42,18 +42,6 @@ jive_regionview::jive_regionview(jive_graphview * graphview_, jive_region * regi
 	subregions.first = subregions.last = nullptr;
 	nodes.first = nodes.last = nullptr;
 	regionview_subregions_list.prev = regionview_subregions_list.next = nullptr;
-}
-
-jive_regionview *
-jive_regionview_create(jive_graphview * graphview, jive_region * region)
-{
-	return new jive_regionview(graphview, region);
-}
-
-void
-jive_regionview_destroy(jive_regionview * self)
-{
-	delete self;
 }
 
 void
@@ -107,7 +95,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 	
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(self->region->subregions, subregion, region_subregions_list) {
-		jive_regionview * subregionview = jive_regionview_create(self->graphview, subregion);
+		jive_regionview * subregionview = new jive_regionview(self->graphview, subregion);
 		jive_regionview_layout(subregionview, &reservation);
 		JIVE_LIST_PUSH_BACK(self->subregions, subregionview, regionview_subregions_list);
 	}
