@@ -65,15 +65,15 @@ jive_outputview_get_edge_offset(const jive_outputview * self)
 
 class jive_nodeview {
 public:
-	~jive_nodeview() noexcept;
+	~jive_nodeview() noexcept {}
 
 	jive_nodeview(jive_graphview * graphview, jive_node * node);
 
 	jive_node * node;
 	jive_graphview * graphview;
 	unsigned int column, row;
-	std::vector<jive_inputview*> inputs;
-	std::vector<jive_outputview*> outputs;
+	std::vector<jive_inputview> inputs;
+	std::vector<jive_outputview> outputs;
 	bool placed;
 	std::string node_label;
 	int x, width, height;
