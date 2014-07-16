@@ -9,11 +9,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include <vector>
+
 class jive_reservationtracker {
 public:
 	int min_x, max_x, min_y, max_y;
 	
-	uint8_t * cells;
+	std::vector<uint8_t> cells;
 	unsigned int stride;
 };
 

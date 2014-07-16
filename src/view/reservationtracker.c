@@ -15,14 +15,12 @@ jive_reservationtracker_init(jive_reservationtracker * self)
 	self->min_y = 32767;
 	self->max_y = -32767;
 	
-	self->cells = 0;
 	self->stride = 0;
 }
 
 void
 jive_reservationtracker_fini(jive_reservationtracker * self)
 {
-	delete[] self->cells;
 }
 
 static void
@@ -42,15 +40,13 @@ ensure_size(
 	if (!need_resize) return;
 	
 	if (new_max_x > new_min_x && new_max_y > new_min_y) {
-		uint8_t * cells = new uint8_t[(new_max_x - new_min_x) * (new_max_y - new_min_y)];
-		memset(cells, 0, (new_max_x - new_min_x) * (new_max_y - new_min_y));
+		std::vector<uint8_t> cells((new_max_x - new_min_x) * (new_max_y - new_min_y), 0);
+
 		unsigned int stride = new_max_x - new_min_x;
-		int y;
-		
-		for(y=self->min_y; y<self->max_y; y++) {
-			memcpy(cells + stride * (y-new_min_y) + (self->min_x - new_min_x), self->cells + self->stride * (y-self->min_y), self->stride);
+		for (int y = self->min_y; y < self->max_y; y++) {
+			memcpy(&cells[0] + stride * (y-new_min_y) + (self->min_x - new_min_x),
+				&self->cells[0] + self->stride * (y-self->min_y), self->stride);
 		}
-		delete[] self->cells;
 		self->cells = cells;
 		self->stride = stride;
 	}
