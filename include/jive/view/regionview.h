@@ -15,6 +15,8 @@ class jive_reservationtracker;
 
 class jive_regionview {
 public:
+	~jive_regionview() noexcept;
+
 	struct jive_region * region;
 	jive_graphview * graphview;
 	int x;

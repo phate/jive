@@ -18,11 +18,6 @@ jive_reservationtracker_init(jive_reservationtracker * self)
 	self->stride = 0;
 }
 
-void
-jive_reservationtracker_fini(jive_reservationtracker * self)
-{
-}
-
 static void
 ensure_size(
 	jive_reservationtracker * self,

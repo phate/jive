@@ -9,6 +9,8 @@
 #include <jive/view/reservationtracker.h>
 #include <jive/util/list.h>
 
+/* graphview_row */
+
 static void
 jive_graphview_row_init(jive_graphview_row * self)
 {
@@ -18,6 +20,17 @@ jive_graphview_row_init(jive_graphview_row * self)
 	self->pad_below = 0;
 	self->x = 0;
 	self->y = 0;
+}
+
+/* graphview */
+
+jive_graphview::~jive_graphview() noexcept
+{
+	jive_textcanvas_fini(&canvas);
+	jive_regionview_destroy(root_region);
+	jive_nodeview_map_fini(&nodemap);
+	jive_inputview_map_fini(&inputmap);
+	jive_outputview_map_fini(&outputmap);
 }
 
 static void
@@ -57,16 +70,6 @@ jive_graphview_init(jive_graphview * self, jive_graph * graph)
 		jive_graphview_add_node_recursive(self, node);
 }
 
-static void
-jive_graphview_fini(jive_graphview * self)
-{
-	jive_textcanvas_fini(&self->canvas);
-	jive_regionview_destroy(self->root_region);
-	jive_nodeview_map_fini(&self->nodemap);
-	jive_inputview_map_fini(&self->inputmap);
-	jive_outputview_map_fini(&self->outputmap);
-}
-
 jive_graphview *
 jive_graphview_create(jive_graph * graph)
 {
@@ -78,7 +81,6 @@ jive_graphview_create(jive_graph * graph)
 void
 jive_graphview_destroy(jive_graphview * self)
 {
-	jive_graphview_fini(self);
 	delete self;
 }
 
@@ -116,8 +118,6 @@ jive_graphview_layout(jive_graphview * self)
 		row->y = self->height + row->pad_above;
 		self->height += row->height + row->pad_above + row->pad_below;
 	}
-	
-	jive_reservationtracker_fini(&reservation);
 }
 
 void

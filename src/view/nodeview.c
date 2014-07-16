@@ -15,6 +15,8 @@
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
 
+/* inputview */
+
 jive_inputview *
 jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 {
@@ -78,6 +80,8 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 	jive_textcanvas_put_ascii(dst, x+1, y, self->label.c_str());
 }
 
+/* outputview */
+
 jive_outputview *
 jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 {
@@ -139,6 +143,16 @@ jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y
 	jive_textcanvas_put_ascii(dst, x+1, y, self->label.c_str());
 }
 
+/* nodeview */
+
+jive_nodeview::~jive_nodeview()
+{
+	for (size_t n = 0; n < node->ninputs; n++)
+		jive_inputview_destroy(inputs[n]);
+	for (size_t n = 0; n < node->noutputs; n++)
+		jive_outputview_destroy(outputs[n]);
+}
+
 static void
 jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive_node * node)
 {
@@ -198,16 +212,6 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	self->height = 7;
 }
 
-static void
-jive_nodeview_fini(jive_nodeview * self)
-{
-	size_t n;
-	for(n=0; n<self->node->ninputs; n++)
-		jive_inputview_destroy(self->inputs[n]);
-	for(n=0; n<self->node->noutputs; n++)
-		jive_outputview_destroy(self->outputs[n]);
-}
-
 jive_nodeview *
 jive_nodeview_create(jive_graphview * graphview, jive_node * node)
 {
@@ -219,7 +223,6 @@ jive_nodeview_create(jive_graphview * graphview, jive_node * node)
 void
 jive_nodeview_destroy(jive_nodeview * self)
 {
-	jive_nodeview_fini(self);
 	delete self;
 }
 

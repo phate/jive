@@ -12,6 +12,23 @@
 #include <jive/view/reservationtracker.h>
 #include <jive/util/list.h>
 
+jive_regionview::~jive_regionview() noexcept
+{
+	jive_nodeview * nodeview = nodes.first;
+	while (nodeview) {
+		jive_nodeview * tmp = nodeview->regionview_nodes_list.next;
+		jive_nodeview_destroy(nodeview);
+		nodeview = tmp;
+	}
+
+	jive_regionview * sub = subregions.first;
+	while (sub) {
+		jive_regionview * tmp = sub->regionview_subregions_list.next;
+		jive_regionview_destroy(sub);
+		sub = tmp;
+	}
+}
+
 void
 jive_regionview_init_(jive_regionview * self, jive_graphview * graphview, jive_region * region)
 {
@@ -26,24 +43,6 @@ jive_regionview_init_(jive_regionview * self, jive_graphview * graphview, jive_r
 	self->graphview = graphview;
 }
 
-void
-jive_regionview_fini_(jive_regionview * self)
-{
-	jive_nodeview * nodeview = self->nodes.first;
-	while(nodeview) {
-		jive_nodeview * tmp = nodeview->regionview_nodes_list.next;
-		jive_nodeview_destroy(nodeview);
-		nodeview = tmp;
-	}
-	
-	jive_regionview * sub = self->subregions.first;
-	while(sub) {
-		jive_regionview * tmp = sub->regionview_subregions_list.next;
-		jive_regionview_destroy(sub);
-		sub = tmp;
-	}
-}
-
 jive_regionview *
 jive_regionview_create(jive_graphview * graphview, jive_region * region)
 {
@@ -55,7 +54,6 @@ jive_regionview_create(jive_graphview * graphview, jive_region * region)
 void
 jive_regionview_destroy(jive_regionview * self)
 {
-	jive_regionview_fini_(self);
 	delete self;
 }
 
@@ -155,8 +153,6 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 	jive_graphview_row * max_row = jive_graphview_get_row(self->graphview, max_y - 1);
 	self->lower_border_offset = max_row->pad_below;
 	max_row->pad_below ++;
-	
-	jive_reservationtracker_fini(&reservation);
 }
 
 void

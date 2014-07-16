@@ -18,6 +18,8 @@ class jive_reservationtracker;
 
 class jive_inputview {
 public:
+	~jive_inputview() noexcept {}
+
 	jive::input * input;
 	jive_nodeview * nodeview;
 	int x, y, width, height;
@@ -47,6 +49,8 @@ jive_inputview_get_edge_offset(const jive_inputview * self)
 
 class jive_outputview {
 public:
+	~jive_outputview() noexcept {}
+
 	jive::output * output;
 	jive_nodeview * nodeview;
 	short x, y;
@@ -78,6 +82,8 @@ jive_outputview_get_edge_offset(const jive_outputview * self)
 
 class jive_nodeview {
 public:
+	~jive_nodeview() noexcept;
+
 	jive_node * node;
 	struct jive_graphview * graphview;
 	unsigned int column, row;
