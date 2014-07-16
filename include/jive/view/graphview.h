@@ -39,8 +39,6 @@ public:
 	
 	std::vector<jive_graphview_row> rows;
 	
-	jive_regionview * root_region;
-	
 	jive_textcanvas canvas;
 };
 
