@@ -26,29 +26,25 @@ jive_graphview::~jive_graphview() noexcept
 {
 	jive_textcanvas_fini(&canvas);
 	delete root_region;
-	jive_nodeview_map_fini(&nodemap);
-	jive_inputview_map_fini(&inputmap);
-	jive_outputview_map_fini(&outputmap);
 }
 
 static void
 jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 {
-	if (jive_nodeview_map_lookup(&self->nodemap, node))
+	if (self->nodemap.find(node) != self->nodemap.end())
 		return;
 	
 	jive_nodeview * nodeview = new jive_nodeview(self, node);
-	jive_nodeview_map_insert(&self->nodemap, nodeview);
-	size_t n;
+	self->nodemap.insert(std::make_pair(node, nodeview));
 	for (size_t n = 0; n < node->noutputs; n++) {
 		jive_outputview * outputview = nodeview->outputs[n];
-		jive_outputview_map_insert(&self->outputmap, outputview);
+		self->outputmap.insert(std::make_pair(node->outputs[n], outputview));
 	}
 	
 	for (size_t n = 0; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
 		jive_inputview * inputview = nodeview->inputs[n];
-		jive_inputview_map_insert(&self->inputmap, inputview);
+		self->inputmap.insert(std::make_pair(input, inputview));
 		jive_graphview_add_node_recursive(self, input->producer());
 	}
 }
@@ -59,10 +55,6 @@ jive_graphview::jive_graphview(jive_graph * graph_)
 	, height(0)
 	, root_region(nullptr)
 {
-	jive_nodeview_map_init(&nodemap, graph->context);
-	jive_inputview_map_init(&inputmap, graph->context);
-	jive_outputview_map_init(&outputmap, graph->context);
-	
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list)
 		jive_graphview_add_node_recursive(this, node);
@@ -107,12 +99,10 @@ jive_graphview_draw(jive_graphview * self)
 	jive_textcanvas_init(&self->canvas, self->width, self->height);
 	
 	jive_regionview_draw(self->root_region, &self->canvas);
-	
-	struct jive_inputview_map_iterator i;
-	JIVE_HASH_ITERATE(jive_inputview_map, self->inputmap, i) {
-		jive_inputview * inputview = i.entry;
-		jive_outputview * outputview = jive_outputview_map_lookup(&self->outputmap,
-			inputview->input->origin());
+
+	for (auto i : self->inputmap) {
+		jive_inputview * inputview = i.second;
+		jive_outputview * outputview = self->outputmap[inputview->input->origin()];
 		
 		JIVE_DEBUG_ASSERT(outputview->nodeview->placed);
 		int begin_x = outputview->nodeview->x + jive_outputview_get_edge_offset(outputview);

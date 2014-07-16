@@ -183,7 +183,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	for(n=0; n<self->node->ninputs; n++) {
 		jive_inputview * inputview = self->inputs[n];
 		jive::output * origin = self->node->inputs[n]->origin();
-		jive_outputview * outputview = jive_outputview_map_lookup(&graphview->outputmap, origin);
+		jive_outputview * outputview = graphview->outputmap[origin];
 		if (!outputview->nodeview->placed) continue;
 		
 		total += outputview->nodeview->x + jive_outputview_get_edge_offset(outputview) - jive_inputview_get_edge_offset(inputview);
@@ -194,7 +194,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 		jive_outputview * outputview = self->outputs[n];
 		jive::input * user = self->node->outputs[n]->users.first;
 		JIVE_LIST_ITERATE(self->node->outputs[n]->users, user, output_users_list) {
-			jive_inputview * inputview = jive_inputview_map_lookup(&graphview->inputmap, user);
+			jive_inputview * inputview = graphview->inputmap[user];
 			if (!inputview->nodeview->placed) continue;
 			
 			total += inputview->nodeview->x + jive_inputview_get_edge_offset(inputview) - jive_outputview_get_edge_offset(outputview);

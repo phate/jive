@@ -72,15 +72,14 @@ jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * n
 	for(n=0; n<nodeview->node->ninputs; n++) {
 		jive::input * input = nodeview->node->inputs[n];
 		if (input->producer()->region != self->region) continue;
-		jive_nodeview * nodeview = jive_nodeview_map_lookup(&self->graphview->nodemap,
-			input->producer());
+		jive_nodeview * nodeview = self->graphview->nodemap[input->producer()];
 		jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 	}
 	for(n=0; n<nodeview->node->noutputs; n++) {
 		jive::input * user = nodeview->node->outputs[n]->users.first;
 		while(user) {
 			if (user->node->region == self->region) {
-				jive_nodeview * nodeview = jive_nodeview_map_lookup(&self->graphview->nodemap, user->node);
+				jive_nodeview * nodeview = self->graphview->nodemap[user->node];
 				jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 			}
 			user = user->output_users_list.next;
@@ -105,7 +104,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 	
 	jive_node * node;
 	JIVE_LIST_ITERATE(self->region->nodes, node, region_nodes_list) {
-		jive_nodeview * nodeview = jive_nodeview_map_lookup(&self->graphview->nodemap, node);
+		jive_nodeview * nodeview = self->graphview->nodemap[node];
 		JIVE_LIST_PUSH_BACK(self->nodes, nodeview, regionview_nodes_list);
 		jive_regionview_layout_nodes_recursive(self, nodeview, &reservation);
 		if (node->depth_from_root + 1 > max_y) max_y = node->depth_from_root + 1;
