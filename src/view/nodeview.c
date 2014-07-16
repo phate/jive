@@ -209,7 +209,7 @@ jive_nodeview_fini(jive_nodeview * self)
 }
 
 jive_nodeview *
-jive_nodeview_create(struct jive_graphview * graphview, jive_node * node)
+jive_nodeview_create(jive_graphview * graphview, jive_node * node)
 {
 	jive_nodeview * nodeview = new jive_nodeview;
 	jive_nodeview_init(nodeview, graphview, node);
@@ -224,7 +224,7 @@ jive_nodeview_destroy(jive_nodeview * self)
 }
 
 void
-jive_nodeview_layout(jive_nodeview * self, struct jive_reservationtracker * reservation)
+jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation)
 {
 	if (self->placed) return;
 	

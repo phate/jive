@@ -15,10 +15,10 @@
 
 #include <vector>
 
-typedef struct jive_graphview jive_graphview;
-typedef struct jive_graphview_row jive_graphview_row;
+class jive_regionview;
 
-struct jive_graphview_row {
+class jive_graphview_row {
+public:
 	int width, height, pad_above, pad_below;
 	int x, y;
 };
@@ -34,7 +34,8 @@ JIVE_DEFINE_HASH_TYPE(jive_inputview_map, jive_inputview, jive::input *, input, 
 JIVE_DECLARE_HASH_TYPE(jive_outputview_map, jive_outputview, jive::output *, output, hash_chain);
 JIVE_DEFINE_HASH_TYPE(jive_outputview_map, jive_outputview, jive::output *, output, hash_chain);
 
-struct jive_graphview {
+class jive_graphview {
+public:
 	struct jive_graph * graph;
 	struct jive_nodeview_map nodemap;
 	struct jive_inputview_map inputmap; 
@@ -43,7 +44,7 @@ struct jive_graphview {
 	
 	std::vector<jive_graphview_row> rows;
 	
-	struct jive_regionview * root_region;
+	jive_regionview * root_region;
 	
 	jive_textcanvas canvas;
 };

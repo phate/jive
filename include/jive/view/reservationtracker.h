@@ -9,17 +9,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef struct jive_reservationtracker jive_reservationtracker;
-typedef struct jive_reservationrect jive_reservationrect;
-
-struct jive_reservationtracker {
+class jive_reservationtracker {
+public:
 	int min_x, max_x, min_y, max_y;
 	
 	uint8_t * cells;
 	unsigned int stride;
 };
 
-struct jive_reservationrect {
+class jive_reservationrect {
+public:
 	int x, y, width, height;
 };
 
