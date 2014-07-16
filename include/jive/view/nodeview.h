@@ -70,18 +70,13 @@ public:
 	jive_nodeview(jive_graphview * graphview, jive_node * node);
 
 	jive_node * node;
-	struct jive_graphview * graphview;
+	jive_graphview * graphview;
 	unsigned int column, row;
 	std::vector<jive_inputview*> inputs;
 	std::vector<jive_outputview*> outputs;
 	bool placed;
 	std::string node_label;
 	int x, width, height;
-	
-	struct {
-		jive_nodeview * prev;
-		jive_nodeview * next;
-	} regionview_nodes_list;
 };
 
 void

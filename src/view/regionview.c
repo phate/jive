@@ -14,19 +14,11 @@
 
 jive_regionview::~jive_regionview() noexcept
 {
-	jive_nodeview * nodeview = nodes.first;
-	while (nodeview) {
-		jive_nodeview * tmp = nodeview->regionview_nodes_list.next;
+	for (auto nodeview : nodes)
 		delete nodeview;
-		nodeview = tmp;
-	}
 
-	jive_regionview * sub = subregions.first;
-	while (sub) {
-		jive_regionview * tmp = sub->regionview_subregions_list.next;
-		delete sub;
-		sub = tmp;
-	}
+	for (auto regionview : subregions)
+		delete regionview;
 }
 
 jive_regionview::jive_regionview(jive_graphview * graphview_, jive_region * region_)
@@ -38,31 +30,22 @@ jive_regionview::jive_regionview(jive_graphview * graphview_, jive_region * regi
 	, upper_border_offset(0)
 	, lower_border_offset(0)
 	, graphview(graphview_)
-{
-	subregions.first = subregions.last = nullptr;
-	nodes.first = nodes.last = nullptr;
-	regionview_subregions_list.prev = regionview_subregions_list.next = nullptr;
-}
+{}
 
 void
 jive_regionview_move_horizontal(jive_regionview * self, int offset)
 {
 	self->x = self->x + offset;
-	jive_nodeview * nodeview = self->nodes.first;
-	while(nodeview) {
+	for (auto nodeview : self->nodes)
 		nodeview->x += offset;
-		nodeview = nodeview->regionview_nodes_list.next;
-	}
-	
-	jive_regionview * sub = self->subregions.first;
-	while(sub) {
-		jive_regionview_move_horizontal(sub, offset);
-		sub = sub->regionview_subregions_list.next;
-	}
+
+	for (auto regionview : self->subregions)
+		jive_regionview_move_horizontal(regionview, offset);
 }
 
 static void
-jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * nodeview, jive_reservationtracker * reservation)
+jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * nodeview,
+	jive_reservationtracker * reservation)
 {
 	if (nodeview->placed) return;
 	
@@ -96,7 +79,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 	JIVE_LIST_ITERATE(self->region->subregions, subregion, region_subregions_list) {
 		jive_regionview * subregionview = new jive_regionview(self->graphview, subregion);
 		jive_regionview_layout(subregionview, &reservation);
-		JIVE_LIST_PUSH_BACK(self->subregions, subregionview, regionview_subregions_list);
+		self->subregions.push_back(subregionview);
 	}
 	
 	int min_y = reservation.min_y;
@@ -105,7 +88,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 	jive_node * node;
 	JIVE_LIST_ITERATE(self->region->nodes, node, region_nodes_list) {
 		jive_nodeview * nodeview = self->graphview->nodemap[node];
-		JIVE_LIST_PUSH_BACK(self->nodes, nodeview, regionview_nodes_list);
+		self->nodes.push_back(nodeview);
 		jive_regionview_layout_nodes_recursive(self, nodeview, &reservation);
 		if (node->depth_from_root + 1 > max_y) max_y = node->depth_from_root + 1;
 		if (node->depth_from_root < min_y) min_y = node->depth_from_root;
@@ -143,9 +126,8 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 void
 jive_regionview_draw(jive_regionview * self, jive_textcanvas * dst)
 {
-	jive_regionview * subregion;
-	JIVE_LIST_ITERATE(self->subregions, subregion, regionview_subregions_list)
-		jive_regionview_draw(subregion, dst);
+	for (auto regionview : self->subregions)
+		jive_regionview_draw(regionview, dst);
 	
 	jive_graphview_row * start_row, * end_row;
 	start_row = jive_graphview_get_row(self->graphview, self->start_row_index);
@@ -155,7 +137,6 @@ jive_regionview_draw(jive_regionview * self, jive_textcanvas * dst)
 	
 	jive_textcanvas_box(dst, self->x, y_start, self->x + self->width, y_end, false, true);
 	
-	jive_nodeview * nodeview;
-	JIVE_LIST_ITERATE(self->nodes, nodeview, regionview_nodes_list)
+	for (auto nodeview : self->nodes)
 		jive_nodeview_draw(nodeview, dst);
 }

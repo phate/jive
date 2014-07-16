@@ -13,7 +13,6 @@
 #include <jive/view/graphview.h>
 #include <jive/vsdg.h>
 #include <jive/util/buffer.h>
-#include <jive/util/list.h>
 
 /* inputview */
 
@@ -126,9 +125,6 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	, x(0)
 {
 	jive_context * context = node->graph->context;
-	
-	regionview_nodes_list.prev = 0;
-	regionview_nodes_list.next = 0;
 	
 	inputs.resize(node->ninputs);
 	for (size_t n = 0; n < node->ninputs; n++)

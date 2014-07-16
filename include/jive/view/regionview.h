@@ -6,6 +6,8 @@
 #ifndef JIVE_VIEW_REGIONVIEW_H
 #define JIVE_VIEW_REGIONVIEW_H
 
+#include <vector>
+
 struct jive_region;
 struct jive_textcanvas;
 
@@ -24,21 +26,9 @@ public:
 	int x;
 	unsigned int width, start_row_index, end_row_index;
 	int upper_border_offset, lower_border_offset;
-	
-	struct {
-		jive_regionview * first;
-		jive_regionview * last;
-	} subregions;
-	
-	struct {
-		jive_regionview * prev;
-		jive_regionview * next;
-	} regionview_subregions_list;
-	
-	struct {
-		jive_nodeview * first;
-		jive_nodeview * last;
-	} nodes;
+
+	std::vector<jive_nodeview*> nodes;
+	std::vector<jive_regionview*> subregions;
 };
 
 void
