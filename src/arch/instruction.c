@@ -21,94 +21,93 @@
 #include <stdio.h>
 #include <string.h>
 
+namespace jive {
+
+instruction_op::~instruction_op() noexcept
+{
+}
+
+bool
+instruction_op::operator==(const operation & other) const noexcept
+{
+	const instruction_op * op =
+		dynamic_cast<const instruction_op *>(&other);
+	return op && op->icls() == icls();
+}
+
+size_t
+instruction_op::narguments() const noexcept
+{
+	return icls()->ninputs + icls()->nimmediates;
+}
+
+const jive::base::type &
+instruction_op::argument_type(size_t index) const noexcept
+{
+	static const jive::imm::type immediate_type;
+	if (index < icls()->ninputs) {
+		return *jive_register_class_get_type(icls()->inregs[index]);
+	} else {
+		return immediate_type;
+	}
+}
+
+size_t
+instruction_op::nresults() const noexcept
+{
+	return icls()->noutputs +
+		((icls()->flags & jive_instruction_jump) ? 1 : 0);
+}
+
+const jive::base::type &
+instruction_op::result_type(size_t index) const noexcept
+{
+	static const jive::ctl::type control_type;
+	if (index < icls()->noutputs) {
+		return *jive_register_class_get_type(icls()->outregs[index]);
+	} else {
+		return control_type;
+	}
+}
+
+jive_node *
+instruction_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	jive_node * node = jive_opnode_create(
+		*this,
+		&JIVE_INSTRUCTION_NODE,
+		region,
+		arguments, arguments + narguments);
+	for (size_t n = 0; n < icls()->ninputs; ++n) {
+		node->inputs[n]->required_rescls = &icls()->inregs[n]->base;
+	}
+	for (size_t n = 0; n < icls()->noutputs; ++n) {
+		node->outputs[n]->required_rescls = &icls()->outregs[n]->base;
+	}
+	return node;
+}
+
+std::string
+instruction_op::debug_string() const
+{
+	return icls()->name;
+}
+
+}
+
 const jive_node_class JIVE_INSTRUCTION_NODE = {
 	parent : &JIVE_NODE,
 	name : "INSTRUCTION",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_instruction_node_get_label_, /* override */
-	match_attrs : jive_instruction_node_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_instruction_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-void
-jive_instruction_node_init_(
-	jive_instruction_node * self,
-	jive_region * region,
-	const jive_instruction_class * icls,
-	jive::output * const operands[],
-	jive::output * const immediates[])
-{
-	size_t ninputs = icls->ninputs;
-	size_t nimmediates = icls->nimmediates;
-	size_t noutputs = icls->noutputs;
-	if (icls->flags & jive_instruction_jump)
-		noutputs ++;
-	jive::ctl::type ctl;
-	jive::imm::type imm;
-	
-	const jive::base::type * input_types[ninputs + nimmediates];
-	jive::output * inputs[ninputs + nimmediates];
-	const jive::base::type * output_types[noutputs];
-	
-	size_t n;
-	for (n = 0; n < icls->ninputs; ++n) {
-		input_types[n] = jive_register_class_get_type(icls->inregs[n]);
-		inputs[n] = operands[n];
-	}
-	for (n = 0; n < icls->nimmediates; ++n) {
-		input_types[n + ninputs] = &imm;
-		inputs[n + ninputs] = immediates[n];
-	}
-	for (n = 0; n < icls->noutputs; n++)
-		output_types[n] = jive_register_class_get_type(icls->outregs[n]);
-	
-	if (icls->flags & jive_instruction_jump) {
-		output_types[icls->noutputs] = &ctl;
-	}
-	
-	jive_node_init_(self,
-		region,
-		ninputs + nimmediates, input_types, inputs,
-		noutputs, output_types);
-	
-	for (n = 0; n<icls->ninputs; n++)
-		self->inputs[n]->required_rescls = &icls->inregs[n]->base;
-	for (n = 0; n<icls->noutputs; n++)
-		self->outputs[n]->required_rescls = &icls->outregs[n]->base;
-}
-
-void
-jive_instruction_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_instruction_node * self = (const jive_instruction_node *) self_;
-	jive_buffer_putstr(buffer, self->operation().icls()->name);
-}
-
-bool
-jive_instruction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::instruction_operation * first = &((const jive_instruction_node *) self)->operation();
-	const jive::instruction_operation * second = (const jive::instruction_operation *) attrs;
-	
-	return first->icls() == second->icls();
-}
-
-jive_node *
-jive_instruction_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::instruction_operation * attrs = (const jive::instruction_operation *) attrs_;
-	
-	jive_instruction_node * other = new jive_instruction_node(*attrs);
-	other->class_ = &JIVE_INSTRUCTION_NODE;
-	jive_instruction_node_init_(
-		other, region, attrs->icls(),
-		operands, operands + attrs->icls()->ninputs);
-	
-	return other;
-}
 
 jive_node *
 jive_instruction_node_create_simple(
@@ -131,17 +130,16 @@ jive_instruction_node_create_extended(
 	jive::output * const * operands,
 	const jive_immediate immediates[])
 {
-	jive::output * immvalues[icls->nimmediates];
-	size_t n;
-	for (n = 0; n < icls->nimmediates; ++n) {
-		immvalues[n] = jive_immediate_create(region->graph, &immediates[n]);
+	jive::output * arguments[icls->ninputs + icls->nimmediates];
+	for (size_t n = 0; n < icls->ninputs; ++n) {
+		arguments[n] = operands[n];
 	}
-	jive_instruction_node * node = new jive_instruction_node(
-		jive::instruction_operation(icls));
-	node->class_ = &JIVE_INSTRUCTION_NODE;
-	jive_instruction_node_init_(node, region, icls, operands, immvalues);
-	
-	return node;
+	for (size_t n = 0; n < icls->nimmediates; ++n) {
+		arguments[n + icls->ninputs] = jive_immediate_create(
+			region->graph, &immediates[n]);
+	}
+	jive::instruction_op op(icls);
+	return op.create_node(region, icls->ninputs + icls->nimmediates, arguments);
 }
 
 static void

@@ -170,7 +170,7 @@ jive_instruction_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive::instruction_operation * attrs = (const jive::instruction_operation *) attrs_;
+	const jive::instruction_op * attrs = (const jive::instruction_op *) attrs_;
 	const jive_serialization_instrcls_registry * reg = driver->instrcls_registry;
 	const jive_serialization_instrcls * sercls =
 		jive_serialization_instrcls_lookup_by_cls(reg, attrs->icls());
@@ -182,8 +182,8 @@ static bool
 jive_instruction_deserialize(
 	const jive_serialization_nodecls * self,
 	struct jive_serialization_driver * driver,
-	jive_region * region, size_t noperands,
-	jive::output * const operands[], jive_token_istream * is,
+	jive_region * region, size_t narguments,
+	jive::output * const arguments[], jive_token_istream * is,
 	jive_node ** node)
 {
 	const jive_token * token = jive_token_istream_current(is);
@@ -201,9 +201,8 @@ jive_instruction_deserialize(
 	}
 	jive_token_istream_advance(is);
 	
-	jive::instruction_operation op(icls);
-	*node = JIVE_INSTRUCTION_NODE.create(region, &op,
-		noperands, operands);
+	jive::instruction_op op(icls);
+	*node = op.create_node(region, narguments, arguments);
 	
 	return true;
 }
