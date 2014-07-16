@@ -11,16 +11,14 @@
 
 /* graphview_row */
 
-static void
-jive_graphview_row_init(jive_graphview_row * self)
-{
-	self->width = 0;
-	self->height = 0;
-	self->pad_above = 0;
-	self->pad_below = 0;
-	self->x = 0;
-	self->y = 0;
-}
+jive_graphview_row::jive_graphview_row() noexcept
+	: width(0)
+	, height(0)
+	, pad_above(0)
+	, pad_below(0)
+	, x(0)
+	, y(0)
+{}
 
 /* graphview */
 
@@ -36,17 +34,18 @@ jive_graphview::~jive_graphview() noexcept
 static void
 jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 {
-	if (jive_nodeview_map_lookup(&self->nodemap, node)) return;
+	if (jive_nodeview_map_lookup(&self->nodemap, node))
+		return;
 	
 	jive_nodeview * nodeview = jive_nodeview_create(self, node);
 	jive_nodeview_map_insert(&self->nodemap, nodeview);
 	size_t n;
-	for(n=0; n<node->noutputs; n++) {
+	for (size_t n = 0; n < node->noutputs; n++) {
 		jive_outputview * outputview = nodeview->outputs[n];
 		jive_outputview_map_insert(&self->outputmap, outputview);
 	}
 	
-	for(n=0; n<node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
 		jive_inputview * inputview = nodeview->inputs[n];
 		jive_inputview_map_insert(&self->inputmap, inputview);
@@ -54,28 +53,25 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 	}
 }
 
-static void
-jive_graphview_init(jive_graphview * self, jive_graph * graph)
+jive_graphview::jive_graphview(jive_graph * graph_)
+	: graph(graph_)
+	, width(0)
+	, height(0)
+	, root_region(nullptr)
 {
-	self->graph = graph;
-	jive_nodeview_map_init(&self->nodemap, graph->context);
-	jive_inputview_map_init(&self->inputmap, graph->context);
-	jive_outputview_map_init(&self->outputmap, graph->context);
-	self->width = 0;
-	self->height = 0;
-	self->root_region = 0;
+	jive_nodeview_map_init(&nodemap, graph->context);
+	jive_inputview_map_init(&inputmap, graph->context);
+	jive_outputview_map_init(&outputmap, graph->context);
 	
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list)
-		jive_graphview_add_node_recursive(self, node);
+		jive_graphview_add_node_recursive(this, node);
 }
 
 jive_graphview *
 jive_graphview_create(jive_graph * graph)
 {
-	jive_graphview * graphview = new jive_graphview;
-	jive_graphview_init(graphview, graph);
-	return graphview;
+	return new jive_graphview(graph);
 }
 
 void
@@ -87,12 +83,9 @@ jive_graphview_destroy(jive_graphview * self)
 jive_graphview_row *
 jive_graphview_get_row(jive_graphview * self, size_t index)
 {
-	if (index >= self->rows.size()) {
-		size_t n = self->rows.size();
+	if (index >= self->rows.size())
 		self->rows.resize(index+1);
-		for (; n <= index; n++)
-			jive_graphview_row_init(&self->rows[n]);
-	}
+
 	return &self->rows[index];
 }
 
@@ -100,7 +93,6 @@ void
 jive_graphview_layout(jive_graphview * self)
 {
 	jive_reservationtracker reservation;
-	jive_reservationtracker_init(&reservation);
 	
 	/* compute sizes of regions and nodes */
 	jive_regionview * regionview = jive_regionview_create(self, self->graph->root_region);

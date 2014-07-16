@@ -29,26 +29,25 @@ jive_regionview::~jive_regionview() noexcept
 	}
 }
 
-void
-jive_regionview_init_(jive_regionview * self, jive_graphview * graphview, jive_region * region)
+jive_regionview::jive_regionview(jive_graphview * graphview_, jive_region * region_)
+	: region(region_)
+	, x(0)
+	, start_row_index(0)
+	, end_row_index(0)
+	, width(0)
+	, upper_border_offset(0)
+	, lower_border_offset(0)
+	, graphview(graphview_)
 {
-	self->region = region;
-	self->x = 0;
-	self->start_row_index = 0;
-	self->end_row_index = 0;
-	self->width = 0;
-	self->subregions.first = self->subregions.last = 0;
-	self->nodes.first = self->nodes.last = 0;
-	self->regionview_subregions_list.prev = self->regionview_subregions_list.next = 0;
-	self->graphview = graphview;
+	subregions.first = subregions.last = nullptr;
+	nodes.first = nodes.last = nullptr;
+	regionview_subregions_list.prev = regionview_subregions_list.next = nullptr;
 }
 
 jive_regionview *
 jive_regionview_create(jive_graphview * graphview, jive_region * region)
 {
-	jive_regionview * regionview = new jive_regionview;
-	jive_regionview_init_(regionview, graphview, region);
-	return regionview;
+	return new jive_regionview(graphview, region);
 }
 
 void
@@ -105,7 +104,6 @@ void
 jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_reservation)
 {
 	jive_reservationtracker reservation;
-	jive_reservationtracker_init(&reservation);
 	
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(self->region->subregions, subregion, region_subregions_list) {

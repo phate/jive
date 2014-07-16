@@ -7,16 +7,31 @@
 #include <string.h>
 #include <jive/view/reservationtracker.h>
 
-void
-jive_reservationtracker_init(jive_reservationtracker * self)
-{
-	self->min_x = 0;
-	self->max_x = 0;
-	self->min_y = 32767;
-	self->max_y = -32767;
-	
-	self->stride = 0;
-}
+/* reservationrect */
+
+jive_reservationrect::jive_reservationrect(int x_, int y_, int width_, int height_) noexcept
+	: x(x_)
+	, y(y_)
+	, width(width_)
+	, height(height_)
+{}
+
+jive_reservationrect::jive_reservationrect() noexcept
+	: x(0)
+	, y(0)
+	, width(0)
+	, height(0)
+{}
+
+/* reservationtracker */
+
+jive_reservationtracker::jive_reservationtracker()
+	: min_x(0)
+	, max_x(0)
+	, min_y(32767)
+	, max_y(-32767)
+	, stride(0)
+{}
 
 static void
 ensure_size(

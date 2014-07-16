@@ -17,6 +17,8 @@ class jive_regionview {
 public:
 	~jive_regionview() noexcept;
 
+	jive_regionview(jive_graphview * graphview, jive_region * region);
+
 	struct jive_region * region;
 	jive_graphview * graphview;
 	int x;

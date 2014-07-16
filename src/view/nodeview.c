@@ -17,15 +17,15 @@
 
 /* inputview */
 
-jive_inputview *
-jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
+jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
+	: nodeview(nodeview_)
+	, input(input_)
+	, x(0)
+	, y(0)
+	, height(1)
+	, edge_bend_y(0)
 {
 	jive_context * context = input->node->graph->context;
-	
-	jive_inputview * self = new jive_inputview;
-	
-	self->nodeview = nodeview;
-	self->input = input;
 	
 	jive_buffer type_label_buffer, input_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
@@ -35,37 +35,29 @@ jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
 	const char * input_label = jive_buffer_to_string(&input_label_buffer);
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 
-	self->label = std::string(input_label);
-	self->label.append(":");
-	self->label.append(type_label);
+	label = std::string(input_label).append(":").append(type_label);
 	
 	jive_ssavar * ssavar = input->ssavar;
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
-		if (resname) {
-			self->label.append(":*");
-			self->label.append(resname->name);
-		} else {
-			self->label.append(":");
-			self->label.append(rescls->name);
-		}
-	} else if (input->required_rescls != &jive_root_resource_class) {
-		self->label.append(":");
-		self->label.append(input->required_rescls->name);
-	}
+		if (resname)
+			label.append(":*").append(resname->name);
+		else
+			label.append(":").append(rescls->name);
+	} else if (input->required_rescls != &jive_root_resource_class)
+		label.append(":").append(input->required_rescls->name);
 	
 	jive_buffer_fini(&input_label_buffer);
 	jive_buffer_fini(&type_label_buffer);
 	
-	self->x = 0;
-	self->y = 0;
-	self->width = self->label.size()+2;
-	self->height = 1;
-	
-	self->edge_bend_y = 0;
-	
-	return self;
+	width = label.size()+2;
+}
+
+jive_inputview *
+jive_inputview_create(jive_nodeview * nodeview, jive::input * input)
+{
+	return new jive_inputview(nodeview, input);
 }
 
 void
@@ -82,15 +74,16 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 
 /* outputview */
 
-jive_outputview *
-jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
+jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * output_)
+	: nodeview(nodeview_)
+	, output(output_)
+	, x(0)
+	, y(0)
+	, height(1)
+	, edge_begin_x(0)
+	, edge_begin_y(0)
 {
 	jive_context * context = output->node()->graph->context;
-	
-	jive_outputview * self = new jive_outputview;
-	
-	self->nodeview = nodeview;
-	self->output = output;
 	
 	jive_buffer type_label_buffer, output_label_buffer;
 	jive_buffer_init(&type_label_buffer, context);
@@ -100,35 +93,29 @@ jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
 	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	const char * output_label = jive_buffer_to_string(&output_label_buffer);
 
-	self->label = std::string(output_label);
-	self->label.append(":");
-	self->label.append(type_label);
+	label = std::string(output_label).append(":").append(type_label);
 
 	jive_ssavar * ssavar = output->ssavar;
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
-		if (resname) {
-			self->label.append(":*");
-			self->label.append(resname->name);
-		} else {
-			self->label.append(":");
-			self->label.append(rescls->name);
-		}
-	} else if (output->required_rescls != &jive_root_resource_class) {
-		self->label.append(":");
-		self->label.append(output->required_rescls->name);
-	}
+		if (resname)
+			label.append(":*").append(resname->name);
+		else
+			label.append(":").append(rescls->name);
+	} else if (output->required_rescls != &jive_root_resource_class)
+		label.append(":").append(output->required_rescls->name);
 
 	jive_buffer_fini(&output_label_buffer);
 	jive_buffer_fini(&type_label_buffer);
 	
-	self->x = 0;
-	self->y = 0;
-	self->width = self->label.size()+2;
-	self->height = 1;
-	
-	return self;
+	width = label.size()+2;
+}
+
+jive_outputview *
+jive_outputview_create(jive_nodeview * nodeview, jive::output * output)
+{
+	return new jive_outputview(nodeview, output);
 }
 
 void
@@ -153,28 +140,27 @@ jive_nodeview::~jive_nodeview()
 		jive_outputview_destroy(outputs[n]);
 }
 
-static void
-jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive_node * node)
+jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
+	: graphview(graphview_)
+	, node(node_)
+	, column(0)
+	, row(0)
+	, placed(false)
+	, height(7)
+	, x(0)
 {
 	jive_context * context = node->graph->context;
 	
-	self->graphview = graphview;
-	self->node = node;
-	self->column = 0;
-	self->row = 0;
+	regionview_nodes_list.prev = 0;
+	regionview_nodes_list.next = 0;
 	
-	self->regionview_nodes_list.prev = 0;
-	self->regionview_nodes_list.next = 0;
-	
-	self->inputs.resize(node->ninputs);
+	inputs.resize(node->ninputs);
 	for (size_t n = 0; n < node->ninputs; n++)
-		self->inputs[n] = jive_inputview_create(self, node->inputs[n]);
+		inputs[n] = jive_inputview_create(this, node->inputs[n]);
 	
-	self->outputs.resize(node->noutputs);
+	outputs.resize(node->noutputs);
 	for (size_t n = 0; n < node->noutputs; n++)
-		self->outputs[n] = jive_outputview_create(self, node->outputs[n]);
-	
-	self->placed = false;
+		outputs[n] = jive_outputview_create(this, node->outputs[n]);
 	
 	char nodeid[32];
 	snprintf(nodeid, sizeof(nodeid), "%zx", (size_t) node);
@@ -182,42 +168,37 @@ jive_nodeview_init(jive_nodeview * self, struct jive_graphview * graphview, jive
 	jive_buffer node_label_buffer;
 	jive_buffer_init(&node_label_buffer, context);
 	jive_node_get_label(node, &node_label_buffer);
-	self->node_label = std::string(jive_buffer_to_string(&node_label_buffer));
-	self->node_label.append(":");
-	self->node_label.append(nodeid);
+	node_label = std::string(jive_buffer_to_string(&node_label_buffer)).append(":").append(nodeid);
 	jive_buffer_fini(&node_label_buffer);
 	
 	int input_width = -3, output_width = -3;
 	int cur_x;
 	
-	int internal_width = self->node_label.size();
+	int internal_width = node_label.size();
 
 	cur_x = 1;
-	for (size_t n = 0; n < self->node->ninputs; n++) {
-		self->inputs[n]->x = cur_x;
-		cur_x += self->inputs[n]->width + 1;
-		input_width += self->inputs[n]->width + 1;
+	for (size_t n = 0; n < node->ninputs; n++) {
+		inputs[n]->x = cur_x;
+		cur_x += inputs[n]->width + 1;
+		input_width += inputs[n]->width + 1;
 	}
 	if (input_width > internal_width) internal_width = input_width;
 	
 	cur_x = 1;
-	for (size_t n = 0; n < self->node->noutputs; n++) {
-		self->outputs[n]->x = cur_x;
-		cur_x += self->outputs[n]->width + 1;
-		output_width += self->outputs[n]->width + 1;
+	for (size_t n = 0; n < node->noutputs; n++) {
+		outputs[n]->x = cur_x;
+		cur_x += outputs[n]->width + 1;
+		output_width += outputs[n]->width + 1;
 	}
 	if (output_width > internal_width) internal_width = output_width;
 	
-	self->width = internal_width + 4;
-	self->height = 7;
+	width = internal_width + 4;
 }
 
 jive_nodeview *
 jive_nodeview_create(jive_graphview * graphview, jive_node * node)
 {
-	jive_nodeview * nodeview = new jive_nodeview;
-	jive_nodeview_init(nodeview, graphview, node);
-	return nodeview;
+	return new jive_nodeview(graphview, node);
 }
 
 void

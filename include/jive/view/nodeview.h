@@ -14,11 +14,14 @@
 #include <vector>
 
 class jive_nodeview;
+class jive_graphview;
 class jive_reservationtracker;
 
 class jive_inputview {
 public:
 	~jive_inputview() noexcept {}
+
+	jive_inputview(jive_nodeview * nodeview, jive::input * input);
 
 	jive::input * input;
 	jive_nodeview * nodeview;
@@ -50,6 +53,8 @@ jive_inputview_get_edge_offset(const jive_inputview * self)
 class jive_outputview {
 public:
 	~jive_outputview() noexcept {}
+
+	jive_outputview(jive_nodeview * nodeview, jive::output * output);
 
 	jive::output * output;
 	jive_nodeview * nodeview;
@@ -83,6 +88,8 @@ jive_outputview_get_edge_offset(const jive_outputview * self)
 class jive_nodeview {
 public:
 	~jive_nodeview() noexcept;
+
+	jive_nodeview(jive_graphview * graphview, jive_node * node);
 
 	jive_node * node;
 	struct jive_graphview * graphview;

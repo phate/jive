@@ -15,6 +15,8 @@ class jive_reservationtracker {
 public:
 	~jive_reservationtracker() noexcept {}
 
+	jive_reservationtracker();
+
 	int min_x, max_x, min_y, max_y;
 	
 	std::vector<uint8_t> cells;
@@ -25,11 +27,12 @@ class jive_reservationrect {
 public:
 	inline ~jive_reservationrect() noexcept {}
 
+	jive_reservationrect() noexcept;
+
+	jive_reservationrect(int x, int y, int width, int height) noexcept;
+
 	int x, y, width, height;
 };
-
-void
-jive_reservationtracker_init(jive_reservationtracker * self);
 
 int
 jive_reservationtracker_find_space(

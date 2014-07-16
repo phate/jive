@@ -21,6 +21,8 @@ class jive_graphview_row {
 public:
 	inline ~jive_graphview_row() noexcept {}
 
+	jive_graphview_row() noexcept;
+
 	int width, height, pad_above, pad_below;
 	int x, y;
 };
@@ -39,6 +41,8 @@ JIVE_DEFINE_HASH_TYPE(jive_outputview_map, jive_outputview, jive::output *, outp
 class jive_graphview {
 public:
 	~jive_graphview() noexcept;
+
+	jive_graphview(jive_graph * graph);
 
 	struct jive_graph * graph;
 	struct jive_nodeview_map nodemap;
