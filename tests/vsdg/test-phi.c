@@ -1,6 +1,6 @@
 /*
  * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,12 +10,12 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/types/function/fctapply.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/phi.h>
-#include <jive/types/function/fctlambda.h>
-#include <jive/types/function/fctapply.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/phi.h>
 
 #include "testnodes.h"
 
@@ -46,8 +46,7 @@ static int test_main()
 	jive::output * lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
 	jive::output * lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
 
-	jive::output * ret;
-	jive_apply_create(fns[2].value, 1, l2->arguments, &ret);
+	jive::output * ret = jive_apply_create(fns[2].value, 1, l2->arguments)[0];
 
 	jive::output * lambda2 = jive_lambda_end(l2, 1, tmparray0, &ret);
 

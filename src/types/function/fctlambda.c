@@ -280,9 +280,12 @@ struct jive_lambda_build_state {
 	jive_floating_region floating;
 };
 
-struct jive_lambda *
-jive_lambda_begin(struct jive_graph * graph,
-	size_t narguments, const jive::base::type * const argument_types[], const char * const argument_names[])
+jive_lambda *
+jive_lambda_begin(
+	jive_graph * graph,
+	size_t narguments,
+	const jive::base::type * const argument_types[],
+	const char * const argument_names[])
 {
 	jive_context * context = graph->context;
 
@@ -421,8 +424,8 @@ replace_apply_node(const jive_apply_node * apply_,
 		alive_arguments[n] = apply->inputs[index]->origin();
 	}
 
-	jive::output * new_apply_results[nalive_results];
-	jive_apply_create(new_fct, nalive_parameters, alive_arguments, new_apply_results);
+	std::vector<jive::output *> new_apply_results =
+		jive_apply_create(new_fct, nalive_parameters, alive_arguments);
 
 	/* replace outputs from old apply node through the outputs from the new one */
 	size_t nalive_apply_results = 0;
@@ -449,7 +452,7 @@ replace_all_apply_nodes(jive::output * fct,
 
 	jive::input * user;
 	JIVE_LIST_ITERATE(fct->users, user, output_users_list) {
-		const jive_apply_node * apply = jive_apply_node_const_cast(user->node);
+		const jive_apply_node * apply = dynamic_cast<const jive_apply_node *>(user->node);
 		if (apply != NULL)
 			replace_apply_node(apply, new_fct, old_lambda,
 				nalive_parameters, alive_parameters, nalive_results, alive_results);

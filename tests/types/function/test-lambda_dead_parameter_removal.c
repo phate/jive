@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -37,12 +38,11 @@ test_simple_lambda(struct jive_graph * graph)
 	jive::output * fct = jive_lambda_end(lambda, 2, tmparray3,
 		tmparray4);
 
-	jive::output * results[2];
-	jive_apply_create(fct, 3, top->outputs, results);
+	std::vector<jive::output *> results = jive_apply_create(fct, 3, top->outputs);
 	const jive::base::type * tmparray5[] = {&vtype, &vtype};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray5, results,
+		2, tmparray5, &results[0],
 		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 
@@ -83,10 +83,8 @@ test_recursive_lambda(struct jive_graph * graph)
 	jive_node * node = jive_test_node_create(lambda->region, 1, tmparray6, &lambda->arguments[0], 1,
 		tmparray6);
 
-	jive::output * results[2];
 	jive::output * tmparray11[] = {node->outputs[0], node->outputs[0], node->outputs[0]};
-	jive_apply_create(fv.value, 3,
-		tmparray11, results);
+	std::vector<jive::output *> results = jive_apply_create(fv.value, 3, tmparray11);
 	const jive::base::type * tmparray12[] = {&vtype, &vtype};
 	jive::output * tmparray13[] = {results[0], lambda->arguments[1]};
 
@@ -96,11 +94,11 @@ test_recursive_lambda(struct jive_graph * graph)
 	jive_phi_fixvar_leave(phi, fv.gate, fct);
 	jive_phi_end(phi, 1, &fv);
 
-	jive_apply_create(fv.value, 3, top->outputs, results);
+	results = jive_apply_create(fv.value, 3, top->outputs);
 	const jive::base::type * tmparray14[] = {&vtype, &vtype};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray14, results,
+		2, tmparray14, &results[0],
 		1, tmparray14);
 	jive_graph_export(graph, bottom->outputs[0]);
 

@@ -1,12 +1,13 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
@@ -34,11 +35,10 @@ test_main(void)
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL, 2, tmparray0);
 
-	jive::output * results[1];
-	jive_apply_create(top->outputs[0], 1, &top->outputs[1], results);
+	std::vector<jive::output *> results = jive_apply_create(top->outputs[0], 1, &top->outputs[1]);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		1, &addrptr, results, 0, NULL);
+		1, &addrptr, &results[0], 0, NULL);
 	(void)bottom;
 
 	jive_view(graph, stdout);

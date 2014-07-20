@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,11 +8,12 @@
 
 #include <assert.h>
 #include <locale.h>
+
 #include <jive/types/bitstring.h>
-#include <jive/view.h>
-#include <jive/vsdg.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
@@ -39,20 +40,19 @@ static int test_main(void)
 	jive::output * c1 = jive_bitconstant(graph, 32, "10010010000000000000000000000000");
 	jive::output * tmparray2[] = {c0, c1};
 	
-	jive_node * apply_node = jive_apply_node_create(graph->root_region,
-		lambda_expr, 2, tmparray2);
+	jive::output * apply_results[1] = {
+		jive_apply_create(lambda_expr, 2, tmparray2)[0]
+	};
 	
-	assert(bits32 == apply_node->outputs[0]->type());
-
 	const jive::base::type * tmparray12[] = {&bits32};
 	jive_node * interest = jive_test_node_create(graph->root_region,
-		1, tmparray12, apply_node->outputs, 1, tmparray12);
+		1, tmparray12, apply_results, 1, tmparray12);
 	
 	jive_graph_export(graph, interest->outputs[0]);
 	
 	jive_view(graph, stderr);
 
-	jive_inline_lambda_apply(apply_node);
+	jive_inline_lambda_apply(apply_results[0]->node());
 	jive_graph_prune(graph);
 	
 	jive_view(graph, stderr);

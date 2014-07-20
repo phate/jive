@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,19 +9,19 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fctsymbolic.h>
 #include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {
 	setlocale( LC_ALL, "" ) ;
 
-	jive_context* context = jive_context_create() ;
-	jive_graph* graph = jive_graph_create( context ) ; 
+	jive_context* context = jive_context_create();
+	jive_graph* graph = jive_graph_create(context);
 
 	jive::bits::type btype(8);
 	const jive::base::type*  tmparray0[] = { &btype };
@@ -31,9 +31,7 @@ static int test_main(void)
 	jive::output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
 	jive::output* func = jive_symbolicfunction_create( graph, "sin", &ftype ) ;
 	jive::output*  tmparray2[] = { constant };
-	jive_node* apply = jive_apply_node_create( graph->root_region, func, 1, tmparray2 ) ;
-	assert(apply->noutputs == 1);
-	jive::output* ret = apply->outputs[0];
+	jive::output * ret = jive_apply_create(func, 1, tmparray2)[0];
 
 	assert(ret->type() == btype);
 

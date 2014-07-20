@@ -426,10 +426,9 @@ jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits)
 	}
 	jive::output * function = jive_address_to_bitstring_create(fct->origin(), nbits, fcttype);
 
-	jive::output * results[nresults];
-	jive_apply_create(function, narguments, arguments, results);
+	std::vector<jive::output *> results = jive_apply_create(function, narguments, arguments);
 
-	for (n = 0; n < nresults; n++) {
+	for (n = 0; n < results.size(); n++) {
 		jive::output * original = node->outputs[n];
 		jive::output * substitute = jive_bitstring_to_address_create(results[n], nbits,
 			&original->type());
@@ -546,9 +545,10 @@ jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
 		} else if (jive_node_isinstance(node, &JIVE_CALL_NODE))
 			jive_call_node_address_transform(jive_call_node_cast(node), nbits);
 
-		const jive_apply_node * apply_node = jive_apply_node_const_cast(node);
-		if (apply_node != NULL)
+		const jive_apply_node * apply_node = dynamic_cast<const jive_apply_node *>(node);
+		if (apply_node) {
 			jive_apply_node_address_transform(apply_node, nbits);
+		}
 	}
 
 	jive_traverser_destroy(traverser);

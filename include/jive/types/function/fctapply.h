@@ -7,45 +7,59 @@
 #ifndef JIVE_TYPES_FUNCTION_FCTAPPLY_H
 #define JIVE_TYPES_FUNCTION_FCTAPPLY_H
 
+#include <jive/types/function/fcttype.h>
 #include <jive/vsdg/node.h>
 
 namespace jive {
 namespace fct {
 
-class apply_operation final : public jive::operation {
+class apply_op final : public jive::operation {
+public:
+	virtual
+	~apply_op() noexcept;
+
+	explicit apply_op(const type & function_type);
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	inline const type &
+	function_type() const noexcept { return function_type_; }
+
+private:
+	type function_type_;
+	
 };
 
 }
 }
 
-typedef jive::operation_node<jive::fct::apply_operation> jive_apply_node;
+typedef jive::operation_node<jive::fct::apply_op> jive_apply_node;
 
 extern const jive_node_class JIVE_APPLY_NODE;
 
-jive_node *
-jive_apply_node_create(jive_region * region, jive::output * function,
-	size_t narguments, jive::output * const arguments[]);
-
-void
-jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[],
-	jive::output * results[]);
-
-JIVE_EXPORTED_INLINE jive_apply_node *
-jive_apply_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_APPLY_NODE))
-		return (jive_apply_node *) node;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const jive_apply_node *
-jive_apply_node_const_cast(const struct jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_APPLY_NODE))
-		return (const jive_apply_node *) node;
-	else
-		return NULL;
-}
+std::vector<jive::output *>
+jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[]);
 
 #endif
