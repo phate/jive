@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,11 +8,12 @@
 
 #include <assert.h>
 #include <locale.h>
+
 #include <jive/types/bitstring.h>
-#include <jive/view.h>
-#include <jive/vsdg.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {
@@ -28,23 +29,27 @@ static int test_main(void)
 	const char * tmparray1[] = {"arg1"};
 	
 	jive_lambda * inner_function = jive_lambda_begin(graph, 1, tmparray11, tmparray1);
-	jive::output * tmparray2[] = {inner_function->arguments[0],
-		outer_function->arguments[0]};
+	jive::output * tmparray2[] = {
+		outer_function->arguments[0],
+		inner_function->arguments[0]
+	};
 
 	jive::output * sum = jive_bitsum(2, tmparray2);
 
 	jive_node * inner_lambda = jive_lambda_end(inner_function, 1, tmparray11, &sum)->node();
 	
-	jive_node * apply = jive_apply_node_create(outer_function->region, inner_lambda->outputs[0],
-		1, outer_function->arguments);
+
+	jive::output * apply_results[1] = {
+		jive_apply_create(inner_lambda->outputs[0], 1, outer_function->arguments)[0]
+	};
 	
 	jive_node * outer_lambda = jive_lambda_end(outer_function, 1, tmparray11,
-		&apply->outputs[0])->node();
+		apply_results)->node();
 	jive_graph_export(graph, outer_lambda->outputs[0]);
 	
 	jive_view(graph, stderr);
 
-	sum->node()->inputs[1]->divert_origin(sum->node()->inputs[0]->origin());
+	sum->node()->inputs[0]->divert_origin(sum->node()->inputs[1]->origin());
 
 	jive_view(graph, stderr);
 	
