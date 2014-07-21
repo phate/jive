@@ -16,119 +16,29 @@
 #include <jive/vsdg/substitution.h>
 
 namespace jive {
-namespace fct {
-
-symfunction_operation::~symfunction_operation() noexcept {}
-
-symfunction_operation::symfunction_operation(
-	const std::string & name,
-	const jive::fct::type & type)
-	: name_(name)
-	, type_(type)
-{
-}
-
-symfunction_operation::symfunction_operation(
-	const std::string && name,
-	const jive::fct::type && type) noexcept
-	: name_(std::move(name))
-	, type_(std::move(type))
-{
-}
-
+namespace base {
+// explicit instantiation
+template class domain_symbol_op<&JIVE_SYMBOLICFUNCTION_NODE, jive::fct::type>;
 }
 }
-
-static void
-jive_symbolicfunction_node_fini_(jive_node * self_);
-
-static void
-jive_symbolicfunction_node_get_label_(const jive_node * self_, struct jive_buffer * buffer);
-
-static bool
-jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
-
-static jive_node *
-jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[]);
 
 const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
 	parent : &JIVE_NODE,
 	name : "SYMBOLICFUNCTION",
-	fini : jive_symbolicfunction_node_fini_, /* override */
+	fini : jive_node_fini_,
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_symbolicfunction_node_get_label_, /* override */
-	match_attrs : jive_symbolicfunction_node_match_attrs_, /* override */
-	check_operands : NULL,
-	create : jive_symbolicfunction_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static void
-jive_symbolicfunction_node_init_(
-	jive_symbolicfunction_node * node,
-	jive_graph * graph,
-	const char * fctname,
-	const jive::fct::type * type)
-{
-	const jive::base::type * rtype = type;
-	jive_node_init_(node, graph->root_region,
-		0, NULL, NULL,
-		1, &rtype);
-}
-
-static void
-jive_symbolicfunction_node_fini_(jive_node * self_)
-{
-	jive_symbolicfunction_node * self = (jive_symbolicfunction_node *) self_;
-	jive_node_fini_(self);
-}
-
-static void
-jive_symbolicfunction_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_symbolicfunction_node * self = (const jive_symbolicfunction_node *) self_;
-	jive_buffer_putstr(buffer, self->operation().name().c_str());
-}
-
-static jive_node *
-jive_symbolicfunction_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::fct::symfunction_operation * attrs = (const jive::fct::symfunction_operation *) attrs_;
-
-	jive_symbolicfunction_node * node = new jive_symbolicfunction_node(*attrs);
-	node->class_ = &JIVE_SYMBOLICFUNCTION_NODE;
-	jive_symbolicfunction_node_init_(node, region->graph, attrs->name().c_str(), &attrs->type());
-	return node;
-}
-
-static bool
-jive_symbolicfunction_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::fct::symfunction_operation * first =
-		&((const jive_symbolicfunction_node *)self)->operation();
-	const jive::fct::symfunction_operation * second =
-		(const jive::fct::symfunction_operation *) attrs;
-
-	return
-		first->name() == second->name() &&
-		first->type() == second->type();
-}
-
-jive_node *
-jive_symbolicfunction_node_create(
-	struct jive_graph * graph, const char * name, const jive::fct::type * type)
-{
-	jive_symbolicfunction_node * node = new jive_symbolicfunction_node(
-		jive::fct::symfunction_operation(name, *type));
-	node->class_ = &JIVE_SYMBOLICFUNCTION_NODE;
-	jive_symbolicfunction_node_init_(node, graph, name, type);
-	return node;
-}
 
 jive::output *
 jive_symbolicfunction_create(
-	struct jive_graph * graph, const char * name, const jive::fct::type * type)
+	jive_graph * graph, const char * name, const jive::fct::type * type)
 {
-	return jive_symbolicfunction_node_create(graph, name, type)->outputs[0];
+	jive::fct::symbol_op op(name, jive::fct::type(*type));
+
+	return jive_nullary_operation_create_normalized(&JIVE_SYMBOLICFUNCTION_NODE, graph,
+		&op);
 }

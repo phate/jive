@@ -11,49 +11,26 @@
 
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/node.h>
-
-namespace jive {
-namespace fct {
-
-class symfunction_operation final : public jive::operation {
-public:
-	virtual ~symfunction_operation() noexcept;
-
-	symfunction_operation(
-		const std::string & name,
-		const jive::fct::type & type);
-
-	symfunction_operation(
-		const std::string && name,
-		const jive::fct::type && type) noexcept;
-
-	inline const std::string& name() const noexcept { return name_; }
-	inline const jive::fct::type& type() const noexcept { return type_; }
-private:
-	std::string name_;
-	jive::fct::type type_;
-};
-
-}
-}
-
-typedef jive::operation_node<jive::fct::symfunction_operation> jive_symbolicfunction_node;
+#include <jive/vsdg/operators.h>
 
 extern const jive_node_class JIVE_SYMBOLICFUNCTION_NODE;
 
-jive_node *
-jive_symbolicfunction_node_create(
-	struct jive_graph * graph, const char * name, const jive::fct::type * type);
+namespace jive {
+namespace base {
+// declare explicit instantiation
+extern template class domain_symbol_op<&JIVE_SYMBOLICFUNCTION_NODE, jive::fct::type>;
+}
+
+namespace fct {
+typedef base::domain_symbol_op<&JIVE_SYMBOLICFUNCTION_NODE, jive::fct::type>
+	symbol_op;
+}
+}
+
+typedef jive::operation_node<jive::fct::symbol_op> jive_symbolicfunction_node;
 
 jive::output *
 jive_symbolicfunction_create(
-	struct jive_graph * graph, const char * name, const jive::fct::type * type);
-
-JIVE_EXPORTED_INLINE jive_symbolicfunction_node *
-jive_symbolicfunction_node_cast(jive_node * node)
-{
-	if(node->class_ == &JIVE_SYMBOLICFUNCTION_NODE) return (jive_symbolicfunction_node *) node;
-	else return 0;
-}
+	jive_graph * graph, const char * name, const jive::fct::type * type);
 
 #endif
