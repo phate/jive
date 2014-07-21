@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -34,11 +34,12 @@ static int test_main(void)
 	
 	jive::output * merged = jive_state_merge(&statetype, 2, top->outputs);
 	
-	jive_node * split = jive_state_split(&statetype, merged, 2);
+	std::vector<jive::output *> split = jive_state_split(&statetype, merged, 2);
 	const jive::base::type * tmparray1[] = {&statetype, &statetype};
-	
+
+	jive::output * split_states[2] = {split[0], split[1]};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray1, split->outputs,
+		2, tmparray1, split_states,
 		0, NULL);
 	(void) bottom;
 	

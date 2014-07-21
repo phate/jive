@@ -8,6 +8,7 @@
 #define JIVE_VSDG_STATETYPE_H
 
 #include <memory>
+#include <vector>
 
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
@@ -61,51 +62,97 @@ private:
 	gate& operator=(const output & rhs) = delete;
 };
 
-}
-
-/* state multiplexing support */
-
-class statemux_operation final : public operation {
+class mux_op final : public operation {
 public:
-	inline statemux_operation(
-		size_t noutputs,
-		const jive::base::type & type)
-		: noutputs_(noutputs)
-		, type_(type.copy())
+	virtual
+	~mux_op() noexcept;
+
+	inline
+	mux_op(const type & state_type, size_t narguments, size_t nresults)
+		: state_type_(state_type.copy())
+		, narguments_(narguments)
+		, nresults_(nresults)
 	{
 	}
 
-	inline statemux_operation(
-		const statemux_operation & other)
-		: noutputs_(other.noutputs())
-		, type_(other.type().copy())
+	inline
+	mux_op(const mux_op & other)
+		: state_type_(other.state_type_->copy())
+		, narguments_(other.narguments_)
+		, nresults_(other.nresults_)
 	{
 	}
 
-	inline statemux_operation(
-		statemux_operation && other) noexcept = default;
+	inline
+	mux_op(mux_op && other) = default;
 
-	inline size_t noutputs() const noexcept { return noutputs_; }
-	inline const jive::base::type & type() const noexcept { return *type_; }
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
 private:
-	size_t noutputs_;
-	std::unique_ptr<jive::base::type> type_;
+	std::unique_ptr<type> state_type_;
+	size_t narguments_;
+	size_t nresults_;
 };
 
 }
+}
 
-typedef jive::operation_node<jive::statemux_operation> jive_statemux_node;
-
-jive_node *
-jive_statemux_node_create(struct jive_region * region,
-	const jive::base::type * statetype,
-	size_t noperands, jive::output * const operands[],
-	size_t noutputs);
+typedef jive::operation_node<jive::state::mux_op> jive_statemux_node;
 
 jive::output *
-jive_state_merge(const jive::base::type * statetype, size_t nstates, jive::output * const states[]);
+jive_state_merge(
+	const jive::state::type * statetype,
+	size_t nstates,
+	jive::output * const states[]);
 
-jive_node *
-jive_state_split(const jive::base::type * statetype, jive::output * state, size_t nstates);
+std::vector<jive::output *>
+jive_state_split(
+	const jive::state::type * statetype,
+	jive::output * state,
+	size_t nstates);
+
+
+// FIXME: temporary overloads below, until it has been made syntactically sure
+// that only state types are passed as arguments
+static inline jive::output *
+jive_state_merge(
+	const jive::base::type * statetype,
+	size_t nstates,
+	jive::output * const states[])
+{
+	return jive_state_merge(&dynamic_cast<const jive::state::type &>(*statetype), nstates, states);
+}
+
+static inline std::vector<jive::output *>
+jive_state_split(
+	const jive::base::type * statetype,
+	jive::output * state,
+	size_t nstates)
+{
+	return jive_state_split(&dynamic_cast<const jive::state::type &>(*statetype), state, nstates);
+}
+
 
 #endif

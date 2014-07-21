@@ -83,10 +83,10 @@ prepare_graph(jive_context * ctx)
 	jive::output * memstate = jive_subroutine_simple_get_global_state(sub);
 	const jive::base::type * memtype = &memstate->type();
 	
-	jive_node * statesplit = jive_state_split(memtype, memstate, 2);
+	std::vector<jive::output *> statesplit = jive_state_split(memtype, memstate, 2);
 	
-	jive::output * state1 = statesplit->outputs[0];
-	jive::output * state2 = statesplit->outputs[0];
+	jive::output * state1 = statesplit[0];
+	jive::output * state2 = statesplit[1];
 	
 	jive::output * arg1 = jive_subroutine_simple_get_argument(sub, 0);
 	jive::output * arg2 = jive_subroutine_simple_get_argument(sub, 1);

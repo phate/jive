@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -31,14 +31,17 @@ create_testgraph_split(jive_context * context)
 		0, NULL);
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
-	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive::gate * arg1_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg1");
 	jive::gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "arg2");
 	
-	jive::gate * retval_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "retval");
+	jive::gate * retval_gate = jive_register_class_create_gate(
+		&jive_testarch_regcls_gpr,
+		graph,
+		"retval");
 	
 	jive::output * arg1 = jive_node_gate_output(enter_mux, arg1_gate);
 	jive::output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
@@ -109,7 +112,7 @@ create_testgraph_emerg_split(jive_context * context)
 		0, NULL);
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
-	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
@@ -124,7 +127,10 @@ create_testgraph_emerg_split(jive_context * context)
 		subroutine.region,
 		&jive_testarch_instr_setr1,
 		tmparray4, NULL);
-	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"), op3->outputs[0]);
+	jive_node_gate_input(
+		leave_mux,
+		jive_register_class_create_gate(&jive_testarch_regcls_r1, graph, "cls1"),
+		op3->outputs[0]);
 	
 	jive::gate * arg2_gate = jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "1or2");
 	jive::output * arg2 = jive_node_gate_output(enter_mux, arg2_gate);
@@ -143,7 +149,10 @@ create_testgraph_emerg_split(jive_context * context)
 		subroutine.region,
 		&jive_testarch_instr_move_gpr,
 		tmparray7, NULL);
-	jive_node_gate_input(leave_mux, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"), op4->outputs[0]);
+	jive_node_gate_input(
+		leave_mux,
+		jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "cls1"),
+		op4->outputs[0]);
 	
 	jive_test_state_type state_type;
 	

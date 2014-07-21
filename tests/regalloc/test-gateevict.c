@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -28,7 +28,7 @@ create_testgraph_gateevict(jive_context * context)
 	
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
-	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,15 +8,16 @@
 
 #include <assert.h>
 #include <locale.h>
+
 #include <jive/arch/registers.h>
 #include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/theta.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
 
 #include "testarch.h"
 
@@ -34,7 +35,7 @@ create_testgraph(jive_context * context)
 	);
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
-	jive_node * enter_mux = jive_state_split(memtype, memstate, 1);
+	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
 	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	

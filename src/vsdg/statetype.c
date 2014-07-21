@@ -12,6 +12,17 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 
+const jive_node_class JIVE_STATEMUX_NODE = {
+	parent : &JIVE_NODE,
+	name : "STATEMUX",
+	fini : jive_node_fini_,
+	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
+};
+
 namespace jive {
 namespace state {
 
@@ -35,101 +46,79 @@ gate::gate(jive_graph * graph, const char name[])
 	: jive::gate(graph, name)
 {}
 
-}
-}
+mux_op::~mux_op() noexcept {}
 
-
-
-
-
-
-
-
-
-
-
-
-static void
-jive_statemux_node_fini_(jive_node * self_);
-
-static bool
-jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_);
-
-static jive_node *
-jive_statemux_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[]);
-
-const jive_node_class JIVE_STATEMUX_NODE = {
-	parent : &JIVE_NODE,
-	name : "STATEMUX",
-	fini : jive_statemux_node_fini_, /* override */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_statemux_node_match_attrs_, /* override */
-	check_operands : NULL,
-	create : jive_statemux_node_create_, /* override */
-};
-
-static void
-jive_statemux_node_fini_(jive_node * self_)
+bool
+mux_op::operator==(const operation & other) const noexcept
 {
-	jive_node_fini_(self_);
+	const mux_op * op = dynamic_cast<const mux_op *>(&other);
+	return op &&
+		op->narguments_ == narguments_ &&
+		op->nresults_ == nresults_ &&
+		*op->state_type_ == *state_type_;
 }
 
-static bool
-jive_statemux_node_match_attrs_(const jive_node * self_, const jive_node_attrs * attrs_)
+size_t
+mux_op::narguments() const noexcept
 {
-	const jive_statemux_node * self = (const jive_statemux_node *) self_;
-	const jive::statemux_operation * attrs = (const jive::statemux_operation *) attrs_;
-	return self->operation().type() == attrs->type();
+	return narguments_;
 }
 
-static jive_node *
-jive_statemux_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
+const jive::base::type &
+mux_op::argument_type(size_t index) const noexcept
 {
-	const jive::statemux_operation * attrs = (const jive::statemux_operation *) attrs_;
-	return jive_statemux_node_create(region, &attrs->type(), noperands, operands, attrs->noutputs());
+	return *state_type_;
+}
+
+size_t
+mux_op::nresults() const noexcept
+{
+	return nresults_;
+}
+
+const jive::base::type &
+mux_op::result_type(size_t index) const noexcept
+{
+	return *state_type_;
 }
 
 jive_node *
-jive_statemux_node_create(jive_region * region,
-	const jive::base::type * statetype,
-	size_t noperands, jive::output * const operands[],
-	size_t noutputs)
+mux_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::state::type*>(statetype));
-	jive_context * context = region->graph->context;
-	jive_statemux_node * node = new jive_statemux_node(
-		jive::statemux_operation(noutputs, *statetype));
-	
-	node->class_ = &JIVE_STATEMUX_NODE;
-	
-	const jive::base::type * operand_types[noperands];
-	const jive::base::type * output_types[noutputs];
-	size_t n;
-	for (n = 0; n < noperands; n++)
-		operand_types[n] = statetype;
-	for (n = 0; n < noutputs; n++)
-		output_types[n] = statetype;
-		
-	jive_node_init_(node, region,
-		noperands, operand_types, operands,
-		noutputs, output_types);
-	
-	return node;
+	return jive_opnode_create(*this, &JIVE_STATEMUX_NODE, region, arguments, arguments + narguments);
+}
+
+std::string
+mux_op::debug_string() const
+{
+	return "STATEMUX";
+}
+
+}
 }
 
 jive::output *
-jive_state_merge(const jive::base::type * statetype, size_t nstates, jive::output * const states[])
+jive_state_merge(const jive::state::type * statetype, size_t nstates, jive::output * const states[])
 {
-	jive_region * region = jive_region_innermost(nstates, states);
-	return jive_statemux_node_create(region, statetype, nstates, states, 1)->outputs[0];
+	jive::state::mux_op op(*statetype, nstates, 1);
+
+	jive::output * result;
+	jive_node_create_normalized(&JIVE_STATEMUX_NODE, states[0]->node()->region->graph,
+		&op, nstates, states, &result);
+	return result;
 }
 
-jive_node *
-jive_state_split(const jive::base::type * statetype, jive::output * state, size_t nstates)
+std::vector<jive::output *>
+jive_state_split(const jive::state::type * statetype, jive::output * state, size_t nstates)
 {
-	jive_region * region = state->node()->region;
-	return jive_statemux_node_create(region, statetype, 1, &state, nstates);
+	jive::state::mux_op op(*statetype, 1, nstates);
+
+	jive::output * results[nstates];
+	jive_node_create_normalized(&JIVE_STATEMUX_NODE, state->node()->region->graph,
+		&op, 1, &state, results);
+
+	return std::vector<jive::output *>(results, results + nstates);
 }
