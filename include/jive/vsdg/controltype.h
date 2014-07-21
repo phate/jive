@@ -85,6 +85,10 @@ private:
 	jive::ctl::type type_;
 };
 
+/* FIXME: no, this is not exactly the right representation for controls,
+ * but leave it for later */
+typedef bool value_repr;
+
 }
 }
 

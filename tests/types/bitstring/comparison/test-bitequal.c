@@ -1,21 +1,22 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
-#include <assert.h>
+#include "bitcmp-test-helpers.h"
 
-#include <jive/vsdg.h>
+#include <assert.h>
+#include <locale.h>
+#include <stdint.h>
+
+#include <jive/types/bitstring.h>
 #include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/bitstring.h>
-
-#include "testnodes.h"
 
 static int test_main(void)
 {
@@ -44,8 +45,8 @@ static int test_main(void)
 	jive_view(graph, stdout);
 
 	assert(jive_node_isinstance(equal0->node(), &JIVE_BITEQUAL_NODE));
-	assert(jive_node_isinstance(equal1->node(), &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(equal2->node(), &JIVE_CONTROL_FALSE_NODE));
+	expect_static_true(equal1);
+	expect_static_false(equal2);
 	assert(jive_node_isinstance(equal3->node(), &JIVE_BITEQUAL_NODE));
 
 	jive_graph_destroy(graph);

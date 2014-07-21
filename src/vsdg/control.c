@@ -1,13 +1,13 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/vsdg/control.h>
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <jive/common.h>
 #include <jive/context.h>
@@ -16,85 +16,37 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
-jive_node *
-jive_control_false_create(jive_region * region)
-{
-	jive_node * self = jive::create_operation_node(
-		jive_op_control_constant(false));
-	jive::ctl::type control;
-	const jive::base::type * control_ptr = &control;
-	self->class_ = &JIVE_CONTROL_FALSE_NODE;
-	jive_node_init_(self, region,
-		0, NULL, NULL,
-		1, &control_ptr);
-	
-	return self;
+namespace jive {
+namespace base {
+// explicit instantiation
+template class domain_const_op<
+	&JIVE_CONTROL_CONSTANT_NODE, ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
+>;
+}
 }
 
-jive_node *
-jive_control_true_create(jive_region * region)
-{
-	jive_node * self = jive::create_operation_node(
-		jive_op_control_constant(true));
-	jive::ctl::type control;
-	const jive::base::type * control_ptr = &control;
-	self->class_ = &JIVE_CONTROL_TRUE_NODE;
-	jive_node_init_(self, region,
-		0, NULL, NULL,
-		1, &control_ptr);
-	
-	return self;
-}
+const jive_node_class JIVE_CONTROL_CONSTANT_NODE = {
+	parent : &JIVE_NULLARY_OPERATION,
+	name : "CTLCONSTANT",
+	fini : jive_node_fini_, /* inherit */
+	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
+};
 
 jive::output *
 jive_control_false(jive_graph * graph)
 {
-	return jive_control_false_create(graph->root_region)->outputs[0];
+	jive::ctl::constant_op op(false);
+	return jive_nullary_operation_create_normalized(&JIVE_CONTROL_CONSTANT_NODE, graph, &op);
 }
 
 jive::output *
 jive_control_true(jive_graph * graph)
 {
-	return jive_control_true_create(graph->root_region)->outputs[0];
+	jive::ctl::constant_op op(true);
+	return jive_nullary_operation_create_normalized(&JIVE_CONTROL_CONSTANT_NODE, graph, &op);
 }
 
-static jive_node *
-jive_control_false_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 0);
-	
-	return jive_control_false_create(region);
-}
-
-static jive_node *
-jive_control_true_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands == 0);
-	
-	return jive_control_true_create(region);
-}
-
-
-const jive_node_class JIVE_CONTROL_FALSE_NODE = {
-	parent : &JIVE_NODE,
-	name : "FALSE",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
-	get_label : jive_node_get_label_,  /* inherit */
-	match_attrs : jive_node_match_attrs_,  /* inherit */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_control_false_node_create_,  /* override */
-};
-
-const jive_node_class JIVE_CONTROL_TRUE_NODE = {
-	parent : &JIVE_NODE,
-	name : "TRUE",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
-	get_label : jive_node_get_label_,  /* inherit */
-	match_attrs : jive_node_match_attrs_,  /* inherit */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_control_true_node_create_,  /* override */
-};

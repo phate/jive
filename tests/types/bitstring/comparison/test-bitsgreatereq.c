@@ -1,20 +1,22 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
+#include "bitcmp-test-helpers.h"
+
 #include <assert.h>
+#include <locale.h>
 #include <stdint.h>
 
-#include <jive/vsdg.h>
+#include <jive/types/bitstring.h>
 #include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/types/bitstring.h>
 
 static int test_main(void)
 {
@@ -48,11 +50,11 @@ static int test_main(void)
 	jive_view(graph, stdout);
 
 	assert(jive_node_isinstance(sgreatereq0->node(), &JIVE_BITSGREATEREQ_NODE));
-	assert(jive_node_isinstance(sgreatereq1->node(), &JIVE_CONTROL_FALSE_NODE));
-	assert(jive_node_isinstance(sgreatereq2->node(), &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(sgreatereq3->node(), &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(sgreatereq4->node(), &JIVE_CONTROL_TRUE_NODE));
-	assert(jive_node_isinstance(sgreatereq5->node(), &JIVE_CONTROL_TRUE_NODE));
+	expect_static_false(sgreatereq1);
+	expect_static_true(sgreatereq2);
+	expect_static_true(sgreatereq3);
+	expect_static_true(sgreatereq4);
+	expect_static_true(sgreatereq5);
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

@@ -1,13 +1,13 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include <jive/vsdg/gamma.h>
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <jive/common.h>
 #include <jive/context.h>
@@ -55,7 +55,10 @@ jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
 }
 
 jive_node_normal_form *
-jive_gamma_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent, jive_graph * graph)
+jive_gamma_node_get_default_normal_form_(
+	const jive_node_class * cls,
+	jive_node_normal_form * parent,
+	jive_graph * graph)
 {
 	jive_gamma_normal_form * normal_form;
 	normal_form = jive_context_malloc(graph->context, sizeof(*normal_form));
@@ -133,7 +136,11 @@ jive_gamma_create(
 	jive_region * true_region = jive_region_create_subregion(region);
 	jive_node * false_alt = jive_gamma_tail_node_create(false_region);
 	jive_node * true_alt = jive_gamma_tail_node_create(true_region);
-	jive_node * gamma = jive_gamma_node_create(region, predicate, true_alt->outputs[0], false_alt->outputs[0]);
+	jive_node * gamma = jive_gamma_node_create(
+		region,
+		predicate,
+		true_alt->outputs[0],
+		false_alt->outputs[0]);
 	
 	size_t n;
 	for (n = 0; n < nvalues; n++) {
@@ -162,11 +169,13 @@ jive_gamma(jive::output * predicate,
 		&JIVE_GAMMA_NODE);
 	
 	if (nf->base.base.enable_mutable && nf->enable_predicate_reduction) {
-		if (jive_node_isinstance(predicate->node(), &JIVE_CONTROL_TRUE_NODE)) {
+		const jive::ctl::constant_op * op =
+			dynamic_cast<const jive::ctl::constant_op *>(&predicate->node()->operation());
+		if (op && op->value()) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = true_values[n];
 			return;
-		} else if (jive_node_isinstance(predicate->node(), &JIVE_CONTROL_FALSE_NODE)) {
+		} else if (op && !op->value()) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = false_values[n];
 			return;
@@ -324,10 +333,13 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 	if (self->enable_predicate_reduction) {
 		jive::output * pred = node->inputs[2]->origin();
 		jive_node * branch = 0;
-		if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_TRUE_NODE))
+		const jive::ctl::constant_op * op =
+			dynamic_cast<const jive::ctl::constant_op *>(&pred->node()->operation());
+		if (op && op->value() == true) {
 			branch = node->producer(0);
-		else if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_FALSE_NODE))
+		} else if (op && op->value() == false) {
 			branch = node->producer(1);
+		}
 		
 		if (!branch)
 			return true;
@@ -372,10 +384,11 @@ jive_gamma_normal_form_operands_are_normalized_(const jive_node_normal_form * se
 	
 	if (self->enable_predicate_reduction) {
 		jive::output * pred = operands[2];
-		if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_TRUE_NODE))
+		const jive::ctl::constant_op * op =
+			dynamic_cast<const jive::ctl::constant_op *>(&pred->node()->operation());
+		if (op) {
 			return false;
-		if (jive_node_isinstance(pred->node(), &JIVE_CONTROL_FALSE_NODE))
-			return false;
+		}
 	}
 	
 	if (self->enable_invariant_reduction) {
