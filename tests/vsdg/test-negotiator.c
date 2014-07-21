@@ -14,6 +14,7 @@
 
 #include <jive/context.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/util/ptr-collection.h>
 #include <jive/view.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/negotiator.h>
@@ -26,126 +27,118 @@ typedef uint32_t test_option_t;
 
 extern const jive_node_class NEGTESTNODE;
 
-class negtest_operation : public jive::operation {
+class negtest_op : public jive::operation {
 public:
 	virtual
-	~negtest_operation() noexcept {}
+	~negtest_op() noexcept {}
 
-	negtest_operation(const negtest_operation & other)
-		: input_options_(other.input_options_)
+	negtest_op(const negtest_op & other)
+		: argument_types_(jive::detail::unique_ptr_vector_copy(other.argument_types_))
+		, result_types_(jive::detail::unique_ptr_vector_copy(other.result_types_))
+		, input_options_(other.input_options_)
 		, output_options_(other.output_options_)
 	{
-		for (const auto & tp : other.output_types_) {
-			output_types_.emplace_back(tp->copy());
-		}
 	}
 
-	negtest_operation(negtest_operation && other) = default;
+	negtest_op(negtest_op && other) = default;
 
-	negtest_operation(
+	negtest_op(
 		size_t ninputs,
 		const test_option_t * input_options,
+		const jive::base::type * const * argument_types,
 		size_t noutputs,
 		const test_option_t * output_options,
-		const jive::base::type * const * output_types)
-		: input_options_(input_options, input_options + ninputs)
+		const jive::base::type * const * result_types)
+		: argument_types_(jive::detail::unique_ptr_vector_copy(
+			jive::detail::make_array_slice(argument_types, ninputs)))
+		, result_types_(jive::detail::unique_ptr_vector_copy(
+			jive::detail::make_array_slice(result_types, noutputs)))
+		, input_options_(input_options, input_options + ninputs)
 		, output_options_(output_options, output_options + noutputs)
 	{
-		for (size_t n = 0; n < noutputs; ++n) {
-			output_types_.emplace_back(output_types[n]->copy());
-		}
+	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override
+	{
+		const negtest_op * op =
+			dynamic_cast<const negtest_op *>(&other);
+		return op &&
+			op->input_options() == input_options() &&
+			op->output_options() == output_options() &&
+			jive::detail::ptr_container_equals(op->argument_types_, argument_types_) &&
+			jive::detail::ptr_container_equals(op->result_types_, result_types_);
+	}
+
+	virtual size_t
+	narguments() const noexcept override
+	{
+		return argument_types_.size();
+	}
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override
+	{
+		return *argument_types_[index];
+	}
+
+	virtual size_t
+	nresults() const noexcept override
+	{
+		return result_types_.size();
+	}
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override
+	{
+		return *result_types_[index];
+	}
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override
+	{
+		return jive_opnode_create(
+			*this,
+			&NEGTESTNODE,
+			region,
+			arguments, arguments + narguments);
+	}
+
+	virtual std::string
+	debug_string() const override
+	{
+		return "NEGTESTNODE";
 	}
 
 	inline size_t ninputs() const noexcept { return input_options_.size(); }
 	inline size_t noutputs() const noexcept { return output_options_.size(); }
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	output_types() const noexcept { return output_types_; }
 	inline const std::vector<test_option_t> &
 	input_options() const noexcept { return input_options_; }
 	inline const std::vector<test_option_t> &
 	output_options() const noexcept { return output_options_; }
 
 private:
+	std::vector<std::unique_ptr<const jive::base::type>> argument_types_;
+	std::vector<std::unique_ptr<const jive::base::type>> result_types_;
 	std::vector<test_option_t> input_options_;
 	std::vector<test_option_t> output_options_;
-	std::vector<std::unique_ptr<jive::base::type>> output_types_;
 };
 
-typedef jive::operation_node<negtest_operation> negtestnode;
-
-static void
-negtestnode_fini_(jive_node * self);
-
-static bool
-negtestnode_match_attrs_(const jive_node * self, const jive_node_attrs * attrs);
-
-static jive_node *
-negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, struct jive::output * const operands[]);
+typedef jive::operation_node<negtest_op> negtestnode;
 
 const jive_node_class NEGTESTNODE = {
 	parent : &JIVE_NODE,
 	name : "NEGTESTNODE",
-	fini : negtestnode_fini_, /* override */
+	fini : jive_node_fini_,
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : negtestnode_match_attrs_, /* override */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : negtestnode_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static void
-negtestnode_init_(
-	negtestnode * self,
-	jive_region * region,
-	
-	size_t noperands,
-	const jive::base::type * const operand_types[],
-	jive::output * const operands[],
-	
-	size_t noutputs,
-	const std::vector<std::unique_ptr<jive::base::type>> & output_types)
-{
-	const jive::base::type * output_types_array[noutputs];
-	for (size_t n = 0; n < noutputs; ++n) {
-		output_types_array[n] = output_types[n].get();
-	}
-	jive_node_init_(self, region,
-		noperands, operand_types, operands,
-		noutputs, output_types_array);
-	jive_context * context = self->region->graph->context;
-}
-
-static void
-negtestnode_fini_(jive_node * self_)
-{
-	jive_node_fini_(self_);
-}
-
-static bool
-negtestnode_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	return false;
-}
-
-static jive_node *
-negtestnode_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, struct jive::output * const operands[])
-{
-	const negtest_operation * attrs = (const negtest_operation *) attrs_;
-	
-	negtestnode * node = new negtestnode(*attrs);
-	node->class_ = &NEGTESTNODE;
-	const jive::base::type * operand_types[noperands];
-	for (size_t n = 0; n < noperands; ++n)
-		operand_types[n] = &operands[n]->type();
-	
-	negtestnode_init_(node, region,
-		noperands, operand_types, operands,
-		attrs->noutputs(), attrs->output_types());
-	
-	return node;
-}
 
 static jive_node *
 jive_negtestnode_create(
@@ -160,7 +153,9 @@ jive_negtestnode_create(
 	const test_option_t output_options[],
 	const jive::base::type * const output_types[])
 {
-	negtest_operation op(noperands, input_options, noutputs, output_options, output_types);
+	negtest_op op(
+		noperands, input_options, operand_types,
+		noutputs, output_options, output_types);
 	
 	const jive_node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &NEGTESTNODE);

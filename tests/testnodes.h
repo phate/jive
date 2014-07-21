@@ -22,7 +22,7 @@ public:
 	~test_operation() noexcept;
 
 	test_operation(
-		size_t noperands, const jive::base::type * const operand_types[],
+		size_t narguments, const jive::base::type * const argument_types[],
 		size_t nresults, const jive::base::type * const result_types[]);
 
 	test_operation(const test_operation & other);
@@ -33,15 +33,33 @@ public:
 	inline
 	test_operation(test_operation && other) noexcept = default;
 	
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	operand_types() const noexcept { return operand_types_; }
+	virtual bool
+	operator==(const operation & other) const noexcept override;
 
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	result_types() const noexcept { return result_types_; }
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 
 private:
-	std::vector<std::unique_ptr<jive::base::type>> operand_types_;
-	std::vector<std::unique_ptr<jive::base::type>> result_types_;
+	std::vector<std::unique_ptr<const jive::base::type>> argument_types_;
+	std::vector<std::unique_ptr<const jive::base::type>> result_types_;
 };
 
 typedef jive::operation_node<test_operation> jive_test_node;
