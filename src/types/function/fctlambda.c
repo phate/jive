@@ -19,81 +19,29 @@
 
 /* lambda enter node */
 
-static jive_node *
-jive_lambda_enter_node_create(jive_region * region)
-{
-	JIVE_DEBUG_ASSERT(region->top == NULL && region->bottom == NULL);
-	jive_node * node = jive::create_operation_node(jive::fct::lambda_enter_operation());
-	
-	node->class_ = &JIVE_LAMBDA_ENTER_NODE;
-	jive::ctl::type ctl;
-	const jive::base::type * ctl_ptr = &ctl;
-	jive_node_init_(node, region,
-		0, NULL, NULL,
-		1, &ctl_ptr);
-	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
-	region->top = node;
-	
-	return node;
-}
-
-static jive_node *
-jive_lambda_enter_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
-{
-	return jive_lambda_enter_node_create(region);
-}
-
 const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 	parent : &JIVE_NODE,
 	name : "LAMBDA_ENTER",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_node_match_attrs_, /* inherit */
-	check_operands : NULL,
-	create : jive_lambda_enter_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 /* lambda leave node */
 
-static jive_node *
-jive_lambda_leave_node_create(jive::output * output)
-{
-	JIVE_DEBUG_ASSERT(output->node()->region->bottom == NULL);
-	
-	jive_node * node = jive::create_operation_node(jive::fct::lambda_leave_operation());
-	
-	node->class_ = &JIVE_LAMBDA_LEAVE_NODE;
-	jive::ctl::type ctl;
-	const jive::base::type * ctl_ptr = &ctl;
-	jive::achr::type anchor;
-	const jive::base::type * ancptr = &anchor;
-	jive_node_init_(node, output->node()->region,
-		1, &ctl_ptr, &output,
-		1, &ancptr);
-	output->node()->region->bottom = node;
-	
-	return node;
-}
-
-static jive_node *
-jive_lambda_leave_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands > 0);
-	return jive_lambda_leave_node_create(operands[0]);
-}
 
 const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	parent : &JIVE_NODE,
 	name : "LAMBDA_LEAVE",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_node_match_attrs_, /* inherit */
-	check_operands : NULL,
-	create : jive_lambda_leave_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr,
 };
 
 /* lambda node */
@@ -101,29 +49,108 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 namespace jive {
 namespace fct {
 
-lambda_operation::~lambda_operation() noexcept
+lambda_head_op::~lambda_head_op() noexcept
 {
 }
 
-lambda_operation::lambda_operation(
-	const lambda_operation & other)
-	: lambda_operation(
+size_t
+lambda_head_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const base::type &
+lambda_head_op::result_type(size_t index) const noexcept
+{
+	static const ctl::type type;
+	return type;
+}
+
+jive_node *
+lambda_head_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	JIVE_DEBUG_ASSERT(!region->top);
+	jive_node * node =jive_opnode_create(
+		*this,
+		&JIVE_LAMBDA_ENTER_NODE,
+		region,
+		arguments, arguments + narguments);
+	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
+	region->top = node;
+	return node;
+}
+
+std::string
+lambda_head_op::debug_string() const
+{
+	return "LAMBDA_HEAD";
+}
+
+lambda_tail_op::~lambda_tail_op() noexcept
+{
+}
+
+size_t
+lambda_tail_op::narguments() const noexcept
+{
+	return 1;
+}
+
+const base::type &
+lambda_tail_op::argument_type(size_t index) const noexcept
+{
+	static const ctl::type type;
+	return type;
+}
+
+jive_node *
+lambda_tail_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	JIVE_DEBUG_ASSERT(!region->bottom);
+	jive_node * node = jive_opnode_create(
+		*this,
+		&JIVE_LAMBDA_LEAVE_NODE,
+		region,
+		arguments, arguments + narguments);
+	region->bottom = node;
+	return node;
+}
+
+std::string
+lambda_tail_op::debug_string() const
+{
+	return "LAMBDA_TAIL";
+}
+
+lambda_op::~lambda_op() noexcept
+{
+}
+
+lambda_op::lambda_op(
+	const lambda_op & other)
+	: lambda_op(
 		other.function_type_,
 		other.argument_gates_,
 		other.return_gates_)
 {
 }
 
-lambda_operation::lambda_operation(
-	lambda_operation && other)
-	: lambda_operation(
+lambda_op::lambda_op(
+	lambda_op && other)
+	: lambda_op(
 		std::move(other.function_type_),
 		std::move(other.argument_gates_),
 		std::move(other.return_gates_))
 {
 }
 
-lambda_operation::lambda_operation(
+lambda_op::lambda_op(
 	const jive::fct::type & function_type,
 	const std::vector<jive::gate *> & argument_gates,
 	const std::vector<jive::gate *> & return_gates)
@@ -133,7 +160,7 @@ lambda_operation::lambda_operation(
 {
 }
 
-lambda_operation::lambda_operation(
+lambda_op::lambda_op(
 	jive::fct::type && function_type,
 	std::vector<jive::gate *> && argument_gates,
 	std::vector<jive::gate *> && return_gates) noexcept
@@ -143,23 +170,46 @@ lambda_operation::lambda_operation(
 {
 }
 
-}
+bool
+lambda_op::operator==(const operation & other) const noexcept
+{
+	const lambda_op * op =
+		dynamic_cast<const lambda_op *>(&other);
+	return op && op->function_type() == function_type();
 }
 
-static void
-jive_lambda_node_init_(
-	jive_lambda_node * self,
-	jive_region * function_region)
+size_t
+lambda_op::nresults() const noexcept
 {
-	jive_region * region = function_region->parent;
-	jive_context * context = function_region->graph->context;
-	
-	jive::achr::type anchor_type;
-	const jive::base::type * ancptr = &anchor_type;
-	const jive::base::type * function_type = &self->operation().function_type();
-	jive_node_init_(self, region,
-		1, &ancptr, &function_region->bottom->outputs[0],
-		1, &function_type);
+	return 1;
+}
+
+const jive::base::type &
+lambda_op::result_type(size_t index) const noexcept
+{
+	return function_type();
+}
+
+jive_node *
+lambda_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	return jive_opnode_create(
+		*this,
+		&JIVE_LAMBDA_NODE,
+		region,
+		arguments, arguments + narguments);
+}
+
+std::string
+lambda_op::debug_string() const
+{
+	return "LAMBDA";
+}
+
+}
 }
 
 static jive_node *
@@ -187,52 +237,24 @@ jive_lambda_node_create(jive_region * function_region)
 		narguments, argument_types,
 		nreturns, return_types);
 	
-	jive::fct::lambda_operation op(
+	jive::fct::lambda_op op(
 		std::move(function_type),
 		std::move(argument_gates),
 		std::move(return_gates));
-	
-	jive_lambda_node * node = new jive_lambda_node(op);
-	node->class_ = &JIVE_LAMBDA_NODE;
-	jive_lambda_node_init_(node, function_region);
-	return node;
+
+	return op.create_node(function_region->parent, 1, &function_region->bottom->outputs[0]);
 }
 
-static void
-jive_lambda_node_fini_(jive_node * self_)
-{
-	jive_node_fini_(self_);
-}
-
-static jive_node *
-jive_lambda_node_create_(struct jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	JIVE_DEBUG_ASSERT(noperands > 0);
-	return jive_lambda_node_create(operands[0]->node()->region);
-}
-
-static bool
-jive_lambda_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	const jive::fct::lambda_operation * first = &((const jive_lambda_node *)self)->operation();
-	const jive::fct::lambda_operation * second = (const jive::fct::lambda_operation *) attrs;
-
-	return
-		first->function_type() == second->function_type() &&
-		first->argument_gates() == second->argument_gates() &&
-		first->return_gates() == second->return_gates();
-}
 
 const jive_node_class JIVE_LAMBDA_NODE = {
 	parent : &JIVE_NODE,
 	name : "LAMBDA",
-	fini : jive_lambda_node_fini_, /* override */
+	fini : jive_node_fini_,
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_lambda_node_match_attrs_, /* override */
-	check_operands : NULL,
-	create : jive_lambda_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 bool
@@ -297,7 +319,7 @@ jive_lambda_begin(
 	lambda->arguments = jive_context_malloc(graph->context, sizeof(*lambda->arguments) * narguments);
 	lambda->narguments = narguments;
 
-	jive_lambda_enter_node_create(lambda->region);
+	jive::fct::lambda_head_op().create_node(lambda->region, 0, nullptr);
 
 	size_t n;
 	for (n = 0; n < narguments; n++) {
@@ -319,7 +341,7 @@ jive_lambda_end(jive_lambda * self,
 	jive_graph * graph = region->graph;
 	jive_context * context = graph->context;
 
-	jive_node * leave = jive_lambda_leave_node_create(region->top->outputs[0]);
+	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, 1, &region->top->outputs[0]);
 
 	size_t n;
 	for (n = 0; n < nresults; n++) {

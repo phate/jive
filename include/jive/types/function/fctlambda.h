@@ -11,30 +11,92 @@
 #include <vector>
 
 #include <jive/types/function/fcttype.h>
+#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node.h>
 
 namespace jive {
 namespace fct {
 
-class lambda_operation final : public jive::operation {
+class lambda_head_op final : public region_head_op {
 public:
-	virtual ~lambda_operation() noexcept;
+	virtual
+	~lambda_head_op() noexcept;
 
-	lambda_operation(
-		const lambda_operation & other);
+	virtual size_t
+	nresults() const noexcept override;
 
-	lambda_operation(
-		lambda_operation && other);
+	virtual const base::type &
+	result_type(size_t index) const noexcept override;
 
-	lambda_operation(
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+};
+
+class lambda_tail_op final : public region_tail_op {
+public:
+	virtual
+	~lambda_tail_op() noexcept;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+};
+
+class lambda_op final : public region_anchor_op {
+public:
+	virtual
+	~lambda_op() noexcept;
+
+	lambda_op(
+		const lambda_op & other);
+
+	lambda_op(
+		lambda_op && other);
+
+	lambda_op(
 		const jive::fct::type & function_type,
 		const std::vector<jive::gate *> & argument_gates,
 		const std::vector<jive::gate *> & return_gates);
 
-	lambda_operation(
+	lambda_op(
 		jive::fct::type && function_type,
 		std::vector<jive::gate *> && argument_gates,
 		std::vector<jive::gate *> && return_gates) noexcept;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 
 	inline const jive::fct::type &
 	function_type() const noexcept
@@ -60,16 +122,10 @@ private:
 	std::vector<jive::gate *> return_gates_;
 };
 
-class lambda_enter_operation final : public jive::operation {
-};
-
-class lambda_leave_operation final : public jive::operation {
-};
-
 }
 }
 
-typedef jive::operation_node<jive::fct::lambda_operation> jive_lambda_node;
+typedef jive::operation_node<jive::fct::lambda_op> jive_lambda_node;
 
 extern const jive_node_class JIVE_LAMBDA_NODE;
 extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
