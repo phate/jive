@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -7,23 +7,23 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
 
-#include <jive/types/bitstring.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/memlayout-simple.h>
+#include <jive/types/bitstring.h>
+#include <jive/types/record/rcdgroup.h>
+#include <jive/types/union/unntype.h>
+#include <jive/types/union/unnunify.h>
 #include <jive/util/buffer.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
-#include <jive/types/record/rcdgroup.h>
-#include <jive/types/union/unnunify.h>
-#include <jive/types/union/unntype.h>
 
 typedef jive::output *(*data_def_fn)(jive_graph *);
 
@@ -38,11 +38,11 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	jive::output * value = data_def(graph);
 	jive::output * dataobj = jive_dataobj(value, &layout_mapper.base.base);
 	jive_linker_symbol my_label_symbol;
-	jive_node * name = jive_objdef_node_create(
+	jive::output * name = jive_objdef_create(
 		dataobj,
 		"my_label",
 		&my_label_symbol);
-	jive_graph_export(graph, name->outputs[0]);
+	jive_graph_export(graph, name);
 	
 	jive_buffer buffer;
 	jive_buffer_init(&buffer, ctx);
@@ -175,13 +175,34 @@ static int test_main(void)
 	
 	jive_context * ctx = jive_context_create();
 	
-	verify_asm_definition(ctx, make_8bit_const, "\t.byte 0xaa\n");
-	verify_asm_definition(ctx, make_16bit_const, "\t.value 0xaaaa\n");
-	verify_asm_definition(ctx, make_32bit_const, "\t.long 0xaaaaaaaa\n");
-	verify_asm_definition(ctx, make_record1, "\t.long 0xaaaaaaaa\n" "\t.value 0xaaaa\n" "\t.byte 0xaa\n" "\t.byte 0x0\n");
-	verify_asm_definition(ctx, make_record2, "\t.value 0xaaaa\n" "\t.value 0xaaaa\n" "\t.long 0xaaaaaaaa\n");
-	verify_asm_definition(ctx, make_union1, "\t.value 0xaaaa\n" "\t.byte 0x0\n" "\t.byte 0x0\n");
-	verify_asm_definition(ctx, make_union2, "\t.long 0xaaaaaaaa\n");
+	verify_asm_definition(
+		ctx,
+		make_8bit_const,
+		"\t.byte 0xaa\n");
+	verify_asm_definition(
+		ctx,
+		make_16bit_const,
+		"\t.value 0xaaaa\n");
+	verify_asm_definition(
+		ctx,
+		make_32bit_const,
+		"\t.long 0xaaaaaaaa\n");
+	verify_asm_definition(
+		ctx,
+		make_record1,
+		"\t.long 0xaaaaaaaa\n" "\t.value 0xaaaa\n" "\t.byte 0xaa\n" "\t.byte 0x0\n");
+	verify_asm_definition(
+		ctx,
+		make_record2,
+		"\t.value 0xaaaa\n" "\t.value 0xaaaa\n" "\t.long 0xaaaaaaaa\n");
+	verify_asm_definition(
+		ctx,
+		make_union1,
+		"\t.value 0xaaaa\n" "\t.byte 0x0\n" "\t.byte 0x0\n");
+	verify_asm_definition(
+		ctx,
+		make_union2,
+		"\t.long 0xaaaaaaaa\n");
 	
 	assert(jive_context_is_empty(ctx));
 	

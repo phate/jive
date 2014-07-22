@@ -48,12 +48,12 @@ static int test_main(void)
 	
 	jive_node * i386_fn = jive_i386_subroutine_convert(graph->root_region, abstract_fn);
 	jive_linker_symbol add_int32_symbol;
-	jive_node * fn_name = jive_objdef_node_create(
+	jive::output * fn_name = jive_objdef_create(
 		i386_fn->outputs[0],
 		"add_int32",
 		&add_int32_symbol);
 
-	jive_graph_export(graph, fn_name->outputs[0]);
+	jive_graph_export(graph, fn_name);
 	jive_graph_prune(graph);
 	
 	jive_view(graph, stdout);

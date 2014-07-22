@@ -20,19 +20,63 @@ class output;
 
 class objdef_operation final : public operation {
 public:
-	inline objdef_operation(
+	virtual
+	~objdef_operation() noexcept;
+
+	inline
+	objdef_operation(
 		const std::string & name,
-		const jive_linker_symbol * symbol)
+		const jive_linker_symbol * symbol,
+		const base::type & type)
 		: name_(name)
 		, symbol_(symbol)
+		, type_(type.copy())
 	{
 	}
 
+	inline
+	objdef_operation(
+		const objdef_operation & other)
+		: name_(other.name_)
+		, symbol_(other.symbol_)
+		, type_(other.type_->copy())
+	{
+	}
+
+	inline
+	objdef_operation(objdef_operation && other) noexcept = default;
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
 	const std::string & name() const noexcept { return name_; }
 	const jive_linker_symbol * symbol() const noexcept { return symbol_; }
+
 private:
 	std::string name_;
 	const jive_linker_symbol * symbol_;
+	std::unique_ptr<base::type> type_;
 };
 
 }
@@ -41,19 +85,10 @@ extern const struct jive_node_class JIVE_OBJDEF_NODE;
 
 typedef jive::operation_node<jive::objdef_operation> jive_objdef_node;
 
-struct jive_node *
-jive_objdef_node_create(
+jive::output *
+jive_objdef_create(
 	jive::output * output,
 	const char * name,
-	const struct jive_linker_symbol * symbol);
-
-JIVE_EXPORTED_INLINE jive_objdef_node *
-jive_objdef_node_cast(jive_node * node)
-{
-	if (node->class_ == &JIVE_OBJDEF_NODE)
-		return (jive_objdef_node *) node;
-	else
-		return NULL;
-}
+	const jive_linker_symbol * symbol);
 
 #endif

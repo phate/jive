@@ -93,11 +93,11 @@ static int test_main(void)
 	jive_linker_symbol hello_world_symbol;
 	jive_label_external hello_world_label;
 	jive_label_external_init(&hello_world_label, ctx, "hello_world", &hello_world_symbol);
-	jive_node * str_name = jive_objdef_node_create(
+	jive::output * str_name = jive_objdef_create(
 		make_string(graph, hello_world),
 		"hello_world",
 		&hello_world_symbol);
-	jive_graph_export(graph, str_name->outputs[0]);
+	jive_graph_export(graph, str_name);
 	
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
@@ -170,11 +170,11 @@ static int test_main(void)
 	
 	jive_node * main_fn = jive_subroutine_end(i386_fn);
 	
-	jive_node * fn_name = jive_objdef_node_create(
+	jive::output * fn_name = jive_objdef_create(
 		main_fn->outputs[0],
 		"main",
 		&main_symbol);
-	jive_graph_export(graph, fn_name->outputs[0]);
+	jive_graph_export(graph, fn_name);
 	jive_graph_prune(graph);
 	
 	//jive_view(graph, stdout);

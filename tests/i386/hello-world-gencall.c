@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -92,11 +92,11 @@ static int test_main(void)
 	jive_linker_symbol hello_world_symbol;
 	jive_label_external hello_world_label;
 	jive_label_external_init(&hello_world_label, ctx, "hello_world", &hello_world_symbol);
-	jive_node * str_name = jive_objdef_node_create(
+	jive::output * str_name = jive_objdef_create(
 		make_string(graph, hello_world),
 		"hello_world",
 		&hello_world_symbol);
-	jive_graph_export(graph, str_name->outputs[0]);
+	jive_graph_export(graph, str_name);
 	
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
@@ -131,7 +131,11 @@ static int test_main(void)
 	jive_node_add_input(load_fd, &control_type, control);
 	
 	jive::output * write_fn_address = jive_label_to_address_create(graph, &write_label.base);
-	jive::output * tmparray0[] = {load_fd->outputs[0], load_str_addr->outputs[0], load_str_len->outputs[0]};
+	jive::output * tmparray0[] = {
+		load_fd->outputs[0],
+		load_str_addr->outputs[0],
+		load_str_len->outputs[0]
+	};
 	jive_node * call_write = jive_call_by_address_node_create(
 		fn_region, write_fn_address, NULL,
 		3, tmparray0,
@@ -146,11 +150,11 @@ static int test_main(void)
 	
 	jive_node * main_fn = jive_subroutine_end(i386_fn);
 	
-	jive_node * fn_name = jive_objdef_node_create(
+	jive::output * fn_name = jive_objdef_create(
 		main_fn->outputs[0],
 		"main",
 		&main_symbol);
-	jive_graph_export(graph, fn_name->outputs[0]);
+	jive_graph_export(graph, fn_name);
 	jive_graph_prune(graph);
 	//jive_view(graph, stdout);
 	

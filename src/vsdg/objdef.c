@@ -18,82 +18,93 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/statetype.h>
 
-static void
-jive_objdef_node_init_(
-	jive_objdef_node * self,
+namespace jive {
+
+objdef_operation::~objdef_operation() noexcept
+{
+}
+
+bool
+objdef_operation::operator==(const operation & other) const noexcept
+{
+	const objdef_operation * op =
+		dynamic_cast<const objdef_operation *>(&other);
+	return op &&
+		op->name() == name() &&
+		op->symbol() == symbol() &&
+		*op->type_ == *type_;
+}
+
+size_t
+objdef_operation::narguments() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+objdef_operation::argument_type(size_t index) const noexcept
+{
+	return *type_;
+}
+
+size_t
+objdef_operation::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+objdef_operation::result_type(size_t index) const noexcept
+{
+	/* FIXME: this is horribly wrong, but we don't have another type right
+	now for putting in here, this entire node needs to be remodeled */
+	static const jive::ctl::type type;
+	return type;
+}
+
+jive_node *
+objdef_operation::create_node(
 	jive_region * region,
-	jive::output * obj)
+	size_t narguments,
+	jive::output * const arguments[]) const
 {
-	/* FIXME: this is horribly wrong, but we don't have another type right now for putting in here,
-						this entire node needs to be remodeled
-	*/
-	jive::ctl::type stype;
-	const jive::base::type * stype_ptr = &stype;
-	const jive::base::type * type = &obj->type();
-	jive_node_init_(self, region,
-		1, &type, &obj,
-		1, &stype_ptr);
-	
-	if (obj->node()->ninputs < 1 || !dynamic_cast<jive::achr::input*>(obj->node()->inputs[0])) {
-		jive_context_fatal_error(region->graph->context,
-			"Type mismatch: object definitions can only be applied to region anchor nodes");
-	}
+	return jive_opnode_create(
+		*this,
+		&JIVE_OBJDEF_NODE,
+		region,
+		arguments, arguments + narguments);
 }
 
-static void
-jive_objdef_node_fini_(jive_node * self_)
+std::string
+objdef_operation::debug_string() const
 {
-	jive_node_fini_(self_);
+	return name();
 }
 
-static void
-jive_objdef_node_get_label_(const jive_node * self_, struct jive_buffer * buffer)
-{
-	const jive_objdef_node * self = (const jive_objdef_node *) self_;
-	jive_buffer_putstr(buffer, self->operation().name().c_str());
-}
-
-static bool
-jive_objdef_node_match_attrs_(const jive_node * self, const jive_node_attrs * attrs)
-{
-	return false;
-}
-
-static jive_node *
-jive_objdef_node_create_(jive_region * region, const jive_node_attrs * attrs_,
-	size_t noperands, jive::output * const operands[])
-{
-	const jive::objdef_operation * attrs = (const jive::objdef_operation *) attrs_;
-	
-	jive_objdef_node * other = new jive_objdef_node(*attrs);
-	other->class_ = &JIVE_OBJDEF_NODE;
-	jive_objdef_node_init_(other, region, operands[0]);
-	
-	return other;
 }
 
 const jive_node_class JIVE_OBJDEF_NODE = {
 	parent : &JIVE_NODE,
 	name : "OBJDEF",
-	fini : jive_objdef_node_fini_, /* override */
+	fini : jive_node_fini_,
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_objdef_node_get_label_, /* override */
-	match_attrs : jive_objdef_node_match_attrs_, /* override */
-	check_operands : NULL,
-	create : jive_objdef_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
-jive_node *
-jive_objdef_node_create(
+jive::output *
+jive_objdef_create(
 	jive::output * output,
 	const char * name,
-	const struct jive_linker_symbol * symbol)
+	const jive_linker_symbol * symbol)
 {
-	jive_region * region = output->node()->region;
-	jive_objdef_node * self = new jive_objdef_node(
-		jive::objdef_operation(name, symbol));
-	self->class_ = &JIVE_OBJDEF_NODE;
-	jive_objdef_node_init_(self, region, output);
-	
-	return self;
+	jive::objdef_operation op(name, symbol, output->type());
+	jive::output * results[1];
+	jive_node_create_normalized(
+		&JIVE_OBJDEF_NODE,
+		output->node()->region->graph,
+		&op, 1, &output, results);
+	return results[0];
 }
