@@ -18,16 +18,63 @@
 
 /* graph tail node */
 
-static jive_node *
-jive_graph_tail_node_create_(struct jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
+namespace jive {
+
+graph_tail_operation::~graph_tail_operation() noexcept
+{
+}
+
+bool
+graph_tail_operation::operator==(const operation & other) const noexcept
+{
+	return dynamic_cast<const graph_tail_operation *>(&other);
+}
+
+size_t
+graph_tail_operation::narguments() const noexcept
+{
+	return 0;
+}
+
+const jive::base::type &
+graph_tail_operation::argument_type(size_t index) const noexcept
+{
+	throw std::logic_error("tail node has no arguments");
+}
+
+size_t
+graph_tail_operation::nresults() const noexcept
+{
+	return 0;
+}
+
+const jive::base::type &
+graph_tail_operation::result_type(size_t index) const noexcept
+{
+	throw std::logic_error("tail node has no results");
+}
+
+jive_node *
+graph_tail_operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 
 	jive_graph_tail_node * node = new jive_graph_tail_node(jive::graph_tail_operation());
 	node->class_ = &JIVE_GRAPH_TAIL_NODE;
-	jive_node_init_(node, region, 0, NULL, NULL, 0, NULL);
+	jive_node_init_(node, region, 0, nullptr, nullptr, 0, nullptr);
+
 	return node;
+}
+
+std::string
+graph_tail_operation::debug_string() const
+{
+	return "GRAPH_TAIL";
+}
+
 }
 
 const jive_node_class JIVE_GRAPH_TAIL_NODE = {
@@ -35,10 +82,10 @@ const jive_node_class JIVE_GRAPH_TAIL_NODE = {
 	name : "GRAPH_TAIL",
 	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
-	get_label : jive_node_get_label_, /* inherit */
-	match_attrs : jive_node_match_attrs_, /* inherit */
-	check_operands : jive_node_check_operands_, /* inherit */
-	create : jive_graph_tail_node_create_, /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 /* graph */
@@ -97,7 +144,8 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	
 	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
 	jive_region_init_(self->root_region, self, 0);
-	self->root_region->bottom = jive_graph_tail_node_create_(self->root_region, NULL, 0, NULL);
+	self->root_region->bottom =
+		jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
 	
 	self->ntracker_slots = 0;
 	self->tracker_slots = 0;
