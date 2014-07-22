@@ -11,7 +11,7 @@
 #include <jive/vsdg/node.h>
 
 namespace jive {
-	class gate;
+class gate;
 }
 
 struct jive_graph;
@@ -23,14 +23,66 @@ extern const jive_node_class JIVE_THETA_HEAD_NODE;
 extern const jive_node_class JIVE_THETA_TAIL_NODE;
 extern const jive_node_class JIVE_THETA_NODE;
 
-class jive_op_theta_head final : public jive::operation {
+namespace jive {
+
+class theta_head_op final : public region_head_op {
+public:
+	virtual
+	~theta_head_op() noexcept;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
-class jive_op_theta_tail final : public jive::operation {
+class theta_tail_op final : public region_tail_op {
+public:
+	virtual
+	~theta_tail_op() noexcept;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
-class jive_op_theta final : public jive::operation {
+class theta_op final : public region_anchor_op {
+public:
+	virtual
+	~theta_op() noexcept;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
+
+}
 
 typedef struct jive_theta jive_theta;
 typedef struct jive_theta_loopvar jive_theta_loopvar;
