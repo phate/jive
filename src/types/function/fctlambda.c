@@ -534,7 +534,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	jive_phi_node * phi_node = NULL;
 	jive_phi_extension * phi_ext = NULL;
 	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
-		phi_node = jive_phi_node_cast(jive_region_get_anchor(lambda_region->parent));
+		phi_node = static_cast<jive_phi_node *>(jive_region_get_anchor(lambda_region->parent));
 
 		jive::fct::type fcttype(nalive_parameters, alive_parameter_types, nalive_results,
 			alive_result_types);

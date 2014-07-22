@@ -40,34 +40,68 @@ extern const jive_anchor_node_class JIVE_PHI_NODE;
 extern const jive_node_class JIVE_PHI_ENTER_NODE;
 extern const jive_node_class JIVE_PHI_LEAVE_NODE;
 
-class jive_op_phi_enter final : public jive::operation {
+namespace jive {
+
+class phi_head_op final : public region_head_op {
+public:
+	virtual
+	~phi_head_op() noexcept;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
-class jive_op_phi_leave final : public jive::operation {
+class phi_tail_op final : public region_tail_op {
+public:
+	virtual
+	~phi_tail_op() noexcept;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
-class jive_op_phi final : public jive::operation {
+class phi_op final : public region_anchor_op {
+public:
+	virtual
+	~phi_op() noexcept;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
-typedef jive::operation_node<jive_op_phi> jive_phi_node;
-
-JIVE_EXPORTED_INLINE jive_phi_node *
-jive_phi_node_cast(struct jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
-		return (jive_phi_node *) node;
-	else
-		return NULL;
 }
 
-JIVE_EXPORTED_INLINE const jive_phi_node *
-jive_phi_node_const_cast(const struct jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_PHI_NODE))
-		return (const jive_phi_node *) node;
-	else
-		return NULL;
-}
+typedef jive::operation_node<jive::phi_op> jive_phi_node;
 
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_phi_node_get_enter_node(const jive_phi_node * self)
