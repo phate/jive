@@ -286,7 +286,7 @@ jive_subroutine_serialize(
 	struct jive_serialization_driver * driver,
 	const jive_node_attrs * attrs_, jive_token_ostream * os)
 {
-	const jive::subroutine_operation * attrs = (const jive::subroutine_operation *) attrs_;
+	const jive::subroutine_op * attrs = (const jive::subroutine_op *) attrs_;
 	jive_subroutine_deprecated * subroutine = attrs->subroutine();
 	
 	if (subroutine->class_ == &JIVE_I386_SUBROUTINE)
@@ -474,10 +474,14 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_LABEL_TO_BITSTRING_NODE, "label2bits",
 	jive_label_to_bitstring_serialize,
 	jive_label_to_bitstring_deserialize);
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
-	JIVE_SUBROUTINE_ENTER_NODE, "subroutine_enter");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
-	JIVE_SUBROUTINE_LEAVE_NODE, "subroutine_leave");
+JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
+	JIVE_SUBROUTINE_ENTER_NODE,
+	jive::subroutine_head_op,
+	"subroutine_enter");
+JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
+	JIVE_SUBROUTINE_LEAVE_NODE,
+	jive::subroutine_tail_op,
+	"subroutine_leave");
 JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_SUBROUTINE_NODE, "subroutine",
 	jive_subroutine_serialize,

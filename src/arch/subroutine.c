@@ -47,7 +47,7 @@ jive_region_get_subroutine_node(const jive_region * region)
 	for (; region; region = region->parent) {
 		if (!region->anchor)
 			continue;
-		jive_subroutine_node * sub = jive_subroutine_node_cast(
+		jive_subroutine_node * sub = dynamic_cast<jive_subroutine_node *>(
 			region->anchor->node);
 		if (sub)
 			return sub;
@@ -113,9 +113,10 @@ jive_subroutine_create_region_and_nodes(
 {
 	jive_region * subroutine_region = jive_region_create_subregion(parent_region);
 	subroutine_region->attrs.section = jive_region_section_code;
-	jive_subroutine_leave_node_create(
-		subroutine_region,
-		jive_subroutine_enter_node_create(subroutine_region)->outputs[0]);
+	jive_node * enter = jive::subroutine_head_op().create_node(
+		subroutine_region, 0, nullptr);
+	jive_node * leave = jive::subroutine_tail_op().create_node(
+		subroutine_region, enter->noutputs, &enter->outputs[0]);
 	jive_subroutine_node_create(subroutine_region, subroutine);
 	subroutine->region = subroutine_region;
 }

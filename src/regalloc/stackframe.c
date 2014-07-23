@@ -317,7 +317,7 @@ region_subroutine_prepare_stackframe(jive_shaped_graph * shaped_graph, jive_regi
 	if (!region->anchor)
 		return;
 	jive_node * node_ = region->anchor->node;
-	jive_subroutine_node * node = jive_subroutine_node_cast(node_);
+	jive_subroutine_node * node = dynamic_cast<jive_subroutine_node *>(node_);
 	if (!node)
 		return;
 	
