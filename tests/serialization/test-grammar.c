@@ -1,21 +1,21 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
-#include <jive/types/bitstring.h>
-#include <jive/context.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
+#include <jive/context.h>
 #include <jive/serialization/grammar.h>
 #include <jive/serialization/token-stream.h>
+#include <jive/types/bitstring.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
@@ -363,7 +363,7 @@ static int test_main(void)
 	verify_serialize_nodeexpr(cat16n,
 		2, tmparray9, tmparray10, /* gates */
 		tmparray11, tmparray12,
-		"(a:root<> b:root<>;c:root<>:bit8gate) bitconcat<> (out:root<>;r:stackslot<4,4>:stackgate)");
+		"(a:root<> b:root<>;c:root<>:bit8gate) bitconcat<8,8> (out:root<>;r:stackslot<4,4>:stackgate)");
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

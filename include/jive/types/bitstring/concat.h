@@ -7,6 +7,8 @@
 #ifndef JIVE_TYPES_BITSTRING_CONCAT_H
 #define JIVE_TYPES_BITSTRING_CONCAT_H
 
+#include <vector>
+
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
@@ -20,8 +22,37 @@ class concat_op final : public jive::base::binary_op {
 public:
 	virtual ~concat_op() noexcept;
 
+	explicit inline
+	concat_op(std::vector<type> argument_types)
+		: argument_types_(std::move(argument_types))
+		, result_type_(aggregate_arguments(argument_types_))
+	{
+	}
+
+	inline
+	concat_op(const concat_op & other)
+		: argument_types_(other.argument_types_)
+		, result_type_(other.result_type_)
+	{
+	}
+
+	inline
+	concat_op(concat_op && other) noexcept = default;
+
 	virtual bool
 	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
 
 	virtual jive_node *
 	create_node(
@@ -46,6 +77,20 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	inline const std::vector<type> &
+	argument_types() const noexcept
+	{
+		return argument_types_;
+	}
+
+private:
+	static type
+	aggregate_arguments(
+		const std::vector<type>& argument_types) noexcept;
+
+	std::vector<type> argument_types_;
+	type result_type_;
 };
 
 }

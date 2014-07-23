@@ -93,6 +93,54 @@ jive_bitslice_deserialize(
 	return true;
 }
 
+static void
+jive_bitconcat_serialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	const jive_node_attrs * attrs_, jive_token_ostream * os)
+{
+	const jive::bits::concat_op * op = static_cast<const jive::bits::concat_op *>(attrs_);
+	bool first = true;
+	for (const jive::bits::type & t : op->argument_types()) {
+		if (!first) {
+			jive_token_ostream_char(os, ',');
+		} else {
+			first = false;
+		}
+		jive_token_ostream_integral(os, t.nbits());
+	}
+}
+
+static bool
+jive_bitconcat_deserialize(
+	const jive_serialization_nodecls * self,
+	struct jive_serialization_driver * driver,
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[],
+	jive_token_istream * is,
+	jive_node ** node)
+{
+	std::vector<jive::bits::type> types;
+	
+	for(;;) {
+		uint64_t bits;
+		if (!jive_deserialize_uint(driver, is, &bits)) {
+			return false;
+		}
+		types.emplace_back(bits);
+		if (jive_token_istream_current(is)->type == jive_token_comma) {
+			jive_token_istream_advance(is);
+		} else {
+			break;
+		}
+	}
+
+	*node = jive::bits::concat_op(std::move(types)).create_node(region, narguments, arguments);
+	
+	return true;
+}
+
 template<typename Operation>
 static bool
 jive_serialization_nodecls_deserialize_bitbinary1(
@@ -164,10 +212,10 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	jive_bitslice_serialize,
 	jive_bitslice_deserialize);
 
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_BITCONCAT_NODE,
-	jive::bits::concat_op,
-	"bitconcat");
+JIVE_SERIALIZATION_NODECLS_REGISTER(
+	JIVE_BITCONCAT_NODE, "bitconcat",
+	jive_bitconcat_serialize,
+	jive_bitconcat_deserialize);
 
 JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
 	JIVE_BITAND_NODE, jive::bits::and_op, "bitand");

@@ -77,18 +77,32 @@ const jive_node_class JIVE_BITCONCAT_NODE = {
 };
 
 jive::output *
-jive_bitconcat(size_t noperands, struct jive::output * const * operands)
+jive_bitconcat(size_t narguments, jive::output * const * arguments)
 {
-	JIVE_DEBUG_ASSERT(noperands != 0);
+	std::vector<jive::bits::type> types;
+	for (size_t n = 0; n < narguments; ++n) {
+		types.push_back(dynamic_cast<const jive::bits::type &>(arguments[n]->type()));
+	}
 
-	jive_graph * graph = operands[0]->node()->graph;
-	jive::bits::concat_op op;
+	jive_graph * graph = arguments[0]->node()->graph;
+
+	jive::bits::concat_op op(std::move(types));
 	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE, graph,
-		&op, noperands, operands);
+		&op, narguments, arguments);
 }
 
 namespace jive {
 namespace bits {
+
+type
+concat_op::aggregate_arguments(const std::vector<type>& argument_types) noexcept
+{
+	size_t total = 0;
+	for (const type & t : argument_types) {
+		total += t.nbits();
+	}
+	return type(total);
+}
 
 concat_op::~concat_op() noexcept
 {
@@ -97,8 +111,32 @@ concat_op::~concat_op() noexcept
 bool
 concat_op::operator==(const operation & other) const noexcept
 {
-	const concat_op * o = dynamic_cast<const concat_op *>(&other);
-	return o != nullptr;
+	const concat_op * op = dynamic_cast<const concat_op *>(&other);
+	return op && op->argument_types_ == argument_types_;
+}
+
+size_t
+concat_op::narguments() const noexcept
+{
+	return argument_types_.size();
+}
+
+const jive::base::type &
+concat_op::argument_type(size_t index) const noexcept
+{
+	return argument_types_[index];
+}
+
+size_t
+concat_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const jive::base::type &
+concat_op::result_type(size_t index) const noexcept
+{
+	return result_type_;
 }
 
 jive_node *
@@ -107,14 +145,17 @@ concat_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments >= 2);
+	std::vector<type> types;
+	for (size_t n = 0; n < narguments; ++n) {
+		types.push_back(dynamic_cast<const type &>(arguments[n]->type()));
+	}
 
-	jive_node * node = jive::create_operation_node(jive::bits::concat_op());
-	node->class_ = &JIVE_BITCONCAT_NODE;
-	jive_bitconcat_node_init_(node, region, narguments, arguments);
-	return node;
+	return jive_opnode_create(
+		concat_op(std::move(types)),
+		&JIVE_BITCONCAT_NODE,
+		region,
+		arguments, arguments + narguments);
 }
-
 
 jive_binop_reduction_path_t
 concat_op::can_reduce_operand_pair(
