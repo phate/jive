@@ -22,11 +22,54 @@ namespace jive {
 extern const jive_node_class JIVE_GAMMA_TAIL_NODE;
 extern const jive_node_class JIVE_GAMMA_NODE;
 
-class jive_op_gamma_tail final : public jive::operation {
+namespace jive {
+
+class gamma_tail_op final : public region_tail_op {
+public:
+	virtual
+	~gamma_tail_op() noexcept;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
 };
 
-class jive_op_gamma final : public jive::operation {
+class gamma_op final : public region_anchor_op {
+public:
+	virtual
+	~gamma_op() noexcept;
+
+	inline constexpr
+	gamma_op(size_t nalternatives = 2) noexcept
+		: nalternatives_(nalternatives)
+	{
+	}
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+private:
+	size_t nalternatives_;
 };
+
+}
 
 void
 jive_gamma(jive::output * predicate,

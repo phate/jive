@@ -19,39 +19,75 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/traverser.h>
 
-static jive_node *
-jive_gamma_tail_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
+namespace jive {
+
+gamma_tail_op::~gamma_tail_op() noexcept
 {
-	JIVE_DEBUG_ASSERT(noperands == 0);
-	
-	jive_node * self = jive::create_operation_node(jive_op_gamma_tail());
-	jive::achr::type anchor;
-	const jive::base::type *typeptr = &anchor;
-	self->class_ = &JIVE_GAMMA_TAIL_NODE;
-	jive_node_init_(self, region,
-		0, NULL, NULL,
-		1, &typeptr);
-	
-	region->bottom = self;
-	return self;
 }
 
-static jive_node *
-jive_gamma_node_create_(jive_region * region, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
+jive_node *
+gamma_tail_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(noperands == 3);
-	jive_node * self = jive::create_operation_node(jive_op_gamma());
-	jive::achr::type anchor;
-	jive::ctl::type ctl;
-	self->class_ = &JIVE_GAMMA_NODE;
-	const jive::base::type * tmparray0[] = {&anchor, &anchor, &ctl};
-	jive_node_init_(self, region,
-		3, tmparray0, operands,
-		0, NULL);
-	
-	return self;
+	JIVE_DEBUG_ASSERT(!region->bottom);
+	jive_node * node = jive_opnode_create(
+		*this,
+		&JIVE_GAMMA_TAIL_NODE,
+		region,
+		arguments, arguments + narguments);
+	region->bottom = node;
+	return node;
+}
+
+std::string
+gamma_tail_op::debug_string() const
+{
+	return "GAMMA_TAIL";
+}
+
+gamma_op::~gamma_op() noexcept
+{
+}
+
+size_t
+gamma_op::narguments() const noexcept
+{
+	return 1 + nalternatives_;
+}
+
+const base::type &
+gamma_op::argument_type(size_t index) const noexcept
+{
+	if (index < nalternatives_) {
+		static const achr::type anchor_type;
+		return anchor_type;
+	} else {
+		static const ctl::type control_type;
+		return control_type;
+	}
+}
+
+jive_node *
+gamma_op::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	return jive_opnode_create(
+		*this,
+		&JIVE_GAMMA_NODE,
+		region,
+		arguments, arguments + narguments);
+}
+
+std::string
+gamma_op::debug_string() const
+{
+	return "GAMMA";
+}
+
 }
 
 jive_node_normal_form *
@@ -73,10 +109,10 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	name : "GAMMA_TAIL",
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
-	get_label : jive_node_get_label_,  /* inherit */
-	match_attrs : jive_node_match_attrs_,  /* inherit */
-	check_operands : jive_node_check_operands_, /* inherrit */
-	create : jive_gamma_tail_node_create_,  /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
 
 const jive_node_class JIVE_GAMMA_NODE = {
@@ -84,45 +120,11 @@ const jive_node_class JIVE_GAMMA_NODE = {
 	name : "GAMMA",
 	fini : jive_node_fini_,  /* inherit */
 	get_default_normal_form : jive_gamma_node_get_default_normal_form_,  /* override */
-	get_label : jive_node_get_label_,  /* inherit */
-	match_attrs : jive_node_match_attrs_,  /* inherit */
-	check_operands : jive_node_check_operands_, /* inherrit */
-	create : jive_gamma_node_create_,  /* override */
+	get_label : nullptr,
+	match_attrs : nullptr,
+	check_operands : nullptr,
+	create : nullptr
 };
-
-static jive_node *
-jive_gamma_tail_node_create(jive_region * region)
-{
-	jive_node * self = jive::create_operation_node(jive_op_gamma_tail());
-	jive::achr::type anchor;
-	const jive::base::type * typeptr = &anchor;
-	self->class_ = &JIVE_GAMMA_TAIL_NODE;
-	jive_node_init_(self, region,
-		0, NULL, NULL,
-		1, &typeptr);
-	
-	region->bottom = self;
-	return self;
-}
-
-static jive_node *
-jive_gamma_node_create(jive_region * region,
-	jive::output * predicate,
-	jive::output * true_alternative,
-	jive::output * false_alternative)
-{
-	jive_node * self = jive::create_operation_node(jive_op_gamma());
-	jive::achr::type anchor;
-	jive::ctl::type ctl;
-	self->class_ = &JIVE_GAMMA_NODE;
-	const jive::base::type * tmparray1[] = {&anchor, &anchor, &ctl};
-	jive::output * tmparray2[] = {true_alternative, false_alternative, predicate};
-	jive_node_init_(self, region,
-		3, tmparray1, tmparray2,
-		0, NULL);
-	
-	return self;
-}
 
 static jive_node *
 jive_gamma_create(
@@ -134,13 +136,18 @@ jive_gamma_create(
 {
 	jive_region * false_region = jive_region_create_subregion(region);
 	jive_region * true_region = jive_region_create_subregion(region);
-	jive_node * false_alt = jive_gamma_tail_node_create(false_region);
-	jive_node * true_alt = jive_gamma_tail_node_create(true_region);
-	jive_node * gamma = jive_gamma_node_create(
-		region,
-		predicate,
+	jive_node * false_alt = jive::gamma_tail_op().create_node(
+		false_region, 0, nullptr);
+	jive_node * true_alt = jive::gamma_tail_op().create_node(
+		true_region, 0, nullptr);
+	jive::output * arguments[3] = {
 		true_alt->outputs[0],
-		false_alt->outputs[0]);
+		false_alt->outputs[0],
+		predicate
+	};
+	jive_node * gamma = jive::gamma_op(2).create_node(
+		region,
+		3, arguments);
 	
 	size_t n;
 	for (n = 0; n < nvalues; n++) {
