@@ -117,12 +117,10 @@ sequentialize_region(
 	jive_traverser * trav = jive_bottomup_region_traverser_get_node_traverser(region_trav, region);
 	
 	jive_node * node = jive_traverser_next(trav);
-	while(node) {
-		jive_instruction_node * inode = jive_instruction_node_cast(node);
-		jive_dataitems_node * dnode = jive_dataitems_node_cast(node);
+	while (node) {
 		jive_seq_point * current;
-		if (inode) {
-			const jive_instruction_class * icls = inode->operation().icls();
+		if (auto i_op = dynamic_cast<const jive::instruction_op *>(&node->operation())) {
+			const jive_instruction_class * icls = i_op->icls();
 			const jive_register_name * inregs[icls->ninputs];
 			const jive_register_name * outregs[icls->noutputs];
 			jive_seq_imm immediates[icls->nimmediates];
@@ -138,7 +136,7 @@ sequentialize_region(
 				outregs,
 				immediates,
 				node)->base;
-		} else if (dnode) {
+		} else if (auto d_op = dynamic_cast<const jive::dataobj_head_op *>(&node->operation())) {
 			jive_seq_data * data = jive_seq_data_create(
 				seq_region, node->ninputs, node);
 			size_t n;
