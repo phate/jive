@@ -24,29 +24,28 @@ public:
 	virtual ~operation() noexcept;
 
 	virtual bool
-	operator==(const operation & other) const noexcept;
+	operator==(const operation & other) const noexcept = 0;
 
 	virtual size_t
-	narguments() const noexcept;
+	narguments() const noexcept = 0;
 
 	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept;
+	argument_type(size_t index) const noexcept = 0;
 
 	virtual size_t
-	nresults() const noexcept;
+	nresults() const noexcept = 0;
 
 	virtual const jive::base::type &
-	result_type(size_t index) const noexcept;
+	result_type(size_t index) const noexcept = 0;
 
 	virtual jive_node *
 	create_node(
 		jive_region * region,
 		size_t narguments,
-		jive::output * const arguments[]) const;
+		jive::output * const arguments[]) const = 0;
 
 	virtual std::string
-	debug_string() const;
-
+	debug_string() const = 0;
 };
 
 }
