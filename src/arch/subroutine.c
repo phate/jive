@@ -4,7 +4,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/subroutine-private.h>
 #include <jive/arch/subroutine.h>
 
 #include <string.h>
@@ -18,27 +17,42 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
 
+namespace jive {
+
+subroutine_hl_builder_interface::~subroutine_hl_builder_interface() noexcept
+{
+}
+
+}
+
 void
 jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_node * self,
+	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm)
 {
-	return self->operation().subroutine()->abi_class->prepare_stackframe(
-		self->operation().subroutine(), xfrm);
+	const jive::subroutine_op & op = self->operation();
+	jive_region * region = self->inputs[0]->origin()->node()->region;
+	return self->operation().signature().abi_class->prepare_stackframe(
+		op, region, frame, xfrm);
 }
 
 jive::input *
 jive_subroutine_node_add_fp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
-	return self->operation().subroutine()->abi_class->add_fp_dependency(
-		self->operation().subroutine(), node);
+	const jive::subroutine_op & subroutine_op = self->operation();
+	jive_region * region = self->inputs[0]->origin()->node()->region;
+	return self->operation().signature().abi_class->add_fp_dependency(
+		subroutine_op, region, node);
 }
 
 jive::input *
 jive_subroutine_node_add_sp_dependency(const jive_subroutine_node * self, jive_node * node)
 {
-	return self->operation().subroutine()->abi_class->add_sp_dependency(
-		self->operation().subroutine(), node);
+	const jive::subroutine_op & subroutine_op = self->operation();
+	jive_region * region = self->inputs[0]->origin()->node()->region;
+	return self->operation().signature().abi_class->add_sp_dependency(
+		subroutine_op, region, node);
 }
 
 jive_subroutine_node *
@@ -60,7 +74,7 @@ jive_region_get_instructionset(const jive_region * region)
 {
 	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
 	if (sub)
-		return sub->operation().subroutine()->abi_class->instructionset;
+		return sub->operation().signature().abi_class->instructionset;
 	else
 		return NULL;
 }
@@ -68,292 +82,110 @@ jive_region_get_instructionset(const jive_region * region)
 jive::output *
 jive_subroutine_node_get_sp(const jive_subroutine_node * self)
 {
-	return self->operation().subroutine()->passthroughs[1].output;
+	jive_region * region = self->inputs[0]->origin()->node()->region;
+	return self->operation().get_passthrough_enter_by_index(region, 1);
 }
 
 jive::output *
 jive_subroutine_node_get_fp(const jive_subroutine_node * self)
 {
+	jive_region * region = self->inputs[0]->origin()->node()->region;
 	/* FIXME: this is only correct if we are compiling "omit-framepointer",
 	but it is only a transitionary stage during subroutine refactoring */
-	return self->operation().subroutine()->passthroughs[1].output;
+	return self->operation().get_passthrough_enter_by_index(region, 1);
 }
 
-jive_subroutine_stackframe_info *
-jive_subroutine_node_get_stackframe_info(const jive_subroutine_node * self)
+jive_subroutine
+jive_subroutine_begin(
+	jive_graph * graph,
+	jive::subroutine_machine_signature sig,
+	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder)
 {
-	return &self->operation().subroutine()->frame;
-}
+	jive_subroutine sub;
+	sub.hl_builder = std::move(hl_builder);
+	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
+	sub.region = jive_region_create_subregion(graph->root_region);
+	sub.region->attrs.section = jive_region_section_code;
 
-void
-jive_subroutine_match_passthrough(
-	const jive_subroutine_deprecated * old_subroutine,
-	const jive_subroutine_passthrough * old_pt,
-	jive_subroutine_deprecated * new_subroutine,
-	jive_subroutine_passthrough * new_pt)
-{
-	new_pt->output = new_subroutine->enter->outputs[old_pt->output->index];
-	new_pt->input = new_subroutine->leave->inputs[old_pt->input->index];
-	new_pt->gate = new_pt->output->gate;
-}
+	jive_node * enter = jive::subroutine_head_op().create_node(sub.region, 0, nullptr);
 
-void
-jive_subroutine_destroy(jive_subroutine_deprecated * self)
-{
-	/*if (self->subroutine_node)
-		self->subroutine_node->operation().subroutine() = 0;*/
-	self->class_->fini(self);
-	jive_context_free(self->context, self);
-}
-
-void
-jive_subroutine_create_region_and_nodes(
-	jive_subroutine_deprecated * subroutine,
-	jive_region * parent_region)
-{
-	jive_region * subroutine_region = jive_region_create_subregion(parent_region);
-	subroutine_region->attrs.section = jive_region_section_code;
-	jive_node * enter = jive::subroutine_head_op().create_node(
-		subroutine_region, 0, nullptr);
-	jive_node * leave = jive::subroutine_tail_op().create_node(
-		subroutine_region, enter->noutputs, &enter->outputs[0]);
-	jive_subroutine_node_create(subroutine_region, subroutine);
-	subroutine->region = subroutine_region;
-}
-
-jive_subroutine_passthrough
-jive_subroutine_create_passthrough(
-	jive_subroutine_deprecated * subroutine,
-	const jive_resource_class * cls,
-	const char * name)
-{
-	jive_subroutine_passthrough passthrough;
-	passthrough.gate = jive_resource_class_create_gate(
-		cls, subroutine->subroutine_node->region->graph, name);
-	passthrough.output = jive_node_gate_output(
-		subroutine->enter, passthrough.gate);
-	passthrough.input = jive_node_gate_input(
-		subroutine->leave, passthrough.gate, passthrough.output);
-	return passthrough;
-}
-
-jive_subroutine_passthrough
-jive_subroutine_create_passthrough_memorystate(
-	jive_subroutine_deprecated * subroutine,
-	const char * name)
-{
-	jive::mem::type memory_type;
-	
-	jive_subroutine_passthrough passthrough;
-	passthrough.gate = memory_type.create_gate(subroutine->subroutine_node->region->graph, name);
-	passthrough.output = jive_node_gate_output(
-		subroutine->enter, passthrough.gate);
-	passthrough.input = jive_node_gate_input(
-		subroutine->leave, passthrough.gate, passthrough.output);
-	return passthrough;
-}
-	
-
-jive::gate *
-jive_subroutine_match_gate(jive::gate * gate, jive_node * old_node, jive_node * new_node)
-{
-	size_t n;
-	
-	JIVE_DEBUG_ASSERT(new_node->ninputs >= old_node->ninputs);
-	for (n = 0; n < old_node->ninputs; n++) {
-		if (old_node->inputs[n]->gate == gate)
-			return new_node->inputs[n]->gate;
+	for (size_t n = 0; n < sig.arguments.size(); ++n) {
+		sub.builder_state->arguments[n].gate = jive_resource_class_create_gate(
+			sig.arguments[n].rescls, graph, sig.arguments[n].name.c_str());
+		sub.builder_state->arguments[n].output = jive_node_gate_output(
+			enter, sub.builder_state->arguments[n].gate);
 	}
-	
-	JIVE_DEBUG_ASSERT(new_node->noutputs >= old_node->noutputs);
-	for (n = 0; n < old_node->noutputs; n++) {
-		if (old_node->outputs[n]->gate == gate)
-			return new_node->outputs[n]->gate;
+	for (size_t n = 0; n < sig.results.size(); ++n) {
+		sub.builder_state->results[n].gate = jive_resource_class_create_gate(
+			sig.results[n].rescls, graph, sig.results[n].name.c_str());
 	}
-	
-	return NULL;
-}
-
-jive_subroutine_deprecated *
-jive_subroutine_copy(const jive_subroutine_deprecated * self,
-	jive_node * new_enter_node, jive_node * new_leave_node)
-{
-	jive_graph * graph = new_enter_node->region->graph;
-	jive_context * context = graph->context;
-	
-	jive_subroutine_deprecated * other = jive_context_malloc(context, sizeof(*other));
-	jive_subroutine_init_(other, self->class_, context,
-		self->nparameters, self->parameter_types,
-		self->nreturns, self->return_types,
-		self->npassthroughs);
-
-	other->enter = (jive_subroutine_enter_node *) new_enter_node;
-	other->leave = (jive_subroutine_leave_node *) new_leave_node;
-	
-	size_t n;
-	
-	for (n = 0; n < self->nparameters; n++) {
-		jive::gate * old_gate = self->parameters[n];
-		jive::gate * new_gate = NULL;
-		
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, self->enter, new_enter_node);
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, self->leave, new_leave_node);
-		if (!new_gate)
-			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
-		
-		other->parameters[n] = new_gate;
-	}
-	
-	for (n = 0; n < self->nreturns; n++) {
-		jive::gate * old_gate = self->returns[n];
-		jive::gate * new_gate = NULL;
-		
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, self->enter, new_enter_node);
-		if (!new_gate)
-			new_gate = jive_subroutine_match_gate(old_gate, self->leave, new_leave_node);
-		if (!new_gate)
-			new_gate = jive_resource_class_create_gate(old_gate->required_rescls, graph, old_gate->name);
-		
-		other->returns[n] = new_gate;
-	}
-	
-	for (n = 0; n < self->npassthroughs; ++n) {
-		jive_subroutine_match_passthrough(
-			self, &self->passthroughs[n],
-			other, &other->passthroughs[n]);
-	}
-	
-	return other;
-}
-
-jive_subroutine_deprecated *
-jive_subroutine_create_takeover(
-	jive_context * context, const jive_subroutine_class * class_,
-	size_t nparameters, jive::gate * const parameters[],
-	size_t nreturns, jive::gate * const returns[],
-	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[])
-{
-	/* FIXME: set parameter/return_types properly, add support in deserialization */
-	jive_argument_type parameter_types[nparameters];
-	jive_argument_type return_types[nreturns];
-
-	jive_subroutine_deprecated * self = jive_context_malloc(context, sizeof(*self));
-	jive_subroutine_init_(self, class_, context,
-		nparameters, parameter_types, nreturns, return_types, npassthroughs);
-	self->frame.upper_bound = 4;
-	
-	size_t n;
-	
-	for (n = 0; n < nparameters; n++)
-		self->parameters[n] = parameters[n];
-	
-	for (n = 0; n < nreturns; n++)
-		self->returns[n] = returns[n];
-	
-	for (n = 0; n < npassthroughs; n++) {
-		self->passthroughs[n] = passthroughs[n];
+	for (size_t n = 0; n < sig.passthroughs.size(); ++n) {
+		if (sig.passthroughs[n].rescls) {
+			sub.builder_state->passthroughs[n].gate = jive_resource_class_create_gate(
+				sig.passthroughs[n].rescls, graph, sig.passthroughs[n].name.c_str());
+		} else {
+			jive::mem::type memory_type;
+			sub.builder_state->passthroughs[n].gate = memory_type.create_gate(
+				graph, sig.passthroughs[n].name.c_str());
+		}
+		sub.builder_state->passthroughs[n].gate->may_spill = sig.passthroughs[n].may_spill;
+		sub.builder_state->passthroughs[n].output = jive_node_gate_output(
+			enter, sub.builder_state->passthroughs[n].gate);
 	}
 
-	return self;
-}
+	sub.signature = std::move(sig);
 
-void
-jive_subroutine_init_(jive_subroutine_deprecated * self, const jive_subroutine_class * cls,
-	jive_context * context,
-	size_t nparameters, const jive_argument_type parameter_types[],
-	size_t nreturns, const jive_argument_type return_types[],
-	size_t npassthroughs)
-{
-	self->class_ = cls;
-	
-	self->context = context;
-	
-	self->enter = NULL;
-	self->leave = NULL;
-	self->subroutine_node = NULL;
-	
-	self->region = NULL;
-	
-	self->frame.lower_bound = 0;
-	self->frame.upper_bound = 0;
-	self->frame.frame_pointer_offset = 0;
-	self->frame.stack_pointer_offset = 0;
-	self->frame.call_area_size = 0;
-	
-	size_t n;
-	
-	self->nparameters = nparameters;
-	self->parameters = jive_context_malloc(context, sizeof(self->parameters[0]) * nparameters);
-	self->parameter_types = jive_context_malloc(context,
-		sizeof(self->parameter_types[0]) * nparameters);
-	for (n = 0; n < nparameters; n++) {
-		self->parameters[n] = NULL;
-		self->parameter_types[n] = parameter_types[n];
-	}
-	
-	self->nreturns = nreturns;
-	self->returns = jive_context_malloc(context, sizeof(self->returns[0]) * nreturns);
-	self->return_types = jive_context_malloc(context, sizeof(self->returns[0]) * nreturns);
-	for (n = 0; n < nreturns; n++) {
-		self->returns[n] = NULL;
-		self->return_types[n] = return_types[n];
-	}
-	
-	self->npassthroughs = npassthroughs;
-	self->passthroughs = jive_context_malloc(context, sizeof(self->passthroughs[0]) * npassthroughs);
-	for (n = 0; n < npassthroughs; n++) {
-		self->passthroughs[n].gate = NULL;
-		self->passthroughs[n].input = NULL;
-		self->passthroughs[n].output = NULL;
-	}
-}
-
-void
-jive_subroutine_fini_(jive_subroutine_deprecated * self)
-{
-	jive_context * context = self->context;
-	jive_context_free(context, self->passthroughs);
-	jive_context_free(context, self->parameters);
-	jive_context_free(context, self->parameter_types);
-	jive_context_free(context, self->returns);
-	jive_context_free(context, self->return_types);
+	return sub;
 }
 
 jive_node *
-jive_subroutine_end(jive_subroutine self)
+jive_subroutine_end(jive_subroutine & self)
 {
-	self.region->bottom = self.old_subroutine_struct->leave;
-	return self.old_subroutine_struct->subroutine_node;
+	jive::output * control_return = self.hl_builder->finalize(self);
+	if (!control_return) {
+		control_return = self.region->top->outputs[0];
+	}
+	jive_node * leave = jive::subroutine_tail_op().create_node(
+		self.region, 1, &control_return);
+
+	jive_node * subroutine_node = jive::subroutine_op(std::move(self.signature)).create_node(
+		self.region->parent, leave->noutputs, &leave->outputs[0]);
+	
+	for (const auto & pt : self.builder_state->passthroughs) {
+		jive_node_gate_input(leave, pt.gate, pt.output);
+	}
+	for (const auto & res : self.builder_state->results) {
+		jive_node_gate_input(leave, res.gate, res.output);
+	}
+
+	return subroutine_node;
 }
 
 jive::output *
 jive_subroutine_simple_get_argument(
-	jive_subroutine self,
+	jive_subroutine & self,
 	size_t index)
 {
-	return jive_subroutine_value_parameter(self.old_subroutine_struct, index);
+	return self.hl_builder->value_parameter(self, index);
 }
 
 void
 jive_subroutine_simple_set_result(
-	jive_subroutine self,
+	jive_subroutine & self,
 	size_t index,
 	jive::output * value)
 {
-	jive_subroutine_value_return(self.old_subroutine_struct, index, value);
+	self.hl_builder->value_return(self, index, value);
 }
 
 jive::output *
-jive_subroutine_simple_get_global_state(const jive_subroutine self)
+jive_subroutine_simple_get_global_state(const jive_subroutine & self)
 {
-	return self.old_subroutine_struct->passthroughs[0].input->origin();
+	return self.builder_state->passthroughs[0].output;
 }
 
 void
-jive_subroutine_simple_set_global_state(jive_subroutine self, jive::output * state)
+jive_subroutine_simple_set_global_state(jive_subroutine & self, jive::output * state)
 {
-	self.old_subroutine_struct->passthroughs[0].input->divert_origin(state);
+	self.builder_state->passthroughs[0].output = state;
 }

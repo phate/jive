@@ -11,8 +11,6 @@
 struct jive_region;
 struct jive_node;
 
-typedef struct jive_i386_subroutine jive_i386_subroutine;
-
 jive_subroutine
 jive_i386_subroutine_begin(jive_graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
@@ -20,19 +18,6 @@ jive_i386_subroutine_begin(jive_graph * graph,
 
 /* convert according to "default" ABI */
 jive_node *
-jive_i386_subroutine_convert(struct jive_region * target_parent, struct jive_node * lambda_node);
-
-jive_subroutine_deprecated *
-jive_i386_subroutine_create_takeover(
-	jive_context * context,
-	size_t nparameters, jive::gate * const parameters[],
-	size_t nreturns, jive::gate * const returns[],
-	size_t npassthroughs, const jive_subroutine_passthrough passthroughs[]);
-
-struct jive_i386_subroutine {
-	jive_subroutine_deprecated base;
-};
-
-extern const jive_subroutine_class JIVE_I386_SUBROUTINE;
+jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node);
 
 #endif

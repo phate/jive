@@ -7,65 +7,112 @@
 #ifndef JIVE_ARCH_SUBROUTINE_H
 #define JIVE_ARCH_SUBROUTINE_H
 
+#include <string>
+#include <vector>
+
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/arch/subroutine/signature.h>
 #include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
+struct jive_subroutine;
+
 namespace jive {
-	class output;
+class gate;
+class output;
+
+class subroutine_hl_builder_interface {
+public:
+	virtual
+	~subroutine_hl_builder_interface() noexcept;
+
+	virtual output *
+	value_parameter(
+		jive_subroutine & subroutine,
+		size_t index) = 0;
+
+	virtual void
+	value_return(
+		jive_subroutine & subroutine,
+		size_t index,
+		output * value) = 0;
+	
+	virtual output *
+	finalize(
+		jive_subroutine & subroutine) = 0;
+};
+
+class subroutine_builder_state {
+public:
+	struct gated_port {
+		gated_port() : gate(0), output(0) {}
+		jive::gate * gate;
+		jive::output * output;
+	};
+
+	inline
+	subroutine_builder_state(const subroutine_machine_signature & sig) noexcept
+		: arguments(sig.arguments.size())
+		, passthroughs(sig.passthroughs.size())
+		, results(sig.results.size())
+	{
+	}
+
+	std::vector<gated_port> arguments;
+	std::vector<gated_port> passthroughs;
+	std::vector<gated_port> results;
+};
+
 }
 
 struct jive_instructionset;
 struct jive_region;
 
-typedef struct jive_subroutine jive_subroutine;
-struct jive_subroutine_builder;
+struct jive_subroutine_abi_class;
 
 struct jive_subroutine {
-	struct jive_region * region;
-	struct jive_subroutine_deprecated * old_subroutine_struct;
+	jive_region * region;
+	
+	std::unique_ptr<jive::subroutine_builder_state> builder_state;
+	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder;
+	jive::subroutine_machine_signature signature;
 };
 
 /**
 	\brief Begin constructing a subroutine region
 */
 jive_subroutine
-jive_subroutine_begin(struct jive_graph * graph);
+jive_subroutine_begin(
+	jive_graph * graph,
+	jive::subroutine_machine_signature sig,
+	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder);
 
 /**
 	\brief End constructing a subroutine region
 */
-struct jive_node *
-jive_subroutine_end(jive_subroutine self);
+jive_node *
+jive_subroutine_end(jive_subroutine & self);
 
 /**
 	\brief Get argument value
 */
 jive::output *
 jive_subroutine_simple_get_argument(
-	jive_subroutine self,
+	jive_subroutine & self,
 	size_t index);
 
 void
 jive_subroutine_simple_set_result(
-	jive_subroutine self,
+	jive_subroutine & self,
 	size_t index,
 	jive::output * value);
 
 jive::output *
-jive_subroutine_simple_get_global_state(const jive_subroutine self);
+jive_subroutine_simple_get_global_state(const jive_subroutine & self);
 
 void
-jive_subroutine_simple_set_global_state(jive_subroutine self, jive::output * state);
-
-typedef struct jive_subroutine_deprecated jive_subroutine_deprecated;
-
-typedef struct jive_subroutine_node_attrs jive_subroutine_node_attrs;
-
-typedef struct jive_subroutine_abi_class jive_subroutine_abi_class;
-typedef struct jive_subroutine_class jive_subroutine_class;
-
+jive_subroutine_simple_set_global_state(jive_subroutine & self, jive::output * state);
 
 /* FIXME: these are quite C-specific, so really do not belong here */
 enum jive_argument_type {
@@ -76,28 +123,19 @@ enum jive_argument_type {
 	jive_argument_float = 4
 };
 
-typedef struct jive_subroutine_passthrough jive_subroutine_passthrough;
-
-struct jive_subroutine_passthrough {
-	jive::gate * gate;
-	jive::output * output;
-	jive::input * input;
-};
-
-typedef struct jive_subroutine_late_transforms jive_subroutine_late_transforms;
-typedef struct jive_value_split_factory jive_value_split_factory;
-
 struct jive_value_split_factory {
 	jive::output * (*split)(const jive_value_split_factory * self, jive::output * value);
 };
 
 struct jive_subroutine_late_transforms {
-	void (*value_split)(const jive_subroutine_late_transforms * self,
-		jive::output * value_in, jive::input * value_out,
-		const jive_value_split_factory * enter_split, const jive_value_split_factory * leave_split);
+	void (*value_split)(
+		const jive_subroutine_late_transforms * self,
+		jive::output * value_in,
+		jive::input * value_out,
+		const jive_value_split_factory * enter_split,
+		const jive_value_split_factory * leave_split);
 };
 
-typedef struct jive_subroutine_stackframe_info jive_subroutine_stackframe_info;
 struct jive_subroutine_stackframe_info {
 	/* lower bound of frame (relative to initial position of stack pointer) */
 	ssize_t lower_bound;
@@ -111,63 +149,27 @@ struct jive_subroutine_stackframe_info {
 	size_t call_area_size;
 };
 
-struct jive_subroutine_deprecated {
-	const jive_subroutine_class * class_;
-	const jive_subroutine_abi_class * abi_class;
-	jive_context * context;
-	jive_subroutine_node * subroutine_node;
-	jive_subroutine_enter_node * enter;
-	jive_subroutine_leave_node * leave;
-	struct jive_region * region;
-	
-	size_t nparameters;
-	jive_argument_type * parameter_types;
-	jive::gate ** parameters;
-	
-	size_t nreturns;
-	jive_argument_type * return_types;
-	jive::gate ** returns;
-	
-	size_t npassthroughs;
-	jive_subroutine_passthrough * passthroughs;
-	
-	jive_subroutine_stackframe_info frame;
-};
-
-struct jive_subroutine_class {
-	void (*fini)(jive_subroutine_deprecated * self);
-	jive::output * (*value_parameter)(jive_subroutine_deprecated * self, size_t index);
-	jive::input * (*value_return)(jive_subroutine_deprecated * self, size_t index,
-		jive::output * value);
-};
-
 struct jive_subroutine_abi_class {
 	void (*prepare_stackframe)(
-		jive_subroutine_deprecated * self,
+		const jive::subroutine_op & op,
+		jive_region * region,
+		jive_subroutine_stackframe_info * frame,
 		const jive_subroutine_late_transforms * xfrm);
-	jive::input *(*add_fp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
-	jive::input *(*add_sp_dependency)(const jive_subroutine_deprecated * self, jive_node * node);
-	const struct jive_instructionset * instructionset;
+	jive::input *(*add_fp_dependency)(
+		const jive::subroutine_op & op,
+		jive_region * region,
+		jive_node * node);
+	jive::input *(*add_sp_dependency)(
+		const jive::subroutine_op & op,
+		jive_region * region,
+		jive_node * node);
+	const jive_instructionset * instructionset;
 };
-
-void
-jive_subroutine_destroy(jive_subroutine_deprecated * self);
-
-JIVE_EXPORTED_INLINE jive::output *
-jive_subroutine_value_parameter(jive_subroutine_deprecated * self, size_t index)
-{
-	return self->class_->value_parameter(self, index);
-}
-
-JIVE_EXPORTED_INLINE jive::input *
-jive_subroutine_value_return(jive_subroutine_deprecated * self, size_t index, jive::output * value)
-{
-	return self->class_->value_return(self, index, value);
-}
 
 void
 jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_node * self,
+	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
 jive::input *
@@ -183,7 +185,7 @@ jive_subroutine_node_add_sp_dependency(
 jive_subroutine_node *
 jive_region_get_subroutine_node(const jive_region * region);
 
-const struct jive_instructionset *
+const jive_instructionset *
 jive_region_get_instructionset(const jive_region * region);
 
 jive::output *
@@ -191,8 +193,5 @@ jive_subroutine_node_get_sp(const jive_subroutine_node * self);
 
 jive::output *
 jive_subroutine_node_get_fp(const jive_subroutine_node * self);
-
-jive_subroutine_stackframe_info *
-jive_subroutine_node_get_stackframe_info(const jive_subroutine_node * self);
 
 #endif

@@ -98,11 +98,6 @@ subroutine_op::~subroutine_op() noexcept
 {
 }
 
-subroutine_op::subroutine_op(const subroutine_op & other)
-	: subroutine_(other.subroutine_) // FIXME: this is wrong, need to copy
-{
-}
-
 size_t
 subroutine_op::nresults() const noexcept
 {
@@ -136,12 +131,47 @@ subroutine_op::debug_string() const
 	return "SUBROUTINE";
 }
 
-
+output *
+subroutine_op::get_passthrough_enter_by_name(jive_region * region, const char * name) const noexcept
+{
+	jive_node * enter = region->top;
+	JIVE_DEBUG_ASSERT(enter);
+	for (size_t n = 0; n < enter->noutputs; ++n) {
+		output * o = enter->outputs[n];
+		if (o->gate && strcmp(name, o->gate->name) == 0) {
+			return o;
+		}
+	}
+	return nullptr;
 }
 
-jive_subroutine_deprecated *
-jive_subroutine_copy(const jive_subroutine_deprecated * self,
-	jive_node * new_enter_node, jive_node * new_leave_node);
+output *
+subroutine_op::get_passthrough_enter_by_index(jive_region * region, size_t index) const noexcept
+{
+	return get_passthrough_enter_by_name(region, signature().passthroughs[index].name.c_str());
+}
+
+input *
+subroutine_op::get_passthrough_leave_by_name(jive_region * region, const char * name) const noexcept
+{
+	jive_node * leave = region->bottom;
+	JIVE_DEBUG_ASSERT(leave);
+	for (size_t n = 0; n < leave->ninputs; ++n) {
+		input * i = leave->inputs[n];
+		if (i->gate && strcmp(name, i->gate->name) == 0) {
+			return i;
+		}
+	}
+	return nullptr;
+}
+
+input *
+subroutine_op::get_passthrough_leave_by_index(jive_region * region, size_t index) const noexcept
+{
+	return get_passthrough_leave_by_name(region, signature().passthroughs[index].name.c_str());
+}
+
+}
 
 const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
 	parent : &JIVE_NODE,
@@ -165,56 +195,13 @@ const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
 	create : nullptr
 };
 
-static void
-jive_subroutine_node_fini_(jive_node * self_);
-
 const jive_node_class JIVE_SUBROUTINE_NODE = {
 	parent : &JIVE_NODE,
 	name : "SUBROUTINE",
-	fini : jive_subroutine_node_fini_, /* override */
+	fini : jive_node_fini_, /* inherit */
 	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
 	create : nullptr
 };
-
-static void
-jive_subroutine_node_fini_(jive_node * self_)
-{
-	jive_subroutine_node * self = (jive_subroutine_node *) self_;
-	jive_subroutine_deprecated * subroutine = self->operation().subroutine();
-	if (subroutine) {
-		JIVE_DEBUG_ASSERT(subroutine->subroutine_node == self);
-		subroutine->subroutine_node = 0;
-		jive_subroutine_destroy(subroutine);
-	}
-	jive_node_fini_(self);
-}
-
-jive_node *
-jive_subroutine_node_create(
-	jive_region * subroutine_region,
-	jive_subroutine_deprecated * subroutine)
-{
-	jive_region * region = subroutine_region->parent;
-	
-	JIVE_DEBUG_ASSERT(region);
-	
-	JIVE_DEBUG_ASSERT(subroutine_region->top && subroutine_region->bottom);
-	
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(subroutine_region->top, &JIVE_SUBROUTINE_ENTER_NODE));
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(subroutine_region->bottom, &JIVE_SUBROUTINE_LEAVE_NODE));
-	
-	jive_subroutine_enter_node * enter = (jive_subroutine_enter_node *) subroutine_region->top;
-	jive_subroutine_leave_node * leave = (jive_subroutine_leave_node *) subroutine_region->bottom;
-	
-	jive_subroutine_node * node = jive::subroutine_op(subroutine).create_node(
-		region, leave->noutputs, &leave->outputs[0]);
-
-	subroutine->subroutine_node = node;
-	subroutine->enter = enter;
-	subroutine->leave = leave;
-	
-	return node;
-}

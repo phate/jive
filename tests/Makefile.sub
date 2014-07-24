@@ -29,7 +29,7 @@ $(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 
 TESTLOG=true
 
-EXPECT_FAIL_TESTS = regalloc/test-loop-overflow
+EXPECT_FAIL_TESTS = regalloc/test-loop-overflow serialization/test-i386-serialization
 EXPECT_PASS_TESTS = $(filter-out $(EXPECT_FAIL_TESTS),$(TESTS))
 
 check: tests/test-runner

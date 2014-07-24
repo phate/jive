@@ -6,10 +6,9 @@
 #ifndef JIVE_ARCH_SUBROUTINE_NODES_H
 #define JIVE_ARCH_SUBROUTINE_NODES_H
 
+#include <jive/arch/subroutine/signature.h>
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node.h>
-
-struct jive_subroutine_deprecated;
 
 namespace jive {
 
@@ -60,13 +59,13 @@ public:
 	virtual
 	~subroutine_op() noexcept;
 
-	inline constexpr subroutine_op(
-		jive_subroutine_deprecated * subroutine) noexcept
-		: subroutine_(subroutine)
+	inline subroutine_op(
+		subroutine_machine_signature signature) noexcept
+		: signature_(std::move(signature))
 	{
 	}
 
-	subroutine_op(const subroutine_op & other);
+	subroutine_op(const subroutine_op & other) = default;
 
 	subroutine_op(subroutine_op && other) noexcept = default;
 
@@ -85,14 +84,26 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline jive_subroutine_deprecated *
-	subroutine() const noexcept
+	inline const jive::subroutine_machine_signature &
+	signature() const noexcept
 	{
-		return subroutine_;
+		return signature_;
 	}
 
+	output *
+	get_passthrough_enter_by_name(jive_region * region, const char * name) const noexcept;
+
+	output *
+	get_passthrough_enter_by_index(jive_region * region, size_t index) const noexcept;
+
+	input *
+	get_passthrough_leave_by_name(jive_region * region, const char * name) const noexcept;
+
+	input *
+	get_passthrough_leave_by_index(jive_region * region, size_t index) const noexcept;
+
 private:
-	jive_subroutine_deprecated * subroutine_;
+	subroutine_machine_signature signature_;
 };
 
 }
@@ -104,10 +115,5 @@ typedef jive::operation_node<jive::subroutine_tail_op> jive_subroutine_leave_nod
 extern const jive_node_class JIVE_SUBROUTINE_ENTER_NODE;
 extern const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE;
 extern const jive_node_class JIVE_SUBROUTINE_NODE;
-
-jive_node *
-jive_subroutine_node_create(
-	jive_region * subroutine_region,
-	jive_subroutine_deprecated * subroutine);
 
 #endif

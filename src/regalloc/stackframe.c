@@ -63,6 +63,7 @@ layout_stackslot(
 		allowed_slot[n] = true;
 	
 	jive_shaped_variable * shaped_variable = jive_shaped_graph_map_variable(shaped_graph, variable);
+	JIVE_DEBUG_ASSERT(shaped_variable);
 	
 	for (const jive_variable_interference_part & part : shaped_variable->interference) {
 		jive_shaped_variable * other_var = part.shaped_variable;
@@ -73,8 +74,12 @@ layout_stackslot(
 		const jive_stackslot_size_class * other_cls =
 			(const jive_stackslot_size_class *) other_slot->base.resource_class;
 		
-		for (n = 0; n < other_cls->size; n++)
+		JIVE_DEBUG_ASSERT(other_slot->offset >= lower_bound);
+		JIVE_DEBUG_ASSERT(other_slot->offset < frame->upper_bound);
+		JIVE_DEBUG_ASSERT(other_slot->offset + other_cls->size <= frame->upper_bound);
+		for (n = 0; n < other_cls->size; n++) {
 			allowed_slot[n + other_slot->offset - lower_bound] = false;
+		}
 	}
 	
 	ssize_t offset = frame->upper_bound - cls->size;
@@ -157,7 +162,10 @@ update_call_area_size(
 }
 
 static void
-layout_stackslots(jive_shaped_graph * shaped_graph, jive_graph * graph)
+layout_stackslots(
+	jive_shaped_graph * shaped_graph,
+	jive_graph * graph,
+	jive_subroutine_to_stackframe_map & stackframe_map)
 {
 	jive_traverser * trav = jive_bottomup_traverser_create(graph);
 	
@@ -166,7 +174,15 @@ layout_stackslots(jive_shaped_graph * shaped_graph, jive_graph * graph)
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 		if (!sub)
 			continue;
-		jive_subroutine_stackframe_info * frame = jive_subroutine_node_get_stackframe_info(sub);
+		if (stackframe_map.find(sub) == stackframe_map.end()) {
+			jive_subroutine_stackframe_info & frame = stackframe_map[sub];
+			frame.lower_bound = sub->operation().signature().stack_frame_lower_bound;
+			frame.upper_bound = sub->operation().signature().stack_frame_upper_bound;
+			frame.frame_pointer_offset = 0;
+			frame.stack_pointer_offset = 0;
+			frame.call_area_size = 0;
+		}
+		jive_subroutine_stackframe_info * frame = &stackframe_map[sub];
 		size_t n;
 		for (n = 0; n < node->noutputs; n++) {
 			jive::output * output = node->outputs[n];
@@ -182,15 +198,16 @@ layout_stackslots(jive_shaped_graph * shaped_graph, jive_graph * graph)
 }
 
 void
-jive_regalloc_stackframe(jive_shaped_graph * shaped_graph)
+jive_regalloc_stackframe(
+	jive_shaped_graph * shaped_graph, jive_subroutine_to_stackframe_map & stackframe_map)
 {
 	jive_graph * graph = shaped_graph->graph;
 	
-	layout_stackslots(shaped_graph, graph);
+	layout_stackslots(shaped_graph, graph, stackframe_map);
 }
 
 static void
-reloc_stack_access(jive_node * node)
+reloc_stack_access(jive_node * node, jive_subroutine_to_stackframe_map & stackframe_map)
 {
 	
 	const jive_instruction_node * inode = jive_instruction_node_cast(node);
@@ -206,7 +223,8 @@ reloc_stack_access(jive_node * node)
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 		JIVE_DEBUG_ASSERT(sub);
-		jive_subroutine_stackframe_info * frame = jive_subroutine_node_get_stackframe_info(sub);
+		JIVE_DEBUG_ASSERT(stackframe_map.count(sub) != 0);
+		jive_subroutine_stackframe_info * frame = &stackframe_map[sub];
 		
 		jive_immediate imm = immnode->operation().value();
 		if (imm.add_label == &jive_label_fpoffset) {
@@ -312,7 +330,10 @@ do_split(
 }
 
 static void
-region_subroutine_prepare_stackframe(jive_shaped_graph * shaped_graph, jive_region * region)
+region_subroutine_prepare_stackframe(
+	jive_shaped_graph * shaped_graph,
+	jive_region * region,
+	jive_subroutine_to_stackframe_map & stackframe_map)
 {
 	if (!region->anchor)
 		return;
@@ -320,38 +341,47 @@ region_subroutine_prepare_stackframe(jive_shaped_graph * shaped_graph, jive_regi
 	jive_subroutine_node * node = dynamic_cast<jive_subroutine_node *>(node_);
 	if (!node)
 		return;
+	JIVE_DEBUG_ASSERT(stackframe_map.count(node) != 0);
+	jive_subroutine_stackframe_info & frame = stackframe_map[node];
 	
 	jive_regalloc_stackframe_transforms xfrm;
 	xfrm.base.value_split = do_split;
 	xfrm.shaped_graph = shaped_graph;
 	xfrm.region = region;
 	
-	jive_subroutine_node_prepare_stackframe(node, &xfrm.base);
+	jive_subroutine_node_prepare_stackframe(node, &frame, &xfrm.base);
 }
 
 static void
 region_subroutine_prepare_stackframe_recursive(
 	jive_shaped_graph * shaped_graph,
-	jive_region * region)
+	jive_region * region,
+	jive_subroutine_to_stackframe_map & stackframe_map)
 {
-	region_subroutine_prepare_stackframe(shaped_graph, region);
+	region_subroutine_prepare_stackframe(
+		shaped_graph, region, stackframe_map);
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
-		region_subroutine_prepare_stackframe_recursive(shaped_graph, subregion);
+		region_subroutine_prepare_stackframe_recursive(
+			shaped_graph, subregion, stackframe_map);
 	}
 }
 
 void
-jive_regalloc_relocate_stackslots(struct jive_shaped_graph * shaped_graph)
+jive_regalloc_relocate_stackslots(
+	jive_shaped_graph * shaped_graph, jive_subroutine_to_stackframe_map & stackframe_map)
 {
 	jive_graph * graph = shaped_graph->graph;
-	region_subroutine_prepare_stackframe_recursive(shaped_graph, graph->root_region);
+	region_subroutine_prepare_stackframe_recursive(
+		shaped_graph,
+		graph->root_region,
+		stackframe_map);
 	
 	jive_traverser * trav = jive_bottomup_traverser_create(graph);
 	
 	jive_node * node;
 	for ( node = jive_traverser_next(trav); node; node = jive_traverser_next(trav) ) {
-		reloc_stack_access(node);
+		reloc_stack_access(node, stackframe_map);
 	}
 	jive_traverser_destroy(trav);
 }

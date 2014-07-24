@@ -48,21 +48,10 @@ extern const jive_instruction_class jive_testarch_instr_jump;
 extern const jive_instruction_class jive_testarch_instr_jumpz;
 extern const jive_instruction_class jive_testarch_instr_jumpnz;
 
-jive_subroutine_deprecated *
-jive_testarch_subroutine_create(struct jive_region * region,
-	size_t nparameters, const jive_argument_type parameters[],
-	size_t nreturns, const jive_argument_type returns[]);
-
 jive_subroutine
-jive_testarch_subroutine_begin(struct jive_graph * graph,
+jive_testarch_subroutine_begin(jive_graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[]);
-
-typedef struct jive_testarch_subroutine jive_testarch_subroutine;
-
-struct jive_testarch_subroutine {
-	jive_subroutine_deprecated base;
-};
 
 class jive_testarch_reg_classifier final : public jive_reg_classifier {
 public:

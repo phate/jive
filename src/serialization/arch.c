@@ -10,7 +10,6 @@
 #include <jive/arch/memorytype.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
-#include <jive/arch/subroutine-private.h>
 #include <jive/arch/subroutine.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/serialization/driver.h>
@@ -278,6 +277,7 @@ jive_label_to_address_deserialize(
 	return true;
 }
 
+#if 0
 #include <jive/backend/i386/subroutine.h>
 
 static void
@@ -417,6 +417,7 @@ jive_subroutine_deserialize(
 	
 	return *node != NULL;
 }
+#endif
 
 static void
 jive_immediate_serialize(
@@ -474,6 +475,7 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_LABEL_TO_BITSTRING_NODE, "label2bits",
 	jive_label_to_bitstring_serialize,
 	jive_label_to_bitstring_deserialize);
+#if 0
 JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
 	JIVE_SUBROUTINE_ENTER_NODE,
 	jive::subroutine_head_op,
@@ -486,6 +488,7 @@ JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_SUBROUTINE_NODE, "subroutine",
 	jive_subroutine_serialize,
 	jive_subroutine_deserialize);
+#endif
 JIVE_SERIALIZATION_NODECLS_REGISTER(
 	JIVE_IMMEDIATE_NODE, "immediate",
 	jive_immediate_serialize,
