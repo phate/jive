@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,7 +14,33 @@
 #include <jive/common.h>
 #include <jive/context.h>
 
+#include <stdint.h>
+#include <vector>
+
 /** \file jive/buffer.h */
+
+namespace jive {
+
+class buffer
+{
+public:
+	jive::buffer & append(const void * data, size_t nbytes);
+
+	inline jive::buffer & append(const char * str) { append(str, strlen(str)); return *this; }
+
+	inline jive::buffer & append(char byte) { data_.push_back(byte); return *this; }
+
+	inline jive::buffer & append(uint8_t byte) { data_.push_back(byte); return *this; }
+
+	size_t size() const noexcept { return data_.size(); }
+
+	const unsigned char * c_str() { append('\0'); return &data_[0]; }
+
+private:
+	std::vector<uint8_t> data_;
+};
+
+}
 
 /**
 	\defgroup jive_buffer Expandable buffers

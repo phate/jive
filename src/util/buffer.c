@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -7,6 +8,20 @@
 #include <sys/mman.h>
 
 #include <jive/util/buffer.h>
+
+namespace jive {
+
+jive::buffer &
+buffer::append(const void * data, size_t nbytes)
+{
+	const uint8_t * d = static_cast<const uint8_t*>(data);
+	for (size_t n = 0; n < nbytes; n++)
+		data_.push_back(d[n]);
+
+	return *this;
+}
+
+}
 
 void *
 jive_buffer_executable(const jive_buffer * self)
