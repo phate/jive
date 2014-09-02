@@ -2,5 +2,3 @@ TESTS+=\
 	frontend/test-cfg \
 	frontend/test-cfg-scc \
 	frontend/test-clg \
-
-include tests/frontend/tac/Makefile.sub

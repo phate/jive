@@ -10,7 +10,6 @@
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
-#include <jive/frontend/tac/three_address_code.h>
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
 

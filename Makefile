@@ -156,17 +156,7 @@ LIBJIVE_SRC += \
 	src/frontend/basic_block.c \
 	src/frontend/cfg.c \
 	src/frontend/cfg-scc.c \
-	src/frontend/tac/three_address_code.c \
-	src/frontend/tac/variable.c \
-	src/frontend/tac/assignment.c \
-	src/frontend/tac/reference.c \
-	src/frontend/tac/call.c \
-	src/frontend/tac/bitstring/bitconstant.c \
-	src/frontend/tac/bitstring/arithmetic/bitsum.c \
-	src/frontend/tac/bitstring/comparison/bitequal.c \
-	src/frontend/tac/bitstring/comparison/bitnotequal.c \
 
-	
 # shaper
 LIBJIVE_SRC += \
 	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c src/regalloc/shaped-variable.c src/regalloc/shaped-node.c src/regalloc/xpoint.c \

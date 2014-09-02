@@ -21,11 +21,6 @@ public:
 	jive_basic_block(struct jive_cfg * cfg) noexcept;
 
 	virtual std::string debug_string() const override;
-
-	struct {
-		jive::frontend::three_address_code * first;
-		jive::frontend::three_address_code * last;
-	} three_address_codes;
 };
 
 struct jive_cfg_node *

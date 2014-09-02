@@ -9,7 +9,6 @@
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg-scc.h>
-#include <jive/frontend/tac/variable.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
 
@@ -35,15 +34,6 @@ setup_cfg(jive_cfg * cfg)
 	bb6 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
 	bb7 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
 	bb8 = dynamic_cast<jive_basic_block*>(jive_basic_block_create(cfg));
-
-	jive_variable_code_create(bb1, "1");
-	jive_variable_code_create(bb2, "2");
-	jive_variable_code_create(bb3, "3");
-	jive_variable_code_create(bb4, "4");
-	jive_variable_code_create(bb5, "5");
-	jive_variable_code_create(bb6, "6");
-	jive_variable_code_create(bb7, "7");
-	jive_variable_code_create(bb8, "8");
 
 	/* first scc */
 	cfg->exit->divert_predecessors(bb1);

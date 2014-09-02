@@ -1,6 +1,0 @@
-TESTS+=\
-	frontend/tac/test-variable \
-	frontend/tac/test-assignment \
-	frontend/tac/test-reference \
-
-include tests/frontend/tac/bitstring/Makefile.sub

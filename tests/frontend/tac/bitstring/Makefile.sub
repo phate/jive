@@ -1,5 +1,0 @@
-TESTS+=\
-	frontend/tac/bitstring/test-bitconstant \
-
-include tests/frontend/tac/bitstring/arithmetic/Makefile.sub
-include tests/frontend/tac/bitstring/comparison/Makefile.sub

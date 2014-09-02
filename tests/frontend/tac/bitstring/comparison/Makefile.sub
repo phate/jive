@@ -1,3 +1,0 @@
-TESTS+=\
-	frontend/tac/bitstring/comparison/test-bitequal \
-	frontend/tac/bitstring/comparison/test-bitnotequal \
