@@ -32,9 +32,6 @@ public:
 	inline jive_cfg_node * sink() const noexcept { return sink_; }
 	inline size_t index() const noexcept { return index_; }
 
-	bool operator==(const cfg_edge & rhs) const noexcept;
-	inline bool operator!=(const cfg_edge & rhs) const noexcept { return !(*this == rhs); }
-
 private:
 	jive_cfg_node * source_;
 	jive_cfg_node * sink_;

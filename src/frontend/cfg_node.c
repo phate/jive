@@ -30,12 +30,6 @@ cfg_edge::divert(jive_cfg_node * new_sink, size_t new_index) noexcept
 	index_ = new_index;
 }
 
-bool
-cfg_edge::operator==(const cfg_edge & rhs) const noexcept
-{
-	return source_ == rhs.source_ && sink_ == rhs.sink_ && index_ == rhs.index_;
-}
-
 }
 }
 
