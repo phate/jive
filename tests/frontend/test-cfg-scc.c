@@ -35,26 +35,26 @@ setup_cfg(jive::frontend::cfg & cfg)
 	bb8 = new jive::frontend::basic_block(cfg);
 
 	/* first scc */
-	cfg.exit->divert_predecessors(bb1);
-	bb1->add_nottaken_successor(bb2);
-	bb2->add_nottaken_successor(bb3);
-	bb3->add_nottaken_successor(bb1);
+	cfg.exit->divert_inedges(bb1);
+	bb1->add_outedge(bb2, 0);
+	bb2->add_outedge(bb3, 0);
+	bb3->add_outedge(bb1, 0);
 
 	/* second scc */
-	bb4->add_nottaken_successor(bb2);
-	bb4->add_taken_successor(bb6);
-	bb6->add_nottaken_successor(bb4);
-	bb6->add_taken_successor(bb5);
+	bb4->add_outedge(bb2, 0);
+	bb4->add_outedge(bb6, 1);
+	bb6->add_outedge(bb4, 0);
+	bb6->add_outedge(bb5, 1);
 
 	/* third scc */
-	bb5->add_nottaken_successor(bb3);
-	bb5->add_taken_successor(bb7);
-	bb7->add_nottaken_successor(bb5);
-	bb7->add_taken_successor(bb8);
+	bb5->add_outedge(bb3, 0);
+	bb5->add_outedge(bb7, 1);
+	bb7->add_outedge(bb5, 0);
+	bb7->add_outedge(bb8, 1);
 
 	/* fourth scc */
-	bb8->add_taken_successor(bb8);
-	bb8->add_nottaken_successor(cfg.exit);
+	bb8->add_outedge(bb8, 1);
+	bb8->add_outedge(cfg.exit, 0);
 }
 
 static void

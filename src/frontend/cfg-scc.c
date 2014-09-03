@@ -36,26 +36,15 @@ strongconnect(
 	node_stack.push_back(node);
 	index++;
 
-	jive::frontend::cfg_node * successor = node->taken_successor();
-	if (successor != nullptr) {
+	std::vector<jive::frontend::cfg_edge*> edges = node->outedges();
+	for (size_t n = 0; n < edges.size(); n++) {
+		jive::frontend::cfg_node * successor = edges[n]->sink();
 		if (map.find(successor) == map.end()) {
 			/* taken successor has not been visited yet; recurse on it */
 			strongconnect(successor, map, node_stack, index, sccs);
 			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->lowlink);
 		} else if (std::find(node_stack.begin(), node_stack.end(), successor) != node_stack.end()) {
 			/* taken successor is in stack and hence in the current SCC */
-			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->index);
-		}
-	}
-
-	successor = node->nottaken_successor();
-	if (successor != nullptr) {
-		if (map.find(successor) == map.end()) {
-			/* nottaken successor has not been visited yet; recurse on it */
-			strongconnect(successor, map, node_stack, index, sccs);
-			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->lowlink);
-		} else if (std::find(node_stack.begin(), node_stack.end(), successor) != node_stack.end()) {
-			/* nottaken successor is in stack and hence in the current SCC */
 			map[node]->lowlink = std::min(map[node]->lowlink, map[successor]->index);
 		}
 	}

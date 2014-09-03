@@ -6,10 +6,9 @@
 #ifndef JIVE_FRONTEND_CFG_NODE_H
 #define JIVE_FRONTEND_CFG_NODE_H
 
-#include <jive/common.h>
-
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 
@@ -25,7 +24,7 @@ public:
 
 	cfg_edge(cfg_node * source, cfg_node * sink, size_t index) noexcept;
 
-	void divert(cfg_node * new_sink, size_t new_index) noexcept;
+	inline void divert(cfg_node * new_sink) noexcept { sink_ = new_sink; }
 
 	inline cfg_node * source() const noexcept { return source_; }
 	inline cfg_node * sink() const noexcept { return sink_; }
@@ -49,35 +48,31 @@ public:
 
 	inline jive::frontend::cfg * cfg() const noexcept { return cfg_; }
 
-	void add_taken_successor(cfg_node * successor);
-	void add_nottaken_successor(cfg_node * successor);
+	jive::frontend::cfg_edge * add_outedge(jive::frontend::cfg_node * successor, size_t index);
 
-	void remove_taken_successor();
-	void remove_nottaken_successor();
-	inline void remove_successors() { remove_taken_successor(); remove_nottaken_successor(); }
+	void remove_outedge(jive::frontend::cfg_edge * edge);
 
-	void remove_predecessors();
+	void remove_outedges();
 
-	inline void divert_taken_successor(cfg_node * successor) {
-		remove_taken_successor();
-		add_taken_successor(successor);
-	}
+	size_t noutedges() const noexcept;
 
-	inline void divert_nottaken_successor(cfg_node * successor) {
-		remove_nottaken_successor();
-		add_nottaken_successor(successor);
-	}
+	std::vector<jive::frontend::cfg_edge*> outedges() const;
 
-	void divert_predecessors(cfg_node * node);
+	void divert_inedges(jive::frontend::cfg_node * new_successor);
 
-	inline jive::frontend::cfg_edge * taken_edge() const noexcept { return taken_edge_.get(); }
-	inline jive::frontend::cfg_edge * nottaken_edge() const noexcept { return nottaken_edge_.get(); }
-	cfg_node * taken_successor() const noexcept;
-	cfg_node * nottaken_successor() const noexcept;
+	void remove_inedges();
 
-	inline size_t npredecessors() const noexcept { return predecessors_.size(); }
-	inline std::vector<jive::frontend::cfg_edge *> predecessors() const noexcept {
-		return predecessors_; }
+	size_t ninedges() const noexcept;
+
+	std::vector<jive::frontend::cfg_edge*> inedges() const;
+
+	bool no_predecessor() const noexcept;
+
+	bool single_predecessor() const noexcept;
+
+	bool no_successor() const noexcept;
+
+	bool single_successor() const noexcept;
 
 	struct {
 		jive::frontend::cfg_node * prev;
@@ -85,9 +80,8 @@ public:
 	} cfg_node_list;
 
 private:
-	std::unique_ptr<jive::frontend::cfg_edge> taken_edge_;
-	std::unique_ptr<jive::frontend::cfg_edge> nottaken_edge_;
-	std::vector<jive::frontend::cfg_edge *> predecessors_;
+	std::unordered_set<std::unique_ptr<jive::frontend::cfg_edge>> outedges_;
+	std::unordered_set<jive::frontend::cfg_edge*> inedges_;
 	jive::frontend::cfg * cfg_;
 };
 

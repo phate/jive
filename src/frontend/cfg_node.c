@@ -23,13 +23,6 @@ cfg_edge::cfg_edge(cfg_node * source, cfg_node * sink, size_t index) noexcept
 	, index_(index)
 {}
 
-void
-cfg_edge::divert(cfg_node * new_sink, size_t new_index) noexcept
-{
-	sink_ = new_sink;
-	index_ = new_index;
-}
-
 cfg_node::~cfg_node()
 {
 	JIVE_LIST_REMOVE(cfg_->nodes, this, cfg_node_list);
@@ -44,91 +37,141 @@ cfg_node::cfg_node(jive::frontend::cfg & cfg)
 	JIVE_LIST_PUSH_BACK(cfg_->nodes, this, cfg_node_list);
 }
 
-void
-cfg_node::remove_taken_successor()
+jive::frontend::cfg_edge *
+cfg_node::add_outedge(jive::frontend::cfg_node * successor, size_t index)
 {
-	if (taken_edge_ == nullptr)
-		return;
+	std::unique_ptr<jive::frontend::cfg_edge> edge(new cfg_edge(this, successor, index));
+	jive::frontend::cfg_edge * e = edge.get();
+	outedges_.insert(std::move(edge));
+	successor->inedges_.insert(e);
+	edge.release();
+	return e;
+}
 
-	size_t index = taken_edge_->index();
-	for (size_t n = index+1; n < taken_successor()->npredecessors(); n++) {
-		jive::frontend::cfg_edge * edge = taken_successor()->predecessors_[n];
-		edge->divert(edge->sink(), edge->index()-1);
+void
+cfg_node::remove_outedge(jive::frontend::cfg_edge * edge)
+{
+	std::unique_ptr<cfg_edge> e(edge);
+	std::unordered_set<std::unique_ptr<cfg_edge>>::const_iterator it = outedges_.find(e);
+	if (it != outedges_.end()) {
+		JIVE_DEBUG_ASSERT(edge->source() == this);
+		edge->sink()->inedges_.erase(edge);
+		outedges_.erase(it);
+	}
+	e.release();
+}
+
+void
+cfg_node::remove_outedges()
+{
+	while (outedges_.size() != 0) {
+		JIVE_DEBUG_ASSERT(outedges_.begin()->get()->source() == this);
+		remove_outedge(outedges_.begin()->get());
+	}
+}
+
+size_t
+cfg_node::noutedges() const noexcept
+{
+	return outedges_.size();
+}
+
+std::vector<jive::frontend::cfg_edge*>
+cfg_node::outedges() const
+{
+	std::vector<jive::frontend::cfg_edge*> edges;
+	std::unordered_set<std::unique_ptr<cfg_edge>>::const_iterator it;
+	for ( it = outedges_.begin(); it != outedges_.end(); it++) {
+		JIVE_DEBUG_ASSERT(it->get()->source() == this);
+		edges.push_back(it->get());
 	}
 
-	taken_successor()->predecessors_.erase(taken_successor()->predecessors_.begin()+index);
-	taken_edge_.reset();
+	return edges;
 }
 
 void
-cfg_node::remove_nottaken_successor()
+cfg_node::divert_inedges(jive::frontend::cfg_node * new_successor)
 {
-	if (nottaken_edge_ == nullptr)
-		return;
+	std::unordered_set<cfg_edge*>::const_iterator it;
+	for (it = inedges_.begin(); it != inedges_.end(); it++) {
+		JIVE_DEBUG_ASSERT((*it)->sink() == this);
+		(*it)->divert(new_successor);
+		new_successor->inedges_.insert(*it);
+	}
+	inedges_.clear();
+}
 
-	size_t index = nottaken_edge_->index();
-	for (size_t n = index+1; n < nottaken_successor()->npredecessors(); n++) {
-		jive::frontend::cfg_edge * edge = nottaken_successor()->predecessors_[n];
-		edge->divert(edge->sink(), edge->index()-1);
+void
+cfg_node::remove_inedges()
+{
+	while (inedges_.size() != 0) {
+		cfg_edge * edge = *inedges_.begin();
+		JIVE_DEBUG_ASSERT(edge->sink() == this);
+		edge->source()->remove_outedge(edge);
+	}
+}
+
+size_t
+cfg_node::ninedges() const noexcept
+{
+	return inedges_.size();
+}
+
+std::vector<jive::frontend::cfg_edge*>
+cfg_node::inedges() const
+{
+	std::vector<jive::frontend::cfg_edge*> edges;
+	std::unordered_set<cfg_edge*>::const_iterator it;
+	for ( it = inedges_.begin(); it != inedges_.end(); it++) {
+		JIVE_DEBUG_ASSERT((*it)->sink() == this);
+		edges.push_back(*it);
 	}
 
-	nottaken_successor()->predecessors_.erase(nottaken_successor()->predecessors_.begin()+index);
-	nottaken_edge_.reset();
+	return edges;
 }
 
-void
-cfg_node::remove_predecessors()
+bool
+cfg_node::no_predecessor() const noexcept
 {
-	for (auto edge : predecessors_) {
-		if (edge->source()->taken_edge_.get() == edge)
-			edge->source()->taken_edge_.reset();
-		else if (edge->source()->nottaken_edge_.get() == edge)
-			edge->source()->nottaken_edge_.reset();
+	return ninedges() == 0;
+}
+
+bool
+cfg_node::single_predecessor() const noexcept
+{
+	if (ninedges() == 0)
+		return false;
+
+	std::unordered_set<cfg_edge*>::const_iterator it;
+	for (it = inedges_.begin(); it != inedges_.end(); it++) {
+		JIVE_DEBUG_ASSERT((*it)->sink() == this);
+		if ((*it)->source() != (*inedges_.begin())->source())
+			return false;
 	}
-	predecessors_.clear();
+
+	return true;
 }
 
-void
-cfg_node::add_taken_successor(jive::frontend::cfg_node * successor)
+bool
+cfg_node::no_successor() const noexcept
 {
-	JIVE_ASSERT(taken_edge_ == nullptr);
-
-	taken_edge_ = std::unique_ptr<jive::frontend::cfg_edge>(
-		new jive::frontend::cfg_edge(this, successor, successor->npredecessors()));
-	successor->predecessors_.push_back(taken_edge_.get());
+	return noutedges() == 0;
 }
 
-void
-cfg_node::add_nottaken_successor(jive::frontend::cfg_node * successor)
+bool
+cfg_node::single_successor() const noexcept
 {
-	JIVE_ASSERT(nottaken_edge_ == nullptr);
+	if (noutedges() == 0)
+		return false;
 
-	nottaken_edge_ = std::unique_ptr<jive::frontend::cfg_edge>(
-		new jive::frontend::cfg_edge(this, successor, successor->npredecessors()));
-	successor->predecessors_.push_back(nottaken_edge_.get());
-}
-
-void
-cfg_node::divert_predecessors(jive::frontend::cfg_node * node)
-{
-	for (size_t n = 0; n < npredecessors(); n++) {
-		JIVE_DEBUG_ASSERT(predecessors_[n]->sink() == this);
-		predecessors_[n]->divert(node, node->npredecessors());
-		node->predecessors_.push_back(predecessors_[n]);
+	std::unordered_set<std::unique_ptr<cfg_edge>>::const_iterator it;
+	for (it = outedges_.begin(); it != outedges_.end(); it++) {
+		JIVE_DEBUG_ASSERT(it->get()->source() == this);
+		if ((*it)->sink() != (*outedges_.begin())->sink())
+			return false;
 	}
-	predecessors_.clear();
-}
 
-cfg_node *
-cfg_node::taken_successor() const noexcept
-{
-	return taken_edge_ == nullptr ? nullptr : taken_edge_->sink();
-}
-
-cfg_node *
-cfg_node::nottaken_successor() const noexcept
-{
-	return nottaken_edge_ == nullptr ? nullptr : nottaken_edge_->sink();
+	return true;
 }
 
 }

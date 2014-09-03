@@ -53,8 +53,6 @@ cfg::exit_node::debug_string() const
 cfg::~cfg()
 {
 	while (nodes.first) {
-		nodes.first->remove_predecessors();
-		nodes.first->remove_successors();
 		delete nodes.first;
 	}
 }
@@ -67,7 +65,7 @@ cfg::cfg()
 
 	enter = new enter_node(*this);
 	exit = new exit_node(*this);
-	enter->add_nottaken_successor(exit);
+	enter->add_outedge(exit, 0);
 }
 
 cfg::cfg(jive::frontend::clg_node & _clg_node)
@@ -78,7 +76,7 @@ cfg::cfg(jive::frontend::clg_node & _clg_node)
 
 	enter = new enter_node(*this);
 	exit = new exit_node(*this);
-	enter->add_nottaken_successor(exit);
+	enter->add_outedge(exit, 0);
 }
 
 }
@@ -96,15 +94,10 @@ jive_cfg_convert_dot(const jive::frontend::cfg & self, jive::buffer & buffer)
 		buffer.append(tmp).append("[shape = box, label = \"");
 		buffer.append(node->debug_string().c_str()).append("\"];\n");
 
-		if (node->taken_successor()) {
-			snprintf(tmp, sizeof(tmp), "%zu -> %zu[label = \"t\"];\n", (size_t)node,
-				(size_t)node->taken_successor());
-			buffer.append(tmp);
-		}
-
-		if (node->nottaken_successor()) {
-			snprintf(tmp, sizeof(tmp), "%zu -> %zu[label = \"nt\"];\n", (size_t)node,
-				(size_t)node->nottaken_successor());
+		std::vector<jive::frontend::cfg_edge*> edges = node->outedges();
+		for (size_t n = 0; n < edges.size(); n++) {
+			snprintf(tmp, sizeof(tmp), "%zu -> %zu[label = \"%zu\"];\n", (size_t)edges[n]->source(),
+				(size_t)edges[n]->sink(), edges[n]->index());
 			buffer.append(tmp);
 		}
 	}
@@ -128,40 +121,13 @@ jive_cfg_validate(const jive::frontend::cfg & self)
 	jive::frontend::cfg_node * node;
 	JIVE_LIST_ITERATE(self.nodes, node, cfg_node_list) {
 		if (node == self.enter) {
-			JIVE_ASSERT(node->predecessors().size() == 0);
-			JIVE_ASSERT(node->taken_successor() == nullptr);
-			JIVE_ASSERT(node->nottaken_successor() != nullptr);
+			JIVE_ASSERT(node->no_predecessor());
+			JIVE_ASSERT(node->single_successor());
 		}
 
 		if (node == self.exit) {
-			JIVE_ASSERT(node->taken_successor() == NULL);
-			JIVE_ASSERT(node->nottaken_successor() == NULL);
-		}
-
-		if (node == self.exit)
+			JIVE_ASSERT(node->no_successor());
 			continue;
-
-		JIVE_ASSERT(node->nottaken_successor() != NULL);
-
-		/* check whether successors are in the predecessor list */
-		size_t n;
-		jive::frontend::cfg_node * successor = node->nottaken_successor();
-		std::vector<jive::frontend::cfg_edge*> predecessors = successor->predecessors();
-		for (n = 0; n < predecessors.size(); n++) {
-			if (predecessors[n]->source() == node)
-			 break;
 		}
-		JIVE_ASSERT(n != predecessors.size());
-
-		if (node->taken_successor() == NULL)
-			continue;
-
-		successor = node->taken_successor();
-		predecessors = successor->predecessors();
-		for (n = 0; n != predecessors.size(); n++) {
-			if (predecessors[n]->source() == node)
-			 break;
-		}
-		JIVE_ASSERT(n != predecessors.size());
 	}
 }
