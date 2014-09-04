@@ -155,7 +155,6 @@ LIBJIVE_SRC += \
 	src/frontend/cfg_node.c \
 	src/frontend/basic_block.c \
 	src/frontend/cfg.c \
-	src/frontend/cfg-scc.c \
 
 # shaper
 LIBJIVE_SRC += \

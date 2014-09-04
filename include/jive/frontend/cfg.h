@@ -24,6 +24,8 @@ public:
 	cfg();
 	cfg(jive::frontend::clg_node  & clg_node);
 
+	std::vector<std::unordered_set<cfg_node*>> find_sccs() const;
+
 	jive::frontend::clg_node * clg_node;
 
 	jive::frontend::cfg::enter_node * enter;

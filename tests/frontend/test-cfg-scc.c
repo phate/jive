@@ -7,9 +7,6 @@
 
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
-#include <jive/frontend/cfg-scc.h>
-#include <jive/frontend/clg.h>
-#include <jive/frontend/clg_node.h>
 
 #include <assert.h>
 
@@ -90,7 +87,7 @@ test_main(void)
 
 //	jive_cfg_view(cfg);
 
-	std::vector<std::unordered_set<jive::frontend::cfg_node*>> sccs = jive_cfg_find_sccs(cfg);
+	std::vector<std::unordered_set<jive::frontend::cfg_node*>> sccs = cfg.find_sccs();
 	check_sccs(sccs);
 
 	return 0;

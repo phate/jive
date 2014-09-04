@@ -13,8 +13,50 @@
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
 
+#include <algorithm>
+#include <unordered_map>
+
 #include <stdlib.h>
 #include <stdio.h>
+
+/* Tarjan's SCC algorithm */
+
+static void
+strongconnect(
+	jive::frontend::cfg_node * node,
+	std::unordered_map<jive::frontend::cfg_node*, std::pair<size_t,size_t>> & map,
+	std::vector<jive::frontend::cfg_node*> & node_stack,
+	size_t index,
+	std::vector<std::unordered_set<jive::frontend::cfg_node*>> & sccs)
+{
+	map.emplace(node, std::make_pair(index, index));
+	node_stack.push_back(node);
+	index++;
+
+	std::vector<jive::frontend::cfg_edge*> edges = node->outedges();
+	for (size_t n = 0; n < edges.size(); n++) {
+		jive::frontend::cfg_node * successor = edges[n]->sink();
+		if (map.find(successor) == map.end()) {
+			/* taken successor has not been visited yet; recurse on it */
+			strongconnect(successor, map, node_stack, index, sccs);
+			map[node].second = std::min(map[node].second, map[successor].second);
+		} else if (std::find(node_stack.begin(), node_stack.end(), successor) != node_stack.end()) {
+			/* taken successor is in stack and hence in the current SCC */
+			map[node].second = std::min(map[node].second, map[successor].first);
+		}
+	}
+
+	if (map[node].second == map[node].first) {
+		std::unordered_set<jive::frontend::cfg_node*> scc;
+		jive::frontend::cfg_node * w;
+		do {
+			w = node_stack.back();
+			node_stack.pop_back();
+			scc.insert(w);
+		} while (w != node);
+		sccs.push_back(scc);
+	}
+}
 
 namespace jive {
 namespace frontend {
@@ -77,6 +119,24 @@ cfg::cfg(jive::frontend::clg_node & _clg_node)
 	enter = new enter_node(*this);
 	exit = new exit_node(*this);
 	enter->add_outedge(exit, 0);
+}
+
+std::vector<std::unordered_set<cfg_node*>>
+cfg::find_sccs() const
+{
+	std::vector<std::unordered_set<jive::frontend::cfg_node*>> sccs;
+
+	std::unordered_map<jive::frontend::cfg_node*, std::pair<size_t,size_t>> map;
+	std::vector<jive::frontend::cfg_node*> node_stack;
+	size_t index = 0;
+
+	jive::frontend::cfg_node * cfg_node;
+	JIVE_LIST_ITERATE(nodes, cfg_node, cfg_node_list) {
+		if (map.find(cfg_node) == map.end())
+			strongconnect(cfg_node, map, node_stack, index, sccs);
+	}
+
+	return sccs;
 }
 
 }
