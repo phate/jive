@@ -41,7 +41,7 @@ public:
 	virtual ~cfg_node();
 
 protected:
-	cfg_node(jive::frontend::cfg & cfg);
+	cfg_node(jive::frontend::cfg & cfg) : cfg_(&cfg) {}
 
 public:
 	virtual std::string debug_string() const = 0;
@@ -74,10 +74,6 @@ public:
 
 	bool single_successor() const noexcept;
 
-	struct {
-		jive::frontend::cfg_node * prev;
-		jive::frontend::cfg_node * next;
-	} cfg_node_list;
 
 private:
 	std::unordered_set<std::unique_ptr<jive::frontend::cfg_edge>> outedges_;

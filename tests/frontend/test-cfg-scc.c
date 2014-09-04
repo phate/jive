@@ -22,17 +22,17 @@ static jive::frontend::basic_block * bb8;
 static void
 setup_cfg(jive::frontend::cfg & cfg)
 {
-	bb1 = new jive::frontend::basic_block(cfg);
-	bb2 = new jive::frontend::basic_block(cfg);
-	bb3 = new jive::frontend::basic_block(cfg);
-	bb4 = new jive::frontend::basic_block(cfg);
-	bb5 = new jive::frontend::basic_block(cfg);
-	bb6 = new jive::frontend::basic_block(cfg);
-	bb7 = new jive::frontend::basic_block(cfg);
-	bb8 = new jive::frontend::basic_block(cfg);
+	bb1 = cfg.create_basic_block();
+	bb2 = cfg.create_basic_block();
+	bb3 = cfg.create_basic_block();
+	bb4 = cfg.create_basic_block();
+	bb5 = cfg.create_basic_block();
+	bb6 = cfg.create_basic_block();
+	bb7 = cfg.create_basic_block();
+	bb8 = cfg.create_basic_block();
 
 	/* first scc */
-	cfg.exit->divert_inedges(bb1);
+	cfg.exit()->divert_inedges(bb1);
 	bb1->add_outedge(bb2, 0);
 	bb2->add_outedge(bb3, 0);
 	bb3->add_outedge(bb1, 0);
@@ -51,7 +51,7 @@ setup_cfg(jive::frontend::cfg & cfg)
 
 	/* fourth scc */
 	bb8->add_outedge(bb8, 1);
-	bb8->add_outedge(cfg.exit, 0);
+	bb8->add_outedge(cfg.exit(), 0);
 }
 
 static void

@@ -23,19 +23,7 @@ cfg_edge::cfg_edge(cfg_node * source, cfg_node * sink, size_t index) noexcept
 	, index_(index)
 {}
 
-cfg_node::~cfg_node()
-{
-	JIVE_LIST_REMOVE(cfg_->nodes, this, cfg_node_list);
-}
-
-cfg_node::cfg_node(jive::frontend::cfg & cfg)
-	: cfg_(&cfg)
-{
-	cfg_node_list.prev = 0;
-	cfg_node_list.next = 0;
-
-	JIVE_LIST_PUSH_BACK(cfg_->nodes, this, cfg_node_list);
-}
+cfg_node::~cfg_node() {}
 
 jive::frontend::cfg_edge *
 cfg_node::add_outedge(jive::frontend::cfg_node * successor, size_t index)
