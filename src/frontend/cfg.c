@@ -139,17 +139,14 @@ cfg::find_sccs() const
 	return sccs;
 }
 
-}
-}
-
 void
-jive_cfg_convert_dot(const jive::frontend::cfg & self, jive::buffer & buffer)
+cfg::convert_to_dot(jive::buffer & buffer) const
 {
 	buffer.append("digraph cfg {\n");
 
 	char tmp[96];
 	jive::frontend::cfg_node * node;
-	JIVE_LIST_ITERATE(self.nodes, node, cfg_node_list) {
+	JIVE_LIST_ITERATE(nodes, node, cfg_node_list) {
 		snprintf(tmp, sizeof(tmp), "%zu", (size_t)node);
 		buffer.append(tmp).append("[shape = box, label = \"");
 		buffer.append(node->debug_string().c_str()).append("\"];\n");
@@ -165,12 +162,15 @@ jive_cfg_convert_dot(const jive::frontend::cfg & self, jive::buffer & buffer)
 	buffer.append("}\n");
 }
 
+}
+}
+
 void
 jive_cfg_view(const jive::frontend::cfg & self)
 {
 	jive::buffer buffer;
 	FILE * file = popen("tee /tmp/cfg.dot | dot -Tps > /tmp/cfg.ps ; gv /tmp/cfg.ps", "w");
-	jive_cfg_convert_dot(self, buffer);
+	self.convert_to_dot(buffer);
 	fwrite(buffer.c_str(), buffer.size(), 1, file);
 	pclose(file);
 }

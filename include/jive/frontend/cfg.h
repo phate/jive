@@ -26,6 +26,8 @@ public:
 
 	std::vector<std::unordered_set<cfg_node*>> find_sccs() const;
 
+	void convert_to_dot(jive::buffer & buffer) const;
+
 	jive::frontend::clg_node * clg_node;
 
 	jive::frontend::cfg::enter_node * enter;
@@ -59,9 +61,6 @@ private:
 
 }
 }
-
-void
-jive_cfg_convert_dot(const jive::frontend::cfg & self, jive::util::buffer & buffer);
 
 void
 jive_cfg_view(const jive::frontend::cfg & self);
