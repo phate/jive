@@ -82,10 +82,9 @@ static int
 test_main(void)
 {
 	jive::frontend::cfg cfg;
-
 	setup_cfg(cfg);
-
 //	jive_cfg_view(cfg);
+	assert(cfg.is_closed());
 
 	std::vector<std::unordered_set<jive::frontend::cfg_node*>> sccs = cfg.find_sccs();
 	check_sccs(sccs);

@@ -25,9 +25,25 @@ public:
 
 	cfg(jive::frontend::clg_node  & clg_node);
 
+private:
+	cfg(const cfg & c);
+
+public:
 	std::vector<std::unordered_set<cfg_node*>> find_sccs() const;
 
 	void convert_to_dot(jive::buffer & buffer) const;
+
+	bool is_valid() const;
+
+	bool is_closed() const noexcept;
+
+	bool is_linear() const noexcept;
+
+	bool is_structured() const;
+
+	bool is_reducible() const;
+
+	void prune();
 
 	jive::frontend::clg_node * clg_node;
 
@@ -54,6 +70,10 @@ private:
 
 		virtual std::string debug_string() const override;
 	};
+
+	void remove_node(cfg_node * node);
+	void create_enter_node();
+	void create_exit_node();
 
 	jive::frontend::cfg::enter_node * enter_;
 	jive::frontend::cfg::exit_node * exit_;

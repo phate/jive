@@ -30,6 +30,8 @@ public:
 	inline cfg_node * sink() const noexcept { return sink_; }
 	inline size_t index() const noexcept { return index_; }
 
+	inline bool is_selfloop() const noexcept { return source_ == sink_; }
+
 private:
 	cfg_node * source_;
 	cfg_node * sink_;
@@ -74,6 +76,7 @@ public:
 
 	bool single_successor() const noexcept;
 
+	inline bool is_branch() const noexcept { return noutedges() > 1; }
 
 private:
 	std::unordered_set<std::unique_ptr<jive::frontend::cfg_edge>> outedges_;
