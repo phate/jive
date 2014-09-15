@@ -6,29 +6,32 @@
 #ifndef JIVE_FRONTEND_CLG_H
 #define JIVE_FRONTEND_CLG_H
 
-struct jive_buffer;
+namespace jive {
+	class buffer;
 
-typedef struct jive_clg jive_clg;
+namespace frontend {
 
-struct jive_clg {
-	struct jive_context * context;
+class clg_node;
+
+class clg final {
+public:
+	~clg();
+
+	clg() noexcept;
 
 	struct {
-		struct jive_clg_node * first;
-		struct jive_clg_node * last;
+		jive::frontend::clg_node * first;
+		jive::frontend::clg_node * last;
 	} nodes;
 };
 
-jive_clg *
-jive_clg_create(struct jive_context * context);
+}
+}
 
 void
-jive_clg_convert_dot(const struct jive_clg * self, struct jive_buffer * buffer);
+jive_clg_convert_dot(const jive::frontend::clg & self, jive::buffer & buffer);
 
 void
-jive_clg_view(const struct jive_clg * self);
-
-void
-jive_clg_destroy(struct jive_clg * self);
+jive_clg_view(const jive::frontend::clg & self);
 
 #endif

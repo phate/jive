@@ -6,70 +6,38 @@
 #ifndef JIVE_FRONTEND_CLG_NODE_H
 #define JIVE_FRONTEND_CLG_NODE_H
 
-#include <stdbool.h>
-#include <stddef.h>
+#include <string>
+#include <unordered_set>
 
-struct jive_buffer;
-struct jive_function_type;
+namespace jive {
+namespace frontend {
 
-typedef struct jive_clg_node jive_clg_node;
-typedef struct jive_clg_node_class jive_clg_node_class;
+class cfg;
+class clg;
 
-struct jive_clg_node {
-	const struct jive_clg_node_class * class_;
+class clg_node final {
+public:
+	~clg_node();
 
-	struct jive_clg * clg;
+	clg_node(jive::frontend::clg & clg, const char * name);
 
-	size_t ncalls;
-	struct jive_clg_node ** calls;
+	jive::frontend::clg * clg;
+
+	std::unordered_set<jive::frontend::clg_node*> calls;
 
 	struct {
-		struct jive_clg_node * prev;
-		struct jive_clg_node * next;
+		jive::frontend::clg_node * prev;
+		jive::frontend::clg_node * next;
 	} clg_node_list;
 
-	char * name;
-	struct jive_cfg * cfg;
+	std::string name;
+	jive::frontend::cfg * cfg;
 };
 
-extern const jive_clg_node_class JIVE_CLG_NODE;
-
-struct jive_clg_node_class {
-	const struct jive_clg_node_class * parent;
-	const char * name;
-
-	void (*fini)(jive_clg_node * self);
-
-	void (*get_label)(const struct jive_clg_node * self, struct jive_buffer * buffer);
-
-	jive_clg_node * (*create)(struct jive_clg * clg, const char * name);
-};
-
-static inline bool
-jive_clg_node_isinstance(const jive_clg_node * self, const jive_clg_node_class * class_)
-{
-	const jive_clg_node_class * c = self->class_;
-	while (c) {
-		if (c == class_)
-			return true;
-		c = c->parent;
-	}
-	return false;
+}
 }
 
-static inline void
-jive_clg_node_get_label(const jive_clg_node * self, struct jive_buffer * buffer)
-{
-	self->class_->get_label(self, buffer);
-}
-
-struct jive_clg_node *
-jive_clg_node_create(struct jive_clg * clg, const char * name);
-
 void
-jive_clg_node_add_call(struct jive_clg_node * self, struct jive_clg_node * callee);
-
-void
-jive_clg_node_destroy(struct jive_clg_node * self);
+jive_clg_node_add_call(jive::frontend::clg_node & self, jive::frontend::clg_node & callee);
 
 #endif
