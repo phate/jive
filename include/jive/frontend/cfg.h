@@ -8,62 +8,63 @@
 
 #include <jive/frontend/cfg_node.h>
 
-#include <stdbool.h>
-#include <stddef.h>
+namespace jive {
+namespace util {
+	class buffer;
+}
 
-/* cfg enter node */
+namespace frontend {
+	class clg_node;
 
-class jive_cfg_enter_node final : public jive_cfg_node {
+class cfg final {
+	class enter_node;
+	class exit_node;
 public:
-	virtual ~jive_cfg_enter_node() noexcept;
+	~cfg();
+	cfg();
+	cfg(jive::frontend::clg_node  & clg_node);
 
-	jive_cfg_enter_node(struct jive_cfg * cfg) noexcept;
+	jive::frontend::clg_node * clg_node;
 
-	virtual std::string debug_string() const override;
-};
-
-/* cfg exit node */
-
-class jive_cfg_exit_node final : public jive_cfg_node {
-public:
-	virtual ~jive_cfg_exit_node() noexcept;
-
-	jive_cfg_exit_node(struct jive_cfg * cfg) noexcept;
-
-	virtual std::string debug_string() const override;
-};
-
-/* cfg */
-
-class jive_cfg final {
-public:
-	struct jive_clg_node * clg_node;
-
-	struct jive_cfg_node * enter;
-	struct jive_cfg_node * exit;
+	jive::frontend::cfg::enter_node * enter;
+	jive::frontend::cfg::exit_node * exit;
 
 	struct {
-		struct jive_cfg_node * first;
-		struct jive_cfg_node * last;
+		jive::frontend::cfg_node * first;
+		jive::frontend::cfg_node * last;
 	} nodes;
+
+private:
+
+	class enter_node final : public cfg_node {
+	public:
+		virtual ~enter_node() noexcept;
+
+		enter_node(jive::frontend::cfg & cfg) noexcept;
+
+		virtual std::string debug_string() const override;
+	};
+
+	class exit_node final : public cfg_node {
+	public:
+		virtual ~exit_node() noexcept;
+
+		exit_node(jive::frontend::cfg & cfg) noexcept;
+
+		virtual std::string debug_string() const override;
+	};
 };
 
-jive_cfg *
-jive_cfg_create(struct jive_clg_node * clg_node);
-
-bool
-jive_cfg_is_empty(const struct jive_cfg * self);
+}
+}
 
 void
-jive_cfg_convert_dot(const struct jive_cfg * self, struct jive_buffer * buffer);
+jive_cfg_convert_dot(const jive::frontend::cfg & self, jive::util::buffer & buffer);
 
 void
-jive_cfg_view(const struct jive_cfg * self);
+jive_cfg_view(const jive::frontend::cfg & self);
 
 void
-jive_cfg_destroy(struct jive_cfg * self);
-
-void
-jive_cfg_validate(const struct jive_cfg * self);
+jive_cfg_validate(const jive::frontend::cfg & self);
 
 #endif

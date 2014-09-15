@@ -50,8 +50,7 @@ jive_clg_node_fini_(struct jive_clg_node * self)
 	jive_context_free(self->clg->context, self->calls);
 	jive_context_free(self->clg->context, self->name);
 
-	if (self->cfg != NULL)
-		jive_cfg_destroy(self->cfg);
+	delete self->cfg;
 }
 
 void

@@ -3,23 +3,22 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/frontend/clg.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 
 #include <stdio.h>
 
-jive_basic_block::~jive_basic_block()
-{
-}
+namespace jive {
+namespace frontend {
 
-jive_basic_block::jive_basic_block(struct jive_cfg * cfg) noexcept
-	: jive_cfg_node(cfg)
-{
-}
+basic_block::~basic_block() {}
+
+basic_block::basic_block(jive::frontend::cfg & cfg) noexcept
+	: cfg_node(cfg)
+{}
 
 std::string
-jive_basic_block::debug_string() const
+basic_block::debug_string() const
 {
 	std::string label;
 
@@ -30,8 +29,5 @@ jive_basic_block::debug_string() const
 	return label;
 }
 
-struct jive_cfg_node *
-jive_basic_block_create(struct jive_cfg * cfg)
-{
-	return new jive_basic_block(cfg);
+}
 }

@@ -10,20 +10,17 @@
 
 namespace jive {
 namespace frontend {
-	class three_address_code;
-}
-}
 
-class jive_basic_block final : public jive_cfg_node {
+class basic_block final : public cfg_node {
 public:
-	virtual ~jive_basic_block();
+	virtual ~basic_block();
 
-	jive_basic_block(struct jive_cfg * cfg) noexcept;
+	basic_block(jive::frontend::cfg & cfg) noexcept;
 
 	virtual std::string debug_string() const override;
 };
 
-struct jive_cfg_node *
-jive_basic_block_create(struct jive_cfg * cfg);
+}
+}
 
 #endif

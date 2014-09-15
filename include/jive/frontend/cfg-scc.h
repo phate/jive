@@ -9,10 +9,16 @@
 #include <unordered_set>
 #include <vector>
 
-class jive_cfg;
-class jive_cfg_node;
+namespace jive {
+namespace frontend {
 
-std::vector<std::unordered_set<jive_cfg_node*>>
-jive_cfg_find_sccs(jive_cfg * self);
+class cfg;
+class cfg_node;
+
+std::vector<std::unordered_set<jive::frontend::cfg_node*>>
+jive_cfg_find_sccs(const jive::frontend::cfg & self);
+
+}
+}
 
 #endif
