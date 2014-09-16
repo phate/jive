@@ -23,12 +23,6 @@ type::copy() const
 	return new jive::flt::type();
 }
 
-void
-type::label(jive_buffer & buffer) const
-{
-	jive_buffer_putstr(&buffer, "flt");
-}
-
 std::string
 type::debug_string() const
 {

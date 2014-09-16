@@ -34,8 +34,6 @@ public:
 
 	inline const jive_resource_name * name() const noexcept { return name_; }
 
-	virtual void label(jive_buffer & buffer) const override;
-
 	virtual std::string debug_string() const override;
 
 	virtual bool operator==(const jive::base::type & type) const noexcept override;
@@ -109,14 +107,6 @@ type::type(const jive_resource_name * name) noexcept
 	: jive::state::type()
 	, name_(name)
 {}
-
-void
-type::label(jive_buffer & buffer) const
-{
-	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "reuse %s", name()->name);
-	jive_buffer_putstr(&buffer, tmp);
-}
 
 std::string
 type::debug_string() const

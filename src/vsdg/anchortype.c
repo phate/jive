@@ -20,12 +20,6 @@ namespace achr {
 
 type::~type() noexcept {}
 
-void
-type::label(jive_buffer & buffer) const
-{
-	jive_buffer_putstr(&buffer, "X");
-}
-
 std::string
 type::debug_string() const
 {

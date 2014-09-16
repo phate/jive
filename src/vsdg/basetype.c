@@ -28,18 +28,10 @@ void
 jive_raise_type_error(const jive::base::type * self, const jive::base::type * other,
 	jive_context * context)
 {
-	jive_buffer input_type_buffer, operand_type_buffer;
-	jive_buffer_init(&input_type_buffer, context);
-	jive_buffer_init(&operand_type_buffer, context);
-	self->label(input_type_buffer);
-	other->label(operand_type_buffer);
-	
 	char * error_message = jive_context_strjoin(context,
-		"Type mismatch: required '", jive_buffer_to_string(&input_type_buffer),
-		"' got '", jive_buffer_to_string(&operand_type_buffer), "'", NULL);
+		"Type mismatch: required '", self->debug_string().c_str(),
+		"' got '", other->debug_string().c_str(), "'", NULL);
 
-	jive_buffer_fini(&input_type_buffer);
-	jive_buffer_fini(&operand_type_buffer);
 	jive_context_fatal_error(context, error_message);
 }
 

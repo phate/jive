@@ -62,12 +62,6 @@ type::type(jive::fct::type && other) noexcept
 {
 }
 
-void
-type::label(jive_buffer & buffer) const
-{
-	jive_buffer_putstr(&buffer, "fct");
-}
-
 std::string
 type::debug_string() const
 {

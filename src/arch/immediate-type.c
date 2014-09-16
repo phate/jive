@@ -44,12 +44,6 @@ gate::gate(jive_graph * graph, const char name[])
 
 type::~type() noexcept {}
 
-void
-type::label(jive_buffer & buffer) const
-{
-	jive_buffer_putstr(&buffer, "imm");
-}
-
 std::string
 type::debug_string() const
 {

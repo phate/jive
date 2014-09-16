@@ -46,8 +46,6 @@ public:
 	inline const std::vector<std::unique_ptr<jive::base::type>> &
 	argument_types() const noexcept { return argument_types_; }
 
-	virtual void label(jive_buffer & buffer) const override;
-
 	virtual std::string debug_string() const override;
 
 	virtual bool operator==(const jive::base::type & other) const noexcept override;

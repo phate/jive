@@ -44,12 +44,6 @@ type::~type() noexcept {}
 
 /* type */
 
-void
-type::label(jive_buffer & buffer) const
-{
-	jive_buffer_putstr(&buffer, "mem");
-}
-
 std::string
 type::debug_string() const
 {

@@ -26,15 +26,12 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 {
 	jive_context * context = input->node->graph->context;
 	
-	jive_buffer type_label_buffer, input_label_buffer;
-	jive_buffer_init(&type_label_buffer, context);
+	jive_buffer input_label_buffer;
 	jive_buffer_init(&input_label_buffer, context);
 	input->label(input_label_buffer);
-	input->type().label(type_label_buffer);
 	const char * input_label = jive_buffer_to_string(&input_label_buffer);
-	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 
-	label = std::string(input_label).append(":").append(type_label);
+	label = std::string(input_label).append(":").append(input->type().debug_string());
 	
 	jive_ssavar * ssavar = input->ssavar;
 	if (ssavar) {
@@ -48,7 +45,6 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 		label.append(":").append(input->required_rescls->name);
 	
 	jive_buffer_fini(&input_label_buffer);
-	jive_buffer_fini(&type_label_buffer);
 	
 	width = label.size()+2;
 }
@@ -72,15 +68,12 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 {
 	jive_context * context = output->node()->graph->context;
 	
-	jive_buffer type_label_buffer, output_label_buffer;
-	jive_buffer_init(&type_label_buffer, context);
+	jive_buffer output_label_buffer;
 	jive_buffer_init(&output_label_buffer, context);
 	output->label(output_label_buffer);
-	output->type().label(type_label_buffer);
-	const char * type_label = jive_buffer_to_string(&type_label_buffer);
 	const char * output_label = jive_buffer_to_string(&output_label_buffer);
 
-	label = std::string(output_label).append(":").append(type_label);
+	label = std::string(output_label).append(":").append(output->type().debug_string());
 
 	jive_ssavar * ssavar = output->ssavar;
 	if (ssavar) {
@@ -94,7 +87,6 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 		label.append(":").append(output->required_rescls->name);
 
 	jive_buffer_fini(&output_label_buffer);
-	jive_buffer_fini(&type_label_buffer);
 	
 	width = label.size()+2;
 }

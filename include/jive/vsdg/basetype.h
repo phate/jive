@@ -48,8 +48,6 @@ protected:
 	inline constexpr type() noexcept {};
 
 public:
-	virtual void label(jive_buffer & buffer) const = 0;
-
 	virtual bool operator==(const jive::base::type & other) const noexcept = 0;
 
 	inline bool operator!=(const jive::base::type & other) const noexcept { return !(*this == other); }

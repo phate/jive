@@ -32,8 +32,6 @@ public:
 
 	inline const jive::rcd::declaration * declaration() const noexcept { return decl_; }
 
-	virtual void label(jive_buffer & buffer) const override;
-
 	virtual std::string debug_string() const override;
 
 	virtual bool operator==(const jive::base::type & type) const noexcept override;

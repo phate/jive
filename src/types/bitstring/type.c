@@ -20,14 +20,6 @@ namespace bits {
 
 type::~type() noexcept {}
 
-void
-type::label(jive_buffer & buffer) const
-{
-	char tmp[16];
-	snprintf(tmp, sizeof(tmp), "bits%zd", nbits());
-	jive_buffer_putstr(&buffer, tmp);
-}
-
 std::string
 type::debug_string() const
 {
