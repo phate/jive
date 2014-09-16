@@ -25,6 +25,12 @@ type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "unn");
 }
 
+std::string
+type::debug_string() const
+{
+	return "unn";
+}
+
 bool
 type::operator==(const jive::base::type & _other) const noexcept
 {

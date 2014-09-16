@@ -28,6 +28,14 @@ type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, tmp);
 }
 
+std::string
+type::debug_string() const
+{
+	char tmp[16];
+	snprintf(tmp, sizeof(tmp), "bits%zd", nbits());
+	return std::string(tmp);
+}
+
 bool
 type::operator==(const jive::base::type & _other) const noexcept
 {

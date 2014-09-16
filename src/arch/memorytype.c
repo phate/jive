@@ -50,6 +50,12 @@ type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "mem");
 }
 
+std::string
+type::debug_string() const
+{
+	return "mem";
+}
+
 bool
 type::operator==(const jive::base::type & other) const noexcept
 {

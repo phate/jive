@@ -36,6 +36,8 @@ public:
 
 	virtual void label(jive_buffer & buffer) const override;
 
+	virtual std::string debug_string() const override;
+
 	virtual bool operator==(const jive::base::type & type) const noexcept override;
 
 	virtual jive::reuse::type * copy() const override;
@@ -114,6 +116,14 @@ type::label(jive_buffer & buffer) const
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "reuse %s", name()->name);
 	jive_buffer_putstr(&buffer, tmp);
+}
+
+std::string
+type::debug_string() const
+{
+	char tmp[80];
+	snprintf(tmp, sizeof(tmp), "reuse %s", name()->name);
+	return std::string(tmp);
 }
 
 bool

@@ -29,6 +29,12 @@ type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "flt");
 }
 
+std::string
+type::debug_string() const
+{
+	return "flt";
+}
+
 bool
 type::operator==(const jive::base::type & other) const noexcept
 {

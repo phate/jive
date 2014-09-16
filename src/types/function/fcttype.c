@@ -68,6 +68,12 @@ type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "fct");
 }
 
+std::string
+type::debug_string() const
+{
+	return "fct";
+}
+
 bool
 type::operator==(const jive::base::type & _other) const noexcept
 {

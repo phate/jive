@@ -17,6 +17,12 @@ jive_test_value_type::label(jive_buffer & buffer) const
 	jive_buffer_putstr(&buffer, "test_value");
 }
 
+std::string
+jive_test_value_type::debug_string() const
+{
+	return "test_value";
+}
+
 bool
 jive_test_value_type::operator==(const jive::base::type & other) const noexcept
 {
@@ -74,6 +80,12 @@ void
 jive_test_state_type::label(jive_buffer & buffer) const
 {
 	jive_buffer_putstr(&buffer, "test_state");
+}
+
+std::string
+jive_test_state_type::debug_string() const
+{
+	return "test_state";
 }
 
 bool

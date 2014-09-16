@@ -56,6 +56,8 @@ public:
 
 	virtual jive::base::type * copy() const = 0;
 
+	virtual std::string debug_string() const = 0;
+
 	/*
 		FIXME: change return type to std::unique_ptr<jive::input>
 	*/
