@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -9,6 +10,9 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#include <string>
+#include <vector>
+
 struct jive_graph;
 
 void
@@ -17,19 +21,19 @@ jive_view(struct jive_graph * graph, FILE * out);
 /**
 	\brief Return graph represented as unicode string
 */
-wchar_t *
+std::vector<wchar_t>
 jive_view_wstring(struct jive_graph * graph);
 
 /**
 	\brief Return graph represented as (locale-dependent) string
 */
-char *
+std::string
 jive_view_string(struct jive_graph * graph);
 
 /**
 	\brief Return graph represented as utf8 string
 */
-char *
+std::string
 jive_view_utf8(struct jive_graph * graph);
 
 #endif

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,18 +11,18 @@
 #include <wchar.h>
 #include <stdio.h>
 
+#include <string>
+#include <vector>
+
 typedef struct jive_textcanvas jive_textcanvas;
 
 struct jive_textcanvas {
 	unsigned short width, height, stride;
-	wchar_t * data;
+	std::vector<wchar_t> data;
 };
 
 bool
 jive_textcanvas_init(jive_textcanvas * canvas, unsigned int width, unsigned int height);
-
-void
-jive_textcanvas_fini(jive_textcanvas * canvas);
 
 void
 jive_textcanvas_write(jive_textcanvas * canvas, FILE * stream);
@@ -49,19 +50,19 @@ jive_textcanvas_box(jive_textcanvas * canvas,
 /**
 	\brief Return contents of text-canvas as unicode string
 */
-wchar_t *
+std::vector<wchar_t>
 jive_textcanvas_as_wstring(jive_textcanvas * canvas);
 
 /**
 	\brief Return contents of text-canvas as (locale-dependent) string
 */
-char *
+std::string
 jive_textcanvas_as_string(jive_textcanvas * canvas);
 
 /**
 	\brief Return contents of text-canvas as utf-8 encoded unicode string
 */
-char *
+std::string
 jive_textcanvas_as_utf8(jive_textcanvas * canvas);
 
 #endif

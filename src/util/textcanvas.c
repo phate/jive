@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -86,10 +87,9 @@ jive_textcanvas_init(jive_textcanvas * canvas, unsigned int width, unsigned int 
 	canvas->width = width;
 	canvas->stride = width + 1;
 	canvas->height = height;
-	canvas->data = malloc((canvas->stride * canvas->height + 1) * sizeof(wchar_t));
-	if (!canvas->data) return false;
+	canvas->data.resize(canvas->stride * canvas->height + 1);
 	
-	wchar_t * ptr = canvas->data;
+	wchar_t * ptr = &canvas->data[0];
 	unsigned int x, y;
 	for(y=0; y<height; y++) {
 		for(x=0; x<width; x++)
@@ -98,19 +98,13 @@ jive_textcanvas_init(jive_textcanvas * canvas, unsigned int width, unsigned int 
 	}
 	*ptr++ = 0;
 	
-	return canvas->data;
-}
-
-void
-jive_textcanvas_fini(jive_textcanvas * canvas)
-{
-	free(canvas->data);
+	return true;
 }
 
 void
 jive_textcanvas_write(jive_textcanvas * canvas, FILE * stream)
 {
-	fputws(canvas->data, stream);
+	fputws(&canvas->data[0], stream);
 }
 
 void
@@ -200,12 +194,11 @@ jive_textcanvas_box(jive_textcanvas * canvas,
 	jive_textcanvas_vline(canvas, x1, y2, y1, thick, stipple);
 }
 
-wchar_t *
+std::vector<wchar_t>
 jive_textcanvas_as_wstring(jive_textcanvas * canvas)
 {
 	size_t nchars = canvas->height * (canvas->width + 1) + 1;
-	wchar_t * data = malloc(sizeof(wchar_t) * nchars);
-	if (!data) return NULL;
+	std::vector<wchar_t> data(nchars);
 	
 	size_t x, y;
 	for(y = 0; y < canvas->height; y++) {
@@ -217,48 +210,10 @@ jive_textcanvas_as_wstring(jive_textcanvas * canvas)
 	return data;
 }
 
-typedef struct dynstr {
-	char * data;
-	size_t size, space;
-} dynstr;
-
-static inline void
-dynstr_init(dynstr * s)
-{
-	s->data = 0;
-	s->size = 0;
-	s->space = 0;
-}
-
-static inline void
-dynstr_fini(dynstr * s)
-{
-	free(s->data);
-}
-
-static inline bool
-dynstr_append(dynstr * s, const char * chars, size_t count)
-{
-	if (s->size + count >= s->space) {
-		size_t space = s->space * 2 + count + 1;
-		char * data = realloc(s->data, space);
-		if (!data) return false;
-		s->data = data;
-		s->space = space;
-	}
-	size_t n;
-	for(n = 0; n < count; n++)
-		s->data[s->size + n] = chars[n];
-	s->data[s->size + n] = 0;
-	s->size = s->size + count;
-	return true;
-}
-
-char *
+std::string
 jive_textcanvas_as_string(jive_textcanvas * canvas)
 {
-	dynstr ds;
-	dynstr_init(&ds);
+	std::string ds;
 	
 	mbstate_t state;
 	wcrtomb(NULL, 0, &state);
@@ -272,26 +227,19 @@ jive_textcanvas_as_string(jive_textcanvas * canvas)
 				tmp[0] = '?';
 				count = 1;
 			}
-			if (!dynstr_append(&ds, tmp, count)) {
-				dynstr_fini(&ds);
-				return NULL;
-			}
+			ds.append(tmp);
 		}
-		if (!dynstr_append(&ds, "\n", 1)) {
-			dynstr_fini(&ds);
-			return NULL;
-		}
+		ds.append("\n");
 	}
 	
-	return ds.data;
+	return ds;
 }
 
-char *
+std::string
 jive_textcanvas_as_utf8(jive_textcanvas * canvas)
 {
-	dynstr ds;
-	dynstr_init(&ds);
-	
+	std::string ds;
+
 	mbstate_t state;
 	wcrtomb(NULL, 0, &state);
 	
@@ -330,16 +278,10 @@ jive_textcanvas_as_utf8(jive_textcanvas * canvas)
 				tmp[count++] = 0x80 | ((c >> 6) & 0x3f);
 				tmp[count++] = 0x80 | ((c >> 0) & 0x3f);
 			}
-			if (!dynstr_append(&ds, tmp, count)) {
-				dynstr_fini(&ds);
-				return NULL;
-			}
+			ds.append(tmp);
 		}
-		if (!dynstr_append(&ds, "\n", 1)) {
-			dynstr_fini(&ds);
-			return NULL;
-		}
+		ds.append("\n");
 	}
 	
-	return ds.data;
+	return ds;
 }

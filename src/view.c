@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -16,7 +17,7 @@ jive_view(struct jive_graph * graph, FILE * out)
 	fflush(out);
 }
 
-wchar_t *
+std::vector<wchar_t>
 jive_view_wstring(struct jive_graph * graph)
 {
 	jive_graphview graphview(graph);
@@ -24,7 +25,7 @@ jive_view_wstring(struct jive_graph * graph)
 	return jive_textcanvas_as_wstring(&graphview.canvas);
 }
 
-char *
+std::string
 jive_view_string(struct jive_graph * graph)
 {
 	jive_graphview graphview(graph);
@@ -32,7 +33,7 @@ jive_view_string(struct jive_graph * graph)
 	return jive_textcanvas_as_string(&graphview.canvas);
 }
 
-char *
+std::string
 jive_view_utf8(struct jive_graph * graph)
 {
 	jive_graphview graphview(graph);

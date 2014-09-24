@@ -22,11 +22,6 @@ jive_graphview_row::jive_graphview_row() noexcept
 
 /* graphview */
 
-jive_graphview::~jive_graphview() noexcept
-{
-	jive_textcanvas_fini(&canvas);
-}
-
 static void
 jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 {
