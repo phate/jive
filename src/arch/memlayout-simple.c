@@ -10,59 +10,28 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_memlayout_record_hash, jive_memlayout_record_entry,
-	const jive::rcd::declaration *, decl, hash_chain);
-
-JIVE_DEFINE_HASH_TYPE(jive_memlayout_union_hash, jive_memlayout_union_entry,
-	const jive::unn::declaration *, decl, hash_chain);
-
 JIVE_DEFINE_RANGEMAP_TYPE(jive_memlayout_bitstring_map, jive_dataitem_memlayout *, NULL);
 
 void
 jive_memlayout_mapper_cached_init_(jive_memlayout_mapper_cached * self, jive_context * context)
 {
 	self->context = context;
-	jive_memlayout_record_hash_init(&self->record_hash, context);
-	jive_memlayout_union_hash_init(&self->union_hash, context);
 	jive_memlayout_bitstring_map_init(&self->bitstring_map);
 }
 
 void
 jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self)
 {
-	struct jive_memlayout_record_hash_iterator i;
-	
-	i = jive_memlayout_record_hash_begin(&self->record_hash);
-	while (i.entry) {
-		jive_memlayout_record_entry * entry = i.entry;
-		jive_memlayout_record_hash_iterator_next(&i);
-		
-		jive_memlayout_record_hash_remove(&self->record_hash, entry);
-		delete[] entry->layout.element;
-		jive_context_free(self->context, entry);
-		
-	}
-	
-	struct jive_memlayout_union_hash_iterator j;
-	j = jive_memlayout_union_hash_begin(&self->union_hash);
-	while (j.entry) {
-		jive_memlayout_union_entry * entry = j.entry;
-		jive_memlayout_union_hash_iterator_next(&j);
-		
-		jive_memlayout_union_hash_remove(&self->union_hash, entry);
-		jive_context_free(self->context, entry);
-		
-	}
-	
+	for (auto i : self->record_map)
+		delete[] i.second.element;
+
 	ssize_t k;
 	for (k = self->bitstring_map.low; k < self->bitstring_map.high; k++) {
 		jive_dataitem_memlayout ** playout = jive_memlayout_bitstring_map_lookup(&self->bitstring_map, k);
 		if (*playout)
 			delete *playout;
 	}
-	
-	jive_memlayout_record_hash_fini(&self->record_hash);
-	jive_memlayout_union_hash_fini(&self->union_hash);
+
 	jive_memlayout_bitstring_map_fini(&self->bitstring_map);
 }
 
@@ -70,9 +39,9 @@ jive_record_memlayout *
 jive_memlayout_mapper_cached_map_record_(jive_memlayout_mapper_cached * self,
 	const jive::rcd::declaration * decl)
 {
-	jive_memlayout_record_entry * entry = jive_memlayout_record_hash_lookup(&self->record_hash, decl);
-	if (entry)
-		return &entry->layout;
+	auto i = self->record_map.find(decl);
+	if (i != self->record_map.end())
+		return &i->second;
 	else
 		return NULL;
 }
@@ -81,9 +50,9 @@ jive_union_memlayout *
 jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self,
 	const jive::unn::declaration * decl)
 {
-	jive_memlayout_union_entry * entry = jive_memlayout_union_hash_lookup(&self->union_hash, decl);
-	if (entry)
-		return &entry->layout;
+	auto i = self->union_map.find(decl);
+	if (i != self->union_map.end())
+		return &i->second;
 	else
 		return NULL;
 }
@@ -98,42 +67,32 @@ jive_record_memlayout *
 jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
 	const jive::rcd::declaration * decl)
 {
-	jive_memlayout_record_entry * entry;
-	entry = jive_context_malloc(self->context, sizeof(*entry));
 	
-	entry->decl = decl;
-	
-	entry->layout.decl = decl;
-	entry->layout.element = new jive_record_memlayout_element[decl->nelements];
+	jive_record_memlayout layout;
+	layout.decl = decl;
+	layout.element = new jive_record_memlayout_element[decl->nelements];
 	size_t n = 0;
 	for (n = 0; n < decl->nelements; n++) {
-		entry->layout.element[n].offset = 0;
-		entry->layout.element[n].size = 0;
+		layout.element[n].offset = 0;
+		layout.element[n].size = 0;
 	}
-	entry->layout.base.alignment = 1;
-	entry->layout.base.total_size = 0;
-	
-	jive_memlayout_record_hash_insert(&self->record_hash, entry);
-	
-	return &entry->layout;
+	layout.base.alignment = 1;
+	layout.base.total_size = 0;
+
+	self->record_map[decl] = layout;
+	return &self->record_map[decl];
 }
 
 jive_union_memlayout *
 jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self,
 	const jive::unn::declaration * decl)
 {
-	jive_memlayout_union_entry * entry;
-	entry = jive_context_malloc(self->context, sizeof(*entry));
-	
-	entry->decl = decl;
-	
-	entry->layout.decl = decl;
-	entry->layout.base.alignment = 1;
-	entry->layout.base.total_size = 0;
-	
-	jive_memlayout_union_hash_insert(&self->union_hash, entry);
-	
-	return &entry->layout;
+	jive_union_memlayout layout;
+	layout.decl = decl;
+	layout.base.alignment = 1;
+	layout.base.total_size = 0;
+	self->union_map[decl] = layout;
+	return &self->union_map[decl];
 }
 
 /* simplistic layouter */
