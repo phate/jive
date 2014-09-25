@@ -57,7 +57,7 @@ jive_nullary_operation_get_default_normal_form_(
 	jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_nullary_operation_normal_form * nf = jive_context_malloc(context, sizeof(*nf));
+	jive_nullary_operation_normal_form * nf = new jive_nullary_operation_normal_form;
 	
 	jive_node_normal_form_init_(&nf->base, cls, parent, graph);
 	nf->base.class_ = &JIVE_NULLARY_OPERATION_NORMAL_FORM;

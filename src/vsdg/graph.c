@@ -142,7 +142,7 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin, context);
 	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change, context);
 	
-	self->root_region = jive_context_malloc(context, sizeof(*self->root_region));
+	self->root_region = new jive_region;
 	jive_region_init_(self->root_region, self, 0);
 	self->root_region->bottom =
 		jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
@@ -182,7 +182,7 @@ jive_graph_fini_(jive_graph * self)
 		jive_node_normal_form_hash_iterator_next(&i);
 		
 		jive_node_normal_form_fini(normal_form);
-		jive_context_free(self->context, normal_form);
+		delete normal_form;
 	}
 	jive_node_normal_form_hash_fini(&self->node_normal_forms);
 	
@@ -225,8 +225,7 @@ jive_graph_fini_(jive_graph * self)
 jive_graph *
 jive_graph_create(jive_context * context)
 {
-	jive_graph * graph;
-	graph = jive_context_malloc(context, sizeof(*graph));
+	jive_graph * graph = new jive_graph;
 	jive_graph_init_(graph, context);
 	return graph;
 }
@@ -235,7 +234,7 @@ void
 jive_graph_destroy(jive_graph * self)
 {
 	jive_graph_fini_(self);
-	jive_context_free(self->context, self);
+	delete self;
 }
 
 jive_tracker_slot

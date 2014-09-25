@@ -46,7 +46,7 @@ JIVE_DEFINE_HASH_TYPE(jive_gate_substitution_hash, jive_gate_substitution, const
 jive_substitution_map *
 jive_substitution_map_create(struct jive_context * context)
 {
-	jive_substitution_map * map = jive_context_malloc(context, sizeof(*map));
+	jive_substitution_map * map = new jive_substitution_map;
 	jive_output_substitution_hash_init(&map->output_hash, context);
 	jive_region_substitution_hash_init(&map->region_hash, context);
 	jive_gate_substitution_hash_init(&map->gate_hash, context);
@@ -163,5 +163,5 @@ jive_substitution_map_destroy(jive_substitution_map * self)
 	jive_output_substitution_hash_fini(&self->output_hash);
 	jive_region_substitution_hash_fini(&self->region_hash);
 	jive_gate_substitution_hash_fini(&self->gate_hash);
-	jive_context_free(context, self);
+	delete self;
 }

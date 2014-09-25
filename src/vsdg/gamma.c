@@ -96,8 +96,7 @@ jive_gamma_node_get_default_normal_form_(
 	jive_node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive_gamma_normal_form * normal_form;
-	normal_form = jive_context_malloc(graph->context, sizeof(*normal_form));
+	jive_gamma_normal_form * normal_form = new jive_gamma_normal_form;
 	normal_form->base.base.class_ = &JIVE_GAMMA_NORMAL_FORM;
 	jive_gamma_normal_form_init_(normal_form, cls, parent, graph);
 	return &normal_form->base.base;

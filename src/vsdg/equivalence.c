@@ -6,7 +6,6 @@
 
 #include <jive/vsdg/equivalence.h>
 
-#include <jive/context.h>
 #include <jive/vsdg/node.h>
 #include <jive/util/hash.h>
 
@@ -72,13 +71,13 @@ static void
 jive_equiv_state_fini(jive_equiv_state * self)
 {
 	jive_context * context = self->node_mapping.context;
-	
+
 	struct jive_node_equiv_mapping_iterator i;
 	i = jive_node_equiv_mapping_begin(&self->node_mapping);
-	while (i.entry) {
+	while (i.entry) {	
 		jive_node_equiv_entry * entry = i.entry;
 		jive_node_equiv_mapping_iterator_next(&i);
-		jive_context_free(context, entry);
+		delete entry;
 	}
 	jive_node_equiv_mapping_fini(&self->node_mapping);
 }
@@ -90,7 +89,7 @@ jive_equiv_state_lookup(jive_equiv_state * self, const jive_node * node)
 	entry = jive_node_equiv_mapping_lookup(&self->node_mapping, node);
 	if (!entry) {
 		jive_context * context = self->node_mapping.context;
-		entry = jive_context_malloc(context, sizeof(*entry));
+		entry = new jive_node_equiv_entry;
 		entry->first = node;
 		entry->second = 0;
 		entry->pending = true;

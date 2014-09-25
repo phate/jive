@@ -47,7 +47,7 @@ jive_tracker_init(jive_tracker * self, jive_graph * graph, size_t nstates)
 	jive_context * context = graph->context;
 	
 	self->graph = graph;
-	self->states = jive_context_malloc(context, nstates * sizeof(self->states[0]));
+	self->states = new jive_tracker_depth_state*[nstates];
 	size_t n;
 	for (n = 0; n < nstates; n++)
 		self->states[n] = jive_graph_reserve_tracker_depth_state(graph);
@@ -66,7 +66,7 @@ jive_tracker_fini(jive_tracker * self)
 	size_t n;
 	for (n = 0; n < self->nstates; n++)
 		jive_graph_return_tracker_depth_state(self->graph, self->states[n]);
-	jive_context_free(context, self->states);
+	delete[] self->states;
 	jive_notifier_disconnect(self->callbacks[0]);
 	jive_notifier_disconnect(self->callbacks[1]);
 	jive_graph_return_tracker_slot(self->graph, self->slot);

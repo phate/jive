@@ -594,7 +594,7 @@ jive_testarch_subroutine_begin(jive_graph * graph,
 	size_t nreturns, const jive_argument_type return_types[])
 {
 	jive_context * context = graph->context;
-	
+
 	jive::subroutine_machine_signature sig;
 	
 	for (size_t n = 0; n < nparameters; n++) {

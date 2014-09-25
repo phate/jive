@@ -195,7 +195,7 @@ jive_negotiator_port_create(
 	const jive_negotiator_option * option)
 {
 	jive_negotiator * negotiator = constraint->negotiator;
-	jive_negotiator_port * self = jive_context_malloc(negotiator->context, sizeof(*self));
+	jive_negotiator_port * self = new jive_negotiator_port;
 	
 	self->constraint = constraint;
 	JIVE_LIST_PUSH_BACK(constraint->ports, self, constraint_port_list);
@@ -266,8 +266,7 @@ jive_negotiator_port_destroy(jive_negotiator_port * self)
 	}
 	
 	delete self->option;
-	
-	jive_context_free(negotiator->context, self);
+	delete self;
 }
 
 void
@@ -289,7 +288,7 @@ jive_negotiator_port_specialize(jive_negotiator_port * self)
 jive_negotiator_connection *
 jive_negotiator_connection_create(jive_negotiator * negotiator)
 {
-	jive_negotiator_connection * self = jive_context_malloc(negotiator->context, sizeof(*self));
+	jive_negotiator_connection * self = new jive_negotiator_connection;
 	self->negotiator = negotiator;
 	self->ports.first = self->ports.last = 0;
 	self->validated = true;
@@ -306,7 +305,7 @@ jive_negotiator_connection_destroy(jive_negotiator_connection * self)
 	} else {
 		JIVE_LIST_REMOVE(self->negotiator->invalidated_connections, self, negotiator_connection_list);
 	}
-	jive_context_free(self->negotiator->context, self);
+	delete self;
 }
 
 void
@@ -416,7 +415,7 @@ jive_negotiator_constraint_destroy(jive_negotiator_constraint * self)
 {
 	JIVE_DEBUG_ASSERT(self->ports.first == 0 && self->ports.last == 0);
 	self->class_->fini(self);
-	jive_context_free(self->negotiator->context, self);
+	delete self;
 }
 
 /* identity constraint */
@@ -444,7 +443,7 @@ static const jive_negotiator_constraint_class JIVE_NEGOTIATOR_IDENTITY_CONSTRAIN
 jive_negotiator_constraint *
 jive_negotiator_identity_constraint_create(jive_negotiator * self)
 {
-	jive_negotiator_constraint * constraint = jive_context_malloc(self->context, sizeof(*constraint));
+	jive_negotiator_constraint * constraint = new jive_negotiator_constraint;
 	jive_negotiator_constraint_init_(constraint, self, &JIVE_NEGOTIATOR_IDENTITY_CONSTRAINT_CLASS);
 	return constraint;
 }

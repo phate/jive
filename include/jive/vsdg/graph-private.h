@@ -70,7 +70,7 @@ jive_graph_return_tracker_slot(jive_graph * self, jive_tracker_slot slot)
 static inline jive_tracker_depth_state *
 jive_graph_reserve_tracker_depth_state(jive_graph * self)
 {
-	jive_tracker_depth_state * state = jive_context_malloc(self->context, sizeof(*state));
+	jive_tracker_depth_state * state = new jive_tracker_depth_state;
 	state->count = 0;
 	state->space = 0;
 	state->nodestates_per_depth = 0;
@@ -82,7 +82,7 @@ static inline void
 jive_graph_return_tracker_depth_state(jive_graph * self, jive_tracker_depth_state * state)
 {
 	jive_context_free(state->context, state->nodestates_per_depth);
-	jive_context_free(state->context, state);
+	delete state;
 }
 
 static inline void

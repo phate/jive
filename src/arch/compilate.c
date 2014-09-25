@@ -23,7 +23,7 @@ static void jive_section_clear(jive_section * self)
 	jive_relocation_entry * entry, * saved_entry;
 	JIVE_LIST_ITERATE_SAFE(self->relocations, entry, saved_entry, section_relocation_list) {
 		JIVE_LIST_REMOVE(self->relocations, entry, section_relocation_list);
-		jive_context_free(self->contents.context, entry);
+		delete entry;
 	}
 }
 
@@ -43,8 +43,7 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
 	
 	jive_context * context = self->contents.context;
 	
-	jive_relocation_entry * entry = jive_context_malloc(context,
-		sizeof(*entry));
+	jive_relocation_entry * entry = new jive_relocation_entry;
 	entry->offset = offset;
 	entry->type = type;
 	entry->target = target;
@@ -74,7 +73,7 @@ jive_compilate_fini(struct jive_compilate * self)
 	jive_section * section, * saved_section;
 	JIVE_LIST_ITERATE_SAFE(self->sections, section, saved_section, compilate_section_list) {
 		jive_section_fini(section);
-		jive_context_free(self->context, section);
+		delete section;
 	}
 }
 
@@ -100,7 +99,7 @@ jive_compilate_get_standard_section(jive_compilate * self,
 			return section;
 	}
 	
-	section = jive_context_malloc(self->context, sizeof(*section));
+	section = new jive_section;
 	jive_section_init(section, self->context, sectionid);
 	JIVE_LIST_PUSH_BACK(self->sections, section, compilate_section_list);
 	

@@ -127,7 +127,7 @@ jive_node_normal_form *
 jive_anchor_node_get_default_normal_form_(const jive_node_class * cls,
 	jive_node_normal_form * parent_, struct jive_graph * graph)
 {
-	jive_anchor_node_normal_form * nf = jive_context_malloc(graph->context, sizeof(*nf));
+	jive_anchor_node_normal_form * nf = new jive_anchor_node_normal_form;
 	nf->base.class_ = &JIVE_ANCHOR_NODE_NORMAL_FORM;
 
 	jive_anchor_node_normal_form_init_(nf, cls, parent_, graph);

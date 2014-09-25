@@ -169,9 +169,8 @@ jive_node_fini_(jive_node * self)
 	}
 	
 	if (self->tracker_slots) {
-		size_t n;
-		for(n=0; n<self->ntracker_slots; n++)
-			jive_context_free(context, self->tracker_slots[n]);
+		for (size_t n = 0; n < self->ntracker_slots; n++)
+			delete self->tracker_slots[n];
 		jive_context_free(context, self->tracker_slots);
 	}
 }
@@ -205,8 +204,7 @@ jive_node_normal_form *
 jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive_node_normal_form * normal_form;
-	normal_form = jive_context_malloc(graph->context, sizeof(*normal_form));
+	jive_node_normal_form * normal_form = new jive_node_normal_form;
 	normal_form->class_ = &JIVE_NODE_NORMAL_FORM;
 	jive_node_normal_form_init_(normal_form, cls, parent, graph);
 	return normal_form;
@@ -731,9 +729,8 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 		self->tracker_slots, new_size * sizeof(self->tracker_slots[0]));
 	
 	jive_tracker_nodestate * nodestate;
-	size_t n;
-	for(n = self->ntracker_slots; n < new_size; n++) {
-		nodestate = jive_context_malloc(context, sizeof(*nodestate));
+	for(size_t n = self->ntracker_slots; n < new_size; n++) {
+		nodestate = new jive_tracker_nodestate;
 		nodestate->node = self;
 		nodestate->cookie = 0;
 		nodestate->state = jive_tracker_nodestate_none;

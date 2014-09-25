@@ -167,8 +167,7 @@ jive_theta
 jive_theta_begin(jive_graph * graph)
 {
 	jive_theta self;
-	jive_theta_build_state * state;
-	state = jive_context_malloc(graph->context, sizeof(*state));
+	jive_theta_build_state * state = new jive_theta_build_state;
 	state->floating = jive_floating_region_create(graph);
 	self.region = state->floating.region;
 	state->nloopvars = 0;
@@ -256,8 +255,8 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	}
 	
 	jive_context_free(context, state->loopvars);
-	jive_context_free(context, state);
-	
+	delete state;
+
 	return anchor;
 }
 

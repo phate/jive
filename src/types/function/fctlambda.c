@@ -311,12 +311,12 @@ jive_lambda_begin(
 {
 	jive_context * context = graph->context;
 
-	jive_lambda * lambda = jive_context_malloc(context, sizeof(*lambda));
+	jive_lambda * lambda = new jive_lambda;
 	jive_lambda_build_state * state;
-	state = jive_context_malloc(graph->context, sizeof(*state));
+	state = new jive_lambda_build_state;
 	state->floating = jive_floating_region_create(graph);
 	lambda->region = state->floating.region;
-	lambda->arguments = jive_context_malloc(graph->context, sizeof(*lambda->arguments) * narguments);
+	lambda->arguments = new jive::output*[narguments];
 	lambda->narguments = narguments;
 
 	jive::fct::lambda_head_op().create_node(lambda->region, 0, nullptr);
@@ -356,9 +356,9 @@ jive_lambda_end(jive_lambda * self,
 	jive_node * anchor = jive_lambda_node_create(region);
 	JIVE_DEBUG_ASSERT(anchor->noutputs == 1);
 
-	jive_context_free(context, self->arguments);
-	jive_context_free(context, state);
-	jive_context_free(context, self);
+	delete[] self->arguments;
+	delete state;
+	delete self;
 
 	return anchor->outputs[0];
 }

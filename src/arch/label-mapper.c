@@ -48,11 +48,11 @@ jive_label_name_mapper_simple_destroy_(jive_label_name_mapper * self_)
 		
 		jive_anon_label_hash_remove(&self->anon_labels, entry);
 		jive_context_free(self->context, entry->name);
-		jive_context_free(self->context, entry);
+		delete entry;
 	}
 	jive_anon_label_hash_fini(&self->anon_labels);
 	
-	jive_context_free(self->context, self);
+	delete self;
 }
 
 static const char *
@@ -64,7 +64,7 @@ jive_label_name_mapper_simple_map_anon_symbol_(
 	
 	jive_anon_label * entry = jive_anon_label_hash_lookup(&self->anon_labels, symbol);
 	if (!entry) {
-		entry = jive_context_malloc(self->context, sizeof(*entry));
+		entry = new jive_anon_label;
 		entry->symbol = symbol;
 		
 		char name[80];
@@ -105,8 +105,7 @@ jive_label_name_mapper_simple_create(
 	const jive_symbol_name_pair * pairs,
 	size_t npairs)
 {
-	jive_label_name_mapper_simple * mapper;
-	mapper = jive_context_malloc(context, sizeof(*mapper));
+	jive_label_name_mapper_simple * mapper = new jive_label_name_mapper_simple;
 	mapper->base.class_ = &JIVE_LABEL_NAME_MAPPER_SIMPLE;
 	mapper->context = context;
 	mapper->int_label_seqno = 0;
@@ -127,8 +126,7 @@ struct jive_label_symbol_mapper_simple {
 static void
 jive_label_symbol_mapper_simple_destroy_(jive_label_symbol_mapper * self_)
 {
-	jive_label_symbol_mapper_simple * self = (jive_label_symbol_mapper_simple *) self_;
-	jive_context_free(self->context, self);
+	delete self_;
 }
 
 static const struct jive_linker_symbol *
@@ -146,8 +144,7 @@ static const jive_label_symbol_mapper_class JIVE_LABEL_SYMBOL_MAPPER_SIMPLE = {
 jive_label_symbol_mapper *
 jive_label_symbol_mapper_simple_create(jive_context * context)
 {
-	jive_label_symbol_mapper_simple * mapper;
-	mapper = jive_context_malloc(context, sizeof(*mapper));
+	jive_label_symbol_mapper_simple * mapper = new jive_label_symbol_mapper_simple;
 	mapper->base.class_ = &JIVE_LABEL_SYMBOL_MAPPER_SIMPLE;
 	mapper->context = context;
 	

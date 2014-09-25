@@ -38,7 +38,7 @@ jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self)
 		jive_memlayout_record_hash_iterator_next(&i);
 		
 		jive_memlayout_record_hash_remove(&self->record_hash, entry);
-		jive_context_free(self->context, entry->layout.element);
+		delete[] entry->layout.element;
 		jive_context_free(self->context, entry);
 		
 	}
@@ -58,7 +58,7 @@ jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self)
 	for (k = self->bitstring_map.low; k < self->bitstring_map.high; k++) {
 		jive_dataitem_memlayout ** playout = jive_memlayout_bitstring_map_lookup(&self->bitstring_map, k);
 		if (*playout)
-			jive_context_free(self->context, *playout);
+			delete *playout;
 	}
 	
 	jive_memlayout_record_hash_fini(&self->record_hash);
@@ -104,7 +104,7 @@ jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
 	entry->decl = decl;
 	
 	entry->layout.decl = decl;
-	entry->layout.element = jive_context_malloc(self->context, decl->nelements * sizeof(*entry->layout.element));
+	entry->layout.element = new jive_record_memlayout_element[decl->nelements];
 	size_t n = 0;
 	for (n = 0; n < decl->nelements; n++) {
 		entry->layout.element[n].offset = 0;
@@ -205,7 +205,7 @@ jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_
 	jive_dataitem_memlayout ** layout = jive_memlayout_mapper_cached_map_bitstring_(&self->base, nbits);
 	
 	if (!*layout) {
-		*layout = jive_context_malloc(self->base.context, sizeof(**layout));
+		*layout = new jive_dataitem_memlayout;
 		
 		if (nbits > self->bits_per_word)
 			nbits = (nbits + self->bits_per_word - 1) & ~ (self->bits_per_word - 1);

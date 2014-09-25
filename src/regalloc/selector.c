@@ -26,7 +26,7 @@ jive_node_cost_create(jive_master_shaper_selector * master, jive_node * node)
 {
 	jive_context * context = master->context;
 	
-	jive_node_cost * self = jive_context_malloc(context, sizeof(*self));
+	jive_node_cost * self = new jive_node_cost;
 	self->node = node;
 	self->master = master;
 	self->state = jive_node_cost_state_ahead;
@@ -51,7 +51,7 @@ jive_node_cost_destroy(jive_node_cost * self)
 	jive_node_cost_hash_remove(&self->master->node_map, self);
 	
 	jive_resource_class_count_fini(&self->rescls_cost);
-	jive_context_free(context, self);
+	delete self;
 }
 
 
@@ -285,7 +285,7 @@ jive_region_shaper_selector_create(jive_master_shaper_selector * master, const j
 {
 	jive_context * context = master->context;
 	
-	jive_region_shaper_selector * self = jive_context_malloc(context, sizeof(*self));
+	jive_region_shaper_selector * self = new jive_region_shaper_selector;
 	
 	self->master = master;
 	
@@ -308,7 +308,7 @@ jive_region_shaper_selector_destroy(jive_region_shaper_selector * self)
 	jive_node_cost_stack_fini(&self->node_stack);
 	jive_region_shaper_selector_hash_remove(&self->master->region_map, self);
 	
-	jive_context_free(context, self);
+	delete self;
 }
 
 void
@@ -411,7 +411,7 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 	/* mark all (remaining) ssavars to be considered */
 	jive_cutvar_xpoint * xpoint;
 	JIVE_LIST_ITERATE(self->shaped_region->active_top.base.xpoints, xpoint, varcut_xpoints_list) {
-		jive_ssavar_spill_position * ssavar_pos = jive_context_malloc(context, sizeof(*ssavar_pos));
+		jive_ssavar_spill_position * ssavar_pos = new jive_ssavar_spill_position;
 		ssavar_pos->ssavar = xpoint->shaped_ssavar->ssavar;
 		ssavar_pos->position = -1;
 		jive_ssavar_spill_position_hash_insert(&ssavar_pos_map, ssavar_pos);
@@ -430,7 +430,7 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 			sorted_ssavars[nsorted_ssavars ++] = shaped_ssavar->ssavar;
 			jive_ssavar_spill_position * ssavar_pos = jive_ssavar_spill_position_hash_lookup(&ssavar_pos_map, shaped_ssavar->ssavar);
 			jive_ssavar_spill_position_hash_remove(&ssavar_pos_map, ssavar_pos);
-			jive_context_free(context, ssavar_pos);
+			delete ssavar_pos;
 		}
 	}
 	
@@ -442,7 +442,7 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 		jive_ssavar_spill_position_hash_iterator_next(&i);
 		sorted_ssavars[nsorted_ssavars ++] = ssavar_pos->ssavar;
 		jive_ssavar_spill_position_hash_remove(&ssavar_pos_map, ssavar_pos);
-		jive_context_free(context, ssavar_pos);
+		delete ssavar_pos;
 	}
 	
 	jive_ssavar_spill_position_hash_fini(&ssavar_pos_map);
@@ -866,8 +866,7 @@ jive_master_shaper_selector_create(jive_shaped_graph * shaped_graph)
 	jive_graph * graph = shaped_graph->graph;
 	jive_context * context = graph->context;
 	
-	jive_master_shaper_selector * self;
-	self = jive_context_malloc(context, sizeof(*self));
+	jive_master_shaper_selector * self = new jive_master_shaper_selector;
 	
 	self->shaped_graph = shaped_graph;
 	self->context = context;
@@ -930,5 +929,5 @@ jive_master_shaper_selector_destroy(jive_master_shaper_selector * self)
 	
 	jive_computation_tracker_fini(&self->cost_computation_state_tracker);
 	
-	jive_context_free(context, self);
+	delete self;
 }

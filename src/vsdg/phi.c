@@ -267,7 +267,7 @@ jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
 	jive_node_normal_form * parent_, struct jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_phi_node_normal_form * nf = jive_context_malloc(context, sizeof(*nf));
+	jive_phi_node_normal_form * nf = new jive_phi_node_normal_form;
 	nf->base.class_ = &JIVE_PHI_NODE_NORMAL_FORM;
 
 	jive_anchor_node_normal_form_init_(nf, cls, parent_, graph);
@@ -277,8 +277,7 @@ jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
 
 typedef struct jive_phi_build_state jive_phi_build_state;
 struct jive_phi_build_state {
-	size_t nfixvars;
-	jive_phi_fixvar * fixvars;
+	std::vector<jive_phi_fixvar> fixvars;
 	jive_floating_region floating;
 };
 
@@ -287,11 +286,9 @@ jive_phi_begin(jive_graph * graph)
 {
 	jive_phi self;
 	jive_phi_build_state * state;
-	state = jive_context_malloc(graph->context, sizeof(*state));
+	state = new jive_phi_build_state;
 	state->floating = jive_floating_region_create(graph);
 	self.region = state->floating.region;
-	state->nfixvars = 0;
-	state->fixvars = 0;
 	
 	jive::phi_head_op().create_node(self.region, 0, nullptr);
 	
@@ -307,19 +304,16 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 	jive_node * enter = self.region->top;
 	jive_graph * graph = enter->region->graph;
 	jive_context * context = graph->context;
-	
-	size_t index = state->nfixvars;
-	
-	++ state->nfixvars;
-	state->fixvars = jive_context_realloc(context,
-		state->fixvars, sizeof(state->fixvars[0]) * state->nfixvars);
-	
+
 	char gate_name[80];
-	snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, index);
-	state->fixvars[index].gate = type->create_gate(graph, gate_name);
-	state->fixvars[index].value = jive_node_gate_output(enter, state->fixvars[index].gate);
+	snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, state->fixvars.size());
 	
-	return state->fixvars[index];
+	jive_phi_fixvar fixvar;
+	fixvar.gate = type->create_gate(graph, gate_name);
+	fixvar.value = jive_node_gate_output(enter, fixvar.gate);
+	state->fixvars.push_back(fixvar);
+
+	return fixvar;
 }
 
 void
@@ -327,7 +321,7 @@ jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::output * fix_value)
 {
 	jive_phi_build_state * state = self.internal_state;
 	size_t n;
-	for (n = 0; n < state->nfixvars; ++n) {
+	for (n = 0; n < state->fixvars.size(); ++n) {
 		if (state->fixvars[n].gate != var)
 			continue;
 		state->fixvars[n].value = fix_value;
@@ -350,30 +344,29 @@ jive_phi_end(jive_phi self,
 	size_t n;
 	
 	jive_node * leave = jive::phi_tail_op().create_node(enter->region, 1, &enter->outputs[0]);
-	for (n = 0; n < state->nfixvars; ++n)
+	for (n = 0; n < state->fixvars.size(); ++n)
 		jive_node_gate_input(leave, state->fixvars[n].gate, state->fixvars[n].value);
 	
 	jive_floating_region_settle(state->floating);
 	
 	jive_node * anchor = jive::phi_op().create_node(self.region->parent, 1, &leave->outputs[0]);
-	for (n = 0; n < state->nfixvars; ++n)
+	for (n = 0; n < state->fixvars.size(); ++n)
 		state->fixvars[n].value = jive_node_gate_output(anchor, state->fixvars[n].gate);
 	
 	for (n = 0; n < npost_values; ++n) {
 		size_t k;
-		for (k = 0; k < state->nfixvars; ++k) {
+		for (k = 0; k < state->fixvars.size(); ++k) {
 			if (state->fixvars[k].gate == fix_values[n].gate) {
 				fix_values[n].value = state->fixvars[k].value;
 				break;
 			}
 		}
-		if (k == state->nfixvars)
+		if (k == state->fixvars.size())
 			jive_context_fatal_error(self.region->graph->context,
 				"Lookup of fix point variable failed");
 	}
 	
-	jive_context_free(context, state->fixvars);
-	jive_context_free(context, state);
+	delete state;
 	
 	return anchor;
 }
@@ -386,9 +379,8 @@ jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
 	jive_context * context = graph->context;
 	jive_node * enter = jive_phi_node_get_enter_node(phi_node);
 
-	jive_phi_extension * phi_ext = jive_context_malloc(context, sizeof(*phi_ext));
-	phi_ext->fixvars = jive_context_malloc(context, sizeof(*phi_ext->fixvars) * nfixvars);
-	phi_ext->nfixvars = nfixvars;
+	jive_phi_extension * phi_ext = new jive_phi_extension;
+	phi_ext->fixvars.resize(nfixvars);
 	phi_ext->phi_node = phi_node;
 
 	size_t n;
@@ -413,7 +405,7 @@ jive_phi_end_extension(struct jive_phi_extension * self)
 
 	size_t n;
 	size_t offset = leave->ninputs;
-	for (n = 0; n < self->nfixvars; n++) {
+	for (n = 0; n < self->fixvars.size(); n++) {
 		jive::gate * gate = enter->outputs[offset+n]->gate;
 		jive_node_gate_input(leave, gate, self->fixvars[n]);
 		jive_node_gate_output(phi_node, gate);
@@ -421,8 +413,7 @@ jive_phi_end_extension(struct jive_phi_extension * self)
 
 	jive_graph_mark_denormalized(phi_node->region->graph);
 
-	jive_context_free(context, self->fixvars);
-	jive_context_free(context, self);
+	delete self;
 
 	return &phi_node->outputs[offset-1];
 }

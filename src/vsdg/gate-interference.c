@@ -11,7 +11,7 @@
 jive_gate_interference *
 jive_gate_interference_create(jive::gate * first, jive::gate * second)
 {
-	jive_gate_interference * i = jive_context_malloc(first->graph->context, sizeof(*i));
+	jive_gate_interference * i = new jive_gate_interference;
 	i->first.gate = first;
 	i->first.whole = i;
 	i->second.gate = second;
@@ -29,5 +29,5 @@ jive_gate_interference_destroy(jive_gate_interference * self)
 {
 	jive_gate_interference_hash_remove(&self->first.gate->interference, &self->second);
 	jive_gate_interference_hash_remove(&self->second.gate->interference, &self->first);
-	jive_context_free(self->first.gate->graph->context, self);
+	delete self;
 }

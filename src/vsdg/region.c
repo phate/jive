@@ -110,7 +110,7 @@ void
 jive_region_destroy(jive_region * self)
 {
 	jive_region_fini_(self);
-	jive_context_free(self->graph->context, self);
+	delete self;
 }
 
 void
@@ -131,7 +131,7 @@ jive_region_prune_subregions_(jive_region * self)
 jive_region *
 jive_region_create_subregion(jive_region * self)
 {
-	jive_region * subregion = jive_context_malloc(self->graph->context, sizeof(*subregion));
+	jive_region * subregion = new jive_region;
 	jive_region_init_(subregion, self->graph, self);
 	return subregion;
 }
@@ -140,7 +140,7 @@ jive_floating_region
 jive_floating_region_create(jive_graph * graph)
 {
 	jive_floating_region floating_region;
-	floating_region.region = jive_context_malloc(graph->context, sizeof(*floating_region.region));
+	floating_region.region = new jive_region;
 	jive_region_init_(floating_region.region, graph, graph->root_region);
 	floating_region.region ->attrs.is_floating = true;
 	graph->floating_region_count ++;
@@ -337,7 +337,7 @@ jive_region_hull_entry_create(jive_region * region, jive::input * input)
 {
 	jive_context * context = input->node->region->graph->context;
 
-	jive_region_hull_entry * entry = jive_context_malloc(context, sizeof(*entry));
+	jive_region_hull_entry * entry = new jive_region_hull_entry;
 	entry->region_hull_list.prev = entry->region_hull_list.next = NULL;
 	entry->input_hull_list.prev = entry->input_hull_list.next = NULL;
 	entry->input = input;
@@ -353,7 +353,7 @@ jive_region_hull_entry_destroy(jive_region_hull_entry * entry)
 {
 	JIVE_LIST_REMOVE(entry->input->hull, entry, input_hull_list);
 	JIVE_LIST_REMOVE(entry->region->hull, entry, region_hull_list);
-	jive_context_free(entry->input->node->region->graph->context, entry);
+	delete entry;
 }
 
 void

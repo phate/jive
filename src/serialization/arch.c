@@ -391,12 +391,9 @@ jive_subroutine_deserialize(
 		jive_context_free(driver->context, parameters);
 		return false;
 	}
-	jive_subroutine_passthrough * passthroughs;
-	passthroughs = jive_context_malloc(driver->context,
-		sizeof(passthroughs[0]) * npassthroughs);
 	
-	size_t n;
-	for (n = 0; n < npassthroughs; ++n) {
+	std::vector<jive_subroutine_passthrough> passthroughs(npassthroughs);
+	for (size_t n = 0; n < npassthroughs; ++n) {
 		jive::gate * gate = passthrough_gates[n];
 		passthroughs[n].gate = gate;
 		passthroughs[n].output = jive_node_get_gate_output(enter, gate);
@@ -407,10 +404,9 @@ jive_subroutine_deserialize(
 		driver->context, &JIVE_I386_SUBROUTINE,
 		nparameters, parameters,
 		nreturns, returns,
-		npassthroughs, passthroughs);
+		passthroughs.size(), &passthroughs[0]);
 	*node = jive_subroutine_node_create(enter->region, subroutine);
 	
-	jive_context_free(driver->context, passthroughs);
 	jive_context_free(driver->context, passthrough_gates);
 	jive_context_free(driver->context, returns);
 	jive_context_free(driver->context, parameters);

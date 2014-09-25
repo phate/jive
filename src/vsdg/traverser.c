@@ -31,7 +31,7 @@ void
 jive_traverser_destroy(jive_traverser * self)
 {
 	self->class_->fini(self);
-	jive_context_free(self->graph->context, self);
+	delete self;
 }
 
 jive_node *
@@ -169,7 +169,7 @@ jive_topdown_traverser_init(jive_full_traverser * self, jive_graph * graph)
 jive_traverser *
 jive_topdown_traverser_create(jive_graph * graph)
 {
-	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_full_traverser * self = new jive_full_traverser;
 	jive_topdown_traverser_init(self, graph);
 	return &self->base;
 }
@@ -279,7 +279,7 @@ jive_bottomup_revisit_traverser_init(jive_full_traverser * self, jive_graph * gr
 jive_traverser *
 jive_bottomup_traverser_create(jive_graph * graph)
 {
-	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_full_traverser * self = new jive_full_traverser;
 	jive_bottomup_traverser_init(self, graph);
 	return &self->base;
 }
@@ -287,7 +287,7 @@ jive_bottomup_traverser_create(jive_graph * graph)
 jive_traverser *
 jive_bottomup_revisit_traverser_create(jive_graph * graph)
 {
-	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_full_traverser * self = new jive_full_traverser;
 	jive_bottomup_revisit_traverser_init(self, graph);
 	return &self->base;
 }
@@ -368,7 +368,7 @@ jive_traverser *
 jive_upward_cone_traverser_create(jive_node * node)
 {
 	jive_graph * graph = node->region->graph;
-	jive_full_traverser * self = jive_context_malloc(graph->context, sizeof(*self));
+	jive_full_traverser * self = new jive_full_traverser;
 	jive_upward_cone_traverser_init(self, graph, node);
 	return &self->base;
 }
@@ -431,7 +431,7 @@ jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master, co
 	jive_graph * graph = master->graph;
 	jive_context * context = graph->context;
 	
-	jive_bottomup_slave_traverser * self = jive_context_malloc(context, sizeof(*self));
+	jive_bottomup_slave_traverser * self = new jive_bottomup_slave_traverser;
 	
 	self->base.graph = graph;
 	self->base.class_ = &JIVE_BOTTOMUP_SLAVE_TRAVERSER;
@@ -448,7 +448,7 @@ jive_bottomup_slave_traverser_destroy(jive_bottomup_slave_traverser * self)
 {
 	jive_graph_return_tracker_depth_state(self->base.graph, self->frontier_state);
 	jive_region_traverser_hash_remove(&self->master->region_hash, self);
-	jive_context_free(self->base.graph->context, self);
+	delete self;
 }
 
 static jive_bottomup_slave_traverser *
@@ -514,7 +514,7 @@ jive_bottomup_region_traverser *
 jive_bottomup_region_traverser_create(jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_bottomup_region_traverser * self = jive_context_malloc(context, sizeof(*self));
+	jive_bottomup_region_traverser * self = new jive_bottomup_region_traverser;
 	
 	self->graph = graph;
 	jive_region_traverser_hash_init(&self->region_hash, context);
@@ -554,5 +554,5 @@ jive_bottomup_region_traverser_destroy(jive_bottomup_region_traverser * self)
 	jive_graph_return_tracker_slot(self->graph, self->slot);
 	jive_graph_return_tracker_depth_state(self->graph, self->behind_state);
 	
-	jive_context_free(context, self);
+	delete self;
 }

@@ -203,8 +203,7 @@ jive_phi_end(jive_phi self,
 typedef struct jive_phi_extension jive_phi_extension;
 struct jive_phi_extension {
 	jive_phi_node * phi_node;
-	size_t nfixvars;
-	jive::output ** fixvars;
+	std::vector<jive::output*> fixvars;
 };
 
 /**

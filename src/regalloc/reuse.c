@@ -243,7 +243,7 @@ jive_names_use_lookup(jive_names_use * self, const jive_resource_name * name)
 	JIVE_DEBUG_ASSERT(name);
 	jive_used_name * used_name = jive_used_name_hash_lookup(&self->hash, name);
 	if (!used_name) {
-		used_name = jive_context_malloc(self->hash.context, sizeof(*used_name));
+		used_name = new jive_used_name;
 		used_name->name = name;
 		jive_node_vector_init(&used_name->read);
 		jive_node_vector_init(&used_name->clobber);
@@ -264,7 +264,7 @@ jive_names_use_remove(jive_names_use * self, jive_used_name * used_name)
 	jive_node_vector_fini(&used_name->clobber, context);
 	jive_used_name_hash_remove(&self->hash, used_name);
 	JIVE_LIST_REMOVE(self->list, used_name, used_names_list);
-	jive_context_free(context, used_name);
+	delete used_name;
 }
 
 static void

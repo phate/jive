@@ -115,7 +115,7 @@ static regalloc_split_region *
 regalloc_split_region_create(jive_region * region)
 {
 	jive_context * context = region->graph->context;
-	regalloc_split_region * split_region = jive_context_malloc(context, sizeof(*split_region));
+	regalloc_split_region * split_region = new regalloc_split_region;
 	
 	split_region->region = region;
 	split_region->splitting_point = 0;
@@ -130,7 +130,7 @@ regalloc_split_region_destroy(regalloc_split_region * self)
 {
 	jive_context * context = self->region->graph->context;
 	jive_context_free(context, self->users.items);
-	jive_context_free(context, self);
+	delete self;
 }
 
 static void

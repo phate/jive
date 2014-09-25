@@ -72,7 +72,7 @@ jive_ssavar_create(jive::output * origin, jive_variable * variable)
 {
 	jive_context * context = variable->graph->context;
 	
-	jive_ssavar * self = jive_context_malloc(context, sizeof(*self));
+	jive_ssavar * self = new jive_ssavar;
 	
 	self->use_count = 0;
 	self->variable = variable;
@@ -97,7 +97,7 @@ jive_ssavar_destroy(jive_ssavar * self)
 	JIVE_DEBUG_ASSERT(self->use_count == 0);
 	jive_ssavar_region_hash_fini(&self->assigned_regions);
 	JIVE_LIST_REMOVE(self->variable->unused_ssavars, self, variable_ssavar_list);
-	jive_context_free(self->variable->graph->context, self);
+	delete self;
 }
 
 void
@@ -258,7 +258,7 @@ jive_variable *
 jive_variable_create(struct jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_variable * self = jive_context_malloc(context, sizeof(*self));
+	jive_variable * self = new jive_variable;
 	
 	self->graph = graph;
 	self->graph_variable_list.prev = self->graph_variable_list.next = 0;
@@ -290,7 +290,7 @@ jive_variable_destroy(jive_variable * self)
 	JIVE_DEBUG_ASSERT(self->use_count == 0);
 	JIVE_LIST_REMOVE(self->graph->unused_variables, self, graph_variable_list);
 	
-	jive_context_free(self->graph->context, self);
+	delete self;
 }
 
 void

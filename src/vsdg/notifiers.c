@@ -33,7 +33,7 @@ jive_##name##_notifier_disconnect_(jive_notifier * _self) \
 { \
 	jive_##name##_notifier * self = (jive_##name##_notifier *) _self; \
 	jive_##name##_notifier_unlink(self); \
-	jive_context_free(self->context, self); \
+	delete self; \
 } \
  \
 static const jive_notifier_class JIVE_##NAME##_NOTIFIER = { \
@@ -49,7 +49,7 @@ jive_##name##_notifier_slot_fini(jive_##name##_notifier_slot * self) \
 jive_notifier * \
 jive_##name##_notifier_slot_connect(jive_##name##_notifier_slot * self, jive_##name##_notifier_function function, void * closure) \
 { \
-	jive_##name##_notifier * notifier = jive_context_malloc(self->context, sizeof(*notifier)); \
+	jive_##name##_notifier * notifier = new jive_##name##_notifier; \
 	notifier->base.class_ = &JIVE_##NAME##_NOTIFIER; \
 	notifier->slot = self; \
 	notifier->context = self->context; \

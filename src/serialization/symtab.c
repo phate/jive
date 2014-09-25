@@ -81,8 +81,7 @@ jive_serialization_symtab_insert_gatesym(
 	jive::gate * gate,
 	char * name)
 {
-	jive_serialization_gatesym * sym;
-	sym = jive_context_malloc(self->name_to_gate.context, sizeof(*sym));
+	jive_serialization_gatesym * sym = new jive_serialization_gatesym;
 	sym->gate = gate;
 	sym->name = name;
 	jive_serialization_gatesym_hash_insert(&self->gate_to_name, sym);
@@ -97,7 +96,7 @@ jive_serialization_symtab_remove_gatesym(
 	jive_serialization_gatesym_hash_remove(&self->gate_to_name, sym);
 	jive_serialization_gatesym_dict_remove(&self->name_to_gate, sym);
 	jive_context_free(self->name_to_gate.context, sym->name);
-	jive_context_free(self->name_to_gate.context, sym);
+	delete sym;
 }
 
 const jive_serialization_gatesym *
@@ -122,8 +121,7 @@ jive_serialization_symtab_insert_labelsym(
 	struct jive_label * label,
 	char * name)
 {
-	jive_serialization_labelsym * sym;
-	sym = jive_context_malloc(self->name_to_label.context, sizeof(*sym));
+	jive_serialization_labelsym * sym = new jive_serialization_labelsym;
 	sym->label = label;
 	sym->name = name;
 	jive_serialization_labelsym_hash_insert(&self->label_to_name, sym);
@@ -138,7 +136,7 @@ jive_serialization_symtab_remove_labelsym(
 	jive_serialization_labelsym_hash_remove(&self->label_to_name, sym);
 	jive_serialization_labelsym_dict_remove(&self->name_to_label, sym);
 	jive_context_free(self->name_to_label.context, sym->name);
-	jive_context_free(self->name_to_label.context, sym);
+	delete sym;
 }
 
 const jive_serialization_labelsym *
@@ -163,8 +161,7 @@ jive_serialization_symtab_insert_nodesym(
 	struct jive_node * node,
 	char * name)
 {
-	jive_serialization_nodesym * sym;
-	sym = jive_context_malloc(self->name_to_node.context, sizeof(*sym));
+	jive_serialization_nodesym * sym = new jive_serialization_nodesym;
 	sym->node = node;
 	sym->name = name;
 	jive_serialization_nodesym_hash_insert(&self->node_to_name, sym);
@@ -179,7 +176,7 @@ jive_serialization_symtab_remove_nodesym(
 	jive_serialization_nodesym_hash_remove(&self->node_to_name, sym);
 	jive_serialization_nodesym_dict_remove(&self->name_to_node, sym);
 	jive_context_free(self->name_to_node.context, sym->name);
-	jive_context_free(self->name_to_node.context, sym);
+	delete sym;
 }
 
 const jive_serialization_nodesym *
@@ -204,8 +201,7 @@ jive_serialization_symtab_insert_outputsym(
 	jive::output * output,
 	char * name)
 {
-	jive_serialization_outputsym * sym;
-	sym = jive_context_malloc(self->name_to_output.context, sizeof(*sym));
+	jive_serialization_outputsym * sym = new jive_serialization_outputsym;
 	sym->output = output;
 	sym->name = name;
 	jive_serialization_outputsym_hash_insert(&self->output_to_name, sym);
@@ -220,7 +216,7 @@ jive_serialization_symtab_remove_outputsym(
 	jive_serialization_outputsym_hash_remove(&self->output_to_name, sym);
 	jive_serialization_outputsym_dict_remove(&self->name_to_output, sym);
 	jive_context_free(self->name_to_output.context, sym->name);
-	jive_context_free(self->name_to_output.context, sym);
+	delete sym;
 }
 
 const jive_serialization_outputsym *

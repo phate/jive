@@ -255,7 +255,7 @@ jive_load_node_get_default_normal_form_(const jive_node_class * cls,
 	jive_node_normal_form * parent_, struct jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_load_node_normal_form * nf = jive_context_malloc(context, sizeof(*nf));
+	jive_load_node_normal_form * nf = new jive_load_node_normal_form;
 
 	jive_node_normal_form_init_(&nf->base, cls, parent_, graph);
 	nf->base.class_ = &JIVE_LOAD_NODE_NORMAL_FORM;

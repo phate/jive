@@ -89,8 +89,7 @@ struct jive_token_ostream_simple {
 static void
 jive_token_ostream_simple_destroy_(jive_token_ostream * self_)
 {
-	jive_token_ostream_simple * self = (jive_token_ostream_simple *) self_;
-	jive_context_free(self->context, self);
+	delete self_;
 }
 
 static void
@@ -192,7 +191,7 @@ jive_token_ostream *
 jive_token_ostream_simple_create(jive_buffer * buffer)
 {
 	jive_token_ostream_simple * self;
-	self = jive_context_malloc(buffer->context, sizeof(*self));
+	self = new jive_token_ostream_simple;
 	self->base.class_ = &JIVE_TOKEN_OSTREAM_SIMPLE;
 	self->context = buffer->context;
 	self->buffer = buffer;
@@ -361,7 +360,7 @@ jive_token_istream_simple_destroy_(jive_token_istream * self_)
 	jive_token_istream_simple * self = (jive_token_istream_simple *) self_;
 	cached_string_fini(&self->current_str, self->context);
 	cached_string_fini(&self->next_str, self->context);
-	jive_context_free(self->context, self);
+	delete self;
 }
 
 static void
@@ -382,7 +381,7 @@ jive_token_istream *
 jive_token_istream_simple_create(jive_context * context,
 	const char * begin, const char * end)
 {
-	jive_token_istream_simple * self = jive_context_malloc(context, sizeof(*self));
+	jive_token_istream_simple * self = new jive_token_istream_simple;
 	self->base.class_ = &JIVE_TOKEN_ISTREAM_SIMPLE;
 	self->context = context;
 	self->begin = begin;

@@ -147,7 +147,7 @@ jive_seq_point_destroy(jive_seq_point * self)
 {
 	jive_context * context = self->seq_region->seq_graph->context;
 	self->class_->fini(self);
-	jive_context_free(context, self);
+	delete self;
 }
 
 JIVE_EXPORTED_INLINE bool

@@ -68,7 +68,7 @@ const jive_seq_point_class JIVE_SEQ_NODE = {
 static jive_seq_point *
 jive_seq_node_create(jive_seq_graph * seq, jive_seq_region * seq_region, jive_node * node)
 {
-	jive_seq_node * self = jive_context_malloc(seq->context, sizeof(*self));
+	jive_seq_node * self = new jive_seq_node;
 	self->base.class_ = &JIVE_SEQ_NODE;
 	
 	jive_seq_point_init(&self->base, seq_region, node);
@@ -105,7 +105,7 @@ sequentialize_region(
 	jive_bottomup_region_traverser * region_trav,
 	jive_region * region)
 {
-	jive_seq_region * seq_region = jive_context_malloc(seq->context, sizeof(*seq_region));
+	jive_seq_region * seq_region = new jive_seq_region;
 	seq_region->region = region;
 	seq_region->seq_graph = seq;
 	seq_region->first_point = 0;
@@ -247,7 +247,7 @@ jive_seq_graph *
 jive_graph_sequentialize(jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive_seq_graph * seq = jive_context_malloc(context, sizeof(*seq));
+	jive_seq_graph * seq = new jive_seq_graph;
 	seq->context = context;
 	seq->graph = graph;
 	seq->points.first = 0;
@@ -327,12 +327,12 @@ jive_seq_graph_destroy(jive_seq_graph * seq)
 	jive_seq_region * sr, * next_r;
 	JIVE_LIST_ITERATE_SAFE(seq->regions, sr, next_r, seqregion_list) {
 		jive_seq_region_hash_remove(&seq->region_map, sr);
-		jive_context_free(seq->context, sr);
+		delete sr;
 	}
 	jive_seq_node_hash_fini(&seq->node_map);
 	jive_seq_region_hash_fini(&seq->region_map);
 	
-	jive_context_free(seq->context, seq);
+	delete seq;
 }
 
 static void
@@ -340,9 +340,9 @@ jive_seq_instruction_fini_(jive_seq_point * self_)
 {
 	jive_seq_instruction * self = (jive_seq_instruction *) self_;
 	jive_context * context = self->base.seq_region->seq_graph->context;
-	jive_context_free(context, self->inputs);
-	jive_context_free(context, self->outputs);
-	jive_context_free(context, self->imm);
+	delete[] self->inputs;
+	delete[] self->outputs;
+	delete[] self->imm;
 	jive_seq_point_fini_(&self->base);
 }
 
@@ -360,16 +360,13 @@ jive_seq_instruction_create_shell(
 	jive_seq_graph * seq = seq_region->seq_graph;
 	jive_context * context = seq->context;
 	
-	jive_seq_instruction * seq_instr = jive_context_malloc(context, sizeof(*seq_instr));
+	jive_seq_instruction * seq_instr = new jive_seq_instruction;
 	seq_instr->base.class_ = &JIVE_SEQ_INSTRUCTION;
 	jive_seq_point_init(&seq_instr->base, seq_region, node);
 	seq_instr->icls = icls;
-	seq_instr->inputs = jive_context_malloc(context,
-		icls->ninputs * sizeof(seq_instr->inputs[0]));
-	seq_instr->outputs = jive_context_malloc(context,
-		icls->noutputs * sizeof(seq_instr->outputs[0]));
-	seq_instr->imm = jive_context_malloc(context,
-		icls->nimmediates * sizeof(seq_instr->imm[0]));
+	seq_instr->inputs = new jive_register_name*[icls->ninputs];
+	seq_instr->outputs = new jive_register_name*[icls->noutputs];
+	seq_instr->imm = new jive_seq_imm[icls->nimmediates];
 	seq_instr->flags = jive_instruction_encoding_flags_none;
 	
 	return seq_instr;
@@ -439,7 +436,7 @@ jive_seq_data_fini_(jive_seq_point * self_)
 {
 	jive_seq_data * self = (jive_seq_data *) self_;
 	jive_context * context = self->base.seq_region->seq_graph->context;
-	jive_context_free(context, self->items);
+	delete[] self->items;
 	jive_seq_point_fini_(&self->base);
 }
 
@@ -457,11 +454,11 @@ jive_seq_data_create(
 	jive_seq_graph * seq = seq_region->seq_graph;
 	jive_context * context = seq->context;
 	
-	jive_seq_data * seq_data = jive_context_malloc(context, sizeof(*seq_data));
+	jive_seq_data * seq_data = new jive_seq_data;
 	seq_data->base.class_ = &JIVE_SEQ_DATA;
 	jive_seq_point_init(&seq_data->base, seq_region, node);
 	seq_data->nitems = nitems;
-	seq_data->items = jive_context_malloc(context, nitems * sizeof(seq_data->items[0]));
+	seq_data->items = new jive_seq_dataitem[nitems];
 	
 	return seq_data;
 }
