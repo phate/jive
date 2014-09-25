@@ -52,17 +52,14 @@ jive_serialize_string(jive_serialization_driver * self,
 
 bool
 jive_deserialize_string(jive_serialization_driver * self,
-	jive_token_istream * is, char ** str, size_t * len)
+	jive_token_istream * is, std::string & str)
 {
 	const jive_token * token = jive_token_istream_current(is);
 	if (token->type != jive_token_string) {
 		self->error(self, "Expected string");
 		return false;
 	}
-	*str = jive_context_malloc(self->context, token->v.string.len + 1);
-	*len = token->v.string.len;
-	memcpy(*str, token->v.string.str, token->v.string.len);
-	(*str)[token->v.string.len] = 0;
+	str = std::string(token->v.string.str, token->v.string.len);
 	jive_token_istream_advance(is);
 	return true;
 }
@@ -242,26 +239,24 @@ bool
 jive_deserialize_gateexpr(jive_serialization_driver * self,
 	jive_token_istream * is, jive_graph * graph, jive::gate ** gate)
 {
-	char * name;
+	std::string name;
 	size_t name_len;
 	const jive_resource_class * rescls;
 	jive::base::type * type;
 	
-	if (!jive_deserialize_string(self, is, &name, &name_len))
+	if (!jive_deserialize_string(self, is, name))
 		return false;
-	if (!jive_deserialize_rescls(self, is, &rescls)) {
-		jive_context_free(self->context, name);
+
+	if (!jive_deserialize_rescls(self, is, &rescls))
 		return false;
-	}
-	if (!jive_deserialize_type(self, is, &type)) {
-		jive_context_free(self->context, name);
+
+	if (!jive_deserialize_type(self, is, &type))
 		return false;
-	}
-	*gate = type->create_gate(graph, name);
+
+	*gate = type->create_gate(graph, name.c_str());
 	(*gate)->required_rescls = rescls;
 
 	delete type;
-	jive_context_free(self->context, name);
 	
 	return true;
 }

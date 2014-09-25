@@ -71,7 +71,7 @@ jive_serialize_string(jive_serialization_driver * self,
 
 bool
 jive_deserialize_string(jive_serialization_driver * self,
-	jive_token_istream * is, char ** str, size_t * len);
+	jive_token_istream * is, std::string & str);
 
 void
 jive_serialize_uint(jive_serialization_driver * self,
