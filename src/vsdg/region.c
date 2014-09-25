@@ -11,7 +11,6 @@
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph-private.h>
-#include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
@@ -39,7 +38,6 @@ jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
 	self->top = self->bottom = 0;
 	jive_region_attrs_init(&self->attrs);
-	jive_region_ssavar_hash_init(&self->used_ssavars, graph->context);
 	
 	if (parent) {
 		JIVE_LIST_PUSH_BACK(parent->subregions, self, region_subregions_list);
@@ -60,7 +58,6 @@ jive_region_fini_(jive_region * self)
 	
 	jive_graph_notify_region_destroy(self->graph, self);
 	
-	jive_region_ssavar_hash_fini(&self->used_ssavars);
 	if (self->parent)
 		JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
 	/* FIXME: destroy stackframe! */
@@ -160,17 +157,16 @@ jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
 	if (ssavar->origin->node()->region->depth >= self->depth) return;
 	if (self->attrs.is_looped) {
-		jive_region_ssavar_use * use;
-		use = jive_region_ssavar_hash_lookup(&self->used_ssavars, ssavar);
+		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
 		if (use)
 			use->count ++;
 		else {
-			use = jive_context_malloc(self->graph->context, sizeof(*use));
+			use = new jive_region_ssavar_use;
 			use->region = self;
 			use->ssavar = ssavar;
 			use->count = 1;
-			jive_region_ssavar_hash_insert(&self->used_ssavars, use);
-			jive_ssavar_region_hash_insert(&ssavar->assigned_regions, use);
+			self->used_ssavars.insert(use);
+			ssavar->assigned_regions.insert(use);
 			
 			jive_graph_notify_region_add_used_ssavar(self->graph, self, ssavar);
 		}
@@ -184,15 +180,14 @@ jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
 	if (ssavar->origin->node()->region->depth >= self->depth) return;
 	if (self->attrs.is_looped) {
-		jive_region_ssavar_use * use;
-		use = jive_region_ssavar_hash_lookup(&self->used_ssavars, ssavar);
+		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
 		use->count --;
 		if (use->count == 0) {
-			jive_region_ssavar_hash_remove(&self->used_ssavars, use);
-			jive_ssavar_region_hash_remove(&ssavar->assigned_regions, use);
-			
+			self->used_ssavars.erase(use);
+			ssavar->assigned_regions.erase(use);
+
 			jive_graph_notify_region_remove_used_ssavar(self->graph, self, ssavar);
-			jive_context_free(self->graph->context, use);
+			delete use;
 		}
 	}
 	

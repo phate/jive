@@ -15,7 +15,6 @@
 #include <jive/regalloc/shaped-region-private.h>
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/gate-interference-private.h>
-#include <jive/vsdg/region-ssavar-use-private.h>
 
 JIVE_DEFINE_HASH_TYPE(
 	jive_shaped_variable_hash,
@@ -612,12 +611,9 @@ jive_shaped_ssavar_xpoints_register_arcs(jive_shaped_ssavar * self)
 		if (origin_shaped_node)
 			jive_shaped_node_add_ssavar_after(origin_shaped_node, self, variable, 1);
 	}
-	
-	struct jive_ssavar_region_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
-		jive_region * region = i.entry->region;
-		jive_shaped_ssavar_xpoints_register_region_arc(self, self->ssavar->origin, region);
-	}
+
+	for (const jive_region_ssavar_use & use : ssavar->assigned_regions)
+		jive_shaped_ssavar_xpoints_register_region_arc(self, self->ssavar->origin, use.region);
 }
 
 void
@@ -635,12 +631,9 @@ jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self)
 		if (origin_shaped_node)
 			jive_shaped_node_remove_ssavar_after(origin_shaped_node, self, variable, 1);
 	}
-	
-	struct jive_ssavar_region_hash_iterator i;
-	JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
-		jive_region * region = i.entry->region;
-		jive_shaped_ssavar_xpoints_unregister_region_arc(self, self->ssavar->origin, region);
-	}
+
+	for (const jive_region_ssavar_use & use : ssavar->assigned_regions)
+		jive_shaped_ssavar_xpoints_unregister_region_arc(self, self->ssavar->origin, use.region);
 }
 
 void
@@ -697,25 +690,21 @@ jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive::output 
 	
 	jive_variable * variable = self->ssavar->variable;
 	jive::input * input;
-	struct jive_ssavar_region_hash_iterator i;
 	
 	if (old_origin_shaped_node && self->ssavar->assigned_output)
 		jive_shaped_node_remove_ssavar_after(old_origin_shaped_node, self, variable, 1);
 	JIVE_LIST_ITERATE(self->ssavar->assigned_inputs, input, ssavar_input_list) {
 		jive_shaped_ssavar_xpoints_unregister_arc(self, input, old_origin);
 	}
-	JIVE_HASH_ITERATE(jive_ssavar_region_hash, self->ssavar->assigned_regions, i) {
-		jive_region * region = i.entry->region;
-		jive_shaped_ssavar_xpoints_unregister_region_arc(self, old_origin, region);
-	}
+	for (const jive_region_ssavar_use & use : self->ssavar->assigned_regions)
+		jive_shaped_ssavar_xpoints_unregister_region_arc(self, old_origin, use.region);
 	
 	JIVE_LIST_ITERATE(self->ssavar->assigned_inputs, input, ssavar_input_list) {
 		jive_shaped_ssavar_xpoints_register_arc(self, input, new_origin);
 	}
-	JIVE_HASH_ITERATE(jive_ssavar_region_hash, self->ssavar->assigned_regions, i) {
-		jive_region * region = i.entry->region;
-		jive_shaped_ssavar_xpoints_register_region_arc(self, new_origin, region);
-	}
+	for (const jive_region_ssavar_use & use : self->ssavar->assigned_regions)
+		jive_shaped_ssavar_xpoints_register_region_arc(self, new_origin, use.region);
+
 	if (new_origin_shaped_node && self->ssavar->assigned_output)
 		jive_shaped_node_add_ssavar_after(new_origin_shaped_node, self, variable, 1);
 }

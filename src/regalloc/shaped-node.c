@@ -12,7 +12,6 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource-private.h>
 
@@ -158,9 +157,8 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	/* if this is the bottom node of a loop region, unregister
 	crossings on behalf of this region */
 	if (self->node == jive_region_get_bottom_node(self->node->region)) {
-		struct jive_region_ssavar_hash_iterator i;
-		JIVE_HASH_ITERATE(jive_region_ssavar_hash, self->node->region->used_ssavars, i) {
-			jive_ssavar * ssavar = i.entry->ssavar;
+		for (jive_region_ssavar_use & use : self->node->region->used_ssavars) {
+			jive_ssavar * ssavar = use.ssavar;
 			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
 			jive_shaped_ssavar_xpoints_unregister_region_arc(
 				shaped_ssavar,

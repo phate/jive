@@ -13,7 +13,6 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/region.h>
 
 static jive_cut *
@@ -209,11 +208,8 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 				jive_shaped_ssavar_xpoints_unregister_arc(shaped_ssavar, input, output);
 			}
-			jive_ssavar_region_hash_iterator i;
-			JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
-				jive_region * region = i.entry->region;
-				jive_shaped_ssavar_xpoints_unregister_region_arc(shaped_ssavar, output, region);
-			}
+			for (const jive_region_ssavar_use & use : ssavar->assigned_regions)
+				jive_shaped_ssavar_xpoints_unregister_region_arc(shaped_ssavar, output, use.region);
 			
 			shaped_ssavar->boundary_region_depth = (size_t) -1;
 		}
@@ -257,11 +253,8 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 			JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 				jive_shaped_ssavar_xpoints_register_arc(shaped_ssavar, input, output);
 			}
-			jive_ssavar_region_hash_iterator i;
-			JIVE_HASH_ITERATE(jive_ssavar_region_hash, ssavar->assigned_regions, i) {
-				jive_region * region = i.entry->region;
-				jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, output, region);
-			}
+			for (const jive_region_ssavar_use & use : ssavar->assigned_regions)
+				jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, output, use.region);
 			
 			if (ssavar->assigned_output)
 				jive_shaped_node_add_ssavar_after(shaped_node, shaped_ssavar, ssavar->variable, 1);
@@ -279,9 +272,8 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	/* if this is the bottom node of a loop region, need to register
 	crossings on behalf of this region */
 	if (node == jive_region_get_bottom_node(node->region)) {
-		jive_region_ssavar_hash_iterator i;
-		JIVE_HASH_ITERATE(jive_region_ssavar_hash, node->region->used_ssavars, i) {
-			jive_ssavar * ssavar = i.entry->ssavar;
+		for (const jive_region_ssavar_use & use : node->region->used_ssavars) {
+			jive_ssavar * ssavar = use.ssavar;
 			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
 			jive_shaped_ssavar_xpoints_register_region_arc(shaped_ssavar, ssavar->origin, node->region);
 		}

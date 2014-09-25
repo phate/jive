@@ -11,7 +11,6 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/region-private.h>
-#include <jive/vsdg/region-ssavar-use-private.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/theta.h>
 
@@ -80,7 +79,6 @@ jive_ssavar_create(jive::output * origin, jive_variable * variable)
 	self->origin = origin;
 	self->assigned_inputs.first = self->assigned_inputs.last = 0;
 	self->assigned_output = 0;
-	jive_ssavar_region_hash_init(&self->assigned_regions, context);
 	
 	JIVE_LIST_PUSH_BACK(variable->unused_ssavars, self, variable_ssavar_list);
 	
@@ -95,7 +93,6 @@ jive_ssavar_destroy(jive_ssavar * self)
 	while (self->assigned_inputs.first)
 		jive_ssavar_unassign_input(self, self->assigned_inputs.first);
 	JIVE_DEBUG_ASSERT(self->use_count == 0);
-	jive_ssavar_region_hash_fini(&self->assigned_regions);
 	JIVE_LIST_REMOVE(self->variable->unused_ssavars, self, variable_ssavar_list);
 	delete self;
 }
