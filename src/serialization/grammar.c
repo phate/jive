@@ -536,19 +536,15 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	if (!jive_deserialize_char_token(self, is, '<')) {
 		return false;
 	}
-	
-	jive::output ** origins = jive_context_malloc(self->context,
-		sizeof(jive::output *) * ports.nnormal);
+
+	std::vector<jive::output*> origins(ports.nnormal);
 	for (n = 0; n < ports.nnormal; ++n)
 		origins[n] = ports.ports[n].origin;
 	
-	if (!sercls->deserialize(sercls, self, region,
-		ports.nnormal, origins, is, node)) {
-		jive_context_free(self->context, origins);
+	if (!sercls->deserialize(sercls, self, region, ports.nnormal, &origins[0], is, node))
 		return false;
-	}
+
 	jive_graph_mark_denormalized(region->graph);
-	jive_context_free(self->context, origins);
 	
 	if (!jive_deserialize_char_token(self, is, '>'))
 		return false;
