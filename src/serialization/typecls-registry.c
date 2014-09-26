@@ -9,7 +9,6 @@
 
 #include <jive/util/buffer.h>
 #include <jive/util/cstr-map.h>
-#include <jive/util/hash.h>
 #include <jive/util/typeinfo-map.h>
 #include <jive/vsdg/basetype.h>
 

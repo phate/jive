@@ -9,7 +9,6 @@
 
 #include <jive/arch/instruction.h>
 #include <jive/util/buffer.h>
-#include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
 
 typedef struct jive_instrcls_tag_bucket jive_instrcls_tag_bucket;

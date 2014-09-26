@@ -10,7 +10,6 @@
 #include <pthread.h> // FIXME: remove
 
 #include <jive/util/buffer.h>
-#include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
 
 namespace jive {
