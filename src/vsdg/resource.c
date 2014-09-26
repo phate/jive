@@ -82,7 +82,7 @@ jive_resource_class_count_clear(jive_resource_class_count * self)
 		size_t index = jive_ptr_hash(item->resource_class) & self->mask;
 		JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
 		JIVE_LIST_REMOVE(self->items, item, item_list);
-		jive_context_free(self->context, item);
+		delete item;
 	}
 	self->nitems = 0;
 }
@@ -148,7 +148,7 @@ jive_resource_class_count_add_single(jive_resource_class_count * self, const jiv
 	if (self->nitems >= self->nbuckets)
 		rehash(self);
 	
-	item = jive_context_malloc(self->context, sizeof(*item));
+	item = new jive_resource_class_count_item;
 	size_t index = jive_ptr_hash(resource_class) & self->mask;
 	item->resource_class = resource_class;
 	item->count = count;
@@ -170,7 +170,7 @@ jive_resource_class_count_max(jive_resource_class_count * self, const struct jiv
 	if (self->nitems >= self->nbuckets)
 		rehash(self);
 	
-	item = jive_context_malloc(self->context, sizeof(*item));
+	item = new jive_resource_class_count_item;
 	size_t index = jive_ptr_hash(resource_class) & self->mask;
 	item->resource_class = resource_class;
 	item->count = count;
@@ -187,7 +187,7 @@ jive_resource_class_count_sub_single(jive_resource_class_count * self, const jiv
 		size_t index = jive_ptr_hash(resource_class) & self->mask;
 		JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
 		JIVE_LIST_REMOVE(self->items, item, item_list);
-		jive_context_free(self->context, item);
+		delete item;
 		self->nitems --;
 	}
 }
@@ -300,7 +300,7 @@ jive_resource_class_count_update_intersection(jive_resource_class_count * self, 
 			size_t index = jive_ptr_hash(item->resource_class) & self->mask;
 			JIVE_LIST_REMOVE(self->buckets[index], item, hash_chain);
 			JIVE_LIST_REMOVE(self->items, item, item_list);
-			jive_context_free(self->context, item);
+			delete item;
 			self->nitems --;
 		} else {
 			item->count = item->count <  count ? item->count : count;
