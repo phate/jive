@@ -7,8 +7,6 @@
 #ifndef JIVE_ARCH_SEQUENCE_H
 #define JIVE_ARCH_SEQUENCE_H
 
-#include <jive/util/hash.h>
-
 #include <jive/arch/instruction.h>
 #include <jive/vsdg/label.h>
 
@@ -52,14 +50,27 @@ struct jive_seq_point {
 	from; not all points are generated from a node, but those that are,
 	are linked here */
 	struct jive_node * node;
-	struct {
-		jive_seq_point * prev;
-		jive_seq_point * next;
-	} hash_chain;
 	
 	size_t size;
 	jive_address address;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_seq_point> hash_chain;
+
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		struct jive_node *,
+		jive_seq_point,
+		&jive_seq_point::node,
+		&jive_seq_point::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::intrusive_hash<
+	struct jive_node *,
+	jive_seq_point,
+	jive_seq_point::hash_chain_accessor
+> jive_seq_node_hash;
 
 extern const jive_seq_point_class JIVE_SEQ_POINT;
 
@@ -77,23 +88,29 @@ struct jive_seq_region {
 		jive_seq_region * prev;
 		jive_seq_region * next;
 	} seqregion_list;
-	struct {
-		jive_seq_region * prev;
-		jive_seq_region * next;
-	} hash_chain;
 	
 	jive_seq_point * first_point;
 	jive_seq_point * last_point;
 	
 	bool inlined;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_seq_region> hash_chain;
+
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		struct jive_region *,
+		jive_seq_region,
+		&jive_seq_region::region,
+		&jive_seq_region::hash_chain
+	> hash_chain_accessor;
 };
 
-typedef struct jive_seq_node_hash jive_seq_node_hash;
-typedef struct jive_seq_region_hash jive_seq_region_hash;
-JIVE_DECLARE_HASH_TYPE(jive_seq_node_hash, jive_seq_point, struct jive_node *,
-	node, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_seq_region_hash, jive_seq_region, struct jive_region *,
-	region, hash_chain);
+typedef jive::detail::owner_intrusive_hash<
+	jive_region *,
+	jive_seq_region,
+	jive_seq_region::hash_chain_accessor
+> jive_seq_region_hash;
 
 struct jive_seq_graph {
 	struct jive_context * context;
@@ -102,14 +119,10 @@ struct jive_seq_graph {
 		jive_seq_point * first;
 		jive_seq_point * last;
 	} points;
-	struct {
-		jive_seq_region * first;
-		jive_seq_region * last;
-	} regions;
-	
+
 	jive_seq_node_hash node_map;
 	jive_seq_region_hash region_map;
-	
+
 	struct jive_notifier * label_notifier;
 	
 	bool addrs_changed;

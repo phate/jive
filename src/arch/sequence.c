@@ -15,11 +15,6 @@
 #include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/objdef.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_seq_node_hash, jive_seq_point, struct jive_node *,
-	node, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_seq_region_hash, jive_seq_region, struct jive_region *,
-	region, hash_chain);
-
 void
 jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region, jive_node * node)
 {
@@ -32,7 +27,7 @@ jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region, jive_no
 	jive_address_init(&self->address, jive_stdsectionid_invalid, 0);
 	self->node = node;
 	if (self->node)
-		jive_seq_node_hash_insert(&seq->node_map, self);
+		seq->node_map.insert(self);
 }
 
 void
@@ -40,7 +35,7 @@ jive_seq_point_fini_(jive_seq_point * self)
 {
 	jive_seq_graph * seq_graph = self->seq_region->seq_graph;
 	if (self->node)
-		jive_seq_node_hash_remove(&seq_graph->node_map, self);
+		seq_graph->node_map.erase(self);
 	JIVE_LIST_REMOVE(seq_graph->points, self, seqpoint_list);
 }
 
@@ -101,8 +96,7 @@ sequentialize_region(
 	seq_region->first_point = 0;
 	seq_region->last_point = 0;
 	seq_region->inlined = false;
-	jive_seq_region_hash_insert(&seq->region_map, seq_region);
-	JIVE_LIST_PUSH_BACK(seq->regions, seq_region, seqregion_list);
+	seq->region_map.insert(seq_region);
 	
 	jive_traverser * trav = jive_bottomup_region_traverser_get_node_traverser(region_trav, region);
 	
@@ -242,12 +236,7 @@ jive_graph_sequentialize(jive_graph * graph)
 	seq->graph = graph;
 	seq->points.first = 0;
 	seq->points.last = 0;
-	seq->regions.first = 0;
-	seq->regions.last = 0;
 	seq->addrs_changed = true;
-	
-	jive_seq_node_hash_init(&seq->node_map, context);
-	jive_seq_region_hash_init(&seq->region_map, context);
 	
 	/* sequentialize nodes of the graph */
 	jive_bottomup_region_traverser * region_trav = jive_bottomup_region_traverser_create(graph);
@@ -298,13 +287,21 @@ jive_graph_sequentialize(jive_graph * graph)
 jive_seq_point *
 jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node)
 {
-	return jive_seq_node_hash_lookup(&seq->node_map, node);
+	auto i = seq->node_map.find(node);
+	if (i != seq->node_map.end())
+		return i.ptr();
+	else
+		return nullptr;
 }
 
 jive_seq_region *
 jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region)
 {
-	return jive_seq_region_hash_lookup(&seq->region_map, region);
+	auto i = seq->region_map.find(region);
+	if (i != seq->region_map.end())
+		return i.ptr();
+	else
+		return nullptr;
 }
 
 void
@@ -314,14 +311,7 @@ jive_seq_graph_destroy(jive_seq_graph * seq)
 	JIVE_LIST_ITERATE_SAFE(seq->points, sp, next_p, seqpoint_list) {
 		jive_seq_point_destroy(sp);
 	}
-	jive_seq_region * sr, * next_r;
-	JIVE_LIST_ITERATE_SAFE(seq->regions, sr, next_r, seqregion_list) {
-		jive_seq_region_hash_remove(&seq->region_map, sr);
-		delete sr;
-	}
-	jive_seq_node_hash_fini(&seq->node_map);
-	jive_seq_region_hash_fini(&seq->region_map);
-	
+
 	delete seq;
 }
 
