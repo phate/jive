@@ -58,8 +58,7 @@ simple_name_gate(
 	jive_serialization_simple_namegen * self = (jive_serialization_simple_namegen *) self_;
 	char tmp[20];
 	snprintf(tmp, sizeof(tmp), "g%zd", self->gate_id ++);
-	jive_serialization_symtab_insert_gatesym(symtab, gate,
-		jive_serialization_symtab_strdup(symtab, tmp));
+	jive_serialization_symtab_insert_gatesym(symtab, gate, tmp);
 }
 
 static void
@@ -73,8 +72,7 @@ simple_name_label(
 	jive_serialization_simple_namegen * self = (jive_serialization_simple_namegen *) self_;
 	char tmp[20];
 	snprintf(tmp, sizeof(tmp), "l%zd", self->label_id ++);
-	jive_serialization_symtab_insert_labelsym(symtab, label,
-		jive_serialization_symtab_strdup(symtab, tmp));
+	jive_serialization_symtab_insert_labelsym(symtab, label, tmp);
 }
 
 static void
@@ -88,8 +86,7 @@ simple_name_node(
 	jive_serialization_simple_namegen * self = (jive_serialization_simple_namegen *) self_;
 	char tmp[20];
 	snprintf(tmp, sizeof(tmp), "n%zd", self->node_id ++);
-	jive_serialization_symtab_insert_nodesym(symtab, node,
-		jive_serialization_symtab_strdup(symtab, tmp));
+	jive_serialization_symtab_insert_nodesym(symtab, node, tmp);
 }
 
 static void
@@ -103,8 +100,7 @@ simple_name_output(
 	jive_serialization_simple_namegen * self = (jive_serialization_simple_namegen *) self_;
 	char tmp[20];
 	snprintf(tmp, sizeof(tmp), "o%zd", self->output_id ++);
-	jive_serialization_symtab_insert_outputsym(symtab, output,
-		jive_serialization_symtab_strdup(symtab, tmp));
+	jive_serialization_symtab_insert_outputsym(symtab, output, tmp);
 }
 
 static void

@@ -63,11 +63,10 @@ static int test_main(void)
 	jive::output * t = jive_bitashr(r, s);
 	
 	jive_node * orig_node = t->node();
-	
+
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv, ctx);
-	jive_serialization_symtab_insert_nodesym(&drv.symtab,
-		orig_node, jive_serialization_symtab_strdup(&drv.symtab, "TARGET"));
+	jive_serialization_symtab_insert_nodesym(&drv.symtab, orig_node, "TARGET");
 	jive_token_ostream * os = jive_token_ostream_simple_create(&buf);
 	jive_serialize_graph(&drv, gr1, os);
 	jive_token_ostream_destroy(os);

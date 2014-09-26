@@ -256,7 +256,7 @@ output_driver::put_defined_label(const jive_label * label)
 {
 	const jive_serialization_labelsym * sym =
 		jive_serialization_symtab_label_to_name(&driver_.symtab, label);
-	const char * label_ident = sym ? sym->name : "%unnamed_label%";
+	const char * label_ident = sym ? sym->name.c_str() : "%unnamed_label%";
 	jive_token_ostream_identifier(&os_, label_ident);
 }
 
@@ -554,7 +554,7 @@ jive_serialize_defined_gate(jive_serialization_driver * self,
 {
 	const jive_serialization_gatesym * sym =
 		jive_serialization_symtab_gate_to_name(&self->symtab, gate);
-	const char * gate_ident = sym ? sym->name : "%unnamed_gate%";
+	const char * gate_ident = sym ? sym->name.c_str() : "%unnamed_gate%";
 	jive_token_ostream_identifier(os, gate_ident);
 }
 
@@ -585,7 +585,7 @@ jive_serialize_defined_label(jive_serialization_driver * self,
 {
 	const jive_serialization_labelsym * sym =
 		jive_serialization_symtab_label_to_name(&self->symtab, label);
-	const char * label_ident = sym ? sym->name : "%unnamed_label%";
+	const char * label_ident = sym ? sym->name.c_str() : "%unnamed_label%";
 	jive_token_ostream_identifier(os, label_ident);
 }
 
@@ -616,7 +616,7 @@ jive_serialize_defined_node(jive_serialization_driver * self,
 {
 	const jive_serialization_nodesym * sym =
 		jive_serialization_symtab_node_to_name(&self->symtab, node);
-	const char * node_ident = sym ? sym->name : "%unnamed_node%";
+	const char * node_ident = sym ? sym->name.c_str() : "%unnamed_node%";
 	jive_token_ostream_identifier(os, node_ident);
 }
 
@@ -648,7 +648,7 @@ jive_serialize_portinfo(jive_serialization_driver * self,
 	jive::output * origin = input->origin;
 	const jive_serialization_outputsym * sym =
 		jive_serialization_symtab_output_to_name(&self->symtab, origin);
-	const char * output_ident = sym ? sym->name : "%unnamed_output%";
+	const char * output_ident = sym ? sym->name.c_str() : "%unnamed_output%";
 	jive_token_ostream_identifier(os, output_ident);
 	
 	jive_serialize_char_token(self, ':', os);
@@ -869,23 +869,18 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 			self->error(self, "Too many names for outputs");
 			return false;
 		}
-		char * name = jive_serialization_symtab_strdup(&self->symtab,
-			jive_token_istream_current(is)->v.identifier);
+		std::string name = jive_token_istream_current(is)->v.identifier;
 		jive_token_istream_advance(is);
 		
-		if (!jive_deserialize_char_token(self, is, ':')) {
-			jive_serialization_symtab_strfree(&self->symtab, name);
+		if (!jive_deserialize_char_token(self, is, ':'))
 			return false;
-		}
 		
 		const jive_resource_class * required_rescls;
-		if (!jive_deserialize_rescls(self, is, &required_rescls)) {
-			jive_serialization_symtab_strfree(&self->symtab, name);
+		if (!jive_deserialize_rescls(self, is, &required_rescls))
 			return false;
-		}
 		
 		jive_serialization_symtab_insert_outputsym(&self->symtab,
-			(*node)->outputs[index], name);
+			(*node)->outputs[index], name.c_str());
 		
 		index ++;
 	}
@@ -900,28 +895,21 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	
 	/* additional outputs */
 	while (jive_token_istream_current(is)->type == jive_token_identifier) {
-		char * name = jive_serialization_symtab_strdup(&self->symtab,
-			jive_token_istream_current(is)->v.identifier);
+		std::string name = jive_token_istream_current(is)->v.identifier;
 		jive_token_istream_advance(is);
 		
-		if (!jive_deserialize_char_token(self, is, ':')) {
-			jive_serialization_symtab_strfree(&self->symtab, name);
+		if (!jive_deserialize_char_token(self, is, ':'))
 			return false;
-		}
 		
 		const jive_resource_class * required_rescls;
-		if (!jive_deserialize_rescls(self, is, &required_rescls)) {
-			jive_serialization_symtab_strfree(&self->symtab, name);
+		if (!jive_deserialize_rescls(self, is, &required_rescls))
 			return false;
-		}
 		
 		jive::gate * gate = 0;
 		if (jive_token_istream_current(is)->type == jive_token_colon) {
 			jive_token_istream_advance(is);
-			if (!jive_deserialize_defined_gate(self, is, &gate)) {
-				jive_serialization_symtab_strfree(&self->symtab, name);
+			if (!jive_deserialize_defined_gate(self, is, &gate))
 				return false;
-			}
 		}
 		
 		jive::output * output;
@@ -932,8 +920,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		
 		output->required_rescls = required_rescls;
 		
-		jive_serialization_symtab_insert_outputsym(&self->symtab,
-			output, name);
+		jive_serialization_symtab_insert_outputsym(&self->symtab, output, name.c_str());
 	}
 	
 	if (!jive_deserialize_char_token(self, is, ')'))
@@ -1149,12 +1136,10 @@ jive_deserialize_def(jive_serialization_driver * self,
 			return true;
 		}
 		case jive_token_identifier: {
-			char * name = jive_serialization_symtab_strdup(&self->symtab, token->v.identifier);
+			std::string name = token->v.identifier;
 			jive_token_istream_advance(is);
-			if (!jive_deserialize_char_token(self, is, '=')) {
-				jive_serialization_symtab_strfree(&self->symtab, name);
+			if (!jive_deserialize_char_token(self, is, '='))
 				return false;
-			}
 			
 			/* parse defined item */
 			token = jive_token_istream_current(is);
@@ -1162,23 +1147,19 @@ jive_deserialize_def(jive_serialization_driver * self,
 				case jive_token_gate: {
 					jive_token_istream_advance(is);
 					jive::gate * gate;
-					if (!jive_deserialize_gateexpr(self, is, region->graph, &gate)) {
-						jive_serialization_symtab_strfree(&self->symtab, name);
+					if (!jive_deserialize_gateexpr(self, is, region->graph, &gate))
 						return false;
-					}
-					jive_serialization_symtab_insert_gatesym(
-						&self->symtab, gate, name);
+
+					jive_serialization_symtab_insert_gatesym(&self->symtab, gate, name.c_str());
 					break;
 				}
 				case jive_token_node: {
 					jive_token_istream_advance(is);
 					jive_node * node;
-					if (!jive_deserialize_nodeexpr(self, is, region, &node)) {
-						jive_serialization_symtab_strfree(&self->symtab, name);
+					if (!jive_deserialize_nodeexpr(self, is, region, &node))
 						return false;
-					}
-					jive_serialization_symtab_insert_nodesym(
-						&self->symtab, node, name);
+
+					jive_serialization_symtab_insert_nodesym(&self->symtab, node, name.c_str());
 					break;
 				}
 				default: {

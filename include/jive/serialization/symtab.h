@@ -10,8 +10,9 @@
 
 #include <jive/common.h>
 #include <jive/context.h>
-#include <jive/util/dict.h>
-#include <jive/util/hash.h>
+#include <jive/util/intrusive-hash.h>
+
+#include <string>
 
 namespace jive {
 	class gate;
@@ -23,80 +24,150 @@ struct jive_label;
 struct jive_node;
 
 typedef struct jive_serialization_gatesym jive_serialization_gatesym;
-typedef struct jive_serialization_gatesym_hash jive_serialization_gatesym_hash;
-typedef struct jive_serialization_gatesym_dict jive_serialization_gatesym_dict;
 typedef struct jive_serialization_labelsym jive_serialization_labelsym;
-typedef struct jive_serialization_labelsym_hash jive_serialization_labelsym_hash;
-typedef struct jive_serialization_labelsym_dict jive_serialization_labelsym_dict;
 typedef struct jive_serialization_nodesym jive_serialization_nodesym;
-typedef struct jive_serialization_nodesym_hash jive_serialization_nodesym_hash;
-typedef struct jive_serialization_nodesym_dict jive_serialization_nodesym_dict;
 typedef struct jive_serialization_outputsym jive_serialization_outputsym;
-typedef struct jive_serialization_outputsym_hash jive_serialization_outputsym_hash;
-typedef struct jive_serialization_outputsym_dict jive_serialization_outputsym_dict;
 typedef struct jive_serialization_symtab jive_serialization_symtab;
 
 struct jive_serialization_gatesym {
 	jive::gate * gate;
-	char * name;
-	struct {
-		jive_serialization_gatesym * prev;
-		jive_serialization_gatesym * next;
-	} gate_hash_chain;
-	struct {
-		jive_serialization_gatesym * prev;
-		jive_serialization_gatesym * next;
-	} name_hash_chain;
+	std::string name;
+private:
+	jive::detail::intrusive_hash_anchor<jive_serialization_gatesym> name_hash_chain;
+	jive::detail::intrusive_hash_anchor<jive_serialization_gatesym> gate_hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		std::string,
+		jive_serialization_gatesym,
+		&jive_serialization_gatesym::name,
+		&jive_serialization_gatesym::name_hash_chain
+	> name_hash_chain_accessor;
+	typedef jive::detail::intrusive_hash_accessor<
+		jive::gate *,
+		jive_serialization_gatesym,
+		&jive_serialization_gatesym::gate,
+		&jive_serialization_gatesym::gate_hash_chain
+	> gate_hash_chain_accessor;
 };
-JIVE_DECLARE_HASH_TYPE(jive_serialization_gatesym_hash, jive_serialization_gatesym, jive::gate *,
-	gate, gate_hash_chain);
-JIVE_DECLARE_DICT_TYPE(jive_serialization_gatesym_dict, jive_serialization_gatesym, name, name_hash_chain);
+typedef jive::detail::intrusive_hash<
+	const std::string,
+	jive_serialization_gatesym,
+	jive_serialization_gatesym::name_hash_chain_accessor,
+	std::hash<std::string>,
+	jive::detail::safe_equal<std::string>
+> jive_serialization_gatesym_dict;
+
+typedef jive::detail::intrusive_hash<
+	const jive::gate *,
+	jive_serialization_gatesym,
+	jive_serialization_gatesym::gate_hash_chain_accessor
+> jive_serialization_gatesym_hash;
+
 
 struct jive_serialization_labelsym {
 	struct jive_label * label;
-	char * name;
-	struct {
-		jive_serialization_labelsym * prev;
-		jive_serialization_labelsym * next;
-	} label_hash_chain;
-	struct {
-		jive_serialization_labelsym * prev;
-		jive_serialization_labelsym * next;
-	} name_hash_chain;
+	std::string name;
+private:
+	jive::detail::intrusive_hash_anchor<jive_serialization_labelsym> name_hash_chain;
+	jive::detail::intrusive_hash_anchor<jive_serialization_labelsym> label_hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		std::string,
+		jive_serialization_labelsym,
+		&jive_serialization_labelsym::name,
+		&jive_serialization_labelsym::name_hash_chain
+	> name_hash_chain_accessor;
+	typedef jive::detail::intrusive_hash_accessor<
+		struct jive_label *,
+		jive_serialization_labelsym,
+		&jive_serialization_labelsym::label,
+		&jive_serialization_labelsym::label_hash_chain
+	> label_hash_chain_accessor;
 };
-JIVE_DECLARE_HASH_TYPE(jive_serialization_labelsym_hash, jive_serialization_labelsym, struct jive_label *, label, label_hash_chain);
-JIVE_DECLARE_DICT_TYPE(jive_serialization_labelsym_dict, jive_serialization_labelsym, name, name_hash_chain);
+typedef jive::detail::intrusive_hash<
+	const std::string,
+	jive_serialization_labelsym,
+	jive_serialization_labelsym::name_hash_chain_accessor,
+	std::hash<std::string>,
+	jive::detail::safe_equal<std::string>
+> jive_serialization_labelsym_dict;
+
+typedef jive::detail::intrusive_hash<
+	const struct jive_label *,
+	jive_serialization_labelsym,
+	jive_serialization_labelsym::label_hash_chain_accessor
+> jive_serialization_labelsym_hash;
+
 
 struct jive_serialization_nodesym {
 	struct jive_node * node;
-	char * name;
-	struct {
-		jive_serialization_nodesym * prev;
-		jive_serialization_nodesym * next;
-	} node_hash_chain;
-	struct {
-		jive_serialization_nodesym * prev;
-		jive_serialization_nodesym * next;
-	} name_hash_chain;
+	std::string name;
+private:
+	jive::detail::intrusive_hash_anchor<jive_serialization_nodesym> name_hash_chain;
+	jive::detail::intrusive_hash_anchor<jive_serialization_nodesym> node_hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		std::string,
+		jive_serialization_nodesym,
+		&jive_serialization_nodesym::name,
+		&jive_serialization_nodesym::name_hash_chain
+	> name_hash_chain_accessor;
+	typedef jive::detail::intrusive_hash_accessor<
+		struct jive_node *,
+		jive_serialization_nodesym,
+		&jive_serialization_nodesym::node,
+		&jive_serialization_nodesym::node_hash_chain
+	> node_hash_chain_accessor;
 };
-JIVE_DECLARE_HASH_TYPE(jive_serialization_nodesym_hash, jive_serialization_nodesym, struct jive_node *, node, node_hash_chain);
-JIVE_DECLARE_DICT_TYPE(jive_serialization_nodesym_dict, jive_serialization_nodesym, name, name_hash_chain);
+typedef jive::detail::intrusive_hash<
+	const std::string,
+	jive_serialization_nodesym,
+	jive_serialization_nodesym::name_hash_chain_accessor,
+	std::hash<std::string>,
+	jive::detail::safe_equal<std::string>
+> jive_serialization_nodesym_dict;
+
+typedef jive::detail::intrusive_hash<
+	const struct jive_node *,
+	jive_serialization_nodesym,
+	jive_serialization_nodesym::node_hash_chain_accessor
+> jive_serialization_nodesym_hash;
+
 
 struct jive_serialization_outputsym {
 	jive::output * output;
-	char * name;
-	struct {
-		jive_serialization_outputsym * prev;
-		jive_serialization_outputsym * next;
-	} output_hash_chain;
-	struct {
-		jive_serialization_outputsym * prev;
-		jive_serialization_outputsym * next;
-	} name_hash_chain;
+	std::string name;
+private:
+	jive::detail::intrusive_hash_anchor<jive_serialization_outputsym> name_hash_chain;
+	jive::detail::intrusive_hash_anchor<jive_serialization_outputsym> output_hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		std::string,
+		jive_serialization_outputsym,
+		&jive_serialization_outputsym::name,
+		&jive_serialization_outputsym::name_hash_chain
+	> name_hash_chain_accessor;
+	typedef jive::detail::intrusive_hash_accessor<
+		jive::output *,
+		jive_serialization_outputsym,
+		&jive_serialization_outputsym::output,
+		&jive_serialization_outputsym::output_hash_chain
+	> output_hash_chain_accessor;
 };
-JIVE_DECLARE_HASH_TYPE(jive_serialization_outputsym_hash, jive_serialization_outputsym,
-	jive::output *, output, output_hash_chain);
-JIVE_DECLARE_DICT_TYPE(jive_serialization_outputsym_dict, jive_serialization_outputsym, name, name_hash_chain);
+typedef jive::detail::intrusive_hash<
+	const std::string,
+	jive_serialization_outputsym,
+	jive_serialization_outputsym::name_hash_chain_accessor,
+	std::hash<std::string>,
+	jive::detail::safe_equal<std::string>
+> jive_serialization_outputsym_dict;
+
+typedef jive::detail::intrusive_hash<
+	const jive::output *,
+	jive_serialization_outputsym,
+	jive_serialization_outputsym::output_hash_chain_accessor
+> jive_serialization_outputsym_hash;
+
 
 struct jive_serialization_symtab {
 	jive_context * context;
@@ -116,27 +187,11 @@ jive_serialization_symtab_init(jive_serialization_symtab * self, jive_context * 
 void
 jive_serialization_symtab_fini(jive_serialization_symtab * self);
 
-JIVE_EXPORTED_INLINE char *
-jive_serialization_symtab_strdup(
-	jive_serialization_symtab * self,
-	const char * str)
-{
-	return jive_context_strdup(self->context, str);
-}
-
-JIVE_EXPORTED_INLINE void
-jive_serialization_symtab_strfree(
-	jive_serialization_symtab * self,
-	char * str)
-{
-	return jive_context_free(self->context, str);
-}
-
 void
 jive_serialization_symtab_insert_gatesym(
 	jive_serialization_symtab * self,
 	jive::gate * gate,
-	char * name);
+	const std::string & name);
 
 void
 jive_serialization_symtab_remove_gatesym(
@@ -157,7 +212,7 @@ void
 jive_serialization_symtab_insert_labelsym(
 	jive_serialization_symtab * self,
 	struct jive_label * label,
-	char * name);
+	const std::string & name);
 
 void
 jive_serialization_symtab_remove_labelsym(
@@ -178,7 +233,7 @@ void
 jive_serialization_symtab_insert_nodesym(
 	jive_serialization_symtab * self,
 	struct jive_node * node,
-	char * name);
+	const std::string & name);
 
 void
 jive_serialization_symtab_remove_nodesym(
@@ -199,7 +254,7 @@ void
 jive_serialization_symtab_insert_outputsym(
 	jive_serialization_symtab * self,
 	jive::output * output,
-	char * name);
+	const std::string & name);
 
 void
 jive_serialization_symtab_remove_outputsym(
