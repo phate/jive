@@ -5,6 +5,5 @@ TESTS += \
 	util/test-hash \
 	util/test-intrusive-hash \
 	util/test-math \
-	util/test-metacontainers \
 	util/test-rangemap \
 	util/test-sort \
