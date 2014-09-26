@@ -4,10 +4,11 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <unordered_map>
+
 #include <jive/vsdg/equivalence.h>
 
 #include <jive/vsdg/node.h>
-#include <jive/util/hash.h>
 
 typedef struct jive_node_equiv_entry jive_node_equiv_entry;
 struct jive_node_equiv_entry {
@@ -24,36 +25,10 @@ struct jive_node_equiv_entry {
 	} pending_chain;
 };
 
-typedef struct jive_node_equiv_mapping jive_node_equiv_mapping;
-
-JIVE_DECLARE_HASH_TYPE(jive_node_equiv_mapping, jive_node_equiv_entry, const jive_node *, first, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_node_equiv_mapping, jive_node_equiv_entry, const jive_node *, first, hash_chain);
-
-typedef struct jive_gate_equiv_entry jive_gate_equiv_entry;
-struct jive_gate_equiv_entry {
-	const jive::gate * first;
-	const jive::gate * second;
-	bool pending;
-	struct {
-		jive_gate_equiv_entry * prev;
-		jive_gate_equiv_entry * next;
-	} hash_chain;
-	struct {
-		jive_gate_equiv_entry * prev;
-		jive_gate_equiv_entry * next;
-	} pending_chain;
-};
-
-typedef struct jive_gate_equiv_mapping jive_gate_equiv_mapping;
-
-JIVE_DECLARE_HASH_TYPE(jive_gate_equiv_mapping, jive_gate_equiv_entry, const jive::gate *, first,
-	hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_gate_equiv_mapping, jive_gate_equiv_entry, const jive::gate *, first,
-	hash_chain);
-
 typedef struct jive_equiv_state jive_equiv_state;
 struct jive_equiv_state {
-	jive_node_equiv_mapping node_mapping;
+	jive_context * context;
+	std::unordered_map<const jive_node *, jive_node_equiv_entry*> node_mapping;
 	struct {
 		jive_node_equiv_entry * first;
 		jive_node_equiv_entry * last;
@@ -63,40 +38,35 @@ struct jive_equiv_state {
 static void
 jive_equiv_state_init(jive_equiv_state * self, jive_context * context)
 {
-	jive_node_equiv_mapping_init(&self->node_mapping, context);
+	self->context = context;
 	self->pending.first = self->pending.last = 0;
 }
 
 static void
 jive_equiv_state_fini(jive_equiv_state * self)
 {
-	jive_context * context = self->node_mapping.context;
-
-	struct jive_node_equiv_mapping_iterator i;
-	i = jive_node_equiv_mapping_begin(&self->node_mapping);
-	while (i.entry) {	
-		jive_node_equiv_entry * entry = i.entry;
-		jive_node_equiv_mapping_iterator_next(&i);
+	while (self->node_mapping.size()) {
+		jive_node_equiv_entry * entry = self->node_mapping.begin()->second;
+		self->node_mapping.erase(self->node_mapping.begin());
 		delete entry;
 	}
-	jive_node_equiv_mapping_fini(&self->node_mapping);
 }
 
 static jive_node_equiv_entry *
 jive_equiv_state_lookup(jive_equiv_state * self, const jive_node * node)
 {
 	jive_node_equiv_entry * entry;
-	entry = jive_node_equiv_mapping_lookup(&self->node_mapping, node);
-	if (!entry) {
-		jive_context * context = self->node_mapping.context;
+	auto i = self->node_mapping.find(node);
+	if (i == self->node_mapping.end()) {
 		entry = new jive_node_equiv_entry;
 		entry->first = node;
 		entry->second = 0;
 		entry->pending = true;
-		jive_node_equiv_mapping_insert(&self->node_mapping, entry);
+		self->node_mapping[node] = entry;
 		JIVE_LIST_PUSH_BACK(self->pending, entry, pending_chain);
-	}
-	
+	} else
+		entry = i->second;
+
 	return entry;
 }
 
