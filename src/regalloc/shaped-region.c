@@ -18,7 +18,7 @@
 static jive_cut *
 jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive_cut * before)
 {
-	jive_cut * self = jive_context_malloc(context, sizeof(*self));
+	jive_cut * self = new jive_cut;
 	
 	self->shaped_region = shaped_region;
 	JIVE_LIST_INSERT(shaped_region->cuts, before, self, region_cut_list);
@@ -102,7 +102,7 @@ jive_cut_destroy(jive_cut * self)
 	
 	JIVE_LIST_REMOVE(self->shaped_region->cuts, self, region_cut_list);
 	
-	jive_context_free(context, self);
+	delete self;
 }
 
 jive_cut *
