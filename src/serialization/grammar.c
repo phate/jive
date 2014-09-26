@@ -778,65 +778,44 @@ jive_serialize_regiondef(jive_serialization_driver * self,
 	jive_serialize_char_token(self, '}', os);
 }
 
-/* FIXME: merge with implementation used for copying! */
+/* FIXME: merge with implementation used for copying!
+	We are sorting nodes of a region according to their depth. This could be done more sanely
+	and offered somewhere else in a more general matter.
+*/
 
 typedef struct jive_level_nodes jive_level_nodes;
 struct jive_level_nodes {
-	jive_node ** items;
-	size_t nitems, space;
+	std::vector<jive_node*> items;
 };
 
 typedef struct jive_sorted_nodes jive_sorted_nodes;
 struct jive_sorted_nodes {
-	jive_level_nodes * depths;
+	std::vector<jive_level_nodes> depths;
 	size_t min_depth;
 	size_t max_depth_plus_one;
-	size_t space;
 };
 
 static void
 jive_sorted_nodes_init(jive_sorted_nodes * self)
 {
-	self->depths = 0;
 	self->min_depth = (size_t)-1;
 	self->max_depth_plus_one = 0;
-	self->space = 0;
-}
-
-static void
-jive_sorted_nodes_fini(jive_sorted_nodes * self, jive_context * context)
-{
-	size_t n;
-	for (n = 0; n < self->max_depth_plus_one; n++)
-		jive_context_free(context, self->depths[n].items);
-	jive_context_free(context, self->depths);
 }
 
 static void
 jive_level_nodes_append(jive_level_nodes * level, jive_context * context, jive_node * node)
 {
-	if (level->nitems == level->space) {
-		level->space =  level->space * 2 + 1;
-		level->items = jive_context_realloc(context, level->items, level->space * sizeof(jive_node *));
-	}
-	level->items[level->nitems ++] = node;
+	level->items.push_back(node);
 }
 
 static void
 jive_sorted_nodes_append(jive_sorted_nodes * self, jive_context * context, jive_node * node)
 {
-	if (node->depth_from_root >= self->space) {
-		size_t new_space = self->space * 2;
+	if (node->depth_from_root >= self->depths.size()) {
+		size_t new_space = self->depths.size() * 2;
 		if (new_space <= node->depth_from_root)
 			new_space = node->depth_from_root + 1;
-		self->depths = jive_context_realloc(context, self->depths, new_space * sizeof(self->depths[0]));
-		size_t n;
-		for (n = self->space; n < new_space; n++) {
-			self->depths[n].items = 0;
-			self->depths[n].space = 0;
-			self->depths[n].nitems = 0;
-		}
-		self->space = new_space;
+		self->depths.resize(new_space);
 	}
 	jive_level_nodes_append(&self->depths[node->depth_from_root], context, node);
 	if (node->depth_from_root + 1 > self->max_depth_plus_one)
@@ -863,7 +842,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 	for (n = sorted.min_depth; n < sorted.max_depth_plus_one; ++n) {
 		size_t k;
 		const jive_level_nodes * level = &sorted.depths[n];
-		for (k = 0; k < level->nitems; ++k) {
+		for (k = 0; k < level->items.size(); ++k) {
 			node = level->items[k];
 
 			size_t j;
@@ -878,7 +857,6 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 			jive_serialize_char_token(self, ';', os);
 		}
 	}
-	jive_sorted_nodes_fini(&sorted, context);
 }
 
 bool
