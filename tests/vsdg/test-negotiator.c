@@ -348,13 +348,13 @@ static int test_main(void)
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive_node * n2 = jive_negtestnode_create(graph->root_region,
-		1, &opt1, tmparray0, n1->outputs,
+		1, &opt1, tmparray0, &n1->outputs[0],
 		0, 0, 0);
 	jive_node * n3 = jive_negtestnode_create(graph->root_region,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive_node * n4 = jive_negtestnode_create(graph->root_region,
-		1, &opt2, tmparray0, n3->outputs,
+		1, &opt2, tmparray0, &n3->outputs[0],
 		0, 0, 0);
 	
 	jive_region * subregion = jive_region_create_subregion(graph->root_region);
@@ -362,10 +362,10 @@ static int test_main(void)
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive_node * n6 = jive_negtestnode_create(subregion,
-		1, &opt3, tmparray0, n5->outputs,
+		1, &opt3, tmparray0, &n5->outputs[0],
 		0, 0, 0);
 	jive_node * n7 = jive_negtestnode_create(subregion,
-		1, &opt4, tmparray0, n5->outputs,
+		1, &opt4, tmparray0, &n5->outputs[0],
 		0, 0, 0);
 	
 	test_negotiator nego;

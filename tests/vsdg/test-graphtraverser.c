@@ -209,7 +209,7 @@ static int test_main(void)
 	const jive::base::type * tmparray12[] = {&type};
 	
 	jive_node * n2 = jive_test_node_create(graph->root_region,
-		2, tmparray11, n1->outputs,
+		2, tmparray11, &n1->outputs[0],
 		1, tmparray12);
 
 	jive_node_add_input(graph->root_region->bottom, &type, n2->outputs[0]);

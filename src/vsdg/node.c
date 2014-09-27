@@ -40,8 +40,7 @@ jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
 	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	
 	self->noutputs ++;
-	self->outputs = jive_context_realloc(self->graph->context, self->outputs,
-		sizeof(jive::output *) * self->noutputs);
+	self->outputs.resize(self->noutputs);
 	self->outputs[output->index] = output;
 }
 
@@ -62,8 +61,7 @@ jive_uninitialized_node_add_input_(jive_node * self, jive::input * input)
 		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
 
 	self->ninputs ++;
-	self->inputs = jive_context_realloc(self->graph->context, self->inputs,
-		sizeof(jive::input *) * self->ninputs);
+	self->inputs.resize(self->ninputs);
 	self->inputs[input->index] = input;
 
 }
@@ -103,10 +101,7 @@ jive_node_init_(
 	self->nsuccessors = 0;
 	
 	self->ninputs = 0;
-	self->inputs = 0;
-	
 	self->noutputs = 0;
-	self->outputs = 0;
 	
 	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
@@ -158,8 +153,6 @@ jive_node_fini_(jive_node * self)
 	if (self == self->region->bottom) self->region->bottom = NULL;
 	
 	self->region = 0;
-	jive_context_free(context, self->inputs);
-	jive_context_free(context, self->outputs);
 	
 	if (self->traverser_slots) {
 		size_t n;

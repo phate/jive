@@ -65,7 +65,7 @@ static int test_main(void)
 	const jive::base::type * tmparray2[] = {&type};
 	
 	jive_node * n2 = jive_test_node_create(r1,
-		1, tmparray1, n1->outputs,
+		1, tmparray1, &n1->outputs[0],
 		1, tmparray2);
 	
 	jive_region * r2 = jive_region_create_subregion(r1);
@@ -74,12 +74,12 @@ static int test_main(void)
 	const jive::base::type * tmparray4[] = {&anchor_type};
 	
 	jive_node * n3 = jive_test_node_create(r2,
-		1, tmparray3, n2->outputs,
+		1, tmparray3, &n2->outputs[0],
 		1, tmparray4);
 	const jive::base::type * tmparray5[] = {&type};
 	const jive::base::type * tmparray6[] = {&anchor_type};
 	jive_node * n4 = jive_test_node_create(r3,
-		1, tmparray5, n2->outputs,
+		1, tmparray5, &n2->outputs[0],
 		1, tmparray6);
 	const jive::base::type * tmparray7[] = {&anchor_type, &anchor_type};
 	jive::output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
@@ -92,12 +92,12 @@ static int test_main(void)
 	const jive::base::type * tmparray11[] = {&anchor_type};
 	
 	jive_node * n6 = jive_test_node_create(r1,
-		1, tmparray10, n5->outputs,
+		1, tmparray10, &n5->outputs[0],
 		1, tmparray11);
 	const jive::base::type * tmparray12[] = {&anchor_type};
 	
 	jive_node * n7 = jive_test_node_create(graph->root_region,
-		1, tmparray12, n6->outputs,
+		1, tmparray12, &n6->outputs[0],
 		0, NULL);
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);

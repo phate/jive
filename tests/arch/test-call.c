@@ -35,13 +35,13 @@ static int test_main(void)
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
 		top->outputs[0], NULL,
-		2, top->outputs + 1,
+		2, &top->outputs[1],
 		3, tmparray1);
 	JIVE_DEBUG_ASSERT(call->noutputs == 3);
 	const jive::base::type * tmparray2[] = {&bits16, &addr, &addr};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		3, tmparray2, call->outputs,
+		3, tmparray2, &call->outputs[0],
 		1, tmparray0);
 	jive_graph_export(graph, bottom->outputs[0]);
 

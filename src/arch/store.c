@@ -166,7 +166,7 @@ jive_store_node_normalized_create_(
 		node = op.create_node(region, narguments, arguments);
 	}
 
-	return std::vector<jive::output *>(node->outputs, node->outputs + node->noutputs);
+	return std::vector<jive::output *>(node->outputs);
 }
 
 static void

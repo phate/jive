@@ -163,8 +163,8 @@ jive_call_by_address_create(jive::output * target_address,
 {
 	jive_region * region = call_node_region_innermost(target_address, narguments, arguments);
 
-	return jive_call_by_address_node_create(region, target_address, calling_convention,
-		narguments, arguments, nreturns, return_types)->outputs;
+	return &jive_call_by_address_node_create(region, target_address, calling_convention,
+		narguments, arguments, nreturns, return_types)->outputs[0];
 }
 
 jive_node *
@@ -206,6 +206,6 @@ jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
 {
 	jive_region * region = call_node_region_innermost(target_address, narguments, arguments);
 
-	return jive_call_by_bitstring_node_create(region, target_address, nbits, calling_convention,
-		narguments, arguments, nreturns, return_types)->outputs;
+	return &jive_call_by_bitstring_node_create(region, target_address, nbits, calling_convention,
+		narguments, arguments, nreturns, return_types)->outputs[0];
 }

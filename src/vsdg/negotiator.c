@@ -634,7 +634,7 @@ jive_negotiator_annotate_identity_node(
 		noutputs ++;
 	jive_negotiator_constraint * constraint;
 	constraint = jive_negotiator_annotate_identity(
-		self, ninputs, node->inputs, noutputs, node->outputs, option);
+		self, ninputs, &node->inputs[0], noutputs, &node->outputs[0], option);
 	constraint->hash_key.node = node;
 	jive_negotiator_node_hash_insert(&self->node_map, constraint);
 	

@@ -64,7 +64,7 @@ static int test_main(void)
 	const jive::base::type * tmparray2[] = {&type, &type};
 	
 	jive_node * top = jive_test_node_create(r1,
-		1, tmparray1, dummy->outputs,
+		1, tmparray1, &dummy->outputs[0],
 		2, tmparray2);
 	
 	jive_theta theta = jive_theta_begin(graph);
@@ -94,7 +94,7 @@ static int test_main(void)
 	const jive::base::type * tmparray9[] = {&anchor_type};
 	
 	jive_node * subroutine_anchor = jive_test_node_create(graph->root_region,
-		1, tmparray9, bottom->outputs,
+		1, tmparray9, &bottom->outputs[0],
 		0, NULL);
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);

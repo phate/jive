@@ -32,7 +32,7 @@ static int test_main(void)
 		0, NULL, NULL,
 		2, tmparray0);
 	
-	jive::output * merged = jive_state_merge(&statetype, 2, top->outputs);
+	jive::output * merged = jive_state_merge(&statetype, 2, &top->outputs[0]);
 	
 	std::vector<jive::output *> split = jive_state_split(&statetype, merged, 2);
 	const jive::base::type * tmparray1[] = {&statetype, &statetype};

@@ -66,9 +66,9 @@ public:
 	size_t ninputs;
 	size_t noperands;
 	size_t noutputs;
-	
-	jive::input ** inputs;
-	jive::output ** outputs;
+
+	std::vector<jive::input*> inputs;
+	std::vector<jive::output*> outputs;
 	
 	struct {
 		jive_node * prev;

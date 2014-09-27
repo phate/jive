@@ -32,7 +32,7 @@ create_testgraph_postop_xfer(jive_context * context)
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
+	jive_node * leave_mux = jive_state_merge(memtype, 1, &enter_mux->outputs[0])->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive::gate * retval_gate = jive_register_class_create_gate(
@@ -66,7 +66,7 @@ create_testgraph_preop_xfer(jive_context * context)
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
+	jive_node * leave_mux = jive_state_merge(memtype, 1, &enter_mux->outputs[0])->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive::gate * retval_gate = jive_register_class_create_gate(
@@ -103,7 +103,7 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
+	jive_node * leave_mux = jive_state_merge(memtype, 1, &enter_mux->outputs[0])->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive::gate * retval_gate = jive_register_class_create_gate(
@@ -141,7 +141,7 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 	jive::output * memstate = jive_subroutine_simple_get_global_state(subroutine);
 	const jive::base::type * memtype = &memstate->type();
 	jive_node * enter_mux = jive_state_split(memtype, memstate, 1)[0]->node();
-	jive_node * leave_mux = jive_state_merge(memtype, 1, enter_mux->outputs)->node();
+	jive_node * leave_mux = jive_state_merge(memtype, 1, &enter_mux->outputs[0])->node();
 	jive_subroutine_simple_set_global_state(subroutine, leave_mux->outputs[0]);
 	
 	jive::gate * save_r3_gate = jive_register_class_create_gate(

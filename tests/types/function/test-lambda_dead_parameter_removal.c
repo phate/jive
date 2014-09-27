@@ -38,7 +38,7 @@ test_simple_lambda(struct jive_graph * graph)
 	jive::output * fct = jive_lambda_end(lambda, 2, tmparray3,
 		tmparray4);
 
-	std::vector<jive::output *> results = jive_apply_create(fct, 3, top->outputs);
+	std::vector<jive::output *> results = jive_apply_create(fct, 3, &top->outputs[0]);
 	const jive::base::type * tmparray5[] = {&vtype, &vtype};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
@@ -94,7 +94,7 @@ test_recursive_lambda(struct jive_graph * graph)
 	jive_phi_fixvar_leave(phi, fv.gate, fct);
 	jive_phi_end(phi, 1, &fv);
 
-	results = jive_apply_create(fv.value, 3, top->outputs);
+	results = jive_apply_create(fv.value, 3, &top->outputs[0]);
 	const jive::base::type * tmparray14[] = {&vtype, &vtype};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
