@@ -15,6 +15,7 @@
 #include <jive/regalloc/shaped-graph.h>
 
 #include <jive/util/buffer.h>
+#include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
@@ -210,19 +211,27 @@ struct jive_used_name {
 	struct {
 		jive_used_name * prev;
 		jive_used_name * next;
-	} hash_chain;
-	struct {
-		jive_used_name * prev;
-		jive_used_name * next;
 	} used_names_list;
+private:
+	jive::detail::intrusive_hash_anchor<jive_used_name> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		const jive_resource_name *,
+		jive_used_name,
+		&jive_used_name::name,
+		&jive_used_name::hash_chain
+	> hash_chain_accessor;
 };
 
-JIVE_DECLARE_HASH_TYPE(jive_used_name_hash, jive_used_name, const jive_resource_name *, name, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_used_name_hash, jive_used_name, const jive_resource_name *, name, hash_chain);
-typedef struct jive_used_name_hash jive_used_name_hash;
+typedef jive::detail::intrusive_hash<
+	const jive_resource_name *,
+	jive_used_name,
+	jive_used_name::hash_chain_accessor
+> jive_used_name_hash;
 
 typedef struct jive_names_use jive_names_use;
 struct jive_names_use {
+	jive_context * context;
 	jive_used_name_hash hash;
 	struct {
 		jive_used_name * first;
@@ -233,7 +242,7 @@ struct jive_names_use {
 static void
 jive_names_use_init(jive_names_use * self, jive_context * context)
 {
-	jive_used_name_hash_init(&self->hash, context);
+	self->context = context;
 	self->list.first = self->list.last = 0;
 }
 
@@ -241,8 +250,10 @@ static jive_used_name *
 jive_names_use_lookup(jive_names_use * self, const jive_resource_name * name)
 {
 	JIVE_DEBUG_ASSERT(name);
-	jive_used_name * used_name = jive_used_name_hash_lookup(&self->hash, name);
-	if (!used_name) {
+	
+	jive_used_name * used_name;
+	auto i = self->hash.find(name);
+	if (i == self->hash.end()) {
 		used_name = new jive_used_name;
 		used_name->name = name;
 		jive_node_vector_init(&used_name->read);
@@ -250,21 +261,12 @@ jive_names_use_lookup(jive_names_use * self, const jive_resource_name * name)
 		used_name->read_count = 0;
 		used_name->write_count = 0;
 		JIVE_LIST_PUSH_BACK(self->list, used_name, used_names_list);
-		jive_used_name_hash_insert(&self->hash, used_name);
-	}
+		JIVE_DEBUG_ASSERT(self->hash.find(name) == self->hash.end());
+		self->hash.insert(used_name);
+	} else
+		used_name = i.ptr();
 	
 	return used_name;
-}
-
-static void
-jive_names_use_remove(jive_names_use * self, jive_used_name * used_name)
-{
-	jive_context * context = self->hash.context;
-	jive_node_vector_fini(&used_name->read, context);
-	jive_node_vector_fini(&used_name->clobber, context);
-	jive_used_name_hash_remove(&self->hash, used_name);
-	JIVE_LIST_REMOVE(self->list, used_name, used_names_list);
-	delete used_name;
 }
 
 static void
@@ -272,9 +274,13 @@ jive_names_use_fini(jive_names_use * self)
 {
 	while (self->list.first) {
 		jive_used_name * used_name = self->list.first;
-		jive_names_use_remove(self, used_name);
+		jive_context * context = self->context;
+		jive_node_vector_fini(&used_name->read, context);
+		jive_node_vector_fini(&used_name->clobber, context);
+		self->hash.erase(used_name);
+		JIVE_LIST_REMOVE(self->list, used_name, used_names_list);
+		delete used_name;
 	}
-	jive_used_name_hash_fini(&self->hash);
 }
 
 static void
@@ -282,7 +288,7 @@ jive_names_use_read(jive_names_use * self, const jive_resource_name * name, jive
 {
 	jive_used_name * used_name = jive_names_use_lookup(self, name);
 	
-	jive_node_vector_push_back(&used_name->read, node, self->hash.context);
+	jive_node_vector_push_back(&used_name->read, node, self->context);
 	used_name->read_count ++;
 }
 
@@ -300,7 +306,7 @@ jive_names_use_clobber(jive_names_use * self, const jive_resource_name * name, j
 			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
 	
-	jive_node_vector_push_back(&used_name->clobber, node, self->hash.context);
+	jive_node_vector_push_back(&used_name->clobber, node, self->context);
 	used_name->write_count ++;
 }
 
