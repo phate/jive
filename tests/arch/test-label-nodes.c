@@ -99,9 +99,6 @@ static int test_main(void)
 
 	jive_graph_destroy(graph);
 	
-	jive_label_external_fini(&bla);
-	jive_label_external_fini(&foobar);
-
 	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);
 

@@ -62,8 +62,6 @@ const jive_label jive_label_spoffset = {
 static void
 jive_label_external_fini_(jive_label * self_)
 {
-	jive_label_external * self = (jive_label_external *) self_;
-	jive_label_external_fini(self);
 }
 
 const jive_label_class JIVE_LABEL_EXTERNAL = {
@@ -82,12 +80,6 @@ jive_label_external_init(
 	self->base.class_ = &JIVE_LABEL_EXTERNAL;
 	self->base.flags = jive_label_flags_external;
 	self->context = context;
-	self->asmname = jive_context_strdup(context, name);
+	self->asmname = std::string(name);
 	self->symbol = symbol;
-}
-
-void
-jive_label_external_fini(jive_label_external * self)
-{
-	jive_context_free(self->context, self->asmname);
 }

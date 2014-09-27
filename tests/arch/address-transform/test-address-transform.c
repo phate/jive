@@ -90,7 +90,6 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	
 	jive_graph_destroy(graph);
-	jive_label_external_fini(&write_label);
 	jive_memlayout_mapper_simple_fini(&mapper);
 	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);

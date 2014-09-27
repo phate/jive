@@ -188,8 +188,6 @@ static int test_main(void)
 	jive_buffer_fini(&buffer);
 	
 	jive_graph_destroy(graph);
-	jive_label_external_fini(&write_label);
-	jive_label_external_fini(&hello_world_label);
 	
 	assert(jive_context_is_empty(ctx));
 	

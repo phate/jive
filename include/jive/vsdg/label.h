@@ -82,7 +82,7 @@ jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
 struct jive_label_external {
 	jive_label base;
 	struct jive_context * context;
-	char * asmname;
+	std::string asmname;
 	const struct jive_linker_symbol * symbol;
 };
 
@@ -118,11 +118,5 @@ jive_label_external_init(
 	struct jive_context * context,
 	const char * name,
 	const struct jive_linker_symbol * symbol);
-
-/**
-	\brief Finalize label external
-*/
-void
-jive_label_external_fini(jive_label_external * self);
 
 #endif
