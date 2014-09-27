@@ -158,8 +158,7 @@ const jive_node_class JIVE_THETA_NODE = {
 
 typedef struct jive_theta_build_state jive_theta_build_state;
 struct jive_theta_build_state {
-	size_t nloopvars;
-	jive_theta_loopvar * loopvars;
+	std::vector<jive_theta_loopvar> loopvars;
 	jive_floating_region floating;
 };
 
@@ -170,9 +169,7 @@ jive_theta_begin(jive_graph * graph)
 	jive_theta_build_state * state = new jive_theta_build_state;
 	state->floating = jive_floating_region_create(graph);
 	self.region = state->floating.region;
-	state->nloopvars = 0;
-	state->loopvars = 0;
-	
+
 	state->floating.region->attrs.is_looped = true;
 	jive::theta_head_op().create_node(self.region, 0, nullptr);
 	
@@ -189,12 +186,10 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 	jive_graph * graph = head->region->graph;
 	jive_context * context = graph->context;
 	
-	size_t index = state->nloopvars;
+	size_t index = state->loopvars.size();
 	
 	const jive::base::type * type = &pre_value->type();
-	++ state->nloopvars;
-	state->loopvars = jive_context_realloc(context,
-		state->loopvars, sizeof(state->loopvars[0]) * state->nloopvars);
+	state->loopvars.resize(state->loopvars.size()+1);
 	
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "loopvar_%p_%zd", head, index);
@@ -211,7 +206,7 @@ jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::output * post_
 {
 	jive_theta_build_state * state = self.internal_state;
 	size_t n;
-	for (n = 0; n < state->nloopvars; ++n) {
+	for (n = 0; n < state->loopvars.size(); ++n) {
 		if (state->loopvars[n].gate != var)
 			continue;
 		state->loopvars[n].value = post_value;
@@ -235,18 +230,18 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	
 	jive_node * tail = jive::theta_tail_op().create_node(
 		self.region, 1, &predicate);
-	for (n = 0; n < state->nloopvars; ++n)
+	for (n = 0; n < state->loopvars.size(); ++n)
 		jive_node_gate_input(tail, state->loopvars[n].gate, state->loopvars[n].value);
 	
 	jive_floating_region_settle(state->floating);
 	
 	jive_node * anchor = jive::theta_op().create_node(self.region->parent, 1, &tail->outputs[0]);
-	for (n = 0; n < state->nloopvars; ++n)
+	for (n = 0; n < state->loopvars.size(); ++n)
 		state->loopvars[n].value = jive_node_gate_output(anchor, state->loopvars[n].gate);
 	
 	for (n = 0; n < npost_values; ++n) {
 		size_t k;
-		for (k = 0; k < state->nloopvars; ++k) {
+		for (k = 0; k < state->loopvars.size(); ++k) {
 			if (state->loopvars[k].gate == post_values[n].gate) {
 				post_values[n].value = state->loopvars[k].value;
 				break;
@@ -254,9 +249,8 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 		}
 	}
 	
-	jive_context_free(context, state->loopvars);
 	delete state;
-
+	
 	return anchor;
 }
 
