@@ -125,8 +125,7 @@ struct jive_graph {
 	bool normalized;
 	size_t floating_region_count;
 	
-	size_t ntracker_slots;
-	jive_tracker_slot_reservation * tracker_slots;
+	std::vector<jive_tracker_slot_reservation> tracker_slots;
 	
 	jive_node_normal_form_hash node_normal_forms;
 	

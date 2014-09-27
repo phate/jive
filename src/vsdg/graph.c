@@ -146,9 +146,6 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	jive_region_init_(self->root_region, self, 0);
 	self->root_region->bottom =
 		jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
-	
-	self->ntracker_slots = 0;
-	self->tracker_slots = 0;
 }
 
 static void
@@ -165,8 +162,6 @@ jive_graph_fini_(jive_graph * self)
 {
 	jive_node_destroy(self->root_region->bottom);
 	jive_graph_prune(self);
-	
-	jive_context_free(self->context, self->tracker_slots);
 	
 	prune_regions_recursive(self->root_region);
 	
@@ -240,12 +235,9 @@ jive_graph_destroy(jive_graph * self)
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 {
-	size_t n = self->ntracker_slots;
-	
-	self->ntracker_slots ++;
-	self->tracker_slots = jive_context_realloc(self->context,
-		self->tracker_slots,
-		sizeof(self->tracker_slots[0]) * self->ntracker_slots);
+	size_t n = self->tracker_slots.size();
+
+	self->tracker_slots.resize(self->tracker_slots.size()+1);
 	
 	self->tracker_slots[n].slot.index = n;
 	self->tracker_slots[n].slot.cookie = 1;
@@ -257,8 +249,7 @@ jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 bool
 jive_graph_has_active_traversers(const jive_graph * self)
 {
-	size_t n;
-	for(n=0; n<self->ntracker_slots; n++)
+	for (size_t n = 0; n < self->tracker_slots.size(); n++)
 		if (self->tracker_slots[n].in_use) return true;
 	return false;
 }

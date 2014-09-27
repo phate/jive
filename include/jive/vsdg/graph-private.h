@@ -44,7 +44,7 @@ static inline jive_tracker_slot
 jive_graph_reserve_tracker_slot(jive_graph * self)
 {
 	size_t n;
-	for (n = 0; n < self->ntracker_slots; n++) {
+	for (n = 0; n < self->tracker_slots.size(); n++) {
 		if (!self->tracker_slots[n].in_use) {
 			/* in theory, overflow might be possible, causing
 			a cookie to be reused... just catch this case
