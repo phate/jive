@@ -440,8 +440,8 @@ emit_labels(
 	}
 	
 	size_t n;
-	for(n = 0; n < seq_point->named_symbols.nitems; n++) {
-		const jive_linker_symbol * symbol = seq_point->named_symbols.items[n];
+	for(n = 0; n < seq_point->named_symbols.size(); n++) {
+		const jive_linker_symbol * symbol = seq_point->named_symbols[n];
 		const char * name = NULL;
 		name = jive_label_name_mapper_map_named_symbol(name_mapper, symbol);
 		jive_buffer_putstr(buffer, ".globl ");

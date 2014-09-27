@@ -43,10 +43,7 @@ struct jive_seq_point {
 	} seqpoint_list;
 	
 	/* The list of named symbols pointing to this sequence point. */
-	struct {
-		const jive_linker_symbol ** items;
-		size_t nitems, space;
-	} named_symbols;
+	std::vector<const jive_linker_symbol*> named_symbols;
 	
 	/* Flag indicating whether a local reference to this point exists. */
 	bool local_symbol;

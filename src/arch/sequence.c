@@ -27,8 +27,6 @@ jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region, jive_no
 	self->seq_region = seq_region;
 	self->size = 0;
 	
-	self->named_symbols.items = 0;
-	self->named_symbols.nitems = self->named_symbols.space = 0;
 	self->local_symbol = false;
 	
 	jive_address_init(&self->address, jive_stdsectionid_invalid, 0);
@@ -41,8 +39,6 @@ void
 jive_seq_point_fini_(jive_seq_point * self)
 {
 	jive_seq_graph * seq_graph = self->seq_region->seq_graph;
-	jive_context * context = seq_graph->context;
-	jive_context_free(context, self->named_symbols.items);
 	if (self->node)
 		jive_seq_node_hash_remove(&seq_graph->node_map, self);
 	JIVE_LIST_REMOVE(seq_graph->points, self, seqpoint_list);
@@ -82,13 +78,7 @@ jive_seq_point_attach_symbol(
 	const jive_linker_symbol * symbol,
 	jive_seq_graph * seq_graph)
 {
-	if (self->named_symbols.nitems == self->named_symbols.space) {
-		self->named_symbols.space = self->named_symbols.space * 2 + 1;
-		self->named_symbols.items = jive_context_realloc(seq_graph->context,
-			self->named_symbols.items,
-			self->named_symbols.space * sizeof(self->named_symbols.items[0]));
-	}
-	self->named_symbols.items[self->named_symbols.nitems++] = symbol;
+	self->named_symbols.push_back(symbol);
 }
 
 static bool
