@@ -112,9 +112,6 @@ jive_node_init_(
 	self->ntraverser_slots = 0;
 	self->traverser_slots = 0;
 
-	self->ntracker_slots = 0;
-	self->tracker_slots = 0;
-
 	size_t n;
 	for(n=0; n<noperands; n++) {
 		jive_uninitialized_node_add_input(self, operand_types[n], operands[n]);
@@ -161,11 +158,8 @@ jive_node_fini_(jive_node * self)
 		jive_context_free(context, self->traverser_slots);
 	}
 	
-	if (self->tracker_slots) {
-		for (size_t n = 0; n < self->ntracker_slots; n++)
-			delete self->tracker_slots[n];
-		jive_context_free(context, self->tracker_slots);
-	}
+	for (size_t n = 0; n < self->tracker_slots.size(); n++)
+		delete self->tracker_slots[n];
 }
 
 void
@@ -718,11 +712,11 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 	size_t new_size = slot.index + 1;
 	
 	jive_context * context = self->graph->context;
-	self->tracker_slots = jive_context_realloc(context,
-		self->tracker_slots, new_size * sizeof(self->tracker_slots[0]));
+	size_t ntracker_slots = self->tracker_slots.size();
+	self->tracker_slots.resize(new_size);
 	
 	jive_tracker_nodestate * nodestate;
-	for(size_t n = self->ntracker_slots; n < new_size; n++) {
+	for(size_t n = ntracker_slots; n < new_size; n++) {
 		nodestate = new jive_tracker_nodestate;
 		nodestate->node = self;
 		nodestate->cookie = 0;
@@ -730,7 +724,6 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 		nodestate->tag = 0;
 		self->tracker_slots[n] = nodestate;
 	}
-	self->ntracker_slots = new_size;
 	
 	nodestate = self->tracker_slots[slot.index];
 	nodestate->cookie = slot.cookie;

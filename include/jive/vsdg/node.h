@@ -87,9 +87,8 @@ public:
 	
 	size_t ntraverser_slots;
 	enum jive_traversal_nodestate ** traverser_slots;
-	
-	size_t ntracker_slots;
-	jive_tracker_nodestate ** tracker_slots;
+
+	std::vector<jive_tracker_nodestate*> tracker_slots;
 };
 
 extern const jive_node_class JIVE_NODE;
@@ -478,7 +477,7 @@ JIVE_EXPORTED_INLINE jive_tracker_nodestate *
 jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
 {
 	jive_tracker_nodestate * nodestate;
-	if (slot.index < self->ntracker_slots) {
+	if (slot.index < self->tracker_slots.size()) {
 		nodestate = self->tracker_slots[slot.index];
 		if (nodestate->cookie != slot.cookie) {
 			nodestate->state = jive_tracker_nodestate_none;
