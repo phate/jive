@@ -11,7 +11,6 @@
 #include <jive/common.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node.h>
-#include <jive/util/vector.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
@@ -19,19 +18,15 @@
 #include <jive/vsdg/theta.h>
 #include <jive/vsdg/variable.h>
 
-typedef struct jive_input_vector jive_input_vector;
-JIVE_DECLARE_VECTOR_TYPE(jive_input_vector, jive::input *)
-JIVE_DEFINE_VECTOR_TYPE(jive_input_vector, jive::input *)
-
 static jive_ssavar *
 reroute_gamma(jive_shaped_graph * shaped_graph,
 	jive_ssavar * ssavar,
-	const jive_input_vector * users_below,
+	const std::vector<jive::input*> & users_below,
 	jive_node * anchor_node,
 	jive_region * interest_region)
 {
 	/* if nothing below gamma anchor, then nothing to do */
-	if (!jive_input_vector_size(users_below)) {
+	if (!users_below.size()) {
 		return ssavar;
 	}
 	jive_graph * graph = ssavar->origin->node()->graph;
@@ -46,25 +41,23 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	
 	jive_region * region1 = anchor_node->producer(0)->region;
 	jive_region * region2 = anchor_node->producer(1)->region;
-	jive_input_vector users1, users2;
-	jive_input_vector_init(&users1);
-	jive_input_vector_init(&users2);
+	std::vector<jive::input*> users1, users2;
 	jive::input * in1 = jive_node_gate_input(anchor_node->producer(0), gate,
 		ssavar->origin);
 	jive::input * in2 = jive_node_gate_input(anchor_node->producer(1), gate,
 		ssavar->origin);
-	jive_input_vector_push_back(&users1, graph->context, in1);
-	jive_input_vector_push_back(&users2, graph->context, in2);
+	users1.push_back(in1);
+	users2.push_back(in2);
 	jive::output * out = jive_node_gate_output(anchor_node, gate);
 	
 	jive::input * user, * next;
 	JIVE_LIST_ITERATE_SAFE(ssavar->assigned_inputs, user, next, ssavar_input_list) {
 		if (jive_region_contains_node(region1, user->node)) {
 			jive_ssavar_unassign_input(ssavar, user);
-			jive_input_vector_push_back(&users1, graph->context, user);
+			users1.push_back(user);
 		} else if (jive_region_contains_node(region2, user->node)) {
 			jive_ssavar_unassign_input(ssavar, user);
-			jive_input_vector_push_back(&users2, graph->context, user);
+			users2.push_back(user);
 		}
 	}
 	jive_ssavar * ssavar_below = jive_ssavar_create(out, variable);
@@ -91,22 +84,19 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	/* everything has been cleared, now redo assignment */
 	size_t n;
 	jive_ssavar_assign_output(ssavar_below, out);
-	for (n = 0; n < jive_input_vector_size(users_below); ++n) {
-		jive::input * input = jive_input_vector_item(users_below, n);
+	for (n = 0; n < users_below.size(); ++n) {
+		jive::input * input = users_below[n];
 		input->divert_origin(out);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
-	for (n = 0; n < jive_input_vector_size(&users1); ++n) {
-		jive::input * input = jive_input_vector_item(&users1, n);
+	for (n = 0; n < users1.size(); ++n) {
+		jive::input * input = users1[n];
 		jive_ssavar_assign_input(ssavar1, input);
 	}
-	for (n = 0; n < jive_input_vector_size(&users2); ++n) {
-		jive::input * input = jive_input_vector_item(&users2, n);
+	for (n = 0; n < users2.size(); ++n) {
+		jive::input * input = users2[n];
 		jive_ssavar_assign_input(ssavar2, input);
 	}
-	
-	jive_input_vector_fini(&users2, graph->context);
-	jive_input_vector_fini(&users1, graph->context);
 	
 	jive_shaped_ssavar * shaped_ssavar1 = jive_shaped_graph_map_ssavar(shaped_graph, ssavar1);
 	jive_shaped_ssavar * shaped_ssavar2 = jive_shaped_graph_map_ssavar(shaped_graph, ssavar2);
@@ -130,7 +120,7 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 static jive_ssavar *
 reroute_theta(jive_shaped_graph * shaped_graph,
 	jive_ssavar * ssavar,
-	const jive_input_vector * users_below,
+	const std::vector<jive::input*> users_below,
 	jive_node * anchor_node,
 	jive_region * interest_region)
 {
@@ -147,22 +137,20 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	jive_node * loop_head = loop_region->top;
 	jive_node * loop_tail = loop_region->bottom;
 	
-	jive_input_vector loop_users;
-	jive_input_vector_init(&loop_users);
+	std::vector<jive::input*> loop_users;
 	jive::input * user, * next;
 	JIVE_LIST_ITERATE(origin->users, user, output_users_list) {
 		if (jive_region_contains_node(loop_region, user->node)) {
 			if (user->ssavar == ssavar) {
 				jive_ssavar_unassign_input(ssavar, user);
-				jive_input_vector_push_back(&loop_users, graph->context, user);
+				loop_users.push_back(user);
 			}
 		}
 	}
 	
 	jive::input * into_loop = jive_node_gate_input(loop_head, gate, ssavar->origin);
 	jive::output * def_inside = jive_node_gate_output(loop_head, gate);
-	jive_input_vector_push_back(&loop_users, graph->context,
-		jive_node_gate_input(loop_tail, gate, def_inside));
+	loop_users.push_back(jive_node_gate_input(loop_tail, gate, def_inside));
 	jive::output * def_outside = jive_node_gate_output(anchor_node, gate);
 	
 	/* everything has been cleared, now redo assignment */
@@ -185,11 +173,10 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	/* ... but assign ssavar only to those that had an ssavar
 	assigned previously */
 	size_t n;
-	for (n = 0; n < jive_input_vector_size(&loop_users); ++n) {
-		jive::input * input = jive_input_vector_item(&loop_users, n);
+	for (n = 0; n < loop_users.size(); ++n) {
+		jive::input * input = loop_users[n];
 		jive_ssavar_assign_input(ssavar_inside, input);
 	}
-	jive_input_vector_fini(&loop_users, graph->context);
 	jive_shaped_ssavar * shaped_ssavar_inside = jive_shaped_graph_map_ssavar(shaped_graph, ssavar_inside);
 	jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar_inside, loop_region->depth);
 	
@@ -197,8 +184,8 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	
 	jive_ssavar * ssavar_below = jive_ssavar_create(def_outside, variable);
 	jive_ssavar_assign_output(ssavar_below, def_outside);
-	for (n = 0; n < jive_input_vector_size(users_below); ++n) {
-		jive::input * input = jive_input_vector_item(users_below, n);
+	for (n = 0; n < users_below.size(); ++n) {
+		jive::input * input = users_below[n];
 		input->divert_origin(def_outside);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
@@ -227,8 +214,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 		return ssavar;
 	JIVE_DEBUG_ASSERT(jive_node_isinstance(anchor_node, &JIVE_GAMMA_NODE) || jive_node_isinstance(anchor_node, &JIVE_THETA_NODE));
 	
-	jive_input_vector users_below;
-	jive_input_vector_init(&users_below);
+	std::vector<jive::input*> users_below;
 	
 	/* collect and disconnect all users below anchor */
 	jive_shaped_node_downward_iterator i;
@@ -243,7 +229,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 			jive::input * input = node->inputs[n];
 			if (input->ssavar == ssavar) {
 				jive_ssavar_unassign_input(ssavar, input);
-				jive_input_vector_push_back(&users_below, context, input);
+				users_below.push_back(input);
 			}
 		}
 	}
@@ -252,13 +238,13 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	jive_ssavar * ssavar_inside_region;
 	
 	if (jive_node_isinstance(anchor_node, &JIVE_GAMMA_NODE)) {
-		ssavar_inside_region = reroute_gamma(shaped_graph, ssavar, &users_below, anchor_node, interest_region);
+		ssavar_inside_region = reroute_gamma(shaped_graph, ssavar, users_below, anchor_node,
+			interest_region);
 	} else {
-		ssavar_inside_region = reroute_theta(shaped_graph, ssavar, &users_below, anchor_node, interest_region);
+		ssavar_inside_region = reroute_theta(shaped_graph, ssavar, users_below, anchor_node,
+			interest_region);
 	}
-	
-	jive_input_vector_fini(&users_below, context);
-	
+
 	return ssavar_inside_region;
 }
 
