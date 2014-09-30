@@ -51,9 +51,9 @@ static int test_main(void)
 	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
 	
 	jive_view(graph, stdout);
-	
-	jive_context * context2 = jive_context_create();
+
 #if 0
+	jive_context * context2 = jive_context_create();
 	// FIXME: copying of subroutine nodes is currently quite broken;
 	// reactivate when repaired
 	jive_graph * graph2 = jive_graph_copy(graph, context2);
@@ -70,17 +70,16 @@ static int test_main(void)
 	assert(sub2->parameters[3]);
 	assert(jive_node_get_gate_output(sub2->enter, sub2->parameters[3]) == NULL);
 	
-	jive_graph_destroy(graph);
-	
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
-	
 	jive_view(graph2, stdout);
 	
 	jive_graph_destroy(graph2);
-#endif
 	assert(jive_context_is_empty(context2));
 	jive_context_destroy(context2);
+#endif
+
+	jive_graph_destroy(graph);
+	assert(jive_context_is_empty(context));
+	jive_context_destroy(context);
 	
 	return 0;
 }
