@@ -516,9 +516,9 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	size_t n;
 	size_t nalive_parameters = 0;
 	size_t nparameters = enter->noutputs-1;
-	jive::output * alive_parameters[nparameters];
-	const jive::base::type * alive_parameter_types[nparameters];
-	const char * alive_parameter_names[nparameters];
+	jive::output * alive_parameters[nparameters] = {};
+	const jive::base::type * alive_parameter_types[nparameters] = {};
+	const char * alive_parameter_names[nparameters] = {};
 	for (n = 1; n < enter->noutputs; n++) {
 		jive::output * parameter = enter->outputs[n];
 
@@ -539,8 +539,8 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	/* collect liveness information about results */
 	size_t nalive_results = 0;
 	size_t nresults = leave->ninputs-1;
-	jive::input * alive_results[nresults];
-	const jive::base::type * alive_result_types[nresults];
+	jive::input * alive_results[nresults] = {};
+	const jive::base::type * alive_result_types[nresults] = {};
 	for (n = 1; n < leave->ninputs; n++) {
 		jive::input * result = leave->inputs[n];
 
