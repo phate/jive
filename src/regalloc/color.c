@@ -100,10 +100,7 @@ typedef struct regalloc_split_region regalloc_split_region;
 struct regalloc_split_region {
 	jive_region * region;
 	jive_shaped_node * splitting_point;
-	struct {
-		size_t nitems, space;
-		jive::input ** items;
-	} users;
+	std::vector<jive::input*> users;
 	
 	struct {
 		regalloc_split_region * prev;
@@ -119,8 +116,6 @@ regalloc_split_region_create(jive_region * region)
 	
 	split_region->region = region;
 	split_region->splitting_point = 0;
-	split_region->users.nitems = split_region->users.space = 0;
-	split_region->users.items = 0;
 	
 	return split_region;
 }
@@ -128,21 +123,13 @@ regalloc_split_region_create(jive_region * region)
 static void
 regalloc_split_region_destroy(regalloc_split_region * self)
 {
-	jive_context * context = self->region->graph->context;
-	jive_context_free(context, self->users.items);
 	delete self;
 }
 
 static void
 regalloc_split_region_add_user(regalloc_split_region * self, jive::input * user)
 {
-	if (self->users.nitems == self->users.space) {
-		jive_context * context = self->region->graph->context;
-		self->users.space = self->users.space * 2 + 1;
-		self->users.items = jive_context_realloc(context, self->users.items,
-			sizeof(self->users.items[0]) * self->users.space);
-	}
-	self->users.items[self->users.nitems++] = user;
+	self->users.push_back(user);
 }
 
 typedef struct split_list {
@@ -316,8 +303,8 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 				continue;
 			if (jive_region_is_contained_by(other_split->region, split_region->region)) {
 				size_t n;
-				for (n = 0; n < other_split->users.nitems; n++)
-					regalloc_split_region_add_user(split_region, other_split->users.items[n]);
+				for (n = 0; n < other_split->users.size(); n++)
+					regalloc_split_region_add_user(split_region, other_split->users[n]);
 				JIVE_LIST_REMOVE(splits, other_split, chain);
 				regalloc_split_region_destroy(other_split);
 			}
@@ -342,8 +329,8 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		jive::output * restored_value = split_bottom(shaped_graph, spilled_value, demotion, split->splitting_point);
 		
 		size_t n;
-		for (n = 0; n < split->users.nitems; n++) {
-			jive::input * user = split->users.items[n];
+		for (n = 0; n < split->users.size(); n++) {
+			jive::input * user = split->users[n];
 			user->divert_origin(restored_value);
 		}
 		
