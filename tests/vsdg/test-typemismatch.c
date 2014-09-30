@@ -24,6 +24,8 @@ static void jump(void * where, const char * msg)
 	longjmp(*buffer, 1);
 }
 
+/* FIXME: valgrind still shows a bug here, but I don't find it right now */
+
 static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
@@ -53,7 +55,8 @@ static int test_main(void)
 	}
 	
 	assert(error_handler_called);
-	
+
+	jive_graph_destroy(graph);
 	jive_context_destroy(ctx);
 	
 	return 0;
