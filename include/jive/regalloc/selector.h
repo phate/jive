@@ -85,16 +85,12 @@ jive_node_cost_prio_heap_remove(jive_node_cost_prio_heap * self, jive_node_cost 
 JIVE_DECLARE_HASH_TYPE(jive_node_cost_hash, jive_node_cost, struct jive_node *, node, hash_chain);
 
 struct jive_node_cost_stack {
-	size_t nitems, space;
-	jive_node_cost ** items;
-	struct jive_context * context;
+	size_t nitems;
+	std::vector<jive_node_cost*> items;
 };
 
 void
 jive_node_cost_stack_init(jive_node_cost_stack * self, struct jive_context * context);
-
-void
-jive_node_cost_stack_fini(jive_node_cost_stack * self);
 
 void
 jive_node_cost_stack_add(jive_node_cost_stack * self, jive_node_cost * item);
