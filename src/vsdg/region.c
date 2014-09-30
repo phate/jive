@@ -194,64 +194,18 @@ jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 	jive_region_remove_used_ssavar(self->parent, ssavar);
 }
 
-typedef struct jive_level_nodes jive_level_nodes;
-struct jive_level_nodes {
-	jive_node ** items;
-	size_t nitems, space;
-};
-
 typedef struct jive_copy_context jive_copy_context;
 struct jive_copy_context {
-	jive_level_nodes * depths;
-	size_t max_depth_plus_one, space;
+	std::vector<std::vector<jive_node*>> depths;
 };
-
-static void
-jive_copy_context_init(jive_copy_context * self)
-{
-	self->depths = 0;
-	self->max_depth_plus_one = 0;
-	self->space = 0;
-}
-
-static void
-jive_copy_context_fini(jive_copy_context * self, jive_context * context)
-{
-	size_t n;
-	for (n = 0; n < self->max_depth_plus_one; n++)
-		jive_context_free(context, self->depths[n].items);
-	jive_context_free(context, self->depths);
-}
-
-static void
-jive_level_nodes_append(jive_level_nodes * level, jive_context * context, jive_node * node)
-{
-	if (level->nitems == level->space) {
-		level->space =  level->space * 2 + 1;
-		level->items = jive_context_realloc(context, level->items, level->space * sizeof(jive_node *));
-	}
-	level->items[level->nitems ++] = node;
-}
 
 static void
 jive_copy_context_append(jive_copy_context * self, jive_context * context, jive_node * node)
 {
-	if (node->depth_from_root >= self->space) {
-		size_t new_space = self->space * 2;
-		if (new_space <= node->depth_from_root)
-			new_space = node->depth_from_root + 1;
-		self->depths = jive_context_realloc(context, self->depths, new_space * sizeof(self->depths[0]));
-		size_t n;
-		for (n = self->space; n < new_space; n++) {
-			self->depths[n].items = 0;
-			self->depths[n].space = 0;
-			self->depths[n].nitems = 0;
-		}
-		self->space = new_space;
-	}
-	jive_level_nodes_append(&self->depths[node->depth_from_root], context, node);
-	if (node->depth_from_root + 1 > self->max_depth_plus_one)
-		self->max_depth_plus_one = node->depth_from_root + 1;
+	if (node->depth_from_root >= self->depths.size())
+		self->depths.resize(node->depth_from_root+1);
+
+	self->depths[node->depth_from_root].push_back(node);
 }
 
 static void
@@ -282,16 +236,13 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 {
 	jive_context * context = target->graph->context;
 	jive_copy_context copy_context;
-	jive_copy_context_init(&copy_context);
-	
+
 	jive_substitution_map_add_region(substitution, self, target);
 	pre_copy_region(target, self, &copy_context, context, substitution, copy_top, copy_bottom);
 	
-	size_t depth;
-	for(depth = 0; depth < copy_context.max_depth_plus_one; depth ++) {
-		size_t n;
-		for(n = 0; n < copy_context.depths[depth].nitems; n++) {
-			jive_node * node = copy_context.depths[depth].items[n];
+	for (size_t depth = 0; depth < copy_context.depths.size(); depth ++) {
+		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
+			jive_node * node = copy_context.depths[depth][n];
 			jive_region * target_subregion = jive_substitution_map_lookup_region(substitution, node->region);
 			jive_node * new_node = jive_node_copy_substitute(node, target_subregion, substitution);
 			if (node->region->top == node)
@@ -300,8 +251,6 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 				target_subregion->bottom = new_node;
 		}
 	}
-	
-	jive_copy_context_fini(&copy_context, context);
 }
 
 void
