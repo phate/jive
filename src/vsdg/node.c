@@ -113,7 +113,13 @@ jive_node_init_(
 	
 	JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
-	
+
+	self->ntraverser_slots = 0;
+	self->traverser_slots = 0;
+
+	self->ntracker_slots = 0;
+	self->tracker_slots = 0;
+
 	size_t n;
 	for(n=0; n<noperands; n++) {
 		jive_uninitialized_node_add_input(self, operand_types[n], operands[n]);
@@ -124,12 +130,6 @@ jive_node_init_(
 	
 	for(n=0; n<noutputs; n++)
 		jive_uninitialized_node_add_output(self, output_types[n]);
-	
-	self->ntraverser_slots = 0;
-	self->traverser_slots = 0;
-	
-	self->ntracker_slots = 0;
-	self->tracker_slots = 0;
 	
 	for (n = 0; n < self->ninputs; ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin()));
