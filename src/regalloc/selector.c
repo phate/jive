@@ -65,28 +65,6 @@ void
 jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self, jive_context * context)
 {
 	self->nitems = 0;
-	self->space = 0;
-	self->items = 0;
-	self->context = context;
-}
-
-void
-jive_node_cost_prio_heap_fini(jive_node_cost_prio_heap * self)
-{
-	jive_context_free(self->context, self->items);
-}
-
-static void
-jive_node_cost_prio_heap_enlarge(jive_node_cost_prio_heap * self)
-{
-	if (self->nitems == self->space) {
-		size_t new_space = self->space * 2 + 1;
-		self->items = jive_context_realloc(self->context, self->items, new_space * sizeof(self->items[0]));
-		size_t n;
-		for (n = self->space; n < new_space; n++)
-			self->items[n] = NULL;
-		self->space = new_space;
-	}
 }
 
 void
@@ -95,7 +73,7 @@ jive_node_cost_prio_heap_add(jive_node_cost_prio_heap * self, jive_node_cost * i
 	JIVE_DEBUG_ASSERT(item->state == jive_node_cost_state_queue);
 	JIVE_DEBUG_ASSERT(item->index == (size_t) -1);
 	size_t index = self->nitems;
-	jive_node_cost_prio_heap_enlarge(self);
+	self->items.resize(self->items.size()+1);
 	self->nitems ++;
 	
 	while (index) {
@@ -304,7 +282,6 @@ jive_region_shaper_selector_destroy(jive_region_shaper_selector * self)
 {
 	jive_context * context = self->master->context;
 	
-	jive_node_cost_prio_heap_fini(&self->prio_heap);
 	jive_node_cost_stack_fini(&self->node_stack);
 	jive_region_shaper_selector_hash_remove(&self->master->region_map, self);
 	

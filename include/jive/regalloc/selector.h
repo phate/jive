@@ -13,6 +13,8 @@
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
 
+#include <vector>
+
 struct jive_context;
 struct jive_node;
 struct jive_region;
@@ -64,16 +66,12 @@ void
 jive_node_cost_destroy(jive_node_cost * self);
 
 struct jive_node_cost_prio_heap {
-	size_t nitems, space;
-	struct jive_node_cost ** items;
-	struct jive_context * context;
+	size_t nitems;
+	std::vector<jive_node_cost*> items;
 };
 
 void
 jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self, struct jive_context * context);
-
-void
-jive_node_cost_prio_heap_fini(jive_node_cost_prio_heap * self);
 
 void
 jive_node_cost_prio_heap_add(jive_node_cost_prio_heap * self, jive_node_cost * item);
