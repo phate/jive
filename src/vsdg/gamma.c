@@ -215,64 +215,22 @@ jive_gamma(jive::output * predicate,
 	}
 }
 
-typedef struct jive_level_nodes jive_level_nodes;
-struct jive_level_nodes {
-	jive_node ** items;
-	size_t nitems, space;
-};
+/* FIXME: this can be done easier. We are basically visiting the nodes in depth first traversal
+	and moving them. Rely on traversers for that.
+*/
 
 typedef struct jive_move_context jive_move_context;
 struct jive_move_context {
-	jive_level_nodes * depths;
-	size_t max_depth_plus_one, space;
+	std::vector<std::vector<jive_node*>> depths;
 };
-
-static void
-jive_move_context_init(jive_move_context * self)
-{
-	self->depths = 0;
-	self->max_depth_plus_one = 0;
-	self->space = 0;
-}
-
-static void
-jive_move_context_fini(jive_move_context * self, jive_context * context)
-{
-	size_t n;
-	for (n = 0; n < self->max_depth_plus_one; n++)
-		jive_context_free(context, self->depths[n].items);
-	jive_context_free(context, self->depths);
-}
-
-static void
-jive_level_nodes_append(jive_level_nodes * level, jive_context * context, jive_node * node)
-{
-	if (level->nitems == level->space) {
-		level->space =  level->space * 2 + 1;
-		level->items = jive_context_realloc(context, level->items, level->space * sizeof(jive_node *));
-	}
-	level->items[level->nitems ++] = node;
-}
 
 static void
 jive_move_context_append(jive_move_context * self, jive_context * context, jive_node * node)
 {
-	if (node->depth_from_root >= self->space) {
-		size_t new_space = self->space * 2;
-		if (new_space <= node->depth_from_root)
-			new_space = node->depth_from_root + 1;
-		self->depths = jive_context_realloc(context, self->depths, new_space * sizeof(self->depths[0]));
-		size_t n;
-		for (n = self->space; n < new_space; n++) {
-			self->depths[n].items = 0;
-			self->depths[n].space = 0;
-			self->depths[n].nitems = 0;
-		}
-		self->space = new_space;
-	}
-	jive_level_nodes_append(&self->depths[node->depth_from_root], context, node);
-	if (node->depth_from_root + 1 > self->max_depth_plus_one)
-		self->max_depth_plus_one = node->depth_from_root + 1;
+	if (node->depth_from_root >= self->depths.size())
+		self->depths.resize(node->depth_from_root+1);
+
+	self->depths[node->depth_from_root].push_back(node);
 }
 
 static void
@@ -291,20 +249,15 @@ jive_region_move(const jive_region * self, jive_region * target)
 {
 	jive_context * context = target->graph->context;
 	jive_move_context move_context;
-	jive_move_context_init(&move_context);
-	
+
 	pre_move_region(target, self, &move_context, context);
-	
-	size_t depth;
-	for (depth = 0; depth < move_context.max_depth_plus_one; depth ++) {
-		size_t n;
-		for (n = 0; n < move_context.depths[depth].nitems; n++) {
-			jive_node * node = move_context.depths[depth].items[n];
+
+	for (size_t depth = 0; depth < move_context.depths.size(); depth++) {
+		for (size_t n = 0; n < move_context.depths[depth].size(); n++) {
+			jive_node * node = move_context.depths[depth][n];
 			jive_node_move(node, target);
 		}
 	}
-	
-	jive_move_context_fini(&move_context, context);
 }
 
 /* normal forms */
@@ -349,7 +302,10 @@ jive_gamma_normal_form_normalize_node_(const jive_node_normal_form * self_, jive
 		
 		if (!branch)
 			return true;
-		
+
+		/* FIXME: jive_region_push_out should do the same, why do we have the custom
+			implementation here?
+		*/	
 		jive_region_move(branch->region, node->region);
 		size_t n;
 		for (n = 0; n < node->noutputs; n++) {
