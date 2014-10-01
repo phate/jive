@@ -28,7 +28,7 @@ struct jive_tracker_depth_state {
 	size_t bottom_occupied;
 	size_t count;
 	size_t space;
-	jive_tracker_nodestate_list * nodestates_per_depth;
+	std::vector<jive_tracker_nodestate_list> nodestates_per_depth;
 	struct jive_context * context;
 	
 	struct {
@@ -73,7 +73,6 @@ jive_graph_reserve_tracker_depth_state(jive_graph * self)
 	jive_tracker_depth_state * state = new jive_tracker_depth_state;
 	state->count = 0;
 	state->space = 0;
-	state->nodestates_per_depth = 0;
 	state->context = self->context;
 	return state;
 }
@@ -81,7 +80,6 @@ jive_graph_reserve_tracker_depth_state(jive_graph * self)
 static inline void
 jive_graph_return_tracker_depth_state(jive_graph * self, jive_tracker_depth_state * state)
 {
-	jive_context_free(state->context, state->nodestates_per_depth);
 	delete state;
 }
 

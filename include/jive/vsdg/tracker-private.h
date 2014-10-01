@@ -17,10 +17,8 @@ jive_tracker_depth_state_add(jive_tracker_depth_state * self, jive_tracker_nodes
 		size_t new_space = self->space * 2 + 1;
 		if (new_space <= depth)
 			new_space = depth + 1;
-		self->nodestates_per_depth = jive_context_realloc(self->context, self->nodestates_per_depth,
-			new_space * sizeof(self->nodestates_per_depth[0]));
-		size_t n;
-		for (n = self->space; n < new_space; n++) {
+		self->nodestates_per_depth.resize(new_space);
+		for (size_t n = self->space; n < new_space; n++) {
 			self->nodestates_per_depth[n].first = self->nodestates_per_depth[n].last = 0;
 		}
 		self->space = new_space;
