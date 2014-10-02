@@ -50,6 +50,12 @@ public:
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const = 0;
+
+	inline bool
+	operator!=(const operation & other) const noexcept
+	{
+		return ! (*this == other);
+	}
 };
 
 }

@@ -640,7 +640,7 @@ void
 jive_node_destroy(jive_node * self)
 {
 	jive_graph_notify_node_destroy(self->graph, self);
-	self->class_->fini(self);
+	jive_node_fini_(self);
 	delete self;
 }
 
@@ -650,9 +650,8 @@ jive_node_cse_test(
 	const jive_node_class * cls, const jive_node_attrs * attrs,
 	size_t noperands, jive::output * const operands[])
 {
-	if (node->class_ != cls) return false;
+	if (node->operation() != *attrs) return false;
 	if (node->ninputs != noperands) return false;
-	if (!jive_node_match_attrs(node, attrs)) return false;
 	size_t n;
 	for(n = 0; n < noperands; n++)
 		if (node->inputs[n]->origin() != operands[n]) return false;
