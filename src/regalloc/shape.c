@@ -19,18 +19,20 @@
 
 static const jive_resource_class *
 get_aux_rescls(const jive_node * node) {
-	if (node->class_ != &JIVE_INSTRUCTION_NODE) {
+	const jive::instruction_op * op =
+		dynamic_cast<const jive::instruction_op *>(&node->operation());
+	if (!op) {
 		return nullptr;
 	}
 	const jive_instruction_node * inode =
 		static_cast<const jive_instruction_node *>(node);
-	if (inode->operation().icls()->flags & jive_instruction_commutative) {
+	if (op->icls()->flags & jive_instruction_commutative) {
 		return nullptr;
 	}
-	if (!(inode->operation().icls()->flags & jive_instruction_write_input)) {
+	if (!(op->icls()->flags & jive_instruction_write_input)) {
 		return nullptr;
 	}
-	return &inode->operation().icls()->inregs[0]->base;
+	return &op->icls()->inregs[0]->base;
 }
 
 typedef struct jive_region_shaper jive_region_shaper;

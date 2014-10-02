@@ -339,15 +339,6 @@ typedef jive::operation_node<jive::address::memberof_operation> jive_memberof_no
 jive::output *
 jive_memberof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
 
-JIVE_EXPORTED_INLINE jive_memberof_node *
-jive_memberof_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_MEMBEROF_NODE))
-		return (jive_memberof_node *) node;
-	else
-		return NULL;
-}
-
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
@@ -357,15 +348,6 @@ typedef jive::operation_node<jive::address::containerof_operation> jive_containe
 
 jive::output *
 jive_containerof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
-
-JIVE_EXPORTED_INLINE jive_containerof_node *
-jive_containerof_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_CONTAINEROF_NODE))
-		return (jive_containerof_node *) node;
-	else
-		return NULL;
-}
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
@@ -377,15 +359,6 @@ typedef jive::operation_node<jive::address::arraysubscript_operation> jive_array
 jive::output *
 jive_arraysubscript(jive::output * address, const jive::value::type * element_type,
 	jive::output * index);
-
-JIVE_EXPORTED_INLINE jive_arraysubscript_node *
-jive_arraysubscript_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_ARRAYSUBSCRIPT_NODE))
-		return (jive_arraysubscript_node *) node;
-	else
-		return NULL;
-}
 
 /* "arrayindex" operator: given two addresses that each point to an
 element of an array and the array element type, compute the
@@ -400,15 +373,6 @@ jive_arrayindex(jive::output * addr1, jive::output * addr2,
 	const jive::value::type * element_type,
 	const jive::bits::type * difference_type);
 
-JIVE_EXPORTED_INLINE jive_arrayindex_node *
-jive_arrayindex_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_ARRAYINDEX_NODE))
-		return (jive_arrayindex_node *) node;
-	else
-		return NULL;
-}
-
 /* label_to_address node */
 
 extern const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE;
@@ -417,15 +381,6 @@ typedef jive::operation_node<jive::address::label_to_address_operation> jive_lab
 
 jive::output *
 jive_label_to_address_create(struct jive_graph * graph, const struct jive_label * label);
-
-JIVE_EXPORTED_INLINE jive_label_to_address_node *
-jive_label_to_address_node_cast(jive_node * node)
-{
-	if(jive_node_isinstance(node, &JIVE_LABEL_TO_ADDRESS_NODE))
-		return (jive_label_to_address_node *) node;
-	else
-		return 0;
-}
 
 /* label_to_bitstring node */
 
@@ -437,14 +392,5 @@ typedef jive::operation_node<jive::address::label_to_bitstring_operation>
 jive::output *
 jive_label_to_bitstring_create(
 	struct jive_graph * graph, const struct jive_label * label, size_t nbits);
-
-JIVE_EXPORTED_INLINE jive_label_to_bitstring_node *
-jive_label_to_bitstring_node_cast(jive_node * node)
-{
-	if(jive_node_isinstance(node, &JIVE_LABEL_TO_BITSTRING_NODE))
-		return (jive_label_to_bitstring_node *) node;
-	else
-		return 0;
-}
 
 #endif

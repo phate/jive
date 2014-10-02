@@ -247,8 +247,8 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	if (!dynamic_cast<jive::ctl::output*>(ctl))
 		return;
 	
-	if (node->class_ == &JIVE_REGVALUE_NODE) {
-		const jive_register_class * regcls = ((jive_regvalue_node *) node)->operation().regcls();
+	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
+		const jive_register_class * regcls = op->regcls();
 		jive_node * origin = node->producer(1);
 		JIVE_DEBUG_ASSERT(origin->region == root_region);
 		

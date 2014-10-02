@@ -91,8 +91,10 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o0->node()), 32);
-	jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(o1->node()), 32);
+	jive_label_to_address_node_address_transform(
+		dynamic_cast<jive_label_to_address_node *>(o0->node()), 32);
+	jive_label_to_address_node_address_transform(
+		dynamic_cast<jive_label_to_address_node *>(o1->node()), 32);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stderr);

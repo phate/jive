@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -69,15 +69,6 @@ struct jive_seq_node {
 };
 
 extern const jive_seq_point_class JIVE_SEQ_NODE;
-
-JIVE_EXPORTED_INLINE jive_seq_node *
-jive_seq_node_cast(jive_seq_point * self)
-{
-	if (self->class_ == &JIVE_SEQ_NODE)
-		return (jive_seq_node *) self;
-	else
-		return 0;
-}
 
 struct jive_seq_region {
 	struct jive_region * region;

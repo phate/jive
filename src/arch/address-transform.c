@@ -513,8 +513,8 @@ convert_regions(const struct jive_region * region, jive_memlayout_mapper * mappe
 
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 
-	const jive_lambda_node * lambda = jive_lambda_node_const_cast(anchor);
-	if (lambda != NULL)
+	jive_lambda_node * lambda = dynamic_cast<jive_lambda_node *>(anchor);
+	if (lambda)
 		jive_lambda_node_address_transform(lambda, nbits);
 }
 
@@ -528,26 +528,24 @@ jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
 
 	jive_node * node = jive_traverser_next(traverser);
 	for(; node; node = jive_traverser_next(traverser)){
-		if (jive_node_isinstance(node, &JIVE_MEMBEROF_NODE))
-			jive_memberof_node_address_transform(jive_memberof_node_cast(node), mapper);
-		else if (jive_node_isinstance(node, &JIVE_CONTAINEROF_NODE))
-			jive_containerof_node_address_transform(jive_containerof_node_cast(node), mapper);
-		else if (jive_node_isinstance(node, &JIVE_ARRAYINDEX_NODE))
-			jive_arrayindex_node_address_transform(jive_arrayindex_node_cast(node), mapper);
-		else if (jive_node_isinstance(node, &JIVE_ARRAYSUBSCRIPT_NODE))
-			jive_arraysubscript_node_address_transform(jive_arraysubscript_node_cast(node), mapper);
-		else if (jive_node_isinstance(node, &JIVE_LABEL_TO_ADDRESS_NODE))
-			jive_label_to_address_node_address_transform(jive_label_to_address_node_cast(node), nbits);
-		else if (auto op = dynamic_cast<const jive::load_op *>(&node->operation())) {
+		if (auto tmp = dynamic_cast<jive_memberof_node *>(node)) {
+			jive_memberof_node_address_transform(tmp, mapper);
+		} else if (auto tmp = dynamic_cast<jive_containerof_node *>(node)) {
+			jive_containerof_node_address_transform(tmp, mapper);
+		} else if (auto tmp = dynamic_cast<jive_arrayindex_node *>(node)) {
+			jive_arrayindex_node_address_transform(tmp, mapper);
+		} else if (auto tmp = dynamic_cast<jive_arraysubscript_node *>(node)) {
+			jive_arraysubscript_node_address_transform(tmp, mapper);
+		} else if (auto tmp = dynamic_cast<jive_label_to_address_node *>(node)) {
+			jive_label_to_address_node_address_transform(tmp, nbits);
+		} else if (auto op = dynamic_cast<const jive::load_op *>(&node->operation())) {
 			jive_load_node_address_transform(node, *op, nbits);
 		} else if (auto op = dynamic_cast<const jive::store_op *>(&node->operation())) {
 			jive_store_node_address_transform(node, *op, nbits);
-		} else if (jive_node_isinstance(node, &JIVE_CALL_NODE))
-			jive_call_node_address_transform(jive_call_node_cast(node), nbits);
-
-		const jive_apply_node * apply_node = dynamic_cast<const jive_apply_node *>(node);
-		if (apply_node) {
-			jive_apply_node_address_transform(apply_node, nbits);
+		} else if (auto tmp = dynamic_cast<jive_call_node *>(node)) {
+			jive_call_node_address_transform(tmp, nbits);
+		} else if (auto tmp = dynamic_cast<jive_apply_node *>(node)) {
+			jive_apply_node_address_transform(tmp, nbits);
 		}
 	}
 

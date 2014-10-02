@@ -60,13 +60,4 @@ jive_immediate_create(
 	struct jive_graph * graph,
 	const jive_immediate * immediate_value);
 
-JIVE_EXPORTED_INLINE jive_immediate_node *
-jive_immediate_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_IMMEDIATE_NODE))
-		return (jive_immediate_node *) node;
-	else
-		return 0;
-}
-
 #endif

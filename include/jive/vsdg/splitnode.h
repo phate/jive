@@ -86,13 +86,4 @@ jive_splitnode_create(struct jive_region * region,
 	const jive::base::type * out_type,
 	const struct jive_resource_class * out_class);
 
-JIVE_EXPORTED_INLINE jive_splitnode *
-jive_splitnode_cast(jive_node * self)
-{
-	if (self->class_ == &JIVE_SPLITNODE)
-		return (jive_splitnode *) self;
-	else
-		return 0;
-}
-
 #endif

@@ -71,13 +71,4 @@ jive_group_create(const jive::rcd::declaration * decl,
 jive::output *
 jive_empty_group_create(struct jive_graph * graph, const jive::rcd::declaration * decl);
 
-JIVE_EXPORTED_INLINE jive_group_node *
-jive_group_node_cast(jive_node * node)
-{
-	if (node->class_ == &JIVE_GROUP_NODE)
-		return (jive_group_node *) node;
-	else
-		return 0;
-}
-
 #endif

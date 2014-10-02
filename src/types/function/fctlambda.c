@@ -386,10 +386,10 @@ jive_lambda_end(jive_lambda * self,
 void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
-	jive_lambda_node * lambda_node = jive_lambda_node_cast(apply_node->producer(0));
-	JIVE_DEBUG_ASSERT(lambda_node);
-	if (!lambda_node)
-		return;
+	jive_node * lambda_node = apply_node->producer(0);
+	
+	const jive::fct::lambda_op & op = dynamic_cast<const jive::fct::lambda_op &>(
+		lambda_node->operation());
 	
 	jive_region * function_region = lambda_node->producer(0)->region;
 	jive_node * head = function_region->top;
@@ -397,8 +397,8 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	
 	jive_substitution_map * substitution = jive_substitution_map_create(apply_node->graph->context);
 	
-	for(size_t n = 0; n < lambda_node->operation().function_type().narguments(); n++) {
-		jive::gate * gate = lambda_node->operation().argument_gates()[n];
+	for(size_t n = 0; n < op.function_type().narguments(); n++) {
+		jive::gate * gate = op.argument_gates()[n];
 		jive::output * output = jive_node_get_gate_output(head, gate);
 		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin());
 	}
@@ -406,8 +406,8 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_region_copy_substitute(function_region,
 		apply_node->region, substitution, false, false);
 	
-	for(size_t n = 0; n < lambda_node->operation().function_type().nreturns(); n++) {
-		jive::gate * gate = lambda_node->operation().return_gates()[n];
+	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
+		jive::gate * gate = op.return_gates()[n];
 		jive::input * input = jive_node_get_gate_input(tail, gate);
 		jive::output * substituted = jive_substitution_map_lookup_output(substitution, input->origin());
 		jive::output * output = apply_node->outputs[n];

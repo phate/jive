@@ -78,22 +78,4 @@ jive_test_node_create_normalized(struct jive_graph * graph, size_t noperands,
 	const jive::base::type * const operand_types[], jive::output * const operands[],
 	size_t nresults, const jive::base::type * const result_types[], jive::output * results[]);
 
-JIVE_EXPORTED_INLINE const jive_test_node *
-jive_test_node_const_cast(const jive_node * self)
-{
-	if (jive_node_isinstance(self, &JIVE_TEST_NODE))
-		return (const jive_test_node *)self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive_test_node *
-jive_test_node_cast(jive_node * self)
-{
-	if (jive_node_isinstance(self, &JIVE_TEST_NODE))
-		return (jive_test_node *)self;
-	else
-		return NULL;
-}
-
 #endif

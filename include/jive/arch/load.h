@@ -103,13 +103,4 @@ jive_load_by_bitstring_create(jive::output * address,
 	size_t nbits, const jive::value::type * datatype,
 	size_t nstates, jive::output * const states[]);
 
-JIVE_EXPORTED_INLINE jive_load_node *
-jive_load_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_LOAD_NODE))
-		return (jive_load_node *) node;
-	else
-		return NULL;
-}
-
 #endif

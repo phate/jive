@@ -210,7 +210,7 @@ flatten_data_items(
 		const jive::rcd::declaration * decl = type->declaration();
 		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
 		
-		jive_group_node * node = jive_group_node_cast(data->node());
+		jive_group_node * node = dynamic_cast<jive_group_node *>(data->node());
 		if (!node)
 			jive_context_fatal_error(ctx, "Type mismatch: can only serialize simple record compounds");
 			

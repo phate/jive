@@ -167,15 +167,6 @@ jive::output *
 jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type);
 
-JIVE_EXPORTED_INLINE jive_address_to_bitstring_node *
-jive_address_to_bitstring_node_cast(jive_node * node)
-{
-	if(jive_node_isinstance(node, &JIVE_ADDRESS_TO_BITSTRING_NODE))
-		return (jive_address_to_bitstring_node *) node;
-	else
-		return 0;
-}
-
 /* bitstring_to_address node */
 
 extern const jive_node_class JIVE_BITSTRING_TO_ADDRESS_NODE;
@@ -183,15 +174,6 @@ extern const jive_node_class JIVE_BITSTRING_TO_ADDRESS_NODE;
 jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 	const jive::base::type * original_type);
-
-JIVE_EXPORTED_INLINE jive_bitstring_to_address_node *
-jive_bitstring_to_address_node_cast(jive_node * node)
-{
-	if(jive_node_isinstance(node, &JIVE_BITSTRING_TO_ADDRESS_NODE))
-		return (jive_bitstring_to_address_node *) node;
-	else
-		return 0;
-}
 
 /* reductions */
 

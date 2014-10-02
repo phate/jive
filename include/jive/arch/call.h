@@ -121,13 +121,4 @@ jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
 	size_t narguments, jive::output * const arguments[],
 	size_t nreturns, const jive::base::type * const result_types[]);
 
-JIVE_EXPORTED_INLINE jive_call_node *
-jive_call_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_CALL_NODE))
-		return (jive_call_node *) node;
-	else
-		return NULL;
-}
-
 #endif

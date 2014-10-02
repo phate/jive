@@ -77,13 +77,4 @@ typedef jive::operation_node<jive::regvalue_op> jive_regvalue_node;
 jive::output *
 jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value);
 
-JIVE_EXPORTED_INLINE jive_regvalue_node *
-jive_regvalue_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_REGVALUE_NODE))
-		return (jive_regvalue_node *) node;
-	else
-		return 0;
-}
-
 #endif

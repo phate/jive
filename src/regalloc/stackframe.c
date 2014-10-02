@@ -209,24 +209,24 @@ jive_regalloc_stackframe(
 static void
 reloc_stack_access(jive_node * node, jive_subroutine_to_stackframe_map & stackframe_map)
 {
-	
-	const jive_instruction_node * inode = jive_instruction_node_cast(node);
-	if (!inode)
+	const jive::instruction_op * i_op = dynamic_cast<const jive::instruction_op *>(
+		&node->operation());
+	if (!i_op) {
 		return;
-	
-	const jive_instruction_class * icls = inode->operation().icls();
-	size_t n;
-	for (n = 0; n < icls->nimmediates; n++) {
+	}
+	const jive_instruction_class * icls = i_op->icls();
+	for (size_t n = 0; n < icls->nimmediates; n++) {
 		jive::input * imm_input = node->inputs[n + icls->ninputs];
-		jive_immediate_node * immnode = jive_immediate_node_cast(imm_input->producer());
-		JIVE_DEBUG_ASSERT(immnode);
 		
 		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
 		JIVE_DEBUG_ASSERT(sub);
 		JIVE_DEBUG_ASSERT(stackframe_map.count(sub) != 0);
 		jive_subroutine_stackframe_info * frame = &stackframe_map[sub];
 		
-		jive_immediate imm = immnode->operation().value();
+		const jive_immediate & orig_imm = dynamic_cast<const jive::immediate_op &>(
+			imm_input->producer()->operation()).value();
+		jive_immediate imm = orig_imm;
+		
 		if (imm.add_label == &jive_label_fpoffset) {
 			const jive_stackslot * slot = get_node_frameslot(node);
 			imm = jive_immediate_add_offset(&imm, slot->offset - frame->frame_pointer_offset);
@@ -247,7 +247,7 @@ reloc_stack_access(jive_node * node, jive_subroutine_to_stackframe_map & stackfr
 			imm = jive_immediate_add_offset(&imm, -slot->offset + frame->stack_pointer_offset);
 			imm.sub_label = 0;
 		}
-		if (!jive_immediate_equals(&imm, &immnode->operation().value())) {
+		if (!jive_immediate_equals(&imm, &orig_imm)) {
 			jive::output * new_immval = jive_immediate_create(node->region->graph, &imm);
 			imm_input->divert_origin(new_immval);
 		}

@@ -140,24 +140,6 @@ extern const jive_node_class JIVE_LAMBDA_NODE;
 extern const jive_node_class JIVE_LAMBDA_ENTER_NODE;
 extern const jive_node_class JIVE_LAMBDA_LEAVE_NODE;
 
-JIVE_EXPORTED_INLINE jive_lambda_node *
-jive_lambda_node_cast(jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
-		return (jive_lambda_node *) node;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const jive_lambda_node *
-jive_lambda_node_const_cast(const jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_LAMBDA_NODE))
-		return (const jive_lambda_node *)node;
-	else
-		return NULL;
-}
-
 JIVE_EXPORTED_INLINE jive_node *
 jive_lambda_node_get_enter_node(const jive_lambda_node * self)
 {

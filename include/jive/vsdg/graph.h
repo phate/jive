@@ -62,24 +62,6 @@ typedef jive::operation_node<jive::graph_tail_operation> jive_graph_tail_node;
 
 extern const jive_node_class JIVE_GRAPH_TAIL_NODE;
 
-JIVE_EXPORTED_INLINE jive_graph_tail_node *
-jive_graph_tail_node_cast(struct jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
-		return (jive_graph_tail_node *) node;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE const jive_graph_tail_node *
-jive_graph_tail_node_const_cast(const struct jive_node * node)
-{
-	if (jive_node_isinstance(node, &JIVE_GRAPH_TAIL_NODE))
-		return (const jive_graph_tail_node *) node;
-	else
-		return NULL;
-}
-
 /* graph */
 
 typedef struct jive_graph jive_graph;

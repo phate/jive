@@ -47,7 +47,7 @@ static int test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_call_node_address_transform(jive_call_node_cast(call), 32);
+	jive_call_node_address_transform(dynamic_cast<jive_call_node *>(call), 32);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);

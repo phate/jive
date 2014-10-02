@@ -352,7 +352,7 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 
 		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
 		if (seq_instr && (seq_instr->icls->flags & jive_instruction_jump)) {
-			jive_instruction_node * inode = jive_instruction_node_cast(seq_point->node);
+			jive_instruction_node * inode = static_cast<jive_instruction_node *>(seq_point->node);
 			jive_seq_graph_patch_jump_targets(seq_graph, seq_instr, inode);
 		}
 		

@@ -273,15 +273,15 @@ jive_graph_sequentialize(jive_graph * graph)
 			jive_seq_instruction_cast(seq_point);
 		if (!seq_instr)
 			continue;
-		const jive_instruction_node * inode =
-			jive_instruction_node_cast(seq_point->node);
-		if (!inode)
+		const jive::instruction_op * i_op = dynamic_cast<const jive::instruction_op *>(
+			&seq_point->node->operation());
+		if (!i_op) {
 			continue;
-		const jive_instruction_class * icls = inode->operation().icls();
-		size_t n;
-		for (n = 0; n < icls->nimmediates; ++ n) {
-			jive_immediate_node * imm_node =
-				jive_instruction_node_get_immediate(inode, n);
+		}
+		const jive_instruction_class * icls = i_op->icls();
+		for (size_t n = 0; n < icls->nimmediates; ++ n) {
+			jive_immediate_node * imm_node = jive_instruction_node_get_immediate(
+				static_cast<const jive_instruction_node *>(seq_point->node), n);
 			jive_immediate imm = imm_node->operation().value();
 			seq_instr->imm[n].value = imm.offset;
 			seq_instr->imm[n].add_label = jive_seq_graph_convert_label(
