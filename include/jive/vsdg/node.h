@@ -84,9 +84,6 @@ public:
 		jive_node * prev;
 		jive_node * next;
 	} graph_bottom_list;
-	
-	size_t ntraverser_slots;
-	enum jive_traversal_nodestate ** traverser_slots;
 
 	std::vector<jive_tracker_nodestate*> tracker_slots;
 };

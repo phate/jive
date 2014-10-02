@@ -109,9 +109,6 @@ jive_node_init_(
 	JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 
-	self->ntraverser_slots = 0;
-	self->traverser_slots = 0;
-
 	size_t n;
 	for(n=0; n<noperands; n++) {
 		jive_uninitialized_node_add_input(self, operand_types[n], operands[n]);
@@ -150,13 +147,6 @@ jive_node_fini_(jive_node * self)
 	if (self == self->region->bottom) self->region->bottom = NULL;
 	
 	self->region = 0;
-	
-	if (self->traverser_slots) {
-		size_t n;
-		for(n=0; n<self->ntraverser_slots; n++)
-			jive_context_free(context, self->traverser_slots[n]);
-		jive_context_free(context, self->traverser_slots);
-	}
 	
 	for (size_t n = 0; n < self->tracker_slots.size(); n++)
 		delete self->tracker_slots[n];
