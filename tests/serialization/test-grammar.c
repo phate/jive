@@ -251,8 +251,7 @@ verify_deserialize_nodeexpr(
 	
 	jive_node * node;
 	assert(jive_deserialize_nodeexpr(&ctx.drv, ctx.is, region, &node));
-	assert(node->class_ == expected_node->class_);
-	assert(jive_node_match_attrs(node, jive_node_get_attrs(expected_node)));
+	assert(node->operation() == expected_node->operation());
 	assert(node->ninputs == expected_node->ninputs);
 	assert(node->noperands == expected_node->noperands);
 	assert(node->noutputs == expected_node->noutputs);

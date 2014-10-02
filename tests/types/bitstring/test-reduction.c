@@ -56,7 +56,7 @@ static int test_main(void)
 		jive::output * concat = jive_bitconcat(2, tmparray0);
 		jive::output * slice = jive_bitslice(concat, 8, 24);
 		jive_node * node = ((jive::output *) slice)->node();
-		assert(node->class_ == &JIVE_BITCONCAT_NODE);
+		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
 		assert(node->ninputs == 2);
 		assert(node->producer(0)->class_ == &JIVE_BITSLICE_NODE);
 		assert(node->producer(1)->class_ == &JIVE_BITSLICE_NODE);
