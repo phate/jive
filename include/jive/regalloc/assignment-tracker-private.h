@@ -22,14 +22,6 @@ jive_var_assignment_tracker_init(jive_var_assignment_tracker * self, jive_contex
 }
 
 static inline void
-jive_var_assignment_tracker_fini(jive_var_assignment_tracker * self)
-{
-	JIVE_DEBUG_ASSERT(self->pressured.empty());
-	JIVE_DEBUG_ASSERT(self->assigned.first == 0);
-	JIVE_DEBUG_ASSERT(self->trivial.first == 0);
-}
-
-static inline void
 jive_var_assignment_tracker_add_tracked(jive_var_assignment_tracker * self, jive_shaped_variable * shaped_variable,
 	const jive_resource_class * rescls, const jive_resource_name * resname)
 {

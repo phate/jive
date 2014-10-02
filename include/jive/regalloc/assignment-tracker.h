@@ -10,8 +10,7 @@
 
 #include <vector>
 
-typedef struct jive_var_assignment_tracker jive_var_assignment_tracker;
-typedef struct jive_pressured_var_list jive_pressured_var_list;
+#include <jive/common.h>
 
 struct jive_context;
 struct jive_shaped_variable;
@@ -22,6 +21,13 @@ struct jive_pressured_var_list {
 };
 
 struct jive_var_assignment_tracker {
+	inline
+	~jive_var_assignment_tracker() {
+		JIVE_DEBUG_ASSERT(pressured.empty());
+		JIVE_DEBUG_ASSERT(assigned.first == 0);
+		JIVE_DEBUG_ASSERT(trivial.first == 0);
+	}
+
 	struct jive_context * context;
 	
 	struct {

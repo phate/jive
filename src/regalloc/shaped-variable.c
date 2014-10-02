@@ -16,31 +16,26 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/gate-interference-private.h>
 
-JIVE_DEFINE_HASH_TYPE(
-	jive_shaped_variable_hash,
-	jive_shaped_variable,
-	jive_variable *,
-	variable,
-	hash_chain);
-
 jive_shaped_variable *
 jive_shaped_variable_create(
 	jive_shaped_graph * shaped_graph,
 	jive_variable * variable)
 {
 	jive_context * context = shaped_graph->context;
-	jive_shaped_variable * self = new jive_shaped_variable;
+	std::unique_ptr<jive_shaped_variable> self(new jive_shaped_variable);
 	
 	self->shaped_graph = shaped_graph;
 	self->variable = variable;
 	
-	jive_shaped_variable_hash_insert(&shaped_graph->variable_map, self);
-	
-	jive_shaped_variable_internal_recompute_allowed_names(self);
-	
+	jive_shaped_variable_internal_recompute_allowed_names(self.get());
+
 	jive_var_assignment_tracker_add_tracked(&self->shaped_graph->var_assignment_tracker,
-		self, self->variable->rescls, self->variable->resname);
-	return self;
+		self.get(), self->variable->rescls, self->variable->resname);
+
+	jive_shaped_variable * result = self.get();
+	shaped_graph->variable_map.insert(std::move(self));
+
+	return result;
 }
 
 void
@@ -229,26 +224,22 @@ jive_shaped_variable_get_cross_count(
 	}
 }
 
-void
-jive_shaped_variable_destroy(jive_shaped_variable * self)
+jive_shaped_variable::~jive_shaped_variable()
 {
 	jive::gate * gate;
-	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
+	JIVE_LIST_ITERATE(variable->gates, gate, variable_gate_list) {
 		for (auto i = gate->interference.begin(); i != gate->interference.end(); i++) {
 			jive::gate * other_gate = i->gate;
 			jive_variable * other = other_gate->variable;
 			if (!other) continue;
-			jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(self->shaped_graph, other);
+			jive_shaped_variable * other_shape = jive_shaped_graph_map_variable(shaped_graph, other);
 			if (other_shape)
-				jive_variable_interference_remove(self, other_shape);
+				jive_variable_interference_remove(this, other_shape);
 		}
 	}
-	jive_var_assignment_tracker_remove_tracked(&self->shaped_graph->var_assignment_tracker,
-		self, self->variable->rescls, self->variable->resname);
-	JIVE_DEBUG_ASSERT(self->interference.empty());
-	jive_shaped_variable_hash_remove(&self->shaped_graph->variable_map, self);
-	
-	delete self;
+	jive_var_assignment_tracker_remove_tracked(&shaped_graph->var_assignment_tracker,
+		this, variable->rescls, variable->resname);
+	JIVE_DEBUG_ASSERT(interference.empty());
 }
 
 jive_variable_interference *
@@ -278,26 +269,20 @@ jive_variable_interference_destroy(jive_variable_interference * self)
 	delete self;
 }
 
-
-JIVE_DEFINE_HASH_TYPE(
-	jive_shaped_ssavar_hash,
-	jive_shaped_ssavar,
-	jive_ssavar *, ssavar,
-	hash_chain);
-
 jive_shaped_ssavar *
 jive_shaped_ssavar_create(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar)
 {
 	jive_context * context = shaped_graph->context;
-	jive_shaped_ssavar * self = new jive_shaped_ssavar;
-	
+	std::unique_ptr<jive_shaped_ssavar> self(new jive_shaped_ssavar);
+
 	self->shaped_graph = shaped_graph;
 	self->ssavar = ssavar;
 	self->boundary_region_depth = (size_t)-1;
-	
-	jive_shaped_ssavar_hash_insert(&shaped_graph->ssavar_map, self);
-	
-	return self;
+
+	jive_shaped_ssavar * result = self.get();
+	shaped_graph->ssavar_map.insert(std::move(self));
+
+	return result;
 }
 
 size_t
@@ -456,13 +441,10 @@ jive_shaped_ssavar_is_active_after(
 	}
 }
 
-void
-jive_shaped_ssavar_destroy(jive_shaped_ssavar * self)
+jive_shaped_ssavar::~jive_shaped_ssavar()
 {
-	JIVE_DEBUG_ASSERT(self->node_xpoints.size() == 0);
-	JIVE_DEBUG_ASSERT(self->region_xpoints.size() == 0);
-	jive_shaped_ssavar_hash_remove(&self->shaped_graph->ssavar_map, self);
-	delete self;
+	JIVE_DEBUG_ASSERT(node_xpoints.size() == 0);
+	JIVE_DEBUG_ASSERT(region_xpoints.size() == 0);
 }
 
 void

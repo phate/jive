@@ -27,27 +27,21 @@ jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive
 	return self;
 }
 
-JIVE_DEFINE_HASH_TYPE(
-	jive_shaped_region_hash,
-	jive_shaped_region,
-	jive_region *,
-	region,
-	hash_chain);
-
 jive_shaped_region *
 jive_shaped_region_create(jive_shaped_graph * shaped_graph, jive_region * region)
 {
 	jive_context * context = shaped_graph->context;
-	jive_shaped_region * self = new jive_shaped_region;
+	std::unique_ptr<jive_shaped_region> self(new jive_shaped_region);
 	
 	self->shaped_graph = shaped_graph;
 	self->region = region;
 	self->cuts.first = self->cuts.last = NULL;
-	jive_region_varcut_init(&self->active_top, self);
-	
-	jive_shaped_region_hash_insert(&shaped_graph->region_map, self);
-	
-	return self;
+	jive_region_varcut_init(&self->active_top, self.get());
+
+	jive_shaped_region * result = self.get();
+	shaped_graph->region_map.insert(std::move(self));
+
+	return result;
 }
 
 jive_cut *
@@ -83,13 +77,10 @@ jive_shaped_region_destroy_cuts(jive_shaped_region * self)
 		jive_cut_destroy(self->cuts.first);
 }
 
-void
-jive_shaped_region_destroy(jive_shaped_region * self)
+jive_shaped_region::~jive_shaped_region()
 {
-	jive_shaped_region_destroy_cuts(self);
-	jive_region_varcut_fini(&self->active_top);
-	jive_shaped_region_hash_remove(&self->shaped_graph->region_map, self);
-	delete self;
+	jive_shaped_region_destroy_cuts(this);
+	jive_region_varcut_fini(&this->active_top);
 }
 
 void

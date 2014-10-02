@@ -20,22 +20,36 @@ struct jive_region;
 struct jive_node;
 
 struct jive_shaped_region {
+	~jive_shaped_region();
+	
 	struct jive_shaped_graph * shaped_graph;
 	
 	struct jive_region * region;
-	
-	struct {
-		jive_shaped_region * prev;
-		jive_shaped_region * next;
-	} hash_chain;
-	
+
 	struct {
 		jive_cut * first;
 		jive_cut * last;
 	} cuts;
 	
 	jive_region_varcut active_top;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_shaped_region> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor <
+		struct jive_region *,
+		jive_shaped_region,
+		&jive_shaped_region::region,
+		&jive_shaped_region::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::owner_intrusive_hash <
+	const jive_region *,
+	jive_shaped_region,
+	jive_shaped_region::hash_chain_accessor
+> jive_shaped_region_hash;
+
 
 struct jive_shaped_node;
 
@@ -58,9 +72,6 @@ jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_r
 /** \brief Create new top-most cut */
 jive_cut *
 jive_shaped_region_create_cut(jive_shaped_region * self);
-
-void
-jive_shaped_region_destroy(jive_shaped_region * self);
 
 void
 jive_shaped_region_destroy_cuts(jive_shaped_region * self);

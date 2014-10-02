@@ -15,8 +15,6 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource-private.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, jive_node *, node, hash_chain);
-
 jive_shaped_node *
 jive_shaped_node_create(jive_cut * cut, jive_node * node)
 {
@@ -31,8 +29,8 @@ jive_shaped_node_create(jive_cut * cut, jive_node * node)
 	self->shaped_graph = shaped_graph;
 	self->node = node;
 	
-	jive_shaped_node_hash_insert(&shaped_graph->node_map, self);
-	
+	shaped_graph->node_map.insert(self);
+
 	self->cut = cut;
 	
 	jive_resource_class_count_init(&self->use_count_before, context);
@@ -168,7 +166,7 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	}
 	
 	/* remove from graph */
-	jive_shaped_node_hash_remove(&self->shaped_graph->node_map, self);
+	self->shaped_graph->node_map.erase(self);
 	JIVE_LIST_REMOVE(self->cut->locations, self, cut_location_list);
 	
 	/* reinstate crossings for those arcs that have this node as origin */

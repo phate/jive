@@ -617,12 +617,7 @@ public:
 
 	~owner_intrusive_hash() noexcept
 	{
-		iterator i = begin();
-		while (i != end()) {
-			ElementType * e = i.ptr();
-			++i;
-			delete e;
-		}
+		clear();
 	}
 
 	inline constexpr
@@ -644,6 +639,17 @@ public:
 		internal_hash_.swap(other.internal_hash_);
 	}
 
+	void
+	clear() noexcept
+	{
+		iterator i = begin();
+		while (i != end()) {
+			iterator j = i;
+			++i;
+			erase(j);
+		}
+	}
+
 	inline iterator
 	insert(std::unique_ptr<ElementType> element)
 	{
@@ -662,7 +668,7 @@ public:
 	inline void
 	erase(iterator i) noexcept
 	{
-		internal_hash_.erase(i);
+		erase(i.ptr());
 	}
 
 	inline void

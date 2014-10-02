@@ -9,6 +9,7 @@
 #include <jive/common.h>
 
 #include <jive/regalloc/xpoint.h>
+#include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/resource.h>
 
 typedef struct jive_shaped_node jive_shaped_node;
@@ -23,12 +24,7 @@ struct jive_shaped_node {
 	struct jive_shaped_graph * shaped_graph;
 	
 	struct jive_node * node;
-	
-	struct {
-		jive_shaped_node * prev;
-		jive_shaped_node * next;
-	} hash_chain;
-	
+
 	struct jive_cut * cut;
 	struct {
 		jive_shaped_node * prev;
@@ -38,7 +34,23 @@ struct jive_shaped_node {
 	jive_nodevar_xpoint_hash_byssavar ssavar_xpoints;
 	jive_resource_class_count use_count_before;
 	jive_resource_class_count use_count_after;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_shaped_node> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		struct jive_node *,
+		jive_shaped_node,
+		&jive_shaped_node::node,
+		&jive_shaped_node::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::intrusive_hash<
+	const struct jive_node *,
+	jive_shaped_node,
+	jive_shaped_node::hash_chain_accessor
+> jive_shaped_node_hash;
 
 jive_shaped_node *
 jive_shaped_node_prev_in_region(const jive_shaped_node * self);

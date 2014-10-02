@@ -13,7 +13,7 @@
 #include <jive/common.h>
 
 #include <jive/regalloc/xpoint.h>
-#include <jive/util/hash.h>
+#include <jive/util/intrusive-hash.h>
 
 struct jive_shaped_variable;
 struct jive_variable_interference;
@@ -50,14 +50,11 @@ struct jive_variable;
 struct jive_resource_name;
 
 struct jive_shaped_variable {
+	~jive_shaped_variable();
+	
 	struct jive_shaped_graph * shaped_graph;
 	
 	struct jive_variable * variable;
-	
-	struct {
-		jive_shaped_variable * prev;
-		jive_shaped_variable * next;
-	} hash_chain;
 	
 	struct {
 		jive_shaped_variable * prev;
@@ -67,7 +64,23 @@ struct jive_shaped_variable {
 	jive_variable_interference_hash interference;
 	std::unordered_set<const jive_resource_name *> allowed_names;
 	size_t squeeze;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_shaped_variable> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor <
+		struct jive_variable*,
+		jive_shaped_variable,
+		&jive_shaped_variable::variable,
+		&jive_shaped_variable::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::owner_intrusive_hash <
+	const jive_variable *,
+	jive_shaped_variable,
+	jive_shaped_variable::hash_chain_accessor
+> jive_shaped_variable_hash;
 
 jive_shaped_variable *
 jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive_variable * variable);
@@ -105,29 +118,39 @@ jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const st
 void
 jive_shaped_variable_get_cross_count(const jive_shaped_variable * self, jive_resource_class_count * counts);
 
-void
-jive_shaped_variable_destroy(jive_shaped_variable * self);
-
 typedef struct jive_shaped_ssavar jive_shaped_ssavar;
 
 struct jive_shaped_graph;
 struct jive_ssavar;
 
 struct jive_shaped_ssavar {
-	struct jive_shaped_graph * shaped_graph;
-	
-	struct jive_ssavar * ssavar;
-	
-	struct {
-		jive_shaped_ssavar * prev;
-		jive_shaped_ssavar * next;
-	} hash_chain;
-	
+	~jive_shaped_ssavar();
+
+	jive_shaped_graph * shaped_graph;
+
+	jive_ssavar * ssavar;
+
 	jive_nodevar_xpoint_hash_bynode node_xpoints;
 	jive_regvar_xpoint_hash_byregion region_xpoints;
 	
 	size_t boundary_region_depth;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_shaped_ssavar> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor <
+		struct jive_ssavar *,
+		jive_shaped_ssavar,
+		&jive_shaped_ssavar::ssavar,
+		&jive_shaped_ssavar::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::owner_intrusive_hash <
+	const jive_ssavar *,
+	jive_shaped_ssavar,
+	jive_shaped_ssavar::hash_chain_accessor
+> jive_shaped_ssavar_hash;
 
 jive_shaped_ssavar *
 jive_shaped_ssavar_create(struct jive_shaped_graph * shaped_graph, struct jive_ssavar * ssavar);
@@ -150,8 +173,5 @@ jive_shaped_ssavar_is_crossing(const jive_shaped_ssavar * self, const struct jiv
 
 size_t
 jive_shaped_ssavar_is_active_after(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
-
-void
-jive_shaped_ssavar_destroy(jive_shaped_ssavar * self);
 
 #endif

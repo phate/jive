@@ -12,38 +12,26 @@
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/regalloc/shaped-node.h>
 
-#include <jive/util/hash.h>
-
 typedef struct jive_shaped_graph jive_shaped_graph;
-
-JIVE_DECLARE_HASH_TYPE(jive_shaped_region_hash, jive_shaped_region, struct jive_region *, region, hash_chain);
-typedef struct jive_shaped_region_hash jive_shaped_region_hash;
-
-JIVE_DECLARE_HASH_TYPE(jive_shaped_variable_hash, jive_shaped_variable, struct jive_variable *, variable, hash_chain);
-typedef struct jive_shaped_variable_hash jive_shaped_variable_hash;
-
-JIVE_DECLARE_HASH_TYPE(jive_shaped_ssavar_hash, jive_shaped_ssavar, struct jive_ssavar *, ssavar, hash_chain);
-typedef struct jive_shaped_ssavar_hash jive_shaped_ssavar_hash;
-
-JIVE_DECLARE_HASH_TYPE(jive_shaped_node_hash, jive_shaped_node, struct jive_node *, node, hash_chain);
-typedef struct jive_shaped_node_hash jive_shaped_node_hash;
 
 struct jive_graph;
 struct jive_context;
 
 struct jive_shaped_graph {
+	~jive_shaped_graph();
+
 	struct jive_graph * graph;
 	struct jive_context * context;
 	
 	struct jive_notifier * callbacks[21];
-	
-	jive_shaped_region_hash region_map;
-	jive_shaped_variable_hash variable_map;
-	jive_shaped_ssavar_hash ssavar_map;
-	jive_shaped_node_hash node_map;
-	
+
 	jive_var_assignment_tracker var_assignment_tracker;
-	
+
+	jive_shaped_node_hash node_map;
+	jive_shaped_ssavar_hash ssavar_map;
+	jive_shaped_variable_hash variable_map;
+	jive_shaped_region_hash region_map;
+
 	jive_node_notifier_slot on_shaped_node_create;
 	jive_node_notifier_slot on_shaped_node_destroy;
 	jive_shaped_region_ssavar_notifier_slot on_shaped_region_ssavar_add;
