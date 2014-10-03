@@ -7,27 +7,19 @@
 
 #include <stdio.h>
 
-#include <jive/util/hash.h>
+#include <unordered_map>
 
 typedef struct jive_anon_label jive_anon_label;
-typedef struct jive_anon_label_hash jive_anon_label_hash;
 typedef struct jive_label_name_mapper_simple jive_label_name_mapper_simple;
 
 struct jive_anon_label {
 	const void * symbol;
 	char * name;
-	struct {
-		jive_anon_label * prev;
-		jive_anon_label * next;
-	} hash_chain;
 };
-
-JIVE_DECLARE_HASH_TYPE(jive_anon_label_hash, jive_anon_label, const void *, symbol, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_anon_label_hash, jive_anon_label, const void *, symbol, hash_chain);
 
 struct jive_label_name_mapper_simple {
 	jive_label_name_mapper base;
-	jive_anon_label_hash anon_labels;
+	std::unordered_map<const void*, jive_anon_label> anon_labels;
 	jive_context * context;
 	size_t int_label_seqno;
 	
@@ -39,19 +31,12 @@ static void
 jive_label_name_mapper_simple_destroy_(jive_label_name_mapper * self_)
 {
 	jive_label_name_mapper_simple * self = (jive_label_name_mapper_simple *) self_;
-	
-	struct jive_anon_label_hash_iterator j;
-	j = jive_anon_label_hash_begin(&self->anon_labels);
-	while (j.entry) {
-		jive_anon_label * entry = j.entry;
-		jive_anon_label_hash_iterator_next(&j);
-		
-		jive_anon_label_hash_remove(&self->anon_labels, entry);
-		jive_context_free(self->context, entry->name);
-		delete entry;
+
+	for (auto i = self->anon_labels.begin(); i != self->anon_labels.end();) {
+		jive_context_free(self->context, i->second.name);
+		i = self->anon_labels.erase(i);
 	}
-	jive_anon_label_hash_fini(&self->anon_labels);
-	
+
 	delete self;
 }
 
@@ -62,19 +47,21 @@ jive_label_name_mapper_simple_map_anon_symbol_(
 {
 	jive_label_name_mapper_simple * self = (jive_label_name_mapper_simple *) self_;
 	
-	jive_anon_label * entry = jive_anon_label_hash_lookup(&self->anon_labels, symbol);
-	if (!entry) {
-		entry = new jive_anon_label;
-		entry->symbol = symbol;
+	jive_anon_label entry;
+	auto i = self->anon_labels.find(symbol);
+	if (i != self->anon_labels.end())
+		entry = i->second;
+	else {
+		entry.symbol = symbol;
 		
 		char name[80];
 		snprintf(name, sizeof(name), ".L%zd", ++self->int_label_seqno);
-		entry->name = jive_context_strdup(self->context, name);
+		entry.name = jive_context_strdup(self->context, name);
 		
-		jive_anon_label_hash_insert(&self->anon_labels, entry);
+		self->anon_labels[symbol] = entry;
 	}
 	
-	return entry->name;
+	return entry.name;
 }
 
 static const char *
@@ -111,8 +98,7 @@ jive_label_name_mapper_simple_create(
 	mapper->int_label_seqno = 0;
 	mapper->pairs = pairs;
 	mapper->npairs = npairs;
-	jive_anon_label_hash_init(&mapper->anon_labels, context);
-	
+
 	return &mapper->base;
 }
 
