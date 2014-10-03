@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include <jive/common.h>
-#include <jive/util/hash.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
@@ -375,8 +374,29 @@ jive_upward_cone_traverser_create(jive_node * node)
 }
 
 typedef struct jive_bottomup_slave_traverser jive_bottomup_slave_traverser;
-typedef struct jive_region_traverser_hash jive_region_traverser_hash;
-JIVE_DECLARE_HASH_TYPE(jive_region_traverser_hash, jive_bottomup_slave_traverser, const jive_region *, region, hash_chain);
+struct jive_bottomup_slave_traverser {
+	jive_traverser base;
+	jive_bottomup_region_traverser * master;
+	jive_tracker_depth_state * frontier_state;
+	const jive_region * region;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_bottomup_slave_traverser> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		const struct jive_region *,
+		jive_bottomup_slave_traverser,
+		&jive_bottomup_slave_traverser::region,
+		&jive_bottomup_slave_traverser::hash_chain
+	> hash_chain_accessor;
+};
+
+typedef jive::detail::intrusive_hash<
+	const struct jive_region *,
+	jive_bottomup_slave_traverser,
+	jive_bottomup_slave_traverser::hash_chain_accessor
+> jive_region_traverser_hash;
+
 
 struct jive_bottomup_region_traverser {
 	jive_graph * graph;
@@ -386,19 +406,6 @@ struct jive_bottomup_region_traverser {
 	
 	jive_tracker_depth_state * behind_state;
 };
-
-struct jive_bottomup_slave_traverser {
-	jive_traverser base;
-	jive_bottomup_region_traverser * master;
-	jive_tracker_depth_state * frontier_state;
-	const jive_region * region;
-	struct {
-		jive_bottomup_slave_traverser * prev;
-		jive_bottomup_slave_traverser * next;
-	} hash_chain;
-};
-
-JIVE_DEFINE_HASH_TYPE(jive_region_traverser_hash, jive_bottomup_slave_traverser, const jive_region *, region, hash_chain);
 
 static void
 jive_bottomup_region_traverser_check_above(jive_bottomup_region_traverser * self, jive_node * node);
@@ -439,7 +446,7 @@ jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master, co
 	self->master = master;
 	self->frontier_state = jive_graph_reserve_tracker_depth_state(graph);
 	self->region = region;
-	jive_region_traverser_hash_insert(&master->region_hash, self);
+	master->region_hash.insert(self);
 	
 	return self;
 }
@@ -448,18 +455,17 @@ static void
 jive_bottomup_slave_traverser_destroy(jive_bottomup_slave_traverser * self)
 {
 	jive_graph_return_tracker_depth_state(self->base.graph, self->frontier_state);
-	jive_region_traverser_hash_remove(&self->master->region_hash, self);
+	self->master->region_hash.erase(self);
 	delete self;
 }
 
 static jive_bottomup_slave_traverser *
 jive_bottomup_region_traverser_map_region(jive_bottomup_region_traverser * self, const jive_region * region)
 {
-	jive_bottomup_slave_traverser * slave;
-	slave = jive_region_traverser_hash_lookup(&self->region_hash, region);
-	if (slave)
-		return slave;
-	
+	auto i = self->region_hash.find(region);
+	if (i != self->region_hash.end())
+		return i.ptr();
+
 	return jive_bottomup_slave_traverser_create(self, region);
 }
 
@@ -518,8 +524,7 @@ jive_bottomup_region_traverser_create(jive_graph * graph)
 	jive_bottomup_region_traverser * self = new jive_bottomup_region_traverser;
 	
 	self->graph = graph;
-	jive_region_traverser_hash_init(&self->region_hash, context);
-	
+
 	self->slot = jive_graph_reserve_tracker_slot(graph);
 	self->behind_state = jive_graph_reserve_tracker_depth_state(graph);
 	
@@ -542,15 +547,11 @@ void
 jive_bottomup_region_traverser_destroy(jive_bottomup_region_traverser * self)
 {
 	jive_context * context = self->graph->context;
-	
-	struct jive_region_traverser_hash_iterator i = jive_region_traverser_hash_begin(&self->region_hash);
-	while (i.entry) {
-		jive_bottomup_slave_traverser * trav = i.entry;
-		jive_region_traverser_hash_iterator_next(&i);
-		
-		jive_bottomup_slave_traverser_destroy(trav);
+
+	for (auto i = self->region_hash.begin(); i != self->region_hash.end();) {
+		auto j = i; i++;
+		jive_bottomup_slave_traverser_destroy(j.ptr());
 	}
-	jive_region_traverser_hash_fini(&self->region_hash);
 	
 	jive_graph_return_tracker_slot(self->graph, self->slot);
 	jive_graph_return_tracker_depth_state(self->graph, self->behind_state);
