@@ -288,19 +288,47 @@ jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial
 JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 {
-	size_t n;
-	for(n = 0; n < self->ninputs; n++)
-		if (self->inputs[n]->gate == gate) return self->inputs[n];
-	return 0;
+	for (size_t n = 0; n < self->ninputs; n++) {
+		if (self->inputs[n]->gate == gate) {
+			return self->inputs[n];
+		}
+	}
+	return nullptr;
+}
+
+JIVE_EXPORTED_INLINE jive::input *
+jive_node_get_gate_input(const jive_node * self, const char * name)
+{
+	for (size_t n = 0; n < self->ninputs; n++) {
+		jive::input * i = self->inputs[n];
+		if (i->gate && strcmp(i->gate->name, name) == 0) {
+			return i;
+		}
+	}
+	return nullptr;
 }
 
 JIVE_EXPORTED_INLINE jive::output *
 jive_node_get_gate_output(const jive_node * self, const jive::gate * gate)
 {
-	size_t n;
-	for(n = 0; n < self->noutputs; n++)
-		if (self->outputs[n]->gate == gate) return self->outputs[n];
-	return 0;
+	for (size_t n = 0; n < self->noutputs; n++) {
+		if (self->outputs[n]->gate == gate) {
+			return self->outputs[n];
+		}
+	}
+	return nullptr;
+}
+
+JIVE_EXPORTED_INLINE jive::output *
+jive_node_get_gate_output(const jive_node * self, const char * name)
+{
+	for (size_t n = 0; n < self->noutputs; n++) {
+		jive::output * o = self->outputs[n];
+		if (o->gate && strcmp(o->gate->name, name) == 0) {
+			return o;
+		}
+	}
+	return nullptr;
 }
 
 jive::output *
