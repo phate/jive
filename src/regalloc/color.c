@@ -510,10 +510,9 @@ pick_gate_evict_rescls(jive_shaped_graph * shaped_graph, jive_shaped_variable * 
 		size_t n;
 		for (n = 0; n < rescls->limit; n++)
 			allowed_names.insert(rescls->names[n]);
-		
-		struct jive_gate_interference_hash_iterator i;
-		JIVE_HASH_ITERATE(jive_gate_interference_hash, gate->interference, i) {
-			jive_variable * other_var = i.entry->gate->variable;
+
+		for (auto i = gate->interference.begin(); i != gate->interference.end(); i++) {
+			jive_variable * other_var = i->gate->variable;
 			if (!other_var)
 				continue;
 			allowed_names.erase(jive_variable_get_resource_name(other_var));

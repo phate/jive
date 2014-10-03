@@ -6,13 +6,40 @@
 #ifndef JIVE_VSDG_GATE_INTERFERENCE_H
 #define JIVE_VSDG_GATE_INTERFERENCE_H
 
-#include <jive/util/hash.h>
+#include <jive/util/intrusive-hash.h>
+
+namespace jive{
+	class gate;
+}
+
+struct jive_gate_interference;
+
+typedef struct jive_gate_interference_part jive_gate_interference_part;
+struct jive_gate_interference_part {
+	jive::gate * gate;
+	jive_gate_interference * whole;
+private:
+	jive::detail::intrusive_hash_anchor<jive_gate_interference_part> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		jive::gate*,
+		jive_gate_interference_part,
+		&jive_gate_interference_part::gate,
+		&jive_gate_interference_part::hash_chain
+	> hash_chain_accessor;
+};
 
 typedef struct jive_gate_interference jive_gate_interference;
-typedef struct jive_gate_interference_hash jive_gate_interference_hash;
-typedef struct jive_gate_interference_part jive_gate_interference_part;
+struct jive_gate_interference {
+	jive_gate_interference_part first;
+	jive_gate_interference_part second;
+	size_t count;
+};
 
-JIVE_DECLARE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, jive::gate *, gate,
-	chain);
+typedef jive::detail::intrusive_hash<
+	const jive::gate *,
+	jive_gate_interference_part,
+	jive_gate_interference_part::hash_chain_accessor
+> jive_gate_interference_hash;
 
 #endif

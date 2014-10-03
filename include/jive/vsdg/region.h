@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/region-ssavar-use.h>
 #include <jive/vsdg/section.h>

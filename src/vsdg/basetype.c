@@ -458,7 +458,6 @@ gate::gate(jive_graph * graph, const char name_[])
 	outputs.first = outputs.last = nullptr;
 	may_spill = true;
 	variable = nullptr;
-	jive_gate_interference_hash_init(&interference, graph->context);
 	variable_gate_list.prev = variable_gate_list.next = nullptr;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 	required_rescls = &jive_root_resource_class;
@@ -474,7 +473,6 @@ gate::~gate() noexcept
 	if (variable)
 		jive_variable_unassign_gate(variable, this);
 	
-	jive_gate_interference_hash_fini(&interference);
 	jive_context_free(graph->context, name);
 	
 	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
@@ -522,10 +520,11 @@ jive_gate_get_constraint(jive::gate * self)
 size_t
 jive_gate_interferes_with(const jive::gate * self, const jive::gate * other)
 {
-	jive_gate_interference_part * part;
-	part = jive_gate_interference_hash_lookup(&self->interference, other);
-	if (part) return part->whole->count;
-	else return 0;
+	auto i = self->interference.find(other);
+	if (i != self->interference.end())
+		return i->whole->count;
+
+	return 0;
 }
 
 void

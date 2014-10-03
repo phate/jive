@@ -18,16 +18,16 @@ jive_gate_interference_create(jive::gate * first, jive::gate * second)
 	i->second.whole = i;
 	i->count = 0;
 	
-	jive_gate_interference_hash_insert(&first->interference, &i->second);
-	jive_gate_interference_hash_insert(&second->interference, &i->first);
-	
+	first->interference.insert(&i->second);
+	second->interference.insert(&i->first);
+
 	return i;
 }
 
 void
 jive_gate_interference_destroy(jive_gate_interference * self)
 {
-	jive_gate_interference_hash_remove(&self->first.gate->interference, &self->second);
-	jive_gate_interference_hash_remove(&self->second.gate->interference, &self->first);
+	self->first.gate->interference.erase(&self->second);
+	self->second.gate->interference.erase(&self->first);
 	delete self;
 }

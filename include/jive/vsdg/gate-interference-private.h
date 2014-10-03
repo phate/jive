@@ -14,24 +14,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/notifiers.h>
 
-struct jive_gate_interference_part {
-	jive::gate * gate;
-	struct {
-		jive_gate_interference_part * prev;
-		jive_gate_interference_part * next;
-	} chain;
-	jive_gate_interference * whole;
-};
-
-struct jive_gate_interference {
-	jive_gate_interference_part first;
-	jive_gate_interference_part second;
-	size_t count;
-};
-
-JIVE_DEFINE_HASH_TYPE(jive_gate_interference_hash, jive_gate_interference_part, const jive::gate *,
-	gate, chain);
-
 jive_gate_interference *
 jive_gate_interference_create(jive::gate * first, jive::gate * second);
 
@@ -41,13 +23,11 @@ jive_gate_interference_destroy(jive_gate_interference * self);
 static inline void
 jive_gate_interference_add(jive_graph * graph, jive::gate * first, jive::gate * second)
 {
-	jive_gate_interference * i;
-	jive_gate_interference_part * part = jive_gate_interference_hash_lookup(&first->interference, second);
-	if (part) {
-		i = part->whole;
-		i->count ++;
+	auto iter = first->interference.find(second);
+	if (iter != first->interference.end()) {
+		iter->whole->count++;
 	} else {
-		i = jive_gate_interference_create(first, second);
+		jive_gate_interference * i = jive_gate_interference_create(first, second);
 		i->count = 1;
 		jive_gate_notifier_slot_call(&graph->on_gate_interference_add, first, second);
 	}
@@ -56,9 +36,7 @@ jive_gate_interference_add(jive_graph * graph, jive::gate * first, jive::gate * 
 static inline void
 jive_gate_interference_remove(jive_graph * graph, jive::gate * first, jive::gate * second)
 {
-	jive_gate_interference * i;
-	jive_gate_interference_part * part = jive_gate_interference_hash_lookup(&first->interference, second);
-	i = part->whole;
+	jive_gate_interference * i = first->interference.find(second)->whole;
 	size_t count = -- (i->count);
 	if (!count) {
 		jive_gate_interference_destroy(i);

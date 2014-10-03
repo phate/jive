@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include <jive/common.h>
+#include <jive/util/hash.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
