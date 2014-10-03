@@ -70,21 +70,21 @@ public:
 	virtual
 	~lambda_op() noexcept;
 
-	lambda_op(
-		const lambda_op & other);
+	inline
+	lambda_op(const lambda_op & other) = default;
 
-	lambda_op(
-		lambda_op && other);
+	inline
+	lambda_op(lambda_op && other) = default;
 
-	lambda_op(
-		const jive::fct::type & function_type,
-		const std::vector<jive::gate *> & argument_gates,
-		const std::vector<jive::gate *> & return_gates);
-
-	lambda_op(
-		jive::fct::type && function_type,
-		std::vector<jive::gate *> && argument_gates,
-		std::vector<jive::gate *> && return_gates) noexcept;
+	inline lambda_op(
+		jive::fct::type function_type,
+		std::vector<std::string> argument_names,
+		std::vector<std::string> result_names) noexcept
+		: function_type_(std::move(function_type))
+		, argument_names_(std::move(argument_names))
+		, result_names_(std::move(result_names))
+	{
+	}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -110,16 +110,16 @@ public:
 		return function_type_;
 	}
 
-	inline const std::vector<jive::gate *>
-	argument_gates() const noexcept
+	inline const std::vector<std::string> &
+	argument_names() const noexcept
 	{
-		return argument_gates_;
+		return argument_names_;
 	}
 
-	inline const std::vector<jive::gate *>
-	return_gates() const noexcept
+	inline const std::vector<std::string> &
+	result_names() const noexcept
 	{
-		return return_gates_;
+		return result_names_;
 	}
 
 	virtual std::unique_ptr<jive::operation>
@@ -127,8 +127,8 @@ public:
 
 private:
 	jive::fct::type function_type_;
-	std::vector<jive::gate *> argument_gates_;
-	std::vector<jive::gate *> return_gates_;
+	std::vector<std::string> argument_names_;
+	std::vector<std::string> result_names_;
 };
 
 }

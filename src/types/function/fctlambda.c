@@ -144,50 +144,16 @@ lambda_op::~lambda_op() noexcept
 {
 }
 
-lambda_op::lambda_op(
-	const lambda_op & other)
-	: lambda_op(
-		other.function_type_,
-		other.argument_gates_,
-		other.return_gates_)
-{
-}
-
-lambda_op::lambda_op(
-	lambda_op && other)
-	: lambda_op(
-		std::move(other.function_type_),
-		std::move(other.argument_gates_),
-		std::move(other.return_gates_))
-{
-}
-
-lambda_op::lambda_op(
-	const jive::fct::type & function_type,
-	const std::vector<jive::gate *> & argument_gates,
-	const std::vector<jive::gate *> & return_gates)
-	: function_type_(function_type)
-	, argument_gates_(argument_gates)
-	, return_gates_(return_gates)
-{
-}
-
-lambda_op::lambda_op(
-	jive::fct::type && function_type,
-	std::vector<jive::gate *> && argument_gates,
-	std::vector<jive::gate *> && return_gates) noexcept
-	: function_type_(std::move(function_type))
-	, argument_gates_(std::move(argument_gates))
-	, return_gates_(std::move(return_gates))
-{
-}
-
 bool
 lambda_op::operator==(const operation & other) const noexcept
 {
 	const lambda_op * op =
 		dynamic_cast<const lambda_op *>(&other);
-	return op && op->function_type() == function_type();
+	return
+		op &&
+		op->function_type() == function_type() &&
+		op->argument_names() == argument_names() &&
+		op->result_names() == result_names();
 }
 
 size_t
@@ -239,16 +205,16 @@ jive_lambda_node_create(jive_region * function_region)
 	size_t nreturns = function_region->bottom->ninputs - 1;
 	
 	const jive::base::type * argument_types[narguments];
-	std::vector<jive::gate *> argument_gates;
+	std::vector<std::string> argument_names;
 	for (size_t n = 0; n < narguments; n++) {
 		argument_types[n] = &function_region->top->outputs[n+1]->type();
-		argument_gates.push_back(function_region->top->outputs[n+1]->gate);
+		argument_names.push_back(function_region->top->outputs[n+1]->gate->name);
 	}
 	const jive::base::type * return_types[nreturns];
-	std::vector<jive::gate *> return_gates;
+	std::vector<std::string> result_names;
 	for (size_t n = 0; n < nreturns; n++) {
 		return_types[n] = &function_region->bottom->inputs[n+1]->type();
-		return_gates.push_back(function_region->bottom->inputs[n+1]->gate);
+		result_names.push_back(function_region->bottom->inputs[n+1]->gate->name);
 	}
 	
 	jive::fct::type function_type(
@@ -257,8 +223,8 @@ jive_lambda_node_create(jive_region * function_region)
 	
 	jive::fct::lambda_op op(
 		std::move(function_type),
-		std::move(argument_gates),
-		std::move(return_gates));
+		std::move(argument_names),
+		std::move(result_names));
 
 	return op.create_node(function_region->parent, 1, &function_region->bottom->outputs[0]);
 }
@@ -398,8 +364,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_substitution_map * substitution = jive_substitution_map_create(apply_node->graph->context);
 	
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {
-		jive::gate * gate = op.argument_gates()[n];
-		jive::output * output = jive_node_get_gate_output(head, gate);
+		jive::output * output = jive_node_get_gate_output(head, op.argument_names()[n].c_str());
 		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin());
 	}
 	
@@ -407,8 +372,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 		apply_node->region, substitution, false, false);
 	
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
-		jive::gate * gate = op.return_gates()[n];
-		jive::input * input = jive_node_get_gate_input(tail, gate);
+		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
 		jive::output * substituted = jive_substitution_map_lookup_output(substitution, input->origin());
 		jive::output * output = apply_node->outputs[n];
 		jive_output_replace(output, substituted);
