@@ -8,7 +8,7 @@
 
 #include <stdbool.h>
 
-#include <jive/util/hash.h>
+#include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/unary.h>
 
@@ -200,23 +200,94 @@ struct jive_negotiator_port {
 	} connection_port_list;
 	
 	jive_negotiator_option * option;
-	
+
 	jive_negotiator_port_attach attach;
-	struct {
-		jive_negotiator_port * prev;
-		jive_negotiator_port * next;
-	} hash_chain;
-	union {
-		jive::input * input;
-		jive::output * output;
-	} hash_key;
-	
+
 	bool specialized;
 	struct {
 		jive_negotiator_port * prev;
 		jive_negotiator_port * next;
 	} specialized_list;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_negotiator_port> hash_chain_;
+
+public:
+	union {
+		const jive::input * input;
+		const jive::output * output;
+	} hash_key_;
+
+	class input_hash_chain_accessor {
+	public:
+		inline const jive::input *
+		get_key(const jive_negotiator_port * obj) const noexcept
+		{
+			return obj->hash_key_.input;
+		}
+		inline jive_negotiator_port *
+		get_prev(const jive_negotiator_port * obj) const noexcept
+		{
+			return obj->hash_chain_.prev;
+		}
+		inline void
+		set_prev(jive_negotiator_port * obj, jive_negotiator_port * prev) const noexcept
+		{
+			obj->hash_chain_.prev = prev;
+		}
+		inline jive_negotiator_port *
+		get_next(const jive_negotiator_port * obj) const noexcept
+		{
+			return obj->hash_chain_.next;
+		}
+		inline void
+		set_next(jive_negotiator_port * obj, jive_negotiator_port * next) const noexcept
+		{
+			obj->hash_chain_.next = next;
+		}
+	};
+	class output_hash_chain_accessor {
+	public:
+		inline const jive::output *
+		get_key(const jive_negotiator_port * obj) const noexcept
+		{
+			return obj->hash_key_.output;
+		}
+		inline jive_negotiator_port *
+		get_prev(const jive_negotiator_port * obj) const noexcept
+		{
+			return obj->hash_chain_.prev;
+		}
+		inline void
+		set_prev(jive_negotiator_port * obj, jive_negotiator_port * prev) const noexcept
+		{
+			obj->hash_chain_.prev = prev;
+		}
+		inline jive_negotiator_port *
+		get_next(const jive_negotiator_port * obj) const noexcept
+		{
+			return obj->hash_chain_.next;
+		}
+		inline void
+		set_next(jive_negotiator_port * obj, jive_negotiator_port * next) const noexcept
+		{
+			obj->hash_chain_.next = next;
+		}
+	};
 };
+
+typedef jive::detail::intrusive_hash<
+	const jive::input *,
+	jive_negotiator_port,
+	jive_negotiator_port::input_hash_chain_accessor
+> jive_negotiator_input_hash;
+
+typedef jive::detail::intrusive_hash<
+	const jive::output *,
+	jive_negotiator_port,
+	jive_negotiator_port::output_hash_chain_accessor
+> jive_negotiator_output_hash;
+
 
 /* connections */
 
@@ -255,15 +326,85 @@ struct jive_negotiator_constraint {
 		jive_negotiator_constraint * next;
 	} negotiator_constraint_list;
 	
-	struct {
-		jive_negotiator_constraint * prev;
-		jive_negotiator_constraint * next;
-	} hash_chain;
+private:
+	jive::detail::intrusive_hash_anchor<jive_negotiator_constraint> hash_chain_;
+public:
 	union {
-		struct jive_node * node;
-		jive::gate * gate;
-	} hash_key;
+		const jive_node * node;
+		const jive::gate * gate;
+	} hash_key_;
+
+	class gate_hash_chain_accessor {
+	public:
+		inline const jive::gate *
+		get_key(const jive_negotiator_constraint * obj) const noexcept
+		{
+			return obj->hash_key_.gate;
+		}
+		inline jive_negotiator_constraint *
+		get_prev(const jive_negotiator_constraint * obj) const noexcept
+		{
+			return obj->hash_chain_.prev;
+		}
+		inline void
+		set_prev(jive_negotiator_constraint * obj, jive_negotiator_constraint * prev) const noexcept
+		{
+			obj->hash_chain_.prev = prev;
+		}
+		inline jive_negotiator_constraint *
+		get_next(const jive_negotiator_constraint * obj) const noexcept
+		{
+			return obj->hash_chain_.next;
+		}
+		inline void
+		set_next(jive_negotiator_constraint * obj, jive_negotiator_constraint * next) const noexcept
+		{
+			obj->hash_chain_.next = next;
+		}
+	};
+
+	class node_hash_chain_accessor {
+	public:
+		inline const jive_node *
+		get_key(const jive_negotiator_constraint * obj) const noexcept
+		{
+			return obj->hash_key_.node;
+		}
+		inline jive_negotiator_constraint *
+		get_prev(const jive_negotiator_constraint * obj) const noexcept
+		{
+			return obj->hash_chain_.prev;
+		}
+		inline void
+		set_prev(jive_negotiator_constraint * obj, jive_negotiator_constraint * prev) const noexcept
+		{
+			obj->hash_chain_.prev = prev;
+		}
+		inline jive_negotiator_constraint *
+		get_next(const jive_negotiator_constraint * obj) const noexcept
+		{
+			return obj->hash_chain_.next;
+		}
+		inline void
+		set_next(jive_negotiator_constraint * obj, jive_negotiator_constraint * next) const noexcept
+		{
+			obj->hash_chain_.next = next;
+		}
+	};
 };
+
+typedef jive::detail::intrusive_hash<
+	const jive::gate *,
+	jive_negotiator_constraint,
+	jive_negotiator_constraint::gate_hash_chain_accessor
+> jive_negotiator_gate_hash;
+
+typedef jive::detail::intrusive_hash<
+	const jive_node *,
+	jive_negotiator_constraint,
+	jive_negotiator_constraint::node_hash_chain_accessor
+> jive_negotiator_node_hash;
+
 
 struct jive_negotiator_constraint_class {
 	void (*fini)(jive_negotiator_constraint * self);
@@ -272,19 +413,6 @@ struct jive_negotiator_constraint_class {
 
 jive_negotiator_constraint *
 jive_negotiator_identity_constraint_create(jive_negotiator * self);
-
-JIVE_DECLARE_HASH_TYPE(
-	jive_negotiator_node_hash,
-	jive_negotiator_constraint,
-	jive_node *,
-	hash_key.node,
-	hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, jive::gate *,
-	hash_key.gate, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive::input *,
-	hash_key.input, hash_chain);
-JIVE_DECLARE_HASH_TYPE(jive_negotiator_output_hash, jive_negotiator_port, jive::output *,
-	hash_key.output, hash_chain);
 
 struct jive_negotiator_class {
 	/* create empty option (probably invalid) */
@@ -311,9 +439,9 @@ struct jive_negotiator {
 	struct jive_context * context;
 	jive_negotiator_input_hash input_map;
 	jive_negotiator_output_hash output_map;
-	jive_negotiator_node_hash node_map;
 	jive_negotiator_gate_hash gate_map;
-	
+	jive_negotiator_node_hash node_map;
+
 	struct {
 		jive_negotiator_connection * first;
 		jive_negotiator_connection * last;

@@ -24,19 +24,6 @@ jive_negotiator_option::~jive_negotiator_option() noexcept
 void
 jive_negotiator_connection_destroy(jive_negotiator_connection * self);
 
-JIVE_DEFINE_HASH_TYPE(
-	jive_negotiator_node_hash,
-	jive_negotiator_constraint,
-	jive_node *,
-	hash_key.node,
-	hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_negotiator_gate_hash, jive_negotiator_constraint, jive::gate *,
-	hash_key.gate, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_negotiator_input_hash, jive_negotiator_port, jive::input *,
-	hash_key.input, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_negotiator_output_hash, jive_negotiator_port, jive::output *,
-	hash_key.output, hash_chain);
-
 /* options */
 
 static inline jive_negotiator_option *
@@ -251,10 +238,10 @@ jive_negotiator_port_destroy(jive_negotiator_port * self)
 	switch (self->attach) {
 		case jive_negotiator_port_attach_none:
 		case jive_negotiator_port_attach_input:
-			jive_negotiator_input_hash_remove(&negotiator->input_map, self);
+			negotiator->input_map.erase(self);
 			break;
 		case jive_negotiator_port_attach_output:
-			jive_negotiator_output_hash_remove(&negotiator->output_map, self);
+			negotiator->output_map.erase(self);
 			break;
 	}
 	
@@ -393,8 +380,6 @@ jive_negotiator_constraint_init_(
 	self->ports.first = self->ports.last = 0;
 	
 	JIVE_LIST_PUSH_BACK(negotiator->constraints, self, negotiator_constraint_list);
-	
-	self->hash_key.node = 0;
 }
 
 void
@@ -452,11 +437,7 @@ jive_negotiator_init_(
 	self->class_ = class_;
 	self->graph = graph;
 	self->context = graph->context;
-	jive_negotiator_input_hash_init(&self->input_map, graph->context);
-	jive_negotiator_output_hash_init(&self->output_map, graph->context);
-	jive_negotiator_node_hash_init(&self->node_map, graph->context);
-	jive_negotiator_gate_hash_init(&self->gate_map, graph->context);
-	
+
 	self->validated_connections.first = self->validated_connections.last = 0;
 	self->invalidated_connections.first = self->invalidated_connections.last = 0;
 	self->constraints.first = self->constraints.last = 0;
@@ -495,11 +476,6 @@ jive_negotiator_fini_(jive_negotiator * self)
 	while(self->invalidated_connections.first) {
 		jive_negotiator_connection_destroy(self->invalidated_connections.first);
 	}
-	
-	jive_negotiator_input_hash_fini(&self->input_map);
-	jive_negotiator_output_hash_fini(&self->output_map);
-	jive_negotiator_node_hash_fini(&self->node_map);
-	jive_negotiator_gate_hash_fini(&self->gate_map);
 }
 
 void
@@ -527,19 +503,31 @@ jive_negotiator_fully_specialize(jive_negotiator * self)
 jive_negotiator_port *
 jive_negotiator_map_input(const jive_negotiator * self, jive::input * input)
 {
-	return jive_negotiator_input_hash_lookup(&self->input_map, input);
+	auto i = self->input_map.find(input);
+	if (i != self->input_map.end())
+		return i.ptr();
+	else
+		return nullptr;
 }
 	
 jive_negotiator_port *
 jive_negotiator_map_output(const jive_negotiator * self, jive::output * output)
 {
-	return jive_negotiator_output_hash_lookup(&self->output_map, output);
+	auto i = self->output_map.find(output);
+	if (i != self->output_map.end())
+		return i.ptr();
+	else
+		return nullptr;
 }
 	
 jive_negotiator_constraint *
 jive_negotiator_map_gate(const jive_negotiator * self, jive::gate * gate)
 {
-	return jive_negotiator_gate_hash_lookup(&self->gate_map, gate);
+	auto i = self->gate_map.find(gate);
+	if (i != self->gate_map.end())
+		return i.ptr();
+	else
+		return nullptr;
 }
 	
 jive_negotiator_connection *
@@ -577,8 +565,8 @@ jive_negotiator_annotate_gate(jive_negotiator * self, jive::gate * gate)
 	jive_negotiator_constraint * constraint = jive_negotiator_map_gate(self, gate);
 	if (!constraint) {
 		constraint = jive_negotiator_identity_constraint_create(self);
-		constraint->hash_key.gate = gate;
-		jive_negotiator_gate_hash_insert(&self->gate_map, constraint);
+		constraint->hash_key_.gate = gate;
+		self->gate_map.insert(constraint);
 	}
 	return constraint;
 }
@@ -595,8 +583,8 @@ jive_negotiator_annotate_identity(jive_negotiator * self,
 		jive::input * input = inputs[n];
 		jive_negotiator_connection * connection = jive_negotiator_create_input_connection(self, input);
 		jive_negotiator_port * port = jive_negotiator_port_create(constraint, connection, option);
-		port->hash_key.input = input;
-		jive_negotiator_input_hash_insert(&self->input_map, port);
+		port->hash_key_.input = input;
+		self->input_map.insert(port);
 		port->attach = jive_negotiator_port_attach_input;
 	}
 	
@@ -604,8 +592,8 @@ jive_negotiator_annotate_identity(jive_negotiator * self,
 		jive::output * output = outputs[n];
 		jive_negotiator_connection * connection = jive_negotiator_create_output_connection(self, output);
 		jive_negotiator_port * port = jive_negotiator_port_create(constraint, connection, option);
-		port->hash_key.output = output;
-		jive_negotiator_output_hash_insert(&self->output_map, port);
+		port->hash_key_.output = output;
+		self->output_map.insert(port);
 		port->attach = jive_negotiator_port_attach_output;
 	}
 	return constraint;
@@ -628,8 +616,8 @@ jive_negotiator_annotate_identity_node(
 	jive_negotiator_constraint * constraint;
 	constraint = jive_negotiator_annotate_identity(
 		self, ninputs, &node->inputs[0], noutputs, &node->outputs[0], option);
-	constraint->hash_key.node = node;
-	jive_negotiator_node_hash_insert(&self->node_map, constraint);
+	constraint->hash_key_.node = node;
+	self->node_map.insert(constraint);
 	
 	return constraint;
 }
@@ -641,8 +629,8 @@ jive_negotiator_annotate_simple_input(jive_negotiator * self, jive::input * inpu
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
 	jive_negotiator_connection * connection = jive_negotiator_create_input_connection(self, input);
 	jive_negotiator_port * port = jive_negotiator_port_create(constraint, connection, option);
-	port->hash_key.input = input;
-	jive_negotiator_input_hash_insert(&self->input_map, port);
+	port->hash_key_.input = input;
+	self->input_map.insert(port);
 	port->attach = jive_negotiator_port_attach_input;
 	
 	return port;
@@ -655,8 +643,8 @@ jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::output * ou
 	jive_negotiator_constraint * constraint = jive_negotiator_identity_constraint_create(self);
 	jive_negotiator_connection * connection = jive_negotiator_create_output_connection(self, output);
 	jive_negotiator_port * port = jive_negotiator_port_create(constraint, connection, option);
-	port->hash_key.output = output;
-	jive_negotiator_output_hash_insert(&self->output_map, port);
+	port->hash_key_.output = output;
+	self->output_map.insert(port);
 	port->attach = jive_negotiator_port_attach_output;
 	
 	return port;
@@ -677,8 +665,8 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 			jive_negotiator_create_input_connection(self, input);
 		jive_negotiator_port * port =
 			jive_negotiator_port_create(constraint, connection, self->tmp_option);
-		port->hash_key.input = input;
-		jive_negotiator_input_hash_insert(&self->input_map, port);
+		port->hash_key_.input = input;
+		self->input_map.insert(port);
 	}
 	for(n = 0; n < node->noutputs; n++) {
 		jive::output * output = node->outputs[n];
@@ -691,8 +679,8 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 			jive_negotiator_create_output_connection(self, output);
 		jive_negotiator_port * port =
 			jive_negotiator_port_create(constraint, connection, self->tmp_option);
-		port->hash_key.output = output;
-		jive_negotiator_output_hash_insert(&self->output_map, port);
+		port->hash_key_.output = output;
+		self->output_map.insert(port);
 	}
 	self->class_->annotate_node_proper(self, node);
 }
