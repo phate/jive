@@ -11,13 +11,14 @@
 
 class jive_node;
 class jive_region;
-class jive_node_normal_form;
 
 namespace jive {
 
 namespace base {
-	class type;
+class type;
 }
+
+class node_normal_form;
 class output;
 
 class operation {

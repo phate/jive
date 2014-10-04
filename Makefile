@@ -8,25 +8,31 @@ CFLAGS+=-g --std=c++0x -xc++ -fpermissive
 # VSDG core
 LIBJIVE_SRC = \
 	src/context.c \
+	src/vsdg/anchor-normal-form.c \
 	src/vsdg/anchor.c \
 	src/vsdg/anchortype.c \
 	src/vsdg/basetype.c \
 	src/vsdg/control.c \
 	src/vsdg/controltype.c \
 	src/vsdg/equivalence.c \
+	src/vsdg/gamma-normal-form.c \
 	src/vsdg/gamma.c \
 	src/vsdg/gate-interference.c \
 	src/vsdg/graph.c \
 	src/vsdg/label.c \
 	src/vsdg/negotiator.c \
+	src/vsdg/node-normal-form.c \
 	src/vsdg/node.c \
 	src/vsdg/notifiers.c \
 	src/vsdg/objdef.c \
 	src/vsdg/operators.c \
 	src/vsdg/operators/base.c \
+	src/vsdg/operators/binary-normal-form.c \
 	src/vsdg/operators/binary.c \
 	src/vsdg/operators/nullary.c \
+	src/vsdg/operators/unary-normal-form.c \
 	src/vsdg/operators/unary.c \
+	src/vsdg/phi-normal-form.c \
 	src/vsdg/phi.c \
 	src/vsdg/region.c \
 	src/vsdg/resource.c \
@@ -129,6 +135,7 @@ LIBJIVE_SRC += \
 	src/arch/subroutine.c \
 	src/arch/subroutine/nodes.c \
 	src/arch/regselector.c \
+	src/arch/load-normal-form.c \
 	src/arch/load.c \
 	src/arch/store.c \
 	src/arch/addresstype.c \

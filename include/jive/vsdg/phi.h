@@ -11,29 +11,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 
-/* phi node normal form */
-
-typedef struct jive_anchor_node_normal_form jive_phi_node_normal_form;
-typedef struct jive_phi_node_normal_form_class jive_phi_node_normal_form_class;
-
-extern const jive_phi_node_normal_form_class JIVE_PHI_NODE_NORMAL_FORM_;
-#define JIVE_PHI_NODE_NORMAL_FORM (JIVE_PHI_NODE_NORMAL_FORM_.base.base)
-
-struct jive_phi_node_normal_form_class {
-	jive_anchor_node_normal_form_class base;
-	void (*normalized_create)(const jive_phi_node_normal_form * self,
-		jive_region * phi_region, jive::output * results[]);
-};
-
-JIVE_EXPORTED_INLINE jive_phi_node_normal_form *
-jive_phi_node_normal_form_cast(jive_node_normal_form * self)
-{
-	if (jive_node_normal_form_isinstance(self, &JIVE_PHI_NODE_NORMAL_FORM))
-		return (jive_phi_node_normal_form *) self;
-	else
-		return NULL;
-}
-
 /* phi node */
 
 extern const jive_anchor_node_class JIVE_PHI_NODE;

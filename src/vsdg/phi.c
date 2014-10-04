@@ -13,6 +13,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/phi-normal-form.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/valuetype.h>
 
@@ -140,102 +141,6 @@ phi_op::copy() const
 
 }
 
-/* phi node normal form */
-
-static bool
-jive_phi_node_normal_form_normalize_node_(const jive_node_normal_form * self_, jive_node * node)
-{
-	const jive_phi_node_normal_form * self = (const jive_phi_node_normal_form *) self_;
-	if (!self->base.enable_mutable)
-		return true;
-
-	const jive_node_attrs * attrs = jive_node_get_attrs(node);
-
-	if (self->base.enable_cse) {
-		jive::output * tmp = node->inputs[0]->origin();
-		jive_node * new_node = jive_node_cse(node->region, self->base.node_class, attrs, 1, &tmp);
-		JIVE_DEBUG_ASSERT(new_node);
-		if (new_node != node) {
-			jive_output_replace(node->outputs[0], new_node->outputs[0]);
-			/* FIXME: not sure whether "destroy" is really appropriate */
-			jive_node_destroy(node);
-			return false;
-		}
-	}
-
-	return true;
-}
-
-static bool
-jive_phi_node_normal_form_operands_are_normalized_(const jive_node_normal_form * self_,
-	size_t noperands, jive::output * const operands[], const jive_node_attrs * attrs)
-{
-	const jive_phi_node_normal_form * self = (const jive_phi_node_normal_form *) self_;
-	if (!self->base.enable_mutable)
-		return true;
-
-	JIVE_DEBUG_ASSERT(noperands == 1);
-
-	jive_region * region = operands[0]->node()->region;
-	const jive_node_class * cls = self->base.node_class;
-
-	if (self->base.enable_cse && jive_node_cse(region, cls, attrs, noperands, operands))
-		return false;
-
-	return true;
-}
-
-static void
-jive_phi_node_normalized_create_(const jive_phi_node_normal_form * self,
-	struct jive_region * phi_region, jive::output  * results[])
-{
-	const jive_node_class * cls = self->base.node_class;
-
-	JIVE_DEBUG_ASSERT(jive_region_get_bottom_node(phi_region)->noutputs == 1);
-	jive_node * leave = jive_region_get_bottom_node(phi_region);
-	jive::output * operand = leave->outputs[0];
-
-	if (!self->base.enable_mutable) {
-		size_t n;
-		jive_node * node = cls->create(phi_region->parent, NULL, 1, &operand);
-		for (n = 0; n < node->noutputs; n++)
-			results[n] = node->outputs[n];
-		return;
-	}
-
-	if (self->base.enable_cse) {
-		size_t n;
-		jive_node * node = jive_node_cse(phi_region, cls, NULL, 1, &operand);
-		if (node) {
-			for (n = 0; n < node->noutputs; n++)
-				results[n] = node->outputs[n];
-			return;
-		}
-	}
-
-	size_t n;
-	jive_node * node = cls->create(phi_region->parent, NULL, 1, &operand);
-	for (n = 0; n < node->noutputs; n++)
-		results[n] = node->outputs[n];
-	return;
-}
-
-const jive_phi_node_normal_form_class JIVE_PHI_NODE_NORMAL_FORM_ = {
-	base : { /* jive_anchor_node_normal_form_class */
-		base : { /* jive_node_normal_form_class */
-			parent : &JIVE_ANCHOR_NODE_NORMAL_FORM,
-			fini : jive_node_normal_form_fini_, /* inherit */
-			normalize_node : jive_phi_node_normal_form_normalize_node_, /* override */
-			operands_are_normalized : jive_phi_node_normal_form_operands_are_normalized_, /* override */
-			normalized_create : NULL,
-			set_mutable : jive_node_normal_form_set_mutable_, /* inherit */
-			set_cse : jive_node_normal_form_set_cse_ /* inherit */
-		},
-		set_reducible : jive_anchor_node_normal_form_set_reducible_ /* inherit */
-	},
-	normalized_create : jive_phi_node_normalized_create_
-};
-
 /* phi enter node */
 
 const jive_node_class JIVE_PHI_ENTER_NODE = {
@@ -264,9 +169,9 @@ const jive_node_class JIVE_PHI_LEAVE_NODE = {
 
 /* phi node */
 
-static jive_node_normal_form *
+static jive::node_normal_form *
 jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
-	jive_node_normal_form * parent_, struct jive_graph * graph);
+	jive::node_normal_form * parent_, struct jive_graph * graph);
 
 const jive_node_class JIVE_PHI_NODE = {
 	parent : &JIVE_ANCHOR_NODE,
@@ -280,17 +185,14 @@ const jive_node_class JIVE_PHI_NODE = {
 };
 
 
-static jive_node_normal_form *
+static jive::node_normal_form *
 jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
-	jive_node_normal_form * parent_, struct jive_graph * graph)
+	jive::node_normal_form * parent_, jive_graph * graph)
 {
-	jive_context * context = graph->context;
-	jive_phi_node_normal_form * nf = new jive_phi_node_normal_form;
-	nf->base.class_ = &JIVE_PHI_NODE_NORMAL_FORM;
+	jive::phi_normal_form * nf = new jive::phi_normal_form(cls, parent_, graph);
+	nf->class_ = &JIVE_PHI_NODE_NORMAL_FORM;
 
-	jive_anchor_node_normal_form_init_(nf, cls, parent_, graph);
-
-	return &nf->base;
+	return nf;
 }
 
 typedef struct jive_phi_build_state jive_phi_build_state;

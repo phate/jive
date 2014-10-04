@@ -1,18 +1,18 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
+#include <jive/types/bitstring.h>
+#include <jive/types/function/fctlambda.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/types/function/fctlambda.h>
-#include <jive/types/bitstring.h>
 
 static int test_main(void)
 {
@@ -29,9 +29,9 @@ static int test_main(void)
 	jive::output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph, 32, 4);
 	
-	jive_node_normal_form * sum_nf = jive_graph_get_nodeclass_form(graph, &JIVE_BITSUM_NODE);
+	jive::node_normal_form * sum_nf = jive_graph_get_nodeclass_form(graph, &JIVE_BITSUM_NODE);
 	assert(sum_nf);
-	jive_node_normal_form_set_mutable(sum_nf, false);
+	sum_nf->set_mutable(false);
 	jive::output * tmparray1[] = {lambda->arguments[0], c0};
 
 	jive::output * sum0 = jive_bitsum(2, tmparray1);
@@ -48,7 +48,7 @@ static int test_main(void)
 	jive::output * arg = lambda_node->producer(0)->producer(0)->outputs[1];
 	jive_graph_export(graph, lambda_node->outputs[0]);
 	
-	jive_node_normal_form_set_mutable(sum_nf, true);
+	sum_nf->set_mutable(true);
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
 	

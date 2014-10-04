@@ -178,7 +178,7 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 		*operand_type, *input_option,
 		*output_type, *output_option);
 	
-	const jive_node_normal_form * nf =
+	const jive::node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &JIVE_NEGOTIATOR_SPLIT_NODE);
 	jive_node * node = jive_node_cse_create(nf, region, &op, 1, &operand);
 	return node->outputs[0];

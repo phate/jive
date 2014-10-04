@@ -5,18 +5,18 @@
 
 #include "test-registry.h"
 
-#include <stdio.h>
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
+#include <stdio.h>
 
-#include <jive/vsdg.h>
-#include <jive/vsdg/equivalence.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/subroutine.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
 #include <jive/view.h>
+#include <jive/vsdg.h>
+#include <jive/vsdg/equivalence.h>
 
 static void
 my_error(jive_serialization_driver * drv, const char msg[])
@@ -51,9 +51,7 @@ static int test_main(void)
 	jive_subroutine_end(sub);
 	
 	/* inhibit implicit normalization */
-	jive_node_normal_form_set_mutable(
-		jive_graph_get_nodeclass_form(gr1, &JIVE_NODE),
-		false);
+	jive_graph_get_nodeclass_form(gr1, &JIVE_NODE)->set_mutable(false);
 	int64_t tmparray2[] = {42};
 	
 	jive_node * n1 = jive_instruction_node_create_simple(

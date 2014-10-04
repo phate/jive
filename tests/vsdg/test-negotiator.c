@@ -162,7 +162,7 @@ jive_negtestnode_create(
 		noperands, input_options, operand_types,
 		noutputs, output_options, output_types);
 	
-	const jive_node_normal_form * nf =
+	const jive::node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &NEGTESTNODE);
 	jive_node * node = jive_node_cse_create(nf, region, &op, noperands, operands);
 	return node;

@@ -16,6 +16,7 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/substitution.h>
@@ -177,13 +178,13 @@ jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * a
 	jive_context_fatal_error(context, "Checking of node operands failed.");
 }
 
-jive_node_normal_form *
-jive_node_get_default_normal_form_(const jive_node_class * cls, jive_node_normal_form * parent,
+jive::node_normal_form *
+jive_node_get_default_normal_form_(
+	const jive_node_class * cls, jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive_node_normal_form * normal_form = new jive_node_normal_form;
+	jive::node_normal_form * normal_form = new jive::node_normal_form(cls, parent, graph);
 	normal_form->class_ = &JIVE_NODE_NORMAL_FORM;
-	jive_node_normal_form_init_(normal_form, cls, parent, graph);
 	return normal_form;
 }
 
@@ -691,8 +692,13 @@ jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * 
 	jive::output * results[])
 {
 	jive_node_check_operands(class_, attrs, noperands, operands, graph->context);
-	jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, class_);
-	jive_node_normal_form_normalized_create(nf, graph, attrs, noperands, operands, results);
+	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, class_);
+	std::vector<jive::output *> arguments(operands, operands + noperands);
+	std::vector<jive::output *> tmp_results =
+		nf->normalized_create(*attrs, arguments);
+	for (size_t n = 0; n < tmp_results.size(); ++n) {
+		results[n] = tmp_results[n];
+	}
 }
 
 jive_tracker_nodestate *
@@ -722,111 +728,27 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 	return nodestate;
 }
 
-/* normal forms */
-
-const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM = {
-	parent : 0,
-	fini : jive_node_normal_form_fini_,
-	normalize_node : jive_node_normal_form_normalize_node_,
-	operands_are_normalized : jive_node_normal_form_operands_are_normalized_,
-	normalized_create : jive_node_normal_form_normalized_create_,
-	set_mutable : jive_node_normal_form_set_mutable_,
-	set_cse : jive_node_normal_form_set_cse_
-};
-
-void
-jive_node_normal_form_fini_(jive_node_normal_form * self)
-{
-}
-
-bool
-jive_node_normal_form_normalize_node_(const jive_node_normal_form * self, jive_node * node)
-{
-	return true;
-}
-
-bool
-jive_node_normal_form_operands_are_normalized_(const jive_node_normal_form * self,
-	size_t noperands, jive::output * const operands[],
-	const jive_node_attrs * attrs)
-{
-	return true;
-}
-
-void
-jive_node_normal_form_normalized_create_(const jive_node_normal_form * self, jive_graph * graph,
-	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
-	jive::output * results[])
-{
-	const jive_node_class * cls = self->node_class;
-
-	jive_region * region = graph->root_region;
-	if (noperands != 0)
-		region = jive_region_innermost(noperands, operands);
-
-	jive_node * node = NULL;
-	if (self->enable_mutable && self->enable_cse)
-		node = jive_node_cse(region, cls, attrs, noperands, operands);
-
-	if (!node) {
-		node = jive_node_create(cls, *attrs, region, noperands, operands);
-	}
-
-	size_t n;
-	for (n = 0; n < node->noutputs; n++)
-		results[n] = node->outputs[n];
-}
-
-void
-jive_node_normal_form_set_mutable_(jive_node_normal_form * self, bool enable)
-{
-	if (self->enable_mutable == enable)
-		return;
-	
-	self->enable_mutable = enable;
-	jive_node_normal_form * child;
-	JIVE_LIST_ITERATE(self->subclasses, child, normal_form_subclass_list) {
-		jive_node_normal_form_set_mutable(child, enable);
-	}
-	if (enable)
-		jive_graph_mark_denormalized(self->graph);
-}
-
-void
-jive_node_normal_form_set_cse_(jive_node_normal_form * self, bool enable)
-{
-	if (self->enable_cse == enable)
-		return;
-	
-	self->enable_cse = enable;
-	jive_node_normal_form * child;
-	JIVE_LIST_ITERATE(self->subclasses, child, normal_form_subclass_list) {
-		jive_node_normal_form_set_cse(child, enable);
-	}
-	if (enable && self->enable_mutable)
-		jive_graph_mark_denormalized(self->graph);
-}
-
 jive_node *
-jive_node_cse_create(const jive_node_normal_form * self, struct jive_region * region,
+jive_node_cse_create(const jive::node_normal_form * nf, struct jive_region * region,
 	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[])
 {
-	const jive_node_class * cls = self->node_class;
+	const jive_node_class * cls = nf->node_class;
 	
 	jive_node * node;
-	if (self->enable_mutable && self->enable_cse) {
+	if (nf->get_mutable() && nf->get_cse()) {
 		node = jive_node_cse(region, cls, attrs, noperands, operands);
-		if (node)
+		if (node) {
 			return node;
+		}
 	}
 
 	return jive_node_create(cls, *attrs, region, noperands, operands);
 }
 
 bool
-jive_node_normalize(struct jive_node * self)
+jive_node_normalize(jive_node * self)
 {
 	jive_graph * graph = self->region->graph;
-	const jive_node_normal_form * nf = jive_graph_get_nodeclass_form(graph, self->class_);
-	return jive_node_normal_form_normalize_node(nf, self);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, self->class_);
+	return nf->normalize_node(self);
 }

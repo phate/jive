@@ -5,16 +5,16 @@
 
 #include "test-registry.h"
 
-#include <stdio.h>
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
+#include <stdio.h>
 
-#include <jive/vsdg.h>
-#include <jive/vsdg/equivalence.h>
-#include <jive/types/bitstring.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
+#include <jive/types/bitstring.h>
 #include <jive/util/buffer.h>
+#include <jive/vsdg.h>
+#include <jive/vsdg/equivalence.h>
 
 static void
 my_error(jive_serialization_driver * drv, const char msg[])
@@ -33,9 +33,7 @@ static int test_main(void)
 	
 	/* inhibit implicit normalization */
 	jive_graph * gr1 = jive_graph_create(ctx);
-	jive_node_normal_form_set_mutable(
-		jive_graph_get_nodeclass_form(gr1, &JIVE_NODE),
-		false);
+	jive_graph_get_nodeclass_form(gr1, &JIVE_NODE)->set_mutable(false);
 	
 	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
 	jive::output * b = jive_bitslice(a, 2, 6);

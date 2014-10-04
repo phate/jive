@@ -115,7 +115,7 @@ jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::outp
 	jive::output * arguments[] = {ctl, value};
 	jive_region * region = jive_region_innermost(2, arguments);
 	
-	const jive_node_normal_form * nf =
+	const jive::node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, &JIVE_REGVALUE_NODE);
 	jive_node * node = jive_node_cse_create(nf, region, &op, 2, arguments);
 	return node->outputs[0];

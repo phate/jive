@@ -10,60 +10,10 @@
 #include <memory>
 
 #include <jive/util/ptr-collection.h>
+#include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/valuetype.h>
-
-/* load normal form */
-
-struct jive_load_node_normal_form;
-struct jive_load_node_normal_form_class;
-
-struct jive_load_node_normal_form_class {
-	jive_node_normal_form_class base;
-	void (*set_reducible)(jive_load_node_normal_form * self, bool enable);
-	jive::output * (*normalized_create)(const jive_load_node_normal_form * self,
-		struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
-		size_t nstates, jive::output * const states[]);
-};
-
-extern const jive_load_node_normal_form_class JIVE_LOAD_NODE_NORMAL_FORM_;
-#define JIVE_LOAD_NODE_NORMAL_FORM (JIVE_LOAD_NODE_NORMAL_FORM_.base)
-
-struct jive_load_node_normal_form {
-	jive_node_normal_form base;
-	bool enable_reducible;
-};
-
-JIVE_EXPORTED_INLINE jive_load_node_normal_form *
-jive_load_node_normal_form_cast(jive_node_normal_form * self)
-{
-	if (jive_node_normal_form_isinstance(self, &JIVE_LOAD_NODE_NORMAL_FORM))
-		return (jive_load_node_normal_form *) self;
-	else
-		return NULL;
-}
-
-JIVE_EXPORTED_INLINE jive::output *
-jive_load_node_normalized_create(const jive_load_node_normal_form * self,
-	struct jive_region * region, const jive_node_attrs * attrs, jive::output * address,
-	size_t nstates, jive::output * const states[])
-{
-	const jive_load_node_normal_form_class * cls;
-	cls = (const jive_load_node_normal_form_class *) self->base.class_;
-
-	return cls->normalized_create(self, region, attrs, address, nstates, states);
-}
-
-JIVE_EXPORTED_INLINE void
-jive_load_node_set_reducible(jive_load_node_normal_form * self, bool reducible)
-{
-	const jive_load_node_normal_form_class * cls;
-	cls = (const jive_load_node_normal_form_class *) self->base.class_;
-	cls->set_reducible(self, reducible);
-}
-
-/* load node */
 
 namespace jive {
 

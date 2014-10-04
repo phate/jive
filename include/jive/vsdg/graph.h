@@ -90,13 +90,12 @@ typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 
 struct jive_node;
 struct jive_node_class;
-struct jive_node_normal_form;
 struct jive_region;
 struct jive_resource;
 
 JIVE_DECLARE_HASH_TYPE(
 	jive_node_normal_form_hash,
-	struct jive_node_normal_form,
+	jive::node_normal_form,
 	struct jive_node_class *,
 	node_class, hash_chain);
 
@@ -201,7 +200,7 @@ jive_graph_push_outward(jive_graph * self);
 void
 jive_graph_pull_inward(jive_graph * self);
 
-struct jive_node_normal_form *
+jive::node_normal_form *
 jive_graph_get_nodeclass_form(jive_graph * self, const struct jive_node_class * node_class);
 
 void
