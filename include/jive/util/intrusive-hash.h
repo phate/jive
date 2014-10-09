@@ -92,6 +92,19 @@ struct safe_equal {
 	}
 };
 
+template<>
+struct safe_equal<std::string> {
+	inline bool
+	operator()(const std::string & a, const std::string & b) const noexcept
+	{
+		// C++11 lacks "noexcept" specification for
+		// std::string::operator==, but implementations lacking
+		// this would be a weird breed. So declare it noexcept
+		// by "fiat".
+		return a == b;
+	}
+};
+
 template<
 	typename KeyType,
 	typename ElementType,

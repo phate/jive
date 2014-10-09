@@ -30,7 +30,22 @@ typedef jive::detail::intrusive_hash<
 	my_item,
 	my_accessor> my_hash;
 
-static int test_main(void)
+struct my_stritem {
+	std::string key;
+	std::string value;
+	jive::detail::intrusive_hash_anchor<my_stritem> hash_chain;
+	
+	typedef jive::detail::intrusive_hash_accessor<
+		std::string, my_stritem,
+		&my_stritem::key, &my_stritem::hash_chain> hash_accessor;
+};
+
+typedef jive::detail::intrusive_hash<
+	std::string,
+	my_stritem,
+	my_stritem::hash_accessor> my_strhash;
+
+static void test_int_hash(void)
 {
 	my_hash m;
 	
@@ -60,7 +75,45 @@ static int test_main(void)
 	}
 	assert(seen_i1 == 1);
 	assert(seen_i2 == 1);
+}
+
+static void test_str_hash(void)
+{
+	my_strhash m;
 	
+	assert(m.find("42") == m.end());
+	
+	my_stritem i1 = {"42", "0"};
+	m.insert(&i1);
+	assert(&*m.find("42") == &i1);
+	
+	my_stritem i2 = {"10", "0"};
+	m.insert(&i2);
+	
+	m.erase(&i1);
+	assert(m.find("42") == m.end());
+	m.insert(&i1);
+	assert(&*m.find("42") == &i1);
+
+	int seen_i1 = 0, seen_i2 = 0;
+	for (const my_stritem & i : m) {
+		assert((&i == &i1) || (&i == &i2));
+		if (&i == &i1) {
+			++ seen_i1;
+		}
+		if (&i == &i2) {
+			++ seen_i2;
+		}
+	}
+	assert(seen_i1 == 1);
+	assert(seen_i2 == 1);
+}
+
+static int test_main(void)
+{
+	test_int_hash();
+	test_str_hash();
+
 	return 0;
 }
 
