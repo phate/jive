@@ -25,6 +25,26 @@ value_repr_from_string(const char * s)
 	return value_repr(s, s + strlen(s));
 }
 
+static inline value_repr
+value_repr_from_int(size_t nbits, int64_t value) {
+	value_repr result(nbits);
+	for (size_t n = 0; n < nbits; ++n) {
+		result[n] = '0' + (value & 1);
+		value = value >> 1;
+	}
+	return result;
+}
+
+static inline value_repr
+value_repr_from_uint(size_t nbits, uint64_t value) {
+	value_repr result(nbits);
+	for (size_t n = 0; n < nbits; ++n) {
+		result[n] = '0' + (value & 1);
+		value = value >> 1;
+	}
+	return result;
+}
+
 }
 }
 

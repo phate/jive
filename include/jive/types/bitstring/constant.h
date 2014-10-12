@@ -39,6 +39,18 @@ typedef base::domain_const_op<
 	&JIVE_BITCONSTANT_NODE, type, value_repr, format_value, type_of_value
 > constant_op;
 
+inline constant_op
+uint_constant_op(size_t nbits, uint64_t value)
+{
+	return constant_op(value_repr_from_uint(nbits, value));
+}
+
+inline constant_op
+int_constant_op(size_t nbits, int64_t value)
+{
+	return constant_op(value_repr_from_int(nbits, value));
+}
+
 }
 
 namespace base {
