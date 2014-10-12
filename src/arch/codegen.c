@@ -273,15 +273,15 @@ jive_seq_graph_patch_jump_targets(
 	JIVE_DEBUG_ASSERT(user);
 	
 	jive_seq_point * primary_tgt = 0, * secondary_tgt = 0;
-	if (user->class_ == &JIVE_SUBROUTINE_LEAVE_NODE) {
+	if (dynamic_cast<const jive::subroutine_tail_op *>(&user->operation())) {
 		return;
-	} else if (user->class_ == &JIVE_GAMMA_NODE) {
+	} else if (dynamic_cast<const jive::gamma_op *>(&user->operation())) {
 		jive_region * primary_region = user->producer(0)->region;
 		jive_region * secondary_region = user->producer(1)->region;
 		primary_tgt = jive_seq_graph_map_region(seq_graph, primary_region)->first_point;
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, secondary_region)->first_point;
 	} else {
-		JIVE_DEBUG_ASSERT(user->class_ == &JIVE_THETA_TAIL_NODE);
+		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_tail_op *>(&user->operation()));
 		jive_region * region = user->region;
 		primary_tgt = jive_seq_graph_map_region(seq_graph, region)->first_point;
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, region)->last_point;
@@ -345,10 +345,12 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 {
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq_graph->points, seq_point, seqpoint_list) {
-		if (!seq_point->node)
+		if (!seq_point->node) {
 			continue;
-		if (jive_node_isinstance(seq_point->node, &JIVE_GRAPH_TAIL_NODE))
+		}
+		if (jive::graph_tail_operation() == seq_point->node->operation()) {
 			continue;
+		}
 
 		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
 		if (seq_instr && (seq_instr->icls->flags & jive_instruction_jump)) {

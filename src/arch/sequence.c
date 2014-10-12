@@ -261,7 +261,7 @@ jive_graph_sequentialize(jive_graph * graph)
 	sequenced */
 	jive_seq_point * seq_point;
 	JIVE_LIST_ITERATE(seq->points, seq_point, seqpoint_list) {
-		if (seq_point->node && jive_node_isinstance(seq_point->node, &JIVE_OBJDEF_NODE)) {
+		if (seq_point->node && dynamic_cast<const jive::objdef_operation *>(&seq_point->node->operation())) {
 			jive_objdef_node * onode = (jive_objdef_node *) seq_point->node;
 			jive_node * anchor = seq_point->node->producer(0);
 			jive_region * region = anchor->producer(0)->region;
