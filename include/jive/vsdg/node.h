@@ -183,14 +183,10 @@ jive_node_isinstance(const jive_node * self, const jive_node_class * class_)
 }
 
 JIVE_EXPORTED_INLINE void
-jive_node_get_label(const jive_node * self, struct jive_buffer * buffer)
+jive_node_get_label(const jive_node * self, jive_buffer * buffer)
 {
-	if (self->class_->get_label) {
-		self->class_->get_label(self, buffer);
-	} else {
-		std::string s = self->operation().debug_string();
-		jive_buffer_putstr(buffer, s.c_str());
-	}
+	std::string s = self->operation().debug_string();
+	jive_buffer_putstr(buffer, s.c_str());
 }
 
 JIVE_EXPORTED_INLINE const jive_node_attrs *
@@ -202,11 +198,7 @@ jive_node_get_attrs(const jive_node * self)
 JIVE_EXPORTED_INLINE bool
 jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
 {
-	if (self->class_->match_attrs) {
-		return self->class_->match_attrs(self, other);
-	} else {
-		return self->operation() == *other;
-	}
+	return self->operation() == *other;
 }
 
 JIVE_EXPORTED_INLINE jive_node *
@@ -217,20 +209,13 @@ jive_node_create(
 	size_t noperands,
 	jive::output * const operands[])
 {
-	if (class_->create) {
-		return class_->create(region, &op, noperands, operands);
-	} else {
-		return op.create_node(region, noperands, operands);
-	}
+	return op.create_node(region, noperands, operands);
 }
 
 JIVE_EXPORTED_INLINE void
 jive_node_check_operands(const jive_node_class * cls, const jive_node_attrs * attrs,
 	size_t noperands, jive::output * const operands[], jive_context * context)
 {
-	if (cls->check_operands) {
-		return cls->check_operands(cls, attrs, noperands, operands, context);
-	}
 }
 
 struct jive_node *
