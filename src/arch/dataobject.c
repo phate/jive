@@ -324,7 +324,7 @@ const jive_node_class JIVE_DATAOBJ_HEAD_NODE = {
 	parent : &JIVE_NODE,
 	name : "DATA_HEAD",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -335,7 +335,7 @@ const jive_node_class JIVE_DATAOBJ_TAIL_NODE = {
 	parent : &JIVE_NODE,
 	name : "DATA_TAIL",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -346,7 +346,7 @@ const jive_node_class JIVE_DATAOBJ_NODE = {
 	parent : &JIVE_NODE,
 	name : "DATA",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

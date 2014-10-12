@@ -194,7 +194,7 @@ const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
 	parent : &JIVE_NODE,
 	name : "SUBROUTINE_ENTER",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -205,7 +205,7 @@ const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
 	parent : &JIVE_NODE,
 	name : "SUBROUTINE_LEAVE",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -216,7 +216,7 @@ const jive_node_class JIVE_SUBROUTINE_NODE = {
 	parent : &JIVE_NODE,
 	name : "SUBROUTINE",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

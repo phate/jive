@@ -156,7 +156,7 @@ const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE = {
 	parent : &JIVE_NODE,
 	name : "NEGOTIATOR_SPLIT",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -178,8 +178,8 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 		*operand_type, *input_option,
 		*output_type, *output_option);
 	
-	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_NEGOTIATOR_SPLIT_NODE);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+		region->graph, typeid(jive::negotiator_split_operation), &JIVE_NEGOTIATOR_SPLIT_NODE);
 	jive_node * node = jive_node_cse_create(nf, region, &op, 1, &operand);
 	return node->outputs[0];
 }

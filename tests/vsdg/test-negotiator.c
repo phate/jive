@@ -138,7 +138,7 @@ const jive_node_class NEGTESTNODE = {
 	parent : &JIVE_NODE,
 	name : "NEGTESTNODE",
 	fini : jive_node_fini_,
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -163,7 +163,7 @@ jive_negtestnode_create(
 		noutputs, output_options, output_types);
 	
 	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph, &NEGTESTNODE);
+		jive_graph_get_nodeclass_form(region->graph, typeid(negtest_op), &NEGTESTNODE);
 	jive_node * node = jive_node_cse_create(nf, region, &op, noperands, operands);
 	return node;
 }

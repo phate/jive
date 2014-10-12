@@ -62,10 +62,11 @@ gamma_normal_form::~gamma_normal_form() noexcept
 }
 
 gamma_normal_form::gamma_normal_form(
-	const jive_node_class * node_class,
+	const std::type_info & operator_class,
+	const jive_node_class * node_class_old,
 	jive::node_normal_form * parent,
 	jive_graph * graph) noexcept
-	: anchor_normal_form(node_class, parent, graph)
+	: anchor_normal_form(operator_class, node_class_old, parent, graph)
 	, enable_predicate_reduction_(true)
 	, enable_invariant_reduction_(true)
 {
@@ -209,13 +210,3 @@ gamma_normal_form::set_invariant_reduction(bool enable)
 }
 
 }
-
-const jive_node_normal_form_class JIVE_GAMMA_NORMAL_FORM = {
-	parent : &JIVE_ANCHOR_NODE_NORMAL_FORM,
-	fini : nullptr,
-	normalize_node : nullptr,
-	operands_are_normalized : nullptr,
-	normalized_create : nullptr,
-	set_mutable : nullptr,
-	set_cse : nullptr
-};

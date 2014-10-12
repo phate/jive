@@ -147,7 +147,7 @@ const jive_node_class JIVE_PHI_ENTER_NODE = {
 	parent : &JIVE_NODE,
 	name : "PHI_ENTER",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -160,7 +160,7 @@ const jive_node_class JIVE_PHI_LEAVE_NODE = {
 	parent : &JIVE_NODE,
 	name : "PHI_LEAVE",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -177,7 +177,7 @@ const jive_node_class JIVE_PHI_NODE = {
 	parent : &JIVE_ANCHOR_NODE,
 	name : "PHI",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_phi_node_get_default_normal_form_, /* override */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -186,14 +186,24 @@ const jive_node_class JIVE_PHI_NODE = {
 
 
 static jive::node_normal_form *
-jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
-	jive::node_normal_form * parent_, jive_graph * graph)
+jive_phi_node_get_default_normal_form_(
+	const std::type_info & operator_class,
+	const jive_node_class * cls,
+	jive::node_normal_form * parent_,
+	jive_graph * graph)
 {
-	jive::phi_normal_form * nf = new jive::phi_normal_form(cls, parent_, graph);
-	nf->class_ = &JIVE_PHI_NODE_NORMAL_FORM;
+	jive::phi_normal_form * nf = new jive::phi_normal_form(operator_class, cls, parent_, graph);
 
 	return nf;
 }
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::phi_op), jive_phi_node_get_default_normal_form_);
+}
+
 
 typedef struct jive_phi_build_state jive_phi_build_state;
 struct jive_phi_build_state {

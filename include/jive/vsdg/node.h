@@ -38,7 +38,6 @@ typedef jive::operation jive_node_attrs;
 
 enum jive_traversal_nodestate;
 
-struct jive_node_normal_form_class;
 struct jive_region;
 struct jive_resource_class_count;
 struct jive_substitution_map;
@@ -334,8 +333,6 @@ jive_node_cse(
 	size_t noperands, jive::output * const operands[]);
 
 /* normal forms */
-
-extern const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM;
 
 void
 jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * graph,

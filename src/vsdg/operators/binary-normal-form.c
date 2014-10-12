@@ -64,10 +64,11 @@ binary_normal_form::~binary_normal_form() noexcept
 }
 
 binary_normal_form::binary_normal_form(
-	const jive_node_class * node_class,
+	const std::type_info & operator_class,
+	const jive_node_class * node_class_old,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
-	: node_normal_form(node_class, parent, graph)
+	: node_normal_form(operator_class, node_class_old, parent, graph)
 	, enable_reducible_(true)
 	, enable_reorder_(true)
 	, enable_flatten_(true)
@@ -309,13 +310,3 @@ binary_normal_form::set_factorize(bool enable)
 }
 
 }
-
-const jive_node_normal_form_class JIVE_BINARY_OPERATION_NORMAL_FORM = {
-	parent : &JIVE_NODE_NORMAL_FORM,
-	fini : nullptr, /* inherit */
-	normalize_node : nullptr, /* override */
-	operands_are_normalized : nullptr, /* inherit */
-	normalized_create : nullptr, /* override */
-	set_mutable : nullptr, /* inherit */
-	set_cse : nullptr /* inherit */
-};

@@ -4,9 +4,12 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/vsdg/graph.h>
+
+#include <cxxabi.h>
+
 #include <jive/util/list.h>
 #include <jive/vsdg/graph-private.h>
-#include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node-private.h>
@@ -88,7 +91,7 @@ const jive_node_class JIVE_GRAPH_TAIL_NODE = {
 	parent : &JIVE_NODE,
 	name : "GRAPH_TAIL",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -96,9 +99,6 @@ const jive_node_class JIVE_GRAPH_TAIL_NODE = {
 };
 
 /* graph */
-
-JIVE_DEFINE_HASH_TYPE(jive_node_normal_form_hash, jive::node_normal_form,
-	const struct jive_node_class *, node_class, hash_chain);
 
 static inline void
 jive_graph_init_(jive_graph * self, jive_context * context)
@@ -111,8 +111,6 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	self->resources_fully_assigned = false;
 	self->normalized = true;
 	self->floating_region_count = 0;
-	
-	jive_node_normal_form_hash_init(&self->node_normal_forms, context);
 	
 	jive_region_notifier_slot_init(&self->on_region_create, context);
 	jive_region_notifier_slot_init(&self->on_region_destroy, context);
@@ -176,16 +174,6 @@ jive_graph_fini_(jive_graph * self)
 		delete self->gates.first;
 	
 	while(self->unused_variables.first) jive_variable_destroy(self->unused_variables.first);
-	
-	struct jive_node_normal_form_hash_iterator i;
-	i = jive_node_normal_form_hash_begin(&self->node_normal_forms);
-	while (i.entry) {
-		jive::node_normal_form * normal_form = i.entry;
-		jive_node_normal_form_hash_iterator_next(&i);
-		
-		delete normal_form;
-	}
-	jive_node_normal_form_hash_fini(&self->node_normal_forms);
 	
 	jive_region_notifier_slot_fini(&self->on_region_create);
 	jive_region_notifier_slot_fini(&self->on_region_destroy);
@@ -338,22 +326,24 @@ jive_graph_pull_inward(jive_graph * self)
 }
 
 jive::node_normal_form *
-jive_graph_get_nodeclass_form(jive_graph * self, const jive_node_class * node_class)
+jive_graph_get_nodeclass_form(
+	jive_graph * self,
+	const std::type_info & type,
+	const jive_node_class * node_class)
 {
-	jive::node_normal_form * normal_form;
-	normal_form = jive_node_normal_form_hash_lookup(&self->node_normal_forms, node_class);
-	if (normal_form)
-		return normal_form;
-	
-	/* note: recursion depth only depends on class hierarchy depths */
-	jive::node_normal_form * parent_normal_form = NULL;
-	if (node_class->parent)
-		parent_normal_form = jive_graph_get_nodeclass_form(self, node_class -> parent);
-	
-	normal_form = node_class->get_default_normal_form(node_class, parent_normal_form, self);
-	jive_node_normal_form_hash_insert(&self->node_normal_forms, normal_form);
-	
-	return normal_form;
+	auto i = self->new_node_normal_forms.find(std::type_index(type));
+	if (i != self->new_node_normal_forms.end()) {
+		return i.ptr();
+	}
+
+	const auto* cinfo = dynamic_cast<const abi::__si_class_type_info *>(&type);
+	jive::node_normal_form * parent_normal_form =
+		cinfo ? jive_graph_get_nodeclass_form(self, *cinfo->__base_type, nullptr) : nullptr;
+
+	jive::node_normal_form * nf = jive::node_normal_form::create(
+		type, node_class, parent_normal_form, self);
+	self->new_node_normal_forms.insert(nf);
+	return nf;
 }
 
 void
@@ -369,7 +359,8 @@ jive_graph_normalize(jive_graph * self)
 	
 	jive_node * node;
 	for(node = jive_traverser_next(trav); node; node = jive_traverser_next(trav)) {
-		jive::node_normal_form * nf = jive_graph_get_nodeclass_form(self, node->class_);
+		jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+			self, typeid(node->operation()), node->class_);
 		nf->normalize_node(node);
 	}
 	

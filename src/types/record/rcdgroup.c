@@ -94,7 +94,7 @@ const jive_node_class JIVE_GROUP_NODE = {
 	parent : &JIVE_NODE,
 	name : "GROUP",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

@@ -117,7 +117,7 @@ const jive_node_class JIVE_STORE_NODE = {
 	parent : &JIVE_NODE,
 	name : "STORE",
 	fini : nullptr, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* override */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -145,8 +145,8 @@ jive_store_by_address_create(jive::output * address,
 	size_t nstates, jive::output * const istates[])
 {
 	jive_graph * graph = address->node()->region->graph;
-	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_STORE_NODE);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+		address->node()->region->graph, typeid(jive::store_op), &JIVE_STORE_NODE);
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
@@ -165,8 +165,8 @@ jive_store_by_bitstring_create(jive::output * address, size_t nbits,
 	size_t nstates, jive::output * const istates[])
 {
 	jive_graph * graph = address->node()->region->graph;
-	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_STORE_NODE);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+		address->node()->region->graph, typeid(jive::store_op), &JIVE_STORE_NODE);
 
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {

@@ -29,7 +29,7 @@ const jive_node_class JIVE_CONTROL_CONSTANT_NODE = {
 	parent : &JIVE_NULLARY_OPERATION,
 	name : "CTLCONSTANT",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_nullary_operation_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

@@ -64,7 +64,7 @@ const jive_node_class JIVE_BITNOT_NODE = {
 	parent : &JIVE_BITUNARY_NODE,
 	name : "BITNOT",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

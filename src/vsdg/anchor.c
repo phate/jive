@@ -116,7 +116,7 @@ const jive_node_class JIVE_ANCHOR_NODE = {
 	parent : &JIVE_NODE,
 	name : "ANCHOR",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_anchor_node_get_default_normal_form_, /* override */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -127,12 +127,19 @@ const jive_node_class JIVE_ANCHOR_NODE = {
 
 jive::node_normal_form *
 jive_anchor_node_get_default_normal_form_(
+	const std::type_info & operator_class,
 	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive::anchor_normal_form * nf = new jive::anchor_normal_form(cls, parent, graph);
-	nf->class_ = &JIVE_ANCHOR_NODE_NORMAL_FORM;
+	jive::anchor_normal_form * nf = new jive::anchor_normal_form(operator_class, cls, parent, graph);
 
 	return nf;
+}
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::region_anchor_op), jive_anchor_node_get_default_normal_form_);
 }

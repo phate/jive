@@ -28,7 +28,7 @@ const jive_node_class JIVE_NODE = {
 	parent : 0,
 	name : "NODE",
 	fini : jive_node_fini_,
-	get_default_normal_form : jive_node_get_default_normal_form_,
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -180,12 +180,21 @@ jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * a
 
 jive::node_normal_form *
 jive_node_get_default_normal_form_(
-	const jive_node_class * cls, jive::node_normal_form * parent,
+	const std::type_info & operator_class,
+	const jive_node_class * cls,
+	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive::node_normal_form * normal_form = new jive::node_normal_form(cls, parent, graph);
-	normal_form->class_ = &JIVE_NODE_NORMAL_FORM;
+	jive::node_normal_form * normal_form = new jive::node_normal_form(
+		operator_class, cls, parent, graph);
 	return normal_form;
+}
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::operation), jive_node_get_default_normal_form_);
 }
 
 static void
@@ -692,7 +701,7 @@ jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * 
 	jive::output * results[])
 {
 	jive_node_check_operands(class_, attrs, noperands, operands, graph->context);
-	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, class_);
+	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(*attrs), class_);
 	std::vector<jive::output *> arguments(operands, operands + noperands);
 	std::vector<jive::output *> tmp_results =
 		nf->normalized_create(*attrs, arguments);
@@ -749,6 +758,7 @@ bool
 jive_node_normalize(jive_node * self)
 {
 	jive_graph * graph = self->region->graph;
-	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, self->class_);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+		graph, typeid(self->operation()), self->class_);
 	return nf->normalize_node(self);
 }

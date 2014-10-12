@@ -34,7 +34,7 @@ static int test_main(void)
 	jive_buffer_init(&buf, ctx);
 	
 	jive_graph * gr1 = jive_graph_create(ctx);
-	jive_graph_get_nodeclass_form(gr1, &JIVE_NODE)->set_mutable(false);
+	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation), &JIVE_NODE)->set_mutable(false);
 	
 	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
 	jive::output * b = jive_bitconstant(gr1, 8, "10101010");

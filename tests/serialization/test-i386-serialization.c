@@ -51,7 +51,7 @@ static int test_main(void)
 	jive_subroutine_end(sub);
 	
 	/* inhibit implicit normalization */
-	jive_graph_get_nodeclass_form(gr1, &JIVE_NODE)->set_mutable(false);
+	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation), &JIVE_NODE)->set_mutable(false);
 	int64_t tmparray2[] = {42};
 	
 	jive_node * n1 = jive_instruction_node_create_simple(

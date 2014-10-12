@@ -205,7 +205,7 @@ const jive_node_class JIVE_FLTBINARY_NODE = {
 	parent : &JIVE_BINARY_OPERATION,
 	name : "FLTBINARY",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -216,7 +216,7 @@ const jive_node_class JIVE_FLTUNARY_NODE = {
 	parent : &JIVE_UNARY_OPERATION,
 	name : "FLTUNARY",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_unary_operation_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -227,7 +227,7 @@ const jive_node_class JIVE_FLTCOMPARISON_NODE = {
 	parent : &JIVE_BINARY_OPERATION,
 	name : "FLTCOMPARISON",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_binary_operation_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

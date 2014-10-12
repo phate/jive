@@ -105,23 +105,30 @@ load_op::copy() const
 
 jive::node_normal_form *
 jive_load_get_default_normal_form_(
-	const jive_node_class * cls,
+	const std::type_info & operator_class,
+	const jive_node_class * node_class_old,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
 	jive_context * context = graph->context;
-	jive::node_normal_form * nf = new jive::load_normal_form(cls, parent, graph);
-
-	nf->class_ = &JIVE_LOAD_NORMAL_FORM;
+	jive::node_normal_form * nf = new jive::load_normal_form(
+		operator_class, node_class_old, parent, graph);
 
 	return nf;
+}
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::load_op), jive_load_get_default_normal_form_);
 }
 
 const jive_node_class JIVE_LOAD_NODE = {
 	parent : &JIVE_NODE,
 	name : "LOAD",
 	fini : jive_node_fini_,
-	get_default_normal_form : jive_load_get_default_normal_form_, /* override */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -164,8 +171,8 @@ jive_load_by_address_create(jive::output * address,
 	size_t nstates, jive::output * const states[])
 {
 	jive_graph * graph = address->node()->region->graph;
-	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_LOAD_NODE);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+		address->node()->region->graph, typeid(jive::load_op), &JIVE_LOAD_NODE);
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
@@ -184,8 +191,8 @@ jive_load_by_bitstring_create(jive::output * address, size_t nbits,
 	size_t nstates, jive::output * const states[])
 {
 	jive_graph * graph = address->node()->region->graph;
-	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(address->node()->region->graph, &JIVE_LOAD_NODE);
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
+		address->node()->region->graph, typeid(jive::load_op), &JIVE_LOAD_NODE);
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {

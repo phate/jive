@@ -23,7 +23,7 @@ const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
 	parent : &JIVE_NODE,
 	name : "LAMBDA_ENTER",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -37,7 +37,7 @@ const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
 	parent : &JIVE_NODE,
 	name : "LAMBDA_LEAVE",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -234,7 +234,7 @@ const jive_node_class JIVE_LAMBDA_NODE = {
 	parent : &JIVE_NODE,
 	name : "LAMBDA",
 	fini : jive_node_fini_,
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -386,7 +386,8 @@ jive_inline_lambda_apply(jive_node * apply_node)
 static bool
 lambda_parameter_is_unused(const jive::output * parameter)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op *>(&parameter->node()->operation()));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op *>(
+		&parameter->node()->operation()));
 
 	return parameter->no_user();
 }
@@ -394,7 +395,8 @@ lambda_parameter_is_unused(const jive::output * parameter)
 static bool
 lambda_parameter_is_passthrough(const jive::output * parameter)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op *>(&parameter->node()->operation()));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op *>(
+		&parameter->node()->operation()));
 
 	jive_node * leave = parameter->node()->region->bottom;
 	return parameter->single_user() && (parameter->users.first->node == leave);
@@ -403,7 +405,8 @@ lambda_parameter_is_passthrough(const jive::output * parameter)
 static bool
 lambda_result_is_passthrough(const jive::input * result)
 {
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_tail_op *>(&result->node->operation()));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_tail_op *>(
+		&result->node->operation()));
 
 	if (dynamic_cast<const jive::fct::lambda_head_op *>(&result->producer()->operation()))
 		return lambda_parameter_is_passthrough(result->origin());

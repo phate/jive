@@ -10,9 +10,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include <typeindex>
+
 #include <jive/common.h>
 #include <jive/context.h>
-#include <jive/util/hash.h>
+#include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/tracker.h>
@@ -65,7 +67,6 @@ extern const jive_node_class JIVE_GRAPH_TAIL_NODE;
 /* graph */
 
 typedef struct jive_graph jive_graph;
-typedef struct jive_node_normal_form_hash jive_node_normal_form_hash;
 typedef struct jive_tracker_depth_state jive_tracker_depth_state;
 typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
 typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
@@ -74,12 +75,6 @@ struct jive_node;
 struct jive_node_class;
 struct jive_region;
 struct jive_resource;
-
-JIVE_DECLARE_HASH_TYPE(
-	jive_node_normal_form_hash,
-	jive::node_normal_form,
-	struct jive_node_class *,
-	node_class, hash_chain);
 
 struct jive_graph {
 	jive_context * context;
@@ -111,7 +106,7 @@ struct jive_graph {
 	
 	std::vector<jive_tracker_slot_reservation> tracker_slots;
 	
-	jive_node_normal_form_hash node_normal_forms;
+	jive::node_normal_form_hash new_node_normal_forms;
 	
 	jive_region_notifier_slot on_region_create;
 	jive_region_notifier_slot on_region_destroy;
@@ -183,7 +178,10 @@ void
 jive_graph_pull_inward(jive_graph * self);
 
 jive::node_normal_form *
-jive_graph_get_nodeclass_form(jive_graph * self, const struct jive_node_class * node_class);
+jive_graph_get_nodeclass_form(
+	jive_graph * self,
+	const std::type_info & type,
+	const jive_node_class * node_class);
 
 void
 jive_graph_mark_denormalized(jive_graph * self);

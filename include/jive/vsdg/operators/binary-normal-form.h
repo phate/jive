@@ -19,7 +19,8 @@ public:
 	~binary_normal_form() noexcept;
 
 	binary_normal_form(
-		const jive_node_class * node_class,
+		const std::type_info & operator_class,
+		const jive_node_class * node_class_old,
 		jive::node_normal_form * parent,
 		jive_graph * graph);
 
@@ -72,7 +73,5 @@ private:
 }
 
 /* normal form class */
-
-extern const jive_node_normal_form_class JIVE_BINARY_OPERATION_NORMAL_FORM;
 
 #endif

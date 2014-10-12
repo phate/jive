@@ -145,7 +145,7 @@ const jive_node_class JIVE_THETA_HEAD_NODE = {
 	parent : &JIVE_NODE,
 	name : "THETA_HEAD",
 	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -156,7 +156,7 @@ const jive_node_class JIVE_THETA_TAIL_NODE = {
 	parent : &JIVE_NODE,
 	name : "THETA_TAIL",
 	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -167,7 +167,7 @@ const jive_node_class JIVE_THETA_NODE = {
 	parent : &JIVE_ANCHOR_NODE,
 	name : "THETA",
 	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_anchor_node_get_default_normal_form_,  /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,

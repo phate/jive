@@ -5,6 +5,10 @@
 
 #include <jive/vsdg/node-normal-form.h>
 
+#include <cxxabi.h>
+#include <typeindex>
+#include <unordered_map>
+
 #include <jive/vsdg/graph.h>
 
 namespace jive {
@@ -81,14 +85,64 @@ node_normal_form::set_cse(bool enable)
 	}
 }
 
+namespace {
+
+typedef jive::node_normal_form *(*create_node_normal_form_functor)(
+	const std::type_info & operator_class,
+	const jive_node_class * node_class,
+	jive::node_normal_form * parent,
+	jive_graph * graph);
+
+typedef std::unordered_map<std::type_index, create_node_normal_form_functor>
+	node_normal_form_registry;
+
+std::unique_ptr<node_normal_form_registry> registry;
+
+create_node_normal_form_functor
+lookup_factory_functor(const std::type_info * info)
+{
+	if (!registry) {
+		registry.reset(new node_normal_form_registry());
+	}
+
+	node_normal_form_registry::const_iterator i;
+	for(;;) {
+		auto i = registry->find(std::type_index(*info));
+		if (i != registry->end()) {
+			return i->second;
+		}
+		const auto& cinfo = dynamic_cast<const abi::__si_class_type_info &>(
+			*info);
+		info = cinfo.__base_type;
+	}
 }
 
-const jive_node_normal_form_class JIVE_NODE_NORMAL_FORM = {
-	parent : 0,
-	fini : nullptr,
-	normalize_node : nullptr,
-	operands_are_normalized : nullptr,
-	normalized_create : nullptr,
-	set_mutable : nullptr,
-	set_cse : nullptr
-};
+}
+
+void
+node_normal_form::register_factory(
+	const std::type_info & operator_class,
+	jive::node_normal_form *(*fn)(
+		const std::type_info & operator_class,
+		const jive_node_class * node_class,
+		jive::node_normal_form * parent,
+		jive_graph * graph))
+{
+	if (!registry) {
+		registry.reset(new node_normal_form_registry());
+	}
+
+	(*registry)[std::type_index(operator_class)] = fn;
+}
+
+node_normal_form *
+node_normal_form::create(
+	const std::type_info & operator_class,
+	const jive_node_class * node_class_old,
+	jive::node_normal_form * parent,
+	jive_graph * graph)
+{
+	return lookup_factory_functor(&operator_class)(operator_class, node_class_old, parent, graph);
+}
+
+}

@@ -79,9 +79,6 @@ public:
 
 struct jive_region;
 
-typedef struct jive_binary_operation_normal_form jive_binary_operation_normal_form;
-typedef struct jive_binary_operation_normal_form_class jive_binary_operation_normal_form_class;
-
 static const jive_binop_reduction_path_t jive_binop_reduction_none = 0;
 /* both operands are constants */
 static const jive_binop_reduction_path_t jive_binop_reduction_constants = 1;
@@ -119,22 +116,5 @@ jive_binary_operation_get_default_normal_form_(
 	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph);
-
-/* normal form class */
-
-struct jive_binary_operation_normal_form_class {
-	jive_node_normal_form_class base;
-	void (*set_reducible)(jive_binary_operation_normal_form * self, bool enable);
-	void (*set_flatten)(jive_binary_operation_normal_form * self, bool enable);
-	void (*set_reorder)(jive_binary_operation_normal_form * self, bool enable);
-	void (*set_distribute)(jive_binary_operation_normal_form * self, bool enable);
-	void (*set_factorize)(jive_binary_operation_normal_form * self, bool enable);
-	jive::output * (*normalized_create)(
-		const jive_binary_operation_normal_form * self,
-		struct jive_region * region,
-		const jive_node_attrs * attrs,
-		size_t noperands,
-		jive::output * const operands[]);
-};
 
 #endif

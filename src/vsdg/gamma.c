@@ -105,13 +105,21 @@ gamma_op::copy() const
 
 jive::node_normal_form *
 jive_gamma_node_get_default_normal_form_(
+	const std::type_info & operator_class,
 	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive::gamma_normal_form * normal_form = new jive::gamma_normal_form(cls, parent, graph);
-	normal_form->class_ = &JIVE_GAMMA_NORMAL_FORM;
+	jive::gamma_normal_form * normal_form = new jive::gamma_normal_form(
+		operator_class, cls, parent, graph);
 	return normal_form;
+}
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::gamma_op), jive_gamma_node_get_default_normal_form_);
 }
 
 
@@ -119,7 +127,7 @@ const jive_node_class JIVE_GAMMA_TAIL_NODE = {
 	parent : &JIVE_NODE,
 	name : "GAMMA_TAIL",
 	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_,  /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -130,7 +138,7 @@ const jive_node_class JIVE_GAMMA_NODE = {
 	parent : &JIVE_ANCHOR_NODE,
 	name : "GAMMA",
 	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : jive_gamma_node_get_default_normal_form_,  /* override */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -183,7 +191,7 @@ jive_gamma(jive::output * predicate,
 	
 	jive_graph * graph = predicate->node()->region->graph;
 	jive::gamma_normal_form * nf = static_cast<jive::gamma_normal_form *>(
-		jive_graph_get_nodeclass_form(graph, &JIVE_GAMMA_NODE));
+		jive_graph_get_nodeclass_form(graph, typeid(jive::gamma_op), &JIVE_GAMMA_NODE));
 	
 	if (nf->get_mutable() && nf->get_predicate_reduction()) {
 		const jive::ctl::constant_op * op =

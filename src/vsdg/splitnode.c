@@ -96,7 +96,7 @@ const jive_node_class JIVE_SPLITNODE = {
 	parent : &JIVE_NODE,
 	name : "SPLIT",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -114,7 +114,7 @@ jive_splitnode_create(jive_region * region,
 	jive::split_operation op(in_class, out_class);
 	
 	jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph , &JIVE_SPLITNODE);
+		jive_graph_get_nodeclass_form(region->graph, typeid(jive::split_operation), &JIVE_SPLITNODE);
 	if (nf->get_mutable() && nf->get_cse())
 		jive_graph_mark_denormalized(region->graph);
 

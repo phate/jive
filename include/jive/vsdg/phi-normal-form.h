@@ -18,7 +18,8 @@ public:
 	~phi_normal_form() noexcept;
 
 	phi_normal_form(
-		const jive_node_class * node_class,
+		const std::type_info & operator_class,
+		const jive_node_class * node_class_old,
 		jive::node_normal_form * parent,
 		jive_graph * graph) noexcept;
 
@@ -26,7 +27,5 @@ public:
 };
 
 }
-
-extern const jive_node_normal_form_class JIVE_PHI_NODE_NORMAL_FORM;
 
 #endif

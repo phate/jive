@@ -19,7 +19,8 @@ public:
 	~unary_normal_form() noexcept;
 
 	unary_normal_form(
-		const jive_node_class * node_class,
+		const std::type_info & operator_class,
+		const jive_node_class * node_class_old,
 		jive::node_normal_form * parent,
 		jive_graph * graph);
 
@@ -46,7 +47,5 @@ private:
 };
 
 }
-
-extern const jive_node_normal_form_class JIVE_UNARY_OPERATION_NORMAL_FORM;
 
 #endif

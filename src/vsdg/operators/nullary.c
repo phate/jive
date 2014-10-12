@@ -20,10 +20,11 @@ public:
 	}
 
 	nullary_normal_form(
+		const std::type_info & operator_class,
 		const jive_node_class * cls,
 		jive::node_normal_form * parent,
 		jive_graph * graph)
-		: node_normal_form(cls, parent, graph)
+		: node_normal_form(operator_class, cls, parent, graph)
 	{
 	}
 };
@@ -57,7 +58,7 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 	parent : &JIVE_NODE,
 	name : "NULLARY",
 	fini : jive_node_fini_,
-	get_default_normal_form : jive_nullary_operation_get_default_normal_form_,
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -68,14 +69,20 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 
 jive::node_normal_form *
 jive_nullary_operation_get_default_normal_form_(
+	const std::type_info & operator_class,
 	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive_context * context = graph->context;
-	jive::node_normal_form * nf = new jive::base::nullary_normal_form(cls, parent, graph);
-	
-	nf->class_ = &JIVE_NODE_NORMAL_FORM;
+	jive::node_normal_form * nf = new jive::base::nullary_normal_form(
+		operator_class, cls, parent, graph);
 	
 	return nf;
+}
+
+static void  __attribute__((constructor))
+register_node_normal_form(void)
+{
+	jive::node_normal_form::register_factory(
+		typeid(jive::base::nullary_op), jive_nullary_operation_get_default_normal_form_);
 }

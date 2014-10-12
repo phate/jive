@@ -100,7 +100,7 @@ const jive_node_class JIVE_REGVALUE_NODE = {
 	parent : &JIVE_NODE,
 	name : "REGVALUE_NODE",
 	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : jive_node_get_default_normal_form_, /* inherit */
+	get_default_normal_form : nullptr,
 	get_label : nullptr,
 	match_attrs : nullptr,
 	check_operands : nullptr,
@@ -116,7 +116,7 @@ jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::outp
 	jive_region * region = jive_region_innermost(2, arguments);
 	
 	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph, &JIVE_REGVALUE_NODE);
+		jive_graph_get_nodeclass_form(region->graph, typeid(jive::regvalue_op), &JIVE_REGVALUE_NODE);
 	jive_node * node = jive_node_cse_create(nf, region, &op, 2, arguments);
 	return node->outputs[0];
 }
