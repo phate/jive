@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -177,7 +177,8 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 		jive::input * input = loop_users[n];
 		jive_ssavar_assign_input(ssavar_inside, input);
 	}
-	jive_shaped_ssavar * shaped_ssavar_inside = jive_shaped_graph_map_ssavar(shaped_graph, ssavar_inside);
+	jive_shaped_ssavar * shaped_ssavar_inside =
+		jive_shaped_graph_map_ssavar(shaped_graph, ssavar_inside);
 	jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar_inside, loop_region->depth);
 	
 	/* below loop */
@@ -210,9 +211,10 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	/* FIXME: just returning appears correct and hinges on the fact that
 	other anchor node types (subroutine etc.) simply do not allow anything
 	to be passed through */
-	if (!jive_node_isinstance(anchor_node, &JIVE_GAMMA_NODE) && !jive_node_isinstance(anchor_node, &JIVE_THETA_NODE))
+	if (!dynamic_cast<const jive::gamma_op *>(&anchor_node->operation()) && !
+		dynamic_cast<const jive::theta_op *>(&anchor_node->operation())) {
 		return ssavar;
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(anchor_node, &JIVE_GAMMA_NODE) || jive_node_isinstance(anchor_node, &JIVE_THETA_NODE));
+	}
 	
 	std::vector<jive::input*> users_below;
 	
@@ -237,7 +239,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	
 	jive_ssavar * ssavar_inside_region;
 	
-	if (jive_node_isinstance(anchor_node, &JIVE_GAMMA_NODE)) {
+	if (dynamic_cast<const jive::gamma_op *>(&anchor_node->operation())) {
 		ssavar_inside_region = reroute_gamma(shaped_graph, ssavar, users_below, anchor_node,
 			interest_region);
 	} else {

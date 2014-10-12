@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -85,8 +85,11 @@ post_op_transfer(
 static void
 process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 {
-	if (!jive_node_isinstance(node, &JIVE_INSTRUCTION_NODE)) return;
-	const struct jive_instruction_class * icls = ((jive_instruction_node *) node)->operation().icls();
+	auto i_op = dynamic_cast<const jive::instruction_op *>(&node->operation());
+	if (!i_op) {
+		return;
+	}
+	const jive_instruction_class * icls = i_op->icls();
 	
 	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
 	

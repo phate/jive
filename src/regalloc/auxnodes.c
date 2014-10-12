@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -105,7 +105,7 @@ jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph)
 	jive_traverser * traverser = jive_bottomup_traverser_create(shaped_graph->graph);
 	jive_node * node;
 	while( (node = jive_traverser_next(traverser)) != 0) {
-		if (jive_node_isinstance(node, &JIVE_SPLITNODE)) {
+		if (dynamic_cast<const jive::split_operation *>(&node->operation())) {
 			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
 			replace_splitnode(shaped_node, node);
 		} else
