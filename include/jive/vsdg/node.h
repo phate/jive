@@ -171,17 +171,6 @@ struct jive_tracker_nodestate {
 	} state_node_list;
 };
 
-JIVE_EXPORTED_INLINE bool
-jive_node_isinstance(const jive_node * self, const jive_node_class * class_)
-{
-	const jive_node_class * c = self->class_;
-	while(c) {
-		if (c == class_) return true;
-		c = c->parent;
-	}
-	return false;
-}
-
 JIVE_EXPORTED_INLINE void
 jive_node_get_label(const jive_node * self, jive_buffer * buffer)
 {
