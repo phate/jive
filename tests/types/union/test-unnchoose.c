@@ -61,7 +61,7 @@ static int test_main(void)
 
 	assert(bottom->producer(1) == top);
 	assert(jive_node_match_attrs(c0->node(), jive_node_get_attrs(c2->node())));
-	assert(jive_node_isinstance(bottom->producer(3), &JIVE_LOAD_NODE));
+	assert(dynamic_cast<const jive::load_op *>(&bottom->producer(3)->operation()));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

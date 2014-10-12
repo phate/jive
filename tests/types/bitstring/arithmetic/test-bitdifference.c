@@ -1,16 +1,17 @@
 /*
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/view.h>
 #include <jive/types/bitstring.h>
-#include <jive/vsdg/graph.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)
@@ -31,7 +32,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(diff->node(), &JIVE_BITDIFFERENCE_NODE));
+	assert(diff->node()->operation() == jive::bits::sub_op(32));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

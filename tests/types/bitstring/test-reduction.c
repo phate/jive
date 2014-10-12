@@ -58,8 +58,8 @@ static int test_main(void)
 		jive_node * node = ((jive::output *) slice)->node();
 		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
 		assert(node->ninputs == 2);
-		assert(node->producer(0)->class_ == &JIVE_BITSLICE_NODE);
-		assert(node->producer(1)->class_ == &JIVE_BITSLICE_NODE);
+		assert(dynamic_cast<const jive::bits::slice_op *>(&node->producer(0)->operation()));
+		assert(dynamic_cast<const jive::bits::slice_op *>(&node->producer(1)->operation()));
 		
 		const jive::bits::slice_op * attrs;
 		attrs = (const jive::bits::slice_op *) jive_node_get_attrs(node->producer(0));

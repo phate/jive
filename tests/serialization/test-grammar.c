@@ -332,7 +332,7 @@ static int test_main(void)
 	jive::output * two8 = jive_bitconstant(graph, 8, "01000000");
 	jive::output * tmparray2[] = {one8, two8};
 	jive::output * add8 = jive_bitsum(2, tmparray2);
-	assert(add8->node()->class_ == &JIVE_BITSUM_NODE);
+	assert(dynamic_cast<const jive::bits::add_op *>(&add8->node()->operation()));
 	assert(add8->node() != zero8->node());
 	const char * tmparray3[] = {"a", "b"};
 	const char * tmparray4[] = {"sum"};

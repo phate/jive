@@ -1,17 +1,17 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)
@@ -40,11 +40,8 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(product0->node(), &JIVE_BITPRODUCT_NODE));
-	assert(jive_node_isinstance(product1->node(), &JIVE_BITCONSTANT_NODE));
-
-	jive_bitconstant_node * bc1 = dynamic_cast<jive_bitconstant_node *>(product1->node());
-	assert(jive_bitconstant_equals_unsigned(bc1, 15));
+	assert(product0->node()->operation() == jive::bits::mul_op(32));
+	assert(product1->node()->operation() == jive::bits::uint_constant_op(32, 15));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

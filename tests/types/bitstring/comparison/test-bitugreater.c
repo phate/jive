@@ -47,7 +47,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(ugreater0->node(), &JIVE_BITUGREATER_NODE));
+	assert(ugreater0->node()->operation() == jive::bits::ugt_op(32));
 	expect_static_false(ugreater1);
 	expect_static_true(ugreater2);
 	expect_static_false(ugreater3);

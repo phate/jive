@@ -68,10 +68,10 @@ static int test_main(void)
 	sum2 = res->node()->inputs[1]->origin();
 	n1 = sum2->node()->producer(0);
 	n2 = sum2->node()->producer(1);
-	assert(n1->class_ == &JIVE_REGVALUE_NODE);
-	assert(n2->class_ == &JIVE_BITNOT_NODE);
+	assert(dynamic_cast<const jive::regvalue_op *>(&n1->operation()));
+	assert(dynamic_cast<const jive::bits::not_op *>(&n2->operation()));
 	n2 = n2->producer(0);
-	assert(n2->class_ == &JIVE_REGVALUE_NODE);
+	assert(dynamic_cast<const jive::regvalue_op *>(&n2->operation()));
 	jive::output * o1 = n1->inputs[1]->origin();
 	jive::output * o2 = n2->inputs[1]->origin();
 	assert(o1 == lit);

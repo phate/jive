@@ -41,8 +41,8 @@ static int test_main(void)
 		/* slice of slice */
 		jive::output * a = jive_bitslice(base_x, 2, 6);
 		jive::output * b = jive_bitslice(a, 1, 3);
-	
-		assert(b->node()->class_ == &JIVE_BITSLICE_NODE);
+
+		assert(dynamic_cast<const jive::bits::slice_op *>(&b->node()->operation()));
 		const jive::bits::slice_op * attrs =
 			(const jive::bits::slice_op *)jive_node_get_attrs(b->node());
 		assert(attrs->low() == 3 && attrs->high() == 5);
@@ -74,7 +74,7 @@ static int test_main(void)
 		jive::output * list2[] = {a, base_z};
 		jive::output * b = jive_bitconcat(2, list2);
 		
-		assert(b->node()->class_ == &JIVE_BITCONCAT_NODE);
+		assert(dynamic_cast<const jive::bits::concat_op *>(&b->node()->operation()));
 		assert(b->node()->ninputs == 3);
 		assert(b->node()->inputs[0]->origin() == base_x);
 		assert(b->node()->inputs[1]->origin() == base_y);

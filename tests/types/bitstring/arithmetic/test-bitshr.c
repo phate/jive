@@ -1,17 +1,17 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)
@@ -39,15 +39,10 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 	
-	assert(jive_node_isinstance(shr0->node(), &JIVE_BITSHR_NODE));
-	assert(jive_node_isinstance(shr1->node(), &JIVE_BITCONSTANT_NODE));
-	assert(jive_node_isinstance(shr2->node(), &JIVE_BITCONSTANT_NODE));
+	assert(shr0->node()->operation() == jive::bits::shr_op(32));
+	assert(shr1->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(shr2->node()->operation() == jive::bits::uint_constant_op(32, 0));
 
-	jive_bitconstant_node * bc1 = dynamic_cast<jive_bitconstant_node *>(shr1->node());
-	jive_bitconstant_node * bc2 = dynamic_cast<jive_bitconstant_node *>(shr2->node());
-	assert(jive_bitconstant_equals_unsigned(bc1, 4));
-	assert(jive_bitconstant_equals_unsigned(bc2, 0));
-	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);

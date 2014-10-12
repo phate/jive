@@ -257,18 +257,15 @@ test_negotiator_option_create_(const jive_negotiator * self)
 static void
 test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 {
-	if (jive_node_isinstance(node_, &NEGTESTNODE)) {
-		negtestnode * node = (negtestnode *) node_;
-		
-		size_t n;
-		for (n = 0; n < node_->ninputs; n++) {
+	if (auto op = dynamic_cast<const negtest_op *>(&node_->operation())) {
+		for (size_t n = 0; n < node_->ninputs; n++) {
 			jive::input * input = node_->inputs[n];
-			test_negotiator_option option(node->operation().input_options()[n]);
+			test_negotiator_option option(op->input_options()[n]);
 			jive_negotiator_annotate_simple_input(self, input, &option);
 		}
-		for (n = 0; n < node_->noutputs; n++) {
+		for (size_t n = 0; n < node_->noutputs; n++) {
 			jive::output * output = node_->outputs[n];
-			test_negotiator_option option(node->operation().output_options()[n]);
+			test_negotiator_option option(op->output_options()[n]);
 			jive_negotiator_annotate_simple_output(self, output, &option);
 		}
 	}

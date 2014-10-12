@@ -47,7 +47,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(sless0->node(), &JIVE_BITSLESS_NODE));
+	assert(sless0->node()->operation() == jive::bits::slt_op(32));
 	expect_static_true(sless1);
 	expect_static_false(sless2);
 	expect_static_false(sless3);

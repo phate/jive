@@ -44,10 +44,10 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(equal0->node(), &JIVE_BITEQUAL_NODE));
+	assert(equal0->node()->operation() == jive::bits::eq_op(32));
 	expect_static_true(equal1);
 	expect_static_false(equal2);
-	assert(jive_node_isinstance(equal3->node(), &JIVE_BITEQUAL_NODE));
+	assert(equal3->node()->operation() == jive::bits::eq_op(32));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

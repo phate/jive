@@ -35,12 +35,12 @@ static int test_main(void)
 	jive::output * tmparray1[] = {lambda->arguments[0], c0};
 
 	jive::output * sum0 = jive_bitsum(2, tmparray1);
-	assert(jive_node_isinstance(sum0->node(), &JIVE_BITSUM_NODE));
+	assert(sum0->node()->operation() == jive::bits::add_op(32));
 	assert(sum0->node()->noperands == 2);
 	jive::output * tmparray2[] = {sum0, c1};
 	
 	jive::output * sum1 = jive_bitsum(2, tmparray2);
-	assert(jive_node_isinstance(sum1->node(), &JIVE_BITSUM_NODE));
+	assert(sum1->node()->operation() == jive::bits::add_op(32));
 	assert(sum1->node()->noperands == 2);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node();
@@ -53,15 +53,14 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	
 	jive::output * expected_sum = retval->origin();
-	assert(jive_node_isinstance(expected_sum->node(), &JIVE_BITSUM_NODE));
+	assert(expected_sum->node()->operation() == jive::bits::add_op(32));
 	assert(expected_sum->node()->noperands == 2);
 	jive::output * op1 = expected_sum->node()->inputs[0]->origin();
 	jive::output * op2 = expected_sum->node()->inputs[1]->origin();
-	if (!jive_node_isinstance(op1->node(), &JIVE_BITCONSTANT_NODE)) {
+	if (!dynamic_cast<const jive::bits::constant_op *>(&op1->node()->operation())) {
 		jive::output * tmp = op1; op1 = op2; op2 = tmp;
 	}
-	assert(jive_node_isinstance(op1->node(), &JIVE_BITCONSTANT_NODE));
-	assert(jive_bitconstant_equals_unsigned((jive_bitconstant_node *) op1->node(), 3+4));
+	assert(op1->node()->operation() == jive::bits::int_constant_op(32, 3 + 4));
 	assert(op2 == arg);
 
 	jive_view(graph, stdout);

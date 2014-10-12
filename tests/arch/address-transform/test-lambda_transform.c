@@ -44,7 +44,7 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(bottom->producer(0), &JIVE_BITSTRING_TO_ADDRESS_NODE));
+	assert(bottom->producer(0)->operation() == jive::bitstring_to_address_operation(32, &addrtype));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

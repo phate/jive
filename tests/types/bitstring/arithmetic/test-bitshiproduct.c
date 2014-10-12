@@ -1,18 +1,17 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/view.h>
-#include <jive/view.h>
 #include <jive/types/bitstring.h>
-#include <jive/vsdg/graph.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)
@@ -33,7 +32,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(shiproduct->node(), &JIVE_BITSHIPRODUCT_NODE));
+	assert(shiproduct->node()->operation() == jive::bits::smulh_op(32));
 
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(context));

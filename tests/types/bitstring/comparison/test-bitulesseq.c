@@ -49,7 +49,7 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	assert(jive_node_isinstance(ulesseq0->node(), &JIVE_BITULESSEQ_NODE));
+	assert(ulesseq0->node()->operation() == jive::bits::ule_op(32));
 	expect_static_true(ulesseq1);
 	expect_static_true(ulesseq2);
 	expect_static_false(ulesseq3);
