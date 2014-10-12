@@ -36,11 +36,9 @@ public:
 	inline
 	node_normal_form(
 		const std::type_info & operator_class,
-		const jive_node_class * node_class_old,
 		jive::node_normal_form * parent,
 		jive_graph * graph) noexcept
-		: node_class(node_class_old)
-		, operator_class_(operator_class)
+		: operator_class_(operator_class)
 		, parent_(parent)
 		, graph_(graph)
 		, enable_mutable_(true)
@@ -82,21 +80,17 @@ public:
 	inline bool
 	get_cse() const noexcept { return enable_cse_; }
 
-	const jive_node_class * node_class;
-
 	static void
 	register_factory(
 		const std::type_info & type,
 		jive::node_normal_form *(*fn)(
 			const std::type_info & operator_class,
-			const jive_node_class * node_class_old,
 			jive::node_normal_form * parent,
 			jive_graph * graph));
 
 	static node_normal_form *
 	create(
 		const std::type_info & operator_class,
-		const jive_node_class * node_class_old,
 		jive::node_normal_form * parent,
 		jive_graph * graph);
 

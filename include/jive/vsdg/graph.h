@@ -180,8 +180,7 @@ jive_graph_pull_inward(jive_graph * self);
 jive::node_normal_form *
 jive_graph_get_nodeclass_form(
 	jive_graph * self,
-	const std::type_info & type,
-	const jive_node_class * node_class);
+	const std::type_info & type);
 
 void
 jive_graph_mark_denormalized(jive_graph * self);

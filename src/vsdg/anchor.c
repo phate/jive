@@ -128,11 +128,10 @@ const jive_node_class JIVE_ANCHOR_NODE = {
 jive::node_normal_form *
 jive_anchor_node_get_default_normal_form_(
 	const std::type_info & operator_class,
-	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive::anchor_normal_form * nf = new jive::anchor_normal_form(operator_class, cls, parent, graph);
+	jive::anchor_normal_form * nf = new jive::anchor_normal_form(operator_class, parent, graph);
 
 	return nf;
 }

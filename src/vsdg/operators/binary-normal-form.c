@@ -65,10 +65,9 @@ binary_normal_form::~binary_normal_form() noexcept
 
 binary_normal_form::binary_normal_form(
 	const std::type_info & operator_class,
-	const jive_node_class * node_class_old,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
-	: node_normal_form(operator_class, node_class_old, parent, graph)
+	: node_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 	, enable_reorder_(true)
 	, enable_flatten_(true)
@@ -139,7 +138,7 @@ binary_normal_form::normalize_node(jive_node * node) const
 		jive_node * new_node = nullptr;
 
 		if (get_cse()) {
-			jive_node_cse(node->region, node_class, &op, new_args.size(), &new_args[0]);
+			jive_node_cse(node->region, nullptr, &op, new_args.size(), &new_args[0]);
 		}
 
 		JIVE_DEBUG_ASSERT(new_args.size() >= 2);

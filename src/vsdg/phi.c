@@ -188,11 +188,10 @@ const jive_node_class JIVE_PHI_NODE = {
 static jive::node_normal_form *
 jive_phi_node_get_default_normal_form_(
 	const std::type_info & operator_class,
-	const jive_node_class * cls,
 	jive::node_normal_form * parent_,
 	jive_graph * graph)
 {
-	jive::phi_normal_form * nf = new jive::phi_normal_form(operator_class, cls, parent_, graph);
+	jive::phi_normal_form * nf = new jive::phi_normal_form(operator_class, parent_, graph);
 
 	return nf;
 }

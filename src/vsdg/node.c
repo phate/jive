@@ -168,12 +168,11 @@ jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other)
 jive::node_normal_form *
 jive_node_get_default_normal_form_(
 	const std::type_info & operator_class,
-	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
 	jive::node_normal_form * normal_form = new jive::node_normal_form(
-		operator_class, cls, parent, graph);
+		operator_class, parent, graph);
 	return normal_form;
 }
 
@@ -687,7 +686,7 @@ jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * 
 	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
 	jive::output * results[])
 {
-	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(*attrs), class_);
+	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(*attrs));
 	std::vector<jive::output *> arguments(operands, operands + noperands);
 	std::vector<jive::output *> tmp_results =
 		nf->normalized_create(*attrs, arguments);
@@ -727,11 +726,9 @@ jive_node *
 jive_node_cse_create(const jive::node_normal_form * nf, struct jive_region * region,
 	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[])
 {
-	const jive_node_class * cls = nf->node_class;
-	
 	jive_node * node;
 	if (nf->get_mutable() && nf->get_cse()) {
-		node = jive_node_cse(region, cls, attrs, noperands, operands);
+		node = jive_node_cse(region, nullptr, attrs, noperands, operands);
 		if (node) {
 			return node;
 		}
@@ -745,6 +742,6 @@ jive_node_normalize(jive_node * self)
 {
 	jive_graph * graph = self->region->graph;
 	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		graph, typeid(self->operation()), self->class_);
+		graph, typeid(self->operation()));
 	return nf->normalize_node(self);
 }

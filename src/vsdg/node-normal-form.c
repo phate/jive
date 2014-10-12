@@ -36,8 +36,6 @@ node_normal_form::normalized_create(
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments) const
 {
-	const jive_node_class * cls = node_class;
-
 	jive_region * region = graph()->root_region;
 	if (!arguments.empty()) {
 		region = jive_region_innermost(arguments.size(), &arguments[0]);
@@ -45,7 +43,7 @@ node_normal_form::normalized_create(
 
 	jive_node * node = nullptr;
 	if (get_mutable() && get_cse()) {
-		node = jive_node_cse(region, node_class, &op, arguments.size(), &arguments[0]);
+		node = jive_node_cse(region, nullptr, &op, arguments.size(), &arguments[0]);
 	}
 
 	if (!node) {
@@ -89,7 +87,6 @@ namespace {
 
 typedef jive::node_normal_form *(*create_node_normal_form_functor)(
 	const std::type_info & operator_class,
-	const jive_node_class * node_class,
 	jive::node_normal_form * parent,
 	jive_graph * graph);
 
@@ -124,7 +121,6 @@ node_normal_form::register_factory(
 	const std::type_info & operator_class,
 	jive::node_normal_form *(*fn)(
 		const std::type_info & operator_class,
-		const jive_node_class * node_class,
 		jive::node_normal_form * parent,
 		jive_graph * graph))
 {
@@ -138,11 +134,10 @@ node_normal_form::register_factory(
 node_normal_form *
 node_normal_form::create(
 	const std::type_info & operator_class,
-	const jive_node_class * node_class_old,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	return lookup_factory_functor(&operator_class)(operator_class, node_class_old, parent, graph);
+	return lookup_factory_functor(&operator_class)(operator_class, parent, graph);
 }
 
 }

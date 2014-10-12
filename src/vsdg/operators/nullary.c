@@ -21,10 +21,9 @@ public:
 
 	nullary_normal_form(
 		const std::type_info & operator_class,
-		const jive_node_class * cls,
 		jive::node_normal_form * parent,
 		jive_graph * graph)
-		: node_normal_form(operator_class, cls, parent, graph)
+		: node_normal_form(operator_class, parent, graph)
 	{
 	}
 };
@@ -70,12 +69,11 @@ const jive_node_class JIVE_NULLARY_OPERATION = {
 jive::node_normal_form *
 jive_nullary_operation_get_default_normal_form_(
 	const std::type_info & operator_class,
-	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
 	jive::node_normal_form * nf = new jive::base::nullary_normal_form(
-		operator_class, cls, parent, graph);
+		operator_class, parent, graph);
 	
 	return nf;
 }

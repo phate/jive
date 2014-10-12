@@ -167,7 +167,7 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 	jive::output * operand, const jive_negotiator_option * input_option,
 	const jive::base::type * output_type, const jive_negotiator_option * output_option)
 {
-	jive_region * region = operand->node()->region;
+	jive_graph * graph = operand->node()->region->graph;
 	
 	/* all members are used "const", but since the structure also
 	represents the attributes of a live node, they cannot be qualified
@@ -178,9 +178,8 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 		*output_type, *output_option);
 	
 	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		region->graph, typeid(jive::negotiator_split_operation), &JIVE_NEGOTIATOR_SPLIT_NODE);
-	jive_node * node = jive_node_cse_create(nf, region, &op, 1, &operand);
-	return node->outputs[0];
+		graph, typeid(jive::negotiator_split_operation));
+	return nf->normalized_create(op, {operand})[0];
 }
 
 /* constraints */

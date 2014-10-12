@@ -163,7 +163,7 @@ jive_negtestnode_create(
 		noutputs, output_options, output_types);
 	
 	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph, typeid(negtest_op), &NEGTESTNODE);
+		jive_graph_get_nodeclass_form(region->graph, typeid(negtest_op));
 	jive_node * node = jive_node_cse_create(nf, region, &op, noperands, operands);
 	return node;
 }

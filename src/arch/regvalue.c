@@ -109,13 +109,10 @@ const jive_node_class JIVE_REGVALUE_NODE = {
 jive::output *
 jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value)
 {
+	jive_graph * graph = value->node()->region->graph;
 	jive::regvalue_op op(regcls);
 	
-	jive::output * arguments[] = {ctl, value};
-	jive_region * region = jive_region_innermost(2, arguments);
-	
 	const jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph, typeid(jive::regvalue_op), &JIVE_REGVALUE_NODE);
-	jive_node * node = jive_node_cse_create(nf, region, &op, 2, arguments);
-	return node->outputs[0];
+		jive_graph_get_nodeclass_form(graph, typeid(jive::regvalue_op));
+	return nf->normalized_create(op, {ctl, value})[0];
 }

@@ -312,7 +312,7 @@ static int test_main(void)
 	verify_deserialize_gateexpr("\"stackgate\" stackslot<4,4> memory<>", stackgate);
 	
 	/* inhibit implicit optimization transformations */
-	jive_graph_get_nodeclass_form(graph, typeid(jive::operation), &JIVE_NODE)->set_mutable(false);
+	jive_graph_get_nodeclass_form(graph, typeid(jive::operation))->set_mutable(false);
 	
 	jive::output * zero8 = jive_bitconstant(graph, 8, "00000000");
 	const char * tmparray0[] = {"out"};

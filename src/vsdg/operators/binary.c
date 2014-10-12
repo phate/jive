@@ -43,11 +43,10 @@ const jive_node_class JIVE_BINARY_OPERATION = {
 jive::node_normal_form *
 jive_binary_operation_get_default_normal_form_(
 	const std::type_info & operator_class,
-	const jive_node_class * cls,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive::binary_normal_form * nf = new jive::binary_normal_form(operator_class, cls, parent, graph);
+	jive::binary_normal_form * nf = new jive::binary_normal_form(operator_class,  parent, graph);
 
 	return nf;
 }

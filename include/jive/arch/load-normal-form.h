@@ -17,7 +17,6 @@ public:
 
 	load_normal_form(
 		const std::type_info & operator_class,
-		const jive_node_class * node_class_old,
 		jive::node_normal_form * parent,
 		jive_graph * graph) noexcept;
 

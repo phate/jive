@@ -30,7 +30,7 @@ static int test_main(void)
 	jive::output * c1 = jive_bitconstant_unsigned(graph, 32, 4);
 	
 	jive::node_normal_form * sum_nf = jive_graph_get_nodeclass_form(
-		graph, typeid(jive::bits::add_op), &JIVE_BITSUM_NODE);
+		graph, typeid(jive::bits::add_op));
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
 	jive::output * tmparray1[] = {lambda->arguments[0], c0};

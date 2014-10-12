@@ -18,10 +18,9 @@ unary_normal_form::~unary_normal_form() noexcept
 
 unary_normal_form::unary_normal_form(
 	const std::type_info & operator_class,
-	const jive_node_class * node_class_old,
 	jive::node_normal_form * parent,
 	jive_graph * graph)
-	: node_normal_form(operator_class, node_class_old, parent, graph)
+	: node_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 {
 	if (auto p = dynamic_cast<unary_normal_form *>(parent)) {
@@ -55,7 +54,7 @@ unary_normal_form::normalize_node(jive_node * node) const
 
 	if (get_cse()) {
 		jive::output * operands[] = { node->inputs[0]->origin() };
-		jive_node * new_node = jive_node_cse(node->region, node_class, &op, 1, operands);
+		jive_node * new_node = jive_node_cse(node->region, nullptr, &op, 1, operands);
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
 			jive_output_replace(output, new_node->outputs[0]);

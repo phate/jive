@@ -327,8 +327,7 @@ jive_graph_pull_inward(jive_graph * self)
 jive::node_normal_form *
 jive_graph_get_nodeclass_form(
 	jive_graph * self,
-	const std::type_info & type,
-	const jive_node_class * node_class)
+	const std::type_info & type)
 {
 	auto i = self->new_node_normal_forms.find(std::type_index(type));
 	if (i != self->new_node_normal_forms.end()) {
@@ -337,10 +336,10 @@ jive_graph_get_nodeclass_form(
 
 	const auto* cinfo = dynamic_cast<const abi::__si_class_type_info *>(&type);
 	jive::node_normal_form * parent_normal_form =
-		cinfo ? jive_graph_get_nodeclass_form(self, *cinfo->__base_type, nullptr) : nullptr;
+		cinfo ? jive_graph_get_nodeclass_form(self, *cinfo->__base_type) : nullptr;
 
 	jive::node_normal_form * nf = jive::node_normal_form::create(
-		type, node_class, parent_normal_form, self);
+		type, parent_normal_form, self);
 	self->new_node_normal_forms.insert(nf);
 	return nf;
 }
@@ -359,7 +358,7 @@ jive_graph_normalize(jive_graph * self)
 	jive_node * node;
 	for(node = jive_traverser_next(trav); node; node = jive_traverser_next(trav)) {
 		jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-			self, typeid(node->operation()), node->class_);
+			self, typeid(node->operation()));
 		nf->normalize_node(node);
 	}
 	
