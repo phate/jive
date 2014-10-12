@@ -61,7 +61,6 @@ slice_op::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 1);
 	
 	jive_bitslice_node * node = new jive_bitslice_node(*this);
-	node->class_ = &JIVE_BITSLICE_NODE;
 
 	const jive::base::type * input_typeptr = &argument_type(0);
 	const jive::base::type * output_typeptr = &result_type(0);

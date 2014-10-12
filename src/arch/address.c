@@ -47,7 +47,6 @@ memberof_operation::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 1);
 
 	jive_memberof_node * node = new jive_memberof_node(*this);
-	node->class_ = &JIVE_MEMBEROF_NODE;
 
 	const jive::base::type * typeptr = &jive::addr::type::singleton();
 
@@ -164,7 +163,6 @@ containerof_operation::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 1);
 
 	jive_containerof_node * node = new jive_containerof_node(*this);
-	node->class_ = &JIVE_CONTAINEROF_NODE;
 
 	const jive::base::type * typeptr = &jive::addr::type::singleton();
 
@@ -330,7 +328,6 @@ arraysubscript_operation::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 2);
 
 	jive_node * node = new jive_arraysubscript_node(*this);
-	node->class_ = &JIVE_ARRAYSUBSCRIPT_NODE;
 
 	const jive::base::type * argument_types[2] = {
 		&argument_type(0),
@@ -467,7 +464,6 @@ arrayindex_operation::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 2);
 
 	jive_node * node = new jive_arrayindex_node(*this);
-	node->class_ = &JIVE_ARRAYINDEX_NODE;
 
 	const jive::base::type * argument_types[2] = {
 		&argument_type(0),
@@ -575,7 +571,6 @@ label_to_address_operation::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_label_to_address_node * node = new jive_label_to_address_node(*this);
-	node->class_ = &JIVE_LABEL_TO_ADDRESS_NODE;
 
 	const jive::base::type * result_types[1] = {&result_type(0)};
 	jive_node_init_(node, region,
@@ -669,7 +664,6 @@ label_to_bitstring_operation::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_label_to_bitstring_node * node = new jive_label_to_bitstring_node(*this);
-	node->class_ = &JIVE_LABEL_TO_BITSTRING_NODE;
 
 	const jive::base::type * result_types[1] = {&result_type(0)};
 	jive_node_init_(node, region,

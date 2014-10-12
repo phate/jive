@@ -83,7 +83,6 @@ negotiator_split_operation::create_node(
 	jive::output * const arguments[]) const
 {
 	negotiator_split_node * node = new negotiator_split_node(*this);
-	node->class_ = &JIVE_NEGOTIATOR_SPLIT_NODE;
 
 	const jive::base::type * argument_type = &input_type();
 	const jive::base::type * result_type = &output_type();

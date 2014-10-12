@@ -624,7 +624,6 @@ address_to_bitstring_operation::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 1);
 
 	jive_address_to_bitstring_node * node = new jive_address_to_bitstring_node(*this);
-	node->class_ = &JIVE_ADDRESS_TO_BITSTRING_NODE;
 	jive_address_to_bitstring_node_init_(node, region, arguments[0], nbits(),
 		&original_type());
 
@@ -714,7 +713,6 @@ bitstring_to_address_operation::create_node(
 	JIVE_DEBUG_ASSERT(narguments == 1);
 
 	jive_bitstring_to_address_node * node = new jive_bitstring_to_address_node(*this);
-	node->class_ = &JIVE_BITSTRING_TO_ADDRESS_NODE;
 	jive_bitstring_to_address_node_init_(node, region, arguments[0], nbits(),
 		&original_type());
 

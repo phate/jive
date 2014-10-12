@@ -67,7 +67,6 @@ graph_tail_operation::create_node(
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 
 	jive_graph_tail_node * node = new jive_graph_tail_node(jive::graph_tail_operation());
-	node->class_ = &JIVE_GRAPH_TAIL_NODE;
 	jive_node_init_(node, region, 0, nullptr, nullptr, 0, nullptr);
 
 	return node;

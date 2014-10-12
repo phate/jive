@@ -65,7 +65,6 @@ regvalue_op::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_regvalue_node * node = new jive_regvalue_node(*this);
-	node->class_ = &JIVE_REGVALUE_NODE;
 
 	const jive::base::type * argument_types[2] = {
 		&argument_type(0),

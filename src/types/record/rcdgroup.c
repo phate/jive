@@ -65,7 +65,6 @@ group_op::create_node(
 	const jive::base::type * result_types[1] = {&result_type(0)};
 
 	jive_group_node * node = new jive_group_node(*this);
-	node->class_ = &JIVE_GROUP_NODE;
 
 	jive_node_init_(
 		node, region,

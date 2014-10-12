@@ -39,7 +39,6 @@ split_operation::create_node(
 	jive_splitnode * node = new jive_splitnode(*this);
 	const jive::base::type * in_type = &argument_type(0);
 	const jive::base::type * out_type = &result_type(0);
-	node->class_ = &JIVE_SPLITNODE;
 	jive_node_init_(node, region,
 		1, &in_type, arguments,
 		1, &out_type);

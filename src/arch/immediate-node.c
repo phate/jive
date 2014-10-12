@@ -45,7 +45,6 @@ immediate_op::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_immediate_node * node = new jive_immediate_node(*this);
-	node->class_ = &JIVE_IMMEDIATE_NODE;
 	const jive::base::type* restypes[] = {&result_type(0)};
 	jive_node_init_(node,
 		region,

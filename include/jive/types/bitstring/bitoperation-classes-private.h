@@ -65,7 +65,6 @@ unop_create(
 	jive::output * argument)
 {
 	jive_node * node = jive::create_operation_node(operation);
-	node->class_ = cls;
 
 	const jive::base::type * types[1] = {&operation.type()};
 
@@ -89,7 +88,6 @@ binop_create(
 	JIVE_DEBUG_ASSERT(narguments == operation.narguments());
 
 	jive_node * node = jive::create_operation_node(operation);
-	node->class_ = cls;
 
 	const jive::base::type * argument_types[narguments];
 	for(size_t n = 0; n < narguments; n++)
@@ -116,7 +114,6 @@ binop_create(
 	JIVE_DEBUG_ASSERT(2 == operation.narguments());
 
 	jive_node * node = jive::create_operation_node(operation);
-	node->class_ = cls;
 
 	jive::output * arguments[2] = {arg1, arg2};
 	const jive::base::type * argument_types[2];

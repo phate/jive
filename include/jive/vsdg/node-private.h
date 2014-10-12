@@ -50,7 +50,6 @@ jive_opnode_create(
 		result_types[n] = &op.result_type(n);
 	}
 	jive_node * node = jive::create_operation_node(op);
-	node->class_ = cls;
 	jive_node_init_(node, region,
 		op.narguments(), argument_types, argument_values,
 		op.nresults(), result_types);
@@ -84,7 +83,6 @@ jive_opnode_create(
 		result_types[n] = &op.result_type(n);
 	}
 	jive_node * node = jive::create_operation_node(op);
-	node->class_ = cls;
 	jive_node_init_(node, region,
 		op.narguments(), argument_types, argument_values,
 		op.nresults(), result_types);

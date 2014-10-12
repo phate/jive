@@ -40,7 +40,6 @@ choose_operation::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_choose_node * node = new jive_choose_node(*this);
-	node->class_ = &JIVE_CHOOSE_NODE;
 
 	const jive::base::type * argtypes[1] = { &argument_type(0) };
 	const jive::base::type * restypes[1] = { &result_type(0) };

@@ -47,7 +47,6 @@ sizeof_op::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_sizeof_node * node = new jive_sizeof_node(*this);
-	node->class_ = &JIVE_SIZEOF_NODE;
 	const jive::base::type* restypes[] = {&result_type(0)};
 	jive_node_init_(node,
 		region,

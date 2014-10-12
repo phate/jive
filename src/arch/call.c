@@ -74,7 +74,6 @@ call_operation::create_node(
 	jive::output * const arguments[]) const
 {
 	jive_call_node * node = new jive_call_node(*this);
-	node->class_ = &JIVE_CALL_NODE;
 
 	const jive::base::type * argtypes[narguments()];
 	for (size_t n = 0; n < narguments(); ++n) {

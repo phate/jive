@@ -143,7 +143,6 @@ public:
 		jive::output * const arguments[]) const override
 	{
 		jive_node * node = jive::create_operation_node(*this);
-		node->class_ = cls;
 
 		const jive::base::type * argument_types[2] = {
 			&argument_type(0),
@@ -213,7 +212,6 @@ public:
 		jive::output * const arguments[]) const override
 	{
 		jive_node * node = jive::create_operation_node(*this);
-		node->class_ = cls;
 
 		const jive::base::type * argument_types[2] = {
 			&argument_type(0),
@@ -294,7 +292,6 @@ public:
 		jive::output * const arguments[]) const override
 	{
 		jive_node * node = jive::create_operation_node(*this);
-		node->class_ = cls;
 
 		const jive::base::type * argument_types[2] = {
 			&argument_type(0),
