@@ -25,7 +25,7 @@
 static inline bool
 is_gpr_immediate(jive::output * arg)
 {
-	return jive_node_isinstance(arg->node(), &JIVE_REGVALUE_NODE);
+	return dynamic_cast<const jive::regvalue_op *>(&arg->node()->operation());
 }
 
 static void
@@ -40,7 +40,7 @@ static void
 regvalue_to_immediate(const jive::output * regvalue, jive_immediate * imm)
 {
 	jive_node * rvnode = regvalue->node();
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(rvnode, &JIVE_REGVALUE_NODE));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::regvalue_op *>(&rvnode->operation()));
 	jive::output * value = rvnode->inputs[1]->origin();
 	
 	jive_bitconstant_node * bcnode = dynamic_cast<jive_bitconstant_node *>(value->node());
@@ -449,7 +449,7 @@ match_gpr_bitunary(jive_node * node)
 static void
 match_gpr_immediate(jive_node * node)
 {
-	JIVE_DEBUG_ASSERT(jive_node_isinstance(node, &JIVE_REGVALUE_NODE));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::regvalue_op *>(&node->operation()));
 	
 	jive_immediate imm[1];
 	regvalue_to_immediate(node->outputs[0], &imm[0]);
