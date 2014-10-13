@@ -12,7 +12,7 @@
 
 /*
  * Implementation of intrusive_hash data structure
- * 
+ *
  * An intrusive_hash is a data structure linking multiple objects such that
  * can be looked up efficiently by a specific key. The intrusive_hash is not
  * a container: It does not "own" the objects referenced. Additionally it
@@ -20,11 +20,11 @@
  * structure for forming the linkage are required to be members of the
  * objects themselves. Any object can be member of an arbitrary number of
  * such intrusive_hash collections.
- * 
+ *
  * Usage:
- * 
+ *
  * For a class declared as the following:
- * 
+ *
  * class X {
  * private:
  *   int num;
@@ -39,17 +39,17 @@
  * };
  *
  * an intrusive_hash data structure can be declared in the following way:
- * 
+ *
  * typedef jive::detail::intrusive_hash<
  *   int,
  *   X,
  *   X::num_hash_accessor
  * > num_hash;
- * 
+ *
  * It is possible to implement a custom accessor instead of using the
  * template-generated one. In this case the get_key, get_prev, get_next,
  * set_prev and set_next members must be implemented appropriately.
- * 
+ *
  * An object h of num_hash class then supports STL-style operations
  * - num_hash::iterator, num_hash::const_iterator for iteration
  * - h.begin(), h.end() and const-qualified variants
@@ -58,12 +58,12 @@
  * - h.erase(element) or h.erase(iterator) unlinks an object from the data
  *   structure
  * - h.size() and h.empty() testing
- * 
+ *
  * The implementation requires the following guarantees:
  * - the accessor to key and anchor are noexcept
  * - the hash function is noexcept
  * - while linked to the data structure, an objects key may not change
- * 
+ *
  * The implementation provides the following guarantees
  * - insert is O(1) amortized
  * - erase, empty, size are O(1) and noexcept
@@ -74,6 +74,11 @@
  *   invalidate traversal order
  * - erase an object does not invalidate iterators except those pointing
  *   to the object removed and does not invalidate traversal order
+ *
+ * An additional template "owner_intrusive_hash" implements the same
+ * interface, but in addition assumes "ownership" of the objects it contains.
+ * This means that upon destruction of the container, the elements will
+ * be deleted as well.
  */
 
 namespace jive {
@@ -571,6 +576,141 @@ public:
 	{
 		(element->*anchor_member).next = next;
 	}
+};
+
+template<
+	typename KeyType,
+	typename ElementType,
+	typename Accessor,
+	typename KeyHash = std::hash<KeyType>,
+	typename KeyEqual = safe_equal<KeyType>>
+class owner_intrusive_hash {
+private:
+	typedef intrusive_hash<KeyType, ElementType, Accessor, KeyHash, KeyEqual>
+		internal_hash_type;
+public:
+	typedef typename internal_hash_type::const_iterator const_iterator;
+	typedef typename internal_hash_type::iterator iterator;
+	typedef typename internal_hash_type::value_type value_type;
+	typedef typename internal_hash_type::mapped_type mapped_type;
+	typedef typename internal_hash_type::key_type key_type;
+	typedef typename internal_hash_type::size_type size_type;
+
+	~owner_intrusive_hash() noexcept
+	{
+		iterator i = begin();
+		while (i != end()) {
+			ElementType * e = i.ptr();
+			++i;
+			delete e;
+		}
+	}
+
+	inline constexpr
+	owner_intrusive_hash() noexcept
+	{
+	}
+
+	owner_intrusive_hash(const owner_intrusive_hash & other) = delete;
+
+	void operator=(const owner_intrusive_hash & other) = delete;
+
+	owner_intrusive_hash(owner_intrusive_hash && other) noexcept
+		: internal_hash_(std::move(other.internal_hash_))
+	{
+	}
+
+	void swap(owner_intrusive_hash & other) noexcept
+	{
+		internal_hash_.swap(other.internal_hash_);
+	}
+
+	inline iterator
+	insert(ElementType * element)
+	{
+		return internal_hash_.insert(element);
+	}
+
+	inline void
+	erase(ElementType * element)
+	{
+		return internal_hash_.erase(element);
+	}
+
+	inline void
+	erase(iterator i)
+	{
+		internal_hash_.erase(i);
+	}
+
+	inline void
+	erase(iterator begin, iterator end)
+	{
+		internal_hash_.erase(begin, end);
+	}
+
+	inline size_type
+	size() const noexcept
+	{
+		return internal_hash_.size();
+	}
+
+	inline bool
+	empty() const noexcept
+	{
+		return internal_hash_.empty();
+	}
+
+	iterator
+	begin() noexcept
+	{
+		return internal_hash_.begin();
+	}
+
+	iterator
+	end() noexcept
+	{
+		return internal_hash_.end();
+	}
+
+	const_iterator
+	cbegin() const noexcept
+	{
+		return internal_hash_.cbegin();
+	}
+
+	const_iterator
+	cend() const noexcept
+	{
+		return internal_hash_.cend();
+	}
+
+	const_iterator
+	begin() const noexcept
+	{
+		return internal_hash_.begin();
+	}
+
+	const_iterator
+	end() const noexcept
+	{
+		return internal_hash_.end();
+	}
+
+	inline iterator
+	find(const KeyType & key) noexcept
+	{
+		return internal_hash_.find(key);
+	}
+
+	inline const_iterator
+	find(const KeyType & key) const noexcept
+	{
+		return internal_hash_.find(key);
+	}
+
+private:
+	internal_hash_type internal_hash_;
 };
 
 }
