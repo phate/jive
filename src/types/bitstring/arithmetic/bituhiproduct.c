@@ -69,6 +69,12 @@ umulh_op::debug_string() const
 	return "BITUHIPRODUCT";
 }
 
+std::unique_ptr<jive::operation>
+umulh_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new umulh_op(*this));
+}
+
 }
 }
 

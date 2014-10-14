@@ -54,6 +54,12 @@ subroutine_head_op::debug_string() const
 	return "SUBROUTINE_HEAD";
 }
 
+std::unique_ptr<jive::operation>
+subroutine_head_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new subroutine_head_op(*this));
+}
+
 subroutine_tail_op::~subroutine_tail_op() noexcept
 {
 }
@@ -93,6 +99,11 @@ subroutine_tail_op::debug_string() const
 	return "SUBROUTINE_TAIL";
 }
 
+std::unique_ptr<jive::operation>
+subroutine_tail_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new subroutine_tail_op(*this));
+}
 
 subroutine_op::~subroutine_op() noexcept
 {
@@ -129,6 +140,12 @@ std::string
 subroutine_op::debug_string() const
 {
 	return "SUBROUTINE";
+}
+
+std::unique_ptr<jive::operation>
+subroutine_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new subroutine_op(*this));
 }
 
 output *

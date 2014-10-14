@@ -83,6 +83,12 @@ test_operation::debug_string() const
 	return "TEST_NODE";
 }
 
+std::unique_ptr<jive::operation>
+test_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new test_operation(*this));
+}
+
 const jive_node_class JIVE_TEST_NODE = {
 	parent : &JIVE_NODE,
 	name : "TEST_NODE",

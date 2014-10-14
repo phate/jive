@@ -62,6 +62,12 @@ shr_op::debug_string() const
 	return "BITSHR";
 }
 
+std::unique_ptr<jive::operation>
+shr_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new shr_op(*this));
+}
+
 }
 }
 

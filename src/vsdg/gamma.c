@@ -47,6 +47,12 @@ gamma_tail_op::debug_string() const
 	return "GAMMA_TAIL";
 }
 
+std::unique_ptr<jive::operation>
+gamma_tail_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new gamma_tail_op(*this));
+}
+
 gamma_op::~gamma_op() noexcept
 {
 }
@@ -86,6 +92,12 @@ std::string
 gamma_op::debug_string() const
 {
 	return "GAMMA";
+}
+
+std::unique_ptr<jive::operation>
+gamma_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new gamma_op(*this));
 }
 
 }

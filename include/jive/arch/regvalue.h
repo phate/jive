@@ -52,6 +52,10 @@ public:
 	debug_string() const override;
 
 	inline const jive_register_class * regcls() const { return regcls_; }
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	const jive_register_class * regcls_;
 };

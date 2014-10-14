@@ -6,6 +6,7 @@
 #ifndef JIVE_VSDG_OPERATORS_BASE_H
 #define JIVE_VSDG_OPERATORS_BASE_H
 
+#include <memory>
 #include <string>
 
 class jive_node;
@@ -46,6 +47,9 @@ public:
 
 	virtual std::string
 	debug_string() const = 0;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const = 0;
 };
 
 }

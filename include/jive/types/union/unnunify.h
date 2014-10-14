@@ -76,6 +76,9 @@ public:
 	inline const jive::unn::declaration *
 	declaration() const noexcept { return type_.declaration(); }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	type type_;
 	size_t option_;
@@ -109,6 +112,9 @@ public:
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 private:
 	type type_;

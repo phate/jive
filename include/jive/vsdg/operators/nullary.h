@@ -134,6 +134,11 @@ public:
 		return value_;
 	}
 
+	virtual std::unique_ptr<jive::operation> copy() const override
+	{
+		return std::unique_ptr<jive::operation>(new domain_const_op(*this));
+	}
+
 private:
 	value_repr value_;
 	Type type_;
@@ -206,6 +211,11 @@ public:
 	name() const noexcept
 	{
 		return name_;
+	}
+
+	virtual std::unique_ptr<jive::operation> copy() const override
+	{
+		return std::unique_ptr<jive::operation>(new domain_symbol_op(*this));
 	}
 
 private:

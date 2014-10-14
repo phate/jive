@@ -117,6 +117,9 @@ public:
 	inline const jive::value::type &
 	data_type() const noexcept { return *data_type_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::unique_ptr<jive::value::type> address_type_;
 	std::vector<std::unique_ptr<jive::state::type>> state_types_;

@@ -66,6 +66,9 @@ public:
 	inline size_t
 	high() const noexcept { return low_ + result_type_.nbits(); }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	jive::bits::type argument_type_;
 	jive::bits::type result_type_;

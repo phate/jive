@@ -639,6 +639,12 @@ address_to_bitstring_operation::debug_string() const
 	return "ADDRESS_TO_BITSTRING";
 }
 
+std::unique_ptr<jive::operation>
+address_to_bitstring_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new address_to_bitstring_operation(*this));
+}
+
 bitstring_to_address_operation::~bitstring_to_address_operation() noexcept
 {
 }
@@ -721,6 +727,12 @@ std::string
 bitstring_to_address_operation::debug_string() const
 {
 	return "BITSTRING_TO_ADDRESS";
+}
+
+std::unique_ptr<jive::operation>
+bitstring_to_address_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new bitstring_to_address_operation(*this));
 }
 
 }

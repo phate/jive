@@ -84,6 +84,9 @@ public:
 		return argument_types_;
 	}
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	static type
 	aggregate_arguments(

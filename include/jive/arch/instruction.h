@@ -61,6 +61,9 @@ public:
 		return icls_;
 	}
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	const jive_instruction_class * icls_;
 };

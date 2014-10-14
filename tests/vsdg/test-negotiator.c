@@ -120,6 +120,11 @@ public:
 	inline const std::vector<test_option_t> &
 	output_options() const noexcept { return output_options_; }
 
+	virtual std::unique_ptr<jive::operation> copy() const override
+	{
+		return std::unique_ptr<jive::operation>(new negtest_op(*this));
+	}
+
 private:
 	std::vector<std::unique_ptr<const jive::base::type>> argument_types_;
 	std::vector<std::unique_ptr<const jive::base::type>> result_types_;

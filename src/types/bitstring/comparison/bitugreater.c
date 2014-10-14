@@ -67,6 +67,12 @@ ugt_op::debug_string() const
 	return "BITUGREATER";
 }
 
+std::unique_ptr<jive::operation>
+ugt_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new ugt_op(*this));
+}
+
 }
 }
 

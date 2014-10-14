@@ -86,6 +86,12 @@ store_op::debug_string() const
 	return "STORE";
 }
 
+std::unique_ptr<jive::operation>
+store_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new store_op(*this));
+}
+
 }
 
 /* store node normal form */

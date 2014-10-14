@@ -60,6 +60,12 @@ and_op::debug_string() const
 	return "BITAND";
 }
 
+std::unique_ptr<jive::operation>
+and_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new and_op(*this));
+}
+
 }
 }
 

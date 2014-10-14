@@ -52,6 +52,9 @@ public:
 	inline const jive::rcd::declaration *
 	declaration() const noexcept { return result_type_.declaration(); }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	const jive::rcd::type result_type_;
 };

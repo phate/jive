@@ -54,6 +54,9 @@ public:
 
 	inline const jive::value::type & type() const noexcept { return *type_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::unique_ptr<jive::value::type> type_;
 };

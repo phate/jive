@@ -73,6 +73,9 @@ public:
 	const std::string & name() const noexcept { return name_; }
 	const jive_linker_symbol * symbol() const noexcept { return symbol_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::string name_;
 	const jive_linker_symbol * symbol_;

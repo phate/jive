@@ -61,6 +61,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 class phi_tail_op final : public region_tail_op {
@@ -82,6 +85,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 class phi_op final : public region_anchor_op {
@@ -97,6 +103,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 }

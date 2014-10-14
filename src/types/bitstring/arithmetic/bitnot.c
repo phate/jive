@@ -51,6 +51,12 @@ not_op::debug_string() const
 	return "BITNOT";
 }
 
+std::unique_ptr<jive::operation>
+not_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new not_op(*this));
+}
+
 }
 }
 

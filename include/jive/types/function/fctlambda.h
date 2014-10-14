@@ -36,6 +36,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 class lambda_tail_op final : public region_tail_op {
@@ -57,6 +60,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 class lambda_op final : public region_anchor_op {
@@ -115,6 +121,9 @@ public:
 	{
 		return return_gates_;
 	}
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 private:
 	jive::fct::type function_type_;

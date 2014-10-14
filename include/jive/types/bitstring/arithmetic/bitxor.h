@@ -42,6 +42,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 }

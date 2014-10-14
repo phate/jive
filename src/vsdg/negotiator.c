@@ -122,6 +122,12 @@ negotiator_split_operation::reduce_operand(
 	return nullptr;
 }
 
+std::unique_ptr<jive::operation>
+negotiator_split_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new negotiator_split_operation(*this));
+}
+
 /* split node */
 
 negotiator_split_node::~negotiator_split_node() noexcept

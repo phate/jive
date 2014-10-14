@@ -60,6 +60,12 @@ add_op::debug_string() const
 	return "BITSUM";
 }
 
+std::unique_ptr<jive::operation>
+add_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new add_op(*this));
+}
+
 }
 }
 

@@ -67,6 +67,12 @@ eq_op::debug_string() const
 	return "BITEQUAL";
 }
 
+std::unique_ptr<jive::operation>
+eq_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new eq_op(*this));
+}
+
 }
 }
 

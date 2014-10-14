@@ -81,6 +81,9 @@ public:
 	inline const std::vector<std::unique_ptr<jive::base::type>> &
 	result_types() const noexcept { return result_types_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	const jive_calling_convention * calling_convention_;
 	std::vector<std::unique_ptr<jive::base::type>> argument_types_;

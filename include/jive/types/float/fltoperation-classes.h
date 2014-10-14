@@ -181,6 +181,11 @@ public:
 		return name;
 	}
 
+	virtual std::unique_ptr<jive::operation> copy() const override
+	{
+		return std::unique_ptr<jive::operation>(new make_unop(*this));
+	}
+
 private:
 	evaluator_functional evaluator_;
 };
@@ -257,6 +262,11 @@ public:
 		return name;
 	}
 
+	virtual std::unique_ptr<jive::operation> copy() const override
+	{
+		return std::unique_ptr<jive::operation>(new make_binop(*this));
+	}
+
 private:
 	evaluator_functional evaluator_;
 };
@@ -331,6 +341,11 @@ public:
 	debug_string() const override
 	{
 		return name;
+	}
+
+	virtual std::unique_ptr<jive::operation> copy() const override
+	{
+		return std::unique_ptr<jive::operation>(new make_cmpop(*this));
 	}
 
 private:

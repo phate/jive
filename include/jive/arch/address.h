@@ -74,6 +74,9 @@ public:
 	inline size_t
 	index() const noexcept { return index_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	const jive::rcd::declaration * record_decl_;
 	size_t index_;
@@ -127,6 +130,9 @@ public:
 	inline size_t
 	index() const noexcept { return index_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	const jive::rcd::declaration * record_decl_;
 	size_t index_;
@@ -171,6 +177,9 @@ public:
 
 	inline const jive::bits::type &
 	index_type() const noexcept { return index_type_; }
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 private:
 	std::unique_ptr<jive::value::type> element_type_;
@@ -217,6 +226,9 @@ public:
 	inline const jive::bits::type &
 	index_type() const noexcept { return index_type_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::unique_ptr<jive::value::type> element_type_;
 	jive::bits::type index_type_;
@@ -259,6 +271,9 @@ public:
 
 	const jive_label *
 	label() const noexcept { return label_; }
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 private:
 	const struct jive_label * label_;
@@ -307,6 +322,9 @@ public:
 
 	size_t
 	nbits() const noexcept { return result_type_.nbits(); }
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 private:
 	const jive_label * label_;

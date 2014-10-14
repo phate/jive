@@ -60,6 +60,12 @@ sub_op::debug_string() const
 	return "BITDIFFERENCE";
 }
 
+std::unique_ptr<jive::operation>
+sub_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new sub_op(*this));
+}
+
 }
 }
 

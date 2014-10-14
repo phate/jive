@@ -83,6 +83,11 @@ unify_op::reduce_operand(
 	return nullptr;
 }
 
+std::unique_ptr<jive::operation>
+unify_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new unify_op(*this));
+}
 
 empty_unify_op::~empty_unify_op() noexcept
 {
@@ -119,6 +124,12 @@ const jive::base::type &
 empty_unify_op::result_type(size_t index) const noexcept
 {
 	return type_;
+}
+
+std::unique_ptr<jive::operation>
+empty_unify_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new empty_unify_op(*this));
 }
 
 }

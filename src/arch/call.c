@@ -98,6 +98,12 @@ call_operation::debug_string() const
 	return "CALL";
 }
 
+std::unique_ptr<jive::operation>
+call_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new call_operation(*this));
+}
+
 }
 
 const jive_node_class JIVE_CALL_NODE = {

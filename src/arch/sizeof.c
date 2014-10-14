@@ -63,6 +63,12 @@ sizeof_op::debug_string() const
 	return "SIZEOF";
 }
 
+std::unique_ptr<jive::operation>
+sizeof_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new sizeof_op(*this));
+}
+
 }
 
 const jive_node_class JIVE_SIZEOF_NODE = {

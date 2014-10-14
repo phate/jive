@@ -107,6 +107,12 @@ memberof_operation::reduce_operand(
 	return nullptr;
 }
 
+std::unique_ptr<jive::operation>
+memberof_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new memberof_operation(*this));
+}
+
 }
 }
 
@@ -216,6 +222,12 @@ containerof_operation::reduce_operand(
 	} else {
 		return nullptr;
 	}
+}
+
+std::unique_ptr<jive::operation>
+containerof_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new containerof_operation(*this));
 }
 
 }
@@ -339,6 +351,12 @@ std::string
 arraysubscript_operation::debug_string() const
 {
 	return "ARRAYSUBSCRIPT";
+}
+
+std::unique_ptr<jive::operation>
+arraysubscript_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new arraysubscript_operation(*this));
 }
 
 }
@@ -472,6 +490,12 @@ arrayindex_operation::debug_string() const
 	return "ARRAYINDEX";
 }
 
+std::unique_ptr<jive::operation>
+arrayindex_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new arrayindex_operation(*this));
+}
+
 }
 }
 
@@ -569,6 +593,12 @@ label_to_address_operation::debug_string() const
 	return tmp;
 }
 
+std::unique_ptr<jive::operation>
+label_to_address_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new label_to_address_operation(*this));
+}
+
 }
 }
 
@@ -655,6 +685,12 @@ label_to_bitstring_operation::debug_string() const
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
 	return tmp;
+}
+
+std::unique_ptr<jive::operation>
+label_to_bitstring_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new label_to_bitstring_operation(*this));
 }
 
 }

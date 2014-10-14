@@ -76,6 +76,9 @@ public:
 	inline size_t nbits() const noexcept { return result_type_.nbits(); }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	jive::bits::type result_type_;
 	std::unique_ptr<jive::base::type> original_type_;
@@ -137,6 +140,9 @@ public:
 
 	inline size_t nbits() const noexcept { return argument_type_.nbits(); }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 
 private:
 	jive::bits::type argument_type_;

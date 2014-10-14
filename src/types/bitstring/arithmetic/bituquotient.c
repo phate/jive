@@ -63,6 +63,12 @@ udiv_op::debug_string() const
 	return "BITUQUOTIENT";
 }
 
+std::unique_ptr<jive::operation>
+udiv_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new udiv_op(*this));
+}
+
 }
 }
 

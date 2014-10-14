@@ -63,6 +63,12 @@ umod_op::debug_string() const
 	return "BITUMOD";
 }
 
+std::unique_ptr<jive::operation>
+umod_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new umod_op(*this));
+}
+
 }
 }
 

@@ -96,6 +96,12 @@ instruction_op::debug_string() const
 	return icls()->name;
 }
 
+std::unique_ptr<jive::operation>
+instruction_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new instruction_op(*this));
+}
+
 }
 
 const jive_node_class JIVE_INSTRUCTION_NODE = {

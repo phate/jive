@@ -47,9 +47,11 @@ public:
 	inline const type &
 	function_type() const noexcept { return function_type_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	type function_type_;
-	
 };
 
 }

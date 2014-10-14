@@ -67,6 +67,12 @@ ult_op::debug_string() const
 	return "BITULESS";
 }
 
+std::unique_ptr<jive::operation>
+ult_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new ult_op(*this));
+}
+
 }
 }
 

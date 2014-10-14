@@ -67,6 +67,12 @@ uge_op::debug_string() const
 	return "BITUGREATEREQ";
 }
 
+std::unique_ptr<jive::operation>
+uge_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new uge_op(*this));
+}
+
 }
 }
 

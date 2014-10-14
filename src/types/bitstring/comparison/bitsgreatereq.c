@@ -67,6 +67,12 @@ sge_op::debug_string() const
 	return "BITSGREATEREQ";
 }
 
+std::unique_ptr<jive::operation>
+sge_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new sge_op(*this));
+}
+
 }
 }
 

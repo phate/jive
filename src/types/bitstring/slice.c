@@ -161,6 +161,12 @@ slice_op::reduce_operand(
 	return nullptr;
 }
 
+std::unique_ptr<jive::operation>
+slice_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new slice_op(*this));
+}
+
 }
 }
 

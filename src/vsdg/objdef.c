@@ -81,6 +81,12 @@ objdef_operation::debug_string() const
 	return name();
 }
 
+std::unique_ptr<jive::operation>
+objdef_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new objdef_operation(*this));
+}
+
 }
 
 const jive_node_class JIVE_OBJDEF_NODE = {

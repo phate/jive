@@ -59,6 +59,12 @@ theta_head_op::debug_string() const
 	return "THETA_HEAD";
 }
 
+std::unique_ptr<jive::operation>
+theta_head_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new theta_head_op(*this));
+}
+
 theta_tail_op::~theta_tail_op() noexcept
 {
 }
@@ -98,6 +104,12 @@ theta_tail_op::debug_string() const
 	return "THETA_TAIL";
 }
 
+std::unique_ptr<jive::operation>
+theta_tail_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new theta_tail_op(*this));
+}
+
 theta_op::~theta_op() noexcept
 {
 }
@@ -119,6 +131,12 @@ std::string
 theta_op::debug_string() const
 {
 	return "THETA";
+}
+
+std::unique_ptr<jive::operation>
+theta_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new theta_op(*this));
 }
 
 }

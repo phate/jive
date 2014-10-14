@@ -57,6 +57,9 @@ public:
 	virtual std::string
 	debug_string() const override;
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::vector<std::unique_ptr<const jive::base::type>> argument_types_;
 	std::vector<std::unique_ptr<const jive::base::type>> result_types_;

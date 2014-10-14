@@ -97,6 +97,12 @@ mux_op::debug_string() const
 	return "STATEMUX";
 }
 
+std::unique_ptr<jive::operation>
+mux_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new mux_op(*this));
+}
+
 }
 }
 

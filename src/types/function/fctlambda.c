@@ -89,6 +89,12 @@ lambda_head_op::debug_string() const
 	return "LAMBDA_HEAD";
 }
 
+std::unique_ptr<jive::operation>
+lambda_head_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new lambda_head_op(*this));
+}
+
 lambda_tail_op::~lambda_tail_op() noexcept
 {
 }
@@ -126,6 +132,12 @@ std::string
 lambda_tail_op::debug_string() const
 {
 	return "LAMBDA_TAIL";
+}
+
+std::unique_ptr<jive::operation>
+lambda_tail_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new lambda_tail_op(*this));
 }
 
 lambda_op::~lambda_op() noexcept
@@ -207,6 +219,12 @@ std::string
 lambda_op::debug_string() const
 {
 	return "LAMBDA";
+}
+
+std::unique_ptr<jive::operation>
+lambda_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new lambda_op(*this));
 }
 
 }

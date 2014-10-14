@@ -130,6 +130,12 @@ select_operation::reduce_operand(
 	return nullptr;
 }
 
+std::unique_ptr<jive::operation>
+select_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new select_operation(*this));
+}
+
 }
 }
 

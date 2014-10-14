@@ -63,6 +63,12 @@ smod_op::debug_string() const
 	return "BITSMOD";
 }
 
+std::unique_ptr<jive::operation>
+smod_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new smod_op(*this));
+}
+
 }
 }
 

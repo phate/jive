@@ -67,6 +67,12 @@ slt_op::debug_string() const
 	return "BITSLESS";
 }
 
+std::unique_ptr<jive::operation>
+slt_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new slt_op(*this));
+}
+
 }
 }
 

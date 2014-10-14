@@ -60,6 +60,12 @@ xor_op::debug_string() const
 	return "BITXOR";
 }
 
+std::unique_ptr<jive::operation>
+xor_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new xor_op(*this));
+}
+
 }
 }
 

@@ -80,6 +80,12 @@ apply_op::debug_string() const
 	return "APPLY";
 }
 
+std::unique_ptr<jive::operation>
+apply_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new apply_op(*this));
+}
+
 }
 }
 

@@ -67,6 +67,12 @@ sle_op::debug_string() const
 	return "BITSLESSEQ";
 }
 
+std::unique_ptr<jive::operation>
+sle_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new sle_op(*this));
+}
+
 }
 }
 

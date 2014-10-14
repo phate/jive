@@ -69,6 +69,12 @@ smulh_op::debug_string() const
 	return "BITSHIPRODUCT";
 }
 
+std::unique_ptr<jive::operation>
+smulh_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new smulh_op(*this));
+}
+
 }
 }
 

@@ -67,6 +67,12 @@ ule_op::debug_string() const
 	return "BITULESSEQ";
 }
 
+std::unique_ptr<jive::operation>
+ule_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new ule_op(*this));
+}
+
 }
 }
 

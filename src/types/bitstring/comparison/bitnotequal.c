@@ -67,6 +67,12 @@ ne_op::debug_string() const
 	return "BITNOTEQUAL";
 }
 
+std::unique_ptr<jive::operation>
+ne_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new ne_op(*this));
+}
+
 }
 }
 

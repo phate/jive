@@ -75,6 +75,12 @@ graph_tail_operation::debug_string() const
 	return "GRAPH_TAIL";
 }
 
+std::unique_ptr<jive::operation>
+graph_tail_operation::copy() const
+{
+	return std::unique_ptr<jive::operation>(new graph_tail_operation(*this));
+}
+
 }
 
 const jive_node_class JIVE_GRAPH_TAIL_NODE = {

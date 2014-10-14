@@ -63,6 +63,12 @@ mul_op::debug_string() const
 	return "BITPRODUCT";
 }
 
+std::unique_ptr<jive::operation>
+mul_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new mul_op(*this));
+}
+
 }
 }
 

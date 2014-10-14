@@ -140,6 +140,9 @@ public:
 	inline const jive_negotiator_option &
 	output_option() const noexcept { return *output_option_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	jive_negotiator * negotiator_;
 	std::unique_ptr<jive::base::type> input_type_;

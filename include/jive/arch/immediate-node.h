@@ -43,6 +43,9 @@ public:
 
 	inline const jive_immediate & value() const noexcept { return value_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	jive_immediate value_;
 };

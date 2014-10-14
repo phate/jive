@@ -58,6 +58,12 @@ phi_head_op::debug_string() const
 	return "PHI_HEAD";
 }
 
+std::unique_ptr<jive::operation>
+phi_head_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new phi_head_op(*this));
+}
+
 phi_tail_op::~phi_tail_op() noexcept
 {
 }
@@ -97,6 +103,12 @@ phi_tail_op::debug_string() const
 	return "PHI_TAIL";
 }
 
+std::unique_ptr<jive::operation>
+phi_tail_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new phi_tail_op(*this));
+}
+
 phi_op::~phi_op() noexcept
 {
 }
@@ -118,6 +130,12 @@ std::string
 phi_op::debug_string() const
 {
 	return "PHI";
+}
+
+std::unique_ptr<jive::operation>
+phi_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new phi_op(*this));
 }
 
 }

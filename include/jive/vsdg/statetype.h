@@ -110,6 +110,9 @@ public:
 	virtual std::string
 	debug_string() const override;
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::unique_ptr<type> state_type_;
 	size_t narguments_;

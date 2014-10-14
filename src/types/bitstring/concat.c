@@ -243,5 +243,11 @@ concat_op::debug_string() const
 	return "BITCONCAT";
 }
 
+std::unique_ptr<jive::operation>
+concat_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new concat_op(*this));
+}
+
 }
 }

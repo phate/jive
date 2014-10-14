@@ -80,6 +80,12 @@ load_op::debug_string() const
 	return "LOAD";
 }
 
+std::unique_ptr<jive::operation>
+load_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new load_op(*this));
+}
+
 }
 
 /* load_node_normal_form */

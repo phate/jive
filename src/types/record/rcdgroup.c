@@ -81,6 +81,12 @@ group_op::debug_string() const
 	return "GROUP";
 }
 
+std::unique_ptr<jive::operation>
+group_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new group_op(*this));
+}
+
 }
 }
 

@@ -51,6 +51,12 @@ neg_op::debug_string() const
 	return "BITNEGATE";
 }
 
+std::unique_ptr<jive::operation>
+neg_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new neg_op(*this));
+}
+
 }
 }
 

@@ -67,6 +67,9 @@ public:
 	inline size_t
 	element() const noexcept { return element_; }
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	type type_;
 	size_t element_;

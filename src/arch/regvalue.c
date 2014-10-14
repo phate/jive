@@ -88,6 +88,12 @@ regvalue_op::debug_string() const
 	return regcls()->base.name;
 }
 
+std::unique_ptr<jive::operation>
+regvalue_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new regvalue_op(*this));
+}
+
 }
 
 const jive_node_class JIVE_REGVALUE_NODE = {

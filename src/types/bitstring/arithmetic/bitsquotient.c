@@ -63,6 +63,12 @@ sdiv_op::debug_string() const
 	return "BITSQUOTIENT";
 }
 
+std::unique_ptr<jive::operation>
+sdiv_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new sdiv_op(*this));
+}
+
 }
 }
 

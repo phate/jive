@@ -62,6 +62,12 @@ ashr_op::debug_string() const
 	return "BITASHR";
 }
 
+std::unique_ptr<jive::operation>
+ashr_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new ashr_op(*this));
+}
+
 }
 }
 

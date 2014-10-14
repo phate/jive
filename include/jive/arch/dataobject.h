@@ -63,6 +63,9 @@ public:
 	virtual std::string
 	debug_string() const override;
 
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
 private:
 	std::vector<std::unique_ptr<const base::type>> types_;
 };
@@ -86,6 +89,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 class dataobj_op final : public region_anchor_op {
@@ -107,6 +113,9 @@ public:
 
 	virtual std::string
 	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
 };
 
 }

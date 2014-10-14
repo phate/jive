@@ -73,6 +73,12 @@ dataobj_head_op::debug_string() const
 	return "DATA_HEAD";
 }
 
+std::unique_ptr<jive::operation>
+dataobj_head_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new dataobj_head_op(*this));
+}
+
 dataobj_tail_op::~dataobj_tail_op() noexcept
 {
 }
@@ -112,6 +118,11 @@ dataobj_tail_op::debug_string() const
 	return "DATA_TAIL";
 }
 
+std::unique_ptr<jive::operation>
+dataobj_tail_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new dataobj_tail_op(*this));
+}
 
 dataobj_op::~dataobj_op() noexcept
 {
@@ -148,6 +159,12 @@ std::string
 dataobj_op::debug_string() const
 {
 	return "DATA";
+}
+
+std::unique_ptr<jive::operation>
+dataobj_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new dataobj_op(*this));
 }
 
 }

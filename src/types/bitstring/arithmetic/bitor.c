@@ -60,6 +60,12 @@ or_op::debug_string() const
 	return "BITOR";
 }
 
+std::unique_ptr<jive::operation>
+or_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new or_op(*this));
+}
+
 }
 }
 

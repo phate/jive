@@ -63,6 +63,12 @@ immediate_op::debug_string() const
 	return tmp;
 }
 
+std::unique_ptr<jive::operation>
+immediate_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new immediate_op(*this));
+}
+
 }
 
 const jive_node_class JIVE_IMMEDIATE_NODE = {

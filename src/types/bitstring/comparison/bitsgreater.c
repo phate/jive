@@ -67,6 +67,12 @@ sgt_op::debug_string() const
 	return "BITSGREATER";
 }
 
+std::unique_ptr<jive::operation>
+sgt_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new sgt_op(*this));
+}
+
 }
 }
 
