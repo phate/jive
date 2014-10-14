@@ -12,256 +12,252 @@
 
 #include <jive/types/bitstring.h>
 
-static void
-jive_bitconstant_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::bits::constant_op * attrs =
-		(const jive::bits::constant_op *) attrs_;
-	jive_token_ostream_string(os, &attrs->value()[0], attrs->value().size());
-}
+namespace jive {
+namespace serialization {
+namespace {
 
-static bool
-jive_bitconstant_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region, size_t noperands,
-	jive::output * const operands[], jive_token_istream * is,
-	jive_node ** node)
-{
-	const jive_token * token = jive_token_istream_current(is);
-	if (token->type != jive_token_string) {
-		driver->error(driver, "Expected string");
-		return false;
-	}
-	
-	const char * bits = token->v.string.str;
-	size_t nbits = token->v.string.len;
-
-	jive::bits::constant_op op(jive::bits::value_repr(bits, bits + nbits));
-	*node = op.create_node(region, noperands, operands);
-
-	jive_token_istream_advance(is);
-
-	return true;
-}
-
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_BITCONSTANT_NODE, "bitconstant",
-	jive_bitconstant_serialize,
-	jive_bitconstant_deserialize);
-
-static void
-jive_bitslice_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::bits::slice_op * attrs = (const jive::bits::slice_op *) attrs_;
-	jive_token_ostream_integral(os, attrs->low());
-	jive_token_ostream_char(os, ',');
-	jive_token_ostream_integral(os, attrs->high());
-}
-
-static bool
-jive_bitslice_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[],
-	jive_token_istream * is,
-	jive_node ** node)
-{
-	uint64_t low, high;
-	if (!jive_deserialize_uint(driver, is, &low))
-		return false;
-	if (!jive_deserialize_char_token(driver, is, ','))
-		return false;
-	if (!jive_deserialize_uint(driver, is, &high))
-		return false;
-	/* FIXME: check low < high, high < nbits */
-
-	const jive::bits::type & argument_type =
-		dynamic_cast<const jive::bits::type &>(arguments[0]->type());
-	jive::bits::slice_op op(argument_type, low, high);
-
-	*node = op.create_node(region, narguments, arguments);
-	
-	return true;
-}
-
-static void
-jive_bitconcat_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::bits::concat_op * op = static_cast<const jive::bits::concat_op *>(attrs_);
-	bool first = true;
-	for (const jive::bits::type & t : op->argument_types()) {
-		if (!first) {
-			jive_token_ostream_char(os, ',');
-		} else {
-			first = false;
-		}
-		jive_token_ostream_integral(os, t.nbits());
-	}
-}
-
-static bool
-jive_bitconcat_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[],
-	jive_token_istream * is,
-	jive_node ** node)
-{
-	std::vector<jive::bits::type> types;
-	
-	for(;;) {
-		uint64_t bits;
-		if (!jive_deserialize_uint(driver, is, &bits)) {
-			return false;
-		}
-		types.emplace_back(bits);
-		if (jive_token_istream_current(is)->type == jive_token_comma) {
-			jive_token_istream_advance(is);
-		} else {
-			break;
-		}
+class bitconstant_handler : public opcls_handler {
+public:
+	inline bitconstant_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(bits::constant_op), registry)
+	{
 	}
 
-	*node = jive::bits::concat_op(std::move(types)).create_node(region, narguments, arguments);
-	
-	return true;
-}
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const bits::constant_op & const_op = static_cast<const bits::constant_op &>(op);
+		std::string s(const_op.value().begin(), const_op.value().end());
+		driver.put_string(s);
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		std::string s = driver.parse_string();
+		std::vector<char> value(s.begin(), s.end());
+		return std::unique_ptr<operation>(new bits::constant_op(value));
+	}
+};
+
 
 template<typename Operation>
-static bool
-jive_serialization_nodecls_deserialize_bitbinary1(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region,
-	size_t noperands, jive::output * const operands[],
-	struct jive_token_istream * is,
-	jive_node ** node)
-{
-	Operation op(dynamic_cast<const jive::bits::type&>(operands[0]->type()), noperands);
-	*node = jive_node_create(self->cls, op, region, noperands, operands);
-	return *node != 0;
-}
-#define JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(nodecls, opcls, tag) \
-	static void __attribute__((constructor)) register_##nodecls(void)\
-	{ \
-		jive_serialization_nodecls_register(&nodecls, tag, \
-			jive_serialization_nodecls_serialize_default, \
-			jive_serialization_nodecls_deserialize_bitbinary1<opcls>); \
-	} \
+class bitbinary1_handler : public opcls_handler {
+public:
+	inline bitbinary1_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(Operation), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		driver.put_uint(static_cast<const bits::binary_op &>(op).type().nbits());
+		driver.put_char_token(',');
+		driver.put_int(static_cast<const bits::binary_op &>(op).narguments());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		size_t nbits = driver.parse_uint();
+		driver.parse_char_token(',');
+		size_t nargs = driver.parse_uint();
+		return std::unique_ptr<operation>(new Operation(nbits, nargs));
+	}
+};
 
 template<typename Operation>
-static bool
-jive_serialization_nodecls_deserialize_bitbinary2(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region,
-	size_t noperands, jive::output * const operands[],
-	struct jive_token_istream * is,
-	jive_node ** node)
-{
-	Operation op(dynamic_cast<const jive::bits::type&>(operands[0]->type()));
-	*node = jive_node_create(self->cls, op, region, noperands, operands);
-	return *node != 0;
-}
-#define JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(nodecls, opcls, tag) \
-	static void __attribute__((constructor)) register_##nodecls(void)\
-	{ \
-		jive_serialization_nodecls_register(&nodecls, tag, \
-			jive_serialization_nodecls_serialize_default, \
-			jive_serialization_nodecls_deserialize_bitbinary2<opcls>); \
-	} \
+class bitbinary2_handler : public opcls_handler {
+public:
+	inline bitbinary2_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(Operation), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		driver.put_uint(static_cast<const bits::binary_op &>(op).type().nbits());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		size_t nbits = driver.parse_uint();
+		return std::unique_ptr<operation>(new Operation(nbits));
+	}
+};
 
 template<typename Operation>
-static bool
-jive_serialization_nodecls_deserialize_bitunary(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region,
-	size_t noperands, jive::output * const operands[],
-	struct jive_token_istream * is,
-	jive_node ** node)
-{
-	Operation op(dynamic_cast<const jive::bits::type&>(operands[0]->type()));
-	*node = jive_node_create(self->cls, op, region, noperands, operands);
-	return *node != 0;
+class bitunary_handler : public opcls_handler {
+public:
+	inline bitunary_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(Operation), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		driver.put_uint(static_cast<const bits::unary_op &>(op).type().nbits());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		size_t nbits = driver.parse_uint();
+		return std::unique_ptr<operation>(new Operation(nbits));
+	}
+};
+
+class bitconcat_handler : public opcls_handler {
+public:
+	inline bitconcat_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(bits::concat_op), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		bool first = true;
+		for (const bits::type & t : static_cast<const bits::concat_op&>(op).argument_types()) {
+			if (!first) {
+				driver.put_char_token(',');
+			} else {
+				first = false;
+			}
+			driver.put_uint(t.nbits());
+		}
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		std::vector<bits::type> types;
+		
+		for (;;) {
+			uint64_t bits = driver.parse_uint();
+			types.emplace_back(bits);
+			if (jive_token_istream_current(&driver.istream())->type == jive_token_comma) {
+				jive_token_istream_advance(&driver.istream());
+			} else {
+				break;
+			}
+		}
+
+		return std::unique_ptr<operation>(new bits::concat_op(std::move(types)));
+	}
+};
+
+class bitslice_handler : public opcls_handler {
+public:
+	inline bitslice_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(bits::slice_op), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const bits::slice_op & slice_op = static_cast<const bits::slice_op &>(op);
+		driver.put_uint(slice_op.argument_type().nbits());
+		driver.put_char_token(',');
+		driver.put_uint(slice_op.low());
+		driver.put_char_token(',');
+		driver.put_uint(slice_op.high());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		size_t nbits = driver.parse_uint();
+		driver.parse_char_token(',');
+		size_t low = driver.parse_uint();
+		driver.parse_char_token(',');
+		size_t high  = driver.parse_uint();
+
+		return std::unique_ptr<operation>(new bits::slice_op(nbits, low, high));
+	}
+};
+
+#define JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY1(tag, opcls) \
+	bitbinary1_handler<opcls> register_cls_##tag(#tag, opcls_registry::mutable_instance());
+
+#define JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(tag, opcls) \
+	bitbinary2_handler<opcls> register_cls_##tag(#tag, opcls_registry::mutable_instance());
+
+#define JIVE_SERIALIZATION_OPCLS_REGISTER_BITUNARY(tag, opcls) \
+	bitunary_handler<opcls> register_cls_##tag(#tag, opcls_registry::mutable_instance());
+
+bitconstant_handler register_cls_bitconstant("bitconstant", opcls_registry::mutable_instance());
+bitconcat_handler register_cls_bitconcat("bitconcat", opcls_registry::mutable_instance());
+bitslice_handler register_cls_bitslice("bitslice", opcls_registry::mutable_instance());
+
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY1(bitand, jive::bits::and_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY1(bitor, jive::bits::or_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY1(bitxor, jive::bits::xor_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITUNARY(bitnot, jive::bits::not_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITUNARY(bitnegate, jive::bits::neg_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitshl, jive::bits::shl_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitshr, jive::bits::shr_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitashr, jive::bits::ashr_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY1(bitsum, jive::bits::add_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitdifference, jive::bits::sub_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY1(bitproduct, jive::bits::mul_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitshiproduct, jive::bits::smulh_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bituhiproduct, jive::bits::umulh_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitsquotient, jive::bits::sdiv_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bituquotient, jive::bits::udiv_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitsmod, jive::bits::smod_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitumod, jive::bits::umod_op);
+
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitequal, jive::bits::eq_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitnotequal, jive::bits::ne_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitsgreater, jive::bits::sgt_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitsgreatereq, jive::bits::sge_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitugreater, jive::bits::ugt_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitugreatereq, jive::bits::uge_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitsless, jive::bits::slt_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitslesseq, jive::bits::sle_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bituless, jive::bits::ult_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_BITBINARY2(bitulesseq, jive::bits::ule_op);
+
 }
-#define JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(nodecls, opcls, tag) \
-	static void __attribute__((constructor)) register_##nodecls(void)\
-	{ \
-		jive_serialization_nodecls_register(&nodecls, tag, \
-			jive_serialization_nodecls_serialize_default, \
-			jive_serialization_nodecls_deserialize_bitunary<opcls>); \
-	} \
+}
+}
 
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_BITSLICE_NODE, "bitslice",
-	jive_bitslice_serialize,
-	jive_bitslice_deserialize);
-
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_BITCONCAT_NODE, "bitconcat",
-	jive_bitconcat_serialize,
-	jive_bitconcat_deserialize);
-
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITAND_NODE, jive::bits::and_op, "bitand");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITOR_NODE, jive::bits::or_op, "bitor");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITXOR_NODE, jive::bits::xor_op, "bitxor");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(
-	JIVE_BITNOT_NODE, jive::bits::not_op, "bitnot");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITUNARY(
-	JIVE_BITNEGATE_NODE, jive::bits::neg_op, "bitnegate");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSHL_NODE, jive::bits::shl_op, "bitshl");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSHR_NODE, jive::bits::shr_op, "bitshr");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITASHR_NODE, jive::bits::ashr_op, "bitashr");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITSUM_NODE, jive::bits::add_op, "bitsum");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITDIFFERENCE_NODE, jive::bits::sub_op, "bitdifference");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY1(
-	JIVE_BITPRODUCT_NODE, jive::bits::mul_op, "bitproduct");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSHIPRODUCT_NODE, jive::bits::smulh_op, "bitshiproduct");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITUHIPRODUCT_NODE, jive::bits::umulh_op, "bituhiproduct");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSQUOTIENT_NODE, jive::bits::sdiv_op, "bitsquotient");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITUQUOTIENT_NODE, jive::bits::udiv_op, "bituquotient");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITSMOD_NODE, jive::bits::smod_op, "bitsmod");
-JIVE_SERIALIZATION_NODECLS_REGISTER_BITBINARY2(
-	JIVE_BITUMOD_NODE, jive::bits::umod_op, "bitumod");
-
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITEQUAL_NODE, "bitequal");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITNOTEQUAL_NODE, "bitnotequal");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITSGREATEREQ_NODE, "bitsgreatereq");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITSGREATER_NODE, "bitsgreater");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITSLESSEQ_NODE, "bitslesseq");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITSLESS_NODE, "bitsless");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITUGREATEREQ_NODE, "bitugreatereq");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITUGREATER_NODE, "bitugreater");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITULESSEQ_NODE, "bitulesseq");
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(JIVE_BITULESS_NODE, "bituless");
 
 static void
 jive_bitstring_type_serialize(

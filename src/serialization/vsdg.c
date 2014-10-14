@@ -13,29 +13,8 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/theta.h>
-
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_GAMMA_NODE,
-	jive::gamma_op,
-	"gamma");
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_GAMMA_TAIL_NODE,
-	jive::gamma_tail_op,
-	"gamma_tail");
-
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_THETA_NODE,
-	jive::theta_op,
-	"theta");
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_THETA_HEAD_NODE,
-	jive::theta_head_op,
-	"theta_head");
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_THETA_TAIL_NODE,
-	jive::theta_tail_op,
-	"theta_tail");
 
 static void
 jive_control_type_serialize(
@@ -63,39 +42,77 @@ JIVE_SERIALIZATION_TYPECLS_REGISTER(jive::ctl::type, jive_control_type, "control
 
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_resource_class, "root");
 
-static void
-jive_ctlconstant_serialize(
-	const jive_serialization_nodecls * self,
-	jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::ctl::constant_op * op = static_cast<const jive::ctl::constant_op *>(attrs_);
-	jive_token_ostream_integral(os, op->value() ? 1 : 0);
-}
+namespace jive {
+namespace serialization {
+namespace {
 
-static bool
-jive_ctlconstant_deserialize(
-	const jive_serialization_nodecls * self,
-	jive_serialization_driver * driver,
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[],
-	jive_token_istream * is,
-	jive_node ** node)
-{
-	uint64_t value;
-	if (!jive_deserialize_uint(driver, is, &value)) {
-		return false;
+class ctlconst_handler final : public opcls_handler {
+public:
+	inline ctlconst_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(ctl::constant_op), registry)
+	{
 	}
-	jive::ctl::constant_op op(!!value);
 
-	*node = op.create_node(region, narguments, arguments);
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		driver.put_uint(static_cast<const ctl::constant_op &>(op).value() ? 1 : 0);
+	}
 
-	return true;
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		return std::unique_ptr<operation>(new ctl::constant_op(!!driver.parse_uint()));
+	}
+};
+
+class split_handler final : public opcls_handler {
+public:
+	inline split_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(split_operation), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const split_operation & s_op = static_cast<const split_operation &>(op);
+		driver.put_resource_class(s_op.in_class());
+		driver.put_char_token(',');
+		driver.put_resource_class(s_op.out_class());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		const jive_resource_class * in_class =
+			driver.parse_resource_class();
+		driver.parse_char_token(',');
+		const jive_resource_class * out_class =
+			driver.parse_resource_class();
+		return std::unique_ptr<operation>(new split_operation(in_class, out_class));
+	}
+};
+
+ctlconst_handler registerer_ctlconst("ctlconst", opcls_registry::mutable_instance());
+split_handler registerer_split_op("split", opcls_registry::mutable_instance());
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(graph_tail, graph_tail_operation);
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(gamma, gamma_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(gamma_tail, gamma_tail_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta, theta_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta_head, theta_head_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta_tail, theta_tail_op);
+
 }
-
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_CONTROL_CONSTANT_NODE, "ctlconst",
-	jive_ctlconstant_serialize,
-	jive_ctlconstant_deserialize);
-
+}
+}

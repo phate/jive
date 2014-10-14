@@ -163,265 +163,302 @@ jive_memory_type_deserialize(
 	return true;
 }
 
-static void
-jive_instruction_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::instruction_op * attrs = (const jive::instruction_op *) attrs_;
-	const jive_serialization_instrcls_registry * reg = driver->instrcls_registry;
-	const jive_serialization_instrcls * sercls =
-		jive_serialization_instrcls_lookup_by_cls(reg, attrs->icls());
-	
-	jive_token_ostream_identifier(os, sercls->tag);
-}
+namespace jive {
+namespace serialization {
+namespace {
 
-static bool
-jive_instruction_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region, size_t narguments,
-	jive::output * const arguments[], jive_token_istream * is,
-	jive_node ** node)
-{
-	const jive_token * token = jive_token_istream_current(is);
-	const jive_instruction_class * icls = 0;
-	if (token->type == jive_token_identifier) {
-		const jive_serialization_instrcls * sercls;
-		sercls = jive_serialization_instrcls_lookup_by_tag(
-			driver->instrcls_registry, token->v.identifier);
-		if (sercls)
-			icls = sercls->cls;
+class immediate_handler final : public opcls_handler {
+public:
+	inline immediate_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(immediate_op), registry)
+	{
 	}
-	if (!icls) {
-		driver->error(driver, "Expected instruction class identifier");
-		return false;
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const immediate_op & imm_op = static_cast<const immediate_op &>(op);
+		driver.put_uint(imm_op.value().offset);
+		if (imm_op.value().add_label) {
+			driver.put_char_token('+');
+			driver.put_label(imm_op.value().add_label);
+		}
+		if (imm_op.value().sub_label) {
+			driver.put_char_token('-');
+			driver.put_label(imm_op.value().sub_label);
+		}
 	}
-	jive_token_istream_advance(is);
-	
-	jive::instruction_op op(icls);
-	*node = op.create_node(region, narguments, arguments);
-	
-	return true;
-}
 
-static void
-jive_label_to_bitstring_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::address::label_to_bitstring_operation * attrs =
-		(const jive::address::label_to_bitstring_operation *) attrs_;
-	
-	jive_serialize_label(driver, attrs->label(), os);
-	jive_serialize_char_token(driver, ',', os);
-	jive_serialize_uint(driver, attrs->nbits(), os);
-}
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		jive_immediate imm;
+		jive_immediate_init(&imm, 0, nullptr, nullptr, nullptr);
 
-static bool
-jive_label_to_bitstring_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region, size_t noperands,
-	jive::output * const operands[], jive_token_istream * is,
-	jive_node ** node)
-{
-	const jive_label * label;
-	uint64_t nbits;
-	if (!jive_deserialize_label(driver, is, &label))
-		return false;
-	if (!jive_deserialize_char_token(driver, is, ','))
-		return false;
-	if (!jive_deserialize_uint(driver, is, &nbits))
-		return false;
-	
-	jive::address::label_to_bitstring_operation attrs(label, nbits);
-	
-	*node = JIVE_LABEL_TO_BITSTRING_NODE.create(region, &attrs,
-		0, NULL);
-	
-	return true;
-}
+		imm.offset = driver.parse_uint();
 
-static void
-jive_label_to_address_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::address::label_to_address_operation * attrs =
-		(const jive::address::label_to_address_operation *) attrs_;
-	
-	jive_serialize_label(driver, attrs->label(), os);
-}
+		if (driver.peek_token_type() == jive_token_plus) {
+			driver.parse_char_token('+');
+			imm.add_label = driver.parse_label();
+		}
 
-static bool
-jive_label_to_address_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region, size_t noperands,
-	jive::output * const operands[], jive_token_istream * is,
-	jive_node ** node)
-{
-	const jive_label * label;
-	if (!jive_deserialize_label(driver, is, &label))
-		return false;
-	
-	jive::address::label_to_address_operation attrs(label);
-	
-	*node = JIVE_LABEL_TO_ADDRESS_NODE.create(region, &attrs,
-		0, NULL);
-	
-	return true;
-}
+		if (driver.peek_token_type() == jive_token_plus) {
+			driver.parse_char_token('-');
+			imm.sub_label = driver.parse_label();
+		}
 
-#if 0
-#include <jive/backend/i386/subroutine.h>
-
-static void
-jive_subroutine_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::subroutine_op * attrs = (const jive::subroutine_op *) attrs_;
-	jive_subroutine_deprecated * subroutine = attrs->subroutine();
-	
-	if (subroutine->class_ == &JIVE_I386_SUBROUTINE)
-		jive_token_ostream_identifier(os, "i386");
-	else
-		abort();
-	
-	size_t n;
-	for (n = 0; n < subroutine->nparameters; ++n) {
-		jive::gate * gate = subroutine->parameters[n];
-		jive_serialize_defined_gate(driver, gate, os);
+		return std::unique_ptr<operation>(new immediate_op(imm));
 	}
-	jive_serialize_char_token(driver, ';', os);
-	for (n = 0; n < subroutine->nreturns; ++n) {
-		jive::gate * gate = subroutine->returns[n];
-		jive_serialize_defined_gate(driver, gate, os);
+};
+
+class instr_handler final : public opcls_handler {
+public:
+	inline instr_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(instruction_op), registry)
+	{
 	}
-	jive_serialize_char_token(driver, ';', os);
-	for (n = 0; n < subroutine->npassthroughs; ++n) {
-		jive::gate * gate = subroutine->passthroughs[n].gate;
-		jive_serialize_defined_gate(driver, gate, os);
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const jive::instruction_op & i_op = static_cast<const jive::instruction_op &>(op);
+		const jive_serialization_instrcls_registry * reg = driver.driver().instrcls_registry;
+		const jive_serialization_instrcls * sercls =
+			jive_serialization_instrcls_lookup_by_cls(reg, i_op.icls());
+
+		driver.put_identifier(sercls->tag);
 	}
-	jive_serialize_char_token(driver, ';', os);
-}
 
-static bool
-jive_deserialize_gatelist(jive_serialization_driver * self,
-	jive_token_istream * is, std::vector<jive::gate*> & gates)
-{
-	const jive_token * token = jive_token_istream_current(is);
-	while (token->type == jive_token_identifier) {
-		jive::gate * gate;
-		if (!jive_deserialize_defined_gate(self, is, &gate))
-			return false;
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		const jive_token * token = jive_token_istream_current(&driver.istream());
+		std::string tag = driver.parse_identifier();
+		
+		const jive_serialization_instrcls * sercls =
+			jive_serialization_instrcls_lookup_by_tag(
+				driver.driver().instrcls_registry, token->v.identifier);
+		if (!sercls) {
+			throw parse_error("Expected instruction class identifier");
+		}
 
-		gates.push_back(gate);
+		return std::unique_ptr<operation>(new instruction_op(sercls->cls));
 	}
-	
-	return true;
-}
+};
 
-static bool
-jive_subroutine_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region, size_t noperands,
-	jive::output * const operands[], jive_token_istream * is,
-	jive_node ** node)
-{
-	*node = 0;
-	if (noperands != 1)
-		return false;
-	
-	jive_node * leave = operands[0]->node();
-	if (leave->region->bottom != leave)
-		return false;
-	jive_node * enter = leave->region->top;
-	if (!enter)
-		return false;
-	
-	const jive_token * token = jive_token_istream_current(is);
-	if (token->type != jive_token_identifier)
-		return false;
-	if (strcmp(token->v.identifier, "i386") != 0)
-		return false;
-	jive_token_istream_advance(is);
-
-	std::vector<jive::gate*> parameters;
-	if (!jive_deserialize_gatelist(driver, is, parameters))
-		return false;
-	if (!jive_deserialize_char_token(driver, is, ';'))
-		return false;
-	
-	std::vector<jive::gate*> returns;
-	if (!jive_deserialize_gatelist(driver, is, returns))
-		return false;
-	if (!jive_deserialize_char_token(driver, is, ';'))
-		return false;
-	
-	std::vector<jive::gate*> passgates;
-	if (!jive_deserialize_gatelist(driver, is, passgates))
-		return false;
-	if (!jive_deserialize_char_token(driver, is, ';'))
-		return false;
-	
-	std::vector<jive_subroutine_passthrough> passthroughs(passgates.size());
-	for (size_t n = 0; n < passgates.size(); ++n) {
-		jive::gate * gate = passgates[n];
-		passthroughs[n].gate = gate;
-		passthroughs[n].output = jive_node_get_gate_output(enter, gate);
-		passthroughs[n].input = jive_node_get_gate_input(leave, gate);
+class subroutine_handler final : public opcls_handler {
+public:
+	inline subroutine_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(subroutine_op), registry)
+	{
 	}
-	
-	jive_subroutine_deprecated * subroutine = jive_subroutine_create_takeover(
-		driver->context, &JIVE_I386_SUBROUTINE,
-		parameters.size(), &parameters[0],
-		returns.size(), &returns[0],
-		passthroughs.size(), &passthroughs[0]);
-	*node = jive_subroutine_node_create(enter->region, subroutine);
-	
-	return *node != NULL;
-}
-#endif
 
-static void
-jive_immediate_serialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	const jive_node_attrs * attrs_, jive_token_ostream * os)
-{
-	const jive::immediate_op * attrs = (const jive::immediate_op *) attrs_;
-	jive_serialize_immediate(driver, &attrs->value(), os);
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const subroutine_op & s_op = static_cast<const subroutine_op &>(op);
+		const subroutine_machine_signature & sig = s_op.signature();
+		driver.put_char_token('<');
+		bool first = true;
+		for (const auto arg : sig.arguments) {
+			if (!first) {
+				driver.put_char_token(',');
+			}
+			first = false;
+			driver.put_char_token('<');
+			driver.put_string(arg.name);
+			driver.put_char_token(',');
+			driver.put_resource_class_or_null(arg.rescls);
+			driver.put_char_token(',');
+			driver.put_uint(arg.may_spill);
+			driver.put_char_token('>');
+		}
+		driver.put_char_token('>');
+		driver.put_char_token(',');
+		driver.put_char_token('<');
+		first = true;
+		for (const auto pt : sig.passthroughs) {
+			if (!first) {
+				driver.put_char_token(',');
+			}
+			first = false;
+			driver.put_char_token('<');
+			driver.put_string(pt.name);
+			driver.put_char_token(',');
+			driver.put_resource_class_or_null(pt.rescls);
+			driver.put_char_token(',');
+			driver.put_uint(pt.may_spill);
+			driver.put_char_token('>');
+		}
+		driver.put_char_token('>');
+		driver.put_char_token(',');
+		driver.put_char_token('<');
+		first = true;
+		for (const auto res : sig.results) {
+			if (!first) {
+				driver.put_char_token(',');
+			}
+			first = false;
+			driver.put_char_token('<');
+			driver.put_string(res.name);
+			driver.put_char_token(',');
+			driver.put_resource_class_or_null(res.rescls);
+			driver.put_char_token('>');
+		}
+		driver.put_char_token('>');
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		subroutine_machine_signature sig;
+		driver.parse_char_token('<');
+		for (;;) {
+			subroutine_machine_signature::argument arg;
+			driver.parse_char_token('<');
+			arg.name = driver.parse_string();
+			driver.parse_char_token(',');
+			arg.rescls = driver.parse_resource_class_or_null();
+			driver.parse_char_token(',');
+			arg.may_spill = driver.parse_uint();
+			driver.parse_char_token('>');
+			sig.arguments.emplace_back(std::move(arg));
+			if (driver.peek_token_type() == jive_token_comma) {
+				driver.parse_char_token(',');
+			} else {
+				break;
+			}
+		}
+		driver.parse_char_token('>');
+		driver.parse_char_token(',');
+		driver.parse_char_token('<');
+		for (;;) {
+			subroutine_machine_signature::passthrough pt;
+			driver.parse_char_token('<');
+			pt.name = driver.parse_string();
+			driver.parse_char_token(',');
+			pt.rescls = driver.parse_resource_class_or_null();
+			driver.parse_char_token(',');
+			pt.may_spill = driver.parse_uint();
+			driver.parse_char_token('>');
+			sig.passthroughs.emplace_back(std::move(pt));
+			if (driver.peek_token_type() == jive_token_comma) {
+				driver.parse_char_token(',');
+			} else {
+				break;
+			}
+		}
+		driver.parse_char_token('>');
+		driver.parse_char_token(',');
+		driver.parse_char_token('<');
+		for (;;) {
+			subroutine_machine_signature::result res;
+			driver.parse_char_token('<');
+			res.name = driver.parse_string();
+			driver.parse_char_token(',');
+			res.rescls = driver.parse_resource_class_or_null();
+			driver.parse_char_token('>');
+			sig.results.emplace_back(std::move(res));
+			if (driver.peek_token_type() == jive_token_comma) {
+				driver.parse_char_token(',');
+			} else {
+				break;
+			}
+		}
+		driver.parse_char_token('>');
+		return std::unique_ptr<operation>(new subroutine_op(std::move(sig)));
+	}
+};
+
+class label2addr_handler final : public opcls_handler {
+public:
+	inline label2addr_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(address::label_to_address_operation), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const address::label_to_address_operation & l_op =
+			static_cast<const address::label_to_address_operation &>(op);
+		driver.put_label(l_op.label());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		const jive_label * label = driver.parse_label();
+		return std::unique_ptr<operation>(
+			new address::label_to_address_operation (label));
+	}
+};
+
+class label2bits_handler final : public opcls_handler {
+public:
+	inline label2bits_handler(
+		std::string tag,
+		opcls_registry & registry)
+		: opcls_handler(tag, typeid(address::label_to_bitstring_operation), registry)
+	{
+	}
+
+	virtual void
+	serialize(
+		const operation & op,
+		output_driver & driver) const override
+	{
+		const address::label_to_bitstring_operation & l_op =
+			static_cast<const address::label_to_bitstring_operation &>(op);
+		driver.put_label(l_op.label());
+		driver.put_char_token(',');
+		driver.put_uint(l_op.nbits());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(
+		parser_driver & driver) const override
+	{
+		const jive_label * label = driver.parse_label();
+		driver.parse_char_token(',');
+		size_t nbits = driver.parse_uint();
+		return std::unique_ptr<operation>(
+			new address::label_to_bitstring_operation (label, nbits));
+	}
+};
+
+immediate_handler register_cls_immediate("immediate", opcls_registry::mutable_instance());
+instr_handler register_cls_instruction("instr", opcls_registry::mutable_instance());
+subroutine_handler register_cls_subroutine("subroutine", opcls_registry::mutable_instance());
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(subroutine_head, subroutine_head_op);
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(subroutine_tail, subroutine_tail_op);
+label2addr_handler register_cls_label2addr("label2addr", opcls_registry::mutable_instance());
+label2addr_handler register_cls_label2bits("label2bits", opcls_registry::mutable_instance());
+
+}
+}
 }
 
-static bool
-jive_immediate_deserialize(
-	const jive_serialization_nodecls * self,
-	struct jive_serialization_driver * driver,
-	jive_region * region, size_t narguments,
-	jive::output * const arguments[], jive_token_istream * is,
-	jive_node ** node)
-{
-	jive_immediate imm;
-	if (!jive_deserialize_immediate(driver, is, &imm))
-		return false;
-	
-	jive::immediate_op op(imm);
-	
-	*node = op.create_node(region, narguments, arguments);
-	
-	return true;
-}
-
-JIVE_SERIALIZATION_NODECLS_REGISTER_SIMPLE(
-	JIVE_GRAPH_TAIL_NODE, "graph_tail");
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_register_class, "register");
 JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_RESOURCE, "stackslot",
 	jive_serialization_stackslot_serialize,
@@ -435,33 +472,3 @@ JIVE_SERIALIZATION_META_RESCLS_REGISTER(JIVE_STACK_CALLSLOT_RESOURCE, "stack_cal
 JIVE_SERIALIZATION_TYPECLS_REGISTER(jive::mem::type, jive_memory_type, "memory",
 	jive_memory_type_serialize,
 	jive_memory_type_deserialize);
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_INSTRUCTION_NODE, "instr",
-	jive_instruction_serialize,
-	jive_instruction_deserialize);
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_LABEL_TO_ADDRESS_NODE, "label2addr",
-	jive_label_to_address_serialize,
-	jive_label_to_address_deserialize);
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_LABEL_TO_BITSTRING_NODE, "label2bits",
-	jive_label_to_bitstring_serialize,
-	jive_label_to_bitstring_deserialize);
-#if 0
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_SUBROUTINE_ENTER_NODE,
-	jive::subroutine_head_op,
-	"subroutine_enter");
-JIVE_SERIALIZATION_OPNODE_REGISTER_SIMPLE(
-	JIVE_SUBROUTINE_LEAVE_NODE,
-	jive::subroutine_tail_op,
-	"subroutine_leave");
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_SUBROUTINE_NODE, "subroutine",
-	jive_subroutine_serialize,
-	jive_subroutine_deserialize);
-#endif
-JIVE_SERIALIZATION_NODECLS_REGISTER(
-	JIVE_IMMEDIATE_NODE, "immediate",
-	jive_immediate_serialize,
-	jive_immediate_deserialize);

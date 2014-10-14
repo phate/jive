@@ -339,11 +339,11 @@ static int test_main(void)
 	verify_serialize_nodeexpr(add8->node(),
 		0, NULL, NULL, /* gates */
 		tmparray3, tmparray4,
-		"(a:root<> b:root<>;) bitsum<> (sum:root<>;)");
+		"(a:root<> b:root<>;) bitsum<8,2> (sum:root<>;)");
 	const char * tmparray5[] = {"a", "b"};
 	jive::output * tmparray6[] = {one8, two8};
 	const char * tmparray7[] = {"sum"};
-	verify_deserialize_nodeexpr("(a:root<> b:root<>;) bitsum<> (sum:root<>;)",
+	verify_deserialize_nodeexpr("(a:root<> b:root<>;) bitsum<8,2> (sum:root<>;)",
 		graph->root_region,
 		tmparray5, tmparray6, /* input names & origins */
 		tmparray7, /* output names */

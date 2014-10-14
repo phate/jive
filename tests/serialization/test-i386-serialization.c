@@ -42,12 +42,9 @@ static int test_main(void)
 		1,tmparray0,
 		1,tmparray1);
 
-	// FIXME: test should fail with the following disabled; it happens
-	// to fail with the following enabled :(
-#if 0
 	jive_subroutine_simple_set_result(sub, 0,
 		jive_subroutine_simple_get_argument(sub, 0));
-#endif
+
 	jive_subroutine_end(sub);
 	
 	/* inhibit implicit normalization */

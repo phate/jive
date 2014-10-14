@@ -1,11 +1,12 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
 #ifndef JIVE_SERIALIZATION_GRAMMAR_H
 #define JIVE_SERIALIZATION_GRAMMAR_H
 
+#include <stdexcept>
 #include <vector>
 
 #include <jive/context.h>
@@ -15,7 +16,134 @@
 #include <jive/vsdg/resource.h>
 
 namespace jive {
-	class output;
+class output;
+
+namespace serialization {
+
+class parse_error : std::runtime_error {
+public:
+	virtual
+	~parse_error() noexcept;
+
+	inline
+	parse_error(std::string what) : std::runtime_error(std::move(what)) {}
+};
+
+class parser_driver {
+public:
+	parser_driver(
+		jive_serialization_driver & driver,
+		jive_token_istream & is)
+		: driver_(driver)
+		, is_(is)
+	{
+	}
+
+	/* note: all parse functions below may throw parse_error */
+
+	void
+	parse_char_token(char expected);
+
+	uint64_t
+	parse_uint();
+
+	int64_t
+	parse_int();
+
+	std::string
+	parse_string();
+
+	std::string
+	parse_identifier();
+
+	const jive_label *
+	parse_defined_label();
+
+	const jive_label *
+	parse_label();
+
+	const jive_resource_class *
+	parse_resource_class();
+
+	const jive_resource_class *
+	parse_resource_class_or_null();
+
+	jive_token_type
+	peek_token_type() const noexcept;
+
+	inline jive_token_istream &
+	istream() noexcept
+	{
+		return is_;
+	}
+
+	jive_serialization_driver &
+	driver() noexcept
+	{
+		return driver_;
+	}
+
+private:
+	jive_serialization_driver & driver_;
+	jive_token_istream & is_;
+};
+
+class output_driver {
+public:
+	output_driver(
+		jive_serialization_driver & driver,
+		jive_token_ostream & os)
+		: driver_(driver)
+		, os_(os)
+	{
+	}
+
+	void
+	put_char_token(char token);
+
+	void
+	put_uint(uint64_t value);
+
+	void
+	put_int(int64_t value);
+
+	void
+	put_string(const std::string& s);
+
+	void
+	put_identifier(const std::string& identifier);
+
+	void
+	put_defined_label(const jive_label * label);
+
+	void
+	put_label(const jive_label * label);
+
+	void
+	put_resource_class(const jive_resource_class * rescls);
+
+	void
+	put_resource_class_or_null(const jive_resource_class * rescls);
+
+	inline jive_token_ostream &
+	ostream() noexcept
+	{
+		return os_;
+	}
+
+	jive_serialization_driver &
+	driver() noexcept
+	{
+		return driver_;
+	}
+
+private:
+	jive_serialization_driver & driver_;
+	jive_token_ostream & os_;
+};
+
+}
+
 }
 
 struct jive_graph;
@@ -190,17 +318,6 @@ jive_serialize_label(jive_serialization_driver * self,
 bool
 jive_deserialize_label(jive_serialization_driver * self,
 	jive_token_istream * is, const struct jive_label ** label);
-
-/* immediate := uint [ '+' label ] [ '-' label ] */
-
-void
-jive_serialize_immediate(jive_serialization_driver * self,
-	const struct jive_immediate * imm,
-	jive_token_ostream * os);
-
-bool
-jive_deserialize_immediate(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive_immediate * imm);
 
 /* def := nodedef | gatedef | regiondef */
 /* nodedef := new_node_id '=' 'node' node_expr ';' */
