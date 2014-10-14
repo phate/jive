@@ -514,11 +514,10 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 
 	/* collect liveness information about parameters */
 	size_t n;
-	size_t nalive_parameters = 0;
 	size_t nparameters = enter->noutputs-1;
-	jive::output * alive_parameters[nparameters] = {};
-	const jive::base::type * alive_parameter_types[nparameters] = {};
-	const char * alive_parameter_names[nparameters] = {};
+	std::vector<jive::output*> alive_parameters;
+	std::vector<const jive::base::type*> alive_parameter_types;
+	std::vector<const char*> alive_parameter_names;
 	for (n = 1; n < enter->noutputs; n++) {
 		jive::output * parameter = enter->outputs[n];
 
@@ -527,28 +526,27 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 		if (lambda_parameter_is_passthrough(parameter))
 			continue;
 
-		alive_parameters[nalive_parameters] = parameter;
-		alive_parameter_types[nalive_parameters] = &parameter->type();
-		alive_parameter_names[nalive_parameters++] = parameter->gate->name;
+		alive_parameters.push_back(parameter);
+		alive_parameter_types.push_back(&parameter->type());
+		alive_parameter_names.push_back(parameter->gate->name);
 	}
 
 	/* all parameters are alive, we don't need to do anything */
-	if (nalive_parameters == nparameters)
+	if (alive_parameters.size() == nparameters)
 		return false;
 
 	/* collect liveness information about results */
-	size_t nalive_results = 0;
 	size_t nresults = leave->ninputs-1;
-	jive::input * alive_results[nresults] = {};
-	const jive::base::type * alive_result_types[nresults] = {};
+	std::vector<jive::input*> alive_results;
+	std::vector<const jive::base::type*> alive_result_types;
 	for (n = 1; n < leave->ninputs; n++) {
 		jive::input * result = leave->inputs[n];
 
 		if (lambda_result_is_passthrough(result))
 			continue;
 
-		alive_results[nalive_results] = result;
-		alive_result_types[nalive_results++] = &result->type();
+		alive_results.push_back(result);
+		alive_result_types.push_back(&result->type());
 	}
 
 	/* If the old lambda is embedded within a phi region, extend the phi region with the new lambda */
@@ -558,8 +556,8 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
 		phi_node = static_cast<jive_phi_node *>(jive_region_get_anchor(lambda_region->parent));
 
-		jive::fct::type fcttype(nalive_parameters, alive_parameter_types, nalive_results,
-			alive_result_types);
+		jive::fct::type fcttype(alive_parameter_types.size(), &alive_parameter_types[0],
+			alive_result_types.size(), &alive_result_types[0]);
 		const jive::base::type * tmparray0[] = {&fcttype};
 		phi_ext = jive_phi_begin_extension(phi_node, 1, tmparray0);
 		embedded_in_phi = true;
@@ -567,21 +565,22 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 
 	/* create new lambda */
 	jive_substitution_map * map = jive_substitution_map_create(context);
-	jive_lambda * lambda = jive_lambda_begin(graph, nalive_parameters, alive_parameter_types,
-		alive_parameter_names);
+	jive_lambda * lambda = jive_lambda_begin(graph, alive_parameter_types.size(),
+		&alive_parameter_types[0], &alive_parameter_names[0]);
 
-	for (n = 0; n < nalive_parameters; n++)
+	for (n = 0; n < alive_parameters.size(); n++)
 		jive_substitution_map_add_output(map, alive_parameters[n], lambda->arguments[n]);
 
 	jive_region_copy_substitute(lambda_region, lambda->region, map, false, false);
 
-	jive::output * new_results[nalive_results];
-	for (n = 0; n < nalive_results; n++) {
+	jive::output * new_results[alive_results.size()];
+	for (n = 0; n < alive_results.size(); n++) {
 		new_results[n] = jive_substitution_map_lookup_output(map, alive_results[n]->origin());
 		JIVE_DEBUG_ASSERT(new_results[n] != NULL);
 	}
 
-	jive::output * new_fct = jive_lambda_end(lambda, nalive_results, alive_result_types, new_results);
+	jive::output * new_fct = jive_lambda_end(lambda, alive_result_types.size(), &alive_result_types[0],
+		new_results);
 	jive_substitution_map_destroy(map);
 
 	/* end the phi extension */
@@ -591,7 +590,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 	}
 
 	replace_all_apply_nodes(fct, new_fct, (const jive_lambda_node *)self,
-		nalive_parameters, alive_parameters, nalive_results, alive_results);
+		alive_parameters.size(), &alive_parameters[0], alive_results.size(), &alive_results[0]);
 
 	return true;
 }
