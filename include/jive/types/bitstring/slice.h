@@ -69,6 +69,12 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	inline const type &
+	argument_type() const noexcept
+	{
+		return argument_type_;
+	}
+
 private:
 	jive::bits::type argument_type_;
 	jive::bits::type result_type_;
