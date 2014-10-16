@@ -81,16 +81,18 @@ jive_equiv_state_mark_verified(jive_equiv_state * self, jive_node_equiv_entry * 
 static bool
 jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const jive_node * n2)
 {
-	if (n1->noutputs != n2->noutputs)
+	if (n1->noutputs != n2->noutputs) {
 		return false;
-	if (n1->ninputs != n2->ninputs)
+	}
+	if (n1->ninputs != n2->ninputs) {
 		return false;
-	if (n1->noperands != n2->noperands)
+	}
+	if (n1->noperands != n2->noperands) {
 		return false;
-	if (n1->class_ != n2->class_)
+	}
+	if (n1->operation() != n2->operation()) {
 		return false;
-	if (!jive_node_match_attrs(n1, jive_node_get_attrs(n2)))
-		return false;
+	}
 	
 	/* FIXME: verify gates */
 	
