@@ -49,7 +49,7 @@ node_normal_form::normalized_create(
 	}
 
 	if (!node) {
-		node = jive_node_create(node_class, op, region, arguments.size(), &arguments[0]);
+		node = op.create_node(region, arguments.size(), &arguments[0]);
 	}
 
 	return std::vector<jive::output *>(&node->outputs[0], &node->outputs[node->noutputs]);

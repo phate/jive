@@ -189,23 +189,6 @@ jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
 	return self->operation() == *other;
 }
 
-JIVE_EXPORTED_INLINE jive_node *
-jive_node_create(
-	const jive_node_class * class_,
-	const jive::operation & op,
-	jive_region * region,
-	size_t noperands,
-	jive::output * const operands[])
-{
-	return op.create_node(region, noperands, operands);
-}
-
-JIVE_EXPORTED_INLINE void
-jive_node_check_operands(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-}
-
 struct jive_node *
 jive_node_copy(
 	const jive_node * self, struct jive_region * region, jive::output * operands[]);

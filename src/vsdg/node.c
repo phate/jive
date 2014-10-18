@@ -165,19 +165,6 @@ jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other)
 	return true;
 }
 
-void
-jive_node_check_operands_(const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[], jive_context * context)
-{
-	if (cls->parent == &JIVE_NODE)
-		return;
-
-	if (noperands == 0)
-		return;
-
-	jive_context_fatal_error(context, "Checking of node operands failed.");
-}
-
 jive::node_normal_form *
 jive_node_get_default_normal_form_(
 	const std::type_info & operator_class,
@@ -587,7 +574,7 @@ struct jive_node *
 jive_node_copy(const jive_node * self, struct jive_region * region, jive::output * operands[])
 {
 	jive_graph_mark_denormalized(region->graph);
-	jive_node_create(self->class_, *jive_node_get_attrs(self), region, self->noperands, operands);
+	self->operation().create_node(region, self->noperands, operands);
 }
 
 jive_node *
@@ -700,7 +687,6 @@ jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * 
 	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
 	jive::output * results[])
 {
-	jive_node_check_operands(class_, attrs, noperands, operands, graph->context);
 	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(*attrs), class_);
 	std::vector<jive::output *> arguments(operands, operands + noperands);
 	std::vector<jive::output *> tmp_results =
@@ -751,7 +737,7 @@ jive_node_cse_create(const jive::node_normal_form * nf, struct jive_region * reg
 		}
 	}
 
-	return jive_node_create(cls, *attrs, region, noperands, operands);
+	attrs->create_node(region, noperands, operands);
 }
 
 bool
