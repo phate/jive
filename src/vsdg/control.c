@@ -40,13 +40,13 @@ jive::output *
 jive_control_false(jive_graph * graph)
 {
 	jive::ctl::constant_op op(false);
-	return jive_nullary_operation_create_normalized(&JIVE_CONTROL_CONSTANT_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }
 
 jive::output *
 jive_control_true(jive_graph * graph)
 {
 	jive::ctl::constant_op op(true);
-	return jive_nullary_operation_create_normalized(&JIVE_CONTROL_CONSTANT_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }
 

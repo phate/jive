@@ -172,6 +172,5 @@ jive::output *
 jive_empty_unify_create(struct jive_graph * graph, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_op op(decl);
-
-	return jive_nullary_operation_create_normalized(&JIVE_EMPTY_UNIFY_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }

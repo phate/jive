@@ -38,7 +38,5 @@ jive_symbolicfunction_create(
 	jive_graph * graph, const char * name, const jive::fct::type * type)
 {
 	jive::fct::symbol_op op(name, jive::fct::type(*type));
-
-	return jive_nullary_operation_create_normalized(&JIVE_SYMBOLICFUNCTION_NODE, graph,
-		&op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }

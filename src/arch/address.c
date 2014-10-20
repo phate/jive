@@ -606,7 +606,7 @@ jive::output *
 jive_label_to_address_create(jive_graph * graph, const jive_label * label)
 {
 	jive::address::label_to_address_operation op(label);
-	return jive_nullary_operation_create_normalized(&JIVE_LABEL_TO_ADDRESS_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }
 
 /* label_to_bitstring_node */
@@ -699,5 +699,5 @@ jive::output *
 jive_label_to_bitstring_create(jive_graph * graph, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_operation op(label, nbits);
-	return jive_nullary_operation_create_normalized(&JIVE_LABEL_TO_BITSTRING_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }

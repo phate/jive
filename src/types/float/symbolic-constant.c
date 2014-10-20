@@ -39,6 +39,5 @@ jive_fltsymbolicconstant(jive_graph * graph, const char * name)
 {
 	jive::flt::symbol_op op(name, jive::flt::type());
 
-	return jive_nullary_operation_create_normalized(&JIVE_FLTSYMBOLICCONSTANT_NODE, graph,
-		&op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }

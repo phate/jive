@@ -40,6 +40,5 @@ jive::output *
 jive_fltconstant(jive_graph * graph, jive::flt::value_repr value)
 {
 	jive::flt::constant_op op(value);
-
-	return jive_nullary_operation_create_normalized(&JIVE_FLTCONSTANT_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }

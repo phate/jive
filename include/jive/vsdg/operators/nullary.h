@@ -227,13 +227,6 @@ private:
 
 extern const jive_node_class JIVE_NULLARY_OPERATION;
 
-JIVE_EXPORTED_INLINE jive::output *
-jive_nullary_operation_create_normalized(const jive_node_class * cls,
-	struct jive_graph * graph, const jive_node_attrs * attrs)
-{
-	return jive_node_create_normalized(graph, *attrs, {})[0];
-}
-
 /* node class inheritable methods */
 
 jive::node_normal_form *

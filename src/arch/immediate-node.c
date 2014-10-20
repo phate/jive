@@ -87,7 +87,5 @@ jive_immediate_create(
 	const jive_immediate * immediate_value)
 {
 	jive::immediate_op op(*immediate_value);
-
-	return jive_nullary_operation_create_normalized(
-		&JIVE_IMMEDIATE_NODE, graph, &op);
+	return jive_node_create_normalized(graph, op, {})[0];
 }

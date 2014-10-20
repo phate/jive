@@ -85,9 +85,7 @@ jive::output *
 jive_sizeof_create(jive_region * region, const jive::value::type * type)
 {
 	jive::sizeof_op op(*type);
-
-	return jive_nullary_operation_create_normalized(
-		&JIVE_SIZEOF_NODE, region->graph, &op);
+	return jive_node_create_normalized(region->graph, op, {})[0];
 }
 
 /* sizeof reduce */
