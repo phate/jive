@@ -43,7 +43,7 @@ node_normal_form::normalized_create(
 
 	jive_node * node = nullptr;
 	if (get_mutable() && get_cse()) {
-		node = jive_node_cse(region, nullptr, &op, arguments.size(), &arguments[0]);
+		node = jive_node_cse(region, op, arguments);
 	}
 
 	if (!node) {

@@ -138,7 +138,7 @@ binary_normal_form::normalize_node(jive_node * node) const
 		jive_node * new_node = nullptr;
 
 		if (get_cse()) {
-			jive_node_cse(node->region, nullptr, &op, new_args.size(), &new_args[0]);
+			jive_node_cse(node->region, op, new_args);
 		}
 
 		JIVE_DEBUG_ASSERT(new_args.size() >= 2);

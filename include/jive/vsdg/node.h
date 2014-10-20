@@ -309,11 +309,21 @@ jive_node_get_use_count_output(
 void
 jive_node_destroy(jive_node * self);
 
+JIVE_EXPORTED_INLINE std::vector<jive::output *>
+jive_node_arguments(jive_node * self)
+{
+	std::vector<jive::output *> arguments;
+	for (size_t n = 0; n < self->noperands; ++n) {
+		arguments.push_back(self->inputs[n]->origin());
+	}
+	return arguments;
+}
+
 jive_node *
 jive_node_cse(
 	jive_region * region,
-	const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[]);
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments);
 
 /* normal forms */
 
@@ -335,10 +345,9 @@ jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * 
 jive_node *
 jive_node_cse_create(
 	const jive::node_normal_form * nf,
-	struct jive_region * region,
-	const jive_node_attrs * attrs,
-	size_t noperands,
-	jive::output * const operands[]);
+	jive_region * region,
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments);
 
 bool
 jive_node_normalize(struct jive_node * self);

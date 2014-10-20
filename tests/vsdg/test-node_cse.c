@@ -32,7 +32,7 @@ test_main()
 		jive_graph_get_nodeclass_form(graph, typeid(test_operation));
 
 	test_operation op;
-	jive_node * outer_node = jive_node_cse_create(normal_form, graph->root_region, &op, 0, NULL);
+	jive_node * outer_node = jive_node_cse_create(normal_form, graph->root_region, op, {});
 
 	assert(inner_node != outer_node);
 

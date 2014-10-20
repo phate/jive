@@ -643,42 +643,38 @@ jive_node_destroy(jive_node * self)
 static bool
 jive_node_cse_test(
 	jive_node * node,
-	const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments)
 {
-	if (node->operation() != *attrs) return false;
-	if (node->ninputs != noperands) return false;
-	size_t n;
-	for(n = 0; n < noperands; n++)
-		if (node->inputs[n]->origin() != operands[n]) return false;
-	
-	return true;
+	return (node->operation() == op && arguments == jive_node_arguments(node));
 }
 
 jive_node *
 jive_node_cse(
 	jive_region * region,
-	const jive_node_class * cls, const jive_node_attrs * attrs,
-	size_t noperands, jive::output * const operands[])
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments)
 {
-	if (noperands) {
+	if (!arguments.empty()) {
 		jive::input * input;
-		JIVE_LIST_ITERATE(operands[0]->users, input, output_users_list) {
+		JIVE_LIST_ITERATE(arguments[0]->users, input, output_users_list) {
 			jive_node * node = input->node;
-			if (jive_node_cse_test(node, cls, attrs, noperands, operands))
+			if (jive_node_cse_test(node, op, arguments)) {
 				return node;
+			}
 		}
 	} else {
 		while (region) {
 			jive_node * node;
 			JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
-				if (jive_node_cse_test(node, cls, attrs, noperands, operands))
+				if (jive_node_cse_test(node, op, arguments)) {
 					return node;
+				}
 			region = region->parent;
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void
@@ -723,18 +719,21 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 }
 
 jive_node *
-jive_node_cse_create(const jive::node_normal_form * nf, struct jive_region * region,
-	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[])
+jive_node_cse_create(
+	const jive::node_normal_form * nf,
+	jive_region * region,
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments)
 {
 	jive_node * node;
 	if (nf->get_mutable() && nf->get_cse()) {
-		node = jive_node_cse(region, nullptr, attrs, noperands, operands);
+		node = jive_node_cse(region, op, arguments);
 		if (node) {
 			return node;
 		}
 	}
 
-	attrs->create_node(region, noperands, operands);
+	return op.create_node(region, arguments.size(), &arguments[0]);
 }
 
 bool
