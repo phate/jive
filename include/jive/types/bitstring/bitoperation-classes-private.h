@@ -13,49 +13,6 @@ namespace jive {
 namespace bits {
 namespace detail {
 
-template<typename Op, typename Cls>
-static inline jive::output *
-unop_normalized_create(const Cls * cls, jive::output * argument)
-{
-	const jive::bits::type * type = dynamic_cast<const jive::bits::type*>(&argument->type());
-
-	Op op(*type);
-	return jive_unary_operation_create_normalized(cls, argument->node()->graph, &op, argument);
-}
-
-template<typename Op, typename Cls>
-static inline jive::output *
-binop_normalized_create(
-	const Cls * cls,
-	size_t narguments,
-	jive::output * const * arguments)
-{
-	JIVE_DEBUG_ASSERT(narguments != 0);
-	const jive::bits::type & type =
-		dynamic_cast<const jive::bits::type &>(arguments[0]->type());
-
-	jive_graph * graph = arguments[0]->node()->graph;
-	Op op(type, narguments);
-	return jive_binary_operation_create_normalized(cls, graph, &op,
-		narguments, arguments);
-}
-
-template<typename Op, typename Cls>
-static inline jive::output *
-binop_normalized_create(
-	const Cls * cls,
-	jive::output * arg1,
-	jive::output * arg2)
-{
-	const jive::bits::type * type = dynamic_cast<const jive::bits::type*>(&arg1->type());
-
-	jive_graph * graph = arg1->node()->graph;
-	Op op(*type);
-	jive::output * arguments[] = {arg1, arg2};
-	return jive_binary_operation_create_normalized(cls, graph, &op,
-		2, arguments);
-}
-
 template<typename Op>
 static inline jive_node *
 unop_create(

@@ -99,15 +99,6 @@ static const jive_binop_reduction_path_t jive_binop_reduction_factor = 7;
 
 extern const jive_node_class JIVE_BINARY_OPERATION;
 
-JIVE_EXPORTED_INLINE jive::output *
-jive_binary_operation_create_normalized(const jive_node_class * class_,
-	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
-	jive::output * const operands[])
-{
-	return jive_node_create_normalized(
-		graph, *attrs, std::vector<jive::output *>(operands, operands + noperands))[0];
-}
-
 /* node class inheritable methods */
 
 jive::node_normal_form *

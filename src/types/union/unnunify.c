@@ -150,9 +150,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::outp
 {
 	const jive::unn::type  unn_type(decl);
 	jive::unn::unify_op op(unn_type, option);
-
-	return jive_unary_operation_create_normalized(&JIVE_UNIFY_NODE, argument->node()->graph,
-		&op, argument);
+	return jive_node_create_normalized(argument->node()->graph, op, {argument})[0];
 }
 
 /* empty unify node */

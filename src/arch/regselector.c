@@ -263,8 +263,10 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				operands[n] = regvalue;
 			}
 			
-			jive::output * subst = jive_binary_operation_create_normalized(origin->class_, region->graph,
-				jive_node_get_attrs(origin), origin->noperands, operands);
+			jive::output * subst = jive_node_create_normalized(
+				region->graph,
+				origin->operation(),
+				std::vector<jive::output *>(operands, operands + origin->noperands))[0];
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->outputs[0]));
 			jive_output_replace(node->outputs[0], subst);
@@ -282,9 +284,8 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 					self->base.class_->annotate_node(&self->base, regvalue->node());
 				operands[n] = regvalue;
 			}
-			
-			jive::output * subst = jive_unary_operation_create_normalized(origin->class_, region->graph,
-				jive_node_get_attrs(origin), operands[0]);
+			jive::output * subst = jive_node_create_normalized(
+				region->graph, origin->operation(), {operands[0]})[0];
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->outputs[0]));
 			jive_output_replace(node->outputs[0], subst);

@@ -132,9 +132,7 @@ jive_memberof(jive::output * address,
 	const jive::rcd::declaration * record_decl, size_t index)
 {
 	jive::address::memberof_operation op(record_decl, index);
-
-	return jive_unary_operation_create_normalized(&JIVE_MEMBEROF_NODE,
-		address->node()->graph, &op, address);
+	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
 }
 
 /* containerof */
@@ -247,9 +245,7 @@ jive_containerof(jive::output * address,
 	const jive::rcd::declaration * record_decl, size_t index)
 {
 	jive::address::containerof_operation op(record_decl, index);
-
-	return jive_unary_operation_create_normalized(&JIVE_CONTAINEROF_NODE, address->node()->graph,
-		&op, address);
+	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
 }
 
 /* arraysubscript */

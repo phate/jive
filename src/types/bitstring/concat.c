@@ -87,8 +87,8 @@ jive_bitconcat(size_t narguments, jive::output * const * arguments)
 	jive_graph * graph = arguments[0]->node()->graph;
 
 	jive::bits::concat_op op(std::move(types));
-	return jive_binary_operation_create_normalized(&JIVE_BITCONCAT_NODE, graph,
-		&op, narguments, arguments);
+	return jive_node_create_normalized(
+		graph, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
 }
 
 namespace jive {

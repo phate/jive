@@ -130,9 +130,7 @@ jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type)
 {
 	jive::address_to_bitstring_operation op(nbits, original_type);
-
-	return jive_unary_operation_create_normalized(&JIVE_ADDRESS_TO_BITSTRING_NODE,
-		address->node()->graph, &op, address);
+	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
 }
 
 /* bitstring_to_address node */
@@ -176,9 +174,7 @@ jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 	const jive::base::type * original_type)
 {
 	jive::bitstring_to_address_operation op(nbits, original_type);
-
-	return jive_unary_operation_create_normalized(&JIVE_BITSTRING_TO_ADDRESS_NODE,
-		bitstring->node()->graph, &op, bitstring);
+	return jive_node_create_normalized(bitstring->node()->graph, op, {bitstring})[0];
 }
 
 /* reductions */

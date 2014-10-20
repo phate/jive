@@ -74,7 +74,6 @@ const jive_node_class JIVE_BITNOT_NODE = {
 jive::output *
 jive_bitnot(jive::output * arg)
 {
-	return jive::bits::detail::unop_normalized_create<
-		jive::bits::not_op>(
-			&JIVE_BITNOT_NODE, arg);
+	const auto & type = dynamic_cast<const jive::bits::type &>(arg->type());
+	return jive_node_create_normalized(arg->node()->graph, jive::bits::not_op(type), {arg})[0];
 }

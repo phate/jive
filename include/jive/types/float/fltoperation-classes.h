@@ -162,10 +162,7 @@ public:
 	static jive::output *
 	normalized_create(jive::output * arg)
 	{
-		jive_graph * graph = arg->node()->graph;
-		make_unop op;
-		return jive_unary_operation_create_normalized(
-			cls, graph, &op, arg);
+		return jive_node_create_normalized(arg->node()->graph, make_unop(), {arg})[0];
 	}
 
 	virtual value_repr
@@ -233,11 +230,7 @@ public:
 	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
 		jive_graph * graph = arg1->node()->graph;
-		make_binop op;
-		jive::output * arguments[] = {arg1, arg2};
-		return jive_binary_operation_create_normalized(
-			cls, graph, &op,
-			2, arguments);
+		return jive_node_create_normalized(graph, make_binop(), {arg1, arg2})[0];
 	}
 
 	virtual jive_binary_operation_flags
@@ -314,10 +307,7 @@ public:
 	{
 		jive_graph * graph = arg1->node()->graph;
 		make_cmpop op;
-		jive::output * arguments[] = {arg1, arg2};
-		return jive_binary_operation_create_normalized(
-			cls, graph, &op,
-			2, arguments);
+		return jive_node_create_normalized(graph, make_cmpop(), {arg1, arg2})[0];
 	}
 
 	virtual jive_binary_operation_flags

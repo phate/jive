@@ -90,10 +90,12 @@ const jive_node_class JIVE_BITSHIPRODUCT_NODE = {
 };
 
 jive::output *
-jive_bitshiproduct(jive::output * dividend, jive::output * divisor)
+jive_bitshiproduct(jive::output * op1, jive::output * op2)
 {
-	jive_graph * graph = dividend->node()->graph;
-	return jive::bits::detail::binop_normalized_create<
-		jive::bits::smulh_op>(
-			&JIVE_BITSHIPRODUCT_NODE, dividend, divisor);
+	const jive::bits::type & type =
+		dynamic_cast<const jive::bits::type &>(op1->type());
+	return jive_node_create_normalized(
+		op1->node()->graph,
+		jive::bits::smulh_op(type),
+		{op1, op2})[0];
 }

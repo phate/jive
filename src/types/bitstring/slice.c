@@ -175,7 +175,5 @@ jive_bitslice(jive::output * argument, size_t low, size_t high)
 	const jive::bits::type & type =
 		dynamic_cast<const jive::bits::type &>(argument->type());
 	jive::bits::slice_op op(type, low, high);
-
-	return jive_unary_operation_create_normalized(&JIVE_BITSLICE_NODE, argument->node()->graph,
-		&op, argument);
+	return jive_node_create_normalized(argument->node()->graph, op, {argument})[0];
 }

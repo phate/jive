@@ -88,10 +88,12 @@ const jive_node_class JIVE_BITEQUAL_NODE = {
 };
 
 jive::output *
-jive_bitequal(jive::output * operand1, jive::output * operand2)
+jive_bitequal(jive::output * op1, jive::output * op2)
 {
-	jive_graph * graph = operand1->node()->graph;
-	return jive::bits::detail::binop_normalized_create<
-		jive::bits::eq_op>(
-			&JIVE_BITEQUAL_NODE, operand1, operand2);
+	const jive::bits::type & type =
+		dynamic_cast<const jive::bits::type &>(op1->type());
+	return jive_node_create_normalized(
+		op1->node()->graph,
+		jive::bits::eq_op(type),
+		{op1, op2})[0];
 }

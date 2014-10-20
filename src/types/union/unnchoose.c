@@ -148,7 +148,5 @@ jive_choose_create(size_t member, jive::output * argument)
 	const jive::unn::type & unn_type =
 		dynamic_cast<const jive::unn::type &>(argument->type());
 	jive::unn::choose_operation op(unn_type, member);
-
-	return jive_unary_operation_create_normalized(
-		&JIVE_CHOOSE_NODE, argument->node()->graph, &op, argument);
+	return jive_node_create_normalized(argument->node()->graph, op, {argument})[0];
 }

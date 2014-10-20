@@ -83,7 +83,10 @@ const jive_node_class JIVE_BITAND_NODE = {
 jive::output *
 jive_bitand(size_t noperands, jive::output * const * operands)
 {
-	return jive::bits::detail::binop_normalized_create<
-		jive::bits::and_op>(
-			&JIVE_BITAND_NODE, noperands, operands);
+	const jive::bits::type & type =
+		dynamic_cast<const jive::bits::type &>(operands[0]->type());
+	return jive_node_create_normalized(
+		operands[0]->node()->graph,
+		jive::bits::and_op(type),
+		std::vector<jive::output *>(operands, operands + noperands))[0];
 }

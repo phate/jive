@@ -85,8 +85,10 @@ const jive_node_class JIVE_BITASHR_NODE = {
 jive::output *
 jive_bitashr(jive::output * operand, jive::output * shift)
 {
-	jive_graph * graph = operand->node()->graph;
-	return jive::bits::detail::binop_normalized_create<
-		jive::bits::ashr_op>(
-			&JIVE_BITASHR_NODE, operand, shift);
+	const jive::bits::type & type =
+		dynamic_cast<const jive::bits::type &>(operand->type());
+	return jive_node_create_normalized(
+		operand->node()->graph,
+		jive::bits::ashr_op(type),
+		{operand, shift})[0];
 }

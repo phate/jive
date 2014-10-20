@@ -64,13 +64,6 @@ static const jive_unop_reduction_path_t jive_unop_reduction_distribute = 6;
 
 extern const jive_node_class JIVE_UNARY_OPERATION;
 
-JIVE_EXPORTED_INLINE jive::output *
-jive_unary_operation_create_normalized(const jive_node_class * class_,
-	struct jive_graph * graph, const jive_node_attrs * attrs, jive::output * operand)
-{
-	return jive_node_create_normalized(graph, *attrs, {operand})[0];
-}
-
 /* node class inheritable methods */
 
 jive::node_normal_form *
