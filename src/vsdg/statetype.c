@@ -111,10 +111,10 @@ jive_state_merge(const jive::state::type * statetype, size_t nstates, jive::outp
 {
 	jive::state::mux_op op(*statetype, nstates, 1);
 
-	jive::output * result;
-	jive_node_create_normalized(&JIVE_STATEMUX_NODE, states[0]->node()->region->graph,
-		&op, nstates, states, &result);
-	return result;
+	return jive_node_create_normalized(
+		states[0]->node()->region->graph,
+		op,
+		std::vector<jive::output *>(states, states + nstates))[0];
 }
 
 std::vector<jive::output *>
@@ -122,9 +122,8 @@ jive_state_split(const jive::state::type * statetype, jive::output * state, size
 {
 	jive::state::mux_op op(*statetype, 1, nstates);
 
-	jive::output * results[nstates];
-	jive_node_create_normalized(&JIVE_STATEMUX_NODE, state->node()->region->graph,
-		&op, 1, &state, results);
-
-	return std::vector<jive::output *>(results, results + nstates);
+	return jive_node_create_normalized(
+		state->node()->region->graph,
+		op,
+		{state});
 }

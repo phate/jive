@@ -104,15 +104,11 @@ std::vector<jive::output *>
 jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[])
 {
 	jive::fct::apply_op op(dynamic_cast<const jive::fct::type &>(function->type()));
-	jive::output * apply_args[narguments + 1];
-	apply_args[0] = function;
+	std::vector<jive::output *> apply_args;
+	apply_args.push_back(function);
 	for (size_t n = 0; n < narguments; ++n) {
-		apply_args[n + 1] = arguments[n];
+		apply_args.push_back(arguments[n]);
 	}
-	size_t nresults = op.nresults();
-	jive::output * results[nresults];
 	jive_graph * graph = function->node()->region->graph;
-	jive_node_create_normalized(&JIVE_APPLY_NODE, graph, &op, narguments + 1, apply_args, results);
-	
-	return std::vector<jive::output *>(results, results + nresults);
+	return jive_node_create_normalized(graph, op, apply_args);
 }

@@ -104,9 +104,8 @@ jive_binary_operation_create_normalized(const jive_node_class * class_,
 	struct jive_graph * graph, const jive_node_attrs * attrs, size_t noperands,
 	jive::output * const operands[])
 {
-	jive::output * result;
-	jive_node_create_normalized(class_, graph, attrs, noperands, operands, &result);
-	return result;
+	return jive_node_create_normalized(
+		graph, *attrs, std::vector<jive::output *>(operands, operands + noperands))[0];
 }
 
 /* node class inheritable methods */

@@ -385,11 +385,7 @@ jive_arraysubscript(
 	jive::output * arguments[2] = {address, index};
 	jive_region * region = jive_region_innermost(2, arguments);
 
-	jive::output * result;
-
-	jive_node_create_normalized(&JIVE_ARRAYSUBSCRIPT_NODE, region->graph,
-		&op, 2, arguments, &result);
-	return result;
+	return jive_node_create_normalized(region->graph, op, {address, index})[0];
 }
 
 /* arrayindex */
@@ -515,12 +511,9 @@ jive_arrayindex(
 	jive::output * arguments[] = {addr1, addr2};
 	jive_region * region = jive_region_innermost(2, arguments);
 	
-	jive::address::arrayindex_operation attrs(*element_type, difference_type->nbits());
+	jive::address::arrayindex_operation op(*element_type, difference_type->nbits());
 	
-	jive::output * result;
-	jive_node_create_normalized(&JIVE_ARRAYINDEX_NODE, region->graph,
-		&attrs, 2, arguments, &result);
-	return result;
+	return jive_node_create_normalized(region->graph, op, {addr1, addr2})[0];
 }
 
 /* label_to_address node */

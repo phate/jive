@@ -677,18 +677,14 @@ jive_node_cse(
 	return nullptr;
 }
 
-void
-jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * graph,
-	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
-	jive::output * results[])
+std::vector<jive::output *>
+jive_node_create_normalized(
+	jive_graph * graph,
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments)
 {
-	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(*attrs));
-	std::vector<jive::output *> arguments(operands, operands + noperands);
-	std::vector<jive::output *> tmp_results =
-		nf->normalized_create(*attrs, arguments);
-	for (size_t n = 0; n < tmp_results.size(); ++n) {
-		results[n] = tmp_results[n];
-	}
+	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(op));
+	return nf->normalized_create(op, arguments);
 }
 
 jive_tracker_nodestate *

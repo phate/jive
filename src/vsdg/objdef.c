@@ -107,10 +107,5 @@ jive_objdef_create(
 	const jive_linker_symbol * symbol)
 {
 	jive::objdef_operation op(name, symbol, output->type());
-	jive::output * results[1];
-	jive_node_create_normalized(
-		&JIVE_OBJDEF_NODE,
-		output->node()->region->graph,
-		&op, 1, &output, results);
-	return results[0];
+	return jive_node_create_normalized( output->node()->region->graph, op, {output})[0];
 }

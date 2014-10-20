@@ -116,5 +116,6 @@ jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
 {
 	test_operation op(noperands, operand_types, nresults, result_types);
 
-	jive_node_create_normalized(&JIVE_TEST_NODE, graph, &op, noperands, operands, results);
+	jive_node_create_normalized(
+		graph, op, std::vector<jive::output *>(operands, operands + noperands));
 }

@@ -327,10 +327,11 @@ jive_node_cse(
 
 /* normal forms */
 
-void
-jive_node_create_normalized(const jive_node_class * class_, struct jive_graph * graph,
-	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
-	jive::output * results[]);
+std::vector<jive::output *>
+jive_node_create_normalized(
+	jive_graph * graph,
+	const jive::operation & op,
+	const std::vector<jive::output *> & arguments);
 
 /**
 	\brief Attempt to find existing or create new node

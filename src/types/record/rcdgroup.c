@@ -105,17 +105,14 @@ jive_group_create(const jive::rcd::declaration * decl,
 	size_t narguments, jive::output * const * arguments)
 {
 	jive::rcd::group_op op(decl);
-	jive::output * result;
 	jive_graph * graph = arguments[0]->node()->region->graph;
-	jive_node_create_normalized(&JIVE_GROUP_NODE, graph, &op, narguments, arguments, &result);
-	return result;
+	return jive_node_create_normalized(
+		graph, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
 }
 
 jive::output *
 jive_empty_group_create(jive_graph * graph, const jive::rcd::declaration * decl)
 {
 	jive::rcd::group_op op(decl);
-	jive::output * result;
-	jive_node_create_normalized(&JIVE_GROUP_NODE, graph, &op, 0, nullptr, &result);
-	return result;
+	return jive_node_create_normalized(graph, op, {})[0];
 }
