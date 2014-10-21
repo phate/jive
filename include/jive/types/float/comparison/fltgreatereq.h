@@ -18,7 +18,6 @@ extern const char fltgreatereq_name[];
 
 typedef detail::make_cmpop<
 	std::greater_equal<value_repr>,
-	&JIVE_FLTGREATEREQ_NODE,
 	fltgreatereq_name,
 	jive_binary_operation_none> ge_op;
 

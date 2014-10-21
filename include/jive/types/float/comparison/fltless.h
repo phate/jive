@@ -18,7 +18,6 @@ extern const char fltless_name[];
 
 typedef detail::make_cmpop<
 	std::less<value_repr>,
-	&JIVE_FLTLESS_NODE,
 	fltless_name,
 	jive_binary_operation_none> lt_op;
 

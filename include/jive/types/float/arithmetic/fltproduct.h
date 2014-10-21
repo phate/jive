@@ -18,7 +18,6 @@ extern const char fltproduct_name[];
 
 typedef detail::make_binop<
 	std::multiplies<value_repr>,
-	&JIVE_FLTPRODUCT_NODE,
 	fltproduct_name,
 	jive_binary_operation_commutative> mul_op;
 

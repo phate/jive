@@ -18,7 +18,6 @@ extern const char fltequal_name[];
 
 typedef detail::make_cmpop<
 	std::equal_to<value_repr>,
-	&JIVE_FLTEQUAL_NODE,
 	fltequal_name,
 	jive_binary_operation_commutative> eq_op;
 

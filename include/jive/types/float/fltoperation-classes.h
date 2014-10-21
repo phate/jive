@@ -123,7 +123,6 @@ namespace detail {
 
 template<
 	typename evaluator_functional,
-	const jive_node_class * cls,
 	const char * name>
 class make_unop final : public unary_op {
 public:
@@ -188,7 +187,6 @@ private:
 
 template<
 	typename evaluator_functional,
-	const jive_node_class * cls,
 	const char * name,
 	jive_binary_operation_flags op_flags>
 class make_binop final : public binary_op {
@@ -264,7 +262,6 @@ private:
 
 template<
 	typename evaluator_functional,
-	const jive_node_class * cls,
 	const char * name,
 	jive_binary_operation_flags op_flags>
 class make_cmpop final : public compare_op {

@@ -18,7 +18,6 @@ extern const char fltgreater_name[];
 
 typedef detail::make_cmpop<
 	std::greater<value_repr>,
-	&JIVE_FLTGREATER_NODE,
 	fltgreater_name,
 	jive_binary_operation_none> gt_op;
 

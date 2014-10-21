@@ -22,7 +22,6 @@ extern const char fltnegate_name[];
 
 typedef detail::make_unop<
 	compute_negation,
-	&JIVE_FLTNEGATE_NODE,
 	fltnegate_name> neg_op;
 
 

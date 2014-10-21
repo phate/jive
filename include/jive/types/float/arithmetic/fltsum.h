@@ -18,7 +18,6 @@ extern const char fltsum_name[];
 
 typedef detail::make_binop<
 	std::plus<value_repr>,
-	&JIVE_FLTSUM_NODE,
 	fltsum_name,
 	jive_binary_operation_commutative> add_op;
 

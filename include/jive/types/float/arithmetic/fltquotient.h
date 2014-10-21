@@ -18,7 +18,6 @@ extern const char fltquotient_name[];
 
 typedef detail::make_binop<
 	std::divides<value_repr>,
-	&JIVE_FLTQUOTIENT_NODE,
 	fltquotient_name,
 	jive_binary_operation_none> div_op;
 
