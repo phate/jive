@@ -33,7 +33,6 @@ uge_op::create_node(
 {
 	return detail::binop_create<uge_op>(
 		*this,
-		&JIVE_BITUGREATEREQ_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

@@ -31,7 +31,6 @@ not_op::create_node(
 {
 	return detail::unop_create<not_op>(
 		*this,
-		&JIVE_BITNOT_NODE,
 		region,
 		arguments[0]);
 }

@@ -31,7 +31,6 @@ mul_op::create_node(
 {
 	return detail::binop_create<mul_op>(
 		*this,
-		&JIVE_BITPRODUCT_NODE,
 		region,
 		narguments,
 		arguments);

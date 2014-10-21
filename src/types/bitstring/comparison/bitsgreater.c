@@ -33,7 +33,6 @@ sgt_op::create_node(
 {
 	return detail::binop_create<sgt_op>(
 		*this,
-		&JIVE_BITSGREATER_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

@@ -31,7 +31,6 @@ umod_op::create_node(
 {
 	return detail::binop_create<umod_op>(
 		*this,
-		&JIVE_BITUMOD_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

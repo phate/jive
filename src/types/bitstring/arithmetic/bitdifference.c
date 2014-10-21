@@ -31,7 +31,6 @@ sub_op::create_node(
 {
 	return detail::binop_create<sub_op>(
 		*this,
-		&JIVE_BITDIFFERENCE_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

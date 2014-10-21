@@ -31,7 +31,6 @@ umulh_op::create_node(
 {
 	return detail::binop_create<umulh_op>(
 		*this,
-		&JIVE_BITUHIPRODUCT_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

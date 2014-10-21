@@ -33,7 +33,6 @@ ne_op::create_node(
 {
 	return detail::binop_create<ne_op>(
 		*this,
-		&JIVE_BITNOTEQUAL_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

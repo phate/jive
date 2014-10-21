@@ -31,7 +31,6 @@ xor_op::create_node(
 {
 	return detail::binop_create<xor_op>(
 		*this,
-		&JIVE_BITXOR_NODE,
 		region,
 		narguments,
 		arguments);

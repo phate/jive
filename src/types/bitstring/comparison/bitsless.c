@@ -33,7 +33,6 @@ slt_op::create_node(
 {
 	return detail::binop_create<slt_op>(
 		*this,
-		&JIVE_BITSLESS_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

@@ -31,7 +31,6 @@ or_op::create_node(
 {
 	return detail::binop_create<or_op>(
 		*this,
-		&JIVE_BITOR_NODE,
 		region,
 		narguments,
 		arguments);

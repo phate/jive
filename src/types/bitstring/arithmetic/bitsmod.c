@@ -31,7 +31,6 @@ smod_op::create_node(
 {
 	return detail::binop_create<smod_op>(
 		*this,
-		&JIVE_BITSMOD_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

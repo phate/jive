@@ -31,7 +31,6 @@ add_op::create_node(
 {
 	return detail::binop_create<add_op>(
 		*this,
-		&JIVE_BITSUM_NODE,
 		region,
 		narguments,
 		arguments);

@@ -31,7 +31,6 @@ neg_op::create_node(
 {
 	return detail::unop_create<neg_op>(
 		*this,
-		&JIVE_BITNEGATE_NODE,
 		region,
 		arguments[0]);
 }

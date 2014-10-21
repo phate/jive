@@ -31,7 +31,6 @@ ashr_op::create_node(
 {
 	return detail::binop_create<ashr_op>(
 		*this,
-		&JIVE_BITASHR_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

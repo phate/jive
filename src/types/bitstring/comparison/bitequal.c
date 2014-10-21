@@ -33,7 +33,6 @@ eq_op::create_node(
 {
 	return detail::binop_create<eq_op>(
 		*this,
-		&JIVE_BITEQUAL_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

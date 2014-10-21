@@ -31,7 +31,6 @@ shl_op::create_node(
 {
 	return detail::binop_create<shl_op>(
 		*this,
-		&JIVE_BITSHL_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

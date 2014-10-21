@@ -33,7 +33,6 @@ ule_op::create_node(
 {
 	return detail::binop_create<ule_op>(
 		*this,
-		&JIVE_BITULESSEQ_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

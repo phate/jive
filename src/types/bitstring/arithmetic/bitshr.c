@@ -31,7 +31,6 @@ shr_op::create_node(
 {
 	return detail::binop_create<shr_op>(
 		*this,
-		&JIVE_BITSHR_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

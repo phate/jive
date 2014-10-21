@@ -31,7 +31,6 @@ sdiv_op::create_node(
 {
 	return detail::binop_create<sdiv_op>(
 		*this,
-		&JIVE_BITSQUOTIENT_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

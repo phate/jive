@@ -33,7 +33,6 @@ sle_op::create_node(
 {
 	return detail::binop_create<sle_op>(
 		*this,
-		&JIVE_BITSLESSEQ_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

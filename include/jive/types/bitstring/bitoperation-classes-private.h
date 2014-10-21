@@ -17,7 +17,6 @@ template<typename Op>
 static inline jive_node *
 unop_create(
 	const Op & operation,
-	const jive_node_class * cls,
 	jive_region * region,
 	jive::output * argument)
 {
@@ -37,7 +36,6 @@ template<typename Op>
 static inline jive_node *
 binop_create(
 	const Op & operation,
-	const jive_node_class * cls,
 	jive_region * region,
 	size_t narguments,
 	jive::output * const * arguments)
@@ -63,7 +61,6 @@ template<typename Op>
 static inline jive_node *
 binop_create(
 	const Op & operation,
-	const jive_node_class * cls,
 	jive_region * region,
 	jive::output * arg1,
 	jive::output * arg2)

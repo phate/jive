@@ -33,7 +33,6 @@ ugt_op::create_node(
 {
 	return detail::binop_create<ugt_op>(
 		*this,
-		&JIVE_BITUGREATER_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

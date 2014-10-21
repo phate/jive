@@ -31,7 +31,6 @@ smulh_op::create_node(
 {
 	return detail::binop_create<smulh_op>(
 		*this,
-		&JIVE_BITSHIPRODUCT_NODE,
 		region,
 		arguments[0],
 		arguments[1]);

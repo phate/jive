@@ -31,7 +31,6 @@ and_op::create_node(
 {
 	return detail::binop_create<and_op>(
 		*this,
-		&JIVE_BITAND_NODE,
 		region,
 		narguments,
 		arguments);
