@@ -68,7 +68,6 @@ apply_op::create_node(
 {
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_APPLY_NODE,
 		region,
 		arguments, arguments + nargumentsx);
 	return node;

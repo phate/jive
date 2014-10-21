@@ -38,9 +38,8 @@ subroutine_head_op::create_node(
 	jive::output * const arguments[]) const
 {
 	JIVE_DEBUG_ASSERT(!region->top);
-	jive_node * node =jive_opnode_create(
+	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_SUBROUTINE_ENTER_NODE,
 		region,
 		arguments, arguments + narguments);
 	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
@@ -86,7 +85,6 @@ subroutine_tail_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->bottom);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_SUBROUTINE_LEAVE_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->bottom = node;
@@ -131,7 +129,6 @@ subroutine_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_SUBROUTINE_NODE,
 		region,
 		arguments, arguments + narguments);
 }

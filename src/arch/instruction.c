@@ -78,7 +78,6 @@ instruction_op::create_node(
 {
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_INSTRUCTION_NODE,
 		region,
 		arguments, arguments + narguments);
 	for (size_t n = 0; n < icls()->ninputs; ++n) {

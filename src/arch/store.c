@@ -92,7 +92,6 @@ store_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_STORE_NODE,
 		region,
 		arguments, arguments + narguments);
 }

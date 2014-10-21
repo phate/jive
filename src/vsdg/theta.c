@@ -46,7 +46,6 @@ theta_head_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->top);
 	jive_node * node =jive_opnode_create(
 		*this,
-		&JIVE_THETA_HEAD_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->top = node;
@@ -91,7 +90,6 @@ theta_tail_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->bottom);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_THETA_TAIL_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->bottom = node;
@@ -122,7 +120,6 @@ theta_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_THETA_NODE,
 		region,
 		arguments, arguments + narguments);
 }

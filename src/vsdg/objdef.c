@@ -70,7 +70,6 @@ objdef_operation::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_OBJDEF_NODE,
 		region,
 		arguments, arguments + narguments);
 }

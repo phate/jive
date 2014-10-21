@@ -102,7 +102,6 @@ public:
 	{
 		return jive_opnode_create(
 			*this,
-			&NEGTESTNODE,
 			region,
 			arguments, arguments + narguments);
 	}

@@ -152,7 +152,6 @@ concat_op::create_node(
 
 	return jive_opnode_create(
 		concat_op(std::move(types)),
-		&JIVE_BITCONCAT_NODE,
 		region,
 		arguments, arguments + narguments);
 }

@@ -108,7 +108,6 @@ empty_unify_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_EMPTY_UNIFY_NODE,
 		region,
 		std::initializer_list<jive::output *>{});
 }

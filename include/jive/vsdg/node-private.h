@@ -31,7 +31,6 @@ template<
 jive_node *
 jive_opnode_create(
 	const Operation & op,
-	const jive_node_class * cls,
 	jive_region * region,
 	ArgumentList arguments)
 {
@@ -63,7 +62,6 @@ template<
 jive_node *
 jive_opnode_create(
 	const Operation & op,
-	const jive_node_class * cls,
 	jive_region * region,
 	ArgumentIterator begin,
 	ArgumentIterator end)

@@ -60,7 +60,6 @@ dataobj_head_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->top);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_DATAOBJ_HEAD_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->top = node;
@@ -105,7 +104,6 @@ dataobj_tail_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->bottom);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_DATAOBJ_TAIL_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->bottom = node;
@@ -150,7 +148,6 @@ dataobj_op::create_node(
 {
 	return  jive_opnode_create(
 		*this,
-		&JIVE_DATAOBJ_NODE,
 		region,
 		arguments, arguments + narguments);
 }

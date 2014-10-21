@@ -45,7 +45,6 @@ phi_head_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->top);
 	jive_node * node =jive_opnode_create(
 		*this,
-		&JIVE_PHI_ENTER_NODE,
 		region,
 		arguments, arguments + narguments);
 	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
@@ -91,7 +90,6 @@ phi_tail_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->bottom);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_PHI_LEAVE_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->bottom = node;
@@ -122,7 +120,6 @@ phi_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_PHI_NODE,
 		region,
 		arguments, arguments + narguments);
 }

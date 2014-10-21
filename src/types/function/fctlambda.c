@@ -75,7 +75,6 @@ lambda_head_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->top);
 	jive_node * node =jive_opnode_create(
 		*this,
-		&JIVE_LAMBDA_ENTER_NODE,
 		region,
 		arguments, arguments + narguments);
 	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
@@ -121,7 +120,6 @@ lambda_tail_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->bottom);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_LAMBDA_LEAVE_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->bottom = node;
@@ -176,7 +174,6 @@ lambda_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_LAMBDA_NODE,
 		region,
 		arguments, arguments + narguments);
 }

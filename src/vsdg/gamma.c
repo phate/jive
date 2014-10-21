@@ -35,7 +35,6 @@ gamma_tail_op::create_node(
 	JIVE_DEBUG_ASSERT(!region->bottom);
 	jive_node * node = jive_opnode_create(
 		*this,
-		&JIVE_GAMMA_TAIL_NODE,
 		region,
 		arguments, arguments + narguments);
 	region->bottom = node;
@@ -84,7 +83,6 @@ gamma_op::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_GAMMA_NODE,
 		region,
 		arguments, arguments + narguments);
 }

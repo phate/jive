@@ -72,7 +72,6 @@ test_operation::create_node(
 {
 	return jive_opnode_create(
 		*this,
-		&JIVE_TEST_NODE,
 		region,
 		arguments, arguments + narguments);
 }
