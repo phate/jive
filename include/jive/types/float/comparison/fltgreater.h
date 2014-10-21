@@ -9,8 +9,6 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 
-extern const jive_node_class JIVE_FLTGREATER_NODE;
-
 namespace jive {
 namespace flt {
 

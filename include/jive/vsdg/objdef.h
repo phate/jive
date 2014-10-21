@@ -84,8 +84,6 @@ private:
 
 }
 
-extern const struct jive_node_class JIVE_OBJDEF_NODE;
-
 typedef jive::operation_node<jive::objdef_operation> jive_objdef_node;
 
 jive::output *

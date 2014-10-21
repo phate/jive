@@ -10,8 +10,6 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/node.h>
 
-extern const jive_node_class JIVE_GROUP_NODE;
-
 namespace jive {
 namespace rcd {
 

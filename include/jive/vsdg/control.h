@@ -11,8 +11,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/nullary.h>
 
-extern const jive_node_class JIVE_CONTROL_CONSTANT_NODE;
-
 namespace jive {
 namespace ctl {
 

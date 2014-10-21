@@ -19,10 +19,6 @@ struct jive_node;
 struct jive_region;
 struct jive_theta_build_state;
 
-extern const jive_node_class JIVE_THETA_HEAD_NODE;
-extern const jive_node_class JIVE_THETA_TAIL_NODE;
-extern const jive_node_class JIVE_THETA_NODE;
-
 namespace jive {
 
 class theta_head_op final : public region_head_op {

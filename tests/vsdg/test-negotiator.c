@@ -25,8 +25,6 @@
 
 typedef uint32_t test_option_t;
 
-extern const jive_node_class NEGTESTNODE;
-
 class negtest_op : public jive::operation {
 public:
 	virtual

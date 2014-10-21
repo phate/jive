@@ -121,8 +121,4 @@ typedef jive::operation_node<jive::subroutine_op> jive_subroutine_node;
 typedef jive::operation_node<jive::subroutine_head_op> jive_subroutine_enter_node;
 typedef jive::operation_node<jive::subroutine_tail_op> jive_subroutine_leave_node;
 
-extern const jive_node_class JIVE_SUBROUTINE_ENTER_NODE;
-extern const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE;
-extern const jive_node_class JIVE_SUBROUTINE_NODE;
-
 #endif

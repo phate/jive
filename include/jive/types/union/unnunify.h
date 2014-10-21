@@ -13,9 +13,6 @@
 
 /* unify node */
 
-extern const jive_node_class JIVE_UNIFY_NODE;
-extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
-
 namespace jive {
 namespace unn {
 
@@ -133,8 +130,6 @@ jive_unify_create(
 	jive::output * const operand);
 
 /* empty unify node */
-
-extern const jive_node_class JIVE_EMPTY_UNIFY_NODE;
 
 jive::output *
 jive_empty_unify_create(

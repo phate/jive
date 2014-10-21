@@ -65,8 +65,6 @@ private:
 
 typedef jive::operation_node<jive::sizeof_op> jive_sizeof_node;
 
-extern const jive_node_class JIVE_SIZEOF_NODE;
-
 jive::output *
 jive_sizeof_create(jive_region * region, const jive::value::type * type);
 

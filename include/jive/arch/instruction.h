@@ -72,8 +72,6 @@ private:
 
 typedef jive::operation_node<jive::instruction_op> jive_instruction_node;
 
-extern const jive_node_class JIVE_INSTRUCTION_NODE;
-
 jive_node *
 jive_instruction_node_create_simple(
 	struct jive_region * region,

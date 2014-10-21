@@ -89,8 +89,6 @@ private:
 
 }
 
-extern const jive_node_class JIVE_STORE_NODE;
-
 typedef jive::operation_node<jive::store_op> jive_store_node;
 
 std::vector<jive::output *>

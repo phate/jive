@@ -166,10 +166,4 @@ private:
 }
 }
 
-extern const jive_node_class JIVE_BITBINARY_NODE;
-
-extern const jive_node_class JIVE_BITUNARY_NODE;
-
-extern const jive_node_class JIVE_BITCOMPARISON_NODE;
-
 #endif

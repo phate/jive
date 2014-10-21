@@ -14,8 +14,6 @@
 
 /* test node */
 
-extern const jive_node_class JIVE_TEST_NODE;
-
 class test_operation final : public jive::operation {
 public:
 	virtual

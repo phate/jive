@@ -10,8 +10,6 @@
 #include <jive/types/bitstring/bitoperation-classes.h>
 #include <jive/types/bitstring/type.h>
 
-extern const jive_node_class JIVE_BITAND_NODE;
-
 namespace jive {
 namespace bits {
 

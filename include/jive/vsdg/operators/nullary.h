@@ -223,8 +223,6 @@ private:
 }
 }
 
-extern const jive_node_class JIVE_NULLARY_OPERATION;
-
 /* node class inheritable methods */
 
 jive::node_normal_form *

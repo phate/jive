@@ -9,8 +9,6 @@
 
 #include <jive/types/bitstring/bitoperation-classes.h>
 
-extern const jive_node_class JIVE_BITNOTEQUAL_NODE;
-
 namespace jive {
 namespace bits {
 

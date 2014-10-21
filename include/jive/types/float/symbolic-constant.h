@@ -12,8 +12,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 
-extern const jive_node_class JIVE_FLTSYMBOLICCONSTANT_NODE;
-
 namespace jive {
 namespace base {
 // declare explicit instantiation

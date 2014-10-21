@@ -59,8 +59,6 @@ private:
 
 typedef jive::operation_node<jive::fct::apply_op> jive_apply_node;
 
-extern const jive_node_class JIVE_APPLY_NODE;
-
 std::vector<jive::output *>
 jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[]);
 

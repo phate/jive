@@ -21,8 +21,6 @@ struct jive_label;
 /* "memberof" operator: given an address that is the start of a record
 in memory, compute address of specified member of record */
 
-extern const jive_node_class JIVE_MEMBEROF_NODE;
-
 namespace jive {
 namespace address {
 
@@ -342,8 +340,6 @@ jive_memberof(jive::output * address, const jive::rcd::declaration * record_decl
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
-extern const jive_node_class JIVE_CONTAINEROF_NODE;
-
 typedef jive::operation_node<jive::address::containerof_operation> jive_containerof_node;
 
 jive::output *
@@ -351,8 +347,6 @@ jive_containerof(jive::output * address, const jive::rcd::declaration * record_d
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
-
-extern const jive_node_class JIVE_ARRAYSUBSCRIPT_NODE;
 
 typedef jive::operation_node<jive::address::arraysubscript_operation> jive_arraysubscript_node;
 
@@ -364,8 +358,6 @@ jive_arraysubscript(jive::output * address, const jive::value::type * element_ty
 element of an array and the array element type, compute the
 difference of their indices */
 
-extern const jive_node_class JIVE_ARRAYINDEX_NODE;
-
 typedef jive::operation_node<jive::address::arrayindex_operation> jive_arrayindex_node;
 
 jive::output *
@@ -375,16 +367,12 @@ jive_arrayindex(jive::output * addr1, jive::output * addr2,
 
 /* label_to_address node */
 
-extern const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE;
-
 typedef jive::operation_node<jive::address::label_to_address_operation> jive_label_to_address_node;
 
 jive::output *
 jive_label_to_address_create(struct jive_graph * graph, const struct jive_label * label);
 
 /* label_to_bitstring node */
-
-extern const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE;
 
 typedef jive::operation_node<jive::address::label_to_bitstring_operation>
 	jive_label_to_bitstring_node;

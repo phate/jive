@@ -66,8 +66,6 @@ public:
 
 /* split node */
 
-extern const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE;
-
 namespace jive {
 
 class negotiator_split_operation final : public base::unary_op {

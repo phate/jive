@@ -97,8 +97,6 @@ static const jive_binop_reduction_path_t jive_binop_reduction_factor = 7;
 
 /* node class */
 
-extern const jive_node_class JIVE_BINARY_OPERATION;
-
 /* node class inheritable methods */
 
 jive::node_normal_form *

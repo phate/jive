@@ -89,8 +89,6 @@ private:
 
 }
 
-extern const jive_node_class JIVE_LOAD_NODE;
-
 typedef jive::operation_node<jive::load_op> jive_load_node;
 
 jive::output *

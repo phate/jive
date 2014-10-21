@@ -92,8 +92,6 @@ private:
 
 }
 
-extern const jive_node_class JIVE_CALL_NODE;
-
 typedef jive::operation_node<jive::call_operation> jive_call_node;
 
 struct jive_node *

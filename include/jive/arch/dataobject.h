@@ -120,10 +120,6 @@ public:
 
 }
 
-extern const jive_node_class JIVE_DATAOBJ_HEAD_NODE;
-extern const jive_node_class JIVE_DATAOBJ_TAIL_NODE;
-extern const jive_node_class JIVE_DATAOBJ_NODE;
-
 struct jive_memlayout_mapper;
 
 typedef jive::operation_node<jive::dataobj_head_op> jive_dataitems_node;

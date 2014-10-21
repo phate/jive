@@ -19,9 +19,6 @@ namespace jive {
 	class type;
 }
 
-extern const jive_node_class JIVE_GAMMA_TAIL_NODE;
-extern const jive_node_class JIVE_GAMMA_NODE;
-
 namespace jive {
 
 class gamma_tail_op final : public region_tail_op {

@@ -88,8 +88,6 @@ public:
 	std::vector<jive_tracker_nodestate*> tracker_slots;
 };
 
-extern const jive_node_class JIVE_NODE;
-
 namespace jive {
 
 // Define node representing a specific operation.

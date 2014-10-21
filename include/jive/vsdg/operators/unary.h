@@ -62,8 +62,6 @@ static const jive_unop_reduction_path_t jive_unop_reduction_distribute = 6;
 
 /* node class */
 
-extern const jive_node_class JIVE_UNARY_OPERATION;
-
 /* node class inheritable methods */
 
 jive::node_normal_form *

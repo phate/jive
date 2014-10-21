@@ -11,12 +11,6 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 
-extern const jive_node_class JIVE_FLTBINARY_NODE;
-
-extern const jive_node_class JIVE_FLTUNARY_NODE;
-
-extern const jive_node_class JIVE_FLTCOMPARISON_NODE;
-
 namespace jive {
 namespace flt {
 

@@ -161,15 +161,11 @@ struct jive_memlayout_mapper;
 
 /* address_to_bitstring node */
 
-extern const jive_node_class JIVE_ADDRESS_TO_BITSTRING_NODE;
-
 jive::output *
 jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type);
 
 /* bitstring_to_address node */
-
-extern const jive_node_class JIVE_BITSTRING_TO_ADDRESS_NODE;
 
 jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,

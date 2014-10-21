@@ -16,8 +16,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 
-extern const jive_node_class JIVE_BITCONSTANT_NODE;
-
 namespace jive {
 namespace bits {
 

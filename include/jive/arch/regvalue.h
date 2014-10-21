@@ -12,8 +12,6 @@
 #include <jive/arch/registers.h>
 #include <jive/vsdg/node.h>
 
-extern const jive_node_class JIVE_REGVALUE_NODE;
-
 namespace jive {
 
 class regvalue_op final : public operation {
