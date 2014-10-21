@@ -13,7 +13,6 @@
 
 /* phi node */
 
-extern const jive_anchor_node_class JIVE_PHI_NODE;
 namespace jive {
 
 class phi_head_op final : public region_head_op {

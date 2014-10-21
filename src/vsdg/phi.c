@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 
-#include <jive/vsdg/anchor-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
@@ -137,17 +136,6 @@ phi_op::copy() const
 }
 
 }
-
-/* phi enter node */
-
-/* phi leave node */
-
-/* phi node */
-
-static jive::node_normal_form *
-jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
-	jive::node_normal_form * parent_, struct jive_graph * graph);
-
 
 static jive::node_normal_form *
 jive_phi_node_get_default_normal_form_(

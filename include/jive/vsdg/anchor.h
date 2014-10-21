@@ -67,10 +67,4 @@ public:
 
 }
 
-/* anchor node */
-
-typedef struct jive_node_class jive_anchor_node_class;
-
-extern const jive_anchor_node_class JIVE_ANCHOR_NODE;
-
 #endif

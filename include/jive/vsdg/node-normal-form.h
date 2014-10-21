@@ -21,7 +21,6 @@
 
 class jive_node;
 struct jive_graph;
-struct jive_node_class;
 
 namespace jive {
 

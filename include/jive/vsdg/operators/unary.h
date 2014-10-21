@@ -60,14 +60,4 @@ static const jive_unop_reduction_path_t jive_unop_reduction_narrow = 5;
 /* operation can be distributed into operands of preceding operation */
 static const jive_unop_reduction_path_t jive_unop_reduction_distribute = 6;
 
-/* node class */
-
-/* node class inheritable methods */
-
-jive::node_normal_form *
-jive_unary_operation_get_default_normal_form_(
-	const jive_node_class * cls,
-	jive::node_normal_form * parent,
-	struct jive_graph * graph);
-
 #endif

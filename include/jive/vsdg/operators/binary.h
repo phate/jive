@@ -95,14 +95,4 @@ static const jive_binop_reduction_path_t jive_binop_reduction_rneutral = 6;
 /* both operands have common form which can be factored over op */
 static const jive_binop_reduction_path_t jive_binop_reduction_factor = 7;
 
-/* node class */
-
-/* node class inheritable methods */
-
-jive::node_normal_form *
-jive_binary_operation_get_default_normal_form_(
-	const jive_node_class * cls,
-	jive::node_normal_form * parent,
-	jive_graph * graph);
-
 #endif

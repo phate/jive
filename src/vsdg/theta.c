@@ -11,7 +11,6 @@
 
 #include <jive/common.h>
 #include <jive/context.h>
-#include <jive/vsdg/anchor-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>

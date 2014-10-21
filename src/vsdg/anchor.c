@@ -7,7 +7,6 @@
 #include <jive/vsdg/anchor.h>
 
 #include <jive/vsdg/anchor-normal-form.h>
-#include <jive/vsdg/anchor-private.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>

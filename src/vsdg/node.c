@@ -142,18 +142,6 @@ jive_node_fini_(jive_node * self)
 		delete self->tracker_slots[n];
 }
 
-void
-jive_node_get_label_(const jive_node * self, struct jive_buffer * buffer)
-{
-	jive_buffer_putstr(buffer, self->class_->name);
-}
-
-bool
-jive_node_match_attrs_(const jive_node * self, const jive_node_attrs * other)
-{
-	return true;
-}
-
 jive::node_normal_form *
 jive_node_get_default_normal_form_(
 	const std::type_info & operator_class,

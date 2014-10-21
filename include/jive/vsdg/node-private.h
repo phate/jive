@@ -90,10 +90,6 @@ jive_opnode_create(
 void
 jive_node_fini_(jive_node * self);
 
-jive::node_normal_form *
-jive_node_get_default_normal_form_(
-	const jive_node_class * cls, jive::node_normal_form * parent, jive_graph * graph);
-
 void
 jive_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
 

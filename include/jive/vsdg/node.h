@@ -30,7 +30,6 @@ class output;
 }
 
 typedef struct jive_node jive_node;
-typedef struct jive_node_class jive_node_class;
 
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
@@ -54,8 +53,6 @@ public:
 		JIVE_DEBUG_ASSERT(index < ninputs);
 		return inputs[index]->producer();
 	}
-	
-	const struct jive_node_class * class_;
 	
 	struct jive_graph * graph;
 	
@@ -131,31 +128,6 @@ create_operation_node(Operation && operation)
 }
 
 }
-
-struct jive_node_class {
-	const struct jive_node_class * parent;
-	const char * name;
-	
-	void (*fini)(jive_node * self);
-	
-	/** \brief Retrieve node normal form */
-	jive::node_normal_form *(*get_default_normal_form)(
-		const jive_node_class * cls, jive::node_normal_form * parent, struct jive_graph * graph);
-	
-	/** \brief Give textual representation of node (for debugging) */
-	void (*get_label)(const jive_node * self, struct jive_buffer * buffer);
-	
-	/** \brief Compare with attribute set (of same node type) */
-	bool (*match_attrs)(const jive_node * self, const jive_node_attrs * second);
-
-	void (*check_operands)(const jive_node_class * cls, const jive_node_attrs * attrs,
-		size_t noperands, jive::output * const operands[], jive_context * context);
-	
-	/** \brief Class method, create node with given attributes */
-	jive_node * (*create)(struct jive_region * region,
-		const jive_node_attrs * attrs,
-		size_t noperands, jive::output * const operands[]);
-};
 
 struct jive_tracker_nodestate {
 	jive_node * node;

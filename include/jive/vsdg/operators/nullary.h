@@ -223,13 +223,4 @@ private:
 }
 }
 
-/* node class inheritable methods */
-
-jive::node_normal_form *
-jive_nullary_operation_get_default_normal_form_(
-	const jive_node_class * cls,
-	jive::node_normal_form * parent,
-	struct jive_graph * graph);
-
-
 #endif

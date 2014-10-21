@@ -87,11 +87,4 @@ binop_create(
 }
 }
 
-/* bitcomparison operation class inhertiable members */
-
-void
-jive_bitcomparison_operation_check_operands_(const jive_node_class * cls,
-	const jive_node_attrs * attrs, size_t noperands, jive::output * const operands[],
-	jive_context * context);
-
 #endif
