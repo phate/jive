@@ -18,11 +18,11 @@ extern const jive_node_class JIVE_SYMBOLICFUNCTION_NODE;
 namespace jive {
 namespace base {
 // declare explicit instantiation
-extern template class domain_symbol_op<&JIVE_SYMBOLICFUNCTION_NODE, jive::fct::type>;
+extern template class domain_symbol_op<jive::fct::type>;
 }
 
 namespace fct {
-typedef base::domain_symbol_op<&JIVE_SYMBOLICFUNCTION_NODE, jive::fct::type>
+typedef base::domain_symbol_op<jive::fct::type>
 	symbol_op;
 }
 }

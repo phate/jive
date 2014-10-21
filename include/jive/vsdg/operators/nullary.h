@@ -49,7 +49,6 @@ struct default_type_of_value {
  * characterised by the value they contain.
  *
  * Template argument requirements:
- * - Class: the node class
  * - Type: type class of the constants represented
  * - ValueRepr: representation of values
  * - FormatValue: functional that takes a ValueRepr instance and returns
@@ -58,7 +57,6 @@ struct default_type_of_value {
  *   the Type instances corresponding to this value (in case the type
  *   class is polymorphic) */
 template<
-	const jive_node_class * Class,
 	typename Type,
 	typename ValueRepr,
 	typename FormatValue,
@@ -148,7 +146,7 @@ private:
  * These are operators yielding a specific but unknown value of the
  * respective type. Useful mainly for testing purposes as it represents
  * sub-expressions which cannot be transformed any further. */
-template<const jive_node_class * Class, typename Type>
+template<typename Type>
 class domain_symbol_op final : public nullary_op {
 public:
 	virtual

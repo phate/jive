@@ -19,7 +19,7 @@ namespace jive {
 namespace base {
 // explicit instantiation
 template class domain_const_op<
-	&JIVE_BITCONSTANT_NODE, bits::type, bits::value_repr, bits::format_value, bits::type_of_value
+	bits::type, bits::value_repr, bits::format_value, bits::type_of_value
 >;
 }
 }

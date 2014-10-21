@@ -36,7 +36,7 @@ struct format_value {
 };
 
 typedef base::domain_const_op<
-	&JIVE_BITCONSTANT_NODE, type, value_repr, format_value, type_of_value
+	type, value_repr, format_value, type_of_value
 > constant_op;
 
 inline constant_op
@@ -56,7 +56,7 @@ int_constant_op(size_t nbits, int64_t value)
 namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<
-	&JIVE_BITCONSTANT_NODE, bits::type, bits::value_repr, bits::format_value, bits::type_of_value
+	bits::type, bits::value_repr, bits::format_value, bits::type_of_value
 >;
 }
 

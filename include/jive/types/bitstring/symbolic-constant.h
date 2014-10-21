@@ -18,11 +18,11 @@ extern const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE;
 namespace jive {
 namespace base {
 // declare explicit instantiation
-extern template class domain_symbol_op<&JIVE_BITSYMBOLICCONSTANT_NODE, jive::bits::type>;
+extern template class domain_symbol_op<jive::bits::type>;
 }
 
 namespace bits {
-typedef base::domain_symbol_op<&JIVE_BITSYMBOLICCONSTANT_NODE, jive::bits::type>
+typedef base::domain_symbol_op<jive::bits::type>
 	symbol_op;
 }
 }

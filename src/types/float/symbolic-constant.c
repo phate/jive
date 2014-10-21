@@ -17,7 +17,7 @@
 namespace jive {
 namespace base {
 // explicit instantiation
-template class domain_symbol_op<&JIVE_FLTSYMBOLICCONSTANT_NODE, jive::flt::type>;
+template class domain_symbol_op<jive::flt::type>;
 }
 }
 

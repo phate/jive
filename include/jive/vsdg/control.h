@@ -31,7 +31,7 @@ struct format_value {
 };
 
 typedef base::domain_const_op<
-	&JIVE_CONTROL_CONSTANT_NODE, type, value_repr, format_value, type_of_value
+	type, value_repr, format_value, type_of_value
 > constant_op;
 
 }
@@ -39,7 +39,7 @@ typedef base::domain_const_op<
 namespace base {
 // declare explicit instantiation
 extern template class domain_const_op<
-	&JIVE_CONTROL_CONSTANT_NODE, ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
+	ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
 >;
 }
 

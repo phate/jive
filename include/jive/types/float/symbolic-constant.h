@@ -17,11 +17,11 @@ extern const jive_node_class JIVE_FLTSYMBOLICCONSTANT_NODE;
 namespace jive {
 namespace base {
 // declare explicit instantiation
-extern template class domain_symbol_op<&JIVE_FLTSYMBOLICCONSTANT_NODE, jive::flt::type>;
+extern template class domain_symbol_op<jive::flt::type>;
 }
 
 namespace flt {
-typedef base::domain_symbol_op<&JIVE_FLTSYMBOLICCONSTANT_NODE, jive::flt::type>
+typedef base::domain_symbol_op<jive::flt::type>
 	symbol_op;
 }
 }

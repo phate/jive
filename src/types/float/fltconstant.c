@@ -20,7 +20,7 @@ namespace jive {
 namespace base {
 // explicit instantiation
 template class domain_const_op<
-	&JIVE_FLTCONSTANT_NODE, flt::type, flt::value_repr, flt::format_value, flt::type_of_value
+	flt::type, flt::value_repr, flt::format_value, flt::type_of_value
 >;
 }
 }

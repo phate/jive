@@ -18,7 +18,7 @@
 namespace jive {
 namespace base {
 // explicit instantiation
-template class domain_symbol_op<&JIVE_BITSYMBOLICCONSTANT_NODE, jive::bits::type>;
+template class domain_symbol_op<jive::bits::type>;
 }
 }
 
