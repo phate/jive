@@ -112,17 +112,6 @@ region_anchor_op::result_type(size_t index) const noexcept
 
 /* node class */
 
-const jive_node_class JIVE_ANCHOR_NODE = {
-	parent : &JIVE_NODE,
-	name : "ANCHOR",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 /* node class inhertiable methods */
 
 jive::node_normal_form *

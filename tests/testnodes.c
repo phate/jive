@@ -88,17 +88,6 @@ test_operation::copy() const
 	return std::unique_ptr<jive::operation>(new test_operation(*this));
 }
 
-const jive_node_class JIVE_TEST_NODE = {
-	parent : &JIVE_NODE,
-	name : "TEST_NODE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive_node *
 jive_test_node_create(struct jive_region * region,
 	size_t noperands, const jive::base::type * const operand_types[], jive::output * const operands[],

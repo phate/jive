@@ -140,46 +140,13 @@ phi_op::copy() const
 
 /* phi enter node */
 
-const jive_node_class JIVE_PHI_ENTER_NODE = {
-	parent : &JIVE_NODE,
-	name : "PHI_ENTER",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 /* phi leave node */
-
-const jive_node_class JIVE_PHI_LEAVE_NODE = {
-	parent : &JIVE_NODE,
-	name : "PHI_LEAVE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
 
 /* phi node */
 
 static jive::node_normal_form *
 jive_phi_node_get_default_normal_form_(const jive_node_class * cls,
 	jive::node_normal_form * parent_, struct jive_graph * graph);
-
-const jive_node_class JIVE_PHI_NODE = {
-	parent : &JIVE_ANCHOR_NODE,
-	name : "PHI",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
 
 
 static jive::node_normal_form *

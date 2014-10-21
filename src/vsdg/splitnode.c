@@ -91,17 +91,6 @@ split_operation::copy() const
 
 }
 
-const jive_node_class JIVE_SPLITNODE = {
-	parent : &JIVE_NODE,
-	name : "SPLIT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive_node *
 jive_splitnode_create(jive_region * region,
 	const jive::base::type * in_type,

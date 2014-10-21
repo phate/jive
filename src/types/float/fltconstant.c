@@ -25,17 +25,6 @@ template class domain_const_op<
 }
 }
 
-const jive_node_class JIVE_FLTCONSTANT_NODE = {
-	parent : &JIVE_NULLARY_OPERATION,
-	name : "FLTCONSTANT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_fltconstant(jive_graph * graph, jive::flt::value_repr value)
 {

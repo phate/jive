@@ -115,17 +115,6 @@ memberof_operation::copy() const
 }
 }
 
-const jive_node_class JIVE_MEMBEROF_NODE = {
-	parent : &JIVE_UNARY_OPERATION,
-	name : "MEMBEROF",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 
 jive::output *
 jive_memberof(jive::output * address,
@@ -228,17 +217,6 @@ containerof_operation::copy() const
 
 }
 }
-
-const jive_node_class JIVE_CONTAINEROF_NODE = {
-	parent : &JIVE_UNARY_OPERATION,
-	name : "CONTAINEROF",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
 
 jive::output *
 jive_containerof(jive::output * address,
@@ -354,17 +332,6 @@ arraysubscript_operation::copy() const
 
 }
 }
-
-const jive_node_class JIVE_ARRAYSUBSCRIPT_NODE = {
-	parent : &JIVE_NODE,
-	name : "ARRAYSUBSCRIPT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
 
 
 jive::output *
@@ -487,17 +454,6 @@ arrayindex_operation::copy() const
 }
 }
 
-const jive_node_class JIVE_ARRAYINDEX_NODE = {
-	parent : &JIVE_NODE,
-	name : "ARRAYINDEX",
-	fini : jive_node_fini_, /* override */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_arrayindex(
 	jive::output * addr1, jive::output * addr2,
@@ -586,17 +542,6 @@ label_to_address_operation::copy() const
 }
 }
 
-const jive_node_class JIVE_LABEL_TO_ADDRESS_NODE = {
-	parent : &JIVE_NODE,
-	name : "LABEL_TO_ADDRESS_NODE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 
 jive::output *
 jive_label_to_address_create(jive_graph * graph, const jive_label * label)
@@ -678,17 +623,6 @@ label_to_bitstring_operation::copy() const
 
 }
 }
-
-const jive_node_class JIVE_LABEL_TO_BITSTRING_NODE = {
-	parent : &JIVE_NODE,
-	name : "LABEL_TO_BITSTRING_NODE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
 
 
 jive::output *

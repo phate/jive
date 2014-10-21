@@ -86,17 +86,6 @@ graph_tail_operation::copy() const
 
 }
 
-const jive_node_class JIVE_GRAPH_TAIL_NODE = {
-	parent : &JIVE_NODE,
-	name : "GRAPH_TAIL",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 /* graph */
 
 static inline void

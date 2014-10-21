@@ -138,17 +138,6 @@ select_operation::copy() const
 }
 }
 
-const jive_node_class JIVE_SELECT_NODE = {
-	parent : &JIVE_UNARY_OPERATION,
-	name : "SELECT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 
 jive::output *
 jive_select_create(size_t member, jive::output * argument)

@@ -24,17 +24,6 @@ template class domain_const_op<
 }
 }
 
-const jive_node_class JIVE_BITCONSTANT_NODE = {
-	parent : &JIVE_NULLARY_OPERATION,
-	name : "BITCONSTANT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitconstant(jive_graph * graph, size_t nbits, const char bits[])
 {

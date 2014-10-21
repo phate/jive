@@ -22,22 +22,6 @@
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 
-const jive_node_class JIVE_BITSLICE_NODE = {
-	/* note that parent is JIVE_UNARY_OPERATION, not
-	JIVE_BITUNARY_OPERATION: the latter one is assumed
-	to represent "width-preserving" bit operations (i.e.
-	number of bits per operand/output matches), while
-	the slice operator violates this assumption */
-	parent : &JIVE_UNARY_OPERATION,
-	name : "BITSLICE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 namespace jive {
 namespace bits {
 

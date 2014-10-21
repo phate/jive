@@ -120,28 +120,6 @@ register_node_normal_form(void)
 }
 
 
-const jive_node_class JIVE_GAMMA_TAIL_NODE = {
-	parent : &JIVE_NODE,
-	name : "GAMMA_TAIL",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
-const jive_node_class JIVE_GAMMA_NODE = {
-	parent : &JIVE_ANCHOR_NODE,
-	name : "GAMMA",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 static jive_node *
 jive_gamma_create(
 	jive_region * region,

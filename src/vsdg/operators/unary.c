@@ -31,21 +31,6 @@ unary_op::nresults() const noexcept
 }
 }
 
-/* node class */
-
-const jive_node_class JIVE_UNARY_OPERATION = {
-	parent : &JIVE_NODE,
-	.name ="UNARY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
-/* node class inheritable methods */
-
 jive::node_normal_form *
 jive_unary_operation_get_default_normal_form_(
 	const std::type_info & operator_class,

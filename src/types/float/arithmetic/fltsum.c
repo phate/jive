@@ -18,17 +18,6 @@ const char fltsum_name[] = "FLTSUM";
 }
 }
 
-const jive_node_class JIVE_FLTSUM_NODE = {
-	parent : &JIVE_FLTBINARY_NODE,
-	name : "FLTSUM",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_fltsum(jive::output * arg1, jive::output * arg2)
 {

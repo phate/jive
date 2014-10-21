@@ -138,39 +138,6 @@ theta_op::copy() const
 
 }
 
-const jive_node_class JIVE_THETA_HEAD_NODE = {
-	parent : &JIVE_NODE,
-	name : "THETA_HEAD",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
-const jive_node_class JIVE_THETA_TAIL_NODE = {
-	parent : &JIVE_NODE,
-	name : "THETA_TAIL",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
-const jive_node_class JIVE_THETA_NODE = {
-	parent : &JIVE_ANCHOR_NODE,
-	name : "THETA",
-	fini : jive_node_fini_,  /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 typedef struct jive_theta_build_state jive_theta_build_state;
 struct jive_theta_build_state {
 	std::vector<jive_theta_loopvar> loopvars;

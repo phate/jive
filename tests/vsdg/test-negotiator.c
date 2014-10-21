@@ -133,17 +133,6 @@ private:
 
 typedef jive::operation_node<negtest_op> negtestnode;
 
-const jive_node_class NEGTESTNODE = {
-	parent : &JIVE_NODE,
-	name : "NEGTESTNODE",
-	fini : jive_node_fini_,
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 static jive_node *
 jive_negtestnode_create(
 	jive_region * region,

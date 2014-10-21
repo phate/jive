@@ -22,17 +22,6 @@ template class domain_symbol_op<jive::fct::type>;
 }
 }
 
-const jive_node_class JIVE_SYMBOLICFUNCTION_NODE = {
-	parent : &JIVE_NODE,
-	name : "SYMBOLICFUNCTION",
-	fini : jive_node_fini_,
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_symbolicfunction_create(
 	jive_graph * graph, const char * name, const jive::fct::type * type)

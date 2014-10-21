@@ -59,17 +59,6 @@ neg_op::copy() const
 }
 }
 
-const jive_node_class JIVE_BITNEGATE_NODE = {
-	parent : &JIVE_BITUNARY_NODE,
-	name : "BITNEGATE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitnegate(jive::output * arg)
 {

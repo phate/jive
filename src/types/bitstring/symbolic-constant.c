@@ -22,17 +22,6 @@ template class domain_symbol_op<jive::bits::type>;
 }
 }
 
-const jive_node_class JIVE_BITSYMBOLICCONSTANT_NODE = {
-	parent : &JIVE_NULLARY_OPERATION,
-	name : "BITSYMBOLICCONSTANT",
-	fini : jive_node_fini_, /* override */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
 {

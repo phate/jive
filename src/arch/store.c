@@ -112,17 +112,6 @@ store_op::copy() const
 
 /* store_node */
 
-const jive_node_class JIVE_STORE_NODE = {
-	parent : &JIVE_NODE,
-	name : "STORE",
-	fini : nullptr, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 static inline jive_region *
 store_node_region_innermost(jive::output * address, jive::output * value,
 	size_t nstates, jive::output * const states[])

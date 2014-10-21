@@ -70,17 +70,6 @@ shr_op::copy() const
 }
 }
 
-const jive_node_class JIVE_BITSHR_NODE = {
-	parent : &JIVE_BITBINARY_NODE,
-	name : "BITSHR",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitshr(jive::output * operand, jive::output * shift)
 {

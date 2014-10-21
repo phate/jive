@@ -253,39 +253,6 @@ jive_bitoperation_check_operands_(const jive_node_class * cls, const jive_node_a
 
 /* bitbinary operation class */
 
-const jive_node_class JIVE_BITBINARY_NODE = {
-	parent : &JIVE_BINARY_OPERATION,
-	name : "BITBINARY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 /* bitunary operation class */
 
-const jive_node_class JIVE_BITUNARY_NODE = {
-	parent : &JIVE_UNARY_OPERATION,
-	name : "BITUNARY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 /* bitcomparison operation class */
-
-const jive_node_class JIVE_BITCOMPARISON_NODE = {
-	parent : &JIVE_BINARY_OPERATION,
-	name : "BITCOMPARISON",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};

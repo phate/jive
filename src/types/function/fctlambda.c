@@ -19,30 +19,8 @@
 
 /* lambda enter node */
 
-const jive_node_class JIVE_LAMBDA_ENTER_NODE = {
-	parent : &JIVE_NODE,
-	name : "LAMBDA_ENTER",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 /* lambda leave node */
 
-
-const jive_node_class JIVE_LAMBDA_LEAVE_NODE = {
-	parent : &JIVE_NODE,
-	name : "LAMBDA_LEAVE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
 
 /* lambda node */
 
@@ -226,17 +204,6 @@ jive_lambda_node_create(jive_region * function_region)
 	return op.create_node(function_region->parent, 1, &function_region->bottom->outputs[0]);
 }
 
-
-const jive_node_class JIVE_LAMBDA_NODE = {
-	parent : &JIVE_NODE,
-	name : "LAMBDA",
-	fini : jive_node_fini_,
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
 
 bool
 jive_lambda_is_self_recursive(const jive_lambda_node * self_)

@@ -103,17 +103,6 @@ instruction_op::copy() const
 
 }
 
-const jive_node_class JIVE_INSTRUCTION_NODE = {
-	parent : &JIVE_NODE,
-	name : "INSTRUCTION",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive_node *
 jive_instruction_node_create_simple(
 	jive_region * region,

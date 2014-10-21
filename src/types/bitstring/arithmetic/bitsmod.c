@@ -71,17 +71,6 @@ smod_op::copy() const
 }
 }
 
-const jive_node_class JIVE_BITSMOD_NODE = {
-	parent : &JIVE_BITBINARY_NODE,
-	name : "BITSMOD",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitsmod(jive::output * op1, jive::output * op2)
 {

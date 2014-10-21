@@ -68,17 +68,6 @@ xor_op::copy() const
 }
 }
 
-const jive_node_class JIVE_BITXOR_NODE = {
-	parent : &JIVE_BITBINARY_NODE,
-	name : "BITXOR",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitxor(size_t noperands, jive::output * const * operands)
 {

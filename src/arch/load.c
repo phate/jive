@@ -122,17 +122,6 @@ register_node_normal_form(void)
 		typeid(jive::load_op), jive_load_get_default_normal_form_);
 }
 
-const jive_node_class JIVE_LOAD_NODE = {
-	parent : &JIVE_NODE,
-	name : "LOAD",
-	fini : jive_node_fini_,
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 namespace {
 
 template<typename T>

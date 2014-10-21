@@ -151,17 +151,6 @@ negotiator_split_node::detach() noexcept
 
 }
 
-const jive_node_class JIVE_NEGOTIATOR_SPLIT_NODE = {
-	parent : &JIVE_NODE,
-	name : "NEGOTIATOR_SPLIT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 static jive::output *
 jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * operand_type,
 	jive::output * operand, const jive_negotiator_option * input_option,

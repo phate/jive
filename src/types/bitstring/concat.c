@@ -60,22 +60,6 @@ jive_bitconcat_node_init_(
 	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
 }
 
-const jive_node_class JIVE_BITCONCAT_NODE = {
-	/* note that parent is JIVE_BINARY_OPERATION, not
-	JIVE_BITBINARY_OPERATION: the latter one is assumed
-	to represent "width-preserving" bit operations (i.e.
-	number of bits per operand/output matches), while
-	the concat operator violates this assumption */
-	parent : &JIVE_BINARY_OPERATION,
-	name : "BITCONCAT",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitconcat(size_t narguments, jive::output * const * arguments)
 {

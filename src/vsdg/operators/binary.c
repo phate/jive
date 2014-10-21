@@ -27,17 +27,6 @@ binary_op::flags() const noexcept
 
 /* node class */
 
-const jive_node_class JIVE_BINARY_OPERATION = {
-	parent : &JIVE_NODE,
-	name : "BINARY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 /* node class inheritable methods */
 
 jive::node_normal_form *

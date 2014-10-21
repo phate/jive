@@ -75,17 +75,6 @@ uge_op::copy() const
 }
 }
 
-const jive_node_class JIVE_BITUGREATEREQ_NODE = {
-	parent : &JIVE_BITCOMPARISON_NODE,
-	name : "BITUGREATEREQ",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_bitugreatereq(jive::output * op1, jive::output * op2)
 {

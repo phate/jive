@@ -24,17 +24,6 @@
 
 jive_node::~jive_node() noexcept {}
 
-const jive_node_class JIVE_NODE = {
-	parent : 0,
-	name : "NODE",
-	fini : jive_node_fini_,
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 static void
 jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
 {

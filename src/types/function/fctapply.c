@@ -88,17 +88,6 @@ apply_op::copy() const
 }
 }
 
-const jive_node_class JIVE_APPLY_NODE = {
-	parent : &JIVE_NODE,
-	name : "APPLY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 std::vector<jive::output *>
 jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[])
 {

@@ -18,17 +18,6 @@ const char fltdifference_name[] = "FLTDIFFERENCE";
 }
 }
 
-const jive_node_class JIVE_FLTDIFFERENCE_NODE = {
-	parent : &JIVE_FLTBINARY_NODE,
-	name : "FLTDIFFERENCE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr,
-};
-
 jive::output *
 jive_fltdifference(jive::output * arg1, jive::output * arg2)
 {

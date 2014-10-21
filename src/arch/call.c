@@ -105,17 +105,6 @@ call_operation::copy() const
 
 }
 
-const jive_node_class JIVE_CALL_NODE = {
-	parent : &JIVE_NODE,
-	name : "CALL",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 static inline jive_region *
 call_node_region_innermost(jive::output * target_address, size_t narguments,
 	jive::output * const arguments[])

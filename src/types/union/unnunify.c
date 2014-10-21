@@ -133,17 +133,6 @@ empty_unify_op::copy() const
 }
 }
 
-const jive_node_class JIVE_UNIFY_NODE = {
-	parent : &JIVE_UNARY_OPERATION,
-	name : "UNIFY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
 jive::output *
 jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::output * const argument)
 {
@@ -153,17 +142,6 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::outp
 }
 
 /* empty unify node */
-
-const jive_node_class JIVE_EMPTY_UNIFY_NODE = {
-	parent : &JIVE_NULLARY_OPERATION,
-	name : "UNIFY",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
 
 jive::output *
 jive_empty_unify_create(struct jive_graph * graph, const jive::unn::declaration * decl)

@@ -186,36 +186,3 @@ subroutine_op::get_passthrough_leave_by_index(jive_region * region, size_t index
 }
 
 }
-
-const jive_node_class JIVE_SUBROUTINE_ENTER_NODE = {
-	parent : &JIVE_NODE,
-	name : "SUBROUTINE_ENTER",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
-const jive_node_class JIVE_SUBROUTINE_LEAVE_NODE = {
-	parent : &JIVE_NODE,
-	name : "SUBROUTINE_LEAVE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
-
-const jive_node_class JIVE_SUBROUTINE_NODE = {
-	parent : &JIVE_NODE,
-	name : "SUBROUTINE",
-	fini : jive_node_fini_, /* inherit */
-	get_default_normal_form : nullptr,
-	get_label : nullptr,
-	match_attrs : nullptr,
-	check_operands : nullptr,
-	create : nullptr
-};
