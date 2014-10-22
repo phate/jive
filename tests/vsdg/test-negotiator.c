@@ -129,8 +129,6 @@ private:
 	std::vector<test_option_t> output_options_;
 };
 
-typedef jive::operation_node<negtest_op> negtestnode;
-
 static jive_node *
 jive_negtestnode_create(
 	jive_region * region,
