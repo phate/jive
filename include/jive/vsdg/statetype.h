@@ -122,8 +122,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::state::mux_op> jive_statemux_node;
-
 jive::output *
 jive_state_merge(
 	const jive::state::type * statetype,

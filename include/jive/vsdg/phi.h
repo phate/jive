@@ -83,26 +83,6 @@ public:
 
 }
 
-typedef jive::operation_node<jive::phi_op> jive_phi_node;
-
-JIVE_EXPORTED_INLINE struct jive_node *
-jive_phi_node_get_enter_node(const jive_phi_node * self)
-{
-	return self->producer(0)->region->top;
-}
-
-JIVE_EXPORTED_INLINE struct jive_node *
-jive_phi_node_get_leave_node(const jive_phi_node * self)
-{
-	return self->producer(0);
-}
-
-JIVE_EXPORTED_INLINE struct jive_region *
-jive_phi_node_get_region(const jive_phi_node * self)
-{
-	return jive_phi_node_get_leave_node(self)->region;
-}
-
 JIVE_EXPORTED_INLINE struct jive_region *
 jive_phi_region_cast(struct jive_region * region)
 {
@@ -184,7 +164,7 @@ jive_phi_end(jive_phi self,
 */
 typedef struct jive_phi_extension jive_phi_extension;
 struct jive_phi_extension {
-	jive_phi_node * phi_node;
+	jive_node * phi_node;
 	std::vector<jive::output*> fixvars;
 };
 
@@ -192,7 +172,7 @@ struct jive_phi_extension {
 	\brief Begin extending a phi construct
 */
 struct jive_phi_extension *
-jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
+jive_phi_begin_extension(jive_node * phi_node, size_t nfixvars,
 	const jive::base::type * fixvar_types[]);
 
 /**

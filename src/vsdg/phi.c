@@ -252,13 +252,14 @@ jive_phi_end(jive_phi self,
 	return anchor;
 }
 
-struct jive_phi_extension *
-jive_phi_begin_extension(jive_phi_node * phi_node, size_t nfixvars,
+jive_phi_extension *
+jive_phi_begin_extension(jive_node * phi_node, size_t nfixvars,
 	const jive::base::type * fixvar_types[])
 {
 	jive_graph * graph = phi_node->region->graph;
 	jive_context * context = graph->context;
-	jive_node * enter = jive_phi_node_get_enter_node(phi_node);
+	jive_region * phi_region = jive_node_anchored_region(phi_node, 0);
+	jive_node * enter = phi_region->top;
 
 	jive_phi_extension * phi_ext = new jive_phi_extension;
 	phi_ext->fixvars.resize(nfixvars);
@@ -281,8 +282,9 @@ jive_phi_end_extension(struct jive_phi_extension * self)
 {
 	jive_node * phi_node = self->phi_node;
 	jive_context * context = phi_node->region->graph->context;
-	jive_node * enter = jive_phi_node_get_enter_node(self->phi_node);
-	jive_node * leave = jive_phi_node_get_leave_node(self->phi_node);
+	jive_region * phi_region = jive_node_anchored_region(self->phi_node, 0);
+	jive_node * enter = phi_region->top;
+	jive_node * leave = phi_region->bottom;
 
 	size_t n;
 	size_t offset = leave->ninputs;

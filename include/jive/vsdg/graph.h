@@ -60,8 +60,6 @@ public:
 
 }
 
-typedef jive::operation_node<jive::graph_tail_operation> jive_graph_tail_node;
-
 /* graph */
 
 typedef struct jive_graph jive_graph;

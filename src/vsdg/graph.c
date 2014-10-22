@@ -66,10 +66,7 @@ graph_tail_operation::create_node(
 {
 	JIVE_DEBUG_ASSERT(region->bottom == NULL);
 
-	jive_graph_tail_node * node = new jive_graph_tail_node(jive::graph_tail_operation());
-	jive_node_init_(node, region, 0, nullptr, nullptr, 0, nullptr);
-
-	return node;
+	return jive_opnode_create(jive::graph_tail_operation(), region, arguments, arguments + narguments);
 }
 
 std::string

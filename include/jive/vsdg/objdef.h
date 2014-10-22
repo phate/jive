@@ -84,8 +84,6 @@ private:
 
 }
 
-typedef jive::operation_node<jive::objdef_operation> jive_objdef_node;
-
 jive::output *
 jive_objdef_create(
 	jive::output * output,

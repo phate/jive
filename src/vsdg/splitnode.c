@@ -34,14 +34,7 @@ split_operation::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments== 1);
-	
-	jive_splitnode * node = new jive_splitnode(*this);
-	const jive::base::type * in_type = &argument_type(0);
-	const jive::base::type * out_type = &result_type(0);
-	jive_node_init_(node, region,
-		1, &in_type, arguments,
-		1, &out_type);
+	jive_node * node = jive_opnode_create(*this, region, arguments, arguments + narguments);
 	node->inputs[0]->required_rescls = in_class();
 	node->outputs[0]->required_rescls = out_class();
 	

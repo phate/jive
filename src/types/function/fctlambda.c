@@ -500,10 +500,10 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 
 	/* If the old lambda is embedded within a phi region, extend the phi region with the new lambda */
 	bool embedded_in_phi = false;
-	jive_phi_node * phi_node = NULL;
-	jive_phi_extension * phi_ext = NULL;
+	jive_node * phi_node = nullptr;
+	jive_phi_extension * phi_ext = nullptr;
 	if (jive_phi_region_const_cast(lambda_region->parent) != NULL) {
-		phi_node = static_cast<jive_phi_node *>(jive_region_get_anchor(lambda_region->parent));
+		phi_node = jive_region_get_anchor(lambda_region->parent);
 
 		jive::fct::type fcttype(alive_parameter_types.size(), &alive_parameter_types[0],
 			alive_result_types.size(), &alive_result_types[0]);

@@ -24,9 +24,6 @@ typedef base::domain_symbol_op<jive::flt::type>
 }
 }
 
-typedef jive::operation_node<jive::flt::symbol_op>
-	jive_fltsymbolicconstant_node;
-
 /**
 	\brief Create symbolic constant
 	\param graph Graph to create constant in

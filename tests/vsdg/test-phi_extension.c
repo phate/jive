@@ -30,7 +30,7 @@ test_main()
 
 	jive_view(graph, stderr);
 
-	jive_phi_node * phi_node = dynamic_cast<jive_phi_node *>(fv.value->node());
+	jive_node * phi_node = fv.value->node();
 	const jive::base::type * tmparray0[] = {&vtype, &vtype};
 	jive_phi_extension * phi_ext = jive_phi_begin_extension(phi_node,
 		2, tmparray0);
