@@ -35,16 +35,7 @@ unify_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_unify_node * node = new jive_unify_node(*this);
-
-	const jive::base::type * argtypes[1] = { &argument_type(0) };
-	const jive::base::type * restypes[1] = { &result_type(0) };
-
-	jive_node_init_(node, region,
-		1, argtypes, arguments,
-		1, restypes);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string

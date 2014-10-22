@@ -60,8 +60,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::rcd::group_op> jive_group_node;
-
 jive::output *
 jive_group_create(const jive::rcd::declaration * decl,
 	size_t narguments, jive::output * const * arguments);

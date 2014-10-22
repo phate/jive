@@ -54,24 +54,10 @@ group_op::result_type(size_t index) const noexcept
 jive_node *
 group_op::create_node(
 	jive_region * region,
-	size_t narguments_given,
+	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	const jive::base::type * argument_types[narguments()];
-	for (size_t n = 0; n < narguments(); ++n) {
-		argument_types[n] = &argument_type(n);
-	}
-
-	const jive::base::type * result_types[1] = {&result_type(0)};
-
-	jive_group_node * node = new jive_group_node(*this);
-
-	jive_node_init_(
-		node, region,
-		narguments(), argument_types, arguments,
-		1, result_types);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string

@@ -75,8 +75,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::rcd::select_operation> jive_select_node;
-
 jive::output *
 jive_select_create(size_t element, jive::output * argument);
 

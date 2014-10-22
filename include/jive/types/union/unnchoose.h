@@ -76,8 +76,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::unn::choose_operation> jive_choose_node;
-
 jive::output *
 jive_choose_create(size_t element, jive::output * operand);
 

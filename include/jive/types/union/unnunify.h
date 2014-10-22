@@ -120,9 +120,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::unn::unify_op> jive_unify_node;
-typedef jive::operation_node<jive::unn::empty_unify_op> jive_empty_unify_node;
-
 jive::output *
 jive_unify_create(
 	const jive::unn::declaration * decl,
