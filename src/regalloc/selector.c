@@ -18,15 +18,14 @@
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/variable.h>
 
-JIVE_DEFINE_HASH_TYPE(jive_node_cost_hash, jive_node_cost, jive_node *, node, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_region_shaper_selector_hash, jive_region_shaper_selector, const jive_region *, region, hash_chain);
+#include <unordered_map>
 
 jive_node_cost *
 jive_node_cost_create(jive_master_shaper_selector * master, jive_node * node)
 {
 	jive_context * context = master->context;
 	
-	jive_node_cost * self = new jive_node_cost;
+	std::unique_ptr<jive_node_cost> self(new jive_node_cost);
 	self->node = node;
 	self->master = master;
 	self->state = jive_node_cost_state_ahead;
@@ -37,21 +36,16 @@ jive_node_cost_create(jive_master_shaper_selector * master, jive_node * node)
 	self->prio_array.count[0] = jive_resource_class_priority_lowest;
 	self->blocked_rescls_priority = jive_resource_class_priority_lowest;
 	self->force_tree_root = false;
-	
-	jive_node_cost_hash_insert(&master->node_map, self);
-	
-	return self;
+
+	jive_node_cost * result = self.get();
+	master->node_map.insert(std::move(self));
+
+	return result;
 }
 
-void
-jive_node_cost_destroy(jive_node_cost * self)
+jive_node_cost::~jive_node_cost()
 {
-	jive_context * context = self->master->context;
-	
-	jive_node_cost_hash_remove(&self->master->node_map, self);
-	
-	jive_resource_class_count_fini(&self->rescls_cost);
-	delete self;
+	jive_resource_class_count_fini(&rescls_cost);
 }
 
 
@@ -252,7 +246,7 @@ jive_region_shaper_selector_create(jive_master_shaper_selector * master, const j
 {
 	jive_context * context = master->context;
 	
-	jive_region_shaper_selector * self = new jive_region_shaper_selector;
+	std::unique_ptr<jive_region_shaper_selector> self(new jive_region_shaper_selector);
 	
 	self->master = master;
 	
@@ -261,19 +255,11 @@ jive_region_shaper_selector_create(jive_master_shaper_selector * master, const j
 	
 	jive_node_cost_prio_heap_init(&self->prio_heap, context);
 	jive_node_cost_stack_init(&self->node_stack, context);
-	jive_region_shaper_selector_hash_insert(&master->region_map, self);
-	
-	return self;
-}
 
-void
-jive_region_shaper_selector_destroy(jive_region_shaper_selector * self)
-{
-	jive_context * context = self->master->context;
-	
-	jive_region_shaper_selector_hash_remove(&self->master->region_map, self);
-	
-	delete self;
+	jive_region_shaper_selector * result = self.get();
+	master->region_map.insert(std::move(self));
+
+	return result;
 }
 
 void
@@ -285,8 +271,11 @@ jive_master_shaper_selector_invalidate_node(jive_master_shaper_selector * self, 
 jive_region_shaper_selector *
 jive_master_shaper_selector_map_region(jive_master_shaper_selector * self, const jive_region * region)
 {
-	jive_region_shaper_selector * region_selector;
-	region_selector = jive_region_shaper_selector_hash_lookup(&self->region_map, region);
+	jive_region_shaper_selector * region_selector = nullptr;
+	auto i = self->region_map.find(region);
+	if (i != self->region_map.end())
+		region_selector = i.ptr();
+
 	if (!region_selector) {
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 		region_selector = jive_region_shaper_selector_create(self, region, shaped_region);
@@ -297,11 +286,11 @@ jive_master_shaper_selector_map_region(jive_master_shaper_selector * self, const
 jive_node_cost *
 jive_master_shaper_selector_map_node_internal(jive_master_shaper_selector * self, jive_node * node)
 {
-	jive_node_cost * node_cost;
-	node_cost = jive_node_cost_hash_lookup(&self->node_map, node);
-	if (!node_cost)
-		node_cost = jive_node_cost_create(self, node);
-	return node_cost;
+	auto i = self->node_map.find(node);
+	if (i != self->node_map.end())
+		return i.ptr();
+
+	return jive_node_cost_create(self, node);
 }
 
 static bool
@@ -315,15 +304,7 @@ typedef struct jive_ssavar_spill_position jive_ssavar_spill_position;
 struct jive_ssavar_spill_position {
 	jive_ssavar * ssavar;
 	ssize_t position;
-	struct {
-		jive_ssavar_spill_position * prev;
-		jive_ssavar_spill_position * next;
-	} hash_chain;
 };
-
-JIVE_DECLARE_HASH_TYPE(jive_ssavar_spill_position_hash, jive_ssavar_spill_position, jive_ssavar *, ssavar, hash_chain);
-JIVE_DEFINE_HASH_TYPE(jive_ssavar_spill_position_hash, jive_ssavar_spill_position, jive_ssavar *, ssavar, hash_chain);
-typedef struct jive_ssavar_spill_position_hash jive_ssavar_spill_position_hash;
 
 static void
 sort_nodes(jive_region_shaper_selector * self, jive_node_cost * sorted_nodes[])
@@ -370,16 +351,15 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 	jive_node_cost * sorted_nodes[nsorted_nodes];
 	sort_nodes(self, sorted_nodes);
 	
-	jive_ssavar_spill_position_hash ssavar_pos_map;
-	jive_ssavar_spill_position_hash_init(&ssavar_pos_map, context);
+	std::unordered_map<jive_ssavar*, jive_ssavar_spill_position> ssavar_pos_map;
 	
 	/* mark all (remaining) ssavars to be considered */
 	jive_cutvar_xpoint * xpoint;
 	JIVE_LIST_ITERATE(self->shaped_region->active_top.base.xpoints, xpoint, varcut_xpoints_list) {
-		jive_ssavar_spill_position * ssavar_pos = new jive_ssavar_spill_position;
-		ssavar_pos->ssavar = xpoint->shaped_ssavar->ssavar;
-		ssavar_pos->position = -1;
-		jive_ssavar_spill_position_hash_insert(&ssavar_pos_map, ssavar_pos);
+		jive_ssavar_spill_position ssavar_pos;
+		ssavar_pos.ssavar = xpoint->shaped_ssavar->ssavar;
+		ssavar_pos.position = -1;
+		ssavar_pos_map[ssavar_pos.ssavar] = ssavar_pos;
 	}
 	
 	/* FIXME: mix in imported origins once they are tracked as well */
@@ -393,24 +373,17 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 			if (!shaped_ssavar)
 				continue;
 			sorted_ssavars[nsorted_ssavars ++] = shaped_ssavar->ssavar;
-			jive_ssavar_spill_position * ssavar_pos = jive_ssavar_spill_position_hash_lookup(&ssavar_pos_map, shaped_ssavar->ssavar);
-			jive_ssavar_spill_position_hash_remove(&ssavar_pos_map, ssavar_pos);
-			delete ssavar_pos;
+			jive_ssavar_spill_position ssavar_pos = ssavar_pos_map[shaped_ssavar->ssavar];
+			ssavar_pos_map.erase(ssavar_pos.ssavar);
 		}
 	}
 	
 	/* now add all remaining ssavars */
-	struct jive_ssavar_spill_position_hash_iterator i;
-	i = jive_ssavar_spill_position_hash_begin(&ssavar_pos_map);
-	while (i.entry) {
-		jive_ssavar_spill_position * ssavar_pos = i.entry;
-		jive_ssavar_spill_position_hash_iterator_next(&i);
-		sorted_ssavars[nsorted_ssavars ++] = ssavar_pos->ssavar;
-		jive_ssavar_spill_position_hash_remove(&ssavar_pos_map, ssavar_pos);
-		delete ssavar_pos;
+	for (auto i = ssavar_pos_map.begin(); i != ssavar_pos_map.end();) {
+		jive_ssavar_spill_position ssavar_pos = i->second;
+		sorted_ssavars[nsorted_ssavars ++] = ssavar_pos.ssavar;
+		i = ssavar_pos_map.erase(i);
 	}
-	
-	jive_ssavar_spill_position_hash_fini(&ssavar_pos_map);
 }
 
 jive_ssavar *
@@ -836,8 +809,6 @@ jive_master_shaper_selector_create(jive_shaped_graph * shaped_graph)
 	self->shaped_graph = shaped_graph;
 	self->context = context;
 	
-	jive_node_cost_hash_init(&self->node_map, context);
-	jive_region_shaper_selector_hash_init(&self->region_map, context);
 	jive_computation_tracker_init(&self->cost_computation_state_tracker, graph);
 	
 	jive_master_shaper_selector_init_region_recursive(self, graph->root_region);
@@ -871,27 +842,7 @@ jive_master_shaper_selector_destroy(jive_master_shaper_selector * self)
 	size_t n;
 	for (n = 0; n < sizeof(self->callbacks)/sizeof(self->callbacks[0]); n++)
 		jive_notifier_disconnect(self->callbacks[n]);
-	
-	struct jive_node_cost_hash_iterator i;
-	i = jive_node_cost_hash_begin(&self->node_map);
-	while (i.entry) {
-		jive_node_cost * node_cost = i.entry;
-		jive_node_cost_hash_iterator_next(&i);
-		
-		jive_node_cost_destroy(node_cost);
-	}
-	jive_node_cost_hash_fini(&self->node_map);
-	
-	struct jive_region_shaper_selector_hash_iterator j;
-	j = jive_region_shaper_selector_hash_begin(&self->region_map);
-	while (j.entry) {
-		jive_region_shaper_selector * region_selector = j.entry;
-		jive_region_shaper_selector_hash_iterator_next(&j);
-		
-		jive_region_shaper_selector_destroy(region_selector);
-	}
-	jive_region_shaper_selector_hash_fini(&self->region_map);
-	
+
 	jive_computation_tracker_fini(&self->cost_computation_state_tracker);
 	
 	delete self;

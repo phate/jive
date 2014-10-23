@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <jive/util/hash.h>
+#include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
 
@@ -25,10 +25,8 @@ struct jive_shaped_graph;
 typedef struct jive_region_shaper_selector jive_region_shaper_selector;
 typedef struct jive_master_shaper_selector jive_master_shaper_selector;
 typedef struct jive_node_cost jive_node_cost;
-typedef struct jive_node_cost_hash jive_node_cost_hash;
 typedef struct jive_node_cost_prio_heap jive_node_cost_prio_heap;
 typedef struct jive_node_cost_stack jive_node_cost_stack;
-typedef struct jive_region_shaper_selector_hash jive_region_shaper_selector_hash;
 
 typedef enum {
 	jive_node_cost_state_ahead = 0,
@@ -38,7 +36,9 @@ typedef enum {
 } jive_node_cost_state;
 
 struct jive_node_cost {
-	struct jive_node * node;
+	~jive_node_cost();
+
+	jive_node * node;
 	jive_master_shaper_selector * master;
 	
 	jive_node_cost_state state; /* whether in prio queue or stack */
@@ -52,18 +52,26 @@ struct jive_node_cost {
 	/* blocked resource class with highest priority */
 	jive_resource_class_priority blocked_rescls_priority;
 	bool force_tree_root;
-	
-	struct {
-		jive_node_cost * prev;
-		jive_node_cost * next;
-	} hash_chain;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_node_cost> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		jive_node *,
+		jive_node_cost,
+		&jive_node_cost::node,
+		&jive_node_cost::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::owner_intrusive_hash<
+	const jive_node *,
+	jive_node_cost,
+	jive_node_cost::hash_chain_accessor
+> jive_node_cost_hash;
 
 jive_node_cost *
 jive_node_cost_create(jive_master_shaper_selector * master, struct jive_node * node);
-
-void
-jive_node_cost_destroy(jive_node_cost * self);
 
 struct jive_node_cost_prio_heap {
 	size_t nitems;
@@ -81,8 +89,6 @@ jive_node_cost_prio_heap_peek(const jive_node_cost_prio_heap * self);
 
 void
 jive_node_cost_prio_heap_remove(jive_node_cost_prio_heap * self, jive_node_cost * item);
-
-JIVE_DECLARE_HASH_TYPE(jive_node_cost_hash, jive_node_cost, struct jive_node *, node, hash_chain);
 
 struct jive_node_cost_stack {
 	size_t nitems;
@@ -109,18 +115,26 @@ struct jive_region_shaper_selector {
 	
 	jive_node_cost_prio_heap prio_heap;
 	jive_node_cost_stack node_stack;
-	
-	struct {
-		jive_region_shaper_selector * prev;
-		jive_region_shaper_selector * next;
-	} hash_chain;
+
+private:
+	jive::detail::intrusive_hash_anchor<jive_region_shaper_selector> hash_chain;
+public:
+	typedef jive::detail::intrusive_hash_accessor <
+		const struct jive_region *,
+		jive_region_shaper_selector,
+		&jive_region_shaper_selector::region,
+		&jive_region_shaper_selector::hash_chain
+	> hash_chain_accessor;
 };
+
+typedef jive::detail::owner_intrusive_hash <
+	const struct jive_region *,
+	jive_region_shaper_selector,
+	jive_region_shaper_selector::hash_chain_accessor
+> jive_region_shaper_selector_hash;
 
 jive_region_shaper_selector *
 jive_region_shaper_selector_create(jive_master_shaper_selector * master, const struct jive_region * region, const struct jive_shaped_region * shaped_region);
-
-void
-jive_region_shaper_selector_destroy(jive_region_shaper_selector * self);
 
 struct jive_node *
 jive_region_shaper_selector_select_node(jive_region_shaper_selector * self);
@@ -130,8 +144,6 @@ jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, con
 
 void
 jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self, struct jive_node * node);
-
-JIVE_DECLARE_HASH_TYPE(jive_region_shaper_selector_hash, jive_region_shaper_selector, const struct jive_region *, region, hash_chain);
 
 struct jive_master_shaper_selector {
 	struct jive_shaped_graph * shaped_graph;
