@@ -168,30 +168,33 @@ struct jive_subroutine_abi_class {
 
 void
 jive_subroutine_node_prepare_stackframe(
-	jive_subroutine_node * self,
+	jive_node * self,
+	const jive::subroutine_op & op,
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
 jive::input *
 jive_subroutine_node_add_fp_dependency(
-	const jive_subroutine_node * self,
+	const jive_node * self,
+	const jive::subroutine_op & op,
 	jive_node * node);
 
 jive::input *
 jive_subroutine_node_add_sp_dependency(
-	const jive_subroutine_node * self,
+	const jive_node * self,
+	const jive::subroutine_op & op,
 	jive_node * node);
 
-jive_subroutine_node *
+jive_node *
 jive_region_get_subroutine_node(const jive_region * region);
 
 const jive_instructionset *
 jive_region_get_instructionset(const jive_region * region);
 
 jive::output *
-jive_subroutine_node_get_sp(const jive_subroutine_node * self);
+jive_subroutine_node_get_sp(const jive_node * self);
 
 jive::output *
-jive_subroutine_node_get_fp(const jive_subroutine_node * self);
+jive_subroutine_node_get_fp(const jive_node * self);
 
 #endif

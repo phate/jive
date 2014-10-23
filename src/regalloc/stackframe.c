@@ -170,13 +170,16 @@ layout_stackslots(
 	
 	jive_node * node;
 	for ( node = jive_traverser_next(trav); node; node = jive_traverser_next(trav) ) {
-		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
-		if (!sub)
+		jive_node * sub = jive_region_get_subroutine_node(node->region);
+		if (!sub) {
 			continue;
+		}
+		const jive::subroutine_op & op = static_cast<const jive::subroutine_op &>(
+			sub->operation());
 		if (stackframe_map.find(sub) == stackframe_map.end()) {
 			jive_subroutine_stackframe_info & frame = stackframe_map[sub];
-			frame.lower_bound = sub->operation().signature().stack_frame_lower_bound;
-			frame.upper_bound = sub->operation().signature().stack_frame_upper_bound;
+			frame.lower_bound = op.signature().stack_frame_lower_bound;
+			frame.upper_bound = op.signature().stack_frame_upper_bound;
 			frame.frame_pointer_offset = 0;
 			frame.stack_pointer_offset = 0;
 			frame.call_area_size = 0;
@@ -217,7 +220,7 @@ reloc_stack_access(jive_node * node, jive_subroutine_to_stackframe_map & stackfr
 	for (size_t n = 0; n < icls->nimmediates; n++) {
 		jive::input * imm_input = node->inputs[n + icls->ninputs];
 		
-		jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
+		jive_node * sub = jive_region_get_subroutine_node(node->region);
 		JIVE_DEBUG_ASSERT(sub);
 		JIVE_DEBUG_ASSERT(stackframe_map.count(sub) != 0);
 		jive_subroutine_stackframe_info * frame = &stackframe_map[sub];
@@ -336,10 +339,13 @@ region_subroutine_prepare_stackframe(
 {
 	if (!region->anchor)
 		return;
-	jive_node * node_ = region->anchor->node;
-	jive_subroutine_node * node = dynamic_cast<jive_subroutine_node *>(node_);
-	if (!node)
+	jive_node * node = region->anchor->node;
+	const jive::subroutine_op * op =
+		dynamic_cast<const jive::subroutine_op *>(&node->operation());
+
+	if (!op) {
 		return;
+	}
 	JIVE_DEBUG_ASSERT(stackframe_map.count(node) != 0);
 	jive_subroutine_stackframe_info & frame = stackframe_map[node];
 	
@@ -348,7 +354,7 @@ region_subroutine_prepare_stackframe(
 	xfrm.shaped_graph = shaped_graph;
 	xfrm.region = region;
 	
-	jive_subroutine_node_prepare_stackframe(node, &frame, &xfrm.base);
+	jive_subroutine_node_prepare_stackframe(node, *op, &frame, &xfrm.base);
 }
 
 static void

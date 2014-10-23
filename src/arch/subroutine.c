@@ -27,44 +27,51 @@ subroutine_hl_builder_interface::~subroutine_hl_builder_interface() noexcept
 
 void
 jive_subroutine_node_prepare_stackframe(
-	jive_subroutine_node * self,
+	jive_node * self,
+	const jive::subroutine_op & op,
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm)
 {
-	const jive::subroutine_op & op = self->operation();
 	jive_region * region = self->inputs[0]->origin()->node()->region;
-	return self->operation().signature().abi_class->prepare_stackframe(
+	return op.signature().abi_class->prepare_stackframe(
 		op, region, frame, xfrm);
 }
 
 jive::input *
-jive_subroutine_node_add_fp_dependency(const jive_subroutine_node * self, jive_node * node)
+jive_subroutine_node_add_fp_dependency(
+	const jive_node * self,
+	const jive::subroutine_op & op,
+	jive_node * node)
 {
-	const jive::subroutine_op & subroutine_op = self->operation();
 	jive_region * region = self->inputs[0]->origin()->node()->region;
-	return self->operation().signature().abi_class->add_fp_dependency(
-		subroutine_op, region, node);
+	return op.signature().abi_class->add_fp_dependency(
+		op, region, node);
 }
 
 jive::input *
-jive_subroutine_node_add_sp_dependency(const jive_subroutine_node * self, jive_node * node)
+jive_subroutine_node_add_sp_dependency(
+	const jive_node * self,
+	const jive::subroutine_op & op,
+	jive_node * node)
 {
-	const jive::subroutine_op & subroutine_op = self->operation();
+	const jive::subroutine_op & subroutine_op =
+		static_cast<const jive::subroutine_op &>(self->operation());
 	jive_region * region = self->inputs[0]->origin()->node()->region;
-	return self->operation().signature().abi_class->add_sp_dependency(
-		subroutine_op, region, node);
+	return op.signature().abi_class->add_sp_dependency(
+		op, region, node);
 }
 
-jive_subroutine_node *
+jive_node *
 jive_region_get_subroutine_node(const jive_region * region)
 {
 	for (; region; region = region->parent) {
-		if (!region->anchor)
+		if (!region->anchor) {
 			continue;
-		jive_subroutine_node * sub = dynamic_cast<jive_subroutine_node *>(
-			region->anchor->node);
-		if (sub)
-			return sub;
+		}
+		jive_node * node = region->anchor->node;
+		if (dynamic_cast<const jive::subroutine_op *>(&node->operation())) {
+			return node;
+		}
 	}
 	return 0;
 }
@@ -72,27 +79,31 @@ jive_region_get_subroutine_node(const jive_region * region)
 const struct jive_instructionset *
 jive_region_get_instructionset(const jive_region * region)
 {
-	jive_subroutine_node * sub = jive_region_get_subroutine_node(region);
-	if (sub)
-		return sub->operation().signature().abi_class->instructionset;
-	else
+	jive_node * sub = jive_region_get_subroutine_node(region);
+	if (sub) {
+		return static_cast<const jive::subroutine_op &>(sub->operation())
+			.signature().abi_class->instructionset;
+	} else {
 		return NULL;
+	}
 }
 
 jive::output *
-jive_subroutine_node_get_sp(const jive_subroutine_node * self)
+jive_subroutine_node_get_sp(const jive_node * self)
 {
 	jive_region * region = self->inputs[0]->origin()->node()->region;
-	return self->operation().get_passthrough_enter_by_index(region, 1);
+	return static_cast<const jive::subroutine_op &>(self->operation())
+		.get_passthrough_enter_by_index(region, 1);
 }
 
 jive::output *
-jive_subroutine_node_get_fp(const jive_subroutine_node * self)
+jive_subroutine_node_get_fp(const jive_node * self)
 {
 	jive_region * region = self->inputs[0]->origin()->node()->region;
 	/* FIXME: this is only correct if we are compiling "omit-framepointer",
 	but it is only a transitionary stage during subroutine refactoring */
-	return self->operation().get_passthrough_enter_by_index(region, 1);
+	return static_cast<const jive::subroutine_op &>(self->operation())
+		.get_passthrough_enter_by_index(region, 1);
 }
 
 jive_subroutine

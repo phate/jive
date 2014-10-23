@@ -117,8 +117,4 @@ private:
 
 }
 
-typedef jive::operation_node<jive::subroutine_op> jive_subroutine_node;
-typedef jive::operation_node<jive::subroutine_head_op> jive_subroutine_enter_node;
-typedef jive::operation_node<jive::subroutine_tail_op> jive_subroutine_leave_node;
-
 #endif

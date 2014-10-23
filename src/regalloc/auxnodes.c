@@ -57,14 +57,19 @@ check_fp_sp_dependency(jive_node * node)
 	means that it would be much better to have the "stackptr add" operation
 	perform a "write" to all stack slots to mark them as invalidated,
 	and let "reuse" introduce ordering edges accordingly */
-	const jive_subroutine_node * sub = jive_region_get_subroutine_node(node->region);
-	if (!sub)
+	const jive_node * sub = jive_region_get_subroutine_node(node->region);
+	if (!sub) {
 		return;
+	}
+	const jive::subroutine_op & op =
+		static_cast<const jive::subroutine_op &>(sub->operation());
+ 
 	jive_node * leave = sub->producer(0);
 	jive_node * enter = leave->region->top;
 	
-	if (node == enter || node == leave)
+	if (node == enter || node == leave) {
 		return;
+	}
 	
 	bool need_fp_dependency = false;
 	bool need_sp_dependency = false;
@@ -88,12 +93,12 @@ check_fp_sp_dependency(jive_node * node)
 	}
 	
 	if (need_fp_dependency) {
-		jive::input * input = jive_subroutine_node_add_fp_dependency(sub, node);
+		jive::input * input = jive_subroutine_node_add_fp_dependency(sub, op, node);
 		if (input)
 			jive_input_auto_merge_variable(input);
 	}
 	if (need_sp_dependency) {
-		jive::input * input = jive_subroutine_node_add_sp_dependency(sub, node);
+		jive::input * input = jive_subroutine_node_add_sp_dependency(sub, op, node);
 		if (input)
 			jive_input_auto_merge_variable(input);
 	}
