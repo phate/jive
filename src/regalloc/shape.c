@@ -24,8 +24,6 @@ get_aux_rescls(const jive_node * node) {
 	if (!op) {
 		return nullptr;
 	}
-	const jive_instruction_node * inode =
-		static_cast<const jive_instruction_node *>(node);
 	if (op->icls()->flags & jive_instruction_commutative) {
 		return nullptr;
 	}

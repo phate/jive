@@ -51,8 +51,6 @@ private:
 };
 }
 
-typedef jive::operation_node<jive::immediate_op> jive_immediate_node;
-
 jive::output *
 jive_immediate_create(
 	struct jive_graph * graph,

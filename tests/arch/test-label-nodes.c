@@ -38,11 +38,11 @@ static int test_main(void)
 	jive::output * o0 = jive_label_to_address_create(graph, &foobar.base);
 	jive::output * o1 = jive_label_to_address_create(graph, &bla.base);
 
-	const jive::address::label_to_address_operation * attrs0 =
-		(const jive::address::label_to_address_operation *)
+	const jive::address::label_to_address_op * attrs0 =
+		(const jive::address::label_to_address_op *)
 			jive_node_get_attrs(o0->node());
-	const jive::address::label_to_address_operation * attrs1 =
-		(const jive::address::label_to_address_operation *)
+	const jive::address::label_to_address_op * attrs1 =
+		(const jive::address::label_to_address_op *)
 			jive_node_get_attrs(o1->node());
 
 	assert(attrs0);
@@ -57,14 +57,14 @@ static int test_main(void)
 	jive::output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
 	jive::output * o4 = jive_label_to_bitstring_create(graph, &foobar.base, 16);
 
-	const jive::address::label_to_address_operation * attrs2 =
-		(const jive::address::label_to_address_operation *)
+	const jive::address::label_to_address_op * attrs2 =
+		(const jive::address::label_to_address_op *)
 			jive_node_get_attrs(o2->node());
-	const jive::address::label_to_address_operation * attrs3 =
-		(const jive::address::label_to_address_operation *)
+	const jive::address::label_to_address_op * attrs3 =
+		(const jive::address::label_to_address_op *)
 			jive_node_get_attrs(o3->node());
-	const jive::address::label_to_address_operation * attrs4 =
-		(const jive::address::label_to_address_operation *)
+	const jive::address::label_to_address_op * attrs4 =
+		(const jive::address::label_to_address_op *)
 			jive_node_get_attrs(o4->node());
 
 	assert(attrs2);
@@ -92,9 +92,13 @@ static int test_main(void)
 	jive_view(graph, stderr);
 
 	jive_label_to_address_node_address_transform(
-		dynamic_cast<jive_label_to_address_node *>(o0->node()), 32);
+		o0->node(),
+		dynamic_cast<const jive::address::label_to_address_op  &>(o0->node()->operation()),
+		32);
 	jive_label_to_address_node_address_transform(
-		dynamic_cast<jive_label_to_address_node *>(o1->node()), 32);
+		o1->node(),
+		dynamic_cast<const jive::address::label_to_address_op &>(o1->node()->operation()),
+		32);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stderr);

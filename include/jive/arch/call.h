@@ -92,8 +92,6 @@ private:
 
 }
 
-typedef jive::operation_node<jive::call_operation> jive_call_node;
-
 struct jive_node *
 jive_call_by_address_node_create(struct jive_region * region,
 	jive::output * target_address, const jive_calling_convention * calling_convention,

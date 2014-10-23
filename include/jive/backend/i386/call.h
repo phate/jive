@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -11,6 +11,8 @@
 struct jive_node;
 
 jive_node *
-jive_i386_call_node_substitute(jive_call_node * node);
+jive_i386_call_node_substitute(
+	jive_node * node,
+	const jive::call_operation & op);
 
 #endif

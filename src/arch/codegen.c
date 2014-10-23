@@ -259,9 +259,10 @@ static void
 jive_seq_graph_patch_jump_targets(
 	jive_seq_graph * seq_graph,
 	jive_seq_instruction * seq_instr,
-	jive_instruction_node * inode)
+	jive_node * inode,
+	const jive::instruction_op & op)
 {
-	size_t index = inode->operation().icls()->noutputs;
+	size_t index = op.icls()->noutputs;
 	JIVE_DEBUG_ASSERT(inode->noutputs);
 	jive::output * ctl_out = inode->outputs[index];
 	JIVE_DEBUG_ASSERT(dynamic_cast<jive::ctl::output*>(ctl_out));
@@ -287,7 +288,7 @@ jive_seq_graph_patch_jump_targets(
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, region)->last_point;
 	}
 	
-	if ( (inode->operation().icls()->flags & jive_instruction_jump_conditional_invertible) ) {
+	if ( (op.icls()->flags & jive_instruction_jump_conditional_invertible) ) {
 		if (primary_tgt == seq_instr->base.seqpoint_list.next) {
 			primary_tgt = secondary_tgt;
 			secondary_tgt = 0;
@@ -354,8 +355,8 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 
 		jive_seq_instruction * seq_instr = jive_seq_instruction_cast(seq_point);
 		if (seq_instr && (seq_instr->icls->flags & jive_instruction_jump)) {
-			jive_instruction_node * inode = static_cast<jive_instruction_node *>(seq_point->node);
-			jive_seq_graph_patch_jump_targets(seq_graph, seq_instr, inode);
+			jive_seq_graph_patch_jump_targets(seq_graph, seq_instr, seq_point->node,
+				static_cast<const jive::instruction_op &>(seq_point->node->operation()));
 		}
 		
 		if (seq_point->node == seq_point->node->region->bottom)

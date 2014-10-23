@@ -390,7 +390,7 @@ public:
 	inline label2addr_handler(
 		std::string tag,
 		opcls_registry & registry)
-		: opcls_handler(tag, typeid(address::label_to_address_operation), registry)
+		: opcls_handler(tag, typeid(address::label_to_address_op), registry)
 	{
 	}
 
@@ -399,8 +399,8 @@ public:
 		const operation & op,
 		output_driver & driver) const override
 	{
-		const address::label_to_address_operation & l_op =
-			static_cast<const address::label_to_address_operation &>(op);
+		const address::label_to_address_op & l_op =
+			static_cast<const address::label_to_address_op &>(op);
 		driver.put_label(l_op.label());
 	}
 
@@ -410,7 +410,7 @@ public:
 	{
 		const jive_label * label = driver.parse_label();
 		return std::unique_ptr<operation>(
-			new address::label_to_address_operation (label));
+			new address::label_to_address_op (label));
 	}
 };
 
@@ -419,7 +419,7 @@ public:
 	inline label2bits_handler(
 		std::string tag,
 		opcls_registry & registry)
-		: opcls_handler(tag, typeid(address::label_to_bitstring_operation), registry)
+		: opcls_handler(tag, typeid(address::label_to_bitstring_op), registry)
 	{
 	}
 
@@ -428,8 +428,8 @@ public:
 		const operation & op,
 		output_driver & driver) const override
 	{
-		const address::label_to_bitstring_operation & l_op =
-			static_cast<const address::label_to_bitstring_operation &>(op);
+		const address::label_to_bitstring_op & l_op =
+			static_cast<const address::label_to_bitstring_op &>(op);
 		driver.put_label(l_op.label());
 		driver.put_char_token(',');
 		driver.put_uint(l_op.nbits());
@@ -443,7 +443,7 @@ public:
 		driver.parse_char_token(',');
 		size_t nbits = driver.parse_uint();
 		return std::unique_ptr<operation>(
-			new address::label_to_bitstring_operation (label, nbits));
+			new address::label_to_bitstring_op (label, nbits));
 	}
 };
 

@@ -60,8 +60,6 @@ private:
 
 }
 
-typedef jive::operation_node<jive::regvalue_op> jive_regvalue_node;
-
 /**
 	\brief Create register constant
 	\param ctl Control of region entry where value is alive

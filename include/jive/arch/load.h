@@ -89,8 +89,6 @@ private:
 
 }
 
-typedef jive::operation_node<jive::load_op> jive_load_node;
-
 jive::output *
 jive_load_by_address_create(jive::output * address,
 	const jive::value::type * datatype,

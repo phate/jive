@@ -18,7 +18,9 @@
 #include <jive/vsdg/splitnode.h>
 
 jive_node *
-jive_i386_call_node_substitute(jive_call_node * node)
+jive_i386_call_node_substitute(
+	jive_node * node,
+	const jive::call_operation & op)
 {
 	jive_region * region = node->region;
 	
@@ -27,14 +29,16 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
 	jive::output * address = node->inputs[0]->origin();
-	if (auto op = dynamic_cast<const jive::address::label_to_address_operation *>(&address->node()->operation())) {
+	if (auto op = dynamic_cast<const jive::address::label_to_address_op *>(
+		&address->node()->operation())) {
 		jive_immediate imm;
 		jive_immediate_init(&imm, 0, op->label(), NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_call,
 			0, &imm);
-	} else if (auto op = dynamic_cast<const jive::address::label_to_bitstring_operation *>(&address->node()->operation())) {
+	} else if (auto op = dynamic_cast<const jive::address::label_to_bitstring_op *>(
+		&address->node()->operation())) {
 		jive_immediate imm;
 		jive_immediate_init(&imm, 0, op->label(), NULL, NULL);
 		call_instr = jive_instruction_node_create_extended(
@@ -65,8 +69,8 @@ jive_i386_call_node_substitute(jive_call_node * node)
 	
 	/* FIXME: for certain types of return values, need to pass in
 	a pointer to the return value area as first (hidden) parameter */
-	size_t n, offset = 0;
-	for (n = 0; n < nargs; n++) {
+	size_t offset = 0;
+	for (size_t n = 0; n < nargs; n++) {
 		jive::output * value = node->inputs[n + 1]->origin();
 		
 		const jive_resource_class * value_cls = value->required_rescls;
@@ -90,14 +94,14 @@ jive_i386_call_node_substitute(jive_call_node * node)
 		input->required_rescls = slot_cls;
 	}
 	
-	JIVE_DEBUG_ASSERT(node->operation().result_types().size() <= 1);
+	JIVE_DEBUG_ASSERT(op.result_types().size() <= 1);
 	
-	if (node->operation().result_types().size() == 1) {
+	if (op.result_types().size() == 1) {
 		/* FIXME: assumes  int32 */
 		jive_output_replace(node->outputs[0], clobber_eax);
 	}
 	
-	for (n = node->noperands; n < node->ninputs; n++) {
+	for (size_t n = node->noperands; n < node->ninputs; n++) {
 		jive::input * orig_input = node->inputs[n];
 		if (orig_input->gate) {
 			jive_node_gate_input(call_instr, orig_input->gate, orig_input->origin());
@@ -107,7 +111,7 @@ jive_i386_call_node_substitute(jive_call_node * node)
 			new_input->required_rescls = orig_input->required_rescls;
 		}
 	}
-	for (n = node->operation().result_types().size(); n < node->noutputs; n++) {
+	for (size_t n = op.result_types().size(); n < node->noutputs; n++) {
 		jive::output * orig_output = node->outputs[n];
 		jive::output * new_output;
 		if (orig_output->gate) {

@@ -58,12 +58,14 @@ static int test_main(void)
 	jive_node * n1 = sum1->node()->producer(0);
 	jive_node * n2 = sum1->node()->producer(1);
 	
-	jive_regvalue_node * rv = dynamic_cast<jive_regvalue_node *>(n1);
+	const jive::regvalue_op * rv = dynamic_cast<const jive::regvalue_op *>(
+		&n1->operation());
 	if (!rv) {
-		rv = dynamic_cast<jive_regvalue_node *>(n2);
+		rv = dynamic_cast<const jive::regvalue_op *>(
+			&n2->operation());
 	}
 	assert(rv);
-	assert(rv->operation().regcls() == &jive_testarch_regcls_gpr);
+	assert(rv->regcls() == &jive_testarch_regcls_gpr);
 	
 	sum2 = res->node()->inputs[1]->origin();
 	n1 = sum2->node()->producer(0);

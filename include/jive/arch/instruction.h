@@ -70,8 +70,6 @@ private:
 
 }
 
-typedef jive::operation_node<jive::instruction_op> jive_instruction_node;
-
 jive_node *
 jive_instruction_node_create_simple(
 	struct jive_region * region,
@@ -96,14 +94,16 @@ jive_instruction_node_create(
 	return jive_instruction_node_create_simple(region, icls, operands, immediates);
 }
 
-JIVE_EXPORTED_INLINE jive_immediate_node *
+JIVE_EXPORTED_INLINE jive_immediate
 jive_instruction_node_get_immediate(
-	const jive_instruction_node * node,
+	const jive_node * node,
 	size_t index)
 {
-	const jive_instruction_class * icls = node->operation().icls();
+	const jive_instruction_class * icls =
+		static_cast<const jive::instruction_op &>(node->operation()).icls();
 	jive::input * input = node->inputs[index + icls->ninputs];
-	return (jive_immediate_node *) input->producer();
+	return static_cast<const jive::immediate_op &>(
+		input->origin()->node()->operation()).value();
 }
 
 #endif

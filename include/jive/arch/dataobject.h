@@ -122,10 +122,6 @@ public:
 
 struct jive_memlayout_mapper;
 
-typedef jive::operation_node<jive::dataobj_head_op> jive_dataitems_node;
-typedef jive::operation_node<jive::dataobj_tail_op> jive_datadef_node;
-typedef jive::operation_node<jive::dataobj_op> jive_dataobj_node;
-
 jive::output *
 jive_dataobj(jive::output * data, jive_memlayout_mapper * mapper);
 

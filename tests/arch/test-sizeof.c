@@ -73,9 +73,9 @@ static int test_main(void)
 	jive_traverser * traverser = jive_topdown_traverser_create(graph);
 	jive_node * node;
 	for (node = jive_traverser_next(traverser); node; node = jive_traverser_next(traverser)) {
-		jive_sizeof_node * sizeof_node = dynamic_cast<jive_sizeof_node *>(node);
-		if (sizeof_node)
-			jive_sizeof_node_reduce(sizeof_node, &layout_mapper.base.base);
+		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
+			jive_sizeof_node_reduce(node, &layout_mapper.base.base);
+		}
 	}
 	jive_traverser_destroy(traverser);
 	jive_graph_prune(graph);

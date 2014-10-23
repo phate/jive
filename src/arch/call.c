@@ -70,25 +70,10 @@ call_operation::result_type(size_t index) const noexcept
 jive_node *
 call_operation::create_node(
 	jive_region * region,
-	size_t narguments_given,
+	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_call_node * node = new jive_call_node(*this);
-
-	const jive::base::type * argtypes[narguments()];
-	for (size_t n = 0; n < narguments(); ++n) {
-		argtypes[n] = &argument_type(n);
-	}
-	const jive::base::type * restypes[nresults()];
-	for (size_t n = 0; n < nresults(); ++n) {
-		restypes[n] = &result_type(n);
-	}
-
-	jive_node_init_(node, region,
-		narguments(), argtypes, arguments,
-		nresults(), restypes);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string

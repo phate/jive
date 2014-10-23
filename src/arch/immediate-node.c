@@ -44,14 +44,7 @@ immediate_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_immediate_node * node = new jive_immediate_node(*this);
-	const jive::base::type* restypes[] = {&result_type(0)};
-	jive_node_init_(node,
-		region,
-		0, nullptr, nullptr,
-		1, restypes);
-	
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string

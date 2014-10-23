@@ -25,40 +25,30 @@
 namespace jive {
 namespace address {
 
-memberof_operation::~memberof_operation() noexcept
+memberof_op::~memberof_op() noexcept
 {
 }
 
 bool
-memberof_operation::operator==(const operation & other) const noexcept
+memberof_op::operator==(const operation & other) const noexcept
 {
-	const memberof_operation * op =
-		dynamic_cast<const memberof_operation *>(&other);
+	const memberof_op * op =
+		dynamic_cast<const memberof_op *>(&other);
 
 	return op && op->record_decl() == record_decl() && op->index() == index();
 }
 
 jive_node *
-memberof_operation::create_node(
+memberof_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 1);
-
-	jive_memberof_node * node = new jive_memberof_node(*this);
-
-	const jive::base::type * typeptr = &jive::addr::type::singleton();
-
-	jive_node_init_(node, region,
-		1, &typeptr, arguments,
-		1, &typeptr);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
-memberof_operation::debug_string() const
+memberof_op::debug_string() const
 {
 	char tmp[128];
 	snprintf(tmp, sizeof(tmp), "MEMBEROF %p:%zd", record_decl(), index());
@@ -66,23 +56,23 @@ memberof_operation::debug_string() const
 }
 
 const jive::base::type &
-memberof_operation::argument_type(size_t index) const noexcept
+memberof_op::argument_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 const jive::base::type &
-memberof_operation::result_type(size_t index) const noexcept
+memberof_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 jive_unop_reduction_path_t
-memberof_operation::can_reduce_operand(
+memberof_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	const containerof_operation * op =
-		dynamic_cast<const containerof_operation *>(&arg->node()->operation());
+	const containerof_op * op =
+		dynamic_cast<const containerof_op *>(&arg->node()->operation());
 
 	if (!op) {
 		return jive_unop_reduction_none;
@@ -96,7 +86,7 @@ memberof_operation::can_reduce_operand(
 }
 
 jive::output *
-memberof_operation::reduce_operand(
+memberof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -107,9 +97,9 @@ memberof_operation::reduce_operand(
 }
 
 std::unique_ptr<jive::operation>
-memberof_operation::copy() const
+memberof_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new memberof_operation(*this));
+	return std::unique_ptr<jive::operation>(new memberof_op(*this));
 }
 
 }
@@ -120,7 +110,7 @@ jive::output *
 jive_memberof(jive::output * address,
 	const jive::rcd::declaration * record_decl, size_t index)
 {
-	jive::address::memberof_operation op(record_decl, index);
+	jive::address::memberof_op op(record_decl, index);
 	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
 }
 
@@ -129,39 +119,29 @@ jive_memberof(jive::output * address,
 namespace jive {
 namespace address {
 
-containerof_operation::~containerof_operation() noexcept
+containerof_op::~containerof_op() noexcept
 {
 }
 
 bool
-containerof_operation::operator==(const operation & other) const noexcept
+containerof_op::operator==(const operation & other) const noexcept
 {
-	const containerof_operation * op =
-		dynamic_cast<const containerof_operation *>(&other);
+	const containerof_op * op =
+		dynamic_cast<const containerof_op *>(&other);
 	return op && op->record_decl() == record_decl() && op->index() == index();
 }
 
 jive_node *
-containerof_operation::create_node(
+containerof_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 1);
-
-	jive_containerof_node * node = new jive_containerof_node(*this);
-
-	const jive::base::type * typeptr = &jive::addr::type::singleton();
-
-	jive_node_init_(node, region,
-		1, &typeptr, arguments,
-		1, &typeptr);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
-containerof_operation::debug_string() const
+containerof_op::debug_string() const
 {
 	char tmp[128];
 	snprintf(tmp, sizeof(tmp), "CONTAINEROF %p:%zd", record_decl(), index());
@@ -169,23 +149,23 @@ containerof_operation::debug_string() const
 }
 
 const jive::base::type &
-containerof_operation::argument_type(size_t index) const noexcept
+containerof_op::argument_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 const jive::base::type &
-containerof_operation::result_type(size_t index) const noexcept
+containerof_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 jive_unop_reduction_path_t
-containerof_operation::can_reduce_operand(
+containerof_op::can_reduce_operand(
 	const jive::output * arg) const noexcept
 {
-	const memberof_operation * op =
-		dynamic_cast<const memberof_operation *>(&arg->node()->operation());
+	const memberof_op * op =
+		dynamic_cast<const memberof_op *>(&arg->node()->operation());
 	if (!op) {
 		return jive_unop_reduction_none;
 	}
@@ -198,7 +178,7 @@ containerof_operation::can_reduce_operand(
 }
 
 jive::output *
-containerof_operation::reduce_operand(
+containerof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::output * arg) const
 {
@@ -210,9 +190,9 @@ containerof_operation::reduce_operand(
 }
 
 std::unique_ptr<jive::operation>
-containerof_operation::copy() const
+containerof_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new containerof_operation(*this));
+	return std::unique_ptr<jive::operation>(new containerof_op(*this));
 }
 
 }
@@ -222,7 +202,7 @@ jive::output *
 jive_containerof(jive::output * address,
 	const jive::rcd::declaration * record_decl, size_t index)
 {
-	jive::address::containerof_operation op(record_decl, index);
+	jive::address::containerof_op op(record_decl, index);
 	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
 }
 
@@ -231,25 +211,25 @@ jive_containerof(jive::output * address,
 namespace jive {
 namespace address {
 
-arraysubscript_operation::~arraysubscript_operation()
+arraysubscript_op::~arraysubscript_op()
 {
 }
 
-arraysubscript_operation::arraysubscript_operation(
-	const arraysubscript_operation & other)
+arraysubscript_op::arraysubscript_op(
+	const arraysubscript_op & other)
 	: element_type_(other.element_type_->copy())
 	, index_type_(other.index_type())
 {
 }
 
-arraysubscript_operation::arraysubscript_operation(
-	arraysubscript_operation && other) noexcept
+arraysubscript_op::arraysubscript_op(
+	arraysubscript_op && other) noexcept
 	: element_type_(std::move(other.element_type_))
 	, index_type_(other.index_type())
 {
 }
 
-arraysubscript_operation::arraysubscript_operation(
+arraysubscript_op::arraysubscript_op(
 	const jive::value::type& type,
 	const jive::bits::type& index_type)
 	: element_type_(type.copy())
@@ -258,21 +238,21 @@ arraysubscript_operation::arraysubscript_operation(
 }
 
 bool
-arraysubscript_operation::operator==(const operation & other) const noexcept
+arraysubscript_op::operator==(const operation & other) const noexcept
 {
-	const arraysubscript_operation * op =
-		dynamic_cast<const arraysubscript_operation *>(&other);
+	const arraysubscript_op * op =
+		dynamic_cast<const arraysubscript_op *>(&other);
 	return op && op->element_type() == element_type() && op->index_type() == index_type();
 }
 
 size_t
-arraysubscript_operation::narguments() const noexcept
+arraysubscript_op::narguments() const noexcept
 {
 	return 2;
 }
 
 const jive::base::type &
-arraysubscript_operation::argument_type(size_t index) const noexcept
+arraysubscript_op::argument_type(size_t index) const noexcept
 {
 	if (index == 0) {
 		return jive::addr::type::singleton();
@@ -282,52 +262,36 @@ arraysubscript_operation::argument_type(size_t index) const noexcept
 }
 
 size_t
-arraysubscript_operation::nresults() const noexcept
+arraysubscript_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-arraysubscript_operation::result_type(size_t index) const noexcept
+arraysubscript_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 jive_node *
-arraysubscript_operation::create_node(
+arraysubscript_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 2);
-
-	jive_node * node = new jive_arraysubscript_node(*this);
-
-	const jive::base::type * argument_types[2] = {
-		&argument_type(0),
-		&argument_type(1)
-	};
-	const jive::base::type * result_types[1] = {
-		&result_type(0)
-	};
-	
-	jive_node_init_(node, region,
-		2, argument_types, arguments,
-		1, result_types);
-	
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
-arraysubscript_operation::debug_string() const
+arraysubscript_op::debug_string() const
 {
 	return "ARRAYSUBSCRIPT";
 }
 
 std::unique_ptr<jive::operation>
-arraysubscript_operation::copy() const
+arraysubscript_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new arraysubscript_operation(*this));
+	return std::unique_ptr<jive::operation>(new arraysubscript_op(*this));
 }
 
 }
@@ -340,7 +304,7 @@ jive_arraysubscript(
 	const jive::value::type * element_type,
 	jive::output * index)
 {
-	jive::address::arraysubscript_operation op(
+	jive::address::arraysubscript_op op(
 		*element_type,
 		dynamic_cast<const jive::bits::type &>(index->type()));
 
@@ -356,25 +320,25 @@ jive_arraysubscript(
 namespace jive {
 namespace address {
 
-arrayindex_operation::~arrayindex_operation() noexcept
+arrayindex_op::~arrayindex_op() noexcept
 {
 }
 
-arrayindex_operation::arrayindex_operation(
-	const arrayindex_operation & other)
+arrayindex_op::arrayindex_op(
+	const arrayindex_op & other)
 	: element_type_(other.element_type().copy()),
 	index_type_(other.index_type())
 {
 }
 
-arrayindex_operation::arrayindex_operation(
-	arrayindex_operation && other) noexcept
+arrayindex_op::arrayindex_op(
+	arrayindex_op && other) noexcept
 	: element_type_(std::move(other.element_type_)),
 	index_type_(other.index_type())
 {
 }
 
-arrayindex_operation::arrayindex_operation(
+arrayindex_op::arrayindex_op(
 	const jive::value::type & element_type,
 	const jive::bits::type & index_type)
 	: element_type_(element_type.copy())
@@ -383,72 +347,56 @@ arrayindex_operation::arrayindex_operation(
 }
 
 bool
-arrayindex_operation::operator==(const operation & other) const noexcept
+arrayindex_op::operator==(const operation & other) const noexcept
 {
-	const arrayindex_operation * op =
-		dynamic_cast<const arrayindex_operation *>(&other);
+	const arrayindex_op * op =
+		dynamic_cast<const arrayindex_op *>(&other);
 	return op && op->element_type() == element_type() && op->index_type() == index_type();
 }
 
 size_t
-arrayindex_operation::narguments() const noexcept
+arrayindex_op::narguments() const noexcept
 {
 	return 2;
 }
 
 const jive::base::type &
-arrayindex_operation::argument_type(size_t index) const noexcept
+arrayindex_op::argument_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 size_t
-arrayindex_operation::nresults() const noexcept
+arrayindex_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-arrayindex_operation::result_type(size_t index) const noexcept
+arrayindex_op::result_type(size_t index) const noexcept
 {
 	return index_type_;
 }
 
 jive_node *
-arrayindex_operation::create_node(
+arrayindex_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 2);
-
-	jive_node * node = new jive_arrayindex_node(*this);
-
-	const jive::base::type * argument_types[2] = {
-		&argument_type(0),
-		&argument_type(1)
-	};
-	const jive::base::type * result_types[1] = {
-		&result_type(0)
-	};
-	
-	jive_node_init_(node, region,
-		2, argument_types, arguments,
-		1, result_types);
-	
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
-arrayindex_operation::debug_string() const
+arrayindex_op::debug_string() const
 {
 	return "ARRAYINDEX";
 }
 
 std::unique_ptr<jive::operation>
-arrayindex_operation::copy() const
+arrayindex_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new arrayindex_operation(*this));
+	return std::unique_ptr<jive::operation>(new arrayindex_op(*this));
 }
 
 }
@@ -463,7 +411,7 @@ jive_arrayindex(
 	jive::output * arguments[] = {addr1, addr2};
 	jive_region * region = jive_region_innermost(2, arguments);
 	
-	jive::address::arrayindex_operation op(*element_type, difference_type->nbits());
+	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
 	
 	return jive_node_create_normalized(region->graph, op, {addr1, addr2})[0];
 }
@@ -473,60 +421,53 @@ jive_arrayindex(
 namespace jive {
 namespace address {
 
-label_to_address_operation::~label_to_address_operation() noexcept
+label_to_address_op::~label_to_address_op() noexcept
 {
 }
 
 bool
-label_to_address_operation::operator==(const operation & other) const noexcept
+label_to_address_op::operator==(const operation & other) const noexcept
 {
-	const label_to_address_operation * op =
-		dynamic_cast<const label_to_address_operation *>(&other);
+	const label_to_address_op * op =
+		dynamic_cast<const label_to_address_op *>(&other);
 	return op && op->label() == label();
 }
 
 size_t
-label_to_address_operation::narguments() const noexcept
+label_to_address_op::narguments() const noexcept
 {
 	return 0;
 }
 
 const jive::base::type &
-label_to_address_operation::argument_type(size_t index) const noexcept
+label_to_address_op::argument_type(size_t index) const noexcept
 {
 	throw std::logic_error("no arguments");
 }
 
 size_t
-label_to_address_operation::nresults() const noexcept
+label_to_address_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-label_to_address_operation::result_type(size_t index) const noexcept
+label_to_address_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
 
 jive_node *
-label_to_address_operation::create_node(
+label_to_address_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_label_to_address_node * node = new jive_label_to_address_node(*this);
-
-	const jive::base::type * result_types[1] = {&result_type(0)};
-	jive_node_init_(node, region,
-		0, nullptr, nullptr,
-		1, result_types);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
-label_to_address_operation::debug_string() const
+label_to_address_op::debug_string() const
 {
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
@@ -534,9 +475,9 @@ label_to_address_operation::debug_string() const
 }
 
 std::unique_ptr<jive::operation>
-label_to_address_operation::copy() const
+label_to_address_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new label_to_address_operation(*this));
+	return std::unique_ptr<jive::operation>(new label_to_address_op(*this));
 }
 
 }
@@ -546,7 +487,7 @@ label_to_address_operation::copy() const
 jive::output *
 jive_label_to_address_create(jive_graph * graph, const jive_label * label)
 {
-	jive::address::label_to_address_operation op(label);
+	jive::address::label_to_address_op op(label);
 	return jive_node_create_normalized(graph, op, {})[0];
 }
 
@@ -555,60 +496,53 @@ jive_label_to_address_create(jive_graph * graph, const jive_label * label)
 namespace jive {
 namespace address {
 
-label_to_bitstring_operation::~label_to_bitstring_operation() noexcept
+label_to_bitstring_op::~label_to_bitstring_op() noexcept
 {
 }
 
 bool
-label_to_bitstring_operation::operator==(const operation & other) const noexcept
+label_to_bitstring_op::operator==(const operation & other) const noexcept
 {
-	const label_to_bitstring_operation * op =
-		dynamic_cast<const label_to_bitstring_operation *>(&other);
+	const label_to_bitstring_op * op =
+		dynamic_cast<const label_to_bitstring_op *>(&other);
 	return op && op->label() == label() && op->nbits() == nbits();
 }
 
 size_t
-label_to_bitstring_operation::narguments() const noexcept
+label_to_bitstring_op::narguments() const noexcept
 {
 	return 0;
 }
 
 const jive::base::type &
-label_to_bitstring_operation::argument_type(size_t index) const noexcept
+label_to_bitstring_op::argument_type(size_t index) const noexcept
 {
 	throw std::logic_error("no arguments");
 }
 
 size_t
-label_to_bitstring_operation::nresults() const noexcept
+label_to_bitstring_op::nresults() const noexcept
 {
 	return 1;
 }
 
 const jive::base::type &
-label_to_bitstring_operation::result_type(size_t index) const noexcept
+label_to_bitstring_op::result_type(size_t index) const noexcept
 {
 	return result_type_;
 }
 
 jive_node *
-label_to_bitstring_operation::create_node(
+label_to_bitstring_op::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_label_to_bitstring_node * node = new jive_label_to_bitstring_node(*this);
-
-	const jive::base::type * result_types[1] = {&result_type(0)};
-	jive_node_init_(node, region,
-		0, nullptr, nullptr,
-		1, result_types);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
-label_to_bitstring_operation::debug_string() const
+label_to_bitstring_op::debug_string() const
 {
 	char tmp[80];
 	snprintf(tmp, sizeof(tmp), "addrof:label%p", label());
@@ -616,9 +550,9 @@ label_to_bitstring_operation::debug_string() const
 }
 
 std::unique_ptr<jive::operation>
-label_to_bitstring_operation::copy() const
+label_to_bitstring_op::copy() const
 {
-	return std::unique_ptr<jive::operation>(new label_to_bitstring_operation(*this));
+	return std::unique_ptr<jive::operation>(new label_to_bitstring_op(*this));
 }
 
 }
@@ -628,6 +562,6 @@ label_to_bitstring_operation::copy() const
 jive::output *
 jive_label_to_bitstring_create(jive_graph * graph, const jive_label * label, size_t nbits)
 {
-	jive::address::label_to_bitstring_operation op(label, nbits);
+	jive::address::label_to_bitstring_op op(label, nbits);
 	return jive_node_create_normalized(graph, op, {})[0];
 }

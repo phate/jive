@@ -46,14 +46,7 @@ sizeof_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_sizeof_node * node = new jive_sizeof_node(*this);
-	const jive::base::type* restypes[] = {&result_type(0)};
-	jive_node_init_(node,
-		region,
-		0, nullptr, nullptr,
-		1, restypes);
-	
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
@@ -80,10 +73,10 @@ jive_sizeof_create(jive_region * region, const jive::value::type * type)
 /* sizeof reduce */
 
 void
-jive_sizeof_node_reduce(const jive_sizeof_node * node, jive_memlayout_mapper * mapper)
+jive_sizeof_node_reduce(const jive_node * node, jive_memlayout_mapper * mapper)
 {
 	const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_value_type(mapper,
-		&node->operation().type());
+		&static_cast<const jive::sizeof_op &>(node->operation()).type());
 	
 	jive::output * new_node = jive_bitconstant_unsigned(node->graph, 32, layout->total_size);
 	jive_output_replace(node->outputs[0], new_node);

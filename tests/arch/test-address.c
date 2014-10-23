@@ -101,16 +101,20 @@ static int test_main(void)
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_containerof_node_address_transform(
-		dynamic_cast<jive_containerof_node *>(cont3->node()),
+		cont3->node(),
+		dynamic_cast<const jive::address::containerof_op &>(cont3->node()->operation()),
 		&mapper.base.base);
 	jive_memberof_node_address_transform(
-		dynamic_cast<jive_memberof_node *>(memberof->node()),
+		memberof->node(),
+		dynamic_cast<const jive::address::memberof_op &>(memberof->node()->operation()),
 		&mapper.base.base);
 	jive_arrayindex_node_address_transform(
-		dynamic_cast<jive_arrayindex_node *>(diff2->node()),
+		diff2->node(),
+		dynamic_cast<const jive::address::arrayindex_op &>(diff2->node()->operation()),
 		&mapper.base.base);
 	jive_arraysubscript_node_address_transform(
-		dynamic_cast<jive_arraysubscript_node *>(arraysub->node()),
+		arraysub->node(),
+		dynamic_cast<const jive::address::arraysubscript_op &>(arraysub->node()->operation()),
 		&mapper.base.base);
 	
 	jive_graph_prune(graph);

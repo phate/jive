@@ -158,7 +158,8 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	//jive_view(graph, stdout);
 	
-	jive_i386_call_node_substitute((jive_call_node *)call_write);
+	jive_i386_call_node_substitute(call_write,
+		static_cast<const jive::call_operation &>(call_write->operation()));
 	jive_graph_prune(graph);
 	//jive_view(graph, stdout);
 	

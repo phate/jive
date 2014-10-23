@@ -63,12 +63,10 @@ private:
 
 }
 
-typedef jive::operation_node<jive::sizeof_op> jive_sizeof_node;
-
 jive::output *
 jive_sizeof_create(jive_region * region, const jive::value::type * type);
 
 void
-jive_sizeof_node_reduce(const jive_sizeof_node * node, jive_memlayout_mapper * mapper);
+jive_sizeof_node_reduce(const jive_node * node, jive_memlayout_mapper * mapper);
 
 #endif

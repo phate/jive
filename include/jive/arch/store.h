@@ -89,8 +89,6 @@ private:
 
 }
 
-typedef jive::operation_node<jive::store_op> jive_store_node;
-
 std::vector<jive::output *>
 jive_store_by_address_create(jive::output * address,
 	const jive::value::type * datatype, jive::output * value,

@@ -48,7 +48,7 @@ regvalue_to_immediate(const jive::output * regvalue, jive_immediate * imm)
 		return;
 	}
 
-	auto lbop = dynamic_cast<const jive::address::label_to_bitstring_operation *>(
+	auto lbop = dynamic_cast<const jive::address::label_to_bitstring_op *>(
 		&value->node()->operation());
 	if (lbop) {
 		jive_immediate_init(imm, 0, lbop->label(), 0, 0);

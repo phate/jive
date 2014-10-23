@@ -24,12 +24,12 @@ in memory, compute address of specified member of record */
 namespace jive {
 namespace address {
 
-class memberof_operation : public base::unary_op {
+class memberof_op : public base::unary_op {
 public:
-	virtual ~memberof_operation() noexcept;
+	virtual ~memberof_op() noexcept;
 
 	inline constexpr
-	memberof_operation(
+	memberof_op(
 		const jive::rcd::declaration * record_decl,
 		size_t index)
 		: record_decl_(record_decl),
@@ -80,12 +80,12 @@ private:
 	size_t index_;
 };
 
-class containerof_operation : public base::unary_op {
+class containerof_op : public base::unary_op {
 public:
-	virtual ~containerof_operation() noexcept;
+	virtual ~containerof_op() noexcept;
 
 	inline constexpr
-	containerof_operation(
+	containerof_op(
 		const jive::rcd::declaration * record_decl,
 		size_t index)
 		: record_decl_(record_decl),
@@ -136,13 +136,13 @@ private:
 	size_t index_;
 };
 
-class arraysubscript_operation : public operation {
+class arraysubscript_op : public operation {
 public:
-	virtual ~arraysubscript_operation() noexcept;
+	virtual ~arraysubscript_op() noexcept;
 
-	arraysubscript_operation(const arraysubscript_operation & other);
-	arraysubscript_operation(arraysubscript_operation && other) noexcept;
-	arraysubscript_operation(
+	arraysubscript_op(const arraysubscript_op & other);
+	arraysubscript_op(arraysubscript_op && other) noexcept;
+	arraysubscript_op(
 		const jive::value::type & element_type,
 		const jive::bits::type & index_type);
 
@@ -184,13 +184,13 @@ private:
 	jive::bits::type index_type_;
 };
 
-class arrayindex_operation : public operation {
+class arrayindex_op : public operation {
 public:
-	virtual ~arrayindex_operation() noexcept;
+	virtual ~arrayindex_op() noexcept;
 
-	arrayindex_operation(const arrayindex_operation & other);
-	arrayindex_operation(arrayindex_operation && other) noexcept;
-	arrayindex_operation(
+	arrayindex_op(const arrayindex_op & other);
+	arrayindex_op(arrayindex_op && other) noexcept;
+	arrayindex_op(
 		const jive::value::type & element_type,
 		const jive::bits::type & index_type);
 
@@ -232,13 +232,13 @@ private:
 	jive::bits::type index_type_;
 };
 
-class label_to_address_operation : public base::nullary_op {
+class label_to_address_op : public base::nullary_op {
 public:
 	virtual
-	~label_to_address_operation() noexcept;
+	~label_to_address_op() noexcept;
 
 	inline constexpr
-	label_to_address_operation(const jive_label * label) noexcept
+	label_to_address_op(const jive_label * label) noexcept
 		: label_(label)
 	{
 	}
@@ -277,13 +277,13 @@ private:
 	const struct jive_label * label_;
 };
 
-class label_to_bitstring_operation : public base::nullary_op {
+class label_to_bitstring_op : public base::nullary_op {
 public:
 	virtual
-	~label_to_bitstring_operation() noexcept;
+	~label_to_bitstring_op() noexcept;
 
 	inline constexpr
-	label_to_bitstring_operation(
+	label_to_bitstring_op(
 		const jive_label * label,
 		size_t nbits) noexcept
 		: label_(label)
@@ -332,23 +332,17 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::address::memberof_operation> jive_memberof_node;
-
 jive::output *
 jive_memberof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
 
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
-typedef jive::operation_node<jive::address::containerof_operation> jive_containerof_node;
-
 jive::output *
 jive_containerof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
-
-typedef jive::operation_node<jive::address::arraysubscript_operation> jive_arraysubscript_node;
 
 jive::output *
 jive_arraysubscript(jive::output * address, const jive::value::type * element_type,
@@ -358,8 +352,6 @@ jive_arraysubscript(jive::output * address, const jive::value::type * element_ty
 element of an array and the array element type, compute the
 difference of their indices */
 
-typedef jive::operation_node<jive::address::arrayindex_operation> jive_arrayindex_node;
-
 jive::output *
 jive_arrayindex(jive::output * addr1, jive::output * addr2,
 	const jive::value::type * element_type,
@@ -367,18 +359,13 @@ jive_arrayindex(jive::output * addr1, jive::output * addr2,
 
 /* label_to_address node */
 
-typedef jive::operation_node<jive::address::label_to_address_operation> jive_label_to_address_node;
-
 jive::output *
-jive_label_to_address_create(struct jive_graph * graph, const struct jive_label * label);
+jive_label_to_address_create(jive_graph * graph, const jive_label * label);
 
 /* label_to_bitstring node */
 
-typedef jive::operation_node<jive::address::label_to_bitstring_operation>
-	jive_label_to_bitstring_node;
-
 jive::output *
 jive_label_to_bitstring_create(
-	struct jive_graph * graph, const struct jive_label * label, size_t nbits);
+	jive_graph * graph, const jive_label * label, size_t nbits);
 
 #endif
