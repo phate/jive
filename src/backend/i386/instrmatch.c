@@ -42,13 +42,12 @@ regvalue_to_immediate(const jive::output * regvalue, jive_immediate * imm)
 	jive_node * rvnode = regvalue->node();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::regvalue_op *>(&rvnode->operation()));
 	jive::output * value = rvnode->inputs[1]->origin();
-	
-	jive_bitconstant_node * bcnode = dynamic_cast<jive_bitconstant_node *>(value->node());
-	if (bcnode) {
-		jive_immediate_init(imm, jive_bitconstant_node_to_unsigned(bcnode), 0, 0, 0);
+
+	if (auto bcop = dynamic_cast<const jive::bits::constant_op *>(&value->node()->operation())) {
+		jive_immediate_init(imm, jive::bits::value_repr_to_uint(bcop->value()), 0, 0, 0);
 		return;
 	}
-	
+
 	auto lbop = dynamic_cast<const jive::address::label_to_bitstring_operation *>(
 		&value->node()->operation());
 	if (lbop) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,13 +9,19 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
-#define ZERO_64 "00000000" "00000000" "00000000" "00000000" "00000000" "00000000" "00000000" "00000000"
-#define ONE_64  "10000000" "00000000" "00000000" "00000000" "00000000" "00000000" "00000000" "00000000"
-#define MONE_64 "11111111" "11111111" "11111111" "11111111" "11111111" "11111111" "11111111" "11111111"
+#define ZERO_64 \
+	"00000000" "00000000" "00000000" "00000000" \
+	"00000000" "00000000" "00000000" "00000000"
+#define ONE_64 \
+	"10000000" "00000000" "00000000" "00000000" \
+	"00000000" "00000000" "00000000" "00000000"
+#define MONE_64 \
+	"11111111" "11111111" "11111111" "11111111" \
+	"11111111" "11111111" "11111111" "11111111"
 
 static int test_main(void)
 {
@@ -29,33 +35,29 @@ static int test_main(void)
 	jive::output * b3 = jive_bitconstant_signed(graph, 8, 204);
 	jive::output * b4 = jive_bitconstant(graph, 9, "001100110");
 	
-	assert(jive_bitconstant_equals_unsigned((jive_bitconstant_node *) b1->node(), 204));
-	assert(jive_bitconstant_equals_signed((jive_bitconstant_node *) b1->node(), -52));
-	assert(!jive_bitconstant_equals_signed((jive_bitconstant_node *) b1->node(), 204));
+	assert(b1->node()->operation() == jive::bits::uint_constant_op(8, 204));
+	assert(b1->node()->operation() == jive::bits::int_constant_op(8, -52));
 
 	assert(b1->node() == b2->node());
 	assert(b1->node() == b3->node());
 	
-	assert(jive_bitconstant_node_to_unsigned(
-		dynamic_cast<jive_bitconstant_node *>(b1->node())) == 204);
-	assert(jive_bitconstant_node_to_signed(dynamic_cast<jive_bitconstant_node *>(b1->node())) == -52);
-	assert(jive_bitconstant_node_to_unsigned(
-		dynamic_cast<jive_bitconstant_node *>(b4->node())) == 204);
-	assert(jive_bitconstant_node_to_signed(dynamic_cast<jive_bitconstant_node *>(b4->node())) == 204);
-	
+	assert(b1->node()->operation() == jive::bits::uint_constant_op(8, 204));
+	assert(b1->node()->operation() == jive::bits::int_constant_op(8, -52));
+
+	assert(b4->node()->operation() == jive::bits::uint_constant_op(9, 204));
+	assert(b4->node()->operation() == jive::bits::int_constant_op(9, 204));
+
 	jive::output * plus_one_128 = jive_bitconstant(graph, 128, ONE_64 ZERO_64);
-	assert(jive_bitconstant_equals_unsigned((jive_bitconstant_node *) plus_one_128->node(), 1));
-	assert(jive_bitconstant_equals_signed((jive_bitconstant_node *) plus_one_128->node(), 1));
+	assert(plus_one_128->node()->operation() == jive::bits::uint_constant_op(128, 1));
+	assert(plus_one_128->node()->operation() == jive::bits::int_constant_op(128, 1));
 
 	jive::output * minus_one_128 = jive_bitconstant(graph, 128, MONE_64 MONE_64);
-	assert(!jive_bitconstant_equals_unsigned((jive_bitconstant_node *) minus_one_128->node(),
-		(uint64_t) -1LL));
-	assert(jive_bitconstant_equals_signed((jive_bitconstant_node *) minus_one_128->node(),
-		(uint64_t) -1LL));
+	assert(minus_one_128->node()->operation() != jive::bits::uint_constant_op(128, -1));
+	assert(minus_one_128->node()->operation() == jive::bits::int_constant_op(128, -1));
 
 	jive_view(graph, stdout);
-	jive_graph_destroy(graph);	
-	
+	jive_graph_destroy(graph);
+
 	assert(jive_context_is_empty(context));
 	jive_context_destroy(context);
 

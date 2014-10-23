@@ -90,6 +90,7 @@ LIBJIVE_SRC += \
 	src/types/bitstring/slice.c \
 	src/types/bitstring/symbolic-constant.c \
 	src/types/bitstring/type.c \
+	src/types/bitstring/value-representation.c \
 
 # floats
 LIBJIVE_SRC += \

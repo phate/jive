@@ -82,8 +82,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::bits::slice_op> jive_bitslice_node;
-
 /**
 	\brief Create bitslice
 	\param operand Input value

@@ -126,10 +126,11 @@ sequentialize_region(
 			size_t n;
 			for (n = 0; n < node->ninputs; ++n) {
 				jive::input * input = node->inputs[n];
-				jive_bitconstant_node * cnode = dynamic_cast<jive_bitconstant_node *>(input->producer());
+				const jive::bits::constant_op * cop = dynamic_cast<const jive::bits::constant_op *>(
+					&input->origin()->node()->operation());
 				jive_seq_dataitem * item = &data->items[n];
-				if (cnode) {
-					switch (cnode->operation().value().size()) {
+				if (cop) {
+					switch (cop->value().size()) {
 						case 8:
 							item->format = jive_seq_dataitem_fmt_8;
 							break;
@@ -146,7 +147,7 @@ sequentialize_region(
 							item->format = jive_seq_dataitem_fmt_none;
 							break;
 					}
-					item->value = jive_bitconstant_node_to_unsigned(cnode);
+					item->value = jive::bits::value_repr_to_uint(cop->value());
 				} else {
 					item->format = jive_seq_dataitem_fmt_none;
 				}

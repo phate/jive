@@ -19,47 +19,6 @@
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 
-static void
-jive_bitstring_multiop_node_init_(
-	jive_node * self,
-	struct jive_region * region,
-	size_t noperands,
-	struct jive::output * const operands[],
-	size_t nbits)
-{
-	const jive::base::type * operand_types[noperands];
-	jive::bits::type * operand_type_structs[noperands];
-	size_t n;
-	
-	for(n=0; n<noperands; n++) {
-		size_t nbits = static_cast<const jive::bits::output*>(operands[n])->nbits();
-		operand_type_structs[n] = new jive::bits::type(nbits);
-		operand_types[n] = operand_type_structs[n];
-	}
-	
-	jive::bits::type output_type(nbits);
-	const jive::base::type * type_array[] = {&output_type};
-	jive_node_init_(self, region,
-		noperands, operand_types, operands,
-		1, type_array);
-
-	for (n = 0; n < noperands; n++)
-		delete operand_type_structs[n];
-}
-
-static void
-jive_bitconcat_node_init_(
-	jive_node * self,
-	jive_region * region,
-	size_t noperands,
-	jive::output * const operands[])
-{
-	size_t nbits = 0, n;
-	for(n=0; n<noperands; n++)
-		nbits += static_cast<const jive::bits::output*>(operands[n])->nbits();
-	jive_bitstring_multiop_node_init_(self, region, noperands, operands, nbits);
-}
-
 jive::output *
 jive_bitconcat(size_t narguments, jive::output * const * arguments)
 {
@@ -134,6 +93,10 @@ concat_op::create_node(
 		types.push_back(dynamic_cast<const type &>(arguments[n]->type()));
 	}
 
+	// FIXME: create new temporary concat_op instance that may have
+	// different signature. This is due to concat operation currently
+	// being modeled as a "binary operation" which cannot deal with
+	// changes of function signature during normalization.
 	return jive_opnode_create(
 		concat_op(std::move(types)),
 		region,

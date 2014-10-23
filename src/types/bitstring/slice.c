@@ -42,17 +42,7 @@ slice_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 1);
-	
-	jive_bitslice_node * node = new jive_bitslice_node(*this);
-
-	const jive::base::type * input_typeptr = &argument_type(0);
-	const jive::base::type * output_typeptr = &result_type(0);
-	jive_node_init_(node, region,
-		1, &input_typeptr, arguments,
-		1, &output_typeptr);
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string

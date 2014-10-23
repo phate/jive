@@ -80,22 +80,14 @@ static int test_main(void)
 	jive_traverser_destroy(traverser);
 	jive_graph_prune(graph);
 
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(0)), 1));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(1)), 1));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(2)), 1));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(3)), 4));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(4)), 4));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(5)), 4));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(6)), 8));
-	assert(jive_bitconstant_equals_unsigned(dynamic_cast<jive_bitconstant_node *>(
-		bottom->producer(7)), 4));
+	assert(bottom->producer(0)->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->producer(1)->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->producer(2)->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->producer(3)->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->producer(4)->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->producer(5)->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->producer(6)->operation() == jive::bits::uint_constant_op(32, 8));
+	assert(bottom->producer(7)->operation() == jive::bits::uint_constant_op(32, 4));
 	
 	jive_view(graph, stdout);
 

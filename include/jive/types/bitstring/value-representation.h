@@ -6,6 +6,7 @@
 #ifndef JIVE_TYPES_BITSTRING_VALUE_REPRESENTATION_H
 #define JIVE_TYPES_BITSTRING_VALUE_REPRESENTATION_H
 
+#include <cstdint>
 #include <cstring>
 #include <vector>
 
@@ -26,7 +27,8 @@ value_repr_from_string(const char * s)
 }
 
 static inline value_repr
-value_repr_from_int(size_t nbits, int64_t value) {
+value_repr_from_int(size_t nbits, int64_t value)
+{
 	value_repr result(nbits);
 	for (size_t n = 0; n < nbits; ++n) {
 		result[n] = '0' + (value & 1);
@@ -36,7 +38,8 @@ value_repr_from_int(size_t nbits, int64_t value) {
 }
 
 static inline value_repr
-value_repr_from_uint(size_t nbits, uint64_t value) {
+value_repr_from_uint(size_t nbits, uint64_t value)
+{
 	value_repr result(nbits);
 	for (size_t n = 0; n < nbits; ++n) {
 		result[n] = '0' + (value & 1);
@@ -44,6 +47,12 @@ value_repr_from_uint(size_t nbits, uint64_t value) {
 	}
 	return result;
 }
+
+uint64_t
+value_repr_to_uint(const value_repr & value);
+
+int64_t
+value_repr_to_int(const value_repr & value);
 
 }
 }
