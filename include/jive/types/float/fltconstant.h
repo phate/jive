@@ -45,8 +45,6 @@ extern template class domain_const_op<
 }
 }
 
-typedef jive::operation_node<jive::flt::constant_op> jive_fltconstant_node;
-
 jive::output *
 jive_fltconstant(jive_graph * graph, jive::flt::value_repr value);
 

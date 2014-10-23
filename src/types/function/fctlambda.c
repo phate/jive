@@ -206,12 +206,11 @@ jive_lambda_node_create(jive_region * function_region)
 
 
 bool
-jive_lambda_is_self_recursive(const jive_lambda_node * self_)
+jive_lambda_is_self_recursive(const jive_node * self)
 {
-	JIVE_DEBUG_ASSERT(self_->noutputs == 1);
+	JIVE_DEBUG_ASSERT(self->noutputs == 1);
 
-	const jive_node * self = self_;
-	const jive_region * lambda_region = jive_lambda_node_get_region(self_);
+	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
 
 	if (jive_phi_region_const_cast(self->region) == NULL)
 		return false;
@@ -379,13 +378,12 @@ lambda_result_is_passthrough(const jive::input * result)
 }
 
 static void
-replace_apply_node(const jive_apply_node * apply_,
-	jive::output * new_fct, const jive_lambda_node * old_lambda,
+replace_apply_node(const jive_node * apply,
+	jive::output * new_fct, const jive_node * old_lambda,
 	size_t nalive_parameters, jive::output * alive_parameters[],
 	size_t nalive_results, jive::input * alive_results[])
 {
-	const struct jive_node * apply = apply_;
-	const jive_node * old_leave = jive_lambda_node_get_leave_node(old_lambda);
+	const jive_node * old_leave = old_lambda->inputs[0]->origin()->node();
 
 	/* collect the arguments for the new apply node */
 	size_t n;
@@ -412,7 +410,7 @@ replace_apply_node(const jive_apply_node * apply_,
 
 static void
 replace_all_apply_nodes(jive::output * fct,
-	jive::output * new_fct, const jive_lambda_node * old_lambda,
+	jive::output * new_fct, const jive_node * old_lambda,
 	size_t nalive_parameters, jive::output * alive_parameters[],
 	size_t nalive_results, jive::input * alive_results[])
 {
@@ -423,12 +421,10 @@ replace_all_apply_nodes(jive::output * fct,
 
 	jive::input * user;
 	JIVE_LIST_ITERATE(fct->users, user, output_users_list) {
-		const jive_apply_node * apply = dynamic_cast<const jive_apply_node *>(user->node);
-		if (apply != NULL)
-			replace_apply_node(apply, new_fct, old_lambda,
+		if (dynamic_cast<const jive::fct::apply_op *>(&user->node->operation())) {
+			replace_apply_node(user->node, new_fct, old_lambda,
 				nalive_parameters, alive_parameters, nalive_results, alive_results);
-
-		if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
+		} else if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
 			jive_node * phi_leave = user->node;
 
 			/* adjust the outer call sides */
@@ -450,15 +446,15 @@ replace_all_apply_nodes(jive::output * fct,
 
 
 bool
-jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
+jive_lambda_node_remove_dead_parameters(const jive_node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs == 1);
 
 	jive_graph * graph = self->region->graph;
 	jive_context * context = graph->context;
-	const jive_node * enter = jive_lambda_node_get_enter_node(self);
-	const jive_node * leave = jive_lambda_node_get_leave_node(self);
-	const jive_region * lambda_region = enter->region;
+	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
+	const jive_node * enter = lambda_region->top;
+	const jive_node * leave = lambda_region->bottom;
 	jive::output * fct = self->outputs[0];
 
 	/* collect liveness information about parameters */
@@ -538,7 +534,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 		jive_phi_end_extension(phi_ext);
 	}
 
-	replace_all_apply_nodes(fct, new_fct, (const jive_lambda_node *)self,
+	replace_all_apply_nodes(fct, new_fct, self,
 		alive_parameters.size(), &alive_parameters[0], alive_results.size(), &alive_results[0]);
 
 	return true;

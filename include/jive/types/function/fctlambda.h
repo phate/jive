@@ -134,34 +134,14 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::fct::lambda_op> jive_lambda_node;
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_lambda_node_get_enter_node(const jive_lambda_node * self)
-{
-	return self->producer(0)->region->top;
-}
-
-JIVE_EXPORTED_INLINE jive_node *
-jive_lambda_node_get_leave_node(const jive_lambda_node * self)
-{
-	return self->producer(0);
-}
-
-JIVE_EXPORTED_INLINE struct jive_region *
-jive_lambda_node_get_region(const jive_lambda_node * self)
-{
-	return jive_lambda_node_get_leave_node(self)->region;
-}
-
 bool
-jive_lambda_is_self_recursive(const jive_lambda_node * self);
+jive_lambda_is_self_recursive(const jive_node * self);
 
 void
 jive_inline_lambda_apply(jive_node * apply_node);
 
 bool
-jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self);
+jive_lambda_node_remove_dead_parameters(const jive_node * self);
 
 /* lambda instantiation */
 

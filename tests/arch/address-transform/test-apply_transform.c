@@ -43,7 +43,7 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_apply_node_address_transform((const jive_apply_node *)results[0]->node(), 32);
+	jive_apply_node_address_transform(results[0]->node(), 32);
 
 	jive_view(graph, stdout);
 

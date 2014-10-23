@@ -310,7 +310,7 @@ jive_arrayindex_node_address_transform(jive_arrayindex_node * node, jive_memlayo
 }
 
 void
-jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits)
+jive_apply_node_address_transform(const jive_node * node, size_t nbits)
 {
 	jive::input * fct = node->inputs[0];
 
@@ -340,7 +340,7 @@ jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits)
 }
 
 void
-jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
+jive_lambda_node_address_transform(const jive_node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(node->noutputs == 1);
 
@@ -352,9 +352,9 @@ jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
 	if (!type_contains_address(type))
 		return;
 
-	jive_node * enter = jive_lambda_node_get_enter_node(node);
-	jive_node * leave = jive_lambda_node_get_leave_node(node);
-	jive_region * region = jive_lambda_node_get_region(node);
+	jive_region * region = jive_node_anchored_region(node, 0);
+	jive_node * enter = region->top;
+	jive_node * leave = region->bottom;
 
 	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
 	std::unique_ptr<jive::base::type> new_fcttype_(convert_address_to_bitstring_type(*fcttype, nbits));
@@ -415,9 +415,9 @@ convert_regions(const struct jive_region * region, jive_memlayout_mapper * mappe
 
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 
-	jive_lambda_node * lambda = dynamic_cast<jive_lambda_node *>(anchor);
-	if (lambda)
-		jive_lambda_node_address_transform(lambda, nbits);
+	if (dynamic_cast<const jive::fct::lambda_op *>(&anchor->operation())) {
+		jive_lambda_node_address_transform(anchor, nbits);
+	}
 }
 
 void
@@ -446,8 +446,8 @@ jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
 			jive_store_node_address_transform(node, *op, nbits);
 		} else if (auto tmp = dynamic_cast<jive_call_node *>(node)) {
 			jive_call_node_address_transform(tmp, nbits);
-		} else if (auto tmp = dynamic_cast<jive_apply_node *>(node)) {
-			jive_apply_node_address_transform(tmp, nbits);
+		} else if (auto op = dynamic_cast<const jive::fct::apply_op *>(&node->operation())) {
+			jive_apply_node_address_transform(node, nbits);
 		}
 	}
 

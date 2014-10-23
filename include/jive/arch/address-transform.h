@@ -208,10 +208,10 @@ jive_call_node_address_transform(jive_call_node * node,
 	size_t nbits);
 
 void
-jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits);
+jive_lambda_node_address_transform(const jive_node * node, size_t nbits);
 
 void
-jive_apply_node_address_transform(const jive_apply_node * node, size_t nbits);
+jive_apply_node_address_transform(const jive_node * node, size_t nbits);
 
 void
 jive_memberof_node_address_transform(jive_memberof_node * node,

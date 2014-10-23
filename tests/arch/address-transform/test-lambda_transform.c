@@ -1,4 +1,5 @@
 /*
+ * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -40,7 +41,7 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_lambda_node_address_transform((const jive_lambda_node *)fct->node(), 32);
+	jive_lambda_node_address_transform(fct->node(), 32);
 
 	jive_view(graph, stdout);
 

@@ -57,8 +57,6 @@ private:
 }
 }
 
-typedef jive::operation_node<jive::fct::apply_op> jive_apply_node;
-
 std::vector<jive::output *>
 jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[]);
 

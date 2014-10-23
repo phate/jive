@@ -25,8 +25,6 @@ typedef base::domain_symbol_op<jive::fct::type>
 }
 }
 
-typedef jive::operation_node<jive::fct::symbol_op> jive_symbolicfunction_node;
-
 jive::output *
 jive_symbolicfunction_create(
 	jive_graph * graph, const char * name, const jive::fct::type * type);
