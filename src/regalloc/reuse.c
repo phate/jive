@@ -167,46 +167,11 @@ gate::gate(const jive_resource_name * name, jive_graph * graph, const char name_
 
 /* structures for tracking current active set and users */
 
-typedef struct jive_node_vector jive_node_vector;
-struct jive_node_vector {
-	size_t nitems, space;
-	jive_node ** items;
-};
-
-static inline void
-jive_node_vector_init(jive_node_vector * self)
-{
-	self->nitems = self->space = 0;
-	self->items = 0;
-}
-
-static inline void
-jive_node_vector_fini(jive_node_vector * self, jive_context * context)
-{
-	jive_context_free(context, self->items);
-}
-
-static inline void
-jive_node_vector_clear(jive_node_vector * self)
-{
-	self->nitems = 0;
-}
-
-static inline void
-jive_node_vector_push_back(jive_node_vector * self, jive_node * node, jive_context * context)
-{
-	if (self->nitems == self->space) {
-		self->space = self->space * 2 + 1;
-		self->items = jive_context_realloc(context, self->items, sizeof(self->items[0]) * self->space);
-	}
-	self->items[self->nitems ++] = node;
-}
-
 typedef struct jive_used_name jive_used_name;
 struct jive_used_name {
 	const jive_resource_name * name;
-	jive_node_vector read;
-	jive_node_vector clobber;
+	std::vector<jive_node*> read;
+	std::vector<jive_node*> clobber;
 	size_t read_count, write_count;
 	struct {
 		jive_used_name * prev;
@@ -231,7 +196,6 @@ typedef jive::detail::intrusive_hash<
 
 typedef struct jive_names_use jive_names_use;
 struct jive_names_use {
-	jive_context * context;
 	jive_used_name_hash hash;
 	struct {
 		jive_used_name * first;
@@ -242,7 +206,6 @@ struct jive_names_use {
 static void
 jive_names_use_init(jive_names_use * self, jive_context * context)
 {
-	self->context = context;
 	self->list.first = self->list.last = 0;
 }
 
@@ -256,8 +219,6 @@ jive_names_use_lookup(jive_names_use * self, const jive_resource_name * name)
 	if (i == self->hash.end()) {
 		used_name = new jive_used_name;
 		used_name->name = name;
-		jive_node_vector_init(&used_name->read);
-		jive_node_vector_init(&used_name->clobber);
 		used_name->read_count = 0;
 		used_name->write_count = 0;
 		JIVE_LIST_PUSH_BACK(self->list, used_name, used_names_list);
@@ -274,9 +235,6 @@ jive_names_use_fini(jive_names_use * self)
 {
 	while (self->list.first) {
 		jive_used_name * used_name = self->list.first;
-		jive_context * context = self->context;
-		jive_node_vector_fini(&used_name->read, context);
-		jive_node_vector_fini(&used_name->clobber, context);
 		self->hash.erase(used_name);
 		JIVE_LIST_REMOVE(self->list, used_name, used_names_list);
 		delete used_name;
@@ -288,7 +246,7 @@ jive_names_use_read(jive_names_use * self, const jive_resource_name * name, jive
 {
 	jive_used_name * used_name = jive_names_use_lookup(self, name);
 	
-	jive_node_vector_push_back(&used_name->read, node, self->context);
+	used_name->read.push_back(node);
 	used_name->read_count ++;
 }
 
@@ -299,14 +257,14 @@ jive_names_use_clobber(jive_names_use * self, const jive_resource_name * name, j
 	
 	jive::reuse::type type(name);
 	size_t n;
-	for (n = 0; n < used_name->read.nitems; n++) {
-		jive_node * before = used_name->read.items[n];
+	for (n = 0; n < used_name->read.size(); n++) {
+		jive_node * before = used_name->read[n];
 		
 		if (node != before)
 			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
 	
-	jive_node_vector_push_back(&used_name->clobber, node, self->context);
+	used_name->clobber.push_back(node);
 	used_name->write_count ++;
 }
 
@@ -318,19 +276,19 @@ jive_names_use_write(jive_names_use * self, const jive_resource_name * name, jiv
 	jive::reuse::type type(name);
 	
 	size_t n;
-	for (n = 0; n < used_name->read.nitems; n++) {
-		jive_node * before = used_name->read.items[n];
+	for (n = 0; n < used_name->read.size(); n++) {
+		jive_node * before = used_name->read[n];
 		if (node != before)
 			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
-	for (n = 0; n < used_name->clobber.nitems; n++) {
-		jive_node * before = used_name->clobber.items[n];
+	for (n = 0; n < used_name->clobber.size(); n++) {
+		jive_node * before = used_name->clobber[n];
 		if (node != before)
 			jive_node_add_input(node, &type, jive_node_add_output(before, &type));
 	}
-	
-	jive_node_vector_clear(&used_name->read);
-	jive_node_vector_clear(&used_name->clobber);
+
+	used_name->read.clear();
+	used_name->clobber.clear();
 	used_name->write_count ++;
 }
 
