@@ -8,7 +8,6 @@
 
 #include <jive/context.h>
 #include <jive/arch/memlayout.h>
-#include <jive/util/rangemap.h>
 
 #include <unordered_map>
 
@@ -16,19 +15,12 @@
 
 typedef struct jive_memlayout_mapper_cached jive_memlayout_mapper_cached;
 
-typedef struct jive_memlayout_bitstring_map jive_memlayout_bitstring_map;
-
-JIVE_DECLARE_RANGEMAP_TYPE(jive_memlayout_bitstring_map, jive_dataitem_memlayout *, NULL);
 struct jive_memlayout_mapper_cached {
 	jive_memlayout_mapper base;
-	jive_context * context;
 	std::unordered_map<const jive::rcd::declaration*, jive_record_memlayout> record_map;
 	std::unordered_map<const jive::unn::declaration*, jive_union_memlayout> union_map;
-	jive_memlayout_bitstring_map bitstring_map;
+	std::unordered_map<size_t, jive_dataitem_memlayout> bitstring_map;
 };
-
-void
-jive_memlayout_mapper_cached_init_(jive_memlayout_mapper_cached * self, jive_context * context);
 
 void
 jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self);
@@ -41,7 +33,7 @@ struct jive_union_memlayout *
 jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self,
 	const jive::unn::declaration * decl);
 
-struct jive_dataitem_memlayout **
+struct jive_dataitem_memlayout *
 jive_memlayout_mapper_cached_map_bitstring_(jive_memlayout_mapper_cached * self, size_t nbits);
 
 struct jive_record_memlayout *

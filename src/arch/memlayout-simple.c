@@ -10,29 +10,11 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 
-JIVE_DEFINE_RANGEMAP_TYPE(jive_memlayout_bitstring_map, jive_dataitem_memlayout *, NULL);
-
-void
-jive_memlayout_mapper_cached_init_(jive_memlayout_mapper_cached * self, jive_context * context)
-{
-	self->context = context;
-	jive_memlayout_bitstring_map_init(&self->bitstring_map);
-}
-
 void
 jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self)
 {
 	for (auto i : self->record_map)
 		delete[] i.second.element;
-
-	ssize_t k;
-	for (k = self->bitstring_map.low; k < self->bitstring_map.high; k++) {
-		jive_dataitem_memlayout ** playout = jive_memlayout_bitstring_map_lookup(&self->bitstring_map, k);
-		if (*playout)
-			delete *playout;
-	}
-
-	jive_memlayout_bitstring_map_fini(&self->bitstring_map);
 }
 
 jive_record_memlayout *
@@ -57,10 +39,14 @@ jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self,
 		return NULL;
 }
 
-struct jive_dataitem_memlayout **
+struct jive_dataitem_memlayout *
 jive_memlayout_mapper_cached_map_bitstring_(jive_memlayout_mapper_cached * self, size_t nbits)
 {
-	return jive_memlayout_bitstring_map_lookup(&self->bitstring_map, nbits);
+	auto i = self->bitstring_map.find(nbits);
+	if (i != self->bitstring_map.end())
+		return &i->second;
+	else
+		return nullptr;
 }
 
 jive_record_memlayout *
@@ -161,32 +147,35 @@ jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_
 {
 	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
 	
-	jive_dataitem_memlayout ** layout = jive_memlayout_mapper_cached_map_bitstring_(&self->base, nbits);
+	jive_dataitem_memlayout * item = jive_memlayout_mapper_cached_map_bitstring_(&self->base, nbits);
+	if (item)
+		return item;
 	
-	if (!*layout) {
-		*layout = new jive_dataitem_memlayout;
-		
-		if (nbits > self->bits_per_word)
-			nbits = (nbits + self->bits_per_word - 1) & ~ (self->bits_per_word - 1);
-		else if (nbits <= 8)
-			nbits = 8;
-		else if (nbits <= 16)
-			nbits = 16;
-		else if (nbits <= 32)
-			nbits = 32;
-		else if (nbits <= 64)
-			nbits = 64;
-		else if (nbits <= 128)
-			nbits = 128;
-		
-		size_t total_size = nbits / 8;
-		(*layout)->total_size = total_size;
-		(*layout)->alignment = total_size;
-		if ((*layout)->alignment > self->bytes_per_word)
-			(*layout)->alignment = self->bytes_per_word;
-	}
+	jive_dataitem_memlayout layout;
+	if (nbits > self->bits_per_word)
+		nbits = (nbits + self->bits_per_word - 1) & ~ (self->bits_per_word - 1);
+	else if (nbits <= 8)
+		nbits = 8;
+	else if (nbits <= 16)
+		nbits = 16;
+	else if (nbits <= 32)
+		nbits = 32;
+	else if (nbits <= 64)
+		nbits = 64;
+	else if (nbits <= 128)
+		nbits = 128;
+	else
+		JIVE_DEBUG_ASSERT(0);
+
+	size_t total_size = nbits / 8;
+	layout.total_size = total_size;
+	layout.alignment = total_size;
+	if (layout.alignment > self->bytes_per_word)
+		layout.alignment = self->bytes_per_word;
+
+	self->base.bitstring_map[nbits] = layout;
 	
-	return *layout;
+	return &self->base.bitstring_map[nbits];
 }
 
 static const jive_dataitem_memlayout *
@@ -207,7 +196,6 @@ const jive_memlayout_mapper_class JIVE_MEMLAYOUT_MAPPER_SIMPLE = {
 void
 jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, jive_context * context, size_t bits_per_word)
 {
-	jive_memlayout_mapper_cached_init_(&self->base, context);
 	self->bits_per_word = bits_per_word;
 	self->bytes_per_word = bits_per_word / 8;
 	self->base.base.class_ = &JIVE_MEMLAYOUT_MAPPER_SIMPLE;
