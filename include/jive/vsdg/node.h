@@ -41,12 +41,18 @@ struct jive_region;
 struct jive_resource_class_count;
 struct jive_substitution_map;
 
-class jive_node {
+class jive_node final {
 public:
-	virtual ~jive_node() noexcept;
-	
-	virtual const jive::operation &
-	operation() const noexcept = 0;
+	inline jive_node(std::unique_ptr<jive::operation> op)
+		: operation_(std::move(op))
+	{
+	}
+
+	inline const jive::operation &
+	operation() const noexcept
+	{
+		return *operation_;
+	}
 
 	inline jive_node * producer(size_t index) const noexcept
 	{
@@ -83,48 +89,17 @@ public:
 	} graph_bottom_list;
 
 	std::vector<jive_tracker_nodestate*> tracker_slots;
+
+private:
+	std::unique_ptr<jive::operation> operation_;
 };
 
 namespace jive {
 
-// Define node representing a specific operation.
-template<typename Operation>
-class operation_node final : public jive_node {
-public:
-	virtual ~operation_node() noexcept {}
-
-	// Construct copying the operator.
-	operation_node(const Operation & operation)
-		: operation_(operation)
-	{}
-
-	// Construct moving the operator.
-	operation_node(Operation && operation) noexcept
-		: operation_(std::move(operation))
-	{}
-
-	virtual const Operation &
-	operation() const noexcept override
-	{
-		return operation_;
-	}
-
-private:
-	Operation operation_;
-};
-
-template<typename Operation>
-operation_node<Operation> *
-create_operation_node(const Operation & operation)
+inline jive_node *
+create_operation_node(const operation & op)
 {
-	return new operation_node<Operation>(operation);
-}
-
-template<typename Operation>
-operation_node<Operation> *
-create_operation_node(Operation && operation)
-{
-	return new operation_node<Operation>(std::move(operation));
+	return new jive_node(op.copy());
 }
 
 }

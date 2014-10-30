@@ -22,8 +22,6 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/variable.h>
 
-jive_node::~jive_node() noexcept {}
-
 static void
 jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
 {
