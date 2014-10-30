@@ -15,7 +15,8 @@
 #include <jive/context.h>
 
 #include <jive/arch/memorytype.h>
-#include <jive/util/rangemap.h>
+
+#include <unordered_map>
 
 const jive_resource_class_class JIVE_STACK_RESOURCE = {
 	parent : &JIVE_ABSTRACT_RESOURCE,
@@ -72,10 +73,9 @@ MAKE_STACKSLOT_CLASS(4, 4);
 MAKE_STACKSLOT_CLASS(8, 8);
 MAKE_STACKSLOT_CLASS(16, 16);
 
-static const jive_stackslot_size_class *
-jive_stackslot_size_class_create(size_t size, size_t alignment)
+static jive_stackslot_size_class *
+jive_stackslot_size_class_static(size_t size, size_t alignment)
 {
-	/* try statically allocated classes first */
 	if (size == alignment) {
 		switch(size) {
 			case 1: return &jive_stackslot_class_1_1;
@@ -84,10 +84,14 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 			case 8: return &jive_stackslot_class_8_8;
 			case 16: return &jive_stackslot_class_16_16;
 		}
-	};
-	
-	/* if requisite class not statically allocated, create it
-	dynamically */
+	}
+
+	return nullptr;
+}
+
+static jive_stackslot_size_class *
+jive_stackslot_size_class_create(size_t size, size_t alignment)
+{
 	char tmpname[80];
 	snprintf(tmpname, sizeof(tmpname), "stack_s%zda%zd", size, alignment);
 	
@@ -119,7 +123,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 jive_stackslot *
 jive_stackslot_create(const jive_resource_class * parent, long offset);
 
-static const jive_fixed_stackslot_class *
+static jive_fixed_stackslot_class *
 jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int offset)
 {
 	char tmpname[80];
@@ -163,7 +167,7 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	return cls;
 }
 
-static const jive_callslot_class *
+static jive_callslot_class *
 jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 {
 	char tmpname[80];
@@ -208,162 +212,191 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	return cls;
 }
 
-typedef struct jive_slot_offset_map jive_slot_offset_map;
-typedef struct jive_callslot_offset_map jive_callslot_offset_map;
 typedef struct jive_slot_alignment jive_slot_alignment;
-typedef struct jive_slot_alignment_map jive_slot_alignment_map;
-typedef struct jive_slot_size jive_slot_size;
-typedef struct jive_slot_size_map jive_slot_size_map;
-
-JIVE_DECLARE_RANGEMAP_TYPE(jive_slot_offset_map, const jive_fixed_stackslot_class *, NULL);
-JIVE_DEFINE_RANGEMAP_TYPE(jive_slot_offset_map, const jive_fixed_stackslot_class *, NULL);
-JIVE_DECLARE_RANGEMAP_TYPE(jive_callslot_offset_map, const jive_callslot_class *, NULL);
-JIVE_DEFINE_RANGEMAP_TYPE(jive_callslot_offset_map, const jive_callslot_class *, NULL);
-
 struct jive_slot_alignment {
-	jive_slot_offset_map slot_by_offset;
-	jive_callslot_offset_map callslot_by_offset;
-	const jive_stackslot_size_class * cls;
+	jive_slot_alignment()
+		: cls(nullptr)
+	{}
+
+	~jive_slot_alignment() noexcept
+	{
+		if (cls && !jive_stackslot_size_class_static(cls->size, cls->alignment)) {
+			free((char *)cls->base.name);
+			free(cls);
+		}
+
+		for (auto i = stackslot_offset_map.begin(); i != stackslot_offset_map.end(); i++) {
+			free((char *)i->second->base.base.name);
+			free(i->second->slot);
+			free(i->second);
+		}
+
+		for (auto i = callslot_offset_map.begin(); i != callslot_offset_map.end(); i++) {
+			free((char *)i->second->base.base.name);
+			free(i->second->slot);
+			free(i->second);
+		}
+	}
+
+	jive_fixed_stackslot_class *
+	lookup_stackslot(ssize_t offset)
+	{
+		auto i = stackslot_offset_map.find(offset);
+		if (i != stackslot_offset_map.end())
+			return i->second;
+		else
+			return nullptr;
+	}
+
+	jive_callslot_class *
+	lookup_callslot(ssize_t offset)
+	{
+		auto i = callslot_offset_map.find(offset);
+		if (i != callslot_offset_map.end())
+			return i->second;
+		else
+			return nullptr;
+	}
+
+	jive_stackslot_size_class * cls;
+	std::unordered_map<ssize_t, jive_fixed_stackslot_class*> stackslot_offset_map;
+	std::unordered_map<ssize_t, jive_callslot_class*> callslot_offset_map;
 };
 
-#define JIVE_SLOT_ALIGNMENT_INITIALIZER \
-	(jive_slot_alignment) { JIVE_RANGEMAP_INITIALIZER, JIVE_RANGEMAP_INITIALIZER, NULL }
-
-JIVE_DECLARE_RANGEMAP_TYPE(jive_slot_alignment_map, jive_slot_alignment, JIVE_SLOT_ALIGNMENT_INITIALIZER);
-JIVE_DEFINE_RANGEMAP_TYPE(jive_slot_alignment_map, jive_slot_alignment, JIVE_SLOT_ALIGNMENT_INITIALIZER);
-
+typedef struct jive_slot_size jive_slot_size;
 struct jive_slot_size {
-	jive_slot_alignment_map by_alignment;
+	jive_slot_alignment *
+	create_or_lookup_slot_alignment(size_t alignment)
+	{
+		auto i = slot_alignment_map.find(alignment);
+		if (i != slot_alignment_map.end())
+			return &i->second;
+
+		slot_alignment_map[alignment] = jive_slot_alignment();
+		return &slot_alignment_map[alignment];
+	}
+
+	std::unordered_map<size_t, jive_slot_alignment> slot_alignment_map;
 };
-
-#define JIVE_SLOT_SIZE_INITIALIZER \
-	(jive_slot_size) { JIVE_RANGEMAP_INITIALIZER }
-
-JIVE_DECLARE_RANGEMAP_TYPE(jive_slot_size_map, jive_slot_size, JIVE_SLOT_SIZE_INITIALIZER)
-JIVE_DEFINE_RANGEMAP_TYPE(jive_slot_size_map, jive_slot_size, JIVE_SLOT_SIZE_INITIALIZER)
-
-static const jive_stackslot_size_class *
-lookup_or_create_size_class(jive_slot_size_map * self, size_t size, size_t alignment)
-{
-	jive_slot_size * by_size = jive_slot_size_map_lookup(self, size);
-	if (!by_size)
-		return NULL;
-	
-	jive_slot_alignment * by_alignment = jive_slot_alignment_map_lookup(&by_size->by_alignment, alignment);
-	if (!by_alignment)
-		return NULL;
-	
-	if (!by_alignment->cls) {
-		const jive_stackslot_size_class * cls = jive_stackslot_size_class_create(size, alignment);
-		if (!cls)
-			return 0;
-		by_alignment->cls = cls;
-	}
-	
-	return by_alignment->cls;
-}
-
-static const jive_fixed_stackslot_class *
-lookup_or_create_stackslot_class(jive_slot_size_map * self, size_t size, size_t alignment, ssize_t offset)
-{
-	JIVE_DEBUG_ASSERT((offset & (alignment - 1)) == 0);
-	jive_slot_size * by_size = jive_slot_size_map_lookup(self, size);
-	if (!by_size)
-		return NULL;
-	
-	jive_slot_alignment * by_alignment = jive_slot_alignment_map_lookup(&by_size->by_alignment, alignment);
-	if (!by_alignment)
-		return NULL;
-	
-	const jive_fixed_stackslot_class ** pcls = jive_slot_offset_map_lookup(&by_alignment->slot_by_offset, offset);
-	if (!*pcls) {
-		const jive_stackslot_size_class * parent = by_alignment->cls;
-		if (!parent) {
-			parent = jive_stackslot_size_class_create(size, alignment);
-			if (!parent)
-				return NULL;
-			by_alignment->cls = parent;
-		}
-		
-		const jive_fixed_stackslot_class * cls = jive_fixed_stackslot_class_create(parent, offset);
-		if (!cls)
-			return NULL;
-		*pcls = cls;
-	}
-	
-	return *pcls;
-}
-
-static const jive_callslot_class *
-lookup_or_create_callslot_class(jive_slot_size_map * self, size_t size, size_t alignment, ssize_t offset)
-{
-	JIVE_DEBUG_ASSERT((offset & (alignment - 1)) == 0);
-	jive_slot_size * by_size = jive_slot_size_map_lookup(self, size);
-	if (!by_size)
-		return NULL;
-	
-	jive_slot_alignment * by_alignment = jive_slot_alignment_map_lookup(&by_size->by_alignment, alignment);
-	if (!by_alignment)
-		return NULL;
-	
-	const jive_callslot_class ** pcls = jive_callslot_offset_map_lookup(&by_alignment->callslot_by_offset, offset);
-	if (!*pcls) {
-		const jive_stackslot_size_class * parent = by_alignment->cls;
-		if (!parent) {
-			parent = jive_stackslot_size_class_create(size, alignment);
-			if (!parent)
-				return NULL;
-			by_alignment->cls = parent;
-		}
-		
-		const jive_callslot_class * cls = jive_callslot_class_create(parent, offset);
-		if (!cls)
-			return NULL;
-		*pcls = cls;
-	}
-	
-	return *pcls;
-}
 
 typedef struct jive_stackslot_class_map jive_stackslot_class_map;
-
 struct jive_stackslot_class_map {
+	jive_stackslot_class_map()
+		: lock(PTHREAD_MUTEX_INITIALIZER)
+	{}
+
+	jive_slot_size *
+	create_or_lookup_slot_size(size_t size)
+	{
+		auto i = slot_size_map.find(size);
+		if (i != slot_size_map.end())
+			return &i->second;
+
+		slot_size_map[size] = jive_slot_size();
+		return &slot_size_map[size];
+	}
+
 	pthread_mutex_t lock;
-	jive_slot_size_map map;
+	std::unordered_map<size_t, jive_slot_size> slot_size_map;
 };
 
 static const jive_stackslot_size_class *
-jive_stackslot_class_map_lookup_or_create_by_alignment(jive_stackslot_class_map * self, size_t size, size_t alignment)
+jive_stackslot_class_map_lookup_or_create_by_alignment(jive_stackslot_class_map * self, size_t size,
+	size_t alignment)
 {
 	pthread_mutex_lock(&self->lock);
-	const jive_stackslot_size_class * cls = lookup_or_create_size_class(&self->map, size, alignment);
-	pthread_mutex_unlock(&self->lock);
 	
-	return cls;
+	jive_slot_size * slot_size = self->create_or_lookup_slot_size(size);
+	jive_slot_alignment * slot_alignment = slot_size->create_or_lookup_slot_alignment(alignment);
+	
+	if (!slot_alignment->cls) {
+		jive_stackslot_size_class * cls = jive_stackslot_size_class_static(size, alignment);
+		if (!cls)
+			cls = jive_stackslot_size_class_create(size, alignment);
+
+		if (!cls)
+			return nullptr;
+		slot_alignment->cls = cls;
+	}
+
+	pthread_mutex_unlock(&self->lock);
+
+	return slot_alignment->cls;
 }
 
 static const jive_fixed_stackslot_class *
-jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size, size_t alignment, ssize_t offset)
+jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size,
+	size_t alignment, ssize_t offset)
 {
+	JIVE_DEBUG_ASSERT((offset & (alignment - 1)) == 0);
+	
 	pthread_mutex_lock(&self->lock);
-	const jive_fixed_stackslot_class * cls = lookup_or_create_stackslot_class(&self->map, size, alignment, offset);
+	
+	jive_slot_size * slot_size = self->create_or_lookup_slot_size(size);
+	jive_slot_alignment * slot_alignment = slot_size->create_or_lookup_slot_alignment(alignment);
+	
+	jive_fixed_stackslot_class * cls = slot_alignment->lookup_stackslot(offset);
+	if (!cls) {
+		jive_stackslot_size_class * parent = slot_alignment->cls;
+		if (!parent) {
+			parent = jive_stackslot_size_class_static(size, alignment);
+			if (!parent)
+				parent = jive_stackslot_size_class_create(size, alignment);
+
+			if (!parent)
+				return nullptr;
+			slot_alignment->cls = parent;
+		}
+		
+		cls = jive_fixed_stackslot_class_create(parent, offset);
+		if (!cls)
+			return nullptr;
+
+		slot_alignment->stackslot_offset_map[offset] = cls;
+	}
+
 	pthread_mutex_unlock(&self->lock);
+
 	return cls;
 }
 
 static const jive_callslot_class *
-jive_callslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size, size_t alignment, ssize_t offset)
+jive_callslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * self, size_t size,
+	size_t alignment, ssize_t offset)
 {
+	JIVE_DEBUG_ASSERT((offset & (alignment - 1)) == 0);
+
 	pthread_mutex_lock(&self->lock);
-	const jive_callslot_class * cls = lookup_or_create_callslot_class(&self->map, size, alignment, offset);
+
+	jive_slot_size * slot_size = self->create_or_lookup_slot_size(size);
+	jive_slot_alignment * slot_alignment = slot_size->create_or_lookup_slot_alignment(alignment);
+	
+	jive_callslot_class * cls = slot_alignment->lookup_callslot(offset);
+	if (!cls) {
+		jive_stackslot_size_class * parent = slot_alignment->cls;
+		if (!parent) {
+			parent = jive_stackslot_size_class_static(size, alignment);
+			if (!parent)
+				parent = jive_stackslot_size_class_create(size, alignment);
+
+			if (!parent)
+				return nullptr;
+			slot_alignment->cls = parent;
+		}
+		
+		cls = jive_callslot_class_create(parent, offset);
+		if (!cls)
+			return nullptr;
+
+		slot_alignment->callslot_offset_map[offset] = cls;
+	}
+
 	pthread_mutex_unlock(&self->lock);
+
 	return cls;
 }
 
-static jive_stackslot_class_map class_map = {
-	lock : PTHREAD_MUTEX_INITIALIZER,
-	map : JIVE_RANGEMAP_INITIALIZER,
-};
+static jive_stackslot_class_map class_map;
 
 const jive_resource_class *
 jive_stackslot_size_class_get(size_t size, size_t alignment)
