@@ -111,13 +111,7 @@ public:
 		size_t narguments,
 		jive::output * const arguments[]) const override
 	{
-		operation_node<domain_const_op> * node =
-			jive::create_operation_node(*this);
-		const base::type * result_types[1] = { &result_type(0) };
-		jive_node_init_(node, region,
-			0, nullptr, nullptr,
-			1, result_types);
-		return node;
+		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	virtual const type &
@@ -189,13 +183,7 @@ public:
 		size_t narguments,
 		jive::output * const arguments[]) const override
 	{
-		operation_node<domain_symbol_op> * node =
-			jive::create_operation_node(*this);
-		const base::type * result_types[1] = { &result_type(0) };
-		jive_node_init_(node, region,
-			0, nullptr, nullptr,
-			1, result_types);
-		return node;
+		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	virtual const type &
