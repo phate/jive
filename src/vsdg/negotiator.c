@@ -12,6 +12,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/traverser.h>
 
@@ -69,21 +70,7 @@ negotiator_split_operation::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	negotiator_split_node * node = new negotiator_split_node(*this);
-
-	const jive::base::type * argument_type = &input_type();
-	const jive::base::type * result_type = &output_type();
-	jive_node_init_(node, region,
-		1, &argument_type, arguments,
-		1, &result_type);
-	
-	node->negotiator = negotiator();
-	JIVE_LIST_PUSH_BACK(node->negotiator->split_nodes, node, split_node_list);
-	
-	jive_negotiator_annotate_simple_input(node->negotiator, node->inputs[0], &input_option());
-	jive_negotiator_annotate_simple_output(node->negotiator, node->outputs[0], &output_option());
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 
@@ -114,28 +101,6 @@ negotiator_split_operation::copy() const
 	return std::unique_ptr<jive::operation>(new negotiator_split_operation(*this));
 }
 
-/* split node */
-
-negotiator_split_node::~negotiator_split_node() noexcept
-{
-	detach();
-}
-
-const negotiator_split_operation &
-negotiator_split_node::operation() const noexcept
-{
-	return op_;
-}
-
-void
-negotiator_split_node::detach() noexcept
-{
-	if (negotiator) {
-		JIVE_LIST_REMOVE(negotiator->split_nodes, this, split_node_list);
-		negotiator = nullptr;
-	}
-}
-
 }
 
 static jive::output *
@@ -145,17 +110,20 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 {
 	jive_graph * graph = operand->node()->region->graph;
 	
-	/* all members are used "const", but since the structure also
-	represents the attributes of a live node, they cannot be qualified
-	as such */
 	jive::negotiator_split_operation op(
 		negotiator,
 		*operand_type, *input_option,
 		*output_type, *output_option);
-	
-	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		graph, typeid(jive::negotiator_split_operation));
-	return nf->normalized_create(op, {operand})[0];
+
+	// Directly create node without going through normalization -- at this
+	// point, normalization *must* not interfere in any way.
+	jive_node * node = op.create_node(operand->node()->region, 1, &operand);
+	jive_graph_mark_denormalized(node->graph);
+
+	jive_negotiator_annotate_simple_input(negotiator, node->inputs[0], input_option);
+	jive_negotiator_annotate_simple_output(negotiator, node->outputs[0], output_option);
+
+	return node->outputs[0];
 }
 
 /* constraints */
@@ -426,6 +394,28 @@ jive_negotiator_identity_constraint_create(jive_negotiator * self)
 	return constraint;
 }
 
+/* glue code */
+
+static void
+jive_negotiator_on_node_create_(
+	void * closure,
+	jive_node * node)
+{
+	jive_negotiator * self = (jive_negotiator *) closure;
+	if (dynamic_cast<const jive::negotiator_split_operation *>(&node->operation())) {
+		self->split_nodes.insert(node);
+	}
+}
+
+static void
+jive_negotiator_on_node_destroy_(
+	void * closure,
+	jive_node * node)
+{
+	jive_negotiator * self = (jive_negotiator *) closure;
+	self->split_nodes.erase(node);
+}
+
 /* negotiator high-level interface */
 
 void
@@ -441,21 +431,24 @@ jive_negotiator_init_(
 	self->validated_connections.first = self->validated_connections.last = 0;
 	self->invalidated_connections.first = self->invalidated_connections.last = 0;
 	self->constraints.first = self->constraints.last = 0;
-	self->split_nodes.first = self->split_nodes.last = 0;
 	self->unspecialized_ports.first = self->unspecialized_ports.last = 0;
 	self->specialized_ports.first = self->specialized_ports.last = 0;
 	
 	self->tmp_option = jive_negotiator_option_create(self);
+	
+	self->node_create_callback = jive_node_notifier_slot_connect(
+		&graph->on_node_create, jive_negotiator_on_node_create_, self);
+	self->node_destroy_callback = jive_node_notifier_slot_connect(
+		&graph->on_node_destroy, jive_negotiator_on_node_destroy_, self);
 }
 
 void
 jive_negotiator_fini_(jive_negotiator * self)
 {
-	delete self->tmp_option;
+	jive_notifier_disconnect(self->node_create_callback);
+	jive_notifier_disconnect(self->node_destroy_callback);
 	
-	while (self->split_nodes.first) {
-		self->split_nodes.first->detach();
-	}
+	delete self->tmp_option;
 	
 	while(self->constraints.first) {
 		jive_negotiator_constraint * constraint = self->constraints.first;
@@ -770,13 +763,15 @@ jive_negotiator_insert_split_nodes(jive_negotiator * self)
 void
 jive_negotiator_remove_split_nodes(jive_negotiator * self)
 {
-	while (self->split_nodes.first) {
-		jive_node * split_node = self->split_nodes.first;
-		jive_negotiator_port * input_port = jive_negotiator_map_input(self, split_node->inputs[0]);
-		jive_negotiator_port * output_port = jive_negotiator_map_output(self, split_node->outputs[0]);
+	auto i = self->split_nodes.begin();
+	while (i != self->split_nodes.end()) {
+		jive_node * node = *i;
+		++i;
+		jive_negotiator_port * input_port = jive_negotiator_map_input(self, node->inputs[0]);
+		jive_negotiator_port * output_port = jive_negotiator_map_output(self, node->outputs[0]);
 		jive_negotiator_port_destroy(input_port);
 		jive_negotiator_port_destroy(output_port);
-		jive_output_replace(split_node->outputs[0], split_node->inputs[0]->origin());
-		jive_node_destroy(split_node);
+		jive_output_replace(node->outputs[0], node->inputs[0]->origin());
+		jive_node_destroy(node);
 	}
 }

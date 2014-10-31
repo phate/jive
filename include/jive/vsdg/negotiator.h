@@ -6,7 +6,7 @@
 #ifndef JIVE_VSDG_NEGOTIATOR_H
 #define JIVE_VSDG_NEGOTIATOR_H
 
-#include <stdbool.h>
+#include <unordered_set>
 
 #include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/node.h>
@@ -147,33 +147,6 @@ private:
 	std::unique_ptr<jive_negotiator_option> input_option_;
 	std::unique_ptr<jive::base::type> output_type_;
 	std::unique_ptr<jive_negotiator_option> output_option_;
-};
-
-class negotiator_split_node : public jive_node {
-public:
-	virtual
-	~negotiator_split_node() noexcept;
-
-	inline negotiator_split_node(
-		const negotiator_split_operation & op)
-		: op_(op)
-	{
-	}
-
-	virtual const negotiator_split_operation &
-	operation() const noexcept override;
-
-	void detach() noexcept;
-
-	struct {
-		negotiator_split_node * prev;
-		negotiator_split_node * next;
-	} split_node_list;
-
-	jive_negotiator * negotiator;
-
-private:
-	negotiator_split_operation op_;
 };
 
 }
@@ -457,10 +430,10 @@ struct jive_negotiator {
 		jive_negotiator_constraint * last;
 	} constraints;
 	
-	struct {
-		jive::negotiator_split_node * first;
-		jive::negotiator_split_node * last;
-	} split_nodes;
+	std::unordered_set<jive_node *> split_nodes;
+	
+	jive_notifier * node_create_callback;
+	jive_notifier * node_destroy_callback;
 	
 	struct {
 		jive_negotiator_port * first;
