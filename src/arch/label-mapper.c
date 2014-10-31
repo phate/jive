@@ -14,7 +14,7 @@ typedef struct jive_label_name_mapper_simple jive_label_name_mapper_simple;
 
 struct jive_anon_label {
 	const void * symbol;
-	char * name;
+	std::string name;
 };
 
 struct jive_label_name_mapper_simple {
@@ -31,12 +31,6 @@ static void
 jive_label_name_mapper_simple_destroy_(jive_label_name_mapper * self_)
 {
 	jive_label_name_mapper_simple * self = (jive_label_name_mapper_simple *) self_;
-
-	for (auto i = self->anon_labels.begin(); i != self->anon_labels.end();) {
-		jive_context_free(self->context, i->second.name);
-		i = self->anon_labels.erase(i);
-	}
-
 	delete self;
 }
 
@@ -56,12 +50,12 @@ jive_label_name_mapper_simple_map_anon_symbol_(
 		
 		char name[80];
 		snprintf(name, sizeof(name), ".L%zd", ++self->int_label_seqno);
-		entry.name = jive_context_strdup(self->context, name);
-		
+		entry.name = name;
+
 		self->anon_labels[symbol] = entry;
 	}
 	
-	return entry.name;
+	return entry.name.c_str();
 }
 
 static const char *
