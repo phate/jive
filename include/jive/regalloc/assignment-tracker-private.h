@@ -9,6 +9,7 @@
 #include <jive/context.h>
 #include <jive/regalloc/assignment-tracker.h>
 #include <jive/regalloc/shaped-variable.h>
+#include <jive/util/list.h>
 #include <jive/vsdg/resource.h>
 
 #include <jive/common.h>

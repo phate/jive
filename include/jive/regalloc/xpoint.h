@@ -6,9 +6,7 @@
 #ifndef JIVE_REGALLOC_XPOINT_H
 #define JIVE_REGALLOC_XPOINT_H
 
-#include <jive/util/hash.h>
 #include <jive/util/intrusive-hash.h>
-
 #include <jive/vsdg/resource.h>
 
 namespace jive {

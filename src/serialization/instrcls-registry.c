@@ -11,6 +11,15 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/node.h>
 
+static inline size_t
+jive_ptr_hash(const void * ptr)
+{
+	/* FIXME: hm, ideally I would like to "rotate" instead of "shifting"... */
+	size_t hash = (size_t) ptr;
+	hash ^= (hash >> 20) ^ (hash >> 12);
+	return hash ^ (hash >> 7) ^ (hash >> 4);
+}
+
 typedef struct jive_instrcls_tag_bucket jive_instrcls_tag_bucket;
 struct jive_instrcls_tag_bucket {
 	jive_serialization_instrcls * first;

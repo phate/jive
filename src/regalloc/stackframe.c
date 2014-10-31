@@ -14,7 +14,6 @@
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable-private.h>
-#include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/traverser.h>

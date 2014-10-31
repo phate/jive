@@ -2,7 +2,6 @@ TESTS += \
 	util/test-bitstring \
 	util/test-double \
 	util/test-float \
-	util/test-hash \
 	util/test-intrusive-hash \
 	util/test-intrusive-list \
 	util/test-math \

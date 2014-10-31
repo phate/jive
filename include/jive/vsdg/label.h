@@ -10,7 +10,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <jive/util/hash.h>
 #include <jive/vsdg/node.h>
 
 namespace jive {

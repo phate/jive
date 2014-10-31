@@ -10,6 +10,7 @@
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-variable.h>
+#include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>

@@ -7,11 +7,19 @@
 
 #include <jive/context.h>
 #include <jive/internal/compiler.h>
-#include <jive/util/hash.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/resource-private.h>
+
+static inline size_t
+jive_ptr_hash(const void * ptr)
+{
+	/* FIXME: hm, ideally I would like to "rotate" instead of "shifting"... */
+	size_t hash = (size_t) ptr;
+	hash ^= (hash >> 20) ^ (hash >> 12);
+	return hash ^ (hash >> 7) ^ (hash >> 4);
+}
 
 const jive_resource_class *
 jive_resource_class_union(const jive_resource_class * self, const jive_resource_class * other)
