@@ -12,6 +12,8 @@
 
 #include <jive/common.h>
 
+#include <vector>
+
 struct jive_context;
 struct jive_graph;
 
@@ -165,7 +167,7 @@ struct jive_resource_class_count_bucket {
 
 struct jive_resource_class_count {
 	size_t nitems, nbuckets, mask;
-	jive_resource_class_count_bucket * buckets;
+	std::vector<jive_resource_class_count_bucket> buckets;
 	struct {
 		jive_resource_class_count_item * first;
 		jive_resource_class_count_item * last;

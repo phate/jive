@@ -127,9 +127,9 @@ rehash(jive_resource_class_count * self)
 	size_t new_nbuckets = self->nbuckets * 2;
 	if (!new_nbuckets)
 		new_nbuckets = 4;
-	
-	self->buckets = jive_context_realloc(self->context, self->buckets, sizeof(self->buckets[0]) * new_nbuckets);
-	
+
+	self->buckets.resize(new_nbuckets);
+
 	size_t n;
 	for(n=0; n<new_nbuckets; n++)
 		self->buckets[n].first = self->buckets[n].last = 0;

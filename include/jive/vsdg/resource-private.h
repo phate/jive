@@ -18,7 +18,6 @@ static inline void
 jive_resource_class_count_init(jive_resource_class_count * self, struct jive_context * context)
 {
 	self->nitems = self->nbuckets = self->mask = 0;
-	self->buckets = 0;
 	self->items.first = self->items.last = 0;
 	self->context = context;
 }
@@ -26,10 +25,8 @@ jive_resource_class_count_init(jive_resource_class_count * self, struct jive_con
 static inline void
 jive_resource_class_count_fini(jive_resource_class_count * self)
 {
-	if (self->buckets) {
+	if (!self->buckets.empty())
 		jive_resource_class_count_clear(self);
-		jive_context_free(self->context, self->buckets);
-	}
 }
 
 const struct jive_resource_class *
