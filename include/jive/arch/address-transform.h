@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,12 +23,17 @@ class address_to_bitstring_operation final : public base::unary_op {
 public:
 	virtual ~address_to_bitstring_operation() noexcept;
 
+	address_to_bitstring_operation(
+		size_t nbits,
+		std::unique_ptr<jive::base::type> original_type);
+
 	inline
 	address_to_bitstring_operation(
 		size_t nbits,
-		const jive::base::type * original_type)
-		: result_type_(nbits)
-		, original_type_(original_type->copy())
+		const jive::base::type & original_type)
+		: address_to_bitstring_operation(
+			nbits,
+			std::unique_ptr<base::type>(original_type.copy()))
 	{
 	}
 
@@ -39,7 +44,8 @@ public:
 	inline
 	address_to_bitstring_operation(
 		const address_to_bitstring_operation & other)
-		: result_type_(other.result_type_)
+		: nbits_(other.nbits_)
+		, result_type_(other.result_type_->copy())
 		, original_type_(other.original_type_->copy())
 	{
 	}
@@ -73,14 +79,15 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline size_t nbits() const noexcept { return result_type_.nbits(); }
+	inline size_t nbits() const noexcept { return nbits_; }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	jive::bits::type result_type_;
+	size_t nbits_;
+	std::unique_ptr<jive::base::type> result_type_;
 	std::unique_ptr<jive::base::type> original_type_;
 };
 
@@ -88,12 +95,17 @@ class bitstring_to_address_operation final : public base::unary_op {
 public:
 	virtual ~bitstring_to_address_operation() noexcept;
 
+	bitstring_to_address_operation(
+		size_t nbits,
+		std::unique_ptr<jive::base::type> original_type);
+
 	inline
 	bitstring_to_address_operation(
 		size_t nbits,
-		const jive::base::type * original_type)
-		: argument_type_(nbits)
-		, original_type_(original_type->copy())
+		const jive::base::type & original_type)
+		: bitstring_to_address_operation(
+			nbits,
+			std::unique_ptr<base::type>(original_type.copy()))
 	{
 	}
 
@@ -104,7 +116,8 @@ public:
 	inline
 	bitstring_to_address_operation(
 		const bitstring_to_address_operation & other)
-		: argument_type_(other.argument_type_)
+		: nbits_(other.nbits_)
+		, argument_type_(other.argument_type_->copy())
 		, original_type_(other.original_type_->copy())
 	{
 	}
@@ -138,14 +151,15 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline size_t nbits() const noexcept { return argument_type_.nbits(); }
+	inline size_t nbits() const noexcept { return nbits_; }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	jive::bits::type argument_type_;
+	size_t nbits_;
+	std::unique_ptr<jive::base::type> argument_type_;
 	std::unique_ptr<jive::base::type> original_type_;
 };
 

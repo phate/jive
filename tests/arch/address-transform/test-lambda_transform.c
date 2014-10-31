@@ -5,8 +5,8 @@
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
@@ -44,7 +44,7 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	assert(bottom->producer(0)->operation() == jive::bitstring_to_address_operation(32, &addrtype));
+	assert(bottom->producer(0)->operation() == jive::bitstring_to_address_operation(32, addrtype));
 
 	jive_graph_destroy(graph);
 	jive_context_assert_clean(context);

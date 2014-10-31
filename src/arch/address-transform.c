@@ -44,114 +44,43 @@ type_contains_address(const jive::base::type * type)
 	return false;
 }
 
-static jive::base::type *
+static std::unique_ptr<jive::base::type>
 convert_address_to_bitstring_type(
-	const jive::base::type * type,
-	size_t nbits,
-	jive_context * context)
+	const jive::base::type & type,
+	size_t nbits)
 {
-	if (dynamic_cast<const jive::addr::type*>(type)) {
-		jive::bits::type bittype(nbits);
-		return bittype.copy();
-	}
+	if (dynamic_cast<const jive::addr::type*>(&type)) {
+		return std::unique_ptr<jive::base::type>(new jive::bits::type(nbits));
+	} else  if (auto fcttype = dynamic_cast<const jive::fct::type*>(&type)) {
+		std::vector<std::unique_ptr<jive::base::type>> argument_types;
+		for (size_t n = 0; n < fcttype->narguments(); n++)
+			argument_types.push_back(convert_address_to_bitstring_type(*fcttype->argument_type(n), nbits));
 
-	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
-	if (fcttype != NULL) {
+		std::vector<std::unique_ptr<jive::base::type>> return_types;
+		for (size_t n = 0; n < fcttype->nreturns(); n++)
+			return_types.push_back(convert_address_to_bitstring_type(*fcttype->return_type(n), nbits));
 
-		size_t n;
-		size_t narguments = fcttype->narguments();
-		const jive::base::type * argument_types[narguments];
-		for (n = 0; n < narguments; n++)
-			argument_types[n] = convert_address_to_bitstring_type(fcttype->argument_type(n), nbits,
-				context);
-
-		size_t nresults = fcttype->nreturns();
-		const jive::base::type * result_types[nresults];
-		for (n = 0; n < nresults; n++)
-			result_types[n] = convert_address_to_bitstring_type(fcttype->return_type(n), nbits, context);
-
-		jive::fct::type return_type(narguments, argument_types, nresults, result_types);
-
-		jive::base::type * new_fcttype = return_type.copy();
-
-		for (n = 0; n < narguments; n++)
-			delete argument_types[n];
-		for (n = 0; n < nresults; n++)
-			delete result_types[n];
-
-		return new_fcttype;
+		return std::unique_ptr<jive::base::type>(new jive::fct::type(argument_types, return_types));
 	}
 
 	JIVE_DEBUG_ASSERT(0);
-}
-
-/* address_to_bitstring node */
-
-static void
-jive_address_to_bitstring_node_init_(jive_address_to_bitstring_node * self, jive_region * region,
-	jive::output * address, size_t nbits, jive::base::type * original_type);
-
-static void
-jive_address_to_bitstring_node_init_(
-	jive_address_to_bitstring_node * self,
-	jive_region * region,
-	jive::output * address,
-	size_t nbits,	jive::base::type * original_type)
-{
-	jive_context * context = region->graph->context;
-
-	const jive::base::type * addrtype = &address->type();
-	if (!dynamic_cast<const jive::value::type*>(addrtype))
-		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
-
-	JIVE_DEBUG_ASSERT(*addrtype == *original_type);
-	jive::base::type * return_type = convert_address_to_bitstring_type(addrtype, nbits, context);
-
-	jive_node_init_(self, region,
-		1, &addrtype, &address,
-		1, (const jive::base::type **)&return_type);
-
-	delete return_type;
 }
 
 jive::output *
 jive_address_to_bitstring_create(jive::output * address, size_t nbits,
 	const jive::base::type * original_type)
 {
-	jive::address_to_bitstring_operation op(nbits, original_type);
+	jive::address_to_bitstring_operation op(
+		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
 	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
-}
-
-/* bitstring_to_address node */
-
-static void
-jive_bitstring_to_address_node_init_(jive_bitstring_to_address_node * self, jive_region * region,
-	jive::output * bitstring, size_t nbits, jive::base::type * original_type);
-
-static void
-jive_bitstring_to_address_node_init_(
-	jive_bitstring_to_address_node * self,
-	jive_region * region,
-	jive::output * bitstring,
-	size_t nbits,
-	const jive::base::type * original_type)
-{
-	jive_context * context = region->graph->context;
-
-	const jive::base::type * bittype = &bitstring->type();
-	if (!dynamic_cast<const jive::value::type*>(bittype))
-		jive_context_fatal_error(context, "Type mismatch: expected a value type.");
-
-	jive_node_init_(self, region,
-		1, &bittype, &bitstring,
-		1, (const jive::base::type **)&original_type);
 }
 
 jive::output *
 jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 	const jive::base::type * original_type)
 {
-	jive::bitstring_to_address_operation op(nbits, original_type);
+	jive::bitstring_to_address_operation op(
+		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
 	return jive_node_create_normalized(bitstring->node()->graph, op, {bitstring})[0];
 }
 
@@ -428,8 +357,8 @@ jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
 	jive_region * region = jive_lambda_node_get_region(node);
 
 	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
-	jive::fct::type * new_fcttype = static_cast<jive::fct::type*>(convert_address_to_bitstring_type(
-		fcttype, nbits, context));
+	std::unique_ptr<jive::base::type> new_fcttype_(convert_address_to_bitstring_type(*fcttype, nbits));
+	jive::fct::type * new_fcttype = static_cast<jive::fct::type*>(new_fcttype_.get());
 
 	size_t n;
 	size_t nparameters = fcttype->narguments();
@@ -470,7 +399,6 @@ jive_lambda_node_address_transform(const jive_lambda_node * node, size_t nbits)
 
 	jive::output * new_fct = jive_lambda_end(lambda, new_fcttype->nreturns(), return_types, results);
 
-	delete new_fcttype;
 	jive_output_replace(fct, jive_bitstring_to_address_create(new_fct, nbits, type));
 }
 
@@ -532,6 +460,14 @@ address_to_bitstring_operation::~address_to_bitstring_operation() noexcept
 {
 }
 
+address_to_bitstring_operation::address_to_bitstring_operation(
+	size_t nbits,
+	std::unique_ptr<jive::base::type> original_type)
+	: nbits_(nbits)
+	, result_type_(convert_address_to_bitstring_type(*original_type, nbits))
+	, original_type_(std::move(original_type))
+{}
+
 jive_unop_reduction_path_t
 address_to_bitstring_operation::can_reduce_operand(
 	const jive::output * arg) const noexcept
@@ -571,14 +507,13 @@ address_to_bitstring_operation::reduce_operand(
 const jive::base::type &
 address_to_bitstring_operation::argument_type(size_t index) const noexcept
 {
-	static const jive::addr::type type;
-	return type;
+	return *original_type_.get();
 }
 
 const jive::base::type &
 address_to_bitstring_operation::result_type(size_t index) const noexcept
 {
-	return result_type_;
+	return *result_type_.get();
 }
 
 bool
@@ -595,13 +530,7 @@ address_to_bitstring_operation::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 1);
-
-	jive_address_to_bitstring_node * node = new jive_address_to_bitstring_node(*this);
-	jive_address_to_bitstring_node_init_(node, region, arguments[0], nbits(),
-		&original_type());
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
@@ -619,6 +548,14 @@ address_to_bitstring_operation::copy() const
 bitstring_to_address_operation::~bitstring_to_address_operation() noexcept
 {
 }
+
+bitstring_to_address_operation::bitstring_to_address_operation(
+	size_t nbits,
+	std::unique_ptr<jive::base::type> original_type)
+	: nbits_(nbits)
+	, argument_type_(convert_address_to_bitstring_type(*original_type, nbits))
+	, original_type_(std::move(original_type))
+{}
 
 jive_unop_reduction_path_t
 bitstring_to_address_operation::can_reduce_operand(
@@ -660,14 +597,13 @@ bitstring_to_address_operation::reduce_operand(
 const jive::base::type &
 bitstring_to_address_operation::argument_type(size_t index) const noexcept
 {
-	return argument_type_;
+	return *argument_type_.get();
 }
 
 const jive::base::type &
 bitstring_to_address_operation::result_type(size_t index) const noexcept
 {
-	static const jive::addr::type type;
-	return type;
+	return *original_type_.get();
 }
 
 bool
@@ -684,13 +620,7 @@ bitstring_to_address_operation::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(narguments == 1);
-
-	jive_bitstring_to_address_node * node = new jive_bitstring_to_address_node(*this);
-	jive_bitstring_to_address_node_init_(node, region, arguments[0], nbits(),
-		&original_type());
-
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
