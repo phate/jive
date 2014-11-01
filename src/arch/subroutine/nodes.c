@@ -152,9 +152,8 @@ subroutine_op::get_passthrough_enter_by_name(jive_region * region, const char * 
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs; ++n) {
 		output * o = enter->outputs[n];
-		if (o->gate && strcmp(name, o->gate->name) == 0) {
+		if (o->gate && name == o->gate->name)
 			return o;
-		}
 	}
 	return nullptr;
 }
@@ -172,9 +171,8 @@ subroutine_op::get_passthrough_leave_by_name(jive_region * region, const char * 
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs; ++n) {
 		input * i = leave->inputs[n];
-		if (i->gate && strcmp(name, i->gate->name) == 0) {
+		if (i->gate && name == i->gate->name)
 			return i;
-		}
 	}
 	return nullptr;
 }

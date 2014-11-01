@@ -477,7 +477,7 @@ jive_lambda_node_remove_dead_parameters(const jive_lambda_node * self)
 
 		alive_parameters.push_back(parameter);
 		alive_parameter_types.push_back(&parameter->type());
-		alive_parameter_names.push_back(parameter->gate->name);
+		alive_parameter_names.push_back(parameter->gate->name.c_str());
 	}
 
 	/* all parameters are alive, we don't need to do anything */

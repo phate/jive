@@ -517,7 +517,7 @@ void
 jive_serialize_gateexpr(jive_serialization_driver * self,
 	jive::gate * gate, jive_token_ostream * os)
 {
-	jive_serialize_string(self, gate->name, strlen(gate->name), os);
+	jive_serialize_string(self, gate->name.c_str(), gate->name.size(), os);
 	jive_serialize_rescls(self, gate->required_rescls, os);
 	jive_serialize_type(self, &gate->type(), os);
 }

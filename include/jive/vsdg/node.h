@@ -227,9 +227,8 @@ jive_node_get_gate_input(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs; n++) {
 		jive::input * i = self->inputs[n];
-		if (i->gate && strcmp(i->gate->name, name) == 0) {
+		if (i->gate && i->gate->name == name)
 			return i;
-		}
 	}
 	return nullptr;
 }
@@ -250,9 +249,8 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs; n++) {
 		jive::output * o = self->outputs[n];
-		if (o->gate && strcmp(o->gate->name, name) == 0) {
+		if (o->gate && o->gate->name == name)
 			return o;
-		}
 	}
 	return nullptr;
 }

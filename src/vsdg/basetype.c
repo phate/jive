@@ -445,7 +445,7 @@ namespace jive {
 gate::gate(jive_graph * graph, const char name_[])
 	: graph (graph)
 {
-	name = jive_context_strdup(graph->context, name_);
+	name = name_;
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
 	may_spill = true;
@@ -464,16 +464,14 @@ gate::~gate() noexcept
 	
 	if (variable)
 		jive_variable_unassign_gate(variable, this);
-	
-	jive_context_free(graph->context, name);
-	
+
 	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
 }
 
 void
 gate::label(jive_buffer & buffer) const
 {
-	jive_buffer_putstr(&buffer, name);
+	jive_buffer_putstr(&buffer, name.c_str());
 }
 
 jive::input *
@@ -555,10 +553,7 @@ jive_gate_merge(jive::gate * self, jive::gate * other)
 	if (self->variable)
 		jive_variable_merge(self->variable, other->variable);
 	
-	jive_context * context = self->graph->context;
-	char * name = jive_context_strjoin(context, self->name, "_", other->name, NULL);
-	jive_context_free(context, self->name);
-	self->name = name;
+	self->name.append("_").append(other->name);
 }
 
 void

@@ -576,7 +576,7 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 			jive::gate * gate = self->inputs[n]->gate;
 			jive::gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
 			if (!target_gate) {
-				target_gate = gate->type().create_gate(target->graph, gate->name);
+				target_gate = gate->type().create_gate(target->graph, gate->name.c_str());
 				target_gate->required_rescls = gate->required_rescls;
 				jive_substitution_map_add_gate(substitution, gate, target_gate);
 			}
@@ -592,7 +592,7 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 			jive::gate * gate = self->outputs[n]->gate;
 			jive::gate * target_gate = jive_substitution_map_lookup_gate(substitution, gate);
 			if (!target_gate) {
-				target_gate = gate->type().create_gate(target->graph, gate->name);
+				target_gate = gate->type().create_gate(target->graph, gate->name.c_str());
 				target_gate->required_rescls = gate->required_rescls;
 				jive_substitution_map_add_gate(substitution, gate, target_gate);
 			}

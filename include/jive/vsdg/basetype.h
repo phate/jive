@@ -261,9 +261,9 @@ public:
 		jive::gate * prev;
 		jive::gate * next;
 	} graph_gate_list;
-	
-	char * name;
-	
+
+	std::string name;
+
 	struct {
 		jive::input * first;
 		jive::input * last;
