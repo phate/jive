@@ -71,11 +71,11 @@ static int test_main(void)
 	jive_serialize_graph(&drv, gr1, os);
 	jive_token_ostream_destroy(os);
 	jive_serialization_driver_fini(&drv);
-	fwrite(buf.data, 1, buf.size, stderr);
+	fwrite(&buf.data[0], 1, buf.data.size(), stderr);
 	
 	jive_graph * gr2 = jive_graph_create(ctx);
 	jive_token_istream * is = jive_token_istream_simple_create(
-		ctx, (char *)buf.data, buf.size + (char *) buf.data);
+		ctx, (char *)&buf.data[0], buf.data.size() + (char *) &buf.data[0]);
 	jive_serialization_driver_init(&drv, ctx);
 	drv.error = my_error;
 	jive_deserialize_graph(&drv, is, gr2);

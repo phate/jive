@@ -40,7 +40,7 @@ verify_serialize(const jive_resource_class * rescls, const char * expect_repr)
 	
 	jive_token_ostream_destroy(os);
 	
-	assert(strncmp((char *)buf.data, expect_repr, buf.size) == 0);
+	assert(strncmp((char *)&buf.data[0], expect_repr, buf.data.size()) == 0);
 	
 	jive_buffer_fini(&buf);
 	assert(jive_context_is_empty(ctx));

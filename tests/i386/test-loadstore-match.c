@@ -49,7 +49,7 @@ compile_graph(jive_graph * graph)
 		jive_label_name_mapper_simple_create(graph->context, NULL, 0);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
-	fwrite(buffer.data, buffer.size, 1, stderr);
+	fwrite(&buffer.data[0], buffer.data.size(), 1, stderr);
 	jive_buffer_fini(&buffer);
 
 	jive_compilate compilate;

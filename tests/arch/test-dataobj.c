@@ -58,7 +58,7 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 		"my_label:\n"
 	;
 	
-	char * buffer_str = (char *) buffer.data;
+	char * buffer_str = static_cast<char*>(&buffer.data[0]);
 	
 	assert(strncmp(buffer_str, expected_header, strlen(expected_header)) == 0);
 	assert(strncmp(buffer_str + strlen(expected_header), expected_data, strlen(expected_data)) == 0);

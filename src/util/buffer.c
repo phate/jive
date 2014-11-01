@@ -39,32 +39,16 @@ jive_buffer_executable(const jive_buffer * self)
 		return 0;
 	unlink(filename_template);
 	
-	if (ftruncate(fd, self->size) == 0) {
-		void * writable = mmap(0, self->size, PROT_WRITE, MAP_SHARED, fd, 0);
+	if (ftruncate(fd, self->data.size()) == 0) {
+		void * writable = mmap(0, self->data.size(), PROT_WRITE, MAP_SHARED, fd, 0);
 		
 		if (writable) {
-			memcpy(writable, self->data, self->size);
-			munmap(writable, self->size);
-			executable = mmap(0, self->size, PROT_EXEC, MAP_SHARED, fd, 0);
+			memcpy(writable, &self->data[0], self->data.size());
+			munmap(writable, self->data.size());
+			executable = mmap(0, self->data.size(), PROT_EXEC, MAP_SHARED, fd, 0);
 		}
 	}
 	
 	close(fd);
 	return executable;
 }
-
-void *
-jive_buffer_reserve_slow(jive_buffer * self, size_t size)
-{
-	size_t total = (self->size+size) * 2;
-	void * tmp = jive_context_realloc(self->context, self->data, total);
-	if (!tmp) return 0;
-	self->available = total;
-	self->data = tmp;
-	
-	tmp = self->size + (char *)(self->data);
-	self->size += size;
-	
-	return tmp;
-}
-

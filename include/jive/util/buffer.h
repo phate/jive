@@ -55,14 +55,7 @@ typedef struct jive_buffer jive_buffer;
 
 /** \brief Expandable buffer */
 struct jive_buffer {
-	/** \brief Data stored in buffer */
-	void * data;
-	/** \brief Number of bytes stored in buffer */
-	size_t size;
-	/** \brief Available storage space before buffer must be expanded */
-	size_t available;
-	/** \brief Context used for memory allocations */
-	jive_context * context;
+	std::vector<char> data;
 };
 
 static inline void
@@ -89,17 +82,14 @@ JIVE_EXPORTED_INLINE const char *
 jive_buffer_to_string(struct jive_buffer * self)
 {
 	jive_buffer_putbyte(self, '\0');
-	return static_cast<const char*>(self->data);
+	return static_cast<const char*>(&self->data[0]);
 }
 
 JIVE_EXPORTED_INLINE void
 jive_buffer_clear(struct jive_buffer * self)
 {
-	self->size = 0;
+	self->data.clear();
 }
-
-void *
-jive_buffer_reserve_slow(jive_buffer * self, size_t size);
 
 /**
 	\brief Initialize expandable buffer
@@ -109,9 +99,7 @@ jive_buffer_reserve_slow(jive_buffer * self, size_t size);
 static inline void
 jive_buffer_init(jive_buffer * self, jive_context * context)
 {
-	self->data = 0;
-	self->size = self->available = 0;
-	self->context = context;
+	//FIXME: remove this function at some point
 }
 
 /**
@@ -123,32 +111,7 @@ jive_buffer_init(jive_buffer * self, jive_context * context)
 static inline void
 jive_buffer_fini(jive_buffer * self)
 {
-	jive_context_free(self->context, self->data);
-}
-
-/**
-	\brief Reserve space in buffer
-	
-	\param self Buffer to append to
-	\param size Number of bytes to append
-	\returns Pointer to first byte to be written, or NULL if resizing failed
-	
-	Resizes @c self such that at least @c size additional bytes
-	fit in. The newly-reserved space is uninitialized and should
-	immediately be filled with data.
-	
-	The returned pointer is only valid until the next call to
-	\ref jive_buffer_append
-*/
-static inline void *
-jive_buffer_reserve(jive_buffer * self, size_t size)
-{
-	if (self->size + size > self->available)
-		return jive_buffer_reserve_slow(self, size);
-	
-	void * tmp = self->size + (char *)(self->data);
-	self->size += size;
-	return tmp;
+	//FIXME: remove this function at some point
 }
 
 /**
@@ -163,9 +126,7 @@ jive_buffer_reserve(jive_buffer * self, size_t size)
 static inline void
 jive_buffer_resize(jive_buffer * self, size_t new_size)
 {
-	if (new_size > self->available)
-		jive_buffer_reserve_slow(self, new_size - self->available);
-	self->size = new_size;
+	self->data.resize(new_size);
 }
 
 /**
@@ -183,9 +144,8 @@ jive_buffer_resize(jive_buffer * self, size_t new_size)
 static inline bool
 jive_buffer_put(jive_buffer * self, const void * data, size_t size)
 {
-	void * ptr = jive_buffer_reserve(self, size);
-	if (!ptr) return false;
-	memcpy(ptr, data, size);
+	for (size_t n = 0; n < size; n++)
+		self->data.push_back(static_cast<const char*>(data)[n]);
 	return true;
 }
 

@@ -38,11 +38,9 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
 	jive_relocation_type type, jive_symref target,
 	jive_offset value)
 {
-	jive_offset offset = self->contents.size;
+	jive_offset offset = self->contents.data.size();
 	jive_section_put(self, data, size);
-	
-	jive_context * context = self->contents.context;
-	
+
 	jive_relocation_entry * entry = new jive_relocation_entry;
 	entry->offset = offset;
 	entry->type = type;
@@ -56,7 +54,7 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
  to be the page size... */
 static size_t jive_section_size_roundup(const jive_section * self)
 {
-	size_t size = self->contents.size;
+	size_t size = self->contents.data.size();
 	return (size + 4095) & ~4095;
 }
 
@@ -209,7 +207,7 @@ section_process_relocations(
 		const void * target;
 		if (!resolve_relocation_target(entry->target, map, sym_resolver, &target))
 			return false;
-		if (!relocate(where, section->contents.size - entry->offset,
+		if (!relocate(where, section->contents.data.size() - entry->offset,
 			offset, entry->type, (intptr_t) target, entry->value)) {
 			return false;
 		}
@@ -257,7 +255,7 @@ jive_compilate_load(const jive_compilate * self,
 		map->sections[n].base = addr;
 		map->sections[n].size = jive_section_size_roundup(section);
 		
-		memcpy(addr, section->contents.data, section->contents.size);
+		memcpy(addr, &section->contents.data[0], section->contents.data.size());
 		
 		/* If this is a code section, create another mapping, this time
 		executable. We cannot generally assume that we can later change

@@ -79,7 +79,7 @@ static int test_main(void)
 	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, symtab, 1);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
-	fwrite(buffer.data, buffer.size, 1, stdout);
+	fwrite(&buffer.data[0], buffer.data.size(), 1, stdout);
 	jive_buffer_fini(&buffer);
 	
 	jive_graph_destroy(graph);

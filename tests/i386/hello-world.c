@@ -199,8 +199,8 @@ static int test_main(void)
 	jive_label_name_mapper_destroy(name_mapper);
 	
 	FILE * gcc_pipe = popen("gcc -m32 -x assembler -", "w");
-	fwrite(buffer.data, buffer.size, 1, stdout);
-	fwrite(buffer.data, buffer.size, 1, gcc_pipe);
+	fwrite(&buffer.data[0], buffer.data.size(), 1, stdout);
+	fwrite(&buffer.data[0], buffer.data.size(), 1, gcc_pipe);
 	int gcc_status = pclose(gcc_pipe);
 	assert(WIFEXITED(gcc_status));
 	assert(WEXITSTATUS(gcc_status) == 0);

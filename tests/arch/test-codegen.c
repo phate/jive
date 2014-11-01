@@ -46,18 +46,18 @@ static int test_main(void)
 
 	jive_buffer * data_buffer = jive_compilate_get_buffer(&compilate,
 		jive_stdsectionid_data);
-	assert(data_buffer->size == 1);
-	assert(((int8_t *)data_buffer->data)[0] == 8);
+	assert(data_buffer->data.size() == 1);
+	assert(data_buffer->data[0] == 8);
 
 	jive_buffer * rodata_buffer = jive_compilate_get_buffer(&compilate,
 		jive_stdsectionid_rodata);
-	assert(rodata_buffer->size == 2);
-	assert(((int16_t *)rodata_buffer->data)[0] == 16); 
+	assert(rodata_buffer->data.size() == 2);
+	assert(rodata_buffer->data[0] == 16);
 
 	jive_buffer * bss_buffer = jive_compilate_get_buffer(&compilate,
 		jive_stdsectionid_bss);
-	assert(bss_buffer->size == 4);
-	assert(((int32_t *)bss_buffer->data)[0] == 32);
+	assert(bss_buffer->data.size() == 4);
+	assert(bss_buffer->data[0] == 32);
 	
 	jive_compilate_fini(&compilate);
 	jive_memlayout_mapper_simple_fini(&mapper);

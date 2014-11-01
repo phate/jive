@@ -151,7 +151,7 @@ jive_token_ostream_simple_create(jive_buffer * buffer)
 	jive_token_ostream_simple * self;
 	self = new jive_token_ostream_simple;
 	self->base.class_ = &JIVE_TOKEN_OSTREAM_SIMPLE;
-	self->context = buffer->context;
+	self->context = nullptr;
 	self->buffer = buffer;
 	self->indent = 0;
 	self->paren_nest = 0;

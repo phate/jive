@@ -214,7 +214,7 @@ generate_code(
 			compilate, sectionid);
 		if (!section) continue;
 
-		jive_offset offset = section->contents.size;
+		jive_offset offset = section->contents.data.size();
 		if (jive_seq_point_isinstance(seq_point, &JIVE_SEQ_INSTRUCTION)) {
 			jive_seq_instruction * seq_instr = (jive_seq_instruction *) seq_point;
 			jive_seq_instruction_generate_code(
@@ -226,7 +226,7 @@ generate_code(
 			jive_seq_data_generate_code(seq_data, section);
 		}
 
-		size_t size = section->contents.size - offset;
+		size_t size = section->contents.data.size() - offset;
 		if (offset != seq_point->address.offset || size != seq_point->size) {
 			jive_address_init(&seq_point->address, sectionid, offset);
 			seq_point->size = size;

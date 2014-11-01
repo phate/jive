@@ -116,7 +116,7 @@ verify_serialize_type(const jive::base::type * type, const char * expect_repr)
 	
 	jive_serialize_type(&ctx.drv, type, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, ctx.buf.data, ctx.buf.size,
+	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -144,7 +144,7 @@ verify_serialize_rescls(const jive_resource_class * rescls, const char * expect_
 	
 	jive_serialize_rescls(&ctx.drv, rescls, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, ctx.buf.data, ctx.buf.size,
+	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -171,7 +171,7 @@ verify_serialize_gateexpr(jive::gate * gate, const char * expect_repr)
 	
 	jive_serialize_gateexpr(&ctx.drv, gate, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, ctx.buf.data, ctx.buf.size,
+	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -220,7 +220,7 @@ verify_serialize_nodeexpr(jive_node * node,
 	
 	jive_serialize_nodeexpr(&ctx.drv, node, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, ctx.buf.data, ctx.buf.size,
+	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
