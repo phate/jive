@@ -174,8 +174,6 @@ lambda_op::copy() const
 static jive_node *
 jive_lambda_node_create(jive_region * function_region)
 {
-	jive_context * context = function_region->graph->context;
-
 	size_t narguments = function_region->top->noutputs - 1;
 	size_t nreturns = function_region->bottom->ninputs - 1;
 	
@@ -256,8 +254,6 @@ jive_lambda_begin(
 	const jive::base::type * const argument_types[],
 	const char * const argument_names[])
 {
-	jive_context * context = graph->context;
-
 	jive_lambda * lambda = new jive_lambda;
 	jive_lambda_build_state * state;
 	state = new jive_lambda_build_state;
@@ -286,7 +282,6 @@ jive_lambda_end(jive_lambda * self,
 	jive_lambda_build_state * state = self->internal_state;
 	jive_region * region = self->region;
 	jive_graph * graph = region->graph;
-	jive_context * context = graph->context;
 
 	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, 1, &region->top->outputs[0]);
 
@@ -451,7 +446,6 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 	JIVE_DEBUG_ASSERT(self->noutputs == 1);
 
 	jive_graph * graph = self->region->graph;
-	jive_context * context = graph->context;
 	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
 	const jive_node * enter = lambda_region->top;
 	const jive_node * leave = lambda_region->bottom;
