@@ -13,7 +13,6 @@
 #include <jive/common.h>
 
 struct jive_buffer;
-struct jive_context;
 
 typedef enum jive_token_type {
 	jive_token_error = -1,
@@ -165,8 +164,7 @@ jive_token_istream_next(const jive_token_istream * self)
 }
 
 jive_token_istream *
-jive_token_istream_simple_create(struct jive_context * context,
-	const char * begin, const char * end);
+jive_token_istream_simple_create(const char * begin, const char * end);
 
 JIVE_EXPORTED_INLINE bool
 jive_token_istream_signed_integral(jive_token_istream * is, int64_t * value)

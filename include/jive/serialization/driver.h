@@ -6,7 +6,6 @@
 #ifndef JIVE_SERIALIZATION_DRIVER_H
 #define JIVE_SERIALIZATION_DRIVER_H
 
-#include <jive/context.h>
 #include <jive/serialization/symtab.h>
 
 struct jive_graph;
@@ -18,8 +17,6 @@ struct jive_token_ostream;
 
 typedef struct jive_serialization_driver jive_serialization_driver;
 struct jive_serialization_driver {
-	jive_context * context;
-	
 	void (*error)(jive_serialization_driver *, const char []);
 	
 	jive_serialization_symtab symtab;
@@ -31,8 +28,7 @@ struct jive_serialization_driver {
 
 void
 jive_serialization_driver_init(
-	jive_serialization_driver * self,
-	jive_context * context);
+	jive_serialization_driver * self);
 
 void
 jive_serialization_driver_fini(

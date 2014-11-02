@@ -32,7 +32,7 @@ verify_serialize(const jive_resource_class * rescls, const char * expect_repr)
 	jive_token_ostream * os = jive_token_ostream_simple_create(&buf);
 	
 	jive_serialization_driver drv;
-	jive_serialization_driver_init(&drv, ctx);
+	jive_serialization_driver_init(&drv);
 	drv.error = my_handle_error;
 	jive_serialize_rescls(&drv, rescls, os);
 	jive_serialization_driver_fini(&drv);
@@ -50,12 +50,12 @@ verify_deserialize(const char * repr, const jive_resource_class * expect_rescls)
 {
 	jive_context * ctx = jive_context_create();
 	jive_token_istream * is = jive_token_istream_simple_create(
-		ctx, repr, repr + strlen(repr));
+		repr, repr + strlen(repr));
 	
 	const jive_resource_class * rescls;
 	
 	jive_serialization_driver drv;
-	jive_serialization_driver_init(&drv, ctx);
+	jive_serialization_driver_init(&drv);
 	drv.error = my_handle_error;
 	assert(jive_deserialize_rescls(&drv, is, &rescls));
 	jive_serialization_driver_fini(&drv);

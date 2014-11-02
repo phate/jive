@@ -9,7 +9,6 @@
 #include <stddef.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/util/intrusive-hash.h>
 
 #include <string>
@@ -19,7 +18,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_context;
 struct jive_label;
 struct jive_node;
 
@@ -170,7 +168,6 @@ typedef jive::detail::intrusive_hash<
 
 
 struct jive_serialization_symtab {
-	jive_context * context;
 	jive_serialization_gatesym_hash gate_to_name;
 	jive_serialization_gatesym_dict name_to_gate;
 	jive_serialization_labelsym_hash label_to_name;
@@ -180,9 +177,6 @@ struct jive_serialization_symtab {
 	jive_serialization_outputsym_hash output_to_name;
 	jive_serialization_outputsym_dict name_to_output;
 };
-
-void
-jive_serialization_symtab_init(jive_serialization_symtab * self, jive_context * ctx);
 
 void
 jive_serialization_symtab_fini(jive_serialization_symtab * self);

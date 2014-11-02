@@ -1041,13 +1041,13 @@ jive_sorted_nodes_init(jive_sorted_nodes * self)
 }
 
 static void
-jive_level_nodes_append(jive_level_nodes * level, jive_context * context, jive_node * node)
+jive_level_nodes_append(jive_level_nodes * level, jive_node * node)
 {
 	level->items.push_back(node);
 }
 
 static void
-jive_sorted_nodes_append(jive_sorted_nodes * self, jive_context * context, jive_node * node)
+jive_sorted_nodes_append(jive_sorted_nodes * self, jive_node * node)
 {
 	if (node->depth_from_root >= self->depths.size()) {
 		size_t new_space = self->depths.size() * 2;
@@ -1055,7 +1055,7 @@ jive_sorted_nodes_append(jive_sorted_nodes * self, jive_context * context, jive_
 			new_space = node->depth_from_root + 1;
 		self->depths.resize(new_space);
 	}
-	jive_level_nodes_append(&self->depths[node->depth_from_root], context, node);
+	jive_level_nodes_append(&self->depths[node->depth_from_root], node);
 	if (node->depth_from_root + 1 > self->max_depth_plus_one)
 		self->max_depth_plus_one = node->depth_from_root + 1;
 	if (node->depth_from_root < self->min_depth)
@@ -1068,13 +1068,12 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 	struct jive_region * region, jive_token_ostream * os)
 {
 	/*FIXME: serialization does not take care of graph tail node*/
-	jive_context * context = self->context;
 	jive_sorted_nodes sorted;
 	jive_sorted_nodes_init(&sorted);
 	
 	jive_node * node;
 	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list)
-		jive_sorted_nodes_append(&sorted, context, node);
+		jive_sorted_nodes_append(&sorted, node);
 	
 	size_t n;
 	for (n = sorted.min_depth; n < sorted.max_depth_plus_one; ++n) {

@@ -19,7 +19,6 @@ namespace base {
 }
 }
 
-struct jive_context;
 struct jive_serialization_driver;
 struct jive_token_ostream;
 struct jive_token_istream;

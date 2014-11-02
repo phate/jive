@@ -41,9 +41,9 @@ token_stream_equal(jive_context * ctx,
 {
 	bool equals = true;
 	jive_token_istream * is1 = jive_token_istream_simple_create(
-		ctx, str1, str1 + len1);
+		str1, str1 + len1);
 	jive_token_istream * is2 = jive_token_istream_simple_create(
-		ctx, str2, str2 + len2);
+		str2, str2 + len2);
 	
 	for (;;) {
 		const jive_token * tok1 = jive_token_istream_current(is1);
@@ -68,7 +68,7 @@ serialize_ctx_init(serialize_ctx * self)
 {
 	self->ctx = jive_context_create();
 	self->os = jive_token_ostream_simple_create(&self->buf);
-	jive_serialization_driver_init(&self->drv, self->ctx);
+	jive_serialization_driver_init(&self->drv);
 	self->drv.error = my_handle_error;
 }
 
@@ -92,8 +92,8 @@ deserialize_ctx_init(deserialize_ctx * self, const char * repr)
 {
 	self->ctx = jive_context_create();
 	self->is = jive_token_istream_simple_create(
-		self->ctx, repr, repr + strlen(repr));
-	jive_serialization_driver_init(&self->drv, self->ctx);
+		repr, repr + strlen(repr));
+	jive_serialization_driver_init(&self->drv);
 	self->drv.error = my_handle_error;
 }
 

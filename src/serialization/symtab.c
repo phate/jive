@@ -6,12 +6,6 @@
 #include <jive/serialization/symtab.h>
 
 void
-jive_serialization_symtab_init(jive_serialization_symtab * self, jive_context * ctx)
-{
-	self->context = ctx;
-}
-
-void
 jive_serialization_symtab_fini(jive_serialization_symtab * self)
 {
 	for (auto i = self->gate_to_name.begin(); i != self->gate_to_name.end();) {

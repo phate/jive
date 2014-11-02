@@ -9,7 +9,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include <jive/context.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/vsdg/basetype.h>

@@ -37,7 +37,6 @@ struct jive_token_ostream_simple {
 	jive_token_ostream base;
 	
 	jive_buffer * buffer;
-	jive_context * context;
 	size_t indent;
 	size_t paren_nest;
 	bool need_indent;
@@ -151,7 +150,6 @@ jive_token_ostream_simple_create(jive_buffer * buffer)
 	jive_token_ostream_simple * self;
 	self = new jive_token_ostream_simple;
 	self->base.class_ = &JIVE_TOKEN_OSTREAM_SIMPLE;
-	self->context = nullptr;
 	self->buffer = buffer;
 	self->indent = 0;
 	self->paren_nest = 0;
@@ -163,7 +161,6 @@ jive_token_ostream_simple_create(jive_buffer * buffer)
 typedef struct jive_token_istream_simple jive_token_istream_simple;
 struct jive_token_istream_simple {
 	jive_token_istream base;
-	jive_context * context;
 	const char * begin;
 	const char * end;
 	const char * parse_point;
@@ -334,12 +331,10 @@ static const jive_token_istream_class JIVE_TOKEN_ISTREAM_SIMPLE = {
 };
 
 jive_token_istream *
-jive_token_istream_simple_create(jive_context * context,
-	const char * begin, const char * end)
+jive_token_istream_simple_create(const char * begin, const char * end)
 {
 	jive_token_istream_simple * self = new jive_token_istream_simple;
 	self->base.class_ = &JIVE_TOKEN_ISTREAM_SIMPLE;
-	self->context = context;
 	self->begin = begin;
 	self->end = end;
 	self->parse_point = begin;
