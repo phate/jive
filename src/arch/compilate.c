@@ -8,9 +8,9 @@
 
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
-static void jive_section_init(jive_section * self, jive_context * context,
-	jive_stdsectionid sectionid)
+static void jive_section_init(jive_section * self, jive_stdsectionid sectionid)
 {
 	self->id = sectionid;
 	self->relocations.first = self->relocations.last = 0;
@@ -57,9 +57,8 @@ static size_t jive_section_size_roundup(const jive_section * self)
 }
 
 void
-jive_compilate_init(struct jive_compilate * self, struct jive_context * context)
+jive_compilate_init(struct jive_compilate * self)
 {
-	self->context = context;
 	self->sections.first = self->sections.last = 0;
 }
 
@@ -96,7 +95,7 @@ jive_compilate_get_standard_section(jive_compilate * self,
 	}
 	
 	section = new jive_section;
-	jive_section_init(section, self->context, sectionid);
+	jive_section_init(section, sectionid);
 	JIVE_LIST_PUSH_BACK(self->sections, section, compilate_section_list);
 	
 	return section;

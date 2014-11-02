@@ -10,7 +10,6 @@
 #include <vector>
 
 #include <jive/arch/subroutine/nodes.h>
-#include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 

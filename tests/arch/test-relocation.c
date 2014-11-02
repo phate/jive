@@ -39,7 +39,7 @@ static int test_main()
 	jive_context * ctx = jive_context_create();
 	
 	jive_compilate compilate;
-	jive_compilate_init(&compilate, ctx);
+	jive_compilate_init(&compilate);
 	
 	jive_section * data = jive_compilate_get_standard_section(&compilate,
 		jive_stdsectionid_data);

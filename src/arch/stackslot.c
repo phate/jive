@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 
 #include <jive/arch/memorytype.h>
 

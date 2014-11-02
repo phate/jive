@@ -11,7 +11,6 @@
 
 #include <jive/arch/immediate-value.h>
 #include <jive/arch/linker-symbol.h>
-#include <jive/context.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/nullary.h>
 

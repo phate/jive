@@ -113,7 +113,6 @@ typedef jive::detail::owner_intrusive_hash<
 > jive_seq_region_hash;
 
 struct jive_seq_graph {
-	struct jive_context * context;
 	struct jive_graph * graph;
 	struct {
 		jive_seq_point * first;
@@ -146,7 +145,6 @@ jive_seq_point_init(jive_seq_point * self, jive_seq_region * seq_region, jive_no
 JIVE_EXPORTED_INLINE void
 jive_seq_point_destroy(jive_seq_point * self)
 {
-	jive_context * context = self->seq_region->seq_graph->context;
 	self->class_->fini(self);
 	delete self;
 }

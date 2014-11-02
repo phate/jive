@@ -12,7 +12,6 @@
 #include <jive/arch/regvalue.h>
 #include <jive/arch/store.h>
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/basetype.h>

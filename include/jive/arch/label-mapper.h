@@ -61,7 +61,6 @@ struct jive_symbol_name_pair {
 
 jive_label_name_mapper *
 jive_label_name_mapper_simple_create(
-	jive_context * context,
 	const jive_symbol_name_pair * pairs,
 	size_t npairs);
 
@@ -98,6 +97,6 @@ struct jive_label_external_symbol {
 };
 
 jive_label_symbol_mapper *
-jive_label_symbol_mapper_simple_create(jive_context * contex);
+jive_label_symbol_mapper_simple_create();
 
 #endif

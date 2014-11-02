@@ -231,9 +231,7 @@ jive_seq_graph_convert_label(
 jive_seq_graph *
 jive_graph_sequentialize(jive_graph * graph)
 {
-	jive_context * context = graph->context;
 	jive_seq_graph * seq = new jive_seq_graph;
-	seq->context = context;
 	seq->graph = graph;
 	seq->points.first = 0;
 	seq->points.last = 0;
@@ -322,7 +320,6 @@ static void
 jive_seq_instruction_fini_(jive_seq_point * self_)
 {
 	jive_seq_instruction * self = (jive_seq_instruction *) self_;
-	jive_context * context = self->base.seq_region->seq_graph->context;
 	delete[] self->inputs;
 	delete[] self->outputs;
 	delete[] self->imm;
@@ -341,7 +338,6 @@ jive_seq_instruction_create_shell(
 	jive_node * node)
 {
 	jive_seq_graph * seq = seq_region->seq_graph;
-	jive_context * context = seq->context;
 	
 	jive_seq_instruction * seq_instr = new jive_seq_instruction;
 	seq_instr->base.class_ = &JIVE_SEQ_INSTRUCTION;
@@ -418,7 +414,6 @@ static void
 jive_seq_data_fini_(jive_seq_point * self_)
 {
 	jive_seq_data * self = (jive_seq_data *) self_;
-	jive_context * context = self->base.seq_region->seq_graph->context;
 	delete[] self->items;
 	jive_seq_point_fini_(&self->base);
 }
@@ -435,7 +430,6 @@ jive_seq_data_create(
 	jive_node * node)
 {
 	jive_seq_graph * seq = seq_region->seq_graph;
-	jive_context * context = seq->context;
 	
 	jive_seq_data * seq_data = new jive_seq_data;
 	seq_data->base.class_ = &JIVE_SEQ_DATA;

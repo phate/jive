@@ -95,7 +95,6 @@ jive_section_put_reloc(jive_section * self, const void * data, size_t size,
 	jive_offset value);
 
 struct jive_compilate {
-	jive_context * context;
 	struct {
 		jive_section * first;
 		jive_section * last;
@@ -117,7 +116,7 @@ struct jive_compilate_map {
 };
 
 void
-jive_compilate_init(jive_compilate * self, struct jive_context * context);
+jive_compilate_init(jive_compilate * self);
 
 void
 jive_compilate_fini(jive_compilate * self);
@@ -147,8 +146,7 @@ jive_compilate_get_buffer(jive_compilate * self, jive_stdsectionid section);
 	
 	Maps all of the sections contained in the compilate into the process'
 	address space. Returns a structure describing the mapping of the
-	sections to the address space. The returned structure is malloc'd
-	and not dependent on any jive_context.
+	sections to the address space. The returned structure is malloc'd.
 */
 jive_compilate_map *
 jive_compilate_load(const jive_compilate * self,

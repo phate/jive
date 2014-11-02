@@ -31,7 +31,7 @@ static int test_main(void)
 	jive::output * c32 = jive_bitconstant_unsigned(graph, 32, 32);
 
 	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+	jive_memlayout_mapper_simple_init(&mapper, 32);
 	jive_dataobj(c8, &mapper.base.base);
 	jive_rodataobj(c16, &mapper.base.base);
 	jive_bssobj(c32, &mapper.base.base);
@@ -39,8 +39,8 @@ static int test_main(void)
 	jive_view(graph, stderr);
 
 	jive_compilate compilate;
-	jive_compilate_init(&compilate, context);
-	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(context);
+	jive_compilate_init(&compilate);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create();
 	jive_graph_generate_code(graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
 

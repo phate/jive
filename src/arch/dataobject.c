@@ -186,7 +186,6 @@ squeeze_data_items(std::vector<jive::output *> & items)
 
 static std::vector<jive::output *>
 flatten_data_items(
-	jive_context * ctx,
 	jive::output * data,
 	jive_memlayout_mapper * layout_mapper)
 {
@@ -218,7 +217,7 @@ flatten_data_items(
 
 		for (size_t k = 0; k < decl->nelements; k++) {
 			std::vector<jive::output *> sub_items = flatten_data_items(
-				ctx, data->node()->inputs[k]->origin(),
+				data->node()->inputs[k]->origin(),
 				layout_mapper);
 			
 			if (sub_items.size() + layout->element[k].offset > items.size()) {
@@ -247,7 +246,7 @@ flatten_data_items(
 		items.resize(layout->base.total_size, zero_pad);
 		
 		std::vector<jive::output *> sub_items = flatten_data_items(
-			ctx, data->node()->inputs[0]->origin(), layout_mapper);
+			data->node()->inputs[0]->origin(), layout_mapper);
 		
 		if (sub_items.size() > items.size()) {
 			throw jive::compiler_error("Invalid union layout: element exceeds union");
@@ -268,8 +267,7 @@ jive_dataobj_internal(
 	jive_region * parent,
 	jive_region * region)
 {
-	std::vector<jive::output *> data_items =
-		flatten_data_items(parent->graph->context, data, layout_mapper);
+	std::vector<jive::output *> data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
 	std::vector<std::unique_ptr<const jive::base::type>> types;
 	jive::output * arguments[data_items.size()];

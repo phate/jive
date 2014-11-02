@@ -83,7 +83,7 @@ static int test_main(void)
 	jive::output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1], &bits32, &bits32);
 
 	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+	jive_memlayout_mapper_simple_init(&mapper, 32);
 
 	jive::output * memberof = jive_memberof(cont3, &rec, 1);
 	jive::output * arraysub = jive_arraysubscript(top->outputs[0],

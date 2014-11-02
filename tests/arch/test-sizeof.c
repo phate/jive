@@ -69,7 +69,7 @@ static int test_main(void)
 	jive_view(graph, stdout);
 
 	jive_memlayout_mapper_simple layout_mapper;
-	jive_memlayout_mapper_simple_init(&layout_mapper, context, 32);
+	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
 	jive_traverser * traverser = jive_topdown_traverser_create(graph);
 	jive_node * node;
 	for (node = jive_traverser_next(traverser); node; node = jive_traverser_next(traverser)) {

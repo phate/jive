@@ -9,7 +9,6 @@
 
 #include <string.h>
 
-#include <jive/context.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
 #include <jive/types/bitstring/type.h>

@@ -44,15 +44,14 @@ compile_graph(jive_graph * graph)
 	jive_shaped_graph_destroy(shaped_graph);
 	
 	jive_buffer buffer;
-	jive_label_name_mapper * name_mapper =
-		jive_label_name_mapper_simple_create(graph->context, NULL, 0);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(NULL, 0);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(&buffer.data[0], buffer.data.size(), 1, stderr);
 
 	jive_compilate compilate;
-	jive_compilate_init(&compilate, graph->context);
-	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(graph->context);
+	jive_compilate_init(&compilate);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create();
 	jive_graph_generate_code(graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
 	

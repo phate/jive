@@ -6,7 +6,6 @@
 #ifndef JIVE_ARCH_MEMLAYOUT_SIMPLE_H
 #define JIVE_ARCH_MEMLAYOUT_SIMPLE_H
 
-#include <jive/context.h>
 #include <jive/arch/memlayout.h>
 
 #include <unordered_map>
@@ -57,7 +56,7 @@ struct jive_memlayout_mapper_simple {
 };
 
 void
-jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, jive_context * context, size_t bits_per_word);
+jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, size_t bits_per_word);
 
 void
 jive_memlayout_mapper_simple_fini(jive_memlayout_mapper_simple * self);

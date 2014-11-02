@@ -69,7 +69,7 @@ static int test_main(void)
 	jive_view(graph, stdout);
 
 	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+	jive_memlayout_mapper_simple_init(&mapper, 32);
 	jive_graph_address_transform(graph, &mapper.base.base);
 
 	jive_graph_normalize(graph);

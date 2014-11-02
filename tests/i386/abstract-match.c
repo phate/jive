@@ -66,8 +66,8 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	
 	jive_compilate compilate;
-	jive_compilate_init(&compilate, ctx);
-	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(ctx);
+	jive_compilate_init(&compilate);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create();
 	jive_graph_generate_code(graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
 	

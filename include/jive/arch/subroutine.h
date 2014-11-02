@@ -12,7 +12,6 @@
 
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/arch/subroutine/signature.h>
-#include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 

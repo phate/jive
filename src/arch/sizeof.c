@@ -7,7 +7,6 @@
 #include <jive/arch/sizeof.h>
 
 #include <jive/arch/memlayout.h>
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>

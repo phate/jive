@@ -33,7 +33,7 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	jive_graph * graph = jive_graph_create(ctx);
 	
 	jive_memlayout_mapper_simple layout_mapper;
-	jive_memlayout_mapper_simple_init(&layout_mapper, ctx, 32);
+	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
 	
 	jive::output * value = data_def(graph);
 	jive::output * dataobj = jive_dataobj(value, &layout_mapper.base.base);
@@ -46,7 +46,7 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	
 	jive_buffer buffer;
 	jive_symbol_name_pair symtab[] = {{&my_label_symbol, "my_label"}};
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, symtab, 1);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(symtab, 1);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	jive_buffer_putbyte(&buffer, 0);

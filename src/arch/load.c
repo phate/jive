@@ -108,7 +108,6 @@ jive_load_get_default_normal_form_(
 	jive::node_normal_form * parent,
 	jive_graph * graph)
 {
-	jive_context * context = graph->context;
 	jive::node_normal_form * nf = new jive::load_normal_form(
 		operator_class, parent, graph);
 

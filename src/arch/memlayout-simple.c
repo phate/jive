@@ -194,7 +194,7 @@ const jive_memlayout_mapper_class JIVE_MEMLAYOUT_MAPPER_SIMPLE = {
 };
 
 void
-jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, jive_context * context, size_t bits_per_word)
+jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, size_t bits_per_word)
 {
 	self->bits_per_word = bits_per_word;
 	self->bytes_per_word = bits_per_word / 8;

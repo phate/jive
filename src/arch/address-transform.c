@@ -351,7 +351,6 @@ jive_lambda_node_address_transform(
 	JIVE_DEBUG_ASSERT(node->noutputs == 1);
 
 	jive_graph * graph = node->graph;
-	jive_context * context = graph->context;
 	jive::output * fct = node->outputs[0];
 
 	const jive::base::type * type = &fct->type();

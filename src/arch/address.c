@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include <jive/arch/addresstype.h>
-#include <jive/context.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>

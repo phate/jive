@@ -20,7 +20,6 @@ struct jive_anon_label {
 struct jive_label_name_mapper_simple {
 	jive_label_name_mapper base;
 	std::unordered_map<const void*, jive_anon_label> anon_labels;
-	jive_context * context;
 	size_t int_label_seqno;
 	
 	const jive_symbol_name_pair * pairs;
@@ -82,13 +81,11 @@ static const jive_label_name_mapper_class JIVE_LABEL_NAME_MAPPER_SIMPLE = {
 
 jive_label_name_mapper *
 jive_label_name_mapper_simple_create(
-	jive_context * context,
 	const jive_symbol_name_pair * pairs,
 	size_t npairs)
 {
 	jive_label_name_mapper_simple * mapper = new jive_label_name_mapper_simple;
 	mapper->base.class_ = &JIVE_LABEL_NAME_MAPPER_SIMPLE;
-	mapper->context = context;
 	mapper->int_label_seqno = 0;
 	mapper->pairs = pairs;
 	mapper->npairs = npairs;
@@ -100,7 +97,6 @@ typedef struct jive_label_symbol_mapper_simple jive_label_symbol_mapper_simple;
 
 struct jive_label_symbol_mapper_simple {
 	jive_label_symbol_mapper base;
-	jive_context * context;
 };
 
 static void
@@ -122,11 +118,10 @@ static const jive_label_symbol_mapper_class JIVE_LABEL_SYMBOL_MAPPER_SIMPLE = {
 };
 
 jive_label_symbol_mapper *
-jive_label_symbol_mapper_simple_create(jive_context * context)
+jive_label_symbol_mapper_simple_create()
 {
 	jive_label_symbol_mapper_simple * mapper = new jive_label_symbol_mapper_simple;
 	mapper->base.class_ = &JIVE_LABEL_SYMBOL_MAPPER_SIMPLE;
-	mapper->context = context;
 	
 	return &mapper->base;
 }

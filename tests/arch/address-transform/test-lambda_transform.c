@@ -43,7 +43,7 @@ test_main(void)
 	jive_view(graph, stdout);
 
 	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+	jive_memlayout_mapper_simple_init(&mapper, 32);
 	jive_node_address_transform(fct->node(), &mapper.base.base);
 	jive_memlayout_mapper_simple_fini(&mapper);
 

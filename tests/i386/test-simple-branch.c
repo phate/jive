@@ -72,14 +72,14 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	
 	jive_buffer buffer;
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, NULL, 0);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(NULL, 0);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(&buffer.data[0], buffer.data.size(), 1, stderr);
 
 	jive_compilate compilate;
-	jive_compilate_init(&compilate, ctx);
-	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create(ctx);
+	jive_compilate_init(&compilate);
+	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create();
 	jive_graph_generate_code(graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
 	jive_compilate_map * map = jive_compilate_load(&compilate,

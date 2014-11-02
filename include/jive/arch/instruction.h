@@ -13,7 +13,6 @@
 #include <jive/arch/instruction-class.h>
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
-#include <jive/context.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>

@@ -67,7 +67,7 @@ make_string(jive_graph * graph, const char * txt)
 	jive::output * tmp = jive_group_create(&string_decl, len, chars);
 	
 	jive_memlayout_mapper_simple layout_mapper;
-	jive_memlayout_mapper_simple_init(&layout_mapper, graph->context, 32);
+	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
 	jive::output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
 	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
@@ -174,7 +174,7 @@ static int test_main(void)
 		{&main_symbol, "main"},
 		{&write_symbol, "write"},
 	};
-	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, symtab, 3);
+	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(symtab, 3);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	

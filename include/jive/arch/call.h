@@ -13,8 +13,6 @@
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
 
-struct jive_context;
-
 namespace jive {
 	class type;
 }
