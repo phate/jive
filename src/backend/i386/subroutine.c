@@ -57,7 +57,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		nvalue_parameters, value_parameters,
 		nvalue_returns, value_returns);
 
-	jive_substitution_map * subst = jive_substitution_map_create(context);
+	jive_substitution_map * subst = jive_substitution_map_create();
 	
 	/* map all parameters */
 	nvalue_parameters = 0;

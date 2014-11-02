@@ -50,7 +50,7 @@ static int test_main(void)
 	jive_view(graph, stderr);
 	
 	jive_region * r2 = jive_region_create_subregion(graph->root_region);
-	jive_substitution_map * subst = jive_substitution_map_create(ctx);
+	jive_substitution_map * subst = jive_substitution_map_create();
 	jive_region_copy_substitute(r1, r2, subst, true, true);
 	jive_substitution_map_destroy(subst);
 	

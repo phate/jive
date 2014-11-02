@@ -259,7 +259,7 @@ jive_graph_copy(jive_graph * self, jive_context * context)
 {
 	jive_graph * new_graph = jive_graph_create(context);
 	
-	jive_substitution_map * subst = jive_substitution_map_create(context);
+	jive_substitution_map * subst = jive_substitution_map_create();
 	jive_region_copy_substitute(self->root_region, new_graph->root_region, subst, false, false);
 	jive_substitution_map_destroy(subst);
 	

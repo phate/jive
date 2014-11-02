@@ -14,7 +14,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_context;
 struct jive_graph;
 struct jive_region;
 
@@ -27,7 +26,7 @@ struct jive_substitution_map {
 };
 
 jive_substitution_map *
-jive_substitution_map_create(struct jive_context * context);
+jive_substitution_map_create();
 
 void
 jive_substitution_map_add_output(jive_substitution_map * self, const jive::output * original,

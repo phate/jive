@@ -324,7 +324,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_node * head = function_region->top;
 	jive_node * tail = function_region->bottom;
 	
-	jive_substitution_map * substitution = jive_substitution_map_create(apply_node->graph->context);
+	jive_substitution_map * substitution = jive_substitution_map_create();
 	
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {
 		jive::output * output = jive_node_get_gate_output(head, op.argument_names()[n].c_str());
@@ -509,7 +509,7 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 	}
 
 	/* create new lambda */
-	jive_substitution_map * map = jive_substitution_map_create(context);
+	jive_substitution_map * map = jive_substitution_map_create();
 	jive_lambda * lambda = jive_lambda_begin(graph, alive_parameter_types.size(),
 		&alive_parameter_types[0], &alive_parameter_names[0]);
 

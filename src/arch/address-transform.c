@@ -379,7 +379,7 @@ jive_lambda_node_address_transform(
 	jive_lambda * lambda = jive_lambda_begin(graph, new_fcttype->narguments(),
 		argument_types, parameter_names);
 
-	jive_substitution_map * map = jive_substitution_map_create(context);
+	jive_substitution_map * map = jive_substitution_map_create();
 
 	jive_node * new_enter = jive_region_get_top_node(lambda->region);
 	for (n = 1; n < enter->noutputs; n++) {

@@ -7,7 +7,7 @@
 #include <jive/vsdg/substitution.h>
 
 jive_substitution_map *
-jive_substitution_map_create(struct jive_context * context)
+jive_substitution_map_create()
 {
 	return new jive_substitution_map;
 }
