@@ -28,7 +28,6 @@ verify_serialize(const jive_resource_class * rescls, const char * expect_repr)
 {
 	jive_context * ctx = jive_context_create();
 	jive_buffer buf;
-	jive_buffer_init(&buf, ctx);
 	
 	jive_token_ostream * os = jive_token_ostream_simple_create(&buf);
 	
@@ -42,7 +41,6 @@ verify_serialize(const jive_resource_class * rescls, const char * expect_repr)
 	
 	assert(strncmp((char *)&buf.data[0], expect_repr, buf.data.size()) == 0);
 	
-	jive_buffer_fini(&buf);
 	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);
 }

@@ -188,7 +188,6 @@ static int test_main(void)
 	//jive_view(graph, stdout);
 	
 	jive_buffer buffer;
-	jive_buffer_init(&buffer, ctx);
 	jive_symbol_name_pair symtab[] = {
 		{&hello_world_symbol, "hello_world"},
 		{&main_symbol, "main"},
@@ -204,8 +203,6 @@ static int test_main(void)
 	int gcc_status = pclose(gcc_pipe);
 	assert(WIFEXITED(gcc_status));
 	assert(WEXITSTATUS(gcc_status) == 0);
-	
-	jive_buffer_fini(&buffer);
 	
 	jive_graph_destroy(graph);
 	

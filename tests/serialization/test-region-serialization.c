@@ -31,7 +31,6 @@ static int test_main(void)
 	jive_context * ctx = jive_context_create();
 	
 	jive_buffer buf;
-	jive_buffer_init(&buf, ctx);
 	
 	jive_graph * gr1 = jive_graph_create(ctx);
 	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation))->set_mutable(false);
@@ -82,8 +81,6 @@ static int test_main(void)
 	
 	jive_graph_destroy(gr1);
 	jive_graph_destroy(gr2);
-	
-	jive_buffer_fini(&buf);
 	
 	assert(jive_context_is_empty(ctx));
 	jive_context_destroy(ctx);

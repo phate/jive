@@ -9,6 +9,8 @@
 
 #include <jive/util/buffer.h>
 
+#include <unistd.h>
+
 namespace jive {
 
 jive::buffer &

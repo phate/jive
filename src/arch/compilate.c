@@ -13,7 +13,6 @@ static void jive_section_init(jive_section * self, jive_context * context,
 	jive_stdsectionid sectionid)
 {
 	self->id = sectionid;
-	jive_buffer_init(&self->contents, context);
 	self->relocations.first = self->relocations.last = 0;
 }
 
@@ -30,7 +29,6 @@ static void jive_section_clear(jive_section * self)
 static void jive_section_fini(jive_section * self)
 {
 	jive_section_clear(self);
-	jive_buffer_fini(&self->contents);
 }
 
 void

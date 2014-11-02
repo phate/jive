@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 
 #include <stdint.h>
 #include <vector>
@@ -58,12 +57,6 @@ struct jive_buffer {
 	std::vector<char> data;
 };
 
-static inline void
-jive_buffer_init(jive_buffer * self, jive_context * context);
-
-static inline void
-jive_buffer_fini(jive_buffer * self);
-
 static inline void *
 jive_buffer_reserve(jive_buffer * self, size_t size);
 
@@ -89,29 +82,6 @@ JIVE_EXPORTED_INLINE void
 jive_buffer_clear(struct jive_buffer * self)
 {
 	self->data.clear();
-}
-
-/**
-	\brief Initialize expandable buffer
-	
-	\param buffer Buffer to initialize
-*/
-static inline void
-jive_buffer_init(jive_buffer * self, jive_context * context)
-{
-	//FIXME: remove this function at some point
-}
-
-/**
-	\brief Destroy expandable buffer
-	\param buffer Buffer to destroy
-	
-	Frees the memory stored in the buffer
-*/
-static inline void
-jive_buffer_fini(jive_buffer * self)
-{
-	//FIXME: remove this function at some point
 }
 
 /**

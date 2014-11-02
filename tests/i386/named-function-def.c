@@ -74,13 +74,11 @@ static int test_main(void)
 	//jive_view(graph, stdout);
 	
 	jive_buffer buffer;
-	jive_buffer_init(&buffer, ctx);
 	jive_symbol_name_pair symtab[] = {{&add_int32_symbol, "add_int32"}};
 	jive_label_name_mapper * name_mapper = jive_label_name_mapper_simple_create(ctx, symtab, 1);
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(&buffer.data[0], buffer.data.size(), 1, stdout);
-	jive_buffer_fini(&buffer);
 	
 	jive_graph_destroy(graph);
 	assert(jive_context_is_empty(ctx));

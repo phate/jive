@@ -67,7 +67,6 @@ static void
 serialize_ctx_init(serialize_ctx * self)
 {
 	self->ctx = jive_context_create();
-	jive_buffer_init(&self->buf, self->ctx);
 	self->os = jive_token_ostream_simple_create(&self->buf);
 	jive_serialization_driver_init(&self->drv, self->ctx);
 	self->drv.error = my_handle_error;
@@ -78,7 +77,6 @@ serialize_ctx_fini(serialize_ctx * self)
 {
 	jive_serialization_driver_fini(&self->drv);
 	jive_token_ostream_destroy(self->os);
-	jive_buffer_fini(&self->buf);
 	assert(jive_context_is_empty(self->ctx));
 	jive_context_destroy(self->ctx);
 }

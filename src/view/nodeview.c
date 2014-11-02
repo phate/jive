@@ -27,7 +27,6 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 	jive_context * context = input->node->graph->context;
 	
 	jive_buffer input_label_buffer;
-	jive_buffer_init(&input_label_buffer, context);
 	input->label(input_label_buffer);
 	const char * input_label = jive_buffer_to_string(&input_label_buffer);
 
@@ -43,8 +42,6 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 			label.append(":").append(rescls->name);
 	} else if (input->required_rescls != &jive_root_resource_class)
 		label.append(":").append(input->required_rescls->name);
-	
-	jive_buffer_fini(&input_label_buffer);
 	
 	width = label.size()+2;
 }
@@ -69,7 +66,6 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 	jive_context * context = output->node()->graph->context;
 	
 	jive_buffer output_label_buffer;
-	jive_buffer_init(&output_label_buffer, context);
 	output->label(output_label_buffer);
 	const char * output_label = jive_buffer_to_string(&output_label_buffer);
 
@@ -86,8 +82,6 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 	} else if (output->required_rescls != &jive_root_resource_class)
 		label.append(":").append(output->required_rescls->name);
 
-	jive_buffer_fini(&output_label_buffer);
-	
 	width = label.size()+2;
 }
 
@@ -120,10 +114,8 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	snprintf(nodeid, sizeof(nodeid), "%zx", (size_t) node);
 	
 	jive_buffer node_label_buffer;
-	jive_buffer_init(&node_label_buffer, context);
 	jive_node_get_label(node, &node_label_buffer);
 	node_label = std::string(jive_buffer_to_string(&node_label_buffer)).append(":").append(nodeid);
-	jive_buffer_fini(&node_label_buffer);
 	
 	int input_width = -3, output_width = -3;
 	int cur_x;
