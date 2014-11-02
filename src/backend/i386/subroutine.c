@@ -24,7 +24,6 @@ jive_node *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
 {
 	jive_region * src_region = lambda_node->producer(0)->region;
-	jive_context * context = target_parent->graph->context;
 	
 	size_t nparameters = src_region->top->noutputs - 1;
 	size_t nreturns = src_region->bottom->ninputs - 1;
@@ -178,8 +177,6 @@ jive_i386_subroutine_begin(jive_graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[])
 {
-	jive_context * context = graph->context;
-	
 	jive::subroutine_machine_signature sig;
 	size_t n;
 	
