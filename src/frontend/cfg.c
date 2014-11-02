@@ -4,7 +4,6 @@
  */
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/frontend/clg.h>
 #include <jive/frontend/clg_node.h>
 #include <jive/frontend/basic_block.h>
