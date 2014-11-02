@@ -352,13 +352,13 @@ jive_shaped_variable_check_change_resource_class(
 	jive_context * context = self->shaped_graph->context;
 	
 	jive_resource_class_count use_count;
-	jive_resource_class_count_init(&use_count, self->shaped_graph->context);
+	jive_resource_class_count_init(&use_count);
 	
 	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
-			jive_node_get_use_count_input(input->node, &use_count, context);
+			jive_node_get_use_count_input(input->node, &use_count);
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
 			if (overflow) {
@@ -368,7 +368,7 @@ jive_shaped_variable_check_change_resource_class(
 		}
 		jive::output * output;
 		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
-			jive_node_get_use_count_output(output->node(), &use_count, context);
+			jive_node_get_use_count_output(output->node(), &use_count);
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
 			if (overflow) {

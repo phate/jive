@@ -347,8 +347,7 @@ jive_node_auto_merge_variables(jive_node * self)
 }
 
 void
-jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count * use_count,
-	jive_context * context)
+jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count * use_count)
 {
 	jive_resource_class_count_clear(use_count);
 	
@@ -379,8 +378,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 }
 
 void
-jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count * use_count,
-	jive_context * context)
+jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count * use_count)
 {
 	jive_resource_class_count_clear(use_count);
 	

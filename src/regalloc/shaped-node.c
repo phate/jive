@@ -33,8 +33,8 @@ jive_shaped_node_create(jive_cut * cut, jive_node * node)
 
 	self->cut = cut;
 	
-	jive_resource_class_count_init(&self->use_count_before, context);
-	jive_resource_class_count_init(&self->use_count_after, context);
+	jive_resource_class_count_init(&self->use_count_before);
+	jive_resource_class_count_init(&self->use_count_after);
 	
 	return self;
 }

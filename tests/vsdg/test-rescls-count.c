@@ -15,7 +15,7 @@
 void test_rescls_count_addsub(jive_context * ctx)
 {
 	jive_resource_class_count count;
-	jive_resource_class_count_init(&count, ctx);
+	jive_resource_class_count_init(&count);
 	
 	const jive_resource_class * overflow;
 	
@@ -49,9 +49,9 @@ void test_rescls_count_addsub(jive_context * ctx)
 void test_rescls_count_compound(jive_context * ctx)
 {
 	jive_resource_class_count a, b, c;
-	jive_resource_class_count_init(&a, ctx);
-	jive_resource_class_count_init(&b, ctx);
-	jive_resource_class_count_init(&c, ctx);
+	jive_resource_class_count_init(&a);
+	jive_resource_class_count_init(&b);
+	jive_resource_class_count_init(&c);
 	
 	assert(jive_resource_class_count_equals(&a, &b));
 	
@@ -104,7 +104,7 @@ void test_rescls_count_compound(jive_context * ctx)
 void test_rescls_count_prio(jive_context * ctx)
 {
 	jive_resource_class_count a;
-	jive_resource_class_count_init(&a, ctx);
+	jive_resource_class_count_init(&a);
 	
 	jive_resource_class_count_add(&a, &jive_testarch_regcls_r0.base);
 	jive_resource_class_count_add(&a, &jive_testarch_regcls_r1.base);

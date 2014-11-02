@@ -252,12 +252,12 @@ jive_node_anchored_region(const jive_node * self, size_t index)
 void
 jive_node_get_use_count_input(
 	const jive_node * self,
-	struct jive_resource_class_count * use_count, struct jive_context * context);
+	struct jive_resource_class_count * use_count);
 
 void
 jive_node_get_use_count_output(
 	const jive_node * self,
-	struct jive_resource_class_count * use_count, struct jive_context * context);
+	struct jive_resource_class_count * use_count);
 
 void
 jive_node_destroy(jive_node * self);

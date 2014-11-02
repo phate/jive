@@ -48,7 +48,7 @@ void
 jive_varcut_init(jive_varcut * self, jive_context * context)
 {
 	self->context = context;
-	jive_resource_class_count_init(&self->use_counts, context);
+	jive_resource_class_count_init(&self->use_counts);
 	self->xpoints.first = self->xpoints.last = 0;
 }
 

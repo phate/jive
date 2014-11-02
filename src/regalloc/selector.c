@@ -31,7 +31,7 @@ jive_node_cost_create(jive_master_shaper_selector * master, jive_node * node)
 	self->state = jive_node_cost_state_ahead;
 	self->index = (size_t) -1;
 	
-	jive_resource_class_count_init(&self->rescls_cost, context);
+	jive_resource_class_count_init(&self->rescls_cost);
 	jive_rescls_prio_array_init(&self->prio_array);
 	self->prio_array.count[0] = jive_resource_class_priority_lowest;
 	self->blocked_rescls_priority = jive_resource_class_priority_lowest;
@@ -462,11 +462,11 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	jive_context * context = self->shaped_graph->context;
 	
 	jive_resource_class_count output_cost, input_cost, self_cost, eval_cost, this_eval_cost;
-	jive_resource_class_count_init(&output_cost, context);
-	jive_resource_class_count_init(&input_cost, context);
-	jive_resource_class_count_init(&self_cost, context);
-	jive_resource_class_count_init(&eval_cost, context);
-	jive_resource_class_count_init(&this_eval_cost, context);
+	jive_resource_class_count_init(&output_cost);
+	jive_resource_class_count_init(&input_cost);
+	jive_resource_class_count_init(&self_cost);
+	jive_resource_class_count_init(&eval_cost);
+	jive_resource_class_count_init(&this_eval_cost);
 	size_t n;
 	
 	/* compute cost of self-representation */
@@ -587,7 +587,7 @@ jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self, 
 	jive_context * context = self->context;
 	
 	jive_resource_class_count cost;
-	jive_resource_class_count_init(&cost, context);
+	jive_resource_class_count_init(&cost);
 	compute_node_cost(self, &cost, node);
 	bool force_tree_root = !maybe_inner_node(self, node);
 	jive_resource_class_priority blocked_rescls_priority = compute_blocked_rescls_priority(self, node);

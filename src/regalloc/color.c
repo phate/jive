@@ -43,7 +43,7 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 	smallest amount of "pressure" on interfering variables */
 	
 	jive_resource_class_count cross_count;
-	jive_resource_class_count_init(&cross_count, context);
+	jive_resource_class_count_init(&cross_count);
 	jive_shaped_variable_get_cross_count(candidate, &cross_count);
 	
 	const jive_resource_class * rescls = jive_variable_get_resource_class(variable);

@@ -14,7 +14,6 @@
 
 #include <vector>
 
-struct jive_context;
 struct jive_graph;
 
 namespace jive {
@@ -172,7 +171,6 @@ struct jive_resource_class_count {
 		jive_resource_class_count_item * first;
 		jive_resource_class_count_item * last;
 	} items;
-	struct jive_context * context;
 };
 
 struct jive_rescls_prio_array {
