@@ -51,7 +51,6 @@ struct jive_regalloc_conflict {
 };
 
 struct jive_region_shaper {
-	jive_context * context;
 	jive_region_shaper * parent;
 	jive_shaped_graph * shaped_graph;
 	jive_region * region;
@@ -69,10 +68,8 @@ jive_region_shaper_create(
 	jive_region * region,
 	jive_master_shaper_selector * master_selector)
 {
-	jive_context * context = region->graph->context;
 	jive_region_shaper * self = new jive_region_shaper;
 	
-	self->context = context;
 	self->parent = parent;
 	self->shaped_graph = master_selector->shaped_graph;
 	self->region = region;
@@ -80,7 +77,7 @@ jive_region_shaper_create(
 	self->master_selector = master_selector;
 	self->region_selector = jive_master_shaper_selector_map_region(master_selector, region);
 	self->control_dominator = 0;
-	jive_varcut_init(&self->active, self->context);
+	jive_varcut_init(&self->active);
 	
 	return self;
 }
@@ -139,11 +136,9 @@ check_crossing_overflow(jive_region_shaper * self,
 	  of the exceeded register classes otherwise.
 	*/
 	
-	jive_context * context = self->context;
-	
 	jive_mutable_varcut active_before, active_after;
-	jive_varcut_init(&active_before, context);
-	jive_varcut_init(&active_after, context);
+	jive_varcut_init(&active_before);
+	jive_varcut_init(&active_after);
 	
 	jive_shaped_node_get_active_before(shaped_node, &active_before);
 	jive_shaped_node_get_active_after(shaped_node, &active_after);
@@ -260,11 +255,9 @@ check_unshaped_crossing_overflow(jive_region_shaper * self,
 	jive_shaped_node * shaped_node,
 	jive_node * new_node)
 {
-	jive_context * context = self->context;
-	
 	jive_mutable_varcut active_before, active_after;
-	jive_varcut_init(&active_before, context);
-	jive_varcut_init(&active_after, context);
+	jive_varcut_init(&active_before);
+	jive_varcut_init(&active_after);
 	
 	jive_shaped_node_get_active_before(shaped_node, &active_before);
 	jive_shaped_node_get_active_before(shaped_node, &active_after);

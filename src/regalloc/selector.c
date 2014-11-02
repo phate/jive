@@ -7,7 +7,6 @@
 #include <jive/regalloc/selector.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/regalloc/xpoint-private.h>
@@ -23,8 +22,6 @@
 jive_node_cost *
 jive_node_cost_create(jive_master_shaper_selector * master, jive_node * node)
 {
-	jive_context * context = master->context;
-	
 	std::unique_ptr<jive_node_cost> self(new jive_node_cost);
 	self->node = node;
 	self->master = master;
@@ -56,7 +53,7 @@ jive_node_cost_prio_heap_cmp(const jive_node_cost * a, const jive_node_cost * b)
 }
 
 void
-jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self, jive_context * context)
+jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self)
 {
 	self->nitems = 0;
 }
@@ -156,7 +153,7 @@ jive_node_cost_prio_heap_remove(jive_node_cost_prio_heap * self, jive_node_cost 
 
 
 void
-jive_node_cost_stack_init(jive_node_cost_stack * self, jive_context * context)
+jive_node_cost_stack_init(jive_node_cost_stack * self)
 {
 	self->nitems = 0;
 }
@@ -244,8 +241,6 @@ jive_region_shaper_selector_select_node(jive_region_shaper_selector * self)
 jive_region_shaper_selector *
 jive_region_shaper_selector_create(jive_master_shaper_selector * master, const jive_region * region, const jive_shaped_region * shaped_region)
 {
-	jive_context * context = master->context;
-	
 	std::unique_ptr<jive_region_shaper_selector> self(new jive_region_shaper_selector);
 	
 	self->master = master;
@@ -253,8 +248,8 @@ jive_region_shaper_selector_create(jive_master_shaper_selector * master, const j
 	self->region = region;
 	self->shaped_region = shaped_region;
 	
-	jive_node_cost_prio_heap_init(&self->prio_heap, context);
-	jive_node_cost_stack_init(&self->node_stack, context);
+	jive_node_cost_prio_heap_init(&self->prio_heap);
+	jive_node_cost_stack_init(&self->node_stack);
 
 	jive_region_shaper_selector * result = self.get();
 	master->region_map.insert(std::move(self));
@@ -345,7 +340,6 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 	size_t nsorted_ssavars = 0;
 	
 	size_t n, k;
-	jive_context * context = self->master->context;
 	
 	size_t nsorted_nodes = self->prio_heap.nitems + self->node_stack.nitems;
 	jive_node_cost * sorted_nodes[nsorted_nodes];
@@ -459,7 +453,6 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	}
 	
 	jive_region * region = node->region;
-	jive_context * context = self->shaped_graph->context;
 	
 	jive_resource_class_count output_cost, input_cost, self_cost, eval_cost, this_eval_cost;
 	jive_resource_class_count_init(&output_cost);
@@ -583,8 +576,6 @@ jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self, 
 {
 	jive_node_cost * node_cost;
 	node_cost = jive_master_shaper_selector_map_node_internal(self, node);
-	
-	jive_context * context = self->context;
 	
 	jive_resource_class_count cost;
 	jive_resource_class_count_init(&cost);
@@ -802,12 +793,10 @@ jive_master_shaper_selector *
 jive_master_shaper_selector_create(jive_shaped_graph * shaped_graph)
 {
 	jive_graph * graph = shaped_graph->graph;
-	jive_context * context = graph->context;
 	
 	jive_master_shaper_selector * self = new jive_master_shaper_selector;
 	
 	self->shaped_graph = shaped_graph;
-	self->context = context;
 	
 	jive_computation_tracker_init(&self->cost_computation_state_tracker, graph);
 	
@@ -837,8 +826,6 @@ jive_master_shaper_selector_create(jive_shaped_graph * shaped_graph)
 void
 jive_master_shaper_selector_destroy(jive_master_shaper_selector * self)
 {
-	jive_context * context = self->context;
-	
 	size_t n;
 	for (n = 0; n < sizeof(self->callbacks)/sizeof(self->callbacks[0]); n++)
 		jive_notifier_disconnect(self->callbacks[n]);

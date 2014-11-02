@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 
 #include <jive/regalloc/shaped-graph.h>
 
@@ -204,7 +203,7 @@ struct jive_names_use {
 };
 
 static void
-jive_names_use_init(jive_names_use * self, jive_context * context)
+jive_names_use_init(jive_names_use * self)
 {
 	self->list.first = self->list.last = 0;
 }
@@ -302,10 +301,8 @@ static void
 jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * node,
 	jive_names_use * names_use)
 {
-	jive_context * context = shaped_graph->context;
-	
 	jive_names_use sub_names_use;
-	jive_names_use_init(&sub_names_use, context);
+	jive_names_use_init(&sub_names_use);
 	jive_used_name * used_name;
 	
 	size_t n;
@@ -315,7 +312,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 			continue;
 		
 		jive_names_use inner_names_use;
-		jive_names_use_init(&inner_names_use, context);
+		jive_names_use_init(&inner_names_use);
 		
 		jive_regalloc_reuse_record_region(shaped_graph, input->producer()->region, &inner_names_use);
 		
@@ -386,10 +383,9 @@ void
 jive_regalloc_reuse(jive_shaped_graph * shaped_graph)
 {
 	jive_graph * graph = shaped_graph->graph;
-	jive_context * context = graph->context;
 	
 	jive_names_use names_use;
-	jive_names_use_init(&names_use, context);
+	jive_names_use_init(&names_use);
 	
 	jive_regalloc_reuse_record_region(shaped_graph, graph->root_region, &names_use);
 	

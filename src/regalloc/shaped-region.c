@@ -6,7 +6,6 @@
 
 #include <jive/regalloc/shaped-region.h>
 
-#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-region-private.h>
@@ -16,7 +15,7 @@
 #include <jive/vsdg/region.h>
 
 static jive_cut *
-jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive_cut * before)
+jive_cut_create(jive_shaped_region * shaped_region, jive_cut * before)
 {
 	jive_cut * self = new jive_cut;
 	
@@ -30,9 +29,7 @@ jive_cut_create(jive_context * context, jive_shaped_region * shaped_region, jive
 jive_shaped_region *
 jive_shaped_region_create(jive_shaped_graph * shaped_graph, jive_region * region)
 {
-	jive_context * context = shaped_graph->context;
 	std::unique_ptr<jive_shaped_region> self(new jive_shaped_region);
-	
 	self->shaped_graph = shaped_graph;
 	self->region = region;
 	self->cuts.first = self->cuts.last = NULL;
@@ -47,7 +44,7 @@ jive_shaped_region_create(jive_shaped_graph * shaped_graph, jive_region * region
 jive_cut *
 jive_shaped_region_create_cut(jive_shaped_region * self)
 {
-	return jive_cut_create(self->shaped_graph->context, self, self->cuts.first);
+	return jive_cut_create(self, self->cuts.first);
 }
 
 jive_shaped_node *
@@ -86,8 +83,6 @@ jive_shaped_region::~jive_shaped_region()
 void
 jive_cut_destroy(jive_cut * self)
 {
-	jive_context * context = self->shaped_region->shaped_graph->context;
-	
 	while(self->locations.first)
 		jive_shaped_node_destroy(self->locations.first);
 	
@@ -99,16 +94,13 @@ jive_cut_destroy(jive_cut * self)
 jive_cut *
 jive_cut_create_above(jive_cut * self)
 {
-	return jive_cut_create(self->shaped_region->shaped_graph->context, self->shaped_region, self);
+	return jive_cut_create(self->shaped_region, self);
 }
 
 jive_cut *
 jive_cut_create_below(jive_cut * self)
 {
-	return jive_cut_create(
-		self->shaped_region->shaped_graph->context,
-		self->shaped_region,
-		self->region_cut_list.next);
+	return jive_cut_create(self->shaped_region, self->region_cut_list.next);
 }
 
 jive_cut *

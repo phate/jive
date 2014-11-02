@@ -24,14 +24,12 @@ struct jive_shaped_region_ssavar_notifier_slot {
 		jive_shaped_region_ssavar_notifier * first;
 		jive_shaped_region_ssavar_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_shaped_region_ssavar_notifier_slot_init(jive_shaped_region_ssavar_notifier_slot * self, jive_context * context)
+jive_shaped_region_ssavar_notifier_slot_init(jive_shaped_region_ssavar_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void

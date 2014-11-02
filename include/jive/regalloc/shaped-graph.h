@@ -15,13 +15,11 @@
 typedef struct jive_shaped_graph jive_shaped_graph;
 
 struct jive_graph;
-struct jive_context;
 
 struct jive_shaped_graph {
 	~jive_shaped_graph();
 
 	struct jive_graph * graph;
-	struct jive_context * context;
 	
 	struct jive_notifier * callbacks[21];
 

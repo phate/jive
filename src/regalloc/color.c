@@ -35,7 +35,7 @@ find_next_uncolored(const jive_var_assignment_tracker * tracker)
 }
 
 static const jive_resource_name *
-find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
+find_allowed_name(jive_shaped_variable * candidate)
 {
 	jive_variable * variable = candidate->variable;
 	
@@ -87,7 +87,7 @@ find_allowed_name(jive_context * context, jive_shaped_variable * candidate)
 static bool
 try_assign_name(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
 {
-	const jive_resource_name * name = find_allowed_name(shaped_graph->graph->context, shaped_variable);
+	const jive_resource_name * name = find_allowed_name(shaped_variable);
 	if (!name)
 		return false;
 	
@@ -111,7 +111,6 @@ struct regalloc_split_region {
 static regalloc_split_region *
 regalloc_split_region_create(jive_region * region)
 {
-	jive_context * context = region->graph->context;
 	regalloc_split_region * split_region = new regalloc_split_region;
 	
 	split_region->region = region;
@@ -248,8 +247,6 @@ split_bottom(jive_shaped_graph * shaped_graph, jive::output * origin,
 static jive_shaped_variable *
 lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable)
 {
-	jive_context * context = shaped_graph->graph->context;
-	
 	/* split lifetime of SSA variable */
 	
 	jive_variable * variable = shaped_variable->variable;
@@ -312,7 +309,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		
 		jive_input_unassign_ssavar(last_user);
 		jive_variable_recompute_rescls(variable);
-		name = find_allowed_name(context, shaped_variable);
+		name = find_allowed_name(shaped_variable);
 	}
 	
 	jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, origin->node());
@@ -497,8 +494,6 @@ static const jive_resource_class_demotion *
 pick_gate_evict_rescls(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_variable,
 	jive::gate * gate)
 {
-	jive_context * context = shaped_graph->graph->context;
-	
 	const jive_resource_class * rescls = jive_variable_get_resource_class(shaped_variable->variable);
 	const jive_resource_class_demotion * demotion = rescls->demotions;
 	while(demotion->target) {

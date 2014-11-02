@@ -12,7 +12,6 @@
 
 #include <jive/common.h>
 
-struct jive_context;
 struct jive_shaped_variable;
 
 struct jive_pressured_var_list {
@@ -28,8 +27,6 @@ struct jive_var_assignment_tracker {
 		JIVE_DEBUG_ASSERT(trivial.first == 0);
 	}
 
-	struct jive_context * context;
-	
 	struct {
 		struct jive_shaped_variable * first;
 		struct jive_shaped_variable * last;

@@ -6,7 +6,6 @@
 #ifndef JIVE_REGALLOC_ASSIGNMENT_TRACKER_PRIVATE_H
 #define JIVE_REGALLOC_ASSIGNMENT_TRACKER_PRIVATE_H
 
-#include <jive/context.h>
 #include <jive/regalloc/assignment-tracker.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/util/list.h>
@@ -15,9 +14,8 @@
 #include <jive/common.h>
 
 static inline void
-jive_var_assignment_tracker_init(jive_var_assignment_tracker * self, jive_context * context)
+jive_var_assignment_tracker_init(jive_var_assignment_tracker * self)
 {
-	self->context = context;
 	self->assigned.first = self->assigned.last = 0;
 	self->trivial.first = self->trivial.last = 0;
 }

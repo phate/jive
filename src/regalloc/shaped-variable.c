@@ -8,7 +8,6 @@
 #include <jive/regalloc/shaped-variable.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node-private.h>
@@ -21,7 +20,6 @@ jive_shaped_variable_create(
 	jive_shaped_graph * shaped_graph,
 	jive_variable * variable)
 {
-	jive_context * context = shaped_graph->context;
 	std::unique_ptr<jive_shaped_variable> self(new jive_shaped_variable);
 	
 	self->shaped_graph = shaped_graph;
@@ -272,9 +270,7 @@ jive_variable_interference_destroy(jive_variable_interference * self)
 jive_shaped_ssavar *
 jive_shaped_ssavar_create(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar)
 {
-	jive_context * context = shaped_graph->context;
 	std::unique_ptr<jive_shaped_ssavar> self(new jive_shaped_ssavar);
-
 	self->shaped_graph = shaped_graph;
 	self->ssavar = ssavar;
 	self->boundary_region_depth = (size_t)-1;
@@ -348,8 +344,6 @@ jive_shaped_variable_check_change_resource_class(
 		if (overflow)
 			return overflow;
 	}
-	
-	jive_context * context = self->shaped_graph->context;
 	
 	jive_resource_class_count use_count;
 	jive_resource_class_count_init(&use_count);

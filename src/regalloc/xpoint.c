@@ -36,7 +36,6 @@ jive_nodevar_xpoint_destroy(jive_nodevar_xpoint * xpoint)
 {
 	jive_shaped_node * shaped_node = xpoint->shaped_node;
 	jive_shaped_ssavar * shaped_ssavar = xpoint->shaped_ssavar;
-	jive_context * context = shaped_node->shaped_graph->context;
 	
 	shaped_node->ssavar_xpoints.erase(xpoint);
 	shaped_ssavar->node_xpoints.erase(xpoint);
@@ -45,9 +44,8 @@ jive_nodevar_xpoint_destroy(jive_nodevar_xpoint * xpoint)
 }
 
 void
-jive_varcut_init(jive_varcut * self, jive_context * context)
+jive_varcut_init(jive_varcut * self)
 {
-	self->context = context;
 	jive_resource_class_count_init(&self->use_counts);
 	self->xpoints.first = self->xpoints.last = 0;
 }
@@ -275,7 +273,7 @@ jive_region_varcut_unregister_xpoint(jive_region_varcut * self, jive_regvar_xpoi
 void
 jive_region_varcut_init(jive_region_varcut * self, jive_shaped_region * shaped_region)
 {
-	jive_varcut_init(&self->base, shaped_region->shaped_graph->context);
+	jive_varcut_init(&self->base);
 	self->shaped_region = shaped_region;
 }
 

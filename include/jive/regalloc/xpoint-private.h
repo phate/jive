@@ -6,7 +6,6 @@
 #ifndef JIVE_REGALLOC_XPOINT_PRIVATE_H
 #define JIVE_REGALLOC_XPOINT_PRIVATE_H
 
-#include <jive/context.h>
 #include <jive/regalloc/xpoint.h>
 
 jive_nodevar_xpoint *
@@ -39,7 +38,7 @@ jive_cutvar_xpoint_put(jive_cutvar_xpoint * self)
 }
 
 void
-jive_varcut_init(jive_varcut * self, jive_context * context);
+jive_varcut_init(jive_varcut * self);
 
 void
 jive_varcut_fini(jive_varcut * self);

@@ -15,7 +15,6 @@
 
 #include <vector>
 
-struct jive_context;
 struct jive_node;
 struct jive_region;
 struct jive_resource_class;
@@ -79,7 +78,7 @@ struct jive_node_cost_prio_heap {
 };
 
 void
-jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self, struct jive_context * context);
+jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self);
 
 void
 jive_node_cost_prio_heap_add(jive_node_cost_prio_heap * self, jive_node_cost * item);
@@ -96,7 +95,7 @@ struct jive_node_cost_stack {
 };
 
 void
-jive_node_cost_stack_init(jive_node_cost_stack * self, struct jive_context * context);
+jive_node_cost_stack_init(jive_node_cost_stack * self);
 
 void
 jive_node_cost_stack_add(jive_node_cost_stack * self, jive_node_cost * item);
@@ -147,7 +146,6 @@ jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self, 
 
 struct jive_master_shaper_selector {
 	struct jive_shaped_graph * shaped_graph;
-	struct jive_context * context;
 	
 	jive_node_cost_hash node_map;
 	jive_region_shaper_selector_hash region_map;

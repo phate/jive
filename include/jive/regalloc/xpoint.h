@@ -120,7 +120,6 @@ struct jive_varcut {
 	jive_cutvar_xpoint_hash_byorigin origin_map;
 	jive_cutvar_xpoint_hash_byvariable variable_map;
 	jive_resource_class_count use_counts;
-	struct jive_context * context;
 	
 	struct {
 		jive_cutvar_xpoint * first;

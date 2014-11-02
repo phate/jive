@@ -7,7 +7,6 @@
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-node.h>
 
-#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg/anchortype.h>
@@ -22,7 +21,6 @@ jive_shaped_node_create(jive_cut * cut, jive_node * node)
 	JIVE_DEBUG_ASSERT(
 		!node->region->anchor ||
 		jive_shaped_graph_map_node(shaped_graph, node->region->anchor->node));
-	jive_context * context = shaped_graph->context;
 	
 	jive_shaped_node * self = new jive_shaped_node;
 	

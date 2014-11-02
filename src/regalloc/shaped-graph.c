@@ -206,11 +206,9 @@ jive_shaped_graph_add_region_recursive(jive_shaped_graph * self, jive_region * r
 jive_shaped_graph *
 jive_shaped_graph_create(jive_graph * graph)
 {
-	jive_context * context = graph->context;
 	jive_shaped_graph * self = new jive_shaped_graph;
 	
 	self->graph = graph;
-	self->context = context;
 	
 	size_t n;
 	for(n = 0; n < sizeof(self->callbacks)/sizeof(self->callbacks[0]); n++)
@@ -241,12 +239,12 @@ jive_shaped_graph_create(jive_graph * graph)
 	
 	JIVE_DEBUG_ASSERT(n <= sizeof(self->callbacks)/sizeof(self->callbacks[0]));
 	
-	jive_var_assignment_tracker_init(&self->var_assignment_tracker, context);
+	jive_var_assignment_tracker_init(&self->var_assignment_tracker);
 	
 	jive_node_notifier_slot_init(&self->on_shaped_node_create);
 	jive_node_notifier_slot_init(&self->on_shaped_node_destroy);
-	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_add, context);
-	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_remove, context);
+	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_add);
+	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_remove);
 	
 	jive_variable * variable;
 	JIVE_LIST_ITERATE(graph->variables, variable, graph_variable_list) {
