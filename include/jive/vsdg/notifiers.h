@@ -7,7 +7,8 @@
 #define JIVE_VSDG_NOTIFIERS_H
 
 #include <jive/common.h>
-#include <jive/context.h>
+
+#include <stddef.h>
 
 namespace jive {
 	class gate;
@@ -31,7 +32,6 @@ struct jive_notifier_class {
 
 struct jive_notifier {
 	const jive_notifier_class * class_;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
@@ -51,14 +51,12 @@ struct jive_node_notifier_slot {
 		jive_node_notifier * first;
 		jive_node_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_node_notifier_slot_init(jive_node_notifier_slot * self, jive_context * context)
+jive_node_notifier_slot_init(jive_node_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -81,14 +79,12 @@ struct jive_node_depth_notifier_slot {
 		jive_node_depth_notifier * first;
 		jive_node_depth_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_node_depth_notifier_slot_init(jive_node_depth_notifier_slot * self, jive_context * context)
+jive_node_depth_notifier_slot_init(jive_node_depth_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -111,14 +107,12 @@ struct jive_input_notifier_slot {
 		jive_input_notifier * first;
 		jive_input_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_input_notifier_slot_init(jive_input_notifier_slot * self, jive_context * context)
+jive_input_notifier_slot_init(jive_input_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -142,14 +136,12 @@ struct jive_input_change_notifier_slot {
 		jive_input_change_notifier * first;
 		jive_input_change_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_input_change_notifier_slot_init(jive_input_change_notifier_slot * self, jive_context * context)
+jive_input_change_notifier_slot_init(jive_input_change_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -173,14 +165,12 @@ struct jive_output_notifier_slot {
 		jive_output_notifier * first;
 		jive_output_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_output_notifier_slot_init(jive_output_notifier_slot * self, jive_context * context)
+jive_output_notifier_slot_init(jive_output_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -203,14 +193,12 @@ struct jive_variable_notifier_slot {
 		jive_variable_notifier * first;
 		jive_variable_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_variable_notifier_slot_init(jive_variable_notifier_slot * self, jive_context * context)
+jive_variable_notifier_slot_init(jive_variable_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -233,14 +221,12 @@ struct jive_ssavar_notifier_slot {
 		jive_ssavar_notifier * first;
 		jive_ssavar_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_ssavar_notifier_slot_init(jive_ssavar_notifier_slot * self, jive_context * context)
+jive_ssavar_notifier_slot_init(jive_ssavar_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -264,14 +250,12 @@ struct jive_ssavar_input_notifier_slot {
 		jive_ssavar_input_notifier * first;
 		jive_ssavar_input_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_ssavar_input_notifier_slot_init(jive_ssavar_input_notifier_slot * self, jive_context * context)
+jive_ssavar_input_notifier_slot_init(jive_ssavar_input_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -296,14 +280,12 @@ struct jive_ssavar_output_notifier_slot {
 		jive_ssavar_output_notifier * first;
 		jive_ssavar_output_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_ssavar_output_notifier_slot_init(jive_ssavar_output_notifier_slot * self, jive_context * context)
+jive_ssavar_output_notifier_slot_init(jive_ssavar_output_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -328,14 +310,12 @@ struct jive_ssavar_divert_notifier_slot {
 		jive_ssavar_divert_notifier * first;
 		jive_ssavar_divert_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_ssavar_divert_notifier_slot_init(jive_ssavar_divert_notifier_slot * self, jive_context * context)
+jive_ssavar_divert_notifier_slot_init(jive_ssavar_divert_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -359,14 +339,12 @@ struct jive_ssavar_variable_notifier_slot {
 		jive_ssavar_variable_notifier * first;
 		jive_ssavar_variable_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_ssavar_variable_notifier_slot_init(jive_ssavar_variable_notifier_slot * self, jive_context * context)
+jive_ssavar_variable_notifier_slot_init(jive_ssavar_variable_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -390,14 +368,12 @@ struct jive_variable_gate_notifier_slot {
 		jive_variable_gate_notifier * first;
 		jive_variable_gate_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_variable_gate_notifier_slot_init(jive_variable_gate_notifier_slot * self, jive_context * context)
+jive_variable_gate_notifier_slot_init(jive_variable_gate_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -421,14 +397,12 @@ struct jive_variable_resource_class_notifier_slot {
 		jive_variable_resource_class_notifier * first;
 		jive_variable_resource_class_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_variable_resource_class_notifier_slot_init(jive_variable_resource_class_notifier_slot * self, jive_context * context)
+jive_variable_resource_class_notifier_slot_init(jive_variable_resource_class_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -451,14 +425,12 @@ struct jive_variable_resource_name_notifier_slot {
 		jive_variable_resource_name_notifier * first;
 		jive_variable_resource_name_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_variable_resource_name_notifier_slot_init(jive_variable_resource_name_notifier_slot * self, jive_context * context)
+jive_variable_resource_name_notifier_slot_init(jive_variable_resource_name_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -481,14 +453,12 @@ struct jive_region_notifier_slot {
 		jive_region_notifier * first;
 		jive_region_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_region_notifier_slot_init(jive_region_notifier_slot * self, jive_context * context)
+jive_region_notifier_slot_init(jive_region_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -511,14 +481,12 @@ struct jive_region_ssavar_notifier_slot {
 		jive_region_ssavar_notifier * first;
 		jive_region_ssavar_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_region_ssavar_notifier_slot_init(jive_region_ssavar_notifier_slot * self, jive_context * context)
+jive_region_ssavar_notifier_slot_init(jive_region_ssavar_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void
@@ -541,14 +509,12 @@ struct jive_gate_notifier_slot {
 		jive_gate_notifier * first;
 		jive_gate_notifier * last;
 	} notifiers;
-	struct jive_context * context;
 };
 
 JIVE_EXPORTED_INLINE void
-jive_gate_notifier_slot_init(jive_gate_notifier_slot * self, jive_context * context)
+jive_gate_notifier_slot_init(jive_gate_notifier_slot * self)
 {
 	self->notifiers.first = self->notifiers.last = 0;
-	self->context = context;
 }
 
 void

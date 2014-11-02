@@ -97,40 +97,40 @@ jive_graph_init_(jive_graph * self, jive_context * context)
 	self->normalized = true;
 	self->floating_region_count = 0;
 	
-	jive_region_notifier_slot_init(&self->on_region_create, context);
-	jive_region_notifier_slot_init(&self->on_region_destroy, context);
-	jive_region_ssavar_notifier_slot_init(&self->on_region_add_used_ssavar, context);
-	jive_region_ssavar_notifier_slot_init(&self->on_region_remove_used_ssavar, context);
+	jive_region_notifier_slot_init(&self->on_region_create);
+	jive_region_notifier_slot_init(&self->on_region_destroy);
+	jive_region_ssavar_notifier_slot_init(&self->on_region_add_used_ssavar);
+	jive_region_ssavar_notifier_slot_init(&self->on_region_remove_used_ssavar);
 	
-	jive_node_notifier_slot_init(&self->on_node_create, context);
-	jive_node_notifier_slot_init(&self->on_node_destroy, context);
-	jive_node_depth_notifier_slot_init(&self->on_node_depth_change, context);
+	jive_node_notifier_slot_init(&self->on_node_create);
+	jive_node_notifier_slot_init(&self->on_node_destroy);
+	jive_node_depth_notifier_slot_init(&self->on_node_depth_change);
 	
-	jive_input_notifier_slot_init(&self->on_input_create, context);
-	jive_input_change_notifier_slot_init(&self->on_input_change, context);
-	jive_input_notifier_slot_init(&self->on_input_destroy, context);
+	jive_input_notifier_slot_init(&self->on_input_create);
+	jive_input_change_notifier_slot_init(&self->on_input_change);
+	jive_input_notifier_slot_init(&self->on_input_destroy);
 	
-	jive_output_notifier_slot_init(&self->on_output_create, context);
-	jive_output_notifier_slot_init(&self->on_output_destroy, context);
+	jive_output_notifier_slot_init(&self->on_output_create);
+	jive_output_notifier_slot_init(&self->on_output_destroy);
 	
-	jive_variable_notifier_slot_init(&self->on_variable_create, context);
-	jive_variable_notifier_slot_init(&self->on_variable_destroy, context);
-	jive_variable_gate_notifier_slot_init(&self->on_variable_assign_gate, context);
-	jive_variable_gate_notifier_slot_init(&self->on_variable_unassign_gate, context);
-	jive_variable_resource_class_notifier_slot_init(&self->on_variable_resource_class_change, context);
-	jive_variable_resource_name_notifier_slot_init(&self->on_variable_resource_name_change, context);
+	jive_variable_notifier_slot_init(&self->on_variable_create);
+	jive_variable_notifier_slot_init(&self->on_variable_destroy);
+	jive_variable_gate_notifier_slot_init(&self->on_variable_assign_gate);
+	jive_variable_gate_notifier_slot_init(&self->on_variable_unassign_gate);
+	jive_variable_resource_class_notifier_slot_init(&self->on_variable_resource_class_change);
+	jive_variable_resource_name_notifier_slot_init(&self->on_variable_resource_name_change);
 	
-	jive_gate_notifier_slot_init(&self->on_gate_interference_add, context);
-	jive_gate_notifier_slot_init(&self->on_gate_interference_remove, context);
+	jive_gate_notifier_slot_init(&self->on_gate_interference_add);
+	jive_gate_notifier_slot_init(&self->on_gate_interference_remove);
 	
-	jive_ssavar_notifier_slot_init(&self->on_ssavar_create, context);
-	jive_ssavar_notifier_slot_init(&self->on_ssavar_destroy, context);
-	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_assign_input, context);
-	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_unassign_input, context);
-	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_assign_output, context);
-	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_unassign_output, context);
-	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin, context);
-	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change, context);
+	jive_ssavar_notifier_slot_init(&self->on_ssavar_create);
+	jive_ssavar_notifier_slot_init(&self->on_ssavar_destroy);
+	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_assign_input);
+	jive_ssavar_input_notifier_slot_init(&self->on_ssavar_unassign_input);
+	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_assign_output);
+	jive_ssavar_output_notifier_slot_init(&self->on_ssavar_unassign_output);
+	jive_ssavar_divert_notifier_slot_init(&self->on_ssavar_divert_origin);
+	jive_ssavar_variable_notifier_slot_init(&self->on_ssavar_variable_change);
 	
 	self->root_region = new jive_region;
 	jive_region_init_(self->root_region, self, 0);

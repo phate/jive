@@ -12,7 +12,6 @@ struct jive_##name##_notifier { \
 	jive_##name##_notifier_function function; \
 	void * closure; \
 	jive_##name##_notifier_slot * slot; \
-	jive_context * context; \
 	struct { \
 		jive_##name##_notifier * prev; \
 		jive_##name##_notifier * next; \
@@ -52,7 +51,6 @@ jive_##name##_notifier_slot_connect(jive_##name##_notifier_slot * self, jive_##n
 	jive_##name##_notifier * notifier = new jive_##name##_notifier; \
 	notifier->base.class_ = &JIVE_##NAME##_NOTIFIER; \
 	notifier->slot = self; \
-	notifier->context = self->context; \
 	notifier->function = function; \
 	notifier->closure = closure; \
 	JIVE_LIST_PUSH_BACK(self->notifiers, notifier, notifier_list); \
