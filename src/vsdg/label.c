@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
@@ -73,13 +72,11 @@ const jive_label_class JIVE_LABEL_EXTERNAL = {
 void
 jive_label_external_init(
 	jive_label_external * self,
-	struct jive_context * context,
 	const char * name,
 	const struct jive_linker_symbol * symbol)
 {
 	self->base.class_ = &JIVE_LABEL_EXTERNAL;
 	self->base.flags = jive_label_flags_external;
-	self->context = context;
 	self->asmname = std::string(name);
 	self->symbol = symbol;
 }

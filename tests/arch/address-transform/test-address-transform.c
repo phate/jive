@@ -18,6 +18,7 @@
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
+#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -31,7 +32,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addr;
 	jive::mem::type mem;
@@ -52,7 +53,7 @@ static int test_main(void)
 
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
-	jive_label_external_init(&write_label, context, "write", &write_symbol);
+	jive_label_external_init(&write_label, "write", &write_symbol);
 	jive::output * label = jive_label_to_address_create(graph, &write_label.base);
 	jive::output * tmparray2[] = {memberof, containerof};
 	const jive::base::type * tmparray3[] = {&addr, &addr};

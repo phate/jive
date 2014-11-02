@@ -308,8 +308,7 @@ jive_gate_auto_merge_variable(jive::gate * self);
 /**	@}	*/
 
 void
-jive_raise_type_error(const jive::base::type * self, const jive::base::type * other,
-	struct jive_context * context);
+jive_raise_type_error(const jive::base::type * self, const jive::base::type * other);
 
 inline jive_node *
 jive::input::producer() const noexcept

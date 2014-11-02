@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -21,7 +22,7 @@
 static jive_graph *
 create_testgraph_mismatch1(jive_context * context)
 {
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray0[] = { jive_argument_int, jive_argument_int };
 	const jive_argument_type tmparray1[] = { jive_argument_int };
 	
@@ -40,7 +41,7 @@ create_testgraph_mismatch1(jive_context * context)
 static jive_graph *
 create_testgraph_mismatch2(jive_context * context)
 {
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray2[] = { jive_argument_int, jive_argument_int };
 	const jive_argument_type tmparray3[] = { jive_argument_int, jive_argument_int };
 	
@@ -62,7 +63,7 @@ create_testgraph_mismatch2(jive_context * context)
 static jive_graph *
 create_testgraph_mismatch3(jive_context * context)
 {
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
 		0, NULL
@@ -101,7 +102,7 @@ create_testgraph_mismatch3(jive_context * context)
 static jive_graph *
 create_testgraph_mismatch4(jive_context * context)
 {
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
 		0, NULL
@@ -140,7 +141,7 @@ create_testgraph_mismatch4(jive_context * context)
 static jive_graph *
 create_testgraph_mismatch5(jive_context * context)
 {
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
 		0, NULL
@@ -192,7 +193,7 @@ create_testgraph_mismatch5(jive_context * context)
 static jive_graph *
 create_testgraph_mismatch6(jive_context * context)
 {
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
 		0, NULL

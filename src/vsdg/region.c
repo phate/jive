@@ -200,7 +200,7 @@ struct jive_copy_context {
 };
 
 static void
-jive_copy_context_append(jive_copy_context * self, jive_context * context, jive_node * node)
+jive_copy_context_append(jive_copy_context * self, jive_node * node)
 {
 	if (node->depth_from_root >= self->depths.size())
 		self->depths.resize(node->depth_from_root+1);
@@ -210,14 +210,14 @@ jive_copy_context_append(jive_copy_context * self, jive_context * context, jive_
 
 static void
 pre_copy_region(jive_region * target_region, const jive_region * original_region,
-	jive_copy_context * copy_context, jive_context * context, jive_substitution_map * substitution,
+	jive_copy_context * copy_context, jive_substitution_map * substitution,
 	bool copy_top, bool copy_bottom)
 {
 	jive_node * node;
 	JIVE_LIST_ITERATE(original_region->nodes, node, region_nodes_list) {
 		if (!copy_top && node == original_region->top) continue;
 		if (!copy_bottom && node == original_region->bottom) continue;
-		jive_copy_context_append(copy_context, context, node);
+		jive_copy_context_append(copy_context, node);
 	}
 	
 	jive_region * subregion;
@@ -225,7 +225,7 @@ pre_copy_region(jive_region * target_region, const jive_region * original_region
 		jive_region * target_subregion = jive_region_create_subregion(target_region);
 		target_subregion->attrs = subregion->attrs;
 		jive_substitution_map_add_region(substitution, subregion, target_subregion);
-		pre_copy_region(target_subregion, subregion, copy_context, context, substitution, true, true);
+		pre_copy_region(target_subregion, subregion, copy_context, substitution, true, true);
 	}
 }
 
@@ -234,11 +234,10 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 	jive_substitution_map * substitution,
 	bool copy_top, bool copy_bottom)
 {
-	jive_context * context = target->graph->context;
 	jive_copy_context copy_context;
 
 	jive_substitution_map_add_region(substitution, self, target);
-	pre_copy_region(target, self, &copy_context, context, substitution, copy_top, copy_bottom);
+	pre_copy_region(target, self, &copy_context, substitution, copy_top, copy_bottom);
 	
 	for (size_t depth = 0; depth < copy_context.depths.size(); depth ++) {
 		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
@@ -280,8 +279,6 @@ jive_region_check_move_floating(jive_region * self, jive_region * edge_origin)
 static jive_region_hull_entry *
 jive_region_hull_entry_create(jive_region * region, jive::input * input)
 {
-	jive_context * context = input->node->region->graph->context;
-
 	jive_region_hull_entry * entry = new jive_region_hull_entry;
 	entry->region_hull_list.prev = entry->region_hull_list.next = NULL;
 	entry->input_hull_list.prev = entry->input_hull_list.next = NULL;

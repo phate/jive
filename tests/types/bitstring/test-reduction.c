@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -30,7 +31,7 @@ static int test_main(void)
 	
 	jive_context * context = jive_context_create();
 	
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	
 	jive::output * a = jive_bitconstant(graph, 4, "1100");
 	jive::output * b = jive_bitconstant(graph, 4, "1010");

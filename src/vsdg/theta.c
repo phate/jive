@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
@@ -165,7 +164,6 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 	jive_theta_build_state * state = self.internal_state;
 	jive_node * head = self.region->top;
 	jive_graph * graph = head->region->graph;
-	jive_context * context = graph->context;
 	
 	size_t index = state->loopvars.size();
 	
@@ -204,7 +202,6 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	jive_theta_build_state * state = self.internal_state;
 	jive_node * head = self.region->top;
 	jive_graph * graph = head->region->graph;
-	jive_context * context = graph->context;
 	
 	size_t n;
 	

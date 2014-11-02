@@ -6,7 +6,6 @@
 #include <jive/vsdg/tracker.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node.h>
@@ -44,8 +43,6 @@ node_destroy(void * closure, jive_node * node)
 void
 jive_tracker_init(jive_tracker * self, jive_graph * graph, size_t nstates)
 {
-	jive_context * context = graph->context;
-	
 	self->graph = graph;
 	self->states = new jive_tracker_depth_state*[nstates];
 	size_t n;
@@ -62,7 +59,6 @@ jive_tracker_init(jive_tracker * self, jive_graph * graph, size_t nstates)
 void
 jive_tracker_fini(jive_tracker * self)
 {
-	jive_context * context = self->graph->context;
 	size_t n;
 	for (n = 0; n < self->nstates; n++)
 		jive_graph_return_tracker_depth_state(self->graph, self->states[n]);

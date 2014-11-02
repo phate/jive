@@ -69,8 +69,6 @@ jive_ssavar_dec_use_count(jive_ssavar * self)
 jive_ssavar *
 jive_ssavar_create(jive::output * origin, jive_variable * variable)
 {
-	jive_context * context = variable->graph->context;
-	
 	jive_ssavar * self = new jive_ssavar;
 	
 	self->use_count = 0;
@@ -256,7 +254,6 @@ jive_ssavar_split(jive_ssavar * self)
 jive_variable *
 jive_variable_create(struct jive_graph * graph)
 {
-	jive_context * context = graph->context;
 	jive_variable * self = new jive_variable;
 	
 	self->graph = graph;

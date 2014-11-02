@@ -17,7 +17,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_context;
 struct jive_graph;
 struct jive_node;
 struct jive_region;
@@ -409,7 +408,6 @@ struct jive_negotiator {
 	const jive_negotiator_class * class_;
 	
 	struct jive_graph * graph;
-	struct jive_context * context;
 	jive_negotiator_input_hash input_map;
 	jive_negotiator_output_hash output_map;
 	jive_negotiator_gate_hash gate_map;

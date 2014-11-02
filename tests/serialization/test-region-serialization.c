@@ -9,6 +9,7 @@
 #include <locale.h>
 #include <stdio.h>
 
+#include <jive/context.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/types/bitstring.h>
@@ -32,7 +33,7 @@ static int test_main(void)
 	
 	jive_buffer buf;
 	
-	jive_graph * gr1 = jive_graph_create(ctx);
+	jive_graph * gr1 = jive_graph_create();
 	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation))->set_mutable(false);
 	
 	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
@@ -61,7 +62,7 @@ static int test_main(void)
 	fwrite(&buf.data[0], 1, buf.data.size(), stderr);
 	
 	jive_view(gr1, stdout);
-	jive_graph * gr2 = jive_graph_create(ctx);
+	jive_graph * gr2 = jive_graph_create();
 	jive_token_istream * is = jive_token_istream_simple_create(
 		(char *)&buf.data[0], buf.data.size() + (char *) &buf.data[0]);
 	jive_serialization_driver_init(&drv);

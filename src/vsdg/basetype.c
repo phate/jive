@@ -25,8 +25,7 @@ type::~type() noexcept {}
 }
 
 void
-jive_raise_type_error(const jive::base::type * self, const jive::base::type * other,
-	jive_context * context)
+jive_raise_type_error(const jive::base::type * self, const jive::base::type * other)
 {
 	throw jive::type_error(self->debug_string(), other->debug_string());
 }
@@ -38,7 +37,7 @@ jive_type_create_input(const jive::base::type * self, struct jive_node * node, s
 	const jive::base::type * operand_type = &origin->type();
 
 	if (*self != *operand_type)
-		jive_raise_type_error(self, operand_type, node->graph->context);
+		jive_raise_type_error(self, operand_type);
 
 	return self->create_input(node, index, origin);
 }
@@ -160,7 +159,7 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	const jive::base::type * operand_type = &new_origin->type();
 
 	if (*input_type != *operand_type) {
-		jive_raise_type_error(input_type, operand_type, this->node->graph->context);
+		jive_raise_type_error(input_type, operand_type);
 	}
 	if (dynamic_cast<const jive::achr::type*>(input_type)) {
 		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");

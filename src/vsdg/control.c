@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>

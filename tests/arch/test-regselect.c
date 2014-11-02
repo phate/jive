@@ -11,6 +11,7 @@
 
 #include <jive/arch/regvalue.h>
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include "testarch.h"
@@ -21,7 +22,7 @@ static int test_main(void)
 	
 	jive_context * context = jive_context_create();
 	
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_argument_type  tmparray0[] = {
 			jive_argument_long, jive_argument_long,
 			jive_argument_long, jive_argument_long

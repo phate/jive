@@ -9,20 +9,21 @@
 #include <locale.h>
 #include <assert.h>
 
-#include <jive/vsdg.h>
-#include <jive/types/bitstring.h>
-#include <jive/view.h>
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/context.h>
+#include <jive/types/bitstring.h>
 #include <jive/types/function/fctlambda.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addr;
 	const jive::base::type * addrptr = &addr;

@@ -14,6 +14,7 @@ finished */
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
+#include <jive/context.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/control.h>
@@ -63,7 +64,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
 	jive::ctl::type control_type;

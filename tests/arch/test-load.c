@@ -13,6 +13,7 @@
 #include <jive/arch/load.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
+#include <jive/context.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -25,7 +26,7 @@ static int test_main()
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::mem::type memtype;
 	jive::addr::type addrtype;

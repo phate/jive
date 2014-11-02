@@ -27,14 +27,14 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_label_external foobar, bla;
 	
 	jive_linker_symbol foobar_symbol;
 	jive_linker_symbol bla_symbol;
-	jive_label_external_init(&foobar, context, "foobar", &foobar_symbol);
-	jive_label_external_init(&bla, context, "bla", &bla_symbol);
+	jive_label_external_init(&foobar, "foobar", &foobar_symbol);
+	jive_label_external_init(&bla, "bla", &bla_symbol);
 
 	jive::output * o0 = jive_label_to_address_create(graph, &foobar.base);
 	jive::output * o1 = jive_label_to_address_create(graph, &bla.base);

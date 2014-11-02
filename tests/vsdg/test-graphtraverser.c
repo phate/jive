@@ -10,9 +10,9 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
+#include <jive/context.h>
 #include <jive/view.h>
-
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser-private.h>
 
@@ -52,7 +52,7 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 
 void test_order_enforcement_traversal(jive_context * ctx)
 {
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
 	const jive::base::type * tmparray0[] = {&type, &type};
@@ -199,7 +199,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	jive_test_value_type type;
 	const jive::base::type * tmparray10[] = {&type, &type};
 	jive_node * n1 = jive_test_node_create(graph->root_region,

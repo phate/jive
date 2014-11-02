@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/context.h>
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/types/bitstring.h>
@@ -18,7 +19,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::output * c0 = jive_bitconstant(graph, 4, "1100");
 	jive::output * c1 = jive_bitconstant(graph, 4, "0001");

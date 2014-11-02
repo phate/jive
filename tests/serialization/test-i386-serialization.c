@@ -11,6 +11,7 @@
 
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/context.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
@@ -32,7 +33,7 @@ static int test_main(void)
 	
 	jive_buffer buf;
 	
-	jive_graph * gr1 = jive_graph_create(ctx);
+	jive_graph * gr1 = jive_graph_create();
 	const jive_argument_type tmparray0[] = { jive_argument_int };
 	const jive_argument_type tmparray1[] = { jive_argument_int };
 	
@@ -84,7 +85,7 @@ static int test_main(void)
 	jive_serialization_driver_fini(&drv);
 	fwrite(&buf.data[0], 1, buf.data.size(), stderr);
 	
-	jive_graph * gr2 = jive_graph_create(ctx);
+	jive_graph * gr2 = jive_graph_create();
 	jive_token_istream * is = jive_token_istream_simple_create(
 		(char *)&buf.data[0], buf.data.size() + (char *) &buf.data[0]);
 	jive_serialization_driver_init(&drv);

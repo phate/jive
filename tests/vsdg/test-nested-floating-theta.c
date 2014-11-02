@@ -10,6 +10,7 @@
 #include <locale.h>
 #include <assert.h>
 
+#include <jive/context.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/theta.h>
@@ -22,7 +23,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
 	jive::ctl::type ctype;

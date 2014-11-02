@@ -10,17 +10,18 @@
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/control.h>
-#include <jive/vsdg/node-private.h>
-#include <jive/view.h>
 
+#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-node-private.h>
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/types/bitstring.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
+#include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/control.h>
+#include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
 
@@ -62,7 +63,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
 	jive::ctl::type control_type;

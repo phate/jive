@@ -7,7 +7,6 @@
 #include <jive/vsdg/negotiator.h>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
@@ -426,7 +425,6 @@ jive_negotiator_init_(
 {
 	self->class_ = class_;
 	self->graph = graph;
-	self->context = graph->context;
 
 	self->validated_connections.first = self->validated_connections.last = 0;
 	self->invalidated_connections.first = self->invalidated_connections.last = 0;

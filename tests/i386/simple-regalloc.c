@@ -17,6 +17,7 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -26,7 +27,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	jive_argument_type  tmparray0[] = { jive_argument_int, jive_argument_int };
 	jive_argument_type  tmparray1[] = { jive_argument_int };
 	

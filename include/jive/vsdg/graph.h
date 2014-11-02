@@ -13,7 +13,6 @@
 #include <typeindex>
 
 #include <jive/common.h>
-#include <jive/context.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/notifiers.h>
@@ -72,8 +71,6 @@ struct jive_region;
 struct jive_resource;
 
 struct jive_graph {
-	jive_context * context;
-	
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -152,13 +149,13 @@ jive_graph_export(struct jive_graph * self, jive::output * operand)
 }
 
 jive_graph *
-jive_graph_create(jive_context * context);
+jive_graph_create();
 
 void
 jive_graph_destroy(jive_graph * self);
 
 jive_graph *
-jive_graph_copy(jive_graph * self, jive_context * context);
+jive_graph_copy(jive_graph * self);
 
 void
 jive_graph_prune(jive_graph * self);

@@ -9,9 +9,10 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/arch/memorytype.h>
+#include <jive/context.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/arch/memorytype.h>
 
 #include "testnodes.h"
 
@@ -20,7 +21,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive_node * node0 = jive_test_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);
 	jive_node * node1 = jive_test_node_create(graph->root_region, 0, NULL, NULL, 0, NULL);

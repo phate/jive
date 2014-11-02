@@ -18,6 +18,7 @@
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/context.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/util/buffer.h>
@@ -33,7 +34,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};

@@ -12,6 +12,7 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
+#include <jive/context.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record.h>
 #include <jive/types/union.h>
@@ -26,7 +27,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);

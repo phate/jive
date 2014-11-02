@@ -27,7 +27,6 @@ struct jive_node_equiv_entry {
 
 typedef struct jive_equiv_state jive_equiv_state;
 struct jive_equiv_state {
-	jive_context * context;
 	std::unordered_map<const jive_node *, jive_node_equiv_entry*> node_mapping;
 	struct {
 		jive_node_equiv_entry * first;
@@ -36,9 +35,8 @@ struct jive_equiv_state {
 };
 
 static void
-jive_equiv_state_init(jive_equiv_state * self, jive_context * context)
+jive_equiv_state_init(jive_equiv_state * self)
 {
-	self->context = context;
 	self->pending.first = self->pending.last = 0;
 }
 
@@ -117,7 +115,7 @@ jive_graphs_equivalent(
 	size_t nassumed, jive_node * const ass1[], jive_node * const ass2[])
 {
 	jive_equiv_state state;
-	jive_equiv_state_init(&state, graph1->context);
+	jive_equiv_state_init(&state);
 	
 	bool satisfied = true;
 	size_t n;

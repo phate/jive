@@ -28,7 +28,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::output * b1 = jive_bitconstant(graph, 8, "00110011");
 	jive::output * b2 = jive_bitconstant_unsigned(graph, 8, 204);

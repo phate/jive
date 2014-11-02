@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/context.h>
 #include <jive/vsdg.h>
 #include <jive/view.h>
 #include <jive/types/float/fltconstant.h>
@@ -18,7 +19,7 @@ test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive_fltconstant_float(graph, -1.0);
 	jive_fltconstant_float(graph, 0.0);

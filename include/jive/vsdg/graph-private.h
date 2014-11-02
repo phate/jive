@@ -29,7 +29,6 @@ struct jive_tracker_depth_state {
 	size_t count;
 	size_t space;
 	std::vector<jive_tracker_nodestate_list> nodestates_per_depth;
-	struct jive_context * context;
 	
 	struct {
 		jive_tracker_depth_state * prev;
@@ -73,7 +72,6 @@ jive_graph_reserve_tracker_depth_state(jive_graph * self)
 	jive_tracker_depth_state * state = new jive_tracker_depth_state;
 	state->count = 0;
 	state->space = 0;
-	state->context = self->context;
 	return state;
 }
 

@@ -18,7 +18,7 @@ struct jive_move_context {
 };
 
 static void
-jive_move_context_append(jive_move_context * self, jive_context * context, jive_node * node)
+jive_move_context_append(jive_move_context * self, jive_node * node)
 {
 	if (node->depth_from_root >= self->depths.size())
 		self->depths.resize(node->depth_from_root+1);
@@ -28,22 +28,21 @@ jive_move_context_append(jive_move_context * self, jive_context * context, jive_
 
 static void
 pre_move_region(jive_region * target_region, const jive_region * original_region,
-	jive_move_context * move_context, jive_context * context)
+	jive_move_context * move_context)
 {
 	jive_node * node;
 	JIVE_LIST_ITERATE(original_region->nodes, node, region_nodes_list) {
 		if (node != original_region->bottom)
-			jive_move_context_append(move_context, context, node);
+			jive_move_context_append(move_context, node);
 	}
 }
 
 static void
 jive_region_move(const jive_region * self, jive_region * target)
 {
-	jive_context * context = target->graph->context;
 	jive_move_context move_context;
 
-	pre_move_region(target, self, &move_context, context);
+	pre_move_region(target, self, &move_context);
 
 	for (size_t depth = 0; depth < move_context.depths.size(); depth++) {
 		for (size_t n = 0; n < move_context.depths[depth].size(); n++) {

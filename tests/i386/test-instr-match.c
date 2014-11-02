@@ -22,6 +22,7 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring.h>
@@ -87,7 +88,7 @@ static un_graph
 prepare_un_graph(jive_context * ctx)
 {
 	un_graph u;
-	u.graph = jive_graph_create(ctx);
+	u.graph = jive_graph_create();
 	jive_argument_type  tmparray0[] = { jive_argument_int };
 	jive_argument_type  tmparray1[] = { jive_argument_int };
 	
@@ -118,7 +119,7 @@ static bin_graph
 prepare_bin_graph(jive_context * ctx)
 {
 	bin_graph b;
-	b.graph = jive_graph_create(ctx);
+	b.graph = jive_graph_create();
 	jive_argument_type  tmparray2[] = { jive_argument_int, jive_argument_int };
 	jive_argument_type  tmparray3[] = { jive_argument_int };
 	

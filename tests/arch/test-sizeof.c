@@ -12,6 +12,7 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/arch/sizeof.h>
+#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
@@ -27,7 +28,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::bits::type bits4(4);
 	jive::bits::type bits8(8);

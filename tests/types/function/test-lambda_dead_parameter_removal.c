@@ -9,6 +9,7 @@
 
 #include <locale.h>
 
+#include <jive/context.h>
 #include <jive/types/function.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -117,11 +118,11 @@ test_main(void)
 
 	jive_context * context = jive_context_create();
 
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	test_simple_lambda(graph);
 	jive_graph_destroy(graph);
 
-	graph = jive_graph_create(context);
+	graph = jive_graph_create();
 	test_recursive_lambda(graph);
 	jive_graph_destroy(graph);
 

@@ -117,7 +117,6 @@ jive_node_init_(
 void
 jive_node_fini_(jive_node * self)
 {
-	jive_context * context = self->graph->context;
 	JIVE_DEBUG_ASSERT(self->region);
 	
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
@@ -666,7 +665,6 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 {
 	size_t new_size = slot.index + 1;
 	
-	jive_context * context = self->graph->context;
 	size_t ntracker_slots = self->tracker_slots.size();
 	self->tracker_slots.resize(new_size);
 	

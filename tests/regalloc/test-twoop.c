@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -22,7 +23,7 @@ static jive_graph *
 create_testgraph_postop_xfer(jive_context * context)
 {
 	/* requires post-op transfer to satisfy register constraints */
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray0[] = { jive_argument_int, jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -56,7 +57,7 @@ static jive_graph *
 create_testgraph_preop_xfer(jive_context * context)
 {
 	/* requires pre-op transfer to satisfy register constraints */
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray2[] = { jive_argument_int, jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -93,7 +94,7 @@ static jive_graph *
 create_testgraph_preop_aux_xfer(jive_context * context)
 {
 	/* requires pre-op transfer to auxiliary register to satisfy register constraints */
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray4[] = { jive_argument_int, jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -131,7 +132,7 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 {
 	/* requires pre-op transfer to auxiliary register to satisfy register constraints
 	additionally, the auxiliary register must be reserved by the shaper */
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray6[] = { jive_argument_int, jive_argument_int };
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,

@@ -15,6 +15,7 @@
 #include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/memlayout-simple.h>
+#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/union/unntype.h>
@@ -30,7 +31,7 @@ typedef jive::output *(*data_def_fn)(jive_graph *);
 static void
 verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * expected_data)
 {
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_memlayout_mapper_simple layout_mapper;
 	jive_memlayout_mapper_simple_init(&layout_mapper, 32);

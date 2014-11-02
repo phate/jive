@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -21,7 +22,7 @@
 static jive_graph *
 create_testgraph(jive_context * ctx)
 {
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray0[] = { jive_argument_int };
 	const jive_argument_type tmparray1[] = { jive_argument_int };
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,

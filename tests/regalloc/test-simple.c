@@ -9,6 +9,7 @@
 #include <locale.h>
 #include <stdio.h>
 
+#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc.h>
 #include <jive/view.h>
@@ -19,7 +20,7 @@
 static jive_graph *
 create_testgraph(jive_context * ctx)
 {
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,

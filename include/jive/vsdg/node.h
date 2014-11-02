@@ -12,7 +12,6 @@
 #include <stdint.h>
 #include <utility>
 
-#include <jive/context.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/operators/base.h>

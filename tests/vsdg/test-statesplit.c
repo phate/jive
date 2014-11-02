@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <locale.h>
 
+#include <jive/context.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
@@ -23,7 +24,7 @@ static int test_main(void)
 	
 	jive_context * context = jive_context_create();
 	
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_test_state_type statetype;
 	const jive::base::type * tmparray0[] = {&statetype, &statetype};
@@ -46,7 +47,7 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	
 	jive_context * context2 = jive_context_create();
-	jive_graph * graph2 = jive_graph_copy(graph, context2);
+	jive_graph * graph2 = jive_graph_copy(graph);
 	
 	jive_graph_destroy(graph);
 	

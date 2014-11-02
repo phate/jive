@@ -10,9 +10,10 @@
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
 
+#include <jive/context.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
@@ -37,7 +38,7 @@ graph_contains_node(jive_graph * graph, jive_node * node)
 static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_region * region = graph->root_region;
 	jive_test_value_type type;

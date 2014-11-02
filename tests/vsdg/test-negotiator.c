@@ -319,7 +319,7 @@ expect_options(
 static int test_main(void)
 {
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	setlocale(LC_ALL, "");
 	

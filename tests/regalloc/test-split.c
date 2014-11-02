@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -25,7 +26,7 @@ create_testgraph_split(jive_context * context)
 	/* register usage counts are satisfied locally, but there
 	is a "critical value" where no global assignment of one
 	register is possible */
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
 		0, NULL);
@@ -106,7 +107,7 @@ create_testgraph_emerg_split(jive_context * context)
 	the lifetime such that no use of e falls within its
 	lifetime. */
 	
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
 		0, NULL,
 		0, NULL);

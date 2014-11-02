@@ -86,9 +86,8 @@ graph_tail_operation::copy() const
 /* graph */
 
 static inline void
-jive_graph_init_(jive_graph * self, jive_context * context)
+jive_graph_init_(jive_graph * self)
 {
-	self->context = context;
 	self->variables.first = self->variables.last = 0;
 	self->unused_variables.first = self->unused_variables.last = 0;
 	self->bottom.first = self->bottom.last = 0;
@@ -197,10 +196,10 @@ jive_graph_fini_(jive_graph * self)
 }
 
 jive_graph *
-jive_graph_create(jive_context * context)
+jive_graph_create()
 {
 	jive_graph * graph = new jive_graph;
-	jive_graph_init_(graph, context);
+	jive_graph_init_(graph);
 	return graph;
 }
 
@@ -255,9 +254,9 @@ jive_graph_prune(jive_graph * self)
 }
 
 jive_graph *
-jive_graph_copy(jive_graph * self, jive_context * context)
+jive_graph_copy(jive_graph * self)
 {
-	jive_graph * new_graph = jive_graph_create(context);
+	jive_graph * new_graph = jive_graph_create();
 	
 	jive_substitution_map * subst = jive_substitution_map_create();
 	jive_region_copy_substitute(self->root_region, new_graph->root_region, subst, false, false);

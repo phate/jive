@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include <jive/arch/registers.h>
+#include <jive/context.h>
 #include <jive/regalloc/selector.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -129,7 +130,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_node * n1 = create_computation_node(graph, 0, NULL, 2);
 	jive::output * tmparray0[] = {n1->outputs[0]};

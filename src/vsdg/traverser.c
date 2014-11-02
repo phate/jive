@@ -437,7 +437,6 @@ static jive_bottomup_slave_traverser *
 jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master, const jive_region * region)
 {
 	jive_graph * graph = master->graph;
-	jive_context * context = graph->context;
 	
 	jive_bottomup_slave_traverser * self = new jive_bottomup_slave_traverser;
 	
@@ -520,7 +519,6 @@ jive_bottomup_region_traverser_get_node_traverser(jive_bottomup_region_traverser
 jive_bottomup_region_traverser *
 jive_bottomup_region_traverser_create(jive_graph * graph)
 {
-	jive_context * context = graph->context;
 	jive_bottomup_region_traverser * self = new jive_bottomup_region_traverser;
 	
 	self->graph = graph;
@@ -546,8 +544,6 @@ jive_bottomup_region_traverser_create(jive_graph * graph)
 void
 jive_bottomup_region_traverser_destroy(jive_bottomup_region_traverser * self)
 {
-	jive_context * context = self->graph->context;
-
 	for (auto i = self->region_hash.begin(); i != self->region_hash.end();) {
 		auto j = i; i++;
 		jive_bottomup_slave_traverser_destroy(j.ptr());

@@ -8,7 +8,6 @@
 
 #include <stdlib.h>
 
-#include <jive/context.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate-interference.h>
 #include <jive/vsdg/graph.h>

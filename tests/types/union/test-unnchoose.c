@@ -8,13 +8,14 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/view.h>
-#include <jive/vsdg.h>
-#include <jive/types/bitstring.h>
-#include <jive/types/union.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
+#include <jive/context.h>
+#include <jive/types/bitstring.h>
+#include <jive/types/union.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
+#include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
 
@@ -23,7 +24,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);

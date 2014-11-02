@@ -9,11 +9,12 @@
 #include <locale.h>
 #include <assert.h>
 
-#include <jive/types/bitstring.h>
-#include <jive/view.h>
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/memlayout-simple.h>
+#include <jive/context.h>
+#include <jive/types/bitstring.h>
+#include <jive/view.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser.h>
 
@@ -24,7 +25,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addrtype;
 	jive::bits::type bits8(8);

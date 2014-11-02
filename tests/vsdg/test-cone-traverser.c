@@ -13,6 +13,7 @@
 #include <jive/vsdg.h>
 #include <jive/view.h>
 
+#include <jive/context.h>
 #include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
@@ -27,7 +28,7 @@ static graph_desc
 prepare_graph(jive_context * ctx)
 {
 	graph_desc g;
-	g.graph = jive_graph_create(ctx);
+	g.graph = jive_graph_create();
 	
 	jive_region * region = g.graph->root_region;
 	jive_test_value_type type;

@@ -25,7 +25,7 @@ test_main(void)
 	setlocale(LC_ALL, "");
 
 	jive_context * context = jive_context_create();
-	jive_graph * graph = jive_graph_create(context);
+	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addrtype;
 	const jive::base::type * addrptr = &addrtype;

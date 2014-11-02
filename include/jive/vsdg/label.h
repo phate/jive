@@ -16,7 +16,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_context;
 struct jive_graph;
 struct jive_linker_symbol;
 struct jive_node;
@@ -80,7 +79,6 @@ jive_label_isinstance(const jive_label * self, const jive_label_class * class_)
 
 struct jive_label_external {
 	jive_label base;
-	struct jive_context * context;
 	std::string asmname;
 	const struct jive_linker_symbol * symbol;
 };
@@ -114,7 +112,6 @@ extern const jive_label_class JIVE_LABEL_EXTERNAL;
 void
 jive_label_external_init(
 	jive_label_external * self,
-	struct jive_context * context,
 	const char * name,
 	const struct jive_linker_symbol * symbol);
 

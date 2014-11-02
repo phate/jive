@@ -28,6 +28,7 @@
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring.h>
@@ -80,7 +81,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_subroutine i386_fn = jive_i386_subroutine_begin(
 		graph,
@@ -91,7 +92,7 @@ static int test_main(void)
 	
 	jive_linker_symbol hello_world_symbol;
 	jive_label_external hello_world_label;
-	jive_label_external_init(&hello_world_label, ctx, "hello_world", &hello_world_symbol);
+	jive_label_external_init(&hello_world_label, "hello_world", &hello_world_symbol);
 	jive::output * str_name = jive_objdef_create(
 		make_string(graph, hello_world),
 		"hello_world",
@@ -100,7 +101,7 @@ static int test_main(void)
 	
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
-	jive_label_external_init(&write_label, ctx, "write", &write_symbol);
+	jive_label_external_init(&write_label, "write", &write_symbol);
 	
 	jive_linker_symbol main_symbol;
 	

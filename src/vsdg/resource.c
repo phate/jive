@@ -5,7 +5,6 @@
 
 #include <jive/vsdg/resource.h>
 
-#include <jive/context.h>
 #include <jive/internal/compiler.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>

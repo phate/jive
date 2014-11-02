@@ -15,6 +15,7 @@
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
+#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/view.h>
@@ -24,8 +25,8 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
-const int64_t tmparray0[] = {42};
+	jive_graph * graph = jive_graph_create();
+	const int64_t tmparray0[] = {42};
 
 	graph->root_region->attrs.section = jive_region_section_code;	
 	jive_node * enter = jive_instruction_node_create(

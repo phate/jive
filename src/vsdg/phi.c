@@ -184,7 +184,6 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 	jive_phi_build_state * state = self.internal_state;
 	jive_node * enter = self.region->top;
 	jive_graph * graph = enter->region->graph;
-	jive_context * context = graph->context;
 
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, state->fixvars.size());
@@ -219,7 +218,6 @@ jive_phi_end(jive_phi self,
 	jive_phi_build_state * state = self.internal_state;
 	jive_node * enter = self.region->top;
 	jive_graph * graph = enter->region->graph;
-	jive_context * context = graph->context;
 	
 	size_t n;
 	
@@ -256,7 +254,6 @@ jive_phi_begin_extension(jive_node * phi_node, size_t nfixvars,
 	const jive::base::type * fixvar_types[])
 {
 	jive_graph * graph = phi_node->region->graph;
-	jive_context * context = graph->context;
 	jive_region * phi_region = jive_node_anchored_region(phi_node, 0);
 	jive_node * enter = phi_region->top;
 
@@ -280,7 +277,6 @@ jive::output **
 jive_phi_end_extension(struct jive_phi_extension * self)
 {
 	jive_node * phi_node = self->phi_node;
-	jive_context * context = phi_node->region->graph->context;
 	jive_region * phi_region = jive_node_anchored_region(self->phi_node, 0);
 	jive_node * enter = phi_region->top;
 	jive_node * leave = phi_region->bottom;

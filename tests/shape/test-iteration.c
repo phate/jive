@@ -15,6 +15,7 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/view.h>
 
+#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-node-private.h>
@@ -50,7 +51,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
 	jive::achr::type anchor_type;

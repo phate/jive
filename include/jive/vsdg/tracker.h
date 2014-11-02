@@ -12,7 +12,6 @@
 /*#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>*/
 
-struct jive_context;
 struct jive_graph;
 struct jive_node;
 struct jive_notifier;

@@ -181,7 +181,7 @@ verify_deserialize_gateexpr(const char * repr, jive::gate * expect_gate)
 	deserialize_ctx ctx;
 	deserialize_ctx_init(&ctx, repr);
 	
-	jive_graph * g = jive_graph_create(ctx.ctx);
+	jive_graph * g = jive_graph_create();
 	
 	jive::gate * gate;
 	assert(jive_deserialize_gateexpr(&ctx.drv, ctx.is, g, &gate));
@@ -291,7 +291,7 @@ static int test_main(void)
 	verify_deserialize_type("control<>", &ctl);
 	
 	jive_context * ctx = jive_context_create();
-	jive_graph * graph = jive_graph_create(ctx);
+	jive_graph * graph = jive_graph_create();
 	
 	jive::gate * bit8gate = bits8.create_gate(graph, "bit8gate");
 	verify_serialize_gateexpr(bit8gate, "\"bit8gate\" root<> bits<8>");
