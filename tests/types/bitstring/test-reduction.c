@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -28,8 +27,6 @@ assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_context * context = jive_context_create();
 	
 	jive_graph * graph = jive_graph_create();
 	
@@ -81,9 +78,6 @@ static int test_main(void)
 	}
 	
 	jive_graph_destroy(graph);
-	
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
 	
 	return 0;
 }

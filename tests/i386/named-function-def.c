@@ -18,7 +18,6 @@
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/context.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/util/buffer.h>
@@ -33,7 +32,6 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive::bits::type bits32(32);
@@ -80,12 +78,9 @@ static int test_main(void)
 	jive_graph_generate_assembler(graph, name_mapper, &buffer);
 	jive_label_name_mapper_destroy(name_mapper);
 	fwrite(&buffer.data[0], buffer.data.size(), 1, stdout);
-	
+
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	
-	jive_context_destroy(ctx);
-	
+
 	return 0;
 }
 

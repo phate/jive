@@ -9,7 +9,6 @@
 #include <locale.h>
 
 #include <jive/arch/compilate.h>
-#include <jive/context.h>
 
 static const jive_relocation_type ABS64 = {0};
 static const jive_relocation_type REL64 = {1};
@@ -36,8 +35,6 @@ process_relocation(
 
 static int test_main()
 {
-	jive_context * ctx = jive_context_create();
-	
 	jive_compilate compilate;
 	jive_compilate_init(&compilate);
 	
@@ -69,9 +66,7 @@ static int test_main()
 	jive_compilate_map_unmap(map);
 	
 	jive_compilate_map_destroy(map);
-	
-	jive_context_assert_clean(ctx);
-	jive_context_destroy(ctx);
+
 	return 0;
 }
 

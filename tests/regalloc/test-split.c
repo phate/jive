@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
-#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -21,7 +20,7 @@
 #include "testarch.h"
 
 static jive_graph *
-create_testgraph_split(jive_context * context)
+create_testgraph_split()
 {
 	/* register usage counts are satisfied locally, but there
 	is a "critical value" where no global assignment of one
@@ -78,7 +77,7 @@ create_testgraph_split(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_emerg_split(jive_context * context)
+create_testgraph_emerg_split()
 {
 	/* creates variables with the following lifetimes:
 	 a   c
@@ -165,7 +164,7 @@ create_testgraph_emerg_split(jive_context * context)
 	return graph;
 }
 
-typedef jive_graph * (*creator_function_t)(jive_context *);
+typedef jive_graph * (*creator_function_t)();
 
 static const creator_function_t tests[] = {
 	create_testgraph_split,
@@ -175,23 +174,18 @@ static const creator_function_t tests[] = {
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_context * context = jive_context_create();
-	
+
 	size_t n;
 	for (n = 0; n < sizeof(tests)/sizeof(tests[0]); n++) {
 		fprintf(stderr, "%zd\n", n);
-		jive_graph * graph = tests[n](context);
+		jive_graph * graph = tests[n]();
 		jive_view(graph, stdout);
 		jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 		jive_view(graph, stdout);
 		jive_shaped_graph_destroy(shaped_graph);
 		jive_graph_destroy(graph);
 	}
-	
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
-	
+
 	return 0;
 }
 

@@ -28,7 +28,6 @@
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring.h>
@@ -80,7 +79,6 @@ static const char hello_world[] = "Hello, world!\n";
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive_subroutine i386_fn = jive_i386_subroutine_begin(
@@ -187,11 +185,7 @@ static int test_main(void)
 	assert(WEXITSTATUS(gcc_status) == 0);
 	
 	jive_graph_destroy(graph);
-	
-	assert(jive_context_is_empty(ctx));
-	
-	jive_context_destroy(ctx);
-	
+
 	FILE * program_pipe = popen("./a.out", "r");
 	char verify_buffer[256];
 	size_t verify_count = fread(verify_buffer, 1, sizeof(verify_buffer), program_pipe);
@@ -202,6 +196,5 @@ static int test_main(void)
 	
 	return 0;
 }
-
 
 JIVE_UNIT_TEST_REGISTER("i386/hello-world-gencall", test_main);

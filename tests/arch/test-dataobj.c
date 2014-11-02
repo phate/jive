@@ -15,7 +15,6 @@
 #include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/memlayout-simple.h>
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/union/unntype.h>
@@ -29,7 +28,7 @@
 typedef jive::output *(*data_def_fn)(jive_graph *);
 
 static void
-verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * expected_data)
+verify_asm_definition(data_def_fn data_def, const char * expected_data)
 {
 	jive_graph * graph = jive_graph_create();
 	
@@ -66,7 +65,6 @@ verify_asm_definition(jive_context * ctx, data_def_fn data_def, const char * exp
 	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
 	jive_graph_destroy(graph);
-	jive_context_assert_clean(ctx);
 }
 
 static const char bits[] = "01010101010101010101010101010101";
@@ -171,43 +169,29 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_context * ctx = jive_context_create();
-	
 	verify_asm_definition(
-		ctx,
 		make_8bit_const,
 		"\t.byte 0xaa\n");
 	verify_asm_definition(
-		ctx,
 		make_16bit_const,
 		"\t.value 0xaaaa\n");
 	verify_asm_definition(
-		ctx,
 		make_32bit_const,
 		"\t.long 0xaaaaaaaa\n");
 	verify_asm_definition(
-		ctx,
 		make_record1,
 		"\t.long 0xaaaaaaaa\n" "\t.value 0xaaaa\n" "\t.byte 0xaa\n" "\t.byte 0x0\n");
 	verify_asm_definition(
-		ctx,
 		make_record2,
 		"\t.value 0xaaaa\n" "\t.value 0xaaaa\n" "\t.long 0xaaaaaaaa\n");
 	verify_asm_definition(
-		ctx,
 		make_union1,
 		"\t.value 0xaaaa\n" "\t.byte 0x0\n" "\t.byte 0x0\n");
 	verify_asm_definition(
-		ctx,
 		make_union2,
 		"\t.long 0xaaaaaaaa\n");
-	
-	assert(jive_context_is_empty(ctx));
-	
-	jive_context_destroy(ctx);
-	
+
 	return 0;
 }
-
 
 JIVE_UNIT_TEST_REGISTER("arch/test-dataobj", test_main);

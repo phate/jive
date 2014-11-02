@@ -10,18 +10,16 @@
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
 
-#include <jive/context.h>
+#include <jive/view.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg.h>
 
 #include "testnodes.h"
 
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive_region * region = graph->root_region;
@@ -43,8 +41,6 @@ static int test_main(void)
 	assert(n2->depth_from_root == 1);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	return 0;
 }
 

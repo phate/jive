@@ -12,7 +12,6 @@
 #include <memory>
 #include <vector>
 
-#include <jive/context.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/util/ptr-collection.h>
 #include <jive/view.h>
@@ -318,7 +317,6 @@ expect_options(
 
 static int test_main(void)
 {
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	setlocale(LC_ALL, "");
@@ -380,9 +378,6 @@ static int test_main(void)
 	test_negotiator_fini(&nego);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
-	
 	return 0;
 }
 

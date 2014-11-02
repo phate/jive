@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #include <jive/arch/registers.h>
-#include <jive/context.h>
 #include <jive/regalloc/selector.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -129,7 +128,6 @@ create_restore_node(jive_graph * graph,
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive_node * n1 = create_computation_node(graph, 0, NULL, 2);
@@ -296,9 +294,7 @@ static int test_main(void)
 	jive_master_shaper_selector_destroy(master_selector);
 	jive_shaped_graph_destroy(shaped_graph);
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
-	
+
 	return 0;
 }
 JIVE_UNIT_TEST_REGISTER("shape/test-selector", test_main);

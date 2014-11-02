@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <jive/context.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
@@ -44,7 +43,6 @@ void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node
 
 static int test_main(void)
 {
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive_region * region = graph->root_region;
@@ -70,8 +68,6 @@ static int test_main(void)
 	test_mutable_traverse_topdown(graph, n1, n2, bottom);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	
 	/* should also write a test that exercises the bottom-up
 	traverser, but since bottom-up traversal is inherently

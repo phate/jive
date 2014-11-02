@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
-#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -20,7 +19,7 @@
 #include "testarch.h"
 
 static jive_graph *
-create_testgraph_postop_xfer(jive_context * context)
+create_testgraph_postop_xfer()
 {
 	/* requires post-op transfer to satisfy register constraints */
 	jive_graph * graph = jive_graph_create();
@@ -54,7 +53,7 @@ create_testgraph_postop_xfer(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_preop_xfer(jive_context * context)
+create_testgraph_preop_xfer()
 {
 	/* requires pre-op transfer to satisfy register constraints */
 	jive_graph * graph = jive_graph_create();
@@ -91,7 +90,7 @@ create_testgraph_preop_xfer(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_preop_aux_xfer(jive_context * context)
+create_testgraph_preop_aux_xfer()
 {
 	/* requires pre-op transfer to auxiliary register to satisfy register constraints */
 	jive_graph * graph = jive_graph_create();
@@ -128,7 +127,7 @@ create_testgraph_preop_aux_xfer(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_preop_aux_xfer_shaper(jive_context * context)
+create_testgraph_preop_aux_xfer_shaper()
 {
 	/* requires pre-op transfer to auxiliary register to satisfy register constraints
 	additionally, the auxiliary register must be reserved by the shaper */
@@ -169,7 +168,7 @@ create_testgraph_preop_aux_xfer_shaper(jive_context * context)
 	return graph;
 }
 
-typedef jive_graph * (*creator_function_t)(jive_context *);
+typedef jive_graph * (*creator_function_t)();
 
 static const creator_function_t tests[] = {
 	create_testgraph_postop_xfer,
@@ -182,22 +181,17 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_context * context = jive_context_create();
-	
 	size_t n;
 	for (n = 0; n < sizeof(tests)/sizeof(tests[0]); n++) {
 		fprintf(stderr, "%zd\n", n);
-		jive_graph * graph = tests[n](context);
+		jive_graph * graph = tests[n]();
 		jive_view(graph, stdout);
 		jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 		jive_view(graph, stdout);
 		jive_shaped_graph_destroy(shaped_graph);
 		jive_graph_destroy(graph);
 	}
-	
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
-	
+
 	return 0;
 }
 

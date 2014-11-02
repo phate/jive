@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <locale.h>
 
-#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-node-private.h>
@@ -62,7 +61,6 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
@@ -149,8 +147,6 @@ static int test_main(void)
 	jive_shaped_graph_destroy(shaped_graph);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	return 0;
 }
 

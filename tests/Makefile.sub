@@ -1,6 +1,3 @@
-TESTS= \
-	test-context \
-
 include tests/arch/Makefile.sub
 include tests/frontend/Makefile.sub
 include tests/function/Makefile.sub

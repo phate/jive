@@ -27,7 +27,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::output * b1 = jive_bitconstant(graph, 8, "00110011");
@@ -56,11 +55,8 @@ static int test_main(void)
 	assert(minus_one_128->node()->operation() == jive::bits::int_constant_op(128, -1));
 
 	jive_view(graph, stdout);
-	jive_graph_destroy(graph);
-
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
-
+	jive_graph_destroy(graph);	
+	
 	return 0;
 }
 

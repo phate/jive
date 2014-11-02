@@ -8,7 +8,6 @@
 #include <locale.h>
 #include <assert.h>
 
-#include <jive/context.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 
@@ -17,7 +16,6 @@ test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive_view(graph, stdout);
@@ -29,8 +27,6 @@ test_main(void)
 	jive_view(graph, stdout);
 
 	jive_graph_destroy(graph);
-	jive_context_assert_clean(context);
-	jive_context_destroy(context);
 
 	return 0;
 }

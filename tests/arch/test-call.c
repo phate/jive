@@ -23,7 +23,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addr;
@@ -59,8 +58,6 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
 
 	return 0;
 }

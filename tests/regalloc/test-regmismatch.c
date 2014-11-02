@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include <jive/arch/subroutine/nodes.h>
-#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
@@ -20,7 +19,7 @@
 #include "testarch.h"
 
 static jive_graph *
-create_testgraph_mismatch1(jive_context * context)
+create_testgraph_mismatch1()
 {
 	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray0[] = { jive_argument_int, jive_argument_int };
@@ -39,7 +38,7 @@ create_testgraph_mismatch1(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_mismatch2(jive_context * context)
+create_testgraph_mismatch2()
 {
 	jive_graph * graph = jive_graph_create();
 	const jive_argument_type tmparray2[] = { jive_argument_int, jive_argument_int };
@@ -61,7 +60,7 @@ create_testgraph_mismatch2(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_mismatch3(jive_context * context)
+create_testgraph_mismatch3()
 {
 	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -100,7 +99,7 @@ create_testgraph_mismatch3(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_mismatch4(jive_context * context)
+create_testgraph_mismatch4()
 {
 	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -139,7 +138,7 @@ create_testgraph_mismatch4(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_mismatch5(jive_context * context)
+create_testgraph_mismatch5()
 {
 	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -191,7 +190,7 @@ create_testgraph_mismatch5(jive_context * context)
 }
 
 static jive_graph *
-create_testgraph_mismatch6(jive_context * context)
+create_testgraph_mismatch6()
 {
 	jive_graph * graph = jive_graph_create();
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
@@ -242,7 +241,7 @@ create_testgraph_mismatch6(jive_context * context)
 	return graph;
 }
 
-typedef jive_graph * (*creator_function_t)(jive_context *);
+typedef jive_graph * (*creator_function_t)();
 
 static const creator_function_t tests[] = {
 	create_testgraph_mismatch1,
@@ -256,23 +255,18 @@ static const creator_function_t tests[] = {
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_context * context = jive_context_create();
-	
+
 	size_t n;
 	for (n = 0; n < sizeof(tests)/sizeof(tests[0]); n++) {
 		fprintf(stderr, "%zd\n", n);
-		jive_graph * graph = tests[n](context);
+		jive_graph * graph = tests[n]();
 		jive_view(graph, stdout);
 		jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 		jive_view(graph, stdout);
 		jive_shaped_graph_destroy(shaped_graph);
 		jive_graph_destroy(graph);
 	}
-	
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
-	
+
 	return 0;
 }
 

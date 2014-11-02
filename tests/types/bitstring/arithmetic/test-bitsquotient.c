@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -19,7 +18,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
@@ -42,8 +40,6 @@ static int test_main(void)
 	assert(squot1->node()->operation() == jive::bits::int_constant_op(32, -2));
 
 	jive_graph_destroy(graph);
-	jive_context_assert_clean(context);
-	jive_context_destroy(context);
 
 	return 0;
 }

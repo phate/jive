@@ -10,7 +10,6 @@
 #include <locale.h>
 #include <string.h>
 
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -19,7 +18,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive::output * base_const1 = jive_bitconstant(graph, 8, "00110111");
@@ -128,13 +126,8 @@ static int test_main(void)
 	}
 	
 	//jive_graph_view(graph);
-
-	jive_graph_destroy(graph);
-	jive_context_destroy(ctx);
 	
 	return 0;
 }
-
-
 
 JIVE_UNIT_TEST_REGISTER("types/bitstring/test-slice-concat", test_main);

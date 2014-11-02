@@ -13,7 +13,6 @@
 #include <jive/arch/dataobject.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/memlayout-simple.h>
-#include <jive/context.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -24,7 +23,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");	
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::output * c8 = jive_bitconstant_unsigned(graph, 8, 8);
@@ -63,8 +61,6 @@ static int test_main(void)
 	jive_compilate_fini(&compilate);
 	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
 
 	return 0;
 }

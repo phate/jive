@@ -9,7 +9,6 @@
 #include <string.h>
 #include <assert.h>
 
-#include <jive/context.h>
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
 #include <jive/serialization/grammar.h>
@@ -26,9 +25,7 @@ my_handle_error(jive_serialization_driver * ctx, const char msg[])
 static void
 verify_serialize(const jive_resource_class * rescls, const char * expect_repr)
 {
-	jive_context * ctx = jive_context_create();
 	jive_buffer buf;
-	
 	jive_token_ostream * os = jive_token_ostream_simple_create(&buf);
 	
 	jive_serialization_driver drv;
@@ -40,17 +37,12 @@ verify_serialize(const jive_resource_class * rescls, const char * expect_repr)
 	jive_token_ostream_destroy(os);
 	
 	assert(strncmp((char *)&buf.data[0], expect_repr, buf.data.size()) == 0);
-	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 }
 
 static void
 verify_deserialize(const char * repr, const jive_resource_class * expect_rescls)
 {
-	jive_context * ctx = jive_context_create();
-	jive_token_istream * is = jive_token_istream_simple_create(
-		repr, repr + strlen(repr));
+	jive_token_istream * is = jive_token_istream_simple_create(repr, repr + strlen(repr));
 	
 	const jive_resource_class * rescls;
 	
@@ -61,9 +53,6 @@ verify_deserialize(const char * repr, const jive_resource_class * expect_rescls)
 	jive_serialization_driver_fini(&drv);
 	
 	jive_token_istream_destroy(is);
-	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	
 	assert(rescls == expect_rescls);
 }

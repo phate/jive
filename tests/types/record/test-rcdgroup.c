@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/record.h>
 #include <jive/view.h>
@@ -21,7 +20,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	static const jive::bits::type bits8(8);
@@ -61,8 +59,6 @@ static int test_main(void)
 	assert(!jive_node_match_attrs(g0->node(), jive_node_get_attrs(g1->node())));
 
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
 
 	return 0;
 }

@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
@@ -23,7 +22,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive::bits::type bits32(32);
@@ -65,8 +63,6 @@ static int test_main(void)
 	assert(test_sum->inputs[1]->origin() == c1);
 	
 	jive_graph_destroy(graph);
-	jive_context_assert_clean(ctx);
-	jive_context_destroy(ctx);
 
 	return 0;
 }

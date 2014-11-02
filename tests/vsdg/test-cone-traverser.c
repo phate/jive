@@ -10,10 +10,9 @@
 #include <assert.h>
 #include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
 
-#include <jive/context.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
@@ -25,7 +24,7 @@ typedef struct graph_desc {
 } graph_desc;
 
 static graph_desc
-prepare_graph(jive_context * ctx)
+prepare_graph()
 {
 	graph_desc g;
 	g.graph = jive_graph_create();
@@ -59,9 +58,9 @@ prepare_graph(jive_context * ctx)
 }
 
 static void
-test_simple_upward_cone(jive_context * ctx)
+test_simple_upward_cone()
 {
-	graph_desc g = prepare_graph(ctx);
+	graph_desc g = prepare_graph();
 	
 	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
 	
@@ -75,9 +74,9 @@ test_simple_upward_cone(jive_context * ctx)
 }
 
 static void
-test_mutable_upward_cone_1(jive_context * ctx)
+test_mutable_upward_cone_1()
 {
-	graph_desc g = prepare_graph(ctx);
+	graph_desc g = prepare_graph();
 	
 	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
 	
@@ -92,9 +91,9 @@ test_mutable_upward_cone_1(jive_context * ctx)
 }
 
 static void
-test_mutable_upward_cone_2(jive_context * ctx)
+test_mutable_upward_cone_2()
 {
-	graph_desc g = prepare_graph(ctx);
+	graph_desc g = prepare_graph();
 	
 	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
 	
@@ -108,9 +107,9 @@ test_mutable_upward_cone_2(jive_context * ctx)
 }
 
 static void
-test_mutable_upward_cone_3(jive_context * ctx)
+test_mutable_upward_cone_3()
 {
-	graph_desc g = prepare_graph(ctx);
+	graph_desc g = prepare_graph();
 	
 	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
 	
@@ -125,15 +124,10 @@ test_mutable_upward_cone_3(jive_context * ctx)
 
 static int test_main(void)
 {
-	jive_context * ctx = jive_context_create();
-	
-	test_simple_upward_cone(ctx);
-	test_mutable_upward_cone_1(ctx);
-	test_mutable_upward_cone_2(ctx);
-	test_mutable_upward_cone_3(ctx);
-	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
+	test_simple_upward_cone();
+	test_mutable_upward_cone_1();
+	test_mutable_upward_cone_2();
+	test_mutable_upward_cone_3();
 	
 	return 0;
 }

@@ -12,7 +12,6 @@
 #include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
 #include <jive/arch/memlayout-simple.h>
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg/node-private.h>
@@ -24,7 +23,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addrtype;
@@ -115,8 +113,6 @@ static int test_main(void)
 
 	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(context));
-	jive_context_destroy(context);
 
 	return 0;
 }

@@ -20,7 +20,6 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring/arithmetic.h>
@@ -31,7 +30,6 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::bits::type bits32(32);
@@ -80,10 +78,7 @@ static int test_main(void)
 	jive_compilate_fini(&compilate);
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	
-	jive_context_destroy(ctx);
-	
+
 	int ret_value = function(18, 24);
 	assert(ret_value == 42);
 	

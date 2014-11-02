@@ -10,7 +10,6 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/context.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
@@ -50,7 +49,7 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 	jive_traverser_destroy(trav);
 }
 
-void test_order_enforcement_traversal(jive_context * ctx)
+void test_order_enforcement_traversal()
 {
 	jive_graph * graph = jive_graph_create();
 	
@@ -198,7 +197,6 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	jive_test_value_type type;
 	const jive::base::type * tmparray10[] = {&type, &type};
@@ -243,7 +241,7 @@ static int test_main(void)
 	
 	test_basic_traversal(graph, n1, n2);
 	test_basic_traversal(graph, n1, n2);
-	test_order_enforcement_traversal(ctx);
+	test_order_enforcement_traversal();
 	
 	test_traversal_insertion(graph, n1, n2);
 	
@@ -252,8 +250,6 @@ static int test_main(void)
 	assert(!jive_graph_has_active_traversers(graph));
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	return 0;
 }
 

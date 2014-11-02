@@ -24,7 +24,6 @@ test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addrtype;
@@ -52,8 +51,6 @@ test_main(void)
 	assert(bottom->producer(0)->operation() == jive::bitstring_to_address_operation(32, addrtype));
 
 	jive_graph_destroy(graph);
-	jive_context_assert_clean(context);
-	jive_context_destroy(context);
 
 	return 0;
 }

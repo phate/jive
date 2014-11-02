@@ -24,7 +24,6 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/context.h>
 #include <jive/regalloc.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/types/bitstring.h>
@@ -68,7 +67,7 @@ compile_graph(jive_graph * graph)
 }
 
 static jive_graph *
-prepare_graph(jive_context * ctx)
+prepare_graph()
 {
 	jive_graph * graph;
 	graph = jive_graph_create();
@@ -124,10 +123,8 @@ typedef void (*testfn_t)(int *, int *);
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_context * ctx = jive_context_create();
-	
-	jive_graph * graph = prepare_graph(ctx);
+
+	jive_graph * graph = prepare_graph();
 	testfn_t fn = (testfn_t) compile_graph(graph);
 	
 	int x, y, m, n;
@@ -140,11 +137,7 @@ static int test_main(void)
 			assert(y == m - n);
 		}
 	}
-	
-	assert(jive_context_is_empty(ctx));
-	
-	jive_context_destroy(ctx);
-	
+
 	return 0;
 }
 

@@ -12,7 +12,6 @@
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/context.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function/fctlambda.h>
 #include <jive/view.h>
@@ -22,7 +21,6 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_context * context = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 
 	jive::addr::type addr;
@@ -42,8 +40,6 @@ static int test_main(void)
 	jive_view(graph, stdout);
 	
 	jive_graph_destroy(graph);
-	jive_context_assert_clean(context);
-	jive_context_destroy(context);
 
 	return 0;
 }

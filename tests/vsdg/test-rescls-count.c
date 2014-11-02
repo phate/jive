@@ -7,12 +7,11 @@
 
 #include <assert.h>
 
-#include <jive/context.h>
 #include <jive/vsdg/resource-private.h>
 
 #include "testarch.h"
 
-void test_rescls_count_addsub(jive_context * ctx)
+void test_rescls_count_addsub()
 {
 	jive_resource_class_count count;
 	jive_resource_class_count_init(&count);
@@ -46,7 +45,7 @@ void test_rescls_count_addsub(jive_context * ctx)
 	jive_resource_class_count_fini(&count);
 }
 
-void test_rescls_count_compound(jive_context * ctx)
+void test_rescls_count_compound()
 {
 	jive_resource_class_count a, b, c;
 	jive_resource_class_count_init(&a);
@@ -101,7 +100,7 @@ void test_rescls_count_compound(jive_context * ctx)
 	jive_resource_class_count_fini(&c);
 }
 
-void test_rescls_count_prio(jive_context * ctx)
+void test_rescls_count_prio()
 {
 	jive_resource_class_count a;
 	jive_resource_class_count_init(&a);
@@ -129,14 +128,9 @@ void test_rescls_count_prio(jive_context * ctx)
 
 static int test_main(void)
 {
-	jive_context * ctx = jive_context_create();
-	
-	test_rescls_count_addsub(ctx);
-	test_rescls_count_compound(ctx);
-	test_rescls_count_prio(ctx);
-	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
+	test_rescls_count_addsub();
+	test_rescls_count_compound();
+	test_rescls_count_prio();
 	return 0;
 }
 

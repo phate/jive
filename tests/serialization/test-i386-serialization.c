@@ -11,7 +11,6 @@
 
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/subroutine.h>
-#include <jive/context.h>
 #include <jive/serialization/driver.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/util/buffer.h>
@@ -29,7 +28,6 @@ my_error(jive_serialization_driver * drv, const char msg[])
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
 	
 	jive_buffer buf;
 	
@@ -105,9 +103,6 @@ static int test_main(void)
 	
 	jive_graph_destroy(gr1);
 	jive_graph_destroy(gr2);
-	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	
 	return 0;
 }

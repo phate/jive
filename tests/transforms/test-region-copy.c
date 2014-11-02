@@ -9,7 +9,7 @@
 
 #include <assert.h>
 #include <locale.h>
-#include <jive/context.h>
+
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
@@ -20,8 +20,6 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
-	
 	jive_graph * graph = jive_graph_create();
 	
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
@@ -72,8 +70,6 @@ static int test_main(void)
 	
 	jive_graph_destroy(graph);
 	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
 	return 0;
 }
 

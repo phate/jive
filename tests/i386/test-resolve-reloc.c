@@ -12,7 +12,6 @@
 
 #include <jive/arch/compilate.h>
 #include <jive/backend/i386/relocation.h>
-#include <jive/context.h>
 
 static const char msg[] = {"Hello world!\n"};
 static const char * vrfy = 0;
@@ -52,7 +51,6 @@ static const jive_linker_symbol_resolver sym_resolver = {
 
 static int test_main(void)
 {
-	jive_context * ctx = jive_context_create();
 	jive_compilate compilate;
 	jive_compilate_init(&compilate);
 	
@@ -96,7 +94,6 @@ static int test_main(void)
 		jive_i386_process_relocation);
 	
 	jive_compilate_fini(&compilate);
-	assert(jive_context_is_empty(ctx));
 	
 	void (*function)(void) =
 		(void(*)(void)) map->sections[0].base;
@@ -106,8 +103,6 @@ static int test_main(void)
 	
 	jive_compilate_map_unmap(map);
 	jive_compilate_map_destroy(map);
-	
-	jive_context_destroy(ctx);
 	
 	return 0;
 }

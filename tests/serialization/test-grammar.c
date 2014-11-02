@@ -12,7 +12,6 @@
 
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
-#include <jive/context.h>
 #include <jive/serialization/grammar.h>
 #include <jive/serialization/token-stream.h>
 #include <jive/types/bitstring.h>
@@ -28,22 +27,17 @@ my_handle_error(jive_serialization_driver * ctx, const char msg[])
 }
 
 typedef struct serialize_ctx {
-	jive_context * ctx;
 	jive_buffer buf;
 	jive_token_ostream * os;
 	jive_serialization_driver drv;
 } serialize_ctx;
 
 static bool
-token_stream_equal(jive_context * ctx,
-	const char * str1, size_t len1,
-	const char * str2, size_t len2)
+token_stream_equal(const char * str1, size_t len1, const char * str2, size_t len2)
 {
 	bool equals = true;
-	jive_token_istream * is1 = jive_token_istream_simple_create(
-		str1, str1 + len1);
-	jive_token_istream * is2 = jive_token_istream_simple_create(
-		str2, str2 + len2);
+	jive_token_istream * is1 = jive_token_istream_simple_create(str1, str1 + len1);
+	jive_token_istream * is2 = jive_token_istream_simple_create(str2, str2 + len2);
 	
 	for (;;) {
 		const jive_token * tok1 = jive_token_istream_current(is1);
@@ -66,7 +60,6 @@ token_stream_equal(jive_context * ctx,
 static void
 serialize_ctx_init(serialize_ctx * self)
 {
-	self->ctx = jive_context_create();
 	self->os = jive_token_ostream_simple_create(&self->buf);
 	jive_serialization_driver_init(&self->drv);
 	self->drv.error = my_handle_error;
@@ -77,12 +70,9 @@ serialize_ctx_fini(serialize_ctx * self)
 {
 	jive_serialization_driver_fini(&self->drv);
 	jive_token_ostream_destroy(self->os);
-	assert(jive_context_is_empty(self->ctx));
-	jive_context_destroy(self->ctx);
 }
 
 typedef struct deserialize_ctx {
-	jive_context * ctx;
 	jive_token_istream * is;
 	jive_serialization_driver drv;
 } deserialize_ctx;
@@ -90,9 +80,7 @@ typedef struct deserialize_ctx {
 static void
 deserialize_ctx_init(deserialize_ctx * self, const char * repr)
 {
-	self->ctx = jive_context_create();
-	self->is = jive_token_istream_simple_create(
-		repr, repr + strlen(repr));
+	self->is = jive_token_istream_simple_create(repr, repr + strlen(repr));
 	jive_serialization_driver_init(&self->drv);
 	self->drv.error = my_handle_error;
 }
@@ -102,8 +90,6 @@ deserialize_ctx_fini(deserialize_ctx * self)
 {
 	jive_serialization_driver_fini(&self->drv);
 	jive_token_istream_destroy(self->is);
-	assert(jive_context_is_empty(self->ctx));
-	jive_context_destroy(self->ctx);
 }
 
 static void
@@ -114,7 +100,7 @@ verify_serialize_type(const jive::base::type * type, const char * expect_repr)
 	
 	jive_serialize_type(&ctx.drv, type, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
+	assert(token_stream_equal(&ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -142,7 +128,7 @@ verify_serialize_rescls(const jive_resource_class * rescls, const char * expect_
 	
 	jive_serialize_rescls(&ctx.drv, rescls, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
+	assert(token_stream_equal(&ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -169,7 +155,7 @@ verify_serialize_gateexpr(jive::gate * gate, const char * expect_repr)
 	
 	jive_serialize_gateexpr(&ctx.drv, gate, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
+	assert(token_stream_equal(&ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -218,7 +204,7 @@ verify_serialize_nodeexpr(jive_node * node,
 	
 	jive_serialize_nodeexpr(&ctx.drv, node, ctx.os);
 	
-	assert(token_stream_equal(ctx.ctx, &ctx.buf.data[0], ctx.buf.data.size(),
+	assert(token_stream_equal(&ctx.buf.data[0], ctx.buf.data.size(),
 		expect_repr, strlen(expect_repr)));
 	
 	serialize_ctx_fini(&ctx);
@@ -290,7 +276,6 @@ static int test_main(void)
 	verify_serialize_type(&ctl, "control<>");
 	verify_deserialize_type("control<>", &ctl);
 	
-	jive_context * ctx = jive_context_create();
 	jive_graph * graph = jive_graph_create();
 	
 	jive::gate * bit8gate = bits8.create_gate(graph, "bit8gate");
@@ -355,9 +340,6 @@ static int test_main(void)
 		"(a:root<> b:root<>;c:root<>:bit8gate) bitconcat<8,8> (out:root<>;r:stackslot<4,4>:stackgate)");
 	
 	jive_graph_destroy(graph);
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
-	
 	return 0;
 }
 

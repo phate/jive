@@ -9,7 +9,6 @@
 #include <locale.h>
 #include <stdio.h>
 
-#include <jive/context.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc.h>
 #include <jive/view.h>
@@ -18,7 +17,7 @@
 #include "testarch.h"
 
 static jive_graph *
-create_testgraph(jive_context * ctx)
+create_testgraph()
 {
 	jive_graph * graph = jive_graph_create();
 	
@@ -61,18 +60,14 @@ create_testgraph(jive_context * ctx)
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_context * ctx = jive_context_create();
-	
-	jive_graph * graph = create_testgraph(ctx);
+
+	jive_graph * graph = create_testgraph();
 	jive_view(graph, stdout);
 	jive_shaped_graph * shaped_graph = jive_regalloc(graph);
 	jive_view(graph, stdout);
 	jive_shaped_graph_destroy(shaped_graph);
 	jive_graph_destroy(graph);
-	
-	assert(jive_context_is_empty(ctx));
-	jive_context_destroy(ctx);
-	
+
 	return 0;
 }
 
