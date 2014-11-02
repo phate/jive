@@ -24,8 +24,6 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 	, height(1)
 	, edge_bend_y(0)
 {
-	jive_context * context = input->node->graph->context;
-	
 	jive_buffer input_label_buffer;
 	input->label(input_label_buffer);
 	const char * input_label = jive_buffer_to_string(&input_label_buffer);
@@ -63,8 +61,6 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 	, edge_begin_x(0)
 	, edge_begin_y(0)
 {
-	jive_context * context = output->node()->graph->context;
-	
 	jive_buffer output_label_buffer;
 	output->label(output_label_buffer);
 	const char * output_label = jive_buffer_to_string(&output_label_buffer);
@@ -102,8 +98,6 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	, height(7)
 	, x(0)
 {
-	jive_context * context = node->graph->context;
-	
 	for (size_t n = 0; n < node->ninputs; n++)
 		inputs.push_back(jive_inputview(this, node->inputs[n]));
 	
