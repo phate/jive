@@ -38,22 +38,20 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
 
-static const jive::value::type ** string_elements;
-static jive::rcd::declaration string_decl;
-
 static jive::output *
 make_string(jive_graph * graph, const char * txt)
 {
 	static const jive::bits::type bits8(8);
+	static std::vector<const jive::value::type*> string_elements;
+	static jive::rcd::declaration string_decl;
 	size_t len = strlen(txt), n;
 	
-	string_elements = malloc(sizeof(*string_elements) * len);
 	for (n = 0; n < len; n++) {
-		string_elements[n] = &bits8;
+		string_elements.push_back(&bits8);
 	}
 	
 	string_decl.nelements = len;
-	string_decl.elements = string_elements;
+	string_decl.elements = &string_elements[0];
 	
 	jive::output * chars[len];
 	for (n = 0; n < len; n++) {

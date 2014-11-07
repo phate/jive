@@ -5,50 +5,58 @@
 
 #include "test-registry.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include <jive/common.h>
+#include <jive/util/intrusive-hash.h>
 
-#include <jive/util/list.h>
+namespace {
 
-typedef struct jive_unit_test jive_unit_test;
+class unit_test {
+public:
+	typedef int (*function_type)(void);
+private:
+	std::string name_;
+	jive::detail::intrusive_hash_anchor<unit_test> hash_anchor_;
+	function_type function_;
+public:
+	typedef jive::detail::intrusive_hash_accessor<
+		std::string,
+		unit_test,
+		&unit_test::name_,
+		&unit_test::hash_anchor_> hash_accessor;
 
-struct jive_unit_test {
-	const char * name;
-	int (*function)(void);
-	struct {
-		jive_unit_test * prev;
-		jive_unit_test * next;
-	} chain;
+	inline unit_test(
+		std::string name,
+		function_type function)
+		: name_(std::move(name))
+		, function_(function)
+	{
+	}
+
+	inline int
+	run() const
+	{
+		return function_();
+	}
 };
 
-static struct {
-	jive_unit_test * first;
-	jive_unit_test * last;
-} unit_tests = {0, 0};
+typedef jive::detail::owner_intrusive_hash<
+	std::string, unit_test, unit_test::hash_accessor> unit_test_map;
+
+static unit_test_map unit_tests;
+
+}
 
 void
 jive_unit_test_register(const char * name, int (*fn)(void))
 {
-	jive_unit_test * test = malloc(sizeof(*test));
-	test->name = name;
-	test->function = fn;
-	JIVE_LIST_PUSH_BACK(unit_tests, test, chain);
-}
-
-static const jive_unit_test *
-jive_unit_test_lookup(const char * name)
-{
-	jive_unit_test * test;
-	JIVE_LIST_ITERATE(unit_tests, test, chain) {
-		if (strcmp(test->name, name) == 0)
-			return test;
-	}
-	return 0;
+	std::unique_ptr<unit_test> test(new unit_test(name, fn));
+	unit_tests.insert(std::move(test));
 }
 
 int
 jive_unit_test_run(const char * name)
 {
-	const jive_unit_test * test = jive_unit_test_lookup(name);
-	return test->function();
+	auto i = unit_tests.find(name);
+	JIVE_ASSERT(i != unit_tests.end());
+	return i->run();
 }
