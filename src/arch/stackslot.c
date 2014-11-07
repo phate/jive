@@ -98,7 +98,7 @@ jive_stackslot_size_class_create(size_t size, size_t alignment)
 	if (!name)
 		return 0;
 	
-	jive_stackslot_size_class * cls = malloc(sizeof(*cls));
+	jive_stackslot_size_class * cls = new jive_stackslot_size_class;
 	if (!cls) {
 		free(name);
 		return 0;
@@ -132,16 +132,16 @@ jive_fixed_stackslot_class_create(const jive_stackslot_size_class * parent, int 
 	if (!name)
 		return 0;
 	
-	jive_fixed_stackslot_class * cls = malloc(sizeof(*cls));
+	jive_fixed_stackslot_class * cls = new jive_fixed_stackslot_class;
 	if (!cls) {
 		free(name);
 		return 0;
 	}
 	
-	jive_stackslot * slot = malloc(sizeof(*slot));
+	jive_stackslot * slot = new jive_stackslot;
 	if (!slot) {
 		free(name);
-		free(cls);
+		delete cls;
 		return 0;
 	}
 	
@@ -176,16 +176,16 @@ jive_callslot_class_create(const jive_stackslot_size_class * parent, int offset)
 	if (!name)
 		return 0;
 	
-	jive_callslot_class * cls = malloc(sizeof(*cls));
+	jive_callslot_class * cls = new jive_callslot_class;
 	if (!cls) {
 		free(name);
 		return 0;
 	}
 	
-	jive_callslot * slot = malloc(sizeof(*slot));
+	jive_callslot * slot = new jive_callslot;
 	if (!slot) {
 		free(name);
-		free(cls);
+		delete cls;
 		return 0;
 	}
 	
@@ -221,19 +221,19 @@ struct jive_slot_alignment {
 	{
 		if (cls && !jive_stackslot_size_class_static(cls->size, cls->alignment)) {
 			free((char *)cls->base.name);
-			free(cls);
+			delete cls;
 		}
 
 		for (auto i = stackslot_offset_map.begin(); i != stackslot_offset_map.end(); i++) {
 			free((char *)i->second->base.base.name);
-			free(i->second->slot);
-			free(i->second);
+			delete i->second->slot;
+			delete i->second;
 		}
 
 		for (auto i = callslot_offset_map.begin(); i != callslot_offset_map.end(); i++) {
 			free((char *)i->second->base.base.name);
-			free(i->second->slot);
-			free(i->second);
+			delete i->second->slot;
+			delete i->second;
 		}
 	}
 
