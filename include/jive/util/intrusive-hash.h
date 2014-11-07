@@ -7,6 +7,7 @@
 #define JIVE_UTIL_INTRUSIVE_HASH_H
 
 #include <functional>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -78,7 +79,13 @@
  * An additional template "owner_intrusive_hash" implements the same
  * interface, but in addition assumes "ownership" of the objects it contains.
  * This means that upon destruction of the container, the elements will
- * be deleted as well.
+ * be deleted as well. In particular, it differs in the following ways:
+ *
+ * - insert expects a std::unique_ptr as argument
+ * - erase is only supported on keys and iterators and will cause the
+ *   element in question to be deleted
+ * - a new method "unlink" removes an element from the hash and returns
+ *   a std::unique_ptr to it
  */
 
 namespace jive {
@@ -364,7 +371,7 @@ public:
 	}
 
 	inline void
-	erase(ElementType * element)
+	erase(ElementType * element) noexcept
 	{
 		size_t index = hash_(accessor_.get_key(element)) & mask_;
 		bucket_type & b = buckets_[index];
@@ -384,13 +391,22 @@ public:
 	}
 
 	inline void
-	erase(iterator i)
+	erase(iterator i) noexcept
 	{
 		erase(i.ptr());
 	}
 
 	inline void
-	erase(iterator begin, iterator end)
+	erase(const KeyType & key) noexcept
+	{
+		iterator i = find(key);
+		if (i != end()) {
+			erase(i);
+		}
+	}
+
+	inline void
+	erase(iterator begin, iterator end) noexcept
 	{
 		while (begin != end) {
 			ElementType * element = begin.ptr();
@@ -589,6 +605,9 @@ private:
 	typedef intrusive_hash<KeyType, ElementType, Accessor, KeyHash, KeyEqual>
 		internal_hash_type;
 public:
+	static_assert(
+		noexcept(std::declval<ElementType&>().~ElementType()),
+		"Require noexcept destructor for ElementType");
 	typedef typename internal_hash_type::const_iterator const_iterator;
 	typedef typename internal_hash_type::iterator iterator;
 	typedef typename internal_hash_type::value_type value_type;
@@ -626,25 +645,45 @@ public:
 	}
 
 	inline iterator
-	insert(ElementType * element)
+	insert(std::unique_ptr<ElementType> element)
 	{
-		return internal_hash_.insert(element);
+		iterator i = internal_hash_.insert(element.get());
+		element.release();
+		return i;
 	}
 
 	inline void
-	erase(ElementType * element)
+	erase(ElementType * element) noexcept
 	{
-		return internal_hash_.erase(element);
+		internal_hash_.erase(element);
+		delete element;
 	}
 
 	inline void
-	erase(iterator i)
+	erase(iterator i) noexcept
 	{
 		internal_hash_.erase(i);
 	}
 
 	inline void
-	erase(iterator begin, iterator end)
+	erase(const KeyType & key) noexcept
+	{
+		iterator i = find(key);
+		if (i != end()) {
+			erase(i);
+		}
+	}
+
+	inline std::unique_ptr<ElementType>
+	unlink(iterator i) noexcept
+	{
+		std::unique_ptr<ElementType> e = i.ptr();
+		internal_hash_.erase(i);
+		return e;
+	}
+
+	inline void
+	erase(iterator begin, iterator end) noexcept
 	{
 		internal_hash_.erase(begin, end);
 	}

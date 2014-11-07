@@ -327,10 +327,11 @@ jive_graph_get_nodeclass_form(
 	jive::node_normal_form * parent_normal_form =
 		cinfo ? jive_graph_get_nodeclass_form(self, *cinfo->__base_type) : nullptr;
 
-	jive::node_normal_form * nf = jive::node_normal_form::create(
-		type, parent_normal_form, self);
-	self->new_node_normal_forms.insert(nf);
-	return nf;
+	std::unique_ptr<jive::node_normal_form> nf(jive::node_normal_form::create(
+		type, parent_normal_form, self));
+	jive::node_normal_form * result = nf.get();
+	self->new_node_normal_forms.insert(std::move(nf));
+	return result;
 }
 
 void

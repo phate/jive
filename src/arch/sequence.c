@@ -96,7 +96,7 @@ sequentialize_region(
 	seq_region->first_point = 0;
 	seq_region->last_point = 0;
 	seq_region->inlined = false;
-	seq->region_map.insert(seq_region);
+	seq->region_map.insert(std::unique_ptr<jive_seq_region>(seq_region));
 	
 	jive_traverser * trav = jive_bottomup_region_traverser_get_node_traverser(region_trav, region);
 	
