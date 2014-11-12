@@ -132,26 +132,10 @@ get_tmpfd(size_t size)
 	return fd;
 }
 
-static jive_compilate_map *
-jive_compilate_map_alloc(size_t section_count)
-{
-	jive_compilate_map * map = malloc(sizeof(*map));
-	if (!map)
-		return NULL;
-	map->sections = malloc(sizeof(map->sections[0]) * section_count);
-	if (!map->sections) {
-		free(map);
-		return NULL;
-	}
-	map->nsections = section_count;
-	return map;
-}
-
 void
 jive_compilate_map_destroy(jive_compilate_map * self)
 {
-	free(self->sections);
-	free(self);
+	delete self;
 }
 
 static bool
@@ -164,7 +148,7 @@ resolve_relocation_target(
 	switch (target.type) {
 		case jive_symref_type_section: {
 			size_t n;
-			for (n = 0; n < map->nsections; ++n) {
+			for (n = 0; n < map->sections.size(); ++n) {
 				if (map->sections[n].section->id == target.ref.section) {
 					*resolved = map->sections[n].base;
 					return true;
@@ -218,18 +202,17 @@ jive_compilate_load(const jive_compilate * self,
 	const jive_linker_symbol_resolver * sym_resolver,
 	jive_process_relocation_function relocate)
 {
-	size_t total_size = 0, section_count = 0;
+	size_t total_size = 0;
 	const jive_section * section;
 	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
 		total_size += jive_section_size_roundup(section);
-		++ section_count;
 	}
 	
 	int fd = get_tmpfd(total_size);
 	if (fd == -1)
 		return NULL;
 	
-	jive_compilate_map * map = jive_compilate_map_alloc(section_count);
+	jive_compilate_map * map = new jive_compilate_map;
 	if (!map) {
 		close(fd);
 		return NULL;
@@ -245,12 +228,12 @@ jive_compilate_load(const jive_compilate * self,
 	/* populate all sections with data, but keep them writable independent
 	of their designation, so relocation processing can modify their
 	contents */
-	size_t offset = 0, n = 0;
+	size_t offset = 0;
 	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
 		void * addr = offset + (char *) writable;
-		map->sections[n].section = section;
-		map->sections[n].base = addr;
-		map->sections[n].size = jive_section_size_roundup(section);
+		map->sections.push_back(jive_compilate_section(section, addr,
+			jive_section_size_roundup(section)));
+		size_t n = map->sections.size()-1;
 		
 		memcpy(addr, &section->contents.data[0], section->contents.data.size());
 		
@@ -269,13 +252,12 @@ jive_compilate_load(const jive_compilate * self,
 		}
 		
 		offset += map->sections[n].size;
-		++n;
 	}
 	
 	/* finalize all sections and switch them over to their correct
 	permissions */
 	offset = 0;
-	n = 0;
+	size_t n = 0;
 	bool success = true;
 	JIVE_LIST_ITERATE(self->sections, section, compilate_section_list) {
 		void * base = offset + (char *) writable;
@@ -325,7 +307,7 @@ void
 jive_compilate_map_unmap(const jive_compilate_map * self)
 {
 	size_t n;
-	for (n = 0; n < self->nsections; ++n) {
+	for (n = 0; n < self->sections.size(); ++n) {
 		void * ptr = (void *) (intptr_t) self->sections[n].base;
 		munmap(ptr, self->sections[n].size);
 	}

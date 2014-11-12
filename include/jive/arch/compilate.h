@@ -101,18 +101,26 @@ struct jive_compilate {
 	} sections;
 };
 
+class jive_compilate_section {
+public:
+	inline
+	jive_compilate_section(const jive_section * _section, void * _base, size_t _size)
+		: section(_section)
+		, base(_base)
+		, size(_size)
+	{}
+
+	/** \brief Section descriptor from compilate */
+	const jive_section * section;
+	/** \brief Base address in process' address space */
+	void * base;
+	/** \brief Size of loaded section */
+	size_t size;
+};
 
 /** \brief Represent a compilate loaded into process' address space */
 struct jive_compilate_map {
-	struct {
-		/** \brief Section descriptor from compilate */
-		const jive_section * section;
-		/** \brief Base address in process' address space */
-		void * base;
-		/** \brief Size of loaded section */
-		size_t size;
-	} * sections;
-	size_t nsections;
+	std::vector<jive_compilate_section> sections;
 };
 
 void
@@ -146,7 +154,7 @@ jive_compilate_get_buffer(jive_compilate * self, jive_stdsectionid section);
 	
 	Maps all of the sections contained in the compilate into the process'
 	address space. Returns a structure describing the mapping of the
-	sections to the address space. The returned structure is malloc'd.
+	sections to the address space.
 */
 jive_compilate_map *
 jive_compilate_load(const jive_compilate * self,
@@ -177,7 +185,7 @@ JIVE_EXPORTED_INLINE void *
 jive_compilate_map_get_stdsection(const jive_compilate_map * self, jive_stdsectionid id)
 {
 	size_t n;
-	for (n = 0; n < self->nsections; ++n) {
+	for (n = 0; n < self->sections.size(); ++n) {
 		if (self->sections[n].section->id == id)
 			return self->sections[n].base;
 	}
