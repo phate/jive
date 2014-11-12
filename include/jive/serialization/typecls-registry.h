@@ -42,13 +42,6 @@ struct jive_serialization_typecls {
 	const std::type_info * cls;
 	jive_typecls_serialize_function_t serialize;
 	jive_typecls_deserialize_function_t deserialize;
-	
-	struct {
-		jive_serialization_typecls * prev, * next;
-	} tag_chain;
-	struct {
-		jive_serialization_typecls * prev, * next;
-	} cls_chain;
 };
 
 typedef struct jive_serialization_typecls_registry jive_serialization_typecls_registry;
