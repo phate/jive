@@ -31,8 +31,7 @@ public:
 		output_driver & driver) const override
 	{
 		const bits::constant_op & const_op = static_cast<const bits::constant_op &>(op);
-		std::string s(const_op.value().begin(), const_op.value().end());
-		driver.put_string(s);
+		driver.put_string(const_op.value().str());
 	}
 
 	virtual std::unique_ptr<operation>
@@ -40,8 +39,7 @@ public:
 		parser_driver & driver) const override
 	{
 		std::string s = driver.parse_string();
-		std::vector<char> value(s.begin(), s.end());
-		return std::unique_ptr<operation>(new bits::constant_op(value));
+		return std::unique_ptr<operation>(new bits::constant_op(jive::bits::value_repr(s)));
 	}
 };
 

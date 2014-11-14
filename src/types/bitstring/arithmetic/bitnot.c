@@ -26,7 +26,7 @@ not_op::reduce_constant(
 	const value_repr & arg) const
 {
 	value_repr result(arg);
-	jive_bitstring_not(&result[0], &arg[0], arg.size());
+	jive_bitstring_not(&result[0], &arg[0], arg.nbits());
 	return result;
 }
 

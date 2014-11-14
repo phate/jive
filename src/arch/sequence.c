@@ -123,7 +123,7 @@ sequentialize_region(
 					&input->origin()->node()->operation());
 				jive_seq_dataitem * item = &data->items[n];
 				if (cop) {
-					switch (cop->value().size()) {
+					switch (cop->value().nbits()) {
 						case 8:
 							item->format = jive_seq_dataitem_fmt_8;
 							break;

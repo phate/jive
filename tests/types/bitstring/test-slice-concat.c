@@ -33,7 +33,7 @@ static int test_main(void)
 		
 		const jive::bits::constant_op & op =
 			dynamic_cast<const jive::bits::constant_op &>(a->node()->operation());
-		assert(op.value() == jive::bits::value_repr_from_string("1101"));
+		assert(op.value() == jive::bits::value_repr("1101"));
 	}
 	
 	{
@@ -104,7 +104,7 @@ static int test_main(void)
 		
 		const jive::bits::constant_op & op =
 			dynamic_cast<const jive::bits::constant_op &>(a->node()->operation());
-		assert(op.value() == jive::bits::value_repr_from_string("0011011111001000"));
+		assert(op.value() == jive::bits::value_repr("0011011111001000"));
 	}
 	
 	{

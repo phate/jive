@@ -71,13 +71,13 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 	const constant_op * arg2_constant = dynamic_cast<const constant_op *>(
 		&arg2->node()->operation());
 	if (arg1_constant && arg2_constant) {
-		size_t nbits = arg1_constant->value().size() + arg2_constant->value().size();
+		size_t nbits = arg1_constant->value().nbits() + arg2_constant->value().nbits();
 		char bits[nbits];
-		memcpy(bits, &arg1_constant->value()[0], arg1_constant->value().size());
+		memcpy(bits, &arg1_constant->value()[0], arg1_constant->value().nbits());
 		memcpy(
-			bits + arg1_constant->value().size(),
+			bits + arg1_constant->value().nbits(),
 			&arg2_constant->value()[0],
-			arg2_constant->value().size());
+			arg2_constant->value().nbits());
 
 		return jive_bitconstant(arg1->node()->graph, nbits, bits);
 	}
@@ -399,13 +399,13 @@ concat_op::reduce_operand_pair(
 		const constant_op & arg2_constant = static_cast<const constant_op &>(
 			arg2->node()->operation());
 
-		size_t nbits = arg1_constant.value().size() + arg2_constant.value().size();
+		size_t nbits = arg1_constant.value().nbits() + arg2_constant.value().nbits();
 		char bits[nbits];
-		memcpy(bits, &arg1_constant.value()[0], arg1_constant.value().size());
+		memcpy(bits, &arg1_constant.value()[0], arg1_constant.value().nbits());
 		memcpy(
-			bits + arg1_constant.value().size(),
+			bits + arg1_constant.value().nbits(),
 			&arg2_constant.value()[0],
-			arg2_constant.value().size());
+			arg2_constant.value().nbits());
 
 		return jive_bitconstant(graph, nbits, bits);
 	}

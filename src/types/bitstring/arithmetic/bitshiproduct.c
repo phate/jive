@@ -26,7 +26,7 @@ smulh_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.size(), arg2.size());
+	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
 	char arg1ext[2 * nbits];
 	char arg2ext[2 * nbits];
 	char resultext[2 * nbits];
@@ -37,7 +37,7 @@ smulh_op::reduce_constants(
 		arg1ext, 2 * nbits,
 		arg2ext, 2 * nbits);
 
-	value_repr result(resultext + nbits, resultext + 2 * nbits);
+	value_repr result(nbits, resultext + nbits);
 	return result;
 }
 

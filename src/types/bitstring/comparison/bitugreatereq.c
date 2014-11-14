@@ -28,7 +28,7 @@ uge_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.size(), arg2.size());
+	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
 	char result = jive_bitstring_ugreatereq(
 		&arg1[0], &arg2[0], nbits);
 

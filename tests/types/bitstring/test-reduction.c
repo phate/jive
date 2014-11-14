@@ -21,7 +21,7 @@ assert_constant(jive::output * bitstr, size_t nbits, const char bits[])
 	const jive::bits::constant_op & op =
 		dynamic_cast<const jive::bits::constant_op &>(bitstr->node()->operation());
 	
-	assert(op.value() == jive::bits::value_repr(bits, bits + nbits));
+	assert(op.value() == jive::bits::value_repr(nbits, bits));
 }
 
 static int test_main(void)

@@ -22,14 +22,14 @@ namespace bits {
 struct type_of_value {
 	type operator()(const value_repr & repr) const
 	{
-		return type(repr.size());
+		return type(repr.nbits());
 	}
 };
 
 struct format_value {
 	std::string operator()(const value_repr & repr) const
 	{
-		return std::string(repr.rbegin(), repr.rend());
+		return repr.str();
 	}
 };
 
@@ -40,13 +40,13 @@ typedef base::domain_const_op<
 inline constant_op
 uint_constant_op(size_t nbits, uint64_t value)
 {
-	return constant_op(value_repr_from_uint(nbits, value));
+	return constant_op(value_repr(nbits, value));
 }
 
 inline constant_op
 int_constant_op(size_t nbits, int64_t value)
 {
-	return constant_op(value_repr_from_int(nbits, value));
+	return constant_op(value_repr(nbits, value));
 }
 
 }
