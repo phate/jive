@@ -12,6 +12,7 @@
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
 #include <jive/arch/call.h>
+#include <jive/arch/memlayout-simple.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg/node-private.h>
@@ -47,8 +48,12 @@ static int test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_call_node_address_transform(
-		call, static_cast<const jive::call_operation &>(call->operation()), 32);
+	jive_memlayout_mapper_simple mapper;
+	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+
+	jive_node_address_transform(call, &mapper.base.base);
+
+	jive_memlayout_mapper_simple_fini(&mapper);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);

@@ -11,6 +11,7 @@
 
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
+#include <jive/arch/memlayout-simple.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fcttype.h>
 #include <jive/view.h>
@@ -43,7 +44,12 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_apply_node_address_transform(results[0]->node(), 32);
+	jive_memlayout_mapper_simple mapper;
+	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+
+	jive_node_address_transform(results[0]->node(), &mapper.base.base);
+
+	jive_memlayout_mapper_simple_fini(&mapper);
 
 	jive_view(graph, stdout);
 

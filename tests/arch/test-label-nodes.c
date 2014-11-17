@@ -13,6 +13,7 @@
 #include <jive/arch/address-transform.h>
 #include <jive/arch/address.h>
 #include <jive/arch/linker-symbol.h>
+#include <jive/arch/memlayout-simple.h>
 #include <jive/context.h>
 #include <jive/view.h>
 #include <jive/vsdg/graph.h>
@@ -91,14 +92,13 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	jive_label_to_address_node_address_transform(
-		o0->node(),
-		dynamic_cast<const jive::address::label_to_address_op  &>(o0->node()->operation()),
-		32);
-	jive_label_to_address_node_address_transform(
-		o1->node(),
-		dynamic_cast<const jive::address::label_to_address_op &>(o1->node()->operation()),
-		32);
+	jive_memlayout_mapper_simple mapper;
+	jive_memlayout_mapper_simple_init(&mapper, context, 32);
+
+	jive_node_address_transform(o0->node(), &mapper.base.base);
+	jive_node_address_transform(o1->node(), &mapper.base.base);
+
+	jive_memlayout_mapper_simple_fini(&mapper);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stderr);

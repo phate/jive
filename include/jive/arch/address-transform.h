@@ -182,55 +182,7 @@ jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 /* reductions */
 
 void
-jive_load_node_address_transform(
-	jive_node * node,
-	const jive::load_op & op,
-	size_t nbits);
-
-void
-jive_store_node_address_transform(
-	jive_node * node,
-	const jive::store_op & op,
-	size_t nbits);
-
-void
-jive_label_to_address_node_address_transform(
-	jive_node * node,
-	const jive::address::label_to_address_op & op,
-	size_t nbits);
-
-void
-jive_call_node_address_transform(jive_node * node, const jive::call_operation & op, size_t nbits);
-
-void
-jive_lambda_node_address_transform(const jive_node * node, size_t nbits);
-
-void
-jive_apply_node_address_transform(const jive_node * node, size_t nbits);
-
-void
-jive_memberof_node_address_transform(
-	jive_node * node,
-	const jive::address::memberof_op & op,
-	jive_memlayout_mapper * mapper);
-
-void
-jive_containerof_node_address_transform(
-	jive_node * node,
-	const jive::address::containerof_op & op,
-	jive_memlayout_mapper * mapper);
-
-void
-jive_arraysubscript_node_address_transform(
-	jive_node * node,
-	const jive::address::arraysubscript_op & op,
-	jive_memlayout_mapper * mapper);
-
-void
-jive_arrayindex_node_address_transform(
-	jive_node * node,
-	const jive::address::arrayindex_op & op,
-	jive_memlayout_mapper * mapper);
+jive_node_address_transform(jive_node * node, jive_memlayout_mapper * mapper);
 
 void
 jive_graph_address_transform(jive_graph * graph,
