@@ -264,6 +264,16 @@ jive_node_input(const struct jive_node * self, size_t index);
 jive::output *
 jive_node_output(const struct jive_node * self, size_t index);
 
+JIVE_EXPORTED_INLINE jive_region *
+jive_node_anchored_region(const jive_node * self, size_t index)
+{
+	jive_region * region = self->inputs[index]->origin()->node()->region;
+	/* the given region can only be different if the identified input
+	 * is of "anchor" type, so this implicitly checks the type */
+	JIVE_DEBUG_ASSERT(self->region != region);
+	return region;
+}
+
 void
 jive_node_get_use_count_input(
 	const jive_node * self,
