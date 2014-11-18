@@ -8,6 +8,8 @@
 #include <inttypes.h>
 #include <stdio.h>
 
+#include <string>
+
 #include <jive/util/buffer.h>
 
 bool
@@ -28,50 +30,6 @@ jive_token_equals(const jive_token * self, const jive_token * other)
 			return true;
 	}
 }
-
-typedef struct cached_string cached_string;
-
-struct cached_string {
-	char * data;
-	size_t space;
-};
-
-static void
-cached_string_init(cached_string * self)
-{
-	self->data = 0;
-	self->space = 0;
-}
-
-static void
-cached_string_fini(cached_string * self, jive_context * context)
-{
-	jive_context_free(context, self->data);
-}
-
-static void
-cached_string_swap(cached_string * self, cached_string * other)
-{
-	char * tmp_data = self->data;
-	self->data = other->data;
-	other->data = tmp_data;
-	
-	size_t tmp_space = self->space;
-	self->space = other->space;
-	other->space = tmp_space;
-}
-
-static void
-cached_string_assign(cached_string * self, const char * str, size_t len, jive_context * context)
-{
-	if (self->space <= len) {
-		self->space = len + 1;
-		self->data = jive_context_realloc(context, self->data, self->space);
-	}
-	memcpy(self->data, str, len);
-	self->data[len] = 0;
-}
-
 
 typedef struct jive_token_ostream_simple jive_token_ostream_simple;
 
@@ -209,9 +167,9 @@ struct jive_token_istream_simple {
 	const char * begin;
 	const char * end;
 	const char * parse_point;
-	
-	cached_string current_str;
-	cached_string next_str;
+
+	std::string current_str;
+	std::string next_str;
 };
 
 /* character classification functions, need to be locale-independent */
@@ -307,8 +265,8 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 		} else {
 			self->base.next.type = jive_token_identifier;
 			size_t len = p - self->parse_point;
-			cached_string_assign(&self->next_str, self->parse_point, len, self->context);
-			self->base.next.v.identifier = self->next_str.data;
+			self->next_str = std::string(self->parse_point, self->parse_point + len);
+			self->base.next.v.identifier = self->next_str.c_str();
 		}
 		self->parse_point = p;
 		return;
@@ -337,10 +295,10 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 			self->base.next.type = jive_token_error;
 			return;
 		}
-		cached_string_assign(&self->next_str, begin, end - begin, self->context);
+		self->next_str = std::string(begin, end);
 		self->base.next.type = jive_token_string;
-		self->base.next.v.string.str = self->next_str.data;
-		self->base.next.v.string.len = end - begin;
+		self->base.next.v.string.str = self->next_str.data();
+		self->base.next.v.string.len = self->next_str.size();
 		self->parse_point = next + 1;
 		return;
 	}
@@ -358,8 +316,6 @@ static void
 jive_token_istream_simple_destroy_(jive_token_istream * self_)
 {
 	jive_token_istream_simple * self = (jive_token_istream_simple *) self_;
-	cached_string_fini(&self->current_str, self->context);
-	cached_string_fini(&self->next_str, self->context);
 	delete self;
 }
 
@@ -368,7 +324,7 @@ jive_token_istream_simple_advance_(jive_token_istream * self_)
 {
 	jive_token_istream_simple * self = (jive_token_istream_simple *) self_;
 	self->base.current = self->base.next;
-	cached_string_swap(&self->current_str, &self->next_str);
+	self->current_str.swap(self->next_str);
 	jive_token_istream_simple_parse(self);
 }
 
@@ -387,11 +343,9 @@ jive_token_istream_simple_create(jive_context * context,
 	self->begin = begin;
 	self->end = end;
 	self->parse_point = begin;
-	cached_string_init(&self->current_str);
-	cached_string_init(&self->next_str);
 	jive_token_istream_simple_parse(self);
 	self->base.current = self->base.next;
-	cached_string_swap(&self->current_str, &self->next_str);
+	self->current_str.swap(self->next_str);
 	jive_token_istream_simple_parse(self);
 	return &self->base;
 }
