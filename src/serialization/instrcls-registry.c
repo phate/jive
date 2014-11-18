@@ -130,12 +130,12 @@ jive_serialization_instrcls_registry_rehash(
 	if (!new_nbuckets)
 		new_nbuckets = 1;
 	size_t new_mask = new_nbuckets - 1;
-	jive_instrcls_cls_bucket * new_by_cls = malloc(new_nbuckets * sizeof(*new_by_cls));
+	jive_instrcls_cls_bucket * new_by_cls = new jive_instrcls_cls_bucket[new_nbuckets];
 	if (!new_by_cls)
 		return false;
-	jive_instrcls_tag_bucket * new_by_tag = malloc(new_nbuckets * sizeof(*new_by_tag));
+	jive_instrcls_tag_bucket * new_by_tag = new jive_instrcls_tag_bucket[new_nbuckets];
 	if (!new_by_tag) {
-		free(new_by_cls);
+		delete[] new_by_tag;
 		return false;
 	}
 	
@@ -161,8 +161,8 @@ jive_serialization_instrcls_registry_rehash(
 	}
 	
 	if (self->nbuckets) {
-		free(self->by_tag);
-		free(self->by_cls);
+		delete[] self->by_tag;
+		delete[] self->by_cls;
 	}
 	self->by_tag = new_by_tag;
 	self->by_cls = new_by_cls;
@@ -244,7 +244,7 @@ jive_serialization_instrcls_register(
 	const struct jive_instruction_class * instrcls,
 	const char tag[])
 {
-	jive_serialization_instrcls * sercls = malloc(sizeof(*sercls));
+	jive_serialization_instrcls * sercls = new jive_serialization_instrcls;
 	sercls->tag = strdup(tag);
 	sercls->cls = instrcls;
 	pthread_mutex_lock(&instrcls_registry_singleton_lock);
@@ -265,7 +265,7 @@ jive_serialization_instrset_register(
 		const struct jive_instruction_class * icls = instrclss[n];
 		if (!icls->name)
 			continue;
-		jive_serialization_instrcls * sercls = malloc(sizeof(*sercls));
+		jive_serialization_instrcls * sercls = new jive_serialization_instrcls;
 		size_t name_len = strlen(icls->name);
 		char * tag = malloc(prefix_len + name_len + 1);
 		memcpy(tag, prefix, prefix_len);

@@ -131,12 +131,12 @@ jive_serialization_rescls_registry_rehash(
 	if (!new_nbuckets)
 		new_nbuckets = 1;
 	size_t new_mask = new_nbuckets - 1;
-	jive_rescls_cls_bucket * new_by_cls = malloc(new_nbuckets * sizeof(*new_by_cls));
+	jive_rescls_cls_bucket * new_by_cls = new jive_rescls_cls_bucket[new_nbuckets];
 	if (!new_by_cls)
 		return false;
-	jive_rescls_tag_bucket * new_by_tag = malloc(new_nbuckets * sizeof(*new_by_tag));
+	jive_rescls_tag_bucket * new_by_tag = new jive_rescls_tag_bucket[new_nbuckets];
 	if (!new_by_tag) {
-		free(new_by_cls);
+		delete[] new_by_cls;
 		return false;
 	}
 	
@@ -162,8 +162,8 @@ jive_serialization_rescls_registry_rehash(
 	}
 	
 	if (self->nbuckets) {
-		free(self->by_tag);
-		free(self->by_cls);
+		delete[] self->by_tag;
+		delete[] self->by_cls;
 	}
 	self->by_tag = new_by_tag;
 	self->by_cls = new_by_cls;
@@ -273,7 +273,7 @@ jive_serialization_rescls_register(
 	jive_rescls_serialize_function_t serialize,
 	jive_rescls_deserialize_function_t deserialize)
 {
-	jive_serialization_rescls * sercls = malloc(sizeof(*sercls));
+	jive_serialization_rescls * sercls = new jive_serialization_rescls;
 	sercls->tag = strdup(tag);
 	sercls->cls = entity;
 	sercls->is_meta_class = is_meta_class;
@@ -302,7 +302,7 @@ jive_serialization_regclsset_register(
 		memcpy(tag, prefix, prefix_len);
 		memcpy(tag + prefix_len, regcls->base.name, name_len);
 		tag[prefix_len + name_len] = 0;
-		jive_serialization_rescls * sercls = malloc(sizeof(*sercls));
+		jive_serialization_rescls * sercls = new jive_serialization_rescls;
 		sercls->tag = tag;
 		sercls->cls = regcls;
 		sercls->is_meta_class = false;
