@@ -49,7 +49,7 @@ struct jive_seq_point {
 	/* allow to lookup point in the sequence by the node it was generated
 	from; not all points are generated from a node, but those that are,
 	are linked here */
-	struct jive_node * node;
+	const jive_node * node;
 	
 	size_t size;
 	jive_address address;
@@ -59,7 +59,7 @@ private:
 
 public:
 	typedef jive::detail::intrusive_hash_accessor<
-		struct jive_node *,
+		const jive_node *,
 		jive_seq_point,
 		&jive_seq_point::node,
 		&jive_seq_point::hash_chain
@@ -67,7 +67,7 @@ public:
 };
 
 typedef jive::detail::intrusive_hash<
-	struct jive_node *,
+	const jive_node *,
 	jive_seq_point,
 	jive_seq_point::hash_chain_accessor
 > jive_seq_node_hash;
@@ -82,7 +82,7 @@ struct jive_seq_node {
 extern const jive_seq_point_class JIVE_SEQ_NODE;
 
 struct jive_seq_region {
-	struct jive_region * region;
+	const jive_region * region;
 	jive_seq_graph * seq_graph;
 	struct {
 		jive_seq_region * prev;
@@ -99,7 +99,7 @@ private:
 
 public:
 	typedef jive::detail::intrusive_hash_accessor<
-		struct jive_region *,
+		const jive_region *,
 		jive_seq_region,
 		&jive_seq_region::region,
 		&jive_seq_region::hash_chain
@@ -107,7 +107,7 @@ public:
 };
 
 typedef jive::detail::owner_intrusive_hash<
-	jive_region *,
+	const jive_region *,
 	jive_seq_region,
 	jive_seq_region::hash_chain_accessor
 > jive_seq_region_hash;
@@ -170,11 +170,33 @@ jive_graph_sequentialize(struct jive_graph * graph);
 void
 jive_seq_graph_destroy(jive_seq_graph * seq);
 
-jive_seq_point *
-jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node);
+inline jive_seq_point *
+jive_seq_graph_map_node(jive_seq_graph * seq, const jive_node * node)
+{
+	auto i = seq->node_map.find(node);
+	return i != seq->node_map.end() ? i.ptr() : nullptr;
+}
 
-jive_seq_region *
-jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region);
+inline jive_seq_region *
+jive_seq_graph_map_region(jive_seq_graph * seq, const jive_region * region)
+{
+	auto i = seq->region_map.find(region);
+	return i != seq->region_map.end() ? i.ptr() : nullptr;
+}
+
+inline const jive_seq_point *
+jive_seq_graph_map_node(const jive_seq_graph * seq, const jive_node * node)
+{
+	auto i = seq->node_map.find(node);
+	return i != seq->node_map.end() ? i.ptr() : nullptr;
+}
+
+inline const jive_seq_region *
+jive_seq_graph_map_region(const jive_seq_graph * seq, const jive_region * region)
+{
+	auto i = seq->region_map.find(region);
+	return i != seq->region_map.end() ? i.ptr() : nullptr;
+}
 
 /* inheritable methods */
 void

@@ -285,26 +285,6 @@ jive_graph_sequentialize(jive_graph * graph)
 	return seq;
 }
 
-jive_seq_point *
-jive_seq_graph_map_node(const jive_seq_graph * seq, struct jive_node * node)
-{
-	auto i = seq->node_map.find(node);
-	if (i != seq->node_map.end())
-		return i.ptr();
-	else
-		return nullptr;
-}
-
-jive_seq_region *
-jive_seq_graph_map_region(const jive_seq_graph * seq, struct jive_region * region)
-{
-	auto i = seq->region_map.find(region);
-	if (i != seq->region_map.end())
-		return i.ptr();
-	else
-		return nullptr;
-}
-
 void
 jive_seq_graph_destroy(jive_seq_graph * seq)
 {

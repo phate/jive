@@ -259,7 +259,7 @@ static void
 jive_seq_graph_patch_jump_targets(
 	jive_seq_graph * seq_graph,
 	jive_seq_instruction * seq_instr,
-	jive_node * inode,
+	const jive_node * inode,
 	const jive::instruction_op & op)
 {
 	size_t index = op.icls()->noutputs;
