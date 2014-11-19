@@ -23,7 +23,7 @@ jive_serialization_typecls_registry::~jive_serialization_typecls_registry()
 {
 	for (auto element : by_cls_) {
 		jive_serialization_typecls * sercls = element.second;
-		free(sercls->tag);
+		free((char*)(sercls->tag));
 		delete sercls;
 	}
 }
