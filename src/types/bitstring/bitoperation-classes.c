@@ -196,6 +196,8 @@ compare_op::can_reduce_operand_pair(
 		case compare_result::undecidable:
 			return jive_binop_reduction_none;
 	}
+	
+	return jive_binop_reduction_none;
 }
 
 jive::output *
