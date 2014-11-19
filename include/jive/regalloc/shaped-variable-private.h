@@ -107,7 +107,6 @@ jive_variable_interference_add(jive_shaped_variable * first, jive_shaped_variabl
 	if (iter != first->interference.end()) {
 		i = iter->whole;
 	} else {
-		jive_variable_interference_part * part =iter.ptr();
 		const jive_resource_name * first_name = first->variable->resname;
 		const jive_resource_name * second_name = second->variable->resname;
 		
