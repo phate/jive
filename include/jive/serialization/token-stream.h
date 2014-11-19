@@ -55,7 +55,7 @@ struct jive_token {
 			const char * str;
 			size_t len;
 		} string;
-		int64_t integral;
+		uint64_t integral;
 	} v;
 };
 
@@ -180,7 +180,7 @@ jive_token_istream_signed_integral(jive_token_istream * is, int64_t * value)
 			return false;
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= 1 + ~ (uint64_t) (-0x7fffffffffffffffLL-1)) {
+		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
 			*value = - next->v.integral;
 			jive_token_istream_advance(is);
 			jive_token_istream_advance(is);

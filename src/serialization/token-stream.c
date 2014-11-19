@@ -108,7 +108,7 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 		case jive_token_integral: {
 			jive_token_ostream_simple_flush_whitespace(self);
 			char repr[64];
-			snprintf(repr, sizeof(repr), "%""lld", token->v.integral);
+			snprintf(repr, sizeof(repr), "%""llu", token->v.integral);
 			jive_buffer_putstr(self->buffer, repr);
 			self->need_whitespace = true;
 			break;
@@ -216,7 +216,7 @@ static inline bool
 match_keyword(const char * begin, const char * end, const char * keyword)
 {
 	size_t len = strlen(keyword);
-	return (end - begin == len) && (memcmp(begin, keyword, len) == 0);
+	return (((size_t)(end - begin)) == len) && (memcmp(begin, keyword, len) == 0);
 }
 
 struct keyword_tokens {
@@ -271,7 +271,7 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 	
 	if (is_digit(c)) {
 		const char * p = self->parse_point;
-		int64_t value = 0;
+		uint64_t value = 0;
 		while (p != self->end && is_digit(*p)) {
 			value = 10 * value + (*p - '0');
 			++p;

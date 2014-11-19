@@ -58,7 +58,7 @@ parser_driver::parse_int()
 			throw parse_error("Integral value out of range");
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= 1 + ~ (uint64_t) (-0x7fffffffffffffffLL-1)) {
+		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
 			int64_t value = - next->v.integral;
 			jive_token_istream_advance(&is_);
 			jive_token_istream_advance(&is_);
@@ -129,7 +129,6 @@ parser_driver::parse_label()
 			return &jive_label_fpoffset;
 		}
 		case jive_token_identifier: {
-			jive_label * tmp;
 			return parse_defined_label();
 		}
 		default: {
@@ -141,8 +140,6 @@ parser_driver::parse_label()
 const jive_resource_class *
 parser_driver::parse_resource_class()
 {
-	const jive_token * token;
-
 	std::string identifier = parse_identifier();
 	const jive_serialization_rescls * sercls =
 		jive_serialization_rescls_lookup_by_tag(
@@ -171,8 +168,6 @@ parser_driver::parse_resource_class()
 const jive_resource_class *
 parser_driver::parse_resource_class_or_null()
 {
-	const jive_token * token;
-
 	std::string identifier = parse_identifier();
 	if (identifier == "none") {
 		return nullptr;
@@ -402,7 +397,7 @@ jive_deserialize_int(jive_serialization_driver * self,
 			return false;
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= 1 + ~ (uint64_t) (-0x7fffffffffffffffLL-1)) {
+		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
 			*value = - next->v.integral;
 			jive_token_istream_advance(is);
 			jive_token_istream_advance(is);
@@ -527,7 +522,6 @@ jive_deserialize_gateexpr(jive_serialization_driver * self,
 	jive_token_istream * is, jive_graph * graph, jive::gate ** gate)
 {
 	std::string name;
-	size_t name_len;
 	const jive_resource_class * rescls;
 	jive::base::type * type;
 	
