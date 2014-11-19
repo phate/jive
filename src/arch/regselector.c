@@ -356,14 +356,14 @@ jive_regselector_process(jive_regselector * self)
 const jive_register_class *
 jive_regselector_map_output(const jive_regselector * self, jive::output * output)
 {
-	jive_negotiator_port * port = jive_negotiator_map_output(&self->base, output);
+	const jive_negotiator_port * port = jive_negotiator_map_output(&self->base, output);
 	return jive_regselector_map_port(self, port);
 }
 
 const jive_register_class *
 jive_regselector_map_input(const jive_regselector * self, jive::input * input)
 {
-	jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
+	const jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 	return jive_regselector_map_port(self, port);
 }
 

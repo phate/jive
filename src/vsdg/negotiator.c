@@ -481,7 +481,7 @@ jive_negotiator_fully_specialize(jive_negotiator * self)
 	}
 }
 
-jive_negotiator_port *
+const jive_negotiator_port *
 jive_negotiator_map_input(const jive_negotiator * self, jive::input * input)
 {
 	auto i = self->input_map.find(input);
@@ -490,9 +490,29 @@ jive_negotiator_map_input(const jive_negotiator * self, jive::input * input)
 	else
 		return nullptr;
 }
-	
+
 jive_negotiator_port *
+jive_negotiator_map_input(jive_negotiator * self, jive::input * input)
+{
+	auto i = self->input_map.find(input);
+	if (i != self->input_map.end())
+		return i.ptr();
+	else
+		return nullptr;
+}
+
+const jive_negotiator_port *
 jive_negotiator_map_output(const jive_negotiator * self, jive::output * output)
+{
+	auto i = self->output_map.find(output);
+	if (i != self->output_map.end())
+		return i.ptr();
+	else
+		return nullptr;
+}
+
+jive_negotiator_port *
+jive_negotiator_map_output(jive_negotiator * self, jive::output * output)
 {
 	auto i = self->output_map.find(output);
 	if (i != self->output_map.end())
@@ -502,7 +522,7 @@ jive_negotiator_map_output(const jive_negotiator * self, jive::output * output)
 }
 	
 jive_negotiator_constraint *
-jive_negotiator_map_gate(const jive_negotiator * self, jive::gate * gate)
+jive_negotiator_map_gate(jive_negotiator * self, jive::gate * gate)
 {
 	auto i = self->gate_map.find(gate);
 	if (i != self->gate_map.end())

@@ -513,11 +513,17 @@ jive_negotiator_annotate_identity_node(
 void
 jive_negotiator_fully_specialize(jive_negotiator * self);
 
-jive_negotiator_port *
+const jive_negotiator_port *
 jive_negotiator_map_output(const jive_negotiator * self, jive::output * output);
 
 jive_negotiator_port *
+jive_negotiator_map_output(jive_negotiator * self, jive::output * output);
+
+const jive_negotiator_port *
 jive_negotiator_map_input(const jive_negotiator * self, jive::input * input);
+
+jive_negotiator_port *
+jive_negotiator_map_input(jive_negotiator * self, jive::input * input);
 
 /* protected functions that allow to manipulate negotiator state */
 void
