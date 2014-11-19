@@ -112,7 +112,6 @@ static int test_main(void)
 	jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_graph_map_ssavar(shaped_graph, a->outputs[0]->ssavar), 1);
 	
 	assert(sub->active_top.base.ssavar_map.size() == 2);
-	jive_cutvar_xpoint * xpoint;
 	auto xi = sub->active_top.base.ssavar_map.find(jive_shaped_graph_map_ssavar(shaped_graph, a->outputs[0]->ssavar));
 	assert(xi != sub->active_top.base.ssavar_map.end());
 	assert(xi->count == 1);

@@ -70,11 +70,11 @@ static int test_main(void)
 	//assert(a0 == top->outputs[0]);
 	jive::output * a1 = jive_arraysubscript(top->outputs[0], &bits32, one);
 	assert(a1 != top->outputs[0]);
-	jive::output * tmp = jive_arraysubscript(a1, &bits32, minus_one);
+	jive_arraysubscript(a1, &bits32, minus_one);
 	jive_view(graph, stdout);
 	//assert(tmp == a0);
 	
-	jive::output * diff = jive_arrayindex(a1, a0, &bits32, &bits32);
+	jive_arrayindex(a1, a0, &bits32, &bits32);
 	//assert(diff == one);
 	
 	jive::output * diff2 = jive_arrayindex(top->outputs[0], top->outputs[1], &bits32, &bits32);

@@ -21,8 +21,6 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 
 	jive::output * s0 = jive_bitsymbolicconstant(graph, 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph, 32, "s1");
-
 	jive::output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 
 	jive::output * not0 = jive_bitnot(s0);
