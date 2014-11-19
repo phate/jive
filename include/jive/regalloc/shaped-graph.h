@@ -42,16 +42,60 @@ jive_shaped_graph_create(struct jive_graph * graph);
 void
 jive_shaped_graph_destroy(jive_shaped_graph * self);
 
-struct jive_shaped_region *
-jive_shaped_graph_map_region(const jive_shaped_graph * self, const struct jive_region * region);
+inline jive_shaped_region *
+jive_shaped_graph_map_region(jive_shaped_graph * self, const jive_region * region)
+{
+	auto i = self->region_map.find(region);
+	return i != self->region_map.end() ? i.ptr() : nullptr;
+}
 
-struct jive_shaped_variable *
-jive_shaped_graph_map_variable(const jive_shaped_graph * self, const struct jive_variable * variable);
+inline const jive_shaped_region *
+jive_shaped_graph_map_region(const jive_shaped_graph * self, const jive_region * region)
+{
+	auto i = self->region_map.find(region);
+	return i != self->region_map.end() ? i.ptr() : nullptr;
+}
 
-struct jive_shaped_ssavar *
-jive_shaped_graph_map_ssavar(const jive_shaped_graph * self, const struct jive_ssavar * ssavar);
+inline jive_shaped_variable *
+jive_shaped_graph_map_variable(jive_shaped_graph * self, const jive_variable * variable)
+{
+	auto i = self->variable_map.find(variable);
+	return i != self->variable_map.end() ? i.ptr() : nullptr;
+}
 
-struct jive_shaped_node *
-jive_shaped_graph_map_node(const jive_shaped_graph * self, const struct jive_node * node);
+inline const jive_shaped_variable *
+jive_shaped_graph_map_variable(const jive_shaped_graph * self, const jive_variable * variable)
+{
+	auto i = self->variable_map.find(variable);
+	return i != self->variable_map.end() ? i.ptr() : nullptr;
+}
+
+inline jive_shaped_ssavar *
+jive_shaped_graph_map_ssavar(jive_shaped_graph * self, const jive_ssavar * ssavar)
+{
+	auto i = self->ssavar_map.find(ssavar);
+	return i != self->ssavar_map.end() ? i.ptr() : nullptr;
+}
+
+inline const jive_shaped_ssavar *
+jive_shaped_graph_map_ssavar(const jive_shaped_graph * self, const jive_ssavar * ssavar)
+{
+	auto i = self->ssavar_map.find(ssavar);
+	return i != self->ssavar_map.end() ? i.ptr() : nullptr;
+}
+
+inline jive_shaped_node *
+jive_shaped_graph_map_node(jive_shaped_graph * self, const jive_node * node)
+{
+	auto i = self->node_map.find(node);
+	return i != self->node_map.end() ? i.ptr() : nullptr;
+}
+
+inline const jive_shaped_node *
+jive_shaped_graph_map_node(const jive_shaped_graph * self, const jive_node * node)
+{
+	auto i = self->node_map.find(node);
+	return i != self->node_map.end() ? i.ptr() : nullptr;
+}
 
 #endif
