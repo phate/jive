@@ -57,9 +57,6 @@ struct jive_buffer {
 	std::vector<char> data;
 };
 
-static inline void *
-jive_buffer_reserve(jive_buffer * self, size_t size);
-
 static inline bool
 jive_buffer_put(jive_buffer * self, const void * data, size_t size);
 
