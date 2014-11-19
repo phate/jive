@@ -343,8 +343,8 @@ jive_seq_instruction_create_shell(
 	seq_instr->base.class_ = &JIVE_SEQ_INSTRUCTION;
 	jive_seq_point_init(&seq_instr->base, seq_region, node);
 	seq_instr->icls = icls;
-	seq_instr->inputs = new jive_register_name*[icls->ninputs];
-	seq_instr->outputs = new jive_register_name*[icls->noutputs];
+	seq_instr->inputs = new const jive_register_name*[icls->ninputs];
+	seq_instr->outputs = new const jive_register_name*[icls->noutputs];
 	seq_instr->imm = new jive_seq_imm[icls->nimmediates];
 	seq_instr->flags = jive_instruction_encoding_flags_none;
 	
