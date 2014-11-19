@@ -3,7 +3,7 @@
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
-CFLAGS+=-g --std=c++0x -xc++ -fpermissive
+CFLAGS+=-g --std=c++0x -xc++
 
 # VSDG core
 LIBJIVE_SRC = \
