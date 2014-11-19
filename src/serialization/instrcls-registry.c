@@ -267,7 +267,7 @@ jive_serialization_instrset_register(
 			continue;
 		jive_serialization_instrcls * sercls = new jive_serialization_instrcls;
 		size_t name_len = strlen(icls->name);
-		char * tag = malloc(prefix_len + name_len + 1);
+		char * tag = new char[prefix_len + name_len + 1];
 		memcpy(tag, prefix, prefix_len);
 		memcpy(tag + prefix_len, icls->name, name_len);
 		tag[prefix_len + name_len] = 0;

@@ -298,7 +298,7 @@ jive_serialization_regclsset_register(
 		if (!regcls->base.name)
 			continue;
 		size_t name_len = strlen(regcls->base.name);
-		char * tag = malloc(prefix_len + name_len + 1);
+		char * tag = new char[prefix_len + name_len + 1];
 		memcpy(tag, prefix, prefix_len);
 		memcpy(tag + prefix_len, regcls->base.name, name_len);
 		tag[prefix_len + name_len] = 0;
