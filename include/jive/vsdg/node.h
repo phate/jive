@@ -63,7 +63,7 @@ public:
 	
 	struct jive_region * region;
 	
-	int depth_from_root;
+	size_t depth_from_root;
 	size_t nsuccessors;
 	size_t ninputs;
 	size_t noperands;
