@@ -227,7 +227,7 @@ jive_shaped_node_remove_ssavar_after(
 static inline bool
 jive_shaped_node_is_resource_name_active_after(
 	const jive_shaped_node * self,
-	jive_resource_name * name)
+	const jive_resource_name * name)
 {
 	for (const jive_nodevar_xpoint & xpoint : self->ssavar_xpoints) {
 		if (!xpoint.after_count) continue;
@@ -241,7 +241,7 @@ jive_shaped_node_is_resource_name_active_after(
 static inline bool
 jive_shaped_node_is_resource_name_active_before(
 	const jive_shaped_node * self,
-	jive_resource_name * name)
+	const jive_resource_name * name)
 {
 	for (const jive_nodevar_xpoint & xpoint : self->ssavar_xpoints) {
 		if (!xpoint.before_count) continue;
