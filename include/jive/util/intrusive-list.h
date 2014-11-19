@@ -129,6 +129,7 @@ public:
 		operator++(void) noexcept
 		{
 			element_ = list_->accessor_.get_next(element_);
+			return *this;
 		}
 
 		inline iterator
@@ -147,6 +148,7 @@ public:
 			} else {
 				element_ = list_->last_;
 			}
+			return *this;
 		}
 
 		inline iterator
@@ -227,6 +229,7 @@ public:
 		operator++(void) noexcept
 		{
 			element_ = list_->accessor_.get_next(element_);
+			return *this;
 		}
 
 		inline iterator
@@ -245,6 +248,7 @@ public:
 			} else {
 				element_ = list_->last_;
 			}
+			return *this;
 		}
 
 		inline iterator
@@ -470,7 +474,7 @@ public:
 	{
 		return (element->*anchor_member).prev;
 	}
-	inline ElementType *
+	inline void
 	set_prev(ElementType * element, ElementType * prev) const noexcept
 	{
 		(element->*anchor_member).prev = prev;
@@ -480,7 +484,7 @@ public:
 	{
 		return (element->*anchor_member).next;
 	}
-	inline ElementType *
+	inline void
 	set_next(ElementType * element, ElementType * next) const noexcept
 	{
 		(element->*anchor_member).next = next;
