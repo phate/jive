@@ -195,6 +195,7 @@ public:
 				}
 			}
 			element_ = next;
+			return *this;
 		}
 
 		inline iterator
@@ -284,6 +285,7 @@ public:
 				}
 			}
 			element_ = next;
+			return *this;
 		}
 
 		inline const_iterator
@@ -577,7 +579,7 @@ public:
 	{
 		return (element->*anchor_member).prev;
 	}
-	inline ElementType *
+	inline void
 	set_prev(ElementType * element, ElementType * prev) const noexcept
 	{
 		(element->*anchor_member).prev = prev;
@@ -587,7 +589,7 @@ public:
 	{
 		return (element->*anchor_member).next;
 	}
-	inline ElementType *
+	inline void
 	set_next(ElementType * element, ElementType * next) const noexcept
 	{
 		(element->*anchor_member).next = next;
