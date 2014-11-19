@@ -178,8 +178,6 @@ jive_i386_subroutine_begin(jive_graph * graph,
 	size_t nreturns, const jive_argument_type return_types[])
 {
 	jive::subroutine_machine_signature sig;
-	size_t n;
-	
 	for (size_t n = 0; n < nparameters; n++) {
 		char argname[80];
 		snprintf(argname, sizeof(argname), "arg%zd", n + 1);
