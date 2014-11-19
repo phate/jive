@@ -548,7 +548,7 @@ struct jive_node *
 jive_node_copy(const jive_node * self, struct jive_region * region, jive::output * operands[])
 {
 	jive_graph_mark_denormalized(region->graph);
-	self->operation().create_node(region, self->noperands, operands);
+	return self->operation().create_node(region, self->noperands, operands);
 }
 
 jive_node *
