@@ -97,8 +97,6 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 	jive::output * operand, const jive_negotiator_option * input_option,
 	const jive::base::type * output_type, const jive_negotiator_option * output_option)
 {
-	jive_graph * graph = operand->node()->region->graph;
-	
 	jive::negotiator_split_operation op(
 		negotiator,
 		*operand_type, *input_option,
@@ -360,7 +358,6 @@ jive_negotiator_identity_constraint_revalidate(
 	jive_negotiator_constraint * self,
 	jive_negotiator_port * port)
 {
-	jive_negotiator * negotiator = self->negotiator;
 	jive_negotiator_port * tmp;
 	JIVE_LIST_ITERATE(self->ports, tmp, constraint_port_list) {
 		if (tmp == port)

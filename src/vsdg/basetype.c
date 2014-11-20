@@ -63,10 +63,10 @@ namespace jive {
 input::input(struct jive_node * node_, size_t index_, jive::output * origin)
 	: node(node_)
 	, index(index_)
-	, origin_(origin)
 	, gate(nullptr)
-	, required_rescls(&jive_root_resource_class)
 	, ssavar(nullptr)
+	, required_rescls(&jive_root_resource_class)
+	, origin_(origin)
 {
 	output_users_list.prev = output_users_list.next = nullptr;
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
@@ -283,11 +283,11 @@ jive_input_auto_merge_variable(jive::input * self)
 namespace jive {
 
 output::output(jive_node * node, size_t index_)
-	: node_(node)
-	, index(index_)
+	: index(index_)
 	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
+	, node_(node)
 {
 	users.first = users.last = nullptr;
 	originating_ssavars.first = originating_ssavars.last = nullptr;

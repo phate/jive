@@ -67,8 +67,8 @@ private:
 	normalize_node(jive_node * node, const base::binary_op & op) const;
 
 	bool enable_reducible_;
-	bool enable_flatten_;
 	bool enable_reorder_;
+	bool enable_flatten_;
 	bool enable_distribute_;
 	bool enable_factorize_;
 

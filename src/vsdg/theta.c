@@ -155,9 +155,7 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values)
 {
 	jive_theta_build_state * state = self.internal_state;
-	jive_node * head = self.region->top;
-	jive_graph * graph = head->region->graph;
-	
+
 	size_t n;
 	
 	jive_node * tail = jive::theta_tail_op().create_node(

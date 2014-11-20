@@ -171,8 +171,7 @@ jive_phi_end(jive_phi self,
 {
 	jive_phi_build_state * state = self.internal_state;
 	jive_node * enter = self.region->top;
-	jive_graph * graph = enter->region->graph;
-	
+
 	size_t n;
 	
 	jive_node * leave = jive::phi_tail_op().create_node(enter->region, 1, &enter->outputs[0]);

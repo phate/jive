@@ -137,7 +137,6 @@ gamma_normal_form::operands_are_normalized(
 	
 	if (get_predicate_reduction()) {
 		jive::output * pred = arguments[2];
-		jive_node * branch = nullptr;
 		const jive::ctl::constant_op * op =
 			dynamic_cast<const jive::ctl::constant_op *>(&pred->node()->operation());
 		if (op) {
