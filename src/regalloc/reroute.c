@@ -204,7 +204,6 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	jive_shaped_node * anchor_location,
 	jive_region * interest_region)
 {
-	jive_graph * graph = ssavar->origin->node()->graph;
 	jive_node * anchor_node = anchor_location->node;
 	
 	/* FIXME: just returning appears correct and hinges on the fact that

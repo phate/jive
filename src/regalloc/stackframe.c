@@ -75,7 +75,7 @@ layout_stackslot(
 		
 		JIVE_DEBUG_ASSERT(other_slot->offset >= lower_bound);
 		JIVE_DEBUG_ASSERT(other_slot->offset < frame->upper_bound);
-		JIVE_DEBUG_ASSERT(other_slot->offset + other_cls->size <= frame->upper_bound);
+		JIVE_DEBUG_ASSERT(other_slot->offset + other_cls->size <= (size_t)frame->upper_bound);
 		for (n = 0; n < other_cls->size; n++) {
 			allowed_slot[n + other_slot->offset - lower_bound] = false;
 		}
