@@ -429,7 +429,6 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 		return false;
 
 	/* collect liveness information about results */
-	size_t nresults = leave->ninputs-1;
 	std::vector<jive::input*> alive_results;
 	std::vector<const jive::base::type*> alive_result_types;
 	for (n = 1; n < leave->ninputs; n++) {

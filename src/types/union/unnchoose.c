@@ -77,8 +77,6 @@ choose_operation::reduce_operand(
 	}
 
 	if (path == jive_choose_reduction_load) {
-		const load_op & op =
-			static_cast<const load_op &>(arg->node()->operation());
 		jive::output * address = arg->node()->inputs[0]->origin();
 
 		const jive::unn::declaration * decl = static_cast<const jive::unn::output*>(

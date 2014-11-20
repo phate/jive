@@ -78,8 +78,6 @@ select_operation::reduce_operand(
 	}
 
 	if (path == jive_select_reduction_load) {
-		const load_op & op =
-			static_cast<const load_op &>(arg->node()->operation());
 		jive::output * address = arg->node()->inputs[0]->origin();
 
 		size_t nbits = 0;

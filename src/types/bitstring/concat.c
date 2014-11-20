@@ -129,8 +129,6 @@ public:
 			return true;
 		}
 
-		const jive::operation & base_op = node->operation();
-		
 		std::vector<jive::output *> args = jive_node_arguments(node);
 		std::vector<jive::output *> new_args;
 
