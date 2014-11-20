@@ -120,7 +120,7 @@ sequentialize_region(
 				outregs,
 				immediates,
 				node)->base;
-		} else if (auto d_op = dynamic_cast<const jive::dataobj_head_op *>(&node->operation())) {
+		} else if (dynamic_cast<const jive::dataobj_head_op *>(&node->operation())) {
 			jive_seq_data * data = jive_seq_data_create(
 				seq_region, node->ninputs, node);
 			size_t n;
@@ -317,8 +317,6 @@ jive_seq_instruction_create_shell(
 	const jive_instruction_class * icls,
 	jive_node * node)
 {
-	jive_seq_graph * seq = seq_region->seq_graph;
-	
 	jive_seq_instruction * seq_instr = new jive_seq_instruction;
 	seq_instr->base.class_ = &JIVE_SEQ_INSTRUCTION;
 	jive_seq_point_init(&seq_instr->base, seq_region, node);
@@ -409,8 +407,6 @@ jive_seq_data_create(
 	size_t nitems,
 	jive_node * node)
 {
-	jive_seq_graph * seq = seq_region->seq_graph;
-	
 	jive_seq_data * seq_data = new jive_seq_data;
 	seq_data->base.class_ = &JIVE_SEQ_DATA;
 	jive_seq_point_init(&seq_data->base, seq_region, node);

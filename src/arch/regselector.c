@@ -149,7 +149,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = self->classifier->classify_fixed_compare(*op);
 		jive_negotiator_annotate_identity(&self->base, 2, &node->inputs[0], 0, &node->outputs[0],
 			&option);
-	} else if (auto op = dynamic_cast<const jive::load_op *>(gen_op)) {
+	} else if (dynamic_cast<const jive::load_op *>(gen_op)) {
 		option.mask = self->classifier->classify_address();
 		jive_negotiator_annotate_identity(&self->base, 1, &node->inputs[0], 0, NULL, &option);
 		
@@ -157,7 +157,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_resource_class * rescls = node->outputs[0]->required_rescls;
 		option.mask = self->classifier->classify_type(type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 0, NULL, 1, &node->outputs[0], &option);
-	} else if (auto op = dynamic_cast<const jive::store_op *>(gen_op)) {
+	} else if (dynamic_cast<const jive::store_op *>(gen_op)) {
 		option.mask = self->classifier->classify_address();
 		jive_negotiator_annotate_identity(&self->base, 1, &node->inputs[0], 0, NULL, &option);
 		
@@ -165,7 +165,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_resource_class * rescls = node->inputs[1]->required_rescls;
 		option.mask = self->classifier->classify_type(type, rescls);
 		jive_negotiator_annotate_identity(&self->base, 1, &node->inputs[1], 0, NULL, &option);
-	} else if (auto op = dynamic_cast<const jive::split_operation *>(gen_op)) {
+	} else if (dynamic_cast<const jive::split_operation *>(gen_op)) {
 		jive::input * input = node->inputs[0];
 		jive::output * output = node->outputs[0];
 		

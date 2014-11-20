@@ -323,7 +323,6 @@ jive_apply_node_address_transform(const jive_node * node, size_t nbits)
 	if (!type_contains_address(fcttype))
 		return;
 
-	size_t nresults = node->noutputs;
 	size_t narguments = node->ninputs-1;
 
 	size_t n;
@@ -441,9 +440,9 @@ jive_node_address_transform(jive_node * node, jive_memlayout_mapper * mapper)
 		jive_store_node_address_transform(node, *op, nbits);
 	} else if (auto op = dynamic_cast<const jive::call_operation *>(&node->operation())) {
 		jive_call_node_address_transform(node, *op, nbits);
-	} else if (auto op = dynamic_cast<const jive::fct::apply_op *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::fct::apply_op *>(&node->operation())) {
 		jive_apply_node_address_transform(node, nbits);
-	} else if (auto op = dynamic_cast<const jive::fct::lambda_op *>(&node->operation())) {
+	} else if (dynamic_cast<const jive::fct::lambda_op *>(&node->operation())) {
 		jive_lambda_node_address_transform(node, nbits);
 	}
 }

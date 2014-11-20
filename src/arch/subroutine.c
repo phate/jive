@@ -54,8 +54,6 @@ jive_subroutine_node_add_sp_dependency(
 	const jive::subroutine_op & op,
 	jive_node * node)
 {
-	const jive::subroutine_op & subroutine_op =
-		static_cast<const jive::subroutine_op &>(self->operation());
 	jive_region * region = self->inputs[0]->origin()->node()->region;
 	return op.signature().abi_class->add_sp_dependency(
 		op, region, node);

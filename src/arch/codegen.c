@@ -42,7 +42,7 @@ jive_imm_add_label_resolve(
 		const jive_seq_point * sp = label->internal;
 		jive_stdsectionid section = jive_seq_point_map_to_section(sp);
 		imm->info = jive_codegen_imm_info_static_unknown;
-		if (sp->address.offset != -1)
+		if (sp->address.offset != (size_t)-1)
 			imm->value += sp->address.offset;
 		imm->symref = jive_symref_section(section);
 	} else if (label->type == jive_seq_label_type_external) {
@@ -67,7 +67,7 @@ jive_imm_sub_label_resolve(
 	jive_stdsectionid target_section = jive_seq_point_map_to_section(target);
 	
 	if (current_section == target_section) {
-		if (target->address.offset != -1 && current->address.offset != -1) {
+		if (target->address.offset != (size_t)-1 && current->address.offset != (size_t)-1) {
 			imm->value += current->address.offset - target->address.offset;
 		}
 		imm->pc_relative = true;
@@ -98,7 +98,7 @@ jive_codegen_imm_resolve(
 			jive_codegen_imm immval;
 			immval.value = add_point->address.offset -
 				sub_point->address.offset + self->value;
-			if (add_point->address.offset != -1 && sub_point->address.offset != -1)
+			if (add_point->address.offset != (size_t)-1 && sub_point->address.offset != (size_t)-1)
 				immval.info = jive_codegen_imm_info_dynamic_known;
 			else
 				immval.info = jive_codegen_imm_info_dynamic_unknown;
