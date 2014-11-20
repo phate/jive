@@ -95,8 +95,8 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	, column(0)
 	, row(0)
 	, placed(false)
-	, height(7)
 	, x(0)
+	, height(7)
 {
 	for (size_t n = 0; n < node->ninputs; n++)
 		inputs.push_back(jive_inputview(this, node->inputs[n]));

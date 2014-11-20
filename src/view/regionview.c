@@ -23,13 +23,13 @@ jive_regionview::~jive_regionview() noexcept
 
 jive_regionview::jive_regionview(jive_graphview * graphview_, jive_region * region_)
 	: region(region_)
+	, graphview(graphview_)
 	, x(0)
+	, width(0)
 	, start_row_index(0)
 	, end_row_index(0)
-	, width(0)
 	, upper_border_offset(0)
 	, lower_border_offset(0)
-	, graphview(graphview_)
 {}
 
 void
@@ -90,8 +90,8 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 		jive_nodeview * nodeview = self->graphview->nodemap[node];
 		self->nodes.push_back(nodeview);
 		jive_regionview_layout_nodes_recursive(self, nodeview, &reservation);
-		if (node->depth_from_root + 1 > max_y) max_y = node->depth_from_root + 1;
-		if (node->depth_from_root < min_y) min_y = node->depth_from_root;
+		if ((ssize_t)node->depth_from_root + 1 > max_y) max_y = node->depth_from_root + 1;
+		if ((ssize_t)node->depth_from_root < min_y) min_y = node->depth_from_root;
 	}
 	
 	if (min_y > max_y) {

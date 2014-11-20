@@ -23,8 +23,8 @@ public:
 
 	jive_inputview(jive_nodeview * nodeview, jive::input * input);
 
-	jive::input * input;
 	jive_nodeview * nodeview;
+	jive::input * input;
 	int x, y, width, height;
 	std::string label;
 	int edge_bend_y;
@@ -45,8 +45,8 @@ public:
 
 	jive_outputview(jive_nodeview * nodeview, jive::output * output);
 
-	jive::output * output;
 	jive_nodeview * nodeview;
+	jive::output * output;
 	short x, y;
 	unsigned short width, height;
 	std::string label;
@@ -69,8 +69,8 @@ public:
 
 	jive_nodeview(jive_graphview * graphview, jive_node * node);
 
-	jive_node * node;
 	jive_graphview * graphview;
+	jive_node * node;
 	unsigned int column, row;
 	std::vector<jive_inputview> inputs;
 	std::vector<jive_outputview> outputs;
