@@ -60,8 +60,8 @@ static int test_main()
 	uint64_t * data64 = (uint64_t *) map->sections[0].base;
 	const uint64_t * rodata64 = (const uint64_t *) map->sections[1].base;
 	
-	assert(*data64 == (intptr_t) rodata64);
-	assert(*rodata64 == (char *) data64 - (char *) rodata64);
+	assert(*data64 == (uintptr_t) rodata64);
+	assert(*rodata64 == (uint64_t)((char *) data64 - (char *) rodata64));
 	
 	jive_compilate_map_unmap(map);
 	
