@@ -126,6 +126,8 @@ static int test_main(void)
 	}
 	
 	//jive_graph_view(graph);
+
+	jive_graph_destroy(graph);
 	
 	return 0;
 }

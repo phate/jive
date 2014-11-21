@@ -24,11 +24,11 @@ static int test_main(void)
 	jive_test_state_type type;
 	jive_test_value_type value_type;
 	const jive::base::type * tmparray0[] = {&type};
-	
+
 	jive_node * n1 = jive_test_node_create(region,
 		0, NULL, NULL,
 		1, tmparray0);
-	
+
 	bool error_handler_called = false;
 	try {
 		const jive::base::type * tmparray1[] = {&value_type};
@@ -41,6 +41,8 @@ static int test_main(void)
 	}
 	
 	assert(error_handler_called);
+
+	jive_graph_destroy(graph);
 
 	return 0;
 }
