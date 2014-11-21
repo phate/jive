@@ -329,39 +329,37 @@ lambda_result_is_passthrough(const jive::input * result)
 static void
 replace_apply_node(const jive_node * apply,
 	jive::output * new_fct, const jive_node * old_lambda,
-	size_t nalive_parameters, jive::output * alive_parameters[],
-	size_t nalive_results, jive::input * alive_results[])
+	std::vector<jive::output *> & alive_parameters,
+	std::vector<jive::input *> & alive_results)
 {
 	const jive_node * old_leave = old_lambda->inputs[0]->origin()->node();
 
 	/* collect the arguments for the new apply node */
-	size_t n;
-	jive::output * alive_arguments[nalive_parameters];
-	for (n = 0; n < nalive_parameters; n++) {
-		size_t index = alive_parameters[n]->index;
-		alive_arguments[n] = apply->inputs[index]->origin();
+	std::vector<jive::output *> alive_arguments;
+	for (auto parameter : alive_parameters) {
+		alive_arguments.push_back(apply->inputs[parameter->index]->origin());
 	}
 
 	std::vector<jive::output *> new_apply_results =
-		jive_apply_create(new_fct, nalive_parameters, alive_arguments);
+		jive_apply_create(new_fct, alive_arguments.size(), &alive_arguments[0]);
 
 	/* replace outputs from old apply node through the outputs from the new one */
 	size_t nalive_apply_results = 0;
-	for (n = 1; n < old_leave->ninputs; n++) {
+	for (size_t n = 1; n < old_leave->ninputs; n++) {
 		jive::input * result = old_leave->inputs[n];
-		if (result == alive_results[nalive_apply_results])
+		if (nalive_apply_results < alive_results.size() && result == alive_results[nalive_apply_results])
 			jive_output_replace(apply->outputs[n-1], new_apply_results[nalive_apply_results++]);
 		else
 			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index]->origin());
 	}
-	JIVE_DEBUG_ASSERT(nalive_results == nalive_apply_results);
+	JIVE_DEBUG_ASSERT(alive_results.size() == nalive_apply_results);
 }
 
 static void
 replace_all_apply_nodes(jive::output * fct,
 	jive::output * new_fct, const jive_node * old_lambda,
-	size_t nalive_parameters, jive::output * alive_parameters[],
-	size_t nalive_results, jive::input * alive_results[])
+	std::vector<jive::output*> alive_parameters,
+	std::vector<jive::input*> alive_results)
 {
 	bool is_lambda = dynamic_cast<const jive::fct::lambda_op *>(&fct->node()->operation());
 	bool is_phi_enter = dynamic_cast<const jive::phi_head_op *>(&fct->node()->operation());
@@ -370,23 +368,23 @@ replace_all_apply_nodes(jive::output * fct,
 
 	jive::input * user;
 	JIVE_LIST_ITERATE(fct->users, user, output_users_list) {
-		if (dynamic_cast<const jive::fct::apply_op *>(&user->node->operation())) {
-			replace_apply_node(user->node, new_fct, old_lambda,
-				nalive_parameters, alive_parameters, nalive_results, alive_results);
-		} else if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
+		if (dynamic_cast<const jive::fct::apply_op *>(&user->node->operation()))
+			replace_apply_node(user->node, new_fct, old_lambda, alive_parameters, alive_results);
+
+		if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
 			jive_node * phi_leave = user->node;
 
 			/* adjust the outer call sides */
 			jive_node * phi_node = phi_leave->outputs[0]->users.first->node;
 			new_fct = phi_node->outputs[phi_node->noutputs-1];
-			replace_all_apply_nodes(phi_node->outputs[user->index-1], new_fct,
-				old_lambda, nalive_parameters, alive_parameters, nalive_results, alive_results);
+			replace_all_apply_nodes(phi_node->outputs[user->index-1], new_fct, old_lambda,
+				alive_parameters, alive_results);
 
 			/* adjust the inner call sides */
 			jive_node * phi_enter = phi_leave->region->top;
 			new_fct = phi_enter->outputs[phi_enter->noutputs-1];
 			replace_all_apply_nodes(phi_enter->outputs[user->index], new_fct, old_lambda,
-				nalive_parameters, alive_parameters, nalive_results, alive_results);
+				alive_parameters, alive_results);
 
 			jive_node_normalize(phi_node);
 		}
@@ -481,8 +479,7 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 		jive_phi_end_extension(phi_ext);
 	}
 
-	replace_all_apply_nodes(fct, new_fct, self,
-		alive_parameters.size(), &alive_parameters[0], alive_results.size(), &alive_results[0]);
+	replace_all_apply_nodes(fct, new_fct, self, alive_parameters, alive_results);
 
 	return true;
 }
