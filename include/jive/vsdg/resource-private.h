@@ -63,7 +63,7 @@ jive_resource_class_count_copy(jive_resource_class_count * self,
 
 bool
 jive_resource_class_count_equals(const jive_resource_class_count * self,
-	const jive_resource_class_count * other); 
+	const jive_resource_class_count * other);
 
 void
 jive_resource_class_count_update_union(jive_resource_class_count * self,

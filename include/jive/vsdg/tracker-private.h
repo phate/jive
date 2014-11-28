@@ -79,7 +79,7 @@ jive_tracker_depth_state_peek_bottom(const jive_tracker_depth_state * self)
 		return 0;
 }
 
-static inline jive_tracker_nodestate * 
+static inline jive_tracker_nodestate *
 jive_tracker_depth_state_pop_top(jive_tracker_depth_state * self)
 {
 	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_peek_top(self);
@@ -90,7 +90,7 @@ jive_tracker_depth_state_pop_top(jive_tracker_depth_state * self)
 	return nodestate;
 }
 
-static inline jive_tracker_nodestate * 
+static inline jive_tracker_nodestate *
 jive_tracker_depth_state_pop_bottom(jive_tracker_depth_state * self)
 {
 	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_peek_bottom(self);
