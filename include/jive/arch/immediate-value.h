@@ -125,7 +125,7 @@ jive_immediate_add_offset(jive_immediate * self, jive_immediate_int offset)
 JIVE_EXPORTED_INLINE bool
 jive_immediate_equals(const jive_immediate * self, const jive_immediate * other)
 {
-	return 
+	return
 		(self->offset == other->offset) &&
 		(self->add_label == other->add_label) &&
 		(self->sub_label == other->sub_label) &&
