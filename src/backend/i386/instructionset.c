@@ -160,7 +160,8 @@ jive_i386_encode_imm32(
 }
 
 static void
-jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp, const jive_register_name * reg)
+jive_buffer_putdisp(jive_buffer * target, const jive_asmgen_imm * disp,
+	const jive_register_name * reg)
 {
 	jive_buffer_putimm(target, disp);
 	jive_buffer_putstr(target, "(%");
@@ -952,7 +953,9 @@ const jive_instruction_class jive_i386_instr_ret = {
 	mnemonic : "ret",
 	encode : jive_i386_encode_simple,
 	write_asm : jive_i386_asm_simple,
-	inregs : 0, outregs : 0, flags : jive_instruction_jump, ninputs : 0, noutputs : 0, nimmediates : 0,
+	inregs : 0, outregs : 0,
+	flags : jive_instruction_jump,
+	ninputs : 0, noutputs : 0, nimmediates : 0,
 	code : 0xc3
 };
 
@@ -989,7 +992,8 @@ const jive_instruction_class jive_i386_instr_int_add = {
 	mnemonic : "addl",
 	encode : jive_i386_encode_regreg,
 	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input | jive_instruction_commutative,
+	inregs : intreg_param, outregs : intflags_param,
+	flags : jive_instruction_write_input | jive_instruction_commutative,
 	ninputs : 2, noutputs : 2, nimmediates : 0,
 	code : 0x01
 };
@@ -1007,7 +1011,8 @@ const jive_instruction_class jive_i386_instr_int_and = {
 	mnemonic : "andl",
 	encode : jive_i386_encode_regreg,
 	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input | jive_instruction_commutative,
+	inregs : intreg_param, outregs : intflags_param,
+	flags : jive_instruction_write_input | jive_instruction_commutative,
 	ninputs : 2, noutputs : 2, nimmediates : 0,
 	code : 0x21
 };
@@ -1016,7 +1021,8 @@ const jive_instruction_class jive_i386_instr_int_or = {
 	mnemonic : "orl",
 	encode : jive_i386_encode_regreg,
 	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input | jive_instruction_commutative,
+	inregs : intreg_param, outregs : intflags_param,
+	flags : jive_instruction_write_input | jive_instruction_commutative,
 	ninputs : 2, noutputs : 2, nimmediates : 0,
 	code : 0x09
 };
@@ -1025,7 +1031,8 @@ const jive_instruction_class jive_i386_instr_int_xor = {
 	mnemonic : "xorl",
 	encode : jive_i386_encode_regreg,
 	write_asm : jive_i386_asm_regreg,
-	inregs : intreg_param, outregs : intflags_param, flags : jive_instruction_write_input | jive_instruction_commutative,
+	inregs : intreg_param, outregs : intflags_param,
+	flags : jive_instruction_write_input | jive_instruction_commutative,
 	ninputs : 2, noutputs : 2, nimmediates : 0,
 	code : 0x31
 };
@@ -1313,7 +1320,8 @@ const jive_instruction_class jive_i386_instr_int_jump_sless = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray16,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0xc,
 	inverse_jump : &jive_i386_instr_int_jump_sgreatereq
@@ -1326,7 +1334,8 @@ const jive_instruction_class jive_i386_instr_int_jump_uless = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray17,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0x2,
 	inverse_jump : &jive_i386_instr_int_jump_ugreatereq
@@ -1339,7 +1348,8 @@ const jive_instruction_class jive_i386_instr_int_jump_slesseq = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray18,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0xe,
 	inverse_jump : &jive_i386_instr_int_jump_sgreater
@@ -1352,7 +1362,8 @@ const jive_instruction_class jive_i386_instr_int_jump_ulesseq = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray19,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0x6,
 	inverse_jump : &jive_i386_instr_int_jump_ugreater
@@ -1365,7 +1376,8 @@ const jive_instruction_class jive_i386_instr_int_jump_equal = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray20,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0x4,
 	inverse_jump : &jive_i386_instr_int_jump_notequal
@@ -1378,7 +1390,8 @@ const jive_instruction_class jive_i386_instr_int_jump_notequal = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray21,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0x5,
 	inverse_jump : &jive_i386_instr_int_jump_equal
@@ -1391,7 +1404,8 @@ const jive_instruction_class jive_i386_instr_int_jump_sgreater = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray22,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0xf,
 	inverse_jump : &jive_i386_instr_int_jump_slesseq
@@ -1404,7 +1418,8 @@ const jive_instruction_class jive_i386_instr_int_jump_ugreater = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray23,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0x7,
 	inverse_jump : &jive_i386_instr_int_jump_ulesseq
@@ -1417,7 +1432,8 @@ const jive_instruction_class jive_i386_instr_int_jump_sgreatereq = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray24,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0xd,
 	inverse_jump : &jive_i386_instr_int_jump_sless
@@ -1430,7 +1446,8 @@ const jive_instruction_class jive_i386_instr_int_jump_ugreatereq = {
 	write_asm : jive_i386_asm_jump,
 	inregs : tmparray25,
 	outregs : NULL,
-	flags : jive_instruction_jump | jive_instruction_jump_relative | jive_instruction_jump_conditional_invertible,
+	flags : jive_instruction_jump | jive_instruction_jump_relative
+		| jive_instruction_jump_conditional_invertible,
 	ninputs : 1, noutputs : 0, nimmediates : 1,
 	code : 0x3,
 	inverse_jump : &jive_i386_instr_int_jump_uless

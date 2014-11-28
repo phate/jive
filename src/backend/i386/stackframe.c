@@ -47,14 +47,16 @@ jive_i386_stackframe_layout_(jive_stackframe * self_)
 		
 		jive::input * input;
 		JIVE_LIST_ITERATE(var->base.inputs, input, resource_input_list) {
-			const jive::instruction_op & op = static_cast<const jive::instruction_op &>(input->node->operation());
+			const jive::instruction_op & op = static_cast<const jive::instruction_op &>(
+				input->node->operation());
 			if (op.icls() == &jive_i386_instr_int_load32_disp)
 				op.immediates[0] = slot->offset + stack_size;
 		}
 		
 		jive::output * output;
 		JIVE_LIST_ITERATE(var->base.outputs, output, resource_output_list) {
-			const jive::instruction_op & op = static_cast<const jive::instruction_op &>(input->node->operation());
+			const jive::instruction_op & op = static_cast<const jive::instruction_op &>(
+				input->node->operation());
 			if (op.icls() == &jive_i386_instr_int_store32_disp)
 				op.immediates[0] = slot->offset + stack_size;
 		}
