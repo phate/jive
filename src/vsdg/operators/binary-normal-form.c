@@ -119,7 +119,8 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 		new_args = base::detail::associative_flatten(
 			args,
 			[&op](jive::output * arg) {
-				const base::flattened_binary_op * fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
+				const base::flattened_binary_op * fb_op;
+				fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
 				return arg->node()->operation() == op ||
 					(fb_op && fb_op->bin_operation() == op);
 			});
@@ -187,7 +188,8 @@ binary_normal_form::operands_are_normalized(
 		bool can_flatten = base::detail::associative_test_flatten(
 			args,
 			[&op](jive::output * arg) {
-				const base::flattened_binary_op * fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
+				const base::flattened_binary_op * fb_op;
+				fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
 				return arg->node()->operation() == op ||
 					(fb_op && fb_op->bin_operation() == op);
 			});
@@ -223,7 +225,8 @@ binary_normal_form::normalized_create(
 		new_args = base::detail::associative_flatten(
 			args,
 			[&op](jive::output * arg) {
-				const base::flattened_binary_op * fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
+				const base::flattened_binary_op * fb_op;
+				fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
 				return arg->node()->operation() == op ||
 					(fb_op && fb_op->bin_operation() == op);
 			});

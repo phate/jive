@@ -124,7 +124,8 @@ jive_topdown_traverser_input_change(void * closure, jive::input * input, jive::o
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
-	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker, input->node);
+	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker,
+		input->node);
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
@@ -133,7 +134,8 @@ jive_topdown_traverser_input_change(void * closure, jive::input * input, jive::o
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as depth of the node could be lowered */
-	jive_traversal_tracker_set_nodestate(&self->tracker, input->node, jive_traversal_nodestate_frontier);
+	jive_traversal_tracker_set_nodestate(&self->tracker, input->node,
+		jive_traversal_nodestate_frontier);
 }
 
 const jive_traverser_class JIVE_TOPDOWN_TRAVERSER = {
@@ -257,9 +259,12 @@ jive_bottomup_traverser_init(jive_full_traverser * self, jive_graph * graph)
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
 		jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
 	}
-	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create, jive_bottomup_traverser_node_create, self);
-	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_bottomup_traverser_node_destroy, self);
-	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_bottomup_traverser_input_change, self);
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create,
+		jive_bottomup_traverser_node_create, self);
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy,
+		jive_bottomup_traverser_node_destroy, self);
+	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(
+		&graph->on_input_change, jive_bottomup_traverser_input_change, self);
 }
 
 static void
@@ -271,9 +276,12 @@ jive_bottomup_revisit_traverser_init(jive_full_traverser * self, jive_graph * gr
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
 		jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
 	}
-	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create, jive_bottomup_revisit_traverser_node_create, self);
-	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_bottomup_traverser_node_destroy, self);
-	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_bottomup_traverser_input_change, self);
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create,
+		jive_bottomup_revisit_traverser_node_create, self);
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy,
+		jive_bottomup_traverser_node_destroy, self);
+	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(
+		&graph->on_input_change, jive_bottomup_traverser_input_change, self);
 }
 
 jive_traverser *
@@ -312,13 +320,14 @@ jive_upward_cone_traverser_node_destroy(void * closure, jive_node * node)
 }
 
 static void
-jive_upward_cone_traverser_input_change(void * closure, jive::input * input, jive::output * old_origin,
-	jive::output * new_origin)
+jive_upward_cone_traverser_input_change(void * closure, jive::input * input,
+	jive::output * old_origin, jive::output * new_origin)
 {
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
 	/* for node of new origin, it may now belong to the cone */
-	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker, input->node);
+	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker,
+		input->node);
 	if (state != jive_traversal_nodestate_ahead) {
 		state = jive_traversal_tracker_get_nodestate(&self->tracker, new_origin->node());
 		if (state == jive_traversal_nodestate_ahead)
@@ -359,9 +368,13 @@ jive_upward_cone_traverser_init(jive_full_traverser * self, jive_graph * graph, 
 	
 	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
 	
-	/* self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create, jive_bottomup_traverser_node_create, self); */
-	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy, jive_upward_cone_traverser_node_destroy, self);
-	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(&graph->on_input_change, jive_upward_cone_traverser_input_change, self);
+	/* self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_create,
+		jive_bottomup_traverser_node_create, self);
+	*/
+	self->callbacks[self->ncallbacks ++] = jive_node_notifier_slot_connect(&graph->on_node_destroy,
+		jive_upward_cone_traverser_node_destroy, self);
+	self->callbacks[self->ncallbacks ++] = jive_input_change_notifier_slot_connect(
+		&graph->on_input_change, jive_upward_cone_traverser_input_change, self);
 }
 
 jive_traverser *
@@ -434,7 +447,8 @@ const jive_traverser_class JIVE_BOTTOMUP_SLAVE_TRAVERSER = {
 };
 
 static jive_bottomup_slave_traverser *
-jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master, const jive_region * region)
+jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master,
+	const jive_region * region)
 {
 	jive_graph * graph = master->graph;
 	
@@ -459,7 +473,8 @@ jive_bottomup_slave_traverser_destroy(jive_bottomup_slave_traverser * self)
 }
 
 static jive_bottomup_slave_traverser *
-jive_bottomup_region_traverser_map_region(jive_bottomup_region_traverser * self, const jive_region * region)
+jive_bottomup_region_traverser_map_region(jive_bottomup_region_traverser * self,
+	const jive_region * region)
 {
 	auto i = self->region_hash.find(region);
 	if (i != self->region_hash.end())
@@ -500,7 +515,8 @@ jive_bottomup_region_traverser_pass(jive_bottomup_region_traverser * self, jive_
 	jive_tracker_nodestate * nodestate = jive_bottomup_region_traverser_map_node(self, node);
 	JIVE_DEBUG_ASSERT(nodestate->state == 0);
 	
-	jive_bottomup_slave_traverser * slave = jive_bottomup_region_traverser_map_region(self, node->region);
+	jive_bottomup_slave_traverser * slave = jive_bottomup_region_traverser_map_region(self,
+		node->region);
 	
 	jive_tracker_depth_state_remove(slave->frontier_state, nodestate, node->depth_from_root);
 	nodestate->state = 1;
@@ -510,7 +526,8 @@ jive_bottomup_region_traverser_pass(jive_bottomup_region_traverser * self, jive_
 }
 
 jive_traverser *
-jive_bottomup_region_traverser_get_node_traverser(jive_bottomup_region_traverser * self, jive_region * region)
+jive_bottomup_region_traverser_get_node_traverser(jive_bottomup_region_traverser * self,
+	jive_region * region)
 {
 	jive_bottomup_slave_traverser * slave = jive_bottomup_region_traverser_map_region(self, region);
 	return &slave->base;
@@ -527,7 +544,8 @@ jive_bottomup_region_traverser_create(jive_graph * graph)
 	self->behind_state = jive_graph_reserve_tracker_depth_state(graph);
 	
 	/* seed bottom nodes in root region */
-	jive_bottomup_slave_traverser * root_slave = jive_bottomup_region_traverser_map_region(self, graph->root_region);
+	jive_bottomup_slave_traverser * root_slave = jive_bottomup_region_traverser_map_region(self,
+		graph->root_region);
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
 		if (node->region != graph->root_region)

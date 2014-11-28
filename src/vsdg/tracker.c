@@ -52,7 +52,8 @@ jive_tracker_init(jive_tracker * self, jive_graph * graph, size_t nstates)
 	
 	self->slot = jive_graph_reserve_tracker_slot(graph);
 	
-	self->callbacks[0] = jive_node_depth_notifier_slot_connect(&graph->on_node_depth_change, node_depth_change, self);
+	self->callbacks[0] = jive_node_depth_notifier_slot_connect(&graph->on_node_depth_change,
+		node_depth_change, self);
 	self->callbacks[1] = jive_node_notifier_slot_connect(&graph->on_node_destroy, node_destroy, self);
 }
 
@@ -88,11 +89,13 @@ jive_tracker_set_nodestate(jive_tracker * self, jive_node * node, size_t state, 
 	
 	if (nodestate->state != state) {
 		if (nodestate->state < self->nstates) {
-			jive_tracker_depth_state_remove(self->states[nodestate->state], nodestate, node->depth_from_root);
+			jive_tracker_depth_state_remove(self->states[nodestate->state], nodestate,
+				node->depth_from_root);
 		}
 		nodestate->state = state;
 		if (nodestate->state < self->nstates) {
-			jive_tracker_depth_state_add(self->states[nodestate->state], nodestate, node->depth_from_root);
+			jive_tracker_depth_state_add(self->states[nodestate->state], nodestate,
+				node->depth_from_root);
 		}
 	}
 }
@@ -136,7 +139,8 @@ jive_traversal_tracker_get_nodestate(jive_traversal_tracker * self, jive_node * 
 }
 
 void
-jive_traversal_tracker_set_nodestate(jive_traversal_tracker * self, jive_node * node, jive_traversal_nodestate state)
+jive_traversal_tracker_set_nodestate(jive_traversal_tracker * self, jive_node * node,
+	jive_traversal_nodestate state)
 {
 	jive_tracker_set_nodestate(&self->base, node, (size_t) state, 0);
 }
