@@ -97,7 +97,8 @@ jive_shaped_variable_sub_squeeze(jive_shaped_variable * self, const jive_resourc
 }
 
 void
-jive_shaped_variable_deny_name(jive_shaped_variable * self, const struct jive_resource_name * resname);
+jive_shaped_variable_deny_name(jive_shaped_variable * self,
+	const struct jive_resource_name * resname);
 
 static inline size_t
 jive_variable_interference_add(jive_shaped_variable * first, jive_shaped_variable * second)
@@ -158,10 +159,12 @@ void
 jive_shaped_variable_unassign_gate(jive_shaped_variable * self, jive::gate * gate);
 
 void
-jive_shaped_variable_resource_class_change(jive_shaped_variable * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
+jive_shaped_variable_resource_class_change(jive_shaped_variable * self,
+	const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 void
-jive_shaped_variable_resource_name_change(jive_shaped_variable * self, const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname);
+jive_shaped_variable_resource_name_change(jive_shaped_variable * self,
+	const struct jive_resource_name * old_resname, const struct jive_resource_name * new_resname);
 
 void
 jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input * input,
@@ -186,16 +189,19 @@ void
 jive_shaped_ssavar_xpoints_unregister_arcs(jive_shaped_ssavar * self);
 
 void
-jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable, jive_variable * new_variable);
+jive_shaped_ssavar_xpoints_variable_change(jive_shaped_ssavar * self, jive_variable * old_variable,
+	jive_variable * new_variable);
 
 void
 jive_shaped_ssavar_notify_divert_origin(jive_shaped_ssavar * self, jive::output * old_origin,
 	jive::output * new_origin);
 
 void
-jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
+jive_shaped_ssavar_xpoints_change_resource_class(jive_shaped_ssavar * self,
+	const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 const struct jive_resource_class *
-jive_shaped_ssavar_check_change_resource_class(const jive_shaped_ssavar * self, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
+jive_shaped_ssavar_check_change_resource_class(const jive_shaped_ssavar * self,
+	const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls);
 
 #endif

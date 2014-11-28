@@ -15,7 +15,8 @@ struct jive_shaped_ssavar;
 
 /* region/ssavar notifiers */
 
-typedef void (*jive_shaped_region_ssavar_notifier_function)(void * closure, struct jive_shaped_region * shaped_region, struct jive_shaped_ssavar * shaped_ssavar);
+typedef void (*jive_shaped_region_ssavar_notifier_function)(void * closure,
+	struct jive_shaped_region * shaped_region, struct jive_shaped_ssavar * shaped_ssavar);
 typedef struct jive_shaped_region_ssavar_notifier jive_shaped_region_ssavar_notifier;
 typedef struct jive_shaped_region_ssavar_notifier_slot jive_shaped_region_ssavar_notifier_slot;
 
@@ -36,9 +37,11 @@ void
 jive_shaped_region_ssavar_notifier_slot_fini(jive_shaped_region_ssavar_notifier_slot * self);
 
 jive_notifier *
-jive_shaped_region_ssavar_notifier_slot_connect(jive_shaped_region_ssavar_notifier_slot * self, jive_shaped_region_ssavar_notifier_function function, void * closure);
+jive_shaped_region_ssavar_notifier_slot_connect(jive_shaped_region_ssavar_notifier_slot * self,
+	jive_shaped_region_ssavar_notifier_function function, void * closure);
 
 void
-jive_shaped_region_ssavar_notifier_slot_call(const jive_shaped_region_ssavar_notifier_slot * self, struct jive_shaped_region * shaped_region, struct jive_shaped_ssavar * shaped_ssavar);
+jive_shaped_region_ssavar_notifier_slot_call(const jive_shaped_region_ssavar_notifier_slot * self,
+	struct jive_shaped_region * shaped_region, struct jive_shaped_ssavar * shaped_ssavar);
 
 #endif

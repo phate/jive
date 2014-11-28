@@ -21,8 +21,9 @@ jive_var_assignment_tracker_init(jive_var_assignment_tracker * self)
 }
 
 static inline void
-jive_var_assignment_tracker_add_tracked(jive_var_assignment_tracker * self, jive_shaped_variable * shaped_variable,
-	const jive_resource_class * rescls, const jive_resource_name * resname)
+jive_var_assignment_tracker_add_tracked(jive_var_assignment_tracker * self,
+	jive_shaped_variable * shaped_variable, const jive_resource_class * rescls,
+	const jive_resource_name * resname)
 {
 	if (resname || rescls->limit == 0) {
 		JIVE_LIST_PUSH_BACK(self->assigned, shaped_variable, assignment_variable_list);
@@ -38,8 +39,9 @@ jive_var_assignment_tracker_add_tracked(jive_var_assignment_tracker * self, jive
 }
 
 static inline void
-jive_var_assignment_tracker_remove_tracked(jive_var_assignment_tracker * self, jive_shaped_variable * shaped_variable,
-	const jive_resource_class * rescls, const jive_resource_name * resname)
+jive_var_assignment_tracker_remove_tracked(jive_var_assignment_tracker * self,
+	jive_shaped_variable * shaped_variable, const jive_resource_class * rescls,
+	const jive_resource_name * resname)
 {
 	if (resname || rescls->limit == 0) {
 		JIVE_LIST_REMOVE(self->assigned, shaped_variable, assignment_variable_list);

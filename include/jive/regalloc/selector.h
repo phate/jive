@@ -133,16 +133,19 @@ typedef jive::detail::owner_intrusive_hash <
 > jive_region_shaper_selector_hash;
 
 jive_region_shaper_selector *
-jive_region_shaper_selector_create(jive_master_shaper_selector * master, const struct jive_region * region, const struct jive_shaped_region * shaped_region);
+jive_region_shaper_selector_create(jive_master_shaper_selector * master,
+	const struct jive_region * region, const struct jive_shaped_region * shaped_region);
 
 struct jive_node *
 jive_region_shaper_selector_select_node(jive_region_shaper_selector * self);
 
 struct jive_ssavar *
-jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const struct jive_resource_class * rescls, struct jive_node * disallow_origins);
+jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self,
+	const struct jive_resource_class * rescls, struct jive_node * disallow_origins);
 
 void
-jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self, struct jive_node * node);
+jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self,
+	struct jive_node * node);
 
 struct jive_master_shaper_selector {
 	struct jive_shaped_graph * shaped_graph;
@@ -161,24 +164,29 @@ void
 jive_master_shaper_selector_destroy(jive_master_shaper_selector * self);
 
 jive_region_shaper_selector *
-jive_master_shaper_selector_map_region(jive_master_shaper_selector * self, const struct jive_region * region);
+jive_master_shaper_selector_map_region(jive_master_shaper_selector * self,
+	const struct jive_region * region);
 
 jive_node_cost *
-jive_master_shaper_selector_map_node_internal(jive_master_shaper_selector * self, struct jive_node * node);
+jive_master_shaper_selector_map_node_internal(jive_master_shaper_selector * self,
+	struct jive_node * node);
 
 jive_node_cost *
 jive_master_shaper_selector_map_node(jive_master_shaper_selector * self, struct jive_node * node);
 
 void
-jive_master_shaper_selector_invalidate_node(jive_master_shaper_selector * self, struct jive_node * node);
+jive_master_shaper_selector_invalidate_node(jive_master_shaper_selector * self,
+	struct jive_node * node);
 
 void
-jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self, struct jive_node * node);
+jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self,
+	struct jive_node * node);
 
 void
 jive_master_shaper_selector_revalidate(jive_master_shaper_selector * self);
 
 bool
-jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * self, struct jive_node * node);
+jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * self,
+	struct jive_node * node);
 
 #endif

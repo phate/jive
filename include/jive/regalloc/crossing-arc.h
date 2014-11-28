@@ -43,7 +43,10 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	self->target_shaped_node = target_shaped_node;
 	self->shaped_ssavar = shaped_ssavar;
 	
-	if (!target_shaped_node || (!self->origin_shaped_node && shaped_ssavar->boundary_region_depth > target_shaped_node->node->region->depth)) {
+	if (!target_shaped_node
+	|| (!self->origin_shaped_node
+		&& shaped_ssavar->boundary_region_depth > target_shaped_node->node->region->depth))
+	{
 		self->start_shaped_node = NULL;
 		self->start_region = NULL;
 	} else if (dynamic_cast<jive::achr::output*>(shaped_ssavar->ssavar->origin)) {
@@ -109,7 +112,8 @@ jive_crossing_arc_iterator_init_ssavar(
 	jive_crossing_arc arc;
 	jive_crossing_arc_init(&arc, origin_shaped_node, target_shaped_node, shaped_ssavar);
 	
-	jive_crossing_arc_iterator_init(self, arc.shaped_graph, arc.origin_shaped_node, arc.start_shaped_node, arc.start_region, arc.boundary_region_depth);
+	jive_crossing_arc_iterator_init(self, arc.shaped_graph, arc.origin_shaped_node,
+		arc.start_shaped_node, arc.start_region, arc.boundary_region_depth);
 	
 	if (self->origin_shaped_node_ && self->node == self->origin_shaped_node_) {
 		self->node = 0;
@@ -142,7 +146,8 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		note: root region has depth 0, so implicitly terminates there */
 		if (self->current_region_->depth > self->boundary_region_depth_) {
 			self->exit_region_ = self->exit_region_->parent;
-			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, self->current_region_->anchor->node);
+			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+				self->current_region_->anchor->node);
 			
 			self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
 			self->current_region_ = self->exit_region_;
@@ -170,7 +175,8 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 			self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
 			self->node = jive_shaped_region_last(self->region);
 		} else {
-			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, anchor_node);
+			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+				anchor_node);
 			self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
 			self->current_region_ = self->current_region_->parent;
 			self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);

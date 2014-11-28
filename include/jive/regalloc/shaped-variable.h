@@ -83,31 +83,39 @@ typedef jive::detail::owner_intrusive_hash <
 > jive_shaped_variable_hash;
 
 jive_shaped_variable *
-jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph, struct jive_variable * variable);
+jive_shaped_variable_create(struct jive_shaped_graph * shaped_graph,
+	struct jive_variable * variable);
 
 size_t
-jive_shaped_variable_interferes_with(const jive_shaped_variable * self, const jive_shaped_variable * other);
+jive_shaped_variable_interferes_with(const jive_shaped_variable * self,
+	const jive_shaped_variable * other);
 
 bool
-jive_shaped_variable_can_merge(const jive_shaped_variable * self, const struct jive_variable * other);
+jive_shaped_variable_can_merge(const jive_shaped_variable * self,
+	const struct jive_variable * other);
 
 const struct jive_resource_class *
-jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * self, const struct jive_resource_class * new_rescls);
+jive_shaped_variable_check_change_resource_class(const jive_shaped_variable * self,
+	const struct jive_resource_class * new_rescls);
 
 bool
-jive_shaped_variable_allowed_resource_name(const jive_shaped_variable * self, const struct jive_resource_name * name);
+jive_shaped_variable_allowed_resource_name(const jive_shaped_variable * self,
+	const struct jive_resource_name * name);
 
 size_t
 jive_shaped_variable_allowed_resource_name_count(const jive_shaped_variable * self);
 
 size_t
-jive_shaped_variable_is_active_before(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
+jive_shaped_variable_is_active_before(const jive_shaped_variable * self,
+	const struct jive_shaped_node * shaped_node);
 
 size_t
-jive_shaped_variable_is_crossing(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
+jive_shaped_variable_is_crossing(const jive_shaped_variable * self,
+	const struct jive_shaped_node * shaped_node);
 
 size_t
-jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const struct jive_shaped_node * shaped_node);
+jive_shaped_variable_is_active_after(const jive_shaped_variable * self,
+	const struct jive_shaped_node * shaped_node);
 
 /**
 	\brief Determine maximum cross count of this variable
@@ -116,7 +124,8 @@ jive_shaped_variable_is_active_after(const jive_shaped_variable * self, const st
 	of use counts per register class at these places.
 */
 void
-jive_shaped_variable_get_cross_count(const jive_shaped_variable * self, jive_resource_class_count * counts);
+jive_shaped_variable_get_cross_count(const jive_shaped_variable * self,
+	jive_resource_class_count * counts);
 
 typedef struct jive_shaped_ssavar jive_shaped_ssavar;
 
@@ -166,12 +175,15 @@ jive_shaped_ssavar_lower_boundary_region_depth(jive_shaped_ssavar * self, size_t
 }
 
 size_t
-jive_shaped_ssavar_is_active_before(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
+jive_shaped_ssavar_is_active_before(const jive_shaped_ssavar * self,
+	const struct jive_shaped_node * shaped_node);
 
 size_t
-jive_shaped_ssavar_is_crossing(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
+jive_shaped_ssavar_is_crossing(const jive_shaped_ssavar * self,
+	const struct jive_shaped_node * shaped_node);
 
 size_t
-jive_shaped_ssavar_is_active_after(const jive_shaped_ssavar * self, const struct jive_shaped_node * shaped_node);
+jive_shaped_ssavar_is_active_after(const jive_shaped_ssavar * self,
+	const struct jive_shaped_node * shaped_node);
 
 #endif

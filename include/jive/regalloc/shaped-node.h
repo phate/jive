@@ -87,10 +87,12 @@ struct jive_shaped_node_downward_iterator {
 };
 
 void
-jive_shaped_node_downward_iterator_init(jive_shaped_node_downward_iterator * self, jive_shaped_node * start);
+jive_shaped_node_downward_iterator_init(jive_shaped_node_downward_iterator * self,
+	jive_shaped_node * start);
 
 void
-jive_shaped_node_downward_iterator_init_outward(jive_shaped_node_downward_iterator * self, jive_shaped_node * start);
+jive_shaped_node_downward_iterator_init_outward(jive_shaped_node_downward_iterator * self,
+	jive_shaped_node * start);
 
 jive_shaped_node *
 jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * self);
