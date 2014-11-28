@@ -55,7 +55,7 @@ static int test_main(void)
 	assert(minus_one_128->node()->operation() == jive::bits::int_constant_op(128, -1));
 
 	jive_view(graph, stdout);
-	jive_graph_destroy(graph);	
+	jive_graph_destroy(graph);
 	
 	return 0;
 }

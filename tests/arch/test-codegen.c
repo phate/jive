@@ -21,7 +21,7 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");	
+	setlocale(LC_ALL, "");
 
 	jive_graph * graph = jive_graph_create();
 

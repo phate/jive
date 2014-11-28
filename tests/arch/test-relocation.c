@@ -15,7 +15,7 @@ static const jive_relocation_type REL64 = {1};
 
 #include <stdio.h>
 
-static bool 
+static bool
 process_relocation(
 	void * where_, size_t max_size, jive_offset offset,
 	jive_relocation_type type, jive_offset target, jive_offset value)

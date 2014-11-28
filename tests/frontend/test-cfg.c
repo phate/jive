@@ -214,7 +214,7 @@ test_while_cfg()
 
 	assert(cfg.is_valid());
 	assert(cfg.is_closed());
-	assert(!cfg.is_linear());	
+	assert(!cfg.is_linear());
 	assert(!cfg.is_structured());
 	assert(cfg.is_reducible());
 }

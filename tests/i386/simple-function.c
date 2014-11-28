@@ -26,7 +26,7 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	const int64_t tmparray0[] = {42};
 
-	graph->root_region->attrs.section = jive_region_section_code;	
+	graph->root_region->attrs.section = jive_region_section_code;
 	jive_node * enter = jive_instruction_node_create(
 		graph->root_region,
 		&jive_i386_instr_int_load_imm,
