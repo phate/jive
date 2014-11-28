@@ -40,7 +40,8 @@ void
 jive_bottomup_region_traverser_destroy(jive_bottomup_region_traverser * self);
 
 jive_traverser *
-jive_bottomup_region_traverser_get_node_traverser(jive_bottomup_region_traverser * self, struct jive_region * region);
+jive_bottomup_region_traverser_get_node_traverser(jive_bottomup_region_traverser * self,
+struct jive_region * region);
 
 jive_bottomup_region_traverser *
 jive_bottomup_region_traverser_create(struct jive_graph * graph);

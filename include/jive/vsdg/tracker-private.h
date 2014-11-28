@@ -11,7 +11,8 @@
 #include <jive/vsdg/node-private.h>
 
 static inline void
-jive_tracker_depth_state_add(jive_tracker_depth_state * self, jive_tracker_nodestate * nodestate, size_t depth)
+jive_tracker_depth_state_add(jive_tracker_depth_state * self, jive_tracker_nodestate * nodestate,
+	size_t depth)
 {
 	if (depth >= self->space) {
 		size_t new_space = self->space * 2 + 1;
@@ -39,7 +40,8 @@ jive_tracker_depth_state_add(jive_tracker_depth_state * self, jive_tracker_nodes
 }
 
 static inline void
-jive_tracker_depth_state_remove(jive_tracker_depth_state * self, jive_tracker_nodestate * nodestate, size_t depth)
+jive_tracker_depth_state_remove(jive_tracker_depth_state * self, jive_tracker_nodestate * nodestate,
+	size_t depth)
 {
 	JIVE_LIST_REMOVE(self->nodestates_per_depth[depth], nodestate, state_node_list);
 	

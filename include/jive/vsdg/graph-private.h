@@ -151,15 +151,20 @@ jive_graph_notify_variable_unassign_gate(jive_graph * graph, struct jive_variabl
 }
 
 static inline void
-jive_graph_notify_variable_resource_class_change(jive_graph * graph, struct jive_variable * variable, const struct jive_resource_class * old_rescls, const struct jive_resource_class * new_rescls)
+jive_graph_notify_variable_resource_class_change(jive_graph * graph,
+	struct jive_variable * variable, const struct jive_resource_class * old_rescls,
+	const struct jive_resource_class * new_rescls)
 {
-	jive_variable_resource_class_notifier_slot_call(&graph->on_variable_resource_class_change, variable, old_rescls, new_rescls);
+	jive_variable_resource_class_notifier_slot_call(&graph->on_variable_resource_class_change,
+		variable, old_rescls, new_rescls);
 }
 
 static inline void
-jive_graph_notify_variable_resource_name_change(jive_graph * graph, struct jive_variable * variable, const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls)
+jive_graph_notify_variable_resource_name_change(jive_graph * graph, struct jive_variable * variable,
+	const struct jive_resource_name * old_rescls, const struct jive_resource_name * new_rescls)
 {
-	jive_variable_resource_name_notifier_slot_call(&graph->on_variable_resource_name_change, variable, old_rescls, new_rescls);
+	jive_variable_resource_name_notifier_slot_call(&graph->on_variable_resource_name_change, variable,
+		old_rescls, new_rescls);
 }
 
 static inline void
@@ -231,13 +236,15 @@ jive_graph_notify_region_destroy(jive_graph * graph, struct jive_region * region
 }
 
 static inline void
-jive_graph_notify_region_add_used_ssavar(jive_graph * graph, struct jive_region * region, struct jive_ssavar * ssavar)
+jive_graph_notify_region_add_used_ssavar(jive_graph * graph, struct jive_region * region,
+	struct jive_ssavar * ssavar)
 {
 	jive_region_ssavar_notifier_slot_call(&graph->on_region_add_used_ssavar, region, ssavar);
 }
 
 static inline void
-jive_graph_notify_region_remove_used_ssavar(jive_graph * graph, struct jive_region * region, struct jive_ssavar * ssavar)
+jive_graph_notify_region_remove_used_ssavar(jive_graph * graph, struct jive_region * region,
+	struct jive_ssavar * ssavar)
 {
 	jive_region_ssavar_notifier_slot_call(&graph->on_region_remove_used_ssavar, region, ssavar);
 }

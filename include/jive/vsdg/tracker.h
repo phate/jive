@@ -78,7 +78,8 @@ jive_traversal_nodestate
 jive_traversal_tracker_get_nodestate(jive_traversal_tracker * self, struct jive_node * node);
 
 void
-jive_traversal_tracker_set_nodestate(jive_traversal_tracker * self, struct jive_node * node, jive_traversal_nodestate state);
+jive_traversal_tracker_set_nodestate(jive_traversal_tracker * self, struct jive_node * node,
+	jive_traversal_nodestate state);
 
 struct jive_node *
 jive_traversal_tracker_pop_top(jive_traversal_tracker * self);

@@ -85,10 +85,12 @@ const jive_resource_class *
 jive_resource_class_union(const jive_resource_class * self, const jive_resource_class * other);
 
 const jive_resource_class *
-jive_resource_class_intersection(const jive_resource_class * self, const jive_resource_class * other);
+jive_resource_class_intersection(const jive_resource_class * self,
+	const jive_resource_class * other);
 
 JIVE_EXPORTED_INLINE bool
-jive_resource_class_issubclass(const jive_resource_class * self, const jive_resource_class * super_class)
+jive_resource_class_issubclass(const jive_resource_class * self,
+	const jive_resource_class * super_class)
 {
 	while (self) {
 		if (self == super_class)
@@ -99,7 +101,8 @@ jive_resource_class_issubclass(const jive_resource_class * self, const jive_reso
 }
 
 JIVE_EXPORTED_INLINE bool
-jive_resource_class_isinstance(const jive_resource_class * self, const jive_resource_class_class * cls)
+jive_resource_class_isinstance(const jive_resource_class * self,
+	const jive_resource_class_class * cls)
 {
 	const jive_resource_class_class * tmp = self->class_;
 	while (tmp) {
@@ -178,10 +181,12 @@ struct jive_rescls_prio_array {
 };
 
 void
-jive_rescls_prio_array_compute(jive_rescls_prio_array * self, const jive_resource_class_count * count);
+jive_rescls_prio_array_compute(jive_rescls_prio_array * self,
+	const jive_resource_class_count * count);
 
 int
-jive_rescls_prio_array_compare(const jive_rescls_prio_array * self, const jive_rescls_prio_array * other);
+jive_rescls_prio_array_compare(const jive_rescls_prio_array * self,
+	const jive_rescls_prio_array * other);
 
 JIVE_EXPORTED_INLINE void
 jive_rescls_prio_array_init(jive_rescls_prio_array * self)

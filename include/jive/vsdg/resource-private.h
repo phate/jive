@@ -28,40 +28,54 @@ jive_resource_class_count_fini(jive_resource_class_count * self)
 }
 
 const struct jive_resource_class *
-jive_resource_class_count_add(jive_resource_class_count * self, const struct jive_resource_class * resource_class);
+jive_resource_class_count_add(jive_resource_class_count * self,
+	const struct jive_resource_class * resource_class);
 
 void
-jive_resource_class_count_max(jive_resource_class_count * self, const struct jive_resource_class * resource_class, size_t count);
+jive_resource_class_count_max(jive_resource_class_count * self,
+	const struct jive_resource_class * resource_class, size_t count);
 
 void
-jive_resource_class_count_sub(jive_resource_class_count * self, const struct jive_resource_class * resource_class);
+jive_resource_class_count_sub(jive_resource_class_count * self,
+	const struct jive_resource_class * resource_class);
 
 size_t
-jive_resource_class_count_get(const jive_resource_class_count * self, const struct jive_resource_class * resource_class);
+jive_resource_class_count_get(const jive_resource_class_count * self,
+	const struct jive_resource_class * resource_class);
 
 const struct jive_resource_class *
-jive_resource_class_count_change(jive_resource_class_count * self, const struct jive_resource_class * old_resource_class, const struct jive_resource_class * new_resource_class);
+jive_resource_class_count_change(jive_resource_class_count * self,
+	const struct jive_resource_class * old_resource_class,
+	const struct jive_resource_class * new_resource_class);
 
 const struct jive_resource_class *
-jive_resource_class_count_check_add(const jive_resource_class_count * self, const struct jive_resource_class * resource_class);
+jive_resource_class_count_check_add(const jive_resource_class_count * self,
+	const struct jive_resource_class * resource_class);
 
 const struct jive_resource_class *
-jive_resource_class_count_check_change(const jive_resource_class_count * self, const struct jive_resource_class * old_resource_class, const struct jive_resource_class * new_resource_class);
+jive_resource_class_count_check_change(const jive_resource_class_count * self,
+	const struct jive_resource_class * old_resource_class,
+	const struct jive_resource_class * new_resource_class);
 
 void
-jive_resource_class_count_copy(jive_resource_class_count * self, const jive_resource_class_count * src);
+jive_resource_class_count_copy(jive_resource_class_count * self,
+	const jive_resource_class_count * src);
 
 bool
-jive_resource_class_count_equals(const jive_resource_class_count * self, const jive_resource_class_count * other); 
+jive_resource_class_count_equals(const jive_resource_class_count * self,
+	const jive_resource_class_count * other); 
 
 void
-jive_resource_class_count_update_union(jive_resource_class_count * self, const jive_resource_class_count * other);
+jive_resource_class_count_update_union(jive_resource_class_count * self,
+	const jive_resource_class_count * other);
 
 void
-jive_resource_class_count_update_intersection(jive_resource_class_count * self, const jive_resource_class_count * other);
+jive_resource_class_count_update_intersection(jive_resource_class_count * self,
+	const jive_resource_class_count * other);
 
 void
-jive_resource_class_count_update_add(jive_resource_class_count * self, const jive_resource_class_count * other);
+jive_resource_class_count_update_add(jive_resource_class_count * self,
+	const jive_resource_class_count * other);
 
 /* iterators */
 struct jive_resource_class_count_iterator {
