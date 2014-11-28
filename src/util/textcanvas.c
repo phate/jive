@@ -10,7 +10,7 @@
 
 /* each square may contain a line from the center to the four
 principal directions outwards; combinations of lines are encoded
-in the following way: 
+in the following way:
 - 0x01: thin line left
 - 0x02: thin line up
 - 0x04: thin line right
