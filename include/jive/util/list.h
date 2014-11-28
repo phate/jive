@@ -60,6 +60,7 @@ iteration */
 /* iterate through linked list of objects; the list may not be modified during
 iteration, except for the current element which may be removed from the list */
 #define JIVE_LIST_ITERATE_SAFE(list_head, object, nextobj, anchor) \
-	for(object = (list_head).first, nextobj = object ? object->anchor.next : 0; object; (object = nextobj), (nextobj = nextobj ? nextobj->anchor.next : 0))
+	for(object = (list_head).first, nextobj = object ? object->anchor.next : 0; object; \
+		(object = nextobj), (nextobj = nextobj ? nextobj->anchor.next : 0))
 
 #endif

@@ -36,7 +36,8 @@ public:
 };
 
 template<typename T>
-using typeinfo_map = std::unordered_map<const std::type_info *, T, type_info_ptr_hash, type_info_ptr_eq>;
+using typeinfo_map = std::unordered_map<const std::type_info *, T, type_info_ptr_hash,
+	type_info_ptr_eq>;
 
 }
 }
