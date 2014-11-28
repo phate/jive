@@ -162,7 +162,8 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 			jive_inputview * inputview = graphview->inputmap[user];
 			if (!inputview->nodeview->placed) continue;
 			
-			total += inputview->nodeview->x + jive_inputview_get_edge_offset(inputview) - jive_outputview_get_edge_offset(outputview);
+			total += inputview->nodeview->x + jive_inputview_get_edge_offset(inputview)
+				- jive_outputview_get_edge_offset(outputview);
 		}
 	}
 	
