@@ -365,7 +365,8 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 }
 
 static void
-jive_regalloc_reuse_record_region(jive_shaped_graph * shaped_graph, jive_region * region, jive_names_use * names_use)
+jive_regalloc_reuse_record_region(jive_shaped_graph * shaped_graph, jive_region * region,
+	jive_names_use * names_use)
 {
 	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, region);
 	

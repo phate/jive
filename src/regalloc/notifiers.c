@@ -47,7 +47,8 @@ jive_##name##_notifier_slot_fini(jive_##name##_notifier_slot * self) \
 } \
  \
 jive_notifier * \
-jive_##name##_notifier_slot_connect(jive_##name##_notifier_slot * self, jive_##name##_notifier_function function, void * closure) \
+jive_##name##_notifier_slot_connect(jive_##name##_notifier_slot * self, \
+	jive_##name##_notifier_function function, void * closure) \
 { \
 	jive_##name##_notifier * notifier = new jive_##name##_notifier; \
 	notifier->base.class_ = &JIVE_##NAME##_NOTIFIER; \
@@ -70,4 +71,6 @@ jive_##name##_notifier_slot_call(const jive_##name##_notifier_slot * self, param
 
 #define WRAP(args...) args
 
-MAKE_NOTIFIER(shaped_region_ssavar, SHAPED_REGION_SSAVAR, WRAP(struct jive_shaped_region * shaped_region, struct jive_shaped_ssavar * shaped_ssavar), WRAP(shaped_region, shaped_ssavar))
+MAKE_NOTIFIER(shaped_region_ssavar, SHAPED_REGION_SSAVAR,
+	WRAP(struct jive_shaped_region * shaped_region, struct jive_shaped_ssavar * shaped_ssavar),
+	WRAP(shaped_region, shaped_ssavar))

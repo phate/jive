@@ -63,7 +63,8 @@ find_allowed_name(jive_shaped_variable * candidate)
 			jive_shaped_variable * other = part.shaped_variable;
 			
 			/* other is colored already or trivially colorable, therefore ignore */
-			if (jive_variable_get_resource_name(other->variable) || other->allowed_names.size() > other->squeeze)
+			if (jive_variable_get_resource_name(other->variable)
+				|| other->allowed_names.size() > other->squeeze)
 				continue;
 			
 			if (other->allowed_names.find(name) != other->allowed_names.end()) {
@@ -137,7 +138,8 @@ typedef struct split_list {
 } split_list;
 
 static const jive_resource_class_demotion *
-select_split_path(jive_shaped_graph * shaped_graph, const jive_resource_class * rescls, jive_shaped_node * start_point, const split_list splits)
+select_split_path(jive_shaped_graph * shaped_graph, const jive_resource_class * rescls,
+	jive_shaped_node * start_point, const split_list splits)
 {
 	const jive_resource_class * from_rescls = rescls;
 	const jive_resource_class_demotion * demotion = from_rescls->demotions;
@@ -151,7 +153,8 @@ select_split_path(jive_shaped_graph * shaped_graph, const jive_resource_class * 
 			jive_shaped_node * end_point = split->splitting_point;
 			
 			jive_crossing_arc_iterator i;
-			jive_crossing_arc_iterator_init(&i, shaped_graph, start_point, jive_shaped_node_prev_in_region(end_point), end_point->node->region, 0);
+			jive_crossing_arc_iterator_init(&i, shaped_graph, start_point,
+				jive_shaped_node_prev_in_region(end_point), end_point->node->region, 0);
 			
 			while (i.region) {
 				if (!i.node) {
@@ -315,7 +318,8 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 	jive_shaped_node * position = jive_shaped_graph_map_node(shaped_graph, origin->node());
 	
 	const jive_resource_class_demotion * demotion;
-	demotion = select_split_path(shaped_graph, jive_variable_get_resource_class(variable), position, splits);
+	demotion = select_split_path(shaped_graph, jive_variable_get_resource_class(variable), position,
+		splits);
 	
 	jive::output * spilled_value;
 	spilled_value = split_top(shaped_graph, origin, demotion, position);
@@ -323,7 +327,8 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 	while (splits.first) {
 		regalloc_split_region * split = splits.first;
 		
-		jive::output * restored_value = split_bottom(shaped_graph, spilled_value, demotion, split->splitting_point);
+		jive::output * restored_value = split_bottom(shaped_graph, spilled_value, demotion,
+			split->splitting_point);
 		
 		size_t n;
 		for (n = 0; n < split->users.size(); n++) {
@@ -636,7 +641,8 @@ void
 jive_regalloc_color(jive_shaped_graph * shaped_graph)
 {
 	for(;;) {
-		jive_shaped_variable * shaped_variable = find_next_uncolored(&shaped_graph->var_assignment_tracker);
+		jive_shaped_variable * shaped_variable = find_next_uncolored(
+			&shaped_graph->var_assignment_tracker);
 		if (!shaped_variable)
 			break;
 		

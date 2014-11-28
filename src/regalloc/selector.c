@@ -216,7 +216,8 @@ push_node_stack(jive_region_shaper_selector * self, jive_node_cost * node_cost)
 }
 
 void
-jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self, struct jive_node * node)
+jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self,
+	struct jive_node * node)
 {
 	jive_node_cost * node_cost = jive_master_shaper_selector_map_node_internal(self->master, node);
 	push_node_stack(self, node_cost);
@@ -239,7 +240,8 @@ jive_region_shaper_selector_select_node(jive_region_shaper_selector * self)
 }
 
 jive_region_shaper_selector *
-jive_region_shaper_selector_create(jive_master_shaper_selector * master, const jive_region * region, const jive_shaped_region * shaped_region)
+jive_region_shaper_selector_create(jive_master_shaper_selector * master, const jive_region * region,
+	const jive_shaped_region * shaped_region)
 {
 	std::unique_ptr<jive_region_shaper_selector> self(new jive_region_shaper_selector);
 	
@@ -264,7 +266,8 @@ jive_master_shaper_selector_invalidate_node(jive_master_shaper_selector * self, 
 }
 
 jive_region_shaper_selector *
-jive_master_shaper_selector_map_region(jive_master_shaper_selector * self, const jive_region * region)
+jive_master_shaper_selector_map_region(jive_master_shaper_selector * self,
+	const jive_region * region)
 {
 	jive_region_shaper_selector * region_selector = nullptr;
 	auto i = self->region_map.find(region);
@@ -363,7 +366,8 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 		jive_node * node = sorted_nodes[k]->node;
 		for (n = 0; n < node->noutputs; n++) {
 			jive::output * output = node->outputs[n];
-			jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(&self->shaped_region->active_top.base, output);
+			jive_shaped_ssavar * shaped_ssavar;
+			shaped_ssavar = jive_varcut_map_output(&self->shaped_region->active_top.base, output);
 			if (!shaped_ssavar)
 				continue;
 			sorted_ssavars[nsorted_ssavars ++] = shaped_ssavar->ssavar;
@@ -381,7 +385,8 @@ sort_ssavars(jive_region_shaper_selector * self, jive_ssavar * sorted_ssavars[])
 }
 
 jive_ssavar *
-jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self, const jive_resource_class * rescls,
+jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self,
+	const jive_resource_class * rescls,
 	jive_node * disallow_origins)
 {
 	size_t nsorted_ssavars = self->shaped_region->active_top.base.ssavar_map.size();
@@ -445,7 +450,8 @@ maybe_inner_node(jive_master_shaper_selector * self, jive_node * node)
 }
 
 static void
-compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count * cost, jive_node * node)
+compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count * cost,
+	jive_node * node)
 {
 	if (jive_shaped_graph_map_node(self->shaped_graph, node)) {
 		jive_resource_class_count_clear(cost);
@@ -464,7 +470,8 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	
 	/* compute cost of self-representation */
 	for (n = 0; n < node->noutputs; n++) {
-		const jive_resource_class * rescls = jive_resource_class_relax(node->outputs[n]->required_rescls);
+		const jive_resource_class * rescls;
+		rescls = jive_resource_class_relax(node->outputs[n]->required_rescls);
 		jive_resource_class_count_add(&output_cost, rescls);
 	}
 	
@@ -508,7 +515,8 @@ compute_node_cost(jive_master_shaper_selector * self, jive_resource_class_count 
 	/* remove cost for those that would be removed by picking this node */
 	for (n = 0; n < node->noutputs; n++) {
 		if (assumed_active(self, node->outputs[n], region)) {
-			const jive_resource_class * rescls = jive_resource_class_relax(node->outputs[n]->required_rescls);
+			const jive_resource_class * rescls;
+			rescls = jive_resource_class_relax(node->outputs[n]->required_rescls);
 			jive_resource_class_count_sub(&self_cost, rescls);
 		}
 	}
@@ -554,10 +562,12 @@ compute_blocked_rescls_priority(jive_master_shaper_selector * self, jive_node * 
 		
 		if (upper->force_tree_root) {
 			if (assumed_active(self, input->origin(), region)) {
-				blocked_rescls_priority = jive_rescls_priority_min(blocked_rescls_priority, input_rescls->priority);
+				blocked_rescls_priority = jive_rescls_priority_min(blocked_rescls_priority,
+					input_rescls->priority);
 			}
 		} else {
-			blocked_rescls_priority = jive_rescls_priority_min(blocked_rescls_priority, upper->blocked_rescls_priority);
+			blocked_rescls_priority = jive_rescls_priority_min(blocked_rescls_priority,
+				upper->blocked_rescls_priority);
 		}
 	}
 	
@@ -581,7 +591,8 @@ jive_master_shaper_selector_revalidate_node(jive_master_shaper_selector * self, 
 	jive_resource_class_count_init(&cost);
 	compute_node_cost(self, &cost, node);
 	bool force_tree_root = !maybe_inner_node(self, node);
-	jive_resource_class_priority blocked_rescls_priority = compute_blocked_rescls_priority(self, node);
+	jive_resource_class_priority blocked_rescls_priority;
+	blocked_rescls_priority = compute_blocked_rescls_priority(self, node);
 	
 	bool changes =
 		(force_tree_root != node_cost->force_tree_root) ||
@@ -621,7 +632,8 @@ jive_master_shaper_selector_revalidate(jive_master_shaper_selector * self)
 }
 
 bool
-jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * self, jive_node * node)
+jive_master_shaper_selector_check_node_selectable(jive_master_shaper_selector * self,
+	jive_node * node)
 {
 	size_t n;
 	for (n = 0; n < node->noutputs; n++) {
@@ -676,7 +688,8 @@ jive_master_shaper_selector_mark_shaped(jive_master_shaper_selector * self, jive
 {
 	jive_node_cost * node_cost = jive_master_shaper_selector_map_node_internal(self, node);
 	
-	jive_region_shaper_selector * region_shaper = jive_master_shaper_selector_map_region(self, node->region);
+	jive_region_shaper_selector * region_shaper = jive_master_shaper_selector_map_region(self,
+		node->region);
 	switch (node_cost->state) {
 		case jive_node_cost_state_ahead:
 			break;
@@ -715,14 +728,16 @@ shaped_node_create(void * self_, jive_node * node)
 }
 
 static void
-shaped_region_ssavar_add(void * self_, jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar)
+shaped_region_ssavar_add(void * self_, jive_shaped_region * shaped_region,
+	jive_shaped_ssavar * shaped_ssavar)
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
 	jive_master_shaper_selector_invalidate_node(self, shaped_ssavar->ssavar->origin->node());
 }
 
 static void
-shaped_region_ssavar_remove(void * self_, jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar)
+shaped_region_ssavar_remove(void * self_, jive_shaped_region * shaped_region,
+	jive_shaped_ssavar * shaped_ssavar)
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
 	jive_master_shaper_selector_invalidate_node(self, shaped_ssavar->ssavar->origin->node());
@@ -746,13 +761,15 @@ node_create(void * self_, jive_node * node)
 	jive_master_shaper_selector_try_add_frontier(self, node);
 	
 	if (stacked) {
-		jive_region_shaper_selector * region_shaper = jive_master_shaper_selector_map_region(self, node->region);
+		jive_region_shaper_selector * region_shaper = jive_master_shaper_selector_map_region(self,
+			node->region);
 		jive_region_shaper_selector_push_node_stack(region_shaper, node);
 	}
 }
 
 static void
-input_change(void * self_, jive::input * input, jive::output * old_origin, jive::output * new_origin)
+input_change(void * self_, jive::input * input, jive::output * old_origin,
+	jive::output * new_origin)
 {
 	jive_master_shaper_selector * self = (jive_master_shaper_selector *) self_;
 	
@@ -769,7 +786,8 @@ input_change(void * self_, jive::input * input, jive::output * old_origin, jive:
 	
 	if (upper_node_cost->state == jive_node_cost_state_stack) {
 		if (lower_node_cost->state != jive_node_cost_state_done) {
-			jive_region_shaper_selector * region_shaper = jive_master_shaper_selector_map_region(self, input->node->region);
+			jive_region_shaper_selector * region_shaper = jive_master_shaper_selector_map_region(self,
+				input->node->region);
 			jive_region_shaper_selector_push_node_stack(region_shaper, input->node);
 		}
 	}
