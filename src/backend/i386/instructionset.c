@@ -416,7 +416,7 @@ jive_i386_encode_imull(const jive_instruction_class * icls,
 	jive_section_putbyte(target, icls->code);
 
 	JIVE_DEBUG_ASSERT(r1 == outputs[1]->code);
-	jive_section_putbyte(target, 0xe8|r2);	
+	jive_section_putbyte(target, 0xe8|r2);
 }
 
 static void
@@ -920,7 +920,7 @@ jive_i386_encode_fp(const jive_instruction_class * icls,
 	jive_instruction_encoding_flags * flags)
 {
 	const jive_register_name * r1 = inputs[0];
-	const jive_register_name * r2 = outputs[0];	
+	const jive_register_name * r2 = outputs[0];
 
 	jive_section_putbyte(target, 0xD9);
 	
@@ -1087,7 +1087,7 @@ const jive_instruction_class jive_i386_instr_int_sdiv = {
 	encode : jive_i386_encode_div_reg,
 	write_asm : jive_i386_asm_div_reg,
 	inregs : tmparray4,
-	outregs : tmparray5, 
+	outregs : tmparray5,
 	flags : jive_instruction_flags_none,
 	ninputs : 3, noutputs : 3, nimmediates : 0,
 	code : 0xf8
@@ -1474,7 +1474,7 @@ const jive_instruction_class jive_i386_instr_fp_load_disp = {
 	outregs : fpreg_param,
 	flags : jive_instruction_flags_none,
 	ninputs : 1, noutputs : 1, nimmediates : 1,
-	code : 0x0	
+	code : 0x0
 };
 
 const jive_instruction_class jive_i386_instr_sse_load32_disp = {
@@ -1497,7 +1497,7 @@ const jive_instruction_class jive_i386_instr_sse_load_abs = {
 	outregs : ssereg_param,
 	flags : jive_instruction_flags_none,
 	ninputs : 0, noutputs : 1, nimmediates : 1,
-	code : 0x10 
+	code : 0x10
 };
 const jive_register_class * tmparray26[] = {
 		&jive_i386_regcls_gpr, &jive_i386_regcls_sse};
@@ -1530,11 +1530,11 @@ const jive_instruction_class jive_i386_instr_float_add = {
 	mnemonic : "addss",
 	encode : jive_i386_encode_regreg_sse_prefixed,
 	write_asm : jive_i386_asm_regreg,
-	inregs : ssereg_param, 
+	inregs : ssereg_param,
 	outregs : ssereg_param,
 	flags : jive_instruction_write_input | jive_instruction_commutative,
 	ninputs : 2, noutputs : 1, nimmediates : 0,
-	code : 0x58 
+	code : 0x58
 };
 const jive_instruction_class jive_i386_instr_float_sub = {
 	name : "flt_sub",
@@ -1573,7 +1573,7 @@ const jive_register_class * tmparray27[] = {&jive_i386_regcls_flags};
 const jive_instruction_class jive_i386_instr_float_cmp = {
 	name : "float_cmp",
 	mnemonic : "ucomiss",
-	encode : jive_i386_encode_cmp_regreg_sse, 
+	encode : jive_i386_encode_cmp_regreg_sse,
 	write_asm : jive_i386_asm_regreg,
 	inregs : ssereg_param,
 	outregs : tmparray27,
@@ -1624,7 +1624,7 @@ static const jive_instruction_class * const registered_instrs[] = {
 	&jive_i386_instr_int_mul,
 	&jive_i386_instr_int_sdiv,
 	&jive_i386_instr_int_udiv,
-	&jive_i386_instr_int_shl,	
+	&jive_i386_instr_int_shl,
 	&jive_i386_instr_int_shr,
 	&jive_i386_instr_int_ashr,
 	&jive_i386_instr_int_mul_expand_signed,
@@ -1669,7 +1669,7 @@ static const jive_instruction_class * const registered_instrs[] = {
 	&jive_i386_instr_sse_load_abs,
 	&jive_i386_instr_sse_store32_disp,
 
-	&jive_i386_instr_sse_xor, 
+	&jive_i386_instr_sse_xor,
 
 	&jive_i386_instr_float_add,
 	&jive_i386_instr_float_sub,
