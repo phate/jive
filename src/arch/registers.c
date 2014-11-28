@@ -15,7 +15,8 @@ jive_register_class_get_type(const jive_register_class * self)
 }
 
 struct jive::gate *
-jive_register_class_create_gate(const jive_register_class * self, struct jive_graph * graph, const char * name)
+jive_register_class_create_gate(const jive_register_class * self, struct jive_graph * graph,
+	const char * name)
 {
 	return jive_resource_class_create_gate(&self->base, graph, name);
 }
