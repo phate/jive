@@ -89,7 +89,7 @@ public:
 
 	virtual const jive::bits::type & type() const noexcept { return type_; }
 
-	inline size_t nbits() const noexcept { return type_.nbits(); }	
+	inline size_t nbits() const noexcept { return type_.nbits(); }
 
 private:
 	gate(const gate & rhs) = delete;
