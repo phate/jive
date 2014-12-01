@@ -4,10 +4,10 @@
  */
 
 #include <jive/common.h>
-#include <jive/frontend/clg.h>
-#include <jive/frontend/clg_node.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
+#include <jive/frontend/clg.h>
+#include <jive/frontend/clg_node.h>
 #include <jive/util/list.h>
 
 #include <string.h>

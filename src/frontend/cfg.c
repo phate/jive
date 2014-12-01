@@ -4,19 +4,19 @@
  */
 
 #include <jive/common.h>
-#include <jive/frontend/clg.h>
-#include <jive/frontend/clg_node.h>
 #include <jive/frontend/basic_block.h>
 #include <jive/frontend/cfg.h>
 #include <jive/frontend/cfg_node.h>
+#include <jive/frontend/clg.h>
+#include <jive/frontend/clg_node.h>
 #include <jive/util/buffer.h>
 
 #include <algorithm>
 #include <deque>
 #include <unordered_map>
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* Tarjan's SCC algorithm */
 
