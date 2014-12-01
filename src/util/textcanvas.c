@@ -4,9 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <stdlib.h>
-#include <stdint.h>
 #include <jive/util/textcanvas.h>
+
+#include <stdint.h>
+#include <stdlib.h>
 
 /* each square may contain a line from the center to the four
 principal directions outwards; combinations of lines are encoded

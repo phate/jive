@@ -10,8 +10,8 @@
  * from type_info to other objects.
  */
 
-#include <unordered_map>
 #include <typeinfo>
+#include <unordered_map>
 
 namespace jive {
 namespace detail {

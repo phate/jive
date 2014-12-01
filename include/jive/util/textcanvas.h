@@ -7,12 +7,10 @@
 #ifndef JIVE_UTIL_TEXTCANVAS_H
 #define JIVE_UTIL_TEXTCANVAS_H
 
-#include <stdbool.h>
-#include <wchar.h>
 #include <stdio.h>
-
 #include <string>
 #include <vector>
+#include <wchar.h>
 
 typedef struct jive_textcanvas jive_textcanvas;
 
