@@ -7,10 +7,10 @@
 #define JIVE_TYPES_FLOAT_COMPARISON_H
 
 #include <jive/types/float/comparison/fltequal.h>
-#include <jive/types/float/comparison/fltnotequal.h>
-#include <jive/types/float/comparison/fltless.h>
-#include <jive/types/float/comparison/fltlesseq.h>
 #include <jive/types/float/comparison/fltgreater.h>
 #include <jive/types/float/comparison/fltgreatereq.h>
+#include <jive/types/float/comparison/fltless.h>
+#include <jive/types/float/comparison/fltlesseq.h>
+#include <jive/types/float/comparison/fltnotequal.h>
 
 #endif
