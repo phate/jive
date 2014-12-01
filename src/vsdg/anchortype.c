@@ -4,14 +4,11 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
-
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/graph.h>
 
 namespace jive {
 namespace achr {

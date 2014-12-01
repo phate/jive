@@ -3,10 +3,11 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <stdio.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
+
+#include <stdio.h>
 
 void
 jive_resource_class_count_dump(const jive_resource_class_count * count)

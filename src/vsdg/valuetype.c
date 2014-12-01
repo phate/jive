@@ -4,13 +4,11 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/valuetype.h>
-#include <jive/vsdg/graph-private.h>
-
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/graph.h>
-
 #include <jive/util/list.h>
+#include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/node.h>
+#include <jive/vsdg/valuetype.h>
 
 namespace jive {
 namespace value {

@@ -4,18 +4,17 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/traverser.h>
-#include <jive/vsdg/traverser-private.h>
-
-#include <string.h>
-
 #include <jive/common.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/tracker.h>
 #include <jive/vsdg/tracker-private.h>
+#include <jive/vsdg/tracker.h>
+#include <jive/vsdg/traverser-private.h>
+#include <jive/vsdg/traverser.h>
+
+#include <string.h>
 
 struct jive_traverser {
 	const jive_traverser_class * class_;

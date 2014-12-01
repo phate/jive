@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/notifiers.h>
 #include <jive/util/list.h>
+#include <jive/vsdg/notifiers.h>
 
 #define MAKE_NOTIFIER(name, NAME, parameters, arguments) \
 struct jive_##name##_notifier { \

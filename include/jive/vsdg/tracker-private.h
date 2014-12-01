@@ -6,9 +6,9 @@
 #ifndef JIVE_VSDG_TRACKER_PRIVATE_H
 #define JIVE_VSDG_TRACKER_PRIVATE_H
 
-#include <jive/vsdg/tracker.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/tracker.h>
 
 static inline void
 jive_tracker_depth_state_add(jive_tracker_depth_state * self, jive_tracker_nodestate * nodestate,

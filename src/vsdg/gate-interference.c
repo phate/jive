@@ -4,9 +4,7 @@
  */
 
 #include <jive/vsdg/gate-interference-private.h>
-
 #include <jive/vsdg/graph.h>
-#include <jive/util/list.h>
 
 jive_gate_interference *
 jive_gate_interference_create(jive::gate * first, jive::gate * second)

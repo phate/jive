@@ -6,8 +6,8 @@
 #ifndef JIVE_VSDG_REGION_PRIVATE_H
 #define JIVE_VSDG_REGION_PRIVATE_H
 
-#include <jive/vsdg/region.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/region.h>
 
 struct jive_ssavar;
 
