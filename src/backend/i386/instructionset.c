@@ -7,16 +7,16 @@
 #include <jive/arch/compilate.h>
 #include <jive/arch/instructionset.h>
 #include <jive/backend/i386/classifier.h>
-#include <jive/backend/i386/registerset.h>
-#include <jive/backend/i386/relocation.h>
 #include <jive/backend/i386/instructionset.h>
 #include <jive/backend/i386/machine.h>
+#include <jive/backend/i386/registerset.h>
+#include <jive/backend/i386/relocation.h>
 #include <jive/serialization/instrcls-registry.h>
 #include <jive/util/buffer.h>
 
 #include <inttypes.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 static inline uint32_t
 cpu_to_le32(uint32_t value)
