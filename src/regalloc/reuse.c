@@ -4,23 +4,19 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/regalloc/reuse.h>
-
-#include <stdio.h>
-#include <string.h>
-
 #include <jive/common.h>
-
+#include <jive/regalloc/reuse.h>
 #include <jive/regalloc/shaped-graph.h>
-
-#include <jive/util/buffer.h>
 #include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/node.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/variable.h>
+
+#include <stdio.h>
+#include <string.h>
 
 namespace jive {
 namespace reuse {

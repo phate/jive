@@ -14,10 +14,10 @@
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-variable.h>
 
-#include <jive/vsdg/variable.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/variable.h>
 
 typedef struct jive_crossing_arc jive_crossing_arc;
 

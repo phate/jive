@@ -4,13 +4,12 @@
  */
 
 #include <jive/regalloc.h>
-
-#include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shape.h>
+#include <jive/regalloc/auxnodes.h>
 #include <jive/regalloc/color.h>
 #include <jive/regalloc/fixup.h>
-#include <jive/regalloc/auxnodes.h>
 #include <jive/regalloc/reuse.h>
+#include <jive/regalloc/shape.h>
+#include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/stackframe.h>
 
 jive_shaped_graph *

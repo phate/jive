@@ -8,9 +8,9 @@
 
 #include <jive/regalloc/assignment-tracker.h>
 #include <jive/regalloc/notifiers.h>
+#include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-variable.h>
-#include <jive/regalloc/shaped-node.h>
 
 typedef struct jive_shaped_graph jive_shaped_graph;
 
