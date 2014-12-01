@@ -4,6 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/util/textcanvas.h>
 #include <jive/view.h>
 #include <jive/view/graphview.h>
 #include <jive/vsdg/region.h>

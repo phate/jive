@@ -7,9 +7,9 @@
 #ifndef JIVE_VIEW_GRAPHVIEW_H
 #define JIVE_VIEW_GRAPHVIEW_H
 
+#include <jive/util/textcanvas.h>
 #include <jive/view/nodeview.h>
 #include <jive/vsdg.h>
-#include <jive/util/textcanvas.h>
 
 #include <unordered_map>
 #include <vector>

@@ -4,15 +4,15 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <jive/arch/registers.h>
+#include <jive/util/buffer.h>
+#include <jive/view/graphview.h>
 #include <jive/view/nodeview.h>
 #include <jive/view/reservationtracker.h>
-#include <jive/view/graphview.h>
 #include <jive/vsdg.h>
-#include <jive/util/buffer.h>
 
 /* inputview */
 

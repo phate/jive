@@ -3,9 +3,9 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <stdbool.h>
-#include <string.h>
 #include <jive/view/reservationtracker.h>
+
+#include <string.h>
 
 /* reservationrect */
 

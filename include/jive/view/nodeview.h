@@ -6,9 +6,9 @@
 #ifndef JIVE_VIEW_NODEVIEW_H
 #define JIVE_VIEW_NODEVIEW_H
 
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/basetype.h>
 #include <jive/util/textcanvas.h>
+#include <jive/vsdg/basetype.h>
+#include <jive/vsdg/node.h>
 
 #include <string>
 #include <vector>

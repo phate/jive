@@ -4,13 +4,13 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/region.h>
-#include <jive/vsdg/graph.h>
+#include <jive/util/list.h>
+#include <jive/view/graphview.h>
 #include <jive/view/nodeview.h>
 #include <jive/view/regionview.h>
-#include <jive/view/graphview.h>
 #include <jive/view/reservationtracker.h>
-#include <jive/util/list.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/region.h>
 
 jive_regionview::~jive_regionview() noexcept
 {

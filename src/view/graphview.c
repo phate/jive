@@ -4,10 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/view/regionview.h>
-#include <jive/view/graphview.h>
-#include <jive/view/reservationtracker.h>
 #include <jive/util/list.h>
+#include <jive/view/graphview.h>
+#include <jive/view/regionview.h>
+#include <jive/view/reservationtracker.h>
 
 /* graphview_row */
 
