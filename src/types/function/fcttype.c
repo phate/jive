@@ -5,13 +5,11 @@
  */
 
 #include <jive/types/function/fcttype.h>
-
-#include <string.h>
-#include <stdio.h>
-
-#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+
+#include <stdio.h>
+#include <string.h>
 
 namespace jive {
 namespace fct {
