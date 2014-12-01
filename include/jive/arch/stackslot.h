@@ -6,8 +6,9 @@
 #ifndef JIVE_ARCH_STACKSLOT_H
 #define JIVE_ARCH_STACKSLOT_H
 
-#include <unistd.h>
 #include <jive/vsdg/resource.h>
+
+#include <unistd.h>
 
 typedef struct jive_stackframe jive_stackframe;
 typedef struct jive_stackframe_class jive_stackframe_class;

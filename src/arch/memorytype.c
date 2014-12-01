@@ -5,12 +5,10 @@
  */
 
 #include <jive/arch/memorytype.h>
+#include <jive/vsdg/graph.h>
+#include <jive/vsdg/node.h>
 
 #include <string.h>
-
-#include <jive/util/buffer.h>
-#include <jive/vsdg/node.h>
-#include <jive/vsdg/graph.h>
 
 namespace jive {
 namespace mem {
