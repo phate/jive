@@ -23,14 +23,14 @@ namespace base {
 	class gate;
 }
 
-typedef struct jive_resource_class_class jive_resource_class_class;
-typedef struct jive_resource_class jive_resource_class;
-typedef struct jive_resource_name jive_resource_name;
-typedef struct jive_resource_class_count jive_resource_class_count;
-typedef struct jive_resource_class_count_item jive_resource_class_count_item;
-typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
-typedef struct jive_resource_class_demotion jive_resource_class_demotion;
 typedef struct jive_rescls_prio_array jive_rescls_prio_array;
+typedef struct jive_resource_class jive_resource_class;
+typedef struct jive_resource_class_class jive_resource_class_class;
+typedef struct jive_resource_class_count jive_resource_class_count;
+typedef struct jive_resource_class_count_bucket jive_resource_class_count_bucket;
+typedef struct jive_resource_class_count_item jive_resource_class_count_item;
+typedef struct jive_resource_class_demotion jive_resource_class_demotion;
+typedef struct jive_resource_name jive_resource_name;
 
 typedef enum {
 	jive_resource_class_priority_invalid = 0,

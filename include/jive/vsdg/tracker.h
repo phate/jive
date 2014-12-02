@@ -17,10 +17,10 @@ struct jive_node;
 struct jive_notifier;
 struct jive_region;
 
+typedef struct jive_computation_tracker jive_computation_tracker;
 typedef struct jive_tracker jive_tracker;
 typedef struct jive_tracker_slot jive_tracker_slot;
 typedef struct jive_traversal_tracker jive_traversal_tracker;
-typedef struct jive_computation_tracker jive_computation_tracker;
 
 static const size_t jive_tracker_nodestate_none = (size_t) -1;
 
