@@ -53,11 +53,11 @@ struct jive_record_memlayout {
 	jive_record_memlayout_element * element;
 };
 
+struct jive_address_type;
+struct jive_bitstring_type;
 struct jive_record_memlayout;
 struct jive_union_declaration;
 struct jive_union_memlayout;
-struct jive_bitstring_type;
-struct jive_address_type;
 
 struct jive_memlayout_mapper_class {
 	const jive_record_memlayout *
