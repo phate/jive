@@ -21,11 +21,11 @@ struct jive_resource_class;
 struct jive_ssavar;
 struct jive_shaped_graph;
 
-typedef struct jive_region_shaper_selector jive_region_shaper_selector;
 typedef struct jive_master_shaper_selector jive_master_shaper_selector;
 typedef struct jive_node_cost jive_node_cost;
 typedef struct jive_node_cost_prio_heap jive_node_cost_prio_heap;
 typedef struct jive_node_cost_stack jive_node_cost_stack;
+typedef struct jive_region_shaper_selector jive_region_shaper_selector;
 
 typedef enum {
 	jive_node_cost_state_ahead = 0,
