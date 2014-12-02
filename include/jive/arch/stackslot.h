@@ -13,16 +13,16 @@
 typedef struct jive_stackframe jive_stackframe;
 typedef struct jive_stackframe_class jive_stackframe_class;
 
-typedef struct jive_stackvar_type jive_stackvar_type;
+typedef struct jive_stackvar_gate jive_stackvar_gate;
 typedef struct jive_stackvar_input jive_stackvar_input;
 typedef struct jive_stackvar_output jive_stackvar_output;
-typedef struct jive_stackvar_gate jive_stackvar_gate;
+typedef struct jive_stackvar_type jive_stackvar_type;
 
-typedef struct jive_stackslot_size_class jive_stackslot_size_class;
+typedef struct jive_callslot jive_callslot;
+typedef struct jive_callslot_class jive_callslot_class;
 typedef struct jive_fixed_stackslot_class jive_fixed_stackslot_class;
 typedef struct jive_stackslot jive_stackslot;
-typedef struct jive_callslot_class jive_callslot_class;
-typedef struct jive_callslot jive_callslot;
+typedef struct jive_stackslot_size_class jive_stackslot_size_class;
 
 extern const jive_resource_class jive_root_stackslot_class;
 

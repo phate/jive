@@ -19,8 +19,8 @@ struct jive_reg_classifier;
 struct jive_region;
 struct jive_resource_class;
 
-typedef struct jive_instructionset_class jive_instructionset_class;
 typedef struct jive_instructionset jive_instructionset;
+typedef struct jive_instructionset_class jive_instructionset_class;
 typedef struct jive_xfer_description jive_xfer_description;
 
 struct jive_xfer_description {
