@@ -120,7 +120,8 @@ static int test_main(void)
 	(void) shaped_body_anchor;
 	(void) shaped_body;
 	
-	assert(jive_shaped_ssavar_is_active_before(jive_shaped_graph_map_ssavar(shaped_graph, loop_body->inputs[1]->ssavar), shaped_tail));
+	assert(jive_shaped_ssavar_is_active_before(jive_shaped_graph_map_ssavar(shaped_graph,
+		loop_body->inputs[1]->ssavar), shaped_tail));
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

@@ -56,7 +56,8 @@ static int test_main(void)
 		&jive_testarch_instructions[instr_add],
 		tmparray1, NULL);
 	
-	jive_node_gate_input(leave, jive_regcls_create_gate( &jive_testarch_regcls_r1, graph, "ret1"), add2->outputs[0]);
+	jive_node_gate_input(leave, jive_regcls_create_gate( &jive_testarch_regcls_r1, graph, "ret1"),
+		add2->outputs[0]);
 	
 	jive_view(graph, stderr);
 	

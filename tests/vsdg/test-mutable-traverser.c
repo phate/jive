@@ -17,7 +17,8 @@
 
 #include "testnodes.h"
 
-void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node * n2, jive_node * n3)
+void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node * n2,
+	jive_node * n3)
 {
 	jive_traverser * trav = jive_topdown_traverser_create(graph);
 	jive_node * tmp;

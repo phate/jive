@@ -62,36 +62,54 @@ static int test_main(void)
 	
 	assert(jive_shaped_variable_can_merge(jive_shaped_graph_map_variable(shaped_graph, r2), r3));
 	assert(!jive_shaped_variable_can_merge(jive_shaped_graph_map_variable(shaped_graph, r2), r1));
-	
-	assert(jive_shaped_variable_check_change_resource_class(jive_shaped_graph_map_variable(shaped_graph, r2), &jive_testarch_regcls_r2.base) == 0);
-	assert(jive_shaped_variable_check_change_resource_class(jive_shaped_graph_map_variable(shaped_graph, r2), &jive_testarch_regcls_r0.base) == &jive_testarch_regcls_r0.base);
-	
-	jive_resource_class_count * use_count = &jive_shaped_graph_map_node(shaped_graph, top)->use_count_after;
-	const jive_resource_class * overflow = jive_resource_class_count_check_add(use_count, &jive_testarch_regcls_r0.base);
+
+	assert(jive_shaped_variable_check_change_resource_class(jive_shaped_graph_map_variable(
+		shaped_graph, r2), &jive_testarch_regcls_r2.base) == 0);
+	assert(jive_shaped_variable_check_change_resource_class(jive_shaped_graph_map_variable(
+		shaped_graph, r2), &jive_testarch_regcls_r0.base) == &jive_testarch_regcls_r0.base);
+
+	jive_resource_class_count * use_count = &jive_shaped_graph_map_node(shaped_graph,
+		top)->use_count_after;
+	const jive_resource_class * overflow = jive_resource_class_count_check_add(use_count,
+		&jive_testarch_regcls_r0.base);
 	assert(overflow == &jive_testarch_regcls_r0.base);
 	
 	assert(jive_shaped_graph_map_variable(shaped_graph, r1)->squeeze == 1);
-	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(shaped_graph, r1)) == 1);
-	assert(jive_shaped_variable_allowed_resource_name(jive_shaped_graph_map_variable(shaped_graph, r1), &jive_testarch_reg_r0.base));
+	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(
+		shaped_graph, r1)) == 1);
+	assert(jive_shaped_variable_allowed_resource_name(jive_shaped_graph_map_variable(shaped_graph,
+		r1), &jive_testarch_reg_r0.base));
 	
 	assert(jive_shaped_graph_map_variable(shaped_graph, r3)->squeeze == 1);
-	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(shaped_graph, r3)) == 4);
-	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, r3), jive_shaped_graph_map_variable(shaped_graph, r1)));
-	
-	assert(shaped_graph->var_assignment_tracker.trivial.first == jive_shaped_graph_map_variable(shaped_graph, r2) || shaped_graph->var_assignment_tracker.trivial.last == jive_shaped_graph_map_variable(shaped_graph, r2));
-	assert(shaped_graph->var_assignment_tracker.trivial.first == jive_shaped_graph_map_variable(shaped_graph, r3) || shaped_graph->var_assignment_tracker.trivial.last == jive_shaped_graph_map_variable(shaped_graph, r3));
+	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(
+		shaped_graph, r3)) == 4);
+
+	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, r3),
+		jive_shaped_graph_map_variable(shaped_graph, r1)));
+
+	assert(shaped_graph->var_assignment_tracker.trivial.first == jive_shaped_graph_map_variable(
+			shaped_graph, r2)
+		|| shaped_graph->var_assignment_tracker.trivial.last == jive_shaped_graph_map_variable(
+			shaped_graph, r2));
+	assert(shaped_graph->var_assignment_tracker.trivial.first == jive_shaped_graph_map_variable(
+			shaped_graph, r3)
+		|| shaped_graph->var_assignment_tracker.trivial.last == jive_shaped_graph_map_variable(
+			shaped_graph, r3));
 	assert(shaped_graph->var_assignment_tracker.pressured.size() == 1);
-	assert(shaped_graph->var_assignment_tracker.pressured[0].first == jive_shaped_graph_map_variable(shaped_graph, r1));
+	assert(shaped_graph->var_assignment_tracker.pressured[0].first ==
+		jive_shaped_graph_map_variable(shaped_graph, r1));
 	
 	jive_variable_set_resource_name(r1, &jive_testarch_reg_r0.base);
 	
 	assert(jive_shaped_graph_map_variable(shaped_graph, r1)->squeeze == 0);
 	assert(jive_shaped_graph_map_variable(shaped_graph, r3)->squeeze == 0);
-	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(shaped_graph, r3)) == 3);
-	assert(!jive_shaped_variable_allowed_resource_name(jive_shaped_graph_map_variable(shaped_graph, r3), &jive_testarch_reg_r0.base));
+	assert(jive_shaped_variable_allowed_resource_name_count(jive_shaped_graph_map_variable(
+		shaped_graph, r3)) == 3);
+	assert(!jive_shaped_variable_allowed_resource_name(jive_shaped_graph_map_variable(shaped_graph,
+		r3), &jive_testarch_reg_r0.base));
 	
-	assert(shaped_graph->var_assignment_tracker.assigned.first == jive_shaped_graph_map_variable(shaped_graph, r1));
+	assert(shaped_graph->var_assignment_tracker.assigned.first == jive_shaped_graph_map_variable(
+		shaped_graph, r1));
 	
 	(void) bottom;
 	

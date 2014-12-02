@@ -30,15 +30,19 @@ create_testgraph()
 		&jive_testarch_instr_nop,
 		0, 0);
 	
-	jive::gate * stackptr_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph, "stackptr");
+	jive::gate * stackptr_gate = jive_register_class_create_gate(&jive_testarch_regcls_r3, graph,
+		"stackptr");
 	stackptr_gate->may_spill = false;
 	
 	jive::output * stackptr = jive_node_gate_output(enter, stackptr_gate);
 	jive_node_gate_input(leave, stackptr_gate, stackptr);
 	
-	jive::output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg1"));
-	jive::output * arg2 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg2"));
-	jive::output * arg3 = jive_node_gate_output(enter, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "arg3"));
+	jive::output * arg1 = jive_node_gate_output(enter, jive_register_class_create_gate(
+		&jive_testarch_regcls_gpr, graph, "arg1"));
+	jive::output * arg2 = jive_node_gate_output(enter, jive_register_class_create_gate(
+		&jive_testarch_regcls_gpr, graph, "arg2"));
+	jive::output * arg3 = jive_node_gate_output(enter, jive_register_class_create_gate(
+		&jive_testarch_regcls_gpr, graph, "arg3"));
 	
 	jive::output * sum;
 	jive::output * tmparray0[] = {arg1, arg2};
@@ -52,7 +56,8 @@ create_testgraph()
 		&jive_testarch_instr_add,
 		tmparray1, 0)->outputs[0];
 	
-	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph, "ret1"), sum);
+	jive_node_gate_input(leave, jive_register_class_create_gate(&jive_testarch_regcls_gpr, graph,
+		"ret1"), sum);
 	
 	return graph;
 }

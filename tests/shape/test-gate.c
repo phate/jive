@@ -46,12 +46,15 @@ static int test_main(void)
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v1), jive_shaped_graph_map_variable(shaped_graph, v2)));
+	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v1),
+		jive_shaped_graph_map_variable(shaped_graph, v2)));
 	
 	jive_variable_assign_gate(v3, g3);
 	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v1), jive_shaped_graph_map_variable(shaped_graph, v3)));
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2), jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v1),
+		jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2),
+		jive_shaped_graph_map_variable(shaped_graph, v3)));
 	
 	jive_variable_unassign_gate(v1, g1);
 	
@@ -59,11 +62,13 @@ static int test_main(void)
 	
 	delete o;
 	
-	assert(!jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2), jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(!jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2),
+		jive_shaped_graph_map_variable(shaped_graph, v3)));
 	
 	jive_node_gate_output(node, g3);
 	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2), jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2),
+		jive_shaped_graph_map_variable(shaped_graph, v3)));
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

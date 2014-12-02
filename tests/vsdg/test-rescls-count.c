@@ -33,13 +33,16 @@ void test_rescls_count_addsub()
 	overflow = jive_resource_class_count_check_add(&count, &jive_testarch_regcls_r2.base);
 	assert(overflow == &jive_testarch_regcls_evenreg.base);
 	
-	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base, &jive_testarch_regcls_oddreg.base);
+	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base,
+		&jive_testarch_regcls_oddreg.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base, &jive_testarch_regcls_r2.base);
+	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base,
+		&jive_testarch_regcls_r2.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base, &jive_testarch_regcls_r0.base);
+	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base,
+		&jive_testarch_regcls_r0.base);
 	assert(overflow == &jive_testarch_regcls_r0.base);
 	
 	jive_resource_class_count_fini(&count);
