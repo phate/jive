@@ -20,8 +20,8 @@ namespace base {
 }
 
 struct jive_serialization_driver;
-struct jive_token_ostream;
 struct jive_token_istream;
+struct jive_token_ostream;
 
 typedef struct jive_serialization_typecls jive_serialization_typecls;
 

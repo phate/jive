@@ -13,8 +13,8 @@
 
 struct jive_instruction_class;
 struct jive_serialization_driver;
-struct jive_token_ostream;
 struct jive_token_istream;
+struct jive_token_ostream;
 
 typedef struct jive_serialization_instrcls jive_serialization_instrcls;
 
