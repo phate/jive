@@ -6,8 +6,8 @@
 #ifndef JIVE_REGALLOC_REROUTE_H
 #define JIVE_REGALLOC_REROUTE_H
 
-struct jive_ssavar;
 struct jive_shaped_node;
+struct jive_ssavar;
 
 /**
 	\brief Reroute variable through regions

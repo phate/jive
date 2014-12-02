@@ -18,8 +18,8 @@
 struct jive_node;
 struct jive_region;
 struct jive_resource_class;
-struct jive_ssavar;
 struct jive_shaped_graph;
+struct jive_ssavar;
 
 typedef struct jive_master_shaper_selector jive_master_shaper_selector;
 typedef struct jive_node_cost jive_node_cost;

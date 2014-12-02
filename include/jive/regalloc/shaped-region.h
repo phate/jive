@@ -15,9 +15,9 @@
 typedef struct jive_cut jive_cut;
 typedef struct jive_shaped_region jive_shaped_region;
 
-struct jive_shaped_graph;
-struct jive_region;
 struct jive_node;
+struct jive_region;
+struct jive_shaped_graph;
 
 struct jive_shaped_region {
 	~jive_shaped_region();

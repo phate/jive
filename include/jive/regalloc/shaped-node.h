@@ -15,8 +15,8 @@
 typedef struct jive_shaped_node jive_shaped_node;
 typedef struct jive_shaped_node_downward_iterator jive_shaped_node_downward_iterator;
 
-struct jive_shaped_graph;
 struct jive_node;
+struct jive_shaped_graph;
 
 struct jive_cut;
 
