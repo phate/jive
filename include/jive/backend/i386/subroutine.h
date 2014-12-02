@@ -8,8 +8,8 @@
 
 #include <jive/arch/subroutine.h>
 
-struct jive_region;
 struct jive_node;
+struct jive_region;
 
 jive_subroutine
 jive_i386_subroutine_begin(jive_graph * graph,
