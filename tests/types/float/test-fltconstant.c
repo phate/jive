@@ -8,9 +8,9 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
 #include <jive/types/float/fltconstant.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int
 test_main(void)

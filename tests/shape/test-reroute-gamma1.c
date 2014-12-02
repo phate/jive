@@ -11,20 +11,20 @@
 point and the two gamma regions have been finished */
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
+
+#include <jive/regalloc/reroute.h>
+#include <jive/regalloc/shaped-graph.h>
+#include <jive/regalloc/shaped-node-private.h>
+#include <jive/regalloc/shaped-region.h>
+#include <jive/regalloc/shaped-variable-private.h>
+#include <jive/types/bitstring.h>
+#include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/view.h>
-
-#include <jive/regalloc/reroute.h>
-#include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-region.h>
-#include <jive/regalloc/shaped-node-private.h>
-#include <jive/regalloc/shaped-variable-private.h>
-#include <jive/types/bitstring.h>
 
 #include "testnodes.h"
 

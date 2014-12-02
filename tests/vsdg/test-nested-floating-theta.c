@@ -7,13 +7,13 @@
 #include "test-registry.h"
 #include "testtypes.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/theta.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/theta.h>
 
 #include "testnodes.h"
 

@@ -6,8 +6,8 @@
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
 #include <jive/arch/address.h>
 #include <jive/arch/addresstype.h>

@@ -7,8 +7,8 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
 
 #include <jive/arch/codegen.h>
 #include <jive/arch/label-mapper.h>

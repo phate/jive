@@ -9,9 +9,9 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/vsdg.h>
 #include <jive/types/bitstring.h>
 #include <jive/types/function/fcttype.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {

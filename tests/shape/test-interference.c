@@ -9,15 +9,15 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
+#include <stdio.h>
 
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-node-private.h>
+#include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-variable-private.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 static int test_main(void)
 {

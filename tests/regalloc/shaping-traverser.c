@@ -6,12 +6,12 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
-#include <jive/regalloc/shaping-traverser.h>
+#include <stdio.h>
 
+#include <jive/regalloc/shaping-traverser.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 static int test_main(void)

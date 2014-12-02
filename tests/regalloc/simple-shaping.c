@@ -6,14 +6,14 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
-#include <jive/vsdg.h>
-#include <jive/view.h>
+#include <stdio.h>
 
-#include <jive/regalloc/shape.h>
 #include <jive/regalloc/color.h>
 #include <jive/regalloc/regreuse.h>
+#include <jive/regalloc/shape.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 #include "testarch.h"
 

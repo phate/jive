@@ -6,11 +6,11 @@
 
 #include "test-registry.h"
 
-#include <locale.h>
 #include <assert.h>
+#include <locale.h>
 
-#include <jive/arch/address.h>
 #include <jive/arch/address-transform.h>
+#include <jive/arch/address.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>

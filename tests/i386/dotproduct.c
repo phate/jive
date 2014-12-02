@@ -6,17 +6,17 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <locale.h>
+#include <stdio.h>
 
-#include <jive/vsdg.h>
-#include <jive/view.h>
-#include <jive/util/buffer.h>
 #include <jive/backend/i386/instructionset.h>
-#include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/machine.h>
+#include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/stackframe.h>
 #include <jive/backend/i386/subroutine.h>
+#include <jive/util/buffer.h>
+#include <jive/view.h>
+#include <jive/vsdg.h>
 
 #include <jive/regalloc.h>
 

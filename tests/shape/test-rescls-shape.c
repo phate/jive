@@ -9,11 +9,12 @@
 
 #include <assert.h>
 #include <locale.h>
+
 #include <jive/arch/registers.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/vsdg/resource-private.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg.h>
+#include <jive/vsdg/node-private.h>
+#include <jive/vsdg/resource-private.h>
 
 #include "testarch.h"
 #include "testnodes.h"

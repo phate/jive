@@ -8,9 +8,9 @@
 #include <assert.h>
 #include <locale.h>
 
-#include <jive/arch/instruction.h>
 #include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
+#include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/arch/memlayout-simple.h>
 #include <jive/types/bitstring/constant.h>
