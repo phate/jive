@@ -16,12 +16,12 @@ namespace jive {
 	class output;
 }
 
-struct jive_region;
 struct jive_node;
-struct jive_variable;
-struct jive_ssavar;
+struct jive_region;
 struct jive_resource_class;
 struct jive_resource_name;
+struct jive_ssavar;
+struct jive_variable;
 
 typedef struct jive_notifier jive_notifier;
 typedef struct jive_notifier_class jive_notifier_class;
