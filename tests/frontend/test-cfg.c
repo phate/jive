@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Nico Reissmann <nico.reissmann@gmail.com>
+ * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 

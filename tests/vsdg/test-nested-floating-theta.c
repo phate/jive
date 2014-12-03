@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
