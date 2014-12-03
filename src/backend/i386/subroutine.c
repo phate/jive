@@ -228,7 +228,7 @@ jive_i386_subroutine_begin(jive_graph * graph,
 
 typedef struct jive_i386_stackptr_split_factory {
 	jive_value_split_factory base;
-	int offset;
+	ssize_t offset;
 } jive_i386_stackptr_split_factory;
 
 static jive::output *
