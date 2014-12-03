@@ -1,11 +1,13 @@
 TESTS+=\
 	vsdg/test-cone-traverser \
+	vsdg/test-empty_graph_pruning \
 	vsdg/test-floating-regions \
 	vsdg/test-graph \
 	vsdg/test-graphtraverser \
 	vsdg/test-mutable-traverser \
 	vsdg/test-negotiator \
 	vsdg/test-nested-floating-theta \
+	vsdg/test-node_cse \
 	vsdg/test-phi \
 	vsdg/test-phi_extension \
 	vsdg/test-prune-replace \
@@ -13,5 +15,3 @@ TESTS+=\
 	vsdg/test-ssavar-merge \
 	vsdg/test-statesplit \
 	vsdg/test-typemismatch \
-	vsdg/test-node_cse \
-	vsdg/test-empty_graph_pruning \

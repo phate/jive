@@ -131,37 +131,39 @@ LIBJIVE_SRC += \
 
 # arch definitions
 LIBJIVE_SRC += \
-	src/arch/registers.c src/arch/instruction.c src/arch/stackslot.c \
-	src/arch/memorytype.c \
-	src/arch/subroutine.c \
-	src/arch/subroutine/nodes.c \
-	src/arch/regselector.c \
-	src/arch/load-normal-form.c \
-	src/arch/load.c \
-	src/arch/store.c \
-	src/arch/addresstype.c \
-	src/arch/address.c \
-	src/arch/memlayout.c \
-	src/arch/memlayout-simple.c \
-	src/arch/dataobject.c \
-	src/arch/sizeof.c \
-	src/arch/call.c \
 	src/arch/address-transform.c \
-	src/arch/regvalue.c \
-	src/arch/compilate.c \
+	src/arch/address.c \
+	src/arch/addresstype.c \
+	src/arch/call.c \
 	src/arch/codegen.c \
-	src/arch/sequence.c \
-	src/arch/label-mapper.c \
+	src/arch/compilate.c \
+	src/arch/dataobject.c \
 	src/arch/immediate-node.c \
 	src/arch/immediate-type.c \
+	src/arch/instruction.c \
+	src/arch/label-mapper.c \
+	src/arch/load-normal-form.c \
+	src/arch/load.c \
+	src/arch/memlayout-simple.c \
+	src/arch/memlayout.c \
+	src/arch/memorytype.c \
+	src/arch/registers.c \
+	src/arch/regselector.c \
+	src/arch/regvalue.c \
+	src/arch/sequence.c \
+	src/arch/sizeof.c \
+	src/arch/stackslot.c \
+	src/arch/store.c \
+	src/arch/subroutine.c \
+	src/arch/subroutine/nodes.c \
 
 # frontend
 LIBJIVE_SRC += \
-	src/frontend/clg_node.c \
-	src/frontend/clg.c \
-	src/frontend/cfg_node.c \
 	src/frontend/basic_block.c \
 	src/frontend/cfg.c \
+	src/frontend/cfg_node.c \
+	src/frontend/clg.c \
+	src/frontend/clg_node.c \
 
 # shaper
 LIBJIVE_SRC += \

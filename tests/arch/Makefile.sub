@@ -7,10 +7,10 @@ TESTS+=\
 	arch/test-label-nodes \
 	arch/test-load \
 	arch/test-memory-type \
-	arch/test-relocation \
 	arch/test-regselect \
+	arch/test-relocation \
 	arch/test-sizeof \
-	arch/test-subroutine \
 	arch/test-store \
+	arch/test-subroutine \
 
 include tests/arch/address-transform/Makefile.sub

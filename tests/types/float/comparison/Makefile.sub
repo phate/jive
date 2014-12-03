@@ -1,8 +1,7 @@
 TESTS+=\
+	types/float/comparison/test-fltequal \
+	types/float/comparison/test-fltgreater \
+	types/float/comparison/test-fltgreatereq \
 	types/float/comparison/test-fltless \
 	types/float/comparison/test-fltlesseq \
-	types/float/comparison/test-fltequal \
 	types/float/comparison/test-fltnotequal \
-	types/float/comparison/test-fltgreatereq \
-	types/float/comparison/test-fltgreater \
-
