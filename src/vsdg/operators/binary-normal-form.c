@@ -8,11 +8,35 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/binary.h>
+#include <jive/vsdg/operators/reduction-helpers.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {
 
 namespace {
+
+bool
+test_reduce_operands(
+	const jive::base::binary_op & op,
+	const std::vector<jive::output *> & args)
+{
+	/* pair-wise reduce */
+	if (op.is_commutative()) {
+		return base::detail::commutative_pairwise_test_reduce(
+			args,
+			[&op](jive::output * arg1, jive::output * arg2)
+			{
+				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
+			});
+	} else {
+		return base::detail::pairwise_test_reduce(
+			args,
+			[&op](jive::output * arg1, jive::output * arg2)
+			{
+				return op.can_reduce_operand_pair(arg1, arg2) != jive_binop_reduction_none;
+			});
+	}
+}
 
 std::vector<jive::output *>
 reduce_operands(
@@ -21,40 +45,28 @@ reduce_operands(
 {
 	/* pair-wise reduce */
 	if (op.is_commutative()) {
-		size_t n = 0;
-		while (n < args.size()) {
-			size_t k = n + 1;
-			while (k < args.size()) {
-				jive::output * op1 = args[n];
-				jive::output * op2 = args[k];
-				jive_binop_reduction_path_t reduction = op.can_reduce_operand_pair(op1, op2);
-				if (reduction != jive_binop_reduction_none) {
-					args.erase(args.begin() + k);
-					args[n] = op.reduce_operand_pair(reduction, op1, op2);
-					--n;
-					break;
-				}
-				++k;;
-			}
-			++n;
-		}
+		return base::detail::commutative_pairwise_reduce(
+			std::move(args),
+			[&op](jive::output * arg1, jive::output * arg2)
+			{
+				jive_binop_reduction_path_t reduction =
+					op.can_reduce_operand_pair(arg1, arg2);
+				return reduction != jive_binop_reduction_none
+					? op.reduce_operand_pair(reduction, arg1, arg2)
+					: nullptr;
+			});
 	} else {
-		size_t n = 0;
-		while (n + 1 < args.size()) {
-			jive_binop_reduction_path_t reduction =
-				op.can_reduce_operand_pair(args[n], args[n + 1]);
-			if (reduction != jive_binop_reduction_none) {
-				args[n] = op.reduce_operand_pair(reduction, args[n], args[n + 1]);
-				args.erase(args.begin() + n + 1);
-				if (n > 0) {
-					--n;
-				}
-			} else {
-				++n;
-			}
-		}
+		return base::detail::pairwise_reduce(
+			std::move(args),
+			[&op](jive::output * arg1, jive::output * arg2)
+			{
+				jive_binop_reduction_path_t reduction =
+					op.can_reduce_operand_pair(arg1, arg2);
+				return reduction != jive_binop_reduction_none
+					? op.reduce_operand_pair(reduction, arg1, arg2)
+					: nullptr;
+			});
 	}
-	return args;
 }
 
 }
@@ -93,32 +105,25 @@ binary_normal_form::normalize_node(jive_node * node) const
 	const jive::operation & base_op = node->operation();
 	const jive::base::binary_op & op = *static_cast<const jive::base::binary_op *>(&base_op);
 	
-	std::vector<jive::output *> args;
-	for (size_t n = 0; n < node->ninputs; ++n) {
-		args.push_back(node->inputs[n]->origin());
-	}
+	std::vector<jive::output *> args = jive_node_arguments(node);
 
 	std::vector<jive::output *> new_args;
 
 	/* possibly expand associative */
 	if (get_flatten() && op.is_associative()) {
-		for (jive::output * arg : args) {
-			// FIXME: switch to comparing operator, not just typeid, after
-			// converting "concat" to not be a binary operator anymore
-			if (typeid(arg->node()->operation()) == typeid(op)) {
-				for (size_t k = 0; k < arg->node()->ninputs; ++k) {
-					new_args.push_back(arg->node()->inputs[k]->origin());
-				}
-			} else {
-				new_args.push_back(arg);
-			}
-		}
+		new_args = base::detail::associative_flatten(
+			args,
+			[&op](jive::output * arg) {
+				// FIXME: switch to comparing operator, not just typeid, after
+				// converting "concat" to not be a binary operator anymore
+				return typeid(arg->node()->operation()) == typeid(op);
+			});
 	} else {
 		new_args = args;
 	}
 
 	if (get_reducible()) {
-		new_args = reduce_operands(op, new_args);
+		new_args = reduce_operands(op, std::move(new_args));
 
 		if (new_args.size() == 1) {
 			jive_output_replace(node->outputs[0], new_args[0]);
@@ -168,21 +173,20 @@ binary_normal_form::operands_are_normalized(
 	
 	/* possibly expand associative */
 	if (get_flatten() && op.is_associative()) {
-		size_t n;
-		for (jive::output * arg : args) {
-			// FIXME: switch to comparing operator, not just typeid, after
-			// converting "concat" to not be a binary operator anymore
-			if (typeid(arg->node()->operation()) == typeid(op)) {
-				return false;
-			}
+		bool can_flatten = base::detail::associative_test_flatten(
+			args,
+			[&op](jive::output * arg) {
+				// FIXME: switch to comparing operator, not just typeid, after
+				// converting "concat" to not be a binary operator anymore
+				return typeid(arg->node()->operation()) == typeid(op);
+			});
+		if (can_flatten) {
+			return false;
 		}
 	}
 	
 	if (get_reducible()) {
-		std::vector<jive::output *> new_args =
-			reduce_operands(op, args);
-		
-		if (new_args != args) {
+		if (test_reduce_operands(op, args)) {
 			return false;
 		}
 	}
