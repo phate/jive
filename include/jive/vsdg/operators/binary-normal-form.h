@@ -10,6 +10,7 @@
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/binary.h>
 
 namespace jive {
 
@@ -62,15 +63,42 @@ public:
 	get_factorize() const noexcept { return enable_factorize_; }
 
 private:
+	bool
+	normalize_node(jive_node * node, const base::binary_op & op) const;
+
 	bool enable_reducible_;
 	bool enable_flatten_;
 	bool enable_reorder_;
 	bool enable_distribute_;
 	bool enable_factorize_;
+
+	friend class flattened_binary_normal_form;
+};
+
+class flattened_binary_normal_form final : public node_normal_form {
+public:
+	virtual
+	~flattened_binary_normal_form() noexcept;
+
+	flattened_binary_normal_form(
+		const std::type_info & operator_class,
+		jive::node_normal_form * parent,
+		jive_graph * graph);
+
+	virtual bool
+	normalize_node(jive_node * node) const override;
+
+	virtual bool
+	operands_are_normalized(
+		const jive::operation & op,
+		const std::vector<jive::output *> & arguments) const override;
+
+	virtual std::vector<jive::output *>
+	normalized_create(
+		const jive::operation & op,
+		const std::vector<jive::output *> & arguments) const override;
 };
 
 }
-
-/* normal form class */
 
 #endif

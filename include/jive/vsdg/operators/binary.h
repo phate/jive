@@ -74,6 +74,65 @@ public:
 	}
 };
 
+class flattened_binary_op final : public operation {
+public:
+	virtual ~flattened_binary_op() noexcept;
+
+	inline
+	flattened_binary_op(
+		std::unique_ptr<binary_op> op,
+		size_t narguments) noexcept
+		: op_(std::move(op))
+		, narguments_(narguments)
+	{
+	}
+
+	inline
+	flattened_binary_op(
+		const binary_op & op,
+		size_t narguments)
+		: op_(std::unique_ptr<binary_op>(static_cast<binary_op *>(op.copy().release())))
+	{
+	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const jive::base::type &
+	argument_type(size_t index) const noexcept override;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const jive::base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual jive_node *
+	create_node(
+		jive_region * region,
+		size_t narguments,
+		jive::output * const arguments[]) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+
+	inline const binary_op &
+	bin_operation() const noexcept
+	{
+		return *op_;
+	}
+
+private:
+	std::unique_ptr<binary_op> op_;
+	size_t narguments_;
+};
+
 }
 }
 
