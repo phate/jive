@@ -12,7 +12,6 @@
 #include <jive/common.h>
 
 #include <jive/types/bitstring/arithmetic.h>
-#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/concat.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>

@@ -6,7 +6,6 @@
 
 #include <jive/types/bitstring/comparison/bitnotequal.h>
 
-#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
@@ -31,11 +30,7 @@ ne_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<ne_op>(
-		*this,
-		region,
-		arguments[0],
-		arguments[1]);
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 compare_result

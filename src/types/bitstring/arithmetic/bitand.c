@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/bitstring/arithmetic/bitand.h>
-#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
@@ -29,11 +28,7 @@ and_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<and_op>(
-		*this,
-		region,
-		narguments,
-		arguments);
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 value_repr

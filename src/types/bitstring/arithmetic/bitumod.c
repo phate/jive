@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/bitstring/arithmetic/bitumod.h>
-#include <jive/types/bitstring/bitoperation-classes-private.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
@@ -29,11 +28,7 @@ umod_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return detail::binop_create<umod_op>(
-		*this,
-		region,
-		arguments[0],
-		arguments[1]);
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 value_repr
