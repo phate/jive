@@ -135,21 +135,7 @@ public:
 		size_t narguments,
 		jive::output * const arguments[]) const override
 	{
-		jive_node * node = jive::create_operation_node(*this);
-
-		const jive::base::type * argument_types[2] = {
-			&argument_type(0),
-		};
-		const jive::base::type * result_types[1] = {
-			&result_type(0)
-		};
-
-		jive_node_init_(
-			node, region,
-			1, argument_types, arguments,
-			1, result_types);
-
-		return node;
+		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	static jive::output *
@@ -200,22 +186,7 @@ public:
 		size_t narguments,
 		jive::output * const arguments[]) const override
 	{
-		jive_node * node = jive::create_operation_node(*this);
-
-		const jive::base::type * argument_types[2] = {
-			&argument_type(0),
-			&argument_type(1)
-		};
-		const jive::base::type * result_types[1] = {
-			&result_type(0)
-		};
-
-		jive_node_init_(
-			node, region,
-			2, argument_types, arguments,
-			1, result_types);
-
-		return node;
+		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	static jive::output *
@@ -275,22 +246,7 @@ public:
 		size_t narguments,
 		jive::output * const arguments[]) const override
 	{
-		jive_node * node = jive::create_operation_node(*this);
-
-		const jive::base::type * argument_types[2] = {
-			&argument_type(0),
-			&argument_type(1)
-		};
-		const jive::base::type * result_types[1] = {
-			&result_type(0)
-		};
-
-		jive_node_init_(
-			node, region,
-			2, argument_types, arguments,
-			1, result_types);
-
-		return node;
+		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	static jive::output *
