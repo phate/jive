@@ -28,11 +28,7 @@ void
 jive_raise_type_error(const jive::base::type * self, const jive::base::type * other,
 	jive_context * context)
 {
-	char * error_message = jive_context_strjoin(context,
-		"Type mismatch: required '", self->debug_string().c_str(),
-		"' got '", other->debug_string().c_str(), "'", NULL);
-
-	jive_context_fatal_error(context, error_message);
+	throw jive::type_error(self->debug_string(), other->debug_string());
 }
 
 jive::input *
@@ -167,8 +163,7 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 		jive_raise_type_error(input_type, operand_type, this->node->graph->context);
 	}
 	if (dynamic_cast<const jive::achr::type*>(input_type)) {
-		jive_context_fatal_error(this->node->graph->context,
-			"Type mismatch: Cannot divert edges of 'anchor' type");
+		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
 	}
 
 	JIVE_DEBUG_ASSERT(this->node->graph == new_origin->node()->graph);

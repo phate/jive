@@ -209,8 +209,7 @@ jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::output * fix_value)
 		return;
 	}
 	
-	jive_context_fatal_error(self.region->graph->context,
-		"Lookup of fix point variable failed");
+	throw std::logic_error("Lookup of fix point variable failed");
 }
 
 jive_node *
@@ -242,9 +241,9 @@ jive_phi_end(jive_phi self,
 				break;
 			}
 		}
-		if (k == state->fixvars.size())
-			jive_context_fatal_error(self.region->graph->context,
-				"Lookup of fix point variable failed");
+		if (k == state->fixvars.size()) {
+			throw std::logic_error("Lookup of fix point variable failed");
+		}
 	}
 	
 	delete state;

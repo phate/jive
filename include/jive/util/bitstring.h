@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <stdexcept>
+
 static inline uint64_t
 jive_bitstring_to_unsigned(const char src[], size_t nbits)
 {
@@ -517,9 +519,7 @@ jive_bitstring_division_unsigned(char quotient[], char remainder[],
 	JIVE_DEBUG_ASSERT(jive_bitstring_is_known(divisor, nbits));
 
 	if (jive_bitstring_is_zero(divisor, nbits)) {
-		//FIXME: Ideally, I would like to throw a jive_context_fatal_error here.
-		JIVE_DEBUG_ASSERT(0);
-		return;
+		throw jive::compiler_error("Division by zero.");
 	}
 
 	char N[nbits], D[nbits];

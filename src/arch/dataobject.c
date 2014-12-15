@@ -196,19 +196,21 @@ flatten_data_items(
 		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
 		
 		if (type->nbits() < 8 || !is_powerof2(type->nbits())) {
-			jive_context_fatal_error(
-				ctx,
+			throw jive::compiler_error(
 				"Type mismatch: primitive data items must be power-of-two bytes in size");
 		}
+
 		items.resize(type->nbits() / 8, nullptr);
 		items[0] = data;
 	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
 		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
 		const jive::rcd::declaration * decl = type->declaration();
 		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper, decl);
-		
-		dynamic_cast<const jive::rcd::group_op &>(data->node()->operation());
-		
+
+		if (!dynamic_cast<const jive::rcd::group_op *>(&data->node()->operation())) {
+			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
+		}
+
 		jive_graph * graph = data->node()->graph;
 		
 		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
@@ -219,12 +221,14 @@ flatten_data_items(
 				ctx, data->node()->inputs[k]->origin(),
 				layout_mapper);
 			
-			if (sub_items.size() + layout->element[k].offset > items.size())
-				jive_context_fatal_error(ctx, "Invalid record layout: element exceeds record");
+			if (sub_items.size() + layout->element[k].offset > items.size()) {
+				throw jive::compiler_error("Invalid record layout: element exceeds record");
+			}
 			
 			for (size_t n = 0; n < sub_items.size(); n++) {
-				if (items[n + layout->element[k].offset] != zero_pad)
-					jive_context_fatal_error(ctx, "Invalid record layout: members overlap");
+				if (items[n + layout->element[k].offset] != zero_pad) {
+					throw jive::compiler_error("Invalid record layout: members overlap");
+				}
 				items[n + layout->element[k].offset] = sub_items[n];
 			}
 		}
@@ -234,7 +238,7 @@ flatten_data_items(
 		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
 		
 		if (!dynamic_cast<const jive::unn::unify_op *>(&data->node()->operation())) {
-			jive_context_fatal_error(ctx, "Type mismatch: can only serialize simple union compounds");
+			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");
 		}
 		
 		jive_graph * graph = data->node()->graph;
@@ -245,14 +249,13 @@ flatten_data_items(
 		std::vector<jive::output *> sub_items = flatten_data_items(
 			ctx, data->node()->inputs[0]->origin(), layout_mapper);
 		
-		if (sub_items.size() > items.size())
-			jive_context_fatal_error(ctx, "Invalid union layout: element exceeds union");
+		if (sub_items.size() > items.size()) {
+			throw jive::compiler_error("Invalid union layout: element exceeds union");
+		}
 		
 		std::copy(sub_items.begin(), sub_items.end(), items.begin());
 	} else {
-		jive_context_fatal_error(
-			ctx,
-			"Type mismatch: can only serialize record and primitive data items");
+		throw jive::compiler_error("Type mismatch: can only serialize record and primitive data items");
 	}
 
 	return items;

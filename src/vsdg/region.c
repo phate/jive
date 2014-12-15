@@ -271,8 +271,9 @@ jive_region_check_move_floating(jive_region * self, jive_region * edge_origin)
 		return;
 	/* if the search ends up somewhere else, then we have found the
 	region which we must reparent to make this a valid edge */
-	if (!movable->attrs.is_floating)
-		jive_context_fatal_error(self->graph->context, "Invalid edge");
+	if (!movable->attrs.is_floating) {
+		throw jive::compiler_error("Invalid edge");
+	}
 	jive_region_reparent(movable, edge_origin);
 }
 

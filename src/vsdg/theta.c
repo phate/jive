@@ -194,8 +194,7 @@ jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::output * post_
 		return;
 	}
 	
-	jive_context_fatal_error(self.region->graph->context,
-		"Lookup of loop-variant variable failed");
+	throw std::logic_error("Lookup of loop-variant variable failed");
 }
 
 jive_node *

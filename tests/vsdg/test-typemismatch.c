@@ -9,22 +9,12 @@
 
 #include <assert.h>
 #include <locale.h>
-#include <setjmp.h>
-#include <stdio.h>
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
-
-static void jump(void * where, const char * msg)
-{
-	jmp_buf * buffer=(jmp_buf *)where;
-	longjmp(*buffer, 1);
-}
-
-/* FIXME: valgrind still shows a bug here, but I don't find it right now */
 
 static int test_main(void)
 {
@@ -41,16 +31,13 @@ static int test_main(void)
 		1, tmparray0);
 	
 	bool error_handler_called = false;
-	
-	jmp_buf buffer;
-	if (setjmp(buffer) == 0) {
-		jive_set_fatal_error_handler(ctx, jump, &buffer);
+	try {
 		const jive::base::type * tmparray1[] = {&value_type};
 		jive::output * tmparray2[] = {n1->outputs[0]};
 		jive_test_node_create(region,
 			1, tmparray1, tmparray2,
 			0, 0);
-	} else {
+	} catch (jive::type_error e) {
 		error_handler_called = true;
 	}
 	

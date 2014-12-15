@@ -269,26 +269,28 @@ jive_node_gate_output(jive_node * self, jive::gate * gate)
 	return output;
 }
 
-struct jive::input *
-jive_node_input(const struct jive_node * self, size_t index)
+jive::input *
+jive_node_input(const jive_node * self, size_t index)
 {
 	jive::input * input = NULL;
-	if (index < self->ninputs)
+	if (index < self->ninputs) {
 		input = self->inputs[index];
-	else
-		jive_context_fatal_error(self->graph->context, "Input index out of bound.");
+	} else {
+		throw std::logic_error("Input index out of bound.");
+	}
 
 	return input;
 }
 
 jive::output *
-jive_node_output(const struct jive_node * self, size_t index)
+jive_node_output(const jive_node * self, size_t index)
 {
 	jive::output * output = NULL;
-	if (index < self->noutputs)
+	if (index < self->noutputs) {
 		return self->outputs[index];
-	else
-		jive_context_fatal_error(self->graph->context, "Output index out of bound.");
+	} else {
+		throw std::logic_error("Output index out of bound.");
+	}
 
 	return output;
 }
@@ -492,8 +494,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 		parent = new_region;
 	}
 	if (!jive_region_is_contained_by(child, parent))
-		jive_context_fatal_error(self->region->graph->context,
-			"Node can only be moved along the region path to the root.");
+		throw std::logic_error("Node can only be moved along the region path to the root.");
 
 	size_t n;
 	/* remove all node inputs from hull of old region and update notion of
