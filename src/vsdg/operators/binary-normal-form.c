@@ -114,9 +114,7 @@ binary_normal_form::normalize_node(jive_node * node) const
 		new_args = base::detail::associative_flatten(
 			args,
 			[&op](jive::output * arg) {
-				// FIXME: switch to comparing operator, not just typeid, after
-				// converting "concat" to not be a binary operator anymore
-				return typeid(arg->node()->operation()) == typeid(op);
+				return arg->node()->operation() == op;
 			});
 	} else {
 		new_args = args;
@@ -176,9 +174,7 @@ binary_normal_form::operands_are_normalized(
 		bool can_flatten = base::detail::associative_test_flatten(
 			args,
 			[&op](jive::output * arg) {
-				// FIXME: switch to comparing operator, not just typeid, after
-				// converting "concat" to not be a binary operator anymore
-				return typeid(arg->node()->operation()) == typeid(op);
+				return arg->node()->operation() == op;
 			});
 		if (can_flatten) {
 			return false;
@@ -209,16 +205,11 @@ binary_normal_form::normalized_create(
 
 	/* possibly expand associative */
 	if (get_mutable() && get_flatten() && op.is_associative()) {
-		for (jive::output * arg : args) {
-			// FIXME: switch to comparing operator, not just typeid, after
-			// converting "concat" to not be a binary operator anymore
-			if (typeid(arg->node()->operation()) == typeid(op)) {
-				for(size_t k = 0; k < arg->node()->noperands; k++)
-					new_args.push_back(arg->node()->inputs[k]->origin());
-			} else {
-				new_args.push_back(arg);
-			}
-		}
+		new_args = base::detail::associative_flatten(
+			args,
+			[&op](jive::output * arg) {
+				return arg->node()->operation() == op;
+			});
 	} else {
 		new_args = args;
 	}
