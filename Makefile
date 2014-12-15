@@ -7,6 +7,7 @@ CFLAGS+=-g --std=c++0x -xc++ -fpermissive
 
 # VSDG core
 LIBJIVE_SRC = \
+	src/common.c \
 	src/context.c \
 	src/vsdg/anchor-normal-form.c \
 	src/vsdg/anchor.c \
