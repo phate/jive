@@ -13,6 +13,7 @@
 #include <jive/internal/compiler.h>
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
+#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
@@ -738,5 +739,14 @@ jive_opnode_create(
 	jive_node_init_(node, region,
 		op.narguments(), argument_types, argument_values,
 		op.nresults(), result_types);
+
+	if (dynamic_cast<const jive::region_head_op *>(&op)) {
+		JIVE_DEBUG_ASSERT(!region->top);
+		region->top = node;
+	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
+		JIVE_DEBUG_ASSERT(!region->bottom);
+		region->bottom = node;
+	}
+
 	return node;
 }

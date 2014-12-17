@@ -28,45 +28,13 @@ graph_tail_operation::~graph_tail_operation() noexcept
 {
 }
 
-bool
-graph_tail_operation::operator==(const operation & other) const noexcept
-{
-	return dynamic_cast<const graph_tail_operation *>(&other);
-}
-
-size_t
-graph_tail_operation::narguments() const noexcept
-{
-	return 0;
-}
-
-const jive::base::type &
-graph_tail_operation::argument_type(size_t index) const noexcept
-{
-	throw std::logic_error("tail node has no arguments");
-}
-
-size_t
-graph_tail_operation::nresults() const noexcept
-{
-	return 0;
-}
-
-const jive::base::type &
-graph_tail_operation::result_type(size_t index) const noexcept
-{
-	throw std::logic_error("tail node has no results");
-}
-
 jive_node *
 graph_tail_operation::create_node(
 	jive_region * region,
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(region->bottom == NULL);
-
-	return jive_opnode_create(jive::graph_tail_operation(), region, arguments, arguments + narguments);
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
@@ -133,8 +101,7 @@ jive_graph_init_(jive_graph * self)
 	
 	self->root_region = new jive_region;
 	jive_region_init_(self->root_region, self, 0);
-	self->root_region->bottom =
-		jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
+	jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
 }
 
 static void

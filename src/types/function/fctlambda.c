@@ -50,13 +50,11 @@ lambda_head_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(!region->top);
 	jive_node * node =jive_opnode_create(
 		*this,
 		region,
 		arguments, arguments + narguments);
 	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
-	region->top = node;
 	return node;
 }
 
@@ -95,13 +93,7 @@ lambda_tail_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	JIVE_DEBUG_ASSERT(!region->bottom);
-	jive_node * node = jive_opnode_create(
-		*this,
-		region,
-		arguments, arguments + narguments);
-	region->bottom = node;
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
