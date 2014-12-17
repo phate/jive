@@ -37,6 +37,9 @@ typedef base::domain_const_op<
 	type, value_repr, format_value, type_of_value
 > constant_op;
 
+jive::output *
+match(size_t nbits, const std::vector<size_t> & constants, jive::output * operand);
+
 }
 
 namespace base {

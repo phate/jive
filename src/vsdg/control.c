@@ -10,9 +10,11 @@
 #include <string.h>
 
 #include <jive/common.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {
@@ -21,6 +23,18 @@ namespace base {
 template class domain_const_op<
 	ctl::type, ctl::value_repr, ctl::format_value, ctl::type_of_value
 >;
+}
+
+namespace ctl {
+
+jive::output *
+match(size_t nbits, const std::vector<size_t> & constants, jive::output * operand)
+{
+	jive::bits::type type(nbits);
+	match_op op(type, constants);
+	return jive_node_create_normalized(operand->node()->graph, op, {operand})[0];
+}
+
 }
 }
 
