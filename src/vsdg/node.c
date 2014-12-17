@@ -712,3 +712,31 @@ jive_node_normalize(jive_node * self)
 		graph, typeid(self->operation()));
 	return nf->normalize_node(self);
 }
+
+jive_node *
+jive_opnode_create(
+	const jive::operation & op,
+	jive_region * region,
+	jive::output * const * args_begin,
+	jive::output * const * args_end)
+{
+	const jive::base::type * argument_types[op.narguments()];
+	jive::output * argument_values[op.narguments()];
+	for (size_t n = 0; n < op.narguments(); ++n) {
+		argument_types[n] = &op.argument_type(n);
+		JIVE_DEBUG_ASSERT(args_begin != args_end);
+		argument_values[n] = *args_begin;
+		++args_begin;
+	}
+	JIVE_DEBUG_ASSERT(args_begin == args_end);
+	
+	const jive::base::type * result_types[op.nresults()];
+	for (size_t n = 0; n < op.nresults(); ++n) {
+		result_types[n] = &op.result_type(n);
+	}
+	jive_node * node = jive::create_operation_node(op);
+	jive_node_init_(node, region,
+		op.narguments(), argument_types, argument_values,
+		op.nresults(), result_types);
+	return node;
+}
