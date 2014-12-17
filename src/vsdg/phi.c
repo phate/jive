@@ -41,10 +41,7 @@ phi_head_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_node * node =jive_opnode_create(
-		*this,
-		region,
-		arguments, arguments + narguments);
+	jive_node * node = jive_opnode_create(*this, region, arguments, arguments + narguments);
 	static_cast<jive::ctl::output*>(node->outputs[0])->set_active(false);
 	return node;
 }
@@ -109,10 +106,7 @@ phi_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return jive_opnode_create(
-		*this,
-		region,
-		arguments, arguments + narguments);
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string

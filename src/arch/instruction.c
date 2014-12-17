@@ -76,10 +76,7 @@ instruction_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_node * node = jive_opnode_create(
-		*this,
-		region,
-		arguments, arguments + narguments);
+	jive_node * node = jive_opnode_create(*this, region, arguments, arguments + narguments);
 	for (size_t n = 0; n < icls()->ninputs; ++n) {
 		node->inputs[n]->required_rescls = &icls()->inregs[n]->base;
 	}

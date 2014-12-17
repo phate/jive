@@ -66,11 +66,7 @@ apply_op::create_node(
 	size_t nargumentsx,
 	jive::output * const arguments[]) const
 {
-	jive_node * node = jive_opnode_create(
-		*this,
-		region,
-		arguments, arguments + nargumentsx);
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + nargumentsx);
 }
 
 std::string

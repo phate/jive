@@ -97,10 +97,7 @@ public:
 		size_t narguments,
 		jive::output * const arguments[]) const override
 	{
-		return jive_opnode_create(
-			*this,
-			region,
-			arguments, arguments + narguments);
+		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	virtual std::string

@@ -97,10 +97,7 @@ empty_unify_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	return jive_opnode_create(
-		*this,
-		region,
-		std::initializer_list<jive::output *>{});
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
