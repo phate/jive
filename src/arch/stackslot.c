@@ -72,7 +72,7 @@ MAKE_STACKSLOT_CLASS(4, 4);
 MAKE_STACKSLOT_CLASS(8, 8);
 MAKE_STACKSLOT_CLASS(16, 16);
 
-static jive_stackslot_size_class *
+static const jive_stackslot_size_class *
 jive_stackslot_size_class_static(size_t size, size_t alignment)
 {
 	if (size == alignment) {
@@ -257,7 +257,7 @@ struct jive_slot_alignment {
 			return nullptr;
 	}
 
-	jive_stackslot_size_class * cls;
+	const jive_stackslot_size_class * cls;
 	std::unordered_map<ssize_t, jive_fixed_stackslot_class*> stackslot_offset_map;
 	std::unordered_map<ssize_t, jive_callslot_class*> callslot_offset_map;
 };
@@ -309,7 +309,8 @@ jive_stackslot_class_map_lookup_or_create_by_alignment(jive_stackslot_class_map 
 	jive_slot_alignment * slot_alignment = slot_size->create_or_lookup_slot_alignment(alignment);
 	
 	if (!slot_alignment->cls) {
-		jive_stackslot_size_class * cls = jive_stackslot_size_class_static(size, alignment);
+		const jive_stackslot_size_class * cls =
+			jive_stackslot_size_class_static(size, alignment);
 		if (!cls)
 			cls = jive_stackslot_size_class_create(size, alignment);
 
@@ -336,7 +337,7 @@ jive_stackslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * s
 	
 	jive_fixed_stackslot_class * cls = slot_alignment->lookup_stackslot(offset);
 	if (!cls) {
-		jive_stackslot_size_class * parent = slot_alignment->cls;
+		const jive_stackslot_size_class * parent = slot_alignment->cls;
 		if (!parent) {
 			parent = jive_stackslot_size_class_static(size, alignment);
 			if (!parent)
@@ -372,7 +373,7 @@ jive_callslot_class_map_lookup_or_create_by_offset(jive_stackslot_class_map * se
 	
 	jive_callslot_class * cls = slot_alignment->lookup_callslot(offset);
 	if (!cls) {
-		jive_stackslot_size_class * parent = slot_alignment->cls;
+		const jive_stackslot_size_class * parent = slot_alignment->cls;
 		if (!parent) {
 			parent = jive_stackslot_size_class_static(size, alignment);
 			if (!parent)
