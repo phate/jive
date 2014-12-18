@@ -741,6 +741,14 @@ jive_opnode_create(
 		op.narguments(), argument_types, argument_values,
 		op.nresults(), result_types);
 
+	/* FIXME: this is regalloc-specific, should go away */
+	for (size_t n = 0; n < op.narguments(); ++n) {
+		node->inputs[n]->required_rescls = op.argument_cls(n);
+	}
+	for (size_t n = 0; n < op.nresults(); ++n) {
+		node->outputs[n]->required_rescls = op.result_cls(n);
+	}
+
 	/* FIXME: region head/tail nodes are a bit quirky, but they
 	 * will go away eventually anyways */
 	if (dynamic_cast<const jive::region_head_op *>(&op)) {

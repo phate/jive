@@ -11,6 +11,7 @@
 
 class jive_node;
 class jive_region;
+class jive_resource_class;
 
 namespace jive {
 
@@ -30,15 +31,19 @@ public:
 
 	virtual size_t
 	narguments() const noexcept = 0;
-
 	virtual const jive::base::type &
 	argument_type(size_t index) const noexcept = 0;
+	// FIXME: specific to register allocator, should go away
+	virtual const jive_resource_class *
+	argument_cls(size_t index) const noexcept;
 
 	virtual size_t
 	nresults() const noexcept = 0;
-
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept = 0;
+	// FIXME: specific to register allocator, should go away
+	virtual const jive_resource_class *
+	result_cls(size_t index) const noexcept;
 
 	virtual jive_node *
 	create_node(

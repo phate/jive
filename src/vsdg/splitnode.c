@@ -34,11 +34,7 @@ split_operation::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_node * node = jive_opnode_create(*this, region, arguments, arguments + narguments);
-	node->inputs[0]->required_rescls = in_class();
-	node->outputs[0]->required_rescls = out_class();
-	
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
@@ -59,6 +55,19 @@ split_operation::result_type(size_t index) const noexcept
 {
 	return *out_class_->type;
 }
+
+const jive_resource_class *
+split_operation::argument_cls(size_t index) const noexcept
+{
+	return in_class_;
+}
+
+const jive_resource_class *
+split_operation::result_cls(size_t index) const noexcept
+{
+	return out_class_;
+}
+
 
 /* reduction methods */
 jive_unop_reduction_path_t

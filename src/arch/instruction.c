@@ -52,11 +52,31 @@ instruction_op::argument_type(size_t index) const noexcept
 	}
 }
 
+const jive_resource_class *
+instruction_op::argument_cls(size_t index) const noexcept
+{
+	if (index < icls()->ninputs) {
+		return &icls()->inregs[index]->base;
+	} else {
+		return &jive_root_resource_class;
+	}
+}
+
 size_t
 instruction_op::nresults() const noexcept
 {
 	return icls()->noutputs +
 		((icls()->flags & jive_instruction_jump) ? 1 : 0);
+}
+
+const jive_resource_class *
+instruction_op::result_cls(size_t index) const noexcept
+{
+	if (index < icls()->noutputs) {
+		return &icls()->outregs[index]->base;
+	} else {
+		return &jive_root_resource_class;
+	}
 }
 
 const jive::base::type &
@@ -76,14 +96,7 @@ instruction_op::create_node(
 	size_t narguments,
 	jive::output * const arguments[]) const
 {
-	jive_node * node = jive_opnode_create(*this, region, arguments, arguments + narguments);
-	for (size_t n = 0; n < icls()->ninputs; ++n) {
-		node->inputs[n]->required_rescls = &icls()->inregs[n]->base;
-	}
-	for (size_t n = 0; n < icls()->noutputs; ++n) {
-		node->outputs[n]->required_rescls = &icls()->outregs[n]->base;
-	}
-	return node;
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
 }
 
 std::string
