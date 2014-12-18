@@ -15,6 +15,7 @@
 #include <jive/util/list.h>
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-normal-form.h>
@@ -740,9 +741,18 @@ jive_opnode_create(
 		op.narguments(), argument_types, argument_values,
 		op.nresults(), result_types);
 
+	/* FIXME: region head/tail nodes are a bit quirky, but they
+	 * will go away eventually anyways */
 	if (dynamic_cast<const jive::region_head_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->top);
 		region->top = node;
+		for (size_t n = 0; n < node->noutputs; ++n) {
+			jive::ctl::output * output =
+				dynamic_cast<jive::ctl::output *>(node->outputs[n]);
+			if (output) {
+				output->set_active(false);
+			}
+		}
 	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->bottom);
 		region->bottom = node;
