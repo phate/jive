@@ -21,16 +21,6 @@ add_op::operator==(const operation & other) const noexcept
 	const add_op * o = dynamic_cast<const add_op *>(&other);
 	return o && o->type() == type();
 }
-
-jive_node *
-add_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 value_repr
 add_op::reduce_constants(
 	const value_repr & arg1,

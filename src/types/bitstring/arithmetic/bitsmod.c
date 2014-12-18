@@ -21,16 +21,6 @@ smod_op::operator==(const operation & other) const noexcept
 	const smod_op * o = dynamic_cast<const smod_op *>(&other);
 	return o && o->type() == type();
 }
-
-jive_node *
-smod_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 value_repr
 smod_op::reduce_constants(
 	const value_repr & arg1,

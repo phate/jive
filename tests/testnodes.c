@@ -63,16 +63,6 @@ test_operation::result_type(size_t index) const noexcept
 {
 	return *result_types_[index];
 }
-
-jive_node *
-test_operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 test_operation::debug_string() const
 {

@@ -27,16 +27,6 @@ namespace jive {
 graph_tail_operation::~graph_tail_operation() noexcept
 {
 }
-
-jive_node *
-graph_tail_operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 graph_tail_operation::debug_string() const
 {

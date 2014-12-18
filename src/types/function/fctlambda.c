@@ -43,16 +43,6 @@ lambda_head_op::result_type(size_t index) const noexcept
 	static const ctl::type type;
 	return type;
 }
-
-jive_node *
-lambda_head_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 lambda_head_op::debug_string() const
 {
@@ -81,16 +71,6 @@ lambda_tail_op::argument_type(size_t index) const noexcept
 	static const ctl::type type;
 	return type;
 }
-
-jive_node *
-lambda_tail_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 lambda_tail_op::debug_string() const
 {
@@ -130,16 +110,6 @@ lambda_op::result_type(size_t index) const noexcept
 {
 	return function_type();
 }
-
-jive_node *
-lambda_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 lambda_op::debug_string() const
 {

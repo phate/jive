@@ -60,15 +60,6 @@ apply_op::result_type(size_t index) const noexcept
 	return *function_type().return_type(index);
 }
 
-jive_node *
-apply_op::create_node(
-	jive_region * region,
-	size_t nargumentsx,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + nargumentsx);
-}
-
 std::string
 apply_op::debug_string() const
 {

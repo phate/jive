@@ -29,4 +29,13 @@ operation::result_cls(size_t index) const noexcept
 	return &jive_root_resource_class;
 }
 
+jive_node *
+operation::create_node(
+	jive_region * region,
+	size_t narguments,
+	jive::output * const arguments[]) const
+{
+	return jive_opnode_create(*this, region, arguments, arguments + narguments);
+}
+
 }

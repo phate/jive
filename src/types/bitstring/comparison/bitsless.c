@@ -23,16 +23,6 @@ slt_op::operator==(const operation & other) const noexcept
 	const slt_op * o = dynamic_cast<const slt_op *>(&other);
 	return o && o->type() == type();
 }
-
-jive_node *
-slt_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 compare_result
 slt_op::reduce_constants(
 	const value_repr & arg1,

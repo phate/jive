@@ -37,16 +37,6 @@ immediate_op::result_type(size_t index) const noexcept
 	static const jive::imm::type type;
 	return type;
 }
-
-jive_node *
-immediate_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 immediate_op::debug_string() const
 {

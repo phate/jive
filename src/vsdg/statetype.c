@@ -70,16 +70,6 @@ mux_op::result_type(size_t index) const noexcept
 {
 	return *state_type_;
 }
-
-jive_node *
-mux_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 mux_op::debug_string() const
 {

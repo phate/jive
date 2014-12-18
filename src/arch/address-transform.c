@@ -517,16 +517,6 @@ address_to_bitstring_operation::operator==(const operation & other) const noexce
 		dynamic_cast<const address_to_bitstring_operation *>(&other);
 	return o && nbits() == o->nbits();
 }
-
-jive_node *
-address_to_bitstring_operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 address_to_bitstring_operation::debug_string() const
 {
@@ -607,16 +597,6 @@ bitstring_to_address_operation::operator==(const operation & other) const noexce
 		dynamic_cast<const bitstring_to_address_operation *>(&other);
 	return o && nbits() == o->nbits();
 }
-
-jive_node *
-bitstring_to_address_operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 bitstring_to_address_operation::debug_string() const
 {

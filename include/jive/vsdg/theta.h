@@ -31,13 +31,6 @@ public:
 
 	virtual const base::type &
 	result_type(size_t index) const noexcept override;
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override;
-
 	virtual std::string
 	debug_string() const override;
 
@@ -55,13 +48,6 @@ public:
 
 	virtual const base::type &
 	argument_type(size_t index) const noexcept override;
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override;
-
 	virtual std::string
 	debug_string() const override;
 
@@ -73,13 +59,6 @@ class theta_op final : public region_anchor_op {
 public:
 	virtual
 	~theta_op() noexcept;
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override;
-
 	virtual std::string
 	debug_string() const override;
 

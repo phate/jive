@@ -23,16 +23,6 @@ namespace jive {
 gamma_tail_op::~gamma_tail_op() noexcept
 {
 }
-
-jive_node *
-gamma_tail_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 gamma_tail_op::debug_string() const
 {
@@ -66,16 +56,6 @@ gamma_op::argument_type(size_t index) const noexcept
 		return control_type;
 	}
 }
-
-jive_node *
-gamma_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 gamma_op::debug_string() const
 {

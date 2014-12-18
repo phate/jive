@@ -21,16 +21,6 @@ neg_op::operator==(const operation & other) const noexcept
 	const neg_op * o = dynamic_cast<const neg_op *>(&other);
 	return o && o->type() == type();
 }
-
-jive_node *
-neg_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 value_repr
 neg_op::reduce_constant(
 	const value_repr & arg) const

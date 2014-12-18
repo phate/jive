@@ -34,16 +34,6 @@ phi_head_op::result_type(size_t index) const noexcept
 	static const ctl::type type;
 	return type;
 }
-
-jive_node *
-phi_head_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 phi_head_op::debug_string() const
 {
@@ -72,16 +62,6 @@ phi_tail_op::argument_type(size_t index) const noexcept
 	static const ctl::type type;
 	return type;
 }
-
-jive_node *
-phi_tail_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 phi_tail_op::debug_string() const
 {
@@ -97,16 +77,6 @@ phi_tail_op::copy() const
 phi_op::~phi_op() noexcept
 {
 }
-
-jive_node *
-phi_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 phi_op::debug_string() const
 {

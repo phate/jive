@@ -21,16 +21,6 @@ shr_op::operator==(const operation & other) const noexcept
 	const shr_op * o = dynamic_cast<const shr_op *>(&other);
 	return o && o->type() == type();
 }
-
-jive_node *
-shr_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 value_repr
 shr_op::reduce_constants(
 	const value_repr & arg1,

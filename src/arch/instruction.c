@@ -89,16 +89,6 @@ instruction_op::result_type(size_t index) const noexcept
 		return control_type;
 	}
 }
-
-jive_node *
-instruction_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 instruction_op::debug_string() const
 {

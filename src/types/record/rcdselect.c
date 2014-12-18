@@ -33,16 +33,6 @@ select_operation::operator==(const operation & other) const noexcept
 		dynamic_cast<const select_operation *>(&other);
 	return op && type_ == op->type_ && element_ == op->element_;
 }
-
-jive_node *
-select_operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 select_operation::debug_string() const
 {

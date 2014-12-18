@@ -129,15 +129,6 @@ public:
 		return o != nullptr;
 	}
 
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override
-	{
-		return jive_opnode_create(*this, region, arguments, arguments + narguments);
-	}
-
 	static jive::output *
 	normalized_create(jive::output * arg)
 	{
@@ -178,15 +169,6 @@ public:
 	{
 		const make_binop * o = dynamic_cast<const make_binop *>(&other);
 		return o != nullptr;
-	}
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override
-	{
-		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	static jive::output *
@@ -238,15 +220,6 @@ public:
 	{
 		const make_cmpop * o = dynamic_cast<const make_cmpop *>(&other);
 		return o != nullptr;
-	}
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override
-	{
-		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	static jive::output *

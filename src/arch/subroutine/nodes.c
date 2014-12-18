@@ -30,16 +30,6 @@ subroutine_head_op::result_type(size_t index) const noexcept
 	static const ctl::type type;
 	return type;
 }
-
-jive_node *
-subroutine_head_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 subroutine_head_op::debug_string() const
 {
@@ -68,16 +58,6 @@ subroutine_tail_op::argument_type(size_t index) const noexcept
 	static const ctl::type type;
 	return type;
 }
-
-jive_node *
-subroutine_tail_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 subroutine_tail_op::debug_string() const
 {
@@ -107,16 +87,6 @@ subroutine_op::result_type(size_t index) const noexcept
 	static const jive::mem::type objstate_type;
 	return objstate_type;
 }
-
-jive_node *
-subroutine_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 subroutine_op::debug_string() const
 {

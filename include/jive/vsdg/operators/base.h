@@ -45,11 +45,12 @@ public:
 	virtual const jive_resource_class *
 	result_cls(size_t index) const noexcept;
 
-	virtual jive_node *
+	// FIXME: move out of operation entirely
+	jive_node *
 	create_node(
 		jive_region * region,
 		size_t narguments,
-		jive::output * const arguments[]) const = 0;
+		jive::output * const arguments[]) const;
 
 	virtual std::string
 	debug_string() const = 0;

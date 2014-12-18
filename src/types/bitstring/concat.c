@@ -354,16 +354,6 @@ concat_op::result_type(size_t index) const noexcept
 {
 	return result_type_;
 }
-
-jive_node *
-concat_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 jive_binop_reduction_path_t
 concat_op::can_reduce_operand_pair(
 	const jive::output * arg1,

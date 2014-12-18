@@ -91,15 +91,6 @@ public:
 		return *result_types_[index];
 	}
 
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override
-	{
-		return jive_opnode_create(*this, region, arguments, arguments + narguments);
-	}
-
 	virtual std::string
 	debug_string() const override
 	{

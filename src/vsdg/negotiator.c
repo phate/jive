@@ -63,16 +63,6 @@ negotiator_split_operation::result_type(size_t index) const noexcept
 	return *output_type_;
 }
 
-jive_node *
-negotiator_split_operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
-
 std::string
 negotiator_split_operation::debug_string() const
 {

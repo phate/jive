@@ -34,16 +34,6 @@ slice_op::operator==(const operation & other) const noexcept
 	const slice_op * op = dynamic_cast<const slice_op *>(&other);
 	return op && op->argument_type_ == argument_type_ && op->low() == low() && op->high() == high();
 }
-
-jive_node *
-slice_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 slice_op::debug_string() const
 {

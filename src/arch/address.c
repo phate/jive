@@ -36,16 +36,6 @@ memberof_op::operator==(const operation & other) const noexcept
 
 	return op && op->record_decl() == record_decl() && op->index() == index();
 }
-
-jive_node *
-memberof_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 memberof_op::debug_string() const
 {
@@ -129,16 +119,6 @@ containerof_op::operator==(const operation & other) const noexcept
 		dynamic_cast<const containerof_op *>(&other);
 	return op && op->record_decl() == record_decl() && op->index() == index();
 }
-
-jive_node *
-containerof_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 containerof_op::debug_string() const
 {
@@ -271,16 +251,6 @@ arraysubscript_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
-
-jive_node *
-arraysubscript_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 arraysubscript_op::debug_string() const
 {
@@ -376,16 +346,6 @@ arrayindex_op::result_type(size_t index) const noexcept
 {
 	return index_type_;
 }
-
-jive_node *
-arrayindex_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 arrayindex_op::debug_string() const
 {
@@ -455,16 +415,6 @@ label_to_address_op::result_type(size_t index) const noexcept
 {
 	return jive::addr::type::singleton();
 }
-
-jive_node *
-label_to_address_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 label_to_address_op::debug_string() const
 {
@@ -530,16 +480,6 @@ label_to_bitstring_op::result_type(size_t index) const noexcept
 {
 	return result_type_;
 }
-
-jive_node *
-label_to_bitstring_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 label_to_bitstring_op::debug_string() const
 {

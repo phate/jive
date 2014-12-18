@@ -28,16 +28,6 @@ unify_op::operator==(const operation & other) const noexcept
 		dynamic_cast<const unify_op *>(&other);
 	return op && type_ == op->type_ && option_ == op->option_;
 }
-
-jive_node *
-unify_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 unify_op::debug_string() const
 {
@@ -90,16 +80,6 @@ empty_unify_op::operator==(const operation & other) const noexcept
 		dynamic_cast<const empty_unify_op *>(&other);
 	return op && op->declaration() == declaration();
 }
-
-jive_node *
-empty_unify_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 empty_unify_op::debug_string() const
 {

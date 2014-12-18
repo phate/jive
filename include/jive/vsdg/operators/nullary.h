@@ -105,15 +105,6 @@ public:
 		return FormatValue()(value_);
 	}
 
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override
-	{
-		return jive_opnode_create(*this, region, arguments, arguments + narguments);
-	}
-
 	virtual const type &
 	result_type(size_t index) const noexcept override
 	{
@@ -175,15 +166,6 @@ public:
 	debug_string() const override
 	{
 		return name_;
-	}
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override
-	{
-		return jive_opnode_create(*this, region, arguments, arguments + narguments);
 	}
 
 	virtual const type &

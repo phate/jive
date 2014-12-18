@@ -58,16 +58,6 @@ flattened_binary_op::result_type(size_t index) const noexcept
 {
 	return op_->result_type(0);
 }
-
-jive_node *
-flattened_binary_op::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
-{
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
-}
-
 std::string
 flattened_binary_op::debug_string() const
 {

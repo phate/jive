@@ -51,13 +51,6 @@ public:
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override;
-
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(

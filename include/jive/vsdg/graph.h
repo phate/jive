@@ -29,13 +29,6 @@ class graph_tail_operation final : public region_tail_op {
 public:
 	virtual
 	~graph_tail_operation() noexcept;
-
-	virtual jive_node *
-	create_node(
-		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const override;
-
 	virtual std::string
 	debug_string() const override;
 
