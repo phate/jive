@@ -68,6 +68,13 @@ gamma_op::copy() const
 	return std::unique_ptr<jive::operation>(new gamma_op(*this));
 }
 
+bool
+gamma_op::operator==(const operation & other) const noexcept
+{
+	const gamma_op * op = dynamic_cast<const gamma_op*>(&other);
+	return op && op->nalternatives_ == nalternatives_;
+}
+
 }
 
 jive::node_normal_form *

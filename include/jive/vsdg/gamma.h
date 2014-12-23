@@ -54,6 +54,9 @@ public:
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+
 private:
 	size_t nalternatives_;
 };
