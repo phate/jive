@@ -129,10 +129,32 @@ public:
 	}
 };
 
+class gamma_op_handler final : public opcls_handler {
+public:
+	inline
+	gamma_op_handler(std::string tag, opcls_registry & registry)
+	: opcls_handler(tag, typeid(gamma_op), registry)
+	{}
+
+	virtual void
+	serialize(const operation & op_, output_driver & driver) const override
+	{
+		const gamma_op & op = static_cast<const gamma_op &>(op_);
+		driver.put_uint(op.nalternatives());
+	}
+
+	virtual std::unique_ptr<operation>
+	deserialize(parser_driver & driver) const override
+	{
+		size_t nalternatives = driver.parse_uint();
+		return std::unique_ptr<operation>(new gamma_op(nalternatives));
+	}
+};
+
 ctlconst_handler registerer_ctlconst("ctlconst", opcls_registry::mutable_instance());
 split_handler registerer_split_op("split", opcls_registry::mutable_instance());
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(graph_tail, graph_tail_operation);
-JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(gamma, gamma_op);
+gamma_op_handler register_gamma_op("gamma", opcls_registry::mutable_instance());
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(gamma_tail, gamma_tail_op);
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta, theta_op);
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta_head, theta_head_op);

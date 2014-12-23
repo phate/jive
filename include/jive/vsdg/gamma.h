@@ -38,7 +38,7 @@ public:
 	~gamma_op() noexcept;
 
 	inline constexpr
-	gamma_op(size_t nalternatives = 2) noexcept
+	gamma_op(size_t nalternatives) noexcept
 		: nalternatives_(nalternatives)
 	{
 	}
@@ -48,6 +48,13 @@ public:
 
 	virtual const base::type &
 	argument_type(size_t index) const noexcept override;
+
+	inline size_t
+	nalternatives() const noexcept
+	{
+		return nalternatives_;
+	}
+
 	virtual std::string
 	debug_string() const override;
 
