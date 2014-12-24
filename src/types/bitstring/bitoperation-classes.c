@@ -160,7 +160,8 @@ compare_op::nresults() const noexcept
 const jive::base::type &
 compare_op::result_type(size_t index) const noexcept
 {
-	return jive::ctl::boolean;
+	static const jive::bits::type bit(1);
+	return bit;
 }
 
 jive_binop_reduction_path_t
@@ -196,10 +197,10 @@ compare_op::reduce_operand_pair(
 {
 	jive_graph * graph = arg1->node()->graph;
 	if (path == 1) {
-		return jive_control_false(graph);
+		return jive_bitconstant(graph, 1, "0");
 	}
 	if (path == 2) {
-		return jive_control_true(graph);
+		return jive_bitconstant(graph, 1, "1");
 	}
 
 	return nullptr;

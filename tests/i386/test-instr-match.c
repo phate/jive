@@ -174,9 +174,11 @@ static bin_function_t
 generate_bin_cmp_function(bin_op_factory_t factory)
 {
 	bin_graph b = prepare_bin_graph();
-	jive::output * pred = factory(b.arg1, b.arg2);
+	jive::output * cmp = factory(b.arg1, b.arg2);
 	jive::output * zero = jive_bitconstant_unsigned(b.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
+
+	jive::output * pred = jive::ctl::match(1, {0}, cmp);
 	
 	jive::bits::type bits32(32);
 	jive::output * result;
@@ -197,10 +199,12 @@ generate_bin_cmp_function_curryleft(bin_op_factory_t factory, uint32_t op1)
 {
 	un_graph u = prepare_un_graph();
 	jive::output * c = jive_bitconstant_unsigned(u.graph, 32, op1);
-	jive::output * pred = factory(c, u.arg);
+	jive::output * cmp = factory(c, u.arg);
 	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
+	jive::output * pred = jive::ctl::match(1, {0}, cmp);
+
 	jive::bits::type bits32(32);
 	jive::output * result;
 	const jive::base::type * tmparray5[] = {&bits32};
@@ -219,9 +223,11 @@ generate_bin_cmp_function_curryright(bin_op_factory_t factory, uint32_t op2)
 {
 	un_graph u = prepare_un_graph();
 	jive::output * c = jive_bitconstant_unsigned(u.graph, 32, op2);
-	jive::output * pred = factory(u.arg, c);
+	jive::output * cmp = factory(u.arg, c);
 	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
+
+	jive::output * pred = jive::ctl::match(1, {0}, cmp);
 	
 	jive::bits::type bits32(32);
 	jive::output * result;

@@ -20,6 +20,7 @@
 #include <jive/util/typeinfo-map.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/traverser.h>
 
@@ -270,10 +271,14 @@ match_gpr_bitbinary(jive_node * node)
 
 static void
 convert_bitcmp(
-	jive_node * node,
+	jive_node * node_,
 	const jive_instruction_class * jump_icls,
 	const jive_instruction_class * inv_jump_icls)
 {
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node_->operation()));
+
+	jive_node * node = node_->producer(0);
+
 	jive::output * arg1 = node->inputs[0]->origin();
 	jive::output * arg2 = node->inputs[1]->origin();
 	
@@ -305,7 +310,7 @@ convert_bitcmp(
 	jive::immediate imm;
 	jive_node * jump_instr = jive_instruction_node_create(node->region, jump_icls,
 		{cmp_instr->outputs[0]}, {imm}, {}, {}, {&jive::ctl::boolean});
-	jive_output_replace(node->outputs[0], jump_instr->outputs[0]);
+	jive_output_replace(node_->outputs[0], jump_instr->outputs[0]);
 }
 
 static const jive::detail::typeinfo_map<
@@ -389,7 +394,9 @@ static const jive::detail::typeinfo_map<
 static void
 match_gpr_bitcmp(jive_node * node)
 {
-	auto i = bitcompare_map.find(&typeid(node->operation()));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node->operation()));
+
+	auto i = bitcompare_map.find(&typeid(node->producer(0)->operation()));
 	if (i != bitcompare_map.end()) {
 		convert_bitcmp(node, i->second.first, i->second.second);
 	} else {
@@ -556,8 +563,10 @@ match_single(jive_node * node, const jive_regselector * regselector)
 		} else {
 			JIVE_DEBUG_ASSERT(false);
 		}
-	} else if (dynamic_cast<const jive::bits::compare_op *>(&node->operation())) {
-		const jive_register_class * regcls = jive_regselector_map_input(regselector, node->inputs[0]);
+	} else if (dynamic_cast<const jive::match_op *>(&node->operation())
+		&& dynamic_cast<const jive::bits::compare_op *>(&node->producer(0)->operation())) {
+		jive::input * cmp_input = node->producer(0)->inputs[0];
+		const jive_register_class * regcls = jive_regselector_map_input(regselector, cmp_input);
 		if (true || (regcls == &jive_i386_regcls_gpr)) {
 			match_gpr_bitcmp(node);
 		} else {

@@ -4,6 +4,8 @@
  * See COPYING for terms of redistribution.
  */
 
+#include <jive/types/bitstring/constant.h>
+#include <jive/types/bitstring/type.h>
 #include <jive/types/float/fltconstant.h>
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/flttype.h>
@@ -153,7 +155,8 @@ compare_op::nresults() const noexcept
 const jive::base::type &
 compare_op::result_type(size_t index) const noexcept
 {
-	return jive::ctl::boolean;
+	static const jive::bits::type bit(1);
+	return bit;
 }
 
 jive_binop_reduction_path_t
@@ -188,9 +191,9 @@ compare_op::reduce_operand_pair(
 			static_cast<const constant_op&>(arg2->node()->operation());
 		bool result = reduce_constants(c1.value(), c2.value());
 		if (result) {
-			return jive_control_true(graph);
+			return jive_bitconstant(graph, 1, "1");
 		} else {
-			return jive_control_false(graph);
+			return jive_bitconstant(graph, 1, "0");
 		}
 	}
 
