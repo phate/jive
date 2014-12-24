@@ -33,6 +33,7 @@ phi_head_op::result_type(size_t index) const noexcept
 {
 	return seq::seqtype;
 }
+
 std::string
 phi_head_op::debug_string() const
 {
@@ -60,6 +61,7 @@ phi_tail_op::argument_type(size_t index) const noexcept
 {
 	return seq::seqtype;
 }
+
 std::string
 phi_tail_op::debug_string() const
 {

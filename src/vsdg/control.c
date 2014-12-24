@@ -25,16 +25,8 @@ template class domain_const_op<
 }
 
 jive::output *
-jive_control_false(jive_graph * graph)
+jive_control_constant(jive_graph * graph, size_t nalternatives, size_t alternative)
 {
-	jive::ctl::constant_op op(false);
+	jive::ctl::constant_op op(jive::ctl::value_repr(alternative, nalternatives));
 	return jive_node_create_normalized(graph, op, {})[0];
 }
-
-jive::output *
-jive_control_true(jive_graph * graph)
-{
-	jive::ctl::constant_op op(true);
-	return jive_node_create_normalized(graph, op, {})[0];
-}
-

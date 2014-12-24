@@ -32,9 +32,8 @@ static int test_main(void)
 		&jive_i386_instr_int_load_imm,
 		0, tmparray0);
 	
-	jive::ctl::type ctltype;
 	jive_node * leave = jive_instruction_node_create(graph->root_region, &jive_i386_instr_ret,
-		{}, {}, {}, {}, {&ctltype});
+		{}, {}, {}, {}, {&jive::ctl::boolean});
 	
 	const jive::base::type * type = &enter->outputs[0]->type();
 	jive::gate * gate = type->create_gate(graph, "retval");

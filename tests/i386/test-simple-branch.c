@@ -43,10 +43,9 @@ static int test_main(void)
 		fn_region, &jive_i386_instr_int_cmp,
 		tmparray2, NULL);
 
-	jive::ctl::type ctltype;
 	jive::immediate imm;
 	jive_node * bge = jive_instruction_node_create(fn_region, &jive_i386_instr_int_jump_sgreatereq,
-		{cmp->outputs[0]}, {imm}, {}, {}, {&ctltype});
+		{cmp->outputs[0]}, {imm}, {}, {}, {&jive::ctl::boolean});
 	
 	const jive::base::type * bits32 = &p1->type();
 	

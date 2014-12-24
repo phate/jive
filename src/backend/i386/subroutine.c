@@ -159,9 +159,8 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		static jive::ctl::type ctltype;
 		jive_node * ret_instr = jive_instruction_node_create(subroutine.region, &jive_i386_instr_ret,
-			{}, {}, {}, {}, {&ctltype});
+			{}, {}, {}, {}, {&jive::ctl::boolean});
 		/* add dependency on return address on stack */
 		jive_node_gate_input(
 			ret_instr,

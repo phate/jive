@@ -272,9 +272,9 @@ static int test_main(void)
 	verify_serialize_type(&bits8, "bits<8>");
 	verify_deserialize_type("bits<8>", &bits8);
 	
-	jive::ctl::type ctl;
-	verify_serialize_type(&ctl, "control<>");
-	verify_deserialize_type("control<>", &ctl);
+	jive::ctl::type ctl(3);
+	verify_serialize_type(&ctl, "control<3>");
+	verify_deserialize_type("control<3>", &ctl);
 	
 	jive_graph * graph = jive_graph_create();
 	

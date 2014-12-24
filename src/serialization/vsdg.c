@@ -21,10 +21,11 @@ static void
 jive_control_type_serialize(
 	const jive_serialization_typecls * self,
 	jive_serialization_driver * driver,
-	const jive::base::type * type,
+	const jive::base::type * type_,
 	jive_token_ostream * os)
 {
-	/* no attributes */
+	const jive::ctl::type * type = static_cast<const jive::ctl::type*>(type_);
+	jive_serialize_uint(driver, type->nalternatives(), os);
 }
 
 static bool
@@ -34,7 +35,11 @@ jive_control_type_deserialize(
 	jive_token_istream * is,
 	jive::base::type ** type)
 {
-	*type = new jive::ctl::type();
+	uint64_t nalternatives;
+	if (!jive_deserialize_uint(driver, is, &nalternatives))
+		return false;
+
+	*type = new jive::ctl::type(nalternatives);
 	return true;
 }
 
@@ -82,17 +87,24 @@ public:
 
 	virtual void
 	serialize(
-		const operation & op,
+		const operation & op_,
 		output_driver & driver) const override
 	{
-		driver.put_uint(static_cast<const ctl::constant_op &>(op).value() ? 1 : 0);
+		const ctl::constant_op & op = static_cast<const ctl::constant_op&>(op_);
+		driver.put_uint(op.value().nalternatives());
+		driver.put_char_token(',');
+		driver.put_uint(op.value().alternative());
 	}
 
 	virtual std::unique_ptr<operation>
 	deserialize(
 		parser_driver & driver) const override
 	{
-		return std::unique_ptr<operation>(new ctl::constant_op(!!driver.parse_uint()));
+		uint64_t nalternatives = driver.parse_uint();
+		driver.parse_char_token(',');
+		uint64_t alternative = driver.parse_uint();
+		return std::unique_ptr<operation>(new ctl::constant_op(
+			ctl::value_repr(alternative, nalternatives)));
 	}
 };
 

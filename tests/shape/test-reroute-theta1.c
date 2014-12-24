@@ -50,7 +50,6 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
-	jive::ctl::type ctl;
 	jive::achr::type anchor_type;
 	const jive::base::type * tmparray0[] = {&type};
 	
@@ -72,7 +71,7 @@ static int test_main(void)
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, top->outputs[0]);
 	const jive::base::type * tmparray3[] = {&type, &type};
 	jive::output * tmparray4[] = {loopvar1.value, top->outputs[1]};
-	const jive::base::type * tmparray5[] = {&ctl, &type};
+	const jive::base::type * tmparray5[] = {&jive::ctl::boolean, &type};
 	
 	jive_node * theta_op = jive_test_node_create(loop_region,
 		2, tmparray3, tmparray4,

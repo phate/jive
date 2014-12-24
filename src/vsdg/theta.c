@@ -34,6 +34,7 @@ theta_head_op::result_type(size_t index) const noexcept
 {
 	return seq::seqtype;
 }
+
 std::string
 theta_head_op::debug_string() const
 {
@@ -62,10 +63,10 @@ theta_tail_op::argument_type(size_t index) const noexcept
 	if (index == 0)
 		return seq::seqtype;
 	else {
-		static ctl::type ctl;
-		return ctl;
+		return jive::ctl::boolean;
 	}
 }
+
 std::string
 theta_tail_op::debug_string() const
 {

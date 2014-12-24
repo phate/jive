@@ -16,7 +16,7 @@ class type final : public jive::state::type {
 public:
 	virtual ~type() noexcept;
 
-	inline constexpr type() noexcept : jive::state::type() {};
+	type(size_t nalternatives);
 
 	virtual std::string debug_string() const override;
 
@@ -30,13 +30,26 @@ public:
 	virtual jive::output * create_output(jive_node * node, size_t index) const override;
 
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
+
+	inline size_t
+	nalternatives() const noexcept
+	{
+		return nalternatives_;
+	}
+
+private:
+	size_t nalternatives_;
 };
 
 class input final : public jive::state::input {
 public:
 	virtual ~input() noexcept;
 
-	input(struct jive_node * node, size_t index, jive::output * initial_operand);
+	input(
+		size_t nalternatives,
+		struct jive_node * node,
+		size_t index,
+		jive::output * initial_operand);
 
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
@@ -51,7 +64,7 @@ class output final : public jive::state::output {
 public:
 	virtual ~output() noexcept;
 
-	output(struct jive_node * node, size_t index);
+	output(size_t nalternatives, struct jive_node * node, size_t index);
 
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
@@ -66,7 +79,7 @@ class gate final : public jive::state::gate {
 public:
 	virtual ~gate() noexcept;
 
-	gate(jive_graph * graph, const char name[]);
+	gate(size_t nalternatives, jive_graph * graph, const char name[]);
 
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
 
@@ -77,9 +90,40 @@ private:
 	jive::ctl::type type_;
 };
 
-/* FIXME: no, this is not exactly the right representation for controls,
- * but leave it for later */
-typedef bool value_repr;
+class value_repr {
+public:
+	value_repr(size_t alternative, size_t nalternatives);
+
+	inline bool
+	operator==(const jive::ctl::value_repr & other) const noexcept
+	{
+		return alternative_ == other.alternative_ && nalternatives_ == other.nalternatives_;
+	}
+
+	inline bool
+	operator!=(const jive::ctl::value_repr & other) const noexcept
+	{
+		return !(*this == other);
+	}
+
+	inline size_t
+	alternative() const noexcept
+	{
+		return alternative_;
+	}
+
+	inline size_t
+	nalternatives() const noexcept
+	{
+		return nalternatives_;
+	}
+
+private:
+	size_t alternative_;
+	size_t nalternatives_;
+};
+
+const type boolean(2);
 
 }
 }

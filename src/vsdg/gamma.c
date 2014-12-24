@@ -52,8 +52,7 @@ gamma_op::argument_type(size_t index) const noexcept
 		static const achr::type anchor_type;
 		return anchor_type;
 	} else {
-		static const ctl::type control_type;
-		return control_type;
+		return jive::ctl::boolean;
 	}
 }
 std::string
@@ -147,11 +146,11 @@ jive_gamma(jive::output * predicate,
 	if (nf->get_mutable() && nf->get_predicate_reduction()) {
 		const jive::ctl::constant_op * op =
 			dynamic_cast<const jive::ctl::constant_op *>(&predicate->node()->operation());
-		if (op && op->value()) {
+		if (op && op->value().nalternatives() == 2 && op->value().alternative() == 1) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = true_values[n];
 			return;
-		} else if (op && !op->value()) {
+		} else if (op && op->value().nalternatives() == 2 && op->value().alternative() == 0) {
 			for (n = 0; n < nvalues; ++n)
 				results[n] = false_values[n];
 			return;

@@ -57,8 +57,7 @@ objdef_operation::result_type(size_t index) const noexcept
 {
 	/* FIXME: this is horribly wrong, but we don't have another type right
 	now for putting in here, this entire node needs to be remodeled */
-	static const jive::ctl::type type;
-	return type;
+	return jive::ctl::boolean;
 }
 std::string
 objdef_operation::debug_string() const

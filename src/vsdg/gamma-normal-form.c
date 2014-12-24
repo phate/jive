@@ -91,9 +91,9 @@ gamma_normal_form::normalize_node(jive_node * node) const
 		jive_node * branch = nullptr;
 		const jive::ctl::constant_op * op =
 			dynamic_cast<const jive::ctl::constant_op *>(&pred->node()->operation());
-		if (op && op->value() == true) {
+		if (op && op->value().nalternatives() == 2 && op->value().alternative() == 1) {
 			branch = node->producer(0);
-		} else if (op && op->value() == false) {
+		} else if (op && op->value().nalternatives() == 2 && op->value().alternative() == 0) {
 			branch = node->producer(1);
 		}
 		

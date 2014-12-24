@@ -49,6 +49,7 @@ dataobj_head_op::result_type(size_t index) const noexcept
 {
 	return seq::seqtype;
 }
+
 std::string
 dataobj_head_op::debug_string() const
 {
@@ -76,6 +77,7 @@ dataobj_tail_op::argument_type(size_t index) const noexcept
 {
 	return seq::seqtype;
 }
+
 std::string
 dataobj_tail_op::debug_string() const
 {

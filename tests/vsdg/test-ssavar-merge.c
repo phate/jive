@@ -64,14 +64,13 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
-	jive::ctl::type control_type;
 	const jive::base::type * tmparray0[] = {&type};
 	
 	jive_node * top = jive_test_node_create(graph->root_region,
 		0, NULL, NULL,
 		1, tmparray0);
 	const jive::base::type * tmparray1[] = {&type};
-	const jive::base::type * tmparray2[] = {&control_type};
+	const jive::base::type * tmparray2[] = {&jive::ctl::boolean};
 	
 	jive_node * pred = jive_test_node_create(graph->root_region,
 		1, tmparray1, &top->outputs[0],

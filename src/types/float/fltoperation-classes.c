@@ -153,8 +153,7 @@ compare_op::nresults() const noexcept
 const jive::base::type &
 compare_op::result_type(size_t index) const noexcept
 {
-	static const jive::ctl::type ctl;
-	return ctl;
+	return jive::ctl::boolean;
 }
 
 jive_binop_reduction_path_t

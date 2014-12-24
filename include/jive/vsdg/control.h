@@ -12,20 +12,24 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/nullary.h>
 
+#include <inttypes.h>
+
 namespace jive {
 namespace ctl {
 
 struct type_of_value {
 	type operator()(const value_repr & repr) const
 	{
-		return type();
+		return type(repr.nalternatives());
 	}
 };
 
 struct format_value {
 	std::string operator()(const value_repr & repr) const
 	{
-		return repr ? "TRUE" : "FALSE";
+		char tmp[32];
+		snprintf(tmp, sizeof(tmp), "%zd", repr.alternative());
+		return tmp;
 	}
 };
 
@@ -45,9 +49,18 @@ extern template class domain_const_op<
 }
 
 jive::output *
-jive_control_false(jive_graph * graph);
+jive_control_constant(jive_graph * graph, size_t nalternatives, size_t alternative);
 
-jive::output *
-jive_control_true(jive_graph * graph);
+JIVE_EXPORTED_INLINE jive::output *
+jive_control_false(jive_graph * graph)
+{
+	return jive_control_constant(graph, 2, 0);
+}
+
+JIVE_EXPORTED_INLINE jive::output *
+jive_control_true(jive_graph * graph)
+{
+	return jive_control_constant(graph, 2, 1);
+}
 
 #endif

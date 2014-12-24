@@ -302,10 +302,9 @@ convert_bitcmp(
 			tmparray6, NULL);
 	}
 	
-	jive::ctl::type ctltype;
 	jive::immediate imm;
 	jive_node * jump_instr = jive_instruction_node_create(node->region, jump_icls,
-		{cmp_instr->outputs[0]}, {imm}, {}, {}, {&ctltype});
+		{cmp_instr->outputs[0]}, {imm}, {}, {}, {&jive::ctl::boolean});
 	jive_output_replace(node->outputs[0], jump_instr->outputs[0]);
 }
 

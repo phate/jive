@@ -12,13 +12,17 @@
 static inline void
 expect_static_true(jive::output * output)
 {
-	assert(dynamic_cast<const jive::ctl::constant_op &>(output->node()->operation()).value() == true);
+	const jive::ctl::constant_op * op;
+	op  = dynamic_cast<const jive::ctl::constant_op*>(&output->node()->operation());
+	assert(op && op->value().nalternatives() == 2 && op->value().alternative() == 1);
 }
 
 static inline void
 expect_static_false(jive::output * output)
 {
-	assert(dynamic_cast<const jive::ctl::constant_op &>(output->node()->operation()).value() == false);
+	const jive::ctl::constant_op * op;
+	op  = dynamic_cast<const jive::ctl::constant_op*>(&output->node()->operation());
+	assert(op && op->value().nalternatives() == 2 && op->value().alternative() == 0);
 }
 
 #endif
