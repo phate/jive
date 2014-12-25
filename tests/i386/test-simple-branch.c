@@ -49,13 +49,7 @@ static int test_main(void)
 	
 	const jive::base::type * bits32 = &p1->type();
 	
-	jive::output * max;
-	const jive::base::type * tmparray5[] = {bits32};
-	jive::output * tmparray6[] = {p2};
-	jive::output * tmparray7[] = {p1};
-	jive_gamma(bge->outputs[0], 1,
-		tmparray5,
-		tmparray6, tmparray7, &max);
+	jive::output * max = jive_gamma(bge->outputs[0], {bits32}, {{p2}, {p1}})[0];
 	
 	jive_subroutine_simple_set_result(subroutine, 0, max);
 	

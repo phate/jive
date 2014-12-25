@@ -6,6 +6,7 @@
 
 #include <jive/vsdg/gamma.h>
 
+#include <algorithm>
 #include <stdio.h>
 #include <string.h>
 
@@ -52,7 +53,8 @@ gamma_op::argument_type(size_t index) const noexcept
 		static const achr::type anchor_type;
 		return anchor_type;
 	} else {
-		return jive::ctl::boolean;
+		static const ctl::type control_type(nalternatives_);
+		return control_type;
 	}
 }
 std::string
@@ -97,89 +99,110 @@ register_node_normal_form(void)
 
 static jive_node *
 jive_gamma_create(
-	jive_region * region,
 	jive::output * predicate,
-	size_t nvalues, const jive::base::type * const types[],
-	jive::output * const true_values[],
-	jive::output * const false_values[])
+	const std::vector<const jive::base::type*> & types,
+	const std::vector<std::vector<jive::output*>> & alternatives)
 {
-	jive_region * false_region = jive_region_create_subregion(region);
-	jive_region * true_region = jive_region_create_subregion(region);
-	jive_node * false_alt = jive::gamma_tail_op().create_node(
-		false_region, 0, nullptr);
-	jive_node * true_alt = jive::gamma_tail_op().create_node(
-		true_region, 0, nullptr);
-	jive::output * arguments[3] = {
-		true_alt->outputs[0],
-		false_alt->outputs[0],
-		predicate
-	};
-	jive_node * gamma = jive::gamma_op(2).create_node(
-		region,
-		3, arguments);
+	size_t nvalues = types.size();
+	size_t nalternatives = alternatives.size();
+
+	std::vector<jive::output*> tmp({predicate});
+	for (size_t i = 0; i < nalternatives; i++) {
+		JIVE_DEBUG_ASSERT(types.size() == alternatives[i].size());
+		for (size_t f = 0; f < nvalues; f++)
+			tmp.push_back(alternatives[i][f]);
+	}
+	jive_region * region = jive_region_innermost(tmp.size(), &tmp[0]);
+
+	jive::output * arguments[nalternatives+1];
+	for (size_t n = 0; n < nalternatives; n++) {
+		jive_region * subregion = jive_region_create_subregion(region);
+		jive_node * tail_node = jive::gamma_tail_op().create_node(subregion, 0, nullptr);
+		arguments[n] = tail_node->outputs[0];
+	}
+	arguments[nalternatives] = predicate;
+
+	jive_node * gamma = jive::gamma_op(nalternatives).create_node(region, nalternatives+1, arguments);
 	
-	size_t n;
-	for (n = 0; n < nvalues; n++) {
+	for (size_t n = 0; n < nvalues; n++) {
 		char name[80];
 		snprintf(name, sizeof(name), "gamma_%p_%zd", gamma, n);
 		jive::gate * gate = types[n]->create_gate(region->graph, name);
-		jive_node_gate_input(true_alt, gate, true_values[n]);
-		jive_node_gate_input(false_alt, gate, false_values[n]);
+		for (size_t i = 0; i < nalternatives; i++)
+			jive_node_gate_input(arguments[i]->node(), gate, alternatives[i][n]);
 		jive_node_gate_output(gamma, gate);
 	}
+
 	return gamma;
 }
 
-void
+std::vector<jive::output *>
 jive_gamma(jive::output * predicate,
-	size_t nvalues, const struct jive::base::type * const types[],
-	jive::output * const true_values[],
-	jive::output * const false_values[],
-	jive::output * results[])
+	const std::vector<const jive::base::type*> & types,
+	const std::vector<std::vector<jive::output*>> & alternatives)
 {
-	size_t n;
-	
+	/*
+		FIXME: This code is supposed to be in gamma-normal-form.c and nowhere else. However,
+		we would need to extend the gamma operator with the types vector in order to make
+		this possible.
+	*/
+
+	if (auto ctl = dynamic_cast<const jive::ctl::type*>(&predicate->type())) {
+		if (ctl->nalternatives() != alternatives.size())
+			throw jive::compiler_error("Incorrect number of alternatives.");
+	}
+
+	for (size_t n = 0; n < alternatives.size(); n++) {
+		if (alternatives[n].size() != types.size())
+			throw jive::compiler_error("Incorrect number of values for an alternative.");
+	}
+
+	/*
+		FIXME: This is currently not guarded by any normal form attribute. We could make
+		it a special case where two regions are equal, but we have to introduce this
+		optimization first.
+	*/
+	if (alternatives.size() == 1)
+		return alternatives[0];
+
 	jive_graph * graph = predicate->node()->region->graph;
 	jive::gamma_normal_form * nf = static_cast<jive::gamma_normal_form *>(
 		jive_graph_get_nodeclass_form(graph, typeid(jive::gamma_op)));
 	
 	if (nf->get_mutable() && nf->get_predicate_reduction()) {
-		const jive::ctl::constant_op * op =
-			dynamic_cast<const jive::ctl::constant_op *>(&predicate->node()->operation());
-		if (op && op->value().nalternatives() == 2 && op->value().alternative() == 1) {
-			for (n = 0; n < nvalues; ++n)
-				results[n] = true_values[n];
-			return;
-		} else if (op && op->value().nalternatives() == 2 && op->value().alternative() == 0) {
-			for (n = 0; n < nvalues; ++n)
-				results[n] = false_values[n];
-			return;
-		}
+		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation()))
+				return alternatives[op->value().alternative()];
 	}
-	
-	jive::output * tmp[nvalues * 2 + 1];
-	tmp[0] = predicate;
-	for (n = 0; n < nvalues; n++)
-		tmp[n + 1] = false_values[n];
-	for (n = 0; n < nvalues; n++)
-		tmp[n + nvalues + 1] = true_values[n];
-	jive_region * region = jive_region_innermost(nvalues * 2 + 1, tmp);
-	
-	jive_node * node = jive_gamma_create(region, predicate, nvalues, types, true_values, false_values);
-	
-	for (n = 0; n < nvalues; ++n)
-		results[n] = node->outputs[n];
-	
+
+	std::vector<jive::output*> results;
+	jive_node * node = jive_gamma_create(predicate, types, alternatives);
+	for (size_t n = 0; n < node->noutputs; n++)
+		results.push_back(node->outputs[n]);
+
+	/*
+		FIXME: this algorithm is O(n^2), since we have to iterate through all inputs/outputs
+		that have a greater index than the deleted one
+	*/
 	if (nf->get_mutable() && nf->get_invariant_reduction()) {
-		jive_node * true_branch = node->producer(0);
-		jive_node * false_branch = node->producer(1);
-		for (n = nvalues; n > 0; --n) {
-			if (true_values[n-1] != false_values[n-1])
-				continue;
-			results[n-1] = true_values[n-1];
-			delete node->outputs[n-1];
-			delete true_branch->inputs[n-1];
-			delete false_branch->inputs[n-1];
+		results.clear();
+		size_t nalternatives = node->ninputs-1;
+		for (size_t v = node->noutputs; v > 0; --v) {
+			size_t n;
+			jive::output * value = node->producer(0)->inputs[v-1]->origin();
+			for (n = 1; n < nalternatives; n++) {
+				if (value != node->producer(n)->inputs[v-1]->origin())
+					break;
+			}
+			if (n == nalternatives) {
+				results.push_back(node->producer(0)->inputs[v-1]->origin());
+				delete node->outputs[v-1];
+				for (size_t n = 0; n < nalternatives; n++)
+					delete node->producer(n)->inputs[v-1];
+			} else
+				results.push_back(node->outputs[v-1]);
 		}
+		std::reverse(results.begin(), results.end());
 	}
+
+	return results;
 }

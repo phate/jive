@@ -100,15 +100,9 @@ static int test_main(void)
 		1, tmparray9, &top->outputs[0],
 		1, tmparray10);
 	
-	jive::output * gamma[2];
-	const jive::base::type * tmparray11[] = {&type, &type};
-	jive::output * tmparray12[] = {l1->outputs[0], l2->outputs[0]};
-	jive::output * tmparray13[] = {r1->outputs[0], r2->outputs[0]};
-	jive_gamma(pred->outputs[0],
-		2, tmparray11,
-		tmparray12,
-		tmparray13,
-		gamma);
+	std::vector<jive::output*> gamma = jive_gamma(pred->outputs[0], {&type, &type},
+		{{l1->outputs[0], l2->outputs[0]}, {r1->outputs[0], r2->outputs[0]}});
+
 	jive_node * gamma_node = gamma[0]->node();
 	const jive::base::type * tmparray14[] = {&type, &type, &type};
 	jive::output * tmparray15[] = {gamma[0], gamma[1], top->outputs[0]};

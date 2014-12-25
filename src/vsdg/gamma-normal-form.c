@@ -78,50 +78,40 @@ gamma_normal_form::gamma_normal_form(
 bool
 gamma_normal_form::normalize_node(jive_node * node) const
 {
-	bool was_normalized = true;
-
-	if (!get_mutable()) {
+	if (!get_mutable())
 		return true;
-	}
-	
-	JIVE_DEBUG_ASSERT(node->noperands == 3);
-	
-	if (get_predicate_reduction()) {
-		jive::output * pred = node->inputs[2]->origin();
-		jive_node * branch = nullptr;
-		const jive::ctl::constant_op * op =
-			dynamic_cast<const jive::ctl::constant_op *>(&pred->node()->operation());
-		if (op && op->value().nalternatives() == 2 && op->value().alternative() == 1) {
-			branch = node->producer(0);
-		} else if (op && op->value().nalternatives() == 2 && op->value().alternative() == 0) {
-			branch = node->producer(1);
-		}
-		
-		if (branch) {
-			jive_region_move(branch->region, node->region);
-			for (size_t n = 0; n < node->noutputs; n++) {
-				jive_output_replace(node->outputs[n], branch->inputs[n]->origin());
-			}
 
+	bool was_normalized = true;
+	if (get_predicate_reduction()) {
+		jive::output * predicate = node->inputs[node->ninputs-1]->origin();
+		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation())) {
+			jive_node * branch = node->producer(op->value().nalternatives());
+			jive_region_move(branch->region, node->region);
+			for (size_t n = 0; n < node->noutputs; n++)
+				jive_output_replace(node->outputs[n], branch->inputs[n]->origin());
 			was_normalized = false;
 		}
 	}
-	
+
 	if (get_invariant_reduction()) {
-		jive_node * true_branch = node->producer(0);
-		jive_node * false_branch = node->producer(1);
-		for (size_t n = node->noutputs; n > 0; --n) {
-			if (true_branch->inputs[n-1]->origin() != false_branch->inputs[n-1]->origin()) {
-				continue;
+		size_t nalternatives = node->ninputs-1;
+		for (size_t v = node->noutputs; v > 0; --v) {
+			size_t n;
+			jive::output * value = node->producer(0)->inputs[v-1]->origin();
+			for (n = 1; n < nalternatives; n++) {
+				if (value != node->producer(n)->inputs[v-1]->origin())
+					break;
 			}
-			jive_output_replace(node->outputs[n-1], true_branch->inputs[n-1]->origin());
-			delete node->outputs[n-1];
-			delete true_branch->inputs[n-1];
-			delete false_branch->inputs[n-1];
-			was_normalized = false;
+			if (n == nalternatives) {
+				jive_output_replace(node->outputs[v-1], node->producer(0)->inputs[v-1]->origin());
+				delete node->outputs[v-1];
+				for (size_t n = 0; n < nalternatives; n++)
+					delete node->producer(n)->inputs[v-1];
+				was_normalized = false;
+			}
 		}
 	}
-	
+
 	return was_normalized;
 }
 
@@ -130,21 +120,29 @@ gamma_normal_form::operands_are_normalized(
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments) const
 {
-	if (!get_mutable()) {
+	if (!get_mutable())
 		return true;
-	}
-	
-	JIVE_DEBUG_ASSERT(arguments.size() == 3);
 	
 	if (get_predicate_reduction()) {
-		jive::output * pred = arguments[2];
-		const jive::ctl::constant_op * op =
-			dynamic_cast<const jive::ctl::constant_op *>(&pred->node()->operation());
-		if (op) {
+		jive::output * predicate = arguments[arguments.size()-1];
+		if (dynamic_cast<const jive::ctl::constant_op *>(&predicate->node()->operation()))
 			return false;
-		}
 	}
 	
+	if (get_invariant_reduction()) {
+		size_t nalternatives = arguments.size()-1;
+		for (size_t v = 0; v < arguments[0]->node()->ninputs; v++) {
+			size_t n;
+			jive::output * value = arguments[0]->node()->inputs[v]->origin();
+			for (n = 1; n < nalternatives; n++) {
+				if (value != arguments[n]->node()->inputs[v]->origin())
+					break;
+			}
+			if (n == nalternatives)
+				return false;
+		}
+	}
+
 	if (get_invariant_reduction()) {
 		jive_node * true_branch = arguments[0]->node();
 		jive_node * false_branch = arguments[1]->node();

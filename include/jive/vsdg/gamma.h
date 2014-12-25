@@ -70,11 +70,9 @@ private:
 
 }
 
-void
+std::vector<jive::output*>
 jive_gamma(jive::output * predicate,
-	size_t nvalues, const struct jive::base::type * const types[],
-	jive::output * const true_values[],
-	jive::output * const false_values[],
-	jive::output * results[]);
+	const std::vector<const jive::base::type*> & types,
+	const std::vector<std::vector<jive::output*>> & alternatives);
 
 #endif

@@ -38,9 +38,7 @@ static int test_main(void)
 	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
 	jive::output * b = jive_bitconstant(gr1, 8, "10101010");
 	jive::output * true_out = jive_control_true(gr1);
-	jive::output * c;
-	const jive::base::type* tmparray0[] = {&a->type()};
-	jive_gamma(true_out, 1, tmparray0, &a, &b, &c);
+	jive::output * c = jive_gamma(true_out, {&a->type()}, {{a}, {b}})[0];
 	
 	jive_theta theta = jive_theta_begin(gr1);
 	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);

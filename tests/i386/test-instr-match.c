@@ -178,14 +178,10 @@ generate_bin_cmp_function(bin_op_factory_t factory)
 	jive::output * zero = jive_bitconstant_unsigned(b.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
 
-	jive::output * pred = jive::ctl::match(1, {0}, cmp);
+	jive::output * pred = jive::ctl::match(1, {1}, cmp);
 	
 	jive::bits::type bits32(32);
-	jive::output * result;
-	const jive::base::type * tmparray4[] = {&bits32};
-	jive_gamma(pred,
-		1, tmparray4,
-		&one, &zero, &result);
+	jive::output * result = jive_gamma(pred, {&bits32}, {{one}, {zero}})[0];
 	
 	jive_subroutine_simple_set_result(b.sub, 0, result);
 	jive_graph_export(b.graph, jive_subroutine_end(b.sub)->outputs[0]);
@@ -203,14 +199,11 @@ generate_bin_cmp_function_curryleft(bin_op_factory_t factory, uint32_t op1)
 	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
-	jive::output * pred = jive::ctl::match(1, {0}, cmp);
+	jive::output * pred = jive::ctl::match(1, {1}, cmp);
 
 	jive::bits::type bits32(32);
-	jive::output * result;
-	const jive::base::type * tmparray5[] = {&bits32};
-	jive_gamma(pred,
-		1, tmparray5,
-		&one, &zero, &result);
+	jive::output * result = jive_gamma(pred, {&bits32}, {{one}, {zero}})[0];
+
 	jive_subroutine_simple_set_result(u.sub, 0, result);
 	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
@@ -227,14 +220,11 @@ generate_bin_cmp_function_curryright(bin_op_factory_t factory, uint32_t op2)
 	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 
-	jive::output * pred = jive::ctl::match(1, {0}, cmp);
+	jive::output * pred = jive::ctl::match(1, {1}, cmp);
 	
 	jive::bits::type bits32(32);
-	jive::output * result;
-	const jive::base::type * tmparray6[] = {&bits32};
-	jive_gamma(pred,
-		1, tmparray6,
-		&one, &zero, &result);
+	jive::output * result = jive_gamma(pred, {&bits32}, {{one}, {zero}})[0];
+
 	jive_subroutine_simple_set_result(u.sub, 0, result);
 	jive_graph_export(u.graph, jive_subroutine_end(u.sub)->outputs[0]);
 	un_function_t function = (un_function_t) compile_graph(u.graph);
