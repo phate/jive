@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -11,6 +11,7 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/node-private.h>
+#include <jive/vsdg/seqtype.h>
 
 namespace jive {
 
@@ -27,8 +28,7 @@ subroutine_head_op::nresults() const noexcept
 const base::type &
 subroutine_head_op::result_type(size_t index) const noexcept
 {
-	static const ctl::type type;
-	return type;
+	return seq::seqtype;
 }
 std::string
 subroutine_head_op::debug_string() const
@@ -49,14 +49,18 @@ subroutine_tail_op::~subroutine_tail_op() noexcept
 size_t
 subroutine_tail_op::narguments() const noexcept
 {
-	return 1;
+	return 2;
 }
 
 const base::type &
 subroutine_tail_op::argument_type(size_t index) const noexcept
 {
-	static const ctl::type type;
-	return type;
+	if (index == 0)
+		return seq::seqtype;
+	else {
+		static ctl::type ctl;
+		return ctl;
+	}
 }
 std::string
 subroutine_tail_op::debug_string() const

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -754,13 +754,6 @@ jive_opnode_create(
 	if (dynamic_cast<const jive::region_head_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->top);
 		region->top = node;
-		for (size_t n = 0; n < node->noutputs; ++n) {
-			jive::ctl::output * output =
-				dynamic_cast<jive::ctl::output *>(node->outputs[n]);
-			if (output) {
-				output->set_active(false);
-			}
-		}
 	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->bottom);
 		region->bottom = node;

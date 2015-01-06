@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -48,7 +48,7 @@ type::create_input(jive_node * node, size_t index, jive::output * origin) const
 jive::output *
 type::create_output(jive_node * node, size_t index) const
 {
-	return new jive::ctl::output(true, node, index);
+	return new jive::ctl::output(node, index);
 }
 
 jive::gate *
@@ -69,9 +69,8 @@ input::input(struct jive_node * node, size_t index, jive::output * initial_opera
 
 output::~output() noexcept {}
 
-output::output(bool active, struct jive_node * node, size_t index)
+output::output(struct jive_node * node, size_t index)
 	: jive::state::output(node, index)
-	, active_(active)
 {}
 
 /* gate */

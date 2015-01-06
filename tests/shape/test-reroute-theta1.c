@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -118,23 +118,23 @@ static int test_main(void)
 	assert(ssavar_p->variable == var);
 	
 	assert(theta_head->ninputs == 2 && theta_head->noutputs == 3);
-	assert(theta_tail->ninputs == 3);
+	assert(theta_tail->ninputs == 4);
 	assert(theta_node->noutputs == 2);
 	
 	jive::gate * gate = theta_head->inputs[1]->gate;
 	assert(gate);
 	assert(theta_head->inputs[1]->gate == gate && theta_head->outputs[2]->gate == gate);
-	assert(theta_tail->inputs[2]->gate == gate);
+	assert(theta_tail->inputs[3]->gate == gate);
 	assert(theta_node->outputs[1]->gate == gate);
 	
 	assert(theta_head->inputs[1]->origin() == top->outputs[1]);
-	assert(theta_tail->inputs[2]->origin() == theta_head->outputs[2]);
+	assert(theta_tail->inputs[3]->origin() == theta_head->outputs[2]);
 	assert(bottom->inputs[1]->origin() == theta_node->outputs[1]);
 	
 	assert(top->outputs[1]->ssavar == orig_ssavar);
 	assert(theta_head->inputs[1]->ssavar == orig_ssavar);
 	assert(theta_head->outputs[2]->ssavar == ssavar_p);
-	assert(theta_tail->inputs[2]->ssavar == ssavar_p);
+	assert(theta_tail->inputs[3]->ssavar == ssavar_p);
 	assert(theta_op->inputs[1]->origin() == theta_head->outputs[2]);
 	assert(theta_op->inputs[1]->ssavar == ssavar_p);
 	

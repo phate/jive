@@ -1,6 +1,6 @@
 /*
  * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -15,6 +15,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/seqtype.h>
 
 namespace jive {
 
@@ -31,8 +32,7 @@ theta_head_op::nresults() const noexcept
 const base::type &
 theta_head_op::result_type(size_t index) const noexcept
 {
-	static const ctl::type type;
-	return type;
+	return seq::seqtype;
 }
 std::string
 theta_head_op::debug_string() const
@@ -53,14 +53,18 @@ theta_tail_op::~theta_tail_op() noexcept
 size_t
 theta_tail_op::narguments() const noexcept
 {
-	return 1;
+	return 2;
 }
 
 const base::type &
 theta_tail_op::argument_type(size_t index) const noexcept
 {
-	static const ctl::type type;
-	return type;
+	if (index == 0)
+		return seq::seqtype;
+	else {
+		static ctl::type ctl;
+		return ctl;
+	}
 }
 std::string
 theta_tail_op::debug_string() const
@@ -157,9 +161,9 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	jive_theta_build_state * state = self.internal_state;
 
 	size_t n;
-	
-	jive_node * tail = jive::theta_tail_op().create_node(
-		self.region, 1, &predicate);
+
+	jive::output * arguments[] = {self.region->top->outputs[0], predicate};
+	jive_node * tail = jive::theta_tail_op().create_node(self.region, 2, arguments);
 	for (n = 0; n < state->loopvars.size(); ++n)
 		jive_node_gate_input(tail, state->loopvars[n].gate, state->loopvars[n].value);
 	

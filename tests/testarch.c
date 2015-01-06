@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -380,6 +380,17 @@ const jive_instruction_class jive_testarch_instr_jumpnz = {
 	inverse_jump : &jive_testarch_instr_jumpz
 };
 
+const jive_instruction_class jive_testarch_instr_ret = {
+	name : "ret",
+	mnemonic : "ret",
+	encode : 0,
+	write_asm : 0,
+	inregs : 0, outregs : 0,
+	flags : jive_instruction_jump,
+	ninputs : 0, noutputs : 0, nimmediates : 0,
+	code : 0
+};
+
 static jive_xfer_description
 create_xfer(jive_region * region, jive::output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
@@ -566,7 +577,11 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		return nullptr;
+		jive_node * ret_instr = jive_instruction_node_create(
+			subroutine.region, &jive_testarch_instr_ret, NULL, NULL);
+		jive_node_gate_input(ret_instr, subroutine.builder_state->passthroughs[1].gate,
+			subroutine.builder_state->passthroughs[1].output);
+		return ret_instr->outputs[0];
 	}
 };
 

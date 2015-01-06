@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -74,13 +74,6 @@ jive_seq_point_attach_symbol(
 	jive_seq_graph * seq_graph)
 {
 	self->named_symbols.push_back(symbol);
-}
-
-static bool
-is_active_control(jive::input * input)
-{
-	jive::ctl::output * output = dynamic_cast<jive::ctl::output*>(input->origin());
-	return output != nullptr ? output->active() : false;
 }
 
 static jive_seq_region *
@@ -190,7 +183,7 @@ sequentialize_region(
 		jive::input * control_input = 0;
 		for(n = 0; n < node->ninputs; n++) {
 			jive::input * input = node->inputs[n];
-			if (is_active_control(input)) {
+			if (dynamic_cast<const jive::ctl::type*>(&input->type())) {
 				control_input = input;
 				break;
 			}

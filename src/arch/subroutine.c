@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -151,11 +151,9 @@ jive_node *
 jive_subroutine_end(jive_subroutine & self)
 {
 	jive::output * control_return = self.hl_builder->finalize(self);
-	if (!control_return) {
-		control_return = self.region->top->outputs[0];
-	}
+	jive::output * arguments[] = {self.region->top->outputs[0], control_return};
 	jive_node * leave = jive::subroutine_tail_op().create_node(
-		self.region, 1, &control_return);
+		self.region, 2, arguments);
 
 	jive_node * subroutine_node = jive::subroutine_op(std::move(self.signature)).create_node(
 		self.region->parent, leave->noutputs, &leave->outputs[0]);

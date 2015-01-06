@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -15,13 +15,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/splitnode.h>
-
-static inline bool
-is_active_control_input(jive::input * input)
-{
-	jive::ctl::output * output = dynamic_cast<jive::ctl::output*>(input->origin());
-	return output != nullptr ? output->active() : false;
-}
 
 static jive_shaped_variable *
 find_next_uncolored(const jive_var_assignment_tracker * tracker)
@@ -424,7 +417,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			jive_node * node = input->node;
 			size_t n;
 			for (n = 0; n < node->ninputs; n++) {
-				if (is_active_control_input(node->inputs[n])) {
+				if (dynamic_cast<const jive::ctl::type*>(&node->inputs[n]->type())) {
 					node = node->producer(n);
 					break;
 				}

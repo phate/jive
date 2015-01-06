@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -16,6 +16,7 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/phi.h>
+#include <jive/vsdg/seqtype.h>
 
 #include "testnodes.h"
 
@@ -70,7 +71,7 @@ static int test_main()
 
 	jive_node * lambda_node2 = phi.region->bottom->producer(3);
 	assert(jive_lambda_is_self_recursive(lambda_node2));
-	assert(dynamic_cast<jive::ctl::input*>(phi.region->bottom->inputs[0]));
+	assert(dynamic_cast<const jive::seq::type*>(&phi.region->bottom->inputs[0]->type()));
 
 	jive_graph_destroy(graph);
 

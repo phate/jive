@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,11 +10,12 @@
 
 #include <jive/types/bitstring/type.h>
 #include <jive/util/buffer.h>
-#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/seqtype.h>
+
 namespace jive {
 
 regvalue_op::~regvalue_op() noexcept
@@ -38,9 +39,8 @@ regvalue_op::narguments() const noexcept
 const jive::base::type &
 regvalue_op::argument_type(size_t index) const noexcept
 {
-	static const jive::ctl::type ctl;
 	if (index == 0) {
-		return ctl;
+		return seq::seqtype;
 	} else {
 		return *regcls()->base.type;
 	}

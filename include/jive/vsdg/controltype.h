@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -51,22 +51,14 @@ class output final : public jive::state::output {
 public:
 	virtual ~output() noexcept;
 
-	output(bool active, struct jive_node * node, size_t index);
+	output(struct jive_node * node, size_t index);
 
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
-
-	inline void set_active(bool active) noexcept { active_ = active; }
-
-	inline bool active() const noexcept { return active_; }
 
 private:
 	output(const output & rhs) = delete;
 	output& operator=(const output & rhs) = delete;
 
-	/*
-		FIXME: this is an ugly hack, introduce a new type for that
-	*/
-	bool active_;
 	jive::ctl::type type_;
 };
 

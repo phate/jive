@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,6 +13,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/theta.h>
 
@@ -39,6 +40,30 @@ jive_control_type_deserialize(
 
 JIVE_SERIALIZATION_TYPECLS_REGISTER(jive::ctl::type, jive_control_type, "control",
 	jive_control_type_serialize, jive_control_type_deserialize);
+
+static void
+jive_seq_type_serialize(
+	const jive_serialization_typecls * self,
+	jive_serialization_driver * driver,
+	const jive::base::type * type,
+	jive_token_ostream * os)
+{
+	/* no attributes */
+}
+
+static bool
+jive_seq_type_deserialize(
+	const jive_serialization_typecls * self,
+	jive_serialization_driver * driver,
+	jive_token_istream * is,
+	jive::base::type ** type)
+{
+	*type = new jive::seq::type();
+	return true;
+}
+
+JIVE_SERIALIZATION_TYPECLS_REGISTER(jive::seq::type, jive_seq_type, "seq",
+	jive_seq_type_serialize, jive_seq_type_deserialize);
 
 JIVE_SERIALIZATION_RESCLS_REGISTER(jive_root_resource_class, "root");
 

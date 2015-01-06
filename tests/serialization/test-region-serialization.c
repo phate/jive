@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -44,7 +44,7 @@ static int test_main(void)
 	
 	jive_theta theta = jive_theta_begin(gr1);
 	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);
-	jive_theta_end(theta, theta.region->top->outputs[0], 1, &loopvar);
+	jive_theta_end(theta, jive_control_false(gr1), 1, &loopvar);
 	jive::output * d = loopvar.value;
 	
 	jive::output * e = jive_bitnot(d);

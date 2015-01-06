@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -371,9 +371,6 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		if (!dynamic_cast<jive::ctl::input*>(input))
 			continue;
 		
-		jive::ctl::output * ctl_output = static_cast<jive::ctl::output*>(input->origin());
-		if (!ctl_output->active())
-			continue;
 		self->control_dominator = input->producer();
 	}
 	

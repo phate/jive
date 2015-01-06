@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -9,10 +9,10 @@
 #include <stdio.h>
 
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/phi-normal-form.h>
+#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/valuetype.h>
 
@@ -31,8 +31,7 @@ phi_head_op::nresults() const noexcept
 const base::type &
 phi_head_op::result_type(size_t index) const noexcept
 {
-	static const ctl::type type;
-	return type;
+	return seq::seqtype;
 }
 std::string
 phi_head_op::debug_string() const
@@ -59,8 +58,7 @@ phi_tail_op::narguments() const noexcept
 const base::type &
 phi_tail_op::argument_type(size_t index) const noexcept
 {
-	static const ctl::type type;
-	return type;
+	return seq::seqtype;
 }
 std::string
 phi_tail_op::debug_string() const

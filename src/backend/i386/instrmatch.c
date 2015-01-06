@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -18,8 +18,8 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/bitstring.h>
 #include <jive/util/typeinfo-map.h>
-#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/traverser.h>
 
 static inline bool
@@ -121,8 +121,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 		
 		jive_node * sub = jive_region_get_subroutine_node(node->region);
 		jive_node * enter = sub->producer(0)->region->top;
-		jive::ctl::type ctl;
-		jive_node_add_input(tmp, &ctl, enter->outputs[0]);
+		jive_node_add_input(tmp, &jive::seq::seqtype, enter->outputs[0]);
 		
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_udiv;
@@ -456,8 +455,7 @@ match_gpr_immediate(jive_node * node)
 	jive_node * instr = jive_instruction_node_create_extended(node->region,
 		&jive_i386_instr_int_load_imm,
 		NULL, imm);
-	jive::ctl::type ctl;
-	jive_node_add_input(instr, &ctl, node->inputs[0]->origin());
+	jive_node_add_input(instr, &jive::seq::seqtype, node->inputs[0]->origin());
 	
 	jive_output_replace(node->outputs[0], instr->outputs[0]);
 }

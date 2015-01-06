@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -15,9 +15,9 @@
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/basetype.h>
-#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/valuetype.h>
@@ -243,7 +243,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	if (!top || top->noutputs < 1)
 		return;
 	jive::output * ctl = top->outputs[0];
-	if (!dynamic_cast<jive::ctl::output*>(ctl))
+	if (!dynamic_cast<const jive::seq::type*>(&ctl->type()))
 		return;
 	
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
