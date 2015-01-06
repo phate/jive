@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -124,7 +124,9 @@ jive_graph_get_root_region(const jive_graph * self)
 JIVE_EXPORTED_INLINE void
 jive_graph_export(struct jive_graph * self, jive::output * operand)
 {
-	jive_node_add_input(self->root_region->bottom, &operand->type(), operand);
+	//FIXME: change the signature to take the name for export
+	jive::gate * gate = operand->type().create_gate(self, "dummy");
+	jive_node_gate_input(self->root_region->bottom, gate, operand);
 }
 
 jive_graph *
