@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -42,12 +42,12 @@ static int test_main(void)
 	jive_node * cmp = jive_instruction_node_create(
 		fn_region, &jive_i386_instr_int_cmp,
 		tmparray2, NULL);
-	jive::output * tmparray3[] = {cmp->outputs[0]};
-	int64_t tmparray4[] = {0};
-	
-	jive_node * bge = jive_instruction_node_create(
-		fn_region, &jive_i386_instr_int_jump_sgreatereq,
-		tmparray3, tmparray4);
+
+	jive::ctl::type ctltype;
+	jive_immediate imm;
+	jive_immediate_init(&imm, 0, NULL, NULL, NULL);
+	jive_node * bge = jive_instruction_node_create(fn_region, &jive_i386_instr_int_jump_sgreatereq,
+		{cmp->outputs[0]}, {imm}, {}, {}, {&ctltype});
 	
 	const jive::base::type * bits32 = &p1->type();
 	

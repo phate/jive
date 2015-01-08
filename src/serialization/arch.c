@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -236,6 +236,31 @@ public:
 			jive_serialization_instrcls_lookup_by_cls(reg, i_op.icls());
 
 		driver.put_identifier(sercls->tag);
+		driver.put_char_token('<');
+
+		/* input states */
+		driver.put_char_token('<');
+		const std::vector<std::unique_ptr<jive::state::type>> & istates = i_op.istates();
+		for (size_t n = 0; n < istates.size(); n++) {
+			if (n != 0)
+				driver.put_char_token(',');
+			jive_serialize_type(&driver.driver(), istates[n].get(), &driver.ostream());
+		}
+		driver.put_char_token('>');
+
+		driver.put_char_token(',');
+
+		/* output states */
+		driver.put_char_token('<');
+		const std::vector<std::unique_ptr<jive::state::type>> & ostates = i_op.ostates();
+		for (size_t n = 0; n < ostates.size(); n++) {
+			if (n != 0)
+				driver.put_char_token(',');
+			jive_serialize_type(&driver.driver(), ostates[n].get(), &driver.ostream());
+		}
+		driver.put_char_token('>');
+
+		driver.put_char_token('>');
 	}
 
 	virtual std::unique_ptr<operation>
@@ -252,7 +277,57 @@ public:
 			throw parse_error("Expected instruction class identifier");
 		}
 
-		return std::unique_ptr<operation>(new instruction_op(sercls->cls));
+		driver.parse_char_token('<');
+
+		/* input states */
+		driver.parse_char_token('<');
+		std::vector<std::unique_ptr<jive::state::type>> istates;
+		for (;;) {
+			if (driver.peek_token_type() == jive_token_gt)
+				break;
+
+			jive::base::type * type;
+			if (!jive_deserialize_type(&driver.driver(), &driver.istream(), &type))
+				throw parse_error("Expected type");
+
+			if (!dynamic_cast<jive::state::type*>(type)) {
+				delete type;
+				throw parse_error("Expected state type");
+			} else
+				istates.emplace_back(static_cast<const jive::state::type*>(type)->copy());
+
+			if (driver.peek_token_type() == jive_token_comma)
+				driver.parse_char_token(',');
+		}
+		driver.parse_char_token('>');
+
+		driver.parse_char_token(',');
+
+		/* output states */
+		driver.parse_char_token('<');
+		std::vector<std::unique_ptr<jive::state::type>> ostates;
+		for (;;) {
+			if (driver.peek_token_type() == jive_token_gt)
+				break;
+
+			jive::base::type * type;
+			if (!jive_deserialize_type(&driver.driver(), &driver.istream(), &type))
+				throw parse_error("Expected type");
+
+			if (!dynamic_cast<jive::state::type*>(type)) {
+				delete type;
+				throw parse_error("Expected state type");
+			} else
+				ostates.emplace_back(static_cast<const jive::state::type*>(type)->copy());
+
+			if (driver.peek_token_type() == jive_token_comma)
+				driver.parse_char_token(',');
+		}
+		driver.parse_char_token('>');
+
+		driver.parse_char_token('>');
+
+		return std::unique_ptr<operation>(new instruction_op(sercls->cls, istates, ostates));
 	}
 };
 

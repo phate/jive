@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,9 +14,11 @@
 #include <jive/arch/linker-symbol.h>
 #include <jive/arch/registers.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/util/ptr-collection.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/nullary.h>
+#include <jive/vsdg/statetype.h>
 
 namespace jive {
 
@@ -25,11 +27,22 @@ public:
 	virtual
 	~instruction_op() noexcept;
 
-	explicit inline constexpr
-	instruction_op(const jive_instruction_class * icls) noexcept
+	inline
+	instruction_op(
+		const jive_instruction_class * icls,
+		const std::vector<std::unique_ptr<jive::state::type>> & istates,
+		const std::vector<std::unique_ptr<jive::state::type>> & ostates)
 		: icls_(icls)
-	{
-	}
+		, istates_(detail::unique_ptr_vector_copy(istates))
+		, ostates_(detail::unique_ptr_vector_copy(ostates))
+	{}
+
+	inline
+	instruction_op(const instruction_op & other)
+		: icls_(other.icls_)
+		, istates_(detail::unique_ptr_vector_copy(other.istates_))
+		, ostates_(detail::unique_ptr_vector_copy(other.ostates_))
+	{}
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -59,11 +72,25 @@ public:
 		return icls_;
 	}
 
+	inline const std::vector<std::unique_ptr<jive::state::type>> &
+	istates() const noexcept
+	{
+		return istates_;
+	}
+
+	inline const std::vector<std::unique_ptr<jive::state::type>> &
+	ostates() const noexcept
+	{
+		return ostates_;
+	}
+
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
 	const jive_instruction_class * icls_;
+	std::vector<std::unique_ptr<jive::state::type>> istates_;
+	std::vector<std::unique_ptr<jive::state::type>> ostates_;
 };
 
 }
@@ -81,6 +108,16 @@ jive_instruction_node_create_extended(
 	const jive_instruction_class * icls,
 	jive::output * const * operands,
 	const jive_immediate immediates[]);
+
+jive_node *
+jive_instruction_node_create(
+	struct jive_region * region,
+	const jive_instruction_class * icls,
+	const std::vector<jive::output*> & operands,
+	const std::vector<jive_immediate> & immediates,
+	const std::vector<const jive::state::type*> & itypes,
+	const std::vector<jive::output*> & istates,
+	const std::vector<const jive::state::type*> & otypes);
 
 JIVE_EXPORTED_INLINE jive_node *
 jive_instruction_node_create(

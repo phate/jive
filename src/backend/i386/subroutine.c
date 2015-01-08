@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -159,8 +159,9 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		jive_node * ret_instr = jive_instruction_node_create(
-			subroutine.region, &jive_i386_instr_ret, NULL, NULL);
+		static jive::ctl::type ctltype;
+		jive_node * ret_instr = jive_instruction_node_create(subroutine.region, &jive_i386_instr_ret,
+			{}, {}, {}, {}, {&ctltype});
 		/* add dependency on return address on stack */
 		jive_node_gate_input(
 			ret_instr,

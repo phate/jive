@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -32,10 +32,9 @@ static int test_main(void)
 		&jive_i386_instr_int_load_imm,
 		0, tmparray0);
 	
-	jive_node * leave = jive_instruction_node_create(
-		graph->root_region,
-		&jive_i386_instr_ret,
-		0, NULL);
+	jive::ctl::type ctltype;
+	jive_node * leave = jive_instruction_node_create(graph->root_region, &jive_i386_instr_ret,
+		{}, {}, {}, {}, {&ctltype});
 	
 	const jive::base::type * type = &enter->outputs[0]->type();
 	jive::gate * gate = type->create_gate(graph, "retval");

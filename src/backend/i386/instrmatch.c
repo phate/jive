@@ -18,6 +18,7 @@
 #include <jive/backend/i386/registerset.h>
 #include <jive/types/bitstring.h>
 #include <jive/util/typeinfo-map.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/traverser.h>
@@ -315,13 +316,11 @@ convert_bitcmp(
 			tmparray6, NULL);
 	}
 	
-	jive_immediate imm[1];
-	jive_immediate_init(&imm[0], 0, 0, 0, 0);
-	jive::output * tmparray7[] = {cmp_instr->outputs[0]};
-	jive_node * jump_instr = jive_instruction_node_create_extended(node->region,
-		jump_icls,
-		tmparray7,
-		imm);
+	jive::ctl::type ctltype;
+	jive_immediate imm;
+	jive_immediate_init(&imm, 0, 0, 0, 0);
+	jive_node * jump_instr = jive_instruction_node_create(node->region, jump_icls,
+		{cmp_instr->outputs[0]}, {imm}, {}, {}, {&ctltype});
 	jive_output_replace(node->outputs[0], jump_instr->outputs[0]);
 }
 
