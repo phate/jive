@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -101,26 +101,24 @@ static int test_main(void)
 	
 	jive_linker_symbol main_symbol;
 	
-	jive_immediate imm;
-	
 	jive_test_state_type control_type;
 	jive::output * control = jive_node_add_output(enter, &control_type);
 	
-	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
+	jive::immediate imm(0, &hello_world_label.base);
 	jive_node * load_str_addr = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_addr, &control_type, control);
 	
-	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
+	imm = strlen(hello_world);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_len, &control_type, control);
 	
-	jive_immediate_init(&imm, 1, NULL, NULL, NULL);
+	imm = 1;
 	jive_node * load_fd = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,

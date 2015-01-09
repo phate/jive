@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -101,8 +101,7 @@ static int test_main(void)
 	
 	jive_linker_symbol main_symbol;
 	
-	jive_immediate imm;
-	jive_immediate_init(&imm, 0, &hello_world_label.base, NULL, NULL);
+	jive::immediate imm(0, &hello_world_label.base);
 	
 	jive_test_state_type state_type;
 	
@@ -114,14 +113,14 @@ static int test_main(void)
 		0, &imm);
 	jive_node_add_input(load_str_addr, &state_type, state);
 	
-	jive_immediate_init(&imm, strlen(hello_world), 0, 0, NULL);
+	imm = strlen(hello_world);
 	jive_node * load_str_len = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
 		0, &imm);
 	jive_node_add_input(load_str_len, &state_type, state);
 	
-	jive_immediate_init(&imm, 1, NULL, NULL, NULL);
+	imm = 1;
 	jive_node * load_fd = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_int_load_imm,
@@ -145,7 +144,7 @@ static int test_main(void)
 		gpr_type, load_str_len->outputs[0], gpr,
 		&memory_type, jive_callslot_class_get(4, 4, 8));
 	
-	jive_immediate_init(&imm, 0, &write_label.base, NULL, NULL);
+	imm = jive::immediate(0, &write_label.base);
 	jive_node * call_write = jive_instruction_node_create_extended(
 		fn_region,
 		&jive_i386_instr_call,

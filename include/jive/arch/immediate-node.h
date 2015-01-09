@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -20,7 +20,7 @@ public:
 	virtual ~immediate_op() noexcept;
 
 	inline constexpr
-	immediate_op(jive_immediate value) noexcept
+	immediate_op(jive::immediate value) noexcept
 		: value_(value)
 	{
 	}
@@ -33,19 +33,19 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive_immediate & value() const noexcept { return value_; }
+	inline const jive::immediate & value() const noexcept { return value_; }
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
 
 private:
-	jive_immediate value_;
+	jive::immediate value_;
 };
 }
 
 jive::output *
 jive_immediate_create(
 	struct jive_graph * graph,
-	const jive_immediate * immediate_value);
+	const jive::immediate * immediate_value);
 
 #endif

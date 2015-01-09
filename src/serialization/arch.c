@@ -182,14 +182,14 @@ public:
 		output_driver & driver) const override
 	{
 		const immediate_op & imm_op = static_cast<const immediate_op &>(op);
-		driver.put_uint(imm_op.value().offset);
-		if (imm_op.value().add_label) {
+		driver.put_uint(imm_op.value().offset());
+		if (imm_op.value().has_add_label()) {
 			driver.put_char_token('+');
-			driver.put_label(imm_op.value().add_label);
+			driver.put_label(imm_op.value().add_label());
 		}
-		if (imm_op.value().sub_label) {
+		if (imm_op.value().has_sub_label()) {
 			driver.put_char_token('-');
-			driver.put_label(imm_op.value().sub_label);
+			driver.put_label(imm_op.value().sub_label());
 		}
 	}
 
@@ -197,19 +197,18 @@ public:
 	deserialize(
 		parser_driver & driver) const override
 	{
-		jive_immediate imm;
-		jive_immediate_init(&imm, 0, nullptr, nullptr, nullptr);
+		jive::immediate imm;
 
-		imm.offset = driver.parse_uint();
+		imm.set_offset(driver.parse_uint());
 
 		if (driver.peek_token_type() == jive_token_plus) {
 			driver.parse_char_token('+');
-			imm.add_label = driver.parse_label();
+			imm.set_add_label(driver.parse_label());
 		}
 
 		if (driver.peek_token_type() == jive_token_plus) {
 			driver.parse_char_token('-');
-			imm.sub_label = driver.parse_label();
+			imm.set_sub_label(driver.parse_label());
 		}
 
 		return std::unique_ptr<operation>(new immediate_op(imm));

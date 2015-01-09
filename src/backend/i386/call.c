@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -31,16 +31,14 @@ jive_i386_call_node_substitute(
 	jive::output * address = node->inputs[0]->origin();
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op *>(
 		&address->node()->operation())) {
-		jive_immediate imm;
-		jive_immediate_init(&imm, 0, op->label(), NULL, NULL);
+		jive::immediate imm(0, op->label());
 		call_instr = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_call,
 			0, &imm);
 	} else if (auto op = dynamic_cast<const jive::address::label_to_bitstring_op *>(
 		&address->node()->operation())) {
-		jive_immediate imm;
-		jive_immediate_init(&imm, 0, op->label(), NULL, NULL);
+		jive::immediate imm(0, op->label());
 		call_instr = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_call,

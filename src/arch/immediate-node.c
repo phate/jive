@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -28,7 +28,7 @@ immediate_op::operator==(const operation & other) const noexcept
 {
 	const immediate_op * op =
 		dynamic_cast<const immediate_op *>(&other);
-	return op && jive_immediate_equals(&op->value(), &value());
+	return op && (op->value() == value());
 }
 
 const jive::base::type &
@@ -41,7 +41,7 @@ std::string
 immediate_op::debug_string() const
 {
 	char tmp[80];
-	snprintf(tmp, sizeof(tmp), "%" "lld", value().offset);
+	snprintf(tmp, sizeof(tmp), "%" "lld", value().offset());
 	return tmp;
 }
 
@@ -56,7 +56,7 @@ immediate_op::copy() const
 jive::output *
 jive_immediate_create(
 	jive_graph * graph,
-	const jive_immediate * immediate_value)
+	const jive::immediate * immediate_value)
 {
 	jive::immediate_op op(*immediate_value);
 	return jive_node_create_normalized(graph, op, {})[0];

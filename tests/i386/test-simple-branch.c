@@ -44,8 +44,7 @@ static int test_main(void)
 		tmparray2, NULL);
 
 	jive::ctl::type ctltype;
-	jive_immediate imm;
-	jive_immediate_init(&imm, 0, NULL, NULL, NULL);
+	jive::immediate imm;
 	jive_node * bge = jive_instruction_node_create(fn_region, &jive_i386_instr_int_jump_sgreatereq,
 		{cmp->outputs[0]}, {imm}, {}, {}, {&ctltype});
 	

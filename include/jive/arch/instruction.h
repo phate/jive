@@ -107,14 +107,14 @@ jive_instruction_node_create_extended(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
 	jive::output * const * operands,
-	const jive_immediate immediates[]);
+	const jive::immediate immediates[]);
 
 jive_node *
 jive_instruction_node_create(
 	struct jive_region * region,
 	const jive_instruction_class * icls,
 	const std::vector<jive::output*> & operands,
-	const std::vector<jive_immediate> & immediates,
+	const std::vector<jive::immediate> & immediates,
 	const std::vector<const jive::state::type*> & itypes,
 	const std::vector<jive::output*> & istates,
 	const std::vector<const jive::state::type*> & otypes);
@@ -129,7 +129,7 @@ jive_instruction_node_create(
 	return jive_instruction_node_create_simple(region, icls, operands, immediates);
 }
 
-JIVE_EXPORTED_INLINE jive_immediate
+JIVE_EXPORTED_INLINE jive::immediate
 jive_instruction_node_get_immediate(
 	const jive_node * node,
 	size_t index)

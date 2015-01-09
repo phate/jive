@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -17,14 +17,14 @@
 
 static void
 get_slot_memory_reference(const jive_resource_class * rescls,
-	jive_immediate * displacement, jive::output ** base,
+	jive::immediate * displacement, jive::output ** base,
 	jive::output * sp, jive::output * fp)
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
-		jive_immediate_init(displacement, 0, &jive_label_spoffset, NULL, NULL);
+		*displacement = jive::immediate(0, &jive_label_spoffset);
 		*base = sp;
 	} else {
-		jive_immediate_init(displacement, 0, &jive_label_fpoffset, NULL, NULL);
+		*displacement = jive::immediate(0, &jive_label_fpoffset);
 		*base = fp;
 	}
 }
@@ -44,7 +44,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
 	
 	if (in_mem) {
-		jive_immediate displacement;
+		jive::immediate displacement;
 		jive::output * base;
 		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
 		xfer.node = jive_instruction_node_create_extended(
@@ -56,7 +56,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 		xfer.input->required_rescls = in_class;
 		xfer.output = xfer.node->outputs[0];
 	} else if (out_mem) {
-		jive_immediate displacement;
+		jive::immediate displacement;
 		jive::output * base;
 		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
 		jive::output * tmparray0[] = {base, origin};

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -225,31 +225,31 @@ reloc_stack_access(jive_node * node, jive_subroutine_to_stackframe_map & stackfr
 		JIVE_DEBUG_ASSERT(stackframe_map.count(sub) != 0);
 		jive_subroutine_stackframe_info * frame = &stackframe_map[sub];
 		
-		const jive_immediate & orig_imm = dynamic_cast<const jive::immediate_op &>(
+		const jive::immediate & orig_imm = dynamic_cast<const jive::immediate_op &>(
 			imm_input->producer()->operation()).value();
-		jive_immediate imm = orig_imm;
+		jive::immediate imm = orig_imm;
 		
-		if (imm.add_label == &jive_label_fpoffset) {
+		if (imm.add_label() == &jive_label_fpoffset) {
 			const jive_stackslot * slot = get_node_frameslot(node);
-			imm = jive_immediate_add_offset(&imm, slot->offset - frame->frame_pointer_offset);
-			imm.add_label = 0;
+			imm += slot->offset - frame->frame_pointer_offset;
+			imm.set_add_label(nullptr);
 		}
-		if (imm.sub_label == &jive_label_fpoffset) {
+		if (imm.sub_label() == &jive_label_fpoffset) {
 			const jive_stackslot * slot = get_node_frameslot(node);
-			imm = jive_immediate_add_offset(&imm, -slot->offset + frame->frame_pointer_offset);
-			imm.sub_label = 0;
+			imm += -slot->offset + frame->frame_pointer_offset;
+			imm.set_sub_label(nullptr);
 		}
-		if (imm.add_label == &jive_label_spoffset) {
+		if (imm.add_label() == &jive_label_spoffset) {
 			const jive_callslot * slot = get_node_callslot(node);
-			imm = jive_immediate_add_offset(&imm, slot->offset - frame->stack_pointer_offset);
-			imm.add_label = 0;
+			imm += slot->offset - frame->stack_pointer_offset;
+			imm.set_add_label(nullptr);
 		}
-		if (imm.sub_label == &jive_label_spoffset) {
+		if (imm.sub_label() == &jive_label_spoffset) {
 			const jive_callslot * slot = get_node_callslot(node);
-			imm = jive_immediate_add_offset(&imm, -slot->offset + frame->stack_pointer_offset);
-			imm.sub_label = 0;
+			imm += -slot->offset + frame->stack_pointer_offset;
+			imm.set_sub_label(nullptr);
 		}
-		if (!jive_immediate_equals(&imm, &orig_imm)) {
+		if (imm != orig_imm) {
 			jive::output * new_immval = jive_immediate_create(node->region->graph, &imm);
 			imm_input->divert_origin(new_immval);
 		}
