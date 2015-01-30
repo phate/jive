@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -50,12 +50,21 @@ class input final : public jive::state::input {
 public:
 	virtual ~input() noexcept {};
 
-	input(const jive_resource_name * name, struct jive_node * node, size_t index,
-		jive::output * origin);
+	inline
+	input(
+		const jive_resource_name * name,
+		struct jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::state::input(node, index, origin, jive::reuse::type(name))
+	, type_(name)
+	{}
 
-	virtual const jive::reuse::type & type() const noexcept { return type_; }
-
-	inline const jive_resource_name * name() const noexcept { return type_.name(); }
+	inline const jive_resource_name *
+	name() const noexcept
+	{
+		return static_cast<const jive::reuse::type*>(&type())->name();
+	}
 
 private:
 	input(const input & rhs) = delete;
@@ -140,12 +149,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive::reuse::gate(this->name(), graph, name);
 }
-
-input::input(const jive_resource_name * name, struct jive_node * node, size_t index,
-	jive::output * origin)
-	: jive::state::input(node, index, origin)
-	, type_(name)
-{}
 
 output::output(const jive_resource_name * name, jive_node * node, size_t index)
 	: jive::state::output(node, index)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -73,23 +73,53 @@ class input final : public jive::value::input {
 public:
 	virtual ~input() noexcept;
 
-	input(const jive::fct::type & type, jive_node * node, size_t index, jive::output * origin);
+	inline
+	input(
+		const jive::fct::type & type,
+		jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::value::input(node, index, origin, type)
+	, type_(type)
+	{}
 
-	input(size_t narguments, const jive::base::type ** argument_types, size_t nreturns,
-		const jive::base::type ** return_types, struct jive_node * node, size_t index,
-		jive::output * origin);
+	inline
+	input(
+		size_t narguments,
+		const jive::base::type ** argument_types,
+		size_t nreturns,
+		const jive::base::type ** return_types,
+		struct jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::value::input(node, index, origin,
+			jive::fct::type(narguments, argument_types, nreturns, return_types))
+	, type_(narguments, argument_types, nreturns, return_types)
+	{}
 
-	virtual const jive::fct::type & type() const noexcept { return type_; }
+	inline size_t
+	narguments() const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->narguments();
+	}
 
-	inline size_t narguments() const noexcept { return type_.narguments(); }
+	inline size_t
+	nreturns() const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->nreturns();
+	}
 
-	inline size_t nreturns() const noexcept { return type_.nreturns(); }
+	inline const jive::base::type *
+	argument_type(size_t index) const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->argument_type(index);
+	}
 
-	inline const jive::base::type * argument_type(size_t index) const noexcept
-		{ return type_.argument_type(index); }
-
-	inline const jive::base::type * return_type(size_t index) const noexcept
-		{ return type_.return_type(index); }
+	inline const jive::base::type *
+	return_type(size_t index) const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->return_type(index);
+	}
 
 private:
 	input(const input & rhs) = delete;

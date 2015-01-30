@@ -49,7 +49,10 @@ public:
 		size_t nalternatives,
 		struct jive_node * node,
 		size_t index,
-		jive::output * initial_operand);
+		jive::output * origin)
+	: jive::state::input(node, index, origin, jive::ctl::type(nalternatives))
+	, type_(nalternatives)
+	{}
 
 	virtual const jive::ctl::type & type() const noexcept { return type_; }
 

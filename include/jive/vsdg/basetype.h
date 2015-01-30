@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -93,10 +93,18 @@ public:
 	virtual ~input() noexcept;
 
 protected:
-	input(struct jive_node * node, size_t index, jive::output * origin);
+	input(
+		struct jive_node * node,
+		size_t index,
+		jive::output * origin,
+		const jive::base::type & type);
 
 public:
-	virtual const jive::base::type & type() const noexcept = 0;
+	inline const jive::base::type &
+	type() const noexcept
+	{
+		return *type_;
+	}
 
 	virtual void label(jive_buffer & buffer) const;
 
@@ -146,6 +154,13 @@ public:
 
 private:
 	jive::output * origin_;
+
+	/*
+		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
+		number given by the operation. Once this is fixed, the attribute can be removed and the type
+		can be taken from the operation.
+	*/
+	std::unique_ptr<jive::base::type> type_;
 };
 
 }	//jive namespace

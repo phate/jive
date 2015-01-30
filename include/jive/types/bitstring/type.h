@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -48,11 +48,21 @@ class input final : public jive::value::input {
 public:
 	virtual ~input() noexcept;
 
-	input(size_t nbits, struct jive_node * node, size_t index, jive::output * origin);
+	inline
+	input(
+		size_t nbits,
+		struct jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::value::input(node, index, origin, jive::bits::type(nbits))
+	, type_(nbits)
+	{}
 
-	virtual const jive::bits::type & type() const noexcept { return type_; }
-
-	inline size_t nbits() const noexcept { return type_.nbits(); }
+	inline size_t
+	nbits() const noexcept
+	{
+		return static_cast<const jive::bits::type*>(&type())->nbits();
+	}
 	
 private:
 	input(const input & rhs) = delete;

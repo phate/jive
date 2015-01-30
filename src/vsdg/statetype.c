@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -18,10 +18,6 @@ namespace state {
 type::~type() noexcept {}
 
 input::~input() noexcept {}
-
-input::input(struct jive_node * node, size_t index, jive::output * origin)
-	: jive::input(node, index, origin)
-{}
 
 output::~output() noexcept {}
 

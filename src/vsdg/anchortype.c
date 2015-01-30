@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -58,17 +58,17 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 /* input */
 
-input::input(struct jive_node * node, size_t index, jive::output * origin)
-	: jive::input(node, index, origin)
-{
-	JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
-	origin->node()->region->anchor = this;
-}
-
 input::~input() noexcept
 {
 	if (origin()->node()->region->anchor == this)
 		origin()->node()->region->anchor = nullptr;
+}
+
+input::input(struct jive_node * node, size_t index, jive::output * origin)
+	: jive::input(node, index, origin, jive::achr::type())
+{
+	JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
+	origin->node()->region->anchor = this;
 }
 
 /* output */

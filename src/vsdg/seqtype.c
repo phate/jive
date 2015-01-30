@@ -52,10 +52,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 
 input::~input() noexcept {}
 
-input::input(struct jive_node * node, size_t index, jive::output * initial_operand)
-	: jive::state::input(node, index, initial_operand)
-{}
-
 /* output */
 
 output::~output() noexcept {}

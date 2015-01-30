@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -48,11 +48,6 @@ jive_test_value_type::create_gate(jive_graph * graph, const char * name) const
 }
 
 jive_test_value_input::~jive_test_value_input() noexcept {}
-
-jive_test_value_input::jive_test_value_input(jive_node * node, size_t index,
-	jive::output * origin)
-	: jive::value::input(node, index, origin)
-{}
 
 jive_test_value_output::~jive_test_value_output() noexcept {}
 
@@ -107,11 +102,6 @@ jive_test_state_type::create_gate(jive_graph * graph, const char * name) const
 }
 
 jive_test_state_input::~jive_test_state_input() noexcept {}
-
-jive_test_state_input::jive_test_state_input(jive_node * node, size_t index,
-	jive::output * origin)
-	: jive::state::input(node, index, origin)
-{}
 
 jive_test_state_output::~jive_test_state_output() noexcept {}
 

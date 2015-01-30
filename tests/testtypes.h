@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,9 +35,13 @@ class jive_test_value_input final : public jive::value::input {
 public:
 	virtual ~jive_test_value_input() noexcept;
 
-	jive_test_value_input(jive_node * node, size_t index, jive::output * output);
-
-	virtual const jive_test_value_type & type() const noexcept { return type_; }
+	inline
+	jive_test_value_input(
+		jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::value::input(node, index, origin, jive_test_value_type())
+	{}
 
 private:
 	jive_test_value_input(const jive_test_value_input & rhs) = delete;
@@ -102,9 +106,13 @@ class jive_test_state_input final : public jive::state::input {
 public:
 	virtual ~jive_test_state_input() noexcept;
 
-	jive_test_state_input(jive_node * node, size_t index, jive::output * origin);
-
-	virtual const jive_test_state_type & type() const noexcept { return type_; }
+	inline
+	jive_test_state_input(
+		jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::state::input(node, index, origin, jive_test_state_type())
+	{}
 
 private:
 	jive_test_state_input(const jive_test_state_input & rhs) = delete;

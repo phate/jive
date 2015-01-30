@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -132,19 +132,6 @@ type::operator=(const jive::fct::type & rhs)
 }
 
 /* input */
-
-input::input(size_t narguments, const jive::base::type ** argument_types,
-	size_t nreturns, const jive::base::type ** return_types, struct jive_node * node, size_t index,
-	jive::output * origin)
-	: jive::value::input(node, index, origin)
-	, type_(narguments, argument_types, nreturns, return_types)
-{}
-
-input::input(const jive::fct::type & type, jive_node * node,
-	size_t index, jive::output * origin)
-	: jive::value::input(node, index, origin)
-	, type_(type)
-{}
 
 input::~input() noexcept {}
 

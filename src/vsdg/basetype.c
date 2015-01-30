@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -60,13 +60,18 @@ jive_input_remove_as_user(jive::input * self, jive::output * output)
 
 namespace jive {
 
-input::input(struct jive_node * node_, size_t index_, jive::output * origin)
+input::input(
+	struct jive_node * node_,
+	size_t index_,
+	jive::output * origin,
+	const jive::base::type & type)
 	: node(node_)
 	, index(index_)
 	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, origin_(origin)
+	, type_(type.copy())
 {
 	output_users_list.prev = output_users_list.next = nullptr;
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;

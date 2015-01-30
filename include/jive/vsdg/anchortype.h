@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -37,8 +37,6 @@ public:
 	virtual ~input() noexcept;
 
 	input(struct jive_node * node, size_t index, jive::output * origin);
-
-	virtual const jive::achr::type & type() const noexcept { return type_; }
 
 private:
 	input(const input & rhs) = delete;

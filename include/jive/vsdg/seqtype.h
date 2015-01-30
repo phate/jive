@@ -35,13 +35,13 @@ class input final : public jive::state::input {
 public:
 	virtual ~input() noexcept;
 
-	input(struct jive_node * node, size_t index, jive::output * initial_operand);
-
-	virtual const jive::seq::type &
-	type() const noexcept override
-	{
-		return type_;
-	}
+	inline
+	input(
+		struct jive_node * node,
+		size_t index,
+		jive::output * origin)
+	: jive::state::input(node, index, origin, jive::seq::type())
+	{}
 
 private:
 	input(const input & rhs) = delete;

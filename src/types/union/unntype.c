@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -57,12 +57,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 }
 
 /* input */
-
-input::input(const jive::unn::declaration * decl, struct jive_node * node, size_t index,
-	jive::output * origin)
-	: jive::value::input(node, index, origin)
-	, type_(decl)
-{}
 
 input::~input() noexcept {}
 
