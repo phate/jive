@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -134,7 +134,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		size_t n;
 		for(n = 0; n<node->ninputs; n++) {
 			jive::input * input = node->inputs[n];
-			if (dynamic_cast<jive::achr::input*>(input)) {
+			if (dynamic_cast<const jive::achr::type*>(&input->type())) {
 				self->current_region_ = input->producer()->region;
 				self->region = jive_shaped_graph_map_region(self->shaped_graph, self->current_region_);
 				self->node = jive_shaped_region_last(self->region);
@@ -164,7 +164,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		jive::input * anchor = 0;
 		while(n < anchor_node->ninputs) {
 			jive::input * input = anchor_node->inputs[n];
-			if (dynamic_cast<jive::achr::input*>(input)) {
+			if (dynamic_cast<const jive::achr::type*>(&input->type())) {
 				anchor = input;
 				break;
 			}

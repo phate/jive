@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -92,7 +92,7 @@ jive_load_node_address_transform(
 	const jive::load_op & op,
 	size_t nbits)
 {
-	bool input_is_address = dynamic_cast<jive::addr::input*>(node->inputs[0]);
+	bool input_is_address = dynamic_cast<const jive::addr::type*>(&node->inputs[0]->type());
 	bool output_is_address = dynamic_cast<jive::addr::output*>(node->outputs[0]);
 
 	if (!input_is_address && !output_is_address)
@@ -130,8 +130,8 @@ jive_store_node_address_transform(
 	const jive::store_op & op,
 	size_t nbits)
 {
-	bool input0_is_address = dynamic_cast<jive::addr::input*>(node->inputs[0]);
-	bool input1_is_address = dynamic_cast<jive::addr::input*>(node->inputs[1]);
+	bool input0_is_address = dynamic_cast<const jive::addr::type*>(&node->inputs[0]->type());
+	bool input1_is_address = dynamic_cast<const jive::addr::type*>(&node->inputs[1]->type());
 
 	if (!input0_is_address && !input1_is_address)
 		return;
@@ -187,7 +187,7 @@ jive_call_node_address_transform(
 	bool transform = false;
 	jive::output * operands[node->ninputs];
 	for (size_t i = 0; i < node->ninputs; i++){
-		if(dynamic_cast<jive::addr::input*>(node->inputs[i])){
+		if(dynamic_cast<const jive::addr::type*>(&node->inputs[i]->type())){
 			operands[i] = jive_address_to_bitstring_create(node->inputs[i]->origin(), nbits,
 				&node->inputs[i]->origin()->type());
 			transform = true;

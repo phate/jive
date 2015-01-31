@@ -405,7 +405,7 @@ jive_node_depends_on_region(const jive_node * self, const jive_region * region)
 	size_t n;
 	for(n = 0; n < self->ninputs; n++) {
 		jive::input * input = self->inputs[n];
-		if (dynamic_cast<jive::achr::input*>(input)) {
+		if (dynamic_cast<const jive::achr::type*>(&input->type())) {
 			if (jive_region_depends_on_region(input->producer()->region, region)) {
 				return true;
 			}
@@ -521,7 +521,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	of top nodes of new region */
 	for (n = 0; n < self->ninputs; n++) {
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
-		if (dynamic_cast<jive::achr::input*>(self->inputs[n])) {
+		if (dynamic_cast<const jive::achr::type*>(&self->inputs[n]->type())) {
 			jive_region * subregion = self->producer(n)->region;
 			jive_region_reparent(subregion, new_region);
 		} else if (self->producer(n)->region != new_region) {

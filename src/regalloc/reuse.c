@@ -307,7 +307,7 @@ jive_regalloc_reuse_record_node(jive_shaped_graph * shaped_graph, jive_node * no
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
-		if (!dynamic_cast<jive::achr::input*>(input))
+		if (!dynamic_cast<const jive::achr::type*>(&input->type()))
 			continue;
 		
 		jive_names_use inner_names_use;

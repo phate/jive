@@ -169,7 +169,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		jive::input * input = node->inputs[0];
 		jive::output * output = node->outputs[0];
 		
-		if (dynamic_cast<jive::value::input*>(input)) {
+		if (dynamic_cast<const jive::value::type*>(&input->type())) {
 			jive_regselector_option option;
 			option.mask = self->classifier->classify_type(&input->type(), input->required_rescls);
 			if (option.mask) {

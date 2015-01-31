@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -154,7 +154,7 @@ add_crossings_from_lower_location(jive_shaped_graph * shaped_graph, jive_shaped_
 	size_t n;
 	for(n = 0; n < lower->node->ninputs; n++) {
 		jive::input * input = lower->node->inputs[n];
-		if (!dynamic_cast<jive::achr::input*>(input)) continue;
+		if (!dynamic_cast<const jive::achr::type*>(&input->type())) continue;
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph,
 			input->producer()->region);
 		
@@ -215,7 +215,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	
 	for(n = 0; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
-		if (!dynamic_cast<jive::achr::input*>(input))
+		if (!dynamic_cast<const jive::achr::type*>(&input->type()))
 			continue;
 		for (const jive_nodevar_xpoint & xpoint : shaped_node->ssavar_xpoints) {
 			jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph,

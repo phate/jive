@@ -231,7 +231,7 @@ can_move_below_cut(jive_region_shaper * self, jive_cut * cut, jive_node * new_no
 		size_t n;
 		for (n = 0; n < node->ninputs; n++) {
 			jive::input * input = node->inputs[n];
-			if (dynamic_cast<jive::achr::input*>(input)) {
+			if (dynamic_cast<const jive::achr::type*>(&input->type())) {
 				if (!can_move_below_region(self, input->producer()->region, new_node))
 					return false;
 			}
@@ -328,7 +328,8 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	bool force_proper_cut = false;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive::input * input = new_node->inputs[n];
-		if (dynamic_cast<jive::achr::input*>(input) || dynamic_cast<jive::ctl::input*>(input))
+		if (dynamic_cast<const jive::achr::type*>(&input->type())
+		|| dynamic_cast<const jive::ctl::type*>(&input->type()))
 			force_proper_cut = true;
 	}
 	
@@ -351,7 +352,8 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 		/* don't put node between a control dependency edge */
 		bool is_control = false;
 		for (n = 0; n < next_node->ninputs; n++)
-			if (dynamic_cast<jive::ctl::input*>(next_node->inputs[n])) is_control = true;
+			if (dynamic_cast<const jive::ctl::type*>(&next_node->inputs[n]->type()))
+				is_control = true;
 		if (conflict.type == jive_regalloc_conflict_none && !is_control)
 			allowed_cut = cut;
 	}
@@ -368,7 +370,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive::input * input = new_node->inputs[n];
-		if (!dynamic_cast<jive::ctl::input*>(input))
+		if (!dynamic_cast<const jive::ctl::type*>(&input->type()))
 			continue;
 		
 		self->control_dominator = input->producer();
@@ -922,7 +924,7 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 	size_t n;
 	for (n = 0; n < new_node->ninputs; n++) {
 		jive::input * input = new_node->inputs[n];
-		if (!dynamic_cast<jive::achr::input*>(input))
+		if (!dynamic_cast<const jive::achr::type*>(&input->type()))
 			continue;
 		jive_region_shaper * subshaper = jive_region_shaper_create(
 			self,
