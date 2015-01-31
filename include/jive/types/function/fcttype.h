@@ -64,67 +64,6 @@ private:
 	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
 };
 
-/* function input */
-
-class input final : public jive::value::input {
-public:
-	virtual ~input() noexcept;
-
-	inline
-	input(
-		const jive::fct::type & type,
-		jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::value::input(node, index, origin, type)
-	, type_(type)
-	{}
-
-	inline
-	input(
-		size_t narguments,
-		const jive::base::type ** argument_types,
-		size_t nreturns,
-		const jive::base::type ** return_types,
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::value::input(node, index, origin,
-			jive::fct::type(narguments, argument_types, nreturns, return_types))
-	, type_(narguments, argument_types, nreturns, return_types)
-	{}
-
-	inline size_t
-	narguments() const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->narguments();
-	}
-
-	inline size_t
-	nreturns() const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->nreturns();
-	}
-
-	inline const jive::base::type *
-	argument_type(size_t index) const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->argument_type(index);
-	}
-
-	inline const jive::base::type *
-	return_type(size_t index) const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->return_type(index);
-	}
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::fct::type type_;
-};
-
 /* function output */
 
 class output final : public jive::value::output {

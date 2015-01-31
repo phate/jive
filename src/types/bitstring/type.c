@@ -53,10 +53,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return new jive::bits::gate(nbits(), graph, name);
 }
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::output(size_t nbits, struct jive_node * node, size_t index)

@@ -28,25 +28,6 @@ public:
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_test_value_input final : public jive::value::input {
-public:
-	virtual ~jive_test_value_input() noexcept;
-
-	inline
-	jive_test_value_input(
-		jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::value::input(node, index, origin, jive_test_value_type())
-	{}
-
-private:
-	jive_test_value_input(const jive_test_value_input & rhs) = delete;
-	jive_test_value_input& operator=(const jive_test_value_input & rhs) = delete;
-
-	jive_test_value_type type_;
-};
-
 class jive_test_value_output final : public jive::value::output {
 public:
 	virtual ~jive_test_value_output() noexcept;
@@ -94,25 +75,6 @@ public:
 	virtual jive::output * create_output(jive_node * node, size_t index) const override;
 
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-};
-
-class jive_test_state_input final : public jive::state::input {
-public:
-	virtual ~jive_test_state_input() noexcept;
-
-	inline
-	jive_test_state_input(
-		jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::state::input(node, index, origin, jive_test_state_type())
-	{}
-
-private:
-	jive_test_state_input(const jive_test_state_input & rhs) = delete;
-	jive_test_state_input& operator=(const jive_test_state_input & rhs) = delete;
-
-	jive_test_state_type type_;
 };
 
 class jive_test_state_output final : public jive::state::output {

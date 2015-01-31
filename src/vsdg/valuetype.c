@@ -15,10 +15,6 @@ namespace value {
 
 type::~type() noexcept {}
 
-/* value inputs */
-
-input::~input() noexcept {};
-
 /* value outputs */
 
 output::~output() noexcept {}

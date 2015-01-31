@@ -16,10 +16,6 @@
 namespace jive {
 namespace imm {
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::~output() noexcept {}

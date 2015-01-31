@@ -38,28 +38,6 @@ private:
 	size_t nalternatives_;
 };
 
-class input final : public jive::state::input {
-public:
-	virtual ~input() noexcept;
-
-	input(
-		size_t nalternatives,
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::state::input(node, index, origin, jive::ctl::type(nalternatives))
-	, type_(nalternatives)
-	{}
-
-	virtual const jive::ctl::type & type() const noexcept { return type_; }
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::ctl::type type_;
-};
-
 class output final : public jive::state::output {
 public:
 	virtual ~output() noexcept;

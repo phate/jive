@@ -125,10 +125,6 @@ type::operator=(const jive::fct::type & rhs)
 	return *this;
 }
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::output(size_t narguments, const jive::base::type ** argument_types,

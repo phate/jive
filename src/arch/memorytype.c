@@ -13,10 +13,6 @@
 namespace jive {
 namespace mem {
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::~output() noexcept {}

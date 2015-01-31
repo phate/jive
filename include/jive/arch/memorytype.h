@@ -29,25 +29,6 @@ public:
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class input final : public jive::state::input {
-public:
-	virtual ~input() noexcept;
-
-	inline
-	input(
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::state::input(node, index, origin, jive::mem::type())
-	{}
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::mem::type type_;
-};
-
 class output final : public jive::state::output {
 public:
 	virtual ~output() noexcept;

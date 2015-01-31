@@ -43,33 +43,6 @@ private:
 	const jive_resource_name * name_;
 };
 
-class input final : public jive::state::input {
-public:
-	virtual ~input() noexcept {};
-
-	inline
-	input(
-		const jive_resource_name * name,
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::state::input(node, index, origin, jive::reuse::type(name))
-	, type_(name)
-	{}
-
-	inline const jive_resource_name *
-	name() const noexcept
-	{
-		return static_cast<const jive::reuse::type*>(&type())->name();
-	}
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::reuse::type type_;
-};
-
 class output final : public jive::state::output {
 public:
 	virtual ~output() noexcept {};

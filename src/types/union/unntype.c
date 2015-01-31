@@ -50,10 +50,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return new jive::unn::gate(this->declaration(), graph, name);
 }
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::output(const jive::unn::declaration * decl, jive_node * node, size_t index)

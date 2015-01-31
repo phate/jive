@@ -63,10 +63,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return new jive::ctl::gate(nalternatives_, graph, name);
 }
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::~output() noexcept {}

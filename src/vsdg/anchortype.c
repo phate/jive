@@ -50,19 +50,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return nullptr;
 }
 
-/* input */
-
-input::~input() noexcept
-{
-	if (origin()->node()->region->anchor == this)
-		origin()->node()->region->anchor = nullptr;
-}
-
-input::input(struct jive_node * node, size_t index, jive::output * origin)
-	: jive::input(node, index, origin, jive::achr::type())
-{
-}
-
 /* output */
 
 output::~output() noexcept {}

@@ -39,35 +39,6 @@ private:
 	size_t nbits_;
 };
 
-/* bitstring input */
-
-class input final : public jive::value::input {
-public:
-	virtual ~input() noexcept;
-
-	inline
-	input(
-		size_t nbits,
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::value::input(node, index, origin, jive::bits::type(nbits))
-	, type_(nbits)
-	{}
-
-	inline size_t
-	nbits() const noexcept
-	{
-		return static_cast<const jive::bits::type*>(&type())->nbits();
-	}
-	
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::bits::type type_;
-};
-
 /* bitstring output */
 
 class output final : public jive::value::output {

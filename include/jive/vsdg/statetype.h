@@ -26,25 +26,6 @@ protected:
 	inline constexpr type() noexcept : jive::base::type() {};
 };
 
-class input : public jive::input {
-public:
-	virtual ~input() noexcept;
-
-protected:
-	inline
-	input(
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin,
-		const jive::base::type & type)
-	: jive::input(node, index, origin, type)
-	{}
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-};
-
 class output : public jive::output {
 public:
 	virtual ~output() noexcept;

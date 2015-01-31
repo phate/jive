@@ -17,8 +17,6 @@ namespace state {
 
 type::~type() noexcept {}
 
-input::~input() noexcept {}
-
 output::~output() noexcept {}
 
 output::output(struct jive_node * node, size_t index)

@@ -33,27 +33,6 @@ public:
 	static const type & singleton();
 };
 
-/* address input */
-
-class input final : public jive::value::input {
-public:
-	virtual ~input() noexcept;
-
-	inline
-	input(
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::value::input(node, index, origin, jive::addr::type())
-	{}
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::addr::type type_;
-};
-
 /* address output */
 
 class output final : public jive::value::output {

@@ -55,10 +55,6 @@ const type & type::singleton()
 	return instance;
 }
 
-/* input */
-
-input::~input() noexcept {}
-
 /* output */
 
 output::~output() noexcept {}

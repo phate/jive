@@ -47,35 +47,6 @@ private:
 	const jive::unn::declaration * decl_;
 };
 
-/* input */
-
-class input final : public jive::value::input {
-public:
-	virtual ~input() noexcept;
-
-	inline
-	input(
-		const jive::unn::declaration * decl,
-		struct jive_node * node,
-		size_t index,
-		jive::output * origin)
-	: jive::value::input(node, index, origin, jive::unn::type(decl))
-	, type_(decl)
-	{}
-
-	inline const jive::unn::declaration *
-	declaration() const noexcept
-	{
-		return static_cast<const jive::unn::type*>(&type())->declaration();
-	}
-
-private:
-	input(const input & rhs) = delete;
-	input& operator=(const input & rhs) = delete;
-
-	jive::unn::type type_;
-};
-
 /* output */
 
 class output final : public jive::value::output {
