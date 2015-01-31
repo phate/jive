@@ -35,12 +35,6 @@ type::copy() const
 	return new jive::achr::type();
 }
 
-jive::input *
-type::create_input(jive_node * node, size_t index, jive::output * origin) const
-{
-	return new jive::achr::input(node, index, origin);
-}
-
 jive::output *
 type::create_output(jive_node * node, size_t index) const
 {
@@ -67,8 +61,6 @@ input::~input() noexcept
 input::input(struct jive_node * node, size_t index, jive::output * origin)
 	: jive::input(node, index, origin, jive::achr::type())
 {
-	JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
-	origin->node()->region->anchor = this;
 }
 
 /* output */

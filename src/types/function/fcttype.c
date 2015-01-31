@@ -98,12 +98,6 @@ type::copy() const
  return new jive::fct::type(argument_types_, return_types_);
 }
 
-jive::input *
-type::create_input(jive_node * node, size_t index, jive::output * origin) const
-{
-	return new jive::fct::input(*this, node, index, origin);
-}
-
 jive::output *
 type::create_output(jive_node * node, size_t index) const
 {

@@ -39,7 +39,17 @@ jive_type_create_input(const jive::base::type * self, struct jive_node * node, s
 	if (*self != *operand_type)
 		jive_raise_type_error(self, operand_type);
 
-	return self->create_input(node, index, origin);
+	jive::input * input = new jive::input(node, index, origin, *self);
+
+	/*
+		FIXME: This is going to be removed once we switched Jive to the new node representation.
+	*/
+	if (dynamic_cast<const jive::achr::type*>(self)) {
+		JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
+		origin->node()->region->anchor = input;
+	}
+
+	return input;
 }
 
 /* inputs */

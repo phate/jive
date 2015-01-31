@@ -29,12 +29,6 @@ jive_test_value_type::copy() const
 	return new jive_test_value_type();
 }
 
-jive::input *
-jive_test_value_type::create_input(jive_node * node, size_t index, jive::output * origin) const
-{
-	return new jive_test_value_input(node, index, origin);
-}
-
 jive::output *
 jive_test_value_type::create_output(jive_node * node, size_t index) const
 {
@@ -81,12 +75,6 @@ jive_test_state_type *
 jive_test_state_type::copy() const
 {
 	return new jive_test_state_type();
-}
-
-jive::input *
-jive_test_state_type::create_input(jive_node * node, size_t index, jive::output * origin) const
-{
-	return new jive_test_state_input(node, index, origin);
 }
 
 jive::output *

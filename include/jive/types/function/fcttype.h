@@ -53,9 +53,6 @@ public:
 
 	virtual jive::fct::type * copy() const override;
 
-	virtual jive::input * create_input(jive_node * node, size_t index,
-		jive::output * origin) const override;
-
 	virtual jive::output * create_output(jive_node * node, size_t index) const override;
 
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
