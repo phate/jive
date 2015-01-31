@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -265,7 +265,7 @@ jive_seq_graph_patch_jump_targets(
 	size_t index = op.icls()->noutputs;
 	JIVE_DEBUG_ASSERT(inode->noutputs);
 	jive::output * ctl_out = inode->outputs[index];
-	JIVE_DEBUG_ASSERT(dynamic_cast<jive::ctl::output*>(ctl_out));
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&ctl_out->type()));
 	
 	JIVE_DEBUG_ASSERT(ctl_out->users.first == ctl_out->users.last);
 	if (!ctl_out->users.first)

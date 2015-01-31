@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -81,13 +81,13 @@ select_operation::reduce_operand(
 		jive::output * address = arg->node()->inputs[0]->origin();
 
 		size_t nbits = 0;
-		if (dynamic_cast<jive::bits::output*>(address)) {
-			nbits = static_cast<const jive::bits::output*>(address)->nbits();
+		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
+			nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
 			address = jive_bitstring_to_address_create(address, nbits, &address->type());
 		}
 		
-		const jive::rcd::declaration * decl = static_cast<const jive::rcd::output*>(
-			arg->node()->outputs[0])->declaration();
+		const jive::rcd::declaration * decl = static_cast<const jive::rcd::type*>(
+			&arg->node()->outputs[0]->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs-1;
 		jive::output * states[nstates];
@@ -96,7 +96,7 @@ select_operation::reduce_operand(
 		}
 
 		jive::output * element_address = jive_memberof(address, decl, element());
-		if (dynamic_cast<jive::addr::output*>(address)) {
+		if (dynamic_cast<const jive::addr::type*>(&address->type())) {
 			return jive_load_by_address_create(element_address, decl->elements[element()],
 				nstates, states);
 		} else {

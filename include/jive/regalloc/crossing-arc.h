@@ -49,7 +49,7 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	{
 		self->start_shaped_node = NULL;
 		self->start_region = NULL;
-	} else if (dynamic_cast<jive::achr::output*>(shaped_ssavar->ssavar->origin)) {
+	} else if (dynamic_cast<const jive::achr::type*>(&shaped_ssavar->ssavar->origin->type())) {
 		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(self->shaped_graph,
 			shaped_ssavar->ssavar->origin->node()->region);
 		self->start_shaped_node = jive_shaped_region_last(shaped_region);

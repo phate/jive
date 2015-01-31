@@ -93,7 +93,7 @@ jive_load_node_address_transform(
 	size_t nbits)
 {
 	bool input_is_address = dynamic_cast<const jive::addr::type*>(&node->inputs[0]->type());
-	bool output_is_address = dynamic_cast<jive::addr::output*>(node->outputs[0]);
+	bool output_is_address = dynamic_cast<const jive::addr::type*>(&node->outputs[0]->type());
 
 	if (!input_is_address && !output_is_address)
 		return;
@@ -102,7 +102,7 @@ jive_load_node_address_transform(
 	if (input_is_address)
 		address = jive_address_to_bitstring_create(address, nbits, &address->type());
 
-	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::output*>(address)->nbits() == nbits);
+	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
 	const jive::value::type * datatype = &op.data_type();
@@ -140,7 +140,7 @@ jive_store_node_address_transform(
 	if (input0_is_address)
 		address = jive_address_to_bitstring_create(address, nbits, &address->type());
 
-	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::output*>(address)->nbits() == nbits);
+	JIVE_DEBUG_ASSERT(static_cast<const jive::bits::type*>(&address->type())->nbits() == nbits);
 
 	jive::bits::type bits(nbits);
 	const jive::value::type * datatype = &op.data_type();
@@ -199,7 +199,7 @@ jive_call_node_address_transform(
 	const jive::base::type * return_types[node->noutputs];
 	jive::bits::type address_type(nbits);
 	for (size_t i = 0; i < node->noutputs; i++){
-		if (dynamic_cast<jive::addr::output*>(node->outputs[i])){
+		if (dynamic_cast<const jive::addr::type*>(&node->outputs[i]->type())){
 			return_types[i] = &address_type;
 			transform = true;
 		} else {
@@ -216,7 +216,7 @@ jive_call_node_address_transform(
 
 	for (size_t i = 0; i < node->noutputs; i++){
 		jive::output * output = call->outputs[i];
-		if(dynamic_cast<jive::addr::output*>(node->outputs[i]))
+		if(dynamic_cast<const jive::addr::type*>(&node->outputs[i]->type()))
 			output = jive_bitstring_to_address_create(call->outputs[i], nbits, &node->outputs[i]->type());
 		jive_output_replace(node->outputs[i], output);
 	}

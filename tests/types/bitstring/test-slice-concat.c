@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -60,7 +60,7 @@ static int test_main(void)
 		jive::output * a = jive_bitconcat(2, list1);
 		jive::output * b = jive_bitslice(a, 0, 8);
 		
-		assert(static_cast<jive::bits::output*>(b)->nbits() == 8);
+		assert(static_cast<const jive::bits::type*>(&b->type())->nbits() == 8);
 		
 		assert(b == base_x);
 	}

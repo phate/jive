@@ -36,7 +36,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	size_t n;
 	for (n = 0; n < nparameters; n++) {
 		jive::output * param = src_region->top->outputs[n + 1];
-		if (dynamic_cast<jive::value::output*>(param)) {
+		if (dynamic_cast<const jive::value::type*>(&param->type())) {
 			value_parameters[nvalue_parameters ++] = jive_argument_long; /* FIXME: pick correct type */
 		} else {
 			nstate_parameters ++;
@@ -64,13 +64,13 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		jive::output * original = src_region->top->outputs[n];
 		
 		jive::output * substitute;
-		if (dynamic_cast<jive::value::output*>(original)) {
+		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			substitute = jive_subroutine_simple_get_argument(sub, nvalue_parameters ++);
 		} else {
 			substitute = jive_node_add_output(sub.region->top, &original->type());
 		}
 		
-		if(dynamic_cast<jive::addr::output*>(original))
+		if(dynamic_cast<const jive::addr::type*>(&original->type()))
 			substitute = jive_bitstring_to_address_create(substitute, 32, &original->type());
 		jive_substitution_map_add_output(subst, original, substitute);
 	}

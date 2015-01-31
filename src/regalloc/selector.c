@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -440,7 +440,7 @@ maybe_inner_node(jive_master_shaper_selector * self, jive_node * node)
 		if (!output_user_count)
 			continue;
 		
-		if (!dynamic_cast<jive::state::output*>(output))
+		if (!dynamic_cast<const jive::state::type*>(&output->type()))
 			nonstate_count ++;
 		
 		user_count += output_user_count;

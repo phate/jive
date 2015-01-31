@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -79,8 +79,8 @@ choose_operation::reduce_operand(
 	if (path == jive_choose_reduction_load) {
 		jive::output * address = arg->node()->inputs[0]->origin();
 
-		const jive::unn::declaration * decl = static_cast<const jive::unn::output*>(
-			arg->node()->outputs[0])->declaration();
+		const jive::unn::declaration * decl = static_cast<const jive::unn::type*>(
+			&arg->node()->outputs[0]->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs-1;
 		jive::output * states[nstates];
@@ -88,11 +88,11 @@ choose_operation::reduce_operand(
 			states[n] = arg->node()->inputs[n+1]->origin();
 		}
 	
-		if (dynamic_cast<jive::addr::output*>(address)) {
+		if (dynamic_cast<const jive::addr::type*>(&address->type())) {
 			return jive_load_by_address_create(address, decl->elements[element()],
 				nstates, states);
 		} else {
-			size_t nbits = static_cast<const jive::bits::output*>(address)->nbits();
+			size_t nbits = static_cast<const jive::bits::type*>(&address->type())->nbits();
 			return jive_load_by_bitstring_create(address, nbits, decl->elements[element()],
 				nstates, states);
 		}
