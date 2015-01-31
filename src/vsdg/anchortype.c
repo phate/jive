@@ -55,7 +55,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 output::~output() noexcept {}
 
 output::output(struct jive_node * node, size_t index)
-	: jive::output(node, index)
+	: jive::output(node, index, jive::achr::type())
 {}
 
 }

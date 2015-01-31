@@ -34,8 +34,6 @@ public:
 
 	jive_test_value_output(jive_node * node, size_t index);
 
-	virtual const jive_test_value_type & type() const noexcept { return type_; }
-
 private:
 	jive_test_value_output(const jive_test_value_output & rhs) = delete;
 	jive_test_value_output& operator=(const jive_test_value_output & rhs) = delete;
@@ -82,8 +80,6 @@ public:
 	virtual ~jive_test_state_output() noexcept;
 
 	jive_test_state_output(jive_node * node, size_t index);
-
-	virtual const jive_test_state_type & type() const noexcept { return type_; }
 
 private:
 	jive_test_state_output(const jive_test_state_output & rhs) = delete;

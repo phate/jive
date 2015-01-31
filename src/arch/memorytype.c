@@ -18,7 +18,7 @@ namespace mem {
 output::~output() noexcept {}
 
 output::output(jive_node * node, size_t index)
-	: jive::state::output(node, index)
+	: jive::state::output(node, index, jive::mem::type())
 {}
 
 /* gate */

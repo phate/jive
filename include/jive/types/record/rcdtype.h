@@ -55,9 +55,11 @@ public:
 
 	output(const jive::rcd::declaration * decl, struct jive_node * nodex, size_t index);
 
-	virtual const jive::rcd::type & type() const noexcept { return type_; }
-
-	inline const jive::rcd::declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::rcd::declaration *
+	declaration() const noexcept
+	{
+		return dynamic_cast<const jive::rcd::type*>(&type())->declaration();
+	}
 
 private:
 	output(const output & rhs) = delete;

@@ -55,9 +55,11 @@ public:
 
 	output(const jive::unn::declaration * decl, jive_node * node, size_t index);
 
-	virtual const jive::unn::type & type() const noexcept { return type_; }
-
-	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::unn::declaration *
+	declaration() const noexcept
+	{
+		return dynamic_cast<const jive::unn::type*>(&type())->declaration();
+	}
 
 private:
 	output(const output & rhs) = delete;

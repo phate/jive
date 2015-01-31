@@ -129,12 +129,13 @@ type::operator=(const jive::fct::type & rhs)
 
 output::output(size_t narguments, const jive::base::type ** argument_types,
 	size_t nreturns, const jive::base::type ** return_types, jive_node * node, size_t index)
-	: jive::value::output(node, index)
+	: jive::value::output(node, index,
+		jive::fct::type(narguments, argument_types, nreturns, return_types))
 	, type_(narguments, argument_types, nreturns, return_types)
 {}
 
 output::output(const jive::fct::type & type, jive_node * node, size_t index)
-	: jive::value::output(node, index)
+	: jive::value::output(node, index, jive::fct::type(type))
 	, type_(type)
 {}
 

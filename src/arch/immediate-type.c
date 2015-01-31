@@ -21,7 +21,7 @@ namespace imm {
 output::~output() noexcept {}
 
 output::output(jive_node * node, size_t index)
-	: jive::value::output(node, index)
+	: jive::value::output(node, index, jive::imm::type())
 {}
 
 /* gate */

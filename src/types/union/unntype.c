@@ -53,7 +53,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 /* output */
 
 output::output(const jive::unn::declaration * decl, jive_node * node, size_t index)
-	: jive::value::output(node, index)
+	: jive::value::output(node, index, jive::unn::type(decl))
 	, type_(decl)
 {}
 

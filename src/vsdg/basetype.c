@@ -297,12 +297,13 @@ jive_input_auto_merge_variable(jive::input * self)
 
 namespace jive {
 
-output::output(jive_node * node, size_t index_)
+output::output(jive_node * node, size_t index_, const jive::base::type & type)
 	: index(index_)
 	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, node_(node)
+	, type_(type.copy())
 {
 	users.first = users.last = nullptr;
 	originating_ssavars.first = originating_ssavars.last = nullptr;

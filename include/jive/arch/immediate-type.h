@@ -35,8 +35,6 @@ public:
 
 	output(jive_node * node, size_t index);
 
-	virtual const jive::imm::type & type() const noexcept { return type_; }
-
 private:
 	output(const output & rhs) = delete;
 	output& operator=(const output & rhs) = delete;

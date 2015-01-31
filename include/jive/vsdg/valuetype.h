@@ -27,7 +27,7 @@ public:
 	virtual ~output() noexcept;
 
 protected:
-	output(struct jive_node * node, size_t index);
+	output(struct jive_node * node, size_t index, const jive::base::type & type);
 
 private:
 	output(const output & rhs) = delete;
