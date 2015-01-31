@@ -82,9 +82,9 @@ namespace jive {
         @{
 */
 
-class input {
+class input final {
 public:
-	virtual ~input() noexcept;
+	~input() noexcept;
 
 	input(
 		struct jive_node * node,
@@ -99,7 +99,7 @@ public:
 		return *type_;
 	}
 
-	virtual void label(jive_buffer & buffer) const;
+	void label(jive_buffer & buffer) const;
 
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
