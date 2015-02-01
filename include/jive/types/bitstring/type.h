@@ -37,27 +37,6 @@ private:
 	size_t nbits_;
 };
 
-/* bitstring output */
-
-class output final : public jive::value::output {
-public:
-	virtual ~output() noexcept;
-
-	output(size_t nbits, struct jive_node * node, size_t index);
-
-	inline size_t
-	nbits() const noexcept
-	{
-		return dynamic_cast<const jive::bits::type*>(&type())->nbits();
-	}
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::bits::type type_;
-};
-
 /* bitstring gate */
 
 class gate final : public jive::value::gate {

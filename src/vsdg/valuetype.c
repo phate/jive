@@ -15,14 +15,6 @@ namespace value {
 
 type::~type() noexcept {}
 
-/* value outputs */
-
-output::~output() noexcept {}
-
-output::output(struct jive_node * node, size_t index, const jive::base::type & type)
-	: jive::output(node, index, type)
-{}
-
 /* value gates */
 
 gate::~gate() noexcept {}

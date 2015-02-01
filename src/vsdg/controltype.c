@@ -57,15 +57,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return new jive::ctl::gate(nalternatives_, graph, name);
 }
 
-/* output */
-
-output::~output() noexcept {}
-
-output::output(size_t nalternatives, struct jive_node * node, size_t index)
-	: jive::state::output(node, index, jive::ctl::type(nalternatives))
-	, type_(nalternatives)
-{}
-
 /* gate */
 
 gate::~gate() noexcept {}

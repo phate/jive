@@ -41,25 +41,6 @@ private:
 	const jive_resource_name * name_;
 };
 
-class output final : public jive::state::output {
-public:
-	virtual ~output() noexcept {};
-
-	output(const jive_resource_name * name, jive_node * node, size_t index);
-
-	inline const jive_resource_name *
-	name() const noexcept
-	{
-		return dynamic_cast<const jive::reuse::type*>(&type())->name();
-	}
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::reuse::type type_;
-};
-
 class gate final : public jive::state::gate {
 public:
 	virtual ~gate() noexcept {};
@@ -107,11 +88,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 {
 	return new jive::reuse::gate(this->name(), graph, name);
 }
-
-output::output(const jive_resource_name * name, jive_node * node, size_t index)
-	: jive::state::output(node, index, jive::reuse::type(name))
-	, type_(name)
-{}
 
 gate::gate(const jive_resource_name * name, jive_graph * graph, const char name_[])
 	: jive::state::gate(graph, name_)

@@ -22,18 +22,6 @@ protected:
 	inline constexpr type() noexcept : jive::base::type() {};
 };
 
-class output : public jive::output {
-public:
-	virtual ~output() noexcept;
-
-protected:
-	output(struct jive_node * node, size_t index, const jive::base::type & type);
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-};
-
 class gate : public jive::gate {
 public:
 	virtual ~gate() noexcept;

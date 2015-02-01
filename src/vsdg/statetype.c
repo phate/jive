@@ -17,12 +17,6 @@ namespace state {
 
 type::~type() noexcept {}
 
-output::~output() noexcept {}
-
-output::output(struct jive_node * node, size_t index, const jive::base::type & type)
-	: jive::output(node, index, type)
-{}
-
 gate::~gate() noexcept {}
 
 gate::gate(jive_graph * graph, const char name[])

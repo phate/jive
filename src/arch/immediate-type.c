@@ -16,14 +16,6 @@
 namespace jive {
 namespace imm {
 
-/* output */
-
-output::~output() noexcept {}
-
-output::output(jive_node * node, size_t index)
-	: jive::value::output(node, index, jive::imm::type())
-{}
-
 /* gate */
 
 gate::~gate() noexcept {}

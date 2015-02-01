@@ -26,19 +26,6 @@ public:
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class jive_test_value_output final : public jive::value::output {
-public:
-	virtual ~jive_test_value_output() noexcept;
-
-	jive_test_value_output(jive_node * node, size_t index);
-
-private:
-	jive_test_value_output(const jive_test_value_output & rhs) = delete;
-	jive_test_value_output& operator=(const jive_test_value_output & rhs) = delete;
-
-	jive_test_value_type type_;
-};
-
 class jive_test_value_gate final : public jive::value::gate {
 public:
 	virtual ~jive_test_value_gate() noexcept;
@@ -69,19 +56,6 @@ public:
 	virtual jive_test_state_type * copy() const override;
 
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-};
-
-class jive_test_state_output final : public jive::state::output {
-public:
-	virtual ~jive_test_state_output() noexcept;
-
-	jive_test_state_output(jive_node * node, size_t index);
-
-private:
-	jive_test_state_output(const jive_test_state_output & rhs) = delete;
-	jive_test_state_output& operator=(const jive_test_state_output & rhs) = delete;
-
-	jive_test_state_type type_;
 };
 
 class jive_test_state_gate final : public jive::state::gate {

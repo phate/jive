@@ -28,21 +28,6 @@ public:
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-/* float output */
-
-class output final : public jive::value::output {
-public:
-	virtual ~output() noexcept;
-
-	output(struct jive_node * node, size_t index);
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::flt::type type_;
-};
-
 /* float gate */
 
 class gate final : public jive::value::gate {

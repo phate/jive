@@ -49,14 +49,6 @@ const type & type::singleton()
 	return instance;
 }
 
-/* output */
-
-output::~output() noexcept {}
-
-output::output(jive_node * node, size_t index)
-	: jive::value::output(node, index, jive::addr::type())
-{}
-
 /* gate */
 
 gate::~gate() noexcept {}

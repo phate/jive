@@ -27,19 +27,6 @@ public:
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
-class output final : public jive::output {
-public:
-	virtual ~output() noexcept;
-
-	output(struct jive_node * node, size_t index);
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::achr::type type_;
-};
-
 }
 }
 

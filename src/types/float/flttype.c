@@ -42,14 +42,6 @@ type::create_gate(jive_graph * graph, const char * name) const
 	return new jive::flt::gate(graph, name);
 }
 
-/* output */
-
-output::~output() noexcept {}
-
-output::output(struct jive_node * node, size_t index)
-	: jive::value::output(node, index, jive::flt::type())
-{}
-
 /* gate */
 
 gate::~gate() noexcept {}

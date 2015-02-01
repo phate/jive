@@ -62,48 +62,6 @@ private:
 	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
 };
 
-/* function output */
-
-class output final : public jive::value::output {
-public:
-	virtual ~output() noexcept;
-
-	output(const jive::fct::type & type, jive_node * node, size_t index);
-
-	output(size_t narguments, const jive::base::type ** argument_types, size_t nreturns,
-		const jive::base::type ** return_types, jive_node * node, size_t index);
-
-	inline size_t
-	narguments() const noexcept
-	{
-		return dynamic_cast<const jive::fct::type*>(&type())->narguments();
-	}
-
-	inline size_t
-	nreturns() const noexcept
-	{
-		return dynamic_cast<const jive::fct::type*>(&type())->nreturns();
-	}
-
-	inline const jive::base::type *
-	argument_type(size_t index) const noexcept
-	{
-		return dynamic_cast<const jive::fct::type*>(&type())->argument_type(index);
-	}
-
-	inline const jive::base::type *
-	return_type(size_t index) const noexcept
-	{
-		return dynamic_cast<const jive::fct::type*>(&type())->return_type(index);
-	}
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::fct::type type_;
-};
-
 /* function gate */
 
 class gate final : public jive::value::gate {

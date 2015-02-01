@@ -45,27 +45,6 @@ private:
 	const jive::unn::declaration * decl_;
 };
 
-/* output */
-
-class output final : public jive::value::output {
-public:
-	virtual ~output() noexcept;
-
-	output(const jive::unn::declaration * decl, jive_node * node, size_t index);
-
-	inline const jive::unn::declaration *
-	declaration() const noexcept
-	{
-		return dynamic_cast<const jive::unn::type*>(&type())->declaration();
-	}
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::unn::type type_;
-};
-
 /* gate */
 
 class gate final : public jive::value::gate {

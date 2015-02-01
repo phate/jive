@@ -45,27 +45,6 @@ private:
 	const jive::rcd::declaration * decl_;
 };
 
-/* output */
-
-class output final : public jive::value::output {
-public:
-	virtual ~output() noexcept;
-
-	output(const jive::rcd::declaration * decl, struct jive_node * nodex, size_t index);
-
-	inline const jive::rcd::declaration *
-	declaration() const noexcept
-	{
-		return dynamic_cast<const jive::rcd::type*>(&type())->declaration();
-	}
-
-private:
-	output(const output & rhs) = delete;
-	output& operator=(const output & rhs) = delete;
-
-	jive::rcd::type type_;
-};
-
 /* gate */
 
 class gate final : public jive::value::gate {
