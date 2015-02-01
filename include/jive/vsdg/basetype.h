@@ -248,9 +248,9 @@ namespace jive {
         @{
 */
 
-class gate {
+class gate final {
 public:
-	virtual ~gate() noexcept;
+	~gate() noexcept;
 
 	gate(struct jive_graph * graph, const char name[], const jive::base::type & type);
 
@@ -261,7 +261,7 @@ public:
 		return *type_;
 	}
 
-	virtual void label(jive_buffer & buffer) const;
+	void label(jive_buffer & buffer) const;
 
 	jive::input * create_input(jive_node * node, size_t index, jive::output * origin);
 
