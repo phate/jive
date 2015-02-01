@@ -57,11 +57,6 @@ public:
 	virtual std::string debug_string() const = 0;
 
 	/*
-		FIXME: change return type to std::unique_ptr<jive::output>
-	*/
-	virtual jive::output * create_output(jive_node * node, size_t index) const = 0;
-
-	/*
 		FIXME: change return type to std::unique_ptr<jive::gate>
 	*/
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const = 0;
@@ -184,7 +179,6 @@ class output {
 public:
 	virtual ~output() noexcept;
 
-protected:
 	output(struct jive_node * node, size_t index, const jive::base::type & type);
 
 public:

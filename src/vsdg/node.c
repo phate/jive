@@ -37,7 +37,7 @@ jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
 static jive::output *
 jive_uninitialized_node_add_output(jive_node * self, const jive::base::type * type)
 {
-	jive::output * output = type->create_output(self, self->noutputs);
+	jive::output * output = new jive::output(self, self->noutputs, *type);
 	jive_uninitialized_node_add_output_(self, output);
 	return output;
 }
@@ -214,7 +214,7 @@ jive_node_add_output_(jive_node * self, jive::output * output)
 jive::output *
 jive_node_add_output(jive_node * self, const jive::base::type * type)
 {
-	jive::output * output = type->create_output(self, self->noutputs);
+	jive::output * output = new jive::output(self, self->noutputs, *type);
 	jive_node_add_output_(self, output);
 	return output;
 }

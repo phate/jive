@@ -497,7 +497,7 @@ gate::create_input(jive_node * node, size_t index, jive::output * origin)
 jive::output *
 gate::create_output(jive_node * node, size_t index)
 {
-	jive::output * output = type().create_output(node, index);
+	jive::output * output = new jive::output(node, index, type());
 	output->required_rescls = required_rescls;
 	output->gate = this;
 	JIVE_LIST_PUSH_BACK(this->outputs, output, gate_outputs_list);

@@ -23,8 +23,6 @@ public:
 
 	virtual jive::seq::type * copy() const override;
 
-	virtual jive::output * create_output(jive_node * node, size_t index) const override;
-
 	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
