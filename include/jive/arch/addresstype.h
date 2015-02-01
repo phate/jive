@@ -29,21 +29,6 @@ public:
 	static const type & singleton();
 };
 
-/* address gate */
-
-class gate final : public jive::value::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(jive_graph * graph, const char name[]);
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::addr::type type_;
-};
-
 }
 }
 

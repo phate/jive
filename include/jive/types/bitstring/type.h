@@ -35,27 +35,6 @@ private:
 	size_t nbits_;
 };
 
-/* bitstring gate */
-
-class gate final : public jive::value::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(size_t nbits, jive_graph * graph, const char name[]);
-
-	inline size_t
-	nbits() const noexcept
-	{
-		return dynamic_cast<const jive::bits::type*>(&type())->nbits();
-	}
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::bits::type type_;
-};
-
 }
 }
 

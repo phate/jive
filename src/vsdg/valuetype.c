@@ -15,13 +15,5 @@ namespace value {
 
 type::~type() noexcept {}
 
-/* value gates */
-
-gate::~gate() noexcept {}
-
-gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
-	: jive::gate(graph, name, type)
-{}
-
 }
 }

@@ -26,21 +26,6 @@ public:
 	virtual jive::flt::type * copy() const override;
 };
 
-/* float gate */
-
-class gate final : public jive::value::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(jive_graph * graph, const char name[]);
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::flt::type type_;
-};
-
 }
 }
 

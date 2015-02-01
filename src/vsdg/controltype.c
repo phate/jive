@@ -51,15 +51,6 @@ type::copy() const
 	return new jive::ctl::type(nalternatives_);
 }
 
-/* gate */
-
-gate::~gate() noexcept {}
-
-gate::gate(size_t nalternatives, jive_graph * graph, const char name[])
-	: jive::state::gate(graph, name, jive::ctl::type(nalternatives))
-	, type_(nalternatives)
-{}
-
 /* value_repr */
 
 value_repr::value_repr(size_t alternative, size_t nalternatives)

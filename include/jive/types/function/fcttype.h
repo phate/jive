@@ -60,48 +60,6 @@ private:
 	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
 };
 
-/* function gate */
-
-class gate final : public jive::value::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(const jive::fct::type & type, jive_graph * graph, const char name[]);
-
-	gate(size_t narguments, const jive::base::type ** argument_types, size_t nreturns,
-		const jive::base::type ** return_types, jive_graph * graph, const char name[]);
-
-	inline size_t
-	narguments() const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->narguments();
-	}
-
-	inline size_t
-	nreturns() const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->nreturns();
-	}
-
-	inline const jive::base::type *
-	argument_type(size_t index) const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->argument_type(index);
-	}
-
-	inline const jive::base::type *
-	return_type(size_t index) const noexcept
-	{
-		return static_cast<const jive::fct::type*>(&type())->return_type(index);
-	}
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::fct::type type_;
-};
-
 }
 }
 

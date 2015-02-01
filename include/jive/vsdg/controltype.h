@@ -34,19 +34,6 @@ private:
 	size_t nalternatives_;
 };
 
-class gate final : public jive::state::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(size_t nalternatives, jive_graph * graph, const char name[]);
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::ctl::type type_;
-};
-
 class value_repr {
 public:
 	value_repr(size_t alternative, size_t nalternatives);

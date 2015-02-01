@@ -113,21 +113,5 @@ type::operator=(const jive::fct::type & rhs)
 	return *this;
 }
 
-/* gate */
-
-gate::gate(size_t narguments, const jive::base::type ** argument_types,
-	size_t nreturns, const jive::base::type ** return_types, jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name,
-		jive::fct::type(narguments, argument_types, nreturns, return_types))
-	, type_(narguments, argument_types, nreturns, return_types)
-{}
-
-gate::gate(const jive::fct::type & type, jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name, jive::fct::type(type))
-	, type_(type)
-{}
-
-gate::~gate() noexcept {}
-
 }
 }

@@ -16,16 +16,6 @@
 namespace jive {
 namespace imm {
 
-/* gate */
-
-gate::~gate() noexcept {}
-
-gate::gate(jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name, jive::imm::type())
-{}
-
-/* type */
-
 type::~type() noexcept {}
 
 std::string

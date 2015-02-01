@@ -13,17 +13,7 @@
 namespace jive {
 namespace mem {
 
-/* gate */
-
-gate::~gate() noexcept {}
-
-gate::gate(jive_graph * graph, const char name[])
-	: jive::state::gate(graph, name, jive::mem::type())
-{}
-
 type::~type() noexcept {}
-
-/* type */
 
 std::string
 type::debug_string() const

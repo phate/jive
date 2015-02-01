@@ -38,14 +38,5 @@ type::copy() const
 	return new jive::rcd::type(this->declaration());
 }
 
-/* gate */
-
-gate::gate(const jive::rcd::declaration * decl, jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name, jive::rcd::type(decl))
-	, type_(decl)
-{}
-
-gate::~gate() noexcept {}
-
 }
 }

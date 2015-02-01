@@ -22,18 +22,6 @@ protected:
 	inline constexpr type() noexcept : jive::base::type() {};
 };
 
-class gate : public jive::gate {
-public:
-	virtual ~gate() noexcept;
-
-protected:
-	gate(jive_graph * graph, const char name[], const jive::base::type & type);
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-};
-
 }
 }
 

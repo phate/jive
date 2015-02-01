@@ -43,13 +43,5 @@ const type & type::singleton()
 	return instance;
 }
 
-/* gate */
-
-gate::~gate() noexcept {}
-
-gate::gate(jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name, jive::addr::type())
-{}
-
 }
 }

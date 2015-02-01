@@ -43,27 +43,6 @@ private:
 	const jive::unn::declaration * decl_;
 };
 
-/* gate */
-
-class gate final : public jive::value::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(const jive::unn::declaration * decl, jive_graph * graph, const char name[]);
-
-	inline const jive::unn::declaration *
-	declaration() const noexcept
-	{
-		return static_cast<const jive::unn::type*>(&type())->declaration();
-	}
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::unn::type type_;
-};
-
 }
 }
 

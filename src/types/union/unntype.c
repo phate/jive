@@ -38,14 +38,5 @@ type::copy() const
 	return new jive::unn::type(this->declaration());
 }
 
-/* gate */
-
-gate::gate(const jive::unn::declaration * decl, jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name, jive::unn::type(decl))
-	, type_(decl)
-{}
-
-gate::~gate() noexcept {}
-
 }
 }

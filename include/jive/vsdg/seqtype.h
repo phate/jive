@@ -24,19 +24,6 @@ public:
 	virtual jive::seq::type * copy() const override;
 };
 
-class gate final : public jive::state::gate {
-public:
-	virtual ~gate() noexcept;
-
-	gate(jive_graph * graph, const char name[]);
-
-private:
-	gate(const gate & rhs) = delete;
-	gate& operator=(const gate & rhs) = delete;
-
-	jive::seq::type type_;
-};
-
 const type seqtype;
 
 }
