@@ -41,12 +41,6 @@ type::copy() const
 	return new jive::bits::type(this->nbits());
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::bits::gate(nbits(), graph, name);
-}
-
 /* gate */
 
 gate::gate(size_t nbits, jive_graph * graph, const char name[])

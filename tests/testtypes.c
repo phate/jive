@@ -29,12 +29,6 @@ jive_test_value_type::copy() const
 	return new jive_test_value_type();
 }
 
-jive::gate *
-jive_test_value_type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive_test_value_gate(graph, name);
-}
-
 jive_test_value_gate::~jive_test_value_gate() noexcept {}
 
 jive_test_value_gate::jive_test_value_gate(jive_graph * graph, const char name[])
@@ -61,12 +55,6 @@ jive_test_state_type *
 jive_test_state_type::copy() const
 {
 	return new jive_test_state_type();
-}
-
-jive::gate *
-jive_test_state_type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive_test_state_gate(graph, name);
 }
 
 jive_test_state_gate::~jive_test_state_gate() noexcept {}

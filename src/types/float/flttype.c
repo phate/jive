@@ -36,12 +36,6 @@ type::operator==(const jive::base::type & other) const noexcept
 	return dynamic_cast<const jive::flt::type*>(&other) != nullptr;
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::flt::gate(graph, name);
-}
-
 /* gate */
 
 gate::~gate() noexcept {}

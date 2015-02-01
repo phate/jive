@@ -35,8 +35,6 @@ public:
 
 	virtual jive::reuse::type * copy() const override;
 
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-
 private:
 	const jive_resource_name * name_;
 };
@@ -83,12 +81,6 @@ jive::reuse::type *
 type::copy() const
 {
 	return new jive::reuse::type(this->name());
-}
-
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::reuse::gate(this->name(), graph, name);
 }
 
 gate::gate(const jive_resource_name * name, jive_graph * graph, const char name_[])

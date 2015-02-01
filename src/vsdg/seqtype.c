@@ -30,12 +30,6 @@ type::copy() const
 	return new jive::seq::type();
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::seq::gate(graph, name);
-}
-
 /* gate */
 
 gate::~gate() noexcept {}

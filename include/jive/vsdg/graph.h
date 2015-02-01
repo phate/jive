@@ -121,11 +121,14 @@ jive_graph_get_root_region(const jive_graph * self)
 	return self->root_region;
 }
 
+jive::gate *
+jive_graph_create_gate(jive_graph * self, const std::string & name, const jive::base::type & type);
+
 JIVE_EXPORTED_INLINE void
 jive_graph_export(struct jive_graph * self, jive::output * operand)
 {
 	//FIXME: change the signature to take the name for export
-	jive::gate * gate = operand->type().create_gate(self, "dummy");
+	jive::gate * gate = jive_graph_create_gate(self, "dummy", operand->type());
 	jive_node_gate_input(self->root_region->bottom, gate, operand);
 }
 

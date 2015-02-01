@@ -53,8 +53,6 @@ public:
 
 	virtual jive::fct::type * copy() const override;
 
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-
 	jive::fct::type& operator=(const jive::fct::type & rhs);
 
 private:

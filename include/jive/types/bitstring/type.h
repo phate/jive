@@ -31,8 +31,6 @@ public:
 
 	virtual jive::bits::type * copy() const override;
 
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-
 private:
 	size_t nbits_;
 };

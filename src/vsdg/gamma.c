@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -127,7 +127,7 @@ jive_gamma_create(
 	for (size_t n = 0; n < nvalues; n++) {
 		char name[80];
 		snprintf(name, sizeof(name), "gamma_%p_%zd", gamma, n);
-		jive::gate * gate = types[n]->create_gate(region->graph, name);
+		jive::gate * gate = jive_graph_create_gate(region->graph, name, *types[n]);
 		for (size_t i = 0; i < nalternatives; i++)
 			jive_node_gate_input(arguments[i]->node(), gate, alternatives[i][n]);
 		jive_node_gate_output(gamma, gate);

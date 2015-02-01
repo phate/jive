@@ -26,8 +26,6 @@ public:
 
 	virtual jive::addr::type * copy() const override;
 
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-
 	static const type & singleton();
 };
 

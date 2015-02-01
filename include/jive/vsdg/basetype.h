@@ -55,11 +55,6 @@ public:
 	virtual jive::base::type * copy() const = 0;
 
 	virtual std::string debug_string() const = 0;
-
-	/*
-		FIXME: change return type to std::unique_ptr<jive::gate>
-	*/
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const = 0;
 };
 
 }
@@ -257,7 +252,6 @@ class gate {
 public:
 	virtual ~gate() noexcept;
 
-protected:
 	gate(struct jive_graph * graph, const char name[], const jive::base::type & type);
 
 public:

@@ -51,12 +51,6 @@ type::copy() const
 	return new jive::ctl::type(nalternatives_);
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::ctl::gate(nalternatives_, graph, name);
-}
-
 /* gate */
 
 gate::~gate() noexcept {}

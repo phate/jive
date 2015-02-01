@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -48,7 +48,7 @@ jive_resource_class_create_gate(const jive_resource_class * self, jive_graph * g
 	const char * name)
 {
 	const jive::base::type * type = jive_resource_class_get_type(self);
-	jive::gate * gate = type->create_gate(graph, name);
+	jive::gate * gate = jive_graph_create_gate(graph, name, *type);
 	gate->required_rescls = self;
 	return gate;
 }

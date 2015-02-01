@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -31,9 +31,9 @@ static int test_main(void)
 		0, NULL, NULL,
 		0, NULL);
 	
-	jive::gate * g1 = type.create_gate(graph, "g1");
-	jive::gate * g2 = type.create_gate(graph, "g2");
-	jive::gate * g3 = type.create_gate(graph, "g3");
+	jive::gate * g1 = jive_graph_create_gate(graph, "g1", type);
+	jive::gate * g2 = jive_graph_create_gate(graph, "g2", type);
+	jive::gate * g3 = jive_graph_create_gate(graph, "g3", type);
 	
 	jive_node_gate_output(node, g1);
 	jive_node_gate_output(node, g2);

@@ -278,7 +278,7 @@ static int test_main(void)
 	
 	jive_graph * graph = jive_graph_create();
 	
-	jive::gate * bit8gate = bits8.create_gate(graph, "bit8gate");
+	jive::gate * bit8gate = jive_graph_create_gate(graph, "bit8gate", bits8);
 	verify_serialize_gateexpr(bit8gate, "\"bit8gate\" root<> bits<8>");
 	verify_deserialize_gateexpr("\"bit8gate\" root<> bits<8>", bit8gate);
 	

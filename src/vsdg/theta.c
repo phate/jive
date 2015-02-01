@@ -132,7 +132,7 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 	
 	char gate_name[80];
 	snprintf(gate_name, sizeof(gate_name), "loopvar_%p_%zd", head, index);
-	state->loopvars[index].gate = type->create_gate(graph, gate_name);
+	state->loopvars[index].gate = jive_graph_create_gate(graph, gate_name, *type);
 	jive_node_gate_input(head, state->loopvars[index].gate, pre_value);
 	state->loopvars[index].value = jive_node_gate_output(head,
 		state->loopvars[index].gate);

@@ -39,8 +39,6 @@ public:
 
 	virtual jive::unn::type * copy() const override;
 
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-
 private:
 	const jive::unn::declaration * decl_;
 };

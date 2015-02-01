@@ -35,14 +35,5 @@ type::copy() const
 	return new jive::achr::type();
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	/*
-		FIXME: this is an ugly solution
-	*/
-	return nullptr;
-}
-
 }
 }

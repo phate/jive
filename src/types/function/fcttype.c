@@ -98,12 +98,6 @@ type::copy() const
  return new jive::fct::type(argument_types_, return_types_);
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::fct::gate(*this, graph, name);
-}
-
 jive::fct::type&
 type::operator=(const jive::fct::type & rhs)
 {

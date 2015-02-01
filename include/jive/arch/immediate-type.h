@@ -23,8 +23,6 @@ public:
 	virtual bool operator==(const jive::base::type & other) const noexcept override;
 
 	virtual jive::imm::type * copy() const override;
-
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
 };
 
 class gate final : public jive::value::gate {

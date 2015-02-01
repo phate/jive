@@ -43,11 +43,5 @@ type::copy() const
 	return new jive::mem::type();
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::mem::gate(graph, name);
-}
-
 }
 }

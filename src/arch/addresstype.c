@@ -37,12 +37,6 @@ type::copy() const
 	return new jive::addr::type();
 }
 
-jive::gate *
-type::create_gate(jive_graph * graph, const char * name) const
-{
-	return new jive::addr::gate(graph, name);
-}
-
 const type & type::singleton()
 {
 	static const type instance;

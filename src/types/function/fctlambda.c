@@ -220,7 +220,7 @@ jive_lambda_begin(
 
 	size_t n;
 	for (n = 0; n < narguments; n++) {
-		jive::gate * gate = argument_types[n]->create_gate(graph, argument_names[n]);
+		jive::gate * gate = jive_graph_create_gate(graph, argument_names[n], *argument_types[n]);
 		lambda->arguments[n] = jive_node_gate_output(lambda->region->top, gate);
 	}
 
@@ -243,7 +243,7 @@ jive_lambda_end(jive_lambda * self,
 	for (n = 0; n < nresults; n++) {
 		char gate_name[80];
 		snprintf(gate_name, sizeof(gate_name), "res_%p_%zd", leave, n);
-		jive::gate * gate = result_types[n]->create_gate(graph, gate_name);
+		jive::gate * gate = jive_graph_create_gate(graph, gate_name, *result_types[n]);
 		jive_node_gate_input(leave, gate, results[n]);
 	}
 

@@ -308,3 +308,9 @@ jive_graph_normalize(jive_graph * self)
 	jive_traverser_destroy(trav);
 	self->normalized = true;
 }
+
+jive::gate *
+jive_graph_create_gate(jive_graph * self, const std::string & name, const jive::base::type & type)
+{
+	return new jive::gate(self, name.c_str(), type);
+}

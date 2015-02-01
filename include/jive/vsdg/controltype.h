@@ -24,8 +24,6 @@ public:
 
 	virtual jive::ctl::type * copy() const override;
 
-	virtual jive::gate * create_gate(jive_graph * graph, const char * name) const override;
-
 	inline size_t
 	nalternatives() const noexcept
 	{
