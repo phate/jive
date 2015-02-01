@@ -62,7 +62,7 @@ type::create_gate(jive_graph * graph, const char * name) const
 gate::~gate() noexcept {}
 
 gate::gate(size_t nalternatives, jive_graph * graph, const char name[])
-	: jive::state::gate(graph, name)
+	: jive::state::gate(graph, name, jive::ctl::type(nalternatives))
 	, type_(nalternatives)
 {}
 

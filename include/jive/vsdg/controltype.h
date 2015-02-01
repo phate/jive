@@ -42,8 +42,6 @@ public:
 
 	gate(size_t nalternatives, jive_graph * graph, const char name[]);
 
-	virtual const jive::ctl::type & type() const noexcept { return type_; }
-
 private:
 	gate(const gate & rhs) = delete;
 	gate& operator=(const gate & rhs) = delete;

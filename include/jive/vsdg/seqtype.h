@@ -32,12 +32,6 @@ public:
 
 	gate(jive_graph * graph, const char name[]);
 
-	virtual const jive::seq::type &
-	type() const noexcept override
-	{
-		return type_;
-	}
-
 private:
 	gate(const gate & rhs) = delete;
 	gate& operator=(const gate & rhs) = delete;

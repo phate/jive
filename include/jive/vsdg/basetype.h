@@ -258,10 +258,14 @@ public:
 	virtual ~gate() noexcept;
 
 protected:
-	gate(struct jive_graph * graph, const char name[]);
+	gate(struct jive_graph * graph, const char name[], const jive::base::type & type);
 
 public:
-	virtual const jive::base::type & type() const noexcept = 0;
+	const jive::base::type &
+	type() const noexcept
+	{
+		return *type_;
+	}
 
 	virtual void label(jive_buffer & buffer) const;
 
@@ -297,6 +301,14 @@ public:
 	} variable_gate_list;
 	
 	const struct jive_resource_class * required_rescls;
+
+private:
+	/*
+		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
+		number given by the operation. Once this is fixed, the attribute can be removed and the type
+		can be taken from the operation.
+	*/
+	std::unique_ptr<jive::base::type> type_;
 };
 
 }	//jive namespace

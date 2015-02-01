@@ -32,8 +32,6 @@ public:
 
 	jive_test_value_gate(jive_graph * graph, const char name[]);
 
-	virtual const jive_test_value_type & type() const noexcept { return type_; }
-
 private:
 	jive_test_value_gate(const jive_test_value_gate & rhs) = delete;
 	jive_test_value_gate& operator=(const jive_test_value_gate & rhs) = delete;
@@ -63,8 +61,6 @@ public:
 	virtual ~jive_test_state_gate() noexcept;
 
 	jive_test_state_gate(jive_graph * graph, const char name[]);
-
-	virtual const jive_test_state_type & type() const noexcept { return type_; }
 
 private:
 	jive_test_state_gate(const jive_test_state_gate & rhs) = delete;

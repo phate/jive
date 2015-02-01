@@ -54,7 +54,7 @@ const type & type::singleton()
 gate::~gate() noexcept {}
 
 gate::gate(jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name)
+	: jive::value::gate(graph, name, jive::addr::type())
 {}
 
 }

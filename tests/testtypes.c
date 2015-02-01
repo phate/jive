@@ -38,7 +38,7 @@ jive_test_value_type::create_gate(jive_graph * graph, const char * name) const
 jive_test_value_gate::~jive_test_value_gate() noexcept {}
 
 jive_test_value_gate::jive_test_value_gate(jive_graph * graph, const char name[])
-	: jive::value::gate(graph, name)
+	: jive::value::gate(graph, name, jive_test_value_type())
 {}
 
 /* test state type */
@@ -72,5 +72,5 @@ jive_test_state_type::create_gate(jive_graph * graph, const char * name) const
 jive_test_state_gate::~jive_test_state_gate() noexcept {}
 
 jive_test_state_gate::jive_test_state_gate(jive_graph * graph, const char name[])
-	: jive::state::gate(graph, name)
+	: jive::state::gate(graph, name, jive_test_state_type())
 {}

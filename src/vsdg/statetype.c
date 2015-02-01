@@ -19,8 +19,8 @@ type::~type() noexcept {}
 
 gate::~gate() noexcept {}
 
-gate::gate(jive_graph * graph, const char name[])
-	: jive::gate(graph, name)
+gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
+	: jive::gate(graph, name, type)
 {}
 
 mux_op::~mux_op() noexcept {}

@@ -452,8 +452,9 @@ jive_output_replace(jive::output * self, jive::output * other)
 
 namespace jive {
 
-gate::gate(jive_graph * graph, const char name_[])
+gate::gate(jive_graph * graph, const char name_[], const jive::base::type & type)
 	: graph (graph)
+	, type_(type.copy())
 {
 	name = name_;
 	inputs.first = inputs.last = nullptr;

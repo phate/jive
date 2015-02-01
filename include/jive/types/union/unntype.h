@@ -53,9 +53,11 @@ public:
 
 	gate(const jive::unn::declaration * decl, jive_graph * graph, const char name[]);
 
-	virtual const jive::unn::type & type() const noexcept { return type_; }
-
-	inline const jive::unn::declaration * declaration() const noexcept { return type_.declaration(); }
+	inline const jive::unn::declaration *
+	declaration() const noexcept
+	{
+		return static_cast<const jive::unn::type*>(&type())->declaration();
+	}
 
 private:
 	gate(const gate & rhs) = delete;

@@ -18,7 +18,7 @@ namespace mem {
 gate::~gate() noexcept {}
 
 gate::gate(jive_graph * graph, const char name[])
-	: jive::state::gate(graph, name)
+	: jive::state::gate(graph, name, jive::mem::type())
 {}
 
 type::~type() noexcept {}

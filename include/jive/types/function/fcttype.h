@@ -73,17 +73,29 @@ public:
 	gate(size_t narguments, const jive::base::type ** argument_types, size_t nreturns,
 		const jive::base::type ** return_types, jive_graph * graph, const char name[]);
 
-	virtual const jive::fct::type & type() const noexcept { return type_; }
+	inline size_t
+	narguments() const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->narguments();
+	}
 
-	inline size_t narguments() const noexcept { return type_.narguments(); }
+	inline size_t
+	nreturns() const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->nreturns();
+	}
 
-	inline size_t nreturns() const noexcept { return type_.nreturns(); }
+	inline const jive::base::type *
+	argument_type(size_t index) const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->argument_type(index);
+	}
 
-	inline const jive::base::type * argument_type(size_t index) const noexcept
-		{ return type_.argument_type(index); }
-
-	inline const jive::base::type * return_type(size_t index) const noexcept
-		{ return type_.return_type(index); }
+	inline const jive::base::type *
+	return_type(size_t index) const noexcept
+	{
+		return static_cast<const jive::fct::type*>(&type())->return_type(index);
+	}
 
 private:
 	gate(const gate & rhs) = delete;
