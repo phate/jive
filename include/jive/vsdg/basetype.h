@@ -175,9 +175,9 @@ namespace jive {
         @{
 */
 
-class output {
+class output final {
 public:
-	virtual ~output() noexcept;
+	~output() noexcept;
 
 	output(struct jive_node * node, size_t index, const jive::base::type & type);
 
@@ -188,7 +188,7 @@ public:
 		return *type_;
 	}
 
-	virtual void label(jive_buffer & buffer) const;
+	void label(jive_buffer & buffer) const;
 
 	inline jive_node * node() const noexcept { return node_; }
 
