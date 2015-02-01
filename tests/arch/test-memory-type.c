@@ -33,7 +33,7 @@ static int test_main(void)
 
 	assert(dynamic_cast<const jive::state::type*>(&arg->type()));
 	assert(dynamic_cast<const jive::state::type*>(&ret->type()));
-	assert(dynamic_cast<jive::state::gate*>(arg_gate));
+	assert(dynamic_cast<const jive::state::type*>(&arg_gate->type()));
 	assert(dynamic_cast<jive::state::type*>(&memtype) != nullptr);
 
 	jive_graph_destroy(graph);
