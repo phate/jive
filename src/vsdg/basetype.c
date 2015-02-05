@@ -24,12 +24,6 @@ type::~type() noexcept {}
 }
 }
 
-void
-jive_raise_type_error(const jive::base::type * self, const jive::base::type * other)
-{
-	throw jive::type_error(self->debug_string(), other->debug_string());
-}
-
 /* inputs */
 
 static inline void
@@ -162,9 +156,9 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	const jive::base::type * input_type = &this->type();
 	const jive::base::type * operand_type = &new_origin->type();
 
-	if (*input_type != *operand_type) {
-		jive_raise_type_error(input_type, operand_type);
-	}
+	if (*input_type != *operand_type)
+		throw jive::type_error(input_type->debug_string(), operand_type->debug_string());
+
 	if (dynamic_cast<const jive::achr::type*>(input_type)) {
 		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
 	}
