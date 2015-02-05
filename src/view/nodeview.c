@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -24,11 +24,7 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
 	, height(1)
 	, edge_bend_y(0)
 {
-	jive_buffer input_label_buffer;
-	input->label(input_label_buffer);
-	const char * input_label = jive_buffer_to_string(&input_label_buffer);
-
-	label = std::string(input_label).append(":").append(input->type().debug_string());
+	label = input->debug_string() + ":" + input->type().debug_string();
 	
 	jive_ssavar * ssavar = input->ssavar;
 	if (ssavar) {
@@ -61,11 +57,7 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * outpu
 	, edge_begin_x(0)
 	, edge_begin_y(0)
 {
-	jive_buffer output_label_buffer;
-	output->label(output_label_buffer);
-	const char * output_label = jive_buffer_to_string(&output_label_buffer);
-
-	label = std::string(output_label).append(":").append(output->type().debug_string());
+	label = output->debug_string() + ":" + output->type().debug_string();
 
 	jive_ssavar * ssavar = output->ssavar;
 	if (ssavar) {

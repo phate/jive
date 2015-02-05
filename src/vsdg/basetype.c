@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 
-#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
@@ -193,18 +192,6 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 #endif
 }
 
-void
-input::label(jive_buffer & buffer) const
-{
-	if (gate) {
-		gate->label(buffer);
-	} else {
-		char tmp[16];
-		snprintf(tmp, sizeof(tmp), "#%zd", index);
-		jive_buffer_putstr(&buffer, tmp);
-	}
-}
-
 }	//jive namespace
 
 jive_variable *
@@ -322,18 +309,6 @@ output::~output() noexcept
 	}
 	
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
-}
-
-void
-output::label(jive_buffer & buffer) const
-{
-	if (gate) {
-		gate->label(buffer);
-	} else {
-		char tmp[16];
-		snprintf(tmp, sizeof(tmp), "#%zd", index);
-		jive_buffer_putstr(&buffer, tmp);
-	}
 }
 
 }	//jive namespace
@@ -460,12 +435,6 @@ gate::~gate() noexcept
 		jive_variable_unassign_gate(variable, this);
 
 	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
-}
-
-void
-gate::label(jive_buffer & buffer) const
-{
-	jive_buffer_putstr(&buffer, name.c_str());
 }
 
 jive::input *

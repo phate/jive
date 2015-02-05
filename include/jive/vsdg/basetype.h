@@ -20,7 +20,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_buffer;
 struct jive_cpureg;
 struct jive_graph;
 struct jive_node;
@@ -82,7 +81,8 @@ public:
 		return *type_;
 	}
 
-	void label(jive_buffer & buffer) const;
+	inline std::string
+	debug_string() const;
 
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
@@ -176,7 +176,8 @@ public:
 		return *type_;
 	}
 
-	void label(jive_buffer & buffer) const;
+	inline std::string
+	debug_string() const;
 
 	inline jive_node * node() const noexcept { return node_; }
 
@@ -254,7 +255,11 @@ public:
 		return *type_;
 	}
 
-	void label(jive_buffer & buffer) const;
+	inline std::string
+	debug_string() const
+	{
+		return name;
+	}
 
 	jive::input * create_input(jive_node * node, size_t index, jive::output * origin);
 
@@ -323,6 +328,28 @@ inline jive_node *
 jive::input::producer() const noexcept
 {
 	return origin_->node();
+}
+
+inline std::string
+jive::input::debug_string() const
+{
+	if (gate)
+		return gate->debug_string();
+
+	std::string str;
+	str += index;
+	return str;
+}
+
+inline std::string
+jive::output::debug_string() const
+{
+	if (gate)
+		return gate->debug_string();
+
+	std::string str;
+	str += index;
+	return str;
 }
 
 #endif
