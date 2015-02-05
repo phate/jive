@@ -30,28 +30,6 @@ jive_raise_type_error(const jive::base::type * self, const jive::base::type * ot
 	throw jive::type_error(self->debug_string(), other->debug_string());
 }
 
-jive::input *
-jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
-	jive::output * origin)
-{
-	const jive::base::type * operand_type = &origin->type();
-
-	if (*self != *operand_type)
-		jive_raise_type_error(self, operand_type);
-
-	jive::input * input = new jive::input(node, index, origin, *self);
-
-	/*
-		FIXME: This is going to be removed once we switched Jive to the new node representation.
-	*/
-	if (dynamic_cast<const jive::achr::type*>(self)) {
-		JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
-		origin->node()->region->anchor = input;
-	}
-
-	return input;
-}
-
 /* inputs */
 
 static inline void
@@ -83,6 +61,9 @@ input::input(
 	, origin_(origin)
 	, type_(type.copy())
 {
+	if (type != origin->type())
+		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+
 	output_users_list.prev = output_users_list.next = nullptr;
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
@@ -90,6 +71,14 @@ input::input(
 
 	jive_input_add_as_user(this, origin);
 	jive_region_hull_add_input(node->region, this);
+
+	/*
+		FIXME: This is going to be removed once we switched Jive to the new node representation.
+	*/
+	if (dynamic_cast<const jive::achr::type*>(&type)) {
+		JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
+		origin->node()->region->anchor = this;
+	}
 }
 
 input::~input() noexcept
@@ -488,7 +477,7 @@ gate::label(jive_buffer & buffer) const
 jive::input *
 gate::create_input(jive_node * node, size_t index, jive::output * origin)
 {
-	jive::input * input = jive_type_create_input(&type(), node, index, origin);
+	jive::input * input = new jive::input(node, index, origin, type());
 	input->required_rescls = required_rescls;
 	input->gate = this;
 	JIVE_LIST_PUSH_BACK(this->inputs, input, gate_inputs_list);

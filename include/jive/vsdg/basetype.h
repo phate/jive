@@ -58,13 +58,6 @@ public:
 };
 
 }
-}	//jive namespace
-
-jive::input *
-jive_type_create_input(const jive::base::type * self, struct jive_node * node, size_t index,
-	jive::output * origin);
-
-namespace jive {
 
 /**
         \defgroup jive::input Inputs

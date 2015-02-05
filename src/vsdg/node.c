@@ -65,7 +65,7 @@ jive_uninitialized_node_add_input(jive_node * self, const jive::base::type * typ
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 	
-	jive::input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
 	jive_uninitialized_node_add_input_(self, input);
 
 #ifdef JIVE_DEBUG
@@ -192,7 +192,7 @@ jive_node_add_input(jive_node * self, const jive::base::type * type, jive::outpu
 		jive_region_check_move_floating(self->region, origin_region);
 	}
 
-	jive::input * input = jive_type_create_input(type, self, self->ninputs, initial_operand);
+	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
 	jive_node_add_input_(self, input);
 
 #ifdef JIVE_DEBUG
