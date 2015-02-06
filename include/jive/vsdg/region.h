@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <jive/common.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/region-ssavar-use.h>
@@ -173,14 +174,8 @@ jive_region_get_bottom_node(jive_region * self)
 	return self->bottom;
 }
 
-JIVE_EXPORTED_INLINE struct jive_node *
-jive_region_get_anchor(struct jive_region * self)
-{
-	if (self->anchor)
-		return self->anchor->node;
-
-	return NULL;
-}
+struct jive_node *
+jive_region_get_anchor(struct jive_region * self);
 
 jive_region *
 jive_region_create_subregion(jive_region * self);

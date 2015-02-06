@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -14,6 +14,15 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
+
+struct jive_node *
+jive_region_get_anchor(struct jive_region * self)
+{
+	if (self->anchor)
+		return self->anchor->node;
+
+	return nullptr;
+}
 
 static inline void
 jive_region_attrs_init(jive_region_attrs * attrs)
