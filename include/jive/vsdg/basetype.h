@@ -39,7 +39,28 @@ public:
 	debug_string() const = 0;
 };
 
-}
+}	//base namespace
+
+namespace value {
+
+class type : public jive::base::type {
+public:
+	virtual
+	~type() noexcept;
+
+protected:
+	inline constexpr
+	type() noexcept
+		: jive::base::type()
+	{}
+
+public:
+	virtual jive::value::type *
+	copy() const override = 0;
+};
+
+} //value namespace
+
 }
 
 #endif

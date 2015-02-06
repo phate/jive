@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -16,7 +16,6 @@
 #include <jive/types/union/unnunify.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/valuetype.h>
 
 static std::vector<jive::output *>
 jive_store_node_normalized_create(

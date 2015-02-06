@@ -20,7 +20,6 @@
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/vsdg/valuetype.h>
 
 jive_reg_classifier::~jive_reg_classifier() noexcept
 {

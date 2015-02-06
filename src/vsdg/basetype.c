@@ -13,4 +13,12 @@ type::~type() noexcept
 {}
 
 }
+
+namespace value {
+
+type::~type() noexcept
+{}
+
+}
+
 }

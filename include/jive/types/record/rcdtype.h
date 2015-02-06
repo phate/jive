@@ -7,7 +7,7 @@
 #ifndef JIVE_TYPES_RECORD_RCDTYPE_H
 #define JIVE_TYPES_RECORD_RCDTYPE_H
 
-#include <jive/vsdg/valuetype.h>
+#include <jive/vsdg/basetype.h>
 
 namespace jive {
 namespace rcd {

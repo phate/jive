@@ -7,7 +7,7 @@
 #ifndef JIVE_ARCH_ADDRESSTYPE_H
 #define JIVE_ARCH_ADDRESSTYPE_H
 
-#include <jive/vsdg/valuetype.h>
+#include <jive/vsdg/basetype.h>
 
 namespace jive {
 namespace addr {

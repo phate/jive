@@ -1,5 +1,5 @@
 # Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
-# Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+# Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
 # See COPYING for terms of redistribution.
 
 CPPFLAGS+=-Iinclude
@@ -44,7 +44,6 @@ LIBJIVE_SRC = \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
-	src/vsdg/valuetype.c \
 	src/vsdg/variable.c \
 
 # visualization

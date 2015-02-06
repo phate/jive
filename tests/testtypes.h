@@ -6,8 +6,8 @@
 #ifndef JIVE_TESTS_TESTTYPES_H
 #define JIVE_TESTS_TESTTYPES_H
 
+#include <jive/vsdg/basetype.h>
 #include <jive/vsdg/statetype.h>
-#include <jive/vsdg/valuetype.h>
 
 /* test value type */
 

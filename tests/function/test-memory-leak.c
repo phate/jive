@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -10,7 +10,6 @@
 #include <assert.h>
 
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/valuetype.h>
 
 static int test_main(void)
 {

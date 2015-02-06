@@ -15,7 +15,6 @@
 #include <jive/vsdg/phi-normal-form.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/substitution.h>
-#include <jive/vsdg/valuetype.h>
 
 namespace jive {
 

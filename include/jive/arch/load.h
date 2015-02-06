@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -13,7 +13,6 @@
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/statetype.h>
-#include <jive/vsdg/valuetype.h>
 
 namespace jive {
 

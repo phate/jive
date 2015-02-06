@@ -7,7 +7,7 @@
 #ifndef JIVE_TYPES_FUNCTION_FCTTYPE_H
 #define JIVE_TYPES_FUNCTION_FCTTYPE_H
 
-#include <jive/vsdg/valuetype.h>
+#include <jive/vsdg/basetype.h>
 
 #include <memory>
 #include <vector>
