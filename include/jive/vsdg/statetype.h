@@ -16,16 +16,6 @@
 namespace jive {
 namespace state {
 
-class type : public jive::base::type {
-public:
-	virtual ~type() noexcept;
-
-	virtual jive::state::type * copy() const override = 0;
-
-protected:
-	inline constexpr type() noexcept : jive::base::type() {};
-};
-
 class mux_op final : public operation {
 public:
 	virtual

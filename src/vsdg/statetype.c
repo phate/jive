@@ -15,8 +15,6 @@
 namespace jive {
 namespace state {
 
-type::~type() noexcept {}
-
 mux_op::~mux_op() noexcept {}
 
 bool

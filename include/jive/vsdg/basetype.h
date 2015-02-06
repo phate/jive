@@ -61,6 +61,26 @@ public:
 
 } //value namespace
 
+namespace state {
+
+class type : public jive::base::type {
+public:
+	virtual
+	~type() noexcept;
+
+protected:
+	inline constexpr
+	type() noexcept
+		: jive::base::type()
+	{}
+
+public:
+	virtual jive::state::type *
+	copy() const override = 0;
+};
+
+}	//state namespace
+
 }
 
 #endif
