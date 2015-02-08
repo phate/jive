@@ -53,6 +53,12 @@ public:
 	inline std::string
 	debug_string() const;
 
+	inline size_t
+	index() const noexcept
+	{
+		return index_;
+	}
+
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
 	*/
@@ -71,7 +77,6 @@ public:
 	inline jive_node * producer() const noexcept;
 
 	struct jive_node * node;
-	size_t index;
 
 	struct {
 		input * prev;
@@ -98,6 +103,7 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
+	size_t index_;
 	jive::output * origin_;
 
 	/*
@@ -306,7 +312,7 @@ jive::input::debug_string() const
 		return gate->debug_string();
 
 	std::string str;
-	str += index;
+	str += index_;
 	return str;
 }
 

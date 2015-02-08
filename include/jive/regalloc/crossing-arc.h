@@ -159,7 +159,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		}
 	} else {
 		/* trace through neighbour regions or next node in parent region */
-		size_t n = self->current_region_->anchor->index + 1;
+		size_t n = self->current_region_->anchor->index() + 1;
 		jive_node * anchor_node = self->current_region_->anchor->node;
 		jive::input * anchor = 0;
 		while(n < anchor_node->ninputs) {

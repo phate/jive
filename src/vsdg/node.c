@@ -44,14 +44,14 @@ namespace jive {
 
 input::input(
 	struct jive_node * node_,
-	size_t index_,
+	size_t index,
 	jive::output * origin,
 	const jive::base::type & type)
 	: node(node_)
-	, index(index_)
 	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
+	, index_(index)
 	, origin_(origin)
 	, type_(type.copy())
 {
@@ -100,9 +100,9 @@ input::~input() noexcept
 
 	size_t n;
 	node->ninputs--;
-	for (n = index; n < node->ninputs; n++) {
+	for (n = index(); n < node->ninputs; n++) {
 		node->inputs[n] = node->inputs[n+1];
-		node->inputs[n]->index = n;
+		node->inputs[n]->index_ = n;
 	}
 	if (node->ninputs == 0)
 		JIVE_LIST_PUSH_BACK(node->region->top_nodes, node, region_top_node_list);
@@ -560,7 +560,7 @@ jive_uninitialized_node_add_input_(jive_node * self, jive::input * input)
 
 	self->ninputs ++;
 	self->inputs.resize(self->ninputs);
-	self->inputs[input->index] = input;
+	self->inputs[input->index()] = input;
 
 }
 
@@ -754,8 +754,7 @@ jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial
 	}
 
 	jive::input * input = gate->create_input(self, self->ninputs, initial_operand);
-	size_t n;
-	for(n=0; n<input->index; n++) {
+	for (size_t n = 0; n < input->index(); n++) {
 		jive::input * other = self->inputs[n];
 		if (!other->gate) continue;
 		jive_gate_interference_add(self->graph, gate, other->gate);

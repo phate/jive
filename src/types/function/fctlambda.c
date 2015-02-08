@@ -172,7 +172,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 	size_t index = self->region->top->noutputs;
 	JIVE_LIST_ITERATE(self->outputs[0]->users, user, output_users_list) {
 		if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
-			index = user->index;
+			index = user->index();
 			break;
 		}
 	}
@@ -350,7 +350,7 @@ replace_apply_node(const jive_node * apply,
 		if (nalive_apply_results < alive_results.size() && result == alive_results[nalive_apply_results])
 			jive_output_replace(apply->outputs[n-1], new_apply_results[nalive_apply_results++]);
 		else
-			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index]->origin());
+			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index()]->origin());
 	}
 	JIVE_DEBUG_ASSERT(alive_results.size() == nalive_apply_results);
 }
@@ -377,13 +377,13 @@ replace_all_apply_nodes(jive::output * fct,
 			/* adjust the outer call sides */
 			jive_node * phi_node = phi_leave->outputs[0]->users.first->node;
 			new_fct = phi_node->outputs[phi_node->noutputs-1];
-			replace_all_apply_nodes(phi_node->outputs[user->index-1], new_fct, old_lambda,
+			replace_all_apply_nodes(phi_node->outputs[user->index()-1], new_fct, old_lambda,
 				alive_parameters, alive_results);
 
 			/* adjust the inner call sides */
 			jive_node * phi_enter = phi_leave->region->top;
 			new_fct = phi_enter->outputs[phi_enter->noutputs-1];
-			replace_all_apply_nodes(phi_enter->outputs[user->index], new_fct, old_lambda,
+			replace_all_apply_nodes(phi_enter->outputs[user->index()], new_fct, old_lambda,
 				alive_parameters, alive_results);
 
 			jive_node_normalize(phi_node);

@@ -222,7 +222,7 @@ jive_shaped_node_downward_iterator_next(jive_shaped_node_downward_iterator * sel
 	if (!next) {
 		if (shaped_region->region->depth > self->leave_region_depth) {
 			jive_node * anchor_node = shaped_region->region->anchor->node;
-			size_t n = shaped_region->region->anchor->index + 1;
+			size_t n = shaped_region->region->anchor->index() + 1;
 			while (n < anchor_node->ninputs) {
 				jive::input * input = anchor_node->inputs[n];
 				if (dynamic_cast<const jive::achr::type*>(&input->type())) {
