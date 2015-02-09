@@ -66,7 +66,7 @@ jive_region_get_subroutine_node(const jive_region * region)
 		if (!region->anchor) {
 			continue;
 		}
-		jive_node * node = region->anchor->node;
+		jive_node * node = region->anchor->node();
 		if (dynamic_cast<const jive::subroutine_op *>(&node->operation())) {
 			return node;
 		}

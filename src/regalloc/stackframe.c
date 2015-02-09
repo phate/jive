@@ -339,7 +339,7 @@ region_subroutine_prepare_stackframe(
 {
 	if (!region->anchor)
 		return;
-	jive_node * node = region->anchor->node;
+	jive_node * node = region->anchor->node();
 	const jive::subroutine_op * op =
 		dynamic_cast<const jive::subroutine_op *>(&node->operation());
 

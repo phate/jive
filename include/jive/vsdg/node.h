@@ -59,6 +59,12 @@ public:
 		return index_;
 	}
 
+	inline struct jive_node *
+	node() const noexcept
+	{
+		return node_;
+	}
+
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
 	*/
@@ -75,8 +81,6 @@ public:
 	inline jive::output * origin() const noexcept { return origin_; }
 
 	inline jive_node * producer() const noexcept;
-
-	struct jive_node * node;
 
 	struct {
 		input * prev;
@@ -105,6 +109,7 @@ public:
 private:
 	size_t index_;
 	jive::output * origin_;
+	struct jive_node * node_;
 
 	/*
 		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
@@ -691,7 +696,7 @@ jive_region_get_anchor_node(const struct jive_region * self)
 
 	JIVE_DEBUG_ASSERT(self->bottom->noutputs == 1);
 	JIVE_DEBUG_ASSERT(self->bottom->outputs[0]->single_user());
-	return self->bottom->outputs[0]->users.first->node;
+	return self->bottom->outputs[0]->users.first->node();
 }
 
 #endif

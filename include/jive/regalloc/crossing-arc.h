@@ -147,7 +147,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 		if (self->current_region_->depth > self->boundary_region_depth_) {
 			self->exit_region_ = self->exit_region_->parent;
 			jive_shaped_node * anchor_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
-				self->current_region_->anchor->node);
+				self->current_region_->anchor->node());
 			
 			self->node = jive_shaped_node_prev_in_region(anchor_shaped_node);
 			self->current_region_ = self->exit_region_;
@@ -160,7 +160,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 	} else {
 		/* trace through neighbour regions or next node in parent region */
 		size_t n = self->current_region_->anchor->index() + 1;
-		jive_node * anchor_node = self->current_region_->anchor->node;
+		jive_node * anchor_node = self->current_region_->anchor->node();
 		jive::input * anchor = 0;
 		while(n < anchor_node->ninputs) {
 			jive::input * input = anchor_node->inputs[n];

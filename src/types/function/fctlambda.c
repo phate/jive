@@ -171,7 +171,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 	jive::input * user;
 	size_t index = self->region->top->noutputs;
 	JIVE_LIST_ITERATE(self->outputs[0]->users, user, output_users_list) {
-		if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
+		if (dynamic_cast<const jive::phi_tail_op *>(&user->node()->operation())) {
 			index = user->index();
 			break;
 		}
@@ -182,7 +182,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 		originates from the same index in the phi enter node */
 	jive_region_hull_entry * entry;
 	JIVE_LIST_ITERATE(lambda_region->hull, entry, input_hull_list) {
-		if (!dynamic_cast<const jive::fct::apply_op *>(&entry->input->node->operation()))
+		if (!dynamic_cast<const jive::fct::apply_op *>(&entry->input->node()->operation()))
 			continue;
 		if (!dynamic_cast<const jive::phi_head_op *>(&entry->input->producer()->operation()))
 			continue;
@@ -311,14 +311,14 @@ lambda_parameter_is_passthrough(const jive::output * parameter)
 		&parameter->node()->operation()));
 
 	jive_node * leave = parameter->node()->region->bottom;
-	return parameter->single_user() && (parameter->users.first->node == leave);
+	return parameter->single_user() && (parameter->users.first->node() == leave);
 }
 
 static bool
 lambda_result_is_passthrough(const jive::input * result)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_tail_op *>(
-		&result->node->operation()));
+		&result->node()->operation()));
 
 	if (dynamic_cast<const jive::fct::lambda_head_op *>(&result->producer()->operation()))
 		return lambda_parameter_is_passthrough(result->origin());
@@ -368,14 +368,14 @@ replace_all_apply_nodes(jive::output * fct,
 
 	jive::input * user;
 	JIVE_LIST_ITERATE(fct->users, user, output_users_list) {
-		if (dynamic_cast<const jive::fct::apply_op *>(&user->node->operation()))
-			replace_apply_node(user->node, new_fct, old_lambda, alive_parameters, alive_results);
+		if (dynamic_cast<const jive::fct::apply_op *>(&user->node()->operation()))
+			replace_apply_node(user->node(), new_fct, old_lambda, alive_parameters, alive_results);
 
-		if (dynamic_cast<const jive::phi_tail_op *>(&user->node->operation())) {
-			jive_node * phi_leave = user->node;
+		if (dynamic_cast<const jive::phi_tail_op *>(&user->node()->operation())) {
+			jive_node * phi_leave = user->node();
 
 			/* adjust the outer call sides */
-			jive_node * phi_node = phi_leave->outputs[0]->users.first->node;
+			jive_node * phi_node = phi_leave->outputs[0]->users.first->node();
 			new_fct = phi_node->outputs[phi_node->noutputs-1];
 			replace_all_apply_nodes(phi_node->outputs[user->index()-1], new_fct, old_lambda,
 				alive_parameters, alive_results);

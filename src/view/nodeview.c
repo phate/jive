@@ -181,7 +181,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 		if (!user) continue;
 		size_t end_row = y;
 		while(user) {
-			if (user->node->depth_from_root > end_row) end_row = user->node->depth_from_root;
+			if (user->node()->depth_from_root > end_row) end_row = user->node()->depth_from_root;
 			user = user->output_users_list.next;
 		}
 		rects[nrects].x = jive_outputview_get_edge_offset(outputview);

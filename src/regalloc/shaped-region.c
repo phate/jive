@@ -207,7 +207,7 @@ jive_cut_insert(jive_cut * self, jive_shaped_node * before, jive_node * node)
 	if (next) {
 		add_crossings_from_lower_location(shaped_graph, shaped_node, next);
 	} else if (node->region->anchor) {
-		next = jive_shaped_graph_map_node(shaped_graph, node->region->anchor->node);
+		next = jive_shaped_graph_map_node(shaped_graph, node->region->anchor->node());
 		for (const jive_nodevar_xpoint & xpoint : next->ssavar_xpoints) {
 			jive_shaped_node_add_ssavar_crossed(shaped_node, xpoint.shaped_ssavar,
 				xpoint.shaped_ssavar->ssavar->variable, xpoint.cross_count);

@@ -19,7 +19,7 @@ struct jive_node *
 jive_region_get_anchor(struct jive_region * self)
 {
 	if (self->anchor)
-		return self->anchor->node;
+		return self->anchor->node();
 
 	return nullptr;
 }

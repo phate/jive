@@ -43,16 +43,16 @@ jive_input_remove_as_user(jive::input * self, jive::output * output)
 namespace jive {
 
 input::input(
-	struct jive_node * node_,
+	struct jive_node * node,
 	size_t index,
 	jive::output * origin,
 	const jive::base::type & type)
-	: node(node_)
-	, gate(nullptr)
+	: gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, index_(index)
 	, origin_(origin)
+	, node_(node)
 	, type_(type.copy())
 {
 	if (type != origin->type())
@@ -82,39 +82,37 @@ input::~input() noexcept
 		jive_input_unassign_ssavar(this);
 	}
 
-	jive_graph_notify_input_destroy(node->graph, this);
+	jive_graph_notify_input_destroy(node()->graph, this);
 
 	if (gate) {
 		JIVE_LIST_REMOVE(gate->inputs, this, gate_inputs_list);
 
-		size_t n;
-		for (n = 0; n < node->ninputs; n++) {
-			jive::input * other = node->inputs[n];
+		for (size_t n = 0; n < node()->ninputs; n++) {
+			jive::input * other = node()->inputs[n];
 			if (other == this || !other->gate)
 				continue;
-			jive_gate_interference_remove(node->graph, gate, other->gate);
+			jive_gate_interference_remove(node()->graph, gate, other->gate);
 		}
 	}
 
 	jive_input_remove_as_user(this, origin_);
 
-	size_t n;
-	node->ninputs--;
-	for (n = index(); n < node->ninputs; n++) {
-		node->inputs[n] = node->inputs[n+1];
-		node->inputs[n]->index_ = n;
+	node()->ninputs--;
+	for (size_t n = index(); n < node()->ninputs; n++) {
+		node()->inputs[n] = node()->inputs[n+1];
+		node()->inputs[n]->index_ = n;
 	}
-	if (node->ninputs == 0)
-		JIVE_LIST_PUSH_BACK(node->region->top_nodes, node, region_top_node_list);
+	if (node()->ninputs == 0)
+		JIVE_LIST_PUSH_BACK(node()->region->top_nodes, node_, region_top_node_list);
 
-	jive_region_hull_remove_input(node->region, this);
+	jive_region_hull_remove_input(node()->region, this);
 }
 
 void
 input::swap(jive::input * other) noexcept
 {
 	JIVE_DEBUG_ASSERT(this->type() == other->type());
-	JIVE_DEBUG_ASSERT(this->node == other->node);
+	JIVE_DEBUG_ASSERT(this->node() == other->node());
 
 	jive_ssavar * v1 = this->ssavar;
 	jive_ssavar * v2 = other->ssavar;
@@ -137,10 +135,10 @@ input::swap(jive::input * other) noexcept
 	if (v2) jive_ssavar_assign_input(v2, this);
 	if (v1) jive_ssavar_assign_input(v1, other);
 
-	jive_node_invalidate_depth_from_root(this->node);
+	jive_node_invalidate_depth_from_root(this->node());
 
-	jive_graph_notify_input_change(this->node->graph, this, o1, o2);
-	jive_graph_notify_input_change(this->node->graph, other, o2, o1);
+	jive_graph_notify_input_change(this->node()->graph, this, o1, o2);
+	jive_graph_notify_input_change(this->node()->graph, other, o2, o1);
 }
 
 void
@@ -163,15 +161,15 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
 	}
 
-	JIVE_DEBUG_ASSERT(this->node->graph == new_origin->node()->graph);
+	JIVE_DEBUG_ASSERT(this->node()->graph == new_origin->node()->graph);
 
-	if (this->producer()->region != this->node->region)
-		jive_region_hull_remove_input(this->node->region, this);
+	if (this->producer()->region != this->node()->region)
+		jive_region_hull_remove_input(this->node()->region, this);
 
-	if (this->node->graph->floating_region_count)
-		jive_region_check_move_floating(this->node->region, new_origin->node()->region);
+	if (this->node()->graph->floating_region_count)
+		jive_region_check_move_floating(this->node()->region, new_origin->node()->region);
 
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node, new_origin));
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node(), new_origin));
 
 	jive::output * old_origin = this->origin();
 
@@ -179,17 +177,17 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	this->origin_ = new_origin;
 	jive_input_add_as_user(this, new_origin);
 
-	if (new_origin->node()->region != this->node->region)
-		jive_region_hull_add_input(this->node->region, this);
+	if (new_origin->node()->region != this->node()->region)
+		jive_region_hull_add_input(this->node()->region, this);
 
-	jive_node_invalidate_depth_from_root(this->node);
+	jive_node_invalidate_depth_from_root(this->node());
 
 	jive_graph_mark_denormalized(new_origin->node()->graph);
 
-	jive_graph_notify_input_change(this->node->graph, this, old_origin, new_origin);
+	jive_graph_notify_input_change(this->node()->graph, this, old_origin, new_origin);
 
 #ifdef JIVE_DEBUG
-	jive_region_verify_hull(this->node->region->graph->root_region);
+	jive_region_verify_hull(this->node()->region->graph->root_region);
 #endif
 }
 
@@ -207,7 +205,7 @@ jive_input_get_constraint(const jive::input * self)
 		}
 		return variable;
 	}
-	variable = jive_variable_create(self->node->graph);
+	variable = jive_variable_create(self->node()->graph);
 	jive_variable_set_resource_class(variable, self->required_rescls);
 	return variable;
 }
@@ -487,8 +485,8 @@ jive_gate_merge(jive::gate * self, jive::gate * other)
 	jive::input * input, * input_next;
 	JIVE_LIST_ITERATE_SAFE(other->inputs, input, input_next, gate_inputs_list) {
 		size_t n;
-		for(n = 0; n<input->node->ninputs; n++) {
-			jive::input * other_input = input->node->inputs[n];
+		for (n = 0; n < input->node()->ninputs; n++) {
+			jive::input * other_input = input->node()->inputs[n];
 			if (other_input == input) continue;
 			if (other_input->gate == 0) continue;
 			jive_gate_interference_remove(self->graph, other, other_input->gate);
@@ -838,7 +836,7 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 	for(n=0; n<self->noutputs; n++) {
 		jive::input * user = self->outputs[n]->users.first;
 		while(user) {
-			jive_node_invalidate_depth_from_root(user->node);
+			jive_node_invalidate_depth_from_root(user->node());
 			user = user->output_users_list.next;
 		}
 	}
@@ -959,7 +957,7 @@ jive_node_next_inner_region(const jive_node * self)
 		jive::output * output = self->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			jive_region * region = user->node->region;
+			jive_region * region = user->node()->region;
 			/* cannot pull anywhere if dependence in same region */
 			if (region == current)
 				return NULL;
@@ -1015,7 +1013,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	for (n = 0; n < self->noutputs; n++) {
 		jive::input * user;
 		JIVE_LIST_ITERATE(self->outputs[n]->users, user, output_users_list)
-			jive_region_hull_remove_input(user->node->region, user);
+			jive_region_hull_remove_input(user->node()->region, user);
 	}
 
 
@@ -1045,8 +1043,8 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	for (n = 0; n < self->noutputs; n++) {
 		jive::input * user;
 		JIVE_LIST_ITERATE(self->outputs[n]->users, user, output_users_list) {
-			if (self->region != user->node->region)
-				jive_region_hull_add_input(user->node->region, user);
+			if (self->region != user->node()->region)
+				jive_region_hull_add_input(user->node()->region, user);
 		}
 	}
 }
@@ -1140,7 +1138,7 @@ jive_node_cse(
 	if (!arguments.empty()) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(arguments[0]->users, input, output_users_list) {
-			jive_node * node = input->node;
+			jive_node * node = input->node();
 			if (jive_node_cse_test(node, op, arguments)) {
 				return node;
 			}

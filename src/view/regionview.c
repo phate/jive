@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -61,8 +61,8 @@ jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * n
 	for(n=0; n<nodeview->node->noutputs; n++) {
 		jive::input * user = nodeview->node->outputs[n]->users.first;
 		while(user) {
-			if (user->node->region == self->region) {
-				jive_nodeview * nodeview = self->graphview->nodemap[user->node];
+			if (user->node()->region == self->region) {
+				jive_nodeview * nodeview = self->graphview->nodemap[user->node()];
 				jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 			}
 			user = user->output_users_list.next;

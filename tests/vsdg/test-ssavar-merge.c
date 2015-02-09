@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -41,7 +41,7 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 				continue;
 			if (!user->ssavar)
 				continue;
-			if (user->node->region != node->region)
+			if (user->node()->region != node->region)
 				continue;
 			ssavar = user->ssavar;
 			break;

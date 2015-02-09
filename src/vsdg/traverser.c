@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -100,7 +100,7 @@ jive_topdown_traverser_next(jive_traverser * self_)
 		jive::output * output = node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			jive_topdown_traverser_check_node(self, user->node);
+			jive_topdown_traverser_check_node(self, user->node());
 		}
 	}
 	return node;
@@ -124,7 +124,7 @@ jive_topdown_traverser_input_change(void * closure, jive::input * input, jive::o
 	jive_full_traverser * self = (jive_full_traverser *) closure;
 	
 	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker,
-		input->node);
+		input->node());
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
@@ -133,7 +133,7 @@ jive_topdown_traverser_input_change(void * closure, jive::input * input, jive::o
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as depth of the node could be lowered */
-	jive_traversal_tracker_set_nodestate(&self->tracker, input->node,
+	jive_traversal_tracker_set_nodestate(&self->tracker, input->node(),
 		jive_traversal_nodestate_frontier);
 }
 
@@ -326,7 +326,7 @@ jive_upward_cone_traverser_input_change(void * closure, jive::input * input,
 	
 	/* for node of new origin, it may now belong to the cone */
 	jive_traversal_nodestate state = jive_traversal_tracker_get_nodestate(&self->tracker,
-		input->node);
+		input->node());
 	if (state != jive_traversal_nodestate_ahead) {
 		state = jive_traversal_tracker_get_nodestate(&self->tracker, new_origin->node());
 		if (state == jive_traversal_nodestate_ahead)
@@ -344,7 +344,7 @@ jive_upward_cone_traverser_input_change(void * closure, jive::input * input,
 			JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 				if (user == input)
 					continue;
-				state = jive_traversal_tracker_get_nodestate(&self->tracker, user->node);
+				state = jive_traversal_tracker_get_nodestate(&self->tracker, user->node());
 				if (state != jive_traversal_nodestate_ahead)
 					return;
 			}

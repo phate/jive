@@ -262,7 +262,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		jive::input * input;
 		JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
 			JIVE_DEBUG_ASSERT(input->ssavar == ssavar);
-			jive_shaped_node * loc = jive_shaped_graph_map_node(shaped_graph, input->node);
+			jive_shaped_node * loc = jive_shaped_graph_map_node(shaped_graph, input->node());
 			jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
 			if (!jive_shaped_ssavar_is_crossing(shaped_ssavar, loc)) {
 				last_user = input;
@@ -275,11 +275,11 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		
 		regalloc_split_region * split_region;
 		JIVE_LIST_ITERATE(splits, split_region, chain) {
-			if (split_region->region == last_user->node->region)
+			if (split_region->region == last_user->node()->region)
 				break;
 		}
 		if (!split_region) {
-			split_region = regalloc_split_region_create(last_user->node->region);
+			split_region = regalloc_split_region_create(last_user->node()->region);
 			JIVE_LIST_PUSH_FRONT(splits, split_region, chain);
 		}
 		
@@ -401,7 +401,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			}
 			
 			jive_node * xfer_node = jive_splitnode_create(
-				input->node->region,
+				input->node()->region,
 				type, origin, rescls,
 				type, rescls);
 			
@@ -414,7 +414,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 			
 			/* determine place where to insert node -- try immediately before the gating node,
 			but move before predicating node if there is one */
-			jive_node * node = input->node;
+			jive_node * node = input->node();
 			size_t n;
 			for (n = 0; n < node->ninputs; n++) {
 				if (dynamic_cast<const jive::ctl::type*>(&node->inputs[n]->type())) {
@@ -551,10 +551,10 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 		
 		if (user->gate == gate) {
 			/* tied gates, just pass through spilled value */
-			jive_node_gate_input(user->node, spill_gate, new_output);
+			jive_node_gate_input(user->node(), spill_gate, new_output);
 			delete user;
 		} else {
-			jive_node * xfer_node = user->node;
+			jive_node * xfer_node = user->node();
 			jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, xfer_node);
 			
 			jive_shaped_node * position = jive_shaped_node_next_in_region(p);
@@ -573,7 +573,7 @@ gate_evict(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_varia
 	
 	while (gate->inputs.first) {
 		jive::input * input = gate->inputs.first;
-		jive_node * node = input->node;
+		jive_node * node = input->node();
 		jive_node * xfer_node = input->producer();
 		jive::output * origin = xfer_node->inputs[0]->origin();
 			

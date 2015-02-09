@@ -352,7 +352,7 @@ jive_shaped_variable_check_change_resource_class(
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
-			jive_node_get_use_count_input(input->node, &use_count);
+			jive_node_get_use_count_input(input->node(), &use_count);
 			const jive_resource_class * overflow;
 			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
 			if (overflow) {
@@ -449,7 +449,8 @@ jive_shaped_ssavar_xpoints_register_arc(jive_shaped_ssavar * self, jive::input *
 	
 	jive_shaped_node * origin_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
 		output->node());
-	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph, input->node);
+	jive_shaped_node * input_shaped_node = jive_shaped_graph_map_node(self->shaped_graph,
+		input->node());
 	
 	jive_crossing_arc_iterator i;
 	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);
@@ -482,7 +483,7 @@ jive_shaped_ssavar_xpoints_unregister_arc(jive_shaped_ssavar * self, jive::input
 	jive_shaped_node * origin_shaped_node =
 		jive_shaped_graph_map_node(self->shaped_graph, output->node());
 	jive_shaped_node * input_shaped_node =
-		jive_shaped_graph_map_node(self->shaped_graph, input->node);
+		jive_shaped_graph_map_node(self->shaped_graph, input->node());
 	
 	jive_crossing_arc_iterator i;
 	jive_crossing_arc_iterator_init_ssavar(&i, origin_shaped_node, input_shaped_node, self);

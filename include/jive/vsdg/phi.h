@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -71,7 +71,7 @@ jive_phi_region_cast(struct jive_region * region)
 		return NULL;
 
 	JIVE_DEBUG_ASSERT(region->bottom->outputs[0]->single_user());
-	if (region->bottom->outputs[0]->users.first->node->operation() == jive::phi_op())
+	if (region->bottom->outputs[0]->users.first->node()->operation() == jive::phi_op())
 		return region;
 	else
 		return NULL;
@@ -86,7 +86,7 @@ jive_phi_region_const_cast(const struct jive_region * region)
 		return NULL;
 
 	JIVE_DEBUG_ASSERT(region->bottom->outputs[0]->single_user());
-	if (region->bottom->outputs[0]->users.first->node->operation() == jive::phi_op())
+	if (region->bottom->outputs[0]->users.first->node()->operation() == jive::phi_op())
 		return region;
 	else
 		return NULL;

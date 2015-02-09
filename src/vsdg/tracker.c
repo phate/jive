@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -196,7 +196,7 @@ jive_computation_tracker_invalidate_below(jive_computation_tracker * self, jive_
 		jive::output * output = node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			jive_computation_tracker_invalidate(self, user->node);
+			jive_computation_tracker_invalidate(self, user->node());
 		}
 	}
 }

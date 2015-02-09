@@ -436,7 +436,7 @@ jive_master_shaper_selector::check_node_selectable(const jive_node * node)
 		jive::output * output = node->outputs[n];
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			jive_node_cost * node_cost = map_node_internal(user->node);
+			jive_node_cost * node_cost = map_node_internal(user->node());
 			if (node_cost->state != jive_node_cost_state_done)
 				return false;
 		}
@@ -537,7 +537,7 @@ jive_master_shaper_selector::maybe_inner_node(const jive_node * node) const noex
 		jive::input * user;
 		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
 			output_user_count ++;
-			other_region = other_region || (user->node->region != node->region);
+			other_region = other_region || (user->node()->region != node->region);
 		}
 		
 		if (!output_user_count)
@@ -854,8 +854,8 @@ jive_master_shaper_selector::input_change(
 	if (upper_node_cost->state == jive_node_cost_state_stack) {
 		if (lower_node_cost->state != jive_node_cost_state_done) {
 			jive_region_shaper_selector * region_shaper =
-				self->map_region(input->node->region);
-			jive_region_shaper_selector_push_node_stack(region_shaper, input->node);
+				self->map_region(input->node()->region);
+			jive_region_shaper_selector_push_node_stack(region_shaper, input->node());
 		}
 	}
 }
