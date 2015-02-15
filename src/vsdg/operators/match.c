@@ -16,7 +16,7 @@ namespace jive {
 match_op::~match_op() noexcept
 {}
 
-match_op::match_op(jive::bits::type & type, const std::vector<size_t> & constants)
+match_op::match_op(const jive::bits::type & type, const std::vector<size_t> & constants)
 	: base::unary_op()
 	, type_(type)
 {

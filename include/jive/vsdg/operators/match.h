@@ -18,7 +18,7 @@ public:
 	virtual
 	~match_op() noexcept;
 
-	match_op(jive::bits::type & type, const std::vector<size_t> & constants);
+	match_op(const jive::bits::type & type, const std::vector<size_t> & constants);
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
