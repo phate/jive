@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -169,16 +170,16 @@ public:
 		return std::string(data_.begin(), data_.end());
 	}
 
+	uint64_t
+	to_uint() const;
+
+	int64_t
+	to_int() const;
+
 private:
 	/* [lsb ... msb] */
 	std::vector<char> data_;
 };
-
-uint64_t
-value_repr_to_uint(const value_repr & value);
-
-int64_t
-value_repr_to_int(const value_repr & value);
 
 }
 }

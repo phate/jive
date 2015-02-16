@@ -46,7 +46,7 @@ regvalue_to_immediate(const jive::output * regvalue)
 	jive::output * value = rvnode->inputs[1]->origin();
 
 	if (auto bcop = dynamic_cast<const jive::bits::constant_op *>(&value->node()->operation())) {
-		return jive::bits::value_repr_to_uint(bcop->value());
+		return bcop->value().to_uint();
 	}
 
 	auto lbop = dynamic_cast<const jive::address::label_to_bitstring_op *>(

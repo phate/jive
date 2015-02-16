@@ -139,7 +139,7 @@ sequentialize_region(
 							item->format = jive_seq_dataitem_fmt_none;
 							break;
 					}
-					item->value = jive::bits::value_repr_to_uint(cop->value());
+					item->value = cop->value().to_uint();
 				} else {
 					item->format = jive_seq_dataitem_fmt_none;
 				}
