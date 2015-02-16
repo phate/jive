@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 
+#include <jive/util/strfmt.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
@@ -139,11 +140,11 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 	jive_node * enter = self.region->top;
 	jive_graph * graph = enter->region->graph;
 
-	char gate_name[80];
-	snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, state->fixvars.size());
-	
 	jive_phi_fixvar fixvar;
-	fixvar.gate = jive_graph_create_gate(graph, gate_name, *type);
+	fixvar.gate = jive_graph_create_gate(
+		graph,
+		jive::detail::strfmt("fix_", enter, "_", state->fixvars.size()),
+		*type);
 	fixvar.value = jive_node_gate_output(enter, fixvar.gate);
 	state->fixvars.push_back(fixvar);
 
@@ -214,12 +215,11 @@ jive_phi_begin_extension(jive_node * phi_node, size_t nfixvars,
 	phi_ext->fixvars.resize(nfixvars);
 	phi_ext->phi_node = phi_node;
 
-	size_t n;
-	char gate_name[80];
 	size_t offset = enter->noutputs-1;
-	for (n = 0; n < nfixvars; n++) {
-		snprintf(gate_name, sizeof(gate_name), "fix_%p_%zd", enter, offset+n);
-		jive::gate * gate = jive_graph_create_gate(graph, gate_name, *fixvar_types[n]);
+	for (size_t n = 0; n < nfixvars; n++) {
+		jive::gate * gate = jive_graph_create_gate(
+			graph, jive::detail::strfmt("fix_", enter, "_", offset + n),
+			*fixvar_types[n]);
 		phi_ext->fixvars[n] = jive_node_gate_output(enter, gate);
 	}
 

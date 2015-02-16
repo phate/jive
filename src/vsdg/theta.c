@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include <jive/common.h>
+#include <jive/util/strfmt.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
@@ -130,9 +131,8 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 	const jive::base::type * type = &pre_value->type();
 	state->loopvars.resize(state->loopvars.size()+1);
 	
-	char gate_name[80];
-	snprintf(gate_name, sizeof(gate_name), "loopvar_%p_%zd", head, index);
-	state->loopvars[index].gate = jive_graph_create_gate(graph, gate_name, *type);
+	state->loopvars[index].gate = jive_graph_create_gate(
+		graph, jive::detail::strfmt("loopvar_", head, "_", index), *type);
 	jive_node_gate_input(head, state->loopvars[index].gate, pre_value);
 	state->loopvars[index].value = jive_node_gate_output(head,
 		state->loopvars[index].gate);

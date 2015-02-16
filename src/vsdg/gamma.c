@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <jive/common.h>
+#include <jive/util/strfmt.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma-normal-form.h>
@@ -125,9 +126,8 @@ jive_gamma_create(
 	jive_node * gamma = jive::gamma_op(nalternatives).create_node(region, nalternatives+1, arguments);
 	
 	for (size_t n = 0; n < nvalues; n++) {
-		char name[80];
-		snprintf(name, sizeof(name), "gamma_%p_%zd", gamma, n);
-		jive::gate * gate = jive_graph_create_gate(region->graph, name, *types[n]);
+		jive::gate * gate = jive_graph_create_gate(
+			region->graph, jive::detail::strfmt("gamma_", gamma, "_", n), *types[n]);
 		for (size_t i = 0; i < nalternatives; i++)
 			jive_node_gate_input(arguments[i]->node(), gate, alternatives[i][n]);
 		jive_node_gate_output(gamma, gate);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -9,8 +9,8 @@
 #include <inttypes.h>
 #include <string.h>
 
-#include <jive/util/buffer.h>
 #include <jive/util/list.h>
+#include <jive/util/strfmt.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
@@ -33,9 +33,7 @@ type::type(size_t nalternatives)
 std::string
 type::debug_string() const
 {
-	char tmp[32];
-	snprintf(tmp, sizeof(tmp), "ctl(%zu)", nalternatives_);
-	return tmp;
+	return detail::strfmt("ctl(", nalternatives_, ")");
 }
 
 bool

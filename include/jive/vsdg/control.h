@@ -1,12 +1,13 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #ifndef JIVE_VSDG_CONTROL_H
 #define JIVE_VSDG_CONTROL_H
 
+#include <jive/util/strfmt.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/node.h>
@@ -27,9 +28,7 @@ struct type_of_value {
 struct format_value {
 	std::string operator()(const value_repr & repr) const
 	{
-		char tmp[32];
-		snprintf(tmp, sizeof(tmp), "%zd", repr.alternative());
-		return tmp;
+		return jive::detail::strfmt(repr.alternative());
 	}
 };
 
