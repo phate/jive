@@ -159,14 +159,6 @@ LIBJIVE_SRC += \
 	src/arch/subroutine.c \
 	src/arch/subroutine/nodes.c \
 
-# frontend
-LIBJIVE_SRC += \
-	src/frontend/basic_block.c \
-	src/frontend/cfg.c \
-	src/frontend/cfg_node.c \
-	src/frontend/clg.c \
-	src/frontend/clg_node.c \
-
 # shaper
 LIBJIVE_SRC += \
 	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c src/regalloc/shaped-variable.c src/regalloc/shaped-node.c src/regalloc/xpoint.c \

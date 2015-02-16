@@ -1,4 +1,0 @@
-TESTS+=\
-	frontend/test-cfg \
-	frontend/test-cfg-scc \
-	frontend/test-clg \
