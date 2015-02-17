@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -44,56 +44,64 @@ void
 jive_shaped_graph_destroy(jive_shaped_graph * self);
 
 inline jive_shaped_region *
-jive_shaped_graph_map_region(jive_shaped_graph * self, const jive_region * region)
+jive_shaped_graph_map_region(
+	jive_shaped_graph * self, const jive_region * region) noexcept
 {
 	auto i = self->region_map.find(region);
 	return i != self->region_map.end() ? i.ptr() : nullptr;
 }
 
 inline const jive_shaped_region *
-jive_shaped_graph_map_region(const jive_shaped_graph * self, const jive_region * region)
+jive_shaped_graph_map_region(
+	const jive_shaped_graph * self, const jive_region * region) noexcept
 {
 	auto i = self->region_map.find(region);
 	return i != self->region_map.end() ? i.ptr() : nullptr;
 }
 
 inline jive_shaped_variable *
-jive_shaped_graph_map_variable(jive_shaped_graph * self, const jive_variable * variable)
+jive_shaped_graph_map_variable(
+	jive_shaped_graph * self, const jive_variable * variable) noexcept
 {
 	auto i = self->variable_map.find(variable);
 	return i != self->variable_map.end() ? i.ptr() : nullptr;
 }
 
 inline const jive_shaped_variable *
-jive_shaped_graph_map_variable(const jive_shaped_graph * self, const jive_variable * variable)
+jive_shaped_graph_map_variable(
+	const jive_shaped_graph * self, const jive_variable * variable) noexcept
 {
 	auto i = self->variable_map.find(variable);
 	return i != self->variable_map.end() ? i.ptr() : nullptr;
 }
 
 inline jive_shaped_ssavar *
-jive_shaped_graph_map_ssavar(jive_shaped_graph * self, const jive_ssavar * ssavar)
+jive_shaped_graph_map_ssavar(
+	jive_shaped_graph * self, const jive_ssavar * ssavar) noexcept
 {
 	auto i = self->ssavar_map.find(ssavar);
 	return i != self->ssavar_map.end() ? i.ptr() : nullptr;
 }
 
 inline const jive_shaped_ssavar *
-jive_shaped_graph_map_ssavar(const jive_shaped_graph * self, const jive_ssavar * ssavar)
+jive_shaped_graph_map_ssavar(
+	const jive_shaped_graph * self, const jive_ssavar * ssavar) noexcept
 {
 	auto i = self->ssavar_map.find(ssavar);
 	return i != self->ssavar_map.end() ? i.ptr() : nullptr;
 }
 
 inline jive_shaped_node *
-jive_shaped_graph_map_node(jive_shaped_graph * self, const jive_node * node)
+jive_shaped_graph_map_node(
+	jive_shaped_graph * self, const jive_node * node) noexcept
 {
 	auto i = self->node_map.find(node);
 	return i != self->node_map.end() ? i.ptr() : nullptr;
 }
 
 inline const jive_shaped_node *
-jive_shaped_graph_map_node(const jive_shaped_graph * self, const jive_node * node)
+jive_shaped_graph_map_node(
+	const jive_shaped_graph * self, const jive_node * node) noexcept
 {
 	auto i = self->node_map.find(node);
 	return i != self->node_map.end() ? i.ptr() : nullptr;
