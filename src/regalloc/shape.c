@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -71,11 +71,11 @@ jive_region_shaper_create(
 	jive_region_shaper * self = new jive_region_shaper;
 	
 	self->parent = parent;
-	self->shaped_graph = master_selector->shaped_graph;
+	self->shaped_graph = master_selector->shaped_graph();
 	self->region = region;
 	self->shaped_region = jive_shaped_graph_map_region(self->shaped_graph, region);
 	self->master_selector = master_selector;
-	self->region_selector = jive_master_shaper_selector_map_region(master_selector, region);
+	self->region_selector = master_selector->map_region(region);
 	self->control_dominator = 0;
 	jive_varcut_init(&self->active);
 	
@@ -964,12 +964,11 @@ jive_regalloc_shape(jive_graph * graph)
 {
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive_master_shaper_selector * selector = jive_master_shaper_selector_create(shaped_graph);
-	jive_region_shaper * region_shaper = jive_region_shaper_create(0, graph->root_region, selector);
+	jive_master_shaper_selector selector(shaped_graph);
+	jive_region_shaper * region_shaper = jive_region_shaper_create(0, graph->root_region, &selector);
 	jive_region_shaper_process(region_shaper);
 	
 	jive_region_shaper_destroy(region_shaper);
-	jive_master_shaper_selector_destroy(selector);
 	
 	return shaped_graph;
 }

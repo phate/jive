@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -171,127 +171,127 @@ static int test_main(void)
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive_master_shaper_selector * master_selector;
-	master_selector = jive_master_shaper_selector_create(shaped_graph);
-	
-	jive_region_shaper_selector * region_selector;
-	region_selector = jive_master_shaper_selector_map_region(master_selector, graph->root_region);
-	
 	{
-		jive_node_cost * n1_cost = jive_master_shaper_selector_map_node(master_selector, n1);
-		assert(n1_cost->prio_array.count[0] == jive_resource_class_priority_lowest);
-		assert(n1_cost->force_tree_root == true);
+		jive_master_shaper_selector master_selector(shaped_graph);
 		
-		/* test invalidation -- artifically modify stored count to make
-		sure count after recomputation differs */
-		jive_resource_class_count_add(&n1_cost->rescls_cost, &jive_root_resource_class);
-		n1_cost->prio_array.count[0] = 0;
-		jive_master_shaper_selector_invalidate_node(master_selector, n1);
-		n1_cost = jive_master_shaper_selector_map_node(master_selector, n1);
-		assert(n1_cost->prio_array.count[0] == jive_resource_class_priority_lowest);
-	}
-	
-	{
-		assert(jive_master_shaper_selector_map_node(master_selector, l1)->force_tree_root == true);
-		assert(jive_master_shaper_selector_map_node(master_selector, l2)->force_tree_root == false);
+		jive_region_shaper_selector * region_selector;
+		region_selector = master_selector.map_region(graph->root_region);
 		
-		assert(jive_master_shaper_selector_map_node(master_selector, l1)->blocked_rescls_priority
-			== jive_root_resource_class.priority);
-		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->blocked_rescls_priority
-			== jive_root_resource_class.priority);
+		{
+			jive_node_cost * n1_cost = master_selector.map_node(n1);
+			assert(n1_cost->prio_array.count[0] == jive_resource_class_priority_lowest);
+			assert(n1_cost->force_tree_root == true);
+			
+			/* test invalidation -- artifically modify stored count to make
+			sure count after recomputation differs */
+			jive_resource_class_count_add(&n1_cost->rescls_cost, &jive_root_resource_class);
+			n1_cost->prio_array.count[0] = 0;
+			master_selector.invalidate_node(n1);
+			n1_cost = master_selector.map_node(n1);
+			assert(n1_cost->prio_array.count[0] == jive_resource_class_priority_lowest);
+		}
 		
-		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->state
-			== jive_node_cost_state_queue);
-		assert(jive_master_shaper_selector_map_node(master_selector, bottom)->index
-			== 0);
+		{
+			assert(master_selector.map_node(l1)->force_tree_root == true);
+			assert(master_selector.map_node(l2)->force_tree_root == false);
+			
+			assert(master_selector.map_node(l1)->blocked_rescls_priority
+				== jive_root_resource_class.priority);
+			assert(master_selector.map_node(bottom)->blocked_rescls_priority
+				== jive_root_resource_class.priority);
+			
+			assert(master_selector.map_node(bottom)->state
+				== jive_node_cost_state_queue);
+			assert(master_selector.map_node(bottom)->index
+				== 0);
+		}
+
+		jive_node * node;
+		
+		assert(region_selector->prio_heap.nitems == 1);
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == bottom);
+		assert(master_selector.map_node(bottom)->state
+			== jive_node_cost_state_stack);
+		shape(shaped_graph, node);
+		
+		assert(master_selector.map_node(s5)->prio_array.count[0]
+			== gpr.base.priority);
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == s5);
+		shape(shaped_graph, node);
+		
+		assert(master_selector.map_node(f)->prio_array.count[0]
+			== gpr.base.priority);
+		assert(region_selector->prio_heap.nitems == 2);
+		assert(region_selector->prio_heap.items[0]->node() == f);
+		assert(region_selector->prio_heap.items[1]->node() == s4);
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == f);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == l2);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == s4);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == e);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == s3);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == d);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == s2);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == c);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == s1);
+		shape(shaped_graph, node);
+		
+		jive_node * tmp = jive_region_shaper_selector_select_node(region_selector);
+		assert(tmp == a || tmp == b);
+		assert(master_selector.map_node(tmp)->state
+			== jive_node_cost_state_stack);
+		jive_node * spill = create_spill_node(graph, tmp->outputs[0]);
+		assert(master_selector.map_node(spill)->state
+			== jive_node_cost_state_stack);
+		jive_node * restore = create_restore_node(graph, spill->outputs[0]);
+		assert(master_selector.map_node(restore)->state
+			== jive_node_cost_state_stack);
+		jive_ssavar * ssavar = tmp->outputs[0]->users.first->ssavar;
+		jive_ssavar_divert_origin(ssavar, restore->outputs[0]);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == restore);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == spill);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == tmp);
+		shape(shaped_graph, node);
+		
+		node = jive_region_shaper_selector_select_node(region_selector);
+		assert(node == a || node == b);
+		shape(shaped_graph, node);
 	}
 
-	jive_node * node;
-	
-	assert(region_selector->prio_heap.nitems == 1);
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == bottom);
-	assert(jive_master_shaper_selector_map_node(master_selector, bottom)->state
-		== jive_node_cost_state_stack);
-	shape(shaped_graph, node);
-	
-	assert(jive_master_shaper_selector_map_node(master_selector, s5)->prio_array.count[0]
-		== gpr.base.priority);
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == s5);
-	shape(shaped_graph, node);
-	
-	assert(jive_master_shaper_selector_map_node(master_selector, f)->prio_array.count[0]
-		== gpr.base.priority);
-	assert(region_selector->prio_heap.nitems == 2);
-	assert(region_selector->prio_heap.items[0]->node == f);
-	assert(region_selector->prio_heap.items[1]->node == s4);
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == f);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == l2);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == s4);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == e);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == s3);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == d);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == s2);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == c);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == s1);
-	shape(shaped_graph, node);
-	
-	jive_node * tmp = jive_region_shaper_selector_select_node(region_selector);
-	assert(tmp == a || tmp == b);
-	assert(jive_master_shaper_selector_map_node(master_selector, tmp)->state
-		== jive_node_cost_state_stack);
-	jive_node * spill = create_spill_node(graph, tmp->outputs[0]);
-	assert(jive_master_shaper_selector_map_node(master_selector, spill)->state
-		== jive_node_cost_state_stack);
-	jive_node * restore = create_restore_node(graph, spill->outputs[0]);
-	assert(jive_master_shaper_selector_map_node(master_selector, restore)->state
-		== jive_node_cost_state_stack);
-	jive_ssavar * ssavar = tmp->outputs[0]->users.first->ssavar;
-	jive_ssavar_divert_origin(ssavar, restore->outputs[0]);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == restore);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == spill);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == tmp);
-	shape(shaped_graph, node);
-	
-	node = jive_region_shaper_selector_select_node(region_selector);
-	assert(node == a || node == b);
-	shape(shaped_graph, node);
-	
-	jive_master_shaper_selector_destroy(master_selector);
 	jive_shaped_graph_destroy(shaped_graph);
 	jive_graph_destroy(graph);
 

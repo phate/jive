@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -62,7 +62,7 @@ jive_varcut_shaped_ssavar_is_active(const jive_varcut * self, jive_shaped_ssavar
 }
 
 static inline size_t
-jive_varcut_output_is_active(const jive_varcut * self, jive::output * output)
+jive_varcut_output_is_active(const jive_varcut * self, const jive::output * output)
 {
 	auto i = self->origin_map.find(output);
 	if (i != self->origin_map.end()) {
@@ -148,7 +148,7 @@ jive_region_varcut_ssavar_rescls_change(
 	const jive_resource_class * rescls);
 
 static inline size_t
-jive_region_varcut_output_is_active(const jive_region_varcut * self, jive::output * output)
+jive_region_varcut_output_is_active(const jive_region_varcut * self, const jive::output * output)
 {
 	return jive_varcut_output_is_active(&self->base, output);
 }
