@@ -34,6 +34,9 @@ public:
 		if (nbits == 0)
 			throw compiler_error("Number of bits is zero.");
 
+		if (nbits < 64 && (value >> nbits) != 0 && (value >> nbits != -1))
+			throw compiler_error("Value cannot be represented with the given number of bits.");
+
 		for (size_t n = 0; n < nbits; ++n) {
 			data_.push_back('0' + (value & 1));
 			value = value >> 1;
