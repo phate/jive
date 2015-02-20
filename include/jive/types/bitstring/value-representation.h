@@ -41,31 +41,6 @@ public:
 	}
 
 	inline
-	value_repr(size_t nbits, uint64_t value)
-	{
-		if (nbits == 0)
-			throw compiler_error("Number of bits is zero.");
-
-		for (size_t n = 0; n < nbits; ++n) {
-			data_.push_back('0' + (value & 1));
-			value = value >> 1;
-		}
-	}
-
-	inline
-	value_repr(const std::string & s)
-	{
-		if (s.empty())
-			throw compiler_error("Number of bits is zero.");
-
-		for (size_t n = 0; n < s.size(); n++) {
-			if (s[n] != '0' && s[n] != '1' && s[n] != 'X' && s[n] != 'D')
-				throw compiler_error("Not a valid bit.");
-			data_.push_back(s[n]);
-		}
-	}
-
-	inline
 	value_repr(const char * s)
 	{
 		if (strlen(s) == 0)
@@ -79,31 +54,6 @@ public:
 	}
 
 	inline
-	value_repr(size_t nbits, const char bits[])
-	{
-		if (nbits == 0)
-			throw compiler_error("Number of bits is zero.");
-
-		for (size_t n = 0; n < nbits; n++) {
-			if (bits[n] != '0' && bits[n] != '1' && bits[n] != 'X' && bits[n] != 'D')
-				throw compiler_error("Not a valid bit.");
-			data_.push_back(bits[n]);
-		}
-	}
-
-	inline
-	value_repr(size_t nbits, char bit)
-	{
-		if (nbits == 0)
-			throw compiler_error("Number of bits is zero.");
-
-		if (bit != '0' && bit != '1' && bit != 'X' && bit != 'D')
-			throw compiler_error("Not a valid bit.");
-
-		data_.insert(data_.begin(), nbits, bit);
-	}
-
-	inline
 	value_repr(const value_repr & other)
 		: data_(other.data_)
 	{}
@@ -113,7 +63,13 @@ public:
 		: data_(std::move(other.data_))
 	{}
 
-	value_repr &
+	inline static value_repr
+	repeat(size_t nbits, char bit)
+	{
+		return value_repr(std::string(nbits, bit).c_str());
+	}
+
+	inline value_repr &
 	operator=(const value_repr & other)
 	{
 		data_ = other.data_;

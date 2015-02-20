@@ -39,7 +39,7 @@ public:
 		parser_driver & driver) const override
 	{
 		std::string s = driver.parse_string();
-		return std::unique_ptr<operation>(new bits::constant_op(jive::bits::value_repr(s)));
+		return std::unique_ptr<operation>(new bits::constant_op(jive::bits::value_repr(s.c_str())));
 	}
 };
 

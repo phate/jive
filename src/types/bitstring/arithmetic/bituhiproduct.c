@@ -37,7 +37,7 @@ umulh_op::reduce_constants(
 		arg1ext, 2 * nbits,
 		arg2ext, 2 * nbits);
 
-	value_repr result(nbits, resultext + nbits);
+	value_repr result(std::string(resultext + nbits, nbits).c_str());
 	return result;
 }
 

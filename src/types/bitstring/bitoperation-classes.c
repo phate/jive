@@ -174,8 +174,8 @@ compare_op::can_reduce_operand_pair(
 	const bits::constant_op * c2_op =
 		dynamic_cast<const bits::constant_op *>(&arg2->node()->operation());
 
-	value_repr arg1_repr = c1_op ? c1_op->value() : value_repr(type_.nbits(), 'D');
-	value_repr arg2_repr = c2_op ? c2_op->value() : value_repr(type_.nbits(), 'D');
+	value_repr arg1_repr = c1_op ? c1_op->value() : value_repr::repeat(type_.nbits(), 'D');
+	value_repr arg2_repr = c2_op ? c2_op->value() : value_repr::repeat(type_.nbits(), 'D');
 
 	switch (reduce_constants(arg1_repr, arg2_repr)) {
 		case compare_result::static_false:

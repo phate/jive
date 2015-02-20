@@ -28,7 +28,7 @@ smod_op::reduce_constants(
 {
 	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
 	char quotient[nbits];
-	value_repr result(nbits, '0');
+	value_repr result = value_repr::repeat(nbits, '0');
 	jive_bitstring_division_signed(
 		quotient, &result[0],
 		&arg1[0], &arg2[0], nbits);

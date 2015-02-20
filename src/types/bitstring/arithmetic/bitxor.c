@@ -27,7 +27,7 @@ xor_op::reduce_constants(
 	const value_repr & arg2) const
 {
 	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	value_repr result(nbits, '0');
+	value_repr result = value_repr::repeat(nbits, '0');
 	jive_bitstring_xor(&result[0], &arg1[0], &arg2[0], nbits);
 	return result;
 }
