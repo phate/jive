@@ -171,6 +171,23 @@ public:
 		return sign() == '1';
 	}
 
+	inline value_repr
+	concat(const value_repr & other) const
+	{
+		value_repr result(*this);
+		result.data_.insert(result.data_.end(), other.data_.begin(), other.data_.end());
+		return result;
+	}
+
+	inline value_repr
+	slice(size_t low, size_t high) const
+	{
+		if (high <= low || low + high > nbits())
+			throw compiler_error("Slice is out of bound.");
+
+		return value_repr(std::string(&data_[low], high - low).c_str());
+	}
+
 	void
 	zext(size_t nbits)
 	{
