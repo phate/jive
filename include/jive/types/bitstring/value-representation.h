@@ -53,7 +53,7 @@ public:
 	}
 
 	inline
-	value_repr(std::string & s)
+	value_repr(const std::string & s)
 	{
 		if (s.empty())
 			throw compiler_error("Number of bits is zero.");
