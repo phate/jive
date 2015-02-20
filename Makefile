@@ -49,6 +49,7 @@ LIBJIVE_SRC = \
 # visualization
 LIBJIVE_SRC += \
 	src/util/buffer.c \
+	src/util/callbacks.c \
 	src/util/textcanvas.c \
 	src/view.c \
 	src/view/graphview.c \
