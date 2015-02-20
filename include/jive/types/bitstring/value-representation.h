@@ -79,27 +79,27 @@ public:
 		return *this;
 	}
 
-	char &
+	inline char &
 	operator[](size_t n)
 	{
 		JIVE_DEBUG_ASSERT(n < nbits());
 		return data_[n];
 	}
 
-	const char &
+	inline const char &
 	operator[](size_t n) const
 	{
 		JIVE_DEBUG_ASSERT(n < nbits());
 		return data_[n];
 	}
 
-	bool
+	inline bool
 	operator==(const jive::bits::value_repr & other) const noexcept
 	{
 		return data_ == other.data_;
 	}
 
-	bool
+	inline bool
 	operator!=(const jive::bits::value_repr & other) const noexcept
 	{
 		return !(*this == other);
