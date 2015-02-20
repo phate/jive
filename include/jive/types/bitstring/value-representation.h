@@ -72,6 +72,83 @@ public:
 		return value_repr(std::string(nbits, bit).c_str());
 	}
 
+private:
+	inline char
+	lor(char a, char b) const noexcept
+	{
+		switch (a) {
+			case '0':
+				return b;
+			case '1':
+				return '1';
+			case 'X':
+				if (b == '1')
+					return '1';
+				return 'X';
+			case 'D':
+				if (b == '1')
+					return '1';
+				if (b == 'X')
+					return 'X';
+				return 'D';
+			default:
+				return 'X';
+		}
+	}
+
+	inline char
+	lxor(char a, char b) const noexcept
+	{
+		switch (a) {
+			case '0':
+				return b;
+			case '1':
+				if (b == '1')
+					return '0';
+				if (b == '0')
+					return '1';
+				return b;
+			case 'X':
+				return 'X';
+			case 'D':
+				if (b == 'X')
+					return 'X';
+				return a;
+			default:
+				return 'X';
+		}
+	}
+
+	inline char
+	lnot(char a) const noexcept
+	{
+		return lxor('1', a);
+	}
+
+	inline char
+	land(char a, char b) const noexcept
+	{
+		switch (a) {
+			case '0':
+				return '0';
+			case '1':
+				return b;
+			case 'X':
+				if (b == '0')
+					return '0';
+				return 'X';
+			case 'D':
+				if (b == '0')
+					return '0';
+				if (b == 'X')
+					return 'X';
+				return 'D';
+			default:
+				return 'X';
+		}
+	}
+
+public:
 	inline value_repr &
 	operator=(const value_repr & other)
 	{
@@ -217,6 +294,92 @@ public:
 
 	int64_t
 	to_int() const;
+
+	inline char
+	ult(const value_repr & other) const
+	{
+		if (nbits() != other.nbits())
+			throw compiler_error("Unequal number of bits.");
+
+		char v = land(lnot(data_[0]), other[0]);
+		for (size_t n = 1; n < nbits(); n++)
+			v = land(lor(lnot(data_[n]), other[n]), lor(land(lnot(data_[n]), other[n]), v));
+
+		return v;
+	}
+
+	inline char
+	slt(const value_repr & other) const
+	{
+		value_repr t1(*this), t2(other);
+		t1[t1.nbits()-1] = lnot(t1.nbits()-1);
+		t2[t2.nbits()-1] = lnot(t2.nbits()-1);
+		return t1.ult(t2);
+	}
+
+	inline char
+	ule(const value_repr & other) const
+	{
+		if (nbits() != other.nbits())
+			throw compiler_error("Unequal number of bits.");
+
+		char v = '1';
+		for (size_t n = 0; n < nbits(); n++)
+			v = land(land(lor(lnot(data_[n]), other[n]), lor(lnot(data_[n]), v)), lor(v, other[n]));
+
+		return v;
+	}
+
+	inline char
+	sle(const value_repr & other) const
+	{
+		value_repr t1(*this), t2(other);
+		t1[t1.nbits()-1] = lnot(t1.nbits()-1);
+		t2[t2.nbits()-1] = lnot(t2.nbits()-1);
+		return t1.ule(t2);
+	}
+
+	inline char
+	ne(const value_repr & other) const
+	{
+		if (nbits() != other.nbits())
+			throw compiler_error("Unequal number of bits.");
+
+		char v = '0';
+		for (size_t n = 0; n < nbits(); n++)
+			v = lor(v, lxor(data_[n], other[n]));
+		return v;
+	}
+
+	inline char
+	eq(const value_repr & other) const
+	{
+		return lnot(ne(other));
+	}
+
+	inline char
+	sge(const value_repr & other) const
+	{
+		return lnot(slt(other));
+	}
+
+	inline char
+	uge(const value_repr & other) const
+	{
+		return lnot(ult(other));
+	}
+
+	inline char
+	sgt(const value_repr & other) const
+	{
+		return lnot(sle(other));
+	}
+
+	inline char
+	ugt(const value_repr & other) const
+	{
+		return lnot(ule(other));
+	}
 
 private:
 	/* [lsb ... msb] */
