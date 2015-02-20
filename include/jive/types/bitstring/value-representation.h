@@ -188,16 +188,16 @@ public:
 		return value_repr(std::string(&data_[low], high - low).c_str());
 	}
 
-	void
-	zext(size_t nbits)
+	inline value_repr
+	zext(size_t nbits) const
 	{
-		data_.insert(data_.end(), nbits, '0');
+		return concat(value_repr(nbits, 0));
 	}
 
-	void
-	sext(size_t nbits)
+	inline value_repr
+	sext(size_t nbits) const
 	{
-		data_.insert(data_.end(), nbits, data_[this->nbits()-1]);
+		return concat(value_repr::repeat(nbits, sign()));
 	}
 
 	inline size_t
