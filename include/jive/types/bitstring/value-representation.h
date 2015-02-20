@@ -137,6 +137,40 @@ public:
 		return !(*this == other);
 	}
 
+	inline char
+	sign() const noexcept
+	{
+		return data_[nbits()-1];
+	}
+
+	inline bool
+	is_defined() const noexcept
+	{
+		for (auto bit : data_) {
+			if (bit == 'X')
+				return false;
+		}
+
+		return true;
+	}
+
+	inline bool
+	is_known() const noexcept
+	{
+		for (auto bit : data_) {
+			if (bit == 'X' || bit == 'D')
+				return false;
+		}
+
+		return true;
+	}
+
+	inline bool
+	is_negative() const noexcept
+	{
+		return sign() == '1';
+	}
+
 	void
 	zext(size_t nbits)
 	{
