@@ -105,6 +105,38 @@ public:
 		return !(*this == other);
 	}
 
+	inline bool
+	operator==(int64_t value) const
+	{
+		return *this == value_repr(nbits(), value);
+	}
+
+	inline bool
+	operator!=(int64_t value) const
+	{
+		return !(*this == value_repr(nbits(), value));
+	}
+
+	inline bool
+	operator==(const std::string & other) const noexcept
+	{
+		if (nbits() != other.size())
+			return false;
+
+		for (size_t n = 0; n < other.size(); n++) {
+			if (data_[n] != other[n])
+				return false;
+		}
+
+		return true;
+	}
+
+	inline bool
+	operator!=(const std::string & other) const noexcept
+	{
+		return !(*this == other);
+	}
+
 	void
 	zext(size_t nbits)
 	{
