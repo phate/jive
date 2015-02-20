@@ -13,10 +13,10 @@
 #include <typeindex>
 
 #include <jive/common.h>
+#include <jive/util/callbacks.h>
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/tracker.h>
 
 /* graph tail node */
@@ -48,8 +48,10 @@ typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 struct jive_node;
 struct jive_region;
 struct jive_resource;
+struct jive_resource_name;
 
 struct jive_graph {
+public:
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -79,40 +81,63 @@ struct jive_graph {
 	
 	jive::node_normal_form_hash new_node_normal_forms;
 	
-	jive_region_notifier_slot on_region_create;
-	jive_region_notifier_slot on_region_destroy;
-	jive_region_ssavar_notifier_slot on_region_add_used_ssavar;
-	jive_region_ssavar_notifier_slot on_region_remove_used_ssavar;
+	/* FIXME: notifiers should become private, but need to turn more things
+	 * into classes first */
+	jive::notifier<jive_region *> on_region_create;
+	jive::notifier<jive_region *> on_region_destroy;
+	jive::notifier<jive_region *, jive_ssavar *> on_region_add_used_ssavar;
+	jive::notifier<jive_region *, jive_ssavar *> on_region_remove_used_ssavar;
 	
-	jive_node_notifier_slot on_node_create;
-	jive_node_notifier_slot on_node_destroy;
-	jive_node_depth_notifier_slot on_node_depth_change;
+	jive::notifier<jive_node *> on_node_create;
+	jive::notifier<jive_node *> on_node_destroy;
+	jive::notifier<jive_node *, size_t> on_node_depth_change;
 	
-	jive_input_notifier_slot on_input_create;
-	jive_input_change_notifier_slot on_input_change;
-	jive_input_notifier_slot on_input_destroy;
+	jive::notifier<jive::input *> on_input_create;
+	jive::notifier<
+		jive::input *,
+		jive::output * /* old */, 
+		jive::output * /* new */
+	> on_input_change;
+	jive::notifier<jive::input *> on_input_destroy;
 	
-	jive_output_notifier_slot on_output_create;
-	jive_output_notifier_slot on_output_destroy;
-	
-	jive_variable_notifier_slot on_variable_create;
-	jive_variable_notifier_slot on_variable_destroy;
-	jive_variable_gate_notifier_slot on_variable_assign_gate;
-	jive_variable_gate_notifier_slot on_variable_unassign_gate;
-	jive_variable_resource_class_notifier_slot on_variable_resource_class_change;
-	jive_variable_resource_name_notifier_slot on_variable_resource_name_change;
-	
-	jive_gate_notifier_slot on_gate_interference_add;
-	jive_gate_notifier_slot on_gate_interference_remove;
-	
-	jive_ssavar_notifier_slot on_ssavar_create;
-	jive_ssavar_notifier_slot on_ssavar_destroy;
-	jive_ssavar_input_notifier_slot on_ssavar_assign_input;
-	jive_ssavar_input_notifier_slot on_ssavar_unassign_input;
-	jive_ssavar_output_notifier_slot on_ssavar_assign_output;
-	jive_ssavar_output_notifier_slot on_ssavar_unassign_output;
-	jive_ssavar_divert_notifier_slot on_ssavar_divert_origin;
-	jive_ssavar_variable_notifier_slot on_ssavar_variable_change;
+	jive::notifier<jive::output *> on_output_create;
+	jive::notifier<jive::output *> on_output_destroy;
+	 
+	jive::notifier<jive_variable *> on_variable_create;
+	jive::notifier<jive_variable *> on_variable_destroy;
+	jive::notifier<jive_variable *, jive::gate *> on_variable_assign_gate;
+	jive::notifier<jive_variable *, jive::gate *> on_variable_unassign_gate;
+	jive::notifier<
+		jive_variable *,
+		const jive_resource_class * /* old */,
+		const jive_resource_class * /* new */
+	> on_variable_resource_class_change;
+	jive::notifier<
+		jive_variable *,
+		const jive_resource_name * /* old */,
+		const jive_resource_name * /* new */
+	> on_variable_resource_name_change;
+
+	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_add;
+	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;
+
+	jive::notifier<jive_ssavar *> on_ssavar_create;
+	jive::notifier<jive_ssavar *> on_ssavar_destroy;
+	jive::notifier<jive_ssavar *, jive::input *> on_ssavar_assign_input;
+	jive::notifier<jive_ssavar *, jive::input *> on_ssavar_unassign_input;
+	jive::notifier<jive_ssavar *, jive::output *> on_ssavar_assign_output;
+	jive::notifier<jive_ssavar *, jive::output *> on_ssavar_unassign_output;
+	jive::notifier<
+		jive_ssavar *,
+		jive::output * /* old */,
+		jive::output * /* new */
+	> on_ssavar_divert_origin;
+	jive::notifier<
+		jive_ssavar *,
+		jive_variable * /* old */,
+		jive_variable * /* new */
+	> on_ssavar_variable_change;
+
 };
 
 JIVE_EXPORTED_INLINE struct jive_region *

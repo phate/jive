@@ -15,6 +15,8 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/variable.h>
 
+using namespace std::placeholders;
+
 static void
 jive_shaped_graph_region_create(void * closure, jive_region * region)
 {
@@ -215,63 +217,50 @@ jive_shaped_graph_create(jive_graph * graph)
 	
 	self->graph = graph;
 	
-	size_t n;
-	for(n = 0; n < sizeof(self->callbacks)/sizeof(self->callbacks[0]); n++)
-		self->callbacks[n] = NULL;
-	
-	n = 0;
-	self->callbacks[n++] = jive_region_notifier_slot_connect(&graph->on_region_create,
-		jive_shaped_graph_region_create, self);
-	self->callbacks[n++] = jive_region_notifier_slot_connect(&graph->on_region_destroy,
-		jive_shaped_graph_region_destroy, self);
-	self->callbacks[n++] = jive_region_ssavar_notifier_slot_connect(&graph->on_region_add_used_ssavar,
-		jive_shaped_graph_region_add_used_ssavar, self);
-	self->callbacks[n++] = jive_region_ssavar_notifier_slot_connect(
-		&graph->on_region_remove_used_ssavar, jive_shaped_graph_region_remove_used_ssavar, self);
-	self->callbacks[n++] = jive_gate_notifier_slot_connect(&graph->on_gate_interference_add,
-		jive_shaped_graph_gate_interference_add, self);
-	self->callbacks[n++] = jive_gate_notifier_slot_connect(&graph->on_gate_interference_remove,
-		jive_shaped_graph_gate_interference_remove, self);
-	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_create,
-		jive_shaped_graph_variable_create, self);
-	self->callbacks[n++] = jive_variable_notifier_slot_connect(&graph->on_variable_destroy,
-		jive_shaped_graph_variable_destroy, self);
-	self->callbacks[n++] = jive_variable_gate_notifier_slot_connect(&graph->on_variable_assign_gate,
-		jive_shaped_graph_variable_assign_gate, self);
-	self->callbacks[n++] = jive_variable_gate_notifier_slot_connect(&graph->on_variable_unassign_gate,
-		jive_shaped_graph_variable_unassign_gate, self);
-	self->callbacks[n++] = jive_variable_resource_class_notifier_slot_connect(
-		&graph->on_variable_resource_class_change, jive_shaped_graph_variable_resource_class_change,
-		self);
-	self->callbacks[n++] = jive_variable_resource_name_notifier_slot_connect(
-		&graph->on_variable_resource_name_change, jive_shaped_graph_variable_resource_name_change, self);
-	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_create,
-		jive_shaped_graph_ssavar_create, self);
-	self->callbacks[n++] = jive_ssavar_notifier_slot_connect(&graph->on_ssavar_destroy,
-		jive_shaped_graph_ssavar_destroy, self);
-	self->callbacks[n++] = jive_node_notifier_slot_connect(&graph->on_node_destroy,
-		jive_shaped_graph_node_destroy, self);
-	self->callbacks[n++] = jive_ssavar_input_notifier_slot_connect(&graph->on_ssavar_assign_input,
-		jive_shaped_graph_ssavar_assign_input, self);
-	self->callbacks[n++] = jive_ssavar_input_notifier_slot_connect(&graph->on_ssavar_unassign_input,
-		jive_shaped_graph_ssavar_unassign_input, self);
-	self->callbacks[n++] = jive_ssavar_output_notifier_slot_connect(&graph->on_ssavar_assign_output,
-		jive_shaped_graph_ssavar_assign_output, self);
-	self->callbacks[n++] = jive_ssavar_output_notifier_slot_connect(&graph->on_ssavar_unassign_output,
-		jive_shaped_graph_ssavar_unassign_output, self);
-	self->callbacks[n++] = jive_ssavar_variable_notifier_slot_connect(
-		&graph->on_ssavar_variable_change, jive_shaped_graph_ssavar_variable_change, self);
-	self->callbacks[n++] = jive_ssavar_divert_notifier_slot_connect(
-		&graph->on_ssavar_divert_origin, jive_shaped_graph_ssavar_divert, self);
-	
-	JIVE_DEBUG_ASSERT(n <= sizeof(self->callbacks)/sizeof(self->callbacks[0]));
+	self->callbacks_.push_back(graph->on_region_create.connect(
+		std::bind(jive_shaped_graph_region_create, self, _1)));
+	self->callbacks_.push_back(graph->on_region_destroy.connect(
+		std::bind(jive_shaped_graph_region_destroy, self, _1)));
+	self->callbacks_.push_back(graph->on_region_add_used_ssavar.connect(
+		std::bind(jive_shaped_graph_region_add_used_ssavar, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_region_remove_used_ssavar.connect(
+		std::bind(jive_shaped_graph_region_remove_used_ssavar, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_gate_interference_add.connect(
+		std::bind(jive_shaped_graph_gate_interference_add, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_gate_interference_remove.connect(
+		std::bind(jive_shaped_graph_gate_interference_remove, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_variable_create.connect(
+		std::bind(jive_shaped_graph_variable_create, self, _1)));
+	self->callbacks_.push_back(graph->on_variable_destroy.connect(
+		std::bind(jive_shaped_graph_variable_destroy, self, _1)));
+	self->callbacks_.push_back(graph->on_variable_assign_gate.connect(
+		std::bind(jive_shaped_graph_variable_assign_gate, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_variable_unassign_gate.connect(
+		std::bind(jive_shaped_graph_variable_unassign_gate, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_variable_resource_class_change.connect(
+		std::bind(jive_shaped_graph_variable_resource_class_change,self, _1, _2, _3)));
+	self->callbacks_.push_back(graph->on_variable_resource_name_change.connect(
+		std::bind(jive_shaped_graph_variable_resource_name_change, self, _1, _2, _3)));
+	self->callbacks_.push_back(graph->on_ssavar_create.connect(
+		std::bind(jive_shaped_graph_ssavar_create, self, _1)));
+	self->callbacks_.push_back(graph->on_ssavar_destroy.connect(
+		std::bind(jive_shaped_graph_ssavar_destroy, self, _1)));
+	self->callbacks_.push_back(graph->on_node_destroy.connect(
+		std::bind(jive_shaped_graph_node_destroy, self, _1)));
+	self->callbacks_.push_back(graph->on_ssavar_assign_input.connect(
+		std::bind(jive_shaped_graph_ssavar_assign_input, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_ssavar_unassign_input.connect(
+		std::bind(jive_shaped_graph_ssavar_unassign_input, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_ssavar_assign_output.connect(
+		std::bind(jive_shaped_graph_ssavar_assign_output, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_ssavar_unassign_output.connect(
+		std::bind(jive_shaped_graph_ssavar_unassign_output, self, _1, _2)));
+	self->callbacks_.push_back(graph->on_ssavar_variable_change.connect(
+		std::bind(jive_shaped_graph_ssavar_variable_change, self, _1, _2, _3)));
+	self->callbacks_.push_back(graph->on_ssavar_divert_origin.connect(
+		std::bind(jive_shaped_graph_ssavar_divert, self, _1, _2, _3)));
 	
 	jive_var_assignment_tracker_init(&self->var_assignment_tracker);
-	
-	jive_node_notifier_slot_init(&self->on_shaped_node_create);
-	jive_node_notifier_slot_init(&self->on_shaped_node_destroy);
-	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_add);
-	jive_shaped_region_ssavar_notifier_slot_init(&self->on_shaped_region_ssavar_remove);
 	
 	jive_variable * variable;
 	JIVE_LIST_ITERATE(graph->variables, variable, graph_variable_list) {
@@ -293,19 +282,9 @@ jive_shaped_graph_create(jive_graph * graph)
 
 jive_shaped_graph::~jive_shaped_graph()
 {
-	for (size_t n = 0; n < sizeof(callbacks)/sizeof(callbacks[0]); n++) {
-		if (callbacks[n])
-			jive_notifier_disconnect(callbacks[n]);
-	}
-	
 	jive_shaped_region_destroy_cuts(jive_shaped_graph_map_region(this, graph->root_region));
 	
 	JIVE_DEBUG_ASSERT(node_map.size() == 0);
-
-	jive_node_notifier_slot_fini(&on_shaped_node_create);
-	jive_node_notifier_slot_fini(&on_shaped_node_destroy);
-	jive_shaped_region_ssavar_notifier_slot_fini(&on_shaped_region_ssavar_add);
-	jive_shaped_region_ssavar_notifier_slot_fini(&on_shaped_region_ssavar_remove);
 }
 
 void

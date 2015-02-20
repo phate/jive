@@ -19,6 +19,8 @@
 
 #include <unordered_map>
 
+using namespace std::placeholders;
+
 jive_node_cost::jive_node_cost(jive_master_shaper_selector * master, jive_node * node)
 	: state(jive_node_cost_state_ahead)
 	, index((size_t) -1)
@@ -363,10 +365,6 @@ compute_prio_value(jive_node_cost * node_cost)
 
 jive_master_shaper_selector::~jive_master_shaper_selector()
 {
-	for (jive_notifier * notifier : callbacks_) {
-		jive_notifier_disconnect(notifier);
-	}
-
 	jive_computation_tracker_fini(&cost_computation_state_tracker_);
 	
 }
@@ -384,26 +382,16 @@ jive_master_shaper_selector::jive_master_shaper_selector(jive_shaped_graph * sha
 		try_add_frontier(node);
 	}
 	
-	callbacks_.push_back(jive_node_notifier_slot_connect(
-		&graph->on_node_create,
-		jive_master_shaper_selector::node_create,
-		this));
-	callbacks_.push_back(jive_input_change_notifier_slot_connect(
-		&graph->on_input_change,
-		jive_master_shaper_selector::input_change,
-		this));
-	callbacks_.push_back(jive_node_notifier_slot_connect(
-		&shaped_graph->on_shaped_node_create,
-		jive_master_shaper_selector::shaped_node_create,
-		this));
-	callbacks_.push_back(jive_shaped_region_ssavar_notifier_slot_connect(
-		&shaped_graph->on_shaped_region_ssavar_add,
-		jive_master_shaper_selector::shaped_region_ssavar_add,
-		this));
-	callbacks_.push_back(jive_shaped_region_ssavar_notifier_slot_connect(
-		&shaped_graph->on_shaped_region_ssavar_remove,
-		jive_master_shaper_selector::shaped_region_ssavar_remove,
-		this));
+	callbacks_.push_back(graph->on_node_create.connect(
+		std::bind(jive_master_shaper_selector::node_create, this, _1)));
+	callbacks_.push_back(graph->on_input_change.connect(
+		std::bind(jive_master_shaper_selector::input_change, this, _1, _2, _3)));
+	callbacks_.push_back(shaped_graph->on_shaped_node_create.connect(
+		std::bind(jive_master_shaper_selector::shaped_node_create, this, _1)));
+	callbacks_.push_back(shaped_graph->on_shaped_region_ssavar_add.connect(
+		std::bind(jive_master_shaper_selector::shaped_region_ssavar_add, this, _1, _2)));
+	callbacks_.push_back(shaped_graph->on_shaped_region_ssavar_remove.connect(
+		std::bind(jive_master_shaper_selector::shaped_region_ssavar_remove, this, _1, _2)));
 }
 
 jive_region_shaper_selector *
@@ -782,34 +770,30 @@ jive_master_shaper_selector::region_shaper_selector_create(const jive_region * r
 /* callback closures */
 
 void
-jive_master_shaper_selector::shaped_node_create(void * closure, jive_node * node)
+jive_master_shaper_selector::shaped_node_create(jive_master_shaper_selector * self, jive_node * node)
 {
-	jive_master_shaper_selector * self = (jive_master_shaper_selector *) closure;
 	self->mark_shaped(node);
 }
 
 void
 jive_master_shaper_selector::shaped_region_ssavar_add(
-	void * closure, jive_shaped_region * shaped_region,
+	jive_master_shaper_selector * self, jive_shaped_region * shaped_region,
 	jive_shaped_ssavar * shaped_ssavar)
 {
-	jive_master_shaper_selector * self = (jive_master_shaper_selector *) closure;
 	self->invalidate_node(shaped_ssavar->ssavar->origin->node());
 }
 
 void
 jive_master_shaper_selector::shaped_region_ssavar_remove(
-	void * closure, jive_shaped_region * shaped_region,
+	jive_master_shaper_selector * self, jive_shaped_region * shaped_region,
 	jive_shaped_ssavar * shaped_ssavar)
 {
-	jive_master_shaper_selector * self = (jive_master_shaper_selector *) closure;
 	self->invalidate_node(shaped_ssavar->ssavar->origin->node());
 }
 
 void
-jive_master_shaper_selector::node_create(void * closure, jive_node * node)
+jive_master_shaper_selector::node_create(jive_master_shaper_selector * self, jive_node * node)
 {
-	jive_master_shaper_selector * self = (jive_master_shaper_selector *) closure;
 	size_t n;
 	bool stacked = false;
 	for (n = 0; n < node->ninputs; n++) {
@@ -834,11 +818,9 @@ jive_master_shaper_selector::node_create(void * closure, jive_node * node)
 
 void
 jive_master_shaper_selector::input_change(
-	void * closure, jive::input * input, jive::output * old_origin,
+	jive_master_shaper_selector * self, jive::input * input, jive::output * old_origin,
 	jive::output * new_origin)
 {
-	jive_master_shaper_selector * self = (jive_master_shaper_selector *) closure;
-	
 	self->try_add_frontier(old_origin->node());
 	
 	jive_node_cost * upper_node_cost, * lower_node_cost;

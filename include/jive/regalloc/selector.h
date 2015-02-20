@@ -247,20 +247,20 @@ private:
 
 	static void
 	shaped_node_create(
-		void * closure, jive_node * node);
+		jive_master_shaper_selector * closure, jive_node * node);
 	static void
 	shaped_region_ssavar_add(
-		void * closure, jive_shaped_region * shaped_region,
+		jive_master_shaper_selector * closure, jive_shaped_region * shaped_region,
 		jive_shaped_ssavar * shaped_ssavar);
 	static void
 	shaped_region_ssavar_remove(
-		void * closure, jive_shaped_region * shaped_region,
+		jive_master_shaper_selector * closure, jive_shaped_region * shaped_region,
 		jive_shaped_ssavar * shaped_ssavar);
 	static void
-	node_create(void * closure, jive_node * node);
+	node_create(jive_master_shaper_selector * closure, jive_node * node);
 	static void
 	input_change(
-		void * closure, jive::input * input, jive::output * old_origin,
+		jive_master_shaper_selector * closure, jive::input * input, jive::output * old_origin,
 		jive::output * new_origin);
 
 	jive_shaped_graph * shaped_graph_;
@@ -269,7 +269,7 @@ private:
 	jive_region_shaper_selector_hash region_map_;
 	jive_computation_tracker cost_computation_state_tracker_;
 
-	std::vector<jive_notifier *> callbacks_;
+	std::vector<jive::callback> callbacks_;
 };
 
 #endif

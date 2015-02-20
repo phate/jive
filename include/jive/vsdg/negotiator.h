@@ -9,6 +9,7 @@
 
 #include <unordered_set>
 
+#include <jive/util/callbacks.h>
 #include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/unary.h>
@@ -424,8 +425,8 @@ struct jive_negotiator {
 	
 	std::unordered_set<jive_node *> split_nodes;
 	
-	jive_notifier * node_create_callback;
-	jive_notifier * node_destroy_callback;
+	jive::callback node_create_callback;
+	jive::callback node_destroy_callback;
 	
 	struct {
 		jive_negotiator_port * first;

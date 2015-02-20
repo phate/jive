@@ -55,7 +55,7 @@ jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
 	
 	self->anchor = 0;
 	
-	jive_graph_notify_region_create(graph, self);
+	graph->on_region_create(self);
 }
 
 void
@@ -65,7 +65,7 @@ jive_region_fini_(jive_region * self)
 	JIVE_DEBUG_ASSERT(self->nodes.first == 0 && self->nodes.last == 0);
 	JIVE_DEBUG_ASSERT(self->subregions.first == 0 && self->subregions.last == 0);
 	
-	jive_graph_notify_region_destroy(self->graph, self);
+	self->graph->on_region_destroy(self);
 	
 	if (self->parent)
 		JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
@@ -177,7 +177,7 @@ jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 			self->used_ssavars.insert(use);
 			ssavar->assigned_regions.insert(use);
 			
-			jive_graph_notify_region_add_used_ssavar(self->graph, self, ssavar);
+			self->graph->on_region_add_used_ssavar(self, ssavar);
 		}
 	}
 	
@@ -195,7 +195,7 @@ jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 			self->used_ssavars.erase(use);
 			ssavar->assigned_regions.erase(use);
 
-			jive_graph_notify_region_remove_used_ssavar(self->graph, self, ssavar);
+			self->graph->on_region_remove_used_ssavar(self, ssavar);
 			delete use;
 		}
 	}

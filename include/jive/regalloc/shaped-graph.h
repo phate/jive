@@ -8,22 +8,21 @@
 #define JIVE_REGALLOC_SHAPED_GRAPH_H
 
 #include <jive/regalloc/assignment-tracker.h>
-#include <jive/regalloc/notifiers.h>
 #include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/regalloc/shaped-variable.h>
+#include <jive/util/callbacks.h>
 
 typedef struct jive_shaped_graph jive_shaped_graph;
 
 struct jive_graph;
 
 struct jive_shaped_graph {
+public:
 	~jive_shaped_graph();
 
 	struct jive_graph * graph;
 	
-	struct jive_notifier * callbacks[21];
-
 	jive_var_assignment_tracker var_assignment_tracker;
 
 	jive_shaped_node_hash node_map;
@@ -31,10 +30,12 @@ struct jive_shaped_graph {
 	jive_shaped_variable_hash variable_map;
 	jive_shaped_region_hash region_map;
 
-	jive_node_notifier_slot on_shaped_node_create;
-	jive_node_notifier_slot on_shaped_node_destroy;
-	jive_shaped_region_ssavar_notifier_slot on_shaped_region_ssavar_add;
-	jive_shaped_region_ssavar_notifier_slot on_shaped_region_ssavar_remove;
+	jive::notifier<jive_node *> on_shaped_node_create;
+	jive::notifier<jive_node *> on_shaped_node_destroy;
+	jive::notifier<jive_shaped_region *, jive_shaped_ssavar *> on_shaped_region_ssavar_add;
+	jive::notifier<jive_shaped_region *, jive_shaped_ssavar *> on_shaped_region_ssavar_remove;
+
+	std::vector<jive::callback> callbacks_;
 };
 
 jive_shaped_graph *

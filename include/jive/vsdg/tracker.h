@@ -10,13 +10,13 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-/*#include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>*/
+#include <jive/util/callbacks.h>
 
 struct jive_graph;
 struct jive_node;
 struct jive_notifier;
 struct jive_region;
+struct jive_tracker_depth_state;
 
 typedef struct jive_computation_tracker jive_computation_tracker;
 typedef struct jive_tracker jive_tracker;
@@ -31,10 +31,10 @@ struct jive_tracker_slot {
 };
 
 struct jive_tracker {
-	struct jive_graph * graph;
-	struct jive_tracker_depth_state ** states;
+	jive_graph * graph;
+	jive_tracker_depth_state ** states;
 	size_t nstates;
-	struct jive_notifier * callbacks[2];
+	jive::callback depth_callback_, destroy_callback_;
 	jive_tracker_slot slot;
 };
 

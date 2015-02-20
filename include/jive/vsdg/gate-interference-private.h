@@ -12,7 +12,6 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate-interference.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/notifiers.h>
 
 jive_gate_interference *
 jive_gate_interference_create(jive::gate * first, jive::gate * second);
@@ -29,7 +28,7 @@ jive_gate_interference_add(jive_graph * graph, jive::gate * first, jive::gate * 
 	} else {
 		jive_gate_interference * i = jive_gate_interference_create(first, second);
 		i->count = 1;
-		jive_gate_notifier_slot_call(&graph->on_gate_interference_add, first, second);
+		graph->on_gate_interference_add(first, second);
 	}
 }
 
@@ -40,7 +39,7 @@ jive_gate_interference_remove(jive_graph * graph, jive::gate * first, jive::gate
 	size_t count = -- (i->count);
 	if (!count) {
 		jive_gate_interference_destroy(i);
-		jive_gate_notifier_slot_call(&graph->on_gate_interference_remove, first, second);
+		graph->on_gate_interference_remove(first, second);
 	}
 }
 

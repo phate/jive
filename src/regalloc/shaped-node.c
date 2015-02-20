@@ -105,7 +105,7 @@ jive_shaped_node_remove_all_crossed(jive_shaped_node * self)
 void
 jive_shaped_node_destroy(jive_shaped_node * self)
 {
-	jive_node_notifier_slot_call(&self->shaped_graph->on_shaped_node_destroy, self->node);
+	self->shaped_graph->on_shaped_node_destroy(self->node);
 	
 	/* destroy node shapes of all anchored regions */
 	size_t n;

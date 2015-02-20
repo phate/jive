@@ -11,7 +11,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/traverser.h>
 
@@ -421,18 +420,15 @@ jive_negotiator_init_(
 	
 	self->tmp_option = jive_negotiator_option_create(self);
 	
-	self->node_create_callback = jive_node_notifier_slot_connect(
-		&graph->on_node_create, jive_negotiator_on_node_create_, self);
-	self->node_destroy_callback = jive_node_notifier_slot_connect(
-		&graph->on_node_destroy, jive_negotiator_on_node_destroy_, self);
+	self->node_create_callback = graph->on_node_create.connect(
+		std::bind(jive_negotiator_on_node_create_, self, std::placeholders::_1));
+	self->node_destroy_callback = graph->on_node_destroy.connect(
+		std::bind(jive_negotiator_on_node_destroy_, self, std::placeholders::_1));
 }
 
 void
 jive_negotiator_fini_(jive_negotiator * self)
 {
-	jive_notifier_disconnect(self->node_create_callback);
-	jive_notifier_disconnect(self->node_destroy_callback);
-	
 	delete self->tmp_option;
 	
 	while(self->constraints.first) {

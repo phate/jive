@@ -82,7 +82,7 @@ input::~input() noexcept
 		jive_input_unassign_ssavar(this);
 	}
 
-	jive_graph_notify_input_destroy(node()->graph, this);
+	node()->graph->on_input_destroy(this);
 
 	if (gate) {
 		JIVE_LIST_REMOVE(gate->inputs, this, gate_inputs_list);
@@ -137,8 +137,8 @@ input::swap(jive::input * other) noexcept
 
 	jive_node_invalidate_depth_from_root(this->node());
 
-	jive_graph_notify_input_change(this->node()->graph, this, o1, o2);
-	jive_graph_notify_input_change(this->node()->graph, other, o2, o1);
+	node()->graph->on_input_change(this, o1, o2);
+	node()->graph->on_input_change(other, o2, o1);
 }
 
 void
@@ -184,7 +184,7 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 
 	jive_graph_mark_denormalized(new_origin->node()->graph);
 
-	jive_graph_notify_input_change(this->node()->graph, this, old_origin, new_origin);
+	node()->graph->on_input_change(this, old_origin, new_origin);
 
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(this->node()->region->graph->root_region);
@@ -283,7 +283,7 @@ output::~output() noexcept
 {
 	JIVE_DEBUG_ASSERT(users.first == nullptr && users.last == nullptr);
 
-	jive_graph_notify_output_destroy(node_->graph, this);
+	node_->graph->on_output_destroy(this);
 
 	if (ssavar)
 		jive_ssavar_unassign_output(ssavar, this);
@@ -619,7 +619,7 @@ jive_node_init_(
 	for (n = 0; n < self->ninputs; ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin()));
 	
-	jive_graph_notify_node_create(self->graph, self);
+	self->graph->on_node_create(self);
 }
 
 void
@@ -672,7 +672,7 @@ jive_node_add_input_(jive_node * self, jive::input * input)
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
 	jive_node_invalidate_depth_from_root(self);
-	jive_graph_notify_input_create(self->graph, input);
+	self->graph->on_input_create(input);
 }
 
 bool
@@ -714,7 +714,9 @@ jive_node_add_output_(jive_node * self, jive::output * output)
 {
 	jive_uninitialized_node_add_output_(self, output);
 	
-	if (self->region) jive_graph_notify_output_create(self->graph, output);
+	if (self->region) {
+		self->graph->on_output_create(output);
+	}
 }
 
 jive::output *
@@ -831,7 +833,7 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 		return;
 	self->depth_from_root = new_depth_from_root;
 	
-	jive_node_depth_notifier_slot_call(&self->graph->on_node_depth_change, self, old_depth_from_root);
+	self->graph->on_node_depth_change(self, old_depth_from_root);
 	
 	for(n=0; n<self->noutputs; n++) {
 		jive::input * user = self->outputs[n]->users.first;
@@ -1115,7 +1117,7 @@ jive_node_copy_substitute(const jive_node * self, jive_region * target,
 void
 jive_node_destroy(jive_node * self)
 {
-	jive_graph_notify_node_destroy(self->graph, self);
+	self->graph->on_node_destroy(self);
 	jive_node_fini_(self);
 	delete self;
 }

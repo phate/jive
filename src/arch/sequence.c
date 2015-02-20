@@ -12,7 +12,6 @@
 #include <jive/types/bitstring.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/notifiers.h>
 #include <jive/vsdg/objdef.h>
 
 void

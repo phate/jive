@@ -23,7 +23,6 @@ LIBJIVE_SRC = \
 	src/vsdg/negotiator.c \
 	src/vsdg/node-normal-form.c \
 	src/vsdg/node.c \
-	src/vsdg/notifiers.c \
 	src/vsdg/objdef.c \
 	src/vsdg/operators.c \
 	src/vsdg/operators/base.c \
@@ -161,8 +160,7 @@ LIBJIVE_SRC += \
 
 # shaper
 LIBJIVE_SRC += \
-	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c src/regalloc/shaped-variable.c src/regalloc/shaped-node.c src/regalloc/xpoint.c \
-	src/regalloc/notifiers.c
+	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c src/regalloc/shaped-variable.c src/regalloc/shaped-node.c src/regalloc/xpoint.c
 # register allocator
 LIBJIVE_SRC += \
 	src/regalloc.c src/regalloc/shape.c src/regalloc/color.c src/regalloc/fixup.c src/regalloc/auxnodes.c src/regalloc/reroute.c src/regalloc/reuse.c \

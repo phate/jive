@@ -21,7 +21,7 @@ jive_variable_inc_use_count(jive_variable * self)
 	if (self->use_count == 1) {
 		JIVE_LIST_REMOVE(self->graph->unused_variables, self, graph_variable_list);
 		JIVE_LIST_PUSH_BACK(self->graph->variables, self, graph_variable_list);
-		jive_graph_notify_variable_create(self->graph, self);
+		self->graph->on_variable_create(self);
 	}
 }
 
@@ -30,7 +30,7 @@ jive_variable_dec_use_count(jive_variable * self)
 {
 	self->use_count = self->use_count - 1;
 	if (self->use_count == 0) {
-		jive_graph_notify_variable_destroy(self->graph, self);
+		self->graph->on_variable_destroy(self);
 		JIVE_LIST_REMOVE(self->graph->variables, self, graph_variable_list);
 		JIVE_LIST_PUSH_BACK(self->graph->unused_variables, self, graph_variable_list);
 	}
@@ -47,7 +47,7 @@ jive_ssavar_inc_use_count(jive_ssavar * self)
 		
 		jive_variable_inc_use_count(self->variable);
 		
-		jive_graph_notify_ssavar_create(self->variable->graph, self);
+		self->variable->graph->on_ssavar_create(self);
 	}
 }
 
@@ -56,7 +56,7 @@ jive_ssavar_dec_use_count(jive_ssavar * self)
 {
 	self->use_count = self->use_count - 1;
 	if (self->use_count == 0) {
-		jive_graph_notify_ssavar_destroy(self->variable->graph, self);
+		self->variable->graph->on_ssavar_destroy(self);
 		
 		jive_variable_dec_use_count(self->variable);
 		
@@ -123,7 +123,7 @@ jive_ssavar_assign_input(jive_ssavar * self, jive::input * input)
 	JIVE_LIST_PUSH_BACK(self->assigned_inputs, input, ssavar_input_list);
 	input->ssavar = self;
 
-	jive_graph_notify_ssavar_assign_input(self->variable->graph, self, input);
+	self->variable->graph->on_ssavar_assign_input(self, input);
 }
 
 void
@@ -131,7 +131,7 @@ jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input)
 {
 	JIVE_DEBUG_ASSERT(input->ssavar == self);
 
-	jive_graph_notify_ssavar_unassign_input(self->variable->graph, self, input);
+	self->variable->graph->on_ssavar_unassign_input(self, input);
 
 	JIVE_LIST_REMOVE(self->assigned_inputs, input, ssavar_input_list);
 	input->ssavar = 0;
@@ -152,7 +152,7 @@ jive_ssavar_assign_output(jive_ssavar * self, jive::output * output)
 	jive_ssavar_inc_use_count(self);
 	self->assigned_output = output;
 	output->ssavar = self;
-	jive_graph_notify_ssavar_assign_output(self->variable->graph, self, output);
+	self->variable->graph->on_ssavar_assign_output(self, output);
 }
 
 void
@@ -160,7 +160,7 @@ jive_ssavar_unassign_output(jive_ssavar * self, jive::output * output)
 {
 	JIVE_DEBUG_ASSERT(output->ssavar == self && self->assigned_output == output);
 	
-	jive_graph_notify_ssavar_unassign_output(self->variable->graph, self, output);
+	self->variable->graph->on_ssavar_unassign_output(self, output);
 	output->ssavar = 0;
 	self->assigned_output = 0;
 	jive_ssavar_dec_use_count(self);
@@ -221,8 +221,8 @@ jive_ssavar_divert_origin(jive_ssavar * self, jive::output * new_origin)
 		JIVE_LIST_REMOVE(old_origin->originating_ssavars, self, originating_ssavar_list);
 		JIVE_LIST_PUSH_BACK(new_origin->originating_ssavars, self, originating_ssavar_list);
 	}
-		
-	jive_graph_notify_ssavar_divert_origin(self->variable->graph, self, old_origin, new_origin);
+	
+	self->variable->graph->on_ssavar_divert_origin(self, old_origin, new_origin);
 }
 
 void
@@ -247,7 +247,7 @@ jive_ssavar_split(jive_ssavar * self)
 	JIVE_LIST_PUSH_BACK(new_variable->ssavars, self, variable_ssavar_list);
 	
 	jive_variable_inc_use_count(new_variable);
-	jive_graph_notify_ssavar_variable_change(self->variable->graph, self, old_variable, new_variable);
+	self->variable->graph->on_ssavar_variable_change(self, old_variable, new_variable);
 	jive_variable_dec_use_count(old_variable);
 }
 
@@ -296,14 +296,14 @@ jive_variable_assign_gate(jive_variable * self, jive::gate * gate)
 	jive_variable_inc_use_count(self);
 	JIVE_LIST_PUSH_BACK(self->gates, gate, variable_gate_list);
 	gate->variable = self;
-	jive_graph_notify_variable_assign_gate(self->graph, self, gate);
+	self->graph->on_variable_assign_gate(self, gate);
 }
 
 void
 jive_variable_unassign_gate(jive_variable * self, jive::gate * gate)
 {
 	JIVE_DEBUG_ASSERT(gate->variable == self);
-	jive_graph_notify_variable_unassign_gate(self->graph, self, gate);
+	self->graph->on_variable_unassign_gate(self, gate);
 	JIVE_LIST_REMOVE(self->gates, gate, variable_gate_list);
 	gate->variable = 0;
 	jive_variable_dec_use_count(self);
@@ -344,7 +344,7 @@ jive_variable_merge(jive_variable * self, jive_variable * other)
 		JIVE_LIST_PUSH_BACK(self->ssavars, ssavar, variable_ssavar_list);
 		ssavar->variable = self;
 		
-		jive_graph_notify_ssavar_variable_change(self->graph, ssavar, other, self);
+		self->graph->on_ssavar_variable_change(ssavar, other, self);
 		
 		jive_variable_dec_use_count(other);
 	}
@@ -367,7 +367,7 @@ jive_variable_set_resource_class(jive_variable * self, const jive_resource_class
 		return;
 	self->rescls = new_rescls;
 	
-	jive_graph_notify_variable_resource_class_change(self->graph, self, old_rescls, new_rescls);
+	self->graph->on_variable_resource_class_change(self, old_rescls, new_rescls);
 }
 
 void
@@ -402,7 +402,7 @@ jive_variable_set_resource_name(jive_variable * self, const jive_resource_name *
 	
 	self->resname = new_resname;
 	
-	jive_graph_notify_variable_resource_name_change(self->graph, self, old_resname, new_resname);
+	self->graph->on_variable_resource_name_change(self, old_resname, new_resname);
 }
 
 bool

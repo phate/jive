@@ -19,9 +19,8 @@ jive_tracker_map_node(jive_tracker * self, jive_node * node)
 }
 
 static void
-node_depth_change(void * closure, jive_node * node, size_t old_depth)
+node_depth_change(jive_tracker * self, jive_node * node, size_t old_depth)
 {
-	jive_tracker * self = (jive_tracker *) closure;
 	jive_tracker_nodestate * nodestate = jive_tracker_map_node(self, node);
 	if (nodestate->state >= self->nstates)
 		return;
@@ -31,9 +30,8 @@ node_depth_change(void * closure, jive_node * node, size_t old_depth)
 }
 
 static void
-node_destroy(void * closure, jive_node * node)
+node_destroy(jive_tracker * self, jive_node * node)
 {
-	jive_tracker * self = (jive_tracker *) closure;
 	jive_tracker_nodestate * nodestate = jive_tracker_map_node(self, node);
 	if (nodestate->state >= self->nstates)
 		return;
@@ -52,9 +50,10 @@ jive_tracker_init(jive_tracker * self, jive_graph * graph, size_t nstates)
 	
 	self->slot = jive_graph_reserve_tracker_slot(graph);
 	
-	self->callbacks[0] = jive_node_depth_notifier_slot_connect(&graph->on_node_depth_change,
-		node_depth_change, self);
-	self->callbacks[1] = jive_node_notifier_slot_connect(&graph->on_node_destroy, node_destroy, self);
+	self->depth_callback_ = graph->on_node_depth_change.connect(
+		std::bind(node_depth_change, self, std::placeholders::_1, std::placeholders::_2));
+	self->destroy_callback_ = graph->on_node_destroy.connect(
+		std::bind(node_destroy, self, std::placeholders::_1));
 }
 
 void
@@ -64,8 +63,6 @@ jive_tracker_fini(jive_tracker * self)
 	for (n = 0; n < self->nstates; n++)
 		jive_graph_return_tracker_depth_state(self->graph, self->states[n]);
 	delete[] self->states;
-	jive_notifier_disconnect(self->callbacks[0]);
-	jive_notifier_disconnect(self->callbacks[1]);
 	jive_graph_return_tracker_slot(self->graph, self->slot);
 }
 
