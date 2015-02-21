@@ -26,13 +26,7 @@ sdiv_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	char remainder[nbits];
-	value_repr result = value_repr::repeat(nbits, '0');
-	jive_bitstring_division_signed(
-		&result[0], remainder,
-		&arg1[0], &arg2[0], nbits);
-	return result;
+	return arg1.sdiv(arg2);
 }
 
 jive_binary_operation_flags

@@ -26,13 +26,7 @@ umod_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	char quotient[nbits];
-	value_repr result = value_repr::repeat(nbits, '0');
-	jive_bitstring_division_unsigned(
-		quotient, &result[0],
-		&arg1[0], &arg2[0], nbits);
-	return result;
+	return arg1.umod(arg2);
 }
 
 jive_binary_operation_flags

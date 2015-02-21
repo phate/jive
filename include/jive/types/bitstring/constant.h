@@ -12,7 +12,6 @@
 
 #include <jive/types/bitstring/type.h>
 #include <jive/types/bitstring/value-representation.h>
-#include <jive/util/bitstring.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators.h>
 

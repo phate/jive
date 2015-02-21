@@ -26,12 +26,7 @@ shl_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	value_repr result = value_repr::repeat(nbits, '0');
-	uint64_t shift = jive_bitstring_to_unsigned(
-		&arg2[0], arg2.nbits());
-	jive_bitstring_shiftleft(&result[0], &arg1[0], nbits, shift);
-	return result;
+	return arg1.shl(arg2.to_uint());
 }
 
 jive_binary_operation_flags

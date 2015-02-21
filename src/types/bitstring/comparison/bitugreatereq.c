@@ -28,11 +28,7 @@ uge_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	char result = jive_bitstring_ugreatereq(
-		&arg1[0], &arg2[0], nbits);
-
-	switch (result) {
+	switch (arg1.uge(arg2)) {
 		case '0': return compare_result::static_false;
 		case '1': return compare_result::static_true;
 		default: return compare_result::undecidable;

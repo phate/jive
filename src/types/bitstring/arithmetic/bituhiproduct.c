@@ -26,19 +26,7 @@ umulh_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	char arg1ext[2 * nbits];
-	char arg2ext[2 * nbits];
-	char resultext[2 * nbits];
-	jive_bitstring_extend_unsigned(arg1ext, 2 * nbits, &arg1[0], nbits);
-	jive_bitstring_extend_unsigned(arg2ext, 2 * nbits, &arg2[0], nbits);
-	jive_bitstring_product(
-		resultext, 2 * nbits,
-		arg1ext, 2 * nbits,
-		arg2ext, 2 * nbits);
-
-	value_repr result(std::string(resultext + nbits, nbits).c_str());
-	return result;
+	return arg1.umulh(arg2);
 }
 
 jive_binary_operation_flags

@@ -26,13 +26,7 @@ mul_op::reduce_constants(
 	const value_repr & arg1,
 	const value_repr & arg2) const
 {
-	size_t nbits = std::min(arg1.nbits(), arg2.nbits());
-	value_repr result = value_repr::repeat(nbits, '0');
-	jive_bitstring_product(
-		&result[0], nbits,
-		&arg1[0], nbits,
-		&arg2[0], nbits);
-	return result;
+	return arg1.mul(arg2);
 }
 
 jive_binary_operation_flags
