@@ -3,5 +3,4 @@ TESTS += \
 	util/test-float \
 	util/test-intrusive-hash \
 	util/test-intrusive-list \
-	util/test-math \
 	util/test-sort \
