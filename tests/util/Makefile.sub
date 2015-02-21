@@ -1,5 +1,4 @@
 TESTS += \
-	util/test-bitstring \
 	util/test-double \
 	util/test-float \
 	util/test-intrusive-hash \
