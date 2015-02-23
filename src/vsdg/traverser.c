@@ -17,6 +17,7 @@
 #include <string.h>
 
 struct jive_traverser {
+	virtual ~jive_traverser() noexcept {}
 	const jive_traverser_class * class_;
 	jive_graph * graph;
 };
@@ -39,9 +40,8 @@ jive_traverser_next(jive_traverser * self)
 	return self->class_->next(self);
 }
 
-typedef struct jive_full_traverser jive_full_traverser;
-struct jive_full_traverser {
-	jive_traverser base;
+struct jive_full_traverser final : public jive_traverser {
+	virtual ~jive_full_traverser() noexcept {}
 	jive_traversal_tracker tracker;
 	
 	jive_notifier * callbacks[3];
@@ -51,7 +51,7 @@ struct jive_full_traverser {
 static void
 jive_full_traverser_init(jive_full_traverser * self, jive_graph * graph)
 {
-	self->base.graph = graph;
+	self->graph = graph;
 	jive_traversal_tracker_init(&self->tracker, graph);
 	self->ncallbacks = 0;
 }
@@ -157,7 +157,7 @@ jive_topdown_traverser_init_top_nodes(jive_full_traverser * self, jive_region * 
 static void
 jive_topdown_traverser_init(jive_full_traverser * self, jive_graph * graph)
 {
-	self->base.class_ = &JIVE_TOPDOWN_TRAVERSER;
+	self->class_ = &JIVE_TOPDOWN_TRAVERSER;
 	jive_full_traverser_init(self, graph);
 	jive_topdown_traverser_init_top_nodes(self, graph->root_region);
 
@@ -172,7 +172,7 @@ jive_topdown_traverser_create(jive_graph * graph)
 {
 	jive_full_traverser * self = new jive_full_traverser;
 	jive_topdown_traverser_init(self, graph);
-	return &self->base;
+	return self;
 }
 
 static void
@@ -252,7 +252,7 @@ const jive_traverser_class JIVE_BOTTOMUP_TRAVERSER = {
 static void
 jive_bottomup_traverser_init(jive_full_traverser * self, jive_graph * graph)
 {
-	self->base.class_ = &JIVE_BOTTOMUP_TRAVERSER;
+	self->class_ = &JIVE_BOTTOMUP_TRAVERSER;
 	jive_full_traverser_init(self, graph);
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
@@ -269,7 +269,7 @@ jive_bottomup_traverser_init(jive_full_traverser * self, jive_graph * graph)
 static void
 jive_bottomup_revisit_traverser_init(jive_full_traverser * self, jive_graph * graph)
 {
-	self->base.class_ = &JIVE_BOTTOMUP_TRAVERSER;
+	self->class_ = &JIVE_BOTTOMUP_TRAVERSER;
 	jive_full_traverser_init(self, graph);
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
@@ -288,7 +288,7 @@ jive_bottomup_traverser_create(jive_graph * graph)
 {
 	jive_full_traverser * self = new jive_full_traverser;
 	jive_bottomup_traverser_init(self, graph);
-	return &self->base;
+	return self;
 }
 
 jive_traverser *
@@ -296,7 +296,7 @@ jive_bottomup_revisit_traverser_create(jive_graph * graph)
 {
 	jive_full_traverser * self = new jive_full_traverser;
 	jive_bottomup_revisit_traverser_init(self, graph);
-	return &self->base;
+	return self;
 }
 
 /* cone traversers */
@@ -362,7 +362,7 @@ const jive_traverser_class JIVE_UPWARD_CONE_TRAVERSER = {
 static void
 jive_upward_cone_traverser_init(jive_full_traverser * self, jive_graph * graph, jive_node * node)
 {
-	self->base.class_ = &JIVE_UPWARD_CONE_TRAVERSER;
+	self->class_ = &JIVE_UPWARD_CONE_TRAVERSER;
 	jive_full_traverser_init(self, graph);
 	
 	jive_traversal_tracker_set_nodestate(&self->tracker, node, jive_traversal_nodestate_frontier);
@@ -382,12 +382,11 @@ jive_upward_cone_traverser_create(jive_node * node)
 	jive_graph * graph = node->region->graph;
 	jive_full_traverser * self = new jive_full_traverser;
 	jive_upward_cone_traverser_init(self, graph, node);
-	return &self->base;
+	return self;
 }
 
-typedef struct jive_bottomup_slave_traverser jive_bottomup_slave_traverser;
-struct jive_bottomup_slave_traverser {
-	jive_traverser base;
+struct jive_bottomup_slave_traverser final : public jive_traverser {
+	virtual ~jive_bottomup_slave_traverser() noexcept {}
 	jive_bottomup_region_traverser * master;
 	jive_tracker_depth_state * frontier_state;
 	const jive_region * region;
@@ -453,8 +452,8 @@ jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master,
 	
 	jive_bottomup_slave_traverser * self = new jive_bottomup_slave_traverser;
 	
-	self->base.graph = graph;
-	self->base.class_ = &JIVE_BOTTOMUP_SLAVE_TRAVERSER;
+	self->graph = graph;
+	self->class_ = &JIVE_BOTTOMUP_SLAVE_TRAVERSER;
 	self->master = master;
 	self->frontier_state = jive_graph_reserve_tracker_depth_state(graph);
 	self->region = region;
@@ -466,7 +465,7 @@ jive_bottomup_slave_traverser_create(jive_bottomup_region_traverser * master,
 static void
 jive_bottomup_slave_traverser_destroy(jive_bottomup_slave_traverser * self)
 {
-	jive_graph_return_tracker_depth_state(self->base.graph, self->frontier_state);
+	jive_graph_return_tracker_depth_state(self->graph, self->frontier_state);
 	self->master->region_hash.erase(self);
 	delete self;
 }
@@ -529,7 +528,7 @@ jive_bottomup_region_traverser_get_node_traverser(jive_bottomup_region_traverser
 	jive_region * region)
 {
 	jive_bottomup_slave_traverser * slave = jive_bottomup_region_traverser_map_region(self, region);
-	return &slave->base;
+	return slave;
 }
 
 jive_bottomup_region_traverser *
