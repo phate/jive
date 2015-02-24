@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -79,7 +79,7 @@ static jive_seq_region *
 sequentialize_region(
 	jive_seq_graph * seq,
 	jive_seq_point * before,
-	jive_bottomup_region_traverser * region_trav,
+	jive::bottomup_region_traverser * region_trav,
 	jive_region * region)
 {
 	jive_seq_region * seq_region = new jive_seq_region;
@@ -90,9 +90,9 @@ sequentialize_region(
 	seq_region->inlined = false;
 	seq->region_map.insert(std::unique_ptr<jive_seq_region>(seq_region));
 	
-	jive_traverser * trav = jive_bottomup_region_traverser_get_node_traverser(region_trav, region);
+	jive::bottomup_slave_traverser * trav = region_trav->map_region(region);
 	
-	jive_node * node = jive_traverser_next(trav);
+	jive_node * node = trav->next();
 	while (node) {
 		jive_seq_point * current;
 		if (auto i_op = dynamic_cast<const jive::instruction_op *>(&node->operation())) {
@@ -190,9 +190,10 @@ sequentialize_region(
 		
 		if (control_input) {
 			node = control_input->producer();
-			jive_bottomup_region_traverser_pass(region_trav, node);
-		} else
-			node = jive_traverser_next(trav);
+			region_trav->pass(node);
+		} else {
+			node = trav->next();
+		}
 	}
 	
 	return seq_region;
@@ -230,9 +231,10 @@ jive_graph_sequentialize(jive_graph * graph)
 	seq->addrs_changed = true;
 	
 	/* sequentialize nodes of the graph */
-	jive_bottomup_region_traverser * region_trav = jive_bottomup_region_traverser_create(graph);
-	sequentialize_region(seq, 0, region_trav, graph->root_region);
-	jive_bottomup_region_traverser_destroy(region_trav);
+	{
+		jive::bottomup_region_traverser region_trav(graph);
+		sequentialize_region(seq, 0, &region_trav, graph->root_region);
+	}
 	
 	/* now that we have a sequence, we can fix up the labels: local
 	labels can be mapped to their respective sequence point such that

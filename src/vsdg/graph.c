@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -158,18 +158,11 @@ jive_graph_copy(jive_graph * self)
 void
 jive_graph_push_outward(jive_graph * self)
 {
-	jive_traverser * trav = jive_topdown_traverser_create(self);
-	
-	for(;;) {
-		jive_node * node = jive_traverser_next(trav);
-		if (!node)
-			break;
-		
-		while (jive_node_can_move_outward(node))
+	for (jive_node * node : jive::topdown_traverser(self)) {
+		while (jive_node_can_move_outward(node)) {
 			jive_node_move_outward(node);
+		}
 	}
-	
-	jive_traverser_destroy(trav);
 
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(self->root_region);
@@ -179,20 +172,13 @@ jive_graph_push_outward(jive_graph * self)
 void
 jive_graph_pull_inward(jive_graph * self)
 {
-	jive_traverser * trav = jive_bottomup_traverser_create(self);
-	
-	for(;;) {
-		jive_node * node = jive_traverser_next(trav);
-		if (!node)
-			break;
+	for (jive_node * node : jive::bottomup_traverser(self)) {
 		jive_region * region;
 		do {
 			region = node->region;
 			jive_node_move_inward(node);
 		} while (region != node->region);
 	}
-	
-	jive_traverser_destroy(trav);
 
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(self->root_region);
@@ -229,16 +215,12 @@ jive_graph_mark_denormalized(jive_graph * self)
 void
 jive_graph_normalize(jive_graph * self)
 {
-	jive_traverser * trav = jive_topdown_traverser_create(self);
-	
-	jive_node * node;
-	for(node = jive_traverser_next(trav); node; node = jive_traverser_next(trav)) {
+	for (jive_node * node : jive::topdown_traverser(self)) {
 		jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
 			self, typeid(node->operation()));
 		nf->normalize_node(node);
 	}
 	
-	jive_traverser_destroy(trav);
 	self->normalized = true;
 }
 

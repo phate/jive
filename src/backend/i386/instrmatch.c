@@ -599,16 +599,8 @@ match_single(jive_node * node, const jive_regselector * regselector)
 void
 jive_i386_match_instructions(jive_graph * graph, const jive_regselector * regselector)
 {
-	jive_traverser * trav;
-	
-	trav = jive_bottomup_traverser_create(graph);
-	
-	for(;;) {
-		jive_node * node = jive_traverser_next(trav);
-		if (!node) break;
+	for (jive_node * node : jive::bottomup_traverser(graph)) {
 		match_single(node, regselector);
 	}
-	
-	jive_traverser_destroy(trav);
 }
 

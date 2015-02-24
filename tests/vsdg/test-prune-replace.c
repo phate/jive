@@ -21,15 +21,10 @@ static bool
 graph_contains_node(jive_graph * graph, jive_node * node)
 {
 	bool found = false;
-	jive_traverser * trav = jive_topdown_traverser_create(graph);
 	
-	jive_node * tmp;
-	
-	while( (tmp = jive_traverser_next(trav)) != 0) {
+	for (jive_node * tmp : jive::topdown_traverser(graph)) {
 		found = found || (tmp == node);
 	}
-	
-	jive_traverser_destroy(trav);
 	
 	return found;
 }

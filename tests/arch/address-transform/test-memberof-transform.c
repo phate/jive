@@ -72,18 +72,14 @@ static int test_main(void)
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);
 
-	jive_traverser * traverser = jive_topdown_traverser_create(graph);
-	jive_node * node = jive_traverser_next(traverser);
-	for(; node; node = jive_traverser_next(traverser)){
-		size_t i;
-		for(i = 0; i < node->ninputs; i++){
+	for (jive_node * node : jive::topdown_traverser(graph)) {
+		for (size_t i = 0; i < node->ninputs; i++){
 			assert(!dynamic_cast<const jive::addr::type*>(&node->inputs[i]->type()));
 		}
-		for(i = 0; i < node->noutputs; i++){
+		for (size_t i = 0; i < node->noutputs; i++){
 			assert(!dynamic_cast<const jive::addr::type*>(&node->outputs[i]->type()));
 		}
 	}
-	jive_traverser_destroy(traverser);
 
 	jive_node * sum = bottom->producer(0);
 	assert(sum->operation() == jive::bits::add_op(32));

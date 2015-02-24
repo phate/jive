@@ -69,14 +69,11 @@ static int test_main(void)
 
 	jive_memlayout_mapper_simple layout_mapper;
 	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
-	jive_traverser * traverser = jive_topdown_traverser_create(graph);
-	jive_node * node;
-	for (node = jive_traverser_next(traverser); node; node = jive_traverser_next(traverser)) {
+	for (jive_node * node : jive::topdown_traverser(graph)) {
 		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
 			jive_sizeof_node_reduce(node, &layout_mapper.base.base);
 		}
 	}
-	jive_traverser_destroy(traverser);
 	jive_graph_prune(graph);
 
 	assert(bottom->producer(0)->operation() == jive::bits::uint_constant_op(32, 1));

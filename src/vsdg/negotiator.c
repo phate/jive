@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -747,18 +747,12 @@ jive_negotiator_process(jive_negotiator * self)
 void
 jive_negotiator_insert_split_nodes(jive_negotiator * self)
 {
-	jive_traverser * trav = jive_topdown_traverser_create(self->graph);
-	
-	jive_node * node  = jive_traverser_next(trav);
-	for (; node; node = jive_traverser_next(trav)) {
-		size_t n;
-		for (n = 0; n < node->ninputs; n++) {
+	for (jive_node * node : jive::topdown_traverser(self->graph)) {
+		for (size_t n = 0; n < node->ninputs; n++) {
 			jive::input * input = node->inputs[n];
 			jive_negotiator_maybe_split_edge(self, input->origin(), input);
 		}
 	}
-	
-	jive_traverser_destroy(trav);
 }
 
 void

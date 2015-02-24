@@ -106,14 +106,12 @@ check_fp_sp_dependency(jive_node * node)
 void
 jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph)
 {
-	jive_traverser * traverser = jive_bottomup_traverser_create(shaped_graph->graph);
-	jive_node * node;
-	while( (node = jive_traverser_next(traverser)) != 0) {
+	for (jive_node * node : jive::bottomup_traverser(shaped_graph->graph)) {
 		if (dynamic_cast<const jive::split_operation *>(&node->operation())) {
 			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
 			replace_splitnode(shaped_node, node);
-		} else
+		} else {
 			check_fp_sp_dependency(node);
+		}
 	}
-	jive_traverser_destroy(traverser);
 }

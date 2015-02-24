@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -20,13 +20,11 @@
 void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node * n2,
 	jive_node * n3)
 {
-	jive_traverser * trav = jive_topdown_traverser_create(graph);
-	jive_node * tmp;
 	bool seen_n1 = false;
 	bool seen_n2 = false;
 	bool seen_n3 = false;
 	
-	while( (tmp = jive_traverser_next(trav)) != 0) {
+	for (jive_node * tmp : jive::topdown_traverser(graph)) {
 		seen_n1 = seen_n1 || (tmp == n1);
 		seen_n2 = seen_n2 || (tmp == n2);
 		seen_n3 = seen_n3 || (tmp == n3);
@@ -39,7 +37,6 @@ void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node
 	assert(seen_n1);
 	assert(seen_n2);
 	assert(seen_n3);
-	jive_traverser_destroy(trav);
 }
 
 static int test_main(void)

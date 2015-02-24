@@ -62,13 +62,13 @@ test_simple_upward_cone()
 {
 	graph_desc g = prepare_graph();
 	
-	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
-	
-	assert( jive_traverser_next(trav) == g.a2 );
-	assert( jive_traverser_next(trav) == g.a1 );
-	assert( jive_traverser_next(trav) == NULL );
-	
-	jive_traverser_destroy(trav);
+	{
+		jive::upward_cone_traverser trav(g.a2);
+		
+		assert( trav.next() == g.a2 );
+		assert( trav.next() == g.a1 );
+		assert( trav.next() == NULL );
+	}
 	
 	jive_graph_destroy(g.graph);
 }
@@ -78,14 +78,14 @@ test_mutable_upward_cone_1()
 {
 	graph_desc g = prepare_graph();
 	
-	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
+	{
+		jive::upward_cone_traverser trav(g.a2);
 	
-	assert( jive_traverser_next(trav) == g.a2 );
-	jive_node_destroy(g.b2);
-	assert( jive_traverser_next(trav) == g.a1 );
-	assert( jive_traverser_next(trav) == NULL );
-	
-	jive_traverser_destroy(trav);
+		assert( trav.next() == g.a2 );
+		jive_node_destroy(g.b2);
+		assert( trav.next() == g.a1 );
+		assert( trav.next() == nullptr );
+	}
 	
 	jive_graph_destroy(g.graph);
 }
@@ -95,14 +95,14 @@ test_mutable_upward_cone_2()
 {
 	graph_desc g = prepare_graph();
 	
-	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
-	
-	jive_node_destroy(g.a2);
-	assert( jive_traverser_next(trav) == g.a1 );
-	assert( jive_traverser_next(trav) == NULL );
-	
-	jive_traverser_destroy(trav);
-	
+	{
+		jive::upward_cone_traverser trav(g.a2);
+
+		jive_node_destroy(g.a2);
+		assert( trav.next() == g.a1 );
+		assert( trav.next() == nullptr );
+	}
+
 	jive_graph_destroy(g.graph);
 }
 
@@ -111,13 +111,13 @@ test_mutable_upward_cone_3()
 {
 	graph_desc g = prepare_graph();
 	
-	jive_traverser * trav = jive_upward_cone_traverser_create(g.a2);
+	{
+		jive::upward_cone_traverser trav(g.a2);
 	
-	g.a2->inputs[0]->divert_origin(g.b1->outputs[0]);
-	assert( jive_traverser_next(trav) == g.a2 );
-	assert( jive_traverser_next(trav) == g.b1 );
-	
-	jive_traverser_destroy(trav);
+		g.a2->inputs[0]->divert_origin(g.b1->outputs[0]);
+		assert( trav.next() == g.a2 );
+		assert( trav.next() == g.b1 );
+	}
 	
 	jive_graph_destroy(g.graph);
 }

@@ -409,14 +409,9 @@ jive_lambda_node_address_transform(
 void
 jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
 {
-	jive_traverser * traverser = jive_topdown_traverser_create(graph);
-
-	jive_node * node = jive_traverser_next(traverser);
-	for(; node; node = jive_traverser_next(traverser)){
+	for (jive_node * node : jive::topdown_traverser(graph)) {
 		jive_node_address_transform(node, mapper);
 	}
-
-	jive_traverser_destroy(traverser);
 }
 
 void

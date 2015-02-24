@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,40 +13,37 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/traverser-private.h>
 
 #include "testnodes.h"
 
 void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 {
-	jive_traverser * trav;
 	jive_node * tmp;
 	
-	trav = jive_topdown_traverser_create(graph);
+	{
+		jive::topdown_traverser trav(graph);
+		
+		tmp = trav.next();
+		assert(tmp==n1);
+		tmp = trav.next();
+		assert(tmp==n2);
+		tmp = trav.next();
+		assert(tmp == graph->root_region->bottom);
+		tmp = trav.next();
+		assert(tmp==0);
+	}
 	
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n1);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n2);
-	tmp = jive_traverser_next(trav);
-	assert(tmp == graph->root_region->bottom);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==0);
-	
-	jive_traverser_destroy(trav);
-	
-	trav = jive_bottomup_traverser_create(graph);
-	
-	tmp = jive_traverser_next(trav);
-	assert(tmp == graph->root_region->bottom);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n2);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n1);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==0);
-	
-	jive_traverser_destroy(trav);
+	{
+		jive::bottomup_traverser trav(graph);
+		tmp = trav.next();
+		assert(tmp == graph->root_region->bottom);
+		tmp = trav.next();
+		assert(tmp==n2);
+		tmp = trav.next();
+		assert(tmp==n1);
+		tmp = trav.next();
+		assert(tmp==0);
+	}
 }
 
 void test_order_enforcement_traversal()
@@ -74,51 +71,49 @@ void test_order_enforcement_traversal()
 		2, tmparray4, tmparray5,
 		1, tmparray6);
 	
-	jive_traverser * trav;
 	jive_node * tmp;
 	
-	trav = jive_topdown_traverser_create(graph);
+	{
+		jive::topdown_traverser trav(graph);
 
-	tmp = jive_traverser_next(trav);
-	assert(tmp = graph->root_region->bottom);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n1);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n2);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n3);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==0);
+		tmp = trav.next();
+		assert(tmp == graph->root_region->bottom);
+		tmp = trav.next();
+		assert(tmp==n1);
+		tmp = trav.next();
+		assert(tmp==n2);
+		tmp = trav.next();
+		assert(tmp==n3);
+		tmp = trav.next();
+		assert(tmp==0);
+	}
 	
-	jive_traverser_destroy(trav);
-	
-	trav = jive_bottomup_traverser_create(graph);
-	
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n3);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n2);
-	tmp = jive_traverser_next(trav);
-	assert(tmp == graph->root_region->bottom);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==n1);
-	tmp = jive_traverser_next(trav);
-	assert(tmp==0);
-	
-	jive_traverser_destroy(trav);
-	
+	{
+		jive::bottomup_traverser trav(graph);
+
+		tmp = trav.next();
+		assert(tmp==n3);
+		tmp = trav.next();
+		assert(tmp==n2);
+		tmp = trav.next();
+		assert(tmp == graph->root_region->bottom);
+		tmp = trav.next();
+		assert(tmp==n1);
+		tmp = trav.next();
+		assert(tmp==0);
+	}
+
 	jive_graph_destroy(graph);
 }
 
 void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2)
 {
-	jive_traverser * trav;
 	jive_node * node;
 	
-	trav = jive_topdown_traverser_create(graph);
+	jive::topdown_traverser trav(graph);
 	
 	jive_test_value_type type;
-	node = jive_traverser_next(trav);
+	node = trav.next();
 	assert(node==n1);
 	const jive::base::type * tmparray7[] = {&type};
 	
@@ -146,15 +141,13 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	
 	bool visited_n2 = false, visited_n3 = false, visited_n4 = false, visited_n5 = false;
 	for(;;) {
-		node = jive_traverser_next(trav);
+		node = trav.next();
 		if (!node) break;
 		if (node==n2) visited_n2 = true;
 		if (node==n3) visited_n3 = true;
 		if (node==n4) visited_n4 = true;
 		if (node==n5) visited_n5 = true;
 	}
-	
-	jive_traverser_destroy(trav);
 	
 	assert(visited_n2);
 	assert(!visited_n3);

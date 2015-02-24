@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -18,11 +18,6 @@ struct jive_notifier;
 struct jive_region;
 struct jive_tracker_depth_state;
 
-typedef struct jive_computation_tracker jive_computation_tracker;
-typedef struct jive_tracker jive_tracker;
-typedef struct jive_tracker_slot jive_tracker_slot;
-typedef struct jive_traversal_tracker jive_traversal_tracker;
-
 static const size_t jive_tracker_nodestate_none = (size_t) -1;
 
 struct jive_tracker_slot {
@@ -30,19 +25,22 @@ struct jive_tracker_slot {
 	size_t cookie;
 };
 
+/* Track states of nodes within the graph. Each node can logically be in
+ * one of the numbered states, plus another "initial" state. All nodes are
+ * at the beginning assumed to be implicitly in this "initial" state. */
 struct jive_tracker {
-	jive_graph * graph;
-	jive_tracker_depth_state ** states;
-	size_t nstates;
+public:
+	jive_tracker(jive_graph * graph, size_t nstates);
+	~jive_tracker();
+
+	jive_graph * graph_;
+	/* FIXME: need RAII idiom for slot reservation */
+	jive_tracker_slot slot_;
+	/* FIXME: need RAII idiom for state reservation */
+	std::vector<jive_tracker_depth_state *> states_;
+
 	jive::callback depth_callback_, destroy_callback_;
-	jive_tracker_slot slot;
 };
-
-void
-jive_tracker_init(jive_tracker * self, struct jive_graph * graph, size_t nstates);
-
-void
-jive_tracker_fini(jive_tracker * self);
 
 int
 jive_tracker_get_nodestate(jive_tracker * self, struct jive_node * node);
@@ -65,15 +63,10 @@ typedef enum jive_traversal_nodestate {
 	jive_traversal_nodestate_behind = +1
 } jive_traversal_nodestate;
 
-struct jive_traversal_tracker {
-	jive_tracker base;
+class jive_traversal_tracker final : public jive_tracker {
+public:
+	jive_traversal_tracker(jive_graph * graph);
 };
-
-void
-jive_traversal_tracker_init(jive_traversal_tracker * self, struct jive_graph * graph);
-
-void
-jive_traversal_tracker_fini(jive_traversal_tracker * self);
 
 jive_traversal_nodestate
 jive_traversal_tracker_get_nodestate(jive_traversal_tracker * self, struct jive_node * node);

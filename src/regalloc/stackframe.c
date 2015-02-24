@@ -166,10 +166,7 @@ layout_stackslots(
 	jive_graph * graph,
 	jive_subroutine_to_stackframe_map & stackframe_map)
 {
-	jive_traverser * trav = jive_bottomup_traverser_create(graph);
-	
-	jive_node * node;
-	for ( node = jive_traverser_next(trav); node; node = jive_traverser_next(trav) ) {
+	for (jive_node * node : jive::bottomup_traverser(graph)) {
 		jive_node * sub = jive_region_get_subroutine_node(node->region);
 		if (!sub) {
 			continue;
@@ -185,8 +182,7 @@ layout_stackslots(
 			frame.call_area_size = 0;
 		}
 		jive_subroutine_stackframe_info * frame = &stackframe_map[sub];
-		size_t n;
-		for (n = 0; n < node->noutputs; n++) {
+		for (size_t n = 0; n < node->noutputs; n++) {
 			jive::output * output = node->outputs[n];
 			if (!output->ssavar)
 				continue;
@@ -195,8 +191,6 @@ layout_stackslots(
 			update_call_area_size(graph, frame, variable);
 		}
 	}
-	
-	jive_traverser_destroy(trav);
 }
 
 void
@@ -382,12 +376,8 @@ jive_regalloc_relocate_stackslots(
 		graph->root_region,
 		stackframe_map);
 	
-	jive_traverser * trav = jive_bottomup_traverser_create(graph);
-	
-	jive_node * node;
-	for ( node = jive_traverser_next(trav); node; node = jive_traverser_next(trav) ) {
+	for (jive_node * node : jive::bottomup_traverser(graph)) {
 		reloc_stack_access(node, stackframe_map);
 	}
-	jive_traverser_destroy(trav);
 }
 
