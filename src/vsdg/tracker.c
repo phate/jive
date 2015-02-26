@@ -14,35 +14,19 @@
 
 using namespace std::placeholders;
 
-static jive_tracker_nodestate *
-jive_tracker_map_node(jive_tracker * self, jive_node * node)
-{
-	return jive_node_get_tracker_state(node, self->slot_);
-}
+namespace jive {
 
-static void
-node_depth_change(jive_tracker * self, jive_node * node, size_t old_depth)
+/* tracker */
+
+tracker::~tracker()
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_map_node(self, node);
-	if (nodestate->state >= self->states_.size()) {
-		return;
+	for (size_t n = 0; n < states_.size(); n++) {
+		jive_graph_return_tracker_depth_state(graph_, states_[n]);
 	}
-	jive_tracker_depth_state_remove(self->states_[nodestate->state], nodestate, old_depth);
-	jive_tracker_depth_state_add(self->states_[nodestate->state], nodestate, node->depth_from_root);
-	
+	jive_graph_return_tracker_slot(graph_, slot_);
 }
 
-static void
-node_destroy(jive_tracker * self, jive_node * node)
-{
-	jive_tracker_nodestate * nodestate = jive_tracker_map_node(self, node);
-	if (nodestate->state >= self->states_.size()) {
-		return;
-	}
-	jive_tracker_depth_state_remove(self->states_[nodestate->state], nodestate, node->depth_from_root);
-}
-
-jive_tracker::jive_tracker(jive_graph * graph, size_t nstates)
+tracker::tracker(jive_graph * graph, size_t nstates)
 	: graph_(graph)
 	, slot_(jive_graph_reserve_tracker_slot(graph_))
 	, states_(nstates, nullptr)
@@ -52,144 +36,125 @@ jive_tracker::jive_tracker(jive_graph * graph, size_t nstates)
 	}
 
 	depth_callback_ = graph->on_node_depth_change.connect(
-		std::bind(node_depth_change, this, _1, _2));
+		std::bind(&tracker::node_depth_change, this, _1, _2));
 	destroy_callback_ = graph->on_node_destroy.connect(
-		std::bind(node_destroy, this, _1));
+		std::bind(&tracker::node_destroy, this, _1));
 }
 
-jive_tracker::~jive_tracker()
+jive_tracker_nodestate*
+tracker::map_node(jive_node * node)
 {
-	for (size_t n = 0; n < states_.size(); n++) {
-		jive_graph_return_tracker_depth_state(graph_, states_[n]);
-	}
-	jive_graph_return_tracker_slot(graph_, slot_);
-}
-
-int
-jive_tracker_get_nodestate(jive_tracker * self, jive_node * node)
-{
-	return jive_tracker_map_node(self, node)->state;
-}
-
-int
-jive_tracker_get_nodetag(jive_tracker * self, jive_node * node)
-{
-	return jive_tracker_map_node(self, node)->tag;
+	return jive_node_get_tracker_state(node, slot_);
 }
 
 void
-jive_tracker_set_nodestate(jive_tracker * self, jive_node * node, size_t state, int tag)
+tracker::node_depth_change(jive_node * node, size_t old_depth)
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_map_node(self, node);
-	nodestate->tag = tag;
+	jive_tracker_nodestate * nodestate = map_node(node);
+	if (nodestate->state >= states_.size()) {
+		return;
+	}
+	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, old_depth);
+	jive_tracker_depth_state_add(states_[nodestate->state], nodestate, node->depth_from_root);
+	
+}
+
+void
+tracker::node_destroy(jive_node * node)
+{
+	jive_tracker_nodestate * nodestate = map_node(node);
+	if (nodestate->state >= states_.size()) {
+		return;
+	}
+	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, node->depth_from_root);
+}
+
+ssize_t
+tracker::get_nodestate(jive_node * node)
+{
+	return map_node(node)->state;
+}
+
+void
+tracker::set_nodestate(jive_node * node, size_t state)
+{
+	jive_tracker_nodestate * nodestate = map_node(node);
 	
 	if (nodestate->state != state) {
-		if (nodestate->state < self->states_.size()) {
-			jive_tracker_depth_state_remove(self->states_[nodestate->state], nodestate,
+		if (nodestate->state < states_.size()) {
+			jive_tracker_depth_state_remove(
+				states_[nodestate->state], nodestate,
 				node->depth_from_root);
 		}
 		nodestate->state = state;
-		if (nodestate->state < self->states_.size()) {
-			jive_tracker_depth_state_add(self->states_[nodestate->state], nodestate,
+		if (nodestate->state < states_.size()) {
+			jive_tracker_depth_state_add(
+				states_[nodestate->state], nodestate,
 				node->depth_from_root);
 		}
 	}
 }
 
 jive_node *
-jive_tracker_pop_top(jive_tracker * self, size_t state)
+tracker::peek_top(size_t state) const
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(self->states_[state]);
+	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(states_[state]);
 	return nodestate ? nodestate->node : nullptr;
 }
 
 jive_node *
-jive_tracker_pop_bottom(jive_tracker * self, size_t state)
+tracker::peek_bottom(size_t state) const
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_bottom(self->states_[state]);
+	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_bottom(states_[state]);
 	return nodestate ? nodestate->node : nullptr;
 }
 
-jive_traversal_tracker::jive_traversal_tracker(jive_graph * graph)
-	: jive_tracker(graph, 2)
+computation_tracker::computation_tracker(jive_graph * graph)
+	: graph_(graph)
+	, slot_(jive_graph_reserve_tracker_slot(graph))
+	, nodestates_(jive_graph_reserve_tracker_depth_state(graph))
 {
 }
 
-jive_traversal_nodestate
-jive_traversal_tracker_get_nodestate(jive_traversal_tracker * self, jive_node * node)
+computation_tracker::~computation_tracker() noexcept
 {
-	return (jive_traversal_nodestate) jive_tracker_get_nodestate(self, node);
+	jive_graph_return_tracker_depth_state(graph_, nodestates_);
+	jive_graph_return_tracker_slot(graph_, slot_);
 }
 
-void
-jive_traversal_tracker_set_nodestate(jive_traversal_tracker * self, jive_node * node,
-	jive_traversal_nodestate state)
+jive_tracker_nodestate *
+computation_tracker::map_node(jive_node * node)
 {
-	jive_tracker_set_nodestate(self, node, (size_t) state, 0);
-}
-
-jive_node *
-jive_traversal_tracker_pop_top(jive_traversal_tracker * self)
-{
-	return jive_tracker_pop_top(self, (size_t) jive_traversal_nodestate_frontier);
-}
-
-jive_node *
-jive_traversal_tracker_pop_bottom(jive_traversal_tracker * self)
-{
-	return jive_tracker_pop_bottom(self, (size_t) jive_traversal_nodestate_frontier);
+	return jive_node_get_tracker_state(node, slot_);
 }
 
 void
-jive_computation_tracker_init(jive_computation_tracker * self, jive_graph * graph)
+computation_tracker::invalidate(jive_node * node)
 {
-	self->graph = graph;
-	self->nodestates = jive_graph_reserve_tracker_depth_state(graph);
-	self->slot = jive_graph_reserve_tracker_slot(graph);
-}
-
-void
-jive_computation_tracker_fini(jive_computation_tracker * self)
-{
-	jive_graph_return_tracker_depth_state(self->graph, self->nodestates);
-	jive_graph_return_tracker_slot(self->graph, self->slot);
-}
-
-static jive_tracker_nodestate *
-jive_computation_tracker_map_node(jive_computation_tracker * self, jive_node * node)
-{
-	return jive_node_get_tracker_state(node, self->slot);
-}
-
-void
-jive_computation_tracker_invalidate(jive_computation_tracker * self, jive_node * node)
-{
-	jive_tracker_nodestate * nodestate = jive_computation_tracker_map_node(self, node);
+	jive_tracker_nodestate * nodestate = map_node(node);
 	if (nodestate->state == jive_tracker_nodestate_none) {
-		jive_tracker_depth_state_add(self->nodestates, nodestate, node->depth_from_root);
+		jive_tracker_depth_state_add(nodestates_, nodestate, node->depth_from_root);
 		nodestate->state = 0;
 	}
 }
 
 void
-jive_computation_tracker_invalidate_below(jive_computation_tracker * self, jive_node * node)
+computation_tracker::invalidate_below(jive_node * node)
 {
-	size_t n;
-	for (n = 0; n < node->noutputs; n++) {
-		jive::output * output = node->outputs[n];
-		jive::input * user;
-		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			jive_computation_tracker_invalidate(self, user->node());
+	for (size_t n = 0; n < node->noutputs; n++) {
+		output * out = node->outputs[n];
+		input * user;
+		JIVE_LIST_ITERATE(out->users, user, output_users_list) {
+			invalidate(user->node());
 		}
 	}
 }
 
 jive_node *
-jive_computation_tracker_pop_top(jive_computation_tracker * self)
+computation_tracker::pop_top()
 {
-	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(self->nodestates);
-	if (nodestate)
-		return nodestate->node;
-	else
-		return 0;
+	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(nodestates_);
+	return nodestate ? nodestate->node : nullptr;
+}
+
 }

@@ -365,16 +365,14 @@ compute_prio_value(jive_node_cost * node_cost)
 
 jive_master_shaper_selector::~jive_master_shaper_selector()
 {
-	jive_computation_tracker_fini(&cost_computation_state_tracker_);
 	
 }
 
 jive_master_shaper_selector::jive_master_shaper_selector(jive_shaped_graph * shaped_graph)
 	: shaped_graph_(shaped_graph)
+	, cost_computation_state_tracker_(shaped_graph->graph)
 {
 	jive_graph * graph = shaped_graph->graph;
-	
-	jive_computation_tracker_init(&cost_computation_state_tracker_, graph);
 	
 	init_region_recursive(graph->root_region);
 	jive_node * node;
@@ -446,7 +444,7 @@ jive_master_shaper_selector::map_node_internal(jive_node * node)
 void
 jive_master_shaper_selector::invalidate_node(jive_node * node)
 {
-	jive_computation_tracker_invalidate(&cost_computation_state_tracker_, node);
+	cost_computation_state_tracker_.invalidate(node);
 }
 
 void
@@ -482,7 +480,7 @@ jive_master_shaper_selector::revalidate_node(jive_node * node)
 		if (node_cost->state == jive_node_cost_state_queue)
 			jive_node_cost_prio_heap_add(&region_shaper->prio_heap, node_cost);
 			
-		jive_computation_tracker_invalidate_below(&cost_computation_state_tracker_, node);
+		cost_computation_state_tracker_.invalidate_below(node);
 	}
 	
 	jive_resource_class_count_fini(&cost);
@@ -492,10 +490,10 @@ void
 jive_master_shaper_selector::revalidate()
 {
 	jive_node * node;
-	node = jive_computation_tracker_pop_top(&cost_computation_state_tracker_);
+	node = cost_computation_state_tracker_.pop_top();
 	while (node) {
 		revalidate_node(node);
-		node = jive_computation_tracker_pop_top(&cost_computation_state_tracker_);
+		node = cost_computation_state_tracker_.pop_top();
 	}
 }
 
@@ -770,7 +768,8 @@ jive_master_shaper_selector::region_shaper_selector_create(const jive_region * r
 /* callback closures */
 
 void
-jive_master_shaper_selector::shaped_node_create(jive_master_shaper_selector * self, jive_node * node)
+jive_master_shaper_selector::shaped_node_create(
+	jive_master_shaper_selector * self, jive_node * node)
 {
 	self->mark_shaped(node);
 }

@@ -338,8 +338,6 @@ typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
 typedef jive::operation jive_node_attrs;
 
-enum jive_traversal_nodestate;
-
 struct jive_region;
 struct jive_resource_class_count;
 struct jive_substitution_map;

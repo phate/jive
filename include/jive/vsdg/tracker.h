@@ -25,13 +25,44 @@ struct jive_tracker_slot {
 	size_t cookie;
 };
 
+struct jive_tracker_nodestate;
+
+namespace jive {
+
 /* Track states of nodes within the graph. Each node can logically be in
  * one of the numbered states, plus another "initial" state. All nodes are
  * at the beginning assumed to be implicitly in this "initial" state. */
-struct jive_tracker {
+struct tracker {
 public:
-	jive_tracker(jive_graph * graph, size_t nstates);
-	~jive_tracker();
+	~tracker() noexcept;
+	
+	tracker(jive_graph * graph, size_t nstates);
+
+	/* get state of the node */
+	ssize_t
+	get_nodestate(jive_node * node);
+
+	/* set state of the node */
+	void
+	set_nodestate(jive_node * node, size_t state);
+
+	/* get one of the top nodes for the given state */
+	jive_node *
+	peek_top(size_t state) const;
+
+	/* get one of the bottom nodes for the given state */
+	jive_node *
+	peek_bottom(size_t state) const;
+
+private:
+	void
+	node_depth_change(jive_node * node, size_t old_depth);
+
+	void
+	node_destroy(jive_node * node);
+
+	jive_tracker_nodestate*
+	map_node(jive_node * node);
 
 	jive_graph * graph_;
 	/* FIXME: need RAII idiom for slot reservation */
@@ -39,67 +70,35 @@ public:
 	/* FIXME: need RAII idiom for state reservation */
 	std::vector<jive_tracker_depth_state *> states_;
 
-	jive::callback depth_callback_, destroy_callback_;
+	callback depth_callback_, destroy_callback_;
 };
 
-int
-jive_tracker_get_nodestate(jive_tracker * self, struct jive_node * node);
-
-int
-jive_tracker_get_nodetag(jive_tracker * self, struct jive_node * node);
-
-void
-jive_tracker_set_nodestate(jive_tracker * self, struct jive_node * node, size_t state, int tag);
-
-struct jive_node *
-jive_tracker_pop_top(jive_tracker * self, size_t state);
-
-struct jive_node *
-jive_tracker_pop_bottom(jive_tracker * self, size_t state);
-
-typedef enum jive_traversal_nodestate {
-	jive_traversal_nodestate_ahead = -1,
-	jive_traversal_nodestate_frontier = 0,
-	jive_traversal_nodestate_behind = +1
-} jive_traversal_nodestate;
-
-class jive_traversal_tracker final : public jive_tracker {
+class computation_tracker {
 public:
-	jive_traversal_tracker(jive_graph * graph);
+	computation_tracker(jive_graph * graph);
+	
+	~computation_tracker() noexcept;
+	
+	void
+	invalidate(jive_node * node);
+	
+	void
+	invalidate_below(jive_node * node);
+	
+	jive_node *
+	pop_top();
+
+private:
+	jive_tracker_nodestate*
+	map_node(jive_node * node);
+
+	jive_graph * graph_;
+	/* FIXME: need RAII idiom for slot reservation */
+	jive_tracker_slot slot_;
+	/* FIXME: need RAII idiom for state reservation */
+	jive_tracker_depth_state * nodestates_;
 };
 
-jive_traversal_nodestate
-jive_traversal_tracker_get_nodestate(jive_traversal_tracker * self, struct jive_node * node);
-
-void
-jive_traversal_tracker_set_nodestate(jive_traversal_tracker * self, struct jive_node * node,
-	jive_traversal_nodestate state);
-
-struct jive_node *
-jive_traversal_tracker_pop_top(jive_traversal_tracker * self);
-
-struct jive_node *
-jive_traversal_tracker_pop_bottom(jive_traversal_tracker * self);
-
-struct jive_computation_tracker {
-	struct jive_tracker_depth_state * nodestates;
-	struct jive_graph * graph;
-	jive_tracker_slot slot;
-};
-
-void
-jive_computation_tracker_init(jive_computation_tracker * self, struct jive_graph * graph);
-
-void
-jive_computation_tracker_fini(jive_computation_tracker * self);
-
-void
-jive_computation_tracker_invalidate(jive_computation_tracker * self, struct jive_node * node);
-
-void
-jive_computation_tracker_invalidate_below(jive_computation_tracker * self, struct jive_node * node);
-
-struct jive_node *
-jive_computation_tracker_pop_top(jive_computation_tracker * self);
+}
 
 #endif

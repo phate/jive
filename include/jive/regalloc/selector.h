@@ -267,7 +267,7 @@ private:
 
 	jive_node_cost_hash node_map_;
 	jive_region_shaper_selector_hash region_map_;
-	jive_computation_tracker cost_computation_state_tracker_;
+	jive::computation_tracker cost_computation_state_tracker_;
 
 	std::vector<jive::callback> callbacks_;
 };
