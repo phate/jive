@@ -292,8 +292,10 @@ public:
 			if (!dynamic_cast<jive::state::type*>(type)) {
 				delete type;
 				throw parse_error("Expected state type");
-			} else
+			} else {
 				istates.emplace_back(static_cast<const jive::state::type*>(type)->copy());
+				delete type;
+			}
 
 			if (driver.peek_token_type() == jive_token_comma)
 				driver.parse_char_token(',');
@@ -316,8 +318,10 @@ public:
 			if (!dynamic_cast<jive::state::type*>(type)) {
 				delete type;
 				throw parse_error("Expected state type");
-			} else
+			} else {
 				ostates.emplace_back(static_cast<const jive::state::type*>(type)->copy());
+				delete type;
+			}
 
 			if (driver.peek_token_type() == jive_token_comma)
 				driver.parse_char_token(',');
