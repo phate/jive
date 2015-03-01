@@ -25,22 +25,29 @@ $(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 TESTLOG=true
 
 EXPECT_FAIL_TESTS = regalloc/test-loop-overflow
-EXPECT_PASS_TESTS = $(filter-out $(EXPECT_FAIL_TESTS),$(TESTS))
 
 check: tests/test-runner
-	rm -rf check.log
-	@UNEXPECTED_FAILED_TESTS="" ; \
-	for TEST in $(EXPECT_PASS_TESTS); do \
-		$(TESTLOG) -n "$$TEST: " ; if tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; UNEXPECTED_FAILED_TESTS="$$UNEXPECTED_FAILED_TESTS $$TEST" ; fi ; \
-	done ; \
-	if [ "x$$UNEXPECTED_FAILED_TESTS" != x ] ; then echo "Failed tests:$$UNEXPECTED_FAILED_TESTS" ; else echo "All tests passed" ; fi ; \
-	if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
+	rm -rf check.log passed.log failed.log
+	@for TEST in `tests/test-runner`; do \
+		$(TESTLOG) -n "$$TEST: " ; \
+		if tests/test-runner $$TEST >>check.log 2>&1 ; then \
+			$(TESTLOG) pass ; echo "$$TEST" >> passed.log ; \
+		else \
+			$(TESTLOG) FAIL ; echo "$$TEST" >> failed.log ; \
+		fi ; \
+	done
+	@grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /"
+	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
 
 valgrind-check: tests/test-runner
-	rm -rf check.log
-	@UNEXPECTED_FAILED_TESTS="" ; \
-	for TEST in $(EXPECT_PASS_TESTS); do \
-		$(TESTLOG) -n "$$TEST: " ; if valgrind --leak-check=full --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then $(TESTLOG) pass ; else $(TESTLOG) FAIL ; FAILED_TESTS="$$UNEXPECTED_FAILED_TESTS $$TEST" ; fi ; \
-	done ; \
-	if [ "x$$UNEXPECTED_FAILED_TESTS" != x ] ; then echo "Failed tests:$$UNEXPECTED_FAILED_TESTS" ; else echo "All tests passed" ; fi ; \
-	if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
+	rm -rf check.log passed.log failed.log
+	@for TEST in `tests/test-runner`; do \
+		$(TESTLOG) -n "$$TEST: " ; \
+		if valgrind --leak-check=full --error-exitcode=1 tests/test-runner $$TEST >>check.log 2>&1 ; then \
+			$(TESTLOG) pass ; echo "$$TEST" >> passed.log ; \
+		else \
+			$(TESTLOG) FAIL ; echo "$$TEST" >> failed.log ; \
+		fi ; \
+	done
+	@grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /"
+	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
