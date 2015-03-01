@@ -1,10 +1,13 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
 #ifndef JIVE_TEST_REGISTRY_H
 #define JIVE_TEST_REGISTRY_H
+
+#include <string>
+#include <vector>
 
 void
 jive_unit_test_register(const char * name, int (*fn)(void));
@@ -17,5 +20,8 @@ jive_unit_test_run(const char * name);
 	{ \
 		jive_unit_test_register(name, function); \
 	} \
+
+std::vector<std::string>
+list_unit_tests();
 
 #endif

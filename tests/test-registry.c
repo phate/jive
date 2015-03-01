@@ -1,10 +1,12 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
 #include "test-registry.h"
+
+#include <algorithm>
 
 #include <jive/common.h>
 #include <jive/util/intrusive-hash.h>
@@ -14,6 +16,9 @@ namespace {
 class unit_test {
 public:
 	typedef int (*function_type)(void);
+	
+	inline const std::string&
+	name() const noexcept { return name_; }
 private:
 	std::string name_;
 	jive::detail::intrusive_hash_anchor<unit_test> hash_anchor_;
@@ -60,4 +65,15 @@ jive_unit_test_run(const char * name)
 	auto i = unit_tests.find(name);
 	JIVE_ASSERT(i != unit_tests.end());
 	return i->run();
+}
+
+std::vector<std::string>
+list_unit_tests()
+{
+	std::vector<std::string> names;
+	for (const unit_test & test : unit_tests) {
+		names.push_back(test.name());
+	}
+	std::sort(names.begin(), names.end());
+	return names;
 }
