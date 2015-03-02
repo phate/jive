@@ -57,10 +57,24 @@ private:
 };
 
 jive_node *
+jive_test_node_create(
+	jive_region * region,
+	const std::vector<const jive::base::type*> & operand_types,
+	const std::vector<jive::output*> & operands,
+	const std::vector<const jive::base::type*> & result_types);
+
+jive_node *
 jive_test_node_create(struct jive_region * region,
 	size_t noperands, const jive::base::type * const operand_types[],
 	jive::output * const operands[], size_t nresults,
 	const jive::base::type * const result_types[]);
+
+std::vector<jive::output*>
+jive_test_node_create_normalized(
+	jive_graph * graph,
+	const std::vector<const jive::base::type*> & operand_types,
+	const std::vector<jive::output*> & operands,
+	const std::vector<const jive::base::type*> & result_types);
 
 void
 jive_test_node_create_normalized(struct jive_graph * graph, size_t noperands,

@@ -84,6 +84,18 @@ jive_test_node_create(struct jive_region * region,
 	return op.create_node(region, noperands, operands);
 }
 
+jive_node *
+jive_test_node_create(
+	jive_region * region,
+	const std::vector<const jive::base::type*> & operand_types,
+	const std::vector<jive::output*> & operands,
+	const std::vector<const jive::base::type*> & result_types)
+{
+	return jive_test_node_create(region, operand_types.size(), &operand_types[0], &operands[0],
+		result_types.size(), &result_types[0]);
+}
+
+
 void
 jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
 	const jive::base::type * const operand_types[], jive::output * const operands[], size_t nresults,
@@ -97,4 +109,17 @@ jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
 
 	for (size_t n = 0; n < tmp.size(); n++)
 		results[n] = tmp[n];
+}
+
+std::vector<jive::output*>
+jive_test_node_create_normalized(
+	jive_graph * graph,
+	const std::vector<const jive::base::type*> & operand_types,
+	const std::vector<jive::output*> & operands,
+	const std::vector<const jive::base::type*> & result_types)
+{
+	std::vector<jive::output*> results(result_types.size());
+	jive_test_node_create_normalized(graph, operand_types.size(), &operand_types[0],
+		&operands[0], result_types.size(), &result_types[0], &results[0]);
+	return results;
 }
