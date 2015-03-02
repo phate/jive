@@ -58,23 +58,7 @@ LIBJIVE_SRC += \
 
 # bitstrings
 LIBJIVE_SRC += \
-	src/types/bitstring/arithmetic/bitand.c \
-	src/types/bitstring/arithmetic/bitashr.c \
-	src/types/bitstring/arithmetic/bitdifference.c \
-	src/types/bitstring/arithmetic/bitnegate.c \
-	src/types/bitstring/arithmetic/bitnot.c \
-	src/types/bitstring/arithmetic/bitor.c \
-	src/types/bitstring/arithmetic/bitproduct.c \
-	src/types/bitstring/arithmetic/bitshiproduct.c \
-	src/types/bitstring/arithmetic/bitshl.c \
-	src/types/bitstring/arithmetic/bitshr.c \
-	src/types/bitstring/arithmetic/bitsmod.c \
-	src/types/bitstring/arithmetic/bitsquotient.c \
-	src/types/bitstring/arithmetic/bitsum.c \
-	src/types/bitstring/arithmetic/bituhiproduct.c \
-	src/types/bitstring/arithmetic/bitumod.c \
-	src/types/bitstring/arithmetic/bituquotient.c \
-	src/types/bitstring/arithmetic/bitxor.c \
+	src/types/bitstring/arithmetic.c \
 	src/types/bitstring/bitoperation-classes.c \
 	src/types/bitstring/comparison/bitequal.c \
 	src/types/bitstring/comparison/bitnotequal.c \
