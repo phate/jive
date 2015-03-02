@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -91,6 +91,10 @@ jive_test_node_create_normalized(jive_graph * graph, size_t noperands,
 {
 	test_operation op(noperands, operand_types, nresults, result_types);
 
-	jive_node_create_normalized(
-		graph, op, std::vector<jive::output *>(operands, operands + noperands));
+	std::vector<jive::output*> tmp;
+	tmp = jive_node_create_normalized(graph, op,
+		std::vector<jive::output *>(operands, operands + noperands));
+
+	for (size_t n = 0; n < tmp.size(); n++)
+		results[n] = tmp[n];
 }
