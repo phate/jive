@@ -1,3 +1,0 @@
-TESTS += \
-	types/record/test-rcdgroup \
-	types/record/test-rcdselect \

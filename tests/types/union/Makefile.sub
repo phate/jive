@@ -1,3 +1,0 @@
-TESTS += \
-	types/union/test-unnchoose \
-	types/union/test-unnunify \

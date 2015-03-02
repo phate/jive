@@ -1,6 +1,0 @@
-TESTS+=\
-	function/test-build-lambda \
-	function/test-call \
-	function/test-equals \
-	function/test-lambda-apply \
-	function/test-memory-leak \

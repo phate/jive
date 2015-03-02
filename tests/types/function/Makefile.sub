@@ -1,2 +1,0 @@
-TESTS += \
-	types/function/test-lambda_dead_parameter_removal \

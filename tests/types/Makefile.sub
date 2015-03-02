@@ -1,6 +1,6 @@
-include tests/types/function/Makefile.sub
-include tests/types/record/Makefile.sub
-include tests/types/union/Makefile.sub
-
+TESTS+=\
 	types/bitstring \
-        types/float \
+	types/float \
+	types/function \
+	types/record \
+	types/union \

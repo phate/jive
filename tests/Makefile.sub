@@ -1,5 +1,4 @@
 include tests/arch/Makefile.sub
-include tests/function/Makefile.sub
 include tests/i386/Makefile.sub
 include tests/regalloc/Makefile.sub
 include tests/shape/Makefile.sub
