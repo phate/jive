@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -20,8 +20,8 @@ public:
 	~test_operation() noexcept;
 
 	test_operation(
-		size_t narguments, const jive::base::type * const argument_types[],
-		size_t nresults, const jive::base::type * const result_types[]);
+		const std::vector<const jive::base::type*> & argument_types,
+		const std::vector<const jive::base::type*> & result_types);
 
 	test_operation(const test_operation & other);
 
@@ -63,22 +63,11 @@ jive_test_node_create(
 	const std::vector<jive::output*> & operands,
 	const std::vector<const jive::base::type*> & result_types);
 
-jive_node *
-jive_test_node_create(struct jive_region * region,
-	size_t noperands, const jive::base::type * const operand_types[],
-	jive::output * const operands[], size_t nresults,
-	const jive::base::type * const result_types[]);
-
 std::vector<jive::output*>
 jive_test_node_create_normalized(
 	jive_graph * graph,
 	const std::vector<const jive::base::type*> & operand_types,
 	const std::vector<jive::output*> & operands,
 	const std::vector<const jive::base::type*> & result_types);
-
-void
-jive_test_node_create_normalized(struct jive_graph * graph, size_t noperands,
-	const jive::base::type * const operand_types[], jive::output * const operands[],
-	size_t nresults, const jive::base::type * const result_types[], jive::output * results[]);
 
 #endif
