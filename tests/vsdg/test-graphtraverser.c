@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -51,26 +51,11 @@ void test_order_enforcement_traversal()
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
-	const jive::base::type * tmparray0[] = {&type, &type};
-	
-	jive_node * n1 = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
-	const jive::base::type * tmparray1[] = {&type};
-	jive::output * tmparray2[] = {n1->outputs[0]};
-	const jive::base::type * tmparray3[] = {&type};
-	
-	jive_node * n2 = jive_test_node_create(graph->root_region,
-		1, tmparray1, tmparray2,
-		1, tmparray3);
-	const jive::base::type * tmparray4[] = {&type, &type};
-	jive::output * tmparray5[] = {n2->outputs[0], n1->outputs[1]};
-	const jive::base::type * tmparray6[] = {&type};
-	
+	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type, &type});
+	jive_node * n2 = jive_test_node_create(graph->root_region, {&type}, {n1->outputs[0]}, {&type});
 	jive_node * n3 = jive_test_node_create(graph->root_region,
-		2, tmparray4, tmparray5,
-		1, tmparray6);
-	
+		{&type, &type}, {n2->outputs[0], n1->outputs[1]}, {&type});
+
 	jive_node * tmp;
 	
 	{
@@ -115,24 +100,13 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	jive_test_value_type type;
 	node = trav.next();
 	assert(node==n1);
-	const jive::base::type * tmparray7[] = {&type};
-	
+
 	/* At this point, n1 has been visited, now create some nodes */
-	
-	jive_node * n3 = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		1, tmparray7);
-	const jive::base::type * tmparray8[] = {&type};
-	
-	jive_node * n4 = jive_test_node_create(graph->root_region,
-		1, tmparray8, &n3->outputs[0],
-		0, NULL);
-	const jive::base::type * tmparray9[] = {&type};
-	
-	jive_node * n5 = jive_test_node_create(graph->root_region,
-		1, tmparray9, &n2->outputs[0],
-		0, NULL);
-	
+
+	jive_node * n3 = jive_test_node_create(graph->root_region, {}, {}, {&type});
+	jive_node * n4 = jive_test_node_create(graph->root_region, {&type}, {n3->outputs[0]}, {});
+	jive_node * n5 = jive_test_node_create(graph->root_region, {&type}, {n2->outputs[0]}, {});
+
 	/*
 		The newly created nodes n3 and n4 will not be visited,
 		as they were not created as descendants of unvisited
@@ -162,16 +136,9 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_graph * graph = jive_graph_create();
 	jive_test_value_type type;
-	const jive::base::type * tmparray10[] = {&type, &type};
-	jive_node * n1 = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray10);
-	const jive::base::type * tmparray11[] = {&type, &type};
-	const jive::base::type * tmparray12[] = {&type};
-	
+	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type, &type});
 	jive_node * n2 = jive_test_node_create(graph->root_region,
-		2, tmparray11, &n1->outputs[0],
-		1, tmparray12);
+		{&type, &type}, {n1->outputs[0], n1->outputs[1]}, {&type});
 
 	jive_node_add_input(graph->root_region->bottom, &type, n2->outputs[0]);
 	(void)n1;

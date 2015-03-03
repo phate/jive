@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -27,25 +27,11 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	
 	jive_test_value_type type;
-	const jive::base::type * tmparray0[] = {&type, &type};
-	
-	jive_node * top = jive_test_node_create(region,
-		0, NULL, NULL,
-		2, tmparray0);
-	const jive::base::type * tmparray1[] = {&type, };
-	jive::output * tmparray2[] = {top->outputs[0]};
-	const jive::base::type * tmparray3[] = {&type};
-	
-	jive_node * mid = jive_test_node_create(region,
-		1, tmparray1, tmparray2,
-		1, tmparray3);
-	const jive::base::type * tmparray4[] = {&type, &type};
-	jive::output * tmparray5[] = {mid->outputs[0], top->outputs[1]};
-	
-	jive_node * bottom = jive_test_node_create(region,
-		2, tmparray4, tmparray5,
-		0, NULL);
-	
+	jive_node * top = jive_test_node_create(region, {}, {}, {&type, &type});
+	jive_node * mid = jive_test_node_create(region, {&type}, {top->outputs[0]}, {&type});
+	jive_node * bottom = jive_test_node_create(region, {&type, &type},
+		{mid->outputs[0], top->outputs[1]}, {});
+
 	jive_variable * r1 = jive_output_auto_merge_variable(top->outputs[1])->variable;
 	jive_variable * r2 = jive_output_auto_merge_variable(top->outputs[0])->variable;
 	jive_variable * r3 = jive_output_auto_merge_variable(mid->outputs[0])->variable;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,10 +23,8 @@ test_main(void)
 
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
-	const jive::base::type * result_types[] = {&bits2, &bits32, &bits32, &bits32};
 	jive_node * top = jive_test_node_create(graph->root_region,
-		0, nullptr, nullptr,
-		4, result_types);
+		{}, {}, {&bits2, &bits32, &bits32, &bits32});
 
 	jive::output * cmp = top->outputs[0];
 	jive::output * v0 = top->outputs[1];

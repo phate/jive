@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -23,19 +23,12 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	jive_test_state_type type;
 	jive_test_value_type value_type;
-	const jive::base::type * tmparray0[] = {&type};
 
-	jive_node * n1 = jive_test_node_create(region,
-		0, NULL, NULL,
-		1, tmparray0);
+	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
 
 	bool error_handler_called = false;
 	try {
-		const jive::base::type * tmparray1[] = {&value_type};
-		jive::output * tmparray2[] = {n1->outputs[0]};
-		jive_test_node_create(region,
-			1, tmparray1, tmparray2,
-			0, 0);
+		jive_test_node_create(region, {&value_type}, {n1->outputs[0]}, {});
 	} catch (jive::type_error e) {
 		error_handler_called = true;
 	}

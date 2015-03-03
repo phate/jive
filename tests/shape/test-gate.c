@@ -27,10 +27,8 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	
-	jive_node * node = jive_test_node_create(region,
-		0, NULL, NULL,
-		0, NULL);
-	
+	jive_node * node = jive_test_node_create(region, {}, {}, {});
+
 	jive::gate * g1 = jive_graph_create_gate(graph, "g1", type);
 	jive::gate * g2 = jive_graph_create_gate(graph, "g2", type);
 	jive::gate * g3 = jive_graph_create_gate(graph, "g3", type);

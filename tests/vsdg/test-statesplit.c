@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -24,23 +24,11 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_state_type statetype;
-	const jive::base::type * tmparray0[] = {&statetype, &statetype};
-	
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray0);
-	
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&statetype, &statetype});
 	jive::output * merged = jive_state_merge(&statetype, 2, &top->outputs[0]);
-	
 	std::vector<jive::output *> split = jive_state_split(&statetype, merged, 2);
-	const jive::base::type * tmparray1[] = {&statetype, &statetype};
+	jive_test_node_create(graph->root_region, {&statetype, &statetype}, {split[0], split[1]}, {});
 
-	jive::output * split_states[2] = {split[0], split[1]};
-	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray1, split_states,
-		0, NULL);
-	(void) bottom;
-	
 	jive_view(graph, stdout);
 	
 	jive_graph * graph2 = jive_graph_copy(graph);

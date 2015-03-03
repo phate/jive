@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -43,12 +43,8 @@ static int test_main(void)
 
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
-	const jive::base::type * tmparray0[] = {
-		&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype
-	};
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		7, tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {},
+		{&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype});
 
 	std::vector<jive::output *> states0 = jive_store_by_address_create(
 		top->outputs[0], &bits32, top->outputs[4], 1, &top->outputs[1]);
@@ -72,17 +68,11 @@ static int test_main(void)
 	unify = jive_empty_unify_create(graph, &empty_unndecl);
 	std::vector<jive::output *> states5 = jive_store_by_address_create(
 		top->outputs[0], &empty_unntype, unify, 1, &top->outputs[1]);
-	const jive::base::type * tmparray3[] = {
-		&memtype, &memtype, &memtype, &memtype, &memtype, &memtype
-	};
-	jive::output * tmparray4[] = {
-		states0[0], states1[0], states1[1], states2[0], states4[0], states5[0]
-	};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		6, tmparray3,
-		tmparray4,
-		1, tmparray3);
+		std::vector<const jive::base::type*>(6, &memtype),
+		{states0[0], states1[0], states1[0], states2[0], states4[0], states5[0]},
+		{&memtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -29,10 +29,8 @@ static int test_main()
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
 	jive::bits::type bits32(32);
-	const jive::base::type * tmparray0[] = {&addrtype, &addrtype, &memtype, &bits32};
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		4, tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {},
+		{&addrtype, &addrtype, &memtype, &bits32});
 
 	jive::output * load0 = jive_load_by_address_create(top->outputs[0], &bits32, 1, &top->outputs[2]);
 
@@ -40,12 +38,9 @@ static int test_main()
 		top->outputs[1], &bits32, top->outputs[3], 1, &top->outputs[2]);
 	jive::output * load1 = jive_load_by_address_create(top->outputs[1], &bits32, 1, &states[0]);
 	assert(load1 == top->outputs[3]);
-	const jive::base::type * tmparray1[] = {&bits32, &bits32};
-	jive::output * tmparray2[] = {load0, load1};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray1, tmparray2,
-		1, tmparray0);
+		{&bits32, &bits32}, {load0, load1}, {&addrtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

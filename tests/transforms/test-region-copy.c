@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,21 +25,14 @@ static int test_main(void)
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
 	
 	jive_test_value_type type;
-	const jive::base::type * tmparray0[] = {&type, &type, &jive::ctl::boolean};
-	
-	jive_node * top = jive_test_node_create(r1,
-		0, NULL, NULL,
-		3, tmparray0);
+	jive_node * top = jive_test_node_create(r1, {}, {}, {&type, &type, &jive::ctl::boolean});
 	r1->top = top;
 	
 	jive::output * tmp = jive_gamma(top->outputs[2], {&type},
 		{{top->outputs[0]}, {top->outputs[1]}})[0];
 	jive_node * gamma = tmp->node();
-	const jive::base::type * tmparray2[] = {&type};
-	
-	jive_node * bottom = jive_test_node_create(r1,
-		1, tmparray2, &gamma->outputs[0],
-		0, NULL);
+
+	jive_node * bottom = jive_test_node_create(r1, {&type}, {gamma->outputs[0]}, {});
 	r1->bottom = bottom;
 	
 	jive_view(graph, stderr);

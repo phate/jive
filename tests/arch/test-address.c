@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -37,11 +37,7 @@ static int test_main(void)
 	};
 	
 	jive::addr::type addrtype;
-	const jive::base::type * tmparray1[] = {&addrtype, &addrtype};
-	
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		2, tmparray1);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&addrtype, &addrtype});
 	
 	jive::output * memb1 = jive_memberof(top->outputs[0], &rec, 0);
 	jive::output * memb2 = jive_memberof(top->outputs[0], &rec, 1);
@@ -86,15 +82,8 @@ static int test_main(void)
 	jive::output * arraysub = jive_arraysubscript(top->outputs[0],
 		&bits32, one);
 
-	const jive::base::type * tmparray2[] = {&addrtype, &addrtype, &bits32};
-	jive::output * tmparray3[] = {memberof, arraysub, diff2};
-
-	const jive::base::type * typeptr = &addrtype;
-
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		3, tmparray2,
-			tmparray3,
-		1, &typeptr);
+		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_node_address_transform(cont3->node(), &mapper.base.base);

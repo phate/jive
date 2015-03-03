@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -53,52 +53,22 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	jive::achr::type anchor_type;
-	const jive::base::type * tmparray0[] = {&type};
-	
-	jive_node * n1 = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		1, tmparray0);
+	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type});
 	
 	jive_region * r1 = jive_region_create_subregion(graph->root_region);
-	const jive::base::type * tmparray1[] = {&type};
-	const jive::base::type * tmparray2[] = {&type};
-	
-	jive_node * n2 = jive_test_node_create(r1,
-		1, tmparray1, &n1->outputs[0],
-		1, tmparray2);
-	
+
+	jive_node * n2 = jive_test_node_create(r1, {&type}, {n1->outputs[0]}, {&type});
+
 	jive_region * r2 = jive_region_create_subregion(r1);
 	jive_region * r3 = jive_region_create_subregion(r1);
-	const jive::base::type * tmparray3[] = {&type};
-	const jive::base::type * tmparray4[] = {&anchor_type};
-	
-	jive_node * n3 = jive_test_node_create(r2,
-		1, tmparray3, &n2->outputs[0],
-		1, tmparray4);
-	const jive::base::type * tmparray5[] = {&type};
-	const jive::base::type * tmparray6[] = {&anchor_type};
-	jive_node * n4 = jive_test_node_create(r3,
-		1, tmparray5, &n2->outputs[0],
-		1, tmparray6);
-	const jive::base::type * tmparray7[] = {&anchor_type, &anchor_type};
-	jive::output * tmparray8[] = {n3->outputs[0], n4->outputs[0]};
-	const jive::base::type * tmparray9[] = {&type};
-	
-	jive_node * n5 = jive_test_node_create(r1,
-		2, tmparray7, tmparray8,
-		1, tmparray9);
-	const jive::base::type * tmparray10[] = {&type};
-	const jive::base::type * tmparray11[] = {&anchor_type};
-	
-	jive_node * n6 = jive_test_node_create(r1,
-		1, tmparray10, &n5->outputs[0],
-		1, tmparray11);
-	const jive::base::type * tmparray12[] = {&anchor_type};
-	
-	jive_node * n7 = jive_test_node_create(graph->root_region,
-		1, tmparray12, &n6->outputs[0],
-		0, NULL);
-	
+
+	jive_node * n3 = jive_test_node_create(r2, {&type}, {n2->outputs[0]}, {&anchor_type});
+	jive_node * n4 = jive_test_node_create(r3, {&type}, {n2->outputs[0]}, {&anchor_type});
+	jive_node * n5 = jive_test_node_create(r1, {&anchor_type, &anchor_type},
+		{n3->outputs[0], n4->outputs[0]}, {&type});
+	jive_node * n6 = jive_test_node_create(r1, {&type}, {n5->outputs[0]}, {&anchor_type});
+	jive_node * n7 = jive_test_node_create(graph->root_region, {&anchor_type}, {n6->outputs[0]}, {});
+
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
 	shape(shaped_graph, n7);

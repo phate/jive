@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,10 +35,7 @@ static int test_main(void)
 	jive::addr::type addr;
 	jive::mem::type mem;
 	jive::bits::type bits64(64);
-	const jive::base::type * tmparray0[] = {&bits64, &bits64, &mem};
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		3, tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&bits64, &bits64, &mem});
 
 	jive::output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, &addr);
 	jive::output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, &addr);
@@ -70,12 +67,9 @@ static int test_main(void)
 		&bits64, arrayindex, 1, &top->outputs[2])[0]->node();
 
 	jive::output * o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
-	const jive::base::type * tmparray4[] = {&bits64, &mem};
-	jive::output * tmparray5[] = {o_addr, store->outputs[0]};
-	
+
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray4, tmparray5,
-		1, tmparray3);
+		{&bits64, &mem}, {o_addr, store->outputs[0]}, {&bits64});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);

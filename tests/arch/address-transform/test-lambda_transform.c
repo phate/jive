@@ -1,7 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
- * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -34,11 +33,7 @@ test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, &addrptr, tmparray0);
 	jive::output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
-	const jive::base::type * fcttype = &fct->type();
-	jive_node * bottom = jive_test_node_create(graph->root_region,
-		1, &fcttype, &fct,
-		0, NULL);
-	(void) bottom;
+	jive_node * bottom = jive_test_node_create(graph->root_region, {&fct->type()}, {fct}, {});
 
 	jive_view(graph, stdout);
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,15 +25,9 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type vtype;
-	const jive::base::type * vtype_ptr = &vtype;
-	jive::output * x = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1,
-		&vtype_ptr)->outputs[0];
-	jive::output * y = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1,
-		&vtype_ptr)->outputs[0];
-	const jive::base::type * tmparray0[] = {&vtype, &vtype};
-	jive::output * tmparray1[] = {x, y};
-	jive_node * n = jive_test_node_create(graph->root_region, 2, tmparray0,
-		tmparray1, 1, &vtype_ptr);
+	jive::output * x = jive_test_node_create(graph->root_region, {}, {}, {&vtype})->outputs[0];
+	jive::output * y = jive_test_node_create(graph->root_region, {}, {}, {&vtype})->outputs[0];
+	jive_node * n = jive_test_node_create(graph->root_region, {&vtype, &vtype}, {x, y}, {&vtype});
 
 	jive_output_auto_assign_variable(x);
 	jive_output_auto_assign_variable(y);

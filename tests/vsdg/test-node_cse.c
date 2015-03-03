@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -24,9 +24,8 @@ test_main()
 	jive_graph * graph = jive_graph_create();
 
 	jive_test_value_type vtype;
-	const jive::base::type * vtype_ptr = &vtype;
 	jive_region * inner_region = jive_region_create_subregion(graph->root_region);
-	jive_node * inner_node = jive_test_node_create(inner_region, 0, NULL, NULL, 1, &vtype_ptr);
+	jive_node * inner_node = jive_test_node_create(inner_region, {}, {}, {&vtype});
 	jive::node_normal_form * normal_form =
 		jive_graph_get_nodeclass_form(graph, typeid(test_operation));
 

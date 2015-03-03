@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -25,18 +25,11 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	
 	jive_test_value_type type;
-	const jive::base::type * tmparray0[] = {&type};
-	
-	jive_node * n1 = jive_test_node_create(region,
-		0, NULL, NULL,
-		1, tmparray0);
+	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
 	assert(n1);
 	assert(n1->depth_from_root == 0);
-	const jive::base::type * tmparray1[] = {&type};
-	
-	jive_node * n2 = jive_test_node_create(region,
-		1, tmparray1, &n1->outputs[0],
-		0, NULL);
+
+	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->outputs[0]}, {});
 	assert(n2);
 	assert(n2->depth_from_root == 1);
 	

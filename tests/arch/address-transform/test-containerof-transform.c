@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -35,11 +35,9 @@ static int test_main(void)
 		nelements : 4,
 		elements : tmparray0
 	};
-	const jive::base::type * tmparray1[] = {&bits32, &bits32, &bits32, &bits32};
-	
+
 	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		4, tmparray1);
+		{}, {}, std::vector<const jive::base::type*>(4, &bits32));
 
 	jive::output * address0 = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
 	jive::output * address1 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
@@ -55,14 +53,10 @@ static int test_main(void)
 	jive::output * offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());
 	jive::output * offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
 	jive::output * offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
-	const jive::base::type * tmparray2[] = {&bits32, &bits32, &bits32, &bits32};
-	jive::output * tmparray3[] = {offset0, offset1, offset2, offset3};
 
-	const jive::base::type * tmparray11[] = {&bits8};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		4, tmparray2,
-		tmparray3,
-		1, tmparray11);
+		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},
+		{&bits32});
 	jive_graph_export(graph, bottom->outputs[0]);
 	
 	jive_view(graph, stdout);

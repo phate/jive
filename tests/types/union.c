@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -34,10 +34,8 @@ static int test_unnchoose(void)
 	static jive::unn::type unntype(&decl);
 
 	jive::addr::type addrtype;
-	const jive::base::type * tmparray0[] = {&bits8, &unntype, &unntype, &addrtype};
 	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		4, tmparray0);
+		{}, {}, {&bits8, &unntype, &unntype, &addrtype});
 
 	jive::output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
 	jive::output * load = jive_load_by_address_create(top->outputs[3], &unntype, 0, NULL);
@@ -46,12 +44,9 @@ static int test_unnchoose(void)
 	jive::output * c1 = jive_choose_create(0, u0);
 	jive::output * c2 = jive_choose_create(1, top->outputs[2]);
 	jive::output * c3 = jive_choose_create(0, load);
-	const jive::base::type * tmparray1[] = {&bits16, &bits8, &bits16, &bits8};
-	jive::output * tmparray2[] = {c0, c1, c2, c3};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		4, tmparray1, tmparray2,
-		1, tmparray0);
+		{&bits16, &bits8, &bits16, &bits8}, {c0, c1, c2, c3}, {&bits8});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);
@@ -86,21 +81,14 @@ static int test_unnunify(void)
 
 	static const jive::unn::declaration decl_empty = {0, NULL};
 	static jive::unn::type unntype_empty(&decl_empty);
-	const jive::base::type * tmparray0[] = {&bits8};
 	
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		1, tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&bits8});
 
 	jive::output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
 	jive::output * u1 = jive_empty_unify_create(graph, &decl_empty);
 
-	const jive::base::type * tmparray1[] = {&unntype, &unntype_empty};
-	jive::output * tmparray2[] = {u0, u1};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray1,
-			tmparray2,
-		1, tmparray0);
+		{&unntype, &unntype_empty}, {u0, u1}, {&bits8});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

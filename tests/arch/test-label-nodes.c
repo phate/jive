@@ -68,12 +68,8 @@ static int test_main(void)
 	jive::addr::type addr;
 	jive::bits::type bits32(32);
 	jive::bits::type bits16(16);
-	const jive::base::type * tmparray0[] = {&addr, &addr, &bits32, &bits32, &bits16};
-	jive::output * tmparray1[] = {o0, o1, o2, o3, o4};
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		5, tmparray0,
-		tmparray1,
-		1, tmparray0);
+		{&addr, &addr, &bits32, &bits32, &bits16}, {o0, o1, o2, o3, o4}, {&addr});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);

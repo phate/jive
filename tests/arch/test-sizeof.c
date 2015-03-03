@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -54,15 +54,10 @@ static int test_main(void)
 	jive::output * s7 = jive_sizeof_create(graph->root_region, &union_t);
 
 	assert(s1->node()->operation() == s2->node()->operation());
-	const jive::base::type *  tmparray2[] = {&bits32, &bits32, &bits32, &bits32, &bits32, &bits32,
-		&bits32, &bits32};
-	jive::output *  tmparray3[] = {s0, s1, s2, s3, s4, s5, s6, s7};
 	assert(s0->node()->operation() != s3->node()->operation());
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		8, tmparray2,
-		tmparray3,
-		1, tmparray2);
+		std::vector<const jive::base::type*>(8, &bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {&bits32});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);

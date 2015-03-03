@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -30,16 +30,11 @@ test_main(void)
 	jive::addr::type addrtype;
 	const jive::base::type * addrptr = &addrtype;
 	jive::fct::type fcttype(1, &addrptr, 1, &addrptr);
-	const jive::base::type * tmparray0[] = {&fcttype, &addrtype};
-
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL, 2, tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&fcttype, &addrtype});
 
 	std::vector<jive::output *> results = jive_apply_create(top->outputs[0], 1, &top->outputs[1]);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
-		1, &addrptr, &results[0], 0, NULL);
-	(void)bottom;
+	jive_node * bottom = jive_test_node_create(graph->root_region, {&addrtype}, results, {});
 
 	jive_view(graph, stdout);
 

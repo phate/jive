@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -71,23 +71,16 @@ create_computation_node(jive_graph * graph,
 	size_t noutputs)
 {
 	jive_test_value_type type;
-	const jive::base::type * input_types[noperands];
-	const jive::base::type * output_types[noperands];
-	
-	size_t n;
-	for (n = 0; n < noperands; n++)
-		input_types[n] = &type;
-	for (n = 0; n < noutputs; n++)
-		output_types[n] = &type;
-	
-	
+	std::vector<jive::output*> operands_(operands, operands+noperands);
+	std::vector<const jive::base::type*> input_types(noperands, &type);
+	std::vector<const jive::base::type*> output_types(noutputs, &type);
+
 	jive_node * node = jive_test_node_create(graph->root_region,
-		noperands, input_types, operands,
-		noutputs, output_types);
-	
-	for (n = 0; n < noperands; n++)
+		input_types, operands_, output_types);
+
+	for (size_t n = 0; n < noperands; n++)
 		node->inputs[n]->required_rescls = &gpr.base;
-	for (n = 0; n < noutputs; n++)
+	for (size_t n = 0; n < noutputs; n++)
 		node->outputs[n]->required_rescls = &gpr.base;
 	
 	return node;
@@ -98,11 +91,7 @@ create_spill_node(jive_graph * graph,
 	jive::output * operand)
 {
 	jive_test_value_type type;
-	const jive::base::type * type_ptr = &type;
-	jive_node * node = jive_test_node_create(graph->root_region,
-		1, &type_ptr, &operand,
-		1, &type_ptr);
-	
+	jive_node * node = jive_test_node_create(graph->root_region, {&type}, {operand}, {&type});
 	node->inputs[0]->required_rescls = &gpr.base;
 	node->outputs[0]->required_rescls = &jive_root_resource_class;
 	
@@ -114,11 +103,7 @@ create_restore_node(jive_graph * graph,
 	jive::output * operand)
 {
 	jive_test_value_type type;
-	const jive::base::type * type_ptr = &type;
-	jive_node * node = jive_test_node_create(graph->root_region,
-		1, &type_ptr, &operand,
-		1, &type_ptr);
-	
+	jive_node * node = jive_test_node_create(graph->root_region, {&type}, {operand}, {&type});
 	node->inputs[0]->required_rescls = &jive_root_resource_class;
 	node->outputs[0]->required_rescls = &gpr.base;
 	

@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
- * Copyright 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
 
@@ -50,61 +50,30 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	jive::achr::type anchor_type;
-	const jive::base::type *  tmparray0[] = {&type, &type};
-	
-	jive_node * top = jive_test_node_create(root,
-		0, NULL, NULL,
-		2, tmparray0);
-	
+	jive_node * top = jive_test_node_create(root, {}, {}, {&type, &type});
+
 	jive_region * loop_region = jive_region_create_subregion(root);
 	loop_region->attrs.is_looped = true;
-	const jive::base::type *  tmparray1[] = {&type};
-	jive::output * tmparray2[] = {top->outputs[0]};
-	const jive::base::type *  tmparray3[] = {&type};
-	
-	jive_node * loop_head = jive_test_node_create(loop_region,
-		1, tmparray1, tmparray2,
-		1, tmparray3);
+
+	jive_node * loop_head = jive_test_node_create(loop_region, {&type}, {top->outputs[0]}, {&type});
 	loop_region->top = loop_head;
 	
 	jive_region * loop_subregion = jive_region_create_subregion(loop_region);
-	const jive::base::type *  tmparray4[] = {&type, &type};
-	jive::output * tmparray5[] = {loop_head->outputs[0], top->outputs[1]};
-	const jive::base::type *  tmparray6[] = {&anchor_type};
-	
+
 	jive_node * loop_body = jive_test_node_create(loop_subregion,
-		2, tmparray4, tmparray5,
-		1, tmparray6);
-	const jive::base::type *  tmparray7[] = {&anchor_type};
-	jive::output * tmparray8[] = {loop_body->outputs[0]};
-	const jive::base::type *  tmparray9[] = {&type};
-	
+		{&type, &type}, {loop_head->outputs[0], top->outputs[1]}, {&anchor_type});
+
 	jive_node * loop_body_anchor = jive_test_node_create(loop_region,
-		1, tmparray7, tmparray8,
-		1, tmparray9);
-	const jive::base::type *  tmparray10[] = {&type};
-	jive::output * tmparray11[] = {loop_body_anchor->outputs[0]};
-	const jive::base::type *  tmparray12[] = {&anchor_type};
-	
+		{&anchor_type}, {loop_body->outputs[0]}, {&type});
+
 	jive_node * loop_tail = jive_test_node_create(loop_region,
-		1, tmparray10, tmparray11,
-		1, tmparray12);
+		{&type}, {loop_body_anchor->outputs[0]}, {&anchor_type});
 	loop_region->bottom = loop_tail;
-	const jive::base::type *  tmparray13[] = {&anchor_type};
-	jive::output * tmparray14[] = {loop_tail->outputs[0]};
-	const jive::base::type *  tmparray15[] = {&type};
-	
+
 	jive_node * loop_anchor = jive_test_node_create(root,
-		1, tmparray13, tmparray14,
-		1, tmparray15);
-	const jive::base::type *  tmparray16[] = {&type};
-	jive::output * tmparray17[] = {loop_anchor->outputs[0]};
-	
-	jive_node * bottom = jive_test_node_create(root,
-		1, tmparray16, tmparray17,
-		0, NULL);
-	
-	// jive_node_reserve(bottom);
+		{&anchor_type}, {loop_tail->outputs[0]}, {&type});
+
+	jive_node * bottom = jive_test_node_create(root, {&type}, {loop_anchor->outputs[0]}, {});
 	
 	jive_view(graph, stderr);
 	

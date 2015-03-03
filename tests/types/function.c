@@ -26,17 +26,17 @@ static void
 test_simple_lambda(struct jive_graph * graph)
 {
 	jive_test_value_type vtype;
-	const jive::base::type * tmparray0[] = {&vtype, &vtype, &vtype};
-	jive_node * top = jive_test_node_create(graph->root_region, 0, NULL, NULL, 3,
-		tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&vtype, &vtype, &vtype});
+
 	const jive::base::type * tmparray1[] = {&vtype, &vtype, &vtype};
 	const char * tmparray2[] = {"x", "y", "z"};
 
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region,
 		3, tmparray1, tmparray2);
 
-	jive_node * node = jive_test_node_create(lambda->region, 1, tmparray0, &lambda->arguments[0], 1,
-		tmparray0);
+	jive_node * node = jive_test_node_create(lambda->region,
+		{&vtype}, {lambda->arguments[0]}, {&vtype});
+
 	const jive::base::type * tmparray3[] = {&vtype, &vtype};
 	jive::output * tmparray4[] = {node->outputs[0], lambda->arguments[1]};
 
@@ -44,11 +44,9 @@ test_simple_lambda(struct jive_graph * graph)
 		tmparray4);
 
 	std::vector<jive::output *> results = jive_apply_create(fct, 3, &top->outputs[0]);
-	const jive::base::type * tmparray5[] = {&vtype, &vtype};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray5, &results[0],
-		1, tmparray0);
+		{&vtype, &vtype}, results, {&vtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);
@@ -69,9 +67,9 @@ static void
 test_recursive_lambda(struct jive_graph * graph)
 {
 	jive_test_value_type vtype;
-	const jive::base::type * tmparray6[] = {&vtype, &vtype, &vtype};
-	jive_node * top = jive_test_node_create(graph->root_region, 0, NULL, NULL, 3,
-		tmparray6);
+	jive_node * top = jive_test_node_create(graph->root_region,
+		{}, {}, {&vtype, &vtype, &vtype});
+
 	const jive::base::type * tmparray7[] = {&vtype, &vtype, &vtype};
 	const jive::base::type * tmparray8[] = {&vtype, &vtype};
 
@@ -85,8 +83,8 @@ test_recursive_lambda(struct jive_graph * graph)
 	jive_lambda * lambda = jive_lambda_begin(phi.region,
 		3, tmparray9, tmparray10);
 
-	jive_node * node = jive_test_node_create(lambda->region, 1, tmparray6, &lambda->arguments[0], 1,
-		tmparray6);
+	jive_node * node = jive_test_node_create(lambda->region,
+		{&vtype}, {lambda->arguments[0]}, {&vtype});
 
 	jive::output * tmparray11[] = {node->outputs[0], node->outputs[0], node->outputs[0]};
 	std::vector<jive::output *> results = jive_apply_create(fv.value, 3, tmparray11);
@@ -100,11 +98,9 @@ test_recursive_lambda(struct jive_graph * graph)
 	jive_phi_end(phi, 1, &fv);
 
 	results = jive_apply_create(fv.value, 3, &top->outputs[0]);
-	const jive::base::type * tmparray14[] = {&vtype, &vtype};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		2, tmparray14, &results[0],
-		1, tmparray14);
+		{&vtype, &vtype}, {results[0], results[1]}, {&vtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stderr);
@@ -248,9 +244,8 @@ static int function_test_lambda_apply(void)
 		jive_apply_create(lambda_expr, 2, tmparray2)[0]
 	};
 	
-	const jive::base::type * tmparray12[] = {&bits32};
 	jive_node * interest = jive_test_node_create(graph->root_region,
-		1, tmparray12, apply_results, 1, tmparray12);
+		{&bits32}, {apply_results[0]}, {&bits32});
 	
 	jive_graph_export(graph, interest->outputs[0]);
 	

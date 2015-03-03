@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -27,10 +27,8 @@ static int test_main(void)
 
 	jive::addr::type addr;
 	jive::bits::type bits16(16);
-	const jive::base::type * tmparray0[] = {&addr, &bits16, &addr};
-	jive_node * top = jive_test_node_create(graph->root_region,
-		0, NULL, NULL,
-		3, tmparray0);
+	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&addr, &bits16, &addr});
+
 	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
 
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
@@ -38,11 +36,9 @@ static int test_main(void)
 		2, &top->outputs[1],
 		3, tmparray1);
 	JIVE_DEBUG_ASSERT(call->noutputs == 3);
-	const jive::base::type * tmparray2[] = {&bits16, &addr, &addr};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		3, tmparray2, &call->outputs[0],
-		1, tmparray0);
+		{&bits16, &addr, &addr}, {call->outputs[0], call->outputs[1], call->outputs[2]}, {&addr});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_view(graph, stdout);

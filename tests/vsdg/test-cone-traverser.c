@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -31,28 +31,10 @@ prepare_graph()
 	
 	jive_region * region = g.graph->root_region;
 	jive_test_value_type type;
-	const jive::base::type * tmparray0[] = {&type};
-	
-	g.a1 = jive_test_node_create(region,
-		0, NULL, NULL,
-		1, tmparray0);
-	const jive::base::type * tmparray1[] = {&type};
-	const jive::base::type * tmparray2[] = {&type};
-	
-	g.a2 = jive_test_node_create(region,
-		1, tmparray1, &g.a1->outputs[0],
-		0, tmparray2);
-	const jive::base::type * tmparray3[] = {&type};
-	
-	g.b1 = jive_test_node_create(region,
-		0, NULL, NULL,
-		1, tmparray3);
-	const jive::base::type * tmparray4[] = {&type};
-	const jive::base::type * tmparray5[] = {&type};
-	
-	g.b2 = jive_test_node_create(region,
-		1, tmparray4, &g.b1->outputs[0],
-		0, tmparray5);
+	g.a1 = jive_test_node_create(region, {}, {}, {&type});
+	g.a2 = jive_test_node_create(region, {&type}, {g.a1->outputs[0]}, {&type});
+	g.b1 = jive_test_node_create(region, {}, {}, {&type});
+	g.b2 = jive_test_node_create(region, {&type}, {g.b1->outputs[0]}, {&type});
 	
 	return g;
 }

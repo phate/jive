@@ -57,11 +57,9 @@ static int test_main()
 	jive_phi_end(phi, 3, fns);
 
 	jive::output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
-	const jive::base::type * tmparray2[] = {&f0type, &f1type, &f2type};
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		3, tmparray2, results,
-		1, tmparray0);
+		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
 	jive_graph_normalize(graph);

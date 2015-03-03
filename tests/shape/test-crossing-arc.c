@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -27,17 +27,14 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 
 	jive_test_value_type vtype;
-	const jive::base::type * vtype_ptr = &vtype;
-	jive_node * a = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype_ptr);
-	jive_node * b = jive_test_node_create(graph->root_region, 0, NULL, NULL, 1, &vtype_ptr);
-	jive_node * c = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &a->outputs[0], 1,
-		&vtype_ptr);
+	jive_node * a = jive_test_node_create(graph->root_region, {}, {}, {&vtype});
+	jive_node * b = jive_test_node_create(graph->root_region, {}, {}, {&vtype});
+	jive_node * c = jive_test_node_create(graph->root_region, {&vtype}, {a->outputs[0]}, {&vtype});
+
 	jive_region * subregion = jive_region_create_subregion(graph->root_region);
-	jive_node * d = jive_test_node_create(subregion, 1, &vtype_ptr, &a->outputs[0], 1, &vtype_ptr);
-	jive_node * e = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &b->outputs[0], 1,
-		&vtype_ptr);
-	jive_node * f = jive_test_node_create(graph->root_region, 1, &vtype_ptr, &b->outputs[0], 1,
-		&vtype_ptr);
+	jive_node * d = jive_test_node_create(subregion, {&vtype}, {a->outputs[0]}, {&vtype});
+	jive_node * e = jive_test_node_create(graph->root_region, {&vtype}, {b->outputs[0]}, {&vtype});
+	jive_node * f = jive_test_node_create(graph->root_region, {&vtype}, {b->outputs[0]}, {&vtype});
 
 	jive::achr::type anchor_type;
 	jive_node_add_input(e, &anchor_type, jive_node_add_output(d, &anchor_type));
