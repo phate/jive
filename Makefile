@@ -163,10 +163,6 @@ LIBJIVE_SRC += \
 	src/serialization/typecls-registry.c \
 	src/serialization/vsdg.c \
 
-# support exported inlines
-LIBJIVE_SRC += \
-	src/exported_inlines.c
-
 include src/backend/i386/Makefile.sub
 
 SOURCES += $(LIBJIVE_SRC)
@@ -206,13 +202,6 @@ SOURCES += $(LIBJIVE_SRC)
 all: check libjive.a # libjive.so
 
 HEADERS = $(shell find include -name "*.h")
-
-src/exported_inlines.c: $(HEADERS)
-	@( \
-		echo "#define JIVE_EXPORTED_INLINE" ; \
-		find include -name "*.h" | \
-				sed -e "s:include/\(.*\):#include <\\1>:" \
-	) > $@
 
 libjive.a: $(patsubst %.c, %.la, $(LIBJIVE_SRC))
 libjive.so: $(patsubst %.c, %.lo, $(LIBJIVE_SRC))
