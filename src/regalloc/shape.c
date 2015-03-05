@@ -55,8 +55,8 @@ struct jive_region_shaper {
 	jive_shaped_graph * shaped_graph;
 	jive_region * region;
 	jive_shaped_region * shaped_region;
-	jive_master_shaper_selector * master_selector;
-	jive_region_shaper_selector * region_selector;
+	jive::regalloc::master_selector * master_selector;
+	jive::regalloc::region_selector * region_selector;
 	jive_node * control_dominator;
 	
 	jive_mutable_varcut active;
@@ -66,7 +66,7 @@ jive_region_shaper *
 jive_region_shaper_create(
 	jive_region_shaper * parent,
 	jive_region * region,
-	jive_master_shaper_selector * master_selector)
+	jive::regalloc::master_selector * master_selector)
 {
 	jive_region_shaper * self = new jive_region_shaper;
 	
@@ -473,8 +473,8 @@ select_spill(
 {
 	switch(conflict.type) {
 		case jive_regalloc_conflict_class: {
-			return jive_region_shaper_selector_select_spill(
-				self->region_selector, conflict.item.rescls, disallow_origins);
+			return self->region_selector->select_spill(
+				conflict.item.rescls, disallow_origins);
 		}
 		case jive_regalloc_conflict_name: {
 			return conflict.item.ssavar;
@@ -540,7 +540,7 @@ do_split_end(
 			out_type, out_rescls);
 		origin = node->outputs[0];
 		in_rescls = out_rescls;
-		jive_region_shaper_selector_push_node_stack(self->region_selector, node);
+		self->region_selector->push_node_stack(node);
 	}
 	jive_ssavar_divert_origin(ssavar, origin);
 }
@@ -687,7 +687,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 			
 			jive_ssavar_divert_origin(shaped_ssavar->ssavar, split_node->outputs[0]);
 			
-			jive_region_shaper_selector_push_node_stack(self->region_selector, split_node);
+			self->region_selector->push_node_stack(split_node);
 			
 			return false;
 		}
@@ -763,14 +763,14 @@ jive_region_shaper_pick_node(jive_region_shaper * self)
 	if (self->control_dominator)
 		return self->control_dominator;
 	
-	return jive_region_shaper_selector_select_node(self->region_selector);
+	return self->region_selector->select_node();
 }
 
 static void
 flush_pending(jive_region_shaper * self)
 {
 	for (;;) {
-		jive_node * node = jive_region_shaper_selector_select_node(self->region_selector);
+		jive_node * node = self->region_selector->select_node();
 		if (!node)
 			break;
 		
@@ -854,7 +854,7 @@ merge_single_ssavar_from_subregion(
 			type, rescls);
 		
 		jive_ssavar_divert_origin(ssavar, split_node->outputs[0]);
-		jive_region_shaper_selector_push_node_stack(subregion->region_selector, split_node);
+		subregion->region_selector->push_node_stack(split_node);
 		flush_pending(subregion);
 		
 		return false;
@@ -964,7 +964,7 @@ jive_regalloc_shape(jive_graph * graph)
 {
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive_master_shaper_selector selector(shaped_graph);
+	jive::regalloc::master_selector selector(shaped_graph);
 	jive_region_shaper * region_shaper = jive_region_shaper_create(0, graph->root_region, &selector);
 	jive_region_shaper_process(region_shaper);
 	

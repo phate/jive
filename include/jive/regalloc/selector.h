@@ -10,170 +10,212 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <set>
+#include <unordered_set>
+#include <vector>
+
 #include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
-
-#include <vector>
-
-namespace jive {
-class input;
-class output;
-}
 
 struct jive_node;
 struct jive_region;
 struct jive_resource_class;
 struct jive_shaped_graph;
+struct jive_shaped_region;
 struct jive_shaped_ssavar;
 struct jive_ssavar;
 
-typedef struct jive_master_shaper_selector jive_master_shaper_selector;
-typedef struct jive_node_cost jive_node_cost;
-typedef struct jive_node_cost_prio_heap jive_node_cost_prio_heap;
-typedef struct jive_node_cost_stack jive_node_cost_stack;
-typedef struct jive_region_shaper_selector jive_region_shaper_selector;
+namespace jive {
+class input;
+class output;
 
-typedef enum {
-	jive_node_cost_state_ahead = 0,
-	jive_node_cost_state_queue = 1,
-	jive_node_cost_state_stack = 2,
-	jive_node_cost_state_done = 3
-} jive_node_cost_state;
+namespace regalloc {
 
-class jive_node_cost {
+class master_selector;
+
+/* Structure used for tracking the selection priority of nodes, driven by
+ * both "cost" and other criteria. */
+class node_selection_order {
 public:
-	~jive_node_cost();
+	enum state_type {
+		state_ahead = 0, /* not selectable */
+		state_queue = 1, /* selectable, in queue according to cost */
+		state_stack = 2, /* selectable, on priority stack */
+		state_done = 3   /* scheduled, cost not tracked anymore */
+	};
 
-	jive_node_cost(jive_master_shaper_selector * master, jive_node * node);
+	/* compare priorities of nodes */
+	class ptr_less {
+	public:
+		inline bool operator()(
+			node_selection_order * x,
+			node_selection_order * y) const noexcept
+		{
+			return jive_rescls_prio_array_compare(
+				&x->prio_array(), &y->prio_array()) < 0;
+		}
+	};
+
+	~node_selection_order();
+
+	node_selection_order(master_selector * master, jive_node * node);
 	
 	inline jive_node * node() const noexcept { return node_; }
-
-	jive_node_cost_state state; /* whether in prio queue or stack */
-	size_t index; /* index within either stack or heap */
 	
+	/* some internals exposed read-only for unit tests */
+	inline const jive_rescls_prio_array & prio_array() const noexcept { return prio_array_; }
+
+	inline state_type state() const noexcept { return state_; }
+
+	inline const std::multiset<node_selection_order *, ptr_less>::const_iterator
+	queue_index() const noexcept { return queue_index_; }
+
+	inline jive_resource_class_priority
+	blocked_rescls_priority() const noexcept { return blocked_rescls_priority_; }
+
+	inline bool force_tree_root() const noexcept { return force_tree_root_; }
+
+	inline const jive_resource_class_count &
+	rescls_cost() const noexcept { return rescls_cost_; }
+
+private:
+	/* compute the priority value for this node, based on resource
+	 * usage counts */
+	void
+	compute_prio_value();
+
+	/* whether in prio queue or stack */
+	state_type state_;
+	/* index within stack (only valid if state_stack) */
+	size_t stack_index_;
+	/* position in queue (only valid if state_queue) */
+	std::multiset<node_selection_order *, ptr_less>::iterator queue_index_;
+
 	/* "cost" of the node, in resource class counts and
 	reduced to array of scalars */
-	jive_resource_class_count rescls_cost;
-	jive_rescls_prio_array prio_array;
+	jive_resource_class_count rescls_cost_;
+	jive_rescls_prio_array prio_array_;
 	
 	/* blocked resource class with highest priority */
-	jive_resource_class_priority blocked_rescls_priority;
-	bool force_tree_root;
+	jive_resource_class_priority blocked_rescls_priority_;
+	/* consider root of dependence tree for computation purposes */
+	bool force_tree_root_;
 
-private:
 	jive_node * node_;
-	jive_master_shaper_selector * master_;
+	master_selector * master_;
 	
-	jive::detail::intrusive_hash_anchor<jive_node_cost> hash_chain;
+	detail::intrusive_hash_anchor<node_selection_order> hash_chain;
 public:
-	typedef jive::detail::intrusive_hash_accessor<
+	typedef detail::intrusive_hash_accessor<
 		jive_node *,
-		jive_node_cost,
-		&jive_node_cost::node_,
-		&jive_node_cost::hash_chain
+		node_selection_order,
+		&node_selection_order::node_,
+		&node_selection_order::hash_chain
 	> hash_chain_accessor;
+
+	friend class region_selector;
+	friend class master_selector;
 };
 
-typedef jive::detail::owner_intrusive_hash<
+typedef detail::owner_intrusive_hash<
 	const jive_node *,
-	jive_node_cost,
-	jive_node_cost::hash_chain_accessor
-> jive_node_cost_hash;
+	node_selection_order,
+	node_selection_order::hash_chain_accessor
+> node_selection_order_hash;
 
-jive_node_cost *
-jive_node_cost_create(jive_master_shaper_selector * master, struct jive_node * node);
+/* select next nodes to be shaped in region */
+class region_selector {
+public:
+	region_selector(
+		master_selector * master,
+		const jive_region * region,
+		const jive_shaped_region * shaped_region);
 
-struct jive_node_cost_prio_heap {
-	size_t nitems;
-	std::vector<jive_node_cost*> items;
-};
+	/* select next node for shaping */
+	jive_node *
+	select_node();
 
-void
-jive_node_cost_prio_heap_init(jive_node_cost_prio_heap * self);
+	/* select variable suitable for spilling */
+	jive_ssavar *
+	select_spill(
+		const jive_resource_class * rescls,
+		jive_node * disallow_origins) const;
 
-void
-jive_node_cost_prio_heap_add(jive_node_cost_prio_heap * self, jive_node_cost * item);
+	/* push onto priority node selection stack -- this node will be
+	 * preferred for selection over all other currently selectable nodes */
+	void
+	push_node_stack(
+		jive_node * node);
 
-jive_node_cost *
-jive_node_cost_prio_heap_peek(const jive_node_cost_prio_heap * self);
-
-void
-jive_node_cost_prio_heap_remove(jive_node_cost_prio_heap * self, jive_node_cost * item);
-
-struct jive_node_cost_stack {
-	size_t nitems;
-	std::vector<jive_node_cost*> items;
-};
-
-void
-jive_node_cost_stack_init(jive_node_cost_stack * self);
-
-void
-jive_node_cost_stack_add(jive_node_cost_stack * self, jive_node_cost * item);
-
-void
-jive_node_cost_stack_remove(jive_node_cost_stack * self, jive_node_cost * item);
-
-jive_node_cost *
-jive_node_cost_stack_peek(const jive_node_cost_stack * self);
-
-struct jive_region_shaper_selector {
-	jive_master_shaper_selector * master;
-	
-	const struct jive_region * region;
-	const struct jive_shaped_region * shaped_region;
-	
-	jive_node_cost_prio_heap prio_heap;
-	jive_node_cost_stack node_stack;
+	/* expose readable node queue (for unit tests) */
+	inline const std::multiset<node_selection_order *, node_selection_order::ptr_less> &
+	node_queue() const noexcept {
+		return node_queue_;
+	}
 
 private:
-	jive::detail::intrusive_hash_anchor<jive_region_shaper_selector> hash_chain;
-public:
-	typedef jive::detail::intrusive_hash_accessor <
-		const struct jive_region *,
-		jive_region_shaper_selector,
-		&jive_region_shaper_selector::region,
-		&jive_region_shaper_selector::hash_chain
+	/* ssavars sorted by priority, highest priority ssavars first */
+	std::vector<jive_ssavar *>
+	prio_sorted_ssavars() const;
+
+	/* lookup or create cost structure for node */
+	node_selection_order *
+	map_node_internal(jive_node * node) const;
+
+	/* add ssavars assigned to outputs of node to both vector and set */
+	void
+	add_node_output_ssavars(
+		jive_node * node,
+		std::vector<jive_ssavar *> & ssavars,
+		std::unordered_set<jive_ssavar *> & unique_ssavars) const;
+
+	/* internal function to push onto node stack */
+	void
+	push_node_stack_internal(node_selection_order * node_cost);
+
+	/* the master controlling this selector */
+	master_selector * master_;
+	
+	/* the region it operates on */
+	const jive_region * region_;
+	const jive_shaped_region * shaped_region_;
+
+	/* stack of priorized nodes: these must be selected in LIFO in
+	 * preference to any other nodes */
+	std::vector<node_selection_order *> node_stack_;
+	/* queue of nodes, ordered by priority */
+	std::multiset<node_selection_order *, node_selection_order::ptr_less> node_queue_;
+
+	/* hash linkage from master */
+	detail::intrusive_hash_anchor<region_selector> hash_chain;
+	typedef detail::intrusive_hash_accessor <
+		const jive_region *,
+		region_selector,
+		&region_selector::region_,
+		&region_selector::hash_chain
 	> hash_chain_accessor;
+
+	friend class master_selector;
 };
 
-typedef jive::detail::owner_intrusive_hash <
-	const struct jive_region *,
-	jive_region_shaper_selector,
-	jive_region_shaper_selector::hash_chain_accessor
-> jive_region_shaper_selector_hash;
-
-jive_region_shaper_selector *
-jive_region_shaper_selector_create(jive_master_shaper_selector * master,
-	const struct jive_region * region, const struct jive_shaped_region * shaped_region);
-
-struct jive_node *
-jive_region_shaper_selector_select_node(jive_region_shaper_selector * self);
-
-struct jive_ssavar *
-jive_region_shaper_selector_select_spill(jive_region_shaper_selector * self,
-	const struct jive_resource_class * rescls, struct jive_node * disallow_origins);
-
-void
-jive_region_shaper_selector_push_node_stack(jive_region_shaper_selector * self,
-	struct jive_node * node);
-
-class jive_master_shaper_selector {
+/* master tying the selectors for indvidual regions together; also provides
+ * common support infrastructure */
+class master_selector {
 public:
-	~jive_master_shaper_selector();
+	~master_selector();
 
-	jive_master_shaper_selector(jive_shaped_graph * shaped_graph);
+	master_selector(jive_shaped_graph * shaped_graph);
 
 	inline jive_shaped_graph *
 	shaped_graph() const noexcept { return shaped_graph_; }
 
 	/* lookup or create shaper selector for region */
-	jive_region_shaper_selector *
+	region_selector *
 	map_region(const jive_region * region);
 
 	/* lookup or create cost structure for node */
-	jive_node_cost *
+	node_selection_order *
 	map_node(jive_node * node);
 
 	bool
@@ -183,7 +225,7 @@ public:
 	 * in the unit tests */
 
 	/* lookup or create cost structure for node, without validation */
-	jive_node_cost *
+	node_selection_order *
 	map_node_internal(jive_node * node);
 
 	/* invalidate cost estimate for current node */
@@ -201,7 +243,7 @@ public:
 private:
 	/* determine whether output is assumed to be active at entry to region */
 	bool
-	assumed_active(const jive::output * output, const jive_region * region) const noexcept;
+	assumed_active(const output * out, const jive_region * region) const noexcept;
 
 	/* test whether this node may be a non-root node of a subtree */
 	bool
@@ -236,40 +278,39 @@ private:
 	init_region_recursive(jive_region * region);
 
 	/* create node_cost structure for the given node */
-	jive_node_cost *
+	node_selection_order *
 	node_cost_create(jive_node * node);
 
 	/* create a selector for the given region */
-	jive_region_shaper_selector *
+	region_selector *
 	region_shaper_selector_create(
 		const jive_region * region,
 		const jive_shaped_region * shaped_region);
 
-	static void
-	shaped_node_create(
-		jive_master_shaper_selector * closure, jive_node * node);
-	static void
-	shaped_region_ssavar_add(
-		jive_master_shaper_selector * closure, jive_shaped_region * shaped_region,
-		jive_shaped_ssavar * shaped_ssavar);
-	static void
-	shaped_region_ssavar_remove(
-		jive_master_shaper_selector * closure, jive_shaped_region * shaped_region,
-		jive_shaped_ssavar * shaped_ssavar);
-	static void
-	node_create(jive_master_shaper_selector * closure, jive_node * node);
-	static void
-	input_change(
-		jive_master_shaper_selector * closure, jive::input * input, jive::output * old_origin,
-		jive::output * new_origin);
+	void
+	handle_node_create(jive_node * node);
+
+	void
+	handle_input_change(
+		input * in, output * old_origin, output * new_origin);
 
 	jive_shaped_graph * shaped_graph_;
 
-	jive_node_cost_hash node_map_;
-	jive_region_shaper_selector_hash region_map_;
-	jive::computation_tracker cost_computation_state_tracker_;
+	node_selection_order_hash node_map_;
 
-	std::vector<jive::callback> callbacks_;
+	typedef detail::owner_intrusive_hash <
+		const jive_region *,
+		region_selector,
+		region_selector::hash_chain_accessor
+	> region_selector_hash;
+
+	region_selector_hash region_map_;
+	computation_tracker cost_computation_state_tracker_;
+
+	std::vector<callback> callbacks_;
 };
+
+}
+}
 
 #endif
