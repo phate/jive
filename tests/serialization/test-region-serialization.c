@@ -40,7 +40,7 @@ static int test_main(void)
 	jive::output * true_out = jive_control_true(gr1);
 	jive::output * c = jive_gamma(true_out, {&a->type()}, {{a}, {b}})[0];
 	
-	jive_theta theta = jive_theta_begin(gr1);
+	jive_theta theta = jive_theta_begin(gr1->root_region);
 	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);
 	jive_theta_end(theta, jive_control_false(gr1), 1, &loopvar);
 	jive::output * d = loopvar.value;

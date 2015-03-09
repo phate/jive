@@ -42,7 +42,7 @@ create_testgraph()
 	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
 	jive::output * arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
 	
-	jive_theta theta = jive_theta_begin(graph);
+	jive_theta theta = jive_theta_begin(graph->root_region);
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, arg1);
 	jive_theta_loopvar loopvar2 = jive_theta_loopvar_enter(theta, arg2);
 

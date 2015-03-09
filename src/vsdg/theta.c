@@ -100,18 +100,16 @@ theta_op::copy() const
 typedef struct jive_theta_build_state jive_theta_build_state;
 struct jive_theta_build_state {
 	std::vector<jive_theta_loopvar> loopvars;
-	jive_floating_region floating;
 };
 
 jive_theta
-jive_theta_begin(jive_graph * graph)
+jive_theta_begin(jive_region * parent)
 {
 	jive_theta self;
 	jive_theta_build_state * state = new jive_theta_build_state;
-	state->floating = jive_floating_region_create(graph);
-	self.region = state->floating.region;
+	self.region = jive_region_create_subregion(parent);
 
-	state->floating.region->attrs.is_looped = true;
+	self.region->attrs.is_looped = true;
 	jive::theta_head_op().create_node(self.region, 0, nullptr);
 	
 	self.internal_state = state;
@@ -167,8 +165,6 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	jive_node * tail = jive::theta_tail_op().create_node(self.region, 2, arguments);
 	for (n = 0; n < state->loopvars.size(); ++n)
 		jive_node_gate_input(tail, state->loopvars[n].gate, state->loopvars[n].value);
-	
-	jive_floating_region_settle(state->floating);
 	
 	jive_node * anchor = jive::theta_op().create_node(self.region->parent, 1, &tail->outputs[0]);
 	for (n = 0; n < state->loopvars.size(); ++n)

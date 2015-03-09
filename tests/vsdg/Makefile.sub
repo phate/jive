@@ -7,7 +7,6 @@ TESTS+=\
 	vsdg/test-graphtraverser \
 	vsdg/test-mutable-traverser \
 	vsdg/test-negotiator \
-	vsdg/test-nested-floating-theta \
 	vsdg/test-node_cse \
 	vsdg/test-phi \
 	vsdg/test-phi_extension \

@@ -65,7 +65,7 @@ static int test_main(void)
 		1, tmparray1, &dummy->outputs[0],
 		2, tmparray2);
 	
-	jive_theta theta = jive_theta_begin(graph);
+	jive_theta theta = jive_theta_begin(r1);
 	jive_region * loop_region = theta.region;
 	
 	jive_theta_loopvar loopvar1 = jive_theta_loopvar_enter(theta, top->outputs[0]);

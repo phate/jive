@@ -91,7 +91,7 @@ struct jive_theta_loopvar {
 	\brief Begin constructing a loop region
 */
 jive_theta
-jive_theta_begin(struct jive_graph * graph);
+jive_theta_begin(struct jive_region * parent);
 
 /**
 	\brief Add a loop-variant variable with a pre-loop value
