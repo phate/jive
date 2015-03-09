@@ -395,16 +395,6 @@ private:
 	std::unique_ptr<jive::operation> operation_;
 };
 
-namespace jive {
-
-inline jive_node *
-create_operation_node(const operation & op)
-{
-	return new jive_node(op.copy());
-}
-
-}
-
 struct jive_tracker_nodestate {
 	jive_node * node;
 	size_t cookie;

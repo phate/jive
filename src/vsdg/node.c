@@ -1229,7 +1229,7 @@ jive_opnode_create(
 	for (size_t n = 0; n < op.nresults(); ++n) {
 		result_types[n] = &op.result_type(n);
 	}
-	jive_node * node = jive::create_operation_node(op);
+	jive_node * node = new jive_node(op.copy());
 	jive_node_init_(node, region,
 		op.narguments(), argument_types, argument_values,
 		op.nresults(), result_types);
