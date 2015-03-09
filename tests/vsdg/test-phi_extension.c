@@ -22,7 +22,7 @@ test_main()
 	jive_graph * graph = jive_graph_create();
 
 	jive_test_value_type vtype;
-	jive_phi phi = jive_phi_begin(graph);
+	jive_phi phi = jive_phi_begin(graph->root_region);
 	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, &vtype);
 	jive_phi_fixvar_leave(phi, fv.gate, fv.value);
 	jive_phi_end(phi, 1, &fv);

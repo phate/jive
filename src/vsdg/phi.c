@@ -113,17 +113,15 @@ register_node_normal_form(void)
 typedef struct jive_phi_build_state jive_phi_build_state;
 struct jive_phi_build_state {
 	std::vector<jive_phi_fixvar> fixvars;
-	jive_floating_region floating;
 };
 
 jive_phi
-jive_phi_begin(jive_graph * graph)
+jive_phi_begin(jive_region * parent)
 {
 	jive_phi self;
 	jive_phi_build_state * state;
 	state = new jive_phi_build_state;
-	state->floating = jive_floating_region_create(graph);
-	self.region = state->floating.region;
+	self.region = jive_region_create_subregion(parent);
 	
 	jive::phi_head_op().create_node(self.region, 0, nullptr);
 	
@@ -177,9 +175,7 @@ jive_phi_end(jive_phi self,
 	jive_node * leave = jive::phi_tail_op().create_node(enter->region, 1, &enter->outputs[0]);
 	for (n = 0; n < state->fixvars.size(); ++n)
 		jive_node_gate_input(leave, state->fixvars[n].gate, state->fixvars[n].value);
-	
-	jive_floating_region_settle(state->floating);
-	
+
 	jive_node * anchor = jive::phi_op().create_node(self.region->parent, 1, &leave->outputs[0]);
 	for (n = 0; n < state->fixvars.size(); ++n)
 		state->fixvars[n].value = jive_node_gate_output(anchor, state->fixvars[n].gate);

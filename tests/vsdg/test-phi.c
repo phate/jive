@@ -32,7 +32,7 @@ static int test_main()
 	jive::fct::type f1type(0, NULL, 0, NULL);
 	jive::fct::type f2type(1, tmparray0, 1, tmparray0);
 
-	jive_phi phi = jive_phi_begin(graph);
+	jive_phi phi = jive_phi_begin(graph->root_region);
 	jive_phi_fixvar fns[3];
 	fns[0] = jive_phi_fixvar_enter(phi, &f0type);
 	fns[1] = jive_phi_fixvar_enter(phi, &f1type);

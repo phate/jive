@@ -117,7 +117,7 @@ struct jive_phi_fixvar {
 	\brief Begin constructing a phi region
 */
 jive_phi
-jive_phi_begin(struct jive_graph * graph);
+jive_phi_begin(struct jive_region * parent);
 
 /**
 	\brief Add a fixpoint variable of given type
