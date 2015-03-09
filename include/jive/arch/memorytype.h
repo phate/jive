@@ -23,6 +23,11 @@ public:
 	virtual bool operator==(const jive::base::type & other) const noexcept override;
 
 	virtual jive::mem::type * copy() const override;
+
+	inline static const type & instance() { return instance_; }
+
+private:
+	static const type instance_;
 };
 
 }

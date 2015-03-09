@@ -44,6 +44,11 @@ LIBJIVE_SRC = \
 	src/vsdg/traverser.c \
 	src/vsdg/variable.c \
 
+#evaluation
+LIBJIVE_SRC += \
+	src/evaluator/eval.c \
+	src/evaluator/literal.c \
+
 # visualization
 LIBJIVE_SRC += \
 	src/util/buffer.c \

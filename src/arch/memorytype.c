@@ -33,5 +33,7 @@ type::copy() const
 	return new jive::mem::type();
 }
 
+const type type::instance_;
+
 }
 }
