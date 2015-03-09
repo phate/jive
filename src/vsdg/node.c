@@ -614,31 +614,6 @@ jive_node_init_(
 	self->graph->on_node_create(self);
 }
 
-void
-jive_node_fini_(jive_node * self)
-{
-	JIVE_DEBUG_ASSERT(self->region);
-	
-	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
-	
-	while(self->noutputs)
-		delete self->outputs[self->noutputs-1];
-	
-	while (self->ninputs)
-		delete self->inputs[self->ninputs-1];
-	
-	JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
-	JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
-
-	if (self == self->region->top) self->region->top = NULL;
-	if (self == self->region->bottom) self->region->bottom = NULL;
-	
-	self->region = 0;
-	
-	for (size_t n = 0; n < self->tracker_slots.size(); n++)
-		delete self->tracker_slots[n];
-}
-
 jive::node_normal_form *
 jive_node_get_default_normal_form_(
 	const std::type_info & operator_class,
@@ -1100,11 +1075,37 @@ jive_node_copy_substitute(
 	return new_node;
 }
 
+jive_node::~jive_node()
+{
+	graph->on_node_destroy(this);
+
+	JIVE_DEBUG_ASSERT(region);
+
+	JIVE_LIST_REMOVE(region->nodes, this, region_nodes_list);
+
+	while(noutputs)
+		delete outputs[noutputs-1];
+
+	while (ninputs)
+		delete inputs[ninputs-1];
+
+	JIVE_LIST_REMOVE(graph->bottom, this, graph_bottom_list);
+	JIVE_LIST_REMOVE(region->top_nodes, this, region_top_node_list);
+
+	if (this == region->top)
+		region->top = nullptr;
+	if (this == region->bottom)
+		region->bottom = nullptr;
+
+	region = nullptr;
+
+	for (size_t n = 0; n < tracker_slots.size(); n++)
+		delete tracker_slots[n];
+}
+
 void
 jive_node_destroy(jive_node * self)
 {
-	self->graph->on_node_destroy(self);
-	jive_node_fini_(self);
 	delete self;
 }
 

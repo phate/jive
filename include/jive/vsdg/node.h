@@ -344,6 +344,8 @@ struct jive_substitution_map;
 
 class jive_node final {
 public:
+	~jive_node();
+
 	inline jive_node(std::unique_ptr<jive::operation> op)
 		: operation_(std::move(op))
 	{
