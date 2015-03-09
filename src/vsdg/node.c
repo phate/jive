@@ -166,9 +166,6 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	if (this->producer()->region != this->node()->region)
 		jive_region_hull_remove_input(this->node()->region, this);
 
-	if (this->node()->graph->floating_region_count)
-		jive_region_check_move_floating(this->node()->region, new_origin->node()->region);
-
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node(), new_origin));
 
 	jive::output * old_origin = this->origin();
@@ -566,11 +563,6 @@ static jive::input *
 jive_uninitialized_node_add_input(jive_node * self, const jive::base::type * type,
 	jive::output * initial_operand)
 {
-	if (self->graph->floating_region_count && !dynamic_cast<const jive::achr::type*>(type)) {
-		jive_region * origin_region = initial_operand->node()->region;
-		jive_region_check_move_floating(self->region, origin_region);
-	}
-	
 	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
 	jive_uninitialized_node_add_input_(self, input);
 
@@ -693,11 +685,6 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 jive::input *
 jive_node_add_input(jive_node * self, const jive::base::type * type, jive::output * initial_operand)
 {
-	if (self->graph->floating_region_count && dynamic_cast<const jive::achr::type*>(type)) {
-		jive_region * origin_region = initial_operand->node()->region;
-		jive_region_check_move_floating(self->region, origin_region);
-	}
-
 	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
 	jive_node_add_input_(self, input);
 
@@ -748,11 +735,6 @@ jive_node_add_constrained_input(jive_node * self, const jive_resource_class * re
 jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {
-	if (self->graph->floating_region_count) {
-		jive_region * origin_region = initial_operand->node()->region;
-		jive_region_check_move_floating(self->region, origin_region);
-	}
-
 	jive::input * input = gate->create_input(self, self->ninputs, initial_operand);
 	for (size_t n = 0; n < input->index(); n++) {
 		jive::input * other = self->inputs[n];

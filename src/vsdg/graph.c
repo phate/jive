@@ -52,8 +52,7 @@ jive_graph_init_(jive_graph * self)
 	self->gates.first = self->gates.last = 0;
 	self->resources_fully_assigned = false;
 	self->normalized = true;
-	self->floating_region_count = 0;
-	
+
 	self->root_region = new jive_region;
 	jive_region_init_(self->root_region, self, 0);
 	jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);

@@ -75,8 +75,7 @@ public:
 	
 	bool resources_fully_assigned;
 	bool normalized;
-	size_t floating_region_count;
-	
+
 	std::vector<jive_tracker_slot_reservation> tracker_slots;
 	
 	jive::node_normal_form_hash new_node_normal_forms;

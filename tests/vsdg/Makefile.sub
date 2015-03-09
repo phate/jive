@@ -1,7 +1,6 @@
 TESTS+=\
 	vsdg/test-cone-traverser \
 	vsdg/test-empty_graph_pruning \
-	vsdg/test-floating-regions \
 	vsdg/test-gamma \
 	vsdg/test-graph \
 	vsdg/test-graphtraverser \

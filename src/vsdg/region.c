@@ -30,7 +30,6 @@ jive_region_attrs_init(jive_region_attrs * attrs)
 	attrs->align = 1;
 	attrs->section = jive_region_section_inherit;
 	attrs->is_looped = false;
-	attrs->is_floating = false;
 }
 
 void
@@ -142,25 +141,6 @@ jive_region_create_subregion(jive_region * self)
 	return subregion;
 }
 
-jive_floating_region
-jive_floating_region_create(jive_graph * graph)
-{
-	jive_floating_region floating_region;
-	floating_region.region = new jive_region;
-	jive_region_init_(floating_region.region, graph, graph->root_region);
-	floating_region.region ->attrs.is_floating = true;
-	graph->floating_region_count ++;
-	return floating_region;
-}
-
-void
-jive_floating_region_settle(jive_floating_region floating_region)
-{
-	JIVE_DEBUG_ASSERT(floating_region.region->attrs.is_floating);
-	floating_region.region->attrs.is_floating = false;
-	floating_region.region->graph->floating_region_count --;
-}
-
 void
 jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
@@ -259,30 +239,6 @@ jive_region_copy_substitute(const jive_region * self, jive_region * target,
 				target_subregion->bottom = new_node;
 		}
 	}
-}
-
-void
-jive_region_check_move_floating(jive_region * self, jive_region * edge_origin)
-{
-	jive_region * movable = self;
-	jive_region * parent = self->parent;
-	/* find closest common parent, as well as the region directly below it
-	on the path */
-	while (movable->depth > edge_origin->depth) {
-		movable = parent;
-		parent = parent->parent;
-	}
-	/* if the search ends up in the origin region of the new edge, then we
-	know that the edge to be inserted points from one outer region into
-	an inner region, and is thus valid */
-	if (movable == edge_origin)
-		return;
-	/* if the search ends up somewhere else, then we have found the
-	region which we must reparent to make this a valid edge */
-	if (!movable->attrs.is_floating) {
-		throw jive::compiler_error("Invalid edge");
-	}
-	jive_region_reparent(movable, edge_origin);
 }
 
 static jive_region_hull_entry *

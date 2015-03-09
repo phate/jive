@@ -20,7 +20,6 @@ namespace jive {
 	class input;
 }
 
-typedef struct jive_floating_region jive_floating_region;
 typedef struct jive_region jive_region;
 
 struct jive_cut;
@@ -43,7 +42,6 @@ struct jive_region_attrs {
 	size_t align;
 	jive_region_section_flags section;
 	bool is_looped;
-	bool is_floating;
 };
 
 typedef struct jive_region_hull_entry jive_region_hull_entry;
@@ -103,13 +101,6 @@ struct jive_region {
 	jive_region_ssavar_hash used_ssavars;
 	
 	struct jive::input * anchor;
-};
-
-/**
-	\brief Represents one region in the "floating" state
-*/
-struct jive_floating_region {
-	jive_region * region;
 };
 
 void
@@ -222,15 +213,6 @@ jive_region_map_to_section(const struct jive_region * region)
 	
 	return section;
 }
-
-jive_floating_region
-jive_floating_region_create(struct jive_graph * graph);
-
-void
-jive_region_check_move_floating(jive_region * self, jive_region * edge_origin);
-
-void
-jive_floating_region_settle(jive_floating_region region);
 
 void
 jive_region_hull_add_input(struct jive_region * region, jive::input * input);
