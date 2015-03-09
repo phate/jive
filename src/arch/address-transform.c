@@ -374,7 +374,7 @@ jive_lambda_node_address_transform(
 	for (size_t i = 0; i < new_fcttype->narguments(); i++)
 		argument_types[i] = new_fcttype->argument_type(i);
 
-	jive_lambda * lambda = jive_lambda_begin(graph, new_fcttype->narguments(),
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region, new_fcttype->narguments(),
 		argument_types, parameter_names);
 
 	jive_substitution_map * map = jive_substitution_map_create();

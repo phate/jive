@@ -32,7 +32,7 @@ test_simple_lambda(struct jive_graph * graph)
 	const jive::base::type * tmparray1[] = {&vtype, &vtype, &vtype};
 	const char * tmparray2[] = {"x", "y", "z"};
 
-	jive_lambda * lambda = jive_lambda_begin(graph,
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region,
 		3, tmparray1, tmparray2);
 
 	jive_node * node = jive_test_node_create(lambda->region, 1, tmparray0, &lambda->arguments[0], 1,
@@ -82,7 +82,7 @@ test_recursive_lambda(struct jive_graph * graph)
 	const jive::base::type * tmparray9[] = {&vtype, &vtype, &vtype};
 	const char * tmparray10[] = {"x", "y", "z"};
 
-	jive_lambda * lambda = jive_lambda_begin(graph,
+	jive_lambda * lambda = jive_lambda_begin(phi.region,
 		3, tmparray9, tmparray10);
 
 	jive_node * node = jive_test_node_create(lambda->region, 1, tmparray6, &lambda->arguments[0], 1,
@@ -142,7 +142,7 @@ static int function_test_build_lambda(void)
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
-	jive_lambda * lambda = jive_lambda_begin(graph,
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region,
 		2, tmparray0, tmparray1);
 
 	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
@@ -232,7 +232,7 @@ static int function_test_lambda_apply(void)
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
-	jive_lambda * lambda = jive_lambda_begin(graph,
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region,
 		2, tmparray0, tmparray1);
 
 	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);

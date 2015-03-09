@@ -134,14 +134,13 @@ struct jive_lambda {
 	struct jive_region * region;
 	size_t narguments;
 	jive::output ** arguments;
-	struct jive_lambda_build_state * internal_state;
 };
 
 /**
 	\brief Begin constructing a lambda region
 */
 struct jive_lambda *
-jive_lambda_begin(struct jive_graph * graph, size_t narguments,
+jive_lambda_begin(struct jive_region * parent, size_t narguments,
 	const jive::base::type * const argument_types[], const char * const argument_names[]);
 
 /**

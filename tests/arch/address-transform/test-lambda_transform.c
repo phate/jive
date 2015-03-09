@@ -31,7 +31,7 @@ test_main(void)
 	const jive::base::type * addrptr = &addrtype;
 	const char * tmparray0[] = {"x"};
 
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, &addrptr, tmparray0);
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, &addrptr, tmparray0);
 	jive::output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
 	const jive::base::type * fcttype = &fct->type();

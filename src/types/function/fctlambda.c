@@ -196,23 +196,17 @@ jive_lambda_is_self_recursive(const jive_node * self)
 
 /* lambda instantiation */
 
-typedef struct jive_lambda_build_state jive_lambda_build_state;
-struct jive_lambda_build_state {
-	jive_floating_region floating;
-};
-
 jive_lambda *
 jive_lambda_begin(
-	jive_graph * graph,
+	jive_region * parent,
 	size_t narguments,
 	const jive::base::type * const argument_types[],
 	const char * const argument_names[])
 {
+	struct jive_graph * graph = parent->graph;
+
 	jive_lambda * lambda = new jive_lambda;
-	jive_lambda_build_state * state;
-	state = new jive_lambda_build_state;
-	state->floating = jive_floating_region_create(graph);
-	lambda->region = state->floating.region;
+	lambda->region = jive_region_create_subregion(parent);
 	lambda->arguments = new jive::output*[narguments];
 	lambda->narguments = narguments;
 
@@ -224,8 +218,6 @@ jive_lambda_begin(
 		lambda->arguments[n] = jive_node_gate_output(lambda->region->top, gate);
 	}
 
-	lambda->internal_state = state;
-
 	return lambda;
 }
 
@@ -233,7 +225,6 @@ jive::output *
 jive_lambda_end(jive_lambda * self,
 	size_t nresults, const jive::base::type * const result_types[], jive::output * const results[])
 {
-	jive_lambda_build_state * state = self->internal_state;
 	jive_region * region = self->region;
 	jive_graph * graph = region->graph;
 
@@ -247,13 +238,10 @@ jive_lambda_end(jive_lambda * self,
 		jive_node_gate_input(leave, gate, results[n]);
 	}
 
-	jive_floating_region_settle(state->floating);
-
 	jive_node * anchor = jive_lambda_node_create(region);
 	JIVE_DEBUG_ASSERT(anchor->noutputs == 1);
 
 	delete[] self->arguments;
-	delete state;
 	delete self;
 
 	return anchor->outputs[0];
@@ -397,7 +385,6 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs == 1);
 
-	jive_graph * graph = self->region->graph;
 	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
 	const jive_node * enter = lambda_region->top;
 	const jive_node * leave = lambda_region->bottom;
@@ -455,7 +442,7 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 
 	/* create new lambda */
 	jive_substitution_map * map = jive_substitution_map_create();
-	jive_lambda * lambda = jive_lambda_begin(graph, alive_parameter_types.size(),
+	jive_lambda * lambda = jive_lambda_begin(lambda_region->parent, alive_parameter_types.size(),
 		&alive_parameter_types[0], &alive_parameter_names[0]);
 
 	for (n = 0; n < alive_parameters.size(); n++)

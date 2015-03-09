@@ -37,7 +37,7 @@ static int test_main(void)
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
-	jive_lambda * lambda = jive_lambda_begin(graph,
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region,
 		2, tmparray0, tmparray1);
 
 	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);

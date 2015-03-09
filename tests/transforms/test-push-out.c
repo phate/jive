@@ -24,10 +24,11 @@ static int test_main(void)
 	const char * tmparray0[] = {"arg"};
 
 	const jive::base::type * tmparray11[] = {&int32};
-	jive_lambda * outer_function = jive_lambda_begin(graph, 1, tmparray11, tmparray0);
+	jive_lambda * outer_function = jive_lambda_begin(graph->root_region, 1, tmparray11, tmparray0);
 	const char * tmparray1[] = {"arg1"};
 	
-	jive_lambda * inner_function = jive_lambda_begin(graph, 1, tmparray11, tmparray1);
+	jive_lambda * inner_function = jive_lambda_begin(outer_function->region, 1, tmparray11,
+		tmparray1);
 	jive::output * tmparray2[] = {
 		outer_function->arguments[0],
 		inner_function->arguments[0]

@@ -1086,7 +1086,7 @@ static int types_bitstring_test_normalize(void)
 	jive::bits::type bits32(32);
 	const char * tmparray0[] = {"arg"};
 	const jive::base::type * tmparray11[] = {&bits32};
-	jive_lambda * lambda = jive_lambda_begin(graph, 1, tmparray11, tmparray0);
+	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, tmparray11, tmparray0);
 
 	jive::output * c0 = jive_bitconstant_unsigned(graph, 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph, 32, 4);
