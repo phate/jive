@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -12,7 +12,6 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/resource-private.h>
 
 jive_shaped_node *
 jive_shaped_node_create(jive_cut * cut, jive_node * node)
@@ -30,10 +29,7 @@ jive_shaped_node_create(jive_cut * cut, jive_node * node)
 	shaped_graph->node_map.insert(self);
 
 	self->cut = cut;
-	
-	jive_resource_class_count_init(&self->use_count_before);
-	jive_resource_class_count_init(&self->use_count_after);
-	
+
 	return self;
 }
 
@@ -181,8 +177,6 @@ jive_shaped_node_destroy(jive_shaped_node * self)
 	}
 	
 	JIVE_DEBUG_ASSERT(self->ssavar_xpoints.size() == 0);
-	jive_resource_class_count_fini(&self->use_count_before);
-	jive_resource_class_count_fini(&self->use_count_after);
 	
 	delete self;
 }

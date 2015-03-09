@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -207,17 +207,19 @@ jive_shaped_variable_get_cross_count(
 	const jive_shaped_variable * self,
 	jive_resource_class_count * counts)
 {
-	jive_resource_class_count_clear(counts);
-	
+	counts->clear();
+
 	jive_ssavar * ssavar;
 	JIVE_LIST_ITERATE(self->variable->ssavars, ssavar, variable_ssavar_list) {
 		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(self->shaped_graph, ssavar);
 		
 		for (const jive_nodevar_xpoint & xpoint : shaped_ssavar->node_xpoints) {
-			if (xpoint.before_count)
-				jive_resource_class_count_update_union(counts, &xpoint.shaped_node->use_count_before);
-			if (xpoint.after_count)
-				jive_resource_class_count_update_union(counts, &xpoint.shaped_node->use_count_after);
+			if (xpoint.before_count) {
+				counts->update_union(xpoint.shaped_node->use_count_before);
+			}
+			if (xpoint.after_count) {
+				counts->update_union(xpoint.shaped_node->use_count_after);
+			}
 		}
 	}
 }
@@ -346,7 +348,6 @@ jive_shaped_variable_check_change_resource_class(
 	}
 	
 	jive_resource_class_count use_count;
-	jive_resource_class_count_init(&use_count);
 	
 	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->variable->gates, gate, variable_gate_list) {
@@ -354,9 +355,8 @@ jive_shaped_variable_check_change_resource_class(
 		JIVE_LIST_ITERATE(gate->inputs, input, gate_inputs_list) {
 			jive_node_get_use_count_input(input->node(), &use_count);
 			const jive_resource_class * overflow;
-			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
+			overflow = use_count.check_change(old_rescls, new_rescls);
 			if (overflow) {
-				jive_resource_class_count_fini(&use_count);
 				return overflow;
 			}
 		}
@@ -364,15 +364,12 @@ jive_shaped_variable_check_change_resource_class(
 		JIVE_LIST_ITERATE(gate->outputs, output, gate_outputs_list) {
 			jive_node_get_use_count_output(output->node(), &use_count);
 			const jive_resource_class * overflow;
-			overflow = jive_resource_class_count_check_change(&use_count, old_rescls, new_rescls);
+			overflow = use_count.check_change(old_rescls, new_rescls);
 			if (overflow) {
-				jive_resource_class_count_fini(&use_count);
 				return overflow;
 			}
 		}
 	}
-	
-	jive_resource_class_count_fini(&use_count);
 	
 	return 0;
 }
@@ -644,10 +641,12 @@ jive_shaped_ssavar_xpoints_variable_change(
 			}
 		}
 		if (old_rescls != new_rescls) {
-			if (xpoint.before_count)
-				jive_resource_class_count_change(&shaped_node->use_count_before, old_rescls, new_rescls);
-			if (xpoint.after_count)
-				jive_resource_class_count_change(&shaped_node->use_count_after, old_rescls, new_rescls);
+			if (xpoint.before_count) {
+				shaped_node->use_count_before.change(old_rescls, new_rescls);
+			}
+			if (xpoint.after_count) {
+				shaped_node->use_count_after.change(old_rescls, new_rescls);
+			}
 		}
 	}
 }
@@ -691,16 +690,12 @@ jive_shaped_ssavar_xpoints_change_resource_class(
 	for (const jive_nodevar_xpoint & xpoint : self->node_xpoints) {
 		jive_shaped_node * shaped_node = xpoint.shaped_node;
 		if (xpoint.before_count) {
-			jive_resource_class_count_change(
-				&shaped_node->use_count_before,
-				old_rescls,
-				new_rescls);
+			shaped_node->use_count_before.change(
+				old_rescls, new_rescls);
 		}
 		if (xpoint.after_count) {
-			jive_resource_class_count_change(
-				&shaped_node->use_count_after,
-				old_rescls,
-				new_rescls);
+			shaped_node->use_count_after.change(
+				old_rescls, new_rescls);
 		}
 	}
 }
@@ -715,20 +710,18 @@ jive_shaped_ssavar_check_change_resource_class(
 	for (const jive_nodevar_xpoint & xpoint : self->node_xpoints) {
 		jive_shaped_node * shaped_node = xpoint.shaped_node;
 		if (xpoint.before_count) {
-			overflow = jive_resource_class_count_check_change(
-				&shaped_node->use_count_before,
-				old_rescls,
-				new_rescls);
-			if (overflow)
+			overflow = shaped_node->use_count_before.check_change(
+				old_rescls, new_rescls);
+			if (overflow) {
 				return overflow;
+			}
 		}
 		if (xpoint.after_count) {
-			overflow = jive_resource_class_count_check_change(
-				&shaped_node->use_count_after,
-				old_rescls,
-				new_rescls);
-			if (overflow)
+			overflow = shaped_node->use_count_after.check_change(
+				old_rescls, new_rescls);
+			if (overflow) {
 				return overflow;
+			}
 		}
 	}
 	

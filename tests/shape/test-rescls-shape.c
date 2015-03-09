@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -14,7 +14,6 @@
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/resource-private.h>
 
 #include "testarch.h"
 #include "testnodes.h"
@@ -57,8 +56,7 @@ static int test_main(void)
 
 	jive_resource_class_count * use_count = &jive_shaped_graph_map_node(shaped_graph,
 		top)->use_count_after;
-	const jive_resource_class * overflow = jive_resource_class_count_check_add(use_count,
-		&jive_testarch_regcls_r0.base);
+	const jive_resource_class * overflow = use_count->check_add(&jive_testarch_regcls_r0.base);
 	assert(overflow == &jive_testarch_regcls_r0.base);
 	
 	assert(jive_shaped_graph_map_variable(shaped_graph, r1)->squeeze == 1);

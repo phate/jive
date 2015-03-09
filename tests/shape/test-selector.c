@@ -17,7 +17,6 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/resource-private.h>
 
 #include "testnodes.h"
 
@@ -169,8 +168,7 @@ static int test_main(void)
 			
 			/* test invalidation -- artifically modify stored count to make
 			sure count after recomputation differs */
-			jive_resource_class_count_add(
-				&const_cast<jive_resource_class_count &>(n1_cost->rescls_cost()),
+			const_cast<jive_resource_class_count &>(n1_cost->rescls_cost()).add(
 				&jive_root_resource_class);
 			const_cast<uint16_t &>(n1_cost->prio_array().count[0]) = 0;
 			master_selector.invalidate_node(n1);

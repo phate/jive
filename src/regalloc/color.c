@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -36,7 +36,6 @@ find_allowed_name(jive_shaped_variable * candidate)
 	smallest amount of "pressure" on interfering variables */
 	
 	jive_resource_class_count cross_count;
-	jive_resource_class_count_init(&cross_count);
 	jive_shaped_variable_get_cross_count(candidate, &cross_count);
 	
 	const jive_resource_class * rescls = jive_variable_get_resource_class(variable);
@@ -47,10 +46,11 @@ find_allowed_name(jive_shaped_variable * candidate)
 	for (const jive_resource_name * name : candidate->allowed_names) {
 		size_t pressure = 0;
 		
-		const jive_resource_class * overflow;
-		overflow = jive_resource_class_count_check_change(&cross_count, rescls, name->resource_class);
-		if (overflow)
+		const jive_resource_class * overflow = cross_count.check_change(
+			rescls, name->resource_class);
+		if (overflow) {
 			continue;
+		}
 		
 		for (const jive_variable_interference_part & part : candidate->interference) {
 			jive_shaped_variable * other = part.shaped_variable;
@@ -72,8 +72,6 @@ find_allowed_name(jive_shaped_variable * candidate)
 			best_pressure = pressure;
 		}
 	}
-	
-	jive_resource_class_count_fini(&cross_count);
 	
 	return best_name;
 }
@@ -160,11 +158,11 @@ select_split_path(jive_shaped_graph * shaped_graph, const jive_resource_class * 
 					continue;
 				}
 				
-				if (jive_resource_class_count_check_add(&i.node->use_count_before, demotion->target)) {
+				if (i.node->use_count_before.check_add(demotion->target)) {
 					allowed = false;
 					break;
 				}
-				if (jive_resource_class_count_check_add(&i.node->use_count_after, demotion->target)) {
+				if (i.node->use_count_after.check_add(demotion->target)) {
 					allowed = false;
 					break;
 				}

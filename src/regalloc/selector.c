@@ -13,7 +13,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/statetype.h>
 #include <jive/vsdg/variable.h>
 
@@ -38,7 +37,6 @@ node_selection_order::node_selection_order(master_selector * master, jive_node *
 	, node_(node)
 	, master_(master)
 {
-	jive_resource_class_count_init(&rescls_cost_);
 	jive_rescls_prio_array_init(&prio_array_);
 	prio_array_.count[0] = jive_resource_class_priority_lowest;
 	blocked_rescls_priority_ = jive_resource_class_priority_lowest;
@@ -46,7 +44,6 @@ node_selection_order::node_selection_order(master_selector * master, jive_node *
 
 node_selection_order::~node_selection_order()
 {
-	jive_resource_class_count_fini(&rescls_cost_);
 }
 
 void
@@ -296,7 +293,6 @@ master_selector::revalidate_node(jive_node * node)
 	node_cost = map_node_internal(node);
 	
 	jive_resource_class_count cost;
-	jive_resource_class_count_init(&cost);
 	compute_node_cost(&cost, node);
 	bool force_tree_root = !maybe_inner_node(node);
 	jive_resource_class_priority blocked_rescls_priority;
@@ -305,7 +301,7 @@ master_selector::revalidate_node(jive_node * node)
 	bool changes =
 		(force_tree_root != node_cost->force_tree_root_) ||
 		(blocked_rescls_priority != node_cost->blocked_rescls_priority_) ||
-		(!jive_resource_class_count_equals(&cost, &node_cost->rescls_cost_));
+		(cost != node_cost->rescls_cost_);
 	
 	if (changes) {
 		region_selector * region_shaper;
@@ -317,7 +313,7 @@ master_selector::revalidate_node(jive_node * node)
 		
 		node_cost->force_tree_root_ = force_tree_root;
 		node_cost->blocked_rescls_priority_ = blocked_rescls_priority;
-		jive_resource_class_count_copy(&node_cost->rescls_cost_, &cost);
+		node_cost->rescls_cost_ = cost;
 		node_cost->compute_prio_value();
 		
 		if (node_cost->state_ == node_selection_order::state_queue){
@@ -327,7 +323,6 @@ master_selector::revalidate_node(jive_node * node)
 		cost_computation_state_tracker_.invalidate_below(node);
 	}
 	
-	jive_resource_class_count_fini(&cost);
 }
 
 void
@@ -387,24 +382,17 @@ master_selector::compute_node_cost(
 	jive_node * node)
 {
 	if (jive_shaped_graph_map_node(shaped_graph_, node)) {
-		jive_resource_class_count_clear(cost);
+		cost->clear();
 		return;
 	}
 	
 	jive_region * region = node->region;
 	
 	jive_resource_class_count output_cost, input_cost, self_cost, eval_cost, this_eval_cost;
-	jive_resource_class_count_init(&output_cost);
-	jive_resource_class_count_init(&input_cost);
-	jive_resource_class_count_init(&self_cost);
-	jive_resource_class_count_init(&eval_cost);
-	jive_resource_class_count_init(&this_eval_cost);
 	
 	/* compute cost of self-representation */
 	for (size_t n = 0; n < node->noutputs; n++) {
-		const jive_resource_class * rescls;
-		rescls = jive_resource_class_relax(node->outputs[n]->required_rescls);
-		jive_resource_class_count_add(&output_cost, rescls);
+		output_cost.add(jive_resource_class_relax(node->outputs[n]->required_rescls));
 	}
 	
 	/* consider cost of all inputs */
@@ -413,12 +401,11 @@ master_selector::compute_node_cost(
 		if (assumed_active(in->origin(), region)) {
 			continue;
 		}
-		const jive_resource_class * rescls = jive_resource_class_relax(in->required_rescls);
-		jive_resource_class_count_add(&input_cost, rescls);
+		input_cost.add(jive_resource_class_relax(in->required_rescls));
 	}
 	
-	jive_resource_class_count_copy(&self_cost, &output_cost);
-	jive_resource_class_count_update_union(&self_cost, &input_cost);
+	self_cost = output_cost;
+	self_cost.update_union(input_cost);
 	
 	bool first = true;
 	for (size_t n = 0; n < node->ninputs; n++) {
@@ -428,42 +415,36 @@ master_selector::compute_node_cost(
 		if (last_eval->force_tree_root_) {
 			continue;
 		}
-		jive_resource_class_count_copy(&this_eval_cost, &input_cost);
+		this_eval_cost = input_cost;
 		if (!assumed_active(in->origin(), region)) {
 			const jive_resource_class * rescls = jive_resource_class_relax(in->required_rescls);
-			jive_resource_class_count_add(&this_eval_cost, rescls);
+			this_eval_cost.add(rescls);
 		}
-		jive_resource_class_count_update_add(&this_eval_cost, &last_eval->rescls_cost_);
+		this_eval_cost.update_add(last_eval->rescls_cost_);
 		
 		if (first) {
-			jive_resource_class_count_copy(&eval_cost, &this_eval_cost);
+			eval_cost = this_eval_cost;
 		} else {
-			jive_resource_class_count_update_intersection(&eval_cost, &this_eval_cost);
+			eval_cost.update_intersection(this_eval_cost);
 		}
 		
 		first = false;
 	}
 	
 	if (!first) {
-		jive_resource_class_count_update_union(&self_cost, &eval_cost);
+		self_cost.update_union(eval_cost);
 	}
 	
 	/* remove cost for those that would be removed by picking this node */
 	for (size_t n = 0; n < node->noutputs; n++) {
 		if (assumed_active(node->outputs[n], region)) {
-			const jive_resource_class * rescls;
-			rescls = jive_resource_class_relax(node->outputs[n]->required_rescls);
-			jive_resource_class_count_sub(&self_cost, rescls);
+			const jive_resource_class * rescls = jive_resource_class_relax(
+				node->outputs[n]->required_rescls);
+			self_cost.sub(rescls);
 		}
 	}
-	
-	jive_resource_class_count_copy(cost, &self_cost);
-	
-	jive_resource_class_count_fini(&output_cost);
-	jive_resource_class_count_fini(&input_cost);
-	jive_resource_class_count_fini(&self_cost);
-	jive_resource_class_count_fini(&eval_cost);
-	jive_resource_class_count_fini(&this_eval_cost);
+
+	*cost = self_cost;
 }
 
 jive_resource_class_priority

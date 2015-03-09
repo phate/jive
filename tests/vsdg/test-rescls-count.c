@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -8,109 +8,101 @@
 
 #include <assert.h>
 
-#include <jive/vsdg/resource-private.h>
+#include <jive/vsdg/resource.h>
 
 #include "testarch.h"
 
 void test_rescls_count_addsub()
 {
 	jive_resource_class_count count;
-	jive_resource_class_count_init(&count);
 	
 	const jive_resource_class * overflow;
 	
-	overflow = jive_resource_class_count_add(&count, &jive_testarch_regcls_r0.base);
+	overflow = count.add(&jive_testarch_regcls_r0.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_add(&count, &jive_testarch_regcls_r1.base);
+	overflow = count.check_add(&jive_testarch_regcls_r1.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_add(&count, &jive_testarch_regcls_r0.base);
+	overflow = count.check_add(&jive_testarch_regcls_r0.base);
 	assert(overflow);
 	
-	overflow = jive_resource_class_count_add(&count, &jive_testarch_regcls_evenreg.base);
+	overflow = count.add(&jive_testarch_regcls_evenreg.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_add(&count, &jive_testarch_regcls_r2.base);
+	overflow = count.check_add(&jive_testarch_regcls_r2.base);
 	assert(overflow == &jive_testarch_regcls_evenreg.base);
 	
-	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base,
+	overflow = count.check_change(
+		&jive_testarch_regcls_evenreg.base,
 		&jive_testarch_regcls_oddreg.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base,
+	overflow = count.check_change(
+		&jive_testarch_regcls_evenreg.base,
 		&jive_testarch_regcls_r2.base);
 	assert(!overflow);
 	
-	overflow = jive_resource_class_count_check_change(&count, &jive_testarch_regcls_evenreg.base,
+	overflow = count.check_change(
+		&jive_testarch_regcls_evenreg.base,
 		&jive_testarch_regcls_r0.base);
 	assert(overflow == &jive_testarch_regcls_r0.base);
-	
-	jive_resource_class_count_fini(&count);
 }
 
 void test_rescls_count_compound()
 {
 	jive_resource_class_count a, b, c;
-	jive_resource_class_count_init(&a);
-	jive_resource_class_count_init(&b);
-	jive_resource_class_count_init(&c);
 	
-	assert(jive_resource_class_count_equals(&a, &b));
+	assert(a == b);
 	
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r0.base);
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&b, &jive_testarch_regcls_r0.base);
-	assert(!jive_resource_class_count_equals(&a, &b));
+	a.add(&jive_testarch_regcls_r0.base);
+	a.add(&jive_testarch_regcls_r1.base);
+	b.add(&jive_testarch_regcls_r0.base);
+	assert(a != b);
 	
-	jive_resource_class_count_copy(&c, &b);
-	assert(jive_resource_class_count_equals(&b, &c));
+	c = b;
+	assert(b == c);
 	
-	jive_resource_class_count_add(&c, &jive_testarch_regcls_r1.base);
-	assert(jive_resource_class_count_equals(&a, &c));
+	c.add(&jive_testarch_regcls_r1.base);
+	assert(a == c);
 	
-	jive_resource_class_count_clear(&a);
-	jive_resource_class_count_clear(&b);
-	jive_resource_class_count_clear(&c);
+	a.clear();
+	b.clear();
+	c.clear();
 	
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r0.base);
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&b, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&b, &jive_testarch_regcls_r2.base);
-	jive_resource_class_count_update_intersection(&a, &b);
-	jive_resource_class_count_add(&c, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&c, &jive_testarch_regcls_evenreg.base);
-	assert(a.nitems == 6);
-	assert(jive_resource_class_count_equals(&a, &c));
+	a.add(&jive_testarch_regcls_r0.base);
+	a.add(&jive_testarch_regcls_r1.base);
+	b.add(&jive_testarch_regcls_r1.base);
+	b.add(&jive_testarch_regcls_r2.base);
+	a.update_intersection(b);
+	c.add(&jive_testarch_regcls_r1.base);
+	c.add(&jive_testarch_regcls_evenreg.base);
+	assert(a.counts().size()== 6);
+	assert(a == c);
 	
-	jive_resource_class_count_clear(&a);
-	jive_resource_class_count_clear(&b);
-	jive_resource_class_count_clear(&c);
+	a.clear();
+	b.clear();
+	c.clear();
 	
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r0.base);
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&b, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&b, &jive_testarch_regcls_r2.base);
-	jive_resource_class_count_update_union(&a, &b);
-	jive_resource_class_count_add(&c, &jive_testarch_regcls_r0.base);
-	jive_resource_class_count_add(&c, &jive_testarch_regcls_r1.base);
-	jive_resource_class_count_add(&c, &jive_testarch_regcls_r2.base);
-	jive_resource_class_count_sub(&c, &jive_testarch_regcls_evenreg.base);
-	assert(a.nitems == 8);
-	assert(jive_resource_class_count_equals(&a, &c));
-	
-	jive_resource_class_count_fini(&a);
-	jive_resource_class_count_fini(&b);
-	jive_resource_class_count_fini(&c);
+	a.add(&jive_testarch_regcls_r0.base);
+	a.add(&jive_testarch_regcls_r1.base);
+	b.add(&jive_testarch_regcls_r1.base);
+	b.add(&jive_testarch_regcls_r2.base);
+	a.update_union(b);
+	c.add(&jive_testarch_regcls_r0.base);
+	c.add(&jive_testarch_regcls_r1.base);
+	c.add(&jive_testarch_regcls_r2.base);
+	c.sub(&jive_testarch_regcls_evenreg.base);
+	assert(a.counts().size() == 8);
+	assert(a == c);
 }
 
 void test_rescls_count_prio()
 {
 	jive_resource_class_count a;
-	jive_resource_class_count_init(&a);
 	
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r0.base);
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_r1.base);
+	a.add(&jive_testarch_regcls_r0.base);
+	a.add(&jive_testarch_regcls_r1.base);
 	
 	jive_rescls_prio_array prio;
 	jive_rescls_prio_array_compute(&prio, &a);
@@ -119,15 +111,13 @@ void test_rescls_count_prio()
 	reference.count[jive_resource_class_priority_lowest] = 2;
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == 0);
 	
-	jive_resource_class_count_sub(&a, &jive_testarch_regcls_r1.base);
+	a.sub(&jive_testarch_regcls_r1.base);
 	jive_rescls_prio_array_compute(&prio, &a);
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == -1);
 	
-	jive_resource_class_count_add(&a, &jive_testarch_regcls_cc.base);
+	a.add(&jive_testarch_regcls_cc.base);
 	jive_rescls_prio_array_compute(&prio, &a);
 	assert( jive_rescls_prio_array_compare(&prio, &reference) == +1);
-	
-	jive_resource_class_count_fini(&a);
 }
 
 static int test_main(void)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -20,7 +20,7 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/resource-private.h>
+#include <jive/vsdg/resource.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/variable.h>
 
@@ -804,10 +804,9 @@ jive_node_auto_merge_variables(jive_node * self)
 void
 jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count * use_count)
 {
-	jive_resource_class_count_clear(use_count);
+	use_count->clear();
 	
-	size_t n;
-	for(n = 0; n<self->ninputs; n++) {
+	for (size_t n = 0; n < self->ninputs; n++) {
 		jive::input * input = self->inputs[n];
 		
 		/* filter out multiple inputs using the same value
@@ -828,17 +827,16 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 		else if (input->gate) rescls = input->gate->required_rescls;
 		else rescls = input->required_rescls;
 		
-		jive_resource_class_count_add(use_count, rescls);
+		use_count->add(rescls);
 	}
 }
 
 void
 jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count * use_count)
 {
-	jive_resource_class_count_clear(use_count);
+	use_count->clear();
 	
-	size_t n;
-	for(n = 0; n<self->noutputs; n++) {
+	for (size_t n = 0; n < self->noutputs; n++) {
 		jive::output * output = self->outputs[n];
 		
 		const jive_resource_class * rescls;
@@ -846,7 +844,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		else if (output->gate) rescls = output->gate->required_rescls;
 		else rescls = output->required_rescls;
 		
-		jive_resource_class_count_add(use_count, rescls);
+		use_count->add(rescls);
 	}
 }
 

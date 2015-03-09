@@ -5,7 +5,7 @@
  */
 
 #include <jive/vsdg/basetype.h>
-#include <jive/vsdg/resource-private.h>
+#include <jive/vsdg/resource.h>
 #include <jive/vsdg/variable.h>
 
 #include <stdio.h>

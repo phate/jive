@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,6 +13,7 @@
 
 #include <jive/common.h>
 
+#include <unordered_map>
 #include <vector>
 
 struct jive_graph;
@@ -150,31 +151,195 @@ struct jive_resource_name {
 	const jive_resource_class * resource_class;
 };
 
-struct jive_resource_class_count_item {
-	const struct jive_resource_class * resource_class;
-	size_t count;
-	struct {
-		jive_resource_class_count_item * prev;
-		jive_resource_class_count_item * next;
-	} hash_chain;
-	struct {
-		jive_resource_class_count_item * prev;
-		jive_resource_class_count_item * next;
-	} item_list;
-};
+class jive_resource_class_count {
+public:
+	typedef std::unordered_map<const jive_resource_class *, size_t> counts_repr;
 
-struct jive_resource_class_count_bucket {
-	jive_resource_class_count_item * first;
-	jive_resource_class_count_item * last;
-};
+	inline jive_resource_class_count()
+		: counts_(0)
+	{
+	}
 
-struct jive_resource_class_count {
-	size_t nitems, nbuckets, mask;
-	std::vector<jive_resource_class_count_bucket> buckets;
-	struct {
-		jive_resource_class_count_item * first;
-		jive_resource_class_count_item * last;
-	} items;
+	inline void swap(jive_resource_class_count & other) noexcept
+	{
+		counts_.swap(other.counts_);
+	}
+
+	/* check use counts for identity */
+	inline bool
+	operator==(const jive_resource_class_count & other) const noexcept
+	{
+		return counts_ == other.counts_;
+	}
+
+	inline bool
+	operator!=(const jive_resource_class_count & other) const noexcept
+	{
+		return ! (*this == other);
+	}
+
+	/* clear use counts */
+	inline void
+	clear()
+	{
+		counts_.clear();
+	}
+
+	/* get use count for given class */
+	inline size_t get(const jive_resource_class * cls) const noexcept
+	{
+		auto i = counts_.find(cls);
+		return (i != counts_.end()) ? i->second : 0;
+	}
+
+	/* add to use count for given class, report narrowest overflowing class
+	 * (or nullptr if no overflow) */
+	inline const jive_resource_class *
+	add(const jive_resource_class * cls, size_t amount = 1)
+	{
+		const jive_resource_class * overflow = 0;
+		while (cls) {
+			size_t count = add_single(cls, amount);
+			if (count > cls->limit && cls->limit && ! overflow) {
+				overflow = cls;
+			}
+			
+			cls = cls->parent;
+		}
+		return overflow;
+	}
+
+	/* check if adding use count for class would lead to overflow, report
+	 * narrowest class (or nullptr if no overflow) */
+	inline const jive_resource_class *
+	check_add(const jive_resource_class * cls, size_t amount = 1) const noexcept
+	{
+		while (cls) {
+			size_t count = get(cls);
+			if (count + amount > cls->limit && cls->limit) {
+				break;
+			}
+			
+			cls = cls->parent;
+		}
+		return cls;
+	}
+
+	/* subtract use count for class */
+	inline void
+	sub(const jive_resource_class * cls, size_t amount = 1)
+	{
+		while (cls) {
+			sub_single(cls, amount);
+			cls = cls->parent;
+		}
+	}
+
+	/* same as sub(old_cls) followed by add(new_cls) */
+	inline const jive_resource_class *
+	change(const jive_resource_class * old_cls, const jive_resource_class * new_cls)
+	{
+		sub(old_cls);
+		return add(new_cls);
+	}
+
+	/* check whether a "change" operation would result in overflow (without
+	 * actually performing the change) */
+	inline const jive_resource_class *
+	check_change(
+		const jive_resource_class * old_resource_class,
+		const jive_resource_class * new_resource_class) const noexcept
+	{
+		if (!old_resource_class) {
+			return check_add(new_resource_class);
+		}
+		if (!new_resource_class) {
+			return nullptr;
+		}
+	
+		const jive_resource_class * common_resource_class =
+			jive_resource_class_union(
+				old_resource_class,
+				new_resource_class);
+	
+		while (new_resource_class != common_resource_class) {
+			size_t count = get(new_resource_class);
+			if (count + 1 > new_resource_class->limit && new_resource_class->limit) {
+				return new_resource_class;
+			}
+			new_resource_class = new_resource_class->parent;
+		}
+		return nullptr;
+	}
+
+	inline void
+	update_union(const jive_resource_class_count & other)
+	{
+		for (const auto & item : other.counts()) {
+			counts_repr::iterator i;
+			bool was_inserted;
+			std::tie(i, was_inserted) = counts_.insert(item);
+			if (!was_inserted) {
+				i->second = std::max(item.second, i->second);
+			}
+		}
+	}
+
+	inline void
+	update_add(const jive_resource_class_count & other)
+	{
+		for (const auto & item : other.counts()) {
+			counts_repr::iterator i;
+			bool was_inserted;
+			std::tie(i, was_inserted) = counts_.insert(item);
+			if (!was_inserted) {
+				i->second += item.second;
+			}
+		}
+	}
+
+	inline void
+	update_intersection(const jive_resource_class_count & other)
+	{
+		auto iter = counts_.begin();
+		while (iter != counts_.end()) {
+			size_t count = std::min(iter->second, other.get(iter->first));
+			if (!count) {
+				iter = counts_.erase(iter);
+			} else {
+				iter->second = count;
+				++iter;
+			}
+		}
+	}
+
+	/* access to raw counts per class */
+	inline const counts_repr & counts() const noexcept { return counts_; }
+
+private:
+	inline size_t
+	add_single(const jive_resource_class * cls, size_t amount)
+	{
+		counts_repr::iterator i;
+		bool was_inserted;
+		std::tie(i, was_inserted) = counts_.insert(std::make_pair(cls, amount));
+		if (!was_inserted) {
+			i->second += amount;
+		}
+		return i->second;
+	}
+
+	inline void
+	sub_single(const jive_resource_class * cls, size_t amount)
+	{
+		auto i = counts_.find(cls);
+		i->second -= amount;
+		if (i->second == 0) {
+			counts_.erase(i);
+		}
+	}
+
+	counts_repr counts_;
 };
 
 struct jive_rescls_prio_array {

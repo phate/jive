@@ -14,7 +14,6 @@
 #include <jive/regalloc/xpoint-private.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/anchortype.h>
-#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/splitnode.h>
 
 static const jive_resource_class *
@@ -109,8 +108,7 @@ varcut_checked_add(jive_region_shaper * self, jive_mutable_varcut * varcut, jive
 	
 	const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
 	
-	const jive_resource_class * overflow =
-		jive_resource_class_count_check_add(&varcut->use_counts, rescls);
+	const jive_resource_class * overflow = varcut->use_counts.check_add(rescls);
 	if (overflow) {
 		conflict.type = jive_regalloc_conflict_class;
 		conflict.item.rescls = overflow;
@@ -192,9 +190,8 @@ check_crossing_overflow(jive_region_shaper * self,
 	}
 	
 	if (conflict.type == jive_regalloc_conflict_none && first_input_passthrough) {
-		const jive_resource_class * rescls, * overflow;
-		rescls = get_aux_rescls(shaped_node->node);
-		overflow = jive_resource_class_count_check_add(&active_before.use_counts, rescls);
+		const jive_resource_class * rescls = get_aux_rescls(shaped_node->node);
+		const jive_resource_class * overflow = active_before.use_counts.check_add(rescls);
 		if (overflow) {
 			conflict.type = jive_regalloc_conflict_class;
 			conflict.item.rescls = overflow;
@@ -296,9 +293,8 @@ check_unshaped_crossing_overflow(jive_region_shaper * self,
 	}
 	
 	if (conflict.type == jive_regalloc_conflict_none && first_input_active_after) {
-		const jive_resource_class * rescls, * overflow;
-		rescls = get_aux_rescls(new_node);
-		overflow = jive_resource_class_count_check_add(&active_before.use_counts, rescls);
+		const jive_resource_class * rescls = get_aux_rescls(new_node);
+		const jive_resource_class * overflow = active_before.use_counts.check_add(rescls);
 		if (overflow) {
 			conflict.type = jive_regalloc_conflict_class;
 			conflict.item.rescls = overflow;
@@ -402,13 +398,9 @@ check_ssavar_replacement_conflict(
 		return conflict;
 	}
 	
-	const jive_resource_class * overflow, * new_rescls = jive_variable_get_resource_class(new_var);
-	if (original) {
-		overflow = jive_resource_class_count_check_change(
-			&ssavar_set->use_counts, original->rescls, new_rescls);
-	} else {
-		overflow = jive_resource_class_count_check_add(&ssavar_set->use_counts, new_rescls);
-	}
+	const jive_resource_class * new_rescls = jive_variable_get_resource_class(new_var);
+	const jive_resource_class * overflow = ssavar_set->use_counts.check_change(
+		original ? original->rescls : nullptr, new_rescls);
 	
 	if (overflow) {
 		jive_regalloc_conflict conflict;
@@ -725,8 +717,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 		if (jive_varcut_shaped_ssavar_is_active(&self->shaped_region->active_top.base, shaped_ssavar)) {
 			const jive_resource_class * aux_rescls = get_aux_rescls(node);
 			
-			const jive_resource_class * overflow;
-			overflow = jive_resource_class_count_check_add(&active->use_counts, aux_rescls);
+			const jive_resource_class * overflow = active->use_counts.check_add(aux_rescls);
 			if (overflow) {
 				jive_region_shaper_undo_setup_node(self, node);
 				jive_regalloc_conflict conflict;
@@ -797,12 +788,12 @@ split_merge_subregion(
 		/* demote to target resource class that... */
 		const jive_resource_class * tgt_rescls = demotion->target;
 		/* ... can be added to the current position in parent region ... */
-		if (jive_resource_class_count_check_add(parent_use_counts, tgt_rescls)) {
+		if (parent_use_counts->check_add(tgt_rescls)) {
 			demotion ++;
 			continue;
 		}
 		/* ... and that can replace the original one in sub region ... */
-		if (jive_resource_class_count_check_change(child_use_counts, from_rescls, tgt_rescls)) {
+		if (child_use_counts->check_change(from_rescls, tgt_rescls)) {
 			demotion ++;
 			continue;
 		}

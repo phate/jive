@@ -14,7 +14,6 @@
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
-#include <jive/vsdg/resource-private.h>
 
 #include "testnodes.h"
 

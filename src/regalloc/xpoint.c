@@ -13,7 +13,6 @@
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
-#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
 
 jive_nodevar_xpoint *
@@ -47,7 +46,6 @@ jive_nodevar_xpoint_destroy(jive_nodevar_xpoint * xpoint)
 void
 jive_varcut_init(jive_varcut * self)
 {
-	jive_resource_class_count_init(&self->use_counts);
 	self->xpoints.first = self->xpoints.last = 0;
 }
 
@@ -55,7 +53,6 @@ void
 jive_varcut_fini(jive_varcut * self)
 {
 	jive_mutable_varcut_clear(self);
-	jive_resource_class_count_fini(&self->use_counts);
 }
 
 jive_shaped_ssavar *
@@ -87,7 +84,7 @@ jive_mutable_varcut_register_xpoint(jive_mutable_varcut * self, jive_cutvar_xpoi
 	self->origin_map.insert(xpoint);
 	self->variable_map.insert(xpoint);
 	JIVE_LIST_PUSH_BACK(self->xpoints, xpoint, varcut_xpoints_list);
-	jive_resource_class_count_add(&self->use_counts, xpoint->rescls);
+	self->use_counts.add(xpoint->rescls);
 }
 
 static void
@@ -97,13 +94,13 @@ jive_mutable_varcut_unregister_xpoint(jive_mutable_varcut * self, jive_cutvar_xp
 	self->origin_map.erase(xpoint);
 	self->variable_map.erase(xpoint);
 	JIVE_LIST_REMOVE(self->xpoints, xpoint, varcut_xpoints_list);
-	jive_resource_class_count_sub(&self->use_counts, xpoint->rescls);
+	self->use_counts.sub(xpoint->rescls);
 }
 
 void
 jive_mutable_varcut_clear(jive_mutable_varcut * self)
 {
-	jive_resource_class_count_clear(&self->use_counts);
+	self->use_counts.clear();
 	
 	jive_cutvar_xpoint * xpoint, * next_xpoint;
 	JIVE_LIST_ITERATE_SAFE(self->xpoints, xpoint, next_xpoint, varcut_xpoints_list) {
@@ -243,7 +240,7 @@ jive_mutable_varcut_ssavar_rescls_change(
 	}
 	jive_cutvar_xpoint * xpoint = i.ptr();
 	
-	jive_resource_class_count_change(&self->use_counts, xpoint->rescls, rescls);
+	self->use_counts.change(xpoint->rescls, rescls);
 	xpoint->rescls = rescls;
 }
 
@@ -256,7 +253,7 @@ jive_region_varcut_register_xpoint(jive_region_varcut * self, jive_regvar_xpoint
 	self->base.variable_map.insert(&xpoint->base);
 	xpoint->base.shaped_ssavar->region_xpoints.insert(xpoint);
 	JIVE_LIST_PUSH_BACK(self->base.xpoints, &xpoint->base, varcut_xpoints_list);
-	jive_resource_class_count_add(&self->base.use_counts, xpoint->base.rescls);
+	self->base.use_counts.add(xpoint->base.rescls);
 }
 
 static void
@@ -267,7 +264,7 @@ jive_region_varcut_unregister_xpoint(jive_region_varcut * self, jive_regvar_xpoi
 	self->base.variable_map.erase(&xpoint->base);
 	xpoint->base.shaped_ssavar->region_xpoints.erase(xpoint);
 	JIVE_LIST_REMOVE(self->base.xpoints, &xpoint->base, varcut_xpoints_list);
-	jive_resource_class_count_add(&self->base.use_counts, xpoint->base.rescls);
+	self->base.use_counts.add(xpoint->base.rescls);
 }
 
 
@@ -282,8 +279,6 @@ void
 jive_region_varcut_fini(jive_region_varcut * self)
 {
 	JIVE_DEBUG_ASSERT(self->base.xpoints.first == 0 && self->base.xpoints.last == 0);
-	
-	jive_resource_class_count_fini(&self->base.use_counts);
 }
 
 size_t

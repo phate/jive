@@ -14,7 +14,6 @@
 #include <jive/regalloc/shaped-variable-private.h>
 #include <jive/regalloc/shaped-variable.h>
 #include <jive/regalloc/xpoint-private.h>
-#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
 
 jive_shaped_node *
@@ -49,8 +48,7 @@ jive_shaped_node_inc_active_after(
 			);
 		}
 		const jive_resource_class * overflow;
-		overflow = jive_resource_class_count_add(
-			&self->use_count_after,
+		overflow = self->use_count_after.add(
 			jive_variable_get_resource_class(variable));
 		JIVE_DEBUG_ASSERT(!overflow);
 	}
@@ -76,7 +74,7 @@ jive_shaped_node_dec_active_after(
 				jive_shaped_graph_map_variable(self->shaped_graph, other_xpoint.shaped_ssavar->ssavar->variable)
 			);
 		}
-		jive_resource_class_count_sub(&self->use_count_after, jive_variable_get_resource_class(variable));
+		self->use_count_after.sub(jive_variable_get_resource_class(variable));
 	}
 }
 
@@ -98,8 +96,7 @@ jive_shaped_node_inc_active_before(
 			);
 		}
 		const jive_resource_class * overflow;
-		overflow = jive_resource_class_count_add(
-			&self->use_count_before,
+		overflow = self->use_count_before.add(
 			jive_variable_get_resource_class(variable));
 		(void) overflow;
 		JIVE_DEBUG_ASSERT(!overflow);
@@ -126,8 +123,7 @@ jive_shaped_node_dec_active_before(
 				jive_shaped_graph_map_variable(self->shaped_graph, other_xpoint.shaped_ssavar->ssavar->variable)
 			);
 		}
-		jive_resource_class_count_sub(
-			&self->use_count_before,
+		self->use_count_before.sub(
 			jive_variable_get_resource_class(variable));
 	}
 }

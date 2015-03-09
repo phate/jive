@@ -13,7 +13,6 @@
 #include <jive/regalloc/assignment-tracker-private.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
-#include <jive/vsdg/resource-private.h>
 #include <jive/vsdg/variable.h>
 
 namespace jive {
