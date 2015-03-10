@@ -55,7 +55,7 @@ static int test_main(void)
 	jive_traverser * sub_trav = jive_shaping_region_traverser_enter_region(regtrav, sub);
 	assert(sub_trav->frontier.first == 0);
 	
-	jive_cut_append(jive_region_create_cut(region), n3);
+	jive_region_create_cut(region)->append(n3);
 	assert(root_trav->frontier.first->node == n1);
 	assert(sub_trav->frontier.first->node == n2);
 	

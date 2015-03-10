@@ -22,22 +22,19 @@
 static jive_shaped_node *
 shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
-	size_t n;
-	for(n = 0; n < node->ninputs; n ++) {
+	for (size_t n = 0; n < node->ninputs; n ++) {
 		jive::input * input = node->inputs[n];
 		jive_input_auto_merge_variable(input);
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, input->ssavar);
-		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, node->region->depth);
+		shaped_graph->map_ssavar(input->ssavar)->lower_boundary_region_depth(node->region->depth);
 	}
-	for(n = 0; n < node->noutputs; n ++) {
+	for (size_t n = 0; n < node->noutputs; n ++) {
 		jive::output * output = node->outputs[n];
 		jive_output_auto_merge_variable(output);
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, output->ssavar);
-		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, node->region->depth);
+		shaped_graph->map_ssavar(output->ssavar)->lower_boundary_region_depth(node->region->depth);
 	}
-	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, node->region);
-	jive_cut * cut = jive_shaped_region_create_cut(shaped_region);
-	return jive_cut_append(cut, node);
+	jive_shaped_region * shaped_region = shaped_graph->map_region(node->region);
+	jive_cut * cut = shaped_region->create_top_cut();
+	return cut->append(node);
 }
 
 static int test_main(void)
@@ -90,8 +87,7 @@ static int test_main(void)
 	(void) shaped_body_anchor;
 	(void) shaped_body;
 	
-	assert(jive_shaped_ssavar_is_active_before(jive_shaped_graph_map_ssavar(shaped_graph,
-		loop_body->inputs[1]->ssavar), shaped_tail));
+	assert(shaped_graph->map_ssavar(loop_body->inputs[1]->ssavar)->is_active_before(shaped_tail));
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

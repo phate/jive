@@ -9,7 +9,7 @@
 #include <jive/common.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-variable.h>
-#include <jive/regalloc/xpoint-private.h>
+#include <jive/regalloc/xpoint.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
@@ -118,11 +118,11 @@ region_selector::add_node_output_ssavars(
 	std::unordered_set<jive_ssavar *> & unique_ssavars) const
 {
 	for (size_t n = 0; n < node->noutputs; n++) {
-		jive_shaped_ssavar * shaped_ssavar = jive_varcut_map_output(
-			&shaped_region_->active_top.base, node->outputs[n]);
+		jive_shaped_ssavar * shaped_ssavar =
+			shaped_region_->active_top().map_output(node->outputs[n]);
 		if (shaped_ssavar) {
-			ssavars.push_back(shaped_ssavar->ssavar);
-			unique_ssavars.insert(shaped_ssavar->ssavar);
+			ssavars.push_back(&shaped_ssavar->ssavar());
+			unique_ssavars.insert(&shaped_ssavar->ssavar());
 		}
 	}
 }
@@ -160,9 +160,8 @@ region_selector::prio_sorted_ssavars() const
 	
 	/* lowest: all remaining ssavars to be considered; we don't care about
 	 * relative order */
-	jive_cutvar_xpoint * xpoint;
-	JIVE_LIST_ITERATE(shaped_region_->active_top.base.xpoints, xpoint, varcut_xpoints_list) {
-		jive_ssavar * ssavar = xpoint->shaped_ssavar->ssavar;
+	for (const jive_cutvar_xpoint & xpoint : shaped_region_->active_top()) {
+		jive_ssavar * ssavar = &xpoint.shaped_ssavar()->ssavar();
 		if (seen_ssavars.find(ssavar) == seen_ssavars.end()) {
 			sorted_ssavars.push_back(ssavar);
 		}
@@ -204,31 +203,29 @@ master_selector::~master_selector()
 
 master_selector::master_selector(jive_shaped_graph * shaped_graph)
 	: shaped_graph_(shaped_graph)
-	, cost_computation_state_tracker_(shaped_graph->graph)
+	, cost_computation_state_tracker_(&shaped_graph->graph())
 {
-	jive_graph * graph = shaped_graph->graph;
-	
-	init_region_recursive(graph->root_region);
+	init_region_recursive(shaped_graph->graph().root_region);
 	jive_node * node;
-	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
+	JIVE_LIST_ITERATE(shaped_graph->graph().bottom, node, graph_bottom_list) {
 		try_add_frontier(node);
 	}
 	
-	callbacks_.push_back(graph->on_node_create.connect(
+	callbacks_.push_back(shaped_graph->graph().on_node_create.connect(
 		std::bind(&master_selector::handle_node_create, this, _1)));
-	callbacks_.push_back(graph->on_input_change.connect(
+	callbacks_.push_back(shaped_graph->graph().on_input_change.connect(
 		std::bind(&master_selector::handle_input_change, this, _1, _2, _3)));
-	callbacks_.push_back(shaped_graph->on_shaped_node_create.connect(
-		[this](jive_node * node){
-			this->mark_shaped(node);
+	callbacks_.push_back(shaped_graph->on_node_place.connect(
+		[this](jive_shaped_node * shaped_node){
+			this->mark_shaped(shaped_node->node());
 		}));
 	callbacks_.push_back(shaped_graph->on_shaped_region_ssavar_add.connect(
 		[this](jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar) {
-			this->invalidate_node(shaped_ssavar->ssavar->origin->node());
+			this->invalidate_node(shaped_ssavar->ssavar().origin->node());
 		}));
 	callbacks_.push_back(shaped_graph->on_shaped_region_ssavar_remove.connect(
 		[this](jive_shaped_region * shaped_region, jive_shaped_ssavar * shaped_ssavar) {
-			this->invalidate_node(shaped_ssavar->ssavar->origin->node());
+			this->invalidate_node(shaped_ssavar->ssavar().origin->node());
 		}));
 }
 
@@ -241,7 +238,7 @@ master_selector::map_region(const jive_region * region)
 		region_selector = i.ptr();
 
 	if (!region_selector) {
-		jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph_, region);
+		jive_shaped_region * shaped_region = shaped_graph_->map_region(region);
 		region_selector = region_shaper_selector_create(region, shaped_region);
 	}
 	return region_selector;
@@ -340,16 +337,17 @@ bool
 master_selector::assumed_active(
 	const output * out, const jive_region * region) const noexcept
 {
-	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph_, region);
-	return jive_region_varcut_output_is_active(&shaped_region->active_top, out);
+	jive_shaped_region * shaped_region = shaped_graph_->map_region(region);
+	return shaped_region->active_top().output_is_active(out);
 }
 
 bool
 master_selector::maybe_inner_node(const jive_node * node) const noexcept
 {
-	if (jive_shaped_graph_map_node(shaped_graph_, node))
+	if (shaped_graph_->is_node_placed(node)) {
 		return false;
-	
+	}
+
 	size_t user_count = 0;
 	size_t nonstate_count = 0;
 	bool other_region = false;
@@ -381,7 +379,7 @@ master_selector::compute_node_cost(
 	jive_resource_class_count * cost,
 	jive_node * node)
 {
-	if (jive_shaped_graph_map_node(shaped_graph_, node)) {
+	if (shaped_graph_->is_node_placed(node)) {
 		cost->clear();
 		return;
 	}
@@ -450,9 +448,10 @@ master_selector::compute_node_cost(
 jive_resource_class_priority
 master_selector::compute_blocked_rescls_priority(jive_node * node)
 {
-	if (jive_shaped_graph_map_node(shaped_graph_, node))
+	if (shaped_graph_->is_node_placed(node)) {
 		return jive_root_resource_class.priority;
-	
+	}
+
 	jive_region * region = node->region;
 	jive_resource_class_priority blocked_rescls_priority = jive_root_resource_class.priority;
 	

@@ -8,7 +8,6 @@
 
 #include <jive/arch/instruction.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-node-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/splitnode.h>
@@ -43,8 +42,8 @@ pre_op_transfer(
 	node->inputs[0]->divert_origin(xfer_output);
 	jive_ssavar * new_var = jive_output_auto_merge_variable(xfer_output);
 	
-	jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, node);
-	jive_cut_append(jive_cut_split(p->cut, p), xfer_node);
+	jive_shaped_node * p = shaped_graph->map_node(node);
+	p->cut()->split(p)->append(xfer_node);
 	
 	/* assign register now that the split is complete */
 	jive_variable_set_resource_name(new_var->variable, new_cpureg);
@@ -74,8 +73,8 @@ post_op_transfer(
 	/* divert & insert */
 	jive_ssavar_divert_origin(moved_var, xfer_output);
 	
-	jive_shaped_node * p = jive_shaped_graph_map_node(shaped_graph, node);
-	jive_cut_append(jive_cut_split(p->cut, p->cut_location_list.next), xfer_node);
+	jive_shaped_node * p = shaped_graph->map_node(node);
+	p->cut()->split(p->next_in_cut())->append(xfer_node);
 	
 	jive_ssavar * out_var = jive_output_auto_merge_variable(origin);
 	/* assign register now that the split is complete */
@@ -91,7 +90,7 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 	}
 	const jive_instruction_class * icls = i_op->icls();
 	
-	jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
+	jive_shaped_node * shaped_node = shaped_graph->map_node(node);
 	
 	if ((icls->flags & jive_instruction_write_input) == 0) return;
 	
@@ -117,15 +116,15 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 			return;
 		}
 		
-		jive_shaped_variable * var1 = jive_shaped_graph_map_variable(
-			shaped_graph, node->inputs[0]->ssavar->variable);
-		jive_shaped_variable * var2 = jive_shaped_graph_map_variable(
-			shaped_graph, node->inputs[1]->ssavar->variable);
+		jive_shaped_variable * var1 = shaped_graph->map_variable(
+			node->inputs[0]->ssavar->variable);
+		jive_shaped_variable * var2 = shaped_graph->map_variable(
+			node->inputs[1]->ssavar->variable);
 		
 		/* if swapping makes the first operand overwritable, do it */
-		if (jive_shaped_variable_is_crossing(var1, shaped_node)
-			&& !jive_shaped_variable_is_crossing(var2, shaped_node))
+		if (var1->is_crossing(shaped_node) && !var2->is_crossing(shaped_node)) {
 			node->inputs[0]->swap(node->inputs[1]);
+		}
 		inreg0 = jive_variable_get_resource_name(node->inputs[0]->ssavar->variable);
 	}
 	
@@ -134,14 +133,14 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 		return;
 	}
 	
-	if (jive_shaped_node_is_resource_name_active_after(shaped_node, inreg0)) {
+	if (shaped_node->is_resource_name_active_after(inreg0)) {
 		/* input register #0 is used after this instruction, therefore
 		must not overwrite it; move calculation into a temporary
 		register, preferably using the final destination register
 		outright */
 		
 		const jive_resource_name * reg = 0;
-		if (shaped_node->use_count_before.check_add(outreg0->resource_class) == 0) {
+		if (shaped_node->use_count_before().check_add(outreg0->resource_class) == 0) {
 			reg = outreg0;
 		}
 		
@@ -149,8 +148,8 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 			size_t n;
 			for(n=0; n<rescls->limit; n++) {
 				const jive_resource_name * name = rescls->names[n];
-				if (jive_shaped_node_is_resource_name_active_before(shaped_node, name)) continue;
-				if (jive_shaped_node_is_resource_name_active_after(shaped_node, name)) continue;
+				if (shaped_node->is_resource_name_active_before(name)) continue;
+				if (shaped_node->is_resource_name_active_after(name)) continue;
 				reg = name;
 			}
 		}
@@ -174,7 +173,7 @@ process_node(jive_shaped_graph * shaped_graph, jive_node * node)
 void
 jive_regalloc_fixup(jive_shaped_graph * shaped_graph)
 {
-	for (jive_node * node : jive::bottomup_traverser(shaped_graph->graph)) {
+	for (jive_node * node : jive::bottomup_traverser(&shaped_graph->graph())) {
 		process_node(shaped_graph, node);
 	}
 }

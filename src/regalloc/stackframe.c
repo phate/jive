@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -13,7 +13,7 @@
 #include <jive/arch/subroutine.h>
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-variable-private.h>
+#include <jive/regalloc/shaped-variable.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/traverser.h>
@@ -61,13 +61,13 @@ layout_stackslot(
 	for (n = 0; n < nslots; n++)
 		allowed_slot[n] = true;
 	
-	jive_shaped_variable * shaped_variable = jive_shaped_graph_map_variable(shaped_graph, variable);
+	jive_shaped_variable * shaped_variable = shaped_graph->map_variable(variable);
 	JIVE_DEBUG_ASSERT(shaped_variable);
 	
-	for (const jive_variable_interference_part & part : shaped_variable->interference) {
+	for (const auto & part : shaped_variable->interference) {
 		jive_shaped_variable * other_var = part.shaped_variable;
 		
-		const jive_stackslot * other_slot = get_req_stackslot(other_var->variable);
+		const jive_stackslot * other_slot = get_req_stackslot(other_var->variable());
 		if (!other_slot)
 			continue;
 		const jive_stackslot_size_class * other_cls =
@@ -197,9 +197,7 @@ void
 jive_regalloc_stackframe(
 	jive_shaped_graph * shaped_graph, jive_subroutine_to_stackframe_map & stackframe_map)
 {
-	jive_graph * graph = shaped_graph->graph;
-	
-	layout_stackslots(shaped_graph, graph, stackframe_map);
+	layout_stackslots(shaped_graph, &shaped_graph->graph(), stackframe_map);
 }
 
 static void
@@ -316,13 +314,12 @@ do_split(
 	/* insert at beginning/end of region */
 	jive_shaped_node * p;
 	
-	p = jive_shaped_graph_map_node(self->shaped_graph, self->region->top);
-	p = jive_shaped_node_next_in_region(p);
+	p = self->shaped_graph->map_node(self->region->top)->next_in_region();
 	
-	jive_cut_append(jive_cut_split(p->cut, p), enter_split_node);
+	p->cut()->split(p)->append(enter_split_node);
 	
-	p = jive_shaped_graph_map_node(self->shaped_graph, self->region->bottom);
-	jive_cut_append(jive_cut_split(p->cut, p), leave_split_node);
+	p = self->shaped_graph->map_node(self->region->bottom);
+	p->cut()->split(p)->append(leave_split_node);
 }
 
 static void
@@ -370,13 +367,12 @@ void
 jive_regalloc_relocate_stackslots(
 	jive_shaped_graph * shaped_graph, jive_subroutine_to_stackframe_map & stackframe_map)
 {
-	jive_graph * graph = shaped_graph->graph;
 	region_subroutine_prepare_stackframe_recursive(
 		shaped_graph,
-		graph->root_region,
+		shaped_graph->graph().root_region,
 		stackframe_map);
 	
-	for (jive_node * node : jive::bottomup_traverser(graph)) {
+	for (jive_node * node : jive::bottomup_traverser(&shaped_graph->graph())) {
 		reloc_stack_access(node, stackframe_map);
 	}
 }

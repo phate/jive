@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -40,10 +40,10 @@ replace_splitnode(jive_shaped_node * shaped_node, jive_node * node)
 	jive_variable_merge(outvar->variable, jive_output_get_constraint(xfer.output));
 	jive_ssavar_divert_origin(outvar, xfer.output);
 	
-	jive_cut * cut = shaped_node->cut;
-	jive_shaped_node * pos = shaped_node->cut_location_list.next;
-	jive_shaped_node_destroy(shaped_node);
-	jive_cut_insert(cut, pos, xfer.node);
+	jive_cut * cut = shaped_node->cut();
+	jive_shaped_node * pos = shaped_node->next_in_cut();
+	shaped_node->remove_from_cut();
+	cut->insert(pos, xfer.node);
 	
 	jive_node_destroy(node);
 }
@@ -106,9 +106,9 @@ check_fp_sp_dependency(jive_node * node)
 void
 jive_regalloc_auxnodes_replace(jive_shaped_graph * shaped_graph)
 {
-	for (jive_node * node : jive::bottomup_traverser(shaped_graph->graph)) {
+	for (jive_node * node : jive::bottomup_traverser(&shaped_graph->graph())) {
 		if (dynamic_cast<const jive::split_operation *>(&node->operation())) {
-			jive_shaped_node * shaped_node = jive_shaped_graph_map_node(shaped_graph, node);
+			jive_shaped_node * shaped_node = shaped_graph->map_node(node);
 			replace_splitnode(shaped_node, node);
 		} else {
 			check_fp_sp_dependency(node);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -26,33 +26,31 @@ static int test_main(void)
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	assert(jive_shaped_graph_map_region(shaped_graph, graph->root_region) != NULL);
-	assert(jive_shaped_graph_map_ssavar(shaped_graph, y->ssavar) != NULL);
+	assert(shaped_graph->map_region(graph->root_region) != NULL);
+	assert(shaped_graph->map_ssavar(y->ssavar) != NULL);
 	
 	jive_region * subregion = jive_region_create_subregion(graph->root_region);
-	assert(jive_shaped_graph_map_region(shaped_graph, subregion) != NULL);
+	assert(shaped_graph->map_region(subregion) != NULL);
 	
 	jive::output * o = jive_bitsymbolicconstant(graph, 8, "x");
 	jive_bitslice(o, 0, 4);
 	jive_variable * var = jive_variable_create(graph);
 	jive_ssavar * ssavar = jive_ssavar_create(o, var);
 	
-	assert(jive_shaped_graph_map_variable(shaped_graph, var) == NULL);
-	assert(jive_shaped_graph_map_ssavar(shaped_graph, ssavar) == NULL);
+	assert(shaped_graph->map_variable(var) == NULL);
+	assert(shaped_graph->map_ssavar(ssavar) == NULL);
 	
 	jive_ssavar_assign_output(ssavar, o);
-	assert(jive_shaped_graph_map_variable(shaped_graph, var) != NULL);
-	assert(jive_shaped_graph_map_ssavar(shaped_graph, ssavar) != NULL);
+	assert(shaped_graph->map_variable(var) != NULL);
+	assert(shaped_graph->map_ssavar(ssavar) != NULL);
 	
-	jive_shaped_region * shaped_root_region = jive_shaped_graph_map_region(shaped_graph,
+	jive_shaped_region * shaped_root_region = shaped_graph->map_region(
 		graph->root_region);
-	jive_cut * c1 = jive_shaped_region_create_cut(shaped_root_region);
-	jive_cut * c2 = jive_shaped_region_create_cut(shaped_root_region);
+	jive_cut * c1 = shaped_root_region->create_top_cut();
+	jive_cut * c2 = shaped_root_region->create_top_cut();
 	
-	assert(c2->region_cut_list.next == c1);
-	
-	jive_cut_append(c1, y->node());
-	jive_cut_append(c2, o->node());
+	c1->append(y->node());
+	c2->append(o->node());
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

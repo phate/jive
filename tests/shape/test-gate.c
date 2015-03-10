@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -45,29 +45,25 @@ static int test_main(void)
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v1),
-		jive_shaped_graph_map_variable(shaped_graph, v2)));
+	assert(shaped_graph->map_variable(v1)->interferes_with(
+		shaped_graph->map_variable(v2)));
 	
 	jive_variable_assign_gate(v3, g3);
 	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v1),
-		jive_shaped_graph_map_variable(shaped_graph, v3)));
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2),
-		jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(shaped_graph->map_variable(v1)->interferes_with(shaped_graph->map_variable(v3)));
+	assert(shaped_graph->map_variable(v2)->interferes_with(shaped_graph->map_variable(v3)));
 	
 	jive_variable_unassign_gate(v1, g1);
 	
-	assert(!jive_shaped_graph_map_variable(shaped_graph, v1));
+	assert(!shaped_graph->map_variable(v1));
 	
 	delete o;
 	
-	assert(!jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2),
-		jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(!shaped_graph->map_variable(v2)->interferes_with(shaped_graph->map_variable(v3)));
 	
 	jive_node_gate_output(node, g3);
 	
-	assert(jive_shaped_variable_interferes_with(jive_shaped_graph_map_variable(shaped_graph, v2),
-		jive_shaped_graph_map_variable(shaped_graph, v3)));
+	assert(shaped_graph->map_variable(v2)->interferes_with(shaped_graph->map_variable(v3)));
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

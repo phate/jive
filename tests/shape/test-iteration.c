@@ -1,6 +1,6 @@
 /*
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -12,9 +12,9 @@
 #include <stdio.h>
 
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-node-private.h>
+#include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-region.h>
-#include <jive/regalloc/shaped-variable-private.h>
+#include <jive/regalloc/shaped-variable.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -26,24 +26,20 @@
 static void
 shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
-	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, node->region);
-	jive_cut * cut = jive_shaped_region_create_cut(shaped_region);
-	jive_cut_append(cut, node);
+	jive_shaped_region * shaped_region = shaped_graph->map_region(node->region);
+	jive_cut * cut = shaped_region->create_top_cut();
+	cut->append(node);
 }
 
-static size_t
-record_iterate(jive_shaped_node_downward_iterator * i, jive_node * dst[], size_t max)
+template<typename T>
+static std::vector<jive_node *>
+record_iterate(const T & range)
 {
-	size_t count = 0;
-	for(;;) {
-		jive_shaped_node * shaped_node;
-		shaped_node = jive_shaped_node_downward_iterator_next(i);
-		if (!shaped_node) break;
-		
-		assert(count < max);
-		dst[count ++] = shaped_node->node;
+	std::vector<jive_node *> result;
+	for (const jive_shaped_node & v : range) {
+		result.push_back(v.node());
 	}
-	return count;
+	return result;
 }
 
 static int test_main(void)
@@ -79,17 +75,11 @@ static int test_main(void)
 	shape(shaped_graph, n2);
 	shape(shaped_graph, n1);
 	
-	jive_shaped_node_downward_iterator i;
-	
-	size_t count;
-	jive_node * nodes[16];
-	
 	{
-		jive_shaped_node_downward_iterator_init(&i, jive_shaped_graph_map_node(shaped_graph, n1));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
+		std::vector<jive_node *> nodes = record_iterate(
+			shaped_graph->map_node(n1)->range_to_end());
 		
-		assert(count == 7);
+		assert(nodes.size() == 7);
 		assert(nodes[0] == n1);
 		assert(nodes[1] == n2);
 		assert(nodes[2] == n3 || nodes[2] == n4);
@@ -100,11 +90,10 @@ static int test_main(void)
 	}
 
 	{
-		jive_shaped_node_downward_iterator_init(&i, jive_shaped_graph_map_node(shaped_graph, n2));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
+		std::vector<jive_node *> nodes = record_iterate(
+			shaped_graph->map_node(n2)->range_to_end());
 		
-		assert(count == 5);
+		assert(nodes.size() == 5);
 		assert(nodes[0] == n2);
 		assert(nodes[1] == n3 || nodes[2] == n4);
 		assert(nodes[2] == n4 || nodes[3] == n3);
@@ -113,53 +102,26 @@ static int test_main(void)
 	}
 	
 	{
-		jive_shaped_node_downward_iterator_init(&i, jive_shaped_graph_map_node(shaped_graph, n3));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
-		
-		assert(count == 1);
+		std::vector<jive_node *> nodes = record_iterate(
+			shaped_graph->map_node(n3)->range_to_end());
+
+		assert(nodes.size() == 1);
 		assert(nodes[0] == n3);
 	}
 	
 	{
-		jive_shaped_node_downward_iterator_init_outward(&i, jive_shaped_graph_map_node(shaped_graph, n3));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
-		
-		assert(count == 4);
-		assert(nodes[0] == n3);
-		assert(nodes[1] == n5);
-		assert(nodes[2] == n6);
-		assert(nodes[3] == n7);
-	}
-	
-	{
-		jive_shaped_node_downward_iterator_init(&i, jive_shaped_graph_map_node(shaped_graph, n4));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
-		
-		assert(count == 1);
+		std::vector<jive_node *> nodes = record_iterate(
+			shaped_graph->map_node(n4)->range_to_end());
+
+		assert(nodes.size() == 1);
 		assert(nodes[0] == n4);
 	}
 	
 	{
-		jive_shaped_node_downward_iterator_init_outward(&i, jive_shaped_graph_map_node(shaped_graph, n4));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
-		
-		assert(count == 4);
-		assert(nodes[0] == n4);
-		assert(nodes[1] == n5);
-		assert(nodes[2] == n6);
-		assert(nodes[3] == n7);
-	}
-	
-	{
-		jive_shaped_node_downward_iterator_init(&i, jive_shaped_graph_map_node(shaped_graph, n5));
-		count = record_iterate(&i, nodes, 16);
-		jive_shaped_node_downward_iterator_fini(&i);
-		
-		assert(count == 2);
+		std::vector<jive_node *> nodes = record_iterate(
+			shaped_graph->map_node(n5)->range_to_end());
+
+		assert(nodes.size() == 2);
 		assert(nodes[0] == n5);
 		assert(nodes[1] == n6);
 	}

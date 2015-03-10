@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -12,9 +12,9 @@
 #include <stdio.h>
 
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-node-private.h>
+#include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-region.h>
-#include <jive/regalloc/shaped-variable-private.h>
+#include <jive/regalloc/shaped-variable.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -27,13 +27,11 @@
 static void
 shape(jive_shaped_graph * shaped_graph, jive_node * node)
 {
-	size_t n;
-	for (n = 0; n < node->noutputs; n++) {
+	for (size_t n = 0; n < node->noutputs; n++) {
 		jive_ssavar * ssavar = jive_output_auto_merge_variable(node->outputs[n]);
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, node->region->depth);
+		shaped_graph->map_ssavar(ssavar)->lower_boundary_region_depth(node->region->depth);
 	}
-	for (n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs; n++) {
 		jive_ssavar * ssavar = 0;
 		jive::input * user;
 		JIVE_LIST_ITERATE(node->inputs[n]->origin()->users, user, output_users_list) {
@@ -46,16 +44,16 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 			ssavar = user->ssavar;
 			break;
 		}
-		if (!ssavar)
+		if (!ssavar) {
 			ssavar = jive_input_auto_assign_variable(node->inputs[n]);
-		else
+		} else {
 			jive_ssavar_assign_input(ssavar, node->inputs[n]);
-		jive_shaped_ssavar * shaped_ssavar = jive_shaped_graph_map_ssavar(shaped_graph, ssavar);
-		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar, node->region->depth);
+		}
+		shaped_graph->map_ssavar(ssavar)->lower_boundary_region_depth(node->region->depth);
 	}
-	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, node->region);
-	jive_cut * cut = jive_shaped_region_create_cut(shaped_region);
-	jive_cut_append(cut, node);
+	jive_shaped_region * shaped_region = shaped_graph->map_region(node->region);
+	jive_cut * cut = shaped_region->create_top_cut();
+	cut->append(node);
 }
 
 static int test_main(void)

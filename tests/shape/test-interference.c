@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -12,10 +12,12 @@
 #include <locale.h>
 #include <stdio.h>
 
+// FIXME: oh the horror...
+#define private public
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-node-private.h>
+#include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-region.h>
-#include <jive/regalloc/shaped-variable-private.h>
+#include <jive/regalloc/shaped-variable.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 
@@ -34,34 +36,34 @@ static int test_main(void)
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive_shaped_region * r = jive_shaped_graph_map_region(shaped_graph, graph->root_region);
-	jive_cut * lower = jive_shaped_region_create_cut(r);
-	jive_cut * upper = jive_shaped_region_create_cut(r);
+	jive_shaped_region * r = shaped_graph->map_region(graph->root_region);
+	jive_cut * lower = r->create_top_cut();
+	jive_cut * upper = r->create_top_cut();
 	
-	jive_shaped_node * nn = jive_cut_append(lower, n);
-	jive_shaped_node * nx = jive_cut_append(upper, x->node());
-	jive_shaped_node * ny = jive_cut_append(upper, y->node());
+	jive_shaped_node * nn = lower->append(n);
+	jive_shaped_node * nx = upper->append(x->node());
+	jive_shaped_node * ny = upper->append(y->node());
 	
-	jive_shaped_variable * vx = jive_shaped_graph_map_variable(shaped_graph, x->ssavar->variable);
-	jive_shaped_variable * vy = jive_shaped_graph_map_variable(shaped_graph, y->ssavar->variable);
+	jive_shaped_variable * vx = shaped_graph->map_variable(x->ssavar->variable);
+	jive_shaped_variable * vy = shaped_graph->map_variable(y->ssavar->variable);
 	
-	jive_shaped_ssavar * sx = jive_shaped_graph_map_ssavar(shaped_graph, x->ssavar);
-	jive_shaped_ssavar * sy = jive_shaped_graph_map_ssavar(shaped_graph, y->ssavar);
+	jive_shaped_ssavar * sx = shaped_graph->map_ssavar(x->ssavar);
+	jive_shaped_ssavar * sy = shaped_graph->map_ssavar(y->ssavar);
 	
-	jive_shaped_node_add_ssavar_after(nx, sx, vx->variable, 1);
-	jive_shaped_node_add_ssavar_after(ny, sy, vy->variable, 1);
+	nx->add_ssavar_after(sx, vx->variable(), 1);
+	ny->add_ssavar_after(sy, vy->variable(), 1);
 	
-	assert(jive_shaped_variable_interferes_with(vx, vy) == 0);
+	assert(vx->interferes_with(vy) == 0);
 	
-	jive_shaped_node_add_ssavar_before(nn, sx, vx->variable, 1);
-	jive_shaped_node_add_ssavar_before(nn, sy, vy->variable, 1);
+	nn->add_ssavar_before(sx, vx->variable(), 1);
+	nn->add_ssavar_before(sy, vy->variable(), 1);
 	
-	assert(jive_shaped_variable_interferes_with(vx, vy) == 1);
+	assert(vx->interferes_with(vy) == 1);
 	
-	jive_shaped_node_remove_ssavar_after(nx, sx, vx->variable, 1);
-	jive_shaped_node_remove_ssavar_after(ny, sy, vy->variable, 1);
-	jive_shaped_node_remove_ssavar_before(nn, sx, vx->variable, 1);
-	jive_shaped_node_remove_ssavar_before(nn, sy, vy->variable, 1);
+	nx->remove_ssavar_after(sx, vx->variable(), 1);
+	ny->remove_ssavar_after(sy, vy->variable(), 1);
+	nn->remove_ssavar_before(sx, vx->variable(), 1);
+	nn->remove_ssavar_before(sy, vy->variable(), 1);
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

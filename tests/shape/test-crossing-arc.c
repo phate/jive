@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -14,7 +14,6 @@
 
 #include <jive/regalloc/crossing-arc.h>
 #include <jive/regalloc/shaped-graph.h>
-#include <jive/regalloc/shaped-region-private.h>
 #include <jive/regalloc/shaped-region.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -43,8 +42,8 @@ static int test_main(void)
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive_shaped_region * root = jive_shaped_graph_map_region(shaped_graph, graph->root_region);
-	jive_shaped_region * sub = jive_shaped_graph_map_region(shaped_graph, subregion);
+	jive_shaped_region * root = shaped_graph->map_region(graph->root_region);
+	jive_shaped_region * sub = shaped_graph->map_region(subregion);
 	
 	jive_node_auto_merge_variables(a);
 	jive_node_auto_merge_variables(b);
@@ -54,41 +53,40 @@ static int test_main(void)
 	
 	jive_crossing_arc_iterator i;
 	
-	jive_shaped_node * fp = jive_cut_append(jive_shaped_region_create_cut(root), f);
-	jive_shaped_node * ep = jive_cut_append(jive_shaped_region_create_cut(root), e);
-	jive_shaped_node * dp = jive_cut_append(jive_shaped_region_create_cut(sub), d);
-	jive_shaped_node * cp = jive_cut_append(jive_shaped_region_create_cut(root), c);
-	jive_shaped_node * bp = jive_cut_append(jive_shaped_region_create_cut(root), b);
+	jive_shaped_node * fp = root->create_top_cut()->append(f);
+	jive_shaped_node * ep = root->create_top_cut()->append(e);
+	jive_shaped_node * dp = sub->create_top_cut()->append(d);
+	jive_shaped_node * cp = root->create_top_cut()->append(c);
+	jive_shaped_node * bp = root->create_top_cut()->append(b);
 	
-	jive_shaped_ssavar_lower_boundary_region_depth(jive_shaped_graph_map_ssavar(shaped_graph,
-		a->outputs[0]->ssavar), 1);
-	jive_crossing_arc_iterator_init_ssavar(&i, NULL, dp, jive_shaped_graph_map_ssavar(shaped_graph,
+	shaped_graph->map_ssavar(a->outputs[0]->ssavar)->lower_boundary_region_depth(1);
+	jive_crossing_arc_iterator_init_ssavar(&i, NULL, dp, shaped_graph->map_ssavar(
 		a->outputs[0]->ssavar));
 	assert(i.region == sub && i.node == NULL);
 	jive_crossing_arc_iterator_next(&i);
 	assert(i.region == NULL && i.node == NULL);
 	
-	jive_shaped_node * ap = jive_cut_append(jive_shaped_region_create_cut(root), a);
+	jive_shaped_node * ap = root->create_top_cut()->append(a);
 	
-	jive_crossing_arc_iterator_init_ssavar(&i, ap, dp, jive_shaped_graph_map_ssavar(shaped_graph,
+	jive_crossing_arc_iterator_init_ssavar(&i, ap, dp, shaped_graph->map_ssavar(
 		a->outputs[0]->ssavar));
 	assert(i.region == sub && i.node == NULL);
 	jive_crossing_arc_iterator_next(&i);
 	assert(i.region == root && i.node == cp);
 	
-	assert(jive_shaped_node_prev_in_region(ep) == cp);
-	assert(jive_shaped_node_prev_in_region(dp) == NULL);
-	assert(jive_shaped_node_prev_in_region(cp) == bp);
-	assert(jive_shaped_node_prev_in_region(bp) == ap);
-	assert(jive_shaped_node_prev_in_region(ap) == NULL);
+	assert(ep->prev_in_region() == cp);
+	assert(dp->prev_in_region() == NULL);
+	assert(cp->prev_in_region() == bp);
+	assert(bp->prev_in_region() == ap);
+	assert(ap->prev_in_region() == nullptr);
 	
-	jive_crossing_arc_iterator_init_ssavar(&i, ap, cp, jive_shaped_graph_map_ssavar(shaped_graph,
+	jive_crossing_arc_iterator_init_ssavar(&i, ap, cp, shaped_graph->map_ssavar(
 		a->outputs[0]->ssavar));
 	assert(i.region == root && i.node == bp);
 	jive_crossing_arc_iterator_next(&i);
 	assert(i.region == NULL && i.node == NULL);
 	
-	jive_crossing_arc_iterator_init_ssavar(&i, bp, fp, jive_shaped_graph_map_ssavar(shaped_graph,
+	jive_crossing_arc_iterator_init_ssavar(&i, bp, fp, shaped_graph->map_ssavar(
 		b->outputs[0]->ssavar));
 	assert(i.region == root && i.node == ep);
 	jive_crossing_arc_iterator_next(&i);
@@ -101,9 +99,8 @@ static int test_main(void)
 	assert(i.region == NULL && i.node == NULL);
 	
 	/* for testing purposes just "fake" merged setting */
-	jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_graph_map_ssavar(shaped_graph,
-		a->outputs[0]->ssavar), 0);
-	jive_crossing_arc_iterator_init_ssavar(&i, ap, dp, jive_shaped_graph_map_ssavar(shaped_graph,
+	shaped_graph->map_ssavar(a->outputs[0]->ssavar)->set_boundary_region_depth(0);
+	jive_crossing_arc_iterator_init_ssavar(&i, ap, dp, shaped_graph->map_ssavar(
 		a->outputs[0]->ssavar));
 	assert(i.region == sub && i.node == NULL);
 	jive_crossing_arc_iterator_next(&i);
@@ -113,18 +110,17 @@ static int test_main(void)
 	jive_crossing_arc_iterator_next(&i);
 	assert(i.region == NULL && i.node == NULL);
 	/* don't forget to reset */
-	jive_shaped_ssavar_set_boundary_region_depth(jive_shaped_graph_map_ssavar(shaped_graph,
-		a->outputs[0]->ssavar), 1);
+	shaped_graph->map_ssavar(a->outputs[0]->ssavar)->set_boundary_region_depth(1);
 	
-	assert(sub->active_top.base.ssavar_map.size() == 2);
-	auto xi = sub->active_top.base.ssavar_map.find(jive_shaped_graph_map_ssavar(shaped_graph,
+	assert(sub->active_top().ssavar_map().size() == 2);
+	auto xi = sub->active_top().ssavar_map().find(shaped_graph->map_ssavar(
 		a->outputs[0]->ssavar));
-	assert(xi != sub->active_top.base.ssavar_map.end());
-	assert(xi->count == 1);
-	xi = sub->active_top.base.ssavar_map.find(jive_shaped_graph_map_ssavar(shaped_graph,
+	assert(xi != sub->active_top().ssavar_map().end());
+	assert(xi->count() == 1);
+	xi = sub->active_top().ssavar_map().find(shaped_graph->map_ssavar(
 		b->outputs[0]->ssavar));
-	assert(xi != sub->active_top.base.ssavar_map.end());
-	assert(xi->count == 1);
+	assert(xi != sub->active_top().ssavar_map().end());
+	assert(xi->count() == 1);
 	
 	jive_shaped_graph_destroy(shaped_graph);
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -271,14 +271,11 @@ static void
 jive_regalloc_reuse_record_region(jive_shaped_graph * shaped_graph, jive_region * region,
 	jive_names_use * names_use)
 {
-	jive_shaped_region * shaped_region = jive_shaped_graph_map_region(shaped_graph, region);
+	jive_shaped_region * shaped_region = shaped_graph->map_region(region);
 	
-	jive_cut * cut;
-	JIVE_LIST_ITERATE(shaped_region->cuts, cut, region_cut_list) {
-		jive_shaped_node * shaped_node;
-		JIVE_LIST_ITERATE(cut->locations, shaped_node, cut_location_list) {
-			jive_node * node = shaped_node->node;
-			jive_regalloc_reuse_record_node(shaped_graph, node, names_use);
+	for (jive_cut & cut : shaped_region->cuts()) {
+		for (jive_shaped_node & shaped_node : cut.nodes()) {
+			jive_regalloc_reuse_record_node(shaped_graph, shaped_node.node(), names_use);
 		}
 	}
 }
@@ -286,12 +283,10 @@ jive_regalloc_reuse_record_region(jive_shaped_graph * shaped_graph, jive_region 
 void
 jive_regalloc_reuse(jive_shaped_graph * shaped_graph)
 {
-	jive_graph * graph = shaped_graph->graph;
-	
 	jive_names_use names_use;
 	jive_names_use_init(&names_use);
 	
-	jive_regalloc_reuse_record_region(shaped_graph, graph->root_region, &names_use);
+	jive_regalloc_reuse_record_region(shaped_graph, shaped_graph->graph().root_region, &names_use);
 	
 	jive_names_use_fini(&names_use);
 }

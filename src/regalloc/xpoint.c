@@ -1,360 +1,227 @@
 /*
- * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/regalloc/xpoint-private.h>
+#include <jive/regalloc/xpoint.h>
 
 #include <jive/common.h>
 
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/shaped-variable.h>
-#include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/variable.h>
 
+jive_nodevar_xpoint::~jive_nodevar_xpoint() noexcept
+{
+	shaped_node_->ssavar_xpoints_.erase(this);
+}
+
+jive_nodevar_xpoint::jive_nodevar_xpoint(
+	jive_shaped_node * shaped_node,
+	jive_shaped_ssavar * shaped_ssavar) noexcept
+	: shaped_node_(shaped_node)
+	, shaped_ssavar_(shaped_ssavar)
+	, before_count_(0)
+	, cross_count_(0)
+	, after_count_(0)
+{
+	shaped_node_->ssavar_xpoints_.insert(this);
+}
+
+void
+jive_nodevar_xpoint::destroy() noexcept
+{
+	shaped_ssavar_->node_xpoints_.erase(this);
+}
+
+
 jive_nodevar_xpoint *
-jive_nodevar_xpoint_create(jive_shaped_node * shaped_node, jive_shaped_ssavar * shaped_ssavar)
+jive_nodevar_xpoint::create(
+	jive_shaped_node * shaped_node,
+	jive_shaped_ssavar * shaped_ssavar)
 {
-	jive_nodevar_xpoint * xpoint = new jive_nodevar_xpoint;
-	xpoint->shaped_node = shaped_node;
-	xpoint->shaped_ssavar = shaped_ssavar;
-	xpoint->before_count = 0;
-	xpoint->cross_count = 0;
-	xpoint->after_count = 0;
-	
-	shaped_node->ssavar_xpoints.insert(xpoint);
-	shaped_ssavar->node_xpoints.insert(xpoint);
-	
-	return xpoint;
+	return shaped_ssavar->node_xpoints_.insert(std::unique_ptr<jive_nodevar_xpoint>(
+		new jive_nodevar_xpoint(shaped_node, shaped_ssavar))).ptr();
 }
 
-void
-jive_nodevar_xpoint_destroy(jive_nodevar_xpoint * xpoint)
+
+jive_cutvar_xpoint::jive_cutvar_xpoint(
+	jive_shaped_ssavar * shaped_ssavar,
+	jive::output * origin,
+	jive_variable * variable,
+	const jive_resource_class * rescls,
+	size_t count) noexcept
+	: shaped_ssavar_(shaped_ssavar)
+	, origin_(origin)
+	, variable_(variable)
+	, rescls_(rescls)
+	, count_(count)
 {
-	jive_shaped_node * shaped_node = xpoint->shaped_node;
-	jive_shaped_ssavar * shaped_ssavar = xpoint->shaped_ssavar;
-	
-	shaped_node->ssavar_xpoints.erase(xpoint);
-	shaped_ssavar->node_xpoints.erase(xpoint);
-	
-	delete xpoint;
 }
 
-void
-jive_varcut_init(jive_varcut * self)
+jive_cutvar_xpoint::~jive_cutvar_xpoint() noexcept
 {
-	self->xpoints.first = self->xpoints.last = 0;
 }
 
-void
-jive_varcut_fini(jive_varcut * self)
+jive_varcut::jive_varcut(const jive_varcut & other)
 {
-	jive_mutable_varcut_clear(self);
-}
-
-jive_shaped_ssavar *
-jive_varcut_map_output(const jive_varcut * self, jive::output * output)
-{
-	auto i = self->origin_map.find(output);
-	if (i != self->origin_map.end()) {
-		return i->shaped_ssavar;
-	} else {
-		return nullptr;
+	for (const jive_cutvar_xpoint & src_xpoint : other.xpoints_) {
+		create_xpoint(
+			src_xpoint.shaped_ssavar(),
+			src_xpoint.origin(),
+			src_xpoint.variable(),
+			src_xpoint.rescls(),
+			src_xpoint.count());
 	}
 }
 
-jive_shaped_ssavar *
-jive_varcut_map_variable(const jive_varcut * self, jive_variable * variable)
+void jive_varcut::swap(jive_varcut & other) noexcept
 {
-	auto i = self->variable_map.find(variable);
-	if (i != self->variable_map.end()) {
-		return i->shaped_ssavar;
-	} else {
-		return nullptr;
-	}
+	ssavar_map_.swap(other.ssavar_map_);
+	origin_map_.swap(other.origin_map_);
+	variable_map_.swap(other.variable_map_);
+	use_counts_.swap(other.use_counts_);
+	xpoints_.swap(other.xpoints_);
 }
 
-static void
-jive_mutable_varcut_register_xpoint(jive_mutable_varcut * self, jive_cutvar_xpoint * xpoint)
+jive_cutvar_xpoint *
+jive_varcut::create_xpoint(
+	jive_shaped_ssavar * shaped_ssavar,
+	jive::output * origin,
+	jive_variable * variable,
+	const jive_resource_class * rescls,
+	size_t count)
 {
-	self->ssavar_map.insert(xpoint);
-	self->origin_map.insert(xpoint);
-	self->variable_map.insert(xpoint);
-	JIVE_LIST_PUSH_BACK(self->xpoints, xpoint, varcut_xpoints_list);
-	self->use_counts.add(xpoint->rescls);
-}
+	std::unique_ptr<jive_cutvar_xpoint> xpoint(new jive_cutvar_xpoint(
+		shaped_ssavar, origin, variable, rescls, count));
 
-static void
-jive_mutable_varcut_unregister_xpoint(jive_mutable_varcut * self, jive_cutvar_xpoint * xpoint)
-{
-	self->ssavar_map.erase(xpoint);
-	self->origin_map.erase(xpoint);
-	self->variable_map.erase(xpoint);
-	JIVE_LIST_REMOVE(self->xpoints, xpoint, varcut_xpoints_list);
-	self->use_counts.sub(xpoint->rescls);
-}
+	/* note: if bad_alloc is thrown during any of the insertions,
+	 * then this object will not be consistent anymore; it can only
+	 * be safely destroyed, but not used otherwise */
+	ssavar_map_.insert(xpoint.get());
+	origin_map_.insert(xpoint.get());
+	variable_map_.insert(xpoint.get());
+	use_counts_.add(rescls);
 
-void
-jive_mutable_varcut_clear(jive_mutable_varcut * self)
-{
-	self->use_counts.clear();
-	
-	jive_cutvar_xpoint * xpoint, * next_xpoint;
-	JIVE_LIST_ITERATE_SAFE(self->xpoints, xpoint, next_xpoint, varcut_xpoints_list) {
-		self->ssavar_map.erase(xpoint);
-		self->origin_map.erase(xpoint);
-		self->variable_map.erase(xpoint);
-		JIVE_LIST_REMOVE(self->xpoints, xpoint, varcut_xpoints_list);
-		
-		delete xpoint;
-	}
+	return xpoints_.insert(xpoints_.end(), std::move(xpoint)).ptr();
 }
 
 void
-jive_mutable_varcut_assign(jive_mutable_varcut * self, const jive_varcut * other)
+jive_varcut::remove_xpoint(jive_cutvar_xpoint * xpoint) noexcept
 {
-	jive_mutable_varcut_clear(self);
-	
-	const jive_cutvar_xpoint * src_xpoint;
-	JIVE_LIST_ITERATE(other->xpoints, src_xpoint, varcut_xpoints_list) {
-		jive_cutvar_xpoint * xpoint = new jive_cutvar_xpoint;
-		xpoint->shaped_ssavar = src_xpoint->shaped_ssavar;
-		xpoint->origin = src_xpoint->origin;
-		xpoint->variable = src_xpoint->variable;
-		xpoint->rescls = src_xpoint->rescls;
-		xpoint->count = src_xpoint->count;
-		jive_mutable_varcut_register_xpoint(self, xpoint);
-	}
+	ssavar_map_.erase(xpoint);
+	origin_map_.erase(xpoint);
+	variable_map_.erase(xpoint);
+	use_counts_.sub(xpoint->rescls_);
+	xpoints_.erase(xpoint);
+}
+
+void
+jive_varcut::clear() noexcept
+{
+	use_counts_.clear();
+	ssavar_map_.clear();
+	origin_map_.clear();
+	variable_map_.clear();
+	xpoints_.clear();
 }
 
 size_t
-jive_mutable_varcut_ssavar_add(
-	jive_mutable_varcut * self,
+jive_varcut::ssavar_add(
 	jive_shaped_ssavar * shaped_ssavar,
 	size_t count)
 {
-	if (!count)
-		return 0;
-	
-	auto i = self->ssavar_map.find(shaped_ssavar);
-	
+	auto i = ssavar_map_.find(shaped_ssavar);
+
+	if (!count) {
+		return i != ssavar_map_.end() ? i->count() : 0;
+	}
+
 	jive_cutvar_xpoint * xpoint;
-	if (i == self->ssavar_map.end()) {
-		xpoint = new jive_cutvar_xpoint;
-		xpoint->shaped_ssavar = shaped_ssavar;
-		xpoint->origin = shaped_ssavar->ssavar->origin;
-		xpoint->variable = shaped_ssavar->ssavar->variable;
-		xpoint->rescls = jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
-		xpoint->count = 0;
-		jive_mutable_varcut_register_xpoint(self, xpoint);
+	if (i == ssavar_map_.end()) {
+		xpoint = create_xpoint(
+			shaped_ssavar,
+			shaped_ssavar->ssavar().origin,
+			shaped_ssavar->ssavar().variable,
+			jive_variable_get_resource_class(shaped_ssavar->ssavar().variable),
+			0);
 	} else {
 		xpoint = i.ptr();
 	}
 	
-	size_t old_count = xpoint->count;
-	xpoint->count += count;
+	size_t old_count = xpoint->count_;
+	xpoint->count_ += count;
 	return old_count;
 }
 
 size_t
-jive_mutable_varcut_ssavar_remove(
-	jive_mutable_varcut * self,
+jive_varcut::ssavar_remove(
 	jive_shaped_ssavar * shaped_ssavar,
 	size_t count)
 {
-	auto i = self->ssavar_map.find(shaped_ssavar);
-	if (i == self->ssavar_map.end()) {
+	auto i = ssavar_map_.find(shaped_ssavar);
+	if (i == ssavar_map_.end()) {
 		return 0;
 	}
-	jive_cutvar_xpoint * xpoint = i.ptr();
-	
-	size_t old_count = xpoint->count;
-	xpoint->count -= count;
-	if (xpoint->count == 0) {
-		jive_mutable_varcut_unregister_xpoint(self, xpoint);
-		delete xpoint;
+
+	size_t old_count = i->count_;
+	if (count >= i->count_) {
+		remove_xpoint(i.ptr());
+	} else {
+		i->count_ -= count;
 	}
 	
 	return old_count;
 }
 
 void
-jive_mutable_varcut_ssavar_remove_full(
-	jive_mutable_varcut * self,
+jive_varcut::ssavar_remove_full(
 	jive_shaped_ssavar * shaped_ssavar)
 {
-	auto i = self->ssavar_map.find(shaped_ssavar);
-	if (i == self->ssavar_map.end()) {
-		return;
+	auto i = ssavar_map_.find(shaped_ssavar);
+	if (i != ssavar_map_.end()) {
+		remove_xpoint(i.ptr());
 	}
-	jive_cutvar_xpoint * xpoint = i.ptr();
-	
-	jive_mutable_varcut_unregister_xpoint(self, xpoint);
-	delete xpoint;
 }
 
 void
-jive_mutable_varcut_ssavar_divert_origin(jive_mutable_varcut * self,
+jive_varcut::ssavar_divert_origin(
 	jive_shaped_ssavar * shaped_ssavar, jive::output * origin)
 {
-	auto i = self->ssavar_map.find(shaped_ssavar);
-	if (i == self->ssavar_map.end()) {
-		return;
+	auto i = ssavar_map_.find(shaped_ssavar);
+	if (i != ssavar_map_.end()) {
+		jive_cutvar_xpoint * xpoint = i.ptr();
+		origin_map_.erase(xpoint);
+		xpoint->origin_ = origin;
+		origin_map_.insert(xpoint);
 	}
-	jive_cutvar_xpoint * xpoint = i.ptr();
-	self->origin_map.erase(xpoint);
-	xpoint->origin = origin;
-	self->origin_map.insert(xpoint);
 }
 
 void
-jive_mutable_varcut_ssavar_variable_change(
-	jive_mutable_varcut * self,
+jive_varcut::ssavar_variable_change(
 	jive_shaped_ssavar * shaped_ssavar,
 	jive_variable * variable)
 {
-	auto i = self->ssavar_map.find(shaped_ssavar);
-	if (i == self->ssavar_map.end()) {
-		return;
+	auto i = ssavar_map_.find(shaped_ssavar);
+	if (i != ssavar_map_.end()) {
+		jive_cutvar_xpoint * xpoint = i.ptr();
+		variable_map_.erase(xpoint);
+		xpoint->variable_ = variable;
+		variable_map_.insert(xpoint);
 	}
-	jive_cutvar_xpoint * xpoint = i.ptr();
-	
-	self->variable_map.erase(xpoint);
-	xpoint->variable = variable;
-	self->variable_map.insert(xpoint);
 }
 
-
 void
-jive_mutable_varcut_ssavar_rescls_change(
-	jive_mutable_varcut * self,
+jive_varcut::ssavar_rescls_change(
 	jive_shaped_ssavar * shaped_ssavar,
 	const jive_resource_class * rescls)
 {
-	auto i = self->ssavar_map.find(shaped_ssavar);
-	if (i == self->ssavar_map.end()) {
-		return;
+	auto i = ssavar_map_.find(shaped_ssavar);
+	if (i != ssavar_map_.end()) {
+		use_counts_.change(i->rescls_, rescls);
+		i->rescls_ = rescls;
 	}
-	jive_cutvar_xpoint * xpoint = i.ptr();
-	
-	self->use_counts.change(xpoint->rescls, rescls);
-	xpoint->rescls = rescls;
-}
-
-
-static void
-jive_region_varcut_register_xpoint(jive_region_varcut * self, jive_regvar_xpoint * xpoint)
-{
-	self->base.ssavar_map.insert(&xpoint->base);
-	self->base.origin_map.insert(&xpoint->base);
-	self->base.variable_map.insert(&xpoint->base);
-	xpoint->base.shaped_ssavar->region_xpoints.insert(xpoint);
-	JIVE_LIST_PUSH_BACK(self->base.xpoints, &xpoint->base, varcut_xpoints_list);
-	self->base.use_counts.add(xpoint->base.rescls);
-}
-
-static void
-jive_region_varcut_unregister_xpoint(jive_region_varcut * self, jive_regvar_xpoint * xpoint)
-{
-	self->base.ssavar_map.erase(&xpoint->base);
-	self->base.origin_map.erase(&xpoint->base);
-	self->base.variable_map.erase(&xpoint->base);
-	xpoint->base.shaped_ssavar->region_xpoints.erase(xpoint);
-	JIVE_LIST_REMOVE(self->base.xpoints, &xpoint->base, varcut_xpoints_list);
-	self->base.use_counts.add(xpoint->base.rescls);
-}
-
-
-void
-jive_region_varcut_init(jive_region_varcut * self, jive_shaped_region * shaped_region)
-{
-	jive_varcut_init(&self->base);
-	self->shaped_region = shaped_region;
-}
-
-void
-jive_region_varcut_fini(jive_region_varcut * self)
-{
-	JIVE_DEBUG_ASSERT(self->base.xpoints.first == 0 && self->base.xpoints.last == 0);
-}
-
-size_t
-jive_region_varcut_ssavar_add(
-	jive_region_varcut * self,
-	jive_shaped_ssavar * shaped_ssavar,
-	size_t count)
-{
-	if (!count)
-		return 0;
-	
-	jive_regvar_xpoint * xpoint;
-	auto i = self->base.ssavar_map.find(shaped_ssavar);
-	
-	if (i == self->base.ssavar_map.end()) {
-		xpoint = new jive_regvar_xpoint;
-		xpoint->base.shaped_ssavar = shaped_ssavar;
-		xpoint->base.origin = shaped_ssavar->ssavar->origin;
-		xpoint->base.variable = shaped_ssavar->ssavar->variable;
-		xpoint->base.rescls = jive_variable_get_resource_class(shaped_ssavar->ssavar->variable);
-		xpoint->base.count = 0;
-		xpoint->shaped_region = self->shaped_region;
-		jive_region_varcut_register_xpoint(self, xpoint);
-	} else {
-		xpoint = reinterpret_cast<jive_regvar_xpoint *>(i.ptr());
-	}
-	
-	size_t old_count = xpoint->base.count;
-	xpoint->base.count += count;
-	return old_count;
-}
-
-size_t
-jive_region_varcut_ssavar_remove(
-	jive_region_varcut * self,
-	jive_shaped_ssavar * shaped_ssavar,
-	size_t count)
-{
-	auto i = self->base.ssavar_map.find(shaped_ssavar);
-	
-	if (i == self->base.ssavar_map.end()) {
-		return 0;
-	}
-	jive_regvar_xpoint * xpoint = reinterpret_cast<jive_regvar_xpoint *>(i.ptr());
-	
-	size_t old_count = xpoint->base.count;
-	xpoint->base.count -= count;
-	if (xpoint->base.count == 0) {
-		jive_region_varcut_unregister_xpoint(self, xpoint);
-		delete xpoint;
-	}
-	
-	return old_count;
-}
-
-void
-jive_region_varcut_ssavar_divert_origin(jive_region_varcut * self,
-	jive_shaped_ssavar * shaped_ssavar, jive::output * origin)
-{
-	jive_mutable_varcut_ssavar_divert_origin(&self->base, shaped_ssavar, origin);
-}
-
-void
-jive_region_varcut_ssavar_variable_change(
-	jive_region_varcut * self,
-	jive_shaped_ssavar * shaped_ssavar,
-	jive_variable * variable)
-{
-	jive_mutable_varcut_ssavar_variable_change(&self->base, shaped_ssavar, variable);
-}
-
-void
-jive_region_varcut_ssavar_rescls_change(
-	jive_region_varcut * self,
-	jive_shaped_ssavar * shaped_ssavar,
-	const jive_resource_class * rescls)
-{
-	jive_mutable_varcut_ssavar_rescls_change(&self->base, shaped_ssavar, rescls);
 }

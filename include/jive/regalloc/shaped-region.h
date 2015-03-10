@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -10,104 +10,149 @@
 #include <stdbool.h>
 
 #include <jive/common.h>
-
+#include <jive/regalloc/shaped-node.h>
 #include <jive/regalloc/xpoint.h>
-
-typedef struct jive_cut jive_cut;
-typedef struct jive_shaped_region jive_shaped_region;
+#include <jive/util/intrusive-list.h>
 
 struct jive_node;
 struct jive_region;
-struct jive_shaped_graph;
 
-struct jive_shaped_region {
-	~jive_shaped_region();
-	
-	struct jive_shaped_graph * shaped_graph;
-	
-	struct jive_region * region;
+class jive_cut;
+class jive_shaped_graph;
+class jive_shaped_region;
+class jive_shaped_ssavar;
 
-	struct {
-		jive_cut * first;
-		jive_cut * last;
-	} cuts;
-	
-	jive_region_varcut active_top;
+class jive_cut {
+public:
+	typedef jive::detail::intrusive_list<
+		jive_shaped_node,
+		jive_shaped_node::list_accessor
+	> nodes_list;
+
+	~jive_cut() noexcept;
+
+	inline jive_cut(jive_shaped_region * shaped_region) noexcept
+		: shaped_region_(shaped_region)
+	{
+	}
+
+	inline jive_shaped_region & shaped_region() noexcept { return *shaped_region_; }
+	inline const jive_shaped_region & shaped_region() const noexcept { return *shaped_region_; }
+
+	/** \brief Insert node before given position in this cut */
+	jive_shaped_node *
+	insert(jive_shaped_node * before, jive_node * node);
+
+	/** \brief Append node to end of this cut */
+	inline jive_shaped_node *
+	append(jive_node * node)
+	{
+		return insert(nullptr, node);
+	}
+
+	/** \brief Split cut at location
+	 *
+	 * Split this cut at the given location: all nodes before this point
+	 * (if any) are moved into a new cut above, all nodes before this
+	 * point (if any) are moved into a new cut below. Returns the
+	 * (empty) cut at the split point. */
+	jive_cut *
+	split(jive_shaped_node * at);
+
+	jive_shaped_region * shaped_region_;
+
+	inline const nodes_list & nodes() const noexcept { return nodes_; }
+	inline nodes_list & nodes() noexcept { return nodes_; }
 
 private:
-	jive::detail::intrusive_hash_anchor<jive_shaped_region> hash_chain;
-public:
-	typedef jive::detail::intrusive_hash_accessor <
-		struct jive_region *,
-		jive_shaped_region,
-		&jive_shaped_region::region,
-		&jive_shaped_region::hash_chain
-	> hash_chain_accessor;
-};
-
-typedef jive::detail::owner_intrusive_hash <
-	const jive_region *,
-	jive_shaped_region,
-	jive_shaped_region::hash_chain_accessor
-> jive_shaped_region_hash;
-
-
-struct jive_shaped_node;
-
-struct jive_cut {
-	jive_shaped_region * shaped_region;
-	struct {
-		jive_cut * prev;
-		jive_cut * next;
-	} region_cut_list;
+	/** \brief Remove all nodes from cut
+	 *
+	 * The nodes are returned to a state where they are not inserted
+	 * anywhere in any cut. */
+	void
+	remove_nodes() noexcept;
 	
-	struct {
-		struct jive_shaped_node * first;
-		struct jive_shaped_node * last;
-	} locations;
+	jive::detail::intrusive_list_anchor<jive_cut> region_cut_list_;
+	typedef jive::detail::intrusive_list_accessor<
+		jive_cut,
+		&jive_cut::region_cut_list_
+	> list_accessor;
+
+	nodes_list nodes_;
+
+	friend class jive_shaped_node;
+	friend class jive_shaped_region;
 };
 
-jive_shaped_region *
-jive_shaped_region_create(struct jive_shaped_graph * shaped_graph, struct jive_region * region);
+class jive_shaped_region {
+public:
+	typedef jive::detail::owner_intrusive_list<jive_cut, jive_cut::list_accessor> cut_list;
 
-/** \brief Create new top-most cut */
-jive_cut *
-jive_shaped_region_create_cut(jive_shaped_region * self);
+	~jive_shaped_region() noexcept;
 
-void
-jive_shaped_region_destroy_cuts(jive_shaped_region * self);
+	inline jive_shaped_region(
+		jive_shaped_graph * shaped_graph,
+		jive_region * region) noexcept
+		: shaped_graph_(shaped_graph)
+		, region_(region)
+	{
+	}
 
-void
-jive_cut_destroy(jive_cut * self);
+	inline jive_shaped_graph & shaped_graph() noexcept { return *shaped_graph_; }
+	inline const jive_shaped_graph & shaped_graph() const noexcept { return *shaped_graph_; }
+	inline jive_region * region() const noexcept { return region_; }
 
-/** \brief Create new cut in same region above this cut */
-jive_cut *
-jive_cut_create_above(jive_cut * self);
+	inline cut_list & cuts() noexcept { return cuts_; }
+	inline const cut_list & cuts() const noexcept { return cuts_; }
 
-/** \brief Create new cut in same region below this cut */
-jive_cut *
-jive_cut_create_below(jive_cut * self);
+	inline const jive_varcut & active_top() const noexcept { return active_top_; }
 
-/** \brief Split cut at location, return empty cut before split point */
-jive_cut *
-jive_cut_split(jive_cut * self, struct jive_shaped_node * at);
+	/** \brief Create a new top-most cut */
+	inline jive_cut *
+	create_top_cut()
+	{
+		return create_cut(cuts_.begin());
+	}
 
-/** \brief Insert node into cut */
-struct jive_shaped_node *
-jive_cut_insert(jive_cut * self, struct jive_shaped_node * before, struct jive_node * node);
+	jive_shaped_node *
+	first_in_region() noexcept;
 
-JIVE_EXPORTED_INLINE struct jive_shaped_node *
-jive_cut_append(jive_cut * self, struct jive_node * node)
-{
-	return jive_cut_insert(self, 0, node);
-}
+	jive_shaped_node *
+	last_in_region() noexcept;
 
-/** \brief First node in region */
-struct jive_shaped_node *
-jive_shaped_region_first(const jive_shaped_region * self);
+private:
+	void
+	add_active_top(jive_shaped_ssavar * shaped_ssavar, size_t count);
 
-/** \brief Last node in region */
-struct jive_shaped_node *
-jive_shaped_region_last(const jive_shaped_region * self);
+	void
+	remove_active_top(jive_shaped_ssavar * shaped_ssavar, size_t count) noexcept;
+
+	/** \brief Clear all cuts
+	 *
+	 * Clears all cuts for this region. All nodes are removed. */
+	void
+	clear_cuts() noexcept;
+
+	jive_cut *
+	create_cut(cut_list::iterator before);
+
+	jive_shaped_graph * shaped_graph_;
+	jive_region * region_;
+	cut_list cuts_;
+	jive_varcut active_top_;
+	jive::detail::intrusive_hash_anchor<jive_shaped_region> hash_chain_;
+
+	typedef jive::detail::intrusive_hash_accessor <
+		jive_region *,
+		jive_shaped_region,
+		&jive_shaped_region::region_,
+		&jive_shaped_region::hash_chain_
+	> hash_chain_accessor;
+
+	friend class jive_cut;
+	friend class jive_shaped_graph;
+	friend class jive_shaped_node;
+	friend class jive_shaped_ssavar;
+};
 
 #endif

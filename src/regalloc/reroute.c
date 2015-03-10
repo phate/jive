@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -82,36 +82,38 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	}
 	
 	/* everything has been cleared, now redo assignment */
-	size_t n;
 	jive_ssavar_assign_output(ssavar_below, out);
-	for (n = 0; n < users_below.size(); ++n) {
+	for (size_t n = 0; n < users_below.size(); ++n) {
 		jive::input * input = users_below[n];
 		input->divert_origin(out);
 		jive_ssavar_assign_input(ssavar_below, input);
 	}
-	for (n = 0; n < users1.size(); ++n) {
+	for (size_t n = 0; n < users1.size(); ++n) {
 		jive::input * input = users1[n];
 		jive_ssavar_assign_input(ssavar1, input);
 	}
-	for (n = 0; n < users2.size(); ++n) {
+	for (size_t n = 0; n < users2.size(); ++n) {
 		jive::input * input = users2[n];
 		jive_ssavar_assign_input(ssavar2, input);
 	}
 	
-	jive_shaped_ssavar * shaped_ssavar1 = jive_shaped_graph_map_ssavar(shaped_graph, ssavar1);
-	jive_shaped_ssavar * shaped_ssavar2 = jive_shaped_graph_map_ssavar(shaped_graph, ssavar2);
-	if (shaped_ssavar1)
-		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar1, region1->depth);
-	if (shaped_ssavar2)
-		jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar2, region2->depth);
-	
-	if (region1 == interest_region)
+	jive_shaped_ssavar * shaped_ssavar1 = shaped_graph->map_ssavar(ssavar1);
+	jive_shaped_ssavar * shaped_ssavar2 = shaped_graph->map_ssavar(ssavar2);
+	if (shaped_ssavar1) {
+		shaped_ssavar1->lower_boundary_region_depth(region1->depth);
+	}
+	if (shaped_ssavar2) {
+		shaped_ssavar2->lower_boundary_region_depth(region2->depth);
+	}
+
+	if (region1 == interest_region) {
 		ssavar_inside_region = ssavar1;
-	else if (region2 == interest_region)
+	} else if (region2 == interest_region) {
 		ssavar_inside_region = ssavar2;
-	else
+	} else {
 		JIVE_DEBUG_ASSERT(false);
-	
+	}
+
 	jive_variable_assign_gate(variable, gate);
 	
 	return ssavar_inside_region;
@@ -159,7 +161,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	
 	jive_ssavar * ssavar_inside = jive_ssavar_create(def_inside, variable);
 	/* assign ssavar to loop entry if it has been shaped already */
-	if (jive_shaped_graph_map_node(shaped_graph, loop_head)) {
+	if (shaped_graph->is_node_placed(loop_head)) {
 		jive_ssavar_assign_input(ssavar, into_loop);
 		jive_ssavar_assign_output(ssavar_inside, def_inside);
 	}
@@ -172,20 +174,17 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	}
 	/* ... but assign ssavar only to those that had an ssavar
 	assigned previously */
-	size_t n;
-	for (n = 0; n < loop_users.size(); ++n) {
+	for (size_t n = 0; n < loop_users.size(); ++n) {
 		jive::input * input = loop_users[n];
 		jive_ssavar_assign_input(ssavar_inside, input);
 	}
-	jive_shaped_ssavar * shaped_ssavar_inside =
-		jive_shaped_graph_map_ssavar(shaped_graph, ssavar_inside);
-	jive_shaped_ssavar_lower_boundary_region_depth(shaped_ssavar_inside, loop_region->depth);
+	shaped_graph->map_ssavar(ssavar_inside)->lower_boundary_region_depth(loop_region->depth);
 	
 	/* below loop */
 	
 	jive_ssavar * ssavar_below = jive_ssavar_create(def_outside, variable);
 	jive_ssavar_assign_output(ssavar_below, def_outside);
-	for (n = 0; n < users_below.size(); ++n) {
+	for (size_t n = 0; n < users_below.size(); ++n) {
 		jive::input * input = users_below[n];
 		input->divert_origin(def_outside);
 		jive_ssavar_assign_input(ssavar_below, input);
@@ -204,7 +203,7 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	jive_shaped_node * anchor_location,
 	jive_region * interest_region)
 {
-	jive_node * anchor_node = anchor_location->node;
+	jive_node * anchor_node = anchor_location->node();
 	
 	/* FIXME: just returning appears correct and hinges on the fact that
 	other anchor node types (subroutine etc.) simply do not allow anything
@@ -217,15 +216,9 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 	std::vector<jive::input*> users_below;
 	
 	/* collect and disconnect all users below anchor */
-	jive_shaped_node_downward_iterator i;
-	jive_shaped_node_downward_iterator_init(&i, anchor_location);
-	for(;;) {
-		jive_shaped_node * loc = jive_shaped_node_downward_iterator_next(&i);
-		if (!loc)
-			break;
-		jive_node * node = loc->node;
-		size_t n;
-		for(n = 0; n < node->ninputs; n++) {
+	for (jive_shaped_node & loc : anchor_location->range_to_end()) {
+		jive_node * node = loc.node();
+		for (size_t n = 0; n < node->ninputs; n++) {
 			jive::input * input = node->inputs[n];
 			if (input->ssavar == ssavar) {
 				jive_ssavar_unassign_input(ssavar, input);
@@ -233,8 +226,6 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 			}
 		}
 	}
-	jive_shaped_node_downward_iterator_fini(&i);
-	
 	jive_ssavar * ssavar_inside_region;
 	
 	if (dynamic_cast<const jive::gamma_op *>(&anchor_node->operation())) {
@@ -251,14 +242,16 @@ reroute_through_anchor(jive_shaped_graph * shaped_graph,
 static jive_ssavar *
 reroute_out_of_region(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar, jive_region * region)
 {
-	if (ssavar->origin->node()->region != region)
+	if (ssavar->origin->node()->region != region) {
 		ssavar = reroute_out_of_region(shaped_graph, ssavar, region->parent);
+	}
 	
-	if (!region->anchor)
+	if (!region->anchor) {
 		return ssavar;
+	}
 	
 	jive_node * anchor_node = region->anchor->node();
-	jive_shaped_node * anchor_location = jive_shaped_graph_map_node(shaped_graph, anchor_node);
+	jive_shaped_node * anchor_location = shaped_graph->map_node(anchor_node);
 	ssavar = reroute_through_anchor(shaped_graph, ssavar, anchor_location, region);
 	/* FIXME: this should be the ssavar as used inside the region */
 	return ssavar;
@@ -267,10 +260,10 @@ reroute_out_of_region(jive_shaped_graph * shaped_graph, jive_ssavar * ssavar, ji
 jive_ssavar *
 jive_regalloc_reroute_at_point(jive_ssavar * ssavar, jive_shaped_node * shaped_node)
 {
-	jive_shaped_graph * shaped_graph = shaped_node->shaped_graph;
-	jive_shaped_region * shaped_region = shaped_node->cut->shaped_region;
-	if (ssavar->origin->node()->region != shaped_region->region)
-		return reroute_out_of_region(shaped_graph, ssavar, shaped_region->region);
-	else
+	jive_region * region = shaped_node->cut()->shaped_region().region();
+	if (ssavar->origin->node()->region != region) {
+		return reroute_out_of_region(&shaped_node->shaped_graph(), ssavar, region);
+	} else {
 		return ssavar;
+	}
 }

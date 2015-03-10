@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -46,11 +46,11 @@ static int test_main(void)
 	
 	jive_ssavar * ssavar = jive_output_auto_merge_variable(enter->outputs[0]);
 	
-	jive_shaped_variable * regvar = jive_shaped_graph_map_variable(shaped_graph, ssavar->variable);
+	jive_shaped_variable * regvar = shaped_graph->map_variable(ssavar->variable);
 	
 	const jive_resource_name * reg_eax = &jive_i386_reg_eax.base;
-	assert(jive_shaped_variable_allowed_resource_name(regvar, reg_eax));
-	assert(jive_shaped_variable_allowed_resource_name_count(regvar) == 1);
+	assert(regvar->allowed_resource_name(reg_eax));
+	assert(regvar->allowed_resource_name_count() == 1);
 	
 	jive_variable_set_resource_name(ssavar->variable, reg_eax);
 	

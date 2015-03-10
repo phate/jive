@@ -13,14 +13,17 @@
 
 #include <jive/common.h>
 
-struct jive_shaped_variable;
+class jive_resource_class;
+class jive_resource_name;
+class jive_shaped_variable;
 
 struct jive_pressured_var_list {
-	struct jive_shaped_variable * first;
-	struct jive_shaped_variable * last;
+	jive_shaped_variable * first;
+	jive_shaped_variable * last;
 };
 
-struct jive_var_assignment_tracker {
+class jive_var_assignment_tracker {
+public:
 	inline
 	~jive_var_assignment_tracker() {
 		JIVE_DEBUG_ASSERT(pressured.empty());
@@ -28,13 +31,32 @@ struct jive_var_assignment_tracker {
 		JIVE_DEBUG_ASSERT(trivial.first == 0);
 	}
 
+	inline
+	jive_var_assignment_tracker() noexcept
+		: assigned({0, 0})
+		, trivial({0, 0})
+	{
+	}
+
+	void
+	add_tracked(
+		jive_shaped_variable * shaped_variable,
+		const jive_resource_class * rescls,
+		const jive_resource_name * resname);
+
+	void
+	remove_tracked(
+		jive_shaped_variable * shaped_variable,
+		const jive_resource_class * rescls,
+		const jive_resource_name * resname);
+
 	struct {
-		struct jive_shaped_variable * first;
-		struct jive_shaped_variable * last;
+		jive_shaped_variable * first;
+		jive_shaped_variable * last;
 	} assigned;
 	struct {
-		struct jive_shaped_variable * first;
-		struct jive_shaped_variable * last;
+		jive_shaped_variable * first;
+		jive_shaped_variable * last;
 	} trivial;
 	std::vector<jive_pressured_var_list> pressured;
 };
