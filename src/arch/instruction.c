@@ -4,11 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/arch/instruction-private.h>
-
 #include <jive/arch/compilate.h>
 #include <jive/arch/immediate-node.h>
 #include <jive/arch/immediate-type.h>
+#include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/control.h>
