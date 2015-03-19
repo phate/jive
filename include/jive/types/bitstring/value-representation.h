@@ -318,12 +318,18 @@ public:
 	inline value_repr
 	zext(size_t nbits) const
 	{
+		if (nbits == 0)
+			return *this;
+
 		return concat(value_repr(nbits, 0));
 	}
 
 	inline value_repr
 	sext(size_t nbits) const
 	{
+		if (nbits == 0)
+			return *this;
+
 		return concat(value_repr::repeat(nbits, sign()));
 	}
 
