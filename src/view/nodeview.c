@@ -87,6 +87,7 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	, column(0)
 	, row(0)
 	, placed(false)
+	, node_label(jive::detail::strfmt(node_->operation().debug_string(), ":", node_))
 	, x(0)
 	, height(7)
 {
@@ -95,14 +96,7 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
 	
 	for (size_t n = 0; n < node->noutputs; n++)
 		outputs.push_back(jive_outputview(this, node->outputs[n]));
-	
-	char nodeid[32];
-	snprintf(nodeid, sizeof(nodeid), "%zx", (size_t) node);
-	
-	jive_buffer node_label_buffer;
-	jive_node_get_label(node, &node_label_buffer);
-	node_label = std::string(jive_buffer_to_string(&node_label_buffer)).append(":").append(nodeid);
-	
+
 	int input_width = -3, output_width = -3;
 	int cur_x;
 	
