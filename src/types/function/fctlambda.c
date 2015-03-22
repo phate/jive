@@ -261,11 +261,10 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive_node * head = function_region->top;
 	jive_node * tail = function_region->bottom;
 	
-	jive_substitution_map * substitution = jive_substitution_map_create();
-	
+	jive::substitution_map substitution;
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {
 		jive::output * output = jive_node_get_gate_output(head, op.argument_names()[n].c_str());
-		jive_substitution_map_add_output(substitution, output, apply_node->inputs[n+1]->origin());
+		substitution.insert(output, apply_node->inputs[n+1]->origin());
 	}
 	
 	jive_region_copy_substitute(function_region,
@@ -273,12 +272,10 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
 		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
-		jive::output * substituted = jive_substitution_map_lookup_output(substitution, input->origin());
+		jive::output * substituted = substitution.lookup(input->origin());
 		jive::output * output = apply_node->outputs[n];
 		jive_output_replace(output, substituted);
 	}
-	
-	jive_substitution_map_destroy(substitution);
 }
 
 /* lambda dead parameters removal */
@@ -441,24 +438,21 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self)
 	}
 
 	/* create new lambda */
-	jive_substitution_map * map = jive_substitution_map_create();
+	jive::substitution_map map;
 	jive_lambda * lambda = jive_lambda_begin(lambda_region->parent, alive_parameter_types.size(),
 		&alive_parameter_types[0], &alive_parameter_names[0]);
 
 	for (n = 0; n < alive_parameters.size(); n++)
-		jive_substitution_map_add_output(map, alive_parameters[n], lambda->arguments[n]);
+		map.insert(alive_parameters[n], lambda->arguments[n]);
 
 	jive_region_copy_substitute(lambda_region, lambda->region, map, false, false);
 
 	jive::output * new_results[alive_results.size()];
-	for (n = 0; n < alive_results.size(); n++) {
-		new_results[n] = jive_substitution_map_lookup_output(map, alive_results[n]->origin());
-		JIVE_DEBUG_ASSERT(new_results[n] != NULL);
-	}
+	for (n = 0; n < alive_results.size(); n++)
+		new_results[n] = map.lookup(alive_results[n]->origin());
 
 	jive::output * new_fct = jive_lambda_end(lambda, alive_result_types.size(), &alive_result_types[0],
 		new_results);
-	jive_substitution_map_destroy(map);
 
 	/* end the phi extension */
 	if (embedded_in_phi) {

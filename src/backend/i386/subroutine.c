@@ -56,8 +56,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		nvalue_parameters, value_parameters,
 		nvalue_returns, value_returns);
 
-	jive_substitution_map * subst = jive_substitution_map_create();
-	
+	jive::substitution_map subst;
+
 	/* map all parameters */
 	nvalue_parameters = 0;
 	for (n = 1; n < src_region->top->noutputs; n++) {
@@ -72,7 +72,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		
 		if(dynamic_cast<const jive::addr::type*>(&original->type()))
 			substitute = jive_bitstring_to_address_create(substitute, 32, &original->type());
-		jive_substitution_map_add_output(subst, original, substitute);
+		subst.insert(original, substitute);
 	}
 	
 	/* transfer function body */
@@ -82,8 +82,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom->ninputs; n++) {
 		jive::input * original = src_region->bottom->inputs[n];
-		jive::output * retval = jive_substitution_map_lookup_output(
-			subst, src_region->bottom->inputs[n]->origin());
+		jive::output * retval = subst.lookup(src_region->bottom->inputs[n]->origin());
 		
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			if(dynamic_cast<const jive::addr::type*>(&original->type()))
@@ -94,9 +93,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 			JIVE_DEBUG_ASSERT(false);
 		}
 	}
-	
-	jive_substitution_map_destroy(subst);
-	
+
 	return jive_subroutine_end(sub);
 }
 

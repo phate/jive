@@ -147,10 +147,9 @@ jive_graph_copy(jive_graph * self)
 {
 	jive_graph * new_graph = jive_graph_create();
 	
-	jive_substitution_map * subst = jive_substitution_map_create();
-	jive_region_copy_substitute(self->root_region, new_graph->root_region, subst, false, false);
-	jive_substitution_map_destroy(subst);
-	
+	jive::substitution_map smap;
+	jive_region_copy_substitute(self->root_region, new_graph->root_region, smap, false, false);
+
 	return new_graph;
 }
 

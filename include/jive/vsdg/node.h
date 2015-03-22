@@ -458,7 +458,9 @@ jive_node_copy(
 */
 jive_node *
 jive_node_copy_substitute(
-	const jive_node * self, struct jive_region * target, struct jive_substitution_map * substitution);
+	const jive_node * self,
+	struct jive_region * target,
+	jive::substitution_map & substitution);
 
 /**
 	\brief Check if an edge may be added to the node

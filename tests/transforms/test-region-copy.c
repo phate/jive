@@ -45,10 +45,9 @@ static int test_main(void)
 	jive_view(graph, stderr);
 	
 	jive_region * r2 = jive_region_create_subregion(graph->root_region);
-	jive_substitution_map * subst = jive_substitution_map_create();
+	jive::substitution_map subst;
 	jive_region_copy_substitute(r1, r2, subst, true, true);
-	jive_substitution_map_destroy(subst);
-	
+
 	jive_node * copied_top = r2->top;
 	jive_node * copied_bottom = r2->bottom;
 	assert(copied_top && copied_top->ninputs == 0 && copied_top->noutputs == 3);

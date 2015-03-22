@@ -198,8 +198,11 @@ jive_copy_context_append(jive_copy_context * self, jive_node * node)
 }
 
 static void
-pre_copy_region(jive_region * target_region, const jive_region * original_region,
-	jive_copy_context * copy_context, jive_substitution_map * substitution,
+pre_copy_region(
+	jive_region * target_region,
+	const jive_region * original_region,
+	jive_copy_context * copy_context,
+	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom)
 {
 	jive_node * node;
@@ -213,25 +216,27 @@ pre_copy_region(jive_region * target_region, const jive_region * original_region
 	JIVE_LIST_ITERATE(original_region->subregions, subregion, region_subregions_list) {
 		jive_region * target_subregion = jive_region_create_subregion(target_region);
 		target_subregion->attrs = subregion->attrs;
-		jive_substitution_map_add_region(substitution, subregion, target_subregion);
+		substitution.insert(subregion, target_subregion);
 		pre_copy_region(target_subregion, subregion, copy_context, substitution, true, true);
 	}
 }
 
 void
-jive_region_copy_substitute(const jive_region * self, jive_region * target,
-	jive_substitution_map * substitution,
+jive_region_copy_substitute(
+	const jive_region * self,
+	jive_region * target,
+	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom)
 {
 	jive_copy_context copy_context;
 
-	jive_substitution_map_add_region(substitution, self, target);
+	substitution.insert(self, target);
 	pre_copy_region(target, self, &copy_context, substitution, copy_top, copy_bottom);
 	
 	for (size_t depth = 0; depth < copy_context.depths.size(); depth ++) {
 		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
 			jive_node * node = copy_context.depths[depth][n];
-			jive_region * target_subregion = jive_substitution_map_lookup_region(substitution, node->region);
+			jive_region * target_subregion = substitution.lookup(node->region);
 			jive_node * new_node = jive_node_copy_substitute(node, target_subregion, substitution);
 			if (node->region->top == node)
 				target_subregion->top = new_node;

@@ -18,6 +18,7 @@
 
 namespace jive {
 	class input;
+	class substitution_map;
 }
 
 typedef struct jive_region jive_region;
@@ -26,7 +27,6 @@ struct jive_cut;
 struct jive_graph;
 struct jive_node;
 struct jive_stackframe;
-struct jive_substitution_map;
 
 typedef struct jive_region_attrs jive_region_attrs;
 
@@ -125,8 +125,10 @@ jive_region_destroy(jive_region * self);
 	as well.
 */
 void
-jive_region_copy_substitute(const jive_region * self, jive_region * target,
-	struct jive_substitution_map * substitution,
+jive_region_copy_substitute(
+	const jive_region * self,
+	jive_region * target,
+	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom);
 
 JIVE_EXPORTED_INLINE bool

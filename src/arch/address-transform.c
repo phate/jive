@@ -377,13 +377,13 @@ jive_lambda_node_address_transform(
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region, new_fcttype->narguments(),
 		argument_types, parameter_names);
 
-	jive_substitution_map * map = jive_substitution_map_create();
+	jive::substitution_map map;
 
 	jive_node * new_enter = jive_region_get_top_node(lambda->region);
 	for (n = 1; n < enter->noutputs; n++) {
 		jive::output * parameter = jive_bitstring_to_address_create(new_enter->outputs[n], nbits,
 			fcttype->argument_type(n-1));
-		jive_substitution_map_add_output(map, enter->outputs[n], parameter);
+		map.insert(enter->outputs[n], parameter);
 	}
 
 	jive_region_copy_substitute(region, lambda->region, map, false, false);
@@ -391,11 +391,9 @@ jive_lambda_node_address_transform(
 	size_t nresults = fcttype->nreturns();
 	jive::output * results[nresults];
 	for (n = 1; n < leave->ninputs; n++) {
-		jive::output * substitute = jive_substitution_map_lookup_output(map, leave->inputs[n]->origin());
+		jive::output * substitute = map.lookup(leave->inputs[n]->origin());
 		results[n-1] = jive_address_to_bitstring_create(substitute, nbits, fcttype->return_type(n-1));
 	}
-
-	jive_substitution_map_destroy(map);
 
 	const jive::base::type * return_types[new_fcttype->nreturns()];
 	for (size_t i = 0; i < new_fcttype->nreturns(); i++)
