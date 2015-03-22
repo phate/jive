@@ -34,12 +34,6 @@ jive_opnode_create(
 /* private node member functions */
 
 void
-jive_node_add_successor(jive_node * self);
-
-void
-jive_node_remove_successor(jive_node * self);
-
-void
 jive_node_invalidate_depth_from_root(jive_node * self);
 
 void

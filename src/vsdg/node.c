@@ -30,14 +30,22 @@ static inline void
 jive_input_add_as_user(jive::input * self, jive::output * output)
 {
 	JIVE_LIST_PUSH_BACK(output->users, self, output_users_list);
-	jive_node_add_successor(output->node());
+
+	if (unlikely(output->node()->nsuccessors == 0)) {
+		JIVE_LIST_REMOVE(output->node()->graph->bottom, output->node(), graph_bottom_list);
+	}
+	output->node()->nsuccessors ++;
 }
 
 static inline void
 jive_input_remove_as_user(jive::input * self, jive::output * output)
 {
 	JIVE_LIST_REMOVE(output->users, self, output_users_list);
-	jive_node_remove_successor(self->producer());
+
+	self->producer()->nsuccessors --;
+	if (unlikely(self->producer()->nsuccessors == 0)) {
+		JIVE_LIST_PUSH_BACK(self->producer()->graph->bottom, self->producer(), graph_bottom_list);
+	}
 }
 
 namespace jive {
@@ -758,23 +766,6 @@ jive_node_output(const jive_node * self, size_t index)
 	}
 
 	return output;
-}
-
-void
-jive_node_add_successor(jive_node * self)
-{
-	if (unlikely(self->nsuccessors == 0))
-		JIVE_LIST_REMOVE(self->graph->bottom, self, graph_bottom_list);
-	
-	self->nsuccessors ++;
-}
-
-void
-jive_node_remove_successor(jive_node * self)
-{
-	self->nsuccessors --;
-	if (unlikely(self->nsuccessors == 0))
-		JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 }
 
 void
