@@ -336,8 +336,6 @@ typedef struct jive_node jive_node;
 
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
-typedef jive::operation jive_node_attrs;
-
 struct jive_region;
 struct jive_resource_class_count;
 struct jive_substitution_map;
@@ -413,18 +411,6 @@ jive_node_get_label(const jive_node * self, jive_buffer * buffer)
 {
 	std::string s = self->operation().debug_string();
 	jive_buffer_putstr(buffer, s.c_str());
-}
-
-JIVE_EXPORTED_INLINE const jive_node_attrs *
-jive_node_get_attrs(const jive_node * self)
-{
-	return &self->operation();
-}
-
-JIVE_EXPORTED_INLINE bool
-jive_node_match_attrs(const jive_node * self, const jive_node_attrs * other)
-{
-	return self->operation() == *other;
 }
 
 struct jive_node *
