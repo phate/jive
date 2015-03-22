@@ -39,7 +39,6 @@ LIBJIVE_SRC = \
 	src/vsdg/seqtype.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/statetype.c \
-	src/vsdg/substitution.c \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \

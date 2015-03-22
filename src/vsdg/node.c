@@ -1048,30 +1048,28 @@ jive_node_copy_substitute(
 {
 	std::vector<jive::output*> operands(self->noperands);
 	for (size_t n = 0; n < self->noperands; n++) {
-		operands[n] = self->inputs[n]->origin();
-		if (substitution.exists(self->inputs[n]->origin()))
-			operands[n] = substitution.lookup(self->inputs[n]->origin());
+		operands[n] = substitution.lookup(self->inputs[n]->origin());
+		if (!operands[n]) {
+			operands[n] = self->inputs[n]->origin();
+		}
 	}
 	
 	jive_node * new_node = jive_node_copy(self, target, &operands[0]);
 	for (size_t n = self->noperands; n < self->ninputs; n++) {
-		jive::output * origin = self->inputs[n]->origin();
-		if (substitution.exists(origin))
-			origin = substitution.lookup(origin);
+		jive::output * origin = substitution.lookup(self->inputs[n]->origin());
+		if (!origin) {
+			origin =  self->inputs[n]->origin();
+		}
 
 		if (self->inputs[n]->gate) {
 			jive::gate * gate = self->inputs[n]->gate;
 
-			jive::gate * target_gate = nullptr;
-			if (!substitution.exists(gate)) {
+			jive::gate * target_gate = substitution.lookup(gate);
+			if (!target_gate) {
 				target_gate = jive_graph_create_gate(target->graph, gate->name, gate->type());
 				target_gate->required_rescls = gate->required_rescls;
 				substitution.insert(gate, target_gate);
-			} else {
-				target_gate = substitution.lookup(gate);
 			}
-
-			jive_node_gate_input(new_node, target_gate, origin);
 		} else {
 			jive::input * input = jive_node_add_input(new_node, &self->inputs[n]->type(), origin);
 			input->required_rescls = self->inputs[n]->required_rescls;
@@ -1082,13 +1080,11 @@ jive_node_copy_substitute(
 		if (self->outputs[n]->gate) {
 			jive::gate * gate = self->outputs[n]->gate;
 
-			jive::gate * target_gate = nullptr;
-			if (!substitution.exists(gate)) {
+			jive::gate * target_gate = substitution.lookup(gate);
+			if (!target_gate) {
 				target_gate = jive_graph_create_gate(target->graph, gate->name, gate->type());
 				target_gate->required_rescls = gate->required_rescls;
 				substitution.insert(gate, target_gate);
-			} else {
-				target_gate = substitution.lookup(gate);
 			}
 
 			jive_node_gate_output(new_node, target_gate);
