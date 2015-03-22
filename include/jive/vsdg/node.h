@@ -406,13 +406,6 @@ struct jive_tracker_nodestate {
 	} state_node_list;
 };
 
-JIVE_EXPORTED_INLINE void
-jive_node_get_label(const jive_node * self, jive_buffer * buffer)
-{
-	std::string s = self->operation().debug_string();
-	jive_buffer_putstr(buffer, s.c_str());
-}
-
 struct jive_node *
 jive_node_copy(
 	const jive_node * self, struct jive_region * region, jive::output * operands[]);

@@ -31,9 +31,6 @@ jive_opnode_create(
 	jive::output * const * args_begin,
 	jive::output * const * args_end);
 
-void
-jive_node_get_label_(const jive_node * self, struct jive_buffer * buffer);
-
 /* private node member functions */
 
 void
