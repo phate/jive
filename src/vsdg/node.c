@@ -24,6 +24,29 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/variable.h>
 
+static void
+jive_node_invalidate_depth_from_root(jive_node * self)
+{
+	size_t new_depth_from_root = 0;
+	for (size_t n = 0; n < self->ninputs; n++)
+		new_depth_from_root = std::max(self->producer(n)->depth_from_root + 1, new_depth_from_root);
+
+	size_t old_depth_from_root = self->depth_from_root;
+	if (old_depth_from_root == new_depth_from_root)
+		return;
+	self->depth_from_root = new_depth_from_root;
+
+	self->graph->on_node_depth_change(self, old_depth_from_root);
+
+	for (size_t n = 0; n < self->noutputs; n++) {
+		jive::input * user = self->outputs[n]->users.first;
+		while (user) {
+			jive_node_invalidate_depth_from_root(user->node());
+			user = user->output_users_list.next;
+		}
+	}
+}
+
 /* inputs */
 
 static inline void
@@ -766,30 +789,6 @@ jive_node_output(const jive_node * self, size_t index)
 	}
 
 	return output;
-}
-
-void
-jive_node_invalidate_depth_from_root(jive_node * self)
-{
-	size_t new_depth_from_root = 0, n;
-	for(n=0; n<self->ninputs; n++)
-		if (self->producer(n)->depth_from_root + 1 > new_depth_from_root)
-			 new_depth_from_root = self->producer(n)->depth_from_root + 1;
-	
-	size_t old_depth_from_root = self->depth_from_root;
-	if (old_depth_from_root == new_depth_from_root)
-		return;
-	self->depth_from_root = new_depth_from_root;
-	
-	self->graph->on_node_depth_change(self, old_depth_from_root);
-	
-	for(n=0; n<self->noutputs; n++) {
-		jive::input * user = self->outputs[n]->users.first;
-		while(user) {
-			jive_node_invalidate_depth_from_root(user->node());
-			user = user->output_users_list.next;
-		}
-	}
 }
 
 void

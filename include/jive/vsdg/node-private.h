@@ -34,9 +34,6 @@ jive_opnode_create(
 /* private node member functions */
 
 void
-jive_node_invalidate_depth_from_root(jive_node * self);
-
-void
 jive_node_auto_merge_variables(jive_node * self);
 
 #endif
