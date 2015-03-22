@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -37,45 +37,33 @@ static int test_main(void)
 	jive::output * o0 = jive_label_to_address_create(graph, &foobar.base);
 	jive::output * o1 = jive_label_to_address_create(graph, &bla.base);
 
-	const jive::address::label_to_address_op * attrs0 =
-		(const jive::address::label_to_address_op *)
-			jive_node_get_attrs(o0->node());
-	const jive::address::label_to_address_op * attrs1 =
-		(const jive::address::label_to_address_op *)
-			jive_node_get_attrs(o1->node());
+	const jive::address::label_to_address_op * attrs0;
+	const jive::address::label_to_address_op * attrs1;
+	attrs0 = dynamic_cast<const jive::address::label_to_address_op*>(&o0->node()->operation());
+	attrs1 = dynamic_cast<const jive::address::label_to_address_op*>(&o1->node()->operation());
 
-	assert(attrs0);
-	assert(attrs1);
 	assert(attrs0->label() == &foobar.base);
 	assert(attrs1->label() == &bla.base);
 	
-	assert(!jive_node_match_attrs(o0->node(), attrs1));
-	assert(jive_node_match_attrs(o1->node(), attrs1));
+	assert(o0->node()->operation() != *attrs1);
 	
 	jive::output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
 	jive::output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
 	jive::output * o4 = jive_label_to_bitstring_create(graph, &foobar.base, 16);
 
-	const jive::address::label_to_address_op * attrs2 =
-		(const jive::address::label_to_address_op *)
-			jive_node_get_attrs(o2->node());
-	const jive::address::label_to_address_op * attrs3 =
-		(const jive::address::label_to_address_op *)
-			jive_node_get_attrs(o3->node());
-	const jive::address::label_to_address_op * attrs4 =
-		(const jive::address::label_to_address_op *)
-			jive_node_get_attrs(o4->node());
+	const jive::address::label_to_bitstring_op * attrs2;
+	const jive::address::label_to_bitstring_op * attrs3;
+	const jive::address::label_to_bitstring_op * attrs4;
+	attrs2 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o2->node()->operation());
+	attrs3 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o3->node()->operation());
+	attrs4 = dynamic_cast<const jive::address::label_to_bitstring_op*>(&o4->node()->operation());
 
-	assert(attrs2);
-	assert(attrs3);
-	assert(attrs4);
 	assert(attrs2->label() == &foobar.base);
 	assert(attrs3->label() == &bla.base);
 	assert(attrs4->label() == &foobar.base);
 	
-	assert(!jive_node_match_attrs(o2->node(), attrs4));
-	assert(!jive_node_match_attrs(o2->node(), attrs3));
-	assert(jive_node_match_attrs(o2->node(), attrs2));
+	assert(o2->node()->operation() != *attrs4);
+	assert(o2->node()->operation() != *attrs3);
 	
 	jive::addr::type addr;
 	jive::bits::type bits32(32);

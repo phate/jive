@@ -58,7 +58,7 @@ static int _test_rcdgroup(void)
 
 	jive_view(graph, stderr);
 
-	assert(!jive_node_match_attrs(g0->node(), jive_node_get_attrs(g1->node())));
+	assert(g0->node()->operation() != g1->node()->operation());
 
 	jive_graph_destroy(graph);
 
@@ -110,7 +110,7 @@ static int _test_rcdselect()
 	jive_view(graph, stderr);
 
 	assert(bottom->producer(1) == top);
-	assert(!jive_node_match_attrs(s0->node(), jive_node_get_attrs(s2->node())));
+	assert(s0->node()->operation() != s2->node()->operation());
 	assert(dynamic_cast<const jive::load_op *>(&bottom->producer(3)->operation()));
 
 	jive_graph_destroy(graph);

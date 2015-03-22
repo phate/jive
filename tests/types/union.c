@@ -60,7 +60,7 @@ static int test_unnchoose(void)
 	jive_view(graph, stderr);
 
 	assert(bottom->producer(1) == top);
-	assert(jive_node_match_attrs(c0->node(), jive_node_get_attrs(c2->node())));
+	assert(c0->node()->operation() == c2->node()->operation());
 	assert(dynamic_cast<const jive::load_op *>(&bottom->producer(3)->operation()));
 
 	jive_graph_destroy(graph);
@@ -108,7 +108,7 @@ static int test_unnunify(void)
 
 	jive_view(graph, stderr);
 
-	assert(!jive_node_match_attrs(u0->node(), jive_node_get_attrs(u1->node())));
+	assert(u0->node()->operation() != u1->node()->operation());
 
 	jive_graph_destroy(graph);
 

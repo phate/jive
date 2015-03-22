@@ -1180,9 +1180,9 @@ static int types_bitstring_test_reduction(void)
 		assert(dynamic_cast<const jive::bits::slice_op *>(&node->producer(1)->operation()));
 		
 		const jive::bits::slice_op * attrs;
-		attrs = (const jive::bits::slice_op *) jive_node_get_attrs(node->producer(0));
+		attrs = dynamic_cast<const jive::bits::slice_op*>(&node->producer(0)->operation());
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
-		attrs = (const jive::bits::slice_op *) jive_node_get_attrs(node->producer(1));
+		attrs = dynamic_cast<const jive::bits::slice_op*>(&node->producer(1)->operation());
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
 		assert(node->producer(0)->inputs[0]->origin() == x);
@@ -1232,8 +1232,8 @@ static int types_bitstring_test_slice_concat(void)
 		jive::output * b = jive_bitslice(a, 1, 3);
 
 		assert(dynamic_cast<const jive::bits::slice_op *>(&b->node()->operation()));
-		const jive::bits::slice_op * attrs =
-			(const jive::bits::slice_op *)jive_node_get_attrs(b->node());
+		const jive::bits::slice_op * attrs;
+		attrs = dynamic_cast<const jive::bits::slice_op *>(&b->node()->operation());
 		assert(attrs->low() == 3 && attrs->high() == 5);
 	}
 	

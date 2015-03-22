@@ -55,14 +55,14 @@ static int test_main(void)
 	jive::output * a3 = jive_address_to_bitstring_create(top->outputs[0], 32,
 		&top->outputs[0]->type());
 	
-	assert(jive_node_match_attrs(a2->node(), jive_node_get_attrs(a3->node())));
-	assert(jive_node_match_attrs(b2->node(), jive_node_get_attrs(b3->node())));
+	assert(a2->node()->operation() == a3->node()->operation());
+	assert(b2->node()->operation() == b3->node()->operation());
 
 	jive::output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64, &addrtype);
 	jive::output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64, &addrtype);
 
-	assert(!jive_node_match_attrs(a2->node(), jive_node_get_attrs(a4->node())));
-	assert(!jive_node_match_attrs(b2->node(), jive_node_get_attrs(b4->node())));
+	assert(a2->node()->operation() != a4->node()->operation());
+	assert(b2->node()->operation() != b4->node()->operation());
 	
 	jive_view(graph, stderr);
 
