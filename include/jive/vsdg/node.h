@@ -13,6 +13,7 @@
 #include <utility>
 
 #include <jive/util/buffer.h>
+#include <jive/util/strfmt.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate-interference.h>
 #include <jive/vsdg/operators/base.h>
@@ -316,9 +317,7 @@ jive::input::debug_string() const
 	if (gate)
 		return gate->debug_string();
 
-	std::string str;
-	str += index_;
-	return str;
+	return detail::strfmt(index_);
 }
 
 inline std::string
@@ -327,9 +326,7 @@ jive::output::debug_string() const
 	if (gate)
 		return gate->debug_string();
 
-	std::string str;
-	str += index;
-	return str;
+	return detail::strfmt(index);
 }
 
 typedef struct jive_node jive_node;
