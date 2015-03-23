@@ -11,6 +11,7 @@
 #include <jive/arch/call.h>
 #include <jive/arch/load.h>
 #include <jive/arch/memlayout.h>
+#include <jive/arch/memorytype.h>
 #include <jive/arch/store.h>
 #include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
@@ -62,6 +63,9 @@ convert_address_to_bitstring_type(
 
 		return std::unique_ptr<jive::base::type>(new jive::fct::type(argument_types, return_types));
 	}
+
+	if (dynamic_cast<const jive::mem::type*>(&type))
+		return std::unique_ptr<jive::base::type>(new jive::mem::type());
 
 	JIVE_DEBUG_ASSERT(0);
 }
