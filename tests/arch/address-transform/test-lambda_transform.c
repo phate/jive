@@ -33,18 +33,21 @@ test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, &addrptr, tmparray0);
 	jive::output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region, {&fct->type()}, {fct}, {});
+	jive_graph_export(graph, fct, "fct");
 
 	jive_view(graph, stdout);
 
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, 32);
-	jive_node_address_transform(fct->node(), &mapper.base.base);
+	jive_graph_address_transform(graph, &mapper.base.base);
 	jive_memlayout_mapper_simple_fini(&mapper);
 
 	jive_view(graph, stdout);
 
-	assert(bottom->producer(0)->operation() == jive::bitstring_to_address_operation(32, addrtype));
+	jive::bits::type bits32(32);
+	const jive::base::type * tmp = &bits32;
+	jive::fct::type fcttype(1, &tmp, 1, &tmp);
+	assert(graph->root_region->bottom->inputs[0]->type() == fcttype);
 
 	jive_graph_destroy(graph);
 
