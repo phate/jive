@@ -44,18 +44,17 @@ gamma_op::~gamma_op() noexcept
 size_t
 gamma_op::narguments() const noexcept
 {
-	return 1 + nalternatives_;
+	return 1 + nalternatives();
 }
 
 const base::type &
 gamma_op::argument_type(size_t index) const noexcept
 {
-	if (index < nalternatives_) {
+	if (index < nalternatives()) {
 		static const achr::type anchor_type;
 		return anchor_type;
 	} else {
-		static const ctl::type control_type(nalternatives_);
-		return control_type;
+		return predicate_type_;
 	}
 }
 std::string
@@ -74,7 +73,7 @@ bool
 gamma_op::operator==(const operation & other) const noexcept
 {
 	const gamma_op * op = dynamic_cast<const gamma_op*>(&other);
-	return op && op->nalternatives_ == nalternatives_;
+	return op && op->predicate_type_ == predicate_type_;
 }
 
 }

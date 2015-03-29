@@ -37,9 +37,9 @@ public:
 	virtual
 	~gamma_op() noexcept;
 
-	inline constexpr
+	inline
 	gamma_op(size_t nalternatives) noexcept
-		: nalternatives_(nalternatives)
+		: predicate_type_(nalternatives)
 	{
 	}
 
@@ -52,7 +52,7 @@ public:
 	inline size_t
 	nalternatives() const noexcept
 	{
-		return nalternatives_;
+		return predicate_type_.nalternatives();
 	}
 
 	virtual std::string
@@ -65,7 +65,7 @@ public:
 	operator==(const operation & other) const noexcept override;
 
 private:
-	size_t nalternatives_;
+	jive::ctl::type predicate_type_;
 };
 
 }
