@@ -361,6 +361,16 @@ public:
 		std::swap(mask_, other.mask_);
 	}
 
+	void
+	clear() noexcept
+	{
+		for (bucket_type & bucket : buckets_) {
+			bucket.first = nullptr;
+			bucket.last = nullptr;
+			size_ = 0;
+		}
+	}
+
 	inline iterator
 	insert(ElementType * element)
 	{
