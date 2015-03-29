@@ -56,6 +56,11 @@ static void test_simple_list(void)
 	assert(std::next(l.begin(), 2) == l.end());
 	assert(std::prev(l.end()).ptr() == &i3);
 	assert(std::prev(l.end(), 2).ptr() == &i1);
+
+	my_list l2;
+	l2.splice(l2.begin(), l);
+	assert(l.empty());
+	assert(l2.size() == 2);
 }
 
 static void test_owner_list(void)
@@ -111,6 +116,11 @@ static void test_owner_list(void)
 		assert(l.begin()->p == &v3);
 		assert(std::next(l.begin()) == l.end());
 		assert(std::prev(l.end())->p == &v3);
+
+		my_owner_list l2;
+		l2.splice(l2.begin(), l);
+		assert(l.size() == 0);
+		assert(l2.size() == 1);
 	}
 	assert(v3 == 0);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -226,14 +226,14 @@ public:
 		{
 		}
 	
-		inline const iterator &
+		inline const const_iterator &
 		operator++(void) noexcept
 		{
 			element_ = list_->accessor_.get_next(element_);
 			return *this;
 		}
 
-		inline iterator
+		inline const_iterator
 		operator++(int) noexcept
 		{
 			iterator i = *this;
@@ -241,7 +241,7 @@ public:
 			return i;
 		}
 
-		inline const iterator &
+		inline const const_iterator &
 		operator--(void) noexcept
 		{
 			if (element_) {
@@ -252,7 +252,7 @@ public:
 			return *this;
 		}
 
-		inline iterator
+		inline const_iterator
 		operator--(int) noexcept
 		{
 			iterator i = *this;
@@ -315,6 +315,12 @@ public:
 		swap(other);
 	}
 
+	void clear() noexcept
+	{
+		first_ = nullptr;
+		last_ = nullptr;
+	}
+
 	void swap(intrusive_list & other) noexcept
 	{
 		std::swap(first_, other.first_);
@@ -347,7 +353,7 @@ public:
 		first_ = element;
 	}
 
-	inline void
+	inline iterator
 	insert(iterator i, ElementType * element) noexcept
 	{
 		ElementType * next = i.ptr();
@@ -364,6 +370,7 @@ public:
 		} else {
 			last_ = element;
 		}
+		return iterator(this, element);
 	}
 
 	inline void
@@ -396,6 +403,61 @@ public:
 			ElementType * element = begin.ptr();
 			++begin;
 			erase(element);
+		}
+	}
+
+	inline void
+	splice(iterator position, intrusive_list & other) noexcept
+	{
+		splice(position, other, other.begin(), other.end());
+	}
+
+	inline void
+	splice(iterator position, intrusive_list & other, iterator i) noexcept
+	{
+		iterator j = i;
+		++j;
+		splice(position, other, i, j);
+	}
+
+	inline void
+	splice(iterator position, intrusive_list & other, iterator begin, iterator end) noexcept
+	{
+		if (begin == end) {
+			return;
+		}
+
+		ElementType * first = begin.ptr();
+		ElementType * before = accessor_.get_prev(first);
+		ElementType * after = end.ptr();
+		ElementType * last = after ? accessor_.get_prev(after) : other.last_;
+
+		/* unlink from source */
+		if (before) {
+			accessor_.set_next(before, after);
+		} else {
+			other.first_ = after;
+		}
+		if (after) {
+			accessor_.set_prev(after, before);
+		} else {
+			other.last_ = before;
+		}
+
+		/* link to destination */
+		ElementType * dst_next = position.ptr();
+		ElementType * dst_prev = dst_next ? accessor_.get_prev(dst_next) : last_;
+		accessor_.set_prev(first, dst_prev);
+		accessor_.set_next(last, dst_next);
+		if (dst_prev) {
+			accessor_.set_next(dst_prev, first);
+		} else {
+			first_ = first;
+		}
+		if (dst_next) {
+			accessor_.set_prev(dst_next, last);
+		} else {
+			last_ = last;
 		}
 	}
 
@@ -449,6 +511,20 @@ public:
 	end() const noexcept
 	{
 		return cend();
+	}
+
+	/* create iterator for element */
+	iterator
+	make_element_iterator(ElementType * element) const noexcept
+	{
+		return iterator(this, element);
+	}
+
+	/* create iterator for element */
+	const_iterator
+	make_element_iterator(const ElementType * element) const noexcept
+	{
+		return const_iterator(this, element);
 	}
 
 private:
@@ -509,11 +585,7 @@ public:
 
 	~owner_intrusive_list() noexcept
 	{
-		while (!empty()) {
-			ElementType * element = begin().ptr();
-			internal_list_.erase(element);
-			delete element;
-		}
+		clear();
 	}
 
 	owner_intrusive_list() {}
@@ -527,9 +599,18 @@ public:
 		swap(other);
 	}
 
+	void clear() noexcept
+	{
+		while (!empty()) {
+			ElementType * element = begin().ptr();
+			internal_list_.erase(element);
+			delete element;
+		}
+	}
+
 	void swap(owner_intrusive_list & other) noexcept
 	{
-		internal_list_.swap(other.internal_list);
+		internal_list_.swap(other.internal_list_);
 	}
 
 	inline void
@@ -544,10 +625,10 @@ public:
 		internal_list_.push_front(element.release());
 	}
 
-	inline void
+	inline iterator
 	insert(iterator i, std::unique_ptr<ElementType> element) noexcept
 	{
-		internal_list_.insert(i, element.release());
+		return internal_list_.insert(i, element.release());
 	}
 
 	inline std::unique_ptr<ElementType>
@@ -556,6 +637,12 @@ public:
 		ElementType * element = i.ptr();
 		internal_list_.erase(i);
 		return std::unique_ptr<ElementType>(element);
+	}
+
+	inline void
+	erase(ElementType * element) noexcept
+	{
+		erase(make_element_iterator(element));
 	}
 
 	inline void
@@ -572,6 +659,26 @@ public:
 			++begin;
 			erase(element);
 		}
+	}
+
+	inline void
+	splice(iterator position, owner_intrusive_list & other) noexcept
+	{
+		splice(position, other, other.begin(), other.end());
+	}
+
+	inline void
+	splice(iterator position, owner_intrusive_list & other, iterator i) noexcept
+	{
+		iterator j = i;
+		++j;
+		splice(position, other, i, j);
+	}
+
+	inline void
+	splice(iterator position, owner_intrusive_list & other, iterator begin, iterator end) noexcept
+	{
+		internal_list_.splice(position, other.internal_list_, begin, end);
 	}
 
 	inline size_type
@@ -620,6 +727,20 @@ public:
 	end() const noexcept
 	{
 		return internal_list_.end();
+	}
+
+	/* create iterator for element */
+	iterator
+	make_element_iterator(ElementType * element) const noexcept
+	{
+		return iterator(&internal_list_, element);
+	}
+
+	/* create iterator for element */
+	const_iterator
+	make_element_iterator(const ElementType * element) const noexcept
+	{
+		return const_iterator(&internal_list_, element);
 	}
 
 private:
