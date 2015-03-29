@@ -7,6 +7,7 @@
 #define JIVE_VSDG_OPERATORS_MATCH_H
 
 #include <jive/types/bitstring/type.h>
+#include <jive/vsdg/controltype.h>
 #include <jive/vsdg/operators/unary.h>
 
 #include <unordered_map>
@@ -48,7 +49,8 @@ public:
 	}
 
 private:
-	jive::bits::type type_;
+	jive::ctl::type otype_;
+	jive::bits::type itype_;
 	std::unordered_map<uint64_t, uint64_t> mapping_;
 };
 

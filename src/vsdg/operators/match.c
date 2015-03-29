@@ -18,7 +18,8 @@ match_op::~match_op() noexcept
 
 match_op::match_op(const jive::bits::type & type, const std::vector<size_t> & constants)
 	: base::unary_op()
-	, type_(type)
+	, otype_(constants.size()+1)
+	, itype_(type)
 {
 	if (std::pow(2.0, type.nbits()) < constants.size() + 1)
 		throw compiler_error("More constants than the input type supports.");
@@ -34,20 +35,19 @@ bool
 match_op::operator==(const operation & other) const noexcept
 {
 	const match_op * op = dynamic_cast<const match_op*>(&other);
-	return op && op->type_ == type_ && op->mapping_ == mapping_;
+	return op && op->itype_ == itype_ && op->otype_ == otype_ && op->mapping_ == mapping_;
 }
 
 const jive::base::type &
 match_op::argument_type(size_t index) const noexcept
 {
-	return type_;
+	return itype_;
 }
 
 const jive::base::type &
 match_op::result_type(size_t index) const noexcept
 {
-	static const jive::ctl::type type(nalternatives());
-	return type;
+	return otype_;
 }
 
 jive_unop_reduction_path_t
