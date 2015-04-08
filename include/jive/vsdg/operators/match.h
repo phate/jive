@@ -10,7 +10,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/operators/unary.h>
 
-#include <unordered_map>
+#include <map>
 
 namespace jive {
 
@@ -19,7 +19,11 @@ public:
 	virtual
 	~match_op() noexcept;
 
-	match_op(const jive::bits::type & type, const std::vector<size_t> & constants);
+	match_op(
+		size_t nbits,
+		const std::map<uint64_t, uint64_t> & mapping,
+		uint64_t default_alternative,
+		size_t nalternatives);
 
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -45,13 +49,24 @@ public:
 	inline uint64_t
 	nalternatives() const noexcept
 	{
-		return mapping_.size()+1;
+		return otype_.nalternatives();
+	}
+
+	inline uint64_t
+	alternative(uint64_t value) const noexcept
+	{
+		auto it = mapping_.find(value);
+		if (it != mapping_.end())
+			return it->second;
+
+		return default_alternative_;
 	}
 
 private:
 	jive::ctl::type otype_;
 	jive::bits::type itype_;
-	std::unordered_map<uint64_t, uint64_t> mapping_;
+	uint64_t default_alternative_;
+	std::map<uint64_t, uint64_t> mapping_;
 };
 
 }

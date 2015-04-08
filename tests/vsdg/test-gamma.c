@@ -34,7 +34,7 @@ test_main(void)
 	std::vector<jive::output*> result;
 
 	//create normal gamma
-	jive::output * pred = jive::ctl::match(2, {0, 1}, cmp);
+	jive::output * pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 	result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
 	jive_graph_export(graph, result[0]);
 	assert(result[0]->node()->operation() == jive::gamma_op(3));
@@ -46,7 +46,7 @@ test_main(void)
 	assert(result[0] == v1);
 
 	//invariant variable reduction
-	pred = jive::ctl::match(2, {0, 1}, cmp);
+	pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 	result = jive_gamma(pred, {&bits32, &bits32}, {{v0, v0}, {v0, v1}, {v0, v2}});
 	jive_graph_export(graph, result[0]);
 	jive_graph_export(graph, result[1]);

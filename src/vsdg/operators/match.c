@@ -16,20 +16,17 @@ namespace jive {
 match_op::~match_op() noexcept
 {}
 
-match_op::match_op(const jive::bits::type & type, const std::vector<size_t> & constants)
+match_op::match_op(
+	size_t nbits,
+	const std::map<uint64_t, uint64_t> & mapping,
+	uint64_t default_alternative,
+	size_t nalternatives)
 	: base::unary_op()
-	, otype_(constants.size()+1)
-	, itype_(type)
-{
-	if (std::pow(2.0, type.nbits()) < constants.size() + 1)
-		throw compiler_error("More constants than the input type supports.");
-
-	for (size_t n = 0; n < constants.size(); n++) {
-		if (mapping_.find(constants[n]) != mapping_.end())
-			throw compiler_error("Constant is not unique.");
-		mapping_[constants[n]] = n;
-	}
-}
+	, otype_(nalternatives)
+	, itype_(nbits)
+	, default_alternative_(default_alternative)
+	, mapping_(mapping)
+{}
 
 bool
 match_op::operator==(const operation & other) const noexcept
@@ -67,11 +64,7 @@ match_op::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) co
 	if (path == jive_unop_reduction_constant) {
 		const jive::bits::constant_op * op;
 		op = static_cast<const jive::bits::constant_op*>(&arg->node()->operation());
-		uint64_t value = op->value().to_uint();
-		if (mapping_.find(value) != mapping_.end())
-			return jive_control_constant(graph, nalternatives(), mapping_.at(value));
-		else
-			return jive_control_constant(graph, nalternatives(), nalternatives()-1);
+		return jive_control_constant(graph, nalternatives(), alternative(op->value().to_uint()));
 	}
 
 	return nullptr;

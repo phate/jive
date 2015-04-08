@@ -178,7 +178,7 @@ generate_bin_cmp_function(bin_op_factory_t factory)
 	jive::output * zero = jive_bitconstant_unsigned(b.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(b.graph, 32, 1);
 
-	jive::output * pred = jive::ctl::match(1, {1}, cmp);
+	jive::output * pred = jive::ctl::match(1, {{1,0}}, 1, 2, cmp);
 	
 	jive::bits::type bits32(32);
 	jive::output * result = jive_gamma(pred, {&bits32}, {{one}, {zero}})[0];
@@ -199,7 +199,7 @@ generate_bin_cmp_function_curryleft(bin_op_factory_t factory, uint32_t op1)
 	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 	
-	jive::output * pred = jive::ctl::match(1, {1}, cmp);
+	jive::output * pred = jive::ctl::match(1, {{1,0}}, 1, 2, cmp);
 
 	jive::bits::type bits32(32);
 	jive::output * result = jive_gamma(pred, {&bits32}, {{one}, {zero}})[0];
@@ -220,7 +220,7 @@ generate_bin_cmp_function_curryright(bin_op_factory_t factory, uint32_t op2)
 	jive::output * zero = jive_bitconstant_unsigned(u.graph, 32, 0);
 	jive::output * one = jive_bitconstant_unsigned(u.graph, 32, 1);
 
-	jive::output * pred = jive::ctl::match(1, {1}, cmp);
+	jive::output * pred = jive::ctl::match(1, {{1, 0}}, 1, 2, cmp);
 	
 	jive::bits::type bits32(32);
 	jive::output * result = jive_gamma(pred, {&bits32}, {{one}, {zero}})[0];

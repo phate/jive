@@ -13,6 +13,8 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/nullary.h>
 
+#include <map>
+
 #include <inttypes.h>
 
 namespace jive {
@@ -37,7 +39,12 @@ typedef base::domain_const_op<
 > constant_op;
 
 jive::output *
-match(size_t nbits, const std::vector<size_t> & constants, jive::output * operand);
+match(
+	size_t nbits,
+	const std::map<uint64_t, uint64_t> & mapping,
+	uint64_t default_alternative,
+	size_t nalternatives,
+	jive::output * operand);
 
 }
 

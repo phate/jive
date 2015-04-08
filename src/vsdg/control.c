@@ -28,10 +28,14 @@ template class domain_const_op<
 namespace ctl {
 
 jive::output *
-match(size_t nbits, const std::vector<size_t> & constants, jive::output * operand)
+match(
+	size_t nbits,
+	const std::map<uint64_t, uint64_t> & mapping,
+	uint64_t default_alternative,
+	size_t nalternatives,
+	jive::output * operand)
 {
-	jive::bits::type type(nbits);
-	match_op op(type, constants);
+	match_op op(nbits, mapping, default_alternative, nalternatives);
 	return jive_node_create_normalized(operand->node()->graph, op, {operand})[0];
 }
 
