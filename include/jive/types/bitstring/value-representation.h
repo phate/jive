@@ -309,8 +309,9 @@ public:
 	inline value_repr
 	slice(size_t low, size_t high) const
 	{
-		if (high <= low || low + high > nbits())
+		if (high <= low || high > nbits()) {
 			throw compiler_error("Slice is out of bound.");
+		}
 
 		return value_repr(std::string(&data_[low], high - low).c_str());
 	}
