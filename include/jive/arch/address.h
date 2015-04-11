@@ -325,6 +325,27 @@ private:
 	uint64_t address_;
 };
 
+struct type_of_value {
+	addr::type operator()(const value_repr & vr) const
+	{
+		return jive::addr::type();
+	}
+};
+
+struct format_value {
+	std::string operator()(const value_repr & vr) const
+	{
+		return vr.debug_string();
+	}
+};
+
+typedef base::domain_const_op<
+	addr::type, value_repr, format_value, type_of_value
+> constant_op;
+
+output *
+constant(struct jive_graph * graph, const value_repr & vr);
+
 }
 }
 

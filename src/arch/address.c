@@ -494,6 +494,15 @@ label_to_bitstring_op::copy() const
 	return std::unique_ptr<jive::operation>(new label_to_bitstring_op(*this));
 }
 
+/* constant */
+
+output *
+constant(struct jive_graph * graph, const value_repr & vr)
+{
+	constant_op op(vr);
+	return jive_node_create_normalized(graph, op, {})[0];
+}
+
 }
 }
 
