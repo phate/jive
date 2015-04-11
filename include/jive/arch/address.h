@@ -287,6 +287,44 @@ private:
 	jive::bits::type result_type_;
 };
 
+class value_repr final {
+public:
+	/*
+		FIXME: This should take a bitstring of arbitrary length.
+	*/
+	inline constexpr
+	value_repr(uint64_t address) noexcept
+		: address_(address)
+	{}
+
+	inline std::string
+	debug_string() const
+	{
+		return detail::strfmt(address_);
+	}
+
+	inline bool
+	operator==(const value_repr & other) const noexcept
+	{
+		return address_ == other.address_;
+	}
+
+	inline bool
+	operator!=(const value_repr & other) const noexcept
+	{
+		return !(*this == other);
+	}
+
+	inline uint64_t
+	value() const noexcept
+	{
+		return address_;
+	}
+
+private:
+	uint64_t address_;
+};
+
 }
 }
 
