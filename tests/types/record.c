@@ -28,12 +28,10 @@ static int _test_rcdgroup(void)
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
-
-	static const jive::value::type * decl_elems[] = {&bits8, &bits16, &bits32};
-	static const jive::rcd::declaration decl = {3, decl_elems};
+	static const jive::rcd::declaration decl({&bits8, &bits16, &bits32});
 	static jive::rcd::type rcdtype(&decl);
 
-	static const jive::rcd::declaration decl_empty = {0, NULL};
+	static const jive::rcd::declaration decl_empty({});
 	static jive::rcd::type rcdtype_empty(&decl_empty);
 
 	jive_node * top = jive_test_node_create(graph->root_region,
@@ -72,9 +70,7 @@ static int _test_rcdselect()
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
-
-	static const jive::value::type * decl_elems[] = {&bits8, &bits16, &bits32};
-	static const jive::rcd::declaration decl = {3, decl_elems};
+	static const jive::rcd::declaration decl({&bits8, &bits16, &bits32});
 	static jive::rcd::type rcdtype(&decl);
 
 	jive::addr::type addrtype;

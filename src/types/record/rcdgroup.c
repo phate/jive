@@ -30,13 +30,13 @@ group_op::operator==(const operation & other) const noexcept
 size_t
 group_op::narguments() const noexcept
 {
-	return declaration()->nelements;
+	return declaration()->nelements();
 }
 
 const jive::base::type &
 group_op::argument_type(size_t index) const noexcept
 {
-	return *declaration()->elements[index];
+	return declaration()->element(index);
 }
 
 size_t

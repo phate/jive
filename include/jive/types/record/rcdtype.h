@@ -7,16 +7,46 @@
 #ifndef JIVE_TYPES_RECORD_RCDTYPE_H
 #define JIVE_TYPES_RECORD_RCDTYPE_H
 
+#include <jive/common.h>
 #include <jive/vsdg/basetype.h>
+
+#include <memory>
+#include <vector>
 
 namespace jive {
 namespace rcd {
 
 /* declaration */
 
-struct declaration {
-	size_t nelements;
-	const jive::value::type ** elements;
+class declaration final {
+public:
+	inline
+	declaration(const std::vector<const value::type*> & types)
+	{
+		for (auto type : types)
+			types_.emplace_back(std::unique_ptr<value::type>(type->copy()));
+	}
+
+	declaration(const declaration & other) = delete;
+
+	declaration &
+	operator=(const declaration & other) = delete;
+
+	inline size_t
+	nelements() const noexcept
+	{
+		return types_.size();
+	}
+
+	const value::type &
+	element(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < nelements());
+		return *types_[index];
+	}
+
+private:
+	std::vector<std::unique_ptr<value::type>> types_;
 };
 
 /* type */

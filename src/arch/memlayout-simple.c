@@ -56,9 +56,9 @@ jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
 	
 	jive_record_memlayout layout;
 	layout.decl = decl;
-	layout.element = new jive_record_memlayout_element[decl->nelements];
+	layout.element = new jive_record_memlayout_element[decl->nelements()];
 	size_t n = 0;
-	for (n = 0; n < decl->nelements; n++) {
+	for (n = 0; n < decl->nelements(); n++) {
 		layout.element[n].offset = 0;
 		layout.element[n].size = 0;
 	}
@@ -94,9 +94,9 @@ jive_memlayout_mapper_simple_map_record_(jive_memlayout_mapper * self_,
 	
 	layout = jive_memlayout_mapper_cached_add_record_(&self->base, decl);
 	size_t pos = 0, alignment = 1, n;
-	for (n = 0; n < decl->nelements; n++) {
+	for (n = 0; n < decl->nelements(); n++) {
 		const jive_dataitem_memlayout * ext = jive_memlayout_mapper_map_value_type(self_,
-			decl->elements[n]);
+			&decl->element(n));
 		
 		if (alignment < ext->alignment)
 			alignment = ext->alignment;

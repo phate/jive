@@ -26,16 +26,8 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	
 	jive::bits::type bits32(32);
-	const jive::value::type * tmparray0[] = {
-		(jive::value::type *)&bits32,
-		(jive::value::type *)&bits32
-	};
-	
-	jive::rcd::declaration rec = {
-		nelements : 2,
-		elements : tmparray0
-	};
-	
+	jive::rcd::declaration rec({&bits32, &bits32});
+
 	jive::addr::type addrtype;
 	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&addrtype, &addrtype});
 	

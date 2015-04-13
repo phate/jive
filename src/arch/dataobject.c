@@ -170,7 +170,7 @@ flatten_data_items(
 		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
 		items.resize(layout->base.total_size, zero_pad);
 
-		for (size_t k = 0; k < decl->nelements; k++) {
+		for (size_t k = 0; k < decl->nelements(); k++) {
 			std::vector<jive::output *> sub_items = flatten_data_items(
 				data->node()->inputs[k]->origin(),
 				layout_mapper);

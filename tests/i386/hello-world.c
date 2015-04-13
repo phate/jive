@@ -44,15 +44,12 @@ make_string(jive_graph * graph, const char * txt)
 {
 	static const jive::bits::type bits8(8);
 	static std::vector<const jive::value::type*> string_elements;
-	static jive::rcd::declaration string_decl;
 	size_t len = strlen(txt), n;
 	
 	for (n = 0; n < len; n++)
 		string_elements.push_back(&bits8);
-	
-	string_decl.nelements = len;
-	string_decl.elements = &string_elements[0];
-	
+	static jive::rcd::declaration string_decl(string_elements);
+
 	jive::output * chars[len];
 	for (n = 0; n < len; n++) {
 		size_t k;

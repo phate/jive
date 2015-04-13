@@ -50,7 +50,7 @@ select_operation::argument_type(size_t index) const noexcept
 const jive::base::type &
 select_operation::result_type(size_t index) const noexcept
 {
-	return *type_.declaration()->elements[element()];
+	return type_.declaration()->element(element());
 }
 
 jive_unop_reduction_path_t
@@ -97,10 +97,10 @@ select_operation::reduce_operand(
 
 		jive::output * element_address = jive_memberof(address, decl, element());
 		if (dynamic_cast<const jive::addr::type*>(&address->type())) {
-			return jive_load_by_address_create(element_address, decl->elements[element()],
+			return jive_load_by_address_create(element_address, &decl->element(element()),
 				nstates, states);
 		} else {
-			return jive_load_by_bitstring_create(element_address, nbits, decl->elements[element()],
+			return jive_load_by_bitstring_create(element_address, nbits, &decl->element(element()),
 				nstates, states);
 		}
 	}

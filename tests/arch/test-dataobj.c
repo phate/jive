@@ -93,13 +93,8 @@ make_record1(jive_graph * graph)
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits8(8);
-	
-	static const jive::value::type * elements1[] = {&bits32, &bits16, &bits8};
-	static const jive::rcd::declaration decl = {
-		nelements : 3,
-		elements : elements1
-	};
-	
+	static jive::rcd::declaration decl({&bits32, &bits16, &bits8});
+
 	jive::output * c1 = jive_bitconstant(graph, 32, bits);
 	jive::output * c2 = jive_bitconstant(graph, 16, bits);
 	jive::output * c3 = jive_bitconstant(graph, 8, bits);
@@ -113,19 +108,9 @@ make_record2(jive_graph * graph)
 {
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
-	
-	static const jive::value::type * elements1[] = {&bits16, &bits16};
-	static const jive::rcd::declaration decl1 = {
-		nelements : 2,
-		elements : elements1
-	};
+	static const jive::rcd::declaration decl1({&bits16, &bits16});
 	static jive::rcd::type rec1(&decl1);
-	
-	static const jive::value::type * elements2[] = {&rec1, &bits32};
-	static const jive::rcd::declaration decl2 = {
-		nelements : 2,
-		elements : elements2
-	};
+	static const jive::rcd::declaration decl2({&rec1, &bits32});
 	
 	jive::output * c1 = jive_bitconstant(graph, 32, bits);
 	jive::output * c2 = jive_bitconstant(graph, 16, bits);
