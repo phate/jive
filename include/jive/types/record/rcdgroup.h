@@ -19,7 +19,7 @@ public:
 	~group_op() noexcept;
 
 	inline constexpr
-	group_op(const jive::rcd::declaration * declaration) noexcept
+	group_op(std::shared_ptr<const rcd::declaration> & declaration) noexcept
 		: result_type_(declaration)
 	{}
 
@@ -40,8 +40,11 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const jive::rcd::declaration *
-	declaration() const noexcept { return result_type_.declaration(); }
+	inline const rcd::declaration *
+	declaration() const noexcept
+	{
+		return result_type_.declaration();
+	}
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
@@ -54,10 +57,11 @@ private:
 }
 
 jive::output *
-jive_group_create(const jive::rcd::declaration * decl,
+jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
 	size_t narguments, jive::output * const * arguments);
 
 jive::output *
-jive_empty_group_create(struct jive_graph * graph, const jive::rcd::declaration * decl);
+jive_empty_group_create(struct jive_graph * graph,
+	std::shared_ptr<const jive::rcd::declaration> & decl);
 
 #endif

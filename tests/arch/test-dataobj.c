@@ -93,14 +93,15 @@ make_record1(jive_graph * graph)
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits8(8);
-	static jive::rcd::declaration decl({&bits32, &bits16, &bits8});
+	static std::shared_ptr<const jive::rcd::declaration> decl(
+		new jive::rcd::declaration({&bits32, &bits16, &bits8}));
 
 	jive::output * c1 = jive_bitconstant(graph, 32, bits);
 	jive::output * c2 = jive_bitconstant(graph, 16, bits);
 	jive::output * c3 = jive_bitconstant(graph, 8, bits);
 	jive::output *  tmparray0[] = {c1, c2, c3};
 	
-	return jive_group_create(&decl, 3, tmparray0);
+	return jive_group_create(decl, 3, tmparray0);
 }
 
 static jive::output *
@@ -108,18 +109,20 @@ make_record2(jive_graph * graph)
 {
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
-	static const jive::rcd::declaration decl1({&bits16, &bits16});
-	static jive::rcd::type rec1(&decl1);
-	static const jive::rcd::declaration decl2({&rec1, &bits32});
+	static std::shared_ptr<const jive::rcd::declaration> decl1(
+		new jive::rcd::declaration({&bits16, &bits16}));
+	static jive::rcd::type rec1(decl1);
+	static std::shared_ptr<const jive::rcd::declaration> decl2(
+		new jive::rcd::declaration({&rec1, &bits32}));
 	
 	jive::output * c1 = jive_bitconstant(graph, 32, bits);
 	jive::output * c2 = jive_bitconstant(graph, 16, bits);
 	jive::output * tmparray1[] = {c2, c2};
 	
-	jive::output * tmp = jive_group_create(&decl1, 2, tmparray1);
+	jive::output * tmp = jive_group_create(decl1, 2, tmparray1);
 	jive::output *  tmparray2[] = {tmp, c1};
 	
-	return jive_group_create(&decl2, 2, tmparray2);
+	return jive_group_create(decl2, 2, tmparray2);
 }
 
 static jive::output *

@@ -66,7 +66,7 @@ group_op::copy() const
 }
 
 jive::output *
-jive_group_create(const jive::rcd::declaration * decl,
+jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
 	size_t narguments, jive::output * const * arguments)
 {
 	jive::rcd::group_op op(decl);
@@ -76,7 +76,8 @@ jive_group_create(const jive::rcd::declaration * decl,
 }
 
 jive::output *
-jive_empty_group_create(jive_graph * graph, const jive::rcd::declaration * decl)
+jive_empty_group_create(jive_graph * graph,
+	std::shared_ptr<const jive::rcd::declaration> & decl)
 {
 	jive::rcd::group_op op(decl);
 	return jive_node_create_normalized(graph, op, {})[0];

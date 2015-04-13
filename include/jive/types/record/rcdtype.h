@@ -56,12 +56,16 @@ public:
 	virtual ~type() noexcept;
 
 	inline constexpr
-	type(const jive::rcd::declaration * decl) noexcept
+	type(std::shared_ptr<const rcd::declaration> & decl) noexcept
 		: decl_(decl)
 	{
 	}
 
-	inline const jive::rcd::declaration * declaration() const noexcept { return decl_; }
+	inline const rcd::declaration *
+	declaration() const noexcept
+	{
+		return decl_.get();
+	}
 
 	virtual std::string debug_string() const override;
 
@@ -70,7 +74,7 @@ public:
 	virtual jive::rcd::type * copy() const override;
 
 private:
-	const jive::rcd::declaration * decl_;
+	std::shared_ptr<const rcd::declaration> & decl_;
 };
 
 }

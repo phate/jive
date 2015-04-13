@@ -48,7 +48,8 @@ make_string(jive_graph * graph, const char * txt)
 	
 	for (n = 0; n < len; n++)
 		string_elements.push_back(&bits8);
-	static jive::rcd::declaration string_decl(string_elements);
+	static std::shared_ptr<const jive::rcd::declaration> string_decl(
+		new jive::rcd::declaration(string_elements));
 
 	jive::output * chars[len];
 	for (n = 0; n < len; n++) {
@@ -59,7 +60,7 @@ make_string(jive_graph * graph, const char * txt)
 		chars[n] = jive_bitconstant(graph, 8, bits);
 	}
 	
-	jive::output * tmp = jive_group_create(&string_decl, len, chars);
+	jive::output * tmp = jive_group_create(string_decl, len, chars);
 	
 	jive_memlayout_mapper_simple layout_mapper;
 	jive_memlayout_mapper_simple_init(&layout_mapper, 32);

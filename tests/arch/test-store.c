@@ -32,8 +32,9 @@ static int test_main(void)
 	static const jive::bits::type bits32(32);
 
 	static const jive::value::type * decl_elems[] = {&bits8, &bits16, &bits32};
-	static const jive::rcd::declaration rcddecl({&bits8, &bits16, &bits32});
-	static jive::rcd::type rcdtype(&rcddecl);
+	std::shared_ptr<const jive::rcd::declaration> rcddecl(
+		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
+	static jive::rcd::type rcdtype(rcddecl);
 	
 	static const jive::unn::declaration unndecl = {3, decl_elems};
 	static jive::unn::type unntype(&unndecl);
@@ -51,7 +52,7 @@ static int test_main(void)
 
 	jive::output * tmparray1[] = {top->outputs[2],
 		top->outputs[3], top->outputs[4]};
-	jive::output * group = jive_group_create(&rcddecl, 3, tmparray1);
+	jive::output * group = jive_group_create(rcddecl, 3, tmparray1);
 	jive::output * tmparray2[] = {top->outputs[1], top->outputs[5]};
 	std::vector<jive::output *> states1 = jive_store_by_address_create(
 		top->outputs[0], &rcdtype, group, 2, tmparray2);

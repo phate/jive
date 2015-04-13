@@ -28,19 +28,21 @@ static int _test_rcdgroup(void)
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
-	static const jive::rcd::declaration decl({&bits8, &bits16, &bits32});
-	static jive::rcd::type rcdtype(&decl);
+	static std::shared_ptr<const jive::rcd::declaration> decl(
+		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
+	static jive::rcd::type rcdtype(decl);
 
-	static const jive::rcd::declaration decl_empty({});
-	static jive::rcd::type rcdtype_empty(&decl_empty);
+	static std::shared_ptr<const jive::rcd::declaration> decl_empty(
+		new jive::rcd::declaration({}));
+	static jive::rcd::type rcdtype_empty(decl_empty);
 
 	jive_node * top = jive_test_node_create(graph->root_region,
 		{}, {}, {&bits8, &bits16, &bits32});
 	jive::output * tmparray1[] = {top->outputs[0],
 		top->outputs[1], top->outputs[2]};
 
-	jive::output * g0 = jive_group_create(&decl, 3, tmparray1);
-	jive::output * g1 = jive_empty_group_create(graph, &decl_empty);
+	jive::output * g0 = jive_group_create(decl, 3, tmparray1);
+	jive::output * g1 = jive_empty_group_create(graph, decl_empty);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		{&rcdtype, &rcdtype_empty}, {g0, g1}, {&bits8});
@@ -70,8 +72,9 @@ static int _test_rcdselect()
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
 	static const jive::bits::type bits32(32);
-	static const jive::rcd::declaration decl({&bits8, &bits16, &bits32});
-	static jive::rcd::type rcdtype(&decl);
+	static std::shared_ptr<const jive::rcd::declaration> decl(
+		new jive::rcd::declaration({&bits8, &bits16, &bits32}));
+	static jive::rcd::type rcdtype(decl);
 
 	jive::addr::type addrtype;
 	jive_node * top = jive_test_node_create(graph->root_region,
@@ -79,7 +82,7 @@ static int _test_rcdselect()
 	jive::output * tmparray1[] = {top->outputs[0],
 		top->outputs[1], top->outputs[2]};
 
-	jive::output * g0 = jive_group_create(&decl, 3, tmparray1);
+	jive::output * g0 = jive_group_create(decl, 3, tmparray1);
 	jive::output * load = jive_load_by_address_create(top->outputs[5], &rcdtype, 0, NULL);
 
 	jive::output * s0 = jive_select_create(1, top->outputs[3]);
