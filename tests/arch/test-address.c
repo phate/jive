@@ -78,10 +78,10 @@ static int test_main(void)
 		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
 	jive_graph_export(graph, bottom->outputs[0]);
 
-	jive_node_address_transform(cont3->node(), &mapper.base.base);
-	jive_node_address_transform(memberof->node(), &mapper.base.base);
-	jive_node_address_transform(diff2->node(), &mapper.base.base);
-	jive_node_address_transform(arraysub->node(), &mapper.base.base);
+	jive_node_address_transform(cont3->node(), &mapper.base);
+	jive_node_address_transform(memberof->node(), &mapper.base);
+	jive_node_address_transform(diff2->node(), &mapper.base);
+	jive_node_address_transform(arraysub->node(), &mapper.base);
 	
 	jive_graph_prune(graph);
 	jive_view(graph, stdout);

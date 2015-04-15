@@ -55,7 +55,7 @@ static int test_main(void)
 
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, 32);
-	jive_graph_address_transform(graph, &mapper.base.base);
+	jive_graph_address_transform(graph, &mapper.base);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

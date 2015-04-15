@@ -32,9 +32,9 @@ static int test_main(void)
 
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, 32);
-	jive_dataobj(c8, &mapper.base.base);
-	jive_rodataobj(c16, &mapper.base.base);
-	jive_bssobj(c32, &mapper.base.base);
+	jive_dataobj(c8, &mapper.base);
+	jive_rodataobj(c16, &mapper.base);
+	jive_bssobj(c32, &mapper.base);
 
 	jive_view(graph, stderr);
 

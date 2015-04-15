@@ -64,7 +64,7 @@ make_string(jive_graph * graph, const char * txt)
 	
 	jive_memlayout_mapper_simple layout_mapper;
 	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
-	jive::output * dataobj = jive_dataobj(tmp, &layout_mapper.base.base);
+	jive::output * dataobj = jive_dataobj(tmp, &layout_mapper.base);
 	jive_memlayout_mapper_simple_fini(&layout_mapper);
 	
 	return dataobj;

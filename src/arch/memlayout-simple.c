@@ -10,47 +10,8 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 
-void
-jive_memlayout_mapper_cached_fini_(jive_memlayout_mapper_cached * self)
-{
-	for (auto i : self->record_map)
-		delete[] i.second.element;
-}
-
-jive_record_memlayout *
-jive_memlayout_mapper_cached_map_record_(jive_memlayout_mapper_cached * self,
-	const jive::rcd::declaration * decl)
-{
-	auto i = self->record_map.find(decl);
-	if (i != self->record_map.end())
-		return &i->second;
-	else
-		return NULL;
-}
-
-jive_union_memlayout *
-jive_memlayout_mapper_cached_map_union_(jive_memlayout_mapper_cached * self,
-	const jive::unn::declaration * decl)
-{
-	auto i = self->union_map.find(decl);
-	if (i != self->union_map.end())
-		return &i->second;
-	else
-		return NULL;
-}
-
-struct jive_dataitem_memlayout *
-jive_memlayout_mapper_cached_map_bitstring_(jive_memlayout_mapper_cached * self, size_t nbits)
-{
-	auto i = self->bitstring_map.find(nbits);
-	if (i != self->bitstring_map.end())
-		return &i->second;
-	else
-		return nullptr;
-}
-
-jive_record_memlayout *
-jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
+static jive_record_memlayout *
+jive_memlayout_mapper_simple_add_record_(jive_memlayout_mapper_simple * self,
 	const jive::rcd::declaration * decl)
 {
 	
@@ -69,8 +30,8 @@ jive_memlayout_mapper_cached_add_record_(jive_memlayout_mapper_cached * self,
 	return &self->record_map[decl];
 }
 
-jive_union_memlayout *
-jive_memlayout_mapper_cached_add_union_(jive_memlayout_mapper_cached * self,
+static jive_union_memlayout *
+jive_memlayout_mapper_simple_add_union_(jive_memlayout_mapper_simple * self,
 	const jive::unn::declaration * decl)
 {
 	jive_union_memlayout layout;
@@ -88,11 +49,12 @@ jive_memlayout_mapper_simple_map_record_(jive_memlayout_mapper * self_,
 	const jive::rcd::declaration * decl)
 {
 	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
-	jive_record_memlayout * layout = jive_memlayout_mapper_cached_map_record_(&self->base, decl);
-	if (layout)
-		return layout;
-	
-	layout = jive_memlayout_mapper_cached_add_record_(&self->base, decl);
+
+	auto i = self->record_map.find(decl);
+	if (i != self->record_map.end())
+		return &i->second;
+
+	jive_record_memlayout * layout = jive_memlayout_mapper_simple_add_record_(self, decl);
 	size_t pos = 0, alignment = 1, n;
 	for (n = 0; n < decl->nelements(); n++) {
 		const jive_dataitem_memlayout * ext = jive_memlayout_mapper_map_value_type(self_,
@@ -120,11 +82,12 @@ jive_memlayout_mapper_simple_map_union_(jive_memlayout_mapper * self_,
 	const jive::unn::declaration * decl)
 {
 	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
-	jive_union_memlayout * layout = jive_memlayout_mapper_cached_map_union_(&self->base, decl);
-	if (layout)
-		return layout;
+
+	auto i = self->union_map.find(decl);
+	if (i != self->union_map.end())
+		return &i->second;
 	
-	layout = jive_memlayout_mapper_cached_add_union_(&self->base, decl);
+	jive_union_memlayout * layout = jive_memlayout_mapper_simple_add_union_(self, decl);
 	size_t size = 0, alignment = 1, n;
 	for (n = 0; n < decl->nelements; n++) {
 		const jive_dataitem_memlayout * ext = jive_memlayout_mapper_map_value_type(self_,
@@ -148,11 +111,11 @@ static const jive_dataitem_memlayout *
 jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_t nbits)
 {
 	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
-	
-	jive_dataitem_memlayout * item = jive_memlayout_mapper_cached_map_bitstring_(&self->base, nbits);
-	if (item)
-		return item;
-	
+
+	auto i = self->bitstring_map.find(nbits);
+	if (i != self->bitstring_map.end())
+		return &i->second;
+
 	jive_dataitem_memlayout layout;
 	if (nbits > self->bits_per_word)
 		nbits = (nbits + self->bits_per_word - 1) & ~ (self->bits_per_word - 1);
@@ -175,9 +138,9 @@ jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_
 	if (layout.alignment > self->bytes_per_word)
 		layout.alignment = self->bytes_per_word;
 
-	self->base.bitstring_map[nbits] = layout;
+	self->bitstring_map[nbits] = layout;
 	
-	return &self->base.bitstring_map[nbits];
+	return &self->bitstring_map[nbits];
 }
 
 static const jive_dataitem_memlayout *
@@ -200,7 +163,7 @@ jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, size_t bi
 {
 	self->bits_per_word = bits_per_word;
 	self->bytes_per_word = bits_per_word / 8;
-	self->base.base.class_ = &JIVE_MEMLAYOUT_MAPPER_SIMPLE;
+	self->base.class_ = &JIVE_MEMLAYOUT_MAPPER_SIMPLE;
 	
 	size_t bytes_per_word = self->bits_per_word / 8;
 	self->address_layout.total_size = bytes_per_word;
@@ -210,5 +173,6 @@ jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, size_t bi
 void
 jive_memlayout_mapper_simple_fini(jive_memlayout_mapper_simple * self)
 {
-	jive_memlayout_mapper_cached_fini_(&self->base);
+	for (auto i : self->record_map)
+		delete[] i.second.element;
 }

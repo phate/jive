@@ -36,7 +36,7 @@ verify_asm_definition(data_def_fn data_def, const char * expected_data)
 	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
 	
 	jive::output * value = data_def(graph);
-	jive::output * dataobj = jive_dataobj(value, &layout_mapper.base.base);
+	jive::output * dataobj = jive_dataobj(value, &layout_mapper.base);
 	jive_linker_symbol my_label_symbol;
 	jive::output * name = jive_objdef_create(
 		dataobj,
