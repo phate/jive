@@ -11,7 +11,7 @@
 #include <jive/types/union/unntype.h>
 
 static jive_record_memlayout *
-jive_memlayout_mapper_simple_add_record_(jive_memlayout_mapper_simple * self,
+jive_memlayout_mapper_simple_add_record_(jive::memlayout_mapper_simple * self,
 	const jive::rcd::declaration * decl)
 {
 	
@@ -31,7 +31,7 @@ jive_memlayout_mapper_simple_add_record_(jive_memlayout_mapper_simple * self,
 }
 
 static jive_union_memlayout *
-jive_memlayout_mapper_simple_add_union_(jive_memlayout_mapper_simple * self,
+jive_memlayout_mapper_simple_add_union_(jive::memlayout_mapper_simple * self,
 	const jive::unn::declaration * decl)
 {
 	jive_union_memlayout layout;
@@ -45,10 +45,10 @@ jive_memlayout_mapper_simple_add_union_(jive_memlayout_mapper_simple * self,
 /* simplistic layouter */
 
 static const struct jive_record_memlayout *
-jive_memlayout_mapper_simple_map_record_(jive_memlayout_mapper * self_,
+jive_memlayout_mapper_simple_map_record_(jive::memlayout_mapper * self_,
 	const jive::rcd::declaration * decl)
 {
-	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
+	jive::memlayout_mapper_simple * self = dynamic_cast<jive::memlayout_mapper_simple*>(self_);
 
 	auto i = self->record_map.find(decl);
 	if (i != self->record_map.end())
@@ -78,10 +78,10 @@ jive_memlayout_mapper_simple_map_record_(jive_memlayout_mapper * self_,
 }
 
 static const struct jive_union_memlayout *
-jive_memlayout_mapper_simple_map_union_(jive_memlayout_mapper * self_,
+jive_memlayout_mapper_simple_map_union_(jive::memlayout_mapper * self_,
 	const jive::unn::declaration * decl)
 {
-	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
+	jive::memlayout_mapper_simple * self = dynamic_cast<jive::memlayout_mapper_simple*>(self_);
 
 	auto i = self->union_map.find(decl);
 	if (i != self->union_map.end())
@@ -108,17 +108,17 @@ jive_memlayout_mapper_simple_map_union_(jive_memlayout_mapper * self_,
 }
 
 static const jive_dataitem_memlayout *
-jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_t nbits)
+jive_memlayout_mapper_simple_map_bitstring_(jive::memlayout_mapper * self_, size_t nbits)
 {
-	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
+	jive::memlayout_mapper_simple * self = dynamic_cast<jive::memlayout_mapper_simple*>(self_);
 
 	auto i = self->bitstring_map.find(nbits);
 	if (i != self->bitstring_map.end())
 		return &i->second;
 
 	jive_dataitem_memlayout layout;
-	if (nbits > self->bits_per_word)
-		nbits = (nbits + self->bits_per_word - 1) & ~ (self->bits_per_word - 1);
+	if (nbits > self->bits_per_word())
+		nbits = (nbits + self->bits_per_word() - 1) & ~ (self->bits_per_word() - 1);
 	else if (nbits <= 8)
 		nbits = 8;
 	else if (nbits <= 16)
@@ -135,8 +135,8 @@ jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_
 	size_t total_size = nbits / 8;
 	layout.total_size = total_size;
 	layout.alignment = total_size;
-	if (layout.alignment > self->bytes_per_word)
-		layout.alignment = self->bytes_per_word;
+	if (layout.alignment > self->bytes_per_word())
+		layout.alignment = self->bytes_per_word();
 
 	self->bitstring_map[nbits] = layout;
 	
@@ -144,9 +144,9 @@ jive_memlayout_mapper_simple_map_bitstring_(jive_memlayout_mapper * self_, size_
 }
 
 static const jive_dataitem_memlayout *
-jive_memlayout_mapper_simple_map_address_(jive_memlayout_mapper * self_)
+jive_memlayout_mapper_simple_map_address_(jive::memlayout_mapper * self_)
 {
-	jive_memlayout_mapper_simple * self = (jive_memlayout_mapper_simple *) self_;
+	jive::memlayout_mapper_simple * self = dynamic_cast<jive::memlayout_mapper_simple*>(self_);
 	
 	return &self->address_layout;
 }
@@ -158,21 +158,21 @@ const jive_memlayout_mapper_class JIVE_MEMLAYOUT_MAPPER_SIMPLE = {
 	map_address : jive_memlayout_mapper_simple_map_address_
 };
 
-void
-jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, size_t bits_per_word)
+namespace jive {
+
+memlayout_mapper_simple::~memlayout_mapper_simple()
 {
-	self->bits_per_word = bits_per_word;
-	self->bytes_per_word = bits_per_word / 8;
-	self->base.class_ = &JIVE_MEMLAYOUT_MAPPER_SIMPLE;
-	
-	size_t bytes_per_word = self->bits_per_word / 8;
-	self->address_layout.total_size = bytes_per_word;
-	self->address_layout.alignment = bytes_per_word;
+	for (auto i : record_map)
+		delete[] i.second.element;
 }
 
-void
-jive_memlayout_mapper_simple_fini(jive_memlayout_mapper_simple * self)
+memlayout_mapper_simple::memlayout_mapper_simple(size_t bytes_per_word)
+	:	memlayout_mapper()
+	, bytes_per_word_(bytes_per_word)
 {
-	for (auto i : self->record_map)
-		delete[] i.second.element;
+	class_ = &JIVE_MEMLAYOUT_MAPPER_SIMPLE;
+	address_layout.total_size = bytes_per_word;
+	address_layout.alignment = bytes_per_word;
+}
+
 }

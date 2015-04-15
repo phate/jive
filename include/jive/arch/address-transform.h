@@ -149,9 +149,9 @@ private:
 	std::unique_ptr<jive::base::type> original_type_;
 };
 
-}
+class memlayout_mapper;
 
-struct jive_memlayout_mapper;
+}
 
 /* address_to_bitstring node */
 
@@ -168,10 +168,9 @@ jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
 /* reductions */
 
 void
-jive_node_address_transform(jive_node * node, jive_memlayout_mapper * mapper);
+jive_node_address_transform(jive_node * node, jive::memlayout_mapper * mapper);
 
 void
-jive_graph_address_transform(jive_graph * graph,
-	jive_memlayout_mapper * mapper);
+jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper);
 
 #endif

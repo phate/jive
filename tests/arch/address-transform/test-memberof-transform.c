@@ -53,9 +53,8 @@ static int test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, 32);
-	jive_graph_address_transform(graph, &mapper.base);
+	jive::memlayout_mapper_simple mapper(4);
+	jive_graph_address_transform(graph, &mapper);
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
@@ -90,7 +89,6 @@ static int test_main(void)
 	constant = sum->producer(1);
 	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
 
-	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
 
 	return 0;

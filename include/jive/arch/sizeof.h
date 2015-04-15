@@ -12,8 +12,6 @@
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/nullary.h>
 
-struct jive_memlayout_mapper;
-
 namespace jive {
 
 class sizeof_op final : public base::nullary_op {
@@ -53,12 +51,14 @@ private:
 	std::unique_ptr<jive::value::type> type_;
 };
 
+class memlayout_mapper;
+
 }
 
 jive::output *
 jive_sizeof_create(jive_region * region, const jive::value::type * type);
 
 void
-jive_sizeof_node_reduce(const jive_node * node, jive_memlayout_mapper * mapper);
+jive_sizeof_node_reduce(const jive_node * node, jive::memlayout_mapper * mapper);
 
 #endif

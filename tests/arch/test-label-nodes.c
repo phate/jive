@@ -74,13 +74,10 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, 32);
+	jive::memlayout_mapper_simple mapper(4);
 
-	jive_node_address_transform(o0->node(), &mapper.base);
-	jive_node_address_transform(o1->node(), &mapper.base);
-
-	jive_memlayout_mapper_simple_fini(&mapper);
+	jive_node_address_transform(o0->node(), &mapper);
+	jive_node_address_transform(o1->node(), &mapper);
 
 	jive_graph_prune(graph);
 	jive_view(graph, stderr);

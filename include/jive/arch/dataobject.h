@@ -97,17 +97,17 @@ public:
 	copy() const override;
 };
 
+class memlayout_mapper;
+
 }
 
-struct jive_memlayout_mapper;
+jive::output *
+jive_dataobj(jive::output * data, jive::memlayout_mapper * mapper);
 
 jive::output *
-jive_dataobj(jive::output * data, jive_memlayout_mapper * mapper);
+jive_rodataobj(jive::output * data, jive::memlayout_mapper * mapper);
 
 jive::output *
-jive_rodataobj(jive::output * data, jive_memlayout_mapper * mapper);
-
-jive::output *
-jive_bssobj(jive::output * data, jive_memlayout_mapper * mapper);
+jive_bssobj(jive::output * data, jive::memlayout_mapper * mapper);
 
 #endif

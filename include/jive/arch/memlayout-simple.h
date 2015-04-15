@@ -11,25 +11,39 @@
 
 #include <unordered_map>
 
+namespace jive {
+
 /* simplistic implementation, for simple use cases & testing */
 
 /* FIXME: endianness */
-typedef struct jive_memlayout_mapper_simple jive_memlayout_mapper_simple;
+class memlayout_mapper_simple : public memlayout_mapper {
+public:
+	virtual
+	~memlayout_mapper_simple();
 
-struct jive_memlayout_mapper_simple {
-	jive_memlayout_mapper base;
-	size_t bits_per_word;
-	size_t bytes_per_word;
+	memlayout_mapper_simple(size_t bytes_per_word);
+
+	inline size_t
+	bytes_per_word() const noexcept
+	{
+		return bytes_per_word_;
+	}
+
+	inline size_t
+	bits_per_word() const noexcept
+	{
+		return bytes_per_word() * 8;
+	}
+
 	jive_dataitem_memlayout address_layout;
 	std::unordered_map<const jive::rcd::declaration*, jive_record_memlayout> record_map;
 	std::unordered_map<const jive::unn::declaration*, jive_union_memlayout> union_map;
 	std::unordered_map<size_t, jive_dataitem_memlayout> bitstring_map;
+
+private:
+	size_t bytes_per_word_;
 };
 
-void
-jive_memlayout_mapper_simple_init(jive_memlayout_mapper_simple * self, size_t bits_per_word);
-
-void
-jive_memlayout_mapper_simple_fini(jive_memlayout_mapper_simple * self);
+}
 
 #endif

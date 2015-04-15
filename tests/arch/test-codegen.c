@@ -30,11 +30,10 @@ static int test_main(void)
 	jive::output * c16 = jive_bitconstant_unsigned(graph, 16, 16);
 	jive::output * c32 = jive_bitconstant_unsigned(graph, 32, 32);
 
-	jive_memlayout_mapper_simple mapper;
-	jive_memlayout_mapper_simple_init(&mapper, 32);
-	jive_dataobj(c8, &mapper.base);
-	jive_rodataobj(c16, &mapper.base);
-	jive_bssobj(c32, &mapper.base);
+	jive::memlayout_mapper_simple mapper(4);
+	jive_dataobj(c8, &mapper);
+	jive_rodataobj(c16, &mapper);
+	jive_bssobj(c32, &mapper);
 
 	jive_view(graph, stderr);
 
@@ -60,7 +59,6 @@ static int test_main(void)
 	assert(bss_buffer->data[0] == 32);
 	
 	jive_compilate_fini(&compilate);
-	jive_memlayout_mapper_simple_fini(&mapper);
 	jive_graph_destroy(graph);
 
 	return 0;

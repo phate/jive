@@ -32,11 +32,10 @@ verify_asm_definition(data_def_fn data_def, const char * expected_data)
 {
 	jive_graph * graph = jive_graph_create();
 	
-	jive_memlayout_mapper_simple layout_mapper;
-	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
-	
+	jive::memlayout_mapper_simple layout_mapper(4);
+
 	jive::output * value = data_def(graph);
-	jive::output * dataobj = jive_dataobj(value, &layout_mapper.base);
+	jive::output * dataobj = jive_dataobj(value, &layout_mapper);
 	jive_linker_symbol my_label_symbol;
 	jive::output * name = jive_objdef_create(
 		dataobj,
@@ -61,9 +60,7 @@ verify_asm_definition(data_def_fn data_def, const char * expected_data)
 	
 	assert(strncmp(buffer_str, expected_header, strlen(expected_header)) == 0);
 	assert(strncmp(buffer_str + strlen(expected_header), expected_data, strlen(expected_data)) == 0);
-	
-	jive_memlayout_mapper_simple_fini(&layout_mapper);
-	
+
 	jive_graph_destroy(graph);
 }
 

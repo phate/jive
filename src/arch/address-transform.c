@@ -232,7 +232,7 @@ static void
 jive_memberof_node_address_transform(
 	jive_node * node,
 	const jive::address::memberof_op & op,
-	jive_memlayout_mapper * mapper)
+	jive::memlayout_mapper * mapper)
 {
 	size_t index = op.index();
 	std::shared_ptr<const jive::rcd::declaration> decl = op.record_decl();
@@ -256,7 +256,7 @@ static void
 jive_containerof_node_address_transform(
 	jive_node * node,
 	const jive::address::containerof_op & op,
-	jive_memlayout_mapper * mapper)
+	jive::memlayout_mapper * mapper)
 {
 	size_t index = op.index();
 	std::shared_ptr<const jive::rcd::declaration> decl = op.record_decl();
@@ -279,7 +279,7 @@ static void
 jive_arraysubscript_node_address_transform(
 	jive_node * node,
 	const jive::address::arraysubscript_op & op,
-	jive_memlayout_mapper * mapper)
+	jive::memlayout_mapper * mapper)
 {
 	size_t elem_type_size = jive_memlayout_mapper_map_value_type(mapper,
 		&op.element_type())->total_size;
@@ -303,7 +303,7 @@ static void
 jive_arrayindex_node_address_transform(
 	jive_node * node,
 	const jive::address::arrayindex_op & op,
-	jive_memlayout_mapper * mapper)
+	jive::memlayout_mapper * mapper)
 {
 	size_t elem_type_size = jive_memlayout_mapper_map_value_type(mapper,
 		&op.element_type())->total_size;
@@ -444,7 +444,7 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 }
 
 void
-jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
+jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper)
 {
 	for (jive_node * node : jive::topdown_traverser(graph)) {
 		jive_node_address_transform(node, mapper);
@@ -452,7 +452,7 @@ jive_graph_address_transform(jive_graph * graph, jive_memlayout_mapper * mapper)
 }
 
 void
-jive_node_address_transform(jive_node * node, jive_memlayout_mapper * mapper)
+jive_node_address_transform(jive_node * node, jive::memlayout_mapper * mapper)
 {
 	size_t nbits = jive_memlayout_mapper_map_address(mapper)->total_size * 8;
 	if (auto op = dynamic_cast<const jive::address::memberof_op *>(&node->operation())) {

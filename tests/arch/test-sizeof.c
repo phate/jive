@@ -61,11 +61,10 @@ static int test_main(void)
 
 	jive_view(graph, stdout);
 
-	jive_memlayout_mapper_simple layout_mapper;
-	jive_memlayout_mapper_simple_init(&layout_mapper, 32);
+	jive::memlayout_mapper_simple layout_mapper(4);
 	for (jive_node * node : jive::topdown_traverser(graph)) {
 		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
-			jive_sizeof_node_reduce(node, &layout_mapper.base);
+			jive_sizeof_node_reduce(node, &layout_mapper);
 		}
 	}
 	jive_graph_prune(graph);
@@ -80,8 +79,6 @@ static int test_main(void)
 	assert(bottom->producer(7)->operation() == jive::bits::uint_constant_op(32, 4));
 	
 	jive_view(graph, stdout);
-
-	jive_memlayout_mapper_simple_fini(&layout_mapper);
 
 	jive_graph_destroy(graph);
 

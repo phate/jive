@@ -11,6 +11,9 @@
 #include <jive/vsdg/basetype.h>
 
 namespace jive {
+
+class memlayout_mapper;
+
 namespace rcd {
 	struct declaration;
 }
@@ -22,7 +25,6 @@ namespace value {
 }
 }
 
-typedef struct jive_memlayout_mapper jive_memlayout_mapper;
 typedef struct jive_memlayout_mapper_class jive_memlayout_mapper_class;
 
 typedef struct jive_dataitem_memlayout jive_dataitem_memlayout;
@@ -62,47 +64,55 @@ struct jive_union_memlayout;
 
 struct jive_memlayout_mapper_class {
 	const jive_record_memlayout *
-	(*map_record)(jive_memlayout_mapper * self, const jive::rcd::declaration * decl);
+	(*map_record)(jive::memlayout_mapper * self, const jive::rcd::declaration * decl);
 	
 	const jive_union_memlayout *
-	(*map_union)(jive_memlayout_mapper * self, const struct jive::unn::declaration * decl);
+	(*map_union)(jive::memlayout_mapper * self, const struct jive::unn::declaration * decl);
 	
 	const jive_dataitem_memlayout *
-	(*map_bitstring)(jive_memlayout_mapper * self, size_t nbits);
+	(*map_bitstring)(jive::memlayout_mapper * self, size_t nbits);
 	
 	const jive_dataitem_memlayout *
-	(*map_address)(jive_memlayout_mapper * self);
+	(*map_address)(jive::memlayout_mapper * self);
 };
 
-struct jive_memlayout_mapper {
+namespace jive {
+
+class memlayout_mapper {
+public:
+	virtual
+	~memlayout_mapper();
+
 	const jive_memlayout_mapper_class * class_;
 };
 
+}
+
 JIVE_EXPORTED_INLINE const jive_record_memlayout *
-jive_memlayout_mapper_map_record(jive_memlayout_mapper * self, const jive::rcd::declaration * decl)
+jive_memlayout_mapper_map_record(jive::memlayout_mapper * self, const jive::rcd::declaration * decl)
 {
 	return self->class_->map_record(self, decl);
 }
 
 JIVE_EXPORTED_INLINE const jive_union_memlayout *
-jive_memlayout_mapper_map_union(jive_memlayout_mapper * self, const jive::unn::declaration * decl)
+jive_memlayout_mapper_map_union(jive::memlayout_mapper * self, const jive::unn::declaration * decl)
 {
 	return self->class_->map_union(self, decl);
 }
 
 JIVE_EXPORTED_INLINE const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_bitstring(jive_memlayout_mapper * self, size_t nbits)
+jive_memlayout_mapper_map_bitstring(jive::memlayout_mapper * self, size_t nbits)
 {
 	return self->class_->map_bitstring(self, nbits);
 }
 
 JIVE_EXPORTED_INLINE const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_address(jive_memlayout_mapper * self)
+jive_memlayout_mapper_map_address(jive::memlayout_mapper * self)
 {
 	return self->class_->map_address(self);
 }
 
 const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_value_type(jive_memlayout_mapper * self, const jive::value::type * type);
+jive_memlayout_mapper_map_value_type(jive::memlayout_mapper * self, const jive::value::type * type);
 
 #endif
