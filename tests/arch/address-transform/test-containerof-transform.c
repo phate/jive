@@ -29,7 +29,8 @@ static int test_main(void)
 	jive::bits::type bits8(8);
 	jive::bits::type bits16(16);
 	jive::bits::type bits32(32);
-	jive::rcd::declaration decl({&bits8, &bits16, &bits32, &bits32});
+	std::shared_ptr<const jive::rcd::declaration> decl(
+		new jive::rcd::declaration({&bits8, &bits16, &bits32, &bits32}));
 
 	jive_node * top = jive_test_node_create(graph->root_region,
 		{}, {}, std::vector<const jive::base::type*>(4, &bits32));
@@ -39,10 +40,10 @@ static int test_main(void)
 	jive::output * address2 = jive_bitstring_to_address_create(top->outputs[2], 32, &addrtype);
 	jive::output * address3 = jive_bitstring_to_address_create(top->outputs[3], 32, &addrtype);
 	
-	jive::output * container0 = jive_containerof(address0, &decl, 0);
-	jive::output * container1 = jive_containerof(address1, &decl, 1);
-	jive::output * container2 = jive_containerof(address2, &decl, 2);
-	jive::output * container3 = jive_containerof(address3, &decl, 3);
+	jive::output * container0 = jive_containerof(address0, decl, 0);
+	jive::output * container1 = jive_containerof(address1, decl, 1);
+	jive::output * container2 = jive_containerof(address2, decl, 2);
+	jive::output * container3 = jive_containerof(address3, decl, 3);
 
 	jive::output * offset0 = jive_address_to_bitstring_create(container0, 32, &container0->type());
 	jive::output * offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());

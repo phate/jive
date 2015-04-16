@@ -40,10 +40,10 @@ static int test_main(void)
 	jive::output * address0 = jive_bitstring_to_address_create(top->outputs[0], 64, &addr);
 	jive::output * address1 = jive_bitstring_to_address_create(top->outputs[1], 64, &addr);
 
-	jive::rcd::declaration decl({&addr, &addr});
+	std::shared_ptr<const jive::rcd::declaration> decl(new jive::rcd::declaration({&addr, &addr}));
 
-	jive::output * memberof = jive_memberof(address0, &decl, 0);
-	jive::output * containerof = jive_containerof(address1, &decl, 1);
+	jive::output * memberof = jive_memberof(address0, decl, 0);
+	jive::output * containerof = jive_containerof(address1, decl, 1);
 
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;

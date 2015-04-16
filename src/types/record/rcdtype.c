@@ -35,7 +35,7 @@ type::operator==(const jive::base::type & _other) const noexcept
 jive::rcd::type *
 type::copy() const
 {
-	return new jive::rcd::type(this->decl_);
+	return new jive::rcd::type(*this);
 }
 
 }

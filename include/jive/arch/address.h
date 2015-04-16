@@ -28,11 +28,11 @@ class memberof_op : public base::unary_op {
 public:
 	virtual ~memberof_op() noexcept;
 
-	inline constexpr
+	inline
 	memberof_op(
-		const jive::rcd::declaration * record_decl,
+		std::shared_ptr<const jive::rcd::declaration> & decl,
 		size_t index)
-		: record_decl_(record_decl),
+		: record_decl_(decl),
 		index_(index)
 	{
 	}
@@ -59,8 +59,11 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline const jive::rcd::declaration *
-	record_decl() const noexcept { return record_decl_; }
+	inline const std::shared_ptr<const jive::rcd::declaration> &
+	record_decl() const noexcept
+	{
+		return record_decl_;
+	}
 
 	inline size_t
 	index() const noexcept { return index_; }
@@ -69,7 +72,7 @@ public:
 	copy() const override;
 
 private:
-	const jive::rcd::declaration * record_decl_;
+	std::shared_ptr<const jive::rcd::declaration> record_decl_;
 	size_t index_;
 };
 
@@ -77,11 +80,11 @@ class containerof_op : public base::unary_op {
 public:
 	virtual ~containerof_op() noexcept;
 
-	inline constexpr
+	inline
 	containerof_op(
-		const jive::rcd::declaration * record_decl,
+		std::shared_ptr<const jive::rcd::declaration> & decl,
 		size_t index)
-		: record_decl_(record_decl),
+		: record_decl_(decl),
 		index_(index)
 	{
 	}
@@ -108,8 +111,11 @@ public:
 		jive_unop_reduction_path_t path,
 		jive::output * arg) const override;
 
-	inline const jive::rcd::declaration *
-	record_decl() const noexcept { return record_decl_; }
+	inline const std::shared_ptr<const jive::rcd::declaration> &
+	record_decl() const noexcept
+	{
+		return record_decl_;
+	}
 
 	inline size_t
 	index() const noexcept { return index_; }
@@ -118,7 +124,7 @@ public:
 	copy() const override;
 
 private:
-	const jive::rcd::declaration * record_decl_;
+	std::shared_ptr<const jive::rcd::declaration> record_decl_;
 	size_t index_;
 };
 
@@ -350,13 +356,19 @@ constant(struct jive_graph * graph, const value_repr & vr);
 }
 
 jive::output *
-jive_memberof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
+jive_memberof(
+	jive::output * address,
+	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	size_t index);
 
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
 jive::output *
-jive_containerof(jive::output * address, const jive::rcd::declaration * record_decl, size_t index);
+jive_containerof(
+	jive::output * address,
+	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	size_t index);
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */

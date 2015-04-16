@@ -18,7 +18,7 @@ public:
 	virtual
 	~group_op() noexcept;
 
-	inline constexpr
+	inline
 	group_op(std::shared_ptr<const rcd::declaration> & declaration) noexcept
 		: result_type_(declaration)
 	{}
@@ -40,7 +40,7 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	inline const rcd::declaration *
+	inline const std::shared_ptr<const rcd::declaration> &
 	declaration() const noexcept
 	{
 		return result_type_.declaration();

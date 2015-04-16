@@ -86,8 +86,8 @@ select_operation::reduce_operand(
 			address = jive_bitstring_to_address_create(address, nbits, &address->type());
 		}
 		
-		const jive::rcd::declaration * decl = static_cast<const jive::rcd::type*>(
-			&arg->node()->outputs[0]->type())->declaration();
+		std::shared_ptr<const jive::rcd::declaration> decl;
+		decl = static_cast<const jive::rcd::type*>(&arg->node()->outputs[0]->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs-1;
 		jive::output * states[nstates];

@@ -26,21 +26,21 @@ static int test_main(void)
 	jive_graph * graph = jive_graph_create();
 	
 	jive::bits::type bits32(32);
-	jive::rcd::declaration rec({&bits32, &bits32});
+	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));
 
 	jive::addr::type addrtype;
 	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&addrtype, &addrtype});
 	
-	jive::output * memb1 = jive_memberof(top->outputs[0], &rec, 0);
-	jive::output * memb2 = jive_memberof(top->outputs[0], &rec, 1);
+	jive::output * memb1 = jive_memberof(top->outputs[0], rec, 0);
+	jive::output * memb2 = jive_memberof(top->outputs[0], rec, 1);
 	
-	jive::output * cont1 = jive_containerof(memb1, &rec, 0);
-	jive::output * cont2 = jive_containerof(memb2, &rec, 0);
+	jive::output * cont1 = jive_containerof(memb1, rec, 0);
+	jive::output * cont2 = jive_containerof(memb2, rec, 0);
 	
-	jive::output * cont3 = jive_containerof(top->outputs[1], &rec, 0);
+	jive::output * cont3 = jive_containerof(top->outputs[1], rec, 0);
 	
-	jive::output * memb3 = jive_memberof(cont3, &rec, 0);
-	jive::output * memb4 = jive_memberof(cont3, &rec, 1);
+	jive::output * memb3 = jive_memberof(cont3, rec, 0);
+	jive::output * memb4 = jive_memberof(cont3, rec, 1);
 	
 	jive_view(graph, stdout);
 	
@@ -70,7 +70,7 @@ static int test_main(void)
 	jive_memlayout_mapper_simple mapper;
 	jive_memlayout_mapper_simple_init(&mapper, 32);
 
-	jive::output * memberof = jive_memberof(cont3, &rec, 1);
+	jive::output * memberof = jive_memberof(cont3, rec, 1);
 	jive::output * arraysub = jive_arraysubscript(top->outputs[0],
 		&bits32, one);
 

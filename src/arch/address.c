@@ -39,9 +39,7 @@ memberof_op::operator==(const operation & other) const noexcept
 std::string
 memberof_op::debug_string() const
 {
-	char tmp[128];
-	snprintf(tmp, sizeof(tmp), "MEMBEROF %p:%zd", record_decl(), index());
-	return tmp;
+	return detail::strfmt("MEMBEROF", record_decl().get(), index());
 }
 
 const jive::base::type &
@@ -96,8 +94,10 @@ memberof_op::copy() const
 
 
 jive::output *
-jive_memberof(jive::output * address,
-	const jive::rcd::declaration * record_decl, size_t index)
+jive_memberof(
+	jive::output * address,
+	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	size_t index)
 {
 	jive::address::memberof_op op(record_decl, index);
 	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
@@ -122,9 +122,7 @@ containerof_op::operator==(const operation & other) const noexcept
 std::string
 containerof_op::debug_string() const
 {
-	char tmp[128];
-	snprintf(tmp, sizeof(tmp), "CONTAINEROF %p:%zd", record_decl(), index());
-	return tmp;
+	return detail::strfmt("CONTAINEROF", record_decl(), index());
 }
 
 const jive::base::type &
@@ -178,8 +176,10 @@ containerof_op::copy() const
 }
 
 jive::output *
-jive_containerof(jive::output * address,
-	const jive::rcd::declaration * record_decl, size_t index)
+jive_containerof(
+	jive::output * address,
+	std::shared_ptr<const jive::rcd::declaration> & record_decl,
+	size_t index)
 {
 	jive::address::containerof_op op(record_decl, index);
 	return jive_node_create_normalized(address->node()->graph, op, {address})[0];

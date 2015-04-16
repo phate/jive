@@ -55,16 +55,16 @@ class type final : public jive::value::type {
 public:
 	virtual ~type() noexcept;
 
-	inline constexpr
-	type(std::shared_ptr<const rcd::declaration> & decl) noexcept
-		: decl_(decl)
+	inline
+	type(std::shared_ptr<const rcd::declaration> decl) noexcept
+		: decl_(std::move(decl))
 	{
 	}
 
-	inline const rcd::declaration *
+	inline const std::shared_ptr<const rcd::declaration> &
 	declaration() const noexcept
 	{
-		return decl_.get();
+		return decl_;
 	}
 
 	virtual std::string debug_string() const override;
@@ -74,7 +74,7 @@ public:
 	virtual jive::rcd::type * copy() const override;
 
 private:
-	std::shared_ptr<const rcd::declaration> & decl_;
+	std::shared_ptr<const rcd::declaration> decl_;
 };
 
 }
