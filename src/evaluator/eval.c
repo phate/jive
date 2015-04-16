@@ -501,7 +501,7 @@ eval_output(const jive::output * output, context & ctx)
 	if (ctx.exists(output))
 		return ctx.lookup(output)->copy();
 
-	return eval_node(output->node(), output->index, ctx)->copy();
+	return eval_node(output->node(), output->index(), ctx)->copy();
 }
 
 static std::unique_ptr<const literal>

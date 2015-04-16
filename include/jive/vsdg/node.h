@@ -167,7 +167,11 @@ public:
 	inline bool single_user() const noexcept
 		{ return (users.first != nullptr) && (users.first == users.last); }
 
-	size_t index;
+	inline size_t
+	index() const noexcept
+	{
+		return index_;
+	}
 
 	struct {
 		jive::input * first;
@@ -189,6 +193,7 @@ public:
 
 	const struct jive_resource_class * required_rescls;
 private:
+	size_t index_;
 	jive_node * node_;
 
 	/*
@@ -326,7 +331,7 @@ jive::output::debug_string() const
 	if (gate)
 		return gate->debug_string();
 
-	return detail::strfmt(index);
+	return detail::strfmt(index());
 }
 
 typedef struct jive_node jive_node;

@@ -187,7 +187,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 		if (!dynamic_cast<const jive::phi_head_op *>(&entry->input->producer()->operation()))
 			continue;
 
-		if (entry->input->origin()->index == index)
+		if (entry->input->origin()->index() == index)
 			return true;
 	}
 
@@ -322,7 +322,7 @@ replace_apply_node(const jive_node * apply,
 	/* collect the arguments for the new apply node */
 	std::vector<jive::output *> alive_arguments;
 	for (auto parameter : alive_parameters) {
-		alive_arguments.push_back(apply->inputs[parameter->index]->origin());
+		alive_arguments.push_back(apply->inputs[parameter->index()]->origin());
 	}
 
 	std::vector<jive::output *> new_apply_results =

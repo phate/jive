@@ -294,11 +294,11 @@ jive_input_auto_merge_variable(jive::input * self)
 
 namespace jive {
 
-output::output(jive_node * node, size_t index_, const jive::base::type & type)
-	: index(index_)
-	, gate(nullptr)
+output::output(jive_node * node, size_t index, const jive::base::type & type)
+	: gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
+	, index_(index)
 	, node_(node)
 	, type_(type.copy())
 {
@@ -330,9 +330,9 @@ output::~output() noexcept
 
 	node_->noutputs--;
 	size_t n;
-	for (n = index; n < node_->noutputs; n++) {
+	for (n = index(); n < node_->noutputs; n++) {
 		node_->outputs[n] = node_->outputs[n+1];
-		node_->outputs[n]->index = n;
+		node_->outputs[n]->index_ = n;
 	}
 
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
@@ -565,7 +565,7 @@ jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
 	
 	self->noutputs ++;
 	self->outputs.resize(self->noutputs);
-	self->outputs[output->index] = output;
+	self->outputs[output->index()] = output;
 }
 
 static jive::output *
@@ -755,8 +755,8 @@ jive::output *
 jive_node_gate_output(jive_node * self, jive::gate * gate)
 {
 	jive::output * output = gate->create_output(self, self->noutputs);
-	size_t n;
-	for(n=0; n<output->index; n++) {
+
+	for (size_t n = 0; n < output->index(); n++) {
 		jive::output * other = self->outputs[n];
 		if (!other->gate) continue;
 		jive_gate_interference_add(self->graph, gate, other->gate);
