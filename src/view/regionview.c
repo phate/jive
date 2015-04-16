@@ -21,7 +21,7 @@ jive_regionview::~jive_regionview() noexcept
 		delete regionview;
 }
 
-jive_regionview::jive_regionview(jive_graphview * graphview_, jive_region * region_)
+jive_regionview::jive_regionview(jive_graphview * graphview_, const jive_region * region_)
 	: region(region_)
 	, graphview(graphview_)
 	, x(0)

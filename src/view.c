@@ -11,7 +11,7 @@
 #include <jive/util/textcanvas.h>
 
 void
-jive_view(struct jive_graph * graph, FILE * out)
+jive_view(const struct jive_graph * graph, FILE * out)
 {
 	jive_graphview graphview(graph);
 	jive_graphview_draw(&graphview);
@@ -20,7 +20,7 @@ jive_view(struct jive_graph * graph, FILE * out)
 }
 
 std::vector<wchar_t>
-jive_view_wstring(struct jive_graph * graph)
+jive_view_wstring(const struct jive_graph * graph)
 {
 	jive_graphview graphview(graph);
 	jive_graphview_draw(&graphview);
@@ -28,7 +28,7 @@ jive_view_wstring(struct jive_graph * graph)
 }
 
 std::string
-jive_view_string(struct jive_graph * graph)
+jive_view_string(const struct jive_graph * graph)
 {
 	jive_graphview graphview(graph);
 	jive_graphview_draw(&graphview);
@@ -36,7 +36,7 @@ jive_view_string(struct jive_graph * graph)
 }
 
 std::string
-jive_view_utf8(struct jive_graph * graph)
+jive_view_utf8(const struct jive_graph * graph)
 {
 	jive_graphview graphview(graph);
 	jive_graphview_draw(&graphview);

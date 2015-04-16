@@ -30,9 +30,9 @@ class jive_graphview {
 public:
 	~jive_graphview() noexcept {}
 
-	jive_graphview(jive_graph * graph);
+	jive_graphview(const jive_graph * graph);
 
-	struct jive_graph * graph;
+	const struct jive_graph * graph;
 	std::unordered_map<jive_node*, jive_nodeview*> nodemap;
 	std::unordered_map<jive::input*, jive_inputview*> inputmap;
 	std::unordered_map<jive::output*, jive_outputview*> outputmap;

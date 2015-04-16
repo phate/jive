@@ -20,9 +20,9 @@ class jive_regionview {
 public:
 	~jive_regionview() noexcept;
 
-	jive_regionview(jive_graphview * graphview, jive_region * region);
+	jive_regionview(jive_graphview * graphview, const jive_region * region);
 
-	struct jive_region * region;
+	const struct jive_region * region;
 	jive_graphview * graphview;
 	int x;
 	unsigned int width, start_row_index, end_row_index;

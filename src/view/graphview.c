@@ -40,7 +40,7 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 	}
 }
 
-jive_graphview::jive_graphview(jive_graph * graph_)
+jive_graphview::jive_graphview(const jive_graph * graph_)
 	: graph(graph_)
 	, width(0)
 	, height(0)

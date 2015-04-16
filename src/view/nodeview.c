@@ -16,7 +16,7 @@
 
 /* inputview */
 
-jive_inputview::jive_inputview(jive_nodeview * nodeview_, jive::input * input_)
+jive_inputview::jive_inputview(jive_nodeview * nodeview_, const jive::input * input_)
 	: nodeview(nodeview_)
 	, input(input_)
 	, x(0)
@@ -48,7 +48,7 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 
 /* outputview */
 
-jive_outputview::jive_outputview(jive_nodeview * nodeview_, jive::output * output_)
+jive_outputview::jive_outputview(jive_nodeview * nodeview_, const jive::output * output_)
 	: nodeview(nodeview_)
 	, output(output_)
 	, x(0)
@@ -81,7 +81,7 @@ jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y
 
 /* nodeview */
 
-jive_nodeview::jive_nodeview(jive_graphview * graphview_, jive_node * node_)
+jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive_node * node_)
 	: graphview(graphview_)
 	, node(node_)
 	, column(0)

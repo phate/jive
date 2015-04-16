@@ -17,25 +17,25 @@ struct jive_graph;
 struct jive_region;
 
 void
-jive_view(struct jive_graph * graph, FILE * out);
+jive_view(const struct jive_graph * graph, FILE * out);
 
 /**
 	\brief Return graph represented as unicode string
 */
 std::vector<wchar_t>
-jive_view_wstring(struct jive_graph * graph);
+jive_view_wstring(const struct jive_graph * graph);
 
 /**
 	\brief Return graph represented as (locale-dependent) string
 */
 std::string
-jive_view_string(struct jive_graph * graph);
+jive_view_string(const struct jive_graph * graph);
 
 /**
 	\brief Return graph represented as utf8 string
 */
 std::string
-jive_view_utf8(struct jive_graph * graph);
+jive_view_utf8(const struct jive_graph * graph);
 
 namespace jive {
 namespace view {
