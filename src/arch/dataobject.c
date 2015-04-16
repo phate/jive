@@ -159,8 +159,7 @@ flatten_data_items(
 	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
 		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
 		std::shared_ptr<const jive::rcd::declaration> decl = type->declaration();
-		const jive_record_memlayout * layout = jive_memlayout_mapper_map_record(layout_mapper,
-			decl.get());
+		const jive_record_memlayout * layout = layout_mapper->map_record(decl.get());
 
 		if (!dynamic_cast<const jive::rcd::group_op *>(&data->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
@@ -189,8 +188,7 @@ flatten_data_items(
 		}
 	} else if (dynamic_cast<const jive::unn::type*>(type_)) {
 		const jive::unn::type * type = static_cast<const jive::unn::type*>(type_);
-		const jive::unn::declaration * decl = type->declaration();
-		const jive_union_memlayout * layout = jive_memlayout_mapper_map_union(layout_mapper, decl);
+		const jive_union_memlayout * layout = layout_mapper->map_union(type->declaration());
 		
 		if (!dynamic_cast<const jive::unn::unify_op *>(&data->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");

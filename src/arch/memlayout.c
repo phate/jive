@@ -15,23 +15,22 @@ namespace jive {
 memlayout_mapper::~memlayout_mapper()
 {}
 
+const jive_dataitem_memlayout *
+memlayout_mapper::map_value_type(const value::type & type)
+{
+	if (auto t = dynamic_cast<const bits::type*>(&type))
+		return map_bitstring(t->nbits());
+
+	if (dynamic_cast<const addr::type*>(&type))
+		return map_address();
+
+	if (auto t = dynamic_cast<const jive::rcd::type*>(&type))
+		return &map_record(t->declaration().get())->base;
+
+	if (auto t = dynamic_cast<const jive::unn::type*>(&type))
+		return &map_union(t->declaration())->base;
+
+	return nullptr;
 }
 
-const jive_dataitem_memlayout *
-jive_memlayout_mapper_map_value_type(jive::memlayout_mapper * self, const jive::value::type * type_)
-{
-	if (dynamic_cast<const jive::bits::type*>(type_)) {
-		return jive_memlayout_mapper_map_bitstring(self,
-			static_cast<const jive::bits::type*>(type_)->nbits());
-	} else if (dynamic_cast<const jive::addr::type*>(type_)) {
-		return jive_memlayout_mapper_map_address(self);
-	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
-		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
-		return &jive_memlayout_mapper_map_record(self, type->declaration().get())->base;
-	} else if (dynamic_cast<const jive::unn::type*>(type_)) {
-		const jive::unn::type * type = static_cast<const jive::unn::type*>(type_);
-		return &jive_memlayout_mapper_map_union(self, type->declaration())->base;
-	}
-	
-	return NULL;
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -16,32 +16,36 @@ namespace jive {
 /* simplistic implementation, for simple use cases & testing */
 
 /* FIXME: endianness */
-class memlayout_mapper_simple : public memlayout_mapper {
+class memlayout_mapper_simple final : public memlayout_mapper {
 public:
 	virtual
 	~memlayout_mapper_simple();
 
 	memlayout_mapper_simple(size_t bytes_per_word);
 
-	inline size_t
-	bytes_per_word() const noexcept
-	{
-		return bytes_per_word_;
-	}
+	virtual const jive_record_memlayout *
+	map_record(const rcd::declaration * decl) override;
 
-	inline size_t
-	bits_per_word() const noexcept
-	{
-		return bytes_per_word() * 8;
-	}
+	virtual const jive_union_memlayout *
+	map_union(const struct unn::declaration * decl) override;
 
-	jive_dataitem_memlayout address_layout;
-	std::unordered_map<const jive::rcd::declaration*, jive_record_memlayout> record_map;
-	std::unordered_map<const jive::unn::declaration*, jive_union_memlayout> union_map;
-	std::unordered_map<size_t, jive_dataitem_memlayout> bitstring_map;
+	virtual const jive_dataitem_memlayout *
+	map_bitstring(size_t nbits) override;
+
+	virtual const jive_dataitem_memlayout *
+	map_address()	override;
 
 private:
-	size_t bytes_per_word_;
+	jive_record_memlayout &
+	add_record(const rcd::declaration * decl);
+
+	jive_union_memlayout &
+	add_union(const unn::declaration * decl);
+
+	jive_dataitem_memlayout address_layout_;
+	std::unordered_map<size_t, jive_dataitem_memlayout> bitstring_map_;
+	std::unordered_map<const jive::unn::declaration*, jive_union_memlayout> union_map_;
+	std::unordered_map<const jive::rcd::declaration*, jive_record_memlayout> record_map_;
 };
 
 }
