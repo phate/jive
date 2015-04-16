@@ -36,7 +36,7 @@ record_memlayout::record_memlayout(
 memlayout_mapper::~memlayout_mapper()
 {}
 
-const dataitem_memlayout *
+const dataitem_memlayout &
 memlayout_mapper::map_value_type(const value::type & type)
 {
 	if (auto t = dynamic_cast<const bits::type*>(&type))
@@ -53,7 +53,7 @@ memlayout_mapper::map_value_type(const value::type & type)
 	if (auto t = dynamic_cast<const jive::unn::type*>(&type))
 		return map_union(t->declaration());
 
-	return nullptr;
+	throw compiler_error("Type not supported.");
 }
 
 }

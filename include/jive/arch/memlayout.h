@@ -163,19 +163,19 @@ public:
 		return bytes_per_word() * 8;
 	}
 
-	virtual const record_memlayout *
+	virtual const record_memlayout &
 	map_record(std::shared_ptr<const rcd::declaration> & decl) = 0;
 
-	virtual const union_memlayout *
+	virtual const union_memlayout &
 	map_union(const struct unn::declaration * decl) = 0;
 
-	virtual const dataitem_memlayout *
+	virtual const dataitem_memlayout &
 	map_bitstring(size_t nbits) = 0;
 
-	virtual const dataitem_memlayout *
+	virtual const dataitem_memlayout &
 	map_address() = 0;
 
-	const dataitem_memlayout *
+	const dataitem_memlayout &
 	map_value_type(const value::type & type);
 
 private:

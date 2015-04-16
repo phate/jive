@@ -27,16 +27,16 @@ public:
 		, address_layout_(bytes_per_word, bytes_per_word)
 	{}
 
-	virtual const record_memlayout *
+	virtual const record_memlayout &
 	map_record(std::shared_ptr<const rcd::declaration> & decl) override;
 
-	virtual const union_memlayout *
+	virtual const union_memlayout &
 	map_union(const struct unn::declaration * decl) override;
 
-	virtual const dataitem_memlayout *
+	virtual const dataitem_memlayout &
 	map_bitstring(size_t nbits) override;
 
-	virtual const dataitem_memlayout *
+	virtual const dataitem_memlayout &
 	map_address()	override;
 
 private:
