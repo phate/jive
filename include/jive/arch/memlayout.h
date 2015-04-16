@@ -10,9 +10,10 @@
 #include <jive/common.h>
 #include <jive/vsdg/basetype.h>
 
-namespace jive {
+#include <memory>
+#include <vector>
 
-class memlayout_mapper;
+namespace jive {
 
 namespace rcd {
 	struct declaration;
@@ -23,44 +24,122 @@ namespace unn {
 namespace value {
 	class type;
 }
-}
 
-typedef struct jive_memlayout_mapper_class jive_memlayout_mapper_class;
+class dataitem_memlayout {
+public:
+	virtual
+	~dataitem_memlayout();
 
-typedef struct jive_dataitem_memlayout jive_dataitem_memlayout;
+	inline
+	dataitem_memlayout(size_t size, size_t alignment) noexcept
+		: size_(size)
+		, alignment_(alignment)
+	{}
 
-typedef struct jive_record_memlayout jive_record_memlayout;
-typedef struct jive_record_memlayout_element jive_record_memlayout_element;
+	inline size_t
+	size() const noexcept
+	{
+		return size_;
+	}
 
-typedef struct jive_union_memlayout jive_union_memlayout;
-typedef jive::value::type jive_union_memlayout_element;
+	inline size_t
+	alignment() const noexcept
+	{
+		return alignment_;
+	}
 
-struct jive_dataitem_memlayout {
-	size_t total_size;
-	size_t alignment;
-	/* FIXME: endianness? */
+private:
+	size_t size_;
+	size_t alignment_;
+	/* FIXME: endianess? */
 };
 
-struct jive_union_memlayout {
-	jive_dataitem_memlayout base;
-	const struct jive::unn::declaration * decl;
+class union_memlayout final : public dataitem_memlayout {
+public:
+	virtual
+	~union_memlayout();
+
+	inline
+	union_memlayout(const struct unn::declaration * decl, size_t size, size_t alignment) noexcept
+		: dataitem_memlayout(size, alignment)
+		, decl_(decl)
+	{}
+
+	inline const unn::declaration *
+	declaration() const noexcept
+	{
+		return decl_;
+	}
+
+private:
+	const struct unn::declaration * decl_;
 };
 
-struct jive_record_memlayout_element {
-	size_t offset, size;
+class record_memlayout_element {
+public:
+	inline
+	record_memlayout_element(size_t size, size_t offset) noexcept
+		: size_(size)
+		, offset_(offset)
+	{}
+
+	inline size_t
+	size() const noexcept
+	{
+		return size_;
+	}
+
+	inline size_t
+	offset() const noexcept
+	{
+		return offset_;
+	}
+
+private:
+	size_t size_;
+	size_t offset_;
 };
 
-struct jive_record_memlayout {
-	jive_dataitem_memlayout base;
-	const jive::rcd::declaration * decl;
-	jive_record_memlayout_element * element;
+class record_memlayout final : public dataitem_memlayout {
+public:
+	virtual
+	~record_memlayout();
+
+	record_memlayout(
+	std::shared_ptr<const rcd::declaration> & decl,
+	const std::vector<record_memlayout_element> & elements,
+	size_t size,
+	size_t alignment) noexcept;
+
+	inline std::shared_ptr<const rcd::declaration>
+	declaration() const noexcept
+	{
+		return decl_;
+	}
+
+	inline size_t
+	nelements() const noexcept
+	{
+		return elements_.size();
+	}
+
+	inline const record_memlayout_element &
+	element(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < nelements());
+		return elements_[index];
+	}
+
+	inline const std::vector<record_memlayout_element> &
+	elements() const noexcept
+	{
+		return elements_;
+	}
+
+private:
+	std::shared_ptr<const rcd::declaration>  decl_;
+	std::vector<record_memlayout_element> elements_;
 };
-
-struct jive_address_type;
-struct jive_bitstring_type;
-struct jive_union_declaration;
-
-namespace jive {
 
 class memlayout_mapper {
 public:
@@ -84,20 +163,19 @@ public:
 		return bytes_per_word() * 8;
 	}
 
-	/* FIXME: use shared_ptr for declaration */
-	virtual const jive_record_memlayout *
-	map_record(const rcd::declaration * decl) = 0;
+	virtual const record_memlayout *
+	map_record(std::shared_ptr<const rcd::declaration> & decl) = 0;
 
-	virtual const jive_union_memlayout *
+	virtual const union_memlayout *
 	map_union(const struct unn::declaration * decl) = 0;
 
-	virtual const jive_dataitem_memlayout *
+	virtual const dataitem_memlayout *
 	map_bitstring(size_t nbits) = 0;
 
-	virtual const jive_dataitem_memlayout *
+	virtual const dataitem_memlayout *
 	map_address() = 0;
 
-	const jive_dataitem_memlayout *
+	const dataitem_memlayout *
 	map_value_type(const value::type & type);
 
 private:

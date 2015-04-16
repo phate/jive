@@ -238,8 +238,8 @@ jive_memberof_node_address_transform(
 	std::shared_ptr<const jive::rcd::declaration> decl = op.record_decl();
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements());
-	size_t elem_offset = mapper->map_record(decl.get())->element[index].offset;
-	size_t nbits = mapper->map_address()->total_size * 8;
+	size_t elem_offset = mapper->map_record(decl)->elements()[index].offset();
+	size_t nbits = mapper->map_address()->size() * 8;
 
 	jive::output * offset = jive_bitconstant_unsigned(node->graph, nbits, elem_offset);
 	jive::output * address = jive_address_to_bitstring_create(node->inputs[0]->origin(), nbits,
@@ -262,8 +262,8 @@ jive_containerof_node_address_transform(
 	std::shared_ptr<const jive::rcd::declaration> decl = op.record_decl();
 
 	JIVE_DEBUG_ASSERT(index < decl->nelements());
-	size_t elem_offset = mapper->map_record(decl.get())->element[index].offset;
-	size_t nbits = mapper->map_address()->total_size * 8;
+	size_t elem_offset = mapper->map_record(decl)->elements()[index].offset();
+	size_t nbits = mapper->map_address()->size() * 8;
 
 	jive::output * offset = jive_bitconstant_unsigned(node->graph, nbits, elem_offset);
 	jive::output * address = jive_address_to_bitstring_create(node->inputs[0]->origin(), nbits,
@@ -281,8 +281,8 @@ jive_arraysubscript_node_address_transform(
 	const jive::address::arraysubscript_op & op,
 	jive::memlayout_mapper * mapper)
 {
-	size_t elem_type_size = mapper->map_value_type(op.element_type())->total_size;
-	size_t nbits = mapper->map_address()->total_size * 8;
+	size_t elem_type_size = mapper->map_value_type(op.element_type())->size();
+	size_t nbits = mapper->map_address()->size() * 8;
 
 	jive::output * index = node->inputs[1]->origin();
 	jive::output * address = jive_address_to_bitstring_create(node->inputs[0]->origin(), nbits,
@@ -304,8 +304,8 @@ jive_arrayindex_node_address_transform(
 	const jive::address::arrayindex_op & op,
 	jive::memlayout_mapper * mapper)
 {
-	size_t elem_type_size = mapper->map_value_type(op.element_type())->total_size;
-	size_t nbits = mapper->map_address()->total_size * 8;
+	size_t elem_type_size = mapper->map_value_type(op.element_type())->size();
+	size_t nbits = mapper->map_address()->size() * 8;
 
 	jive::output * address1 = jive_address_to_bitstring_create(node->inputs[0]->origin(), nbits,
 		&node->inputs[0]->origin()->type());
@@ -452,7 +452,7 @@ jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper
 void
 jive_node_address_transform(jive_node * node, jive::memlayout_mapper * mapper)
 {
-	size_t nbits = mapper->map_address()->total_size * 8;
+	size_t nbits = mapper->map_address()->size() * 8;
 	if (auto op = dynamic_cast<const jive::address::memberof_op *>(&node->operation())) {
 		jive_memberof_node_address_transform(node, *op, mapper);
 	} else if (auto op = dynamic_cast<const jive::address::containerof_op *>(&node->operation())) {

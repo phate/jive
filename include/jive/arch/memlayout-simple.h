@@ -21,31 +21,32 @@ public:
 	virtual
 	~memlayout_mapper_simple();
 
-	memlayout_mapper_simple(size_t bytes_per_word);
+	inline
+	memlayout_mapper_simple(size_t bytes_per_word)
+		: memlayout_mapper(bytes_per_word)
+		, address_layout_(bytes_per_word, bytes_per_word)
+	{}
 
-	virtual const jive_record_memlayout *
-	map_record(const rcd::declaration * decl) override;
+	virtual const record_memlayout *
+	map_record(std::shared_ptr<const rcd::declaration> & decl) override;
 
-	virtual const jive_union_memlayout *
+	virtual const union_memlayout *
 	map_union(const struct unn::declaration * decl) override;
 
-	virtual const jive_dataitem_memlayout *
+	virtual const dataitem_memlayout *
 	map_bitstring(size_t nbits) override;
 
-	virtual const jive_dataitem_memlayout *
+	virtual const dataitem_memlayout *
 	map_address()	override;
 
 private:
-	jive_record_memlayout &
-	add_record(const rcd::declaration * decl);
-
-	jive_union_memlayout &
-	add_union(const unn::declaration * decl);
-
-	jive_dataitem_memlayout address_layout_;
-	std::unordered_map<size_t, jive_dataitem_memlayout> bitstring_map_;
-	std::unordered_map<const jive::unn::declaration*, jive_union_memlayout> union_map_;
-	std::unordered_map<const jive::rcd::declaration*, jive_record_memlayout> record_map_;
+	dataitem_memlayout address_layout_;
+	std::unordered_map<size_t, dataitem_memlayout> bitstring_map_;
+	std::unordered_map<const jive::unn::declaration*, union_memlayout> union_map_;
+	std::unordered_map<
+		std::shared_ptr<const rcd::declaration>,
+		record_memlayout
+	> record_map_;
 };
 
 }

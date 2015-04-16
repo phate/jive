@@ -159,7 +159,7 @@ flatten_data_items(
 	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
 		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
 		std::shared_ptr<const jive::rcd::declaration> decl = type->declaration();
-		const jive_record_memlayout * layout = layout_mapper->map_record(decl.get());
+		const jive::record_memlayout * layout = layout_mapper->map_record(decl);
 
 		if (!dynamic_cast<const jive::rcd::group_op *>(&data->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
@@ -168,27 +168,27 @@ flatten_data_items(
 		jive_graph * graph = data->node()->graph;
 		
 		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
-		items.resize(layout->base.total_size, zero_pad);
+		items.resize(layout->size(), zero_pad);
 
 		for (size_t k = 0; k < decl->nelements(); k++) {
 			std::vector<jive::output *> sub_items = flatten_data_items(
 				data->node()->inputs[k]->origin(),
 				layout_mapper);
 			
-			if (sub_items.size() + layout->element[k].offset > items.size()) {
+			if (sub_items.size() + layout->element(k).offset() > items.size()) {
 				throw jive::compiler_error("Invalid record layout: element exceeds record");
 			}
 			
 			for (size_t n = 0; n < sub_items.size(); n++) {
-				if (items[n + layout->element[k].offset] != zero_pad) {
+				if (items[n + layout->element(k).offset()] != zero_pad) {
 					throw jive::compiler_error("Invalid record layout: members overlap");
 				}
-				items[n + layout->element[k].offset] = sub_items[n];
+				items[n + layout->element(k).offset()] = sub_items[n];
 			}
 		}
 	} else if (dynamic_cast<const jive::unn::type*>(type_)) {
 		const jive::unn::type * type = static_cast<const jive::unn::type*>(type_);
-		const jive_union_memlayout * layout = layout_mapper->map_union(type->declaration());
+		const jive::union_memlayout * layout = layout_mapper->map_union(type->declaration());
 		
 		if (!dynamic_cast<const jive::unn::unify_op *>(&data->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");
@@ -197,7 +197,7 @@ flatten_data_items(
 		jive_graph * graph = data->node()->graph;
 		
 		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
-		items.resize(layout->base.total_size, zero_pad);
+		items.resize(layout->size(), zero_pad);
 		
 		std::vector<jive::output *> sub_items = flatten_data_items(
 			data->node()->inputs[0]->origin(), layout_mapper);

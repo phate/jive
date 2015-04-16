@@ -12,10 +12,31 @@
 
 namespace jive {
 
+dataitem_memlayout::~dataitem_memlayout()
+{}
+
+union_memlayout::~union_memlayout()
+{}
+
+record_memlayout::~record_memlayout()
+{}
+
+record_memlayout::record_memlayout(
+	std::shared_ptr<const rcd::declaration> & decl,
+	const std::vector<record_memlayout_element> & elements,
+	size_t size,
+	size_t alignment) noexcept
+	: dataitem_memlayout(size, alignment)
+	, decl_(decl)
+	, elements_(elements)
+{
+	JIVE_DEBUG_ASSERT(decl->nelements() == elements.size());
+}
+
 memlayout_mapper::~memlayout_mapper()
 {}
 
-const jive_dataitem_memlayout *
+const dataitem_memlayout *
 memlayout_mapper::map_value_type(const value::type & type)
 {
 	if (auto t = dynamic_cast<const bits::type*>(&type))
@@ -24,11 +45,13 @@ memlayout_mapper::map_value_type(const value::type & type)
 	if (dynamic_cast<const addr::type*>(&type))
 		return map_address();
 
-	if (auto t = dynamic_cast<const jive::rcd::type*>(&type))
-		return &map_record(t->declaration().get())->base;
+	if (auto t = dynamic_cast<const jive::rcd::type*>(&type)) {
+		std::shared_ptr<const rcd::declaration> decl = t->declaration();
+		return map_record(decl);
+	}
 
 	if (auto t = dynamic_cast<const jive::unn::type*>(&type))
-		return &map_union(t->declaration())->base;
+		return map_union(t->declaration());
 
 	return nullptr;
 }
