@@ -464,16 +464,6 @@ gate::~gate() noexcept
 	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
 }
 
-jive::input *
-gate::create_input(jive_node * node, size_t index, jive::output * origin)
-{
-	jive::input * input = new jive::input(node, index, origin, type());
-	input->required_rescls = required_rescls;
-	input->gate = this;
-	JIVE_LIST_PUSH_BACK(this->inputs, input, gate_inputs_list);
-	return input;
-}
-
 jive::output *
 gate::create_output(jive_node * node, size_t index)
 {
@@ -741,7 +731,11 @@ jive_node_add_constrained_input(jive_node * self, const jive_resource_class * re
 jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {
-	jive::input * input = gate->create_input(self, self->ninputs, initial_operand);
+	jive::input * input = new jive::input(self, self->ninputs, initial_operand, gate->type());
+	input->required_rescls = gate->required_rescls;
+	input->gate = gate;
+	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
+
 	for (size_t n = 0; n < input->index(); n++) {
 		jive::input * other = self->inputs[n];
 		if (!other->gate) continue;
