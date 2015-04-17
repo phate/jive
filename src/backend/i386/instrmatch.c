@@ -87,7 +87,7 @@ convert_bitbinary(jive_node * node,
 			tmparray1, NULL);
 	}
 	
-	jive_output_replace(node->outputs[0], instr->outputs[0]);
+	node->outputs[0]->replace(instr->outputs[0]);
 }
 
 static void
@@ -122,7 +122,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 	jive_node * instr = jive_instruction_node_create_extended(node->region,
 		icls, tmparray3, NULL);
 	
-	jive_output_replace(node->outputs[0], instr->outputs[index]);
+	node->outputs[0]->replace(instr->outputs[index]);
 }
 
 static void
@@ -138,7 +138,7 @@ convert_complex_bitbinary(jive_node * node,
 		icls,
 		tmparray4, NULL);
 	
-	jive_output_replace(node->outputs[0], instr->outputs[result_index]);
+	node->outputs[0]->replace(instr->outputs[result_index]);
 }
 
 static const jive::detail::typeinfo_map<
@@ -310,7 +310,7 @@ convert_bitcmp(
 	jive::immediate imm;
 	jive_node * jump_instr = jive_instruction_node_create(node->region, jump_icls,
 		{cmp_instr->outputs[0]}, {imm}, {}, {}, {&jive::ctl::boolean});
-	jive_output_replace(node_->outputs[0], jump_instr->outputs[0]);
+	node_->outputs[0]->replace(jump_instr->outputs[0]);
 }
 
 static const jive::detail::typeinfo_map<
@@ -428,7 +428,7 @@ match_gpr_bitunary(jive_node * node)
 			icls,
 			tmparray8, NULL);
 		
-		jive_output_replace(node->outputs[0], instr->outputs[0]);
+		node->outputs[0]->replace(instr->outputs[0]);
 	} else {
 		throw std::logic_error("Unknown operator");
 	}
@@ -445,7 +445,7 @@ match_gpr_immediate(jive_node * node)
 		&jive_i386_instr_int_load_imm, nullptr, &imm);
 	jive_node_add_input(instr, &jive::seq::seqtype, node->inputs[0]->origin());
 	
-	jive_output_replace(node->outputs[0], instr->outputs[0]);
+	node->outputs[0]->replace(instr->outputs[0]);
 }
 
 typedef enum {
@@ -489,7 +489,7 @@ match_gpr_load(jive_node * node)
 		}
 	}
 	
-	jive_output_replace(node->outputs[0], value);
+	node->outputs[0]->replace(value);
 	size_t n;
 	for (n = 1; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
@@ -505,7 +505,7 @@ match_gpr_load(jive_node * node)
 			rep = jive_node_gate_output(instr, output->gate);
 		else
 			rep = jive_node_add_output(instr, &output->type());
-		jive_output_replace(output, rep);
+		output->replace(rep);
 	}
 }
 
@@ -542,7 +542,7 @@ match_gpr_store(jive_node * node)
 			rep = jive_node_gate_output(instr, output->gate);
 		else
 			rep = jive_node_add_output(instr, &output->type());
-		jive_output_replace(output, rep);
+		output->replace(rep);
 	}
 }
 

@@ -339,6 +339,13 @@ output::~output() noexcept
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
 
+void
+output::replace(jive::output * other) noexcept
+{
+	while (users.first)
+		users.first->divert_origin(other);
+}
+
 }	//jive namespace
 
 jive_variable *
@@ -424,15 +431,6 @@ jive_output_auto_merge_variable(jive::output * self)
 		}
 	}
 	return self->ssavar;
-}
-
-void
-jive_output_replace(jive::output * self, jive::output * other)
-{
-	while(self->users.first) {
-		jive::input * input = self->users.first;
-		input->divert_origin(other);
-	}
 }
 
 /* gates */

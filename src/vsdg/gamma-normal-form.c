@@ -88,7 +88,7 @@ gamma_normal_form::normalize_node(jive_node * node) const
 			jive_node * branch = node->producer(op->value().nalternatives());
 			jive_region_move(branch->region, node->region);
 			for (size_t n = 0; n < node->noutputs; n++)
-				jive_output_replace(node->outputs[n], branch->inputs[n]->origin());
+				node->outputs[n]->replace(branch->inputs[n]->origin());
 			was_normalized = false;
 		}
 	}
@@ -103,7 +103,7 @@ gamma_normal_form::normalize_node(jive_node * node) const
 					break;
 			}
 			if (n == nalternatives) {
-				jive_output_replace(node->outputs[v-1], node->producer(0)->inputs[v-1]->origin());
+				node->outputs[v-1]->replace(node->producer(0)->inputs[v-1]->origin());
 				delete node->outputs[v-1];
 				for (size_t n = 0; n < nalternatives; n++)
 					delete node->producer(n)->inputs[v-1];

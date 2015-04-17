@@ -267,7 +267,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				std::vector<jive::output *>(operands, operands + origin->noperands))[0];
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->outputs[0]));
-			jive_output_replace(node->outputs[0], subst);
+			node->outputs[0]->replace(subst);
 			
 			if (!jive_negotiator_map_output(&self->base, subst))
 				self->base.class_->annotate_node(&self->base, subst->node());
@@ -286,7 +286,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 				region->graph, origin->operation(), {operands[0]})[0];
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->outputs[0]));
-			jive_output_replace(node->outputs[0], subst);
+			node->outputs[0]->replace(subst);
 			
 			if (!jive_negotiator_map_output(&self->base, subst))
 				self->base.class_->annotate_node(&self->base, subst->node());

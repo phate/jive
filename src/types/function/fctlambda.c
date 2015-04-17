@@ -274,7 +274,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
 		jive::output * substituted = substitution.lookup(input->origin());
 		jive::output * output = apply_node->outputs[n];
-		jive_output_replace(output, substituted);
+		output->replace(substituted);
 	}
 }
 
@@ -333,9 +333,9 @@ replace_apply_node(const jive_node * apply,
 	for (size_t n = 1; n < old_leave->ninputs; n++) {
 		jive::input * result = old_leave->inputs[n];
 		if (nalive_apply_results < alive_results.size() && result == alive_results[nalive_apply_results])
-			jive_output_replace(apply->outputs[n-1], new_apply_results[nalive_apply_results++]);
+			apply->outputs[n-1]->replace(new_apply_results[nalive_apply_results++]);
 		else
-			jive_output_replace(apply->outputs[n-1], apply->inputs[result->index()]->origin());
+			apply->outputs[n-1]->replace(apply->inputs[result->index()]->origin());
 	}
 	JIVE_DEBUG_ASSERT(alive_results.size() == nalive_apply_results);
 }

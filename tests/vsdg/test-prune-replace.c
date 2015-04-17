@@ -45,7 +45,7 @@ static int test_main(void)
 	
 	jive_node * n4 = jive_test_node_create(region, {&type}, {n1->outputs[0]}, {&type});
 
-	jive_output_replace(n2->outputs[0], n4->outputs[0]);
+	n2->outputs[0]->replace(n4->outputs[0]);
 	assert(n2->outputs[0]->users.first == 0);
 	
 	jive_graph_prune(graph);

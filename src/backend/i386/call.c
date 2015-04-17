@@ -96,7 +96,7 @@ jive_i386_call_node_substitute(
 	
 	if (op.result_types().size() == 1) {
 		/* FIXME: assumes  int32 */
-		jive_output_replace(node->outputs[0], clobber_eax);
+		node->outputs[0]->replace(clobber_eax);
 	}
 	
 	for (size_t n = node->noperands; n < node->ninputs; n++) {
@@ -118,7 +118,7 @@ jive_i386_call_node_substitute(
 			new_output = jive_node_add_output(call_instr, &orig_output->type());
 			new_output->required_rescls = orig_output->required_rescls;
 		}
-		jive_output_replace(orig_output, new_output);
+		orig_output->replace(new_output);
 	}
 	
 	return call_instr;

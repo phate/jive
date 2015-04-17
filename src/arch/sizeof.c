@@ -67,5 +67,5 @@ jive_sizeof_node_reduce(const jive_node * node, jive_memlayout_mapper * mapper)
 		&static_cast<const jive::sizeof_op &>(node->operation()).type());
 	
 	jive::output * new_node = jive_bitconstant_unsigned(node->graph, 32, layout->total_size);
-	jive_output_replace(node->outputs[0], new_node);
+	node->outputs[0]->replace(new_node);
 }

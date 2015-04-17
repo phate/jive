@@ -61,7 +61,7 @@ load_normal_form::normalize_node(jive_node * node) const
 			}
 		}
 		if (store_node) {
-			jive_output_replace(node->outputs[0], store_node->inputs[1]->origin());
+			node->outputs[0]->replace(store_node->inputs[1]->origin());
 			jive_node_destroy(node);
 			return false;
 		}

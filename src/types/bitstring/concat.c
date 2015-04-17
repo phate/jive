@@ -151,7 +151,7 @@ public:
 				concat_reduce_arg_pair);
 
 			if (new_args.size() == 1) {
-				jive_output_replace(node->outputs[0], new_args[0]);
+				node->outputs[0]->replace(new_args[0]);
 				/* FIXME: not sure whether "destroy" is really appropriate? */
 				jive_node_destroy(node);
 				return false;
@@ -174,7 +174,7 @@ public:
 			}
 
 			if (new_node != node) {
-				jive_output_replace(node->outputs[0], new_node->outputs[0]);
+				node->outputs[0]->replace(new_node->outputs[0]);
 				jive_node_destroy(node);
 				return false;
 			}

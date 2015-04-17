@@ -173,6 +173,9 @@ public:
 		return index_;
 	}
 
+	void
+	replace(jive::output * other) noexcept;
+
 	struct {
 		jive::input * first;
 		jive::input * last;
@@ -208,9 +211,6 @@ private:
 
 struct jive_variable *
 jive_output_get_constraint(const jive::output * self);
-
-void
-jive_output_replace(jive::output * self, jive::output * other);
 
 struct jive_ssavar *
 jive_output_auto_assign_variable(jive::output * self);
