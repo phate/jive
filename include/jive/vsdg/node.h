@@ -247,8 +247,6 @@ public:
 		return name;
 	}
 
-	jive::output * create_output(jive_node * node, size_t index);
-
 	struct jive_graph * graph;
 	struct {
 		jive::gate * prev;

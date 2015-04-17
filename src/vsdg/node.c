@@ -464,16 +464,6 @@ gate::~gate() noexcept
 	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
 }
 
-jive::output *
-gate::create_output(jive_node * node, size_t index)
-{
-	jive::output * output = new jive::output(node, index, type());
-	output->required_rescls = required_rescls;
-	output->gate = this;
-	JIVE_LIST_PUSH_BACK(this->outputs, output, gate_outputs_list);
-	return output;
-}
-
 }	//jive namespace
 
 jive_variable *
@@ -748,7 +738,10 @@ jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial
 jive::output *
 jive_node_gate_output(jive_node * self, jive::gate * gate)
 {
-	jive::output * output = gate->create_output(self, self->noutputs);
+	jive::output * output = new jive::output(self, self->noutputs, gate->type());
+	output->required_rescls = gate->required_rescls;
+	output->gate = gate;
+	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
 
 	for (size_t n = 0; n < output->index(); n++) {
 		jive::output * other = self->outputs[n];
