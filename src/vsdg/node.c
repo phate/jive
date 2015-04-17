@@ -680,32 +680,6 @@ jive_node_gate_output(jive_node * self, jive::gate * gate)
 	return output;
 }
 
-jive::input *
-jive_node_input(const jive_node * self, size_t index)
-{
-	jive::input * input = NULL;
-	if (index < self->ninputs) {
-		input = self->inputs[index];
-	} else {
-		throw std::logic_error("Input index out of bound.");
-	}
-
-	return input;
-}
-
-jive::output *
-jive_node_output(const jive_node * self, size_t index)
-{
-	jive::output * output = NULL;
-	if (index < self->noutputs) {
-		return self->outputs[index];
-	} else {
-		throw std::logic_error("Output index out of bound.");
-	}
-
-	return output;
-}
-
 void
 jive_node_auto_merge_variables(jive_node * self)
 {

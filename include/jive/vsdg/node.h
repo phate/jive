@@ -512,12 +512,6 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 jive::output *
 jive_node_gate_output(jive_node * self, jive::gate * gate);
 
-jive::input *
-jive_node_input(const struct jive_node * self, size_t index);
-
-jive::output *
-jive_node_output(const struct jive_node * self, size_t index);
-
 JIVE_EXPORTED_INLINE jive_region *
 jive_node_anchored_region(const jive_node * self, size_t index)
 {
