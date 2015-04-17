@@ -294,9 +294,6 @@ private:
 
 }	//jive namespace
 
-struct jive_variable *
-jive_gate_get_constraint(jive::gate * self);
-
 void
 jive_gate_split(jive::gate * self);
 

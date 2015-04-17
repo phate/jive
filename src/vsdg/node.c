@@ -228,7 +228,8 @@ jive_input_get_constraint(const jive::input * self)
 	if (self->gate) {
 		variable = self->gate->variable;
 		if (!variable) {
-			variable = jive_gate_get_constraint(self->gate);
+			variable = jive_variable_create(self->gate->graph());
+			jive_variable_set_resource_class(variable, self->gate->required_rescls);
 			jive_variable_assign_gate(variable, self->gate);
 		}
 		return variable;
@@ -347,7 +348,8 @@ jive_output_get_constraint(const jive::output * self)
 	if (self->gate) {
 		variable = self->gate->variable;
 		if (!variable) {
-			variable = jive_gate_get_constraint(self->gate);
+			variable = jive_variable_create(self->gate->graph());
+			jive_variable_set_resource_class(variable, self->required_rescls);
 			jive_variable_assign_gate(variable, self->gate);
 		}
 		return variable;
@@ -465,17 +467,6 @@ gate::~gate() noexcept
 }
 
 }	//jive namespace
-
-jive_variable *
-jive_gate_get_constraint(jive::gate * self)
-{
-	if (self->variable) return self->variable;
-
-	jive_variable * variable = jive_variable_create(self->graph());
-	jive_variable_set_resource_class(variable, self->required_rescls);
-
-	return variable;
-}
 
 void
 jive_gate_split(jive::gate * self)
