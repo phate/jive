@@ -508,21 +508,6 @@ jive_uninitialized_node_add_input_(jive_node * self, jive::input * input)
 
 }
 
-static jive::input *
-jive_uninitialized_node_add_input(jive_node * self, const jive::base::type * type,
-	jive::output * initial_operand)
-{
-	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
-	jive_uninitialized_node_add_input_(self, input);
-
-#ifdef JIVE_DEBUG
-	jive_region_verify_hull(self->region->graph->root_region);
-	jive_region_verify_top_node_list(self->region->graph->root_region);
-#endif
-
-	return input;
-}
-
 void
 jive_node_init_(
 	jive_node * self,
@@ -546,18 +531,23 @@ jive_node_init_(
 	JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 
-	size_t n;
-	for(n=0; n<noperands; n++) {
-		jive_uninitialized_node_add_input(self, operand_types[n], operands[n]);
+	for (size_t n = 0; n < noperands; n++) {
+		jive::input * input = new jive::input(self, self->ninputs, operands[n], *operand_types[n]);
+		jive_uninitialized_node_add_input_(self, input);
 		if (operands[n]->node()->depth_from_root + 1 > self->depth_from_root)
 			 self->depth_from_root = operands[n]->node()->depth_from_root + 1;
 	}
 	self->noperands = self->ninputs;
-	
-	for(n=0; n<noutputs; n++)
+
+	#ifdef JIVE_DEBUG
+		jive_region_verify_hull(self->region->graph->root_region);
+		jive_region_verify_top_node_list(self->region->graph->root_region);
+	#endif
+
+	for (size_t n = 0; n < noutputs; n++)
 		jive_uninitialized_node_add_output(self, output_types[n]);
 	
-	for (n = 0; n < self->ninputs; ++n)
+	for (size_t n = 0; n < self->ninputs; ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin()));
 	
 	self->graph->on_node_create(self);
