@@ -303,9 +303,6 @@ jive_gate_interferes_with(const jive::gate * self, const jive::gate * other);
 void
 jive_gate_split(jive::gate * self);
 
-void
-jive_gate_auto_merge_variable(jive::gate * self);
-
 /**	@}	*/
 
 /**	@}	*/
