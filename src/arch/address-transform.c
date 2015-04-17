@@ -375,7 +375,7 @@ jive_lambda_node_address_transform(
 	size_t nparameters = fcttype->narguments();
 	const char * parameter_names[nparameters];
 	for (n = 1; n < enter->noutputs; n++)
-		parameter_names[n-1] = enter->outputs[n]->gate->name.c_str();
+		parameter_names[n-1] = enter->outputs[n]->gate->name().c_str();
 
 	const jive::base::type * argument_types[new_fcttype->narguments()];
 	for (size_t i = 0; i < new_fcttype->narguments(); i++)
@@ -425,11 +425,11 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 		jive::output * origin = node->inputs[n]->origin();
 		if (type_contains_address(&origin->type())) {
 			transform = true;
-			names.push_back(node->inputs[n]->gate->name);
+			names.push_back(node->inputs[n]->gate->name());
 			exports.push_back(jive_address_to_bitstring_create(origin, nbits, &origin->type()));
 		} else {
 			exports.push_back(origin);
-			names.push_back(node->inputs[n]->gate->name);
+			names.push_back(node->inputs[n]->gate->name());
 		}
 	}
 

@@ -244,13 +244,19 @@ public:
 	inline std::string
 	debug_string() const
 	{
-		return name;
+		return name();
 	}
 
 	inline struct jive_graph *
 	graph() const noexcept
 	{
 		return graph_;
+	}
+
+	inline const std::string &
+	name() const noexcept
+	{
+		return name_;
 	}
 
 	void
@@ -260,8 +266,6 @@ public:
 		jive::gate * prev;
 		jive::gate * next;
 	} graph_gate_list;
-
-	std::string name;
 
 	struct {
 		jive::input * first;
@@ -285,6 +289,7 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
+	std::string name_;
 	struct jive_graph * graph_;
 
 	/*
@@ -469,7 +474,7 @@ jive_node_get_gate_input(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs; n++) {
 		jive::input * i = self->inputs[n];
-		if (i->gate && i->gate->name == name)
+		if (i->gate && i->gate->name() == name)
 			return i;
 	}
 	return nullptr;
@@ -491,7 +496,7 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs; n++) {
 		jive::output * o = self->outputs[n];
-		if (o->gate && o->gate->name == name)
+		if (o->gate && o->gate->name() == name)
 			return o;
 	}
 	return nullptr;

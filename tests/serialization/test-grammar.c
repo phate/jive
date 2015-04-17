@@ -171,7 +171,7 @@ verify_deserialize_gateexpr(const char * repr, jive::gate * expect_gate)
 	
 	jive::gate * gate;
 	assert(jive_deserialize_gateexpr(&ctx.drv, ctx.is, g, &gate));
-	assert(gate->name == expect_gate->name);
+	assert(gate->name() == expect_gate->name());
 	assert(gate->type() == expect_gate->type());
 	assert(gate->required_rescls == expect_gate->required_rescls);
 	

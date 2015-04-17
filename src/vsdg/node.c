@@ -439,11 +439,11 @@ jive_output_replace(jive::output * self, jive::output * other)
 
 namespace jive {
 
-gate::gate(jive_graph * graph, const char name_[], const jive::base::type & type)
-	: graph_(graph)
+gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
+	: name_(name)
+	, graph_(graph)
 	, type_(type.copy())
 {
-	name = name_;
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
 	may_spill = true;
@@ -958,7 +958,7 @@ jive_node_copy_substitute(
 
 			jive::gate * target_gate = substitution.lookup(gate);
 			if (!target_gate) {
-				target_gate = jive_graph_create_gate(target->graph, gate->name, gate->type());
+				target_gate = jive_graph_create_gate(target->graph, gate->name(), gate->type());
 				target_gate->required_rescls = gate->required_rescls;
 				substitution.insert(gate, target_gate);
 			}
@@ -974,7 +974,7 @@ jive_node_copy_substitute(
 
 			jive::gate * target_gate = substitution.lookup(gate);
 			if (!target_gate) {
-				target_gate = jive_graph_create_gate(target->graph, gate->name, gate->type());
+				target_gate = jive_graph_create_gate(target->graph, gate->name(), gate->type());
 				target_gate->required_rescls = gate->required_rescls;
 				substitution.insert(gate, target_gate);
 			}

@@ -520,7 +520,7 @@ eval(
 	const jive_node * tail = graph->root_region->bottom;
 	for (size_t n = 0; n < tail->ninputs; n++) {
 		JIVE_DEBUG_ASSERT(tail->inputs[n]->gate != nullptr);
-		if (tail->inputs[n]->gate->name == name) {
+		if (tail->inputs[n]->gate->name() == name) {
 			output = tail->inputs[n]->origin();
 			break;
 		}
