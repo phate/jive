@@ -494,20 +494,6 @@ jive_uninitialized_node_add_output(jive_node * self, const jive::base::type * ty
 	return output;
 }
 
-static void
-jive_uninitialized_node_add_input_(jive_node * self, jive::input * input)
-{
-	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-	
-	if (self->ninputs == 0)
-		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
-
-	self->ninputs ++;
-	self->inputs.resize(self->ninputs);
-	self->inputs[input->index()] = input;
-
-}
-
 void
 jive_node_init_(
 	jive_node * self,
@@ -527,15 +513,20 @@ jive_node_init_(
 	
 	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
 	self->region = region;
-	
-	JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
+
+	if (noperands == 0)
+		JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
+	else
+		self->region_top_node_list.prev = self->region_top_node_list.next = nullptr;
+
 	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
 
 	for (size_t n = 0; n < noperands; n++) {
-		jive::input * input = new jive::input(self, self->ninputs, operands[n], *operand_types[n]);
-		jive_uninitialized_node_add_input_(self, input);
-		if (operands[n]->node()->depth_from_root + 1 > self->depth_from_root)
-			 self->depth_from_root = operands[n]->node()->depth_from_root + 1;
+		JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
+		jive::input * input = new jive::input(self, n, operands[n], *operand_types[n]);
+		self->ninputs++;
+		self->inputs.push_back(input);
+		self->depth_from_root = std::max(operands[n]->node()->depth_from_root+1, self->depth_from_root);
 	}
 	self->noperands = self->ninputs;
 
@@ -589,8 +580,15 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 jive::input *
 jive_node_add_input(jive_node * self, const jive::base::type * type, jive::output * initial_operand)
 {
+	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
-	jive_uninitialized_node_add_input_(self, input);
+
+	if (self->ninputs == 0)
+		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
+
+	self->ninputs ++;
+	self->inputs.resize(self->ninputs);
+	self->inputs[input->index()] = input;
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
 	jive_node_invalidate_depth_from_root(self);
