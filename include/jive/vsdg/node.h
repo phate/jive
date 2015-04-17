@@ -247,7 +247,12 @@ public:
 		return name;
 	}
 
-	struct jive_graph * graph;
+	inline struct jive_graph *
+	graph() const noexcept
+	{
+		return graph_;
+	}
+
 	struct {
 		jive::gate * prev;
 		jive::gate * next;
@@ -277,6 +282,8 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
+	struct jive_graph * graph_;
+
 	/*
 		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
 		number given by the operation. Once this is fixed, the attribute can be removed and the type

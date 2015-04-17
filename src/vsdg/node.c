@@ -438,7 +438,7 @@ jive_output_replace(jive::output * self, jive::output * other)
 namespace jive {
 
 gate::gate(jive_graph * graph, const char name_[], const jive::base::type & type)
-	: graph (graph)
+	: graph_(graph)
 	, type_(type.copy())
 {
 	name = name_;
@@ -461,7 +461,7 @@ gate::~gate() noexcept
 	if (variable)
 		jive_variable_unassign_gate(variable, this);
 
-	JIVE_LIST_REMOVE(graph->gates, this, graph_gate_list);
+	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
 }
 
 }	//jive namespace
@@ -471,7 +471,7 @@ jive_gate_get_constraint(jive::gate * self)
 {
 	if (self->variable) return self->variable;
 
-	jive_variable * variable = jive_variable_create(self->graph);
+	jive_variable * variable = jive_variable_create(self->graph());
 	jive_variable_set_resource_class(variable, self->required_rescls);
 
 	return variable;
@@ -497,8 +497,8 @@ jive_gate_merge(jive::gate * self, jive::gate * other)
 			jive::input * other_input = input->node()->inputs[n];
 			if (other_input == input) continue;
 			if (other_input->gate == 0) continue;
-			jive_gate_interference_remove(self->graph, other, other_input->gate);
-			jive_gate_interference_add(self->graph, self, other_input->gate);
+			jive_gate_interference_remove(self->graph(), other, other_input->gate);
+			jive_gate_interference_add(self->graph(), self, other_input->gate);
 		}
 		JIVE_LIST_REMOVE(other->inputs, input, gate_inputs_list);
 		input->gate = self;
@@ -512,8 +512,8 @@ jive_gate_merge(jive::gate * self, jive::gate * other)
 			jive::output * other_output = output->node()->outputs[n];
 			if (other_output == output) continue;
 			if (other_output->gate == 0) continue;
-			jive_gate_interference_remove(self->graph, other, other_output->gate);
-			jive_gate_interference_add(self->graph, self, other_output->gate);
+			jive_gate_interference_remove(self->graph(), other, other_output->gate);
+			jive_gate_interference_add(self->graph(), self, other_output->gate);
 		}
 		JIVE_LIST_REMOVE(other->outputs, output, gate_outputs_list);
 		output->gate = self;
