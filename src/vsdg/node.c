@@ -647,16 +647,6 @@ jive_node_add_constrained_output(jive_node * self, const jive_resource_class * r
 }
 
 jive::input *
-jive_node_add_constrained_input(jive_node * self, const jive_resource_class * rescls,
-	jive::output * initial_operand)
-{
-	jive::input * input = jive_node_add_input(self, jive_resource_class_get_type(rescls),
-		initial_operand);
-	input->required_rescls = rescls;
-	return input;
-}
-
-jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {
 	jive::input * input = new jive::input(self, self->ninputs, initial_operand, gate->type());

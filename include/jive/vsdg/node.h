@@ -463,10 +463,6 @@ jive::output *
 jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);
 
 jive::input *
-jive_node_add_constrained_input(
-	jive_node * self, const struct jive_resource_class * rescls, jive::output * initial_operand);
-
-jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand);
 
 JIVE_EXPORTED_INLINE jive::input *
