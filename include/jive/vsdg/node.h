@@ -297,9 +297,6 @@ private:
 struct jive_variable *
 jive_gate_get_constraint(jive::gate * self);
 
-size_t
-jive_gate_interferes_with(const jive::gate * self, const jive::gate * other);
-
 void
 jive_gate_split(jive::gate * self);
 

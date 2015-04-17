@@ -477,16 +477,6 @@ jive_gate_get_constraint(jive::gate * self)
 	return variable;
 }
 
-size_t
-jive_gate_interferes_with(const jive::gate * self, const jive::gate * other)
-{
-	auto i = self->interference.find(other);
-	if (i != self->interference.end())
-		return i->whole->count;
-
-	return 0;
-}
-
 void
 jive_gate_split(jive::gate * self)
 {
