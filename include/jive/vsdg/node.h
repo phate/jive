@@ -301,9 +301,6 @@ size_t
 jive_gate_interferes_with(const jive::gate * self, const jive::gate * other);
 
 void
-jive_gate_merge(jive::gate * self, jive::gate * other);
-
-void
 jive_gate_split(jive::gate * self);
 
 void

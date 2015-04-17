@@ -488,45 +488,6 @@ jive_gate_interferes_with(const jive::gate * self, const jive::gate * other)
 }
 
 void
-jive_gate_merge(jive::gate * self, jive::gate * other)
-{
-	jive::input * input, * input_next;
-	JIVE_LIST_ITERATE_SAFE(other->inputs, input, input_next, gate_inputs_list) {
-		size_t n;
-		for (n = 0; n < input->node()->ninputs; n++) {
-			jive::input * other_input = input->node()->inputs[n];
-			if (other_input == input) continue;
-			if (other_input->gate == 0) continue;
-			jive_gate_interference_remove(self->graph(), other, other_input->gate);
-			jive_gate_interference_add(self->graph(), self, other_input->gate);
-		}
-		JIVE_LIST_REMOVE(other->inputs, input, gate_inputs_list);
-		input->gate = self;
-		JIVE_LIST_PUSH_BACK(other->inputs, input, gate_inputs_list);
-	}
-
-	jive::output * output, * output_next;
-	JIVE_LIST_ITERATE_SAFE(other->outputs, output, output_next, gate_outputs_list) {
-		size_t n;
-		for(n = 0; n < output->node()->noutputs; n++) {
-			jive::output * other_output = output->node()->outputs[n];
-			if (other_output == output) continue;
-			if (other_output->gate == 0) continue;
-			jive_gate_interference_remove(self->graph(), other, other_output->gate);
-			jive_gate_interference_add(self->graph(), self, other_output->gate);
-		}
-		JIVE_LIST_REMOVE(other->outputs, output, gate_outputs_list);
-		output->gate = self;
-		JIVE_LIST_PUSH_BACK(other->outputs, output, gate_outputs_list);
-	}
-
-	if (self->variable)
-		jive_variable_merge(self->variable, other->variable);
-
-	self->name.append("_").append(other->name);
-}
-
-void
 jive_gate_split(jive::gate * self)
 {
 	/* split off this gate from others assigned to the same variable */
