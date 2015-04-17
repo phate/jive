@@ -571,16 +571,6 @@ register_node_normal_form(void)
 		typeid(jive::operation), jive_node_get_default_normal_form_);
 }
 
-static void
-jive_node_add_input_(jive_node * self, jive::input * input)
-{
-	jive_uninitialized_node_add_input_(self, input);
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
-	jive_node_invalidate_depth_from_root(self);
-	self->graph->on_input_create(input);
-}
-
 bool
 jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 {
@@ -600,7 +590,11 @@ jive::input *
 jive_node_add_input(jive_node * self, const jive::base::type * type, jive::output * initial_operand)
 {
 	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
-	jive_node_add_input_(self, input);
+	jive_uninitialized_node_add_input_(self, input);
+
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
+	jive_node_invalidate_depth_from_root(self);
+	self->graph->on_input_create(input);
 
 #ifdef JIVE_DEBUG
 	jive_region_verify_hull(self->region->graph->root_region);
@@ -639,7 +633,8 @@ jive_node_add_constrained_output(jive_node * self, const jive_resource_class * r
 jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {
-	jive::input * input = new jive::input(self, self->ninputs, initial_operand, gate->type());
+	jive::input * input = jive_node_add_input(self, &gate->type(), initial_operand);
+
 	input->required_rescls = gate->required_rescls;
 	input->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
@@ -649,7 +644,6 @@ jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial
 		if (!other->gate) continue;
 		jive_gate_interference_add(self->graph, gate, other->gate);
 	}
-	jive_node_add_input_(self, input);
 	return input;
 }
 
