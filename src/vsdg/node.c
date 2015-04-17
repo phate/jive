@@ -466,19 +466,19 @@ gate::~gate() noexcept
 	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
 }
 
-}	//jive namespace
-
 void
-jive_gate_split(jive::gate * self)
+gate::split()
 {
 	/* split off this gate from others assigned to the same variable */
-	jive_variable * new_variable = jive_variable_create(self->variable->graph);
-	jive_variable_set_resource_class(new_variable, jive_variable_get_resource_class(self->variable));
-	jive_variable_set_resource_name(new_variable, jive_variable_get_resource_name(self->variable));
+	jive_variable * new_variable = jive_variable_create(variable->graph);
+	jive_variable_set_resource_class(new_variable, jive_variable_get_resource_class(variable));
+	jive_variable_set_resource_name(new_variable, jive_variable_get_resource_name(variable));
 
-	jive_variable_unassign_gate(self->variable, self);
-	jive_variable_assign_gate(new_variable, self);
+	jive_variable_unassign_gate(variable, this);
+	jive_variable_assign_gate(new_variable, this);
 }
+
+}	//jive namespace
 
 static void
 jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)

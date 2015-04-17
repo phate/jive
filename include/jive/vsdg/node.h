@@ -253,6 +253,9 @@ public:
 		return graph_;
 	}
 
+	void
+	split();
+
 	struct {
 		jive::gate * prev;
 		jive::gate * next;
@@ -293,9 +296,6 @@ private:
 };
 
 }	//jive namespace
-
-void
-jive_gate_split(jive::gate * self);
 
 /**	@}	*/
 

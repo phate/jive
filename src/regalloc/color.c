@@ -458,7 +458,7 @@ gate_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shaped_v
 	/* now split gates */
 	while (variable->gates.first != variable->gates.last) {
 		jive::gate * gate = variable->gates.first;
-		jive_gate_split(gate);
+		gate->split();
 		merge_gate_ports(gate);
 	}
 	
