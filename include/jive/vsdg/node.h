@@ -35,6 +35,8 @@ class node_normal_form;
 */
 
 class input final {
+	friend jive::output;
+
 public:
 	~input() noexcept;
 
@@ -145,6 +147,8 @@ namespace jive {
 */
 
 class output final {
+	friend jive::input;
+
 public:
 	~output() noexcept;
 
@@ -196,6 +200,13 @@ public:
 
 	const struct jive_resource_class * required_rescls;
 private:
+
+	void
+	add_user(jive::input * user) noexcept;
+
+	void
+	remove_user(jive::input * user) noexcept;
+
 	size_t index_;
 	jive_node * node_;
 

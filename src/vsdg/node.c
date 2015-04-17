@@ -47,31 +47,9 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 	}
 }
 
-/* inputs */
-
-static inline void
-jive_input_add_as_user(jive::input * self, jive::output * output)
-{
-	JIVE_LIST_PUSH_BACK(output->users, self, output_users_list);
-
-	if (unlikely(output->node()->nsuccessors == 0)) {
-		JIVE_LIST_REMOVE(output->node()->graph->bottom, output->node(), graph_bottom_list);
-	}
-	output->node()->nsuccessors ++;
-}
-
-static inline void
-jive_input_remove_as_user(jive::input * self, jive::output * output)
-{
-	JIVE_LIST_REMOVE(output->users, self, output_users_list);
-
-	self->producer()->nsuccessors --;
-	if (unlikely(self->producer()->nsuccessors == 0)) {
-		JIVE_LIST_PUSH_BACK(self->producer()->graph->bottom, self->producer(), graph_bottom_list);
-	}
-}
-
 namespace jive {
+
+/* inputs */
 
 input::input(
 	struct jive_node * node,
@@ -94,7 +72,7 @@ input::input(
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 	hull.first = hull.last = nullptr;
 
-	jive_input_add_as_user(this, origin);
+	origin->add_user(this);
 	jive_region_hull_add_input(node->region, this);
 
 	/*
@@ -126,7 +104,7 @@ input::~input() noexcept
 		}
 	}
 
-	jive_input_remove_as_user(this, origin_);
+	origin_->remove_user(this);
 
 	node()->ninputs--;
 	for (size_t n = index(); n < node()->ninputs; n++) {
@@ -154,14 +132,14 @@ input::swap(jive::input * other) noexcept
 	jive::output * o1 = this->origin();
 	jive::output * o2 = other->origin();
 
-	jive_input_remove_as_user(this, o1);
-	jive_input_remove_as_user(other, o2);
-
-	jive_input_add_as_user(this, o2);
-	jive_input_add_as_user(other, o1);
+	o1->remove_user(this);
+	o2->remove_user(other);
 
 	this->origin_ = o2;
 	other->origin_ = o1;
+
+	o2->add_user(this);
+	o1->add_user(other);
 
 	if (v2) jive_ssavar_assign_input(v2, this);
 	if (v1) jive_ssavar_assign_input(v1, other);
@@ -201,9 +179,9 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 
 	jive::output * old_origin = this->origin();
 
-	jive_input_remove_as_user(this, old_origin);
+	old_origin->remove_user(this);
 	this->origin_ = new_origin;
-	jive_input_add_as_user(this, new_origin);
+	new_origin->add_user(this);
 
 	if (new_origin->node()->region != this->node()->region)
 		jive_region_hull_add_input(this->node()->region, this);
@@ -344,6 +322,26 @@ output::replace(jive::output * other) noexcept
 {
 	while (users.first)
 		users.first->divert_origin(other);
+}
+
+void
+output::add_user(jive::input * user) noexcept
+{
+	JIVE_LIST_PUSH_BACK(users, user, output_users_list);
+
+	if (unlikely(node()->nsuccessors == 0))
+		JIVE_LIST_REMOVE(node()->graph->bottom, node(), graph_bottom_list);
+	node()->nsuccessors++;
+}
+
+void
+output::remove_user(jive::input * user) noexcept
+{
+	JIVE_LIST_REMOVE(users, user, output_users_list);
+
+	node()->nsuccessors--;
+	if (unlikely(node()->nsuccessors == 0))
+		JIVE_LIST_PUSH_BACK(node()->graph->bottom, node(), graph_bottom_list);
 }
 
 }	//jive namespace
