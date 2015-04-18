@@ -476,16 +476,6 @@ gate::split()
 
 }	//jive namespace
 
-static void
-jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
-{
-	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-	
-	self->noutputs ++;
-	self->outputs.resize(self->noutputs);
-	self->outputs[output->index()] = output;
-}
-
 void
 jive_node_init_(
 	jive_node * self,
@@ -528,8 +518,10 @@ jive_node_init_(
 	#endif
 
 	for (size_t n = 0; n < noutputs; n++) {
+		JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 		jive::output * output = new jive::output(self, self->noutputs, *output_types[n]);
-		jive_uninitialized_node_add_output_(self, output);
+		self->noutputs++;
+		self->outputs.push_back(output);
 	}
 
 	for (size_t n = 0; n < self->ninputs; ++n)
@@ -599,11 +591,13 @@ jive_node_add_input(jive_node * self, const jive::base::type * type, jive::outpu
 jive::output *
 jive_node_add_output(jive_node * self, const jive::base::type * type)
 {
+	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 	jive::output * output = new jive::output(self, self->noutputs, *type);
-	jive_uninitialized_node_add_output_(self, output);
-	
-	if (self->region)
-		self->graph->on_output_create(output);
+	self->noutputs ++;
+	self->outputs.resize(self->noutputs);
+	self->outputs[output->index()] = output;
+
+	self->graph->on_output_create(output);
 
 	return output;
 }
