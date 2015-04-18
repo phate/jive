@@ -656,17 +656,4 @@ jive_region_innermost(size_t noperands, jive::output * const operands[])
 	return region;
 }
 
-JIVE_EXPORTED_INLINE struct jive_node *
-jive_region_get_anchor_node(const struct jive_region * self)
-{
-	if (self->bottom == NULL)
-		return NULL;
-	if (self->parent == NULL)
-		return NULL;
-
-	JIVE_DEBUG_ASSERT(self->bottom->noutputs == 1);
-	JIVE_DEBUG_ASSERT(self->bottom->outputs[0]->single_user());
-	return self->bottom->outputs[0]->users.first->node();
-}
-
 #endif
