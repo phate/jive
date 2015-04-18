@@ -596,21 +596,15 @@ jive_node_add_input(jive_node * self, const jive::base::type * type, jive::outpu
 	return input;
 }
 
-static void
-jive_node_add_output_(jive_node * self, jive::output * output)
-{
-	jive_uninitialized_node_add_output_(self, output);
-	
-	if (self->region) {
-		self->graph->on_output_create(output);
-	}
-}
-
 jive::output *
 jive_node_add_output(jive_node * self, const jive::base::type * type)
 {
 	jive::output * output = new jive::output(self, self->noutputs, *type);
-	jive_node_add_output_(self, output);
+	jive_uninitialized_node_add_output_(self, output);
+	
+	if (self->region)
+		self->graph->on_output_create(output);
+
 	return output;
 }
 
@@ -642,7 +636,8 @@ jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial
 jive::output *
 jive_node_gate_output(jive_node * self, jive::gate * gate)
 {
-	jive::output * output = new jive::output(self, self->noutputs, gate->type());
+	jive::output * output = jive_node_add_output(self, &gate->type());
+
 	output->required_rescls = gate->required_rescls;
 	output->gate = gate;
 	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
@@ -652,7 +647,6 @@ jive_node_gate_output(jive_node * self, jive::gate * gate)
 		if (!other->gate) continue;
 		jive_gate_interference_add(self->graph, gate, other->gate);
 	}
-	jive_node_add_output_(self, output);
 	return output;
 }
 
