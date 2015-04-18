@@ -486,14 +486,6 @@ jive_uninitialized_node_add_output_(jive_node * self, jive::output * output)
 	self->outputs[output->index()] = output;
 }
 
-static jive::output *
-jive_uninitialized_node_add_output(jive_node * self, const jive::base::type * type)
-{
-	jive::output * output = new jive::output(self, self->noutputs, *type);
-	jive_uninitialized_node_add_output_(self, output);
-	return output;
-}
-
 void
 jive_node_init_(
 	jive_node * self,
@@ -535,9 +527,11 @@ jive_node_init_(
 		jive_region_verify_top_node_list(self->region->graph->root_region);
 	#endif
 
-	for (size_t n = 0; n < noutputs; n++)
-		jive_uninitialized_node_add_output(self, output_types[n]);
-	
+	for (size_t n = 0; n < noutputs; n++) {
+		jive::output * output = new jive::output(self, self->noutputs, *output_types[n]);
+		jive_uninitialized_node_add_output_(self, output);
+	}
+
 	for (size_t n = 0; n < self->ninputs; ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin()));
 	
