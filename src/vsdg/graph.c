@@ -66,27 +66,24 @@ jive_graph::~jive_graph()
 		jive_variable_destroy(unused_variables.first);
 }
 
-static inline void
-jive_graph_init_(jive_graph * self)
+jive_graph::jive_graph()
 {
-	self->variables.first = self->variables.last = 0;
-	self->unused_variables.first = self->unused_variables.last = 0;
-	self->bottom.first = self->bottom.last = 0;
-	self->gates.first = self->gates.last = 0;
-	self->resources_fully_assigned = false;
-	self->normalized = true;
+	variables.first = variables.last = 0;
+	unused_variables.first = unused_variables.last = 0;
+	bottom.first = bottom.last = 0;
+	gates.first = gates.last = 0;
+	resources_fully_assigned = false;
+	normalized = true;
 
-	self->root_region = new jive_region;
-	jive_region_init_(self->root_region, self, 0);
-	jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
+	root_region = new jive_region;
+	jive_region_init_(root_region, this, 0);
+	jive::graph_tail_operation().create_node(root_region, 0, nullptr);
 }
 
 jive_graph *
 jive_graph_create()
 {
-	jive_graph * graph = new jive_graph;
-	jive_graph_init_(graph);
-	return graph;
+	return new jive_graph;
 }
 
 void

@@ -54,6 +54,8 @@ struct jive_graph {
 public:
 	~jive_graph();
 
+	jive_graph();
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
