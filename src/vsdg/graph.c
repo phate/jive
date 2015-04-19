@@ -41,7 +41,30 @@ graph_tail_operation::copy() const
 
 }
 
+static void
+prune_regions_recursive(jive_region * region)
+{
+	jive_region * subregion, * next;
+	JIVE_LIST_ITERATE_SAFE(region->subregions, subregion, next, region_subregions_list)
+		prune_regions_recursive(subregion);
+	if (jive_region_empty(region)) jive_region_destroy(region);
+}
+
 /* graph */
+
+jive_graph::~jive_graph()
+{
+	jive_node_destroy(root_region->bottom);
+	jive_graph_prune(this);
+
+	prune_regions_recursive(root_region);
+
+	while (gates.first)
+		delete gates.first;
+
+	while (unused_variables.first)
+		jive_variable_destroy(unused_variables.first);
+}
 
 static inline void
 jive_graph_init_(jive_graph * self)
@@ -58,32 +81,6 @@ jive_graph_init_(jive_graph * self)
 	jive::graph_tail_operation().create_node(self->root_region, 0, nullptr);
 }
 
-static void
-prune_regions_recursive(jive_region * region)
-{
-	jive_region * subregion, * next;
-	JIVE_LIST_ITERATE_SAFE(region->subregions, subregion, next, region_subregions_list)
-		prune_regions_recursive(subregion);
-	if (jive_region_empty(region)) jive_region_destroy(region);
-}
-
-static void
-jive_graph_fini_(jive_graph * self)
-{
-	jive_node_destroy(self->root_region->bottom);
-	jive_graph_prune(self);
-	
-	prune_regions_recursive(self->root_region);
-	
-	while (self->gates.first) {
-		delete self->gates.first;
-	}
-	
-	while (self->unused_variables.first) {
-		jive_variable_destroy(self->unused_variables.first);
-	}
-}
-
 jive_graph *
 jive_graph_create()
 {
@@ -95,7 +92,6 @@ jive_graph_create()
 void
 jive_graph_destroy(jive_graph * self)
 {
-	jive_graph_fini_(self);
 	delete self;
 }
 
