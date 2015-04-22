@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -21,8 +21,8 @@ process_relocation(
 	void * where_, size_t max_size, jive_offset offset,
 	jive_relocation_type type, jive_offset target, jive_offset value)
 {
-	int64_t * where = (int64_t *) where_;
-	assert(max_size >= sizeof(int64_t));
+	uint64_t * where = (uint64_t *) where_;
+	assert(max_size >= sizeof(uint64_t));
 	if (type.arch_code == 0) {
 		*where = target;
 		return true;

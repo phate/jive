@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 Helge Bahmann <hcb@chaoticmind.net>
+ * Copyright 2012 2013 2015 Helge Bahmann <hcb@chaoticmind.net>
  * Copyright 2011 2012 2014 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
@@ -189,7 +189,7 @@ section_process_relocations(
 		if (!resolve_relocation_target(entry->target, map, sym_resolver, &target))
 			return false;
 		if (!relocate(where, section->contents.data.size() - entry->offset,
-			offset, entry->type, (intptr_t) target, entry->value)) {
+			offset, entry->type, (uintptr_t) target, entry->value)) {
 			return false;
 		}
 	}
@@ -263,7 +263,7 @@ jive_compilate_load(const jive_compilate * self,
 		void * base = offset + (char *) writable;
 		
 		success = success && section_process_relocations(base,
-			(jive_offset) (intptr_t) map->sections[n].base,
+			(jive_offset) (uintptr_t) map->sections[n].base,
 			map, section, sym_resolver, relocate);
 		
 		switch (section->id) {
