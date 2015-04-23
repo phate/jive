@@ -37,11 +37,7 @@ type::copy() const
 	return new jive::addr::type();
 }
 
-const type & type::singleton()
-{
-	static const type instance;
-	return instance;
-}
+const type type::instance_;
 
 }
 }

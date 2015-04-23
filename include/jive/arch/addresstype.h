@@ -26,7 +26,14 @@ public:
 
 	virtual jive::addr::type * copy() const override;
 
-	static const type & singleton();
+	inline static const type &
+	instance()
+	{
+		return instance_;
+	}
+
+private:
+	static const type instance_;
 };
 
 }

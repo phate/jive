@@ -45,13 +45,13 @@ memberof_op::debug_string() const
 const jive::base::type &
 memberof_op::argument_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 
 const jive::base::type &
 memberof_op::result_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 
 jive_unop_reduction_path_t
@@ -128,13 +128,13 @@ containerof_op::debug_string() const
 const jive::base::type &
 containerof_op::argument_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 
 const jive::base::type &
 containerof_op::result_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 
 jive_unop_reduction_path_t
@@ -234,7 +234,7 @@ const jive::base::type &
 arraysubscript_op::argument_type(size_t index) const noexcept
 {
 	if (index == 0) {
-		return jive::addr::type::singleton();
+		return jive::addr::type::instance();
 	} else {
 		return index_type_;
 	}
@@ -249,7 +249,7 @@ arraysubscript_op::nresults() const noexcept
 const jive::base::type &
 arraysubscript_op::result_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 std::string
 arraysubscript_op::debug_string() const
@@ -332,7 +332,7 @@ arrayindex_op::narguments() const noexcept
 const jive::base::type &
 arrayindex_op::argument_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 
 size_t
@@ -413,7 +413,7 @@ label_to_address_op::nresults() const noexcept
 const jive::base::type &
 label_to_address_op::result_type(size_t index) const noexcept
 {
-	return jive::addr::type::singleton();
+	return jive::addr::type::instance();
 }
 std::string
 label_to_address_op::debug_string() const
