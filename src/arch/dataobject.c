@@ -6,8 +6,8 @@
 
 #include <jive/arch/dataobject.h>
 
+#include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout.h>
-#include <jive/arch/memorytype.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/record/rcdgroup.h>
@@ -103,9 +103,7 @@ dataobj_op::nresults() const noexcept
 const base::type &
 dataobj_op::result_type(size_t index) const noexcept
 {
-	/* FIXME: a data object should not have a memory type as output */
-	static const jive::mem::type objstate_type;
-	return objstate_type;
+	return jive::addr::type::instance();
 }
 std::string
 dataobj_op::debug_string() const
