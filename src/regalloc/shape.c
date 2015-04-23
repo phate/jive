@@ -9,7 +9,7 @@
 #include <jive/arch/instruction.h>
 #include <jive/common.h>
 #include <jive/regalloc/reroute.h>
-#include <jive/regalloc/selector.h>
+#include <jive/regalloc/selector-cost.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint.h>
 #include <jive/vsdg.h>
@@ -61,6 +61,7 @@ struct jive_region_shaper {
 
 jive_region_shaper *
 jive_region_shaper_create(
+	jive_shaped_graph * shaped_graph,
 	jive_region_shaper * parent,
 	jive_region * region,
 	jive::regalloc::master_selector * master_selector)
@@ -68,7 +69,7 @@ jive_region_shaper_create(
 	jive_region_shaper * self = new jive_region_shaper;
 	
 	self->parent = parent;
-	self->shaped_graph = master_selector->shaped_graph();
+	self->shaped_graph = shaped_graph;
 	self->region = region;
 	self->shaped_region = self->shaped_graph->map_region(region);
 	self->master_selector = master_selector;
@@ -880,6 +881,7 @@ jive_region_shaper_process_subregions(jive_region_shaper * self, jive_node * new
 		if (!dynamic_cast<const jive::achr::type*>(&input->type()))
 			continue;
 		jive_region_shaper * subshaper = jive_region_shaper_create(
+			self->shaped_graph,
 			self,
 			input->producer()->region,
 			self->master_selector);
@@ -917,8 +919,9 @@ jive_regalloc_shape(jive_graph * graph)
 {
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive::regalloc::master_selector selector(shaped_graph);
-	jive_region_shaper * region_shaper = jive_region_shaper_create(0, graph->root_region, &selector);
+	jive::regalloc::master_selector_cost selector(shaped_graph);
+	jive_region_shaper * region_shaper = jive_region_shaper_create(
+		shaped_graph, nullptr, graph->root_region, &selector);
 	jive_region_shaper_process(region_shaper);
 	
 	jive_region_shaper_destroy(region_shaper);

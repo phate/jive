@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #include <jive/arch/registers.h>
-#include <jive/regalloc/selector.h>
+#include <jive/regalloc/selector-cost.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -154,9 +154,9 @@ static int test_main(void)
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
 	{
-		jive::regalloc::master_selector master_selector(shaped_graph);
+		jive::regalloc::master_selector_cost master_selector(shaped_graph);
 		
-		jive::regalloc::region_selector * region_selector;
+		jive::regalloc::region_selector_cost * region_selector;
 		region_selector = master_selector.map_region(graph->root_region);
 		
 		{
