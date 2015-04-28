@@ -133,8 +133,34 @@ check_crossing_overflow(jive_region_shaper * self,
 	jive_varcut active_before = shaped_node.get_active_before();
 	jive_varcut active_after = shaped_node.get_active_after();
 
+	for (size_t n = 0; n < new_node->noutputs; n++) {
+		jive_shaped_ssavar * shaped_ssavar = self->shaped_graph->map_ssavar(
+			new_node->outputs[n]->ssavar);
+		active_before.ssavar_remove_full(shaped_ssavar);
+		active_after.ssavar_remove_full(shaped_ssavar);
+	}
+	
+	jive_regalloc_conflict conflict;
+	conflict.type = jive_regalloc_conflict_none;
+	
+	for (size_t n = 0; n < new_node->ninputs; n++) {
+		jive_ssavar * ssavar = new_node->inputs[n]->ssavar;
+		conflict = varcut_checked_add(self, &active_before, ssavar);
+		if (conflict.type != jive_regalloc_conflict_none) {
+			return conflict;
+		}
+		conflict = varcut_checked_add(self, &active_after, ssavar);
+		if (conflict.type != jive_regalloc_conflict_none) {
+			return conflict;
+		}
+	}
+
+	if (!shaped_node.node()->ninputs) {
+		return conflict;
+	}
+
 	/*
-	  Determine if the resource assigned to the first input
+	  Determine if the value of to the first input
 	  of this node is passed through this node. For the
 	  register allocator this means that it is forbidden
 	  to reuse the first input register as output register,
@@ -144,47 +170,13 @@ check_crossing_overflow(jive_region_shaper * self,
 	  Detect this case and make sure the register is
 	  available.
 	*/
-	jive_ssavar * first_input_var = 0;
-	bool first_input_passthrough = false;
-	if (shaped_node.node()->ninputs) {
-		first_input_var = shaped_node.node()->inputs[0]->ssavar;
-		jive_shaped_ssavar * shaped_ssavar = self->shaped_graph->map_ssavar(first_input_var);
-		first_input_passthrough = !!active_after.shaped_ssavar_is_active(shaped_ssavar);
-	}
-	
-	size_t n;
-	for (n = 0; n < new_node->noutputs; n++) {
-		jive_shaped_ssavar * shaped_ssavar = self->shaped_graph->map_ssavar(
-			new_node->outputs[n]->ssavar);
-		if (active_before.shaped_ssavar_is_active(shaped_ssavar)) {
-			active_before.ssavar_remove_full(shaped_ssavar);
-		}
-		if (active_after.shaped_ssavar_is_active(shaped_ssavar)) {
-			active_after.ssavar_remove_full(shaped_ssavar);
-		}
-	}
-	
-	jive_regalloc_conflict conflict;
-	conflict.type = jive_regalloc_conflict_none;
-	
-	for (n = 0; n < new_node->ninputs; n++) {
-		jive_ssavar * ssavar = new_node->inputs[n]->ssavar;
-		
-		if (ssavar == first_input_var)
-			first_input_passthrough = true;
-		
-		conflict = varcut_checked_add(self, &active_before, ssavar);
-		if (conflict.type != jive_regalloc_conflict_none)
-			break;
-		
-		conflict = varcut_checked_add(self, &active_after, ssavar);
-		if (conflict.type != jive_regalloc_conflict_none)
-			break;
-	}
-	
-	if (conflict.type == jive_regalloc_conflict_none && first_input_passthrough) {
+	jive_shaped_ssavar * shaped_ssavar = self->shaped_graph->map_ssavar(shaped_node.node()->inputs[0]->ssavar);
+	if (active_after.shaped_ssavar_is_active(shaped_ssavar)) {
 		const jive_resource_class * rescls = get_aux_rescls(shaped_node.node());
 		const jive_resource_class * overflow = active_before.use_counts().check_add(rescls);
+		if (!overflow) {
+			overflow = active_after.use_counts().check_add(rescls);
+		}
 		if (overflow) {
 			conflict.type = jive_regalloc_conflict_class;
 			conflict.item.rescls = overflow;
@@ -236,57 +228,46 @@ can_move_below_cut(jive_region_shaper * self, const jive_cut & cut, jive_node * 
 	return true;
 }
 
+/* check whether "new_node" can be inserted before "shaped_node" without
+ * overflowing register budget (including a possible reserve for two-op fixup */
 static jive_regalloc_conflict
-check_unshaped_crossing_overflow(jive_region_shaper * self,
+check_unshaped_crossing_overflow(
+	jive_region_shaper * self,
 	jive_shaped_node * shaped_node,
 	jive_node * new_node)
 {
 	jive_varcut active_before = shaped_node->get_active_before();
-	jive_varcut active_after = shaped_node->get_active_after();
+	jive_varcut active_after = shaped_node->get_active_before();
 
-	bool first_input_active_after = false;
-	
+	for (size_t n = 0; n < new_node->noutputs; ++n) {
+		jive_ssavar * ssavar = new_node->outputs[n]->ssavar;
+		active_before.ssavar_remove_full(self->shaped_graph->map_ssavar(ssavar));
+	}
+	for (size_t n = 0; n < new_node->ninputs; ++n) {
+		jive_ssavar * ssavar = new_node->inputs[n]->ssavar;
+		jive_regalloc_conflict conflict = varcut_checked_add(self, &active_before, ssavar);
+		if (conflict.type != jive_regalloc_conflict_none) {
+			return conflict;
+		}
+	}
+
 	if (new_node->ninputs) {
 		jive_ssavar * ssavar = new_node->inputs[0]->ssavar;
 		jive_shaped_ssavar * shaped_ssavar = self->shaped_graph->map_ssavar(ssavar);
-		first_input_active_after =
-			!!active_after.shaped_ssavar_is_active(shaped_ssavar);
-	}
-	
-	jive_regalloc_conflict conflict;
-	conflict.type = jive_regalloc_conflict_none;
-	
-	for (size_t n = 0; n < new_node->noutputs; n++) {
-		jive_ssavar * ssavar = new_node->outputs[n]->ssavar;
-		
-		active_before.ssavar_remove_full(
-			self->shaped_graph->map_ssavar(ssavar));
-	
-		conflict = varcut_checked_add(self, &active_after, ssavar);
-		if (conflict.type != jive_regalloc_conflict_none)
-			break;
-	}
-	
-	if (conflict.type == jive_regalloc_conflict_none) {
-		for (size_t n = 0; n < new_node->ninputs; n++) {
-			jive_ssavar * ssavar = new_node->inputs[n]->ssavar;
-			
-			conflict = varcut_checked_add(self, &active_before, ssavar);
-			if (conflict.type != jive_regalloc_conflict_none) {
-				break;
+		if (active_after.shaped_ssavar_is_active(shaped_ssavar)) {
+			const jive_resource_class * rescls = get_aux_rescls(new_node);
+			const jive_resource_class * overflow = active_before.use_counts().check_add(rescls);
+			if (overflow) {
+				jive_regalloc_conflict conflict;
+				conflict.type = jive_regalloc_conflict_class;
+				conflict.item.rescls = overflow;
+				return conflict;
 			}
 		}
 	}
-	
-	if (conflict.type == jive_regalloc_conflict_none && first_input_active_after) {
-		const jive_resource_class * rescls = get_aux_rescls(new_node);
-		const jive_resource_class * overflow = active_before.use_counts().check_add(rescls);
-		if (overflow) {
-			conflict.type = jive_regalloc_conflict_class;
-			conflict.item.rescls = overflow;
-		}
-	}
 
+	jive_regalloc_conflict conflict;
+	conflict.type = jive_regalloc_conflict_none;
 	return conflict;
 }
 
