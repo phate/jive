@@ -9,7 +9,7 @@
 #include <jive/arch/instruction.h>
 #include <jive/common.h>
 #include <jive/regalloc/reroute.h>
-#include <jive/regalloc/selector-cost.h>
+#include <jive/regalloc/selector-simple.h>
 #include <jive/regalloc/shaped-graph.h>
 #include <jive/regalloc/xpoint.h>
 #include <jive/vsdg.h>
@@ -919,7 +919,7 @@ jive_regalloc_shape(jive_graph * graph)
 {
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
 	
-	jive::regalloc::master_selector_cost selector(shaped_graph);
+	jive::regalloc::master_selector_simple selector(shaped_graph);
 	jive_region_shaper * region_shaper = jive_region_shaper_create(
 		shaped_graph, nullptr, graph->root_region, &selector);
 	jive_region_shaper_process(region_shaper);
