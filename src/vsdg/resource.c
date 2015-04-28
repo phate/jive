@@ -6,6 +6,8 @@
 
 #include <jive/vsdg/resource.h>
 
+#include <sstream>
+
 #include <jive/internal/compiler.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
@@ -116,4 +118,20 @@ jive_rescls_prio_array_compare(const jive_rescls_prio_array * self,
 			return +1;
 	}
 	return 0;
+}
+
+/* generate human-readable representation */
+std::string
+jive_resource_class_count::debug_string() const
+{
+	bool first = true;
+	std::ostringstream os;
+	for (const auto& item : counts_) {
+		if (!first) {
+			os << ", ";
+		}
+		first = false;
+		os << item.first->name << ":" << item.second;
+	}
+	return os.str();
 }

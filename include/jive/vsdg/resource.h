@@ -316,6 +316,10 @@ public:
 	/* access to raw counts per class */
 	inline const counts_repr & counts() const noexcept { return counts_; }
 
+	/* generate human-readable representation */
+	std::string
+	debug_string() const;
+
 private:
 	inline size_t
 	add_single(const jive_resource_class * cls, size_t amount)
