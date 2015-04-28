@@ -251,6 +251,9 @@ public:
 	void
 	remove_xpoint(jive_cutvar_xpoint * xpoint) noexcept;
 
+	std::string
+	debug_string() const;
+
 private:
 	ssavar_map_type ssavar_map_;
 	origin_map_type origin_map_;

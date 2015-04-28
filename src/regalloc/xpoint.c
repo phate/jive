@@ -6,6 +6,8 @@
 
 #include <jive/regalloc/xpoint.h>
 
+#include <sstream>
+
 #include <jive/common.h>
 
 #include <jive/regalloc/shaped-graph.h>
@@ -224,4 +226,20 @@ jive_varcut::ssavar_rescls_change(
 		use_counts_.change(i->rescls_, rescls);
 		i->rescls_ = rescls;
 	}
+}
+
+std::string
+jive_varcut::debug_string() const
+{
+	std::ostringstream os;
+	bool first = true;
+	for (const jive_cutvar_xpoint & xpoint : xpoints_) {
+		if (first) {
+			first = false;
+		} else {
+			os << ", ";
+		}
+		os << "<" << xpoint.origin() << "," << xpoint.rescls()->name << "," << xpoint.count() << ">";
+	}
+	return os.str();
 }
