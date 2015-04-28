@@ -126,3 +126,25 @@ jive_shaped_region::remove_active_top(
 		shaped_graph().on_shaped_region_ssavar_remove(this, shaped_ssavar);
 	}
 }
+
+void
+jive_shaped_region::debug_stream(const std::string& indent, std::ostream& os) const
+{
+	for (const jive_cut & cut : cut_list()) {
+		for (const jive_shaped_node & shaped_node : cut.nodes_) {
+			jive_node * node = shaped_node.node();
+			for (size_t n = 0; n < node->ninputs; ++n) {
+				jive::input * input = node->inputs[n];
+				if (dynamic_cast<const jive::achr::type*>(&input->type())) {
+					os << indent << "subregion\n";
+					jive_region * sub_region = input->origin()->node()->region;
+					shaped_graph().map_region(sub_region)->debug_stream(indent + " ", os);
+				}
+			}
+			os << indent << "pre : " << shaped_node.get_active_before().debug_string() << "\n";
+			os << indent << node << "\n";
+			os << indent << "post: " << shaped_node.get_active_after().debug_string() << "\n";
+		}
+	}
+}
+

@@ -216,6 +216,14 @@ jive_shaped_graph::~jive_shaped_graph()
 {
 }
 
+std::string
+jive_shaped_graph::debug_string() const
+{
+	std::ostringstream os;
+	map_region(graph_->root_region)->debug_stream("", os);
+	return os.str();
+}
+
 jive_shaped_graph *
 jive_shaped_graph_create(jive_graph * graph)
 {

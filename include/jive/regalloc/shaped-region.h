@@ -7,7 +7,7 @@
 #ifndef JIVE_REGALLOC_SHAPED_REGION_H
 #define JIVE_REGALLOC_SHAPED_REGION_H
 
-#include <stdbool.h>
+#include <ostream>
 
 #include <jive/common.h>
 #include <jive/regalloc/shaped-node.h>
@@ -135,6 +135,9 @@ private:
 
 	jive_cut *
 	create_cut(cut_list::iterator before);
+
+	void
+	debug_stream(const std::string& indent, std::ostream& os) const;
 
 	jive_shaped_graph * shaped_graph_;
 	jive_region * region_;

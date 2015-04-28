@@ -124,6 +124,9 @@ public:
 
 	inline jive_graph & graph() const noexcept { return *graph_; }
 
+	std::string
+	debug_string() const;
+
 	jive_var_assignment_tracker var_assignment_tracker;
 
 	jive_shaped_node_hash node_map_;
