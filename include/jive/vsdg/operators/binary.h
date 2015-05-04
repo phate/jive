@@ -92,6 +92,7 @@ public:
 		const binary_op & op,
 		size_t narguments)
 		: op_(std::unique_ptr<binary_op>(static_cast<binary_op *>(op.copy().release())))
+		, narguments_(narguments)
 	{
 	}
 
