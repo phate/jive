@@ -10,6 +10,7 @@
 #include <jive/arch/memlayout.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/type.h>
+#include <jive/types/float/flttype.h>
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
@@ -157,6 +158,9 @@ flatten_data_items(
 	} else if (dynamic_cast<const jive::addr::type*>(type_)) {
 		const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_address(layout_mapper);
 		items.resize(layout->total_size, nullptr);
+		items[0] = data;
+	} else if (dynamic_cast<const jive::flt::type*>(type_)) {
+		items.resize(4, nullptr);
 		items[0] = data;
 	} else if (dynamic_cast<const jive::rcd::type*>(type_)) {
 		const jive::rcd::type * type = static_cast<const jive::rcd::type*>(type_);
