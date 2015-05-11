@@ -64,7 +64,10 @@ struct jive_region_hull_entry {
 	struct jive_region * region;
 };
 
-struct jive_region {
+class jive_region {
+public:
+	~jive_region();
+
 	struct jive_graph * graph;
 	jive_region * parent;
 	size_t depth;

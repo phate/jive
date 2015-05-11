@@ -15,6 +15,20 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 
+jive_region::~jive_region()
+{
+	JIVE_DEBUG_ASSERT(nodes.first == nullptr && nodes.last == nullptr);
+	JIVE_DEBUG_ASSERT(subregions.first == nullptr && subregions.last == nullptr);
+
+	graph->on_region_destroy(this);
+
+	if (parent)
+		JIVE_LIST_REMOVE(parent->subregions, this, region_subregions_list);
+	/* FIXME: destroy stackframe! */
+	/* if (self->stackframe)
+		jive_stackframe_destroy(self->stackframe); */
+}
+
 struct jive_node *
 jive_region_get_anchor(struct jive_region * self)
 {
@@ -55,22 +69,6 @@ jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
 	self->anchor = 0;
 	
 	graph->on_region_create(self);
-}
-
-void
-jive_region_fini_(jive_region * self)
-{
-	JIVE_DEBUG_ASSERT(jive_region_empty(self));
-	JIVE_DEBUG_ASSERT(self->nodes.first == 0 && self->nodes.last == 0);
-	JIVE_DEBUG_ASSERT(self->subregions.first == 0 && self->subregions.last == 0);
-	
-	self->graph->on_region_destroy(self);
-	
-	if (self->parent)
-		JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
-	/* FIXME: destroy stackframe! */
-	/* if (self->stackframe)
-		jive_stackframe_destroy(self->stackframe); */
 }
 
 bool
@@ -114,7 +112,6 @@ jive_region_reparent(jive_region * self, jive_region * new_parent)
 void
 jive_region_destroy(jive_region * self)
 {
-	jive_region_fini_(self);
 	delete self;
 }
 

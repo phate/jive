@@ -16,9 +16,6 @@ void
 jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent);
 
 void
-jive_region_fini_(jive_region * self);
-
-void
 jive_region_prune_subregions_(jive_region * self);
 
 void
