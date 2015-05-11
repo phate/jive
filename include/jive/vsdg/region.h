@@ -68,6 +68,8 @@ class jive_region {
 public:
 	~jive_region();
 
+	jive_region(jive_region * parent, jive_graph * graph);
+
 	struct jive_graph * graph;
 	jive_region * parent;
 	size_t depth;

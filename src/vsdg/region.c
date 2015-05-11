@@ -15,6 +15,14 @@
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/variable.h>
 
+static inline void
+jive_region_attrs_init(jive_region_attrs * attrs)
+{
+	attrs->align = 1;
+	attrs->section = jive_region_section_inherit;
+	attrs->is_looped = false;
+}
+
 jive_region::~jive_region()
 {
 	JIVE_DEBUG_ASSERT(nodes.first == nullptr && nodes.last == nullptr);
@@ -29,6 +37,30 @@ jive_region::~jive_region()
 		jive_stackframe_destroy(self->stackframe); */
 }
 
+jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
+	: graph(_graph)
+	, parent(_parent)
+	, depth(0)
+	, stackframe(nullptr)
+	, top(nullptr)
+	, bottom(nullptr)
+	, anchor(nullptr)
+{
+	nodes.first = nodes.last = nullptr;
+	top_nodes.first = top_nodes.last = nullptr;
+	subregions.first = subregions.last = nullptr;
+	hull.first = hull.last = nullptr;
+	region_subregions_list.prev = region_subregions_list.next = nullptr;
+	jive_region_attrs_init(&attrs);
+
+	if (parent) {
+		JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
+		depth = parent->depth + 1;
+	}
+
+	graph->on_region_create(this);
+}
+
 struct jive_node *
 jive_region_get_anchor(struct jive_region * self)
 {
@@ -36,39 +68,6 @@ jive_region_get_anchor(struct jive_region * self)
 		return self->anchor->node();
 
 	return nullptr;
-}
-
-static inline void
-jive_region_attrs_init(jive_region_attrs * attrs)
-{
-	attrs->align = 1;
-	attrs->section = jive_region_section_inherit;
-	attrs->is_looped = false;
-}
-
-void
-jive_region_init_(jive_region * self, jive_graph * graph, jive_region * parent)
-{
-	self->graph = graph;
-	self->parent = parent;
-	self->stackframe = 0;
-	
-	self->nodes.first = self->nodes.last = 0;
-	self->top_nodes.first = self->top_nodes.last = 0;
-	self->subregions.first = self->subregions.last = 0;
-	self->hull.first = self->hull.last = 0;
-	self->region_subregions_list.prev = self->region_subregions_list.next = 0;
-	self->top = self->bottom = 0;
-	jive_region_attrs_init(&self->attrs);
-	
-	if (parent) {
-		JIVE_LIST_PUSH_BACK(parent->subregions, self, region_subregions_list);
-		self->depth = parent->depth + 1;
-	} else self->depth = 0;
-	
-	self->anchor = 0;
-	
-	graph->on_region_create(self);
 }
 
 bool
@@ -133,9 +132,7 @@ jive_region_prune_subregions_(jive_region * self)
 jive_region *
 jive_region_create_subregion(jive_region * self)
 {
-	jive_region * subregion = new jive_region;
-	jive_region_init_(subregion, self->graph, self);
-	return subregion;
+	return new jive_region(self, self->graph);
 }
 
 void

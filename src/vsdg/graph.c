@@ -75,8 +75,7 @@ jive_graph::jive_graph()
 	resources_fully_assigned = false;
 	normalized = true;
 
-	root_region = new jive_region;
-	jive_region_init_(root_region, this, 0);
+	root_region = new jive_region(nullptr, this);
 	jive::graph_tail_operation().create_node(root_region, 0, nullptr);
 }
 
