@@ -156,8 +156,8 @@ flatten_data_items(
 		items.resize(type->nbits() / 8, nullptr);
 		items[0] = data;
 	} else if (dynamic_cast<const jive::addr::type*>(type_)) {
-		const jive_dataitem_memlayout * layout = jive_memlayout_mapper_map_address(layout_mapper);
-		items.resize(layout->total_size, nullptr);
+		const jive::dataitem_memlayout & layout = layout_mapper->map_address();
+		items.resize(layout.size(), nullptr);
 		items[0] = data;
 	} else if (dynamic_cast<const jive::flt::type*>(type_)) {
 		items.resize(4, nullptr);
