@@ -3,6 +3,9 @@
  * See COPYING for terms of redistribution.
  */
 
+#ifndef JIVE_EVALUATOR_EVAL_H
+#define JIVE_EVALUATOR_EVAL_H
+
 #include <memory>
 #include <vector>
 
@@ -21,3 +24,5 @@ eval(
 
 }
 }
+
+#endif

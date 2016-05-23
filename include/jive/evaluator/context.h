@@ -3,6 +3,9 @@
  * See COPYING for terms of redistribution.
  */
 
+#ifndef JIVE_EVALUATOR_CONTEXT_H
+#define JIVE_EVALUATOR_CONTEXT_H
+
 #include <jive/common.h>
 #include <jive/evaluator/literal.h>
 
@@ -185,3 +188,5 @@ private:
 
 }
 }
+
+#endif

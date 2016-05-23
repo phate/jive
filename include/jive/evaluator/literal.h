@@ -3,8 +3,8 @@
  * See COPYING for terms of redistribution.
  */
 
-#ifndef JIVE_EVALUATOR_VALUE_H
-#define JIVE_EVALUATOR_VALUE_H
+#ifndef JIVE_EVALUATOR_LITERAL_H
+#define JIVE_EVALUATOR_LITERAL_H
 
 #include <jive/types/bitstring/type.h>
 #include <jive/types/bitstring/value-representation.h>
