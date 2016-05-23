@@ -28,11 +28,11 @@ jive_bitconcat(size_t narguments, jive::output * const * arguments)
 		types.push_back(dynamic_cast<const jive::bits::type &>(arguments[n]->type()));
 	}
 
-	jive_graph * graph = arguments[0]->node()->graph;
+	jive_region* region = jive_region_innermost(narguments, arguments);
 
 	jive::bits::concat_op op(std::move(types));
 	return jive_node_create_normalized(
-		graph, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
+		region, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
 }
 
 namespace jive {
@@ -218,6 +218,7 @@ public:
 
 	virtual std::vector<jive::output *>
 	normalized_create(
+		jive_region * region,
 		const jive::operation & op,
 		const std::vector<jive::output *> & arguments) const override
 	{
@@ -246,7 +247,7 @@ public:
 		}
 
 		concat_op new_op(types_from_arguments(new_args));
-		return node_normal_form::normalized_create(new_op, new_args);
+		return node_normal_form::normalized_create(region, new_op, new_args);
 	}
 
 	virtual void

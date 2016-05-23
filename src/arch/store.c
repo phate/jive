@@ -30,7 +30,9 @@ jive_store_node_normalized_create(
 	for (size_t n = 0; n < nstates; ++n) {
 		args.push_back(states[n]);
 	}
-	return nf->normalized_create(op, args);
+
+	jive_region * region = jive_region_innermost(args.size(), &args[0]);
+	return nf->normalized_create(region, op, args);
 }
 
 

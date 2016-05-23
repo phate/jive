@@ -70,9 +70,9 @@ jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
 	size_t narguments, jive::output * const * arguments)
 {
 	jive::rcd::group_op op(decl);
-	jive_graph * graph = arguments[0]->node()->region->graph;
+	jive_region * region = jive_region_innermost(narguments, arguments);
 	return jive_node_create_normalized(
-		graph, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
+		region, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
 }
 
 jive::output *
@@ -80,5 +80,5 @@ jive_empty_group_create(jive_graph * graph,
 	std::shared_ptr<const jive::rcd::declaration> & decl)
 {
 	jive::rcd::group_op op(decl);
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }

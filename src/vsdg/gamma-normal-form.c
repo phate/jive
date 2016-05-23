@@ -159,6 +159,7 @@ gamma_normal_form::operands_are_normalized(
 
 std::vector<jive::output *>
 gamma_normal_form::normalized_create(
+	jive_region * region,
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments) const
 {

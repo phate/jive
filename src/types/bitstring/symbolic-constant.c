@@ -26,5 +26,5 @@ jive::output *
 jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
 {
 	jive::bits::symbol_op op(name, jive::bits::type(nbits));
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }

@@ -36,7 +36,7 @@ match(
 	jive::output * operand)
 {
 	match_op op(nbits, mapping, default_alternative, nalternatives);
-	return jive_node_create_normalized(operand->node()->graph, op, {operand})[0];
+	return jive_node_create_normalized(operand->node()->region, op, {operand})[0];
 }
 
 }
@@ -46,5 +46,5 @@ jive::output *
 jive_control_constant(jive_graph * graph, size_t nalternatives, size_t alternative)
 {
 	jive::ctl::constant_op op(jive::ctl::value_repr(alternative, nalternatives));
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }

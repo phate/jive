@@ -106,7 +106,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::outp
 {
 	const jive::unn::type  unn_type(decl);
 	jive::unn::unify_op op(unn_type, option);
-	return jive_node_create_normalized(argument->node()->graph, op, {argument})[0];
+	return jive_node_create_normalized(argument->node()->region, op, {argument})[0];
 }
 
 /* empty unify node */
@@ -115,5 +115,5 @@ jive::output *
 jive_empty_unify_create(struct jive_graph * graph, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_op op(decl);
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }

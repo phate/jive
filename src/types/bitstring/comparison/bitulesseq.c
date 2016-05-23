@@ -59,10 +59,8 @@ ule_op::copy() const
 jive::output *
 jive_bitulesseq(jive::output * op1, jive::output * op2)
 {
-	const jive::bits::type & type =
-		dynamic_cast<const jive::bits::type &>(op1->type());
-	return jive_node_create_normalized(
-		op1->node()->graph,
-		jive::bits::ule_op(type),
-		{op1, op2})[0];
+	std::vector<jive::output*> operands = {op1, op2};
+	jive_region * region = jive_region_innermost(operands.size(), &operands[0]);
+	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
+	return jive_node_create_normalized(region, jive::bits::ule_op(type), {op1, op2})[0];
 }

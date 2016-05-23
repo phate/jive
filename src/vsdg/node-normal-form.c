@@ -33,14 +33,10 @@ node_normal_form::operands_are_normalized(
 
 std::vector<jive::output *>
 node_normal_form::normalized_create(
+	jive_region * region,
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments) const
 {
-	jive_region * region = graph()->root_region;
-	if (!arguments.empty()) {
-		region = jive_region_innermost(arguments.size(), &arguments[0]);
-	}
-
 	jive_node * node = nullptr;
 	if (get_mutable() && get_cse()) {
 		node = jive_node_cse(region, op, arguments);

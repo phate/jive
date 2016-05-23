@@ -100,7 +100,7 @@ jive_memberof(
 	size_t index)
 {
 	jive::address::memberof_op op(record_decl, index);
-	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
+	return jive_node_create_normalized(address->node()->region, op, {address})[0];
 }
 
 /* containerof */
@@ -182,7 +182,7 @@ jive_containerof(
 	size_t index)
 {
 	jive::address::containerof_op op(record_decl, index);
-	return jive_node_create_normalized(address->node()->graph, op, {address})[0];
+	return jive_node_create_normalized(address->node()->region, op, {address})[0];
 }
 
 /* arraysubscript */
@@ -281,7 +281,7 @@ jive_arraysubscript(
 	jive::output * arguments[2] = {address, index};
 	jive_region * region = jive_region_innermost(2, arguments);
 
-	return jive_node_create_normalized(region->graph, op, {address, index})[0];
+	return jive_node_create_normalized(region, op, {address, index})[0];
 }
 
 /* arrayindex */
@@ -372,7 +372,7 @@ jive_arrayindex(
 	
 	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
 	
-	return jive_node_create_normalized(region->graph, op, {addr1, addr2})[0];
+	return jive_node_create_normalized(region, op, {addr1, addr2})[0];
 }
 
 /* label_to_address node */
@@ -437,7 +437,7 @@ jive::output *
 jive_label_to_address_create(jive_graph * graph, const jive_label * label)
 {
 	jive::address::label_to_address_op op(label);
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }
 
 /* label_to_bitstring_node */
@@ -500,7 +500,7 @@ output *
 constant(struct jive_graph * graph, const value_repr & vr)
 {
 	constant_op op(vr);
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }
 
 }
@@ -511,5 +511,5 @@ jive::output *
 jive_label_to_bitstring_create(jive_graph * graph, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_op op(label, nbits);
-	return jive_node_create_normalized(graph, op, {})[0];
+	return jive_node_create_normalized(graph->root_region, op, {})[0];
 }

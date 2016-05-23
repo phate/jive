@@ -989,12 +989,12 @@ jive_node_cse(
 
 std::vector<jive::output *>
 jive_node_create_normalized(
-	jive_graph * graph,
+	jive_region * region,
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments)
 {
-	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(graph, typeid(op));
-	return nf->normalized_create(op, arguments);
+	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(region->graph, typeid(op));
+	return nf->normalized_create(region, op, arguments);
 }
 
 jive_tracker_nodestate *

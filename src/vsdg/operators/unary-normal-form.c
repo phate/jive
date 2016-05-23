@@ -88,6 +88,7 @@ unary_normal_form::operands_are_normalized(
 
 std::vector<jive::output *>
 unary_normal_form::normalized_create(
+	jive_region * region,
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments) const
 {
@@ -104,7 +105,7 @@ unary_normal_form::normalized_create(
 		}
 	}
 
-	return node_normal_form::normalized_create(op, arguments);
+	return node_normal_form::normalized_create(region, op, arguments);
 }
 
 void

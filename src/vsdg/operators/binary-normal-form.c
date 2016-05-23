@@ -214,6 +214,7 @@ binary_normal_form::operands_are_normalized(
 
 std::vector<jive::output *>
 binary_normal_form::normalized_create(
+	jive_region * region,
 	const jive::operation & base_op,
 	const std::vector<jive::output *> & args) const
 {
@@ -252,7 +253,8 @@ binary_normal_form::normalized_create(
 	const operation & new_op =
 		tmp_op ? *tmp_op : static_cast<const operation &>(op);
 
-	return node_normal_form::normalized_create(new_op, new_args);
+	region = jive_region_innermost(new_args.size(), &new_args[0]);
+	return node_normal_form::normalized_create(region, new_op, new_args);
 }
 
 void
@@ -369,6 +371,7 @@ flattened_binary_normal_form::operands_are_normalized(
 
 std::vector<jive::output *>
 flattened_binary_normal_form::normalized_create(
+	jive_region * region,
 	const jive::operation & base_op,
 	const std::vector<jive::output *> & arguments) const
 {
@@ -377,7 +380,7 @@ flattened_binary_normal_form::normalized_create(
 
 	const node_normal_form * nf = jive_graph_get_nodeclass_form(graph(), typeid(op.bin_operation()));
 
-	return nf->normalized_create(op.bin_operation(), arguments);
+	return nf->normalized_create(region, op.bin_operation(), arguments);
 }
 
 }

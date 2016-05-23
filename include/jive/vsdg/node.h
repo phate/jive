@@ -555,7 +555,7 @@ jive_node_cse(
 
 std::vector<jive::output *>
 jive_node_create_normalized(
-	jive_graph * graph,
+	jive_region * region,
 	const jive::operation & op,
 	const std::vector<jive::output *> & arguments);
 

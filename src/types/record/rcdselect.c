@@ -124,6 +124,6 @@ jive_select_create(size_t member, jive::output * argument)
 	const jive::rcd::type & rcd_type =
 		dynamic_cast<const jive::rcd::type &>(argument->type());
 	jive::rcd::select_operation op(rcd_type, member);
-	return jive_node_create_normalized(argument->node()->graph, op, {argument})[0];
+	return jive_node_create_normalized(argument->node()->region, op, {argument})[0];
 }
 

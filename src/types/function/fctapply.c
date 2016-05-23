@@ -84,6 +84,7 @@ jive_apply_create(jive::output * function, size_t narguments, jive::output * con
 	for (size_t n = 0; n < narguments; ++n) {
 		apply_args.push_back(arguments[n]);
 	}
-	jive_graph * graph = function->node()->region->graph;
-	return jive_node_create_normalized(graph, op, apply_args);
+
+	jive_region * region = jive_region_innermost(apply_args.size(), &apply_args[0]);
+	return jive_node_create_normalized(region, op, apply_args);
 }

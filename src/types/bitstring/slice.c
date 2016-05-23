@@ -134,8 +134,7 @@ slice_op::copy() const
 jive::output *
 jive_bitslice(jive::output * argument, size_t low, size_t high)
 {
-	const jive::bits::type & type =
-		dynamic_cast<const jive::bits::type &>(argument->type());
+	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(argument->type());
 	jive::bits::slice_op op(type, low, high);
-	return jive_node_create_normalized(argument->node()->graph, op, {argument})[0];
+	return jive_node_create_normalized(argument->node()->region, op, {argument})[0];
 }
