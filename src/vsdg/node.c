@@ -974,14 +974,10 @@ jive_node_cse(
 			}
 		}
 	} else {
-		while (region) {
-			jive_node * node;
-			JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
-				if (jive_node_cse_test(node, op, arguments)) {
-					return node;
-				}
-			region = region->parent;
-		}
+		jive_node * node;
+		JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
+		if (jive_node_cse_test(node, op, arguments))
+			return node;
 	}
 
 	return nullptr;
