@@ -47,17 +47,12 @@ typedef enum jive_token_type {
 	jive_token_keyword_last_plus1
 } jive_token_type;
 
-typedef struct jive_token jive_token;
-struct jive_token {
+class jive_token {
+public:
 	jive_token_type type;
-	union {
-		const char * identifier;
-		struct {
-			const char * str;
-			size_t len;
-		} string;
-		uint64_t integral;
-	} v;
+	std::string identifier;
+	std::string string;
+	uint64_t integral;
 };
 
 bool
@@ -92,7 +87,7 @@ jive_token_ostream_identifier(jive_token_ostream * self, const char * identifier
 {
 	jive_token token;
 	token.type = jive_token_identifier;
-	token.v.identifier = identifier;
+	token.identifier = identifier;
 	jive_token_ostream_put(self, &token);
 }
 
@@ -101,8 +96,7 @@ jive_token_ostream_string(jive_token_ostream * self, const char * string, size_t
 {
 	jive_token token;
 	token.type = jive_token_string;
-	token.v.string.str = string;
-	token.v.string.len = size;
+	token.string = std::string(string, size);
 	jive_token_ostream_put(self, &token);
 }
 
@@ -111,7 +105,7 @@ jive_token_ostream_integral(jive_token_ostream * self, uint64_t value)
 {
 	jive_token token;
 	token.type = jive_token_integral;
-	token.v.integral = value;
+	token.integral = value;
 	jive_token_ostream_put(self, &token);
 }
 
@@ -173,16 +167,16 @@ jive_token_istream_signed_integral(jive_token_istream * is, int64_t * value)
 	const jive_token * current = jive_token_istream_current(is);
 	const jive_token * next = jive_token_istream_next(is);
 	if (current->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
-			*value = current->v.integral;
+		if (current->integral <= (uint64_t) 0x7fffffffffffffffLL) {
+			*value = current->integral;
 			jive_token_istream_advance(is);
 			return true;
 		} else {
 			return false;
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
-			*value = - next->v.integral;
+		if (current->integral <= (uint64_t) 0x7fffffffffffffffLL) {
+			*value = - next->integral;
 			jive_token_istream_advance(is);
 			jive_token_istream_advance(is);
 			return true;

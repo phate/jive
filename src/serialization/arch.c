@@ -271,7 +271,7 @@ public:
 		
 		const jive_serialization_instrcls * sercls =
 			jive_serialization_instrcls_lookup_by_tag(
-				driver.driver().instrcls_registry, token->v.identifier);
+				driver.driver().instrcls_registry, token->identifier.c_str());
 		if (!sercls) {
 			throw parse_error("Expected instruction class identifier");
 		}

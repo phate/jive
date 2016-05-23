@@ -20,13 +20,11 @@ jive_token_equals(const jive_token * self, const jive_token * other)
 		return false;
 	switch (self->type) {
 		case jive_token_identifier:
-			return strcmp(self->v.identifier, other->v.identifier) == 0;
+			return self->identifier == other->identifier;
 		case jive_token_string:
-			if (self->v.string.len != other->v.string.len)
-				return false;
-			return memcmp(self->v.string.str, other->v.string.str, self->v.string.len) == 0;
+			return self->string == other->string;
 		case jive_token_integral:
-			return self->v.integral == other->v.integral;
+			return self->integral == other->integral;
 		default:
 			return true;
 	}
@@ -90,8 +88,7 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 		case jive_token_identifier: {
 			jive_token_ostream_simple_flush_indent(self);
 			jive_token_ostream_simple_flush_whitespace(self);
-			jive_buffer_putstr(self->buffer,
-				token->v.identifier);
+			jive_buffer_putstr(self->buffer, token->identifier.c_str());
 			self->need_whitespace = true;
 			break;
 		}
@@ -99,9 +96,7 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 			jive_token_ostream_simple_flush_indent(self);
 			jive_token_ostream_simple_flush_whitespace(self);
 			jive_buffer_putbyte(self->buffer, '"');
-			jive_buffer_put(self->buffer,
-				token->v.string.str,
-				token->v.string.len);
+			jive_buffer_putstr(self->buffer, token->string.c_str());
 			jive_buffer_putbyte(self->buffer, '"');
 			self->need_whitespace = true;
 			break;
@@ -109,7 +104,7 @@ jive_token_ostream_simple_put_(jive_token_ostream * self_, const jive_token * to
 		case jive_token_integral: {
 			jive_token_ostream_simple_flush_whitespace(self);
 			char repr[64];
-			snprintf(repr, sizeof(repr), "%""llu", token->v.integral);
+			snprintf(repr, sizeof(repr), "%""llu", token->integral);
 			jive_buffer_putstr(self->buffer, repr);
 			self->need_whitespace = true;
 			break;
@@ -264,7 +259,7 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 			self->base.next.type = jive_token_identifier;
 			size_t len = p - self->parse_point;
 			self->next_str = std::string(self->parse_point, self->parse_point + len);
-			self->base.next.v.identifier = self->next_str.c_str();
+			self->base.next.identifier = self->next_str;
 		}
 		self->parse_point = p;
 		return;
@@ -278,7 +273,7 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 			++p;
 		}
 		self->base.next.type = jive_token_integral;
-		self->base.next.v.integral = value;
+		self->base.next.integral = value;
 		self->parse_point = p;
 		return;
 	}
@@ -295,8 +290,7 @@ jive_token_istream_simple_parse(jive_token_istream_simple * self)
 		}
 		self->next_str = std::string(begin, end);
 		self->base.next.type = jive_token_string;
-		self->base.next.v.string.str = self->next_str.data();
-		self->base.next.v.string.len = self->next_str.size();
+		self->base.next.string = self->next_str;
 		self->parse_point = next + 1;
 		return;
 	}

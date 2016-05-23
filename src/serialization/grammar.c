@@ -39,7 +39,7 @@ parser_driver::parse_uint()
 	if (token->type != jive_token_integral) {
 		throw parse_error("Expected unsigned integral value");
 	}
-	uint64_t value = token->v.integral;
+	uint64_t value = token->integral;
 	jive_token_istream_advance(&is_);
 	return value;
 }
@@ -50,16 +50,16 @@ parser_driver::parse_int()
 	const jive_token * current = jive_token_istream_current(&is_);
 	const jive_token * next = jive_token_istream_next(&is_);
 	if (current->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
-			int64_t value = current->v.integral;
+		if (current->integral <= (uint64_t) 0x7fffffffffffffffLL) {
+			int64_t value = current->integral;
 			jive_token_istream_advance(&is_);
 			return value;
 		} else {
 			throw parse_error("Integral value out of range");
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
-			int64_t value = - next->v.integral;
+		if (current->integral <= (uint64_t) 0x7fffffffffffffffLL) {
+			int64_t value = - next->integral;
 			jive_token_istream_advance(&is_);
 			jive_token_istream_advance(&is_);
 			return value;
@@ -77,7 +77,7 @@ parser_driver::parse_string()
 	if (token->type != jive_token_string) {
 		throw parse_error("Expected string");
 	}
-	std::string result(token->v.string.str, token->v.string.len);
+	std::string result = token->string;
 	jive_token_istream_advance(&is_);
 	return result;
 }
@@ -89,7 +89,7 @@ parser_driver::parse_identifier()
 	if (token->type != jive_token_identifier) {
 		throw parse_error("Expected identifier");
 	}
-	std::string result(token->v.identifier);
+	std::string result = token->identifier;
 	jive_token_istream_advance(&is_);
 	return result;
 }
@@ -102,7 +102,7 @@ parser_driver::parse_defined_label()
 		throw parse_error("Expected label identifier");
 	}
 	const jive_serialization_labelsym * sym =
-		jive_serialization_symtab_name_to_label(&driver().symtab, token->v.identifier);
+		jive_serialization_symtab_name_to_label(&driver().symtab, token->identifier.c_str());
 	if (!sym || !sym->label) {
 		throw parse_error("Expected label identifier");
 	}
@@ -235,8 +235,7 @@ output_driver::put_string(const std::string & s)
 {
 	jive_token token;
 	token.type = jive_token_string;
-	token.v.string.str = s.c_str();
-	token.v.string.len = s.size();
+	token.string = s;
 	jive_token_ostream_put(&os_, &token);
 }
 
@@ -327,8 +326,7 @@ jive_serialize_string(jive_serialization_driver * self,
 {
 	jive_token token;
 	token.type = jive_token_string;
-	token.v.string.str = str;
-	token.v.string.len = len;
+	token.string = std::string(str, len);
 	jive_token_ostream_put(os, &token);
 }
 
@@ -341,7 +339,7 @@ jive_deserialize_string(jive_serialization_driver * self,
 		self->error(self, "Expected string");
 		return false;
 	}
-	str = std::string(token->v.string.str, token->v.string.len);
+	str = token->string;
 	jive_token_istream_advance(is);
 	return true;
 }
@@ -362,7 +360,7 @@ jive_deserialize_uint(jive_serialization_driver * self,
 		self->error(self, "Expected unsigned integral value");
 		return false;
 	}
-	*value = token->v.integral;
+	*value = token->integral;
 	jive_token_istream_advance(is);
 	return true;
 }
@@ -388,8 +386,8 @@ jive_deserialize_int(jive_serialization_driver * self,
 	const jive_token * current = jive_token_istream_current(is);
 	const jive_token * next = jive_token_istream_next(is);
 	if (current->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
-			*value = current->v.integral;
+		if (current->integral <= (uint64_t) 0x7fffffffffffffffLL) {
+			*value = current->integral;
 			jive_token_istream_advance(is);
 			return true;
 		} else {
@@ -397,8 +395,8 @@ jive_deserialize_int(jive_serialization_driver * self,
 			return false;
 		}
 	} else if (current->type == jive_token_minus && next->type == jive_token_integral) {
-		if (current->v.integral <= (uint64_t) 0x7fffffffffffffffLL) {
-			*value = - next->v.integral;
+		if (current->integral <= (uint64_t) 0x7fffffffffffffffLL) {
+			*value = - next->integral;
 			jive_token_istream_advance(is);
 			jive_token_istream_advance(is);
 			return true;
@@ -436,7 +434,7 @@ jive_deserialize_type(jive_serialization_driver * self,
 	token = jive_token_istream_current(is);
 	if (token->type == jive_token_identifier) {
 		sercls = jive_serialization_typecls_lookup_by_tag(
-			self->typecls_registry, token->v.identifier);
+			self->typecls_registry, token->identifier.c_str());
 	}
 	if (!sercls) {
 		self->error(self, "Expected type identifier");
@@ -485,7 +483,7 @@ jive_deserialize_rescls(jive_serialization_driver * self,
 	token = jive_token_istream_current(is);
 	if (token->type == jive_token_identifier) {
 		sercls = jive_serialization_rescls_lookup_by_tag(
-			self->rescls_registry, token->v.identifier);
+			self->rescls_registry, token->identifier.c_str());
 	}
 	if (!sercls) {
 		self->error(self, "Expected resource class identifier");
@@ -562,7 +560,7 @@ jive_deserialize_defined_gate(jive_serialization_driver * self,
 		return false;
 	}
 	const jive_serialization_gatesym * sym =
-		jive_serialization_symtab_name_to_gate(&self->symtab, token->v.identifier);
+		jive_serialization_symtab_name_to_gate(&self->symtab, token->identifier.c_str());
 	if (!sym || !sym->gate) {
 		self->error(self, "Expected gate identifier");
 		return false;
@@ -593,7 +591,7 @@ jive_deserialize_defined_label(jive_serialization_driver * self,
 		return false;
 	}
 	const jive_serialization_labelsym * sym =
-		jive_serialization_symtab_name_to_label(&self->symtab, token->v.identifier);
+		jive_serialization_symtab_name_to_label(&self->symtab, token->identifier.c_str());
 	if (!sym || !sym->label) {
 		self->error(self, "Expected label identifier");
 		return false;
@@ -624,7 +622,7 @@ jive_deserialize_defined_node(jive_serialization_driver * self,
 		return false;
 	}
 	const jive_serialization_nodesym * sym =
-		jive_serialization_symtab_name_to_node(&self->symtab, token->v.identifier);
+		jive_serialization_symtab_name_to_node(&self->symtab, token->identifier.c_str());
 	if (!sym || !sym->node) {
 		self->error(self, "Expected node identifier");
 		return false;
@@ -669,7 +667,7 @@ jive_deserialize_portinfo(jive_serialization_driver * self,
 		return false;
 	}
 	const jive_serialization_outputsym * sym =
-		jive_serialization_symtab_name_to_output(&self->symtab, token->v.identifier);
+		jive_serialization_symtab_name_to_output(&self->symtab, token->identifier.c_str());
 	if (!sym || !sym->output) {
 		self->error(self, "Expected output identifier");
 		return false;
@@ -810,7 +808,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	const jive::serialization::opcls_handler * sercls = nullptr;
 	const jive_token * token = jive_token_istream_current(is);
 	if (token->type == jive_token_identifier) {
-		sercls = jive::serialization::opcls_registry::instance().lookup(token->v.identifier);
+		sercls = jive::serialization::opcls_registry::instance().lookup(token->identifier);
 	}
 	if (!sercls) {
 		self->error(self, "Expected node class identifier");
@@ -863,7 +861,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 			self->error(self, "Too many names for outputs");
 			return false;
 		}
-		std::string name = jive_token_istream_current(is)->v.identifier;
+		std::string name = jive_token_istream_current(is)->identifier;
 		jive_token_istream_advance(is);
 		
 		if (!jive_deserialize_char_token(self, is, ':'))
@@ -889,7 +887,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	
 	/* additional outputs */
 	while (jive_token_istream_current(is)->type == jive_token_identifier) {
-		std::string name = jive_token_istream_current(is)->v.identifier;
+		std::string name = jive_token_istream_current(is)->identifier;
 		jive_token_istream_advance(is);
 		
 		if (!jive_deserialize_char_token(self, is, ':'))
@@ -1129,7 +1127,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 			return true;
 		}
 		case jive_token_identifier: {
-			std::string name = token->v.identifier;
+			std::string name = token->identifier;
 			jive_token_istream_advance(is);
 			if (!jive_deserialize_char_token(self, is, '='))
 				return false;
