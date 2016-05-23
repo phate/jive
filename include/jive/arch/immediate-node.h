@@ -45,7 +45,7 @@ private:
 
 jive::output *
 jive_immediate_create(
-	struct jive_graph * graph,
+	jive_region * region,
 	const jive::immediate * immediate_value);
 
 #endif

@@ -144,7 +144,7 @@ jive_instruction_node_create(
 {
 	std::vector<jive::output*> arguments(operands.begin(), operands.end());
 	for (size_t n = 0; n < icls->nimmediates; n++)
-		arguments.push_back(jive_immediate_create(region->graph, &immediates[n]));
+		arguments.push_back(jive_immediate_create(region, &immediates[n]));
 	arguments.insert(arguments.end(), istates.begin(), istates.end());
 
 	std::vector<std::unique_ptr<jive::state::type>> itypes_;

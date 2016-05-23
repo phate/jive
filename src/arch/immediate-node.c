@@ -55,9 +55,9 @@ immediate_op::copy() const
 
 jive::output *
 jive_immediate_create(
-	jive_graph * graph,
+	jive_region * region,
 	const jive::immediate * immediate_value)
 {
 	jive::immediate_op op(*immediate_value);
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(region, op, {})[0];
 }

@@ -242,7 +242,7 @@ reloc_stack_access(jive_node * node, jive_subroutine_to_stackframe_map & stackfr
 			imm.set_sub_label(nullptr);
 		}
 		if (imm != orig_imm) {
-			jive::output * new_immval = jive_immediate_create(node->region->graph, &imm);
+			jive::output * new_immval = jive_immediate_create(node->region, &imm);
 			imm_input->divert_origin(new_immval);
 		}
 	}
