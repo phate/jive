@@ -58,18 +58,18 @@ extern template class domain_const_op<
 }
 
 jive::output *
-jive_control_constant(jive_graph * graph, size_t nalternatives, size_t alternative);
+jive_control_constant(jive_region * region, size_t nalternatives, size_t alternative);
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_control_false(jive_graph * graph)
+jive_control_false(jive_region * region)
 {
-	return jive_control_constant(graph, 2, 0);
+	return jive_control_constant(region, 2, 0);
 }
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_control_true(jive_graph * graph)
+jive_control_true(jive_region * region)
 {
-	return jive_control_constant(graph, 2, 1);
+	return jive_control_constant(region, 2, 1);
 }
 
 #endif

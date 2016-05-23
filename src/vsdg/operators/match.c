@@ -59,12 +59,11 @@ match_op::can_reduce_operand(const jive::output * arg) const noexcept
 jive::output *
 match_op::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
 {
-	jive_graph * graph = arg->node()->graph;
-
 	if (path == jive_unop_reduction_constant) {
 		const jive::bits::constant_op * op;
 		op = static_cast<const jive::bits::constant_op*>(&arg->node()->operation());
-		return jive_control_constant(graph, nalternatives(), alternative(op->value().to_uint()));
+		return jive_control_constant(arg->node()->region, nalternatives(),
+			alternative(op->value().to_uint()));
 	}
 
 	return nullptr;

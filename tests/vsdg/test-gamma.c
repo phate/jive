@@ -40,7 +40,7 @@ test_main(void)
 	assert(result[0]->node()->operation() == jive::gamma_op(3));
 
 	//predicate reduction
-	pred = jive_control_constant(graph, 3, 1);
+	pred = jive_control_constant(graph->root_region, 3, 1);
 	result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
 	jive_graph_export(graph, result[0]);
 	assert(result[0] == v1);
