@@ -273,11 +273,11 @@ types_float_test_fltconstant(void)
 
 	jive_graph * graph = jive_graph_create();
 
-	jive_fltconstant_float(graph, -1.0);
-	jive_fltconstant_float(graph, 0.0);
-	jive_fltconstant_float(graph, 1.0);
-	jive_fltconstant_float(graph, 0.0 / 0.0);
-	jive_fltconstant_float(graph, 1.0 / 0.0);
+	jive_fltconstant_float(graph->root_region, -1.0);
+	jive_fltconstant_float(graph->root_region, 0.0);
+	jive_fltconstant_float(graph->root_region, 1.0);
+	jive_fltconstant_float(graph->root_region, 0.0 / 0.0);
+	jive_fltconstant_float(graph->root_region, 1.0 / 0.0);
 
 	jive_view(graph, stdout);
 	jive_graph_destroy(graph);

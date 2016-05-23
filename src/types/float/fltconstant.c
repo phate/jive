@@ -26,8 +26,8 @@ template class domain_const_op<
 }
 
 jive::output *
-jive_fltconstant(jive_graph * graph, jive::flt::value_repr value)
+jive_fltconstant(jive_region * region, jive::flt::value_repr value)
 {
 	jive::flt::constant_op op(value);
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(region, op, {})[0];
 }

@@ -46,12 +46,12 @@ extern template class domain_const_op<
 }
 
 jive::output *
-jive_fltconstant(jive_graph * graph, jive::flt::value_repr value);
+jive_fltconstant(jive_region * region, jive::flt::value_repr value);
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_fltconstant_float(jive_graph * graph, float value)
+jive_fltconstant_float(jive_region * region, float value)
 {
-	return jive_fltconstant(graph, value);
+	return jive_fltconstant(region, value);
 }
 
 #endif

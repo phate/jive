@@ -54,11 +54,9 @@ unary_op::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_constant) {
-		jive_graph * graph = arg->node()->graph;
-		const constant_op & c =
-			static_cast<const constant_op&>(arg->node()->operation());
+		const constant_op & c = static_cast<const constant_op&>(arg->node()->operation());
 		value_repr result = reduce_constant(c.value());
-		return jive_fltconstant(graph, result);
+		return jive_fltconstant(arg->node()->region, result);
 	}
 
 	return nullptr;
@@ -116,15 +114,11 @@ binary_op::reduce_operand_pair(
 	jive::output * arg1,
 	jive::output * arg2) const
 {
-	jive_graph * graph = arg1->node()->graph;
-
 	if (path == jive_binop_reduction_constants) {
-		const constant_op & c1 =
-			static_cast<const constant_op&>(arg1->node()->operation());
-		const constant_op & c2 =
-			static_cast<const constant_op&>(arg2->node()->operation());
+		const constant_op & c1 = static_cast<const constant_op&>(arg1->node()->operation());
+		const constant_op & c2 = static_cast<const constant_op&>(arg2->node()->operation());
 		value_repr result = reduce_constants(c1.value(), c2.value());
-		return jive_fltconstant(graph, result);
+		return jive_fltconstant(arg1->node()->region, result);
 	}
 
 	return nullptr;
