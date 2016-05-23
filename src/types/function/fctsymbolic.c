@@ -24,8 +24,8 @@ template class domain_symbol_op<jive::fct::type>;
 
 jive::output *
 jive_symbolicfunction_create(
-	jive_graph * graph, const char * name, const jive::fct::type * type)
+	jive_region * region, const char * name, const jive::fct::type * type)
 {
 	jive::fct::symbol_op op(name, jive::fct::type(*type));
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(region, op, {})[0];
 }

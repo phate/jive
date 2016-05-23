@@ -171,7 +171,7 @@ static int function_test_call(void)
 	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
 	jive::output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
-	jive::output* func = jive_symbolicfunction_create( graph, "sin", &ftype ) ;
+	jive::output* func = jive_symbolicfunction_create(graph->root_region, "sin", &ftype ) ;
 	jive::output*  tmparray2[] = { constant };
 	jive::output * ret = jive_apply_create(func, 1, tmparray2)[0];
 
