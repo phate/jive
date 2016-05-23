@@ -66,7 +66,7 @@ static int test_main(void)
 	std::vector<jive::output *> states4 = jive_store_by_address_create(
 		top->outputs[0], &bits32, top->outputs[4], 1, &states3[0]);
 
-	unify = jive_empty_unify_create(graph, &empty_unndecl);
+	unify = jive_empty_unify_create(graph->root_region, &empty_unndecl);
 	std::vector<jive::output *> states5 = jive_store_by_address_create(
 		top->outputs[0], &empty_unntype, unify, 1, &top->outputs[1]);
 

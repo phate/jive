@@ -85,7 +85,7 @@ static int test_unnunify(void)
 	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&bits8});
 
 	jive::output * u0 = jive_unify_create(&decl, 0, top->outputs[0]);
-	jive::output * u1 = jive_empty_unify_create(graph, &decl_empty);
+	jive::output * u1 = jive_empty_unify_create(graph->root_region, &decl_empty);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		{&unntype, &unntype_empty}, {u0, u1}, {&bits8});
