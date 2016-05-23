@@ -79,7 +79,7 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 			&arg2_constant->value()[0],
 			arg2_constant->value().nbits());
 
-		return jive_bitconstant(arg1->node()->graph, nbits, bits);
+		return jive_bitconstant(arg1->node()->region, nbits, bits);
 	}
 
 	const slice_op * arg1_slice = dynamic_cast<const slice_op *>(
@@ -392,8 +392,6 @@ concat_op::reduce_operand_pair(
 	jive::output * arg1,
 	jive::output * arg2) const
 {
-	jive_graph * graph = arg1->node()->graph;
-
 	if (path == jive_binop_reduction_constants) {
 		const constant_op & arg1_constant = static_cast<const constant_op &>(
 			arg1->node()->operation());
@@ -408,7 +406,7 @@ concat_op::reduce_operand_pair(
 			&arg2_constant.value()[0],
 			arg2_constant.value().nbits());
 
-		return jive_bitconstant(graph, nbits, bits);
+		return jive_bitconstant(arg1->node()->region, nbits, bits);
 	}
 
 	if (path == jive_binop_reduction_merge) {

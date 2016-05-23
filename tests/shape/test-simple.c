@@ -21,7 +21,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_graph * graph = jive_graph_create();
 	
-	jive::output * y = jive_bitsymbolicconstant(graph, 8, "y");
+	jive::output * y = jive_bitsymbolicconstant(graph->root_region, 8, "y");
 	jive_output_auto_assign_variable(y);
 	
 	jive_shaped_graph * shaped_graph = jive_shaped_graph_create(graph);
@@ -32,7 +32,7 @@ static int test_main(void)
 	jive_region * subregion = jive_region_create_subregion(graph->root_region);
 	assert(shaped_graph->map_region(subregion) != NULL);
 	
-	jive::output * o = jive_bitsymbolicconstant(graph, 8, "x");
+	jive::output * o = jive_bitsymbolicconstant(graph->root_region, 8, "x");
 	jive_bitslice(o, 0, 4);
 	jive_variable * var = jive_variable_create(graph);
 	jive_ssavar * ssavar = jive_ssavar_create(o, var);

@@ -173,7 +173,7 @@ flatten_data_items(
 
 		jive_graph * graph = data->node()->graph;
 		
-		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
+		jive::output * zero_pad = jive_bitconstant(graph->root_region, 8, "00000000");
 		items.resize(layout.size(), zero_pad);
 
 		for (size_t k = 0; k < decl->nelements(); k++) {
@@ -202,7 +202,7 @@ flatten_data_items(
 		
 		jive_graph * graph = data->node()->graph;
 		
-		jive::output * zero_pad = jive_bitconstant(graph, 8, "00000000");
+		jive::output * zero_pad = jive_bitconstant(graph->root_region, 8, "00000000");
 		items.resize(layout.size(), zero_pad);
 		
 		std::vector<jive::output *> sub_items = flatten_data_items(

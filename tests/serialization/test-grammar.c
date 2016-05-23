@@ -290,7 +290,7 @@ static int test_main(void)
 	/* inhibit implicit optimization transformations */
 	jive_graph_get_nodeclass_form(graph, typeid(jive::operation))->set_mutable(false);
 	
-	jive::output * zero8 = jive_bitconstant(graph, 8, "00000000");
+	jive::output * zero8 = jive_bitconstant(graph->root_region, 8, "00000000");
 	const char * tmparray0[] = {"out"};
 	verify_serialize_nodeexpr(zero8->node(),
 		0, NULL, NULL, /* gates */
@@ -304,8 +304,8 @@ static int test_main(void)
 		tmparray1, /* output names */
 		zero8->node());
 	
-	jive::output * one8 = jive_bitconstant(graph, 8, "10000000");
-	jive::output * two8 = jive_bitconstant(graph, 8, "01000000");
+	jive::output * one8 = jive_bitconstant(graph->root_region, 8, "10000000");
+	jive::output * two8 = jive_bitconstant(graph->root_region, 8, "01000000");
 	jive::output * tmparray2[] = {one8, two8};
 	jive::output * add8 = jive_bitsum(2, tmparray2);
 	assert(dynamic_cast<const jive::bits::add_op *>(&add8->node()->operation()));

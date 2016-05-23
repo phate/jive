@@ -182,8 +182,6 @@ compare_op::reduce_operand_pair(
 	jive::output * arg1,
 	jive::output * arg2) const
 {
-	jive_graph * graph = arg1->node()->graph;
-
 	if (path == jive_binop_reduction_constants) {
 		const constant_op & c1 =
 			static_cast<const constant_op&>(arg1->node()->operation());
@@ -191,9 +189,9 @@ compare_op::reduce_operand_pair(
 			static_cast<const constant_op&>(arg2->node()->operation());
 		bool result = reduce_constants(c1.value(), c2.value());
 		if (result) {
-			return jive_bitconstant(graph, 1, "1");
+			return jive_bitconstant(arg1->node()->region, 1, "1");
 		} else {
-			return jive_bitconstant(graph, 1, "0");
+			return jive_bitconstant(arg1->node()->region, 1, "0");
 		}
 	}
 

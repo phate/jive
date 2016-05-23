@@ -56,7 +56,7 @@ make_string(jive_graph * graph, const char * txt)
 		char bits[8];
 		for (k = 0; k < 8; k++)
 			bits[k] = '0' + ((txt[n] >> k) & 1);
-		chars[n] = jive_bitconstant(graph, 8, bits);
+		chars[n] = jive_bitconstant(graph->root_region, 8, bits);
 	}
 	
 	jive::output * tmp = jive_group_create(string_decl, len, chars);

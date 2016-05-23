@@ -23,8 +23,8 @@ template class domain_symbol_op<jive::bits::type>;
 }
 
 jive::output *
-jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name)
+jive_bitsymbolicconstant(jive_region * region, size_t nbits, const char * name)
 {
 	jive::bits::symbol_op op(name, jive::bits::type(nbits));
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(region, op, {})[0];
 }

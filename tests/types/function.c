@@ -170,7 +170,7 @@ static int function_test_call(void)
 	const jive::base::type*  tmparray1[] = { &btype };
 	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
-	jive::output* constant = jive_bitconstant( graph, 8, "00001111" ) ;
+	jive::output* constant = jive_bitconstant(graph->root_region, 8, "00001111" ) ;
 	jive::output* func = jive_symbolicfunction_create(graph->root_region, "sin", &ftype ) ;
 	jive::output*  tmparray2[] = { constant };
 	jive::output * ret = jive_apply_create(func, 1, tmparray2)[0];
@@ -236,8 +236,8 @@ static int function_test_lambda_apply(void)
 	const jive::base::type * tmparray11[] = {&bits32};
 	jive::output * lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);
 	
-	jive::output * c0 = jive_bitconstant(graph, 32, "01010100000000000000000000000000");
-	jive::output * c1 = jive_bitconstant(graph, 32, "10010010000000000000000000000000");
+	jive::output * c0 = jive_bitconstant(graph->root_region, 32, "01010100000000000000000000000000");
+	jive::output * c1 = jive_bitconstant(graph->root_region, 32, "10010010000000000000000000000000");
 	jive::output * tmparray2[] = {c0, c1};
 	
 	jive::output * apply_results[1] = {

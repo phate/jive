@@ -29,7 +29,7 @@ static int test_main(void)
 	const char * tmparray0[] = {"arg"};
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, &addrptr, tmparray0);
 
-	jive::output * constant = jive_bitconstant_unsigned(graph, 32, 2);
+	jive::output * constant = jive_bitconstant_unsigned(graph->root_region, 32, 2);
 	jive::output * address = jive_arraysubscript(lambda->arguments[0], &bits32, constant);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, &addrptr, &address)->node();

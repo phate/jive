@@ -56,7 +56,7 @@ static int test_main(void)
 		2, tmparray2,
 		2, tmparray3);
 
-	jive::output * constant = jive_bitconstant_unsigned(graph, 64, 1);
+	jive::output * constant = jive_bitconstant_unsigned(graph->root_region, 64, 1);
 	jive::output * arraysub = jive_arraysubscript(call->outputs[0], &addr, constant);
 
 	jive::output * arrayindex = jive_arrayindex(call->outputs[0], call->outputs[1], &addr, &bits64);

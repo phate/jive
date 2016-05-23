@@ -35,8 +35,8 @@ static int test_main(void)
 	jive_graph * gr1 = jive_graph_create();
 	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation))->set_mutable(false);
 	
-	jive::output * a = jive_bitconstant(gr1, 8, "01010101");
-	jive::output * b = jive_bitconstant(gr1, 8, "10101010");
+	jive::output * a = jive_bitconstant(gr1->root_region, 8, "01010101");
+	jive::output * b = jive_bitconstant(gr1->root_region, 8, "10101010");
 	jive::output * true_out = jive_control_true(gr1->root_region);
 	jive::output * c = jive_gamma(true_out, {&a->type()}, {{a}, {b}})[0];
 	

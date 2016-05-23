@@ -36,6 +36,6 @@ typedef base::domain_symbol_op<jive::bits::type>
 	returns the output handle of an existing constant.
 */
 jive::output *
-jive_bitsymbolicconstant(jive_graph * graph, size_t nbits, const char * name);
+jive_bitsymbolicconstant(jive_region * region, size_t nbits, const char * name);
 
 #endif

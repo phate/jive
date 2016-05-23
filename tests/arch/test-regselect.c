@@ -33,8 +33,8 @@ static int test_main(void)
 	
 	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	
-	jive::output * lit = jive_bitconstant_unsigned(graph, 32, 42);
-	jive::output * sym = jive_bitsymbolicconstant(graph, 32, "symbol");
+	jive::output * lit = jive_bitconstant_unsigned(graph->root_region, 32, 42);
+	jive::output * sym = jive_bitsymbolicconstant(graph->root_region, 32, "symbol");
 	jive::output * bitnot = jive_bitnot(sym);
 	jive::output* tmparray2[] = {arg1, lit};
 	jive::output * sum1 = jive_bitsum(2, tmparray2);

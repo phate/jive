@@ -50,9 +50,12 @@ static int test_main(void)
 	assert(memb4 != top->outputs[1]);
 	assert(memb3 == top->outputs[1]);
 	
-	jive::output * zero = jive_bitconstant(graph, 32, "00000000000000000000000000000000");
-	jive::output * one = jive_bitconstant(graph, 32, "10000000000000000000000000000000");
-	jive::output * minus_one = jive_bitconstant(graph, 32, "11111111111111111111111111111111");
+	jive::output * zero = jive_bitconstant(graph->root_region, 32,
+		"00000000000000000000000000000000");
+	jive::output * one = jive_bitconstant(graph->root_region, 32,
+		"10000000000000000000000000000000");
+	jive::output * minus_one = jive_bitconstant(graph->root_region, 32,
+		"11111111111111111111111111111111");
 	
 	jive::output * a0 = jive_arraysubscript(top->outputs[0], &bits32, zero);
 	//assert(a0 == top->outputs[0]);
