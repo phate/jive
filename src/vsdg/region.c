@@ -109,12 +109,6 @@ jive_region_reparent(jive_region * self, jive_region * new_parent)
 }
 
 void
-jive_region_destroy(jive_region * self)
-{
-	delete self;
-}
-
-void
 jive_region_prune_subregions_(jive_region * self)
 {
 	jive_region * subregion;
@@ -123,7 +117,7 @@ jive_region_prune_subregions_(jive_region * self)
 		jive_region * next = subregion->region_subregions_list.next;
 		if (jive_region_empty(subregion)) {
 			JIVE_LIST_REMOVE(self->subregions, subregion, region_subregions_list);
-			jive_region_destroy(subregion);
+			delete subregion;
 		}
 		subregion = next;
 	}

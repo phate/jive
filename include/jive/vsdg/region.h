@@ -108,10 +108,6 @@ public:
 	struct jive::input * anchor;
 };
 
-void
-jive_region_destroy(jive_region * self);
-
-
 /**
 	\brief Copy a region with substitutions
 	\param self Region to be copied

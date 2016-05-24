@@ -47,7 +47,8 @@ prune_regions_recursive(jive_region * region)
 	jive_region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(region->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
-	if (jive_region_empty(region)) jive_region_destroy(region);
+	if (jive_region_empty(region))
+		delete region;
 }
 
 /* graph */
