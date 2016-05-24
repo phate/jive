@@ -40,11 +40,11 @@ jive_region::~jive_region()
 jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
 	: graph(_graph)
 	, parent(_parent)
-	, depth(0)
 	, stackframe(nullptr)
 	, top(nullptr)
 	, bottom(nullptr)
 	, anchor(nullptr)
+	, depth_(0)
 {
 	nodes.first = nodes.last = nullptr;
 	top_nodes.first = top_nodes.last = nullptr;
@@ -55,7 +55,7 @@ jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
 
 	if (parent) {
 		JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
-		depth = parent->depth + 1;
+		depth_ = parent->depth() + 1;
 	}
 
 	graph->on_region_create(this);
@@ -87,7 +87,7 @@ jive_region::reparent(jive_region * new_parent) noexcept
 		jive_region * region,
 		size_t new_depth)
 	{
-		region->depth = new_depth;
+		region->depth_ = new_depth;
 		jive_region * subregion;
 		JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
 			set_depth_recursive(subregion, new_depth + 1);
@@ -97,8 +97,8 @@ jive_region::reparent(jive_region * new_parent) noexcept
 	jive_region_hull_remove_hull_from_parents(this);
 
 	parent = new_parent;
-	size_t new_depth = new_parent->depth + 1;
-	if (new_depth != depth)
+	size_t new_depth = new_parent->depth() + 1;
+	if (new_depth != depth())
 		set_depth_recursive(this, new_depth);
 
 	jive_region_hull_add_hull_to_parents(this);
@@ -129,7 +129,7 @@ jive_region_create_subregion(jive_region * self)
 void
 jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
-	if (ssavar->origin->node()->region->depth >= self->depth) return;
+	if (ssavar->origin->node()->region->depth() >= self->depth()) return;
 	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
 		if (use)
@@ -152,7 +152,7 @@ jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 void
 jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
-	if (ssavar->origin->node()->region->depth >= self->depth) return;
+	if (ssavar->origin->node()->region->depth() >= self->depth()) return;
 	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
 		use->count --;
@@ -257,7 +257,7 @@ void
 jive_region_hull_add_input(jive_region * region, jive::input * input)
 {
 	jive_region * origin_region = input->producer()->region;
-	while (region->depth > origin_region->depth) {
+	while (region->depth() > origin_region->depth()) {
 		jive_region_hull_entry_create(region, input);
 		region = region->parent;
 	}
@@ -268,7 +268,7 @@ jive_region_hull_remove_input(struct jive_region * region, jive::input * input)
 {
 	jive_region_hull_entry * entry, * next_entry;
 	JIVE_LIST_ITERATE_SAFE(input->hull, entry, next_entry, input_hull_list) {
-		if (region->depth >= entry->region->depth) {
+		if (region->depth() >= entry->region->depth()) {
 			jive_region_hull_entry_destroy(entry);
 		}
 	}
@@ -287,7 +287,7 @@ jive_region_verify_hull(struct jive_region * region)
 	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list) {
 		size_t i;
 		for (i = 0; i < node->ninputs; i++) {
-			if (node->producer(i)->region->depth < region->depth) {
+			if (node->producer(i)->region->depth() < region->depth()) {
 				jive_region_hull_entry * entry;
 				JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
 					if (entry->input == node->inputs[i])
@@ -304,7 +304,7 @@ jive_region_verify_hull(struct jive_region * region)
 	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
 		jive_region_hull_entry * sub_entry;
 		JIVE_LIST_ITERATE(subregion->hull, sub_entry, region_hull_list) {
-			if (sub_entry->input->origin()->node()->region->depth < region->depth) {
+			if (sub_entry->input->origin()->node()->region->depth() < region->depth()) {
 				jive_region_hull_entry * entry;
 				JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
 					if (entry->input == sub_entry->input)
@@ -319,7 +319,7 @@ jive_region_verify_hull(struct jive_region * region)
 	/* check region hull whether it contains entries that don't belong there */
 	jive_region_hull_entry * entry;
 	JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
-		if (entry->input->origin()->node()->region->depth >= region->depth)
+		if (entry->input->origin()->node()->region->depth() >= region->depth())
 			JIVE_DEBUG_ASSERT(0);
 	}
 }

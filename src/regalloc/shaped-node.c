@@ -43,7 +43,7 @@ jive_shaped_node::add_crossings_from_lower_location(
 			if (dynamic_cast<const jive::achr::type*>(&ssavar.origin->type())) {
 				continue;
 			}
-			if (xpoint.shaped_ssavar().boundary_region_depth() > node()->region->depth &&
+			if (xpoint.shaped_ssavar().boundary_region_depth() > node()->region->depth() &&
 				!shaped_graph->is_node_placed(ssavar.origin->node())) {
 				continue;
 			}

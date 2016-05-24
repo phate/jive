@@ -72,9 +72,13 @@ public:
 
 	void reparent(jive_region * new_parent) noexcept;
 
+	inline size_t depth() const noexcept
+	{
+		return depth_;
+	}
+
 	struct jive_graph * graph;
 	jive_region * parent;
-	size_t depth;
 	struct jive_stackframe * stackframe;
 
 	struct {
@@ -108,6 +112,9 @@ public:
 	jive_region_ssavar_hash used_ssavars;
 	
 	struct jive::input * anchor;
+
+private:
+	size_t depth_;
 };
 
 /**
@@ -143,7 +150,7 @@ jive_region_empty(const jive_region * self)
 JIVE_EXPORTED_INLINE bool
 jive_region_is_contained_by(const jive_region * self, const jive_region * other)
 {
-	while(self->depth > other->depth) {
+	while(self->depth() > other->depth()) {
 		if (self->parent == other) return true;
 		self = self->parent;
 	}
@@ -153,7 +160,7 @@ jive_region_is_contained_by(const jive_region * self, const jive_region * other)
 JIVE_EXPORTED_INLINE bool
 jive_region_valid_edge_source(const jive_region * self, const jive_region * from)
 {
-	while (self->depth > from->depth)
+	while (self->depth() > from->depth())
 		self = self->parent;
 	return self == from;
 }

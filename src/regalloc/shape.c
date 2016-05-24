@@ -346,7 +346,7 @@ jive_region_shaper_pushdown_node(jive_region_shaper * self, jive_node * new_node
 	for (n = 0; n < new_node->ninputs; n++) {
 		JIVE_DEBUG_ASSERT(self->shaped_graph->map_ssavar(
 			new_node->inputs[n]->ssavar)->boundary_region_depth()
-				<= self->region->depth);
+				<= self->region->depth());
 	}
 }
 
@@ -671,7 +671,7 @@ jive_region_shaper_setup_node(jive_region_shaper * self, jive_node * node)
 				jive_variable_get_resource_class(ssavar.variable));
 		}
 		
-		shaped_ssavar->lower_boundary_region_depth(self->region->depth);
+		shaped_ssavar->lower_boundary_region_depth(self->region->depth());
 	}
 	
 	if (node->ninputs) {
@@ -777,7 +777,7 @@ merge_single_ssavar_from_subregion(
 {
 	jive_ssavar & ssavar = shaped_ssavar->ssavar();
 		
-	if (shaped_ssavar->boundary_region_depth() <= self->region->depth) {
+	if (shaped_ssavar->boundary_region_depth() <= self->region->depth()) {
 		/* if already merged into this region, then nothing to do */
 		return true;
 	}
@@ -842,7 +842,7 @@ merge_single_ssavar_from_subregion(
 	}
 	
 	/* no conflicts, just pass through to parent */
-	shaped_ssavar->lower_boundary_region_depth(self->region->depth);
+	shaped_ssavar->lower_boundary_region_depth(self->region->depth());
 	return true;
 }
 

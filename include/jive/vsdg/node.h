@@ -634,7 +634,7 @@ JIVE_EXPORTED_INLINE bool
 jive_region_contains_node(const jive_region * self, const jive_node * node)
 {
 	const jive_region * tmp = node->region;
-	while(tmp->depth >= self->depth) {
+	while(tmp->depth() >= self->depth()) {
 		if (tmp == self) return true;
 		tmp = tmp->parent;
 		if (!tmp) break;
@@ -649,7 +649,7 @@ jive_region_innermost(size_t noperands, jive::output * const operands[])
 	jive_region * region = operands[noperands - 1]->node()->region;
 	for (size_t n = noperands - 1; n; --n) {
 		jive_node * node = operands[n-1]->node();
-		if (node->region->depth > region->depth)
+		if (node->region->depth() > region->depth())
 			region = node->region;
 	}
 	

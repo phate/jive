@@ -45,7 +45,7 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	
 	if (!target_shaped_node
 	|| (!self->origin_shaped_node
-		&& shaped_ssavar->boundary_region_depth() > target_shaped_node->node()->region->depth))
+		&& shaped_ssavar->boundary_region_depth() > target_shaped_node->node()->region->depth()))
 	{
 		self->start_shaped_node = NULL;
 		self->start_region = NULL;
@@ -60,9 +60,9 @@ jive_crossing_arc_init(jive_crossing_arc * self,
 	}
 	
 	if (origin_shaped_node) {
-		self->boundary_region_depth = shaped_ssavar->ssavar().origin->node()->region->depth;
+		self->boundary_region_depth = shaped_ssavar->ssavar().origin->node()->region->depth();
 	} else {
-		self->boundary_region_depth = shaped_ssavar->ssavar().origin->node()->region->depth;
+		self->boundary_region_depth = shaped_ssavar->ssavar().origin->node()->region->depth();
 		if (self->boundary_region_depth < shaped_ssavar->boundary_region_depth()) {
 			self->boundary_region_depth = shaped_ssavar->boundary_region_depth();
 		}
@@ -143,7 +143,7 @@ jive_crossing_arc_iterator_next(jive_crossing_arc_iterator * self)
 	} else if (self->current_region_ == self->exit_region_) {
 		/* trace out of region (unless desired depth reached)
 		note: root region has depth 0, so implicitly terminates there */
-		if (self->current_region_->depth > self->boundary_region_depth_) {
+		if (self->current_region_->depth() > self->boundary_region_depth_) {
 			self->exit_region_ = self->exit_region_->parent;
 			jive_shaped_node * anchor_shaped_node = self->shaped_graph->map_node(
 				self->current_region_->anchor->node());

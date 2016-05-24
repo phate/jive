@@ -606,7 +606,7 @@ jive_shaped_ssavar::xpoints_register_arc(
 
 	if (target_shaped_node &&
 			(origin_shaped_node ||
-			boundary_region_depth() <= target_shaped_node->node()->region->depth)) {
+			boundary_region_depth() <= target_shaped_node->node()->region->depth())) {
 		target_shaped_node->add_ssavar_before(this, variable, 1);
 	}
 	
@@ -626,7 +626,7 @@ jive_shaped_ssavar::xpoints_unregister_arc(
 
 	if (target_shaped_node &&
 			(origin_shaped_node ||
-			boundary_region_depth() <= target_shaped_node->node()->region->depth)) {
+			boundary_region_depth() <= target_shaped_node->node()->region->depth())) {
 		target_shaped_node->remove_ssavar_before(this, variable, 1);
 	}
 

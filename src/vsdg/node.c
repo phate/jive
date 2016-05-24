@@ -793,7 +793,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	/* verify that the node is moved along the region path to the root */
 	jive_region * child = new_region;
 	jive_region * parent = self->region;
-	if (self->region->depth > new_region->depth) {
+	if (self->region->depth() > new_region->depth()) {
 		child = self->region;
 		parent = new_region;
 	}

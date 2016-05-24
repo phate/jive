@@ -100,10 +100,10 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	jive_shaped_ssavar * shaped_ssavar1 = shaped_graph->map_ssavar(ssavar1);
 	jive_shaped_ssavar * shaped_ssavar2 = shaped_graph->map_ssavar(ssavar2);
 	if (shaped_ssavar1) {
-		shaped_ssavar1->lower_boundary_region_depth(region1->depth);
+		shaped_ssavar1->lower_boundary_region_depth(region1->depth());
 	}
 	if (shaped_ssavar2) {
-		shaped_ssavar2->lower_boundary_region_depth(region2->depth);
+		shaped_ssavar2->lower_boundary_region_depth(region2->depth());
 	}
 
 	if (region1 == interest_region) {
@@ -178,7 +178,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 		jive::input * input = loop_users[n];
 		jive_ssavar_assign_input(ssavar_inside, input);
 	}
-	shaped_graph->map_ssavar(ssavar_inside)->lower_boundary_region_depth(loop_region->depth);
+	shaped_graph->map_ssavar(ssavar_inside)->lower_boundary_region_depth(loop_region->depth());
 	
 	/* below loop */
 	

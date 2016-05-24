@@ -26,13 +26,13 @@ shape(jive_shaped_graph * shaped_graph, jive_node * node)
 		jive::input * input = node->inputs[n];
 		jive_input_auto_merge_variable(input);
 		jive_shaped_ssavar * shaped_ssavar = shaped_graph->map_ssavar(input->ssavar);
-		shaped_ssavar->lower_boundary_region_depth(node->region->depth);
+		shaped_ssavar->lower_boundary_region_depth(node->region->depth());
 	}
 	for (size_t n = 0; n < node->noutputs; n ++) {
 		jive::output * output = node->outputs[n];
 		jive_output_auto_merge_variable(output);
 		jive_shaped_ssavar * shaped_ssavar = shaped_graph->map_ssavar(output->ssavar);
-		shaped_ssavar->lower_boundary_region_depth(node->region->depth);
+		shaped_ssavar->lower_boundary_region_depth(node->region->depth());
 	}
 	jive_shaped_region * shaped_region = shaped_graph->map_region(node->region);
 	jive_cut * cut = shaped_region->create_top_cut();
