@@ -828,7 +828,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
 		if (dynamic_cast<const jive::achr::type*>(&self->inputs[n]->type())) {
 			jive_region * subregion = self->producer(n)->region;
-			jive_region_reparent(subregion, new_region);
+			subregion->reparent(new_region);
 		} else if (self->producer(n)->region != new_region) {
 			/* or add the node's input to the hull */
 			jive_region_hull_add_input(new_region, self->inputs[n]);

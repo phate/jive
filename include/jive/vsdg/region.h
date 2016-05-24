@@ -70,6 +70,8 @@ public:
 
 	jive_region(jive_region * parent, jive_graph * graph);
 
+	void reparent(jive_region * new_parent) noexcept;
+
 	struct jive_graph * graph;
 	jive_region * parent;
 	size_t depth;
@@ -173,9 +175,6 @@ jive_region_get_anchor(struct jive_region * self);
 
 jive_region *
 jive_region_create_subregion(jive_region * self);
-
-void
-jive_region_reparent(jive_region * self, jive_region * new_parent);
 
 bool
 jive_region_depends_on_region(const jive_region * self, const jive_region * region);

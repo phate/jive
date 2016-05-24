@@ -80,32 +80,29 @@ jive_region_depends_on_region(const jive_region * self, const jive_region * regi
 	return false;
 }
 
-static void
-jive_region_set_depth_recursive(jive_region * self, size_t new_depth)
-{
-	self->depth = new_depth;
-
-	jive_region * subregion;
-	JIVE_LIST_ITERATE(self->subregions, subregion, region_subregions_list) {
-		jive_region_set_depth_recursive(subregion, new_depth + 1);
-	}
-}
-
 void
-jive_region_reparent(jive_region * self, jive_region * new_parent)
+jive_region::reparent(jive_region * new_parent) noexcept
 {
-	JIVE_LIST_REMOVE(self->parent->subregions, self, region_subregions_list);
+	std::function<void (jive_region *, size_t)> set_depth_recursive = [&](
+		jive_region * region,
+		size_t new_depth)
+	{
+		region->depth = new_depth;
+		jive_region * subregion;
+		JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
+			set_depth_recursive(subregion, new_depth + 1);
+	};
 
-	jive_region_hull_remove_hull_from_parents(self);
+	JIVE_LIST_REMOVE(parent->subregions, this, region_subregions_list);
+	jive_region_hull_remove_hull_from_parents(this);
 
-	self->parent = new_parent;
+	parent = new_parent;
 	size_t new_depth = new_parent->depth + 1;
-	if (new_depth != self->depth)
-		jive_region_set_depth_recursive(self, new_depth);
+	if (new_depth != depth)
+		set_depth_recursive(this, new_depth);
 
-	jive_region_hull_add_hull_to_parents(self);
-
-	JIVE_LIST_PUSH_BACK(self->parent->subregions, self, region_subregions_list);
+	jive_region_hull_add_hull_to_parents(this);
+	JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
 }
 
 void
