@@ -116,7 +116,7 @@ jive_gamma_create(
 
 	jive::output * arguments[nalternatives+1];
 	for (size_t n = 0; n < nalternatives; n++) {
-		jive_region * subregion = jive_region_create_subregion(region);
+		jive_region * subregion = new jive_region(region, region->graph);
 		jive_node * tail_node = jive::gamma_tail_op().create_node(subregion, 0, nullptr);
 		arguments[n] = tail_node->outputs[0];
 	}

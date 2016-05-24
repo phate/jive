@@ -29,7 +29,7 @@ static int test_main(void)
 	assert(shaped_graph->map_region(graph->root_region) != NULL);
 	assert(shaped_graph->map_ssavar(y->ssavar) != NULL);
 	
-	jive_region * subregion = jive_region_create_subregion(graph->root_region);
+	jive_region * subregion = new jive_region(graph->root_region, graph);
 	assert(shaped_graph->map_region(subregion) != NULL);
 	
 	jive::output * o = jive_bitsymbolicconstant(graph->root_region, 8, "x");

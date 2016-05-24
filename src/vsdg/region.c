@@ -120,12 +120,6 @@ jive_region_prune_subregions_(jive_region * self)
 	}
 }
 
-jive_region *
-jive_region_create_subregion(jive_region * self)
-{
-	return new jive_region(self, self->graph);
-}
-
 void
 jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
@@ -199,7 +193,7 @@ pre_copy_region(
 	
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(original_region->subregions, subregion, region_subregions_list) {
-		jive_region * target_subregion = jive_region_create_subregion(target_region);
+		jive_region * target_subregion = new jive_region(target_region, target_region->graph);
 		target_subregion->attrs = subregion->attrs;
 		substitution.insert(subregion, target_subregion);
 		pre_copy_region(target_subregion, subregion, copy_context, substitution, true, true);

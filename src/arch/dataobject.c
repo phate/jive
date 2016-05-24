@@ -250,7 +250,7 @@ jive::output *
 jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive_region * parent = data->node()->graph->root_region;
-	jive_region * region = jive_region_create_subregion(parent);
+	jive_region * region = new jive_region(parent, parent->graph);
 	region->attrs.section = jive_region_section_data;
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
@@ -260,7 +260,7 @@ jive::output *
 jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive_region * parent = data->node()->graph->root_region;
-	jive_region * region = jive_region_create_subregion(parent);
+	jive_region * region = new jive_region(parent, parent->graph);
 	region->attrs.section = jive_region_section_rodata;
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
@@ -270,7 +270,7 @@ jive::output *
 jive_bssobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive_region * parent = data->node()->graph->root_region;
-	jive_region * region = jive_region_create_subregion(parent);
+	jive_region * region = new jive_region(parent, parent->graph);
 	region->attrs.section = jive_region_section_bss;
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);

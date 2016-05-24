@@ -180,9 +180,6 @@ jive_region_get_bottom_node(jive_region * self)
 struct jive_node *
 jive_region_get_anchor(struct jive_region * self);
 
-jive_region *
-jive_region_create_subregion(jive_region * self);
-
 bool
 jive_region_depends_on_region(const jive_region * self, const jive_region * region);
 

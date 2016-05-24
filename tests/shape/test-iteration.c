@@ -51,12 +51,12 @@ static int test_main(void)
 	jive::achr::type anchor_type;
 	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type});
 	
-	jive_region * r1 = jive_region_create_subregion(graph->root_region);
+	jive_region * r1 = new jive_region(graph->root_region, graph);
 
 	jive_node * n2 = jive_test_node_create(r1, {&type}, {n1->outputs[0]}, {&type});
 
-	jive_region * r2 = jive_region_create_subregion(r1);
-	jive_region * r3 = jive_region_create_subregion(r1);
+	jive_region * r2 = new jive_region(r1, graph);
+	jive_region * r3 = new jive_region(r1, graph);
 
 	jive_node * n3 = jive_test_node_create(r2, {&type}, {n2->outputs[0]}, {&anchor_type});
 	jive_node * n4 = jive_test_node_create(r3, {&type}, {n2->outputs[0]}, {&anchor_type});

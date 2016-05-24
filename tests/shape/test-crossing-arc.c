@@ -30,7 +30,7 @@ static int test_main(void)
 	jive_node * b = jive_test_node_create(graph->root_region, {}, {}, {&vtype});
 	jive_node * c = jive_test_node_create(graph->root_region, {&vtype}, {a->outputs[0]}, {&vtype});
 
-	jive_region * subregion = jive_region_create_subregion(graph->root_region);
+	jive_region * subregion = new jive_region(graph->root_region, graph);
 	jive_node * d = jive_test_node_create(subregion, {&vtype}, {a->outputs[0]}, {&vtype});
 	jive_node * e = jive_test_node_create(graph->root_region, {&vtype}, {b->outputs[0]}, {&vtype});
 	jive_node * f = jive_test_node_create(graph->root_region, {&vtype}, {b->outputs[0]}, {&vtype});

@@ -1119,7 +1119,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 			jive_token_istream_advance(is);
 			if (!jive_deserialize_char_token(self, is, '{'))
 				return false;
-			jive_region * subregion = jive_region_create_subregion(region);
+			jive_region * subregion = new jive_region(region, region->graph);
 			if (!jive_deserialize_regionbody(self, is, subregion))
 				return false;
 			if (!jive_deserialize_char_token(self, is, '}'))

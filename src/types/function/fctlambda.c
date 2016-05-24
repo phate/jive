@@ -206,7 +206,7 @@ jive_lambda_begin(
 	struct jive_graph * graph = parent->graph;
 
 	jive_lambda * lambda = new jive_lambda;
-	lambda->region = jive_region_create_subregion(parent);
+	lambda->region = new jive_region(parent, parent->graph);
 	lambda->arguments = new jive::output*[narguments];
 	lambda->narguments = narguments;
 

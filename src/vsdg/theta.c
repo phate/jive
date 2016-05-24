@@ -107,7 +107,7 @@ jive_theta_begin(jive_region * parent)
 {
 	jive_theta self;
 	jive_theta_build_state * state = new jive_theta_build_state;
-	self.region = jive_region_create_subregion(parent);
+	self.region = new jive_region(parent, parent->graph);
 
 	self.region->attrs.is_looped = true;
 	jive::theta_head_op().create_node(self.region, 0, nullptr);

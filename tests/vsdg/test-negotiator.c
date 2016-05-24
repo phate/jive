@@ -329,7 +329,7 @@ static int test_main(void)
 		1, &opt2, tmparray0, &n3->outputs[0],
 		0, 0, 0);
 	
-	jive_region * subregion = jive_region_create_subregion(graph->root_region);
+	jive_region * subregion = new jive_region(graph->root_region, graph);
 	jive_node * n5 = jive_negtestnode_create(graph->root_region,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);

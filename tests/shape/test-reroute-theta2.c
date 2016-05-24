@@ -50,7 +50,7 @@ static int test_main(void)
 	jive::achr::type anchor_type;
 	jive_node * dummy = jive_test_node_create(graph->root_region, {}, {}, {&type});
 
-	jive_region * r1 = jive_region_create_subregion(graph->root_region);
+	jive_region * r1 = new jive_region(graph->root_region, graph);
 
 	jive_node * top = jive_test_node_create(r1, {&type}, {dummy->outputs[0]}, {&type, &type});
 
