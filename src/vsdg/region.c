@@ -112,7 +112,7 @@ jive_region_prune_subregions_(jive_region * self)
 	subregion = self->subregions.first;
 	while(subregion) {
 		jive_region * next = subregion->region_subregions_list.next;
-		if (jive_region_empty(subregion)) {
+		if (subregion->is_empty()) {
 			JIVE_LIST_REMOVE(self->subregions, subregion, region_subregions_list);
 			delete subregion;
 		}

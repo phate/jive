@@ -88,6 +88,12 @@ public:
 		return false;
 	}
 
+	inline bool
+	is_empty() const noexcept
+	{
+		return nodes.first == nullptr && subregions.first == nullptr;
+	}
+
 	struct jive_graph * graph;
 	jive_region * parent;
 	struct jive_stackframe * stackframe;
@@ -151,12 +157,6 @@ jive_region_copy_substitute(
 	jive_region * target,
 	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom);
-
-JIVE_EXPORTED_INLINE bool
-jive_region_empty(const jive_region * self)
-{
-	return self->nodes.first == 0 && self->subregions.first == 0;
-}
 
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_region_get_top_node(jive_region * self)
