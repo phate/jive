@@ -52,10 +52,10 @@ reroute_gamma(jive_shaped_graph * shaped_graph,
 	
 	jive::input * user, * next;
 	JIVE_LIST_ITERATE_SAFE(ssavar->assigned_inputs, user, next, ssavar_input_list) {
-		if (jive_region_contains_node(region1, user->node())) {
+		if (region1->contains(user->node())) {
 			jive_ssavar_unassign_input(ssavar, user);
 			users1.push_back(user);
-		} else if (jive_region_contains_node(region2, user->node())) {
+		} else if (region2->contains(user->node())) {
 			jive_ssavar_unassign_input(ssavar, user);
 			users2.push_back(user);
 		}
@@ -142,7 +142,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	std::vector<jive::input*> loop_users;
 	jive::input * user, * next;
 	JIVE_LIST_ITERATE(origin->users, user, output_users_list) {
-		if (jive_region_contains_node(loop_region, user->node())) {
+		if (loop_region->contains(user->node())) {
 			if (user->ssavar == ssavar) {
 				jive_ssavar_unassign_input(ssavar, user);
 				loop_users.push_back(user);
@@ -168,7 +168,7 @@ reroute_theta(jive_shaped_graph * shaped_graph,
 	
 	/* all loop users must use new definition from inside loop ... */
 	JIVE_LIST_ITERATE_SAFE(origin->users, user, next, output_users_list) {
-		if (jive_region_contains_node(loop_region, user->node()) && user != into_loop) {
+		if (loop_region->contains(user->node()) && user != into_loop) {
 			user->divert_origin(def_inside);
 		}
 	}

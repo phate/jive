@@ -88,6 +88,9 @@ public:
 		return false;
 	}
 
+	bool
+	contains(const jive_node * node) const noexcept;
+
 	inline bool
 	is_empty() const noexcept
 	{

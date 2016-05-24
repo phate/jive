@@ -105,6 +105,20 @@ jive_region::reparent(jive_region * new_parent) noexcept
 	JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
 }
 
+bool
+jive_region::contains(const jive_node * node) const noexcept
+{
+	const jive_region * tmp = node->region;
+	while (tmp->depth() >= depth()) {
+		if (tmp == this)
+			return true;
+		tmp = tmp->parent;
+		if (!tmp)
+			break;
+	}
+	return false;
+}
+
 void
 jive_region_prune_subregions_(jive_region * self)
 {

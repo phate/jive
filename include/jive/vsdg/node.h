@@ -630,18 +630,6 @@ jive_node_move(jive_node * self, struct jive_region * new_region);
 /* methods pertaining to jive_region that require definition of jive_node
 need to live here to avoid cyclic header dependency */
 
-JIVE_EXPORTED_INLINE bool
-jive_region_contains_node(const jive_region * self, const jive_node * node)
-{
-	const jive_region * tmp = node->region;
-	while(tmp->depth() >= self->depth()) {
-		if (tmp == self) return true;
-		tmp = tmp->parent;
-		if (!tmp) break;
-	}
-	return false;
-}
-
 /** \brief Determine innermost of multiple (possibly) nested regions from operand list */
 JIVE_EXPORTED_INLINE jive_region *
 jive_region_innermost(size_t noperands, jive::output * const operands[])
