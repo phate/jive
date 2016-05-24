@@ -158,14 +158,6 @@ jive_region_empty(const jive_region * self)
 	return self->nodes.first == 0 && self->subregions.first == 0;
 }
 
-JIVE_EXPORTED_INLINE bool
-jive_region_valid_edge_source(const jive_region * self, const jive_region * from)
-{
-	while (self->depth() > from->depth())
-		self = self->parent;
-	return self == from;
-}
-
 JIVE_EXPORTED_INLINE struct jive_node *
 jive_region_get_top_node(jive_region * self)
 {
