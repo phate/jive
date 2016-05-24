@@ -288,7 +288,7 @@ lifetime_splitting(jive_shaped_graph * shaped_graph, jive_shaped_variable * shap
 		JIVE_LIST_ITERATE_SAFE(splits, other_split, next_split, chain) {
 			if (other_split == split_region)
 				continue;
-			if (jive_region_is_contained_by(other_split->region, split_region->region)) {
+			if (split_region->region->contains(other_split->region)) {
 				size_t n;
 				for (n = 0; n < other_split->users.size(); n++)
 					regalloc_split_region_add_user(split_region, other_split->users[n]);

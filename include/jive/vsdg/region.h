@@ -77,6 +77,17 @@ public:
 		return depth_;
 	}
 
+	inline bool
+	contains(const jive_region * other) const noexcept
+	{
+		while (other->depth() > depth()) {
+			if (other->parent == this)
+				return true;
+			other = other->parent;
+		}
+		return false;
+	}
+
 	struct jive_graph * graph;
 	jive_region * parent;
 	struct jive_stackframe * stackframe;
@@ -145,16 +156,6 @@ JIVE_EXPORTED_INLINE bool
 jive_region_empty(const jive_region * self)
 {
 	return self->nodes.first == 0 && self->subregions.first == 0;
-}
-
-JIVE_EXPORTED_INLINE bool
-jive_region_is_contained_by(const jive_region * self, const jive_region * other)
-{
-	while(self->depth() > other->depth()) {
-		if (self->parent == other) return true;
-		self = self->parent;
-	}
-	return false;
 }
 
 JIVE_EXPORTED_INLINE bool

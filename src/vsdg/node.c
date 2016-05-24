@@ -797,7 +797,7 @@ jive_node_move(jive_node * self, jive_region * new_region)
 		child = self->region;
 		parent = new_region;
 	}
-	if (!jive_region_is_contained_by(child, parent))
+	if (!parent->contains(child))
 		throw std::logic_error("Node can only be moved along the region path to the root.");
 
 	size_t n;
