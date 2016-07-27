@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -128,7 +128,8 @@ lambda_op::copy() const
 static jive_node *
 jive_lambda_node_create(jive_region * function_region)
 {
-	size_t narguments = function_region->top->noutputs - 1;
+	size_t ndependencies = function_region->top->ninputs;
+	size_t narguments = function_region->top->noutputs - ndependencies - 1;
 	size_t nreturns = function_region->bottom->ninputs - 1;
 	
 	const jive::base::type * argument_types[narguments];
@@ -178,16 +179,12 @@ jive_lambda_is_self_recursive(const jive_node * self)
 	}
 	JIVE_DEBUG_ASSERT(index != self->region->top->noutputs);
 
-	/* the lambda is self recursive if the function input of an apply node in the lambda region
-		originates from the same index in the phi enter node */
-	jive_region_hull_entry * entry;
-	JIVE_LIST_ITERATE(lambda_region->hull, entry, input_hull_list) {
-		if (!dynamic_cast<const jive::fct::apply_op *>(&entry->input->node()->operation()))
-			continue;
-		if (!dynamic_cast<const jive::phi_head_op *>(&entry->input->producer()->operation()))
-			continue;
-
-		if (entry->input->origin()->index() == index)
+	/* the lambda is self-recursive if one of its external dependencies originates from the same
+	*  index in the phi enter node
+	*/
+	for (size_t n = 0; n < lambda_region->top->ninputs; n++) {
+		jive::input * input = lambda_region->top->inputs[n];
+		if (input->origin()->index() == index)
 			return true;
 	}
 
@@ -195,6 +192,30 @@ jive_lambda_is_self_recursive(const jive_node * self)
 }
 
 /* lambda instantiation */
+
+namespace jive {
+namespace fct {
+
+lambda_dep
+lambda_dep_add(jive_lambda * self, jive::output * value)
+{
+	jive_node * enter = self->region->top;
+	jive_graph * graph = self->region->graph;
+
+	jive::fct::lambda_dep depvar;
+	jive::gate * gate = jive_graph_create_gate(
+		graph,
+		jive::detail::strfmt("dep_", enter, "_", self->depvars.size()),
+		value->type());
+	depvar.input = jive_node_gate_input(enter, gate, value);
+	depvar.output = jive_node_gate_output(enter, gate);
+	self->depvars.push_back(depvar);
+
+	return depvar;
+}
+
+}
+}
 
 jive_lambda *
 jive_lambda_begin(

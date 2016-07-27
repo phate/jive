@@ -325,16 +325,21 @@ static const std::unique_ptr<const literal>
 eval_lambda_head_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op*>(&node->operation()));
-	JIVE_DEBUG_ASSERT(index < ctx.top_arguments().size()+1);
 
-	jive::output * argument = node->outputs[index];
-	JIVE_DEBUG_ASSERT(!ctx.exists(argument));
+	if (index < ctx.top_arguments().size()+1) {
+		/* it is an argument */
+		jive::output * argument = node->outputs[index];
+		JIVE_DEBUG_ASSERT(!ctx.exists(argument));
 
-	const literal * v = ctx.top_arguments()[index-1].get();
-	ctx.insert(argument, v);
+		const literal * v = ctx.top_arguments()[index-1].get();
+		ctx.insert(argument, v);
 
-	std::unique_ptr<const literal> result = std::move(v->copy());
-	return result;
+		std::unique_ptr<const literal> result = std::move(v->copy());
+		return result;
+	} else {
+		/* it is an external dependency */
+		return eval_input(node->inputs[node->noutputs-index-1], ctx);
+	}
 }
 
 static const std::unique_ptr<const literal>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * Copyright 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
  * See COPYING for terms of redistribution.
  */
@@ -39,15 +39,15 @@ static int test_main()
 	fns[2] = jive_phi_fixvar_enter(phi, &f2type);
 
 	jive_lambda * l0 = jive_lambda_begin(phi.region, 0, NULL, NULL);
-	jive_lambda * l1 = jive_lambda_begin(phi.region, 0, NULL, NULL);
-	const char * tmparray1[] = {"arg"};
-	jive_lambda * l2 = jive_lambda_begin(phi.region, 1, tmparray0, tmparray1);
-
 	jive::output * lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
+
+	jive_lambda * l1 = jive_lambda_begin(phi.region, 0, NULL, NULL);
 	jive::output * lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
 
-	jive::output * ret = jive_apply_create(fns[2].value, 1, l2->arguments)[0];
-
+	const char * tmparray1[] = {"arg"};
+	jive_lambda * l2 = jive_lambda_begin(phi.region, 1, tmparray0, tmparray1);
+	jive::fct::lambda_dep depvar = jive::fct::lambda_dep_add(l2, fns[2].value);
+	jive::output * ret = jive_apply_create(depvar.output, 1, l2->arguments)[0];
 	jive::output * lambda2 = jive_lambda_end(l2, 1, tmparray0, &ret);
 
 	jive_phi_fixvar_leave(phi, fns[0].gate, lambda0);

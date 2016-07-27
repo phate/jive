@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -128,13 +128,34 @@ jive_lambda_node_remove_dead_parameters(const jive_node * self);
 	\brief Represent a lambda construct under construction
 */
 
+namespace jive {
+namespace fct {
+
+struct lambda_dep {
+	jive::input * input;
+	jive::output * output;
+};
+
+}
+}
+
 typedef struct jive_lambda jive_lambda;
 
 struct jive_lambda {
 	struct jive_region * region;
 	size_t narguments;
 	jive::output ** arguments;
+	std::vector<jive::fct::lambda_dep> depvars;
 };
+
+namespace jive {
+namespace fct {
+
+lambda_dep
+lambda_dep_add(jive_lambda * self, jive::output * value);
+
+}
+}
 
 /**
 	\brief Begin constructing a lambda region

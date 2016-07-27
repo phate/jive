@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -141,16 +141,17 @@ unsigned int fib(unsigned int n){
 
 	std::vector<const char*> names({"n"});
 	jive_lambda * lambda = jive_lambda_begin(phi.region, 1, &args[0], &names[0]);
+	jive::fct::lambda_dep depvar = jive::fct::lambda_dep_add(lambda, fv_fib.value);
 
 	jive::output * n = lambda->arguments[0];
 	jive::output * one = jive_bitconstant_unsigned(graph->root_region, 32, 1);
 	jive::output * two = jive_bitconstant_unsigned(graph->root_region, 32, 2);
 
 	jive::output * tmp = jive_bitdifference(n, one);
-	tmp = jive_apply_create(fv_fib.value, 1, &tmp)[0];
+	tmp = jive_apply_create(depvar.output, 1, &tmp)[0];
 
 	jive::output * tmp2 = jive_bitdifference(n, two);
-	tmp2 = jive_apply_create(fv_fib.value, 1, &tmp2)[0];
+	tmp2 = jive_apply_create(depvar.output, 1, &tmp2)[0];
 
 	std::vector<jive::output*> operands({tmp, tmp2});
 	jive::output * result = jive_bitsum(2, &operands[0]);
