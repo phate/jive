@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -68,16 +68,6 @@ jive_region_get_anchor(struct jive_region * self)
 		return self->anchor->node();
 
 	return nullptr;
-}
-
-bool
-jive_region_depends_on_region(const jive_region * self, const jive_region * region)
-{
-	jive_node * node;
-	JIVE_LIST_ITERATE(self->nodes, node, region_nodes_list) {
-		if (jive_node_depends_on_region(node, region)) return true;
-	}
-	return false;
 }
 
 void

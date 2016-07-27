@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -175,9 +175,6 @@ jive_region_get_bottom_node(jive_region * self)
 
 struct jive_node *
 jive_region_get_anchor(struct jive_region * self);
-
-bool
-jive_region_depends_on_region(const jive_region * self, const jive_region * region);
 
 JIVE_EXPORTED_INLINE struct jive_stackframe *
 jive_region_get_stackframe(const jive_region * region)

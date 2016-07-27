@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -699,89 +699,6 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		
 		use_count->add(rescls);
 	}
-}
-
-/**
-	\brief Test whether node has inputs from region
-*/
-bool
-jive_node_depends_on_region(const jive_node * self, const jive_region * region)
-{
-	size_t n;
-	for(n = 0; n < self->ninputs; n++) {
-		jive::input * input = self->inputs[n];
-		if (dynamic_cast<const jive::achr::type*>(&input->type())) {
-			if (jive_region_depends_on_region(input->producer()->region, region)) {
-				return true;
-			}
-		} else {
-			if (input->producer()->region == region) {
-				return true;
-			}
-		}
-	}
-	
-	return false;
-}
-
-bool
-jive_node_can_move_outward(const jive_node * self)
-{
-	return self->region->parent
-		&& self->region->top != self
-		&& self->region->bottom != self
-		&& !jive_node_depends_on_region(self, self->region);
-}
-
-void
-jive_node_move_outward(jive_node * self)
-{
-	jive_node_move(self, self->region->parent);
-}
-
-bool
-jive_node_can_move_inward(const jive_node * self)
-{
-	return jive_node_next_inner_region(self) != NULL;
-}
-
-struct jive_region *
-jive_node_next_inner_region(const jive_node * self)
-{
-	jive_region * current = self->region;
-	if (current->top == self || current->bottom == self)
-		return NULL;
-	jive_region * target = NULL;
-	size_t n;
-	for (n = 0; n < self->noutputs; n++) {
-		jive::output * output = self->outputs[n];
-		jive::input * user;
-		JIVE_LIST_ITERATE(output->users, user, output_users_list) {
-			jive_region * region = user->node()->region;
-			/* cannot pull anywhere if dependence in same region */
-			if (region == current)
-				return NULL;
-			while (region->parent != current)
-				region = region->parent;
-			/* can only pull if all dependencies in same region (or deeper) */
-			if (target && target != region)
-				return NULL;
-			/* don't pull into looped or lambda def regions */
-			if (region->top)
-				return NULL;
-			target = region;
-		}
-	}
-	return target;
-}
-
-void
-jive_node_move_inward(jive_node * self)
-{
-	jive_region * target = jive_node_next_inner_region(self);
-	if (!target)
-		return;
-	jive_node_move(self, target);
 }
 
 void

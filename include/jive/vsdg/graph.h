@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -180,12 +180,6 @@ jive_graph_prune(jive_graph * self);
 
 bool
 jive_graph_has_active_traversers(const jive_graph * self);
-
-void
-jive_graph_push_outward(jive_graph * self);
-
-void
-jive_graph_pull_inward(jive_graph * self);
 
 jive::node_normal_form *
 jive_graph_get_nodeclass_form(

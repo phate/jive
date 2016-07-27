@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -599,30 +599,6 @@ jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
 	}
 	return jive_node_get_tracker_state_slow(self, slot);
 }
-
-/**
-	\brief Test whether node can be moved to next outer region
-*/
-bool
-jive_node_can_move_outward(const jive_node * self);
-
-/**
-	\brief Move node to outer region
-*/
-void
-jive_node_move_outward(jive_node * self);
-
-bool
-jive_node_can_move_inward(const jive_node * self);
-
-void
-jive_node_move_inward(jive_node * self);
-
-bool
-jive_node_depends_on_region(const jive_node * self, const struct jive_region * region);
-
-struct jive_region *
-jive_node_next_inner_region(const jive_node * self);
 
 void
 jive_node_move(jive_node * self, struct jive_region * new_region);

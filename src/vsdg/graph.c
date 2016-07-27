@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -144,36 +144,6 @@ jive_graph_copy(jive_graph * self)
 	jive_region_copy_substitute(self->root_region, new_graph->root_region, smap, false, false);
 
 	return new_graph;
-}
-
-void
-jive_graph_push_outward(jive_graph * self)
-{
-	for (jive_node * node : jive::topdown_traverser(self)) {
-		while (jive_node_can_move_outward(node)) {
-			jive_node_move_outward(node);
-		}
-	}
-
-#ifdef JIVE_DEBUG
-	jive_region_verify_hull(self->root_region);
-#endif
-}
-
-void
-jive_graph_pull_inward(jive_graph * self)
-{
-	for (jive_node * node : jive::bottomup_traverser(self)) {
-		jive_region * region;
-		do {
-			region = node->region;
-			jive_node_move_inward(node);
-		} while (region != node->region);
-	}
-
-#ifdef JIVE_DEBUG
-	jive_region_verify_hull(self->root_region);
-#endif
 }
 
 jive::node_normal_form *
