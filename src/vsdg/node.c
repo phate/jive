@@ -512,11 +512,6 @@ jive_node_init_(
 	}
 	self->noperands = self->ninputs;
 
-	#ifdef JIVE_DEBUG
-		jive_region_verify_hull(self->region->graph->root_region);
-		jive_region_verify_top_node_list(self->region->graph->root_region);
-	#endif
-
 	for (size_t n = 0; n < noutputs; n++) {
 		JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
 		jive::output * output = new jive::output(self, self->noutputs, *output_types[n]);
@@ -1006,6 +1001,11 @@ jive_opnode_create(
 		JIVE_DEBUG_ASSERT(!region->bottom);
 		region->bottom = node;
 	}
+
+	#ifdef JIVE_DEBUG
+		jive_region_verify_hull(node->region->graph->root_region);
+		jive_region_verify_top_node_list(node->region->graph->root_region);
+	#endif
 
 	return node;
 }
