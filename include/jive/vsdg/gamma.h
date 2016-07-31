@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,10 +21,35 @@ namespace jive {
 
 namespace jive {
 
+class gamma_head_op final : public region_head_op {
+public:
+	virtual
+	~gamma_head_op() noexcept;
+
+	virtual size_t
+	nresults() const noexcept override;
+
+	virtual const base::type &
+	result_type(size_t index) const noexcept override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
 class gamma_tail_op final : public region_tail_op {
 public:
 	virtual
 	~gamma_tail_op() noexcept;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const base::type &
+	argument_type(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -167,6 +167,7 @@ ctlconst_handler registerer_ctlconst("ctlconst", opcls_registry::mutable_instanc
 split_handler registerer_split_op("split", opcls_registry::mutable_instance());
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(graph_tail, graph_tail_operation);
 gamma_op_handler register_gamma_op("gamma", opcls_registry::mutable_instance());
+JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(gamma_head, gamma_head_op);
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(gamma_tail, gamma_tail_op);
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta, theta_op);
 JIVE_SERIALIZATION_OPCLS_REGISTER_SIMPLE(theta_head, theta_head_op);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -18,13 +18,55 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/traverser.h>
 
 namespace jive {
 
+gamma_head_op::~gamma_head_op() noexcept
+{
+}
+
+size_t
+gamma_head_op::nresults() const noexcept
+{
+	return 1;
+}
+
+const base::type &
+gamma_head_op::result_type(size_t index) const noexcept
+{
+	return seq::seqtype;
+}
+
+std::string
+gamma_head_op::debug_string() const
+{
+	return "GAMMA_HEAD";
+}
+
+std::unique_ptr<jive::operation>
+gamma_head_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new gamma_head_op(*this));
+}
+
 gamma_tail_op::~gamma_tail_op() noexcept
 {
 }
+
+size_t
+gamma_tail_op::narguments() const noexcept
+{
+	return 1;
+}
+
+const base::type &
+gamma_tail_op::argument_type(size_t index) const noexcept
+{
+	return seq::seqtype;
+}
+
 std::string
 gamma_tail_op::debug_string() const
 {
@@ -117,19 +159,27 @@ jive_gamma_create(
 	jive::output * arguments[nalternatives+1];
 	for (size_t n = 0; n < nalternatives; n++) {
 		jive_region * subregion = new jive_region(region, region->graph);
-		jive_node * tail_node = jive::gamma_tail_op().create_node(subregion, 0, nullptr);
-		arguments[n] = tail_node->outputs[0];
+		jive_node * head = jive::gamma_head_op().create_node(subregion, 0, nullptr);
+		jive_node * tail = jive::gamma_tail_op().create_node(subregion, 1, &head->outputs[0]);
+		arguments[n] = tail->outputs[0];
 	}
 	arguments[nalternatives] = predicate;
 
 	jive_node * gamma = jive::gamma_op(nalternatives).create_node(region, nalternatives+1, arguments);
 	
 	for (size_t n = 0; n < nvalues; n++) {
-		jive::gate * gate = jive_graph_create_gate(
+		jive::gate * gate_head = jive_graph_create_gate(
+			region->graph, jive::detail::strfmt("head_", gamma, "_", n), *types[n]);
+		jive::gate * gate_tail = jive_graph_create_gate(
 			region->graph, jive::detail::strfmt("gamma_", gamma, "_", n), *types[n]);
-		for (size_t i = 0; i < nalternatives; i++)
-			jive_node_gate_input(arguments[i]->node(), gate, alternatives[i][n]);
-		jive_node_gate_output(gamma, gate);
+
+		for (size_t i = 0; i < nalternatives; i++) {
+			jive_node * head = arguments[i]->node()->producer(0);
+			jive_node_gate_input(head, gate_head, alternatives[i][n]);
+			jive::output * value = jive_node_gate_output(head, gate_head);
+			jive_node_gate_input(arguments[i]->node(), gate_tail, value);
+		}
+		jive_node_gate_output(gamma, gate_tail);
 	}
 
 	return gamma;
@@ -184,19 +234,34 @@ jive_gamma(jive::output * predicate,
 	*/
 	if (nf->get_mutable() && nf->get_invariant_reduction()) {
 		results.clear();
+		jive_node * tail0 = node->producer(0);
+		jive_node * head0 = tail0->producer(0);
 		size_t nalternatives = node->ninputs-1;
 		for (size_t v = node->noutputs; v > 0; --v) {
+			jive::output * value = tail0->inputs[v]->origin();
+			if (value->node() != head0)
+				continue;
+
 			size_t n;
-			jive::output * value = node->producer(0)->inputs[v-1]->origin();
+			value = head0->inputs[v-1]->origin();
 			for (n = 1; n < nalternatives; n++) {
-				if (value != node->producer(n)->inputs[v-1]->origin())
+				jive_node * tail = node->producer(n);
+				jive_node * head = tail->producer(0);
+				if (tail->producer(v) != head || value != head->inputs[v-1]->origin())
 					break;
 			}
 			if (n == nalternatives) {
-				results.push_back(node->producer(0)->inputs[v-1]->origin());
+				results.push_back(head0->inputs[v]->origin());
+
+				/* FIXME: ugh, this should be done by DNE */
 				delete node->outputs[v-1];
-				for (size_t n = 0; n < nalternatives; n++)
-					delete node->producer(n)->inputs[v-1];
+				for (size_t n = 0; n < nalternatives; n++) {
+					jive_node * tail = node->producer(n);
+					jive_node * head = tail->producer(0);
+					delete tail->inputs[v];
+					delete head->outputs[v];
+					delete head->inputs[v-1];
+				}
 			} else
 				results.push_back(node->outputs[v-1]);
 		}

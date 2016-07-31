@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -357,6 +357,13 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
+eval_gamma_head_node(const struct jive_node * node, size_t index, context & ctx)
+{
+	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_head_op*>(&node->operation()));
+	return eval_input(node->inputs[index-1], ctx);
+}
+
+static const std::unique_ptr<const literal>
 eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
@@ -369,7 +376,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 
 	ctx.push_frame(tail->region);
 	std::vector<std::unique_ptr<const literal>> results;
-	for (size_t n = 0; n < tail->ninputs; n++)
+	for (size_t n = 1; n < tail->ninputs; n++)
 		results.emplace_back(eval_input(tail->inputs[n], ctx));
 	ctx.pop_frame(tail->region);
 
@@ -460,6 +467,7 @@ static eval_map evlmap
 	{std::type_index(typeid(jive::fct::apply_op)), eval_apply_node},
 	{std::type_index(typeid(jive::fct::lambda_head_op)), eval_lambda_head_node},
 	{std::type_index(typeid(jive::fct::lambda_op)), eval_lambda_node},
+	{std::type_index(typeid(jive::gamma_head_op)), eval_gamma_head_node},
 	{std::type_index(typeid(jive::gamma_op)), eval_gamma_node},
 	{std::type_index(typeid(jive::theta_head_op)), eval_theta_head_node},
 	{std::type_index(typeid(jive::theta_op)), eval_theta_node},
