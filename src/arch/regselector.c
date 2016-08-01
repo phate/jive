@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -248,8 +248,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
 		const jive_register_class * regcls = op->regcls();
 		jive_node * origin = node->producer(1);
-		JIVE_DEBUG_ASSERT(origin->region == root_region);
-		
+
 		if (dynamic_cast<const jive::base::binary_op *>(&origin->operation())) {
 			jive::output * operands[origin->noperands];
 			for (size_t n = 0; n < origin->noperands; n++) {
@@ -294,11 +293,12 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 		}
 		return;
 	}
-	
+
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
-		if (input->producer()->region != root_region)
+		if (input->producer()->region != root_region
+		&& !dynamic_cast<const jive::base::nullary_op*>(&input->producer()->operation()))
 			continue;
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 		if (!port)
