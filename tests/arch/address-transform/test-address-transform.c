@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -48,7 +48,7 @@ static int test_main(void)
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
 	jive_label_external_init(&write_label, "write", &write_symbol);
-	jive::output * label = jive_label_to_address_create(graph, &write_label.base);
+	jive::output * label = jive_label_to_address_create(graph->root_region, &write_label.base);
 	jive::output * tmparray2[] = {memberof, containerof};
 	const jive::base::type * tmparray3[] = {&addr, &addr};
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -34,8 +34,8 @@ static int test_main(void)
 	jive_label_external_init(&foobar, "foobar", &foobar_symbol);
 	jive_label_external_init(&bla, "bla", &bla_symbol);
 
-	jive::output * o0 = jive_label_to_address_create(graph, &foobar.base);
-	jive::output * o1 = jive_label_to_address_create(graph, &bla.base);
+	jive::output * o0 = jive_label_to_address_create(graph->root_region, &foobar.base);
+	jive::output * o1 = jive_label_to_address_create(graph->root_region, &bla.base);
 
 	const jive::address::label_to_address_op * attrs0;
 	const jive::address::label_to_address_op * attrs1;
@@ -47,9 +47,9 @@ static int test_main(void)
 	
 	assert(o0->node()->operation() != *attrs1);
 	
-	jive::output * o2 = jive_label_to_bitstring_create(graph, &foobar.base, 32);
-	jive::output * o3 = jive_label_to_bitstring_create(graph, &bla.base, 32);
-	jive::output * o4 = jive_label_to_bitstring_create(graph, &foobar.base, 16);
+	jive::output * o2 = jive_label_to_bitstring_create(graph->root_region, &foobar.base, 32);
+	jive::output * o3 = jive_label_to_bitstring_create(graph->root_region, &bla.base, 32);
+	jive::output * o4 = jive_label_to_bitstring_create(graph->root_region, &foobar.base, 16);
 
 	const jive::address::label_to_bitstring_op * attrs2;
 	const jive::address::label_to_bitstring_op * attrs3;

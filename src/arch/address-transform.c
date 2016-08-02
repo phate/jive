@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -178,7 +178,7 @@ jive_label_to_address_node_address_transform(
 {
 	const jive_label * label = op.label();
 
-	jive::output * label_o = jive_label_to_bitstring_create(node->region->graph, label, nbits);
+	jive::output * label_o = jive_label_to_bitstring_create(node->graph->root_region, label, nbits);
 	jive::output * addr_o = jive_bitstring_to_address_create(label_o, nbits,
 		&node->outputs[0]->type());
 	node->outputs[0]->replace(addr_o);

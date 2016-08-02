@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -389,12 +389,11 @@ jive_arrayindex(jive::output * addr1, jive::output * addr2,
 /* label_to_address node */
 
 jive::output *
-jive_label_to_address_create(jive_graph * graph, const jive_label * label);
+jive_label_to_address_create(jive_region * region, const jive_label * label);
 
 /* label_to_bitstring node */
 
 jive::output *
-jive_label_to_bitstring_create(
-	jive_graph * graph, const jive_label * label, size_t nbits);
+jive_label_to_bitstring_create(jive_region * region, const jive_label * label, size_t nbits);
 
 #endif

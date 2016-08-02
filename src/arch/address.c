@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -434,10 +434,10 @@ label_to_address_op::copy() const
 
 
 jive::output *
-jive_label_to_address_create(jive_graph * graph, const jive_label * label)
+jive_label_to_address_create(jive_region * region, const jive_label * label)
 {
 	jive::address::label_to_address_op op(label);
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(region, op, {})[0];
 }
 
 /* label_to_bitstring_node */
@@ -508,8 +508,8 @@ constant(struct jive_graph * graph, const value_repr & vr)
 
 
 jive::output *
-jive_label_to_bitstring_create(jive_graph * graph, const jive_label * label, size_t nbits)
+jive_label_to_bitstring_create(jive_region * region, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_op op(label, nbits);
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(region, op, {})[0];
 }
