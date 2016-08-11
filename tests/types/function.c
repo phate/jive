@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -21,114 +21,6 @@
 #include <jive/vsdg.h>
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/phi.h>
-
-static void
-test_simple_lambda(struct jive_graph * graph)
-{
-	jive_test_value_type vtype;
-	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&vtype, &vtype, &vtype});
-
-	const jive::base::type * tmparray1[] = {&vtype, &vtype, &vtype};
-	const char * tmparray2[] = {"x", "y", "z"};
-
-	jive_lambda * lambda = jive_lambda_begin(graph->root_region,
-		3, tmparray1, tmparray2);
-
-	jive_node * node = jive_test_node_create(lambda->region,
-		{&vtype}, {lambda->arguments[0]}, {&vtype});
-
-	const jive::base::type * tmparray3[] = {&vtype, &vtype};
-	jive::output * tmparray4[] = {node->outputs[0], lambda->arguments[1]};
-
-	jive::output * fct = jive_lambda_end(lambda, 2, tmparray3,
-		tmparray4);
-
-	std::vector<jive::output *> results = jive_apply_create(fct, 3, &top->outputs[0]);
-
-	jive_node * bottom = jive_test_node_create(graph->root_region,
-		{&vtype, &vtype}, results, {&vtype});
-	jive_graph_export(graph, bottom->outputs[0]);
-
-	jive_view(graph, stderr);
-
-	jive_lambda_node_remove_dead_parameters(fct->node());
-	jive_graph_prune(graph);
-
-	jive_view(graph, stderr);
-
-	assert(bottom->producer(1) == top);
-
-	jive_node * apply = bottom->producer(0);
-	assert(apply->ninputs == 2);
-
-}
-
-static void
-test_recursive_lambda(struct jive_graph * graph)
-{
-	jive_test_value_type vtype;
-	jive_node * top = jive_test_node_create(graph->root_region,
-		{}, {}, {&vtype, &vtype, &vtype});
-
-	const jive::base::type * tmparray7[] = {&vtype, &vtype, &vtype};
-	const jive::base::type * tmparray8[] = {&vtype, &vtype};
-
-	jive::fct::type fcttype(3, tmparray7, 2, tmparray8);
-
-	jive_phi phi = jive_phi_begin(graph->root_region);
-	jive_phi_fixvar fv = jive_phi_fixvar_enter(phi, &fcttype);
-	const jive::base::type * tmparray9[] = {&vtype, &vtype, &vtype};
-	const char * tmparray10[] = {"x", "y", "z"};
-
-	jive_lambda * lambda = jive_lambda_begin(phi.region,
-		3, tmparray9, tmparray10);
-
-	jive_node * node = jive_test_node_create(lambda->region,
-		{&vtype}, {lambda->arguments[0]}, {&vtype});
-
-	jive::output * tmparray11[] = {node->outputs[0], node->outputs[0], node->outputs[0]};
-	std::vector<jive::output *> results = jive_apply_create(fv.value, 3, tmparray11);
-	const jive::base::type * tmparray12[] = {&vtype, &vtype};
-	jive::output * tmparray13[] = {results[0], lambda->arguments[1]};
-
-	jive::output * fct = jive_lambda_end(lambda, 2,
-		tmparray12, tmparray13);
-
-	jive_phi_fixvar_leave(phi, fv.gate, fct);
-	jive_phi_end(phi, 1, &fv);
-
-	results = jive_apply_create(fv.value, 3, &top->outputs[0]);
-
-	jive_node * bottom = jive_test_node_create(graph->root_region,
-		{&vtype, &vtype}, {results[0], results[1]}, {&vtype});
-	jive_graph_export(graph, bottom->outputs[0]);
-
-	jive_view(graph, stderr);
-
-	jive_lambda_node_remove_dead_parameters(fct->node());
-	jive_graph_prune(graph);
-
-	jive_view(graph, stderr);
-}
-
-static int
-function_test_lambda_dead_parameter_removal(void)
-{
-	setlocale(LC_ALL, "");
-
-	jive_graph * graph = jive_graph_create();
-	test_simple_lambda(graph);
-	jive_graph_destroy(graph);
-
-	graph = jive_graph_create();
-	test_recursive_lambda(graph);
-	jive_graph_destroy(graph);
-
-	return 0;
-}
-
-JIVE_UNIT_TEST_REGISTER("types/function/test-lambda_dead_parameter_removal",
-	function_test_lambda_dead_parameter_removal);
 
 static int function_test_build_lambda(void)
 {

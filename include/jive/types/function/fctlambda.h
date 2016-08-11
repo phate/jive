@@ -119,9 +119,6 @@ jive_lambda_is_self_recursive(const jive_node * self);
 void
 jive_inline_lambda_apply(jive_node * apply_node);
 
-bool
-jive_lambda_node_remove_dead_parameters(const jive_node * self);
-
 /* lambda instantiation */
 
 /**
