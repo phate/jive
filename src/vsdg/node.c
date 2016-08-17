@@ -67,6 +67,14 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 
 namespace jive {
 
+/* iport */
+
+iport::~iport() noexcept
+{}
+
+iport::iport()
+{}
+
 /* inputs */
 
 input::input(
@@ -74,7 +82,8 @@ input::input(
 	size_t index,
 	jive::output * origin,
 	const jive::base::type & type)
-	: gate(nullptr)
+	: iport()
+	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, index_(index)
@@ -275,12 +284,22 @@ jive_input_auto_merge_variable(jive::input * self)
 	return ssavar;
 }
 
-/* outputs */
 
 namespace jive {
 
+/* oport */
+
+oport::~oport()
+{}
+
+oport::oport()
+{}
+
+/* outputs */
+
 output::output(jive_node * node, size_t index, const jive::base::type & type)
-	: gate(nullptr)
+	: oport()
+	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, index_(index)

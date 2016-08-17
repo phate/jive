@@ -28,16 +28,35 @@ namespace base {
 class gate;
 class node_normal_form;
 
+class iport {
+public:
+	virtual
+	~iport() noexcept;
+
+	iport();
+
+	iport(const iport &) = delete;
+
+	iport(const iport &&) = delete;
+
+	iport &
+	operator=(const iport &) = delete;
+
+	iport &
+	operator=(const iport &&) = delete;
+};
+
 /**
         \defgroup jive::input Inputs
         Inputs
         @{
 */
 
-class input final {
+class input final : public iport {
 	friend jive::output;
 
 public:
+	virtual
 	~input() noexcept;
 
 	input(
@@ -133,6 +152,24 @@ jive_input_auto_merge_variable(jive::input * self);
 
 namespace jive {
 
+class oport {
+public:
+	virtual
+	~oport() noexcept;
+
+	oport();
+
+	oport(const oport &) = delete;
+
+	oport(const oport &&) = delete;
+
+	oport &
+	operator=(const oport &) = delete;
+
+	oport &
+	operator=(const oport &&) = delete;
+};
+
 /**	@}	*/
 
 /**
@@ -141,10 +178,11 @@ namespace jive {
         @{
 */
 
-class output final {
+class output final : public oport {
 	friend jive::input;
 
 public:
+	virtual
 	~output() noexcept;
 
 	output(struct jive_node * node, size_t index, const jive::base::type & type);
