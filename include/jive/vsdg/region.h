@@ -44,26 +44,6 @@ struct jive_region_attrs {
 	bool is_looped;
 };
 
-typedef struct jive_region_hull_entry jive_region_hull_entry;
-
-struct jive_region_hull_entry {
-	struct {
-		struct jive_region_hull_entry * prev;
-		struct jive_region_hull_entry * next;
-	} region_hull_list;
-
-	struct {
-		struct jive_region_hull_entry * prev;
-		struct jive_region_hull_entry * next;
-	} input_hull_list;
-
-	/* the input that the entry represents */
-	jive::input * input;
-
-	/* the region where entry lives */
-	struct jive_region * region;
-};
-
 class jive_region {
 public:
 	~jive_region();
@@ -119,11 +99,7 @@ public:
 		jive_region * prev;
 		jive_region * next;
 	} region_subregions_list;
-	struct {
-		struct jive_region_hull_entry * first;
-		struct jive_region_hull_entry * last;
-	} hull;
-	
+
 	jive_region_attrs attrs;
 	
 	struct jive_node * top;
@@ -213,32 +189,7 @@ jive_region_map_to_section(const struct jive_region * region)
 	return section;
 }
 
-void
-jive_region_hull_add_input(struct jive_region * region, jive::input * input);
-
-JIVE_EXPORTED_INLINE void
-jive_region_hull_add_hull_to_parents(struct jive_region * region)
-{
-	jive_region_hull_entry * entry, * next;
-	JIVE_LIST_ITERATE_SAFE(region->hull, entry, next, region_hull_list)
-		jive_region_hull_add_input(region->parent, entry->input);
-}
-
-void
-jive_region_hull_remove_input(struct jive_region * region, jive::input * input);
-
-JIVE_EXPORTED_INLINE void
-jive_region_hull_remove_hull_from_parents(struct jive_region * region)
-{
-	jive_region_hull_entry * entry, * next;
-	JIVE_LIST_ITERATE_SAFE(region->hull, entry, next, region_hull_list)
-		jive_region_hull_remove_input(region->parent, entry->input);
-}
-
 #ifdef JIVE_DEBUG
-void
-jive_region_verify_hull(struct jive_region * region);
-
 void
 jive_region_verify_top_node_list(struct jive_region * region);
 #endif

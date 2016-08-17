@@ -49,7 +49,6 @@ jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
 	nodes.first = nodes.last = nullptr;
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
-	hull.first = hull.last = nullptr;
 	region_subregions_list.prev = region_subregions_list.next = nullptr;
 	jive_region_attrs_init(&attrs);
 
@@ -84,14 +83,12 @@ jive_region::reparent(jive_region * new_parent) noexcept
 	};
 
 	JIVE_LIST_REMOVE(parent->subregions, this, region_subregions_list);
-	jive_region_hull_remove_hull_from_parents(this);
 
 	parent = new_parent;
 	size_t new_depth = new_parent->depth() + 1;
 	if (new_depth != depth())
 		set_depth_recursive(this, new_depth);
 
-	jive_region_hull_add_hull_to_parents(this);
 	JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
 }
 
@@ -229,99 +226,7 @@ jive_region_copy_substitute(
 	}
 }
 
-static jive_region_hull_entry *
-jive_region_hull_entry_create(jive_region * region, jive::input * input)
-{
-	jive_region_hull_entry * entry = new jive_region_hull_entry;
-	entry->region_hull_list.prev = entry->region_hull_list.next = NULL;
-	entry->input_hull_list.prev = entry->input_hull_list.next = NULL;
-	entry->input = input;
-	entry->region = region;
-
-	JIVE_LIST_PUSH_BACK(region->hull, entry, region_hull_list);
-	JIVE_LIST_PUSH_BACK(input->hull, entry, input_hull_list);
-	return entry;
-}
-
-static void
-jive_region_hull_entry_destroy(jive_region_hull_entry * entry)
-{
-	JIVE_LIST_REMOVE(entry->input->hull, entry, input_hull_list);
-	JIVE_LIST_REMOVE(entry->region->hull, entry, region_hull_list);
-	delete entry;
-}
-
-void
-jive_region_hull_add_input(jive_region * region, jive::input * input)
-{
-	jive_region * origin_region = input->producer()->region;
-	while (region->depth() > origin_region->depth()) {
-		jive_region_hull_entry_create(region, input);
-		region = region->parent;
-	}
-}
-
-void
-jive_region_hull_remove_input(struct jive_region * region, jive::input * input)
-{
-	jive_region_hull_entry * entry, * next_entry;
-	JIVE_LIST_ITERATE_SAFE(input->hull, entry, next_entry, input_hull_list) {
-		if (region->depth() >= entry->region->depth()) {
-			jive_region_hull_entry_destroy(entry);
-		}
-	}
-}
-
 #ifdef JIVE_DEBUG
-void
-jive_region_verify_hull(struct jive_region * region)
-{
-	jive_region * subregion;
-	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
-		jive_region_verify_hull(subregion);
-
-	/* check whether all inputs of the nodes in the region are in the hull */
-	jive_node * node;
-	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list) {
-		size_t i;
-		for (i = 0; i < node->ninputs; i++) {
-			if (node->producer(i)->region->depth() < region->depth()) {
-				jive_region_hull_entry * entry;
-				JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
-					if (entry->input == node->inputs[i])
-						break;
-				}
-				if (entry == NULL)
-					JIVE_DEBUG_ASSERT(0);
-			}
-		}
-	}
-
-	/* check whether all inputs from the subregion hulls that originate from a node in a parent region
-	are in the hull */
-	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
-		jive_region_hull_entry * sub_entry;
-		JIVE_LIST_ITERATE(subregion->hull, sub_entry, region_hull_list) {
-			if (sub_entry->input->origin()->node()->region->depth() < region->depth()) {
-				jive_region_hull_entry * entry;
-				JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
-					if (entry->input == sub_entry->input)
-						break;
-				}
-				if (entry == NULL)
-					JIVE_DEBUG_ASSERT(0);
-			}
-		}
-	}
-
-	/* check region hull whether it contains entries that don't belong there */
-	jive_region_hull_entry * entry;
-	JIVE_LIST_ITERATE(region->hull, entry, region_hull_list) {
-		if (entry->input->origin()->node()->region->depth() >= region->depth())
-			JIVE_DEBUG_ASSERT(0);
-	}
-}
-
 void
 jive_region_verify_top_node_list(struct jive_region * region)
 {

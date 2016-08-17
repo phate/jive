@@ -70,10 +70,8 @@ input::input(
 	output_users_list.prev = output_users_list.next = nullptr;
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
-	hull.first = hull.last = nullptr;
 
 	origin->add_user(this);
-	jive_region_hull_add_input(node->region, this);
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -113,8 +111,6 @@ input::~input() noexcept
 	}
 	if (node()->ninputs == 0)
 		JIVE_LIST_PUSH_BACK(node()->region->top_nodes, node_, region_top_node_list);
-
-	jive_region_hull_remove_input(node()->region, this);
 }
 
 void
@@ -171,10 +167,6 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	}
 
 	JIVE_DEBUG_ASSERT(this->node()->graph == new_origin->node()->graph);
-
-	if (this->producer()->region != this->node()->region)
-		jive_region_hull_remove_input(this->node()->region, this);
-
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node(), new_origin));
 
 	jive::output * old_origin = this->origin();
@@ -183,18 +175,11 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	this->origin_ = new_origin;
 	new_origin->add_user(this);
 
-	if (new_origin->node()->region != this->node()->region)
-		jive_region_hull_add_input(this->node()->region, this);
-
 	jive_node_invalidate_depth_from_root(this->node());
 
 	jive_graph_mark_denormalized(new_origin->node()->graph);
 
 	node()->graph->on_input_change(this, old_origin, new_origin);
-
-#ifdef JIVE_DEBUG
-	jive_region_verify_hull(this->node()->region->graph->root_region);
-#endif
 }
 
 }	//jive namespace
@@ -575,11 +560,6 @@ jive_node_add_input(jive_node * self, const jive::base::type * type, jive::outpu
 	jive_node_invalidate_depth_from_root(self);
 	self->graph->on_input_create(input);
 
-#ifdef JIVE_DEBUG
-	jive_region_verify_hull(self->region->graph->root_region);
-	jive_region_verify_top_node_list(self->region->graph->root_region);
-#endif
-
 	return input;
 }
 
@@ -712,52 +692,26 @@ jive_node_move(jive_node * self, jive_region * new_region)
 	if (!parent->contains(child))
 		throw std::logic_error("Node can only be moved along the region path to the root.");
 
-	size_t n;
-	/* remove all node inputs from hull of old region and update notion of
-	top nodes of old region */
-	for (n = 0; n < self->ninputs; n++)
-		jive_region_hull_remove_input(self->region, self->inputs[n]);
+	/* update notion of top nodes of old region */
 	if (self->ninputs == 0) {
 		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
 	}
 		
-	/* remove all node output users in new region from the hulls */
-	for (n = 0; n < self->noutputs; n++) {
-		jive::input * user;
-		JIVE_LIST_ITERATE(self->outputs[n]->users, user, output_users_list)
-			jive_region_hull_remove_input(user->node()->region, user);
-	}
-
-
 	/* move the node to the new region */
 	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
 	self->region = new_region;
 	JIVE_LIST_PUSH_BACK(self->region->nodes, self, region_nodes_list);
 
-	/* re-add all node inputs to hull of new region and update notion
-	of top nodes of new region */
-	for (n = 0; n < self->ninputs; n++) {
+	/* update notion of top nodes of new region */
+	for (size_t n = 0; n < self->ninputs; n++) {
 		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
 		if (dynamic_cast<const jive::achr::type*>(&self->inputs[n]->type())) {
 			jive_region * subregion = self->producer(n)->region;
 			subregion->reparent(new_region);
-		} else if (self->producer(n)->region != new_region) {
-			/* or add the node's input to the hull */
-			jive_region_hull_add_input(new_region, self->inputs[n]);
 		}
 	}
 	if (self->ninputs == 0) {
 		JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
-	}
-
-
-	/* add all output users to the hulls */
-	for (n = 0; n < self->noutputs; n++) {
-		jive::input * user;
-		JIVE_LIST_ITERATE(self->outputs[n]->users, user, output_users_list) {
-			if (self->region != user->node()->region)
-				jive_region_hull_add_input(user->node()->region, user);
-		}
 	}
 }
 
@@ -1001,11 +955,6 @@ jive_opnode_create(
 		JIVE_DEBUG_ASSERT(!region->bottom);
 		region->bottom = node;
 	}
-
-	#ifdef JIVE_DEBUG
-		jive_region_verify_hull(node->region->graph->root_region);
-		jive_region_verify_top_node_list(node->region->graph->root_region);
-	#endif
 
 	return node;
 }

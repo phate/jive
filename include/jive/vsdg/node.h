@@ -102,11 +102,6 @@ public:
 		input * next;
 	} ssavar_input_list;
 
-	struct {
-		struct jive_region_hull_entry * first;
-		struct jive_region_hull_entry * last;
-	} hull;
-
 	const struct jive_resource_class * required_rescls;
 
 private:
