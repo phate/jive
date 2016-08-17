@@ -39,9 +39,9 @@ fib(size_t n)
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, &types[0], &names[0]);
 
 	jive::output * n = lambda->arguments[0];
-	jive::output * i = jive_bitconstant_unsigned(graph->root_region, 32, 1);
-	jive::output * j = jive_bitconstant_unsigned(graph->root_region, 32, 0);
-	jive::output * k = jive_bitconstant_unsigned(graph->root_region, 32, 1);
+	jive::output * i = jive_bitconstant_unsigned(lambda->region, 32, 1);
+	jive::output * j = jive_bitconstant_unsigned(lambda->region, 32, 0);
+	jive::output * k = jive_bitconstant_unsigned(lambda->region, 32, 1);
 
 	jive_theta theta = jive_theta_begin(lambda->region);
 	jive_theta_loopvar lv_i = jive_theta_loopvar_enter(theta, i);
@@ -52,7 +52,7 @@ fib(size_t n)
 	std::vector<jive::output*> operands({lv_i.value, lv_j.value});
 	jive::output * t = jive_bitsum(2, &operands[0]);
 
-	jive::output * one = jive_bitconstant_unsigned(graph->root_region, 32, 1);
+	jive::output * one = jive_bitconstant_unsigned(theta.region, 32, 1);
 
 	operands.clear();
 	operands.push_back(one);
@@ -144,8 +144,8 @@ unsigned int fib(unsigned int n){
 	jive::fct::lambda_dep depvar = jive::fct::lambda_dep_add(lambda, fv_fib.value);
 
 	jive::output * n = lambda->arguments[0];
-	jive::output * one = jive_bitconstant_unsigned(graph->root_region, 32, 1);
-	jive::output * two = jive_bitconstant_unsigned(graph->root_region, 32, 2);
+	jive::output * one = jive_bitconstant_unsigned(lambda->region, 32, 1);
+	jive::output * two = jive_bitconstant_unsigned(lambda->region, 32, 2);
 
 	jive::output * tmp = jive_bitdifference(n, one);
 	tmp = jive_apply_create(depvar.output, 1, &tmp)[0];
@@ -227,7 +227,7 @@ test_loadstore(struct jive_graph * graph)
 
 	jive::output * value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 
-	jive::output * three = jive_bitconstant_unsigned(graph->root_region, 4, 3);
+	jive::output * three = jive_bitconstant_unsigned(lambda->region, 4, 3);
 	std::vector<jive::output*> operands({value, three});
 	value = jive_bitsum(2, &operands[0]);
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2013 2014 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2013 2014 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -313,7 +313,7 @@ static int test_main(void)
 	test_option_t opt1 = 1;
 	test_option_t opt2 = 2;
 	test_option_t opt3 = 3;
-	test_option_t opt4 = 6;
+	test_option_t opt4 = 5;
 
 	const jive::base::type * tmparray0[] = {&bits32};
 	jive_node * n1 = jive_negtestnode_create(graph->root_region,
@@ -330,7 +330,7 @@ static int test_main(void)
 		0, 0, 0);
 	
 	jive_region * subregion = new jive_region(graph->root_region, graph);
-	jive_node * n5 = jive_negtestnode_create(graph->root_region,
+	jive_node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive_node * n6 = jive_negtestnode_create(subregion,
@@ -347,8 +347,8 @@ static int test_main(void)
 	
 	expect_options(&nego, n1->outputs[0], 1, n2->inputs[0], 1);
 	expect_options(&nego, n3->outputs[0], 1, n4->inputs[0], 2);
-	expect_options(&nego, n5->outputs[0], 1, n6->inputs[0], 2);
-	expect_options(&nego, n5->outputs[0], 1, n7->inputs[0], 2);
+	expect_options(&nego, n5->outputs[0], 1, n6->inputs[0], 1);
+	expect_options(&nego, n5->outputs[0], 1, n7->inputs[0], 1);
 	
 	jive_negotiator_insert_split_nodes(&nego);
 	

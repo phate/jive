@@ -1,6 +1,6 @@
 /*
  * Copyright 2010 2011 2012 2013 2014 2015 Helge Bahmann <hcb@chaoticmind.net>
- * Copyright 2011 2012 2014 2015 Nico Reißmann <nico.reissmann@gmail.com>
+ * Copyright 2011 2012 2014 2015 2016 Nico Reißmann <nico.reissmann@gmail.com>
  * See COPYING for terms of redistribution.
  */
 
@@ -1088,8 +1088,8 @@ static int types_bitstring_test_normalize(void)
 	const jive::base::type * tmparray11[] = {&bits32};
 	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, tmparray11, tmparray0);
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root_region, 32, 3);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root_region, 32, 4);
+	jive::output * c0 = jive_bitconstant_unsigned(lambda->region, 32, 3);
+	jive::output * c1 = jive_bitconstant_unsigned(lambda->region, 32, 4);
 	
 	jive::node_normal_form * sum_nf = jive_graph_get_nodeclass_form(
 		graph, typeid(jive::bits::add_op));
