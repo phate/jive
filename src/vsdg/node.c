@@ -24,6 +24,24 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/variable.h>
 
+/*
+	FIXME: merge with jive_node_valid_edge when we transformed to new representation
+*/
+static bool
+jive_input_is_valid(const jive::input * input)
+{
+	jive_region * region = input->node()->region;
+	jive_region * origin_region = input->origin()->node()->region;
+
+	if (dynamic_cast<const jive::achr::type*>(&input->type()))
+		return origin_region->parent == region;
+
+	if (dynamic_cast<const jive::region_head_op*>(&input->node()->operation()))
+		return origin_region == region->parent;
+
+	return origin_region == region;
+}
+
 static void
 jive_node_invalidate_depth_from_root(jive_node * self)
 {
@@ -174,6 +192,9 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	old_origin->remove_user(this);
 	this->origin_ = new_origin;
 	new_origin->add_user(this);
+
+	if (!jive_input_is_valid(this))
+		throw jive::compiler_error("Invalid input");
 
 	jive_node_invalidate_depth_from_root(this->node());
 
@@ -555,6 +576,9 @@ jive_node_add_input(jive_node * self, const jive::base::type * type, jive::outpu
 	self->ninputs ++;
 	self->inputs.resize(self->ninputs);
 	self->inputs[input->index()] = input;
+
+	if (!jive_input_is_valid(input))
+		throw jive::compiler_error("Invalid input");
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
 	jive_node_invalidate_depth_from_root(self);
@@ -954,6 +978,11 @@ jive_opnode_create(
 	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->bottom);
 		region->bottom = node;
+	}
+
+	for (size_t n = 0; n < node->ninputs; n++) {
+		if (!jive_input_is_valid(node->inputs[n]))
+			throw jive::compiler_error("Invalid input");
 	}
 
 	return node;
