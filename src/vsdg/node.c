@@ -72,7 +72,8 @@ namespace jive {
 iport::~iport() noexcept
 {}
 
-iport::iport()
+iport::iport(size_t index)
+	: index_(index)
 {}
 
 /* inputs */
@@ -82,11 +83,10 @@ input::input(
 	size_t index,
 	jive::output * origin,
 	const jive::base::type & type)
-	: iport()
+	: iport(index)
 	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
-	, index_(index)
 	, origin_(origin)
 	, node_(node)
 	, type_(type.copy())
@@ -134,7 +134,7 @@ input::~input() noexcept
 	node()->ninputs--;
 	for (size_t n = index(); n < node()->ninputs; n++) {
 		node()->inputs[n] = node()->inputs[n+1];
-		node()->inputs[n]->index_ = n;
+		node()->inputs[n]->set_index(n);
 	}
 	if (node()->ninputs == 0)
 		JIVE_LIST_PUSH_BACK(node()->region->top_nodes, node_, region_top_node_list);
@@ -292,17 +292,17 @@ namespace jive {
 oport::~oport()
 {}
 
-oport::oport()
+oport::oport(size_t index)
+	: index_(index)
 {}
 
 /* outputs */
 
 output::output(jive_node * node, size_t index, const jive::base::type & type)
-	: oport()
+	: oport(index)
 	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
-	, index_(index)
 	, node_(node)
 	, type_(type.copy())
 {
@@ -333,10 +333,9 @@ output::~output() noexcept
 	}
 
 	node_->noutputs--;
-	size_t n;
-	for (n = index(); n < node_->noutputs; n++) {
+	for (size_t n = index(); n < node_->noutputs; n++) {
 		node_->outputs[n] = node_->outputs[n+1];
-		node_->outputs[n]->index_ = n;
+		node_->outputs[n]->set_index(n);
 	}
 
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);

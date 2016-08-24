@@ -33,7 +33,7 @@ public:
 	virtual
 	~iport() noexcept;
 
-	iport();
+	iport(size_t index);
 
 	iport(const iport &) = delete;
 
@@ -44,6 +44,22 @@ public:
 
 	iport &
 	operator=(const iport &&) = delete;
+
+	inline size_t
+	index() const noexcept
+	{
+		return index_;
+	}
+
+protected:
+	inline void
+	set_index(size_t index) noexcept
+	{
+		index_ = index;
+	}
+
+private:
+	size_t index_;
 };
 
 /**
@@ -74,12 +90,6 @@ public:
 
 	inline std::string
 	debug_string() const;
-
-	inline size_t
-	index() const noexcept
-	{
-		return index_;
-	}
 
 	inline struct jive_node *
 	node() const noexcept
@@ -124,7 +134,6 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
-	size_t index_;
 	jive::output * origin_;
 	struct jive_node * node_;
 
@@ -157,7 +166,7 @@ public:
 	virtual
 	~oport() noexcept;
 
-	oport();
+	oport(size_t index);
 
 	oport(const oport &) = delete;
 
@@ -168,6 +177,22 @@ public:
 
 	oport &
 	operator=(const oport &&) = delete;
+
+	inline size_t
+	index() const noexcept
+	{
+		return index_;
+	}
+
+protected:
+	inline void
+	set_index(size_t index) noexcept
+	{
+		index_ = index;
+	}
+
+private:
+	size_t index_;
 };
 
 /**	@}	*/
@@ -204,12 +229,6 @@ public:
 	inline bool single_user() const noexcept
 		{ return (users.first != nullptr) && (users.first == users.last); }
 
-	inline size_t
-	index() const noexcept
-	{
-		return index_;
-	}
-
 	void
 	replace(jive::output * other) noexcept;
 
@@ -240,7 +259,6 @@ private:
 	void
 	remove_user(jive::input * user) noexcept;
 
-	size_t index_;
 	jive_node * node_;
 
 	/*
@@ -362,7 +380,7 @@ jive::input::debug_string() const
 	if (gate)
 		return gate->debug_string();
 
-	return detail::strfmt(index_);
+	return detail::strfmt(index());
 }
 
 inline std::string
