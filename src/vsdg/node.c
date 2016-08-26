@@ -76,6 +76,12 @@ iport::iport(size_t index)
 	: index_(index)
 {}
 
+std::string
+iport::debug_string() const
+{
+	return detail::strfmt(index());
+}
+
 /* inputs */
 
 input::input(
@@ -144,6 +150,15 @@ const jive::base::type &
 input::type() const noexcept
 {
 	return *type_;
+}
+
+std::string
+input::debug_string() const
+{
+	if (gate)
+		return gate->debug_string();
+
+	return iport::debug_string();
 }
 
 void
@@ -302,6 +317,12 @@ oport::oport(size_t index)
 	: index_(index)
 {}
 
+std::string
+oport::debug_string() const
+{
+	return detail::strfmt(index());
+}
+
 /* outputs */
 
 output::output(jive_node * node, size_t index, const jive::base::type & type)
@@ -351,6 +372,15 @@ const jive::base::type &
 output::type() const noexcept
 {
 	return *type_;
+}
+
+std::string
+output::debug_string() const
+{
+	if (gate)
+		return gate->debug_string();
+
+	return oport::debug_string();
 }
 
 void

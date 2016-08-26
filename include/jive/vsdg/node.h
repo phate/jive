@@ -54,6 +54,9 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
+	virtual std::string
+	debug_string() const;
+
 protected:
 	inline void
 	set_index(size_t index) noexcept
@@ -88,8 +91,8 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept override;
 
-	inline std::string
-	debug_string() const;
+	virtual std::string
+	debug_string() const override;
 
 	inline struct jive_node *
 	node() const noexcept
@@ -187,6 +190,9 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
+	virtual std::string
+	debug_string() const;
+
 protected:
 	inline void
 	set_index(size_t index) noexcept
@@ -219,8 +225,8 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept override;
 
-	inline std::string
-	debug_string() const;
+	virtual std::string
+	debug_string() const override;
 
 	inline jive_node * node() const noexcept { return node_; }
 
@@ -372,24 +378,6 @@ inline jive_node *
 jive::input::producer() const noexcept
 {
 	return origin_->node();
-}
-
-inline std::string
-jive::input::debug_string() const
-{
-	if (gate)
-		return gate->debug_string();
-
-	return detail::strfmt(index());
-}
-
-inline std::string
-jive::output::debug_string() const
-{
-	if (gate)
-		return gate->debug_string();
-
-	return detail::strfmt(index());
 }
 
 typedef struct jive_node jive_node;
