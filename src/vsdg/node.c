@@ -387,11 +387,10 @@ output::replace(jive::output * other) noexcept
 void
 output::add_user(jive::input * user) noexcept
 {
-	users.insert(user);
-
-	if (unlikely(node()->nsuccessors == 0))
+	if (!node()->has_successors())
 		JIVE_LIST_REMOVE(node()->graph->bottom, node(), graph_bottom_list);
-	node()->nsuccessors++;
+
+	users.insert(user);
 }
 
 void
@@ -399,8 +398,7 @@ output::remove_user(jive::input * user) noexcept
 {
 	users.erase(user);
 
-	node()->nsuccessors--;
-	if (unlikely(node()->nsuccessors == 0))
+	if (!node()->has_successors())
 		JIVE_LIST_PUSH_BACK(node()->graph->bottom, node(), graph_bottom_list);
 }
 
@@ -545,8 +543,7 @@ jive_node_init_(
 {
 	self->graph = region->graph;
 	self->depth_from_root = 0;
-	self->nsuccessors = 0;
-	
+
 	self->ninputs = 0;
 	self->noutputs = 0;
 	

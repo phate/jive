@@ -408,13 +408,23 @@ public:
 		JIVE_DEBUG_ASSERT(index < ninputs);
 		return inputs[index]->producer();
 	}
+
+	inline bool
+	has_successors() const noexcept
+	{
+		for (auto output : outputs) {
+			if (!output->no_user())
+				return true;
+		}
+
+		return false;
+	}
 	
 	struct jive_graph * graph;
 	
 	struct jive_region * region;
 	
 	size_t depth_from_root;
-	size_t nsuccessors;
 	size_t ninputs;
 	size_t noperands;
 	size_t noutputs;
