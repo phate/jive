@@ -51,6 +51,9 @@ public:
 		return index_;
 	}
 
+	virtual const jive::base::type &
+	type() const noexcept = 0;
+
 protected:
 	inline void
 	set_index(size_t index) noexcept
@@ -82,11 +85,8 @@ public:
 		const jive::base::type & type);
 
 public:
-	inline const jive::base::type &
-	type() const noexcept
-	{
-		return *type_;
-	}
+	virtual const jive::base::type &
+	type() const noexcept override;
 
 	inline std::string
 	debug_string() const;
@@ -184,6 +184,9 @@ public:
 		return index_;
 	}
 
+	virtual const jive::base::type &
+	type() const noexcept = 0;
+
 protected:
 	inline void
 	set_index(size_t index) noexcept
@@ -213,11 +216,8 @@ public:
 	output(struct jive_node * node, size_t index, const jive::base::type & type);
 
 public:
-	const jive::base::type &
-	type() const noexcept
-	{
-		return *type_;
-	}
+	virtual const jive::base::type &
+	type() const noexcept override;
 
 	inline std::string
 	debug_string() const;

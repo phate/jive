@@ -140,6 +140,12 @@ input::~input() noexcept
 		JIVE_LIST_PUSH_BACK(node()->region->top_nodes, node_, region_top_node_list);
 }
 
+const jive::base::type &
+input::type() const noexcept
+{
+	return *type_;
+}
+
 void
 input::swap(jive::input * other) noexcept
 {
@@ -339,6 +345,12 @@ output::~output() noexcept
 	}
 
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
+}
+
+const jive::base::type &
+output::type() const noexcept
+{
+	return *type_;
 }
 
 void
