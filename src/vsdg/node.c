@@ -57,11 +57,8 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 	self->graph->on_node_depth_change(self, old_depth_from_root);
 
 	for (size_t n = 0; n < self->noutputs; n++) {
-		jive::input * user = self->outputs[n]->users.first;
-		while (user) {
+		for (auto user : self->outputs[n]->users)
 			jive_node_invalidate_depth_from_root(user->node());
-			user = user->output_users_list.next;
-		}
 	}
 }
 
@@ -100,7 +97,6 @@ input::input(
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
-	output_users_list.prev = output_users_list.next = nullptr;
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
@@ -288,8 +284,7 @@ jive_input_auto_merge_variable(jive::input * self)
 	if (self->origin()->ssavar) {
 		ssavar = self->origin()->ssavar;
 	} else {
-		jive::input * user;
-		JIVE_LIST_ITERATE(self->origin()->users, user, output_users_list) {
+		for (auto user : self->origin()->users) {
 			if (user->ssavar) {
 				ssavar = user->ssavar;
 				break;
@@ -333,14 +328,13 @@ output::output(jive_node * node, size_t index, const jive::base::type & type)
 	, node_(node)
 	, type_(type.copy())
 {
-	users.first = users.last = nullptr;
 	originating_ssavars.first = originating_ssavars.last = nullptr;
 	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
 }
 
 output::~output() noexcept
 {
-	JIVE_DEBUG_ASSERT(users.first == nullptr && users.last == nullptr);
+	JIVE_DEBUG_ASSERT(users.empty());
 
 	node_->graph->on_output_destroy(this);
 
@@ -386,14 +380,14 @@ output::debug_string() const
 void
 output::replace(jive::output * other) noexcept
 {
-	while (users.first)
-		users.first->divert_origin(other);
+	while (users.size())
+		(*users.begin())->divert_origin(other);
 }
 
 void
 output::add_user(jive::input * user) noexcept
 {
-	JIVE_LIST_PUSH_BACK(users, user, output_users_list);
+	users.insert(user);
 
 	if (unlikely(node()->nsuccessors == 0))
 		JIVE_LIST_REMOVE(node()->graph->bottom, node(), graph_bottom_list);
@@ -403,7 +397,7 @@ output::add_user(jive::input * user) noexcept
 void
 output::remove_user(jive::input * user) noexcept
 {
-	JIVE_LIST_REMOVE(users, user, output_users_list);
+	users.erase(user);
 
 	node()->nsuccessors--;
 	if (unlikely(node()->nsuccessors == 0))
@@ -441,8 +435,7 @@ jive_output_auto_assign_variable(jive::output * self)
 {
 	if (self->ssavar == 0) {
 		jive_ssavar * ssavar = 0;
-		jive::input * user;
-		JIVE_LIST_ITERATE(self->users, user, output_users_list) {
+		for (auto user : self->users) {
 			if (!user->ssavar) continue;
 			if (ssavar) {
 				jive_variable_merge(ssavar->variable, user->ssavar->variable);
@@ -469,8 +462,7 @@ jive_output_auto_merge_variable(jive::output * self)
 	if (!self->ssavar) {
 		jive_variable * variable = jive_output_get_constraint(self);
 		jive_ssavar * ssavar = NULL;
-		jive::input * user;
-		JIVE_LIST_ITERATE(self->users, user, output_users_list) {
+		for (auto user : self->users) {
 			if (user->ssavar) {
 				jive_variable_merge(user->ssavar->variable, variable);
 				JIVE_DEBUG_ASSERT( ssavar == NULL || ssavar == user->ssavar );
@@ -482,8 +474,7 @@ jive_output_auto_merge_variable(jive::output * self)
 		jive_ssavar_assign_output(ssavar, self);
 	}
 
-	jive::input * user;
-	JIVE_LIST_ITERATE(self->users, user, output_users_list) {
+	for (auto user : self->users) {
 		if (!user->ssavar) {
 			jive_variable_merge(self->ssavar->variable, jive_input_get_constraint(user));
 			jive_ssavar_assign_input(self->ssavar, user);
@@ -916,9 +907,8 @@ jive_node_cse(
 	const std::vector<jive::output *> & arguments)
 {
 	if (!arguments.empty()) {
-		jive::input * input;
-		JIVE_LIST_ITERATE(arguments[0]->users, input, output_users_list) {
-			jive_node * node = input->node();
+		for (auto user : arguments[0]->users) {
+			jive_node * node = user->node();
 			if (jive_node_cse_test(node, op, arguments)) {
 				return node;
 			}

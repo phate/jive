@@ -101,11 +101,9 @@ jive_ssavar_assert_consistent(const jive_ssavar * self)
 	jive::output * origin = self->origin;
 	if (!origin)
 		return;
-	
-	jive::input * input;
-	JIVE_LIST_ITERATE(origin->users, input, output_users_list) {
-		JIVE_DEBUG_ASSERT(input->ssavar == origin->ssavar);
-	}
+
+	for (auto user : origin->users)
+		JIVE_DEBUG_ASSERT(user->ssavar == origin->ssavar);
 }
 
 void

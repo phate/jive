@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <unordered_set>
 #include <utility>
 
 #include <jive/util/buffer.h>
@@ -116,11 +117,6 @@ public:
 	inline jive::output * origin() const noexcept { return origin_; }
 
 	inline jive_node * producer() const noexcept;
-
-	struct {
-		input * prev;
-		input * next;
-	} output_users_list;
 
 	jive::gate * gate;
 	struct {
@@ -230,18 +226,22 @@ public:
 
 	inline jive_node * node() const noexcept { return node_; }
 
-	inline bool no_user() const noexcept { return users.first == nullptr; }
+	inline bool
+	no_user() const noexcept
+	{
+		return users.empty();
+	}
 
-	inline bool single_user() const noexcept
-		{ return (users.first != nullptr) && (users.first == users.last); }
+	inline bool
+	single_user() const noexcept
+	{
+		return users.size() == 1;
+	}
 
 	void
 	replace(jive::output * other) noexcept;
 
-	struct {
-		jive::input * first;
-		jive::input * last;
-	} users;
+	std::unordered_set<jive::input*> users;
 
 	jive::gate * gate;
 	struct {

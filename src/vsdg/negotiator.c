@@ -540,8 +540,7 @@ jive_negotiator_connection *
 jive_negotiator_create_output_connection(jive_negotiator * self, jive::output * output)
 {
 	jive_negotiator_connection * connection = 0;
-	jive::input * user;
-	JIVE_LIST_ITERATE(output->users, user, output_users_list) {
+	for (auto user : output->users) {
 		jive_negotiator_port * port = jive_negotiator_map_input(self, user);
 		if (connection && port)
 			jive_negotiator_connection_merge(connection, port->connection);

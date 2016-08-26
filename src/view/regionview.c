@@ -59,13 +59,11 @@ jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * n
 		jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 	}
 	for(n=0; n<nodeview->node->noutputs; n++) {
-		jive::input * user = nodeview->node->outputs[n]->users.first;
-		while(user) {
+		for (auto user : nodeview->node->outputs[n]->users) {
 			if (user->node()->region == self->region) {
 				jive_nodeview * nodeview = self->graphview->nodemap[user->node()];
 				jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 			}
-			user = user->output_users_list.next;
 		}
 	}
 }
