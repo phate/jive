@@ -46,7 +46,7 @@ unary_normal_form::normalize_node(jive_node * node) const
 		if (reduction != jive_unop_reduction_none) {
 			output->replace(op.reduce_operand(reduction, tmp));
 			/* FIXME: not sure whether "destroy" is really appropriate? */
-			jive_node_destroy(node);
+			delete node;
 			return false;
 		}
 	}
@@ -57,7 +57,7 @@ unary_normal_form::normalize_node(jive_node * node) const
 		if (new_node != node) {
 			output->replace(new_node->outputs[0]);
 			/* FIXME: not sure whether "destroy" is really appropriate? */
-			jive_node_destroy(node);
+			delete node;
 			return false;
 		}
 	}

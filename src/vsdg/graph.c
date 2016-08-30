@@ -55,7 +55,7 @@ prune_regions_recursive(jive_region * region)
 
 jive_graph::~jive_graph()
 {
-	jive_node_destroy(root_region->bottom);
+	delete root_region->bottom;
 	jive_graph_prune(this);
 
 	prune_regions_recursive(root_region);
@@ -123,7 +123,7 @@ jive_graph_prune(jive_graph * self)
 		jive_node * next = node->graph_bottom_list.next;
 		
 		if (node != self->root_region->bottom) {
-			jive_node_destroy(node);
+			delete node;
 			if (!next) next = self->bottom.first;
 		}
 		

@@ -766,6 +766,6 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self)
 		jive_negotiator_port_destroy(input_port);
 		jive_negotiator_port_destroy(output_port);
 		node->outputs[0]->replace(node->inputs[0]->origin());
-		jive_node_destroy(node);
+		delete node;
 	}
 }

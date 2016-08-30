@@ -135,7 +135,7 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 		if (new_args.size() == 1) {
 			node->outputs[0]->replace(new_args[0]);
 			/* FIXME: not sure whether "destroy" is really appropriate? */
-			jive_node_destroy(node);
+			delete node;
 			return false;
 		}
 	}
@@ -166,7 +166,7 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 
 		if (new_node != node) {
 			node->outputs[0]->replace(new_node->outputs[0]);
-			jive_node_destroy(node);
+			delete node;
 			return false;
 		}
 	}

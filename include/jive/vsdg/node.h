@@ -581,9 +581,6 @@ jive_node_get_use_count_output(
 	const jive_node * self,
 	struct jive_resource_class_count * use_count);
 
-void
-jive_node_destroy(jive_node * self);
-
 JIVE_EXPORTED_INLINE std::vector<jive::output *>
 jive_node_arguments(jive_node * self)
 {

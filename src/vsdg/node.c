@@ -882,12 +882,6 @@ jive_node::~jive_node()
 		delete tracker_slots[n];
 }
 
-void
-jive_node_destroy(jive_node * self)
-{
-	delete self;
-}
-
 static bool
 jive_node_cse_test(
 	jive_node * node,

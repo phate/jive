@@ -64,7 +64,7 @@ test_mutable_upward_cone_1()
 		jive::upward_cone_traverser trav(g.a2);
 	
 		assert( trav.next() == g.a2 );
-		jive_node_destroy(g.b2);
+		delete g.b2;
 		assert( trav.next() == g.a1 );
 		assert( trav.next() == nullptr );
 	}
@@ -80,7 +80,7 @@ test_mutable_upward_cone_2()
 	{
 		jive::upward_cone_traverser trav(g.a2);
 
-		jive_node_destroy(g.a2);
+		delete g.a2;
 		assert( trav.next() == g.a1 );
 		assert( trav.next() == nullptr );
 	}
