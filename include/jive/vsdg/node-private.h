@@ -14,16 +14,6 @@
 
 /* inheritable node member functions */
 
-void
-jive_node_init_(
-	jive_node * self,
-	struct jive_region * region,
-	size_t noperands,
-	const jive::base::type * const operand_types[],
-	jive::output * const operands[],
-	size_t noutputs,
-	const jive::base::type * const output_types[]);
-
 jive_node *
 jive_opnode_create(
 	const jive::operation & op,

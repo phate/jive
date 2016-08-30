@@ -392,10 +392,8 @@ class jive_node final {
 public:
 	~jive_node();
 
-	inline jive_node(std::unique_ptr<jive::operation> op)
-		: operation_(std::move(op))
-	{
-	}
+	jive_node(std::unique_ptr<jive::operation> op, jive_region * region,
+		const std::vector<jive::output*> & operands);
 
 	inline const jive::operation &
 	operation() const noexcept

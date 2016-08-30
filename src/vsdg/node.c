@@ -531,54 +531,6 @@ gate::split()
 
 }	//jive namespace
 
-void
-jive_node_init_(
-	jive_node * self,
-	struct jive_region * region,
-	size_t noperands,
-	const struct jive::base::type * const operand_types[],
-	jive::output * const operands[],
-	size_t noutputs,
-	const struct jive::base::type * const output_types[])
-{
-	self->graph = region->graph;
-	self->depth_from_root = 0;
-
-	self->ninputs = 0;
-	self->noutputs = 0;
-	
-	JIVE_LIST_PUSH_BACK(region->nodes, self, region_nodes_list);
-	self->region = region;
-
-	if (noperands == 0)
-		JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
-	else
-		self->region_top_node_list.prev = self->region_top_node_list.next = nullptr;
-
-	JIVE_LIST_PUSH_BACK(self->graph->bottom, self, graph_bottom_list);
-
-	for (size_t n = 0; n < noperands; n++) {
-		JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-		jive::input * input = new jive::input(self, n, operands[n], *operand_types[n]);
-		self->ninputs++;
-		self->inputs.push_back(input);
-		self->depth_from_root = std::max(operands[n]->node()->depth_from_root+1, self->depth_from_root);
-	}
-	self->noperands = self->ninputs;
-
-	for (size_t n = 0; n < noutputs; n++) {
-		JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-		jive::output * output = new jive::output(self, self->noutputs, *output_types[n]);
-		self->noutputs++;
-		self->outputs.push_back(output);
-	}
-
-	for (size_t n = 0; n < self->ninputs; ++n)
-		JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, self->inputs[n]->origin()));
-	
-	self->graph->on_node_create(self);
-}
-
 jive::node_normal_form *
 jive_node_get_default_normal_form_(
 	const std::type_info & operator_class,
@@ -854,6 +806,53 @@ jive_node_copy_substitute(
 	return new_node;
 }
 
+jive_node::jive_node(
+	std::unique_ptr<jive::operation> op,
+	jive_region * region,
+	const std::vector<jive::output*> & operands)
+	: graph(region->graph)
+	, region(region)
+	, depth_from_root(0)
+	, ninputs(0)
+	, noperands(0)
+	, noutputs(0)
+	, operation_(std::move(op))
+{
+	if (operation_->narguments() != operands.size())
+		throw jive::compiler_error(jive::detail::strfmt("Argument error - expected ",
+			operation_->narguments(), ", received ", operands.size(), " arguments."));
+
+	if (operation_->narguments() == 0) {
+		JIVE_LIST_PUSH_BACK(region->top_nodes, this, region_top_node_list);
+	} else {
+		region_top_node_list.prev = region_top_node_list.next = nullptr;
+
+		for (size_t n = 0; n < operation_->narguments(); n++) {
+			JIVE_DEBUG_ASSERT(!this->graph->resources_fully_assigned);
+			jive::input * input = new jive::input(this, n, operands[n], operation_->argument_type(n));
+			ninputs++;
+			inputs.push_back(input);
+			depth_from_root = std::max(operands[n]->node()->depth_from_root+1, depth_from_root);
+		}
+		this->noperands = ninputs;
+	}
+
+	for (size_t n = 0; n < operation_->nresults(); n++) {
+		JIVE_DEBUG_ASSERT(!graph->resources_fully_assigned);
+		jive::output * output = new jive::output(this, noutputs, operation_->result_type(n));
+		noutputs++;
+		outputs.push_back(output);
+	}
+
+	for (size_t n = 0; n < this->ninputs; ++n)
+		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, this->inputs[n]->origin()));
+
+	JIVE_LIST_PUSH_BACK(region->nodes, this, region_nodes_list);
+	JIVE_LIST_PUSH_BACK(graph->bottom, this, graph_bottom_list);
+
+	graph->on_node_create(this);
+}
+
 jive_node::~jive_node()
 {
 	graph->on_node_destroy(this);
@@ -984,24 +983,15 @@ jive_opnode_create(
 	jive::output * const * args_begin,
 	jive::output * const * args_end)
 {
-	const jive::base::type * argument_types[op.narguments()];
-	jive::output * argument_values[op.narguments()];
+	std::vector<jive::output*> arguments;
 	for (size_t n = 0; n < op.narguments(); ++n) {
-		argument_types[n] = &op.argument_type(n);
 		JIVE_DEBUG_ASSERT(args_begin != args_end);
-		argument_values[n] = *args_begin;
+		arguments.push_back(*args_begin);
 		++args_begin;
 	}
 	JIVE_DEBUG_ASSERT(args_begin == args_end);
 	
-	const jive::base::type * result_types[op.nresults()];
-	for (size_t n = 0; n < op.nresults(); ++n) {
-		result_types[n] = &op.result_type(n);
-	}
-	jive_node * node = new jive_node(op.copy());
-	jive_node_init_(node, region,
-		op.narguments(), argument_types, argument_values,
-		op.nresults(), result_types);
+	jive_node * node = new jive_node(op.copy(), region, arguments);
 
 	/* FIXME: this is regalloc-specific, should go away */
 	for (size_t n = 0; n < op.narguments(); ++n) {
