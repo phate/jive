@@ -103,7 +103,7 @@ slice_op::reduce_operand(
 		jive::output * arguments[node->ninputs];
 		
 		size_t narguments = 0, pos = 0, n;
-		for (n=0; n<node->noperands; n++) {
+		for (n = 0; n < node->noperands(); n++) {
 			jive::output * argument = node->inputs[n]->origin();
 			size_t base = pos;
 			size_t nbits = static_cast<const jive::bits::type&>(argument->type()).nbits();

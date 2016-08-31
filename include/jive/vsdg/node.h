@@ -417,6 +417,12 @@ public:
 
 		return false;
 	}
+
+	inline size_t
+	noperands() const noexcept
+	{
+		return operation_->narguments();
+	}
 	
 	struct jive_graph * graph;
 	
@@ -424,7 +430,6 @@ public:
 	
 	size_t depth_from_root;
 	size_t ninputs;
-	size_t noperands;
 	size_t noutputs;
 
 	std::vector<jive::input*> inputs;
@@ -583,7 +588,7 @@ JIVE_EXPORTED_INLINE std::vector<jive::output *>
 jive_node_arguments(jive_node * self)
 {
 	std::vector<jive::output *> arguments;
-	for (size_t n = 0; n < self->noperands; ++n) {
+	for (size_t n = 0; n < self->noperands(); ++n) {
 		arguments.push_back(self->inputs[n]->origin());
 	}
 	return arguments;

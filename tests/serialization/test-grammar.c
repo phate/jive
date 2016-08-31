@@ -230,7 +230,7 @@ verify_deserialize_nodeexpr(
 	assert(jive_deserialize_nodeexpr(&ctx.drv, ctx.is, region, &node));
 	assert(node->operation() == expected_node->operation());
 	assert(node->ninputs == expected_node->ninputs);
-	assert(node->noperands == expected_node->noperands);
+	assert(node->noperands() == expected_node->noperands());
 	assert(node->noutputs == expected_node->noutputs);
 	
 	for (n = 0; n < node->ninputs; ++n) {

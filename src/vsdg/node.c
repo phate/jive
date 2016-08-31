@@ -743,7 +743,7 @@ struct jive_node *
 jive_node_copy(const jive_node * self, struct jive_region * region, jive::output * operands[])
 {
 	jive_graph_mark_denormalized(region->graph);
-	return self->operation().create_node(region, self->noperands, operands);
+	return self->operation().create_node(region, self->noperands(), operands);
 }
 
 jive_node *
@@ -752,8 +752,8 @@ jive_node_copy_substitute(
 	jive_region * target,
 	jive::substitution_map & substitution)
 {
-	std::vector<jive::output*> operands(self->noperands);
-	for (size_t n = 0; n < self->noperands; n++) {
+	std::vector<jive::output*> operands(self->noperands());
+	for (size_t n = 0; n < self->noperands(); n++) {
 		operands[n] = substitution.lookup(self->inputs[n]->origin());
 		if (!operands[n]) {
 			operands[n] = self->inputs[n]->origin();
@@ -761,7 +761,7 @@ jive_node_copy_substitute(
 	}
 	
 	jive_node * new_node = jive_node_copy(self, target, &operands[0]);
-	for (size_t n = self->noperands; n < self->ninputs; n++) {
+	for (size_t n = self->noperands(); n < self->ninputs; n++) {
 		jive::output * origin = substitution.lookup(self->inputs[n]->origin());
 		if (!origin) {
 			origin =  self->inputs[n]->origin();
@@ -814,7 +814,6 @@ jive_node::jive_node(
 	, region(region)
 	, depth_from_root(0)
 	, ninputs(0)
-	, noperands(0)
 	, noutputs(0)
 	, operation_(std::move(op))
 {
@@ -834,7 +833,6 @@ jive_node::jive_node(
 			inputs.push_back(input);
 			depth_from_root = std::max(operands[n]->node()->depth_from_root+1, depth_from_root);
 		}
-		this->noperands = ninputs;
 	}
 
 	for (size_t n = 0; n < operation_->nresults(); n++) {

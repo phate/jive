@@ -1099,12 +1099,12 @@ static int types_bitstring_test_normalize(void)
 
 	jive::output * sum0 = jive_bitsum(2, tmparray1);
 	assert(sum0->node()->operation() == jive::bits::add_op(32));
-	assert(sum0->node()->noperands == 2);
+	assert(sum0->node()->noperands() == 2);
 	jive::output * tmparray2[] = {sum0, c1};
 	
 	jive::output * sum1 = jive_bitsum(2, tmparray2);
 	assert(sum1->node()->operation() == jive::bits::add_op(32));
-	assert(sum1->node()->noperands == 2);
+	assert(sum1->node()->noperands() == 2);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node();
 	jive::input * retval = lambda_node->producer(0)->inputs[1];
@@ -1117,7 +1117,7 @@ static int types_bitstring_test_normalize(void)
 	
 	jive::output * expected_sum = retval->origin();
 	assert(expected_sum->node()->operation() == jive::bits::add_op(32));
-	assert(expected_sum->node()->noperands == 2);
+	assert(expected_sum->node()->noperands() == 2);
 	jive::output * op1 = expected_sum->node()->inputs[0]->origin();
 	jive::output * op2 = expected_sum->node()->inputs[1]->origin();
 	if (!dynamic_cast<const jive::bits::constant_op *>(&op1->node()->operation())) {

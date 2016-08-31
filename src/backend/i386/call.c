@@ -24,7 +24,7 @@ jive_i386_call_node_substitute(
 {
 	jive_region * region = node->region;
 	
-	size_t nargs = node->noperands - 1;
+	size_t nargs = node->noperands() - 1;
 	
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
@@ -99,7 +99,7 @@ jive_i386_call_node_substitute(
 		node->outputs[0]->replace(clobber_eax);
 	}
 	
-	for (size_t n = node->noperands; n < node->ninputs; n++) {
+	for (size_t n = node->noperands(); n < node->ninputs; n++) {
 		jive::input * orig_input = node->inputs[n];
 		if (orig_input->gate) {
 			jive_node_gate_input(call_instr, orig_input->gate, orig_input->origin());

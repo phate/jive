@@ -85,7 +85,7 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const
 	if (n1->ninputs != n2->ninputs) {
 		return false;
 	}
-	if (n1->noperands != n2->noperands) {
+	if (n1->noperands() != n2->noperands()) {
 		return false;
 	}
 	if (n1->operation() != n2->operation()) {
