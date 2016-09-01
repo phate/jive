@@ -564,29 +564,6 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 	return false;
 }
 
-jive::input *
-jive_node_add_input(jive_node * self, const jive::base::type * type, jive::output * initial_operand)
-{
-	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-	jive::input * input = new jive::input(self, self->ninputs, initial_operand, *type);
-
-	if (self->ninputs == 0)
-		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
-
-	self->ninputs ++;
-	self->inputs.resize(self->ninputs);
-	self->inputs[input->index()] = input;
-
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(self, input->origin()));
-	jive_node_invalidate_depth_from_root(self);
-	self->graph->on_input_create(input);
-
-	return input;
-}
-
 jive::output *
 jive_node_add_output(jive_node * self, const jive::base::type * type)
 {
@@ -612,7 +589,7 @@ jive_node_add_constrained_output(jive_node * self, const jive_resource_class * r
 jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {
-	jive::input * input = jive_node_add_input(self, &gate->type(), initial_operand);
+	jive::input * input = self->add_input(&gate->type(), initial_operand);
 
 	input->required_rescls = gate->required_rescls;
 	input->gate = gate;
@@ -777,7 +754,7 @@ jive_node_copy_substitute(
 				substitution.insert(gate, target_gate);
 			}
 		} else {
-			jive::input * input = jive_node_add_input(new_node, &self->inputs[n]->type(), origin);
+			jive::input * input = new_node->add_input(&self->inputs[n]->type(), origin);
 			input->required_rescls = self->inputs[n]->required_rescls;
 		}
 	}
@@ -877,6 +854,28 @@ jive_node::~jive_node()
 
 	for (size_t n = 0; n < tracker_slots.size(); n++)
 		delete tracker_slots[n];
+}
+
+jive::input *
+jive_node::add_input(const jive::base::type * type, jive::output * origin)
+{
+	JIVE_DEBUG_ASSERT(!graph->resources_fully_assigned);
+	jive::input * input = new jive::input(this, ninputs, origin, *type);
+
+	if (ninputs == 0)
+		JIVE_LIST_REMOVE(region->top_nodes, this, region_top_node_list);
+
+	ninputs++;
+	inputs.push_back(input);
+
+	if (!jive_input_is_valid(input))
+		throw jive::compiler_error("Invalid input");
+
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
+	jive_node_invalidate_depth_from_root(this);
+	graph->on_input_create(input);
+
+	return input;
 }
 
 static bool

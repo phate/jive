@@ -423,6 +423,9 @@ public:
 	{
 		return operation_->narguments();
 	}
+
+	jive::input *
+	add_input(const jive::base::type * type, jive::output * origin);
 	
 	struct jive_graph * graph;
 	
@@ -504,9 +507,6 @@ jive_node_copy_substitute(
 */
 bool
 jive_node_valid_edge(const jive_node * self, const jive::output * origin);
-
-jive::input *
-jive_node_add_input(jive_node * self, const jive::base::type * type, jive::output * origin);
 
 jive::output *
 jive_node_add_output(jive_node * self, const jive::base::type * type);

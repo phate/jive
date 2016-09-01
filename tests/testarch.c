@@ -421,7 +421,7 @@ create_xfer(jive_region * region, jive::output * origin,
 			region,
 			&jive_testarch_instr_restore_gpr,
 			NULL, NULL);
-		xfer.input = jive_node_add_input(xfer.node, jive_resource_class_get_type(in_class), origin);
+		xfer.input = xfer.node->add_input(jive_resource_class_get_type(in_class), origin);
 		xfer.output = xfer.node->outputs[0];
 	} else {
 		JIVE_DEBUG_ASSERT(false);

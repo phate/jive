@@ -52,7 +52,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 			&jive_i386_instr_int_load32_disp,
 			&base, &displacement);
 		jive_input_auto_merge_variable(xfer.node->inputs[0]);
-		xfer.input = jive_node_add_input(xfer.node, jive_resource_class_get_type(in_class), origin);
+		xfer.input = xfer.node->add_input(jive_resource_class_get_type(in_class), origin);
 		xfer.input->required_rescls = in_class;
 		xfer.output = xfer.node->outputs[0];
 	} else if (out_mem) {

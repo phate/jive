@@ -842,7 +842,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		} else {
 			const jive_resource_class * rescls = ports.ports[n].required_rescls;
 			const jive::base::type * type = jive_resource_class_get_type(rescls);
-			jive::input * input = jive_node_add_input(*node, type, ports.ports[n].origin);
+			jive::input * input = (*node)->add_input(type, ports.ports[n].origin);
 			input->required_rescls = rescls;
 		}
 	}

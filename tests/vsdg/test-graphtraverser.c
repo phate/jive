@@ -140,7 +140,7 @@ static int test_main(void)
 	jive_node * n2 = jive_test_node_create(graph->root_region,
 		{&type, &type}, {n1->outputs[0], n1->outputs[1]}, {&type});
 
-	jive_node_add_input(graph->root_region->bottom, &type, n2->outputs[0]);
+	graph->root_region->bottom->add_input(&type, n2->outputs[0]);
 	(void)n1;
 	(void)n2;
 	

@@ -112,7 +112,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 		
 		jive_node * sub = jive_region_get_subroutine_node(node->region);
 		jive_node * enter = sub->producer(0)->region->top;
-		jive_node_add_input(tmp, &jive::seq::seqtype, enter->outputs[0]);
+		tmp->add_input(&jive::seq::seqtype, enter->outputs[0]);
 		
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_udiv;
@@ -443,7 +443,7 @@ match_gpr_immediate(jive_node * node)
 	
 	jive_node * instr = jive_instruction_node_create_extended(node->region,
 		&jive_i386_instr_int_load_imm, nullptr, &imm);
-	jive_node_add_input(instr, &jive::seq::seqtype, node->inputs[0]->origin());
+	instr->add_input(&jive::seq::seqtype, node->inputs[0]->origin());
 	
 	node->outputs[0]->replace(instr->outputs[0]);
 }
@@ -496,7 +496,7 @@ match_gpr_load(jive_node * node)
 		if (input->gate)
 			jive_node_gate_input(instr, input->gate, input->origin());
 		else
-			jive_node_add_input(instr, &input->type(), input->origin());
+			instr->add_input(&input->type(), input->origin());
 	}
 	for (n = 1; n < node->noutputs; n++) {
 		jive::output * output = node->outputs[n];
@@ -533,7 +533,7 @@ match_gpr_store(jive_node * node)
 		if (input->gate)
 			jive_node_gate_input(instr, input->gate, input->origin());
 		else
-			jive_node_add_input(instr, &input->type(), input->origin());
+			instr->add_input(&input->type(), input->origin());
 	}
 	for (n = 0; n < node->noutputs; n++) {
 		jive::output * output = node->outputs[n];

@@ -299,7 +299,7 @@ jive_i386_subroutine_add_fp_dependency_(
 		if (input->origin() == frameptr)
 			return NULL;
 	}
-	return jive_node_add_input(node, &frameptr->type(), frameptr);
+	return node->add_input(&frameptr->type(), frameptr);
 }
 
 static jive::input *
@@ -314,5 +314,5 @@ jive_i386_subroutine_add_sp_dependency_(
 		if (input->origin() == stackptr)
 			return NULL;
 	}
-	return jive_node_add_input(node, &stackptr->type(), stackptr);
+	return node->add_input(&stackptr->type(), stackptr);
 }
