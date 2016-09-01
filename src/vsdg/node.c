@@ -564,14 +564,6 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 	return false;
 }
 
-jive::output *
-jive_node_add_constrained_output(jive_node * self, const jive_resource_class * rescls)
-{
-	jive::output * output = self->add_output(jive_resource_class_get_type(rescls));
-	output->required_rescls = rescls;
-	return output;
-}
-
 jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
 {

@@ -53,14 +53,10 @@ jive_i386_call_node_substitute(
 	}
 	
 	/* mark caller-saved regs as clobbered */
-	jive::output * clobber_eax = jive_node_add_constrained_output(
-		call_instr, &jive_i386_regcls_gpr_eax.base);
-	jive::output * clobber_edx = jive_node_add_constrained_output(
-		call_instr, &jive_i386_regcls_gpr_edx.base);
-	jive::output * clobber_ecx = jive_node_add_constrained_output(
-		call_instr, &jive_i386_regcls_gpr_ecx.base);
-	jive::output * clobber_flags = jive_node_add_constrained_output(
-		call_instr, &jive_i386_regcls_flags.base);
+	jive::output * clobber_eax = call_instr->add_output(&jive_i386_regcls_gpr_eax.base);
+	jive::output * clobber_edx = call_instr->add_output(&jive_i386_regcls_gpr_edx.base);
+	jive::output * clobber_ecx = call_instr->add_output(&jive_i386_regcls_gpr_ecx.base);
+	jive::output * clobber_flags = call_instr->add_output(&jive_i386_regcls_flags.base);
 	(void) clobber_edx;
 	(void) clobber_ecx;
 	(void) clobber_flags;

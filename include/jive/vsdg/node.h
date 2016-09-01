@@ -19,6 +19,7 @@
 #include <jive/vsdg/gate-interference.h>
 #include <jive/vsdg/operators/base.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
 
 namespace jive {
@@ -430,6 +431,14 @@ public:
 	jive::output *
 	add_output(const jive::base::type * type);
 
+	inline jive::output *
+	add_output(const struct jive_resource_class * rescls)
+	{
+		jive::output * output = add_output(jive_resource_class_get_type(rescls));
+		output->required_rescls = rescls;
+		return output;
+	}
+
 	struct jive_graph * graph;
 	
 	struct jive_region * region;
@@ -510,9 +519,6 @@ jive_node_copy_substitute(
 */
 bool
 jive_node_valid_edge(const jive_node * self, const jive::output * origin);
-
-jive::output *
-jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);
 
 jive::input *
 jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand);
