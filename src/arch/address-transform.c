@@ -178,7 +178,8 @@ jive_label_to_address_node_address_transform(
 {
 	const jive_label * label = op.label();
 
-	jive::output * label_o = jive_label_to_bitstring_create(node->graph->root_region, label, nbits);
+	jive::output * label_o = jive_label_to_bitstring_create(node->graph()->root_region,
+		label, nbits);
 	jive::output * addr_o = jive_bitstring_to_address_create(label_o, nbits,
 		&node->outputs[0]->type());
 	node->outputs[0]->replace(addr_o);
@@ -353,7 +354,7 @@ jive_lambda_node_address_transform(
 {
 	JIVE_DEBUG_ASSERT(node->noutputs == 1);
 
-	jive_graph * graph = node->graph;
+	jive_graph * graph = node->graph();
 	jive::output * fct = node->outputs[0];
 
 	const jive::base::type * type = &fct->type();
@@ -413,7 +414,7 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::graph_tail_operation*>(&node->operation()));
 
-	jive_graph * graph = node->graph;
+	jive_graph * graph = node->graph();
 
 	bool transform = false;
 	std::vector<std::string> names;

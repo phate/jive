@@ -171,7 +171,7 @@ flatten_data_items(
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
 		}
 
-		jive_graph * graph = data->node()->graph;
+		jive_graph * graph = data->node()->graph();
 		
 		jive::output * zero_pad = jive_bitconstant(graph->root_region, 8, "00000000");
 		items.resize(layout.size(), zero_pad);
@@ -200,7 +200,7 @@ flatten_data_items(
 			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");
 		}
 		
-		jive_graph * graph = data->node()->graph;
+		jive_graph * graph = data->node()->graph();
 		
 		jive::output * zero_pad = jive_bitconstant(graph->root_region, 8, "00000000");
 		items.resize(layout.size(), zero_pad);
@@ -249,7 +249,7 @@ jive_dataobj_internal(
 jive::output *
 jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive_region * parent = data->node()->graph->root_region;
+	jive_region * parent = data->node()->graph()->root_region;
 	jive_region * region = new jive_region(parent, parent->graph);
 	region->attrs.section = jive_region_section_data;
 
@@ -259,7 +259,7 @@ jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 jive::output *
 jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive_region * parent = data->node()->graph->root_region;
+	jive_region * parent = data->node()->graph()->root_region;
 	jive_region * region = new jive_region(parent, parent->graph);
 	region->attrs.section = jive_region_section_rodata;
 
@@ -269,7 +269,7 @@ jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 jive::output *
 jive_bssobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive_region * parent = data->node()->graph->root_region;
+	jive_region * parent = data->node()->graph()->root_region;
 	jive_region * region = new jive_region(parent, parent->graph);
 	region->attrs.section = jive_region_section_bss;
 

@@ -445,8 +445,12 @@ public:
 	jive::output *
 	add_output(jive::gate * gate);
 
-	struct jive_graph * graph;
-	
+	inline jive_graph *
+	graph() const noexcept
+	{
+		return graph_;
+	}
+
 	struct jive_region * region;
 	
 	size_t depth_from_root;
@@ -474,6 +478,7 @@ public:
 	std::vector<jive_tracker_nodestate*> tracker_slots;
 
 private:
+	jive_graph * graph_;
 	std::unique_ptr<jive::operation> operation_;
 };
 
