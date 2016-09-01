@@ -426,7 +426,10 @@ public:
 
 	jive::input *
 	add_input(const jive::base::type * type, jive::output * origin);
-	
+
+	jive::output *
+	add_output(const jive::base::type * type);
+
 	struct jive_graph * graph;
 	
 	struct jive_region * region;
@@ -507,9 +510,6 @@ jive_node_copy_substitute(
 */
 bool
 jive_node_valid_edge(const jive_node * self, const jive::output * origin);
-
-jive::output *
-jive_node_add_output(jive_node * self, const jive::base::type * type);
 
 jive::output *
 jive_node_add_constrained_output(jive_node * self, const struct jive_resource_class * rescls);

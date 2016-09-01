@@ -67,7 +67,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			substitute = jive_subroutine_simple_get_argument(sub, nvalue_parameters ++);
 		} else {
-			substitute = jive_node_add_output(sub.region->top, &original->type());
+			substitute = sub.region->top->add_output(&original->type());
 		}
 		
 		if(dynamic_cast<const jive::addr::type*>(&original->type()))

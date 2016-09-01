@@ -114,7 +114,7 @@ jive_i386_call_node_substitute(
 		if (orig_output->gate) {
 			new_output = jive_node_gate_output(call_instr, orig_output->gate);
 		} else {
-			new_output = jive_node_add_output(call_instr, &orig_output->type());
+			new_output = call_instr->add_output(&orig_output->type());
 			new_output->required_rescls = orig_output->required_rescls;
 		}
 		orig_output->replace(new_output);

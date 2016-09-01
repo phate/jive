@@ -565,23 +565,9 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 }
 
 jive::output *
-jive_node_add_output(jive_node * self, const jive::base::type * type)
-{
-	JIVE_DEBUG_ASSERT(!self->graph->resources_fully_assigned);
-	jive::output * output = new jive::output(self, self->noutputs, *type);
-	self->noutputs ++;
-	self->outputs.resize(self->noutputs);
-	self->outputs[output->index()] = output;
-
-	self->graph->on_output_create(output);
-
-	return output;
-}
-
-jive::output *
 jive_node_add_constrained_output(jive_node * self, const jive_resource_class * rescls)
 {
-	jive::output * output = jive_node_add_output(self, jive_resource_class_get_type(rescls));
+	jive::output * output = self->add_output(jive_resource_class_get_type(rescls));
 	output->required_rescls = rescls;
 	return output;
 }
@@ -606,7 +592,7 @@ jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial
 jive::output *
 jive_node_gate_output(jive_node * self, jive::gate * gate)
 {
-	jive::output * output = jive_node_add_output(self, &gate->type());
+	jive::output * output = self->add_output(&gate->type());
 
 	output->required_rescls = gate->required_rescls;
 	output->gate = gate;
@@ -772,7 +758,7 @@ jive_node_copy_substitute(
 
 			jive_node_gate_output(new_node, target_gate);
 		} else {
-			jive::output * output = jive_node_add_output(new_node, &self->outputs[n]->type());
+			jive::output * output = new_node->add_output(&self->outputs[n]->type());
 			output->required_rescls = self->outputs[n]->required_rescls;
 		}
 	}
@@ -876,6 +862,19 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 	graph->on_input_create(input);
 
 	return input;
+}
+
+jive::output *
+jive_node::add_output(const jive::base::type * type)
+{
+	JIVE_DEBUG_ASSERT(!graph->resources_fully_assigned);
+	jive::output * output = new jive::output(this, noutputs, *type);
+	noutputs++;
+	outputs.push_back(output);
+
+	graph->on_output_create(output);
+
+	return output;
 }
 
 static bool

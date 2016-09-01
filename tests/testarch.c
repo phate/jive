@@ -415,7 +415,7 @@ create_xfer(jive_region * region, jive::output * origin,
 			&jive_testarch_instr_spill_gpr,
 			tmparray9, NULL);
 		xfer.input = xfer.node->inputs[0];
-		xfer.output = jive_node_add_output(xfer.node, jive_resource_class_get_type(out_class));
+		xfer.output = xfer.node->add_output(jive_resource_class_get_type(out_class));
 	} else if (out_relaxed == CLS(gpr)) {
 		xfer.node = jive_instruction_node_create(
 			region,
