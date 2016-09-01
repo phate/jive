@@ -174,7 +174,7 @@ jive_phi_end(jive_phi self,
 	
 	jive_node * leave = jive::phi_tail_op().create_node(enter->region, 1, &enter->outputs[0]);
 	for (n = 0; n < state->fixvars.size(); ++n)
-		jive_node_gate_input(leave, state->fixvars[n].gate, state->fixvars[n].value);
+		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
 
 	jive_node * anchor = jive::phi_op().create_node(self.region->parent, 1, &leave->outputs[0]);
 	for (n = 0; n < state->fixvars.size(); ++n)
@@ -233,7 +233,7 @@ jive_phi_end_extension(struct jive_phi_extension * self)
 	size_t offset = leave->ninputs;
 	for (n = 0; n < self->fixvars.size(); n++) {
 		jive::gate * gate = enter->outputs[offset+n]->gate;
-		jive_node_gate_input(leave, gate, self->fixvars[n]);
+		leave->add_input(gate, self->fixvars[n]);
 		jive_node_gate_output(phi_node, gate);
 	}
 

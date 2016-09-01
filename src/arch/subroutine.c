@@ -159,10 +159,10 @@ jive_subroutine_end(jive_subroutine & self)
 		self.region->parent, leave->noutputs, &leave->outputs[0]);
 	
 	for (const auto & pt : self.builder_state->passthroughs) {
-		jive_node_gate_input(leave, pt.gate, pt.output);
+		leave->add_input(pt.gate, pt.output);
 	}
 	for (const auto & res : self.builder_state->results) {
-		jive_node_gate_input(leave, res.gate, res.output);
+		leave->add_input(res.gate, res.output);
 	}
 
 	return subroutine_node;

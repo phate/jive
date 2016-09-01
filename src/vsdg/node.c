@@ -564,23 +564,6 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 	return false;
 }
 
-jive::input *
-jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand)
-{
-	jive::input * input = self->add_input(&gate->type(), initial_operand);
-
-	input->required_rescls = gate->required_rescls;
-	input->gate = gate;
-	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
-
-	for (size_t n = 0; n < input->index(); n++) {
-		jive::input * other = self->inputs[n];
-		if (!other->gate) continue;
-		jive_gate_interference_add(self->graph, gate, other->gate);
-	}
-	return input;
-}
-
 jive::output *
 jive_node_gate_output(jive_node * self, jive::gate * gate)
 {
@@ -852,6 +835,23 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	jive_node_invalidate_depth_from_root(this);
 	graph->on_input_create(input);
+
+	return input;
+}
+
+jive::input *
+jive_node::add_input(jive::gate * gate, jive::output * origin)
+{
+	jive::input * input = add_input(&gate->type(), origin);
+	input->required_rescls = gate->required_rescls;
+	input->gate = gate;
+	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
+
+	for (size_t n = 0; n < input->index(); n++) {
+		jive::input * other = inputs[n];
+		if (!other->gate) continue;
+		jive_gate_interference_add(graph, gate, other->gate);
+	}
 
 	return input;
 }

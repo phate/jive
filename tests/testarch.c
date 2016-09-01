@@ -579,7 +579,7 @@ public:
 	{
 		jive_node * ret_instr = jive_instruction_node_create(subroutine.region,
 			&jive_testarch_instr_ret, {}, {}, {}, {}, {&jive::ctl::boolean});
-		jive_node_gate_input(ret_instr, subroutine.builder_state->passthroughs[1].gate,
+		ret_instr->add_input(subroutine.builder_state->passthroughs[1].gate,
 			subroutine.builder_state->passthroughs[1].output);
 		return ret_instr->outputs[0];
 	}

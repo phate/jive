@@ -206,7 +206,7 @@ lambda_dep_add(jive_lambda * self, jive::output * value)
 		graph,
 		jive::detail::strfmt("dep_", enter, "_", self->depvars.size()),
 		value->type());
-	depvar.input = jive_node_gate_input(enter, gate, value);
+	depvar.input = enter->add_input(gate, value);
 	depvar.output = jive_node_gate_output(enter, gate);
 	self->depvars.push_back(depvar);
 
@@ -255,7 +255,7 @@ jive_lambda_end(jive_lambda * self,
 		char gate_name[80];
 		snprintf(gate_name, sizeof(gate_name), "res_%p_%zd", leave, n);
 		jive::gate * gate = jive_graph_create_gate(graph, gate_name, *result_types[n]);
-		jive_node_gate_input(leave, gate, results[n]);
+		leave->add_input(gate, results[n]);
 	}
 
 	jive_node * anchor = jive_lambda_node_create(region);

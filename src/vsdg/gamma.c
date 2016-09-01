@@ -175,9 +175,9 @@ jive_gamma_create(
 
 		for (size_t i = 0; i < nalternatives; i++) {
 			jive_node * head = arguments[i]->node()->producer(0);
-			jive_node_gate_input(head, gate_head, alternatives[i][n]);
+			head->add_input(gate_head, alternatives[i][n]);
 			jive::output * value = jive_node_gate_output(head, gate_head);
-			jive_node_gate_input(arguments[i]->node(), gate_tail, value);
+			arguments[i]->node()->add_input(gate_tail, value);
 		}
 		jive_node_gate_output(gamma, gate_tail);
 	}

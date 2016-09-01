@@ -428,6 +428,9 @@ public:
 	jive::input *
 	add_input(const jive::base::type * type, jive::output * origin);
 
+	jive::input *
+	add_input(jive::gate * gate, jive::output * origin);
+
 	jive::output *
 	add_output(const jive::base::type * type);
 
@@ -519,9 +522,6 @@ jive_node_copy_substitute(
 */
 bool
 jive_node_valid_edge(const jive_node * self, const jive::output * origin);
-
-jive::input *
-jive_node_gate_input(jive_node * self, jive::gate * gate, jive::output * initial_operand);
 
 JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)

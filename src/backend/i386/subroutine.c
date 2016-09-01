@@ -159,10 +159,8 @@ public:
 		jive_node * ret_instr = jive_instruction_node_create(subroutine.region, &jive_i386_instr_ret,
 			{}, {}, {}, {}, {&jive::ctl::boolean});
 		/* add dependency on return address on stack */
-		jive_node_gate_input(
-			ret_instr,
-			subroutine.builder_state->passthroughs[6].gate,
-			subroutine.builder_state->passthroughs[6].output);
+			ret_instr->add_input(subroutine.builder_state->passthroughs[6].gate,
+				subroutine.builder_state->passthroughs[6].output);
 		return ret_instr->outputs[0];
 	}
 };
