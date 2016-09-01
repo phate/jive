@@ -121,8 +121,8 @@ jive_subroutine_begin(
 	for (size_t n = 0; n < sig.arguments.size(); ++n) {
 		sub.builder_state->arguments[n].gate = jive_resource_class_create_gate(
 			sig.arguments[n].rescls, graph, sig.arguments[n].name.c_str());
-		sub.builder_state->arguments[n].output = jive_node_gate_output(
-			enter, sub.builder_state->arguments[n].gate);
+		sub.builder_state->arguments[n].output = enter->add_output(
+			sub.builder_state->arguments[n].gate);
 	}
 	for (size_t n = 0; n < sig.results.size(); ++n) {
 		sub.builder_state->results[n].gate = jive_resource_class_create_gate(
@@ -138,8 +138,8 @@ jive_subroutine_begin(
 				sig.passthroughs[n].name.c_str(), memory_type);
 		}
 		sub.builder_state->passthroughs[n].gate->may_spill = sig.passthroughs[n].may_spill;
-		sub.builder_state->passthroughs[n].output = jive_node_gate_output(
-			enter, sub.builder_state->passthroughs[n].gate);
+		sub.builder_state->passthroughs[n].output = enter->add_output(
+			sub.builder_state->passthroughs[n].gate);
 	}
 
 	sub.signature = std::move(sig);

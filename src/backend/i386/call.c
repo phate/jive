@@ -108,7 +108,7 @@ jive_i386_call_node_substitute(
 		jive::output * orig_output = node->outputs[n];
 		jive::output * new_output;
 		if (orig_output->gate) {
-			new_output = jive_node_gate_output(call_instr, orig_output->gate);
+			new_output = call_instr->add_output(orig_output->gate);
 		} else {
 			new_output = call_instr->add_output(&orig_output->type());
 			new_output->required_rescls = orig_output->required_rescls;

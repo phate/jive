@@ -905,7 +905,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		
 		jive::output * output;
 		if (gate)
-			output = jive_node_gate_output(*node, gate);
+			output = (*node)->add_output(gate);
 		else
 			output = (*node)->add_output(jive_resource_class_get_type(required_rescls));
 		

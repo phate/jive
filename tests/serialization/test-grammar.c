@@ -329,7 +329,7 @@ static int test_main(void)
 	jive::output * cat16 = jive_bitconcat(2, tmparray8);
 	jive_node * cat16n = cat16->node();
 	cat16n->add_input(bit8gate, zero8);
-	jive_node_gate_output(cat16n, stackgate);
+	cat16n->add_output(stackgate);
 	const char * tmparray9[] = {"bit8gate", "stackgate"};
 	jive::gate* tmparray10[] = {bit8gate, stackgate};
 	const char * tmparray11[] = {"a", "b", "c"};

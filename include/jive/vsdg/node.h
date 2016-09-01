@@ -442,6 +442,9 @@ public:
 		return output;
 	}
 
+	jive::output *
+	add_output(jive::gate * gate);
+
 	struct jive_graph * graph;
 	
 	struct jive_region * region;
@@ -566,9 +569,6 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 	}
 	return nullptr;
 }
-
-jive::output *
-jive_node_gate_output(jive_node * self, jive::gate * gate);
 
 JIVE_EXPORTED_INLINE jive_region *
 jive_node_anchored_region(const jive_node * self, size_t index)

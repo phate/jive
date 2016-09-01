@@ -176,10 +176,10 @@ jive_gamma_create(
 		for (size_t i = 0; i < nalternatives; i++) {
 			jive_node * head = arguments[i]->node()->producer(0);
 			head->add_input(gate_head, alternatives[i][n]);
-			jive::output * value = jive_node_gate_output(head, gate_head);
+			jive::output * value = head->add_output(gate_head);
 			arguments[i]->node()->add_input(gate_tail, value);
 		}
-		jive_node_gate_output(gamma, gate_tail);
+		gamma->add_output(gate_tail);
 	}
 
 	return gamma;

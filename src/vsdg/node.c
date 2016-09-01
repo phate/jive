@@ -564,23 +564,6 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 	return false;
 }
 
-jive::output *
-jive_node_gate_output(jive_node * self, jive::gate * gate)
-{
-	jive::output * output = self->add_output(&gate->type());
-
-	output->required_rescls = gate->required_rescls;
-	output->gate = gate;
-	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
-
-	for (size_t n = 0; n < output->index(); n++) {
-		jive::output * other = self->outputs[n];
-		if (!other->gate) continue;
-		jive_gate_interference_add(self->graph, gate, other->gate);
-	}
-	return output;
-}
-
 void
 jive_node_auto_merge_variables(jive_node * self)
 {
@@ -731,7 +714,7 @@ jive_node_copy_substitute(
 				substitution.insert(gate, target_gate);
 			}
 
-			jive_node_gate_output(new_node, target_gate);
+			new_node->add_output(target_gate);
 		} else {
 			jive::output * output = new_node->add_output(&self->outputs[n]->type());
 			output->required_rescls = self->outputs[n]->required_rescls;
@@ -865,6 +848,23 @@ jive_node::add_output(const jive::base::type * type)
 	outputs.push_back(output);
 
 	graph->on_output_create(output);
+
+	return output;
+}
+
+jive::output *
+jive_node::add_output(jive::gate * gate)
+{
+	jive::output * output = add_output(&gate->type());
+	output->required_rescls = gate->required_rescls;
+	output->gate = gate;
+	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
+
+	for (size_t n = 0; n < output->index(); n++) {
+		jive::output * other = outputs[n];
+		if (!other->gate) continue;
+		jive_gate_interference_add(graph, gate, other->gate);
+	}
 
 	return output;
 }
