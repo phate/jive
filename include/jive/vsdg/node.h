@@ -14,13 +14,15 @@
 #include <utility>
 
 #include <jive/util/buffer.h>
+#include <jive/util/intrusive-list.h>
 #include <jive/util/strfmt.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate-interference.h>
 #include <jive/vsdg/operators/base.h>
-#include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
+
+struct jive_ssavar;
 
 namespace jive {
 namespace base {
@@ -29,6 +31,7 @@ namespace base {
 
 class gate;
 class node_normal_form;
+class substitution_map;
 
 class iport {
 public:
@@ -486,11 +489,6 @@ public:
 
 	std::vector<jive::input*> inputs;
 	std::vector<jive::output*> outputs;
-	
-	struct {
-		jive_node * prev;
-		jive_node * next;
-	} region_nodes_list;
 
 	struct {
 		jive_node * prev;
@@ -503,6 +501,15 @@ public:
 	} graph_bottom_list;
 
 	std::vector<jive_tracker_nodestate*> tracker_slots;
+
+private:
+	jive::detail::intrusive_list_anchor<jive_node> region_node_list_anchor_;
+
+public:
+	typedef jive::detail::intrusive_list_accessor<
+		jive_node,
+		&jive_node::region_node_list_anchor_
+	> region_node_list_accessor;
 
 private:
 	jive_graph * graph_;

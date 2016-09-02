@@ -22,7 +22,7 @@ test_main(void)
 
 	jive_graph_prune(graph);
 
-	assert(graph->root_region->nodes.first == graph->root_region->bottom);
+	assert(graph->root_region->nodes.size() == 1);
 
 	jive_view(graph, stdout);
 

@@ -1061,17 +1061,16 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 	/*FIXME: serialization does not take care of graph tail node*/
 	jive_sorted_nodes sorted;
 	jive_sorted_nodes_init(&sorted);
-	
-	jive_node * node;
-	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list)
-		jive_sorted_nodes_append(&sorted, node);
+
+	for (auto & node : region->nodes)
+		jive_sorted_nodes_append(&sorted, &node);
 	
 	size_t n;
 	for (n = sorted.min_depth; n < sorted.max_depth_plus_one; ++n) {
 		size_t k;
 		const jive_level_nodes * level = &sorted.depths[n];
 		for (k = 0; k < level->items.size(); ++k) {
-			node = level->items[k];
+			jive_node * node = level->items[k];
 
 			size_t j;
 			for (j = 0; j < node->ninputs; ++j) {

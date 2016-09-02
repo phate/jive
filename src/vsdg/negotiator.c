@@ -693,9 +693,8 @@ jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiat
 void
 jive_negotiator_process_region_(jive_negotiator * self, jive_region * region)
 {
-	jive_node * node;
-	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list)
-		self->class_->annotate_node(self, node);
+	for (auto & node : region->nodes)
+		self->class_->annotate_node(self, &node);
 	jive_negotiator_negotiate(self);
 }
 

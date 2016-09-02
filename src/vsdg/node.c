@@ -660,7 +660,7 @@ jive_node::jive_node(
 	for (size_t n = 0; n < this->ninputs; ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, this->inputs[n]->origin()));
 
-	JIVE_LIST_PUSH_BACK(region->nodes, this, region_nodes_list);
+	region->nodes.push_back(this);
 	JIVE_LIST_PUSH_BACK(graph_->bottom, this, graph_bottom_list);
 
 	graph_->on_node_create(this);
@@ -672,7 +672,7 @@ jive_node::~jive_node()
 
 	JIVE_DEBUG_ASSERT(region_);
 
-	JIVE_LIST_REMOVE(region_->nodes, this, region_nodes_list);
+	region_->nodes.erase(this);
 
 	while(noutputs)
 		delete outputs[noutputs-1];

@@ -33,7 +33,7 @@ public:
 	jive_graphview(const jive_graph * graph);
 
 	const struct jive_graph * graph;
-	std::unordered_map<jive_node*, jive_nodeview*> nodemap;
+	std::unordered_map<const jive_node*, jive_nodeview*> nodemap;
 	std::unordered_map<jive::input*, jive_inputview*> inputmap;
 	std::unordered_map<jive::output*, jive_outputview*> outputmap;
 	int width, height;

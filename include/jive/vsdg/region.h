@@ -13,6 +13,7 @@
 #include <jive/common.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
+#include <jive/vsdg/node.h>
 #include <jive/vsdg/region-ssavar-use.h>
 #include <jive/vsdg/section.h>
 
@@ -71,20 +72,16 @@ public:
 	bool
 	contains(const jive_node * node) const noexcept;
 
-	inline bool
-	is_empty() const noexcept
-	{
-		return nodes.first == nullptr && subregions.first == nullptr;
-	}
-
 	struct jive_graph * graph;
 	jive_region * parent;
 	struct jive_stackframe * stackframe;
 
-	struct {
-		struct jive_node * first;
-		struct jive_node * last;
-	} nodes;
+	typedef jive::detail::intrusive_list<
+		jive_node,
+		jive_node::region_node_list_accessor
+	> region_nodes_list;
+
+	region_nodes_list nodes;
 
 	struct {
 		struct jive_node * first;

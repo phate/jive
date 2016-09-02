@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/region.h>
 
 namespace jive {
 	class output;

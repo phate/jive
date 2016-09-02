@@ -25,7 +25,7 @@ jive_region_attrs_init(jive_region_attrs * attrs)
 
 jive_region::~jive_region()
 {
-	JIVE_DEBUG_ASSERT(nodes.first == nullptr && nodes.last == nullptr);
+	JIVE_DEBUG_ASSERT(nodes.empty());
 	JIVE_DEBUG_ASSERT(subregions.first == nullptr && subregions.last == nullptr);
 
 	graph->on_region_destroy(this);
@@ -46,7 +46,6 @@ jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
 	, anchor(nullptr)
 	, depth_(0)
 {
-	nodes.first = nodes.last = nullptr;
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
 	region_subregions_list.prev = region_subregions_list.next = nullptr;
@@ -113,7 +112,7 @@ jive_region_prune_subregions_(jive_region * self)
 	subregion = self->subregions.first;
 	while(subregion) {
 		jive_region * next = subregion->region_subregions_list.next;
-		if (subregion->is_empty()) {
+		if (subregion->nodes.empty()) {
 			JIVE_LIST_REMOVE(self->subregions, subregion, region_subregions_list);
 			delete subregion;
 		}
@@ -165,11 +164,11 @@ jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 
 typedef struct jive_copy_context jive_copy_context;
 struct jive_copy_context {
-	std::vector<std::vector<jive_node*>> depths;
+	std::vector<std::vector<const jive_node*>> depths;
 };
 
 static void
-jive_copy_context_append(jive_copy_context * self, jive_node * node)
+jive_copy_context_append(jive_copy_context * self, const jive_node * node)
 {
 	if (node->depth_from_root >= self->depths.size())
 		self->depths.resize(node->depth_from_root+1);
@@ -185,11 +184,10 @@ pre_copy_region(
 	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom)
 {
-	jive_node * node;
-	JIVE_LIST_ITERATE(original_region->nodes, node, region_nodes_list) {
-		if (!copy_top && node == original_region->top) continue;
-		if (!copy_bottom && node == original_region->bottom) continue;
-		jive_copy_context_append(copy_context, node);
+	for (auto & node : original_region->nodes) {
+		if (!copy_top && &node == original_region->top) continue;
+		if (!copy_bottom && &node == original_region->bottom) continue;
+		jive_copy_context_append(copy_context, &node);
 	}
 	
 	jive_region * subregion;
@@ -215,7 +213,7 @@ jive_region_copy_substitute(
 	
 	for (size_t depth = 0; depth < copy_context.depths.size(); depth ++) {
 		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
-			jive_node * node = copy_context.depths[depth][n];
+			const jive_node * node = copy_context.depths[depth][n];
 			jive_region * target_subregion = substitution.lookup(node->region());
 			jive_node * new_node = node->copy(target_subregion, substitution);
 			if (node->region()->top == node)
@@ -240,13 +238,13 @@ jive_region_verify_top_node_list(struct jive_region * region)
 		JIVE_DEBUG_ASSERT(node->ninputs == 0);
 
 	/* check whether all nullary nodes from the region are in the top_node_list */
-	JIVE_LIST_ITERATE(region->nodes, node, region_nodes_list) {
-		if (node->ninputs != 0)
+	for (const auto & node : region->nodes) {
+		if (node.ninputs != 0)
 			continue;
 
 		jive_node * top;
 		JIVE_LIST_ITERATE(region->top_nodes, top, region_top_node_list) {
-			if (top == node)
+			if (top == &node)
 				break;
 		}
 		if (top == NULL)

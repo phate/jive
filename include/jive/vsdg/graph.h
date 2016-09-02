@@ -17,6 +17,7 @@
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/region.h>
 #include <jive/vsdg/tracker.h>
 
 /* graph tail node */
