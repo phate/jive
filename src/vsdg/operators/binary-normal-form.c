@@ -253,7 +253,7 @@ binary_normal_form::normalized_create(
 	const operation & new_op =
 		tmp_op ? *tmp_op : static_cast<const operation &>(op);
 
-	region = jive_region_innermost(new_args.size(), &new_args[0]);
+	region = new_args[0]->node()->region();
 	return node_normal_form::normalized_create(region, new_op, new_args);
 }
 

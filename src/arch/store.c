@@ -31,8 +31,7 @@ jive_store_node_normalized_create(
 		args.push_back(states[n]);
 	}
 
-	jive_region * region = jive_region_innermost(args.size(), &args[0]);
-	return nf->normalized_create(region, op, args);
+	return nf->normalized_create(address->node()->region(), op, args);
 }
 
 
@@ -99,21 +98,6 @@ store_op::copy() const
 }
 
 /* store_node */
-
-static inline jive_region *
-store_node_region_innermost(jive::output * address, jive::output * value,
-	size_t nstates, jive::output * const states[])
-{
-	size_t i;
-	jive::output * outputs[nstates+2];
-	for(i = 0; i < nstates; i++){
-		outputs[i] = states[i];
-	}
-	outputs[nstates] = address;
-	outputs[nstates+1] = value;
-
-	return jive_region_innermost(nstates+2, outputs);
-}
 
 std::vector<jive::output *>
 jive_store_by_address_create(jive::output * address,

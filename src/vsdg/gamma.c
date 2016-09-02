@@ -147,14 +147,7 @@ jive_gamma_create(
 {
 	size_t nvalues = types.size();
 	size_t nalternatives = alternatives.size();
-
-	std::vector<jive::output*> tmp({predicate});
-	for (size_t i = 0; i < nalternatives; i++) {
-		JIVE_DEBUG_ASSERT(types.size() == alternatives[i].size());
-		for (size_t f = 0; f < nvalues; f++)
-			tmp.push_back(alternatives[i][f]);
-	}
-	jive_region * region = jive_region_innermost(tmp.size(), &tmp[0]);
+	jive_region * region = predicate->node()->region();
 
 	jive::output * arguments[nalternatives+1];
 	for (size_t n = 0; n < nalternatives; n++) {

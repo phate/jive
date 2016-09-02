@@ -661,21 +661,4 @@ jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
 	return jive_node_get_tracker_state_slow(self, slot);
 }
 
-/* methods pertaining to jive_region that require definition of jive_node
-need to live here to avoid cyclic header dependency */
-
-/** \brief Determine innermost of multiple (possibly) nested regions from operand list */
-JIVE_EXPORTED_INLINE jive_region *
-jive_region_innermost(size_t noperands, jive::output * const operands[])
-{
-	jive_region * region = operands[noperands-1]->node()->region();
-	for (size_t n = noperands - 1; n; --n) {
-		jive_node * node = operands[n-1]->node();
-		if (node->region()->depth() > region->depth())
-			region = node->region();
-	}
-	
-	return region;
-}
-
 #endif

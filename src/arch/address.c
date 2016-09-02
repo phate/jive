@@ -277,11 +277,7 @@ jive_arraysubscript(
 		*element_type,
 		dynamic_cast<const jive::bits::type &>(index->type()));
 
-
-	jive::output * arguments[2] = {address, index};
-	jive_region * region = jive_region_innermost(2, arguments);
-
-	return jive_node_create_normalized(region, op, {address, index})[0];
+	return jive_node_create_normalized(address->node()->region(), op, {address, index})[0];
 }
 
 /* arrayindex */
@@ -367,12 +363,8 @@ jive_arrayindex(
 	const jive::value::type * element_type,
 	const jive::bits::type * difference_type)
 {
-	jive::output * arguments[] = {addr1, addr2};
-	jive_region * region = jive_region_innermost(2, arguments);
-	
 	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
-	
-	return jive_node_create_normalized(region, op, {addr1, addr2})[0];
+	return jive_node_create_normalized(addr1->node()->region(), op, {addr1, addr2})[0];
 }
 
 /* label_to_address node */

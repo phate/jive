@@ -68,7 +68,7 @@ mux_op::copy() const
 jive::output *
 jive_state_merge(const jive::state::type * statetype, size_t nstates, jive::output * const states[])
 {
-	jive_region * region = jive_region_innermost(nstates, states);
+	jive_region * region = states[0]->node()->region();
 
 	jive::state::mux_op op(*statetype, nstates, 1);
 	return jive_node_create_normalized(region, op,

@@ -93,7 +93,7 @@ jive_test_node_create_normalized(
 {
 	jive_region * region = graph->root_region;
 	if (!operands.empty())
-		region = jive_region_innermost(operands.size(), &operands[0]);
+		region = operands[0]->node()->region();
 
 	test_operation op(operand_types, result_types);
 	return jive_node_create_normalized(region, op, operands);

@@ -174,9 +174,7 @@ public:
 	static jive::output *
 	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
-		std::vector<jive::output*> operands = {arg1, arg2};
-		jive_region * region = jive_region_innermost(operands.size(), &operands[0]);
-		return jive_node_create_normalized(region, make_binop(), {arg1, arg2})[0];
+		return jive_node_create_normalized(arg1->node()->region(), make_binop(), {arg1, arg2})[0];
 	}
 
 	virtual jive_binary_operation_flags
@@ -226,10 +224,8 @@ public:
 	static jive::output *
 	normalized_create(jive::output * arg1, jive::output * arg2)
 	{
-		std::vector<jive::output*> operands = {arg1, arg2};
-		jive_region * region = jive_region_innermost(operands.size(), &operands[0]);
 		make_cmpop op;
-		return jive_node_create_normalized(region, make_cmpop(), {arg1, arg2})[0];
+		return jive_node_create_normalized(arg1->node()->region(), make_cmpop(), {arg1, arg2})[0];
 	}
 
 	virtual jive_binary_operation_flags

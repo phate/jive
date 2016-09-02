@@ -26,8 +26,7 @@ jive_load_node_normalized_create(
 		args.push_back(states[n]);
 	}
 
-	jive_region * region = jive_region_innermost(args.size(), &args[0]);
-	return nf->normalized_create(region, op, args)[0];
+	return nf->normalized_create(address->node()->region(), op, args)[0];
 }
 
 namespace jive {
