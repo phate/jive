@@ -217,7 +217,7 @@ jive_region_copy_substitute(
 		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
 			jive_node * node = copy_context.depths[depth][n];
 			jive_region * target_subregion = substitution.lookup(node->region);
-			jive_node * new_node = jive_node_copy_substitute(node, target_subregion, substitution);
+			jive_node * new_node = node->copy(target_subregion, substitution);
 			if (node->region->top == node)
 				target_subregion->top = new_node;
 			if (node->region->bottom == node)

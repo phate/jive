@@ -621,66 +621,6 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 	}
 }
 
-jive_node *
-jive_node_copy_substitute(
-	const jive_node * self,
-	jive_region * target,
-	jive::substitution_map & substitution)
-{
-	std::vector<jive::output*> operands(self->noperands());
-	for (size_t n = 0; n < self->noperands(); n++) {
-		operands[n] = substitution.lookup(self->inputs[n]->origin());
-		if (!operands[n]) {
-			operands[n] = self->inputs[n]->origin();
-		}
-	}
-	
-	jive_node * new_node = self->copy(target, operands);
-	for (size_t n = self->noperands(); n < self->ninputs; n++) {
-		jive::output * origin = substitution.lookup(self->inputs[n]->origin());
-		if (!origin) {
-			origin =  self->inputs[n]->origin();
-		}
-
-		if (self->inputs[n]->gate) {
-			jive::gate * gate = self->inputs[n]->gate;
-
-			jive::gate * target_gate = substitution.lookup(gate);
-			if (!target_gate) {
-				target_gate = jive_graph_create_gate(target->graph, gate->name(), gate->type());
-				target_gate->required_rescls = gate->required_rescls;
-				substitution.insert(gate, target_gate);
-			}
-		} else {
-			jive::input * input = new_node->add_input(&self->inputs[n]->type(), origin);
-			input->required_rescls = self->inputs[n]->required_rescls;
-		}
-	}
-	
-	for (size_t n = new_node->noutputs; n < self->noutputs; n++) {
-		if (self->outputs[n]->gate) {
-			jive::gate * gate = self->outputs[n]->gate;
-
-			jive::gate * target_gate = substitution.lookup(gate);
-			if (!target_gate) {
-				target_gate = jive_graph_create_gate(target->graph, gate->name(), gate->type());
-				target_gate->required_rescls = gate->required_rescls;
-				substitution.insert(gate, target_gate);
-			}
-
-			new_node->add_output(target_gate);
-		} else {
-			jive::output * output = new_node->add_output(&self->outputs[n]->type());
-			output->required_rescls = self->outputs[n]->required_rescls;
-		}
-	}
-	
-	for (size_t n = 0; n < new_node->noutputs; n++)
-		substitution.insert(self->outputs[n], new_node->outputs[n]);
-
-	return new_node;
-}
-
 jive_node::jive_node(
 	std::unique_ptr<jive::operation> op,
 	jive_region * region,
@@ -828,6 +768,63 @@ jive_node::copy(jive_region * region, const std::vector<jive::output*> & operand
 {
 	jive_graph_mark_denormalized(graph());
 	return operation_->create_node(region, noperands(), &operands[0]);
+}
+
+jive_node *
+jive_node::copy(jive_region * region, jive::substitution_map & smap) const
+{
+	std::vector<jive::output*> operands(noperands());
+	for (size_t n = 0; n < noperands(); n++) {
+		operands[n] = smap.lookup(inputs[n]->origin());
+		if (!operands[n]) {
+			operands[n] = inputs[n]->origin();
+		}
+	}
+
+	jive_node * new_node = copy(region, operands);
+	for (size_t n = noperands(); n < ninputs; n++) {
+		jive::output * origin = smap.lookup(inputs[n]->origin());
+		if (!origin) {
+			origin =  inputs[n]->origin();
+		}
+
+		if (inputs[n]->gate) {
+			jive::gate * gate = inputs[n]->gate;
+
+			jive::gate * target_gate = smap.lookup(gate);
+			if (!target_gate) {
+				target_gate = jive_graph_create_gate(region->graph, gate->name(), gate->type());
+				target_gate->required_rescls = gate->required_rescls;
+				smap.insert(gate, target_gate);
+			}
+		} else {
+			jive::input * input = new_node->add_input(&inputs[n]->type(), origin);
+			input->required_rescls = inputs[n]->required_rescls;
+		}
+	}
+
+	for (size_t n = new_node->noutputs; n < noutputs; n++) {
+		if (outputs[n]->gate) {
+			jive::gate * gate = outputs[n]->gate;
+
+			jive::gate * target_gate = smap.lookup(gate);
+			if (!target_gate) {
+				target_gate = jive_graph_create_gate(region->graph, gate->name(), gate->type());
+				target_gate->required_rescls = gate->required_rescls;
+				smap.insert(gate, target_gate);
+			}
+
+			new_node->add_output(target_gate);
+		} else {
+			jive::output * output = new_node->add_output(&outputs[n]->type());
+			output->required_rescls = outputs[n]->required_rescls;
+		}
+	}
+
+	for (size_t n = 0; n < new_node->noutputs; n++)
+		smap.insert(outputs[n], new_node->outputs[n]);
+
+	return new_node;
 }
 
 static bool

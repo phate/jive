@@ -454,6 +454,26 @@ public:
 	jive_node *
 	copy(jive_region * region, const std::vector<jive::output*> & operands) const;
 
+	/**
+		\brief Copy a node with substitutions
+		\param self Node to be copied
+		\param target Target region to create node in
+		\param substitution Operand and gate substitutions
+		\return Copied node
+
+		Create a new node that is semantically equivalent to an
+		existing node. The newly created node will use the same
+		operands as the existing node unless there is a substitution
+		registered for a particular operand.
+
+		The given substitution map is updated so that all
+		outputs of the original node will be substituted by
+		corresponding outputs of the newly created node in
+		subsequent \ref copy operations.
+	*/
+	jive_node *
+	copy(jive_region * region, jive::substitution_map & smap) const;
+
 	struct jive_region * region;
 	
 	size_t depth_from_root;
@@ -495,29 +515,6 @@ struct jive_tracker_nodestate {
 		jive_tracker_nodestate * next;
 	} state_node_list;
 };
-
-/**
-	\brief Copy a node with substitutions
-	\param self Node to be copied
-	\param target Target region to create node in
-	\param substitution Operand and gate substitutions
-	\return Copied node
-	
-	Create a new node that is semantically equivalent to an
-	existing node. The newly created node will use the same
-	operands as the existing node unless there is a substitution
-	registered for a particular operand.
-	
-	The given substitution map will be update so that all
-	outputs of the original node will be substituted by
-	corresponding outputs of the newly created node in
-	subsequent \ref jive_node_copy_substitute operations.
-*/
-jive_node *
-jive_node_copy_substitute(
-	const jive_node * self,
-	struct jive_region * target,
-	jive::substitution_map & substitution);
 
 /**
 	\brief Check if an edge may be added to the node
