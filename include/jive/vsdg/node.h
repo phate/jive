@@ -660,9 +660,6 @@ jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
 	return jive_node_get_tracker_state_slow(self, slot);
 }
 
-void
-jive_node_move(jive_node * self, struct jive_region * new_region);
-
 /* methods pertaining to jive_region that require definition of jive_node
 need to live here to avoid cyclic header dependency */
 

@@ -621,45 +621,6 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 	}
 }
 
-void
-jive_node_move(jive_node * self, jive_region * new_region)
-{
-	if (self->region == new_region)
-		return;
-
-	/* verify that the node is moved along the region path to the root */
-	jive_region * child = new_region;
-	jive_region * parent = self->region;
-	if (self->region->depth() > new_region->depth()) {
-		child = self->region;
-		parent = new_region;
-	}
-	if (!parent->contains(child))
-		throw std::logic_error("Node can only be moved along the region path to the root.");
-
-	/* update notion of top nodes of old region */
-	if (self->ninputs == 0) {
-		JIVE_LIST_REMOVE(self->region->top_nodes, self, region_top_node_list);
-	}
-		
-	/* move the node to the new region */
-	JIVE_LIST_REMOVE(self->region->nodes, self, region_nodes_list);
-	self->region = new_region;
-	JIVE_LIST_PUSH_BACK(self->region->nodes, self, region_nodes_list);
-
-	/* update notion of top nodes of new region */
-	for (size_t n = 0; n < self->ninputs; n++) {
-		/* if it is an anchor node, we also need to pull/push in/out the corresponding regions */
-		if (dynamic_cast<const jive::achr::type*>(&self->inputs[n]->type())) {
-			jive_region * subregion = self->producer(n)->region;
-			subregion->reparent(new_region);
-		}
-	}
-	if (self->ninputs == 0) {
-		JIVE_LIST_PUSH_BACK(self->region->top_nodes, self, region_top_node_list);
-	}
-}
-
 struct jive_node *
 jive_node_copy(const jive_node * self, struct jive_region * region, jive::output * operands[])
 {

@@ -10,50 +10,7 @@
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
-
-namespace {
-
-typedef struct jive_move_context jive_move_context;
-struct jive_move_context {
-	std::vector<std::vector<jive_node*>> depths;
-};
-
-static void
-jive_move_context_append(jive_move_context * self, jive_node * node)
-{
-	if (node->depth_from_root >= self->depths.size())
-		self->depths.resize(node->depth_from_root+1);
-
-	self->depths[node->depth_from_root].push_back(node);
-}
-
-static void
-pre_move_region(jive_region * target_region, const jive_region * original_region,
-	jive_move_context * move_context)
-{
-	jive_node * node;
-	JIVE_LIST_ITERATE(original_region->nodes, node, region_nodes_list) {
-		if (node != original_region->bottom)
-			jive_move_context_append(move_context, node);
-	}
-}
-
-static void
-jive_region_move(const jive_region * self, jive_region * target)
-{
-	jive_move_context move_context;
-
-	pre_move_region(target, self, &move_context);
-
-	for (size_t depth = 0; depth < move_context.depths.size(); depth++) {
-		for (size_t n = 0; n < move_context.depths[depth].size(); n++) {
-			jive_node * node = move_context.depths[depth][n];
-			jive_node_move(node, target);
-		}
-	}
-}
-
-}
+#include <jive/vsdg/substitution.h>
 
 namespace jive {
 
@@ -85,10 +42,21 @@ gamma_normal_form::normalize_node(jive_node * node) const
 	if (get_predicate_reduction()) {
 		jive::output * predicate = node->inputs[node->ninputs-1]->origin();
 		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation())) {
-			jive_node * branch = node->producer(op->value().nalternatives());
-			jive_region_move(branch->region, node->region);
-			for (size_t n = 0; n < node->noutputs; n++)
-				node->outputs[n]->replace(branch->inputs[n]->origin());
+			jive_node * tail = node->producer(op->value().nalternatives());
+			jive_node * head = tail->inputs[0]->origin()->node();
+			JIVE_DEBUG_ASSERT(tail = tail->region->bottom);
+			JIVE_DEBUG_ASSERT(head = head->region->top);
+
+			jive::substitution_map map;
+			for (size_t n = 1; n < head->noutputs; n++)
+				map.insert(head->outputs[n], head->inputs[n-1]->origin());
+
+			jive_region_copy_substitute(tail->region, node->region, map, false, false);
+
+			for (size_t n = 1; n < node->noutputs; n++) {
+					jive::output * original = tail->inputs[n]->origin();
+					node->outputs[n]->replace(map.lookup(original));
+			}
 			was_normalized = false;
 		}
 	}
