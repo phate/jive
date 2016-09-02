@@ -621,13 +621,6 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 	}
 }
 
-struct jive_node *
-jive_node_copy(const jive_node * self, struct jive_region * region, jive::output * operands[])
-{
-	jive_graph_mark_denormalized(region->graph);
-	return self->operation().create_node(region, self->noperands(), operands);
-}
-
 jive_node *
 jive_node_copy_substitute(
 	const jive_node * self,
@@ -642,7 +635,7 @@ jive_node_copy_substitute(
 		}
 	}
 	
-	jive_node * new_node = jive_node_copy(self, target, &operands[0]);
+	jive_node * new_node = self->copy(target, operands);
 	for (size_t n = self->noperands(); n < self->ninputs; n++) {
 		jive::output * origin = substitution.lookup(self->inputs[n]->origin());
 		if (!origin) {
@@ -828,6 +821,13 @@ jive_node::add_output(jive::gate * gate)
 	}
 
 	return output;
+}
+
+jive_node *
+jive_node::copy(jive_region * region, const std::vector<jive::output*> & operands) const
+{
+	jive_graph_mark_denormalized(graph());
+	return operation_->create_node(region, noperands(), &operands[0]);
 }
 
 static bool

@@ -451,6 +451,9 @@ public:
 		return graph_;
 	}
 
+	jive_node *
+	copy(jive_region * region, const std::vector<jive::output*> & operands) const;
+
 	struct jive_region * region;
 	
 	size_t depth_from_root;
@@ -492,10 +495,6 @@ struct jive_tracker_nodestate {
 		jive_tracker_nodestate * next;
 	} state_node_list;
 };
-
-struct jive_node *
-jive_node_copy(
-	const jive_node * self, struct jive_region * region, jive::output * operands[]);
 
 /**
 	\brief Copy a node with substitutions
