@@ -1077,7 +1077,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 			for (j = 0; j < node->ninputs; ++j) {
 				jive::input * input = node->inputs[j];
 				if (dynamic_cast<const jive::achr::type*>(&input->type()))
-					jive_serialize_regiondef(self, namegen, input->origin()->node()->region, os);
+					jive_serialize_regiondef(self, namegen, input->origin()->node()->region(), os);
 			}
 			if (jive::graph_tail_operation() == node->operation()) {
 				continue;

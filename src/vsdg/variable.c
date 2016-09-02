@@ -113,9 +113,9 @@ jive_ssavar_assign_input(jive_ssavar * self, jive::input * input)
 
 	jive_ssavar_inc_use_count(self);
 	if (jive::theta_head_op() == input->node()->operation()) {
-		jive_region_add_used_ssavar(input->node()->region->parent, self);
+		jive_region_add_used_ssavar(input->node()->region()->parent, self);
 	} else {
-		jive_region_add_used_ssavar(input->node()->region, self);
+		jive_region_add_used_ssavar(input->node()->region(), self);
 	}
 
 	JIVE_LIST_PUSH_BACK(self->assigned_inputs, input, ssavar_input_list);
@@ -134,9 +134,9 @@ jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input)
 	JIVE_LIST_REMOVE(self->assigned_inputs, input, ssavar_input_list);
 	input->ssavar = 0;
 	if (jive::theta_head_op() == input->node()->operation()) {
-		jive_region_remove_used_ssavar(input->node()->region->parent, self);
+		jive_region_remove_used_ssavar(input->node()->region()->parent, self);
 	} else {
-		jive_region_remove_used_ssavar(input->node()->region, self);
+		jive_region_remove_used_ssavar(input->node()->region(), self);
 	}
 
 	jive_ssavar_dec_use_count(self);

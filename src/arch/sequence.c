@@ -158,7 +158,7 @@ sequentialize_region(
 				jive_seq_region * seq_subregion;
 				if (n == 0) {
 					seq_subregion = sequentialize_region(seq, current, region_trav,
-						input->producer()->region);
+						input->producer()->region());
 					
 					if (!seq_region->last_point)
 						seq_region->last_point = seq_subregion->last_point;
@@ -167,7 +167,7 @@ sequentialize_region(
 					
 					seq_subregion->inlined = true;
 				} else {
-					seq_subregion = sequentialize_region(seq, 0, region_trav, input->producer()->region);
+					seq_subregion = sequentialize_region(seq, 0, region_trav, input->producer()->region());
 					seq_subregion->inlined = false;
 				}
 			}
@@ -249,7 +249,7 @@ jive_graph_sequentialize(jive_graph * graph)
 			nullptr;
 		if (odef) {
 			jive_node * anchor = seq_point->node->producer(0);
-			jive_region * region = anchor->producer(0)->region;
+			jive_region * region = anchor->producer(0)->region();
 			jive_seq_region * seq_region = jive_seq_graph_map_region(seq, region);
 			jive_seq_point_attach_symbol(seq_region->first_point,
 				odef->symbol(), seq);

@@ -74,7 +74,7 @@ regvalue_op::copy() const
 jive::output *
 jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value)
 {
-	jive_graph * graph = value->node()->region->graph;
+	jive_graph * graph = value->node()->graph();
 	jive::regvalue_op op(regcls);
 	
 	const jive::node_normal_form * nf =

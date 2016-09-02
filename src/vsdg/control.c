@@ -36,7 +36,7 @@ match(
 	jive::output * operand)
 {
 	match_op op(nbits, mapping, default_alternative, nalternatives);
-	return jive_node_create_normalized(operand->node()->region, op, {operand})[0];
+	return jive_node_create_normalized(operand->node()->region(), op, {operand})[0];
 }
 
 }

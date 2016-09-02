@@ -231,11 +231,11 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 {
 	jive_region * root_region = self->base.graph->root_region;
 	
-	if (node->region == root_region)
+	if (node->region() == root_region)
 		return;
 	
 	/* determine function region */
-	jive_region * region = node->region;
+	jive_region * region = node->region();
 	while (region->parent != root_region)
 		region = region->parent;
 	jive_node * top = region->top;
@@ -297,7 +297,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
 		jive::input * input = node->inputs[n];
-		if (input->producer()->region != root_region
+		if (input->producer()->region() != root_region
 		&& !dynamic_cast<const jive::base::nullary_op*>(&input->producer()->operation()))
 			continue;
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);

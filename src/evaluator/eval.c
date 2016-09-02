@@ -349,14 +349,14 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 
 	jive_node * tail = node->producer(0);
 
-	ctx.push_frame(tail->region);
+	ctx.push_frame(tail->region());
 
 	std::vector<std::unique_ptr<const literal>> results;
 	for (size_t n = 1; n < tail->ninputs; n++)
 		results.emplace_back(eval_input(tail->inputs[n], ctx));
 
 	std::unique_ptr<const literal> fct(new fctliteral(ctx.top_arguments(), results));
-	ctx.pop_frame(tail->region);
+	ctx.pop_frame(tail->region());
 
 	return fct;
 }
@@ -379,11 +379,11 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
 	jive_node * tail = node->inputs[alt]->origin()->node();
 
-	ctx.push_frame(tail->region);
+	ctx.push_frame(tail->region());
 	std::vector<std::unique_ptr<const literal>> results;
 	for (size_t n = 1; n < tail->ninputs; n++)
 		results.emplace_back(eval_input(tail->inputs[n], ctx));
-	ctx.pop_frame(tail->region);
+	ctx.pop_frame(tail->region());
 
 	JIVE_DEBUG_ASSERT(node->noutputs == results.size());
 	for (size_t n = 0; n < node->noutputs; n++)
@@ -412,7 +412,7 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 
 	std::vector<std::unique_ptr<const literal>> results;
 	do {
-		ctx.push_frame(tail->region);
+		ctx.push_frame(tail->region());
 
 		if (!results.empty()) {
 			JIVE_DEBUG_ASSERT(results.size() == head->noutputs);
@@ -423,7 +423,7 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 
 		for (size_t n = 1; n < tail->ninputs; n++)
 			results.emplace_back(eval_input(tail->inputs[n], ctx));
-		ctx.pop_frame(tail->region);
+		ctx.pop_frame(tail->region());
 
 		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&results[0]->type()));
 	} while (static_cast<const ctlliteral*>(results[0].get())->alternative());
@@ -441,12 +441,12 @@ eval_phi_head_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_head_op*>(&node->operation()));
 
-	jive_node * tail = node->region->bottom;
+	jive_node * tail = node->region()->bottom;
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
-	ctx.push_frame(tail->region);
+	ctx.push_frame(tail->region());
 	std::unique_ptr<const literal> result = std::move(eval_input(tail->inputs[index], ctx));
-	ctx.pop_frame(tail->region);
+	ctx.pop_frame(tail->region());
 
 	return result;
 }
@@ -460,9 +460,9 @@ eval_phi_node(const struct jive_node * node, size_t index, context & ctx)
 	jive_node * tail = node->producer(0);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
-	ctx.push_frame(tail->region);
+	ctx.push_frame(tail->region());
 	std::unique_ptr<const literal> result = std::move(eval_input(tail->inputs[index+1], ctx));
-	ctx.pop_frame(tail->region);
+	ctx.pop_frame(tail->region());
 
 	return result;
 }

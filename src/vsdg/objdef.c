@@ -80,5 +80,5 @@ jive_objdef_create(
 	const jive_linker_symbol * symbol)
 {
 	jive::objdef_operation op(name, symbol, output->type());
-	return jive_node_create_normalized(output->node()->region, op, {output})[0];
+	return jive_node_create_normalized(output->node()->region(), op, {output})[0];
 }

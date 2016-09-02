@@ -30,8 +30,8 @@
 static bool
 jive_input_is_valid(const jive::input * input)
 {
-	jive_region * region = input->node()->region;
-	jive_region * origin_region = input->origin()->node()->region;
+	jive_region * region = input->node()->region();
+	jive_region * origin_region = input->origin()->node()->region();
 
 	if (dynamic_cast<const jive::achr::type*>(&input->type()))
 		return origin_region->parent == region;
@@ -106,8 +106,8 @@ input::input(
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
 	*/
 	if (dynamic_cast<const jive::achr::type*>(&type)) {
-		JIVE_DEBUG_ASSERT(origin->node()->region->anchor == nullptr);
-		origin->node()->region->anchor = this;
+		JIVE_DEBUG_ASSERT(origin->node()->region()->anchor == nullptr);
+		origin->node()->region()->anchor = this;
 	}
 }
 
@@ -139,7 +139,7 @@ input::~input() noexcept
 		node()->inputs[n]->set_index(n);
 	}
 	if (node()->ninputs == 0)
-		JIVE_LIST_PUSH_BACK(node()->region->top_nodes, node_, region_top_node_list);
+		JIVE_LIST_PUSH_BACK(node()->region()->top_nodes, node_, region_top_node_list);
 }
 
 const jive::base::type &
@@ -552,8 +552,8 @@ register_node_normal_form(void)
 bool
 jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 {
-	jive_region * origin_region = origin->node()->region;
-	jive_region * target_region = self->region;
+	jive_region * origin_region = origin->node()->region();
+	jive_region * target_region = self->region();
 	if (dynamic_cast<const jive::achr::type*>(&origin->type()))
 		origin_region = origin_region->parent;
 	while (target_region) {
@@ -625,11 +625,11 @@ jive_node::jive_node(
 	std::unique_ptr<jive::operation> op,
 	jive_region * region,
 	const std::vector<jive::output*> & operands)
-	: region(region)
-	, depth_from_root(0)
+	: depth_from_root(0)
 	, ninputs(0)
 	, noutputs(0)
 	, graph_(region->graph)
+	, region_(region)
 	, operation_(std::move(op))
 {
 	if (operation_->narguments() != operands.size())
@@ -670,9 +670,9 @@ jive_node::~jive_node()
 {
 	graph()->on_node_destroy(this);
 
-	JIVE_DEBUG_ASSERT(region);
+	JIVE_DEBUG_ASSERT(region_);
 
-	JIVE_LIST_REMOVE(region->nodes, this, region_nodes_list);
+	JIVE_LIST_REMOVE(region_->nodes, this, region_nodes_list);
 
 	while(noutputs)
 		delete outputs[noutputs-1];
@@ -681,14 +681,14 @@ jive_node::~jive_node()
 		delete inputs[ninputs-1];
 
 	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
-	JIVE_LIST_REMOVE(region->top_nodes, this, region_top_node_list);
+	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
 
-	if (this == region->top)
-		region->top = nullptr;
-	if (this == region->bottom)
-		region->bottom = nullptr;
+	if (this == region()->top)
+		region()->top = nullptr;
+	if (this == region()->bottom)
+		region()->bottom = nullptr;
 
-	region = nullptr;
+	region_ = nullptr;
 
 	for (size_t n = 0; n < tracker_slots.size(); n++)
 		delete tracker_slots[n];
@@ -701,7 +701,7 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 	jive::input * input = new jive::input(this, ninputs, origin, *type);
 
 	if (ninputs == 0)
-		JIVE_LIST_REMOVE(region->top_nodes, this, region_top_node_list);
+		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
 	ninputs++;
 	inputs.push_back(input);
@@ -916,9 +916,8 @@ jive_node_cse_create(
 bool
 jive_node_normalize(jive_node * self)
 {
-	jive_graph * graph = self->region->graph;
-	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		graph, typeid(self->operation()));
+	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(self->graph(),
+		typeid(self->operation()));
 	return nf->normalize_node(self);
 }
 

@@ -214,7 +214,7 @@ jive_gamma(jive::output * predicate,
 	if (alternatives.size() == 1)
 		return alternatives[0];
 
-	jive_graph * graph = predicate->node()->region->graph;
+	jive_graph * graph = predicate->node()->graph();
 	jive::gamma_normal_form * nf = static_cast<jive::gamma_normal_form *>(
 		jive_graph_get_nodeclass_form(graph, typeid(jive::gamma_op)));
 	

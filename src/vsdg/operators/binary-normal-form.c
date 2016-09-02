@@ -156,12 +156,12 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 		const operation & new_op =
 			tmp_op ? *tmp_op : static_cast<const operation &>(op);
 		if (get_cse()) {
-			jive_node_cse(node->region, new_op, new_args);
+			jive_node_cse(node->region(), new_op, new_args);
 		}
 
 		JIVE_DEBUG_ASSERT(new_args.size() >= 2);
 		if (!new_node) {
-			new_node = new_op.create_node(node->region, new_args.size(), &new_args[0]);
+			new_node = new_op.create_node(node->region(), new_args.size(), &new_args[0]);
 		}
 
 		if (new_node != node) {

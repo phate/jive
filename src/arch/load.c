@@ -144,9 +144,9 @@ jive_load_by_address_create(jive::output * address,
 	const jive::value::type * datatype,
 	size_t nstates, jive::output * const states[])
 {
-	jive_graph * graph = address->node()->region->graph;
+	jive_graph * graph = address->node()->graph();
 	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		address->node()->region->graph, typeid(jive::load_op));
+		address->node()->graph(), typeid(jive::load_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
@@ -164,9 +164,9 @@ jive_load_by_bitstring_create(jive::output * address, size_t nbits,
 	const jive::value::type * datatype,
 	size_t nstates, jive::output * const states[])
 {
-	jive_graph * graph = address->node()->region->graph;
+	jive_graph * graph = address->node()->graph();
 	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		address->node()->region->graph, typeid(jive::load_op));
+		address->node()->graph(), typeid(jive::load_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {

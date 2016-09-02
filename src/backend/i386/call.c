@@ -22,7 +22,7 @@ jive_i386_call_node_substitute(
 	jive_node * node,
 	const jive::call_operation & op)
 {
-	jive_region * region = node->region;
+	jive_region * region = node->region();
 	
 	size_t nargs = node->noperands() - 1;
 	
@@ -79,9 +79,7 @@ jive_i386_call_node_substitute(
 		
 		offset += 4;
 		
-		jive_node * split = jive_splitnode_create(
-			node->region,
-			value_type, value, value_cls,
+		jive_node * split = jive_splitnode_create(node->region(), value_type, value, value_cls,
 			slot_type, slot_cls);
 		
 		jive::input * input = call_instr->add_input(slot_type, split->outputs[0]);

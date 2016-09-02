@@ -44,14 +44,14 @@ gamma_normal_form::normalize_node(jive_node * node) const
 		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation())) {
 			jive_node * tail = node->producer(op->value().nalternatives());
 			jive_node * head = tail->inputs[0]->origin()->node();
-			JIVE_DEBUG_ASSERT(tail = tail->region->bottom);
-			JIVE_DEBUG_ASSERT(head = head->region->top);
+			JIVE_DEBUG_ASSERT(tail = tail->region()->bottom);
+			JIVE_DEBUG_ASSERT(head = head->region()->top);
 
 			jive::substitution_map map;
 			for (size_t n = 1; n < head->noutputs; n++)
 				map.insert(head->outputs[n], head->inputs[n-1]->origin());
 
-			jive_region_copy_substitute(tail->region, node->region, map, false, false);
+			jive_region_copy_substitute(tail->region(), node->region(), map, false, false);
 
 			for (size_t n = 1; n < node->noutputs; n++) {
 					jive::output * original = tail->inputs[n]->origin();

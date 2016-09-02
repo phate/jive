@@ -141,7 +141,7 @@ public:
 	inline bool
 	exists(const jive::output * output) const noexcept
 	{
-		struct jive_region * region = output->node()->region;
+		jive_region * region = output->node()->region();
 
 		if (frames_.find(region) == frames_.end())
 			return false;
@@ -161,7 +161,7 @@ public:
 	inline const literal *
 	lookup(const jive::output * output) const noexcept
 	{
-		struct jive_region * region = output->node()->region;
+		jive_region * region = output->node()->region();
 
 		if (frames_.find(region) == frames_.end())
 			return nullptr;
@@ -177,7 +177,7 @@ public:
 	{
 		JIVE_DEBUG_ASSERT(!exists(output));
 
-		struct jive_region * region = output->node()->region;
+		struct jive_region * region = output->node()->region();
 		frames_.find(region)->second.back()->insert(output, v);
 	}
 

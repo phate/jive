@@ -100,7 +100,7 @@ jive_memberof(
 	size_t index)
 {
 	jive::address::memberof_op op(record_decl, index);
-	return jive_node_create_normalized(address->node()->region, op, {address})[0];
+	return jive_node_create_normalized(address->node()->region(), op, {address})[0];
 }
 
 /* containerof */
@@ -182,7 +182,7 @@ jive_containerof(
 	size_t index)
 {
 	jive::address::containerof_op op(record_decl, index);
-	return jive_node_create_normalized(address->node()->region, op, {address})[0];
+	return jive_node_create_normalized(address->node()->region(), op, {address})[0];
 }
 
 /* arraysubscript */

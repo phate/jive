@@ -189,9 +189,9 @@ bottomup_traverser::input_change(input * in, output * old_origin, output * new_o
 upward_cone_traverser::~upward_cone_traverser() noexcept {}
 
 upward_cone_traverser::upward_cone_traverser(jive_node * node)
-	: tracker_(node->region->graph)
+	: tracker_(node->graph())
 {
-	jive_graph * graph = node->region->graph;
+	jive_graph * graph = node->graph();
 	
 	tracker_.set_nodestate(node, traversal_nodestate::frontier);
 	
@@ -334,7 +334,7 @@ bottomup_region_traverser::check_above(jive_node * node)
 			continue;
 		}
 		
-		jive_region * region = above->region;
+		jive_region * region = above->region();
 		
 		bottomup_slave_traverser * slave = map_region(region);
 		nodestate->state = 0;
@@ -348,7 +348,7 @@ bottomup_region_traverser::pass(jive_node * node)
 	jive_tracker_nodestate * nodestate = map_node(node);
 	JIVE_DEBUG_ASSERT(nodestate->state == 0);
 	
-	bottomup_slave_traverser * slave = map_region(node->region);
+	bottomup_slave_traverser * slave = map_region(node->region());
 	
 	jive_tracker_depth_state_remove(slave->frontier_state_, nodestate, node->depth_from_root);
 	nodestate->state = 1;
@@ -366,7 +366,7 @@ bottomup_region_traverser::bottomup_region_traverser(jive_graph * graph)
 	bottomup_slave_traverser * root_slave = map_region(graph_->root_region);
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph_->bottom, node, graph_bottom_list) {
-		if (node->region != graph->root_region) {
+		if (node->region() != graph->root_region) {
 			continue;
 		}
 		

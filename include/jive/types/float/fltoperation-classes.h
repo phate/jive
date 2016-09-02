@@ -132,7 +132,7 @@ public:
 	static jive::output *
 	normalized_create(jive::output * arg)
 	{
-		return jive_node_create_normalized(arg->node()->region, make_unop(), {arg})[0];
+		return jive_node_create_normalized(arg->node()->region(), make_unop(), {arg})[0];
 	}
 
 	virtual value_repr

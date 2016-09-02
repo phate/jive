@@ -79,5 +79,5 @@ std::vector<jive::output *>
 jive_state_split(const jive::state::type * statetype, jive::output * state, size_t nstates)
 {
 	jive::state::mux_op op(*statetype, 1, nstates);
-	return jive_node_create_normalized(state->node()->region, op, {state});
+	return jive_node_create_normalized(state->node()->region(), op, {state});
 }

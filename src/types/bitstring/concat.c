@@ -79,7 +79,7 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 			&arg2_constant->value()[0],
 			arg2_constant->value().nbits());
 
-		return jive_bitconstant(arg1->node()->region, nbits, bits);
+		return jive_bitconstant(arg1->node()->region(), nbits, bits);
 	}
 
 	const slice_op * arg1_slice = dynamic_cast<const slice_op *>(
@@ -165,12 +165,12 @@ public:
 			concat_op op(types_from_arguments(new_args));
 
 			if (get_cse()) {
-				jive_node_cse(node->region, op, new_args);
+				jive_node_cse(node->region(), op, new_args);
 			}
 
 			JIVE_DEBUG_ASSERT(new_args.size() >= 2);
 			if (!new_node) {
-				new_node = op.create_node(node->region, new_args.size(), &new_args[0]);
+				new_node = op.create_node(node->region(), new_args.size(), &new_args[0]);
 			}
 
 			if (new_node != node) {
@@ -406,7 +406,7 @@ concat_op::reduce_operand_pair(
 			&arg2_constant.value()[0],
 			arg2_constant.value().nbits());
 
-		return jive_bitconstant(arg1->node()->region, nbits, bits);
+		return jive_bitconstant(arg1->node()->region(), nbits, bits);
 	}
 
 	if (path == jive_binop_reduction_merge) {

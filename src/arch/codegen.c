@@ -278,13 +278,13 @@ jive_seq_graph_patch_jump_targets(
 	if (dynamic_cast<const jive::subroutine_tail_op *>(&user->operation())) {
 		return;
 	} else if (dynamic_cast<const jive::gamma_op *>(&user->operation())) {
-		jive_region * primary_region = user->producer(0)->region;
-		jive_region * secondary_region = user->producer(1)->region;
+		jive_region * primary_region = user->producer(0)->region();
+		jive_region * secondary_region = user->producer(1)->region();
 		primary_tgt = jive_seq_graph_map_region(seq_graph, primary_region)->first_point;
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, secondary_region)->first_point;
 	} else {
 		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_tail_op *>(&user->operation()));
-		jive_region * region = user->region;
+		jive_region * region = user->region();
 		primary_tgt = jive_seq_graph_map_region(seq_graph, region)->first_point;
 		secondary_tgt = jive_seq_graph_map_region(seq_graph, region)->last_point;
 	}
@@ -304,7 +304,7 @@ jive_seq_graph_patch_jump_targets(
 	seq_instr->imm[0].add_label.internal = primary_tgt;
 	
 	if (secondary_tgt) {
-		const jive_instructionset * isa = jive_region_get_instructionset(inode->region);
+		const jive_instructionset * isa = jive_region_get_instructionset(inode->region());
 		const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 		
 		jive_seq_imm imm;
@@ -328,7 +328,7 @@ jive_seq_graph_patch_region_end(jive_seq_graph * seq_graph, jive_seq_point * seq
 		return;
 	
 	jive_node * anchor_node = (*seq_point->node->outputs[0]->users.begin())->node();
-	const jive_instructionset * isa = jive_region_get_instructionset(anchor_node->region);
+	const jive_instructionset * isa = jive_region_get_instructionset(anchor_node->region());
 	const jive_instruction_class * jump_icls = jive_instructionset_get_jump_instruction_class(isa);
 	
 	jive_seq_imm imm;
@@ -360,7 +360,7 @@ jive_seq_graph_patch_jumps(jive_seq_graph * seq_graph)
 				static_cast<const jive::instruction_op &>(seq_point->node->operation()));
 		}
 		
-		if (seq_point->node == seq_point->node->region->bottom)
+		if (seq_point->node == seq_point->node->region()->bottom)
 			jive_seq_graph_patch_region_end(seq_graph, seq_point);
 	}
 }

@@ -135,7 +135,7 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 {
 	jive_phi_build_state * state = self.internal_state;
 	jive_node * enter = self.region->top;
-	jive_graph * graph = enter->region->graph;
+	jive_graph * graph = enter->graph();
 
 	jive_phi_fixvar fixvar;
 	fixvar.gate = jive_graph_create_gate(
@@ -172,7 +172,7 @@ jive_phi_end(jive_phi self,
 
 	size_t n;
 	
-	jive_node * leave = jive::phi_tail_op().create_node(enter->region, 1, &enter->outputs[0]);
+	jive_node * leave = jive::phi_tail_op().create_node(enter->region(), 1, &enter->outputs[0]);
 	for (n = 0; n < state->fixvars.size(); ++n)
 		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
 
@@ -202,7 +202,7 @@ jive_phi_extension *
 jive_phi_begin_extension(jive_node * phi_node, size_t nfixvars,
 	const jive::base::type * fixvar_types[])
 {
-	jive_graph * graph = phi_node->region->graph;
+	jive_graph * graph = phi_node->graph();
 	jive_region * phi_region = jive_node_anchored_region(phi_node, 0);
 	jive_node * enter = phi_region->top;
 
@@ -237,7 +237,7 @@ jive_phi_end_extension(struct jive_phi_extension * self)
 		phi_node->add_output(gate);
 	}
 
-	jive_graph_mark_denormalized(phi_node->region->graph);
+	jive_graph_mark_denormalized(phi_node->graph());
 
 	delete self;
 

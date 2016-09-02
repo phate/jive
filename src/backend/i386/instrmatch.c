@@ -79,12 +79,10 @@ convert_bitbinary(jive_node * node,
 	
 	if (second_is_immediate) {
 		jive::immediate imm = regvalue_to_immediate(arg2);
-		instr = jive_instruction_node_create_extended(node->region, regimm_icls, &arg1, &imm);
+		instr = jive_instruction_node_create_extended(node->region(), regimm_icls, &arg1, &imm);
 	} else {
 		jive::output * tmparray1[] = {arg1, arg2};
-		instr = jive_instruction_node_create(node->region,
-			regreg_icls,
-			tmparray1, NULL);
+		instr = jive_instruction_node_create(node->region(), regreg_icls, tmparray1, NULL);
 	}
 	
 	node->outputs[0]->replace(instr->outputs[0]);
@@ -100,18 +98,18 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 	const jive_instruction_class * icls;
 	if (sign) {
 		jive::immediate imm(31);
-		jive_node * tmp = jive_instruction_node_create_extended(node->region,
+		jive_node * tmp = jive_instruction_node_create_extended(node->region(),
 			&jive_i386_instr_int_ashr_immediate, &arg1, &imm);
 		
 		ext = tmp->outputs[0];
 		icls = &jive_i386_instr_int_sdiv;
 	} else {
 		jive::immediate imm;
-		jive_node * tmp = jive_instruction_node_create_extended(node->region,
+		jive_node * tmp = jive_instruction_node_create_extended(node->region(),
 			&jive_i386_instr_int_load_imm, nullptr, &imm);
 		
-		jive_node * sub = jive_region_get_subroutine_node(node->region);
-		jive_node * enter = sub->producer(0)->region->top;
+		jive_node * sub = jive_region_get_subroutine_node(node->region());
+		jive_node * enter = sub->producer(0)->region()->top;
 		tmp->add_input(&jive::seq::seqtype, enter->outputs[0]);
 		
 		ext = tmp->outputs[0];
@@ -119,7 +117,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 	}
 	jive::output * tmparray3[] = {ext, arg1, arg2};
 	
-	jive_node * instr = jive_instruction_node_create_extended(node->region,
+	jive_node * instr = jive_instruction_node_create_extended(node->region(),
 		icls, tmparray3, NULL);
 	
 	node->outputs[0]->replace(instr->outputs[index]);
@@ -134,7 +132,7 @@ convert_complex_bitbinary(jive_node * node,
 	jive::output * arg2 = node->inputs[1]->origin();
 	jive::output * tmparray4[] = {arg1, arg2};
 	
-	jive_node * instr = jive_instruction_node_create(node->region,
+	jive_node * instr = jive_instruction_node_create(node->region(),
 		icls,
 		tmparray4, NULL);
 	
@@ -298,17 +296,17 @@ convert_bitcmp(
 	
 	if (second_is_immediate) {
 		jive::immediate imm = regvalue_to_immediate(arg2);
-		cmp_instr = jive_instruction_node_create_extended(node->region,
+		cmp_instr = jive_instruction_node_create_extended(node->region(),
 			&jive_i386_instr_int_cmp_immediate, &arg1, &imm);
 	} else {
 		jive::output * tmparray6[] = {arg1, arg2};
-		cmp_instr = jive_instruction_node_create(node->region,
+		cmp_instr = jive_instruction_node_create(node->region(),
 			&jive_i386_instr_int_cmp,
 			tmparray6, NULL);
 	}
 	
 	jive::immediate imm;
-	jive_node * jump_instr = jive_instruction_node_create(node->region, jump_icls,
+	jive_node * jump_instr = jive_instruction_node_create(node->region(), jump_icls,
 		{cmp_instr->outputs[0]}, {imm}, {}, {}, {&jive::ctl::boolean});
 	node_->outputs[0]->replace(jump_instr->outputs[0]);
 }
@@ -424,7 +422,7 @@ match_gpr_bitunary(jive_node * node)
 	if (i != bitunary_map.end()) {
 		const jive_instruction_class * icls = i->second;
 		jive::output * tmparray8[] = {node->inputs[0]->origin()};
-		jive_node * instr = jive_instruction_node_create(node->region,
+		jive_node * instr = jive_instruction_node_create(node->region(),
 			icls,
 			tmparray8, NULL);
 		
@@ -441,7 +439,7 @@ match_gpr_immediate(jive_node * node)
 	
 	jive::immediate imm = regvalue_to_immediate(node->outputs[0]);
 	
-	jive_node * instr = jive_instruction_node_create_extended(node->region,
+	jive_node * instr = jive_instruction_node_create_extended(node->region(),
 		&jive_i386_instr_int_load_imm, nullptr, &imm);
 	instr->add_input(&jive::seq::seqtype, node->inputs[0]->origin());
 	
@@ -482,7 +480,7 @@ match_gpr_load(jive_node * node)
 	switch (info.mode) {
 		case jive_i386_addr_mode_disp: {
 			jive::immediate imm(info.info.disp.offset);
-			instr = jive_instruction_node_create_extended(node->region,
+			instr = jive_instruction_node_create_extended(node->region(),
 				&jive_i386_instr_int_load32_disp, &info.info.disp.base, &imm);
 			value = instr->outputs[0];
 			break;
@@ -520,7 +518,7 @@ match_gpr_store(jive_node * node)
 		case jive_i386_addr_mode_disp: {
 			jive::immediate imm(info.info.disp.offset);
 			jive::output * tmparray10[] = {info.info.disp.base, value};
-			instr = jive_instruction_node_create_extended(node->region,
+			instr = jive_instruction_node_create_extended(node->region(),
 				&jive_i386_instr_int_store32_disp,
 				tmparray10, &imm);
 			break;

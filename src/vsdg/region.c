@@ -95,7 +95,7 @@ jive_region::reparent(jive_region * new_parent) noexcept
 bool
 jive_region::contains(const jive_node * node) const noexcept
 {
-	const jive_region * tmp = node->region;
+	const jive_region * tmp = node->region();
 	while (tmp->depth() >= depth()) {
 		if (tmp == this)
 			return true;
@@ -124,7 +124,7 @@ jive_region_prune_subregions_(jive_region * self)
 void
 jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
-	if (ssavar->origin->node()->region->depth() >= self->depth()) return;
+	if (ssavar->origin->node()->region()->depth() >= self->depth()) return;
 	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
 		if (use)
@@ -147,7 +147,7 @@ jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 void
 jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
 {
-	if (ssavar->origin->node()->region->depth() >= self->depth()) return;
+	if (ssavar->origin->node()->region()->depth() >= self->depth()) return;
 	if (self->attrs.is_looped) {
 		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
 		use->count --;
@@ -216,11 +216,11 @@ jive_region_copy_substitute(
 	for (size_t depth = 0; depth < copy_context.depths.size(); depth ++) {
 		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
 			jive_node * node = copy_context.depths[depth][n];
-			jive_region * target_subregion = substitution.lookup(node->region);
+			jive_region * target_subregion = substitution.lookup(node->region());
 			jive_node * new_node = node->copy(target_subregion, substitution);
-			if (node->region->top == node)
+			if (node->region()->top == node)
 				target_subregion->top = new_node;
-			if (node->region->bottom == node)
+			if (node->region()->bottom == node)
 				target_subregion->bottom = new_node;
 		}
 	}

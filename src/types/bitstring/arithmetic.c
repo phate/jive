@@ -627,14 +627,14 @@ jive::output *
 jive_bitnegate(jive::output * arg)
 {
 	const auto & type = dynamic_cast<const jive::bits::type &>(arg->type());
-	return jive_node_create_normalized(arg->node()->region, jive::bits::neg_op(type), {arg})[0];
+	return jive_node_create_normalized(arg->node()->region(), jive::bits::neg_op(type), {arg})[0];
 }
 
 jive::output *
 jive_bitnot(jive::output * arg)
 {
 	const auto & type = dynamic_cast<const jive::bits::type &>(arg->type());
-	return jive_node_create_normalized(arg->node()->region, jive::bits::not_op(type), {arg})[0];
+	return jive_node_create_normalized(arg->node()->region(), jive::bits::not_op(type), {arg})[0];
 }
 
 jive::output *

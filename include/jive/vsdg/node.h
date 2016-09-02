@@ -451,6 +451,12 @@ public:
 		return graph_;
 	}
 
+	inline jive_region *
+	region() const noexcept
+	{
+		return region_;
+	}
+
 	jive_node *
 	copy(jive_region * region, const std::vector<jive::output*> & operands) const;
 
@@ -474,8 +480,6 @@ public:
 	jive_node *
 	copy(jive_region * region, jive::substitution_map & smap) const;
 
-	struct jive_region * region;
-	
 	size_t depth_from_root;
 	size_t ninputs;
 	size_t noutputs;
@@ -502,6 +506,7 @@ public:
 
 private:
 	jive_graph * graph_;
+	jive_region * region_;
 	std::unique_ptr<jive::operation> operation_;
 };
 
@@ -574,10 +579,10 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 JIVE_EXPORTED_INLINE jive_region *
 jive_node_anchored_region(const jive_node * self, size_t index)
 {
-	jive_region * region = self->inputs[index]->origin()->node()->region;
+	jive_region * region = self->inputs[index]->origin()->node()->region();
 	/* the given region can only be different if the identified input
 	 * is of "anchor" type, so this implicitly checks the type */
-	JIVE_DEBUG_ASSERT(self->region != region);
+	JIVE_DEBUG_ASSERT(self->region() != region);
 	return region;
 }
 
@@ -663,11 +668,11 @@ need to live here to avoid cyclic header dependency */
 JIVE_EXPORTED_INLINE jive_region *
 jive_region_innermost(size_t noperands, jive::output * const operands[])
 {
-	jive_region * region = operands[noperands - 1]->node()->region;
+	jive_region * region = operands[noperands-1]->node()->region();
 	for (size_t n = noperands - 1; n; --n) {
 		jive_node * node = operands[n-1]->node();
-		if (node->region->depth() > region->depth())
-			region = node->region;
+		if (node->region()->depth() > region->depth())
+			region = node->region();
 	}
 	
 	return region;

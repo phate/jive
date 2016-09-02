@@ -62,7 +62,7 @@ match_op::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) co
 	if (path == jive_unop_reduction_constant) {
 		const jive::bits::constant_op * op;
 		op = static_cast<const jive::bits::constant_op*>(&arg->node()->operation());
-		return jive_control_constant(arg->node()->region, nalternatives(),
+		return jive_control_constant(arg->node()->region(), nalternatives(),
 			alternative(op->value().to_uint()));
 	}
 

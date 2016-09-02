@@ -165,18 +165,18 @@ jive_lambda_is_self_recursive(const jive_node * self)
 
 	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
 
-	if (jive_phi_region_const_cast(self->region) == NULL)
+	if (jive_phi_region_const_cast(self->region()) == NULL)
 		return false;
 
 	/* find index of lambda output in the phi leave node */
-	size_t index = self->region->top->noutputs;
+	size_t index = self->region()->top->noutputs;
 	for (auto user : self->outputs[0]->users) {
 		if (dynamic_cast<const jive::phi_tail_op *>(&user->node()->operation())) {
 			index = user->index();
 			break;
 		}
 	}
-	JIVE_DEBUG_ASSERT(index != self->region->top->noutputs);
+	JIVE_DEBUG_ASSERT(index != self->region()->top->noutputs);
 
 	/* the lambda is self-recursive if one of its external dependencies originates from the same
 	*  index in the phi enter node
@@ -277,7 +277,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	const jive::fct::lambda_op & op = dynamic_cast<const jive::fct::lambda_op &>(
 		lambda_node->operation());
 	
-	jive_region * function_region = lambda_node->producer(0)->region;
+	jive_region * function_region = lambda_node->producer(0)->region();
 	jive_node * head = function_region->top;
 	jive_node * tail = function_region->bottom;
 	
@@ -287,8 +287,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 		substitution.insert(output, apply_node->inputs[n+1]->origin());
 	}
 	
-	jive_region_copy_substitute(function_region,
-		apply_node->region, substitution, false, false);
+	jive_region_copy_substitute(function_region, apply_node->region(), substitution, false, false);
 	
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
 		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
