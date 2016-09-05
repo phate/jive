@@ -231,29 +231,29 @@ jive_gamma(jive::output * predicate,
 		jive_node * head0 = tail0->producer(0);
 		size_t nalternatives = node->ninputs-1;
 		for (size_t v = node->noutputs; v > 0; --v) {
-			jive::output * value = tail0->inputs[v]->origin();
+			jive::output * value = tail0->input(v)->origin();
 			if (value->node() != head0)
 				continue;
 
 			size_t n;
-			value = head0->inputs[v-1]->origin();
+			value = head0->input(v-1)->origin();
 			for (n = 1; n < nalternatives; n++) {
 				jive_node * tail = node->producer(n);
 				jive_node * head = tail->producer(0);
-				if (tail->producer(v) != head || value != head->inputs[v-1]->origin())
+				if (tail->producer(v) != head || value != head->input(v-1)->origin())
 					break;
 			}
 			if (n == nalternatives) {
-				results.push_back(head0->inputs[v]->origin());
+				results.push_back(head0->input(v)->origin());
 
 				/* FIXME: ugh, this should be done by DNE */
 				delete node->outputs[v-1];
 				for (size_t n = 0; n < nalternatives; n++) {
 					jive_node * tail = node->producer(n);
 					jive_node * head = tail->producer(0);
-					delete tail->inputs[v];
+					tail->remove_input(v);
 					delete head->outputs[v];
-					delete head->inputs[v-1];
+					head->remove_input(v-1);
 				}
 			} else
 				results.push_back(node->outputs[v-1]);

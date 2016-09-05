@@ -65,15 +65,15 @@ static int test_main(void)
 	assert(rv);
 	assert(rv->regcls() == &jive_testarch_regcls_gpr);
 	
-	sum2 = res->node()->inputs[1]->origin();
+	sum2 = res->node()->input(1)->origin();
 	n1 = sum2->node()->producer(0);
 	n2 = sum2->node()->producer(1);
 	assert(dynamic_cast<const jive::regvalue_op *>(&n1->operation()));
 	assert(dynamic_cast<const jive::bits::not_op *>(&n2->operation()));
 	n2 = n2->producer(0);
 	assert(dynamic_cast<const jive::regvalue_op *>(&n2->operation()));
-	jive::output * o1 = n1->inputs[1]->origin();
-	jive::output * o2 = n2->inputs[1]->origin();
+	jive::output * o1 = n1->input(1)->origin();
+	jive::output * o2 = n2->input(1)->origin();
 	assert(o1 == lit);
 	assert(o2 == sym);
 	

@@ -151,8 +151,8 @@ static int function_test_lambda_apply(void)
 	jive_node * test_sum = interest->producer(0);
 	assert(test_sum->operation() == jive::bits::add_op(32));
 	assert(test_sum->ninputs == 2);
-	assert(test_sum->inputs[0]->origin() == c0);
-	assert(test_sum->inputs[1]->origin() == c1);
+	assert(test_sum->input(0)->origin() == c0);
+	assert(test_sum->input(1)->origin() == c1);
 	
 	jive_graph_destroy(graph);
 

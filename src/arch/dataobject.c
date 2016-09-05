@@ -178,7 +178,7 @@ flatten_data_items(
 
 		for (size_t k = 0; k < decl->nelements(); k++) {
 			std::vector<jive::output *> sub_items = flatten_data_items(
-				data->node()->inputs[k]->origin(),
+				data->node()->input(k)->origin(),
 				layout_mapper);
 			
 			if (sub_items.size() + layout.element(k).offset() > items.size()) {
@@ -206,7 +206,7 @@ flatten_data_items(
 		items.resize(layout.size(), zero_pad);
 		
 		std::vector<jive::output *> sub_items = flatten_data_items(
-			data->node()->inputs[0]->origin(), layout_mapper);
+			data->node()->input(0)->origin(), layout_mapper);
 		
 		if (sub_items.size() > items.size()) {
 			throw jive::compiler_error("Invalid union layout: element exceeds union");

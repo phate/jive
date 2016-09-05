@@ -40,8 +40,8 @@ static int test_main(void)
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		{&addrtype, &bits32}, {a0, b1}, {});
 
-	assert(bottom->inputs[0]->origin() == top->outputs[0]);
-	assert(bottom->inputs[1]->origin() == top->outputs[1]);
+	assert(bottom->input(0)->origin() == top->outputs[0]);
+	assert(bottom->input(1)->origin() == top->outputs[1]);
 
 	jive::output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
 	jive::output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);

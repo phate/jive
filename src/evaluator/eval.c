@@ -305,10 +305,10 @@ eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
 
 	std::vector<std::unique_ptr<const literal>> arguments;
 	for (size_t n = 1; n < node->ninputs; n++)
-			arguments.emplace_back(eval_input(node->inputs[n], ctx));
+			arguments.emplace_back(eval_input(node->input(n), ctx));
 
 	ctx.push_arguments(arguments);
-	std::unique_ptr<const literal> fct = std::move(eval_input(node->inputs[0], ctx));
+	std::unique_ptr<const literal> fct = std::move(eval_input(node->input(0), ctx));
 	ctx.pop_arguments();
 
 	const fctliteral * fctv = static_cast<const fctliteral*>(fct.get());
@@ -338,7 +338,7 @@ eval_lambda_head_node(const struct jive_node * node, size_t index, context & ctx
 		return result;
 	} else {
 		/* it is an external dependency */
-		return eval_input(node->inputs[node->noutputs-index-1], ctx);
+		return eval_input(node->input(node->noutputs-index-1), ctx);
 	}
 }
 
@@ -353,7 +353,7 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 
 	std::vector<std::unique_ptr<const literal>> results;
 	for (size_t n = 1; n < tail->ninputs; n++)
-		results.emplace_back(eval_input(tail->inputs[n], ctx));
+		results.emplace_back(eval_input(tail->input(n), ctx));
 
 	std::unique_ptr<const literal> fct(new fctliteral(ctx.top_arguments(), results));
 	ctx.pop_frame(tail->region());
@@ -365,7 +365,7 @@ static const std::unique_ptr<const literal>
 eval_gamma_head_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_head_op*>(&node->operation()));
-	return eval_input(node->inputs[index-1], ctx);
+	return eval_input(node->input(index-1), ctx);
 }
 
 static const std::unique_ptr<const literal>
@@ -373,16 +373,16 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
 
-	jive::input * predicate = node->inputs[node->ninputs-1];
+	jive::input * predicate = node->input(node->ninputs-1);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
-	jive_node * tail = node->inputs[alt]->origin()->node();
+	jive_node * tail = node->input(alt)->origin()->node();
 
 	ctx.push_frame(tail->region());
 	std::vector<std::unique_ptr<const literal>> results;
 	for (size_t n = 1; n < tail->ninputs; n++)
-		results.emplace_back(eval_input(tail->inputs[n], ctx));
+		results.emplace_back(eval_input(tail->input(n), ctx));
 	ctx.pop_frame(tail->region());
 
 	JIVE_DEBUG_ASSERT(node->noutputs == results.size());
@@ -398,7 +398,7 @@ eval_theta_head_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_head_op*>(&node->operation()));
 
-	std::unique_ptr<const literal> result = std::move(eval_input(node->inputs[index-1], ctx));
+	std::unique_ptr<const literal> result = std::move(eval_input(node->input(index-1), ctx));
 	return result;
 }
 
@@ -422,7 +422,7 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 		}
 
 		for (size_t n = 1; n < tail->ninputs; n++)
-			results.emplace_back(eval_input(tail->inputs[n], ctx));
+			results.emplace_back(eval_input(tail->input(n), ctx));
 		ctx.pop_frame(tail->region());
 
 		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&results[0]->type()));
@@ -445,7 +445,7 @@ eval_phi_head_node(const struct jive_node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());
-	std::unique_ptr<const literal> result = std::move(eval_input(tail->inputs[index], ctx));
+	std::unique_ptr<const literal> result = std::move(eval_input(tail->input(index), ctx));
 	ctx.pop_frame(tail->region());
 
 	return result;
@@ -461,7 +461,7 @@ eval_phi_node(const struct jive_node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());
-	std::unique_ptr<const literal> result = std::move(eval_input(tail->inputs[index+1], ctx));
+	std::unique_ptr<const literal> result = std::move(eval_input(tail->input(index+1), ctx));
 	ctx.pop_frame(tail->region());
 
 	return result;
@@ -495,7 +495,7 @@ eval_node(const struct jive_node * node, size_t index, context & ctx)
 	/* evaluate all other nodes */
 	std::vector<std::unique_ptr<const literal>> operands;
 	for (size_t n = 0; n < node->ninputs; n++)
-		operands.emplace_back(eval_input(node->inputs[n], ctx));
+		operands.emplace_back(eval_input(node->input(n), ctx));
 
 	std::vector<std::unique_ptr<const literal>> results;
 	results = compute_operation(node->operation(), operands);
@@ -532,9 +532,9 @@ eval(
 	const jive::output * output = nullptr;
 	const jive_node * tail = graph->root_region->bottom;
 	for (size_t n = 0; n < tail->ninputs; n++) {
-		JIVE_DEBUG_ASSERT(tail->inputs[n]->gate != nullptr);
-		if (tail->inputs[n]->gate->name() == name) {
-			output = tail->inputs[n]->origin();
+		JIVE_DEBUG_ASSERT(tail->input(n)->gate != nullptr);
+		if (tail->input(n)->gate->name() == name) {
+			output = tail->input(n)->origin();
 			break;
 		}
 	}

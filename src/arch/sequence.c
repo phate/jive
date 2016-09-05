@@ -102,7 +102,7 @@ sequentialize_region(
 			jive_seq_imm immediates[icls->nimmediates];
 			size_t n;
 			for (n = 0; n < icls->ninputs; ++n)
-				inregs[n] = (const jive_register_name *)node->inputs[n]->ssavar->variable->resname;
+				inregs[n] = (const jive_register_name *)node->input(n)->ssavar->variable->resname;
 			for (n = 0; n < icls->noutputs; ++n)
 				outregs[n] = (const jive_register_name *)node->outputs[n]->ssavar->variable->resname;
 			current = &jive_seq_instruction_create(
@@ -117,7 +117,7 @@ sequentialize_region(
 				seq_region, node->ninputs, node);
 			size_t n;
 			for (n = 0; n < node->ninputs; ++n) {
-				jive::input * input = node->inputs[n];
+				jive::input * input = node->input(n);
 				const jive::bits::constant_op * cop = dynamic_cast<const jive::bits::constant_op *>(
 					&input->origin()->node()->operation());
 				jive_seq_dataitem * item = &data->items[n];
@@ -153,7 +153,7 @@ sequentialize_region(
 		
 		size_t n;
 		for(n = 0; n < node->ninputs; n++) {
-			jive::input * input = node->inputs[n];
+			jive::input * input = node->input(n);
 			if (dynamic_cast<const jive::achr::type*>(&input->type())) {
 				jive_seq_region * seq_subregion;
 				if (n == 0) {
@@ -181,7 +181,7 @@ sequentialize_region(
 		
 		jive::input * control_input = 0;
 		for(n = 0; n < node->ninputs; n++) {
-			jive::input * input = node->inputs[n];
+			jive::input * input = node->input(n);
 			if (dynamic_cast<const jive::ctl::type*>(&input->type())) {
 				control_input = input;
 				break;

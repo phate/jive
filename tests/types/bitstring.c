@@ -1107,7 +1107,7 @@ static int types_bitstring_test_normalize(void)
 	assert(sum1->node()->noperands() == 2);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node();
-	jive::input * retval = lambda_node->producer(0)->inputs[1];
+	jive::input * retval = lambda_node->producer(0)->input(1);
 	jive::output * arg = lambda_node->producer(0)->producer(0)->outputs[1];
 	jive_graph_export(graph, lambda_node->outputs[0]);
 	
@@ -1118,8 +1118,8 @@ static int types_bitstring_test_normalize(void)
 	jive::output * expected_sum = retval->origin();
 	assert(expected_sum->node()->operation() == jive::bits::add_op(32));
 	assert(expected_sum->node()->noperands() == 2);
-	jive::output * op1 = expected_sum->node()->inputs[0]->origin();
-	jive::output * op2 = expected_sum->node()->inputs[1]->origin();
+	jive::output * op1 = expected_sum->node()->input(0)->origin();
+	jive::output * op2 = expected_sum->node()->input(1)->origin();
 	if (!dynamic_cast<const jive::bits::constant_op *>(&op1->node()->operation())) {
 		jive::output * tmp = op1; op1 = op2; op2 = tmp;
 	}
@@ -1185,8 +1185,8 @@ static int types_bitstring_test_reduction(void)
 		attrs = dynamic_cast<const jive::bits::slice_op*>(&node->producer(1)->operation());
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
-		assert(node->producer(0)->inputs[0]->origin() == x);
-		assert(node->producer(1)->inputs[0]->origin() == y);
+		assert(node->producer(0)->input(0)->origin() == x);
+		assert(node->producer(1)->input(0)->origin() == y);
 	}
 	
 	{
@@ -1265,9 +1265,9 @@ static int types_bitstring_test_slice_concat(void)
 		
 		assert(dynamic_cast<const jive::bits::concat_op *>(&b->node()->operation()));
 		assert(b->node()->ninputs == 3);
-		assert(b->node()->inputs[0]->origin() == base_x);
-		assert(b->node()->inputs[1]->origin() == base_y);
-		assert(b->node()->inputs[2]->origin() == base_z);
+		assert(b->node()->input(0)->origin() == base_x);
+		assert(b->node()->input(1)->origin() == base_y);
+		assert(b->node()->input(2)->origin() == base_z);
 	}
 	
 	{

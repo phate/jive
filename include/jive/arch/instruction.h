@@ -136,7 +136,7 @@ jive_instruction_node_get_immediate(
 {
 	const jive_instruction_class * icls =
 		static_cast<const jive::instruction_op &>(node->operation()).icls();
-	jive::input * input = node->inputs[index + icls->ninputs];
+	jive::input * input = node->input(index + icls->ninputs);
 	return static_cast<const jive::immediate_op &>(
 		input->origin()->node()->operation()).value();
 }

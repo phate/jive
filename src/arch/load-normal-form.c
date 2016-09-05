@@ -42,7 +42,7 @@ static bool is_matching_store_node(
 	const jive_node * node) {
 	return
 		is_matching_store_op(l_op, node->operation()) &&
-		node->inputs[0]->origin() == address;
+		node->input(0)->origin() == address;
 }
 
 bool
@@ -50,18 +50,18 @@ load_normal_form::normalize_node(jive_node * node) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(node->operation());
-		jive::output * address = node->inputs[0]->origin();
+		jive::output * address = node->input(0)->origin();
 		jive_node * store_node =
 			(node->ninputs >= 2 &&
-				is_matching_store_node(l_op, address, node->inputs[1]->origin()->node())) ?
-			node->inputs[1]->origin()->node() : nullptr;
+				is_matching_store_node(l_op, address, node->input(1)->origin()->node())) ?
+			node->input(1)->origin()->node() : nullptr;
 		for (size_t n = 2; n < node->ninputs; ++n) {
-			if (node->inputs[n]->origin()->node() != store_node) {
+			if (node->input(n)->origin()->node() != store_node) {
 				store_node = nullptr;
 			}
 		}
 		if (store_node) {
-			node->outputs[0]->replace(store_node->inputs[1]->origin());
+			node->outputs[0]->replace(store_node->input(1)->origin());
 			delete node;
 			return false;
 		}
@@ -112,7 +112,7 @@ load_normal_form::normalized_create(
 			}
 		}
 		if (store_node) {
-			return {store_node->inputs[1]->origin()};
+			return {store_node->input(1)->origin()};
 		}
 	}
 

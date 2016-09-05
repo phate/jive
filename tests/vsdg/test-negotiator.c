@@ -230,7 +230,7 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 {
 	if (auto op = dynamic_cast<const negtest_op *>(&node_->operation())) {
 		for (size_t n = 0; n < node_->ninputs; n++) {
-			jive::input * input = node_->inputs[n];
+			jive::input * input = node_->input(n);
 			test_negotiator_option option(op->input_options()[n]);
 			jive_negotiator_annotate_simple_input(self, input, &option);
 		}
@@ -345,23 +345,23 @@ static int test_main(void)
 	
 	jive_negotiator_process(&nego);
 	
-	expect_options(&nego, n1->outputs[0], 1, n2->inputs[0], 1);
-	expect_options(&nego, n3->outputs[0], 1, n4->inputs[0], 2);
-	expect_options(&nego, n5->outputs[0], 1, n6->inputs[0], 1);
-	expect_options(&nego, n5->outputs[0], 1, n7->inputs[0], 1);
-	
+	expect_options(&nego, n1->outputs[0], 1, n2->input(0), 1);
+	expect_options(&nego, n3->outputs[0], 1, n4->input(0), 2);
+	expect_options(&nego, n5->outputs[0], 1, n6->input(0), 1);
+	expect_options(&nego, n5->outputs[0], 1, n7->input(0), 1);
+
 	jive_negotiator_insert_split_nodes(&nego);
 	
-	assert(n2->inputs[0]->origin() == n1->outputs[0]);
-	assert(n4->inputs[0]->origin() != n3->outputs[0]);
+	assert(n2->input(0)->origin() == n1->outputs[0]);
+	assert(n4->input(0)->origin() != n3->outputs[0]);
 	jive_node * split_node = n4->producer(0);
-	expect_options(&nego, n3->outputs[0], 1, split_node->inputs[0], 1);
-	expect_options(&nego, split_node->outputs[0], 2, n4->inputs[0], 2);
+	expect_options(&nego, n3->outputs[0], 1, split_node->input(0), 1);
+	expect_options(&nego, split_node->outputs[0], 2, n4->input(0), 2);
 	
 	jive_negotiator_remove_split_nodes(&nego);
 	
-	assert(n4->inputs[0]->origin() == n3->outputs[0]);
-	expect_options(&nego, n3->outputs[0], 1, n4->inputs[0], 2);
+	assert(n4->input(0)->origin() == n3->outputs[0]);
+	expect_options(&nego, n3->outputs[0], 1, n4->input(0), 2);
 	
 	test_negotiator_fini(&nego);
 	

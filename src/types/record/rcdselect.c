@@ -74,11 +74,11 @@ select_operation::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse) {
-		return arg->node()->inputs[element()]->origin();
+		return arg->node()->input(element())->origin();
 	}
 
 	if (path == jive_select_reduction_load) {
-		jive::output * address = arg->node()->inputs[0]->origin();
+		jive::output * address = arg->node()->input(0)->origin();
 
 		size_t nbits = 0;
 		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
@@ -92,7 +92,7 @@ select_operation::reduce_operand(
 		size_t nstates = arg->node()->ninputs-1;
 		jive::output * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
-			states[n] = arg->node()->inputs[n+1]->origin();
+			states[n] = arg->node()->input(n+1)->origin();
 		}
 
 		jive::output * element_address = jive_memberof(address, decl, element());

@@ -73,11 +73,11 @@ choose_operation::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse) {
-		return arg->node()->inputs[0]->origin();
+		return arg->node()->input(0)->origin();
 	}
 
 	if (path == jive_choose_reduction_load) {
-		jive::output * address = arg->node()->inputs[0]->origin();
+		jive::output * address = arg->node()->input(0)->origin();
 
 		const jive::unn::declaration * decl = static_cast<const jive::unn::type*>(
 			&arg->node()->outputs[0]->type())->declaration();
@@ -85,7 +85,7 @@ choose_operation::reduce_operand(
 		size_t nstates = arg->node()->ninputs-1;
 		jive::output * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
-			states[n] = arg->node()->inputs[n+1]->origin();
+			states[n] = arg->node()->input(n+1)->origin();
 		}
 	
 		if (dynamic_cast<const jive::addr::type*>(&address->type())) {

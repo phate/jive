@@ -45,7 +45,7 @@ test_main(void)
 	jive::bits::type bits32(32);
 	const jive::base::type * tmp = &bits32;
 	jive::fct::type fcttype(1, &tmp, 1, &tmp);
-	assert(graph->root_region->bottom->inputs[0]->type() == fcttype);
+	assert(graph->root_region->bottom->input(0)->type() == fcttype);
 
 	jive_graph_destroy(graph);
 

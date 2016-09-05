@@ -62,7 +62,6 @@ public:
 	virtual std::string
 	debug_string() const;
 
-protected:
 	inline void
 	set_index(size_t index) noexcept
 	{
@@ -407,8 +406,7 @@ public:
 
 	inline jive_node * producer(size_t index) const noexcept
 	{
-		JIVE_DEBUG_ASSERT(index < ninputs);
-		return inputs[index]->producer();
+		return input(index)->producer();
 	}
 
 	inline bool
@@ -433,6 +431,9 @@ public:
 
 	jive::input *
 	add_input(jive::gate * gate, jive::output * origin);
+
+	void
+	remove_input(size_t index);
 
 	jive::output *
 	add_output(const jive::base::type * type);
@@ -483,11 +484,17 @@ public:
 	jive_node *
 	copy(jive_region * region, jive::substitution_map & smap) const;
 
+	inline jive::input *
+	input(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < inputs_.size());
+		return inputs_[index];
+	}
+
 	size_t depth_from_root;
 	size_t ninputs;
 	size_t noutputs;
 
-	std::vector<jive::input*> inputs;
 	std::vector<jive::output*> outputs;
 
 	struct {
@@ -514,6 +521,7 @@ public:
 private:
 	jive_graph * graph_;
 	jive_region * region_;
+	std::vector<jive::input*> inputs_;
 	std::unique_ptr<jive::operation> operation_;
 };
 
@@ -543,8 +551,8 @@ JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs; n++) {
-		if (self->inputs[n]->gate == gate) {
-			return self->inputs[n];
+		if (self->input(n)->gate == gate) {
+			return self->input(n);
 		}
 	}
 	return nullptr;
@@ -554,7 +562,7 @@ JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs; n++) {
-		jive::input * i = self->inputs[n];
+		jive::input * i = self->input(n);
 		if (i->gate && i->gate->name() == name)
 			return i;
 	}
@@ -586,7 +594,7 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 JIVE_EXPORTED_INLINE jive_region *
 jive_node_anchored_region(const jive_node * self, size_t index)
 {
-	jive_region * region = self->inputs[index]->origin()->node()->region();
+	jive_region * region = self->input(index)->origin()->node()->region();
 	/* the given region can only be different if the identified input
 	 * is of "anchor" type, so this implicitly checks the type */
 	JIVE_DEBUG_ASSERT(self->region() != region);
@@ -608,7 +616,7 @@ jive_node_arguments(jive_node * self)
 {
 	std::vector<jive::output *> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
-		arguments.push_back(self->inputs[n]->origin());
+		arguments.push_back(self->input(n)->origin());
 	}
 	return arguments;
 }

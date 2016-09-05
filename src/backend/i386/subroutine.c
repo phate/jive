@@ -43,7 +43,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 		}
 	}
 	for (n = 0; n < nreturns; n++) {
-		jive::input * ret = src_region->bottom->inputs[n + 1];
+		jive::input * ret = src_region->bottom->input(n+1);
 		if (dynamic_cast<const jive::value::type*>(&ret->type())) {
 			value_returns[nvalue_returns ++] = jive_argument_long; /* FIXME: pick correct type */
 		} else {
@@ -81,8 +81,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	/* map all returns */
 	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom->ninputs; n++) {
-		jive::input * original = src_region->bottom->inputs[n];
-		jive::output * retval = subst.lookup(src_region->bottom->inputs[n]->origin());
+		jive::input * original = src_region->bottom->input(n);
+		jive::output * retval = subst.lookup(src_region->bottom->input(n)->origin());
 		
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			if(dynamic_cast<const jive::addr::type*>(&original->type()))
@@ -293,7 +293,7 @@ jive_i386_subroutine_add_fp_dependency_(
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive::input * input = node->inputs[n];
+		jive::input * input = node->input(n);
 		if (input->origin() == frameptr)
 			return NULL;
 	}
@@ -308,7 +308,7 @@ jive_i386_subroutine_add_sp_dependency_(
 	
 	size_t n;
 	for (n = 0; n < node->ninputs; n++) {
-		jive::input * input = node->inputs[n];
+		jive::input * input = node->input(n);
 		if (input->origin() == stackptr)
 			return NULL;
 	}

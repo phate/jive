@@ -120,26 +120,7 @@ input::~input() noexcept
 
 	node()->graph()->on_input_destroy(this);
 
-	if (gate) {
-		JIVE_LIST_REMOVE(gate->inputs, this, gate_inputs_list);
-
-		for (size_t n = 0; n < node()->ninputs; n++) {
-			jive::input * other = node()->inputs[n];
-			if (other == this || !other->gate)
-				continue;
-			jive_gate_interference_remove(node()->graph(), gate, other->gate);
-		}
-	}
-
 	origin_->remove_user(this);
-
-	node()->ninputs--;
-	for (size_t n = index(); n < node()->ninputs; n++) {
-		node()->inputs[n] = node()->inputs[n+1];
-		node()->inputs[n]->set_index(n);
-	}
-	if (node()->ninputs == 0)
-		JIVE_LIST_PUSH_BACK(node()->region()->top_nodes, node_, region_top_node_list);
 }
 
 const jive::base::type &
@@ -569,7 +550,7 @@ jive_node_auto_merge_variables(jive_node * self)
 {
 	size_t n;
 	for(n = 0; n < self->ninputs; n++)
-		jive_input_auto_merge_variable(self->inputs[n]);
+		jive_input_auto_merge_variable(self->input(n));
 	for(n = 0; n < self->noutputs; n++)
 		jive_output_auto_merge_variable(self->outputs[n]);
 }
@@ -580,7 +561,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 	use_count->clear();
 	
 	for (size_t n = 0; n < self->ninputs; n++) {
-		jive::input * input = self->inputs[n];
+		jive::input * input = self->input(n);
 		
 		/* filter out multiple inputs using the same value
 		FIXME: this assumes that all inputs have the same resource
@@ -589,7 +570,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 			bool duplicate = false;
 			size_t k;
 			for(k = 0; k<n; k++) {
-				if (self->inputs[k]->origin() == input->origin())
+				if (self->input(k)->origin() == input->origin())
 					duplicate = true;
 			}
 			if (duplicate) continue;
@@ -645,7 +626,7 @@ jive_node::jive_node(
 			JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
 			jive::input * input = new jive::input(this, n, operands[n], operation_->argument_type(n));
 			ninputs++;
-			inputs.push_back(input);
+			inputs_.push_back(input);
 			depth_from_root = std::max(operands[n]->node()->depth_from_root+1, depth_from_root);
 		}
 	}
@@ -658,7 +639,7 @@ jive_node::jive_node(
 	}
 
 	for (size_t n = 0; n < this->ninputs; ++n)
-		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, this->inputs[n]->origin()));
+		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, this->input(n)->origin()));
 
 	region->nodes.push_back(this);
 	JIVE_LIST_PUSH_BACK(graph_->bottom, this, graph_bottom_list);
@@ -678,7 +659,7 @@ jive_node::~jive_node()
 		delete outputs[noutputs-1];
 
 	while (ninputs)
-		delete inputs[ninputs-1];
+		remove_input(ninputs-1);
 
 	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
@@ -704,7 +685,7 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
 	ninputs++;
-	inputs.push_back(input);
+	inputs_.push_back(input);
 
 	if (!jive_input_is_valid(input))
 		throw jive::compiler_error("Invalid input");
@@ -725,12 +706,41 @@ jive_node::add_input(jive::gate * gate, jive::output * origin)
 	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
 
 	for (size_t n = 0; n < input->index(); n++) {
-		jive::input * other = inputs[n];
+		jive::input * other = this->input(n);
 		if (!other->gate) continue;
 		jive_gate_interference_add(graph(), gate, other->gate);
 	}
 
 	return input;
+}
+
+void
+jive_node::remove_input(size_t index)
+{
+	JIVE_DEBUG_ASSERT(index < inputs_.size());
+	jive::input * input = inputs_[index];
+
+	if (input->gate) {
+		JIVE_LIST_REMOVE(input->gate->inputs, input, gate_inputs_list);
+
+		for (size_t n = 0; n < ninputs; n++) {
+			jive::input * other = inputs_[n];
+			if (other == input || !other->gate)
+				continue;
+			jive_gate_interference_remove(graph(), input->gate, other->gate);
+		}
+	}
+
+	delete input;
+
+	ninputs--;
+	for (size_t n = index; n < ninputs; n++) {
+		inputs_[n] = inputs_[n+1];
+		inputs_[n]->set_index(n);
+	}
+
+	if (ninputs == 0)
+		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
 jive::output *
@@ -775,21 +785,21 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 {
 	std::vector<jive::output*> operands(noperands());
 	for (size_t n = 0; n < noperands(); n++) {
-		operands[n] = smap.lookup(inputs[n]->origin());
+		operands[n] = smap.lookup(input(n)->origin());
 		if (!operands[n]) {
-			operands[n] = inputs[n]->origin();
+			operands[n] = input(n)->origin();
 		}
 	}
 
 	jive_node * new_node = copy(region, operands);
 	for (size_t n = noperands(); n < ninputs; n++) {
-		jive::output * origin = smap.lookup(inputs[n]->origin());
+		jive::output * origin = smap.lookup(input(n)->origin());
 		if (!origin) {
-			origin =  inputs[n]->origin();
+			origin =  input(n)->origin();
 		}
 
-		if (inputs[n]->gate) {
-			jive::gate * gate = inputs[n]->gate;
+		if (input(n)->gate) {
+			jive::gate * gate = input(n)->gate;
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
@@ -798,8 +808,8 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 				smap.insert(gate, target_gate);
 			}
 		} else {
-			jive::input * input = new_node->add_input(&inputs[n]->type(), origin);
-			input->required_rescls = inputs[n]->required_rescls;
+			jive::input * input = new_node->add_input(&this->input(n)->type(), origin);
+			input->required_rescls = this->input(n)->required_rescls;
 		}
 	}
 
@@ -940,7 +950,7 @@ jive_opnode_create(
 
 	/* FIXME: this is regalloc-specific, should go away */
 	for (size_t n = 0; n < op.narguments(); ++n) {
-		node->inputs[n]->required_rescls = op.argument_cls(n);
+		node->input(n)->required_rescls = op.argument_cls(n);
 	}
 	for (size_t n = 0; n < op.nresults(); ++n) {
 		node->outputs[n]->required_rescls = op.result_cls(n);
@@ -957,7 +967,7 @@ jive_opnode_create(
 	}
 
 	for (size_t n = 0; n < node->ninputs; n++) {
-		if (!jive_input_is_valid(node->inputs[n]))
+		if (!jive_input_is_valid(node->input(n)))
 			throw jive::compiler_error("Invalid input");
 	}
 

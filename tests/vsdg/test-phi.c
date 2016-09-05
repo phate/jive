@@ -69,7 +69,7 @@ static int test_main()
 
 	jive_node * lambda_node2 = phi.region->bottom->producer(3);
 	assert(jive_lambda_is_self_recursive(lambda_node2));
-	assert(dynamic_cast<const jive::seq::type*>(&phi.region->bottom->inputs[0]->type()));
+	assert(dynamic_cast<const jive::seq::type*>(&phi.region->bottom->input(0)->type()));
 
 	jive_graph_destroy(graph);
 

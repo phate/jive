@@ -90,7 +90,7 @@ slice_op::reduce_operand(
 	
 	if (path == jive_unop_reduction_narrow) {
 		auto op = static_cast<const slice_op &>(gen_op);
-		return jive_bitslice(arg->node()->inputs[0]->origin(), low() + op.low(), high() + op.low());
+		return jive_bitslice(arg->node()->input(0)->origin(), low() + op.low(), high() + op.low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
@@ -104,7 +104,7 @@ slice_op::reduce_operand(
 		
 		size_t narguments = 0, pos = 0, n;
 		for (n = 0; n < node->noperands(); n++) {
-			jive::output * argument = node->inputs[n]->origin();
+			jive::output * argument = node->input(n)->origin();
 			size_t base = pos;
 			size_t nbits = static_cast<const jive::bits::type&>(argument->type()).nbits();
 			pos = pos + nbits;

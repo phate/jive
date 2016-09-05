@@ -96,7 +96,7 @@ test_mutable_upward_cone_3()
 	{
 		jive::upward_cone_traverser trav(g.a2);
 	
-		g.a2->inputs[0]->divert_origin(g.b1->outputs[0]);
+		g.a2->input(0)->divert_origin(g.b1->outputs[0]);
 		assert( trav.next() == g.a2 );
 		assert( trav.next() == g.b1 );
 	}

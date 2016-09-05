@@ -141,8 +141,8 @@ jive_lambda_node_create(jive_region * function_region)
 	const jive::base::type * return_types[nreturns];
 	std::vector<std::string> result_names;
 	for (size_t n = 0; n < nreturns; n++) {
-		return_types[n] = &function_region->bottom->inputs[n+1]->type();
-		result_names.push_back(function_region->bottom->inputs[n+1]->gate->name());
+		return_types[n] = &function_region->bottom->input(n+1)->type();
+		result_names.push_back(function_region->bottom->input(n+1)->gate->name());
 	}
 	
 	jive::fct::type function_type(
@@ -182,7 +182,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 	*  index in the phi enter node
 	*/
 	for (size_t n = 0; n < lambda_region->top->ninputs; n++) {
-		jive::input * input = lambda_region->top->inputs[n];
+		jive::input * input = lambda_region->top->input(n);
 		if (input->origin()->index() == index)
 			return true;
 	}
@@ -284,7 +284,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	jive::substitution_map substitution;
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {
 		jive::output * output = jive_node_get_gate_output(head, op.argument_names()[n].c_str());
-		substitution.insert(output, apply_node->inputs[n+1]->origin());
+		substitution.insert(output, apply_node->input(n+1)->origin());
 	}
 	
 	jive_region_copy_substitute(function_region, apply_node->region(), substitution, false, false);

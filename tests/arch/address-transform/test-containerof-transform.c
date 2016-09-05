@@ -66,7 +66,7 @@ static int test_main(void)
 
 	for (jive_node * node : jive::topdown_traverser(graph)) {
 		for (size_t i = 0; i < node->ninputs; i++){
-			assert(!dynamic_cast<const jive::addr::type*>(&node->inputs[i]->type()));
+			assert(!dynamic_cast<const jive::addr::type*>(&node->input(i)->type()));
 		}
 		for (size_t i = 0; i < node->noutputs; i++){
 			assert(!dynamic_cast<const jive::addr::type*>(&node->outputs[i]->type()));
