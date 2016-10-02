@@ -128,10 +128,10 @@ lambda_op::copy() const
 static jive_node *
 jive_lambda_node_create(jive_region * function_region)
 {
-	size_t ndependencies = function_region->top->ninputs;
+	size_t ndependencies = function_region->top->ninputs();
 	size_t narguments = function_region->top->noutputs - ndependencies - 1;
-	size_t nreturns = function_region->bottom->ninputs - 1;
-	
+	size_t nreturns = function_region->bottom->ninputs()-1;
+
 	const jive::base::type * argument_types[narguments];
 	std::vector<std::string> argument_names;
 	for (size_t n = 0; n < narguments; n++) {
@@ -181,7 +181,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 	/* the lambda is self-recursive if one of its external dependencies originates from the same
 	*  index in the phi enter node
 	*/
-	for (size_t n = 0; n < lambda_region->top->ninputs; n++) {
+	for (size_t n = 0; n < lambda_region->top->ninputs(); n++) {
 		jive::input * input = lambda_region->top->input(n);
 		if (input->origin()->index() == index)
 			return true;

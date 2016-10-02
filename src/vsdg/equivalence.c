@@ -82,7 +82,7 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const
 	if (n1->noutputs != n2->noutputs) {
 		return false;
 	}
-	if (n1->ninputs != n2->ninputs) {
+	if (n1->ninputs() != n2->ninputs()) {
 		return false;
 	}
 	if (n1->noperands() != n2->noperands()) {
@@ -95,7 +95,7 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const
 	/* FIXME: verify gates */
 	
 	size_t n = 0;
-	for (n = 0; n < n1->ninputs; ++n) {
+	for (n = 0; n < n1->ninputs(); ++n) {
 		jive::output * o1 = n1->input(n)->origin();
 		jive::output * o2 = n2->input(n)->origin();
 		

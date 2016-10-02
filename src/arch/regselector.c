@@ -296,7 +296,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	}
 
 	size_t n;
-	for (n = 0; n < node->ninputs; n++) {
+	for (n = 0; n < node->ninputs(); n++) {
 		jive::input * input = node->input(n);
 		if (input->producer()->region() != root_region
 		&& !dynamic_cast<const jive::base::nullary_op*>(&input->producer()->operation()))

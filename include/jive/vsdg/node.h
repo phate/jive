@@ -461,6 +461,12 @@ public:
 		return region_;
 	}
 
+	inline size_t
+	ninputs() const noexcept
+	{
+		return ninputs_;
+	}
+
 	jive_node *
 	copy(jive_region * region, const std::vector<jive::output*> & operands) const;
 
@@ -492,7 +498,6 @@ public:
 	}
 
 	size_t depth_from_root;
-	size_t ninputs;
 	size_t noutputs;
 
 	std::vector<jive::output*> outputs;
@@ -519,6 +524,7 @@ public:
 	> region_node_list_accessor;
 
 private:
+	size_t ninputs_;
 	jive_graph * graph_;
 	jive_region * region_;
 	std::vector<jive::input*> inputs_;
@@ -550,7 +556,7 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin);
 JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 {
-	for (size_t n = 0; n < self->ninputs; n++) {
+	for (size_t n = 0; n < self->ninputs(); n++) {
 		if (self->input(n)->gate == gate) {
 			return self->input(n);
 		}
@@ -561,7 +567,7 @@ jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const char * name)
 {
-	for (size_t n = 0; n < self->ninputs; n++) {
+	for (size_t n = 0; n < self->ninputs(); n++) {
 		jive::input * i = self->input(n);
 		if (i->gate && i->gate->name() == name)
 			return i;

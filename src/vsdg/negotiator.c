@@ -602,7 +602,7 @@ jive_negotiator_annotate_identity_node(
 	/* FIXME: this assumes that all "gates" are at the end of the list
 	-- while plausible, this is not strictly correct */
 	std::vector<jive::input*> inputs;
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		jive::input * input = node->input(n);
 		if (!input->gate) {
 			inputs.push_back(input);
@@ -653,7 +653,7 @@ void
 jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 {
 	size_t n;
-	for(n = 0; n < node->ninputs; n++) {
+	for(n = 0; n < node->ninputs(); n++) {
 		jive::input * input = node->input(n);
 		if (!input->gate) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, input->gate))
@@ -752,7 +752,7 @@ void
 jive_negotiator_insert_split_nodes(jive_negotiator * self)
 {
 	for (jive_node * node : jive::topdown_traverser(self->graph)) {
-		for (size_t n = 0; n < node->ninputs; n++) {
+		for (size_t n = 0; n < node->ninputs(); n++) {
 			jive::input * input = node->input(n);
 			jive_negotiator_maybe_split_edge(self, input->origin(), input);
 		}

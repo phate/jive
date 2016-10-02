@@ -1175,7 +1175,7 @@ static int types_bitstring_test_reduction(void)
 		jive::output * slice = jive_bitslice(concat, 8, 24);
 		jive_node * node = ((jive::output *) slice)->node();
 		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
-		assert(node->ninputs == 2);
+		assert(node->ninputs() == 2);
 		assert(dynamic_cast<const jive::bits::slice_op *>(&node->producer(0)->operation()));
 		assert(dynamic_cast<const jive::bits::slice_op *>(&node->producer(1)->operation()));
 		
@@ -1264,7 +1264,7 @@ static int types_bitstring_test_slice_concat(void)
 		jive::output * b = jive_bitconcat(2, list2);
 		
 		assert(dynamic_cast<const jive::bits::concat_op *>(&b->node()->operation()));
-		assert(b->node()->ninputs == 3);
+		assert(b->node()->ninputs() == 3);
 		assert(b->node()->input(0)->origin() == base_x);
 		assert(b->node()->input(1)->origin() == base_y);
 		assert(b->node()->input(2)->origin() == base_z);

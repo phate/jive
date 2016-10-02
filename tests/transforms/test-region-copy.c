@@ -43,8 +43,8 @@ static int test_main(void)
 
 	jive_node * copied_top = r2->top;
 	jive_node * copied_bottom = r2->bottom;
-	assert(copied_top && copied_top->ninputs == 0 && copied_top->noutputs == 3);
-	assert(copied_bottom && copied_bottom->ninputs == 1 && copied_bottom->noutputs == 0);
+	assert(copied_top && copied_top->ninputs() == 0 && copied_top->noutputs == 3);
+	assert(copied_bottom && copied_bottom->ninputs() == 1 && copied_bottom->noutputs == 0);
 	jive_node * copied_gamma = copied_bottom->producer(0);
 	assert(copied_gamma->operation() == gamma->operation());
 	jive_node * alt1 = copied_gamma->producer(0);

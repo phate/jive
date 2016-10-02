@@ -93,7 +93,7 @@ jive_i386_call_node_substitute(
 		node->outputs[0]->replace(clobber_eax);
 	}
 	
-	for (size_t n = node->noperands(); n < node->ninputs; n++) {
+	for (size_t n = node->noperands(); n < node->ninputs(); n++) {
 		jive::input * orig_input = node->input(n);
 		if (orig_input->gate) {
 			call_instr->add_input(orig_input->gate, orig_input->origin());

@@ -114,9 +114,9 @@ sequentialize_region(
 				node)->base;
 		} else if (dynamic_cast<const jive::dataobj_head_op *>(&node->operation())) {
 			jive_seq_data * data = jive_seq_data_create(
-				seq_region, node->ninputs, node);
+				seq_region, node->ninputs(), node);
 			size_t n;
-			for (n = 0; n < node->ninputs; ++n) {
+			for (n = 0; n < node->ninputs(); ++n) {
 				jive::input * input = node->input(n);
 				const jive::bits::constant_op * cop = dynamic_cast<const jive::bits::constant_op *>(
 					&input->origin()->node()->operation());
@@ -152,7 +152,7 @@ sequentialize_region(
 		JIVE_LIST_INSERT(seq->points, before, current, seqpoint_list);
 		
 		size_t n;
-		for(n = 0; n < node->ninputs; n++) {
+		for(n = 0; n < node->ninputs(); n++) {
 			jive::input * input = node->input(n);
 			if (dynamic_cast<const jive::achr::type*>(&input->type())) {
 				jive_seq_region * seq_subregion;
@@ -180,7 +180,7 @@ sequentialize_region(
 		before = current;
 		
 		jive::input * control_input = 0;
-		for(n = 0; n < node->ninputs; n++) {
+		for(n = 0; n < node->ninputs(); n++) {
 			jive::input * input = node->input(n);
 			if (dynamic_cast<const jive::ctl::type*>(&input->type())) {
 				control_input = input;

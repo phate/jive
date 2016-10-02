@@ -304,7 +304,7 @@ eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(index < node->noutputs);
 
 	std::vector<std::unique_ptr<const literal>> arguments;
-	for (size_t n = 1; n < node->ninputs; n++)
+	for (size_t n = 1; n < node->ninputs(); n++)
 			arguments.emplace_back(eval_input(node->input(n), ctx));
 
 	ctx.push_arguments(arguments);
@@ -352,7 +352,7 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 	ctx.push_frame(tail->region());
 
 	std::vector<std::unique_ptr<const literal>> results;
-	for (size_t n = 1; n < tail->ninputs; n++)
+	for (size_t n = 1; n < tail->ninputs(); n++)
 		results.emplace_back(eval_input(tail->input(n), ctx));
 
 	std::unique_ptr<const literal> fct(new fctliteral(ctx.top_arguments(), results));
@@ -373,7 +373,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
 
-	jive::input * predicate = node->input(node->ninputs-1);
+	jive::input * predicate = node->input(node->ninputs()-1);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
@@ -381,7 +381,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 
 	ctx.push_frame(tail->region());
 	std::vector<std::unique_ptr<const literal>> results;
-	for (size_t n = 1; n < tail->ninputs; n++)
+	for (size_t n = 1; n < tail->ninputs(); n++)
 		results.emplace_back(eval_input(tail->input(n), ctx));
 	ctx.pop_frame(tail->region());
 
@@ -421,7 +421,7 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 			results.clear();
 		}
 
-		for (size_t n = 1; n < tail->ninputs; n++)
+		for (size_t n = 1; n < tail->ninputs(); n++)
 			results.emplace_back(eval_input(tail->input(n), ctx));
 		ctx.pop_frame(tail->region());
 
@@ -494,7 +494,7 @@ eval_node(const struct jive_node * node, size_t index, context & ctx)
 
 	/* evaluate all other nodes */
 	std::vector<std::unique_ptr<const literal>> operands;
-	for (size_t n = 0; n < node->ninputs; n++)
+	for (size_t n = 0; n < node->ninputs(); n++)
 		operands.emplace_back(eval_input(node->input(n), ctx));
 
 	std::vector<std::unique_ptr<const literal>> results;
@@ -531,7 +531,7 @@ eval(
 {
 	const jive::output * output = nullptr;
 	const jive_node * tail = graph->root_region->bottom;
-	for (size_t n = 0; n < tail->ninputs; n++) {
+	for (size_t n = 0; n < tail->ninputs(); n++) {
 		JIVE_DEBUG_ASSERT(tail->input(n)->gate != nullptr);
 		if (tail->input(n)->gate->name() == name) {
 			output = tail->input(n)->origin();

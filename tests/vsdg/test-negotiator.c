@@ -229,7 +229,7 @@ static void
 test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 {
 	if (auto op = dynamic_cast<const negtest_op *>(&node_->operation())) {
-		for (size_t n = 0; n < node_->ninputs; n++) {
+		for (size_t n = 0; n < node_->ninputs(); n++) {
 			jive::input * input = node_->input(n);
 			test_negotiator_option option(op->input_options()[n]);
 			jive_negotiator_annotate_simple_input(self, input, &option);

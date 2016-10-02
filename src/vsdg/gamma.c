@@ -229,7 +229,7 @@ jive_gamma(jive::output * predicate,
 		results.clear();
 		jive_node * tail0 = node->producer(0);
 		jive_node * head0 = tail0->producer(0);
-		size_t nalternatives = node->ninputs-1;
+		size_t nalternatives = node->ninputs()-1;
 		for (size_t v = node->noutputs; v > 0; --v) {
 			jive::output * value = tail0->input(v)->origin();
 			if (value->node() != head0)

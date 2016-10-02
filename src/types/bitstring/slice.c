@@ -100,7 +100,7 @@ slice_op::reduce_operand(
 	
 	if (path == jive_unop_reduction_distribute) {
 		jive_node * node = arg->node();
-		jive::output * arguments[node->ninputs];
+		jive::output * arguments[node->ninputs()];
 		
 		size_t narguments = 0, pos = 0, n;
 		for (n = 0; n < node->noperands(); n++) {

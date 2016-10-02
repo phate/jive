@@ -46,7 +46,7 @@ static void
 jive_node_invalidate_depth_from_root(jive_node * self)
 {
 	size_t new_depth_from_root = 0;
-	for (size_t n = 0; n < self->ninputs; n++)
+	for (size_t n = 0; n < self->ninputs(); n++)
 		new_depth_from_root = std::max(self->producer(n)->depth_from_root + 1, new_depth_from_root);
 
 	size_t old_depth_from_root = self->depth_from_root;
@@ -549,7 +549,7 @@ void
 jive_node_auto_merge_variables(jive_node * self)
 {
 	size_t n;
-	for(n = 0; n < self->ninputs; n++)
+	for(n = 0; n < self->ninputs(); n++)
 		jive_input_auto_merge_variable(self->input(n));
 	for(n = 0; n < self->noutputs; n++)
 		jive_output_auto_merge_variable(self->outputs[n]);
@@ -560,7 +560,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 {
 	use_count->clear();
 	
-	for (size_t n = 0; n < self->ninputs; n++) {
+	for (size_t n = 0; n < self->ninputs(); n++) {
 		jive::input * input = self->input(n);
 		
 		/* filter out multiple inputs using the same value
@@ -607,8 +607,8 @@ jive_node::jive_node(
 	jive_region * region,
 	const std::vector<jive::output*> & operands)
 	: depth_from_root(0)
-	, ninputs(0)
 	, noutputs(0)
+	, ninputs_(0)
 	, graph_(region->graph)
 	, region_(region)
 	, operation_(std::move(op))
@@ -625,7 +625,7 @@ jive_node::jive_node(
 		for (size_t n = 0; n < operation_->narguments(); n++) {
 			JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
 			jive::input * input = new jive::input(this, n, operands[n], operation_->argument_type(n));
-			ninputs++;
+			ninputs_++;
 			inputs_.push_back(input);
 			depth_from_root = std::max(operands[n]->node()->depth_from_root+1, depth_from_root);
 		}
@@ -638,7 +638,7 @@ jive_node::jive_node(
 		outputs.push_back(output);
 	}
 
-	for (size_t n = 0; n < this->ninputs; ++n)
+	for (size_t n = 0; n < this->ninputs(); ++n)
 		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, this->input(n)->origin()));
 
 	region->nodes.push_back(this);
@@ -658,8 +658,8 @@ jive_node::~jive_node()
 	while(noutputs)
 		delete outputs[noutputs-1];
 
-	while (ninputs)
-		remove_input(ninputs-1);
+	while (ninputs_)
+		remove_input(ninputs_-1);
 
 	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
@@ -679,12 +679,12 @@ jive::input *
 jive_node::add_input(const jive::base::type * type, jive::output * origin)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
-	jive::input * input = new jive::input(this, ninputs, origin, *type);
+	jive::input * input = new jive::input(this, ninputs_, origin, *type);
 
-	if (ninputs == 0)
+	if (ninputs_ == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	ninputs++;
+	ninputs_++;
 	inputs_.push_back(input);
 
 	if (!jive_input_is_valid(input))
@@ -723,7 +723,7 @@ jive_node::remove_input(size_t index)
 	if (input->gate) {
 		JIVE_LIST_REMOVE(input->gate->inputs, input, gate_inputs_list);
 
-		for (size_t n = 0; n < ninputs; n++) {
+		for (size_t n = 0; n < ninputs_; n++) {
 			jive::input * other = inputs_[n];
 			if (other == input || !other->gate)
 				continue;
@@ -733,13 +733,13 @@ jive_node::remove_input(size_t index)
 
 	delete input;
 
-	ninputs--;
-	for (size_t n = index; n < ninputs; n++) {
+	ninputs_--;
+	for (size_t n = index; n < ninputs_; n++) {
 		inputs_[n] = inputs_[n+1];
 		inputs_[n]->set_index(n);
 	}
 
-	if (ninputs == 0)
+	if (ninputs_ == 0)
 		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
@@ -792,7 +792,7 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 	}
 
 	jive_node * new_node = copy(region, operands);
-	for (size_t n = noperands(); n < ninputs; n++) {
+	for (size_t n = noperands(); n < ninputs(); n++) {
 		jive::output * origin = smap.lookup(input(n)->origin());
 		if (!origin) {
 			origin =  input(n)->origin();
@@ -966,7 +966,7 @@ jive_opnode_create(
 		region->bottom = node;
 	}
 
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		if (!jive_input_is_valid(node->input(n)))
 			throw jive::compiler_error("Invalid input");
 	}

@@ -37,7 +37,7 @@ topdown_traverser::topdown_traverser(jive_graph * graph)
 bool
 topdown_traverser::predecessors_visited(const jive_node * node) noexcept
 {
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		input * in = node->input(n);
 		if (tracker_.get_nodestate(in->producer())
 			!= traversal_nodestate::behind) {
@@ -147,7 +147,7 @@ bottomup_traverser::next()
 		return NULL;
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		check_node(node->input(n)->producer());
 	}
 	return node;
@@ -162,7 +162,7 @@ bottomup_traverser::node_create(jive_node * node)
 void
 bottomup_traverser::node_destroy(jive_node * node)
 {
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		check_node(node->input(n)->producer());
 	}
 }
@@ -219,7 +219,7 @@ upward_cone_traverser::node_destroy(jive_node * node)
 		return;
 	}
 	
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		check_node(node->input(n)->producer());
 	}
 }
@@ -263,7 +263,7 @@ upward_cone_traverser::next()
 		return nullptr;
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		check_node(node->input(n)->producer());
 	}
 	return node;
@@ -327,7 +327,7 @@ bottomup_region_traverser::map_node(jive_node * node)
 void
 bottomup_region_traverser::check_above(jive_node * node)
 {
-	for (size_t n = 0; n < node->ninputs; n++) {
+	for (size_t n = 0; n < node->ninputs(); n++) {
 		jive_node * above = node->input(n)->producer();
 		jive_tracker_nodestate * nodestate = map_node(above);
 		if (nodestate->state != jive_tracker_nodestate_none) {

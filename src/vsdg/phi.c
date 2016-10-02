@@ -230,7 +230,7 @@ jive_phi_end_extension(struct jive_phi_extension * self)
 	jive_node * leave = phi_region->bottom;
 
 	size_t n;
-	size_t offset = leave->ninputs;
+	size_t offset = leave->ninputs();
 	for (n = 0; n < self->fixvars.size(); n++) {
 		jive::gate * gate = enter->outputs[offset+n]->gate;
 		leave->add_input(gate, self->fixvars[n]);

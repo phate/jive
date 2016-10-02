@@ -26,7 +26,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	jive_region * src_region = lambda_node->producer(0)->region();
 	
 	size_t nparameters = src_region->top->noutputs - 1;
-	size_t nreturns = src_region->bottom->ninputs - 1;
+	size_t nreturns = src_region->bottom->ninputs()-1;
 	
 	size_t nvalue_parameters = 0, nstate_parameters = 0;
 	size_t nvalue_returns = 0, nstate_returns = 0;
@@ -80,7 +80,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	
 	/* map all returns */
 	nvalue_returns = 0;
-	for (n = 1; n < src_region->bottom->ninputs; n++) {
+	for (n = 1; n < src_region->bottom->ninputs(); n++) {
 		jive::input * original = src_region->bottom->input(n);
 		jive::output * retval = subst.lookup(src_region->bottom->input(n)->origin());
 		
@@ -292,7 +292,7 @@ jive_i386_subroutine_add_fp_dependency_(
 	jive::output * frameptr = op.get_passthrough_enter_by_index(region, 1);
 	
 	size_t n;
-	for (n = 0; n < node->ninputs; n++) {
+	for (n = 0; n < node->ninputs(); n++) {
 		jive::input * input = node->input(n);
 		if (input->origin() == frameptr)
 			return NULL;
@@ -307,7 +307,7 @@ jive_i386_subroutine_add_sp_dependency_(
 	jive::output * stackptr = op.get_passthrough_enter_by_index(region, 1);
 	
 	size_t n;
-	for (n = 0; n < node->ninputs; n++) {
+	for (n = 0; n < node->ninputs(); n++) {
 		jive::input * input = node->input(n);
 		if (input->origin() == stackptr)
 			return NULL;

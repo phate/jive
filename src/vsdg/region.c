@@ -235,11 +235,11 @@ jive_region_verify_top_node_list(struct jive_region * region)
 	/* check whether all nodes in the top_node_list are really nullary nodes */
 	jive_node * node;
 	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
-		JIVE_DEBUG_ASSERT(node->ninputs == 0);
+		JIVE_DEBUG_ASSERT(node->ninputs() == 0);
 
 	/* check whether all nullary nodes from the region are in the top_node_list */
 	for (const auto & node : region->nodes) {
-		if (node.ninputs != 0)
+		if (node.ninputs() != 0)
 			continue;
 
 		jive_node * top;
