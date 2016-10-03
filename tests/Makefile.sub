@@ -1,8 +1,5 @@
 include tests/arch/Makefile.sub
 include tests/evaluator/Makefile.sub
-include tests/i386/Makefile.sub
-include tests/regalloc/Makefile.sub
-include tests/shape/Makefile.sub
 include tests/serialization/Makefile.sub
 include tests/transforms/Makefile.sub
 include tests/types/Makefile.sub
@@ -23,8 +20,6 @@ $(patsubst %, .dep/tests/%.la.d, $(TESTS)): CPPFLAGS+=-Itests
 $(patsubst %, .dep/tests/%.lo.d, $(TESTS)): CPPFLAGS+=-Itests
 
 TESTLOG=true
-
-EXPECT_FAIL_TESTS = regalloc/test-loop-overflow
 
 check: tests/test-runner
 	rm -rf check.log passed.log failed.log

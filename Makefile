@@ -146,23 +146,6 @@ LIBJIVE_SRC += \
 	src/arch/subroutine.c \
 	src/arch/subroutine/nodes.c \
 
-# shaper
-LIBJIVE_SRC += \
-	src/regalloc/shaped-graph.c src/regalloc/shaped-region.c src/regalloc/shaped-variable.c src/regalloc/shaped-node.c src/regalloc/xpoint.c
-# register allocator
-LIBJIVE_SRC += \
-	src/regalloc.c \
-	src/regalloc/auxnodes.c \
-	src/regalloc/color.c \
-	src/regalloc/fixup.c \
-	src/regalloc/reroute.c \
-	src/regalloc/reuse.c \
-	src/regalloc/selector-cost.c \
-	src/regalloc/selector-simple.c \
-	src/regalloc/selector.c \
-	src/regalloc/shape.c \
-	src/regalloc/stackframe.c
-
 # serialization
 LIBJIVE_SRC += \
 	src/serialization/arch.c \

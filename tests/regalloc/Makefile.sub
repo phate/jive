@@ -1,9 +1,0 @@
-TESTS+=\
-	regalloc/test-gateevict \
-	regalloc/test-gatesplit \
-	regalloc/test-loop-overflow \
-	regalloc/test-regmismatch \
-	regalloc/test-shape-split \
-	regalloc/test-simple \
-	regalloc/test-split \
-	regalloc/test-twoop \

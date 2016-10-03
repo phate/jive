@@ -11,6 +11,5 @@ TESTS+=\
 	vsdg/test-phi_extension \
 	vsdg/test-prune-replace \
 	vsdg/test-rescls-count \
-	vsdg/test-ssavar-merge \
 	vsdg/test-statesplit \
 	vsdg/test-typemismatch \
