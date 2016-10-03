@@ -464,7 +464,7 @@ public:
 	inline size_t
 	ninputs() const noexcept
 	{
-		return ninputs_;
+		return inputs_.size();
 	}
 
 	jive_node *
@@ -524,7 +524,6 @@ public:
 	> region_node_list_accessor;
 
 private:
-	size_t ninputs_;
 	jive_graph * graph_;
 	jive_region * region_;
 	std::vector<jive::input*> inputs_;

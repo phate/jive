@@ -608,7 +608,6 @@ jive_node::jive_node(
 	const std::vector<jive::output*> & operands)
 	: depth_from_root(0)
 	, noutputs(0)
-	, ninputs_(0)
 	, graph_(region->graph)
 	, region_(region)
 	, operation_(std::move(op))
@@ -624,9 +623,7 @@ jive_node::jive_node(
 
 		for (size_t n = 0; n < operation_->narguments(); n++) {
 			JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
-			jive::input * input = new jive::input(this, n, operands[n], operation_->argument_type(n));
-			ninputs_++;
-			inputs_.push_back(input);
+			inputs_.push_back(new jive::input(this, n, operands[n], operation_->argument_type(n)));
 			depth_from_root = std::max(operands[n]->node()->depth_from_root+1, depth_from_root);
 		}
 	}
@@ -658,8 +655,8 @@ jive_node::~jive_node()
 	while(noutputs)
 		delete outputs[noutputs-1];
 
-	while (ninputs_)
-		remove_input(ninputs_-1);
+	while (inputs_.size())
+		remove_input(inputs_.size()-1);
 
 	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
@@ -679,12 +676,11 @@ jive::input *
 jive_node::add_input(const jive::base::type * type, jive::output * origin)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
-	jive::input * input = new jive::input(this, ninputs_, origin, *type);
+	jive::input * input = new jive::input(this, inputs_.size(), origin, *type);
 
-	if (ninputs_ == 0)
+	if (inputs_.size() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
-	ninputs_++;
 	inputs_.push_back(input);
 
 	if (!jive_input_is_valid(input))
@@ -723,7 +719,7 @@ jive_node::remove_input(size_t index)
 	if (input->gate) {
 		JIVE_LIST_REMOVE(input->gate->inputs, input, gate_inputs_list);
 
-		for (size_t n = 0; n < ninputs_; n++) {
+		for (size_t n = 0; n < inputs_.size(); n++) {
 			jive::input * other = inputs_[n];
 			if (other == input || !other->gate)
 				continue;
@@ -732,14 +728,13 @@ jive_node::remove_input(size_t index)
 	}
 
 	delete input;
-
-	ninputs_--;
-	for (size_t n = index; n < ninputs_; n++) {
+	for (size_t n = index; n < inputs_.size()-1; n++) {
 		inputs_[n] = inputs_[n+1];
 		inputs_[n]->set_index(n);
 	}
+	inputs_.pop_back();
 
-	if (ninputs_ == 0)
+	if (inputs_.size() == 0)
 		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
