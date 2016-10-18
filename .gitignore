@@ -6,3 +6,6 @@
 .dep
 .Makefile.override
 a.out
+check.log
+passed.log
+failed.log
