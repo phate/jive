@@ -186,18 +186,17 @@ public:
 		return index_;
 	}
 
-	virtual const jive::base::type &
-	type() const noexcept = 0;
-
-	virtual std::string
-	debug_string() const;
-
-protected:
 	inline void
 	set_index(size_t index) noexcept
 	{
 		index_ = index;
 	}
+
+	virtual const jive::base::type &
+	type() const noexcept = 0;
+
+	virtual std::string
+	debug_string() const;
 
 private:
 	size_t index_;
@@ -412,7 +411,7 @@ public:
 	inline bool
 	has_successors() const noexcept
 	{
-		for (auto output : outputs) {
+		for (auto output : outputs_) {
 			if (!output->no_user())
 				return true;
 		}
@@ -448,6 +447,9 @@ public:
 
 	jive::output *
 	add_output(jive::gate * gate);
+
+	void
+	remove_output(size_t index);
 
 	inline jive_graph *
 	graph() const noexcept
@@ -497,10 +499,15 @@ public:
 		return inputs_[index];
 	}
 
+	inline jive::output *
+	output(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < outputs_.size());
+		return outputs_[index];
+	}
+
 	size_t depth_from_root;
 	size_t noutputs;
-
-	std::vector<jive::output*> outputs;
 
 	struct {
 		jive_node * prev;
@@ -527,6 +534,7 @@ private:
 	jive_graph * graph_;
 	jive_region * region_;
 	std::vector<jive::input*> inputs_;
+	std::vector<jive::output*> outputs_;
 	std::unique_ptr<jive::operation> operation_;
 };
 
@@ -578,8 +586,8 @@ JIVE_EXPORTED_INLINE jive::output *
 jive_node_get_gate_output(const jive_node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs; n++) {
-		if (self->outputs[n]->gate == gate) {
-			return self->outputs[n];
+		if (self->output(n)->gate == gate) {
+			return self->output(n);
 		}
 	}
 	return nullptr;
@@ -589,7 +597,7 @@ JIVE_EXPORTED_INLINE jive::output *
 jive_node_get_gate_output(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs; n++) {
-		jive::output * o = self->outputs[n];
+		jive::output * o = self->output(n);
 		if (o->gate && o->gate->name() == name)
 			return o;
 	}

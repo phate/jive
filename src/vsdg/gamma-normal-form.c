@@ -49,13 +49,13 @@ gamma_normal_form::normalize_node(jive_node * node) const
 
 			jive::substitution_map map;
 			for (size_t n = 1; n < head->noutputs; n++)
-				map.insert(head->outputs[n], head->input(n-1)->origin());
+				map.insert(head->output(n), head->input(n-1)->origin());
 
 			jive_region_copy_substitute(tail->region(), node->region(), map, false, false);
 
 			for (size_t n = 1; n < node->noutputs; n++) {
 					jive::output * original = tail->input(n)->origin();
-					node->outputs[n]->replace(map.lookup(original));
+					node->output(n)->replace(map.lookup(original));
 			}
 			was_normalized = false;
 		}
@@ -71,8 +71,8 @@ gamma_normal_form::normalize_node(jive_node * node) const
 					break;
 			}
 			if (n == nalternatives) {
-				node->outputs[v-1]->replace(node->producer(0)->input(v-1)->origin());
-				delete node->outputs[v-1];
+				node->output(v-1)->replace(node->producer(0)->input(v-1)->origin());
+				delete node->output(v-1);
 				for (size_t n = 0; n < nalternatives; n++)
 					node->producer(n)->remove_input(v-1);
 				was_normalized = false;

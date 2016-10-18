@@ -36,17 +36,17 @@ static int test_main(void)
 	jive_region * region = graph->root_region;
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
-	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->outputs[0]}, {&type});
-	jive_node * n3 = jive_test_node_create(region, {&type}, {n2->outputs[0]}, {&type});
+	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
+	jive_node * n3 = jive_test_node_create(region, {&type}, {n2->output(0)}, {&type});
 	jive_node * bottom = jive_test_node_create(region,
-		{&type, &type}, {n2->outputs[0], n3->outputs[0]}, {&type});
+		{&type, &type}, {n2->output(0), n3->output(0)}, {&type});
 	
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, bottom->output(0));
 	
-	jive_node * n4 = jive_test_node_create(region, {&type}, {n1->outputs[0]}, {&type});
+	jive_node * n4 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
 
-	n2->outputs[0]->replace(n4->outputs[0]);
-	assert(n2->outputs[0]->no_user());
+	n2->output(0)->replace(n4->output(0));
+	assert(n2->output(0)->no_user());
 	
 	jive_graph_prune(graph);
 	

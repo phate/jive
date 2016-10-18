@@ -107,9 +107,9 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 	jive_graph_mark_denormalized(node->graph());
 
 	jive_negotiator_annotate_simple_input(negotiator, node->input(0), input_option);
-	jive_negotiator_annotate_simple_output(negotiator, node->outputs[0], output_option);
+	jive_negotiator_annotate_simple_output(negotiator, node->output(0), output_option);
 
-	return node->outputs[0];
+	return node->output(0);
 }
 
 /* constraints */
@@ -598,7 +598,6 @@ jive_negotiator_annotate_identity_node(
 	jive_node * node,
 	const jive_negotiator_option * option)
 {
-	size_t noutputs = 0;
 	/* FIXME: this assumes that all "gates" are at the end of the list
 	-- while plausible, this is not strictly correct */
 	std::vector<jive::input*> inputs;
@@ -609,12 +608,17 @@ jive_negotiator_annotate_identity_node(
 		}
 	}
 
-	while(noutputs < node->noutputs && !node->outputs[noutputs]->gate)
-		noutputs ++;
+	std::vector<jive::output*> outputs;
+	for (size_t n = 0; n < node->noutputs; n++) {
+		jive::output * output = node->output(0);
+		if (!output->gate) {
+			outputs.push_back(output);
+		}
+	}
 
 	jive_negotiator_constraint * constraint;
 	constraint = jive_negotiator_annotate_identity(
-		self, inputs.size(), &inputs[0], noutputs, &node->outputs[0], option);
+		self, inputs.size(), &inputs[0], outputs.size(), &outputs[0], option);
 	constraint->hash_key_.node = node;
 	self->node_map.insert(constraint);
 	
@@ -668,7 +672,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 		self->input_map.insert(port);
 	}
 	for(n = 0; n < node->noutputs; n++) {
-		jive::output * output = node->outputs[n];
+		jive::output * output = node->output(n);
 		if (!output->gate) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, output->gate))
 			continue;
@@ -767,10 +771,10 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self)
 		jive_node * node = *i;
 		++i;
 		jive_negotiator_port * input_port = jive_negotiator_map_input(self, node->input(0));
-		jive_negotiator_port * output_port = jive_negotiator_map_output(self, node->outputs[0]);
+		jive_negotiator_port * output_port = jive_negotiator_map_output(self, node->output(0));
 		jive_negotiator_port_destroy(input_port);
 		jive_negotiator_port_destroy(output_port);
-		node->outputs[0]->replace(node->input(0)->origin());
+		node->output(0)->replace(node->input(0)->origin());
 		delete node;
 	}
 }

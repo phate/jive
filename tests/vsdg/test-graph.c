@@ -29,7 +29,7 @@ static int test_main(void)
 	assert(n1);
 	assert(n1->depth_from_root == 0);
 
-	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->outputs[0]}, {});
+	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {});
 	assert(n2);
 	assert(n2->depth_from_root == 1);
 	

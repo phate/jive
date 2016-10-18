@@ -235,7 +235,7 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 			jive_negotiator_annotate_simple_input(self, input, &option);
 		}
 		for (size_t n = 0; n < node_->noutputs; n++) {
-			jive::output * output = node_->outputs[n];
+			jive::output * output = node_->output(n);
 			test_negotiator_option option(op->output_options()[n]);
 			jive_negotiator_annotate_simple_output(self, output, &option);
 		}
@@ -319,25 +319,28 @@ static int test_main(void)
 	jive_node * n1 = jive_negtestnode_create(graph->root_region,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
+	jive::output * tmp = n1->output(0);
 	jive_node * n2 = jive_negtestnode_create(graph->root_region,
-		1, &opt1, tmparray0, &n1->outputs[0],
+		1, &opt1, tmparray0, &tmp,
 		0, 0, 0);
 	jive_node * n3 = jive_negtestnode_create(graph->root_region,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
+	tmp = n3->output(0);
 	jive_node * n4 = jive_negtestnode_create(graph->root_region,
-		1, &opt2, tmparray0, &n3->outputs[0],
+		1, &opt2, tmparray0, &tmp,
 		0, 0, 0);
 	
 	jive_region * subregion = new jive_region(graph->root_region, graph);
 	jive_node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
+	tmp = n5->output(0);
 	jive_node * n6 = jive_negtestnode_create(subregion,
-		1, &opt3, tmparray0, &n5->outputs[0],
+		1, &opt3, tmparray0, &tmp,
 		0, 0, 0);
 	jive_node * n7 = jive_negtestnode_create(subregion,
-		1, &opt4, tmparray0, &n5->outputs[0],
+		1, &opt4, tmparray0, &tmp,
 		0, 0, 0);
 	
 	test_negotiator nego;
@@ -345,23 +348,23 @@ static int test_main(void)
 	
 	jive_negotiator_process(&nego);
 	
-	expect_options(&nego, n1->outputs[0], 1, n2->input(0), 1);
-	expect_options(&nego, n3->outputs[0], 1, n4->input(0), 2);
-	expect_options(&nego, n5->outputs[0], 1, n6->input(0), 1);
-	expect_options(&nego, n5->outputs[0], 1, n7->input(0), 1);
+	expect_options(&nego, n1->output(0), 1, n2->input(0), 1);
+	expect_options(&nego, n3->output(0), 1, n4->input(0), 2);
+	expect_options(&nego, n5->output(0), 1, n6->input(0), 1);
+	expect_options(&nego, n5->output(0), 1, n7->input(0), 1);
 
 	jive_negotiator_insert_split_nodes(&nego);
 	
-	assert(n2->input(0)->origin() == n1->outputs[0]);
-	assert(n4->input(0)->origin() != n3->outputs[0]);
+	assert(n2->input(0)->origin() == n1->output(0));
+	assert(n4->input(0)->origin() != n3->output(0));
 	jive_node * split_node = n4->producer(0);
-	expect_options(&nego, n3->outputs[0], 1, split_node->input(0), 1);
-	expect_options(&nego, split_node->outputs[0], 2, n4->input(0), 2);
+	expect_options(&nego, n3->output(0), 1, split_node->input(0), 1);
+	expect_options(&nego, split_node->output(0), 2, n4->input(0), 2);
 	
 	jive_negotiator_remove_split_nodes(&nego);
 	
-	assert(n4->input(0)->origin() == n3->outputs[0]);
-	expect_options(&nego, n3->outputs[0], 1, n4->input(0), 2);
+	assert(n4->input(0)->origin() == n3->output(0));
+	expect_options(&nego, n3->output(0), 1, n4->input(0), 2);
 	
 	test_negotiator_fini(&nego);
 	

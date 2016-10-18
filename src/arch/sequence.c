@@ -104,7 +104,7 @@ sequentialize_region(
 			for (n = 0; n < icls->ninputs; ++n)
 				inregs[n] = (const jive_register_name *)node->input(n)->ssavar->variable->resname;
 			for (n = 0; n < icls->noutputs; ++n)
-				outregs[n] = (const jive_register_name *)node->outputs[n]->ssavar->variable->resname;
+				outregs[n] = (const jive_register_name *)node->output(n)->ssavar->variable->resname;
 			current = &jive_seq_instruction_create(
 				seq_region,
 				icls,

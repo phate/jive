@@ -57,7 +57,7 @@ static int test_main(void)
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		std::vector<const jive::base::type*>(8, &bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {&bits32});
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, bottom->output(0));
 
 	jive_view(graph, stdout);
 

@@ -109,7 +109,7 @@ subroutine_op::get_passthrough_enter_by_name(jive_region * region, const char * 
 	jive_node * enter = region->top;
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs; ++n) {
-		output * o = enter->outputs[n];
+		output * o = enter->output(n);
 		if (o->gate && name == o->gate->name())
 			return o;
 	}

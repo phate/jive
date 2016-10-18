@@ -28,11 +28,11 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(r1, {}, {}, {&type, &type, &jive::ctl::boolean});
 	r1->top = top;
 	
-	jive::output * tmp = jive_gamma(top->outputs[2], {&type},
-		{{top->outputs[0]}, {top->outputs[1]}})[0];
+	jive::output * tmp = jive_gamma(top->output(2), {&type},
+		{{top->output(0)}, {top->output(1)}})[0];
 	jive_node * gamma = tmp->node();
 
-	jive_node * bottom = jive_test_node_create(r1, {&type}, {gamma->outputs[0]}, {});
+	jive_node * bottom = jive_test_node_create(r1, {&type}, {gamma->output(0)}, {});
 	r1->bottom = bottom;
 	
 	jive_view(graph, stderr);

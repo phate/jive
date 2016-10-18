@@ -32,7 +32,8 @@ test_main(void)
 	jive::fct::type fcttype(1, &addrptr, 1, &addrptr);
 	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&fcttype, &addrtype});
 
-	std::vector<jive::output *> results = jive_apply_create(top->outputs[0], 1, &top->outputs[1]);
+	jive::output * address = top->output(1);
+	std::vector<jive::output *> results = jive_apply_create(top->output(0), 1, &address);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region, {&addrtype}, results, {});
 

@@ -47,34 +47,34 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(graph->root_region, {}, {},
 		{&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype});
 
+	jive::output * state = top->output(1);
 	std::vector<jive::output *> states0 = jive_store_by_address_create(
-		top->outputs[0], &bits32, top->outputs[4], 1, &top->outputs[1]);
+		top->output(0), &bits32, top->output(4), 1, &state);
 
-	jive::output * tmparray1[] = {top->outputs[2],
-		top->outputs[3], top->outputs[4]};
+	jive::output * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
 	jive::output * group = jive_group_create(rcddecl, 3, tmparray1);
-	jive::output * tmparray2[] = {top->outputs[1], top->outputs[5]};
+	jive::output * tmparray2[] = {top->output(1), top->output(5)};
 	std::vector<jive::output *> states1 = jive_store_by_address_create(
-		top->outputs[0], &rcdtype, group, 2, tmparray2);
+		top->output(0), &rcdtype, group, 2, tmparray2);
 
-	jive::output * unify = jive_unify_create(&unndecl, 2, top->outputs[4]);
+	jive::output * unify = jive_unify_create(&unndecl, 2, top->output(4));
 	std::vector<jive::output *> states2 = jive_store_by_address_create(
-		top->outputs[0], &unntype, unify, 1, &top->outputs[1]);
+		top->output(0), &unntype, unify, 1, &state);
 
 	std::vector<jive::output *> states3 = jive_store_by_address_create(
-		top->outputs[6], &bits32, top->outputs[4], 1, &top->outputs[1]);
+		top->output(6), &bits32, top->output(4), 1, &state);
 	std::vector<jive::output *> states4 = jive_store_by_address_create(
-		top->outputs[0], &bits32, top->outputs[4], 1, &states3[0]);
+		top->output(0), &bits32, top->output(4), 1, &states3[0]);
 
 	unify = jive_empty_unify_create(graph->root_region, &empty_unndecl);
 	std::vector<jive::output *> states5 = jive_store_by_address_create(
-		top->outputs[0], &empty_unntype, unify, 1, &top->outputs[1]);
+		top->output(0), &empty_unntype, unify, 1, &state);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		std::vector<const jive::base::type*>(6, &memtype),
 		{states0[0], states1[0], states1[0], states2[0], states4[0], states5[0]},
 		{&memtype});
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, bottom->output(0));
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

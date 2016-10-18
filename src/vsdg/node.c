@@ -57,7 +57,7 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 	self->graph()->on_node_depth_change(self, old_depth_from_root);
 
 	for (size_t n = 0; n < self->noutputs; n++) {
-		for (auto user : self->outputs[n]->users)
+		for (auto user : self->output(n)->users)
 			jive_node_invalidate_depth_from_root(user->node());
 	}
 }
@@ -322,24 +322,6 @@ output::~output() noexcept
 	if (ssavar)
 		jive_ssavar_unassign_output(ssavar, this);
 
-	if (gate) {
-		JIVE_LIST_REMOVE(gate->outputs, this, gate_outputs_list);
-
-		size_t n;
-		for (n = 0; n < node_->noutputs; n++) {
-			jive::output * other = node_->outputs[n];
-			if (other == this || !other->gate)
-				continue;
-			jive_gate_interference_remove(node_->graph(), gate, other->gate);
-		}
-	}
-
-	node_->noutputs--;
-	for (size_t n = index(); n < node_->noutputs; n++) {
-		node_->outputs[n] = node_->outputs[n+1];
-		node_->outputs[n]->set_index(n);
-	}
-
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
 
@@ -552,7 +534,7 @@ jive_node_auto_merge_variables(jive_node * self)
 	for(n = 0; n < self->ninputs(); n++)
 		jive_input_auto_merge_variable(self->input(n));
 	for(n = 0; n < self->noutputs; n++)
-		jive_output_auto_merge_variable(self->outputs[n]);
+		jive_output_auto_merge_variable(self->output(n));
 }
 
 void
@@ -591,7 +573,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 	use_count->clear();
 	
 	for (size_t n = 0; n < self->noutputs; n++) {
-		jive::output * output = self->outputs[n];
+		jive::output * output = self->output(n);
 		
 		const jive_resource_class * rescls;
 		if (output->ssavar) rescls = output->ssavar->variable->rescls;
@@ -632,7 +614,7 @@ jive_node::jive_node(
 		JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
 		jive::output * output = new jive::output(this, noutputs, operation_->result_type(n));
 		noutputs++;
-		outputs.push_back(output);
+		outputs_.push_back(output);
 	}
 
 	for (size_t n = 0; n < this->ninputs(); ++n)
@@ -653,7 +635,7 @@ jive_node::~jive_node()
 	region_->nodes.erase(this);
 
 	while(noutputs)
-		delete outputs[noutputs-1];
+		remove_output(outputs_.size()-1);
 
 	while (inputs_.size())
 		remove_input(inputs_.size()-1);
@@ -738,13 +720,39 @@ jive_node::remove_input(size_t index)
 		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
 }
 
+void
+jive_node::remove_output(size_t index)
+{
+	JIVE_DEBUG_ASSERT(index < outputs_.size());
+	jive::output * output = outputs_[index];
+
+	if (output->gate) {
+		JIVE_LIST_REMOVE(output->gate->outputs, output, gate_outputs_list);
+
+		for (size_t n = 0; n < noutputs; n++) {
+			jive::output * other = outputs_[n];
+			if (other == output || !other->gate)
+				continue;
+			jive_gate_interference_remove(graph(), output->gate, other->gate);
+		}
+	}
+
+	noutputs--;
+	delete output;
+	for (size_t n = index; n < noutputs; n++) {
+		outputs_[n] = outputs_[n+1];
+		outputs_[n]->set_index(n);
+	}
+	outputs_.pop_back();
+}
+
 jive::output *
 jive_node::add_output(const jive::base::type * type)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::output * output = new jive::output(this, noutputs, *type);
 	noutputs++;
-	outputs.push_back(output);
+	outputs_.push_back(output);
 
 	graph()->on_output_create(output);
 
@@ -760,7 +768,7 @@ jive_node::add_output(jive::gate * gate)
 	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
 
 	for (size_t n = 0; n < output->index(); n++) {
-		jive::output * other = outputs[n];
+		jive::output * other = this->output(n);
 		if (!other->gate) continue;
 		jive_gate_interference_add(graph(), gate, other->gate);
 	}
@@ -809,8 +817,8 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 	}
 
 	for (size_t n = new_node->noutputs; n < noutputs; n++) {
-		if (outputs[n]->gate) {
-			jive::gate * gate = outputs[n]->gate;
+		if (output(n)->gate) {
+			jive::gate * gate = output(n)->gate;
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
@@ -821,13 +829,13 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 
 			new_node->add_output(target_gate);
 		} else {
-			jive::output * output = new_node->add_output(&outputs[n]->type());
-			output->required_rescls = outputs[n]->required_rescls;
+			jive::output * output = new_node->add_output(&this->output(n)->type());
+			output->required_rescls = this->output(n)->required_rescls;
 		}
 	}
 
 	for (size_t n = 0; n < new_node->noutputs; n++)
-		smap.insert(outputs[n], new_node->outputs[n]);
+		smap.insert(output(n), new_node->output(n));
 
 	return new_node;
 }
@@ -948,7 +956,7 @@ jive_opnode_create(
 		node->input(n)->required_rescls = op.argument_cls(n);
 	}
 	for (size_t n = 0; n < op.nresults(); ++n) {
-		node->outputs[n]->required_rescls = op.result_cls(n);
+		node->output(n)->required_rescls = op.result_cls(n);
 	}
 
 	/* FIXME: region head/tail nodes are a bit quirky, but they

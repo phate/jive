@@ -38,15 +38,15 @@ static int test_main(void)
 	jive::output * s1 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
-		tmparray2, NULL)->outputs[0];
+		tmparray2, NULL)->output(0);
 	jive::output * tmparray3[] = {s1, arg3};
 	jive::output * s2 = jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
-		tmparray3, NULL)->outputs[0];
+		tmparray3, NULL)->output(0);
 	jive_subroutine_simple_set_result(subroutine, 0, s2);
 	
-	jive_graph_export(graph, jive_subroutine_end(subroutine)->outputs[0]);
+	jive_graph_export(graph, jive_subroutine_end(subroutine)->output(0));
 	
 	jive_view(graph, stdout);
 

@@ -1108,8 +1108,8 @@ static int types_bitstring_test_normalize(void)
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node();
 	jive::input * retval = lambda_node->producer(0)->input(1);
-	jive::output * arg = lambda_node->producer(0)->producer(0)->outputs[1];
-	jive_graph_export(graph, lambda_node->outputs[0]);
+	jive::output * arg = lambda_node->producer(0)->producer(0)->output(1);
+	jive_graph_export(graph, lambda_node->output(0));
 	
 	sum_nf->set_mutable(true);
 	jive_graph_normalize(graph);

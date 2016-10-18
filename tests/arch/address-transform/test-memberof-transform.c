@@ -34,7 +34,7 @@ static int test_main(void)
 
 	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&bits32});
 
-	jive::output * address = jive_bitstring_to_address_create(top->outputs[0], 32, &addrtype);
+	jive::output * address = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
 
 	jive::output * member0 = jive_memberof(address, decl, 0);
 	jive::output * member1 = jive_memberof(address, decl, 1);
@@ -49,7 +49,7 @@ static int test_main(void)
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},
 		{&bits32});
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, bottom->output(0));
 
 	jive_view(graph, stdout);
 
@@ -65,7 +65,7 @@ static int test_main(void)
 			assert(!dynamic_cast<const jive::addr::type*>(&node->input(i)->type()));
 		}
 		for (size_t i = 0; i < node->noutputs; i++){
-			assert(!dynamic_cast<const jive::addr::type*>(&node->outputs[i]->type()));
+			assert(!dynamic_cast<const jive::addr::type*>(&node->output(i)->type()));
 		}
 	}
 

@@ -46,7 +46,11 @@ node_normal_form::normalized_create(
 		node = op.create_node(region, arguments.size(), &arguments[0]);
 	}
 
-	return std::vector<jive::output *>(&node->outputs[0], &node->outputs[node->noutputs]);
+	std::vector<jive::output*> outputs;
+	for (size_t n = 0; n < node->noutputs; n++)
+		outputs.push_back(node->output(n));
+
+	return outputs;
 }
 
 void

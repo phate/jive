@@ -238,12 +238,12 @@ jive_dataobj_internal(
 
 	jive_node * head = jive::dataobj_head_op(std::move(types)).create_node(
 		region, data_items.size(), arguments);
-	jive_node * tail = jive::dataobj_tail_op().create_node(
-		region, 1, &head->outputs[0]);
-	jive_node * obj = jive::dataobj_op().create_node(
-		parent, 1, &tail->outputs[0]);
+	jive::output * tmp = head->output(0);
+	jive_node * tail = jive::dataobj_tail_op().create_node(region, 1, &tmp);
+	tmp = tail->output(0);
+	jive_node * obj = jive::dataobj_op().create_node(parent, 1, &tmp);
 
-	return obj->outputs[0];
+	return obj->output(0);
 }
 
 jive::output *

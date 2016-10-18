@@ -139,7 +139,7 @@ static int function_test_lambda_apply(void)
 	jive_node * interest = jive_test_node_create(graph->root_region,
 		{&bits32}, {apply_results[0]}, {&bits32});
 	
-	jive_graph_export(graph, interest->outputs[0]);
+	jive_graph_export(graph, interest->output(0));
 	
 	jive_view(graph, stderr);
 

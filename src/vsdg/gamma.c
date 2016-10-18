@@ -153,8 +153,9 @@ jive_gamma_create(
 	for (size_t n = 0; n < nalternatives; n++) {
 		jive_region * subregion = new jive_region(region, region->graph);
 		jive_node * head = jive::gamma_head_op().create_node(subregion, 0, nullptr);
-		jive_node * tail = jive::gamma_tail_op().create_node(subregion, 1, &head->outputs[0]);
-		arguments[n] = tail->outputs[0];
+		jive::output * tmp = head->output(0);
+		jive_node * tail = jive::gamma_tail_op().create_node(subregion, 1, &tmp);
+		arguments[n] = tail->output(0);
 	}
 	arguments[nalternatives] = predicate;
 
@@ -219,7 +220,7 @@ jive_gamma(jive::output * predicate,
 	std::vector<jive::output*> results;
 	jive_node * node = jive_gamma_create(predicate, types, alternatives);
 	for (size_t n = 0; n < node->noutputs; n++)
-		results.push_back(node->outputs[n]);
+		results.push_back(node->output(n));
 
 	/*
 		FIXME: this algorithm is O(n^2), since we have to iterate through all inputs/outputs
@@ -247,16 +248,16 @@ jive_gamma(jive::output * predicate,
 				results.push_back(head0->input(v)->origin());
 
 				/* FIXME: ugh, this should be done by DNE */
-				delete node->outputs[v-1];
+				delete node->output(v-1);
 				for (size_t n = 0; n < nalternatives; n++) {
 					jive_node * tail = node->producer(n);
 					jive_node * head = tail->producer(0);
 					tail->remove_input(v);
-					delete head->outputs[v];
+					head->remove_output(v);
 					head->remove_input(v-1);
 				}
 			} else
-				results.push_back(node->outputs[v-1]);
+				results.push_back(node->output(v-1));
 		}
 		std::reverse(results.begin(), results.end());
 	}

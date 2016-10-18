@@ -160,12 +160,13 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 
 	size_t n;
 
-	jive::output * arguments[] = {self.region->top->outputs[0], predicate};
+	jive::output * arguments[] = {self.region->top->output(0), predicate};
 	jive_node * tail = jive::theta_tail_op().create_node(self.region, 2, arguments);
 	for (n = 0; n < state->loopvars.size(); ++n)
 		tail->add_input(state->loopvars[n].gate, state->loopvars[n].value);
-	
-	jive_node * anchor = jive::theta_op().create_node(self.region->parent, 1, &tail->outputs[0]);
+
+	jive::output * tmp = tail->output(0);
+	jive_node * anchor = jive::theta_op().create_node(self.region->parent, 1, &tmp);
 	for (n = 0; n < state->loopvars.size(); ++n)
 		state->loopvars[n].value = anchor->add_output(state->loopvars[n].gate);
 	

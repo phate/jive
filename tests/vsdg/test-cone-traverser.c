@@ -32,9 +32,9 @@ prepare_graph()
 	jive_region * region = g.graph->root_region;
 	jive_test_value_type type;
 	g.a1 = jive_test_node_create(region, {}, {}, {&type});
-	g.a2 = jive_test_node_create(region, {&type}, {g.a1->outputs[0]}, {&type});
+	g.a2 = jive_test_node_create(region, {&type}, {g.a1->output(0)}, {&type});
 	g.b1 = jive_test_node_create(region, {}, {}, {&type});
-	g.b2 = jive_test_node_create(region, {&type}, {g.b1->outputs[0]}, {&type});
+	g.b2 = jive_test_node_create(region, {&type}, {g.b1->output(0)}, {&type});
 	
 	return g;
 }
@@ -96,7 +96,7 @@ test_mutable_upward_cone_3()
 	{
 		jive::upward_cone_traverser trav(g.a2);
 	
-		g.a2->input(0)->divert_origin(g.b1->outputs[0]);
+		g.a2->input(0)->divert_origin(g.b1->output(0));
 		assert( trav.next() == g.a2 );
 		assert( trav.next() == g.b1 );
 	}

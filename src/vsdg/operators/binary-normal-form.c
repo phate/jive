@@ -133,7 +133,7 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 		new_args = reduce_operands(op, std::move(new_args));
 
 		if (new_args.size() == 1) {
-			node->outputs[0]->replace(new_args[0]);
+			node->output(0)->replace(new_args[0]);
 			/* FIXME: not sure whether "destroy" is really appropriate? */
 			delete node;
 			return false;
@@ -165,7 +165,7 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 		}
 
 		if (new_node != node) {
-			node->outputs[0]->replace(new_node->outputs[0]);
+			node->output(0)->replace(new_node->output(0));
 			delete node;
 			return false;
 		}

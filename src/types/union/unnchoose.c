@@ -80,7 +80,7 @@ choose_operation::reduce_operand(
 		jive::output * address = arg->node()->input(0)->origin();
 
 		const jive::unn::declaration * decl = static_cast<const jive::unn::type*>(
-			&arg->node()->outputs[0]->type())->declaration();
+			&arg->node()->output(0)->type())->declaration();
 
 		size_t nstates = arg->node()->ninputs()-1;
 		jive::output * states[nstates];

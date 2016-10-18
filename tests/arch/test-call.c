@@ -31,15 +31,14 @@ static int test_main(void)
 
 	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
 
+	std::vector<jive::output*> tmp = {top->output(1), top->output(2)};
 	jive_node * call = jive_call_by_address_node_create(graph->root_region,
-		top->outputs[0], NULL,
-		2, &top->outputs[1],
-		3, tmparray1);
+		top->output(0), NULL, 2, &tmp[0], 3, tmparray1);
 	JIVE_DEBUG_ASSERT(call->noutputs == 3);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
-		{&bits16, &addr, &addr}, {call->outputs[0], call->outputs[1], call->outputs[2]}, {&addr});
-	jive_graph_export(graph, bottom->outputs[0]);
+		{&bits16, &addr, &addr}, {call->output(0), call->output(1), call->output(2)}, {&addr});
+	jive_graph_export(graph, bottom->output(0));
 
 	jive_view(graph, stdout);
 

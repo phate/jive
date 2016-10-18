@@ -407,7 +407,7 @@ create_xfer(jive_region * region, jive::output * origin,
 			&jive_testarch_instr_move_gpr,
 			tmparray8, NULL);
 		xfer.input = xfer.node->input(0);
-		xfer.output = xfer.node->outputs[0];
+		xfer.output = xfer.node->output(0);
 	} else if (in_relaxed == CLS(gpr)) {
 		jive::output * tmparray9[] = {origin};
 		xfer.node = jive_instruction_node_create(
@@ -422,7 +422,7 @@ create_xfer(jive_region * region, jive::output * origin,
 			&jive_testarch_instr_restore_gpr,
 			NULL, NULL);
 		xfer.input = xfer.node->add_input(jive_resource_class_get_type(in_class), origin);
-		xfer.output = xfer.node->outputs[0];
+		xfer.output = xfer.node->output(0);
 	} else {
 		JIVE_DEBUG_ASSERT(false);
 	}
@@ -559,7 +559,7 @@ public:
 			jive_node * node = jive_splitnode_create(subroutine.region,
 				in_type, o, o->gate->required_rescls,
 				out_type, &jive_testarch_regcls_gpr.base);
-			o = node->outputs[0];
+			o = node->output(0);
 		}
 		return o;
 	}
@@ -581,7 +581,7 @@ public:
 			&jive_testarch_instr_ret, {}, {}, {}, {}, {&jive::ctl::boolean});
 		ret_instr->add_input(subroutine.builder_state->passthroughs[1].gate,
 			subroutine.builder_state->passthroughs[1].output);
-		return ret_instr->outputs[0];
+		return ret_instr->output(0);
 	}
 };
 

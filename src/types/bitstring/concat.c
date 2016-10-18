@@ -151,7 +151,7 @@ public:
 				concat_reduce_arg_pair);
 
 			if (new_args.size() == 1) {
-				node->outputs[0]->replace(new_args[0]);
+				node->output(0)->replace(new_args[0]);
 				/* FIXME: not sure whether "destroy" is really appropriate? */
 				delete node;
 				return false;
@@ -174,7 +174,7 @@ public:
 			}
 
 			if (new_node != node) {
-				node->outputs[0]->replace(new_node->outputs[0]);
+				node->output(0)->replace(new_node->output(0));
 				delete node;
 				return false;
 			}

@@ -30,31 +30,31 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(graph->root_region,
 		{}, {}, {&addrtype, &bits32, &bits64});
 
-	jive::output * b0 = jive_address_to_bitstring_create(top->outputs[0], 32,
-		&top->outputs[0]->type());
+	jive::output * b0 = jive_address_to_bitstring_create(top->output(0), 32,
+		&top->output(0)->type());
 	jive::output * a0 = jive_bitstring_to_address_create(b0, 32, &addrtype);
 
-	jive::output * a1 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
+	jive::output * a1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
 	jive::output * b1 = jive_address_to_bitstring_create(a1, 32, &addrtype);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		{&addrtype, &bits32}, {a0, b1}, {});
 
-	assert(bottom->input(0)->origin() == top->outputs[0]);
-	assert(bottom->input(1)->origin() == top->outputs[1]);
+	assert(bottom->input(0)->origin() == top->output(0));
+	assert(bottom->input(1)->origin() == top->output(1));
 
-	jive::output * b2 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
-	jive::output * b3 = jive_bitstring_to_address_create(top->outputs[1], 32, &addrtype);
-	jive::output * a2 = jive_address_to_bitstring_create(top->outputs[0], 32,
-		&top->outputs[0]->type());
-	jive::output * a3 = jive_address_to_bitstring_create(top->outputs[0], 32,
-		&top->outputs[0]->type());
+	jive::output * b2 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
+	jive::output * b3 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
+	jive::output * a2 = jive_address_to_bitstring_create(top->output(0), 32,
+		&top->output(0)->type());
+	jive::output * a3 = jive_address_to_bitstring_create(top->output(0), 32,
+		&top->output(0)->type());
 	
 	assert(a2->node()->operation() == a3->node()->operation());
 	assert(b2->node()->operation() == b3->node()->operation());
 
-	jive::output * b4 = jive_bitstring_to_address_create(top->outputs[2], 64, &addrtype);
-	jive::output * a4 = jive_address_to_bitstring_create(top->outputs[0], 64, &addrtype);
+	jive::output * b4 = jive_bitstring_to_address_create(top->output(2), 64, &addrtype);
+	jive::output * a4 = jive_address_to_bitstring_create(top->output(0), 64, &addrtype);
 
 	assert(a2->node()->operation() != a4->node()->operation());
 	assert(b2->node()->operation() != b4->node()->operation());

@@ -52,9 +52,9 @@ void test_order_enforcement_traversal()
 	
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type, &type});
-	jive_node * n2 = jive_test_node_create(graph->root_region, {&type}, {n1->outputs[0]}, {&type});
+	jive_node * n2 = jive_test_node_create(graph->root_region, {&type}, {n1->output(0)}, {&type});
 	jive_node * n3 = jive_test_node_create(graph->root_region,
-		{&type, &type}, {n2->outputs[0], n1->outputs[1]}, {&type});
+		{&type, &type}, {n2->output(0), n1->output(1)}, {&type});
 
 	jive_node * tmp;
 	
@@ -104,8 +104,8 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	/* At this point, n1 has been visited, now create some nodes */
 
 	jive_node * n3 = jive_test_node_create(graph->root_region, {}, {}, {&type});
-	jive_node * n4 = jive_test_node_create(graph->root_region, {&type}, {n3->outputs[0]}, {});
-	jive_node * n5 = jive_test_node_create(graph->root_region, {&type}, {n2->outputs[0]}, {});
+	jive_node * n4 = jive_test_node_create(graph->root_region, {&type}, {n3->output(0)}, {});
+	jive_node * n5 = jive_test_node_create(graph->root_region, {&type}, {n2->output(0)}, {});
 
 	/*
 		The newly created nodes n3 and n4 will not be visited,
@@ -138,9 +138,9 @@ static int test_main(void)
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type, &type});
 	jive_node * n2 = jive_test_node_create(graph->root_region,
-		{&type, &type}, {n1->outputs[0], n1->outputs[1]}, {&type});
+		{&type, &type}, {n1->output(0), n1->output(1)}, {&type});
 
-	graph->root_region->bottom->add_input(&type, n2->outputs[0]);
+	graph->root_region->bottom->add_input(&type, n2->output(0));
 	(void)n1;
 	(void)n2;
 	

@@ -315,7 +315,7 @@ eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
 
 	JIVE_DEBUG_ASSERT(node->noutputs == fctv->nresults());
 	for (size_t n = 0; n < fctv->nresults(); n++)
-		ctx.insert(node->outputs[n], &fctv->result(n));
+		ctx.insert(node->output(n), &fctv->result(n));
 
 	std::unique_ptr<const literal> result = std::move(fctv->result(index).copy());
 	return result;
@@ -328,7 +328,7 @@ eval_lambda_head_node(const struct jive_node * node, size_t index, context & ctx
 
 	if (index < ctx.top_arguments().size()+1) {
 		/* it is an argument */
-		jive::output * argument = node->outputs[index];
+		jive::output * argument = node->output(index);
 		JIVE_DEBUG_ASSERT(!ctx.exists(argument));
 
 		const literal * v = ctx.top_arguments()[index-1].get();
@@ -387,7 +387,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 
 	JIVE_DEBUG_ASSERT(node->noutputs == results.size());
 	for (size_t n = 0; n < node->noutputs; n++)
-		ctx.insert(node->outputs[n], results[n].get());
+		ctx.insert(node->output(n), results[n].get());
 
 	std::unique_ptr<const literal> result = std::move(results[index]->copy());
 	return result;
@@ -417,7 +417,7 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 		if (!results.empty()) {
 			JIVE_DEBUG_ASSERT(results.size() == head->noutputs);
 			for (size_t n = 1; n < head->noutputs; n++)
-				ctx.insert(head->outputs[n], results[n].get());
+				ctx.insert(head->output(n), results[n].get());
 			results.clear();
 		}
 
@@ -430,7 +430,7 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 
 	JIVE_DEBUG_ASSERT(node->noutputs == results.size()-1);
 	for (size_t n = 0; n < node->noutputs; n++)
-		ctx.insert(node->outputs[n], results[n+1].get());
+		ctx.insert(node->output(n), results[n+1].get());
 
 	std::unique_ptr<const literal> result = std::move(results[index+1]);
 	return result;
@@ -502,7 +502,7 @@ eval_node(const struct jive_node * node, size_t index, context & ctx)
 
 	JIVE_DEBUG_ASSERT(results.size() == node->noutputs);
 	for (size_t n = 0; n < node->noutputs; n++)
-		ctx.insert(node->outputs[n], results[n].get());
+		ctx.insert(node->output(n), results[n].get());
 
 	std::unique_ptr<const literal> result = results[index]->copy();
 	return result;

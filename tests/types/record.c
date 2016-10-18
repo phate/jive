@@ -38,8 +38,7 @@ static int _test_rcdgroup(void)
 
 	jive_node * top = jive_test_node_create(graph->root_region,
 		{}, {}, {&bits8, &bits16, &bits32});
-	jive::output * tmparray1[] = {top->outputs[0],
-		top->outputs[1], top->outputs[2]};
+	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
 	jive::output * g0 = jive_group_create(decl, 3, tmparray1);
 	jive::output * g1 = jive_empty_group_create(graph, decl_empty);
@@ -47,7 +46,7 @@ static int _test_rcdgroup(void)
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		{&rcdtype, &rcdtype_empty}, {g0, g1}, {&bits8});
 
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, bottom->output(0));
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
@@ -79,20 +78,19 @@ static int _test_rcdselect()
 	jive::addr::type addrtype;
 	jive_node * top = jive_test_node_create(graph->root_region,
 		{}, {}, {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype});
-	jive::output * tmparray1[] = {top->outputs[0],
-		top->outputs[1], top->outputs[2]};
+	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
 	jive::output * g0 = jive_group_create(decl, 3, tmparray1);
-	jive::output * load = jive_load_by_address_create(top->outputs[5], &rcdtype, 0, NULL);
+	jive::output * load = jive_load_by_address_create(top->output(5), &rcdtype, 0, NULL);
 
-	jive::output * s0 = jive_select_create(1, top->outputs[3]);
+	jive::output * s0 = jive_select_create(1, top->output(3));
 	jive::output * s1 = jive_select_create(1, g0);
-	jive::output * s2 = jive_select_create(2, top->outputs[4]);
+	jive::output * s2 = jive_select_create(2, top->output(4));
 	jive::output * s3 = jive_select_create(0, load);
 
 	jive_node * bottom = jive_test_node_create(graph->root_region,
 		{&bits16, &bits16, &bits32, &bits8}, {s0, s1, s2, s3}, {&bits8});
-	jive_graph_export(graph, bottom->outputs[0]);
+	jive_graph_export(graph, bottom->output(0));
 
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);

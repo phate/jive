@@ -54,7 +54,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 		jive_input_auto_merge_variable(xfer.node->input(0));
 		xfer.input = xfer.node->add_input(jive_resource_class_get_type(in_class), origin);
 		xfer.input->required_rescls = in_class;
-		xfer.output = xfer.node->outputs[0];
+		xfer.output = xfer.node->output(0);
 	} else if (out_mem) {
 		jive::immediate displacement;
 		jive::output * base;
@@ -75,7 +75,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 			&jive_i386_instr_int_transfer,
 			tmparray1, NULL);
 		xfer.input = xfer.node->input(0);
-		xfer.output = xfer.node->outputs[0];
+		xfer.output = xfer.node->output(0);
 	}
 	
 	return xfer;

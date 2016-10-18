@@ -135,8 +135,8 @@ jive_lambda_node_create(jive_region * function_region)
 	const jive::base::type * argument_types[narguments];
 	std::vector<std::string> argument_names;
 	for (size_t n = 0; n < narguments; n++) {
-		argument_types[n] = &function_region->top->outputs[n+1]->type();
-		argument_names.push_back(function_region->top->outputs[n+1]->gate->name());
+		argument_types[n] = &function_region->top->output(n+1)->type();
+		argument_names.push_back(function_region->top->output(n+1)->gate->name());
 	}
 	const jive::base::type * return_types[nreturns];
 	std::vector<std::string> result_names;
@@ -154,7 +154,8 @@ jive_lambda_node_create(jive_region * function_region)
 		std::move(argument_names),
 		std::move(result_names));
 
-	return op.create_node(function_region->parent, 1, &function_region->bottom->outputs[0]);
+	jive::output * tmp = function_region->bottom->output(0);
+	return op.create_node(function_region->parent, 1, &tmp);
 }
 
 
@@ -170,7 +171,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 
 	/* find index of lambda output in the phi leave node */
 	size_t index = self->region()->top->noutputs;
-	for (auto user : self->outputs[0]->users) {
+	for (auto user : self->output(0)->users) {
 		if (dynamic_cast<const jive::phi_tail_op *>(&user->node()->operation())) {
 			index = user->index();
 			break;
@@ -248,7 +249,8 @@ jive_lambda_end(jive_lambda * self,
 	jive_region * region = self->region;
 	jive_graph * graph = region->graph;
 
-	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, 1, &region->top->outputs[0]);
+	jive::output * tmp = region->top->output(0);
+	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, 1, &tmp);
 
 	size_t n;
 	for (n = 0; n < nresults; n++) {
@@ -264,7 +266,7 @@ jive_lambda_end(jive_lambda * self,
 	delete[] self->arguments;
 	delete self;
 
-	return anchor->outputs[0];
+	return anchor->output(0);
 }
 
 /* lambda inlining */
@@ -292,7 +294,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
 		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
 		jive::output * substituted = substitution.lookup(input->origin());
-		jive::output * output = apply_node->outputs[n];
+		jive::output * output = apply_node->output(n);
 		output->replace(substituted);
 	}
 }

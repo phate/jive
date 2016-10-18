@@ -28,7 +28,7 @@ static int test_main(void)
 
 	bool error_handler_called = false;
 	try {
-		jive_test_node_create(region, {&value_type}, {n1->outputs[0]}, {});
+		jive_test_node_create(region, {&value_type}, {n1->output(0)}, {});
 	} catch (jive::type_error e) {
 		error_handler_called = true;
 	}

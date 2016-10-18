@@ -95,7 +95,7 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive_node * node
 		inputs.push_back(jive_inputview(this, node->input(n)));
 	
 	for (size_t n = 0; n < node->noutputs; n++)
-		outputs.push_back(jive_outputview(this, node->outputs[n]));
+		outputs.push_back(jive_outputview(this, node->output(n)));
 
 	int input_width = -3, output_width = -3;
 	int cur_x;
@@ -142,7 +142,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	
 	for(size_t n = 0; n < self->node->noutputs; n++) {
 		jive_outputview * outputview = &self->outputs[n];
-		for (auto user : self->node->outputs[n]->users) {
+		for (auto user : self->node->output(n)->users) {
 			jive_inputview * inputview = graphview->inputmap[user];
 			if (!inputview->nodeview->placed) continue;
 			

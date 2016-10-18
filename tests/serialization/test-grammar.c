@@ -199,8 +199,7 @@ verify_serialize_nodeexpr(jive_node * node,
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab,
 			node->input(n)->origin(), input_names[n]);
 	for (n = 0; n < node->noutputs; ++n)
-		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab,
-			node->outputs[n], output_names[n]);
+		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab, node->output(n), output_names[n]);
 	
 	jive_serialize_nodeexpr(&ctx.drv, node, ctx.os);
 	
@@ -242,12 +241,12 @@ verify_deserialize_nodeexpr(
 	for (n = 0; n < expected_node->noutputs; ++n) {
 		const jive_serialization_outputsym * sym =
 			jive_serialization_symtab_name_to_output(&ctx.drv.symtab, output_names[n]);
-		assert(sym && sym->output == node->outputs[n]);
-		const jive::base::type * type = &node->outputs[n]->type();
-		const jive::base::type * expected_type = &expected_node->outputs[n]->type();
+		assert(sym && sym->output == node->output(n));
+		const jive::base::type * type = &node->output(n)->type();
+		const jive::base::type * expected_type = &expected_node->output(n)->type();
 		assert(*type == *expected_type);
-		assert(node->outputs[n]->required_rescls == expected_node->outputs[n]->required_rescls);
-		assert(node->outputs[n]->gate == expected_node->outputs[n]->gate);
+		assert(node->output(n)->required_rescls == expected_node->output(n)->required_rescls);
+		assert(node->output(n)->gate == expected_node->output(n)->gate);
 	}
 	
 	deserialize_ctx_fini(&ctx);

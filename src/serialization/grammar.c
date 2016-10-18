@@ -782,9 +782,9 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 	size_t nnormal = node->noutputs;
 	for (n = 0; n < node->noutputs; ++n) {
 		jive_portinfo port;
-		port.origin = node->outputs[n];
-		port.required_rescls = node->outputs[n]->required_rescls;
-		port.gate = node->outputs[n]->gate;
+		port.origin = node->output(n);
+		port.required_rescls = node->output(n)->required_rescls;
+		port.gate = node->output(n)->gate;
 		if (port.gate && n < nnormal)
 			nnormal = n;
 		outports.ports.push_back(port);
@@ -871,7 +871,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 			return false;
 		
 		jive_serialization_symtab_insert_outputsym(&self->symtab,
-			(*node)->outputs[index], name.c_str());
+			(*node)->output(index), name.c_str());
 		
 		index ++;
 	}
@@ -977,7 +977,7 @@ jive_serialize_nodedef(jive_serialization_driver * self,
 	namegen->name_node(namegen, &self->symtab, node);
 	size_t n;
 	for (n = 0; n < node->noutputs; ++n)
-		namegen->name_output(namegen, &self->symtab, node->outputs[n]);
+		namegen->name_output(namegen, &self->symtab, node->output(n));
 	jive_serialize_defined_node(self, node, os);
 	jive_serialize_char_token(self, '=', os);
 	jive_token_ostream_identifier(os, "node"); /* FIXME: keyword */
