@@ -32,7 +32,12 @@ check: tests/test-runner
 		fi ; \
 	done
 	@if [ -e failed.log ] ; then \
-		grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /" ; \
+		if [ -z ${EXPECT_FAIL_TESTS+x} ] ; then \
+			echo "Failed:" ; \
+			cat failed.log ; \
+		else \
+			grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /" ; \
+		fi \
 	fi
 	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
 
@@ -47,6 +52,11 @@ valgrind-check: tests/test-runner
 		fi ; \
 	done
 	@if [ -e failed.log ] ; then \
-		grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /" ; \
+		if [ -z ${EXPECT_FAIL_TESTS+x} ] ; then \
+			echo "Failed:" ; \
+			cat failed.log ; \
+		else \
+			grep -v $(EXPECT_FAIL_TESTS) < failed.log | sed -e "s/^/Failed: /" ; \
+		fi \
 	fi
 	@if [ "x$(EXPECT_FAIL_TESTS)" != x ] ; then echo "Expected failures: $(EXPECT_FAIL_TESTS)" ; fi
