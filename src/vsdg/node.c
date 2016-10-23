@@ -589,7 +589,6 @@ jive_node::jive_node(
 	jive_region * region,
 	const std::vector<jive::output*> & operands)
 	: depth_from_root(0)
-	, noutputs_(0)
 	, graph_(region->graph)
 	, region_(region)
 	, operation_(std::move(op))
@@ -612,9 +611,7 @@ jive_node::jive_node(
 
 	for (size_t n = 0; n < operation_->nresults(); n++) {
 		JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
-		jive::output * output = new jive::output(this, noutputs_, operation_->result_type(n));
-		noutputs_++;
-		outputs_.push_back(output);
+		outputs_.push_back(new jive::output(this, n, operation_->result_type(n)));
 	}
 
 	for (size_t n = 0; n < this->ninputs(); ++n)
@@ -634,7 +631,7 @@ jive_node::~jive_node()
 
 	region_->nodes.erase(this);
 
-	while(noutputs_)
+	while(outputs_.size())
 		remove_output(outputs_.size()-1);
 
 	while (inputs_.size())
@@ -737,9 +734,8 @@ jive_node::remove_output(size_t index)
 		}
 	}
 
-	noutputs_--;
 	delete output;
-	for (size_t n = index; n < noutputs_; n++) {
+	for (size_t n = index; n < outputs_.size()-1; n++) {
 		outputs_[n] = outputs_[n+1];
 		outputs_[n]->set_index(n);
 	}
@@ -750,8 +746,7 @@ jive::output *
 jive_node::add_output(const jive::base::type * type)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
-	jive::output * output = new jive::output(this, noutputs_, *type);
-	noutputs_++;
+	jive::output * output = new jive::output(this, outputs_.size(), *type);
 	outputs_.push_back(output);
 
 	graph()->on_output_create(output);
