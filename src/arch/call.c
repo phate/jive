@@ -121,7 +121,7 @@ jive_call_by_address_create(jive::output * target_address,
 		narguments, arguments, nreturns, return_types);
 
 	std::vector<jive::output*> results;
-	for (size_t n = 0; n < node->noutputs; n++)
+	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 
 	return results;
@@ -169,7 +169,7 @@ jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
 		calling_convention, narguments, arguments, nreturns, return_types);
 
 	std::vector<jive::output*> results;
-	for (size_t n = 0; n < node->noutputs; n++)
+	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 
 	return results;

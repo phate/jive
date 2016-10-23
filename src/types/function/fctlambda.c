@@ -129,7 +129,7 @@ static jive_node *
 jive_lambda_node_create(jive_region * function_region)
 {
 	size_t ndependencies = function_region->top->ninputs();
-	size_t narguments = function_region->top->noutputs - ndependencies - 1;
+	size_t narguments = function_region->top->noutputs() - ndependencies - 1;
 	size_t nreturns = function_region->bottom->ninputs()-1;
 
 	const jive::base::type * argument_types[narguments];
@@ -162,7 +162,7 @@ jive_lambda_node_create(jive_region * function_region)
 bool
 jive_lambda_is_self_recursive(const jive_node * self)
 {
-	JIVE_DEBUG_ASSERT(self->noutputs == 1);
+	JIVE_DEBUG_ASSERT(self->noutputs() == 1);
 
 	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
 
@@ -170,14 +170,14 @@ jive_lambda_is_self_recursive(const jive_node * self)
 		return false;
 
 	/* find index of lambda output in the phi leave node */
-	size_t index = self->region()->top->noutputs;
+	size_t index = self->region()->top->noutputs();
 	for (auto user : self->output(0)->users) {
 		if (dynamic_cast<const jive::phi_tail_op *>(&user->node()->operation())) {
 			index = user->index();
 			break;
 		}
 	}
-	JIVE_DEBUG_ASSERT(index != self->region()->top->noutputs);
+	JIVE_DEBUG_ASSERT(index != self->region()->top->noutputs());
 
 	/* the lambda is self-recursive if one of its external dependencies originates from the same
 	*  index in the phi enter node
@@ -261,7 +261,7 @@ jive_lambda_end(jive_lambda * self,
 	}
 
 	jive_node * anchor = jive_lambda_node_create(region);
-	JIVE_DEBUG_ASSERT(anchor->noutputs == 1);
+	JIVE_DEBUG_ASSERT(anchor->noutputs() == 1);
 
 	delete[] self->arguments;
 	delete self;

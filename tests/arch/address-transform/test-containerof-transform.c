@@ -68,7 +68,7 @@ static int test_main(void)
 		for (size_t i = 0; i < node->ninputs(); i++){
 			assert(!dynamic_cast<const jive::addr::type*>(&node->input(i)->type()));
 		}
-		for (size_t i = 0; i < node->noutputs; i++){
+		for (size_t i = 0; i < node->noutputs(); i++){
 			assert(!dynamic_cast<const jive::addr::type*>(&node->output(i)->type()));
 		}
 	}

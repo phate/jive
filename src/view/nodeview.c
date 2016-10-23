@@ -94,7 +94,7 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive_node * node
 	for (size_t n = 0; n < node->ninputs(); n++)
 		inputs.push_back(jive_inputview(this, node->input(n)));
 	
-	for (size_t n = 0; n < node->noutputs; n++)
+	for (size_t n = 0; n < node->noutputs(); n++)
 		outputs.push_back(jive_outputview(this, node->output(n)));
 
 	int input_width = -3, output_width = -3;
@@ -111,7 +111,7 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive_node * node
 	if (input_width > internal_width) internal_width = input_width;
 	
 	cur_x = 1;
-	for (size_t n = 0; n < node->noutputs; n++) {
+	for (size_t n = 0; n < node->noutputs(); n++) {
 		outputs[n].x = cur_x;
 		cur_x += outputs[n].width + 1;
 		output_width += outputs[n].width + 1;
@@ -140,7 +140,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 		count ++;
 	}
 	
-	for(size_t n = 0; n < self->node->noutputs; n++) {
+	for(size_t n = 0; n < self->node->noutputs(); n++) {
 		jive_outputview * outputview = &self->outputs[n];
 		for (auto user : self->node->output(n)->users) {
 			jive_inputview * inputview = graphview->inputmap[user];
@@ -159,7 +159,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	int y = self->node->depth_from_root;
 	
 	/* extents of node itself */
-	jive_reservationrect rects[1 + self->node->noutputs];
+	jive_reservationrect rects[1 + self->node->noutputs()];
 	rects[0].x = 0;
 	rects[0].y = y;
 	rects[0].width = width;
@@ -167,7 +167,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	
 	/* for each output, determine extents of longest edge */
 	size_t nrects = 1;
-	for(size_t n = 0; n < self->node->noutputs; n++) {
+	for(size_t n = 0; n < self->node->noutputs(); n++) {
 		jive_outputview * outputview = &self->outputs[n];
 		if (outputview->output->no_user())
 			continue;
@@ -216,7 +216,7 @@ jive_nodeview_draw(jive_nodeview * self, jive_textcanvas * dst)
 		jive_textcanvas_vline(dst, x + self->inputs[n].x - 1, y, y+2, false, false);
 	}
 	
-	for(size_t n = 0; n < self->node->noutputs; n++) {
+	for(size_t n = 0; n < self->node->noutputs(); n++) {
 		jive_outputview_draw(&self->outputs[n], dst, x + self->outputs[n].x, y+5);
 		jive_textcanvas_vline(dst, x + self->outputs[n].x - 1, y+4, y+6, false, false);
 	}

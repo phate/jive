@@ -198,7 +198,7 @@ verify_serialize_nodeexpr(jive_node * node,
 	for (n = 0; n < node->ninputs(); ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab,
 			node->input(n)->origin(), input_names[n]);
-	for (n = 0; n < node->noutputs; ++n)
+	for (n = 0; n < node->noutputs(); ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab, node->output(n), output_names[n]);
 	
 	jive_serialize_nodeexpr(&ctx.drv, node, ctx.os);
@@ -230,7 +230,7 @@ verify_deserialize_nodeexpr(
 	assert(node->operation() == expected_node->operation());
 	assert(node->ninputs() == expected_node->ninputs());
 	assert(node->noperands() == expected_node->noperands());
-	assert(node->noutputs == expected_node->noutputs);
+	assert(node->noutputs() == expected_node->noutputs());
 	
 	for (n = 0; n < node->ninputs(); ++n) {
 		assert(node->input(n)->origin() == expected_node->input(n)->origin());
@@ -238,7 +238,7 @@ verify_deserialize_nodeexpr(
 		assert(node->input(n)->gate == expected_node->input(n)->gate);
 	}
 	
-	for (n = 0; n < expected_node->noutputs; ++n) {
+	for (n = 0; n < expected_node->noutputs(); ++n) {
 		const jive_serialization_outputsym * sym =
 			jive_serialization_symtab_name_to_output(&ctx.drv.symtab, output_names[n]);
 		assert(sym && sym->output == node->output(n));

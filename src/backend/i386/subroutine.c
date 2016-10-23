@@ -25,7 +25,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 {
 	jive_region * src_region = lambda_node->producer(0)->region();
 	
-	size_t nparameters = src_region->top->noutputs - 1;
+	size_t nparameters = src_region->top->noutputs() - 1;
 	size_t nreturns = src_region->bottom->ninputs()-1;
 	
 	size_t nvalue_parameters = 0, nstate_parameters = 0;
@@ -60,7 +60,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 
 	/* map all parameters */
 	nvalue_parameters = 0;
-	for (n = 1; n < src_region->top->noutputs; n++) {
+	for (n = 1; n < src_region->top->noutputs(); n++) {
 		jive::output * original = src_region->top->output(n);
 		
 		jive::output * substitute;

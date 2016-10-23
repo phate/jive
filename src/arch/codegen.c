@@ -263,7 +263,7 @@ jive_seq_graph_patch_jump_targets(
 	const jive::instruction_op & op)
 {
 	size_t index = op.icls()->noutputs;
-	JIVE_DEBUG_ASSERT(inode->noutputs);
+	JIVE_DEBUG_ASSERT(inode->noutputs());
 	jive::output * ctl_out = inode->output(index);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&ctl_out->type()));
 	

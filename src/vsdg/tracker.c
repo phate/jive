@@ -141,7 +141,7 @@ computation_tracker::invalidate(jive_node * node)
 void
 computation_tracker::invalidate_below(jive_node * node)
 {
-	for (size_t n = 0; n < node->noutputs; n++) {
+	for (size_t n = 0; n < node->noutputs(); n++) {
 		for (auto user : node->output(n)->users)
 			invalidate(user->node());
 	}

@@ -47,7 +47,7 @@ node_normal_form::normalized_create(
 	}
 
 	std::vector<jive::output*> outputs;
-	for (size_t n = 0; n < node->noutputs; n++)
+	for (size_t n = 0; n < node->noutputs(); n++)
 		outputs.push_back(node->output(n));
 
 	return outputs;

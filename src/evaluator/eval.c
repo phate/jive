@@ -301,7 +301,7 @@ static const std::unique_ptr<const literal>
 eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::apply_op*>(&node->operation()));
-	JIVE_DEBUG_ASSERT(index < node->noutputs);
+	JIVE_DEBUG_ASSERT(index < node->noutputs());
 
 	std::vector<std::unique_ptr<const literal>> arguments;
 	for (size_t n = 1; n < node->ninputs(); n++)
@@ -313,7 +313,7 @@ eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
 
 	const fctliteral * fctv = static_cast<const fctliteral*>(fct.get());
 
-	JIVE_DEBUG_ASSERT(node->noutputs == fctv->nresults());
+	JIVE_DEBUG_ASSERT(node->noutputs() == fctv->nresults());
 	for (size_t n = 0; n < fctv->nresults(); n++)
 		ctx.insert(node->output(n), &fctv->result(n));
 
@@ -338,7 +338,7 @@ eval_lambda_head_node(const struct jive_node * node, size_t index, context & ctx
 		return result;
 	} else {
 		/* it is an external dependency */
-		return eval_input(node->input(node->noutputs-index-1), ctx);
+		return eval_input(node->input(node->noutputs()-index-1), ctx);
 	}
 }
 
@@ -385,8 +385,8 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 		results.emplace_back(eval_input(tail->input(n), ctx));
 	ctx.pop_frame(tail->region());
 
-	JIVE_DEBUG_ASSERT(node->noutputs == results.size());
-	for (size_t n = 0; n < node->noutputs; n++)
+	JIVE_DEBUG_ASSERT(node->noutputs() == results.size());
+	for (size_t n = 0; n < node->noutputs(); n++)
 		ctx.insert(node->output(n), results[n].get());
 
 	std::unique_ptr<const literal> result = std::move(results[index]->copy());
@@ -415,8 +415,8 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 		ctx.push_frame(tail->region());
 
 		if (!results.empty()) {
-			JIVE_DEBUG_ASSERT(results.size() == head->noutputs);
-			for (size_t n = 1; n < head->noutputs; n++)
+			JIVE_DEBUG_ASSERT(results.size() == head->noutputs());
+			for (size_t n = 1; n < head->noutputs(); n++)
 				ctx.insert(head->output(n), results[n].get());
 			results.clear();
 		}
@@ -428,8 +428,8 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&results[0]->type()));
 	} while (static_cast<const ctlliteral*>(results[0].get())->alternative());
 
-	JIVE_DEBUG_ASSERT(node->noutputs == results.size()-1);
-	for (size_t n = 0; n < node->noutputs; n++)
+	JIVE_DEBUG_ASSERT(node->noutputs() == results.size()-1);
+	for (size_t n = 0; n < node->noutputs(); n++)
 		ctx.insert(node->output(n), results[n+1].get());
 
 	std::unique_ptr<const literal> result = std::move(results[index+1]);
@@ -483,7 +483,7 @@ static eval_map evlmap
 static const std::unique_ptr<const literal>
 eval_node(const struct jive_node * node, size_t index, context & ctx)
 {
-	JIVE_DEBUG_ASSERT(index < node->noutputs);
+	JIVE_DEBUG_ASSERT(index < node->noutputs());
 
 	/* check for special nodes and evaluate them */
 	if (evlmap.find(typeid(node->operation())) != evlmap.end()) {
@@ -500,8 +500,8 @@ eval_node(const struct jive_node * node, size_t index, context & ctx)
 	std::vector<std::unique_ptr<const literal>> results;
 	results = compute_operation(node->operation(), operands);
 
-	JIVE_DEBUG_ASSERT(results.size() == node->noutputs);
-	for (size_t n = 0; n < node->noutputs; n++)
+	JIVE_DEBUG_ASSERT(results.size() == node->noutputs());
+	for (size_t n = 0; n < node->noutputs(); n++)
 		ctx.insert(node->output(n), results[n].get());
 
 	std::unique_ptr<const literal> result = results[index]->copy();

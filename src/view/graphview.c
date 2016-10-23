@@ -30,7 +30,7 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
 	
 	jive_nodeview * nodeview = new jive_nodeview(self, node);
 	self->nodemap.insert(std::make_pair(node, nodeview));
-	for (size_t n = 0; n < node->noutputs; n++)
+	for (size_t n = 0; n < node->noutputs(); n++)
 		self->outputmap.insert(std::make_pair(node->output(n), &nodeview->outputs[n]));
 	
 	for (size_t n = 0; n < node->ninputs(); n++) {

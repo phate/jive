@@ -138,7 +138,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = self->classifier->classify_float_compare(*op);
 		jive::input * input = node->input(0);
 		std::vector<jive::output*> outputs;
-		for (size_t n = 0; n < node->noutputs; n++)
+		for (size_t n = 0; n < node->noutputs(); n++)
 			outputs.push_back(node->output(n));
 		jive_negotiator_annotate_identity(&self->base, 2, &input, 0, &outputs[0], &option);
 	} else if (auto op = dynamic_cast<const jive::bits::unary_op *>(gen_op)) {
@@ -151,7 +151,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		option.mask = self->classifier->classify_fixed_compare(*op);
 		jive::input * input = node->input(0);
 		std::vector<jive::output*> outputs;
-		for (size_t n = 0; n < node->noutputs; n++)
+		for (size_t n = 0; n < node->noutputs(); n++)
 			outputs.push_back(node->output(n));
 		jive_negotiator_annotate_identity(&self->base, 2, &input, 0, &outputs[0], &option);
 	} else if (dynamic_cast<const jive::load_op *>(gen_op)) {
@@ -163,7 +163,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 		const jive_resource_class * rescls = node->output(0)->required_rescls;
 		option.mask = self->classifier->classify_type(type, rescls);
 		std::vector<jive::output*> outputs;
-		for (size_t n = 0; n < node->noutputs; n++)
+		for (size_t n = 0; n < node->noutputs(); n++)
 			outputs.push_back(node->output(n));
 		jive_negotiator_annotate_identity(&self->base, 0, NULL, 1, &outputs[0], &option);
 	} else if (dynamic_cast<const jive::store_op *>(gen_op)) {
@@ -194,7 +194,7 @@ jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node
 			option.mask = self->classifier->classify_type(&output->type(), output->required_rescls);
 			if (option.mask) {
 				std::vector<jive::output*> outputs;
-				for (size_t n = 0; n < node->noutputs; n++)
+				for (size_t n = 0; n < node->noutputs(); n++)
 					outputs.push_back(node->output(n));
 				jive_negotiator_annotate_identity(&self->base,0, NULL, 1, &outputs[0], &option);
 			}
@@ -249,7 +249,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	while (region->parent != root_region)
 		region = region->parent;
 	jive_node * top = region->top;
-	if (!top || top->noutputs < 1)
+	if (!top || top->noutputs() < 1)
 		return;
 	jive::output * ctl = top->output(0);
 	if (!dynamic_cast<const jive::seq::type*>(&ctl->type()))

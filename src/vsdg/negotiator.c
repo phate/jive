@@ -609,7 +609,7 @@ jive_negotiator_annotate_identity_node(
 	}
 
 	std::vector<jive::output*> outputs;
-	for (size_t n = 0; n < node->noutputs; n++) {
+	for (size_t n = 0; n < node->noutputs(); n++) {
 		jive::output * output = node->output(0);
 		if (!output->gate) {
 			outputs.push_back(output);
@@ -671,7 +671,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 		port->hash_key_.input = input;
 		self->input_map.insert(port);
 	}
-	for(n = 0; n < node->noutputs; n++) {
+	for(n = 0; n < node->noutputs(); n++) {
 		jive::output * output = node->output(n);
 		if (!output->gate) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, output->gate))

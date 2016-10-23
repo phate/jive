@@ -203,9 +203,9 @@ jive_call_node_address_transform(
 		}
 	}
 
-	const jive::base::type * return_types[node->noutputs];
+	const jive::base::type * return_types[node->noutputs()];
 	jive::bits::type address_type(nbits);
-	for (size_t i = 0; i < node->noutputs; i++){
+	for (size_t i = 0; i < node->noutputs(); i++){
 		if (dynamic_cast<const jive::addr::type*>(&node->output(i)->type())){
 			return_types[i] = &address_type;
 			transform = true;
@@ -218,10 +218,10 @@ jive_call_node_address_transform(
 		return;
 
 	jive_node * call = jive_call_by_bitstring_node_create(node->region(), operands[0], nbits,
-		op.calling_convention(), node->ninputs() - 1, operands + 1, node->noutputs,
+		op.calling_convention(), node->ninputs() - 1, operands + 1, node->noutputs(),
 		return_types);
 
-	for (size_t i = 0; i < node->noutputs; i++){
+	for (size_t i = 0; i < node->noutputs(); i++){
 		jive::output * output = call->output(i);
 		if(dynamic_cast<const jive::addr::type*>(&node->output(i)->type()))
 			output = jive_bitstring_to_address_create(call->output(i), nbits, &node->output(i)->type());
@@ -352,7 +352,7 @@ static void
 jive_lambda_node_address_transform(
 	const jive_node * node, size_t nbits)
 {
-	JIVE_DEBUG_ASSERT(node->noutputs == 1);
+	JIVE_DEBUG_ASSERT(node->noutputs() == 1);
 
 	jive_graph * graph = node->graph();
 	jive::output * fct = node->output(0);
@@ -372,7 +372,7 @@ jive_lambda_node_address_transform(
 	size_t n;
 	size_t nparameters = fcttype->narguments();
 	const char * parameter_names[nparameters];
-	for (n = 1; n < enter->noutputs; n++)
+	for (n = 1; n < enter->noutputs(); n++)
 		parameter_names[n-1] = enter->output(n)->gate->name().c_str();
 
 	const jive::base::type * argument_types[new_fcttype->narguments()];
@@ -385,7 +385,7 @@ jive_lambda_node_address_transform(
 	jive::substitution_map map;
 
 	jive_node * new_enter = jive_region_get_top_node(lambda->region);
-	for (n = 1; n < enter->noutputs; n++) {
+	for (n = 1; n < enter->noutputs(); n++) {
 		jive::output * parameter = jive_bitstring_to_address_create(new_enter->output(n), nbits,
 			fcttype->argument_type(n-1));
 		map.insert(enter->output(n), parameter);

@@ -56,7 +56,7 @@ jive_node_invalidate_depth_from_root(jive_node * self)
 
 	self->graph()->on_node_depth_change(self, old_depth_from_root);
 
-	for (size_t n = 0; n < self->noutputs; n++) {
+	for (size_t n = 0; n < self->noutputs(); n++) {
 		for (auto user : self->output(n)->users)
 			jive_node_invalidate_depth_from_root(user->node());
 	}
@@ -533,7 +533,7 @@ jive_node_auto_merge_variables(jive_node * self)
 	size_t n;
 	for(n = 0; n < self->ninputs(); n++)
 		jive_input_auto_merge_variable(self->input(n));
-	for(n = 0; n < self->noutputs; n++)
+	for(n = 0; n < self->noutputs(); n++)
 		jive_output_auto_merge_variable(self->output(n));
 }
 
@@ -572,7 +572,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 {
 	use_count->clear();
 	
-	for (size_t n = 0; n < self->noutputs; n++) {
+	for (size_t n = 0; n < self->noutputs(); n++) {
 		jive::output * output = self->output(n);
 		
 		const jive_resource_class * rescls;
@@ -589,7 +589,7 @@ jive_node::jive_node(
 	jive_region * region,
 	const std::vector<jive::output*> & operands)
 	: depth_from_root(0)
-	, noutputs(0)
+	, noutputs_(0)
 	, graph_(region->graph)
 	, region_(region)
 	, operation_(std::move(op))
@@ -612,8 +612,8 @@ jive_node::jive_node(
 
 	for (size_t n = 0; n < operation_->nresults(); n++) {
 		JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
-		jive::output * output = new jive::output(this, noutputs, operation_->result_type(n));
-		noutputs++;
+		jive::output * output = new jive::output(this, noutputs_, operation_->result_type(n));
+		noutputs_++;
 		outputs_.push_back(output);
 	}
 
@@ -634,7 +634,7 @@ jive_node::~jive_node()
 
 	region_->nodes.erase(this);
 
-	while(noutputs)
+	while(noutputs_)
 		remove_output(outputs_.size()-1);
 
 	while (inputs_.size())
@@ -729,7 +729,7 @@ jive_node::remove_output(size_t index)
 	if (output->gate) {
 		JIVE_LIST_REMOVE(output->gate->outputs, output, gate_outputs_list);
 
-		for (size_t n = 0; n < noutputs; n++) {
+		for (size_t n = 0; n < noutputs(); n++) {
 			jive::output * other = outputs_[n];
 			if (other == output || !other->gate)
 				continue;
@@ -737,9 +737,9 @@ jive_node::remove_output(size_t index)
 		}
 	}
 
-	noutputs--;
+	noutputs_--;
 	delete output;
-	for (size_t n = index; n < noutputs; n++) {
+	for (size_t n = index; n < noutputs_; n++) {
 		outputs_[n] = outputs_[n+1];
 		outputs_[n]->set_index(n);
 	}
@@ -750,8 +750,8 @@ jive::output *
 jive_node::add_output(const jive::base::type * type)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
-	jive::output * output = new jive::output(this, noutputs, *type);
-	noutputs++;
+	jive::output * output = new jive::output(this, noutputs_, *type);
+	noutputs_++;
 	outputs_.push_back(output);
 
 	graph()->on_output_create(output);
@@ -816,7 +816,7 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 		}
 	}
 
-	for (size_t n = new_node->noutputs; n < noutputs; n++) {
+	for (size_t n = new_node->noutputs(); n < noutputs(); n++) {
 		if (output(n)->gate) {
 			jive::gate * gate = output(n)->gate;
 
@@ -834,7 +834,7 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 		}
 	}
 
-	for (size_t n = 0; n < new_node->noutputs; n++)
+	for (size_t n = 0; n < new_node->noutputs(); n++)
 		smap.insert(output(n), new_node->output(n));
 
 	return new_node;

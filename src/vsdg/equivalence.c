@@ -79,7 +79,7 @@ jive_equiv_state_mark_verified(jive_equiv_state * self, jive_node_equiv_entry * 
 static bool
 jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const jive_node * n2)
 {
-	if (n1->noutputs != n2->noutputs) {
+	if (n1->noutputs() != n2->noutputs()) {
 		return false;
 	}
 	if (n1->ninputs() != n2->ninputs()) {

@@ -779,8 +779,8 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 	
 	/* outputs */
 	jive_portsinfo outports;
-	size_t nnormal = node->noutputs;
-	for (n = 0; n < node->noutputs; ++n) {
+	size_t nnormal = node->noutputs();
+	for (n = 0; n < node->noutputs(); ++n) {
 		jive_portinfo port;
 		port.origin = node->output(n);
 		port.required_rescls = node->output(n)->required_rescls;
@@ -856,7 +856,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	size_t index = 0;
 	/* result outputs */
 	while (jive_token_istream_current(is)->type == jive_token_identifier) {
-		if (index >= (*node)->noutputs) {
+		if (index >= (*node)->noutputs()) {
 			self->error(self, "Too many names for outputs");
 			return false;
 		}
@@ -879,7 +879,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	if (!jive_deserialize_char_token(self, is, ';'))
 		return false;
 	
-	if (index != (*node)->noutputs) {
+	if (index != (*node)->noutputs()) {
 		self->error(self, "Too few names for outputs");
 		return false;
 	}
@@ -976,7 +976,7 @@ jive_serialize_nodedef(jive_serialization_driver * self,
 {
 	namegen->name_node(namegen, &self->symtab, node);
 	size_t n;
-	for (n = 0; n < node->noutputs; ++n)
+	for (n = 0; n < node->noutputs(); ++n)
 		namegen->name_output(namegen, &self->symtab, node->output(n));
 	jive_serialize_defined_node(self, node, os);
 	jive_serialize_char_token(self, '=', os);

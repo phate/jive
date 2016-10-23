@@ -219,7 +219,7 @@ jive_gamma(jive::output * predicate,
 
 	std::vector<jive::output*> results;
 	jive_node * node = jive_gamma_create(predicate, types, alternatives);
-	for (size_t n = 0; n < node->noutputs; n++)
+	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 
 	/*
@@ -231,7 +231,7 @@ jive_gamma(jive::output * predicate,
 		jive_node * tail0 = node->producer(0);
 		jive_node * head0 = tail0->producer(0);
 		size_t nalternatives = node->ninputs()-1;
-		for (size_t v = node->noutputs; v > 0; --v) {
+		for (size_t v = node->noutputs(); v > 0; --v) {
 			jive::output * value = tail0->input(v)->origin();
 			if (value->node() != head0)
 				continue;

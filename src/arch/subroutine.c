@@ -155,11 +155,11 @@ jive_subroutine_end(jive_subroutine & self)
 	jive_node * leave = jive::subroutine_tail_op().create_node(self.region, 2, arguments);
 
 	std::vector<jive::output*> outputs;
-	for (size_t n = 0; n < leave->noutputs; n++)
+	for (size_t n = 0; n < leave->noutputs(); n++)
 		outputs.push_back(leave->output(n));
 
 	jive_node * subroutine_node = jive::subroutine_op(std::move(self.signature)).create_node(
-		self.region->parent, leave->noutputs, &outputs[0]);
+		self.region->parent, leave->noutputs(), &outputs[0]);
 	
 	for (const auto & pt : self.builder_state->passthroughs) {
 		leave->add_input(pt.gate, pt.output);

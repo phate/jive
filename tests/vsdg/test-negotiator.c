@@ -234,7 +234,7 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
 			test_negotiator_option option(op->input_options()[n]);
 			jive_negotiator_annotate_simple_input(self, input, &option);
 		}
-		for (size_t n = 0; n < node_->noutputs; n++) {
+		for (size_t n = 0; n < node_->noutputs(); n++) {
 			jive::output * output = node_->output(n);
 			test_negotiator_option option(op->output_options()[n]);
 			jive_negotiator_annotate_simple_output(self, output, &option);

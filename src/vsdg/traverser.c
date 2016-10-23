@@ -63,7 +63,7 @@ topdown_traverser::next()
 		return nullptr;
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
-	for (size_t n = 0; n < node->noutputs; n++) {
+	for (size_t n = 0; n < node->noutputs(); n++) {
 		for (auto user : node->output(n)->users)
 			check_node(user->node());
 	}
@@ -240,7 +240,7 @@ upward_cone_traverser::input_change(input * in, output * old_origin, output * ne
 	state = tracker_.get_nodestate(old_origin->node());
 	if (state == traversal_nodestate::frontier) {
 		size_t n;
-		for (n = 0; n < old_origin->node()->noutputs; n++) {
+		for (n = 0; n < old_origin->node()->noutputs(); n++) {
 			output * out = old_origin->node()->output(n);
 			for (auto user : out->users) {
 				if (user == in)
