@@ -84,7 +84,7 @@ iport::debug_string() const
 input::input(
 	struct jive_node * node,
 	size_t index,
-	jive::output * origin,
+	jive::oport * origin,
 	const jive::base::type & type)
 	: iport(index)
 	, gate(nullptr)
@@ -100,14 +100,15 @@ input::input(
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
-	origin->add_user(this);
+	/* FIXME: remove dynamic_cast once we moved users to oport */
+	dynamic_cast<jive::output*>(origin)->add_user(this);
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
 	*/
 	if (dynamic_cast<const jive::achr::type*>(&type)) {
-		JIVE_DEBUG_ASSERT(origin->node()->region()->anchor == nullptr);
-		origin->node()->region()->anchor = this;
+		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
+		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
 	}
 }
 
@@ -120,7 +121,8 @@ input::~input() noexcept
 
 	node()->graph()->on_input_destroy(this);
 
-	origin_->remove_user(this);
+	/* FIXME: remove dynamic_cast once we moved users to oport */
+	dynamic_cast<jive::output*>(origin_)->remove_user(this);
 }
 
 const jive::base::type &

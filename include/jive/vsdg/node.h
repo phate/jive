@@ -31,6 +31,7 @@ namespace base {
 
 class gate;
 class node_normal_form;
+class oport;
 class substitution_map;
 
 class iport {
@@ -88,7 +89,7 @@ public:
 	input(
 		struct jive_node * node,
 		size_t index,
-		jive::output * origin,
+		jive::oport * origin,
 		const jive::base::type & type);
 
 public:
@@ -117,7 +118,8 @@ public:
 	*/
 	void swap(input * other) noexcept;
 
-	inline jive::output * origin() const noexcept { return origin_; }
+	inline jive::output *
+	origin() const noexcept;
 
 	inline jive_node * producer() const noexcept;
 
@@ -136,7 +138,7 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
-	jive::output * origin_;
+	jive::oport * origin_;
 	struct jive_node * node_;
 
 	/*
@@ -379,7 +381,14 @@ private:
 inline jive_node *
 jive::input::producer() const noexcept
 {
-	return origin_->node();
+	return origin()->node();
+}
+
+inline jive::output *
+jive::input::origin() const noexcept
+{
+	/* FIXME: the dynamic_cast is going to be removed again once we introduced region arguments */
+	return dynamic_cast<jive::output*>(origin_);
 }
 
 typedef struct jive_node jive_node;
