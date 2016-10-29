@@ -350,8 +350,22 @@ output::~output() noexcept
 
 	node_->graph()->on_output_destroy(this);
 
+	if (gate_) {
+		JIVE_LIST_REMOVE(gate_->outputs, this, gate_outputs_list);
+
+		for (size_t n = 0; n < node()->noutputs(); n++) {
+			jive::output * other = node()->output(n);
+			if (other == this || !other->gate())
+				continue;
+			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
+		}
+	}
+
 	if (ssavar_)
 		jive_ssavar_unassign_output(ssavar_, this);
+
+	for (size_t n = index()+1; n < node()->noutputs(); n++)
+		node()->output(n)->set_index(n-1);
 
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
@@ -672,21 +686,10 @@ jive_node::remove_output(size_t index)
 	JIVE_DEBUG_ASSERT(index < outputs_.size());
 	jive::output * output = outputs_[index];
 
-	if (output->gate()) {
-		JIVE_LIST_REMOVE(output->gate()->outputs, output, gate_outputs_list);
-
-		for (size_t n = 0; n < noutputs(); n++) {
-			jive::output * other = outputs_[n];
-			if (other == output || !other->gate())
-				continue;
-			jive_gate_interference_remove(graph(), output->gate(), other->gate());
-		}
-	}
-
 	delete output;
 	for (size_t n = index; n < outputs_.size()-1; n++) {
+		JIVE_DEBUG_ASSERT(outputs_[n+1]->index() == n);
 		outputs_[n] = outputs_[n+1];
-		outputs_[n]->set_index(n);
 	}
 	outputs_.pop_back();
 }

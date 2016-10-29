@@ -222,17 +222,18 @@ public:
 		return index_;
 	}
 
-	inline void
-	set_index(size_t index) noexcept
-	{
-		index_ = index;
-	}
-
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
 	virtual std::string
 	debug_string() const;
+
+protected:
+	inline void
+	set_index(size_t index) noexcept
+	{
+		index_ = index;
+	}
 
 private:
 	size_t index_;
