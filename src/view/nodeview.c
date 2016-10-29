@@ -59,7 +59,7 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, const jive::output *
 {
 	label = output->debug_string() + ":" + output->type().debug_string();
 
-	jive_ssavar * ssavar = output->ssavar;
+	jive_ssavar * ssavar = output->ssavar();
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);

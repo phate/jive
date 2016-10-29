@@ -300,6 +300,21 @@ public:
 		rescls_ = rescls;
 	}
 
+	inline struct jive_ssavar *
+	ssavar() const noexcept
+	{
+		return ssavar_;
+	}
+
+	/*
+		FIXME: This is going to be removed again later.
+	*/
+	inline void
+	set_ssavar(struct jive_ssavar * ssavar) noexcept
+	{
+		ssavar_ = ssavar;
+	}
+
 	void
 	replace(jive::output * other) noexcept;
 
@@ -309,8 +324,6 @@ public:
 		jive::output * prev;
 		jive::output * next;
 	} gate_outputs_list;
-
-	struct jive_ssavar * ssavar;
 
 	struct {
 		struct jive_ssavar * first;
@@ -327,6 +340,7 @@ private:
 
 	jive_node * node_;
 	jive::gate * gate_;
+	struct jive_ssavar * ssavar_;
 	const struct jive_resource_class * rescls_;
 
 	/*

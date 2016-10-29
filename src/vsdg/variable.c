@@ -103,7 +103,7 @@ jive_ssavar_assert_consistent(const jive_ssavar * self)
 		return;
 
 	for (auto user : origin->users)
-		JIVE_DEBUG_ASSERT(user->ssavar() == origin->ssavar);
+		JIVE_DEBUG_ASSERT(user->ssavar() == origin->ssavar());
 }
 
 void
@@ -145,21 +145,21 @@ jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input)
 void
 jive_ssavar_assign_output(jive_ssavar * self, jive::output * output)
 {
-	JIVE_DEBUG_ASSERT( (self->origin == output) && (output->ssavar == 0) );
+	JIVE_DEBUG_ASSERT(self->origin == output && output->ssavar() == nullptr);
 	
 	jive_ssavar_inc_use_count(self);
 	self->assigned_output = output;
-	output->ssavar = self;
+	output->set_ssavar(self);
 	self->variable->graph->on_ssavar_assign_output(self, output);
 }
 
 void
 jive_ssavar_unassign_output(jive_ssavar * self, jive::output * output)
 {
-	JIVE_DEBUG_ASSERT(output->ssavar == self && self->assigned_output == output);
+	JIVE_DEBUG_ASSERT(output->ssavar() == self && self->assigned_output == output);
 	
 	self->variable->graph->on_ssavar_unassign_output(self, output);
-	output->ssavar = 0;
+	output->set_ssavar(nullptr);
 	self->assigned_output = 0;
 	jive_ssavar_dec_use_count(self);
 }
@@ -199,15 +199,15 @@ jive_ssavar_merge(jive_ssavar * self, jive_ssavar * other)
 void
 jive_ssavar_divert_origin(jive_ssavar * self, jive::output * new_origin)
 {
-	JIVE_DEBUG_ASSERT(new_origin->ssavar == 0);
+	JIVE_DEBUG_ASSERT(new_origin->ssavar() == 0);
 	
 	jive::output * old_origin = self->origin;
 	self->origin = new_origin;
 	
 	if (self->assigned_output) {
-		self->assigned_output->ssavar = 0;
+		self->assigned_output->set_ssavar(nullptr);
 		self->assigned_output = new_origin;
-		self->assigned_output->ssavar = self;
+		self->assigned_output->set_ssavar(self);
 	}
 	
 	jive::input * input;

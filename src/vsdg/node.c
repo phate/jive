@@ -251,7 +251,7 @@ input::auto_merge_variable()
 	if (ssavar())
 		return ssavar();
 
-	jive_ssavar * ssavar = origin()->ssavar;
+	jive_ssavar * ssavar = origin()->ssavar();
 	if (ssavar) {
 		for (auto user : origin()->users) {
 			if (user->ssavar()) {
@@ -288,9 +288,9 @@ oport::debug_string() const
 
 output::output(jive_node * node, size_t index, const jive::base::type & type)
 	: oport(index)
-	, ssavar(nullptr)
 	, node_(node)
 	, gate_(nullptr)
+	, ssavar_(nullptr)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
@@ -300,9 +300,9 @@ output::output(jive_node * node, size_t index, const jive::base::type & type)
 
 output::output(jive_node * node, size_t index, jive::gate * gate)
 	: oport(index)
-	, ssavar(nullptr)
 	, node_(node)
 	, gate_(gate)
+	, ssavar_(nullptr)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
@@ -320,9 +320,9 @@ output::output(jive_node * node, size_t index, jive::gate * gate)
 
 output::output(jive_node * node, size_t index, const struct jive_resource_class * rescls)
 	: oport(index)
-	, ssavar(nullptr)
 	, node_(node)
 	, gate_(nullptr)
+	, ssavar_(nullptr)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
@@ -336,8 +336,8 @@ output::~output() noexcept
 
 	node_->graph()->on_output_destroy(this);
 
-	if (ssavar)
-		jive_ssavar_unassign_output(ssavar, this);
+	if (ssavar_)
+		jive_ssavar_unassign_output(ssavar_, this);
 
 	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
@@ -497,7 +497,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		jive::output * output = self->output(n);
 		
 		const jive_resource_class * rescls;
-		if (output->ssavar) rescls = output->ssavar->variable->rescls;
+		if (output->ssavar()) rescls = output->ssavar()->variable->rescls;
 		else if (output->gate()) rescls = output->gate()->required_rescls;
 		else rescls = output->rescls();
 		
