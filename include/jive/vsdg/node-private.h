@@ -21,9 +21,4 @@ jive_opnode_create(
 	jive::output * const * args_begin,
 	jive::output * const * args_end);
 
-/* private node member functions */
-
-void
-jive_node_auto_merge_variables(jive_node * self);
-
 #endif

@@ -141,39 +141,6 @@ input::debug_string() const
 }
 
 void
-input::swap(jive::input * other) noexcept
-{
-	JIVE_DEBUG_ASSERT(this->type() == other->type());
-	JIVE_DEBUG_ASSERT(this->node() == other->node());
-
-	jive_ssavar * v1 = this->ssavar;
-	jive_ssavar * v2 = other->ssavar;
-
-	if (v1) jive_ssavar_unassign_input(v1, this);
-	if (v2) jive_ssavar_unassign_input(v2, other);
-
-	jive::output * o1 = this->origin();
-	jive::output * o2 = other->origin();
-
-	o1->remove_user(this);
-	o2->remove_user(other);
-
-	this->origin_ = o2;
-	other->origin_ = o1;
-
-	o2->add_user(this);
-	o1->add_user(other);
-
-	if (v2) jive_ssavar_assign_input(v2, this);
-	if (v1) jive_ssavar_assign_input(v1, other);
-
-	jive_node_invalidate_depth_from_root(this->node());
-
-	node()->graph()->on_input_change(this, o1, o2);
-	node()->graph()->on_input_change(other, o2, o1);
-}
-
-void
 input::divert_origin(jive::output * new_origin) noexcept
 {
 	JIVE_DEBUG_ASSERT(!this->ssavar);
@@ -238,24 +205,6 @@ input::unassign_ssavar()
 }
 
 }	//jive namespace
-
-jive_ssavar *
-jive_input_auto_assign_variable(jive::input * self)
-{
-	if (self->ssavar)
-		return self->ssavar;
-
-	jive_ssavar * ssavar;
-	if (self->origin()->ssavar) {
-		ssavar = self->origin()->ssavar;
-		jive_variable_merge(ssavar->variable, self->constraint());
-	} else {
-		ssavar = jive_ssavar_create(self->origin(), self->constraint());
-	}
-
-	jive_ssavar_assign_input(ssavar, self);
-	return ssavar;
-}
 
 jive_ssavar *
 jive_input_auto_merge_variable(jive::input * self)
@@ -368,93 +317,7 @@ output::remove_user(jive::input * user) noexcept
 		JIVE_LIST_PUSH_BACK(node()->graph()->bottom, node(), graph_bottom_list);
 }
 
-}	//jive namespace
-
-jive_variable *
-jive_output_get_constraint(const jive::output * self)
-{
-	jive_variable * variable;
-	if (self->gate) {
-		variable = self->gate->variable;
-		if (!variable) {
-			variable = jive_variable_create(self->gate->graph());
-			jive_variable_set_resource_class(variable, self->required_rescls);
-			jive_variable_assign_gate(variable, self->gate);
-		}
-		return variable;
-	}
-	variable = jive_variable_create(self->node()->graph());
-	jive_variable_set_resource_class(variable, self->required_rescls);
-	return variable;
-}
-
-void
-jive_output_unassign_ssavar(jive::output * self)
-{
-	if (self->ssavar) jive_ssavar_unassign_output(self->ssavar, self);
-}
-
-jive_ssavar *
-jive_output_auto_assign_variable(jive::output * self)
-{
-	if (self->ssavar == 0) {
-		jive_ssavar * ssavar = 0;
-		for (auto user : self->users) {
-			if (!user->ssavar) continue;
-			if (ssavar) {
-				jive_variable_merge(ssavar->variable, user->ssavar->variable);
-				jive_ssavar_merge(ssavar, user->ssavar);
-			} else
-				ssavar = user->ssavar;
-		}
-
-		if (ssavar) {
-			jive_variable_merge(ssavar->variable, jive_output_get_constraint(self));
-		} else {
-			ssavar = jive_ssavar_create(self, jive_output_get_constraint(self));
-		}
-
-		jive_ssavar_assign_output(ssavar, self);
-	}
-
-	return self->ssavar;
-}
-
-jive_ssavar *
-jive_output_auto_merge_variable(jive::output * self)
-{
-	if (!self->ssavar) {
-		jive_variable * variable = jive_output_get_constraint(self);
-		jive_ssavar * ssavar = NULL;
-		for (auto user : self->users) {
-			if (user->ssavar) {
-				jive_variable_merge(user->ssavar->variable, variable);
-				JIVE_DEBUG_ASSERT( ssavar == NULL || ssavar == user->ssavar );
-				ssavar = user->ssavar;
-				variable = user->ssavar->variable;
-			}
-		}
-		if (!ssavar) ssavar = jive_ssavar_create(self, variable);
-		jive_ssavar_assign_output(ssavar, self);
-	}
-
-	for (auto user : self->users) {
-		if (!user->ssavar) {
-			jive_variable_merge(self->ssavar->variable, user->constraint());
-			jive_ssavar_assign_input(self->ssavar, user);
-		} else if (user->ssavar != self->ssavar) {
-			/* FIXME: maybe better to merge ssavar? */
-			jive_variable_merge(self->ssavar->variable, user->ssavar->variable);
-			user->unassign_ssavar();
-			jive_ssavar_assign_input(self->ssavar, user);
-		}
-	}
-	return self->ssavar;
-}
-
 /* gates */
-
-namespace jive {
 
 gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
 	: name_(name)
@@ -528,16 +391,6 @@ jive_node_valid_edge(const jive_node * self, const jive::output * origin)
 		target_region = target_region->parent;
 	}
 	return false;
-}
-
-void
-jive_node_auto_merge_variables(jive_node * self)
-{
-	size_t n;
-	for(n = 0; n < self->ninputs(); n++)
-		jive_input_auto_merge_variable(self->input(n));
-	for(n = 0; n < self->noutputs(); n++)
-		jive_output_auto_merge_variable(self->output(n));
 }
 
 void

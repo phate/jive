@@ -113,12 +113,6 @@ public:
 
 	void divert_origin(jive::output * new_origin) noexcept;
 
-	/*
-		FIXME: This function is only used two times in src/regalloc/fixup.c. See whether we can
-		actually remove it and add a replacement in the register allocator.
-	*/
-	void swap(input * other) noexcept;
-
 	inline jive::output *
 	origin() const noexcept;
 
@@ -157,9 +151,6 @@ private:
 };
 
 }	//jive namespace
-
-struct jive_ssavar *
-jive_input_auto_assign_variable(jive::input * self);
 
 struct jive_ssavar *
 jive_input_auto_merge_variable(jive::input * self);
@@ -280,18 +271,6 @@ private:
 	std::unique_ptr<jive::base::type> type_;
 };
 
-}	//jive namespace
-
-struct jive_variable *
-jive_output_get_constraint(const jive::output * self);
-
-struct jive_ssavar *
-jive_output_auto_assign_variable(jive::output * self);
-
-struct jive_ssavar *
-jive_output_auto_merge_variable(jive::output * self);
-
-namespace jive {
 
 /**	@}	*/
 
