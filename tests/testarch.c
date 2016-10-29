@@ -557,7 +557,7 @@ public:
 			const jive::base::type * out_type =
 				jive_resource_class_get_type(&jive_testarch_regcls_gpr.base);
 			jive_node * node = jive_splitnode_create(subroutine.region,
-				in_type, o, o->gate->required_rescls,
+				in_type, o, o->gate()->required_rescls,
 				out_type, &jive_testarch_regcls_gpr.base);
 			o = node->output(0);
 		}

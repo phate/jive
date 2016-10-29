@@ -499,8 +499,8 @@ match_gpr_load(jive_node * node)
 	for (n = 1; n < node->noutputs(); n++) {
 		jive::output * output = node->output(n);
 		jive::output * rep;
-		if (output->gate)
-			rep = instr->add_output(output->gate);
+		if (output->gate())
+			rep = instr->add_output(output->gate());
 		else
 			rep = instr->add_output(&output->type());
 		output->replace(rep);
@@ -536,8 +536,8 @@ match_gpr_store(jive_node * node)
 	for (n = 0; n < node->noutputs(); n++) {
 		jive::output * output = node->output(n);
 		jive::output * rep;
-		if (output->gate)
-			rep = instr->add_output(output->gate);
+		if (output->gate())
+			rep = instr->add_output(output->gate());
 		else
 			rep = instr->add_output(&output->type());
 		output->replace(rep);

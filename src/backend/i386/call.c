@@ -103,8 +103,8 @@ jive_i386_call_node_substitute(
 	for (size_t n = op.result_types().size(); n < node->noutputs(); n++) {
 		jive::output * orig_output = node->output(n);
 		jive::output * new_output;
-		if (orig_output->gate) {
-			new_output = call_instr->add_output(orig_output->gate);
+		if (orig_output->gate()) {
+			new_output = call_instr->add_output(orig_output->gate());
 		} else {
 			new_output = call_instr->add_output(&orig_output->type());
 			new_output->required_rescls = orig_output->required_rescls;

@@ -373,7 +373,7 @@ jive_lambda_node_address_transform(
 	size_t nparameters = fcttype->narguments();
 	const char * parameter_names[nparameters];
 	for (n = 1; n < enter->noutputs(); n++)
-		parameter_names[n-1] = enter->output(n)->gate->name().c_str();
+		parameter_names[n-1] = enter->output(n)->gate()->name().c_str();
 
 	const jive::base::type * argument_types[new_fcttype->narguments()];
 	for (size_t i = 0; i < new_fcttype->narguments(); i++)

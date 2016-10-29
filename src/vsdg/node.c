@@ -297,14 +297,34 @@ oport::debug_string() const
 
 output::output(jive_node * node, size_t index, const jive::base::type & type)
 	: oport(index)
-	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
 	, node_(node)
+	, gate_(nullptr)
 	, type_(type.copy())
 {
 	originating_ssavars.first = originating_ssavars.last = nullptr;
 	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
+}
+
+output::output(jive_node * node, size_t index, jive::gate * gate)
+	: oport(index)
+	, ssavar(nullptr)
+	, required_rescls(gate->required_rescls)
+	, node_(node)
+	, gate_(gate)
+	, type_(gate->type().copy())
+{
+	originating_ssavars.first = originating_ssavars.last = nullptr;
+	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
+
+	JIVE_LIST_PUSH_BACK(gate->outputs, this, gate_outputs_list);
+
+	for (size_t n = 0; n < index; n++) {
+		jive::output * other = node->output(n);
+		if (!other->gate()) continue;
+		jive_gate_interference_add(node->graph(), gate, other->gate());
+	}
 }
 
 output::~output() noexcept
@@ -328,8 +348,8 @@ output::type() const noexcept
 std::string
 output::debug_string() const
 {
-	if (gate)
-		return gate->debug_string();
+	if (gate())
+		return gate()->debug_string();
 
 	return oport::debug_string();
 }
@@ -475,7 +495,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		
 		const jive_resource_class * rescls;
 		if (output->ssavar) rescls = output->ssavar->variable->rescls;
-		else if (output->gate) rescls = output->gate->required_rescls;
+		else if (output->gate()) rescls = output->gate()->required_rescls;
 		else rescls = output->required_rescls;
 		
 		use_count->add(rescls);
@@ -646,14 +666,14 @@ jive_node::remove_output(size_t index)
 	JIVE_DEBUG_ASSERT(index < outputs_.size());
 	jive::output * output = outputs_[index];
 
-	if (output->gate) {
-		JIVE_LIST_REMOVE(output->gate->outputs, output, gate_outputs_list);
+	if (output->gate()) {
+		JIVE_LIST_REMOVE(output->gate()->outputs, output, gate_outputs_list);
 
 		for (size_t n = 0; n < noutputs(); n++) {
 			jive::output * other = outputs_[n];
-			if (other == output || !other->gate)
+			if (other == output || !other->gate())
 				continue;
-			jive_gate_interference_remove(graph(), output->gate, other->gate);
+			jive_gate_interference_remove(graph(), output->gate(), other->gate());
 		}
 	}
 
@@ -680,16 +700,11 @@ jive_node::add_output(const jive::base::type * type)
 jive::output *
 jive_node::add_output(jive::gate * gate)
 {
-	jive::output * output = add_output(&gate->type());
-	output->required_rescls = gate->required_rescls;
-	output->gate = gate;
-	JIVE_LIST_PUSH_BACK(gate->outputs, output, gate_outputs_list);
+	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
+	jive::output * output = new jive::output(this, outputs_.size(), gate);
+	outputs_.push_back(output);
 
-	for (size_t n = 0; n < output->index(); n++) {
-		jive::output * other = this->output(n);
-		if (!other->gate) continue;
-		jive_gate_interference_add(graph(), gate, other->gate);
-	}
+	graph()->on_output_create(output);
 
 	return output;
 }
@@ -734,8 +749,8 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 	}
 
 	for (size_t n = new_node->noutputs(); n < noutputs(); n++) {
-		if (output(n)->gate) {
-			jive::gate * gate = output(n)->gate;
+		if (output(n)->gate()) {
+			jive::gate * gate = output(n)->gate();
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {

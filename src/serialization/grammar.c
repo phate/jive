@@ -784,7 +784,7 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 		jive_portinfo port;
 		port.origin = node->output(n);
 		port.required_rescls = node->output(n)->required_rescls;
-		port.gate = node->output(n)->gate;
+		port.gate = node->output(n)->gate();
 		if (port.gate && n < nnormal)
 			nnormal = n;
 		outports.ports.push_back(port);

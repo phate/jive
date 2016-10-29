@@ -242,6 +242,8 @@ public:
 
 	output(struct jive_node * node, size_t index, const jive::base::type & type);
 
+	output(jive_node * node, size_t index, jive::gate * gate);
+
 public:
 	virtual const jive::base::type &
 	type() const noexcept override;
@@ -263,12 +265,17 @@ public:
 		return users.size() == 1;
 	}
 
+	inline jive::gate *
+	gate() const noexcept
+	{
+		return gate_;
+	}
+
 	void
 	replace(jive::output * other) noexcept;
 
 	std::unordered_set<jive::input*> users;
 
-	jive::gate * gate;
 	struct {
 		jive::output * prev;
 		jive::output * next;
@@ -291,6 +298,7 @@ private:
 	remove_user(jive::input * user) noexcept;
 
 	jive_node * node_;
+	jive::gate * gate_;
 
 	/*
 		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
@@ -623,7 +631,7 @@ JIVE_EXPORTED_INLINE jive::output *
 jive_node_get_gate_output(const jive_node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
-		if (self->output(n)->gate == gate) {
+		if (self->output(n)->gate() == gate) {
 			return self->output(n);
 		}
 	}
@@ -635,7 +643,7 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
 		jive::output * o = self->output(n);
-		if (o->gate && o->gate->name() == name)
+		if (o->gate() && o->gate()->name() == name)
 			return o;
 	}
 	return nullptr;

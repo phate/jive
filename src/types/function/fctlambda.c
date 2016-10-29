@@ -136,7 +136,7 @@ jive_lambda_node_create(jive_region * function_region)
 	std::vector<std::string> argument_names;
 	for (size_t n = 0; n < narguments; n++) {
 		argument_types[n] = &function_region->top->output(n+1)->type();
-		argument_names.push_back(function_region->top->output(n+1)->gate->name());
+		argument_names.push_back(function_region->top->output(n+1)->gate()->name());
 	}
 	const jive::base::type * return_types[nreturns];
 	std::vector<std::string> result_names;
