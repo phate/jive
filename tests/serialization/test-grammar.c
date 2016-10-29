@@ -245,7 +245,7 @@ verify_deserialize_nodeexpr(
 		const jive::base::type * type = &node->output(n)->type();
 		const jive::base::type * expected_type = &expected_node->output(n)->type();
 		assert(*type == *expected_type);
-		assert(node->output(n)->required_rescls == expected_node->output(n)->required_rescls);
+		assert(node->output(n)->rescls() == expected_node->output(n)->rescls());
 		assert(node->output(n)->gate() == expected_node->output(n)->gate());
 	}
 	

@@ -67,7 +67,7 @@ jive_i386_call_node_substitute(
 	for (size_t n = 0; n < nargs; n++) {
 		jive::output * value = node->input(n+1)->origin();
 		
-		const jive_resource_class * value_cls = value->required_rescls;
+		const jive_resource_class * value_cls = value->rescls();
 		const jive::base::type * value_type = &value->type();
 		if (value_cls == &jive_root_resource_class) {
 			/* FIXME: assumes  int32 */
@@ -106,8 +106,7 @@ jive_i386_call_node_substitute(
 		if (orig_output->gate()) {
 			new_output = call_instr->add_output(orig_output->gate());
 		} else {
-			new_output = call_instr->add_output(&orig_output->type());
-			new_output->required_rescls = orig_output->required_rescls;
+			new_output = call_instr->add_output(orig_output->rescls());
 		}
 		orig_output->replace(new_output);
 	}

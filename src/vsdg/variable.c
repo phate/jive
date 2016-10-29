@@ -379,7 +379,7 @@ jive_variable_recompute_rescls(jive_variable * self)
 			rescls = jive_resource_class_intersection(rescls, input->rescls());
 		}
 		if (ssavar->assigned_output)
-			rescls = jive_resource_class_intersection(rescls, ssavar->assigned_output->required_rescls);
+			rescls = jive_resource_class_intersection(rescls, ssavar->assigned_output->rescls());
 	}
 	jive::gate * gate;
 	JIVE_LIST_ITERATE(self->gates, gate, variable_gate_list) {

@@ -67,8 +67,8 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, const jive::output *
 			label.append(":*").append(resname->name);
 		else
 			label.append(":").append(rescls->name);
-	} else if (output->required_rescls != &jive_root_resource_class)
-		label.append(":").append(output->required_rescls->name);
+	} else if (output->rescls() != &jive_root_resource_class)
+		label.append(":").append(output->rescls()->name);
 
 	width = label.size()+2;
 }

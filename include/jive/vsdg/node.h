@@ -244,6 +244,8 @@ public:
 
 	output(jive_node * node, size_t index, jive::gate * gate);
 
+	output(jive_node * node, size_t index, const struct jive_resource_class * rescls);
+
 public:
 	virtual const jive::base::type &
 	type() const noexcept override;
@@ -271,6 +273,21 @@ public:
 		return gate_;
 	}
 
+	inline const struct jive_resource_class *
+	rescls() const noexcept
+	{
+		return rescls_;
+	}
+
+	/*
+		FIXME: This is going to be removed again later.
+	*/
+	inline void
+	set_rescls(const struct jive_resource_class * rescls) noexcept
+	{
+		rescls_ = rescls;
+	}
+
 	void
 	replace(jive::output * other) noexcept;
 
@@ -288,7 +305,6 @@ public:
 		struct jive_ssavar * last;
 	} originating_ssavars;
 
-	const struct jive_resource_class * required_rescls;
 private:
 
 	void
@@ -299,6 +315,7 @@ private:
 
 	jive_node * node_;
 	jive::gate * gate_;
+	const struct jive_resource_class * rescls_;
 
 	/*
 		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
@@ -466,13 +483,8 @@ public:
 	jive::output *
 	add_output(const jive::base::type * type);
 
-	inline jive::output *
-	add_output(const struct jive_resource_class * rescls)
-	{
-		jive::output * output = add_output(jive_resource_class_get_type(rescls));
-		output->required_rescls = rescls;
-		return output;
-	}
+	jive::output *
+	add_output(const struct jive_resource_class * rescls);
 
 	jive::output *
 	add_output(jive::gate * gate);

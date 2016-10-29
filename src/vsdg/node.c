@@ -298,9 +298,9 @@ oport::debug_string() const
 output::output(jive_node * node, size_t index, const jive::base::type & type)
 	: oport(index)
 	, ssavar(nullptr)
-	, required_rescls(&jive_root_resource_class)
 	, node_(node)
 	, gate_(nullptr)
+	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
 	originating_ssavars.first = originating_ssavars.last = nullptr;
@@ -310,9 +310,9 @@ output::output(jive_node * node, size_t index, const jive::base::type & type)
 output::output(jive_node * node, size_t index, jive::gate * gate)
 	: oport(index)
 	, ssavar(nullptr)
-	, required_rescls(gate->required_rescls)
 	, node_(node)
 	, gate_(gate)
+	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
 	originating_ssavars.first = originating_ssavars.last = nullptr;
@@ -325,6 +325,18 @@ output::output(jive_node * node, size_t index, jive::gate * gate)
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
+}
+
+output::output(jive_node * node, size_t index, const struct jive_resource_class * rescls)
+	: oport(index)
+	, ssavar(nullptr)
+	, node_(node)
+	, gate_(nullptr)
+	, rescls_(rescls)
+	, type_(jive_resource_class_get_type(rescls)->copy())
+{
+	originating_ssavars.first = originating_ssavars.last = nullptr;
+	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
 }
 
 output::~output() noexcept
@@ -496,7 +508,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		const jive_resource_class * rescls;
 		if (output->ssavar) rescls = output->ssavar->variable->rescls;
 		else if (output->gate()) rescls = output->gate()->required_rescls;
-		else rescls = output->required_rescls;
+		else rescls = output->rescls();
 		
 		use_count->add(rescls);
 	}
@@ -709,6 +721,18 @@ jive_node::add_output(jive::gate * gate)
 	return output;
 }
 
+jive::output *
+jive_node::add_output(const struct jive_resource_class * rescls)
+{
+	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
+	jive::output * output = new jive::output(this, outputs_.size(), rescls);
+	outputs_.push_back(output);
+
+	graph()->on_output_create(output);
+
+	return output;
+}
+
 jive_node *
 jive_node::copy(jive_region * region, const std::vector<jive::output*> & operands) const
 {
@@ -761,8 +785,7 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 
 			new_node->add_output(target_gate);
 		} else {
-			jive::output * output = new_node->add_output(&this->output(n)->type());
-			output->required_rescls = this->output(n)->required_rescls;
+			new_node->add_output(this->output(n)->rescls());
 		}
 	}
 
@@ -908,7 +931,7 @@ jive_opnode_create(
 		node->input(n)->set_rescls(op.argument_cls(n));
 	}
 	for (size_t n = 0; n < op.nresults(); ++n) {
-		node->output(n)->required_rescls = op.result_cls(n);
+		node->output(n)->set_rescls(op.result_cls(n));
 	}
 
 	/* FIXME: region head/tail nodes are a bit quirky, but they

@@ -783,7 +783,7 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 	for (n = 0; n < node->noutputs(); ++n) {
 		jive_portinfo port;
 		port.origin = node->output(n);
-		port.required_rescls = node->output(n)->required_rescls;
+		port.required_rescls = node->output(n)->rescls();
 		port.gate = node->output(n)->gate();
 		if (port.gate && n < nnormal)
 			nnormal = n;
@@ -904,10 +904,8 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 		if (gate)
 			output = (*node)->add_output(gate);
 		else
-			output = (*node)->add_output(jive_resource_class_get_type(required_rescls));
-		
-		output->required_rescls = required_rescls;
-		
+			output = (*node)->add_output(required_rescls);
+
 		jive_serialization_symtab_insert_outputsym(&self->symtab, output, name.c_str());
 	}
 	
