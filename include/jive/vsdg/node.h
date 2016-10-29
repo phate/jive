@@ -124,6 +124,9 @@ public:
 	void
 	unassign_ssavar();
 
+	struct jive_ssavar *
+	auto_merge_variable();
+
 	jive::gate * gate;
 	struct {
 		input * prev;
@@ -150,12 +153,6 @@ private:
 	std::unique_ptr<jive::base::type> type_;
 };
 
-}	//jive namespace
-
-struct jive_ssavar *
-jive_input_auto_merge_variable(jive::input * self);
-
-namespace jive {
 
 class oport {
 public:

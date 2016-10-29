@@ -204,20 +204,15 @@ input::unassign_ssavar()
 		jive_ssavar_unassign_input(ssavar, this);
 }
 
-}	//jive namespace
-
 jive_ssavar *
-jive_input_auto_merge_variable(jive::input * self)
+input::auto_merge_variable()
 {
-	if (self->ssavar)
-		return self->ssavar;
+	if (ssavar)
+		return ssavar;
 
-	jive_ssavar * ssavar = NULL;
-
-	if (self->origin()->ssavar) {
-		ssavar = self->origin()->ssavar;
-	} else {
-		for (auto user : self->origin()->users) {
+	jive_ssavar * ssavar = origin()->ssavar;
+	if (ssavar) {
+		for (auto user : origin()->users) {
 			if (user->ssavar) {
 				ssavar = user->ssavar;
 				break;
@@ -226,15 +221,12 @@ jive_input_auto_merge_variable(jive::input * self)
 	}
 
 	if (!ssavar)
-		ssavar = jive_ssavar_create(self->origin(), self->constraint());
+		ssavar = jive_ssavar_create(origin(), constraint());
 
-	jive_variable_merge(ssavar->variable, self->constraint());
-	jive_ssavar_assign_input(ssavar, self);
+	jive_variable_merge(ssavar->variable, constraint());
+	jive_ssavar_assign_input(ssavar, this);
 	return ssavar;
 }
-
-
-namespace jive {
 
 /* oport */
 

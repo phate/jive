@@ -51,7 +51,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 			region,
 			&jive_i386_instr_int_load32_disp,
 			&base, &displacement);
-		jive_input_auto_merge_variable(xfer.node->input(0));
+		xfer.node->input(0)->auto_merge_variable();
 		xfer.input = xfer.node->add_input(jive_resource_class_get_type(in_class), origin);
 		xfer.input->required_rescls = in_class;
 		xfer.output = xfer.node->output(0);
@@ -64,7 +64,7 @@ jive_i386_create_xfer(jive_region * region, jive::output * origin,
 			region,
 			&jive_i386_instr_int_store32_disp,
 			tmparray0, &displacement);
-		jive_input_auto_merge_variable(xfer.node->input(0));
+		xfer.node->input(0)->auto_merge_variable();
 		xfer.input = xfer.node->input(1);
 		xfer.output = xfer.node->add_output(jive_resource_class_get_type(out_class));
 		xfer.output->required_rescls = out_class;
