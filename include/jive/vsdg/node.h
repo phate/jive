@@ -64,6 +64,7 @@ public:
 	virtual std::string
 	debug_string() const;
 
+protected:
 	inline void
 	set_index(size_t index) noexcept
 	{

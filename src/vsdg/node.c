@@ -164,10 +164,24 @@ input::input(
 
 input::~input() noexcept
 {
+	node()->graph()->on_input_destroy(this);
+
 	if (ssavar_)
 		jive_ssavar_unassign_input(ssavar_, this);
 
-	node()->graph()->on_input_destroy(this);
+	if (gate_) {
+		JIVE_LIST_REMOVE(gate_->inputs, this, gate_inputs_list);
+
+		for (size_t n = 0; n < node()->ninputs(); n++) {
+			jive::input * other = node()->input(n);
+			if (other == this || !other->gate())
+				continue;
+			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
+		}
+	}
+
+	for (size_t n = index()+1; n < node()->ninputs(); n++)
+		node()->input(n)->set_index(n-1);
 
 	/* FIXME: remove dynamic_cast once we moved users to oport */
 	dynamic_cast<jive::output*>(origin_)->remove_user(this);
@@ -641,21 +655,10 @@ jive_node::remove_input(size_t index)
 	JIVE_DEBUG_ASSERT(index < inputs_.size());
 	jive::input * input = inputs_[index];
 
-	if (input->gate()) {
-		JIVE_LIST_REMOVE(input->gate()->inputs, input, gate_inputs_list);
-
-		for (size_t n = 0; n < inputs_.size(); n++) {
-			jive::input * other = inputs_[n];
-			if (other == input || !other->gate())
-				continue;
-			jive_gate_interference_remove(graph(), input->gate(), other->gate());
-		}
-	}
-
 	delete input;
 	for (size_t n = index; n < inputs_.size()-1; n++) {
+		JIVE_DEBUG_ASSERT(inputs_[n+1]->index() == n);
 		inputs_[n] = inputs_[n+1];
-		inputs_[n]->set_index(n);
 	}
 	inputs_.pop_back();
 
