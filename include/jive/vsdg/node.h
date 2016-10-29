@@ -127,6 +127,9 @@ public:
 	struct jive_variable *
 	constraint();
 
+	void
+	unassign_ssavar();
+
 	jive::gate * gate;
 	struct {
 		input * prev;
@@ -154,9 +157,6 @@ private:
 };
 
 }	//jive namespace
-
-void
-jive_input_unassign_ssavar(jive::input * self);
 
 struct jive_ssavar *
 jive_input_auto_assign_variable(jive::input * self);

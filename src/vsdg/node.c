@@ -116,7 +116,7 @@ input::~input() noexcept
 {
 	if (ssavar) {
 		jive_ssavar_unassign_input(ssavar, this);
-		jive_input_unassign_ssavar(this);
+		unassign_ssavar();
 	}
 
 	node()->graph()->on_input_destroy(this);
@@ -230,13 +230,14 @@ input::constraint()
 	return variable;
 }
 
-}	//jive namespace
-
 void
-jive_input_unassign_ssavar(jive::input * self)
+input::unassign_ssavar()
 {
-	if (self->ssavar) jive_ssavar_unassign_input(self->ssavar, self);
+	if (ssavar)
+		jive_ssavar_unassign_input(ssavar, this);
 }
+
+}	//jive namespace
 
 jive_ssavar *
 jive_input_auto_assign_variable(jive::input * self)
@@ -444,7 +445,7 @@ jive_output_auto_merge_variable(jive::output * self)
 		} else if (user->ssavar != self->ssavar) {
 			/* FIXME: maybe better to merge ssavar? */
 			jive_variable_merge(self->ssavar->variable, user->ssavar->variable);
-			jive_input_unassign_ssavar(user);
+			user->unassign_ssavar();
 			jive_ssavar_assign_input(self->ssavar, user);
 		}
 	}
