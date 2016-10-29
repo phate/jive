@@ -164,10 +164,8 @@ input::input(
 
 input::~input() noexcept
 {
-	if (ssavar_) {
+	if (ssavar_)
 		jive_ssavar_unassign_input(ssavar_, this);
-		unassign_ssavar();
-	}
 
 	node()->graph()->on_input_destroy(this);
 
@@ -245,13 +243,6 @@ input::constraint()
 	jive_variable * variable = jive_variable_create(node()->graph());
 	jive_variable_set_resource_class(variable, rescls());
 	return variable;
-}
-
-void
-input::unassign_ssavar()
-{
-	if (ssavar())
-		jive_ssavar_unassign_input(ssavar(), this);
 }
 
 jive_ssavar *

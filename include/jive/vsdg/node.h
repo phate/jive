@@ -169,9 +169,6 @@ public:
 	struct jive_variable *
 	constraint();
 
-	void
-	unassign_ssavar();
-
 	struct jive_ssavar *
 	auto_merge_variable();
 
