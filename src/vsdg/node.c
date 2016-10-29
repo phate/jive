@@ -212,25 +212,25 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	node()->graph()->on_input_change(this, old_origin, new_origin);
 }
 
-}	//jive namespace
-
-jive_variable *
-jive_input_get_constraint(const jive::input * self)
+struct jive_variable *
+input::constraint()
 {
-	jive_variable * variable;
-	if (self->gate) {
-		variable = self->gate->variable;
+	if (gate) {
+		jive_variable * variable = gate->variable;
 		if (!variable) {
-			variable = jive_variable_create(self->gate->graph());
-			jive_variable_set_resource_class(variable, self->gate->required_rescls);
-			jive_variable_assign_gate(variable, self->gate);
+			variable = jive_variable_create(gate->graph());
+			jive_variable_set_resource_class(variable, gate->required_rescls);
+			jive_variable_assign_gate(variable, gate);
 		}
 		return variable;
 	}
-	variable = jive_variable_create(self->node()->graph());
-	jive_variable_set_resource_class(variable, self->required_rescls);
+
+	jive_variable * variable = jive_variable_create(node()->graph());
+	jive_variable_set_resource_class(variable, required_rescls);
 	return variable;
 }
+
+}	//jive namespace
 
 void
 jive_input_unassign_ssavar(jive::input * self)
@@ -247,9 +247,9 @@ jive_input_auto_assign_variable(jive::input * self)
 	jive_ssavar * ssavar;
 	if (self->origin()->ssavar) {
 		ssavar = self->origin()->ssavar;
-		jive_variable_merge(ssavar->variable, jive_input_get_constraint(self));
+		jive_variable_merge(ssavar->variable, self->constraint());
 	} else {
-		ssavar = jive_ssavar_create(self->origin(), jive_input_get_constraint(self));
+		ssavar = jive_ssavar_create(self->origin(), self->constraint());
 	}
 
 	jive_ssavar_assign_input(ssavar, self);
@@ -276,9 +276,9 @@ jive_input_auto_merge_variable(jive::input * self)
 	}
 
 	if (!ssavar)
-		ssavar = jive_ssavar_create(self->origin(), jive_input_get_constraint(self));
+		ssavar = jive_ssavar_create(self->origin(), self->constraint());
 
-	jive_variable_merge(ssavar->variable, jive_input_get_constraint(self));
+	jive_variable_merge(ssavar->variable, self->constraint());
 	jive_ssavar_assign_input(ssavar, self);
 	return ssavar;
 }
@@ -439,7 +439,7 @@ jive_output_auto_merge_variable(jive::output * self)
 
 	for (auto user : self->users) {
 		if (!user->ssavar) {
-			jive_variable_merge(self->ssavar->variable, jive_input_get_constraint(user));
+			jive_variable_merge(self->ssavar->variable, user->constraint());
 			jive_ssavar_assign_input(self->ssavar, user);
 		} else if (user->ssavar != self->ssavar) {
 			/* FIXME: maybe better to merge ssavar? */

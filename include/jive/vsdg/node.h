@@ -23,6 +23,7 @@
 #include <jive/vsdg/tracker.h>
 
 struct jive_ssavar;
+struct jive_variable;
 
 namespace jive {
 namespace base {
@@ -123,6 +124,9 @@ public:
 
 	inline jive_node * producer() const noexcept;
 
+	struct jive_variable *
+	constraint();
+
 	jive::gate * gate;
 	struct {
 		input * prev;
@@ -150,9 +154,6 @@ private:
 };
 
 }	//jive namespace
-
-struct jive_variable *
-jive_input_get_constraint(const jive::input * self);
 
 void
 jive_input_unassign_ssavar(jive::input * self);
