@@ -139,6 +139,21 @@ public:
 		rescls_ = rescls;
 	}
 
+	inline struct jive_ssavar *
+	ssavar() const noexcept
+	{
+		return ssavar_;
+	}
+
+	/*
+		FIXME: This is going to be removed again later.
+	*/
+	inline void
+	set_ssavar(struct jive_ssavar * ssavar) noexcept
+	{
+		ssavar_ = ssavar;
+	}
+
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
 	*/
@@ -165,7 +180,6 @@ public:
 		input * next;
 	} gate_inputs_list;
 
-	struct jive_ssavar * ssavar;
 	struct {
 		input * prev;
 		input * next;
@@ -175,6 +189,7 @@ private:
 	jive::gate * gate_;
 	jive::oport * origin_;
 	struct jive_node * node_;
+	struct jive_ssavar * ssavar_;
 	const struct jive_resource_class * rescls_;
 
 	/*

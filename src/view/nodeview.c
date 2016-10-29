@@ -26,7 +26,7 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, const jive::input * in
 {
 	label = input->debug_string() + ":" + input->type().debug_string();
 	
-	jive_ssavar * ssavar = input->ssavar;
+	jive_ssavar * ssavar = input->ssavar();
 	if (ssavar) {
 		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
 		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);

@@ -67,10 +67,10 @@ input::input(
 	jive::oport * origin,
 	const jive::base::type & type)
 	: iport(index)
-	, ssavar(nullptr)
 	, gate_(nullptr)
 	, origin_(origin)
 	, node_(node)
+	, ssavar_(nullptr)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
@@ -98,10 +98,10 @@ input::input(
 	jive::oport * origin,
 	jive::gate * gate)
 	: iport(index)
-	, ssavar(nullptr)
 	, gate_(gate)
 	, origin_(origin)
 	, node_(node)
+	, ssavar_(nullptr)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
@@ -137,10 +137,10 @@ input::input(
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
 	: iport(index)
-	, ssavar(nullptr)
 	, gate_(nullptr)
 	, origin_(origin)
 	, node_(node)
+	, ssavar_(nullptr)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
@@ -164,8 +164,8 @@ input::input(
 
 input::~input() noexcept
 {
-	if (ssavar) {
-		jive_ssavar_unassign_input(ssavar, this);
+	if (ssavar_) {
+		jive_ssavar_unassign_input(ssavar_, this);
 		unassign_ssavar();
 	}
 
@@ -193,7 +193,7 @@ input::debug_string() const
 void
 input::divert_origin(jive::output * new_origin) noexcept
 {
-	JIVE_DEBUG_ASSERT(!this->ssavar);
+	JIVE_DEBUG_ASSERT(!this->ssavar());
 	internal_divert_origin(new_origin);
 }
 
@@ -250,21 +250,21 @@ input::constraint()
 void
 input::unassign_ssavar()
 {
-	if (ssavar)
-		jive_ssavar_unassign_input(ssavar, this);
+	if (ssavar())
+		jive_ssavar_unassign_input(ssavar(), this);
 }
 
 jive_ssavar *
 input::auto_merge_variable()
 {
-	if (ssavar)
-		return ssavar;
+	if (ssavar())
+		return ssavar();
 
 	jive_ssavar * ssavar = origin()->ssavar;
 	if (ssavar) {
 		for (auto user : origin()->users) {
-			if (user->ssavar) {
-				ssavar = user->ssavar;
+			if (user->ssavar()) {
+				ssavar = user->ssavar();
 				break;
 			}
 		}
@@ -489,7 +489,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 		}
 		
 		const jive_resource_class * rescls;
-		if (input->ssavar) rescls = input->ssavar->variable->rescls;
+		if (input->ssavar()) rescls = input->ssavar()->variable->rescls;
 		else if (input->gate()) rescls = input->gate()->required_rescls;
 		else rescls = input->rescls();
 		

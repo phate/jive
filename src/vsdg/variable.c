@@ -103,13 +103,13 @@ jive_ssavar_assert_consistent(const jive_ssavar * self)
 		return;
 
 	for (auto user : origin->users)
-		JIVE_DEBUG_ASSERT(user->ssavar == origin->ssavar);
+		JIVE_DEBUG_ASSERT(user->ssavar() == origin->ssavar);
 }
 
 void
 jive_ssavar_assign_input(jive_ssavar * self, jive::input * input)
 {
-	JIVE_DEBUG_ASSERT(input->origin() == self->origin && input->ssavar == 0);
+	JIVE_DEBUG_ASSERT(input->origin() == self->origin && input->ssavar() == nullptr);
 
 	jive_ssavar_inc_use_count(self);
 	if (jive::theta_head_op() == input->node()->operation()) {
@@ -119,7 +119,7 @@ jive_ssavar_assign_input(jive_ssavar * self, jive::input * input)
 	}
 
 	JIVE_LIST_PUSH_BACK(self->assigned_inputs, input, ssavar_input_list);
-	input->ssavar = self;
+	input->set_ssavar(self);
 
 	self->variable->graph->on_ssavar_assign_input(self, input);
 }
@@ -127,12 +127,12 @@ jive_ssavar_assign_input(jive_ssavar * self, jive::input * input)
 void
 jive_ssavar_unassign_input(jive_ssavar * self, jive::input * input)
 {
-	JIVE_DEBUG_ASSERT(input->ssavar == self);
+	JIVE_DEBUG_ASSERT(input->ssavar() == self);
 
 	self->variable->graph->on_ssavar_unassign_input(self, input);
 
 	JIVE_LIST_REMOVE(self->assigned_inputs, input, ssavar_input_list);
-	input->ssavar = 0;
+	input->set_ssavar(nullptr);
 	if (jive::theta_head_op() == input->node()->operation()) {
 		jive_region_remove_used_ssavar(input->node()->region()->parent, self);
 	} else {
