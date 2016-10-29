@@ -268,8 +268,9 @@ input::auto_merge_variable()
 	jive_ssavar * ssavar = origin()->ssavar();
 	if (ssavar) {
 		for (auto user : origin()->users) {
-			if (user->ssavar()) {
-				ssavar = user->ssavar();
+			auto input = dynamic_cast<jive::input*>(user);
+			if (input->ssavar()) {
+				ssavar = input->ssavar();
 				break;
 			}
 		}
@@ -388,8 +389,10 @@ output::debug_string() const
 void
 output::replace(jive::output * other) noexcept
 {
-	while (users.size())
-		(*users.begin())->divert_origin(other);
+	while (users.size()) {
+		auto input = dynamic_cast<jive::input*>(*users.begin());
+		input->divert_origin(other);
+	}
 }
 
 void
@@ -807,8 +810,10 @@ jive_node::recompute_depth()
 	graph()->on_node_depth_change(this, old_depth);
 
 	for (size_t n = 0; n < noutputs(); n++) {
-		for (auto user : output(n)->users)
-			user->node()->recompute_depth();
+		for (auto user : output(n)->users) {
+			auto input = dynamic_cast<jive::input*>(user);
+			input->node()->recompute_depth();
+		}
 	}
 }
 
@@ -829,7 +834,8 @@ jive_node_cse(
 {
 	if (!arguments.empty()) {
 		for (auto user : arguments[0]->users) {
-			jive_node * node = user->node();
+			auto input = dynamic_cast<jive::input*>(user);
+			jive_node * node = input->node();
 			if (jive_node_cse_test(node, op, arguments)) {
 				return node;
 			}

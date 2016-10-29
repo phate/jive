@@ -320,7 +320,7 @@ public:
 	void
 	replace(jive::output * other) noexcept;
 
-	std::unordered_set<jive::input*> users;
+	std::unordered_set<jive::iport*> users;
 
 	struct {
 		jive::output * prev;

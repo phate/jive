@@ -138,8 +138,10 @@ void
 computation_tracker::invalidate_below(jive_node * node)
 {
 	for (size_t n = 0; n < node->noutputs(); n++) {
-		for (auto user : node->output(n)->users)
-			invalidate(user->node());
+		for (auto user : node->output(n)->users) {
+			auto input = dynamic_cast<jive::input*>(user);
+			invalidate(input->node());
+		}
 	}
 }
 

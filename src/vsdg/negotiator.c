@@ -541,7 +541,8 @@ jive_negotiator_create_output_connection(jive_negotiator * self, jive::output * 
 {
 	jive_negotiator_connection * connection = 0;
 	for (auto user : output->users) {
-		jive_negotiator_port * port = jive_negotiator_map_input(self, user);
+		jive_negotiator_port * port = jive_negotiator_map_input(self,
+			dynamic_cast<jive::input*>(user));
 		if (connection && port)
 			jive_negotiator_connection_merge(connection, port->connection);
 		else if (port)

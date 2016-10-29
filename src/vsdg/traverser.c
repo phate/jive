@@ -64,8 +64,10 @@ topdown_traverser::next()
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->noutputs(); n++) {
-		for (auto user : node->output(n)->users)
-			check_node(user->node());
+		for (auto user : node->output(n)->users) {
+			auto input = dynamic_cast<jive::input*>(user);
+			check_node(input->node());
+		}
 	}
 	return node;
 }
@@ -245,7 +247,8 @@ upward_cone_traverser::input_change(input * in, output * old_origin, output * ne
 			for (auto user : out->users) {
 				if (user == in)
 					continue;
-				state = tracker_.get_nodestate(user->node());
+				auto input = dynamic_cast<jive::input*>(user);
+				state = tracker_.get_nodestate(input->node());
 				if (state != traversal_nodestate::ahead)
 					return;
 			}
