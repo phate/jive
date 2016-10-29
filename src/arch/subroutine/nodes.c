@@ -129,7 +129,7 @@ subroutine_op::get_passthrough_leave_by_name(jive_region * region, const char * 
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs(); ++n) {
 		input * i = leave->input(n);
-		if (i->gate && name == i->gate->name())
+		if (i->gate() && name == i->gate()->name())
 			return i;
 	}
 	return nullptr;

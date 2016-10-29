@@ -95,8 +95,8 @@ jive_i386_call_node_substitute(
 	
 	for (size_t n = node->noperands(); n < node->ninputs(); n++) {
 		jive::input * orig_input = node->input(n);
-		if (orig_input->gate) {
-			call_instr->add_input(orig_input->gate, orig_input->origin());
+		if (orig_input->gate()) {
+			call_instr->add_input(orig_input->gate(), orig_input->origin());
 		} else {
 			jive::input * new_input = call_instr->add_input(&orig_input->type(), orig_input->origin());
 			new_input->required_rescls = orig_input->required_rescls;

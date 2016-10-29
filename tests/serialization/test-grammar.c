@@ -235,7 +235,7 @@ verify_deserialize_nodeexpr(
 	for (n = 0; n < node->ninputs(); ++n) {
 		assert(node->input(n)->origin() == expected_node->input(n)->origin());
 		assert(node->input(n)->required_rescls == expected_node->input(n)->required_rescls);
-		assert(node->input(n)->gate == expected_node->input(n)->gate);
+		assert(node->input(n)->gate() == expected_node->input(n)->gate());
 	}
 	
 	for (n = 0; n < expected_node->noutputs(); ++n) {

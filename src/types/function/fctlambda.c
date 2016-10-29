@@ -142,7 +142,7 @@ jive_lambda_node_create(jive_region * function_region)
 	std::vector<std::string> result_names;
 	for (size_t n = 0; n < nreturns; n++) {
 		return_types[n] = &function_region->bottom->input(n+1)->type();
-		result_names.push_back(function_region->bottom->input(n+1)->gate->name());
+		result_names.push_back(function_region->bottom->input(n+1)->gate()->name());
 	}
 	
 	jive::fct::type function_type(

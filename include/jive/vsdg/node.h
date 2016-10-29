@@ -93,6 +93,12 @@ public:
 		jive::oport * origin,
 		const jive::base::type & type);
 
+	input(
+		jive_node * node,
+		size_t index,
+		jive::oport * origin,
+		jive::gate * gate);
+
 public:
 	virtual const jive::base::type &
 	type() const noexcept override;
@@ -104,6 +110,12 @@ public:
 	node() const noexcept
 	{
 		return node_;
+	}
+
+	inline jive::gate *
+	gate() const noexcept
+	{
+		return gate_;
 	}
 
 	/*
@@ -127,7 +139,6 @@ public:
 	struct jive_ssavar *
 	auto_merge_variable();
 
-	jive::gate * gate;
 	struct {
 		input * prev;
 		input * next;
@@ -142,6 +153,7 @@ public:
 	const struct jive_resource_class * required_rescls;
 
 private:
+	jive::gate * gate_;
 	jive::oport * origin_;
 	struct jive_node * node_;
 
@@ -566,7 +578,7 @@ JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
-		if (self->input(n)->gate == gate) {
+		if (self->input(n)->gate() == gate) {
 			return self->input(n);
 		}
 	}
@@ -578,7 +590,7 @@ jive_node_get_gate_input(const jive_node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
 		jive::input * i = self->input(n);
-		if (i->gate && i->gate->name() == name)
+		if (i->gate() && i->gate()->name() == name)
 			return i;
 	}
 	return nullptr;

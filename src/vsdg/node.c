@@ -67,9 +67,9 @@ input::input(
 	jive::oport * origin,
 	const jive::base::type & type)
 	: iport(index)
-	, gate(nullptr)
 	, ssavar(nullptr)
 	, required_rescls(&jive_root_resource_class)
+	, gate_(nullptr)
 	, origin_(origin)
 	, node_(node)
 	, type_(type.copy())
@@ -89,6 +89,45 @@ input::input(
 	if (dynamic_cast<const jive::achr::type*>(&type)) {
 		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
 		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
+	}
+}
+
+input::input(
+	jive_node * node,
+	size_t index,
+	jive::oport * origin,
+	jive::gate * gate)
+	: iport(index)
+	, ssavar(nullptr)
+	, required_rescls(gate->required_rescls)
+	, gate_(gate)
+	, origin_(origin)
+	, node_(node)
+	, type_(gate->type().copy())
+{
+	if (type() != origin->type())
+		throw jive::type_error(type().debug_string(), origin->type().debug_string());
+
+	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
+	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
+
+	/* FIXME: remove dynamic_cast once we moved users to oport */
+	dynamic_cast<jive::output*>(origin)->add_user(this);
+
+	/*
+		FIXME: This is going to be removed once we switched Jive to the new node representation.
+	*/
+	if (dynamic_cast<const jive::achr::type*>(&type())) {
+		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
+		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
+	}
+
+	JIVE_LIST_PUSH_BACK(gate->inputs, this, gate_inputs_list);
+
+	for (size_t n = 0; n < index; n++) {
+		jive::input * other = node->input(n);
+		if (!other->gate()) continue;
+		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 }
 
@@ -114,8 +153,8 @@ input::type() const noexcept
 std::string
 input::debug_string() const
 {
-	if (gate)
-		return gate->debug_string();
+	if (gate())
+		return gate()->debug_string();
 
 	return iport::debug_string();
 }
@@ -162,12 +201,12 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 struct jive_variable *
 input::constraint()
 {
-	if (gate) {
-		jive_variable * variable = gate->variable;
+	if (gate()) {
+		jive_variable * variable = gate()->variable;
 		if (!variable) {
-			variable = jive_variable_create(gate->graph());
-			jive_variable_set_resource_class(variable, gate->required_rescls);
-			jive_variable_assign_gate(variable, gate);
+			variable = jive_variable_create(gate()->graph());
+			jive_variable_set_resource_class(variable, gate()->required_rescls);
+			jive_variable_assign_gate(variable, gate());
 		}
 		return variable;
 	}
@@ -376,7 +415,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 		/* filter out multiple inputs using the same value
 		FIXME: this assumes that all inputs have the same resource
 		class requirement! */
-		if (!input->gate) {
+		if (!input->gate()) {
 			bool duplicate = false;
 			size_t k;
 			for(k = 0; k<n; k++) {
@@ -388,7 +427,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 		
 		const jive_resource_class * rescls;
 		if (input->ssavar) rescls = input->ssavar->variable->rescls;
-		else if (input->gate) rescls = input->gate->required_rescls;
+		else if (input->gate()) rescls = input->gate()->required_rescls;
 		else rescls = input->required_rescls;
 		
 		use_count->add(rescls);
@@ -503,16 +542,20 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 jive::input *
 jive_node::add_input(jive::gate * gate, jive::output * origin)
 {
-	jive::input * input = add_input(&gate->type(), origin);
-	input->required_rescls = gate->required_rescls;
-	input->gate = gate;
-	JIVE_LIST_PUSH_BACK(gate->inputs, input, gate_inputs_list);
+	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
+	jive::input * input = new jive::input(this, inputs_.size(), origin, gate);
 
-	for (size_t n = 0; n < input->index(); n++) {
-		jive::input * other = this->input(n);
-		if (!other->gate) continue;
-		jive_gate_interference_add(graph(), gate, other->gate);
-	}
+	if (inputs_.size() == 0)
+		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
+
+	inputs_.push_back(input);
+
+	if (!jive_input_is_valid(input))
+		throw jive::compiler_error("Invalid input");
+
+	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
+	recompute_depth();
+	graph()->on_input_create(input);
 
 	return input;
 }
@@ -523,14 +566,14 @@ jive_node::remove_input(size_t index)
 	JIVE_DEBUG_ASSERT(index < inputs_.size());
 	jive::input * input = inputs_[index];
 
-	if (input->gate) {
-		JIVE_LIST_REMOVE(input->gate->inputs, input, gate_inputs_list);
+	if (input->gate()) {
+		JIVE_LIST_REMOVE(input->gate()->inputs, input, gate_inputs_list);
 
 		for (size_t n = 0; n < inputs_.size(); n++) {
 			jive::input * other = inputs_[n];
-			if (other == input || !other->gate)
+			if (other == input || !other->gate())
 				continue;
-			jive_gate_interference_remove(graph(), input->gate, other->gate);
+			jive_gate_interference_remove(graph(), input->gate(), other->gate());
 		}
 	}
 
@@ -624,8 +667,8 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 			origin =  input(n)->origin();
 		}
 
-		if (input(n)->gate) {
-			jive::gate * gate = input(n)->gate;
+		if (input(n)->gate()) {
+			jive::gate * gate = input(n)->gate();
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {

@@ -423,11 +423,11 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 		jive::output * origin = node->input(n)->origin();
 		if (type_contains_address(&origin->type())) {
 			transform = true;
-			names.push_back(node->input(n)->gate->name());
+			names.push_back(node->input(n)->gate()->name());
 			exports.push_back(jive_address_to_bitstring_create(origin, nbits, &origin->type()));
 		} else {
 			exports.push_back(origin);
-			names.push_back(node->input(n)->gate->name());
+			names.push_back(node->input(n)->gate()->name());
 		}
 	}
 
