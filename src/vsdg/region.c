@@ -170,10 +170,10 @@ struct jive_copy_context {
 static void
 jive_copy_context_append(jive_copy_context * self, const jive_node * node)
 {
-	if (node->depth_from_root >= self->depths.size())
-		self->depths.resize(node->depth_from_root+1);
+	if (node->depth() >= self->depths.size())
+		self->depths.resize(node->depth()+1);
 
-	self->depths[node->depth_from_root].push_back(node);
+	self->depths[node->depth()].push_back(node);
 }
 
 static void

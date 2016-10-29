@@ -1040,17 +1040,16 @@ jive_level_nodes_append(jive_level_nodes * level, jive_node * node)
 static void
 jive_sorted_nodes_append(jive_sorted_nodes * self, jive_node * node)
 {
-	if (node->depth_from_root >= self->depths.size()) {
-		size_t new_space = self->depths.size() * 2;
-		if (new_space <= node->depth_from_root)
-			new_space = node->depth_from_root + 1;
+	if (node->depth() >= self->depths.size()) {
+		size_t new_space = self->depths.size()*2;
+		if (new_space <= node->depth())
+			new_space = node->depth()+1;
 		self->depths.resize(new_space);
 	}
-	jive_level_nodes_append(&self->depths[node->depth_from_root], node);
-	if (node->depth_from_root + 1 > self->max_depth_plus_one)
-		self->max_depth_plus_one = node->depth_from_root + 1;
-	if (node->depth_from_root < self->min_depth)
-		self->min_depth = node->depth_from_root;
+	jive_level_nodes_append(&self->depths[node->depth()], node);
+
+	self->max_depth_plus_one = std::max(node->depth()+1, self->max_depth_plus_one);
+	self->min_depth = std::min(node->depth(), self->min_depth);
 }
 
 void

@@ -55,7 +55,7 @@ tracker::node_depth_change(jive_node * node, size_t old_depth)
 		return;
 	}
 	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, old_depth);
-	jive_tracker_depth_state_add(states_[nodestate->state], nodestate, node->depth_from_root);
+	jive_tracker_depth_state_add(states_[nodestate->state], nodestate, node->depth());
 	
 }
 
@@ -66,7 +66,7 @@ tracker::node_destroy(jive_node * node)
 	if (nodestate->state >= states_.size()) {
 		return;
 	}
-	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, node->depth_from_root);
+	jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, node->depth());
 }
 
 ssize_t
@@ -82,15 +82,11 @@ tracker::set_nodestate(jive_node * node, size_t state)
 	
 	if (nodestate->state != state) {
 		if (nodestate->state < states_.size()) {
-			jive_tracker_depth_state_remove(
-				states_[nodestate->state], nodestate,
-				node->depth_from_root);
+			jive_tracker_depth_state_remove(states_[nodestate->state], nodestate, node->depth());
 		}
 		nodestate->state = state;
 		if (nodestate->state < states_.size()) {
-			jive_tracker_depth_state_add(
-				states_[nodestate->state], nodestate,
-				node->depth_from_root);
+			jive_tracker_depth_state_add(states_[nodestate->state], nodestate, node->depth());
 		}
 	}
 }
@@ -133,7 +129,7 @@ computation_tracker::invalidate(jive_node * node)
 {
 	jive_tracker_nodestate * nodestate = map_node(node);
 	if (nodestate->state == jive_tracker_nodestate_none) {
-		jive_tracker_depth_state_add(nodestates_, nodestate, node->depth_from_root);
+		jive_tracker_depth_state_add(nodestates_, nodestate, node->depth());
 		nodestate->state = 0;
 	}
 }

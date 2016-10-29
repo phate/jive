@@ -42,26 +42,6 @@ jive_input_is_valid(const jive::input * input)
 	return origin_region == region;
 }
 
-static void
-jive_node_invalidate_depth_from_root(jive_node * self)
-{
-	size_t new_depth_from_root = 0;
-	for (size_t n = 0; n < self->ninputs(); n++)
-		new_depth_from_root = std::max(self->producer(n)->depth_from_root + 1, new_depth_from_root);
-
-	size_t old_depth_from_root = self->depth_from_root;
-	if (old_depth_from_root == new_depth_from_root)
-		return;
-	self->depth_from_root = new_depth_from_root;
-
-	self->graph()->on_node_depth_change(self, old_depth_from_root);
-
-	for (size_t n = 0; n < self->noutputs(); n++) {
-		for (auto user : self->output(n)->users)
-			jive_node_invalidate_depth_from_root(user->node());
-	}
-}
-
 namespace jive {
 
 /* iport */
@@ -172,7 +152,7 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	if (!jive_input_is_valid(this))
 		throw jive::compiler_error("Invalid input");
 
-	jive_node_invalidate_depth_from_root(this->node());
+	node()->recompute_depth();
 
 	jive_graph_mark_denormalized(new_origin->node()->graph());
 
@@ -436,7 +416,7 @@ jive_node::jive_node(
 	std::unique_ptr<jive::operation> op,
 	jive_region * region,
 	const std::vector<jive::output*> & operands)
-	: depth_from_root(0)
+	: depth_(0)
 	, graph_(region->graph)
 	, region_(region)
 	, operation_(std::move(op))
@@ -453,7 +433,7 @@ jive_node::jive_node(
 		for (size_t n = 0; n < operation_->narguments(); n++) {
 			JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
 			inputs_.push_back(new jive::input(this, n, operands[n], operation_->argument_type(n)));
-			depth_from_root = std::max(operands[n]->node()->depth_from_root+1, depth_from_root);
+			depth_ = std::max(operands[n]->node()->depth()+1, depth_);
 		}
 	}
 
@@ -514,7 +494,7 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 		throw jive::compiler_error("Invalid input");
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
-	jive_node_invalidate_depth_from_root(this);
+	recompute_depth();
 	graph()->on_input_create(input);
 
 	return input;
@@ -681,6 +661,26 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 		smap.insert(output(n), new_node->output(n));
 
 	return new_node;
+}
+
+void
+jive_node::recompute_depth()
+{
+	size_t new_depth = 0;
+	for (size_t n = 0; n < ninputs(); n++)
+		new_depth = std::max(producer(n)->depth() + 1, new_depth);
+
+	size_t old_depth = depth_;
+	if (new_depth == old_depth)
+		return;
+
+	depth_ = new_depth;
+	graph()->on_node_depth_change(this, old_depth);
+
+	for (size_t n = 0; n < noutputs(); n++) {
+		for (auto user : output(n)->users)
+			user->node()->recompute_depth();
+	}
 }
 
 static bool

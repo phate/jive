@@ -296,7 +296,7 @@ bottomup_slave_traverser::next()
 	jive_node * node = nodestate->node;
 	
 	nodestate->state = 1;
-	jive_tracker_depth_state_add(master_->behind_state_, nodestate, node->depth_from_root);
+	jive_tracker_depth_state_add(master_->behind_state_, nodestate, node->depth());
 	master_->check_above(node);
 	
 	return nodestate->node;
@@ -338,7 +338,7 @@ bottomup_region_traverser::check_above(jive_node * node)
 		
 		bottomup_slave_traverser * slave = map_region(region);
 		nodestate->state = 0;
-		jive_tracker_depth_state_add(slave->frontier_state_, nodestate, above->depth_from_root);
+		jive_tracker_depth_state_add(slave->frontier_state_, nodestate, above->depth());
 	}
 }
 
@@ -350,9 +350,9 @@ bottomup_region_traverser::pass(jive_node * node)
 	
 	bottomup_slave_traverser * slave = map_region(node->region());
 	
-	jive_tracker_depth_state_remove(slave->frontier_state_, nodestate, node->depth_from_root);
+	jive_tracker_depth_state_remove(slave->frontier_state_, nodestate, node->depth());
 	nodestate->state = 1;
-	jive_tracker_depth_state_add(behind_state_, nodestate, node->depth_from_root);
+	jive_tracker_depth_state_add(behind_state_, nodestate, node->depth());
 	
 	check_above(node);
 }
@@ -372,7 +372,7 @@ bottomup_region_traverser::bottomup_region_traverser(jive_graph * graph)
 		
 		jive_tracker_nodestate * nodestate = map_node(node);
 		nodestate->state = 0;
-		jive_tracker_depth_state_add(root_slave->frontier_state_, nodestate, node->depth_from_root);
+		jive_tracker_depth_state_add(root_slave->frontier_state_, nodestate, node->depth());
 	}
 }
 

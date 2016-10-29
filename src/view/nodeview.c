@@ -156,7 +156,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	self->placed = true;
 	
 	int width = self->width;
-	int y = self->node->depth_from_root;
+	int y = self->node->depth();
 	
 	/* extents of node itself */
 	jive_reservationrect rects[1 + self->node->noutputs()];
@@ -174,7 +174,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 
 		size_t end_row = y;
 		for (auto user : outputview->output->users)
-			if (user->node()->depth_from_root > end_row) end_row = user->node()->depth_from_root;
+			if (user->node()->depth() > end_row) end_row = user->node()->depth();
 
 		rects[nrects].x = jive_outputview_get_edge_offset(outputview);
 		rects[nrects].y = y;
@@ -187,7 +187,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	self->x = jive_reservationtracker_find_space(reservation, nrects, rects, preferred_x);
 	jive_reservationtracker_reserve_boxes(reservation, nrects, rects, self->x);
 	
-	jive_graphview_row * row = jive_graphview_get_row(self->graphview, self->node->depth_from_root);
+	jive_graphview_row * row = jive_graphview_get_row(self->graphview, self->node->depth());
 	
 	for(size_t n = 0; n < self->node->ninputs(); n++) {
 		jive_inputview * inputview = &self->inputs[n];
@@ -227,6 +227,6 @@ jive_nodeview_draw(jive_nodeview * self, jive_textcanvas * dst)
 int
 jive_nodeview_get_y(const jive_nodeview * self)
 {
-	return jive_graphview_get_row(self->graphview, self->node->depth_from_root)->y;
+	return jive_graphview_get_row(self->graphview, self->node->depth())->y;
 }
 

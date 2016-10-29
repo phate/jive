@@ -86,8 +86,8 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 		jive_nodeview * nodeview = self->graphview->nodemap[&node];
 		self->nodes.push_back(nodeview);
 		jive_regionview_layout_nodes_recursive(self, nodeview, &reservation);
-		if ((ssize_t)node.depth_from_root + 1 > max_y) max_y = node.depth_from_root + 1;
-		if ((ssize_t)node.depth_from_root < min_y) min_y = node.depth_from_root;
+		if ((ssize_t)node.depth()+1 > max_y) max_y = node.depth()+1;
+		if ((ssize_t)node.depth() < min_y) min_y = node.depth();
 	}
 	
 	if (min_y > max_y) {

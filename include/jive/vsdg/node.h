@@ -498,7 +498,17 @@ public:
 		return outputs_[index];
 	}
 
-	size_t depth_from_root;
+	inline size_t
+	depth() const noexcept
+	{
+		return depth_;
+	}
+
+	/*
+		FIXME: privatize or completely remove it again
+	*/
+	void
+	recompute_depth();
 
 	struct {
 		jive_node * prev;
@@ -522,6 +532,7 @@ public:
 	> region_node_list_accessor;
 
 private:
+	size_t depth_;
 	jive_graph * graph_;
 	jive_region * region_;
 	std::vector<jive::input*> inputs_;

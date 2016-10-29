@@ -27,11 +27,11 @@ static int test_main(void)
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
 	assert(n1);
-	assert(n1->depth_from_root == 0);
+	assert(n1->depth() == 0);
 
 	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {});
 	assert(n2);
-	assert(n2->depth_from_root == 1);
+	assert(n2->depth() == 1);
 	
 	jive_graph_destroy(graph);
 	return 0;
