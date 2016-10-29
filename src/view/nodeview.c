@@ -34,8 +34,8 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, const jive::input * in
 			label.append(":*").append(resname->name);
 		else
 			label.append(":").append(rescls->name);
-	} else if (input->required_rescls != &jive_root_resource_class)
-		label.append(":").append(input->required_rescls->name);
+	} else if (input->rescls() != &jive_root_resource_class)
+		label.append(":").append(input->rescls()->name);
 	
 	width = label.size()+2;
 }

@@ -376,7 +376,7 @@ jive_variable_recompute_rescls(jive_variable * self)
 	JIVE_LIST_ITERATE(self->ssavars, ssavar, variable_ssavar_list) {
 		jive::input * input;
 		JIVE_LIST_ITERATE(ssavar->assigned_inputs, input, ssavar_input_list) {
-			rescls = jive_resource_class_intersection(rescls, input->required_rescls);
+			rescls = jive_resource_class_intersection(rescls, input->rescls());
 		}
 		if (ssavar->assigned_output)
 			rescls = jive_resource_class_intersection(rescls, ssavar->assigned_output->required_rescls);

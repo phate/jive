@@ -82,8 +82,7 @@ jive_i386_call_node_substitute(
 		jive_node * split = jive_splitnode_create(node->region(), value_type, value, value_cls,
 			slot_type, slot_cls);
 		
-		jive::input * input = call_instr->add_input(slot_type, split->output(0));
-		input->required_rescls = slot_cls;
+		call_instr->add_input(slot_cls, split->output(0));
 	}
 	
 	JIVE_DEBUG_ASSERT(op.result_types().size() <= 1);
@@ -98,8 +97,7 @@ jive_i386_call_node_substitute(
 		if (orig_input->gate()) {
 			call_instr->add_input(orig_input->gate(), orig_input->origin());
 		} else {
-			jive::input * new_input = call_instr->add_input(&orig_input->type(), orig_input->origin());
-			new_input->required_rescls = orig_input->required_rescls;
+			call_instr->add_input(orig_input->rescls(), orig_input->origin());
 		}
 	}
 	for (size_t n = op.result_types().size(); n < node->noutputs(); n++) {
