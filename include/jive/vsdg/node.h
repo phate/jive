@@ -143,12 +143,8 @@ public:
 		rescls_ = rescls;
 	}
 
-	/*
-		FIXME: Try to merge internal_divert_origin and divert_origin methods.
-	*/
-	void internal_divert_origin(jive::output * new_origin) noexcept;
-
-	void divert_origin(jive::output * new_origin) noexcept;
+	void
+	divert_origin(jive::output * new_origin) noexcept;
 
 	inline jive::output *
 	origin() const noexcept;

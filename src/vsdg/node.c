@@ -188,12 +188,6 @@ input::region() const noexcept
 void
 input::divert_origin(jive::output * new_origin) noexcept
 {
-	internal_divert_origin(new_origin);
-}
-
-void
-input::internal_divert_origin(jive::output * new_origin) noexcept
-{
 	const jive::base::type * input_type = &this->type();
 	const jive::base::type * operand_type = &new_origin->type();
 
