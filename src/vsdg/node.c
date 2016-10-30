@@ -74,14 +74,10 @@ input::input(
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
-	if (type != origin->type())
-		throw jive::type_error(type.debug_string(), origin->type().debug_string());
-
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
-	/* FIXME: remove dynamic_cast once we moved users to oport */
-	dynamic_cast<jive::output*>(origin)->add_user(this);
+	origin->add_user(this);
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -105,14 +101,10 @@ input::input(
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
-	if (type() != origin->type())
-		throw jive::type_error(type().debug_string(), origin->type().debug_string());
-
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
-	/* FIXME: remove dynamic_cast once we moved users to oport */
-	dynamic_cast<jive::output*>(origin)->add_user(this);
+	origin->add_user(this);
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -144,14 +136,10 @@ input::input(
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
-	if (type() != origin->type())
-		throw jive::type_error(type().debug_string(), origin->type().debug_string());
-
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
-	/* FIXME: remove dynamic_cast once we moved users to oport */
-	dynamic_cast<jive::output*>(origin)->add_user(this);
+	origin->add_user(this);
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -183,8 +171,7 @@ input::~input() noexcept
 	for (size_t n = index()+1; n < node()->ninputs(); n++)
 		node()->input(n)->set_index(n-1);
 
-	/* FIXME: remove dynamic_cast once we moved users to oport */
-	dynamic_cast<jive::output*>(origin_)->remove_user(this);
+	origin_->remove_user(this);
 }
 
 const jive::base::type &
@@ -305,6 +292,21 @@ oport::debug_string() const
 	return detail::strfmt(index());
 }
 
+void
+oport::add_user(jive::iport * user)
+{
+	if (type() != user->type())
+		throw jive::type_error(type().debug_string(), user->type().debug_string());
+
+	users.insert(user);
+}
+
+void
+oport::remove_user(jive::iport * user) noexcept
+{
+	users.erase(user);
+}
+
 /* outputs */
 
 output::output(jive_node * node, size_t index, const jive::base::type & type)
@@ -408,18 +410,18 @@ output::replace(jive::output * other) noexcept
 }
 
 void
-output::add_user(jive::input * user) noexcept
+output::add_user(jive::iport * user)
 {
 	if (!node()->has_successors())
 		JIVE_LIST_REMOVE(node()->graph()->bottom, node(), graph_bottom_list);
 
-	users.insert(user);
+	oport::add_user(user);
 }
 
 void
-output::remove_user(jive::input * user) noexcept
+output::remove_user(jive::iport * user) noexcept
 {
-	users.erase(user);
+	oport::remove_user(user);
 
 	if (!node()->has_successors())
 		JIVE_LIST_PUSH_BACK(node()->graph()->bottom, node(), graph_bottom_list);

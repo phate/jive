@@ -228,6 +228,24 @@ public:
 		return index_;
 	}
 
+	inline bool
+	no_user() const noexcept
+	{
+		return users.empty();
+	}
+
+	inline bool
+	single_user() const noexcept
+	{
+		return users.size() == 1;
+	}
+
+	inline size_t
+	nusers() const noexcept
+	{
+		return users.size();
+	}
+
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
@@ -236,6 +254,14 @@ public:
 
 	virtual std::string
 	debug_string() const;
+
+	std::unordered_set<jive::iport*> users;
+
+	virtual void
+	add_user(jive::iport * user);
+
+	virtual void
+	remove_user(jive::iport * user) noexcept;
 
 protected:
 	inline void
@@ -281,18 +307,6 @@ public:
 
 	inline jive_node * node() const noexcept { return node_; }
 
-	inline bool
-	no_user() const noexcept
-	{
-		return users.empty();
-	}
-
-	inline bool
-	single_user() const noexcept
-	{
-		return users.size() == 1;
-	}
-
 	inline jive::gate *
 	gate() const noexcept
 	{
@@ -332,7 +346,6 @@ public:
 	void
 	replace(jive::output * other) noexcept;
 
-	std::unordered_set<jive::iport*> users;
 
 	struct {
 		jive::output * prev;
@@ -345,12 +358,11 @@ public:
 	} originating_ssavars;
 
 private:
+	void
+	add_user(jive::iport * user) override;
 
 	void
-	add_user(jive::input * user) noexcept;
-
-	void
-	remove_user(jive::input * user) noexcept;
+	remove_user(jive::iport * user) noexcept override;
 
 	jive_node * node_;
 	jive::gate * gate_;
