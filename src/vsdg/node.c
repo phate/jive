@@ -202,6 +202,12 @@ input::debug_string() const
 	return iport::debug_string();
 }
 
+jive_region *
+input::region() const noexcept
+{
+	return node()->region();
+}
+
 void
 input::divert_origin(jive::output * new_origin) noexcept
 {
@@ -384,6 +390,12 @@ output::debug_string() const
 		return gate()->debug_string();
 
 	return oport::debug_string();
+}
+
+jive_region *
+output::region() const noexcept
+{
+	return node()->region();
 }
 
 void
