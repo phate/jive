@@ -14,6 +14,5 @@
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/traverser.h>
 #include <jive/vsdg/types.h>
-#include <jive/vsdg/variable.h>
 
 #endif

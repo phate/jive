@@ -14,7 +14,6 @@
 #include <jive/util/list.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/region-ssavar-use.h>
 #include <jive/vsdg/section.h>
 
 namespace jive {
@@ -101,8 +100,6 @@ public:
 	
 	struct jive_node * top;
 	struct jive_node * bottom;
-	
-	jive_region_ssavar_hash used_ssavars;
 	
 	struct jive::input * anchor;
 

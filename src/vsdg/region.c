@@ -13,7 +13,6 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/vsdg/variable.h>
 
 static inline void
 jive_region_attrs_init(jive_region_attrs * attrs)
@@ -118,48 +117,6 @@ jive_region_prune_subregions_(jive_region * self)
 		}
 		subregion = next;
 	}
-}
-
-void
-jive_region_add_used_ssavar(jive_region * self, jive_ssavar * ssavar)
-{
-	if (ssavar->origin->node()->region()->depth() >= self->depth()) return;
-	if (self->attrs.is_looped) {
-		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
-		if (use)
-			use->count ++;
-		else {
-			use = new jive_region_ssavar_use;
-			use->region = self;
-			use->ssavar = ssavar;
-			use->count = 1;
-			self->used_ssavars.insert(use);
-			ssavar->assigned_regions.insert(use);
-			
-			self->graph->on_region_add_used_ssavar(self, ssavar);
-		}
-	}
-	
-	jive_region_add_used_ssavar(self->parent, ssavar);
-}
-
-void
-jive_region_remove_used_ssavar(jive_region * self, jive_ssavar * ssavar)
-{
-	if (ssavar->origin->node()->region()->depth() >= self->depth()) return;
-	if (self->attrs.is_looped) {
-		jive_region_ssavar_use * use = self->used_ssavars.find(ssavar).ptr();
-		use->count --;
-		if (use->count == 0) {
-			self->used_ssavars.erase(use);
-			ssavar->assigned_regions.erase(use);
-
-			self->graph->on_region_remove_used_ssavar(self, ssavar);
-			delete use;
-		}
-	}
-	
-	jive_region_remove_used_ssavar(self->parent, ssavar);
 }
 
 typedef struct jive_copy_context jive_copy_context;

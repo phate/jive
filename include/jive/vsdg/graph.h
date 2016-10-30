@@ -69,15 +69,6 @@ public:
 		jive::gate * last;
 	} gates;
 	
-	struct {
-		struct jive_variable * first;
-		struct jive_variable * last;
-	} variables;
-	struct {
-		struct jive_variable * first;
-		struct jive_variable * last;
-	} unused_variables;
-	
 	bool resources_fully_assigned;
 	bool normalized;
 
@@ -89,9 +80,7 @@ public:
 	 * into classes first */
 	jive::notifier<jive_region *> on_region_create;
 	jive::notifier<jive_region *> on_region_destroy;
-	jive::notifier<jive_region *, jive_ssavar *> on_region_add_used_ssavar;
-	jive::notifier<jive_region *, jive_ssavar *> on_region_remove_used_ssavar;
-	
+
 	jive::notifier<jive_node *> on_node_create;
 	jive::notifier<jive_node *> on_node_destroy;
 	jive::notifier<jive_node *, size_t> on_node_depth_change;
@@ -107,41 +96,8 @@ public:
 	jive::notifier<jive::output *> on_output_create;
 	jive::notifier<jive::output *> on_output_destroy;
 	 
-	jive::notifier<jive_variable *> on_variable_create;
-	jive::notifier<jive_variable *> on_variable_destroy;
-	jive::notifier<jive_variable *, jive::gate *> on_variable_assign_gate;
-	jive::notifier<jive_variable *, jive::gate *> on_variable_unassign_gate;
-	jive::notifier<
-		jive_variable *,
-		const jive_resource_class * /* old */,
-		const jive_resource_class * /* new */
-	> on_variable_resource_class_change;
-	jive::notifier<
-		jive_variable *,
-		const jive_resource_name * /* old */,
-		const jive_resource_name * /* new */
-	> on_variable_resource_name_change;
-
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_add;
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;
-
-	jive::notifier<jive_ssavar *> on_ssavar_create;
-	jive::notifier<jive_ssavar *> on_ssavar_destroy;
-	jive::notifier<jive_ssavar *, jive::input *> on_ssavar_assign_input;
-	jive::notifier<jive_ssavar *, jive::input *> on_ssavar_unassign_input;
-	jive::notifier<jive_ssavar *, jive::output *> on_ssavar_assign_output;
-	jive::notifier<jive_ssavar *, jive::output *> on_ssavar_unassign_output;
-	jive::notifier<
-		jive_ssavar *,
-		jive::output * /* old */,
-		jive::output * /* new */
-	> on_ssavar_divert_origin;
-	jive::notifier<
-		jive_ssavar *,
-		jive_variable * /* old */,
-		jive_variable * /* new */
-	> on_ssavar_variable_change;
-
 };
 
 JIVE_EXPORTED_INLINE struct jive_region *

@@ -22,7 +22,6 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/substitution.h>
-#include <jive/vsdg/variable.h>
 
 /*
 	FIXME: merge with jive_node_valid_edge when we transformed to new representation
@@ -70,12 +69,10 @@ input::input(
 	, gate_(nullptr)
 	, origin_(origin)
 	, node_(node)
-	, ssavar_(nullptr)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
-	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
 	origin->add_user(this);
 
@@ -97,12 +94,10 @@ input::input(
 	, gate_(gate)
 	, origin_(origin)
 	, node_(node)
-	, ssavar_(nullptr)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
-	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
 	origin->add_user(this);
 
@@ -132,12 +127,10 @@ input::input(
 	, gate_(nullptr)
 	, origin_(origin)
 	, node_(node)
-	, ssavar_(nullptr)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
-	ssavar_input_list.prev = ssavar_input_list.next = nullptr;
 
 	origin->add_user(this);
 
@@ -153,9 +146,6 @@ input::input(
 input::~input() noexcept
 {
 	node()->graph()->on_input_destroy(this);
-
-	if (ssavar_)
-		jive_ssavar_unassign_input(ssavar_, this);
 
 	if (gate_) {
 		JIVE_LIST_REMOVE(gate_->inputs, this, gate_inputs_list);
@@ -198,7 +188,6 @@ input::region() const noexcept
 void
 input::divert_origin(jive::output * new_origin) noexcept
 {
-	JIVE_DEBUG_ASSERT(!this->ssavar());
 	internal_divert_origin(new_origin);
 }
 
@@ -232,49 +221,6 @@ input::internal_divert_origin(jive::output * new_origin) noexcept
 	jive_graph_mark_denormalized(new_origin->node()->graph());
 
 	node()->graph()->on_input_change(this, old_origin, new_origin);
-}
-
-struct jive_variable *
-input::constraint()
-{
-	if (gate()) {
-		jive_variable * variable = gate()->variable;
-		if (!variable) {
-			variable = jive_variable_create(gate()->graph());
-			jive_variable_set_resource_class(variable, gate()->required_rescls);
-			jive_variable_assign_gate(variable, gate());
-		}
-		return variable;
-	}
-
-	jive_variable * variable = jive_variable_create(node()->graph());
-	jive_variable_set_resource_class(variable, rescls());
-	return variable;
-}
-
-jive_ssavar *
-input::auto_merge_variable()
-{
-	if (ssavar())
-		return ssavar();
-
-	jive_ssavar * ssavar = origin()->ssavar();
-	if (ssavar) {
-		for (auto user : origin()->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			if (input->ssavar()) {
-				ssavar = input->ssavar();
-				break;
-			}
-		}
-	}
-
-	if (!ssavar)
-		ssavar = jive_ssavar_create(origin(), constraint());
-
-	jive_variable_merge(ssavar->variable, constraint());
-	jive_ssavar_assign_input(ssavar, this);
-	return ssavar;
 }
 
 /* oport */
@@ -313,11 +259,9 @@ output::output(jive_node * node, size_t index, const jive::base::type & type)
 	: oport(index)
 	, node_(node)
 	, gate_(nullptr)
-	, ssavar_(nullptr)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
-	originating_ssavars.first = originating_ssavars.last = nullptr;
 	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
 }
 
@@ -325,11 +269,9 @@ output::output(jive_node * node, size_t index, jive::gate * gate)
 	: oport(index)
 	, node_(node)
 	, gate_(gate)
-	, ssavar_(nullptr)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
-	originating_ssavars.first = originating_ssavars.last = nullptr;
 	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
 
 	JIVE_LIST_PUSH_BACK(gate->outputs, this, gate_outputs_list);
@@ -345,11 +287,9 @@ output::output(jive_node * node, size_t index, const struct jive_resource_class 
 	: oport(index)
 	, node_(node)
 	, gate_(nullptr)
-	, ssavar_(nullptr)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
-	originating_ssavars.first = originating_ssavars.last = nullptr;
 	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
 }
 
@@ -370,13 +310,8 @@ output::~output() noexcept
 		}
 	}
 
-	if (ssavar_)
-		jive_ssavar_unassign_output(ssavar_, this);
-
 	for (size_t n = index()+1; n < node()->noutputs(); n++)
 		node()->output(n)->set_index(n-1);
-
-	JIVE_DEBUG_ASSERT(originating_ssavars.first == 0);
 }
 
 const jive::base::type &
@@ -437,8 +372,6 @@ gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
 	inputs.first = inputs.last = nullptr;
 	outputs.first = outputs.last = nullptr;
 	may_spill = true;
-	variable = nullptr;
-	variable_gate_list.prev = variable_gate_list.next = nullptr;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 	required_rescls = &jive_root_resource_class;
 
@@ -450,22 +383,7 @@ gate::~gate() noexcept
 	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
 	JIVE_DEBUG_ASSERT(outputs.first == nullptr && outputs.last == nullptr);
 
-	if (variable)
-		jive_variable_unassign_gate(variable, this);
-
 	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
-}
-
-void
-gate::split()
-{
-	/* split off this gate from others assigned to the same variable */
-	jive_variable * new_variable = jive_variable_create(variable->graph);
-	jive_variable_set_resource_class(new_variable, jive_variable_get_resource_class(variable));
-	jive_variable_set_resource_name(new_variable, jive_variable_get_resource_name(variable));
-
-	jive_variable_unassign_gate(variable, this);
-	jive_variable_assign_gate(new_variable, this);
 }
 
 }	//jive namespace
@@ -525,8 +443,7 @@ jive_node_get_use_count_input(const jive_node * self, jive_resource_class_count 
 		}
 		
 		const jive_resource_class * rescls;
-		if (input->ssavar()) rescls = input->ssavar()->variable->rescls;
-		else if (input->gate()) rescls = input->gate()->required_rescls;
+		if (input->gate()) rescls = input->gate()->required_rescls;
 		else rescls = input->rescls();
 		
 		use_count->add(rescls);
@@ -542,8 +459,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 		jive::output * output = self->output(n);
 		
 		const jive_resource_class * rescls;
-		if (output->ssavar()) rescls = output->ssavar()->variable->rescls;
-		else if (output->gate()) rescls = output->gate()->required_rescls;
+		if (output->gate()) rescls = output->gate()->required_rescls;
 		else rescls = output->rescls();
 		
 		use_count->add(rescls);

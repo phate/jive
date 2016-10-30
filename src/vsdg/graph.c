@@ -18,7 +18,6 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
-#include <jive/vsdg/variable.h>
 
 /* graph tail node */
 
@@ -62,15 +61,10 @@ jive_graph::~jive_graph()
 
 	while (gates.first)
 		delete gates.first;
-
-	while (unused_variables.first)
-		jive_variable_destroy(unused_variables.first);
 }
 
 jive_graph::jive_graph()
 {
-	variables.first = variables.last = 0;
-	unused_variables.first = unused_variables.last = 0;
 	bottom.first = bottom.last = 0;
 	gates.first = gates.last = 0;
 	resources_fully_assigned = false;

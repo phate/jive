@@ -22,9 +22,6 @@
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
 
-struct jive_ssavar;
-struct jive_variable;
-
 namespace jive {
 namespace base {
 	class type;
@@ -146,21 +143,6 @@ public:
 		rescls_ = rescls;
 	}
 
-	inline struct jive_ssavar *
-	ssavar() const noexcept
-	{
-		return ssavar_;
-	}
-
-	/*
-		FIXME: This is going to be removed again later.
-	*/
-	inline void
-	set_ssavar(struct jive_ssavar * ssavar) noexcept
-	{
-		ssavar_ = ssavar;
-	}
-
 	/*
 		FIXME: Try to merge internal_divert_origin and divert_origin methods.
 	*/
@@ -173,27 +155,15 @@ public:
 
 	inline jive_node * producer() const noexcept;
 
-	struct jive_variable *
-	constraint();
-
-	struct jive_ssavar *
-	auto_merge_variable();
-
 	struct {
 		input * prev;
 		input * next;
 	} gate_inputs_list;
 
-	struct {
-		input * prev;
-		input * next;
-	} ssavar_input_list;
-
 private:
 	jive::gate * gate_;
 	jive::oport * origin_;
 	struct jive_node * node_;
-	struct jive_ssavar * ssavar_;
 	const struct jive_resource_class * rescls_;
 
 	/*
@@ -328,34 +298,13 @@ public:
 		rescls_ = rescls;
 	}
 
-	inline struct jive_ssavar *
-	ssavar() const noexcept
-	{
-		return ssavar_;
-	}
-
-	/*
-		FIXME: This is going to be removed again later.
-	*/
-	inline void
-	set_ssavar(struct jive_ssavar * ssavar) noexcept
-	{
-		ssavar_ = ssavar;
-	}
-
 	void
 	replace(jive::output * other) noexcept;
-
 
 	struct {
 		jive::output * prev;
 		jive::output * next;
 	} gate_outputs_list;
-
-	struct {
-		struct jive_ssavar * first;
-		struct jive_ssavar * last;
-	} originating_ssavars;
 
 private:
 	void
@@ -366,7 +315,6 @@ private:
 
 	jive_node * node_;
 	jive::gate * gate_;
-	struct jive_ssavar * ssavar_;
 	const struct jive_resource_class * rescls_;
 
 	/*
@@ -417,9 +365,6 @@ public:
 		return name_;
 	}
 
-	void
-	split();
-
 	struct {
 		jive::gate * prev;
 		jive::gate * next;
@@ -437,12 +382,6 @@ public:
 
 	bool may_spill;
 	jive_gate_interference_hash interference;
-
-	struct jive_variable * variable;
-	struct {
-		jive::gate * prev;
-		jive::gate * next;
-	} variable_gate_list;
 
 	const struct jive_resource_class * required_rescls;
 

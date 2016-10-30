@@ -26,15 +26,7 @@ jive_inputview::jive_inputview(jive_nodeview * nodeview_, const jive::input * in
 {
 	label = input->debug_string() + ":" + input->type().debug_string();
 	
-	jive_ssavar * ssavar = input->ssavar();
-	if (ssavar) {
-		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
-		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
-		if (resname)
-			label.append(":*").append(resname->name);
-		else
-			label.append(":").append(rescls->name);
-	} else if (input->rescls() != &jive_root_resource_class)
+	if (input->rescls() != &jive_root_resource_class)
 		label.append(":").append(input->rescls()->name);
 	
 	width = label.size()+2;
@@ -59,15 +51,7 @@ jive_outputview::jive_outputview(jive_nodeview * nodeview_, const jive::output *
 {
 	label = output->debug_string() + ":" + output->type().debug_string();
 
-	jive_ssavar * ssavar = output->ssavar();
-	if (ssavar) {
-		const jive_resource_name * resname = jive_variable_get_resource_name(ssavar->variable);
-		const jive_resource_class * rescls = jive_variable_get_resource_class(ssavar->variable);
-		if (resname)
-			label.append(":*").append(resname->name);
-		else
-			label.append(":").append(rescls->name);
-	} else if (output->rescls() != &jive_root_resource_class)
+	if (output->rescls() != &jive_root_resource_class)
 		label.append(":").append(output->rescls()->name);
 
 	width = label.size()+2;

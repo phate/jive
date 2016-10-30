@@ -42,7 +42,6 @@ LIBJIVE_SRC = \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \
-	src/vsdg/variable.c \
 
 #evaluation
 LIBJIVE_SRC += \
