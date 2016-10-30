@@ -1,8 +1,6 @@
 TESTS+=\
 	arch/test-address \
 	arch/test-call \
-	arch/test-codegen \
-	arch/test-dataobj \
 	arch/test-dynamic-stackslots \
 	arch/test-label-nodes \
 	arch/test-load \

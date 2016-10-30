@@ -124,7 +124,6 @@ LIBJIVE_SRC += \
 	src/arch/address.c \
 	src/arch/addresstype.c \
 	src/arch/call.c \
-	src/arch/codegen.c \
 	src/arch/compilate.c \
 	src/arch/dataobject.c \
 	src/arch/immediate-node.c \
@@ -139,7 +138,6 @@ LIBJIVE_SRC += \
 	src/arch/registers.c \
 	src/arch/regselector.c \
 	src/arch/regvalue.c \
-	src/arch/sequence.c \
 	src/arch/sizeof.c \
 	src/arch/stackslot.c \
 	src/arch/store.c \
