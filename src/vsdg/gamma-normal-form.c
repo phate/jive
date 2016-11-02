@@ -111,17 +111,6 @@ gamma_normal_form::operands_are_normalized(
 		}
 	}
 
-	if (get_invariant_reduction()) {
-		jive_node * true_branch = arguments[0]->node();
-		jive_node * false_branch = arguments[1]->node();
-		size_t nvars = true_branch->ninputs();
-		for (size_t n = nvars; n > 0; --n) {
-			if (true_branch->input(n-1)->origin() == false_branch->input(n-1)->origin()) {
-				return false;
-			}
-		}
-	}
-
 	return true;
 }
 
