@@ -69,14 +69,14 @@ static int test_main(void)
 	}
 	jive_graph_prune(graph);
 
-	assert(bottom->producer(0)->operation() == jive::bits::uint_constant_op(32, 1));
-	assert(bottom->producer(1)->operation() == jive::bits::uint_constant_op(32, 1));
-	assert(bottom->producer(2)->operation() == jive::bits::uint_constant_op(32, 1));
-	assert(bottom->producer(3)->operation() == jive::bits::uint_constant_op(32, 4));
-	assert(bottom->producer(4)->operation() == jive::bits::uint_constant_op(32, 4));
-	assert(bottom->producer(5)->operation() == jive::bits::uint_constant_op(32, 4));
-	assert(bottom->producer(6)->operation() == jive::bits::uint_constant_op(32, 8));
-	assert(bottom->producer(7)->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(0)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->input(1)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->input(2)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 1));
+	assert(bottom->input(3)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(4)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(5)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
+	assert(bottom->input(6)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 8));
+	assert(bottom->input(7)->origin()->node()->operation() == jive::bits::uint_constant_op(32, 4));
 	
 	jive_view(graph, stdout);
 

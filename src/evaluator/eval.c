@@ -347,7 +347,7 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_op*>(&node->operation()));
 
-	jive_node * tail = node->producer(0);
+	jive_node * tail = node->input(0)->origin()->node();
 
 	ctx.push_frame(tail->region());
 
@@ -407,8 +407,8 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_op*>(&node->operation()));
 
-	jive_node * tail = node->producer(0);
-	jive_node * head = tail->producer(0);
+	jive_node * tail = node->input(0)->origin()->node();
+	jive_node * head = tail->input(0)->origin()->node();
 
 	std::vector<std::unique_ptr<const literal>> results;
 	do {
@@ -457,7 +457,7 @@ eval_phi_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_op*>(&node->operation()));
 
-	jive_node * tail = node->producer(0);
+	jive_node * tail = node->input(0)->origin()->node();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());

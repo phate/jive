@@ -357,7 +357,7 @@ static int test_main(void)
 	
 	assert(n2->input(0)->origin() == n1->output(0));
 	assert(n4->input(0)->origin() != n3->output(0));
-	jive_node * split_node = n4->producer(0);
+	jive_node * split_node = n4->input(0)->origin()->node();
 	expect_options(&nego, n3->output(0), 1, split_node->input(0), 1);
 	expect_options(&nego, split_node->output(0), 2, n4->input(0), 2);
 	

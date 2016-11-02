@@ -168,7 +168,7 @@ jive_gamma_create(
 			region->graph, jive::detail::strfmt("gamma_", gamma, "_", n), *types[n]);
 
 		for (size_t i = 0; i < nalternatives; i++) {
-			jive_node * head = arguments[i]->node()->producer(0);
+			jive_node * head = arguments[i]->node()->input(0)->origin()->node();
 			head->add_input(gate_head, alternatives[i][n]);
 			jive::output * value = head->add_output(gate_head);
 			arguments[i]->node()->add_input(gate_tail, value);
@@ -228,8 +228,8 @@ jive_gamma(jive::output * predicate,
 	*/
 	if (nf->get_mutable() && nf->get_invariant_reduction()) {
 		results.clear();
-		jive_node * tail0 = node->producer(0);
-		jive_node * head0 = tail0->producer(0);
+		jive_node * tail0 = node->input(0)->origin()->node();
+		jive_node * head0 = tail0->input(0)->origin()->node();
 		size_t nalternatives = node->ninputs()-1;
 		for (size_t v = node->noutputs(); v > 0; --v) {
 			jive::output * value = tail0->input(v)->origin();
@@ -239,9 +239,9 @@ jive_gamma(jive::output * predicate,
 			size_t n;
 			value = head0->input(v-1)->origin();
 			for (n = 1; n < nalternatives; n++) {
-				jive_node * tail = node->producer(n);
-				jive_node * head = tail->producer(0);
-				if (tail->producer(v) != head || value != head->input(v-1)->origin())
+				jive_node * tail = node->input(n)->origin()->node();
+				jive_node * head = tail->input(0)->origin()->node();
+				if (tail->input(v)->origin()->node() != head || value != head->input(v-1)->origin())
 					break;
 			}
 			if (n == nalternatives) {
@@ -250,8 +250,8 @@ jive_gamma(jive::output * predicate,
 				/* FIXME: ugh, this should be done by DNE */
 				delete node->output(v-1);
 				for (size_t n = 0; n < nalternatives; n++) {
-					jive_node * tail = node->producer(n);
-					jive_node * head = tail->producer(0);
+					jive_node * tail = node->input(n)->origin()->node();
+					jive_node * head = tail->input(0)->origin()->node();
 					tail->remove_input(v);
 					head->remove_output(v);
 					head->remove_input(v-1);

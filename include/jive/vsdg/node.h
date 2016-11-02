@@ -149,8 +149,6 @@ public:
 	inline jive::output *
 	origin() const noexcept;
 
-	inline jive_node * producer() const noexcept;
-
 	struct {
 		input * prev;
 		input * next;
@@ -399,12 +397,6 @@ private:
 
 /**	@}	*/
 
-inline jive_node *
-jive::input::producer() const noexcept
-{
-	return origin()->node();
-}
-
 inline jive::output *
 jive::input::origin() const noexcept
 {
@@ -431,11 +423,6 @@ public:
 	operation() const noexcept
 	{
 		return *operation_;
-	}
-
-	inline jive_node * producer(size_t index) const noexcept
-	{
-		return input(index)->producer();
 	}
 
 	inline bool

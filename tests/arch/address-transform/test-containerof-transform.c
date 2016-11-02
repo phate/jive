@@ -73,24 +73,24 @@ static int test_main(void)
 		}
 	}
 	
-	jive_node * sum = bottom->producer(0);
+	jive_node * sum = bottom->input(0)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	jive_node * constant = sum->producer(1);
+	jive_node * constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
 	
-	sum = bottom->producer(1);
+	sum = bottom->input(1)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	constant = sum->producer(1);
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 2));
 
-	sum = bottom->producer(2);
+	sum = bottom->input(2)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	constant = sum->producer(1);
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 4));
 
-	sum = bottom->producer(3);
+	sum = bottom->input(3)->origin()->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	constant = sum->producer(1);
+	constant = sum->input(1)->origin()->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
 	
 	jive_graph_destroy(graph);

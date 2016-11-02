@@ -23,7 +23,7 @@
 jive_node *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
 {
-	jive_region * src_region = lambda_node->producer(0)->region();
+	jive_region * src_region = lambda_node->input(0)->origin()->node()->region();
 	
 	size_t nparameters = src_region->top->noutputs() - 1;
 	size_t nreturns = src_region->bottom->ninputs()-1;

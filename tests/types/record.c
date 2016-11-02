@@ -97,9 +97,9 @@ static int _test_rcdselect()
 
 	jive_view(graph, stderr);
 
-	assert(bottom->producer(1) == top);
+	assert(bottom->input(1)->origin()->node() == top);
 	assert(s0->node()->operation() != s2->node()->operation());
-	assert(dynamic_cast<const jive::load_op *>(&bottom->producer(3)->operation()));
+	assert(dynamic_cast<const jive::load_op *>(&bottom->input(3)->origin()->node()->operation()));
 
 	jive_graph_destroy(graph);
 

@@ -724,7 +724,7 @@ jive_node::recompute_depth()
 {
 	size_t new_depth = 0;
 	for (size_t n = 0; n < ninputs(); n++)
-		new_depth = std::max(producer(n)->depth() + 1, new_depth);
+		new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
 
 	size_t old_depth = depth_;
 	if (new_depth == old_depth)

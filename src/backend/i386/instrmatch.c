@@ -109,7 +109,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 			&jive_i386_instr_int_load_imm, nullptr, &imm);
 		
 		jive_node * sub = jive_region_get_subroutine_node(node->region());
-		jive_node * enter = sub->producer(0)->region()->top;
+		jive_node * enter = sub->input(0)->origin()->region()->top;
 		tmp->add_input(&jive::seq::seqtype, enter->output(0));
 		
 		ext = tmp->output(0);
@@ -275,7 +275,7 @@ convert_bitcmp(
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node_->operation()));
 
-	jive_node * node = node_->producer(0);
+	jive_node * node = node_->input(0)->origin()->node();
 
 	jive::output * arg1 = node->input(0)->origin();
 	jive::output * arg2 = node->input(1)->origin();
@@ -394,7 +394,7 @@ match_gpr_bitcmp(jive_node * node)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::match_op*>(&node->operation()));
 
-	auto i = bitcompare_map.find(&typeid(node->producer(0)->operation()));
+	auto i = bitcompare_map.find(&typeid(node->input(0)->origin()->node()->operation()));
 	if (i != bitcompare_map.end()) {
 		convert_bitcmp(node, i->second.first, i->second.second);
 	} else {
@@ -562,8 +562,9 @@ match_single(jive_node * node, const jive_regselector * regselector)
 			JIVE_DEBUG_ASSERT(false);
 		}
 	} else if (dynamic_cast<const jive::match_op *>(&node->operation())
-		&& dynamic_cast<const jive::bits::compare_op *>(&node->producer(0)->operation())) {
-		jive::input * cmp_input = node->producer(0)->input(0);
+		&& dynamic_cast<const jive::bits::compare_op *>(
+		&node->input(0)->origin()->node()->operation())) {
+		jive::input * cmp_input = node->input(0)->origin()->node()->input(0);
 		const jive_register_class * regcls = jive_regselector_map_input(regselector, cmp_input);
 		if (true || (regcls == &jive_i386_regcls_gpr)) {
 			match_gpr_bitcmp(node);

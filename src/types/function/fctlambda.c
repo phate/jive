@@ -275,12 +275,12 @@ jive_lambda_end(jive_lambda * self,
 void
 jive_inline_lambda_apply(jive_node * apply_node)
 {
-	jive_node * lambda_node = apply_node->producer(0);
+	jive_node * lambda_node = apply_node->input(0)->origin()->node();
 	
 	const jive::fct::lambda_op & op = dynamic_cast<const jive::fct::lambda_op &>(
 		lambda_node->operation());
 	
-	jive_region * function_region = lambda_node->producer(0)->region();
+	jive_region * function_region = lambda_node->input(0)->origin()->region();
 	jive_node * head = function_region->top;
 	jive_node * tail = function_region->bottom;
 	
