@@ -44,7 +44,7 @@ test_main(void)
 
 	jive_view(graph, stdout);
 
-	assert(bottom->input(0)->origin()->node()->operation()
+	assert(dynamic_cast<jive::output*>(bottom->input(0)->origin())->node()->operation()
 		== jive::bitstring_to_address_operation(32, addrtype));
 
 	jive_graph_destroy(graph);

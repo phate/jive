@@ -40,24 +40,27 @@ gamma_normal_form::normalize_node(jive_node * node) const
 
 	bool was_normalized = true;
 	if (get_predicate_reduction()) {
-		jive::output * predicate = node->input(node->ninputs()-1)->origin();
-		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation())) {
-			jive_node * tail = node->input(op->value().nalternatives())->origin()->node();
-			jive_node * head = tail->input(0)->origin()->node();
-			JIVE_DEBUG_ASSERT(tail = tail->region()->bottom);
-			JIVE_DEBUG_ASSERT(head = head->region()->top);
+		auto predicate = dynamic_cast<jive::output*>(node->input(node->ninputs()-1)->origin());
+		if (predicate) {
+			if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation())) {
+				size_t nalts = op->value().nalternatives();
+				jive_node * tail = dynamic_cast<jive::output*>(node->input(nalts)->origin())->node();
+				jive_node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
+				JIVE_DEBUG_ASSERT(tail = tail->region()->bottom);
+				JIVE_DEBUG_ASSERT(head = head->region()->top);
 
-			jive::substitution_map map;
-			for (size_t n = 1; n < head->noutputs(); n++)
-				map.insert(head->output(n), head->input(n-1)->origin());
+				jive::substitution_map map;
+				for (size_t n = 1; n < head->noutputs(); n++)
+					map.insert(head->output(n), dynamic_cast<jive::output*>(head->input(n-1)->origin()));
 
-			jive_region_copy_substitute(tail->region(), node->region(), map, false, false);
+				jive_region_copy_substitute(tail->region(), node->region(), map, false, false);
 
-			for (size_t n = 1; n < node->noutputs(); n++) {
-					jive::output * original = tail->input(n)->origin();
+				for (size_t n = 1; n < node->noutputs(); n++) {
+					jive::output * original = dynamic_cast<jive::output*>(tail->input(n)->origin());
 					node->output(n)->replace(map.lookup(original));
+				}
+				was_normalized = false;
 			}
-			was_normalized = false;
 		}
 	}
 
@@ -65,16 +68,18 @@ gamma_normal_form::normalize_node(jive_node * node) const
 		size_t nalternatives = node->ninputs()-1;
 		for (size_t v = node->noutputs(); v > 0; --v) {
 			size_t n;
-			jive::output * value = node->input(0)->origin()->node()->input(v-1)->origin();
+			jive_node * tmp = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
+			jive::output * value = dynamic_cast<jive::output*>(tmp->input(v-1)->origin());
 			for (n = 1; n < nalternatives; n++) {
-				if (value != node->input(n)->origin()->node()->input(v-1)->origin())
+				jive_node * tail_node = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
+				if (value != dynamic_cast<jive::output*>(tail_node->input(v-1)->origin()))
 					break;
 			}
 			if (n == nalternatives) {
-				node->output(v-1)->replace(node->input(0)->origin()->node()->input(v-1)->origin());
+				node->output(v-1)->replace(tmp->input(v-1)->origin());
 				delete node->output(v-1);
 				for (size_t n = 0; n < nalternatives; n++)
-					node->input(n)->origin()->node()->remove_input(v-1);
+					dynamic_cast<jive::output*>(node->input(n)->origin())->node()->remove_input(v-1);
 				was_normalized = false;
 			}
 		}
@@ -101,7 +106,7 @@ gamma_normal_form::operands_are_normalized(
 		size_t nalternatives = arguments.size()-1;
 		for (size_t v = 0; v < arguments[0]->node()->ninputs(); v++) {
 			size_t n;
-			jive::output * value = arguments[0]->node()->input(v)->origin();
+			jive::output * value = dynamic_cast<jive::output*>(arguments[0]->node()->input(v)->origin());
 			for (n = 1; n < nalternatives; n++) {
 				if (value != arguments[n]->node()->input(v)->origin())
 					break;

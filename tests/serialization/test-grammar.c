@@ -197,7 +197,7 @@ verify_serialize_nodeexpr(jive_node * node,
 		jive_serialization_symtab_insert_gatesym(&ctx.drv.symtab, gates[n], gate_names[n]);
 	for (n = 0; n < node->ninputs(); ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab,
-			node->input(n)->origin(), input_names[n]);
+			dynamic_cast<jive::output*>(node->input(n)->origin()), input_names[n]);
 	for (n = 0; n < node->noutputs(); ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab, node->output(n), output_names[n]);
 	

@@ -29,8 +29,8 @@
 static bool
 jive_input_is_valid(const jive::input * input)
 {
-	jive_region * region = input->node()->region();
-	jive_region * origin_region = input->origin()->node()->region();
+	jive_region * region = input->region();
+	jive_region * origin_region = input->origin()->region();
 
 	if (dynamic_cast<const jive::achr::type*>(&input->type()))
 		return origin_region->parent == region;
@@ -201,7 +201,7 @@ input::divert_origin(jive::oport * new_origin) noexcept
 	JIVE_DEBUG_ASSERT(this->region()->graph == new_origin->region()->graph);
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node(), new_origin));
 
-	jive::output * old_origin = this->origin();
+	jive::oport * old_origin = this->origin();
 
 	old_origin->remove_user(this);
 	this->origin_ = new_origin;
@@ -214,7 +214,8 @@ input::divert_origin(jive::oport * new_origin) noexcept
 
 	jive_graph_mark_denormalized(new_origin->region()->graph);
 
-	node()->graph()->on_input_change(this, old_origin, dynamic_cast<jive::output*>(new_origin));
+	node()->graph()->on_input_change(this, dynamic_cast<jive::output*>(old_origin),
+		dynamic_cast<jive::output*>(new_origin));
 }
 
 /* oport */
@@ -669,17 +670,17 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 {
 	std::vector<jive::output*> operands(noperands());
 	for (size_t n = 0; n < noperands(); n++) {
-		operands[n] = smap.lookup(input(n)->origin());
+		operands[n] = smap.lookup(dynamic_cast<jive::output*>(input(n)->origin()));
 		if (!operands[n]) {
-			operands[n] = input(n)->origin();
+			operands[n] = dynamic_cast<jive::output*>(input(n)->origin());
 		}
 	}
 
 	jive_node * new_node = copy(region, operands);
 	for (size_t n = noperands(); n < ninputs(); n++) {
-		jive::output * origin = smap.lookup(input(n)->origin());
+		jive::output * origin = smap.lookup(dynamic_cast<jive::output*>(input(n)->origin()));
 		if (!origin) {
-			origin =  input(n)->origin();
+			origin =  dynamic_cast<jive::output*>(input(n)->origin());
 		}
 
 		if (input(n)->gate()) {
@@ -724,7 +725,8 @@ jive_node::recompute_depth()
 {
 	size_t new_depth = 0;
 	for (size_t n = 0; n < ninputs(); n++)
-		new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
+		new_depth = std::max(dynamic_cast<jive::output*>(input(n)->origin())->node()->depth() + 1,
+			new_depth);
 
 	size_t old_depth = depth_;
 	if (new_depth == old_depth)

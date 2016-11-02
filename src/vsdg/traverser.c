@@ -39,7 +39,7 @@ topdown_traverser::predecessors_visited(const jive_node * node) noexcept
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
 		input * in = node->input(n);
-		if (tracker_.get_nodestate(in->origin()->node())
+		if (tracker_.get_nodestate(dynamic_cast<jive::output*>(in->origin())->node())
 			!= traversal_nodestate::behind) {
 			return false;
 		}
@@ -150,7 +150,7 @@ bottomup_traverser::next()
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(node->input(n)->origin()->node());
+		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
 	}
 	return node;
 }
@@ -165,7 +165,7 @@ void
 bottomup_traverser::node_destroy(jive_node * node)
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(node->input(n)->origin()->node());
+		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
 	}
 }
 
@@ -222,7 +222,7 @@ upward_cone_traverser::node_destroy(jive_node * node)
 	}
 	
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(node->input(n)->origin()->node());
+		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
 	}
 }
 
@@ -267,7 +267,7 @@ upward_cone_traverser::next()
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(node->input(n)->origin()->node());
+		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
 	}
 	return node;
 }
@@ -331,7 +331,7 @@ void
 bottomup_region_traverser::check_above(jive_node * node)
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		jive_node * above = node->input(n)->origin()->node();
+		jive_node * above = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
 		jive_tracker_nodestate * nodestate = map_node(above);
 		if (nodestate->state != jive_tracker_nodestate_none) {
 			continue;

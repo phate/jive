@@ -756,7 +756,7 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 	/* inputs */
 	for (n = 0; n < node->ninputs(); ++n) {
 		jive_portinfo port;
-		port.origin = node->input(n)->origin();
+		port.origin = dynamic_cast<jive::output*>(node->input(n)->origin());
 		port.required_rescls = node->input(n)->rescls();
 		port.gate = node->input(n)->gate();
 		inports.ports.push_back(port);
@@ -1070,7 +1070,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 			for (j = 0; j < node->ninputs(); ++j) {
 				jive::input * input = node->input(j);
 				if (dynamic_cast<const jive::achr::type*>(&input->type()))
-					jive_serialize_regiondef(self, namegen, input->origin()->node()->region(), os);
+					jive_serialize_regiondef(self, namegen, input->origin()->region(), os);
 			}
 			if (jive::graph_tail_operation() == node->operation()) {
 				continue;

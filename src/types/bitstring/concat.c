@@ -88,7 +88,7 @@ concat_reduce_arg_pair(jive::output * arg1, jive::output * arg2)
 		&arg2->node()->operation());
 	if (arg1_slice && arg2_slice && arg1_slice->high() == arg2_slice->low() &&
 		arg1->node()->input(0)->origin() == arg2->node()->input(0)->origin()) {
-		jive::output * origin1 = arg1->node()->input(0)->origin();
+		jive::output * origin1 = dynamic_cast<jive::output*>(arg1->node()->input(0)->origin());
 		/* FIXME: support sign bit */
 		return jive_bitslice(origin1, arg1_slice->low(), arg2_slice->high());
 	}
@@ -373,8 +373,8 @@ concat_op::can_reduce_operand_pair(
 		&arg2->node()->operation());
 
 	if (arg1_slice && arg2_slice){
-		jive::output * origin1 = arg1->node()->input(0)->origin();
-		jive::output * origin2 = arg2->node()->input(0)->origin();
+		jive::oport * origin1 = arg1->node()->input(0)->origin();
+		jive::oport * origin2 = arg2->node()->input(0)->origin();
 
 		if (origin1 == origin2 && arg1_slice->high() == arg2_slice->low()) {
 			return jive_binop_reduction_merge;
@@ -415,7 +415,7 @@ concat_op::reduce_operand_pair(
 		const slice_op * arg2_slice = static_cast<const slice_op *>(
 			&arg2->node()->operation());
 
-		jive::output * origin1 = arg1->node()->input(0)->origin();
+		jive::output * origin1 = dynamic_cast<jive::output*>(arg1->node()->input(0)->origin());
 
 		return jive_bitslice(origin1, arg1_slice->low(), arg2_slice->high());
 

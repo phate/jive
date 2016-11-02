@@ -257,12 +257,12 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
 		const jive_register_class * regcls = op->regcls();
-		jive_node * origin = node->input(1)->origin()->node();
+		jive_node * origin = dynamic_cast<jive::output*>(node->input(1)->origin())->node();
 
 		if (dynamic_cast<const jive::base::binary_op *>(&origin->operation())) {
 			jive::output * operands[origin->noperands()];
 			for (size_t n = 0; n < origin->noperands(); n++) {
-				jive::output * operand = origin->input(n)->origin();
+				jive::output * operand = dynamic_cast<jive::output*>(origin->input(n)->origin());
 				jive::output * regvalue = jive_regvalue(ctl, regcls, operand);
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
@@ -284,7 +284,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 		} else if (dynamic_cast<const jive::base::unary_op *>(&origin->operation())) {
 			jive::output * operands[origin->noperands()];
 			for (size_t n = 0; n < origin->noperands(); n++) {
-				jive::output * operand = origin->input(n)->origin();
+				jive::output * operand = dynamic_cast<jive::output*>(origin->input(n)->origin());
 				jive::output * regvalue = jive_regvalue(ctl, regcls, operand);
 				jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 				if (!reg_port)
@@ -308,7 +308,8 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	for (n = 0; n < node->ninputs(); n++) {
 		jive::input * input = node->input(n);
 		if (input->origin()->region() != root_region
-		&& !dynamic_cast<const jive::base::nullary_op*>(&input->origin()->node()->operation()))
+		&& !dynamic_cast<const jive::base::nullary_op*>(
+			&dynamic_cast<jive::output*>(input->origin())->node()->operation()))
 			continue;
 		jive_negotiator_port * port = jive_negotiator_map_input(&self->base, input);
 		if (!port)
@@ -317,7 +318,8 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 		if (!regcls)
 			continue;
 		
-		jive::output * regvalue = jive_regvalue(ctl, regcls, input->origin());
+		jive::output * regvalue = jive_regvalue(ctl, regcls,
+			dynamic_cast<jive::output*>(input->origin()));
 		jive_negotiator_port * reg_port = jive_negotiator_map_output(&self->base, regvalue);
 		if (!reg_port) {
 			self->base.class_->annotate_node(&self->base, regvalue->node());

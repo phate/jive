@@ -53,8 +53,8 @@ static int test_main(void)
 	jive_regselector_process(&regselect);
 	jive_regselector_fini(&regselect);
 	
-	jive_node * n1 = sum1->node()->input(0)->origin()->node();
-	jive_node * n2 = sum1->node()->input(1)->origin()->node();
+	jive_node * n1 = dynamic_cast<jive::output*>(sum1->node()->input(0)->origin())->node();
+	jive_node * n2 = dynamic_cast<jive::output*>(sum1->node()->input(1)->origin())->node();
 	
 	const jive::regvalue_op * rv = dynamic_cast<const jive::regvalue_op *>(
 		&n1->operation());
@@ -65,15 +65,15 @@ static int test_main(void)
 	assert(rv);
 	assert(rv->regcls() == &jive_testarch_regcls_gpr);
 	
-	sum2 = res->node()->input(1)->origin();
-	n1 = sum2->node()->input(0)->origin()->node();
-	n2 = sum2->node()->input(1)->origin()->node();
+	sum2 = dynamic_cast<jive::output*>(res->node()->input(1)->origin());
+	n1 = dynamic_cast<jive::output*>(sum2->node()->input(0)->origin())->node();
+	n2 = dynamic_cast<jive::output*>(sum2->node()->input(1)->origin())->node();
 	assert(dynamic_cast<const jive::regvalue_op *>(&n1->operation()));
 	assert(dynamic_cast<const jive::bits::not_op *>(&n2->operation()));
-	n2 = n2->input(0)->origin()->node();
+	n2 = dynamic_cast<jive::output*>(n2->input(0)->origin())->node();
 	assert(dynamic_cast<const jive::regvalue_op *>(&n2->operation()));
-	jive::output * o1 = n1->input(1)->origin();
-	jive::output * o2 = n2->input(1)->origin();
+	jive::output * o1 = dynamic_cast<jive::output*>(n1->input(1)->origin());
+	jive::output * o2 = dynamic_cast<jive::output*>(n2->input(1)->origin());
 	assert(o1 == lit);
 	assert(o2 == sym);
 	

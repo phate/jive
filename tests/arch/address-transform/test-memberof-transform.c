@@ -69,24 +69,24 @@ static int test_main(void)
 		}
 	}
 
-	jive_node * sum = bottom->input(0)->origin()->node();
+	jive_node * sum = dynamic_cast<jive::output*>(bottom->input(0)->origin())->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	jive_node * constant = sum->input(1)->origin()->node();
+	jive_node * constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
 	
-	sum = bottom->input(1)->origin()->node();
+	sum = dynamic_cast<jive::output*>(bottom->input(1)->origin())->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 2));
 
-	sum = bottom->input(2)->origin()->node();
+	sum = dynamic_cast<jive::output*>(bottom->input(2)->origin())->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 4));
 
-	sum = bottom->input(3)->origin()->node();
+	sum = dynamic_cast<jive::output*>(bottom->input(3)->origin())->node();
 	assert(sum->operation() == jive::bits::add_op(32));
-	constant = sum->input(1)->origin()->node();
+	constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 8));
 
 	jive_graph_destroy(graph);

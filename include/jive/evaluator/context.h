@@ -135,7 +135,7 @@ public:
 	inline bool
 	exists(const jive::input * input) const noexcept
 	{
-		return exists(input->origin());
+		return exists(dynamic_cast<jive::output*>(input->origin()));
 	}
 
 	inline bool
@@ -155,7 +155,7 @@ public:
 	inline const literal *
 	lookup(const jive::input * input) const noexcept
 	{
-		return lookup(input->origin());
+		return lookup(dynamic_cast<jive::output*>(input->origin()));
 	}
 
 	inline const literal *

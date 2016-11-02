@@ -115,7 +115,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	int preferred_x = 0, total = 0, count = 0;
 	for(size_t n = 0; n < self->node->ninputs(); n++) {
 		jive_inputview * inputview = &self->inputs[n];
-		jive::output * origin = self->node->input(n)->origin();
+		jive::output * origin = dynamic_cast<jive::output*>(self->node->input(n)->origin());
 		jive_outputview * outputview = graphview->outputmap[origin];
 		if (!outputview->nodeview->placed) continue;
 		

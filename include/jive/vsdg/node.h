@@ -146,7 +146,7 @@ public:
 	void
 	divert_origin(jive::oport * new_origin) noexcept;
 
-	inline jive::output *
+	inline jive::oport *
 	origin() const noexcept;
 
 	struct {
@@ -397,11 +397,10 @@ private:
 
 /**	@}	*/
 
-inline jive::output *
+inline jive::oport *
 jive::input::origin() const noexcept
 {
-	/* FIXME: the dynamic_cast is going to be removed again once we introduced region arguments */
-	return dynamic_cast<jive::output*>(origin_);
+	return origin_;
 }
 
 typedef struct jive_node jive_node;
@@ -638,7 +637,7 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 JIVE_EXPORTED_INLINE jive_region *
 jive_node_anchored_region(const jive_node * self, size_t index)
 {
-	jive_region * region = self->input(index)->origin()->node()->region();
+	jive_region * region = self->input(index)->origin()->region();
 	/* the given region can only be different if the identified input
 	 * is of "anchor" type, so this implicitly checks the type */
 	JIVE_DEBUG_ASSERT(self->region() != region);
@@ -655,12 +654,12 @@ jive_node_get_use_count_output(
 	const jive_node * self,
 	struct jive_resource_class_count * use_count);
 
-JIVE_EXPORTED_INLINE std::vector<jive::output *>
+JIVE_EXPORTED_INLINE std::vector<jive::output*>
 jive_node_arguments(jive_node * self)
 {
-	std::vector<jive::output *> arguments;
+	std::vector<jive::output*> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
-		arguments.push_back(self->input(n)->origin());
+		arguments.push_back(dynamic_cast<jive::output*>(self->input(n)->origin()));
 	}
 	return arguments;
 }

@@ -23,7 +23,8 @@
 jive_node *
 jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
 {
-	jive_region * src_region = lambda_node->input(0)->origin()->node()->region();
+	jive_region * src_region;
+	src_region = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->region();
 	
 	size_t nparameters = src_region->top->noutputs() - 1;
 	size_t nreturns = src_region->bottom->ninputs()-1;
@@ -82,7 +83,8 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom->ninputs(); n++) {
 		jive::input * original = src_region->bottom->input(n);
-		jive::output * retval = subst.lookup(src_region->bottom->input(n)->origin());
+		jive::output * retval = subst.lookup(
+			dynamic_cast<jive::output*>(src_region->bottom->input(n)->origin()));
 		
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			if(dynamic_cast<const jive::addr::type*>(&original->type()))

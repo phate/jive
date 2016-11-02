@@ -28,7 +28,7 @@ jive_i386_call_node_substitute(
 	
 	/* distinguish between call to fixed address and register-indirect call */
 	jive_node * call_instr;
-	jive::output * address = node->input(0)->origin();
+	jive::output * address = dynamic_cast<jive::output*>(node->input(0)->origin());
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op *>(
 		&address->node()->operation())) {
 		jive::immediate imm(0, op->label());
@@ -65,7 +65,7 @@ jive_i386_call_node_substitute(
 	a pointer to the return value area as first (hidden) parameter */
 	size_t offset = 0;
 	for (size_t n = 0; n < nargs; n++) {
-		jive::output * value = node->input(n+1)->origin();
+		jive::output * value = dynamic_cast<jive::output*>(node->input(n+1)->origin());
 		
 		const jive_resource_class * value_cls = value->rescls();
 		const jive::base::type * value_type = &value->type();

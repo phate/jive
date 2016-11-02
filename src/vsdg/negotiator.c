@@ -527,7 +527,8 @@ jive_negotiator_map_gate(jive_negotiator * self, jive::gate * gate)
 jive_negotiator_connection *
 jive_negotiator_create_input_connection(jive_negotiator * self, jive::input * input)
 {
-	jive_negotiator_port * output_port = jive_negotiator_map_output(self, input->origin());
+	jive_negotiator_port * output_port;
+	output_port = jive_negotiator_map_output(self, dynamic_cast<jive::output*>(input->origin()));
 	jive_negotiator_connection * connection;
 	if (!output_port)
 		connection = jive_negotiator_connection_create(self);
@@ -725,7 +726,7 @@ jive_negotiator_maybe_split_edge(jive_negotiator * self, jive::output * origin, 
 	
 	const jive::base::type * type = &input->type();
 	jive::output * split_output = jive_negotiator_split(self,
-		type, input->origin(), origin_port->option,
+		type, dynamic_cast<jive::output*>(input->origin()), origin_port->option,
 		type, input_port->option);
 	
 	jive_negotiator_port * split_output_port = jive_negotiator_map_output(self, split_output);
@@ -759,7 +760,7 @@ jive_negotiator_insert_split_nodes(jive_negotiator * self)
 	for (jive_node * node : jive::topdown_traverser(self->graph)) {
 		for (size_t n = 0; n < node->ninputs(); n++) {
 			jive::input * input = node->input(n);
-			jive_negotiator_maybe_split_edge(self, input->origin(), input);
+			jive_negotiator_maybe_split_edge(self, dynamic_cast<jive::output*>(input->origin()), input);
 		}
 	}
 }

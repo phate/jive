@@ -148,7 +148,7 @@ static int function_test_lambda_apply(void)
 	
 	jive_view(graph, stderr);
 
-	jive_node * test_sum = interest->input(0)->origin()->node();
+	jive_node * test_sum = dynamic_cast<jive::output*>(interest->input(0)->origin())->node();
 	assert(test_sum->operation() == jive::bits::add_op(32));
 	assert(test_sum->ninputs() == 2);
 	assert(test_sum->input(0)->origin() == c0);

@@ -347,7 +347,7 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_op*>(&node->operation()));
 
-	jive_node * tail = node->input(0)->origin()->node();
+	jive_node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
 
 	ctx.push_frame(tail->region());
 
@@ -377,7 +377,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
-	jive_node * tail = node->input(alt)->origin()->node();
+	jive_node * tail = dynamic_cast<jive::output*>(node->input(alt)->origin())->node();
 
 	ctx.push_frame(tail->region());
 	std::vector<std::unique_ptr<const literal>> results;
@@ -407,8 +407,8 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_op*>(&node->operation()));
 
-	jive_node * tail = node->input(0)->origin()->node();
-	jive_node * head = tail->input(0)->origin()->node();
+	jive_node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
+	jive_node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
 
 	std::vector<std::unique_ptr<const literal>> results;
 	do {
@@ -457,7 +457,7 @@ eval_phi_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_op*>(&node->operation()));
 
-	jive_node * tail = node->input(0)->origin()->node();
+	jive_node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());
@@ -520,7 +520,7 @@ eval_output(const jive::output * output, context & ctx)
 static std::unique_ptr<const literal>
 eval_input(const jive::input * input, context & ctx)
 {
-	return eval_output(input->origin(), ctx);
+	return eval_output(dynamic_cast<jive::output*>(input->origin()), ctx);
 }
 
 const std::unique_ptr<const literal>
@@ -534,7 +534,7 @@ eval(
 	for (size_t n = 0; n < tail->ninputs(); n++) {
 		JIVE_DEBUG_ASSERT(tail->input(n)->gate() != nullptr);
 		if (tail->input(n)->gate()->name() == name) {
-			output = tail->input(n)->origin();
+			output = dynamic_cast<jive::output*>(tail->input(n)->origin());
 			break;
 		}
 	}

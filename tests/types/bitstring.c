@@ -1107,20 +1107,22 @@ static int types_bitstring_test_normalize(void)
 	assert(sum1->node()->noperands() == 2);
 
 	jive_node * lambda_node = jive_lambda_end(lambda, 1, tmparray11, &sum1)->node();
-	jive::input * retval = lambda_node->input(0)->origin()->node()->input(1);
-	jive::output * arg;
-	arg = lambda_node->input(0)->origin()->node()->input(0)->origin()->node()->output(1);
+	jive::input * retval;
+	retval = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->input(1);
+	jive_node * lambda_tail = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node();
+	jive_node * lambda_head = dynamic_cast<jive::output*>(lambda_tail->input(0)->origin())->node();
+	jive::output * arg = lambda_head->output(1);
 	jive_graph_export(graph, lambda_node->output(0));
 	
 	sum_nf->set_mutable(true);
 	jive_graph_normalize(graph);
 	jive_graph_prune(graph);
 	
-	jive::output * expected_sum = retval->origin();
+	jive::output * expected_sum = dynamic_cast<jive::output*>(retval->origin());
 	assert(expected_sum->node()->operation() == jive::bits::add_op(32));
 	assert(expected_sum->node()->noperands() == 2);
-	jive::output * op1 = expected_sum->node()->input(0)->origin();
-	jive::output * op2 = expected_sum->node()->input(1)->origin();
+	jive::output * op1 = dynamic_cast<jive::output*>(expected_sum->node()->input(0)->origin());
+	jive::output * op2 = dynamic_cast<jive::output*>(expected_sum->node()->input(1)->origin());
 	if (!dynamic_cast<const jive::bits::constant_op *>(&op1->node()->operation())) {
 		jive::output * tmp = op1; op1 = op2; op2 = tmp;
 	}
@@ -1178,20 +1180,20 @@ static int types_bitstring_test_reduction(void)
 		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
 		assert(node->ninputs() == 2);
 		assert(dynamic_cast<const jive::bits::slice_op *>(
-			&node->input(0)->origin()->node()->operation()));
+			&dynamic_cast<jive::output*>(node->input(0)->origin())->node()->operation()));
 		assert(dynamic_cast<const jive::bits::slice_op *>(
-			&node->input(1)->origin()->node()->operation()));
+			&dynamic_cast<jive::output*>(node->input(1)->origin())->node()->operation()));
 		
 		const jive::bits::slice_op * attrs;
 		attrs = dynamic_cast<const jive::bits::slice_op*>(
-			&node->input(0)->origin()->node()->operation());
+			&dynamic_cast<jive::output*>(node->input(0)->origin())->node()->operation());
 		assert( (attrs->low() == 8) && (attrs->high() == 16) );
 		attrs = dynamic_cast<const jive::bits::slice_op*>(
-			&node->input(1)->origin()->node()->operation());
+			&dynamic_cast<jive::output*>(node->input(1)->origin())->node()->operation());
 		assert( (attrs->low() == 0) && (attrs->high() == 8) );
 		
-		assert(node->input(0)->origin()->node()->input(0)->origin() == x);
-		assert(node->input(1)->origin()->node()->input(0)->origin() == y);
+		assert(dynamic_cast<jive::output*>(node->input(0)->origin())->node()->input(0)->origin() == x);
+		assert(dynamic_cast<jive::output*>(node->input(1)->origin())->node()->input(0)->origin() == y);
 	}
 	
 	{

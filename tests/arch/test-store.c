@@ -81,7 +81,7 @@ static int test_main(void)
 
 	jive_view(graph, stderr);
 
-	assert(states3[0]->node()->input(2)->origin()->node() == top);
+	assert(dynamic_cast<jive::output*>(states3[0]->node()->input(2)->origin())->node() == top);
 
 	jive_graph_destroy(graph);
 

@@ -50,7 +50,7 @@ static int test_main()
 
 	jive_view(graph, stderr);
 
-	assert(bottom->input(1)->origin()->node() == top);
+	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
 
 	jive_graph_destroy(graph);
 

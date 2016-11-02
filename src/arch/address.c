@@ -78,7 +78,7 @@ memberof_op::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse)
-		return arg->node()->input(0)->origin();
+		return dynamic_cast<jive::output*>(arg->node()->input(0)->origin());
 	
 	return nullptr;
 }
@@ -160,7 +160,7 @@ containerof_op::reduce_operand(
 	jive::output * arg) const
 {
 	if (path == jive_unop_reduction_inverse) {
-		return arg->node()->input(0)->origin();
+		return dynamic_cast<jive::output*>(arg->node()->input(0)->origin());
 	} else {
 		return nullptr;
 	}
