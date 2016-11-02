@@ -186,7 +186,7 @@ input::region() const noexcept
 }
 
 void
-input::divert_origin(jive::output * new_origin) noexcept
+input::divert_origin(jive::oport * new_origin) noexcept
 {
 	const jive::base::type * input_type = &this->type();
 	const jive::base::type * operand_type = &new_origin->type();
@@ -198,7 +198,7 @@ input::divert_origin(jive::output * new_origin) noexcept
 		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
 	}
 
-	JIVE_DEBUG_ASSERT(this->node()->graph() == new_origin->node()->graph());
+	JIVE_DEBUG_ASSERT(this->region()->graph == new_origin->region()->graph);
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node(), new_origin));
 
 	jive::output * old_origin = this->origin();
@@ -212,9 +212,9 @@ input::divert_origin(jive::output * new_origin) noexcept
 
 	node()->recompute_depth();
 
-	jive_graph_mark_denormalized(new_origin->node()->graph());
+	jive_graph_mark_denormalized(new_origin->region()->graph);
 
-	node()->graph()->on_input_change(this, old_origin, new_origin);
+	node()->graph()->on_input_change(this, old_origin, dynamic_cast<jive::output*>(new_origin));
 }
 
 /* oport */
@@ -330,7 +330,7 @@ output::region() const noexcept
 }
 
 void
-output::replace(jive::output * other) noexcept
+output::replace(jive::oport * other) noexcept
 {
 	while (users.size()) {
 		auto input = dynamic_cast<jive::input*>(*users.begin());
@@ -401,9 +401,9 @@ register_node_normal_form(void)
 }
 
 bool
-jive_node_valid_edge(const jive_node * self, const jive::output * origin)
+jive_node_valid_edge(const jive_node * self, const jive::oport * origin)
 {
-	jive_region * origin_region = origin->node()->region();
+	jive_region * origin_region = origin->region();
 	jive_region * target_region = self->region();
 	if (dynamic_cast<const jive::achr::type*>(&origin->type()))
 		origin_region = origin_region->parent;

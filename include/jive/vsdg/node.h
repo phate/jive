@@ -144,7 +144,7 @@ public:
 	}
 
 	void
-	divert_origin(jive::output * new_origin) noexcept;
+	divert_origin(jive::oport * new_origin) noexcept;
 
 	inline jive::output *
 	origin() const noexcept;
@@ -293,7 +293,7 @@ public:
 	}
 
 	void
-	replace(jive::output * other) noexcept;
+	replace(jive::oport * other) noexcept;
 
 	struct {
 		jive::output * prev;
@@ -589,7 +589,7 @@ struct jive_tracker_nodestate {
 	originating at port @c origin.
 */
 bool
-jive_node_valid_edge(const jive_node * self, const jive::output * origin);
+jive_node_valid_edge(const jive_node * self, const jive::oport * origin);
 
 JIVE_EXPORTED_INLINE jive::input *
 jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
