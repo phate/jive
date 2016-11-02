@@ -443,13 +443,13 @@ public:
 	}
 
 	jive::input *
-	add_input(const jive::base::type * type, jive::output * origin);
+	add_input(const jive::base::type * type, jive::oport * origin);
 
 	jive::input *
-	add_input(jive::gate * gate, jive::output * origin);
+	add_input(jive::gate * gate, jive::oport * origin);
 
 	jive::input *
-	add_input(const struct jive_resource_class * rescls, jive::output * origin);
+	add_input(const struct jive_resource_class * rescls, jive::oport * origin);
 
 	void
 	remove_input(size_t index);

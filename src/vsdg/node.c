@@ -528,7 +528,7 @@ jive_node::~jive_node()
 }
 
 jive::input *
-jive_node::add_input(const jive::base::type * type, jive::output * origin)
+jive_node::add_input(const jive::base::type * type, jive::oport * origin)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::input * input = new jive::input(this, inputs_.size(), origin, *type);
@@ -549,7 +549,7 @@ jive_node::add_input(const jive::base::type * type, jive::output * origin)
 }
 
 jive::input *
-jive_node::add_input(jive::gate * gate, jive::output * origin)
+jive_node::add_input(jive::gate * gate, jive::oport * origin)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::input * input = new jive::input(this, inputs_.size(), origin, gate);
@@ -570,7 +570,7 @@ jive_node::add_input(jive::gate * gate, jive::output * origin)
 }
 
 jive::input *
-jive_node::add_input(const struct jive_resource_class * rescls, jive::output * origin)
+jive_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
 {
 	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::input * input = new jive::input(this, inputs_.size(), origin, rescls);
