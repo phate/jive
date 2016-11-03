@@ -37,7 +37,7 @@ public:
 	virtual
 	~iport() noexcept;
 
-	iport(size_t index);
+	iport(size_t index, jive::oport * origin) noexcept;
 
 	iport(const iport &) = delete;
 
@@ -54,6 +54,15 @@ public:
 	{
 		return index_;
 	}
+
+	jive::oport *
+	origin() const noexcept
+	{
+		return origin_;
+	}
+
+	virtual void
+	divert_origin(jive::oport * new_origin);
 
 	virtual const jive::base::type &
 	type() const noexcept = 0;
@@ -73,6 +82,7 @@ protected:
 
 private:
 	size_t index_;
+	jive::oport * origin_;
 };
 
 /**
@@ -143,11 +153,8 @@ public:
 		rescls_ = rescls;
 	}
 
-	void
-	divert_origin(jive::oport * new_origin) noexcept;
-
-	inline jive::oport *
-	origin() const noexcept;
+	virtual void
+	divert_origin(jive::oport * new_origin) override;
 
 	struct {
 		input * prev;
@@ -156,7 +163,6 @@ public:
 
 private:
 	jive::gate * gate_;
-	jive::oport * origin_;
 	struct jive_node * node_;
 	const struct jive_resource_class * rescls_;
 
@@ -210,6 +216,13 @@ public:
 		return users.size();
 	}
 
+	inline void
+	replace(jive::oport * new_origin)
+	{
+		while (users.size())
+			(*users.begin())->divert_origin(new_origin);
+	}
+
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
@@ -220,12 +233,6 @@ public:
 	debug_string() const;
 
 	std::unordered_set<jive::iport*> users;
-
-	virtual void
-	add_user(jive::iport * user);
-
-	virtual void
-	remove_user(jive::iport * user) noexcept;
 
 protected:
 	inline void
@@ -292,21 +299,12 @@ public:
 		rescls_ = rescls;
 	}
 
-	void
-	replace(jive::oport * other) noexcept;
-
 	struct {
 		jive::output * prev;
 		jive::output * next;
 	} gate_outputs_list;
 
 private:
-	void
-	add_user(jive::iport * user) override;
-
-	void
-	remove_user(jive::iport * user) noexcept override;
-
 	jive_node * node_;
 	jive::gate * gate_;
 	const struct jive_resource_class * rescls_;
@@ -396,12 +394,6 @@ private:
 /**	@}	*/
 
 /**	@}	*/
-
-inline jive::oport *
-jive::input::origin() const noexcept
-{
-	return origin_;
-}
 
 typedef struct jive_node jive_node;
 

@@ -48,14 +48,47 @@ namespace jive {
 iport::~iport() noexcept
 {}
 
-iport::iport(size_t index)
+iport::iport(size_t index, jive::oport * origin) noexcept
 	: index_(index)
+	, origin_(origin)
 {}
 
 std::string
 iport::debug_string() const
 {
 	return detail::strfmt(index());
+}
+
+void
+iport::divert_origin(jive::oport * new_origin)
+{
+	const jive::base::type * input_type = &this->type();
+	const jive::base::type * operand_type = &new_origin->type();
+
+	if (*input_type != *operand_type)
+		throw jive::type_error(input_type->debug_string(), operand_type->debug_string());
+
+	if (dynamic_cast<const jive::achr::type*>(input_type)) {
+		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
+	}
+
+	/* FIXME: This should be before we assign the new origin */
+	if (!jive_input_is_valid(dynamic_cast<jive::input*>(this)))
+		throw jive::compiler_error("Invalid input");
+
+	origin()->users.erase(this);
+	auto output = dynamic_cast<jive::output*>(origin());
+	if (output && !output->node()->has_successors())
+		JIVE_LIST_PUSH_BACK(output->node()->graph()->bottom, output->node(), graph_bottom_list);
+
+	this->origin_ = new_origin;
+
+	output = dynamic_cast<jive::output*>(origin());
+	if (output && !output->node()->has_successors())
+		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
+	origin()->users.insert(this);
+
+	jive_graph_mark_denormalized(new_origin->region()->graph);
 }
 
 /* inputs */
@@ -65,16 +98,22 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index)
+	: iport(index, origin)
 	, gate_(nullptr)
-	, origin_(origin)
 	, node_(node)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 
-	origin->add_user(this);
+	auto output = dynamic_cast<jive::output*>(origin);
+	bool has_successors = output->node()->has_successors();
+
+	/* FIXME: check whether origin is valid */
+	/* FIXME: This should optimally be in node constructor */
+
+	if (this->type() != origin->type())
+		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -83,6 +122,10 @@ input::input(
 		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
 		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
 	}
+
+	origin->users.insert(this);
+	if (output && !has_successors)
+		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 }
 
 input::input(
@@ -90,16 +133,21 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(index)
+	: iport(index, origin)
 	, gate_(gate)
-	, origin_(origin)
 	, node_(node)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 
-	origin->add_user(this);
+	auto output = dynamic_cast<jive::output*>(origin);
+	bool has_successors = output->node()->has_successors();
+
+	/* FIXME: check whether origin is valid */
+
+	if (type() != origin->type())
+		throw jive::type_error(type().debug_string(), origin->type().debug_string());
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -116,6 +164,10 @@ input::input(
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
+
+	origin->users.insert(this);
+	if (output && !has_successors)
+		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 }
 
 input::input(
@@ -123,16 +175,21 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(index)
+	: iport(index, origin)
 	, gate_(nullptr)
-	, origin_(origin)
 	, node_(node)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
 
-	origin->add_user(this);
+	auto output = dynamic_cast<jive::output*>(origin);
+	bool has_successors = output->node()->has_successors();
+
+	/* FIXME: check whether origin is valid */
+
+	if (type() != origin->type())
+		throw jive::type_error(type().debug_string(), origin->type().debug_string());
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
@@ -141,11 +198,20 @@ input::input(
 		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
 		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
 	}
+
+	origin->users.insert(this);
+	if (has_successors)
+		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 }
 
 input::~input() noexcept
 {
 	node()->graph()->on_input_destroy(this);
+
+	origin()->users.erase(this);
+	auto output = dynamic_cast<jive::output*>(origin());
+	if (output && !output->node()->has_successors())
+		JIVE_LIST_PUSH_BACK(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 
 	if (gate_) {
 		JIVE_LIST_REMOVE(gate_->inputs, this, gate_inputs_list);
@@ -160,8 +226,6 @@ input::~input() noexcept
 
 	for (size_t n = index()+1; n < node()->ninputs(); n++)
 		node()->input(n)->set_index(n-1);
-
-	origin_->remove_user(this);
 }
 
 const jive::base::type &
@@ -186,33 +250,12 @@ input::region() const noexcept
 }
 
 void
-input::divert_origin(jive::oport * new_origin) noexcept
+input::divert_origin(jive::oport * new_origin)
 {
-	const jive::base::type * input_type = &this->type();
-	const jive::base::type * operand_type = &new_origin->type();
-
-	if (*input_type != *operand_type)
-		throw jive::type_error(input_type->debug_string(), operand_type->debug_string());
-
-	if (dynamic_cast<const jive::achr::type*>(input_type)) {
-		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
-	}
-
-	JIVE_DEBUG_ASSERT(this->region()->graph == new_origin->region()->graph);
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this->node(), new_origin));
-
 	jive::oport * old_origin = this->origin();
 
-	old_origin->remove_user(this);
-	this->origin_ = new_origin;
-	new_origin->add_user(this);
-
-	if (!jive_input_is_valid(this))
-		throw jive::compiler_error("Invalid input");
-
+	iport::divert_origin(new_origin);
 	node()->recompute_depth();
-
-	jive_graph_mark_denormalized(new_origin->region()->graph);
 
 	node()->graph()->on_input_change(this, dynamic_cast<jive::output*>(old_origin),
 		dynamic_cast<jive::output*>(new_origin));
@@ -231,21 +274,6 @@ std::string
 oport::debug_string() const
 {
 	return detail::strfmt(index());
-}
-
-void
-oport::add_user(jive::iport * user)
-{
-	if (type() != user->type())
-		throw jive::type_error(type().debug_string(), user->type().debug_string());
-
-	users.insert(user);
-}
-
-void
-oport::remove_user(jive::iport * user) noexcept
-{
-	users.erase(user);
 }
 
 /* outputs */
@@ -328,33 +356,6 @@ jive_region *
 output::region() const noexcept
 {
 	return node()->region();
-}
-
-void
-output::replace(jive::oport * other) noexcept
-{
-	while (users.size()) {
-		auto input = dynamic_cast<jive::input*>(*users.begin());
-		input->divert_origin(other);
-	}
-}
-
-void
-output::add_user(jive::iport * user)
-{
-	if (!node()->has_successors())
-		JIVE_LIST_REMOVE(node()->graph()->bottom, node(), graph_bottom_list);
-
-	oport::add_user(user);
-}
-
-void
-output::remove_user(jive::iport * user) noexcept
-{
-	oport::remove_user(user);
-
-	if (!node()->has_successors())
-		JIVE_LIST_PUSH_BACK(node()->graph()->bottom, node(), graph_bottom_list);
 }
 
 /* gates */
