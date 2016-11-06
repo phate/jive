@@ -88,8 +88,8 @@ public:
 	jive::notifier<jive::input *> on_input_create;
 	jive::notifier<
 		jive::input *,
-		jive::output * /* old */, 
-		jive::output * /* new */
+		jive::oport* /* old */,
+		jive::oport* /* new */
 	> on_input_change;
 	jive::notifier<jive::input *> on_input_destroy;
 	

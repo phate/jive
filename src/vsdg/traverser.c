@@ -83,7 +83,7 @@ topdown_traverser::node_create(jive_node * node)
 }
 
 void
-topdown_traverser::input_change(input * in, output * old_origin, output * new_origin)
+topdown_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
 {
 	traversal_nodestate state = tracker_.get_nodestate(in->node());
 	
@@ -170,9 +170,10 @@ bottomup_traverser::node_destroy(jive_node * node)
 }
 
 void
-bottomup_traverser::input_change(input * in, output * old_origin, output * new_origin)
+bottomup_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
 {
-	traversal_nodestate state = tracker_.get_nodestate(old_origin->node());
+	auto output = dynamic_cast<jive::output*>(old_origin);
+	traversal_nodestate state = tracker_.get_nodestate(output->node());
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
@@ -182,8 +183,7 @@ bottomup_traverser::input_change(input * in, output * old_origin, output * new_o
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as there (potentially) is one less obstructing node below */
-	tracker_.set_nodestate(old_origin->node(),
-		traversal_nodestate::frontier);
+	tracker_.set_nodestate(output->node(), traversal_nodestate::frontier);
 }
 
 /* upward cone traverser */
@@ -227,23 +227,24 @@ upward_cone_traverser::node_destroy(jive_node * node)
 }
 
 void
-upward_cone_traverser::input_change(input * in, output * old_origin, output * new_origin)
+upward_cone_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
 {
+	auto output = dynamic_cast<jive::output*>(old_origin);
+
 	/* for node of new origin, it may now belong to the cone */
 	traversal_nodestate state = tracker_.get_nodestate(in->node());
 	if (state != traversal_nodestate::ahead) {
-		state = tracker_.get_nodestate(new_origin->node());
+		state = tracker_.get_nodestate(output->node());
 		if (state == traversal_nodestate::ahead)
-			tracker_.set_nodestate(new_origin->node(),
-				traversal_nodestate::frontier);
+			tracker_.set_nodestate(output->node(), traversal_nodestate::frontier);
 	}
 	
 	/* for node of old origin, it may cease to belong to the cone */
-	state = tracker_.get_nodestate(old_origin->node());
+	state = tracker_.get_nodestate(output->node());
 	if (state == traversal_nodestate::frontier) {
 		size_t n;
-		for (n = 0; n < old_origin->node()->noutputs(); n++) {
-			output * out = old_origin->node()->output(n);
+		for (n = 0; n < output->node()->noutputs(); n++) {
+			jive::output * out = output->node()->output(n);
 			for (auto user : out->users) {
 				if (user == in)
 					continue;
@@ -253,8 +254,7 @@ upward_cone_traverser::input_change(input * in, output * old_origin, output * ne
 					return;
 			}
 		}
-		tracker_.set_nodestate(old_origin->node(),
-			traversal_nodestate::ahead);
+		tracker_.set_nodestate(output->node(), traversal_nodestate::ahead);
 	}
 }
 
