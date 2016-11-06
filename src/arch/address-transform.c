@@ -372,7 +372,7 @@ jive_lambda_node_address_transform(
 
 	jive_region * region = jive_node_anchored_region(node, 0);
 	jive_node * enter = region->top();
-	jive_node * leave = region->bottom;
+	jive_node * leave = region->bottom();
 
 	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
 	std::unique_ptr<jive::base::type> new_fcttype_(convert_address_to_bitstring_type(*fcttype, nbits));
@@ -443,7 +443,7 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 	if (!transform)
 		return;
 
-	delete graph->root_region->bottom;
+	delete graph->root_region->bottom();
 	jive::graph_tail_operation().create_node(graph->root_region, {});
 
 	JIVE_DEBUG_ASSERT(exports.size() == names.size());

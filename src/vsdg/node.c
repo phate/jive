@@ -520,8 +520,8 @@ jive_node::~jive_node()
 
 	if (this == region()->top())
 		region()->set_top(nullptr);
-	if (this == region()->bottom)
-		region()->bottom = nullptr;
+	if (this == region()->bottom())
+		region()->set_bottom(nullptr);
 
 	region_ = nullptr;
 
@@ -861,8 +861,8 @@ jive_opnode_create(
 		JIVE_DEBUG_ASSERT(!region->top());
 		region->set_top(node);
 	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
-		JIVE_DEBUG_ASSERT(!region->bottom);
-		region->bottom = node;
+		JIVE_DEBUG_ASSERT(!region->bottom());
+		region->set_bottom(node);
 	}
 
 	for (size_t n = 0; n < node->ninputs(); n++) {

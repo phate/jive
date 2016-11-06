@@ -28,7 +28,7 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 		tmp = trav.next();
 		assert(tmp==n2);
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom);
+		assert(tmp == graph->root_region->bottom());
 		tmp = trav.next();
 		assert(tmp==0);
 	}
@@ -36,7 +36,7 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 	{
 		jive::bottomup_traverser trav(graph);
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom);
+		assert(tmp == graph->root_region->bottom());
 		tmp = trav.next();
 		assert(tmp==n2);
 		tmp = trav.next();
@@ -62,7 +62,7 @@ void test_order_enforcement_traversal()
 		jive::topdown_traverser trav(graph);
 
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom);
+		assert(tmp == graph->root_region->bottom());
 		tmp = trav.next();
 		assert(tmp==n1);
 		tmp = trav.next();
@@ -81,7 +81,7 @@ void test_order_enforcement_traversal()
 		tmp = trav.next();
 		assert(tmp==n2);
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom);
+		assert(tmp == graph->root_region->bottom());
 		tmp = trav.next();
 		assert(tmp==n1);
 		tmp = trav.next();
@@ -140,7 +140,7 @@ static int test_main(void)
 	jive_node * n2 = jive_test_node_create(graph->root_region,
 		{&type, &type}, {n1->output(0), n1->output(1)}, {&type});
 
-	graph->root_region->bottom->add_input(&type, n2->output(0));
+	graph->root_region->bottom()->add_input(&type, n2->output(0));
 	(void)n1;
 	(void)n2;
 	

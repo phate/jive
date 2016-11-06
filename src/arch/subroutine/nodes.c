@@ -125,7 +125,7 @@ subroutine_op::get_passthrough_enter_by_index(jive_region * region, size_t index
 input *
 subroutine_op::get_passthrough_leave_by_name(jive_region * region, const char * name) const noexcept
 {
-	jive_node * leave = region->bottom;
+	jive_node * leave = region->bottom();
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs(); ++n) {
 		input * i = leave->input(n);

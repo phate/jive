@@ -441,7 +441,7 @@ eval_phi_head_node(const struct jive_node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_head_op*>(&node->operation()));
 
-	jive_node * tail = node->region()->bottom;
+	jive_node * tail = node->region()->bottom();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());
@@ -530,7 +530,7 @@ eval(
 	const std::vector<const literal*> & arguments)
 {
 	const jive::output * output = nullptr;
-	const jive_node * tail = graph->root_region->bottom;
+	const jive_node * tail = graph->root_region->bottom();
 	for (size_t n = 0; n < tail->ninputs(); n++) {
 		JIVE_DEBUG_ASSERT(tail->input(n)->gate() != nullptr);
 		if (tail->input(n)->gate()->name() == name) {

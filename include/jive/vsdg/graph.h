@@ -113,7 +113,7 @@ JIVE_EXPORTED_INLINE void
 jive_graph_export(struct jive_graph * self, jive::output * operand, const std::string & name)
 {
 	jive::gate * gate = jive_graph_create_gate(self, name.c_str(), operand->type());
-	self->root_region->bottom->add_input(gate, operand);
+	self->root_region->bottom()->add_input(gate, operand);
 }
 
 JIVE_EXPORTED_INLINE void

@@ -33,7 +33,7 @@ static int test_main(void)
 	jive_node * gamma = tmp->node();
 
 	jive_node * bottom = jive_test_node_create(r1, {&type}, {gamma->output(0)}, {});
-	r1->bottom = bottom;
+	r1->set_bottom(bottom);
 	
 	jive_view(graph, stderr);
 	
@@ -42,7 +42,7 @@ static int test_main(void)
 	jive_region_copy_substitute(r1, r2, subst, true, true);
 
 	jive_node * copied_top = r2->top();
-	jive_node * copied_bottom = r2->bottom;
+	jive_node * copied_bottom = r2->bottom();
 	assert(copied_top && copied_top->ninputs() == 0 && copied_top->noutputs() == 3);
 	assert(copied_bottom && copied_bottom->ninputs() == 1 && copied_bottom->noutputs() == 0);
 	jive_node * copied_gamma;

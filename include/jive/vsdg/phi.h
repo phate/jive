@@ -67,10 +67,10 @@ jive_phi_region_cast(struct jive_region * region)
 {
 	if (region->graph()->root_region == region)
 		return NULL;
-	if (region->bottom == NULL)
+	if (!region->bottom())
 		return NULL;
 
-	if (dynamic_cast<const jive::phi_tail_op*>(&region->bottom->operation()))
+	if (dynamic_cast<const jive::phi_tail_op*>(&region->bottom()->operation()))
 		return region;
 	else
 		return NULL;
@@ -81,10 +81,10 @@ jive_phi_region_const_cast(const struct jive_region * region)
 {
 	if (region->graph()->root_region == region)
 		return NULL;
-	if (region->bottom == NULL)
+	if (!region->bottom())
 		return NULL;
 
-	if (dynamic_cast<const jive::phi_tail_op*>(&region->bottom->operation()))
+	if (dynamic_cast<const jive::phi_tail_op*>(&region->bottom()->operation()))
 		return region;
 	else
 		return NULL;

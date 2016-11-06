@@ -130,7 +130,7 @@ jive_lambda_node_create(jive_region * function_region)
 {
 	size_t ndependencies = function_region->top()->ninputs();
 	size_t narguments = function_region->top()->noutputs() - ndependencies - 1;
-	size_t nreturns = function_region->bottom->ninputs()-1;
+	size_t nreturns = function_region->bottom()->ninputs()-1;
 
 	const jive::base::type * argument_types[narguments];
 	std::vector<std::string> argument_names;
@@ -141,8 +141,8 @@ jive_lambda_node_create(jive_region * function_region)
 	const jive::base::type * return_types[nreturns];
 	std::vector<std::string> result_names;
 	for (size_t n = 0; n < nreturns; n++) {
-		return_types[n] = &function_region->bottom->input(n+1)->type();
-		result_names.push_back(function_region->bottom->input(n+1)->gate()->name());
+		return_types[n] = &function_region->bottom()->input(n+1)->type();
+		result_names.push_back(function_region->bottom()->input(n+1)->gate()->name());
 	}
 	
 	jive::fct::type function_type(
@@ -154,7 +154,7 @@ jive_lambda_node_create(jive_region * function_region)
 		std::move(argument_names),
 		std::move(result_names));
 
-	jive::output * tmp = function_region->bottom->output(0);
+	jive::output * tmp = function_region->bottom()->output(0);
 	return op.create_node(function_region->parent(), {tmp});
 }
 
@@ -282,7 +282,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	
 	jive_region * function_region = lambda_node->input(0)->origin()->region();
 	jive_node * head = function_region->top();
-	jive_node * tail = function_region->bottom;
+	jive_node * tail = function_region->bottom();
 	
 	jive::substitution_map substitution;
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {
