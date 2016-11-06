@@ -27,18 +27,18 @@ jive_region::~jive_region()
 	JIVE_DEBUG_ASSERT(nodes.empty());
 	JIVE_DEBUG_ASSERT(subregions.first == nullptr && subregions.last == nullptr);
 
-	graph->on_region_destroy(this);
+	graph_->on_region_destroy(this);
 
 	if (parent_)
 		JIVE_LIST_REMOVE(parent_->subregions, this, region_subregions_list);
 }
 
-jive_region::jive_region(jive_region * parent, jive_graph * _graph)
-	: graph(_graph)
-	, top(nullptr)
+jive_region::jive_region(jive_region * parent, jive_graph * graph)
+	: top(nullptr)
 	, bottom(nullptr)
 	, anchor(nullptr)
 	, depth_(0)
+	, graph_(graph)
 	, parent_(parent)
 {
 	top_nodes.first = top_nodes.last = nullptr;
@@ -145,7 +145,7 @@ pre_copy_region(
 	
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(original_region->subregions, subregion, region_subregions_list) {
-		jive_region * target_subregion = new jive_region(target_region, target_region->graph);
+		jive_region * target_subregion = new jive_region(target_region, target_region->graph());
 		target_subregion->attrs = subregion->attrs;
 		substitution.insert(subregion, target_subregion);
 		pre_copy_region(target_subregion, subregion, copy_context, substitution, true, true);

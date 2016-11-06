@@ -201,7 +201,7 @@ lambda_dep
 lambda_dep_add(jive_lambda * self, jive::output * value)
 {
 	jive_node * enter = self->region->top;
-	jive_graph * graph = self->region->graph;
+	jive_graph * graph = self->region->graph();
 
 	jive::fct::lambda_dep depvar;
 	jive::gate * gate = jive_graph_create_gate(
@@ -225,10 +225,10 @@ jive_lambda_begin(
 	const jive::base::type * const argument_types[],
 	const char * const argument_names[])
 {
-	struct jive_graph * graph = parent->graph;
+	jive_graph * graph = parent->graph();
 
 	jive_lambda * lambda = new jive_lambda;
-	lambda->region = new jive_region(parent, parent->graph);
+	lambda->region = new jive_region(parent, parent->graph());
 	lambda->arguments = new jive::output*[narguments];
 	lambda->narguments = narguments;
 
@@ -248,7 +248,7 @@ jive_lambda_end(jive_lambda * self,
 	size_t nresults, const jive::base::type * const result_types[], jive::output * const results[])
 {
 	jive_region * region = self->region;
-	jive_graph * graph = region->graph;
+	jive_graph * graph = region->graph();
 
 	jive::output * tmp = region->top->output(0);
 	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, {tmp});

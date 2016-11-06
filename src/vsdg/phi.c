@@ -121,7 +121,7 @@ jive_phi_begin(jive_region * parent)
 	jive_phi self;
 	jive_phi_build_state * state;
 	state = new jive_phi_build_state;
-	self.region = new jive_region(parent, parent->graph);
+	self.region = new jive_region(parent, parent->graph());
 
 	jive::phi_head_op().create_node(self.region, {});
 	

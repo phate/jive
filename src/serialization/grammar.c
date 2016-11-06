@@ -829,7 +829,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	std::unique_ptr<jive::operation> op = sercls->deserialize(parser_driver);
 	*node = op->create_node(region, origins);
 
-	jive_graph_mark_denormalized(region->graph);
+	jive_graph_mark_denormalized(region->graph());
 	
 	if (!jive_deserialize_char_token(self, is, '>'))
 		return false;
@@ -1111,7 +1111,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 			jive_token_istream_advance(is);
 			if (!jive_deserialize_char_token(self, is, '{'))
 				return false;
-			jive_region * subregion = new jive_region(region, region->graph);
+			jive_region * subregion = new jive_region(region, region->graph());
 			if (!jive_deserialize_regionbody(self, is, subregion))
 				return false;
 			if (!jive_deserialize_char_token(self, is, '}'))
@@ -1130,7 +1130,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 				case jive_token_gate: {
 					jive_token_istream_advance(is);
 					jive::gate * gate;
-					if (!jive_deserialize_gateexpr(self, is, region->graph, &gate))
+					if (!jive_deserialize_gateexpr(self, is, region->graph(), &gate))
 						return false;
 
 					jive_serialization_symtab_insert_gatesym(&self->symtab, gate, name.c_str());

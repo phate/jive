@@ -53,7 +53,7 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 	}
 	
 	jive_subroutine sub = jive_i386_subroutine_begin(
-		target_parent->graph,
+		target_parent->graph(),
 		nvalue_parameters, value_parameters,
 		nvalue_returns, value_returns);
 

@@ -76,7 +76,11 @@ public:
 		return parent_;
 	}
 
-	struct jive_graph * graph;
+	inline jive_graph *
+	graph() const noexcept
+	{
+		return graph_;
+	}
 
 	typedef jive::detail::intrusive_list<
 		jive_node,
@@ -108,6 +112,7 @@ public:
 
 private:
 	size_t depth_;
+	jive_graph * graph_;
 	jive_region * parent_;
 };
 

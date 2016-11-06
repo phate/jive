@@ -88,7 +88,7 @@ iport::divert_origin(jive::oport * new_origin)
 		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 	origin()->users.insert(this);
 
-	jive_graph_mark_denormalized(new_origin->region()->graph);
+	jive_graph_mark_denormalized(new_origin->region()->graph());
 }
 
 /* inputs */
@@ -467,7 +467,7 @@ jive_node::jive_node(
 	jive_region * region,
 	const std::vector<jive::oport*> & operands)
 	: depth_(0)
-	, graph_(region->graph)
+	, graph_(region->graph())
 	, region_(region)
 	, operation_(std::move(op))
 {
@@ -689,7 +689,7 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = jive_graph_create_gate(region->graph, gate->name(), gate->type());
+				target_gate = jive_graph_create_gate(region->graph(), gate->name(), gate->type());
 				target_gate->required_rescls = gate->required_rescls;
 				smap.insert(gate, target_gate);
 			}
@@ -704,7 +704,7 @@ jive_node::copy(jive_region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = jive_graph_create_gate(region->graph, gate->name(), gate->type());
+				target_gate = jive_graph_create_gate(region->graph(), gate->name(), gate->type());
 				target_gate->required_rescls = gate->required_rescls;
 				smap.insert(gate, target_gate);
 			}
@@ -783,7 +783,7 @@ jive_node_create_normalized(
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments)
 {
-	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(region->graph, typeid(op));
+	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(region->graph(), typeid(op));
 	return nf->normalized_create(region, op, arguments);
 }
 
