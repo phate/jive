@@ -177,7 +177,7 @@ jive_phi_end(jive_phi self,
 		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
 
 	tmp = leave->output(0);
-	jive_node * anchor = jive::phi_op().create_node(self.region->parent, {tmp});
+	jive_node * anchor = jive::phi_op().create_node(self.region->parent(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		state->fixvars[n].value = anchor->add_output(state->fixvars[n].gate);
 	

@@ -165,7 +165,7 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 		tail->add_input(state->loopvars[n].gate, state->loopvars[n].value);
 
 	jive::output * tmp = tail->output(0);
-	jive_node * anchor = jive::theta_op().create_node(self.region->parent, {tmp});
+	jive_node * anchor = jive::theta_op().create_node(self.region->parent(), {tmp});
 	for (n = 0; n < state->loopvars.size(); ++n)
 		state->loopvars[n].value = anchor->add_output(state->loopvars[n].gate);
 	

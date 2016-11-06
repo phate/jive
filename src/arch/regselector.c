@@ -246,8 +246,8 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	
 	/* determine function region */
 	jive_region * region = node->region();
-	while (region->parent != root_region)
-		region = region->parent;
+	while (region->parent() != root_region)
+		region = region->parent();
 	jive_node * top = region->top;
 	if (!top || top->noutputs() < 1)
 		return;

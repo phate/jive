@@ -60,9 +60,9 @@ public:
 	contains(const jive_region * other) const noexcept
 	{
 		while (other->depth() > depth()) {
-			if (other->parent == this)
+			if (other->parent() == this)
 				return true;
-			other = other->parent;
+			other = other->parent();
 		}
 		return false;
 	}
@@ -70,8 +70,13 @@ public:
 	bool
 	contains(const jive_node * node) const noexcept;
 
+	inline jive_region *
+	parent() const noexcept
+	{
+		return parent_;
+	}
+
 	struct jive_graph * graph;
-	jive_region * parent;
 
 	typedef jive::detail::intrusive_list<
 		jive_node,
@@ -103,6 +108,7 @@ public:
 
 private:
 	size_t depth_;
+	jive_region * parent_;
 };
 
 /**
@@ -148,7 +154,7 @@ JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_region_map_to_section(const struct jive_region * region)
 {
 	while (region && (region->attrs.section == jive_region_section_inherit))
-		region = region->parent;
+		region = region->parent();
 
 	jive_stdsectionid section = jive_stdsectionid_invalid;
 	if (region) {

@@ -155,7 +155,7 @@ jive_lambda_node_create(jive_region * function_region)
 		std::move(result_names));
 
 	jive::output * tmp = function_region->bottom->output(0);
-	return op.create_node(function_region->parent, {tmp});
+	return op.create_node(function_region->parent(), {tmp});
 }
 
 

@@ -29,26 +29,26 @@ jive_region::~jive_region()
 
 	graph->on_region_destroy(this);
 
-	if (parent)
-		JIVE_LIST_REMOVE(parent->subregions, this, region_subregions_list);
+	if (parent_)
+		JIVE_LIST_REMOVE(parent_->subregions, this, region_subregions_list);
 }
 
-jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
+jive_region::jive_region(jive_region * parent, jive_graph * _graph)
 	: graph(_graph)
-	, parent(_parent)
 	, top(nullptr)
 	, bottom(nullptr)
 	, anchor(nullptr)
 	, depth_(0)
+	, parent_(parent)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
 	region_subregions_list.prev = region_subregions_list.next = nullptr;
 	jive_region_attrs_init(&attrs);
 
-	if (parent) {
-		JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
-		depth_ = parent->depth() + 1;
+	if (parent_) {
+		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
+		depth_ = parent_->depth() + 1;
 	}
 
 	graph->on_region_create(this);
@@ -76,14 +76,14 @@ jive_region::reparent(jive_region * new_parent) noexcept
 			set_depth_recursive(subregion, new_depth + 1);
 	};
 
-	JIVE_LIST_REMOVE(parent->subregions, this, region_subregions_list);
+	JIVE_LIST_REMOVE(parent()->subregions, this, region_subregions_list);
 
-	parent = new_parent;
+	parent_ = new_parent;
 	size_t new_depth = new_parent->depth() + 1;
 	if (new_depth != depth())
 		set_depth_recursive(this, new_depth);
 
-	JIVE_LIST_PUSH_BACK(parent->subregions, this, region_subregions_list);
+	JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
 }
 
 bool
@@ -93,7 +93,7 @@ jive_region::contains(const jive_node * node) const noexcept
 	while (tmp->depth() >= depth()) {
 		if (tmp == this)
 			return true;
-		tmp = tmp->parent;
+		tmp = tmp->parent();
 		if (!tmp)
 			break;
 	}

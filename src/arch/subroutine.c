@@ -62,7 +62,7 @@ jive_subroutine_node_add_sp_dependency(
 jive_node *
 jive_region_get_subroutine_node(const jive_region * region)
 {
-	for (; region; region = region->parent) {
+	for (; region; region = region->parent()) {
 		if (!region->anchor) {
 			continue;
 		}
@@ -159,7 +159,7 @@ jive_subroutine_end(jive_subroutine & self)
 		outputs.push_back(leave->output(n));
 
 	jive_node * subroutine_node = jive::subroutine_op(std::move(self.signature)).create_node(
-		self.region->parent, outputs);
+		self.region->parent(), outputs);
 	
 	for (const auto & pt : self.builder_state->passthroughs) {
 		leave->add_input(pt.gate, pt.output);

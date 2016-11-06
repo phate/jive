@@ -50,8 +50,8 @@ static int test_main(void)
 	assert(copied_gamma->operation() == gamma->operation());
 	jive_node * alt1 = dynamic_cast<jive::output*>(copied_gamma->input(0)->origin())->node();
 	jive_node * alt2 = dynamic_cast<jive::output*>(copied_gamma->input(1)->origin())->node();
-	assert(alt1->region()->parent == r2);
-	assert(alt2->region()->parent == r2);
+	assert(alt1->region()->parent() == r2);
+	assert(alt2->region()->parent() == r2);
 	assert(dynamic_cast<const jive::gamma_tail_op *>(&alt1->operation()));
 	assert(dynamic_cast<const jive::gamma_tail_op *>(&alt2->operation()));
 

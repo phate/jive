@@ -747,7 +747,7 @@ jive_negotiator_process(jive_negotiator * self)
 		if (region->region_subregions_list.next)
 			region = region->region_subregions_list.next;
 		else
-			region = region->parent;
+			region = region->parent();
 	}
 	jive_negotiator_fully_specialize(self);
 	
