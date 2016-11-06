@@ -27,22 +27,6 @@ struct jive_cut;
 struct jive_graph;
 struct jive_node;
 
-typedef struct jive_region_attrs jive_region_attrs;
-
-typedef enum jive_region_section_flags {
-	jive_region_section_inherit = 0,
-	jive_region_section_code = 1,
-	jive_region_section_data = 2,
-	jive_region_section_rodata = 3,
-	jive_region_section_bss = 4
-} jive_region_section_flags;
-
-struct jive_region_attrs {
-	size_t align;
-	jive_region_section_flags section;
-	bool is_looped;
-};
-
 class jive_region {
 public:
 	~jive_region();
@@ -148,9 +132,6 @@ public:
 		jive_region * next;
 	} region_subregions_list;
 
-	jive_region_attrs attrs;
-
-
 private:
 	size_t depth_;
 	jive_node * top_;
@@ -183,35 +164,6 @@ jive_region_copy_substitute(
 	jive_region * target,
 	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom);
-
-JIVE_EXPORTED_INLINE jive_stdsectionid
-jive_region_map_to_section(const struct jive_region * region)
-{
-	while (region && (region->attrs.section == jive_region_section_inherit))
-		region = region->parent();
-
-	jive_stdsectionid section = jive_stdsectionid_invalid;
-	if (region) {
-		switch(region->attrs.section) {
-			case jive_region_section_code:
-				section = jive_stdsectionid_code;
-				break;
-			case jive_region_section_data:
-				section = jive_stdsectionid_data;
-				break;
-			case jive_region_section_rodata:
-				section = jive_stdsectionid_rodata;
-				break;
-			case jive_region_section_bss:
-				section = jive_stdsectionid_bss;
-				break;
-			default:
-				JIVE_DEBUG_ASSERT(0);
-		}
-	}
-	
-	return section;
-}
 
 #ifdef JIVE_DEBUG
 void

@@ -114,7 +114,6 @@ jive_subroutine_begin(
 	sub.hl_builder = std::move(hl_builder);
 	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
 	sub.region = new jive_region(graph->root_region, graph);
-	sub.region->attrs.section = jive_region_section_code;
 
 	jive_node * enter = jive::subroutine_head_op().create_node(sub.region, {});
 

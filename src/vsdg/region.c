@@ -14,14 +14,6 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 
-static inline void
-jive_region_attrs_init(jive_region_attrs * attrs)
-{
-	attrs->align = 1;
-	attrs->section = jive_region_section_inherit;
-	attrs->is_looped = false;
-}
-
 jive_region::~jive_region()
 {
 	JIVE_DEBUG_ASSERT(nodes.empty());
@@ -44,7 +36,6 @@ jive_region::jive_region(jive_region * parent, jive_graph * graph)
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
 	region_subregions_list.prev = region_subregions_list.next = nullptr;
-	jive_region_attrs_init(&attrs);
 
 	if (parent_) {
 		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
@@ -137,7 +128,6 @@ pre_copy_region(
 	jive_region * subregion;
 	JIVE_LIST_ITERATE(original_region->subregions, subregion, region_subregions_list) {
 		jive_region * target_subregion = new jive_region(target_region, target_region->graph());
-		target_subregion->attrs = subregion->attrs;
 		substitution.insert(subregion, target_subregion);
 		pre_copy_region(target_subregion, subregion, copy_context, substitution, true, true);
 	}
