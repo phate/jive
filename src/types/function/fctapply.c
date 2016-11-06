@@ -79,12 +79,12 @@ std::vector<jive::output *>
 jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[])
 {
 	jive::fct::apply_op op(dynamic_cast<const jive::fct::type &>(function->type()));
-	std::vector<jive::output *> apply_args;
+	std::vector<jive::oport*> apply_args;
 	apply_args.push_back(function);
 	for (size_t n = 0; n < narguments; ++n) {
 		apply_args.push_back(arguments[n]);
 	}
 
-	jive_region * region = apply_args[0]->node()->region();
+	jive_region * region = apply_args[0]->region();
 	return jive_node_create_normalized(region, op, apply_args);
 }

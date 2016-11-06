@@ -142,7 +142,7 @@ jive_instruction_node_create(
 	const std::vector<jive::output*> & istates,
 	const std::vector<const jive::state::type*> & otypes)
 {
-	std::vector<jive::output*> arguments(operands.begin(), operands.end());
+	std::vector<jive::oport*> arguments(operands.begin(), operands.end());
 	for (size_t n = 0; n < icls->nimmediates; n++)
 		arguments.push_back(jive_immediate_create(region, &immediates[n]));
 	arguments.insert(arguments.end(), istates.begin(), istates.end());
@@ -156,7 +156,7 @@ jive_instruction_node_create(
 		otypes_.emplace_back(dynamic_cast<const jive::state::type*>(t)->copy());
 
 	jive::instruction_op op(icls, itypes_, otypes_);
-	return op.create_node(region, arguments.size(), &arguments[0]);
+	return op.create_node(region, arguments);
 }
 
 static void

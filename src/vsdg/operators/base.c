@@ -30,12 +30,9 @@ operation::result_cls(size_t index) const noexcept
 }
 
 jive_node *
-operation::create_node(
-	jive_region * region,
-	size_t narguments,
-	jive::output * const arguments[]) const
+operation::create_node(jive_region * region, const std::vector<jive::oport*> & operands) const
 {
-	return jive_opnode_create(*this, region, arguments, arguments + narguments);
+	return jive_opnode_create(*this, region, operands);
 }
 
 }

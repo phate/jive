@@ -602,7 +602,7 @@ jive_bitand(size_t noperands, jive::output * const * operands)
 	jive_region * region = operands[0]->node()->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::and_op(type),
-		std::vector<jive::output *>(operands, operands + noperands))[0];
+		std::vector<jive::oport*>(operands, operands + noperands))[0];
 }
 
 jive::output *
@@ -641,7 +641,7 @@ jive_bitor(size_t noperands, jive::output * const * operands)
 	jive_region * region = operands[0]->node()->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::or_op(type),
-		std::vector<jive::output *>(operands, operands + noperands))[0];
+		std::vector<jive::oport*>(operands, operands + noperands))[0];
 }
 
 jive::output *
@@ -650,7 +650,7 @@ jive_bitmultiply(size_t noperands, jive::output * const * operands)
 	jive_region * region = operands[0]->node()->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::mul_op(type),
-		std::vector<jive::output *>(operands, operands + noperands))[0];
+		std::vector<jive::oport*>(operands, operands + noperands))[0];
 }
 
 jive::output *
@@ -699,7 +699,7 @@ jive_bitsum(size_t noperands, jive::output * const * operands)
 	jive_region * region = operands[0]->node()->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::add_op(type),
-		std::vector<jive::output *>(operands, operands + noperands))[0];
+		std::vector<jive::oport*>(operands, operands + noperands))[0];
 }
 
 jive::output *
@@ -733,5 +733,5 @@ jive_bitxor(size_t noperands, jive::output * const * operands)
 	jive_region * region = operands[0]->node()->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::xor_op(type),
-		std::vector<jive::output *>(operands, operands + noperands))[0];
+		std::vector<jive::oport*>(operands, operands + noperands))[0];
 }

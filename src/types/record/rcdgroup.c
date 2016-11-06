@@ -70,9 +70,9 @@ jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
 	size_t narguments, jive::output * const * arguments)
 {
 	jive::rcd::group_op op(decl);
-	jive_region * region = arguments[0]->node()->region();
+	jive_region * region = arguments[0]->region();
 	return jive_node_create_normalized(
-		region, op, std::vector<jive::output *>(arguments, arguments + narguments))[0];
+		region, op, std::vector<jive::oport*>(arguments, arguments + narguments))[0];
 }
 
 jive::output *

@@ -35,7 +35,8 @@ test_main(void)
 	jive::output * address = top->output(1);
 	std::vector<jive::output *> results = jive_apply_create(top->output(0), 1, &address);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region, {&addrtype}, results, {});
+	jive_node * bottom = jive_test_node_create(graph->root_region, {&addrtype},
+		{results.begin(), results.end()}, {});
 
 	jive_view(graph, stdout);
 

@@ -30,6 +30,7 @@ namespace base {
 class gate;
 class node_normal_form;
 class oport;
+class output;
 class substitution_map;
 
 class iport {
@@ -408,7 +409,7 @@ public:
 	~jive_node();
 
 	jive_node(std::unique_ptr<jive::operation> op, jive_region * region,
-		const std::vector<jive::output*> & operands);
+		const std::vector<jive::oport*> & operands);
 
 	inline const jive::operation &
 	operation() const noexcept
@@ -482,7 +483,7 @@ public:
 	}
 
 	jive_node *
-	copy(jive_region * region, const std::vector<jive::output*> & operands) const;
+	copy(jive_region * region, const std::vector<jive::oport*> & operands) const;
 
 	/**
 		\brief Copy a node with substitutions
@@ -646,10 +647,10 @@ jive_node_get_use_count_output(
 	const jive_node * self,
 	struct jive_resource_class_count * use_count);
 
-JIVE_EXPORTED_INLINE std::vector<jive::output*>
+JIVE_EXPORTED_INLINE std::vector<jive::oport*>
 jive_node_arguments(jive_node * self)
 {
-	std::vector<jive::output*> arguments;
+	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
 		arguments.push_back(dynamic_cast<jive::output*>(self->input(n)->origin()));
 	}
@@ -660,7 +661,7 @@ jive_node *
 jive_node_cse(
 	jive_region * region,
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments);
+	const std::vector<jive::oport*> & arguments);
 
 /* normal forms */
 
@@ -668,7 +669,7 @@ std::vector<jive::output *>
 jive_node_create_normalized(
 	jive_region * region,
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments);
+	const std::vector<jive::oport*> & arguments);
 
 /**
 	\brief Attempt to find existing or create new node
@@ -685,7 +686,7 @@ jive_node_cse_create(
 	const jive::node_normal_form * nf,
 	jive_region * region,
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments);
+	const std::vector<jive::oport*> & arguments);
 
 bool
 jive_node_normalize(struct jive_node * self);

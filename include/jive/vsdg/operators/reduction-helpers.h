@@ -56,7 +56,7 @@ pairwise_reduce(
 	auto right = std::next(left);
 
 	while (right != args.end()) {
-		jive::output * res = reductor(*left, *right);
+		jive::oport * res = reductor(*left, *right);
 		if (res) {
 			*left = res;
 			++right;
@@ -136,13 +136,14 @@ associative_test_flatten(const Container & args, const FlattenTester& flatten_te
 /* Replace each argument of "args" with the arguments of its defining node
  * for each where "flatten_tester" returns true. */
 template<typename FlattenTester>
-std::vector<jive::output *>
-associative_flatten(std::vector<jive::output *> args, const FlattenTester& flatten_tester)
+std::vector<jive::oport*>
+associative_flatten(std::vector<jive::oport*> args, const FlattenTester& flatten_tester)
 {
 	size_t n = 0;
 	while (n < args.size()) {
 		if (flatten_tester(args[n])) {
-			std::vector<jive::output *> sub_args = jive_node_arguments(args[n]->node());
+			auto arg = dynamic_cast<jive::output*>(args[n]);
+			std::vector<jive::oport*> sub_args = jive_node_arguments(arg->node());
 			args[n] = sub_args[0];
 			args.insert(args.begin() + n + 1, sub_args.begin() + 1, sub_args.end());
 		} else {

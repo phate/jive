@@ -21,7 +21,7 @@ jive_load_node_normalized_create(
 	jive::output * address,
 	size_t nstates, jive::output * const states[])
 {
-	std::vector<jive::output *> args = {address};
+	std::vector<jive::oport*> args = {address};
 	for (size_t n = 0; n < nstates; ++n) {
 		args.push_back(states[n]);
 	}

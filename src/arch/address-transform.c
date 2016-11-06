@@ -444,7 +444,7 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 		return;
 
 	delete graph->root_region->bottom;
-	jive::graph_tail_operation().create_node(graph->root_region, 0, nullptr);
+	jive::graph_tail_operation().create_node(graph->root_region, {});
 
 	JIVE_DEBUG_ASSERT(exports.size() == names.size());
 	for (size_t n = 0; n < exports.size(); n++)

@@ -110,7 +110,7 @@ jive_theta_begin(jive_region * parent)
 	self.region = new jive_region(parent, parent->graph);
 
 	self.region->attrs.is_looped = true;
-	jive::theta_head_op().create_node(self.region, 0, nullptr);
+	jive::theta_head_op().create_node(self.region, {});
 	
 	self.internal_state = state;
 	
@@ -159,14 +159,13 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 	jive_theta_build_state * state = self.internal_state;
 
 	size_t n;
-
-	jive::output * arguments[] = {self.region->top->output(0), predicate};
-	jive_node * tail = jive::theta_tail_op().create_node(self.region, 2, arguments);
+	jive_node * tail = jive::theta_tail_op().create_node(self.region,
+		{self.region->top->output(0), predicate});
 	for (n = 0; n < state->loopvars.size(); ++n)
 		tail->add_input(state->loopvars[n].gate, state->loopvars[n].value);
 
 	jive::output * tmp = tail->output(0);
-	jive_node * anchor = jive::theta_op().create_node(self.region->parent, 1, &tmp);
+	jive_node * anchor = jive::theta_op().create_node(self.region->parent, {tmp});
 	for (n = 0; n < state->loopvars.size(); ++n)
 		state->loopvars[n].value = anchor->add_output(state->loopvars[n].gate);
 	

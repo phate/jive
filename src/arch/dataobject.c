@@ -230,18 +230,17 @@ jive_dataobj_internal(
 	std::vector<jive::output *> data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
 	std::vector<std::unique_ptr<const jive::base::type>> types;
-	jive::output * arguments[data_items.size()];
+	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < data_items.size(); ++n) {
 		types.emplace_back(data_items[n]->type().copy());
-		arguments[n] = data_items[n];
+		arguments.push_back(data_items[n]);
 	}
 
-	jive_node * head = jive::dataobj_head_op(std::move(types)).create_node(
-		region, data_items.size(), arguments);
+	jive_node * head = jive::dataobj_head_op(std::move(types)).create_node(region, arguments);
 	jive::output * tmp = head->output(0);
-	jive_node * tail = jive::dataobj_tail_op().create_node(region, 1, &tmp);
+	jive_node * tail = jive::dataobj_tail_op().create_node(region, {tmp});
 	tmp = tail->output(0);
-	jive_node * obj = jive::dataobj_op().create_node(parent, 1, &tmp);
+	jive_node * obj = jive::dataobj_op().create_node(parent, {tmp});
 
 	return obj->output(0);
 }

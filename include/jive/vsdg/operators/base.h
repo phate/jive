@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 class jive_node;
 class jive_region;
@@ -21,7 +22,7 @@ class type;
 }
 
 class node_normal_form;
-class output;
+class oport;
 
 class operation {
 public:
@@ -50,8 +51,7 @@ public:
 	jive_node *
 	create_node(
 		jive_region * region,
-		size_t narguments,
-		jive::output * const arguments[]) const;
+		const std::vector<jive::oport*> & operands) const;
 
 	virtual std::string
 	debug_string() const = 0;

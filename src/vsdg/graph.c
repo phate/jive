@@ -71,7 +71,7 @@ jive_graph::jive_graph()
 	normalized = true;
 
 	root_region = new jive_region(nullptr, this);
-	jive::graph_tail_operation().create_node(root_region, 0, nullptr);
+	jive::graph_tail_operation().create_node(root_region, {});
 }
 
 jive_graph *

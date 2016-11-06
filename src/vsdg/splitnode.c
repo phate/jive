@@ -61,16 +61,13 @@ split_operation::result_cls(size_t index) const noexcept
 
 /* reduction methods */
 jive_unop_reduction_path_t
-split_operation::can_reduce_operand(
-	const jive::output * arg) const noexcept
+split_operation::can_reduce_operand(const jive::output * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
 jive::output *
-split_operation::reduce_operand(
-	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+split_operation::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
 {
 	return nullptr;
 }
@@ -98,5 +95,5 @@ jive_splitnode_create(jive_region * region,
 	if (nf->get_mutable() && nf->get_cse())
 		jive_graph_mark_denormalized(region->graph);
 
-	return op.create_node(region, 1, &in_origin);
+	return op.create_node(region, {in_origin});
 }

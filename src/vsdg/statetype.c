@@ -72,7 +72,7 @@ jive_state_merge(const jive::state::type * statetype, size_t nstates, jive::outp
 
 	jive::state::mux_op op(*statetype, nstates, 1);
 	return jive_node_create_normalized(region, op,
-		std::vector<jive::output *>(states, states + nstates))[0];
+		std::vector<jive::oport*>(states, states + nstates))[0];
 }
 
 std::vector<jive::output *>

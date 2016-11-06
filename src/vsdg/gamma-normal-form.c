@@ -91,24 +91,26 @@ gamma_normal_form::normalize_node(jive_node * node) const
 bool
 gamma_normal_form::operands_are_normalized(
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments) const
+	const std::vector<jive::oport*> & arguments) const
 {
 	if (!get_mutable())
 		return true;
 	
 	if (get_predicate_reduction()) {
-		jive::output * predicate = arguments[arguments.size()-1];
-		if (dynamic_cast<const jive::ctl::constant_op *>(&predicate->node()->operation()))
+		jive::output * predicate = dynamic_cast<jive::output*>(arguments[arguments.size()-1]);
+		if (predicate && dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation()))
 			return false;
 	}
 	
 	if (get_invariant_reduction()) {
 		size_t nalternatives = arguments.size()-1;
-		for (size_t v = 0; v < arguments[0]->node()->ninputs(); v++) {
+		auto arg0 = dynamic_cast<jive::output*>(arguments[0]);
+		for (size_t v = 0; v < arg0->node()->ninputs(); v++) {
 			size_t n;
-			jive::output * value = dynamic_cast<jive::output*>(arguments[0]->node()->input(v)->origin());
+			jive::output * value = dynamic_cast<jive::output*>(arg0->node()->input(v)->origin());
 			for (n = 1; n < nalternatives; n++) {
-				if (value != arguments[n]->node()->input(v)->origin())
+				auto argn = dynamic_cast<jive::output*>(arguments[n]);
+				if (value != argn->node()->input(v)->origin())
 					break;
 			}
 			if (n == nalternatives)
@@ -123,7 +125,7 @@ std::vector<jive::output *>
 gamma_normal_form::normalized_create(
 	jive_region * region,
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments) const
+	const std::vector<jive::oport*> & arguments) const
 {
 	throw std::logic_error("Unimplemented: gamma_normal_form::normalized_create");
 }

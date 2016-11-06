@@ -38,7 +38,7 @@ is_matching_store_op(const jive::load_op & l_op, const jive::operation & op)
 }
 
 static bool is_matching_store_node(
-	const jive::load_op & l_op, const jive::output * address,
+	const jive::load_op & l_op, const jive::oport * address,
 	const jive_node * node) {
 	return
 		is_matching_store_op(l_op, node->operation()) &&
@@ -74,16 +74,18 @@ load_normal_form::normalize_node(jive_node * node) const
 bool
 load_normal_form::operands_are_normalized(
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments) const
+	const std::vector<jive::oport*> & arguments) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
-		jive::output * address = arguments[0];
+		jive::oport * address = arguments[0];
+		auto arg1 = dynamic_cast<jive::output*>(arguments[1]);
 		jive_node * store_node =
-			(arguments.size() >= 2 && is_matching_store_node(l_op, address, arguments[1]->node())) ?
-			arguments[1]->node() : nullptr;
+			(arg1 && arguments.size() >= 2 && is_matching_store_node(l_op, address, arg1->node())) ?
+			arg1->node() : nullptr;
 		for (size_t n = 2; n < arguments.size(); ++n) {
-			if (arguments[n]->node() != store_node) {
+			auto argn = dynamic_cast<jive::output*>(arguments[n]);
+			if (argn && argn->node() != store_node) {
 				store_node = nullptr;
 			}
 		}
@@ -99,16 +101,18 @@ std::vector<jive::output *>
 load_normal_form::normalized_create(
 	jive_region * region,
 	const jive::operation & op,
-	const std::vector<jive::output *> & arguments) const
+	const std::vector<jive::oport*> & arguments) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
-		jive::output * address = arguments[0];
+		jive::oport * address = arguments[0];
+		auto arg1 = dynamic_cast<jive::output*>(arguments[1]);
 		jive_node * store_node =
-			(arguments.size() >= 2 && is_matching_store_node(l_op, address, arguments[1]->node())) ?
-			arguments[1]->node() : nullptr;
+			(arg1 && arguments.size() >= 2 && is_matching_store_node(l_op, address, arg1->node())) ?
+			arg1->node() : nullptr;
 		for (size_t n = 2; n < arguments.size(); ++n) {
-			if (arguments[n]->node() != store_node) {
+			auto argn = dynamic_cast<jive::output*>(arguments[n]);
+			if (argn->node() != store_node) {
 				store_node = nullptr;
 			}
 		}

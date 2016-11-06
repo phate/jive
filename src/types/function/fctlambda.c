@@ -155,7 +155,7 @@ jive_lambda_node_create(jive_region * function_region)
 		std::move(result_names));
 
 	jive::output * tmp = function_region->bottom->output(0);
-	return op.create_node(function_region->parent, 1, &tmp);
+	return op.create_node(function_region->parent, {tmp});
 }
 
 
@@ -232,7 +232,7 @@ jive_lambda_begin(
 	lambda->arguments = new jive::output*[narguments];
 	lambda->narguments = narguments;
 
-	jive::fct::lambda_head_op().create_node(lambda->region, 0, nullptr);
+	jive::fct::lambda_head_op().create_node(lambda->region, {});
 
 	size_t n;
 	for (n = 0; n < narguments; n++) {
@@ -251,7 +251,7 @@ jive_lambda_end(jive_lambda * self,
 	jive_graph * graph = region->graph;
 
 	jive::output * tmp = region->top->output(0);
-	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, 1, &tmp);
+	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, {tmp});
 
 	size_t n;
 	for (n = 0; n < nresults; n++) {

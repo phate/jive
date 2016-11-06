@@ -135,7 +135,7 @@ jive_negtestnode_create(
 	
 	const jive::node_normal_form * nf =
 		jive_graph_get_nodeclass_form(region->graph, typeid(negtest_op));
-	std::vector<jive::output *> arguments(operands, operands + noperands);
+	std::vector<jive::oport*> arguments(operands, operands + noperands);
 	return jive_node_cse_create(nf, region, op, arguments);
 }
 

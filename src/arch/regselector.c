@@ -273,7 +273,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 			jive::output * subst = jive_node_create_normalized(
 				region,
 				origin->operation(),
-				std::vector<jive::output *>(operands, operands + origin->noperands()))[0];
+				std::vector<jive::oport*>(operands, operands + origin->noperands()))[0];
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base, node->output(0)));
 			node->output(0)->replace(subst);
