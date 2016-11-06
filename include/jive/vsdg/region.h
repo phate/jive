@@ -26,7 +26,6 @@ typedef struct jive_region jive_region;
 struct jive_cut;
 struct jive_graph;
 struct jive_node;
-struct jive_stackframe;
 
 typedef struct jive_region_attrs jive_region_attrs;
 
@@ -73,7 +72,6 @@ public:
 
 	struct jive_graph * graph;
 	jive_region * parent;
-	struct jive_stackframe * stackframe;
 
 	typedef jive::detail::intrusive_list<
 		jive_node,
@@ -145,14 +143,6 @@ jive_region_get_bottom_node(jive_region * self)
 
 struct jive_node *
 jive_region_get_anchor(struct jive_region * self);
-
-JIVE_EXPORTED_INLINE struct jive_stackframe *
-jive_region_get_stackframe(const jive_region * region)
-{
-	while(region && !region->stackframe) region = region->parent;
-	if (region) return region->stackframe;
-	else return 0;
-}
 
 JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_region_map_to_section(const struct jive_region * region)

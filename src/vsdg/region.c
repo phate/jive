@@ -31,15 +31,11 @@ jive_region::~jive_region()
 
 	if (parent)
 		JIVE_LIST_REMOVE(parent->subregions, this, region_subregions_list);
-	/* FIXME: destroy stackframe! */
-	/* if (self->stackframe)
-		jive_stackframe_destroy(self->stackframe); */
 }
 
 jive_region::jive_region(jive_region * _parent, jive_graph * _graph)
 	: graph(_graph)
 	, parent(_parent)
-	, stackframe(nullptr)
 	, top(nullptr)
 	, bottom(nullptr)
 	, anchor(nullptr)
