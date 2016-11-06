@@ -119,8 +119,8 @@ input::input(
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
 	*/
 	if (dynamic_cast<const jive::achr::type*>(&type)) {
-		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
-		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
+		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
+		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
 
 	origin->users.insert(this);
@@ -153,8 +153,8 @@ input::input(
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
 	*/
 	if (dynamic_cast<const jive::achr::type*>(&type())) {
-		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
-		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
+		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
+		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
 
 	JIVE_LIST_PUSH_BACK(gate->inputs, this, gate_inputs_list);
@@ -195,8 +195,8 @@ input::input(
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
 	*/
 	if (dynamic_cast<const jive::achr::type*>(&type())) {
-		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor == nullptr);
-		dynamic_cast<jive::output*>(origin)->node()->region()->anchor = this;
+		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
+		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
 
 	origin->users.insert(this);

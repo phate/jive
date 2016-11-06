@@ -50,10 +50,10 @@ static std::string
 region_tree_string_recursive(const jive_region * region, size_t depth)
 {
 	std::string string(depth, '-');
-	if (region->anchor) {
+	if (region->anchor()) {
 		char tmp[32];
 		snprintf(tmp, sizeof(tmp), "%p", region);
-		string.append(region->anchor->node()->operation().debug_string())
+		string.append(region->anchor()->node()->operation().debug_string())
 		.append("_").append(tmp).append("\n");
 	} else
 		string.append("ROOT\n");

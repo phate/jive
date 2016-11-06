@@ -112,6 +112,21 @@ public:
 		bottom_ = bottom;
 	}
 
+	inline jive::input *
+	anchor() const noexcept
+	{
+		return anchor_;
+	}
+
+	/*
+		FIXME: this is going to be removed again
+	*/
+	inline void
+	set_anchor(jive::input * anchor) noexcept
+	{
+		anchor_ = anchor;
+	}
+
 	typedef jive::detail::intrusive_list<
 		jive_node,
 		jive_node::region_node_list_accessor
@@ -135,7 +150,6 @@ public:
 
 	jive_region_attrs attrs;
 
-	struct jive::input * anchor;
 
 private:
 	size_t depth_;
@@ -143,6 +157,7 @@ private:
 	jive_node * bottom_;
 	jive_graph * graph_;
 	jive_region * parent_;
+	jive::input * anchor_;
 };
 
 /**
@@ -168,9 +183,6 @@ jive_region_copy_substitute(
 	jive_region * target,
 	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom);
-
-struct jive_node *
-jive_region_get_anchor(struct jive_region * self);
 
 JIVE_EXPORTED_INLINE jive_stdsectionid
 jive_region_map_to_section(const struct jive_region * region)

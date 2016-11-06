@@ -34,12 +34,12 @@ jive_region::~jive_region()
 }
 
 jive_region::jive_region(jive_region * parent, jive_graph * graph)
-	: anchor(nullptr)
-	, depth_(0)
+	: depth_(0)
 	, top_(nullptr)
 	, bottom_(nullptr)
 	, graph_(graph)
 	, parent_(parent)
+	, anchor_(nullptr)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
@@ -52,15 +52,6 @@ jive_region::jive_region(jive_region * parent, jive_graph * graph)
 	}
 
 	graph->on_region_create(this);
-}
-
-struct jive_node *
-jive_region_get_anchor(struct jive_region * self)
-{
-	if (self->anchor)
-		return self->anchor->node();
-
-	return nullptr;
 }
 
 void
