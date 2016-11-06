@@ -82,21 +82,6 @@ jive_region::contains(const jive_node * node) const noexcept
 	return false;
 }
 
-void
-jive_region_prune_subregions_(jive_region * self)
-{
-	jive_region * subregion;
-	subregion = self->subregions.first;
-	while(subregion) {
-		jive_region * next = subregion->region_subregions_list.next;
-		if (subregion->nodes.empty()) {
-			JIVE_LIST_REMOVE(self->subregions, subregion, region_subregions_list);
-			delete subregion;
-		}
-		subregion = next;
-	}
-}
-
 typedef struct jive_copy_context jive_copy_context;
 struct jive_copy_context {
 	std::vector<std::vector<const jive_node*>> depths;
