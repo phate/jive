@@ -152,7 +152,7 @@ jive_subroutine_end(jive_subroutine & self)
 {
 	jive::output * control_return = self.hl_builder->finalize(self);
 	jive_node * leave = jive::subroutine_tail_op().create_node(self.region,
-		{self.region->top->output(0), control_return});
+		{self.region->top()->output(0), control_return});
 
 	std::vector<jive::oport*> outputs;
 	for (size_t n = 0; n < leave->noutputs(); n++)

@@ -128,15 +128,15 @@ lambda_op::copy() const
 static jive_node *
 jive_lambda_node_create(jive_region * function_region)
 {
-	size_t ndependencies = function_region->top->ninputs();
-	size_t narguments = function_region->top->noutputs() - ndependencies - 1;
+	size_t ndependencies = function_region->top()->ninputs();
+	size_t narguments = function_region->top()->noutputs() - ndependencies - 1;
 	size_t nreturns = function_region->bottom->ninputs()-1;
 
 	const jive::base::type * argument_types[narguments];
 	std::vector<std::string> argument_names;
 	for (size_t n = 0; n < narguments; n++) {
-		argument_types[n] = &function_region->top->output(n+1)->type();
-		argument_names.push_back(function_region->top->output(n+1)->gate()->name());
+		argument_types[n] = &function_region->top()->output(n+1)->type();
+		argument_names.push_back(function_region->top()->output(n+1)->gate()->name());
 	}
 	const jive::base::type * return_types[nreturns];
 	std::vector<std::string> result_names;
@@ -170,7 +170,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 		return false;
 
 	/* find index of lambda output in the phi leave node */
-	size_t index = self->region()->top->noutputs();
+	size_t index = self->region()->top()->noutputs();
 	for (auto user : self->output(0)->users) {
 		auto input = dynamic_cast<jive::input*>(user);
 		if (dynamic_cast<const jive::phi_tail_op *>(&input->node()->operation())) {
@@ -178,13 +178,13 @@ jive_lambda_is_self_recursive(const jive_node * self)
 			break;
 		}
 	}
-	JIVE_DEBUG_ASSERT(index != self->region()->top->noutputs());
+	JIVE_DEBUG_ASSERT(index != self->region()->top()->noutputs());
 
 	/* the lambda is self-recursive if one of its external dependencies originates from the same
 	*  index in the phi enter node
 	*/
-	for (size_t n = 0; n < lambda_region->top->ninputs(); n++) {
-		jive::input * input = lambda_region->top->input(n);
+	for (size_t n = 0; n < lambda_region->top()->ninputs(); n++) {
+		jive::input * input = lambda_region->top()->input(n);
 		if (input->origin()->index() == index)
 			return true;
 	}
@@ -200,7 +200,7 @@ namespace fct {
 lambda_dep
 lambda_dep_add(jive_lambda * self, jive::output * value)
 {
-	jive_node * enter = self->region->top;
+	jive_node * enter = self->region->top();
 	jive_graph * graph = self->region->graph();
 
 	jive::fct::lambda_dep depvar;
@@ -237,7 +237,7 @@ jive_lambda_begin(
 	size_t n;
 	for (n = 0; n < narguments; n++) {
 		jive::gate * gate = jive_graph_create_gate(graph, argument_names[n], *argument_types[n]);
-		lambda->arguments[n] = lambda->region->top->add_output(gate);
+		lambda->arguments[n] = lambda->region->top()->add_output(gate);
 	}
 
 	return lambda;
@@ -250,7 +250,7 @@ jive_lambda_end(jive_lambda * self,
 	jive_region * region = self->region;
 	jive_graph * graph = region->graph();
 
-	jive::output * tmp = region->top->output(0);
+	jive::output * tmp = region->top()->output(0);
 	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, {tmp});
 
 	size_t n;
@@ -281,7 +281,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 		lambda_node->operation());
 	
 	jive_region * function_region = lambda_node->input(0)->origin()->region();
-	jive_node * head = function_region->top;
+	jive_node * head = function_region->top();
 	jive_node * tail = function_region->bottom;
 	
 	jive::substitution_map substitution;

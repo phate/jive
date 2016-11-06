@@ -47,7 +47,7 @@ gamma_normal_form::normalize_node(jive_node * node) const
 				jive_node * tail = dynamic_cast<jive::output*>(node->input(nalts)->origin())->node();
 				jive_node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
 				JIVE_DEBUG_ASSERT(tail = tail->region()->bottom);
-				JIVE_DEBUG_ASSERT(head = head->region()->top);
+				JIVE_DEBUG_ASSERT(head = head->region()->top());
 
 				jive::substitution_map map;
 				for (size_t n = 1; n < head->noutputs(); n++)

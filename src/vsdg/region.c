@@ -34,10 +34,10 @@ jive_region::~jive_region()
 }
 
 jive_region::jive_region(jive_region * parent, jive_graph * graph)
-	: top(nullptr)
-	, bottom(nullptr)
+	: bottom(nullptr)
 	, anchor(nullptr)
 	, depth_(0)
+	, top_(nullptr)
 	, graph_(graph)
 	, parent_(parent)
 {
@@ -138,7 +138,7 @@ pre_copy_region(
 	bool copy_top, bool copy_bottom)
 {
 	for (auto & node : original_region->nodes) {
-		if (!copy_top && &node == original_region->top) continue;
+		if (!copy_top && &node == original_region->top()) continue;
 		if (!copy_bottom && &node == original_region->bottom) continue;
 		jive_copy_context_append(copy_context, &node);
 	}
@@ -169,8 +169,8 @@ jive_region_copy_substitute(
 			const jive_node * node = copy_context.depths[depth][n];
 			jive_region * target_subregion = substitution.lookup(node->region());
 			jive_node * new_node = node->copy(target_subregion, substitution);
-			if (node->region()->top == node)
-				target_subregion->top = new_node;
+			if (node->region()->top() == node)
+				target_subregion->set_top(new_node);
 			if (node->region()->bottom == node)
 				target_subregion->bottom = new_node;
 		}

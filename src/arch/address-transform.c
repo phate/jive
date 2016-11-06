@@ -371,7 +371,7 @@ jive_lambda_node_address_transform(
 		return;
 
 	jive_region * region = jive_node_anchored_region(node, 0);
-	jive_node * enter = region->top;
+	jive_node * enter = region->top();
 	jive_node * leave = region->bottom;
 
 	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
@@ -393,7 +393,7 @@ jive_lambda_node_address_transform(
 
 	jive::substitution_map map;
 
-	jive_node * new_enter = jive_region_get_top_node(lambda->region);
+	jive_node * new_enter = lambda->region->top();
 	for (n = 1; n < enter->noutputs(); n++) {
 		jive::output * parameter = jive_bitstring_to_address_create(new_enter->output(n), nbits,
 			fcttype->argument_type(n-1));

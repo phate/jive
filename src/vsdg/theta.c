@@ -121,7 +121,7 @@ jive_theta_loopvar
 jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 {
 	jive_theta_build_state * state = self.internal_state;
-	jive_node * head = self.region->top;
+	jive_node * head = self.region->top();
 	jive_graph * graph = head->graph();
 	
 	size_t index = state->loopvars.size();
@@ -160,7 +160,7 @@ jive_theta_end(jive_theta self, jive::output * predicate,
 
 	size_t n;
 	jive_node * tail = jive::theta_tail_op().create_node(self.region,
-		{self.region->top->output(0), predicate});
+		{self.region->top()->output(0), predicate});
 	for (n = 0; n < state->loopvars.size(); ++n)
 		tail->add_input(state->loopvars[n].gate, state->loopvars[n].value);
 

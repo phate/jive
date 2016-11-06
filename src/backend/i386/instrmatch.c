@@ -109,7 +109,7 @@ convert_divmod(jive_node * node, bool sign, size_t index)
 			&jive_i386_instr_int_load_imm, nullptr, &imm);
 		
 		jive_node * sub = jive_region_get_subroutine_node(node->region());
-		jive_node * enter = sub->input(0)->origin()->region()->top;
+		jive_node * enter = sub->input(0)->origin()->region()->top();
 		tmp->add_input(&jive::seq::seqtype, enter->output(0));
 		
 		ext = tmp->output(0);

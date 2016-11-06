@@ -518,8 +518,8 @@ jive_node::~jive_node()
 	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
 
-	if (this == region()->top)
-		region()->top = nullptr;
+	if (this == region()->top())
+		region()->set_top(nullptr);
 	if (this == region()->bottom)
 		region()->bottom = nullptr;
 
@@ -858,8 +858,8 @@ jive_opnode_create(
 	/* FIXME: region head/tail nodes are a bit quirky, but they
 	 * will go away eventually anyways */
 	if (dynamic_cast<const jive::region_head_op *>(&op)) {
-		JIVE_DEBUG_ASSERT(!region->top);
-		region->top = node;
+		JIVE_DEBUG_ASSERT(!region->top());
+		region->set_top(node);
 	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->bottom);
 		region->bottom = node;

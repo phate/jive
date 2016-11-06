@@ -134,7 +134,7 @@ jive_phi_fixvar
 jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 {
 	jive_phi_build_state * state = self.internal_state;
-	jive_node * enter = self.region->top;
+	jive_node * enter = self.region->top();
 	jive_graph * graph = enter->graph();
 
 	jive_phi_fixvar fixvar;
@@ -168,7 +168,7 @@ jive_phi_end(jive_phi self,
 	size_t npost_values, jive_phi_fixvar * fix_values)
 {
 	jive_phi_build_state * state = self.internal_state;
-	jive_node * enter = self.region->top;
+	jive_node * enter = self.region->top();
 
 	size_t n;
 	jive::output * tmp = enter->output(0);

@@ -26,7 +26,7 @@ static int test_main(void)
 	
 	jive_test_value_type type;
 	jive_node * top = jive_test_node_create(r1, {}, {}, {&type, &type, &jive::ctl::boolean});
-	r1->top = top;
+	r1->set_top(top);
 	
 	jive::output * tmp = jive_gamma(top->output(2), {&type},
 		{{top->output(0)}, {top->output(1)}})[0];
@@ -41,7 +41,7 @@ static int test_main(void)
 	jive::substitution_map subst;
 	jive_region_copy_substitute(r1, r2, subst, true, true);
 
-	jive_node * copied_top = r2->top;
+	jive_node * copied_top = r2->top();
 	jive_node * copied_bottom = r2->bottom;
 	assert(copied_top && copied_top->ninputs() == 0 && copied_top->noutputs() == 3);
 	assert(copied_bottom && copied_bottom->ninputs() == 1 && copied_bottom->noutputs() == 0);
