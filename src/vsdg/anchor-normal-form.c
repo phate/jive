@@ -38,9 +38,8 @@ anchor_normal_form::set_reducible(bool enable)
 	children_set<anchor_normal_form, &anchor_normal_form::set_reducible>(enable);
 	
 	enable_reducible_ = enable;
-	if (get_mutable() && get_reducible()) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && get_reducible())
+		graph()->mark_denormalized();
 }
 
 }

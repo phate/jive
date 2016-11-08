@@ -119,9 +119,8 @@ unary_normal_form::set_reducible(bool enable)
 	children_set<unary_normal_form, &unary_normal_form::set_reducible>(enable);
 
 	enable_reducible_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 }

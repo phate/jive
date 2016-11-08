@@ -266,9 +266,8 @@ public:
 		children_set<concat_normal_form, &concat_normal_form::set_reducible>(enable);
 
 		enable_reducible_ = enable;
-		if (get_mutable() && enable) {
-			jive_graph_mark_denormalized(graph());
-		}
+		if (get_mutable() && enable)
+			graph()->mark_denormalized();
 	}
 	inline bool
 	get_reducible() const noexcept { return enable_reducible_; }
@@ -283,9 +282,8 @@ public:
 		children_set<concat_normal_form, &concat_normal_form::set_flatten>(enable);
 
 		enable_flatten_ = enable;
-		if (get_mutable() && enable) {
-			jive_graph_mark_denormalized(graph());
-		}
+		if (get_mutable() && enable)
+			graph()->mark_denormalized();
 	}
 	inline bool
 	get_flatten() const noexcept { return enable_flatten_; }

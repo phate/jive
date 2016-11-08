@@ -88,7 +88,7 @@ iport::divert_origin(jive::oport * new_origin)
 		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 	origin()->users.insert(this);
 
-	jive_graph_mark_denormalized(new_origin->region()->graph());
+	new_origin->region()->graph()->mark_denormalized();
 }
 
 /* inputs */
@@ -662,8 +662,9 @@ jive_node::add_output(const struct jive_resource_class * rescls)
 jive_node *
 jive_node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
 {
-	jive_graph_mark_denormalized(graph());
-	return operation_->create_node(region, operands);
+	jive_node * node = operation_->create_node(region, operands);
+	graph()->mark_denormalized();
+	return node;
 }
 
 jive_node *

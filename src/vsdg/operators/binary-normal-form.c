@@ -276,9 +276,8 @@ binary_normal_form::set_reducible(bool enable)
 	children_set<binary_normal_form, &binary_normal_form::set_reducible>(enable);
 
 	enable_reducible_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 void
@@ -291,9 +290,8 @@ binary_normal_form::set_flatten(bool enable)
 	children_set<binary_normal_form, &binary_normal_form::set_flatten>(enable);
 
 	enable_flatten_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 void
@@ -306,9 +304,8 @@ binary_normal_form::set_reorder(bool enable)
 	children_set<binary_normal_form, &binary_normal_form::set_reorder>(enable);
 	
 	enable_reorder_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 void
@@ -321,9 +318,8 @@ binary_normal_form::set_distribute(bool enable)
 	children_set<binary_normal_form, &binary_normal_form::set_distribute>(enable);
 
 	enable_distribute_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 void
@@ -336,9 +332,8 @@ binary_normal_form::set_factorize(bool enable)
 	children_set<binary_normal_form, &binary_normal_form::set_factorize>(enable);
 
 	enable_factorize_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 

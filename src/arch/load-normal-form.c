@@ -134,9 +134,8 @@ load_normal_form::set_reducible(bool enable)
 	children_set<load_normal_form, &load_normal_form::set_reducible>(enable);
 
 	enable_reducible_ = enable;
-	if (get_mutable() && enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (get_mutable() && enable)
+		graph()->mark_denormalized();
 }
 
 }

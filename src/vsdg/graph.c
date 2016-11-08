@@ -148,12 +148,6 @@ jive_graph_get_nodeclass_form(
 }
 
 void
-jive_graph_mark_denormalized(jive_graph * self)
-{
-	self->normalized = false;
-}
-
-void
 jive_graph_normalize(jive_graph * self)
 {
 	for (jive_node * node : jive::topdown_traverser(self)) {

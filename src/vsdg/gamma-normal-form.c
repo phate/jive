@@ -149,9 +149,8 @@ gamma_normal_form::set_predicate_reduction(bool enable)
 
 	enable_predicate_reduction_ = enable;
 
-	if (enable && get_mutable()) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (enable && get_mutable())
+		graph()->mark_denormalized();
 }
 
 void
@@ -165,9 +164,8 @@ gamma_normal_form::set_invariant_reduction(bool enable)
 
 	enable_invariant_reduction_ = enable;
 
-	if (enable && get_mutable()) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (enable && get_mutable())
+		graph()->mark_denormalized();
 }
 
 }

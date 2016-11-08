@@ -63,9 +63,8 @@ node_normal_form::set_mutable(bool enable)
 	children_set<node_normal_form, &node_normal_form::set_mutable>(enable);
 
 	enable_mutable_ = enable;
-	if (enable) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (enable)
+		graph()->mark_denormalized();
 }
 
 void
@@ -78,9 +77,8 @@ node_normal_form::set_cse(bool enable)
 	children_set<node_normal_form, &node_normal_form::set_cse>(enable);
 
 	enable_cse_ = enable;
-	if (enable && enable_mutable_) {
-		jive_graph_mark_denormalized(graph());
-	}
+	if (enable && enable_mutable_)
+		graph()->mark_denormalized();
 }
 
 namespace {

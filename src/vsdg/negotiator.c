@@ -104,7 +104,7 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 	// Directly create node without going through normalization -- at this
 	// point, normalization *must* not interfere in any way.
 	jive_node * node = op.create_node(operand->node()->region(), {operand});
-	jive_graph_mark_denormalized(node->graph());
+	node->graph()->mark_denormalized();
 
 	jive_negotiator_annotate_simple_input(negotiator, node->input(0), input_option);
 	jive_negotiator_annotate_simple_output(negotiator, node->output(0), output_option);

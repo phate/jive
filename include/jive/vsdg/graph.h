@@ -62,6 +62,12 @@ public:
 		return root_;
 	}
 
+	inline void
+	mark_denormalized() noexcept
+	{
+		normalized = false;
+	}
+
 	std::unique_ptr<jive_graph>
 	copy() const;
 
@@ -136,9 +142,6 @@ jive::node_normal_form *
 jive_graph_get_nodeclass_form(
 	jive_graph * self,
 	const std::type_info & type);
-
-void
-jive_graph_mark_denormalized(jive_graph * self);
 
 void
 jive_graph_normalize(jive_graph * self);

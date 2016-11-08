@@ -829,8 +829,8 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 	std::unique_ptr<jive::operation> op = sercls->deserialize(parser_driver);
 	*node = op->create_node(region, origins);
 
-	jive_graph_mark_denormalized(region->graph());
-	
+	region->graph()->mark_denormalized();
+
 	if (!jive_deserialize_char_token(self, is, '>'))
 		return false;
 	
