@@ -530,7 +530,7 @@ eval(
 	const std::vector<const literal*> & arguments)
 {
 	const jive::output * output = nullptr;
-	const jive_node * tail = graph->root_region->bottom();
+	const jive_node * tail = graph->root()->bottom();
 	for (size_t n = 0; n < tail->ninputs(); n++) {
 		JIVE_DEBUG_ASSERT(tail->input(n)->gate() != nullptr);
 		if (tail->input(n)->gate()->name() == name) {
@@ -543,7 +543,7 @@ eval(
 		throw compiler_error("Export not found.");
 
 	context ctx;
-	ctx.push_frame(graph->root_region);
+	ctx.push_frame(graph->root());
 
 	auto fcttype = dynamic_cast<const jive::fct::type*>(&output->type());
 	if (fcttype) {
@@ -564,8 +564,8 @@ eval(
 	if (fcttype)
 		ctx.pop_arguments();
 
-	ctx.pop_frame(graph->root_region);
-	JIVE_DEBUG_ASSERT(ctx.nframes(graph->root_region) == 0);
+	ctx.pop_frame(graph->root());
+	JIVE_DEBUG_ASSERT(ctx.nframes(graph->root()) == 0);
 	JIVE_DEBUG_ASSERT(ctx.narguments() == 0);
 
 	return result;

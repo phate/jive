@@ -33,7 +33,7 @@ static int test_main(void)
 {
 	jive_graph * graph = jive_graph_create();
 	
-	jive::region * region = graph->root_region;
+	jive::region * region = graph->root();
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
 	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});

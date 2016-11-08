@@ -53,24 +53,23 @@ prune_regions_recursive(jive::region * region)
 
 jive_graph::~jive_graph()
 {
-	delete root_region->bottom();
+	delete root()->bottom();
 	jive_graph_prune(this);
 
-	prune_regions_recursive(root_region);
+	prune_regions_recursive(root());
 
 	while (gates.first)
 		delete gates.first;
 }
 
 jive_graph::jive_graph()
+	: root_(new jive::region(nullptr, this))
 {
 	bottom.first = bottom.last = 0;
 	gates.first = gates.last = 0;
 	resources_fully_assigned = false;
 	normalized = true;
-
-	root_region = new jive::region(nullptr, this);
-	jive::graph_tail_operation().create_node(root_region, {});
+	jive::graph_tail_operation().create_node(root(), {});
 }
 
 jive_graph *
@@ -115,7 +114,7 @@ jive_graph_prune(jive_graph * self)
 	while(node) {
 		jive_node * next = node->graph_bottom_list.next;
 		
-		if (node != self->root_region->bottom()) {
+		if (node != self->root()->bottom()) {
 			delete node;
 			if (!next) next = self->bottom.first;
 		}
@@ -124,7 +123,7 @@ jive_graph_prune(jive_graph * self)
 	}
 	
 	jive::region * subregion, * next;
-	JIVE_LIST_ITERATE_SAFE(self->root_region->subregions, subregion, next, region_subregions_list)
+	JIVE_LIST_ITERATE_SAFE(self->root()->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
 }
 
@@ -134,7 +133,7 @@ jive_graph_copy(jive_graph * self)
 	jive_graph * new_graph = jive_graph_create();
 	
 	jive::substitution_map smap;
-	jive_region_copy_substitute(self->root_region, new_graph->root_region, smap, false, false);
+	jive_region_copy_substitute(self->root(), new_graph->root(), smap, false, false);
 
 	return new_graph;
 }

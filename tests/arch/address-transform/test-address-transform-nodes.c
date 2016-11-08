@@ -27,7 +27,7 @@ static int test_main(void)
 	jive::addr::type addrtype;
 	jive::bits::type bits32(32);
 	jive::bits::type bits64(64);
-	jive_node * top = jive_test_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root(),
 		{}, {}, {&addrtype, &bits32, &bits64});
 
 	jive::output * b0 = jive_address_to_bitstring_create(top->output(0), 32,
@@ -37,7 +37,7 @@ static int test_main(void)
 	jive::output * a1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
 	jive::output * b1 = jive_address_to_bitstring_create(a1, 32, &addrtype);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root(),
 		{&addrtype, &bits32}, {a0, b1}, {});
 
 	assert(bottom->input(0)->origin() == top->output(0));

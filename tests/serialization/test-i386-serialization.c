@@ -51,7 +51,7 @@ static int test_main(void)
 	int64_t tmparray2[] = {42};
 	
 	jive_node * n1 = jive_instruction_node_create_simple(
-		gr1->root_region,
+		gr1->root(),
 		&jive_i386_instr_int_load_imm,
 		NULL,
 		tmparray2);
@@ -59,14 +59,14 @@ static int test_main(void)
 	int64_t tmparray4[] = {17};
 	
 	jive_node * n2 = jive_instruction_node_create_simple(
-		gr1->root_region,
+		gr1->root(),
 		&jive_i386_instr_int_load32_disp,
 		tmparray3,
 		tmparray4);
 	jive::output * tmparray5[] = {n1->output(0), n2->output(0)};
 	
 	jive_node * n3 = jive_instruction_node_create_simple(
-		gr1->root_region,
+		gr1->root(),
 		&jive_i386_instr_int_mul_expand_signed,
 		tmparray5,
 		NULL);

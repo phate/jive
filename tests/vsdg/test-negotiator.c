@@ -316,22 +316,22 @@ static int test_main(void)
 	test_option_t opt4 = 5;
 
 	const jive::base::type * tmparray0[] = {&bits32};
-	jive_node * n1 = jive_negtestnode_create(graph->root_region,
+	jive_node * n1 = jive_negtestnode_create(graph->root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive::output * tmp = n1->output(0);
-	jive_node * n2 = jive_negtestnode_create(graph->root_region,
+	jive_node * n2 = jive_negtestnode_create(graph->root(),
 		1, &opt1, tmparray0, &tmp,
 		0, 0, 0);
-	jive_node * n3 = jive_negtestnode_create(graph->root_region,
+	jive_node * n3 = jive_negtestnode_create(graph->root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	tmp = n3->output(0);
-	jive_node * n4 = jive_negtestnode_create(graph->root_region,
+	jive_node * n4 = jive_negtestnode_create(graph->root(),
 		1, &opt2, tmparray0, &tmp,
 		0, 0, 0);
 	
-	jive::region * subregion = new jive::region(graph->root_region, graph);
+	jive::region * subregion = new jive::region(graph->root(), graph);
 	jive_node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);

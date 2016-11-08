@@ -29,7 +29,7 @@ prepare_graph()
 	graph_desc g;
 	g.graph = jive_graph_create();
 	
-	jive::region * region = g.graph->root_region;
+	jive::region * region = g.graph->root();
 	jive_test_value_type type;
 	g.a1 = jive_test_node_create(region, {}, {}, {&type});
 	g.a2 = jive_test_node_create(region, {&type}, {g.a1->output(0)}, {&type});

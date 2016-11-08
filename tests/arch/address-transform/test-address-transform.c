@@ -35,7 +35,7 @@ static int test_main(void)
 	jive::addr::type addr;
 	jive::mem::type mem;
 	jive::bits::type bits64(64);
-	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&bits64, &bits64, &mem});
+	jive_node * top = jive_test_node_create(graph->root(), {}, {}, {&bits64, &bits64, &mem});
 
 	jive::output * address0 = jive_bitstring_to_address_create(top->output(0), 64, &addr);
 	jive::output * address1 = jive_bitstring_to_address_create(top->output(1), 64, &addr);
@@ -48,15 +48,15 @@ static int test_main(void)
 	jive_linker_symbol write_symbol;
 	jive_label_external write_label;
 	jive_label_external_init(&write_label, "write", &write_symbol);
-	jive::output * label = jive_label_to_address_create(graph->root_region, &write_label.base);
+	jive::output * label = jive_label_to_address_create(graph->root(), &write_label.base);
 	jive::output * tmparray2[] = {memberof, containerof};
 	const jive::base::type * tmparray3[] = {&addr, &addr};
-	jive_node * call = jive_call_by_address_node_create(graph->root_region,
+	jive_node * call = jive_call_by_address_node_create(graph->root(),
 		label, NULL,
 		2, tmparray2,
 		2, tmparray3);
 
-	jive::output * constant = jive_bitconstant_unsigned(graph->root_region, 64, 1);
+	jive::output * constant = jive_bitconstant_unsigned(graph->root(), 64, 1);
 	jive::output * arraysub = jive_arraysubscript(call->output(0), &addr, constant);
 
 	jive::output * arrayindex = jive_arrayindex(call->output(0), call->output(1), &addr, &bits64);
@@ -68,7 +68,7 @@ static int test_main(void)
 
 	jive::output * o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root(),
 		{&bits64, &mem}, {o_addr, store->output(0)}, {&bits64});
 	jive_graph_export(graph, bottom->output(0));
 

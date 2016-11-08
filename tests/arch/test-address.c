@@ -29,7 +29,7 @@ static int test_main(void)
 	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));
 
 	jive::addr::type addrtype;
-	jive_node * top = jive_test_node_create(graph->root_region, {}, {}, {&addrtype, &addrtype});
+	jive_node * top = jive_test_node_create(graph->root(), {}, {}, {&addrtype, &addrtype});
 	
 	jive::output * memb1 = jive_memberof(top->output(0), rec, 0);
 	jive::output * memb2 = jive_memberof(top->output(0), rec, 1);
@@ -50,11 +50,11 @@ static int test_main(void)
 	assert(memb4 != top->output(1));
 	assert(memb3 == top->output(1));
 	
-	jive::output * zero = jive_bitconstant(graph->root_region, 32,
+	jive::output * zero = jive_bitconstant(graph->root(), 32,
 		"00000000000000000000000000000000");
-	jive::output * one = jive_bitconstant(graph->root_region, 32,
+	jive::output * one = jive_bitconstant(graph->root(), 32,
 		"10000000000000000000000000000000");
-	jive::output * minus_one = jive_bitconstant(graph->root_region, 32,
+	jive::output * minus_one = jive_bitconstant(graph->root(), 32,
 		"11111111111111111111111111111111");
 	
 	jive::output * a0 = jive_arraysubscript(top->output(0), &bits32, zero);
@@ -75,7 +75,7 @@ static int test_main(void)
 	jive::output * memberof = jive_memberof(cont3, rec, 1);
 	jive::output * arraysub = jive_arraysubscript(top->output(0), &bits32, one);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root(),
 		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
 	jive_graph_export(graph, bottom->output(0));
 

@@ -20,7 +20,7 @@ static int test_main(void)
 {
 	jive_graph * graph = jive_graph_create();
 	
-	jive::region * region = graph->root_region;
+	jive::region * region = graph->root();
 	jive_test_state_type type;
 	jive_test_value_type value_type;
 

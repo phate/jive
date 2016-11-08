@@ -35,12 +35,12 @@ static int test_main(void)
 	jive_graph * gr1 = jive_graph_create();
 	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation))->set_mutable(false);
 	
-	jive::output * a = jive_bitconstant(gr1->root_region, 8, "01010101");
-	jive::output * b = jive_bitconstant(gr1->root_region, 8, "10101010");
-	jive::output * true_out = jive_control_true(gr1->root_region);
+	jive::output * a = jive_bitconstant(gr1->root(), 8, "01010101");
+	jive::output * b = jive_bitconstant(gr1->root(), 8, "10101010");
+	jive::output * true_out = jive_control_true(gr1->root());
 	jive::output * c = jive_gamma(true_out, {&a->type()}, {{a}, {b}})[0];
 	
-	jive_theta theta = jive_theta_begin(gr1->root_region);
+	jive_theta theta = jive_theta_begin(gr1->root());
 	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);
 	jive_theta_end(theta, jive_control_false(theta.region), 1, &loopvar);
 	jive::output * d = loopvar.value;

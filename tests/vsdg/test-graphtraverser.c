@@ -28,7 +28,7 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 		tmp = trav.next();
 		assert(tmp==n2);
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom());
+		assert(tmp == graph->root()->bottom());
 		tmp = trav.next();
 		assert(tmp==0);
 	}
@@ -36,7 +36,7 @@ void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
 	{
 		jive::bottomup_traverser trav(graph);
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom());
+		assert(tmp == graph->root()->bottom());
 		tmp = trav.next();
 		assert(tmp==n2);
 		tmp = trav.next();
@@ -51,9 +51,9 @@ void test_order_enforcement_traversal()
 	jive_graph * graph = jive_graph_create();
 	
 	jive_test_value_type type;
-	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type, &type});
-	jive_node * n2 = jive_test_node_create(graph->root_region, {&type}, {n1->output(0)}, {&type});
-	jive_node * n3 = jive_test_node_create(graph->root_region,
+	jive_node * n1 = jive_test_node_create(graph->root(), {}, {}, {&type, &type});
+	jive_node * n2 = jive_test_node_create(graph->root(), {&type}, {n1->output(0)}, {&type});
+	jive_node * n3 = jive_test_node_create(graph->root(),
 		{&type, &type}, {n2->output(0), n1->output(1)}, {&type});
 
 	jive_node * tmp;
@@ -62,7 +62,7 @@ void test_order_enforcement_traversal()
 		jive::topdown_traverser trav(graph);
 
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom());
+		assert(tmp == graph->root()->bottom());
 		tmp = trav.next();
 		assert(tmp==n1);
 		tmp = trav.next();
@@ -81,7 +81,7 @@ void test_order_enforcement_traversal()
 		tmp = trav.next();
 		assert(tmp==n2);
 		tmp = trav.next();
-		assert(tmp == graph->root_region->bottom());
+		assert(tmp == graph->root()->bottom());
 		tmp = trav.next();
 		assert(tmp==n1);
 		tmp = trav.next();
@@ -103,9 +103,9 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 
 	/* At this point, n1 has been visited, now create some nodes */
 
-	jive_node * n3 = jive_test_node_create(graph->root_region, {}, {}, {&type});
-	jive_node * n4 = jive_test_node_create(graph->root_region, {&type}, {n3->output(0)}, {});
-	jive_node * n5 = jive_test_node_create(graph->root_region, {&type}, {n2->output(0)}, {});
+	jive_node * n3 = jive_test_node_create(graph->root(), {}, {}, {&type});
+	jive_node * n4 = jive_test_node_create(graph->root(), {&type}, {n3->output(0)}, {});
+	jive_node * n5 = jive_test_node_create(graph->root(), {&type}, {n2->output(0)}, {});
 
 	/*
 		The newly created nodes n3 and n4 will not be visited,
@@ -136,11 +136,11 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_graph * graph = jive_graph_create();
 	jive_test_value_type type;
-	jive_node * n1 = jive_test_node_create(graph->root_region, {}, {}, {&type, &type});
-	jive_node * n2 = jive_test_node_create(graph->root_region,
+	jive_node * n1 = jive_test_node_create(graph->root(), {}, {}, {&type, &type});
+	jive_node * n2 = jive_test_node_create(graph->root(),
 		{&type, &type}, {n1->output(0), n1->output(1)}, {&type});
 
-	graph->root_region->bottom()->add_input(&type, n2->output(0));
+	graph->root()->bottom()->add_input(&type, n2->output(0));
 	(void)n1;
 	(void)n2;
 	

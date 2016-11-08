@@ -36,14 +36,14 @@ static int _test_rcdgroup(void)
 		new jive::rcd::declaration({}));
 	static jive::rcd::type rcdtype_empty(decl_empty);
 
-	jive_node * top = jive_test_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root(),
 		{}, {}, {&bits8, &bits16, &bits32});
 	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
 	jive::output * g0 = jive_group_create(decl, 3, tmparray1);
 	jive::output * g1 = jive_empty_group_create(graph, decl_empty);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root(),
 		{&rcdtype, &rcdtype_empty}, {g0, g1}, {&bits8});
 
 	jive_graph_export(graph, bottom->output(0));
@@ -76,7 +76,7 @@ static int _test_rcdselect()
 	static jive::rcd::type rcdtype(decl);
 
 	jive::addr::type addrtype;
-	jive_node * top = jive_test_node_create(graph->root_region,
+	jive_node * top = jive_test_node_create(graph->root(),
 		{}, {}, {&bits8, &bits16, &bits32, &rcdtype, &rcdtype, &addrtype});
 	jive::output * tmparray1[] = {top->output(0), top->output(1), top->output(2)};
 
@@ -88,7 +88,7 @@ static int _test_rcdselect()
 	jive::output * s2 = jive_select_create(2, top->output(4));
 	jive::output * s3 = jive_select_create(0, load);
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root(),
 		{&bits16, &bits16, &bits32, &bits8}, {s0, s1, s2, s3}, {&bits8});
 	jive_graph_export(graph, bottom->output(0));
 

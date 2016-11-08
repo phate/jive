@@ -32,7 +32,7 @@ static int test_main()
 	jive::fct::type f1type(0, NULL, 0, NULL);
 	jive::fct::type f2type(1, tmparray0, 1, tmparray0);
 
-	jive_phi phi = jive_phi_begin(graph->root_region);
+	jive_phi phi = jive_phi_begin(graph->root());
 	jive_phi_fixvar fns[3];
 	fns[0] = jive_phi_fixvar_enter(phi, &f0type);
 	fns[1] = jive_phi_fixvar_enter(phi, &f1type);
@@ -58,7 +58,7 @@ static int test_main()
 
 	jive::output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
 
-	jive_node * bottom = jive_test_node_create(graph->root_region,
+	jive_node * bottom = jive_test_node_create(graph->root(),
 		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
 	jive_graph_export(graph, bottom->output(0));
 

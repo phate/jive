@@ -65,7 +65,7 @@ jive_graphview_layout(jive_graphview * self)
 	jive_reservationtracker reservation;
 	
 	/* compute sizes of regions and nodes */
-	jive_regionview regionview(self, self->graph->root_region);
+	jive_regionview regionview(self, self->graph->root());
 	jive_regionview_layout(&regionview, &reservation);
 	
 	self->width = reservation.max_x - reservation.min_x;

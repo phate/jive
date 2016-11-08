@@ -136,7 +136,7 @@ jive_serialize_graph(
 		jive_serialize_char_token(self, ';', os);
 	}
 	
-	jive_serialize_regionbody(self, &namegen.base, graph->root_region, os);
+	jive_serialize_regionbody(self, &namegen.base, graph->root(), os);
 	jive_serialization_simple_namegen_fini(&namegen);
 }
 
@@ -146,7 +146,7 @@ jive_deserialize_graph(
 	struct jive_token_istream * is,
 	struct jive_graph * graph)
 {
-	if (!jive_deserialize_regionbody(self, is, graph->root_region))
+	if (!jive_deserialize_regionbody(self, is, graph->root()))
 		return false;
 	return true;
 }

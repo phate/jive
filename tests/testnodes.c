@@ -91,7 +91,7 @@ jive_test_node_create_normalized(
 	const std::vector<jive::oport*> & operands,
 	const std::vector<const jive::base::type*> & result_types)
 {
-	jive::region * region = graph->root_region;
+	jive::region * region = graph->root();
 	if (!operands.empty())
 		region = operands[0]->region();
 

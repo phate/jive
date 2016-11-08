@@ -28,5 +28,5 @@ jive::output *
 jive_fltsymbolicconstant(jive_graph * graph, const char * name)
 {
 	jive::flt::symbol_op op(name, jive::flt::type());
-	return jive_node_create_normalized(graph->root_region, op, {})[0];
+	return jive_node_create_normalized(graph->root(), op, {})[0];
 }

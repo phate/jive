@@ -65,7 +65,7 @@ public:
 JIVE_EXPORTED_INLINE struct jive::region *
 jive_phi_region_cast(struct jive::region * region)
 {
-	if (region->graph()->root_region == region)
+	if (region->graph()->root() == region)
 		return NULL;
 	if (!region->bottom())
 		return NULL;
@@ -79,7 +79,7 @@ jive_phi_region_cast(struct jive::region * region)
 JIVE_EXPORTED_INLINE const struct jive::region *
 jive_phi_region_const_cast(const struct jive::region * region)
 {
-	if (region->graph()->root_region == region)
+	if (region->graph()->root() == region)
 		return NULL;
 	if (!region->bottom())
 		return NULL;

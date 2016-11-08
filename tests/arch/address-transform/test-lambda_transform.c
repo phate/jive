@@ -30,7 +30,7 @@ test_main(void)
 	const jive::base::type * addrptr = &addrtype;
 	const char * tmparray0[] = {"x"};
 
-	jive_lambda * lambda = jive_lambda_begin(graph->root_region, 1, &addrptr, tmparray0);
+	jive_lambda * lambda = jive_lambda_begin(graph->root(), 1, &addrptr, tmparray0);
 	jive::output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
 	jive_graph_export(graph, fct, "fct");
@@ -45,7 +45,7 @@ test_main(void)
 	jive::bits::type bits32(32);
 	const jive::base::type * tmp = &bits32;
 	jive::fct::type fcttype(1, &tmp, 1, &tmp);
-	assert(graph->root_region->bottom()->input(0)->type() == fcttype);
+	assert(graph->root()->bottom()->input(0)->type() == fcttype);
 
 	jive_graph_destroy(graph);
 

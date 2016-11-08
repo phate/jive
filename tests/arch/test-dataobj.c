@@ -69,19 +69,19 @@ static const char bits[] = "01010101010101010101010101010101";
 static jive::output *
 make_8bit_const(jive_graph * graph)
 {
-	return jive_bitconstant(graph->root_region, 8, bits);
+	return jive_bitconstant(graph->root(), 8, bits);
 }
 
 static jive::output *
 make_16bit_const(jive_graph * graph)
 {
-	return jive_bitconstant(graph->root_region, 16, bits);
+	return jive_bitconstant(graph->root(), 16, bits);
 }
 
 static jive::output *
 make_32bit_const(jive_graph * graph)
 {
-	return jive_bitconstant(graph->root_region, 32, bits);
+	return jive_bitconstant(graph->root(), 32, bits);
 }
 
 static jive::output *
@@ -93,9 +93,9 @@ make_record1(jive_graph * graph)
 	static std::shared_ptr<const jive::rcd::declaration> decl(
 		new jive::rcd::declaration({&bits32, &bits16, &bits8}));
 
-	jive::output * c1 = jive_bitconstant(graph->root_region, 32, bits);
-	jive::output * c2 = jive_bitconstant(graph->root_region, 16, bits);
-	jive::output * c3 = jive_bitconstant(graph->root_region, 8, bits);
+	jive::output * c1 = jive_bitconstant(graph->root(), 32, bits);
+	jive::output * c2 = jive_bitconstant(graph->root(), 16, bits);
+	jive::output * c3 = jive_bitconstant(graph->root(), 8, bits);
 	jive::output *  tmparray0[] = {c1, c2, c3};
 	
 	return jive_group_create(decl, 3, tmparray0);
@@ -112,8 +112,8 @@ make_record2(jive_graph * graph)
 	static std::shared_ptr<const jive::rcd::declaration> decl2(
 		new jive::rcd::declaration({&rec1, &bits32}));
 	
-	jive::output * c1 = jive_bitconstant(graph->root_region, 32, bits);
-	jive::output * c2 = jive_bitconstant(graph->root_region, 16, bits);
+	jive::output * c1 = jive_bitconstant(graph->root(), 32, bits);
+	jive::output * c2 = jive_bitconstant(graph->root(), 16, bits);
 	jive::output * tmparray1[] = {c2, c2};
 	
 	jive::output * tmp = jive_group_create(decl1, 2, tmparray1);
@@ -131,7 +131,7 @@ make_union1(jive_graph * graph)
 	static const jive::value::type * elements1[] = {&bits16, &bits32};
 	static const jive::unn::declaration decl1 = {2, elements1};
 	
-	jive::output * c = jive_bitconstant(graph->root_region, 16, bits);
+	jive::output * c = jive_bitconstant(graph->root(), 16, bits);
 	
 	return jive_unify_create(&decl1, 0, c);
 }
@@ -145,7 +145,7 @@ make_union2(jive_graph * graph)
 	static const jive::value::type * elements1[] = {&bits16, &bits32};
 	static const jive::unn::declaration decl1 = {2, elements1};
 	
-	jive::output * c = jive_bitconstant(graph->root_region, 32, bits);
+	jive::output * c = jive_bitconstant(graph->root(), 32, bits);
 	
 	return jive_unify_create(&decl1, 1, c);
 }

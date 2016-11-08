@@ -24,13 +24,13 @@ test_main()
 	jive_graph * graph = jive_graph_create();
 
 	jive_test_value_type vtype;
-	jive::region * inner_region = new jive::region(graph->root_region, graph);
+	jive::region * inner_region = new jive::region(graph->root(), graph);
 	jive_node * inner_node = jive_test_node_create(inner_region, {}, {}, {&vtype});
 	jive::node_normal_form * normal_form =
 		jive_graph_get_nodeclass_form(graph, typeid(test_operation));
 
 	test_operation op;
-	jive_node * outer_node = jive_node_cse_create(normal_form, graph->root_region, op, {});
+	jive_node * outer_node = jive_node_cse_create(normal_form, graph->root(), op, {});
 
 	assert(inner_node != outer_node);
 

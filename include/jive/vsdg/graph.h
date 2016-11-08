@@ -56,13 +56,17 @@ public:
 
 	jive_graph();
 
+	inline jive::region *
+	root() const noexcept
+	{
+		return root_;
+	}
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
 	} bottom;
-	
-	struct jive::region * root_region;
-	
+
 	struct {
 		jive::gate * first;
 		jive::gate * last;
@@ -97,13 +101,10 @@ public:
 	 
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_add;
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;
-};
 
-JIVE_EXPORTED_INLINE struct jive::region *
-jive_graph_get_root_region(const jive_graph * self)
-{
-	return self->root_region;
-}
+private:
+	jive::region * root_;
+};
 
 jive::gate *
 jive_graph_create_gate(jive_graph * self, const std::string & name, const jive::base::type & type);
@@ -112,7 +113,7 @@ JIVE_EXPORTED_INLINE void
 jive_graph_export(struct jive_graph * self, jive::output * operand, const std::string & name)
 {
 	jive::gate * gate = jive_graph_create_gate(self, name.c_str(), operand->type());
-	self->root_region->bottom()->add_input(gate, operand);
+	self->root()->bottom()->add_input(gate, operand);
 }
 
 JIVE_EXPORTED_INLINE void

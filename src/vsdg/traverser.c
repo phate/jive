@@ -26,7 +26,7 @@ topdown_traverser::~topdown_traverser() noexcept {}
 topdown_traverser::topdown_traverser(jive_graph * graph)
 	: tracker_(graph)
 {
-	init_top_nodes(graph->root_region);
+	init_top_nodes(graph->root());
 
 	callbacks_.push_back(graph->on_node_create.connect(
 		std::bind(&topdown_traverser::node_create, this, _1)));
@@ -366,10 +366,10 @@ bottomup_region_traverser::bottomup_region_traverser(jive_graph * graph)
 	, behind_state_(jive_graph_reserve_tracker_depth_state(graph_))
 {
 	/* seed bottom nodes in root region */
-	bottomup_slave_traverser * root_slave = map_region(graph_->root_region);
+	bottomup_slave_traverser * root_slave = map_region(graph_->root());
 	jive_node * node;
 	JIVE_LIST_ITERATE(graph_->bottom, node, graph_bottom_list) {
-		if (node->region() != graph->root_region) {
+		if (node->region() != graph->root()) {
 			continue;
 		}
 		
