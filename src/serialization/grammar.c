@@ -795,7 +795,7 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 
 bool
 jive_deserialize_nodeexpr(jive_serialization_driver * self,
-	jive_token_istream * is, jive_region * region, jive_node ** node)
+	jive_token_istream * is, jive::region * region, jive_node ** node)
 {
 	size_t n;
 	jive_portsinfo ports;
@@ -994,7 +994,7 @@ jive_serialize_gatedef(jive_serialization_driver * self,
 void
 jive_serialize_regiondef(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
-	struct jive_region * region, jive_token_ostream * os)
+	struct jive::region * region, jive_token_ostream * os)
 {
 	jive_token_ostream_identifier(os, "region"); /* FIXME: keyword */
 	jive_serialize_char_token(self, '{', os);
@@ -1050,7 +1050,7 @@ jive_sorted_nodes_append(jive_sorted_nodes * self, jive_node * node)
 void
 jive_serialize_regionbody(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
-	struct jive_region * region, jive_token_ostream * os)
+	struct jive::region * region, jive_token_ostream * os)
 {
 	/*FIXME: serialization does not take care of graph tail node*/
 	jive_sorted_nodes sorted;
@@ -1084,7 +1084,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 bool
 jive_deserialize_regionbody(jive_serialization_driver * self,
 	jive_token_istream * is,
-	jive_region * region)
+	jive::region * region)
 {
 	for (;;) {
 		const jive_token * token = jive_token_istream_current(is);
@@ -1102,7 +1102,7 @@ jive_deserialize_regionbody(jive_serialization_driver * self,
 bool
 jive_deserialize_def(jive_serialization_driver * self,
 	jive_token_istream * is,
-	struct jive_region * region)
+	struct jive::region * region)
 {
 	const jive_token * token = jive_token_istream_current(is);
 	
@@ -1111,7 +1111,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 			jive_token_istream_advance(is);
 			if (!jive_deserialize_char_token(self, is, '{'))
 				return false;
-			jive_region * subregion = new jive_region(region, region->graph());
+			jive::region * subregion = new jive::region(region, region->graph());
 			if (!jive_deserialize_regionbody(self, is, subregion))
 				return false;
 			if (!jive_deserialize_char_token(self, is, '}'))

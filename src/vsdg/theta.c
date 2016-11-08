@@ -103,11 +103,11 @@ struct jive_theta_build_state {
 };
 
 jive_theta
-jive_theta_begin(jive_region * parent)
+jive_theta_begin(jive::region * parent)
 {
 	jive_theta self;
 	jive_theta_build_state * state = new jive_theta_build_state;
-	self.region = new jive_region(parent, parent->graph());
+	self.region = new jive::region(parent, parent->graph());
 
 	jive::theta_head_op().create_node(self.region, {});
 	

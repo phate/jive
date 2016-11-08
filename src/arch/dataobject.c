@@ -224,8 +224,8 @@ static jive::output *
 jive_dataobj_internal(
 	jive::output * data,
 	jive::memlayout_mapper * layout_mapper,
-	jive_region * parent,
-	jive_region * region)
+	jive::region * parent,
+	jive::region * region)
 {
 	std::vector<jive::output *> data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
@@ -248,8 +248,8 @@ jive_dataobj_internal(
 jive::output *
 jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive_region * parent = data->node()->graph()->root_region;
-	jive_region * region = new jive_region(parent, parent->graph());
+	jive::region * parent = data->node()->graph()->root_region;
+	jive::region * region = new jive::region(parent, parent->graph());
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
 }
@@ -257,8 +257,8 @@ jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 jive::output *
 jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive_region * parent = data->node()->graph()->root_region;
-	jive_region * region = new jive_region(parent, parent->graph());
+	jive::region * parent = data->node()->graph()->root_region;
+	jive::region * region = new jive::region(parent, parent->graph());
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
 }
@@ -266,8 +266,8 @@ jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 jive::output *
 jive_bssobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive_region * parent = data->node()->graph()->root_region;
-	jive_region * region = new jive_region(parent, parent->graph());
+	jive::region * parent = data->node()->graph()->root_region;
+	jive::region * region = new jive::region(parent, parent->graph());
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
 }

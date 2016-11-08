@@ -12,7 +12,6 @@
 
 struct jive_graph;
 struct jive_node;
-struct jive_region;
 
 namespace jive {
 namespace detail {
@@ -114,7 +113,7 @@ private:
 	check_node(jive_node * node);
 
 	void
-	init_top_nodes(jive_region * region);
+	init_top_nodes(jive::region * region);
 
 	void
 	node_create(jive_node * node);
@@ -198,7 +197,7 @@ public:
 
 	bottomup_slave_traverser(
 		bottomup_region_traverser * master,
-		const jive_region * region);
+		const jive::region * region);
 
 	jive_node *
 	next();
@@ -210,13 +209,13 @@ public:
 
 private:
 	bottomup_region_traverser * master_;
-	const jive_region * region_;
+	const jive::region * region_;
 	jive_tracker_depth_state * frontier_state_;
 
 	detail::intrusive_hash_anchor<bottomup_slave_traverser> hash_chain_;
 
 	typedef detail::intrusive_hash_accessor<
-		const jive_region *,
+		const jive::region *,
 		bottomup_slave_traverser,
 		&bottomup_slave_traverser::region_,
 		&bottomup_slave_traverser::hash_chain_
@@ -236,11 +235,11 @@ public:
 	pass(jive_node * node);
 
 	bottomup_slave_traverser *
-	map_region(const jive_region * region);
+	map_region(const jive::region * region);
 
 private:
 	typedef detail::owner_intrusive_hash<
-		const jive_region *,
+		const jive::region *,
 		bottomup_slave_traverser,
 		bottomup_slave_traverser::hash_chain_accessor
 	> slave_traverser_hash;

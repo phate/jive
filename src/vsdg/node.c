@@ -29,8 +29,8 @@
 static bool
 jive_input_is_valid(const jive::input * input)
 {
-	jive_region * region = input->region();
-	jive_region * origin_region = input->origin()->region();
+	jive::region * region = input->region();
+	jive::region * origin_region = input->origin()->region();
 
 	if (dynamic_cast<const jive::achr::type*>(&input->type()))
 		return origin_region->parent() == region;
@@ -243,7 +243,7 @@ input::debug_string() const
 	return iport::debug_string();
 }
 
-jive_region *
+jive::region *
 input::region() const noexcept
 {
 	return node()->region();
@@ -352,7 +352,7 @@ output::debug_string() const
 	return oport::debug_string();
 }
 
-jive_region *
+jive::region *
 output::region() const noexcept
 {
 	return node()->region();
@@ -405,8 +405,8 @@ register_node_normal_form(void)
 bool
 jive_node_valid_edge(const jive_node * self, const jive::oport * origin)
 {
-	jive_region * origin_region = origin->region();
-	jive_region * target_region = self->region();
+	jive::region * origin_region = origin->region();
+	jive::region * target_region = self->region();
 	if (dynamic_cast<const jive::achr::type*>(&origin->type()))
 		origin_region = origin_region->parent();
 	while (target_region) {
@@ -464,7 +464,7 @@ jive_node_get_use_count_output(const jive_node * self, jive_resource_class_count
 
 jive_node::jive_node(
 	std::unique_ptr<jive::operation> op,
-	jive_region * region,
+	jive::region * region,
 	const std::vector<jive::oport*> & operands)
 	: depth_(0)
 	, graph_(region->graph())
@@ -660,14 +660,14 @@ jive_node::add_output(const struct jive_resource_class * rescls)
 }
 
 jive_node *
-jive_node::copy(jive_region * region, const std::vector<jive::oport*> & operands) const
+jive_node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
 {
 	jive_graph_mark_denormalized(graph());
 	return operation_->create_node(region, operands);
 }
 
 jive_node *
-jive_node::copy(jive_region * region, jive::substitution_map & smap) const
+jive_node::copy(jive::region * region, jive::substitution_map & smap) const
 {
 	std::vector<jive::oport*> operands(noperands());
 	for (size_t n = 0; n < noperands(); n++) {
@@ -755,7 +755,7 @@ jive_node_cse_test(
 
 jive_node *
 jive_node_cse(
-	jive_region * region,
+	jive::region * region,
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments)
 {
@@ -779,7 +779,7 @@ jive_node_cse(
 
 std::vector<jive::output *>
 jive_node_create_normalized(
-	jive_region * region,
+	jive::region * region,
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments)
 {
@@ -816,7 +816,7 @@ jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot)
 jive_node *
 jive_node_cse_create(
 	const jive::node_normal_form * nf,
-	jive_region * region,
+	jive::region * region,
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments)
 {
@@ -842,7 +842,7 @@ jive_node_normalize(jive_node * self)
 jive_node *
 jive_opnode_create(
 	const jive::operation & op,
-	jive_region * region,
+	jive::region * region,
 	const std::vector<jive::oport*> & operands)
 {
 	jive_node * node = new jive_node(op.copy(), region, operands);

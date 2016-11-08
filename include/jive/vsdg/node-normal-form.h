@@ -21,13 +21,13 @@
 
 class jive_node;
 class jive_graph;
-class jive_region;
 
 namespace jive {
 
 class operation;
 class oport;
 class output;
+class region;
 
 class node_normal_form {
 public:
@@ -63,7 +63,7 @@ public:
 
 	virtual std::vector<jive::output *>
 	normalized_create(
-		jive_region * region,
+		jive::region * region,
 		const jive::operation & op,
 		const std::vector<jive::oport*> & arguments) const;
 

@@ -70,16 +70,16 @@ extern template class domain_const_op<
 	returns the output handle of an existing constant.
 */
 jive::output *
-jive_bitconstant(jive_region * region, size_t nbits, const char bits[]);
+jive_bitconstant(jive::region * region, size_t nbits, const char bits[]);
 
 jive::output *
-jive_bitconstant_unsigned(jive_region * region, size_t nbits, uint64_t value);
+jive_bitconstant_unsigned(jive::region * region, size_t nbits, uint64_t value);
 
 jive::output *
-jive_bitconstant_signed(jive_region * region, size_t nbits, int64_t value);
+jive_bitconstant_signed(jive::region * region, size_t nbits, int64_t value);
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_bitconstant_undefined(jive_region * region, size_t nbits)
+jive_bitconstant_undefined(jive::region * region, size_t nbits)
 {
 	size_t i;
 	char bits[nbits];
@@ -90,7 +90,7 @@ jive_bitconstant_undefined(jive_region * region, size_t nbits)
 }
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_bitconstant_defined(jive_region * region, size_t nbits)
+jive_bitconstant_defined(jive::region * region, size_t nbits)
 {
 	size_t i;
 	char bits[nbits];

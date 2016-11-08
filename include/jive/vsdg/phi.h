@@ -62,8 +62,8 @@ public:
 
 }
 
-JIVE_EXPORTED_INLINE struct jive_region *
-jive_phi_region_cast(struct jive_region * region)
+JIVE_EXPORTED_INLINE struct jive::region *
+jive_phi_region_cast(struct jive::region * region)
 {
 	if (region->graph()->root_region == region)
 		return NULL;
@@ -76,8 +76,8 @@ jive_phi_region_cast(struct jive_region * region)
 		return NULL;
 }
 
-JIVE_EXPORTED_INLINE const struct jive_region *
-jive_phi_region_const_cast(const struct jive_region * region)
+JIVE_EXPORTED_INLINE const struct jive::region *
+jive_phi_region_const_cast(const struct jive::region * region)
 {
 	if (region->graph()->root_region == region)
 		return NULL;
@@ -99,7 +99,7 @@ struct jive_phi_build_state;
 	\brief Represent a phi construct under construction
 */
 struct jive_phi {
-	struct jive_region * region;
+	struct jive::region * region;
 	struct jive_phi_build_state * internal_state;
 };
 
@@ -115,7 +115,7 @@ struct jive_phi_fixvar {
 	\brief Begin constructing a phi region
 */
 jive_phi
-jive_phi_begin(struct jive_region * parent);
+jive_phi_begin(struct jive::region * parent);
 
 /**
 	\brief Add a fixpoint variable of given type

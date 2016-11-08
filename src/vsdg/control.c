@@ -43,7 +43,7 @@ match(
 }
 
 jive::output *
-jive_control_constant(jive_region * region, size_t nalternatives, size_t alternative)
+jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative)
 {
 	jive::ctl::constant_op op(jive::ctl::value_repr(alternative, nalternatives));
 	return jive_node_create_normalized(region, op, {})[0];

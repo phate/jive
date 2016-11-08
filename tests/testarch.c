@@ -392,7 +392,7 @@ const jive_instruction_class jive_testarch_instr_ret = {
 };
 
 static jive_xfer_description
-create_xfer(jive_region * region, jive::output * origin,
+create_xfer(jive::region * region, jive::output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
 	jive_xfer_description xfer;
@@ -590,7 +590,7 @@ public:
 static void
 jive_testarch_subroutine_prepare_stackframe_(
 	const jive::subroutine_op & op,
-	jive_region * region,
+	jive::region * region,
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm)
 {

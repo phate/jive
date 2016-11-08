@@ -47,7 +47,7 @@ namespace jive {
 namespace view {
 
 static std::string
-region_tree_string_recursive(const jive_region * region, size_t depth)
+region_tree_string_recursive(const jive::region * region, size_t depth)
 {
 	std::string string(depth, '-');
 	if (region->anchor()) {
@@ -58,7 +58,7 @@ region_tree_string_recursive(const jive_region * region, size_t depth)
 	} else
 		string.append("ROOT\n");
 
-	jive_region * subregion;
+	jive::region * subregion;
 	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
 		string.append(region_tree_string_recursive(subregion, depth+1));
 
@@ -66,7 +66,7 @@ region_tree_string_recursive(const jive_region * region, size_t depth)
 }
 
 std::string
-region_tree_string(const jive_region * region)
+region_tree_string(const jive::region * region)
 {
 	std::string string;
 	string.append(region_tree_string_recursive(region, 0));
@@ -74,7 +74,7 @@ region_tree_string(const jive_region * region)
 }
 
 void
-region_tree(const jive_region * region, FILE * out)
+region_tree(const jive::region * region, FILE * out)
 {
 	std::string s = region_tree_string(region);
 	fputs(s.c_str(), out);

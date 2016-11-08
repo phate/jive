@@ -32,7 +32,7 @@ jive_subroutine_node_prepare_stackframe(
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm)
 {
-	jive_region * region = self->input(0)->origin()->region();
+	jive::region * region = self->input(0)->origin()->region();
 	return op.signature().abi_class->prepare_stackframe(
 		op, region, frame, xfrm);
 }
@@ -43,7 +43,7 @@ jive_subroutine_node_add_fp_dependency(
 	const jive::subroutine_op & op,
 	jive_node * node)
 {
-	jive_region * region = self->input(0)->origin()->region();
+	jive::region * region = self->input(0)->origin()->region();
 	return op.signature().abi_class->add_fp_dependency(
 		op, region, node);
 }
@@ -54,13 +54,13 @@ jive_subroutine_node_add_sp_dependency(
 	const jive::subroutine_op & op,
 	jive_node * node)
 {
-	jive_region * region = self->input(0)->origin()->region();
+	jive::region * region = self->input(0)->origin()->region();
 	return op.signature().abi_class->add_sp_dependency(
 		op, region, node);
 }
 
 jive_node *
-jive_region_get_subroutine_node(const jive_region * region)
+jive_region_get_subroutine_node(const jive::region * region)
 {
 	for (; region; region = region->parent()) {
 		if (!region->anchor()) {
@@ -75,7 +75,7 @@ jive_region_get_subroutine_node(const jive_region * region)
 }
 
 const struct jive_instructionset *
-jive_region_get_instructionset(const jive_region * region)
+jive_region_get_instructionset(const jive::region * region)
 {
 	jive_node * sub = jive_region_get_subroutine_node(region);
 	if (sub) {
@@ -89,7 +89,7 @@ jive_region_get_instructionset(const jive_region * region)
 jive::output *
 jive_subroutine_node_get_sp(const jive_node * self)
 {
-	jive_region * region = self->input(0)->origin()->region();
+	jive::region * region = self->input(0)->origin()->region();
 	return static_cast<const jive::subroutine_op &>(self->operation())
 		.get_passthrough_enter_by_index(region, 1);
 }
@@ -97,7 +97,7 @@ jive_subroutine_node_get_sp(const jive_node * self)
 jive::output *
 jive_subroutine_node_get_fp(const jive_node * self)
 {
-	jive_region * region = self->input(0)->origin()->region();
+	jive::region * region = self->input(0)->origin()->region();
 	/* FIXME: this is only correct if we are compiling "omit-framepointer",
 	but it is only a transitionary stage during subroutine refactoring */
 	return static_cast<const jive::subroutine_op &>(self->operation())
@@ -113,7 +113,7 @@ jive_subroutine_begin(
 	jive_subroutine sub;
 	sub.hl_builder = std::move(hl_builder);
 	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
-	sub.region = new jive_region(graph->root_region, graph);
+	sub.region = new jive::region(graph->root_region, graph);
 
 	jive_node * enter = jive::subroutine_head_op().create_node(sub.region, {});
 

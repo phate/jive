@@ -16,7 +16,6 @@ class gate;
 
 struct jive_graph;
 struct jive_node;
-struct jive_region;
 struct jive_theta_build_state;
 
 namespace jive {
@@ -75,7 +74,7 @@ typedef struct jive_theta_loopvar jive_theta_loopvar;
 	\brief Represent a theta construct under construction
 */
 struct jive_theta {
-	struct jive_region * region;
+	struct jive::region * region;
 	struct jive_theta_build_state * internal_state;
 };
 
@@ -91,7 +90,7 @@ struct jive_theta_loopvar {
 	\brief Begin constructing a loop region
 */
 jive_theta
-jive_theta_begin(struct jive_region * parent);
+jive_theta_begin(struct jive::region * parent);
 
 /**
 	\brief Add a loop-variant variable with a pre-loop value

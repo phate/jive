@@ -12,7 +12,6 @@
 #include <jive/vsdg/graph.h>
 
 struct jive_graph;
-struct jive_region;
 
 namespace jive {
 	class output;

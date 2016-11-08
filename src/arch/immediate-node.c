@@ -55,7 +55,7 @@ immediate_op::copy() const
 
 jive::output *
 jive_immediate_create(
-	jive_region * region,
+	jive::region * region,
 	const jive::immediate * immediate_value)
 {
 	jive::immediate_op op(*immediate_value);

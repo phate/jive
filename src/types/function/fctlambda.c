@@ -126,7 +126,7 @@ lambda_op::copy() const
 }
 
 static jive_node *
-jive_lambda_node_create(jive_region * function_region)
+jive_lambda_node_create(jive::region * function_region)
 {
 	size_t ndependencies = function_region->top()->ninputs();
 	size_t narguments = function_region->top()->noutputs() - ndependencies - 1;
@@ -164,7 +164,7 @@ jive_lambda_is_self_recursive(const jive_node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs() == 1);
 
-	const jive_region * lambda_region = jive_node_anchored_region(self, 0);
+	const jive::region * lambda_region = jive_node_anchored_region(self, 0);
 
 	if (jive_phi_region_const_cast(self->region()) == NULL)
 		return false;
@@ -220,7 +220,7 @@ lambda_dep_add(jive_lambda * self, jive::output * value)
 
 jive_lambda *
 jive_lambda_begin(
-	jive_region * parent,
+	jive::region * parent,
 	size_t narguments,
 	const jive::base::type * const argument_types[],
 	const char * const argument_names[])
@@ -228,7 +228,7 @@ jive_lambda_begin(
 	jive_graph * graph = parent->graph();
 
 	jive_lambda * lambda = new jive_lambda;
-	lambda->region = new jive_region(parent, parent->graph());
+	lambda->region = new jive::region(parent, parent->graph());
 	lambda->arguments = new jive::output*[narguments];
 	lambda->narguments = narguments;
 
@@ -247,7 +247,7 @@ jive::output *
 jive_lambda_end(jive_lambda * self,
 	size_t nresults, const jive::base::type * const result_types[], jive::output * const results[])
 {
-	jive_region * region = self->region;
+	jive::region * region = self->region;
 	jive_graph * graph = region->graph();
 
 	jive::output * tmp = region->top()->output(0);
@@ -280,7 +280,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	const jive::fct::lambda_op & op = dynamic_cast<const jive::fct::lambda_op &>(
 		lambda_node->operation());
 	
-	jive_region * function_region = lambda_node->input(0)->origin()->region();
+	jive::region * function_region = lambda_node->input(0)->origin()->region();
 	jive_node * head = function_region->top();
 	jive_node * tail = function_region->bottom();
 	

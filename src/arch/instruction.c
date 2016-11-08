@@ -107,7 +107,7 @@ instruction_op::copy() const
 
 jive_node *
 jive_instruction_node_create_simple(
-	jive_region * region,
+	jive::region * region,
 	const jive_instruction_class * icls,
 	jive::output * const * operands,
 	const int64_t * immediates)
@@ -121,7 +121,7 @@ jive_instruction_node_create_simple(
 
 jive_node *
 jive_instruction_node_create_extended(
-	jive_region * region,
+	jive::region * region,
 	const jive_instruction_class * icls,
 	jive::output * const * operands_,
 	const jive::immediate immediates_[])
@@ -134,7 +134,7 @@ jive_instruction_node_create_extended(
 
 jive_node *
 jive_instruction_node_create(
-	jive_region * region,
+	jive::region * region,
 	const jive_instruction_class * icls,
 	const std::vector<jive::output*> & operands,
 	const std::vector<jive::immediate> & immediates,

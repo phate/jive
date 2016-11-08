@@ -21,9 +21,9 @@
 
 /* convert according to "default" ABI */
 jive_node *
-jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_node)
+jive_i386_subroutine_convert(jive::region * target_parent, jive_node * lambda_node)
 {
-	jive_region * src_region;
+	jive::region * src_region;
 	src_region = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->region();
 	
 	size_t nparameters = src_region->top()->noutputs() - 1;
@@ -102,17 +102,17 @@ jive_i386_subroutine_convert(jive_region * target_parent, jive_node * lambda_nod
 static void
 jive_i386_subroutine_prepare_stackframe_(
 	const jive::subroutine_op & op,
-	jive_region * region,
+	jive::region * region,
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
 static jive::input *
 jive_i386_subroutine_add_fp_dependency_(
-	const jive::subroutine_op & op, jive_region * region, jive_node * node);
+	const jive::subroutine_op & op, jive::region * region, jive_node * node);
 
 static jive::input *
 jive_i386_subroutine_add_sp_dependency_(
-	const jive::subroutine_op & op, jive_region * region, jive_node * node);
+	const jive::subroutine_op & op, jive::region * region, jive_node * node);
 
 const jive_subroutine_abi_class JIVE_I386_SUBROUTINE_ABI = {
 	prepare_stackframe : jive_i386_subroutine_prepare_stackframe_,
@@ -255,7 +255,7 @@ do_stackptr_add(const jive_value_split_factory * self_, jive::output * value)
 static void
 jive_i386_subroutine_prepare_stackframe_(
 	const jive::subroutine_op & op,
-	jive_region * region,
+	jive::region * region,
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm)
 {
@@ -289,7 +289,7 @@ jive_i386_subroutine_prepare_stackframe_(
 
 static jive::input *
 jive_i386_subroutine_add_fp_dependency_(
-	const jive::subroutine_op & op, jive_region * region, jive_node * node)
+	const jive::subroutine_op & op, jive::region * region, jive_node * node)
 {
 	jive::output * frameptr = op.get_passthrough_enter_by_index(region, 1);
 	
@@ -304,7 +304,7 @@ jive_i386_subroutine_add_fp_dependency_(
 
 static jive::input *
 jive_i386_subroutine_add_sp_dependency_(
-	const jive::subroutine_op & op, jive_region * region, jive_node * node)
+	const jive::subroutine_op & op, jive::region * region, jive_node * node)
 {
 	jive::output * stackptr = op.get_passthrough_enter_by_index(region, 1);
 	

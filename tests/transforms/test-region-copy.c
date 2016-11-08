@@ -22,7 +22,7 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_graph * graph = jive_graph_create();
 	
-	jive_region * r1 = new jive_region(graph->root_region, graph);
+	jive::region * r1 = new jive::region(graph->root_region, graph);
 	
 	jive_test_value_type type;
 	jive_node * top = jive_test_node_create(r1, {}, {}, {&type, &type, &jive::ctl::boolean});
@@ -37,7 +37,7 @@ static int test_main(void)
 	
 	jive_view(graph, stderr);
 	
-	jive_region * r2 = new jive_region(graph->root_region, graph);
+	jive::region * r2 = new jive::region(graph->root_region, graph);
 	jive::substitution_map subst;
 	jive_region_copy_substitute(r1, r2, subst, true, true);
 

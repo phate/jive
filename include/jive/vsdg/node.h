@@ -68,7 +68,7 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
-	virtual jive_region *
+	virtual jive::region *
 	region() const noexcept = 0;
 
 	virtual std::string
@@ -124,7 +124,7 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	virtual jive_region *
+	virtual jive::region *
 	region() const noexcept override;
 
 	inline struct jive_node *
@@ -227,7 +227,7 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
-	virtual jive_region *
+	virtual jive::region *
 	region() const noexcept = 0;
 
 	virtual std::string
@@ -274,7 +274,7 @@ public:
 	virtual std::string
 	debug_string() const override;
 
-	virtual jive_region *
+	virtual jive::region *
 	region() const noexcept override;
 
 	inline jive_node * node() const noexcept { return node_; }
@@ -400,7 +400,6 @@ typedef struct jive_node jive_node;
 
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
-struct jive_region;
 struct jive_resource_class_count;
 struct jive_substitution_map;
 
@@ -408,7 +407,7 @@ class jive_node final {
 public:
 	~jive_node();
 
-	jive_node(std::unique_ptr<jive::operation> op, jive_region * region,
+	jive_node(std::unique_ptr<jive::operation> op, jive::region * region,
 		const std::vector<jive::oport*> & operands);
 
 	inline const jive::operation &
@@ -464,7 +463,7 @@ public:
 		return graph_;
 	}
 
-	inline jive_region *
+	inline jive::region *
 	region() const noexcept
 	{
 		return region_;
@@ -483,7 +482,7 @@ public:
 	}
 
 	jive_node *
-	copy(jive_region * region, const std::vector<jive::oport*> & operands) const;
+	copy(jive::region * region, const std::vector<jive::oport*> & operands) const;
 
 	/**
 		\brief Copy a node with substitutions
@@ -503,7 +502,7 @@ public:
 		subsequent \ref copy operations.
 	*/
 	jive_node *
-	copy(jive_region * region, jive::substitution_map & smap) const;
+	copy(jive::region * region, jive::substitution_map & smap) const;
 
 	inline jive::input *
 	input(size_t index) const noexcept
@@ -555,7 +554,7 @@ public:
 private:
 	size_t depth_;
 	jive_graph * graph_;
-	jive_region * region_;
+	jive::region * region_;
 	std::vector<jive::input*> inputs_;
 	std::vector<jive::output*> outputs_;
 	std::unique_ptr<jive::operation> operation_;
@@ -627,10 +626,10 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive_region *
+JIVE_EXPORTED_INLINE jive::region *
 jive_node_anchored_region(const jive_node * self, size_t index)
 {
-	jive_region * region = self->input(index)->origin()->region();
+	jive::region * region = self->input(index)->origin()->region();
 	/* the given region can only be different if the identified input
 	 * is of "anchor" type, so this implicitly checks the type */
 	JIVE_DEBUG_ASSERT(self->region() != region);
@@ -659,7 +658,7 @@ jive_node_arguments(jive_node * self)
 
 jive_node *
 jive_node_cse(
-	jive_region * region,
+	jive::region * region,
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments);
 
@@ -667,7 +666,7 @@ jive_node_cse(
 
 std::vector<jive::output *>
 jive_node_create_normalized(
-	jive_region * region,
+	jive::region * region,
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments);
 
@@ -684,7 +683,7 @@ jive_node_create_normalized(
 jive_node *
 jive_node_cse_create(
 	const jive::node_normal_form * nf,
-	jive_region * region,
+	jive::region * region,
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments);
 

@@ -116,7 +116,7 @@ jive_unify_create(
 
 jive::output *
 jive_empty_unify_create(
-	jive_region * region,
+	jive::region * region,
 	const jive::unn::declaration * decl);
 
 #endif

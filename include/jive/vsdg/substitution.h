@@ -11,8 +11,6 @@
 
 #include <unordered_map>
 
-struct jive_region;
-
 namespace jive {
 
 class gate;
@@ -27,8 +25,8 @@ public:
 		return i != output_map_.end() ? i->second : nullptr;
 	}
 
-	inline jive_region *
-	lookup(const jive_region * original) const noexcept
+	inline jive::region *
+	lookup(const jive::region * original) const noexcept
 	{
 		auto i = region_map_.find(original);
 		return i != region_map_.end() ? i->second : nullptr;
@@ -48,7 +46,7 @@ public:
 	}
 
 	inline void
-	insert(const jive_region * original, jive_region * substitute)
+	insert(const jive::region * original, jive::region * substitute)
 	{
 		region_map_[original] = substitute;
 	}
@@ -60,7 +58,7 @@ public:
 
 private:
 	std::unordered_map<const jive::gate*, jive::gate*> gate_map_;
-	std::unordered_map<const jive_region*, jive_region*> region_map_;
+	std::unordered_map<const jive::region*, jive::region*> region_map_;
 	std::unordered_map<const jive::output*, jive::output*> output_map_;
 };
 

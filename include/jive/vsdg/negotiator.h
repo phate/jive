@@ -21,7 +21,6 @@ namespace jive {
 
 struct jive_graph;
 struct jive_node;
-struct jive_region;
 
 struct jive_negotiator;
 struct jive_negotiator_connection;
@@ -396,7 +395,7 @@ struct jive_negotiator_class {
 	void (*annotate_node)(jive_negotiator * self, struct jive_node * node);
 	
 	/* process region */
-	void (*process_region)(jive_negotiator * self, struct jive_region * region);
+	void (*process_region)(jive_negotiator * self, struct jive::region * region);
 };
 
 struct jive_negotiator {
@@ -480,7 +479,7 @@ jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiat
 	const jive::gate * gate);
 
 void
-jive_negotiator_process_region_(jive_negotiator * self, struct jive_region * region);
+jive_negotiator_process_region_(jive_negotiator * self, struct jive::region * region);
 
 void
 jive_negotiator_init_(

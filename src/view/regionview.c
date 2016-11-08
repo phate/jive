@@ -21,7 +21,7 @@ jive_regionview::~jive_regionview() noexcept
 		delete regionview;
 }
 
-jive_regionview::jive_regionview(jive_graphview * graphview_, const jive_region * region_)
+jive_regionview::jive_regionview(jive_graphview * graphview_, const jive::region * region_)
 	: region(region_)
 	, graphview(graphview_)
 	, x(0)
@@ -74,7 +74,7 @@ jive_regionview_layout(jive_regionview * self, jive_reservationtracker * parent_
 {
 	jive_reservationtracker reservation;
 	
-	jive_region * subregion;
+	jive::region * subregion;
 	JIVE_LIST_ITERATE(self->region->subregions, subregion, region_subregions_list) {
 		jive_regionview * subregionview = new jive_regionview(self->graphview, subregion);
 		jive_regionview_layout(subregionview, &reservation);

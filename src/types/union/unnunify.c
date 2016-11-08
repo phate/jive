@@ -112,7 +112,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::outp
 /* empty unify node */
 
 jive::output *
-jive_empty_unify_create(struct jive_region * region, const jive::unn::declaration * decl)
+jive_empty_unify_create(struct jive::region * region, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_op op(decl);
 	return jive_node_create_normalized(region, op, {})[0];

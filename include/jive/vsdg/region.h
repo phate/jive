@@ -21,19 +21,19 @@ namespace jive {
 	class substitution_map;
 }
 
-typedef struct jive_region jive_region;
-
 struct jive_cut;
 struct jive_graph;
 struct jive_node;
 
-class jive_region {
+namespace jive {
+
+class region {
 public:
-	~jive_region();
+	~region();
 
-	jive_region(jive_region * parent, jive_graph * graph);
+	region(jive::region * parent, jive_graph * graph);
 
-	void reparent(jive_region * new_parent) noexcept;
+	void reparent(jive::region * new_parent) noexcept;
 
 	inline size_t depth() const noexcept
 	{
@@ -41,7 +41,7 @@ public:
 	}
 
 	inline bool
-	contains(const jive_region * other) const noexcept
+	contains(const jive::region * other) const noexcept
 	{
 		while (other->depth() > depth()) {
 			if (other->parent() == this)
@@ -54,7 +54,7 @@ public:
 	bool
 	contains(const jive_node * node) const noexcept;
 
-	inline jive_region *
+	inline jive::region *
 	parent() const noexcept
 	{
 		return parent_;
@@ -124,12 +124,12 @@ public:
 	} top_nodes;
 
 	struct {
-		jive_region * first;
-		jive_region * last;
+		jive::region * first;
+		jive::region * last;
 	} subregions;
 	struct {
-		jive_region * prev;
-		jive_region * next;
+		jive::region * prev;
+		jive::region * next;
 	} region_subregions_list;
 
 private:
@@ -137,9 +137,11 @@ private:
 	jive_node * top_;
 	jive_node * bottom_;
 	jive_graph * graph_;
-	jive_region * parent_;
+	jive::region * parent_;
 	jive::input * anchor_;
 };
+
+} //namespace
 
 /**
 	\brief Copy a region with substitutions
@@ -160,14 +162,14 @@ private:
 */
 void
 jive_region_copy_substitute(
-	const jive_region * self,
-	jive_region * target,
+	const jive::region * self,
+	jive::region * target,
 	jive::substitution_map & substitution,
 	bool copy_top, bool copy_bottom);
 
 #ifdef JIVE_DEBUG
 void
-jive_region_verify_top_node_list(struct jive_region * region);
+jive_region_verify_top_node_list(struct jive::region * region);
 #endif
 
 #endif

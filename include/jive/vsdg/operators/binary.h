@@ -130,8 +130,6 @@ private:
 }
 }
 
-struct jive_region;
-
 static const jive_binop_reduction_path_t jive_binop_reduction_none = 0;
 /* both operands are constants */
 static const jive_binop_reduction_path_t jive_binop_reduction_constants = 1;

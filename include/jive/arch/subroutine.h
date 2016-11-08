@@ -20,6 +20,7 @@ struct jive_subroutine;
 namespace jive {
 class gate;
 class output;
+class region;
 
 class subroutine_hl_builder_interface {
 public:
@@ -66,12 +67,11 @@ public:
 }
 
 struct jive_instructionset;
-struct jive_region;
 
 struct jive_subroutine_abi_class;
 
 struct jive_subroutine {
-	jive_region * region;
+	jive::region * region;
 	
 	std::unique_ptr<jive::subroutine_builder_state> builder_state;
 	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder;
@@ -151,16 +151,16 @@ struct jive_subroutine_stackframe_info {
 struct jive_subroutine_abi_class {
 	void (*prepare_stackframe)(
 		const jive::subroutine_op & op,
-		jive_region * region,
+		jive::region * region,
 		jive_subroutine_stackframe_info * frame,
 		const jive_subroutine_late_transforms * xfrm);
 	jive::input *(*add_fp_dependency)(
 		const jive::subroutine_op & op,
-		jive_region * region,
+		jive::region * region,
 		jive_node * node);
 	jive::input *(*add_sp_dependency)(
 		const jive::subroutine_op & op,
-		jive_region * region,
+		jive::region * region,
 		jive_node * node);
 	const jive_instructionset * instructionset;
 };
@@ -185,10 +185,10 @@ jive_subroutine_node_add_sp_dependency(
 	jive_node * node);
 
 jive_node *
-jive_region_get_subroutine_node(const jive_region * region);
+jive_region_get_subroutine_node(const jive::region * region);
 
 const jive_instructionset *
-jive_region_get_instructionset(const jive_region * region);
+jive_region_get_instructionset(const jive::region * region);
 
 jive::output *
 jive_subroutine_node_get_sp(const jive_node * self);

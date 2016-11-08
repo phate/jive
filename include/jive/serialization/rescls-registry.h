@@ -16,7 +16,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_region;
 struct jive_register_class;
 struct jive_resource_class;
 struct jive_resource_class_class;

@@ -80,6 +80,6 @@ jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::outp
 	const jive::node_normal_form * nf =
 		jive_graph_get_nodeclass_form(graph, typeid(jive::regvalue_op));
 
-	jive_region * region = ctl->node()->region();
+	jive::region * region = ctl->node()->region();
 	return nf->normalized_create(region, op, {ctl, value})[0];
 }

@@ -17,7 +17,6 @@ namespace jive {
 struct jive_instruction_class;
 struct jive_node;
 struct jive_reg_classifier;
-struct jive_region;
 struct jive_resource_class;
 
 typedef struct jive_instructionset jive_instructionset;
@@ -31,7 +30,7 @@ struct jive_xfer_description {
 };
 
 struct jive_instructionset_class {
-	jive_xfer_description (*create_xfer)(struct jive_region * region, jive::output * origin,
+	jive_xfer_description (*create_xfer)(struct jive::region * region, jive::output * origin,
 		const struct jive_resource_class * in_class, const struct jive_resource_class * out_class);
 };
 
@@ -43,7 +42,7 @@ struct jive_instructionset {
 
 JIVE_EXPORTED_INLINE jive_xfer_description
 jive_instructionset_create_xfer(const jive_instructionset * self,
-	struct jive_region * region, jive::output * origin,
+	struct jive::region * region, jive::output * origin,
 	const struct jive_resource_class * in_class, const struct jive_resource_class * out_class)
 {
 	return  self->class_->create_xfer(region, origin, in_class, out_class);

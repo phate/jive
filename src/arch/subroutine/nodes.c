@@ -104,7 +104,7 @@ subroutine_op::copy() const
 }
 
 output *
-subroutine_op::get_passthrough_enter_by_name(jive_region * region, const char * name) const noexcept
+subroutine_op::get_passthrough_enter_by_name(jive::region * region, const char * name) const noexcept
 {
 	jive_node * enter = region->top();
 	JIVE_DEBUG_ASSERT(enter);
@@ -117,13 +117,13 @@ subroutine_op::get_passthrough_enter_by_name(jive_region * region, const char * 
 }
 
 output *
-subroutine_op::get_passthrough_enter_by_index(jive_region * region, size_t index) const noexcept
+subroutine_op::get_passthrough_enter_by_index(jive::region * region, size_t index) const noexcept
 {
 	return get_passthrough_enter_by_name(region, signature().passthroughs[index].name.c_str());
 }
 
 input *
-subroutine_op::get_passthrough_leave_by_name(jive_region * region, const char * name) const noexcept
+subroutine_op::get_passthrough_leave_by_name(jive::region * region, const char * name) const noexcept
 {
 	jive_node * leave = region->bottom();
 	JIVE_DEBUG_ASSERT(leave);
@@ -136,7 +136,7 @@ subroutine_op::get_passthrough_leave_by_name(jive_region * region, const char * 
 }
 
 input *
-subroutine_op::get_passthrough_leave_by_index(jive_region * region, size_t index) const noexcept
+subroutine_op::get_passthrough_leave_by_index(jive::region * region, size_t index) const noexcept
 {
 	return get_passthrough_leave_by_name(region, signature().passthroughs[index].name.c_str());
 }

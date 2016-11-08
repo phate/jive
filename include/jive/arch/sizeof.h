@@ -56,7 +56,7 @@ class memlayout_mapper;
 }
 
 jive::output *
-jive_sizeof_create(jive_region * region, const jive::value::type * type);
+jive_sizeof_create(jive::region * region, const jive::value::type * type);
 
 void
 jive_sizeof_node_reduce(const jive_node * node, jive::memlayout_mapper * mapper);

@@ -139,7 +139,7 @@ struct lambda_dep {
 typedef struct jive_lambda jive_lambda;
 
 struct jive_lambda {
-	struct jive_region * region;
+	struct jive::region * region;
 	size_t narguments;
 	jive::output ** arguments;
 	std::vector<jive::fct::lambda_dep> depvars;
@@ -158,7 +158,7 @@ lambda_dep_add(jive_lambda * self, jive::output * value);
 	\brief Begin constructing a lambda region
 */
 struct jive_lambda *
-jive_lambda_begin(struct jive_region * parent, size_t narguments,
+jive_lambda_begin(struct jive::region * parent, size_t narguments,
 	const jive::base::type * const argument_types[], const char * const argument_names[]);
 
 /**

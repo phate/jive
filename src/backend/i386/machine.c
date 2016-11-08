@@ -30,7 +30,7 @@ get_slot_memory_reference(const jive_resource_class * rescls,
 }
 
 jive_xfer_description
-jive_i386_create_xfer(jive_region * region, jive::output * origin,
+jive_i386_create_xfer(jive::region * region, jive::output * origin,
 	const jive_resource_class * in_class, const jive_resource_class * out_class)
 {
 	jive_xfer_description xfer;

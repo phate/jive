@@ -40,9 +40,9 @@ graph_tail_operation::copy() const
 }
 
 static void
-prune_regions_recursive(jive_region * region)
+prune_regions_recursive(jive::region * region)
 {
-	jive_region * subregion, * next;
+	jive::region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(region->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
 	if (region->nodes.empty())
@@ -69,7 +69,7 @@ jive_graph::jive_graph()
 	resources_fully_assigned = false;
 	normalized = true;
 
-	root_region = new jive_region(nullptr, this);
+	root_region = new jive::region(nullptr, this);
 	jive::graph_tail_operation().create_node(root_region, {});
 }
 
@@ -123,7 +123,7 @@ jive_graph_prune(jive_graph * self)
 		node = next;
 	}
 	
-	jive_region * subregion, * next;
+	jive::region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(self->root_region->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
 }

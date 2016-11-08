@@ -22,7 +22,7 @@ jive_i386_call_node_substitute(
 	jive_node * node,
 	const jive::call_operation & op)
 {
-	jive_region * region = node->region();
+	jive::region * region = node->region();
 	
 	size_t nargs = node->noperands() - 1;
 	

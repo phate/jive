@@ -47,7 +47,6 @@ typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
 typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 
 struct jive_node;
-struct jive_region;
 struct jive_resource;
 struct jive_resource_name;
 
@@ -62,7 +61,7 @@ public:
 		struct jive_node * last;
 	} bottom;
 	
-	struct jive_region * root_region;
+	struct jive::region * root_region;
 	
 	struct {
 		jive::gate * first;
@@ -78,8 +77,8 @@ public:
 	
 	/* FIXME: notifiers should become private, but need to turn more things
 	 * into classes first */
-	jive::notifier<jive_region *> on_region_create;
-	jive::notifier<jive_region *> on_region_destroy;
+	jive::notifier<jive::region *> on_region_create;
+	jive::notifier<jive::region *> on_region_destroy;
 
 	jive::notifier<jive_node *> on_node_create;
 	jive::notifier<jive_node *> on_node_destroy;
@@ -100,7 +99,7 @@ public:
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;
 };
 
-JIVE_EXPORTED_INLINE struct jive_region *
+JIVE_EXPORTED_INLINE struct jive::region *
 jive_graph_get_root_region(const jive_graph * self)
 {
 	return self->root_region;

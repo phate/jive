@@ -59,7 +59,7 @@ slt_op::copy() const
 jive::output *
 jive_bitsless(jive::output * op1, jive::output * op2)
 {
-	jive_region * region = op1->node()->region();
+	jive::region * region = op1->node()->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::slt_op(type), {op1, op2})[0];
 }

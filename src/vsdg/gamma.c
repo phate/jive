@@ -147,11 +147,11 @@ jive_gamma_create(
 {
 	size_t nvalues = types.size();
 	size_t nalternatives = alternatives.size();
-	jive_region * region = predicate->region();
+	jive::region * region = predicate->region();
 
 	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < nalternatives; n++) {
-		jive_region * subregion = new jive_region(region, region->graph());
+		jive::region * subregion = new jive::region(region, region->graph());
 		jive_node * head = jive::gamma_head_op().create_node(subregion, {});
 		jive::output * tmp = head->output(0);
 		jive_node * tail = jive::gamma_tail_op().create_node(subregion, {tmp});

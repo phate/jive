@@ -19,7 +19,6 @@ namespace jive {
 struct jive_graph;
 struct jive_linker_symbol;
 struct jive_node;
-struct jive_region;
 
 typedef uint64_t jive_offset;
 

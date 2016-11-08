@@ -118,7 +118,7 @@ private:
 
 static jive_node *
 jive_negtestnode_create(
-	jive_region * region,
+	jive::region * region,
 	
 	size_t noperands,
 	const test_option_t input_options[],
@@ -331,7 +331,7 @@ static int test_main(void)
 		1, &opt2, tmparray0, &tmp,
 		0, 0, 0);
 	
-	jive_region * subregion = new jive_region(graph->root_region, graph);
+	jive::region * subregion = new jive::region(graph->root_region, graph);
 	jive_node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);

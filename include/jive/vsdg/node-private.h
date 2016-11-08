@@ -17,7 +17,7 @@
 jive_node *
 jive_opnode_create(
 	const jive::operation & op,
-	jive_region * region,
+	jive::region * region,
 	const std::vector<jive::oport*> & operands);
 
 #endif

@@ -12,7 +12,6 @@
 #include <vector>
 
 class jive_node;
-class jive_region;
 class jive_resource_class;
 
 namespace jive {
@@ -23,6 +22,7 @@ class type;
 
 class node_normal_form;
 class oport;
+class region;
 
 class operation {
 public:
@@ -50,7 +50,7 @@ public:
 	// FIXME: move out of operation entirely
 	jive_node *
 	create_node(
-		jive_region * region,
+		jive::region * region,
 		const std::vector<jive::oport*> & operands) const;
 
 	virtual std::string

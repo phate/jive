@@ -25,21 +25,21 @@ template class domain_const_op<
 }
 
 jive::output *
-jive_bitconstant(jive_region * region, size_t nbits, const char bits[])
+jive_bitconstant(jive::region * region, size_t nbits, const char bits[])
 {
 	jive::bits::constant_op op(jive::bits::value_repr(std::string(bits, nbits).c_str()));
 	return jive_node_create_normalized(region, op, {})[0];
 }
 
 jive::output *
-jive_bitconstant_unsigned(jive_region * region, size_t nbits, uint64_t value)
+jive_bitconstant_unsigned(jive::region * region, size_t nbits, uint64_t value)
 {
 	jive::bits::constant_op op(jive::bits::value_repr(nbits, value));
 	return jive_node_create_normalized(region, op, {})[0];
 }
 
 jive::output *
-jive_bitconstant_signed(jive_region * region, size_t nbits, int64_t value)
+jive_bitconstant_signed(jive::region * region, size_t nbits, int64_t value)
 {
 	jive::bits::constant_op op(jive::bits::value_repr(nbits, value));
 	return jive_node_create_normalized(region, op, {})[0];

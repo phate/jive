@@ -45,7 +45,7 @@ private:
 
 jive::output *
 jive_immediate_create(
-	jive_region * region,
+	jive::region * region,
 	const jive::immediate * immediate_value);
 
 #endif

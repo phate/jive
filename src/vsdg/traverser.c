@@ -100,9 +100,9 @@ topdown_traverser::input_change(input * in, oport * old_origin, oport * new_orig
 }
 
 void
-topdown_traverser::init_top_nodes(jive_region * region)
+topdown_traverser::init_top_nodes(jive::region * region)
 {
-	jive_region * subregion;
+	jive::region * subregion;
 	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
 		init_top_nodes(subregion);
 	}
@@ -281,7 +281,7 @@ bottomup_slave_traverser::~bottomup_slave_traverser() noexcept
 
 bottomup_slave_traverser::bottomup_slave_traverser(
 	bottomup_region_traverser * master,
-	const jive_region * region)
+	const jive::region * region)
 	: master_(master)
 	, region_(region)
 	, frontier_state_(jive_graph_reserve_tracker_depth_state(master_->graph_))
@@ -308,7 +308,7 @@ bottomup_slave_traverser::next()
 /* bottom up region traverser */
 
 bottomup_slave_traverser *
-bottomup_region_traverser::map_region(const jive_region * region)
+bottomup_region_traverser::map_region(const jive::region * region)
 {
 	auto i = region_hash_.find(region);
 	if (i != region_hash_.end()) {
@@ -337,7 +337,7 @@ bottomup_region_traverser::check_above(jive_node * node)
 			continue;
 		}
 		
-		jive_region * region = above->region();
+		jive::region * region = above->region();
 		
 		bottomup_slave_traverser * slave = map_region(region);
 		nodestate->state = 0;

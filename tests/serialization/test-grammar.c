@@ -212,7 +212,7 @@ verify_serialize_nodeexpr(jive_node * node,
 static void
 verify_deserialize_nodeexpr(
 	const char * repr,
-	jive_region * region,
+	jive::region * region,
 	const char * const input_names[],
 	jive::output * const input_origins[],
 	const char * const output_names[],

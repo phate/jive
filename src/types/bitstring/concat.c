@@ -28,7 +28,7 @@ jive_bitconcat(size_t narguments, jive::output * const * arguments)
 		types.push_back(dynamic_cast<const jive::bits::type &>(arguments[n]->type()));
 	}
 
-	jive_region* region = arguments[0]->node()->region();
+	jive::region* region = arguments[0]->node()->region();
 
 	jive::bits::concat_op op(std::move(types));
 	return jive_node_create_normalized(
@@ -220,7 +220,7 @@ public:
 
 	virtual std::vector<jive::output *>
 	normalized_create(
-		jive_region * region,
+		jive::region * region,
 		const jive::operation & op,
 		const std::vector<jive::oport*> & arguments) const override
 	{

@@ -426,7 +426,7 @@ label_to_address_op::copy() const
 
 
 jive::output *
-jive_label_to_address_create(jive_region * region, const jive_label * label)
+jive_label_to_address_create(jive::region * region, const jive_label * label)
 {
 	jive::address::label_to_address_op op(label);
 	return jive_node_create_normalized(region, op, {})[0];
@@ -500,7 +500,7 @@ constant(struct jive_graph * graph, const value_repr & vr)
 
 
 jive::output *
-jive_label_to_bitstring_create(jive_region * region, const jive_label * label, size_t nbits)
+jive_label_to_bitstring_create(jive::region * region, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_op op(label, nbits);
 	return jive_node_create_normalized(region, op, {})[0];

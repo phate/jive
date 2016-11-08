@@ -18,7 +18,6 @@
 #include <jive/util/intrusive-hash.h>
 #include <jive/vsdg/node.h>
 
-struct jive_region;
 struct jive_serialization_driver;
 struct jive_token_istream;
 struct jive_token_ostream;

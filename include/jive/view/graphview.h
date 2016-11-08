@@ -14,8 +14,6 @@
 #include <unordered_map>
 #include <vector>
 
-class jive_regionview;
-
 class jive_graphview_row {
 public:
 	inline ~jive_graphview_row() noexcept {}

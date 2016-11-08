@@ -239,13 +239,13 @@ jive_regselector_map_port(const jive_regselector * self, const jive_negotiator_p
 static void
 jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 {
-	jive_region * root_region = self->base.graph->root_region;
+	jive::region * root_region = self->base.graph->root_region;
 	
 	if (node->region() == root_region)
 		return;
 	
 	/* determine function region */
-	jive_region * region = node->region();
+	jive::region * region = node->region();
 	while (region->parent() != root_region)
 		region = region->parent();
 	jive_node * top = region->top();

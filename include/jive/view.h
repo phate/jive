@@ -14,7 +14,6 @@
 #include <vector>
 
 struct jive_graph;
-struct jive_region;
 
 void
 jive_view(const struct jive_graph * graph, FILE * out);
@@ -38,13 +37,16 @@ std::string
 jive_view_utf8(const struct jive_graph * graph);
 
 namespace jive {
+
+class region;
+
 namespace view {
 
 std::string
-region_tree_string(const jive_region * region);
+region_tree_string(const jive::region * region);
 
 void
-region_tree(const jive_region * region, FILE * out);
+region_tree(const jive::region * region, FILE * out);
 
 }
 }

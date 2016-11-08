@@ -15,7 +15,6 @@
 struct jive_graph;
 struct jive_node;
 struct jive_notifier;
-struct jive_region;
 struct jive_tracker_depth_state;
 
 static const size_t jive_tracker_nodestate_none = (size_t) -1;
@@ -28,6 +27,8 @@ struct jive_tracker_slot {
 struct jive_tracker_nodestate;
 
 namespace jive {
+
+class region;
 
 /* Track states of nodes within the graph. Each node can logically be in
  * one of the numbered states, plus another "initial" state. All nodes are

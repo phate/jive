@@ -703,7 +703,7 @@ jive_negotiator_option_gate_default_(const jive_negotiator * self, jive_negotiat
 }
 
 void
-jive_negotiator_process_region_(jive_negotiator * self, jive_region * region)
+jive_negotiator_process_region_(jive_negotiator * self, jive::region * region)
 {
 	for (auto & node : region->nodes)
 		self->class_->annotate_node(self, &node);
@@ -738,7 +738,7 @@ jive_negotiator_maybe_split_edge(jive_negotiator * self, jive::output * origin, 
 void
 jive_negotiator_process(jive_negotiator * self)
 {
-	jive_region * region = self->graph->root_region;
+	jive::region * region = self->graph->root_region;
 	while(region->subregions.first)
 		region = region->subregions.first;
 	

@@ -9,7 +9,10 @@
 
 #include <vector>
 
-struct jive_region;
+namespace jive {
+	class region;
+}
+
 struct jive_textcanvas;
 
 class jive_graphview;
@@ -20,9 +23,9 @@ class jive_regionview {
 public:
 	~jive_regionview() noexcept;
 
-	jive_regionview(jive_graphview * graphview, const jive_region * region);
+	jive_regionview(jive_graphview * graphview, const jive::region * region);
 
-	const struct jive_region * region;
+	const struct jive::region * region;
 	jive_graphview * graphview;
 	int x;
 	unsigned int width, start_row_index, end_row_index;

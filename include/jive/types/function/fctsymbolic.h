@@ -27,6 +27,6 @@ typedef base::domain_symbol_op<jive::fct::type>
 
 jive::output *
 jive_symbolicfunction_create(
-	jive_region * region, const char * name, const jive::fct::type * type);
+	jive::region * region, const char * name, const jive::fct::type * type);
 
 #endif
