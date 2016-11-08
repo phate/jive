@@ -83,6 +83,17 @@ jive_graph::copy() const
 	return graph;
 }
 
+void
+jive_graph::normalize()
+{
+	for (auto node : jive::topdown_traverser(this)) {
+		auto nf = jive_graph_get_nodeclass_form(this, typeid(node->operation()));
+		nf->normalize_node(node);
+	}
+
+	normalized = true;
+}
+
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 {
@@ -145,18 +156,6 @@ jive_graph_get_nodeclass_form(
 	jive::node_normal_form * result = nf.get();
 	self->new_node_normal_forms.insert(std::move(nf));
 	return result;
-}
-
-void
-jive_graph_normalize(jive_graph * self)
-{
-	for (jive_node * node : jive::topdown_traverser(self)) {
-		jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-			self, typeid(node->operation()));
-		nf->normalize_node(node);
-	}
-	
-	self->normalized = true;
 }
 
 jive::gate *

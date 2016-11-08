@@ -76,7 +76,7 @@ static int test_main(void)
 		{&memtype});
 	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 
 	jive_view(&graph, stderr);

@@ -62,7 +62,7 @@ static int test_main()
 		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
 	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 
 	jive_view(&graph, stderr);

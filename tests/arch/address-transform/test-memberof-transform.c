@@ -56,7 +56,7 @@ static int test_main(void)
 	jive::memlayout_mapper_simple mapper(4);
 	jive_graph_address_transform(&graph, &mapper);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 

@@ -49,7 +49,7 @@ static int test_unnchoose(void)
 		{&bits16, &bits8, &bits16, &bits8}, {c0, c1, c2, c3}, {&bits8});
 	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 
 	jive_view(&graph, stderr);
@@ -90,7 +90,7 @@ static int test_unnunify(void)
 		{&unntype, &unntype_empty}, {u0, u1}, {&bits8});
 	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 
 	jive_view(&graph, stderr);

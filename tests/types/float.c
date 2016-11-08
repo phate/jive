@@ -23,7 +23,7 @@ types_float_arithmetic_test_fltdifference(void)
 
 	jive_graph_export(&graph, sub);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -44,7 +44,7 @@ types_float_arithmetic_test_fltnegate(void)
 
 	jive_graph_export(&graph, neg);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -66,7 +66,7 @@ static int types_float_arithmetic_test_fltproduct(void)
 
 	jive_graph_export(&graph, mul);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -87,7 +87,7 @@ static int types_float_arithmetic_test_fltquotient(void)
 
 	jive_graph_export(&graph, div);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -108,7 +108,7 @@ static int types_float_arithmetic_test_fltsum(void)
 
 	jive_graph_export(&graph, add);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -129,7 +129,7 @@ static int types_float_comparison_test_fltequal(void)
 
 	jive_graph_export(&graph, equal);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -150,7 +150,7 @@ static int types_float_comparison_test_fltgreater(void)
 
 	jive_graph_export(&graph, greater);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -171,7 +171,7 @@ static int types_float_comparison_test_fltgreatereq(void)
 
 	jive_graph_export(&graph, geq);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -192,7 +192,7 @@ static int types_float_comparison_test_fltless(void)
 
 	jive_graph_export(&graph, less);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -213,7 +213,7 @@ static int types_float_comparison_test_fltlesseq(void)
 
 	jive_graph_export(&graph, lesseq);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -235,7 +235,7 @@ types_float_comparison_test_fltnotequal(void)
 
 	jive_graph_export(&graph, neq);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 

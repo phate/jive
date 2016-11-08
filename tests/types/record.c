@@ -48,7 +48,7 @@ static int _test_rcdgroup(void)
 
 	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 
 	jive_view(&graph, stderr);
@@ -90,7 +90,7 @@ static int _test_rcdselect()
 		{&bits16, &bits16, &bits32, &bits8}, {s0, s1, s2, s3}, {&bits8});
 	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 
 	jive_view(&graph, stderr);

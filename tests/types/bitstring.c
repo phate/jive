@@ -106,7 +106,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 
 	jive_graph_export(&graph, diff);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -227,7 +227,7 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	jive_graph_export(&graph, product0);
 	jive_graph_export(&graph, product1);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -252,7 +252,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 
 	jive_graph_export(&graph, shiproduct);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -347,7 +347,7 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 	jive_graph_export(&graph, smod0);
 	jive_graph_export(&graph, smod1);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -377,7 +377,7 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	jive_graph_export(&graph, squot0);
 	jive_graph_export(&graph, squot1);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -409,7 +409,7 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	jive_graph_export(&graph, sum0);
 	jive_graph_export(&graph, sum1);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -434,7 +434,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 
 	jive_graph_export(&graph, uhiproduct);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -463,7 +463,7 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 	jive_graph_export(&graph, umod0);
 	jive_graph_export(&graph, umod1);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -493,7 +493,7 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	jive_graph_export(&graph, uquot0);
 	jive_graph_export(&graph, uquot1);
 
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
 
@@ -1058,7 +1058,7 @@ static int types_bitstring_test_normalize(void)
 	jive_graph_export(&graph, lambda_node->output(0));
 	
 	sum_nf->set_mutable(true);
-	jive_graph_normalize(&graph);
+	graph.normalize();
 	jive_graph_prune(&graph);
 	
 	jive::output * expected_sum = dynamic_cast<jive::output*>(retval->origin());
