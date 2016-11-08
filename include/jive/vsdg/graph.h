@@ -65,7 +65,7 @@ public:
 	inline void
 	mark_denormalized() noexcept
 	{
-		normalized = false;
+		normalized_ = false;
 	}
 
 	void
@@ -85,7 +85,6 @@ public:
 	} gates;
 	
 	bool resources_fully_assigned;
-	bool normalized;
 
 	std::vector<jive_tracker_slot_reservation> tracker_slots;
 	
@@ -115,6 +114,7 @@ public:
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;
 
 private:
+	bool normalized_;
 	jive::region * root_;
 };
 

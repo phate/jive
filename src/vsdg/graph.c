@@ -63,12 +63,12 @@ jive_graph::~jive_graph()
 }
 
 jive_graph::jive_graph()
-	: root_(new jive::region(nullptr, this))
+	: normalized_(false)
+	, root_(new jive::region(nullptr, this))
 {
 	bottom.first = bottom.last = 0;
 	gates.first = gates.last = 0;
 	resources_fully_assigned = false;
-	normalized = true;
 	jive::graph_tail_operation().create_node(root(), {});
 }
 
@@ -91,7 +91,7 @@ jive_graph::normalize()
 		nf->normalize_node(node);
 	}
 
-	normalized = true;
+	normalized_ = true;
 }
 
 jive_tracker_slot
