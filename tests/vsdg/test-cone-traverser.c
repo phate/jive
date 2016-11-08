@@ -18,7 +18,7 @@
 #include "testnodes.h"
 
 typedef struct graph_desc {
-	jive_graph * graph;
+	std::unique_ptr<jive_graph> graph;
 	jive_node * a1, * a2;
 	jive_node * b1, * b2;
 } graph_desc;
@@ -27,7 +27,7 @@ static graph_desc
 prepare_graph()
 {
 	graph_desc g;
-	g.graph = jive_graph_create();
+	g.graph = std::move(std::unique_ptr<jive_graph>(new jive_graph()));
 	
 	jive::region * region = g.graph->root();
 	jive_test_value_type type;
@@ -51,8 +51,6 @@ test_simple_upward_cone()
 		assert( trav.next() == g.a1 );
 		assert( trav.next() == NULL );
 	}
-	
-	jive_graph_destroy(g.graph);
 }
 
 static void
@@ -68,8 +66,6 @@ test_mutable_upward_cone_1()
 		assert( trav.next() == g.a1 );
 		assert( trav.next() == nullptr );
 	}
-	
-	jive_graph_destroy(g.graph);
 }
 
 static void
@@ -84,8 +80,6 @@ test_mutable_upward_cone_2()
 		assert( trav.next() == g.a1 );
 		assert( trav.next() == nullptr );
 	}
-
-	jive_graph_destroy(g.graph);
 }
 
 static void
@@ -100,8 +94,6 @@ test_mutable_upward_cone_3()
 		assert( trav.next() == g.a2 );
 		assert( trav.next() == g.b1 );
 	}
-	
-	jive_graph_destroy(g.graph);
 }
 
 static int test_main(void)

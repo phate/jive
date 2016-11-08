@@ -20,9 +20,9 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
-	jive::region * region = graph->root();
+	jive::region * region = graph.root();
 	
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
@@ -33,7 +33,6 @@ static int test_main(void)
 	assert(n2);
 	assert(n2->depth() == 1);
 	
-	jive_graph_destroy(graph);
 	return 0;
 }
 

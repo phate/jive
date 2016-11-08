@@ -305,7 +305,7 @@ expect_options(
 
 static int test_main(void)
 {
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
 	setlocale(LC_ALL, "");
 	
@@ -316,22 +316,22 @@ static int test_main(void)
 	test_option_t opt4 = 5;
 
 	const jive::base::type * tmparray0[] = {&bits32};
-	jive_node * n1 = jive_negtestnode_create(graph->root(),
+	jive_node * n1 = jive_negtestnode_create(graph.root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive::output * tmp = n1->output(0);
-	jive_node * n2 = jive_negtestnode_create(graph->root(),
+	jive_node * n2 = jive_negtestnode_create(graph.root(),
 		1, &opt1, tmparray0, &tmp,
 		0, 0, 0);
-	jive_node * n3 = jive_negtestnode_create(graph->root(),
+	jive_node * n3 = jive_negtestnode_create(graph.root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	tmp = n3->output(0);
-	jive_node * n4 = jive_negtestnode_create(graph->root(),
+	jive_node * n4 = jive_negtestnode_create(graph.root(),
 		1, &opt2, tmparray0, &tmp,
 		0, 0, 0);
 	
-	jive::region * subregion = new jive::region(graph->root(), graph);
+	jive::region * subregion = new jive::region(graph.root(), &graph);
 	jive_node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
@@ -344,7 +344,7 @@ static int test_main(void)
 		0, 0, 0);
 	
 	test_negotiator nego;
-	test_negotiator_init(&nego, graph);
+	test_negotiator_init(&nego, &graph);
 	
 	jive_negotiator_process(&nego);
 	
@@ -367,8 +367,7 @@ static int test_main(void)
 	expect_options(&nego, n3->output(0), 1, n4->input(0), 2);
 	
 	test_negotiator_fini(&nego);
-	
-	jive_graph_destroy(graph);
+
 	return 0;
 }
 

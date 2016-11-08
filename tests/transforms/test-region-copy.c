@@ -20,9 +20,9 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
-	jive::region * r1 = new jive::region(graph->root(), graph);
+	jive::region * r1 = new jive::region(graph.root(), &graph);
 	
 	jive_test_value_type type;
 	jive_node * top = jive_test_node_create(r1, {}, {}, {&type, &type, &jive::ctl::boolean});
@@ -35,9 +35,9 @@ static int test_main(void)
 	jive_node * bottom = jive_test_node_create(r1, {&type}, {gamma->output(0)}, {});
 	r1->set_bottom(bottom);
 	
-	jive_view(graph, stderr);
+	jive_view(&graph, stderr);
 	
-	jive::region * r2 = new jive::region(graph->root(), graph);
+	jive::region * r2 = new jive::region(graph.root(), &graph);
 	jive::substitution_map subst;
 	jive_region_copy_substitute(r1, r2, subst, true, true);
 
@@ -55,10 +55,8 @@ static int test_main(void)
 	assert(dynamic_cast<const jive::gamma_tail_op *>(&alt1->operation()));
 	assert(dynamic_cast<const jive::gamma_tail_op *>(&alt2->operation()));
 
-	jive_view(graph, stderr);
-	
-	jive_graph_destroy(graph);
-	
+	jive_view(&graph, stderr);
+
 	return 0;
 }
 

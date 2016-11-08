@@ -32,12 +32,12 @@ static int test_main(void)
 	
 	jive_buffer buf;
 	
-	jive_graph * gr1 = jive_graph_create();
+	jive_graph gr1;
 	const jive_argument_type tmparray0[] = { jive_argument_int };
 	const jive_argument_type tmparray1[] = { jive_argument_int };
 	
 	jive_subroutine sub = jive_i386_subroutine_begin(
-		gr1,
+		&gr1,
 		1,tmparray0,
 		1,tmparray1);
 
@@ -47,11 +47,11 @@ static int test_main(void)
 	jive_subroutine_end(sub);
 	
 	/* inhibit implicit normalization */
-	jive_graph_get_nodeclass_form(gr1, typeid(jive::operation))->set_mutable(false);
+	jive_graph_get_nodeclass_form(&gr1, typeid(jive::operation))->set_mutable(false);
 	int64_t tmparray2[] = {42};
 	
 	jive_node * n1 = jive_instruction_node_create_simple(
-		gr1->root(),
+		gr1.root(),
 		&jive_i386_instr_int_load_imm,
 		NULL,
 		tmparray2);
@@ -59,52 +59,49 @@ static int test_main(void)
 	int64_t tmparray4[] = {17};
 	
 	jive_node * n2 = jive_instruction_node_create_simple(
-		gr1->root(),
+		gr1.root(),
 		&jive_i386_instr_int_load32_disp,
 		tmparray3,
 		tmparray4);
 	jive::output * tmparray5[] = {n1->output(0), n2->output(0)};
 	
 	jive_node * n3 = jive_instruction_node_create_simple(
-		gr1->root(),
+		gr1.root(),
 		&jive_i386_instr_int_mul_expand_signed,
 		tmparray5,
 		NULL);
 	
 	jive_node * orig_node = n3;
 	
-	jive_view(gr1, stdout);
+	jive_view(&gr1, stdout);
 	
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv);
 	jive_serialization_symtab_insert_nodesym(&drv.symtab, orig_node, "TARGET");
 	jive_token_ostream * os = jive_token_ostream_simple_create(&buf);
-	jive_serialize_graph(&drv, gr1, os);
+	jive_serialize_graph(&drv, &gr1, os);
 	jive_token_ostream_destroy(os);
 	jive_serialization_driver_fini(&drv);
 	fwrite(&buf.data[0], 1, buf.data.size(), stderr);
 	
-	jive_graph * gr2 = jive_graph_create();
+	jive_graph gr2;
 	jive_token_istream * is = jive_token_istream_simple_create(
 		(char *)&buf.data[0], buf.data.size() + (char *) &buf.data[0]);
 	jive_serialization_driver_init(&drv);
 	drv.error = my_error;
-	jive_deserialize_graph(&drv, is, gr2);
+	jive_deserialize_graph(&drv, is, &gr2);
 	jive_node * repl_node = jive_serialization_symtab_name_to_node(&drv.symtab, "TARGET")->node;
 	jive_serialization_driver_fini(&drv);
 	jive_token_istream_destroy(is);
 	
 	assert(repl_node);
 	
-	assert (jive_graphs_equivalent(gr1, gr2,
+	assert (jive_graphs_equivalent(&gr1, &gr2,
 		1, &orig_node, &repl_node, 0, NULL, NULL));
 	
-	jive_view(gr1, stdout);
-	jive_view(gr2, stdout);
-	
-	jive_graph_destroy(gr1);
-	jive_graph_destroy(gr2);
-	
+	jive_view(&gr1, stdout);
+	jive_view(&gr2, stdout);
+
 	return 0;
 }
 JIVE_UNIT_TEST_REGISTER("serialization/test-i386-serialization", test_main);

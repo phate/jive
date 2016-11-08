@@ -26,7 +26,7 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
 	jive::bits::type bits4(4);
 	jive::bits::type bits8(8);
@@ -43,31 +43,31 @@ static int test_main(void)
 
 	jive::unn::type union_t(&u_decl);
 
-	jive::output * s0 = jive_sizeof_create(graph->root(), &bits4);
-	jive::output * s1 = jive_sizeof_create(graph->root(), &bits8);
-	jive::output * s2 = jive_sizeof_create(graph->root(), &bits8);
-	jive::output * s3 = jive_sizeof_create(graph->root(), &bits18);
-	jive::output * s4 = jive_sizeof_create(graph->root(), &bits32);
-	jive::output * s5 = jive_sizeof_create(graph->root(), &addr);
-	jive::output * s6 = jive_sizeof_create(graph->root(), &record_t);
-	jive::output * s7 = jive_sizeof_create(graph->root(), &union_t);
+	jive::output * s0 = jive_sizeof_create(graph.root(), &bits4);
+	jive::output * s1 = jive_sizeof_create(graph.root(), &bits8);
+	jive::output * s2 = jive_sizeof_create(graph.root(), &bits8);
+	jive::output * s3 = jive_sizeof_create(graph.root(), &bits18);
+	jive::output * s4 = jive_sizeof_create(graph.root(), &bits32);
+	jive::output * s5 = jive_sizeof_create(graph.root(), &addr);
+	jive::output * s6 = jive_sizeof_create(graph.root(), &record_t);
+	jive::output * s7 = jive_sizeof_create(graph.root(), &union_t);
 
 	assert(s1->node()->operation() == s2->node()->operation());
 	assert(s0->node()->operation() != s3->node()->operation());
 
-	jive_node * bottom = jive_test_node_create(graph->root(),
+	jive_node * bottom = jive_test_node_create(graph.root(),
 		std::vector<const jive::base::type*>(8, &bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {&bits32});
-	jive_graph_export(graph, bottom->output(0));
+	jive_graph_export(&graph, bottom->output(0));
 
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 
 	jive::memlayout_mapper_simple layout_mapper(4);
-	for (jive_node * node : jive::topdown_traverser(graph)) {
+	for (jive_node * node : jive::topdown_traverser(&graph)) {
 		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
 			jive_sizeof_node_reduce(node, &layout_mapper);
 		}
 	}
-	jive_graph_prune(graph);
+	jive_graph_prune(&graph);
 
 	assert(dynamic_cast<jive::output*>(bottom->input(0)->origin())->node()->operation()
 		== jive::bits::uint_constant_op(32, 1));
@@ -86,9 +86,7 @@ static int test_main(void)
 	assert(dynamic_cast<jive::output*>(bottom->input(7)->origin())->node()->operation()
 		== jive::bits::uint_constant_op(32, 4));
 	
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }

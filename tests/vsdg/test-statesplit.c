@@ -21,10 +21,10 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
 	jive_test_state_type statetype;
-	jive_node * top = jive_test_node_create(graph->root(), {}, {}, {&statetype, &statetype});
+	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&statetype, &statetype});
 
 	std::vector<jive::output*> outputs;
 	for (size_t n = 0; n < top->noutputs(); n++)
@@ -32,17 +32,14 @@ static int test_main(void)
 
 	jive::output * merged = jive_state_merge(&statetype, 2, &outputs[0]);
 	std::vector<jive::output *> split = jive_state_split(&statetype, merged, 2);
-	jive_test_node_create(graph->root(), {&statetype, &statetype}, {split[0], split[1]}, {});
+	jive_test_node_create(graph.root(), {&statetype, &statetype}, {split[0], split[1]}, {});
 
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 	
-	jive_graph * graph2 = jive_graph_copy(graph);
-	
-	jive_graph_destroy(graph);
-	
+	jive_graph * graph2 = jive_graph_copy(&graph);
 	jive_view(graph2, stdout);
-	
-	jive_graph_destroy(graph2);
+	delete graph2;
+
 	return 0;
 }
 

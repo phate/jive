@@ -18,8 +18,8 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_graph * graph = jive_graph_create();
+
+	jive_graph graph;
 	jive_argument_type  tmparray0[] = {
 			jive_argument_long, jive_argument_long,
 			jive_argument_long, jive_argument_long
@@ -27,7 +27,7 @@ static int test_main(void)
 	jive_argument_type  tmparray1[] = {jive_argument_long};
 	
 	jive_subroutine subroutine = jive_testarch_subroutine_begin(
-		graph,
+		&graph,
 		4, tmparray0,
 		1, tmparray1);
 	
@@ -43,13 +43,13 @@ static int test_main(void)
 	jive::output * res = jive_bituquotient(sum1, sum2);
 	jive_subroutine_simple_set_result(subroutine, 0, res);
 	
-	jive_graph_export(graph, jive_subroutine_end(subroutine)->output(0));
+	jive_graph_export(&graph, jive_subroutine_end(subroutine)->output(0));
 	
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 	
 	jive_testarch_reg_classifier classifier;
 	jive_regselector regselect;
-	jive_regselector_init(&regselect, graph, &classifier);
+	jive_regselector_init(&regselect, &graph, &classifier);
 	jive_regselector_process(&regselect);
 	jive_regselector_fini(&regselect);
 	
@@ -77,10 +77,8 @@ static int test_main(void)
 	assert(o1 == lit);
 	assert(o2 == sym);
 	
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-	
-	jive_graph_destroy(graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }

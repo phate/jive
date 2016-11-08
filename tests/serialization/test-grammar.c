@@ -167,16 +167,14 @@ verify_deserialize_gateexpr(const char * repr, jive::gate * expect_gate)
 	deserialize_ctx ctx;
 	deserialize_ctx_init(&ctx, repr);
 	
-	jive_graph * g = jive_graph_create();
+	jive_graph g;
 	
 	jive::gate * gate;
-	assert(jive_deserialize_gateexpr(&ctx.drv, ctx.is, g, &gate));
+	assert(jive_deserialize_gateexpr(&ctx.drv, ctx.is, &g, &gate));
 	assert(gate->name() == expect_gate->name());
 	assert(gate->type() == expect_gate->type());
 	assert(gate->required_rescls == expect_gate->required_rescls);
-	
-	jive_graph_destroy(g);
-	
+
 	deserialize_ctx_fini(&ctx);
 }
 
@@ -275,21 +273,21 @@ static int test_main(void)
 	verify_serialize_type(&ctl, "control<3>");
 	verify_deserialize_type("control<3>", &ctl);
 	
-	jive_graph * graph = jive_graph_create();
-	
-	jive::gate * bit8gate = jive_graph_create_gate(graph, "bit8gate", bits8);
+	jive_graph graph;
+
+	jive::gate * bit8gate = jive_graph_create_gate(&graph, "bit8gate", bits8);
 	verify_serialize_gateexpr(bit8gate, "\"bit8gate\" root<> bits<8>");
 	verify_deserialize_gateexpr("\"bit8gate\" root<> bits<8>", bit8gate);
 	
 	jive::gate * stackgate = jive_resource_class_create_gate(jive_stackslot_size_class_get(4, 4),
-		graph, "stackgate");
+		&graph, "stackgate");
 	verify_serialize_gateexpr(stackgate, "\"stackgate\" stackslot<4,4> memory<>");
 	verify_deserialize_gateexpr("\"stackgate\" stackslot<4,4> memory<>", stackgate);
 	
 	/* inhibit implicit optimization transformations */
-	jive_graph_get_nodeclass_form(graph, typeid(jive::operation))->set_mutable(false);
+	jive_graph_get_nodeclass_form(&graph, typeid(jive::operation))->set_mutable(false);
 	
-	jive::output * zero8 = jive_bitconstant(graph->root(), 8, "00000000");
+	jive::output * zero8 = jive_bitconstant(graph.root(), 8, "00000000");
 	const char * tmparray0[] = {"out"};
 	verify_serialize_nodeexpr(zero8->node(),
 		0, NULL, NULL, /* gates */
@@ -298,13 +296,13 @@ static int test_main(void)
 		"(;) bitconstant<\"00000000\"> (out:root<>;)");
 	const char * tmparray1[] = {"out"};
 	verify_deserialize_nodeexpr("(;) bitconstant<\"00000000\"> (out:root<>;)",
-		graph->root(),
+		graph.root(),
 		NULL, NULL, /* input names & origins */
 		tmparray1, /* output names */
 		zero8->node());
 	
-	jive::output * one8 = jive_bitconstant(graph->root(), 8, "10000000");
-	jive::output * two8 = jive_bitconstant(graph->root(), 8, "01000000");
+	jive::output * one8 = jive_bitconstant(graph.root(), 8, "10000000");
+	jive::output * two8 = jive_bitconstant(graph.root(), 8, "01000000");
 	jive::output * tmparray2[] = {one8, two8};
 	jive::output * add8 = jive_bitsum(2, tmparray2);
 	assert(dynamic_cast<const jive::bits::add_op *>(&add8->node()->operation()));
@@ -319,7 +317,7 @@ static int test_main(void)
 	jive::output * tmparray6[] = {one8, two8};
 	const char * tmparray7[] = {"sum"};
 	verify_deserialize_nodeexpr("(a:root<> b:root<>;) bitsum<8,2> (sum:root<>;)",
-		graph->root(),
+		graph.root(),
 		tmparray5, tmparray6, /* input names & origins */
 		tmparray7, /* output names */
 		add8->node());
@@ -337,8 +335,7 @@ static int test_main(void)
 		2, tmparray9, tmparray10, /* gates */
 		tmparray11, tmparray12,
 		"(a:root<> b:root<>;c:root<>:bit8gate) bitconcat<8,8> (out:root<>;r:stackslot<4,4>:stackgate)");
-	
-	jive_graph_destroy(graph);
+
 	return 0;
 }
 

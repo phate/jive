@@ -16,8 +16,8 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_graph * graph = jive_graph_create();
+
+	jive_graph graph;
 	jive_argument_type  tmparray0[] = {
 		jive_argument_long,
 		jive_argument_long,
@@ -26,7 +26,7 @@ static int test_main(void)
 	};
 	jive_argument_type  tmparray1[] = {jive_argument_long};
 	
-	jive_subroutine subroutine = jive_testarch_subroutine_begin(graph,
+	jive_subroutine subroutine = jive_testarch_subroutine_begin(&graph,
 		4, tmparray0,
 		1, tmparray1);
 	
@@ -46,18 +46,18 @@ static int test_main(void)
 		tmparray3, NULL)->output(0);
 	jive_subroutine_simple_set_result(subroutine, 0, s2);
 	
-	jive_graph_export(graph, jive_subroutine_end(subroutine)->output(0));
+	jive_graph_export(&graph, jive_subroutine_end(subroutine)->output(0));
 	
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 
 #if 0
 	jive_context * context2 = jive_context_create();
 	// FIXME: copying of subroutine nodes is currently quite broken;
 	// reactivate when repaired
-	jive_graph * graph2 = jive_graph_copy(graph, context2);
+	jive_graph * &graph2 = jive_graph_copy(&graph, context2);
 	
 	jive_subroutine_node * anchor2 = dynamic_cast<jive_subroutine_node *>(
-		graph2->bottom.first->graph_bottom_list.next);
+		&graph2->bottom.first->&graph_bottom_list.next);
 	assert(anchor2);
 	jive_subroutine_deprecated * sub2 = anchor2->operation().subroutine();
 	assert(sub2);
@@ -68,14 +68,12 @@ static int test_main(void)
 	assert(sub2->parameters[3]);
 	assert(jive_node_get_gate_output(sub2->enter, sub2->parameters[3]) == NULL);
 	
-	jive_view(graph2, stdout);
+	jive_view(&graph2, stdout);
 	
-	jive_graph_destroy(graph2);
+	jive_graph_destroy(&graph2);
 	assert(jive_context_is_empty(context2));
 	jive_context_destroy(context2);
 #endif
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }

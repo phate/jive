@@ -41,20 +41,18 @@ void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node
 
 static int test_main(void)
 {
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
-	jive::region * region = graph->root();
+	jive::region * region = graph.root();
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
 	jive_node * n2 = jive_test_node_create(region, {}, {}, {&type});
 	jive_node * bottom = jive_test_node_create(region, {&type}, {n1->output(0)}, {});
 
-	test_mutable_traverse_topdown(graph, n1, n2, bottom);
+	test_mutable_traverse_topdown(&graph, n1, n2, bottom);
 	
-	test_mutable_traverse_topdown(graph, n1, n2, bottom);
-	
-	jive_graph_destroy(graph);
-	
+	test_mutable_traverse_topdown(&graph, n1, n2, bottom);
+
 	/* should also write a test that exercises the bottom-up
 	traverser, but since bottom-up traversal is inherently
 	more robust I do not have a non-contrived "error scenario"

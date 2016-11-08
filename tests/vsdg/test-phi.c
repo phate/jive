@@ -24,7 +24,7 @@ static int test_main()
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
 	jive_test_value_type vtype;
 	jive::fct::type f0type(0, NULL, 0, NULL);
@@ -32,7 +32,7 @@ static int test_main()
 	jive::fct::type f1type(0, NULL, 0, NULL);
 	jive::fct::type f2type(1, tmparray0, 1, tmparray0);
 
-	jive_phi phi = jive_phi_begin(graph->root());
+	jive_phi phi = jive_phi_begin(graph.root());
 	jive_phi_fixvar fns[3];
 	fns[0] = jive_phi_fixvar_enter(phi, &f0type);
 	fns[1] = jive_phi_fixvar_enter(phi, &f1type);
@@ -58,21 +58,19 @@ static int test_main()
 
 	jive::output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
 
-	jive_node * bottom = jive_test_node_create(graph->root(),
+	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
-	jive_graph_export(graph, bottom->output(0));
+	jive_graph_export(&graph, bottom->output(0));
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
 
-	jive_view(graph, stderr);
+	jive_view(&graph, stderr);
 
 	jive_node * lambda_node2;
 	lambda_node2 = dynamic_cast<jive::output*>(phi.region->bottom()->input(3)->origin())->node();
 	assert(jive_lambda_is_self_recursive(lambda_node2));
 	assert(dynamic_cast<const jive::seq::type*>(&phi.region->bottom()->input(0)->type()));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }

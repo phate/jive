@@ -31,9 +31,9 @@ graph_contains_node(jive_graph * graph, jive_node * node)
 
 static int test_main(void)
 {
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
-	jive::region * region = graph->root();
+	jive::region * region = graph.root();
 	jive_test_value_type type;
 	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
 	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
@@ -41,19 +41,17 @@ static int test_main(void)
 	jive_node * bottom = jive_test_node_create(region,
 		{&type, &type}, {n2->output(0), n3->output(0)}, {&type});
 	
-	jive_graph_export(graph, bottom->output(0));
+	jive_graph_export(&graph, bottom->output(0));
 	
 	jive_node * n4 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
 
 	n2->output(0)->replace(n4->output(0));
 	assert(n2->output(0)->no_user());
 	
-	jive_graph_prune(graph);
+	jive_graph_prune(&graph);
 	
-	assert(! graph_contains_node(graph, n2) );
-	
-	jive_graph_destroy(graph);
-	
+	assert(!graph_contains_node(&graph, n2));
+
 	return 0;
 }
 

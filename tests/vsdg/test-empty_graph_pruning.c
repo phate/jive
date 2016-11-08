@@ -16,17 +16,15 @@ test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 
-	jive_graph_prune(graph);
+	jive_graph_prune(&graph);
 
-	assert(graph->root()->nodes.size() == 1);
+	assert(graph.root()->nodes.size() == 1);
 
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }

@@ -25,27 +25,25 @@
 static int function_test_build_lambda(void)
 {
 	setlocale(LC_ALL, "");
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
-	jive_lambda * lambda = jive_lambda_begin(graph->root(),
+	jive_lambda * lambda = jive_lambda_begin(graph.root(),
 		2, tmparray0, tmparray1);
 
 	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
 
 	jive::output * fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
 	
-	jive_view(graph, stderr);
+	jive_view(&graph, stderr);
 	
 	const jive::base::type * tmparray2[] = {&bits32, &bits32};
 	jive::fct::type ftype(2, tmparray2, 1, tmparray2);
 
 	assert(ftype == fct->type());
 	
-	jive_graph_destroy(graph);
-
 	return 0;
 }
 
@@ -55,24 +53,22 @@ static int function_test_call(void)
 {
 	setlocale( LC_ALL, "" ) ;
 
-	jive_graph* graph = jive_graph_create();
+	jive_graph graph;
 
 	jive::bits::type btype(8);
 	const jive::base::type*  tmparray0[] = { &btype };
 	const jive::base::type*  tmparray1[] = { &btype };
 	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
-	jive::output* constant = jive_bitconstant(graph->root(), 8, "00001111" ) ;
-	jive::output* func = jive_symbolicfunction_create(graph->root(), "sin", &ftype ) ;
+	jive::output* constant = jive_bitconstant(graph.root(), 8, "00001111" ) ;
+	jive::output* func = jive_symbolicfunction_create(graph.root(), "sin", &ftype ) ;
 	jive::output*  tmparray2[] = { constant };
 	jive::output * ret = jive_apply_create(func, 1, tmparray2)[0];
 
 	assert(ret->type() == btype);
 
-	jive_view( graph, stderr ) ;
+	jive_view( &graph, stderr ) ;
 
-	jive_graph_destroy( graph ) ;
- 
 	return 0 ;
 }
 
@@ -115,12 +111,12 @@ static int function_test_lambda_apply(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
 	const char * tmparray1[] = {"arg1", "arg2"};
-	jive_lambda * lambda = jive_lambda_begin(graph->root(),
+	jive_lambda * lambda = jive_lambda_begin(graph.root(),
 		2, tmparray0, tmparray1);
 
 	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
@@ -128,25 +124,25 @@ static int function_test_lambda_apply(void)
 	const jive::base::type * tmparray11[] = {&bits32};
 	jive::output * lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);
 	
-	jive::output * c0 = jive_bitconstant(graph->root(), 32, "01010100000000000000000000000000");
-	jive::output * c1 = jive_bitconstant(graph->root(), 32, "10010010000000000000000000000000");
+	jive::output * c0 = jive_bitconstant(graph.root(), 32, "01010100000000000000000000000000");
+	jive::output * c1 = jive_bitconstant(graph.root(), 32, "10010010000000000000000000000000");
 	jive::output * tmparray2[] = {c0, c1};
 	
 	jive::output * apply_results[1] = {
 		jive_apply_create(lambda_expr, 2, tmparray2)[0]
 	};
 	
-	jive_node * interest = jive_test_node_create(graph->root(),
+	jive_node * interest = jive_test_node_create(graph.root(),
 		{&bits32}, {apply_results[0]}, {&bits32});
 	
-	jive_graph_export(graph, interest->output(0));
+	jive_graph_export(&graph, interest->output(0));
 	
-	jive_view(graph, stderr);
+	jive_view(&graph, stderr);
 
 	jive_inline_lambda_apply(apply_results[0]->node());
-	jive_graph_prune(graph);
+	jive_graph_prune(&graph);
 	
-	jive_view(graph, stderr);
+	jive_view(&graph, stderr);
 
 	jive_node * test_sum = dynamic_cast<jive::output*>(interest->input(0)->origin())->node();
 	assert(test_sum->operation() == jive::bits::add_op(32));
@@ -154,8 +150,6 @@ static int function_test_lambda_apply(void)
 	assert(test_sum->input(0)->origin() == c0);
 	assert(test_sum->input(1)->origin() == c1);
 	
-	jive_graph_destroy(graph);
-
 	return 0;
 }
 

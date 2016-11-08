@@ -23,34 +23,32 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
 	jive::addr::type addr;
 	jive::bits::type bits16(16);
-	jive_node * top = jive_test_node_create(graph->root(), {}, {}, {&addr, &bits16, &addr});
+	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&addr, &bits16, &addr});
 
 	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
 
 	std::vector<jive::output*> tmp = {top->output(1), top->output(2)};
-	jive_node * call = jive_call_by_address_node_create(graph->root(),
+	jive_node * call = jive_call_by_address_node_create(graph.root(),
 		top->output(0), NULL, 2, &tmp[0], 3, tmparray1);
 	JIVE_DEBUG_ASSERT(call->noutputs() == 3);
 
-	jive_node * bottom = jive_test_node_create(graph->root(),
+	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&bits16, &addr, &addr}, {call->output(0), call->output(1), call->output(2)}, {&addr});
-	jive_graph_export(graph, bottom->output(0));
+	jive_graph_export(&graph, bottom->output(0));
 
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 
 	jive::memlayout_mapper_simple mapper(4);
 
 	jive_node_address_transform(call, &mapper);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 	
-	jive_graph_destroy(graph);
-
 	return 0;
 }
 

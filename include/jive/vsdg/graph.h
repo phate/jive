@@ -124,12 +124,6 @@ jive_graph_export(struct jive_graph * self, jive::output * operand)
 }
 
 jive_graph *
-jive_graph_create();
-
-void
-jive_graph_destroy(jive_graph * self);
-
-jive_graph *
 jive_graph_copy(jive_graph * self);
 
 void

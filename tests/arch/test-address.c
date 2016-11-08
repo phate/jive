@@ -22,14 +22,14 @@
 static int test_main(void)
 {
 	setlocale(LC_ALL, "");
-	
-	jive_graph * graph = jive_graph_create();
-	
+
+	jive_graph graph;
+
 	jive::bits::type bits32(32);
 	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));
 
 	jive::addr::type addrtype;
-	jive_node * top = jive_test_node_create(graph->root(), {}, {}, {&addrtype, &addrtype});
+	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&addrtype, &addrtype});
 	
 	jive::output * memb1 = jive_memberof(top->output(0), rec, 0);
 	jive::output * memb2 = jive_memberof(top->output(0), rec, 1);
@@ -42,7 +42,7 @@ static int test_main(void)
 	jive::output * memb3 = jive_memberof(cont3, rec, 0);
 	jive::output * memb4 = jive_memberof(cont3, rec, 1);
 	
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 	
 	assert(cont1 == top->output(0));
 	assert(cont2 != top->output(0));
@@ -50,11 +50,11 @@ static int test_main(void)
 	assert(memb4 != top->output(1));
 	assert(memb3 == top->output(1));
 	
-	jive::output * zero = jive_bitconstant(graph->root(), 32,
+	jive::output * zero = jive_bitconstant(graph.root(), 32,
 		"00000000000000000000000000000000");
-	jive::output * one = jive_bitconstant(graph->root(), 32,
+	jive::output * one = jive_bitconstant(graph.root(), 32,
 		"10000000000000000000000000000000");
-	jive::output * minus_one = jive_bitconstant(graph->root(), 32,
+	jive::output * minus_one = jive_bitconstant(graph.root(), 32,
 		"11111111111111111111111111111111");
 	
 	jive::output * a0 = jive_arraysubscript(top->output(0), &bits32, zero);
@@ -62,7 +62,7 @@ static int test_main(void)
 	jive::output * a1 = jive_arraysubscript(top->output(0), &bits32, one);
 	assert(a1 != top->output(0));
 	jive_arraysubscript(a1, &bits32, minus_one);
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 	//assert(tmp == a0);
 	
 	jive_arrayindex(a1, a0, &bits32, &bits32);
@@ -75,19 +75,17 @@ static int test_main(void)
 	jive::output * memberof = jive_memberof(cont3, rec, 1);
 	jive::output * arraysub = jive_arraysubscript(top->output(0), &bits32, one);
 
-	jive_node * bottom = jive_test_node_create(graph->root(),
+	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
-	jive_graph_export(graph, bottom->output(0));
+	jive_graph_export(&graph, bottom->output(0));
 
 	jive_node_address_transform(cont3->node(), &mapper);
 	jive_node_address_transform(memberof->node(), &mapper);
 	jive_node_address_transform(diff2->node(), &mapper);
 	jive_node_address_transform(arraysub->node(), &mapper);
 	
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-	
-	jive_graph_destroy(graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }

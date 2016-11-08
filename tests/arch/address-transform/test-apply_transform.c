@@ -25,30 +25,28 @@ test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
 	jive::addr::type addrtype;
 	const jive::base::type * addrptr = &addrtype;
 	jive::fct::type fcttype(1, &addrptr, 1, &addrptr);
-	jive_node * top = jive_test_node_create(graph->root(), {}, {}, {&fcttype, &addrtype});
+	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&fcttype, &addrtype});
 
 	jive::output * address = top->output(1);
 	std::vector<jive::output *> results = jive_apply_create(top->output(0), 1, &address);
 
-	jive_node * bottom = jive_test_node_create(graph->root(), {&addrtype},
+	jive_node * bottom = jive_test_node_create(graph.root(), {&addrtype},
 		{results.begin(), results.end()}, {});
 
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 
 	jive::memlayout_mapper_simple mapper(4);
 	jive_node_address_transform(results[0]->node(), &mapper);
 
-	jive_view(graph, stdout);
+	jive_view(&graph, stdout);
 
 	assert(dynamic_cast<jive::output*>(bottom->input(0)->origin())->node()->operation()
 		== jive::bitstring_to_address_operation(32, addrtype));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }

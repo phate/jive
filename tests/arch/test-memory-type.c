@@ -19,14 +19,14 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive_node * node0 = jive_test_node_create(graph->root(), {}, {}, {});
-	jive_node * node1 = jive_test_node_create(graph->root(), {}, {}, {});
+	jive_node * node0 = jive_test_node_create(graph.root(), {}, {}, {});
+	jive_node * node1 = jive_test_node_create(graph.root(), {}, {}, {});
 
 	jive::mem::type memtype;
-	jive::gate * arg_gate = jive_graph_create_gate(graph, "arg", memtype);
-	jive::gate * ret_gate = jive_graph_create_gate(graph, "ret", memtype);
+	jive::gate * arg_gate = jive_graph_create_gate(&graph, "arg", memtype);
+	jive::gate * ret_gate = jive_graph_create_gate(&graph, "ret", memtype);
 
 	jive::output * arg = node0->add_output(arg_gate);
 	jive::input * ret = node1->add_input(ret_gate, arg);
@@ -35,8 +35,6 @@ static int test_main(void)
 	assert(dynamic_cast<const jive::state::type*>(&ret->type()));
 	assert(dynamic_cast<const jive::state::type*>(&arg_gate->type()));
 	assert(dynamic_cast<jive::state::type*>(&memtype) != nullptr);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }

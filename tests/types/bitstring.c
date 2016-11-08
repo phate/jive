@@ -26,29 +26,27 @@ static int types_bitstring_arithmetic_test_bitand(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 	jive::output * tmparray1[] = {s0, s1};
 
 	jive::output * and0 = jive_bitand(2, tmparray1);
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * and1 = jive_bitand(2, tmparray2);
 
-	jive_graph_export(graph, and0);
-	jive_graph_export(graph, and1);
+	jive_graph_export(&graph, and0);
+	jive_graph_export(&graph, and1);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(and0->node()->operation() == jive::bits::and_op(32));
 	assert(and1->node()->operation() == jive::bits::int_constant_op(32, +1));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -59,15 +57,15 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 16);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, -16);
-	jive::output * c2 = jive_bitconstant_unsigned(graph->root(), 32, 2);
-	jive::output * c3 = jive_bitconstant_unsigned(graph->root(), 32, 32);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 16);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, -16);
+	jive::output * c2 = jive_bitconstant_unsigned(graph.root(), 32, 2);
+	jive::output * c3 = jive_bitconstant_unsigned(graph.root(), 32, 32);
 
 	jive::output * ashr0 = jive_bitashr(s0, s1);
 	jive::output * ashr1 = jive_bitashr(c0, c2);
@@ -75,22 +73,20 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	jive::output * ashr3 = jive_bitashr(c1, c2);
 	jive::output * ashr4 = jive_bitashr(c1, c3);
 
-	jive_graph_export(graph, ashr0);
-	jive_graph_export(graph, ashr1);
-	jive_graph_export(graph, ashr2);
-	jive_graph_export(graph, ashr3);
-	jive_graph_export(graph, ashr4);
+	jive_graph_export(&graph, ashr0);
+	jive_graph_export(&graph, ashr1);
+	jive_graph_export(&graph, ashr2);
+	jive_graph_export(&graph, ashr3);
+	jive_graph_export(&graph, ashr4);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(ashr0->node()->operation() == jive::bits::ashr_op(32));
 	assert(ashr1->node()->operation() == jive::bits::int_constant_op(32, 4));
 	assert(ashr2->node()->operation() == jive::bits::int_constant_op(32, 0));
 	assert(ashr3->node()->operation() == jive::bits::int_constant_op(32, -4));
 	assert(ashr4->node()->operation() == jive::bits::int_constant_op(32, -1));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -101,22 +97,20 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
 	jive::output * diff = jive_bitdifference(s0, s1);
 
-	jive_graph_export(graph, diff);
+	jive_graph_export(&graph, diff);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(diff->node()->operation() == jive::bits::sub_op(32));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -127,27 +121,25 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 
 	jive::output * neg0 = jive_bitnegate(s0);
 	jive::output * neg1 = jive_bitnegate(c0);
 	jive::output * neg2 = jive_bitnegate(neg1);
 
-	jive_graph_export(graph, neg0);
-	jive_graph_export(graph, neg1);
-	jive_graph_export(graph, neg2);
+	jive_graph_export(&graph, neg0);
+	jive_graph_export(&graph, neg1);
+	jive_graph_export(&graph, neg2);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(neg0->node()->operation() == jive::bits::neg_op(32));
 	assert(neg1->node()->operation() == jive::bits::int_constant_op(32, -3));
 	assert(neg2->node()->operation() == jive::bits::int_constant_op(32, 3));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -158,27 +150,25 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 
 	jive::output * not0 = jive_bitnot(s0);
 	jive::output * not1 = jive_bitnot(c0);
 	jive::output * not2 = jive_bitnot(not1);
 
-	jive_graph_export(graph, not0);
-	jive_graph_export(graph, not1);
-	jive_graph_export(graph, not2);
+	jive_graph_export(&graph, not0);
+	jive_graph_export(&graph, not1);
+	jive_graph_export(&graph, not2);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(not0->node()->operation() == jive::bits::not_op(32));
 	assert(not1->node()->operation() == jive::bits::int_constant_op(32, -4));
 	assert(not2->node()->operation() == jive::bits::int_constant_op(32, 3));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -189,29 +179,27 @@ static int types_bitstring_arithmetic_test_bitor(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 	jive::output * tmparray1[] = {s0, s1};
 
 	jive::output * or0 = jive_bitor(2, tmparray1);
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * or1 = jive_bitor(2, tmparray2);
 
-	jive_graph_export(graph, or0);
-	jive_graph_export(graph, or1);
+	jive_graph_export(&graph, or0);
+	jive_graph_export(&graph, or1);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(or0->node()->operation() == jive::bits::or_op(32));
 	assert(or1->node()->operation() == jive::bits::uint_constant_op(32, 7));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -222,13 +210,13 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 	jive::output * tmparray1[] = {s0,
 		s1};
 
@@ -236,17 +224,15 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * product1 = jive_bitmultiply(2, tmparray2);
 
-	jive_graph_export(graph, product0);
-	jive_graph_export(graph, product1);
+	jive_graph_export(&graph, product0);
+	jive_graph_export(&graph, product1);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(product0->node()->operation() == jive::bits::mul_op(32));
 	assert(product1->node()->operation() == jive::bits::uint_constant_op(32, 15));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -257,22 +243,20 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
 	jive::output * shiproduct = jive_bitshiproduct(s0, s1);
 
-	jive_graph_export(graph, shiproduct);
+	jive_graph_export(&graph, shiproduct);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(shiproduct->node()->operation() == jive::bits::smulh_op(32));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -283,31 +267,29 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 16);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 2);
-	jive::output * c2 = jive_bitconstant_unsigned(graph->root(), 32, 32);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 16);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 2);
+	jive::output * c2 = jive_bitconstant_unsigned(graph.root(), 32, 32);
 
 	jive::output * shl0 = jive_bitshl(s0, s1);
 	jive::output * shl1 = jive_bitshl(c0, c1);
 	jive::output * shl2 = jive_bitshl(c0, c2);
 
-	jive_graph_export(graph, shl0);
-	jive_graph_export(graph, shl1);
-	jive_graph_export(graph, shl2);
+	jive_graph_export(&graph, shl0);
+	jive_graph_export(&graph, shl1);
+	jive_graph_export(&graph, shl2);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(shl0->node()->operation() == jive::bits::shl_op(32));
 	assert(shl1->node()->operation() == jive::bits::uint_constant_op(32, 64));
 	assert(shl2->node()->operation() == jive::bits::uint_constant_op(32, 0));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -318,31 +300,29 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 16);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 2);
-	jive::output * c2 = jive_bitconstant_unsigned(graph->root(), 32, 32);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 16);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 2);
+	jive::output * c2 = jive_bitconstant_unsigned(graph.root(), 32, 32);
 
 	jive::output * shr0 = jive_bitshr(s0, s1);
 	jive::output * shr1 = jive_bitshr(c0, c1);
 	jive::output * shr2 = jive_bitshr(c0, c2);
 
-	jive_graph_export(graph, shr0);
-	jive_graph_export(graph, shr1);
-	jive_graph_export(graph, shr2);
+	jive_graph_export(&graph, shr0);
+	jive_graph_export(&graph, shr1);
+	jive_graph_export(&graph, shr2);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 	
 	assert(shr0->node()->operation() == jive::bits::shr_op(32));
 	assert(shr1->node()->operation() == jive::bits::uint_constant_op(32, 4));
 	assert(shr2->node()->operation() == jive::bits::uint_constant_op(32, 0));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -353,28 +333,26 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, -7);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 3);
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, -7);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 3);
 
 	jive::output * smod0 = jive_bitsmod(s0, s1);
 	jive::output * smod1 = jive_bitsmod(c0, c1);
 
-	jive_graph_export(graph, smod0);
-	jive_graph_export(graph, smod1);
+	jive_graph_export(&graph, smod0);
+	jive_graph_export(&graph, smod1);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(smod0->node()->operation() == jive::bits::smod_op(32));
 	assert(smod1->node()->operation() == jive::bits::int_constant_op(32, -1));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -385,28 +363,26 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 7);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, -3);
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 7);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, -3);
 
 	jive::output * squot0 = jive_bitsquotient(s0, s1);
 	jive::output * squot1 = jive_bitsquotient(c0, c1);
 
-	jive_graph_export(graph, squot0);
-	jive_graph_export(graph, squot1);
+	jive_graph_export(&graph, squot0);
+	jive_graph_export(&graph, squot1);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(squot0->node()->operation() == jive::bits::sdiv_op(32));
 	assert(squot1->node()->operation() == jive::bits::int_constant_op(32, -2));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -417,30 +393,28 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 
 	jive::output * tmparray1[] = {s0, s1};
 	jive::output * sum0 = jive_bitsum(2, tmparray1);
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * sum1 = jive_bitsum(2, tmparray2);
 
-	jive_graph_export(graph, sum0);
-	jive_graph_export(graph, sum1);
+	jive_graph_export(&graph, sum0);
+	jive_graph_export(&graph, sum1);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(sum0->node()->operation() == jive::bits::add_op(32));
 	assert(sum1->node()->operation() == jive::bits::int_constant_op(32, 8));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -451,22 +425,20 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
 	jive::output * uhiproduct = jive_bituhiproduct(s0, s1);
 
-	jive_graph_export(graph, uhiproduct);
+	jive_graph_export(&graph, uhiproduct);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(uhiproduct->node()->operation() == jive::bits::umulh_op(32));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -477,28 +449,26 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 7);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 3);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 7);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 
 	jive::output * umod0 = jive_bitumod(s0, s1);
 	jive::output * umod1 = jive_bitumod(c0, c1);
 
-	jive_graph_export(graph, umod0);
-	jive_graph_export(graph, umod1);
+	jive_graph_export(&graph, umod0);
+	jive_graph_export(&graph, umod1);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(umod0->node()->operation() == jive::bits::umod_op(32));
 	assert(umod1->node()->operation() == jive::bits::int_constant_op(32, 1));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -509,28 +479,26 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 7);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 3);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 7);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 
 	jive::output * uquot0 = jive_bituquotient(s0, s1);
 	jive::output * uquot1 = jive_bituquotient(c0, c1);
 
-	jive_graph_export(graph, uquot0);
-	jive_graph_export(graph, uquot1);
+	jive_graph_export(&graph, uquot0);
+	jive_graph_export(&graph, uquot1);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(uquot0->node()->operation() == jive::bits::udiv_op(32));
 	assert(uquot1->node()->operation() == jive::bits::int_constant_op(32, 2));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -541,29 +509,27 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
 
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 3);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 
 	jive::output * tmparray1[] = {s0, s1};
 	jive::output * xor0 = jive_bitxor(2, tmparray1);
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * xor1 = jive_bitxor(2, tmparray2);
 
-	jive_graph_export(graph, xor0);
-	jive_graph_export(graph, xor1);
+	jive_graph_export(&graph, xor0);
+	jive_graph_export(&graph, xor1);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(xor0->node()->operation() == jive::bits::xor_op(32));
 	assert(xor1->node()->operation() == jive::bits::int_constant_op(32, 6));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -590,33 +556,31 @@ static int types_bitstring_comparison_test_bitequal(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_undefined(graph->root(), 32);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_undefined(graph.root(), 32);
 
 	jive::output * equal0 = jive_bitequal(s0, s1);
 	jive::output * equal1 = jive_bitequal(c0, c0);
 	jive::output * equal2 = jive_bitequal(c0, c1);
 	jive::output * equal3 = jive_bitequal(c0, c2);
 
-	jive_graph_export(graph, equal0);
-	jive_graph_export(graph, equal1);
-	jive_graph_export(graph, equal2);
-	jive_graph_export(graph, equal3);
+	jive_graph_export(&graph, equal0);
+	jive_graph_export(&graph, equal1);
+	jive_graph_export(&graph, equal2);
+	jive_graph_export(&graph, equal3);
 	
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(equal0->node()->operation() == jive::bits::eq_op(32));
 	expect_static_true(equal1);
 	expect_static_false(equal2);
 	assert(equal3->node()->operation() == jive::bits::eq_op(32));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -627,33 +591,31 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_undefined(graph->root(), 32);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_undefined(graph.root(), 32);
 
 	jive::output * nequal0 = jive_bitnotequal(s0, s1);
 	jive::output * nequal1 = jive_bitnotequal(c0, c0);
 	jive::output * nequal2 = jive_bitnotequal(c0, c1);
 	jive::output * nequal3 = jive_bitnotequal(c0, c2);
 
-	jive_graph_export(graph, nequal0);
-	jive_graph_export(graph, nequal1);
-	jive_graph_export(graph, nequal2);
-	jive_graph_export(graph, nequal3);
+	jive_graph_export(&graph, nequal0);
+	jive_graph_export(&graph, nequal1);
+	jive_graph_export(&graph, nequal2);
+	jive_graph_export(&graph, nequal3);
 	
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(nequal0->node()->operation() == jive::bits::ne_op(32));
 	expect_static_false(nequal1);
 	expect_static_true(nequal2);
 	assert(nequal3->node()->operation() == jive::bits::ne_op(32));
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -664,14 +626,14 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, 0x7fffffffL);
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
 	jive::output * sgreater0 = jive_bitsgreater(s0, s1);
 	jive::output * sgreater1 = jive_bitsgreater(c0, c1);
@@ -679,22 +641,20 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	jive::output * sgreater3 = jive_bitsgreater(s0, c2);
 	jive::output * sgreater4 = jive_bitsgreater(c3, s1);
 
-	jive_graph_export(graph, sgreater0);
-	jive_graph_export(graph, sgreater1);
-	jive_graph_export(graph, sgreater2);
-	jive_graph_export(graph, sgreater3);
-	jive_graph_export(graph, sgreater4);
+	jive_graph_export(&graph, sgreater0);
+	jive_graph_export(&graph, sgreater1);
+	jive_graph_export(&graph, sgreater2);
+	jive_graph_export(&graph, sgreater3);
+	jive_graph_export(&graph, sgreater4);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(sgreater0->node()->operation() == jive::bits::sgt_op(32));
 	expect_static_false(sgreater1);
 	expect_static_true(sgreater2);
 	expect_static_false(sgreater3);
 	expect_static_false(sgreater4);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -705,14 +665,14 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, 0x7fffffffL);
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
 	jive::output * sgreatereq0 = jive_bitsgreatereq(s0, s1);
 	jive::output * sgreatereq1 = jive_bitsgreatereq(c0, c1);
@@ -721,15 +681,15 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	jive::output * sgreatereq4 = jive_bitsgreatereq(c2, s0);
 	jive::output * sgreatereq5 = jive_bitsgreatereq(s1, c3);
 
-	jive_graph_export(graph, sgreatereq0);
-	jive_graph_export(graph, sgreatereq1);
-	jive_graph_export(graph, sgreatereq2);
-	jive_graph_export(graph, sgreatereq3);
-	jive_graph_export(graph, sgreatereq4);
-	jive_graph_export(graph, sgreatereq5);
+	jive_graph_export(&graph, sgreatereq0);
+	jive_graph_export(&graph, sgreatereq1);
+	jive_graph_export(&graph, sgreatereq2);
+	jive_graph_export(&graph, sgreatereq3);
+	jive_graph_export(&graph, sgreatereq4);
+	jive_graph_export(&graph, sgreatereq5);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(sgreatereq0->node()->operation() == jive::bits::sge_op(32));
 	expect_static_false(sgreatereq1);
@@ -737,8 +697,6 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	expect_static_true(sgreatereq3);
 	expect_static_true(sgreatereq4);
 	expect_static_true(sgreatereq5);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -749,14 +707,14 @@ static int types_bitstring_comparison_test_bitsless(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, 0x7fffffffL);
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
 	jive::output * sless0 = jive_bitsless(s0, s1);
 	jive::output * sless1 = jive_bitsless(c0, c1);
@@ -764,22 +722,20 @@ static int types_bitstring_comparison_test_bitsless(void)
 	jive::output * sless3 = jive_bitsless(c2, s0);
 	jive::output * sless4 = jive_bitsless(s1, c3);
 
-	jive_graph_export(graph, sless0);
-	jive_graph_export(graph, sless1);
-	jive_graph_export(graph, sless2);
-	jive_graph_export(graph, sless3);
-	jive_graph_export(graph, sless4);
+	jive_graph_export(&graph, sless0);
+	jive_graph_export(&graph, sless1);
+	jive_graph_export(&graph, sless2);
+	jive_graph_export(&graph, sless3);
+	jive_graph_export(&graph, sless4);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(sless0->node()->operation() == jive::bits::slt_op(32));
 	expect_static_true(sless1);
 	expect_static_false(sless2);
 	expect_static_false(sless3);
 	expect_static_false(sless4);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -790,14 +746,14 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, 0x7fffffffL);
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, (-0x7fffffffL-1));
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, 0x7fffffffL);
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, (-0x7fffffffL-1));
 
 	jive::output * slesseq0 = jive_bitslesseq(s0, s1);
 	jive::output * slesseq1 = jive_bitslesseq(c0, c1);
@@ -806,15 +762,15 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	jive::output * slesseq4 = jive_bitslesseq(s0, c2);
 	jive::output * slesseq5 = jive_bitslesseq(c3, s1);
 
-	jive_graph_export(graph, slesseq0);
-	jive_graph_export(graph, slesseq1);
-	jive_graph_export(graph, slesseq2);
-	jive_graph_export(graph, slesseq3);
-	jive_graph_export(graph, slesseq4);
-	jive_graph_export(graph, slesseq5);
+	jive_graph_export(&graph, slesseq0);
+	jive_graph_export(&graph, slesseq1);
+	jive_graph_export(&graph, slesseq2);
+	jive_graph_export(&graph, slesseq3);
+	jive_graph_export(&graph, slesseq4);
+	jive_graph_export(&graph, slesseq5);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(slesseq0->node()->operation() == jive::bits::sle_op(32));
 	expect_static_true(slesseq1);
@@ -822,8 +778,6 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	expect_static_false(slesseq3);
 	expect_static_true(slesseq4);
 	expect_static_true(slesseq5);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -834,14 +788,14 @@ static int types_bitstring_comparison_test_bitugreater(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_unsigned(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_unsigned(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_unsigned(graph->root(), 32, (0xffffffffUL));
-	jive::output * c3 = jive_bitconstant_unsigned(graph->root(), 32, 0);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_unsigned(graph.root(), 32, (0xffffffffUL));
+	jive::output * c3 = jive_bitconstant_unsigned(graph.root(), 32, 0);
 
 	jive::output * ugreater0 = jive_bitugreater(s0, s1);
 	jive::output * ugreater1 = jive_bitugreater(c0, c1);
@@ -849,22 +803,20 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	jive::output * ugreater3 = jive_bitugreater(s0, c2);
 	jive::output * ugreater4 = jive_bitugreater(c3, s1);
 
-	jive_graph_export(graph, ugreater0);
-	jive_graph_export(graph, ugreater1);
-	jive_graph_export(graph, ugreater2);
-	jive_graph_export(graph, ugreater3);
-	jive_graph_export(graph, ugreater4);
+	jive_graph_export(&graph, ugreater0);
+	jive_graph_export(&graph, ugreater1);
+	jive_graph_export(&graph, ugreater2);
+	jive_graph_export(&graph, ugreater3);
+	jive_graph_export(&graph, ugreater4);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(ugreater0->node()->operation() == jive::bits::ugt_op(32));
 	expect_static_false(ugreater1);
 	expect_static_true(ugreater2);
 	expect_static_false(ugreater3);
 	expect_static_false(ugreater4);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -875,14 +827,14 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, (0xffffffffUL));
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, 0);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, (0xffffffffUL));
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, 0);
 
 	jive::output * ugreatereq0 = jive_bitugreatereq(s0, s1);
 	jive::output * ugreatereq1 = jive_bitugreatereq(c0, c1);
@@ -891,15 +843,15 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	jive::output * ugreatereq4 = jive_bitugreatereq(c2, s0);
 	jive::output * ugreatereq5 = jive_bitugreatereq(s1, c3);
 
-	jive_graph_export(graph, ugreatereq0);
-	jive_graph_export(graph, ugreatereq1);
-	jive_graph_export(graph, ugreatereq2);
-	jive_graph_export(graph, ugreatereq3);
-	jive_graph_export(graph, ugreatereq4);
-	jive_graph_export(graph, ugreatereq5);
+	jive_graph_export(&graph, ugreatereq0);
+	jive_graph_export(&graph, ugreatereq1);
+	jive_graph_export(&graph, ugreatereq2);
+	jive_graph_export(&graph, ugreatereq3);
+	jive_graph_export(&graph, ugreatereq4);
+	jive_graph_export(&graph, ugreatereq5);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(ugreatereq0->node()->operation() == jive::bits::uge_op(32));
 	expect_static_false(ugreatereq1);
@@ -907,8 +859,6 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	expect_static_true(ugreatereq3);
 	expect_static_true(ugreatereq4);
 	expect_static_true(ugreatereq5);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -919,14 +869,14 @@ static int types_bitstring_comparison_test_bituless(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, (0xffffffffUL));
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, 0);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, (0xffffffffUL));
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, 0);
 
 	jive::output * uless0 = jive_bituless(s0, s1);
 	jive::output * uless1 = jive_bituless(c0, c1);
@@ -934,22 +884,20 @@ static int types_bitstring_comparison_test_bituless(void)
 	jive::output * uless3 = jive_bituless(c2, s0);
 	jive::output * uless4 = jive_bituless(s1, c3);
 
-	jive_graph_export(graph, uless0);
-	jive_graph_export(graph, uless1);
-	jive_graph_export(graph, uless2);
-	jive_graph_export(graph, uless3);
-	jive_graph_export(graph, uless4);
+	jive_graph_export(&graph, uless0);
+	jive_graph_export(&graph, uless1);
+	jive_graph_export(&graph, uless2);
+	jive_graph_export(&graph, uless3);
+	jive_graph_export(&graph, uless4);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(uless0->node()->operation() == jive::bits::ult_op(32));
 	expect_static_true(uless1);
 	expect_static_false(uless2);
 	expect_static_false(uless3);
 	expect_static_false(uless4);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -960,14 +908,14 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_bitsymbolicconstant(graph->root(), 32, "s0");
-	jive::output * s1 = jive_bitsymbolicconstant(graph->root(), 32, "s1");
-	jive::output * c0 = jive_bitconstant_signed(graph->root(), 32, 4);
-	jive::output * c1 = jive_bitconstant_signed(graph->root(), 32, 5);
-	jive::output * c2 = jive_bitconstant_signed(graph->root(), 32, (0xffffffffUL));
-	jive::output * c3 = jive_bitconstant_signed(graph->root(), 32, 0);
+	jive::output * s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
+	jive::output * s1 = jive_bitsymbolicconstant(graph.root(), 32, "s1");
+	jive::output * c0 = jive_bitconstant_signed(graph.root(), 32, 4);
+	jive::output * c1 = jive_bitconstant_signed(graph.root(), 32, 5);
+	jive::output * c2 = jive_bitconstant_signed(graph.root(), 32, (0xffffffffUL));
+	jive::output * c3 = jive_bitconstant_signed(graph.root(), 32, 0);
 
 	jive::output * ulesseq0 = jive_bitulesseq(s0, s1);
 	jive::output * ulesseq1 = jive_bitulesseq(c0, c1);
@@ -976,15 +924,15 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	jive::output * ulesseq4 = jive_bitulesseq(s0, c2);
 	jive::output * ulesseq5 = jive_bitulesseq(c3, s1);
 
-	jive_graph_export(graph, ulesseq0);
-	jive_graph_export(graph, ulesseq1);
-	jive_graph_export(graph, ulesseq2);
-	jive_graph_export(graph, ulesseq3);
-	jive_graph_export(graph, ulesseq4);
-	jive_graph_export(graph, ulesseq5);
+	jive_graph_export(&graph, ulesseq0);
+	jive_graph_export(&graph, ulesseq1);
+	jive_graph_export(&graph, ulesseq2);
+	jive_graph_export(&graph, ulesseq3);
+	jive_graph_export(&graph, ulesseq4);
+	jive_graph_export(&graph, ulesseq5);
 
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	assert(ulesseq0->node()->operation() == jive::bits::ule_op(32));
 	expect_static_true(ulesseq1);
@@ -992,8 +940,6 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	expect_static_false(ulesseq3);
 	expect_static_true(ulesseq4);
 	expect_static_true(ulesseq5);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }
@@ -1004,10 +950,10 @@ static int types_bitstring_test_arithmetic(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * c0 = jive_bitconstant(graph->root(), 4, "1100");
-	jive::output * c1 = jive_bitconstant(graph->root(), 4, "0001");
+	jive::output * c0 = jive_bitconstant(graph.root(), 4, "1100");
+	jive::output * c1 = jive_bitconstant(graph.root(), 4, "0001");
 
 	jive_bitdifference(c0, c1);
 	jive_bitshiproduct(c0, c1);
@@ -1020,9 +966,7 @@ static int types_bitstring_test_arithmetic(void)
 	jive_bitshr(c0, c1);
 	jive_bitashr(c0, c1);
 
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -1043,12 +987,12 @@ static int types_bitstring_test_constant(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * b1 = jive_bitconstant(graph->root(), 8, "00110011");
-	jive::output * b2 = jive_bitconstant_unsigned(graph->root(), 8, 204);
-	jive::output * b3 = jive_bitconstant_signed(graph->root(), 8, 204);
-	jive::output * b4 = jive_bitconstant(graph->root(), 9, "001100110");
+	jive::output * b1 = jive_bitconstant(graph.root(), 8, "00110011");
+	jive::output * b2 = jive_bitconstant_unsigned(graph.root(), 8, 204);
+	jive::output * b3 = jive_bitconstant_signed(graph.root(), 8, 204);
+	jive::output * b4 = jive_bitconstant(graph.root(), 9, "001100110");
 	
 	assert(b1->node()->operation() == jive::bits::uint_constant_op(8, 204));
 	assert(b1->node()->operation() == jive::bits::int_constant_op(8, -52));
@@ -1062,16 +1006,15 @@ static int types_bitstring_test_constant(void)
 	assert(b4->node()->operation() == jive::bits::uint_constant_op(9, 204));
 	assert(b4->node()->operation() == jive::bits::int_constant_op(9, 204));
 
-	jive::output * plus_one_128 = jive_bitconstant(graph->root(), 128, ONE_64 ZERO_64);
+	jive::output * plus_one_128 = jive_bitconstant(graph.root(), 128, ONE_64 ZERO_64);
 	assert(plus_one_128->node()->operation() == jive::bits::uint_constant_op(128, 1));
 	assert(plus_one_128->node()->operation() == jive::bits::int_constant_op(128, 1));
 
-	jive::output * minus_one_128 = jive_bitconstant(graph->root(), 128, MONE_64 MONE_64);
+	jive::output * minus_one_128 = jive_bitconstant(graph.root(), 128, MONE_64 MONE_64);
 	assert(minus_one_128->node()->operation() == jive::bits::int_constant_op(128, -1));
 
-	jive_view(graph, stdout);
-	jive_graph_destroy(graph);
-	
+	jive_view(&graph, stdout);
+
 	return 0;
 }
 
@@ -1081,18 +1024,18 @@ static int types_bitstring_test_normalize(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
 	jive::bits::type bits32(32);
 	const char * tmparray0[] = {"arg"};
 	const jive::base::type * tmparray11[] = {&bits32};
-	jive_lambda * lambda = jive_lambda_begin(graph->root(), 1, tmparray11, tmparray0);
+	jive_lambda * lambda = jive_lambda_begin(graph.root(), 1, tmparray11, tmparray0);
 
 	jive::output * c0 = jive_bitconstant_unsigned(lambda->region, 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(lambda->region, 32, 4);
 	
 	jive::node_normal_form * sum_nf = jive_graph_get_nodeclass_form(
-		graph, typeid(jive::bits::add_op));
+		&graph, typeid(jive::bits::add_op));
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
 	jive::output * tmparray1[] = {lambda->arguments[0], c0};
@@ -1112,11 +1055,11 @@ static int types_bitstring_test_normalize(void)
 	jive_node * lambda_tail = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node();
 	jive_node * lambda_head = dynamic_cast<jive::output*>(lambda_tail->input(0)->origin())->node();
 	jive::output * arg = lambda_head->output(1);
-	jive_graph_export(graph, lambda_node->output(0));
+	jive_graph_export(&graph, lambda_node->output(0));
 	
 	sum_nf->set_mutable(true);
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
 	
 	jive::output * expected_sum = dynamic_cast<jive::output*>(retval->origin());
 	assert(expected_sum->node()->operation() == jive::bits::add_op(32));
@@ -1129,9 +1072,7 @@ static int types_bitstring_test_normalize(void)
 	assert(op1->node()->operation() == jive::bits::int_constant_op(32, 3 + 4));
 	assert(op2 == arg);
 
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -1151,10 +1092,10 @@ static int types_bitstring_test_reduction(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_graph * graph = jive_graph_create();
-	
-	jive::output * a = jive_bitconstant(graph->root(), 4, "1100");
-	jive::output * b = jive_bitconstant(graph->root(), 4, "1010");
+	jive_graph graph;
+
+	jive::output * a = jive_bitconstant(graph.root(), 4, "1100");
+	jive::output * b = jive_bitconstant(graph.root(), 4, "1010");
 	
 	jive::output * ops[] = {a, b};
 	
@@ -1167,10 +1108,10 @@ static int types_bitstring_test_reduction(void)
 	assert_constant(jive_bitnegate(a), 4, "1011");
 	assert_constant(jive_bitnegate(b), 4, "1101");
 	
-	jive_graph_prune(graph);
+	jive_graph_prune(&graph);
 	
-	jive::output * x = jive_bitsymbolicconstant(graph->root(), 16, "x");
-	jive::output * y = jive_bitsymbolicconstant(graph->root(), 16, "y");
+	jive::output * x = jive_bitsymbolicconstant(graph.root(), 16, "x");
+	jive::output * y = jive_bitsymbolicconstant(graph.root(), 16, "y");
 	
 	{
 		jive::output *  tmparray0[] = {x, y};
@@ -1203,9 +1144,7 @@ static int types_bitstring_test_reduction(void)
 		jive::output * concat = jive_bitconcat(2, tmparray1);
 		assert(concat == x);
 	}
-	
-	jive_graph_destroy(graph);
-	
+
 	return 0;
 }
 
@@ -1215,14 +1154,14 @@ static int types_bitstring_test_slice_concat(void)
 {
 	setlocale(LC_ALL, "");
 	
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
-	jive::output * base_const1 = jive_bitconstant(graph->root(), 8, "00110111");
-	jive::output * base_const2 = jive_bitconstant(graph->root(), 8, "11001000");
+	jive::output * base_const1 = jive_bitconstant(graph.root(), 8, "00110111");
+	jive::output * base_const2 = jive_bitconstant(graph.root(), 8, "11001000");
 	
-	jive::output * base_x = jive_bitsymbolicconstant(graph->root(), 8, "x");
-	jive::output * base_y = jive_bitsymbolicconstant(graph->root(), 8, "y");
-	jive::output * base_z = jive_bitsymbolicconstant(graph->root(), 8, "z");
+	jive::output * base_x = jive_bitsymbolicconstant(graph.root(), 8, "x");
+	jive::output * base_y = jive_bitsymbolicconstant(graph.root(), 8, "y");
+	jive::output * base_z = jive_bitsymbolicconstant(graph.root(), 8, "z");
 	
 	{
 		/* slice of constant */
@@ -1306,10 +1245,10 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* CSE */
-		jive::output * a = jive_bitsymbolicconstant(graph->root(), 8, "x");
+		jive::output * a = jive_bitsymbolicconstant(graph.root(), 8, "x");
 		assert(a == base_x);
 		
-		jive::output * b = jive_bitconstant(graph->root(), 8, "00110111");
+		jive::output * b = jive_bitconstant(graph.root(), 8, "00110111");
 		assert(b == base_const1);
 		
 		jive::output * c = jive_bitslice(base_x, 2, 6);
@@ -1322,10 +1261,8 @@ static int types_bitstring_test_slice_concat(void)
 		assert(e == f);
 	}
 	
-	//jive_graph_view(graph);
+	//jive_graph_view(&graph);
 
-	jive_graph_destroy(graph);
-	
 	return 0;
 }
 

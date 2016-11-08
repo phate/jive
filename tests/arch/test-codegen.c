@@ -24,23 +24,23 @@ static int test_main(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph * &graph = jive_graph_create();
 
-	jive::output * c8 = jive_bitconstant_unsigned(graph->root(), 8, 8);
-	jive::output * c16 = jive_bitconstant_unsigned(graph->root(), 16, 16);
-	jive::output * c32 = jive_bitconstant_unsigned(graph->root(), 32, 32);
+	jive::output * c8 = jive_bitconstant_unsigned(graph.root(), 8, 8);
+	jive::output * c16 = jive_bitconstant_unsigned(graph.root(), 16, 16);
+	jive::output * c32 = jive_bitconstant_unsigned(graph.root(), 32, 32);
 
 	jive::memlayout_mapper_simple mapper(4);
 	jive_dataobj(c8, &mapper);
 	jive_rodataobj(c16, &mapper);
 	jive_bssobj(c32, &mapper);
 
-	jive_view(graph, stderr);
+	jive_view(&graph, stderr);
 
 	jive_compilate compilate;
 	jive_compilate_init(&compilate);
 	jive_label_symbol_mapper * symbol_mapper = jive_label_symbol_mapper_simple_create();
-	jive_graph_generate_code(graph, symbol_mapper, &compilate);
+	jive_graph_generate_code(&graph, symbol_mapper, &compilate);
 	jive_label_symbol_mapper_destroy(symbol_mapper);
 
 	jive_buffer * data_buffer = jive_compilate_get_buffer(&compilate,
@@ -59,7 +59,7 @@ static int test_main(void)
 	assert(bss_buffer->data[0] == 32);
 	
 	jive_compilate_fini(&compilate);
-	jive_graph_destroy(graph);
+	jive_graph_destroy(&graph);
 
 	return 0;
 }

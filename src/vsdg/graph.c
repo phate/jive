@@ -72,18 +72,6 @@ jive_graph::jive_graph()
 	jive::graph_tail_operation().create_node(root(), {});
 }
 
-jive_graph *
-jive_graph_create()
-{
-	return new jive_graph;
-}
-
-void
-jive_graph_destroy(jive_graph * self)
-{
-	delete self;
-}
-
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 {
@@ -130,8 +118,8 @@ jive_graph_prune(jive_graph * self)
 jive_graph *
 jive_graph_copy(jive_graph * self)
 {
-	jive_graph * new_graph = jive_graph_create();
-	
+	jive_graph * new_graph = new jive_graph();
+
 	jive::substitution_map smap;
 	jive_region_copy_substitute(self->root(), new_graph->root(), smap, false, false);
 

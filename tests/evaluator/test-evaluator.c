@@ -121,7 +121,7 @@ test_fib_iter(struct jive_graph * graph)
 }
 
 static jive::output *
-setup_fib_rec(struct jive_graph * graph)
+setup_fib_rec(struct jive_graph * &graph)
 {
 /*
 unsigned int fib(unsigned int n){
@@ -253,13 +253,11 @@ test_evaluator()
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	test_fib_iter(graph);
-	test_fib_rec(graph);
-	test_loadstore(graph);
-
-	jive_graph_destroy(graph);
+	test_fib_iter(&graph);
+	test_fib_rec(&graph);
+	test_loadstore(&graph);
 
 	return 0;
 }

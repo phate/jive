@@ -18,9 +18,9 @@
 
 static int test_main(void)
 {
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 	
-	jive::region * region = graph->root();
+	jive::region * region = graph.root();
 	jive_test_state_type type;
 	jive_test_value_type value_type;
 
@@ -34,8 +34,6 @@ static int test_main(void)
 	}
 	
 	assert(error_handler_called);
-
-	jive_graph_destroy(graph);
 
 	return 0;
 }

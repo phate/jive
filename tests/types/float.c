@@ -15,19 +15,17 @@ types_float_arithmetic_test_fltdifference(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * sub = jive_fltdifference(s0, s1);
 
-	jive_graph_export(graph, sub);
+	jive_graph_export(&graph, sub);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -39,18 +37,16 @@ types_float_arithmetic_test_fltnegate(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
 	jive::output * neg = jive_fltnegate(s0);
 
-	jive_graph_export(graph, neg);
+	jive_graph_export(&graph, neg);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -62,19 +58,17 @@ static int types_float_arithmetic_test_fltproduct(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * mul = jive_fltproduct(s0, s1);
 
-	jive_graph_export(graph, mul);
+	jive_graph_export(&graph, mul);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -85,19 +79,17 @@ static int types_float_arithmetic_test_fltquotient(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * div = jive_fltquotient(s0, s1);
 
-	jive_graph_export(graph, div);
+	jive_graph_export(&graph, div);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -108,19 +100,17 @@ static int types_float_arithmetic_test_fltsum(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * add = jive_fltsum(s0, s1);
 
-	jive_graph_export(graph, add);
+	jive_graph_export(&graph, add);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -131,19 +121,17 @@ static int types_float_comparison_test_fltequal(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * equal = jive_fltequal(s0, s1);
 
-	jive_graph_export(graph, equal);
+	jive_graph_export(&graph, equal);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -154,19 +142,17 @@ static int types_float_comparison_test_fltgreater(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * greater = jive_fltgreater(s0, s1);
 
-	jive_graph_export(graph, greater);
+	jive_graph_export(&graph, greater);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -177,19 +163,17 @@ static int types_float_comparison_test_fltgreatereq(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * geq = jive_fltgreatereq(s0, s1);
 
-	jive_graph_export(graph, geq);
+	jive_graph_export(&graph, geq);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -200,19 +184,17 @@ static int types_float_comparison_test_fltless(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * less = jive_fltless(s0, s1);
 
-	jive_graph_export(graph, less);
+	jive_graph_export(&graph, less);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -223,19 +205,17 @@ static int types_float_comparison_test_fltlesseq(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * lesseq = jive_fltlesseq(s0, s1);
 
-	jive_graph_export(graph, lesseq);
+	jive_graph_export(&graph, lesseq);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -247,19 +227,17 @@ types_float_comparison_test_fltnotequal(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive::output * s0 = jive_fltsymbolicconstant(graph, "s0");
-	jive::output * s1 = jive_fltsymbolicconstant(graph, "s1");
+	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
+	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * neq = jive_fltnotequal(s0, s1);
 
-	jive_graph_export(graph, neq);
+	jive_graph_export(&graph, neq);
 
-	jive_graph_normalize(graph);
-	jive_graph_prune(graph);
-	jive_view(graph, stdout);
-
-	jive_graph_destroy(graph);
+	jive_graph_normalize(&graph);
+	jive_graph_prune(&graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
@@ -271,16 +249,15 @@ types_float_test_fltconstant(void)
 {
 	setlocale(LC_ALL, "");
 
-	jive_graph * graph = jive_graph_create();
+	jive_graph graph;
 
-	jive_fltconstant_float(graph->root(), -1.0);
-	jive_fltconstant_float(graph->root(), 0.0);
-	jive_fltconstant_float(graph->root(), 1.0);
-	jive_fltconstant_float(graph->root(), 0.0 / 0.0);
-	jive_fltconstant_float(graph->root(), 1.0 / 0.0);
+	jive_fltconstant_float(graph.root(), -1.0);
+	jive_fltconstant_float(graph.root(), 0.0);
+	jive_fltconstant_float(graph.root(), 1.0);
+	jive_fltconstant_float(graph.root(), 0.0 / 0.0);
+	jive_fltconstant_float(graph.root(), 1.0 / 0.0);
 
-	jive_view(graph, stdout);
-	jive_graph_destroy(graph);
+	jive_view(&graph, stdout);
 
 	return 0;
 }
