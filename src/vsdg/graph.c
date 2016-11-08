@@ -72,6 +72,17 @@ jive_graph::jive_graph()
 	jive::graph_tail_operation().create_node(root(), {});
 }
 
+std::unique_ptr<jive_graph>
+jive_graph::copy() const
+{
+	std::unique_ptr<jive_graph> graph(new jive_graph());
+
+	jive::substitution_map smap;
+	jive_region_copy_substitute(root(), graph->root(), smap, false, false);
+
+	return graph;
+}
+
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 {
@@ -113,17 +124,6 @@ jive_graph_prune(jive_graph * self)
 	jive::region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(self->root()->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
-}
-
-jive_graph *
-jive_graph_copy(jive_graph * self)
-{
-	jive_graph * new_graph = new jive_graph();
-
-	jive::substitution_map smap;
-	jive_region_copy_substitute(self->root(), new_graph->root(), smap, false, false);
-
-	return new_graph;
 }
 
 jive::node_normal_form *

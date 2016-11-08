@@ -35,10 +35,9 @@ static int test_main(void)
 	jive_test_node_create(graph.root(), {&statetype, &statetype}, {split[0], split[1]}, {});
 
 	jive_view(&graph, stdout);
-	
-	jive_graph * graph2 = jive_graph_copy(&graph);
-	jive_view(graph2, stdout);
-	delete graph2;
+
+	std::unique_ptr<jive_graph> graph2 = graph.copy();
+	jive_view(graph2.get(), stdout);
 
 	return 0;
 }

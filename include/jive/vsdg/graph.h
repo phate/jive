@@ -62,6 +62,9 @@ public:
 		return root_;
 	}
 
+	std::unique_ptr<jive_graph>
+	copy() const;
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -122,9 +125,6 @@ jive_graph_export(struct jive_graph * self, jive::output * operand)
 	//FIXME: this function should be removed
 	jive_graph_export(self, operand, "dummy");
 }
-
-jive_graph *
-jive_graph_copy(jive_graph * self);
 
 void
 jive_graph_prune(jive_graph * self);
