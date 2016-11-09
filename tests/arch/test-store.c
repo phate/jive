@@ -74,7 +74,7 @@ static int test_main(void)
 		std::vector<const jive::base::type*>(6, &memtype),
 		{states0[0], states1[0], states1[0], states2[0], states4[0], states5[0]},
 		{&memtype});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);

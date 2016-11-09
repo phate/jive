@@ -43,7 +43,7 @@ static int test_main()
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&bits32, &bits32}, {load0, load1}, {&addrtype});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);

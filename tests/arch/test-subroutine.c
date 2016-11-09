@@ -46,7 +46,7 @@ static int test_main(void)
 		tmparray3, NULL)->output(0);
 	jive_subroutine_simple_set_result(subroutine, 0, s2);
 	
-	jive_graph_export(&graph, jive_subroutine_end(subroutine)->output(0));
+	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
 	
 	jive_view(&graph, stdout);
 

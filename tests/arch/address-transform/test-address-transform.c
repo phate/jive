@@ -70,7 +70,7 @@ static int test_main(void)
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&bits64, &mem}, {o_addr, store->output(0)}, {&bits64});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	jive_view(&graph, stdout);
 

@@ -41,7 +41,7 @@ static int test_main(void)
 	jive_node * bottom = jive_test_node_create(region,
 		{&type, &type}, {n2->output(0), n3->output(0)}, {&type});
 	
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 	
 	jive_node * n4 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
 

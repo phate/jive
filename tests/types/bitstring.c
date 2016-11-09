@@ -39,8 +39,8 @@ static int types_bitstring_arithmetic_test_bitand(void)
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * and1 = jive_bitand(2, tmparray2);
 
-	jive_graph_export(&graph, and0);
-	jive_graph_export(&graph, and1);
+	graph.export_port(and0, "dummy");
+	graph.export_port(and1, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -73,11 +73,11 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	jive::output * ashr3 = jive_bitashr(c1, c2);
 	jive::output * ashr4 = jive_bitashr(c1, c3);
 
-	jive_graph_export(&graph, ashr0);
-	jive_graph_export(&graph, ashr1);
-	jive_graph_export(&graph, ashr2);
-	jive_graph_export(&graph, ashr3);
-	jive_graph_export(&graph, ashr4);
+	graph.export_port(ashr0, "dummy");
+	graph.export_port(ashr1, "dummy");
+	graph.export_port(ashr2, "dummy");
+	graph.export_port(ashr3, "dummy");
+	graph.export_port(ashr4, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -104,7 +104,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 
 	jive::output * diff = jive_bitdifference(s0, s1);
 
-	jive_graph_export(&graph, diff);
+	graph.export_port(diff, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -130,9 +130,9 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	jive::output * neg1 = jive_bitnegate(c0);
 	jive::output * neg2 = jive_bitnegate(neg1);
 
-	jive_graph_export(&graph, neg0);
-	jive_graph_export(&graph, neg1);
-	jive_graph_export(&graph, neg2);
+	graph.export_port(neg0, "dummy");
+	graph.export_port(neg1, "dummy");
+	graph.export_port(neg2, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -159,9 +159,9 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 	jive::output * not1 = jive_bitnot(c0);
 	jive::output * not2 = jive_bitnot(not1);
 
-	jive_graph_export(&graph, not0);
-	jive_graph_export(&graph, not1);
-	jive_graph_export(&graph, not2);
+	graph.export_port(not0, "dummy");
+	graph.export_port(not1, "dummy");
+	graph.export_port(not2, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -192,8 +192,8 @@ static int types_bitstring_arithmetic_test_bitor(void)
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * or1 = jive_bitor(2, tmparray2);
 
-	jive_graph_export(&graph, or0);
-	jive_graph_export(&graph, or1);
+	graph.export_port(or0, "dummy");
+	graph.export_port(or1, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -224,8 +224,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * product1 = jive_bitmultiply(2, tmparray2);
 
-	jive_graph_export(&graph, product0);
-	jive_graph_export(&graph, product1);
+	graph.export_port(product0, "dummy");
+	graph.export_port(product1, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -250,7 +250,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 
 	jive::output * shiproduct = jive_bitshiproduct(s0, s1);
 
-	jive_graph_export(&graph, shiproduct);
+	graph.export_port(shiproduct, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -280,9 +280,9 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 	jive::output * shl1 = jive_bitshl(c0, c1);
 	jive::output * shl2 = jive_bitshl(c0, c2);
 
-	jive_graph_export(&graph, shl0);
-	jive_graph_export(&graph, shl1);
-	jive_graph_export(&graph, shl2);
+	graph.export_port(shl0, "dummy");
+	graph.export_port(shl1, "dummy");
+	graph.export_port(shl2, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -313,9 +313,9 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 	jive::output * shr1 = jive_bitshr(c0, c1);
 	jive::output * shr2 = jive_bitshr(c0, c2);
 
-	jive_graph_export(&graph, shr0);
-	jive_graph_export(&graph, shr1);
-	jive_graph_export(&graph, shr2);
+	graph.export_port(shr0, "dummy");
+	graph.export_port(shr1, "dummy");
+	graph.export_port(shr2, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -344,8 +344,8 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 	jive::output * smod0 = jive_bitsmod(s0, s1);
 	jive::output * smod1 = jive_bitsmod(c0, c1);
 
-	jive_graph_export(&graph, smod0);
-	jive_graph_export(&graph, smod1);
+	graph.export_port(smod0, "dummy");
+	graph.export_port(smod1, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -374,8 +374,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	jive::output * squot0 = jive_bitsquotient(s0, s1);
 	jive::output * squot1 = jive_bitsquotient(c0, c1);
 
-	jive_graph_export(&graph, squot0);
-	jive_graph_export(&graph, squot1);
+	graph.export_port(squot0, "dummy");
+	graph.export_port(squot1, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -406,8 +406,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * sum1 = jive_bitsum(2, tmparray2);
 
-	jive_graph_export(&graph, sum0);
-	jive_graph_export(&graph, sum1);
+	graph.export_port(sum0, "dummy");
+	graph.export_port(sum1, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -432,7 +432,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 
 	jive::output * uhiproduct = jive_bituhiproduct(s0, s1);
 
-	jive_graph_export(&graph, uhiproduct);
+	graph.export_port(uhiproduct, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -460,8 +460,8 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 	jive::output * umod0 = jive_bitumod(s0, s1);
 	jive::output * umod1 = jive_bitumod(c0, c1);
 
-	jive_graph_export(&graph, umod0);
-	jive_graph_export(&graph, umod1);
+	graph.export_port(umod0, "dummy");
+	graph.export_port(umod1, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -490,8 +490,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	jive::output * uquot0 = jive_bituquotient(s0, s1);
 	jive::output * uquot1 = jive_bituquotient(c0, c1);
 
-	jive_graph_export(&graph, uquot0);
-	jive_graph_export(&graph, uquot1);
+	graph.export_port(uquot0, "dummy");
+	graph.export_port(uquot1, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -522,8 +522,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	jive::output * tmparray2[] = {c0, c1};
 	jive::output * xor1 = jive_bitxor(2, tmparray2);
 
-	jive_graph_export(&graph, xor0);
-	jive_graph_export(&graph, xor1);
+	graph.export_port(xor0, "dummy");
+	graph.export_port(xor1, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -569,10 +569,10 @@ static int types_bitstring_comparison_test_bitequal(void)
 	jive::output * equal2 = jive_bitequal(c0, c1);
 	jive::output * equal3 = jive_bitequal(c0, c2);
 
-	jive_graph_export(&graph, equal0);
-	jive_graph_export(&graph, equal1);
-	jive_graph_export(&graph, equal2);
-	jive_graph_export(&graph, equal3);
+	graph.export_port(equal0, "dummy");
+	graph.export_port(equal1, "dummy");
+	graph.export_port(equal2, "dummy");
+	graph.export_port(equal3, "dummy");
 	
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -604,10 +604,10 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	jive::output * nequal2 = jive_bitnotequal(c0, c1);
 	jive::output * nequal3 = jive_bitnotequal(c0, c2);
 
-	jive_graph_export(&graph, nequal0);
-	jive_graph_export(&graph, nequal1);
-	jive_graph_export(&graph, nequal2);
-	jive_graph_export(&graph, nequal3);
+	graph.export_port(nequal0, "dummy");
+	graph.export_port(nequal1, "dummy");
+	graph.export_port(nequal2, "dummy");
+	graph.export_port(nequal3, "dummy");
 	
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -641,11 +641,11 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	jive::output * sgreater3 = jive_bitsgreater(s0, c2);
 	jive::output * sgreater4 = jive_bitsgreater(c3, s1);
 
-	jive_graph_export(&graph, sgreater0);
-	jive_graph_export(&graph, sgreater1);
-	jive_graph_export(&graph, sgreater2);
-	jive_graph_export(&graph, sgreater3);
-	jive_graph_export(&graph, sgreater4);
+	graph.export_port(sgreater0, "dummy");
+	graph.export_port(sgreater1, "dummy");
+	graph.export_port(sgreater2, "dummy");
+	graph.export_port(sgreater3, "dummy");
+	graph.export_port(sgreater4, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -681,12 +681,12 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	jive::output * sgreatereq4 = jive_bitsgreatereq(c2, s0);
 	jive::output * sgreatereq5 = jive_bitsgreatereq(s1, c3);
 
-	jive_graph_export(&graph, sgreatereq0);
-	jive_graph_export(&graph, sgreatereq1);
-	jive_graph_export(&graph, sgreatereq2);
-	jive_graph_export(&graph, sgreatereq3);
-	jive_graph_export(&graph, sgreatereq4);
-	jive_graph_export(&graph, sgreatereq5);
+	graph.export_port(sgreatereq0, "dummy");
+	graph.export_port(sgreatereq1, "dummy");
+	graph.export_port(sgreatereq2, "dummy");
+	graph.export_port(sgreatereq3, "dummy");
+	graph.export_port(sgreatereq4, "dummy");
+	graph.export_port(sgreatereq5, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -722,11 +722,11 @@ static int types_bitstring_comparison_test_bitsless(void)
 	jive::output * sless3 = jive_bitsless(c2, s0);
 	jive::output * sless4 = jive_bitsless(s1, c3);
 
-	jive_graph_export(&graph, sless0);
-	jive_graph_export(&graph, sless1);
-	jive_graph_export(&graph, sless2);
-	jive_graph_export(&graph, sless3);
-	jive_graph_export(&graph, sless4);
+	graph.export_port(sless0, "dummy");
+	graph.export_port(sless1, "dummy");
+	graph.export_port(sless2, "dummy");
+	graph.export_port(sless3, "dummy");
+	graph.export_port(sless4, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -762,12 +762,12 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	jive::output * slesseq4 = jive_bitslesseq(s0, c2);
 	jive::output * slesseq5 = jive_bitslesseq(c3, s1);
 
-	jive_graph_export(&graph, slesseq0);
-	jive_graph_export(&graph, slesseq1);
-	jive_graph_export(&graph, slesseq2);
-	jive_graph_export(&graph, slesseq3);
-	jive_graph_export(&graph, slesseq4);
-	jive_graph_export(&graph, slesseq5);
+	graph.export_port(slesseq0, "dummy");
+	graph.export_port(slesseq1, "dummy");
+	graph.export_port(slesseq2, "dummy");
+	graph.export_port(slesseq3, "dummy");
+	graph.export_port(slesseq4, "dummy");
+	graph.export_port(slesseq5, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -803,11 +803,11 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	jive::output * ugreater3 = jive_bitugreater(s0, c2);
 	jive::output * ugreater4 = jive_bitugreater(c3, s1);
 
-	jive_graph_export(&graph, ugreater0);
-	jive_graph_export(&graph, ugreater1);
-	jive_graph_export(&graph, ugreater2);
-	jive_graph_export(&graph, ugreater3);
-	jive_graph_export(&graph, ugreater4);
+	graph.export_port(ugreater0, "dummy");
+	graph.export_port(ugreater1, "dummy");
+	graph.export_port(ugreater2, "dummy");
+	graph.export_port(ugreater3, "dummy");
+	graph.export_port(ugreater4, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -843,12 +843,12 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	jive::output * ugreatereq4 = jive_bitugreatereq(c2, s0);
 	jive::output * ugreatereq5 = jive_bitugreatereq(s1, c3);
 
-	jive_graph_export(&graph, ugreatereq0);
-	jive_graph_export(&graph, ugreatereq1);
-	jive_graph_export(&graph, ugreatereq2);
-	jive_graph_export(&graph, ugreatereq3);
-	jive_graph_export(&graph, ugreatereq4);
-	jive_graph_export(&graph, ugreatereq5);
+	graph.export_port(ugreatereq0, "dummy");
+	graph.export_port(ugreatereq1, "dummy");
+	graph.export_port(ugreatereq2, "dummy");
+	graph.export_port(ugreatereq3, "dummy");
+	graph.export_port(ugreatereq4, "dummy");
+	graph.export_port(ugreatereq5, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -884,11 +884,11 @@ static int types_bitstring_comparison_test_bituless(void)
 	jive::output * uless3 = jive_bituless(c2, s0);
 	jive::output * uless4 = jive_bituless(s1, c3);
 
-	jive_graph_export(&graph, uless0);
-	jive_graph_export(&graph, uless1);
-	jive_graph_export(&graph, uless2);
-	jive_graph_export(&graph, uless3);
-	jive_graph_export(&graph, uless4);
+	graph.export_port(uless0, "dummy");
+	graph.export_port(uless1, "dummy");
+	graph.export_port(uless2, "dummy");
+	graph.export_port(uless3, "dummy");
+	graph.export_port(uless4, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -924,12 +924,12 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	jive::output * ulesseq4 = jive_bitulesseq(s0, c2);
 	jive::output * ulesseq5 = jive_bitulesseq(c3, s1);
 
-	jive_graph_export(&graph, ulesseq0);
-	jive_graph_export(&graph, ulesseq1);
-	jive_graph_export(&graph, ulesseq2);
-	jive_graph_export(&graph, ulesseq3);
-	jive_graph_export(&graph, ulesseq4);
-	jive_graph_export(&graph, ulesseq5);
+	graph.export_port(ulesseq0, "dummy");
+	graph.export_port(ulesseq1, "dummy");
+	graph.export_port(ulesseq2, "dummy");
+	graph.export_port(ulesseq3, "dummy");
+	graph.export_port(ulesseq4, "dummy");
+	graph.export_port(ulesseq5, "dummy");
 
 	jive_graph_prune(&graph);
 	jive_view(&graph, stdout);
@@ -1054,7 +1054,7 @@ static int types_bitstring_test_normalize(void)
 	jive_node * lambda_tail = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node();
 	jive_node * lambda_head = dynamic_cast<jive::output*>(lambda_tail->input(0)->origin())->node();
 	jive::output * arg = lambda_head->output(1);
-	jive_graph_export(&graph, lambda_node->output(0));
+	graph.export_port(lambda_node->output(0), "dummy");
 	
 	sum_nf->set_mutable(true);
 	graph.normalize();

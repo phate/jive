@@ -49,7 +49,7 @@ static int test_main(void)
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},
 		{&bits32});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	jive_view(&graph, stdout);
 

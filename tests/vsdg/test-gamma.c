@@ -36,7 +36,7 @@ test_main(void)
 	//create normal gamma
 	jive::output * pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 	result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
-	jive_graph_export(&graph, result[0]);
+	graph.export_port(result[0], "dummy");
 	assert(result[0]->node()->operation() == jive::gamma_op(3));
 
 	jive_view(&graph, stdout);

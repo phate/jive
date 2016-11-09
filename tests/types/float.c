@@ -21,7 +21,7 @@ types_float_arithmetic_test_fltdifference(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * sub = jive_fltdifference(s0, s1);
 
-	jive_graph_export(&graph, sub);
+	graph.export_port(sub, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -42,7 +42,7 @@ types_float_arithmetic_test_fltnegate(void)
 	jive::output * s0 = jive_fltsymbolicconstant(&graph, "s0");
 	jive::output * neg = jive_fltnegate(s0);
 
-	jive_graph_export(&graph, neg);
+	graph.export_port(neg, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -64,7 +64,7 @@ static int types_float_arithmetic_test_fltproduct(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * mul = jive_fltproduct(s0, s1);
 
-	jive_graph_export(&graph, mul);
+	graph.export_port(mul, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -85,7 +85,7 @@ static int types_float_arithmetic_test_fltquotient(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * div = jive_fltquotient(s0, s1);
 
-	jive_graph_export(&graph, div);
+	graph.export_port(div, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -106,7 +106,7 @@ static int types_float_arithmetic_test_fltsum(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * add = jive_fltsum(s0, s1);
 
-	jive_graph_export(&graph, add);
+	graph.export_port(add, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -127,7 +127,7 @@ static int types_float_comparison_test_fltequal(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * equal = jive_fltequal(s0, s1);
 
-	jive_graph_export(&graph, equal);
+	graph.export_port(equal, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -148,7 +148,7 @@ static int types_float_comparison_test_fltgreater(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * greater = jive_fltgreater(s0, s1);
 
-	jive_graph_export(&graph, greater);
+	graph.export_port(greater, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -169,7 +169,7 @@ static int types_float_comparison_test_fltgreatereq(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * geq = jive_fltgreatereq(s0, s1);
 
-	jive_graph_export(&graph, geq);
+	graph.export_port(geq, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -190,7 +190,7 @@ static int types_float_comparison_test_fltless(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * less = jive_fltless(s0, s1);
 
-	jive_graph_export(&graph, less);
+	graph.export_port(less, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -211,7 +211,7 @@ static int types_float_comparison_test_fltlesseq(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * lesseq = jive_fltlesseq(s0, s1);
 
-	jive_graph_export(&graph, lesseq);
+	graph.export_port(lesseq, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -233,7 +233,7 @@ types_float_comparison_test_fltnotequal(void)
 	jive::output * s1 = jive_fltsymbolicconstant(&graph, "s1");
 	jive::output * neq = jive_fltnotequal(s0, s1);
 
-	jive_graph_export(&graph, neq);
+	graph.export_port(neq, "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);

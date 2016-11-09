@@ -82,7 +82,7 @@ test_fib_iter(struct jive_graph * graph)
 	using namespace jive::evaluator;
 
 	jive::output * fib_iter = setup_fib_iter(graph);
-	jive_graph_export(graph, fib_iter, "fib_iter");
+	graph->export_port(fib_iter, "fib_iter");
 
 	std::unique_ptr<const literal> result;
 
@@ -173,7 +173,7 @@ test_fib_rec(struct jive_graph * graph)
 	using namespace jive::evaluator;
 
 	jive::output * fib_rec = setup_fib_rec(graph);
-	jive_graph_export(graph, fib_rec, "fib_rec");
+	graph->export_port(fib_rec, "fib_rec");
 
 	jive_view(graph, stdout);
 
@@ -235,7 +235,7 @@ test_loadstore(struct jive_graph * graph)
 
 	jive::output * f = jive_lambda_end(lambda, 1, &types[0], &state);
 
-	jive_graph_export(graph, f, "loadstore");
+	graph->export_port(f, "loadstore");
 
 	jive_view(graph, stdout);
 

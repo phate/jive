@@ -77,7 +77,7 @@ static int test_main(void)
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	jive_node_address_transform(cont3->node(), &mapper);
 	jive_node_address_transform(memberof->node(), &mapper);

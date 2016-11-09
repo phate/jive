@@ -448,7 +448,7 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 
 	JIVE_DEBUG_ASSERT(exports.size() == names.size());
 	for (size_t n = 0; n < exports.size(); n++)
-		jive_graph_export(graph, exports[n], names[n]);
+		graph->export_port(exports[n], names[n]);
 }
 
 void

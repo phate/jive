@@ -33,7 +33,7 @@ test_main(void)
 	jive_lambda * lambda = jive_lambda_begin(graph.root(), 1, &addrptr, tmparray0);
 	jive::output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
-	jive_graph_export(&graph, fct, "fct");
+	graph.export_port(fct, "fct");
 
 	jive_view(&graph, stdout);
 

@@ -46,7 +46,7 @@ static int _test_rcdgroup(void)
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&rcdtype, &rcdtype_empty}, {g0, g1}, {&bits8});
 
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);
@@ -88,7 +88,7 @@ static int _test_rcdselect()
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&bits16, &bits16, &bits32, &bits8}, {s0, s1, s2, s3}, {&bits8});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
 	jive_graph_prune(&graph);

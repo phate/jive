@@ -43,7 +43,7 @@ static int test_main(void)
 	jive::output * res = jive_bituquotient(sum1, sum2);
 	jive_subroutine_simple_set_result(subroutine, 0, res);
 	
-	jive_graph_export(&graph, jive_subroutine_end(subroutine)->output(0));
+	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
 	
 	jive_view(&graph, stdout);
 	

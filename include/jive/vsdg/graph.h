@@ -83,6 +83,13 @@ public:
 	jive::gate *
 	create_gate(const jive::base::type & type, const std::string & name);
 
+	inline jive::input *
+	export_port(jive::oport * operand, const std::string & name)
+	{
+		jive::gate * gate = create_gate(operand->type(), name);
+		return root()->bottom()->add_input(gate, operand);
+	}
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -123,20 +130,6 @@ private:
 	jive::region * root_;
 	jive::node_normal_form_hash node_normal_forms_;
 };
-
-JIVE_EXPORTED_INLINE void
-jive_graph_export(struct jive_graph * self, jive::output * operand, const std::string & name)
-{
-	jive::gate * gate = self->create_gate(operand->type(), name);
-	self->root()->bottom()->add_input(gate, operand);
-}
-
-JIVE_EXPORTED_INLINE void
-jive_graph_export(struct jive_graph * self, jive::output * operand)
-{
-	//FIXME: this function should be removed
-	jive_graph_export(self, operand, "dummy");
-}
 
 void
 jive_graph_prune(jive_graph * self);

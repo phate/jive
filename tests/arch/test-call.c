@@ -38,7 +38,7 @@ static int test_main(void)
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&bits16, &addr, &addr}, {call->output(0), call->output(1), call->output(2)}, {&addr});
-	jive_graph_export(&graph, bottom->output(0));
+	graph.export_port(bottom->output(0), "dummy");
 
 	jive_view(&graph, stdout);
 
