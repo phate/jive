@@ -138,10 +138,9 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 	jive_graph * graph = enter->graph();
 
 	jive_phi_fixvar fixvar;
-	fixvar.gate = jive_graph_create_gate(
-		graph,
-		jive::detail::strfmt("fix_", enter, "_", state->fixvars.size()),
-		*type);
+	fixvar.gate = graph->create_gate(
+		*type,
+		jive::detail::strfmt("fix_", enter, "_", state->fixvars.size()));
 	fixvar.value = enter->add_output(fixvar.gate);
 	state->fixvars.push_back(fixvar);
 

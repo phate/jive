@@ -204,10 +204,9 @@ lambda_dep_add(jive_lambda * self, jive::output * value)
 	jive_graph * graph = self->region->graph();
 
 	jive::fct::lambda_dep depvar;
-	jive::gate * gate = jive_graph_create_gate(
-		graph,
-		jive::detail::strfmt("dep_", enter, "_", self->depvars.size()),
-		value->type());
+	jive::gate * gate = graph->create_gate(
+		value->type(),
+		jive::detail::strfmt("dep_", enter, "_", self->depvars.size()));
 	depvar.input = enter->add_input(gate, value);
 	depvar.output = enter->add_output(gate);
 	self->depvars.push_back(depvar);
@@ -236,7 +235,7 @@ jive_lambda_begin(
 
 	size_t n;
 	for (n = 0; n < narguments; n++) {
-		jive::gate * gate = jive_graph_create_gate(graph, argument_names[n], *argument_types[n]);
+		jive::gate * gate = graph->create_gate(*argument_types[n], argument_names[n]);
 		lambda->arguments[n] = lambda->region->top()->add_output(gate);
 	}
 
@@ -257,7 +256,7 @@ jive_lambda_end(jive_lambda * self,
 	for (n = 0; n < nresults; n++) {
 		char gate_name[80];
 		snprintf(gate_name, sizeof(gate_name), "res_%p_%zd", leave, n);
-		jive::gate * gate = jive_graph_create_gate(graph, gate_name, *result_types[n]);
+		jive::gate * gate = graph->create_gate(*result_types[n], gate_name);
 		leave->add_input(gate, results[n]);
 	}
 

@@ -162,10 +162,12 @@ jive_gamma_create(
 	jive_node * gamma = jive::gamma_op(nalternatives).create_node(region, arguments);
 	
 	for (size_t n = 0; n < nvalues; n++) {
-		jive::gate * gate_head = jive_graph_create_gate(
-			region->graph(), jive::detail::strfmt("head_", gamma, "_", n), *types[n]);
-		jive::gate * gate_tail = jive_graph_create_gate(
-			region->graph(), jive::detail::strfmt("gamma_", gamma, "_", n), *types[n]);
+		jive::gate * gate_head = region->graph()->create_gate(
+			*types[n],
+			jive::detail::strfmt("head_", gamma, "_", n));
+		jive::gate * gate_tail = region->graph()->create_gate(
+			*types[n],
+			jive::detail::strfmt("gamma_", gamma, "_", n));
 
 		for (size_t i = 0; i < nalternatives; i++) {
 			jive::output * tmp = static_cast<jive::output*>(arguments[i]);

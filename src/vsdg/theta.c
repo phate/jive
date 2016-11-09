@@ -128,8 +128,9 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 	const jive::base::type * type = &pre_value->type();
 	state->loopvars.resize(state->loopvars.size()+1);
 	
-	state->loopvars[index].gate = jive_graph_create_gate(
-		graph, jive::detail::strfmt("loopvar_", head, "_", index), *type);
+	state->loopvars[index].gate = graph->create_gate(
+		*type,
+		jive::detail::strfmt("loopvar_", head, "_", index));
 	head->add_input(state->loopvars[index].gate, pre_value);
 	state->loopvars[index].value = head->add_output(state->loopvars[index].gate);
 	

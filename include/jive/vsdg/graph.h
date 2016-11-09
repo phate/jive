@@ -80,6 +80,9 @@ public:
 	bool
 	has_active_traversers() const noexcept;
 
+	jive::gate *
+	create_gate(const jive::base::type & type, const std::string & name);
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -121,13 +124,10 @@ private:
 	jive::node_normal_form_hash node_normal_forms_;
 };
 
-jive::gate *
-jive_graph_create_gate(jive_graph * self, const std::string & name, const jive::base::type & type);
-
 JIVE_EXPORTED_INLINE void
 jive_graph_export(struct jive_graph * self, jive::output * operand, const std::string & name)
 {
-	jive::gate * gate = jive_graph_create_gate(self, name.c_str(), operand->type());
+	jive::gate * gate = self->create_gate(operand->type(), name);
 	self->root()->bottom()->add_input(gate, operand);
 }
 

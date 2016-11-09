@@ -49,7 +49,7 @@ jive_resource_class_create_gate(const jive_resource_class * self, jive_graph * g
 	const char * name)
 {
 	const jive::base::type * type = jive_resource_class_get_type(self);
-	jive::gate * gate = jive_graph_create_gate(graph, name, *type);
+	jive::gate * gate = graph->create_gate(*type, name);
 	gate->required_rescls = self;
 	return gate;
 }

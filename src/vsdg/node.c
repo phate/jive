@@ -682,7 +682,7 @@ jive_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = jive_graph_create_gate(region->graph(), gate->name(), gate->type());
+				target_gate = region->graph()->create_gate(gate->type(), gate->name());
 				target_gate->required_rescls = gate->required_rescls;
 				smap.insert(gate, target_gate);
 			}
@@ -697,7 +697,7 @@ jive_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = jive_graph_create_gate(region->graph(), gate->name(), gate->type());
+				target_gate = region->graph()->create_gate(gate->type(), gate->name());
 				target_gate->required_rescls = gate->required_rescls;
 				smap.insert(gate, target_gate);
 			}

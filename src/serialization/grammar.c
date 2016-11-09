@@ -532,7 +532,7 @@ jive_deserialize_gateexpr(jive_serialization_driver * self,
 	if (!jive_deserialize_type(self, is, &type))
 		return false;
 
-	*gate = jive_graph_create_gate(graph, name, *type);
+	*gate = graph->create_gate(*type, name);
 	(*gate)->required_rescls = rescls;
 
 	delete type;

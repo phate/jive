@@ -133,8 +133,8 @@ jive_subroutine_begin(
 				sig.passthroughs[n].rescls, graph, sig.passthroughs[n].name.c_str());
 		} else {
 			jive::mem::type memory_type;
-			sub.builder_state->passthroughs[n].gate = jive_graph_create_gate(graph,
-				sig.passthroughs[n].name.c_str(), memory_type);
+			sub.builder_state->passthroughs[n].gate = graph->create_gate(memory_type,
+				sig.passthroughs[n].name.c_str());
 		}
 		sub.builder_state->passthroughs[n].gate->may_spill = sig.passthroughs[n].may_spill;
 		sub.builder_state->passthroughs[n].output = enter->add_output(

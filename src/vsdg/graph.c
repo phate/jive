@@ -121,6 +121,12 @@ jive_graph::has_active_traversers() const noexcept
 	return false;
 }
 
+jive::gate *
+jive_graph::create_gate(const jive::base::type & type, const std::string & name)
+{
+	return new jive::gate(this, name.c_str(), type);
+}
+
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 {
@@ -154,10 +160,4 @@ jive_graph_prune(jive_graph * self)
 	jive::region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(self->root()->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
-}
-
-jive::gate *
-jive_graph_create_gate(jive_graph * self, const std::string & name, const jive::base::type & type)
-{
-	return new jive::gate(self, name.c_str(), type);
 }
