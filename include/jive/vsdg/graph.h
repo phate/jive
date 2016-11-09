@@ -88,9 +88,7 @@ public:
 	} gates;
 	
 	std::vector<jive_tracker_slot_reservation> tracker_slots;
-	
-	jive::node_normal_form_hash new_node_normal_forms;
-	
+
 	/* FIXME: notifiers should become private, but need to turn more things
 	 * into classes first */
 	jive::notifier<jive::region *> on_region_create;
@@ -117,6 +115,7 @@ public:
 private:
 	bool normalized_;
 	jive::region * root_;
+	jive::node_normal_form_hash node_normal_forms_;
 };
 
 jive::gate *

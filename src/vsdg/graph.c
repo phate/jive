@@ -94,8 +94,8 @@ jive_graph::normalize()
 jive::node_normal_form *
 jive_graph::node_normal_form(const std::type_info & type) noexcept
 {
-	auto i = new_node_normal_forms.find(std::type_index(type));
-	if (i != new_node_normal_forms.end())
+	auto i = node_normal_forms_.find(std::type_index(type));
+	if (i != node_normal_forms_.end())
 		return i.ptr();
 
 	const auto cinfo = dynamic_cast<const abi::__si_class_type_info *>(&type);
@@ -105,7 +105,7 @@ jive_graph::node_normal_form(const std::type_info & type) noexcept
 		jive::node_normal_form::create(type, parent_normal_form, this));
 
 	jive::node_normal_form * result = nf.get();
-	new_node_normal_forms.insert(std::move(nf));
+	node_normal_forms_.insert(std::move(nf));
 
 	return result;
 }
