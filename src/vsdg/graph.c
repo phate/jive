@@ -68,7 +68,6 @@ jive_graph::jive_graph()
 {
 	bottom.first = bottom.last = 0;
 	gates.first = gates.last = 0;
-	resources_fully_assigned = false;
 	jive::graph_tail_operation().create_node(root(), {});
 }
 

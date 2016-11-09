@@ -481,14 +481,12 @@ jive_node::jive_node(
 		region_top_node_list.prev = region_top_node_list.next = nullptr;
 
 		for (size_t n = 0; n < operation_->narguments(); n++) {
-			JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
 			inputs_.push_back(new jive::input(this, n, operands[n], operation_->argument_type(n)));
 			depth_ = std::max(dynamic_cast<jive::output*>(operands[n])->node()->depth()+1, depth_);
 		}
 	}
 
 	for (size_t n = 0; n < operation_->nresults(); n++) {
-		JIVE_DEBUG_ASSERT(!graph_->resources_fully_assigned);
 		outputs_.push_back(new jive::output(this, n, operation_->result_type(n)));
 	}
 
@@ -532,7 +530,6 @@ jive_node::~jive_node()
 jive::input *
 jive_node::add_input(const jive::base::type * type, jive::oport * origin)
 {
-	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::input * input = new jive::input(this, inputs_.size(), origin, *type);
 
 	if (inputs_.size() == 0)
@@ -553,7 +550,6 @@ jive_node::add_input(const jive::base::type * type, jive::oport * origin)
 jive::input *
 jive_node::add_input(jive::gate * gate, jive::oport * origin)
 {
-	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::input * input = new jive::input(this, inputs_.size(), origin, gate);
 
 	if (inputs_.size() == 0)
@@ -574,7 +570,6 @@ jive_node::add_input(jive::gate * gate, jive::oport * origin)
 jive::input *
 jive_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
 {
-	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::input * input = new jive::input(this, inputs_.size(), origin, rescls);
 
 	if (inputs_.size() == 0)
@@ -626,7 +621,6 @@ jive_node::remove_output(size_t index)
 jive::output *
 jive_node::add_output(const jive::base::type * type)
 {
-	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::output * output = new jive::output(this, outputs_.size(), *type);
 	outputs_.push_back(output);
 
@@ -638,7 +632,6 @@ jive_node::add_output(const jive::base::type * type)
 jive::output *
 jive_node::add_output(jive::gate * gate)
 {
-	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::output * output = new jive::output(this, outputs_.size(), gate);
 	outputs_.push_back(output);
 
@@ -650,7 +643,6 @@ jive_node::add_output(jive::gate * gate)
 jive::output *
 jive_node::add_output(const struct jive_resource_class * rescls)
 {
-	JIVE_DEBUG_ASSERT(!graph()->resources_fully_assigned);
 	jive::output * output = new jive::output(this, outputs_.size(), rescls);
 	outputs_.push_back(output);
 

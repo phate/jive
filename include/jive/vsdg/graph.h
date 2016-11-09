@@ -84,8 +84,6 @@ public:
 		jive::gate * last;
 	} gates;
 	
-	bool resources_fully_assigned;
-
 	std::vector<jive_tracker_slot_reservation> tracker_slots;
 	
 	jive::node_normal_form_hash new_node_normal_forms;
