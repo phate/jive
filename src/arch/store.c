@@ -105,8 +105,7 @@ jive_store_by_address_create(jive::output * address,
 	size_t nstates, jive::output * const istates[])
 {
 	jive_graph * graph = address->node()->graph();
-	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		address->node()->graph(), typeid(jive::store_op));
+	const auto nf = address->node()->graph()->node_normal_form(typeid(jive::store_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
@@ -125,8 +124,7 @@ jive_store_by_bitstring_create(jive::output * address, size_t nbits,
 	size_t nstates, jive::output * const istates[])
 {
 	jive_graph * graph = address->node()->graph();
-	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(
-		address->node()->graph(), typeid(jive::store_op));
+	const auto nf = address->node()->graph()->node_normal_form(typeid(jive::store_op));
 
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {

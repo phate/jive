@@ -32,8 +32,8 @@ static int test_main(void)
 	
 	/* inhibit implicit normalization */
 	jive_graph gr1;
-	jive_graph_get_nodeclass_form(&gr1, typeid(jive::operation))->set_mutable(false);
-	
+	gr1.node_normal_form(typeid(jive::operation))->set_mutable(false);
+
 	jive::output * a = jive_bitconstant(gr1.root(), 8, "01010101");
 	jive::output * b = jive_bitslice(a, 2, 6);
 	jive::output * tmparray0[] = {b, b};

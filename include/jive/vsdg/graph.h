@@ -74,6 +74,9 @@ public:
 	std::unique_ptr<jive_graph>
 	copy() const;
 
+	jive::node_normal_form *
+	node_normal_form(const std::type_info & type) noexcept;
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -138,10 +141,5 @@ jive_graph_prune(jive_graph * self);
 
 bool
 jive_graph_has_active_traversers(const jive_graph * self);
-
-jive::node_normal_form *
-jive_graph_get_nodeclass_form(
-	jive_graph * self,
-	const std::type_info & type);
 
 #endif

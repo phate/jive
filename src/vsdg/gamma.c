@@ -210,9 +210,8 @@ jive_gamma(jive::output * predicate,
 		return alternatives[0];
 
 	jive_graph * graph = predicate->node()->graph();
-	jive::gamma_normal_form * nf = static_cast<jive::gamma_normal_form *>(
-		jive_graph_get_nodeclass_form(graph, typeid(jive::gamma_op)));
-	
+	auto nf = static_cast<jive::gamma_normal_form*>(graph->node_normal_form(typeid(jive::gamma_op)));
+
 	if (nf->get_mutable() && nf->get_predicate_reduction()) {
 		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation()))
 				return alternatives[op->value().alternative()];

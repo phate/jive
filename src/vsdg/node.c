@@ -776,7 +776,7 @@ jive_node_create_normalized(
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments)
 {
-	jive::node_normal_form * nf = jive_graph_get_nodeclass_form(region->graph(), typeid(op));
+	auto nf = region->graph()->node_normal_form(typeid(op));
 	return nf->normalized_create(region, op, arguments);
 }
 
@@ -827,8 +827,7 @@ jive_node_cse_create(
 bool
 jive_node_normalize(jive_node * self)
 {
-	const jive::node_normal_form * nf = jive_graph_get_nodeclass_form(self->graph(),
-		typeid(self->operation()));
+	auto nf = self->graph()->node_normal_form(typeid(self->operation()));
 	return nf->normalize_node(self);
 }
 

@@ -1034,8 +1034,7 @@ static int types_bitstring_test_normalize(void)
 	jive::output * c0 = jive_bitconstant_unsigned(lambda->region, 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(lambda->region, 32, 4);
 	
-	jive::node_normal_form * sum_nf = jive_graph_get_nodeclass_form(
-		&graph, typeid(jive::bits::add_op));
+	auto  sum_nf = graph.node_normal_form(typeid(jive::bits::add_op));
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
 	jive::output * tmparray1[] = {lambda->arguments[0], c0};

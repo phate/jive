@@ -85,12 +85,29 @@ jive_graph::copy() const
 void
 jive_graph::normalize()
 {
-	for (auto node : jive::topdown_traverser(this)) {
-		auto nf = jive_graph_get_nodeclass_form(this, typeid(node->operation()));
-		nf->normalize_node(node);
-	}
+	for (auto node : jive::topdown_traverser(this))
+		node_normal_form(typeid(node->operation()))->normalize_node(node);
 
 	normalized_ = true;
+}
+
+jive::node_normal_form *
+jive_graph::node_normal_form(const std::type_info & type) noexcept
+{
+	auto i = new_node_normal_forms.find(std::type_index(type));
+	if (i != new_node_normal_forms.end())
+		return i.ptr();
+
+	const auto cinfo = dynamic_cast<const abi::__si_class_type_info *>(&type);
+	auto parent_normal_form = cinfo ? node_normal_form(*cinfo->__base_type) : nullptr;
+
+	std::unique_ptr<jive::node_normal_form> nf(
+		jive::node_normal_form::create(type, parent_normal_form, this));
+
+	jive::node_normal_form * result = nf.get();
+	new_node_normal_forms.insert(std::move(nf));
+
+	return result;
 }
 
 jive_tracker_slot
@@ -134,27 +151,6 @@ jive_graph_prune(jive_graph * self)
 	jive::region * subregion, * next;
 	JIVE_LIST_ITERATE_SAFE(self->root()->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
-}
-
-jive::node_normal_form *
-jive_graph_get_nodeclass_form(
-	jive_graph * self,
-	const std::type_info & type)
-{
-	auto i = self->new_node_normal_forms.find(std::type_index(type));
-	if (i != self->new_node_normal_forms.end()) {
-		return i.ptr();
-	}
-
-	const auto* cinfo = dynamic_cast<const abi::__si_class_type_info *>(&type);
-	jive::node_normal_form * parent_normal_form =
-		cinfo ? jive_graph_get_nodeclass_form(self, *cinfo->__base_type) : nullptr;
-
-	std::unique_ptr<jive::node_normal_form> nf(jive::node_normal_form::create(
-		type, parent_normal_form, self));
-	jive::node_normal_form * result = nf.get();
-	self->new_node_normal_forms.insert(std::move(nf));
-	return result;
 }
 
 jive::gate *

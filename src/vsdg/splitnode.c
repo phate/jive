@@ -90,8 +90,7 @@ jive_splitnode_create(jive::region * region,
 {
 	jive::split_operation op(in_class, out_class);
 	
-	jive::node_normal_form * nf =
-		jive_graph_get_nodeclass_form(region->graph(), typeid(jive::split_operation));
+	auto nf = region->graph()->node_normal_form(typeid(jive::split_operation));
 	if (nf->get_mutable() && nf->get_cse())
 		region->graph()->mark_denormalized();
 
