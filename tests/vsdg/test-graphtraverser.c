@@ -175,7 +175,7 @@ static int test_main(void)
 	
 	test_basic_traversal(&graph, n1, n2);
 	
-	assert(!jive_graph_has_active_traversers(&graph));
+	assert(!graph.has_active_traversers());
 
 	return 0;
 }

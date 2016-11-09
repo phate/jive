@@ -110,6 +110,17 @@ jive_graph::node_normal_form(const std::type_info & type) noexcept
 	return result;
 }
 
+bool
+jive_graph::has_active_traversers() const noexcept
+{
+	for (const auto & slot : tracker_slots) {
+		if (slot.in_use)
+			return true;
+	}
+
+	return false;
+}
+
 jive_tracker_slot
 jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 {
@@ -122,14 +133,6 @@ jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 	self->tracker_slots[n].in_use = true;
 	
 	return self->tracker_slots[n].slot;
-}
-
-bool
-jive_graph_has_active_traversers(const jive_graph * self)
-{
-	for (size_t n = 0; n < self->tracker_slots.size(); n++)
-		if (self->tracker_slots[n].in_use) return true;
-	return false;
 }
 
 void

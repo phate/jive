@@ -77,6 +77,9 @@ public:
 	jive::node_normal_form *
 	node_normal_form(const std::type_info & type) noexcept;
 
+	bool
+	has_active_traversers() const noexcept;
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -137,8 +140,5 @@ jive_graph_export(struct jive_graph * self, jive::output * operand)
 
 void
 jive_graph_prune(jive_graph * self);
-
-bool
-jive_graph_has_active_traversers(const jive_graph * self);
 
 #endif
