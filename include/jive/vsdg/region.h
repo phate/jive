@@ -111,6 +111,21 @@ public:
 		anchor_ = anchor;
 	}
 
+	/**
+		\brief Copy a region with substitutions
+		\param target Target region to create nodes in
+		\param substitution Operand and gate substitutions
+		\param copy_top Copy top node of region
+		\param copy_bottom Copy bottom node of region
+
+		Copies all nodes of the specified region and its
+		subregions into the target region. Substitutions
+		will be performed as specified, and the substitution
+		map will be updated as nodes are copied.
+	*/
+	void
+	copy(region * target, substitution_map & smap, bool copy_top, bool copy_bottom) const;
+
 	typedef jive::detail::intrusive_list<
 		jive_node,
 		jive_node::region_node_list_accessor
@@ -142,30 +157,6 @@ private:
 };
 
 } //namespace
-
-/**
-	\brief Copy a region with substitutions
-	\param self Region to be copied
-	\param target Target region to create nodes in
-	\param substitution Operand and gate substitutions
-	\param copy_top Copy top node of region
-	\param copy_bottom Copy bottom node of region
-	
-	Copies all nodes of the specified region and its
-	subregions into the target region. Substitutions
-	will be performed as specified, and the substitution
-	map will be updated as nodes are copied.
-	
-	@c self must be a region with uniquely determined top
-	and bottom nodes. Optionally, these nodes are copied
-	as well.
-*/
-void
-jive_region_copy_substitute(
-	const jive::region * self,
-	jive::region * target,
-	jive::substitution_map & substitution,
-	bool copy_top, bool copy_bottom);
 
 #ifdef JIVE_DEBUG
 void

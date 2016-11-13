@@ -84,68 +84,61 @@ region::contains(const jive_node * node) const noexcept
 	return false;
 }
 
-}	//namespace
-
-typedef struct jive_copy_context jive_copy_context;
-struct jive_copy_context {
-	std::vector<std::vector<const jive_node*>> depths;
-};
-
-static void
-jive_copy_context_append(jive_copy_context * self, const jive_node * node)
-{
-	if (node->depth() >= self->depths.size())
-		self->depths.resize(node->depth()+1);
-
-	self->depths[node->depth()].push_back(node);
-}
-
-static void
-pre_copy_region(
-	jive::region * target_region,
-	const jive::region * original_region,
-	jive_copy_context * copy_context,
-	jive::substitution_map & substitution,
-	bool copy_top, bool copy_bottom)
-{
-	for (auto & node : original_region->nodes) {
-		if (!copy_top && &node == original_region->top()) continue;
-		if (!copy_bottom && &node == original_region->bottom()) continue;
-		jive_copy_context_append(copy_context, &node);
-	}
-	
-	jive::region * subregion;
-	JIVE_LIST_ITERATE(original_region->subregions, subregion, region_subregions_list) {
-		jive::region * target_subregion = new jive::region(target_region, target_region->graph());
-		substitution.insert(subregion, target_subregion);
-		pre_copy_region(target_subregion, subregion, copy_context, substitution, true, true);
-	}
-}
-
 void
-jive_region_copy_substitute(
-	const jive::region * self,
-	jive::region * target,
-	jive::substitution_map & substitution,
-	bool copy_top, bool copy_bottom)
+region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_bottom) const
 {
-	jive_copy_context copy_context;
-
-	substitution.insert(self, target);
-	pre_copy_region(target, self, &copy_context, substitution, copy_top, copy_bottom);
+	std::function<void (
+		const region*,
+		region*,
+		std::vector<std::vector<const jive_node*>>&,
+		substitution_map&,
+		bool,
+		bool
+	)>
+	pre_copy_region = [&] (
+		const region * source,
+		region * target,
+		std::vector<std::vector<const jive_node*>> & context,
+		substitution_map & smap,
+		bool copy_top,
+		bool copy_bottom)
+	{
+		for (const auto & node : source->nodes) {
+			if (!copy_top && &node == source->top())
+				continue;
+			if (!copy_bottom && &node == source->bottom())
+				continue;
 	
-	for (size_t depth = 0; depth < copy_context.depths.size(); depth ++) {
-		for (size_t n = 0; n < copy_context.depths[depth].size(); n++) {
-			const jive_node * node = copy_context.depths[depth][n];
-			jive::region * target_subregion = substitution.lookup(node->region());
-			jive_node * new_node = node->copy(target_subregion, substitution);
+			if (node.depth() >= context.size())
+				context.resize(node.depth()+1);
+			context[node.depth()].push_back(&node);
+		}
+
+		jive::region * subregion;
+		JIVE_LIST_ITERATE(source->subregions, subregion, region_subregions_list) {
+			jive::region * target_subregion = new jive::region(target, target->graph());
+			smap.insert(subregion, target_subregion);
+			pre_copy_region(subregion, target_subregion, context, smap, true, true);
+		}
+	};
+
+	smap.insert(this, target);
+	std::vector<std::vector<const jive_node*>> context;
+	pre_copy_region(this, target, context, smap, copy_top, copy_bottom);
+
+	for (size_t n = 0; n < context.size(); n++) {
+		for (const auto node : context[n]) {
+			target = smap.lookup(node->region());
+			jive_node * new_node = node->copy(target, smap);
 			if (node->region()->top() == node)
-				target_subregion->set_top(new_node);
+				target->set_top(new_node);
 			if (node->region()->bottom() == node)
-				target_subregion->set_bottom(new_node);
+				target->set_bottom(new_node);
 		}
 	}
 }
+
+}	//namespace
 
 #ifdef JIVE_DEBUG
 void

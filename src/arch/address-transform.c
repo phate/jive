@@ -400,7 +400,7 @@ jive_lambda_node_address_transform(
 		map.insert(enter->output(n), parameter);
 	}
 
-	jive_region_copy_substitute(region, lambda->region, map, false, false);
+	region->copy(lambda->region, map, false, false);
 
 	size_t nresults = fcttype->nreturns();
 	jive::output * results[nresults];

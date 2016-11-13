@@ -74,11 +74,9 @@ jive_graph::jive_graph()
 std::unique_ptr<jive_graph>
 jive_graph::copy() const
 {
-	std::unique_ptr<jive_graph> graph(new jive_graph());
-
 	jive::substitution_map smap;
-	jive_region_copy_substitute(root(), graph->root(), smap, false, false);
-
+	std::unique_ptr<jive_graph> graph(new jive_graph());
+	root()->copy(graph->root(), smap, false, false);
 	return graph;
 }
 

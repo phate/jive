@@ -39,7 +39,7 @@ static int test_main(void)
 	
 	jive::region * r2 = new jive::region(graph.root(), &graph);
 	jive::substitution_map subst;
-	jive_region_copy_substitute(r1, r2, subst, true, true);
+	r1->copy(r2, subst, true, true);
 
 	jive_node * copied_top = r2->top();
 	jive_node * copied_bottom = r2->bottom();

@@ -289,7 +289,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 		substitution.insert(output, dynamic_cast<jive::output*>(apply_node->input(n+1)->origin()));
 	}
 	
-	jive_region_copy_substitute(function_region, apply_node->region(), substitution, false, false);
+	function_region->copy(apply_node->region(), substitution, false, false);
 	
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
 		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());

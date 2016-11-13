@@ -77,7 +77,7 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive_node * lambda_no
 	}
 	
 	/* transfer function body */
-	jive_region_copy_substitute(src_region, sub.region, subst, false, false);
+	src_region->copy(sub.region, subst, false, false);
 	
 	/* map all returns */
 	nvalue_returns = 0;
