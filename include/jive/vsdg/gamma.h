@@ -94,9 +94,9 @@ private:
 
 }
 
-std::vector<jive::output*>
-jive_gamma(jive::output * predicate,
+std::vector<jive::oport*>
+jive_gamma(jive::oport * predicate,
 	const std::vector<const jive::base::type*> & types,
-	const std::vector<std::vector<jive::output*>> & alternatives);
+	const std::vector<std::vector<jive::oport*>> & alternatives);
 
 #endif

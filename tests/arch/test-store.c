@@ -47,28 +47,23 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(graph.root(), {}, {},
 		{&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype});
 
-	jive::output * state = top->output(1);
-	std::vector<jive::output *> states0 = jive_store_by_address_create(
-		top->output(0), &bits32, top->output(4), 1, &state);
+	jive::oport * state = top->output(1);
+	auto states0 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1, &state);
 
-	jive::output * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
-	jive::output * group = jive_group_create(rcddecl, 3, tmparray1);
-	jive::output * tmparray2[] = {top->output(1), top->output(5)};
-	std::vector<jive::output *> states1 = jive_store_by_address_create(
-		top->output(0), &rcdtype, group, 2, tmparray2);
+	jive::oport * tmparray1[] = {top->output(2), top->output(3), top->output(4)};
+	auto group = jive_group_create(rcddecl, 3, tmparray1);
+	jive::oport * tmparray2[] = {top->output(1), top->output(5)};
+	auto states1 = jive_store_by_address_create(top->output(0), &rcdtype, group, 2, tmparray2);
 
-	jive::output * unify = jive_unify_create(&unndecl, 2, top->output(4));
-	std::vector<jive::output *> states2 = jive_store_by_address_create(
-		top->output(0), &unntype, unify, 1, &state);
+	auto unify = jive_unify_create(&unndecl, 2, top->output(4));
+	auto states2 = jive_store_by_address_create(top->output(0), &unntype, unify, 1, &state);
 
-	std::vector<jive::output *> states3 = jive_store_by_address_create(
-		top->output(6), &bits32, top->output(4), 1, &state);
-	std::vector<jive::output *> states4 = jive_store_by_address_create(
-		top->output(0), &bits32, top->output(4), 1, &states3[0]);
+	auto states3 = jive_store_by_address_create(top->output(6), &bits32, top->output(4), 1, &state);
+	auto states4 = jive_store_by_address_create(top->output(0), &bits32, top->output(4), 1,
+		&states3[0]);
 
 	unify = jive_empty_unify_create(graph.root(), &empty_unndecl);
-	std::vector<jive::output *> states5 = jive_store_by_address_create(
-		top->output(0), &empty_unntype, unify, 1, &state);
+	auto states5 = jive_store_by_address_create(top->output(0), &empty_unntype, unify, 1, &state);
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		std::vector<const jive::base::type*>(6, &memtype),
@@ -81,7 +76,8 @@ static int test_main(void)
 
 	jive_view(&graph, stderr);
 
-	assert(dynamic_cast<jive::output*>(states3[0]->node()->input(2)->origin())->node() == top);
+	assert(dynamic_cast<jive::output*>(
+		dynamic_cast<jive::output*>(states3[0])->node()->input(2)->origin())->node() == top);
 
 	return 0;
 }

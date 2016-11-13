@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitsum(const std::vector<jive::output*> & operands);
+jive::oport *
+jive_bitsum(const std::vector<jive::oport*> & operands);
 
 #endif

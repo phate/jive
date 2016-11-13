@@ -39,16 +39,16 @@ static int test_main()
 	fns[2] = jive_phi_fixvar_enter(phi, &f2type);
 
 	jive_lambda * l0 = jive_lambda_begin(phi.region, 0, NULL, NULL);
-	jive::output * lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
+	auto lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
 
 	jive_lambda * l1 = jive_lambda_begin(phi.region, 0, NULL, NULL);
-	jive::output * lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
+	auto lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
 
 	const char * tmparray1[] = {"arg"};
 	jive_lambda * l2 = jive_lambda_begin(phi.region, 1, tmparray0, tmparray1);
 	jive::fct::lambda_dep depvar = jive::fct::lambda_dep_add(l2, fns[2].value);
-	jive::output * ret = jive_apply_create(depvar.output, 1, l2->arguments)[0];
-	jive::output * lambda2 = jive_lambda_end(l2, 1, tmparray0, &ret);
+	auto ret = jive_apply_create(depvar.output, 1, l2->arguments)[0];
+	auto lambda2 = jive_lambda_end(l2, 1, tmparray0, &ret);
 
 	jive_phi_fixvar_leave(phi, fns[0].gate, lambda0);
 	jive_phi_fixvar_leave(phi, fns[1].gate, lambda1);
@@ -56,7 +56,7 @@ static int test_main()
 
 	jive_phi_end(phi, 3, fns);
 
-	jive::output * results[3] = {fns[0].value, fns[1].value, fns[2].value};
+	jive::oport * results[3] = {fns[0].value, fns[1].value, fns[2].value};
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});

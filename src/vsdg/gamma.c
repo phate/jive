@@ -141,9 +141,9 @@ register_node_normal_form(void)
 
 static jive_node *
 jive_gamma_create(
-	jive::output * predicate,
+	jive::oport * predicate,
 	const std::vector<const jive::base::type*> & types,
-	const std::vector<std::vector<jive::output*>> & alternatives)
+	const std::vector<std::vector<jive::oport*>> & alternatives)
 {
 	size_t nvalues = types.size();
 	size_t nalternatives = alternatives.size();
@@ -182,10 +182,10 @@ jive_gamma_create(
 	return gamma;
 }
 
-std::vector<jive::output *>
-jive_gamma(jive::output * predicate,
+std::vector<jive::oport *>
+jive_gamma(jive::oport * predicate,
 	const std::vector<const jive::base::type*> & types,
-	const std::vector<std::vector<jive::output*>> & alternatives)
+	const std::vector<std::vector<jive::oport*>> & alternatives)
 {
 	/*
 		FIXME: This code is supposed to be in gamma-normal-form.c and nowhere else. However,
@@ -211,15 +211,18 @@ jive_gamma(jive::output * predicate,
 	if (alternatives.size() == 1)
 		return alternatives[0];
 
-	jive_graph * graph = predicate->node()->graph();
+	jive_graph * graph = predicate->region()->graph();
 	auto nf = static_cast<jive::gamma_normal_form*>(graph->node_normal_form(typeid(jive::gamma_op)));
 
 	if (nf->get_mutable() && nf->get_predicate_reduction()) {
-		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(&predicate->node()->operation()))
+		if (auto op = dynamic_cast<const jive::ctl::constant_op*>(
+				&dynamic_cast<jive::output*>(predicate)->node()->operation()))
+		{
 				return alternatives[op->value().alternative()];
+		}
 	}
 
-	std::vector<jive::output*> results;
+	std::vector<jive::oport*> results;
 	jive_node * node = jive_gamma_create(predicate, types, alternatives);
 	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));

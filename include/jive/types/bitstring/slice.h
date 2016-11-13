@@ -85,7 +85,7 @@ private:
 	Convenience function that either creates a new slice or
 	returns the output handle of an existing slice.
 */
-jive::output *
-jive_bitslice(jive::output * operand, size_t low, size_t high);
+jive::oport *
+jive_bitslice(jive::oport * operand, size_t low, size_t high);
 
 #endif

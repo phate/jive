@@ -50,7 +50,7 @@ private:
 }
 }
 
-std::vector<jive::output *>
-jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[]);
+std::vector<jive::oport*>
+jive_apply_create(jive::oport * function, size_t narguments, jive::oport * const arguments[]);
 
 #endif

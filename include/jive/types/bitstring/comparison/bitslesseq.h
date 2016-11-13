@@ -42,7 +42,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitslesseq(jive::output * operand1, jive::output * operand2);
+jive::oport *
+jive_bitslesseq(jive::oport * operand1, jive::oport * operand2);
 
 #endif

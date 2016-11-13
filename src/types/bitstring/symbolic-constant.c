@@ -22,7 +22,7 @@ template class domain_symbol_op<jive::bits::type>;
 }
 }
 
-jive::output *
+jive::oport *
 jive_bitsymbolicconstant(jive::region * region, size_t nbits, const char * name)
 {
 	jive::bits::symbol_op op(name, jive::bits::type(nbits));

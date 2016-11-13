@@ -38,7 +38,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitshr(jive::output * operand, jive::output * shift);
+jive::oport *
+jive_bitshr(jive::oport * operand, jive::oport * shift);
 
 #endif

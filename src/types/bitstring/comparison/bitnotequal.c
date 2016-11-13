@@ -56,10 +56,10 @@ ne_op::copy() const
 }
 }
 
-jive::output *
-jive_bitnotequal(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bitnotequal(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::ne_op(type), {op1, op2})[0];
 }

@@ -32,13 +32,12 @@ static int test_main()
 	jive_node * top = jive_test_node_create(graph.root(), {}, {},
 		{&addrtype, &addrtype, &memtype, &bits32});
 
-	jive::output * state = top->output(2);
-	jive::output * load0 = jive_load_by_address_create(top->output(0), &bits32, 1, &state);
+	jive::oport * state = top->output(2);
+	auto load0 = jive_load_by_address_create(top->output(0), &bits32, 1, &state);
 
 	state = top->output(2);
-	std::vector<jive::output *> states = jive_store_by_address_create(
-		top->output(1), &bits32, top->output(3), 1, &state);
-	jive::output * load1 = jive_load_by_address_create(top->output(1), &bits32, 1, &states[0]);
+	auto states = jive_store_by_address_create(top->output(1), &bits32, top->output(3), 1, &state);
+	auto load1 = jive_load_by_address_create(top->output(1), &bits32, 1, &states[0]);
 	assert(load1 == top->output(3));
 
 	jive_node * bottom = jive_test_node_create(graph.root(),

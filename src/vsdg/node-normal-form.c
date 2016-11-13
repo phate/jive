@@ -31,7 +31,7 @@ node_normal_form::operands_are_normalized(
 	return true;
 }
 
-std::vector<jive::output *>
+std::vector<jive::oport*>
 node_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,
@@ -46,7 +46,7 @@ node_normal_form::normalized_create(
 		node = op.create_node(region, arguments);
 	}
 
-	std::vector<jive::output*> outputs;
+	std::vector<jive::oport*> outputs;
 	for (size_t n = 0; n < node->noutputs(); n++)
 		outputs.push_back(node->output(n));
 

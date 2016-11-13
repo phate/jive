@@ -97,7 +97,7 @@ load_normal_form::operands_are_normalized(
 	return node_normal_form::operands_are_normalized(op, arguments);
 }
 
-std::vector<jive::output *>
+std::vector<jive::oport*>
 load_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,

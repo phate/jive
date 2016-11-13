@@ -82,8 +82,8 @@ call_operation::copy() const
 
 jive_node *
 jive_call_by_address_node_create(jive::region * region,
-	jive::output * target_address, const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	jive::oport * target_address, const jive_calling_convention * calling_convention,
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	std::vector<jive::oport*> call_args;
@@ -109,17 +109,17 @@ jive_call_by_address_node_create(jive::region * region,
 	return op.create_node(region, call_args);
 }
 
-std::vector<jive::output*>
-jive_call_by_address_create(jive::output * target_address,
+std::vector<jive::oport*>
+jive_call_by_address_create(jive::oport * target_address,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
-	jive::region * region = target_address->node()->region();
+	jive::region * region = target_address->region();
 	jive_node * node = jive_call_by_address_node_create(region, target_address, calling_convention,
 		narguments, arguments, nreturns, return_types);
 
-	std::vector<jive::output*> results;
+	std::vector<jive::oport*> results;
 	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 
@@ -128,9 +128,9 @@ jive_call_by_address_create(jive::output * target_address,
 
 jive_node *
 jive_call_by_bitstring_node_create(jive::region * region,
-	jive::output * target_address, size_t nbits,
+	jive::oport * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	std::vector<jive::oport*> call_args;
@@ -156,17 +156,17 @@ jive_call_by_bitstring_node_create(jive::region * region,
 	return op.create_node(region, call_args);
 }
 
-std::vector<jive::output*>
-jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
+std::vector<jive::oport*>
+jive_call_by_bitstring_create(jive::oport * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const return_types[])
 {
-	jive::region * region = target_address->node()->region();
+	jive::region * region = target_address->region();
 	jive_node * node = jive_call_by_bitstring_node_create(region, target_address, nbits,
 		calling_convention, narguments, arguments, nreturns, return_types);
 
-	std::vector<jive::output*> results;
+	std::vector<jive::oport*> results;
 	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 

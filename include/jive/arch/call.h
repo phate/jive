@@ -85,27 +85,27 @@ private:
 
 struct jive_node *
 jive_call_by_address_node_create(struct jive::region * region,
-	jive::output * target_address, const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	jive::oport * target_address, const jive_calling_convention * calling_convention,
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const result_types[]);
 
-std::vector<jive::output*>
-jive_call_by_address_create(jive::output * target_address,
+std::vector<jive::oport*>
+jive_call_by_address_create(jive::oport * target_address,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const result_types[]);
 
 struct jive_node *
 jive_call_by_bitstring_node_create(struct jive::region * region,
-	jive::output * target_address, size_t nbits,
+	jive::oport * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const result_types[]);
 
-std::vector<jive::output*>
-jive_call_by_bitstring_create(jive::output * target_address, size_t nbits,
+std::vector<jive::oport*>
+jive_call_by_bitstring_create(jive::oport * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
-	size_t narguments, jive::output * const arguments[],
+	size_t narguments, jive::oport * const arguments[],
 	size_t nreturns, const jive::base::type * const result_types[]);
 
 #endif

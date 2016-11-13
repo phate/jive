@@ -27,22 +27,22 @@ template class domain_const_op<
 
 namespace ctl {
 
-jive::output *
+jive::oport *
 match(
 	size_t nbits,
 	const std::map<uint64_t, uint64_t> & mapping,
 	uint64_t default_alternative,
 	size_t nalternatives,
-	jive::output * operand)
+	jive::oport * operand)
 {
 	match_op op(nbits, mapping, default_alternative, nalternatives);
-	return jive_node_create_normalized(operand->node()->region(), op, {operand})[0];
+	return jive_node_create_normalized(operand->region(), op, {operand})[0];
 }
 
 }
 }
 
-jive::output *
+jive::oport *
 jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative)
 {
 	jive::ctl::constant_op op(jive::ctl::value_repr(alternative, nalternatives));

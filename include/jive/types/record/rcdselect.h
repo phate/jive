@@ -68,7 +68,7 @@ private:
 }
 }
 
-jive::output *
-jive_select_create(size_t element, jive::output * argument);
+jive::oport *
+jive_select_create(size_t element, jive::oport * argument);
 
 #endif

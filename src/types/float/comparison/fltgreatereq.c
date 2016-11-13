@@ -19,8 +19,8 @@ const char fltgreatereq_name[] = "FLTGREATEREQ";
 }
 }
 
-jive::output *
-jive_fltgreatereq(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltgreatereq(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::ge_op::normalized_create(arg1, arg2);
 }

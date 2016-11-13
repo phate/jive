@@ -51,7 +51,7 @@ sizeof_op::copy() const
 
 }
 
-jive::output *
+jive::oport *
 jive_sizeof_create(jive::region * region, const jive::value::type * type)
 {
 	jive::sizeof_op op(*type);
@@ -66,6 +66,6 @@ jive_sizeof_node_reduce(const jive_node * node, jive::memlayout_mapper * mapper)
 	const jive::dataitem_memlayout & layout = mapper->map_value_type(
 		static_cast<const jive::sizeof_op &>(node->operation()).type());
 	
-	jive::output * new_node = jive_bitconstant_unsigned(node->region(), 32, layout.size());
+	auto new_node = jive_bitconstant_unsigned(node->region(), 32, layout.size());
 	node->output(0)->replace(new_node);
 }

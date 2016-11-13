@@ -19,8 +19,8 @@ const char fltequal_name[] = "FLTEQUAL";
 }
 }
 
-jive::output *
-jive_fltequal(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltequal(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::eq_op::normalized_create(arg1, arg2);
 }

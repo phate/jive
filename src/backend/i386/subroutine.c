@@ -66,13 +66,15 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive_node * lambda_no
 		
 		jive::output * substitute;
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
-			substitute = jive_subroutine_simple_get_argument(sub, nvalue_parameters ++);
+			substitute = dynamic_cast<jive::output*>(
+				jive_subroutine_simple_get_argument(sub, nvalue_parameters ++));
 		} else {
 			substitute = sub.region->top()->add_output(&original->type());
 		}
 		
 		if(dynamic_cast<const jive::addr::type*>(&original->type()))
-			substitute = jive_bitstring_to_address_create(substitute, 32, &original->type());
+			substitute = dynamic_cast<jive::output*>(
+				jive_bitstring_to_address_create(substitute, 32, &original->type()));
 		subst.insert(original, substitute);
 	}
 	
@@ -88,7 +90,8 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive_node * lambda_no
 		
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			if(dynamic_cast<const jive::addr::type*>(&original->type()))
-				retval = jive_address_to_bitstring_create(retval, 32, &retval->type());
+				retval = dynamic_cast<jive::output*>(
+					jive_address_to_bitstring_create(retval, 32, &retval->type()));
 			jive_subroutine_simple_set_result(sub, nvalue_returns ++, retval);
 		} else {
 			/* FIXME: state returns currently unsupported */

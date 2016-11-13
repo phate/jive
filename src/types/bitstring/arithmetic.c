@@ -596,141 +596,140 @@ xor_op::copy() const
 }
 }
 
-jive::output *
-jive_bitand(const std::vector<jive::output*> & operands)
+jive::oport *
+jive_bitand(const std::vector<jive::oport*> & operands)
 {
-	jive::region * region = operands[0]->node()->region();
+	jive::region * region = operands[0]->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::and_op(type),
 		{operands.begin(), operands.end()})[0];
 }
 
-jive::output *
-jive_bitashr(jive::output * operand, jive::output * shift)
+jive::oport *
+jive_bitashr(jive::oport * operand, jive::oport * shift)
 {
-	jive::region * region = operand->node()->region();
+	jive::region * region = operand->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operand->type());
 	return jive_node_create_normalized(region, jive::bits::ashr_op(type), {operand, shift})[0];
 }
 
-jive::output *
-jive_bitdifference(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bitdifference(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::sub_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bitnegate(jive::output * arg)
+jive::oport *
+jive_bitnegate(jive::oport * arg)
 {
 	const auto & type = dynamic_cast<const jive::bits::type &>(arg->type());
-	return jive_node_create_normalized(arg->node()->region(), jive::bits::neg_op(type), {arg})[0];
+	return jive_node_create_normalized(arg->region(), jive::bits::neg_op(type), {arg})[0];
 }
 
-jive::output *
-jive_bitnot(jive::output * arg)
+jive::oport *
+jive_bitnot(jive::oport * arg)
 {
 	const auto & type = dynamic_cast<const jive::bits::type &>(arg->type());
-	return jive_node_create_normalized(arg->node()->region(), jive::bits::not_op(type), {arg})[0];
+	return jive_node_create_normalized(arg->region(), jive::bits::not_op(type), {arg})[0];
 }
 
-jive::output *
-jive_bitor(const std::vector<jive::output*> & operands)
+jive::oport *
+jive_bitor(const std::vector<jive::oport*> & operands)
 {
-	jive::region * region = operands[0]->node()->region();
+	jive::region * region = operands[0]->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::or_op(type),
 		{operands.begin(), operands.end()})[0];
 }
 
-jive::output *
-jive_bitmultiply(const std::vector<jive::output*> & operands)
+jive::oport *
+jive_bitmultiply(const std::vector<jive::oport*> & operands)
 {
-	jive::region * region = operands[0]->node()->region();
+	jive::region * region = operands[0]->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::mul_op(type),
 		{operands.begin(), operands.end()})[0];
 }
 
-jive::output *
-jive_bitshiproduct(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bitshiproduct(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::smulh_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bitshl(jive::output * operand, jive::output * shift)
+jive::oport *
+jive_bitshl(jive::oport * operand, jive::oport * shift)
 {
-	jive::region * region = operand->node()->region();
+	jive::region * region = operand->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operand->type());
 	return jive_node_create_normalized(region, jive::bits::shl_op(type), {operand, shift})[0];
 }
 
-jive::output *
-jive_bitshr(jive::output * operand, jive::output * shift)
+jive::oport *
+jive_bitshr(jive::oport * operand, jive::oport * shift)
 {
-	jive::region * region = operand->node()->region();
+	jive::region * region = operand->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operand->type());
 	return jive_node_create_normalized(region, jive::bits::shr_op(type), {operand, shift})[0];
 }
 
-jive::output *
-jive_bitsmod(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bitsmod(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::smod_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bitsquotient(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bitsquotient(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::sdiv_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bitsum(const std::vector<jive::output*> & operands)
+jive::oport *
+jive_bitsum(const std::vector<jive::oport*> & operands)
 {
-	jive::region * region = operands[0]->node()->region();
+	jive::region * region = operands[0]->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::add_op(type),
 		{operands.begin(), operands.end()})[0];
 }
 
-jive::output *
-jive_bituhiproduct(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bituhiproduct(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::umulh_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bitumod(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bitumod(jive::oport * op1, jive::oport * op2)
 {
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::umod_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bituquotient(jive::output * op1, jive::output * op2)
+jive::oport *
+jive_bituquotient(jive::oport * op1, jive::oport * op2)
 {
-	std::vector<jive::output*> operands = {op1, op2};
-	jive::region * region = op1->node()->region();
+	jive::region * region = op1->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(op1->type());
 	return jive_node_create_normalized(region, jive::bits::udiv_op(type), {op1, op2})[0];
 }
 
-jive::output *
-jive_bitxor(const std::vector<jive::output*> & operands)
+jive::oport *
+jive_bitxor(const std::vector<jive::oport*> & operands)
 {
-	jive::region * region = operands[0]->node()->region();
+	jive::region * region = operands[0]->region();
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(operands[0]->type());
 	return jive_node_create_normalized(region, jive::bits::xor_op(type),
 		{operands.begin(), operands.end()})[0];

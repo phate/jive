@@ -13,20 +13,20 @@
 #include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
 
-static jive::output *
+static jive::oport *
 jive_load_node_normalized_create(
 	const jive::node_normal_form * nf,
 	jive_graph * graph,
 	const jive::operation & op,
-	jive::output * address,
-	size_t nstates, jive::output * const states[])
+	jive::oport * address,
+	size_t nstates, jive::oport * const states[])
 {
 	std::vector<jive::oport*> args = {address};
 	for (size_t n = 0; n < nstates; ++n) {
 		args.push_back(states[n]);
 	}
 
-	return nf->normalized_create(address->node()->region(), op, args)[0];
+	return nf->normalized_create(address->region(), op, args)[0];
 }
 
 namespace jive {
@@ -138,13 +138,13 @@ make_ptr_array(const T * begin, const T * end)
 
 }
 
-jive::output *
-jive_load_by_address_create(jive::output * address,
+jive::oport *
+jive_load_by_address_create(jive::oport * address,
 	const jive::value::type * datatype,
-	size_t nstates, jive::output * const states[])
+	size_t nstates, jive::oport * const states[])
 {
-	jive_graph * graph = address->node()->graph();
-	const auto nf = address->node()->graph()->node_normal_form(typeid(jive::load_op));
+	jive_graph * graph = address->region()->graph();
+	const auto nf = graph->node_normal_form(typeid(jive::load_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
@@ -157,13 +157,13 @@ jive_load_by_address_create(jive::output * address,
 	return jive_load_node_normalized_create(nf, graph, op, address, nstates, states);
 }
 
-jive::output *
-jive_load_by_bitstring_create(jive::output * address, size_t nbits,
+jive::oport *
+jive_load_by_bitstring_create(jive::oport * address, size_t nbits,
 	const jive::value::type * datatype,
-	size_t nstates, jive::output * const states[])
+	size_t nstates, jive::oport * const states[])
 {
-	jive_graph * graph = address->node()->graph();
-	const auto nf = address->node()->graph()->node_normal_form(typeid(jive::load_op));
+	jive_graph * graph = address->region()->graph();
+	const auto nf = graph->node_normal_form(typeid(jive::load_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {

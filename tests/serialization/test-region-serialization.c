@@ -35,19 +35,19 @@ static int test_main(void)
 	jive_graph gr1;
 	gr1.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
-	jive::output * a = jive_bitconstant(gr1.root(), 8, "01010101");
-	jive::output * b = jive_bitconstant(gr1.root(), 8, "10101010");
-	jive::output * true_out = jive_control_true(gr1.root());
-	jive::output * c = jive_gamma(true_out, {&a->type()}, {{a}, {b}})[0];
+	auto a = jive_bitconstant(gr1.root(), 8, "01010101");
+	auto b = jive_bitconstant(gr1.root(), 8, "10101010");
+	auto true_out = jive_control_true(gr1.root());
+	auto c = jive_gamma(true_out, {&a->type()}, {{a}, {b}})[0];
 	
 	jive_theta theta = jive_theta_begin(gr1.root());
 	jive_theta_loopvar loopvar = jive_theta_loopvar_enter(theta, c);
 	jive_theta_end(theta, jive_control_false(theta.region), 1, &loopvar);
-	jive::output * d = loopvar.value;
+	auto d = loopvar.value;
 	
-	jive::output * e = jive_bitnot(d);
+	auto e = jive_bitnot(d);
 	
-	jive_node * orig_node = e->node();
+	jive_node * orig_node = dynamic_cast<jive::output*>(e)->node();
 	
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv);

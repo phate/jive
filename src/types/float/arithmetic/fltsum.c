@@ -18,8 +18,8 @@ const char fltsum_name[] = "FLTSUM";
 }
 }
 
-jive::output *
-jive_fltsum(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltsum(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::add_op::normalized_create(arg1, arg2);
 }

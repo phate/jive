@@ -19,8 +19,8 @@ const char fltgreater_name[] = "FLTGREATER";
 }
 }
 
-jive::output *
-jive_fltgreater(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltgreater(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::gt_op::normalized_create(arg1, arg2);
 }

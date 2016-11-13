@@ -43,14 +43,14 @@ static int test_main(void)
 
 	jive::unn::type union_t(&u_decl);
 
-	jive::output * s0 = jive_sizeof_create(graph.root(), &bits4);
-	jive::output * s1 = jive_sizeof_create(graph.root(), &bits8);
-	jive::output * s2 = jive_sizeof_create(graph.root(), &bits8);
-	jive::output * s3 = jive_sizeof_create(graph.root(), &bits18);
-	jive::output * s4 = jive_sizeof_create(graph.root(), &bits32);
-	jive::output * s5 = jive_sizeof_create(graph.root(), &addr);
-	jive::output * s6 = jive_sizeof_create(graph.root(), &record_t);
-	jive::output * s7 = jive_sizeof_create(graph.root(), &union_t);
+	auto s0 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits4));
+	auto s1 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits8));
+	auto s2 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits8));
+	auto s3 = dynamic_cast<jive::output*>(jive_sizeof_create(graph.root(), &bits18));
+	auto s4 = jive_sizeof_create(graph.root(), &bits32);
+	auto s5 = jive_sizeof_create(graph.root(), &addr);
+	auto s6 = jive_sizeof_create(graph.root(), &record_t);
+	auto s7 = jive_sizeof_create(graph.root(), &union_t);
 
 	assert(s1->node()->operation() == s2->node()->operation());
 	assert(s0->node()->operation() != s3->node()->operation());

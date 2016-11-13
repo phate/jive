@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitsmod(jive::output * operand1, jive::output * operand2);
+jive::oport *
+jive_bitsmod(jive::oport * operand1, jive::oport * operand2);
 
 #endif

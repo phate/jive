@@ -35,20 +35,20 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(graph.root(),
 		{}, {}, std::vector<const jive::base::type*>(4, &bits32));
 
-	jive::output * address0 = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
-	jive::output * address1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
-	jive::output * address2 = jive_bitstring_to_address_create(top->output(2), 32, &addrtype);
-	jive::output * address3 = jive_bitstring_to_address_create(top->output(3), 32, &addrtype);
+	auto address0 = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
+	auto address1 = jive_bitstring_to_address_create(top->output(1), 32, &addrtype);
+	auto address2 = jive_bitstring_to_address_create(top->output(2), 32, &addrtype);
+	auto address3 = jive_bitstring_to_address_create(top->output(3), 32, &addrtype);
 	
-	jive::output * container0 = jive_containerof(address0, decl, 0);
-	jive::output * container1 = jive_containerof(address1, decl, 1);
-	jive::output * container2 = jive_containerof(address2, decl, 2);
-	jive::output * container3 = jive_containerof(address3, decl, 3);
+	auto container0 = jive_containerof(address0, decl, 0);
+	auto container1 = jive_containerof(address1, decl, 1);
+	auto container2 = jive_containerof(address2, decl, 2);
+	auto container3 = jive_containerof(address3, decl, 3);
 
-	jive::output * offset0 = jive_address_to_bitstring_create(container0, 32, &container0->type());
-	jive::output * offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());
-	jive::output * offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
-	jive::output * offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
+	auto offset0 = jive_address_to_bitstring_create(container0, 32, &container0->type());
+	auto offset1 = jive_address_to_bitstring_create(container1, 32, &container1->type());
+	auto offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
+	auto offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
 
 	jive_node * bottom = jive_test_node_create(graph.root(),
 		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},

@@ -34,7 +34,7 @@ typedef base::domain_symbol_op<jive::flt::type>
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive::output *
+jive::oport *
 jive_fltsymbolicconstant(jive_graph * graph, const char * name);
 
 #endif

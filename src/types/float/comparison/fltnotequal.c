@@ -19,8 +19,8 @@ const char fltnotequal_name[] = "FLTNOTEQUAL";
 }
 }
 
-jive::output *
-jive_fltnotequal(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltnotequal(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::ne_op::normalized_create(arg1, arg2);
 }

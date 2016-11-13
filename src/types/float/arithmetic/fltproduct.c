@@ -18,8 +18,8 @@ const char fltproduct_name[] = "FLTPRODUCT";
 }
 }
 
-jive::output *
-jive_fltproduct(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltproduct(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::mul_op::normalized_create(arg1, arg2);
 }

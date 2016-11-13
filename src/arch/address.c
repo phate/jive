@@ -95,14 +95,14 @@ memberof_op::copy() const
 }
 
 
-jive::output *
+jive::oport *
 jive_memberof(
-	jive::output * address,
+	jive::oport * address,
 	std::shared_ptr<const jive::rcd::declaration> & record_decl,
 	size_t index)
 {
 	jive::address::memberof_op op(record_decl, index);
-	return jive_node_create_normalized(address->node()->region(), op, {address})[0];
+	return jive_node_create_normalized(address->region(), op, {address})[0];
 }
 
 /* containerof */
@@ -178,14 +178,14 @@ containerof_op::copy() const
 }
 }
 
-jive::output *
+jive::oport *
 jive_containerof(
-	jive::output * address,
+	jive::oport * address,
 	std::shared_ptr<const jive::rcd::declaration> & record_decl,
 	size_t index)
 {
 	jive::address::containerof_op op(record_decl, index);
-	return jive_node_create_normalized(address->node()->region(), op, {address})[0];
+	return jive_node_create_normalized(address->region(), op, {address})[0];
 }
 
 /* arraysubscript */
@@ -270,17 +270,17 @@ arraysubscript_op::copy() const
 }
 
 
-jive::output *
+jive::oport *
 jive_arraysubscript(
-	jive::output * address,
+	jive::oport * address,
 	const jive::value::type * element_type,
-	jive::output * index)
+	jive::oport * index)
 {
 	jive::address::arraysubscript_op op(
 		*element_type,
 		dynamic_cast<const jive::bits::type &>(index->type()));
 
-	return jive_node_create_normalized(address->node()->region(), op, {address, index})[0];
+	return jive_node_create_normalized(address->region(), op, {address, index})[0];
 }
 
 /* arrayindex */
@@ -360,14 +360,14 @@ arrayindex_op::copy() const
 }
 }
 
-jive::output *
+jive::oport *
 jive_arrayindex(
-	jive::output * addr1, jive::output * addr2,
+	jive::oport * addr1, jive::oport * addr2,
 	const jive::value::type * element_type,
 	const jive::bits::type * difference_type)
 {
 	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
-	return jive_node_create_normalized(addr1->node()->region(), op, {addr1, addr2})[0];
+	return jive_node_create_normalized(addr1->region(), op, {addr1, addr2})[0];
 }
 
 /* label_to_address node */
@@ -428,7 +428,7 @@ label_to_address_op::copy() const
 }
 
 
-jive::output *
+jive::oport *
 jive_label_to_address_create(jive::region * region, const jive_label * label)
 {
 	jive::address::label_to_address_op op(label);
@@ -491,7 +491,7 @@ label_to_bitstring_op::copy() const
 
 /* constant */
 
-output *
+jive::oport *
 constant(struct jive_graph * graph, const value_repr & vr)
 {
 	constant_op op(vr);
@@ -502,7 +502,7 @@ constant(struct jive_graph * graph, const value_repr & vr)
 }
 
 
-jive::output *
+jive::oport *
 jive_label_to_bitstring_create(jive::region * region, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_op op(label, nbits);

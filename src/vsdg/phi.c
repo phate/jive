@@ -148,7 +148,7 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 }
 
 void
-jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::output * fix_value)
+jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::oport * fix_value)
 {
 	jive_phi_build_state * state = self.internal_state;
 	size_t n;

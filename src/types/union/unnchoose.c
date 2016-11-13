@@ -85,7 +85,7 @@ choose_operation::reduce_operand(
 			&op->node()->output(0)->type())->declaration();
 
 		size_t nstates = op->node()->ninputs()-1;
-		jive::output * states[nstates];
+		jive::oport * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
 			states[n] = dynamic_cast<jive::output*>(op->node()->input(n+1)->origin());
 		}
@@ -112,11 +112,11 @@ choose_operation::copy() const
 }
 }
 
-jive::output *
-jive_choose_create(size_t member, jive::output * argument)
+jive::oport *
+jive_choose_create(size_t member, jive::oport * argument)
 {
 	const jive::unn::type & unn_type =
 		dynamic_cast<const jive::unn::type &>(argument->type());
 	jive::unn::choose_operation op(unn_type, member);
-	return jive_node_create_normalized(argument->node()->region(), op, {argument})[0];
+	return jive_node_create_normalized(argument->region(), op, {argument})[0];
 }

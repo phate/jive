@@ -71,14 +71,14 @@ regvalue_op::copy() const
 
 }
 
-jive::output *
-jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value)
+jive::oport *
+jive_regvalue(jive::oport * ctl, const jive_register_class * regcls, jive::oport * value)
 {
-	jive_graph * graph = value->node()->graph();
+	jive_graph * graph = value->region()->graph();
 	jive::regvalue_op op(regcls);
 	
 	const auto nf = graph->node_normal_form(typeid(jive::regvalue_op));
 
-	jive::region * region = ctl->node()->region();
+	jive::region * region = ctl->region();
 	return nf->normalized_create(region, op, {ctl, value})[0];
 }

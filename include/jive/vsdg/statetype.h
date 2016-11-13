@@ -69,34 +69,34 @@ private:
 }
 }
 
-jive::output *
+jive::oport*
 jive_state_merge(
 	const jive::state::type * statetype,
 	size_t nstates,
-	jive::output * const states[]);
+	jive::oport * const states[]);
 
-std::vector<jive::output *>
+std::vector<jive::oport*>
 jive_state_split(
 	const jive::state::type * statetype,
-	jive::output * state,
+	jive::oport * state,
 	size_t nstates);
 
 
 // FIXME: temporary overloads below, until it has been made syntactically sure
 // that only state types are passed as arguments
-static inline jive::output *
+static inline jive::oport*
 jive_state_merge(
 	const jive::base::type * statetype,
 	size_t nstates,
-	jive::output * const states[])
+	jive::oport * const states[])
 {
 	return jive_state_merge(&dynamic_cast<const jive::state::type &>(*statetype), nstates, states);
 }
 
-static inline std::vector<jive::output *>
+static inline std::vector<jive::oport*>
 jive_state_split(
 	const jive::base::type * statetype,
-	jive::output * state,
+	jive::oport * state,
 	size_t nstates)
 {
 	return jive_state_split(&dynamic_cast<const jive::state::type &>(*statetype), state, nstates);

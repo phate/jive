@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bituquotient(jive::output * dividend, jive::output * divisor);
+jive::oport *
+jive_bituquotient(jive::oport * dividend, jive::oport * divisor);
 
 #endif

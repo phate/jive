@@ -31,7 +31,7 @@ static int test_main(void)
 
 	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
 
-	std::vector<jive::output*> tmp = {top->output(1), top->output(2)};
+	std::vector<jive::oport*> tmp = {top->output(1), top->output(2)};
 	jive_node * call = jive_call_by_address_node_create(graph.root(),
 		top->output(0), NULL, 2, &tmp[0], 3, tmparray1);
 	JIVE_DEBUG_ASSERT(call->noutputs() == 3);

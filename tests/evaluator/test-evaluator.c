@@ -17,7 +17,7 @@
 #include <jive/vsdg/phi.h>
 #include <jive/vsdg/theta.h>
 
-static jive::output *
+static jive::oport *
 setup_fib_iter(struct jive_graph * graph)
 {
 /*
@@ -38,10 +38,10 @@ fib(size_t n)
 	std::vector<const char *> names({"n"});
 	jive_lambda * lambda = jive_lambda_begin(graph->root(), 1, &types[0], &names[0]);
 
-	jive::output * n = lambda->arguments[0];
-	jive::output * i = jive_bitconstant_unsigned(lambda->region, 32, 1);
-	jive::output * j = jive_bitconstant_unsigned(lambda->region, 32, 0);
-	jive::output * k = jive_bitconstant_unsigned(lambda->region, 32, 1);
+	auto n = lambda->arguments[0];
+	auto i = jive_bitconstant_unsigned(lambda->region, 32, 1);
+	auto j = jive_bitconstant_unsigned(lambda->region, 32, 0);
+	auto k = jive_bitconstant_unsigned(lambda->region, 32, 1);
 
 	jive_theta theta = jive_theta_begin(lambda->region);
 	jive_theta_loopvar lv_i = jive_theta_loopvar_enter(theta, i);
@@ -49,14 +49,14 @@ fib(size_t n)
 	jive_theta_loopvar lv_k = jive_theta_loopvar_enter(theta, k);
 	jive_theta_loopvar lv_n = jive_theta_loopvar_enter(theta, n);
 
-	jive::output * t = jive_bitsum({lv_i.value, lv_j.value});
+	auto t = jive_bitsum({lv_i.value, lv_j.value});
 
-	jive::output * one = jive_bitconstant_unsigned(theta.region, 32, 1);
+	auto one = jive_bitconstant_unsigned(theta.region, 32, 1);
 
-	jive::output * new_k = jive_bitsum({one, lv_k.value});
+	auto new_k = jive_bitsum({one, lv_k.value});
 
-	jive::output * cmp = jive_bitulesseq(new_k, lv_n.value);
-	jive::output * predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
+	auto cmp = jive_bitulesseq(new_k, lv_n.value);
+	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 	jive_theta_loopvar_leave(theta, lv_k.gate, new_k);
 	jive_theta_loopvar_leave(theta, lv_i.gate, lv_j.value);
 	jive_theta_loopvar_leave(theta, lv_j.gate, t);
@@ -66,7 +66,7 @@ fib(size_t n)
 
 	cmp = jive_bitulesseq(k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
-	std::vector<jive::output *> results = jive_gamma(predicate, {&bits32, &bits32, &bits32, &bits32},
+	auto results = jive_gamma(predicate, {&bits32, &bits32, &bits32, &bits32},
 		{{i, j, k, n}, {loopvars[0].value, loopvars[1].value, loopvars[2].value, loopvars[3].value}});
 
 	return jive_lambda_end(lambda, 1, &types[0], &results[1]);
@@ -77,7 +77,7 @@ test_fib_iter(struct jive_graph * graph)
 {
 	using namespace jive::evaluator;
 
-	jive::output * fib_iter = setup_fib_iter(graph);
+	auto fib_iter = setup_fib_iter(graph);
 	graph->export_port(fib_iter, "fib_iter");
 
 	std::unique_ptr<const literal> result;
@@ -116,7 +116,7 @@ test_fib_iter(struct jive_graph * graph)
 	assert(fib->value_repr() == 89);
 }
 
-static jive::output *
+static jive::oport *
 setup_fib_rec(struct jive_graph * &graph)
 {
 /*
@@ -139,22 +139,22 @@ unsigned int fib(unsigned int n){
 	jive_lambda * lambda = jive_lambda_begin(phi.region, 1, &args[0], &names[0]);
 	jive::fct::lambda_dep depvar = jive::fct::lambda_dep_add(lambda, fv_fib.value);
 
-	jive::output * n = lambda->arguments[0];
-	jive::output * one = jive_bitconstant_unsigned(lambda->region, 32, 1);
-	jive::output * two = jive_bitconstant_unsigned(lambda->region, 32, 2);
+	auto n = lambda->arguments[0];
+	auto one = jive_bitconstant_unsigned(lambda->region, 32, 1);
+	auto two = jive_bitconstant_unsigned(lambda->region, 32, 2);
 
-	jive::output * tmp = jive_bitdifference(n, one);
+	auto tmp = jive_bitdifference(n, one);
 	tmp = jive_apply_create(depvar.output, 1, &tmp)[0];
 
-	jive::output * tmp2 = jive_bitdifference(n, two);
+	auto tmp2 = jive_bitdifference(n, two);
 	tmp2 = jive_apply_create(depvar.output, 1, &tmp2)[0];
 
-	jive::output * result = jive_bitsum({tmp, tmp2});
+	auto result = jive_bitsum({tmp, tmp2});
 
-	jive::output * predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(n, two));
+	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(n, two));
 	result = jive_gamma(predicate, {&bits32}, {{result}, {n}})[0];
 
-	jive::output * fib = jive_lambda_end(lambda, 1, &args[0], &result);
+	auto fib = jive_lambda_end(lambda, 1, &args[0], &result);
 
 	jive_phi_fixvar_leave(phi, fv_fib.gate, fib);
 	jive_phi_end(phi, 1, &fv_fib);
@@ -167,7 +167,7 @@ test_fib_rec(struct jive_graph * graph)
 {
 	using namespace jive::evaluator;
 
-	jive::output * fib_rec = setup_fib_rec(graph);
+	auto fib_rec = setup_fib_rec(graph);
 	graph->export_port(fib_rec, "fib_rec");
 
 	jive_view(graph, stdout);
@@ -217,17 +217,17 @@ test_loadstore(struct jive_graph * graph)
 	std::vector<const char *> names({"state", "address"});
 	jive_lambda * lambda = jive_lambda_begin(graph->root(), 2, &types[0], &names[0]);
 
-	jive::output * state = lambda->arguments[0];
-	jive::output * address = lambda->arguments[1];
+	jive::oport * state = lambda->arguments[0];
+	jive::oport * address = lambda->arguments[1];
 
-	jive::output * value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
+	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 
-	jive::output * three = jive_bitconstant_unsigned(lambda->region, 4, 3);
+	auto three = jive_bitconstant_unsigned(lambda->region, 4, 3);
 	value = jive_bitsum({value, three});
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
 
-	jive::output * f = jive_lambda_end(lambda, 1, &types[0], &state);
+	auto f = jive_lambda_end(lambda, 1, &types[0], &state);
 
 	graph->export_port(f, "loadstore");
 

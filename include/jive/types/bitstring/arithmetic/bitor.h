@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitor(const std::vector<jive::output*> & operands);
+jive::oport *
+jive_bitor(const std::vector<jive::oport*> & operands);
 
 #endif

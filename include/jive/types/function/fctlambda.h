@@ -130,7 +130,7 @@ namespace fct {
 
 struct lambda_dep {
 	jive::input * input;
-	jive::output * output;
+	jive::oport * output;
 };
 
 }
@@ -141,7 +141,7 @@ typedef struct jive_lambda jive_lambda;
 struct jive_lambda {
 	struct jive::region * region;
 	size_t narguments;
-	jive::output ** arguments;
+	jive::oport ** arguments;
 	std::vector<jive::fct::lambda_dep> depvars;
 };
 
@@ -149,7 +149,7 @@ namespace jive {
 namespace fct {
 
 lambda_dep
-lambda_dep_add(jive_lambda * self, jive::output * value);
+lambda_dep_add(jive_lambda * self, jive::oport * value);
 
 }
 }
@@ -164,8 +164,8 @@ jive_lambda_begin(struct jive::region * parent, size_t narguments,
 /**
 	\brief End constructing a lambda region
 */
-jive::output *
+jive::oport *
 jive_lambda_end(struct jive_lambda * lambda, size_t nresults,
-	const jive::base::type * const result_types[], struct jive::output * const results[]);
+	const jive::base::type * const result_types[], struct jive::oport * const results[]);
 
 #endif

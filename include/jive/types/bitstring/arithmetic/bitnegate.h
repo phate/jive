@@ -47,7 +47,7 @@ public:
 	
 	Convenience function to create negation of value.
 */
-jive::output *
-jive_bitnegate(jive::output * operand);
+jive::oport *
+jive_bitnegate(jive::oport * operand);
 
 #endif

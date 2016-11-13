@@ -28,9 +28,8 @@ static int test_main(void)
 	jive_node * top = jive_test_node_create(r1, {}, {}, {&type, &type, &jive::ctl::boolean});
 	r1->set_top(top);
 	
-	jive::output * tmp = jive_gamma(top->output(2), {&type},
-		{{top->output(0)}, {top->output(1)}})[0];
-	jive_node * gamma = tmp->node();
+	auto tmp = jive_gamma(top->output(2), {&type}, {{top->output(0)}, {top->output(1)}})[0];
+	jive_node * gamma = dynamic_cast<jive::output*>(tmp)->node();
 
 	jive_node * bottom = jive_test_node_create(r1, {&type}, {gamma->output(0)}, {});
 	r1->set_bottom(bottom);

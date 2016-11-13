@@ -87,7 +87,7 @@ unary_normal_form::operands_are_normalized(
 	return node_normal_form::operands_are_normalized(base_op, arguments);
 }
 
-std::vector<jive::output *>
+std::vector<jive::oport*>
 unary_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,
@@ -101,7 +101,7 @@ unary_normal_form::normalized_create(
 
 		jive_unop_reduction_path_t reduction = un_op.can_reduce_operand(arguments[0]);
 		if (reduction != jive_unop_reduction_none) {
-			return { dynamic_cast<jive::output*>(un_op.reduce_operand(reduction, arguments[0])) };
+			return {un_op.reduce_operand(reduction, arguments[0])};
 		}
 	}
 

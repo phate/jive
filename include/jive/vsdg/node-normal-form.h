@@ -61,7 +61,7 @@ public:
 		const jive::operation & op,
 		const std::vector<jive::oport*> & arguments) const;
 
-	virtual std::vector<jive::output *>
+	virtual std::vector<jive::oport*>
 	normalized_create(
 		jive::region * region,
 		const jive::operation & op,

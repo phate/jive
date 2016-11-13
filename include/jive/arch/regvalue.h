@@ -63,7 +63,7 @@ private:
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive::output *
-jive_regvalue(jive::output * ctl, const jive_register_class * regcls, jive::output * value);
+jive::oport *
+jive_regvalue(jive::oport * ctl, const jive_register_class * regcls, jive::oport * value);
 
 #endif

@@ -17,21 +17,22 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node-private.h>
 
-static std::vector<jive::output *>
+static std::vector<jive::oport*>
 jive_store_node_normalized_create(
 	const jive::node_normal_form * nf,
 	jive_graph * graph,
 	const jive::operation & op,
-	jive::output * address,
-	jive::output * value,
-	size_t nstates, jive::output * const states[])
+	jive::oport * address,
+	jive::oport * value,
+	size_t nstates, jive::oport * const states[])
 {
 	std::vector<jive::oport*> args = {address, value};
 	for (size_t n = 0; n < nstates; ++n) {
 		args.push_back(states[n]);
 	}
 
-	return nf->normalized_create(address->node()->region(), op, args);
+	auto tmp = nf->normalized_create(address->region(), op, args);
+	return {tmp.begin(), tmp.end()};
 }
 
 
@@ -99,13 +100,13 @@ store_op::copy() const
 
 /* store_node */
 
-std::vector<jive::output *>
-jive_store_by_address_create(jive::output * address,
-	const jive::value::type * datatype, jive::output * value,
-	size_t nstates, jive::output * const istates[])
+std::vector<jive::oport*>
+jive_store_by_address_create(jive::oport* address,
+	const jive::value::type * datatype, jive::oport * value,
+	size_t nstates, jive::oport * const istates[])
 {
-	jive_graph * graph = address->node()->graph();
-	const auto nf = address->node()->graph()->node_normal_form(typeid(jive::store_op));
+	jive_graph * graph = address->region()->graph();
+	const auto nf = graph->node_normal_form(typeid(jive::store_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {
@@ -118,13 +119,13 @@ jive_store_by_address_create(jive::output * address,
 	return jive_store_node_normalized_create(nf, graph, op, address, value, nstates, istates);
 }
 
-std::vector<jive::output *>
-jive_store_by_bitstring_create(jive::output * address, size_t nbits,
-	const jive::value::type * datatype, jive::output * value,
-	size_t nstates, jive::output * const istates[])
+std::vector<jive::oport*>
+jive_store_by_bitstring_create(jive::oport * address, size_t nbits,
+	const jive::value::type * datatype, jive::oport * value,
+	size_t nstates, jive::oport * const istates[])
 {
-	jive_graph * graph = address->node()->graph();
-	const auto nf = address->node()->graph()->node_normal_form(typeid(jive::store_op));
+	jive_graph * graph = address->region()->graph();
+	const auto nf = graph->node_normal_form(typeid(jive::store_op));
 
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
 	for (size_t n = 0; n < nstates; ++n) {

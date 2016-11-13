@@ -25,7 +25,7 @@ template class domain_const_op<
 }
 }
 
-jive::output *
+jive::oport *
 jive_fltconstant(jive::region * region, jive::flt::value_repr value)
 {
 	jive::flt::constant_op op(value);

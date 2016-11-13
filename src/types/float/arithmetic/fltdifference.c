@@ -18,8 +18,8 @@ const char fltdifference_name[] = "FLTDIFFERENCE";
 }
 }
 
-jive::output *
-jive_fltdifference(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltdifference(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::sub_op::normalized_create(arg1, arg2);
 }

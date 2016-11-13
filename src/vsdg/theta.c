@@ -117,7 +117,7 @@ jive_theta_begin(jive::region * parent)
 }
 
 jive_theta_loopvar
-jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
+jive_theta_loopvar_enter(jive_theta self, jive::oport * pre_value)
 {
 	jive_theta_build_state * state = self.internal_state;
 	jive_node * head = self.region->top();
@@ -138,7 +138,7 @@ jive_theta_loopvar_enter(jive_theta self, jive::output * pre_value)
 }
 
 void
-jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::output * post_value)
+jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::oport * post_value)
 {
 	jive_theta_build_state * state = self.internal_state;
 	size_t n;
@@ -153,7 +153,7 @@ jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::output * post_
 }
 
 jive_node *
-jive_theta_end(jive_theta self, jive::output * predicate,
+jive_theta_end(jive_theta self, jive::oport * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values)
 {
 	jive_theta_build_state * state = self.internal_state;

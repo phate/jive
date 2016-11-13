@@ -22,8 +22,8 @@ typedef detail::make_cmpop<
 }
 }
 
-jive::output *
-jive_fltgreater(jive::output * operand1, jive::output * operand2);
+jive::oport *
+jive_fltgreater(jive::oport * operand1, jive::oport * operand2);
 
 #endif
 

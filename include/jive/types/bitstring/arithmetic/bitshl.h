@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitshl(jive::output * operand, jive::output * shift);
+jive::oport *
+jive_bitshl(jive::oport * operand, jive::oport * shift);
 
 #endif

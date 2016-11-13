@@ -73,22 +73,22 @@ convert_address_to_bitstring_type(
 	JIVE_DEBUG_ASSERT(0);
 }
 
-jive::output *
-jive_address_to_bitstring_create(jive::output * address, size_t nbits,
+jive::oport *
+jive_address_to_bitstring_create(jive::oport * address, size_t nbits,
 	const jive::base::type * original_type)
 {
 	jive::address_to_bitstring_operation op(
 		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
-	return jive_node_create_normalized(address->node()->region(), op, {address})[0];
+	return jive_node_create_normalized(address->region(), op, {address})[0];
 }
 
-jive::output *
-jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
+jive::oport *
+jive_bitstring_to_address_create(jive::oport * bitstring, size_t nbits,
 	const jive::base::type * original_type)
 {
 	jive::bitstring_to_address_operation op(
 		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
-	return jive_node_create_normalized(bitstring->node()->region(), op, {bitstring})[0];
+	return jive_node_create_normalized(bitstring->region(), op, {bitstring})[0];
 }
 
 /* reductions */
@@ -105,7 +105,7 @@ jive_load_node_address_transform(
 	if (!input_is_address && !output_is_address)
 		return;
 
-	jive::output * address = dynamic_cast<jive::output*>(node->input(0)->origin());
+	jive::oport * address = node->input(0)->origin();
 	if (input_is_address)
 		address = jive_address_to_bitstring_create(address, nbits, &address->type());
 
@@ -118,12 +118,11 @@ jive_load_node_address_transform(
 
 	size_t i;
 	size_t nstates = node->ninputs() - 1;
-	jive::output * states[nstates];
-	for (i = 0; i < nstates; i++){
-		states[i] = dynamic_cast<jive::output*>(node->input(i+1)->origin());
-	}
+	jive::oport * states[nstates];
+	for (i = 0; i < nstates; i++)
+		states[i] = node->input(i+1)->origin();
 
-	jive::output * load = jive_load_by_bitstring_create(address, nbits, datatype, nstates, states);
+	auto load = jive_load_by_bitstring_create(address, nbits, datatype, nstates, states);
 	
 	if (output_is_address)
 		load = jive_bitstring_to_address_create(load, nbits, &node->output(0)->type());
@@ -143,7 +142,7 @@ jive_store_node_address_transform(
 	if (!input0_is_address && !input1_is_address)
 		return;
 
-	jive::output * address = dynamic_cast<jive::output*>(node->input(0)->origin());
+	jive::oport * address = node->input(0)->origin();
 	if (input0_is_address)
 		address = jive_address_to_bitstring_create(address, nbits, &address->type());
 
@@ -151,21 +150,19 @@ jive_store_node_address_transform(
 
 	jive::bits::type bits(nbits);
 	const jive::value::type * datatype = &op.data_type();
-	jive::output * value = dynamic_cast<jive::output*>(node->input(1)->origin());
+	jive::oport * value = node->input(1)->origin();
 	if (input1_is_address){
 		datatype = &bits;
-		value = jive_address_to_bitstring_create(
-			dynamic_cast<jive::output*>(node->input(1)->origin()), nbits, &value->type());
+		value = jive_address_to_bitstring_create(node->input(1)->origin(), nbits, &value->type());
 	}
 
 	size_t nstates = node->ninputs() - 2;
-	jive::output * states[nstates];
+	jive::oport * states[nstates];
 	for (size_t n = 0; n < nstates; ++n){
-		states[n] = dynamic_cast<jive::output*>(node->input(n+2)->origin());
+		states[n] = node->input(n+2)->origin();
 	}
 
-	std::vector<jive::output *> ostates = jive_store_by_bitstring_create(
-		address, nbits, datatype, value, nstates, states);
+	auto ostates = jive_store_by_bitstring_create(address, nbits, datatype, value, nstates, states);
 
 	for (size_t n = 0; n < nstates; ++n)
 		node->output(n)->replace(ostates[n]);
@@ -179,10 +176,8 @@ jive_label_to_address_node_address_transform(
 {
 	const jive_label * label = op.label();
 
-	jive::output * label_o = jive_label_to_bitstring_create(node->graph()->root(),
-		label, nbits);
-	jive::output * addr_o = jive_bitstring_to_address_create(label_o, nbits,
-		&node->output(0)->type());
+	auto label_o = jive_label_to_bitstring_create(node->graph()->root(), label, nbits);
+	auto addr_o = jive_bitstring_to_address_create(label_o, nbits, &node->output(0)->type());
 	node->output(0)->replace(addr_o);
 }
 
@@ -193,15 +188,14 @@ jive_call_node_address_transform(
 	size_t nbits)
 {
 	bool transform = false;
-	jive::output * operands[node->ninputs()];
+	jive::oport * operands[node->ninputs()];
 	for (size_t i = 0; i < node->ninputs(); i++){
 		if(dynamic_cast<const jive::addr::type*>(&node->input(i)->type())){
-			operands[i] = jive_address_to_bitstring_create(
-				dynamic_cast<jive::output*>(node->input(i)->origin()), nbits,
+			operands[i] = jive_address_to_bitstring_create(node->input(i)->origin(), nbits,
 				&node->input(i)->origin()->type());
 			transform = true;
 		} else {
-			operands[i] = dynamic_cast<jive::output*>(node->input(i)->origin());
+			operands[i] = node->input(i)->origin();
 		}
 	}
 
@@ -224,7 +218,7 @@ jive_call_node_address_transform(
 		return_types);
 
 	for (size_t i = 0; i < node->noutputs(); i++){
-		jive::output * output = call->output(i);
+		jive::oport * output = call->output(i);
 		if(dynamic_cast<const jive::addr::type*>(&node->output(i)->type()))
 			output = jive_bitstring_to_address_create(call->output(i), nbits, &node->output(i)->type());
 		node->output(i)->replace(output);
@@ -244,13 +238,11 @@ jive_memberof_node_address_transform(
 	size_t elem_offset = mapper->map_record(decl).element(index).offset();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	jive::output * offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
-	jive::output * address = jive_address_to_bitstring_create(
-		dynamic_cast<jive::output*>(node->input(0)->origin()), nbits,
+	auto offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
+	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	jive::output * sum = jive_bitsum({address, offset});
-	jive::output * off_address = jive_bitstring_to_address_create(sum, nbits,
-		&node->output(0)->type());
+	auto sum = jive_bitsum({address, offset});
+	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 
 	node->output(0)->replace(off_address);
 }
@@ -268,13 +260,11 @@ jive_containerof_node_address_transform(
 	size_t elem_offset = mapper->map_record(decl).element(index).offset();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	jive::output * offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
-	jive::output * address = jive_address_to_bitstring_create(
-		dynamic_cast<jive::output*>(node->input(0)->origin()), nbits,
+	auto offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
+	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	jive::output * sum = jive_bitdifference(address, offset);
-	jive::output * off_address = jive_bitstring_to_address_create(sum, nbits,
-		&node->output(0)->type());
+	auto sum = jive_bitdifference(address, offset);
+	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 
 	node->output(0)->replace(off_address);
 }
@@ -288,15 +278,13 @@ jive_arraysubscript_node_address_transform(
 	size_t elem_type_size = mapper->map_value_type(op.element_type()).size();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	jive::output * index = dynamic_cast<jive::output*>(node->input(1)->origin());
-	jive::output * address = jive_address_to_bitstring_create(
-		dynamic_cast<jive::output*>(node->input(0)->origin()), nbits,
+	auto index = node->input(1)->origin();
+	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	jive::output * elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
-	jive::output * offset = jive_bitmultiply({elem_size, index});
-	jive::output * sum = jive_bitsum({address, offset});
-	jive::output * off_address = jive_bitstring_to_address_create(sum, nbits,
-		&node->output(0)->type());
+	auto elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
+	auto offset = jive_bitmultiply({elem_size, index});
+	auto sum = jive_bitsum({address, offset});
+	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 	
 	node->output(0)->replace(off_address);
 }
@@ -310,15 +298,13 @@ jive_arrayindex_node_address_transform(
 	size_t elem_type_size = mapper->map_value_type(op.element_type()).size();
 	size_t nbits = mapper->map_address().size() * 8;
 
-	jive::output * address1 = jive_address_to_bitstring_create(
-		dynamic_cast<jive::output*>(node->input(0)->origin()), nbits,
+	auto address1 = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	jive::output * address2 = jive_address_to_bitstring_create(
-		dynamic_cast<jive::output*>(node->input(1)->origin()), nbits,
+	auto address2 = jive_address_to_bitstring_create(node->input(1)->origin(), nbits,
 		&node->input(1)->origin()->type());
-	jive::output * elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
-	jive::output * diff = jive_bitdifference(address1, address2);
-	jive::output * div = jive_bitsquotient(diff, elem_size);
+	auto elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
+	auto diff = jive_bitdifference(address1, address2);
+	auto div = jive_bitsquotient(diff, elem_size);
 
 	node->output(0)->replace(div);
 }
@@ -335,21 +321,19 @@ jive_apply_node_address_transform(const jive_node * node, size_t nbits)
 	size_t narguments = node->ninputs()-1;
 
 	size_t n;
-	jive::output * arguments[narguments];
+	jive::oport * arguments[narguments];
 	for (n = 1; n < node->ninputs(); n++) {
 		jive::input * argument = node->input(n);
 		arguments[n-1] = jive_address_to_bitstring_create(
-			dynamic_cast<jive::output*>(argument->origin()), nbits, &argument->type());
+			argument->origin(), nbits, &argument->type());
 	}
-	jive::output * function = jive_address_to_bitstring_create(
-		dynamic_cast<jive::output*>(fct->origin()), nbits, fcttype);
+	auto function = jive_address_to_bitstring_create(fct->origin(), nbits, fcttype);
 
-	std::vector<jive::output *> results = jive_apply_create(function, narguments, arguments);
+	auto results = jive_apply_create(function, narguments, arguments);
 
 	for (n = 0; n < results.size(); n++) {
-		jive::output * original = node->output(n);
-		jive::output * substitute = jive_bitstring_to_address_create(results[n], nbits,
-			&original->type());
+		jive::oport * original = node->output(n);
+		auto substitute = jive_bitstring_to_address_create(results[n], nbits, &original->type());
 		original->replace(substitute);
 	}
 }
@@ -393,17 +377,17 @@ jive_lambda_node_address_transform(
 
 	jive_node * new_enter = lambda->region->top();
 	for (n = 1; n < enter->noutputs(); n++) {
-		jive::output * parameter = jive_bitstring_to_address_create(new_enter->output(n), nbits,
+		jive::oport * parameter = jive_bitstring_to_address_create(new_enter->output(n), nbits,
 			fcttype->argument_type(n-1));
-		map.insert(enter->output(n), parameter);
+		map.insert(enter->output(n), dynamic_cast<jive::output*>(parameter));
 	}
 
 	region->copy(lambda->region, map, false, false);
 
 	size_t nresults = fcttype->nreturns();
-	jive::output * results[nresults];
+	jive::oport * results[nresults];
 	for (n = 1; n < leave->ninputs(); n++) {
-		jive::output * substitute = map.lookup(dynamic_cast<jive::output*>(leave->input(n)->origin()));
+		auto substitute = map.lookup(dynamic_cast<jive::output*>(leave->input(n)->origin()));
 		results[n-1] = jive_address_to_bitstring_create(substitute, nbits, fcttype->return_type(n-1));
 	}
 
@@ -411,7 +395,7 @@ jive_lambda_node_address_transform(
 	for (size_t i = 0; i < new_fcttype->nreturns(); i++)
 		return_types[i] = new_fcttype->return_type(i);
 
-	jive::output * new_fct = jive_lambda_end(lambda, new_fcttype->nreturns(), return_types, results);
+	auto new_fct = jive_lambda_end(lambda, new_fcttype->nreturns(), return_types, results);
 
 	fct->replace(jive_bitstring_to_address_create(new_fct, nbits, type));
 }
@@ -425,7 +409,7 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 
 	bool transform = false;
 	std::vector<std::string> names;
-	std::vector<jive::output*> exports;
+	std::vector<jive::oport*> exports;
 	for (size_t n = 0; n < node->ninputs(); n++) {
 		jive::output * origin = dynamic_cast<jive::output*>(node->input(n)->origin());
 		if (type_contains_address(&origin->type())) {

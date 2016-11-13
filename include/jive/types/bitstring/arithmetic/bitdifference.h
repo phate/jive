@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitdifference(jive::output * op1, jive::output * op2);
+jive::oport *
+jive_bitdifference(jive::oport * op1, jive::oport * op2);
 
 #endif

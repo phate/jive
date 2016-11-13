@@ -43,7 +43,7 @@ private:
 };
 }
 
-jive::output *
+jive::oport *
 jive_immediate_create(
 	jive::region * region,
 	const jive::immediate * immediate_value);

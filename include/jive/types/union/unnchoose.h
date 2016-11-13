@@ -69,7 +69,7 @@ private:
 }
 }
 
-jive::output *
-jive_choose_create(size_t element, jive::output * operand);
+jive::oport *
+jive_choose_create(size_t element, jive::oport * operand);
 
 #endif

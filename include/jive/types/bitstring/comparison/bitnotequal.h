@@ -42,7 +42,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitnotequal(jive::output * operand1, jive::output * operand2);
+jive::oport *
+jive_bitnotequal(jive::oport * operand1, jive::oport * operand2);
 
 #endif

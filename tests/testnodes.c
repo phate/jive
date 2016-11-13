@@ -84,7 +84,7 @@ jive_test_node_create(
 	return op.create_node(region, operands);
 }
 
-std::vector<jive::output*>
+std::vector<jive::oport*>
 jive_test_node_create_normalized(
 	jive_graph * graph,
 	const std::vector<const jive::base::type*> & operand_types,
@@ -96,5 +96,6 @@ jive_test_node_create_normalized(
 		region = operands[0]->region();
 
 	test_operation op(operand_types, result_types);
-	return jive_node_create_normalized(region, op, operands);
+	auto tmp = jive_node_create_normalized(region, op, operands);
+	return {tmp.begin(), tmp.end()};
 }

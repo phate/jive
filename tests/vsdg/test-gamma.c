@@ -31,13 +31,11 @@ test_main(void)
 	jive::output * v1 = top->output(2);
 	jive::output * v2 = top->output(3);
 
-	std::vector<jive::output*> result;
-
 	//create normal gamma
-	jive::output * pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
-	result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
+	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
+	auto result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
 	graph.export_port(result[0], "dummy");
-	assert(result[0]->node()->operation() == jive::gamma_op(3));
+	assert(dynamic_cast<jive::output*>(result[0])->node()->operation() == jive::gamma_op(3));
 
 	jive_view(&graph, stdout);
 #if 0

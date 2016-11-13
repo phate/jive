@@ -287,9 +287,9 @@ static int test_main(void)
 	/* inhibit implicit optimization transformations */
 	graph.node_normal_form(typeid(jive::operation))->set_mutable(false);
 
-	jive::output * zero8 = jive_bitconstant(graph.root(), 8, "00000000");
+	auto zero8 = dynamic_cast<jive::output*>(jive_bitconstant(graph.root(), 8, "00000000"));
 	const char * tmparray0[] = {"out"};
-	verify_serialize_nodeexpr(zero8->node(),
+	verify_serialize_nodeexpr(dynamic_cast<jive::output*>(zero8)->node(),
 		0, NULL, NULL, /* gates */
 		NULL, /* inputs */
 		tmparray0 /* outputs */,
@@ -299,11 +299,11 @@ static int test_main(void)
 		graph.root(),
 		NULL, NULL, /* input names & origins */
 		tmparray1, /* output names */
-		zero8->node());
+		dynamic_cast<jive::output*>(zero8)->node());
 	
-	jive::output * one8 = jive_bitconstant(graph.root(), 8, "10000000");
-	jive::output * two8 = jive_bitconstant(graph.root(), 8, "01000000");
-	jive::output * add8 = jive_bitsum({one8, two8});
+	auto one8 = dynamic_cast<jive::output*>(jive_bitconstant(graph.root(), 8, "10000000"));
+	auto two8 = dynamic_cast<jive::output*>(jive_bitconstant(graph.root(), 8, "01000000"));
+	auto add8 = dynamic_cast<jive::output*>(jive_bitsum({one8, two8}));
 	assert(dynamic_cast<const jive::bits::add_op *>(&add8->node()->operation()));
 	assert(add8->node() != zero8->node());
 	const char * tmparray3[] = {"a", "b"};
@@ -321,7 +321,7 @@ static int test_main(void)
 		tmparray7, /* output names */
 		add8->node());
 
-	jive::output * cat16 = jive_bitconcat({one8, two8});
+	auto cat16 = dynamic_cast<jive::output*>(jive_bitconcat({one8, two8}));
 	jive_node * cat16n = cat16->node();
 	cat16n->add_input(bit8gate, zero8);
 	cat16n->add_output(stackgate);

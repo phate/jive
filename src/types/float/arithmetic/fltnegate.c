@@ -18,8 +18,8 @@ const char fltnegate_name[] = "FLTNEGATE";
 }
 }
 
-jive::output *
-jive_fltnegate(jive::output * arg)
+jive::oport *
+jive_fltnegate(jive::oport * arg)
 {
 	return jive::flt::neg_op::normalized_create(arg);
 }

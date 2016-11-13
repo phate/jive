@@ -31,7 +31,7 @@ test_main(void)
 	const char * tmparray0[] = {"x"};
 
 	jive_lambda * lambda = jive_lambda_begin(graph.root(), 1, &addrptr, tmparray0);
-	jive::output * fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
+	auto fct = jive_lambda_end(lambda, 1, &addrptr, lambda->arguments);
 
 	graph.export_port(fct, "fct");
 

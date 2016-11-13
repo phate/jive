@@ -199,7 +199,7 @@ namespace jive {
 namespace fct {
 
 lambda_dep
-lambda_dep_add(jive_lambda * self, jive::output * value)
+lambda_dep_add(jive_lambda * self, jive::oport * value)
 {
 	jive_node * enter = self->region->top();
 	jive_graph * graph = self->region->graph();
@@ -229,7 +229,7 @@ jive_lambda_begin(
 
 	jive_lambda * lambda = new jive_lambda;
 	lambda->region = new jive::region(parent, parent->graph());
-	lambda->arguments = new jive::output*[narguments];
+	lambda->arguments = new jive::oport*[narguments];
 	lambda->narguments = narguments;
 
 	jive::fct::lambda_head_op().create_node(lambda->region, {});
@@ -243,9 +243,9 @@ jive_lambda_begin(
 	return lambda;
 }
 
-jive::output *
+jive::oport *
 jive_lambda_end(jive_lambda * self,
-	size_t nresults, const jive::base::type * const result_types[], jive::output * const results[])
+	size_t nresults, const jive::base::type * const result_types[], jive::oport * const results[])
 {
 	jive::region * region = self->region;
 	jive_graph * graph = region->graph();

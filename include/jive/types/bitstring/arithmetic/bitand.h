@@ -41,7 +41,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitand(const std::vector<jive::output*> & operands);
+jive::oport *
+jive_bitand(const std::vector<jive::oport*> & operands);
 
 #endif

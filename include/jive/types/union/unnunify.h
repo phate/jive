@@ -106,15 +106,15 @@ private:
 }
 }
 
-jive::output *
+jive::oport *
 jive_unify_create(
 	const jive::unn::declaration * decl,
 	size_t option,
-	jive::output * const operand);
+	jive::oport * const operand);
 
 /* empty unify node */
 
-jive::output *
+jive::oport *
 jive_empty_unify_create(
 	jive::region * region,
 	const jive::unn::declaration * decl);

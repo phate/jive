@@ -42,7 +42,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitsgreatereq(jive::output * operand1, jive::output * operand2);
+jive::oport *
+jive_bitsgreatereq(jive::oport * operand1, jive::oport * operand2);
 
 #endif

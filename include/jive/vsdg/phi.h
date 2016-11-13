@@ -107,7 +107,7 @@ struct jive_phi {
 	\brief Represent information about a phi fixpoint value
 */
 struct jive_phi_fixvar {
-	jive::output * value;
+	jive::oport * value;
 	jive::gate * gate;
 };
 
@@ -127,7 +127,7 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type);
 	\brief Set fixpoint value of variable
 */
 void
-jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::output * post_value);
+jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::oport * post_value);
 
 /**
 	\brief End constructing a phi region

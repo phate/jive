@@ -75,8 +75,8 @@ apply_op::copy() const
 }
 }
 
-std::vector<jive::output *>
-jive_apply_create(jive::output * function, size_t narguments, jive::output * const arguments[])
+std::vector<jive::oport*>
+jive_apply_create(jive::oport * function, size_t narguments, jive::oport * const arguments[])
 {
 	jive::fct::apply_op op(dynamic_cast<const jive::fct::type &>(function->type()));
 	std::vector<jive::oport*> apply_args;
@@ -86,5 +86,6 @@ jive_apply_create(jive::output * function, size_t narguments, jive::output * con
 	}
 
 	jive::region * region = apply_args[0]->region();
-	return jive_node_create_normalized(region, op, apply_args);
+	auto tmp = jive_node_create_normalized(region, op, apply_args);
+	return {tmp.begin(), tmp.end()};
 }

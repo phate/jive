@@ -349,51 +349,51 @@ typedef base::domain_const_op<
 	addr::type, value_repr, format_value, type_of_value
 > constant_op;
 
-output *
+oport *
 constant(struct jive_graph * graph, const value_repr & vr);
 
 }
 }
 
-jive::output *
+jive::oport *
 jive_memberof(
-	jive::output * address,
+	jive::oport * address,
 	std::shared_ptr<const jive::rcd::declaration> & record_decl,
 	size_t index);
 
 /* "containerof" operator: given an address that is the start of a record
 member in memory, compute address of containing record */
 
-jive::output *
+jive::oport *
 jive_containerof(
-	jive::output * address,
+	jive::oport * address,
 	std::shared_ptr<const jive::rcd::declaration> & record_decl,
 	size_t index);
 
 /* "arraysubscript" operator: given an address that points to an element of
 an array, compute address of element offset by specified distance */
 
-jive::output *
-jive_arraysubscript(jive::output * address, const jive::value::type * element_type,
-	jive::output * index);
+jive::oport *
+jive_arraysubscript(jive::oport * address, const jive::value::type * element_type,
+	jive::oport * index);
 
 /* "arrayindex" operator: given two addresses that each point to an
 element of an array and the array element type, compute the
 difference of their indices */
 
-jive::output *
-jive_arrayindex(jive::output * addr1, jive::output * addr2,
+jive::oport *
+jive_arrayindex(jive::oport * addr1, jive::oport * addr2,
 	const jive::value::type * element_type,
 	const jive::bits::type * difference_type);
 
 /* label_to_address node */
 
-jive::output *
+jive::oport *
 jive_label_to_address_create(jive::region * region, const jive_label * label);
 
 /* label_to_bitstring node */
 
-jive::output *
+jive::oport *
 jive_label_to_bitstring_create(jive::region * region, const jive_label * label, size_t nbits);
 
 #endif

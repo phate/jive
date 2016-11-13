@@ -19,8 +19,8 @@ const char fltless_name[] = "FLTLESS";
 }
 }
 
-jive::output *
-jive_fltless(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltless(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::lt_op::normalized_create(arg1, arg2);
 }

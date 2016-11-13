@@ -35,7 +35,7 @@ typedef base::domain_symbol_op<jive::bits::type>
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
-jive::output *
+jive::oport *
 jive_bitsymbolicconstant(jive::region * region, size_t nbits, const char * name);
 
 #endif

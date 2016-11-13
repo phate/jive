@@ -40,7 +40,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitshiproduct(jive::output * factor1, jive::output * factor2);
+jive::oport *
+jive_bitshiproduct(jive::oport * factor1, jive::oport * factor2);
 
 #endif

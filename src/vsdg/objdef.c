@@ -73,12 +73,12 @@ objdef_operation::copy() const
 
 }
 
-jive::output *
+jive::oport *
 jive_objdef_create(
-	jive::output * output,
+	jive::oport * output,
 	const char * name,
 	const jive_linker_symbol * symbol)
 {
 	jive::objdef_operation op(name, symbol, output->type());
-	return jive_node_create_normalized(output->node()->region(), op, {output})[0];
+	return jive_node_create_normalized(output->region(), op, {output})[0];
 }

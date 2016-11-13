@@ -24,7 +24,7 @@ template class domain_symbol_op<jive::flt::type>;
 
 
 
-jive::output *
+jive::oport *
 jive_fltsymbolicconstant(jive_graph * graph, const char * name)
 {
 	jive::flt::symbol_op op(name, jive::flt::type());

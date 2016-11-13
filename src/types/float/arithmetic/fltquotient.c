@@ -18,8 +18,8 @@ const char fltquotient_name[] = "FLTQUOTIENT";
 }
 }
 
-jive::output *
-jive_fltquotient(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltquotient(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::div_op::normalized_create(arg1, arg2);
 }

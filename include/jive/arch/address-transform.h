@@ -155,14 +155,14 @@ class memlayout_mapper;
 
 /* address_to_bitstring node */
 
-jive::output *
-jive_address_to_bitstring_create(jive::output * address, size_t nbits,
+jive::oport *
+jive_address_to_bitstring_create(jive::oport * address, size_t nbits,
 	const jive::base::type * original_type);
 
 /* bitstring_to_address node */
 
-jive::output *
-jive_bitstring_to_address_create(jive::output * bitstring, size_t nbits,
+jive::oport *
+jive_bitstring_to_address_create(jive::oport * bitstring, size_t nbits,
 	const jive::base::type * original_type);
 
 /* reductions */

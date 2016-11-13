@@ -20,14 +20,14 @@
 #include <jive/vsdg/operators/reduction-helpers.h>
 #include <jive/vsdg/region.h>
 
-jive::output *
-jive_bitconcat(const std::vector<jive::output*> & operands)
+jive::oport *
+jive_bitconcat(const std::vector<jive::oport*> & operands)
 {
 	std::vector<jive::bits::type> types;
 	for (const auto operand : operands)
 		types.push_back(dynamic_cast<const jive::bits::type &>(operand->type()));
 
-	jive::region* region = operands[0]->node()->region();
+	jive::region* region = operands[0]->region();
 
 	jive::bits::concat_op op(std::move(types));
 	return jive_node_create_normalized(region, op, {operands.begin(), operands.end()})[0];
@@ -61,7 +61,7 @@ concat_test_reduce_arg_pair(const jive::oport * arg1, const jive::oport * arg2)
 	return false;
 }
 
-jive::output *
+jive::oport *
 concat_reduce_arg_pair(jive::oport * arg1, jive::oport * arg2)
 {
 	auto op1 = dynamic_cast<jive::output*>(arg1);
@@ -216,7 +216,7 @@ public:
 		return node_normal_form::operands_are_normalized(op, arguments);
 	}
 
-	virtual std::vector<jive::output *>
+	virtual std::vector<jive::oport*>
 	normalized_create(
 		jive::region * region,
 		const jive::operation & op,
@@ -242,12 +242,8 @@ public:
 			new_args = base::detail::pairwise_reduce(
 				std::move(new_args),
 				concat_reduce_arg_pair);
-			if (new_args.size() == 1) {
-				std::vector<jive::output*> tmp;
-				for (auto arg : new_args)
-					tmp.push_back(dynamic_cast<jive::output*>(arg));
-				return std::move(tmp);
-			}
+			if (new_args.size() == 1)
+				return std::move(new_args);
 		}
 
 		concat_op new_op(types_from_arguments(new_args));

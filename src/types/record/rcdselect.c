@@ -79,7 +79,7 @@ select_operation::reduce_operand(
 		return op->node()->input(element())->origin();
 
 	if (path == jive_select_reduction_load) {
-		jive::output * address = dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+		auto address = op->node()->input(0)->origin();
 
 		size_t nbits = 0;
 		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
@@ -91,12 +91,12 @@ select_operation::reduce_operand(
 		decl = static_cast<const jive::rcd::type*>(&op->node()->output(0)->type())->declaration();
 
 		size_t nstates = op->node()->ninputs()-1;
-		jive::output * states[nstates];
+		jive::oport * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
-			states[n] = dynamic_cast<jive::output*>(op->node()->input(n+1)->origin());
+			states[n] = op->node()->input(n+1)->origin();
 		}
 
-		jive::output * element_address = jive_memberof(address, decl, element());
+		auto element_address = jive_memberof(address, decl, element());
 		if (dynamic_cast<const jive::addr::type*>(&address->type())) {
 			return jive_load_by_address_create(element_address, &decl->element(element()),
 				nstates, states);
@@ -119,12 +119,12 @@ select_operation::copy() const
 }
 
 
-jive::output *
-jive_select_create(size_t member, jive::output * argument)
+jive::oport *
+jive_select_create(size_t member, jive::oport * argument)
 {
 	const jive::rcd::type & rcd_type =
 		dynamic_cast<const jive::rcd::type &>(argument->type());
 	jive::rcd::select_operation op(rcd_type, member);
-	return jive_node_create_normalized(argument->node()->region(), op, {argument})[0];
+	return jive_node_create_normalized(argument->region(), op, {argument})[0];
 }
 

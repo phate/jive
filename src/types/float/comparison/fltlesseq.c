@@ -19,8 +19,8 @@ const char fltlesseq_name[] = "FLTLESSEQ";
 }
 }
 
-jive::output *
-jive_fltlesseq(jive::output * arg1, jive::output * arg2)
+jive::oport *
+jive_fltlesseq(jive::oport * arg1, jive::oport * arg2)
 {
 	return jive::flt::le_op::normalized_create(arg1, arg2);
 }

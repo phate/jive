@@ -90,7 +90,7 @@ private:
 }
 }
 
-jive::output *
-jive_bitconcat(const std::vector<jive::output*> & operands);
+jive::oport *
+jive_bitconcat(const std::vector<jive::oport*> & operands);
 
 #endif

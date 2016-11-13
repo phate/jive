@@ -41,7 +41,7 @@ public:
 }
 }
 
-jive::output *
-jive_bitxor(const std::vector<jive::output*> & operands);
+jive::oport *
+jive_bitxor(const std::vector<jive::oport*> & operands);
 
 #endif

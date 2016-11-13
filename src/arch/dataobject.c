@@ -128,7 +128,7 @@ is_powerof2(size_t v)
 }
 
 static void
-squeeze_data_items(std::vector<jive::output *> & items)
+squeeze_data_items(std::vector<jive::oport*> & items)
 {
 	size_t k = 0;
 	for (size_t n = 0; n < items.size(); n++) {
@@ -138,12 +138,14 @@ squeeze_data_items(std::vector<jive::output *> & items)
 	items.resize(k);
 }
 
-static std::vector<jive::output *>
+static std::vector<jive::oport*>
 flatten_data_items(
-	jive::output * data,
+	jive::oport * data,
 	jive::memlayout_mapper * layout_mapper)
 {
-	std::vector<jive::output *> items;
+	auto tmp = dynamic_cast<jive::output*>(data);
+
+	std::vector<jive::oport*> items;
 	const jive::base::type * type_ = &data->type();
 	if (dynamic_cast<const jive::bits::type*>(type_)) {
 		const jive::bits::type * type = static_cast<const jive::bits::type*>(type_);
@@ -167,19 +169,17 @@ flatten_data_items(
 		std::shared_ptr<const jive::rcd::declaration> decl = type->declaration();
 		const jive::record_memlayout & layout = layout_mapper->map_record(decl);
 
-		if (!dynamic_cast<const jive::rcd::group_op *>(&data->node()->operation())) {
+		if (!dynamic_cast<const jive::rcd::group_op *>(&tmp->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
 		}
 
-		jive_graph * graph = data->node()->graph();
+		jive_graph * graph = data->region()->graph();
 		
-		jive::output * zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
+		auto zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
 		items.resize(layout.size(), zero_pad);
 
 		for (size_t k = 0; k < decl->nelements(); k++) {
-			std::vector<jive::output *> sub_items = flatten_data_items(
-				dynamic_cast<jive::output*>(data->node()->input(k)->origin()),
-				layout_mapper);
+			auto sub_items = flatten_data_items(tmp->node()->input(k)->origin(), layout_mapper);
 			
 			if (sub_items.size() + layout.element(k).offset() > items.size()) {
 				throw jive::compiler_error("Invalid record layout: element exceeds record");
@@ -196,17 +196,16 @@ flatten_data_items(
 		const jive::unn::type * type = static_cast<const jive::unn::type*>(type_);
 		const jive::union_memlayout & layout = layout_mapper->map_union(type->declaration());
 		
-		if (!dynamic_cast<const jive::unn::unify_op *>(&data->node()->operation())) {
+		if (!dynamic_cast<const jive::unn::unify_op *>(&tmp->node()->operation())) {
 			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");
 		}
 		
-		jive_graph * graph = data->node()->graph();
+		jive_graph * graph = data->region()->graph();
 		
-		jive::output * zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
+		auto zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
 		items.resize(layout.size(), zero_pad);
 		
-		std::vector<jive::output *> sub_items = flatten_data_items(
-			dynamic_cast<jive::output*>(data->node()->input(0)->origin()), layout_mapper);
+		auto sub_items = flatten_data_items(tmp->node()->input(0)->origin(), layout_mapper);
 		
 		if (sub_items.size() > items.size()) {
 			throw jive::compiler_error("Invalid union layout: element exceeds union");
@@ -220,14 +219,14 @@ flatten_data_items(
 	return items;
 }
 
-static jive::output *
+static jive::oport *
 jive_dataobj_internal(
-	jive::output * data,
+	jive::oport * data,
 	jive::memlayout_mapper * layout_mapper,
 	jive::region * parent,
 	jive::region * region)
 {
-	std::vector<jive::output *> data_items = flatten_data_items(data, layout_mapper);
+	std::vector<jive::oport*> data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
 	std::vector<std::unique_ptr<const jive::base::type>> types;
 	std::vector<jive::oport*> arguments;
@@ -245,28 +244,28 @@ jive_dataobj_internal(
 	return obj->output(0);
 }
 
-jive::output *
-jive_dataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
+jive::oport *
+jive_dataobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive::region * parent = data->node()->graph()->root();
+	jive::region * parent = data->region()->graph()->root();
 	jive::region * region = new jive::region(parent, parent->graph());
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
 }
 
-jive::output *
-jive_rodataobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
+jive::oport *
+jive_rodataobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive::region * parent = data->node()->graph()->root();
+	jive::region * parent = data->region()->graph()->root();
 	jive::region * region = new jive::region(parent, parent->graph());
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);
 }
 
-jive::output *
-jive_bssobj(jive::output * data, jive::memlayout_mapper * layout_mapper)
+jive::oport *
+jive_bssobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
 {
-	jive::region * parent = data->node()->graph()->root();
+	jive::region * parent = data->region()->graph()->root();
 	jive::region * region = new jive::region(parent, parent->graph());
 
 	return jive_dataobj_internal(data, layout_mapper, parent, region);

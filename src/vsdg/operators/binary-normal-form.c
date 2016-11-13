@@ -219,7 +219,7 @@ binary_normal_form::operands_are_normalized(
 	return node_normal_form::operands_are_normalized(base_op, args);
 }
 
-std::vector<jive::output *>
+std::vector<jive::oport*>
 binary_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & base_op,
@@ -244,10 +244,8 @@ binary_normal_form::normalized_create(
 
 	if (get_mutable() && get_reducible()) {
 		new_args = reduce_operands(op, std::move(new_args));
-		if (new_args.size() == 1) {
-			std::vector<jive::output*> tmp(1, dynamic_cast<jive::output*>(new_args[0]));
-			return std::move(tmp);
-		}
+		if (new_args.size() == 1)
+			return new_args;
 	}
 
 	/* FIXME: reorder for commutative operation */
@@ -371,7 +369,7 @@ flattened_binary_normal_form::operands_are_normalized(
 	return nf->operands_are_normalized(op.bin_operation(), arguments);
 }
 
-std::vector<jive::output *>
+std::vector<jive::oport*>
 flattened_binary_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & base_op,
