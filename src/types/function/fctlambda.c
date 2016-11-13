@@ -164,7 +164,8 @@ jive_lambda_is_self_recursive(const jive_node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs() == 1);
 
-	const jive::region * lambda_region = jive_node_anchored_region(self, 0);
+	auto lambda_region = self->input(0)->origin()->region();
+	JIVE_DEBUG_ASSERT(self->region() != lambda_region);
 
 	if (jive_phi_region_const_cast(self->region()) == NULL)
 		return false;

@@ -626,16 +626,6 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::region *
-jive_node_anchored_region(const jive_node * self, size_t index)
-{
-	jive::region * region = self->input(index)->origin()->region();
-	/* the given region can only be different if the identified input
-	 * is of "anchor" type, so this implicitly checks the type */
-	JIVE_DEBUG_ASSERT(self->region() != region);
-	return region;
-}
-
 void
 jive_node_get_use_count_input(
 	const jive_node * self,

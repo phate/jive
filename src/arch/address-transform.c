@@ -370,7 +370,8 @@ jive_lambda_node_address_transform(
 	if (!type_contains_address(type))
 		return;
 
-	jive::region * region = jive_node_anchored_region(node, 0);
+	jive::region * region = node->input(0)->origin()->region();
+	JIVE_DEBUG_ASSERT(node->region() != region);
 	jive_node * enter = region->top();
 	jive_node * leave = region->bottom();
 
