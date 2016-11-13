@@ -33,7 +33,8 @@ static int function_test_build_lambda(void)
 	jive_lambda * lambda = jive_lambda_begin(graph.root(),
 		2, tmparray0, tmparray1);
 
-	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
+	jive::output * sum = jive_bitsum(
+		std::vector<jive::output*>(lambda->arguments, lambda->arguments+lambda->narguments));
 
 	jive::output * fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
 	
@@ -119,7 +120,8 @@ static int function_test_lambda_apply(void)
 	jive_lambda * lambda = jive_lambda_begin(graph.root(),
 		2, tmparray0, tmparray1);
 
-	jive::output * sum = jive_bitsum(lambda->narguments, lambda->arguments);
+	jive::output * sum = jive_bitsum(
+		std::vector<jive::output*>(lambda->arguments, lambda->arguments+lambda->narguments));
 
 	const jive::base::type * tmparray11[] = {&bits32};
 	jive::output * lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);

@@ -41,6 +41,6 @@ public:
 }
 
 jive::output *
-jive_bitmultiply(size_t noperands, jive::output * const * operands);
+jive_bitmultiply(const std::vector<jive::output*> & operands);
 
 #endif

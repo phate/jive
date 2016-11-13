@@ -21,18 +21,16 @@
 #include <jive/vsdg/region.h>
 
 jive::output *
-jive_bitconcat(size_t narguments, jive::output * const * arguments)
+jive_bitconcat(const std::vector<jive::output*> & operands)
 {
 	std::vector<jive::bits::type> types;
-	for (size_t n = 0; n < narguments; ++n) {
-		types.push_back(dynamic_cast<const jive::bits::type &>(arguments[n]->type()));
-	}
+	for (const auto operand : operands)
+		types.push_back(dynamic_cast<const jive::bits::type &>(operand->type()));
 
-	jive::region* region = arguments[0]->node()->region();
+	jive::region* region = operands[0]->node()->region();
 
 	jive::bits::concat_op op(std::move(types));
-	return jive_node_create_normalized(
-		region, op, std::vector<jive::oport*>(arguments, arguments + narguments))[0];
+	return jive_node_create_normalized(region, op, {operands.begin(), operands.end()})[0];
 }
 
 namespace jive {

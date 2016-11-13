@@ -248,8 +248,7 @@ jive_memberof_node_address_transform(
 	jive::output * address = jive_address_to_bitstring_create(
 		dynamic_cast<jive::output*>(node->input(0)->origin()), nbits,
 		&node->input(0)->origin()->type());
-	jive::output * tmparray0[] = {address, offset};
-	jive::output * sum = jive_bitsum(2, tmparray0);
+	jive::output * sum = jive_bitsum({address, offset});
 	jive::output * off_address = jive_bitstring_to_address_create(sum, nbits,
 		&node->output(0)->type());
 
@@ -294,10 +293,8 @@ jive_arraysubscript_node_address_transform(
 		dynamic_cast<jive::output*>(node->input(0)->origin()), nbits,
 		&node->input(0)->origin()->type());
 	jive::output * elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
-	jive::output * tmparray1[] = {elem_size, index};
-	jive::output * offset = jive_bitmultiply(2, tmparray1);
-	jive::output * tmparray2[] = {address, offset};
-	jive::output * sum = jive_bitsum(2, tmparray2);
+	jive::output * offset = jive_bitmultiply({elem_size, index});
+	jive::output * sum = jive_bitsum({address, offset});
 	jive::output * off_address = jive_bitstring_to_address_create(sum, nbits,
 		&node->output(0)->type());
 	

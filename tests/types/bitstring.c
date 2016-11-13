@@ -33,11 +33,9 @@ static int types_bitstring_arithmetic_test_bitand(void)
 
 	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
-	jive::output * tmparray1[] = {s0, s1};
 
-	jive::output * and0 = jive_bitand(2, tmparray1);
-	jive::output * tmparray2[] = {c0, c1};
-	jive::output * and1 = jive_bitand(2, tmparray2);
+	jive::output * and0 = jive_bitand({s0, s1});
+	jive::output * and1 = jive_bitand({c0, c1});
 
 	graph.export_port(and0, "dummy");
 	graph.export_port(and1, "dummy");
@@ -186,11 +184,9 @@ static int types_bitstring_arithmetic_test_bitor(void)
 
 	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
-	jive::output * tmparray1[] = {s0, s1};
 
-	jive::output * or0 = jive_bitor(2, tmparray1);
-	jive::output * tmparray2[] = {c0, c1};
-	jive::output * or1 = jive_bitor(2, tmparray2);
+	jive::output * or0 = jive_bitor({s0, s1});
+	jive::output * or1 = jive_bitor({c0, c1});
 
 	graph.export_port(or0, "dummy");
 	graph.export_port(or1, "dummy");
@@ -217,12 +213,9 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 
 	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
-	jive::output * tmparray1[] = {s0,
-		s1};
 
-	jive::output * product0 = jive_bitmultiply(2, tmparray1);
-	jive::output * tmparray2[] = {c0, c1};
-	jive::output * product1 = jive_bitmultiply(2, tmparray2);
+	jive::output * product0 = jive_bitmultiply({s0, s1});
+	jive::output * product1 = jive_bitmultiply({c0, c1});
 
 	graph.export_port(product0, "dummy");
 	graph.export_port(product1, "dummy");
@@ -401,10 +394,8 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 
-	jive::output * tmparray1[] = {s0, s1};
-	jive::output * sum0 = jive_bitsum(2, tmparray1);
-	jive::output * tmparray2[] = {c0, c1};
-	jive::output * sum1 = jive_bitsum(2, tmparray2);
+	jive::output * sum0 = jive_bitsum({s0, s1});
+	jive::output * sum1 = jive_bitsum({c0, c1});
 
 	graph.export_port(sum0, "dummy");
 	graph.export_port(sum1, "dummy");
@@ -517,10 +508,8 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	jive::output * c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 	jive::output * c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 
-	jive::output * tmparray1[] = {s0, s1};
-	jive::output * xor0 = jive_bitxor(2, tmparray1);
-	jive::output * tmparray2[] = {c0, c1};
-	jive::output * xor1 = jive_bitxor(2, tmparray2);
+	jive::output * xor0 = jive_bitxor({s0, s1});
+	jive::output * xor1 = jive_bitxor({c0, c1});
 
 	graph.export_port(xor0, "dummy");
 	graph.export_port(xor1, "dummy");
@@ -1037,14 +1026,12 @@ static int types_bitstring_test_normalize(void)
 	auto  sum_nf = graph.node_normal_form(typeid(jive::bits::add_op));
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
-	jive::output * tmparray1[] = {lambda->arguments[0], c0};
 
-	jive::output * sum0 = jive_bitsum(2, tmparray1);
+	jive::output * sum0 = jive_bitsum({lambda->arguments[0], c0});
 	assert(sum0->node()->operation() == jive::bits::add_op(32));
 	assert(sum0->node()->noperands() == 2);
-	jive::output * tmparray2[] = {sum0, c1};
-	
-	jive::output * sum1 = jive_bitsum(2, tmparray2);
+
+	jive::output * sum1 = jive_bitsum({sum0, c1});
 	assert(sum1->node()->operation() == jive::bits::add_op(32));
 	assert(sum1->node()->noperands() == 2);
 
@@ -1095,15 +1082,13 @@ static int types_bitstring_test_reduction(void)
 
 	jive::output * a = jive_bitconstant(graph.root(), 4, "1100");
 	jive::output * b = jive_bitconstant(graph.root(), 4, "1010");
-	
-	jive::output * ops[] = {a, b};
-	
-	assert_constant(jive_bitand(2, ops), 4, "1000");
-	assert_constant(jive_bitor(2, ops), 4, "1110");
-	assert_constant(jive_bitxor(2, ops), 4, "0110");
-	assert_constant(jive_bitsum(2, ops), 4, "0001");
-	assert_constant(jive_bitmultiply(2, ops), 4, "1111");
-	assert_constant(jive_bitconcat(2, ops), 8, "11001010");
+
+	assert_constant(jive_bitand({a, b}), 4, "1000");
+	assert_constant(jive_bitor({a, b}), 4, "1110");
+	assert_constant(jive_bitxor({a, b}), 4, "0110");
+	assert_constant(jive_bitsum({a, b}), 4, "0001");
+	assert_constant(jive_bitmultiply({a, b}), 4, "1111");
+	assert_constant(jive_bitconcat({a, b}), 8, "11001010");
 	assert_constant(jive_bitnegate(a), 4, "1011");
 	assert_constant(jive_bitnegate(b), 4, "1101");
 	
@@ -1113,8 +1098,7 @@ static int types_bitstring_test_reduction(void)
 	jive::output * y = jive_bitsymbolicconstant(graph.root(), 16, "y");
 	
 	{
-		jive::output *  tmparray0[] = {x, y};
-		jive::output * concat = jive_bitconcat(2, tmparray0);
+		jive::output * concat = jive_bitconcat({x, y});
 		jive::output * slice = jive_bitslice(concat, 8, 24);
 		jive_node * node = ((jive::output *) slice)->node();
 		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
@@ -1139,8 +1123,7 @@ static int types_bitstring_test_reduction(void)
 	{
 		jive::output * slice1 = jive_bitslice(x, 0, 8);
 		jive::output * slice2 = jive_bitslice(x, 8, 16);
-		jive::output * tmparray1[] = {slice1, slice2};
-		jive::output * concat = jive_bitconcat(2, tmparray1);
+		jive::output * concat = jive_bitconcat({slice1, slice2});
 		assert(concat == x);
 	}
 
@@ -1191,8 +1174,7 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* slice of concat */
-		jive::output * list1[] = {base_x, base_y};
-		jive::output * a = jive_bitconcat(2, list1);
+		jive::output * a = jive_bitconcat({base_x, base_y});
 		jive::output * b = jive_bitslice(a, 0, 8);
 		
 		assert(static_cast<const jive::bits::type*>(&b->type())->nbits() == 8);
@@ -1202,11 +1184,8 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* concat flattening */
-		jive::output * list1[] = {base_x, base_y};
-		jive::output * a = jive_bitconcat(2, list1);
-		
-		jive::output * list2[] = {a, base_z};
-		jive::output * b = jive_bitconcat(2, list2);
+		jive::output * a = jive_bitconcat({base_x, base_y});
+		jive::output * b = jive_bitconcat({a, base_z});
 		
 		assert(dynamic_cast<const jive::bits::concat_op *>(&b->node()->operation()));
 		assert(b->node()->ninputs() == 3);
@@ -1217,7 +1196,7 @@ static int types_bitstring_test_slice_concat(void)
 	
 	{
 		/* concat of single node */
-		jive::output * a = jive_bitconcat(1, &base_x);
+		jive::output * a = jive_bitconcat({base_x});
 		
 		assert(a==base_x);
 	}
@@ -1226,16 +1205,14 @@ static int types_bitstring_test_slice_concat(void)
 		/* concat of slices */
 		jive::output * a = jive_bitslice(base_x, 0, 4);
 		jive::output * b = jive_bitslice(base_x, 4, 8);
-		jive::output * list1[] = {a, b};
-		jive::output * c = jive_bitconcat(2, list1);
+		jive::output * c = jive_bitconcat({a, b});
 		
 		assert(c==base_x);
 	}
 	
 	{
 		/* concat of constants */
-		jive::output * list1[] = {base_const1, base_const2};
-		jive::output * a = jive_bitconcat(2, list1);
+		jive::output * a = jive_bitconcat({base_const1, base_const2});
 		
 		const jive::bits::constant_op & op =
 			dynamic_cast<const jive::bits::constant_op &>(a->node()->operation());
@@ -1254,9 +1231,8 @@ static int types_bitstring_test_slice_concat(void)
 		jive::output * d = jive_bitslice(base_x, 2, 6);
 		assert(c == d);
 		
-		jive::output * list1[] = {base_x, base_y};
-		jive::output * e = jive_bitconcat(2, list1);
-		jive::output * f = jive_bitconcat(2, list1);
+		jive::output * e = jive_bitconcat({base_x, base_y});
+		jive::output * f = jive_bitconcat({base_x, base_y});
 		assert(e == f);
 	}
 	

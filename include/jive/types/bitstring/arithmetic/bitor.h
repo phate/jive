@@ -41,6 +41,6 @@ public:
 }
 
 jive::output *
-jive_bitor(size_t noperands, jive::output * const * operands);
+jive_bitor(const std::vector<jive::output*> & operands);
 
 #endif

@@ -303,8 +303,7 @@ static int test_main(void)
 	
 	jive::output * one8 = jive_bitconstant(graph.root(), 8, "10000000");
 	jive::output * two8 = jive_bitconstant(graph.root(), 8, "01000000");
-	jive::output * tmparray2[] = {one8, two8};
-	jive::output * add8 = jive_bitsum(2, tmparray2);
+	jive::output * add8 = jive_bitsum({one8, two8});
 	assert(dynamic_cast<const jive::bits::add_op *>(&add8->node()->operation()));
 	assert(add8->node() != zero8->node());
 	const char * tmparray3[] = {"a", "b"};
@@ -321,9 +320,8 @@ static int test_main(void)
 		tmparray5, tmparray6, /* input names & origins */
 		tmparray7, /* output names */
 		add8->node());
-	jive::output * tmparray8[] = {one8, two8};
-	
-	jive::output * cat16 = jive_bitconcat(2, tmparray8);
+
+	jive::output * cat16 = jive_bitconcat({one8, two8});
 	jive_node * cat16n = cat16->node();
 	cat16n->add_input(bit8gate, zero8);
 	cat16n->add_output(stackgate);

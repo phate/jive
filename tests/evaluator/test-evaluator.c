@@ -49,15 +49,11 @@ fib(size_t n)
 	jive_theta_loopvar lv_k = jive_theta_loopvar_enter(theta, k);
 	jive_theta_loopvar lv_n = jive_theta_loopvar_enter(theta, n);
 
-	std::vector<jive::output*> operands({lv_i.value, lv_j.value});
-	jive::output * t = jive_bitsum(2, &operands[0]);
+	jive::output * t = jive_bitsum({lv_i.value, lv_j.value});
 
 	jive::output * one = jive_bitconstant_unsigned(theta.region, 32, 1);
 
-	operands.clear();
-	operands.push_back(one);
-	operands.push_back(lv_k.value);
-	jive::output * new_k = jive_bitsum(2, &operands[0]);
+	jive::output * new_k = jive_bitsum({one, lv_k.value});
 
 	jive::output * cmp = jive_bitulesseq(new_k, lv_n.value);
 	jive::output * predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
@@ -153,8 +149,7 @@ unsigned int fib(unsigned int n){
 	jive::output * tmp2 = jive_bitdifference(n, two);
 	tmp2 = jive_apply_create(depvar.output, 1, &tmp2)[0];
 
-	std::vector<jive::output*> operands({tmp, tmp2});
-	jive::output * result = jive_bitsum(2, &operands[0]);
+	jive::output * result = jive_bitsum({tmp, tmp2});
 
 	jive::output * predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(n, two));
 	result = jive_gamma(predicate, {&bits32}, {{result}, {n}})[0];
@@ -228,8 +223,7 @@ test_loadstore(struct jive_graph * graph)
 	jive::output * value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 
 	jive::output * three = jive_bitconstant_unsigned(lambda->region, 4, 3);
-	std::vector<jive::output*> operands({value, three});
-	value = jive_bitsum(2, &operands[0]);
+	value = jive_bitsum({value, three});
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
 

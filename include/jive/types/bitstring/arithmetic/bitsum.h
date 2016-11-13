@@ -41,6 +41,6 @@ public:
 }
 
 jive::output *
-jive_bitsum(size_t noperands, jive::output * const * operands);
+jive_bitsum(const std::vector<jive::output*> & operands);
 
 #endif

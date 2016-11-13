@@ -36,10 +36,8 @@ static int test_main(void)
 	jive::output * lit = jive_bitconstant_unsigned(subroutine.region, 32, 42);
 	jive::output * sym = jive_bitsymbolicconstant(subroutine.region, 32, "symbol");
 	jive::output * bitnot = jive_bitnot(sym);
-	jive::output* tmparray2[] = {arg1, lit};
-	jive::output * sum1 = jive_bitsum(2, tmparray2);
-	jive::output* tmparray3[] = {lit, bitnot};
-	jive::output * sum2 = jive_bitsum(2, tmparray3);
+	jive::output * sum1 = jive_bitsum({arg1, lit});
+	jive::output * sum2 = jive_bitsum({lit, bitnot});
 	jive::output * res = jive_bituquotient(sum1, sum2);
 	jive_subroutine_simple_set_result(subroutine, 0, res);
 	

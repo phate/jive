@@ -36,19 +36,13 @@ static int test_main(void)
 
 	jive::output * a = jive_bitconstant(gr1.root(), 8, "01010101");
 	jive::output * b = jive_bitslice(a, 2, 6);
-	jive::output * tmparray0[] = {b, b};
-	jive::output * c = jive_bitconcat(2, tmparray0);
-	jive::output * tmparray1[] = {a, c};
-	jive::output * d = jive_bitsum(2, tmparray1);
+	jive::output * c = jive_bitconcat({b, b});
+	jive::output * d = jive_bitsum({a, c});
 	jive::output * e = jive_bitdifference(a, c);
-	jive::output * tmparray2[] = {d, e};
-	jive::output * f = jive_bitand(2, tmparray2);
-	jive::output * tmparray3[] = {d, e};
-	jive::output * g = jive_bitor(2, tmparray3);
-	jive::output * tmparray4[] = {f, g};
-	jive::output * h = jive_bitxor(2, tmparray4);
-	jive::output * tmparray5[] = {f, g};
-	jive::output * i = jive_bitmultiply(2, tmparray5);
+	jive::output * f = jive_bitand({d, e});
+	jive::output * g = jive_bitor({d, e});
+	jive::output * h = jive_bitxor({f, g});
+	jive::output * i = jive_bitmultiply({f, g});
 	jive::output * j = jive_bituhiproduct(h, i);
 	jive::output * k = jive_bitshiproduct(h, i);
 	jive::output * l = jive_bituquotient(j, k);

@@ -101,9 +101,9 @@ slice_op::reduce_operand(
 	
 	if (path == jive_unop_reduction_distribute) {
 		jive_node * node = arg->node();
-		jive::output * arguments[node->ninputs()];
+		std::vector<jive::output*> arguments;
 		
-		size_t narguments = 0, pos = 0, n;
+		size_t pos = 0, n;
 		for (n = 0; n < node->noperands(); n++) {
 			jive::output * argument = dynamic_cast<jive::output*>(node->input(n)->origin());
 			size_t base = pos;
@@ -113,11 +113,11 @@ slice_op::reduce_operand(
 				size_t slice_low = (low() > base) ? (low() - base) : 0;
 				size_t slice_high = (high() < pos) ? (high() - base) : (pos - base);
 				argument = jive_bitslice(argument, slice_low, slice_high);
-				arguments[narguments++] = argument;
+				arguments.push_back(argument);
 			}
 		}
 		
-		return jive_bitconcat(narguments, arguments);
+		return jive_bitconcat(arguments);
 	}
 	
 	return nullptr;
