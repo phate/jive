@@ -70,15 +70,15 @@ negotiator_split_operation::debug_string() const
 
 jive_unop_reduction_path_t
 negotiator_split_operation::can_reduce_operand(
-	const jive::output * arg) const noexcept
+	const jive::oport * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 negotiator_split_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+	jive::oport * arg) const
 {
 	return nullptr;
 }

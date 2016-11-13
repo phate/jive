@@ -61,13 +61,13 @@ split_operation::result_cls(size_t index) const noexcept
 
 /* reduction methods */
 jive_unop_reduction_path_t
-split_operation::can_reduce_operand(const jive::output * arg) const noexcept
+split_operation::can_reduce_operand(const jive::oport * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive::output *
-split_operation::reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const
+jive::oport *
+split_operation::reduce_operand(jive_unop_reduction_path_t path, jive::oport * arg) const
 {
 	return nullptr;
 }

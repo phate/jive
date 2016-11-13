@@ -99,10 +99,9 @@ unary_normal_form::normalized_create(
 		const jive::base::unary_op & un_op =
 			static_cast<const jive::base::unary_op &>(op);
 
-		jive_unop_reduction_path_t reduction =
-			un_op.can_reduce_operand(dynamic_cast<jive::output*>(arguments[0]));
+		jive_unop_reduction_path_t reduction = un_op.can_reduce_operand(arguments[0]);
 		if (reduction != jive_unop_reduction_none) {
-			return { un_op.reduce_operand(reduction, dynamic_cast<jive::output*>(arguments[0])) };
+			return { dynamic_cast<jive::output*>(un_op.reduce_operand(reduction, arguments[0])) };
 		}
 	}
 

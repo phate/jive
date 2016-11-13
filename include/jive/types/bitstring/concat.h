@@ -54,14 +54,14 @@ public:
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::output * arg1,
-		const jive::output * arg2) const noexcept override;
+		const jive::oport * arg1,
+		const jive::oport * arg2) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::output * arg1,
-		jive::output * arg2) const override;
+		jive::oport * arg1,
+		jive::oport * arg2) const override;
 
 	virtual jive_binary_operation_flags
 	flags() const noexcept override;

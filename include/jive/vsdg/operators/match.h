@@ -35,10 +35,10 @@ public:
 	result_type(size_t index) const noexcept override;
 
 	virtual jive_unop_reduction_path_t
-	can_reduce_operand(const jive::output * arg) const noexcept override;
+	can_reduce_operand(const jive::oport * arg) const noexcept override;
 
-	virtual jive::output *
-	reduce_operand(jive_unop_reduction_path_t path, jive::output * arg) const override;
+	virtual jive::oport *
+	reduce_operand(jive_unop_reduction_path_t path, jive::oport * arg) const override;
 
 	virtual std::string
 	debug_string() const override;

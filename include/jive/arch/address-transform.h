@@ -65,12 +65,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::output * arg) const noexcept override;
+		const jive::oport * arg) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::output * arg) const override;
+		jive::oport * arg) const override;
 
 	inline size_t nbits() const noexcept { return nbits_; }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }
@@ -130,12 +130,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::output * arg) const noexcept override;
+		const jive::oport * arg) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::output * arg) const override;
+		jive::oport * arg) const override;
 
 	inline size_t nbits() const noexcept { return nbits_; }
 	inline const jive::base::type & original_type() const noexcept { return *original_type_; }

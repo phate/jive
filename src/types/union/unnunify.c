@@ -50,15 +50,15 @@ unify_op::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 unify_op::can_reduce_operand(
-	const jive::output * arg) const noexcept
+	const jive::oport * arg) const noexcept
 {
 	return jive_unop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 unify_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+	jive::oport * arg) const
 {
 	return nullptr;
 }

@@ -49,14 +49,14 @@ public:
 
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::output * op1,
-		const jive::output * op2) const noexcept = 0;
+		const jive::oport * op1,
+		const jive::oport * op2) const noexcept = 0;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::output * op1,
-		jive::output * op2) const = 0;
+		jive::oport * op1,
+		jive::oport * op2) const = 0;
 
 	virtual jive_binary_operation_flags
 	flags() const noexcept;

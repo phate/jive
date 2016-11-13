@@ -107,7 +107,7 @@ commutative_pairwise_reduce(
 	while (left != args.end()) {
 		auto right = std::next(left);
 		while (right != args.end()) {
-			jive::output * result = reductor(*left, *right);
+			jive::oport * result = reductor(*left, *right);
 			if (result) {
 				*left = result;
 				*right = args.back();

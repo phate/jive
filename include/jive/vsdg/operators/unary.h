@@ -34,12 +34,12 @@ public:
 
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::output * arg) const noexcept = 0;
+		const jive::oport * arg) const noexcept = 0;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::output * arg) const = 0;
+		jive::oport * arg) const = 0;
 };
 
 }

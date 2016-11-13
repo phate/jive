@@ -54,12 +54,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::output * arg) const noexcept override;
+		const jive::oport * arg) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::output * arg) const override;
+		jive::oport * arg) const override;
 
 	inline const jive_resource_class * in_class() const noexcept { return in_class_; }
 	inline const jive_resource_class * out_class() const noexcept { return out_class_; }

@@ -357,26 +357,27 @@ concat_op::result_type(size_t index) const noexcept
 }
 jive_binop_reduction_path_t
 concat_op::can_reduce_operand_pair(
-	const jive::output * arg1,
-	const jive::output * arg2) const noexcept
+	const jive::oport * arg1,
+	const jive::oport * arg2) const noexcept
 {
-	const constant_op * arg1_constant = dynamic_cast<const constant_op *>(
-		&arg1->node()->operation());
-	const constant_op * arg2_constant = dynamic_cast<const constant_op *>(
-		&arg2->node()->operation());
+	auto op1 = dynamic_cast<const jive::output*>(arg1);
+	auto op2 = dynamic_cast<const jive::output*>(arg2);
+	if (!op1 || !op2)
+		return jive_binop_reduction_none;
+
+	auto arg1_constant = dynamic_cast<const constant_op *>(&op1->node()->operation());
+	auto arg2_constant = dynamic_cast<const constant_op *>(&op2->node()->operation());
 
 	if (arg1_constant && arg2_constant) {
 		return jive_binop_reduction_constants;
 	}
 
-	const slice_op * arg1_slice = dynamic_cast<const slice_op *>(
-		&arg1->node()->operation());
-	const slice_op * arg2_slice = dynamic_cast<const slice_op *>(
-		&arg2->node()->operation());
+	auto arg1_slice = dynamic_cast<const slice_op *>(&op1->node()->operation());
+	auto arg2_slice = dynamic_cast<const slice_op *>(&op2->node()->operation());
 
 	if (arg1_slice && arg2_slice){
-		jive::oport * origin1 = arg1->node()->input(0)->origin();
-		jive::oport * origin2 = arg2->node()->input(0)->origin();
+		jive::oport * origin1 = op1->node()->input(0)->origin();
+		jive::oport * origin2 = op2->node()->input(0)->origin();
 
 		if (origin1 == origin2 && arg1_slice->high() == arg2_slice->low()) {
 			return jive_binop_reduction_merge;
@@ -388,17 +389,18 @@ concat_op::can_reduce_operand_pair(
 	return jive_binop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 concat_op::reduce_operand_pair(
 	jive_binop_reduction_path_t path,
-	jive::output * arg1,
-	jive::output * arg2) const
+	jive::oport * arg1,
+	jive::oport * arg2) const
 {
+	auto op1 = static_cast<jive::output*>(arg1);
+	auto op2 = static_cast<jive::output*>(arg2);
+
 	if (path == jive_binop_reduction_constants) {
-		const constant_op & arg1_constant = static_cast<const constant_op &>(
-			arg1->node()->operation());
-		const constant_op & arg2_constant = static_cast<const constant_op &>(
-			arg2->node()->operation());
+		auto arg1_constant = static_cast<const constant_op &>(op1->node()->operation());
+		auto arg2_constant = static_cast<const constant_op &>(op2->node()->operation());
 
 		size_t nbits = arg1_constant.value().nbits() + arg2_constant.value().nbits();
 		char bits[nbits];
@@ -408,16 +410,14 @@ concat_op::reduce_operand_pair(
 			&arg2_constant.value()[0],
 			arg2_constant.value().nbits());
 
-		return jive_bitconstant(arg1->node()->region(), nbits, bits);
+		return jive_bitconstant(arg1->region(), nbits, bits);
 	}
 
 	if (path == jive_binop_reduction_merge) {
-		const slice_op * arg1_slice = static_cast<const slice_op *>(
-			&arg1->node()->operation());
-		const slice_op * arg2_slice = static_cast<const slice_op *>(
-			&arg2->node()->operation());
+		auto arg1_slice = static_cast<const slice_op *>(&op1->node()->operation());
+		auto arg2_slice = static_cast<const slice_op *>(&op2->node()->operation());
 
-		jive::output * origin1 = dynamic_cast<jive::output*>(arg1->node()->input(0)->origin());
+		jive::output * origin1 = dynamic_cast<jive::output*>(op1->node()->input(0)->origin());
 
 		return jive_bitslice(origin1, arg1_slice->low(), arg2_slice->high());
 

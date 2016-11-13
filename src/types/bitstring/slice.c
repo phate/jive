@@ -55,11 +55,17 @@ slice_op::result_type(size_t index) const noexcept
 }
 
 jive_unop_reduction_path_t
-slice_op::can_reduce_operand(const jive::output * arg) const noexcept
+slice_op::can_reduce_operand(const jive::oport * arg) const noexcept
 {
-	const jive::bits::type & arg_type =
-		static_cast<const jive::bits::type &>(arg->type());
-	const jive::operation * op = &arg->node()->operation();
+	auto tmp = dynamic_cast<const jive::output*>(arg);
+	if (!tmp)
+		return jive_unop_reduction_none;
+
+	/*
+		FIXME: this should be a dynamic_cast
+	*/
+	const jive::bits::type & arg_type = static_cast<const jive::bits::type &>(arg->type());
+	const jive::operation * op = &tmp->node()->operation();
 
 	if ((low() == 0) && (high() == arg_type.nbits())) {
 		return jive_unop_reduction_idempotent;
@@ -77,12 +83,13 @@ slice_op::can_reduce_operand(const jive::output * arg) const noexcept
 	return jive_unop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 slice_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+	jive::oport * arg) const
 {
-	const jive::operation & gen_op = arg->node()->operation();
+	auto tmp = dynamic_cast<jive::output*>(arg);
+	const jive::operation & gen_op = tmp->node()->operation();
 	
 	if (path == jive_unop_reduction_idempotent) {
 		return arg;
@@ -90,17 +97,17 @@ slice_op::reduce_operand(
 	
 	if (path == jive_unop_reduction_narrow) {
 		auto op = static_cast<const slice_op &>(gen_op);
-		jive::output * tmp = dynamic_cast<jive::output*>(arg->node()->input(0)->origin());
+		tmp = dynamic_cast<jive::output*>(tmp->node()->input(0)->origin());
 		return jive_bitslice(tmp, low() + op.low(), high() + op.low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
 		auto op = static_cast<const constant_op &>(gen_op);
-		return jive_bitconstant(arg->node()->region(), high() - low(), &op.value()[0] + low());
+		return jive_bitconstant(arg->region(), high() - low(), &op.value()[0] + low());
 	}
 	
 	if (path == jive_unop_reduction_distribute) {
-		jive_node * node = arg->node();
+		jive_node * node = tmp->node();
 		std::vector<jive::output*> arguments;
 		
 		size_t pos = 0, n;

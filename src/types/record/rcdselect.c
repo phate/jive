@@ -55,30 +55,31 @@ select_operation::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 select_operation::can_reduce_operand(
-	const jive::output * arg) const noexcept
+	const jive::oport * arg) const noexcept
 {
-	if (dynamic_cast<const group_op *>(&arg->node()->operation())) {
-		return jive_unop_reduction_inverse;
-	}
+	auto op = dynamic_cast<const jive::output*>(arg);
 
-	if (dynamic_cast<const load_op *>(&arg->node()->operation())) {
+	if (op && dynamic_cast<const group_op *>(&op->node()->operation()))
+		return jive_unop_reduction_inverse;
+
+	if (dynamic_cast<const load_op *>(&op->node()->operation()))
 		return jive_select_reduction_load;
-	}
 
 	return jive_unop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 select_operation::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+	jive::oport * arg) const
 {
-	if (path == jive_unop_reduction_inverse) {
-		return dynamic_cast<jive::output*>(arg->node()->input(element())->origin());
-	}
+	auto op = static_cast<jive::output*>(arg);
+
+	if (path == jive_unop_reduction_inverse)
+		return op->node()->input(element())->origin();
 
 	if (path == jive_select_reduction_load) {
-		jive::output * address = dynamic_cast<jive::output*>(arg->node()->input(0)->origin());
+		jive::output * address = dynamic_cast<jive::output*>(op->node()->input(0)->origin());
 
 		size_t nbits = 0;
 		if (dynamic_cast<const jive::bits::type*>(&address->type())) {
@@ -87,12 +88,12 @@ select_operation::reduce_operand(
 		}
 		
 		std::shared_ptr<const jive::rcd::declaration> decl;
-		decl = static_cast<const jive::rcd::type*>(&arg->node()->output(0)->type())->declaration();
+		decl = static_cast<const jive::rcd::type*>(&op->node()->output(0)->type())->declaration();
 
-		size_t nstates = arg->node()->ninputs()-1;
+		size_t nstates = op->node()->ninputs()-1;
 		jive::output * states[nstates];
 		for (size_t n = 0; n < nstates; n++) {
-			states[n] = dynamic_cast<jive::output*>(arg->node()->input(n+1)->origin());
+			states[n] = dynamic_cast<jive::output*>(op->node()->input(n+1)->origin());
 		}
 
 		jive::output * element_address = jive_memberof(address, decl, element());

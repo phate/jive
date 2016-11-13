@@ -40,12 +40,12 @@ public:
 	/* reduction methods */
 	virtual jive_unop_reduction_path_t
 	can_reduce_operand(
-		const jive::output * arg) const noexcept override;
+		const jive::oport * arg) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand(
 		jive_unop_reduction_path_t path,
-		jive::output * arg) const override;
+		jive::oport * arg) const override;
 
 	virtual value_repr
 	reduce_constant(
@@ -83,14 +83,14 @@ public:
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::output * arg1,
-		const jive::output * arg2) const noexcept override;
+		const jive::oport * arg1,
+		const jive::oport * arg2) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::output * arg1,
-		jive::output * arg2) const override;
+		jive::oport * arg1,
+		jive::oport * arg2) const override;
 
 	virtual value_repr
 	reduce_constants(
@@ -141,14 +141,14 @@ public:
 	/* reduction methods */
 	virtual jive_binop_reduction_path_t
 	can_reduce_operand_pair(
-		const jive::output * arg1,
-		const jive::output * arg2) const noexcept override;
+		const jive::oport * arg1,
+		const jive::oport * arg2) const noexcept override;
 
-	virtual jive::output *
+	virtual jive::oport *
 	reduce_operand_pair(
 		jive_binop_reduction_path_t path,
-		jive::output * arg1,
-		jive::output * arg2) const override;
+		jive::oport * arg1,
+		jive::oport * arg2) const override;
 
 	virtual compare_result
 	reduce_constants(

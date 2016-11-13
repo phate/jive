@@ -56,14 +56,15 @@ memberof_op::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 memberof_op::can_reduce_operand(
-	const jive::output * arg) const noexcept
+	const jive::oport * arg) const noexcept
 {
-	const containerof_op * op =
-		dynamic_cast<const containerof_op *>(&arg->node()->operation());
-
-	if (!op) {
+	auto tmp = dynamic_cast<const jive::output*>(arg);
+	if (!tmp)
 		return jive_unop_reduction_none;
-	}
+
+	auto op = dynamic_cast<const containerof_op *>(&tmp->node()->operation());
+	if (!op)
+		return jive_unop_reduction_none;
 
 	if (op->record_decl() == record_decl() && op->index() == index()) {
 		return jive_unop_reduction_inverse;
@@ -72,13 +73,14 @@ memberof_op::can_reduce_operand(
 	return jive_unop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 memberof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+	jive::oport * arg) const
 {
+	auto op = static_cast<jive::output*>(arg);
 	if (path == jive_unop_reduction_inverse)
-		return dynamic_cast<jive::output*>(arg->node()->input(0)->origin());
+		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
 	
 	return nullptr;
 }
@@ -139,31 +141,32 @@ containerof_op::result_type(size_t index) const noexcept
 
 jive_unop_reduction_path_t
 containerof_op::can_reduce_operand(
-	const jive::output * arg) const noexcept
+	const jive::oport * arg) const noexcept
 {
-	const memberof_op * op =
-		dynamic_cast<const memberof_op *>(&arg->node()->operation());
-	if (!op) {
+	auto tmp = dynamic_cast<const jive::output*>(arg);
+	if (!tmp)
 		return jive_unop_reduction_none;
-	}
-	
-	if (op->record_decl() == record_decl() && op->index() == index()) {
+
+	auto op = dynamic_cast<const memberof_op *>(&tmp->node()->operation());
+	if (!op)
+		return jive_unop_reduction_none;
+
+	if (op->record_decl() == record_decl() && op->index() == index())
 		return jive_unop_reduction_inverse;
-	}
-	
+
 	return jive_unop_reduction_none;
 }
 
-jive::output *
+jive::oport *
 containerof_op::reduce_operand(
 	jive_unop_reduction_path_t path,
-	jive::output * arg) const
+	jive::oport * arg) const
 {
-	if (path == jive_unop_reduction_inverse) {
-		return dynamic_cast<jive::output*>(arg->node()->input(0)->origin());
-	} else {
-		return nullptr;
-	}
+	auto op = static_cast<const jive::output*>(arg);
+	if (path == jive_unop_reduction_inverse)
+		return dynamic_cast<jive::output*>(op->node()->input(0)->origin());
+
+	return nullptr;
 }
 
 std::unique_ptr<jive::operation>
