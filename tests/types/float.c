@@ -24,7 +24,7 @@ types_float_arithmetic_test_fltdifference(void)
 	graph.export_port(sub, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -45,7 +45,7 @@ types_float_arithmetic_test_fltnegate(void)
 	graph.export_port(neg, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -67,7 +67,7 @@ static int types_float_arithmetic_test_fltproduct(void)
 	graph.export_port(mul, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -88,7 +88,7 @@ static int types_float_arithmetic_test_fltquotient(void)
 	graph.export_port(div, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -109,7 +109,7 @@ static int types_float_arithmetic_test_fltsum(void)
 	graph.export_port(add, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -130,7 +130,7 @@ static int types_float_comparison_test_fltequal(void)
 	graph.export_port(equal, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -151,7 +151,7 @@ static int types_float_comparison_test_fltgreater(void)
 	graph.export_port(greater, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -172,7 +172,7 @@ static int types_float_comparison_test_fltgreatereq(void)
 	graph.export_port(geq, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -193,7 +193,7 @@ static int types_float_comparison_test_fltless(void)
 	graph.export_port(less, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -214,7 +214,7 @@ static int types_float_comparison_test_fltlesseq(void)
 	graph.export_port(lesseq, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;
@@ -236,7 +236,7 @@ types_float_comparison_test_fltnotequal(void)
 	graph.export_port(neq, "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;

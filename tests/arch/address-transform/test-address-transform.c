@@ -77,7 +77,7 @@ static int test_main(void)
 	jive::memlayout_mapper_simple mapper(8);
 	jive_graph_address_transform(&graph, &mapper);
 
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 	
 	return 0;

@@ -140,7 +140,7 @@ static int function_test_lambda_apply(void)
 	jive_view(&graph, stderr);
 
 	jive_inline_lambda_apply(apply_results[0]->node());
-	jive_graph_prune(&graph);
+	graph.prune();
 	
 	jive_view(&graph, stderr);
 

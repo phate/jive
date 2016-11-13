@@ -20,7 +20,7 @@ test_main(void)
 
 	jive_view(&graph, stdout);
 
-	jive_graph_prune(&graph);
+	graph.prune();
 
 	assert(graph.root()->nodes.size() == 1);
 

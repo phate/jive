@@ -54,7 +54,7 @@ prune_regions_recursive(jive::region * region)
 jive_graph::~jive_graph()
 {
 	delete root()->bottom();
-	jive_graph_prune(this);
+	prune();
 
 	prune_regions_recursive(root());
 
@@ -142,22 +142,22 @@ jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 }
 
 void
-jive_graph_prune(jive_graph * self)
+jive_graph::prune()
 {
-	jive_node * node;
-	node = self->bottom.first;
-	while(node) {
+	jive_node * node = bottom.first;
+	while (node) {
 		jive_node * next = node->graph_bottom_list.next;
 		
-		if (node != self->root()->bottom()) {
+		if (node != root()->bottom()) {
 			delete node;
-			if (!next) next = self->bottom.first;
+
+			if (!next)
+				next = bottom.first;
 		}
-		
 		node = next;
 	}
 	
 	jive::region * subregion, * next;
-	JIVE_LIST_ITERATE_SAFE(self->root()->subregions, subregion, next, region_subregions_list)
+	JIVE_LIST_ITERATE_SAFE(root()->subregions, subregion, next, region_subregions_list)
 		prune_regions_recursive(subregion);
 }

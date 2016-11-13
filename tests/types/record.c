@@ -49,7 +49,7 @@ static int _test_rcdgroup(void)
 	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 
 	jive_view(&graph, stderr);
 
@@ -91,7 +91,7 @@ static int _test_rcdselect()
 	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 
 	jive_view(&graph, stderr);
 

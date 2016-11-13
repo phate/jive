@@ -79,7 +79,7 @@ static int test_main(void)
 	jive_node_address_transform(o0->node(), &mapper);
 	jive_node_address_transform(o1->node(), &mapper);
 
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stderr);
 
 	return 0;

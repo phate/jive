@@ -126,7 +126,7 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 	assert(!visited_n4);
 	assert(visited_n5);
 	
-	jive_graph_prune(graph);
+	graph->prune();
 }
 
 static int test_main(void)

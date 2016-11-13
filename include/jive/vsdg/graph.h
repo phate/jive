@@ -90,6 +90,9 @@ public:
 		return root()->bottom()->add_input(gate, operand);
 	}
 
+	void
+	prune();
+
 	struct {
 		struct jive_node * first;
 		struct jive_node * last;
@@ -130,8 +133,5 @@ private:
 	jive::region * root_;
 	jive::node_normal_form_hash node_normal_forms_;
 };
-
-void
-jive_graph_prune(jive_graph * self);
 
 #endif

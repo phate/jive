@@ -77,7 +77,7 @@ static int test_main(void)
 	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 
 	jive_view(&graph, stderr);
 

@@ -83,8 +83,8 @@ static int test_main(void)
 	jive_node_address_transform(memberof->node(), &mapper);
 	jive_node_address_transform(diff2->node(), &mapper);
 	jive_node_address_transform(arraysub->node(), &mapper);
-	
-	jive_graph_prune(&graph);
+
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;

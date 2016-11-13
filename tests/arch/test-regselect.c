@@ -77,7 +77,7 @@ static int test_main(void)
 	assert(o1 == lit);
 	assert(o2 == sym);
 	
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	return 0;

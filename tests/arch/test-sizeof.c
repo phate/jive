@@ -67,7 +67,7 @@ static int test_main(void)
 			jive_sizeof_node_reduce(node, &layout_mapper);
 		}
 	}
-	jive_graph_prune(&graph);
+	graph.prune();
 
 	assert(dynamic_cast<jive::output*>(bottom->input(0)->origin())->node()->operation()
 		== jive::bits::uint_constant_op(32, 1));

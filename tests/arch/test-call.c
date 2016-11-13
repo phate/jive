@@ -46,7 +46,7 @@ static int test_main(void)
 
 	jive_node_address_transform(call, &mapper);
 
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 	
 	return 0;

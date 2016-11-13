@@ -48,7 +48,7 @@ static int test_main(void)
 	n2->output(0)->replace(n4->output(0));
 	assert(n2->output(0)->no_user());
 	
-	jive_graph_prune(&graph);
+	graph.prune();
 	
 	assert(!graph_contains_node(&graph, n2));
 

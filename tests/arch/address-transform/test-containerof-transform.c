@@ -61,7 +61,7 @@ static int test_main(void)
 	jive_graph_address_transform(&graph, &mapper);
 
 	graph.normalize();
-	jive_graph_prune(&graph);
+	graph.prune();
 	jive_view(&graph, stdout);
 
 	for (jive_node * node : jive::topdown_traverser(&graph)) {
