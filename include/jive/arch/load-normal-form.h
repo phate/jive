@@ -21,7 +21,7 @@ public:
 		jive_graph * graph) noexcept;
 
 	virtual bool
-	normalize_node(jive_node * node) const override;
+	normalize_node(jive::node * node) const override;
 
 	virtual bool
 	operands_are_normalized(

@@ -80,7 +80,7 @@ split_operation::copy() const
 
 }
 
-jive_node *
+jive::node *
 jive_splitnode_create(jive::region * region,
 	const jive::base::type * in_type,
 	jive::output * in_origin,

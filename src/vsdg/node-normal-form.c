@@ -18,7 +18,7 @@ node_normal_form::~node_normal_form() noexcept
 }
 
 bool
-node_normal_form::normalize_node(jive_node * node) const
+node_normal_form::normalize_node(jive::node * node) const
 {
 	return true;
 }
@@ -37,7 +37,7 @@ node_normal_form::normalized_create(
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments) const
 {
-	jive_node * node = nullptr;
+	jive::node * node = nullptr;
 	if (get_mutable() && get_cse()) {
 		node = jive_node_cse(region, op, arguments);
 	}

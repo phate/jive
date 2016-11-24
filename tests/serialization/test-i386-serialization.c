@@ -50,7 +50,7 @@ static int test_main(void)
 	gr1.node_normal_form(typeid(jive::operation))->set_mutable(false);
 	int64_t tmparray2[] = {42};
 	
-	jive_node * n1 = jive_instruction_node_create_simple(
+	jive::node * n1 = jive_instruction_node_create_simple(
 		gr1.root(),
 		&jive_i386_instr_int_load_imm,
 		NULL,
@@ -58,20 +58,20 @@ static int test_main(void)
 	jive::output * tmparray3[] = {n1->output(0)};
 	int64_t tmparray4[] = {17};
 	
-	jive_node * n2 = jive_instruction_node_create_simple(
+	jive::node * n2 = jive_instruction_node_create_simple(
 		gr1.root(),
 		&jive_i386_instr_int_load32_disp,
 		tmparray3,
 		tmparray4);
 	jive::output * tmparray5[] = {n1->output(0), n2->output(0)};
 	
-	jive_node * n3 = jive_instruction_node_create_simple(
+	jive::node * n3 = jive_instruction_node_create_simple(
 		gr1.root(),
 		&jive_i386_instr_int_mul_expand_signed,
 		tmparray5,
 		NULL);
 	
-	jive_node * orig_node = n3;
+	jive::node * orig_node = n3;
 	
 	jive_view(&gr1, stdout);
 	
@@ -90,7 +90,7 @@ static int test_main(void)
 	jive_serialization_driver_init(&drv);
 	drv.error = my_error;
 	jive_deserialize_graph(&drv, is, &gr2);
-	jive_node * repl_node = jive_serialization_symtab_name_to_node(&drv.symtab, "TARGET")->node;
+	jive::node * repl_node = jive_serialization_symtab_name_to_node(&drv.symtab, "TARGET")->node;
 	jive_serialization_driver_fini(&drv);
 	jive_token_istream_destroy(is);
 	

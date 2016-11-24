@@ -1040,13 +1040,13 @@ static int types_bitstring_test_normalize(void)
 	assert(sum1->node()->noperands() == 2);
 
 	jive::oport * tmp = sum1;
-	jive_node * lambda_node = dynamic_cast<jive::output*>(
+	jive::node * lambda_node = dynamic_cast<jive::output*>(
 		jive_lambda_end(lambda, 1, tmparray11, &tmp))->node();
 
 	jive::input * retval;
 	retval = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->input(1);
-	jive_node * lambda_tail = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node();
-	jive_node * lambda_head = dynamic_cast<jive::output*>(lambda_tail->input(0)->origin())->node();
+	jive::node * lambda_tail = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node();
+	jive::node * lambda_head = dynamic_cast<jive::output*>(lambda_tail->input(0)->origin())->node();
 	auto arg = lambda_head->output(1);
 	graph.export_port(lambda_node->output(0), "dummy");
 	
@@ -1107,7 +1107,7 @@ static int types_bitstring_test_reduction(void)
 	{
 		auto concat = jive_bitconcat({x, y});
 		auto slice = jive_bitslice(concat, 8, 24);
-		jive_node * node = dynamic_cast<jive::output*>(slice)->node();
+		jive::node * node = dynamic_cast<jive::output*>(slice)->node();
 		assert(dynamic_cast<const jive::bits::concat_op *>(&node->operation()));
 		assert(node->ninputs() == 2);
 		assert(dynamic_cast<const jive::bits::slice_op *>(

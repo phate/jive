@@ -19,11 +19,11 @@
 
 /* normal forms */
 
-class jive_node;
 class jive_graph;
 
 namespace jive {
 
+class node;
 class operation;
 class oport;
 class output;
@@ -54,7 +54,7 @@ public:
 	}
 
 	virtual bool
-	normalize_node(jive_node * node) const;
+	normalize_node(jive::node * node) const;
 
 	virtual bool
 	operands_are_normalized(

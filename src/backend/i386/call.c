@@ -17,9 +17,9 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/splitnode.h>
 
-jive_node *
+jive::node *
 jive_i386_call_node_substitute(
-	jive_node * node,
+	jive::node * node,
 	const jive::call_operation & op)
 {
 	jive::region * region = node->region();
@@ -27,7 +27,7 @@ jive_i386_call_node_substitute(
 	size_t nargs = node->noperands() - 1;
 	
 	/* distinguish between call to fixed address and register-indirect call */
-	jive_node * call_instr;
+	jive::node * call_instr;
 	jive::output * address = dynamic_cast<jive::output*>(node->input(0)->origin());
 	if (auto op = dynamic_cast<const jive::address::label_to_address_op *>(
 		&address->node()->operation())) {
@@ -79,7 +79,7 @@ jive_i386_call_node_substitute(
 		
 		offset += 4;
 		
-		jive_node * split = jive_splitnode_create(node->region(), value_type, value, value_cls,
+		jive::node * split = jive_splitnode_create(node->region(), value_type, value, value_cls,
 			slot_type, slot_cls);
 		
 		call_instr->add_input(slot_cls, split->output(0));

@@ -118,7 +118,7 @@ jive_regselector_classify_regcls(const jive_regselector * self, const jive_regis
 }
 
 static void
-jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive_node * node)
+jive_regselector_annotate_node_proper_(jive_negotiator * self_, jive::node * node)
 {
 	jive_regselector * self = (jive_regselector *) self_;
 	const jive::operation * gen_op = &node->operation();
@@ -237,7 +237,7 @@ jive_regselector_map_port(const jive_regselector * self, const jive_negotiator_p
 }
 
 static void
-jive_regselector_pull_node(jive_regselector * self, jive_node * node)
+jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 {
 	jive::region * root_region = self->base.graph->root();
 	
@@ -248,7 +248,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	jive::region * region = node->region();
 	while (region->parent() != root_region)
 		region = region->parent();
-	jive_node * top = region->top();
+	jive::node * top = region->top();
 	if (!top || top->noutputs() < 1)
 		return;
 	jive::output * ctl = top->output(0);
@@ -257,7 +257,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 	
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
 		const jive_register_class * regcls = op->regcls();
-		jive_node * origin = dynamic_cast<jive::output*>(node->input(1)->origin())->node();
+		jive::node * origin = dynamic_cast<jive::output*>(node->input(1)->origin())->node();
 
 		if (dynamic_cast<const jive::base::binary_op *>(&origin->operation())) {
 			jive::oport * operands[origin->noperands()];
@@ -335,7 +335,7 @@ jive_regselector_pull_node(jive_regselector * self, jive_node * node)
 void
 jive_regselector_pull(jive_regselector * self)
 {
-	for (jive_node * node : jive::bottomup_traverser(self->base.graph, true)) {
+	for (jive::node * node : jive::bottomup_traverser(self->base.graph, true)) {
 		jive_regselector_pull_node(self, node);
 	}
 }

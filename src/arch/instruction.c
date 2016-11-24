@@ -105,7 +105,7 @@ instruction_op::copy() const
 
 }
 
-jive_node *
+jive::node *
 jive_instruction_node_create_simple(
 	jive::region * region,
 	const jive_instruction_class * icls,
@@ -119,7 +119,7 @@ jive_instruction_node_create_simple(
 	return jive_instruction_node_create_extended(region, icls, operands, &imm[0]);
 }
 
-jive_node *
+jive::node *
 jive_instruction_node_create_extended(
 	jive::region * region,
 	const jive_instruction_class * icls,
@@ -132,7 +132,7 @@ jive_instruction_node_create_extended(
 	return jive_instruction_node_create(region, icls, operands, immediates, {}, {}, {});
 }
 
-jive_node *
+jive::node *
 jive_instruction_node_create(
 	jive::region * region,
 	const jive_instruction_class * icls,

@@ -29,7 +29,7 @@ operation::result_cls(size_t index) const noexcept
 	return &jive_root_resource_class;
 }
 
-jive_node *
+jive::node *
 operation::create_node(jive::region * region, const std::vector<jive::oport*> & operands) const
 {
 	return jive_opnode_create(*this, region, operands);

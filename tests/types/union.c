@@ -34,7 +34,7 @@ static int test_unnchoose(void)
 	static jive::unn::type unntype(&decl);
 
 	jive::addr::type addrtype;
-	jive_node * top = jive_test_node_create(graph.root(),
+	jive::node * top = jive_test_node_create(graph.root(),
 		{}, {}, {&bits8, &unntype, &unntype, &addrtype});
 
 	auto u0 = jive_unify_create(&decl, 0, top->output(0));
@@ -45,7 +45,7 @@ static int test_unnchoose(void)
 	auto c2 = dynamic_cast<jive::output*>(jive_choose_create(1, top->output(2)));
 	auto c3 = jive_choose_create(0, load);
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		{&bits16, &bits8, &bits16, &bits8}, {c0, c1, c2, c3}, {&bits8});
 	graph.export_port(bottom->output(0), "dummy");
 
@@ -81,12 +81,12 @@ static int test_unnunify(void)
 	static const jive::unn::declaration decl_empty = {0, NULL};
 	static jive::unn::type unntype_empty(&decl_empty);
 	
-	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&bits8});
+	jive::node * top = jive_test_node_create(graph.root(), {}, {}, {&bits8});
 
 	auto u0 = dynamic_cast<jive::output*>(jive_unify_create(&decl, 0, top->output(0)));
 	auto u1 = dynamic_cast<jive::output*>(jive_empty_unify_create(graph.root(), &decl_empty));
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		{&unntype, &unntype_empty}, {u0, u1}, {&bits8});
 	graph.export_port(bottom->output(0), "dummy");
 

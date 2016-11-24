@@ -107,7 +107,7 @@ slice_op::reduce_operand(
 	}
 	
 	if (path == jive_unop_reduction_distribute) {
-		jive_node * node = tmp->node();
+		jive::node * node = tmp->node();
 		std::vector<jive::oport*> arguments;
 		
 		size_t pos = 0, n;

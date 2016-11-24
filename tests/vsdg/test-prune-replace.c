@@ -18,11 +18,11 @@
 #include "testnodes.h"
 
 static bool
-graph_contains_node(jive_graph * graph, jive_node * node)
+graph_contains_node(jive_graph * graph, jive::node * node)
 {
 	bool found = false;
 	
-	for (jive_node * tmp : jive::topdown_traverser(graph)) {
+	for (jive::node * tmp : jive::topdown_traverser(graph)) {
 		found = found || (tmp == node);
 	}
 	
@@ -35,15 +35,15 @@ static int test_main(void)
 	
 	jive::region * region = graph.root();
 	jive_test_value_type type;
-	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
-	jive_node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
-	jive_node * n3 = jive_test_node_create(region, {&type}, {n2->output(0)}, {&type});
-	jive_node * bottom = jive_test_node_create(region,
+	jive::node * n1 = jive_test_node_create(region, {}, {}, {&type});
+	jive::node * n2 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
+	jive::node * n3 = jive_test_node_create(region, {&type}, {n2->output(0)}, {&type});
+	jive::node * bottom = jive_test_node_create(region,
 		{&type, &type}, {n2->output(0), n3->output(0)}, {&type});
 	
 	graph.export_port(bottom->output(0), "dummy");
 	
-	jive_node * n4 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
+	jive::node * n4 = jive_test_node_create(region, {&type}, {n1->output(0)}, {&type});
 
 	n2->output(0)->replace(n4->output(0));
 	assert(n2->output(0)->no_user());

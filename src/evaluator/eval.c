@@ -29,7 +29,7 @@ typedef std::unordered_map<
 typedef std::unordered_map<
 	std::type_index,
 	const std::unique_ptr<const jive::evaluator::literal>(*)(
-		const struct jive_node * node,
+		const jive::node * node,
 		size_t index,
 		jive::evaluator::context & ctx)
 	> eval_map;
@@ -298,7 +298,7 @@ static std::unique_ptr<const literal>
 eval_input(const jive::input * input, context & ctx);
 
 static const std::unique_ptr<const literal>
-eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
+eval_apply_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::apply_op*>(&node->operation()));
 	JIVE_DEBUG_ASSERT(index < node->noutputs());
@@ -322,7 +322,7 @@ eval_apply_node(const struct jive_node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_lambda_head_node(const struct jive_node * node, size_t index, context & ctx)
+eval_lambda_head_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op*>(&node->operation()));
 
@@ -343,11 +343,11 @@ eval_lambda_head_node(const struct jive_node * node, size_t index, context & ctx
 }
 
 static const std::unique_ptr<const literal>
-eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
+eval_lambda_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_op*>(&node->operation()));
 
-	jive_node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
+	jive::node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
 
 	ctx.push_frame(tail->region());
 
@@ -362,14 +362,14 @@ eval_lambda_node(const struct jive_node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_gamma_head_node(const struct jive_node * node, size_t index, context & ctx)
+eval_gamma_head_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_head_op*>(&node->operation()));
 	return eval_input(node->input(index-1), ctx);
 }
 
 static const std::unique_ptr<const literal>
-eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
+eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
 
@@ -377,7 +377,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
-	jive_node * tail = dynamic_cast<jive::output*>(node->input(alt)->origin())->node();
+	jive::node * tail = dynamic_cast<jive::output*>(node->input(alt)->origin())->node();
 
 	ctx.push_frame(tail->region());
 	std::vector<std::unique_ptr<const literal>> results;
@@ -394,7 +394,7 @@ eval_gamma_node(const struct jive_node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_theta_head_node(const struct jive_node * node, size_t index, context & ctx)
+eval_theta_head_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_head_op*>(&node->operation()));
 
@@ -403,12 +403,12 @@ eval_theta_head_node(const struct jive_node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
+eval_theta_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_op*>(&node->operation()));
 
-	jive_node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-	jive_node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
+	jive::node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
+	jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
 
 	std::vector<std::unique_ptr<const literal>> results;
 	do {
@@ -437,11 +437,11 @@ eval_theta_node(const struct jive_node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_phi_head_node(const struct jive_node * node, size_t index, context & ctx)
+eval_phi_head_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_head_op*>(&node->operation()));
 
-	jive_node * tail = node->region()->bottom();
+	jive::node * tail = node->region()->bottom();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());
@@ -453,11 +453,11 @@ eval_phi_head_node(const struct jive_node * node, size_t index, context & ctx)
 
 
 static const std::unique_ptr<const literal>
-eval_phi_node(const struct jive_node * node, size_t index, context & ctx)
+eval_phi_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_op*>(&node->operation()));
 
-	jive_node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
+	jive::node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
 
 	ctx.push_frame(tail->region());
@@ -481,7 +481,7 @@ static eval_map evlmap
 });
 
 static const std::unique_ptr<const literal>
-eval_node(const struct jive_node * node, size_t index, context & ctx)
+eval_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(index < node->noutputs());
 
@@ -530,7 +530,7 @@ eval(
 	const std::vector<const literal*> & arguments)
 {
 	const jive::output * output = nullptr;
-	const jive_node * tail = graph->root()->bottom();
+	const jive::node * tail = graph->root()->bottom();
 	for (size_t n = 0; n < tail->ninputs(); n++) {
 		JIVE_DEBUG_ASSERT(tail->input(n)->gate() != nullptr);
 		if (tail->input(n)->gate()->name() == name) {

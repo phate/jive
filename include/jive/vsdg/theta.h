@@ -15,7 +15,6 @@ class gate;
 }
 
 struct jive_graph;
-struct jive_node;
 struct jive_theta_build_state;
 
 namespace jive {
@@ -107,7 +106,7 @@ jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::oport * post_v
 /**
 	\brief End constructing a loop region, specify repetition predicate
 */
-struct jive_node *
+jive::node *
 jive_theta_end(jive_theta self, jive::oport * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values);
 

@@ -132,7 +132,7 @@ jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::oport * post_value)
 /**
 	\brief End constructing a phi region
 */
-struct jive_node *
+jive::node *
 jive_phi_end(jive_phi self,
 	     size_t npost_values, jive_phi_fixvar * fix_values);
 

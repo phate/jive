@@ -77,7 +77,7 @@ static void
 simple_name_node(
 	jive_serialization_namegen * self_,
 	jive_serialization_symtab * symtab,
-	jive_node * node)
+	jive::node * node)
 {
 	if (jive_serialization_symtab_node_to_name(symtab, node) != 0)
 		return;

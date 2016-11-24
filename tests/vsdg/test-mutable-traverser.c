@@ -17,14 +17,14 @@
 
 #include "testnodes.h"
 
-void test_mutable_traverse_topdown(jive_graph * graph, jive_node * n1, jive_node * n2,
-	jive_node * n3)
+void test_mutable_traverse_topdown(jive_graph * graph, jive::node * n1, jive::node * n2,
+	jive::node * n3)
 {
 	bool seen_n1 = false;
 	bool seen_n2 = false;
 	bool seen_n3 = false;
 	
-	for (jive_node * tmp : jive::topdown_traverser(graph)) {
+	for (jive::node * tmp : jive::topdown_traverser(graph)) {
 		seen_n1 = seen_n1 || (tmp == n1);
 		seen_n2 = seen_n2 || (tmp == n2);
 		seen_n3 = seen_n3 || (tmp == n3);
@@ -45,9 +45,9 @@ static int test_main(void)
 	
 	jive::region * region = graph.root();
 	jive_test_value_type type;
-	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
-	jive_node * n2 = jive_test_node_create(region, {}, {}, {&type});
-	jive_node * bottom = jive_test_node_create(region, {&type}, {n1->output(0)}, {});
+	jive::node * n1 = jive_test_node_create(region, {}, {}, {&type});
+	jive::node * n2 = jive_test_node_create(region, {}, {}, {&type});
+	jive::node * bottom = jive_test_node_create(region, {&type}, {n1->output(0)}, {});
 
 	test_mutable_traverse_topdown(&graph, n1, n2, bottom);
 	

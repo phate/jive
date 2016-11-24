@@ -149,7 +149,6 @@ private:
 
 struct jive_graph;
 struct jive_immediate;
-struct jive_node;
 
 typedef struct jive_portinfo jive_portinfo;
 struct jive_portinfo {
@@ -178,7 +177,7 @@ struct jive_serialization_namegen {
 	void (*name_node)(
 		jive_serialization_namegen * self,
 		jive_serialization_symtab * symtab,
-		struct jive_node * node);
+		jive::node * node);
 	void (*name_output)(
 		jive_serialization_namegen * self,
 		jive_serialization_symtab * symtab,
@@ -273,11 +272,11 @@ jive_deserialize_defined_label(jive_serialization_driver * self,
 
 void
 jive_serialize_defined_node(jive_serialization_driver * self,
-	struct jive_node * node, jive_token_ostream * os);
+	jive::node * node, jive_token_ostream * os);
 
 bool
 jive_deserialize_defined_node(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive_node ** node);
+	jive_token_istream * is, jive::node ** node);
 
 /* portinfo := output_ident ':' rescls [ ':' gate_ident ] */
 
@@ -303,11 +302,11 @@ jive_deserialize_portsinfo(jive_serialization_driver * self,
 
 void
 jive_serialize_nodeexpr(jive_serialization_driver * self,
-	struct jive_node * node, jive_token_ostream * os);
+	jive::node * node, jive_token_ostream * os);
 
 bool
 jive_deserialize_nodeexpr(jive_serialization_driver * self,
-	jive_token_istream * is, struct jive::region * region, struct jive_node ** node);
+	jive_token_istream * is, struct jive::region * region, jive::node ** node);
 
 /* label := ('.' | 'frameptr' | 'stackptr' | defined_label) */
 
@@ -328,7 +327,7 @@ jive_deserialize_label(jive_serialization_driver * self,
 void
 jive_serialize_nodedef(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
-	struct jive_node * node, jive_token_ostream * os);
+	jive::node * node, jive_token_ostream * os);
 
 void
 jive_serialize_gatedef(jive_serialization_driver * self,

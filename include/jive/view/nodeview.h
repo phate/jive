@@ -68,10 +68,10 @@ class jive_nodeview {
 public:
 	~jive_nodeview() noexcept {}
 
-	jive_nodeview(jive_graphview * graphview, const jive_node * node);
+	jive_nodeview(jive_graphview * graphview, const jive::node * node);
 
 	jive_graphview * graphview;
-	const jive_node * node;
+	const jive::node * node;
 	unsigned int column, row;
 	std::vector<jive_inputview> inputs;
 	std::vector<jive_outputview> outputs;

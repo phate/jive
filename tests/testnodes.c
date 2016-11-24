@@ -73,7 +73,7 @@ test_operation::copy() const
 	return std::unique_ptr<jive::operation>(new test_operation(*this));
 }
 
-jive_node *
+jive::node *
 jive_test_node_create(
 	jive::region * region,
 	const std::vector<const jive::base::type*> & operand_types,

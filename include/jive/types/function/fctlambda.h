@@ -114,10 +114,10 @@ private:
 }
 
 bool
-jive_lambda_is_self_recursive(const jive_node * self);
+jive_lambda_is_self_recursive(const jive::node * self);
 
 void
-jive_inline_lambda_apply(jive_node * apply_node);
+jive_inline_lambda_apply(jive::node * apply_node);
 
 /* lambda instantiation */
 

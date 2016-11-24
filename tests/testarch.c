@@ -556,7 +556,7 @@ public:
 			const jive::base::type * in_type = &o->type();
 			const jive::base::type * out_type =
 				jive_resource_class_get_type(&jive_testarch_regcls_gpr.base);
-			jive_node * node = jive_splitnode_create(subroutine.region,
+			jive::node * node = jive_splitnode_create(subroutine.region,
 				in_type, o, o->gate()->required_rescls,
 				out_type, &jive_testarch_regcls_gpr.base);
 			o = node->output(0);
@@ -577,7 +577,7 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		jive_node * ret_instr = jive_instruction_node_create(subroutine.region,
+		jive::node * ret_instr = jive_instruction_node_create(subroutine.region,
 			&jive_testarch_instr_ret, {}, {}, {}, {}, {&jive::ctl::boolean});
 		ret_instr->add_input(subroutine.builder_state->passthroughs[1].gate,
 			subroutine.builder_state->passthroughs[1].output);

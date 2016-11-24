@@ -24,7 +24,7 @@ static int test_main(void)
 	jive_test_state_type type;
 	jive_test_value_type value_type;
 
-	jive_node * n1 = jive_test_node_create(region, {}, {}, {&type});
+	jive::node * n1 = jive_test_node_create(region, {}, {}, {&type});
 
 	bool error_handler_called = false;
 	try {

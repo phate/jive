@@ -20,7 +20,6 @@ namespace jive {
 }
 
 struct jive_graph;
-struct jive_node;
 
 struct jive_negotiator;
 struct jive_negotiator_connection;
@@ -296,7 +295,7 @@ private:
 	jive::detail::intrusive_hash_anchor<jive_negotiator_constraint> hash_chain_;
 public:
 	union {
-		const jive_node * node;
+		const jive::node * node;
 		const jive::gate * gate;
 	} hash_key_;
 
@@ -331,7 +330,7 @@ public:
 
 	class node_hash_chain_accessor {
 	public:
-		inline const jive_node *
+		inline const jive::node *
 		get_key(const jive_negotiator_constraint * obj) const noexcept
 		{
 			return obj->hash_key_.node;
@@ -366,7 +365,7 @@ typedef jive::detail::intrusive_hash<
 > jive_negotiator_gate_hash;
 
 typedef jive::detail::intrusive_hash<
-	const jive_node *,
+	const jive::node *,
 	jive_negotiator_constraint,
 	jive_negotiator_constraint::node_hash_chain_accessor
 > jive_negotiator_node_hash;
@@ -389,10 +388,10 @@ struct jive_negotiator_class {
 		const jive::gate * gate);
 	
 	/* annotate non-gate ports of node */
-	void (*annotate_node_proper)(jive_negotiator * self, struct jive_node * node);
+	void (*annotate_node_proper)(jive_negotiator * self, jive::node * node);
 	
 	/* annotate ports of node */
-	void (*annotate_node)(jive_negotiator * self, struct jive_node * node);
+	void (*annotate_node)(jive_negotiator * self, jive::node * node);
 	
 	/* process region */
 	void (*process_region)(jive_negotiator * self, struct jive::region * region);
@@ -422,7 +421,7 @@ struct jive_negotiator {
 		jive_negotiator_constraint * last;
 	} constraints;
 	
-	std::unordered_set<jive_node *> split_nodes;
+	std::unordered_set<jive::node *> split_nodes;
 	
 	jive::callback node_create_callback;
 	jive::callback node_destroy_callback;
@@ -467,11 +466,11 @@ jive_negotiator_constraint_fini_(jive_negotiator_constraint * self);
 
 /* inheritable default node annotator */
 void
-jive_negotiator_annotate_node_(jive_negotiator * self, struct jive_node * node);
+jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node);
 
 /* inheritable default proper node annotator */
 void
-jive_negotiator_annotate_node_proper_(jive_negotiator * self, struct jive_node * node);
+jive_negotiator_annotate_node_proper_(jive_negotiator * self, jive::node * node);
 
 /* inheritable default gate annotator */
 bool
@@ -508,7 +507,7 @@ jive_negotiator_annotate_identity(jive_negotiator * self,
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity_node(
 	jive_negotiator * self,
-	jive_node * node,
+	jive::node * node,
 	const jive_negotiator_option * option);
 
 void

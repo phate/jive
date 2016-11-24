@@ -71,7 +71,7 @@ region::reparent(jive::region * new_parent) noexcept
 }
 
 bool
-region::contains(const jive_node * node) const noexcept
+region::contains(const jive::node * node) const noexcept
 {
 	const jive::region * tmp = node->region();
 	while (tmp->depth() >= depth()) {
@@ -90,7 +90,7 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 	std::function<void (
 		const region*,
 		region*,
-		std::vector<std::vector<const jive_node*>>&,
+		std::vector<std::vector<const jive::node*>>&,
 		substitution_map&,
 		bool,
 		bool
@@ -98,7 +98,7 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 	pre_copy_region = [&] (
 		const region * source,
 		region * target,
-		std::vector<std::vector<const jive_node*>> & context,
+		std::vector<std::vector<const jive::node*>> & context,
 		substitution_map & smap,
 		bool copy_top,
 		bool copy_bottom)
@@ -123,13 +123,13 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 	};
 
 	smap.insert(this, target);
-	std::vector<std::vector<const jive_node*>> context;
+	std::vector<std::vector<const jive::node*>> context;
 	pre_copy_region(this, target, context, smap, copy_top, copy_bottom);
 
 	for (size_t n = 0; n < context.size(); n++) {
 		for (const auto node : context[n]) {
 			target = smap.lookup(node->region());
-			jive_node * new_node = node->copy(target, smap);
+			jive::node * new_node = node->copy(target, smap);
 			if (node->region()->top() == node)
 				target->set_top(new_node);
 			if (node->region()->bottom() == node)
@@ -149,7 +149,7 @@ jive_region_verify_top_node_list(struct jive::region * region)
 		jive_region_verify_top_node_list(subregion);
 
 	/* check whether all nodes in the top_node_list are really nullary nodes */
-	jive_node * node;
+	jive::node * node;
 	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
 		JIVE_DEBUG_ASSERT(node->ninputs() == 0);
 
@@ -158,7 +158,7 @@ jive_region_verify_top_node_list(struct jive::region * region)
 		if (node.ninputs() != 0)
 			continue;
 
-		jive_node * top;
+		jive::node * top;
 		JIVE_LIST_ITERATE(region->top_nodes, top, region_top_node_list) {
 			if (top == &node)
 				break;

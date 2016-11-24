@@ -23,9 +23,10 @@ namespace jive {
 
 struct jive_cut;
 struct jive_graph;
-struct jive_node;
 
 namespace jive {
+
+class node;
 
 class region {
 public:
@@ -52,7 +53,7 @@ public:
 	}
 
 	bool
-	contains(const jive_node * node) const noexcept;
+	contains(const jive::node * node) const noexcept;
 
 	inline jive::region *
 	parent() const noexcept
@@ -66,7 +67,7 @@ public:
 		return graph_;
 	}
 
-	inline jive_node *
+	inline jive::node *
 	top() const noexcept
 	{
 		return top_;
@@ -76,12 +77,12 @@ public:
 		FIXME: this is going to be removed again
 	*/
 	inline void
-	set_top(jive_node * top) noexcept
+	set_top(jive::node * top) noexcept
 	{
 		top_ = top;
 	}
 
-	inline jive_node *
+	inline jive::node *
 	bottom() const noexcept
 	{
 		return bottom_;
@@ -91,7 +92,7 @@ public:
 		FIXME: this is going to be removed again
 	*/
 	inline void
-	set_bottom(jive_node * bottom) noexcept
+	set_bottom(jive::node * bottom) noexcept
 	{
 		bottom_ = bottom;
 	}
@@ -127,15 +128,15 @@ public:
 	copy(region * target, substitution_map & smap, bool copy_top, bool copy_bottom) const;
 
 	typedef jive::detail::intrusive_list<
-		jive_node,
-		jive_node::region_node_list_accessor
+		jive::node,
+		jive::node::region_node_list_accessor
 	> region_nodes_list;
 
 	region_nodes_list nodes;
 
 	struct {
-		struct jive_node * first;
-		struct jive_node * last;
+		jive::node * first;
+		jive::node * last;
 	} top_nodes;
 
 	struct {
@@ -149,8 +150,8 @@ public:
 
 private:
 	size_t depth_;
-	jive_node * top_;
-	jive_node * bottom_;
+	jive::node * top_;
+	jive::node * bottom_;
 	jive_graph * graph_;
 	jive::region * parent_;
 	jive::input * anchor_;

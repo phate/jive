@@ -106,7 +106,7 @@ subroutine_op::copy() const
 output *
 subroutine_op::get_passthrough_enter_by_name(jive::region * region, const char * name) const noexcept
 {
-	jive_node * enter = region->top();
+	jive::node * enter = region->top();
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs(); ++n) {
 		output * o = enter->output(n);
@@ -125,7 +125,7 @@ subroutine_op::get_passthrough_enter_by_index(jive::region * region, size_t inde
 input *
 subroutine_op::get_passthrough_leave_by_name(jive::region * region, const char * name) const noexcept
 {
-	jive_node * leave = region->bottom();
+	jive::node * leave = region->bottom();
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs(); ++n) {
 		input * i = leave->input(n);

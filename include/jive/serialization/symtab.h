@@ -16,11 +16,11 @@
 
 namespace jive {
 	class gate;
+	class node;
 	class output;
 }
 
 struct jive_label;
-struct jive_node;
 
 typedef struct jive_serialization_gatesym jive_serialization_gatesym;
 typedef struct jive_serialization_labelsym jive_serialization_labelsym;
@@ -99,7 +99,7 @@ typedef jive::detail::intrusive_hash<
 
 
 struct jive_serialization_nodesym {
-	struct jive_node * node;
+	jive::node * node;
 	std::string name;
 private:
 	jive::detail::intrusive_hash_anchor<jive_serialization_nodesym> name_hash_chain;
@@ -112,7 +112,7 @@ public:
 		&jive_serialization_nodesym::name_hash_chain
 	> name_hash_chain_accessor;
 	typedef jive::detail::intrusive_hash_accessor<
-		struct jive_node *,
+		jive::node *,
 		jive_serialization_nodesym,
 		&jive_serialization_nodesym::node,
 		&jive_serialization_nodesym::node_hash_chain
@@ -127,7 +127,7 @@ typedef jive::detail::intrusive_hash<
 > jive_serialization_nodesym_dict;
 
 typedef jive::detail::intrusive_hash<
-	const struct jive_node *,
+	const jive::node *,
 	jive_serialization_nodesym,
 	jive_serialization_nodesym::node_hash_chain_accessor
 > jive_serialization_nodesym_hash;
@@ -227,7 +227,7 @@ jive_serialization_symtab_name_to_label(
 void
 jive_serialization_symtab_insert_nodesym(
 	jive_serialization_symtab * self,
-	struct jive_node * node,
+	jive::node * node,
 	const std::string & name);
 
 void
@@ -238,7 +238,7 @@ jive_serialization_symtab_remove_nodesym(
 const jive_serialization_nodesym *
 jive_serialization_symtab_node_to_name(
 	jive_serialization_symtab * self,
-	const struct jive_node * node);
+	const jive::node * node);
 
 const jive_serialization_nodesym *
 jive_serialization_symtab_name_to_node(

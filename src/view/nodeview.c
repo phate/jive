@@ -65,7 +65,7 @@ jive_outputview_draw(jive_outputview * self, jive_textcanvas * dst, int x, int y
 
 /* nodeview */
 
-jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive_node * node_)
+jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive::node * node_)
 	: graphview(graphview_)
 	, node(node_)
 	, column(0)

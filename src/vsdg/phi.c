@@ -134,7 +134,7 @@ jive_phi_fixvar
 jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 {
 	jive_phi_build_state * state = self.internal_state;
-	jive_node * enter = self.region->top();
+	jive::node * enter = self.region->top();
 	jive_graph * graph = enter->graph();
 
 	jive_phi_fixvar fixvar;
@@ -162,21 +162,21 @@ jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::oport * fix_value)
 	throw std::logic_error("Lookup of fix point variable failed");
 }
 
-jive_node *
+jive::node *
 jive_phi_end(jive_phi self,
 	size_t npost_values, jive_phi_fixvar * fix_values)
 {
 	jive_phi_build_state * state = self.internal_state;
-	jive_node * enter = self.region->top();
+	jive::node * enter = self.region->top();
 
 	size_t n;
 	jive::output * tmp = enter->output(0);
-	jive_node * leave = jive::phi_tail_op().create_node(enter->region(), {tmp});
+	jive::node * leave = jive::phi_tail_op().create_node(enter->region(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
 
 	tmp = leave->output(0);
-	jive_node * anchor = jive::phi_op().create_node(self.region->parent(), {tmp});
+	jive::node * anchor = jive::phi_op().create_node(self.region->parent(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		state->fixvars[n].value = anchor->add_output(state->fixvars[n].gate);
 	

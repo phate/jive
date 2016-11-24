@@ -42,13 +42,13 @@ tracker::tracker(jive_graph * graph, size_t nstates)
 }
 
 jive_tracker_nodestate*
-tracker::map_node(jive_node * node)
+tracker::map_node(jive::node * node)
 {
 	return jive_node_get_tracker_state(node, slot_);
 }
 
 void
-tracker::node_depth_change(jive_node * node, size_t old_depth)
+tracker::node_depth_change(jive::node * node, size_t old_depth)
 {
 	jive_tracker_nodestate * nodestate = map_node(node);
 	if (nodestate->state >= states_.size()) {
@@ -60,7 +60,7 @@ tracker::node_depth_change(jive_node * node, size_t old_depth)
 }
 
 void
-tracker::node_destroy(jive_node * node)
+tracker::node_destroy(jive::node * node)
 {
 	jive_tracker_nodestate * nodestate = map_node(node);
 	if (nodestate->state >= states_.size()) {
@@ -70,13 +70,13 @@ tracker::node_destroy(jive_node * node)
 }
 
 ssize_t
-tracker::get_nodestate(jive_node * node)
+tracker::get_nodestate(jive::node * node)
 {
 	return map_node(node)->state;
 }
 
 void
-tracker::set_nodestate(jive_node * node, size_t state)
+tracker::set_nodestate(jive::node * node, size_t state)
 {
 	jive_tracker_nodestate * nodestate = map_node(node);
 	
@@ -91,14 +91,14 @@ tracker::set_nodestate(jive_node * node, size_t state)
 	}
 }
 
-jive_node *
+jive::node *
 tracker::peek_top(size_t state) const
 {
 	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(states_[state]);
 	return nodestate ? nodestate->node : nullptr;
 }
 
-jive_node *
+jive::node *
 tracker::peek_bottom(size_t state) const
 {
 	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_bottom(states_[state]);
@@ -119,13 +119,13 @@ computation_tracker::~computation_tracker() noexcept
 }
 
 jive_tracker_nodestate *
-computation_tracker::map_node(jive_node * node)
+computation_tracker::map_node(jive::node * node)
 {
 	return jive_node_get_tracker_state(node, slot_);
 }
 
 void
-computation_tracker::invalidate(jive_node * node)
+computation_tracker::invalidate(jive::node * node)
 {
 	jive_tracker_nodestate * nodestate = map_node(node);
 	if (nodestate->state == jive_tracker_nodestate_none) {
@@ -135,7 +135,7 @@ computation_tracker::invalidate(jive_node * node)
 }
 
 void
-computation_tracker::invalidate_below(jive_node * node)
+computation_tracker::invalidate_below(jive::node * node)
 {
 	for (size_t n = 0; n < node->noutputs(); n++) {
 		for (auto user : node->output(n)->users) {
@@ -145,7 +145,7 @@ computation_tracker::invalidate_below(jive_node * node)
 	}
 }
 
-jive_node *
+jive::node *
 computation_tracker::pop_top()
 {
 	jive_tracker_nodestate * nodestate = jive_tracker_depth_state_pop_top(nodestates_);

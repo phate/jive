@@ -9,11 +9,9 @@
 
 #include <jive/arch/call.h>
 
-struct jive_node;
-
-jive_node *
+jive::node *
 jive_i386_call_node_substitute(
-	jive_node * node,
+	jive::node * node,
 	const jive::call_operation & op);
 
 #endif

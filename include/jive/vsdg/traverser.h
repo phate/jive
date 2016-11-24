@@ -11,7 +11,6 @@
 #include <stdlib.h>
 
 struct jive_graph;
-struct jive_node;
 
 namespace jive {
 namespace detail {
@@ -20,13 +19,13 @@ template<typename T>
 class traverser_iterator {
 public:
 	typedef std::input_iterator_tag iterator_category;
-	typedef jive_node * value_type;
+	typedef jive::node * value_type;
 	typedef ssize_t difference_type;
 	typedef value_type * pointer;
 	typedef value_type & reference;
 
 	constexpr
-	traverser_iterator(T * traverser = nullptr, jive_node * node = nullptr) noexcept
+	traverser_iterator(T * traverser = nullptr, jive::node * node = nullptr) noexcept
 		: traverser_(traverser)
 		, node_(node)
 	{
@@ -57,7 +56,7 @@ public:
 
 private:
 	T * traverser_;
-	jive_node * node_;
+	jive::node * node_;
 };
 
 }
@@ -75,15 +74,15 @@ public:
 	traversal_tracker(jive_graph * graph);
 	
 	inline traversal_nodestate
-	get_nodestate(jive_node * node);
+	get_nodestate(jive::node * node);
 	
 	inline void
-	set_nodestate(jive_node * node, traversal_nodestate state);
+	set_nodestate(jive::node * node, traversal_nodestate state);
 	
-	inline jive_node *
+	inline jive::node *
 	peek_top();
 	
-	inline jive_node *
+	inline jive::node *
 	peek_bottom();
 
 private:
@@ -97,26 +96,26 @@ public:
 	explicit
 	topdown_traverser(jive_graph * graph);
 
-	jive_node *
+	jive::node *
 	next();
 
 	typedef detail::traverser_iterator<topdown_traverser> iterator;
-	typedef jive_node * value_type;
+	typedef jive::node * value_type;
 	inline iterator begin() { return iterator(this, next()); }
 	inline iterator end() { return iterator(this, nullptr); }
 
 private:
 	bool
-	predecessors_visited(const jive_node * node) noexcept;
+	predecessors_visited(const jive::node * node) noexcept;
 
 	void
-	check_node(jive_node * node);
+	check_node(jive::node * node);
 
 	void
 	init_top_nodes(jive::region * region);
 
 	void
-	node_create(jive_node * node);
+	node_create(jive::node * node);
 
 	void
 	input_change(input * in, oport * old_origin, oport * new_origin);
@@ -132,23 +131,23 @@ public:
 	explicit
 	bottomup_traverser(jive_graph * graph, bool revisit = false);
 
-	jive_node *
+	jive::node *
 	next();
 
 	typedef detail::traverser_iterator<bottomup_traverser> iterator;
-	typedef jive_node * value_type;
+	typedef jive::node * value_type;
 	inline iterator begin() { return iterator(this, next()); }
 	inline iterator end() { return iterator(this, nullptr); }
 
 private:
 	void
-	check_node(jive_node * node);
+	check_node(jive::node * node);
 
 	void
-	node_create(jive_node * node);
+	node_create(jive::node * node);
 
 	void
-	node_destroy(jive_node * node);
+	node_destroy(jive::node * node);
 
 	void
 	input_change(input * in, oport * old_origin, oport * new_origin);
@@ -163,25 +162,25 @@ public:
 	~upward_cone_traverser() noexcept;
 
 	explicit
-	upward_cone_traverser(jive_node * node);
+	upward_cone_traverser(jive::node * node);
 
-	jive_node *
+	jive::node *
 	next();
 
 	typedef detail::traverser_iterator<upward_cone_traverser> iterator;
-	typedef jive_node * value_type;
+	typedef jive::node * value_type;
 	inline iterator begin() { return iterator(this, next()); }
 	inline iterator end() { return iterator(this, nullptr); }
 
 private:
 	void
-	check_node(jive_node * node);
+	check_node(jive::node * node);
 
 	void
-	node_create(jive_node * node);
+	node_create(jive::node * node);
 
 	void
-	node_destroy(jive_node * node);
+	node_destroy(jive::node * node);
 
 	void
 	input_change(input * input, oport * old_origin, oport * new_origin);
@@ -199,11 +198,11 @@ public:
 		bottomup_region_traverser * master,
 		const jive::region * region);
 
-	jive_node *
+	jive::node *
 	next();
 
 	typedef detail::traverser_iterator<bottomup_slave_traverser> iterator;
-	typedef jive_node * value_type;
+	typedef jive::node * value_type;
 	inline iterator begin() { return iterator(this, next()); }
 	inline iterator end() { return iterator(this, nullptr); }
 
@@ -232,7 +231,7 @@ public:
 	bottomup_region_traverser(jive_graph * graph);
 
 	void
-	pass(jive_node * node);
+	pass(jive::node * node);
 
 	bottomup_slave_traverser *
 	map_region(const jive::region * region);
@@ -245,10 +244,10 @@ private:
 	> slave_traverser_hash;
 
 	void
-	check_above(jive_node * node);
+	check_above(jive::node * node);
 
 	jive_tracker_nodestate *
-	map_node(jive_node * node);
+	map_node(jive::node * node);
 
 	jive_graph * graph_;
 	slave_traverser_hash region_hash_;
@@ -266,26 +265,26 @@ traversal_tracker::traversal_tracker(jive_graph * graph)
 }
 
 traversal_nodestate
-traversal_tracker::get_nodestate(jive_node * node)
+traversal_tracker::get_nodestate(jive::node * node)
 {
 	return static_cast<traversal_nodestate>(tracker_.get_nodestate(node));
 }
 
 void
 traversal_tracker::set_nodestate(
-	jive_node * node,
+	jive::node * node,
 	traversal_nodestate state)
 {
 	tracker_.set_nodestate(node, static_cast<size_t>(state));
 }
 
-jive_node *
+jive::node *
 traversal_tracker::peek_top()
 {
 	return tracker_.peek_top(static_cast<size_t>(traversal_nodestate::frontier));
 }
 
-jive_node *
+jive::node *
 traversal_tracker::peek_bottom()
 {
 	return tracker_.peek_bottom(static_cast<size_t>(traversal_nodestate::frontier));

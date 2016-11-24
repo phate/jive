@@ -46,7 +46,6 @@ typedef struct jive_tracker_depth_state jive_tracker_depth_state;
 typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
 typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 
-struct jive_node;
 struct jive_resource;
 struct jive_resource_name;
 
@@ -94,8 +93,8 @@ public:
 	prune();
 
 	struct {
-		struct jive_node * first;
-		struct jive_node * last;
+		jive::node * first;
+		jive::node * last;
 	} bottom;
 
 	struct {
@@ -110,9 +109,9 @@ public:
 	jive::notifier<jive::region *> on_region_create;
 	jive::notifier<jive::region *> on_region_destroy;
 
-	jive::notifier<jive_node *> on_node_create;
-	jive::notifier<jive_node *> on_node_destroy;
-	jive::notifier<jive_node *, size_t> on_node_depth_change;
+	jive::notifier<jive::node *> on_node_create;
+	jive::notifier<jive::node *> on_node_destroy;
+	jive::notifier<jive::node *, size_t> on_node_depth_change;
 	
 	jive::notifier<jive::input *> on_input_create;
 	jive::notifier<

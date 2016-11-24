@@ -56,7 +56,7 @@ private:
 	std::vector<std::unique_ptr<const jive::base::type>> result_types_;
 };
 
-jive_node *
+jive::node *
 jive_test_node_create(
 	jive::region * region,
 	const std::vector<const jive::base::type*> & operand_types,

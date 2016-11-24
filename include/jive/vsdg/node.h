@@ -100,19 +100,19 @@ public:
 	~input() noexcept;
 
 	input(
-		struct jive_node * node,
+		jive::node * node,
 		size_t index,
 		jive::oport * origin,
 		const jive::base::type & type);
 
 	input(
-		jive_node * node,
+		jive::node * node,
 		size_t index,
 		jive::oport * origin,
 		jive::gate * gate);
 
 	input(
-		jive_node * node,
+		jive::node * node,
 		size_t index,
 		jive::oport * origin,
 		const struct jive_resource_class * rescls);
@@ -127,7 +127,7 @@ public:
 	virtual jive::region *
 	region() const noexcept override;
 
-	inline struct jive_node *
+	inline jive::node *
 	node() const noexcept
 	{
 		return node_;
@@ -164,7 +164,7 @@ public:
 
 private:
 	jive::gate * gate_;
-	struct jive_node * node_;
+	jive::node * node_;
 	const struct jive_resource_class * rescls_;
 
 	/*
@@ -261,11 +261,11 @@ public:
 	virtual
 	~output() noexcept;
 
-	output(struct jive_node * node, size_t index, const jive::base::type & type);
+	output(jive::node * node, size_t index, const jive::base::type & type);
 
-	output(jive_node * node, size_t index, jive::gate * gate);
+	output(jive::node * node, size_t index, jive::gate * gate);
 
-	output(jive_node * node, size_t index, const struct jive_resource_class * rescls);
+	output(jive::node * node, size_t index, const struct jive_resource_class * rescls);
 
 public:
 	virtual const jive::base::type &
@@ -277,7 +277,7 @@ public:
 	virtual jive::region *
 	region() const noexcept override;
 
-	inline jive_node * node() const noexcept { return node_; }
+	inline jive::node * node() const noexcept { return node_; }
 
 	inline jive::gate *
 	gate() const noexcept
@@ -306,7 +306,7 @@ public:
 	} gate_outputs_list;
 
 private:
-	jive_node * node_;
+	jive::node * node_;
 	jive::gate * gate_;
 	const struct jive_resource_class * rescls_;
 
@@ -396,18 +396,18 @@ private:
 
 /**	@}	*/
 
-typedef struct jive_node jive_node;
-
 typedef struct jive_tracker_nodestate jive_tracker_nodestate;
 
 struct jive_resource_class_count;
 struct jive_substitution_map;
 
-class jive_node final {
-public:
-	~jive_node();
+namespace jive {
 
-	jive_node(std::unique_ptr<jive::operation> op, jive::region * region,
+class node final {
+public:
+	~node();
+
+	node(std::unique_ptr<jive::operation> op, jive::region * region,
 		const std::vector<jive::oport*> & operands);
 
 	inline const jive::operation &
@@ -481,7 +481,7 @@ public:
 		return outputs_.size();
 	}
 
-	jive_node *
+	jive::node *
 	copy(jive::region * region, const std::vector<jive::oport*> & operands) const;
 
 	/**
@@ -501,7 +501,7 @@ public:
 		corresponding outputs of the newly created node in
 		subsequent \ref copy operations.
 	*/
-	jive_node *
+	jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const;
 
 	inline jive::input *
@@ -531,24 +531,24 @@ public:
 	recompute_depth();
 
 	struct {
-		jive_node * prev;
-		jive_node * next;
+		jive::node * prev;
+		jive::node * next;
 	} region_top_node_list;
 	
 	struct {
-		jive_node * prev;
-		jive_node * next;
+		jive::node * prev;
+		jive::node * next;
 	} graph_bottom_list;
 
 	std::vector<jive_tracker_nodestate*> tracker_slots;
 
 private:
-	jive::detail::intrusive_list_anchor<jive_node> region_node_list_anchor_;
+	jive::detail::intrusive_list_anchor<jive::node> region_node_list_anchor_;
 
 public:
 	typedef jive::detail::intrusive_list_accessor<
-		jive_node,
-		&jive_node::region_node_list_anchor_
+		jive::node,
+		&jive::node::region_node_list_anchor_
 	> region_node_list_accessor;
 
 private:
@@ -560,8 +560,10 @@ private:
 	std::unique_ptr<jive::operation> operation_;
 };
 
+}
+
 struct jive_tracker_nodestate {
-	jive_node * node;
+	jive::node * node;
 	size_t cookie;
 	size_t state;
 	intptr_t tag;
@@ -580,10 +582,10 @@ struct jive_tracker_nodestate {
 	originating at port @c origin.
 */
 bool
-jive_node_valid_edge(const jive_node * self, const jive::oport * origin);
+jive_node_valid_edge(const jive::node * self, const jive::oport * origin);
 
 JIVE_EXPORTED_INLINE jive::input *
-jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
+jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
 		if (self->input(n)->gate() == gate) {
@@ -594,7 +596,7 @@ jive_node_get_gate_input(const jive_node * self, const jive::gate * gate)
 }
 
 JIVE_EXPORTED_INLINE jive::input *
-jive_node_get_gate_input(const jive_node * self, const char * name)
+jive_node_get_gate_input(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
 		jive::input * i = self->input(n);
@@ -605,7 +607,7 @@ jive_node_get_gate_input(const jive_node * self, const char * name)
 }
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_node_get_gate_output(const jive_node * self, const jive::gate * gate)
+jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
 		if (self->output(n)->gate() == gate) {
@@ -616,7 +618,7 @@ jive_node_get_gate_output(const jive_node * self, const jive::gate * gate)
 }
 
 JIVE_EXPORTED_INLINE jive::output *
-jive_node_get_gate_output(const jive_node * self, const char * name)
+jive_node_get_gate_output(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
 		jive::output * o = self->output(n);
@@ -628,16 +630,16 @@ jive_node_get_gate_output(const jive_node * self, const char * name)
 
 void
 jive_node_get_use_count_input(
-	const jive_node * self,
+	const jive::node * self,
 	struct jive_resource_class_count * use_count);
 
 void
 jive_node_get_use_count_output(
-	const jive_node * self,
+	const jive::node * self,
 	struct jive_resource_class_count * use_count);
 
 JIVE_EXPORTED_INLINE std::vector<jive::oport*>
-jive_node_arguments(jive_node * self)
+jive_node_arguments(jive::node * self)
 {
 	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
@@ -646,7 +648,7 @@ jive_node_arguments(jive_node * self)
 	return arguments;
 }
 
-jive_node *
+jive::node *
 jive_node_cse(
 	jive::region * region,
 	const jive::operation & op,
@@ -670,7 +672,7 @@ jive_node_create_normalized(
 	\param operands Input operands of node
 */
 
-jive_node *
+jive::node *
 jive_node_cse_create(
 	const jive::node_normal_form * nf,
 	jive::region * region,
@@ -678,15 +680,15 @@ jive_node_cse_create(
 	const std::vector<jive::oport*> & arguments);
 
 bool
-jive_node_normalize(struct jive_node * self);
+jive_node_normalize(jive::node * self);
 
 /* tracking support */
 
 jive_tracker_nodestate *
-jive_node_get_tracker_state_slow(jive_node * self, jive_tracker_slot slot);
+jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot);
 
 JIVE_EXPORTED_INLINE jive_tracker_nodestate *
-jive_node_get_tracker_state(jive_node * self, jive_tracker_slot slot)
+jive_node_get_tracker_state(jive::node * self, jive_tracker_slot slot)
 {
 	jive_tracker_nodestate * nodestate;
 	if (slot.index < self->tracker_slots.size()) {

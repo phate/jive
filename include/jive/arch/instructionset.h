@@ -15,7 +15,6 @@ namespace jive {
 }
 
 struct jive_instruction_class;
-struct jive_node;
 struct jive_reg_classifier;
 struct jive_resource_class;
 
@@ -25,7 +24,7 @@ typedef struct jive_xfer_description jive_xfer_description;
 
 struct jive_xfer_description {
 	jive::input * input;
-	struct jive_node * node;
+	jive::node * node;
 	jive::output * output;
 };
 

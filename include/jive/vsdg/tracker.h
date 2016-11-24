@@ -13,7 +13,6 @@
 #include <jive/util/callbacks.h>
 
 struct jive_graph;
-struct jive_node;
 struct jive_notifier;
 struct jive_tracker_depth_state;
 
@@ -28,6 +27,7 @@ struct jive_tracker_nodestate;
 
 namespace jive {
 
+class node;
 class region;
 
 /* Track states of nodes within the graph. Each node can logically be in
@@ -41,29 +41,29 @@ public:
 
 	/* get state of the node */
 	ssize_t
-	get_nodestate(jive_node * node);
+	get_nodestate(jive::node * node);
 
 	/* set state of the node */
 	void
-	set_nodestate(jive_node * node, size_t state);
+	set_nodestate(jive::node * node, size_t state);
 
 	/* get one of the top nodes for the given state */
-	jive_node *
+	jive::node *
 	peek_top(size_t state) const;
 
 	/* get one of the bottom nodes for the given state */
-	jive_node *
+	jive::node *
 	peek_bottom(size_t state) const;
 
 private:
 	void
-	node_depth_change(jive_node * node, size_t old_depth);
+	node_depth_change(jive::node * node, size_t old_depth);
 
 	void
-	node_destroy(jive_node * node);
+	node_destroy(jive::node * node);
 
 	jive_tracker_nodestate*
-	map_node(jive_node * node);
+	map_node(jive::node * node);
 
 	jive_graph * graph_;
 	/* FIXME: need RAII idiom for slot reservation */
@@ -81,17 +81,17 @@ public:
 	~computation_tracker() noexcept;
 	
 	void
-	invalidate(jive_node * node);
+	invalidate(jive::node * node);
 	
 	void
-	invalidate_below(jive_node * node);
+	invalidate_below(jive::node * node);
 	
-	jive_node *
+	jive::node *
 	pop_top();
 
 private:
 	jive_tracker_nodestate*
-	map_node(jive_node * node);
+	map_node(jive::node * node);
 
 	jive_graph * graph_;
 	/* FIXME: need RAII idiom for slot reservation */

@@ -26,7 +26,7 @@ public:
 		jive_graph * graph);
 
 	virtual bool
-	normalize_node(jive_node * node) const override;
+	normalize_node(jive::node * node) const override;
 
 	virtual bool
 	operands_are_normalized(
@@ -66,7 +66,7 @@ public:
 
 private:
 	bool
-	normalize_node(jive_node * node, const base::binary_op & op) const;
+	normalize_node(jive::node * node, const base::binary_op & op) const;
 
 	bool enable_reducible_;
 	bool enable_reorder_;
@@ -88,7 +88,7 @@ public:
 		jive_graph * graph);
 
 	virtual bool
-	normalize_node(jive_node * node) const override;
+	normalize_node(jive::node * node) const override;
 
 	virtual bool
 	operands_are_normalized(

@@ -116,7 +116,7 @@ private:
 	std::vector<test_option_t> output_options_;
 };
 
-static jive_node *
+static jive::node *
 jive_negtestnode_create(
 	jive::region * region,
 	
@@ -225,7 +225,7 @@ test_negotiator_option_create_(const jive_negotiator * self)
 }
 
 static void
-test_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node_)
+test_negotiator_annotate_node_proper_(jive_negotiator * self, jive::node * node_)
 {
 	if (auto op = dynamic_cast<const negtest_op *>(&node_->operation())) {
 		for (size_t n = 0; n < node_->ninputs(); n++) {
@@ -315,30 +315,30 @@ static int test_main(void)
 	test_option_t opt4 = 5;
 
 	const jive::base::type * tmparray0[] = {&bits32};
-	jive_node * n1 = jive_negtestnode_create(graph.root(),
+	jive::node * n1 = jive_negtestnode_create(graph.root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	jive::output * tmp = n1->output(0);
-	jive_node * n2 = jive_negtestnode_create(graph.root(),
+	jive::node * n2 = jive_negtestnode_create(graph.root(),
 		1, &opt1, tmparray0, &tmp,
 		0, 0, 0);
-	jive_node * n3 = jive_negtestnode_create(graph.root(),
+	jive::node * n3 = jive_negtestnode_create(graph.root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	tmp = n3->output(0);
-	jive_node * n4 = jive_negtestnode_create(graph.root(),
+	jive::node * n4 = jive_negtestnode_create(graph.root(),
 		1, &opt2, tmparray0, &tmp,
 		0, 0, 0);
 	
 	jive::region * subregion = new jive::region(graph.root(), &graph);
-	jive_node * n5 = jive_negtestnode_create(subregion,
+	jive::node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
 	tmp = n5->output(0);
-	jive_node * n6 = jive_negtestnode_create(subregion,
+	jive::node * n6 = jive_negtestnode_create(subregion,
 		1, &opt3, tmparray0, &tmp,
 		0, 0, 0);
-	jive_node * n7 = jive_negtestnode_create(subregion,
+	jive::node * n7 = jive_negtestnode_create(subregion,
 		1, &opt4, tmparray0, &tmp,
 		0, 0, 0);
 	
@@ -356,7 +356,7 @@ static int test_main(void)
 	
 	assert(n2->input(0)->origin() == n1->output(0));
 	assert(n4->input(0)->origin() != n3->output(0));
-	jive_node * split_node = dynamic_cast<jive::output*>(n4->input(0)->origin())->node();
+	jive::node * split_node = dynamic_cast<jive::output*>(n4->input(0)->origin())->node();
 	expect_options(&nego, n3->output(0), 1, split_node->input(0), 1);
 	expect_options(&nego, split_node->output(0), 2, n4->input(0), 2);
 	

@@ -121,7 +121,7 @@ public:
 	}
 
 	virtual bool
-	normalize_node(jive_node * node) const override
+	normalize_node(jive::node * node) const override
 	{
 		if (!get_mutable()) {
 			return true;
@@ -160,7 +160,7 @@ public:
 		bool changes = (args != new_args);
 
 		if (changes) {
-			jive_node * new_node = nullptr;
+			jive::node * new_node = nullptr;
 			concat_op op(types_from_arguments(new_args));
 
 			if (get_cse()) {

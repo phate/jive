@@ -95,7 +95,7 @@ jive_bitstring_to_address_create(jive::oport * bitstring, size_t nbits,
 
 static void
 jive_load_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::load_op & op,
 	size_t nbits)
 {
@@ -132,7 +132,7 @@ jive_load_node_address_transform(
 
 static void
 jive_store_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::store_op & op,
 	size_t nbits)
 {
@@ -170,7 +170,7 @@ jive_store_node_address_transform(
 
 static void
 jive_label_to_address_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::address::label_to_address_op & op,
 	size_t nbits)
 {
@@ -183,7 +183,7 @@ jive_label_to_address_node_address_transform(
 
 static void
 jive_call_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::call_operation & op,
 	size_t nbits)
 {
@@ -213,7 +213,7 @@ jive_call_node_address_transform(
 	if (!transform)
 		return;
 
-	jive_node * call = jive_call_by_bitstring_node_create(node->region(), operands[0], nbits,
+	jive::node * call = jive_call_by_bitstring_node_create(node->region(), operands[0], nbits,
 		op.calling_convention(), node->ninputs() - 1, operands + 1, node->noutputs(),
 		return_types);
 
@@ -227,7 +227,7 @@ jive_call_node_address_transform(
 
 static void
 jive_memberof_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::address::memberof_op & op,
 	jive::memlayout_mapper * mapper)
 {
@@ -249,7 +249,7 @@ jive_memberof_node_address_transform(
 
 static void
 jive_containerof_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::address::containerof_op & op,
 	jive::memlayout_mapper * mapper)
 {
@@ -271,7 +271,7 @@ jive_containerof_node_address_transform(
 
 static void
 jive_arraysubscript_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::address::arraysubscript_op & op,
 	jive::memlayout_mapper * mapper)
 {
@@ -291,7 +291,7 @@ jive_arraysubscript_node_address_transform(
 
 static void
 jive_arrayindex_node_address_transform(
-	jive_node * node,
+	jive::node * node,
 	const jive::address::arrayindex_op & op,
 	jive::memlayout_mapper * mapper)
 {
@@ -310,7 +310,7 @@ jive_arrayindex_node_address_transform(
 }
 
 static void
-jive_apply_node_address_transform(const jive_node * node, size_t nbits)
+jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 {
 	jive::input * fct = node->input(0);
 
@@ -340,7 +340,7 @@ jive_apply_node_address_transform(const jive_node * node, size_t nbits)
 
 static void
 jive_lambda_node_address_transform(
-	const jive_node * node, size_t nbits)
+	const jive::node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(node->noutputs() == 1);
 
@@ -353,8 +353,8 @@ jive_lambda_node_address_transform(
 
 	jive::region * region = node->input(0)->origin()->region();
 	JIVE_DEBUG_ASSERT(node->region() != region);
-	jive_node * enter = region->top();
-	jive_node * leave = region->bottom();
+	jive::node * enter = region->top();
+	jive::node * leave = region->bottom();
 
 	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
 	std::unique_ptr<jive::base::type> new_fcttype_(convert_address_to_bitstring_type(*fcttype, nbits));
@@ -375,7 +375,7 @@ jive_lambda_node_address_transform(
 
 	jive::substitution_map map;
 
-	jive_node * new_enter = lambda->region->top();
+	jive::node * new_enter = lambda->region->top();
 	for (n = 1; n < enter->noutputs(); n++) {
 		jive::oport * parameter = jive_bitstring_to_address_create(new_enter->output(n), nbits,
 			fcttype->argument_type(n-1));
@@ -401,7 +401,7 @@ jive_lambda_node_address_transform(
 }
 
 static void
-jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
+jive_graph_tail_node_address_transform(const jive::node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::graph_tail_operation*>(&node->operation()));
 
@@ -436,13 +436,13 @@ jive_graph_tail_node_address_transform(const jive_node * node, size_t nbits)
 void
 jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper)
 {
-	for (jive_node * node : jive::topdown_traverser(graph)) {
+	for (jive::node * node : jive::topdown_traverser(graph)) {
 		jive_node_address_transform(node, mapper);
 	}
 }
 
 void
-jive_node_address_transform(jive_node * node, jive::memlayout_mapper * mapper)
+jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper)
 {
 	size_t nbits = mapper->map_address().size() * 8;
 	if (auto op = dynamic_cast<const jive::address::memberof_op *>(&node->operation())) {

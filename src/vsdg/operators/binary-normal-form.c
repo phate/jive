@@ -101,7 +101,7 @@ binary_normal_form::binary_normal_form(
 }
 
 bool
-binary_normal_form::normalize_node(jive_node * node) const
+binary_normal_form::normalize_node(jive::node * node) const
 {
 	const jive::operation & base_op = node->operation();
 	const jive::base::binary_op & op = *static_cast<const jive::base::binary_op *>(&base_op);
@@ -110,7 +110,7 @@ binary_normal_form::normalize_node(jive_node * node) const
 }
 
 bool
-binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op) const
+binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op) const
 {
 	if (!get_mutable()) {
 		return true;
@@ -153,7 +153,7 @@ binary_normal_form::normalize_node(jive_node * node, const base::binary_op & op)
 	bool changes = (args != new_args);
 
 	if (changes) {
-		jive_node * new_node = nullptr;
+		jive::node * new_node = nullptr;
 
 		std::unique_ptr<operation> tmp_op;
 		if (new_args.size() > 2) {
@@ -346,7 +346,7 @@ flattened_binary_normal_form::flattened_binary_normal_form(
 }
 
 bool
-flattened_binary_normal_form::normalize_node(jive_node * node) const
+flattened_binary_normal_form::normalize_node(jive::node * node) const
 {
 	const base::flattened_binary_op & op =
 		static_cast<const base::flattened_binary_op &>(node->operation());

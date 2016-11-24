@@ -90,7 +90,7 @@ jive_subroutine_begin(
 /**
 	\brief End constructing a subroutine region
 */
-jive_node *
+jive::node *
 jive_subroutine_end(jive_subroutine & self);
 
 /**
@@ -157,43 +157,43 @@ struct jive_subroutine_abi_class {
 	jive::input *(*add_fp_dependency)(
 		const jive::subroutine_op & op,
 		jive::region * region,
-		jive_node * node);
+		jive::node * node);
 	jive::input *(*add_sp_dependency)(
 		const jive::subroutine_op & op,
 		jive::region * region,
-		jive_node * node);
+		jive::node * node);
 	const jive_instructionset * instructionset;
 };
 
 void
 jive_subroutine_node_prepare_stackframe(
-	jive_node * self,
+	jive::node * self,
 	const jive::subroutine_op & op,
 	jive_subroutine_stackframe_info * frame,
 	const jive_subroutine_late_transforms * xfrm);
 
 jive::input *
 jive_subroutine_node_add_fp_dependency(
-	const jive_node * self,
+	const jive::node * self,
 	const jive::subroutine_op & op,
-	jive_node * node);
+	jive::node * node);
 
 jive::input *
 jive_subroutine_node_add_sp_dependency(
-	const jive_node * self,
+	const jive::node * self,
 	const jive::subroutine_op & op,
-	jive_node * node);
+	jive::node * node);
 
-jive_node *
+jive::node *
 jive_region_get_subroutine_node(const jive::region * region);
 
 const jive_instructionset *
 jive_region_get_instructionset(const jive::region * region);
 
 jive::output *
-jive_subroutine_node_get_sp(const jive_node * self);
+jive_subroutine_node_get_sp(const jive::node * self);
 
 jive::output *
-jive_subroutine_node_get_fp(const jive_node * self);
+jive_subroutine_node_get_fp(const jive::node * self);
 
 #endif

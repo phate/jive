@@ -47,7 +47,7 @@ static int test_main(void)
 	
 	auto e = jive_bitnot(d);
 	
-	jive_node * orig_node = dynamic_cast<jive::output*>(e)->node();
+	jive::node * orig_node = dynamic_cast<jive::output*>(e)->node();
 	
 	jive_serialization_driver drv;
 	jive_serialization_driver_init(&drv);
@@ -65,7 +65,7 @@ static int test_main(void)
 	jive_serialization_driver_init(&drv);
 	drv.error = my_error;
 	jive_deserialize_graph(&drv, is, &gr2);
-	jive_node * repl_node = jive_serialization_symtab_name_to_node(&drv.symtab, "TARGET")->node;
+	jive::node * repl_node = jive_serialization_symtab_name_to_node(&drv.symtab, "TARGET")->node;
 	assert(repl_node);
 	jive_serialization_driver_fini(&drv);
 	jive_token_istream_destroy(is);

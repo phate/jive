@@ -20,8 +20,8 @@
 #include <jive/vsdg/substitution.h>
 
 /* convert according to "default" ABI */
-jive_node *
-jive_i386_subroutine_convert(jive::region * target_parent, jive_node * lambda_node)
+jive::node *
+jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_node)
 {
 	jive::region * src_region;
 	src_region = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->region();
@@ -111,11 +111,11 @@ jive_i386_subroutine_prepare_stackframe_(
 
 static jive::input *
 jive_i386_subroutine_add_fp_dependency_(
-	const jive::subroutine_op & op, jive::region * region, jive_node * node);
+	const jive::subroutine_op & op, jive::region * region, jive::node * node);
 
 static jive::input *
 jive_i386_subroutine_add_sp_dependency_(
-	const jive::subroutine_op & op, jive::region * region, jive_node * node);
+	const jive::subroutine_op & op, jive::region * region, jive::node * node);
 
 const jive_subroutine_abi_class JIVE_I386_SUBROUTINE_ABI = {
 	prepare_stackframe : jive_i386_subroutine_prepare_stackframe_,
@@ -142,7 +142,7 @@ public:
 	
 		const jive::base::type * in_type = &o->type();
 		const jive::base::type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
-		jive_node * node = jive_splitnode_create(subroutine.region,
+		jive::node * node = jive_splitnode_create(subroutine.region,
 			in_type, o, o->gate()->required_rescls,
 			out_type, &jive_i386_regcls_gpr.base);
 		return node->output(0);
@@ -161,7 +161,7 @@ public:
 	finalize(
 		jive_subroutine & subroutine) override
 	{
-		jive_node * ret_instr = jive_instruction_node_create(subroutine.region, &jive_i386_instr_ret,
+		jive::node * ret_instr = jive_instruction_node_create(subroutine.region, &jive_i386_instr_ret,
 			{}, {}, {}, {}, {&jive::ctl::boolean});
 		/* add dependency on return address on stack */
 			ret_instr->add_input(subroutine.builder_state->passthroughs[6].gate,
@@ -292,7 +292,7 @@ jive_i386_subroutine_prepare_stackframe_(
 
 static jive::input *
 jive_i386_subroutine_add_fp_dependency_(
-	const jive::subroutine_op & op, jive::region * region, jive_node * node)
+	const jive::subroutine_op & op, jive::region * region, jive::node * node)
 {
 	jive::output * frameptr = op.get_passthrough_enter_by_index(region, 1);
 	
@@ -307,7 +307,7 @@ jive_i386_subroutine_add_fp_dependency_(
 
 static jive::input *
 jive_i386_subroutine_add_sp_dependency_(
-	const jive::subroutine_op & op, jive::region * region, jive_node * node)
+	const jive::subroutine_op & op, jive::region * region, jive::node * node)
 {
 	jive::output * stackptr = op.get_passthrough_enter_by_index(region, 1);
 	

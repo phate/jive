@@ -29,7 +29,7 @@ unary_normal_form::unary_normal_form(
 }
 
 bool
-unary_normal_form::normalize_node(jive_node * node) const
+unary_normal_form::normalize_node(jive::node * node) const
 {
 	if (!get_mutable()) {
 		return true;
@@ -52,7 +52,7 @@ unary_normal_form::normalize_node(jive_node * node) const
 	}
 
 	if (get_cse()) {
-		jive_node * new_node = jive_node_cse(node->region(), op,
+		jive::node * new_node = jive_node_cse(node->region(), op,
 			{dynamic_cast<jive::output*>(node->input(0)->origin())});
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {

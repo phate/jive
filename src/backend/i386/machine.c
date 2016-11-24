@@ -35,7 +35,7 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 {
 	jive_xfer_description xfer;
 	
-	jive_node * sub = jive_region_get_subroutine_node(region);
+	jive::node * sub = jive_region_get_subroutine_node(region);
 	
 	jive::output * sp = jive_subroutine_node_get_sp(sub);
 	jive::output * fp = jive_subroutine_node_get_fp(sub);

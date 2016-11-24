@@ -55,14 +55,14 @@ static int test_main(void)
 	assert(s1->node()->operation() == s2->node()->operation());
 	assert(s0->node()->operation() != s3->node()->operation());
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		std::vector<const jive::base::type*>(8, &bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {&bits32});
 	graph.export_port(bottom->output(0), "dummy");
 
 	jive_view(&graph, stdout);
 
 	jive::memlayout_mapper_simple layout_mapper(4);
-	for (jive_node * node : jive::topdown_traverser(&graph)) {
+	for (jive::node * node : jive::topdown_traverser(&graph)) {
 		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
 			jive_sizeof_node_reduce(node, &layout_mapper);
 		}

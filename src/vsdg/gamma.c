@@ -139,7 +139,7 @@ register_node_normal_form(void)
 }
 
 
-static jive_node *
+static jive::node *
 jive_gamma_create(
 	jive::oport * predicate,
 	const std::vector<const jive::base::type*> & types,
@@ -152,14 +152,14 @@ jive_gamma_create(
 	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < nalternatives; n++) {
 		jive::region * subregion = new jive::region(region, region->graph());
-		jive_node * head = jive::gamma_head_op().create_node(subregion, {});
+		jive::node * head = jive::gamma_head_op().create_node(subregion, {});
 		jive::output * tmp = head->output(0);
-		jive_node * tail = jive::gamma_tail_op().create_node(subregion, {tmp});
+		jive::node * tail = jive::gamma_tail_op().create_node(subregion, {tmp});
 		arguments.push_back(tail->output(0));
 	}
 	arguments.push_back(predicate);
 
-	jive_node * gamma = jive::gamma_op(nalternatives).create_node(region, arguments);
+	jive::node * gamma = jive::gamma_op(nalternatives).create_node(region, arguments);
 	
 	for (size_t n = 0; n < nvalues; n++) {
 		jive::gate * gate_head = region->graph()->create_gate(
@@ -171,7 +171,7 @@ jive_gamma_create(
 
 		for (size_t i = 0; i < nalternatives; i++) {
 			jive::output * tmp = static_cast<jive::output*>(arguments[i]);
-			jive_node * head = static_cast<jive::output*>(tmp->node()->input(0)->origin())->node();
+			jive::node * head = static_cast<jive::output*>(tmp->node()->input(0)->origin())->node();
 			head->add_input(gate_head, alternatives[i][n]);
 			jive::output * value = head->add_output(gate_head);
 			tmp->node()->add_input(gate_tail, value);
@@ -223,7 +223,7 @@ jive_gamma(jive::oport * predicate,
 	}
 
 	std::vector<jive::oport*> results;
-	jive_node * node = jive_gamma_create(predicate, types, alternatives);
+	jive::node * node = jive_gamma_create(predicate, types, alternatives);
 	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 
@@ -233,8 +233,8 @@ jive_gamma(jive::oport * predicate,
 	*/
 	if (nf->get_mutable() && nf->get_invariant_reduction()) {
 		results.clear();
-		jive_node * tail0 = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-		jive_node * head0 = dynamic_cast<jive::output*>(tail0->input(0)->origin())->node();
+		jive::node * tail0 = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
+		jive::node * head0 = dynamic_cast<jive::output*>(tail0->input(0)->origin())->node();
 		size_t nalternatives = node->ninputs()-1;
 		for (size_t v = node->noutputs(); v > 0; --v) {
 			jive::output * value = dynamic_cast<jive::output*>(tail0->input(v)->origin());
@@ -244,8 +244,8 @@ jive_gamma(jive::oport * predicate,
 			size_t n;
 			value = dynamic_cast<jive::output*>(head0->input(v-1)->origin());
 			for (n = 1; n < nalternatives; n++) {
-				jive_node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
-				jive_node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
+				jive::node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
+				jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
 				if (dynamic_cast<jive::output*>(tail->input(v)->origin())->node() != head
 					|| value != dynamic_cast<jive::output*>(head->input(v-1)->origin()))
 				{
@@ -258,8 +258,8 @@ jive_gamma(jive::oport * predicate,
 				/* FIXME: ugh, this should be done by DNE */
 				delete node->output(v-1);
 				for (size_t n = 0; n < nalternatives; n++) {
-					jive_node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
-					jive_node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
+					jive::node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
+					jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
 					tail->remove_input(v);
 					head->remove_output(v);
 					head->remove_input(v-1);

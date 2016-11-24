@@ -604,7 +604,7 @@ jive_deserialize_defined_label(jive_serialization_driver * self,
 
 void
 jive_serialize_defined_node(jive_serialization_driver * self,
-	jive_node * node, jive_token_ostream * os)
+	jive::node * node, jive_token_ostream * os)
 {
 	const jive_serialization_nodesym * sym =
 		jive_serialization_symtab_node_to_name(&self->symtab, node);
@@ -614,7 +614,7 @@ jive_serialize_defined_node(jive_serialization_driver * self,
 
 bool
 jive_deserialize_defined_node(jive_serialization_driver * self,
-	jive_token_istream * is, jive_node ** node)
+	jive_token_istream * is, jive::node ** node)
 {
 	const jive_token * token = jive_token_istream_current(is);
 	if (token->type != jive_token_identifier) {
@@ -748,7 +748,7 @@ jive_deserialize_portsinfo(jive_serialization_driver * self,
 
 void
 jive_serialize_nodeexpr(jive_serialization_driver * self,
-	jive_node * node, jive_token_ostream * os)
+	jive::node * node, jive_token_ostream * os)
 {
 	size_t n;
 	jive_portsinfo inports;
@@ -795,7 +795,7 @@ jive_serialize_nodeexpr(jive_serialization_driver * self,
 
 bool
 jive_deserialize_nodeexpr(jive_serialization_driver * self,
-	jive_token_istream * is, jive::region * region, jive_node ** node)
+	jive_token_istream * is, jive::region * region, jive::node ** node)
 {
 	size_t n;
 	jive_portsinfo ports;
@@ -967,7 +967,7 @@ jive_deserialize_label(jive_serialization_driver * self,
 void
 jive_serialize_nodedef(jive_serialization_driver * self,
 	jive_serialization_namegen * namegen,
-	jive_node * node, jive_token_ostream * os)
+	jive::node * node, jive_token_ostream * os)
 {
 	namegen->name_node(namegen, &self->symtab, node);
 	size_t n;
@@ -1009,7 +1009,7 @@ jive_serialize_regiondef(jive_serialization_driver * self,
 
 typedef struct jive_level_nodes jive_level_nodes;
 struct jive_level_nodes {
-	std::vector<jive_node*> items;
+	std::vector<jive::node*> items;
 };
 
 typedef struct jive_sorted_nodes jive_sorted_nodes;
@@ -1027,13 +1027,13 @@ jive_sorted_nodes_init(jive_sorted_nodes * self)
 }
 
 static void
-jive_level_nodes_append(jive_level_nodes * level, jive_node * node)
+jive_level_nodes_append(jive_level_nodes * level, jive::node * node)
 {
 	level->items.push_back(node);
 }
 
 static void
-jive_sorted_nodes_append(jive_sorted_nodes * self, jive_node * node)
+jive_sorted_nodes_append(jive_sorted_nodes * self, jive::node * node)
 {
 	if (node->depth() >= self->depths.size()) {
 		size_t new_space = self->depths.size()*2;
@@ -1064,7 +1064,7 @@ jive_serialize_regionbody(jive_serialization_driver * self,
 		size_t k;
 		const jive_level_nodes * level = &sorted.depths[n];
 		for (k = 0; k < level->items.size(); ++k) {
-			jive_node * node = level->items[k];
+			jive::node * node = level->items[k];
 
 			size_t j;
 			for (j = 0; j < node->ninputs(); ++j) {
@@ -1138,7 +1138,7 @@ jive_deserialize_def(jive_serialization_driver * self,
 				}
 				case jive_token_node: {
 					jive_token_istream_advance(is);
-					jive_node * node;
+					jive::node * node;
 					if (!jive_deserialize_nodeexpr(self, is, region, &node))
 						return false;
 

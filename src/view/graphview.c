@@ -23,7 +23,7 @@ jive_graphview_row::jive_graphview_row() noexcept
 /* graphview */
 
 static void
-jive_graphview_add_node_recursive(jive_graphview * self, jive_node * node)
+jive_graphview_add_node_recursive(jive_graphview * self, jive::node * node)
 {
 	if (self->nodemap.find(node) != self->nodemap.end())
 		return;
@@ -45,7 +45,7 @@ jive_graphview::jive_graphview(const jive_graph * graph_)
 	, width(0)
 	, height(0)
 {
-	jive_node * node;
+	jive::node * node;
 	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list)
 		jive_graphview_add_node_recursive(this, node);
 }

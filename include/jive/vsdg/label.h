@@ -18,7 +18,6 @@ namespace jive {
 
 struct jive_graph;
 struct jive_linker_symbol;
-struct jive_node;
 
 typedef uint64_t jive_offset;
 

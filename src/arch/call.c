@@ -80,7 +80,7 @@ call_operation::copy() const
 
 }
 
-jive_node *
+jive::node *
 jive_call_by_address_node_create(jive::region * region,
 	jive::oport * target_address, const jive_calling_convention * calling_convention,
 	size_t narguments, jive::oport * const arguments[],
@@ -116,7 +116,7 @@ jive_call_by_address_create(jive::oport * target_address,
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive::region * region = target_address->region();
-	jive_node * node = jive_call_by_address_node_create(region, target_address, calling_convention,
+	jive::node * node = jive_call_by_address_node_create(region, target_address, calling_convention,
 		narguments, arguments, nreturns, return_types);
 
 	std::vector<jive::oport*> results;
@@ -126,7 +126,7 @@ jive_call_by_address_create(jive::oport * target_address,
 	return results;
 }
 
-jive_node *
+jive::node *
 jive_call_by_bitstring_node_create(jive::region * region,
 	jive::oport * target_address, size_t nbits,
 	const jive_calling_convention * calling_convention,
@@ -163,7 +163,7 @@ jive_call_by_bitstring_create(jive::oport * target_address, size_t nbits,
 	size_t nreturns, const jive::base::type * const return_types[])
 {
 	jive::region * region = target_address->region();
-	jive_node * node = jive_call_by_bitstring_node_create(region, target_address, nbits,
+	jive::node * node = jive_call_by_bitstring_node_create(region, target_address, nbits,
 		calling_convention, narguments, arguments, nreturns, return_types);
 
 	std::vector<jive::oport*> results;

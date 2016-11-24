@@ -127,7 +127,7 @@ jive_serialization_symtab_name_to_label(
 void
 jive_serialization_symtab_insert_nodesym(
 	jive_serialization_symtab * self,
-	struct jive_node * node,
+	jive::node * node,
 	const std::string & name)
 {
 	jive_serialization_nodesym * sym = new jive_serialization_nodesym;
@@ -150,7 +150,7 @@ jive_serialization_symtab_remove_nodesym(
 const jive_serialization_nodesym *
 jive_serialization_symtab_node_to_name(
 	jive_serialization_symtab * self,
-	const struct jive_node * node)
+	const jive::node * node)
 {
 	auto i = self->node_to_name.find(node);
 	if (i != self->node_to_name.end())

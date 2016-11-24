@@ -25,11 +25,11 @@ test_main()
 
 	jive_test_value_type vtype;
 	jive::region * inner_region = new jive::region(graph.root(), &graph);
-	jive_node * inner_node = jive_test_node_create(inner_region, {}, {}, {&vtype});
+	jive::node * inner_node = jive_test_node_create(inner_region, {}, {}, {&vtype});
 	auto normal_form = graph.node_normal_form(typeid(test_operation));
 
 	test_operation op;
-	jive_node * outer_node = jive_node_cse_create(normal_form, graph.root(), op, {});
+	jive::node * outer_node = jive_node_cse_create(normal_form, graph.root(), op, {});
 
 	assert(inner_node != outer_node);
 

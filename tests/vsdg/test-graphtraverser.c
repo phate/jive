@@ -16,9 +16,9 @@
 
 #include "testnodes.h"
 
-void test_basic_traversal(jive_graph * graph, jive_node * n1, jive_node * n2)
+void test_basic_traversal(jive_graph * graph, jive::node * n1, jive::node * n2)
 {
-	jive_node * tmp;
+	jive::node * tmp;
 	
 	{
 		jive::topdown_traverser trav(graph);
@@ -51,12 +51,12 @@ void test_order_enforcement_traversal()
 	jive_graph graph;
 	
 	jive_test_value_type type;
-	jive_node * n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
-	jive_node * n2 = jive_test_node_create(graph.root(), {&type}, {n1->output(0)}, {&type});
-	jive_node * n3 = jive_test_node_create(graph.root(),
+	jive::node * n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
+	jive::node * n2 = jive_test_node_create(graph.root(), {&type}, {n1->output(0)}, {&type});
+	jive::node * n3 = jive_test_node_create(graph.root(),
 		{&type, &type}, {n2->output(0), n1->output(1)}, {&type});
 
-	jive_node * tmp;
+	jive::node * tmp;
 	
 	{
 		jive::topdown_traverser trav(&graph);
@@ -89,9 +89,9 @@ void test_order_enforcement_traversal()
 	}
 }
 
-void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2)
+void test_traversal_insertion(jive_graph * graph, jive::node * n1, jive::node * n2)
 {
-	jive_node * node;
+	jive::node * node;
 	
 	jive::topdown_traverser trav(graph);
 	
@@ -101,9 +101,9 @@ void test_traversal_insertion(jive_graph * graph, jive_node * n1, jive_node * n2
 
 	/* At this point, n1 has been visited, now create some nodes */
 
-	jive_node * n3 = jive_test_node_create(graph->root(), {}, {}, {&type});
-	jive_node * n4 = jive_test_node_create(graph->root(), {&type}, {n3->output(0)}, {});
-	jive_node * n5 = jive_test_node_create(graph->root(), {&type}, {n2->output(0)}, {});
+	jive::node * n3 = jive_test_node_create(graph->root(), {}, {}, {&type});
+	jive::node * n4 = jive_test_node_create(graph->root(), {&type}, {n3->output(0)}, {});
+	jive::node * n5 = jive_test_node_create(graph->root(), {&type}, {n2->output(0)}, {});
 
 	/*
 		The newly created nodes n3 and n4 will not be visited,
@@ -134,8 +134,8 @@ static int test_main(void)
 	setlocale(LC_ALL, "");
 	jive_graph graph;
 	jive_test_value_type type;
-	jive_node * n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
-	jive_node * n2 = jive_test_node_create(graph.root(),
+	jive::node * n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
+	jive::node * n2 = jive_test_node_create(graph.root(),
 		{&type, &type}, {n1->output(0), n1->output(1)}, {&type});
 
 	graph.root()->bottom()->add_input(&type, n2->output(0));

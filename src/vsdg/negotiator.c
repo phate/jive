@@ -103,7 +103,7 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 
 	// Directly create node without going through normalization -- at this
 	// point, normalization *must* not interfere in any way.
-	jive_node * node = op.create_node(operand->node()->region(), {operand});
+	jive::node * node = op.create_node(operand->node()->region(), {operand});
 	node->graph()->mark_denormalized();
 
 	jive_negotiator_annotate_simple_input(negotiator, node->input(0), input_option);
@@ -384,7 +384,7 @@ jive_negotiator_identity_constraint_create(jive_negotiator * self)
 static void
 jive_negotiator_on_node_create_(
 	void * closure,
-	jive_node * node)
+	jive::node * node)
 {
 	jive_negotiator * self = (jive_negotiator *) closure;
 	if (dynamic_cast<const jive::negotiator_split_operation *>(&node->operation())) {
@@ -395,7 +395,7 @@ jive_negotiator_on_node_create_(
 static void
 jive_negotiator_on_node_destroy_(
 	void * closure,
-	jive_node * node)
+	jive::node * node)
 {
 	jive_negotiator * self = (jive_negotiator *) closure;
 	self->split_nodes.erase(node);
@@ -597,7 +597,7 @@ jive_negotiator_annotate_identity(jive_negotiator * self,
 jive_negotiator_constraint *
 jive_negotiator_annotate_identity_node(
 	jive_negotiator * self,
-	jive_node * node,
+	jive::node * node,
 	const jive_negotiator_option * option)
 {
 	/* FIXME: this assumes that all "gates" are at the end of the list
@@ -656,7 +656,7 @@ jive_negotiator_annotate_simple_output(jive_negotiator * self, jive::output * ou
 }
 
 void
-jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
+jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node)
 {
 	size_t n;
 	for(n = 0; n < node->ninputs(); n++) {
@@ -691,7 +691,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive_node * node)
 }
 
 void
-jive_negotiator_annotate_node_proper_(jive_negotiator * self, jive_node * node)
+jive_negotiator_annotate_node_proper_(jive_negotiator * self, jive::node * node)
 {
 }
 
@@ -757,7 +757,7 @@ jive_negotiator_process(jive_negotiator * self)
 void
 jive_negotiator_insert_split_nodes(jive_negotiator * self)
 {
-	for (jive_node * node : jive::topdown_traverser(self->graph)) {
+	for (jive::node * node : jive::topdown_traverser(self->graph)) {
 		for (size_t n = 0; n < node->ninputs(); n++) {
 			jive::input * input = node->input(n);
 			jive_negotiator_maybe_split_edge(self, dynamic_cast<jive::output*>(input->origin()), input);
@@ -770,7 +770,7 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self)
 {
 	auto i = self->split_nodes.begin();
 	while (i != self->split_nodes.end()) {
-		jive_node * node = *i;
+		jive::node * node = *i;
 		++i;
 		jive_negotiator_port * input_port = jive_negotiator_map_input(self, node->input(0));
 		jive_negotiator_port * output_port = jive_negotiator_map_output(self, node->output(0));

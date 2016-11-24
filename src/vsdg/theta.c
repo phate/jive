@@ -120,7 +120,7 @@ jive_theta_loopvar
 jive_theta_loopvar_enter(jive_theta self, jive::oport * pre_value)
 {
 	jive_theta_build_state * state = self.internal_state;
-	jive_node * head = self.region->top();
+	jive::node * head = self.region->top();
 	jive_graph * graph = head->graph();
 	
 	size_t index = state->loopvars.size();
@@ -152,20 +152,20 @@ jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::oport * post_v
 	throw std::logic_error("Lookup of loop-variant variable failed");
 }
 
-jive_node *
+jive::node *
 jive_theta_end(jive_theta self, jive::oport * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values)
 {
 	jive_theta_build_state * state = self.internal_state;
 
 	size_t n;
-	jive_node * tail = jive::theta_tail_op().create_node(self.region,
+	jive::node * tail = jive::theta_tail_op().create_node(self.region,
 		{self.region->top()->output(0), predicate});
 	for (n = 0; n < state->loopvars.size(); ++n)
 		tail->add_input(state->loopvars[n].gate, state->loopvars[n].value);
 
 	jive::output * tmp = tail->output(0);
-	jive_node * anchor = jive::theta_op().create_node(self.region->parent(), {tmp});
+	jive::node * anchor = jive::theta_op().create_node(self.region->parent(), {tmp});
 	for (n = 0; n < state->loopvars.size(); ++n)
 		state->loopvars[n].value = anchor->add_output(state->loopvars[n].gate);
 	

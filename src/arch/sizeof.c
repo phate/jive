@@ -61,7 +61,7 @@ jive_sizeof_create(jive::region * region, const jive::value::type * type)
 /* sizeof reduce */
 
 void
-jive_sizeof_node_reduce(const jive_node * node, jive::memlayout_mapper * mapper)
+jive_sizeof_node_reduce(const jive::node * node, jive::memlayout_mapper * mapper)
 {
 	const jive::dataitem_memlayout & layout = mapper->map_value_type(
 		static_cast<const jive::sizeof_op &>(node->operation()).type());

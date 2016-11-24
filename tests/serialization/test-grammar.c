@@ -179,7 +179,7 @@ verify_deserialize_gateexpr(const char * repr, jive::gate * expect_gate)
 }
 
 static void
-verify_serialize_nodeexpr(jive_node * node,
+verify_serialize_nodeexpr(jive::node * node,
 	size_t ngates,
 	const char * const gate_names[],
 	jive::gate * const gates[],
@@ -214,7 +214,7 @@ verify_deserialize_nodeexpr(
 	const char * const input_names[],
 	jive::output * const input_origins[],
 	const char * const output_names[],
-	jive_node * expected_node)
+	jive::node * expected_node)
 {
 	deserialize_ctx ctx;
 	deserialize_ctx_init(&ctx, repr);
@@ -223,7 +223,7 @@ verify_deserialize_nodeexpr(
 	for (n = 0; n < expected_node->ninputs(); ++n)
 		jive_serialization_symtab_insert_outputsym(&ctx.drv.symtab, input_origins[n], input_names[n]);
 	
-	jive_node * node;
+	jive::node * node;
 	assert(jive_deserialize_nodeexpr(&ctx.drv, ctx.is, region, &node));
 	assert(node->operation() == expected_node->operation());
 	assert(node->ninputs() == expected_node->ninputs());
@@ -322,7 +322,7 @@ static int test_main(void)
 		add8->node());
 
 	auto cat16 = dynamic_cast<jive::output*>(jive_bitconcat({one8, two8}));
-	jive_node * cat16n = cat16->node();
+	jive::node * cat16n = cat16->node();
 	cat16n->add_input(bit8gate, zero8);
 	cat16n->add_output(stackgate);
 	const char * tmparray9[] = {"bit8gate", "stackgate"};

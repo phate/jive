@@ -59,6 +59,6 @@ jive::oport *
 jive_sizeof_create(jive::region * region, const jive::value::type * type);
 
 void
-jive_sizeof_node_reduce(const jive_node * node, jive::memlayout_mapper * mapper);
+jive_sizeof_node_reduce(const jive::node * node, jive::memlayout_mapper * mapper);
 
 #endif

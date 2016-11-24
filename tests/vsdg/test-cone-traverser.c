@@ -19,8 +19,8 @@
 
 typedef struct graph_desc {
 	std::unique_ptr<jive_graph> graph;
-	jive_node * a1, * a2;
-	jive_node * b1, * b2;
+	jive::node * a1, * a2;
+	jive::node * b1, * b2;
 } graph_desc;
 
 static graph_desc

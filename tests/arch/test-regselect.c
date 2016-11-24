@@ -52,8 +52,8 @@ static int test_main(void)
 	jive_regselector_fini(&regselect);
 
 	auto tmp1 = dynamic_cast<jive::output*>(sum1);	
-	jive_node * n1 = dynamic_cast<jive::output*>(tmp1->node()->input(0)->origin())->node();
-	jive_node * n2 = dynamic_cast<jive::output*>(tmp1->node()->input(1)->origin())->node();
+	jive::node * n1 = dynamic_cast<jive::output*>(tmp1->node()->input(0)->origin())->node();
+	jive::node * n2 = dynamic_cast<jive::output*>(tmp1->node()->input(1)->origin())->node();
 	
 	const jive::regvalue_op * rv = dynamic_cast<const jive::regvalue_op *>(
 		&n1->operation());

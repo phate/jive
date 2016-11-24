@@ -11,7 +11,7 @@
 bool
 jive_graphs_equivalent(
 	jive_graph * graph1, jive_graph * graph2,
-	size_t ncheck, struct jive_node * const check1[], struct jive_node * const check2[],
-	size_t nassumed, struct jive_node * const ass1[], struct jive_node * const ass2[]);
+	size_t ncheck, jive::node * const check1[], jive::node * const check2[],
+	size_t nassumed, jive::node * const ass1[], jive::node * const ass2[]);
 
 #endif

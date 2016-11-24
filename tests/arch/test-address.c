@@ -29,7 +29,7 @@ static int test_main(void)
 	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));
 
 	jive::addr::type addrtype;
-	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&addrtype, &addrtype});
+	jive::node * top = jive_test_node_create(graph.root(), {}, {}, {&addrtype, &addrtype});
 	
 	auto memb1 = jive_memberof(top->output(0), rec, 0);
 	auto memb2 = jive_memberof(top->output(0), rec, 1);
@@ -72,7 +72,7 @@ static int test_main(void)
 	auto memberof = jive_memberof(cont3, rec, 1);
 	auto arraysub = jive_arraysubscript(top->output(0), &bits32, one);
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		{&addrtype, &addrtype, &bits32}, {memberof, arraysub, diff2}, {&addrtype});
 	graph.export_port(bottom->output(0), "dummy");
 

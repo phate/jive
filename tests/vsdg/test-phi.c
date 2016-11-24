@@ -58,7 +58,7 @@ static int test_main()
 
 	jive::oport * results[3] = {fns[0].value, fns[1].value, fns[2].value};
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
 	graph.export_port(bottom->output(0), "dummy");
 
@@ -67,7 +67,7 @@ static int test_main()
 
 	jive_view(&graph, stderr);
 
-	jive_node * lambda_node2;
+	jive::node * lambda_node2;
 	lambda_node2 = dynamic_cast<jive::output*>(phi.region->bottom()->input(3)->origin())->node();
 	assert(jive_lambda_is_self_recursive(lambda_node2));
 	assert(dynamic_cast<const jive::seq::type*>(&phi.region->bottom()->input(0)->type()));

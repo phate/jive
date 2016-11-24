@@ -12,8 +12,8 @@
 
 typedef struct jive_node_equiv_entry jive_node_equiv_entry;
 struct jive_node_equiv_entry {
-	const jive_node * first;
-	const jive_node * second;
+	const jive::node * first;
+	const jive::node * second;
 	bool pending;
 	struct {
 		jive_node_equiv_entry * prev;
@@ -27,7 +27,7 @@ struct jive_node_equiv_entry {
 
 typedef struct jive_equiv_state jive_equiv_state;
 struct jive_equiv_state {
-	std::unordered_map<const jive_node *, jive_node_equiv_entry*> node_mapping;
+	std::unordered_map<const jive::node *, jive_node_equiv_entry*> node_mapping;
 	struct {
 		jive_node_equiv_entry * first;
 		jive_node_equiv_entry * last;
@@ -51,7 +51,7 @@ jive_equiv_state_fini(jive_equiv_state * self)
 }
 
 static jive_node_equiv_entry *
-jive_equiv_state_lookup(jive_equiv_state * self, const jive_node * node)
+jive_equiv_state_lookup(jive_equiv_state * self, const jive::node * node)
 {
 	jive_node_equiv_entry * entry;
 	auto i = self->node_mapping.find(node);
@@ -77,7 +77,7 @@ jive_equiv_state_mark_verified(jive_equiv_state * self, jive_node_equiv_entry * 
 }
 
 static bool
-jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const jive_node * n2)
+jive_equiv_state_check_node(jive_equiv_state * self, const jive::node * n1, const jive::node * n2)
 {
 	if (n1->noutputs() != n2->noutputs()) {
 		return false;
@@ -111,8 +111,8 @@ jive_equiv_state_check_node(jive_equiv_state * self, const jive_node * n1, const
 bool
 jive_graphs_equivalent(
 	jive_graph * graph1, jive_graph * graph2,
-	size_t ncheck, jive_node * const check1[], jive_node * const check2[],
-	size_t nassumed, jive_node * const ass1[], jive_node * const ass2[])
+	size_t ncheck, jive::node * const check1[], jive::node * const check2[],
+	size_t nassumed, jive::node * const ass1[], jive::node * const ass2[])
 {
 	jive_equiv_state state;
 	jive_equiv_state_init(&state);

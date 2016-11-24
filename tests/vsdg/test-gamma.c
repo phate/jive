@@ -23,7 +23,7 @@ test_main(void)
 
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
-	jive_node * top = jive_test_node_create(graph.root(),
+	jive::node * top = jive_test_node_create(graph.root(),
 		{}, {}, {&bits2, &bits32, &bits32, &bits32});
 
 	jive::output * cmp = top->output(0);

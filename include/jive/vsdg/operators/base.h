@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 
-class jive_node;
 class jive_resource_class;
 
 namespace jive {
@@ -20,6 +19,7 @@ namespace base {
 class type;
 }
 
+class node;
 class node_normal_form;
 class oport;
 class region;
@@ -48,7 +48,7 @@ public:
 	result_cls(size_t index) const noexcept;
 
 	// FIXME: move out of operation entirely
-	jive_node *
+	jive::node *
 	create_node(
 		jive::region * region,
 		const std::vector<jive::oport*> & operands) const;

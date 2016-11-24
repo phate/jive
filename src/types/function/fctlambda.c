@@ -125,7 +125,7 @@ lambda_op::copy() const
 }
 }
 
-static jive_node *
+static jive::node *
 jive_lambda_node_create(jive::region * function_region)
 {
 	size_t ndependencies = function_region->top()->ninputs();
@@ -160,7 +160,7 @@ jive_lambda_node_create(jive::region * function_region)
 
 
 bool
-jive_lambda_is_self_recursive(const jive_node * self)
+jive_lambda_is_self_recursive(const jive::node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs() == 1);
 
@@ -201,7 +201,7 @@ namespace fct {
 lambda_dep
 lambda_dep_add(jive_lambda * self, jive::oport * value)
 {
-	jive_node * enter = self->region->top();
+	jive::node * enter = self->region->top();
 	jive_graph * graph = self->region->graph();
 
 	jive::fct::lambda_dep depvar;
@@ -251,7 +251,7 @@ jive_lambda_end(jive_lambda * self,
 	jive_graph * graph = region->graph();
 
 	jive::output * tmp = region->top()->output(0);
-	jive_node * leave = jive::fct::lambda_tail_op().create_node(region, {tmp});
+	jive::node * leave = jive::fct::lambda_tail_op().create_node(region, {tmp});
 
 	size_t n;
 	for (n = 0; n < nresults; n++) {
@@ -261,7 +261,7 @@ jive_lambda_end(jive_lambda * self,
 		leave->add_input(gate, results[n]);
 	}
 
-	jive_node * anchor = jive_lambda_node_create(region);
+	jive::node * anchor = jive_lambda_node_create(region);
 	JIVE_DEBUG_ASSERT(anchor->noutputs() == 1);
 
 	delete[] self->arguments;
@@ -273,16 +273,16 @@ jive_lambda_end(jive_lambda * self,
 /* lambda inlining */
 
 void
-jive_inline_lambda_apply(jive_node * apply_node)
+jive_inline_lambda_apply(jive::node * apply_node)
 {
-	jive_node * lambda_node = dynamic_cast<jive::output*>(apply_node->input(0)->origin())->node();
+	jive::node * lambda_node = dynamic_cast<jive::output*>(apply_node->input(0)->origin())->node();
 	
 	const jive::fct::lambda_op & op = dynamic_cast<const jive::fct::lambda_op &>(
 		lambda_node->operation());
 	
 	jive::region * function_region = lambda_node->input(0)->origin()->region();
-	jive_node * head = function_region->top();
-	jive_node * tail = function_region->bottom();
+	jive::node * head = function_region->top();
+	jive::node * tail = function_region->bottom();
 	
 	jive::substitution_map substitution;
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {

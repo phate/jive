@@ -32,7 +32,7 @@ static int test_main(void)
 	std::shared_ptr<const jive::rcd::declaration> decl(
 		new jive::rcd::declaration({&bits8, &bits16, &bits32, &bits32}));
 
-	jive_node * top = jive_test_node_create(graph.root(),
+	jive::node * top = jive_test_node_create(graph.root(),
 		{}, {}, std::vector<const jive::base::type*>(4, &bits32));
 
 	auto address0 = jive_bitstring_to_address_create(top->output(0), 32, &addrtype);
@@ -50,7 +50,7 @@ static int test_main(void)
 	auto offset2 = jive_address_to_bitstring_create(container2, 32, &container2->type());
 	auto offset3 = jive_address_to_bitstring_create(container3, 32, &container3->type());
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		std::vector<const jive::base::type*>(4, &bits32), {offset0, offset1, offset2, offset3},
 		{&bits32});
 	graph.export_port(bottom->output(0), "dummy");
@@ -64,7 +64,7 @@ static int test_main(void)
 	graph.prune();
 	jive_view(&graph, stdout);
 
-	for (jive_node * node : jive::topdown_traverser(&graph)) {
+	for (jive::node * node : jive::topdown_traverser(&graph)) {
 		for (size_t i = 0; i < node->ninputs(); i++){
 			assert(!dynamic_cast<const jive::addr::type*>(&node->input(i)->type()));
 		}
@@ -73,9 +73,9 @@ static int test_main(void)
 		}
 	}
 	
-	jive_node * sum = dynamic_cast<jive::output*>(bottom->input(0)->origin())->node();
+	jive::node * sum = dynamic_cast<jive::output*>(bottom->input(0)->origin())->node();
 	assert(sum->operation() == jive::bits::sub_op(32));
-	jive_node * constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
+	jive::node * constant = dynamic_cast<jive::output*>(sum->input(1)->origin())->node();
 	assert(constant->operation() == jive::bits::int_constant_op(32, 0));
 	
 	sum = dynamic_cast<jive::output*>(bottom->input(1)->origin())->node();

@@ -168,7 +168,7 @@ jive_bitstring_to_address_create(jive::oport * bitstring, size_t nbits,
 /* reductions */
 
 void
-jive_node_address_transform(jive_node * node, jive::memlayout_mapper * mapper);
+jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper);
 
 void
 jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper);

@@ -142,9 +142,9 @@ jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 void
 jive_graph::prune()
 {
-	jive_node * node = bottom.first;
+	jive::node * node = bottom.first;
 	while (node) {
-		jive_node * next = node->graph_bottom_list.next;
+		jive::node * next = node->graph_bottom_list.next;
 		
 		if (node != root()->bottom()) {
 			delete node;

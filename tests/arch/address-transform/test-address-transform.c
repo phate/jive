@@ -35,7 +35,7 @@ static int test_main(void)
 	jive::addr::type addr;
 	jive::mem::type mem;
 	jive::bits::type bits64(64);
-	jive_node * top = jive_test_node_create(graph.root(), {}, {}, {&bits64, &bits64, &mem});
+	jive::node * top = jive_test_node_create(graph.root(), {}, {}, {&bits64, &bits64, &mem});
 
 	auto address0 = jive_bitstring_to_address_create(top->output(0), 64, &addr);
 	auto address1 = jive_bitstring_to_address_create(top->output(1), 64, &addr);
@@ -51,7 +51,7 @@ static int test_main(void)
 	auto label = jive_label_to_address_create(graph.root(), &write_label.base);
 	jive::oport * tmparray2[] = {memberof, containerof};
 	const jive::base::type * tmparray3[] = {&addr, &addr};
-	jive_node * call = jive_call_by_address_node_create(graph.root(),
+	jive::node * call = jive_call_by_address_node_create(graph.root(),
 		label, NULL,
 		2, tmparray2,
 		2, tmparray3);
@@ -63,12 +63,12 @@ static int test_main(void)
 	
 	jive::oport * state = top->output(2);
 	auto load = jive_load_by_address_create(arraysub, &addr, 1, &state);
-	jive_node * store = dynamic_cast<jive::output*>(jive_store_by_address_create(
+	jive::node * store = dynamic_cast<jive::output*>(jive_store_by_address_create(
 		arraysub, &bits64, arrayindex, 1, &state)[0])->node();
 
 	auto o_addr = jive_address_to_bitstring_create(load, 64, &load->type());
 
-	jive_node * bottom = jive_test_node_create(graph.root(),
+	jive::node * bottom = jive_test_node_create(graph.root(),
 		{&bits64, &mem}, {o_addr, store->output(0)}, {&bits64});
 	graph.export_port(bottom->output(0), "dummy");
 

@@ -14,7 +14,7 @@
 
 /* inheritable node member functions */
 
-jive_node *
+jive::node *
 jive_opnode_create(
 	const jive::operation & op,
 	jive::region * region,
