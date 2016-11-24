@@ -85,8 +85,8 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive_node * lambda_no
 	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom()->ninputs(); n++) {
 		jive::input * original = src_region->bottom()->input(n);
-		jive::output * retval = subst.lookup(
-			dynamic_cast<jive::output*>(src_region->bottom()->input(n)->origin()));
+		jive::output * retval = dynamic_cast<jive::output*>(
+			subst.lookup(src_region->bottom()->input(n)->origin()));
 		
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			if(dynamic_cast<const jive::addr::type*>(&original->type()))

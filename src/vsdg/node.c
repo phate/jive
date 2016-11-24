@@ -672,9 +672,9 @@ jive_node::copy(jive::region * region, jive::substitution_map & smap) const
 
 	jive_node * new_node = copy(region, operands);
 	for (size_t n = noperands(); n < ninputs(); n++) {
-		jive::output * origin = smap.lookup(dynamic_cast<jive::output*>(input(n)->origin()));
+		jive::oport * origin = smap.lookup(input(n)->origin());
 		if (!origin) {
-			origin =  dynamic_cast<jive::output*>(input(n)->origin());
+			origin = input(n)->origin();
 		}
 
 		if (input(n)->gate()) {

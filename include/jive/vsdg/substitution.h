@@ -14,12 +14,11 @@
 namespace jive {
 
 class gate;
-class output;
 
 class substitution_map final {
 public:
-	inline jive::output *
-	lookup(const jive::output * original) const noexcept
+	inline jive::oport *
+	lookup(const jive::oport * original) const noexcept
 	{
 		auto i = output_map_.find(original);
 		return i != output_map_.end() ? i->second : nullptr;
@@ -59,7 +58,7 @@ public:
 private:
 	std::unordered_map<const jive::gate*, jive::gate*> gate_map_;
 	std::unordered_map<const jive::region*, jive::region*> region_map_;
-	std::unordered_map<const jive::output*, jive::output*> output_map_;
+	std::unordered_map<const jive::oport*, jive::oport*> output_map_;
 };
 
 }

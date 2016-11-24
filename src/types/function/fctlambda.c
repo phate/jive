@@ -294,7 +294,7 @@ jive_inline_lambda_apply(jive_node * apply_node)
 	
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
 		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
-		jive::output * substituted = substitution.lookup(dynamic_cast<jive::output*>(input->origin()));
+		jive::oport * substituted = substitution.lookup(input->origin());
 		jive::output * output = apply_node->output(n);
 		output->replace(substituted);
 	}
