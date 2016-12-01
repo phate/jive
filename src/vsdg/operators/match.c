@@ -6,7 +6,6 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/match.h>
 
 #include <cmath>

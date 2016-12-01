@@ -19,7 +19,6 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/control.h>
-#include <jive/vsdg/node-private.h>
 
 
 static int types_bitstring_arithmetic_test_bitand(void)

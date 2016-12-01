@@ -7,7 +7,6 @@
 #include <jive/types/float/fltconstant.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/node-private.h>
 
 
 static int

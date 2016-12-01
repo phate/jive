@@ -9,7 +9,6 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/node-normal-form.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/base.h>
 

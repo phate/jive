@@ -20,7 +20,6 @@
 #include <jive/types/function/fctlambda.h>
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/label.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>

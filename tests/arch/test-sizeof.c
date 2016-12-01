@@ -17,7 +17,6 @@
 #include <jive/types/union/unntype.h>
 #include <jive/view.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser.h>
 
 #include "testnodes.h"

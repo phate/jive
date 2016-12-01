@@ -8,7 +8,6 @@
 
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 
 #include <string.h>
 

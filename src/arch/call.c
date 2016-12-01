@@ -10,7 +10,6 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {

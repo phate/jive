@@ -15,7 +15,6 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 
 static constexpr jive_unop_reduction_path_t jive_select_reduction_load = 128;
 

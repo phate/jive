@@ -23,7 +23,6 @@
 #include <jive/types/bitstring/arithmetic/bitxor.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {

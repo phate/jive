@@ -8,7 +8,6 @@
 #define JIVE_VSDG_TRACKER_PRIVATE_H
 
 #include <jive/vsdg/graph-private.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/tracker.h>
 
 static inline void

@@ -11,7 +11,6 @@
 
 #include <jive/arch/memorytype.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
 

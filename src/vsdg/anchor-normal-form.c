@@ -8,7 +8,6 @@
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 
 namespace jive {
 

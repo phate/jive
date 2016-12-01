@@ -14,7 +14,6 @@
 #include <jive/arch/memlayout-simple.h>
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/traverser.h>
 
 #include "testnodes.h"

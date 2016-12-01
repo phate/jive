@@ -12,7 +12,6 @@
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/node-normal-form.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>

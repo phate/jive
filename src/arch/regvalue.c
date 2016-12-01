@@ -11,7 +11,6 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/seqtype.h>

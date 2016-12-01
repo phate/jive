@@ -8,7 +8,6 @@
 #define JIVE_TYPES_FLOAT_FLTOPERATION_CLASSES_H
 
 #include <jive/types/float/value-representation.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators.h>
 
 namespace jive {

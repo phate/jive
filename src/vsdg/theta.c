@@ -14,7 +14,6 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/seqtype.h>
 

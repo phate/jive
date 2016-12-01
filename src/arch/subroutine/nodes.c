@@ -10,7 +10,6 @@
 #include <jive/arch/subroutine.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/seqtype.h>
 
 namespace jive {

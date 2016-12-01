@@ -13,7 +13,6 @@
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/node-private.h>
 
 #include "testnodes.h"
 

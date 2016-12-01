@@ -15,7 +15,6 @@
 #include <jive/types/union/unntype.h>
 #include <jive/types/union/unnunify.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 
 static std::vector<jive::oport*>
 jive_store_node_normalized_create(

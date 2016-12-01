@@ -17,7 +17,6 @@
 #include <jive/types/union/unnunify.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/statetype.h>
 

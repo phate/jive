@@ -8,7 +8,6 @@
 
 #include <jive/types/float/flttype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 
 namespace jive {
 namespace flt {

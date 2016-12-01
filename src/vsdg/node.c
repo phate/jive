@@ -4,8 +4,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/node-private.h>
-
 #include <string.h>
 
 #include <jive/common.h>

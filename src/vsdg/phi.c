@@ -11,7 +11,6 @@
 #include <jive/util/strfmt.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/phi-normal-form.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/substitution.h>

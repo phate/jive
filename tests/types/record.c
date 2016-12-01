@@ -16,7 +16,6 @@
 #include <jive/types/record.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
-#include <jive/vsdg/node-private.h>
 
 
 static int _test_rcdgroup(void)

@@ -7,7 +7,6 @@
 #include <jive/vsdg/operators/binary-normal-form.h>
 
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/operators/binary.h>
 #include <jive/vsdg/operators/reduction-helpers.h>
 #include <jive/vsdg/region.h>

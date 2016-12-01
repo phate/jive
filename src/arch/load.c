@@ -10,7 +10,6 @@
 #include <jive/arch/load-normal-form.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node-private.h>
 #include <jive/vsdg/node.h>
 
 static jive::oport *
