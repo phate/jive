@@ -43,7 +43,7 @@ node_normal_form::normalized_create(
 	}
 
 	if (!node) {
-		node = op.create_node(region, arguments);
+		node = jive_opnode_create(op, region, arguments);
 	}
 
 	std::vector<jive::oport*> outputs;

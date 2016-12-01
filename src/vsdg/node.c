@@ -656,7 +656,7 @@ node::add_output(const struct jive_resource_class * rescls)
 jive::node *
 node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
 {
-	jive::node * node = operation_->create_node(region, operands);
+	jive::node * node = jive_opnode_create(*operation_, region, operands);
 	graph()->mark_denormalized();
 	return node;
 }
@@ -825,7 +825,7 @@ jive_node_cse_create(
 		}
 	}
 
-	return op.create_node(region, arguments);
+	return jive_opnode_create(op, region, arguments);
 }
 
 bool

@@ -827,7 +827,7 @@ jive_deserialize_nodeexpr(jive_serialization_driver * self,
 
 	jive::serialization::parser_driver parser_driver(*self, *is);
 	std::unique_ptr<jive::operation> op = sercls->deserialize(parser_driver);
-	*node = op->create_node(region, origins);
+	*node = jive_opnode_create(*op, region, origins);
 
 	region->graph()->mark_denormalized();
 

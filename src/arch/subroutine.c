@@ -115,7 +115,7 @@ jive_subroutine_begin(
 	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
 	sub.region = new jive::region(graph->root(), graph);
 
-	jive::node * enter = jive::subroutine_head_op().create_node(sub.region, {});
+	jive::node * enter = jive_opnode_create(jive::subroutine_head_op(), sub.region, {});
 
 	for (size_t n = 0; n < sig.arguments.size(); ++n) {
 		sub.builder_state->arguments[n].gate = jive_resource_class_create_gate(
@@ -150,14 +150,14 @@ jive::node *
 jive_subroutine_end(jive_subroutine & self)
 {
 	jive::output * control_return = self.hl_builder->finalize(self);
-	jive::node * leave = jive::subroutine_tail_op().create_node(self.region,
+	jive::node * leave = jive_opnode_create(jive::subroutine_tail_op(), self.region,
 		{self.region->top()->output(0), control_return});
 
 	std::vector<jive::oport*> outputs;
 	for (size_t n = 0; n < leave->noutputs(); n++)
 		outputs.push_back(leave->output(n));
 
-	jive::node * subroutine_node = jive::subroutine_op(std::move(self.signature)).create_node(
+	jive::node * subroutine_node = jive_opnode_create(jive::subroutine_op(std::move(self.signature)),
 		self.region->parent(), outputs);
 	
 	for (const auto & pt : self.builder_state->passthroughs) {

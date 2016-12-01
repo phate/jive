@@ -123,8 +123,8 @@ jive_phi_begin(jive::region * parent)
 	state = new jive_phi_build_state;
 	self.region = new jive::region(parent, parent->graph());
 
-	jive::phi_head_op().create_node(self.region, {});
-	
+	jive_opnode_create(jive::phi_head_op(), self.region, {});
+
 	self.internal_state = state;
 	
 	return self;
@@ -171,12 +171,12 @@ jive_phi_end(jive_phi self,
 
 	size_t n;
 	jive::output * tmp = enter->output(0);
-	jive::node * leave = jive::phi_tail_op().create_node(enter->region(), {tmp});
+	jive::node * leave = jive_opnode_create(jive::phi_tail_op(), enter->region(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
 
 	tmp = leave->output(0);
-	jive::node * anchor = jive::phi_op().create_node(self.region->parent(), {tmp});
+	jive::node * anchor = jive_opnode_create(jive::phi_op(), self.region->parent(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		state->fixvars[n].value = anchor->add_output(state->fixvars[n].gate);
 	

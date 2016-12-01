@@ -94,5 +94,5 @@ jive_splitnode_create(jive::region * region,
 	if (nf->get_mutable() && nf->get_cse())
 		region->graph()->mark_denormalized();
 
-	return op.create_node(region, {in_origin});
+	return jive_opnode_create(op, region, {in_origin});
 }

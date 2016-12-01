@@ -106,7 +106,7 @@ jive_call_by_address_node_create(jive::region * region,
 		std::move(argtypes),
 		std::move(restypes));
 
-	return op.create_node(region, call_args);
+	return jive_opnode_create(op, region, call_args);
 }
 
 std::vector<jive::oport*>
@@ -153,7 +153,7 @@ jive_call_by_bitstring_node_create(jive::region * region,
 		std::move(argtypes),
 		std::move(restypes));
 
-	return op.create_node(region, call_args);
+	return jive_opnode_create(op, region, call_args);
 }
 
 std::vector<jive::oport*>

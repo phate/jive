@@ -156,7 +156,7 @@ jive_instruction_node_create(
 		otypes_.emplace_back(dynamic_cast<const jive::state::type*>(t)->copy());
 
 	jive::instruction_op op(icls, itypes_, otypes_);
-	return op.create_node(region, arguments);
+	return jive_opnode_create(op, region, arguments);
 }
 
 static void

@@ -152,15 +152,15 @@ jive_gamma_create(
 	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < nalternatives; n++) {
 		jive::region * subregion = new jive::region(region, region->graph());
-		jive::node * head = jive::gamma_head_op().create_node(subregion, {});
+		jive::node * head = jive_opnode_create(jive::gamma_head_op(), subregion, {});
 		jive::output * tmp = head->output(0);
-		jive::node * tail = jive::gamma_tail_op().create_node(subregion, {tmp});
+		jive::node * tail = jive_opnode_create(jive::gamma_tail_op(), subregion, {tmp});
 		arguments.push_back(tail->output(0));
 	}
 	arguments.push_back(predicate);
 
-	jive::node * gamma = jive::gamma_op(nalternatives).create_node(region, arguments);
-	
+	jive::node * gamma = jive_opnode_create(jive::gamma_op(nalternatives), region, arguments);
+
 	for (size_t n = 0; n < nvalues; n++) {
 		jive::gate * gate_head = region->graph()->create_gate(
 			*types[n],

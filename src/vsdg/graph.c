@@ -68,7 +68,7 @@ jive_graph::jive_graph()
 {
 	bottom.first = bottom.last = 0;
 	gates.first = gates.last = 0;
-	jive::graph_tail_operation().create_node(root(), {});
+	jive_opnode_create(jive::graph_tail_operation(), root(), {});
 }
 
 std::unique_ptr<jive_graph>

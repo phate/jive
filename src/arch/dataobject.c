@@ -235,11 +235,12 @@ jive_dataobj_internal(
 		arguments.push_back(data_items[n]);
 	}
 
-	jive::node * head = jive::dataobj_head_op(std::move(types)).create_node(region, arguments);
+	jive::node * head;
+	head = jive_opnode_create(jive::dataobj_head_op(std::move(types)), region, arguments);
 	jive::output * tmp = head->output(0);
-	jive::node * tail = jive::dataobj_tail_op().create_node(region, {tmp});
+	jive::node * tail = jive_opnode_create(jive::dataobj_tail_op(), region, {tmp});
 	tmp = tail->output(0);
-	jive::node * obj = jive::dataobj_op().create_node(parent, {tmp});
+	jive::node * obj = jive_opnode_create(jive::dataobj_op(), parent, {tmp});
 
 	return obj->output(0);
 }

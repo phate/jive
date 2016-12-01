@@ -81,7 +81,7 @@ jive_test_node_create(
 	const std::vector<const jive::base::type*> & result_types)
 {
 	test_operation op(operand_types, result_types);
-	return op.create_node(region, operands);
+	return jive_opnode_create(op, region, operands);
 }
 
 std::vector<jive::oport*>
