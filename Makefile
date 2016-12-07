@@ -73,11 +73,7 @@ LIBJIVE_SRC += \
 
 # floats
 LIBJIVE_SRC += \
-	src/types/float/arithmetic/fltdifference.c \
-	src/types/float/arithmetic/fltnegate.c \
-	src/types/float/arithmetic/fltproduct.c \
-	src/types/float/arithmetic/fltquotient.c \
-	src/types/float/arithmetic/fltsum.c \
+	src/types/float/arithmetic.c \
 	src/types/float/comparison/fltequal.c \
 	src/types/float/comparison/fltgreater.c \
 	src/types/float/comparison/fltgreatereq.c \
