@@ -63,16 +63,7 @@ LIBJIVE_SRC += \
 LIBJIVE_SRC += \
 	src/types/bitstring/arithmetic.c \
 	src/types/bitstring/bitoperation-classes.c \
-	src/types/bitstring/comparison/bitequal.c \
-	src/types/bitstring/comparison/bitnotequal.c \
-	src/types/bitstring/comparison/bitsgreater.c \
-	src/types/bitstring/comparison/bitsgreatereq.c \
-	src/types/bitstring/comparison/bitsless.c \
-	src/types/bitstring/comparison/bitslesseq.c \
-	src/types/bitstring/comparison/bitugreater.c \
-	src/types/bitstring/comparison/bitugreatereq.c \
-	src/types/bitstring/comparison/bituless.c \
-	src/types/bitstring/comparison/bitulesseq.c \
+	src/types/bitstring/comparison.c \
 	src/types/bitstring/concat.c \
 	src/types/bitstring/constant.c \
 	src/types/bitstring/slice.c \
