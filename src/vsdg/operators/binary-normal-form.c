@@ -234,10 +234,10 @@ binary_normal_form::normalized_create(
 		new_args = base::detail::associative_flatten(
 			args,
 			[&op](jive::oport* arg) {
-				auto operand = dynamic_cast<jive::output*>(arg);
-				const base::flattened_binary_op * fb_op;
-				fb_op = dynamic_cast<const base::flattened_binary_op *>(&operand->node()->operation());
-				return operand->node()->operation() == op ||
+				if (!arg->node())
+					return false;
+				auto fb_op = dynamic_cast<const base::flattened_binary_op *>(&arg->node()->operation());
+				return arg->node()->operation() == op ||
 					(fb_op && fb_op->bin_operation() == op);
 			});
 	}

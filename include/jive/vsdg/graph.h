@@ -126,6 +126,9 @@ public:
 	
 	jive::notifier<jive::output *> on_output_create;
 	jive::notifier<jive::output *> on_output_destroy;
+
+	jive::notifier<jive::argument*> on_argument_create;
+	jive::notifier<jive::argument*> on_argument_destroy;
 	 
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_add;
 	jive::notifier<jive::gate *, jive::gate *> on_gate_interference_remove;

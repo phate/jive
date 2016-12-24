@@ -325,11 +325,9 @@ jive_node_cse(
 {
 	if (!arguments.empty()) {
 		for (auto user : arguments[0]->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			jive::node * node = input->node();
-			if (jive_node_cse_test(node, op, arguments)) {
+			auto node = user->node();
+			if (node && jive_node_cse_test(node, op, arguments))
 				return node;
-			}
 		}
 	} else {
 		jive::node * node;

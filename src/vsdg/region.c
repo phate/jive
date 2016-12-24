@@ -10,11 +10,84 @@
 
 #include <jive/util/list.h>
 #include <jive/vsdg/anchortype.h>
+#include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 
 namespace jive {
+
+/* argument */
+
+argument::~argument() noexcept
+{
+	JIVE_DEBUG_ASSERT(users.empty());
+
+	region()->graph()->on_argument_destroy(this);
+
+	if (gate()) {
+		for (size_t n = 0; n < region()->narguments(); n++) {
+			jive::argument * other = region()->argument(n);
+			if (other == this || !other->gate())
+				continue;
+			jive_gate_interference_remove(region()->graph(), gate(), other->gate());
+		}
+	}
+
+	for (size_t n = index()+1; n < region_->narguments(); n++)
+		region_->argument(n)->set_index(n-1);
+}
+
+argument::argument(
+	jive::region * region,
+	size_t index,
+	jive::structural_input * input,
+	const jive::base::type & type)
+	: oport(index)
+	, region_(region)
+	, input_(input)
+	, type_(type.copy())
+{
+	input_argument_list.prev = input_argument_list.next = nullptr;
+}
+
+argument::argument(
+	jive::region * region,
+	size_t index,
+	jive::structural_input * input,
+	jive::gate * gate)
+	: oport(index, gate)
+	, region_(region)
+	, input_(input)
+	, type_(gate->type().copy())
+{
+	input_argument_list.prev = input_argument_list.next = nullptr;
+	for (size_t n = 0; n < index; n++) {
+		jive::argument * other = region->argument(n);
+		if (!other->gate()) continue;
+		jive_gate_interference_add(region->graph(), gate, other->gate());
+	}
+}
+
+const jive::base::type &
+argument::type() const noexcept
+{
+	return *type_;
+}
+
+jive::region *
+argument::region() const noexcept
+{
+	return region_;
+}
+
+jive::node *
+argument::node() const noexcept
+{
+	return nullptr;
+}
+
+/* region */
 
 region::~region()
 {
@@ -54,8 +127,14 @@ region::~region()
 	JIVE_DEBUG_ASSERT(nodes.empty());
 	JIVE_DEBUG_ASSERT(subregions.first == nullptr && subregions.last == nullptr);
 
+	while (arguments_.size())
+		remove_argument(arguments_.size()-1);
+
 	if (parent_)
 		JIVE_LIST_REMOVE(parent_->subregions, this, region_subregions_list);
+
+	while (results_.size())
+		remove_result(results_.size()-1);
 }
 
 region::region(jive::region * parent, jive_graph * graph)
@@ -76,6 +155,42 @@ region::region(jive::region * parent, jive_graph * graph)
 	}
 
 	graph->on_region_create(this);
+}
+
+jive::argument *
+region::add_argument(jive::structural_input * input, const jive::base::type & type)
+{
+	jive::argument * argument = new jive::argument(this, narguments(), input, type);
+	arguments_.push_back(argument);
+
+	graph()->on_argument_create(argument);
+
+	return argument;
+}
+
+jive::argument *
+region::add_argument(jive::structural_input * input, jive::gate * gate)
+{
+	jive::argument * argument = new jive::argument(this, narguments(), input, gate);
+	arguments_.push_back(argument);
+
+	graph()->on_argument_create(argument);
+
+	return argument;
+}
+
+void
+region::remove_argument(size_t index)
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	jive::argument * argument = arguments_[index];
+
+	delete argument;
+	for (size_t n = index; n < arguments_.size()-1; n++) {
+		JIVE_DEBUG_ASSERT(arguments_[n+1]->index() == n);
+		arguments_[n] = arguments_[n+1];
+	}
+	arguments_.pop_back();
 }
 
 void
@@ -156,6 +271,24 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 	smap.insert(this, target);
 	std::vector<std::vector<const jive::node*>> context;
 	pre_copy_region(this, target, context, smap, copy_top, copy_bottom);
+
+	/* copy arguments */
+	for (size_t n = 0; n < narguments(); n++) {
+		jive::argument * new_argument;
+		if (argument(n)->gate()) {
+			auto gate = argument(n)->gate();
+			auto new_gate = smap.lookup(gate);
+			if (!new_gate) {
+				new_gate = graph()->create_gate(gate->type(), gate->name(), gate->rescls());
+				smap.insert(gate, new_gate);
+			}
+
+			new_argument = target->add_argument(smap.lookup(argument(n)->input()), gate);
+		} else {
+			new_argument = target->add_argument(smap.lookup(argument(n)->input()), argument(n)->type());
+		}
+		smap.insert(argument(n), new_argument);
+	}
 
 	for (size_t n = 0; n < context.size(); n++) {
 		for (const auto node : context[n]) {

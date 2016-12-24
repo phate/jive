@@ -27,6 +27,60 @@ struct jive_graph;
 namespace jive {
 
 class node;
+class structural_input;
+
+class argument final : public oport {
+public:
+	virtual
+	~argument() noexcept;
+
+	argument(
+		jive::region * region,
+		size_t index,
+		jive::structural_input * input,
+		const jive::base::type & type);
+
+	argument(
+		jive::region * region,
+		size_t index,
+		jive::structural_input * input,
+		jive::gate * gate);
+
+	argument(const argument &) = delete;
+
+	argument(const argument &&) = delete;
+
+	argument &
+	operator=(const argument &) = delete;
+
+	argument &
+	operator=(const argument &&) = delete;
+
+	virtual const jive::base::type &
+	type() const noexcept override;
+
+	virtual jive::region *
+	region() const noexcept override;
+
+	virtual jive::node *
+	node() const noexcept override;
+
+	inline jive::structural_input *
+	input() const noexcept
+	{
+		return input_;
+	}
+
+	struct {
+		jive::argument * prev;
+		jive::argument * next;
+	} input_argument_list;
+
+private:
+	jive::region * region_;
+	jive::structural_input * input_;
+	std::unique_ptr<jive::base::type> type_;
+};
 
 class region {
 public:
@@ -112,6 +166,28 @@ public:
 		anchor_ = anchor;
 	}
 
+	jive::argument *
+	add_argument(jive::structural_input * input, const jive::base::type & type);
+
+	jive::argument *
+	add_argument(jive::structural_input * input, jive::gate * gate);
+
+	void
+	remove_argument(size_t index);
+
+	inline size_t
+	narguments() const noexcept
+	{
+		return arguments_.size();
+	}
+
+	inline jive::argument *
+	argument(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < narguments());
+		return arguments_[index];
+	}
+
 	/**
 		\brief Copy a region with substitutions
 		\param target Target region to create nodes in
@@ -155,6 +231,7 @@ private:
 	jive_graph * graph_;
 	jive::region * parent_;
 	jive::input * anchor_;
+	std::vector<jive::argument*> arguments_;
 };
 
 } //namespace

@@ -294,9 +294,10 @@ void
 simple_node::recompute_depth()
 {
 	size_t new_depth = 0;
-	for (size_t n = 0; n < ninputs(); n++)
-		new_depth = std::max(dynamic_cast<jive::output*>(input(n)->origin())->node()->depth() + 1,
-			new_depth);
+	for (size_t n = 0; n < ninputs(); n++) {
+		if (input(n)->origin()->node())
+			new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
+	}
 
 	size_t old_depth = depth_;
 	if (new_depth == old_depth)

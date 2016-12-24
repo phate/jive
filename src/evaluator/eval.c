@@ -514,6 +514,12 @@ eval_output(const jive::oport * output, context & ctx)
 	if (ctx.exists(output))
 		return ctx.lookup(output)->copy();
 
+	if (auto arg = dynamic_cast<const jive::argument*>(output)) {
+		auto r = eval_input(arg->input(), ctx);
+		ctx.insert(arg, r.get());
+		return r;
+	}
+
 	return eval_node(output->node(), output->index(), ctx)->copy();
 }
 
