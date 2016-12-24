@@ -37,9 +37,8 @@ input::~input() noexcept
 	node()->graph()->on_input_destroy(this);
 
 	origin()->users.erase(this);
-	auto output = dynamic_cast<jive::output*>(origin());
-	if (output && !output->node()->has_successors())
-		JIVE_LIST_PUSH_BACK(output->node()->graph()->bottom, output->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors())
+		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {

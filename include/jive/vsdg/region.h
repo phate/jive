@@ -28,6 +28,7 @@ namespace jive {
 
 class node;
 class structural_input;
+class structural_output;
 
 class argument final : public oport {
 public:
@@ -79,6 +80,64 @@ public:
 private:
 	jive::region * region_;
 	jive::structural_input * input_;
+	std::unique_ptr<jive::base::type> type_;
+};
+
+class result final : public iport {
+public:
+	virtual
+	~result() noexcept;
+
+	result(
+		jive::region * region,
+		size_t index,
+		jive::oport * origin,
+		jive::structural_output * output,
+		const jive::base::type & type);
+
+	result(
+		jive::region * region,
+		size_t index,
+		jive::oport * origin,
+		jive::structural_output * output,
+		jive::gate * gate);
+
+	result(const result &) = delete;
+
+	result(const result &&) = delete;
+
+	result &
+	operator=(const result &) = delete;
+
+	result &
+	operator=(const result &&) = delete;
+
+	virtual const jive::base::type &
+	type() const noexcept override;
+
+	virtual jive::region *
+	region() const noexcept override;
+
+	virtual jive::node *
+	node() const noexcept override;
+
+	virtual void
+	divert_origin(jive::oport * new_origin);
+
+	inline jive::structural_output *
+	output() const noexcept
+	{
+		return output_;
+	}
+
+	struct {
+		jive::result * prev;
+		jive::result * next;
+	} output_result_list;
+
+private:
+	jive::region * region_;
+	jive::structural_output * output_;
 	std::unique_ptr<jive::base::type> type_;
 };
 
@@ -188,6 +247,28 @@ public:
 		return arguments_[index];
 	}
 
+	jive::result *
+	add_result(jive::oport * origin, structural_output * output, const base::type & type);
+
+	jive::result *
+	add_result(jive::oport * origin, structural_output * output, jive::gate * gate);
+
+	void
+	remove_result(size_t index);
+
+	inline size_t
+	nresults() const noexcept
+	{
+		return results_.size();
+	}
+
+	inline jive::result *
+	result(size_t index) const noexcept
+	{
+		JIVE_DEBUG_ASSERT(index < nresults());
+		return results_[index];
+	}
+
 	/**
 		\brief Copy a region with substitutions
 		\param target Target region to create nodes in
@@ -231,6 +312,7 @@ private:
 	jive_graph * graph_;
 	jive::region * parent_;
 	jive::input * anchor_;
+	std::vector<jive::result*> results_;
 	std::vector<jive::argument*> arguments_;
 };
 
