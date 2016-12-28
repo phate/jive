@@ -38,7 +38,7 @@ public:
 	virtual
 	~iport() noexcept;
 
-	iport(size_t index, jive::oport * origin) noexcept;
+	iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept;
 
 	iport(const iport &) = delete;
 
@@ -62,6 +62,12 @@ public:
 		return origin_;
 	}
 
+	inline jive::gate *
+	gate() const noexcept
+	{
+		return gate_;
+	}
+
 	virtual void
 	divert_origin(jive::oport * new_origin);
 
@@ -74,6 +80,11 @@ public:
 	virtual std::string
 	debug_string() const;
 
+	struct {
+		jive::iport * prev;
+		jive::iport * next;
+	} gate_iport_list;
+
 protected:
 	inline void
 	set_index(size_t index) noexcept
@@ -83,6 +94,7 @@ protected:
 
 private:
 	size_t index_;
+	jive::gate * gate_;
 	jive::oport * origin_;
 };
 
@@ -121,9 +133,6 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept override;
 
-	virtual std::string
-	debug_string() const override;
-
 	virtual jive::region *
 	region() const noexcept override;
 
@@ -131,12 +140,6 @@ public:
 	node() const noexcept
 	{
 		return node_;
-	}
-
-	inline jive::gate *
-	gate() const noexcept
-	{
-		return gate_;
 	}
 
 	inline const struct jive_resource_class *
@@ -157,13 +160,7 @@ public:
 	virtual void
 	divert_origin(jive::oport * new_origin) override;
 
-	struct {
-		input * prev;
-		input * next;
-	} gate_inputs_list;
-
 private:
-	jive::gate * gate_;
 	jive::node * node_;
 	const struct jive_resource_class * rescls_;
 
@@ -181,7 +178,7 @@ public:
 	virtual
 	~oport() noexcept;
 
-	oport(size_t index);
+	oport(size_t index, jive::gate * gate);
 
 	oport(const oport &) = delete;
 
@@ -224,6 +221,12 @@ public:
 			(*users.begin())->divert_origin(new_origin);
 	}
 
+	inline jive::gate *
+	gate() const noexcept
+	{
+		return gate_;
+	}
+
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
@@ -235,6 +238,11 @@ public:
 
 	std::unordered_set<jive::iport*> users;
 
+	struct {
+		jive::oport * prev;
+		jive::oport * next;
+	} gate_oport_list;
+
 protected:
 	inline void
 	set_index(size_t index) noexcept
@@ -244,6 +252,7 @@ protected:
 
 private:
 	size_t index_;
+	jive::gate * gate_;
 };
 
 /**	@}	*/
@@ -271,19 +280,10 @@ public:
 	virtual const jive::base::type &
 	type() const noexcept override;
 
-	virtual std::string
-	debug_string() const override;
-
 	virtual jive::region *
 	region() const noexcept override;
 
 	inline jive::node * node() const noexcept { return node_; }
-
-	inline jive::gate *
-	gate() const noexcept
-	{
-		return gate_;
-	}
 
 	inline const struct jive_resource_class *
 	rescls() const noexcept
@@ -300,14 +300,8 @@ public:
 		rescls_ = rescls;
 	}
 
-	struct {
-		jive::output * prev;
-		jive::output * next;
-	} gate_outputs_list;
-
 private:
 	jive::node * node_;
-	jive::gate * gate_;
 	const struct jive_resource_class * rescls_;
 
 	/*
@@ -364,14 +358,14 @@ public:
 	} graph_gate_list;
 
 	struct {
-		jive::input * first;
-		jive::input * last;
-	} inputs;
+		jive::iport * first;
+		jive::iport * last;
+	} iports;
 
 	struct {
-		jive::output * first;
-		jive::output * last;
-	} outputs;
+		jive::oport * first;
+		jive::oport * last;
+	}	oports;
 
 	bool may_spill;
 	jive_gate_interference_hash interference;

@@ -44,16 +44,27 @@ namespace jive {
 /* iport */
 
 iport::~iport() noexcept
-{}
+{
+	if (gate())
+		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
+}
 
-iport::iport(size_t index, jive::oport * origin) noexcept
+iport::iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept
 	: index_(index)
+	, gate_(gate)
 	, origin_(origin)
-{}
+{
+	gate_iport_list.prev = gate_iport_list.next = nullptr;
+	if (gate)
+		JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
+}
 
 std::string
 iport::debug_string() const
 {
+	if (gate())
+		return gate()->debug_string();
+
 	return detail::strfmt(index());
 }
 
@@ -96,14 +107,11 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index, origin)
-	, gate_(nullptr)
+	: iport(index, origin, nullptr)
 	, node_(node)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
-	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
-
 	auto output = dynamic_cast<jive::output*>(origin);
 	bool has_successors = output->node()->has_successors();
 
@@ -131,14 +139,11 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(index, origin)
-	, gate_(gate)
+	: iport(index, origin, gate)
 	, node_(node)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
-	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
-
 	auto output = dynamic_cast<jive::output*>(origin);
 	bool has_successors = output->node()->has_successors();
 
@@ -154,8 +159,6 @@ input::input(
 		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
 		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
-
-	JIVE_LIST_PUSH_BACK(gate->inputs, this, gate_inputs_list);
 
 	for (size_t n = 0; n < index; n++) {
 		jive::input * other = node->input(n);
@@ -173,14 +176,11 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(index, origin)
-	, gate_(nullptr)
+	: iport(index, origin, nullptr)
 	, node_(node)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
-	gate_inputs_list.prev = gate_inputs_list.next = nullptr;
-
 	auto output = dynamic_cast<jive::output*>(origin);
 	bool has_successors = output->node()->has_successors();
 
@@ -211,9 +211,7 @@ input::~input() noexcept
 	if (output && !output->node()->has_successors())
 		JIVE_LIST_PUSH_BACK(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 
-	if (gate_) {
-		JIVE_LIST_REMOVE(gate_->inputs, this, gate_inputs_list);
-
+	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
 			jive::input * other = node()->input(n);
 			if (other == this || !other->gate())
@@ -230,15 +228,6 @@ const jive::base::type &
 input::type() const noexcept
 {
 	return *type_;
-}
-
-std::string
-input::debug_string() const
-{
-	if (gate())
-		return gate()->debug_string();
-
-	return iport::debug_string();
 }
 
 jive::region *
@@ -262,41 +251,44 @@ input::divert_origin(jive::oport * new_origin)
 /* oport */
 
 oport::~oport()
-{}
+{
+	if (gate())
+		JIVE_LIST_REMOVE(gate()->oports, this, gate_oport_list);
+}
 
-oport::oport(size_t index)
+oport::oport(size_t index, jive::gate * gate)
 	: index_(index)
-{}
+	, gate_(gate)
+{
+	gate_oport_list.prev = gate_oport_list.next = nullptr;
+	if (gate)
+		JIVE_LIST_PUSH_BACK(gate->oports, this, gate_oport_list);
+}
 
 std::string
 oport::debug_string() const
 {
+	if (gate())
+		return gate()->debug_string();
+
 	return detail::strfmt(index());
 }
 
 /* outputs */
 
 output::output(jive::node * node, size_t index, const jive::base::type & type)
-	: oport(index)
+	: oport(index, nullptr)
 	, node_(node)
-	, gate_(nullptr)
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
-{
-	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
-}
+{}
 
 output::output(jive::node * node, size_t index, jive::gate * gate)
-	: oport(index)
+	: oport(index, gate)
 	, node_(node)
-	, gate_(gate)
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
-	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
-
-	JIVE_LIST_PUSH_BACK(gate->outputs, this, gate_outputs_list);
-
 	for (size_t n = 0; n < index; n++) {
 		jive::output * other = node->output(n);
 		if (!other->gate()) continue;
@@ -305,14 +297,11 @@ output::output(jive::node * node, size_t index, jive::gate * gate)
 }
 
 output::output(jive::node * node, size_t index, const struct jive_resource_class * rescls)
-	: oport(index)
+	: oport(index, nullptr)
 	, node_(node)
-	, gate_(nullptr)
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
-{
-	gate_outputs_list.prev = gate_outputs_list.next = nullptr;
-}
+{}
 
 output::~output() noexcept
 {
@@ -320,9 +309,7 @@ output::~output() noexcept
 
 	node_->graph()->on_output_destroy(this);
 
-	if (gate_) {
-		JIVE_LIST_REMOVE(gate_->outputs, this, gate_outputs_list);
-
+	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
 			jive::output * other = node()->output(n);
 			if (other == this || !other->gate())
@@ -341,15 +328,6 @@ output::type() const noexcept
 	return *type_;
 }
 
-std::string
-output::debug_string() const
-{
-	if (gate())
-		return gate()->debug_string();
-
-	return oport::debug_string();
-}
-
 jive::region *
 output::region() const noexcept
 {
@@ -363,8 +341,8 @@ gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
 	, graph_(graph)
 	, type_(type.copy())
 {
-	inputs.first = inputs.last = nullptr;
-	outputs.first = outputs.last = nullptr;
+	iports.first = iports.last = nullptr;
+	oports.first = oports.last = nullptr;
 	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
 	required_rescls = &jive_root_resource_class;
@@ -374,8 +352,8 @@ gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
 
 gate::~gate() noexcept
 {
-	JIVE_DEBUG_ASSERT(inputs.first == nullptr && inputs.last == nullptr);
-	JIVE_DEBUG_ASSERT(outputs.first == nullptr && outputs.last == nullptr);
+	JIVE_DEBUG_ASSERT(iports.first == nullptr && iports.last == nullptr);
+	JIVE_DEBUG_ASSERT(oports.first == nullptr && oports.last == nullptr);
 
 	JIVE_LIST_REMOVE(graph()->gates, this, graph_gate_list);
 }
