@@ -517,6 +517,17 @@ node::~node()
 		delete tracker_slots[n];
 }
 
+bool
+node::has_successors() const noexcept
+{
+	for (auto output : outputs_) {
+		if (!output->no_user())
+			return true;
+	}
+
+	return false;
+}
+
 jive::input *
 node::add_input(const jive::base::type * type, jive::oport * origin)
 {

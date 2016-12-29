@@ -414,16 +414,8 @@ public:
 		return *operation_;
 	}
 
-	inline bool
-	has_successors() const noexcept
-	{
-		for (auto output : outputs_) {
-			if (!output->no_user())
-				return true;
-		}
-
-		return false;
-	}
+	virtual bool
+	has_successors() const noexcept;
 
 	inline size_t
 	noperands() const noexcept
