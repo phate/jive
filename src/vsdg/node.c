@@ -86,15 +86,13 @@ iport::divert_origin(jive::oport * new_origin)
 		throw jive::compiler_error("Invalid input");
 
 	origin()->users.erase(this);
-	auto output = dynamic_cast<jive::output*>(origin());
-	if (output && !output->node()->has_successors())
-		JIVE_LIST_PUSH_BACK(output->node()->graph()->bottom, output->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors())
+		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
 
 	this->origin_ = new_origin;
 
-	output = dynamic_cast<jive::output*>(origin());
-	if (output && !output->node()->has_successors())
-		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors())
+		JIVE_LIST_REMOVE(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
 	origin()->users.insert(this);
 
 	new_origin->region()->graph()->mark_denormalized();
@@ -112,9 +110,6 @@ input::input(
 	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
-	auto output = dynamic_cast<jive::output*>(origin);
-	bool has_successors = output->node()->has_successors();
-
 	/* FIXME: check whether origin is valid */
 	/* FIXME: This should optimally be in node constructor */
 
@@ -129,9 +124,9 @@ input::input(
 		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
 
+	if (origin->node() && !origin->node()->has_successors())
+		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
-	if (output && !has_successors)
-		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 }
 
 input::input(
@@ -144,9 +139,6 @@ input::input(
 	, rescls_(gate->required_rescls)
 	, type_(gate->type().copy())
 {
-	auto output = dynamic_cast<jive::output*>(origin);
-	bool has_successors = output->node()->has_successors();
-
 	/* FIXME: check whether origin is valid */
 
 	if (type() != origin->type())
@@ -166,9 +158,9 @@ input::input(
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 
+	if (origin->node() && !origin->node()->has_successors())
+		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
-	if (output && !has_successors)
-		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 }
 
 input::input(
@@ -181,9 +173,6 @@ input::input(
 	, rescls_(rescls)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
-	auto output = dynamic_cast<jive::output*>(origin);
-	bool has_successors = output->node()->has_successors();
-
 	/* FIXME: check whether origin is valid */
 
 	if (type() != origin->type())
@@ -197,9 +186,9 @@ input::input(
 		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
 
+	if (origin->node() && !origin->node()->has_successors())
+		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
-	if (has_successors)
-		JIVE_LIST_REMOVE(output->node()->graph()->bottom, output->node(), graph_bottom_list);
 }
 
 input::~input() noexcept
