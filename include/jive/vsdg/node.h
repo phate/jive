@@ -77,6 +77,9 @@ public:
 	virtual jive::region *
 	region() const noexcept = 0;
 
+	virtual jive::node *
+	node() const noexcept = 0;
+
 	virtual std::string
 	debug_string() const;
 
@@ -136,11 +139,8 @@ public:
 	virtual jive::region *
 	region() const noexcept override;
 
-	inline jive::node *
-	node() const noexcept
-	{
-		return node_;
-	}
+	virtual jive::node *
+	node() const noexcept override;
 
 	inline const struct jive_resource_class *
 	rescls() const noexcept
@@ -233,6 +233,9 @@ public:
 	virtual jive::region *
 	region() const noexcept = 0;
 
+	virtual jive::node *
+	node() const noexcept = 0;
+
 	virtual std::string
 	debug_string() const;
 
@@ -283,7 +286,8 @@ public:
 	virtual jive::region *
 	region() const noexcept override;
 
-	inline jive::node * node() const noexcept { return node_; }
+	virtual jive::node *
+	node() const noexcept override;
 
 	inline const struct jive_resource_class *
 	rescls() const noexcept

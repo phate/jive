@@ -236,6 +236,12 @@ input::region() const noexcept
 	return node()->region();
 }
 
+jive::node *
+input::node() const noexcept
+{
+	return node_;
+}
+
 void
 input::divert_origin(jive::oport * new_origin)
 {
@@ -332,6 +338,12 @@ jive::region *
 output::region() const noexcept
 {
 	return node()->region();
+}
+
+jive::node *
+output::node() const noexcept
+{
+	return node_;
 }
 
 /* gates */
