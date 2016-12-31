@@ -1,6 +1,5 @@
 include tests/arch/Makefile.sub
 include tests/evaluator/Makefile.sub
-include tests/serialization/Makefile.sub
 include tests/transforms/Makefile.sub
 include tests/types/Makefile.sub
 include tests/util/Makefile.sub

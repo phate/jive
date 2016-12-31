@@ -8,7 +8,6 @@
 
 #include <jive/arch/registers.h>
 #include <jive/arch/stackslot.h>
-#include <jive/serialization/rescls-registry.h>
 #include <jive/types/bitstring/type.h>
 #include <jive/types/float/flttype.h>
 
@@ -474,33 +473,3 @@ const jive_register_class jive_i386_regcls_sse_xmm7 = {
 	},
 	nbits : 32, int_arithmetic_width : 128, loadstore_width : 128
 };
-
-static const jive_register_class * registered_regcls[] = {
-	&jive_i386_regcls_gpr,
-	&jive_i386_regcls_fp,
-	/*&jive_i386_regcls_mmx,*/
-	&jive_i386_regcls_sse,
-	&jive_i386_regcls_flags,
-	&jive_i386_regcls_gpr_byte,
-	&jive_i386_regcls_gpr_eax,
-	&jive_i386_regcls_gpr_ebx,
-	&jive_i386_regcls_gpr_ecx,
-	&jive_i386_regcls_gpr_edx,
-	&jive_i386_regcls_gpr_esi,
-	&jive_i386_regcls_gpr_edi,
-	&jive_i386_regcls_gpr_esp,
-	&jive_i386_regcls_gpr_ebp,
-	&jive_i386_regcls_fp_st0,
-	&jive_i386_regcls_sse_xmm0,
-	&jive_i386_regcls_sse_xmm1,
-	&jive_i386_regcls_sse_xmm2,
-	&jive_i386_regcls_sse_xmm3,
-	&jive_i386_regcls_sse_xmm4,
-	&jive_i386_regcls_sse_xmm5,
-	&jive_i386_regcls_sse_xmm6,
-	&jive_i386_regcls_sse_xmm7,
-};
-
-JIVE_SERIALIZATION_REGCLSSET_REGISTER(registered_regcls,
-	sizeof(registered_regcls) / sizeof(registered_regcls[0]),
-	"i386_");

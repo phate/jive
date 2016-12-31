@@ -125,20 +125,6 @@ LIBJIVE_SRC += \
 	src/arch/subroutine.c \
 	src/arch/subroutine/nodes.c \
 
-# serialization
-LIBJIVE_SRC += \
-	src/serialization/arch.c \
-	src/serialization/bitstring.c \
-	src/serialization/driver.c \
-	src/serialization/grammar.c \
-	src/serialization/instrcls-registry.c \
-	src/serialization/nodecls-registry.c \
-	src/serialization/rescls-registry.c \
-	src/serialization/symtab.c \
-	src/serialization/token-stream.c \
-	src/serialization/typecls-registry.c \
-	src/serialization/vsdg.c \
-
 include src/backend/i386/Makefile.sub
 
 SOURCES += $(LIBJIVE_SRC)

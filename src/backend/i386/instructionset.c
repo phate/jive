@@ -11,7 +11,6 @@
 #include <jive/backend/i386/machine.h>
 #include <jive/backend/i386/registerset.h>
 #include <jive/backend/i386/relocation.h>
-#include <jive/serialization/instrcls-registry.h>
 #include <jive/util/buffer.h>
 
 #include <inttypes.h>
@@ -1679,8 +1678,3 @@ static const jive_instruction_class * const registered_instrs[] = {
 	&jive_i386_instr_float_cmp,
 	&jive_i386_instr_float_transfer
 };
-
-JIVE_SERIALIZATION_INSTRSET_REGISTER(
-	registered_instrs,
-	sizeof(registered_instrs) / sizeof(registered_instrs[0]),
-	"i386_");
