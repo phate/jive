@@ -19,6 +19,7 @@
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
 /*
@@ -447,54 +448,25 @@ namespace jive {
 
 node::node(
 	std::unique_ptr<jive::operation> op,
-	jive::region * region,
-	const std::vector<jive::oport*> & operands)
-	: depth_(0)
-	, graph_(region->graph())
+	jive::region * region)
+	: graph_(region->graph())
 	, region_(region)
 	, operation_(std::move(op))
 {
-	if (operation_->narguments() != operands.size())
-		throw jive::compiler_error(jive::detail::strfmt("Argument error - expected ",
-			operation_->narguments(), ", received ", operands.size(), " arguments."));
-
-	if (operation_->narguments() == 0) {
+	if (operation().narguments() == 0)
 		JIVE_LIST_PUSH_BACK(region->top_nodes, this, region_top_node_list);
-	} else {
+	else
 		region_top_node_list.prev = region_top_node_list.next = nullptr;
-
-		for (size_t n = 0; n < operation_->narguments(); n++) {
-			inputs_.push_back(new jive::input(this, n, operands[n], operation_->argument_type(n)));
-			depth_ = std::max(dynamic_cast<jive::output*>(operands[n])->node()->depth()+1, depth_);
-		}
-	}
-
-	for (size_t n = 0; n < operation_->nresults(); n++) {
-		outputs_.push_back(new jive::output(this, n, operation_->result_type(n)));
-	}
-
-	for (size_t n = 0; n < this->ninputs(); ++n)
-		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, this->input(n)->origin()));
 
 	region->nodes.push_back(this);
 	JIVE_LIST_PUSH_BACK(graph_->bottom, this, graph_bottom_list);
-
-	graph_->on_node_create(this);
 }
 
 node::~node()
 {
-	graph()->on_node_destroy(this);
-
 	JIVE_DEBUG_ASSERT(region_);
 
 	region_->nodes.erase(this);
-
-	while(outputs_.size())
-		remove_output(outputs_.size()-1);
-
-	while (inputs_.size())
-		remove_input(inputs_.size()-1);
 
 	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
@@ -508,225 +480,6 @@ node::~node()
 
 	for (size_t n = 0; n < tracker_slots.size(); n++)
 		delete tracker_slots[n];
-}
-
-bool
-node::has_successors() const noexcept
-{
-	for (auto output : outputs_) {
-		if (!output->no_user())
-			return true;
-	}
-
-	return false;
-}
-
-jive::input *
-node::add_input(const jive::base::type * type, jive::oport * origin)
-{
-	jive::input * input = new jive::input(this, inputs_.size(), origin, *type);
-
-	if (inputs_.size() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	inputs_.push_back(input);
-
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
-	recompute_depth();
-	graph()->on_input_create(input);
-
-	return input;
-}
-
-jive::input *
-node::add_input(jive::gate * gate, jive::oport * origin)
-{
-	jive::input * input = new jive::input(this, inputs_.size(), origin, gate);
-
-	if (inputs_.size() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	inputs_.push_back(input);
-
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
-	recompute_depth();
-	graph()->on_input_create(input);
-
-	return input;
-}
-
-jive::input *
-node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
-{
-	jive::input * input = new jive::input(this, inputs_.size(), origin, rescls);
-
-	if (inputs_.size() == 0)
-		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
-
-	inputs_.push_back(input);
-
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
-	recompute_depth();
-	graph()->on_input_create(input);
-
-	return input;
-}
-
-void
-node::remove_input(size_t index)
-{
-	JIVE_DEBUG_ASSERT(index < inputs_.size());
-	jive::input * input = inputs_[index];
-
-	delete input;
-	for (size_t n = index; n < inputs_.size()-1; n++) {
-		JIVE_DEBUG_ASSERT(inputs_[n+1]->index() == n);
-		inputs_[n] = inputs_[n+1];
-	}
-	inputs_.pop_back();
-
-	if (inputs_.size() == 0)
-		JIVE_LIST_PUSH_BACK(region()->top_nodes, this, region_top_node_list);
-}
-
-void
-node::remove_output(size_t index)
-{
-	JIVE_DEBUG_ASSERT(index < outputs_.size());
-	jive::output * output = outputs_[index];
-
-	delete output;
-	for (size_t n = index; n < outputs_.size()-1; n++) {
-		JIVE_DEBUG_ASSERT(outputs_[n+1]->index() == n);
-		outputs_[n] = outputs_[n+1];
-	}
-	outputs_.pop_back();
-}
-
-jive::output *
-node::add_output(const jive::base::type * type)
-{
-	jive::output * output = new jive::output(this, outputs_.size(), *type);
-	outputs_.push_back(output);
-
-	graph()->on_output_create(output);
-
-	return output;
-}
-
-jive::output *
-node::add_output(jive::gate * gate)
-{
-	jive::output * output = new jive::output(this, outputs_.size(), gate);
-	outputs_.push_back(output);
-
-	graph()->on_output_create(output);
-
-	return output;
-}
-
-jive::output *
-node::add_output(const struct jive_resource_class * rescls)
-{
-	jive::output * output = new jive::output(this, outputs_.size(), rescls);
-	outputs_.push_back(output);
-
-	graph()->on_output_create(output);
-
-	return output;
-}
-
-jive::node *
-node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
-{
-	jive::node * node = jive_opnode_create(*operation_, region, operands);
-	graph()->mark_denormalized();
-	return node;
-}
-
-jive::node *
-node::copy(jive::region * region, jive::substitution_map & smap) const
-{
-	std::vector<jive::oport*> operands(noperands());
-	for (size_t n = 0; n < noperands(); n++) {
-		operands[n] = smap.lookup(dynamic_cast<jive::output*>(input(n)->origin()));
-		if (!operands[n]) {
-			operands[n] = dynamic_cast<jive::output*>(input(n)->origin());
-		}
-	}
-
-	jive::node * new_node = copy(region, operands);
-	for (size_t n = noperands(); n < ninputs(); n++) {
-		jive::oport * origin = smap.lookup(input(n)->origin());
-		if (!origin) {
-			origin = input(n)->origin();
-		}
-
-		if (input(n)->gate()) {
-			jive::gate * gate = input(n)->gate();
-
-			jive::gate * target_gate = smap.lookup(gate);
-			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate->type(), gate->name(), gate->rescls());
-				smap.insert(gate, target_gate);
-			}
-		} else {
-			new_node->add_input(this->input(n)->rescls(), origin);
-		}
-	}
-
-	for (size_t n = new_node->noutputs(); n < noutputs(); n++) {
-		if (output(n)->gate()) {
-			jive::gate * gate = output(n)->gate();
-
-			jive::gate * target_gate = smap.lookup(gate);
-			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate->type(), gate->name(), gate->rescls());
-				smap.insert(gate, target_gate);
-			}
-
-			new_node->add_output(target_gate);
-		} else {
-			new_node->add_output(this->output(n)->rescls());
-		}
-	}
-
-	for (size_t n = 0; n < new_node->noutputs(); n++)
-		smap.insert(output(n), new_node->output(n));
-
-	return new_node;
-}
-
-void
-node::recompute_depth()
-{
-	size_t new_depth = 0;
-	for (size_t n = 0; n < ninputs(); n++)
-		new_depth = std::max(dynamic_cast<jive::output*>(input(n)->origin())->node()->depth() + 1,
-			new_depth);
-
-	size_t old_depth = depth_;
-	if (new_depth == old_depth)
-		return;
-
-	depth_ = new_depth;
-	graph()->on_node_depth_change(this, old_depth);
-
-	for (size_t n = 0; n < noutputs(); n++) {
-		for (auto user : output(n)->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			input->node()->recompute_depth();
-		}
-	}
 }
 
 }
@@ -831,7 +584,7 @@ jive_opnode_create(
 	jive::region * region,
 	const std::vector<jive::oport*> & operands)
 {
-	jive::node * node = new jive::node(op.copy(), region, operands);
+	jive::node * node = new jive::simple_node(op, region, operands);
 
 	/* FIXME: this is regalloc-specific, should go away */
 	for (size_t n = 0; n < op.narguments(); ++n) {

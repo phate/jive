@@ -410,12 +410,12 @@ struct jive_substitution_map;
 
 namespace jive {
 
-class node final {
+class node {
 public:
+	virtual
 	~node();
 
-	node(std::unique_ptr<jive::operation> op, jive::region * region,
-		const std::vector<jive::oport*> & operands);
+	node(std::unique_ptr<jive::operation> op, jive::region * region);
 
 	inline const jive::operation &
 	operation() const noexcept
@@ -424,7 +424,7 @@ public:
 	}
 
 	virtual bool
-	has_successors() const noexcept;
+	has_successors() const noexcept = 0;
 
 	inline size_t
 	noperands() const noexcept
@@ -432,29 +432,29 @@ public:
 		return operation_->narguments();
 	}
 
-	jive::input *
-	add_input(const jive::base::type * type, jive::oport * origin);
+	virtual jive::input *
+	add_input(const jive::base::type * type, jive::oport * origin) = 0;
 
-	jive::input *
-	add_input(jive::gate * gate, jive::oport * origin);
+	virtual jive::input *
+	add_input(jive::gate * gate, jive::oport * origin) = 0;
 
-	jive::input *
-	add_input(const struct jive_resource_class * rescls, jive::oport * origin);
+	virtual jive::input *
+	add_input(const struct jive_resource_class * rescls, jive::oport * origin) = 0;
 
-	void
-	remove_input(size_t index);
+	virtual void
+	remove_input(size_t index) = 0;
 
-	jive::output *
-	add_output(const jive::base::type * type);
+	virtual jive::output *
+	add_output(const jive::base::type * type) = 0;
 
-	jive::output *
-	add_output(const struct jive_resource_class * rescls);
+	virtual jive::output *
+	add_output(const struct jive_resource_class * rescls) = 0;
 
-	jive::output *
-	add_output(jive::gate * gate);
+	virtual jive::output *
+	add_output(jive::gate * gate) = 0;
 
-	void
-	remove_output(size_t index);
+	virtual void
+	remove_output(size_t index) = 0;
 
 	inline jive_graph *
 	graph() const noexcept
@@ -468,20 +468,14 @@ public:
 		return region_;
 	}
 
-	inline size_t
-	ninputs() const noexcept
-	{
-		return inputs_.size();
-	}
+	virtual size_t
+	ninputs() const noexcept = 0;
 
-	inline size_t
-	noutputs() const noexcept
-	{
-		return outputs_.size();
-	}
+	virtual size_t
+	noutputs() const noexcept = 0;
 
-	jive::node *
-	copy(jive::region * region, const std::vector<jive::oport*> & operands) const;
+	virtual jive::node *
+	copy(jive::region * region, const std::vector<jive::oport*> & operands) const = 0;
 
 	/**
 		\brief Copy a node with substitutions
@@ -500,34 +494,23 @@ public:
 		corresponding outputs of the newly created node in
 		subsequent \ref copy operations.
 	*/
-	jive::node *
-	copy(jive::region * region, jive::substitution_map & smap) const;
+	virtual jive::node *
+	copy(jive::region * region, jive::substitution_map & smap) const = 0;
 
-	inline jive::input *
-	input(size_t index) const noexcept
-	{
-		JIVE_DEBUG_ASSERT(index < inputs_.size());
-		return inputs_[index];
-	}
+	virtual jive::input *
+	input(size_t index) const noexcept = 0;
 
-	inline jive::output *
-	output(size_t index) const noexcept
-	{
-		JIVE_DEBUG_ASSERT(index < outputs_.size());
-		return outputs_[index];
-	}
+	virtual jive::output *
+	output(size_t index) const noexcept = 0;
 
-	inline size_t
-	depth() const noexcept
-	{
-		return depth_;
-	}
+	virtual size_t
+	depth() const noexcept = 0;
 
 	/*
 		FIXME: privatize or completely remove it again
 	*/
-	void
-	recompute_depth();
+	virtual void
+	recompute_depth() = 0;
 
 	struct {
 		jive::node * prev;
@@ -551,11 +534,8 @@ public:
 	> region_node_list_accessor;
 
 private:
-	size_t depth_;
 	jive_graph * graph_;
 	jive::region * region_;
-	std::vector<jive::input*> inputs_;
-	std::vector<jive::output*> outputs_;
 	std::unique_ptr<jive::operation> operation_;
 };
 
