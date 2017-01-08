@@ -18,6 +18,7 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/seqtype.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/statetype.h>
 
 namespace jive {

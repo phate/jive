@@ -15,6 +15,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 

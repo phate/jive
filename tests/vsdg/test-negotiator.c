@@ -18,6 +18,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/negotiator.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/simple_node.h>
 
 /* negotiator test node */
 

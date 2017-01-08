@@ -10,6 +10,7 @@
 #include <jive/vsdg/operators/binary.h>
 #include <jive/vsdg/operators/reduction-helpers.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 

@@ -9,6 +9,7 @@
 #include <jive/common.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/resource.h>
+#include <jive/vsdg/simple_node.h>
 
 #include <string.h>
 

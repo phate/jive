@@ -11,6 +11,7 @@
 #include <jive/types/float/flttype.h>
 
 #include <jive/vsdg/control.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace flt {

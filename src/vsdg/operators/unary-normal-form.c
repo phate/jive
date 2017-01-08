@@ -8,7 +8,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/unary.h>
 #include <jive/vsdg/region.h>
-
+#include <jive/vsdg/simple_node.h>
 namespace jive {
 
 unary_normal_form::~unary_normal_form() noexcept

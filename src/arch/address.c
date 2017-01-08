@@ -17,6 +17,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 /* memberof */
 

@@ -11,6 +11,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/traverser.h>
 
 jive_negotiator_option::~jive_negotiator_option() noexcept

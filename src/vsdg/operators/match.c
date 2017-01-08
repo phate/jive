@@ -7,6 +7,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/operators/match.h>
+#include <jive/vsdg/simple_node.h>
 
 #include <cmath>
 

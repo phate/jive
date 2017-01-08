@@ -8,7 +8,7 @@
 
 #include <jive/vsdg/equivalence.h>
 
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/simple_node.h>
 
 typedef struct jive_node_equiv_entry jive_node_equiv_entry;
 struct jive_node_equiv_entry {

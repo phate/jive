@@ -12,6 +12,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/operators.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace bits {

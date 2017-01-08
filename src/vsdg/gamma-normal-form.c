@@ -9,7 +9,7 @@
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/node.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
 namespace jive {

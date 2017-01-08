@@ -14,6 +14,7 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/traverser.h>
 
 #include <stdio.h>

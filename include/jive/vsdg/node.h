@@ -33,6 +33,8 @@ class oport;
 class output;
 class substitution_map;
 
+/* iports */
+
 class iport {
 public:
 	virtual
@@ -101,77 +103,7 @@ private:
 	jive::oport * origin_;
 };
 
-/**
-        \defgroup jive::input Inputs
-        Inputs
-        @{
-*/
-
-class input final : public iport {
-	friend jive::output;
-
-public:
-	virtual
-	~input() noexcept;
-
-	input(
-		jive::node * node,
-		size_t index,
-		jive::oport * origin,
-		const jive::base::type & type);
-
-	input(
-		jive::node * node,
-		size_t index,
-		jive::oport * origin,
-		jive::gate * gate);
-
-	input(
-		jive::node * node,
-		size_t index,
-		jive::oport * origin,
-		const struct jive_resource_class * rescls);
-
-public:
-	virtual const jive::base::type &
-	type() const noexcept override;
-
-	virtual jive::region *
-	region() const noexcept override;
-
-	virtual jive::node *
-	node() const noexcept override;
-
-	inline const struct jive_resource_class *
-	rescls() const noexcept
-	{
-		return rescls_;
-	}
-
-	/*
-		FIXME: This is going to be removed again later.
-	*/
-	void
-	set_rescls(const struct jive_resource_class * rescls) noexcept
-	{
-		rescls_ = rescls;
-	}
-
-	virtual void
-	divert_origin(jive::oport * new_origin) override;
-
-private:
-	jive::node * node_;
-	const struct jive_resource_class * rescls_;
-
-	/*
-		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
-		number given by the operation. Once this is fixed, the attribute can be removed and the type
-		can be taken from the operation.
-	*/
-	std::unique_ptr<jive::base::type> type_;
-};
-
+/* oports */
 
 class oport {
 public:
@@ -257,65 +189,6 @@ private:
 	size_t index_;
 	jive::gate * gate_;
 };
-
-/**	@}	*/
-
-/**
-        \defgroup jive::output Outputs
-        Outputs
-        @{
-*/
-
-class output final : public oport {
-	friend jive::input;
-
-public:
-	virtual
-	~output() noexcept;
-
-	output(jive::node * node, size_t index, const jive::base::type & type);
-
-	output(jive::node * node, size_t index, jive::gate * gate);
-
-	output(jive::node * node, size_t index, const struct jive_resource_class * rescls);
-
-public:
-	virtual const jive::base::type &
-	type() const noexcept override;
-
-	virtual jive::region *
-	region() const noexcept override;
-
-	virtual jive::node *
-	node() const noexcept override;
-
-	inline const struct jive_resource_class *
-	rescls() const noexcept
-	{
-		return rescls_;
-	}
-
-	/*
-		FIXME: This is going to be removed again later.
-	*/
-	inline void
-	set_rescls(const struct jive_resource_class * rescls) noexcept
-	{
-		rescls_ = rescls;
-	}
-
-private:
-	jive::node * node_;
-	const struct jive_resource_class * rescls_;
-
-	/*
-		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the
-		number given by the operation. Once this is fixed, the attribute can be removed and the type
-		can be taken from the operation.
-	*/
-	std::unique_ptr<jive::base::type> type_;
-};
-
 
 /**	@}	*/
 
@@ -622,7 +495,7 @@ jive_node_arguments(jive::node * self)
 {
 	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
-		arguments.push_back(dynamic_cast<jive::output*>(self->input(n)->origin()));
+		arguments.push_back(self->input(n)->origin());
 	}
 	return arguments;
 }
