@@ -44,16 +44,6 @@ jive_resource_class_intersection(const jive_resource_class * self,
 	else return 0;
 }
 
-jive::gate *
-jive_resource_class_create_gate(const jive_resource_class * self, jive_graph * graph,
-	const char * name)
-{
-	const jive::base::type * type = jive_resource_class_get_type(self);
-	jive::gate * gate = graph->create_gate(*type, name);
-	gate->required_rescls = self;
-	return gate;
-}
-
 const jive_resource_class *
 jive_resource_class_relax(const jive_resource_class * self)
 {

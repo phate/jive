@@ -136,7 +136,7 @@ input::input(
 	jive::gate * gate)
 	: iport(index, origin, gate)
 	, node_(node)
-	, rescls_(gate->required_rescls)
+	, rescls_(gate->rescls())
 	, type_(gate->type().copy())
 {
 	/* FIXME: check whether origin is valid */
@@ -281,7 +281,7 @@ output::output(jive::node * node, size_t index, const jive::base::type & type)
 output::output(jive::node * node, size_t index, jive::gate * gate)
 	: oport(index, gate)
 	, node_(node)
-	, rescls_(gate->required_rescls)
+	, rescls_(gate->rescls())
 	, type_(gate->type().copy())
 {
 	for (size_t n = 0; n < index; n++) {
@@ -337,16 +337,20 @@ output::node() const noexcept
 
 /* gates */
 
-gate::gate(jive_graph * graph, const char name[], const jive::base::type & type)
+gate::gate(
+	jive_graph * graph,
+	const char name[],
+	const jive::base::type & type,
+	const struct jive_resource_class * rescls)
 	: name_(name)
 	, graph_(graph)
+	, rescls_(rescls)
 	, type_(type.copy())
 {
 	iports.first = iports.last = nullptr;
 	oports.first = oports.last = nullptr;
 	may_spill = true;
 	graph_gate_list.prev = graph_gate_list.next = nullptr;
-	required_rescls = &jive_root_resource_class;
 
 	JIVE_LIST_PUSH_BACK(graph->gates, this, graph_gate_list);
 }
@@ -416,7 +420,7 @@ jive_node_get_use_count_input(const jive::node * self, jive_resource_class_count
 		}
 		
 		const jive_resource_class * rescls;
-		if (input->gate()) rescls = input->gate()->required_rescls;
+		if (input->gate()) rescls = input->gate()->rescls();
 		else rescls = input->rescls();
 		
 		use_count->add(rescls);
@@ -432,7 +436,7 @@ jive_node_get_use_count_output(const jive::node * self, jive_resource_class_coun
 		jive::output * output = self->output(n);
 		
 		const jive_resource_class * rescls;
-		if (output->gate()) rescls = output->gate()->required_rescls;
+		if (output->gate()) rescls = output->gate()->rescls();
 		else rescls = output->rescls();
 		
 		use_count->add(rescls);
@@ -672,8 +676,7 @@ node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate->type(), gate->name());
-				target_gate->required_rescls = gate->required_rescls;
+				target_gate = region->graph()->create_gate(gate->type(), gate->name(), gate->rescls());
 				smap.insert(gate, target_gate);
 			}
 		} else {
@@ -687,8 +690,7 @@ node::copy(jive::region * region, jive::substitution_map & smap) const
 
 			jive::gate * target_gate = smap.lookup(gate);
 			if (!target_gate) {
-				target_gate = region->graph()->create_gate(gate->type(), gate->name());
-				target_gate->required_rescls = gate->required_rescls;
+				target_gate = region->graph()->create_gate(gate->type(), gate->name(), gate->rescls());
 				smap.insert(gate, target_gate);
 			}
 

@@ -119,9 +119,12 @@ jive_graph::has_active_traversers() const noexcept
 }
 
 jive::gate *
-jive_graph::create_gate(const jive::base::type & type, const std::string & name)
+jive_graph::create_gate(
+	const jive::base::type & type,
+	const std::string & name,
+	const jive_resource_class * rescls)
 {
-	return new jive::gate(this, name.c_str(), type);
+	return new jive::gate(this, name.c_str(), type, rescls);
 }
 
 jive_tracker_slot

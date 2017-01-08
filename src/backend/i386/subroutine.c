@@ -143,7 +143,7 @@ public:
 		const jive::base::type * in_type = &o->type();
 		const jive::base::type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
 		jive::node * node = jive_splitnode_create(subroutine.region,
-			in_type, o, o->gate()->required_rescls,
+			in_type, o, o->gate()->rescls(),
 			out_type, &jive_i386_regcls_gpr.base);
 		return node->output(0);
 	}

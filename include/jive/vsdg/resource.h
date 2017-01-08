@@ -135,10 +135,6 @@ jive_resource_class_is_abstract(const jive_resource_class * self)
 	return self->class_->is_abstract;
 }
 
-jive::gate *
-jive_resource_class_create_gate(const jive_resource_class * self, struct jive_graph * graph,
-	const char * name);
-
 /** \brief Find largest resource class of same general type containing this class */
 const jive_resource_class *
 jive_resource_class_relax(const jive_resource_class * self);

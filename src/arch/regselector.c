@@ -210,7 +210,7 @@ jive_regselector_option_gate_default_(const jive_negotiator * self_, jive_negoti
 		return false;
 	jive_regselector * self = (jive_regselector *) self_;
 	jive_regselector_option * option = (jive_regselector_option *) dst;
-	option->mask = self->classifier->classify_type(&gate->type(), gate->required_rescls);
+	option->mask = self->classifier->classify_type(&gate->type(), gate->rescls());
 	return !!option->mask;
 }
 

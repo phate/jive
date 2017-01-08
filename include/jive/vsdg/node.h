@@ -329,7 +329,11 @@ class gate final {
 public:
 	~gate() noexcept;
 
-	gate(struct jive_graph * graph, const char name[], const jive::base::type & type);
+	gate(
+		struct jive_graph * graph,
+		const char name[],
+		const jive::base::type & type,
+		const struct jive_resource_class * rescls = &jive_root_resource_class);
 
 public:
 	const jive::base::type &
@@ -356,6 +360,12 @@ public:
 		return name_;
 	}
 
+	inline const struct jive_resource_class *
+	rescls() const noexcept
+	{
+		return rescls_;
+	}
+
 	struct {
 		jive::gate * prev;
 		jive::gate * next;
@@ -374,11 +384,10 @@ public:
 	bool may_spill;
 	jive_gate_interference_hash interference;
 
-	const struct jive_resource_class * required_rescls;
-
 private:
 	std::string name_;
 	struct jive_graph * graph_;
+	const struct jive_resource_class * rescls_;
 
 	/*
 		FIXME: This attribute is necessary as long as the number of inputs do not coincide with the

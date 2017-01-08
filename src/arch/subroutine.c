@@ -117,19 +117,22 @@ jive_subroutine_begin(
 	jive::node * enter = jive_opnode_create(jive::subroutine_head_op(), sub.region, {});
 
 	for (size_t n = 0; n < sig.arguments.size(); ++n) {
-		sub.builder_state->arguments[n].gate = jive_resource_class_create_gate(
-			sig.arguments[n].rescls, graph, sig.arguments[n].name.c_str());
+		const struct jive_resource_class * rescls = sig.arguments[n].rescls;
+		sub.builder_state->arguments[n].gate = graph->create_gate(
+			*jive_resource_class_get_type(rescls), sig.arguments[n].name, rescls);
 		sub.builder_state->arguments[n].output = enter->add_output(
 			sub.builder_state->arguments[n].gate);
 	}
 	for (size_t n = 0; n < sig.results.size(); ++n) {
-		sub.builder_state->results[n].gate = jive_resource_class_create_gate(
-			sig.results[n].rescls, graph, sig.results[n].name.c_str());
+		const struct jive_resource_class * rescls = sig.results[n].rescls;
+		sub.builder_state->results[n].gate = graph->create_gate(
+			*jive_resource_class_get_type(rescls), sig.results[n].name, rescls);
 	}
 	for (size_t n = 0; n < sig.passthroughs.size(); ++n) {
 		if (sig.passthroughs[n].rescls) {
-			sub.builder_state->passthroughs[n].gate = jive_resource_class_create_gate(
-				sig.passthroughs[n].rescls, graph, sig.passthroughs[n].name.c_str());
+			const struct jive_resource_class * rescls = sig.passthroughs[n].rescls;
+			sub.builder_state->passthroughs[n].gate = graph->create_gate(
+				*jive_resource_class_get_type(rescls), sig.passthroughs[n].name, rescls);
 		} else {
 			jive::mem::type memory_type;
 			sub.builder_state->passthroughs[n].gate = graph->create_gate(memory_type,

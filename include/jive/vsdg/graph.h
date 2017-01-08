@@ -80,7 +80,10 @@ public:
 	has_active_traversers() const noexcept;
 
 	jive::gate *
-	create_gate(const jive::base::type & type, const std::string & name);
+	create_gate(
+		const jive::base::type & type,
+		const std::string & name,
+		const jive_resource_class * rescls = &jive_root_resource_class);
 
 	inline jive::input *
 	export_port(jive::oport * operand, const std::string & name)
