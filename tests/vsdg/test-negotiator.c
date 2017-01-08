@@ -228,12 +228,12 @@ test_negotiator_annotate_node_proper_(jive_negotiator * self, jive::node * node_
 {
 	if (auto op = dynamic_cast<const negtest_op *>(&node_->operation())) {
 		for (size_t n = 0; n < node_->ninputs(); n++) {
-			jive::input * input = node_->input(n);
+			jive::input * input = dynamic_cast<jive::input*>(node_->input(n));
 			test_negotiator_option option(op->input_options()[n]);
 			jive_negotiator_annotate_simple_input(self, input, &option);
 		}
 		for (size_t n = 0; n < node_->noutputs(); n++) {
-			jive::output * output = node_->output(n);
+			jive::output * output = dynamic_cast<jive::output*>(node_->output(n));
 			test_negotiator_option option(op->output_options()[n]);
 			jive_negotiator_annotate_simple_output(self, output, &option);
 		}
@@ -282,13 +282,13 @@ typedef jive_negotiator test_negotiator;
 static void
 expect_options(
 	jive_negotiator * nego,
-	jive::output * o,
+	jive::oport * o,
 	test_option_t o_o,
-	jive::input * i,
+	jive::iport * i,
 	test_option_t o_i)
 {
-	jive_negotiator_port * p_o = jive_negotiator_map_output(nego, o);
-	jive_negotiator_port * p_i = jive_negotiator_map_input(nego, i);
+	jive_negotiator_port * p_o = jive_negotiator_map_output(nego, dynamic_cast<jive::output*>(o));
+	jive_negotiator_port * p_i = jive_negotiator_map_input(nego, dynamic_cast<jive::input*>(i));
 	assert(p_o);
 	assert(p_i);
 	
@@ -317,14 +317,14 @@ static int test_main(void)
 	jive::node * n1 = jive_negtestnode_create(graph.root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
-	jive::output * tmp = n1->output(0);
+	jive::output * tmp = dynamic_cast<jive::output*>(n1->output(0));
 	jive::node * n2 = jive_negtestnode_create(graph.root(),
 		1, &opt1, tmparray0, &tmp,
 		0, 0, 0);
 	jive::node * n3 = jive_negtestnode_create(graph.root(),
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
-	tmp = n3->output(0);
+	tmp = dynamic_cast<jive::output*>(n3->output(0));
 	jive::node * n4 = jive_negtestnode_create(graph.root(),
 		1, &opt2, tmparray0, &tmp,
 		0, 0, 0);
@@ -333,7 +333,7 @@ static int test_main(void)
 	jive::node * n5 = jive_negtestnode_create(subregion,
 		0, 0, 0, 0,
 		1, &opt1, tmparray0);
-	tmp = n5->output(0);
+	tmp = dynamic_cast<jive::output*>(n5->output(0));
 	jive::node * n6 = jive_negtestnode_create(subregion,
 		1, &opt3, tmparray0, &tmp,
 		0, 0, 0);

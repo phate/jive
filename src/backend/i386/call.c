@@ -53,10 +53,14 @@ jive_i386_call_node_substitute(
 	}
 	
 	/* mark caller-saved regs as clobbered */
-	jive::output * clobber_eax = call_instr->add_output(&jive_i386_regcls_gpr_eax.base);
-	jive::output * clobber_edx = call_instr->add_output(&jive_i386_regcls_gpr_edx.base);
-	jive::output * clobber_ecx = call_instr->add_output(&jive_i386_regcls_gpr_ecx.base);
-	jive::output * clobber_flags = call_instr->add_output(&jive_i386_regcls_flags.base);
+	jive::output * clobber_eax = dynamic_cast<jive::output*>(
+		call_instr->add_output(&jive_i386_regcls_gpr_eax.base));
+	jive::output * clobber_edx = dynamic_cast<jive::output*>(
+		call_instr->add_output(&jive_i386_regcls_gpr_edx.base));
+	jive::output * clobber_ecx = dynamic_cast<jive::output*>(
+		call_instr->add_output(&jive_i386_regcls_gpr_ecx.base));
+	jive::output * clobber_flags = dynamic_cast<jive::output*>(
+		call_instr->add_output(&jive_i386_regcls_flags.base));
 	(void) clobber_edx;
 	(void) clobber_ecx;
 	(void) clobber_flags;
@@ -93,7 +97,7 @@ jive_i386_call_node_substitute(
 	}
 	
 	for (size_t n = node->noperands(); n < node->ninputs(); n++) {
-		jive::input * orig_input = node->input(n);
+		jive::input * orig_input = dynamic_cast<jive::input*>(node->input(n));
 		if (orig_input->gate()) {
 			call_instr->add_input(orig_input->gate(), orig_input->origin());
 		} else {
@@ -101,12 +105,12 @@ jive_i386_call_node_substitute(
 		}
 	}
 	for (size_t n = op.result_types().size(); n < node->noutputs(); n++) {
-		jive::output * orig_output = node->output(n);
+		jive::output * orig_output = dynamic_cast<jive::output*>(node->output(n));
 		jive::output * new_output;
 		if (orig_output->gate()) {
-			new_output = call_instr->add_output(orig_output->gate());
+			new_output = dynamic_cast<jive::output*>(call_instr->add_output(orig_output->gate()));
 		} else {
-			new_output = call_instr->add_output(orig_output->rescls());
+			new_output = dynamic_cast<jive::output*>(call_instr->add_output(orig_output->rescls()));
 		}
 		orig_output->replace(new_output);
 	}

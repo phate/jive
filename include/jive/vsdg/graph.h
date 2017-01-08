@@ -85,7 +85,7 @@ public:
 		const std::string & name,
 		const jive_resource_class * rescls = &jive_root_resource_class);
 
-	inline jive::input *
+	inline jive::iport *
 	export_port(jive::oport * operand, const std::string & name)
 	{
 		jive::gate * gate = create_gate(operand->type(), name);

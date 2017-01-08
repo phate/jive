@@ -432,25 +432,25 @@ public:
 		return operation_->narguments();
 	}
 
-	virtual jive::input *
+	virtual jive::iport *
 	add_input(const jive::base::type * type, jive::oport * origin) = 0;
 
-	virtual jive::input *
+	virtual jive::iport *
 	add_input(jive::gate * gate, jive::oport * origin) = 0;
 
-	virtual jive::input *
+	virtual jive::iport *
 	add_input(const struct jive_resource_class * rescls, jive::oport * origin) = 0;
 
 	virtual void
 	remove_input(size_t index) = 0;
 
-	virtual jive::output *
+	virtual jive::oport *
 	add_output(const jive::base::type * type) = 0;
 
-	virtual jive::output *
+	virtual jive::oport *
 	add_output(const struct jive_resource_class * rescls) = 0;
 
-	virtual jive::output *
+	virtual jive::oport *
 	add_output(jive::gate * gate) = 0;
 
 	virtual void
@@ -497,10 +497,10 @@ public:
 	virtual jive::node *
 	copy(jive::region * region, jive::substitution_map & smap) const = 0;
 
-	virtual jive::input *
+	virtual jive::iport *
 	input(size_t index) const noexcept = 0;
 
-	virtual jive::output *
+	virtual jive::oport *
 	output(size_t index) const noexcept = 0;
 
 	virtual size_t
@@ -563,7 +563,7 @@ struct jive_tracker_nodestate {
 bool
 jive_node_valid_edge(const jive::node * self, const jive::oport * origin);
 
-JIVE_EXPORTED_INLINE jive::input *
+JIVE_EXPORTED_INLINE jive::iport *
 jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
@@ -574,18 +574,18 @@ jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::input *
+JIVE_EXPORTED_INLINE jive::iport *
 jive_node_get_gate_input(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->ninputs(); n++) {
-		jive::input * i = self->input(n);
+		jive::iport * i = self->input(n);
 		if (i->gate() && i->gate()->name() == name)
 			return i;
 	}
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::output *
+JIVE_EXPORTED_INLINE jive::oport *
 jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
@@ -596,11 +596,11 @@ jive_node_get_gate_output(const jive::node * self, const jive::gate * gate)
 	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE jive::output *
+JIVE_EXPORTED_INLINE jive::oport *
 jive_node_get_gate_output(const jive::node * self, const char * name)
 {
 	for (size_t n = 0; n < self->noutputs(); n++) {
-		jive::output * o = self->output(n);
+		jive::oport * o = self->output(n);
 		if (o->gate() && o->gate()->name() == name)
 			return o;
 	}

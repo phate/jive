@@ -26,10 +26,10 @@ test_main(void)
 	jive::node * top = jive_test_node_create(graph.root(),
 		{}, {}, {&bits2, &bits32, &bits32, &bits32});
 
-	jive::output * cmp = top->output(0);
-	jive::output * v0 = top->output(1);
-	jive::output * v1 = top->output(2);
-	jive::output * v2 = top->output(3);
+	jive::output * cmp = dynamic_cast<jive::output*>(top->output(0));
+	jive::output * v0 = dynamic_cast<jive::output*>(top->output(1));
+	jive::output * v1 = dynamic_cast<jive::output*>(top->output(2));
+	jive::output * v2 = dynamic_cast<jive::output*>(top->output(3));
 
 	//create normal gamma
 	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);

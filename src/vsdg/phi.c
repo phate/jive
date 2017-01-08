@@ -169,12 +169,12 @@ jive_phi_end(jive_phi self,
 	jive::node * enter = self.region->top();
 
 	size_t n;
-	jive::output * tmp = enter->output(0);
+	jive::output * tmp = dynamic_cast<jive::output*>(enter->output(0));
 	jive::node * leave = jive_opnode_create(jive::phi_tail_op(), enter->region(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
 
-	tmp = leave->output(0);
+	tmp = dynamic_cast<jive::output*>(leave->output(0));
 	jive::node * anchor = jive_opnode_create(jive::phi_op(), self.region->parent(), {tmp});
 	for (n = 0; n < state->fixvars.size(); ++n)
 		state->fixvars[n].value = anchor->add_output(state->fixvars[n].gate);

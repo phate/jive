@@ -36,7 +36,7 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_n
 	
 	size_t n;
 	for (n = 0; n < nparameters; n++) {
-		jive::output * param = src_region->top()->output(n+1);
+		jive::output * param = dynamic_cast<jive::output*>(src_region->top()->output(n+1));
 		if (dynamic_cast<const jive::value::type*>(&param->type())) {
 			value_parameters[nvalue_parameters ++] = jive_argument_long; /* FIXME: pick correct type */
 		} else {
@@ -44,7 +44,7 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_n
 		}
 	}
 	for (n = 0; n < nreturns; n++) {
-		jive::input * ret = src_region->bottom()->input(n+1);
+		jive::input * ret = dynamic_cast<jive::input*>(src_region->bottom()->input(n+1));
 		if (dynamic_cast<const jive::value::type*>(&ret->type())) {
 			value_returns[nvalue_returns ++] = jive_argument_long; /* FIXME: pick correct type */
 		} else {
@@ -62,14 +62,14 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_n
 	/* map all parameters */
 	nvalue_parameters = 0;
 	for (n = 1; n < src_region->top()->noutputs(); n++) {
-		jive::output * original = src_region->top()->output(n);
+		jive::output * original = dynamic_cast<jive::output*>(src_region->top()->output(n));
 		
 		jive::output * substitute;
 		if (dynamic_cast<const jive::value::type*>(&original->type())) {
 			substitute = dynamic_cast<jive::output*>(
 				jive_subroutine_simple_get_argument(sub, nvalue_parameters ++));
 		} else {
-			substitute = sub.region->top()->add_output(&original->type());
+			substitute = dynamic_cast<jive::output*>(sub.region->top()->add_output(&original->type()));
 		}
 		
 		if(dynamic_cast<const jive::addr::type*>(&original->type()))
@@ -84,7 +84,7 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_n
 	/* map all returns */
 	nvalue_returns = 0;
 	for (n = 1; n < src_region->bottom()->ninputs(); n++) {
-		jive::input * original = src_region->bottom()->input(n);
+		jive::input * original = dynamic_cast<jive::input*>(src_region->bottom()->input(n));
 		jive::output * retval = dynamic_cast<jive::output*>(
 			subst.lookup(src_region->bottom()->input(n)->origin()));
 		
@@ -145,7 +145,7 @@ public:
 		jive::node * node = jive_splitnode_create(subroutine.region,
 			in_type, o, o->gate()->rescls(),
 			out_type, &jive_i386_regcls_gpr.base);
-		return node->output(0);
+		return dynamic_cast<jive::output*>(node->output(0));
 	}
 
 	virtual void
@@ -166,7 +166,7 @@ public:
 		/* add dependency on return address on stack */
 			ret_instr->add_input(subroutine.builder_state->passthroughs[6].gate,
 				subroutine.builder_state->passthroughs[6].output);
-		return ret_instr->output(0);
+		return dynamic_cast<jive::output*>(ret_instr->output(0));
 	}
 };
 
@@ -237,10 +237,10 @@ do_stackptr_sub(const jive_value_split_factory * self_, jive::output * value)
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
 	
-	return jive_instruction_node_create_simple(
+	return dynamic_cast<jive::output*>(jive_instruction_node_create_simple(
 		value->node()->region(),
 		&jive_i386_instr_int_sub_immediate,
-		&value, immediates)->output(0);
+		&value, immediates)->output(0));
 }
 
 static jive::output *
@@ -249,10 +249,10 @@ do_stackptr_add(const jive_value_split_factory * self_, jive::output * value)
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
 	
-	return jive_instruction_node_create_simple(
+	return dynamic_cast<jive::output*>(jive_instruction_node_create_simple(
 		value->node()->region(),
 		&jive_i386_instr_int_add_immediate,
-		&value, immediates)->output(0);
+		&value, immediates)->output(0));
 }
 
 static void
@@ -298,11 +298,11 @@ jive_i386_subroutine_add_fp_dependency_(
 	
 	size_t n;
 	for (n = 0; n < node->ninputs(); n++) {
-		jive::input * input = node->input(n);
+		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
 		if (input->origin() == frameptr)
 			return NULL;
 	}
-	return node->add_input(&frameptr->type(), frameptr);
+	return dynamic_cast<jive::input*>(node->add_input(&frameptr->type(), frameptr));
 }
 
 static jive::input *
@@ -313,9 +313,9 @@ jive_i386_subroutine_add_sp_dependency_(
 	
 	size_t n;
 	for (n = 0; n < node->ninputs(); n++) {
-		jive::input * input = node->input(n);
+		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
 		if (input->origin() == stackptr)
 			return NULL;
 	}
-	return node->add_input(&stackptr->type(), stackptr);
+	return dynamic_cast<jive::input*>(node->add_input(&stackptr->type(), stackptr));
 }

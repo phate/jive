@@ -154,7 +154,7 @@ input::input(
 	}
 
 	for (size_t n = 0; n < index; n++) {
-		jive::input * other = node->input(n);
+		jive::input * other = dynamic_cast<jive::input*>(node->input(n));
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
@@ -203,7 +203,7 @@ input::~input() noexcept
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
-			jive::input * other = node()->input(n);
+			jive::input * other = dynamic_cast<jive::input*>(node()->input(n));
 			if (other == this || !other->gate())
 				continue;
 			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
@@ -211,7 +211,7 @@ input::~input() noexcept
 	}
 
 	for (size_t n = index()+1; n < node()->ninputs(); n++)
-		node()->input(n)->set_index(n-1);
+		dynamic_cast<jive::input*>(node()->input(n))->set_index(n-1);
 }
 
 const jive::base::type &
@@ -286,7 +286,7 @@ output::output(jive::node * node, size_t index, jive::gate * gate)
 	, type_(gate->type().copy())
 {
 	for (size_t n = 0; n < index; n++) {
-		jive::output * other = node->output(n);
+		jive::output * other = dynamic_cast<jive::output*>(node->output(n));
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
@@ -307,7 +307,7 @@ output::~output() noexcept
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
-			jive::output * other = node()->output(n);
+			jive::output * other = dynamic_cast<jive::output*>(node()->output(n));
 			if (other == this || !other->gate())
 				continue;
 			jive_gate_interference_remove(node()->graph(), gate(), other->gate());
@@ -315,7 +315,7 @@ output::~output() noexcept
 	}
 
 	for (size_t n = index()+1; n < node()->noutputs(); n++)
-		node()->output(n)->set_index(n-1);
+		dynamic_cast<jive::output*>(node()->output(n))->set_index(n-1);
 }
 
 const jive::base::type &
@@ -405,7 +405,7 @@ jive_node_get_use_count_input(const jive::node * self, jive_resource_class_count
 	use_count->clear();
 	
 	for (size_t n = 0; n < self->ninputs(); n++) {
-		jive::input * input = self->input(n);
+		jive::input * input = dynamic_cast<jive::input*>(self->input(n));
 		
 		/* filter out multiple inputs using the same value
 		FIXME: this assumes that all inputs have the same resource
@@ -434,7 +434,7 @@ jive_node_get_use_count_output(const jive::node * self, jive_resource_class_coun
 	use_count->clear();
 	
 	for (size_t n = 0; n < self->noutputs(); n++) {
-		jive::output * output = self->output(n);
+		jive::output * output = dynamic_cast<jive::output*>(self->output(n));
 		
 		const jive_resource_class * rescls;
 		if (output->gate()) rescls = output->gate()->rescls();
@@ -588,10 +588,10 @@ jive_opnode_create(
 
 	/* FIXME: this is regalloc-specific, should go away */
 	for (size_t n = 0; n < op.narguments(); ++n) {
-		node->input(n)->set_rescls(op.argument_cls(n));
+		dynamic_cast<jive::input*>(node->input(n))->set_rescls(op.argument_cls(n));
 	}
 	for (size_t n = 0; n < op.nresults(); ++n) {
-		node->output(n)->set_rescls(op.result_cls(n));
+		dynamic_cast<jive::output*>(node->output(n))->set_rescls(op.result_cls(n));
 	}
 
 	/* FIXME: region head/tail nodes are a bit quirky, but they
@@ -605,7 +605,7 @@ jive_opnode_create(
 	}
 
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		if (!jive_input_is_valid(node->input(n)))
+		if (!jive_input_is_valid(dynamic_cast<jive::input*>(node->input(n))))
 			throw jive::compiler_error("Invalid input");
 	}
 

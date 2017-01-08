@@ -1042,7 +1042,7 @@ static int types_bitstring_test_normalize(void)
 	jive::node * lambda_node = dynamic_cast<jive::output*>(
 		jive_lambda_end(lambda, 1, tmparray11, &tmp))->node();
 
-	jive::input * retval;
+	jive::iport * retval;
 	retval = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->input(1);
 	jive::node * lambda_tail = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node();
 	jive::node * lambda_head = dynamic_cast<jive::output*>(lambda_tail->input(0)->origin())->node();

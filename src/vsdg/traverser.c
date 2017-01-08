@@ -38,7 +38,7 @@ bool
 topdown_traverser::predecessors_visited(const jive::node * node) noexcept
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		input * in = node->input(n);
+		input * in = dynamic_cast<jive::input*>(node->input(n));
 		if (tracker_.get_nodestate(dynamic_cast<jive::output*>(in->origin())->node())
 			!= traversal_nodestate::behind) {
 			return false;
@@ -244,7 +244,7 @@ upward_cone_traverser::input_change(input * in, oport * old_origin, oport * new_
 	if (state == traversal_nodestate::frontier) {
 		size_t n;
 		for (n = 0; n < output->node()->noutputs(); n++) {
-			jive::output * out = output->node()->output(n);
+			jive::output * out = dynamic_cast<jive::output*>(output->node()->output(n));
 			for (auto user : out->users) {
 				if (user == in)
 					continue;

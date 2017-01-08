@@ -39,7 +39,7 @@ public:
 	}
 
 	inline void
-	insert(const jive::output * original, jive::output * substitute)
+	insert(const jive::oport * original, jive::oport * substitute)
 	{
 		output_map_[original] = substitute;
 	}

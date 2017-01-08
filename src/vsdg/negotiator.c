@@ -105,10 +105,12 @@ jive_negotiator_split(jive_negotiator * negotiator, const jive::base::type * ope
 	jive::node * node = jive_opnode_create(op, operand->node()->region(), {operand});
 	node->graph()->mark_denormalized();
 
-	jive_negotiator_annotate_simple_input(negotiator, node->input(0), input_option);
-	jive_negotiator_annotate_simple_output(negotiator, node->output(0), output_option);
+	jive_negotiator_annotate_simple_input(negotiator, dynamic_cast<jive::input*>(node->input(0)),
+		input_option);
+	jive_negotiator_annotate_simple_output(negotiator, dynamic_cast<jive::output*>(node->output(0)),
+		output_option);
 
-	return node->output(0);
+	return dynamic_cast<jive::output*>(node->output(0));
 }
 
 /* constraints */
@@ -603,7 +605,7 @@ jive_negotiator_annotate_identity_node(
 	-- while plausible, this is not strictly correct */
 	std::vector<jive::input*> inputs;
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		jive::input * input = node->input(n);
+		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
 		if (!input->gate()) {
 			inputs.push_back(input);
 		}
@@ -611,7 +613,7 @@ jive_negotiator_annotate_identity_node(
 
 	std::vector<jive::output*> outputs;
 	for (size_t n = 0; n < node->noutputs(); n++) {
-		jive::output * output = node->output(0);
+		jive::output * output = dynamic_cast<jive::output*>(node->output(0));
 		if (!output->gate()) {
 			outputs.push_back(output);
 		}
@@ -659,7 +661,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node)
 {
 	size_t n;
 	for(n = 0; n < node->ninputs(); n++) {
-		jive::input * input = node->input(n);
+		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
 		if (!input->gate()) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, input->gate()))
 			continue;
@@ -673,7 +675,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node)
 		self->input_map.insert(port);
 	}
 	for(n = 0; n < node->noutputs(); n++) {
-		jive::output * output = node->output(n);
+		jive::output * output = dynamic_cast<jive::output*>(node->output(n));
 		if (!output->gate()) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, output->gate()))
 			continue;
@@ -758,7 +760,7 @@ jive_negotiator_insert_split_nodes(jive_negotiator * self)
 {
 	for (jive::node * node : jive::topdown_traverser(self->graph)) {
 		for (size_t n = 0; n < node->ninputs(); n++) {
-			jive::input * input = node->input(n);
+			jive::input * input = dynamic_cast<jive::input*>(node->input(n));
 			jive_negotiator_maybe_split_edge(self, dynamic_cast<jive::output*>(input->origin()), input);
 		}
 	}
@@ -771,8 +773,10 @@ jive_negotiator_remove_split_nodes(jive_negotiator * self)
 	while (i != self->split_nodes.end()) {
 		jive::node * node = *i;
 		++i;
-		jive_negotiator_port * input_port = jive_negotiator_map_input(self, node->input(0));
-		jive_negotiator_port * output_port = jive_negotiator_map_output(self, node->output(0));
+		jive_negotiator_port * input_port = jive_negotiator_map_input(self,
+			dynamic_cast<jive::input*>(node->input(0)));
+		jive_negotiator_port * output_port = jive_negotiator_map_output(self,
+			dynamic_cast<jive::output*>(node->output(0)));
 		jive_negotiator_port_destroy(input_port);
 		jive_negotiator_port_destroy(output_port);
 		node->output(0)->replace(node->input(0)->origin());

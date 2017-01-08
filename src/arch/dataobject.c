@@ -236,9 +236,9 @@ jive_dataobj_internal(
 
 	jive::node * head;
 	head = jive_opnode_create(jive::dataobj_head_op(std::move(types)), region, arguments);
-	jive::output * tmp = head->output(0);
+	jive::output * tmp = dynamic_cast<jive::output*>(head->output(0));
 	jive::node * tail = jive_opnode_create(jive::dataobj_tail_op(), region, {tmp});
-	tmp = tail->output(0);
+	tmp = dynamic_cast<jive::output*>(tail->output(0));
 	jive::node * obj = jive_opnode_create(jive::dataobj_op(), parent, {tmp});
 
 	return obj->output(0);

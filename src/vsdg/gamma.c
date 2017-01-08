@@ -152,7 +152,7 @@ jive_gamma_create(
 	for (size_t n = 0; n < nalternatives; n++) {
 		jive::region * subregion = new jive::region(region, region->graph());
 		jive::node * head = jive_opnode_create(jive::gamma_head_op(), subregion, {});
-		jive::output * tmp = head->output(0);
+		jive::output * tmp = dynamic_cast<jive::output*>(head->output(0));
 		jive::node * tail = jive_opnode_create(jive::gamma_tail_op(), subregion, {tmp});
 		arguments.push_back(tail->output(0));
 	}
@@ -172,7 +172,7 @@ jive_gamma_create(
 			jive::output * tmp = static_cast<jive::output*>(arguments[i]);
 			jive::node * head = static_cast<jive::output*>(tmp->node()->input(0)->origin())->node();
 			head->add_input(gate_head, alternatives[i][n]);
-			jive::output * value = head->add_output(gate_head);
+			jive::output * value = dynamic_cast<jive::output*>(head->add_output(gate_head));
 			tmp->node()->add_input(gate_tail, value);
 		}
 		gamma->add_output(gate_tail);

@@ -76,10 +76,10 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive::node * nod
 	, height(7)
 {
 	for (size_t n = 0; n < node->ninputs(); n++)
-		inputs.push_back(jive_inputview(this, node->input(n)));
+		inputs.push_back(jive_inputview(this, dynamic_cast<jive::input*>(node->input(n))));
 	
 	for (size_t n = 0; n < node->noutputs(); n++)
-		outputs.push_back(jive_outputview(this, node->output(n)));
+		outputs.push_back(jive_outputview(this, dynamic_cast<jive::output*>(node->output(n))));
 
 	int input_width = -3, output_width = -3;
 	int cur_x;

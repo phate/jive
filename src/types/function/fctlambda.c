@@ -153,7 +153,7 @@ jive_lambda_node_create(jive::region * function_region)
 		std::move(argument_names),
 		std::move(result_names));
 
-	jive::output * tmp = function_region->bottom()->output(0);
+	jive::output * tmp = dynamic_cast<jive::output*>(function_region->bottom()->output(0));
 	return jive_opnode_create(op, function_region->parent(), {tmp});
 }
 
@@ -184,7 +184,7 @@ jive_lambda_is_self_recursive(const jive::node * self)
 	*  index in the phi enter node
 	*/
 	for (size_t n = 0; n < lambda_region->top()->ninputs(); n++) {
-		jive::input * input = lambda_region->top()->input(n);
+		jive::input * input = dynamic_cast<jive::input*>(lambda_region->top()->input(n));
 		if (input->origin()->index() == index)
 			return true;
 	}
@@ -207,7 +207,7 @@ lambda_dep_add(jive_lambda * self, jive::oport * value)
 	jive::gate * gate = graph->create_gate(
 		value->type(),
 		jive::detail::strfmt("dep_", enter, "_", self->depvars.size()));
-	depvar.input = enter->add_input(gate, value);
+	depvar.input = dynamic_cast<jive::input*>(enter->add_input(gate, value));
 	depvar.output = enter->add_output(gate);
 	self->depvars.push_back(depvar);
 
@@ -249,7 +249,7 @@ jive_lambda_end(jive_lambda * self,
 	jive::region * region = self->region;
 	jive_graph * graph = region->graph();
 
-	jive::output * tmp = region->top()->output(0);
+	jive::output * tmp = dynamic_cast<jive::output*>(region->top()->output(0));
 	jive::node * leave = jive_opnode_create(jive::fct::lambda_tail_op(), region, {tmp});
 
 	size_t n;
@@ -285,16 +285,18 @@ jive_inline_lambda_apply(jive::node * apply_node)
 	
 	jive::substitution_map substitution;
 	for(size_t n = 0; n < op.function_type().narguments(); n++) {
-		jive::output * output = jive_node_get_gate_output(head, op.argument_names()[n].c_str());
+		jive::output * output = dynamic_cast<jive::output*>(
+			jive_node_get_gate_output(head, op.argument_names()[n].c_str()));
 		substitution.insert(output, dynamic_cast<jive::output*>(apply_node->input(n+1)->origin()));
 	}
 	
 	function_region->copy(apply_node->region(), substitution, false, false);
 	
 	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
-		jive::input * input = jive_node_get_gate_input(tail, op.result_names()[n].c_str());
+		jive::input * input = dynamic_cast<jive::input*>(
+			jive_node_get_gate_input(tail, op.result_names()[n].c_str()));
 		jive::oport * substituted = substitution.lookup(input->origin());
-		jive::output * output = apply_node->output(n);
+		jive::output * output = dynamic_cast<jive::output*>(apply_node->output(n));
 		output->replace(substituted);
 	}
 }

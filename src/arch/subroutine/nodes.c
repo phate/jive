@@ -108,7 +108,7 @@ subroutine_op::get_passthrough_enter_by_name(jive::region * region, const char *
 	jive::node * enter = region->top();
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs(); ++n) {
-		output * o = enter->output(n);
+		output * o = dynamic_cast<jive::output*>(enter->output(n));
 		if (o->gate() && name == o->gate()->name())
 			return o;
 	}
@@ -127,7 +127,7 @@ subroutine_op::get_passthrough_leave_by_name(jive::region * region, const char *
 	jive::node * leave = region->bottom();
 	JIVE_DEBUG_ASSERT(leave);
 	for (size_t n = 0; n < leave->ninputs(); ++n) {
-		input * i = leave->input(n);
+		input * i = dynamic_cast<jive::input*>(leave->input(n));
 		if (i->gate() && name == i->gate()->name())
 			return i;
 	}

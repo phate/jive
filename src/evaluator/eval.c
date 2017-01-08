@@ -295,7 +295,7 @@ compute_operation(
 /* evaluation */
 
 static std::unique_ptr<const literal>
-eval_input(const jive::input * input, context & ctx);
+eval_input(const jive::iport * input, context & ctx);
 
 static const std::unique_ptr<const literal>
 eval_apply_node(const jive::node * node, size_t index, context & ctx)
@@ -328,7 +328,7 @@ eval_lambda_head_node(const jive::node * node, size_t index, context & ctx)
 
 	if (index < ctx.top_arguments().size()+1) {
 		/* it is an argument */
-		jive::output * argument = node->output(index);
+		jive::oport * argument = node->output(index);
 		JIVE_DEBUG_ASSERT(!ctx.exists(argument));
 
 		const literal * v = ctx.top_arguments()[index-1].get();
@@ -373,7 +373,7 @@ eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
 
-	jive::input * predicate = node->input(node->ninputs()-1);
+	jive::iport * predicate = node->input(node->ninputs()-1);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
@@ -509,7 +509,7 @@ eval_node(const jive::node * node, size_t index, context & ctx)
 }
 
 static std::unique_ptr<const literal>
-eval_output(const jive::output * output, context & ctx)
+eval_output(const jive::oport * output, context & ctx)
 {
 	if (ctx.exists(output))
 		return ctx.lookup(output)->copy();
@@ -518,9 +518,9 @@ eval_output(const jive::output * output, context & ctx)
 }
 
 static std::unique_ptr<const literal>
-eval_input(const jive::input * input, context & ctx)
+eval_input(const jive::iport * input, context & ctx)
 {
-	return eval_output(dynamic_cast<jive::output*>(input->origin()), ctx);
+	return eval_output(input->origin(), ctx);
 }
 
 const std::unique_ptr<const literal>
