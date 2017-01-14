@@ -50,14 +50,35 @@ iport::~iport() noexcept
 		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
 }
 
+iport::iport(size_t index, jive::oport * origin) noexcept
+	: index_(index)
+	, gate_(nullptr)
+	, origin_(origin)
+	, rescls_(&jive_root_resource_class)
+{
+	gate_iport_list.prev = gate_iport_list.next = nullptr;
+}
+
 iport::iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept
 	: index_(index)
 	, gate_(gate)
 	, origin_(origin)
+	, rescls_(gate->rescls())
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
-	if (gate)
-		JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
+	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
+}
+
+iport::iport(
+	size_t index,
+	jive::oport * origin,
+	const struct jive_resource_class * rescls) noexcept
+	: index_(index)
+	, gate_(nullptr)
+	, origin_(origin)
+	, rescls_(rescls)
+{
+	gate_iport_list.prev = gate_iport_list.next = nullptr;
 }
 
 std::string
@@ -376,9 +397,6 @@ jive_opnode_create(
 	jive::node * node = new jive::simple_node(op, region, operands);
 
 	/* FIXME: this is regalloc-specific, should go away */
-	for (size_t n = 0; n < op.narguments(); ++n) {
-		dynamic_cast<jive::input*>(node->input(n))->set_rescls(op.argument_cls(n));
-	}
 	for (size_t n = 0; n < op.nresults(); ++n) {
 		dynamic_cast<jive::output*>(node->output(n))->set_rescls(op.result_cls(n));
 	}

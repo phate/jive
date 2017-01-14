@@ -59,9 +59,8 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index, origin, nullptr)
+	: iport(index, origin)
 	, node_(node)
-	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {
 	/* FIXME: check whether origin is valid */
@@ -90,7 +89,6 @@ input::input(
 	jive::gate * gate)
 	: iport(index, origin, gate)
 	, node_(node)
-	, rescls_(gate->rescls())
 	, type_(gate->type().copy())
 {
 	/* FIXME: check whether origin is valid */
@@ -121,21 +119,21 @@ input::input(
 	jive::node * node,
 	size_t index,
 	jive::oport * origin,
+	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
-	: iport(index, origin, nullptr)
+	: iport(index, origin, rescls)
 	, node_(node)
-	, rescls_(rescls)
-	, type_(jive_resource_class_get_type(rescls)->copy())
+	, type_(type.copy())
 {
 	/* FIXME: check whether origin is valid */
 
-	if (type() != origin->type())
-		throw jive::type_error(type().debug_string(), origin->type().debug_string());
+	if (type != origin->type())
+		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
 	/*
 		FIXME: This is going to be removed once we switched Jive to the new node representation.
 	*/
-	if (dynamic_cast<const jive::achr::type*>(&type())) {
+	if (dynamic_cast<const jive::achr::type*>(&type)) {
 		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
 		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
 	}
@@ -266,8 +264,8 @@ simple_node::simple_node(
 			operation().narguments(), ", received ", operands.size(), " arguments."));
 
 	for (size_t n = 0; n < operation().narguments(); n++) {
-		inputs_.emplace_back(std::unique_ptr<jive::input>(
-			new jive::input(this, n, operands[n], operation().argument_type(n))));
+		inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
+			this, n, operands[n], operation().argument_type(n), operation().argument_cls(n))));
 
 		size_t depth = operands[n]->node() ? operands[n]->node()->depth()+1 : 0;
 		depth_ = std::max(depth, depth_);
@@ -398,7 +396,7 @@ simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * 
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
 	inputs_.emplace_back(std::unique_ptr<jive::input>(
-		new jive::input(this, ninputs(), origin, rescls)));
+		new jive::input(this, ninputs(), origin, *jive_resource_class_get_type(rescls), rescls)));
 	auto input = this->input(ninputs()-1);
 
 	if (!jive_input_is_valid(input))

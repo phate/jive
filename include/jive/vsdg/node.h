@@ -40,7 +40,11 @@ public:
 	virtual
 	~iport() noexcept;
 
+	iport(size_t index, jive::oport * origin) noexcept;
+
 	iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept;
+
+	iport(size_t index, jive::oport * origin, const struct jive_resource_class * rescls) noexcept;
 
 	iport(const iport &) = delete;
 
@@ -68,6 +72,12 @@ public:
 	gate() const noexcept
 	{
 		return gate_;
+	}
+
+	inline const struct jive_resource_class *
+	rescls() const noexcept
+	{
+		return rescls_;
 	}
 
 	virtual void
@@ -101,6 +111,7 @@ private:
 	size_t index_;
 	jive::gate * gate_;
 	jive::oport * origin_;
+	const struct jive_resource_class * rescls_;
 };
 
 /* oports */
