@@ -176,16 +176,14 @@ input::divert_origin(jive::oport * new_origin)
 /* outputs */
 
 output::output(jive::node * node, size_t index, const jive::base::type & type)
-	: oport(index, nullptr)
+	: oport(index)
 	, node_(node)
-	, rescls_(&jive_root_resource_class)
 	, type_(type.copy())
 {}
 
 output::output(jive::node * node, size_t index, jive::gate * gate)
 	: oport(index, gate)
 	, node_(node)
-	, rescls_(gate->rescls())
 	, type_(gate->type().copy())
 {
 	for (size_t n = 0; n < index; n++) {
@@ -195,11 +193,14 @@ output::output(jive::node * node, size_t index, jive::gate * gate)
 	}
 }
 
-output::output(jive::node * node, size_t index, const struct jive_resource_class * rescls)
-	: oport(index, nullptr)
+output::output(
+	jive::node * node,
+	size_t index,
+	const jive::base::type & type,
+	const struct jive_resource_class * rescls)
+	: oport(index, rescls)
 	, node_(node)
-	, rescls_(rescls)
-	, type_(jive_resource_class_get_type(rescls)->copy())
+	, type_(type.copy())
 {}
 
 output::~output() noexcept
@@ -272,8 +273,8 @@ simple_node::simple_node(
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++) {
-		outputs_.emplace_back(std::unique_ptr<jive::output>(
-			new jive::output(this, n, operation().result_type(n))));
+		outputs_.emplace_back(std::unique_ptr<jive::output>(new jive::output(this, n,
+			operation().result_type(n), operation().result_cls(n))));
 	}
 
 	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());
@@ -452,7 +453,7 @@ jive::output *
 simple_node::add_output(const struct jive_resource_class * rescls)
 {
 	outputs_.emplace_back(std::unique_ptr<jive::output>(
-		new jive::output(this, noutputs(), rescls)));
+		new jive::output(this, noutputs(), *jive_resource_class_get_type(rescls), rescls)));
 	auto output = this->output(noutputs()-1);
 
 	graph()->on_output_create(output);

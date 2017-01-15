@@ -121,7 +121,11 @@ public:
 	virtual
 	~oport() noexcept;
 
+	oport(size_t index);
+
 	oport(size_t index, jive::gate * gate);
+
+	oport(size_t index, const struct jive_resource_class * rescls);
 
 	oport(const oport &) = delete;
 
@@ -170,6 +174,12 @@ public:
 		return gate_;
 	}
 
+	inline const struct jive_resource_class *
+	rescls() const noexcept
+	{
+		return rescls_;
+	}
+
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
@@ -199,6 +209,7 @@ protected:
 private:
 	size_t index_;
 	jive::gate * gate_;
+	const struct jive_resource_class * rescls_;
 };
 
 /**	@}	*/

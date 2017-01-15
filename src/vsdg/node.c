@@ -128,14 +128,28 @@ oport::~oport()
 		JIVE_LIST_REMOVE(gate()->oports, this, gate_oport_list);
 }
 
+oport::oport(size_t index)
+	: index_(index)
+	, gate_(nullptr)
+	, rescls_(&jive_root_resource_class)
+{
+	gate_oport_list.prev = gate_oport_list.next = nullptr;
+}
+
 oport::oport(size_t index, jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
+	, rescls_(gate->rescls())
 {
 	gate_oport_list.prev = gate_oport_list.next = nullptr;
-	if (gate)
-		JIVE_LIST_PUSH_BACK(gate->oports, this, gate_oport_list);
+	JIVE_LIST_PUSH_BACK(gate->oports, this, gate_oport_list);
 }
+
+oport::oport(size_t index, const struct jive_resource_class * rescls)
+	: index_(index)
+	, gate_(nullptr)
+	, rescls_(rescls)
+{}
 
 std::string
 oport::debug_string() const
@@ -395,11 +409,6 @@ jive_opnode_create(
 	const std::vector<jive::oport*> & operands)
 {
 	jive::node * node = new jive::simple_node(op, region, operands);
-
-	/* FIXME: this is regalloc-specific, should go away */
-	for (size_t n = 0; n < op.nresults(); ++n) {
-		dynamic_cast<jive::output*>(node->output(n))->set_rescls(op.result_cls(n));
-	}
 
 	/* FIXME: region head/tail nodes are a bit quirky, but they
 	 * will go away eventually anyways */
