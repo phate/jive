@@ -31,13 +31,11 @@ jive_graphview_add_node_recursive(jive_graphview * self, jive::node * node)
 	jive_nodeview * nodeview = new jive_nodeview(self, node);
 	self->nodemap.insert(std::make_pair(node, nodeview));
 	for (size_t n = 0; n < node->noutputs(); n++)
-		self->outputmap.insert(std::make_pair(dynamic_cast<jive::output*>(node->output(n)),
-			&nodeview->outputs[n]));
+		self->outputmap.insert(std::make_pair(node->output(n), &nodeview->outputs[n]));
 	
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(node->input(n));
-		self->inputmap.insert(std::make_pair(input, &nodeview->inputs[n]));
-		jive_graphview_add_node_recursive(self, dynamic_cast<jive::output*>(input->origin())->node());
+		self->inputmap.insert(std::make_pair(node->input(n), &nodeview->inputs[n]));
+		jive_graphview_add_node_recursive(self, node->input(n)->origin()->node());
 	}
 }
 
@@ -94,7 +92,7 @@ jive_graphview_draw(jive_graphview * self)
 
 	for (auto i : self->inputmap) {
 		jive_inputview * inputview = i.second;
-		jive::output * tmp = dynamic_cast<jive::output*>(inputview->input->origin());
+		jive::oport * tmp = inputview->input->origin();
 		jive_outputview * outputview = self->outputmap[tmp];
 		
 		JIVE_DEBUG_ASSERT(outputview->nodeview->placed);

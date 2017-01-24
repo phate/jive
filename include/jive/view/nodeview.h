@@ -22,10 +22,10 @@ class jive_inputview {
 public:
 	~jive_inputview() noexcept {}
 
-	jive_inputview(jive_nodeview * nodeview, const jive::input * input);
+	jive_inputview(jive_nodeview * nodeview, const jive::iport * input);
 
 	jive_nodeview * nodeview;
-	const jive::input * input;
+	const jive::iport * input;
 	int x, y, width, height;
 	std::string label;
 	int edge_bend_y;
@@ -44,10 +44,10 @@ class jive_outputview {
 public:
 	~jive_outputview() noexcept {}
 
-	jive_outputview(jive_nodeview * nodeview, const jive::output * output);
+	jive_outputview(jive_nodeview * nodeview, const jive::oport * output);
 
 	jive_nodeview * nodeview;
-	const jive::output * output;
+	const jive::oport * output;
 	short x, y;
 	unsigned short width, height;
 	std::string label;

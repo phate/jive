@@ -16,7 +16,7 @@
 
 /* inputview */
 
-jive_inputview::jive_inputview(jive_nodeview * nodeview_, const jive::input * input_)
+jive_inputview::jive_inputview(jive_nodeview * nodeview_, const jive::iport * input_)
 	: nodeview(nodeview_)
 	, input(input_)
 	, x(0)
@@ -40,7 +40,7 @@ jive_inputview_draw(jive_inputview * self, jive_textcanvas * dst, int x, int y)
 
 /* outputview */
 
-jive_outputview::jive_outputview(jive_nodeview * nodeview_, const jive::output * output_)
+jive_outputview::jive_outputview(jive_nodeview * nodeview_, const jive::oport * output_)
 	: nodeview(nodeview_)
 	, output(output_)
 	, x(0)
@@ -76,10 +76,10 @@ jive_nodeview::jive_nodeview(jive_graphview * graphview_, const jive::node * nod
 	, height(7)
 {
 	for (size_t n = 0; n < node->ninputs(); n++)
-		inputs.push_back(jive_inputview(this, dynamic_cast<jive::input*>(node->input(n))));
+		inputs.push_back(jive_inputview(this, node->input(n)));
 	
 	for (size_t n = 0; n < node->noutputs(); n++)
-		outputs.push_back(jive_outputview(this, dynamic_cast<jive::output*>(node->output(n))));
+		outputs.push_back(jive_outputview(this, node->output(n)));
 
 	int input_width = -3, output_width = -3;
 	int cur_x;
@@ -115,7 +115,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	int preferred_x = 0, total = 0, count = 0;
 	for(size_t n = 0; n < self->node->ninputs(); n++) {
 		jive_inputview * inputview = &self->inputs[n];
-		jive::output * origin = dynamic_cast<jive::output*>(self->node->input(n)->origin());
+		jive::oport * origin = self->node->input(n)->origin();
 		jive_outputview * outputview = graphview->outputmap[origin];
 		if (!outputview->nodeview->placed) continue;
 		
@@ -127,8 +127,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 	for(size_t n = 0; n < self->node->noutputs(); n++) {
 		jive_outputview * outputview = &self->outputs[n];
 		for (auto user : self->node->output(n)->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			jive_inputview * inputview = graphview->inputmap[input];
+			jive_inputview * inputview = graphview->inputmap[user];
 			if (!inputview->nodeview->placed) continue;
 			
 			total += inputview->nodeview->x + jive_inputview_get_edge_offset(inputview)
@@ -159,8 +158,7 @@ jive_nodeview_layout(jive_nodeview * self, jive_reservationtracker * reservation
 
 		size_t end_row = y;
 		for (auto user : outputview->output->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			if (input->node()->depth() > end_row) end_row = input->node()->depth();
+			if (user->node() && user->node()->depth() > end_row) end_row = user->node()->depth();
 		}
 
 		rects[nrects].x = jive_outputview_get_edge_offset(outputview);

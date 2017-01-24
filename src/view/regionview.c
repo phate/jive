@@ -52,17 +52,19 @@ jive_regionview_layout_nodes_recursive(jive_regionview * self, jive_nodeview * n
 	jive_nodeview_layout(nodeview, reservation);
 
 	for(size_t n = 0; n < nodeview->node->ninputs(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(nodeview->node->input(n));
-		if (input->origin()->region() != self->region) continue;
-		jive::node * tmp = dynamic_cast<jive::output*>(input->origin())->node();
-		jive_nodeview * nodeview = self->graphview->nodemap[tmp];
+		jive::iport * input = nodeview->node->input(n);
+		if (input->origin()->region() != self->region)
+			continue;
+		if (!input->origin()->node())
+			continue;
+
+		jive_nodeview * nodeview = self->graphview->nodemap[input->origin()->node()];
 		jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 	}
 	for(size_t n = 0; n < nodeview->node->noutputs(); n++) {
 		for (auto user : nodeview->node->output(n)->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			if (input->node()->region() == self->region) {
-				jive_nodeview * nodeview = self->graphview->nodemap[input->node()];
+			if (user->node() && user->node()->region() == self->region) {
+				jive_nodeview * nodeview = self->graphview->nodemap[user->node()];
 				jive_regionview_layout_nodes_recursive(self, nodeview, reservation);
 			}
 		}
