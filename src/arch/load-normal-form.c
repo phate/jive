@@ -107,18 +107,16 @@ load_normal_form::normalized_create(
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
 		jive::oport * address = arguments[0];
-		auto arg1 = dynamic_cast<jive::output*>(arguments[1]);
 		jive::node * store_node =
-			(arg1 && arguments.size() >= 2 && is_matching_store_node(l_op, address, arg1->node())) ?
-			arg1->node() : nullptr;
+			(arguments.size() >= 2 && is_matching_store_node(l_op, address, arguments[1]->node())) ?
+			arguments[1]->node() : nullptr;
 		for (size_t n = 2; n < arguments.size(); ++n) {
-			auto argn = dynamic_cast<jive::output*>(arguments[n]);
-			if (argn->node() != store_node) {
+			if (arguments[n]->node() != store_node) {
 				store_node = nullptr;
 			}
 		}
 		if (store_node) {
-			return {dynamic_cast<jive::output*>(store_node->input(1)->origin())};
+			return {store_node->input(1)->origin()};
 		}
 	}
 
