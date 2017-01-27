@@ -18,10 +18,41 @@ namespace jive {
 
 region::~region()
 {
+	graph_->on_region_destroy(this);
+
+	std::vector<std::vector<const jive::node*>> sorted_nodes;
+	for (const auto & node : nodes)	{
+		if (node.depth() >= sorted_nodes.size())
+			sorted_nodes.resize(node.depth()+1);
+		sorted_nodes[node.depth()].push_back(&node);
+	}
+	for (auto it = sorted_nodes.rbegin(); it != sorted_nodes.rend(); it++) {
+		for (const auto & node : *it) {
+			std::vector<jive::region*> subregions;
+			if (dynamic_cast<const jive::region_anchor_op*>(&node->operation())) {
+				for (size_t n = 0; n < node->ninputs(); n++) {
+					auto tail = node->input(n)->origin()->node();
+					if (tail && tail == tail->region()->bottom())
+						subregions.push_back(tail->region());
+				}
+			}
+
+			delete node;
+			for (size_t n = 0; n < subregions.size(); n++)
+				delete subregions[n];
+		}
+	}
+
+	/*
+		FIXME: some unit tests create regions without anchor nodes
+	*/
+	jive::region * subregion, * next;
+	JIVE_LIST_ITERATE_SAFE(subregions, subregion, next, region_subregions_list) {
+		delete subregion;
+	}
+
 	JIVE_DEBUG_ASSERT(nodes.empty());
 	JIVE_DEBUG_ASSERT(subregions.first == nullptr && subregions.last == nullptr);
-
-	graph_->on_region_destroy(this);
 
 	if (parent_)
 		JIVE_LIST_REMOVE(parent_->subregions, this, region_subregions_list);

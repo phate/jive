@@ -52,10 +52,7 @@ prune_regions_recursive(jive::region * region)
 
 jive_graph::~jive_graph()
 {
-	delete root()->bottom();
-	prune();
-
-	prune_regions_recursive(root());
+	delete root_;
 
 	while (gates.first)
 		delete gates.first;
