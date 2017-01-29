@@ -17,6 +17,7 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/structural_node.h>
 
 namespace jive {
 
@@ -99,18 +100,18 @@ theta_op::copy() const
 
 typedef struct jive_theta_build_state jive_theta_build_state;
 struct jive_theta_build_state {
-	std::vector<jive_theta_loopvar> loopvars;
+	jive::structural_node * node;
+	std::vector<jive_theta_loopvar> lvs;
+	std::unordered_map<jive::gate*, jive::oport*> lvmap;
 };
 
 jive_theta
 jive_theta_begin(jive::region * parent)
 {
 	jive_theta self;
-	jive_theta_build_state * state = new jive_theta_build_state;
-	self.region = new jive::region(parent, parent->graph());
-
-	jive_opnode_create(jive::theta_head_op(), self.region, {});
-
+	auto state = new jive_theta_build_state;
+	state->node = new jive::structural_node(jive::theta_op(), parent, 1);
+	self.region = state->node->subregion(0);
 	self.internal_state = state;
 	
 	return self;
@@ -119,68 +120,56 @@ jive_theta_begin(jive::region * parent)
 jive_theta_loopvar
 jive_theta_loopvar_enter(jive_theta self, jive::oport * pre_value)
 {
-	jive_theta_build_state * state = self.internal_state;
-	jive::node * head = self.region->top();
-	jive_graph * graph = head->graph();
-	
-	size_t index = state->loopvars.size();
-	
-	const jive::base::type * type = &pre_value->type();
-	state->loopvars.resize(state->loopvars.size()+1);
-	
-	state->loopvars[index].gate = graph->create_gate(
-		*type,
-		jive::detail::strfmt("loopvar_", head, "_", index));
-	head->add_input(state->loopvars[index].gate, pre_value);
-	state->loopvars[index].value = head->add_output(state->loopvars[index].gate);
-	
-	return state->loopvars[index];
+	auto state = self.internal_state;
+	auto graph = self.region->graph();
+
+	jive_theta_loopvar lv;
+	auto str = jive::detail::strfmt("loopvar_", state->node, "_", state->lvs.size());
+	lv.gate = graph->create_gate(pre_value->type(), str);
+	auto input = state->node->add_input(lv.gate, pre_value);
+	lv.value = self.region->add_argument(input, lv.gate);
+
+	state->lvs.push_back(lv);
+	state->lvmap[lv.gate] = lv.value;
+
+	return lv;
 }
 
 void
 jive_theta_loopvar_leave(jive_theta self, jive::gate * var, jive::oport * post_value)
 {
-	jive_theta_build_state * state = self.internal_state;
-	size_t n;
-	for (n = 0; n < state->loopvars.size(); ++n) {
-		if (state->loopvars[n].gate != var)
-			continue;
-		state->loopvars[n].value = post_value;
-		return;
-	}
-	
-	throw std::logic_error("Lookup of loop-variant variable failed");
+	auto state = self.internal_state;
+
+	if (state->lvmap.find(var) == state->lvmap.end())
+		throw std::logic_error("Lookup of loop-variant variable failed.");
+
+	state->lvmap[var] = post_value;
 }
 
 jive::node *
 jive_theta_end(jive_theta self, jive::oport * predicate,
 	size_t npost_values, jive_theta_loopvar * post_values)
 {
-	jive_theta_build_state * state = self.internal_state;
+	auto state = self.internal_state;
+	auto theta = state->node;
 
-	size_t n;
-	jive::node * tail = jive_opnode_create(jive::theta_tail_op(), self.region,
-		{self.region->top()->output(0), predicate});
-	for (n = 0; n < state->loopvars.size(); ++n)
-		tail->add_input(state->loopvars[n].gate, state->loopvars[n].value);
+	std::unordered_map<jive::gate*, size_t> map;
+	for (size_t n = 0; n < npost_values; n++)
+		map[post_values[n].gate] = n;
 
-	jive::output * tmp = dynamic_cast<jive::output*>(tail->output(0));
-	jive::node * anchor = jive_opnode_create(jive::theta_op(), self.region->parent(), {tmp});
-	for (n = 0; n < state->loopvars.size(); ++n)
-		state->loopvars[n].value = anchor->add_output(state->loopvars[n].gate);
-	
-	for (n = 0; n < npost_values; ++n) {
-		size_t k;
-		for (k = 0; k < state->loopvars.size(); ++k) {
-			if (state->loopvars[k].gate == post_values[n].gate) {
-				post_values[n].value = state->loopvars[k].value;
-				break;
-			}
-		}
+	self.region->add_result(predicate, nullptr, predicate->type());
+	for (auto & lv : state->lvs) {
+		auto output = theta->add_output(lv.gate);
+		self.region->add_result(state->lvmap[lv.gate], output, lv.gate);
+		lv.value = output;
+
+		if (map.find(lv.gate) == map.end())
+			throw std::logic_error("Lookup of fix loop-variant variable failed.");
+
+		post_values[map[lv.gate]].value = output;
 	}
-	
-	delete state;
-	
-	return anchor;
-}
 
+	delete state;
+
+	return theta;
+}

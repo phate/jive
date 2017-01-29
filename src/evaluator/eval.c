@@ -14,7 +14,9 @@
 #include <jive/vsdg/gamma.h>
 #include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/phi.h>
+#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/theta.h>
+
 
 #include <typeindex>
 #include <unordered_map>
@@ -406,34 +408,33 @@ static const std::unique_ptr<const literal>
 eval_theta_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_op*>(&node->operation()));
-
-	jive::node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-	jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
+	auto theta = static_cast<const jive::structural_node*>(node);
 
 	std::vector<std::unique_ptr<const literal>> results;
 	do {
-		ctx.push_frame(tail->region());
+		auto subregion = theta->subregion(0);
+		ctx.push_frame(subregion);
 
 		if (!results.empty()) {
-			JIVE_DEBUG_ASSERT(results.size() == head->noutputs());
-			for (size_t n = 1; n < head->noutputs(); n++)
-				ctx.insert(head->output(n), results[n].get());
+			JIVE_DEBUG_ASSERT(results.size() == subregion->narguments()+1);
+			for (size_t n = 0; n < subregion->narguments(); n++)
+				ctx.insert(subregion->argument(n), results[n+1].get());
 			results.clear();
 		}
 
-		for (size_t n = 1; n < tail->ninputs(); n++)
-			results.emplace_back(eval_input(tail->input(n), ctx));
-		ctx.pop_frame(tail->region());
+		for (size_t n = 0; n < subregion->nresults(); n++)
+			results.emplace_back(eval_input(subregion->result(n), ctx));
+		ctx.pop_frame(subregion);
 
 		JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&results[0]->type()));
 	} while (static_cast<const ctlliteral*>(results[0].get())->alternative());
+
 
 	JIVE_DEBUG_ASSERT(node->noutputs() == results.size()-1);
 	for (size_t n = 0; n < node->noutputs(); n++)
 		ctx.insert(node->output(n), results[n+1].get());
 
-	std::unique_ptr<const literal> result = std::move(results[index+1]);
-	return result;
+	return std::move(results[index+1]);
 }
 
 static const std::unique_ptr<const literal>
