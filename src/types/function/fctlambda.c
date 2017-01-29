@@ -166,26 +166,26 @@ jive_lambda_is_self_recursive(const jive::node * self)
 	auto lambda_region = self->input(0)->origin()->region();
 	JIVE_DEBUG_ASSERT(self->region() != lambda_region);
 
-	if (jive_phi_region_const_cast(self->region()) == NULL)
+	auto phi_region = self->region();
+	auto phi = phi_region->node();
+	if (phi && typeid(phi->operation()) != typeid(jive::phi_op))
 		return false;
 
 	/* find index of lambda output in the phi leave node */
-	size_t index = self->region()->top()->noutputs();
-	for (auto user : self->output(0)->users) {
-		auto input = dynamic_cast<jive::input*>(user);
-		if (dynamic_cast<const jive::phi_tail_op *>(&input->node()->operation())) {
+	size_t index = phi_region->nresults();
+	for (const auto & user : self->output(0)->users) {
+		if (dynamic_cast<const jive::result*>(user)) {
 			index = user->index();
 			break;
 		}
 	}
-	JIVE_DEBUG_ASSERT(index != self->region()->top()->noutputs());
+	JIVE_DEBUG_ASSERT(index != phi_region->nresults());
 
 	/* the lambda is self-recursive if one of its external dependencies originates from the same
 	*  index in the phi enter node
 	*/
 	for (size_t n = 0; n < lambda_region->top()->ninputs(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(lambda_region->top()->input(n));
-		if (input->origin()->index() == index)
+		if (lambda_region->top()->input(n)->origin()->index() == index)
 			return true;
 	}
 

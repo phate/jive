@@ -112,37 +112,36 @@ register_node_normal_form(void)
 
 typedef struct jive_phi_build_state jive_phi_build_state;
 struct jive_phi_build_state {
-	std::vector<jive_phi_fixvar> fixvars;
+	jive::structural_node * node;
+	std::vector<jive_phi_fixvar> fvs;
+	std::unordered_map<jive::gate*, jive::oport*> fvmap;
 };
 
 jive_phi
 jive_phi_begin(jive::region * parent)
 {
 	jive_phi self;
-	jive_phi_build_state * state;
-	state = new jive_phi_build_state;
-	self.region = new jive::region(parent, parent->graph());
-
-	jive_opnode_create(jive::phi_head_op(), self.region, {});
-
+	auto state = new jive_phi_build_state;
+	state->node = new jive::structural_node(jive::phi_op(), parent, 1);
+	self.region = state->node->subregion(0);
 	self.internal_state = state;
-	
+
 	return self;
 }
 
 jive_phi_fixvar
 jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 {
-	jive_phi_build_state * state = self.internal_state;
-	jive::node * enter = self.region->top();
-	jive_graph * graph = enter->graph();
+	auto state = self.internal_state;
+	auto graph = self.region->graph();
 
 	jive_phi_fixvar fixvar;
-	fixvar.gate = graph->create_gate(
-		*type,
-		jive::detail::strfmt("fix_", enter, "_", state->fixvars.size()));
-	fixvar.value = enter->add_output(fixvar.gate);
-	state->fixvars.push_back(fixvar);
+	auto str = jive::detail::strfmt("fix_", state->node, "_", state->fvs.size());
+	fixvar.gate = graph->create_gate(*type, str);
+	fixvar.value = self.region->add_argument(nullptr, fixvar.gate);
+
+	state->fvs.push_back(fixvar);
+	state->fvmap[fixvar.gate] = fixvar.value;
 
 	return fixvar;
 }
@@ -150,50 +149,35 @@ jive_phi_fixvar_enter(jive_phi self, const struct jive::base::type * type)
 void
 jive_phi_fixvar_leave(jive_phi self, jive::gate * var, jive::oport * fix_value)
 {
-	jive_phi_build_state * state = self.internal_state;
-	size_t n;
-	for (n = 0; n < state->fixvars.size(); ++n) {
-		if (state->fixvars[n].gate != var)
-			continue;
-		state->fixvars[n].value = fix_value;
-		return;
-	}
-	
-	throw std::logic_error("Lookup of fix point variable failed");
+	auto state = self.internal_state;
+
+	if (state->fvmap.find(var) == state->fvmap.end())
+		throw std::logic_error("Lookup of fix point variable failed");
+
+	state->fvmap[var] = fix_value;
 }
 
 jive::node *
-jive_phi_end(jive_phi self,
-	size_t npost_values, jive_phi_fixvar * fix_values)
+jive_phi_end(jive_phi self, size_t npost_values, jive_phi_fixvar * fix_values)
 {
-	jive_phi_build_state * state = self.internal_state;
-	jive::node * enter = self.region->top();
+	auto state = self.internal_state;
+	auto phi = state->node;
 
-	size_t n;
-	jive::output * tmp = dynamic_cast<jive::output*>(enter->output(0));
-	jive::node * leave = jive_opnode_create(jive::phi_tail_op(), enter->region(), {tmp});
-	for (n = 0; n < state->fixvars.size(); ++n)
-		leave->add_input(state->fixvars[n].gate, state->fixvars[n].value);
+	std::unordered_map<jive::gate*, size_t> map;
+	for (size_t n = 0; n < npost_values; n++)
+		map[fix_values[n].gate] = n;
 
-	tmp = dynamic_cast<jive::output*>(leave->output(0));
-	jive::node * anchor = jive_opnode_create(jive::phi_op(), self.region->parent(), {tmp});
-	for (n = 0; n < state->fixvars.size(); ++n)
-		state->fixvars[n].value = anchor->add_output(state->fixvars[n].gate);
-	
-	for (n = 0; n < npost_values; ++n) {
-		size_t k;
-		for (k = 0; k < state->fixvars.size(); ++k) {
-			if (state->fixvars[k].gate == fix_values[n].gate) {
-				fix_values[n].value = state->fixvars[k].value;
-				break;
-			}
-		}
-		if (k == state->fixvars.size()) {
-			throw std::logic_error("Lookup of fix point variable failed");
-		}
+	for (auto & fv : state->fvs) {
+		auto output = phi->add_output(fv.gate);
+		self.region->add_result(state->fvmap[fv.gate], output, fv.gate);
+
+		if (map.find(fv.gate) == map.end())
+			throw std::logic_error("Lookup of fix point variable failed.");
+
+		fix_values[map[fv.gate]].value = output;
 	}
-	
+
 	delete state;
-	
-	return anchor;
+
+	return phi;
 }

@@ -10,6 +10,7 @@
 #include <jive/vsdg/anchor.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/structural_node.h>
 
 /* phi node */
 
@@ -62,32 +63,28 @@ public:
 
 }
 
-JIVE_EXPORTED_INLINE struct jive::region *
-jive_phi_region_cast(struct jive::region * region)
+JIVE_EXPORTED_INLINE jive::region *
+jive_phi_region_cast(jive::region * region)
 {
-	if (region->graph()->root() == region)
-		return NULL;
-	if (!region->bottom())
-		return NULL;
-
-	if (dynamic_cast<const jive::phi_tail_op*>(&region->bottom()->operation()))
+	/*
+		FIXME: remove this function
+	*/
+	if (region->node() && typeid(region->node()->operation()) == typeid(jive::phi_op))
 		return region;
-	else
-		return NULL;
+
+	return nullptr;
 }
 
-JIVE_EXPORTED_INLINE const struct jive::region *
-jive_phi_region_const_cast(const struct jive::region * region)
+JIVE_EXPORTED_INLINE const jive::region *
+jive_phi_region_const_cast(const jive::region * region)
 {
-	if (region->graph()->root() == region)
-		return NULL;
-	if (!region->bottom())
-		return NULL;
-
-	if (dynamic_cast<const jive::phi_tail_op*>(&region->bottom()->operation()))
+	/*
+		FIXME: remove this function
+	*/
+	if (region->node() && typeid(region->node()->operation()) == typeid(jive::phi_op))
 		return region;
-	else
-		return NULL;
+
+	return nullptr;
 }
 
 typedef struct jive_phi jive_phi;

@@ -458,12 +458,12 @@ eval_phi_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_op*>(&node->operation()));
 
-	jive::node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
+	auto phi = static_cast<const jive::structural_node*>(node);
+	auto phi_region = phi->subregion(0);
 
-	ctx.push_frame(tail->region());
-	std::unique_ptr<const literal> result = std::move(eval_input(tail->input(index+1), ctx));
-	ctx.pop_frame(tail->region());
+	ctx.push_frame(phi_region);
+	std::unique_ptr<const literal> result = std::move(eval_input(phi_region->result(index), ctx));
+	ctx.pop_frame(phi_region);
 
 	return result;
 }
@@ -510,16 +510,29 @@ eval_node(const jive::node * node, size_t index, context & ctx)
 }
 
 static std::unique_ptr<const literal>
+eval_argument(const jive::argument * argument, context & ctx)
+{
+	std::unique_ptr<const literal> result;
+	if (typeid(argument->region()->node()->operation()) == typeid(jive::phi_op)) {
+		ctx.push_frame(argument->region());
+		result = eval_input(argument->region()->result(argument->index()), ctx);
+		ctx.pop_frame(argument->region());
+	} else {
+		result = eval_input(argument->input(), ctx);
+		ctx.insert(argument, result.get());
+	}
+
+	return result;
+}
+
+static std::unique_ptr<const literal>
 eval_output(const jive::oport * output, context & ctx)
 {
 	if (ctx.exists(output))
 		return ctx.lookup(output)->copy();
 
-	if (auto arg = dynamic_cast<const jive::argument*>(output)) {
-		auto r = eval_input(arg->input(), ctx);
-		ctx.insert(arg, r.get());
-		return r;
-	}
+	if (auto arg = dynamic_cast<const jive::argument*>(output))
+		return eval_argument(arg, ctx);
 
 	return eval_node(output->node(), output->index(), ctx)->copy();
 }
