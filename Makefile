@@ -40,6 +40,7 @@ LIBJIVE_SRC = \
 	src/vsdg/splitnode.c \
 	src/vsdg/statetype.c \
 	src/vsdg/simple_node.c \
+	src/vsdg/structural_node.c \
 	src/vsdg/theta.c \
 	src/vsdg/tracker.c \
 	src/vsdg/traverser.c \

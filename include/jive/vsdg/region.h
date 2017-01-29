@@ -141,11 +141,15 @@ private:
 	std::unique_ptr<jive::base::type> type_;
 };
 
+class structural_node;
+
 class region {
 public:
 	~region();
 
 	region(jive::region * parent, jive_graph * graph);
+
+	region(jive::structural_node * node);
 
 	void reparent(jive::region * new_parent) noexcept;
 
@@ -223,6 +227,12 @@ public:
 	set_anchor(jive::input * anchor) noexcept
 	{
 		anchor_ = anchor;
+	}
+
+	inline jive::structural_node *
+	node() const noexcept
+	{
+		return node_;
 	}
 
 	jive::argument *
@@ -312,6 +322,7 @@ private:
 	jive_graph * graph_;
 	jive::region * parent_;
 	jive::input * anchor_;
+	jive::structural_node * node_;
 	std::vector<jive::result*> results_;
 	std::vector<jive::argument*> arguments_;
 };

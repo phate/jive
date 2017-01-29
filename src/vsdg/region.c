@@ -12,6 +12,7 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 
@@ -24,6 +25,9 @@ argument::~argument() noexcept
 	JIVE_DEBUG_ASSERT(users.empty());
 
 	region()->graph()->on_argument_destroy(this);
+
+	if (input())
+		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
 
 	if (gate()) {
 		for (size_t n = 0; n < region()->narguments(); n++) {
@@ -49,6 +53,8 @@ argument::argument(
 	, type_(type.copy())
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
+	if (input)
+		JIVE_LIST_PUSH_BACK(input->arguments, this, input_argument_list);
 }
 
 argument::argument(
@@ -62,6 +68,9 @@ argument::argument(
 	, type_(gate->type().copy())
 {
 	input_argument_list.prev = input_argument_list.next = nullptr;
+	if (input)
+		JIVE_LIST_PUSH_BACK(input->arguments, this, input_argument_list);
+
 	for (size_t n = 0; n < index; n++) {
 		jive::argument * other = region->argument(n);
 		if (!other->gate()) continue;
@@ -96,6 +105,9 @@ result::~result() noexcept
 	origin()->users.erase(this);
 	if (origin()->node() && !origin()->node()->has_successors())
 		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
+
+	if (output())
+		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
 
 	if (gate()) {
 		for (size_t n = 0; n < region()->nresults(); n++) {
@@ -247,6 +259,7 @@ region::region(jive::region * parent, jive_graph * graph)
 	, graph_(graph)
 	, parent_(parent)
 	, anchor_(nullptr)
+	, node_(nullptr)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
@@ -258,6 +271,27 @@ region::region(jive::region * parent, jive_graph * graph)
 	}
 
 	graph->on_region_create(this);
+}
+
+region::region(jive::structural_node * node)
+	: depth_(0)
+	, top_(nullptr)
+	, bottom_(nullptr)
+	, graph_(node->graph())
+	, parent_(nullptr)
+	, anchor_(nullptr)
+	, node_(node)
+{
+	top_nodes.first = top_nodes.last = nullptr;
+	subregions.first = subregions.last = nullptr;
+	region_subregions_list.prev = region_subregions_list.next = nullptr;
+
+	if (parent_) {
+		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
+		depth_ = parent_->depth() + 1;
+	}
+
+	graph()->on_region_create(this);
 }
 
 jive::argument *

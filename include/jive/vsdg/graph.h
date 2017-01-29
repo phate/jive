@@ -123,9 +123,20 @@ public:
 		jive::oport* /* new */
 	> on_input_change;
 	jive::notifier<jive::input *> on_input_destroy;
+
+	jive::notifier<jive::structural_input*> on_structural_input_create;
+	jive::notifier<
+		jive::structural_input*,
+		jive::oport* /* old */,
+		jive::oport* /* new */
+	> on_structural_input_change;
+	jive::notifier<jive::structural_input*> on_structural_input_destroy;
 	
 	jive::notifier<jive::output *> on_output_create;
 	jive::notifier<jive::output *> on_output_destroy;
+
+	jive::notifier<jive::structural_output*> on_structural_output_create;
+	jive::notifier<jive::structural_output*> on_structural_output_destroy;
 
 	jive::notifier<jive::argument*> on_argument_create;
 	jive::notifier<jive::argument*> on_argument_destroy;

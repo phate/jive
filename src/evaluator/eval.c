@@ -535,12 +535,12 @@ eval(
 	const std::string & name,
 	const std::vector<const literal*> & arguments)
 {
-	const jive::output * output = nullptr;
+	const jive::oport * output = nullptr;
 	const jive::node * tail = graph->root()->bottom();
 	for (size_t n = 0; n < tail->ninputs(); n++) {
 		JIVE_DEBUG_ASSERT(tail->input(n)->gate() != nullptr);
 		if (tail->input(n)->gate()->name() == name) {
-			output = dynamic_cast<jive::output*>(tail->input(n)->origin());
+			output = tail->input(n)->origin();
 			break;
 		}
 	}
