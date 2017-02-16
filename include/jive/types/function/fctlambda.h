@@ -76,6 +76,9 @@ public:
 	operator==(const operation & other) const noexcept override;
 
 	virtual size_t
+	narguments() const noexcept override;
+
+	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const jive::base::type &
@@ -126,10 +129,14 @@ jive_inline_lambda_apply(jive::node * apply_node);
 */
 
 namespace jive {
+
+class structural_input;
+class structural_node;
+
 namespace fct {
 
 struct lambda_dep {
-	jive::input * input;
+	jive::structural_input * input;
 	jive::oport * output;
 };
 
@@ -139,6 +146,7 @@ struct lambda_dep {
 typedef struct jive_lambda jive_lambda;
 
 struct jive_lambda {
+	jive::structural_node * node;
 	struct jive::region * region;
 	size_t narguments;
 	jive::oport ** arguments;
@@ -158,8 +166,9 @@ lambda_dep_add(jive_lambda * self, jive::oport * value);
 	\brief Begin constructing a lambda region
 */
 struct jive_lambda *
-jive_lambda_begin(struct jive::region * parent, size_t narguments,
-	const jive::base::type * const argument_types[], const char * const argument_names[]);
+jive_lambda_begin(jive::region * parent,
+	const std::vector<std::pair<const jive::base::type*, std::string>> & arguments,
+	const std::vector<std::pair<const jive::base::type*, std::string>> & results);
 
 /**
 	\brief End constructing a lambda region

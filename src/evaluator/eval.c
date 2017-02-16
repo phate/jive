@@ -348,17 +348,17 @@ static const std::unique_ptr<const literal>
 eval_lambda_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_op*>(&node->operation()));
+	auto lambda = static_cast<const jive::structural_node*>(node);
+	auto region = lambda->subregion(0);
 
-	jive::node * tail = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-
-	ctx.push_frame(tail->region());
+	ctx.push_frame(region);
 
 	std::vector<std::unique_ptr<const literal>> results;
-	for (size_t n = 1; n < tail->ninputs(); n++)
-		results.emplace_back(eval_input(tail->input(n), ctx));
+	for (size_t n = 0; n < region->nresults(); n++)
+		results.emplace_back(eval_input(region->result(n), ctx));
 
 	std::unique_ptr<const literal> fct(new fctliteral(ctx.top_arguments(), results));
-	ctx.pop_frame(tail->region());
+	ctx.pop_frame(region);
 
 	return fct;
 }
@@ -517,6 +517,17 @@ eval_argument(const jive::argument * argument, context & ctx)
 		ctx.push_frame(argument->region());
 		result = eval_input(argument->region()->result(argument->index()), ctx);
 		ctx.pop_frame(argument->region());
+	} else if (typeid(argument->region()->node()->operation()) == typeid(jive::fct::lambda_op)) {
+		if (argument->input()) {
+			/* it is an external dependency */
+			result = eval_input(argument->input(), ctx);
+		} else {
+			/* it is a lambda argument */
+			JIVE_DEBUG_ASSERT(!ctx.exists(argument));
+			auto v = ctx.top_arguments()[argument->index()].get();
+			ctx.insert(argument, v);
+			result = std::move(v->copy());
+		}
 	} else {
 		result = eval_input(argument->input(), ctx);
 		ctx.insert(argument, result.get());

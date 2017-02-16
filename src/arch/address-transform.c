@@ -22,6 +22,7 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/substitution.h>
+#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/traverser.h>
 
 static bool
@@ -338,68 +339,6 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 }
 
 static void
-jive_lambda_node_address_transform(
-	const jive::node * node, size_t nbits)
-{
-	JIVE_DEBUG_ASSERT(node->noutputs() == 1);
-
-	jive_graph * graph = node->graph();
-	jive::output * fct = dynamic_cast<jive::output*>(node->output(0));
-
-	const jive::base::type * type = &fct->type();
-	if (!type_contains_address(type))
-		return;
-
-	jive::region * region = node->input(0)->origin()->region();
-	JIVE_DEBUG_ASSERT(node->region() != region);
-	jive::node * enter = region->top();
-	jive::node * leave = region->bottom();
-
-	const jive::fct::type * fcttype = dynamic_cast<const jive::fct::type*>(type);
-	std::unique_ptr<jive::base::type> new_fcttype_(convert_address_to_bitstring_type(*fcttype, nbits));
-	jive::fct::type * new_fcttype = static_cast<jive::fct::type*>(new_fcttype_.get());
-
-	size_t n;
-	size_t nparameters = fcttype->narguments();
-	const char * parameter_names[nparameters];
-	for (n = 1; n < enter->noutputs(); n++)
-		parameter_names[n-1] = enter->output(n)->gate()->name().c_str();
-
-	const jive::base::type * argument_types[new_fcttype->narguments()];
-	for (size_t i = 0; i < new_fcttype->narguments(); i++)
-		argument_types[i] = new_fcttype->argument_type(i);
-
-	jive_lambda * lambda = jive_lambda_begin(graph->root(), new_fcttype->narguments(),
-		argument_types, parameter_names);
-
-	jive::substitution_map map;
-
-	jive::node * new_enter = lambda->region->top();
-	for (n = 1; n < enter->noutputs(); n++) {
-		jive::oport * parameter = jive_bitstring_to_address_create(new_enter->output(n), nbits,
-			fcttype->argument_type(n-1));
-		map.insert(enter->output(n), dynamic_cast<jive::output*>(parameter));
-	}
-
-	region->copy(lambda->region, map, false, false);
-
-	size_t nresults = fcttype->nreturns();
-	jive::oport * results[nresults];
-	for (n = 1; n < leave->ninputs(); n++) {
-		auto substitute = map.lookup(dynamic_cast<jive::output*>(leave->input(n)->origin()));
-		results[n-1] = jive_address_to_bitstring_create(substitute, nbits, fcttype->return_type(n-1));
-	}
-
-	const jive::base::type * return_types[new_fcttype->nreturns()];
-	for (size_t i = 0; i < new_fcttype->nreturns(); i++)
-		return_types[i] = new_fcttype->return_type(i);
-
-	auto new_fct = jive_lambda_end(lambda, new_fcttype->nreturns(), return_types, results);
-
-	fct->replace(jive_bitstring_to_address_create(new_fct, nbits, type));
-}
-
-static void
 jive_graph_tail_node_address_transform(const jive::node * node, size_t nbits)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::graph_tail_operation*>(&node->operation()));
@@ -463,8 +402,6 @@ jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper)
 		jive_call_node_address_transform(node, *op, nbits);
 	} else if (dynamic_cast<const jive::fct::apply_op *>(&node->operation())) {
 		jive_apply_node_address_transform(node, nbits);
-	} else if (dynamic_cast<const jive::fct::lambda_op *>(&node->operation())) {
-		jive_lambda_node_address_transform(node, nbits);
 	} else if (dynamic_cast<const jive::graph_tail_operation*>(&node->operation())) {
 		jive_graph_tail_node_address_transform(node, nbits);
 	}

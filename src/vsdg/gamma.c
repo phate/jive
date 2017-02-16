@@ -237,23 +237,22 @@ jive_gamma(jive::oport * predicate,
 		jive::node * head0 = dynamic_cast<jive::output*>(tail0->input(0)->origin())->node();
 		size_t nalternatives = node->ninputs()-1;
 		for (size_t v = node->noutputs(); v > 0; --v) {
-			jive::output * value = dynamic_cast<jive::output*>(tail0->input(v)->origin());
-			if (value->node() != head0)
+			auto value = tail0->input(v)->origin();
+			if (value && value->node() != head0)
 				continue;
 
 			size_t n;
-			value = dynamic_cast<jive::output*>(head0->input(v-1)->origin());
+			value = head0->input(v-1)->origin();
 			for (n = 1; n < nalternatives; n++) {
 				jive::node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
 				jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
-				if (dynamic_cast<jive::output*>(tail->input(v)->origin())->node() != head
-					|| value != dynamic_cast<jive::output*>(head->input(v-1)->origin()))
+				if (tail->input(v)->origin()->node() != head || value != head->input(v-1)->origin())
 				{
 					break;
 				}
 			}
 			if (n == nalternatives) {
-				results.push_back(dynamic_cast<jive::output*>(head0->input(v)->origin()));
+				results.push_back(head0->input(v)->origin());
 
 				/* FIXME: ugh, this should be done by DNE */
 				delete node->output(v-1);

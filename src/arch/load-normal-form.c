@@ -102,17 +102,19 @@ std::vector<jive::oport*>
 load_normal_form::normalized_create(
 	jive::region * region,
 	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments) const
+	const std::vector<jive::oport*> & args) const
 {
 	if (get_mutable() && get_reducible()) {
 		const jive::load_op & l_op = static_cast<const jive::load_op &>(op);
-		jive::oport * address = arguments[0];
-		jive::node * store_node =
-			(arguments.size() >= 2 && is_matching_store_node(l_op, address, arguments[1]->node())) ?
-			arguments[1]->node() : nullptr;
-		for (size_t n = 2; n < arguments.size(); ++n) {
-			if (arguments[n]->node() != store_node) {
+		jive::oport * addr = args[0];
+		jive::node * store_node = nullptr;
+		if (args.size() >= 2 && args[1]->node() && is_matching_store_node(l_op, addr, args[1]->node()))
+			store_node = args[1]->node();
+
+		for (size_t n = 2; n < args.size(); ++n) {
+			if (args[n]->node() != store_node) {
 				store_node = nullptr;
+				break;
 			}
 		}
 		if (store_node) {
@@ -120,7 +122,7 @@ load_normal_form::normalized_create(
 		}
 	}
 
-	return node_normal_form::normalized_create(region, op, arguments);
+	return node_normal_form::normalized_create(region, op, args);
 }
 
 void

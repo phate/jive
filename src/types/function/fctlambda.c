@@ -14,7 +14,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/phi.h>
 #include <jive/vsdg/seqtype.h>
-#include <jive/vsdg/substitution.h>
+#include <jive/vsdg/structural_node.h>
 
 /* lambda enter node */
 
@@ -99,6 +99,12 @@ lambda_op::operator==(const operation & other) const noexcept
 }
 
 size_t
+lambda_op::narguments() const noexcept
+{
+	return 0;
+}
+
+size_t
 lambda_op::nresults() const noexcept
 {
 	return 1;
@@ -109,6 +115,7 @@ lambda_op::result_type(size_t index) const noexcept
 {
 	return function_type();
 }
+
 std::string
 lambda_op::debug_string() const
 {
@@ -124,47 +131,12 @@ lambda_op::copy() const
 }
 }
 
-static jive::node *
-jive_lambda_node_create(jive::region * function_region)
-{
-	size_t ndependencies = function_region->top()->ninputs();
-	size_t narguments = function_region->top()->noutputs() - ndependencies - 1;
-	size_t nreturns = function_region->bottom()->ninputs()-1;
-
-	const jive::base::type * argument_types[narguments];
-	std::vector<std::string> argument_names;
-	for (size_t n = 0; n < narguments; n++) {
-		argument_types[n] = &function_region->top()->output(n+1)->type();
-		argument_names.push_back(function_region->top()->output(n+1)->gate()->name());
-	}
-	const jive::base::type * return_types[nreturns];
-	std::vector<std::string> result_names;
-	for (size_t n = 0; n < nreturns; n++) {
-		return_types[n] = &function_region->bottom()->input(n+1)->type();
-		result_names.push_back(function_region->bottom()->input(n+1)->gate()->name());
-	}
-	
-	jive::fct::type function_type(
-		narguments, argument_types,
-		nreturns, return_types);
-	
-	jive::fct::lambda_op op(
-		std::move(function_type),
-		std::move(argument_names),
-		std::move(result_names));
-
-	jive::output * tmp = dynamic_cast<jive::output*>(function_region->bottom()->output(0));
-	return jive_opnode_create(op, function_region->parent(), {tmp});
-}
-
-
 bool
 jive_lambda_is_self_recursive(const jive::node * self)
 {
 	JIVE_DEBUG_ASSERT(self->noutputs() == 1);
 
-	auto lambda_region = self->input(0)->origin()->region();
-	JIVE_DEBUG_ASSERT(self->region() != lambda_region);
+	auto lambda = dynamic_cast<const jive::structural_node*>(self);
 
 	auto phi_region = self->region();
 	auto phi = phi_region->node();
@@ -179,13 +151,14 @@ jive_lambda_is_self_recursive(const jive::node * self)
 			break;
 		}
 	}
-	JIVE_DEBUG_ASSERT(index != phi_region->nresults());
+	if (index == phi_region->nresults())
+		return false;
 
 	/* the lambda is self-recursive if one of its external dependencies originates from the same
 	*  index in the phi enter node
 	*/
-	for (size_t n = 0; n < lambda_region->top()->ninputs(); n++) {
-		if (lambda_region->top()->input(n)->origin()->index() == index)
+	for (size_t n = 0; n < lambda->ninputs(); n++) {
+		if (lambda->input(n)->origin()->index() == index)
 			return true;
 	}
 
@@ -200,15 +173,13 @@ namespace fct {
 lambda_dep
 lambda_dep_add(jive_lambda * self, jive::oport * value)
 {
-	jive::node * enter = self->region->top();
-	jive_graph * graph = self->region->graph();
+	auto graph = self->node->graph();
 
 	jive::fct::lambda_dep depvar;
-	jive::gate * gate = graph->create_gate(
-		value->type(),
-		jive::detail::strfmt("dep_", enter, "_", self->depvars.size()));
-	depvar.input = dynamic_cast<jive::input*>(enter->add_input(gate, value));
-	depvar.output = enter->add_output(gate);
+	auto gate = graph->create_gate(value->type(),
+		jive::detail::strfmt("dep_", self->node, "_", self->depvars.size()));
+	depvar.input = self->node->add_input(gate, value);
+	depvar.output = self->node->subregion(0)->add_argument(depvar.input, gate);
 	self->depvars.push_back(depvar);
 
 	return depvar;
@@ -220,23 +191,36 @@ lambda_dep_add(jive_lambda * self, jive::oport * value)
 jive_lambda *
 jive_lambda_begin(
 	jive::region * parent,
-	size_t narguments,
-	const jive::base::type * const argument_types[],
-	const char * const argument_names[])
+	const std::vector<std::pair<const jive::base::type*, std::string>> & arguments,
+	const std::vector<std::pair<const jive::base::type*, std::string>> & results)
 {
-	jive_graph * graph = parent->graph();
+	std::vector<std::string> argument_names;
+	std::vector<const jive::base::type*> argument_types;
+	for (const auto & arg : arguments) {
+		argument_types.push_back(arg.first);
+		argument_names.push_back(arg.second);
+	}
 
-	jive_lambda * lambda = new jive_lambda;
-	lambda->region = new jive::region(parent, parent->graph());
-	lambda->arguments = new jive::oport*[narguments];
-	lambda->narguments = narguments;
+	std::vector<std::string> result_names;
+	std::vector<const jive::base::type*> result_types;
+	for (const auto & result : results) {
+		result_types.push_back(result.first);
+		result_names.push_back(result.second);
+	}
 
-	jive_opnode_create(jive::fct::lambda_head_op(), lambda->region, {});
+	jive::fct::type fcttype(argument_types.size(), &argument_types[0],
+		result_types.size(), &result_types[0]);
 
-	size_t n;
-	for (n = 0; n < narguments; n++) {
-		jive::gate * gate = graph->create_gate(*argument_types[n], argument_names[n]);
-		lambda->arguments[n] = lambda->region->top()->add_output(gate);
+	auto lambda = new jive_lambda;
+	lambda->node = new jive::structural_node(
+		jive::fct::lambda_op(fcttype, argument_names, result_names), parent, 1);
+	lambda->region = lambda->node->subregion(0);
+	lambda->arguments = new jive::oport*[arguments.size()];
+	lambda->narguments = arguments.size();
+
+	for (size_t n = 0; n < arguments.size(); n++) {
+		auto gate = parent->graph()->create_gate(*arguments[n].first, arguments[n].second);
+		lambda->arguments[n] = lambda->node->subregion(0)->add_argument(nullptr, gate);
 	}
 
 	return lambda;
@@ -246,57 +230,27 @@ jive::oport *
 jive_lambda_end(jive_lambda * self,
 	size_t nresults, const jive::base::type * const result_types[], jive::oport * const results[])
 {
-	jive::region * region = self->region;
-	jive_graph * graph = region->graph();
+	auto node = self->node;
+	auto graph = self->node->graph();
+	auto region = node->subregion(0);
+	auto op = static_cast<const jive::fct::lambda_op*>(&node->operation());
+	auto fcttype = static_cast<const jive::fct::type*>(&op->result_type(0));
 
-	jive::output * tmp = dynamic_cast<jive::output*>(region->top()->output(0));
-	jive::node * leave = jive_opnode_create(jive::fct::lambda_tail_op(), region, {tmp});
+	if (nresults != fcttype->nreturns())
+		throw std::logic_error("Incorrect number of results.");
 
-	size_t n;
-	for (n = 0; n < nresults; n++) {
-		char gate_name[80];
-		snprintf(gate_name, sizeof(gate_name), "res_%p_%zd", leave, n);
-		jive::gate * gate = graph->create_gate(*result_types[n], gate_name);
-		leave->add_input(gate, results[n]);
+	for (size_t n = 0; n < nresults; n++) {
+		if (*result_types[n] != *fcttype->return_type(n))
+			throw std::logic_error("Incorrect result type.");
+
+		auto gate = graph->create_gate(*result_types[n], op->result_names()[n]);
+		region->add_result(results[n], nullptr, gate);
 	}
 
-	jive::node * anchor = jive_lambda_node_create(region);
-	JIVE_DEBUG_ASSERT(anchor->noutputs() == 1);
+	node->add_output(fcttype);
 
 	delete[] self->arguments;
 	delete self;
 
-	return anchor->output(0);
-}
-
-/* lambda inlining */
-
-void
-jive_inline_lambda_apply(jive::node * apply_node)
-{
-	jive::node * lambda_node = dynamic_cast<jive::output*>(apply_node->input(0)->origin())->node();
-	
-	const jive::fct::lambda_op & op = dynamic_cast<const jive::fct::lambda_op &>(
-		lambda_node->operation());
-	
-	jive::region * function_region = lambda_node->input(0)->origin()->region();
-	jive::node * head = function_region->top();
-	jive::node * tail = function_region->bottom();
-	
-	jive::substitution_map substitution;
-	for(size_t n = 0; n < op.function_type().narguments(); n++) {
-		jive::output * output = dynamic_cast<jive::output*>(
-			jive_node_get_gate_output(head, op.argument_names()[n].c_str()));
-		substitution.insert(output, dynamic_cast<jive::output*>(apply_node->input(n+1)->origin()));
-	}
-	
-	function_region->copy(apply_node->region(), substitution, false, false);
-	
-	for(size_t n = 0; n < op.function_type().nreturns(); n++) {
-		jive::input * input = dynamic_cast<jive::input*>(
-			jive_node_get_gate_input(tail, op.result_names()[n].c_str()));
-		jive::oport * substituted = substitution.lookup(input->origin());
-		jive::output * output = dynamic_cast<jive::output*>(apply_node->output(n));
-		output->replace(substituted);
-	}
+	return node->output(0);
 }

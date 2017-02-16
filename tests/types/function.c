@@ -28,9 +28,8 @@ static int function_test_build_lambda(void)
 
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
-	const char * tmparray1[] = {"arg1", "arg2"};
 	jive_lambda * lambda = jive_lambda_begin(graph.root(),
-		2, tmparray0, tmparray1);
+		{{&bits32, "arg1"}, {&bits32, "arg1"}}, {{&bits32, "r"}});
 
 	auto sum = jive_bitsum(
 		std::vector<jive::oport*>(lambda->arguments, lambda->arguments+lambda->narguments));
@@ -106,55 +105,6 @@ static int function_test_equals(void)
 }
 
 JIVE_UNIT_TEST_REGISTER("function/test-equals", function_test_equals);
-
-static int function_test_lambda_apply(void)
-{
-	setlocale(LC_ALL, "");
-
-	jive_graph graph;
-	
-	jive::bits::type bits32(32);
-	const jive::base::type * tmparray0[] = {&bits32, &bits32};
-	const char * tmparray1[] = {"arg1", "arg2"};
-	jive_lambda * lambda = jive_lambda_begin(graph.root(),
-		2, tmparray0, tmparray1);
-
-	auto sum = jive_bitsum(
-		std::vector<jive::oport*>(lambda->arguments, lambda->arguments+lambda->narguments));
-
-	const jive::base::type * tmparray11[] = {&bits32};
-	auto lambda_expr = jive_lambda_end(lambda, 1, tmparray11, &sum);
-	
-	auto c0 = jive_bitconstant(graph.root(), 32, "01010100000000000000000000000000");
-	auto c1 = jive_bitconstant(graph.root(), 32, "10010010000000000000000000000000");
-	jive::oport * tmparray2[] = {c0, c1};
-	
-	jive::oport * apply_results[1] = {
-		jive_apply_create(lambda_expr, 2, tmparray2)[0]
-	};
-	
-	jive::node * interest = jive_test_node_create(graph.root(),
-		{&bits32}, {apply_results[0]}, {&bits32});
-	
-	graph.export_port(interest->output(0), "dummy");
-	
-	jive_view(&graph, stderr);
-
-	jive_inline_lambda_apply(dynamic_cast<jive::output*>(apply_results[0])->node());
-	graph.prune();
-	
-	jive_view(&graph, stderr);
-
-	jive::node * test_sum = dynamic_cast<jive::output*>(interest->input(0)->origin())->node();
-	assert(test_sum->operation() == jive::bits::add_op(32));
-	assert(test_sum->ninputs() == 2);
-	assert(test_sum->input(0)->origin() == c0);
-	assert(test_sum->input(1)->origin() == c1);
-	
-	return 0;
-}
-
-JIVE_UNIT_TEST_REGISTER("function/test-lambda-apply", function_test_lambda_apply);
 
 static int function_test_memory_leak(void)
 {
