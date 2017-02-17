@@ -85,16 +85,44 @@ public:
 	virtual
 	~dataobj_op() noexcept;
 
+	inline
+	dataobj_op(const std::vector<std::unique_ptr<const base::type>> & types)
+	: types_(detail::unique_ptr_vector_copy(types))
+	{}
+
+	inline
+	dataobj_op(std::vector<std::unique_ptr<const base::type>> && types)
+	: types_(std::move(types))
+	{}
+
+	inline
+	dataobj_op(const dataobj_op & other)
+	: types_(detail::unique_ptr_vector_copy(other.types_))
+	{}
+
+	inline
+	dataobj_op(dataobj_op && other) noexcept = default;
+
+	virtual size_t
+	narguments() const noexcept override;
+
+	virtual const base::type &
+	argument_type(size_t index) const noexcept override;
+
 	virtual size_t
 	nresults() const noexcept override;
 
 	virtual const base::type &
 	result_type(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
 	virtual std::unique_ptr<jive::operation>
 	copy() const override;
+
+private:
+	std::vector<std::unique_ptr<const base::type>> types_;
 };
 
 class memlayout_mapper;

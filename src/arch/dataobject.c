@@ -20,6 +20,7 @@
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/statetype.h>
+#include <jive/vsdg/structural_node.h>
 
 namespace jive {
 
@@ -93,6 +94,19 @@ dataobj_tail_op::copy() const
 
 dataobj_op::~dataobj_op() noexcept
 {
+}
+
+size_t
+dataobj_op::narguments() const noexcept
+{
+	return types_.size();
+}
+
+const base::type &
+dataobj_op::argument_type(size_t index) const noexcept
+{
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return *types_[index];
 }
 
 size_t
@@ -223,51 +237,39 @@ static jive::oport *
 jive_dataobj_internal(
 	jive::oport * data,
 	jive::memlayout_mapper * layout_mapper,
-	jive::region * parent,
-	jive::region * region)
+	jive::region * parent)
 {
 	std::vector<jive::oport*> data_items = flatten_data_items(data, layout_mapper);
 	squeeze_data_items(data_items);
+
 	std::vector<std::unique_ptr<const jive::base::type>> types;
-	std::vector<jive::oport*> arguments;
-	for (size_t n = 0; n < data_items.size(); ++n) {
-		types.emplace_back(data_items[n]->type().copy());
-		arguments.push_back(data_items[n]);
-	}
+	for (const auto & item : data_items)
+		types.emplace_back(item->type().copy());
 
-	jive::node * head;
-	head = jive_opnode_create(jive::dataobj_head_op(std::move(types)), region, arguments);
-	jive::output * tmp = dynamic_cast<jive::output*>(head->output(0));
-	jive::node * tail = jive_opnode_create(jive::dataobj_tail_op(), region, {tmp});
-	tmp = dynamic_cast<jive::output*>(tail->output(0));
-	jive::node * obj = jive_opnode_create(jive::dataobj_op(), parent, {tmp});
+	auto node = new jive::structural_node(jive::dataobj_op(std::move(types)), parent, 1);
+	for (const auto & item : data_items)
+		node->add_input(&item->type(), item);
 
-	return obj->output(0);
+	return node->add_output(&jive::addr::type::instance());
 }
 
 jive::oport *
 jive_dataobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive::region * parent = data->region()->graph()->root();
-	jive::region * region = new jive::region(parent, parent->graph());
-
-	return jive_dataobj_internal(data, layout_mapper, parent, region);
+	return jive_dataobj_internal(data, layout_mapper, parent);
 }
 
 jive::oport *
 jive_rodataobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive::region * parent = data->region()->graph()->root();
-	jive::region * region = new jive::region(parent, parent->graph());
-
-	return jive_dataobj_internal(data, layout_mapper, parent, region);
+	return jive_dataobj_internal(data, layout_mapper, parent);
 }
 
 jive::oport *
 jive_bssobj(jive::oport * data, jive::memlayout_mapper * layout_mapper)
 {
 	jive::region * parent = data->region()->graph()->root();
-	jive::region * region = new jive::region(parent, parent->graph());
-
-	return jive_dataobj_internal(data, layout_mapper, parent, region);
+	return jive_dataobj_internal(data, layout_mapper, parent);
 }
