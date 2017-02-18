@@ -36,7 +36,7 @@ test_main(void)
 	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
 	auto result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
 	graph.export_port(result[0], "dummy");
-	assert(dynamic_cast<jive::output*>(result[0])->node()->operation() == jive::gamma_op(3));
+	assert(result[0]->node() && result[0]->node()->operation() == jive::gamma_op(3));
 
 	jive_view(&graph, stdout);
 #if 0

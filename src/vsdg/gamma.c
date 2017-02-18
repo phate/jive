@@ -19,6 +19,7 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/traverser.h>
 
 namespace jive {
@@ -86,19 +87,16 @@ gamma_op::~gamma_op() noexcept
 size_t
 gamma_op::narguments() const noexcept
 {
-	return 1 + nalternatives();
+	return 1;
 }
 
 const base::type &
 gamma_op::argument_type(size_t index) const noexcept
 {
-	if (index < nalternatives()) {
-		static const achr::type anchor_type;
-		return anchor_type;
-	} else {
-		return predicate_type_;
-	}
+	JIVE_DEBUG_ASSERT(index < narguments());
+	return predicate_type_;
 }
+
 std::string
 gamma_op::debug_string() const
 {
@@ -139,44 +137,41 @@ register_node_normal_form(void)
 }
 
 
-static jive::node *
+static jive::structural_node *
 jive_gamma_create(
 	jive::oport * predicate,
 	const std::vector<const jive::base::type*> & types,
 	const std::vector<std::vector<jive::oport*>> & alternatives)
 {
-	size_t nvalues = types.size();
-	size_t nalternatives = alternatives.size();
-	jive::region * region = predicate->region();
+	auto nvalues = types.size();
+	auto nalternatives = alternatives.size();
+	auto parent = predicate->region();
+	auto graph = parent->graph();
 
-	std::vector<jive::oport*> arguments;
-	for (size_t n = 0; n < nalternatives; n++) {
-		jive::region * subregion = new jive::region(region, region->graph());
-		jive::node * head = jive_opnode_create(jive::gamma_head_op(), subregion, {});
-		jive::output * tmp = dynamic_cast<jive::output*>(head->output(0));
-		jive::node * tail = jive_opnode_create(jive::gamma_tail_op(), subregion, {tmp});
-		arguments.push_back(tail->output(0));
-	}
-	arguments.push_back(predicate);
+	auto gamma = new jive::structural_node(jive::gamma_op(nalternatives), parent, nalternatives);
+	gamma->add_input(&gamma->operation().argument_type(0), predicate);
 
-	jive::node * gamma = jive_opnode_create(jive::gamma_op(nalternatives), region, arguments);
+	std::vector<std::vector<jive::argument*>> arguments;
+	for (size_t i = 0; i < nalternatives; i++) {
+		std::vector<jive::argument*> args;
+		JIVE_DEBUG_ASSERT(alternatives[i].size() == nvalues);
+		for (size_t n = 0; n < nvalues; n++) {
+			auto arg_gate = graph->create_gate(*types[n], jive::detail::strfmt("arg_", gamma, "_", n*i));
 
-	for (size_t n = 0; n < nvalues; n++) {
-		jive::gate * gate_head = region->graph()->create_gate(
-			*types[n],
-			jive::detail::strfmt("head_", gamma, "_", n));
-		jive::gate * gate_tail = region->graph()->create_gate(
-			*types[n],
-			jive::detail::strfmt("gamma_", gamma, "_", n));
-
-		for (size_t i = 0; i < nalternatives; i++) {
-			jive::output * tmp = static_cast<jive::output*>(arguments[i]);
-			jive::node * head = static_cast<jive::output*>(tmp->node()->input(0)->origin())->node();
-			head->add_input(gate_head, alternatives[i][n]);
-			jive::output * value = dynamic_cast<jive::output*>(head->add_output(gate_head));
-			tmp->node()->add_input(gate_tail, value);
+			auto input = gamma->add_input(arg_gate, alternatives[i][n]);
+			args.push_back(gamma->subregion(i)->add_argument(input, arg_gate));
 		}
-		gamma->add_output(gate_tail);
+		arguments.push_back(args);
+	}
+
+	JIVE_DEBUG_ASSERT(arguments.size() == nalternatives);
+	for (size_t n = 0; n < nvalues; n++) {
+		auto res_gate = graph->create_gate(*types[n], jive::detail::strfmt("res_", gamma, "_", n));
+		auto output = gamma->add_output(res_gate);
+		for (size_t i = 0; i < nalternatives; i++) {
+			JIVE_DEBUG_ASSERT(arguments[i].size() == nvalues);
+			gamma->subregion(i)->add_result(arguments[i][n], output, res_gate);
+		}
 	}
 
 	return gamma;
@@ -223,7 +218,7 @@ jive_gamma(jive::oport * predicate,
 	}
 
 	std::vector<jive::oport*> results;
-	jive::node * node = jive_gamma_create(predicate, types, alternatives);
+	auto node = jive_gamma_create(predicate, types, alternatives);
 	for (size_t n = 0; n < node->noutputs(); n++)
 		results.push_back(node->output(n));
 
@@ -233,40 +228,34 @@ jive_gamma(jive::oport * predicate,
 	*/
 	if (nf->get_mutable() && nf->get_invariant_reduction()) {
 		results.clear();
-		jive::node * tail0 = dynamic_cast<jive::output*>(node->input(0)->origin())->node();
-		jive::node * head0 = dynamic_cast<jive::output*>(tail0->input(0)->origin())->node();
-		size_t nalternatives = node->ninputs()-1;
-		for (size_t v = node->noutputs(); v > 0; --v) {
-			auto value = tail0->input(v)->origin();
-			if (value && value->node() != head0)
-				continue;
+		size_t nalternatives = alternatives.size();
+		for (size_t v = 0; v < node->noutputs(); v++) {
+				auto res0 = node->subregion(0)->result(v);
+				auto arg0 = dynamic_cast<const jive::argument*>(res0->origin());
+				if (!arg0)
+					continue;
 
 			size_t n;
-			value = head0->input(v-1)->origin();
 			for (n = 1; n < nalternatives; n++) {
-				jive::node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
-				jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
-				if (tail->input(v)->origin()->node() != head || value != head->input(v-1)->origin())
-				{
+				auto arg = dynamic_cast<const jive::argument*>(node->subregion(n)->result(v)->origin());
+				if (arg || arg->input()->origin() != arg0->input()->origin())
 					break;
-				}
 			}
 			if (n == nalternatives) {
-				results.push_back(head0->input(v)->origin());
+				results.push_back(arg0->input()->origin());
 
 				/* FIXME: ugh, this should be done by DNE */
-				delete node->output(v-1);
+				node->remove_output(v);
+				jive::argument * argument = nullptr;
 				for (size_t n = 0; n < nalternatives; n++) {
-					jive::node * tail = dynamic_cast<jive::output*>(node->input(n)->origin())->node();
-					jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
-					tail->remove_input(v);
-					head->remove_output(v);
-					head->remove_input(v-1);
+					argument = static_cast<jive::argument*>(node->subregion(n)->result(v)->origin());
+					node->subregion(n)->remove_result(v);
+					node->subregion(n)->remove_argument(argument->index());
 				}
+				node->remove_input(argument->input()->index());
 			} else
-				results.push_back(node->output(v-1));
+				results.push_back(node->output(v));
 		}
-		std::reverse(results.begin(), results.end());
 	}
 
 	return results;

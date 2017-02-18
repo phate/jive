@@ -374,18 +374,21 @@ static const std::unique_ptr<const literal>
 eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_op*>(&node->operation()));
+	auto gamma = static_cast<const jive::structural_node*>(node);
 
-	jive::iport * predicate = node->input(node->ninputs()-1);
+	jive::iport * predicate = node->input(0);
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::ctl::type*>(&predicate->type()));
 
 	size_t alt = static_cast<const ctlliteral*>(eval_input(predicate, ctx).get())->alternative();
-	jive::node * tail = dynamic_cast<jive::output*>(node->input(alt)->origin())->node();
+	auto region = gamma->subregion(alt);
 
-	ctx.push_frame(tail->region());
+	ctx.push_frame(region);
+
 	std::vector<std::unique_ptr<const literal>> results;
-	for (size_t n = 1; n < tail->ninputs(); n++)
-		results.emplace_back(eval_input(tail->input(n), ctx));
-	ctx.pop_frame(tail->region());
+	for (size_t n = 0; n < region->nresults(); n++)
+		results.emplace_back(eval_input(region->result(n), ctx));
+
+	ctx.pop_frame(region);
 
 	JIVE_DEBUG_ASSERT(node->noutputs() == results.size());
 	for (size_t n = 0; n < node->noutputs(); n++)
