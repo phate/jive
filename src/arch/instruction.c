@@ -109,7 +109,7 @@ jive::node *
 jive_instruction_node_create_simple(
 	jive::region * region,
 	const jive_instruction_class * icls,
-	jive::output * const * operands,
+	jive::oport * const * operands,
 	const int64_t * immediates)
 {
 	std::vector<jive::immediate> imm;
@@ -123,10 +123,10 @@ jive::node *
 jive_instruction_node_create_extended(
 	jive::region * region,
 	const jive_instruction_class * icls,
-	jive::output * const * operands_,
+	jive::oport * const * operands_,
 	const jive::immediate immediates_[])
 {
-	std::vector<jive::output*> operands(operands_, operands_ + icls->ninputs);
+	std::vector<jive::oport*> operands(operands_, operands_ + icls->ninputs);
 	std::vector<jive::immediate> immediates(immediates_, immediates_ + icls->nimmediates);
 
 	return jive_instruction_node_create(region, icls, operands, immediates, {}, {}, {});
@@ -136,10 +136,10 @@ jive::node *
 jive_instruction_node_create(
 	jive::region * region,
 	const jive_instruction_class * icls,
-	const std::vector<jive::output*> & operands,
+	const std::vector<jive::oport*> & operands,
 	const std::vector<jive::immediate> & immediates,
 	const std::vector<const jive::state::type*> & itypes,
-	const std::vector<jive::output*> & istates,
+	const std::vector<jive::oport*> & istates,
 	const std::vector<const jive::state::type*> & otypes)
 {
 	std::vector<jive::oport*> arguments(operands.begin(), operands.end());

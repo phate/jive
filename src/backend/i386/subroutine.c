@@ -133,19 +133,19 @@ public:
 	{
 	}
 
-	virtual jive::output *
+	virtual jive::oport *
 	value_parameter(
 		jive_subroutine & subroutine,
 		size_t index) override
 	{
-		jive::output * o = subroutine.builder_state->arguments[index].output;
+		auto o = subroutine.builder_state->arguments[index].output;
 	
 		const jive::base::type * in_type = &o->type();
 		const jive::base::type * out_type = jive_resource_class_get_type(&jive_i386_regcls_gpr.base);
 		jive::node * node = jive_splitnode_create(subroutine.region,
 			in_type, o, o->gate()->rescls(),
 			out_type, &jive_i386_regcls_gpr.base);
-		return dynamic_cast<jive::output*>(node->output(0));
+		return node->output(0);
 	}
 
 	virtual void
@@ -231,28 +231,28 @@ typedef struct jive_i386_stackptr_split_factory {
 	ssize_t offset;
 } jive_i386_stackptr_split_factory;
 
-static jive::output *
-do_stackptr_sub(const jive_value_split_factory * self_, jive::output * value)
+static jive::oport *
+do_stackptr_sub(const jive_value_split_factory * self_, jive::oport * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
 	
-	return dynamic_cast<jive::output*>(jive_instruction_node_create_simple(
+	return jive_instruction_node_create_simple(
 		value->node()->region(),
 		&jive_i386_instr_int_sub_immediate,
-		&value, immediates)->output(0));
+		&value, immediates)->output(0);
 }
 
-static jive::output *
-do_stackptr_add(const jive_value_split_factory * self_, jive::output * value)
+static jive::oport *
+do_stackptr_add(const jive_value_split_factory * self_, jive::oport * value)
 {
 	const jive_i386_stackptr_split_factory * self = (const jive_i386_stackptr_split_factory *) self_;
 	int64_t immediates[1] = {self->offset};
 	
-	return dynamic_cast<jive::output*>(jive_instruction_node_create_simple(
+	return jive_instruction_node_create_simple(
 		value->node()->region(),
 		&jive_i386_instr_int_add_immediate,
-		&value, immediates)->output(0));
+		&value, immediates)->output(0);
 }
 
 static void

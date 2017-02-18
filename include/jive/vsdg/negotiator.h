@@ -180,7 +180,7 @@ private:
 public:
 	union {
 		const jive::input * input;
-		const jive::output * output;
+		const jive::oport * output;
 	} hash_key_;
 
 	class input_hash_chain_accessor {
@@ -213,7 +213,7 @@ public:
 	};
 	class output_hash_chain_accessor {
 	public:
-		inline const jive::output *
+		inline const jive::oport *
 		get_key(const jive_negotiator_port * obj) const noexcept
 		{
 			return obj->hash_key_.output;
@@ -248,7 +248,7 @@ typedef jive::detail::intrusive_hash<
 > jive_negotiator_input_hash;
 
 typedef jive::detail::intrusive_hash<
-	const jive::output *,
+	const jive::oport *,
 	jive_negotiator_port,
 	jive_negotiator_port::output_hash_chain_accessor
 > jive_negotiator_output_hash;

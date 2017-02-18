@@ -16,6 +16,7 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/structural_node.h>
 
 namespace jive {
 
@@ -113,38 +114,38 @@ jive_subroutine_begin(
 	jive_subroutine sub;
 	sub.hl_builder = std::move(hl_builder);
 	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
-	sub.region = new jive::region(graph->root(), graph);
+	sub.node = new jive::structural_node(jive::subroutine_op(std::move(sig)), graph->root(), 1);
+	sub.signature = static_cast<const jive::subroutine_op*>(&sub.node->operation())->signature();
+	sub.region = sub.node->subregion(0);
 
-	jive::node * enter = jive_opnode_create(jive::subroutine_head_op(), sub.region, {});
-
-	for (size_t n = 0; n < sig.arguments.size(); ++n) {
-		const struct jive_resource_class * rescls = sig.arguments[n].rescls;
+	for (size_t n = 0; n < sub.signature.arguments.size(); n++) {
+		auto rescls = sub.signature.arguments[n].rescls;
 		sub.builder_state->arguments[n].gate = graph->create_gate(
-			*jive_resource_class_get_type(rescls), sig.arguments[n].name, rescls);
-		sub.builder_state->arguments[n].output = dynamic_cast<jive::output*>(enter->add_output(
-			sub.builder_state->arguments[n].gate));
-	}
-	for (size_t n = 0; n < sig.results.size(); ++n) {
-		const struct jive_resource_class * rescls = sig.results[n].rescls;
-		sub.builder_state->results[n].gate = graph->create_gate(
-			*jive_resource_class_get_type(rescls), sig.results[n].name, rescls);
-	}
-	for (size_t n = 0; n < sig.passthroughs.size(); ++n) {
-		if (sig.passthroughs[n].rescls) {
-			const struct jive_resource_class * rescls = sig.passthroughs[n].rescls;
-			sub.builder_state->passthroughs[n].gate = graph->create_gate(
-				*jive_resource_class_get_type(rescls), sig.passthroughs[n].name, rescls);
-		} else {
-			jive::mem::type memory_type;
-			sub.builder_state->passthroughs[n].gate = graph->create_gate(memory_type,
-				sig.passthroughs[n].name.c_str());
-		}
-		sub.builder_state->passthroughs[n].gate->may_spill = sig.passthroughs[n].may_spill;
-		sub.builder_state->passthroughs[n].output = dynamic_cast<jive::output*>(enter->add_output(
-			sub.builder_state->passthroughs[n].gate));
+			*jive_resource_class_get_type(rescls), sub.signature.arguments[n].name, rescls);
+		sub.builder_state->arguments[n].output = sub.region->add_argument(nullptr,
+			sub.builder_state->arguments[n].gate);
 	}
 
-	sub.signature = std::move(sig);
+	for (size_t n = 0; n < sub.signature.results.size(); n++) {
+		auto rescls = sub.signature.results[n].rescls;
+		sub.builder_state->results[n].gate = graph->create_gate(
+			*jive_resource_class_get_type(rescls), sub.signature.results[n].name, rescls);
+	}
+
+	for (size_t n = 0; n < sub.signature.passthroughs.size(); n++) {
+		if (sub.signature.passthroughs[n].rescls) {
+			auto rescls = sub.signature.passthroughs[n].rescls;
+			sub.builder_state->passthroughs[n].gate = graph->create_gate(
+				*jive_resource_class_get_type(rescls), sub.signature.passthroughs[n].name, rescls);
+		} else {
+			sub.builder_state->passthroughs[n].gate = graph->create_gate(jive::mem::type::instance(),
+				sub.signature.passthroughs[n].name);
+		}
+
+		sub.builder_state->passthroughs[n].gate->may_spill = sub.signature.passthroughs[n].may_spill;
+		sub.builder_state->passthroughs[n].output = sub.region->add_argument(nullptr,
+			sub.builder_state->passthroughs[n].gate);
+	}
 
 	return sub;
 }
@@ -152,28 +153,21 @@ jive_subroutine_begin(
 jive::node *
 jive_subroutine_end(jive_subroutine & self)
 {
-	jive::output * control_return = self.hl_builder->finalize(self);
-	jive::node * leave = jive_opnode_create(jive::subroutine_tail_op(), self.region,
-		{self.region->top()->output(0), control_return});
+	auto ctl_return = self.hl_builder->finalize(self);
+	self.region->add_result(ctl_return, nullptr, ctl_return->type());
 
-	std::vector<jive::oport*> outputs;
-	for (size_t n = 0; n < leave->noutputs(); n++)
-		outputs.push_back(leave->output(n));
+	for (const auto & pt : self.builder_state->passthroughs)
+		self.region->add_result(pt.output, nullptr, pt.gate);
 
-	jive::node * subroutine_node = jive_opnode_create(jive::subroutine_op(std::move(self.signature)),
-		self.region->parent(), outputs);
-	
-	for (const auto & pt : self.builder_state->passthroughs) {
-		leave->add_input(pt.gate, pt.output);
-	}
-	for (const auto & res : self.builder_state->results) {
-		leave->add_input(res.gate, res.output);
-	}
+	for (const auto & res : self.builder_state->results)
+		self.region->add_result(res.output, nullptr, res.gate);
 
-	return subroutine_node;
+	self.node->add_output(&jive::mem::type::instance());
+
+	return self.node;
 }
 
-jive::output *
+jive::oport *
 jive_subroutine_simple_get_argument(
 	jive_subroutine & self,
 	size_t index)
@@ -190,7 +184,7 @@ jive_subroutine_simple_set_result(
 	self.hl_builder->value_return(self, index, value);
 }
 
-jive::output *
+jive::oport *
 jive_subroutine_simple_get_global_state(const jive_subroutine & self)
 {
 	return self.builder_state->passthroughs[0].output;

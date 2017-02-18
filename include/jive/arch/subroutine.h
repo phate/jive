@@ -27,7 +27,7 @@ public:
 	virtual
 	~subroutine_hl_builder_interface() noexcept;
 
-	virtual output *
+	virtual oport *
 	value_parameter(
 		jive_subroutine & subroutine,
 		size_t index) = 0;
@@ -48,7 +48,7 @@ public:
 	struct gated_port {
 		gated_port() : gate(0), output(0) {}
 		jive::gate * gate;
-		jive::output * output;
+		jive::oport * output;
 	};
 
 	inline
@@ -72,6 +72,7 @@ struct jive_subroutine_abi_class;
 
 struct jive_subroutine {
 	jive::region * region;
+	jive::structural_node * node;
 	
 	std::unique_ptr<jive::subroutine_builder_state> builder_state;
 	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder;
@@ -96,7 +97,7 @@ jive_subroutine_end(jive_subroutine & self);
 /**
 	\brief Get argument value
 */
-jive::output *
+jive::oport *
 jive_subroutine_simple_get_argument(
 	jive_subroutine & self,
 	size_t index);
@@ -107,7 +108,7 @@ jive_subroutine_simple_set_result(
 	size_t index,
 	jive::output * value);
 
-jive::output *
+jive::oport *
 jive_subroutine_simple_get_global_state(const jive_subroutine & self);
 
 void
@@ -123,7 +124,7 @@ enum jive_argument_type {
 };
 
 struct jive_value_split_factory {
-	jive::output * (*split)(const jive_value_split_factory * self, jive::output * value);
+	jive::oport * (*split)(const jive_value_split_factory * self, jive::oport * value);
 };
 
 struct jive_subroutine_late_transforms {

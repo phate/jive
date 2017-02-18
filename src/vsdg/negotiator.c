@@ -540,7 +540,7 @@ jive_negotiator_create_input_connection(jive_negotiator * self, jive::input * in
 }
 
 jive_negotiator_connection *
-jive_negotiator_create_output_connection(jive_negotiator * self, jive::output * output)
+jive_negotiator_create_output_connection(jive_negotiator * self, jive::oport * output)
 {
 	jive_negotiator_connection * connection = 0;
 	for (auto user : output->users) {
@@ -676,7 +676,7 @@ jive_negotiator_annotate_node_(jive_negotiator * self, jive::node * node)
 		self->input_map.insert(port);
 	}
 	for(n = 0; n < node->noutputs(); n++) {
-		jive::output * output = dynamic_cast<jive::output*>(node->output(n));
+		auto output = node->output(n);
 		if (!output->gate()) continue;
 		if (!self->class_->option_gate_default(self, self->tmp_option, output->gate()))
 			continue;

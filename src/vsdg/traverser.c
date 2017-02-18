@@ -151,7 +151,8 @@ bottomup_traverser::next()
 	}
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
+		auto producer = node->input(n)->origin()->node();
+		if (producer) check_node(producer);
 	}
 	return node;
 }

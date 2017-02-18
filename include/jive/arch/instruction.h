@@ -99,31 +99,31 @@ jive::node *
 jive_instruction_node_create_simple(
 	struct jive::region * region,
 	const jive_instruction_class * icls,
-	jive::output * const * operands,
+	jive::oport * const * operands,
 	const int64_t * immediates);
 
 jive::node *
 jive_instruction_node_create_extended(
 	struct jive::region * region,
 	const jive_instruction_class * icls,
-	jive::output * const * operands,
+	jive::oport * const * operands,
 	const jive::immediate immediates[]);
 
 jive::node *
 jive_instruction_node_create(
 	struct jive::region * region,
 	const jive_instruction_class * icls,
-	const std::vector<jive::output*> & operands,
+	const std::vector<jive::oport*> & operands,
 	const std::vector<jive::immediate> & immediates,
 	const std::vector<const jive::state::type*> & itypes,
-	const std::vector<jive::output*> & istates,
+	const std::vector<jive::oport*> & istates,
 	const std::vector<const jive::state::type*> & otypes);
 
 JIVE_EXPORTED_INLINE jive::node *
 jive_instruction_node_create(
 	struct jive::region * region,
 	const jive_instruction_class * icls,
-	jive::output * const * operands,
+	jive::oport * const * operands,
 	const int64_t * immediates)
 {
 	return jive_instruction_node_create_simple(region, icls, operands, immediates);

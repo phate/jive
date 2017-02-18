@@ -401,7 +401,7 @@ create_xfer(jive::region * region, jive::output * origin,
 	const jive_resource_class * out_relaxed = jive_resource_class_relax(out_class);
 	
 	if (in_relaxed == CLS(gpr) && out_relaxed == CLS(gpr)) {
-		jive::output * tmparray8[] = {origin};
+		jive::oport * tmparray8[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive_testarch_instr_move_gpr,
@@ -409,7 +409,7 @@ create_xfer(jive::region * region, jive::output * origin,
 		xfer.input = dynamic_cast<jive::input*>(xfer.node->input(0));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
 	} else if (in_relaxed == CLS(gpr)) {
-		jive::output * tmparray9[] = {origin};
+		jive::oport * tmparray9[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive_testarch_instr_spill_gpr,
@@ -547,12 +547,12 @@ public:
 	{
 	}
 
-	virtual jive::output *
+	virtual jive::oport *
 	value_parameter(
 		jive_subroutine & subroutine,
 		size_t index) override
 	{
-		jive::output * o = subroutine.builder_state->arguments[index].output;
+		jive::oport * o = subroutine.builder_state->arguments[index].output;
 	
 		if (index >= 2) {
 			const jive::base::type * in_type = &o->type();

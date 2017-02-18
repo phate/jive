@@ -17,8 +17,8 @@
 
 static void
 get_slot_memory_reference(const jive_resource_class * rescls,
-	jive::immediate * displacement, jive::output ** base,
-	jive::output * sp, jive::output * fp)
+	jive::immediate * displacement, jive::oport ** base,
+	jive::oport * sp, jive::oport * fp)
 {
 	if (jive_resource_class_isinstance(rescls, &JIVE_STACK_CALLSLOT_RESOURCE)) {
 		*displacement = jive::immediate(0, &jive_label_spoffset);
@@ -37,15 +37,15 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 	
 	jive::node * sub = jive_region_get_subroutine_node(region);
 	
-	jive::output * sp = jive_subroutine_node_get_sp(sub);
-	jive::output * fp = jive_subroutine_node_get_fp(sub);
+	auto sp = jive_subroutine_node_get_sp(sub);
+	auto fp = jive_subroutine_node_get_fp(sub);
 	
 	bool in_mem = !jive_resource_class_isinstance(in_class, &JIVE_REGISTER_RESOURCE);
 	bool out_mem = !jive_resource_class_isinstance(out_class, &JIVE_REGISTER_RESOURCE);
 	
 	if (in_mem) {
 		jive::immediate displacement;
-		jive::output * base;
+		jive::oport * base;
 		get_slot_memory_reference(in_class, &displacement, &base, sp, fp);
 		xfer.node = jive_instruction_node_create_extended(
 			region,
@@ -55,9 +55,9 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->output(0));
 	} else if (out_mem) {
 		jive::immediate displacement;
-		jive::output * base;
+		jive::oport * base;
 		get_slot_memory_reference(out_class, &displacement, &base, sp, fp);
-		jive::output * tmparray0[] = {base, origin};
+		jive::oport * tmparray0[] = {base, origin};
 		xfer.node = jive_instruction_node_create_extended(
 			region,
 			&jive_i386_instr_int_store32_disp,
@@ -65,7 +65,7 @@ jive_i386_create_xfer(jive::region * region, jive::output * origin,
 		xfer.input = dynamic_cast<jive::input*>(xfer.node->input(1));
 		xfer.output = dynamic_cast<jive::output*>(xfer.node->add_output(out_class));
 	} else {
-		jive::output * tmparray1[] = {origin};
+		jive::oport * tmparray1[] = {origin};
 		xfer.node = jive_instruction_node_create(
 			region,
 			&jive_i386_instr_int_transfer,

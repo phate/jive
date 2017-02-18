@@ -31,16 +31,16 @@ static int test_main(void)
 		4, tmparray0,
 		1, tmparray1);
 	
-	jive::output * arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
-	jive::output * arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
-	jive::output * arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
-	jive::output * tmparray2[] = {arg1, arg2};
+	auto arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
+	auto arg2 = jive_subroutine_simple_get_argument(subroutine, 1);
+	auto arg3 = jive_subroutine_simple_get_argument(subroutine, 2);
+	jive::oport * tmparray2[] = {arg1, arg2};
 	
 	jive::output * s1 = dynamic_cast<jive::output*>(jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
 		tmparray2, NULL)->output(0));
-	jive::output * tmparray3[] = {s1, arg3};
+	jive::oport * tmparray3[] = {s1, arg3};
 	jive::output * s2 = dynamic_cast<jive::output*>(jive_instruction_node_create(
 		subroutine.region,
 		&jive_testarch_instr_add,
