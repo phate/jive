@@ -34,9 +34,6 @@ jive_input_is_valid(const jive::input * input)
 	if (dynamic_cast<const jive::achr::type*>(&input->type()))
 		return origin_region->parent() == region;
 
-	if (dynamic_cast<const jive::region_head_op*>(&input->node()->operation()))
-		return origin_region == region->parent();
-
 	return origin_region == region;
 }
 
@@ -410,10 +407,7 @@ jive_opnode_create(
 
 	/* FIXME: region head/tail nodes are a bit quirky, but they
 	 * will go away eventually anyways */
-	if (dynamic_cast<const jive::region_head_op *>(&op)) {
-		JIVE_DEBUG_ASSERT(!region->top());
-		region->set_top(node);
-	} else if (dynamic_cast<const jive::region_tail_op *>(&op)) {
+	if (dynamic_cast<const jive::region_tail_op *>(&op)) {
 		JIVE_DEBUG_ASSERT(!region->bottom());
 		region->set_bottom(node);
 	}

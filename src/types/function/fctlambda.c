@@ -16,8 +16,6 @@
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/structural_node.h>
 
-/* lambda enter node */
-
 /* lambda leave node */
 
 
@@ -25,34 +23,6 @@
 
 namespace jive {
 namespace fct {
-
-lambda_head_op::~lambda_head_op() noexcept
-{
-}
-
-size_t
-lambda_head_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-lambda_head_op::result_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-lambda_head_op::debug_string() const
-{
-	return "LAMBDA_HEAD";
-}
-
-std::unique_ptr<jive::operation>
-lambda_head_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new lambda_head_op(*this));
-}
 
 lambda_tail_op::~lambda_tail_op() noexcept
 {

@@ -21,34 +21,6 @@
 
 namespace jive {
 
-theta_head_op::~theta_head_op() noexcept
-{
-}
-
-size_t
-theta_head_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-theta_head_op::result_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-theta_head_op::debug_string() const
-{
-	return "THETA_HEAD";
-}
-
-std::unique_ptr<jive::operation>
-theta_head_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new theta_head_op(*this));
-}
-
 theta_tail_op::~theta_tail_op() noexcept
 {
 }

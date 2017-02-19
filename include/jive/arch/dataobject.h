@@ -16,53 +16,6 @@
 
 namespace jive {
 
-class dataobj_head_op final : public region_head_op {
-public:
-	virtual
-	~dataobj_head_op() noexcept;
-
-	template<typename Container>
-	dataobj_head_op(const Container & container)
-		: types_(detail::unique_ptr_vector_copy(container))
-	{
-	}
-
-	inline
-	dataobj_head_op(std::vector<std::unique_ptr<const base::type>> && types)
-		: types_(std::move(types))
-	{
-	}
-
-	inline
-	dataobj_head_op(const dataobj_head_op & other)
-		: types_(detail::unique_ptr_vector_copy(other.types_))
-	{
-	}
-
-	inline
-	dataobj_head_op(dataobj_head_op && other) noexcept = default;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const base::type &
-	argument_type(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const base::type &
-	result_type(size_t index) const noexcept override;
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-
-private:
-	std::vector<std::unique_ptr<const base::type>> types_;
-};
-
 class dataobj_tail_op final : public region_tail_op {
 public:
 	virtual

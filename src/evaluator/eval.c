@@ -324,27 +324,6 @@ eval_apply_node(const jive::node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_lambda_head_node(const jive::node * node, size_t index, context & ctx)
-{
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_head_op*>(&node->operation()));
-
-	if (index < ctx.top_arguments().size()+1) {
-		/* it is an argument */
-		jive::oport * argument = node->output(index);
-		JIVE_DEBUG_ASSERT(!ctx.exists(argument));
-
-		const literal * v = ctx.top_arguments()[index-1].get();
-		ctx.insert(argument, v);
-
-		std::unique_ptr<const literal> result = std::move(v->copy());
-		return result;
-	} else {
-		/* it is an external dependency */
-		return eval_input(node->input(node->noutputs()-index-1), ctx);
-	}
-}
-
-static const std::unique_ptr<const literal>
 eval_lambda_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::fct::lambda_op*>(&node->operation()));
@@ -361,13 +340,6 @@ eval_lambda_node(const jive::node * node, size_t index, context & ctx)
 	ctx.pop_frame(region);
 
 	return fct;
-}
-
-static const std::unique_ptr<const literal>
-eval_gamma_head_node(const jive::node * node, size_t index, context & ctx)
-{
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::gamma_head_op*>(&node->operation()));
-	return eval_input(node->input(index-1), ctx);
 }
 
 static const std::unique_ptr<const literal>
@@ -395,15 +367,6 @@ eval_gamma_node(const jive::node * node, size_t index, context & ctx)
 		ctx.insert(node->output(n), results[n].get());
 
 	std::unique_ptr<const literal> result = std::move(results[index]->copy());
-	return result;
-}
-
-static const std::unique_ptr<const literal>
-eval_theta_head_node(const jive::node * node, size_t index, context & ctx)
-{
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::theta_head_op*>(&node->operation()));
-
-	std::unique_ptr<const literal> result = std::move(eval_input(node->input(index-1), ctx));
 	return result;
 }
 
@@ -441,22 +404,6 @@ eval_theta_node(const jive::node * node, size_t index, context & ctx)
 }
 
 static const std::unique_ptr<const literal>
-eval_phi_head_node(const jive::node * node, size_t index, context & ctx)
-{
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_head_op*>(&node->operation()));
-
-	jive::node * tail = node->region()->bottom();
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_tail_op*>(&tail->operation()));
-
-	ctx.push_frame(tail->region());
-	std::unique_ptr<const literal> result = std::move(eval_input(tail->input(index), ctx));
-	ctx.pop_frame(tail->region());
-
-	return result;
-}
-
-
-static const std::unique_ptr<const literal>
 eval_phi_node(const jive::node * node, size_t index, context & ctx)
 {
 	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::phi_op*>(&node->operation()));
@@ -474,13 +421,9 @@ eval_phi_node(const jive::node * node, size_t index, context & ctx)
 static eval_map evlmap
 ({
 	{std::type_index(typeid(jive::fct::apply_op)), eval_apply_node},
-	{std::type_index(typeid(jive::fct::lambda_head_op)), eval_lambda_head_node},
 	{std::type_index(typeid(jive::fct::lambda_op)), eval_lambda_node},
-	{std::type_index(typeid(jive::gamma_head_op)), eval_gamma_head_node},
 	{std::type_index(typeid(jive::gamma_op)), eval_gamma_node},
-	{std::type_index(typeid(jive::theta_head_op)), eval_theta_head_node},
 	{std::type_index(typeid(jive::theta_op)), eval_theta_node},
-	{std::type_index(typeid(jive::phi_head_op)), eval_phi_head_node},
 	{std::type_index(typeid(jive::phi_op)), eval_phi_node}
 });
 

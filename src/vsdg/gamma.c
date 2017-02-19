@@ -24,34 +24,6 @@
 
 namespace jive {
 
-gamma_head_op::~gamma_head_op() noexcept
-{
-}
-
-size_t
-gamma_head_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-gamma_head_op::result_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-gamma_head_op::debug_string() const
-{
-	return "GAMMA_HEAD";
-}
-
-std::unique_ptr<jive::operation>
-gamma_head_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new gamma_head_op(*this));
-}
-
 gamma_tail_op::~gamma_tail_op() noexcept
 {
 }

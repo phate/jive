@@ -18,34 +18,6 @@
 
 namespace jive {
 
-phi_head_op::~phi_head_op() noexcept
-{
-}
-
-size_t
-phi_head_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-phi_head_op::result_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-phi_head_op::debug_string() const
-{
-	return "PHI_HEAD";
-}
-
-std::unique_ptr<jive::operation>
-phi_head_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new phi_head_op(*this));
-}
-
 phi_tail_op::~phi_tail_op() noexcept
 {
 }

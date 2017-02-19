@@ -24,46 +24,6 @@
 
 namespace jive {
 
-dataobj_head_op::~dataobj_head_op() noexcept
-{
-}
-
-size_t
-dataobj_head_op::narguments() const noexcept
-{
-	return types_.size();
-}
-
-const base::type &
-dataobj_head_op::argument_type(size_t index) const noexcept
-{
-	return *types_[index];
-}
-
-size_t
-dataobj_head_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-dataobj_head_op::result_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-dataobj_head_op::debug_string() const
-{
-	return "DATA_HEAD";
-}
-
-std::unique_ptr<jive::operation>
-dataobj_head_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new dataobj_head_op(*this));
-}
-
 dataobj_tail_op::~dataobj_tail_op() noexcept
 {
 }

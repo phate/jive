@@ -22,9 +22,6 @@ jive_input_is_valid(const jive::input * input)
 	if (dynamic_cast<const jive::achr::type*>(&input->type()))
 		return origin_region->parent() == region;
 
-	if (dynamic_cast<const jive::region_head_op*>(&input->node()->operation()))
-		return origin_region == region->parent();
-
 	return origin_region == region;
 }
 
