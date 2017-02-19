@@ -5,8 +5,6 @@ TESTS+=\
 	vsdg/test-graph \
 	vsdg/test-graphtraverser \
 	vsdg/test-mutable-traverser \
-	vsdg/test-negotiator \
-	vsdg/test-node_cse \
 	vsdg/test-phi \
 	vsdg/test-prune-replace \
 	vsdg/test-rescls-count \
