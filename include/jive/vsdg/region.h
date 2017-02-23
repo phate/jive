@@ -201,12 +201,6 @@ public:
 		bottom_ = bottom;
 	}
 
-	inline jive::input *
-	anchor() const noexcept
-	{
-		return anchor_;
-	}
-
 	inline jive::structural_node *
 	node() const noexcept
 	{
@@ -299,7 +293,6 @@ private:
 	jive::node * bottom_;
 	jive_graph * graph_;
 	jive::region * parent_;
-	jive::input * anchor_;
 	jive::structural_node * node_;
 	std::vector<jive::result*> results_;
 	std::vector<jive::argument*> arguments_;
