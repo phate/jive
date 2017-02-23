@@ -151,38 +151,42 @@ view(const jive::region * region, FILE * out)
 	fflush(out);
 }
 
-static std::string
-region_tree_string_recursive(const jive::region * region, size_t depth)
-{
-	std::string string(depth, '-');
-	if (region->anchor()) {
-		char tmp[32];
-		snprintf(tmp, sizeof(tmp), "%p", region);
-		string.append(region->anchor()->node()->operation().debug_string())
-		.append("_").append(tmp).append("\n");
-	} else
-		string.append("ROOT\n");
-
-	jive::region * subregion;
-	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
-		string.append(region_tree_string_recursive(subregion, depth+1));
-
-	return string;
-}
-
 std::string
-region_tree_string(const jive::region * region)
+region_tree(const jive::region * region)
 {
-	std::string string;
-	string.append(region_tree_string_recursive(region, 0));
-	return string;
+	std::function<std::string(const jive::region *, size_t)> f = [&] (
+		const jive::region * region,
+		size_t depth
+	) {
+		std::string subtree;
+		if (region->node()) {
+			if (region->node()->nsubregions() != 1) {
+				subtree += std::string(depth, '-') + detail::strfmt(region) + "\n";
+				depth += 1;
+			}
+		} else {
+			subtree = "ROOT\n";
+			depth += 1;
+		}
+
+		for (const auto & node : region->nodes) {
+			if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+				subtree += std::string(depth, '-') + snode->operation().debug_string() + "\n";
+				for (size_t n = 0; n < snode->nsubregions(); n++)
+					subtree += f(snode->subregion(n), depth+1);
+			}
+		}
+
+		return subtree;
+	};
+
+	return f(region, 0);
 }
 
 void
 region_tree(const jive::region * region, FILE * out)
 {
-	std::string s = region_tree_string(region);
-	fputs(s.c_str(), out);
+	fputs(region_tree(region).c_str(), out);
 	fflush(out);
 }
 

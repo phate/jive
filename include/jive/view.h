@@ -22,7 +22,7 @@ std::string
 view(const jive::region * region);
 
 std::string
-region_tree_string(const jive::region * region);
+region_tree(const jive::region * region);
 
 void
 region_tree(const jive::region * region, FILE * out);
