@@ -59,4 +59,4 @@ static int test_main(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("vsdg/test-mutable-traverser", test_main);
+JIVE_UNIT_TEST_REGISTER("vsdg/traverser/test-mutable-traverser", test_main);

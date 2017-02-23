@@ -104,4 +104,4 @@ static int test_main(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("vsdg/test-cone-traverser", test_main);
+JIVE_UNIT_TEST_REGISTER("vsdg/traverser/test-cone-traverser", test_main);
