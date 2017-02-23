@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
@@ -21,8 +20,6 @@
 
 static int test_main()
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive::mem::type memtype;
@@ -46,7 +43,7 @@ static int test_main()
 	graph.normalize();
 	graph.prune();
 
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
 

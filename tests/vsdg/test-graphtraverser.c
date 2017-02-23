@@ -8,7 +8,6 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -130,7 +129,6 @@ void test_traversal_insertion(jive_graph * graph, jive::node * n1, jive::node * 
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
 	jive_graph graph;
 	jive_test_value_type type;
 	jive::node * n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});

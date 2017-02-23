@@ -8,7 +8,6 @@
 #include "testnodes.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
@@ -20,8 +19,6 @@
 
 static int test_unnchoose(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	static const jive::bits::type bits8(8);
@@ -51,7 +48,7 @@ static int test_unnchoose(void)
 	graph.normalize();
 	graph.prune();
 
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
 	assert(c0->node()->operation() == c2->node()->operation());
@@ -65,8 +62,6 @@ JIVE_UNIT_TEST_REGISTER("types/union/test-unnchoose", test_unnchoose);
 
 static int test_unnunify(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 	
 	static const jive::bits::type bits8(8);
@@ -92,7 +87,7 @@ static int test_unnunify(void)
 	graph.normalize();
 	graph.prune();
 
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	assert(u0->node()->operation() != u1->node()->operation());
 

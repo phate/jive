@@ -169,7 +169,7 @@ test_fib_rec(struct jive_graph * graph)
 	auto fib_rec = setup_fib_rec(graph);
 	graph->export_port(fib_rec, "fib_rec");
 
-	jive_view(graph, stdout);
+	jive::view(graph->root(), stdout);
 
 	std::unique_ptr<const literal> result;
 
@@ -232,7 +232,7 @@ test_loadstore(struct jive_graph * graph)
 
 	graph->export_port(f, "loadstore");
 
-	jive_view(graph, stdout);
+	jive::view(graph->root(), stdout);
 
 	uint32_t v = 0xF05;
 
@@ -246,8 +246,6 @@ test_loadstore(struct jive_graph * graph)
 static int
 test_evaluator()
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	test_fib_iter(&graph);

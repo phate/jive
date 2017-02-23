@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/regvalue.h>
 #include <jive/arch/subroutine/nodes.h>
@@ -18,8 +17,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 	jive_argument_type  tmparray0[] = {
 			jive_argument_long, jive_argument_long,
@@ -44,7 +41,7 @@ static int test_main(void)
 	
 	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
 	
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 	
 	jive_testarch_reg_classifier classifier;
 	jive_regselector regselect;

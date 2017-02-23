@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/memlayout-simple.h>
@@ -24,8 +23,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive::bits::type bits4(4);
@@ -59,7 +56,7 @@ static int test_main(void)
 		std::vector<const jive::base::type*>(8, &bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {&bits32});
 	graph.export_port(bottom->output(0), "dummy");
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	jive::memlayout_mapper_simple layout_mapper(4);
 	for (jive::node * node : jive::topdown_traverser(&graph)) {
@@ -86,7 +83,7 @@ static int test_main(void)
 	assert(dynamic_cast<jive::output*>(bottom->input(7)->origin())->node()->operation()
 		== jive::bits::uint_constant_op(32, 4));
 	
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }

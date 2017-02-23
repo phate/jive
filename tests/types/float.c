@@ -1,7 +1,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/types/float.h>
 #include <jive/types/float/fltconstant.h>
@@ -12,8 +11,6 @@
 static int
 types_float_arithmetic_test_fltdifference(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -24,7 +21,7 @@ types_float_arithmetic_test_fltdifference(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -34,8 +31,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltdifference", types_float
 static int
 types_float_arithmetic_test_fltnegate(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -45,7 +40,7 @@ types_float_arithmetic_test_fltnegate(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -55,8 +50,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltnegate", types_float_ari
 
 static int types_float_arithmetic_test_fltproduct(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -67,7 +60,7 @@ static int types_float_arithmetic_test_fltproduct(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -76,8 +69,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltproduct", types_float_ar
 
 static int types_float_arithmetic_test_fltquotient(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -88,7 +79,7 @@ static int types_float_arithmetic_test_fltquotient(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -97,8 +88,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltquotient", types_float_a
 
 static int types_float_arithmetic_test_fltsum(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -109,7 +98,7 @@ static int types_float_arithmetic_test_fltsum(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -118,8 +107,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltsum", types_float_arithm
 
 static int types_float_comparison_test_fltequal(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -130,7 +117,7 @@ static int types_float_comparison_test_fltequal(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -139,8 +126,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltequal", types_float_comp
 
 static int types_float_comparison_test_fltgreater(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -151,7 +136,7 @@ static int types_float_comparison_test_fltgreater(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -160,8 +145,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreater", types_float_co
 
 static int types_float_comparison_test_fltgreatereq(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -172,7 +155,7 @@ static int types_float_comparison_test_fltgreatereq(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -181,8 +164,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreatereq", types_float_
 
 static int types_float_comparison_test_fltless(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -193,7 +174,7 @@ static int types_float_comparison_test_fltless(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -202,8 +183,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltless", types_float_compa
 
 static int types_float_comparison_test_fltlesseq(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -214,7 +193,7 @@ static int types_float_comparison_test_fltlesseq(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -224,8 +203,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltlesseq", types_float_com
 static int
 types_float_comparison_test_fltnotequal(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_fltsymbolicconstant(&graph, "s0");
@@ -236,7 +213,7 @@ types_float_comparison_test_fltnotequal(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -246,8 +223,6 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltnotequal", types_float_c
 static int
 types_float_test_fltconstant(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive_fltconstant_float(graph.root(), -1.0);
@@ -256,7 +231,7 @@ types_float_test_fltconstant(void)
 	jive_fltconstant_float(graph.root(), 0.0 / 0.0);
 	jive_fltconstant_float(graph.root(), 1.0 / 0.0);
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }

@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/subroutine/nodes.h>
 #include <jive/view.h>
@@ -16,8 +15,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 	jive_argument_type  tmparray0[] = {
 		jive_argument_long,
@@ -49,7 +46,7 @@ static int test_main(void)
 	
 	graph.export_port(jive_subroutine_end(subroutine)->output(0), "dummy");
 	
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 #if 0
 	jive_context * context2 = jive_context_create();

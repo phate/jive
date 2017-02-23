@@ -8,7 +8,6 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <locale.h>
 #include <stdio.h>
 
 #include <jive/view.h>

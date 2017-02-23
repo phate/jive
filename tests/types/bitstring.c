@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -23,8 +22,6 @@
 
 static int types_bitstring_arithmetic_test_bitand(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -40,7 +37,7 @@ static int types_bitstring_arithmetic_test_bitand(void)
 	graph.export_port(and1, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(and0->node()->operation() == jive::bits::and_op(32));
 	assert(and1->node()->operation() == jive::bits::int_constant_op(32, +1));
@@ -52,8 +49,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitand", types_bitstrin
 
 static int types_bitstring_arithmetic_test_bitashr(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -77,7 +72,7 @@ static int types_bitstring_arithmetic_test_bitashr(void)
 	graph.export_port(ashr4, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(ashr0->node()->operation() == jive::bits::ashr_op(32));
 	assert(ashr1->node()->operation() == jive::bits::int_constant_op(32, 4));
@@ -92,8 +87,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitashr", types_bitstri
 
 static int types_bitstring_arithmetic_test_bitdifference(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -105,7 +98,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(diff->node()->operation() == jive::bits::sub_op(32));
 
@@ -116,8 +109,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitdifference", types_b
 
 static int types_bitstring_arithmetic_test_bitnegate(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -132,7 +123,7 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	graph.export_port(neg2, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(neg0->node()->operation() == jive::bits::neg_op(32));
 	assert(neg1->node()->operation() == jive::bits::int_constant_op(32, -3));
@@ -145,8 +136,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitnegate", types_bitst
 
 static int types_bitstring_arithmetic_test_bitnot(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -161,7 +150,7 @@ static int types_bitstring_arithmetic_test_bitnot(void)
 	graph.export_port(not2, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(not0->node()->operation() == jive::bits::not_op(32));
 	assert(not1->node()->operation() == jive::bits::int_constant_op(32, -4));
@@ -174,8 +163,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitnot", types_bitstrin
 
 static int types_bitstring_arithmetic_test_bitor(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -191,7 +178,7 @@ static int types_bitstring_arithmetic_test_bitor(void)
 	graph.export_port(or1, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(or0->node()->operation() == jive::bits::or_op(32));
 	assert(or1->node()->operation() == jive::bits::uint_constant_op(32, 7));
@@ -203,8 +190,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitor", types_bitstring
 
 static int types_bitstring_arithmetic_test_bitproduct(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -221,7 +206,7 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(product0->node()->operation() == jive::bits::mul_op(32));
 	assert(product1->node()->operation() == jive::bits::uint_constant_op(32, 15));
@@ -233,8 +218,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitproduct", types_bits
 
 static int types_bitstring_arithmetic_test_bitshiproduct(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -246,7 +229,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(shiproduct->node()->operation() == jive::bits::smulh_op(32));
 
@@ -257,8 +240,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshiproduct", types_b
 
 static int types_bitstring_arithmetic_test_bitshl(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -277,7 +258,7 @@ static int types_bitstring_arithmetic_test_bitshl(void)
 	graph.export_port(shl2, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(shl0->node()->operation() == jive::bits::shl_op(32));
 	assert(shl1->node()->operation() == jive::bits::uint_constant_op(32, 64));
@@ -290,8 +271,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshl", types_bitstrin
 
 static int types_bitstring_arithmetic_test_bitshr(void)
 {
-	setlocale(LC_ALL, "");
-	
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -310,7 +289,7 @@ static int types_bitstring_arithmetic_test_bitshr(void)
 	graph.export_port(shr2, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 	
 	assert(shr0->node()->operation() == jive::bits::shr_op(32));
 	assert(shr1->node()->operation() == jive::bits::uint_constant_op(32, 4));
@@ -323,8 +302,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitshr", types_bitstrin
 
 static int types_bitstring_arithmetic_test_bitsmod(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -341,7 +318,7 @@ static int types_bitstring_arithmetic_test_bitsmod(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(smod0->node()->operation() == jive::bits::smod_op(32));
 	assert(smod1->node()->operation() == jive::bits::int_constant_op(32, -1));
@@ -353,8 +330,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsmod", types_bitstri
 
 static int types_bitstring_arithmetic_test_bitsquotient(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -371,7 +346,7 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(squot0->node()->operation() == jive::bits::sdiv_op(32));
 	assert(squot1->node()->operation() == jive::bits::int_constant_op(32, -2));
@@ -383,8 +358,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsquotient", types_bi
 
 static int types_bitstring_arithmetic_test_bitsum(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -401,7 +374,7 @@ static int types_bitstring_arithmetic_test_bitsum(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(sum0->node()->operation() == jive::bits::add_op(32));
 	assert(sum1->node()->operation() == jive::bits::int_constant_op(32, 8));
@@ -413,8 +386,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitsum", types_bitstrin
 
 static int types_bitstring_arithmetic_test_bituhiproduct(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -426,7 +397,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(uhiproduct->node()->operation() == jive::bits::umulh_op(32));
 
@@ -437,8 +408,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bituhiproduct", types_b
 
 static int types_bitstring_arithmetic_test_bitumod(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -455,7 +424,7 @@ static int types_bitstring_arithmetic_test_bitumod(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(umod0->node()->operation() == jive::bits::umod_op(32));
 	assert(umod1->node()->operation() == jive::bits::int_constant_op(32, 1));
@@ -467,8 +436,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bitumod", types_bitstri
 
 static int types_bitstring_arithmetic_test_bituquotient(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -485,7 +452,7 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 
 	graph.normalize();
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(uquot0->node()->operation() == jive::bits::udiv_op(32));
 	assert(uquot1->node()->operation() == jive::bits::int_constant_op(32, 2));
@@ -497,8 +464,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/arithmetic/test-bituquotient", types_bi
 
 static int types_bitstring_arithmetic_test_bitxor(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -514,7 +479,7 @@ static int types_bitstring_arithmetic_test_bitxor(void)
 	graph.export_port(xor1, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(xor0->node()->operation() == jive::bits::xor_op(32));
 	assert(xor1->node()->operation() == jive::bits::int_constant_op(32, 6));
@@ -544,8 +509,6 @@ expect_static_false(jive::oport * port)
 
 static int types_bitstring_comparison_test_bitequal(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -565,7 +528,7 @@ static int types_bitstring_comparison_test_bitequal(void)
 	graph.export_port(equal3, "dummy");
 	
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(equal0->node()->operation() == jive::bits::eq_op(32));
 	expect_static_true(equal1);
@@ -579,8 +542,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitequal", types_bitstr
 
 static int types_bitstring_comparison_test_bitnotequal(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -600,7 +561,7 @@ static int types_bitstring_comparison_test_bitnotequal(void)
 	graph.export_port(nequal3, "dummy");
 	
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(nequal0->node()->operation() == jive::bits::ne_op(32));
 	expect_static_false(nequal1);
@@ -614,8 +575,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitnotequal", types_bit
 
 static int types_bitstring_comparison_test_bitsgreater(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -638,7 +597,7 @@ static int types_bitstring_comparison_test_bitsgreater(void)
 	graph.export_port(sgreater4, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(sgreater0->node()->operation() == jive::bits::sgt_op(32));
 	expect_static_false(sgreater1);
@@ -653,8 +612,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsgreater", types_bit
 
 static int types_bitstring_comparison_test_bitsgreatereq(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -679,7 +636,7 @@ static int types_bitstring_comparison_test_bitsgreatereq(void)
 	graph.export_port(sgreatereq5, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(sgreatereq0->node()->operation() == jive::bits::sge_op(32));
 	expect_static_false(sgreatereq1);
@@ -695,8 +652,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsgreatereq", types_b
 
 static int types_bitstring_comparison_test_bitsless(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -719,7 +674,7 @@ static int types_bitstring_comparison_test_bitsless(void)
 	graph.export_port(sless4, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(sless0->node()->operation() == jive::bits::slt_op(32));
 	expect_static_true(sless1);
@@ -734,8 +689,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitsless", types_bitstr
 
 static int types_bitstring_comparison_test_bitslesseq(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -760,7 +713,7 @@ static int types_bitstring_comparison_test_bitslesseq(void)
 	graph.export_port(slesseq5, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(slesseq0->node()->operation() == jive::bits::sle_op(32));
 	expect_static_true(slesseq1);
@@ -776,8 +729,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitslesseq", types_bits
 
 static int types_bitstring_comparison_test_bitugreater(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -800,7 +751,7 @@ static int types_bitstring_comparison_test_bitugreater(void)
 	graph.export_port(ugreater4, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(ugreater0->node()->operation() == jive::bits::ugt_op(32));
 	expect_static_false(ugreater1);
@@ -815,8 +766,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreater", types_bit
 
 static int types_bitstring_comparison_test_bitugreatereq(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -841,7 +790,7 @@ static int types_bitstring_comparison_test_bitugreatereq(void)
 	graph.export_port(ugreatereq5, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(ugreatereq0->node()->operation() == jive::bits::uge_op(32));
 	expect_static_false(ugreatereq1);
@@ -857,8 +806,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitugreatereq", types_b
 
 static int types_bitstring_comparison_test_bituless(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -881,7 +828,7 @@ static int types_bitstring_comparison_test_bituless(void)
 	graph.export_port(uless4, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(uless0->node()->operation() == jive::bits::ult_op(32));
 	expect_static_true(uless1);
@@ -896,8 +843,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bituless", types_bitstr
 
 static int types_bitstring_comparison_test_bitulesseq(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto s0 = jive_bitsymbolicconstant(graph.root(), 32, "s0");
@@ -922,7 +867,7 @@ static int types_bitstring_comparison_test_bitulesseq(void)
 	graph.export_port(ulesseq5, "dummy");
 
 	graph.prune();
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	assert(ulesseq0->node()->operation() == jive::bits::ule_op(32));
 	expect_static_true(ulesseq1);
@@ -938,8 +883,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/comparison/test-bitulesseq", types_bits
 
 static int types_bitstring_test_arithmetic(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto c0 = jive_bitconstant(graph.root(), 4, "1100");
@@ -956,7 +899,7 @@ static int types_bitstring_test_arithmetic(void)
 	jive_bitshr(c0, c1);
 	jive_bitashr(c0, c1);
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -975,8 +918,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/test-arithmetic", types_bitstring_test_
 
 static int types_bitstring_test_constant(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	auto b1 = dynamic_cast<jive::output*>(jive_bitconstant(graph.root(), 8, "00110011"));
@@ -1005,7 +946,7 @@ static int types_bitstring_test_constant(void)
 		jive_bitconstant(graph.root(), 128, MONE_64 MONE_64));
 	assert(minus_one_128->node()->operation() == jive::bits::int_constant_op(128, -1));
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -1014,8 +955,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/test-constant", types_bitstring_test_co
 
 static int types_bitstring_test_normalize(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive::bits::type bits32(32);
@@ -1059,7 +998,7 @@ static int types_bitstring_test_normalize(void)
 //	assert(op1->node()->operation() == jive::bits::int_constant_op(32, 3 + 4));
 //	assert(op2 == lambda_node->subregion(0)->argument(0));
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
@@ -1077,8 +1016,6 @@ assert_constant(jive::oport * bitstr, size_t nbits, const char bits[])
 
 static int types_bitstring_test_reduction(void)
 {
-	setlocale(LC_ALL, "");
-	
 	jive_graph graph;
 
 	auto a = jive_bitconstant(graph.root(), 4, "1100");
@@ -1135,8 +1072,6 @@ JIVE_UNIT_TEST_REGISTER("types/bitstring/test-reduction", types_bitstring_test_r
 
 static int types_bitstring_test_slice_concat(void)
 {
-	setlocale(LC_ALL, "");
-	
 	jive_graph graph;
 	
 	auto base_const1 = jive_bitconstant(graph.root(), 8, "00110111");
@@ -1237,8 +1172,6 @@ static int types_bitstring_test_slice_concat(void)
 		assert(e == f);
 	}
 	
-	//jive_graph_view(&graph);
-
 	return 0;
 }
 

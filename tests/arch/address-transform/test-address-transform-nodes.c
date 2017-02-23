@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/address-transform.h>
 #include <jive/arch/addresstype.h>
@@ -19,8 +18,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive::addr::type addrtype;
@@ -61,7 +58,7 @@ static int test_main(void)
 	assert(a2->node()->operation() != a4->node()->operation());
 	assert(b2->node()->operation() != b4->node()->operation());
 	
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	return 0;
 }

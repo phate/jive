@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/codegen.h>
 #include <jive/arch/dataobject.h>
@@ -22,8 +21,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph * &graph = jive_graph_create();
 
 	jive::output * c8 = jive_bitconstant_unsigned(graph.root(), 8, 8);
@@ -35,7 +32,7 @@ static int test_main(void)
 	jive_rodataobj(c16, &mapper);
 	jive_bssobj(c32, &mapper);
 
-	jive_view(&graph, stderr);
+	jive::view(graph->root(), stderr);
 
 	jive_compilate compilate;
 	jive_compilate_init(&compilate);

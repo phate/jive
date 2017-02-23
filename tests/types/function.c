@@ -9,7 +9,6 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/types/bitstring.h>
 #include <jive/types/function.h>
@@ -23,7 +22,6 @@
 
 static int function_test_build_lambda(void)
 {
-	setlocale(LC_ALL, "");
 	jive_graph graph;
 
 	jive::bits::type bits32(32);
@@ -36,7 +34,7 @@ static int function_test_build_lambda(void)
 
 	auto fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
 	
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 	
 	const jive::base::type * tmparray2[] = {&bits32, &bits32};
 	jive::fct::type ftype(2, tmparray2, 1, tmparray2);
@@ -50,8 +48,6 @@ JIVE_UNIT_TEST_REGISTER("function/test-build-lambda", function_test_build_lambda
 
 static int function_test_call(void)
 {
-	setlocale( LC_ALL, "" ) ;
-
 	jive_graph graph;
 
 	jive::bits::type btype(8);
@@ -66,7 +62,7 @@ static int function_test_call(void)
 
 	assert(ret->type() == btype);
 
-	jive_view( &graph, stderr ) ;
+	jive::view(graph.root(), stderr) ;
 
 	return 0 ;
 }
@@ -75,8 +71,6 @@ JIVE_UNIT_TEST_REGISTER("function/test-call", function_test_call);
 
 static int function_test_equals(void)
 {
-	setlocale( LC_ALL, "" ) ;
-
 	jive::bits::type btype0(8);
 	jive::bits::type btype1(8);
 	const jive::base::type*  tmparray0[] = { &btype0 };

@@ -8,7 +8,6 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
@@ -21,8 +20,6 @@
 
 static int test_main()
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive_test_value_type vtype;
@@ -63,7 +60,7 @@ static int test_main()
 	graph.normalize();
 	graph.prune();
 
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	jive::node * lambda_node2;
 	lambda_node2 = phi.region->result(2)->origin()->node();

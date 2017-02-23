@@ -6,8 +6,6 @@
 #include "test-registry.h"
 #include "testnodes.h"
 
-#include <locale.h>
-
 #include <jive/types/bitstring/type.h>
 #include <jive/view.h>
 #include <jive/vsdg/control.h>
@@ -18,8 +16,6 @@
 static int
 test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive::bits::type bits2(2);
@@ -38,7 +34,7 @@ test_main(void)
 	graph.export_port(result[0], "dummy");
 	assert(result[0]->node() && result[0]->node()->operation() == jive::gamma_op(3));
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 #if 0
 	//predicate reduction
 	pred = jive_control_constant(graph.root(), 3, 1);

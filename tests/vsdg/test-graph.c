@@ -8,7 +8,6 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <locale.h>
 #include <stdio.h>
 
 #include <jive/view.h>
@@ -18,7 +17,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
 	jive_graph graph;
 	
 	jive::region * region = graph.root();

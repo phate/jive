@@ -8,7 +8,6 @@
 #include "testtypes.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -18,8 +17,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-	
 	jive_graph graph;
 	
 	jive_test_state_type statetype;
@@ -33,10 +30,10 @@ static int test_main(void)
 	auto split = jive_state_split(&statetype, merged, 2);
 	jive_test_node_create(graph.root(), {&statetype, &statetype}, {split[0], split[1]}, {});
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	std::unique_ptr<jive_graph> graph2 = graph.copy();
-	jive_view(graph2.get(), stdout);
+	jive::view(graph2->root(), stdout);
 
 	return 0;
 }

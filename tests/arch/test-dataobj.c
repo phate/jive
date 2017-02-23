@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 #include <stdio.h>
 
 #include <jive/arch/codegen.h>
@@ -152,8 +151,6 @@ make_union2(jive_graph * &graph)
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-	
 	verify_asm_definition(
 		make_8bit_const,
 		"\t.byte 0xaa\n");

@@ -8,7 +8,6 @@
 #include "testnodes.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
@@ -20,8 +19,6 @@
 
 static int _test_rcdgroup(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 	
 	static const jive::bits::type bits8(8);
@@ -50,7 +47,7 @@ static int _test_rcdgroup(void)
 	graph.normalize();
 	graph.prune();
 
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	assert(g0->node()->operation() != g1->node()->operation());
 
@@ -61,8 +58,6 @@ JIVE_UNIT_TEST_REGISTER("types/record/test-rcdgroup", _test_rcdgroup);
 
 static int _test_rcdselect()
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	static const jive::bits::type bits8(8);
@@ -92,7 +87,7 @@ static int _test_rcdselect()
 	graph.normalize();
 	graph.prune();
 
-	jive_view(&graph, stderr);
+	jive::view(graph.root(), stderr);
 
 	assert(dynamic_cast<jive::output*>(bottom->input(1)->origin())->node() == top);
 	assert(s0->node()->operation() != s2->node()->operation());

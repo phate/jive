@@ -7,7 +7,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/arch/memorytype.h>
 #include <jive/vsdg.h>
@@ -16,8 +15,6 @@
 
 static int test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
 	jive::node * node0 = jive_test_node_create(graph.root(), {}, {}, {});

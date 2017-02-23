@@ -6,7 +6,6 @@
 #include "test-registry.h"
 
 #include <assert.h>
-#include <locale.h>
 
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -14,17 +13,15 @@
 static int
 test_main(void)
 {
-	setlocale(LC_ALL, "");
-
 	jive_graph graph;
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	graph.prune();
 
 	assert(graph.root()->nodes.size() == 1);
 
-	jive_view(&graph, stdout);
+	jive::view(graph.root(), stdout);
 
 	return 0;
 }
