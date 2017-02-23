@@ -85,6 +85,13 @@ public:
 		const std::string & name,
 		const jive_resource_class * rescls = &jive_root_resource_class);
 
+	inline jive::argument *
+	import(const jive::base::type & type, const std::string & name)
+	{
+		auto gate = create_gate(type, name);
+		return root()->add_argument(nullptr, gate);
+	}
+
 	inline jive::iport *
 	export_port(jive::oport * operand, const std::string & name)
 	{
