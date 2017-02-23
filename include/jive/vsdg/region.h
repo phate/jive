@@ -151,8 +151,6 @@ public:
 
 	region(jive::structural_node * node);
 
-	void reparent(jive::region * new_parent) noexcept;
-
 	inline size_t depth() const noexcept
 	{
 		return depth_;

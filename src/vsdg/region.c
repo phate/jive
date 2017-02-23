@@ -372,29 +372,6 @@ region::remove_result(size_t index)
 	results_.pop_back();
 }
 
-void
-region::reparent(jive::region * new_parent) noexcept
-{
-	std::function<void (jive::region *, size_t)> set_depth_recursive = [&](
-		jive::region * region,
-		size_t new_depth)
-	{
-		region->depth_ = new_depth;
-		jive::region * subregion;
-		JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
-			set_depth_recursive(subregion, new_depth + 1);
-	};
-
-	JIVE_LIST_REMOVE(parent()->subregions, this, region_subregions_list);
-
-	parent_ = new_parent;
-	size_t new_depth = new_parent->depth() + 1;
-	if (new_depth != depth())
-		set_depth_recursive(this, new_depth);
-
-	JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
-}
-
 bool
 region::contains(const jive::node * node) const noexcept
 {
