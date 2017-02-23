@@ -207,15 +207,6 @@ public:
 		return anchor_;
 	}
 
-	/*
-		FIXME: this is going to be removed again
-	*/
-	inline void
-	set_anchor(jive::input * anchor) noexcept
-	{
-		anchor_ = anchor;
-	}
-
 	inline jive::structural_node *
 	node() const noexcept
 	{

@@ -65,14 +65,6 @@ input::input(
 	if (this->type() != origin->type())
 		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
-	/*
-		FIXME: This is going to be removed once we switched Jive to the new node representation.
-	*/
-	if (dynamic_cast<const jive::achr::type*>(&type)) {
-		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
-		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
-	}
-
 	if (origin->node() && !origin->node()->has_successors())
 		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
@@ -91,14 +83,6 @@ input::input(
 
 	if (type() != origin->type())
 		throw jive::type_error(type().debug_string(), origin->type().debug_string());
-
-	/*
-		FIXME: This is going to be removed once we switched Jive to the new node representation.
-	*/
-	if (dynamic_cast<const jive::achr::type*>(&type())) {
-		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
-		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
-	}
 
 	for (size_t n = 0; n < index; n++) {
 		jive::input * other = dynamic_cast<jive::input*>(node->input(n));
@@ -125,14 +109,6 @@ input::input(
 
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
-
-	/*
-		FIXME: This is going to be removed once we switched Jive to the new node representation.
-	*/
-	if (dynamic_cast<const jive::achr::type*>(&type)) {
-		JIVE_DEBUG_ASSERT(dynamic_cast<jive::output*>(origin)->node()->region()->anchor() == nullptr);
-		dynamic_cast<jive::output*>(origin)->node()->region()->set_anchor(this);
-	}
 
 	if (origin->node() && !origin->node()->has_successors())
 		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
