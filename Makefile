@@ -54,12 +54,7 @@ LIBJIVE_SRC += \
 LIBJIVE_SRC += \
 	src/util/buffer.c \
 	src/util/callbacks.c \
-	src/util/textcanvas.c \
 	src/view.c \
-	src/view/graphview.c \
-	src/view/nodeview.c \
-	src/view/regionview.c \
-	src/view/reservationtracker.c  \
 
 # bitstrings
 LIBJIVE_SRC += \

@@ -4,45 +4,10 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/util/textcanvas.h>
 #include <jive/view.h>
-#include <jive/view/graphview.h>
-#include <jive/util/textcanvas.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/structural_node.h>
-
-void
-jive_view(const struct jive_graph * graph, FILE * out)
-{
-	jive_graphview graphview(graph);
-	jive_graphview_draw(&graphview);
-	jive_textcanvas_write(&graphview.canvas, out);
-	fflush(out);
-}
-
-std::vector<wchar_t>
-jive_view_wstring(const struct jive_graph * graph)
-{
-	jive_graphview graphview(graph);
-	jive_graphview_draw(&graphview);
-	return jive_textcanvas_as_wstring(&graphview.canvas);
-}
-
-std::string
-jive_view_string(const struct jive_graph * graph)
-{
-	jive_graphview graphview(graph);
-	jive_graphview_draw(&graphview);
-	return jive_textcanvas_as_string(&graphview.canvas);
-}
-
-std::string
-jive_view_utf8(const struct jive_graph * graph)
-{
-	jive_graphview graphview(graph);
-	jive_graphview_draw(&graphview);
-	return jive_textcanvas_as_utf8(&graphview.canvas);
-}
 
 namespace jive {
 

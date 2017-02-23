@@ -7,34 +7,9 @@
 #ifndef JIVE_VIEW_H
 #define JIVE_VIEW_H
 
-#include <stdio.h>
-#include <wchar.h>
-
 #include <string>
-#include <vector>
 
 struct jive_graph;
-
-void
-jive_view(const struct jive_graph * graph, FILE * out);
-
-/**
-	\brief Return graph represented as unicode string
-*/
-std::vector<wchar_t>
-jive_view_wstring(const struct jive_graph * graph);
-
-/**
-	\brief Return graph represented as (locale-dependent) string
-*/
-std::string
-jive_view_string(const struct jive_graph * graph);
-
-/**
-	\brief Return graph represented as utf8 string
-*/
-std::string
-jive_view_utf8(const struct jive_graph * graph);
 
 namespace jive {
 
