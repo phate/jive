@@ -63,16 +63,12 @@ jive_subroutine_node_add_sp_dependency(
 jive::node *
 jive_region_get_subroutine_node(const jive::region * region)
 {
-	for (; region; region = region->parent()) {
-		if (!region->anchor()) {
-			continue;
-		}
-		jive::node * node = region->anchor()->node();
-		if (dynamic_cast<const jive::subroutine_op *>(&node->operation())) {
-			return node;
-		}
+	for (; region->node(); region = region->node()->region()) {
+		if (dynamic_cast<const jive::subroutine_op*>(&region->node()->operation()))
+			return region->node();
 	}
-	return 0;
+
+	return nullptr;
 }
 
 const struct jive_instructionset *
