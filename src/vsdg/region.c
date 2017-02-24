@@ -370,20 +370,6 @@ region::remove_result(size_t index)
 	results_.pop_back();
 }
 
-bool
-region::contains(const jive::node * node) const noexcept
-{
-	const jive::region * tmp = node->region();
-	while (tmp->depth() >= depth()) {
-		if (tmp == this)
-			return true;
-		tmp = tmp->parent();
-		if (!tmp)
-			break;
-	}
-	return false;
-}
-
 void
 region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_bottom) const
 {

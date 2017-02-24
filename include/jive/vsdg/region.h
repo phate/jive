@@ -156,9 +156,6 @@ public:
 		return depth_;
 	}
 
-	bool
-	contains(const jive::node * node) const noexcept;
-
 	inline jive::region *
 	parent() const noexcept
 	{
