@@ -14,7 +14,6 @@
 #include <jive/types/function.h>
 #include <jive/types/function/fctapply.h>
 #include <jive/types/function/fctlambda.h>
-#include <jive/types/function/fctsymbolic.h>
 #include <jive/types/function/fcttype.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
@@ -56,7 +55,7 @@ static int function_test_call(void)
 	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
 
 	auto constant = jive_bitconstant(graph.root(), 8, "00001111" ) ;
-	auto func = jive_symbolicfunction_create(graph.root(), "sin", &ftype ) ;
+	auto func = graph.import(ftype, "sin");
 	jive::oport *  tmparray2[] = { constant };
 	auto ret = jive_apply_create(func, 1, tmparray2)[0];
 
