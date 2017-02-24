@@ -13,7 +13,6 @@
 #include <jive/types/bitstring/concat.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/slice.h>
-#include <jive/types/bitstring/symbolic-constant.h>
 #include <jive/types/bitstring/type.h>
 
 #endif

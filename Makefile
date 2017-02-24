@@ -64,7 +64,6 @@ LIBJIVE_SRC += \
 	src/types/bitstring/concat.c \
 	src/types/bitstring/constant.c \
 	src/types/bitstring/slice.c \
-	src/types/bitstring/symbolic-constant.c \
 	src/types/bitstring/type.c \
 	src/types/bitstring/value-representation.c \
 
