@@ -57,26 +57,21 @@ slice_op::result_type(size_t index) const noexcept
 jive_unop_reduction_path_t
 slice_op::can_reduce_operand(const jive::oport * arg) const noexcept
 {
-	auto tmp = dynamic_cast<const jive::output*>(arg);
-	if (!tmp)
-		return jive_unop_reduction_none;
-
 	/*
 		FIXME: this should be a dynamic_cast
 	*/
 	const jive::bits::type & arg_type = static_cast<const jive::bits::type &>(arg->type());
-	const jive::operation * op = &tmp->node()->operation();
 
 	if ((low() == 0) && (high() == arg_type.nbits())) {
 		return jive_unop_reduction_idempotent;
 	}
-	if (dynamic_cast<const slice_op *>(op)) {
+	if (arg->node() && dynamic_cast<const slice_op*>(&arg->node()->operation())) {
 		return jive_unop_reduction_narrow;
 	}
-	if (dynamic_cast<const constant_op *>(op)) {
+	if (arg->node() && dynamic_cast<const constant_op*>(&arg->node()->operation())) {
 		return jive_unop_reduction_constant;
 	}
-	if (dynamic_cast<const concat_op *>(op)) {
+	if (arg->node() && dynamic_cast<const concat_op*>(&arg->node()->operation())) {
 		return jive_unop_reduction_distribute;
 	}
 	
@@ -88,31 +83,25 @@ slice_op::reduce_operand(
 	jive_unop_reduction_path_t path,
 	jive::oport * arg) const
 {
-	auto tmp = dynamic_cast<jive::output*>(arg);
-	const jive::operation & gen_op = tmp->node()->operation();
-	
 	if (path == jive_unop_reduction_idempotent) {
 		return arg;
 	}
 	
 	if (path == jive_unop_reduction_narrow) {
-		auto op = static_cast<const slice_op &>(gen_op);
-		tmp = dynamic_cast<jive::output*>(tmp->node()->input(0)->origin());
-		return jive_bitslice(tmp, low() + op.low(), high() + op.low());
+		auto op = static_cast<const slice_op &>(arg->node()->operation());
+		return jive_bitslice(arg->node()->input(0)->origin(), low() + op.low(), high() + op.low());
 	}
 	
 	if (path == jive_unop_reduction_constant) {
-		auto op = static_cast<const constant_op &>(gen_op);
+		auto op = static_cast<const constant_op &>(arg->node()->operation());
 		return jive_bitconstant(arg->region(), high() - low(), &op.value()[0] + low());
 	}
 	
 	if (path == jive_unop_reduction_distribute) {
-		jive::node * node = tmp->node();
-		std::vector<jive::oport*> arguments;
-		
 		size_t pos = 0, n;
-		for (n = 0; n < node->noperands(); n++) {
-			jive::oport * argument = node->input(n)->origin();
+		std::vector<jive::oport*> arguments;
+		for (n = 0; n < arg->node()->noperands(); n++) {
+			jive::oport * argument = arg->node()->input(n)->origin();
 			size_t base = pos;
 			size_t nbits = static_cast<const jive::bits::type&>(argument->type()).nbits();
 			pos = pos + nbits;

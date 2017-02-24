@@ -64,11 +64,9 @@ reduce_operands(
 			std::move(args),
 			[&op](jive::oport * arg1, jive::oport * arg2)
 			{
-				auto op1 = dynamic_cast<jive::output*>(arg1);
-				auto op2 = dynamic_cast<jive::output*>(arg2);
-				jive_binop_reduction_path_t reduction = op.can_reduce_operand_pair(op1, op2);
+				jive_binop_reduction_path_t reduction = op.can_reduce_operand_pair(arg1, arg2);
 				return reduction != jive_binop_reduction_none
-					? op.reduce_operand_pair(reduction, op1, op2)
+					? op.reduce_operand_pair(reduction, arg1, arg2)
 					: nullptr;
 			});
 	}

@@ -163,13 +163,13 @@ compare_op::can_reduce_operand_pair(
 	const jive::oport * arg1,
 	const jive::oport * arg2) const noexcept
 {
-	auto op1 = dynamic_cast<const jive::output*>(arg1);
-	auto op2 = dynamic_cast<const jive::output*>(arg2);
-	if (!op1 || !op2)
-		return jive_binop_reduction_none;
+	const bits::constant_op * c1_op = nullptr;
+	if (arg1->node())
+		c1_op = dynamic_cast<const bits::constant_op*>(&arg1->node()->operation());
 
-	auto c1_op = dynamic_cast<const bits::constant_op *>(&op1->node()->operation());
-	auto c2_op = dynamic_cast<const bits::constant_op *>(&op2->node()->operation());
+	const bits::constant_op * c2_op = nullptr;
+	if (arg2->node())
+		c2_op = dynamic_cast<const bits::constant_op*>(&arg2->node()->operation());
 
 	value_repr arg1_repr = c1_op ? c1_op->value() : value_repr::repeat(type_.nbits(), 'D');
 	value_repr arg2_repr = c2_op ? c2_op->value() : value_repr::repeat(type_.nbits(), 'D');
