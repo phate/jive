@@ -151,11 +151,6 @@ public:
 
 	region(jive::structural_node * node);
 
-	inline size_t depth() const noexcept
-	{
-		return depth_;
-	}
-
 	inline jive::region *
 	parent() const noexcept
 	{
@@ -285,7 +280,6 @@ public:
 	} region_subregions_list;
 
 private:
-	size_t depth_;
 	jive::node * top_;
 	jive::node * bottom_;
 	jive_graph * graph_;

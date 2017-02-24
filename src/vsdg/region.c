@@ -253,8 +253,7 @@ region::~region()
 }
 
 region::region(jive::region * parent, jive_graph * graph)
-	: depth_(0)
-	, top_(nullptr)
+	: top_(nullptr)
 	, bottom_(nullptr)
 	, graph_(graph)
 	, parent_(parent)
@@ -266,15 +265,13 @@ region::region(jive::region * parent, jive_graph * graph)
 
 	if (parent_) {
 		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
-		depth_ = parent_->depth() + 1;
 	}
 
 	graph->on_region_create(this);
 }
 
 region::region(jive::structural_node * node)
-	: depth_(0)
-	, top_(nullptr)
+	: top_(nullptr)
 	, bottom_(nullptr)
 	, graph_(node->graph())
 	, parent_(nullptr)
@@ -286,7 +283,6 @@ region::region(jive::structural_node * node)
 
 	if (parent_) {
 		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
-		depth_ = parent_->depth() + 1;
 	}
 
 	graph()->on_region_create(this);
