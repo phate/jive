@@ -126,69 +126,6 @@ private:
 	Type type_;
 };
 
-/* Template to allow definition of domain-specific "symbolic constants":
- * These are operators yielding a specific but unknown value of the
- * respective type. Useful mainly for testing purposes as it represents
- * sub-expressions which cannot be transformed any further. */
-template<typename Type>
-class domain_symbol_op final : public nullary_op {
-public:
-	virtual
-	~domain_symbol_op() noexcept
-	{
-	}
-
-	inline
-	domain_symbol_op(
-		std::string && name,
-		Type && type) noexcept
-		: name_(std::move(name))
-		, type_(std::move(type))
-	{
-	}
-
-	inline
-	domain_symbol_op(const domain_symbol_op & other) = default;
-
-	inline
-	domain_symbol_op(domain_symbol_op && other) = default;
-
-	virtual bool
-	operator==(const operation & other) const noexcept override
-	{
-		const domain_symbol_op * op =
-			dynamic_cast<const domain_symbol_op *>(&other);
-		return op && op->type_ == type_ && op->name_ == name_;
-	}
-
-	virtual std::string
-	debug_string() const override
-	{
-		return name_;
-	}
-
-	virtual const type &
-	result_type(size_t index) const noexcept override
-	{
-		return type_;
-	}
-
-	inline const std::string &
-	name() const noexcept
-	{
-		return name_;
-	}
-
-	virtual std::unique_ptr<jive::operation> copy() const override
-	{
-		return std::unique_ptr<jive::operation>(new domain_symbol_op(*this));
-	}
-
-private:
-	std::string name_;
-	Type type_;
-};
-
 }
 }
 
