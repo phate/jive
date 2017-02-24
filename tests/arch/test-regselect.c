@@ -13,6 +13,7 @@
 #include <jive/types/bitstring.h>
 #include <jive/view.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/structural_node.h>
 #include "testarch.h"
 
 static int test_main(void)
@@ -32,7 +33,7 @@ static int test_main(void)
 	auto arg1 = jive_subroutine_simple_get_argument(subroutine, 0);
 	
 	auto lit = jive_bitconstant_unsigned(subroutine.region, 32, 42);
-	auto sym = jive_bitsymbolicconstant(subroutine.region, 32, "symbol");
+	auto sym = subroutine.node->subregion(0)->add_argument(nullptr, jive::bits::type(32));
 	auto bitnot = jive_bitnot(sym);
 	auto sum1 = jive_bitsum({arg1, lit});
 	auto sum2 = jive_bitsum({lit, bitnot});
