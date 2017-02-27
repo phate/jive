@@ -1,5 +1,4 @@
 TESTS+=\
 	vsdg/traverser/test-cone-traverser \
 	vsdg/traverser/test-graphtraverser \
-	vsdg/traverser/test-mutable-traverser \
 	vsdg/traverser/test-topdown \
