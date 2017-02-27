@@ -62,7 +62,6 @@ jive_graph::jive_graph()
 	: normalized_(false)
 	, root_(new jive::region(nullptr, this))
 {
-	bottom.first = bottom.last = 0;
 	gates.first = gates.last = 0;
 	jive_opnode_create(jive::graph_tail_operation(), root(), {});
 }
@@ -141,15 +140,16 @@ jive_graph_reserve_tracker_slot_slow(jive_graph * self)
 void
 jive_graph::prune()
 {
-	jive::node * node = bottom.first;
+	/* FIXME: this function is broken */
+	jive::node * node = root()->bottom_nodes.first;
 	while (node) {
-		jive::node * next = node->graph_bottom_list.next;
+		auto next = node->region_bottom_list.next;
 		
 		if (node != root()->bottom()) {
 			delete node;
 
 			if (!next)
-				next = bottom.first;
+				next = root()->bottom_nodes.first;
 		}
 		node = next;
 	}

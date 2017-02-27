@@ -123,7 +123,7 @@ bottomup_traverser::bottomup_traverser(jive_graph * graph, bool revisit)
 	, new_nodes_state_(revisit ? traversal_nodestate::frontier : traversal_nodestate::behind)
 {
 	jive::node * node;
-	JIVE_LIST_ITERATE(graph->bottom, node, graph_bottom_list) {
+	JIVE_LIST_ITERATE(graph->root()->bottom_nodes, node, region_bottom_list) {
 		tracker_.set_nodestate(node, traversal_nodestate::frontier);
 	}
 	callbacks_.push_back(graph->on_node_create.connect(
@@ -376,7 +376,7 @@ bottomup_region_traverser::bottomup_region_traverser(jive_graph * graph)
 	/* seed bottom nodes in root region */
 	bottomup_slave_traverser * root_slave = map_region(graph_->root());
 	jive::node * node;
-	JIVE_LIST_ITERATE(graph_->bottom, node, graph_bottom_list) {
+	JIVE_LIST_ITERATE(graph_->root()->bottom_nodes, node, region_bottom_list) {
 		if (node->region() != graph->root()) {
 			continue;
 		}

@@ -103,8 +103,10 @@ result::~result() noexcept
 	region()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_successors())
-		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors()) {
+		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
+			region_bottom_list);
+	}
 
 	if (output())
 		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
@@ -141,8 +143,10 @@ result::result(
 	if (output)
 		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);
 
-	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+	if (origin->node() && !origin->node()->has_successors()) {
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(),
+			region_bottom_list);
+	}
 	origin->users.insert(this);
 }
 
@@ -171,8 +175,9 @@ result::result(
 		jive_gate_interference_add(region->graph(), gate, other->gate());
 	}
 
-	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+	if (origin->node() && !origin->node()->has_successors()) {
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
+	}
 	origin->users.insert(this);
 }
 
@@ -261,6 +266,7 @@ region::region(jive::region * parent, jive_graph * graph)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
+	bottom_nodes.first = bottom_nodes.last = nullptr;
 	region_subregions_list.prev = region_subregions_list.next = nullptr;
 
 	if (parent_) {
@@ -279,6 +285,7 @@ region::region(jive::structural_node * node)
 {
 	top_nodes.first = top_nodes.last = nullptr;
 	subregions.first = subregions.last = nullptr;
+	bottom_nodes.first = bottom_nodes.last = nullptr;
 	region_subregions_list.prev = region_subregions_list.next = nullptr;
 
 	if (parent_) {

@@ -105,13 +105,17 @@ iport::divert_origin(jive::oport * new_origin)
 		throw jive::compiler_error("Invalid input");
 
 	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_successors())
-		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors()) {
+		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
+			region_bottom_list);
+	}
 
 	this->origin_ = new_origin;
 
-	if (origin()->node() && !origin()->node()->has_successors())
-		JIVE_LIST_REMOVE(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors()) {
+		JIVE_LIST_REMOVE(origin()->node()->region()->bottom_nodes, origin()->node(),
+			region_bottom_list);
+	}
 	origin()->users.insert(this);
 
 	new_origin->region()->graph()->mark_denormalized();
@@ -280,7 +284,7 @@ node::node(
 		region_top_node_list.prev = region_top_node_list.next = nullptr;
 
 	region->nodes.push_back(this);
-	JIVE_LIST_PUSH_BACK(graph_->bottom, this, graph_bottom_list);
+	JIVE_LIST_PUSH_BACK(region->bottom_nodes, this, region_bottom_list);
 }
 
 node::~node()
@@ -289,7 +293,7 @@ node::~node()
 
 	region_->nodes.erase(this);
 
-	JIVE_LIST_REMOVE(graph()->bottom, this, graph_bottom_list);
+	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
 
 	if (this == region()->top())

@@ -415,7 +415,7 @@ public:
 	struct {
 		jive::node * prev;
 		jive::node * next;
-	} graph_bottom_list;
+	} region_bottom_list;
 
 	std::vector<jive_tracker_nodestate*> tracker_slots;
 

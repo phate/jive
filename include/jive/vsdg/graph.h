@@ -103,11 +103,6 @@ public:
 	prune();
 
 	struct {
-		jive::node * first;
-		jive::node * last;
-	} bottom;
-
-	struct {
 		jive::gate * first;
 		jive::gate * last;
 	} gates;

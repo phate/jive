@@ -271,6 +271,11 @@ public:
 	} top_nodes;
 
 	struct {
+		jive::node * first;
+		jive::node * last;
+	} bottom_nodes;
+
+	struct {
 		jive::region * first;
 		jive::region * last;
 	} subregions;

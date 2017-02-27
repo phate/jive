@@ -20,8 +20,10 @@ structural_input::~structural_input()
 	node()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_successors())
-		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors()) {
+		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
+			region_bottom_list);
+	}
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
@@ -51,7 +53,7 @@ structural_input::structural_input(
 		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 
 	node->graph()->on_iport_create(this);
@@ -78,7 +80,7 @@ structural_input::structural_input(
 	}
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 
 	node->graph()->on_iport_create(this);
@@ -99,7 +101,7 @@ structural_input::structural_input(
 		throw jive::type_error(type().debug_string(), origin->type().debug_string());
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 
 	node->graph()->on_iport_create(this);
@@ -326,7 +328,7 @@ structural_node::add_input(const jive::base::type * type, jive::oport * origin)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 
 	inputs_.emplace_back(std::unique_ptr<structural_input>(
 		new structural_input(this, inputs_.size(), origin, *type)));
@@ -350,7 +352,7 @@ structural_node::add_input(jive::gate * gate, jive::oport * origin)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 
 	inputs_.emplace_back(std::unique_ptr<structural_input>(
 		new structural_input(this, inputs_.size(), origin, gate)));
@@ -376,7 +378,7 @@ structural_node::add_input(const struct jive_resource_class * rescls, jive::opor
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 
 	inputs_.emplace_back(std::unique_ptr<structural_input>(
 		new structural_input(this, inputs_.size(), origin, rescls)));

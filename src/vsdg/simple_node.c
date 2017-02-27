@@ -34,8 +34,10 @@ input::~input() noexcept
 	node()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_successors())
-		JIVE_LIST_PUSH_BACK(origin()->node()->graph()->bottom, origin()->node(), graph_bottom_list);
+	if (origin()->node() && !origin()->node()->has_successors()) {
+		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
+			region_bottom_list);
+	}
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
@@ -66,7 +68,7 @@ input::input(
 		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 }
 
@@ -91,7 +93,7 @@ input::input(
 	}
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 }
 
@@ -111,7 +113,7 @@ input::input(
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
 	if (origin->node() && !origin->node()->has_successors())
-		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 }
 
