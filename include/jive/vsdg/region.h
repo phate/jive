@@ -164,21 +164,6 @@ public:
 	}
 
 	inline jive::node *
-	top() const noexcept
-	{
-		return top_;
-	}
-
-	/*
-		FIXME: this is going to be removed again
-	*/
-	inline void
-	set_top(jive::node * top) noexcept
-	{
-		top_ = top;
-	}
-
-	inline jive::node *
 	bottom() const noexcept
 	{
 		return bottom_;

@@ -393,8 +393,6 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 		bool copy_bottom)
 	{
 		for (const auto & node : source->nodes) {
-			if (!copy_top && &node == source->top())
-				continue;
 			if (!copy_bottom && &node == source->bottom())
 				continue;
 	
@@ -458,8 +456,6 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 		for (const auto node : context[n]) {
 			target = smap.lookup(node->region());
 			jive::node * new_node = node->copy(target, smap);
-			if (node->region()->top() == node)
-				target->set_top(new_node);
 			if (node->region()->bottom() == node)
 				target->set_bottom(new_node);
 		}

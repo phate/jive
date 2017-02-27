@@ -38,6 +38,7 @@ gamma_normal_form::normalize_node(jive::node * node) const
 	if (!get_mutable())
 		return true;
 
+	/* FIXME: predicate reduction is broken */
 	bool was_normalized = true;
 	if (get_predicate_reduction()) {
 		auto predicate = dynamic_cast<jive::output*>(node->input(node->ninputs()-1)->origin());
@@ -47,7 +48,6 @@ gamma_normal_form::normalize_node(jive::node * node) const
 				jive::node * tail = dynamic_cast<jive::output*>(node->input(nalts)->origin())->node();
 				jive::node * head = dynamic_cast<jive::output*>(tail->input(0)->origin())->node();
 				JIVE_DEBUG_ASSERT(tail = tail->region()->bottom());
-				JIVE_DEBUG_ASSERT(head = head->region()->top());
 
 				jive::substitution_map map;
 				for (size_t n = 1; n < head->noutputs(); n++)
@@ -64,6 +64,7 @@ gamma_normal_form::normalize_node(jive::node * node) const
 		}
 	}
 
+	/* FIXME: invariant reduction is broken */
 	if (get_invariant_reduction()) {
 		size_t nalternatives = node->ninputs()-1;
 		for (size_t v = node->noutputs(); v > 0; --v) {

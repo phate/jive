@@ -23,10 +23,13 @@
 jive::node *
 jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_node)
 {
+	/* FIXME: this function is broken */
+	return nullptr;
+#if 0
 	jive::region * src_region;
 	src_region = dynamic_cast<jive::output*>(lambda_node->input(0)->origin())->node()->region();
 	
-	size_t nparameters = src_region->top()->noutputs() - 1;
+	size_t nparameters = src_region->narguments();
 	size_t nreturns = src_region->bottom()->ninputs()-1;
 	
 	size_t nvalue_parameters = 0, nstate_parameters = 0;
@@ -100,6 +103,7 @@ jive_i386_subroutine_convert(jive::region * target_parent, jive::node * lambda_n
 	}
 
 	return jive_subroutine_end(sub);
+#endif
 }
 
 static void

@@ -47,7 +47,8 @@ subroutine_op::copy() const
 output *
 subroutine_op::get_passthrough_enter_by_name(jive::region * region, const char * name) const noexcept
 {
-	jive::node * enter = region->top();
+	/* FIXME: this function is broken */
+	jive::node * enter = nullptr;
 	JIVE_DEBUG_ASSERT(enter);
 	for (size_t n = 0; n < enter->noutputs(); ++n) {
 		output * o = dynamic_cast<jive::output*>(enter->output(n));

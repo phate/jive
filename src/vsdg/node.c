@@ -296,8 +296,6 @@ node::~node()
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
 
-	if (this == region()->top())
-		region()->set_top(nullptr);
 	if (this == region()->bottom())
 		region()->set_bottom(nullptr);
 
