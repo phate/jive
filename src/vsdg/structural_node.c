@@ -17,7 +17,7 @@ structural_input::~structural_input()
 {
 	JIVE_DEBUG_ASSERT(arguments.first == nullptr && arguments.last == nullptr);
 
-	node()->graph()->on_structural_input_destroy(this);
+	node()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
 	if (origin()->node() && !origin()->node()->has_successors())
@@ -54,7 +54,7 @@ structural_input::structural_input(
 		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
 
-	node->graph()->on_structural_input_create(this);
+	node->graph()->on_iport_create(this);
 }
 
 structural_input::structural_input(
@@ -81,7 +81,7 @@ structural_input::structural_input(
 		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
 
-	node->graph()->on_structural_input_create(this);
+	node->graph()->on_iport_create(this);
 }
 
 structural_input::structural_input(
@@ -102,7 +102,7 @@ structural_input::structural_input(
 		JIVE_LIST_REMOVE(origin->node()->graph()->bottom, origin->node(), graph_bottom_list);
 	origin->users.insert(this);
 
-	node->graph()->on_structural_input_create(this);
+	node->graph()->on_iport_create(this);
 }
 
 const jive::base::type &
@@ -131,7 +131,7 @@ structural_input::divert_origin(jive::oport * new_origin)
 	iport::divert_origin(new_origin);
 	node()->recompute_depth();
 
-	node()->graph()->on_structural_input_change(this, old_origin, new_origin);
+	node()->graph()->on_iport_change(this, old_origin, new_origin);
 }
 
 /* structural output */
@@ -140,7 +140,7 @@ structural_output::~structural_output()
 {
 	JIVE_DEBUG_ASSERT(results.first == nullptr && results.last == nullptr);
 
-	node()->graph()->on_structural_output_destroy(this);
+	node()->graph()->on_oport_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
@@ -165,7 +165,7 @@ structural_output::structural_output(
 {
 	results.first = results.last = nullptr;
 
-	node->graph()->on_structural_output_create(this);
+	node->graph()->on_oport_create(this);
 }
 
 structural_output::structural_output(
@@ -184,7 +184,7 @@ structural_output::structural_output(
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 
-	node->graph()->on_structural_output_create(this);
+	node->graph()->on_oport_create(this);
 }
 
 structural_output::structural_output(
@@ -197,7 +197,7 @@ structural_output::structural_output(
 {
 	results.first = results.last = nullptr;
 
-	node->graph()->on_structural_output_create(this);
+	node->graph()->on_oport_create(this);
 }
 
 const jive::base::type &

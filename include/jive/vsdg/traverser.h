@@ -118,7 +118,7 @@ private:
 	node_create(jive::node * node);
 
 	void
-	input_change(input * in, oport * old_origin, oport * new_origin);
+	iport_change(iport * in, oport * old_origin, oport * new_origin);
 
 	traversal_tracker tracker_;
 	std::vector<callback> callbacks_;
@@ -150,7 +150,7 @@ private:
 	node_destroy(jive::node * node);
 
 	void
-	input_change(input * in, oport * old_origin, oport * new_origin);
+	iport_change(iport * in, oport * old_origin, oport * new_origin);
 
 	traversal_tracker tracker_;
 	std::vector<callback> callbacks_;
@@ -183,7 +183,7 @@ private:
 	node_destroy(jive::node * node);
 
 	void
-	input_change(input * input, oport * old_origin, oport * new_origin);
+	iport_change(iport * input, oport * old_origin, oport * new_origin);
 
 	traversal_tracker tracker_;
 	std::vector<callback> callbacks_;

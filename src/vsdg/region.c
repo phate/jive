@@ -24,7 +24,7 @@ argument::~argument() noexcept
 {
 	JIVE_DEBUG_ASSERT(users.empty());
 
-	region()->graph()->on_argument_destroy(this);
+	region()->graph()->on_oport_destroy(this);
 
 	if (input())
 		JIVE_LIST_REMOVE(input()->arguments, this, input_argument_list);
@@ -100,7 +100,7 @@ argument::node() const noexcept
 
 result::~result() noexcept
 {
-	region()->graph()->on_result_destroy(this);
+	region()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
 	if (origin()->node() && !origin()->node()->has_successors())
@@ -199,7 +199,7 @@ result::divert_origin(jive::oport * new_origin)
 {
 	jive::oport * old_origin = this->origin();
 	iport::divert_origin(new_origin);
-	region()->graph()->on_result_change(this, old_origin, new_origin);
+	region()->graph()->on_iport_change(this, old_origin, new_origin);
 }
 
 /* region */
@@ -294,7 +294,7 @@ region::add_argument(jive::structural_input * input, const jive::base::type & ty
 	jive::argument * argument = new jive::argument(this, narguments(), input, type);
 	arguments_.push_back(argument);
 
-	graph()->on_argument_create(argument);
+	graph()->on_oport_create(argument);
 
 	return argument;
 }
@@ -305,7 +305,7 @@ region::add_argument(jive::structural_input * input, jive::gate * gate)
 	jive::argument * argument = new jive::argument(this, narguments(), input, gate);
 	arguments_.push_back(argument);
 
-	graph()->on_argument_create(argument);
+	graph()->on_oport_create(argument);
 
 	return argument;
 }
@@ -333,7 +333,7 @@ region::add_result(jive::oport * origin, structural_output * output, const base:
 	if (origin->region() != this)
 		throw jive::compiler_error("Invalid region result");
 
-	graph()->on_result_create(result);
+	graph()->on_iport_create(result);
 
 	return result;
 }
@@ -347,7 +347,7 @@ region::add_result(jive::oport * origin, structural_output * output, jive::gate 
 	if (origin->region() != this)
 		throw jive::compiler_error("Invalid region result");
 
-	graph()->on_result_create(result);
+	graph()->on_iport_create(result);
 
 	return result;
 }

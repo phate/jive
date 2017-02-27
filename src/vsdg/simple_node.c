@@ -31,7 +31,7 @@ namespace jive {
 
 input::~input() noexcept
 {
-	node()->graph()->on_input_destroy(this);
+	node()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
 	if (origin()->node() && !origin()->node()->has_successors())
@@ -141,8 +141,7 @@ input::divert_origin(jive::oport * new_origin)
 	iport::divert_origin(new_origin);
 	node()->recompute_depth();
 
-	node()->graph()->on_input_change(this, dynamic_cast<jive::output*>(old_origin),
-		dynamic_cast<jive::output*>(new_origin));
+	node()->graph()->on_iport_change(this, old_origin, new_origin);
 }
 
 /* outputs */
@@ -179,7 +178,7 @@ output::~output() noexcept
 {
 	JIVE_DEBUG_ASSERT(users.empty());
 
-	node_->graph()->on_output_destroy(this);
+	node_->graph()->on_oport_destroy(this);
 
 	if (gate()) {
 		for (size_t n = 0; n < node()->noutputs(); n++) {
@@ -338,7 +337,7 @@ simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	recompute_depth();
-	graph()->on_input_create(input);
+	graph()->on_iport_create(input);
 
 	return input;
 }
@@ -358,7 +357,7 @@ simple_node::add_input(jive::gate * gate, jive::oport * origin)
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	recompute_depth();
-	graph()->on_input_create(input);
+	graph()->on_iport_create(input);
 
 	return input;
 }
@@ -378,7 +377,7 @@ simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * 
 
 	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	recompute_depth();
-	graph()->on_input_create(input);
+	graph()->on_iport_create(input);
 
 	return input;
 }
@@ -405,7 +404,7 @@ simple_node::add_output(const jive::base::type * type)
 		new jive::output(this, noutputs(), *type)));
 	auto output = outputs_[noutputs()-1].get();
 
-	graph()->on_output_create(output);
+	graph()->on_oport_create(output);
 
 	return output;
 }
@@ -417,7 +416,7 @@ simple_node::add_output(jive::gate * gate)
 		new jive::output(this, noutputs(), gate)));
 	auto output = this->output(noutputs()-1);
 
-	graph()->on_output_create(output);
+	graph()->on_oport_create(output);
 
 	return output;
 }
@@ -429,7 +428,7 @@ simple_node::add_output(const struct jive_resource_class * rescls)
 		new jive::output(this, noutputs(), *jive_resource_class_get_type(rescls), rescls)));
 	auto output = this->output(noutputs()-1);
 
-	graph()->on_output_create(output);
+	graph()->on_oport_create(output);
 
 	return output;
 }

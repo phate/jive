@@ -31,8 +31,8 @@ topdown_traverser::topdown_traverser(jive_graph * graph)
 
 	callbacks_.push_back(graph->on_node_create.connect(
 		std::bind(&topdown_traverser::node_create, this, _1)));
-	callbacks_.push_back(graph->on_input_change.connect(
-		std::bind(&topdown_traverser::input_change, this, _1, _2, _3)));
+	callbacks_.push_back(graph->on_iport_change.connect(
+		std::bind(&topdown_traverser::iport_change, this, _1, _2, _3)));
 }
 
 bool
@@ -84,8 +84,11 @@ topdown_traverser::node_create(jive::node * node)
 }
 
 void
-topdown_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
+topdown_traverser::iport_change(iport * in, oport * old_origin, oport * new_origin)
 {
+	if (!in->node())
+		return;
+
 	traversal_nodestate state = tracker_.get_nodestate(in->node());
 	
 	/* ignore nodes that have been traversed already, or that are already
@@ -130,8 +133,8 @@ bottomup_traverser::bottomup_traverser(jive_graph * graph, bool revisit)
 		std::bind(&bottomup_traverser::node_create, this, _1)));
 	callbacks_.push_back(graph->on_node_destroy.connect(
 		std::bind(&bottomup_traverser::node_destroy, this, _1)));
-	callbacks_.push_back(graph->on_input_change.connect(
-		std::bind(&bottomup_traverser::input_change, this, _1, _2, _3)));
+	callbacks_.push_back(graph->on_iport_change.connect(
+		std::bind(&bottomup_traverser::iport_change, this, _1, _2, _3)));
 }
 
 void
@@ -172,8 +175,11 @@ bottomup_traverser::node_destroy(jive::node * node)
 }
 
 void
-bottomup_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
+bottomup_traverser::iport_change(iport * in, oport * old_origin, oport * new_origin)
 {
+	if (!in->node())
+		return;
+
 	auto output = dynamic_cast<jive::output*>(old_origin);
 	traversal_nodestate state = tracker_.get_nodestate(output->node());
 	
@@ -201,8 +207,8 @@ upward_cone_traverser::upward_cone_traverser(jive::node * node)
 	
 	callbacks_.push_back(graph->on_node_destroy.connect(
 		std::bind(&upward_cone_traverser::node_destroy, this, _1)));
-	callbacks_.push_back(graph->on_input_change.connect(
-		std::bind(&upward_cone_traverser::input_change, this, _1, _2, _3)));
+	callbacks_.push_back(graph->on_iport_change.connect(
+		std::bind(&upward_cone_traverser::iport_change, this, _1, _2, _3)));
 }
 
 void
@@ -229,8 +235,11 @@ upward_cone_traverser::node_destroy(jive::node * node)
 }
 
 void
-upward_cone_traverser::input_change(input * in, oport * old_origin, oport * new_origin)
+upward_cone_traverser::iport_change(iport * in, oport * old_origin, oport * new_origin)
 {
+	if (!in->node())
+		return;
+
 	auto output = dynamic_cast<jive::output*>(old_origin);
 
 	/* for node of new origin, it may now belong to the cone */
