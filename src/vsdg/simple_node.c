@@ -34,7 +34,7 @@ input::~input() noexcept
 	node()->graph()->on_iport_destroy(this);
 
 	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_successors()) {
+	if (origin()->node() && !origin()->node()->has_users()) {
 		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
 			region_bottom_list);
 	}
@@ -67,7 +67,7 @@ input::input(
 	if (this->type() != origin->type())
 		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
-	if (origin->node() && !origin->node()->has_successors())
+	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 }
@@ -92,7 +92,7 @@ input::input(
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 
-	if (origin->node() && !origin->node()->has_successors())
+	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 }
@@ -112,7 +112,7 @@ input::input(
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
-	if (origin->node() && !origin->node()->has_successors())
+	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
 }
@@ -314,7 +314,7 @@ simple_node::output(size_t index) const noexcept
 }
 
 bool
-simple_node::has_successors() const noexcept
+simple_node::has_users() const noexcept
 {
 	for (const auto & output : outputs_) {
 		if (!output->no_user())

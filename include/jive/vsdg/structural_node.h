@@ -121,7 +121,7 @@ public:
 	recompute_depth() override;
 
 	virtual bool
-	has_successors() const noexcept override;
+	has_users() const noexcept override;
 
 	inline size_t
 	nsubregions() const noexcept

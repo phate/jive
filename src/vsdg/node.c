@@ -105,14 +105,14 @@ iport::divert_origin(jive::oport * new_origin)
 		throw jive::compiler_error("Invalid input");
 
 	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_successors()) {
+	if (origin()->node() && !origin()->node()->has_users()) {
 		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
 			region_bottom_list);
 	}
 
 	this->origin_ = new_origin;
 
-	if (origin()->node() && !origin()->node()->has_successors()) {
+	if (origin()->node() && !origin()->node()->has_users()) {
 		JIVE_LIST_REMOVE(origin()->node()->region()->bottom_nodes, origin()->node(),
 			region_bottom_list);
 	}

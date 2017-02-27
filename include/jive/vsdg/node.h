@@ -319,7 +319,7 @@ public:
 	}
 
 	virtual bool
-	has_successors() const noexcept = 0;
+	has_users() const noexcept = 0;
 
 	inline size_t
 	noperands() const noexcept

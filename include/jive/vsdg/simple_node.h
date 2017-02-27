@@ -121,7 +121,7 @@ public:
 	recompute_depth() override;
 
 	virtual bool
-	has_successors() const noexcept override;
+	has_users() const noexcept override;
 
 	virtual size_t
 	ninputs() const noexcept override;
