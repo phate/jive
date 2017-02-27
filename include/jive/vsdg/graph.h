@@ -96,7 +96,7 @@ public:
 	export_port(jive::oport * operand, const std::string & name)
 	{
 		jive::gate * gate = create_gate(operand->type(), name);
-		return root()->bottom()->add_input(gate, operand);
+		return root()->add_result(operand, nullptr, gate);
 	}
 
 	void

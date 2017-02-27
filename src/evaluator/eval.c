@@ -506,23 +506,21 @@ eval(
 	const std::string & name,
 	const std::vector<const literal*> & arguments)
 {
-	const jive::oport * output = nullptr;
-	const jive::node * tail = graph->root()->bottom();
-	for (size_t n = 0; n < tail->ninputs(); n++) {
-		JIVE_DEBUG_ASSERT(tail->input(n)->gate() != nullptr);
-		if (tail->input(n)->gate()->name() == name) {
-			output = tail->input(n)->origin();
+	const jive::iport * port = nullptr;
+	for (size_t n = 0; n < graph->root()->nresults(); n++) {
+		auto result = graph->root()->result(n);
+		if (result->gate()->name() == name) {
+			port = result;
 			break;
 		}
 	}
-
-	if (!output)
+	if (!port)
 		throw compiler_error("Export not found.");
 
 	context ctx;
 	ctx.push_frame(graph->root());
 
-	auto fcttype = dynamic_cast<const jive::fct::type*>(&output->type());
+	auto fcttype = dynamic_cast<const jive::fct::type*>(&port->type());
 	if (fcttype) {
 		if (fcttype->narguments() != arguments.size())
 			throw compiler_error("Number of arguments does not coincide with function arguments.");
@@ -536,7 +534,7 @@ eval(
 		ctx.push_arguments(arguments);
 	}
 
-	std::unique_ptr<const literal> result = std::move(eval_output(output, ctx));
+	std::unique_ptr<const literal> result = std::move(eval_input(port, ctx));
 
 	if (fcttype)
 		ctx.pop_arguments();

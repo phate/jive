@@ -281,8 +281,8 @@ simple_node::recompute_depth()
 
 	for (size_t n = 0; n < noutputs(); n++) {
 		for (auto user : output(n)->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			input->node()->recompute_depth();
+			if (user->node())
+				user->node()->recompute_depth();
 		}
 	}
 }
