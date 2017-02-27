@@ -94,10 +94,16 @@ public:
 	~topdown_traverser() noexcept;
 
 	explicit
-	topdown_traverser(jive_graph * graph);
+	topdown_traverser(jive::region * region);
 
 	jive::node *
 	next();
+
+	inline jive::region *
+	region() const noexcept
+	{
+		return region_;
+	}
 
 	typedef detail::traverser_iterator<topdown_traverser> iterator;
 	typedef jive::node * value_type;
@@ -109,17 +115,12 @@ private:
 	predecessors_visited(const jive::node * node) noexcept;
 
 	void
-	check_node(jive::node * node);
-
-	void
-	init_top_nodes(jive::region * region);
-
-	void
 	node_create(jive::node * node);
 
 	void
 	iport_change(iport * in, oport * old_origin, oport * new_origin);
 
+	jive::region * region_;
 	traversal_tracker tracker_;
 	std::vector<callback> callbacks_;
 };

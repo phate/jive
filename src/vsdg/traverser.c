@@ -24,14 +24,28 @@ namespace jive {
 
 topdown_traverser::~topdown_traverser() noexcept {}
 
-topdown_traverser::topdown_traverser(jive_graph * graph)
-	: tracker_(graph)
+topdown_traverser::topdown_traverser(jive::region * region)
+	: region_(region)
+	, tracker_(region->graph())
 {
-	init_top_nodes(graph->root());
+	jive::node * node;
+	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list) {
+		tracker_.set_nodestate(node, traversal_nodestate::frontier);
+	}
 
-	callbacks_.push_back(graph->on_node_create.connect(
+	for (size_t n = 0; n < region->narguments(); n++) {
+		auto argument = region->argument(n);
+		for (const auto & user : argument->users) {
+			if (!user->node() || !predecessors_visited(user->node()))
+				continue;
+
+			tracker_.set_nodestate(user->node(), traversal_nodestate::frontier);
+		}
+	}
+
+	callbacks_.push_back(region->graph()->on_node_create.connect(
 		std::bind(&topdown_traverser::node_create, this, _1)));
-	callbacks_.push_back(graph->on_iport_change.connect(
+	callbacks_.push_back(region->graph()->on_iport_change.connect(
 		std::bind(&topdown_traverser::iport_change, this, _1, _2, _3)));
 }
 
@@ -39,82 +53,65 @@ bool
 topdown_traverser::predecessors_visited(const jive::node * node) noexcept
 {
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		input * in = dynamic_cast<jive::input*>(node->input(n));
-		if (tracker_.get_nodestate(dynamic_cast<jive::output*>(in->origin())->node())
-			!= traversal_nodestate::behind) {
-			return false;
-		}
-	}
-	return true;
-}
+		auto predecessor = node->input(n)->origin()->node();
+		if (!predecessor)
+			continue;
 
-void
-topdown_traverser::check_node(jive::node * node)
-{
-	if (tracker_.get_nodestate(node) == traversal_nodestate::ahead) {
-		tracker_.set_nodestate(node, traversal_nodestate::frontier);
+		if (tracker_.get_nodestate(predecessor) != traversal_nodestate::behind)
+			return false;
 	}
+
+	return true;
 }
 
 jive::node *
 topdown_traverser::next()
 {
 	jive::node * node = tracker_.peek_top();
-	if (!node) {
-		return nullptr;
-	}
+	if (!node) return nullptr;
+
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->noutputs(); n++) {
-		for (auto user : node->output(n)->users) {
-			auto input = dynamic_cast<jive::input*>(user);
-			check_node(input->node());
+		for (const auto & user : node->output(n)->users) {
+			if (!user->node())
+				continue;
+
+			if (tracker_.get_nodestate(user->node()) == traversal_nodestate::ahead)
+				tracker_.set_nodestate(user->node(), traversal_nodestate::frontier);
 		}
 	}
+
 	return node;
 }
 
 void
 topdown_traverser::node_create(jive::node * node)
 {
-	if (predecessors_visited(node)) {
+	if (node->region() != region())
+		return;
+
+	if (predecessors_visited(node))
 		tracker_.set_nodestate(node, traversal_nodestate::behind);
-	} else {
+	else
 		tracker_.set_nodestate(node, traversal_nodestate::frontier);
-	}
 }
 
 void
 topdown_traverser::iport_change(iport * in, oport * old_origin, oport * new_origin)
 {
-	if (!in->node())
+	if (in->region() != region() || !in->node())
 		return;
 
-	traversal_nodestate state = tracker_.get_nodestate(in->node());
+	auto state = tracker_.get_nodestate(in->node());
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
-	if (state != traversal_nodestate::ahead) {
+	if (state != traversal_nodestate::ahead)
 		return;
-	}
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as depth of the node could be lowered */
-	tracker_.set_nodestate(in->node(),
-		traversal_nodestate::frontier);
-}
-
-void
-topdown_traverser::init_top_nodes(jive::region * region)
-{
-	jive::region * subregion;
-	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list) {
-		init_top_nodes(subregion);
-	}
-
-	jive::node * node;
-	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list) {
-		tracker_.set_nodestate(node, traversal_nodestate::frontier);
-	}
+	tracker_.set_nodestate(in->node(), traversal_nodestate::frontier);
 }
 
 /* bottom up traverser */

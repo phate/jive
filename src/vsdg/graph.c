@@ -79,7 +79,7 @@ jive_graph::copy() const
 void
 jive_graph::normalize()
 {
-	for (auto node : jive::topdown_traverser(this))
+	for (auto node : jive::topdown_traverser(root()))
 		node_normal_form(typeid(node->operation()))->normalize_node(node);
 
 	normalized_ = true;

@@ -759,7 +759,7 @@ jive_negotiator_process(jive_negotiator * self)
 void
 jive_negotiator_insert_split_nodes(jive_negotiator * self)
 {
-	for (jive::node * node : jive::topdown_traverser(self->graph)) {
+	for (jive::node * node : jive::topdown_traverser(self->graph->root())) {
 		for (size_t n = 0; n < node->ninputs(); n++) {
 			jive::input * input = dynamic_cast<jive::input*>(node->input(n));
 			jive_negotiator_maybe_split_edge(self, dynamic_cast<jive::output*>(input->origin()), input);

@@ -20,7 +20,7 @@ graph_contains_node(jive_graph * graph, jive::node * node)
 {
 	bool found = false;
 	
-	for (jive::node * tmp : jive::topdown_traverser(graph)) {
+	for (jive::node * tmp : jive::topdown_traverser(graph->root())) {
 		found = found || (tmp == node);
 	}
 	

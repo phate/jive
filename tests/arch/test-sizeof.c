@@ -59,7 +59,7 @@ static int test_main(void)
 	jive::view(graph.root(), stdout);
 
 	jive::memlayout_mapper_simple layout_mapper(4);
-	for (jive::node * node : jive::topdown_traverser(&graph)) {
+	for (jive::node * node : jive::topdown_traverser(graph.root())) {
 		if (dynamic_cast<const jive::sizeof_op *>(&node->operation())) {
 			jive_sizeof_node_reduce(node, &layout_mapper);
 		}

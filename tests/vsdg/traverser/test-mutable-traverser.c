@@ -22,7 +22,7 @@ void test_mutable_traverse_topdown(jive_graph * graph, jive::node * n1, jive::no
 	bool seen_n2 = false;
 	bool seen_n3 = false;
 	
-	for (jive::node * tmp : jive::topdown_traverser(graph)) {
+	for (jive::node * tmp : jive::topdown_traverser(graph->root())) {
 		seen_n1 = seen_n1 || (tmp == n1);
 		seen_n2 = seen_n2 || (tmp == n2);
 		seen_n3 = seen_n3 || (tmp == n3);

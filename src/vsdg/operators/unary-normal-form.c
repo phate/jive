@@ -51,8 +51,7 @@ unary_normal_form::normalize_node(jive::node * node) const
 	}
 
 	if (get_cse()) {
-		jive::node * new_node = jive_node_cse(node->region(), op,
-			{dynamic_cast<jive::output*>(node->input(0)->origin())});
+		jive::node * new_node = jive_node_cse(node->region(), op, {node->input(0)->origin()});
 		JIVE_DEBUG_ASSERT(new_node);
 		if (new_node != node) {
 			output->replace(new_node->output(0));
