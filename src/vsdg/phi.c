@@ -18,34 +18,6 @@
 
 namespace jive {
 
-phi_tail_op::~phi_tail_op() noexcept
-{
-}
-
-size_t
-phi_tail_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-phi_tail_op::argument_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-phi_tail_op::debug_string() const
-{
-	return "PHI_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-phi_tail_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new phi_tail_op(*this));
-}
-
 phi_op::~phi_op() noexcept
 {
 }

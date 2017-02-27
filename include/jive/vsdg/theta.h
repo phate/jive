@@ -19,23 +19,6 @@ struct jive_theta_build_state;
 
 namespace jive {
 
-class theta_tail_op final : public region_tail_op {
-public:
-	virtual
-	~theta_tail_op() noexcept;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const base::type &
-	argument_type(size_t index) const noexcept override;
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
 class theta_op final : public region_anchor_op {
 public:
 	virtual

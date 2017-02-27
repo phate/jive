@@ -40,13 +40,11 @@ test_basic_traversal()
 	auto n2 = jive_test_node_create(graph.root(), {&type, &type}, {n1->output(0), n1->output(1)},
 		{&type});
 
-	graph.root()->bottom()->add_input(&type, n2->output(0));
+	graph.export_port(n2->output(0), "dummy");
 
 	{
 		jive::node * tmp;
 		jive::bottomup_traverser trav(graph.root());
-		tmp = trav.next();
-		assert(tmp == graph.root()->bottom());
 		tmp = trav.next();
 		assert(tmp == n2);
 		tmp = trav.next();
@@ -76,8 +74,6 @@ test_order_enforcement_traversal()
 		assert(tmp == n3);
 		tmp = trav.next();
 		assert(tmp == n2);
-		tmp = trav.next();
-		assert(tmp == graph.root()->bottom());
 		tmp = trav.next();
 		assert(tmp == n1);
 		tmp = trav.next();

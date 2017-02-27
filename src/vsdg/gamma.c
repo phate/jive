@@ -24,34 +24,6 @@
 
 namespace jive {
 
-gamma_tail_op::~gamma_tail_op() noexcept
-{
-}
-
-size_t
-gamma_tail_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-gamma_tail_op::argument_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-gamma_tail_op::debug_string() const
-{
-	return "GAMMA_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-gamma_tail_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new gamma_tail_op(*this));
-}
-
 gamma_op::~gamma_op() noexcept
 {
 }

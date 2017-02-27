@@ -20,25 +20,6 @@
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/tracker.h>
 
-/* graph tail node */
-
-namespace jive {
-
-class gate;
-
-class graph_tail_operation final : public region_tail_op {
-public:
-	virtual
-	~graph_tail_operation() noexcept;
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
-}
-
 /* graph */
 
 typedef struct jive_graph jive_graph;

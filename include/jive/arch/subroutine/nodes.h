@@ -13,23 +13,6 @@
 
 namespace jive {
 
-class subroutine_tail_op final : public region_tail_op {
-public:
-	virtual
-	~subroutine_tail_op() noexcept;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const base::type &
-	argument_type(size_t index) const noexcept override;
-	virtual std::string
-	debug_string() const override;
-
-	virtual std::unique_ptr<jive::operation>
-	copy() const override;
-};
-
 class subroutine_op final : public region_anchor_op {
 public:
 	virtual

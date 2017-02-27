@@ -338,39 +338,6 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 	}
 }
 
-static void
-jive_graph_tail_node_address_transform(const jive::node * node, size_t nbits)
-{
-	JIVE_DEBUG_ASSERT(dynamic_cast<const jive::graph_tail_operation*>(&node->operation()));
-
-	jive_graph * graph = node->graph();
-
-	bool transform = false;
-	std::vector<std::string> names;
-	std::vector<jive::oport*> exports;
-	for (size_t n = 0; n < node->ninputs(); n++) {
-		jive::output * origin = dynamic_cast<jive::output*>(node->input(n)->origin());
-		if (type_contains_address(&origin->type())) {
-			transform = true;
-			names.push_back(node->input(n)->gate()->name());
-			exports.push_back(jive_address_to_bitstring_create(origin, nbits, &origin->type()));
-		} else {
-			exports.push_back(origin);
-			names.push_back(node->input(n)->gate()->name());
-		}
-	}
-
-	if (!transform)
-		return;
-
-	delete graph->root()->bottom();
-	jive_opnode_create(jive::graph_tail_operation(), graph->root(), {});
-
-	JIVE_DEBUG_ASSERT(exports.size() == names.size());
-	for (size_t n = 0; n < exports.size(); n++)
-		graph->export_port(exports[n], names[n]);
-}
-
 void
 jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper)
 {
@@ -402,8 +369,6 @@ jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper)
 		jive_call_node_address_transform(node, *op, nbits);
 	} else if (dynamic_cast<const jive::fct::apply_op *>(&node->operation())) {
 		jive_apply_node_address_transform(node, nbits);
-	} else if (dynamic_cast<const jive::graph_tail_operation*>(&node->operation())) {
-		jive_graph_tail_node_address_transform(node, nbits);
 	}
 }
 

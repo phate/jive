@@ -19,7 +19,7 @@ test_main(void)
 
 	graph.prune();
 
-	assert(graph.root()->nodes.size() == 1);
+	assert(graph.root()->nodes.size() == 0);
 
 	jive::view(graph.root(), stdout);
 

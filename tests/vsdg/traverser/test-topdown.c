@@ -57,8 +57,6 @@ test_basic_traversal()
 		jive::topdown_traverser trav(graph.root());
 
 		tmp = trav.next();
-		assert(tmp == graph.root()->bottom());
-		tmp = trav.next();
 		assert(tmp == n1);
 		tmp = trav.next();
 		assert(tmp == n2);
@@ -83,8 +81,6 @@ test_order_enforcement_traversal()
 		jive::node * tmp;
 		jive::topdown_traverser trav(graph.root());
 
-		tmp = trav.next();
-		assert(tmp == graph.root()->bottom());
 		tmp = trav.next();
 		assert(tmp == n1);
 		tmp = trav.next();
@@ -113,8 +109,6 @@ test_traversal_insertion()
 		jive::node * node;
 		jive::topdown_traverser trav(graph.root());
 
-		node = trav.next();
-		assert(node == graph.root()->bottom());
 		node = trav.next();
 		assert(node == n1);
 

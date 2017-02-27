@@ -24,34 +24,6 @@
 
 namespace jive {
 
-dataobj_tail_op::~dataobj_tail_op() noexcept
-{
-}
-
-size_t
-dataobj_tail_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-dataobj_tail_op::argument_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-dataobj_tail_op::debug_string() const
-{
-	return "DATA_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-dataobj_tail_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new dataobj_tail_op(*this));
-}
-
 dataobj_op::~dataobj_op() noexcept
 {
 }

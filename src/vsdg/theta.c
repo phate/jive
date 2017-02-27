@@ -21,38 +21,6 @@
 
 namespace jive {
 
-theta_tail_op::~theta_tail_op() noexcept
-{
-}
-
-size_t
-theta_tail_op::narguments() const noexcept
-{
-	return 2;
-}
-
-const base::type &
-theta_tail_op::argument_type(size_t index) const noexcept
-{
-	if (index == 0)
-		return seq::seqtype;
-	else {
-		return jive::ctl::boolean;
-	}
-}
-
-std::string
-theta_tail_op::debug_string() const
-{
-	return "THETA_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-theta_tail_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new theta_tail_op(*this));
-}
-
 theta_op::~theta_op() noexcept
 {
 }

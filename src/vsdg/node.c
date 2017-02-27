@@ -409,13 +409,6 @@ jive_opnode_create(
 {
 	jive::node * node = new jive::simple_node(op, region, operands);
 
-	/* FIXME: region head/tail nodes are a bit quirky, but they
-	 * will go away eventually anyways */
-	if (dynamic_cast<const jive::region_tail_op *>(&op)) {
-		JIVE_DEBUG_ASSERT(!region->bottom());
-		region->set_bottom(node);
-	}
-
 	for (size_t n = 0; n < node->ninputs(); n++) {
 		if (!jive_input_is_valid(dynamic_cast<jive::input*>(node->input(n))))
 			throw jive::compiler_error("Invalid input");

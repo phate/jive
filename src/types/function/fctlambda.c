@@ -16,41 +16,10 @@
 #include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/structural_node.h>
 
-/* lambda leave node */
-
-
 /* lambda node */
 
 namespace jive {
 namespace fct {
-
-lambda_tail_op::~lambda_tail_op() noexcept
-{
-}
-
-size_t
-lambda_tail_op::narguments() const noexcept
-{
-	return 1;
-}
-
-const base::type &
-lambda_tail_op::argument_type(size_t index) const noexcept
-{
-	return seq::seqtype;
-}
-
-std::string
-lambda_tail_op::debug_string() const
-{
-	return "LAMBDA_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-lambda_tail_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new lambda_tail_op(*this));
-}
 
 lambda_op::~lambda_op() noexcept
 {

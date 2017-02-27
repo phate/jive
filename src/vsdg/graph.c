@@ -17,27 +17,6 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 
-/* graph tail node */
-
-namespace jive {
-
-graph_tail_operation::~graph_tail_operation() noexcept
-{
-}
-std::string
-graph_tail_operation::debug_string() const
-{
-	return "GRAPH_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-graph_tail_operation::copy() const
-{
-	return std::unique_ptr<jive::operation>(new graph_tail_operation(*this));
-}
-
-}
-
 static void
 prune_regions_recursive(jive::region * region)
 {
@@ -63,7 +42,6 @@ jive_graph::jive_graph()
 	, root_(new jive::region(nullptr, this))
 {
 	gates.first = gates.last = 0;
-	jive_opnode_create(jive::graph_tail_operation(), root(), {});
 }
 
 std::unique_ptr<jive_graph>

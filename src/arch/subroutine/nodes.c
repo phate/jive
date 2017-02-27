@@ -15,38 +15,6 @@
 
 namespace jive {
 
-subroutine_tail_op::~subroutine_tail_op() noexcept
-{
-}
-
-size_t
-subroutine_tail_op::narguments() const noexcept
-{
-	return 2;
-}
-
-const base::type &
-subroutine_tail_op::argument_type(size_t index) const noexcept
-{
-	if (index == 0)
-		return seq::seqtype;
-	else {
-		return jive::ctl::boolean;
-	}
-}
-
-std::string
-subroutine_tail_op::debug_string() const
-{
-	return "SUBROUTINE_TAIL";
-}
-
-std::unique_ptr<jive::operation>
-subroutine_tail_op::copy() const
-{
-	return std::unique_ptr<jive::operation>(new subroutine_tail_op(*this));
-}
-
 subroutine_op::~subroutine_op() noexcept
 {
 }
