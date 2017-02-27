@@ -324,6 +324,19 @@ simple_node::has_users() const noexcept
 	return false;
 }
 
+bool
+simple_node::has_successors() const noexcept
+{
+	for (const auto & output : outputs_) {
+		for (const auto & user : output->users) {
+			if (user->node())
+				return true;
+		}
+	}
+
+	return false;
+}
+
 jive::input *
 simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 {

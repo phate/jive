@@ -123,6 +123,9 @@ public:
 	virtual bool
 	has_users() const noexcept override;
 
+	virtual bool
+	has_successors() const noexcept override;
+
 	virtual size_t
 	ninputs() const noexcept override;
 

@@ -123,6 +123,9 @@ public:
 	virtual bool
 	has_users() const noexcept override;
 
+	virtual bool
+	has_successors() const noexcept override;
+
 	inline size_t
 	nsubregions() const noexcept
 	{

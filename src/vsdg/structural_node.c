@@ -259,6 +259,19 @@ structural_node::has_users() const noexcept
 	return false;
 }
 
+bool
+structural_node::has_successors() const noexcept
+{
+	for (const auto & output : outputs_) {
+		for (const auto & user : output->users) {
+			if (user->node())
+				return true;
+		}
+	}
+
+	return false;
+}
+
 size_t
 structural_node::depth() const noexcept
 {
