@@ -223,20 +223,8 @@ region::~region()
 		sorted_nodes[node.depth()].push_back(&node);
 	}
 	for (auto it = sorted_nodes.rbegin(); it != sorted_nodes.rend(); it++) {
-		for (const auto & node : *it) {
-			std::vector<jive::region*> subregions;
-			if (dynamic_cast<const jive::region_anchor_op*>(&node->operation())) {
-				for (size_t n = 0; n < node->ninputs(); n++) {
-					auto tail = node->input(n)->origin()->node();
-					if (tail && tail == tail->region()->bottom())
-						subregions.push_back(tail->region());
-				}
-			}
-
+		for (const auto & node : *it)
 			delete node;
-			for (size_t n = 0; n < subregions.size(); n++)
-				delete subregions[n];
-		}
 	}
 
 	/*
@@ -258,9 +246,7 @@ region::~region()
 }
 
 region::region(jive::region * parent, jive_graph * graph)
-	: top_(nullptr)
-	, bottom_(nullptr)
-	, graph_(graph)
+	: graph_(graph)
 	, parent_(parent)
 	, node_(nullptr)
 {
@@ -277,9 +263,7 @@ region::region(jive::region * parent, jive_graph * graph)
 }
 
 region::region(jive::structural_node * node)
-	: top_(nullptr)
-	, bottom_(nullptr)
-	, graph_(node->graph())
+	: graph_(node->graph())
 	, parent_(nullptr)
 	, node_(node)
 {
@@ -393,9 +377,6 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 		bool copy_bottom)
 	{
 		for (const auto & node : source->nodes) {
-			if (!copy_bottom && &node == source->bottom())
-				continue;
-	
 			if (node.depth() >= context.size())
 				context.resize(node.depth()+1);
 			context[node.depth()].push_back(&node);
@@ -455,9 +436,7 @@ region::copy(region * target, substitution_map & smap, bool copy_top, bool copy_
 	for (size_t n = 0; n < context.size(); n++) {
 		for (const auto node : context[n]) {
 			target = smap.lookup(node->region());
-			jive::node * new_node = node->copy(target, smap);
-			if (node->region()->bottom() == node)
-				target->set_bottom(new_node);
+			node->copy(target, smap);
 		}
 	}
 }

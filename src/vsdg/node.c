@@ -296,9 +296,6 @@ node::~node()
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
 	JIVE_LIST_REMOVE(region_->top_nodes, this, region_top_node_list);
 
-	if (this == region()->bottom())
-		region()->set_bottom(nullptr);
-
 	region_ = nullptr;
 
 	for (size_t n = 0; n < tracker_slots.size(); n++)

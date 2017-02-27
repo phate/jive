@@ -163,21 +163,6 @@ public:
 		return graph_;
 	}
 
-	inline jive::node *
-	bottom() const noexcept
-	{
-		return bottom_;
-	}
-
-	/*
-		FIXME: this is going to be removed again
-	*/
-	inline void
-	set_bottom(jive::node * bottom) noexcept
-	{
-		bottom_ = bottom;
-	}
-
 	inline jive::structural_node *
 	node() const noexcept
 	{
@@ -270,8 +255,6 @@ public:
 	} region_subregions_list;
 
 private:
-	jive::node * top_;
-	jive::node * bottom_;
 	jive_graph * graph_;
 	jive::region * parent_;
 	jive::structural_node * node_;

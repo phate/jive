@@ -122,13 +122,9 @@ jive_graph::prune()
 	jive::node * node = root()->bottom_nodes.first;
 	while (node) {
 		auto next = node->region_bottom_list.next;
-		
-		if (node != root()->bottom()) {
-			delete node;
-
-			if (!next)
-				next = root()->bottom_nodes.first;
-		}
+		delete node;
+		if (!next)
+			next = root()->bottom_nodes.first;
 		node = next;
 	}
 	
