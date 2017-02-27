@@ -118,41 +118,40 @@ topdown_traverser::iport_change(iport * in, oport * old_origin, oport * new_orig
 
 bottomup_traverser::~bottomup_traverser() noexcept {}
 
-bottomup_traverser::bottomup_traverser(jive_graph * graph, bool revisit)
-	: tracker_(graph)
-	, new_nodes_state_(revisit ? traversal_nodestate::frontier : traversal_nodestate::behind)
+bottomup_traverser::bottomup_traverser(jive::region * region, bool revisit)
+	: region_(region)
+	, tracker_(region->graph())
+	, new_node_state_(revisit ? traversal_nodestate::frontier : traversal_nodestate::behind)
 {
 	jive::node * node;
-	JIVE_LIST_ITERATE(graph->root()->bottom_nodes, node, region_bottom_list) {
+	JIVE_LIST_ITERATE(region->bottom_nodes, node, region_bottom_list)
 		tracker_.set_nodestate(node, traversal_nodestate::frontier);
-	}
-	callbacks_.push_back(graph->on_node_create.connect(
-		std::bind(&bottomup_traverser::node_create, this, _1)));
-	callbacks_.push_back(graph->on_node_destroy.connect(
-		std::bind(&bottomup_traverser::node_destroy, this, _1)));
-	callbacks_.push_back(graph->on_iport_change.connect(
-		std::bind(&bottomup_traverser::iport_change, this, _1, _2, _3)));
-}
 
-void
-bottomup_traverser::check_node(jive::node * node)
-{
-	if (tracker_.get_nodestate(node) == traversal_nodestate::ahead) {
-		tracker_.set_nodestate(node, traversal_nodestate::frontier);
+	for (size_t n = 0; n < region->nresults(); n++) {
+		auto node = region->result(n)->origin()->node();
+		if (node && !node->has_successors())
+			tracker_.set_nodestate(node, traversal_nodestate::frontier);
 	}
+
+	callbacks_.push_back(region->graph()->on_node_create.connect(
+		std::bind(&bottomup_traverser::node_create, this, _1)));
+	callbacks_.push_back(region->graph()->on_node_destroy.connect(
+		std::bind(&bottomup_traverser::node_destroy, this, _1)));
+	callbacks_.push_back(region->graph()->on_iport_change.connect(
+		std::bind(&bottomup_traverser::iport_change, this, _1, _2, _3)));
 }
 
 jive::node *
 bottomup_traverser::next()
 {
-	jive::node * node = tracker_.peek_bottom();
-	if (!node) {
-		return NULL;
-	}
+	auto node = tracker_.peek_bottom();
+	if (!node) return nullptr;
+
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->ninputs(); n++) {
 		auto producer = node->input(n)->origin()->node();
-		if (producer) check_node(producer);
+		if (producer && tracker_.get_nodestate(producer) == traversal_nodestate::ahead)
+			tracker_.set_nodestate(producer, traversal_nodestate::frontier);
 	}
 	return node;
 }
@@ -160,35 +159,41 @@ bottomup_traverser::next()
 void
 bottomup_traverser::node_create(jive::node * node)
 {
-	tracker_.set_nodestate(node, new_nodes_state_);
+	if (node->region() != region())
+		return;
+
+	tracker_.set_nodestate(node, new_node_state_);
 }
 
 void
 bottomup_traverser::node_destroy(jive::node * node)
 {
+	if (node->region() != region())
+		return;
+
 	for (size_t n = 0; n < node->ninputs(); n++) {
-		check_node(dynamic_cast<jive::output*>(node->input(n)->origin())->node());
+		auto producer = node->input(n)->origin()->node();
+		if (producer && tracker_.get_nodestate(producer) == traversal_nodestate::ahead)
+			tracker_.set_nodestate(producer, traversal_nodestate::frontier);
 	}
 }
 
 void
 bottomup_traverser::iport_change(iport * in, oport * old_origin, oport * new_origin)
 {
-	if (!in->node())
+	if (in->region() != region() || !in->node())
 		return;
 
-	auto output = dynamic_cast<jive::output*>(old_origin);
-	traversal_nodestate state = tracker_.get_nodestate(output->node());
+	traversal_nodestate state = tracker_.get_nodestate(old_origin->node());
 	
 	/* ignore nodes that have been traversed already, or that are already
 	marked for later traversal */
-	if (state != traversal_nodestate::ahead) {
+	if (state != traversal_nodestate::ahead)
 		return;
-	}
 	
 	/* make sure node is visited eventually, might now be visited earlier
 	as there (potentially) is one less obstructing node below */
-	tracker_.set_nodestate(output->node(), traversal_nodestate::frontier);
+	tracker_.set_nodestate(old_origin->node(), traversal_nodestate::frontier);
 }
 
 /* upward cone traverser */

@@ -338,7 +338,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 void
 jive_regselector_pull(jive_regselector * self)
 {
-	for (jive::node * node : jive::bottomup_traverser(self->base.graph, true)) {
+	for (jive::node * node : jive::bottomup_traverser(self->base.graph->root(), true)) {
 		jive_regselector_pull_node(self, node);
 	}
 }

@@ -19,7 +19,7 @@ void test_basic_traversal(jive_graph * graph, jive::node * n1, jive::node * n2)
 	jive::node * tmp;
 
 	{
-		jive::bottomup_traverser trav(graph);
+		jive::bottomup_traverser trav(graph->root());
 		tmp = trav.next();
 		assert(tmp == graph->root()->bottom());
 		tmp = trav.next();
@@ -44,7 +44,7 @@ void test_order_enforcement_traversal()
 	jive::node * tmp;
 
 	{
-		jive::bottomup_traverser trav(&graph);
+		jive::bottomup_traverser trav(graph.root());
 
 		tmp = trav.next();
 		assert(tmp==n3);

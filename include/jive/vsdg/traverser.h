@@ -130,10 +130,16 @@ public:
 	~bottomup_traverser() noexcept;
 
 	explicit
-	bottomup_traverser(jive_graph * graph, bool revisit = false);
+	bottomup_traverser(jive::region * region, bool revisit = false);
 
 	jive::node *
 	next();
+
+	inline jive::region *
+	region() const noexcept
+	{
+		return region_;
+	}
 
 	typedef detail::traverser_iterator<bottomup_traverser> iterator;
 	typedef jive::node * value_type;
@@ -141,9 +147,6 @@ public:
 	inline iterator end() { return iterator(this, nullptr); }
 
 private:
-	void
-	check_node(jive::node * node);
-
 	void
 	node_create(jive::node * node);
 
@@ -153,9 +156,10 @@ private:
 	void
 	iport_change(iport * in, oport * old_origin, oport * new_origin);
 
+	jive::region * region_;
 	traversal_tracker tracker_;
 	std::vector<callback> callbacks_;
-	traversal_nodestate new_nodes_state_;
+	traversal_nodestate new_node_state_;
 };
 
 class upward_cone_traverser final {
