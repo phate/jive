@@ -539,23 +539,6 @@ jive_node_create_normalized(
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments);
 
-/**
-	\brief Attempt to find existing or create new node
-	
-	\param nf Normal form of node class
-	\param region Region to create node in
-	\param attrs Attributes of node
-	\param noperands Number of operands
-	\param operands Input operands of node
-*/
-
-jive::node *
-jive_node_cse_create(
-	const jive::node_normal_form * nf,
-	jive::region * region,
-	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments);
-
 bool
 jive_node_normalize(jive::node * self);
 

@@ -360,24 +360,6 @@ jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot)
 	return nodestate;
 }
 
-jive::node *
-jive_node_cse_create(
-	const jive::node_normal_form * nf,
-	jive::region * region,
-	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments)
-{
-	jive::node * node;
-	if (nf->get_mutable() && nf->get_cse()) {
-		node = jive_node_cse(region, op, arguments);
-		if (node) {
-			return node;
-		}
-	}
-
-	return region->add_simple_node(op, arguments);
-}
-
 bool
 jive_node_normalize(jive::node * self)
 {
