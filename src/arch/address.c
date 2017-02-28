@@ -492,7 +492,7 @@ label_to_bitstring_op::copy() const
 /* constant */
 
 jive::oport *
-constant(struct jive_graph * graph, const value_repr & vr)
+constant(jive::graph * graph, const value_repr & vr)
 {
 	constant_op op(vr);
 	return jive_node_create_normalized(graph->root(), op, {})[0];

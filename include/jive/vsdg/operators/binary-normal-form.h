@@ -23,7 +23,7 @@ public:
 	binary_normal_form(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph);
+		jive::graph * graph);
 
 	virtual bool
 	normalize_node(jive::node * node) const override;
@@ -85,7 +85,7 @@ public:
 	flattened_binary_normal_form(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph);
+		jive::graph * graph);
 
 	virtual bool
 	normalize_node(jive::node * node) const override;

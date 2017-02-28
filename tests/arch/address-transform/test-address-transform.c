@@ -26,7 +26,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::addr::type addr;
 	jive::mem::type mem;

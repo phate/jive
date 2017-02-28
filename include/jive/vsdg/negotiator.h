@@ -19,8 +19,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_graph;
-
 struct jive_negotiator;
 struct jive_negotiator_connection;
 struct jive_negotiator_constraint;
@@ -400,7 +398,7 @@ struct jive_negotiator_class {
 struct jive_negotiator {
 	const jive_negotiator_class * class_;
 	
-	struct jive_graph * graph;
+	jive::graph * graph;
 	jive_negotiator_input_hash input_map;
 	jive_negotiator_output_hash output_map;
 	jive_negotiator_gate_hash gate_map;
@@ -484,7 +482,7 @@ void
 jive_negotiator_init_(
 	jive_negotiator * self,
 	const jive_negotiator_class * class_,
-	jive_graph * graph);
+	jive::graph * graph);
 
 void
 jive_negotiator_fini_(jive_negotiator * self);

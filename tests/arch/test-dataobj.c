@@ -24,12 +24,12 @@
 #include <jive/vsdg/label.h>
 #include <jive/vsdg/objdef.h>
 
-typedef jive::output *(*data_def_fn)(jive_graph *);
+typedef jive::output *(*data_def_fn)(jive::graph *);
 
 static void
 verify_asm_definition(data_def_fn data_def, const char * expected_data)
 {
-	jive_graph * &graph = jive_graph_create();
+	auto graph = jive_graph_create();
 	
 	jive::memlayout_mapper_simple layout_mapper(4);
 
@@ -66,25 +66,25 @@ verify_asm_definition(data_def_fn data_def, const char * expected_data)
 static const char bits[] = "01010101010101010101010101010101";
 
 static jive::output *
-make_8bit_const(jive_graph * &graph)
+make_8bit_const(jive::graph * &graph)
 {
 	return jive_bitconstant(graph.root(), 8, bits);
 }
 
 static jive::output *
-make_16bit_const(jive_graph * &graph)
+make_16bit_const(jive::graph * &graph)
 {
 	return jive_bitconstant(graph.root(), 16, bits);
 }
 
 static jive::output *
-make_32bit_const(jive_graph * &graph)
+make_32bit_const(jive::graph * &graph)
 {
 	return jive_bitconstant(graph.root(), 32, bits);
 }
 
 static jive::output *
-make_record1(jive_graph * &graph)
+make_record1(jive::graph * &graph)
 {
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
@@ -101,7 +101,7 @@ make_record1(jive_graph * &graph)
 }
 
 static jive::output *
-make_record2(jive_graph * &graph)
+make_record2(jive::graph * &graph)
 {
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
@@ -122,7 +122,7 @@ make_record2(jive_graph * &graph)
 }
 
 static jive::output *
-make_union1(jive_graph * &graph)
+make_union1(jive::graph * &graph)
 {
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);
@@ -136,7 +136,7 @@ make_union1(jive_graph * &graph)
 }
 
 static jive::output *
-make_union2(jive_graph * &graph)
+make_union2(jive::graph * &graph)
 {
 	static const jive::bits::type bits32(32);
 	static const jive::bits::type bits16(16);

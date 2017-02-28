@@ -203,7 +203,7 @@ upward_cone_traverser::~upward_cone_traverser() noexcept {}
 upward_cone_traverser::upward_cone_traverser(jive::node * node)
 	: tracker_(node->graph())
 {
-	jive_graph * graph = node->graph();
+	jive::graph * graph = node->graph();
 	
 	tracker_.set_nodestate(node, traversal_nodestate::frontier);
 	
@@ -373,7 +373,7 @@ bottomup_region_traverser::pass(jive::node * node)
 	check_above(node);
 }
 
-bottomup_region_traverser::bottomup_region_traverser(jive_graph * graph)
+bottomup_region_traverser::bottomup_region_traverser(jive::graph * graph)
 	: graph_(graph)
 	, slot_(jive_graph_reserve_tracker_slot(graph_))
 	, behind_state_(jive_graph_reserve_tracker_depth_state(graph_))

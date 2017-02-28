@@ -19,7 +19,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::bits::type bits32(32);
 	std::shared_ptr<const jive::rcd::declaration> rec(new jive::rcd::declaration({&bits32, &bits32}));

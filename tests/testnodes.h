@@ -65,7 +65,7 @@ jive_test_node_create(
 
 std::vector<jive::oport*>
 jive_test_node_create_normalized(
-	jive_graph * graph,
+	jive::graph * graph,
 	const std::vector<const jive::base::type*> & operand_types,
 	const std::vector<jive::oport*> & operands,
 	const std::vector<const jive::base::type*> & result_types);

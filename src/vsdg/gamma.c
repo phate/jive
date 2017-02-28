@@ -66,7 +66,7 @@ jive::node_normal_form *
 jive_gamma_node_get_default_normal_form_(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	jive::gamma_normal_form * normal_form = new jive::gamma_normal_form(
 		operator_class, parent, graph);
@@ -150,7 +150,7 @@ jive_gamma(jive::oport * predicate,
 	if (alternatives.size() == 1)
 		return alternatives[0];
 
-	jive_graph * graph = predicate->region()->graph();
+	jive::graph * graph = predicate->region()->graph();
 	auto nf = static_cast<jive::gamma_normal_form*>(graph->node_normal_form(typeid(jive::gamma_op)));
 
 	if (nf->get_mutable() && nf->get_predicate_reduction()) {

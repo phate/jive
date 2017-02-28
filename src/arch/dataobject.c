@@ -119,7 +119,7 @@ flatten_data_items(
 			throw jive::compiler_error("Type mismatch: can only serialize simple record compounds");
 		}
 
-		jive_graph * graph = data->region()->graph();
+		auto graph = data->region()->graph();
 		
 		auto zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
 		items.resize(layout.size(), zero_pad);
@@ -146,7 +146,7 @@ flatten_data_items(
 			throw jive::compiler_error("Type mismatch: can only serialize simple union compounds");
 		}
 		
-		jive_graph * graph = data->region()->graph();
+		auto graph = data->region()->graph();
 		
 		auto zero_pad = jive_bitconstant(graph->root(), 8, "00000000");
 		items.resize(layout.size(), zero_pad);

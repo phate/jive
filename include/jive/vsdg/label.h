@@ -16,7 +16,6 @@ namespace jive {
 	class output;
 }
 
-struct jive_graph;
 struct jive_linker_symbol;
 
 typedef uint64_t jive_offset;

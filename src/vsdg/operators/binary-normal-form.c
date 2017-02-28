@@ -81,7 +81,7 @@ binary_normal_form::~binary_normal_form() noexcept
 binary_normal_form::binary_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 	: node_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 	, enable_reorder_(true)
@@ -338,7 +338,7 @@ flattened_binary_normal_form::~flattened_binary_normal_form() noexcept
 flattened_binary_normal_form::flattened_binary_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 	: node_normal_form(operator_class, parent, graph)
 {
 }

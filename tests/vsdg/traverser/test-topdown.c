@@ -15,7 +15,7 @@ test_initialization()
 {
 	jive_test_value_type vtype;
 
-	jive_graph graph;
+	jive::graph graph;
 	auto i = graph.import(vtype, "i");
 
 	auto constant = jive_test_node_create(graph.root(), {}, {}, {&vtype});
@@ -44,7 +44,7 @@ test_initialization()
 static void
 test_basic_traversal()
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type type;
 	auto n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
 	auto n2 = jive_test_node_create(graph.root(), {&type, &type}, {n1->output(0), n1->output(1)},
@@ -70,7 +70,7 @@ test_basic_traversal()
 static void
 test_order_enforcement_traversal()
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type type;
 	jive::node * n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
 	jive::node * n2 = jive_test_node_create(graph.root(), {&type}, {n1->output(0)}, {&type});
@@ -97,7 +97,7 @@ test_order_enforcement_traversal()
 static void
 test_traversal_insertion()
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type type;
 	auto n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
 	auto n2 = jive_test_node_create(graph.root(), {&type, &type}, {n1->output(0), n1->output(1)},
@@ -146,7 +146,7 @@ test_traversal_insertion()
 static void
 test_mutable_traverse()
 {
-	auto test = [](jive_graph * graph, jive::node * n1, jive::node * n2, jive::node * n3) {
+	auto test = [](jive::graph * graph, jive::node * n1, jive::node * n2, jive::node * n3) {
 		bool seen_n1 = false;
 		bool seen_n2 = false;
 		bool seen_n3 = false;
@@ -166,7 +166,7 @@ test_mutable_traverse()
 		assert(seen_n3);
 	};
 
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type type;
 	auto n1 = jive_test_node_create(graph.root(), {}, {}, {&type});
 	auto n2 = jive_test_node_create(graph.root(), {}, {}, {&type});

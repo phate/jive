@@ -11,7 +11,7 @@
 static int
 types_float_arithmetic_test_fltdifference(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -31,7 +31,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltdifference", types_float
 static int
 types_float_arithmetic_test_fltnegate(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto neg = jive_fltnegate(s0);
@@ -50,7 +50,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltnegate", types_float_ari
 
 static int types_float_arithmetic_test_fltproduct(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -69,7 +69,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltproduct", types_float_ar
 
 static int types_float_arithmetic_test_fltquotient(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -88,7 +88,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltquotient", types_float_a
 
 static int types_float_arithmetic_test_fltsum(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -107,7 +107,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/arithmetic/test-fltsum", types_float_arithm
 
 static int types_float_comparison_test_fltequal(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -126,7 +126,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltequal", types_float_comp
 
 static int types_float_comparison_test_fltgreater(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -145,7 +145,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreater", types_float_co
 
 static int types_float_comparison_test_fltgreatereq(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -164,7 +164,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltgreatereq", types_float_
 
 static int types_float_comparison_test_fltless(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -183,7 +183,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltless", types_float_compa
 
 static int types_float_comparison_test_fltlesseq(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -203,7 +203,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltlesseq", types_float_com
 static int
 types_float_comparison_test_fltnotequal(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	auto s0 = graph.import(jive::flt::type(), "s0");
 	auto s1 = graph.import(jive::flt::type(), "s1");
@@ -223,7 +223,7 @@ JIVE_UNIT_TEST_REGISTER("types/float/comparison/test-fltnotequal", types_float_c
 static int
 types_float_test_fltconstant(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive_fltconstant_float(graph.root(), -1.0);
 	jive_fltconstant_float(graph.root(), 0.0);

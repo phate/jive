@@ -85,7 +85,7 @@ jive::node_normal_form *
 jive_anchor_node_get_default_normal_form_(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	jive::anchor_normal_form * nf = new jive::anchor_normal_form(operator_class, parent, graph);
 

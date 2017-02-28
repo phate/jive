@@ -34,7 +34,7 @@ jive::node_normal_form *
 jive_unary_operation_get_default_normal_form_(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	jive::node_normal_form * nf = new jive::unary_normal_form(operator_class, parent, graph);
 	

@@ -87,7 +87,7 @@ namespace {
 typedef jive::node_normal_form *(*create_node_normal_form_functor)(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph);
+	jive::graph * graph);
 
 typedef std::unordered_map<std::type_index, create_node_normal_form_functor>
 	node_normal_form_registry;
@@ -121,7 +121,7 @@ node_normal_form::register_factory(
 	jive::node_normal_form *(*fn)(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph))
+		jive::graph * graph))
 {
 	if (!registry) {
 		registry.reset(new node_normal_form_registry());
@@ -134,7 +134,7 @@ node_normal_form *
 node_normal_form::create(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	return lookup_factory_functor(&operator_class)(operator_class, parent, graph);
 }

@@ -345,7 +345,7 @@ jive_regselector_pull(jive_regselector * self)
 }
 
 void
-jive_regselector_init(jive_regselector * self, struct jive_graph * graph,
+jive_regselector_init(jive_regselector * self, jive::graph * graph,
 	const jive_reg_classifier * classifier)
 {
 	jive_negotiator_init_(&self->base, &JIVE_REGSELECTOR_CLASS, graph);

@@ -16,7 +16,7 @@
 #include "testnodes.h"
 
 static bool
-graph_contains_node(jive_graph * graph, jive::node * node)
+graph_contains_node(jive::graph * graph, jive::node * node)
 {
 	bool found = false;
 	
@@ -29,7 +29,7 @@ graph_contains_node(jive_graph * graph, jive::node * node)
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 	
 	jive::region * region = graph.root();
 	jive_test_value_type type;

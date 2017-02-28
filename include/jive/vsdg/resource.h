@@ -16,8 +16,6 @@
 #include <unordered_map>
 #include <vector>
 
-struct jive_graph;
-
 namespace jive {
 namespace base {
 	class type;

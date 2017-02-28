@@ -20,7 +20,7 @@ public:
 	phi_normal_form(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph) noexcept;
+		jive::graph * graph) noexcept;
 
 	// FIXME: phi normal forms are totally broken.
 };

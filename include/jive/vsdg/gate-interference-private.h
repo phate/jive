@@ -20,7 +20,7 @@ void
 jive_gate_interference_destroy(jive_gate_interference * self);
 
 static inline void
-jive_gate_interference_add(jive_graph * graph, jive::gate * first, jive::gate * second)
+jive_gate_interference_add(jive::graph * graph, jive::gate * first, jive::gate * second)
 {
 	auto iter = first->interference.find(second);
 	if (iter != first->interference.end()) {
@@ -33,7 +33,7 @@ jive_gate_interference_add(jive_graph * graph, jive::gate * first, jive::gate * 
 }
 
 static inline void
-jive_gate_interference_remove(jive_graph * graph, jive::gate * first, jive::gate * second)
+jive_gate_interference_remove(jive::graph * graph, jive::gate * first, jive::gate * second)
 {
 	jive_gate_interference * i = first->interference.find(second)->whole;
 	size_t count = -- (i->count);

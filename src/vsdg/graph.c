@@ -19,7 +19,9 @@
 
 /* graph */
 
-jive_graph::~jive_graph()
+namespace jive {
+
+graph::~graph()
 {
 	delete root_;
 
@@ -27,24 +29,24 @@ jive_graph::~jive_graph()
 		delete gates.first;
 }
 
-jive_graph::jive_graph()
+graph::graph()
 	: normalized_(false)
 	, root_(new jive::region(nullptr, this))
 {
 	gates.first = gates.last = 0;
 }
 
-std::unique_ptr<jive_graph>
-jive_graph::copy() const
+std::unique_ptr<jive::graph>
+graph::copy() const
 {
 	jive::substitution_map smap;
-	std::unique_ptr<jive_graph> graph(new jive_graph());
+	std::unique_ptr<jive::graph> graph(new jive::graph());
 	root()->copy(graph->root(), smap);
 	return graph;
 }
 
 void
-jive_graph::normalize()
+graph::normalize()
 {
 	for (auto node : jive::topdown_traverser(root()))
 		node_normal_form(typeid(node->operation()))->normalize_node(node);
@@ -53,7 +55,7 @@ jive_graph::normalize()
 }
 
 jive::node_normal_form *
-jive_graph::node_normal_form(const std::type_info & type) noexcept
+graph::node_normal_form(const std::type_info & type) noexcept
 {
 	auto i = node_normal_forms_.find(std::type_index(type));
 	if (i != node_normal_forms_.end())
@@ -72,7 +74,7 @@ jive_graph::node_normal_form(const std::type_info & type) noexcept
 }
 
 bool
-jive_graph::has_active_traversers() const noexcept
+graph::has_active_traversers() const noexcept
 {
 	for (const auto & slot : tracker_slots) {
 		if (slot.in_use)
@@ -83,7 +85,7 @@ jive_graph::has_active_traversers() const noexcept
 }
 
 jive::gate *
-jive_graph::create_gate(
+graph::create_gate(
 	const jive::base::type & type,
 	const std::string & name,
 	const jive_resource_class * rescls)
@@ -91,22 +93,8 @@ jive_graph::create_gate(
 	return new jive::gate(this, name.c_str(), type, rescls);
 }
 
-jive_tracker_slot
-jive_graph_reserve_tracker_slot_slow(jive_graph * self)
-{
-	size_t n = self->tracker_slots.size();
-
-	self->tracker_slots.resize(self->tracker_slots.size()+1);
-	
-	self->tracker_slots[n].slot.index = n;
-	self->tracker_slots[n].slot.cookie = 1;
-	self->tracker_slots[n].in_use = true;
-	
-	return self->tracker_slots[n].slot;
-}
-
 void
-jive_graph::prune()
+graph::prune()
 {
 	/* FIXME: this function is broken */
 	jive::node * node = root()->bottom_nodes.first;
@@ -117,4 +105,20 @@ jive_graph::prune()
 			next = root()->bottom_nodes.first;
 		node = next;
 	}
+}
+
+}
+
+jive_tracker_slot
+jive_graph_reserve_tracker_slot_slow(jive::graph * self)
+{
+	size_t n = self->tracker_slots.size();
+
+	self->tracker_slots.resize(self->tracker_slots.size()+1);
+
+	self->tracker_slots[n].slot.index = n;
+	self->tracker_slots[n].slot.cookie = 1;
+	self->tracker_slots[n].in_use = true;
+
+	return self->tracker_slots[n].slot;
 }

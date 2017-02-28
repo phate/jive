@@ -16,7 +16,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 	
 	jive::region * region = graph.root();
 	jive_test_state_type type;

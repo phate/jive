@@ -409,7 +409,7 @@ void
 jive_negotiator_init_(
 	jive_negotiator * self,
 	const jive_negotiator_class * class_,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	self->class_ = class_;
 	self->graph = graph;

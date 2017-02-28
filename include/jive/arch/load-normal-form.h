@@ -18,7 +18,7 @@ public:
 	load_normal_form(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph) noexcept;
+		jive::graph * graph) noexcept;
 
 	virtual bool
 	normalize_node(jive::node * node) const override;

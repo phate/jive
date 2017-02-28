@@ -110,7 +110,7 @@ public:
 
 	concat_normal_form(
 		jive::node_normal_form * parent,
-		jive_graph * graph)
+		jive::graph * graph)
 		: node_normal_form(typeid(concat_op), parent, graph)
 		, enable_reducible_(true)
 		, enable_flatten_(true)
@@ -291,7 +291,7 @@ static node_normal_form *
 get_default_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	return new concat_normal_form(parent, graph);
 }

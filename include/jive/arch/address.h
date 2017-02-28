@@ -350,7 +350,7 @@ typedef base::domain_const_op<
 > constant_op;
 
 oport *
-constant(struct jive_graph * graph, const value_repr & vr);
+constant(jive::graph * graph, const value_repr & vr);
 
 }
 }

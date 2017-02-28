@@ -75,7 +75,7 @@ jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
 }
 
 jive::oport *
-jive_empty_group_create(jive_graph * graph,
+jive_empty_group_create(jive::graph * graph,
 	std::shared_ptr<const jive::rcd::declaration> & decl)
 {
 	jive::rcd::group_op op(decl);

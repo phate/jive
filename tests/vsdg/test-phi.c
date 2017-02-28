@@ -20,7 +20,7 @@
 
 static int test_main()
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive_test_value_type vtype;
 	jive::fct::type f0type(0, NULL, 0, NULL);

@@ -16,7 +16,7 @@
 static int
 test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);

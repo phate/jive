@@ -36,10 +36,10 @@ struct jive_tracker_depth_state {
 };
 
 jive_tracker_slot
-jive_graph_reserve_tracker_slot_slow(jive_graph * self);
+jive_graph_reserve_tracker_slot_slow(jive::graph * self);
 
 static inline jive_tracker_slot
-jive_graph_reserve_tracker_slot(jive_graph * self)
+jive_graph_reserve_tracker_slot(jive::graph * self)
 {
 	size_t n;
 	for (n = 0; n < self->tracker_slots.size(); n++) {
@@ -59,14 +59,14 @@ jive_graph_reserve_tracker_slot(jive_graph * self)
 }
 
 static inline void
-jive_graph_return_tracker_slot(jive_graph * self, jive_tracker_slot slot)
+jive_graph_return_tracker_slot(jive::graph * self, jive_tracker_slot slot)
 {
 	JIVE_DEBUG_ASSERT(self->tracker_slots[slot.index].in_use);
 	self->tracker_slots[slot.index].in_use = false;
 }
 
 static inline jive_tracker_depth_state *
-jive_graph_reserve_tracker_depth_state(jive_graph * self)
+jive_graph_reserve_tracker_depth_state(jive::graph * self)
 {
 	jive_tracker_depth_state * state = new jive_tracker_depth_state;
 	state->count = 0;
@@ -75,7 +75,7 @@ jive_graph_reserve_tracker_depth_state(jive_graph * self)
 }
 
 static inline void
-jive_graph_return_tracker_depth_state(jive_graph * self, jive_tracker_depth_state * state)
+jive_graph_return_tracker_depth_state(jive::graph * self, jive_tracker_depth_state * state)
 {
 	delete state;
 }

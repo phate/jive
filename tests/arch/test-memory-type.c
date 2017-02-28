@@ -15,7 +15,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::node * node0 = jive_test_node_create(graph.root(), {}, {}, {});
 	jive::node * node1 = jive_test_node_create(graph.root(), {}, {}, {});

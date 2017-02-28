@@ -18,7 +18,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_argument_type  tmparray0[] = {
 			jive_argument_long, jive_argument_long,
 			jive_argument_long, jive_argument_long

@@ -12,7 +12,6 @@
 
 #include <jive/util/callbacks.h>
 
-struct jive_graph;
 struct jive_notifier;
 struct jive_tracker_depth_state;
 
@@ -27,6 +26,7 @@ struct jive_tracker_nodestate;
 
 namespace jive {
 
+class graph;
 class node;
 class region;
 
@@ -37,7 +37,7 @@ struct tracker {
 public:
 	~tracker() noexcept;
 	
-	tracker(jive_graph * graph, size_t nstates);
+	tracker(jive::graph * graph, size_t nstates);
 
 	/* get state of the node */
 	ssize_t
@@ -65,7 +65,7 @@ private:
 	jive_tracker_nodestate*
 	map_node(jive::node * node);
 
-	jive_graph * graph_;
+	jive::graph * graph_;
 	/* FIXME: need RAII idiom for slot reservation */
 	jive_tracker_slot slot_;
 	/* FIXME: need RAII idiom for state reservation */
@@ -76,7 +76,7 @@ private:
 
 class computation_tracker {
 public:
-	computation_tracker(jive_graph * graph);
+	computation_tracker(jive::graph * graph);
 	
 	~computation_tracker() noexcept;
 	
@@ -93,7 +93,7 @@ private:
 	jive_tracker_nodestate*
 	map_node(jive::node * node);
 
-	jive_graph * graph_;
+	jive::graph * graph_;
 	/* FIXME: need RAII idiom for slot reservation */
 	jive_tracker_slot slot_;
 	/* FIXME: need RAII idiom for state reservation */

@@ -15,7 +15,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_argument_type  tmparray0[] = {
 		jive_argument_long,
 		jive_argument_long,
@@ -52,7 +52,7 @@ static int test_main(void)
 	jive_context * context2 = jive_context_create();
 	// FIXME: copying of subroutine nodes is currently quite broken;
 	// reactivate when repaired
-	jive_graph * &graph2 = jive_graph_copy(&graph, context2);
+	jive::graph * &graph2 = jive_graph_copy(&graph, context2);
 	
 	jive_subroutine_node * anchor2 = dynamic_cast<jive_subroutine_node *>(
 		&graph2->bottom.first->&graph_bottom_list.next);

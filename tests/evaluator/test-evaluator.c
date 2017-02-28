@@ -18,7 +18,7 @@
 #include <jive/vsdg/theta.h>
 
 static jive::oport *
-setup_fib_iter(struct jive_graph * graph)
+setup_fib_iter(jive::graph * graph)
 {
 /*
 size_t
@@ -72,7 +72,7 @@ fib(size_t n)
 }
 
 static void
-test_fib_iter(struct jive_graph * graph)
+test_fib_iter(jive::graph * graph)
 {
 	using namespace jive::evaluator;
 
@@ -116,7 +116,7 @@ test_fib_iter(struct jive_graph * graph)
 }
 
 static jive::oport *
-setup_fib_rec(struct jive_graph * &graph)
+setup_fib_rec(jive::graph * &graph)
 {
 /*
 unsigned int fib(unsigned int n){
@@ -162,7 +162,7 @@ unsigned int fib(unsigned int n){
 }
 
 static void
-test_fib_rec(struct jive_graph * graph)
+test_fib_rec(jive::graph * graph)
 {
 	using namespace jive::evaluator;
 
@@ -207,7 +207,7 @@ test_fib_rec(struct jive_graph * graph)
 }
 
 static void
-test_loadstore(struct jive_graph * graph)
+test_loadstore(jive::graph * graph)
 {
 	using namespace jive::evaluator;
 
@@ -246,7 +246,7 @@ test_loadstore(struct jive_graph * graph)
 static int
 test_evaluator()
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	test_fib_iter(&graph);
 	test_fib_rec(&graph);

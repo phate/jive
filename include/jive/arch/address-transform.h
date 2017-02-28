@@ -171,6 +171,6 @@ void
 jive_node_address_transform(jive::node * node, jive::memlayout_mapper * mapper);
 
 void
-jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper);
+jive_graph_address_transform(jive::graph * graph, jive::memlayout_mapper * mapper);
 
 #endif

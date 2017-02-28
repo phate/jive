@@ -16,7 +16,7 @@
 #include "testnodes.h"
 
 typedef struct graph_desc {
-	std::unique_ptr<jive_graph> graph;
+	std::unique_ptr<jive::graph> graph;
 	jive::node * a1, * a2;
 	jive::node * b1, * b2;
 } graph_desc;
@@ -25,7 +25,7 @@ static graph_desc
 prepare_graph()
 {
 	graph_desc g;
-	g.graph = std::move(std::unique_ptr<jive_graph>(new jive_graph()));
+	g.graph = std::move(std::unique_ptr<jive::graph>(new jive::graph()));
 	
 	jive::region * region = g.graph->root();
 	jive_test_value_type type;

@@ -21,7 +21,7 @@ gamma_normal_form::~gamma_normal_form() noexcept
 gamma_normal_form::gamma_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph) noexcept
+	jive::graph * graph) noexcept
 	: anchor_normal_form(operator_class, parent, graph)
 	, enable_predicate_reduction_(true)
 	, enable_invariant_reduction_(true)

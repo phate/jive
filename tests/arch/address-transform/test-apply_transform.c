@@ -21,7 +21,7 @@
 static int
 test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::addr::type addrtype;
 	const jive::base::type * addrptr = &addrtype;

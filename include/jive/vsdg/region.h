@@ -22,7 +22,6 @@ namespace jive {
 }
 
 struct jive_cut;
-struct jive_graph;
 
 namespace jive {
 
@@ -148,11 +147,11 @@ class region {
 public:
 	~region();
 
-	region(jive::region * parent, jive_graph * graph);
+	region(jive::region * parent, jive::graph * graph);
 
 	region(jive::structural_node * node);
 
-	inline jive_graph *
+	inline jive::graph *
 	graph() const noexcept
 	{
 		return graph_;
@@ -244,7 +243,7 @@ public:
 	} bottom_nodes;
 
 private:
-	jive_graph * graph_;
+	jive::graph * graph_;
 	jive::structural_node * node_;
 	std::vector<jive::result*> results_;
 	std::vector<jive::argument*> arguments_;

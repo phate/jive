@@ -9,8 +9,6 @@
 
 #include <jive/vsdg/resource.h>
 
-struct jive_graph;
-
 namespace jive {
 namespace base {
 	class type;

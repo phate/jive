@@ -19,7 +19,7 @@
 static std::vector<jive::oport*>
 jive_store_node_normalized_create(
 	const jive::node_normal_form * nf,
-	jive_graph * graph,
+	jive::graph * graph,
 	const jive::operation & op,
 	jive::oport * address,
 	jive::oport * value,
@@ -104,7 +104,7 @@ jive_store_by_address_create(jive::oport* address,
 	const jive::value::type * datatype, jive::oport * value,
 	size_t nstates, jive::oport * const istates[])
 {
-	jive_graph * graph = address->region()->graph();
+	jive::graph * graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::store_op));
 	
 	std::vector<std::unique_ptr<jive::state::type>> state_types;
@@ -123,7 +123,7 @@ jive_store_by_bitstring_create(jive::oport * address, size_t nbits,
 	const jive::value::type * datatype, jive::oport * value,
 	size_t nstates, jive::oport * const istates[])
 {
-	jive_graph * graph = address->region()->graph();
+	jive::graph * graph = address->region()->graph();
 	const auto nf = graph->node_normal_form(typeid(jive::store_op));
 
 	std::vector<std::unique_ptr<jive::state::type>> state_types;

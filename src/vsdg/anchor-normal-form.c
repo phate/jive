@@ -18,7 +18,7 @@ anchor_normal_form::~anchor_normal_form() noexcept
 anchor_normal_form::anchor_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph) noexcept
+	jive::graph * graph) noexcept
 	: node_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 {

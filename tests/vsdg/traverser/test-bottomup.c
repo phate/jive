@@ -13,7 +13,7 @@
 static void
 test_initialization()
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type vtype;
 	auto n1 = jive_test_node_create(graph.root(), {}, {}, {});
 	auto n2 = jive_test_node_create(graph.root(), {}, {}, {&vtype});
@@ -34,7 +34,7 @@ test_initialization()
 static void
 test_basic_traversal()
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type type;
 	auto n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
 	auto n2 = jive_test_node_create(graph.root(), {&type, &type}, {n1->output(0), n1->output(1)},
@@ -59,7 +59,7 @@ test_basic_traversal()
 static void
 test_order_enforcement_traversal()
 {
-	jive_graph graph;
+	jive::graph graph;
 	jive_test_value_type type;
 	auto n1 = jive_test_node_create(graph.root(), {}, {}, {&type, &type});
 	auto n2 = jive_test_node_create(graph.root(), {&type}, {n1->output(0)}, {&type});

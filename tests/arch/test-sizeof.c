@@ -23,7 +23,7 @@
 
 static int test_main(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::bits::type bits4(4);
 	jive::bits::type bits8(8);

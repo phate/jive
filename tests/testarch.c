@@ -606,7 +606,7 @@ static const jive_subroutine_abi_class JIVE_TESTARCH_SUBROUTINE_ABI = {
 };
 
 jive_subroutine
-jive_testarch_subroutine_begin(jive_graph * graph,
+jive_testarch_subroutine_begin(jive::graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[])
 {

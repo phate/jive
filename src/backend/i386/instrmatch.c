@@ -600,7 +600,7 @@ match_single(jive::node * node, const jive_regselector * regselector)
 }
 
 void
-jive_i386_match_instructions(jive_graph * graph, const jive_regselector * regselector)
+jive_i386_match_instructions(jive::graph * graph, const jive_regselector * regselector)
 {
 	for (jive::node * node : jive::bottomup_traverser(graph->root())) {
 		match_single(node, regselector);

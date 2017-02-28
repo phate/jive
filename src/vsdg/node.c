@@ -160,7 +160,7 @@ oport::debug_string() const
 /* gates */
 
 gate::gate(
-	jive_graph * graph,
+	jive::graph * graph,
 	const char name[],
 	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
@@ -191,7 +191,7 @@ jive::node_normal_form *
 jive_node_get_default_normal_form_(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	jive::node_normal_form * normal_form = new jive::node_normal_form(
 		operator_class, parent, graph);

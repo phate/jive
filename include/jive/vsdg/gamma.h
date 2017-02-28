@@ -11,8 +11,6 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 
-struct jive_graph;
-
 namespace jive {
 	class output;
 	class type;

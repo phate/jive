@@ -339,7 +339,7 @@ jive_apply_node_address_transform(const jive::node * node, size_t nbits)
 }
 
 void
-jive_graph_address_transform(jive_graph * graph, jive::memlayout_mapper * mapper)
+jive_graph_address_transform(jive::graph * graph, jive::memlayout_mapper * mapper)
 {
 	for (jive::node * node : jive::topdown_traverser(graph->root())) {
 		jive_node_address_transform(node, mapper);

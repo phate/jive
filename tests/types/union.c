@@ -19,7 +19,7 @@
 
 static int test_unnchoose(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
@@ -62,7 +62,7 @@ JIVE_UNIT_TEST_REGISTER("types/union/test-unnchoose", test_unnchoose);
 
 static int test_unnunify(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 	
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);

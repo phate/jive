@@ -225,7 +225,7 @@ region::~region()
 		remove_argument(arguments_.size()-1);
 }
 
-region::region(jive::region * parent, jive_graph * graph)
+region::region(jive::region * parent, jive::graph * graph)
 	: graph_(graph)
 	, node_(nullptr)
 {

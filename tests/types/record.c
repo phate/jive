@@ -19,7 +19,7 @@
 
 static int _test_rcdgroup(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 	
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);
@@ -58,7 +58,7 @@ JIVE_UNIT_TEST_REGISTER("types/record/test-rcdgroup", _test_rcdgroup);
 
 static int _test_rcdselect()
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	static const jive::bits::type bits8(8);
 	static const jive::bits::type bits16(16);

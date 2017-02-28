@@ -9,8 +9,6 @@
 
 #include <string>
 
-struct jive_graph;
-
 namespace jive {
 
 class region;

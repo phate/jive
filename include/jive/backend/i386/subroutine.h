@@ -10,7 +10,7 @@
 #include <jive/arch/subroutine.h>
 
 jive_subroutine
-jive_i386_subroutine_begin(jive_graph * graph,
+jive_i386_subroutine_begin(jive::graph * graph,
 	size_t nparameters, const jive_argument_type parameter_types[],
 	size_t nreturns, const jive_argument_type return_types[]);
 

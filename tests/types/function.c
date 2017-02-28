@@ -21,7 +21,7 @@
 
 static int function_test_build_lambda(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::bits::type bits32(32);
 	const jive::base::type * tmparray0[] = {&bits32, &bits32};
@@ -47,7 +47,7 @@ JIVE_UNIT_TEST_REGISTER("function/test-build-lambda", function_test_build_lambda
 
 static int function_test_call(void)
 {
-	jive_graph graph;
+	jive::graph graph;
 
 	jive::bits::type btype(8);
 	const jive::base::type*  tmparray0[] = { &btype };

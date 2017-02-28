@@ -18,7 +18,7 @@ unary_normal_form::~unary_normal_form() noexcept
 unary_normal_form::unary_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 	: node_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 {

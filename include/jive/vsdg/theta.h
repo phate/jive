@@ -14,7 +14,6 @@ namespace jive {
 class gate;
 }
 
-struct jive_graph;
 struct jive_theta_build_state;
 
 namespace jive {

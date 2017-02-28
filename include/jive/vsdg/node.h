@@ -28,6 +28,7 @@ namespace base {
 }
 
 class gate;
+class graph;
 class node_normal_form;
 class oport;
 class output;
@@ -225,7 +226,7 @@ public:
 	~gate() noexcept;
 
 	gate(
-		struct jive_graph * graph,
+		jive::graph * graph,
 		const char name[],
 		const jive::base::type & type,
 		const struct jive_resource_class * rescls = &jive_root_resource_class);
@@ -243,7 +244,7 @@ public:
 		return name();
 	}
 
-	inline struct jive_graph *
+	inline jive::graph *
 	graph() const noexcept
 	{
 		return graph_;
@@ -281,7 +282,7 @@ public:
 
 private:
 	std::string name_;
-	struct jive_graph * graph_;
+	jive::graph * graph_;
 	const struct jive_resource_class * rescls_;
 
 	/*
@@ -354,7 +355,7 @@ public:
 	virtual void
 	remove_output(size_t index) = 0;
 
-	inline jive_graph *
+	inline jive::graph *
 	graph() const noexcept
 	{
 		return graph_;
@@ -432,7 +433,7 @@ public:
 	> region_node_list_accessor;
 
 private:
-	jive_graph * graph_;
+	jive::graph * graph_;
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
 };

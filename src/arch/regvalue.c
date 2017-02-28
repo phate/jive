@@ -73,7 +73,7 @@ regvalue_op::copy() const
 jive::oport *
 jive_regvalue(jive::oport * ctl, const jive_register_class * regcls, jive::oport * value)
 {
-	jive_graph * graph = value->region()->graph();
+	auto graph = value->region()->graph();
 	jive::regvalue_op op(regcls);
 	
 	const auto nf = graph->node_normal_form(typeid(jive::regvalue_op));

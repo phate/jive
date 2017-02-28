@@ -252,7 +252,7 @@ jive_ssavar_split(jive_ssavar * self)
 }
 
 jive_variable *
-jive_variable_create(struct jive_graph * graph)
+jive_variable_create(jive::graph * graph)
 {
 	jive_variable * self = new jive_variable;
 	

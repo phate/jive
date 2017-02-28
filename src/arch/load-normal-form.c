@@ -19,7 +19,7 @@ load_normal_form::~load_normal_form() noexcept
 load_normal_form::load_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph) noexcept
+	jive::graph * graph) noexcept
 	: node_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 {

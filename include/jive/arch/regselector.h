@@ -29,7 +29,6 @@ class flt_binary_operation;
 class flt_compare_operation;
 };
 
-struct jive_graph;
 struct jive_resource_class;
 
 namespace jive {
@@ -90,7 +89,7 @@ struct jive_regselector {
 };
 
 void
-jive_regselector_init(jive_regselector * self, struct jive_graph * graph,
+jive_regselector_init(jive_regselector * self, jive::graph * graph,
 	const jive_reg_classifier * classifier);
 
 void

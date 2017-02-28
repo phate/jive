@@ -22,7 +22,6 @@
 
 /* graph */
 
-typedef struct jive_graph jive_graph;
 typedef struct jive_tracker_depth_state jive_tracker_depth_state;
 typedef struct jive_tracker_nodestate_list jive_tracker_nodestate_list;
 typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
@@ -30,11 +29,13 @@ typedef struct jive_tracker_slot_reservation jive_tracker_slot_reservation;
 struct jive_resource;
 struct jive_resource_name;
 
-struct jive_graph {
-public:
-	~jive_graph();
+namespace jive {
 
-	jive_graph();
+class graph {
+public:
+	~graph();
+
+	graph();
 
 	inline jive::region *
 	root() const noexcept
@@ -51,7 +52,7 @@ public:
 	void
 	normalize();
 
-	std::unique_ptr<jive_graph>
+	std::unique_ptr<jive::graph>
 	copy() const;
 
 	jive::node_normal_form *
@@ -118,5 +119,7 @@ private:
 	jive::region * root_;
 	jive::node_normal_form_hash node_normal_forms_;
 };
+
+}
 
 #endif

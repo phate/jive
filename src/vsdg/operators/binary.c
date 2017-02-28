@@ -83,7 +83,7 @@ jive::node_normal_form *
 jive_binary_operation_get_default_normal_form_(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	jive::binary_normal_form * nf = new jive::binary_normal_form(operator_class,  parent, graph);
 
@@ -94,7 +94,7 @@ jive::node_normal_form *
 jive_flattened_binary_operation_get_default_normal_form_(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
-	jive_graph * graph)
+	jive::graph * graph)
 {
 	return new jive::flattened_binary_normal_form(operator_class,  parent, graph);
 }

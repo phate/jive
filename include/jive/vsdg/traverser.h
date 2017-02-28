@@ -10,8 +10,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-struct jive_graph;
-
 namespace jive {
 namespace detail {
 
@@ -71,7 +69,7 @@ enum class traversal_nodestate {
 class traversal_tracker final {
 public:
 	inline
-	traversal_tracker(jive_graph * graph);
+	traversal_tracker(jive::graph * graph);
 	
 	inline traversal_nodestate
 	get_nodestate(jive::node * node);
@@ -233,7 +231,7 @@ public:
 	~bottomup_region_traverser() noexcept;
 
 	explicit
-	bottomup_region_traverser(jive_graph * graph);
+	bottomup_region_traverser(jive::graph * graph);
 
 	void
 	pass(jive::node * node);
@@ -254,7 +252,7 @@ private:
 	jive_tracker_nodestate *
 	map_node(jive::node * node);
 
-	jive_graph * graph_;
+	jive::graph * graph_;
 	slave_traverser_hash region_hash_;
 	jive_tracker_slot slot_; /* FIXME: RAII */
 	jive_tracker_depth_state * behind_state_; /* FIXME: RAII */
@@ -264,7 +262,7 @@ private:
 
 /* traversal tracker implementation */
 
-traversal_tracker::traversal_tracker(jive_graph * graph)
+traversal_tracker::traversal_tracker(jive::graph * graph)
 	: tracker_(graph, 2)
 {
 }

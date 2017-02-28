@@ -25,7 +25,7 @@ tracker::~tracker()
 	jive_graph_return_tracker_slot(graph_, slot_);
 }
 
-tracker::tracker(jive_graph * graph, size_t nstates)
+tracker::tracker(jive::graph * graph, size_t nstates)
 	: graph_(graph)
 	, slot_(jive_graph_reserve_tracker_slot(graph_))
 	, states_(nstates, nullptr)
@@ -104,7 +104,7 @@ tracker::peek_bottom(size_t state) const
 	return nodestate ? nodestate->node : nullptr;
 }
 
-computation_tracker::computation_tracker(jive_graph * graph)
+computation_tracker::computation_tracker(jive::graph * graph)
 	: graph_(graph)
 	, slot_(jive_graph_reserve_tracker_slot(graph))
 	, nodestates_(jive_graph_reserve_tracker_depth_state(graph))

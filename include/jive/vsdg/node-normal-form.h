@@ -19,10 +19,9 @@
 
 /* normal forms */
 
-class jive_graph;
-
 namespace jive {
 
+class graph;
 class node;
 class operation;
 class oport;
@@ -38,7 +37,7 @@ public:
 	node_normal_form(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph) noexcept
+		jive::graph * graph) noexcept
 		: operator_class_(operator_class)
 		, parent_(parent)
 		, graph_(graph)
@@ -69,7 +68,7 @@ public:
 
 	inline node_normal_form *
 	parent() const noexcept { return parent_; }
-	inline jive_graph *
+	inline jive::graph *
 	graph() const noexcept { return graph_; }
 
 	virtual void
@@ -88,13 +87,13 @@ public:
 		jive::node_normal_form *(*fn)(
 			const std::type_info & operator_class,
 			jive::node_normal_form * parent,
-			jive_graph * graph));
+			jive::graph * graph));
 
 	static node_normal_form *
 	create(
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
-		jive_graph * graph);
+		jive::graph * graph);
 
 	class opclass_hash_accessor {
 	public:
@@ -141,7 +140,7 @@ protected:
 private:
 	const std::type_info & operator_class_;
 	node_normal_form * parent_;
-	jive_graph * graph_;
+	jive::graph * graph_;
 
 	struct {
 		node_normal_form * prev;

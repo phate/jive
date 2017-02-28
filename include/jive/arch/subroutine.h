@@ -84,7 +84,7 @@ struct jive_subroutine {
 */
 jive_subroutine
 jive_subroutine_begin(
-	jive_graph * graph,
+	jive::graph * graph,
 	jive::subroutine_machine_signature sig,
 	std::unique_ptr<jive::subroutine_hl_builder_interface> hl_builder);
 
