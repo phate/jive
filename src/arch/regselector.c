@@ -250,8 +250,8 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 
 	/* determine function region */
 	jive::region * region = node->region();
-	while (region->parent() != root_region)
-		region = region->parent();
+	//while (region->parent() != root_region)
+	//	region = region->parent();
 	jive::node * top = nullptr;
 	jive::output * ctl = dynamic_cast<jive::output*>(top->output(0));
 	if (!dynamic_cast<const jive::seq::type*>(&ctl->type()))

@@ -226,7 +226,6 @@ region::~region()
 
 region::region(jive::region * parent, jive_graph * graph)
 	: graph_(graph)
-	, parent_(parent)
 	, node_(nullptr)
 {
 	top_nodes.first = top_nodes.last = nullptr;
@@ -236,7 +235,6 @@ region::region(jive::region * parent, jive_graph * graph)
 
 region::region(jive::structural_node * node)
 	: graph_(node->graph())
-	, parent_(nullptr)
 	, node_(node)
 {
 	top_nodes.first = top_nodes.last = nullptr;

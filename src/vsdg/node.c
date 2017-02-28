@@ -30,10 +30,6 @@ jive_input_is_valid(const jive::input * input)
 {
 	jive::region * region = input->region();
 	jive::region * origin_region = input->origin()->region();
-
-	if (dynamic_cast<const jive::achr::type*>(&input->type()))
-		return origin_region->parent() == region;
-
 	return origin_region == region;
 }
 
@@ -214,14 +210,7 @@ jive_node_valid_edge(const jive::node * self, const jive::oport * origin)
 {
 	jive::region * origin_region = origin->region();
 	jive::region * target_region = self->region();
-	if (dynamic_cast<const jive::achr::type*>(&origin->type()))
-		origin_region = origin_region->parent();
-	while (target_region) {
-		if (target_region == origin_region)
-			return true;
-		target_region = target_region->parent();
-	}
-	return false;
+	return target_region == origin_region;
 }
 
 void

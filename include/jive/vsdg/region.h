@@ -151,12 +151,6 @@ public:
 
 	region(jive::structural_node * node);
 
-	inline jive::region *
-	parent() const noexcept
-	{
-		return parent_;
-	}
-
 	inline jive_graph *
 	graph() const noexcept
 	{
@@ -247,7 +241,6 @@ public:
 
 private:
 	jive_graph * graph_;
-	jive::region * parent_;
 	jive::structural_node * node_;
 	std::vector<jive::result*> results_;
 	std::vector<jive::argument*> arguments_;

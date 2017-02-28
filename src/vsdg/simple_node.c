@@ -18,10 +18,6 @@ jive_input_is_valid(const jive::input * input)
 {
 	jive::region * region = input->region();
 	jive::region * origin_region = input->origin()->region();
-
-	if (dynamic_cast<const jive::achr::type*>(&input->type()))
-		return origin_region->parent() == region;
-
 	return origin_region == region;
 }
 
