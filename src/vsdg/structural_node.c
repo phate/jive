@@ -43,14 +43,11 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(node->region(), index, origin)
+	: iport(node->region(), type, index, origin)
 	, node_(node)
 	, type_(type.copy())
 {
 	arguments.first = arguments.last = nullptr;
-
-	if (this->type() != origin->type())
-		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
 	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
@@ -64,14 +61,11 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(node->region(), index, origin, gate)
+	: iport(node->region(), gate->type(), index, origin, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
 	arguments.first = arguments.last = nullptr;
-
-	if (type() != origin->type())
-		throw jive::type_error(type().debug_string(), origin->type().debug_string());
 
 	for (size_t n = 0; n < index; n++) {
 		jive::structural_input * other = node->input(n);
@@ -91,14 +85,11 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(node->region(), index, origin, rescls)
+	: iport(node->region(), *jive_resource_class_get_type(rescls), index, origin, rescls)
 	, node_(node)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	arguments.first = arguments.last = nullptr;
-
-	if (type() != origin->type())
-		throw jive::type_error(type().debug_string(), origin->type().debug_string());
 
 	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
@@ -331,9 +322,6 @@ structural_node::recompute_depth()
 jive::structural_input *
 structural_node::add_input(const jive::base::type * type, jive::oport * origin)
 {
-	if (origin->type() != *type)
-		throw jive::type_error(type->debug_string(), origin->type().debug_string());
-
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
@@ -352,9 +340,6 @@ structural_node::add_input(const jive::base::type * type, jive::oport * origin)
 jive::structural_input *
 structural_node::add_input(jive::gate * gate, jive::oport * origin)
 {
-	if (origin->type() != gate->type())
-		throw jive::type_error(gate->type().debug_string(), origin->type().debug_string());
-
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 
@@ -373,11 +358,6 @@ structural_node::add_input(jive::gate * gate, jive::oport * origin)
 jive::structural_input *
 structural_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
 {
-	auto type = jive_resource_class_get_type(rescls);
-
-	if (origin->type() != *type)
-		throw jive::type_error(type->debug_string(), origin->type().debug_string());
-
 	if (ninputs() == 0)
 		JIVE_LIST_REMOVE(region()->top_nodes, this, region_top_node_list);
 

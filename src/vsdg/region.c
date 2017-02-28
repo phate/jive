@@ -131,15 +131,12 @@ result::result(
 	jive::oport * origin,
 	jive::structural_output * output,
 	const jive::base::type & type)
-	: iport(region, index, origin)
+	: iport(region, type, index, origin)
 	, region_(region)
 	, output_(output)
 	, type_(type.copy())
 {
 	output_result_list.prev = output_result_list.next = nullptr;
-
-	if (this->type() != origin->type())
-		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
 	if (output)
 		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);
@@ -157,15 +154,12 @@ result::result(
 	jive::oport * origin,
 	jive::structural_output * output,
 	jive::gate * gate)
-	: iport(region, index, origin, gate)
+	: iport(region, gate->type(), index, origin, gate)
 	, region_(region)
 	, output_(output)
 	, type_(gate->type().copy())
 {
 	output_result_list.prev = output_result_list.next = nullptr;
-
-	if (this->type() != origin->type())
-		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
 
 	if (output)
 		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);

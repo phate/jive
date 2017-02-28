@@ -42,15 +42,10 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(node->region(), index, origin)
+	: iport(node->region(), type, index, origin)
 	, node_(node)
 	, type_(type.copy())
 {
-	/* FIXME: This should optimally be in node constructor */
-
-	if (this->type() != origin->type())
-		throw jive::type_error(this->type().debug_string(), origin->type().debug_string());
-
 	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);
@@ -61,13 +56,10 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(node->region(), index, origin, gate)
+	: iport(node->region(), gate->type(), index, origin, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
-	if (type() != origin->type())
-		throw jive::type_error(type().debug_string(), origin->type().debug_string());
-
 	for (size_t n = 0; n < index; n++) {
 		jive::input * other = dynamic_cast<jive::input*>(node->input(n));
 		if (!other->gate()) continue;
@@ -85,13 +77,10 @@ input::input(
 	jive::oport * origin,
 	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
-	: iport(node->region(), index, origin, rescls)
+	: iport(node->region(), type, index, origin, rescls)
 	, node_(node)
 	, type_(type.copy())
 {
-	if (type != origin->type())
-		throw jive::type_error(type.debug_string(), origin->type().debug_string());
-
 	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
 	origin->users.insert(this);

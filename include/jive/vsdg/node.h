@@ -43,17 +43,20 @@ public:
 
 	iport(
 		const jive::region * region,
+		const jive::base::type & type,
 		size_t index,
 		jive::oport * origin);
 
 	iport(
 		const jive::region * region,
+		const jive::base::type & type,
 		size_t index,
 		jive::oport * origin,
 		jive::gate * gate);
 
 	iport(
 		const jive::region * region,
+		const jive::base::type & type,
 		size_t index,
 		jive::oport * origin,
 		const struct jive_resource_class * rescls);

@@ -32,7 +32,11 @@ iport::~iport() noexcept
 		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
 }
 
-iport::iport(const jive::region * region, size_t index, jive::oport * origin)
+iport::iport(
+	const jive::region * region,
+	const jive::base::type & type,
+	size_t index,
+	jive::oport * origin)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
@@ -42,9 +46,17 @@ iport::iport(const jive::region * region, size_t index, jive::oport * origin)
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
+
+	if (type != origin->type())
+		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 }
 
-iport::iport(const jive::region * region, size_t index, jive::oport * origin, jive::gate * gate)
+iport::iport(
+	const jive::region * region,
+	const jive::base::type & type,
+	size_t index,
+	jive::oport * origin,
+	jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
 	, origin_(origin)
@@ -55,10 +67,14 @@ iport::iport(const jive::region * region, size_t index, jive::oport * origin, ji
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
+
+	if (type != origin->type())
+		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 }
 
 iport::iport(
 	const jive::region * region,
+	const jive::base::type & type,
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
@@ -71,6 +87,9 @@ iport::iport(
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
+
+	if (type != origin->type())
+		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 }
 
 std::string
@@ -85,13 +104,10 @@ iport::debug_string() const
 void
 iport::divert_origin(jive::oport * new_origin)
 {
-	const jive::base::type * input_type = &this->type();
-	const jive::base::type * operand_type = &new_origin->type();
+	if (type() != new_origin->type())
+		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
 
-	if (*input_type != *operand_type)
-		throw jive::type_error(input_type->debug_string(), operand_type->debug_string());
-
-	if (dynamic_cast<const jive::achr::type*>(input_type)) {
+	if (dynamic_cast<const jive::achr::type*>(&this->type())) {
 		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
 	}
 
