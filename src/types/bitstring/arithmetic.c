@@ -4,23 +4,7 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/types/bitstring/arithmetic/bitand.h>
-#include <jive/types/bitstring/arithmetic/bitashr.h>
-#include <jive/types/bitstring/arithmetic/bitdifference.h>
-#include <jive/types/bitstring/arithmetic/bitnegate.h>
-#include <jive/types/bitstring/arithmetic/bitnot.h>
-#include <jive/types/bitstring/arithmetic/bitor.h>
-#include <jive/types/bitstring/arithmetic/bitproduct.h>
-#include <jive/types/bitstring/arithmetic/bitshiproduct.h>
-#include <jive/types/bitstring/arithmetic/bitshl.h>
-#include <jive/types/bitstring/arithmetic/bitshr.h>
-#include <jive/types/bitstring/arithmetic/bitsmod.h>
-#include <jive/types/bitstring/arithmetic/bitsquotient.h>
-#include <jive/types/bitstring/arithmetic/bitsum.h>
-#include <jive/types/bitstring/arithmetic/bituhiproduct.h>
-#include <jive/types/bitstring/arithmetic/bitumod.h>
-#include <jive/types/bitstring/arithmetic/bituquotient.h>
-#include <jive/types/bitstring/arithmetic/bitxor.h>
+#include <jive/types/bitstring/arithmetic.h>
 #include <jive/types/bitstring/constant.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>

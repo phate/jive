@@ -6,22 +6,478 @@
 #ifndef JIVE_TYPES_BITSTRING_ARITHMETIC_H
 #define JIVE_TYPES_BITSTRING_ARITHMETIC_H
 
-#include <jive/types/bitstring/arithmetic/bitand.h>
-#include <jive/types/bitstring/arithmetic/bitashr.h>
-#include <jive/types/bitstring/arithmetic/bitdifference.h>
-#include <jive/types/bitstring/arithmetic/bitnegate.h>
-#include <jive/types/bitstring/arithmetic/bitnot.h>
-#include <jive/types/bitstring/arithmetic/bitor.h>
-#include <jive/types/bitstring/arithmetic/bitproduct.h>
-#include <jive/types/bitstring/arithmetic/bitshiproduct.h>
-#include <jive/types/bitstring/arithmetic/bitshl.h>
-#include <jive/types/bitstring/arithmetic/bitshr.h>
-#include <jive/types/bitstring/arithmetic/bitsmod.h>
-#include <jive/types/bitstring/arithmetic/bitsquotient.h>
-#include <jive/types/bitstring/arithmetic/bitsum.h>
-#include <jive/types/bitstring/arithmetic/bituhiproduct.h>
-#include <jive/types/bitstring/arithmetic/bitumod.h>
-#include <jive/types/bitstring/arithmetic/bituquotient.h>
-#include <jive/types/bitstring/arithmetic/bitxor.h>
+#include <jive/types/bitstring/bitoperation-classes.h>
+
+namespace jive {
+namespace bits {
+
+class and_op final : public binary_op {
+public:
+	virtual ~and_op() noexcept;
+
+	inline and_op(const jive::bits::type & type, size_t arity = 2) noexcept
+		: binary_op(type, arity)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class ashr_op final : public binary_op {
+public:
+	virtual ~ashr_op() noexcept;
+
+	inline ashr_op(const jive::bits::type & type) noexcept : binary_op(type) {}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class sub_op final : public binary_op {
+public:
+	virtual ~sub_op() noexcept;
+
+	inline sub_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class neg_op final : public unary_op {
+public:
+	virtual
+	~neg_op() noexcept;
+
+	inline
+	neg_op(const jive::bits::type & type) noexcept
+		: unary_op(type)
+	{
+	}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual value_repr
+	reduce_constant(
+		const value_repr & arg) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class not_op final : public unary_op {
+public:
+	virtual
+	~not_op() noexcept;
+
+	inline not_op(const jive::bits::type & type) noexcept : unary_op(type) {}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual value_repr
+	reduce_constant(
+		const value_repr & arg) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class or_op final : public binary_op {
+public:
+	virtual ~or_op() noexcept;
+
+	inline or_op(const jive::bits::type & type, size_t arity = 2) noexcept
+		: binary_op(type, arity)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class mul_op final : public binary_op {
+public:
+	virtual ~mul_op() noexcept;
+
+	inline mul_op(const jive::bits::type & type, size_t arity = 2) noexcept
+		: binary_op(type, arity)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class smulh_op final : public binary_op {
+public:
+	virtual ~smulh_op() noexcept;
+
+	inline smulh_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class shl_op final : public binary_op {
+public:
+	virtual ~shl_op() noexcept;
+
+	inline shl_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class shr_op final : public binary_op {
+public:
+	virtual ~shr_op() noexcept;
+
+	inline shr_op(const jive::bits::type & type) noexcept : binary_op(type) {}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class smod_op final : public binary_op {
+public:
+	virtual ~smod_op() noexcept;
+
+	inline smod_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class sdiv_op final : public binary_op {
+public:
+	virtual ~sdiv_op() noexcept;
+
+	inline sdiv_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class add_op final : public binary_op {
+public:
+	virtual ~add_op() noexcept;
+
+	inline add_op(const jive::bits::type & type, size_t arity = 2) noexcept
+		: binary_op(type, arity)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class umulh_op final : public binary_op {
+public:
+	virtual ~umulh_op() noexcept;
+
+	inline umulh_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class umod_op final : public binary_op {
+public:
+	virtual ~umod_op() noexcept;
+
+	inline umod_op(const jive::bits::type & type) noexcept
+		: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class udiv_op final : public binary_op {
+public:
+	virtual ~udiv_op() noexcept;
+
+	inline udiv_op(const jive::bits::type & type) noexcept
+	: binary_op(type)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+class xor_op final : public binary_op {
+public:
+	virtual ~xor_op() noexcept;
+
+	inline xor_op(const jive::bits::type & type, size_t arity = 2) noexcept
+		: binary_op(type, arity)
+	{}
+
+	virtual bool
+	operator==(const operation & other) const noexcept override;
+	virtual jive_binary_operation_flags
+	flags() const noexcept override;
+
+	virtual value_repr
+	reduce_constants(
+		const value_repr & arg1,
+		const value_repr & arg2) const override;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+}
+}
+
+jive::oport *
+jive_bitand(const std::vector<jive::oport*> & operands);
+
+jive::oport *
+jive_bitashr(jive::oport * operand, jive::oport * shift);
+
+jive::oport *
+jive_bitdifference(jive::oport * op1, jive::oport * op2);
+
+jive::oport *
+jive_bitnegate(jive::oport * operand);
+
+jive::oport *
+jive_bitnot(jive::oport * operand);
+
+jive::oport *
+jive_bitor(const std::vector<jive::oport*> & operands);
+
+jive::oport *
+jive_bitmultiply(const std::vector<jive::oport*> & operands);
+
+jive::oport *
+jive_bitshiproduct(jive::oport * factor1, jive::oport * factor2);
+
+jive::oport *
+jive_bitsmod(jive::oport * operand1, jive::oport * operand2);
+
+jive::oport *
+jive_bitshl(jive::oport * operand, jive::oport * shift);
+
+jive::oport *
+jive_bitshr(jive::oport * operand, jive::oport * shift);
+
+jive::oport *
+jive_bitsquotient(jive::oport * dividend, jive::oport * divisor);
+
+jive::oport *
+jive_bitsum(const std::vector<jive::oport*> & operands);
+
+jive::oport *
+jive_bituhiproduct(jive::oport * factor1, jive::oport * factor2);
+
+jive::oport *
+jive_bitumod(jive::oport * operand1, jive::oport * operand2);
+
+jive::oport *
+jive_bituquotient(jive::oport * dividend, jive::oport * divisor);
+
+jive::oport *
+jive_bitxor(const std::vector<jive::oport*> & operands);
 
 #endif
