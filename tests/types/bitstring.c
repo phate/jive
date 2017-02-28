@@ -92,7 +92,7 @@ static int types_bitstring_arithmetic_test_bitdifference(void)
 	auto s0 = graph.import(jive::bits::type(32), "s0");
 	auto s1 = graph.import(jive::bits::type(32), "s1");
 
-	auto diff = jive_bitdifference(32, s0, s1);
+	auto diff = jive_bitsub(32, s0, s1);
 
 	graph.export_port(diff, "dummy");
 
@@ -114,9 +114,9 @@ static int types_bitstring_arithmetic_test_bitnegate(void)
 	auto s0 = graph.import(jive::bits::type(32), "s0");
 	auto c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 
-	auto neg0 = jive_bitnegate(32, s0);
-	auto neg1 = jive_bitnegate(32, c0);
-	auto neg2 = jive_bitnegate(32, neg1);
+	auto neg0 = jive_bitneg(32, s0);
+	auto neg1 = jive_bitneg(32, c0);
+	auto neg2 = jive_bitneg(32, neg1);
 
 	graph.export_port(neg0, "dummy");
 	graph.export_port(neg1, "dummy");
@@ -198,8 +198,8 @@ static int types_bitstring_arithmetic_test_bitproduct(void)
 	auto c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 	auto c1 = jive_bitconstant_unsigned(graph.root(), 32, 5);
 
-	auto product0 = jive_bitmultiply(32, {s0, s1});
-	auto product1 = jive_bitmultiply(32, {c0, c1});
+	auto product0 = jive_bitmul(32, {s0, s1});
+	auto product1 = jive_bitmul(32, {c0, c1});
 
 	graph.export_port(product0, "dummy");
 	graph.export_port(product1, "dummy");
@@ -223,7 +223,7 @@ static int types_bitstring_arithmetic_test_bitshiproduct(void)
 	auto s0 = graph.import(jive::bits::type(32), "s0");
 	auto s1 = graph.import(jive::bits::type(32), "s1");
 
-	auto shiproduct = jive_bitshiproduct(32, s0, s1);
+	auto shiproduct = jive_bitsmulh(32, s0, s1);
 
 	graph.export_port(shiproduct, "dummy");
 
@@ -338,8 +338,8 @@ static int types_bitstring_arithmetic_test_bitsquotient(void)
 	auto c0 = jive_bitconstant_signed(graph.root(), 32, 7);
 	auto c1 = jive_bitconstant_signed(graph.root(), 32, -3);
 
-	auto squot0 = jive_bitsquotient(32, s0, s1);
-	auto squot1 = jive_bitsquotient(32, c0, c1);
+	auto squot0 = jive_bitsdiv(32, s0, s1);
+	auto squot1 = jive_bitsdiv(32, c0, c1);
 
 	graph.export_port(squot0, "dummy");
 	graph.export_port(squot1, "dummy");
@@ -391,7 +391,7 @@ static int types_bitstring_arithmetic_test_bituhiproduct(void)
 	auto s0 = graph.import(jive::bits::type(32), "s0");
 	auto s1 = graph.import(jive::bits::type(32), "s1");
 
-	auto uhiproduct = jive_bituhiproduct(32, s0, s1);
+	auto uhiproduct = jive_bitumulh(32, s0, s1);
 
 	graph.export_port(uhiproduct, "dummy");
 
@@ -444,8 +444,8 @@ static int types_bitstring_arithmetic_test_bituquotient(void)
 	auto c0 = jive_bitconstant_unsigned(graph.root(), 32, 7);
 	auto c1 = jive_bitconstant_unsigned(graph.root(), 32, 3);
 
-	auto uquot0 = jive_bituquotient(32, s0, s1);
-	auto uquot1 = jive_bituquotient(32, c0, c1);
+	auto uquot0 = jive_bitudiv(32, s0, s1);
+	auto uquot1 = jive_bitudiv(32, c0, c1);
 
 	graph.export_port(uquot0, "dummy");
 	graph.export_port(uquot1, "dummy");
@@ -888,11 +888,11 @@ static int types_bitstring_test_arithmetic(void)
 	auto c0 = jive_bitconstant(graph.root(), 4, "1100");
 	auto c1 = jive_bitconstant(graph.root(), 4, "0001");
 
-	jive_bitdifference(4, c0, c1);
-	jive_bitshiproduct(4, c0, c1);
-	jive_bituhiproduct(4, c0, c1);
-	jive_bituquotient(4, c0, c1);
-	jive_bitsquotient(4, c0, c1);
+	jive_bitsub(4, c0, c1);
+	jive_bitsmulh(4, c0, c1);
+	jive_bitumulh(4, c0, c1);
+	jive_bitudiv(4, c0, c1);
+	jive_bitsdiv(4, c0, c1);
 	jive_bitumod(4, c0, c1);
 	jive_bitsmod(4, c0, c1);
 	jive_bitshl(4, c0, c1);
@@ -1025,10 +1025,10 @@ static int types_bitstring_test_reduction(void)
 	assert_constant(jive_bitor(4, {a, b}), 4, "1110");
 	assert_constant(jive_bitxor(4, {a, b}), 4, "0110");
 	assert_constant(jive_bitsum(4, {a, b}), 4, "0001");
-	assert_constant(jive_bitmultiply(4, {a, b}), 4, "1111");
+	assert_constant(jive_bitmul(4, {a, b}), 4, "1111");
 	assert_constant(jive_bitconcat({a, b}), 8, "11001010");
-	assert_constant(jive_bitnegate(4, a), 4, "1011");
-	assert_constant(jive_bitnegate(4, b), 4, "1101");
+	assert_constant(jive_bitneg(4, a), 4, "1011");
+	assert_constant(jive_bitneg(4, b), 4, "1101");
 	
 	graph.prune();
 	

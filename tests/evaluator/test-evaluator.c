@@ -142,10 +142,10 @@ unsigned int fib(unsigned int n){
 	auto one = jive_bitconstant_unsigned(lambda->region, 32, 1);
 	auto two = jive_bitconstant_unsigned(lambda->region, 32, 2);
 
-	auto tmp = jive_bitdifference(32, n, one);
+	auto tmp = jive_bitsub(32, n, one);
 	tmp = jive_apply_create(depvar.output, 1, &tmp)[0];
 
-	auto tmp2 = jive_bitdifference(32, n, two);
+	auto tmp2 = jive_bitsub(32, n, two);
 	tmp2 = jive_apply_create(depvar.output, 1, &tmp2)[0];
 
 	auto result = jive_bitsum(32, {tmp, tmp2});
