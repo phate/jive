@@ -22,17 +22,6 @@
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
-/*
-	FIXME: merge with jive_node_valid_edge when we transformed to new representation
-*/
-static bool
-jive_input_is_valid(const jive::input * input)
-{
-	jive::region * region = input->region();
-	jive::region * origin_region = input->origin()->region();
-	return origin_region == region;
-}
-
 namespace jive {
 
 /* iport */
@@ -43,16 +32,19 @@ iport::~iport() noexcept
 		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
 }
 
-iport::iport(size_t index, jive::oport * origin) noexcept
+iport::iport(const jive::region * region, size_t index, jive::oport * origin)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
 	, rescls_(&jive_root_resource_class)
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
+
+	if (region != origin->region())
+		throw jive::compiler_error("Invalid operand region.");
 }
 
-iport::iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept
+iport::iport(const jive::region * region, size_t index, jive::oport * origin, jive::gate * gate)
 	: index_(index)
 	, gate_(gate)
 	, origin_(origin)
@@ -60,18 +52,25 @@ iport::iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
 	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
+
+	if (region != origin->region())
+		throw jive::compiler_error("Invalid operand region.");
 }
 
 iport::iport(
+	const jive::region * region,
 	size_t index,
 	jive::oport * origin,
-	const struct jive_resource_class * rescls) noexcept
+	const struct jive_resource_class * rescls)
 	: index_(index)
 	, gate_(nullptr)
 	, origin_(origin)
 	, rescls_(rescls)
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
+
+	if (region != origin->region())
+		throw jive::compiler_error("Invalid operand region.");
 }
 
 std::string
@@ -96,9 +95,8 @@ iport::divert_origin(jive::oport * new_origin)
 		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
 	}
 
-	/* FIXME: This should be before we assign the new origin */
-	if (!jive_input_is_valid(dynamic_cast<jive::input*>(this)))
-		throw jive::compiler_error("Invalid input");
+	if (region() != new_origin->region())
+		throw jive::compiler_error("Invalid operand region.");
 
 	origin()->users.erase(this);
 	if (origin()->node() && !origin()->node()->has_users()) {

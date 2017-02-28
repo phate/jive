@@ -10,17 +10,6 @@
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
-/*
-	FIXME: merge with jive_node_valid_edge when we transformed to new representation
-*/
-static bool
-jive_input_is_valid(const jive::input * input)
-{
-	jive::region * region = input->region();
-	jive::region * origin_region = input->origin()->region();
-	return origin_region == region;
-}
-
 namespace jive {
 
 /* inputs */
@@ -53,11 +42,10 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index, origin)
+	: iport(node->region(), index, origin)
 	, node_(node)
 	, type_(type.copy())
 {
-	/* FIXME: check whether origin is valid */
 	/* FIXME: This should optimally be in node constructor */
 
 	if (this->type() != origin->type())
@@ -73,12 +61,10 @@ input::input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(index, origin, gate)
+	: iport(node->region(), index, origin, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
-	/* FIXME: check whether origin is valid */
-
 	if (type() != origin->type())
 		throw jive::type_error(type().debug_string(), origin->type().debug_string());
 
@@ -99,12 +85,10 @@ input::input(
 	jive::oport * origin,
 	const jive::base::type & type,
 	const struct jive_resource_class * rescls)
-	: iport(index, origin, rescls)
+	: iport(node->region(), index, origin, rescls)
 	, node_(node)
 	, type_(type.copy())
 {
-	/* FIXME: check whether origin is valid */
-
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
@@ -247,8 +231,6 @@ simple_node::simple_node(
 	}
 
 	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());
-	for (size_t n = 0; n < operation().narguments(); ++n)
-		JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, inputs_[n]->origin()));
 
 	graph()->on_node_create(this);
 }
@@ -343,10 +325,6 @@ simple_node::add_input(const jive::base::type * type, jive::oport * origin)
 		new jive::input(this, ninputs(), origin, *type)));
 	auto input = this->input(ninputs()-1);
 
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	recompute_depth();
 	graph()->on_iport_create(input);
 
@@ -363,10 +341,6 @@ simple_node::add_input(jive::gate * gate, jive::oport * origin)
 		new jive::input(this, ninputs(), origin, gate)));
 	auto input = this->input(ninputs()-1);
 
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	recompute_depth();
 	graph()->on_iport_create(input);
 
@@ -383,10 +357,6 @@ simple_node::add_input(const struct jive_resource_class * rescls, jive::oport * 
 		new jive::input(this, ninputs(), origin, *jive_resource_class_get_type(rescls), rescls)));
 	auto input = this->input(ninputs()-1);
 
-	if (!jive_input_is_valid(input))
-		throw jive::compiler_error("Invalid input");
-
-	JIVE_DEBUG_ASSERT(jive_node_valid_edge(this, input->origin()));
 	recompute_depth();
 	graph()->on_iport_create(input);
 

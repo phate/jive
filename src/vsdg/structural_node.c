@@ -43,7 +43,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const jive::base::type & type)
-	: iport(index, origin)
+	: iport(node->region(), index, origin)
 	, node_(node)
 	, type_(type.copy())
 {
@@ -64,7 +64,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	jive::gate * gate)
-	: iport(index, origin, gate)
+	: iport(node->region(), index, origin, gate)
 	, node_(node)
 	, type_(gate->type().copy())
 {
@@ -91,7 +91,7 @@ structural_input::structural_input(
 	size_t index,
 	jive::oport * origin,
 	const struct jive_resource_class * rescls)
-	: iport(index, origin, rescls)
+	: iport(node->region(), index, origin, rescls)
 	, node_(node)
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
@@ -331,9 +331,6 @@ structural_node::recompute_depth()
 jive::structural_input *
 structural_node::add_input(const jive::base::type * type, jive::oport * origin)
 {
-	if (origin->region() != region())
-		throw jive::compiler_error("Invalid input");
-
 	if (origin->type() != *type)
 		throw jive::type_error(type->debug_string(), origin->type().debug_string());
 
@@ -355,9 +352,6 @@ structural_node::add_input(const jive::base::type * type, jive::oport * origin)
 jive::structural_input *
 structural_node::add_input(jive::gate * gate, jive::oport * origin)
 {
-	if (origin->region() != region())
-		throw jive::compiler_error("Invalid input");
-
 	if (origin->type() != gate->type())
 		throw jive::type_error(gate->type().debug_string(), origin->type().debug_string());
 
@@ -380,9 +374,6 @@ jive::structural_input *
 structural_node::add_input(const struct jive_resource_class * rescls, jive::oport * origin)
 {
 	auto type = jive_resource_class_get_type(rescls);
-
-	if (origin->region() != region())
-		throw jive::compiler_error("Invalid input");
 
 	if (origin->type() != *type)
 		throw jive::type_error(type->debug_string(), origin->type().debug_string());

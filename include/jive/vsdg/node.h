@@ -41,11 +41,22 @@ public:
 	virtual
 	~iport() noexcept;
 
-	iport(size_t index, jive::oport * origin) noexcept;
+	iport(
+		const jive::region * region,
+		size_t index,
+		jive::oport * origin);
 
-	iport(size_t index, jive::oport * origin, jive::gate * gate) noexcept;
+	iport(
+		const jive::region * region,
+		size_t index,
+		jive::oport * origin,
+		jive::gate * gate);
 
-	iport(size_t index, jive::oport * origin, const struct jive_resource_class * rescls) noexcept;
+	iport(
+		const jive::region * region,
+		size_t index,
+		jive::oport * origin,
+		const struct jive_resource_class * rescls);
 
 	iport(const iport &) = delete;
 
@@ -450,17 +461,6 @@ struct jive_tracker_nodestate {
 		jive_tracker_nodestate * next;
 	} state_node_list;
 };
-
-/**
-	\brief Check if an edge may be added to the node
-	\param self Target node
-	\param origin Origin of edge
-	
-	Check whether an edge to @c self as target node may be added,
-	originating at port @c origin.
-*/
-bool
-jive_node_valid_edge(const jive::node * self, const jive::oport * origin);
 
 JIVE_EXPORTED_INLINE jive::iport *
 jive_node_get_gate_input(const jive::node * self, const jive::gate * gate)
