@@ -516,7 +516,7 @@ structural_node::copy(jive::region * region, jive::substitution_map & smap) cons
 	for (size_t n = 0; n < nsubregions(); n++) {
 		new_node->subregions_.emplace_back(std::unique_ptr<jive::region>(new jive::region(new_node)));
 		auto new_subregion = new_node->subregions_.back().get();
-		subregion(n)->copy(new_subregion, smap, false, false);
+		subregion(n)->copy(new_subregion, smap);
 	}
 
 	return new_node;

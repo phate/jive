@@ -52,7 +52,7 @@ gamma_normal_form::normalize_node(jive::node * node) const
 				for (size_t n = 1; n < head->noutputs(); n++)
 					map.insert(head->output(n), dynamic_cast<jive::output*>(head->input(n-1)->origin()));
 
-				tail->region()->copy(node->region(), map, false, false);
+				tail->region()->copy(node->region(), map);
 
 				for (size_t n = 1; n < node->noutputs(); n++) {
 					jive::output * original = dynamic_cast<jive::output*>(tail->input(n)->origin());

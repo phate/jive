@@ -49,7 +49,7 @@ jive_graph::copy() const
 {
 	jive::substitution_map smap;
 	std::unique_ptr<jive_graph> graph(new jive_graph());
-	root()->copy(graph->root(), smap, false, false);
+	root()->copy(graph->root(), smap);
 	return graph;
 }
 

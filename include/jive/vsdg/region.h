@@ -226,7 +226,7 @@ public:
 		map will be updated as nodes are copied.
 	*/
 	void
-	copy(region * target, substitution_map & smap, bool copy_top, bool copy_bottom) const;
+	copy(region * target, substitution_map & smap) const;
 
 	typedef jive::detail::intrusive_list<
 		jive::node,
