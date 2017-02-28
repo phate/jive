@@ -459,7 +459,7 @@ simple_node::remove_output(size_t index)
 jive::node *
 simple_node::copy(jive::region * region, const std::vector<jive::oport*> & operands) const
 {
-	jive::node * node = jive_opnode_create(operation(), region, operands);
+	jive::node * node = region->add_simple_node(operation(), operands);
 	graph()->mark_denormalized();
 	return node;
 }

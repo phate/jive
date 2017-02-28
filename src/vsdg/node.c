@@ -375,7 +375,7 @@ jive_node_cse_create(
 		}
 	}
 
-	return jive_opnode_create(op, region, arguments);
+	return region->add_simple_node(op, arguments);
 }
 
 bool
@@ -383,20 +383,4 @@ jive_node_normalize(jive::node * self)
 {
 	auto nf = self->graph()->node_normal_form(typeid(self->operation()));
 	return nf->normalize_node(self);
-}
-
-jive::node *
-jive_opnode_create(
-	const jive::operation & op,
-	jive::region * region,
-	const std::vector<jive::oport*> & operands)
-{
-	jive::node * node = new jive::simple_node(op, region, operands);
-
-	for (size_t n = 0; n < node->ninputs(); n++) {
-		if (!jive_input_is_valid(dynamic_cast<jive::input*>(node->input(n))))
-			throw jive::compiler_error("Invalid input");
-	}
-
-	return node;
 }

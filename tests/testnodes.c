@@ -8,6 +8,7 @@
 
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/simple_node.h>
 
 /* test node */
 
@@ -80,7 +81,7 @@ jive_test_node_create(
 	const std::vector<const jive::base::type*> & result_types)
 {
 	test_operation op(operand_types, result_types);
-	return jive_opnode_create(op, region, operands);
+	return region->add_simple_node(op, operands);
 }
 
 std::vector<jive::oport*>

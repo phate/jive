@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 
@@ -43,7 +44,7 @@ node_normal_form::normalized_create(
 	}
 
 	if (!node) {
-		node = jive_opnode_create(op, region, arguments);
+		node = region->add_simple_node(op, arguments);
 	}
 
 	std::vector<jive::oport*> outputs;

@@ -11,6 +11,7 @@
 #include <jive/util/ptr-collection.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 
@@ -105,7 +106,7 @@ jive_call_by_address_node_create(jive::region * region,
 		std::move(argtypes),
 		std::move(restypes));
 
-	return jive_opnode_create(op, region, call_args);
+	return region->add_simple_node(op, call_args);
 }
 
 std::vector<jive::oport*>
@@ -152,7 +153,7 @@ jive_call_by_bitstring_node_create(jive::region * region,
 		std::move(argtypes),
 		std::move(restypes));
 
-	return jive_opnode_create(op, region, call_args);
+	return region->add_simple_node(op, call_args);
 }
 
 std::vector<jive::oport*>

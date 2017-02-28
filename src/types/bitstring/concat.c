@@ -166,7 +166,7 @@ public:
 
 			JIVE_DEBUG_ASSERT(new_args.size() >= 2);
 			if (!new_node) {
-				new_node = jive_opnode_create(op, node->region(), new_args);
+				new_node = node->region()->add_simple_node(op, new_args);
 			}
 
 			if (new_node != node) {

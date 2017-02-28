@@ -559,15 +559,6 @@ jive_node_cse_create(
 bool
 jive_node_normalize(jive::node * self);
 
-/*
-	FIXME: This is going to be removed again
-*/
-jive::node *
-jive_opnode_create(
-	const jive::operation & op,
-	jive::region * region,
-	const std::vector<jive::oport*> & operands);
-
 /* tracking support */
 
 jive_tracker_nodestate *

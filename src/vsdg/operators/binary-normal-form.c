@@ -165,7 +165,7 @@ binary_normal_form::normalize_node(jive::node * node, const base::binary_op & op
 
 		JIVE_DEBUG_ASSERT(new_args.size() >= 2);
 		if (!new_node) {
-			new_node = jive_opnode_create(new_op, node->region(), new_args);
+			new_node = node->region()->add_simple_node(new_op, new_args);
 		}
 
 		if (new_node != node) {
