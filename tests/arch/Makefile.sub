@@ -1,5 +1,6 @@
 TESTS+=\
 	arch/test-address \
+	arch/test-address-transform \
 	arch/test-call \
 	arch/test-dynamic-stackslots \
 	arch/test-label-nodes \
@@ -10,5 +11,3 @@ TESTS+=\
 	arch/test-sizeof \
 	arch/test-store \
 	arch/test-subroutine \
-
-include tests/arch/address-transform/Makefile.sub
