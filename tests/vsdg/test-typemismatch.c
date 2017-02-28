@@ -22,11 +22,11 @@ static int test_main(void)
 	jive_test_state_type type;
 	jive_test_value_type value_type;
 
-	jive::node * n1 = jive_test_node_create(region, {}, {}, {&type});
+	auto n1 = jive::test::node_create(region, {}, {}, {&type});
 
 	bool error_handler_called = false;
 	try {
-		jive_test_node_create(region, {&value_type}, {n1->output(0)}, {});
+		jive::test::node_create(region, {&value_type}, {n1->output(0)}, {});
 	} catch (jive::type_error e) {
 		error_handler_called = true;
 	}

@@ -11,25 +11,28 @@
 #include <vector>
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
-/* test node */
+namespace jive {
+namespace test {
 
-class test_operation final : public jive::operation {
+class op final : public jive::operation {
 public:
 	virtual
-	~test_operation() noexcept;
+	~op() noexcept;
 
-	test_operation(
+	op(
 		const std::vector<const jive::base::type*> & argument_types,
 		const std::vector<const jive::base::type*> & result_types);
 
-	test_operation(const test_operation & other);
+	op(const jive::test::op & other);
 
 	inline
-	test_operation() noexcept {}
+	op() noexcept {}
 
 	inline
-	test_operation(test_operation && other) noexcept = default;
+	op(jive::test::op && other) noexcept = default;
 	
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -45,6 +48,7 @@ public:
 
 	virtual const jive::base::type &
 	result_type(size_t index) const noexcept override;
+
 	virtual std::string
 	debug_string() const override;
 
@@ -56,18 +60,26 @@ private:
 	std::vector<std::unique_ptr<const jive::base::type>> result_types_;
 };
 
-jive::node *
-jive_test_node_create(
+static inline jive::node *
+node_create(
 	jive::region * region,
 	const std::vector<const jive::base::type*> & operand_types,
 	const std::vector<jive::oport*> & operands,
-	const std::vector<const jive::base::type*> & result_types);
+	const std::vector<const jive::base::type*> & result_types)
+{
+	return region->add_simple_node(jive::test::op(operand_types, result_types), operands);
+}
 
-std::vector<jive::oport*>
-jive_test_node_create_normalized(
-	jive::graph * graph,
+static inline std::vector<jive::oport*>
+node_normalized_create(
+	jive::region * r,
 	const std::vector<const jive::base::type*> & operand_types,
 	const std::vector<jive::oport*> & operands,
-	const std::vector<const jive::base::type*> & result_types);
+	const std::vector<const jive::base::type*> & result_types)
+{
+	return jive_node_create_normalized(r, jive::test::op(operand_types, result_types), operands);
+}
+
+}}
 
 #endif

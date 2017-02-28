@@ -53,7 +53,7 @@ static int test_main()
 
 	jive::oport * results[3] = {fns[0].value, fns[1].value, fns[2].value};
 
-	jive::node * bottom = jive_test_node_create(graph.root(),
+	auto bottom = jive::test::node_create(graph.root(),
 		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
 	graph.export_port(bottom->output(0), "dummy");
 
