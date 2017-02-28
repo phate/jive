@@ -27,6 +27,7 @@ struct jive_graph;
 namespace jive {
 
 class node;
+class simple_node;
 class structural_input;
 class structural_output;
 
@@ -206,6 +207,9 @@ public:
 		JIVE_DEBUG_ASSERT(index < nresults());
 		return results_[index];
 	}
+
+	jive::simple_node *
+	add_simple_node(const jive::operation & op, const std::vector<jive::oport*> & operands);
 
 	/**
 		\brief Copy a region with substitutions

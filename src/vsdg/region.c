@@ -12,6 +12,7 @@
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
+#include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/structural_node.h>
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
@@ -318,6 +319,12 @@ region::remove_result(size_t index)
 		results_[n] = results_[n+1];
 	}
 	results_.pop_back();
+}
+
+jive::simple_node *
+region::add_simple_node(const jive::operation & op, const std::vector<jive::oport*> & operands)
+{
+	return new jive::simple_node(op, this, operands);
 }
 
 void
