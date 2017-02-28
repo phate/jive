@@ -216,27 +216,9 @@ region::~region()
 	while (results_.size())
 		remove_result(results_.size()-1);
 
-	std::vector<std::vector<const jive::node*>> sorted_nodes;
-	for (const auto & node : nodes)	{
-		if (node.depth() >= sorted_nodes.size())
-			sorted_nodes.resize(node.depth()+1);
-		sorted_nodes[node.depth()].push_back(&node);
-	}
-	for (auto it = sorted_nodes.rbegin(); it != sorted_nodes.rend(); it++) {
-		for (const auto & node : *it)
-			delete node;
-	}
-
-	/*
-		FIXME: some unit tests create regions without anchor nodes
-	*/
-	jive::region * subregion, * next;
-	JIVE_LIST_ITERATE_SAFE(subregions, subregion, next, region_subregions_list) {
-		delete subregion;
-	}
-
+	while (bottom_nodes.first)
+		delete bottom_nodes.first;
 	JIVE_DEBUG_ASSERT(nodes.empty());
-	JIVE_DEBUG_ASSERT(subregions.first == nullptr && subregions.last == nullptr);
 
 	while (arguments_.size())
 		remove_argument(arguments_.size()-1);
