@@ -245,15 +245,6 @@ public:
 		jive::node * last;
 	} bottom_nodes;
 
-	struct {
-		jive::region * first;
-		jive::region * last;
-	} subregions;
-	struct {
-		jive::region * prev;
-		jive::region * next;
-	} region_subregions_list;
-
 private:
 	jive_graph * graph_;
 	jive::region * parent_;

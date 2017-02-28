@@ -17,16 +17,6 @@
 #include <jive/vsdg/substitution.h>
 #include <jive/vsdg/traverser.h>
 
-static void
-prune_regions_recursive(jive::region * region)
-{
-	jive::region * subregion, * next;
-	JIVE_LIST_ITERATE_SAFE(region->subregions, subregion, next, region_subregions_list)
-		prune_regions_recursive(subregion);
-	if (region->nodes.empty())
-		delete region;
-}
-
 /* graph */
 
 jive_graph::~jive_graph()
@@ -127,8 +117,4 @@ jive_graph::prune()
 			next = root()->bottom_nodes.first;
 		node = next;
 	}
-	
-	jive::region * subregion, * next;
-	JIVE_LIST_ITERATE_SAFE(root()->subregions, subregion, next, region_subregions_list)
-		prune_regions_recursive(subregion);
 }

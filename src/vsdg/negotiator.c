@@ -740,6 +740,8 @@ jive_negotiator_maybe_split_edge(jive_negotiator * self, jive::output * origin, 
 void
 jive_negotiator_process(jive_negotiator * self)
 {
+	/* FIXME: this function is broken */
+/*
 	jive::region * region = self->graph->root();
 	while(region->subregions.first)
 		region = region->subregions.first;
@@ -751,6 +753,7 @@ jive_negotiator_process(jive_negotiator * self)
 		else
 			region = region->parent();
 	}
+*/
 	jive_negotiator_fully_specialize(self);
 	
 	jive_negotiator_insert_split_nodes(self);

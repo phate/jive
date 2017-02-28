@@ -222,9 +222,6 @@ region::~region()
 
 	while (arguments_.size())
 		remove_argument(arguments_.size()-1);
-
-	if (parent_)
-		JIVE_LIST_REMOVE(parent_->subregions, this, region_subregions_list);
 }
 
 region::region(jive::region * parent, jive_graph * graph)
@@ -233,14 +230,7 @@ region::region(jive::region * parent, jive_graph * graph)
 	, node_(nullptr)
 {
 	top_nodes.first = top_nodes.last = nullptr;
-	subregions.first = subregions.last = nullptr;
 	bottom_nodes.first = bottom_nodes.last = nullptr;
-	region_subregions_list.prev = region_subregions_list.next = nullptr;
-
-	if (parent_) {
-		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
-	}
-
 	graph->on_region_create(this);
 }
 
@@ -250,14 +240,7 @@ region::region(jive::structural_node * node)
 	, node_(node)
 {
 	top_nodes.first = top_nodes.last = nullptr;
-	subregions.first = subregions.last = nullptr;
 	bottom_nodes.first = bottom_nodes.last = nullptr;
-	region_subregions_list.prev = region_subregions_list.next = nullptr;
-
-	if (parent_) {
-		JIVE_LIST_PUSH_BACK(parent_->subregions, this, region_subregions_list);
-	}
-
 	graph()->on_region_create(this);
 }
 
@@ -359,13 +342,6 @@ region::copy(region * target, substitution_map & smap) const
 				context.resize(node.depth()+1);
 			context[node.depth()].push_back(&node);
 		}
-
-		jive::region * subregion;
-		JIVE_LIST_ITERATE(source->subregions, subregion, region_subregions_list) {
-			jive::region * target_subregion = new jive::region(target, target->graph());
-			smap.insert(subregion, target_subregion);
-			pre_copy_region(subregion, target_subregion, context, smap);
-		}
 	};
 
 	smap.insert(this, target);
@@ -425,10 +401,6 @@ region::copy(region * target, substitution_map & smap) const
 void
 jive_region_verify_top_node_list(struct jive::region * region)
 {
-	jive::region * subregion;
-	JIVE_LIST_ITERATE(region->subregions, subregion, region_subregions_list)
-		jive_region_verify_top_node_list(subregion);
-
 	/* check whether all nodes in the top_node_list are really nullary nodes */
 	jive::node * node;
 	JIVE_LIST_ITERATE(region->top_nodes, node, region_top_node_list)
