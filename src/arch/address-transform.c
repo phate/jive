@@ -241,7 +241,7 @@ jive_memberof_node_address_transform(
 	auto offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
 	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	auto sum = jive_bitsum({address, offset});
+	auto sum = jive_bitsum(nbits, {address, offset});
 	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 
 	node->output(0)->replace(off_address);
@@ -263,7 +263,7 @@ jive_containerof_node_address_transform(
 	auto offset = jive_bitconstant_unsigned(node->region(), nbits, elem_offset);
 	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
-	auto sum = jive_bitdifference(address, offset);
+	auto sum = jive_bitdifference(nbits, address, offset);
 	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 
 	node->output(0)->replace(off_address);
@@ -282,8 +282,8 @@ jive_arraysubscript_node_address_transform(
 	auto address = jive_address_to_bitstring_create(node->input(0)->origin(), nbits,
 		&node->input(0)->origin()->type());
 	auto elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
-	auto offset = jive_bitmultiply({elem_size, index});
-	auto sum = jive_bitsum({address, offset});
+	auto offset = jive_bitmultiply(nbits, {elem_size, index});
+	auto sum = jive_bitsum(nbits, {address, offset});
 	auto off_address = jive_bitstring_to_address_create(sum, nbits, &node->output(0)->type());
 	
 	node->output(0)->replace(off_address);
@@ -303,8 +303,8 @@ jive_arrayindex_node_address_transform(
 	auto address2 = jive_address_to_bitstring_create(node->input(1)->origin(), nbits,
 		&node->input(1)->origin()->type());
 	auto elem_size = jive_bitconstant_unsigned(node->region(), nbits, elem_type_size);
-	auto diff = jive_bitdifference(address1, address2);
-	auto div = jive_bitsquotient(diff, elem_size);
+	auto diff = jive_bitdifference(nbits, address1, address2);
+	auto div = jive_bitsquotient(nbits, diff, elem_size);
 
 	node->output(0)->replace(div);
 }

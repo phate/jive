@@ -430,54 +430,54 @@ public:
 }
 
 jive::oport *
-jive_bitand(const std::vector<jive::oport*> & operands);
+jive_bitand(size_t nbits, const std::vector<jive::oport*> & operands);
 
 jive::oport *
-jive_bitashr(jive::oport * operand, jive::oport * shift);
+jive_bitashr(size_t nbits, jive::oport * operand, jive::oport * shift);
 
 jive::oport *
-jive_bitdifference(jive::oport * op1, jive::oport * op2);
+jive_bitdifference(size_t nbits, jive::oport * op1, jive::oport * op2);
 
 jive::oport *
-jive_bitnegate(jive::oport * operand);
+jive_bitnegate(size_t nbits, jive::oport * operand);
 
 jive::oport *
-jive_bitnot(jive::oport * operand);
+jive_bitnot(size_t nbits, jive::oport * operand);
 
 jive::oport *
-jive_bitor(const std::vector<jive::oport*> & operands);
+jive_bitor(size_t nbits, const std::vector<jive::oport*> & operands);
 
 jive::oport *
-jive_bitmultiply(const std::vector<jive::oport*> & operands);
+jive_bitmultiply(size_t nbits, const std::vector<jive::oport*> & operands);
 
 jive::oport *
-jive_bitshiproduct(jive::oport * factor1, jive::oport * factor2);
+jive_bitshiproduct(size_t nbits, jive::oport * factor1, jive::oport * factor2);
 
 jive::oport *
-jive_bitsmod(jive::oport * operand1, jive::oport * operand2);
+jive_bitsmod(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bitshl(jive::oport * operand, jive::oport * shift);
+jive_bitshl(size_t nbits, jive::oport * operand, jive::oport * shift);
 
 jive::oport *
-jive_bitshr(jive::oport * operand, jive::oport * shift);
+jive_bitshr(size_t nbits, jive::oport * operand, jive::oport * shift);
 
 jive::oport *
-jive_bitsquotient(jive::oport * dividend, jive::oport * divisor);
+jive_bitsquotient(size_t nbits, jive::oport * dividend, jive::oport * divisor);
 
 jive::oport *
-jive_bitsum(const std::vector<jive::oport*> & operands);
+jive_bitsum(size_t nbits, const std::vector<jive::oport*> & operands);
 
 jive::oport *
-jive_bituhiproduct(jive::oport * factor1, jive::oport * factor2);
+jive_bituhiproduct(size_t nbits, jive::oport * factor1, jive::oport * factor2);
 
 jive::oport *
-jive_bitumod(jive::oport * operand1, jive::oport * operand2);
+jive_bitumod(size_t nbits, jive::oport * operand1, jive::oport * operand2);
 
 jive::oport *
-jive_bituquotient(jive::oport * dividend, jive::oport * divisor);
+jive_bituquotient(size_t nbits, jive::oport * dividend, jive::oport * divisor);
 
 jive::oport *
-jive_bitxor(const std::vector<jive::oport*> & operands);
+jive_bitxor(size_t nbits, const std::vector<jive::oport*> & operands);
 
 #endif

@@ -48,11 +48,11 @@ fib(size_t n)
 	jive_theta_loopvar lv_k = jive_theta_loopvar_enter(theta, k);
 	jive_theta_loopvar lv_n = jive_theta_loopvar_enter(theta, n);
 
-	auto t = jive_bitsum({lv_i.value, lv_j.value});
+	auto t = jive_bitsum(32, {lv_i.value, lv_j.value});
 
 	auto one = jive_bitconstant_unsigned(theta.region, 32, 1);
 
-	auto new_k = jive_bitsum({one, lv_k.value});
+	auto new_k = jive_bitsum(32, {one, lv_k.value});
 
 	auto cmp = jive_bitulesseq(new_k, lv_n.value);
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
@@ -142,13 +142,13 @@ unsigned int fib(unsigned int n){
 	auto one = jive_bitconstant_unsigned(lambda->region, 32, 1);
 	auto two = jive_bitconstant_unsigned(lambda->region, 32, 2);
 
-	auto tmp = jive_bitdifference(n, one);
+	auto tmp = jive_bitdifference(32, n, one);
 	tmp = jive_apply_create(depvar.output, 1, &tmp)[0];
 
-	auto tmp2 = jive_bitdifference(n, two);
+	auto tmp2 = jive_bitdifference(32, n, two);
 	tmp2 = jive_apply_create(depvar.output, 1, &tmp2)[0];
 
-	auto result = jive_bitsum({tmp, tmp2});
+	auto result = jive_bitsum(32, {tmp, tmp2});
 
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(n, two));
 	result = jive_gamma(predicate, {&bits32}, {{result}, {n}})[0];
@@ -224,7 +224,7 @@ test_loadstore(jive::graph * graph)
 	auto value = jive_load_by_bitstring_create(address, 64, &bits4, 1, &state);
 
 	auto three = jive_bitconstant_unsigned(lambda->region, 4, 3);
-	value = jive_bitsum({value, three});
+	value = jive_bitsum(4, {value, three});
 
 	state = jive_store_by_bitstring_create(address, 64, &bits4, value, 1, &state)[0];
 

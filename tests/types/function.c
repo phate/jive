@@ -28,7 +28,7 @@ static int function_test_build_lambda(void)
 	jive_lambda * lambda = jive_lambda_begin(graph.root(),
 		{{&bits32, "arg1"}, {&bits32, "arg1"}}, {{&bits32, "r"}});
 
-	auto sum = jive_bitsum(
+	auto sum = jive_bitsum(32,
 		std::vector<jive::oport*>(lambda->arguments, lambda->arguments+lambda->narguments));
 
 	auto fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
