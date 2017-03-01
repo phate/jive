@@ -12,11 +12,12 @@
 
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 
 namespace jive {
 namespace state {
 
-class mux_op final : public operation {
+class mux_op final : public simple_op {
 public:
 	virtual
 	~mux_op() noexcept;

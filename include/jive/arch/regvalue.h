@@ -11,10 +11,11 @@
 
 #include <jive/arch/registers.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 
 namespace jive {
 
-class regvalue_op final : public operation {
+class regvalue_op final : public simple_op {
 public:
 	virtual
 	~regvalue_op() noexcept;

@@ -10,7 +10,7 @@
 #include <jive/common.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/simple.h>
 
 typedef size_t jive_binop_reduction_path_t;
 
@@ -43,7 +43,7 @@ namespace base {
 	Operator taking two arguments (with well-defined reduction for more
 	operands if operator is associative).
 */
-class binary_op : public operation {
+class binary_op : public simple_op {
 public:
 	virtual ~binary_op() noexcept;
 
@@ -74,7 +74,7 @@ public:
 	}
 };
 
-class flattened_binary_op final : public operation {
+class flattened_binary_op final : public simple_op {
 public:
 	virtual ~flattened_binary_op() noexcept;
 

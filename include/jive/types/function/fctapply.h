@@ -9,11 +9,12 @@
 
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 
 namespace jive {
 namespace fct {
 
-class apply_op final : public jive::operation {
+class apply_op final : public jive::simple_op {
 public:
 	virtual
 	~apply_op() noexcept;

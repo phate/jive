@@ -12,6 +12,7 @@
 
 #include <jive/common.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 
 namespace jive {
 	class type;
@@ -22,7 +23,7 @@ struct jive_calling_convention;
 
 namespace jive {
 
-class call_operation final : public operation {
+class call_operation final : public simple_op {
 public:
 	virtual ~call_operation() noexcept;
 

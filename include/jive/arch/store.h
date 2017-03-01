@@ -16,7 +16,7 @@
 
 namespace jive {
 
-class store_op final : public operation {
+class store_op final : public simple_op {
 public:
 	virtual
 	~store_op() noexcept;

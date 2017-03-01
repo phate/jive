@@ -7,13 +7,13 @@
 #define JIVE_VSDG_OPERATORS_UNARY_NORMAL_FORM_H
 
 #include <jive/common.h>
-#include <jive/vsdg/node-normal-form.h>
+#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/base.h>
 
 namespace jive {
 
-class unary_normal_form final : public node_normal_form {
+class unary_normal_form final : public simple_normal_form {
 public:
 	virtual
 	~unary_normal_form() noexcept;

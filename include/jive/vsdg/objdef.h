@@ -10,6 +10,7 @@
 #include <string>
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 
 struct jive_label;
 struct jive_linker_symbol;
@@ -18,7 +19,7 @@ namespace jive {
 
 class output;
 
-class objdef_operation final : public operation {
+class objdef_operation final : public simple_op {
 public:
 	virtual
 	~objdef_operation() noexcept;

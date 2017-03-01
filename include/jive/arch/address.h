@@ -128,7 +128,7 @@ private:
 	size_t index_;
 };
 
-class arraysubscript_op : public operation {
+class arraysubscript_op : public simple_op {
 public:
 	virtual ~arraysubscript_op() noexcept;
 
@@ -169,7 +169,7 @@ private:
 	jive::bits::type index_type_;
 };
 
-class arrayindex_op : public operation {
+class arrayindex_op : public simple_op {
 public:
 	virtual ~arrayindex_op() noexcept;
 

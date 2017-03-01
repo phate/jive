@@ -19,7 +19,7 @@ unary_normal_form::unary_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
 	jive::graph * graph)
-	: node_normal_form(operator_class, parent, graph)
+	: simple_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 {
 	if (auto p = dynamic_cast<unary_normal_form *>(parent)) {
@@ -82,7 +82,7 @@ unary_normal_form::operands_are_normalized(
 		}
 	}
 
-	return node_normal_form::operands_are_normalized(base_op, arguments);
+	return simple_normal_form::operands_are_normalized(base_op, arguments);
 }
 
 std::vector<jive::oport*>
@@ -103,7 +103,7 @@ unary_normal_form::normalized_create(
 		}
 	}
 
-	return node_normal_form::normalized_create(region, op, arguments);
+	return simple_normal_form::normalized_create(region, op, arguments);
 }
 
 void

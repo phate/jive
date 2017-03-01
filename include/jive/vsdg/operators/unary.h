@@ -10,7 +10,7 @@
 #include <jive/common.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/simple.h>
 
 typedef size_t jive_unop_reduction_path_t;
 
@@ -22,7 +22,7 @@ namespace base {
 	
 	Operator taking a single argument.
 */
-class unary_op : public operation {
+class unary_op : public simple_op {
 public:
 	virtual ~unary_op() noexcept;
 

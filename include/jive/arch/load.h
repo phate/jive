@@ -16,7 +16,7 @@
 
 namespace jive {
 
-class load_op final : public operation {
+class load_op final : public simple_op {
 public:
 	virtual
 	~load_op() noexcept;

@@ -22,7 +22,7 @@
 
 namespace jive {
 
-class instruction_op final : public operation {
+class instruction_op final : public simple_op {
 public:
 	virtual
 	~instruction_op() noexcept;

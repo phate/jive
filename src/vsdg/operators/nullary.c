@@ -7,12 +7,13 @@
 #include <jive/vsdg/operators/nullary.h>
 
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {
 namespace base {
 
-class nullary_normal_form final : public node_normal_form {
+class nullary_normal_form final : public simple_normal_form {
 public:
 	virtual
 	~nullary_normal_form() noexcept
@@ -23,7 +24,7 @@ public:
 		const std::type_info & operator_class,
 		jive::node_normal_form * parent,
 		jive::graph * graph)
-		: node_normal_form(operator_class, parent, graph)
+		: simple_normal_form(operator_class, parent, graph)
 	{
 	}
 };

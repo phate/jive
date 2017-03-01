@@ -11,13 +11,14 @@
 #include <vector>
 
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace test {
 
-class op final : public jive::operation {
+class op final : public jive::simple_op {
 public:
 	virtual
 	~op() noexcept;

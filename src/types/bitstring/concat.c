@@ -17,6 +17,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/operators/reduction-helpers.h>
+#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
 
@@ -103,7 +104,7 @@ types_from_arguments(const std::vector<jive::oport*> & args)
 
 }
 
-class concat_normal_form final : public node_normal_form {
+class concat_normal_form final : public simple_normal_form {
 public:
 	virtual
 	~concat_normal_form() noexcept;
@@ -111,7 +112,7 @@ public:
 	concat_normal_form(
 		jive::node_normal_form * parent,
 		jive::graph * graph)
-		: node_normal_form(typeid(concat_op), parent, graph)
+		: simple_normal_form(typeid(concat_op), parent, graph)
 		, enable_reducible_(true)
 		, enable_flatten_(true)
 	{
@@ -210,7 +211,7 @@ public:
 			}
 		}
 		
-		return node_normal_form::operands_are_normalized(op, arguments);
+		return simple_normal_form::operands_are_normalized(op, arguments);
 	}
 
 	virtual std::vector<jive::oport*>
@@ -243,7 +244,7 @@ public:
 		}
 
 		concat_op new_op(types_from_arguments(new_args));
-		return node_normal_form::normalized_create(region, new_op, new_args);
+		return simple_normal_form::normalized_create(region, new_op, new_args);
 	}
 
 	virtual void

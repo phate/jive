@@ -82,7 +82,7 @@ binary_normal_form::binary_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
 	jive::graph * graph)
-	: node_normal_form(operator_class, parent, graph)
+	: simple_normal_form(operator_class, parent, graph)
 	, enable_reducible_(true)
 	, enable_reorder_(true)
 	, enable_flatten_(true)
@@ -214,7 +214,7 @@ binary_normal_form::operands_are_normalized(
 	
 	/* FIXME: attempt distributive transform */
 	
-	return node_normal_form::operands_are_normalized(base_op, args);
+	return simple_normal_form::operands_are_normalized(base_op, args);
 }
 
 std::vector<jive::oport*>
@@ -257,7 +257,7 @@ binary_normal_form::normalized_create(
 		tmp_op ? *tmp_op : static_cast<const operation &>(op);
 
 	region = new_args[0]->region();
-	return node_normal_form::normalized_create(region, new_op, new_args);
+	return simple_normal_form::normalized_create(region, new_op, new_args);
 }
 
 void

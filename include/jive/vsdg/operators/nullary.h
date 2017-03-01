@@ -10,7 +10,7 @@
 #include <jive/common.h>
 #include <jive/vsdg/node-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/simple.h>
 
 namespace jive {
 
@@ -21,7 +21,7 @@ namespace base {
 /**
 	\brief Nullary operator (operator taking no formal arguments)
 */
-class nullary_op : public operation {
+class nullary_op : public simple_op {
 public:
 	virtual
 	~nullary_op() noexcept;

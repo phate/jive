@@ -9,11 +9,12 @@
 
 #include <jive/types/record/rcdtype.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/simple.h>
 
 namespace jive {
 namespace rcd {
 
-class group_op final : public jive::operation {
+class group_op final : public jive::simple_op {
 public:
 	virtual
 	~group_op() noexcept;

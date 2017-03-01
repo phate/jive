@@ -8,14 +8,14 @@
 #define JIVE_VSDG_OPERATORS_BINARY_NORMAL_FORM_H
 
 #include <jive/common.h>
-#include <jive/vsdg/node-normal-form.h>
+#include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/base.h>
 #include <jive/vsdg/operators/binary.h>
 
 namespace jive {
 
-class binary_normal_form final : public node_normal_form {
+class binary_normal_form final : public simple_normal_form {
 public:
 	virtual
 	~binary_normal_form() noexcept;

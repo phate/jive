@@ -6,11 +6,11 @@
 #ifndef JIVE_ARCH_LOAD_NORMAL_FORM_H
 #define JIVE_ARCH_LOAD_NORMAL_FORM_H
 
-#include <jive/vsdg/node-normal-form.h>
+#include <jive/vsdg/operators/simple-normal-form.h>
 
 namespace jive {
 
-class load_normal_form : public node_normal_form {
+class load_normal_form : public simple_normal_form {
 public:
 	virtual
 	~load_normal_form() noexcept;
