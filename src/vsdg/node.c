@@ -11,7 +11,6 @@
 #include <jive/internal/compiler.h>
 #include <jive/util/buffer.h>
 #include <jive/util/list.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
@@ -105,10 +104,6 @@ iport::divert_origin(jive::oport * new_origin)
 {
 	if (type() != new_origin->type())
 		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
-
-	if (dynamic_cast<const jive::achr::type*>(&this->type())) {
-		throw jive::compiler_error("Type mismatch: Cannot divert edges of 'anchor' type");
-	}
 
 	if (region() != new_origin->region())
 		throw jive::compiler_error("Invalid operand region.");

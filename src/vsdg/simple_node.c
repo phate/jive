@@ -3,7 +3,6 @@
  * See COPYING for terms of redistribution.
  */
 
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>

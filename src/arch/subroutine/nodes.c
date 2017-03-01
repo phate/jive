@@ -8,7 +8,6 @@
 
 #include <jive/arch/memorytype.h>
 #include <jive/arch/subroutine.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/simple_node.h>
 

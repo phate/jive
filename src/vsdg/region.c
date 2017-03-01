@@ -9,7 +9,6 @@
 #include <jive/common.h>
 
 #include <jive/util/list.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/gate-interference-private.h>
 #include <jive/vsdg/graph-private.h>
 #include <jive/vsdg/simple_node.h>

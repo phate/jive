@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 #include <jive/util/strfmt.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/phi-normal-form.h>
 #include <jive/vsdg/simple_node.h>

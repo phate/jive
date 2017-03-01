@@ -8,7 +8,6 @@ CFLAGS+=-Wall -g --std=c++0x -xc++
 # VSDG core
 LIBJIVE_SRC = \
 	src/common.c \
-	src/vsdg/anchortype.c \
 	src/vsdg/basetype.c \
 	src/vsdg/control.c \
 	src/vsdg/controltype.c \

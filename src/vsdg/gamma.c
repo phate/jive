@@ -12,7 +12,6 @@
 
 #include <jive/common.h>
 #include <jive/util/strfmt.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/gamma-normal-form.h>
 #include <jive/vsdg/graph.h>

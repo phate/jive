@@ -11,7 +11,6 @@
 
 #include <jive/common.h>
 #include <jive/util/strfmt.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>

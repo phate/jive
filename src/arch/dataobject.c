@@ -15,7 +15,6 @@
 #include <jive/types/record/rcdtype.h>
 #include <jive/types/union/unntype.h>
 #include <jive/types/union/unnunify.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/statetype.h>

@@ -11,7 +11,6 @@
 
 #include <jive/common.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/region.h>
