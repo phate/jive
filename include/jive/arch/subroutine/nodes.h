@@ -8,12 +8,12 @@
 #define JIVE_ARCH_SUBROUTINE_NODES_H
 
 #include <jive/arch/subroutine/signature.h>
-#include <jive/vsdg/anchor.h>
+#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/node.h>
 
 namespace jive {
 
-class subroutine_op final : public region_anchor_op {
+class subroutine_op final : public structural_op {
 public:
 	virtual
 	~subroutine_op() noexcept;

@@ -7,9 +7,9 @@
 #ifndef JIVE_VSDG_GAMMA_H
 #define JIVE_VSDG_GAMMA_H
 
-#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/operators/structural.h>
 
 namespace jive {
 	class output;
@@ -18,7 +18,7 @@ namespace jive {
 
 namespace jive {
 
-class gamma_op final : public region_anchor_op {
+class gamma_op final : public structural_op {
 public:
 	virtual
 	~gamma_op() noexcept;

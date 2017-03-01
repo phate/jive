@@ -7,16 +7,16 @@
 #ifndef JIVE_VSDG_PHI_H
 #define JIVE_VSDG_PHI_H
 
-#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/structural_node.h>
 
 /* phi node */
 
 namespace jive {
 
-class phi_op final : public region_anchor_op {
+class phi_op final : public structural_op {
 public:
 	virtual
 	~phi_op() noexcept;

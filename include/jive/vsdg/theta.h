@@ -7,8 +7,8 @@
 #ifndef JIVE_VSDG_THETA_H
 #define JIVE_VSDG_THETA_H
 
-#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/structural.h>
 
 namespace jive {
 class gate;
@@ -18,7 +18,7 @@ struct jive_theta_build_state;
 
 namespace jive {
 
-class theta_op final : public region_anchor_op {
+class theta_op final : public structural_op {
 public:
 	virtual
 	~theta_op() noexcept;

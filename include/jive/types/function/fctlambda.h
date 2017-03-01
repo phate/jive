@@ -11,13 +11,13 @@
 #include <vector>
 
 #include <jive/types/function/fcttype.h>
-#include <jive/vsdg/anchor.h>
+#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace fct {
 
-class lambda_op final : public region_anchor_op {
+class lambda_op final : public structural_op {
 public:
 	virtual
 	~lambda_op() noexcept;

@@ -10,13 +10,13 @@
 #include <jive/common.h>
 
 #include <jive/util/ptr-collection.h>
-#include <jive/vsdg/anchor.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/region.h>
 
 namespace jive {
 
-class dataobj_op final : public region_anchor_op {
+class dataobj_op final : public structural_op {
 public:
 	virtual
 	~dataobj_op() noexcept;
