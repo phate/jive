@@ -42,12 +42,10 @@ public:
 		, parent_(parent)
 		, graph_(graph)
 		, enable_mutable_(true)
-		, enable_cse_(true)
 	{
 		subclasses_.first = subclasses_.last = nullptr;
 		if (parent) {
 			enable_mutable_ = parent->enable_mutable_;
-			enable_cse_ = parent->enable_cse_;
 			JIVE_LIST_PUSH_BACK(parent->subclasses_, this, normal_form_subclass_list_);
 		}
 	}
@@ -75,11 +73,6 @@ public:
 	set_mutable(bool enable);
 	inline bool
 	get_mutable() const noexcept { return enable_mutable_; }
-
-	virtual void
-	set_cse(bool enable);
-	inline bool
-	get_cse() const noexcept { return enable_cse_; }
 
 	static void
 	register_factory(

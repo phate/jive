@@ -1,6 +1,7 @@
 include tests/vsdg/traverser/Makefile.sub
 
 TESTS+=\
+	vsdg/test-cse \
 	vsdg/test-empty_graph_pruning \
 	vsdg/test-gamma \
 	vsdg/test-graph \

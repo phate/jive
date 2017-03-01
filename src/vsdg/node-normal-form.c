@@ -38,20 +38,7 @@ node_normal_form::normalized_create(
 	const jive::operation & op,
 	const std::vector<jive::oport*> & arguments) const
 {
-	jive::node * node = nullptr;
-	if (get_mutable() && get_cse()) {
-		node = jive_node_cse(region, op, arguments);
-	}
-
-	if (!node) {
-		node = region->add_simple_node(op, arguments);
-	}
-
-	std::vector<jive::oport*> outputs;
-	for (size_t n = 0; n < node->noutputs(); n++)
-		outputs.push_back(node->output(n));
-
-	return outputs;
+	throw std::logic_error("node_normal_form::normalized_create cannot create node.");
 }
 
 void
@@ -65,20 +52,6 @@ node_normal_form::set_mutable(bool enable)
 
 	enable_mutable_ = enable;
 	if (enable)
-		graph()->mark_denormalized();
-}
-
-void
-node_normal_form::set_cse(bool enable)
-{
-	if (enable_cse_ == enable) {
-		return;
-	}
-
-	children_set<node_normal_form, &node_normal_form::set_cse>(enable);
-
-	enable_cse_ = enable;
-	if (enable && enable_mutable_)
 		graph()->mark_denormalized();
 }
 

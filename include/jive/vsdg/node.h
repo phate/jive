@@ -520,7 +520,7 @@ jive_node_get_use_count_output(
 	struct jive_resource_class_count * use_count);
 
 JIVE_EXPORTED_INLINE std::vector<jive::oport*>
-jive_node_arguments(jive::node * self)
+jive_node_arguments(const jive::node * self)
 {
 	std::vector<jive::oport*> arguments;
 	for (size_t n = 0; n < self->noperands(); ++n) {
