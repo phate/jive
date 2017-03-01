@@ -6,13 +6,13 @@
 #ifndef JIVE_VSDG_GAMMA_NORMAL_FORM_H
 #define JIVE_VSDG_GAMMA_NORMAL_FORM_H
 
-#include <jive/vsdg/anchor-normal-form.h>
+#include <jive/vsdg/operators/structural-normal-form.h>
 
 /* normal form */
 
 namespace jive {
 
-class gamma_normal_form final : public anchor_normal_form {
+class gamma_normal_form final : public structural_normal_form {
 public:
 	virtual
 	~gamma_normal_form() noexcept;
@@ -35,9 +35,6 @@ public:
 		jive::region * region,
 		const jive::operation & op,
 		const std::vector<jive::oport*> & arguments) const override;
-
-	virtual void
-	set_reducible(bool enable) override;
 
 	virtual void
 	set_predicate_reduction(bool enable);

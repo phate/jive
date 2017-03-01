@@ -22,7 +22,7 @@ gamma_normal_form::gamma_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
 	jive::graph * graph) noexcept
-	: anchor_normal_form(operator_class, parent, graph)
+	: structural_normal_form(operator_class, parent, graph)
 	, enable_predicate_reduction_(true)
 	, enable_invariant_reduction_(true)
 {
@@ -128,14 +128,6 @@ gamma_normal_form::normalized_create(
 	const std::vector<jive::oport*> & arguments) const
 {
 	throw std::logic_error("Unimplemented: gamma_normal_form::normalized_create");
-}
-
-void
-gamma_normal_form::set_reducible(bool enable)
-{
-	anchor_normal_form::set_reducible(enable);
-	set_predicate_reduction(enable);
-	set_invariant_reduction(enable);
 }
 
 void

@@ -15,7 +15,7 @@ phi_normal_form::phi_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
 	jive::graph * graph) noexcept
-	: anchor_normal_form(operator_class, parent, graph)
+	: structural_normal_form(operator_class, parent, graph)
 {
 }
 

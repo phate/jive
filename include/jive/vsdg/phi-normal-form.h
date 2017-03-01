@@ -6,13 +6,13 @@
 #ifndef JIVE_VSDG_PHI_NORMAL_FORM_H
 #define JIVE_VSDG_PHI_NORMAL_FORM_H
 
-#include <jive/vsdg/anchor-normal-form.h>
+#include <jive/vsdg/operators/structural-normal-form.h>
 
 /* phi node normal form */
 
 namespace jive {
 
-class phi_normal_form final : public anchor_normal_form {
+class phi_normal_form final : public structural_normal_form {
 public:
 	virtual
 	~phi_normal_form() noexcept;
