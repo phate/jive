@@ -20,7 +20,6 @@ LIBJIVE_SRC = \
 	src/vsdg/negotiator.c \
 	src/vsdg/node-normal-form.c \
 	src/vsdg/node.c \
-	src/vsdg/operators.c \
 	src/vsdg/operators/base.c \
 	src/vsdg/operators/binary-normal-form.c \
 	src/vsdg/operators/binary.c \
