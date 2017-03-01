@@ -10,7 +10,6 @@
 
 #include <jive/util/strfmt.h>
 #include <jive/vsdg/graph.h>
-#include <jive/vsdg/phi-normal-form.h>
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
@@ -32,25 +31,6 @@ phi_op::copy() const
 }
 
 }
-
-static jive::node_normal_form *
-jive_phi_node_get_default_normal_form_(
-	const std::type_info & operator_class,
-	jive::node_normal_form * parent_,
-	jive::graph * graph)
-{
-	jive::phi_normal_form * nf = new jive::phi_normal_form(operator_class, parent_, graph);
-
-	return nf;
-}
-
-static void  __attribute__((constructor))
-register_node_normal_form(void)
-{
-	jive::node_normal_form::register_factory(
-		typeid(jive::phi_op), jive_phi_node_get_default_normal_form_);
-}
-
 
 typedef struct jive_phi_build_state jive_phi_build_state;
 struct jive_phi_build_state {

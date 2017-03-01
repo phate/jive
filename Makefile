@@ -31,7 +31,6 @@ LIBJIVE_SRC = \
 	src/vsdg/operators/structural.c \
 	src/vsdg/operators/unary-normal-form.c \
 	src/vsdg/operators/unary.c \
-	src/vsdg/phi-normal-form.c \
 	src/vsdg/phi.c \
 	src/vsdg/region.c \
 	src/vsdg/resource.c \
