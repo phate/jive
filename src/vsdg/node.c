@@ -213,14 +213,6 @@ register_node_normal_form(void)
 		typeid(jive::operation), jive_node_get_default_normal_form_);
 }
 
-bool
-jive_node_valid_edge(const jive::node * self, const jive::oport * origin)
-{
-	jive::region * origin_region = origin->region();
-	jive::region * target_region = self->region();
-	return target_region == origin_region;
-}
-
 void
 jive_node_get_use_count_input(const jive::node * self, jive_resource_class_count * use_count)
 {
