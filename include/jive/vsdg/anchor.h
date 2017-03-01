@@ -11,24 +11,6 @@
 
 namespace jive {
 
-class region_tail_op : public operation {
-public:
-	virtual bool
-	operator==(const operation & other) const noexcept override;
-
-	virtual size_t
-	narguments() const noexcept override;
-
-	virtual const jive::base::type &
-	argument_type(size_t index) const noexcept override;
-
-	virtual size_t
-	nresults() const noexcept override;
-
-	virtual const jive::base::type &
-	result_type(size_t index) const noexcept override;
-};
-
 class region_anchor_op : public operation {
 public:
 	virtual bool

@@ -13,38 +13,6 @@
 namespace jive {
 
 bool
-region_tail_op::operator==(const operation & other) const noexcept
-{
-	return typeid(*this) == typeid(other);
-}
-
-size_t
-region_tail_op::narguments() const noexcept
-{
-	return 0;
-}
-
-const jive::base::type &
-region_tail_op::argument_type(size_t index) const noexcept
-{
-	throw std::logic_error("region_tail_op has no arguments");
-}
-
-size_t
-region_tail_op::nresults() const noexcept
-{
-	return 1;
-}
-
-const jive::base::type &
-region_tail_op::result_type(size_t index) const noexcept
-{
-	static const achr::type type;
-	return type;
-}
-
-
-bool
 region_anchor_op::operator==(const operation & other) const noexcept
 {
 	return typeid(*this) == typeid(other);
