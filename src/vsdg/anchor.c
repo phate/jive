@@ -6,7 +6,6 @@
 
 #include <jive/vsdg/anchor.h>
 
-#include <jive/vsdg/anchor-normal-form.h>
 #include <jive/vsdg/anchortype.h>
 #include <jive/vsdg/graph.h>
 
@@ -43,26 +42,4 @@ region_anchor_op::result_type(size_t index) const noexcept
 	throw std::logic_error("region_anchor_op has no results");
 }
 
-}
-
-/* node class */
-
-/* node class inhertiable methods */
-
-jive::node_normal_form *
-jive_anchor_node_get_default_normal_form_(
-	const std::type_info & operator_class,
-	jive::node_normal_form * parent,
-	jive::graph * graph)
-{
-	jive::anchor_normal_form * nf = new jive::anchor_normal_form(operator_class, parent, graph);
-
-	return nf;
-}
-
-static void  __attribute__((constructor))
-register_node_normal_form(void)
-{
-	jive::node_normal_form::register_factory(
-		typeid(jive::region_anchor_op), jive_anchor_node_get_default_normal_form_);
 }
