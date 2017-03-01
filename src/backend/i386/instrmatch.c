@@ -21,7 +21,6 @@
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/match.h>
-#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/traverser.h>
 
 static inline bool
@@ -438,8 +437,7 @@ match_gpr_immediate(jive::node * node)
 	
 	jive::node * instr = jive_instruction_node_create_extended(node->region(),
 		&jive_i386_instr_int_load_imm, nullptr, &imm);
-	instr->add_input(&jive::seq::seqtype, node->input(0)->origin());
-	
+
 	node->output(0)->replace(instr->output(0));
 }
 

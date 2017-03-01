@@ -14,7 +14,6 @@
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/phi.h>
-#include <jive/vsdg/seqtype.h>
 
 #include "testnodes.h"
 

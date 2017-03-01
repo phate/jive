@@ -17,7 +17,6 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/seqtype.h>
 #include <jive/vsdg/splitnode.h>
 #include <jive/vsdg/traverser.h>
 
@@ -252,11 +251,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 	jive::region * region = node->region();
 	//while (region->parent() != root_region)
 	//	region = region->parent();
-	jive::node * top = nullptr;
-	jive::output * ctl = dynamic_cast<jive::output*>(top->output(0));
-	if (!dynamic_cast<const jive::seq::type*>(&ctl->type()))
-		return;
-	
+
 	if (auto op = dynamic_cast<const jive::regvalue_op *>(&node->operation())) {
 		const jive_register_class * regcls = op->regcls();
 		jive::node * origin = dynamic_cast<jive::output*>(node->input(1)->origin())->node();

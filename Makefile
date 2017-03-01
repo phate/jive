@@ -36,7 +36,6 @@ LIBJIVE_SRC = \
 	src/vsdg/phi.c \
 	src/vsdg/region.c \
 	src/vsdg/resource.c \
-	src/vsdg/seqtype.c \
 	src/vsdg/splitnode.c \
 	src/vsdg/statetype.c \
 	src/vsdg/simple_node.c \
