@@ -13,7 +13,6 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
-#include <jive/vsdg/seqtype.h>
 
 namespace jive {
 
@@ -32,17 +31,13 @@ regvalue_op::operator==(const operation & other) const noexcept
 size_t
 regvalue_op::narguments() const noexcept
 {
-	return 2;
+	return 1;
 }
 
 const jive::base::type &
 regvalue_op::argument_type(size_t index) const noexcept
 {
-	if (index == 0) {
-		return seq::seqtype;
-	} else {
-		return *regcls()->base.type;
-	}
+	return *regcls()->base.type;
 }
 
 size_t
@@ -71,13 +66,7 @@ regvalue_op::copy() const
 }
 
 jive::oport *
-jive_regvalue(jive::oport * ctl, const jive_register_class * regcls, jive::oport * value)
+jive_regvalue(jive::oport * value, const jive_register_class * regcls)
 {
-	auto graph = value->region()->graph();
-	jive::regvalue_op op(regcls);
-	
-	const auto nf = graph->node_normal_form(typeid(jive::regvalue_op));
-
-	jive::region * region = ctl->region();
-	return nf->normalized_create(region, op, {ctl, value})[0];
+	return jive_node_create_normalized(value->region(), jive::regvalue_op(regcls), {value})[0];
 }

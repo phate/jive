@@ -55,15 +55,14 @@ private:
 
 /**
 	\brief Create register constant
-	\param ctl Control of region entry where value is alive
-	\param regcls Register class
 	\param value Value to be represented
+	\param regcls Register class
 	\returns Bitstring value representing constant, constrained to register class
 	
 	Convenience function that either creates a new constant or
 	returns the output handle of an existing constant.
 */
 jive::oport *
-jive_regvalue(jive::oport * ctl, const jive_register_class * regcls, jive::oport * value);
+jive_regvalue(jive::oport * value, const jive_register_class * regcls);
 
 #endif
