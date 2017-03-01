@@ -30,6 +30,7 @@ LIBJIVE_SRC = \
 	src/vsdg/operators/binary.c \
 	src/vsdg/operators/match.c \
 	src/vsdg/operators/nullary.c \
+	src/vsdg/operators/structural.c \
 	src/vsdg/operators/unary-normal-form.c \
 	src/vsdg/operators/unary.c \
 	src/vsdg/phi-normal-form.c \
