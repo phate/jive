@@ -50,7 +50,7 @@ jive_theta_begin(jive::region * parent)
 {
 	jive_theta self;
 	auto state = new jive_theta_build_state;
-	state->node = new jive::structural_node(jive::theta_op(), parent, 1);
+	state->node = parent->add_structural_node(jive::theta_op(), 1);
 	self.region = state->node->subregion(0);
 	self.internal_state = state;
 	

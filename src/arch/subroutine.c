@@ -110,7 +110,7 @@ jive_subroutine_begin(
 	jive_subroutine sub;
 	sub.hl_builder = std::move(hl_builder);
 	sub.builder_state.reset(new jive::subroutine_builder_state(sig));
-	sub.node = new jive::structural_node(jive::subroutine_op(std::move(sig)), graph->root(), 1);
+	sub.node = graph->root()->add_structural_node(jive::subroutine_op(std::move(sig)), 1);
 	sub.signature = static_cast<const jive::subroutine_op*>(&sub.node->operation())->signature();
 	sub.region = sub.node->subregion(0);
 

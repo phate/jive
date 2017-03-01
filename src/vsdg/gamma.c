@@ -92,7 +92,7 @@ jive_gamma_create(
 	auto parent = predicate->region();
 	auto graph = parent->graph();
 
-	auto gamma = new jive::structural_node(jive::gamma_op(nalternatives), parent, nalternatives);
+	auto gamma = parent->add_structural_node(jive::gamma_op(nalternatives), nalternatives);
 	gamma->add_input(&gamma->operation().argument_type(0), predicate);
 
 	std::vector<std::vector<jive::argument*>> arguments;

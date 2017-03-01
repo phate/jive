@@ -66,7 +66,7 @@ jive_phi_begin(jive::region * parent)
 {
 	jive_phi self;
 	auto state = new jive_phi_build_state;
-	state->node = new jive::structural_node(jive::phi_op(), parent, 1);
+	state->node = parent->add_structural_node(jive::phi_op(), 1);
 	self.region = state->node->subregion(0);
 	self.internal_state = state;
 

@@ -321,6 +321,12 @@ region::add_simple_node(const jive::operation & op, const std::vector<jive::opor
 	return new jive::simple_node(op, this, operands);
 }
 
+jive::structural_node *
+region::add_structural_node(const jive::operation & op, size_t nsubregions)
+{
+	return new jive::structural_node(op, this, nsubregions);
+}
+
 void
 region::copy(region * target, substitution_map & smap) const
 {

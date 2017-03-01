@@ -151,8 +151,8 @@ jive_lambda_begin(
 		result_types.size(), &result_types[0]);
 
 	auto lambda = new jive_lambda;
-	lambda->node = new jive::structural_node(
-		jive::fct::lambda_op(fcttype, argument_names, result_names), parent, 1);
+	lambda->node = parent->add_structural_node(
+		jive::fct::lambda_op(fcttype, argument_names, result_names), 1);
 	lambda->region = lambda->node->subregion(0);
 	lambda->arguments = new jive::oport*[arguments.size()];
 	lambda->narguments = arguments.size();

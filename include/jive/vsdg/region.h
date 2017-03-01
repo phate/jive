@@ -210,6 +210,9 @@ public:
 	jive::simple_node *
 	add_simple_node(const jive::operation & op, const std::vector<jive::oport*> & operands);
 
+	jive::structural_node *
+	add_structural_node(const jive::operation & op, size_t nsubregions);
+
 	/**
 		\brief Copy a region with substitutions
 		\param target Target region to create nodes in
