@@ -10,6 +10,8 @@
 
 namespace jive {
 
+class argument;
+class result;
 class structural_node;
 
 class structural_input final : public iport {
