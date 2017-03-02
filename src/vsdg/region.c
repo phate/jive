@@ -327,6 +327,12 @@ region::add_structural_node(const jive::operation & op, size_t nsubregions)
 }
 
 void
+region::remove_node(jive::node * node)
+{
+	delete node;
+}
+
+void
 region::copy(region * target, substitution_map & smap) const
 {
 	std::function<void (
