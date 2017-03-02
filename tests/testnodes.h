@@ -12,11 +12,14 @@
 
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/operators/simple.h>
+#include <jive/vsdg/operators/structural.h>
 #include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace test {
+
+/* simple operation */
 
 class simple_op final : public jive::simple_op {
 public:
@@ -80,6 +83,26 @@ simple_node_normalized_create(
 {
 	jive::test::simple_op op(operand_types, result_types);
 	return jive_node_create_normalized(r, op, operands);
+}
+
+/* structural operation */
+
+class structural_op final : public jive::structural_op {
+public:
+	virtual
+	~structural_op() noexcept;
+
+	virtual std::string
+	debug_string() const override;
+
+	virtual std::unique_ptr<jive::operation>
+	copy() const override;
+};
+
+static inline jive::structural_node *
+structural_node_create(jive::region * parent, size_t nsubregions)
+{
+	return parent->add_structural_node(jive::test::structural_op(), nsubregions);
 }
 
 }}

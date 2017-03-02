@@ -11,6 +11,8 @@
 namespace jive {
 namespace test {
 
+/* simple operation */
+
 simple_op::~simple_op() noexcept {}
 
 simple_op::simple_op(
@@ -61,13 +63,30 @@ simple_op::result_type(size_t index) const noexcept
 std::string
 simple_op::debug_string() const
 {
-	return "TEST_NODE";
+	return "SIMPLE_TEST_NODE";
 }
 
 std::unique_ptr<jive::operation>
 simple_op::copy() const
 {
 	return std::unique_ptr<jive::operation>(new jive::test::simple_op(*this));
+}
+
+/* structural operation */
+
+structural_op::~structural_op()
+{}
+
+std::string
+structural_op::debug_string() const
+{
+	return "STRUCTURAL_TEST_NODE";
+}
+
+std::unique_ptr<jive::operation>
+structural_op::copy() const
+{
+	return std::unique_ptr<jive::operation>(new structural_op(*this));
 }
 
 }}
