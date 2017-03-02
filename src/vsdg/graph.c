@@ -93,20 +93,6 @@ graph::create_gate(
 	return new jive::gate(this, name.c_str(), type, rescls);
 }
 
-void
-graph::prune()
-{
-	/* FIXME: this function is broken */
-	jive::node * node = root()->bottom_nodes.first;
-	while (node) {
-		auto next = node->region_bottom_list.next;
-		root()->remove_node(node);
-		if (!next)
-			next = root()->bottom_nodes.first;
-		node = next;
-	}
-}
-
 }
 
 jive_tracker_slot

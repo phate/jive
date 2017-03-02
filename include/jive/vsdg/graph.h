@@ -80,8 +80,11 @@ public:
 		return root()->add_result(operand, nullptr, gate);
 	}
 
-	void
-	prune();
+	inline void
+	prune()
+	{
+		root()->prune(true);
+	}
 
 	struct {
 		jive::gate * first;

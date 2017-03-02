@@ -11,9 +11,60 @@
 #include <stdio.h>
 
 #include <jive/view.h>
+#include <jive/vsdg/structural_node.h>
 #include <jive/vsdg.h>
 
 #include "testnodes.h"
+
+static bool
+region_contains_node(const jive::region * region, const jive::node * n)
+{
+	for (const auto & node : region->nodes) {
+		if (&node == n)
+			return true;
+	}
+
+	return false;
+}
+
+static int
+test_recursive_prune()
+{
+	jive::graph graph;
+	jive::test::valuetype t;
+	auto imp = graph.import(t, "i");
+
+	auto n1 = jive::test::simple_node_create(graph.root(), {&t}, {imp}, {&t});
+	auto n2 = jive::test::simple_node_create(graph.root(), {&t}, {imp}, {&t});
+
+	auto n3 = jive::test::structural_node_create(graph.root(), 1);
+	n3->add_input(&t, imp);
+	auto a1 = n3->subregion(0)->add_argument(nullptr, t);
+	auto n4 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
+	auto n5 = jive::test::simple_node_create(n3->subregion(0), {&t}, {a1}, {&t});
+	n3->subregion(0)->add_result(n4->output(0), nullptr, t);
+	auto o1 = n3->add_output(&t);
+
+	auto n6 = jive::test::structural_node_create(n3->subregion(0), 1);
+
+	graph.export_port(n2->output(0), "n2");
+	graph.export_port(o1, "n3");
+
+	jive::view(graph.root(), stdout);
+	graph.prune();
+	jive::view(graph.root(), stdout);
+
+	assert(!region_contains_node(graph.root(), n1));
+	assert(region_contains_node(graph.root(), n2));
+	assert(region_contains_node(graph.root(), n3));
+	assert(region_contains_node(n3->subregion(0), n4));
+	assert(!region_contains_node(n3->subregion(0), n5));
+	assert(!region_contains_node(n3->subregion(0), n6));
+
+	return 0;
+}
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-graph_prune", test_recursive_prune);
 
 static int test_main(void)
 {
