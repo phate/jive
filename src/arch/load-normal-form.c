@@ -64,7 +64,7 @@ load_normal_form::normalize_node(jive::node * node) const
 		}
 		if (store_node) {
 			node->output(0)->replace(store_node->input(1)->origin());
-			delete node;
+			node->region()->remove_node(node);
 			return false;
 		}
 	}

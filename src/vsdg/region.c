@@ -211,7 +211,7 @@ region::~region()
 		remove_result(results_.size()-1);
 
 	while (bottom_nodes.first)
-		delete bottom_nodes.first;
+		remove_node(bottom_nodes.first);
 	JIVE_DEBUG_ASSERT(nodes.empty());
 
 	while (arguments_.size())

@@ -100,7 +100,7 @@ graph::prune()
 	jive::node * node = root()->bottom_nodes.first;
 	while (node) {
 		auto next = node->region_bottom_list.next;
-		delete node;
+		root()->remove_node(node);
 		if (!next)
 			next = root()->bottom_nodes.first;
 		node = next;
