@@ -9,34 +9,53 @@
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/statetype.h>
 
+namespace jive {
+namespace test {
+
 /* test value type */
 
-class jive_test_value_type final : public jive::value::type {
+class valuetype final : public jive::value::type {
 public:
-	virtual ~jive_test_value_type() noexcept;
+	virtual
+	~valuetype() noexcept;
 
-	inline constexpr jive_test_value_type() noexcept : jive::value::type() {};
+	inline constexpr
+	valuetype() noexcept
+	: jive::value::type()
+	{}
 
-	virtual std::string debug_string() const override;
+	virtual
+	std::string debug_string() const override;
 
-	virtual bool operator==(const jive::base::type & other) const noexcept override;
+	virtual bool
+	operator==(const jive::base::type & other) const noexcept override;
 
-	virtual jive_test_value_type * copy() const override;
+	virtual
+	valuetype * copy() const override;
 };
 
 /* test state type */
 
-class jive_test_state_type final : public jive::state::type {
+class statetype final : public jive::state::type {
 public:
-	virtual ~jive_test_state_type() noexcept;
+	virtual
+	~statetype() noexcept;
 
-	inline constexpr jive_test_state_type() noexcept : jive::state::type() {};
+	inline constexpr
+	statetype() noexcept
+	: jive::state::type()
+	{}
 
-	virtual std::string debug_string() const override;
+	virtual
+	std::string debug_string() const override;
 
-	virtual bool operator==(const jive::base::type & other) const noexcept override;
+	virtual bool
+	operator==(const jive::base::type & other) const noexcept override;
 
-	virtual jive_test_state_type * copy() const override;
+	virtual
+	statetype * copy() const override;
 };
+
+}}
 
 #endif

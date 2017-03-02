@@ -21,7 +21,7 @@ static int test_main()
 {
 	jive::graph graph;
 
-	jive_test_value_type vtype;
+	jive::test::valuetype vtype;
 	jive::fct::type f0type(0, NULL, 0, NULL);
 	const jive::base::type * tmparray0[] = {&vtype};
 	jive::fct::type f1type(0, NULL, 0, NULL);

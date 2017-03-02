@@ -32,7 +32,7 @@ static int test_main(void)
 	jive::graph graph;
 	
 	jive::region * region = graph.root();
-	jive_test_value_type type;
+	jive::test::valuetype type;
 	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
 	auto n2 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
 	auto n3 = jive::test::simple_node_create(region, {&type}, {n2->output(0)}, {&type});

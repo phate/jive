@@ -28,7 +28,7 @@ prepare_graph()
 	g.graph = std::move(std::unique_ptr<jive::graph>(new jive::graph()));
 	
 	jive::region * region = g.graph->root();
-	jive_test_value_type type;
+	jive::test::valuetype type;
 	g.a1 = jive::test::simple_node_create(region, {}, {}, {&type});
 	g.a2 = jive::test::simple_node_create(region, {&type}, {g.a1->output(0)}, {&type});
 	g.b1 = jive::test::simple_node_create(region, {}, {}, {&type});

@@ -19,8 +19,8 @@ static int test_main(void)
 	jive::graph graph;
 	
 	jive::region * region = graph.root();
-	jive_test_state_type type;
-	jive_test_value_type value_type;
+	jive::test::statetype type;
+	jive::test::valuetype value_type;
 
 	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
 

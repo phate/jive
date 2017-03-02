@@ -14,7 +14,7 @@
 static int
 test_main()
 {
-	jive_test_value_type t;
+	jive::test::valuetype t;
 	jive::graph graph;
 	auto i = graph.import(t, "i");
 

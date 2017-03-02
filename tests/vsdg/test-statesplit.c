@@ -19,7 +19,7 @@ static int test_main(void)
 {
 	jive::graph graph;
 	
-	jive_test_state_type statetype;
+	jive::test::statetype statetype;
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&statetype, &statetype});
 
 	std::vector<jive::oport*> outputs;

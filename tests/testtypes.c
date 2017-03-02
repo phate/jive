@@ -7,46 +7,53 @@
 
 #include <jive/util/buffer.h>
 
+namespace jive {
+namespace test {
+
 /* test value type */
 
-jive_test_value_type::~jive_test_value_type() noexcept {}
+valuetype::~valuetype() noexcept
+{}
 
 std::string
-jive_test_value_type::debug_string() const
+valuetype::debug_string() const
 {
 	return "test_value";
 }
 
 bool
-jive_test_value_type::operator==(const jive::base::type & other) const noexcept
+valuetype::operator==(const jive::base::type & other) const noexcept
 {
-	return dynamic_cast<const jive_test_value_type*>(&other) != nullptr;
+	return dynamic_cast<const valuetype*>(&other) != nullptr;
 }
 
-jive_test_value_type *
-jive_test_value_type::copy() const
+valuetype *
+valuetype::copy() const
 {
-	return new jive_test_value_type();
+	return new valuetype();
 }
 
 /* test state type */
 
-jive_test_state_type::~jive_test_state_type() noexcept {}
+statetype::~statetype() noexcept
+{}
 
 std::string
-jive_test_state_type::debug_string() const
+statetype::debug_string() const
 {
 	return "test_state";
 }
 
 bool
-jive_test_state_type::operator==(const jive::base::type & other) const noexcept
+statetype::operator==(const jive::base::type & other) const noexcept
 {
-	return dynamic_cast<const jive_test_state_type*>(&other) != nullptr;
+	return dynamic_cast<const statetype*>(&other) != nullptr;
 }
 
-jive_test_state_type *
-jive_test_state_type::copy() const
+statetype *
+statetype::copy() const
 {
-	return new jive_test_state_type();
+	return new statetype();
 }
+
+}}

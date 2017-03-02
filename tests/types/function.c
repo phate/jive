@@ -101,7 +101,7 @@ JIVE_UNIT_TEST_REGISTER("function/test-equals", function_test_equals);
 
 static int function_test_memory_leak(void)
 {
-	jive_test_value_type value_type;
+	jive::test::valuetype value_type;
 	const jive::base::type * value_type_ptr = &value_type;
 	jive::fct::type t1(1, &value_type_ptr, 1, &value_type_ptr);
 
