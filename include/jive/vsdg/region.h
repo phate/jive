@@ -231,6 +231,9 @@ public:
 	void
 	copy(region * target, substitution_map & smap) const;
 
+	void
+	prune(bool recursive);
+
 	typedef jive::detail::intrusive_list<
 		jive::node,
 		jive::node::region_node_list_accessor

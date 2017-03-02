@@ -210,8 +210,7 @@ region::~region()
 	while (results_.size())
 		remove_result(results_.size()-1);
 
-	while (bottom_nodes.first)
-		remove_node(bottom_nodes.first);
+	prune(false);
 	JIVE_DEBUG_ASSERT(nodes.empty());
 
 	while (arguments_.size())
@@ -401,6 +400,23 @@ region::copy(region * target, substitution_map & smap) const
 		for (const auto node : context[n]) {
 			target = smap.lookup(node->region());
 			node->copy(target, smap);
+		}
+	}
+}
+
+void
+region::prune(bool recursive)
+{
+	while (bottom_nodes.first)
+		remove_node(bottom_nodes.first);
+
+	if (!recursive)
+		return;
+
+	for (const auto & node : nodes) {
+		if (auto snode = dynamic_cast<const jive::structural_node*>(&node)) {
+			for (size_t n = 0; n < snode->nsubregions(); n++)
+				snode->subregion(n)->prune(recursive);
 		}
 	}
 }
