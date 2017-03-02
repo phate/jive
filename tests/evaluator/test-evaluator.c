@@ -42,31 +42,32 @@ fib(size_t n)
 	auto j = jive_bitconstant_unsigned(lambda->region, 32, 0);
 	auto k = jive_bitconstant_unsigned(lambda->region, 32, 1);
 
-	jive_theta theta = jive_theta_begin(lambda->region);
-	jive_theta_loopvar lv_i = jive_theta_loopvar_enter(theta, i);
-	jive_theta_loopvar lv_j = jive_theta_loopvar_enter(theta, j);
-	jive_theta_loopvar lv_k = jive_theta_loopvar_enter(theta, k);
-	jive_theta_loopvar lv_n = jive_theta_loopvar_enter(theta, n);
+	jive::theta_builder tb;
+	auto theta_region = tb.begin(lambda->region);
+	auto lv_i = tb.add_loopvar(i);
+	auto lv_j = tb.add_loopvar(j);
+	auto lv_k = tb.add_loopvar(k);
+	auto lv_n = tb.add_loopvar(n);
 
-	auto t = jive_bitsum(32, {lv_i.value, lv_j.value});
+	auto t = jive_bitsum(32, {lv_i->value(), lv_j->value()});
 
-	auto one = jive_bitconstant_unsigned(theta.region, 32, 1);
+	auto one = jive_bitconstant_unsigned(theta_region, 32, 1);
 
-	auto new_k = jive_bitsum(32, {one, lv_k.value});
+	auto new_k = jive_bitsum(32, {one, lv_k->value()});
 
-	auto cmp = jive_bitulesseq(new_k, lv_n.value);
+	auto cmp = jive_bitulesseq(new_k, lv_n->value());
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
-	jive_theta_loopvar_leave(theta, lv_k.gate, new_k);
-	jive_theta_loopvar_leave(theta, lv_i.gate, lv_j.value);
-	jive_theta_loopvar_leave(theta, lv_j.gate, t);
-	jive_theta_loopvar_leave(theta, lv_n.gate, lv_n.value);
-	std::vector<jive_theta_loopvar> loopvars({lv_i, lv_j, lv_k, lv_n});
-	jive_theta_end(theta, predicate, 4, &loopvars[0]);
+
+	lv_k->set_value(new_k);
+	lv_i->set_value(lv_j->value());
+	lv_j->set_value(t);
+	lv_n->set_value(lv_n->value());
+	tb.end(predicate);
 
 	cmp = jive_bitulesseq(k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
 	auto results = jive_gamma(predicate, {&bits32, &bits32, &bits32, &bits32},
-		{{i, j, k, n}, {loopvars[0].value, loopvars[1].value, loopvars[2].value, loopvars[3].value}});
+		{{i, j, k, n}, {lv_i->value(), lv_j->value(), lv_k->value(), lv_n->value()}});
 
 	return jive_lambda_end(lambda, 1, &types[0], &results[1]);
 }
