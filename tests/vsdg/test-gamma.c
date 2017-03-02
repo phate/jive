@@ -20,7 +20,8 @@ test_main(void)
 
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
-	auto top = jive::test::node_create(graph.root(), {}, {}, {&bits2, &bits32, &bits32, &bits32});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {},
+		{&bits2, &bits32, &bits32, &bits32});
 
 	jive::output * cmp = dynamic_cast<jive::output*>(top->output(0));
 	jive::output * v0 = dynamic_cast<jive::output*>(top->output(1));

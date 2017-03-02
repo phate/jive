@@ -33,15 +33,15 @@ static int test_main(void)
 	
 	jive::region * region = graph.root();
 	jive_test_value_type type;
-	auto n1 = jive::test::node_create(region, {}, {}, {&type});
-	auto n2 = jive::test::node_create(region, {&type}, {n1->output(0)}, {&type});
-	auto n3 = jive::test::node_create(region, {&type}, {n2->output(0)}, {&type});
-	auto bottom = jive::test::node_create(region,
+	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
+	auto n2 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
+	auto n3 = jive::test::simple_node_create(region, {&type}, {n2->output(0)}, {&type});
+	auto bottom = jive::test::simple_node_create(region,
 		{&type, &type}, {n2->output(0), n3->output(0)}, {&type});
 	
 	graph.export_port(bottom->output(0), "dummy");
 	
-	auto n4 = jive::test::node_create(region, {&type}, {n1->output(0)}, {&type});
+	auto n4 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
 
 	n2->output(0)->replace(n4->output(0));
 	assert(n2->output(0)->no_user());

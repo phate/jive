@@ -22,11 +22,11 @@ static int test_main(void)
 	jive::region * region = graph.root();
 	
 	jive_test_value_type type;
-	auto n1 = jive::test::node_create(region, {}, {}, {&type});
+	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
 	assert(n1);
 	assert(n1->depth() == 0);
 
-	auto n2 = jive::test::node_create(region, {&type}, {n1->output(0)}, {});
+	auto n2 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {});
 	assert(n2);
 	assert(n2->depth() == 1);
 	

@@ -52,7 +52,7 @@ static int test_main(void)
 	assert(s1->node()->operation() == s2->node()->operation());
 	assert(s0->node()->operation() != s3->node()->operation());
 
-	auto bottom = jive::test::node_create(graph.root(),
+	auto bottom = jive::test::simple_node_create(graph.root(),
 		std::vector<const jive::base::type*>(8, &bits32), {s0, s1, s2, s3, s4, s5, s6, s7}, {&bits32});
 	graph.export_port(bottom->output(0), "dummy");
 

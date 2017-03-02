@@ -25,7 +25,7 @@ static int test_main()
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
 	jive::bits::type bits32(32);
-	auto top = jive::test::node_create(graph.root(), {}, {}, {&addrtype, &addrtype, &memtype,
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&addrtype, &addrtype, &memtype,
 		&bits32});
 
 	jive::oport * state = top->output(2);
@@ -36,7 +36,7 @@ static int test_main()
 	auto load1 = jive_load_by_address_create(top->output(1), &bits32, 1, &states[0]);
 	assert(load1 == top->output(3));
 
-	auto bottom = jive::test::node_create(graph.root(), {&bits32, &bits32}, {load0, load1},
+	auto bottom = jive::test::simple_node_create(graph.root(), {&bits32, &bits32}, {load0, load1},
 		{&addrtype});
 	graph.export_port(bottom->output(0), "dummy");
 

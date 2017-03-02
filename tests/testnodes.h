@@ -18,22 +18,22 @@
 namespace jive {
 namespace test {
 
-class op final : public jive::simple_op {
+class simple_op final : public jive::simple_op {
 public:
 	virtual
-	~op() noexcept;
+	~simple_op() noexcept;
 
-	op(
+	simple_op(
 		const std::vector<const jive::base::type*> & argument_types,
 		const std::vector<const jive::base::type*> & result_types);
 
-	op(const jive::test::op & other);
+	simple_op(const jive::test::simple_op & other);
 
 	inline
-	op() noexcept {}
+	simple_op() noexcept {}
 
 	inline
-	op(jive::test::op && other) noexcept = default;
+	simple_op(jive::test::simple_op && other) noexcept = default;
 	
 	virtual bool
 	operator==(const operation & other) const noexcept override;
@@ -62,23 +62,24 @@ private:
 };
 
 static inline jive::node *
-node_create(
+simple_node_create(
 	jive::region * region,
 	const std::vector<const jive::base::type*> & operand_types,
 	const std::vector<jive::oport*> & operands,
 	const std::vector<const jive::base::type*> & result_types)
 {
-	return region->add_simple_node(jive::test::op(operand_types, result_types), operands);
+	return region->add_simple_node(jive::test::simple_op(operand_types, result_types), operands);
 }
 
 static inline std::vector<jive::oport*>
-node_normalized_create(
+simple_node_normalized_create(
 	jive::region * r,
 	const std::vector<const jive::base::type*> & operand_types,
 	const std::vector<jive::oport*> & operands,
 	const std::vector<const jive::base::type*> & result_types)
 {
-	return jive_node_create_normalized(r, jive::test::op(operand_types, result_types), operands);
+	jive::test::simple_op op(operand_types, result_types);
+	return jive_node_create_normalized(r, op, operands);
 }
 
 }}

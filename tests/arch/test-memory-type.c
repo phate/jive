@@ -17,8 +17,8 @@ static int test_main(void)
 {
 	jive::graph graph;
 
-	auto node0 = jive::test::node_create(graph.root(), {}, {}, {});
-	auto node1 = jive::test::node_create(graph.root(), {}, {}, {});
+	auto node0 = jive::test::simple_node_create(graph.root(), {}, {}, {});
+	auto node1 = jive::test::simple_node_create(graph.root(), {}, {}, {});
 
 	jive::mem::type memtype;
 	jive::gate * arg_gate = graph.create_gate(memtype, "arg");

@@ -40,7 +40,7 @@ static int test_main(void)
 
 	jive::mem::type memtype;
 	jive::addr::type addrtype;
-	auto top = jive::test::node_create(graph.root(), {}, {},
+	auto top = jive::test::simple_node_create(graph.root(), {}, {},
 		{&addrtype, &memtype, &bits8, &bits16, &bits32, &memtype, &addrtype});
 
 	jive::oport * state = top->output(1);
@@ -61,7 +61,7 @@ static int test_main(void)
 	unify = jive_empty_unify_create(graph.root(), &empty_unndecl);
 	auto states5 = jive_store_by_address_create(top->output(0), &empty_unntype, unify, 1, &state);
 
-	auto bottom = jive::test::node_create(graph.root(),
+	auto bottom = jive::test::simple_node_create(graph.root(),
 		std::vector<const jive::base::type*>(6, &memtype),
 		{states0[0], states1[0], states1[0], states2[0], states4[0], states5[0]},
 		{&memtype});

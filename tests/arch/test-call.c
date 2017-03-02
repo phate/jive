@@ -23,7 +23,7 @@ static int test_main(void)
 
 	jive::addr::type addr;
 	jive::bits::type bits16(16);
-	auto top = jive::test::node_create(graph.root(), {}, {}, {&addr, &bits16, &addr});
+	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&addr, &bits16, &addr});
 
 	const jive::base::type * tmparray1[] = {&bits16, &addr, &addr};
 
@@ -32,7 +32,7 @@ static int test_main(void)
 		top->output(0), NULL, 2, &tmp[0], 3, tmparray1);
 	JIVE_DEBUG_ASSERT(call->noutputs() == 3);
 
-	auto bottom = jive::test::node_create(graph.root(),
+	auto bottom = jive::test::simple_node_create(graph.root(),
 		{&bits16, &addr, &addr}, {call->output(0), call->output(1), call->output(2)}, {&addr});
 	graph.export_port(bottom->output(0), "dummy");
 
