@@ -66,7 +66,54 @@ test_recursive_prune()
 
 JIVE_UNIT_TEST_REGISTER("vsdg/test-graph_prune", test_recursive_prune);
 
-static int test_main(void)
+static int
+test_empty_graph_pruning(void)
+{
+	jive::graph graph;
+
+	jive::view(graph.root(), stdout);
+
+	graph.prune();
+
+	assert(graph.root()->nodes.size() == 0);
+
+	jive::view(graph.root(), stdout);
+
+	return 0;
+}
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-empty_graph_pruning", test_empty_graph_pruning);
+
+static int
+test_prune_replace(void)
+{
+	jive::graph graph;
+
+	jive::region * region = graph.root();
+	jive::test::valuetype type;
+	auto n1 = jive::test::simple_node_create(region, {}, {}, {&type});
+	auto n2 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
+	auto n3 = jive::test::simple_node_create(region, {&type}, {n2->output(0)}, {&type});
+
+	graph.export_port(n2->output(0), "n2");
+	graph.export_port(n3->output(0), "n3");
+
+	auto n4 = jive::test::simple_node_create(region, {&type}, {n1->output(0)}, {&type});
+
+	n2->output(0)->replace(n4->output(0));
+	assert(n2->output(0)->no_user());
+
+	graph.prune();
+
+	assert(!region_contains_node(region, n2));
+
+	return 0;
+}
+
+JIVE_UNIT_TEST_REGISTER("vsdg/test-prune-replace", test_prune_replace);
+
+static int
+test_graph(void)
 {
 	jive::graph graph;
 	
@@ -84,4 +131,4 @@ static int test_main(void)
 	return 0;
 }
 
-JIVE_UNIT_TEST_REGISTER("vsdg/test-graph", test_main);
+JIVE_UNIT_TEST_REGISTER("vsdg/test-graph", test_graph);
