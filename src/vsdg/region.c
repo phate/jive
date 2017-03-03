@@ -212,6 +212,8 @@ region::~region()
 
 	prune(false);
 	JIVE_DEBUG_ASSERT(nodes.empty());
+	JIVE_DEBUG_ASSERT(top_nodes.first == nullptr && top_nodes.last == nullptr);
+	JIVE_DEBUG_ASSERT(bottom_nodes.first == nullptr && bottom_nodes.last == nullptr);
 
 	while (arguments_.size())
 		remove_argument(arguments_.size()-1);
