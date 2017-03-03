@@ -12,7 +12,9 @@
 
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/operators/structural.h>
+#include <jive/vsdg/region.h>
 #include <jive/vsdg/simple_node.h>
+#include <jive/vsdg/structural_node.h>
 
 namespace jive {
 namespace fct {
@@ -68,6 +70,73 @@ jive_lambda_is_self_recursive(const jive::node * self);
 
 void
 jive_inline_lambda_apply(jive::node * apply_node);
+
+namespace jive {
+
+class argument;
+
+class lambda_builder final {
+public:
+	inline
+	lambda_builder() noexcept
+	: node_(nullptr)
+	{}
+
+	inline jive::region *
+	begin(jive::region * parent, jive::fct::type type)
+	{
+		if (node_)
+			node_->subregion(0);
+
+		std::vector<jive::argument*> arguments;
+		node_ = parent->add_structural_node(jive::fct::lambda_op(std::move(type)), 1);
+		for (size_t n = 0; n < type.narguments(); n++)
+			arguments.push_back(node_->subregion(0)->add_argument(nullptr, type.argument_type(n)));
+
+		return node_->subregion(0);
+	}
+
+	inline jive::region *
+	region() const noexcept
+	{
+		return node_ ? node_->subregion(0) : nullptr;
+	}
+
+	inline jive::oport *
+	add_dependency(jive::oport * value)
+	{
+		if (!node_)
+			return nullptr;
+
+		auto input = node_->add_input(&value->type(), value);
+		return node_->subregion(0)->add_argument(input, value->type());
+	}
+
+	inline jive::structural_node *
+	end(const std::vector<jive::oport*> & results)
+	{
+		if (!node_)
+			return nullptr;
+
+		const auto & op = node_->operation();
+		const auto & ftype = static_cast<const jive::fct::type*>(&op.result_type(0));
+		if (results.size() != ftype->nresults())
+			throw jive::compiler_error("Incorrect number of results.");
+
+		for (size_t n = 0; n < results.size(); n++)
+			node_->subregion(0)->add_result(results[n], nullptr, ftype->result_type(n));
+		node_->add_output(ftype);
+
+		auto node = node_;
+		node_ = nullptr;
+		return node;
+	}
+
+private:
+	jive::structural_node * node_;
+};
+
+}
 
 /* lambda instantiation */
 
