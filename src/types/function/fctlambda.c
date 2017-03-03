@@ -26,13 +26,8 @@ lambda_op::~lambda_op() noexcept
 bool
 lambda_op::operator==(const operation & other) const noexcept
 {
-	const lambda_op * op =
-		dynamic_cast<const lambda_op *>(&other);
-	return
-		op &&
-		op->function_type() == function_type() &&
-		op->argument_names() == argument_names() &&
-		op->result_names() == result_names();
+	auto op = dynamic_cast<const lambda_op*>(&other);
+	return op && op->function_type() == function_type();
 }
 
 size_t
@@ -149,8 +144,7 @@ jive_lambda_begin(
 		result_types.size(), &result_types[0]);
 
 	auto lambda = new jive_lambda;
-	lambda->node = parent->add_structural_node(
-		jive::fct::lambda_op(fcttype, argument_names, result_names), 1);
+	lambda->node = parent->add_structural_node(jive::fct::lambda_op(fcttype), 1);
 	lambda->region = lambda->node->subregion(0);
 	lambda->arguments = new jive::oport*[arguments.size()];
 	lambda->narguments = arguments.size();
@@ -180,7 +174,7 @@ jive_lambda_end(jive_lambda * self,
 		if (*result_types[n] != *fcttype->return_type(n))
 			throw std::logic_error("Incorrect result type.");
 
-		auto gate = graph->create_gate(*result_types[n], op->result_names()[n]);
+		auto gate = graph->create_gate(*result_types[n], jive::detail::strfmt("r", n));
 		region->add_result(results[n], nullptr, gate);
 	}
 
