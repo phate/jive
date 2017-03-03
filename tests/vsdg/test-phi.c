@@ -22,10 +22,10 @@ static int test_main()
 	jive::graph graph;
 
 	jive::test::valuetype vtype;
-	jive::fct::type f0type(0, NULL, 0, NULL);
+	jive::fct::type f0type((const std::vector<const jive::base::type*>){}, {});
 	const jive::base::type * tmparray0[] = {&vtype};
-	jive::fct::type f1type(0, NULL, 0, NULL);
-	jive::fct::type f2type(1, tmparray0, 1, tmparray0);
+	jive::fct::type f1type((const std::vector<const jive::base::type*>){}, {});
+	jive::fct::type f2type({&vtype}, {&vtype});
 
 	jive_phi phi = jive_phi_begin(graph.root());
 	jive_phi_fixvar fns[3];

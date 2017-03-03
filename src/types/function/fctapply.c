@@ -43,20 +43,20 @@ apply_op::argument_type(size_t index) const noexcept
 	if (index == 0) {
 		return function_type();
 	} else {
-		return *function_type().argument_type(index - 1);
+		return function_type().argument_type(index - 1);
 	}
 }
 
 size_t
 apply_op::nresults() const noexcept
 {
-	return function_type().nreturns();
+	return function_type().nresults();
 }
 
 const jive::base::type &
 apply_op::result_type(size_t index) const noexcept
 {
-	return *function_type().return_type(index);
+	return function_type().result_type(index);
 }
 
 std::string

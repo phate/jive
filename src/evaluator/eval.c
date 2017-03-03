@@ -526,8 +526,8 @@ eval(
 			throw compiler_error("Number of arguments does not coincide with function arguments.");
 
 		for (size_t n = 0; n < fcttype->narguments(); n++) {
-			if (*fcttype->argument_type(n) != arguments[n]->type())
-				throw type_error(fcttype->argument_type(n)->debug_string(),
+			if (fcttype->argument_type(n) != arguments[n]->type())
+				throw type_error(fcttype->argument_type(n).debug_string(),
 					arguments[n]->type().debug_string());
 		}
 

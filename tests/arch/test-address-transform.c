@@ -137,8 +137,7 @@ test_apply_transform(void)
 	jive::graph graph;
 
 	jive::addr::type addrtype;
-	const jive::base::type * addrptr = &addrtype;
-	jive::fct::type fcttype(1, &addrptr, 1, &addrptr);
+	jive::fct::type fcttype({&addrtype}, {&addrtype});
 	auto top = jive::test::simple_node_create(graph.root(), {}, {}, {&fcttype, &addrtype});
 
 	jive::oport * address = top->output(1);

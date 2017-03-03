@@ -130,7 +130,7 @@ unsigned int fib(unsigned int n){
 	jive::bits::type bits32(32);
 	std::vector<const jive::base::type*> args({&bits32});
 	std::vector<const jive::base::type*> res({&bits32});
-	jive::fct::type fcttype(args.size(), &args[0], res.size(), &res[0]);
+	jive::fct::type fcttype({&bits32}, {&bits32});
 
 	jive_phi phi = jive_phi_begin(graph->root());
 	jive_phi_fixvar fv_fib = jive_phi_fixvar_enter(phi, &fcttype);

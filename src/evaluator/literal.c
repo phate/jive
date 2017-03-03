@@ -109,8 +109,7 @@ fctliteral::operator=(const fctliteral & other)
 	for (size_t n = 0; n < other.results_.size(); n++)
 		results_.emplace_back(other.results_[n]->copy());
 
-	type_ = std::move(std::unique_ptr<fct::type>(new fct::type(
-		other.type_->argument_types(), other.type_->return_types())));
+	type_ = std::move(std::unique_ptr<fct::type>(new fct::type(*other.type_)));
 	return *this;
 }
 

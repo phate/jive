@@ -35,10 +35,10 @@ type_contains_address(const jive::base::type * type)
 	if (fcttype != NULL) {
 		size_t n;
 		for (n = 0; n < fcttype->narguments(); n++)
-			if (type_contains_address(fcttype->argument_type(n)))
+			if (type_contains_address(&fcttype->argument_type(n)))
 				return true;
-		for (n = 0; n < fcttype->nreturns(); n++)
-			if (type_contains_address(fcttype->return_type(n)))
+		for (n = 0; n < fcttype->nresults(); n++)
+			if (type_contains_address(&fcttype->result_type(n)))
 				return true;
 	}
 
@@ -55,11 +55,11 @@ convert_address_to_bitstring_type(
 	} else  if (auto fcttype = dynamic_cast<const jive::fct::type*>(&type)) {
 		std::vector<std::unique_ptr<jive::base::type>> argument_types;
 		for (size_t n = 0; n < fcttype->narguments(); n++)
-			argument_types.push_back(convert_address_to_bitstring_type(*fcttype->argument_type(n), nbits));
+			argument_types.push_back(convert_address_to_bitstring_type(fcttype->argument_type(n), nbits));
 
 		std::vector<std::unique_ptr<jive::base::type>> return_types;
-		for (size_t n = 0; n < fcttype->nreturns(); n++)
-			return_types.push_back(convert_address_to_bitstring_type(*fcttype->return_type(n), nbits));
+		for (size_t n = 0; n < fcttype->nresults(); n++)
+			return_types.push_back(convert_address_to_bitstring_type(fcttype->result_type(n), nbits));
 
 		return std::unique_ptr<jive::base::type>(new jive::fct::type(argument_types, return_types));
 	}

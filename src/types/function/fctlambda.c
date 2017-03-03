@@ -140,8 +140,7 @@ jive_lambda_begin(
 		result_names.push_back(result.second);
 	}
 
-	jive::fct::type fcttype(argument_types.size(), &argument_types[0],
-		result_types.size(), &result_types[0]);
+	jive::fct::type fcttype(argument_types, result_types);
 
 	auto lambda = new jive_lambda;
 	lambda->node = parent->add_structural_node(jive::fct::lambda_op(fcttype), 1);
@@ -167,11 +166,11 @@ jive_lambda_end(jive_lambda * self,
 	auto op = static_cast<const jive::fct::lambda_op*>(&node->operation());
 	auto fcttype = static_cast<const jive::fct::type*>(&op->result_type(0));
 
-	if (nresults != fcttype->nreturns())
+	if (nresults != fcttype->nresults())
 		throw std::logic_error("Incorrect number of results.");
 
 	for (size_t n = 0; n < nresults; n++) {
-		if (*result_types[n] != *fcttype->return_type(n))
+		if (*result_types[n] != fcttype->result_type(n))
 			throw std::logic_error("Incorrect result type.");
 
 		auto gate = graph->create_gate(*result_types[n], jive::detail::strfmt("r", n));

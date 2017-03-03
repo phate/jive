@@ -15,48 +15,60 @@
 namespace jive {
 namespace fct {
 
-/* function type */
-
 class type final : public jive::value::type {
 public:
-	virtual ~type() noexcept;
+	virtual
+	~type() noexcept;
 
-	type(size_t narguments, const jive::base::type ** argument_types, size_t nreturns,
-		const jive::base::type ** return_types);
+	type(
+		const std::vector<const jive::base::type*> & argument_types,
+		const std::vector<const jive::base::type*> & result_types);
 
-	type(const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
-		const std::vector<std::unique_ptr<jive::base::type>> & return_types);
+	type(
+		const std::vector<std::unique_ptr<jive::base::type>> & argument_types,
+		const std::vector<std::unique_ptr<jive::base::type>> & result_types);
 
-	type(const jive::fct::type & rhs);
+	type(const jive::fct::type & other);
 
-	type(jive::fct::type && other) noexcept;
+	inline size_t
+	nresults() const noexcept
+	{
+		return result_types_.size();
+	}
 
-	inline size_t nreturns() const noexcept { return return_types_.size(); }
+	inline size_t
+	narguments() const noexcept
+	{
+		return argument_types_.size();
+	}
 
-	inline size_t narguments() const noexcept { return argument_types_.size(); }
+	inline const jive::base::type &
+	result_type(size_t index) const noexcept
+	{
+		return *result_types_[index];
+	}
 
-	inline const jive::base::type * return_type(size_t index) const noexcept
-		{ return return_types_[index].get(); }
+	inline const jive::base::type &
+	argument_type(size_t index) const noexcept
+	{
+		return *argument_types_[index];
+	}
 
-	inline const jive::base::type * argument_type(size_t index) const noexcept
-		{ return argument_types_[index].get(); }
+	virtual std::string
+	debug_string() const override;
 
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	return_types() const noexcept { return return_types_; }
+	virtual bool
+	operator==(const jive::base::type & other) const noexcept override;
 
-	inline const std::vector<std::unique_ptr<jive::base::type>> &
-	argument_types() const noexcept { return argument_types_; }
+	virtual
+	jive::fct::type *
+	copy() const override;
 
-	virtual std::string debug_string() const override;
-
-	virtual bool operator==(const jive::base::type & other) const noexcept override;
-
-	virtual jive::fct::type * copy() const override;
-
-	jive::fct::type& operator=(const jive::fct::type & rhs);
+	jive::fct::type &
+	operator=(const jive::fct::type & other);
 
 private:
-	std::vector<std::unique_ptr<jive::base::type>> return_types_;
+	std::vector<std::unique_ptr<jive::base::type>> result_types_;
 	std::vector<std::unique_ptr<jive::base::type>> argument_types_;
 };
 

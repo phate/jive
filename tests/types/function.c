@@ -35,8 +35,7 @@ static int function_test_build_lambda(void)
 	
 	jive::view(graph.root(), stderr);
 	
-	const jive::base::type * tmparray2[] = {&bits32, &bits32};
-	jive::fct::type ftype(2, tmparray2, 1, tmparray2);
+	jive::fct::type ftype({&bits32, &bits32}, {&bits32});
 
 	assert(ftype == fct->type());
 	
@@ -50,9 +49,7 @@ static int function_test_call(void)
 	jive::graph graph;
 
 	jive::bits::type btype(8);
-	const jive::base::type*  tmparray0[] = { &btype };
-	const jive::base::type*  tmparray1[] = { &btype };
-	jive::fct::type ftype(1, tmparray0, 1, tmparray1) ;
+	jive::fct::type ftype({&btype}, {&btype}) ;
 
 	auto constant = jive_bitconstant(graph.root(), 8, "00001111" ) ;
 	auto func = graph.import(ftype, "sin");
@@ -72,22 +69,10 @@ static int function_test_equals(void)
 {
 	jive::bits::type btype0(8);
 	jive::bits::type btype1(8);
-	const jive::base::type*  tmparray0[] = { &btype0 };
-	const jive::base::type*  tmparray1[] = { &btype0 };
-
-	jive::fct::type type0(1, tmparray0, 1, tmparray1);
-
-	const jive::base::type*  tmparray2[] = { &btype0 };
-	const jive::base::type*  tmparray3[] = { &btype1 };
-	jive::fct::type type1(1, tmparray2, 1, tmparray3);
-
-	const jive::base::type*  tmparray4[] = { &btype0 };
-	const jive::base::type*  tmparray5[] = { &btype1, &btype1 };
-	jive::fct::type type2(1, tmparray4, 2, tmparray5);
-
-	const jive::base::type*  tmparray6[] = { &btype0, &btype0 };
-	const jive::base::type*  tmparray7[] = { &btype0 };
-	jive::fct::type type3(2, tmparray6, 1, tmparray7);
+	jive::fct::type type0({&btype0}, {&btype0});
+	jive::fct::type type1({&btype0}, {&btype1});
+	jive::fct::type type2({&btype0}, {&btype1, &btype1});
+	jive::fct::type type3({&btype0, &btype0}, {&btype0});
 
 	assert(type0 == type0);
 	assert(type0 == type1);
@@ -102,12 +87,8 @@ JIVE_UNIT_TEST_REGISTER("function/test-equals", function_test_equals);
 static int function_test_memory_leak(void)
 {
 	jive::test::valuetype value_type;
-	const jive::base::type * value_type_ptr = &value_type;
-	jive::fct::type t1(1, &value_type_ptr, 1, &value_type_ptr);
-
-	const jive::base::type * tmparray2[] = {&t1};
-	const jive::base::type * tmparray3[] = {&t1};
-	jive::fct::type t2(1, tmparray2, 1, tmparray3);
+	jive::fct::type t1({&value_type}, {&value_type});
+	jive::fct::type t2({&t1}, {&t1});
 	
 	return 0;
 }
