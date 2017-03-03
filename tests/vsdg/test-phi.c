@@ -23,26 +23,26 @@ static int test_main()
 
 	jive::test::valuetype vtype;
 	jive::fct::type f0type((const std::vector<const jive::base::type*>){}, {});
-	const jive::base::type * tmparray0[] = {&vtype};
-	jive::fct::type f1type((const std::vector<const jive::base::type*>){}, {});
-	jive::fct::type f2type({&vtype}, {&vtype});
+	jive::fct::type f1type({&vtype}, {&vtype});
 
 	jive_phi phi = jive_phi_begin(graph.root());
 	jive_phi_fixvar fns[3];
 	fns[0] = jive_phi_fixvar_enter(phi, &f0type);
-	fns[1] = jive_phi_fixvar_enter(phi, &f1type);
-	fns[2] = jive_phi_fixvar_enter(phi, &f2type);
+	fns[1] = jive_phi_fixvar_enter(phi, &f0type);
+	fns[2] = jive_phi_fixvar_enter(phi, &f1type);
 
-	jive_lambda * l0 = jive_lambda_begin(phi.region, {}, {});
-	auto lambda0 = jive_lambda_end(l0, 0, NULL, NULL);
+	jive::lambda_builder lb;
+	lb.begin(phi.region, f0type);
+	auto lambda0 = lb.end({})->output(0);
 
-	jive_lambda * l1 = jive_lambda_begin(phi.region, {}, {});
-	auto lambda1 = jive_lambda_end(l1, 0, NULL, NULL);
+	lb.begin(phi.region, f0type);
+	auto lambda1 = lb.end({})->output(0);
 
-	jive_lambda * l2 = jive_lambda_begin(phi.region, {{&vtype, "arg"}}, {{&vtype, "r"}});
-	jive::fct::lambda_dep depvar = jive::fct::lambda_dep_add(l2, fns[2].value);
-	auto ret = jive_apply_create(depvar.output, 1, l2->arguments)[0];
-	auto lambda2 = jive_lambda_end(l2, 1, tmparray0, &ret);
+	lb.begin(phi.region, f1type);
+	auto dep = lb.add_dependency(fns[2].value);
+	jive::oport * arg[1] = {lb.region()->argument(0)};
+	auto ret = jive_apply_create(dep, 1, arg)[0];
+	auto lambda2 = lb.end({ret})->output(0);
 
 	jive_phi_fixvar_leave(phi, fns[0].gate, lambda0);
 	jive_phi_fixvar_leave(phi, fns[1].gate, lambda1);
@@ -53,7 +53,7 @@ static int test_main()
 	jive::oport * results[3] = {fns[0].value, fns[1].value, fns[2].value};
 
 	auto bottom = jive::test::simple_node_create(graph.root(),
-		{&f0type, &f1type, &f2type}, {results[0], results[1], results[2]}, {&vtype});
+		{&f0type, &f0type, &f1type}, {results[0], results[1], results[2]}, {&vtype});
 	graph.export_port(bottom->output(0), "dummy");
 
 	graph.normalize();

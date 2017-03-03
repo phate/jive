@@ -958,17 +958,16 @@ static int types_bitstring_test_normalize(void)
 	jive::graph graph;
 
 	jive::bits::type bits32(32);
-	const jive::base::type * tmparray11[] = {&bits32};
-	jive_lambda * lambda = jive_lambda_begin(graph.root(), {{&bits32, "arg"}}, {{&bits32, "r"}});
+	auto imp = graph.import(bits32, "imp");
 
-	auto c0 = jive_bitconstant_unsigned(lambda->region, 32, 3);
-	auto c1 = jive_bitconstant_unsigned(lambda->region, 32, 4);
+	auto c0 = jive_bitconstant_unsigned(graph.root(), 32, 3);
+	auto c1 = jive_bitconstant_unsigned(graph.root(), 32, 4);
 	
 	auto  sum_nf = graph.node_normal_form(typeid(jive::bits::add_op));
 	assert(sum_nf);
 	sum_nf->set_mutable(false);
 
-	auto sum0 = jive_bitsum(32, {lambda->arguments[0], c0});
+	auto sum0 = jive_bitsum(32, {imp, c0});
 	assert(sum0->node()->operation() == jive::bits::add_op(32));
 	assert(sum0->node()->noperands() == 2);
 
@@ -976,27 +975,22 @@ static int types_bitstring_test_normalize(void)
 	assert(sum1->node()->operation() == jive::bits::add_op(32));
 	assert(sum1->node()->noperands() == 2);
 
-	auto lambda_node = dynamic_cast<jive::structural_node*>(
-		jive_lambda_end(lambda, 1, tmparray11, &sum1)->node());
-
-	jive::iport * retval = lambda_node->subregion(0)->result(0);
-	graph.export_port(lambda_node->output(0), "dummy");
+	auto exp = graph.export_port(sum1, "dummy");
 
 	sum_nf->set_mutable(true);
 	graph.normalize();
 	graph.prune();
 
-	auto expected_sum = retval->origin();
-	assert(expected_sum->node()->operation() == jive::bits::add_op(32));
-	assert(expected_sum->node()->noperands() == 2);
-	auto op1 = expected_sum->node()->input(0)->origin();
-	auto op2 = expected_sum->node()->input(1)->origin();
-	if (!dynamic_cast<const jive::bits::constant_op *>(&op1->node()->operation())) {
+	assert(exp->origin()->node()->operation() == jive::bits::add_op(32));
+	assert(exp->origin()->node()->noperands() == 2);
+	auto op1 = exp->origin()->node()->input(0)->origin();
+	auto op2 = exp->origin()->node()->input(1)->origin();
+	if (!op1->node()) {
 		auto tmp = op1; op1 = op2; op2 = tmp;
 	}
 	/* FIXME: the graph traversers are currently broken, that is why it won't normalize */
-//	assert(op1->node()->operation() == jive::bits::int_constant_op(32, 3 + 4));
-//	assert(op2 == lambda_node->subregion(0)->argument(0));
+	assert(op1->node()->operation() == jive::bits::int_constant_op(32, 3 + 4));
+	assert(op2 == imp);
 
 	jive::view(graph.root(), stdout);
 

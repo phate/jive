@@ -22,17 +22,15 @@
 static int function_test_build_lambda(void)
 {
 	jive::graph graph;
-
 	jive::bits::type bits32(32);
-	const jive::base::type * tmparray0[] = {&bits32, &bits32};
-	jive_lambda * lambda = jive_lambda_begin(graph.root(),
-		{{&bits32, "arg1"}, {&bits32, "arg1"}}, {{&bits32, "r"}});
 
-	auto sum = jive_bitsum(32,
-		std::vector<jive::oport*>(lambda->arguments, lambda->arguments+lambda->narguments));
+	jive::lambda_builder lb;
+	lb.begin(graph.root(), {{&bits32, &bits32}, {&bits32}});
 
-	auto fct = jive_lambda_end(lambda, 1, tmparray0, &sum);
-	
+	auto sum = jive_bitsum(32, {lb.region()->argument(0), lb.region()->argument(1)});
+
+	auto fct = lb.end({sum})->output(0);
+
 	jive::view(graph.root(), stderr);
 	
 	jive::fct::type ftype({&bits32, &bits32}, {&bits32});
