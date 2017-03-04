@@ -9,7 +9,7 @@
 #include <jive/common.h>
 #include <jive/vsdg/operators/simple-normal-form.h>
 #include <jive/vsdg/node.h>
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/operation.h>
 
 namespace jive {
 

@@ -18,7 +18,7 @@
 #include <jive/util/strfmt.h>
 #include <jive/vsdg/basetype.h>
 #include <jive/vsdg/gate-interference.h>
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/operation.h>
 #include <jive/vsdg/resource.h>
 #include <jive/vsdg/tracker.h>
 

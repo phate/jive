@@ -6,7 +6,7 @@
 #ifndef JIVE_VSDG_OPERATORS_SIMPLE_H
 #define JIVE_VSDG_OPERATORS_SIMPLE_H
 
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/operation.h>
 
 namespace jive {
 

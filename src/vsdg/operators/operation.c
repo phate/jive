@@ -6,7 +6,7 @@
 
 #include <stdexcept>
 
-#include <jive/vsdg/operators/base.h>
+#include <jive/vsdg/operators/operation.h>
 
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
