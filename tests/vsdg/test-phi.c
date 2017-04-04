@@ -25,36 +25,31 @@ static int test_main()
 	jive::fct::type f0type((const std::vector<const jive::base::type*>){}, {});
 	jive::fct::type f1type({&vtype}, {&vtype});
 
-	jive_phi phi = jive_phi_begin(graph.root());
-	jive_phi_fixvar fns[3];
-	fns[0] = jive_phi_fixvar_enter(phi, &f0type);
-	fns[1] = jive_phi_fixvar_enter(phi, &f0type);
-	fns[2] = jive_phi_fixvar_enter(phi, &f1type);
+	jive::phi_builder pb;
+	pb.begin(graph.root());
+	auto rv1 = pb.add_recvar(f0type);
+	auto rv2 = pb.add_recvar(f0type);
+	auto rv3 = pb.add_recvar(f1type);
 
 	jive::lambda_builder lb;
-	lb.begin(phi.region, f0type);
+	lb.begin(pb.region(), f0type);
 	auto lambda0 = lb.end({})->output(0);
 
-	lb.begin(phi.region, f0type);
+	lb.begin(pb.region(), f0type);
 	auto lambda1 = lb.end({})->output(0);
 
-	lb.begin(phi.region, f1type);
-	auto dep = lb.add_dependency(fns[2].value);
+	lb.begin(pb.region(), f1type);
+	auto dep = lb.add_dependency(rv3->value());
 	jive::oport * arg[1] = {lb.region()->argument(0)};
 	auto ret = jive_apply_create(dep, 1, arg)[0];
 	auto lambda2 = lb.end({ret})->output(0);
 
-	jive_phi_fixvar_leave(phi, fns[0].gate, lambda0);
-	jive_phi_fixvar_leave(phi, fns[1].gate, lambda1);
-	jive_phi_fixvar_leave(phi, fns[2].gate, lambda2);
+	rv1->set_value(lambda0);
+	rv2->set_value(lambda1);
+	rv3->set_value(lambda2);
 
-	jive_phi_end(phi, 3, fns);
-
-	jive::oport * results[3] = {fns[0].value, fns[1].value, fns[2].value};
-
-	auto bottom = jive::test::simple_node_create(graph.root(),
-		{&f0type, &f0type, &f1type}, {results[0], results[1], results[2]}, {&vtype});
-	graph.export_port(bottom->output(0), "dummy");
+	auto phi = pb.end();
+	graph.export_port(phi->output(0), "dummy");
 
 	graph.normalize();
 	graph.prune();
@@ -62,7 +57,7 @@ static int test_main()
 	jive::view(graph.root(), stderr);
 
 	jive::node * lambda_node2;
-	lambda_node2 = phi.region->result(2)->origin()->node();
+	lambda_node2 = phi->subregion(0)->result(2)->origin()->node();
 	assert(jive_lambda_is_self_recursive(lambda_node2));
 
 	return 0;

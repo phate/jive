@@ -134,12 +134,13 @@ unsigned int fib(unsigned int n){
 	std::vector<const jive::base::type*> res({&bits32});
 	jive::fct::type fcttype({&bits32}, {&bits32});
 
-	jive_phi phi = jive_phi_begin(graph->root());
-	jive_phi_fixvar fv_fib = jive_phi_fixvar_enter(phi, &fcttype);
+	jive::phi_builder pb;
+	pb.begin(graph->root());
+	auto rv = pb.add_recvar(fcttype);
 
 	jive::lambda_builder lb;
-	lb.begin(phi.region, {{&bits32}, {&bits32}});
-	auto dep = lb.add_dependency(fv_fib.value);
+	lb.begin(pb.region(), {{&bits32}, {&bits32}});
+	auto dep = lb.add_dependency(rv->value());
 
 	auto n = lb.region()->argument(0);
 	auto one = jive_bitconstant_unsigned(lb.region(), 32, 1);
@@ -157,11 +158,10 @@ unsigned int fib(unsigned int n){
 	result = jive_gamma(predicate, {&bits32}, {{result}, {n}})[0];
 
 	auto fib = lb.end({result})->output(0);
+	rv->set_value(fib);
+	pb.end();
 
-	jive_phi_fixvar_leave(phi, fv_fib.gate, fib);
-	jive_phi_end(phi, 1, &fv_fib);
-
-	return fv_fib.value;
+	return rv->value();
 }
 
 static void
