@@ -233,6 +233,7 @@ structural_node::structural_node(
 	: node(op.copy(), region)
 	, depth_(0)
 {
+	/* FIXME: check that nsubregions is unequal zero */
 	for (size_t n = 0; n < nsubregions; n++)
 		subregions_.emplace_back(std::unique_ptr<jive::region>(new jive::region(this)));
 
