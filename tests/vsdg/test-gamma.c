@@ -20,19 +20,25 @@ test_main(void)
 
 	jive::bits::type bits2(2);
 	jive::bits::type bits32(32);
-	auto top = jive::test::simple_node_create(graph.root(), {}, {},
-		{&bits2, &bits32, &bits32, &bits32});
 
-	jive::output * cmp = dynamic_cast<jive::output*>(top->output(0));
-	jive::output * v0 = dynamic_cast<jive::output*>(top->output(1));
-	jive::output * v1 = dynamic_cast<jive::output*>(top->output(2));
-	jive::output * v2 = dynamic_cast<jive::output*>(top->output(3));
+	auto cmp = graph.import(bits2, "");
+	auto v0 = graph.import(bits32, "");
+	auto v1 = graph.import(bits32, "");
+	auto v2 = graph.import(bits32, "");
 
 	//create normal gamma
 	auto pred = jive::ctl::match(2, {{0,0}, {1,1}}, 2, 3, cmp);
-	auto result = jive_gamma(pred, {&bits32}, {{v0}, {v1}, {v2}});
-	graph.export_port(result[0], "dummy");
-	assert(result[0]->node() && result[0]->node()->operation() == jive::gamma_op(3));
+
+	jive::gamma_builder gb;
+	gb.begin(pred);
+	auto ev0 = gb.add_entryvar(v0);
+	auto ev1 = gb.add_entryvar(v1);
+	auto ev2 = gb.add_entryvar(v2);
+	gb.add_exitvar({ev0->argument(0), ev1->argument(1), ev2->argument(2)});
+	auto gamma = gb.end();
+
+	graph.export_port(gamma->output(0), "dummy");
+	assert(gamma && gamma->operation() == jive::gamma_op(3));
 
 	jive::view(graph.root(), stdout);
 #if 0

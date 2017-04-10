@@ -68,10 +68,25 @@ fib(size_t n)
 
 	cmp = jive_bitulesseq(k, n);
 	predicate = jive::ctl::match(1, {{0,0}}, 1, 2, cmp);
-	auto results = jive_gamma(predicate, {&bits32, &bits32, &bits32, &bits32},
-		{{i, j, k, n}, {lv_i->value(), lv_j->value(), lv_k->value(), lv_n->value()}});
 
-	return lb.end({results[1]})->output(0);
+	jive::gamma_builder gb;
+	gb.begin(predicate);
+	auto evi = gb.add_entryvar(i);
+	auto evj = gb.add_entryvar(j);
+	auto evk = gb.add_entryvar(k);
+	auto evn = gb.add_entryvar(n);
+	auto evlvi = gb.add_entryvar(lv_i->value());
+	auto evlvj = gb.add_entryvar(lv_j->value());
+	auto evlvk = gb.add_entryvar(lv_k->value());
+	auto evlvn = gb.add_entryvar(lv_n->value());
+
+	auto exi = gb.add_exitvar({evi->argument(0), evlvi->argument(1)});
+	auto exj = gb.add_exitvar({evj->argument(0), evlvj->argument(1)});
+	auto exk = gb.add_exitvar({evk->argument(0), evlvk->argument(1)});
+	auto exn = gb.add_exitvar({evn->argument(0), evlvn->argument(1)});
+	auto gamma = gb.end();
+
+	return lb.end({gamma->output(1)})->output(0);
 }
 
 static void
@@ -155,9 +170,15 @@ unsigned int fib(unsigned int n){
 	auto result = jive_bitsum(32, {tmp, tmp2});
 
 	auto predicate = jive::ctl::match(1, {{0,0}}, 1, 2, jive_bituless(n, two));
-	result = jive_gamma(predicate, {&bits32}, {{result}, {n}})[0];
 
-	auto fib = lb.end({result})->output(0);
+	jive::gamma_builder gb;
+	gb.begin(predicate);
+	auto ev1 = gb.add_entryvar(result);
+	auto ev2 = gb.add_entryvar(n);
+	auto ex = gb.add_exitvar({ev1->argument(0), ev2->argument(1)});
+	auto gamma = gb.end();
+
+	auto fib = lb.end({gamma->output(0)})->output(0);
 	rv->set_value(fib);
 	pb.end();
 
