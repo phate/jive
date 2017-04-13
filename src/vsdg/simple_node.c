@@ -253,7 +253,7 @@ bool
 simple_node::has_users() const noexcept
 {
 	for (const auto & output : outputs_) {
-		if (!output->no_user())
+		if (output->nusers() != 0)
 			return true;
 	}
 

@@ -161,18 +161,6 @@ public:
 		return index_;
 	}
 
-	inline bool
-	no_user() const noexcept
-	{
-		return users_.empty();
-	}
-
-	inline bool
-	single_user() const noexcept
-	{
-		return users_.size() == 1;
-	}
-
 	inline size_t
 	nusers() const noexcept
 	{
