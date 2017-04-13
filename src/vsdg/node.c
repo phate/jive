@@ -9,7 +9,6 @@
 #include <jive/common.h>
 
 #include <jive/internal/compiler.h>
-#include <jive/util/buffer.h>
 #include <jive/util/list.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/gate-interference-private.h>

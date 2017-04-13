@@ -9,7 +9,6 @@
 #include <jive/arch/addresstype.h>
 #include <jive/arch/load.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/simple_node.h>
 

@@ -5,8 +5,6 @@
 
 #include "testtypes.h"
 
-#include <jive/util/buffer.h>
-
 namespace jive {
 namespace test {
 

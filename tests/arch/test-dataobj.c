@@ -18,7 +18,6 @@
 #include <jive/types/record/rcdgroup.h>
 #include <jive/types/union/unntype.h>
 #include <jive/types/union/unnunify.h>
-#include <jive/util/buffer.h>
 #include <jive/view.h>
 #include <jive/vsdg.h>
 #include <jive/vsdg/label.h>

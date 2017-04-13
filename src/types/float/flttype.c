@@ -5,7 +5,6 @@
  */
 
 #include <jive/types/float/flttype.h>
-#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 

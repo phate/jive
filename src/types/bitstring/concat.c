@@ -13,7 +13,6 @@
 #include <jive/types/bitstring/constant.h>
 #include <jive/types/bitstring/slice.h>
 #include <jive/types/bitstring/type.h>
-#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/operators/reduction-helpers.h>

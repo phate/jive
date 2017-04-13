@@ -13,7 +13,6 @@
 #include <unordered_set>
 #include <utility>
 
-#include <jive/util/buffer.h>
 #include <jive/util/intrusive-list.h>
 #include <jive/util/strfmt.h>
 #include <jive/vsdg/basetype.h>

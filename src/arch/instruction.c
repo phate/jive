@@ -9,7 +9,6 @@
 #include <jive/arch/immediate-type.h>
 #include <jive/arch/instruction.h>
 #include <jive/arch/label-mapper.h>
-#include <jive/util/buffer.h>
 #include <jive/vsdg/control.h>
 #include <jive/vsdg/controltype.h>
 #include <jive/vsdg/graph.h>

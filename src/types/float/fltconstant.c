@@ -11,7 +11,6 @@
 
 #include <jive/types/float/fltoperation-classes.h>
 #include <jive/types/float/flttype.h>
-#include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/nullary.h>
 #include <jive/vsdg/simple_node.h>
