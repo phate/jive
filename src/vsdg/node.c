@@ -300,8 +300,6 @@ node::node(std::unique_ptr<jive::operation> op, jive::region * region, size_t de
 
 node::~node()
 {
-	JIVE_DEBUG_ASSERT(region_);
-
 	region_->nodes.erase(this);
 
 	JIVE_LIST_REMOVE(region()->bottom_nodes, this, region_bottom_list);
