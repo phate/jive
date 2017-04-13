@@ -283,10 +283,9 @@ jive_node_get_use_count_output(const jive::node * self, jive_resource_class_coun
 
 namespace jive {
 
-node::node(
-	std::unique_ptr<jive::operation> op,
-	jive::region * region)
-	: graph_(region->graph())
+node::node(std::unique_ptr<jive::operation> op, jive::region * region, size_t depth)
+	: depth_(depth)
+	, graph_(region->graph())
 	, region_(region)
 	, operation_(std::move(op))
 {
@@ -312,6 +311,30 @@ node::~node()
 
 	for (size_t n = 0; n < tracker_slots.size(); n++)
 		delete tracker_slots[n];
+}
+
+void
+node::recompute_depth()
+{
+	size_t new_depth = 0;
+	for (size_t n = 0; n < ninputs(); n++) {
+		if (input(n)->origin()->node())
+			new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
+	}
+
+	size_t old_depth = depth_;
+	if (new_depth == old_depth)
+		return;
+
+	depth_ = new_depth;
+	graph()->on_node_depth_change(this, old_depth);
+
+	for (size_t n = 0; n < noutputs(); n++) {
+		for (auto user : *output(n)) {
+			if (user->node())
+				user->node()->recompute_depth();
+		}
+	}
 }
 
 }

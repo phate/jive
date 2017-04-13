@@ -199,8 +199,7 @@ structural_node::structural_node(
 	const jive::operation & op,
 	jive::region * region,
 	size_t nsubregions)
-	: node(op.copy(), region)
-	, depth_(0)
+	: node(op.copy(), region, 0)
 {
 	/* FIXME: check that nsubregions is unequal zero */
 	for (size_t n = 0; n < nsubregions; n++)
@@ -234,12 +233,6 @@ structural_node::has_successors() const noexcept
 }
 
 size_t
-structural_node::depth() const noexcept
-{
-	return depth_;
-}
-
-size_t
 structural_node::ninputs() const noexcept
 {
 	return inputs_.size();
@@ -263,30 +256,6 @@ structural_node::output(size_t index) const noexcept
 {
 	JIVE_DEBUG_ASSERT(index < noutputs());
 	return outputs_[index].get();
-}
-
-void
-structural_node::recompute_depth()
-{
-	size_t new_depth = 0;
-	for (size_t n = 0; n < ninputs(); n++) {
-		if (input(n)->origin()->node())
-			new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
-	}
-
-	size_t old_depth = depth_;
-	if (new_depth == old_depth)
-		return;
-
-	depth_ = new_depth;
-	graph()->on_node_depth_change(this, old_depth);
-
-	for (size_t n = 0; n < noutputs(); n++) {
-		for (auto user : *output(n)) {
-			if (user->node())
-				user->node()->recompute_depth();
-		}
-	}
 }
 
 jive::structural_input *

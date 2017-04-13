@@ -113,12 +113,6 @@ public:
 		jive::region * region,
 		size_t nsubregions);
 
-	virtual size_t
-	depth() const noexcept override;
-
-	virtual void
-	recompute_depth() override;
-
 	virtual bool
 	has_users() const noexcept override;
 
@@ -181,7 +175,6 @@ public:
 	copy(jive::region * region, jive::substitution_map & smap) const override;
 
 private:
-	size_t depth_;
 	std::vector<std::unique_ptr<jive::region>> subregions_;
 	std::vector<std::unique_ptr<structural_input>> inputs_;
 	std::vector<std::unique_ptr<structural_output>> outputs_;

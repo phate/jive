@@ -10,6 +10,8 @@
 #include <jive/vsdg/simple_node.h>
 #include <jive/vsdg/substitution.h>
 
+#include <numeric>
+
 namespace jive {
 
 /* inputs */
@@ -168,8 +170,10 @@ simple_node::simple_node(
 	const jive::operation & op,
 	jive::region * region,
 	const std::vector<jive::oport*> & operands)
-	: node(op.copy(), region)
-	, depth_(0)
+	: node(op.copy(), region, std::accumulate(operands.begin(), operands.end(), 0,
+			[](size_t depth, const jive::oport * operand) {
+				return std::max(depth, operand->node() ? operand->node()->depth()+1 : 0);
+			}))
 {
 	if (operation().narguments() != operands.size())
 		throw jive::compiler_error(jive::detail::strfmt("Argument error - expected ",
@@ -178,9 +182,6 @@ simple_node::simple_node(
 	for (size_t n = 0; n < operation().narguments(); n++) {
 		inputs_.emplace_back(std::unique_ptr<jive::input>(new jive::input(
 			this, n, operands[n], operation().argument_type(n), operation().argument_cls(n))));
-
-		size_t depth = operands[n]->node() ? operands[n]->node()->depth()+1 : 0;
-		depth_ = std::max(depth, depth_);
 	}
 
 	for (size_t n = 0; n < operation().nresults(); n++) {
@@ -191,36 +192,6 @@ simple_node::simple_node(
 	JIVE_DEBUG_ASSERT(operation().narguments() == inputs_.size());
 
 	graph()->on_node_create(this);
-}
-
-size_t
-simple_node::depth() const noexcept
-{
-	return depth_;
-}
-
-void
-simple_node::recompute_depth()
-{
-	size_t new_depth = 0;
-	for (size_t n = 0; n < ninputs(); n++) {
-		if (input(n)->origin()->node())
-			new_depth = std::max(input(n)->origin()->node()->depth() + 1, new_depth);
-	}
-
-	size_t old_depth = depth_;
-	if (new_depth == old_depth)
-		return;
-
-	depth_ = new_depth;
-	graph()->on_node_depth_change(this, old_depth);
-
-	for (size_t n = 0; n < noutputs(); n++) {
-		for (auto user : *output(n)) {
-			if (user->node())
-				user->node()->recompute_depth();
-		}
-	}
 }
 
 size_t

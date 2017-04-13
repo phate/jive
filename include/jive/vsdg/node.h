@@ -333,7 +333,7 @@ public:
 	virtual
 	~node();
 
-	node(std::unique_ptr<jive::operation> op, jive::region * region);
+	node(std::unique_ptr<jive::operation> op, jive::region * region, size_t depth);
 
 	inline const jive::operation &
 	operation() const noexcept
@@ -424,14 +424,17 @@ public:
 	virtual jive::oport *
 	output(size_t index) const noexcept = 0;
 
-	virtual size_t
-	depth() const noexcept = 0;
+	inline size_t
+	depth() const noexcept
+	{
+		return depth_;
+	}
 
 	/*
 		FIXME: privatize or completely remove it again
 	*/
-	virtual void
-	recompute_depth() = 0;
+	void
+	recompute_depth();
 
 	struct {
 		jive::node * prev;
@@ -455,6 +458,7 @@ public:
 	> region_node_list_accessor;
 
 private:
+	size_t depth_;
 	jive::graph * graph_;
 	jive::region * region_;
 	std::unique_ptr<jive::operation> operation_;
