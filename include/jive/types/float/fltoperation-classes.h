@@ -9,6 +9,7 @@
 
 #include <jive/types/float/value-representation.h>
 #include <jive/vsdg/operators.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace flt {
@@ -131,7 +132,7 @@ public:
 	static jive::oport *
 	normalized_create(jive::oport * arg)
 	{
-		return jive_node_create_normalized(arg->region(), make_unop(), {arg})[0];
+		return jive::create_normalized(arg->region(), make_unop(), {arg})[0];
 	}
 
 	virtual value_repr
@@ -173,7 +174,7 @@ public:
 	static jive::oport *
 	normalized_create(jive::oport * arg1, jive::oport * arg2)
 	{
-		return jive_node_create_normalized(arg1->region(), make_binop(), {arg1, arg2})[0];
+		return jive::create_normalized(arg1->region(), make_binop(), {arg1, arg2})[0];
 	}
 
 	virtual jive_binary_operation_flags
@@ -224,7 +225,7 @@ public:
 	normalized_create(jive::oport * arg1, jive::oport * arg2)
 	{
 		make_cmpop op;
-		return jive_node_create_normalized(arg1->region(), make_cmpop(), {arg1, arg2})[0];
+		return jive::create_normalized(arg1->region(), make_cmpop(), {arg1, arg2})[0];
 	}
 
 	virtual jive_binary_operation_flags

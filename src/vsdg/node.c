@@ -324,16 +324,6 @@ jive_node_cse(
 	return nullptr;
 }
 
-std::vector<jive::oport*>
-jive_node_create_normalized(
-	jive::region * region,
-	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments)
-{
-	auto nf = region->graph()->node_normal_form(typeid(op));
-	return nf->normalized_create(region, op, arguments);
-}
-
 jive_tracker_nodestate *
 jive_node_get_tracker_state_slow(jive::node * self, jive_tracker_slot slot)
 {

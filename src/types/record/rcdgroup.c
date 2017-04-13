@@ -10,6 +10,7 @@
 
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace rcd {
@@ -70,7 +71,7 @@ jive_group_create(std::shared_ptr<const jive::rcd::declaration> & decl,
 {
 	jive::rcd::group_op op(decl);
 	jive::region * region = arguments[0]->region();
-	return jive_node_create_normalized(
+	return jive::create_normalized(
 		region, op, std::vector<jive::oport*>(arguments, arguments + narguments))[0];
 }
 
@@ -79,5 +80,5 @@ jive_empty_group_create(jive::graph * graph,
 	std::shared_ptr<const jive::rcd::declaration> & decl)
 {
 	jive::rcd::group_op op(decl);
-	return jive_node_create_normalized(graph->root(), op, {})[0];
+	return jive::create_normalized(graph->root(), op, {})[0];
 }

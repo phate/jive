@@ -375,8 +375,8 @@ flattened_binary_normal_form::normalized_create(
 	const base::flattened_binary_op & op =
 		static_cast<const base::flattened_binary_op &>(base_op);
 
-	const auto nf = graph()->node_normal_form(typeid(op.bin_operation()));
-
+	auto nf = static_cast<const binary_normal_form*>(
+		graph()->node_normal_form(typeid(op.bin_operation())));
 	return nf->normalized_create(region, op.bin_operation(), arguments);
 }
 

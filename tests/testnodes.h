@@ -82,7 +82,7 @@ simple_node_normalized_create(
 	const std::vector<const jive::base::type*> & result_types)
 {
 	jive::test::simple_op op(operand_types, result_types);
-	return jive_node_create_normalized(r, op, operands);
+	return jive::create_normalized(r, op, operands);
 }
 
 /* structural operation */

@@ -10,6 +10,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace state {
@@ -70,7 +71,7 @@ jive_state_merge(const jive::state::type * statetype, size_t nstates, jive::opor
 	jive::region * region = states[0]->region();
 
 	jive::state::mux_op op(*statetype, nstates, 1);
-	return jive_node_create_normalized(region, op,
+	return jive::create_normalized(region, op,
 		std::vector<jive::oport*>(states, states + nstates))[0];
 }
 
@@ -78,5 +79,5 @@ std::vector<jive::oport*>
 jive_state_split(const jive::state::type * statetype, jive::oport * state, size_t nstates)
 {
 	jive::state::mux_op op(*statetype, 1, nstates);
-	return jive_node_create_normalized(state->region(), op, {state});
+	return jive::create_normalized(state->region(), op, {state});
 }

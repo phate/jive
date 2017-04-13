@@ -79,7 +79,7 @@ jive_address_to_bitstring_create(jive::oport * address, size_t nbits,
 {
 	jive::address_to_bitstring_operation op(
 		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
-	return jive_node_create_normalized(address->region(), op, {address})[0];
+	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
 jive::oport *
@@ -88,7 +88,7 @@ jive_bitstring_to_address_create(jive::oport * bitstring, size_t nbits,
 {
 	jive::bitstring_to_address_operation op(
 		nbits, std::unique_ptr<jive::base::type>(original_type->copy()));
-	return jive_node_create_normalized(bitstring->region(), op, {bitstring})[0];
+	return jive::create_normalized(bitstring->region(), op, {bitstring})[0];
 }
 
 /* reductions */

@@ -12,6 +12,7 @@
 #include <jive/types/union/unntype.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 
@@ -54,7 +55,7 @@ jive::oport *
 jive_sizeof_create(jive::region * region, const jive::value::type * type)
 {
 	jive::sizeof_op op(*type);
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }
 
 /* sizeof reduce */

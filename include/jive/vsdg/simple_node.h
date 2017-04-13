@@ -174,6 +174,12 @@ private:
 	std::vector<std::unique_ptr<jive::output>> outputs_;
 };
 
+std::vector<jive::oport*>
+create_normalized(
+	jive::region * region,
+	const jive::operation & op,
+	const std::vector<jive::oport*> & arguments);
+
 }
 
 #endif

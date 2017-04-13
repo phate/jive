@@ -11,6 +11,7 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/node.h>
+#include <jive/vsdg/simple_node.h>
 
 static jive::oport *
 jive_load_node_normalized_create(
@@ -25,7 +26,7 @@ jive_load_node_normalized_create(
 		args.push_back(states[n]);
 	}
 
-	return nf->normalized_create(address->region(), op, args)[0];
+	return jive::create_normalized(address->region(), op, args)[0];
 }
 
 namespace jive {

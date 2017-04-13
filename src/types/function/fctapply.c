@@ -8,6 +8,7 @@
 
 #include <jive/types/function/fcttype.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/simple_node.h>
 
 #include <string.h>
 
@@ -85,6 +86,5 @@ jive_apply_create(jive::oport * function, size_t narguments, jive::oport * const
 	}
 
 	jive::region * region = apply_args[0]->region();
-	auto tmp = jive_node_create_normalized(region, op, apply_args);
-	return {tmp.begin(), tmp.end()};
+	return jive::create_normalized(region, op, apply_args);
 }

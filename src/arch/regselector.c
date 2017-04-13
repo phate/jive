@@ -267,7 +267,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 				operands[n] = regvalue;
 			}
 			
-			jive::output * subst = dynamic_cast<jive::output*>(jive_node_create_normalized(
+			jive::output * subst = dynamic_cast<jive::output*>(jive::create_normalized(
 				region,
 				origin->operation(),
 				std::vector<jive::oport*>(operands, operands + origin->noperands()))[0]);
@@ -289,7 +289,7 @@ jive_regselector_pull_node(jive_regselector * self, jive::node * node)
 					self->base.class_->annotate_node(&self->base, regvalue->node());
 				operands[n] = regvalue;
 			}
-			jive::output * subst = dynamic_cast<jive::output*>(jive_node_create_normalized(
+			jive::output * subst = dynamic_cast<jive::output*>(jive::create_normalized(
 				region, origin->operation(), {operands[0]})[0]);
 			
 			jive_negotiator_port_split(jive_negotiator_map_output(&self->base,

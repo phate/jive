@@ -15,6 +15,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/nullary.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 /* immediate node */
 
@@ -58,5 +59,5 @@ jive_immediate_create(
 	const jive::immediate * immediate_value)
 {
 	jive::immediate_op op(*immediate_value);
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }

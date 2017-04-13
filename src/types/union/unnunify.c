@@ -10,6 +10,7 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/nullary.h>
+#include <jive/vsdg/simple_node.h>
 
 #include <string.h>
 
@@ -105,7 +106,7 @@ jive_unify_create(const jive::unn::declaration * decl, size_t option, jive::opor
 {
 	const jive::unn::type  unn_type(decl);
 	jive::unn::unify_op op(unn_type, option);
-	return jive_node_create_normalized(argument->region(), op, {argument})[0];
+	return jive::create_normalized(argument->region(), op, {argument})[0];
 }
 
 /* empty unify node */
@@ -114,5 +115,5 @@ jive::oport *
 jive_empty_unify_create(struct jive::region * region, const jive::unn::declaration * decl)
 {
 	jive::unn::empty_unify_op op(decl);
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }

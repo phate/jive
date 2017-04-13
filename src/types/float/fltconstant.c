@@ -14,6 +14,7 @@
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/nullary.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace base {
@@ -28,5 +29,5 @@ jive::oport *
 jive_fltconstant(jive::region * region, jive::flt::value_repr value)
 {
 	jive::flt::constant_op op(value);
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }

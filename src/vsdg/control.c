@@ -14,6 +14,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators/match.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 namespace base {
@@ -34,7 +35,7 @@ match(
 	jive::oport * operand)
 {
 	match_op op(nbits, mapping, default_alternative, nalternatives);
-	return jive_node_create_normalized(operand->region(), op, {operand})[0];
+	return jive::create_normalized(operand->region(), op, {operand})[0];
 }
 
 }
@@ -44,5 +45,5 @@ jive::oport *
 jive_control_constant(jive::region * region, size_t nalternatives, size_t alternative)
 {
 	jive::ctl::constant_op op(jive::ctl::value_repr(alternative, nalternatives));
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }

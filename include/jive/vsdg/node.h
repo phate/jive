@@ -537,12 +537,6 @@ jive_node_cse(
 
 /* normal forms */
 
-std::vector<jive::oport*>
-jive_node_create_normalized(
-	jive::region * region,
-	const jive::operation & op,
-	const std::vector<jive::oport*> & arguments);
-
 bool
 jive_node_normalize(jive::node * self);
 

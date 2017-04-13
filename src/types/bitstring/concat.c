@@ -31,7 +31,7 @@ jive_bitconcat(const std::vector<jive::oport*> & operands)
 	jive::region* region = operands[0]->region();
 
 	jive::bits::concat_op op(std::move(types));
-	return jive_node_create_normalized(region, op, {operands.begin(), operands.end()})[0];
+	return jive::create_normalized(region, op, {operands.begin(), operands.end()})[0];
 }
 
 namespace jive {

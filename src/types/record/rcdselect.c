@@ -15,6 +15,7 @@
 #include <jive/types/bitstring/type.h>
 #include <jive/util/buffer.h>
 #include <jive/vsdg/graph.h>
+#include <jive/vsdg/simple_node.h>
 
 static constexpr jive_unop_reduction_path_t jive_select_reduction_load = 128;
 
@@ -124,6 +125,6 @@ jive_select_create(size_t member, jive::oport * argument)
 	const jive::rcd::type & rcd_type =
 		dynamic_cast<const jive::rcd::type &>(argument->type());
 	jive::rcd::select_operation op(rcd_type, member);
-	return jive_node_create_normalized(argument->region(), op, {argument})[0];
+	return jive::create_normalized(argument->region(), op, {argument})[0];
 }
 

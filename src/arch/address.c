@@ -102,7 +102,7 @@ jive_memberof(
 	size_t index)
 {
 	jive::address::memberof_op op(record_decl, index);
-	return jive_node_create_normalized(address->region(), op, {address})[0];
+	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
 /* containerof */
@@ -185,7 +185,7 @@ jive_containerof(
 	size_t index)
 {
 	jive::address::containerof_op op(record_decl, index);
-	return jive_node_create_normalized(address->region(), op, {address})[0];
+	return jive::create_normalized(address->region(), op, {address})[0];
 }
 
 /* arraysubscript */
@@ -280,7 +280,7 @@ jive_arraysubscript(
 		*element_type,
 		dynamic_cast<const jive::bits::type &>(index->type()));
 
-	return jive_node_create_normalized(address->region(), op, {address, index})[0];
+	return jive::create_normalized(address->region(), op, {address, index})[0];
 }
 
 /* arrayindex */
@@ -367,7 +367,7 @@ jive_arrayindex(
 	const jive::bits::type * difference_type)
 {
 	jive::address::arrayindex_op op(*element_type, difference_type->nbits());
-	return jive_node_create_normalized(addr1->region(), op, {addr1, addr2})[0];
+	return jive::create_normalized(addr1->region(), op, {addr1, addr2})[0];
 }
 
 /* label_to_address node */
@@ -432,7 +432,7 @@ jive::oport *
 jive_label_to_address_create(jive::region * region, const jive_label * label)
 {
 	jive::address::label_to_address_op op(label);
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }
 
 /* label_to_bitstring_node */
@@ -495,7 +495,7 @@ jive::oport *
 constant(jive::graph * graph, const value_repr & vr)
 {
 	constant_op op(vr);
-	return jive_node_create_normalized(graph->root(), op, {})[0];
+	return jive::create_normalized(graph->root(), op, {})[0];
 }
 
 }
@@ -506,5 +506,5 @@ jive::oport *
 jive_label_to_bitstring_create(jive::region * region, const jive_label * label, size_t nbits)
 {
 	jive::address::label_to_bitstring_op op(label, nbits);
-	return jive_node_create_normalized(region, op, {})[0];
+	return jive::create_normalized(region, op, {})[0];
 }

@@ -133,5 +133,5 @@ jive_bitslice(jive::oport * argument, size_t low, size_t high)
 {
 	const jive::bits::type & type = dynamic_cast<const jive::bits::type &>(argument->type());
 	jive::bits::slice_op op(type, low, high);
-	return jive_node_create_normalized(argument->region(), op, {argument})[0];
+	return jive::create_normalized(argument->region(), op, {argument})[0];
 }

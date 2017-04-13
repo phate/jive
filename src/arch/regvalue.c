@@ -13,6 +13,7 @@
 #include <jive/vsdg/graph.h>
 #include <jive/vsdg/operators.h>
 #include <jive/vsdg/region.h>
+#include <jive/vsdg/simple_node.h>
 
 namespace jive {
 
@@ -68,5 +69,5 @@ regvalue_op::copy() const
 jive::oport *
 jive_regvalue(jive::oport * value, const jive_register_class * regcls)
 {
-	return jive_node_create_normalized(value->region(), jive::regvalue_op(regcls), {value})[0];
+	return jive::create_normalized(value->region(), jive::regvalue_op(regcls), {value})[0];
 }

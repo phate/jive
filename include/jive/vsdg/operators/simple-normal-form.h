@@ -32,7 +32,7 @@ public:
 	normalized_create(
 		jive::region * region,
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const override;
+		const std::vector<jive::oport*> & arguments) const;
 
 	virtual void
 	set_cse(bool enable);
