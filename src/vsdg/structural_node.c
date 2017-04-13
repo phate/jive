@@ -224,7 +224,7 @@ bool
 structural_node::has_successors() const noexcept
 {
 	for (const auto & output : outputs_) {
-		for (const auto & user : output->users) {
+		for (const auto & user : *output) {
 			if (user->node())
 				return true;
 		}
@@ -282,7 +282,7 @@ structural_node::recompute_depth()
 	graph()->on_node_depth_change(this, old_depth);
 
 	for (size_t n = 0; n < noutputs(); n++) {
-		for (auto user : output(n)->users) {
+		for (auto user : *output(n)) {
 			if (user->node())
 				user->node()->recompute_depth();
 		}

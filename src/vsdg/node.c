@@ -25,11 +25,7 @@ namespace jive {
 
 iport::~iport() noexcept
 {
-	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_users()) {
-		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
-			region_bottom_list);
-	}
+	origin()->remove_user(this);
 
 	if (gate())
 		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
@@ -53,9 +49,7 @@ iport::iport(
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
+	origin->add_user(this);
 }
 
 iport::iport(
@@ -79,9 +73,7 @@ iport::iport(
 
 	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
 
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
+	origin->add_user(this);
 }
 
 iport::iport(
@@ -103,9 +95,7 @@ iport::iport(
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
 
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
+	origin->add_user(this);
 }
 
 std::string
@@ -118,35 +108,30 @@ iport::debug_string() const
 }
 
 void
-iport::divert_origin(jive::oport * norg)
+iport::divert_origin(jive::oport * new_origin)
 {
-	if (type() != norg->type())
-		throw jive::type_error(type().debug_string(), norg->type().debug_string());
+	if (type() != new_origin->type())
+		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
 
-	if (region() != norg->region())
+	if (region() != new_origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
-	auto oorg = origin();
-
-	oorg->users.erase(this);
-	if (oorg->node() && !oorg->node()->has_users())
-		JIVE_LIST_PUSH_BACK(oorg->node()->region()->bottom_nodes, oorg->node(), region_bottom_list);
-
-	this->origin_ = norg;
-
-	if (norg->node() && !norg->node()->has_users())
-		JIVE_LIST_REMOVE(norg->node()->region()->bottom_nodes, norg->node(), region_bottom_list);
-	norg->users.insert(this);
+	auto old_origin = origin();
+	old_origin->remove_user(this);
+	this->origin_ = new_origin;
+	new_origin->add_user(this);
 
 	if (node()) node()->recompute_depth();
-	norg->region()->graph()->mark_denormalized();
-	region()->graph()->on_iport_change(this, oorg, norg);
+	region()->graph()->mark_denormalized();
+	region()->graph()->on_iport_change(this, old_origin, new_origin);
 }
 
 /* oport */
 
 oport::~oport()
 {
+	JIVE_DEBUG_ASSERT(nusers() == 0);
+
 	if (gate())
 		JIVE_LIST_REMOVE(gate()->oports, this, gate_oport_list);
 }
@@ -181,6 +166,26 @@ oport::debug_string() const
 		return gate()->debug_string();
 
 	return detail::strfmt(index());
+}
+
+void
+oport::remove_user(jive::iport * user)
+{
+	JIVE_DEBUG_ASSERT(users_.find(user) != users_.end());
+
+	users_.erase(user);
+	if (node() && !node()->has_users())
+		JIVE_LIST_PUSH_BACK(region()->bottom_nodes, node(), region_bottom_list);
+}
+
+void
+oport::add_user(jive::iport * user)
+{
+	JIVE_DEBUG_ASSERT(users_.find(user) == users_.end());
+
+	if (node() && !node()->has_users())
+		JIVE_LIST_REMOVE(region()->bottom_nodes, node(), region_bottom_list);
+	users_.insert(user);
 }
 
 /* gates */
@@ -327,7 +332,7 @@ jive_node_cse(
 	const std::vector<jive::oport*> & arguments)
 {
 	if (!arguments.empty()) {
-		for (auto user : arguments[0]->users) {
+		for (const auto & user : *arguments[0]) {
 			auto node = user->node();
 			if (node && jive_node_cse_test(node, op, arguments))
 				return node;

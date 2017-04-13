@@ -35,7 +35,7 @@ topdown_traverser::topdown_traverser(jive::region * region)
 
 	for (size_t n = 0; n < region->narguments(); n++) {
 		auto argument = region->argument(n);
-		for (const auto & user : argument->users) {
+		for (const auto & user : *argument) {
 			if (!user->node() || !predecessors_visited(user->node()))
 				continue;
 
@@ -72,7 +72,7 @@ topdown_traverser::next()
 
 	tracker_.set_nodestate(node, traversal_nodestate::behind);
 	for (size_t n = 0; n < node->noutputs(); n++) {
-		for (const auto & user : node->output(n)->users) {
+		for (const auto & user : *node->output(n)) {
 			if (!user->node())
 				continue;
 
@@ -258,7 +258,7 @@ upward_cone_traverser::iport_change(iport * in, oport * old_origin, oport * new_
 		size_t n;
 		for (n = 0; n < output->node()->noutputs(); n++) {
 			jive::output * out = dynamic_cast<jive::output*>(output->node()->output(n));
-			for (auto user : out->users) {
+			for (const auto & user : *out) {
 				if (user == in)
 					continue;
 				auto input = dynamic_cast<jive::input*>(user);

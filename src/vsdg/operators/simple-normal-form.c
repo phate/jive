@@ -22,7 +22,7 @@ node_cse(
 	};
 
 	if (!arguments.empty()) {
-		for (auto user : arguments[0]->users) {
+		for (const auto & user : *arguments[0]) {
 			auto node = user->node();
 			if (node && cse_test(node))
 				return node;

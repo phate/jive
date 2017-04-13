@@ -77,7 +77,7 @@ jive_lambda_is_self_recursive(const jive::node * self)
 
 	/* find index of lambda output in the phi leave node */
 	size_t index = phi_region->nresults();
-	for (const auto & user : self->output(0)->users) {
+	for (const auto & user : *self->output(0)) {
 		if (dynamic_cast<const jive::result*>(user)) {
 			index = user->index();
 			break;

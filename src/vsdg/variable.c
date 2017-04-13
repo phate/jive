@@ -102,7 +102,7 @@ jive_ssavar_assert_consistent(const jive_ssavar * self)
 	if (!origin)
 		return;
 
-	for (auto user : origin->users) {
+	for (const auto & user : origin) {
 		auto input = dynamic_cast<jive::input*>(user);
 		JIVE_DEBUG_ASSERT(input->ssavar() == origin->ssavar());
 	}

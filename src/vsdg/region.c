@@ -22,8 +22,6 @@ namespace jive {
 
 argument::~argument() noexcept
 {
-	JIVE_DEBUG_ASSERT(users.empty());
-
 	region()->graph()->on_oport_destroy(this);
 
 	if (input())

@@ -131,6 +131,10 @@ private:
 /* oports */
 
 class oport {
+	friend iport;
+
+	typedef std::unordered_set<jive::iport*>::const_iterator user_iterator;
+
 public:
 	virtual
 	~oport() noexcept;
@@ -160,26 +164,26 @@ public:
 	inline bool
 	no_user() const noexcept
 	{
-		return users.empty();
+		return users_.empty();
 	}
 
 	inline bool
 	single_user() const noexcept
 	{
-		return users.size() == 1;
+		return users_.size() == 1;
 	}
 
 	inline size_t
 	nusers() const noexcept
 	{
-		return users.size();
+		return users_.size();
 	}
 
 	inline void
 	replace(jive::oport * new_origin)
 	{
-		while (users.size())
-			(*users.begin())->divert_origin(new_origin);
+		while (users_.size())
+			(*users_.begin())->divert_origin(new_origin);
 	}
 
 	inline jive::gate *
@@ -194,6 +198,18 @@ public:
 		return rescls_;
 	}
 
+	inline user_iterator
+	begin() const noexcept
+	{
+		return users_.begin();
+	}
+
+	inline user_iterator
+	end() const noexcept
+	{
+		return users_.end();
+	}
+
 	virtual const jive::base::type &
 	type() const noexcept = 0;
 
@@ -205,8 +221,6 @@ public:
 
 	virtual std::string
 	debug_string() const;
-
-	std::unordered_set<jive::iport*> users;
 
 	struct {
 		jive::oport * prev;
@@ -221,8 +235,15 @@ protected:
 	}
 
 private:
+	void
+	remove_user(jive::iport * user);
+
+	void
+	add_user(jive::iport * user);
+
 	size_t index_;
 	jive::gate * gate_;
+	std::unordered_set<jive::iport*> users_;
 	const struct jive_resource_class * rescls_;
 };
 
