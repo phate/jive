@@ -77,7 +77,7 @@ private:
 	friend class flattened_binary_normal_form;
 };
 
-class flattened_binary_normal_form final : public node_normal_form {
+class flattened_binary_normal_form final : public simple_normal_form {
 public:
 	virtual
 	~flattened_binary_normal_form() noexcept;

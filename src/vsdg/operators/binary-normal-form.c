@@ -338,7 +338,7 @@ flattened_binary_normal_form::flattened_binary_normal_form(
 	const std::type_info & operator_class,
 	jive::node_normal_form * parent,
 	jive::graph * graph)
-	: node_normal_form(operator_class, parent, graph)
+	: simple_normal_form(operator_class, parent, graph)
 {
 }
 
