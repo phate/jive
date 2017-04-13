@@ -102,12 +102,6 @@ result::~result() noexcept
 {
 	region()->graph()->on_iport_destroy(this);
 
-	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_users()) {
-		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
-			region_bottom_list);
-	}
-
 	if (output())
 		JIVE_LIST_REMOVE(output()->results, this, output_result_list);
 

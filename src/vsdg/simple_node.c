@@ -18,12 +18,6 @@ input::~input() noexcept
 {
 	node()->graph()->on_iport_destroy(this);
 
-	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_users()) {
-		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
-			region_bottom_list);
-	}
-
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
 			jive::input * other = dynamic_cast<jive::input*>(node()->input(n));

@@ -19,12 +19,6 @@ structural_input::~structural_input()
 
 	node()->graph()->on_iport_destroy(this);
 
-	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_users()) {
-		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
-			region_bottom_list);
-	}
-
 	if (gate()) {
 		for (size_t n = 0; n < node()->ninputs(); n++) {
 			auto other = node()->input(n);

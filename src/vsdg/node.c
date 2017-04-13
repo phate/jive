@@ -25,6 +25,12 @@ namespace jive {
 
 iport::~iport() noexcept
 {
+	origin()->users.erase(this);
+	if (origin()->node() && !origin()->node()->has_users()) {
+		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
+			region_bottom_list);
+	}
+
 	if (gate())
 		JIVE_LIST_REMOVE(gate()->iports, this, gate_iport_list);
 }
