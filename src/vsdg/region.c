@@ -139,12 +139,6 @@ result::result(
 
 	if (output)
 		JIVE_LIST_PUSH_BACK(output->results, this, output_result_list);
-
-	if (origin->node() && !origin->node()->has_users()) {
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(),
-			region_bottom_list);
-	}
-	origin->users.insert(this);
 }
 
 result::result(
@@ -168,11 +162,6 @@ result::result(
 		if (!other->gate()) continue;
 		jive_gate_interference_add(region->graph(), gate, other->gate());
 	}
-
-	if (origin->node() && !origin->node()->has_users()) {
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	}
-	origin->users.insert(this);
 }
 
 const jive::base::type &

@@ -45,11 +45,7 @@ input::input(
 	: iport(node->region(), type, index, origin)
 	, node_(node)
 	, type_(type.copy())
-{
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
-}
+{}
 
 input::input(
 	jive::node * node,
@@ -65,10 +61,6 @@ input::input(
 		if (!other->gate()) continue;
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
-
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
 }
 
 input::input(
@@ -80,11 +72,7 @@ input::input(
 	: iport(node->region(), type, index, origin, rescls)
 	, node_(node)
 	, type_(type.copy())
-{
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
-}
+{}
 
 const jive::base::type &
 input::type() const noexcept

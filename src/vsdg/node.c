@@ -46,6 +46,10 @@ iport::iport(
 
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+
+	if (origin->node() && !origin->node()->has_users())
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
+	origin->users.insert(this);
 }
 
 iport::iport(
@@ -67,6 +71,10 @@ iport::iport(
 
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+
+	if (origin->node() && !origin->node()->has_users())
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
+	origin->users.insert(this);
 }
 
 iport::iport(
@@ -87,6 +95,10 @@ iport::iport(
 
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+
+	if (origin->node() && !origin->node()->has_users())
+		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
+	origin->users.insert(this);
 }
 
 std::string

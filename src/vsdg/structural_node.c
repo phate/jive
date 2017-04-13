@@ -48,11 +48,6 @@ structural_input::structural_input(
 	, type_(type.copy())
 {
 	arguments.first = arguments.last = nullptr;
-
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
-
 	node->graph()->on_iport_create(this);
 }
 
@@ -73,10 +68,6 @@ structural_input::structural_input(
 		jive_gate_interference_add(node->graph(), gate, other->gate());
 	}
 
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
-
 	node->graph()->on_iport_create(this);
 }
 
@@ -90,11 +81,6 @@ structural_input::structural_input(
 	, type_(jive_resource_class_get_type(rescls)->copy())
 {
 	arguments.first = arguments.last = nullptr;
-
-	if (origin->node() && !origin->node()->has_users())
-		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
-	origin->users.insert(this);
-
 	node->graph()->on_iport_create(this);
 }
 
