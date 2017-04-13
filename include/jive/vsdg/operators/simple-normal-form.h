@@ -21,18 +21,18 @@ public:
 		jive::graph * graph) noexcept;
 
 	virtual bool
-	normalize_node(jive::node * node) const;
+	normalize_node(jive::node * node) const override;
 
 	virtual bool
 	operands_are_normalized(
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const;
+		const std::vector<jive::oport*> & arguments) const override;
 
 	virtual std::vector<jive::oport*>
 	normalized_create(
 		jive::region * region,
 		const jive::operation & op,
-		const std::vector<jive::oport*> & arguments) const;
+		const std::vector<jive::oport*> & arguments) const override;
 
 	virtual void
 	set_cse(bool enable);
