@@ -64,13 +64,14 @@ iport::iport(
 	, rescls_(gate->rescls())
 {
 	gate_iport_list.prev = gate_iport_list.next = nullptr;
-	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
 
 	if (region != origin->region())
 		throw jive::compiler_error("Invalid operand region.");
 
 	if (type != origin->type())
 		throw jive::type_error(type.debug_string(), origin->type().debug_string());
+
+	JIVE_LIST_PUSH_BACK(gate->iports, this, gate_iport_list);
 
 	if (origin->node() && !origin->node()->has_users())
 		JIVE_LIST_REMOVE(origin->node()->region()->bottom_nodes, origin->node(), region_bottom_list);
