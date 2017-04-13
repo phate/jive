@@ -141,7 +141,6 @@ private:
 	} new_hash_chain;
 
 	bool enable_mutable_;
-	bool enable_cse_;
 
 	struct {
 		node_normal_form * first;
