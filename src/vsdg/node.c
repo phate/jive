@@ -99,29 +99,29 @@ iport::debug_string() const
 }
 
 void
-iport::divert_origin(jive::oport * new_origin)
+iport::divert_origin(jive::oport * norg)
 {
-	if (type() != new_origin->type())
-		throw jive::type_error(type().debug_string(), new_origin->type().debug_string());
+	if (type() != norg->type())
+		throw jive::type_error(type().debug_string(), norg->type().debug_string());
 
-	if (region() != new_origin->region())
+	if (region() != norg->region())
 		throw jive::compiler_error("Invalid operand region.");
 
-	origin()->users.erase(this);
-	if (origin()->node() && !origin()->node()->has_users()) {
-		JIVE_LIST_PUSH_BACK(origin()->node()->region()->bottom_nodes, origin()->node(),
-			region_bottom_list);
-	}
+	auto oorg = origin();
 
-	this->origin_ = new_origin;
+	oorg->users.erase(this);
+	if (oorg->node() && !oorg->node()->has_users())
+		JIVE_LIST_PUSH_BACK(oorg->node()->region()->bottom_nodes, oorg->node(), region_bottom_list);
 
-	if (origin()->node() && !origin()->node()->has_users()) {
-		JIVE_LIST_REMOVE(origin()->node()->region()->bottom_nodes, origin()->node(),
-			region_bottom_list);
-	}
-	origin()->users.insert(this);
+	this->origin_ = norg;
 
-	new_origin->region()->graph()->mark_denormalized();
+	if (norg->node() && !norg->node()->has_users())
+		JIVE_LIST_REMOVE(norg->node()->region()->bottom_nodes, norg->node(), region_bottom_list);
+	norg->users.insert(this);
+
+	if (node()) node()->recompute_depth();
+	norg->region()->graph()->mark_denormalized();
+	region()->graph()->on_iport_change(this, oorg, norg);
 }
 
 /* oport */

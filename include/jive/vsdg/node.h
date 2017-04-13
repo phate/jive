@@ -94,7 +94,7 @@ public:
 		return rescls_;
 	}
 
-	virtual void
+	void
 	divert_origin(jive::oport * new_origin);
 
 	virtual const jive::base::type &

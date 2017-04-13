@@ -50,9 +50,6 @@ public:
 	virtual jive::node *
 	node() const noexcept override;
 
-	virtual void
-	divert_origin(jive::oport * new_origin) override;
-
 	struct {
 		jive::argument * first;
 		jive::argument * last;

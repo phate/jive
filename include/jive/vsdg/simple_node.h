@@ -48,9 +48,6 @@ public:
 	virtual jive::node *
 	node() const noexcept override;
 
-	virtual void
-	divert_origin(jive::oport * new_origin) override;
-
 private:
 	jive::node * node_;
 

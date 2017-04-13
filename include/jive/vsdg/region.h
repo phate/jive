@@ -121,9 +121,6 @@ public:
 	virtual jive::node *
 	node() const noexcept override;
 
-	virtual void
-	divert_origin(jive::oport * new_origin);
-
 	inline jive::structural_output *
 	output() const noexcept
 	{

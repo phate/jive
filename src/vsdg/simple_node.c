@@ -104,17 +104,6 @@ input::node() const noexcept
 	return node_;
 }
 
-void
-input::divert_origin(jive::oport * new_origin)
-{
-	jive::oport * old_origin = this->origin();
-
-	iport::divert_origin(new_origin);
-	node()->recompute_depth();
-
-	node()->graph()->on_iport_change(this, old_origin, new_origin);
-}
-
 /* outputs */
 
 output::output(jive::node * node, size_t index, const jive::base::type & type)

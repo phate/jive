@@ -193,14 +193,6 @@ result::node() const noexcept
 	return nullptr;
 }
 
-void
-result::divert_origin(jive::oport * new_origin)
-{
-	jive::oport * old_origin = this->origin();
-	iport::divert_origin(new_origin);
-	region()->graph()->on_iport_change(this, old_origin, new_origin);
-}
-
 /* region */
 
 region::~region()
