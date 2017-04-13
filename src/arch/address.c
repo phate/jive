@@ -386,24 +386,6 @@ label_to_address_op::operator==(const operation & other) const noexcept
 	return op && op->label() == label();
 }
 
-size_t
-label_to_address_op::narguments() const noexcept
-{
-	return 0;
-}
-
-const jive::base::type &
-label_to_address_op::argument_type(size_t index) const noexcept
-{
-	throw std::logic_error("no arguments");
-}
-
-size_t
-label_to_address_op::nresults() const noexcept
-{
-	return 1;
-}
-
 const jive::base::type &
 label_to_address_op::result_type(size_t index) const noexcept
 {
@@ -449,24 +431,6 @@ label_to_bitstring_op::operator==(const operation & other) const noexcept
 	const label_to_bitstring_op * op =
 		dynamic_cast<const label_to_bitstring_op *>(&other);
 	return op && op->label() == label() && op->nbits() == nbits();
-}
-
-size_t
-label_to_bitstring_op::narguments() const noexcept
-{
-	return 0;
-}
-
-const jive::base::type &
-label_to_bitstring_op::argument_type(size_t index) const noexcept
-{
-	throw std::logic_error("no arguments");
-}
-
-size_t
-label_to_bitstring_op::nresults() const noexcept
-{
-	return 1;
 }
 
 const jive::base::type &
